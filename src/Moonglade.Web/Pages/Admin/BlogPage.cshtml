@@ -25,43 +25,47 @@
     </script>
 }
 
-<a class="btn btn-sm btn-outline-success" asp-page="./EditPage">
-    <i class="bi-plus-lg"></i>
-    @Localizer["New"]
-</a>
-<hr />
+<div class="admin-toolbar ps-4 pe-4 pt-2 pb-2 border-bottom mb-3 shadow-sm">
+    <a class="btn btn-sm btn-outline-accent" asp-page="./EditPage">
+        <i class="bi-plus-lg"></i>
+        @Localizer["New"]
+    </a>
+</div>
+
 
 @if (Model.PageSegments.Any())
 {
-    @Html.AntiForgeryToken()
+    <div class="ps-4 pe-4">
+        @Html.AntiForgeryToken()
 
-    <div class="row row-cols-1 row-cols-sm-2 row-cols-md-3 row-cols-lg-4 g-4">
-        @foreach (var item in Model.PageSegments.OrderByDescending(p => p.CreateTimeUtc))
-        {
-            <div class="col">
-                <div class="card mb-4" id="card-@item.Id">
-                    <div class="card-body">
-                        <h6 class="card-title">
-                            <a asp-page="/BlogPage" asp-route-slug="@item.Slug" target="_blank">@item.Title</a>
-                        </h6>
-                        <p class="mt-2 h-30px">@item.Slug</p>
-                        <small class="text-muted">
-                            @item.CreateTimeUtc
-                        </small>
-                    </div>
-                    <div class="card-footer">
-                        <a class="btn btn-outline-accent btn-sm btn-edit" asp-page="./EditPage" asp-route-id="@item.Id">
-                            <i class="bi-pen"></i>
-                        </a>
-                        <a class="btn btn-outline-danger btn-sm btn-delete" data-pageid="@item.Id" href="javascript:;">
-                            <i class="bi-trash"></i>
-                        </a>
+        <div class="row row-cols-1 row-cols-sm-2 row-cols-md-3 row-cols-lg-4 g-4">
+            @foreach (var item in Model.PageSegments.OrderByDescending(p => p.CreateTimeUtc))
+            {
+                <div class="col">
+                    <div class="card shadow-sm mb-4" id="card-@item.Id">
+                        <div class="card-body">
+                            <h6 class="card-title">
+                                <a asp-page="/BlogPage" asp-route-slug="@item.Slug" target="_blank">@item.Title</a>
+                            </h6>
+                            <p class="mt-2 h-30px">@item.Slug</p>
+                            <small class="text-muted">
+                                @item.CreateTimeUtc
+                            </small>
+                        </div>
+                        <div class="card-footer">
+                            <a class="btn btn-outline-accent btn-sm btn-edit" asp-page="./EditPage" asp-route-id="@item.Id">
+                                <i class="bi-pen"></i>
+                            </a>
+                            <a class="btn btn-outline-danger btn-sm btn-delete" data-pageid="@item.Id" href="javascript:;">
+                                <i class="bi-trash"></i>
+                            </a>
 
-                        <span id="span-processing-@item.Id" class="spinner-border spinner-border-sm" role="status" aria-hidden="true" style="display: none;"></span>
+                            <span id="span-processing-@item.Id" class="spinner-border spinner-border-sm" role="status" aria-hidden="true" style="display: none;"></span>
+                        </div>
                     </div>
                 </div>
-            </div>
-        }
+            }
+        </div>
     </div>
 }
 else

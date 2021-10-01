@@ -27,43 +27,46 @@
     </script>
 }
 
-<table id="pingbacks-table" class="table table-bordered">
-    <thead>
-        <tr>
-            <th>@Localizer["Link"]</th>
-            <th>@Localizer["Destination Server"]</th>
-            <th>@Localizer["Referenced Post"]</th>
-            <th>@Localizer["Ping Time (UTC)"]</th>
-            <th>@Localizer["Operation"]</th>
-        </tr>
-    </thead>
-    <tbody>
-        @foreach (var item in Model.PingbackRecords.OrderByDescending(p => p.PingTimeUtc))
-        {
-            <tr id="pingback-box-@item.Id">
-                <td class="table-item-w30">
-                    <a href="@item.SourceUrl" target="_blank">@item.SourceTitle</a>
-                </td>
-                <td>
-                    @item.Domain <br />
-                    <small class="text-muted">
-                        @item.SourceIp
-                    </small>
-                </td>
-                <td class="table-item-w30">
-                    @item.TargetPostTitle
-                </td>
-                <td data-sort="@item.PingTimeUtc.ToString("yyyyMMddHHmmss")">
-                    @item.PingTimeUtc
-                </td>
-                <td class="p-2">
-                    <a class="btn btn-sm btn-outline-danger btn-delete" href="#" data-pingbackid="@item.Id">
-                        <i class="bi-trash"></i>
+<div class="p-4">
 
-                        <span id="span-processing-@item.Id" class="spinner-border spinner-border-sm" role="status" aria-hidden="true" style="display: none;"></span>
-                    </a>
-                </td>
+    <table id="pingbacks-table" class="table table-bordered">
+        <thead>
+            <tr>
+                <th>@Localizer["Link"]</th>
+                <th>@Localizer["Destination Server"]</th>
+                <th>@Localizer["Referenced Post"]</th>
+                <th>@Localizer["Ping Time (UTC)"]</th>
+                <th>@Localizer["Operation"]</th>
             </tr>
-        }
-    </tbody>
-</table>
+        </thead>
+        <tbody>
+            @foreach (var item in Model.PingbackRecords.OrderByDescending(p => p.PingTimeUtc))
+            {
+                <tr id="pingback-box-@item.Id">
+                    <td class="table-item-w30">
+                        <a href="@item.SourceUrl" target="_blank">@item.SourceTitle</a>
+                    </td>
+                    <td>
+                        @item.Domain <br />
+                        <small class="text-muted">
+                            @item.SourceIp
+                        </small>
+                    </td>
+                    <td class="table-item-w30">
+                        @item.TargetPostTitle
+                    </td>
+                    <td data-sort="@item.PingTimeUtc.ToString("yyyyMMddHHmmss")">
+                        @item.PingTimeUtc
+                    </td>
+                    <td class="p-2">
+                        <a class="btn btn-sm btn-outline-danger btn-delete" href="#" data-pingbackid="@item.Id">
+                            <i class="bi-trash"></i>
+
+                            <span id="span-processing-@item.Id" class="spinner-border spinner-border-sm" role="status" aria-hidden="true" style="display: none;"></span>
+                        </a>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+</div>

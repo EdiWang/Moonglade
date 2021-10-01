@@ -217,135 +217,138 @@
     </script>
 }
 
-@if (Model.MenuItems.Count == 0)
-{
-    <div class="alert alert-info">@Localizer["No Customized Menus"]</div>
-}
+<div class="p-4">
 
-<div class="row">
-    <div class="col-3">
-        <h5>@Localizer["Top Level"]</h5>
-        <hr />
-        <div class="list-group top-menu-list mb-2">
-            @foreach (var menu in Model.MenuItems.OrderBy(m => m.DisplayOrder))
-            {
-                @if (menu.SubMenus.Count > 0)
+    @if (Model.MenuItems.Count == 0)
+    {
+        <div class="alert alert-info">@Localizer["No Customized Menus"]</div>
+    }
+
+    <div class="row">
+        <div class="col-3">
+            <h5>@Localizer["Top Level"]</h5>
+            <hr />
+            <div class="list-group top-menu-list mb-2">
+                @foreach (var menu in Model.MenuItems.OrderBy(m => m.DisplayOrder))
                 {
-                    <a id="menu-@menu.Id" class="list-group-item list-group-item-action"
-                       href="javascript:loadMenuEditor('@menu.Id');">
-                        <i class="bi-menu-app me-2"></i>
-                        @menu.Title
+                    @if (menu.SubMenus.Count > 0)
+                    {
+                        <a id="menu-@menu.Id" class="list-group-item list-group-item-action"
+                           href="javascript:loadMenuEditor('@menu.Id');">
+                            <i class="bi-menu-app me-2"></i>
+                            @menu.Title
 
-                        <span class="text-muted float-end">
-                            ...
-                        </span>
-                    </a>
+                            <span class="text-muted float-end">
+                                ...
+                            </span>
+                        </a>
+                    }
+                    else
+                    {
+                        <a id="menu-@menu.Id" class="list-group-item list-group-item-action"
+                           href="javascript:loadMenuEditor('@menu.Id');">
+                            <i class="@menu.Icon me-2"></i>
+                            @menu.Title
+                        </a>
+                    }
                 }
-                else
-                {
-                    <a id="menu-@menu.Id" class="list-group-item list-group-item-action"
-                       href="javascript:loadMenuEditor('@menu.Id');">
-                        <i class="@menu.Icon me-2"></i>
-                        @menu.Title
-                    </a>
-                }
-            }
+            </div>
+            <a class="btn btn-outline-accent w-100" href="javascript:initCreateMenu();">
+                <i class="bi-plus-lg"></i>
+                @Localizer["New"]
+            </a>
         </div>
-        <a class="btn btn-outline-accent w-100" href="javascript:initCreateMenu();">
-            <i class="bi-plus-circle"></i>
-            @Localizer["New"]
-        </a>
-    </div>
-    <div class="col-3">
-        <h5>@Localizer["Sub Menu"]</h5>
-        <hr />
-        <div class="list-group submenu-list mb-2">
+        <div class="col-3">
+            <h5>@Localizer["Sub Menu"]</h5>
+            <hr />
+            <div class="list-group submenu-list mb-2">
 
+            </div>
+            <a class="btn btn-outline-accent w-100 btn-create-submenu" style="display: none;" href="javascript:initCreateSubMenu();">
+                <i class="bi-plus-circle"></i>
+                @Localizer["New"]
+            </a>
         </div>
-        <a class="btn btn-outline-accent w-100 btn-create-submenu" style="display: none;" href="javascript:initCreateSubMenu();">
-            <i class="bi-plus-circle"></i>
-            @Localizer["New"]
-        </a>
-    </div>
-    <div class="col-6">
-        <h5>@Localizer["Menu Editor"]</h5>
-        <hr />
-        <div class="top-menu-editor">
-            <form id="edit-form" method="post">
-                <h6>@Localizer["Top Menu Properties"]</h6>
-                <hr />
-                <input type="hidden" id="topmenu-id" />
-
-                <div class="row">
-                    <div class="col-6">
-                        <div class="mb-2">
-                            <input id="topmenu-title" placeholder="@Localizer["Title"]" class="form-control" max-length="64" required />
-                        </div>
-                    </div>
-                    <div class="col-4">
-                        <div class="mb-2">
-                            <input id="topmenu-iconcssclass" placeholder="@Localizer["Icon CSS Class"]" class="form-control" pattern="[a-z0-9-]+" />
-
-                        </div>
-                    </div>
-                    <div class="col-2">
-                        <a class="btn btn-outline-secondary w-100" href="https://icons.getbootstrap.com/" target="_blank">All Icons</a>
-                    </div>
-                </div>
-
-                <div class="mb-2">
-                    <input id="topmenu-url" placeholder="@Localizer["Url (Relative or Absolute)"]" class="form-control" max-length="256" required />
-                </div>
-
-                <div class="mb-2">
-                    <div class="input-group">
-                        <span class="input-group-text">Order</span>
-                        <input id="topmenu-displayorder" class="form-control" />
-                    </div>
-                </div>
-                <div class="mb-2">
-                    <div class="form-check">
-                        <input id="topmenu-isopeninnewtab" class="form-check-input" type="checkbox">
-                        <label for="topmenu-isopeninnewtab" class="form-check-label">@Localizer["Open in New Tab"]</label>
-                    </div>
-                </div>
-
-                <div class="sub-menu-editor" style="display: none;">
-                    <h6>@Localizer["Sub Menu Properties"]</h6>
+        <div class="col-6">
+            <h5>@Localizer["Menu Editor"]</h5>
+            <hr />
+            <div class="top-menu-editor">
+                <form id="edit-form" method="post">
+                    <h6>@Localizer["Top Menu Properties"]</h6>
                     <hr />
-                    <input type="hidden" id="submenu-id" />
+                    <input type="hidden" id="topmenu-id" />
+
                     <div class="row">
-                        <div class="col-10">
+                        <div class="col-6">
                             <div class="mb-2">
-                                <input id="submenu-title" placeholder="@Localizer["Title"]" class="form-control" max-length="64" required />
+                                <input id="topmenu-title" placeholder="@Localizer["Title"]" class="form-control" max-length="64" required />
                             </div>
+                        </div>
+                        <div class="col-4">
                             <div class="mb-2">
-                                <input id="submenu-url" placeholder="@Localizer["Url (Relative or Absolute)"]" class="form-control" max-length="256" required />
+                                <input id="topmenu-iconcssclass" placeholder="@Localizer["Icon CSS Class"]" class="form-control" pattern="[a-z0-9-]+" />
+
                             </div>
                         </div>
                         <div class="col-2">
-                            <a href="javascript:;" data-tmd="" data-smd="" class="btn w-100 btn-outline-danger btn-delete-submenu" style="display: none;"><i class="bi-trash"></i></a>
+                            <a class="btn btn-outline-secondary w-100" href="https://icons.getbootstrap.com/" target="_blank">All Icons</a>
                         </div>
                     </div>
 
                     <div class="mb-2">
-                        <div class="form-check">
-                            <input id="submenu-isopeninnewtab" class="form-check-input" type="checkbox">
-                            <label for="submenu-isopeninnewtab" class="form-check-label">@Localizer["Open in New Tab"]</label>
+                        <input id="topmenu-url" placeholder="@Localizer["Url (Relative or Absolute)"]" class="form-control" max-length="256" required />
+                    </div>
+
+                    <div class="mb-2">
+                        <div class="input-group">
+                            <span class="input-group-text">Order</span>
+                            <input id="topmenu-displayorder" class="form-control" />
                         </div>
                     </div>
-                </div>
+                    <div class="mb-2">
+                        <div class="form-check">
+                            <input id="topmenu-isopeninnewtab" class="form-check-input" type="checkbox">
+                            <label for="topmenu-isopeninnewtab" class="form-check-label">@Localizer["Open in New Tab"]</label>
+                        </div>
+                    </div>
 
-                <hr />
-                <button type="button" class="btn btn-outline-success btn-submit">@Localizer["Submit"]</button>
-                <button type="button" class="btn btn-outline-secondary">@Localizer["Cancel"]</button>
+                    <div class="sub-menu-editor" style="display: none;">
+                        <h6>@Localizer["Sub Menu Properties"]</h6>
+                        <hr />
+                        <input type="hidden" id="submenu-id" />
+                        <div class="row">
+                            <div class="col-10">
+                                <div class="mb-2">
+                                    <input id="submenu-title" placeholder="@Localizer["Title"]" class="form-control" max-length="64" required />
+                                </div>
+                                <div class="mb-2">
+                                    <input id="submenu-url" placeholder="@Localizer["Url (Relative or Absolute)"]" class="form-control" max-length="256" required />
+                                </div>
+                            </div>
+                            <div class="col-2">
+                                <a href="javascript:;" data-tmd="" data-smd="" class="btn w-100 btn-outline-danger btn-delete-submenu" style="display: none;"><i class="bi-trash"></i></a>
+                            </div>
+                        </div>
 
-                <a href="javascript:;" data-menuid="" class="btn btn-outline-danger btn-delete" style="display: none;"><i class="bi-trash"></i></a>
-            </form>
+                        <div class="mb-2">
+                            <div class="form-check">
+                                <input id="submenu-isopeninnewtab" class="form-check-input" type="checkbox">
+                                <label for="submenu-isopeninnewtab" class="form-check-label">@Localizer["Open in New Tab"]</label>
+                            </div>
+                        </div>
+                    </div>
+
+                    <hr />
+                    <button type="button" class="btn btn-outline-accent btn-submit">@Localizer["Submit"]</button>
+                    <button type="button" class="btn btn-outline-secondary">@Localizer["Cancel"]</button>
+
+                    <a href="javascript:;" data-menuid="" class="btn btn-outline-danger btn-delete" style="display: none;"><i class="bi-trash"></i></a>
+                </form>
+            </div>
         </div>
     </div>
-</div>
 
-<div class="small text-muted">
-    * @Localizer["To turn on / off system navigation items (Categories / Tags / Archive), edit"] <code>appsettings.json</code> @Localizer["or override with environment variables."]
+    <div class="small text-muted">
+        * @Localizer["To turn on / off system navigation items (Categories / Tags / Archive), edit"] <code>appsettings.json</code> @Localizer["or override with environment variables."]
+    </div>
 </div>
