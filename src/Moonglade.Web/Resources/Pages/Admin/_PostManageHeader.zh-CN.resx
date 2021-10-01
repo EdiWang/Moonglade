@@ -126,9 +126,6 @@
   <data name="New" xml:space="preserve">
     <value>新建</value>
   </data>
-  <data name="Posts" xml:space="preserve">
-    <value>文章</value>
-  </data>
   <data name="Published" xml:space="preserve">
     <value>已发布</value>
   </data>

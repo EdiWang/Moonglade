@@ -93,7 +93,6 @@
 
 .admin-main {
     min-width: 100vw;
-    box-shadow: 0 0 12px var(--gray-3);
 }
 
 @media (min-width: 768px) {

@@ -78,16 +78,11 @@
     </script>
 }
 
-<h3>
-    <i class="bi-folder2 icon-admin-title"></i>
-    @Localizer["Categories"]
-    <a class="btn btn-outline-success float-end" href="javascript:initCreateCategory();">
-        <i class="bi-plus-circle"></i>
-        @Localizer["New"]
-    </a>
-</h3>
+<a class="btn btn-sm btn-outline-success" href="javascript:initCreateCategory();">
+    <i class="bi-plus-lg"></i>
+    @Localizer["New"]
+</a>
 <hr />
-
 
 @Html.AntiForgeryToken()
 

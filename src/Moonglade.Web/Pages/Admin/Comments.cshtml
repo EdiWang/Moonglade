@@ -64,13 +64,9 @@
     </style>
 }
 
-<h3>
-    <i class="bi-chat-left-text icon-admin-title"></i>
-    @Localizer["Comments"]
-    <a href="javascript:deleteSelectedComments();" class="btn btn-outline-danger btn-delete-selected float-end">
-        <i class="bi-trash"></i> @Localizer["Delete Selected"]
-    </a>
-</h3>
+<a href="javascript:deleteSelectedComments();" class="btn btn-sm btn-outline-danger btn-delete-selected">
+    <i class="bi-trash"></i> @Localizer["Delete Selected"]
+</a>
 <hr />
 
 @if (Model.CommentDetailedItems.Count == 0)

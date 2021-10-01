@@ -129,9 +129,6 @@
   <data name="Ping Time (UTC)" xml:space="preserve">
     <value>引用时间 (UTC)</value>
   </data>
-  <data name="Pingbacks" xml:space="preserve">
-    <value>引用</value>
-  </data>
   <data name="Referenced Post" xml:space="preserve">
     <value>引用的文章</value>
   </data>

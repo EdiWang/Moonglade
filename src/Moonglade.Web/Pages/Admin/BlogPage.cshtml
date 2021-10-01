@@ -25,16 +25,11 @@
     </script>
 }
 
-<h3>
-    <i class="bi-file-earmark-post icon-admin-title"></i>
-    @Localizer["Pages"]
-    <a class="btn btn-outline-success float-end" asp-page="./EditPage">
-        <i class="bi-plus-circle"></i>
-        @Localizer["New"]
-    </a>
-</h3>
+<a class="btn btn-sm btn-outline-success" asp-page="./EditPage">
+    <i class="bi-plus-lg"></i>
+    @Localizer["New"]
+</a>
 <hr />
-
 
 @if (Model.PageSegments.Any())
 {
