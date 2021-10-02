@@ -83,149 +83,149 @@
 }
 
 <partial name="_SettingsHeader" />
-
-<form id="form-settings" asp-controller="Settings" asp-action="Advanced"
-      data-ajax-begin="onUpdateSettingsBegin"
-      data-ajax-complete="onUpdateSettingsComplete"
-      data-ajax-failure="onUpdateSettingsFailed"
-      data-ajax-success="onUpdateSettingsSuccess"
-      data-ajax="true"
-      data-ajax-method="POST">
-    <div asp-validation-summary="All" class="text-danger"></div>
-    <div class="row">
-        <div class="col-md-6">
-            <div class="card mb-4">
-                <div class="card-header">@Localizer["Advanced Settings"]</div>
-                <ul class="list-group list-group-flush">
-                    <li class="list-group-item">
-                        <div class="form-check form-switch">
-                            <input type="checkbox" asp-for="ViewModel.EnablePingbackSend" class="form-check-input">
-                            <label asp-for="ViewModel.EnablePingbackSend" class="form-check-label"></label>
-                        </div>
-                    </li>
-                    <li class="list-group-item">
-                        <div class="form-check form-switch">
-                            <input type="checkbox" asp-for="ViewModel.EnablePingbackReceive" class="form-check-input">
-                            <label asp-for="ViewModel.EnablePingbackReceive" class="form-check-label"></label>
-                        </div>
-                    </li>
-                    <li class="list-group-item">
-                        <div class="form-check form-switch">
-                            <input type="checkbox" asp-for="ViewModel.EnableOpenGraph" class="form-check-input">
-                            <label asp-for="ViewModel.EnableOpenGraph" class="form-check-label"></label>
-                        </div>
-                    </li>
-                    <li class="list-group-item">
-                        <div class="form-check form-switch">
-                            <input type="checkbox" asp-for="ViewModel.EnableOpenSearch" class="form-check-input">
-                            <label asp-for="ViewModel.EnableOpenSearch" class="form-check-label"></label>
-                        </div>
-                    </li>
-                    <li class="list-group-item">
-                        <div class="form-check form-switch">
-                            <input type="checkbox" asp-for="ViewModel.WarnExternalLink" class="form-check-input">
-                            <label asp-for="ViewModel.WarnExternalLink" class="form-check-label"></label>
-                        </div>
-                    </li>
-                    <li class="list-group-item">
-                        <div class="form-check form-switch">
-                            <input type="checkbox" asp-for="ViewModel.AllowScriptsInPage" class="form-check-input">
-                            <label asp-for="ViewModel.AllowScriptsInPage" class="form-check-label"></label>
-                        </div>
-                    </li>
-                    <li class="list-group-item">
-                        <div class="form-check form-switch">
-                            <input type="checkbox" asp-for="ViewModel.ShowAdminLoginButton" class="form-check-input">
-                            <label asp-for="ViewModel.ShowAdminLoginButton" class="form-check-label"></label>
-                        </div>
-                    </li>
-                </ul>
-                <div class="card-body">
-                    <div class="mb-2">
-                        <label asp-for="ViewModel.RobotsTxtContent" class="form-label"></label>
-                        <textarea asp-for="ViewModel.RobotsTxtContent" class="form-control textarea-code" cols="60" rows="10" spellcheck="false"></textarea>
-                        <span asp-validation-for="ViewModel.RobotsTxtContent" class="text-danger"></span>
-                    </div>
-                </div>
-            </div>
-        </div>
-        <div class="col-md-6">
-            <div class="card mb-4">
-                <div class="card-header">
-                    MetaWeblog
-                </div>
-                <div class="card-body">
-                    <div class="form-check form-switch">
-                        <input type="checkbox" asp-for="ViewModel.EnableMetaWeblog" class="form-check-input">
-                        <label asp-for="ViewModel.EnableMetaWeblog" class="form-check-label"></label>
-                        <small class="form-text text-muted">@Localizer["* Requires restarting application"]</small>
-                    </div>
-                    <div class="row">
-                        <div class="col-7">
-                            <div class="input-group mb-2">
-                                <div class="input-group-text">
-                                    @Localizer["Password"]
-                                </div>
-                                <input asp-for="ViewModel.MetaWeblogPassword" class="form-control"/>
+<div class="ps-4 pe-4">
+    <form id="form-settings" asp-controller="Settings" asp-action="Advanced"
+          data-ajax-begin="onUpdateSettingsBegin"
+          data-ajax-complete="onUpdateSettingsComplete"
+          data-ajax-failure="onUpdateSettingsFailed"
+          data-ajax-success="onUpdateSettingsSuccess"
+          data-ajax="true"
+          data-ajax-method="POST">
+        <div asp-validation-summary="All" class="text-danger"></div>
+        <div class="row">
+            <div class="col-md-6">
+                <div class="card mb-4">
+                    <div class="card-header">@Localizer["Advanced Settings"]</div>
+                    <ul class="list-group list-group-flush">
+                        <li class="list-group-item">
+                            <div class="form-check form-switch">
+                                <input type="checkbox" asp-for="ViewModel.EnablePingbackSend" class="form-check-input">
+                                <label asp-for="ViewModel.EnablePingbackSend" class="form-check-label"></label>
                             </div>
-                            <span asp-validation-for="ViewModel.MetaWeblogPassword" class="text-danger"></span>
-                            <small class="form-text text-muted">@Localizer["Leave blank if you don't need to change password."]</small>
-                            <small class="form-text text-muted">@Localizer["* Username: moonglade"]</small>
-                        </div>
-                        <div class="col-auto">
-                            <a href="javascript:;" class="btn btn-outline-accent" onclick="generateMetaWeblogPassword()">@Localizer["Generate password"]</a>
+                        </li>
+                        <li class="list-group-item">
+                            <div class="form-check form-switch">
+                                <input type="checkbox" asp-for="ViewModel.EnablePingbackReceive" class="form-check-input">
+                                <label asp-for="ViewModel.EnablePingbackReceive" class="form-check-label"></label>
+                            </div>
+                        </li>
+                        <li class="list-group-item">
+                            <div class="form-check form-switch">
+                                <input type="checkbox" asp-for="ViewModel.EnableOpenGraph" class="form-check-input">
+                                <label asp-for="ViewModel.EnableOpenGraph" class="form-check-label"></label>
+                            </div>
+                        </li>
+                        <li class="list-group-item">
+                            <div class="form-check form-switch">
+                                <input type="checkbox" asp-for="ViewModel.EnableOpenSearch" class="form-check-input">
+                                <label asp-for="ViewModel.EnableOpenSearch" class="form-check-label"></label>
+                            </div>
+                        </li>
+                        <li class="list-group-item">
+                            <div class="form-check form-switch">
+                                <input type="checkbox" asp-for="ViewModel.WarnExternalLink" class="form-check-input">
+                                <label asp-for="ViewModel.WarnExternalLink" class="form-check-label"></label>
+                            </div>
+                        </li>
+                        <li class="list-group-item">
+                            <div class="form-check form-switch">
+                                <input type="checkbox" asp-for="ViewModel.AllowScriptsInPage" class="form-check-input">
+                                <label asp-for="ViewModel.AllowScriptsInPage" class="form-check-label"></label>
+                            </div>
+                        </li>
+                        <li class="list-group-item">
+                            <div class="form-check form-switch">
+                                <input type="checkbox" asp-for="ViewModel.ShowAdminLoginButton" class="form-check-input">
+                                <label asp-for="ViewModel.ShowAdminLoginButton" class="form-check-label"></label>
+                            </div>
+                        </li>
+                    </ul>
+                    <div class="card-body">
+                        <div class="mb-2">
+                            <label asp-for="ViewModel.RobotsTxtContent" class="form-label"></label>
+                            <textarea asp-for="ViewModel.RobotsTxtContent" class="form-control textarea-code" cols="60" rows="10" spellcheck="false"></textarea>
+                            <span asp-validation-for="ViewModel.RobotsTxtContent" class="text-danger"></span>
                         </div>
                     </div>
                 </div>
             </div>
-            <div class="card">
-                <div class="card-header">
-                    @Localizer["Options"]
+            <div class="col-md-6">
+                <div class="card mb-4">
+                    <div class="card-header">
+                        MetaWeblog
+                    </div>
+                    <div class="card-body">
+                        <div class="form-check form-switch">
+                            <input type="checkbox" asp-for="ViewModel.EnableMetaWeblog" class="form-check-input">
+                            <label asp-for="ViewModel.EnableMetaWeblog" class="form-check-label"></label>
+                            <small class="form-text text-muted">@Localizer["* Requires restarting application"]</small>
+                        </div>
+                        <div class="row">
+                            <div class="col-7">
+                                <div class="input-group mb-2">
+                                    <div class="input-group-text">
+                                        @Localizer["Password"]
+                                    </div>
+                                    <input asp-for="ViewModel.MetaWeblogPassword" class="form-control" />
+                                </div>
+                                <span asp-validation-for="ViewModel.MetaWeblogPassword" class="text-danger"></span>
+                                <small class="form-text text-muted">@Localizer["Leave blank if you don't need to change password."]</small>
+                                <small class="form-text text-muted">@Localizer["* Username: moonglade"]</small>
+                            </div>
+                            <div class="col-auto">
+                                <a href="javascript:;" class="btn btn-outline-accent" onclick="generateMetaWeblogPassword()">@Localizer["Generate password"]</a>
+                            </div>
+                        </div>
+                    </div>
                 </div>
-                <div class="card-body">
-                    <div class="row row-cols-2 g-3">
-                        <div class="col">
-                            <h6>@Localizer["Update"]</h6>
-                            <hr />
+                <div class="card">
+                    <div class="card-header">
+                        @Localizer["Options"]
+                    </div>
+                    <div class="card-body">
+                        <div class="row row-cols-2 g-3">
+                            <div class="col">
+                                <h6>@Localizer["Update"]</h6>
+                                <hr />
 
-                            <p>@Localizer["Check online for new Moonglade release."]</p>
+                                <p>@Localizer["Check online for new Moonglade release."]</p>
 
-                            <a href="#" class="btn btn-sm btn-outline-accent btn-check-update">
-                                @Localizer["Check now"]
-                            </a>
-                        </div>
-                        <div class="col">
-                            <h6>@Localizer["Restart Website"]</h6>
-                            <hr />
+                                <a href="#" class="btn btn-sm btn-outline-accent btn-check-update">
+                                    @Localizer["Check now"]
+                                </a>
+                            </div>
+                            <div class="col">
+                                <h6>@Localizer["Restart Website"]</h6>
+                                <hr />
 
-                            <p>@Localizer["Try to shutdown and restart the website, this will terminate all current requests."]</p>
+                                <p>@Localizer["Try to shutdown and restart the website, this will terminate all current requests."]</p>
 
-                            <a href="javascript:;" class="btn btn-sm btn-outline-accent" data-bs-toggle="modal" data-bs-target="#restartModal">
-                                @Localizer["Restart"]
-                            </a>
-                        </div>
-                        <div class="col">
-                            <h6>@Localizer["System Reset"]</h6>
-                            <hr />
+                                <a href="javascript:;" class="btn btn-sm btn-outline-accent" data-bs-toggle="modal" data-bs-target="#restartModal">
+                                    @Localizer["Restart"]
+                                </a>
+                            </div>
+                            <div class="col">
+                                <h6>@Localizer["System Reset"]</h6>
+                                <hr />
 
-                            <p>@Localizer["Erase all data and configuration."]</p>
+                                <p>@Localizer["Erase all data and configuration."]</p>
 
-                            <a href="javascript:;" class="btn btn-sm btn-danger" data-bs-toggle="modal" data-bs-target="#resetModal">
-                                <i class="bi-exclamation-triangle-fill"></i>
-                                @Localizer["Reset"]
-                            </a>
+                                <a href="javascript:;" class="btn btn-sm btn-danger" data-bs-toggle="modal" data-bs-target="#resetModal">
+                                    <i class="bi-exclamation-triangle-fill"></i>
+                                    @Localizer["Reset"]
+                                </a>
+                            </div>
                         </div>
                     </div>
                 </div>
             </div>
         </div>
-    </div>
-    <hr />
-    <div class="mb-2">
-        <input id="btn-save-settings" type="submit" value="@Localizer["Save"]" class="btn btn-success" />
-    </div>
-</form>
-
+        <hr />
+        <div class="mb-2">
+            <input id="btn-save-settings" type="submit" value="@Localizer["Save"]" class="btn btn-outline-accent" />
+        </div>
+    </form>
+</div>
 <div class="modal fade" id="restartModal" tabindex="-1" role="dialog" aria-labelledby="restartModalLabel" aria-hidden="true">
     <div class="modal-dialog" role="document">
         <div class="modal-content">
@@ -238,7 +238,7 @@
                 @Localizer["Are you sure to restart website? All current requests will be terminated."]
             </div>
             <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Cancel</button>
                 <button type="button" class="btn btn-danger btn-restart">@Localizer["Restart"]</button>
             </div>
         </div>
@@ -257,7 +257,7 @@
                 @Localizer["Are you ABSOLUTELY sure? ALL data and configuration will be erased!"]
             </div>
             <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Cancel</button>
                 <button type="button" class="btn btn-danger btn-reset">@Localizer["Reset"]</button>
             </div>
         </div>
@@ -317,11 +317,11 @@
         </div>
         <hr />
         <div class="mt-3">
-            <a href="#" target="_blank" class="btn btn-success disabled btn-get-update">
+            <a href="#" target="_blank" class="btn btn-outline-accent disabled btn-get-update">
                 <i class="bi-download"></i>
                 @Localizer["Get update"]
             </a>
-            <button type="button" class="btn btn-secondary" data-bs-dismiss="offcanvas">@Localizer["Cancel"]</button>
+            <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="offcanvas">@Localizer["Cancel"]</button>
         </div>
     </div>
 </div>

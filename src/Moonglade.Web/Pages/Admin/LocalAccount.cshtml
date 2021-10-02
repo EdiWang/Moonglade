@@ -60,28 +60,29 @@
                     });
             }
         });
-    
+
     </script>
 }
 
-<h3>
-    <i class="bi-people icon-admin-title"></i>
-    @Localizer["User Account"]
-    <a class="btn btn-outline-success float-end" href="javascript:initCreateAccount();">
-        <i class="bi-plus-circle"></i>
+<div class="admin-toolbar ps-4 pe-4 pt-2 pb-2 border-bottom mb-3 shadow-sm">
+    <a class="btn btn-sm btn-outline-accent" href="javascript:initCreateAccount();">
+        <i class="bi-plus-lg"></i>
         @Localizer["Create"]
     </a>
-</h3>
-<hr />
-
-<div class="alert alert-info">
-    @Localizer["It's recommend to use Azure Active Directory over local account. Azure provides way more secure and easy user management capabilities."]
 </div>
 
-@if (null != Model.Accounts && Model.Accounts.Any())
-{
-    <table class="table table-bordered mt-3">
-        <thead>
+<div class="ps-4 pe-4">
+
+
+
+    <div class="alert alert-info">
+        @Localizer["It's recommend to use Azure Active Directory over local account. Azure provides way more secure and easy user management capabilities."]
+    </div>
+
+    @if (null != Model.Accounts && Model.Accounts.Any())
+    {
+        <table class="table table-bordered mt-3">
+            <thead>
             <tr>
                 <th>@Localizer["Username"]</th>
                 <th>@Localizer["Last Login IP"]</th>
@@ -89,8 +90,8 @@
                 <th>@Localizer["Create Time (UTC)"]</th>
                 <th>@Localizer["Action"]</th>
             </tr>
-        </thead>
-        <tbody>
+            </thead>
+            <tbody>
             @foreach (var item in Model.Accounts.OrderBy(p => p.Username))
             {
                 <tr id="tr-@item.Id">
@@ -111,12 +112,13 @@
                     </td>
                 </tr>
             }
-        </tbody>
-    </table>
-}
+            </tbody>
+        </table>
+    }
 
-<p class="text-muted">Check out <a href="https://azure.microsoft.com/en-us/services/active-directory?WT.mc_id=AZ-MVP-5002809">Azure Active Directoy</a> and empower your blog to achieve more!</p>
+    <p class="text-muted">Check out <a href="https://azure.microsoft.com/en-us/services/active-directory?WT.mc_id=AZ-MVP-5002809">Azure Active Directoy</a> and empower your blog to achieve more!</p>
 
+</div>
 
 <div class="modal fade" id="editAccountModal" tabindex="-1" role="dialog" aria-labelledby="editAccountModalLabel" aria-hidden="true">
     <div class="modal-dialog" role="document">
@@ -124,7 +126,6 @@
             <div class="modal-header">
                 <h5 class="modal-title" id="editAccountModalLabel">@Localizer["Account Information"]</h5>
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close">
-                    
                 </button>
             </div>
 
@@ -143,8 +144,8 @@
                     </div>
                 </div>
                 <div class="modal-footer">
-                    <button type="button" class="btn btn-success btn-submit">@Localizer["Submit"]</button>
-                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">@Localizer["Cancel"]</button>
+                    <button type="button" class="btn btn-outline-accent btn-submit">@Localizer["Submit"]</button>
+                    <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">@Localizer["Cancel"]</button>
                 </div>
             </form>
         </div>
@@ -157,7 +158,6 @@
             <div class="modal-header">
                 <h5 class="modal-title" id="resetPasswordModalLabel">@Localizer["Reset Password"]</h5>
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close">
-                    
                 </button>
             </div>
 
@@ -179,8 +179,8 @@
                     </div>
                 </div>
                 <div class="modal-footer">
-                    <button type="button" class="btn btn-success btn-resetpwd">@Localizer["Submit"]</button>
-                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">@Localizer["Cancel"]</button>
+                    <button type="button" class="btn btn-outline-accent btn-resetpwd">@Localizer["Submit"]</button>
+                    <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">@Localizer["Cancel"]</button>
                 </div>
             </form>
         </div>

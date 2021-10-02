@@ -68,19 +68,17 @@
     </script>
 }
 
-
-<h3>
-    <i class="bi-link-45deg icon-admin-title"></i>
-    @Localizer["Friend Links"]
-    <a class="btn btn-outline-success float-end" href="javascript:initCreateFriendLink();">
-        <i class="bi-plus-circle"></i>
+<div class="admin-toolbar ps-4 pe-4 pt-2 pb-2 border-bottom mb-3 shadow-sm">
+    <a class="btn btn-sm btn-outline-accent" href="javascript:initCreateFriendLink();">
+        <i class="bi-plus-lg"></i>
         @Localizer["New"]
     </a>
-</h3>
-<hr />
+</div>
 
-<table class="table table-bordered">
-    <thead>
+<div class="ps-4 pe-4">
+
+    <table class="table table-bordered">
+        <thead>
         <tr>
             <th>
                 @Localizer["Title"]
@@ -92,8 +90,8 @@
                 @Localizer["Action"]
             </th>
         </tr>
-    </thead>
-    <tbody>
+        </thead>
+        <tbody>
         @foreach (var item in Model.Links.OrderBy(m => m.Title))
         {
             <tr id="tr-@item.Id">
@@ -110,12 +108,13 @@
                 </td>
             </tr>
         }
-    </tbody>
-</table>
+        </tbody>
+    </table>
 
-@Html.AntiForgeryToken()
+    @Html.AntiForgeryToken()
 
-<p class="text-muted mt-4">@Localizer["* Note: Friend link cache refreshes every 60 minutes, you may need to wait for some time to see the new data."]</p>
+    <p class="text-muted mt-4">@Localizer["* Note: Friend link cache refreshes every 60 minutes, you may need to wait for some time to see the new data."]</p>
+</div>
 
 <div class="offcanvas offcanvas-end" tabindex="-1" id="editLinkCanvas" aria-labelledby="editLinkCanvasLabel">
     <div class="offcanvas-header">

@@ -2,58 +2,59 @@
 @model Moonglade.Web.Pages.Settings.SubscriptionModel
 
 <partial name="_SettingsHeader" />
+<div class="ps-4 pe-4">
+    <form id="form-settings" asp-controller="Settings" asp-action="Subscription"
+          data-ajax-begin="onUpdateSettingsBegin"
+          data-ajax-complete="onUpdateSettingsComplete"
+          data-ajax-failure="onUpdateSettingsFailed"
+          data-ajax-success="onUpdateSettingsSuccess"
+          data-ajax="true"
+          data-ajax-method="POST"
+          spellcheck="false">
+        <div asp-validation-summary="All" class="text-danger"></div>
 
-<form id="form-settings" asp-controller="Settings" asp-action="Subscription"
-      data-ajax-begin="onUpdateSettingsBegin"
-      data-ajax-complete="onUpdateSettingsComplete"
-      data-ajax-failure="onUpdateSettingsFailed"
-      data-ajax-success="onUpdateSettingsSuccess"
-      data-ajax="true"
-      data-ajax-method="POST" 
-      spellcheck="false">
-    <div asp-validation-summary="All" class="text-danger"></div>
-
-    <div class="row">
-        <div class="col-md-6">
-            <div class="card mb-4">
-                <div class="card-header">@Localizer["General"]</div>
-                <ul class="list-group list-group-flush">
-                    <li class="list-group-item">
-                        <div class="form-check form-switch">
-                            <input type="checkbox" asp-for="ViewModel.UseFullContent" class="form-check-input">
-                            <label asp-for="ViewModel.UseFullContent" class="form-check-label"></label>
+        <div class="row">
+            <div class="col-md-6">
+                <div class="card mb-4">
+                    <div class="card-header">@Localizer["General"]</div>
+                    <ul class="list-group list-group-flush">
+                        <li class="list-group-item">
+                            <div class="form-check form-switch">
+                                <input type="checkbox" asp-for="ViewModel.UseFullContent" class="form-check-input">
+                                <label asp-for="ViewModel.UseFullContent" class="form-check-label"></label>
+                            </div>
+                        </li>
+                    </ul>
+                    <div class="card-body">
+                        <div class="mb-3">
+                            <label class="form-label" asp-for="ViewModel.RssTitle"></label>
+                            <input asp-for="ViewModel.RssTitle" class="form-control" />
+                            <span asp-validation-for="ViewModel.RssTitle" class="text-danger"></span>
                         </div>
-                    </li>
-                </ul>
-                <div class="card-body">
-                    <div class="mb-3">
-                        <label class="form-label" asp-for="ViewModel.RssTitle"></label>
-                        <input asp-for="ViewModel.RssTitle" class="form-control" />
-                        <span asp-validation-for="ViewModel.RssTitle" class="text-danger"></span>
-                    </div>
-                    <div class="mb-3">
-                        <label class="form-label" asp-for="ViewModel.AuthorName"></label>
-                        <input asp-for="ViewModel.AuthorName" class="form-control" />
-                        <span asp-validation-for="ViewModel.AuthorName" class="text-danger"></span>
-                    </div>
-                    <div class="mb-3">
-                        <label class="form-label" asp-for="ViewModel.RssCopyright"></label>
-                        <input asp-for="ViewModel.RssCopyright" class="form-control" />
-                        <span asp-validation-for="ViewModel.RssCopyright" class="text-danger"></span>
-                    </div>
-                    <div class="mb-3">
-                        <label class="form-label" asp-for="ViewModel.RssItemCount"></label>
-                        <input asp-for="ViewModel.RssItemCount" class="form-control" />
-                        <span asp-validation-for="ViewModel.RssItemCount" class="text-danger"></span>
-                        <small class="form-text text-muted">@Localizer["The number of entries to include in RSS feed."]</small>
+                        <div class="mb-3">
+                            <label class="form-label" asp-for="ViewModel.AuthorName"></label>
+                            <input asp-for="ViewModel.AuthorName" class="form-control" />
+                            <span asp-validation-for="ViewModel.AuthorName" class="text-danger"></span>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label" asp-for="ViewModel.RssCopyright"></label>
+                            <input asp-for="ViewModel.RssCopyright" class="form-control" />
+                            <span asp-validation-for="ViewModel.RssCopyright" class="text-danger"></span>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label" asp-for="ViewModel.RssItemCount"></label>
+                            <input asp-for="ViewModel.RssItemCount" class="form-control" />
+                            <span asp-validation-for="ViewModel.RssItemCount" class="text-danger"></span>
+                            <small class="form-text text-muted">@Localizer["The number of entries to include in RSS feed."]</small>
+                        </div>
                     </div>
                 </div>
             </div>
         </div>
-    </div>
 
-    <hr />
-    <div class="mb-2">
-        <input id="btn-save-settings" type="submit" value="@Localizer["Save"]" class="btn btn-success" />
-    </div>
-</form>
+        <hr />
+        <div class="mb-2">
+            <input id="btn-save-settings" type="submit" value="@Localizer["Save"]" class="btn btn-outline-accent" />
+        </div>
+    </form>
+</div>

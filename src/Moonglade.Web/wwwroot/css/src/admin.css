@@ -71,14 +71,8 @@
 }
 
 .admin-nav {
-    background-color: var(--gray-1);
     width: 190px;
     min-height: calc(100vh - 54px);
-    margin-left: -15rem;
-    -webkit-transition: margin .25s ease-out;
-    -moz-transition: margin .25s ease-out;
-    -o-transition: margin .25s ease-out;
-    transition: margin .25s ease-out;
 }
 
 .admin-nav .list-group-item span {
@@ -93,12 +87,15 @@
 
 .admin-main {
     min-width: 100vw;
-    box-shadow: 0 0 12px var(--gray-3);
+}
+
+.admin-toolbar .nav-pills .nav-link.active, .nav-pills .show > .nav-link {
+    background-color: var(--accent-color1);
 }
 
 @media (min-width: 768px) {
     .admin-nav {
-        margin-left: 0;
+        margin-left: 15px;
     }
 
     .admin-main {
@@ -132,13 +129,15 @@ hr.admin-nav-divider {
 
 .admin-nav-section .list-group-item {
     background-color: transparent;
-    border: 0 none;
+    border-left: 4px solid transparent;
+    border-top: 0;
+    border-bottom: 0;
+    border-right: 0;
 }
 
 .admin-nav-section .list-group-item.active,
 .admin-nav-section .list-group-item:hover {
-    background-color: var(--gray-3);
-    border-right: 4px solid var(--accent-color2);
+    border-left: 4px solid var(--accent-color2);
 }
 
 .admin-nav-link:active {}

@@ -2,35 +2,31 @@
     var currentPage = ViewContext.RouteData.Values["Page"]?.ToString();
 }
 
-<h3>
-    <i class="bi-gear icon-admin-title"></i> @Localizer["Settings"]
-</h3>
-<hr />
-
-<ul class="nav nav-tabs">
-    <li role="presentation" class="nav-item nav-item-non-margin">
-        <a class="nav-link @(currentPage == "/Settings/General" ? "active" : null)" asp-page="./General">@Localizer["General"]</a>
-    </li>
-    <li role="presentation" class="nav-item nav-item-non-margin">
-        <a class="nav-link @(currentPage == "/Settings/Content" ? "active" : null)" asp-page="./Content">@Localizer["Content"]</a>
-    </li>
-    <li role="presentation" class="nav-item nav-item-non-margin">
-        <a class="nav-link @(currentPage == "/Settings/Image" ? "active" : null)" asp-page="./Image">@Localizer["Image"]</a>
-    </li>
-    <li role="presentation" class="nav-item nav-item-non-margin">
-        <a class="nav-link @(currentPage == "/Settings/Subscription" ? "active" : null)" asp-page="./Subscription">@Localizer["Subscription"]</a>
-    </li>
-    <li role="presentation" class="nav-item nav-item-non-margin">
-        <a class="nav-link @(currentPage == "/Settings/CustomStyleSheet" ? "active" : null)" asp-page="./CustomStyleSheet">@Localizer["Custom CSS"]</a>
-    </li>
-    <li role="presentation" class="nav-item nav-item-non-margin">
-        <a class="nav-link @(currentPage == "/Settings/Notification" ? "active" : null)" asp-page="./Notification">@Localizer["Notification"]</a>
-    </li>
-    <li role="presentation" class="nav-item nav-item-non-margin">
-        <a class="nav-link @(currentPage == "/Settings/Advanced" ? "active" : null)" asp-page="./Advanced">@Localizer["Advanced"]</a>
-    </li>
-    <li role="presentation" class="nav-item nav-item-non-margin">
-        <a class="nav-link @(currentPage == "/Settings/DataPorting" ? "active" : null)" asp-page="./DataPorting">@Localizer["Import &amp; Export Data"]</a>
-    </li>
-</ul>
-<div class="mb-3"></div>
+<div class="admin-toolbar ps-4 pe-4 pt-2 pb-2 border-bottom mb-3 shadow-sm d-flex">
+    <ul class="nav nav-pills">
+        <li role="presentation" class="nav-item nav-item-non-margin">
+            <a class="nav-link @(currentPage == "/Settings/General" ? "active" : null)" asp-page="./General">@Localizer["General"]</a>
+        </li>
+        <li role="presentation" class="nav-item nav-item-non-margin">
+            <a class="nav-link @(currentPage == "/Settings/Content" ? "active" : null)" asp-page="./Content">@Localizer["Content"]</a>
+        </li>
+        <li role="presentation" class="nav-item nav-item-non-margin">
+            <a class="nav-link @(currentPage == "/Settings/Image" ? "active" : null)" asp-page="./Image">@Localizer["Image"]</a>
+        </li>
+        <li role="presentation" class="nav-item nav-item-non-margin">
+            <a class="nav-link @(currentPage == "/Settings/Subscription" ? "active" : null)" asp-page="./Subscription">@Localizer["Subscription"]</a>
+        </li>
+        <li role="presentation" class="nav-item nav-item-non-margin">
+            <a class="nav-link @(currentPage == "/Settings/CustomStyleSheet" ? "active" : null)" asp-page="./CustomStyleSheet">@Localizer["Custom CSS"]</a>
+        </li>
+        <li role="presentation" class="nav-item nav-item-non-margin">
+            <a class="nav-link @(currentPage == "/Settings/Notification" ? "active" : null)" asp-page="./Notification">@Localizer["Notification"]</a>
+        </li>
+        <li role="presentation" class="nav-item nav-item-non-margin">
+            <a class="nav-link @(currentPage == "/Settings/Advanced" ? "active" : null)" asp-page="./Advanced">@Localizer["Advanced"]</a>
+        </li>
+        <li role="presentation" class="nav-item nav-item-non-margin">
+            <a class="nav-link @(currentPage == "/Settings/DataPorting" ? "active" : null)" asp-page="./DataPorting">@Localizer["Import &amp; Export Data"]</a>
+        </li>
+    </ul>
+</div>

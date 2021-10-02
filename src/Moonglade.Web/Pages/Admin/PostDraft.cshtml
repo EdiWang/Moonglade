@@ -28,38 +28,41 @@
 
 <partial name="_PostManageHeader" />
 
-@if (Model.PostSegments.Any())
-{
-    @Html.AntiForgeryToken()
+<div class="ps-4 pe-4">
 
-    @foreach (var post in Model.PostSegments.OrderByDescending(p => p.LastModifiedUtc))
+    @if (Model.PostSegments.Any())
     {
-        <div class="card mb-3" id="tr-@post.Id">
-            <div class="card-body">
-                <h6 class="card-title">
-                    <a asp-page="./EditPost" asp-route-id="@post.Id">@post.Title</a>
-                </h6>
+        @Html.AntiForgeryToken()
 
-                <p class="mt-2 text-muted">
-                    @post.ContentAbstract
-                </p>
+        @foreach (var post in Model.PostSegments.OrderByDescending(p => p.LastModifiedUtc))
+        {
+            <div class="card mb-3" id="tr-@post.Id">
+                <div class="card-body">
+                    <h6 class="card-title">
+                        <a asp-page="./EditPost" asp-route-id="@post.Id">@post.Title</a>
+                    </h6>
 
-                <small class="text-muted">@_zoneResolver.ToTimeZone(post.CreateTimeUtc).ToLongDateString() @_zoneResolver.ToTimeZone(post.CreateTimeUtc).ToShortTimeString()</small>
+                    <p class="mt-2 text-muted">
+                        @post.ContentAbstract
+                    </p>
+
+                    <small class="text-muted">@_zoneResolver.ToTimeZone(post.CreateTimeUtc).ToLongDateString() @_zoneResolver.ToTimeZone(post.CreateTimeUtc).ToShortTimeString()</small>
+                </div>
+                <div class="card-footer">
+                    <a class="btn btn-outline-accent btn-sm btn-edit" asp-page="./EditPost" asp-route-id="@post.Id">
+                        <i class="bi-pen"></i>
+                    </a>
+                    <a class="btn btn-outline-danger btn-sm btn-delete" data-postid="@post.Id" href="javascript:;">
+                        <i class="bi-trash"></i>
+                    </a>
+
+                    <span id="span-processing-@post.Id" class="spinner-border spinner-border-sm" role="status" aria-hidden="true" style="display: none;"></span>
+                </div>
             </div>
-            <div class="card-footer">
-                <a class="btn btn-outline-accent btn-sm btn-edit" asp-page="./EditPost" asp-route-id="@post.Id">
-                    <i class="bi-pen"></i>
-                </a>
-                <a class="btn btn-outline-danger btn-sm btn-delete" data-postid="@post.Id" href="javascript:;">
-                    <i class="bi-trash"></i>
-                </a>
-
-                <span id="span-processing-@post.Id" class="spinner-border spinner-border-sm" role="status" aria-hidden="true" style="display: none;"></span>
-            </div>
-        </div>
+        }
     }
-}
-else
-{
-    <partial name="_NoPosts" />
-}
+    else
+    {
+        <partial name="_NoPosts" />
+    }
+</div>

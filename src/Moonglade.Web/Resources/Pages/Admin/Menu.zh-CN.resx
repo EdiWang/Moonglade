@@ -129,9 +129,6 @@
   <data name="Icon" xml:space="preserve">
     <value>图标</value>
   </data>
-  <data name="Navigation Menus" xml:space="preserve">
-    <value>导航菜单</value>
-  </data>
   <data name="No Customized Menus" xml:space="preserve">
     <value>无自定义菜单</value>
   </data>

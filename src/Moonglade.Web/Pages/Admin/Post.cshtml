@@ -102,19 +102,21 @@
 
 @Html.AntiForgeryToken()
 
-<div class="float-end">
-    <button class="btn btn-sm btn-outline-accent btn-refresh">
-        Refresh
-    </button>
-</div>
+<div class="ps-4 pe-4">
+    <div class="float-end">
+        <button class="btn btn-sm btn-outline-accent btn-refresh">
+            Refresh
+        </button>
+    </div>
 
-<table id="posts-table" class="table table-bordered">
-    <thead>
-        <tr>
-            <th>@Localizer["Title"]</th>
-            <th class="table-item-w20">@Localizer["Published"]</th>
-            <th class="table-item-w10">@Localizer["Hits"]</th>
-            <th class="table-item-w20">@Localizer["Options"]</th>
-        </tr>
-    </thead>
-</table>
+    <table id="posts-table" class="table table-bordered">
+        <thead>
+            <tr>
+                <th>@Localizer["Title"]</th>
+                <th class="table-item-w20">@Localizer["Published"]</th>
+                <th class="table-item-w10">@Localizer["Hits"]</th>
+                <th class="table-item-w20">@Localizer["Options"]</th>
+            </tr>
+        </thead>
+    </table>
+</div>

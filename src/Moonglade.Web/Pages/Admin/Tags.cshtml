@@ -48,28 +48,27 @@
     </script>
 }
 
-<h3>
-    <i class="bi-tag icon-admin-title"></i>
-    @Localizer["Tags"]
-    <a class="btn btn-outline-success float-end" href="javascript:initCreateTag();">
-        <i class="bi-plus-circle"></i>
+<div class="admin-toolbar ps-4 pe-4 pt-2 pb-2 border-bottom mb-3 shadow-sm">
+    <a class="btn btn-sm btn-outline-accent" href="javascript:initCreateTag();">
+        <i class="bi-plus-lg"></i>
         @Localizer["New"]
     </a>
-</h3>
-<hr />
+</div>
 
-<ul class="list-unstyled ul-tag-mgr">
-    @foreach (var tag in Model.Tags.OrderBy(model => model.DisplayName))
-    {
-        <li id="li-tag-@tag.Id" class="border">
-            <span class="span-tagcontent-editable" contenteditable="true" spellcheck="false" data-tagid="@tag.Id">@tag.DisplayName</span>
-            <a class="btn-delete" data-tagid="@tag.Id">
-                <i class="bi-trash"></i>
-                <span class="d-none">@tag.DisplayName</span>
-            </a>
-        </li>
-    }
-</ul>
+<div class="ps-4 pe-4">
+    <ul class="list-unstyled ul-tag-mgr">
+        @foreach (var tag in Model.Tags.OrderBy(model => model.DisplayName))
+        {
+            <li id="li-tag-@tag.Id" class="border">
+                <span class="span-tagcontent-editable" contenteditable="true" spellcheck="false" data-tagid="@tag.Id">@tag.DisplayName</span>
+                <a class="btn-delete" data-tagid="@tag.Id">
+                    <i class="bi-trash"></i>
+                    <span class="d-none">@tag.DisplayName</span>
+                </a>
+            </li>
+        }
+    </ul>
+</div>
 
 <div class="offcanvas offcanvas-end" tabindex="-1" id="editTagCanvas" aria-labelledby="editTagCanvasLabel">
     <div class="offcanvas-header">

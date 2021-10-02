@@ -120,9 +120,6 @@
   <data name="Cancel" xml:space="preserve">
     <value>取消</value>
   </data>
-  <data name="Categories" xml:space="preserve">
-    <value>分类</value>
-  </data>
   <data name="Category Information" xml:space="preserve">
     <value>分类信息</value>
   </data>
