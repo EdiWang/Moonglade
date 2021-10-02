@@ -89,6 +89,10 @@
     min-width: 100vw;
 }
 
+.admin-toolbar .nav-pills .nav-link.active, .nav-pills .show > .nav-link {
+    background-color: var(--accent-color1);
+}
+
 @media (min-width: 768px) {
     .admin-nav {
         margin-left: 15px;
