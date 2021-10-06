@@ -14,7 +14,7 @@
       "destination": "wwwroot/lib/tinymce"
     },
     {
-      "library": "monaco-editor@0.27.0",
+      "library": "monaco-editor@0.28.1",
       "destination": "wwwroot/lib/monaco-editor/",
       "files": [
         "min/vs/loader.js",
@@ -77,7 +77,7 @@
       ]
     },
     {
-      "library": "jquery-validate@1.19.2",
+      "library": "jquery-validate@1.19.3",
       "destination": "wwwroot/lib/jquery-validate/",
       "files": [
         "jquery.validate.min.js"
@@ -91,7 +91,7 @@
       ]
     },
     {
-      "library": "twitter-bootstrap@5.1.1",
+      "library": "twitter-bootstrap@5.1.2",
       "destination": "wwwroot/lib/twitter-bootstrap/",
       "files": [
         "css/bootstrap.min.css",
