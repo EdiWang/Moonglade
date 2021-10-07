@@ -2,12 +2,13 @@
     var currentPage = ViewContext.RouteData.Values["page"]?.ToString();
 }
 
-<ul class="nav nav-tabs">
-    <li role="presentation" class="nav-item nav-item-non-margin">
-        <a class="nav-link @(currentPage == "/Admin/About" ? "active" : null)" asp-page="./About">@Localizer["About"]</a>
-    </li>
-    <li role="presentation" class="nav-item nav-item-non-margin">
-        <a class="nav-link @(currentPage == "/Admin/AuditLogs" ? "active" : null)" asp-page="./AuditLogs">@Localizer["Audit Logs"]</a>
-    </li>
-</ul>
-<div class="mb-3"></div>
+<div class="admin-toolbar ps-4 pe-4 pt-2 pb-2 border-bottom mb-3 shadow-sm d-flex">
+    <ul class="nav nav-pills">
+        <li role="presentation" class="nav-item nav-item-non-margin">
+            <a class="nav-link @(currentPage == "/Admin/About" ? "active" : null)" asp-page="./About">@Localizer["About"]</a>
+        </li>
+        <li role="presentation" class="nav-item nav-item-non-margin">
+            <a class="nav-link @(currentPage == "/Admin/AuditLogs" ? "active" : null)" asp-page="./AuditLogs">@Localizer["Audit Logs"]</a>
+        </li>
+    </ul>
+</div>
