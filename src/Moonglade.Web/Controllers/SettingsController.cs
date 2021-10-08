@@ -211,34 +211,6 @@ namespace Moonglade.Web.Controllers
             var model = wrapperModel.ViewModel;
             _blogConfig.ImageSettings = model;
 
-            if (model.EnableCDNRedirect)
-            {
-                if (string.IsNullOrWhiteSpace(model.CDNEndpoint))
-                {
-                    _blogConfig.ImageSettings.EnableCDNRedirect = false;
-
-                    ModelState.AddModelError(nameof(model.CDNEndpoint), $"{nameof(model.CDNEndpoint)} must be specified when {nameof(model.EnableCDNRedirect)} is enabled.");
-
-                    return BadRequest(ModelState.CombineErrorMessages());
-                }
-
-                _logger.LogWarning("Images are configured to use CDN, the endpoint is out of control, use it on your own risk.");
-
-                // Validate endpoint Url to avoid security risks
-                // But it still has risks:
-                // e.g. If the endpoint is compromised, the attacker could return any kind of response from a image with a big fuck to a script that can attack users.
-
-                var endpoint = model.CDNEndpoint;
-                var isValidEndpoint = endpoint.IsValidUrl(UrlExtension.UrlScheme.Https);
-                if (!isValidEndpoint)
-                {
-                    ModelState.AddModelError(nameof(model.CDNEndpoint), "CDN Endpoint is not a valid HTTPS Url.");
-                    return BadRequest(ModelState.CombineErrorMessages());
-                }
-
-                _blogConfig.ImageSettings.CDNEndpoint = model.CDNEndpoint;
-            }
-
             await _blogConfig.SaveAsync(_blogConfig.ImageSettings);
             await _blogAudit.AddEntry(BlogEventType.Settings, BlogEventId.SettingsSavedImage, "Image Settings updated.");
 
