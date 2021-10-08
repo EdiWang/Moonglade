@@ -310,7 +310,7 @@ namespace Moonglade.Web.Tests.Controllers
             _mockBlogConfig.Setup(p => p.CustomStyleSheetSettings).Returns(new CustomStyleSheetSettings());
 
             var settingsController = CreateSettingsController();
-            CustomStyleSheetSettingsViewModel model = new()
+            CustomStyleSheetSettings model = new()
             {
                 EnableCustomCss = true,
                 CssCode = string.Empty
@@ -329,7 +329,7 @@ namespace Moonglade.Web.Tests.Controllers
             _mockBlogConfig.Setup(p => p.CustomStyleSheetSettings).Returns(new CustomStyleSheetSettings());
 
             var settingsController = CreateSettingsController();
-            CustomStyleSheetSettingsViewModel model = new()
+            CustomStyleSheetSettings model = new()
             {
                 EnableCustomCss = true,
                 CssCode = ".996-{icu}"
@@ -348,7 +348,7 @@ namespace Moonglade.Web.Tests.Controllers
             _mockBlogConfig.Setup(p => p.CustomStyleSheetSettings).Returns(new CustomStyleSheetSettings());
 
             var settingsController = CreateSettingsController();
-            CustomStyleSheetSettingsViewModel model = new()
+            CustomStyleSheetSettings model = new()
             {
                 EnableCustomCss = true,
                 CssCode = ".icu { color: #996; }"

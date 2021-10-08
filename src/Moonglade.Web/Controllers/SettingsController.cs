@@ -313,14 +313,13 @@ namespace Moonglade.Web.Controllers
         [HttpPost("custom-css")]
         [ProducesResponseType(StatusCodes.Status204NoContent)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
-        public async Task<IActionResult> CustomStyleSheet([FromForm] MagicWrapper<CustomStyleSheetSettingsViewModel> wrapperModel)
+        public async Task<IActionResult> CustomStyleSheet([FromForm] MagicWrapper<CustomStyleSheetSettings> wrapperModel)
         {
             var model = wrapperModel.ViewModel;
-            var settings = _blogConfig.CustomStyleSheetSettings;
 
             if (model.EnableCustomCss && string.IsNullOrWhiteSpace(model.CssCode))
             {
-                ModelState.AddModelError(nameof(CustomStyleSheetSettingsViewModel.CssCode), "CSS Code is required");
+                ModelState.AddModelError(nameof(CustomStyleSheetSettings.CssCode), "CSS Code is required");
                 return BadRequest(ModelState.CombineErrorMessages());
             }
 
@@ -334,10 +333,9 @@ namespace Moonglade.Web.Controllers
                 return BadRequest(ModelState.CombineErrorMessages());
             }
 
-            settings.EnableCustomCss = model.EnableCustomCss;
-            settings.CssCode = model.CssCode;
+            _blogConfig.CustomStyleSheetSettings = model;
 
-            await _blogConfig.SaveAsync(settings);
+            await _blogConfig.SaveAsync(_blogConfig.CustomStyleSheetSettings);
             await _blogAudit.AddEntry(BlogEventType.Settings, BlogEventId.SettingsSavedAdvanced, "Custom Style Sheet Settings updated.");
             return NoContent();
         }
