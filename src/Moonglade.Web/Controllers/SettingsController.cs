@@ -206,24 +206,16 @@ namespace Moonglade.Web.Controllers
         [HttpPost("watermark")]
         [ProducesResponseType(StatusCodes.Status204NoContent)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
-        public async Task<IActionResult> Image([FromForm] MagicWrapper<ImageSettingsViewModel> wrapperModel)
+        public async Task<IActionResult> Image([FromForm] MagicWrapper<ImageSettings> wrapperModel)
         {
             var model = wrapperModel.ViewModel;
-
-            var settings = _blogConfig.ImageSettings;
-            settings.IsWatermarkEnabled = model.IsWatermarkEnabled;
-            settings.KeepOriginImage = model.KeepOriginImage;
-            settings.WatermarkFontSize = model.WatermarkFontSize;
-            settings.WatermarkText = model.WatermarkText;
-            settings.UseFriendlyNotFoundImage = model.UseFriendlyNotFoundImage;
-            settings.FitImageToDevicePixelRatio = model.FitImageToDevicePixelRatio;
-            settings.EnableCDNRedirect = model.EnableCDNRedirect;
+            _blogConfig.ImageSettings = model;
 
             if (model.EnableCDNRedirect)
             {
                 if (string.IsNullOrWhiteSpace(model.CDNEndpoint))
                 {
-                    settings.EnableCDNRedirect = false;
+                    _blogConfig.ImageSettings.EnableCDNRedirect = false;
 
                     ModelState.AddModelError(nameof(model.CDNEndpoint), $"{nameof(model.CDNEndpoint)} must be specified when {nameof(model.EnableCDNRedirect)} is enabled.");
 
@@ -244,10 +236,10 @@ namespace Moonglade.Web.Controllers
                     return BadRequest(ModelState.CombineErrorMessages());
                 }
 
-                settings.CDNEndpoint = model.CDNEndpoint;
+                _blogConfig.ImageSettings.CDNEndpoint = model.CDNEndpoint;
             }
 
-            await _blogConfig.SaveAsync(settings);
+            await _blogConfig.SaveAsync(_blogConfig.ImageSettings);
             await _blogAudit.AddEntry(BlogEventType.Settings, BlogEventId.SettingsSavedImage, "Image Settings updated.");
 
             return NoContent();

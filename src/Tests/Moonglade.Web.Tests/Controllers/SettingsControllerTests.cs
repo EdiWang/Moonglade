@@ -198,7 +198,7 @@ namespace Moonglade.Web.Tests.Controllers
         {
             _mockBlogConfig.Setup(p => p.ImageSettings).Returns(new ImageSettings());
             var settingsController = CreateSettingsController();
-            ImageSettingsViewModel model = new();
+            ImageSettings model = new();
 
             var result = await settingsController.Image(new(model));
 
@@ -242,7 +242,7 @@ namespace Moonglade.Web.Tests.Controllers
         {
             _mockBlogConfig.Setup(p => p.ImageSettings).Returns(new ImageSettings());
             var settingsController = CreateSettingsController();
-            ImageSettingsViewModel model = new() { EnableCDNRedirect = true, CDNEndpoint = string.Empty };
+            ImageSettings model = new() { EnableCDNRedirect = true, CDNEndpoint = string.Empty };
             var result = await settingsController.Image(new(model));
             Assert.IsInstanceOf<BadRequestObjectResult>(result);
         }
@@ -252,7 +252,7 @@ namespace Moonglade.Web.Tests.Controllers
         {
             _mockBlogConfig.Setup(p => p.ImageSettings).Returns(new ImageSettings());
             var settingsController = CreateSettingsController();
-            ImageSettingsViewModel model = new() { EnableCDNRedirect = true, CDNEndpoint = "996.icu" };
+            ImageSettings model = new() { EnableCDNRedirect = true, CDNEndpoint = "996.icu" };
             var result = await settingsController.Image(new(model));
             Assert.IsInstanceOf<BadRequestObjectResult>(result);
         }
@@ -262,7 +262,7 @@ namespace Moonglade.Web.Tests.Controllers
         {
             _mockBlogConfig.Setup(p => p.ImageSettings).Returns(new ImageSettings());
             var settingsController = CreateSettingsController();
-            ImageSettingsViewModel model = new() { EnableCDNRedirect = true, CDNEndpoint = "https://cdn.996.icu/fubao" };
+            ImageSettings model = new() { EnableCDNRedirect = true, CDNEndpoint = "https://cdn.996.icu/fubao" };
 
             var result = await settingsController.Image(new(model));
 
