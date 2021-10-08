@@ -228,7 +228,7 @@ namespace Moonglade.Web.Tests.Controllers
         {
             _mockBlogConfig.Setup(p => p.AdvancedSettings).Returns(new AdvancedSettings());
             var settingsController = CreateSettingsController();
-            AdvancedSettingsViewModel model = new();
+            AdvancedSettings model = new();
 
             var result = await settingsController.Advanced(new(model));
 

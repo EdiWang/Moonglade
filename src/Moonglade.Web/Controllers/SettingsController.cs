@@ -219,27 +219,17 @@ namespace Moonglade.Web.Controllers
 
         [HttpPost("advanced")]
         [ProducesResponseType(StatusCodes.Status204NoContent)]
-        public async Task<IActionResult> Advanced([FromForm] MagicWrapper<AdvancedSettingsViewModel> wrapperModel)
+        public async Task<IActionResult> Advanced([FromForm] MagicWrapper<AdvancedSettings> wrapperModel)
         {
             var model = wrapperModel.ViewModel;
 
-            var settings = _blogConfig.AdvancedSettings;
-            settings.RobotsTxtContent = model.RobotsTxtContent;
-            settings.EnablePingBackSend = model.EnablePingbackSend;
-            settings.EnablePingBackReceive = model.EnablePingbackReceive;
-            settings.EnableOpenGraph = model.EnableOpenGraph;
-            settings.EnableOpenSearch = model.EnableOpenSearch;
-            settings.EnableMetaWeblog = model.EnableMetaWeblog;
-            settings.WarnExternalLink = model.WarnExternalLink;
-            settings.AllowScriptsInPage = model.AllowScriptsInPage;
-            settings.ShowAdminLoginButton = model.ShowAdminLoginButton;
+            model.MetaWeblogPasswordHash = !string.IsNullOrWhiteSpace(model.MetaWeblogPassword) ?
+                Helper.HashPassword(model.MetaWeblogPassword) :
+                _blogConfig.AdvancedSettings.MetaWeblogPasswordHash;
 
-            if (!string.IsNullOrWhiteSpace(model.MetaWeblogPassword))
-            {
-                settings.MetaWeblogPasswordHash = Helper.HashPassword(model.MetaWeblogPassword);
-            }
+            _blogConfig.AdvancedSettings = model;
 
-            await _blogConfig.SaveAsync(settings);
+            await _blogConfig.SaveAsync(_blogConfig.AdvancedSettings);
             await _blogAudit.AddEntry(BlogEventType.Settings, BlogEventId.SettingsSavedAdvanced, "Advanced Settings updated.");
             return NoContent();
         }

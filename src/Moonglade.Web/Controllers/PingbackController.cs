@@ -44,7 +44,7 @@ namespace Moonglade.Web.Controllers
         [ProducesResponseType(StatusCodes.Status403Forbidden)]
         public async Task<IActionResult> Process([FromServices] IServiceScopeFactory factory)
         {
-            if (!_blogConfig.AdvancedSettings.EnablePingBackReceive)
+            if (!_blogConfig.AdvancedSettings.EnablePingbackReceive)
             {
                 _logger.LogInformation("Pingback receive is disabled");
                 return Forbid();

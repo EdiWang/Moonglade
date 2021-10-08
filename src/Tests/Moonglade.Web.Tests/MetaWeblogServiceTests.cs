@@ -7,7 +7,6 @@ using Moonglade.Core.PostFeature;
 using Moonglade.Core.TagFeature;
 using Moonglade.Data.Entities;
 using Moonglade.ImageStorage;
-using Moonglade.Utils;
 using Moq;
 using NUnit.Framework;
 using System;
@@ -91,7 +90,7 @@ namespace Moonglade.Web.Tests
 
             _mockBlogConfig.Setup(p => p.AdvancedSettings).Returns(new AdvancedSettings()
             {
-                MetaWeblogPasswordHash = Helper.HashPassword(_password)
+                MetaWeblogPassword = _password
             });
         }
 

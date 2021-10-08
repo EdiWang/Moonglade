@@ -52,7 +52,7 @@ namespace Moonglade.Web.Tests.Controllers
         {
             _mockBlogConfig.Setup(p => p.AdvancedSettings).Returns(new AdvancedSettings
             {
-                EnablePingBackReceive = false
+                EnablePingbackReceive = false
             });
 
             var pingbackController = CreatePingbackController();
@@ -65,7 +65,7 @@ namespace Moonglade.Web.Tests.Controllers
         {
             _mockBlogConfig.Setup(p => p.AdvancedSettings).Returns(new AdvancedSettings
             {
-                EnablePingBackReceive = true
+                EnablePingbackReceive = true
             });
 
             _mockMediator

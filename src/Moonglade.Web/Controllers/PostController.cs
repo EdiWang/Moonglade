@@ -150,7 +150,7 @@ namespace Moonglade.Web.Controllers
                                    postEntity.Slug
                                });
 
-                    if (_blogConfig.AdvancedSettings.EnablePingBackSend)
+                    if (_blogConfig.AdvancedSettings.EnablePingbackSend)
                     {
                         _ = Task.Run(async () => { await _pingbackSender.TrySendPingAsync(link, postEntity.PostContent); });
                     }
