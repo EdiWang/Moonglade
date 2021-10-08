@@ -184,7 +184,7 @@ namespace Moonglade.Web.Tests.Controllers
         {
             _mockBlogConfig.Setup(p => p.FeedSettings).Returns(new FeedSettings());
             var settingsController = CreateSettingsController();
-            SubscriptionSettingsViewModel model = new();
+            FeedSettings model = new();
 
             var result = await settingsController.Subscription(new(model));
 

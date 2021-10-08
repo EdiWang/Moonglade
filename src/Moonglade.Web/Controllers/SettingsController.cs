@@ -198,18 +198,12 @@ namespace Moonglade.Web.Controllers
 
         [HttpPost("subscription")]
         [ProducesResponseType(StatusCodes.Status204NoContent)]
-        public async Task<IActionResult> Subscription([FromForm] MagicWrapper<SubscriptionSettingsViewModel> wrapperModel)
+        public async Task<IActionResult> Subscription([FromForm] MagicWrapper<FeedSettings> wrapperModel)
         {
             var model = wrapperModel.ViewModel;
+            _blogConfig.FeedSettings = model;
 
-            var settings = _blogConfig.FeedSettings;
-            settings.AuthorName = model.AuthorName;
-            settings.RssCopyright = model.RssCopyright;
-            settings.RssItemCount = model.RssItemCount;
-            settings.RssTitle = model.RssTitle;
-            settings.UseFullContent = model.UseFullContent;
-
-            await _blogConfig.SaveAsync(settings);
+            await _blogConfig.SaveAsync(_blogConfig.FeedSettings);
             await _blogAudit.AddEntry(BlogEventType.Settings, BlogEventId.SettingsSavedSubscription, "Subscription Settings updated.");
 
             return NoContent();
