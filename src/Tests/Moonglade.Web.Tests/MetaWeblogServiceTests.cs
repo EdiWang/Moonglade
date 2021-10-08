@@ -13,6 +13,7 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 using System.Threading.Tasks;
+using Moonglade.Utils;
 using WilderMinds.MetaWeblog;
 using Post = Moonglade.Core.PostFeature.Post;
 using Tag = Moonglade.Core.TagFeature.Tag;
@@ -88,9 +89,10 @@ namespace Moonglade.Web.Tests
                 SiteTitle = "996 ICU"
             });
 
-            _mockBlogConfig.Setup(p => p.AdvancedSettings).Returns(new AdvancedSettings()
+            _mockBlogConfig.Setup(p => p.AdvancedSettings).Returns(new AdvancedSettings
             {
-                MetaWeblogPassword = _password
+                MetaWeblogPassword = _password,
+                MetaWeblogPasswordHash = Helper.HashPassword(_password)
             });
         }
 
