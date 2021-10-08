@@ -12,6 +12,8 @@ using Moonglade.Web.Models.Settings;
 using Moq;
 using NUnit.Framework;
 using System;
+using System.ComponentModel.DataAnnotations;
+using System.Linq;
 using System.Threading.Tasks;
 
 namespace Moonglade.Web.Tests.Controllers
@@ -238,23 +240,25 @@ namespace Moonglade.Web.Tests.Controllers
         }
 
         [Test]
-        public async Task Image_Post_EnableCDNRedirect_EmptyCDNEndpoint()
+        public void Image_Post_EnableCDNRedirect_EmptyCDNEndpoint()
         {
             _mockBlogConfig.Setup(p => p.ImageSettings).Returns(new ImageSettings());
-            var settingsController = CreateSettingsController();
             ImageSettings model = new() { EnableCDNRedirect = true, CDNEndpoint = string.Empty };
-            var result = await settingsController.Image(new(model));
-            Assert.IsInstanceOf<BadRequestObjectResult>(result);
+
+            var validationContext = new ValidationContext(model);
+            var results = model.Validate(validationContext);
+            Assert.AreEqual(results.Count(), 2);
         }
 
         [Test]
-        public async Task Image_Post_EnableCDNRedirect_InvalidCDNEndpoint()
+        public void Image_Post_EnableCDNRedirect_InvalidCDNEndpoint()
         {
             _mockBlogConfig.Setup(p => p.ImageSettings).Returns(new ImageSettings());
-            var settingsController = CreateSettingsController();
             ImageSettings model = new() { EnableCDNRedirect = true, CDNEndpoint = "996.icu" };
-            var result = await settingsController.Image(new(model));
-            Assert.IsInstanceOf<BadRequestObjectResult>(result);
+
+            var validationContext = new ValidationContext(model);
+            var results = model.Validate(validationContext);
+            Assert.AreEqual(results.Count(), 1);
         }
 
         [Test]
