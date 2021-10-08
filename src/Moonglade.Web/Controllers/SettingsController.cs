@@ -163,18 +163,12 @@ namespace Moonglade.Web.Controllers
 
         [HttpPost("notification")]
         [ProducesResponseType(StatusCodes.Status204NoContent)]
-        public async Task<IActionResult> Notification([FromForm] MagicWrapper<NotificationSettingsViewModel> wrapperModel)
+        public async Task<IActionResult> Notification([FromForm] MagicWrapper<NotificationSettings> wrapperModel)
         {
             var model = wrapperModel.ViewModel;
+            _blogConfig.NotificationSettings = model;
 
-            var settings = _blogConfig.NotificationSettings;
-            settings.EmailDisplayName = model.EmailDisplayName;
-            settings.EnableEmailSending = model.EnableEmailSending;
-            settings.SendEmailOnCommentReply = model.SendEmailOnCommentReply;
-            settings.SendEmailOnNewComment = model.SendEmailOnNewComment;
-            settings.AzureFunctionEndpoint = model.AzureFunctionEndpoint;
-
-            await _blogConfig.SaveAsync(settings);
+            await _blogConfig.SaveAsync(_blogConfig.NotificationSettings);
             await _blogAudit.AddEntry(BlogEventType.Settings, BlogEventId.SettingsSavedNotification, "Notification Settings updated.");
 
             return NoContent();

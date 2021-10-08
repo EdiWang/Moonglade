@@ -162,7 +162,7 @@ namespace Moonglade.Web.Tests.Controllers
         {
             _mockBlogConfig.Setup(p => p.NotificationSettings).Returns(new NotificationSettings());
             var settingsController = CreateSettingsController();
-            NotificationSettingsViewModel model = new();
+            NotificationSettings model = new();
 
             var result = await settingsController.Notification(new(model));
 
