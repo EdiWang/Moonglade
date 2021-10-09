@@ -31,8 +31,6 @@
 
 <partial name="_SettingsHeader" />
 <div class="ps-4 pe-4">
-    <div class="alert alert-info">Please follow instructions <a href="https://github.com/EdiWang/Moonglade/blob/master/README.md#email-notification" target="_blank">here</a> to setup notification API.</div>
-
     <form id="form-settings" asp-controller="Settings" asp-action="Notification"
           data-ajax-begin="onUpdateSettingsBegin"
           data-ajax-complete="onUpdateSettingsComplete"
@@ -44,49 +42,43 @@
 
         <div class="row">
             <div class="col-md-6">
-                <div class="card mb-4">
-                    <div class="card-header">@Localizer["Email Options"]</div>
-                    <div class="card-body">
-                        <div class="mb-2">
-                            <label class="form-label" asp-for="ViewModel.EmailDisplayName"></label>
-                            <input asp-for="ViewModel.EmailDisplayName" class="form-control" />
-                            <span asp-validation-for="ViewModel.EmailDisplayName" class="text-danger"></span>
-                        </div>
-                        <div class="mb-2">
-                            <label class="form-label" asp-for="ViewModel.AzureFunctionEndpoint"></label>
-                            <input asp-for="ViewModel.AzureFunctionEndpoint" class="form-control" />
-                            <span asp-validation-for="ViewModel.AzureFunctionEndpoint" class="text-danger"></span>
-                        </div>
-                        <a href="javascript:sendTestEmail();" id="a-send-test-mail" class="btn btn-sm btn-outline-accent">
-                            <i class="bi-envelope"></i>
-                            @Localizer["Send Test Email"]
-                        </a>
+                <h6 class="card-subtitle mb-3 text-muted">@Localizer["Email Options"]</h6>
+                <div>
+                    <div class="mb-2">
+                        <label class="form-label" asp-for="ViewModel.EmailDisplayName"></label>
+                        <input asp-for="ViewModel.EmailDisplayName" class="form-control" />
+                        <span asp-validation-for="ViewModel.EmailDisplayName" class="text-danger"></span>
                     </div>
+                    <div class="mb-2">
+                        <label class="form-label" asp-for="ViewModel.AzureFunctionEndpoint"></label>
+                        <input asp-for="ViewModel.AzureFunctionEndpoint" class="form-control" />
+                        <span asp-validation-for="ViewModel.AzureFunctionEndpoint" class="text-danger"></span>
+                        <p class="text-muted mb-4">Please follow instructions <a href="https://github.com/EdiWang/Moonglade/blob/master/README.md#email-notification" target="_blank">here</a> to setup notification API.</p>
+                    </div>
+
+                    <a href="javascript:sendTestEmail();" id="a-send-test-mail" class="btn btn-sm btn-outline-accent">
+                        <i class="bi-envelope"></i>
+                        @Localizer["Send Test Email"]
+                    </a>
+
+                   
                 </div>
             </div>
             <div class="col-md-6">
-                <div class="card mb-4">
-                    <div class="card-header">@Localizer["Notification Options"]</div>
-                    <ul class="list-group list-group-flush">
-                        <li class="list-group-item">
-                            <div class="form-check form-switch">
-                                <input type="checkbox" asp-for="ViewModel.EnableEmailSending" class="form-check-input">
-                                <label asp-for="ViewModel.EnableEmailSending" class="form-check-label"></label>
-                            </div>
-                        </li>
-                        <li class="list-group-item">
-                            <div class="form-check form-switch">
-                                <input type="checkbox" asp-for="ViewModel.SendEmailOnCommentReply" class="form-check-input">
-                                <label asp-for="ViewModel.SendEmailOnCommentReply" class="form-check-label"></label>
-                            </div>
-                        </li>
-                        <li class="list-group-item">
-                            <div class="form-check form-switch">
-                                <input type="checkbox" asp-for="ViewModel.SendEmailOnNewComment" class="form-check-input">
-                                <label asp-for="ViewModel.SendEmailOnNewComment" class="form-check-label"></label>
-                            </div>
-                        </li>
-                    </ul>
+                <div class="mb-4">
+                    <h6 class="card-subtitle mb-3 text-muted">@Localizer["Notification Options"]</h6>
+                    <div class="form-check form-switch">
+                        <input type="checkbox" asp-for="ViewModel.EnableEmailSending" class="form-check-input">
+                        <label asp-for="ViewModel.EnableEmailSending" class="form-check-label"></label>
+                    </div>
+                    <div class="form-check form-switch">
+                        <input type="checkbox" asp-for="ViewModel.SendEmailOnCommentReply" class="form-check-input">
+                        <label asp-for="ViewModel.SendEmailOnCommentReply" class="form-check-label"></label>
+                    </div>
+                    <div class="form-check form-switch">
+                        <input type="checkbox" asp-for="ViewModel.SendEmailOnNewComment" class="form-check-input">
+                        <label asp-for="ViewModel.SendEmailOnNewComment" class="form-check-label"></label>
+                    </div>
                 </div>
             </div>
         </div>
