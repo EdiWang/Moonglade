@@ -16,22 +16,22 @@
             <div class="col-md-6">
                 <div>
                     <h6 class="card-subtitle mb-3 text-muted">@Localizer["Comments"]</h6>
-                    <div class="form-check form-switch">
+                    <div class="form-check form-switch mb-2">
                         <input type="checkbox" asp-for="ViewModel.EnableComments" class="form-check-input">
                         <label asp-for="ViewModel.EnableComments" class="form-check-label"></label>
                     </div>
-                    <div class="form-check form-switch">
+                    <div class="form-check form-switch mb-2">
                         <input type="checkbox" asp-for="ViewModel.RequireCommentReview" class="form-check-input">
                         <label asp-for="ViewModel.RequireCommentReview" class="form-check-label"></label>
                     </div>
-                    <div class="form-check form-switch">
+                    <div class="form-check form-switch mb-2">
                         <input type="checkbox" asp-for="ViewModel.EnableGravatar" class="form-check-input">
                         <label asp-for="ViewModel.EnableGravatar" class="form-check-label"></label>
                     </div>
 
                     <h6 class="card-subtitle mt-5 mb-3 text-muted">@Localizer["Word filter"]</h6>
 
-                    <div class="form-check form-switch">
+                    <div class="form-check form-switch mb-2">
                         <input type="checkbox" asp-for="ViewModel.EnableWordFilter" class="form-check-input">
                         <label asp-for="ViewModel.EnableWordFilter" class="form-check-label"></label>
                     </div>
@@ -78,7 +78,7 @@
                             <span asp-validation-for="ViewModel.HotTagAmount" class="text-danger"></span>
                         </div>
                     </div>
-                    <div class="form-check form-switch">
+                    <div class="form-check form-switch mb-2">
                         <input type="checkbox" asp-for="ViewModel.ShowPostFooter" class="form-check-input">
                         <label asp-for="ViewModel.ShowPostFooter" class="form-check-label"></label>
                     </div>
@@ -97,7 +97,7 @@
                 </div>
                 <div class="mt-5">
                     <h6 class="card-subtitle mb-3 text-muted">@Localizer["Call-out"]</h6>
-                    <div class="form-check form-switch">
+                    <div class="form-check form-switch mb-2">
                         <input type="checkbox" asp-for="ViewModel.ShowCalloutSection" class="form-check-input">
                         <label asp-for="ViewModel.ShowCalloutSection" class="form-check-label"></label>
                     </div>

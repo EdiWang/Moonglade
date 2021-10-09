@@ -198,9 +198,6 @@
   <data name="Side Bar" xml:space="preserve">
     <value>侧边栏</value>
   </data>
-  <data name="Appearance" xml:space="preserve">
-    <value>外观</value>
-  </data>
   <data name="Footer" xml:space="preserve">
     <value>页脚</value>
   </data>
