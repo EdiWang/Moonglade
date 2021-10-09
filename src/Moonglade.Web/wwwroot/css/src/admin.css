@@ -89,6 +89,10 @@
     min-width: 100vw;
 }
 
+.admin-toolbar {
+    margin-bottom: 25px !important;
+}
+
 .admin-toolbar .nav-pills .nav-link.active, .nav-pills .show > .nav-link {
     background-color: var(--accent-color1);
 }
