@@ -25,14 +25,20 @@
         <link href="~/css/bundle.min.css" rel="stylesheet" asp-append-version="true" />
         @Html.Raw(_javaScriptSnippet.FullScript)
     </environment>
+    <link href="~/theme.css" rel="stylesheet" asp-append-version="true" />
+    @if (BlogConfig.CustomStyleSheetSettings.EnableCustomCss)
+    {
+        <link href="~/custom.css" rel="stylesheet" asp-append-version="true" />
+    }
 </head>
 <body class="bg-gray-1 pt-5">
     <div class="container">
         <div class="row justify-content-md-center">
             <div class="col-md-4">
-                <div class="card">
-                    <h6 class="card-header">@Localizer["Sign In"]</h6>
+                <div class="card shadow">
                     <div class="card-body">
+                        <h5 class="card-title mb-4">@Localizer["Sign In"]</h5>
+
                         <form method="post">
                             <div asp-validation-summary="All" class="text-danger"></div>
                             <div class="form-floating mb-3">
@@ -44,7 +50,7 @@
                                 <label asp-for="Password"></label>
                             </div>
 
-                            <div clas="mb-2">
+                            <div class="mb-3">
                                 <div class="input-group">
                                     <img id="img-captcha" src="~/captcha-image" data-bs-toggle="tooltip" data-placement="top" title="@Localizer["Can't read? Click to change another image."]" />
                                     <input asp-for="CaptchaCode"
@@ -56,8 +62,7 @@
                                 </div>
                             </div>
 
-                            <hr />
-                            <input type="submit" value="@Localizer["Sign In"]" class="btn btn-success" />
+                            <input type="submit" value="@Localizer["Sign In"]" class="btn w-100 btn-accent" />
                         </form>
                     </div>
                 </div>
