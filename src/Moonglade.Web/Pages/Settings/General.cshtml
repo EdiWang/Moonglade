@@ -87,160 +87,152 @@
 
         <div class="row">
             <div class="col-md-6">
-                <div class="card mb-3">
-                    <div class="card-header">@Localizer["Blog Identity"]</div>
-                    <div class="card-body">
-                        <div class="row">
-                            <div class="col-2">
-                                <div class="mb-2">
-                                    <img src="@Url.Action("SiteIconOrigin", "Assets")" class="img-thumbnail img-fluid blogadmin-siteicon" />
-                                </div>
-                                <a class="btn w-100 btn-sm btn-outline-accent" href="#" data-bs-toggle="modal" data-bs-target="#siteiconmodal">@Localizer["New Icon"]</a>
+                <div class="mb-3">
+                    <h6 class="card-subtitle mb-3 text-muted">@Localizer["Blog Identity"]</h6>
+                    <div class="row">
+                        <div class="col-2">
+                            <div class="mb-2">
+                                <img src="@Url.Action("SiteIconOrigin", "Assets")" class="img-thumbnail img-fluid blogadmin-siteicon" />
                             </div>
-                            <div class="col-10">
-                                <div class="row g-2 mb-3">
-                                    <div class="col">
-                                        <label class="form-label" asp-for="ViewModel.SiteTitle"></label>
-                                        <input asp-for="ViewModel.SiteTitle" class="form-control" />
-                                        <span asp-validation-for="ViewModel.SiteTitle" class="text-danger"></span>
-                                    </div>
-                                    <div class="col">
-                                        <label class="form-label" asp-for="ViewModel.LogoText"></label>
-                                        <input asp-for="ViewModel.LogoText" class="form-control" />
-                                        <span asp-validation-for="ViewModel.LogoText" class="text-danger"></span>
-                                    </div>
+                            <a class="btn w-100 btn-sm btn-outline-accent" href="#" data-bs-toggle="modal" data-bs-target="#siteiconmodal">@Localizer["New Icon"]</a>
+                        </div>
+                        <div class="col-10">
+                            <div class="row g-2 mb-3">
+                                <div class="col">
+                                    <label class="form-label" asp-for="ViewModel.SiteTitle"></label>
+                                    <input asp-for="ViewModel.SiteTitle" class="form-control" />
+                                    <span asp-validation-for="ViewModel.SiteTitle" class="text-danger"></span>
                                 </div>
-                                <div class="mb-1">
-                                    <label class="form-label" asp-for="ViewModel.MetaKeyword"></label>
-                                    <input asp-for="ViewModel.MetaKeyword" class="form-control" />
-                                    <span asp-validation-for="ViewModel.MetaKeyword" class="text-danger"></span>
+                                <div class="col">
+                                    <label class="form-label" asp-for="ViewModel.LogoText"></label>
+                                    <input asp-for="ViewModel.LogoText" class="form-control" />
+                                    <span asp-validation-for="ViewModel.LogoText" class="text-danger"></span>
                                 </div>
-                                <div class="mb-3">
-                                    <div class="form-floating">
-                                        <textarea asp-for="ViewModel.MetaDescription" placeholder="@Html.DisplayNameFor(m => m.ViewModel.MetaDescription)"
-                                                  class="form-control h-100px"></textarea>
-                                        <label class="form-label" asp-for="ViewModel.MetaDescription"></label>
-                                    </div>
-                                    <span asp-validation-for="ViewModel.MetaDescription" class="text-danger"></span>
+                            </div>
+                            <div class="mb-1">
+                                <label class="form-label" asp-for="ViewModel.MetaKeyword"></label>
+                                <input asp-for="ViewModel.MetaKeyword" class="form-control" />
+                                <span asp-validation-for="ViewModel.MetaKeyword" class="text-danger"></span>
+                            </div>
+                            <div class="mb-3">
+                                <div class="form-floating">
+                                    <textarea asp-for="ViewModel.MetaDescription" placeholder="@Html.DisplayNameFor(m => m.ViewModel.MetaDescription)"
+                                              class="form-control h-100px"></textarea>
+                                    <label class="form-label" asp-for="ViewModel.MetaDescription"></label>
                                 </div>
-                                <div class="mb-3">
-                                    <label class="form-label" asp-for="ViewModel.CanonicalPrefix"></label>
-                                    <input asp-for="ViewModel.CanonicalPrefix" class="form-control" />
-                                    <span asp-validation-for="ViewModel.CanonicalPrefix" class="text-danger"></span>
-                                    <small class="form-text text-muted">@Localizer["Set a primary domain if your website binds to multiple domian names."]</small>
-                                </div>
+                                <span asp-validation-for="ViewModel.MetaDescription" class="text-danger"></span>
+                            </div>
+                            <div class="mb-3">
+                                <label class="form-label" asp-for="ViewModel.CanonicalPrefix"></label>
+                                <input asp-for="ViewModel.CanonicalPrefix" class="form-control" />
+                                <span asp-validation-for="ViewModel.CanonicalPrefix" class="text-danger"></span>
+                                <small class="form-text text-muted">@Localizer["Set a primary domain if your website binds to multiple domian names."]</small>
+                            </div>
 
-                                <div>
-                                    <div class="input-group">
-                                        <label class="input-group-text" for="SelectedUtcOffset">@Localizer["Time Zone"]</label>
-                                        <select class="form-select" asp-for="ViewModel.SelectedTimeZoneId" asp-items="@tzList"></select>
-                                    </div>
-                                    <small class="form-text text-muted">@Localizer["Blog posts will use this time zone as date and time display."]</small>
+                            <div>
+                                <div class="input-group">
+                                    <label class="input-group-text" for="SelectedUtcOffset">@Localizer["Time Zone"]</label>
+                                    <select class="form-select" asp-for="ViewModel.SelectedTimeZoneId" asp-items="@tzList"></select>
                                 </div>
+                                <small class="form-text text-muted">@Localizer["Blog posts will use this time zone as date and time display."]</small>
                             </div>
                         </div>
-                        <hr />
-                        <div class="row">
-                            <div class="col-md-2 col-sm-4">
-                                <div class="mb-3">
-                                    <img src="@Url.Action("Avatar", "Assets")" class="img-thumbnail img-fluid blogadmin-avatar" />
-                                </div>
-                                <a class="btn w-100 btn-sm btn-outline-accent" href="#" data-bs-toggle="modal" data-bs-target="#avatarmodal">@Localizer["New Avatar"]</a>
+                    </div>
+                    <hr />
+                    <div class="row">
+                        <div class="col-md-2 col-sm-4">
+                            <div class="mb-3">
+                                <img src="@Url.Action("Avatar", "Assets")" class="img-thumbnail img-fluid blogadmin-avatar" />
                             </div>
-                            <div class="col-md-10 col-sm-8">
-                                <div class="row g-2 mb-3">
-                                    <div class="col">
-                                        <label class="form-label" asp-for="ViewModel.OwnerName"></label>
-                                        <input asp-for="ViewModel.OwnerName" class="form-control" />
-                                        <span asp-validation-for="ViewModel.OwnerName" class="text-danger"></span>
-                                    </div>
-                                    <div class="col">
-                                        <label class="form-label" asp-for="ViewModel.OwnerEmail"></label>
-                                        <input asp-for="ViewModel.OwnerEmail" class="form-control" title="@Localizer["Email address to receive notifications from this blog."]" />
-                                        <span asp-validation-for="ViewModel.OwnerEmail" class="text-danger"></span>
-                                    </div>
+                            <a class="btn w-100 btn-sm btn-outline-accent" href="#" data-bs-toggle="modal" data-bs-target="#avatarmodal">@Localizer["New Avatar"]</a>
+                        </div>
+                        <div class="col-md-10 col-sm-8">
+                            <div class="row g-2 mb-3">
+                                <div class="col">
+                                    <label class="form-label" asp-for="ViewModel.OwnerName"></label>
+                                    <input asp-for="ViewModel.OwnerName" class="form-control" />
+                                    <span asp-validation-for="ViewModel.OwnerName" class="text-danger"></span>
                                 </div>
-                                <div class="mb-3">
-                                    <div class="form-floating">
-                                        <textarea asp-for="ViewModel.OwnerDescription"
-                                                  placeholder="@Html.DisplayNameFor(m => m.ViewModel.OwnerDescription)"
-                                                  class="form-control h-100px"
-                                                  spellcheck="false" cols="10" rows="10"></textarea>
-                                        <label class="form-label" asp-for="ViewModel.OwnerDescription"></label>
-                                    </div>
-                                    <span asp-validation-for="ViewModel.OwnerDescription" class="text-danger"></span>
+                                <div class="col">
+                                    <label class="form-label" asp-for="ViewModel.OwnerEmail"></label>
+                                    <input asp-for="ViewModel.OwnerEmail" class="form-control" title="@Localizer["Email address to receive notifications from this blog."]" />
+                                    <span asp-validation-for="ViewModel.OwnerEmail" class="text-danger"></span>
                                 </div>
-                                <div>
-                                    <label class="form-label" asp-for="ViewModel.OwnerShortDescription"></label>
-                                    <input asp-for="ViewModel.OwnerShortDescription" class="form-control" />
-                                    <span asp-validation-for="ViewModel.OwnerShortDescription" class="text-danger"></span>
-                                    <small class="form-text text-muted">@Localizer["Short description is for display only on Phone screen."]</small>
+                            </div>
+                            <div class="mb-3">
+                                <div class="form-floating">
+                                    <textarea asp-for="ViewModel.OwnerDescription"
+                                              placeholder="@Html.DisplayNameFor(m => m.ViewModel.OwnerDescription)"
+                                              class="form-control h-100px"
+                                              spellcheck="false" cols="10" rows="10"></textarea>
+                                    <label class="form-label" asp-for="ViewModel.OwnerDescription"></label>
                                 </div>
+                                <span asp-validation-for="ViewModel.OwnerDescription" class="text-danger"></span>
+                            </div>
+                            <div>
+                                <label class="form-label" asp-for="ViewModel.OwnerShortDescription"></label>
+                                <input asp-for="ViewModel.OwnerShortDescription" class="form-control" />
+                                <span asp-validation-for="ViewModel.OwnerShortDescription" class="text-danger"></span>
+                                <small class="form-text text-muted">@Localizer["Short description is for display only on Phone screen."]</small>
                             </div>
                         </div>
                     </div>
                 </div>
             </div>
             <div class="col-md-6">
-                <div class="card mb-3">
-                    <div class="card-header">@Localizer["Appearance"]</div>
-                    <div class="card-body">
-                        <h6 class="card-subtitle mb-2 text-muted">
-                            @Localizer["Theme"]
-                        </h6>
-                        <div>
-                            <div class="row g-1 mb-3">
-                                <div class="col">
-                                    <select class="form-select" asp-for="ViewModel.SelectedThemeId" asp-items="@tmList"></select>
-                                </div>
-                                <div class="col-auto">
-                                    <a class="btn btn-outline-accent" href="#" data-bs-toggle="modal" data-bs-target="#thememodal">
-                                        <i class="bi-palette"></i>
-                                        New
-                                    </a>
-                                    <a class="btn btn-outline-danger btn-delete-theme" href="#">
-                                        <i class="bi-trash"></i>
-                                    </a>
-                                </div>
+                <div class="mb-3">
+                    <h6 class="card-subtitle mb-2 text-muted">
+                        @Localizer["Theme"]
+                    </h6>
+                    <div>
+                        <div class="row g-1 mb-3">
+                            <div class="col">
+                                <select class="form-select" asp-for="ViewModel.SelectedThemeId" asp-items="@tmList"></select>
                             </div>
-                            <div class="form-check">
-                                <input asp-for="ViewModel.AutoDarkLightTheme" class="form-check-input" type="checkbox">
-                                <label asp-for="ViewModel.AutoDarkLightTheme" class="form-check-label">@Localizer["Auto Light / Dark theme regarding client system settings"]</label>
+                            <div class="col-auto">
+                                <a class="btn btn-outline-accent" href="#" data-bs-toggle="modal" data-bs-target="#thememodal">
+                                    <i class="bi-palette"></i>
+                                    New
+                                </a>
+                                <a class="btn btn-outline-danger btn-delete-theme" href="#">
+                                    <i class="bi-trash"></i>
+                                </a>
                             </div>
+                        </div>
+                        <div class="form-check">
+                            <input asp-for="ViewModel.AutoDarkLightTheme" class="form-check-input" type="checkbox">
+                            <label asp-for="ViewModel.AutoDarkLightTheme" class="form-check-label">@Localizer["Auto Light / Dark theme regarding client system settings"]</label>
                         </div>
                     </div>
-                    <hr />
-                    <div class="card-body">
-                        <h6 class="card-subtitle mb-2 text-muted">
-                            @Localizer["Side Bar"]
-                        </h6>
-                        <div class="mb-1">
-                            <div class="form-check form-check-inline">
-                                @Html.RadioButtonFor(model => model.ViewModel.SideBarOption, SideBarOption.Right.ToString(), new { id = SideBarOption.Right.ToString(), @class = "form-check-input" })
-                                <label class="form-check-label" for="@SideBarOption.Right.ToString()">@Localizer["Right"]</label>
-                            </div>
-                            <div class="form-check form-check-inline">
-                                @Html.RadioButtonFor(model => model.ViewModel.SideBarOption, SideBarOption.Left.ToString(), new { id = SideBarOption.Left.ToString(), @class = "form-check-input" })
-                                <label class="form-check-label" for="@SideBarOption.Left.ToString()">@Localizer["Left"]</label>
-                            </div>
-                            <div class="form-check form-check-inline">
-                                @Html.RadioButtonFor(model => model.ViewModel.SideBarOption, SideBarOption.Disabled.ToString(), new { id = SideBarOption.Disabled.ToString(), @class = "form-check-input" })
-                                <label class="form-check-label" for="@SideBarOption.Disabled.ToString()">@Localizer["Disabled"]</label>
-                            </div>
+                    <h6 class="card-subtitle mt-5 mb-2 text-muted">
+                        @Localizer["Side Bar"]
+                    </h6>
+                    <div class="mb-1">
+                        <div class="form-check form-check-inline">
+                            @Html.RadioButtonFor(model => model.ViewModel.SideBarOption, SideBarOption.Right.ToString(), new { id = SideBarOption.Right.ToString(), @class = "form-check-input" })
+                            <label class="form-check-label" for="@SideBarOption.Right.ToString()">@Localizer["Right"]</label>
                         </div>
-                        <div class="form-floating">
-                            <textarea asp-for="ViewModel.SideBarCustomizedHtmlPitch"
-                                      placeholder="@Html.DisplayNameFor(m => m.ViewModel.SideBarCustomizedHtmlPitch)"
-                                      class="form-control form-control-sm h-100px textarea-code"
-                                      spellcheck="false"
-                                      cols="10"
-                                      rows="10"></textarea>
-                            <label class="form-label" asp-for="ViewModel.SideBarCustomizedHtmlPitch"></label>
+                        <div class="form-check form-check-inline">
+                            @Html.RadioButtonFor(model => model.ViewModel.SideBarOption, SideBarOption.Left.ToString(), new { id = SideBarOption.Left.ToString(), @class = "form-check-input" })
+                            <label class="form-check-label" for="@SideBarOption.Left.ToString()">@Localizer["Left"]</label>
                         </div>
-                        <span asp-validation-for="ViewModel.SideBarCustomizedHtmlPitch" class="text-danger"></span>
+                        <div class="form-check form-check-inline">
+                            @Html.RadioButtonFor(model => model.ViewModel.SideBarOption, SideBarOption.Disabled.ToString(), new { id = SideBarOption.Disabled.ToString(), @class = "form-check-input" })
+                            <label class="form-check-label" for="@SideBarOption.Disabled.ToString()">@Localizer["Disabled"]</label>
+                        </div>
                     </div>
-                    <hr />
-                    <div class="card-body">
+                    <div class="form-floating">
+                        <textarea asp-for="ViewModel.SideBarCustomizedHtmlPitch"
+                                  placeholder="@Html.DisplayNameFor(m => m.ViewModel.SideBarCustomizedHtmlPitch)"
+                                  class="form-control form-control-sm h-100px textarea-code"
+                                  spellcheck="false"
+                                  cols="10"
+                                  rows="10"></textarea>
+                        <label class="form-label" asp-for="ViewModel.SideBarCustomizedHtmlPitch"></label>
+                    </div>
+                    <span asp-validation-for="ViewModel.SideBarCustomizedHtmlPitch" class="text-danger"></span>
+
+                    <div class="mt-5">
                         <h6 class="card-subtitle mb-2 text-muted">
                             @Localizer["Footer"]
                         </h6>
@@ -264,7 +256,7 @@
         </div>
 
         <hr />
-        <div class="mb-2">
+        <div class="mb-4">
             <input id="btn-save-settings" type="submit" value="@Localizer["Save"]" class="btn btn-outline-accent" />
         </div>
     </form>
