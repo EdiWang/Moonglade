@@ -14,40 +14,31 @@
         <div asp-validation-summary="All" class="text-danger"></div>
 
         <div class="row">
-            <div class="col-md-6">
-                <div class="card mb-4">
-                    <div class="card-header">@Localizer["General"]</div>
-                    <ul class="list-group list-group-flush">
-                        <li class="list-group-item">
-                            <div class="form-check form-switch">
-                                <input type="checkbox" asp-for="ViewModel.UseFullContent" class="form-check-input">
-                                <label asp-for="ViewModel.UseFullContent" class="form-check-label"></label>
-                            </div>
-                        </li>
-                    </ul>
-                    <div class="card-body">
-                        <div class="mb-3">
-                            <label class="form-label" asp-for="ViewModel.RssTitle"></label>
-                            <input asp-for="ViewModel.RssTitle" class="form-control" />
-                            <span asp-validation-for="ViewModel.RssTitle" class="text-danger"></span>
-                        </div>
-                        <div class="mb-3">
-                            <label class="form-label" asp-for="ViewModel.AuthorName"></label>
-                            <input asp-for="ViewModel.AuthorName" class="form-control" />
-                            <span asp-validation-for="ViewModel.AuthorName" class="text-danger"></span>
-                        </div>
-                        <div class="mb-3">
-                            <label class="form-label" asp-for="ViewModel.RssCopyright"></label>
-                            <input asp-for="ViewModel.RssCopyright" class="form-control" />
-                            <span asp-validation-for="ViewModel.RssCopyright" class="text-danger"></span>
-                        </div>
-                        <div class="mb-3">
-                            <label class="form-label" asp-for="ViewModel.RssItemCount"></label>
-                            <input asp-for="ViewModel.RssItemCount" class="form-control" />
-                            <span asp-validation-for="ViewModel.RssItemCount" class="text-danger"></span>
-                            <small class="form-text text-muted">@Localizer["The number of entries to include in RSS feed."]</small>
-                        </div>
-                    </div>
+            <div class="col-md-4">
+                <div class="mb-3">
+                    <label class="form-label" asp-for="ViewModel.RssTitle"></label>
+                    <input asp-for="ViewModel.RssTitle" class="form-control" />
+                    <span asp-validation-for="ViewModel.RssTitle" class="text-danger"></span>
+                </div>
+                <div class="mb-3">
+                    <label class="form-label" asp-for="ViewModel.AuthorName"></label>
+                    <input asp-for="ViewModel.AuthorName" class="form-control" />
+                    <span asp-validation-for="ViewModel.AuthorName" class="text-danger"></span>
+                </div>
+                <div class="mb-3">
+                    <label class="form-label" asp-for="ViewModel.RssCopyright"></label>
+                    <input asp-for="ViewModel.RssCopyright" class="form-control" />
+                    <span asp-validation-for="ViewModel.RssCopyright" class="text-danger"></span>
+                </div>
+                <div class="mb-3">
+                    <label class="form-label" asp-for="ViewModel.RssItemCount"></label>
+                    <input asp-for="ViewModel.RssItemCount" class="form-control" />
+                    <span asp-validation-for="ViewModel.RssItemCount" class="text-danger"></span>
+                    <small class="form-text text-muted">@Localizer["The number of entries to include in RSS feed."]</small>
+                </div>
+                <div class="form-check form-switch mb-3">
+                    <input type="checkbox" asp-for="ViewModel.UseFullContent" class="form-check-input">
+                    <label asp-for="ViewModel.UseFullContent" class="form-check-label"></label>
                 </div>
             </div>
         </div>
