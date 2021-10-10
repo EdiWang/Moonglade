@@ -78,7 +78,7 @@
                     <div class="col">
                         @Localizer["Send Test Email"]
                     </div>
-                    <div class="col-md-5">
+                    <div class="col-md-5 text-end">
                         <a href="javascript:sendTestEmail();" id="a-send-test-mail" class="btn btn-sm btn-outline-accent">
                             Send
                         </a>
@@ -94,7 +94,7 @@
                     <div class="col">
                         <label asp-for="ViewModel.EnableEmailSending" class="form-check-label"></label>
                     </div>
-                    <div class="col-md-5">
+                    <div class="col-md-5 text-end">
                         <div class="form-check form-switch">
                             <input type="checkbox" asp-for="ViewModel.EnableEmailSending" class="form-check-input">
                         </div>
@@ -108,7 +108,7 @@
                     <div class="col">
                         <label asp-for="ViewModel.SendEmailOnNewComment" class="form-check-label"></label>
                     </div>
-                    <div class="col-md-5">
+                    <div class="col-md-5 text-end">
                         <div class="form-check form-switch">
                             <input type="checkbox" asp-for="ViewModel.SendEmailOnNewComment" class="form-check-input">
                         </div>
@@ -122,7 +122,7 @@
                     <div class="col">
                         <label asp-for="ViewModel.SendEmailOnCommentReply" class="form-check-label"></label>
                     </div>
-                    <div class="col-md-5">
+                    <div class="col-md-5 text-end">
                         <div class="form-check form-switch">
                             <input type="checkbox" asp-for="ViewModel.SendEmailOnCommentReply" class="form-check-input">
                         </div>
