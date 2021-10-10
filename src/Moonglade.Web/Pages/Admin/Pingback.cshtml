@@ -26,7 +26,7 @@
         });
 
         $('.btn-clear').click(function () {
-            callApi(`/api/settings/pingback/clear`, 'DELETE', {},
+            callApi(`/pingback/clear`, 'DELETE', {},
                 (resp) => {
                     blogToast.success('Pingback logs are cleared');
                     setTimeout(function () {

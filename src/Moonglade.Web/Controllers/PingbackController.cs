@@ -24,18 +24,15 @@ namespace Moonglade.Web.Controllers
         private readonly ILogger<PingbackController> _logger;
         private readonly IBlogConfig _blogConfig;
         private readonly IMediator _mediator;
-        private readonly IBlogNotificationClient _notificationClient;
 
         public PingbackController(
             ILogger<PingbackController> logger,
             IBlogConfig blogConfig,
-            IMediator mediator,
-            IBlogNotificationClient notificationClient)
+            IMediator mediator)
         {
             _logger = logger;
             _blogConfig = blogConfig;
             _mediator = mediator;
-            _notificationClient = notificationClient;
         }
 
         [HttpPost]
@@ -85,6 +82,16 @@ namespace Moonglade.Web.Controllers
             await _mediator.Send(new DeletePingbackCommand(pingbackId));
             await blogAudit.AddEntry(BlogEventType.Content, BlogEventId.PingbackDeleted,
                 $"Pingback '{pingbackId}' deleted.");
+            return NoContent();
+        }
+
+        [Authorize]
+        [HttpDelete("clear")]
+        [ProducesResponseType(StatusCodes.Status204NoContent)]
+        public async Task<IActionResult> Clear([FromServices] IBlogAudit blogAudit)
+        {
+            await _mediator.Send(new ClearPingbackCommand());
+            await blogAudit.AddEntry(BlogEventType.Content, BlogEventId.PingbackCleared, "Pingback cleared.");
             return NoContent();
         }
     }
