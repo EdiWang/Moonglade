@@ -13,76 +13,137 @@
         <div asp-validation-summary="All" class="text-danger"></div>
 
         <div class="row">
-            <div class="col-md-6">
+            <div class="col-lg-6">
                 <div class="mb-4">
-                    <h6 class="card-subtitle mb-3 text-muted">
+                    <h6 class="card-subtitle mb-4 text-muted">
                         @Localizer["General"]
                     </h6>
-                    <div class="mb-4">
-                        <div class="form-check form-switch mb-2">
-                            <input type="checkbox" asp-for="ViewModel.UseFriendlyNotFoundImage" class="form-check-input">
+
+                    <div class="row g-3 align-items-center settings-entry mb-4">
+                        <div class="col-auto">
+                            <i class="bi-file-earmark-image settings-entry-icon"></i>
+                        </div>
+                        <div class="col">
                             <label asp-for="ViewModel.UseFriendlyNotFoundImage" class="form-check-label"></label>
                         </div>
-                        <div class="form-check form-switch mb-2">
-                            <input type="checkbox" asp-for="ViewModel.FitImageToDevicePixelRatio" class="form-check-input">
-                            <label asp-for="ViewModel.FitImageToDevicePixelRatio" class="form-check-label"></label>
+                        <div class="col-md-5">
+                            <div class="form-check form-switch">
+                                <input type="checkbox" asp-for="ViewModel.UseFriendlyNotFoundImage" class="form-check-input">
+                            </div>
                         </div>
                     </div>
 
-                    <h6 class="card-subtitle mb-3 text-muted">
+                    <div class="row g-3 align-items-center settings-entry mb-4">
+                        <div class="col-auto">
+                            <i class="bi-fullscreen settings-entry-icon"></i>
+                        </div>
+                        <div class="col">
+                            <label asp-for="ViewModel.FitImageToDevicePixelRatio" class="form-check-label"></label>
+                        </div>
+                        <div class="col-md-5">
+                            <div class="form-check form-switch">
+                                <input type="checkbox" asp-for="ViewModel.FitImageToDevicePixelRatio" class="form-check-input">
+                            </div>
+                        </div>
+                    </div>
+
+                    <h6 class="card-subtitle mb-4 text-muted">
                         @Localizer["Watermark"]
                     </h6>
 
-                    <div class="row mb-2">
-                        <div class="col">
-                            <div>
-                                <label class="form-label" asp-for="ViewModel.WatermarkText"></label>
-                                <input asp-for="ViewModel.WatermarkText" class="form-control" />
-                                <span asp-validation-for="ViewModel.WatermarkText" class="text-danger"></span>
-                            </div>
-                        </div>
-                        <div class="col">
-                            <div>
-                                <label class="form-label" asp-for="ViewModel.WatermarkFontSize"></label>
-                                <input asp-for="ViewModel.WatermarkFontSize" class="form-control" />
-                                <span asp-validation-for="ViewModel.WatermarkFontSize" class="text-danger"></span>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="row">
+                    <div class="row g-3 align-items-center settings-entry mb-4">
                         <div class="col-auto">
-                            <div class="form-check form-switch mb-2">
+                            <i class="bi-file-earmark-font settings-entry-icon"></i>
+                        </div>
+                        <div class="col">
+                            <label asp-for="ViewModel.IsWatermarkEnabled" class="form-check-label"></label>
+                        </div>
+                        <div class="col-md-5">
+                            <div class="form-check form-switch">
                                 <input type="checkbox" asp-for="ViewModel.IsWatermarkEnabled" class="form-check-input">
-                                <label asp-for="ViewModel.IsWatermarkEnabled" class="form-check-label"></label>
-                            </div>
-                        </div>
-                        <div class="col-auto">
-                            <div class="form-check form-switch mb-2">
-                                <input type="checkbox" asp-for="ViewModel.KeepOriginImage" class="form-check-input">
-                                <label asp-for="ViewModel.KeepOriginImage" class="form-check-label"></label>
                             </div>
                         </div>
                     </div>
 
+                    <div class="row g-3 align-items-center settings-entry mb-4">
+                        <div class="col-auto">
+                            <i class="bi-images settings-entry-icon"></i>
+                        </div>
+                        <div class="col">
+                            <label asp-for="ViewModel.KeepOriginImage" class="form-check-label"></label>
+                            <div class="form-text">
+                                Also save the origin image as a backup while adding watermark
+                            </div>
+                        </div>
+                        <div class="col-md-5">
+                            <div class="form-check form-switch">
+                                <input type="checkbox" asp-for="ViewModel.KeepOriginImage" class="form-check-input">
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="row g-3 align-items-center settings-entry mb-4">
+                        <div class="col-auto">
+                            <i class="bi-input-cursor-text settings-entry-icon"></i>
+                        </div>
+                        <div class="col">
+                            <label asp-for="ViewModel.WatermarkText"></label>
+                        </div>
+                        <div class="col-md-5">
+                            <input asp-for="ViewModel.WatermarkText" class="form-control" />
+                            <span asp-validation-for="ViewModel.WatermarkText" class="text-danger"></span>
+                        </div>
+                    </div>
+
+                    <div class="row g-3 align-items-center settings-entry mb-4">
+                        <div class="col-auto">
+                            <i class="bi-fonts settings-entry-icon"></i>
+                        </div>
+                        <div class="col">
+                            <label asp-for="ViewModel.WatermarkFontSize"></label>
+                        </div>
+                        <div class="col-md-5">
+                            <input asp-for="ViewModel.WatermarkFontSize" class="form-control" />
+                            <span asp-validation-for="ViewModel.WatermarkFontSize" class="text-danger"></span>
+                        </div>
+                    </div>
                 </div>
 
-                <h6 class="card-subtitle mb-3 text-muted">
+                <h6 class="card-subtitle mb-4 text-muted">
                     CDN
                 </h6>
-                <div class="form-check form-switch mb-2">
-                    <input type="checkbox" asp-for="ViewModel.EnableCDNRedirect" class="form-check-input">
-                    <label asp-for="ViewModel.EnableCDNRedirect" class="form-check-label"></label>
+                
+                <div class="row g-3 align-items-center settings-entry mb-4">
+                    <div class="col-auto">
+                        <i class="bi-globe settings-entry-icon"></i>
+                    </div>
+                    <div class="col">
+                        <label asp-for="ViewModel.EnableCDNRedirect" class="form-check-label"></label>
+                    </div>
+                    <div class="col-md-5">
+                        <div class="form-check form-switch">
+                            <input type="checkbox" asp-for="ViewModel.EnableCDNRedirect" class="form-check-input">
+                        </div>
+                    </div>
                 </div>
-                <div class="input-group mb-2">
-                    <div class="input-group-text">@Localizer["Endpoint"]</div>
-                    <input asp-for="ViewModel.CDNEndpoint" class="form-control" />
+
+                <div class="row g-3 align-items-center settings-entry mb-4">
+                    <div class="col-auto">
+                        <i class="bi-link settings-entry-icon"></i>
+                    </div>
+                    <div class="col">
+                        <label asp-for="ViewModel.CDNEndpoint"></label>
+                        <div class="form-text">@Localizer["e.g. https://blog.ediwangcdn.com/ediwang-images"]</div>
+                    </div>
+                    <div class="col-md-5">
+                        <input asp-for="ViewModel.CDNEndpoint" class="form-control" />
+                        <span asp-validation-for="ViewModel.CDNEndpoint" class="text-danger"></span>
+                    </div>
                 </div>
-                <span asp-validation-for="ViewModel.CDNEndpoint" class="text-danger"></span>
-                <small class="form-text text-muted">@Localizer["e.g. https://blog.ediwangcdn.com/ediwang-images"]</small>
+                
             </div>
         </div>
 
-        <hr />
         <div class="mb-2">
             <input id="btn-save-settings" type="submit" value="@Localizer["Save"]" class="btn btn-outline-accent" />
         </div>
