@@ -292,3 +292,13 @@ table.dataTable {
     border-collapse: inherit !important;
     border-spacing: inherit !important;
 }
+
+.settings-entry {
+    background-color: var(--bs-gray-100);
+    border-radius: 5px;
+    padding-bottom: 15px;
+}
+
+.settings-entry-icon {
+    font-size: 24px;
+}
