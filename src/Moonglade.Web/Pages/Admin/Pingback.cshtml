@@ -24,11 +24,28 @@
                 "pageLength": 10
             });
         });
+
+        $('.btn-clear').click(function () {
+            callApi(`/api/settings/pingback/clear`, 'DELETE', {},
+                (resp) => {
+                    blogToast.success('Pingback logs are cleared');
+                    setTimeout(function () {
+                        window.location.reload();
+                    }, 800);
+                });
+        });
     </script>
 }
 
-<div class="p-4">
 
+<div class="admin-toolbar ps-4 pe-4 pt-2 pb-2 border-bottom mb-3 shadow-sm">
+    <a class="btn btn-outline-danger" href="javascript:;" data-bs-toggle="modal" data-bs-target="#clearpingbackModal">
+        <i class="bi-trash"></i>
+        @Localizer["Clear all"]
+    </a>
+</div>
+
+<div class="ps-4 pe-4">
     <table id="pingbacks-table" class="table table-bordered">
         <thead>
             <tr>
@@ -69,4 +86,23 @@
             }
         </tbody>
     </table>
+</div>
+
+<div class="modal fade" id="clearpingbackModal" tabindex="-1" role="dialog" aria-labelledby="clearpingbackModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="clearpingbackModalLabel">@Localizer["Clear Pingback Logs"]</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close">
+                </button>
+            </div>
+            <div class="modal-body">
+                @Localizer["Are you sure?"]
+            </div>
+            <div class="modal-footer">
+                <a href="#" class="btn btn-outline-danger btn-clear">@Localizer["Clear Now"]</a>
+                <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">@Localizer["Cancel"]</button>
+            </div>
+        </div>
+    </div>
 </div>
