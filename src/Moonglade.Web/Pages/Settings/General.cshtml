@@ -85,7 +85,7 @@
           data-ajax-method="POST">
         <div asp-validation-summary="All" class="text-danger"></div>
 
-        <div class="row">
+        <div class="row g-5">
             <div class="col-md-6">
                 <div class="mb-3">
                     <h6 class="card-subtitle mb-3 text-muted">@Localizer["Blog Identity"]</h6>
@@ -122,20 +122,34 @@
                                 </div>
                                 <span asp-validation-for="ViewModel.MetaDescription" class="text-danger"></span>
                             </div>
-                            <div class="mb-3">
-                                <label class="form-label" asp-for="ViewModel.CanonicalPrefix"></label>
-                                <input asp-for="ViewModel.CanonicalPrefix" class="form-control" />
-                                <span asp-validation-for="ViewModel.CanonicalPrefix" class="text-danger"></span>
-                                <small class="form-text text-muted">@Localizer["Set a primary domain if your website binds to multiple domian names."]</small>
+                            
+                            <div class="row g-3 align-items-center settings-entry mt-1 mb-4">
+                                <div class="col-auto">
+                                    <i class="bi-link settings-entry-icon"></i>
+                                </div>
+                                <div class="col">
+                                    <label asp-for="ViewModel.CanonicalPrefix"></label>
+                                    <div class="form-text">@Localizer["Set a primary domain if your website binds to multiple domian names."]</div>
+                                </div>
+                                <div class="col-md-5 text-end">
+                                    <input asp-for="ViewModel.CanonicalPrefix" class="form-control" />
+                                    <span asp-validation-for="ViewModel.CanonicalPrefix" class="text-danger"></span>
+                                </div>
                             </div>
-
-                            <div>
-                                <div class="input-group">
-                                    <label class="input-group-text" for="SelectedUtcOffset">@Localizer["Time Zone"]</label>
+                            
+                            <div class="row g-3 align-items-center settings-entry mb-4">
+                                <div class="col-auto">
+                                    <i class="bi-clock settings-entry-icon"></i>
+                                </div>
+                                <div class="col">
+                                    <label for="SelectedUtcOffset">@Localizer["Time Zone"]</label>
+                                    <div class="form-text">@Localizer["Blog posts will use this time zone as date and time display."]</div>
+                                </div>
+                                <div class="col-md-5 text-end">
                                     <select class="form-select" asp-for="ViewModel.SelectedTimeZoneId" asp-items="@tzList"></select>
                                 </div>
-                                <small class="form-text text-muted">@Localizer["Blog posts will use this time zone as date and time display."]</small>
                             </div>
+
                         </div>
                     </div>
                     <hr />
@@ -233,15 +247,24 @@
                     <span asp-validation-for="ViewModel.SideBarCustomizedHtmlPitch" class="text-danger"></span>
 
                     <div class="mt-5">
-                        <h6 class="card-subtitle mb-2 text-muted">
+                        <h6 class="card-subtitle mb-4 text-muted">
                             @Localizer["Footer"]
                         </h6>
-                        <div class="mb-2">
-                            <label class="form-label" asp-for="ViewModel.Copyright"></label>
-                            <input asp-for="ViewModel.Copyright" class="form-control" />
-                            <p class="text-muted">@Localizer["Use [c] for copyright mark: &copy;, [year] for current year."]</p>
-                            <span asp-validation-for="ViewModel.Copyright" class="text-danger"></span>
+                        
+                        <div class="row g-3 align-items-center settings-entry mb-2">
+                            <div class="col-auto">
+                                <i class="bi-check2-square settings-entry-icon"></i>
+                            </div>
+                            <div class="col">
+                                <label asp-for="ViewModel.Copyright"></label>
+                                <div class="form-text">@Localizer["Use [c] for copyright mark: &copy;, [year] for current year."]</div>
+                            </div>
+                            <div class="col-md-5 text-end">
+                                <input asp-for="ViewModel.Copyright" class="form-control" />
+                                <span asp-validation-for="ViewModel.Copyright" class="text-danger"></span>
+                            </div>
                         </div>
+
                         <div class="form-floating">
                             <textarea asp-for="ViewModel.FooterCustomizedHtmlPitch"
                                       placeholder="@Html.DisplayNameFor(m => m.ViewModel.FooterCustomizedHtmlPitch)"
@@ -255,7 +278,6 @@
             </div>
         </div>
 
-        <hr />
         <div class="mb-4">
             <input id="btn-save-settings" type="submit" value="@Localizer["Save"]" class="btn btn-outline-accent" />
         </div>
