@@ -5,6 +5,6 @@
     <Copyright>(C) 2021 edi.wang@outlook.com</Copyright>
     <AssemblyVersion>11.8.0.0</AssemblyVersion>
     <FileVersion>11.8.0.0</FileVersion>
-    <Version>11.8.0-preview</Version>
+    <Version>11.8.0-RC</Version>
   </PropertyGroup>
 </Project>
