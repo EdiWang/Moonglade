@@ -384,6 +384,7 @@ h3 small {
 }
 
 .btn-outline-accent {
+    background-color: var(--bs-white);
     color: var(--accent-color1);
     border-color: var(--accent-color1);
 }

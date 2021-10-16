@@ -2,101 +2,152 @@
 @model Moonglade.Web.Pages.Settings.ContentModel
 
 <partial name="_SettingsHeader" />
+<div class="ps-4 pe-4">
+    <form id="form-settings" asp-controller="Settings" asp-action="Content"
+          data-ajax-begin="onUpdateSettingsBegin"
+          data-ajax-complete="onUpdateSettingsComplete"
+          data-ajax-failure="onUpdateSettingsFailed"
+          data-ajax-success="onUpdateSettingsSuccess"
+          data-ajax="true"
+          data-ajax-method="POST">
+        <div asp-validation-summary="All" class="text-danger"></div>
 
-<form id="form-settings" asp-controller="Settings" asp-action="Content"
-      data-ajax-begin="onUpdateSettingsBegin"
-      data-ajax-complete="onUpdateSettingsComplete"
-      data-ajax-failure="onUpdateSettingsFailed"
-      data-ajax-success="onUpdateSettingsSuccess"
-      data-ajax="true"
-      data-ajax-method="POST">
-    <div asp-validation-summary="All" class="text-danger"></div>
+        <div class="row">
+            <div class="col-md-6">
+                <div>
+                    <h6 class="card-subtitle mb-4 text-muted">@Localizer["Comments"]</h6>
 
-    <div class="row">
-        <div class="col-md-6">
-            <div class="card">
-                <div class="card-header">@Localizer["Comments"]</div>
-                <ul class="list-group list-group-flush">
-                    <li class="list-group-item">
-                        <div class="form-check form-switch">
-                            <input type="checkbox" asp-for="ViewModel.EnableComments" class="form-check-input">
+                    <div class="row g-3 align-items-center settings-entry mb-4">
+                        <div class="col-auto">
+                            <i class="bi-chat-left-dots settings-entry-icon"></i>
+                        </div>
+                        <div class="col">
                             <label asp-for="ViewModel.EnableComments" class="form-check-label"></label>
                         </div>
-                    </li>
-                    <li class="list-group-item">
-                        <div class="form-check form-switch">
-                            <input type="checkbox" asp-for="ViewModel.RequireCommentReview" class="form-check-input">
+                        <div class="col-md-5 text-end">
+                            <div class="form-check form-switch">
+                                <input type="checkbox" asp-for="ViewModel.EnableComments" class="form-check-input">
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="row g-3 align-items-center settings-entry mb-4">
+                        <div class="col-auto">
+                            <i class="bi-person-check settings-entry-icon"></i>
+                        </div>
+                        <div class="col">
                             <label asp-for="ViewModel.RequireCommentReview" class="form-check-label"></label>
                         </div>
-                    </li>
-                    <li class="list-group-item">
-                        <div class="form-check form-switch">
-                            <input type="checkbox" asp-for="ViewModel.EnableGravatar" class="form-check-input">
+                        <div class="col-md-5 text-end">
+                            <div class="form-check form-switch">
+                                <input type="checkbox" asp-for="ViewModel.RequireCommentReview" class="form-check-input">
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="row g-3 align-items-center settings-entry mb-4">
+                        <div class="col-auto">
+                            <i class="bi-person-square settings-entry-icon"></i>
+                        </div>
+                        <div class="col">
                             <label asp-for="ViewModel.EnableGravatar" class="form-check-label"></label>
                         </div>
-                    </li>
-                    <li class="list-group-item">
-                        <div class="form-check form-switch">
-                            <input type="checkbox" asp-for="ViewModel.EnableWordFilter" class="form-check-input">
+                        <div class="col-md-5 text-end">
+                            <div class="form-check form-switch">
+                                <input type="checkbox" asp-for="ViewModel.EnableGravatar" class="form-check-input">
+                            </div>
+                        </div>
+                    </div>
+
+                    <h6 class="card-subtitle mt-5 mb-4 text-muted">@Localizer["Word filter"]</h6>
+
+                    <div class="row g-3 align-items-center settings-entry mb-2">
+                        <div class="col-auto">
+                            <i class="bi-translate settings-entry-icon"></i>
+                        </div>
+                        <div class="col">
                             <label asp-for="ViewModel.EnableWordFilter" class="form-check-label"></label>
                         </div>
-                    </li>
-                </ul>
-                <div class="card-body">
-                    <div class="mb-2">
-                        <div class="form-floating">
-                            <textarea asp-for="ViewModel.DisharmonyWords"
-                                      placeholder="@Html.DisplayNameFor(m => m.ViewModel.DisharmonyWords)"
-                                      class="form-control form-control-sm h-200px"
-                                      spellcheck="false"></textarea>
-                            <label class="form-label" asp-for="ViewModel.DisharmonyWords"></label>
+                        <div class="col-md-5 text-end">
+                            <div class="form-check form-switch">
+                                <input type="checkbox" asp-for="ViewModel.EnableWordFilter" class="form-check-input">
+                            </div>
                         </div>
-
-                        <span asp-validation-for="ViewModel.DisharmonyWords" class="text-danger"></span>
-                        <small class="form-text text-muted">@Localizer["Blocked words will be masked as *** in comment content."]</small>
                     </div>
-                    <hr />
-                    <div>
-                        <label asp-for="ViewModel.WordFilterMode" class="me-4"></label>
 
-                        <div class="form-check form-check-inline">
-                            @Html.RadioButtonFor(model => model.ViewModel.WordFilterMode, WordFilterMode.Mask.ToString(), new { id = WordFilterMode.Mask.ToString(), @class = "form-check-input" })
-                            <label class="form-check-label" for="@WordFilterMode.Mask.ToString()">@Localizer["Mask Word"]</label>
+                    <div>
+                        <div class="mb-2">
+                            <div class="form-floating">
+                                <textarea asp-for="ViewModel.DisharmonyWords"
+                                          placeholder="@Html.DisplayNameFor(m => m.ViewModel.DisharmonyWords)"
+                                          class="form-control form-control-sm h-200px"
+                                          spellcheck="false"></textarea>
+                                <label class="form-label" asp-for="ViewModel.DisharmonyWords"></label>
+                            </div>
+
+                            <span asp-validation-for="ViewModel.DisharmonyWords" class="text-danger"></span>
+                            <small class="form-text text-muted">@Localizer["Blocked words will be masked as *** in comment content."]</small>
                         </div>
-                        <div class="form-check form-check-inline">
-                            @Html.RadioButtonFor(model => model.ViewModel.WordFilterMode, WordFilterMode.Block.ToString(), new { id = WordFilterMode.Block.ToString(), @class = "form-check-input" })
-                            <label class="form-check-label" for="@WordFilterMode.Block.ToString()">@Localizer["Block Comment"]</label>
+                        <div>
+                            <label asp-for="ViewModel.WordFilterMode" class="me-4"></label>
+
+                            <div class="form-check form-check-inline">
+                                @Html.RadioButtonFor(model => model.ViewModel.WordFilterMode, WordFilterMode.Mask.ToString(), new { id = WordFilterMode.Mask.ToString(), @class = "form-check-input" })
+                                <label class="form-check-label" for="@WordFilterMode.Mask.ToString()">@Localizer["Mask Word"]</label>
+                            </div>
+                            <div class="form-check form-check-inline">
+                                @Html.RadioButtonFor(model => model.ViewModel.WordFilterMode, WordFilterMode.Block.ToString(), new { id = WordFilterMode.Block.ToString(), @class = "form-check-input" })
+                                <label class="form-check-label" for="@WordFilterMode.Block.ToString()">@Localizer["Block Comment"]</label>
+                            </div>
                         </div>
                     </div>
                 </div>
             </div>
-        </div>
-        <div class="col-md-6">
-            <div class="card mb-3">
-                <div class="card-header">@Localizer["Blog posts"]</div>
-                <div class="card-body">
-                    <div class="row g-2 mb-3">
+            <div class="col-md-6">
+                <div class="mb-3">
+                    <h6 class="card-subtitle mb-4 text-muted">@Localizer["Blog posts"]</h6>
+
+                    <div class="row g-3 align-items-center settings-entry mb-4">
+                        <div class="col-auto">
+                            <i class="bi-sort-numeric-down settings-entry-icon"></i>
+                        </div>
                         <div class="col">
-                            <label class="form-label" asp-for="ViewModel.PostListPageSize"></label>
+                            <label asp-for="ViewModel.PostListPageSize"></label>
+                        </div>
+                        <div class="col-md-5">
                             <input asp-for="ViewModel.PostListPageSize" class="form-control" />
                             <span asp-validation-for="ViewModel.PostListPageSize" class="text-danger"></span>
                         </div>
+                    </div>
+
+                    <div class="row g-3 align-items-center settings-entry mb-4">
+                        <div class="col-auto">
+                            <i class="bi-tags settings-entry-icon"></i>
+                        </div>
                         <div class="col">
-                            <label class="form-label" asp-for="ViewModel.HotTagAmount"></label>
+                            <label asp-for="ViewModel.HotTagAmount"></label>
+                        </div>
+                        <div class="col-md-5">
                             <input asp-for="ViewModel.HotTagAmount" class="form-control" />
                             <span asp-validation-for="ViewModel.HotTagAmount" class="text-danger"></span>
                         </div>
                     </div>
-                </div>
-                <ul class="list-group list-group-flush">
-                    <li class="list-group-item">
-                        <div class="form-check form-switch">
-                            <input type="checkbox" asp-for="ViewModel.ShowPostFooter" class="form-check-input">
-                            <label asp-for="ViewModel.ShowPostFooter" class="form-check-label"></label>
+
+                    <div class="row g-3 align-items-center settings-entry mb-2">
+                        <div class="col-auto">
+                            <i class="bi-card-text settings-entry-icon"></i>
                         </div>
-                    </li>
-                </ul>
-                <div class="card-body">
+                        <div class="col">
+                            <label asp-for="ViewModel.ShowPostFooter" class="form-check-label"></label>
+                            <div class="form-text">@Localizer["e.g. Your blog post license information."]</div>
+                        </div>
+                        <div class="col-md-5 text-end">
+                            <div class="form-check form-switch">
+                                <input type="checkbox" asp-for="ViewModel.ShowPostFooter" class="form-check-input">
+                            </div>
+                        </div>
+                    </div>
+
                     <div>
                         <div class="form-floating">
                             <textarea asp-for="ViewModel.PostFooterHtmlCode"
@@ -106,22 +157,25 @@
                             <label class="form-label" asp-for="ViewModel.PostFooterHtmlCode"></label>
                         </div>
                         <span asp-validation-for="ViewModel.PostFooterHtmlCode" class="text-danger"></span>
-
-                        <small class="form-text text-muted">@Localizer["e.g. Your blog post license information."]</small>
                     </div>
                 </div>
-            </div>
-            <div class="card">
-                <div class="card-header">@Localizer["Call-out"]</div>
-                <ul class="list-group list-group-flush">
-                    <li class="list-group-item">
-                        <div class="form-check form-switch">
-                            <input type="checkbox" asp-for="ViewModel.ShowCalloutSection" class="form-check-input">
-                            <label asp-for="ViewModel.ShowCalloutSection" class="form-check-label"></label>
+                <div class="mt-5">
+                    <h6 class="card-subtitle mb-4 text-muted">@Localizer["Call-out"]</h6>
+
+                    <div class="row g-3 align-items-center settings-entry mb-2">
+                        <div class="col-auto">
+                            <i class="bi-menu-button-wide-fill settings-entry-icon"></i>
                         </div>
-                    </li>
-                </ul>
-                <div class="card-body">
+                        <div class="col">
+                            <label asp-for="ViewModel.ShowCalloutSection" class="form-check-label"></label>
+                            <div class="form-text">@Localizer["The call-out section will display on top of every page in the website."]</div>
+                        </div>
+                        <div class="col-md-5 text-end">
+                            <div class="form-check form-switch">
+                                <input type="checkbox" asp-for="ViewModel.ShowCalloutSection" class="form-check-input">
+                            </div>
+                        </div>
+                    </div>
                     <div>
                         <div class="form-floating">
                             <textarea asp-for="ViewModel.CalloutSectionHtmlCode"
@@ -131,15 +185,13 @@
                             <label class="form-label" asp-for="ViewModel.CalloutSectionHtmlCode"></label>
                         </div>
                         <span asp-validation-for="ViewModel.CalloutSectionHtmlCode" class="text-danger"></span>
-                        <small class="form-text text-muted">@Localizer["The call-out section will display on top of every page in the website."]</small>
                     </div>
                 </div>
             </div>
         </div>
-    </div>
 
-    <hr />
-    <div class="mb-2">
-        <input id="btn-save-settings" type="submit" value="@Localizer["Save"]" class="btn btn-success" />
-    </div>
-</form>
+        <div class="mt-4 mb-4">
+            <input id="btn-save-settings" type="submit" value="@Localizer["Save"]" class="btn btn-outline-accent" />
+        </div>
+    </form>
+</div>

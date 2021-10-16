@@ -69,9 +69,9 @@ namespace Moonglade.Notification.Client.Tests
         [Test]
         public async Task TestNotificationAsync_StateUnderTest_ExpectedBehavior()
         {
-            var notificationClient = CreateNotificationClient();
-
-            await notificationClient.TestNotificationAsync();
+            var l = _mockRepository.Create<ILogger<TestNotificationHandler>>();
+            var handler = new TestNotificationHandler(CreateNotificationClient(), l.Object);
+            await handler.Handle(new(), default);
 
             _handlerMock.Protected().Verify(
                 "SendAsync",
@@ -101,11 +101,12 @@ namespace Moonglade.Notification.Client.Tests
                 })
                 .Verifiable();
 
-            var notificationClient = CreateNotificationClient();
+            var l = _mockRepository.Create<ILogger<TestNotificationHandler>>();
+            var handler = new TestNotificationHandler(CreateNotificationClient(), l.Object);
 
             Assert.ThrowsAsync<Exception>(async () =>
             {
-                await notificationClient.TestNotificationAsync();
+                await handler.Handle(new(), default);
             });
 
             _handlerMock.Protected().Verify(
@@ -122,7 +123,6 @@ namespace Moonglade.Notification.Client.Tests
         [Test]
         public async Task NotifyCommentAsync_StateUnderTest_ExpectedBehavior()
         {
-            var notificationClient = CreateNotificationClient();
             string username = "Fubao";
             string email = "fubao@996.icu";
             string ipAddress = "9.9.6.007";
@@ -130,13 +130,16 @@ namespace Moonglade.Notification.Client.Tests
             string commentContent = "This is fubao";
             DateTime createTimeUtc = default(DateTime);
 
-            await notificationClient.NotifyCommentAsync(
+            var l = _mockRepository.Create<ILogger<CommentNotificationHandler>>();
+            var handler = new CommentNotificationHandler(CreateNotificationClient(), l.Object);
+
+            await handler.Handle(new(
                 username,
                 email,
                 ipAddress,
                 postTitle,
                 commentContent,
-                createTimeUtc);
+                createTimeUtc), default);
 
             _handlerMock.Protected().Verify(
                 "SendAsync",
@@ -152,19 +155,20 @@ namespace Moonglade.Notification.Client.Tests
         [Test]
         public async Task NotifyCommentReplyAsync_StateUnderTest_ExpectedBehavior()
         {
-            var notificationClient = CreateNotificationClient();
             string email = "fubao@996.icu";
             string commentContent = "This is fubao";
             string title = "Work 996 and get into ICU";
             string replyContentHtml = "<p>Jack Ma's fubao</p>";
             string postLink = "https://996.icu/fuck-jack-ma";
 
-            await notificationClient.NotifyCommentReplyAsync(
+            var l = _mockRepository.Create<ILogger<CommentReplyNotificationHandler>>();
+            var handler = new CommentReplyNotificationHandler(CreateNotificationClient(), l.Object);
+            await handler.Handle(new(
                 email,
                 commentContent,
                 title,
                 replyContentHtml,
-                postLink);
+                postLink), default);
 
             _handlerMock.Protected().Verify(
                 "SendAsync",
@@ -180,7 +184,6 @@ namespace Moonglade.Notification.Client.Tests
         [Test]
         public async Task NotifyPingbackAsync_StateUnderTest_ExpectedBehavior()
         {
-            var notificationClient = CreateNotificationClient();
             string targetPostTitle = "Work 996 and get into ICU";
             DateTime pingTimeUtc = default(DateTime);
             string domain = "996.icu";
@@ -188,13 +191,15 @@ namespace Moonglade.Notification.Client.Tests
             string sourceUrl = "https://996.icu/fuck-jack-ma";
             string sourceTitle = "996 is Fubao";
 
-            await notificationClient.NotifyPingbackAsync(
-                targetPostTitle,
+            var l = _mockRepository.Create<ILogger<PingbackNotificationHandler>>();
+            var handler = new PingbackNotificationHandler(CreateNotificationClient(), l.Object);
+
+            await handler.Handle(new(targetPostTitle,
                 pingTimeUtc,
                 domain,
                 sourceIp,
                 sourceUrl,
-                sourceTitle);
+                sourceTitle), default);
 
             _handlerMock.Protected().Verify(
                 "SendAsync",

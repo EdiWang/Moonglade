@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Authorization;
+﻿using MediatR;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Localization;
 using Microsoft.AspNetCore.Mvc;
@@ -32,6 +33,7 @@ namespace Moonglade.Web.Controllers
     {
         #region Private Fields
 
+        private readonly IMediator _mediator;
         private readonly IBlogConfig _blogConfig;
         private readonly IBlogAudit _blogAudit;
         private readonly ILogger<SettingsController> _logger;
@@ -41,12 +43,14 @@ namespace Moonglade.Web.Controllers
         public SettingsController(
             IBlogConfig blogConfig,
             IBlogAudit blogAudit,
-            ILogger<SettingsController> logger)
+            ILogger<SettingsController> logger,
+            IMediator mediator)
         {
             _blogConfig = blogConfig;
             _blogAudit = blogAudit;
 
             _logger = logger;
+            _mediator = mediator;
         }
 
         [HttpGet("release/check")]
@@ -159,18 +163,12 @@ namespace Moonglade.Web.Controllers
 
         [HttpPost("notification")]
         [ProducesResponseType(StatusCodes.Status204NoContent)]
-        public async Task<IActionResult> Notification([FromForm] MagicWrapper<NotificationSettingsViewModel> wrapperModel)
+        public async Task<IActionResult> Notification([FromForm] MagicWrapper<NotificationSettings> wrapperModel)
         {
             var model = wrapperModel.ViewModel;
+            _blogConfig.NotificationSettings = model;
 
-            var settings = _blogConfig.NotificationSettings;
-            settings.EmailDisplayName = model.EmailDisplayName;
-            settings.EnableEmailSending = model.EnableEmailSending;
-            settings.SendEmailOnCommentReply = model.SendEmailOnCommentReply;
-            settings.SendEmailOnNewComment = model.SendEmailOnNewComment;
-            settings.AzureFunctionEndpoint = model.AzureFunctionEndpoint;
-
-            await _blogConfig.SaveAsync(settings);
+            await _blogConfig.SaveAsync(_blogConfig.NotificationSettings);
             await _blogAudit.AddEntry(BlogEventType.Settings, BlogEventId.SettingsSavedNotification, "Notification Settings updated.");
 
             return NoContent();
@@ -179,26 +177,27 @@ namespace Moonglade.Web.Controllers
         [HttpPost("test-email")]
         [IgnoreAntiforgeryToken]
         [ProducesResponseType(StatusCodes.Status200OK)]
-        public async Task<IActionResult> TestEmail([FromServices] IBlogNotificationClient notificationClient)
+        public async Task<IActionResult> TestEmail()
         {
-            await notificationClient.TestNotificationAsync();
-            return Ok(true);
+            try
+            {
+                await _mediator.Publish(new TestNotification());
+                return Ok(true);
+            }
+            catch (Exception e)
+            {
+                return StatusCode(StatusCodes.Status500InternalServerError, e.Message);
+            }
         }
 
         [HttpPost("subscription")]
         [ProducesResponseType(StatusCodes.Status204NoContent)]
-        public async Task<IActionResult> Subscription([FromForm] MagicWrapper<SubscriptionSettingsViewModel> wrapperModel)
+        public async Task<IActionResult> Subscription([FromForm] MagicWrapper<FeedSettings> wrapperModel)
         {
             var model = wrapperModel.ViewModel;
+            _blogConfig.FeedSettings = model;
 
-            var settings = _blogConfig.FeedSettings;
-            settings.AuthorName = model.AuthorName;
-            settings.RssCopyright = model.RssCopyright;
-            settings.RssItemCount = model.RssItemCount;
-            settings.RssTitle = model.RssTitle;
-            settings.UseFullContent = model.UseFullContent;
-
-            await _blogConfig.SaveAsync(settings);
+            await _blogConfig.SaveAsync(_blogConfig.FeedSettings);
             await _blogAudit.AddEntry(BlogEventType.Settings, BlogEventId.SettingsSavedSubscription, "Subscription Settings updated.");
 
             return NoContent();
@@ -207,48 +206,12 @@ namespace Moonglade.Web.Controllers
         [HttpPost("watermark")]
         [ProducesResponseType(StatusCodes.Status204NoContent)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
-        public async Task<IActionResult> Image([FromForm] MagicWrapper<ImageSettingsViewModel> wrapperModel)
+        public async Task<IActionResult> Image([FromForm] MagicWrapper<ImageSettings> wrapperModel)
         {
             var model = wrapperModel.ViewModel;
+            _blogConfig.ImageSettings = model;
 
-            var settings = _blogConfig.ImageSettings;
-            settings.IsWatermarkEnabled = model.IsWatermarkEnabled;
-            settings.KeepOriginImage = model.KeepOriginImage;
-            settings.WatermarkFontSize = model.WatermarkFontSize;
-            settings.WatermarkText = model.WatermarkText;
-            settings.UseFriendlyNotFoundImage = model.UseFriendlyNotFoundImage;
-            settings.FitImageToDevicePixelRatio = model.FitImageToDevicePixelRatio;
-            settings.EnableCDNRedirect = model.EnableCDNRedirect;
-
-            if (model.EnableCDNRedirect)
-            {
-                if (string.IsNullOrWhiteSpace(model.CDNEndpoint))
-                {
-                    settings.EnableCDNRedirect = false;
-
-                    ModelState.AddModelError(nameof(model.CDNEndpoint), $"{nameof(model.CDNEndpoint)} must be specified when {nameof(model.EnableCDNRedirect)} is enabled.");
-
-                    return BadRequest(ModelState.CombineErrorMessages());
-                }
-
-                _logger.LogWarning("Images are configured to use CDN, the endpoint is out of control, use it on your own risk.");
-
-                // Validate endpoint Url to avoid security risks
-                // But it still has risks:
-                // e.g. If the endpoint is compromised, the attacker could return any kind of response from a image with a big fuck to a script that can attack users.
-
-                var endpoint = model.CDNEndpoint;
-                var isValidEndpoint = endpoint.IsValidUrl(UrlExtension.UrlScheme.Https);
-                if (!isValidEndpoint)
-                {
-                    ModelState.AddModelError(nameof(model.CDNEndpoint), "CDN Endpoint is not a valid HTTPS Url.");
-                    return BadRequest(ModelState.CombineErrorMessages());
-                }
-
-                settings.CDNEndpoint = model.CDNEndpoint;
-            }
-
-            await _blogConfig.SaveAsync(settings);
+            await _blogConfig.SaveAsync(_blogConfig.ImageSettings);
             await _blogAudit.AddEntry(BlogEventType.Settings, BlogEventId.SettingsSavedImage, "Image Settings updated.");
 
             return NoContent();
@@ -256,27 +219,17 @@ namespace Moonglade.Web.Controllers
 
         [HttpPost("advanced")]
         [ProducesResponseType(StatusCodes.Status204NoContent)]
-        public async Task<IActionResult> Advanced([FromForm] MagicWrapper<AdvancedSettingsViewModel> wrapperModel)
+        public async Task<IActionResult> Advanced([FromForm] MagicWrapper<AdvancedSettings> wrapperModel)
         {
             var model = wrapperModel.ViewModel;
 
-            var settings = _blogConfig.AdvancedSettings;
-            settings.RobotsTxtContent = model.RobotsTxtContent;
-            settings.EnablePingBackSend = model.EnablePingbackSend;
-            settings.EnablePingBackReceive = model.EnablePingbackReceive;
-            settings.EnableOpenGraph = model.EnableOpenGraph;
-            settings.EnableOpenSearch = model.EnableOpenSearch;
-            settings.EnableMetaWeblog = model.EnableMetaWeblog;
-            settings.WarnExternalLink = model.WarnExternalLink;
-            settings.AllowScriptsInPage = model.AllowScriptsInPage;
-            settings.ShowAdminLoginButton = model.ShowAdminLoginButton;
+            model.MetaWeblogPasswordHash = !string.IsNullOrWhiteSpace(model.MetaWeblogPassword) ?
+                Helper.HashPassword(model.MetaWeblogPassword) :
+                _blogConfig.AdvancedSettings.MetaWeblogPasswordHash;
 
-            if (!string.IsNullOrWhiteSpace(model.MetaWeblogPassword))
-            {
-                settings.MetaWeblogPasswordHash = Helper.HashPassword(model.MetaWeblogPassword);
-            }
+            _blogConfig.AdvancedSettings = model;
 
-            await _blogConfig.SaveAsync(settings);
+            await _blogConfig.SaveAsync(_blogConfig.AdvancedSettings);
             await _blogAudit.AddEntry(BlogEventType.Settings, BlogEventId.SettingsSavedAdvanced, "Advanced Settings updated.");
             return NoContent();
         }
@@ -308,14 +261,13 @@ namespace Moonglade.Web.Controllers
         [HttpPost("custom-css")]
         [ProducesResponseType(StatusCodes.Status204NoContent)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
-        public async Task<IActionResult> CustomStyleSheet([FromForm] MagicWrapper<CustomStyleSheetSettingsViewModel> wrapperModel)
+        public async Task<IActionResult> CustomStyleSheet([FromForm] MagicWrapper<CustomStyleSheetSettings> wrapperModel)
         {
             var model = wrapperModel.ViewModel;
-            var settings = _blogConfig.CustomStyleSheetSettings;
 
             if (model.EnableCustomCss && string.IsNullOrWhiteSpace(model.CssCode))
             {
-                ModelState.AddModelError(nameof(CustomStyleSheetSettingsViewModel.CssCode), "CSS Code is required");
+                ModelState.AddModelError(nameof(CustomStyleSheetSettings.CssCode), "CSS Code is required");
                 return BadRequest(ModelState.CombineErrorMessages());
             }
 
@@ -329,10 +281,9 @@ namespace Moonglade.Web.Controllers
                 return BadRequest(ModelState.CombineErrorMessages());
             }
 
-            settings.EnableCustomCss = model.EnableCustomCss;
-            settings.CssCode = model.CssCode;
+            _blogConfig.CustomStyleSheetSettings = model;
 
-            await _blogConfig.SaveAsync(settings);
+            await _blogConfig.SaveAsync(_blogConfig.CustomStyleSheetSettings);
             await _blogAudit.AddEntry(BlogEventType.Settings, BlogEventId.SettingsSavedAdvanced, "Custom Style Sheet Settings updated.");
             return NoContent();
         }

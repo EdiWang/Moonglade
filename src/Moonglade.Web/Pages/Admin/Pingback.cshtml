@@ -24,52 +24,85 @@
                 "pageLength": 10
             });
         });
+
+        $('.btn-clear').click(function () {
+            callApi(`/pingback/clear`, 'DELETE', {},
+                (resp) => {
+                    blogToast.success('Pingback logs are cleared');
+                    setTimeout(function () {
+                        window.location.reload();
+                    }, 800);
+                });
+        });
     </script>
 }
 
-<h3>
-    <i class="bi-arrow-left-right icon-admin-title"></i>
-    @Localizer["Pingbacks"]
-</h3>
-<hr />
 
-<table id="pingbacks-table" class="table table-bordered">
-    <thead>
-        <tr>
-            <th>@Localizer["Link"]</th>
-            <th>@Localizer["Destination Server"]</th>
-            <th>@Localizer["Referenced Post"]</th>
-            <th>@Localizer["Ping Time (UTC)"]</th>
-            <th>@Localizer["Operation"]</th>
-        </tr>
-    </thead>
-    <tbody>
-        @foreach (var item in Model.PingbackRecords.OrderByDescending(p => p.PingTimeUtc))
-        {
-            <tr id="pingback-box-@item.Id">
-                <td class="table-item-w30">
-                    <a href="@item.SourceUrl" target="_blank">@item.SourceTitle</a>
-                </td>
-                <td>
-                    @item.Domain <br />
-                    <small class="text-muted">
-                        @item.SourceIp
-                    </small>
-                </td>
-                <td class="table-item-w30">
-                    @item.TargetPostTitle
-                </td>
-                <td data-sort="@item.PingTimeUtc.ToString("yyyyMMddHHmmss")">
-                    @item.PingTimeUtc
-                </td>
-                <td class="p-2">
-                    <a class="btn btn-sm btn-outline-danger btn-delete" href="#" data-pingbackid="@item.Id">
-                        <i class="bi-trash"></i>
+<div class="admin-toolbar ps-4 pe-4 pt-2 pb-2 border-bottom mb-3 shadow-sm">
+    <a class="btn btn-outline-danger" href="javascript:;" data-bs-toggle="modal" data-bs-target="#clearpingbackModal">
+        <i class="bi-trash"></i>
+        @Localizer["Clear all"]
+    </a>
+</div>
 
-                        <span id="span-processing-@item.Id" class="spinner-border spinner-border-sm" role="status" aria-hidden="true" style="display: none;"></span>
-                    </a>
-                </td>
+<div class="ps-4 pe-4">
+    <table id="pingbacks-table" class="table table-bordered">
+        <thead>
+            <tr>
+                <th>@Localizer["Link"]</th>
+                <th>@Localizer["Destination Server"]</th>
+                <th>@Localizer["Referenced Post"]</th>
+                <th>@Localizer["Ping Time (UTC)"]</th>
+                <th>@Localizer["Operation"]</th>
             </tr>
-        }
-    </tbody>
-</table>
+        </thead>
+        <tbody>
+            @foreach (var item in Model.PingbackRecords.OrderByDescending(p => p.PingTimeUtc))
+            {
+                <tr id="pingback-box-@item.Id">
+                    <td class="table-item-w30">
+                        <a href="@item.SourceUrl" target="_blank">@item.SourceTitle</a>
+                    </td>
+                    <td>
+                        @item.Domain <br />
+                        <small class="text-muted">
+                            @item.SourceIp
+                        </small>
+                    </td>
+                    <td class="table-item-w30">
+                        @item.TargetPostTitle
+                    </td>
+                    <td data-sort="@item.PingTimeUtc.ToString("yyyyMMddHHmmss")">
+                        @item.PingTimeUtc
+                    </td>
+                    <td class="p-2">
+                        <a class="btn btn-sm btn-outline-danger btn-delete" href="#" data-pingbackid="@item.Id">
+                            <i class="bi-trash"></i>
+
+                            <span id="span-processing-@item.Id" class="spinner-border spinner-border-sm" role="status" aria-hidden="true" style="display: none;"></span>
+                        </a>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+</div>
+
+<div class="modal fade" id="clearpingbackModal" tabindex="-1" role="dialog" aria-labelledby="clearpingbackModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="clearpingbackModalLabel">@Localizer["Clear Pingback Logs"]</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close">
+                </button>
+            </div>
+            <div class="modal-body">
+                @Localizer["Are you sure?"]
+            </div>
+            <div class="modal-footer">
+                <a href="#" class="btn btn-outline-danger btn-clear">@Localizer["Clear Now"]</a>
+                <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">@Localizer["Cancel"]</button>
+            </div>
+        </div>
+    </div>
+</div>

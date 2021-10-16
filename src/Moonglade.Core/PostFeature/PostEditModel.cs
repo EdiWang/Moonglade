@@ -1,8 +1,8 @@
-﻿using System;
+﻿using Microsoft.AspNetCore.Mvc;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Text.Json.Serialization;
-using Microsoft.AspNetCore.Mvc;
 
 namespace Moonglade.Core.PostFeature
 {
@@ -80,6 +80,10 @@ namespace Moonglade.Core.PostFeature
         [Display(Name = "Hero Image")]
         [DataType(DataType.Url)]
         public string HeroImageUrl { get; set; }
+
+        [Display(Name = "Inline CSS")]
+        [MaxLength(2048)]
+        public string InlineCss { get; set; }
 
         public PostEditModel()
         {

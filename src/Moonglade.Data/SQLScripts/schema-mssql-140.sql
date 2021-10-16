@@ -82,6 +82,7 @@ CREATE TABLE [Post](
 [IsOriginal] [bit] NOT NULL,
 [OriginLink] [nvarchar](256) NULL,
 [HeroImageUrl] [nvarchar](256) NULL,
+[InlineCss] [nvarchar](2048) NULL,
 [IsDeleted] [bit] NOT NULL,
 [HashCheckSum] [int] NOT NULL
 ) ON [PRIMARY] TEXTIMAGE_ON [PRIMARY]

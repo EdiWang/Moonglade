@@ -93,19 +93,19 @@ namespace Moonglade.Core.Tests
                 .Returns(Task.FromResult((TagEntity)null));
             _mockTagEntityRepo.Setup(p => p.AddAsync(It.IsAny<TagEntity>())).Returns(Task.FromResult(new TagEntity()));
 
-            var req = new UpdatePostRequest
+            var req = new PostEditModel
             {
                 Title = "Work 996 and Get into ICU",
                 Slug = "work-996-and-get-into-icu",
-                ContentLanguageCode = "en-us",
+                LanguageCode = "en-us",
                 EditorContent = "<p>996 is fubao</p>",
                 EnableComment = true,
                 ExposedToSiteMap = true,
-                IsFeedIncluded = true,
+                FeedIncluded = true,
                 IsPublished = true,
-                IsFeatured = true,
-                Tags = new[] { "996", "Fubao" },
-                CategoryIds = new[] { Uid }
+                Featured = true,
+                Tags = "996,Fubao",
+                CategoryList = new() { new() { Id = Uid, IsChecked = true } }
             };
 
             var handler = new CreatePostCommandHandler(_mockPostEntityRepo.Object, _mockBlogAudit.Object,
@@ -149,19 +149,19 @@ namespace Moonglade.Core.Tests
                 Editor = EditorChoice.Html
             });
 
-            var req = new UpdatePostRequest
+            var req = new PostEditModel
             {
                 Title = "Work 996 and Get into ICU",
                 Slug = "work-996-and-get-into-icu",
-                ContentLanguageCode = "en-us",
+                LanguageCode = "en-us",
                 EditorContent = "<p>996 is fubao</p>",
                 EnableComment = true,
                 ExposedToSiteMap = true,
-                IsFeedIncluded = true,
+                FeedIncluded = true,
                 IsPublished = true,
-                IsFeatured = true,
-                Tags = new[] { "996", "Fubao" },
-                CategoryIds = new[] { Uid }
+                Featured = true,
+                Tags = "996,Fubao",
+                CategoryList = new() { new() { Id = Uid, IsChecked = true } }
             };
 
             var handler = new UpdatePostCommandHandler(

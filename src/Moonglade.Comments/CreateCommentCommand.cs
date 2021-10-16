@@ -12,16 +12,16 @@ namespace Moonglade.Comments
 {
     public class CreateCommentCommand : IRequest<CommentDetailedItem>
     {
-        public CreateCommentCommand(Guid postId, CommentRequest request, string ipAddress)
+        public CreateCommentCommand(Guid postId, CommentRequest payload, string ipAddress)
         {
             PostId = postId;
-            Request = request;
+            Payload = payload;
             IpAddress = ipAddress;
         }
 
         public Guid PostId { get; set; }
 
-        public CommentRequest Request { get; set; }
+        public CommentRequest Payload { get; set; }
 
         public string IpAddress { get; set; }
     }
@@ -30,15 +30,15 @@ namespace Moonglade.Comments
     {
         private readonly IBlogConfig _blogConfig;
         private readonly IRepository<PostEntity> _postRepo;
-        private readonly ICommentModerator _commentModerator;
+        private readonly ICommentModerator _moderator;
         private readonly IRepository<CommentEntity> _commentRepo;
 
         public CreateCommentCommandHandler(
-            IBlogConfig blogConfig, IRepository<PostEntity> postRepo, ICommentModerator commentModerator, IRepository<CommentEntity> commentRepo)
+            IBlogConfig blogConfig, IRepository<PostEntity> postRepo, ICommentModerator moderator, IRepository<CommentEntity> commentRepo)
         {
             _blogConfig = blogConfig;
             _postRepo = postRepo;
-            _commentModerator = commentModerator;
+            _moderator = moderator;
             _commentRepo = commentRepo;
         }
 
@@ -49,11 +49,11 @@ namespace Moonglade.Comments
                 switch (_blogConfig.ContentSettings.WordFilterMode)
                 {
                     case WordFilterMode.Mask:
-                        request.Request.Username = await _commentModerator.ModerateContent(request.Request.Username);
-                        request.Request.Content = await _commentModerator.ModerateContent(request.Request.Content);
+                        request.Payload.Username = await _moderator.ModerateContent(request.Payload.Username);
+                        request.Payload.Content = await _moderator.ModerateContent(request.Payload.Content);
                         break;
                     case WordFilterMode.Block:
-                        if (await _commentModerator.HasBadWord(request.Request.Username, request.Request.Content))
+                        if (await _moderator.HasBadWord(request.Payload.Username, request.Payload.Content))
                         {
                             await Task.CompletedTask;
                             return null;
@@ -65,11 +65,11 @@ namespace Moonglade.Comments
             var model = new CommentEntity
             {
                 Id = Guid.NewGuid(),
-                Username = request.Request.Username,
-                CommentContent = request.Request.Content,
+                Username = request.Payload.Username,
+                CommentContent = request.Payload.Content,
                 PostId = request.PostId,
                 CreateTimeUtc = DateTime.UtcNow,
-                Email = request.Request.Email,
+                Email = request.Payload.Email,
                 IPAddress = request.IpAddress,
                 IsApproved = !_blogConfig.ContentSettings.RequireCommentReview
             };

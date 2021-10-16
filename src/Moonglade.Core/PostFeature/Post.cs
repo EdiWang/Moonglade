@@ -25,6 +25,7 @@ namespace Moonglade.Core.PostFeature
         public bool IsOriginal { get; set; }
         public string OriginLink { get; set; }
         public string HeroImageUrl { get; set; }
+        public string InlineCss { get; set; }
         public Tag[] Tags { get; set; }
         public Category[] Categories { get; set; }
         public DateTime? PubDateUtc { get; set; }
@@ -49,6 +50,7 @@ namespace Moonglade.Core.PostFeature
             IsOriginal = p.IsOriginal,
             OriginLink = p.OriginLink,
             HeroImageUrl = p.HeroImageUrl,
+            InlineCss = p.InlineCss,
             ContentLanguageCode = p.ContentLanguageCode,
             Tags = p.Tags.Select(pt => new Tag
             {

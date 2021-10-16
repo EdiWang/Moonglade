@@ -279,7 +279,7 @@ namespace Moonglade.Web.Tests.Controllers
                 ContentAbstract = Post.ContentAbstract
             }));
 
-            _mockBlogConfig.Setup(p => p.AdvancedSettings).Returns(new AdvancedSettings { EnablePingBackSend = true });
+            _mockBlogConfig.Setup(p => p.AdvancedSettings).Returns(new AdvancedSettings { EnablePingbackSend = true });
 
             var result = await postManageController.CreateOrEdit(model, mockLinkGenerator.Object);
 

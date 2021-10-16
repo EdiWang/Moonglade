@@ -11,12 +11,12 @@ namespace Moonglade.Menus
 {
     public class CreateMenuCommand : IRequest<Guid>
     {
-        public CreateMenuCommand(EditMenuRequest request)
+        public CreateMenuCommand(EditMenuRequest payload)
         {
-            Request = request;
+            Payload = payload;
         }
 
-        public EditMenuRequest Request { get; set; }
+        public EditMenuRequest Payload { get; set; }
     }
 
     public class CreateMenuCommandHandler : IRequestHandler<CreateMenuCommand, Guid>
@@ -36,16 +36,16 @@ namespace Moonglade.Menus
             var menu = new MenuEntity
             {
                 Id = uid,
-                Title = request.Request.Title.Trim(),
-                DisplayOrder = request.Request.DisplayOrder.GetValueOrDefault(),
-                Icon = request.Request.Icon,
-                Url = request.Request.Url,
-                IsOpenInNewTab = request.Request.IsOpenInNewTab
+                Title = request.Payload.Title.Trim(),
+                DisplayOrder = request.Payload.DisplayOrder.GetValueOrDefault(),
+                Icon = request.Payload.Icon,
+                Url = request.Payload.Url,
+                IsOpenInNewTab = request.Payload.IsOpenInNewTab
             };
 
-            if (request.Request.SubMenus is { Length: > 0 })
+            if (request.Payload.SubMenus is { Length: > 0 })
             {
-                var sms = request.Request.SubMenus.Select(p => new SubMenuEntity
+                var sms = request.Payload.SubMenus.Select(p => new SubMenuEntity
                 {
                     Id = Guid.NewGuid(),
                     IsOpenInNewTab = p.IsOpenInNewTab,

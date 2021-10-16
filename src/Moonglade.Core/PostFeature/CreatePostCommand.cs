@@ -11,6 +11,7 @@ using Moonglade.Data.Spec;
 using Moonglade.Utils;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -18,12 +19,12 @@ namespace Moonglade.Core.PostFeature
 {
     public class CreatePostCommand : IRequest<PostEntity>
     {
-        public CreatePostCommand(UpdatePostRequest request)
+        public CreatePostCommand(PostEditModel payload)
         {
-            Request = request;
+            Payload = payload;
         }
 
-        public UpdatePostRequest Request { get; set; }
+        public PostEditModel Payload { get; set; }
     }
 
     public class CreatePostCommandHandler : IRequestHandler<CreatePostCommand, PostEntity>
@@ -56,31 +57,32 @@ namespace Moonglade.Core.PostFeature
         public async Task<PostEntity> Handle(CreatePostCommand request, CancellationToken cancellationToken)
         {
             var abs = ContentProcessor.GetPostAbstract(
-                   string.IsNullOrEmpty(request.Request.Abstract) ? request.Request.EditorContent : request.Request.Abstract.Trim(),
+                   string.IsNullOrEmpty(request.Payload.Abstract) ? request.Payload.EditorContent : request.Payload.Abstract.Trim(),
                    _settings.PostAbstractWords,
                    _settings.Editor == EditorChoice.Markdown);
 
             var post = new PostEntity
             {
-                CommentEnabled = request.Request.EnableComment,
+                CommentEnabled = request.Payload.EnableComment,
                 Id = Guid.NewGuid(),
-                PostContent = request.Request.EditorContent,
+                PostContent = request.Payload.EditorContent,
                 ContentAbstract = abs,
                 CreateTimeUtc = DateTime.UtcNow,
                 LastModifiedUtc = DateTime.UtcNow, // Fix draft orders
-                Slug = request.Request.Slug.ToLower().Trim(),
-                Author = request.Request.Author?.Trim(),
-                Title = request.Request.Title.Trim(),
-                ContentLanguageCode = request.Request.ContentLanguageCode,
-                ExposedToSiteMap = request.Request.ExposedToSiteMap,
-                IsFeedIncluded = request.Request.IsFeedIncluded,
-                PubDateUtc = request.Request.IsPublished ? DateTime.UtcNow : null,
+                Slug = request.Payload.Slug.ToLower().Trim(),
+                Author = request.Payload.Author?.Trim(),
+                Title = request.Payload.Title.Trim(),
+                ContentLanguageCode = request.Payload.LanguageCode,
+                ExposedToSiteMap = request.Payload.ExposedToSiteMap,
+                IsFeedIncluded = request.Payload.FeedIncluded,
+                PubDateUtc = request.Payload.IsPublished ? DateTime.UtcNow : null,
                 IsDeleted = false,
-                IsPublished = request.Request.IsPublished,
-                IsFeatured = request.Request.IsFeatured,
-                IsOriginal = request.Request.IsOriginal,
-                OriginLink = string.IsNullOrWhiteSpace(request.Request.OriginLink) ? null : Helper.SterilizeLink(request.Request.OriginLink),
-                HeroImageUrl = string.IsNullOrWhiteSpace(request.Request.HeroImageUrl) ? null : Helper.SterilizeLink(request.Request.HeroImageUrl),
+                IsPublished = request.Payload.IsPublished,
+                IsFeatured = request.Payload.Featured,
+                IsOriginal = request.Payload.IsOriginal,
+                OriginLink = string.IsNullOrWhiteSpace(request.Payload.OriginLink) ? null : Helper.SterilizeLink(request.Payload.OriginLink),
+                HeroImageUrl = string.IsNullOrWhiteSpace(request.Payload.HeroImageUrl) ? null : Helper.SterilizeLink(request.Payload.HeroImageUrl),
+                InlineCss = request.Payload.InlineCss,
                 PostExtension = new()
                 {
                     Hits = 0,
@@ -103,9 +105,10 @@ namespace Moonglade.Core.PostFeature
             post.HashCheckSum = checkSum;
 
             // add categories
-            if (request.Request.CategoryIds is { Length: > 0 })
+            var catIds = request.Payload.CategoryList.Where(p => p.IsChecked).Select(p => p.Id).ToArray();
+            if (catIds is { Length: > 0 })
             {
-                foreach (var id in request.Request.CategoryIds)
+                foreach (var id in catIds)
                 {
                     post.PostCategory.Add(new()
                     {
@@ -116,14 +119,15 @@ namespace Moonglade.Core.PostFeature
             }
 
             // add tags
-            if (request.Request.Tags is { Length: > 0 })
+            var tags = string.IsNullOrWhiteSpace(request.Payload.Tags) ?
+                        Array.Empty<string>() :
+                        request.Payload.Tags.Split(',').ToArray();
+
+            if (tags is { Length: > 0 })
             {
-                foreach (var item in request.Request.Tags)
+                foreach (var item in tags)
                 {
-                    if (!Tag.ValidateName(item))
-                    {
-                        continue;
-                    }
+                    if (!Tag.ValidateName(item)) continue;
 
                     var tag = await _tagRepo.GetAsync(q => q.DisplayName == item) ?? await CreateTag(item);
                     post.Tags.Add(tag);

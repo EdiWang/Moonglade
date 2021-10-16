@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using Moonglade.Configuration;
 using Moonglade.Data;
@@ -23,27 +24,24 @@ namespace Moonglade.Web.Controllers
         private readonly ILogger<PingbackController> _logger;
         private readonly IBlogConfig _blogConfig;
         private readonly IMediator _mediator;
-        private readonly IBlogNotificationClient _notificationClient;
 
         public PingbackController(
             ILogger<PingbackController> logger,
             IBlogConfig blogConfig,
-            IMediator mediator,
-            IBlogNotificationClient notificationClient)
+            IMediator mediator)
         {
             _logger = logger;
             _blogConfig = blogConfig;
             _mediator = mediator;
-            _notificationClient = notificationClient;
         }
 
         [HttpPost]
         [IgnoreAntiforgeryToken]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status403Forbidden)]
-        public async Task<IActionResult> Process()
+        public async Task<IActionResult> Process([FromServices] IServiceScopeFactory factory)
         {
-            if (!_blogConfig.AdvancedSettings.EnablePingBackReceive)
+            if (!_blogConfig.AdvancedSettings.EnablePingbackReceive)
             {
                 _logger.LogInformation("Pingback receive is disabled");
                 return Forbid();
@@ -55,12 +53,21 @@ namespace Moonglade.Web.Controllers
             var response = await _mediator.Send(new ReceivePingCommand(requestBody, ip,
                 history =>
                 {
-                    _notificationClient.NotifyPingbackAsync(history.TargetPostTitle,
-                        history.PingTimeUtc,
-                        history.Domain,
-                        history.SourceIp,
-                        history.SourceUrl,
-                        history.SourceTitle);
+                    _ = Task.Run(async () =>
+                    {
+                        var scope = factory.CreateScope();
+                        var mediator = scope.ServiceProvider.GetService<IMediator>();
+                        if (mediator != null)
+                        {
+                            await mediator.Publish(new PingbackNotification(
+                                history.TargetPostTitle,
+                                history.PingTimeUtc,
+                                history.Domain,
+                                history.SourceIp,
+                                history.SourceUrl,
+                                history.SourceTitle));
+                        }
+                    });
                 }));
 
             _logger.LogInformation($"Pingback Processor Response: {response}");
@@ -75,6 +82,16 @@ namespace Moonglade.Web.Controllers
             await _mediator.Send(new DeletePingbackCommand(pingbackId));
             await blogAudit.AddEntry(BlogEventType.Content, BlogEventId.PingbackDeleted,
                 $"Pingback '{pingbackId}' deleted.");
+            return NoContent();
+        }
+
+        [Authorize]
+        [HttpDelete("clear")]
+        [ProducesResponseType(StatusCodes.Status204NoContent)]
+        public async Task<IActionResult> Clear([FromServices] IBlogAudit blogAudit)
+        {
+            await _mediator.Send(new ClearPingbackCommand());
+            await blogAudit.AddEntry(BlogEventType.Content, BlogEventId.PingbackCleared, "Pingback cleared.");
             return NoContent();
         }
     }

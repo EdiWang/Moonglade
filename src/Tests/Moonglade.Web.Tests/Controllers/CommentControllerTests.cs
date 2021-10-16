@@ -1,6 +1,7 @@
 using MediatR;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.DependencyInjection;
 using Moonglade.Comments;
 using Moonglade.Configuration;
 using Moonglade.Notification.Client;
@@ -22,7 +23,7 @@ namespace Moonglade.Web.Tests.Controllers
         private Mock<IBlogConfig> _mockBlogConfig;
         private Mock<IBlogNotificationClient> _mockBlogNotificationClient;
         private Mock<ITimeZoneResolver> _mockTimeZoneResolver;
-
+        private Mock<IServiceScopeFactory> _mockServiceScopeFactory;
 
         [SetUp]
         public void SetUp()
@@ -34,6 +35,7 @@ namespace Moonglade.Web.Tests.Controllers
             _mockBlogConfig = _mockRepository.Create<IBlogConfig>();
             _mockBlogNotificationClient = _mockRepository.Create<IBlogNotificationClient>();
             _mockTimeZoneResolver = _mockRepository.Create<ITimeZoneResolver>();
+            _mockServiceScopeFactory = _mockRepository.Create<IServiceScopeFactory>();
         }
 
         private CommentController CreateCommentController()
@@ -77,7 +79,7 @@ namespace Moonglade.Web.Tests.Controllers
                 CaptchaCode = "0996",
                 Content = "Get your fubao",
                 Username = "Jack Ma"
-            });
+            }, _mockServiceScopeFactory.Object);
 
             Assert.IsInstanceOf<BadRequestObjectResult>(result);
         }
@@ -97,7 +99,7 @@ namespace Moonglade.Web.Tests.Controllers
                 CaptchaCode = "0996",
                 Content = "Get your fubao",
                 Username = "Jack Ma"
-            });
+            }, _mockServiceScopeFactory.Object);
 
             Assert.IsInstanceOf<ForbidResult>(result);
         }
@@ -128,7 +130,7 @@ namespace Moonglade.Web.Tests.Controllers
                 CaptchaCode = "0996",
                 Content = "Get your fubao",
                 Username = "Jack Ma"
-            });
+            }, _mockServiceScopeFactory.Object);
 
             Assert.IsInstanceOf<ConflictObjectResult>(result);
         }
@@ -175,7 +177,7 @@ namespace Moonglade.Web.Tests.Controllers
                 CaptchaCode = "0996",
                 Content = "Get your fubao",
                 Username = "Jack Ma"
-            });
+            }, _mockServiceScopeFactory.Object);
 
             Assert.IsInstanceOf<OkResult>(result);
         }
@@ -223,7 +225,7 @@ namespace Moonglade.Web.Tests.Controllers
             });
 
             var ctl = CreateCommentController();
-            var result = await ctl.Reply(Guid.NewGuid(), "996", null);
+            var result = await ctl.Reply(Guid.NewGuid(), "996", null, _mockServiceScopeFactory.Object);
 
             Assert.IsInstanceOf<ForbidResult>(result);
         }

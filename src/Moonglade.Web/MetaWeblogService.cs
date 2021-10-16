@@ -121,17 +121,17 @@ namespace Moonglade.Web
                     throw new ArgumentOutOfRangeException(nameof(post.categories));
                 }
 
-                var req = new UpdatePostRequest
+                var req = new PostEditModel
                 {
                     Title = post.title,
                     Slug = post.wp_slug ?? ToSlug(post.title),
                     EditorContent = post.description,
-                    Tags = post.mt_keywords?.Split(','),
-                    CategoryIds = cids,
-                    ContentLanguageCode = "en-us",
+                    Tags = post.mt_keywords,
+                    CategoryList = cids.Select(p => new CategoryCheckBox { Id = p, IsChecked = true }).ToList(),
+                    LanguageCode = "en-us",
                     IsPublished = publish,
                     EnableComment = true,
-                    IsFeedIncluded = true,
+                    FeedIncluded = true,
                     ExposedToSiteMap = true,
                     PublishDate = DateTime.UtcNow
                 };
@@ -174,17 +174,17 @@ namespace Moonglade.Web
                     throw new ArgumentOutOfRangeException(nameof(post.categories));
                 }
 
-                var req = new UpdatePostRequest
+                var req = new PostEditModel
                 {
                     Title = post.title,
                     Slug = post.wp_slug ?? ToSlug(post.title),
                     EditorContent = post.description,
-                    Tags = post.mt_keywords?.Split(','),
-                    CategoryIds = cids,
-                    ContentLanguageCode = "en-us",
+                    Tags = post.mt_keywords,
+                    CategoryList = cids.Select(p => new CategoryCheckBox { Id = p, IsChecked = true }).ToList(),
+                    LanguageCode = "en-us",
                     IsPublished = publish,
                     EnableComment = true,
-                    IsFeedIncluded = true,
+                    FeedIncluded = true,
                     ExposedToSiteMap = true,
                     PublishDate = DateTime.UtcNow
                 };

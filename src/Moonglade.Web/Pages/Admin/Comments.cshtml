@@ -64,27 +64,24 @@
     </style>
 }
 
-<h3>
-    <i class="bi-chat-left-text icon-admin-title"></i>
-    @Localizer["Comments"]
-    <a href="javascript:deleteSelectedComments();" class="btn btn-outline-danger btn-delete-selected float-end">
-        <i class="bi-trash"></i> @Localizer["Delete Selected"]
+<div class="admin-toolbar ps-4 pe-4 pt-2 pb-2 border-bottom mb-3 shadow-sm">
+    <a href="javascript:deleteSelectedComments();" class="btn btn-outline-danger btn-delete-selected">
+        <i class="bi-trash"></i> @Localizer["Delete selected"]
     </a>
-</h3>
-<hr />
+</div>
 
-@if (Model.CommentDetailedItems.Count == 0)
-{
-    <div class="alert alert-info">
-        @Localizer["No Comments"]
-    </div>
-}
-else
-{
-    foreach (var item in Model.CommentDetailedItems)
+<div class="ps-4 pe-4">
+    @if (Model.CommentDetailedItems.Count == 0)
     {
-        <div id="panel-comment-@item.Id" class="card mb-4">
-            <div class="card-body">
+        <div class="alert alert-info">
+            @Localizer["No Comments"]
+        </div>
+    }
+    else
+    {
+        foreach (var item in Model.CommentDetailedItems)
+        {
+            <div id="panel-comment-@item.Id" class="mb-4">
                 <div class="float-end">
                     <div class="form-check mb-2 text-end">
                         <input type="checkbox" class="form-check-input chk-cid" id="comment-item-chk-@item.Id" data-cid="@item.Id" />
@@ -149,14 +146,16 @@ else
                     }
                 </div>
             </div>
-        </div>
-    }
-}
 
-@Html.PagedListPager(Model.CommentDetailedItems, page => $"?pageIndex={page}", new PagedListRenderOptions
-{
-    LiElementClasses = new[] { "page-item" },
-    PageClasses = new[] { "page-link" },
-    UlElementClasses = new[] { "pagination justify-content-end" },
-    DisplayEllipsesWhenNotShowingAllPageNumbers = false
-})
+            <hr />
+        }
+    }
+
+    @Html.PagedListPager(Model.CommentDetailedItems, page => $"?pageIndex={page}", new PagedListRenderOptions
+    {
+        LiElementClasses = new[] { "page-item" },
+        PageClasses = new[] { "page-link" },
+        UlElementClasses = new[] { "pagination justify-content-end" },
+        DisplayEllipsesWhenNotShowingAllPageNumbers = false
+    })
+</div>

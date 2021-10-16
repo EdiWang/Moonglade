@@ -46,6 +46,7 @@
         PageDeleted = 7003,
 
         PingbackDeleted = 8001,
+        PingbackCleared = 8002,
 
         MenuCreated = 9001,
         MenuUpdated = 9002,

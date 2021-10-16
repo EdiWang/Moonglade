@@ -14,6 +14,7 @@ using Moonglade.Data.Spec;
 using Moonglade.Pingback;
 using Moonglade.Utils;
 using Moonglade.Web.Models;
+using NUglify;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
@@ -106,31 +107,20 @@ namespace Moonglade.Web.Controllers
                 // temp solution
                 var model = temp.ViewModel;
 
-                var tags = string.IsNullOrWhiteSpace(model.Tags)
-                    ? Array.Empty<string>()
-                    : model.Tags.Split(',').ToArray();
-
-                var catIds = model.CategoryList.Where(p => p.IsChecked).Select(p => p.Id).ToArray();
-
-                var request = new UpdatePostRequest
+                if (!string.IsNullOrWhiteSpace(model.InlineCss))
                 {
-                    Title = model.Title.Trim(),
-                    Slug = model.Slug.Trim(),
-                    Author = model.Author?.Trim(),
-                    EditorContent = model.EditorContent,
-                    EnableComment = model.EnableComment,
-                    ExposedToSiteMap = model.ExposedToSiteMap,
-                    IsFeedIncluded = model.FeedIncluded,
-                    ContentLanguageCode = model.LanguageCode,
-                    Abstract = model.Abstract,
-                    IsPublished = model.IsPublished,
-                    IsFeatured = model.Featured,
-                    IsOriginal = model.IsOriginal,
-                    OriginLink = string.IsNullOrWhiteSpace(model.OriginLink) ? null : model.OriginLink,
-                    HeroImageUrl = string.IsNullOrWhiteSpace(model.HeroImageUrl) ? null : model.HeroImageUrl,
-                    Tags = tags,
-                    CategoryIds = catIds
-                };
+                    var uglifyTest = Uglify.Css(model.InlineCss);
+                    if (uglifyTest.HasErrors)
+                    {
+                        foreach (var err in uglifyTest.Errors)
+                        {
+                            ModelState.AddModelError(model.InlineCss, err.ToString());
+                        }
+                        return BadRequest(ModelState.CombineErrorMessages());
+                    }
+
+                    model.InlineCss = uglifyTest.Code;
+                }
 
                 var tzDate = _timeZoneResolver.NowOfTimeZone;
                 if (model.ChangePublishDate &&
@@ -138,12 +128,12 @@ namespace Moonglade.Web.Controllers
                     model.PublishDate <= tzDate &&
                     model.PublishDate.GetValueOrDefault().Year >= 1975)
                 {
-                    request.PublishDate = _timeZoneResolver.ToUtc(model.PublishDate.Value);
+                    model.PublishDate = _timeZoneResolver.ToUtc(model.PublishDate.Value);
                 }
 
                 var postEntity = model.PostId == Guid.Empty ?
-                    await _mediator.Send(new CreatePostCommand(request)) :
-                    await _mediator.Send(new UpdatePostCommand(model.PostId, request));
+                    await _mediator.Send(new CreatePostCommand(model)) :
+                    await _mediator.Send(new UpdatePostCommand(model.PostId, model));
 
                 if (model.IsPublished)
                 {
@@ -160,7 +150,7 @@ namespace Moonglade.Web.Controllers
                                    postEntity.Slug
                                });
 
-                    if (_blogConfig.AdvancedSettings.EnablePingBackSend)
+                    if (_blogConfig.AdvancedSettings.EnablePingbackSend)
                     {
                         _ = Task.Run(async () => { await _pingbackSender.TrySendPingAsync(link, postEntity.PostContent); });
                     }

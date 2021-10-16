@@ -1,44 +1,80 @@
 ﻿@page "/admin/settings/data-porting"
 
 <partial name="_SettingsHeader" />
-
-<div class="row">
-    <div class="col-md-6">
-        <div class="card">
-            <div class="card-header">
+<div class="ps-4 pe-4">
+    <div class="row">
+        <div class="col-md-6">
+            <h6 class="card-subtitle mb-4 text-muted">
                 @Localizer["Export Data"]
-            </div>
-            <div class="card-body">
-                <strong>@Localizer["Main Data"]</strong>
-                <hr />
-
-                <div class="mb-3">
-                    <a asp-action="ExportDownload" asp-controller="DataPorting" asp-route-type="Posts" class="btn btn-outline-accent" target="_blank">@Localizer["Posts"]</a>
-
-                    <a asp-action="ExportDownload" asp-controller="DataPorting" asp-route-type="Pages" class="btn btn-outline-accent" target="_blank">@Localizer["Pages"]</a>
-
-                    <a asp-action="ExportDownload" asp-controller="DataPorting" asp-route-type="Tags" class="btn btn-outline-accent" target="_blank">@Localizer["Tags"]</a>
-
-                    <a asp-action="ExportDownload" asp-controller="DataPorting" asp-route-type="Categories" class="btn btn-outline-accent" target="_blank">@Localizer["Categories"]</a>
+            </h6>
+            <div class="mb-5">
+                <div class="row g-3 align-items-center settings-entry mb-4">
+                    <div class="col-auto">
+                        <i class="bi-file-earmark-richtext settings-entry-icon"></i>
+                    </div>
+                    <div class="col">
+                        @Localizer["Posts"]
+                    </div>
+                    <div class="col-md-5 text-end">
+                        <a asp-action="ExportDownload" asp-controller="DataPorting" asp-route-type="Posts" class="btn btn-outline-accent" target="_blank">@Localizer["Export"]</a>
+                    </div>
                 </div>
 
-                <strong>@Localizer["Secondary Data"]</strong>
-                <hr />
-
-                <div>
-                    <a asp-action="ExportDownload" asp-controller="DataPorting" asp-route-type="FriendLinks" class="btn btn-outline-accent" target="_blank">@Localizer["Friend Links"]</a>
+                <div class="row g-3 align-items-center settings-entry mb-4">
+                    <div class="col-auto">
+                        <i class="bi-file-earmark-post settings-entry-icon"></i>
+                    </div>
+                    <div class="col">
+                        @Localizer["Pages"]
+                    </div>
+                    <div class="col-md-5 text-end">
+                        <a asp-action="ExportDownload" asp-controller="DataPorting" asp-route-type="Pages" class="btn btn-outline-accent" target="_blank">@Localizer["Export"]</a>
+                    </div>
+                </div>
+                
+                <div class="row g-3 align-items-center settings-entry mb-4">
+                    <div class="col-auto">
+                        <i class="bi-tag settings-entry-icon"></i>
+                    </div>
+                    <div class="col">
+                        @Localizer["Tags"]
+                    </div>
+                    <div class="col-md-5 text-end">
+                        <a asp-action="ExportDownload" asp-controller="DataPorting" asp-route-type="Tags" class="btn btn-outline-accent" target="_blank">@Localizer["Export"]</a>
+                    </div>
+                </div>
+                
+                <div class="row g-3 align-items-center settings-entry mb-4">
+                    <div class="col-auto">
+                        <i class="bi-folder2 settings-entry-icon"></i>
+                    </div>
+                    <div class="col">
+                        @Localizer["Categories"]
+                    </div>
+                    <div class="col-md-5 text-end">
+                        <a asp-action="ExportDownload" asp-controller="DataPorting" asp-route-type="Categories" class="btn btn-outline-accent" target="_blank">@Localizer["Export"]</a>
+                    </div>
+                </div>
+                
+                <div class="row g-3 align-items-center settings-entry mb-4">
+                    <div class="col-auto">
+                        <i class="bi-link-45deg settings-entry-icon"></i>
+                    </div>
+                    <div class="col">
+                        @Localizer["Friend Links"]
+                    </div>
+                    <div class="col-md-5 text-end">
+                        <a asp-action="ExportDownload" asp-controller="DataPorting" asp-route-type="FriendLinks" class="btn btn-outline-accent" target="_blank">@Localizer["Export"]</a>
+                    </div>
                 </div>
             </div>
-        </div>
-    </div>
-    <div class="col-md-6">
-        <div class="card">
-            <div class="card-header">@Localizer["Import Data"]</div>
-            <div class="card-body">
+
+            <h6 class="card-subtitle mb-4 text-muted">@Localizer["Import Data"]</h6>
+            <div>
                 @Localizer["Coming soon..."]
             </div>
         </div>
     </div>
-</div>
 
-<p class="text-muted mt-4">@Localizer["* Note: This isn't cloning database, not everything would be exported. Although content would be same, object IDs would be different across systems."]</p>
+    <p class="text-muted mt-4">@Localizer["* Note: This isn't cloning database, not everything would be exported. Although content would be same, object IDs would be different across systems."]</p>
+</div>

@@ -171,99 +171,99 @@
     </style>
 }
 
-<form id="page-edit-form" method="post">
-    <div asp-validation-summary="ModelOnly" class="alert alert-danger"></div>
-    <div class="row">
-        <div class="col-md-9 col-xl-10">
-            <input type="text" asp-for="EditPageRequest.Title" class="form-control form-control-lg mb-1" placeholder="Title" />
-            <div>
-                <span asp-validation-for="EditPageRequest.Title" class="text-danger"></span>
-            </div>
+<div class="p-4">
 
-            <div class="input-group input-group-sm">
-                <span class="input-group-text" id="basic-addon3">page/</span>
-                <input type="text" asp-for="EditPageRequest.Slug" class="form-control form-control-sm" placeholder="slug" />
-            </div>
-            <div>
-                <span asp-validation-for="EditPageRequest.Slug" class="text-danger"></span>
-            </div>
-
-            <div>
-                <span asp-validation-for="EditPageRequest.RawHtmlContent" class="text-danger"></span>
-            </div>
-            <div>
-                <span asp-validation-for="EditPageRequest.CssContent" class="text-danger"></span>
-            </div>
-
-            <ul class="nav nav-tabs mt-3" id="editor-box-tabs" role="tablist">
-                <li class="nav-item">
-                    <a class="nav-link active" id="profile-tab" data-bs-toggle="tab" href="#rawhtmlcontent-editor-box" role="tab" aria-controls="html" aria-selected="false">HTML</a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link" id="csscontent-tab" data-bs-toggle="tab" href="#csscontent-editor-box" role="tab" aria-controls="css" aria-selected="true">CSS</a>
-                </li>
-            </ul>
-
-            <div class="tab-content">
-                <div class="tab-pane active" id="rawhtmlcontent-editor-box" role="tabpanel" aria-labelledby="html-tab">
-                    <div id="RawHtmlContentEditor" class="monaco-target">
-
-                    </div>
-                    <textarea asp-for="EditPageRequest.RawHtmlContent" class="page-rawhtmlcontent-textarea d-none"></textarea>
+    <form id="page-edit-form" method="post">
+        <div asp-validation-summary="ModelOnly" class="alert alert-danger"></div>
+        <div class="row">
+            <div class="col-md-9 col-xl-10">
+                <input type="text" asp-for="EditPageRequest.Title" class="form-control form-control-lg mb-1" placeholder="Title" />
+                <div>
+                    <span asp-validation-for="EditPageRequest.Title" class="text-danger"></span>
                 </div>
-                <div class="tab-pane" id="csscontent-editor-box" role="tabpanel" aria-labelledby="css-tab">
-                    <div id="CssContentEditor" class="monaco-target">
 
-                    </div>
-                    <textarea asp-for="EditPageRequest.CssContent" class="page-csscontent-textarea d-none"></textarea>
+                <div class="input-group input-group-sm">
+                    <span class="input-group-text" id="basic-addon3">page/</span>
+                    <input type="text" asp-for="EditPageRequest.Slug" class="form-control form-control-sm" placeholder="slug" />
                 </div>
-            </div>
-        </div>
+                <div>
+                    <span asp-validation-for="EditPageRequest.Slug" class="text-danger"></span>
+                </div>
 
-        <div class="col-md-3 col-xl-2">
-            <div class="card mb-4">
-                <div class="card-header">Options</div>
-                <ul class="list-group list-group-flush">
-                    <li class="list-group-item">
-                        <div class="form-check form-switch">
-                            <input type="checkbox" asp-for="EditPageRequest.HideSidebar" class="form-check-input">
-                            <label asp-for="EditPageRequest.HideSidebar" class="form-check-label"></label>
-                        </div>
+                <div>
+                    <span asp-validation-for="EditPageRequest.RawHtmlContent" class="text-danger"></span>
+                </div>
+                <div>
+                    <span asp-validation-for="EditPageRequest.CssContent" class="text-danger"></span>
+                </div>
+
+                <ul class="nav nav-tabs mt-3" id="editor-box-tabs" role="tablist">
+                    <li class="nav-item">
+                        <a class="nav-link active" id="profile-tab" data-bs-toggle="tab" href="#rawhtmlcontent-editor-box" role="tab" aria-controls="html" aria-selected="false">HTML</a>
                     </li>
-                    <li class="list-group-item">
-                        <div class="form-check form-switch">
-                            <input type="checkbox" asp-for="EditPageRequest.IsPublished" class="form-check-input">
-                            <label asp-for="EditPageRequest.IsPublished" class="form-check-label"></label>
-                        </div>
+                    <li class="nav-item">
+                        <a class="nav-link" id="csscontent-tab" data-bs-toggle="tab" href="#csscontent-editor-box" role="tab" aria-controls="css" aria-selected="true">CSS</a>
                     </li>
                 </ul>
-                <div class="card-body">
-                    <div class="form-floating">
-                        <textarea asp-for="EditPageRequest.MetaDescription"
+
+                <div class="tab-content">
+                    <div class="tab-pane active" id="rawhtmlcontent-editor-box" role="tabpanel" aria-labelledby="html-tab">
+                        <div id="RawHtmlContentEditor" class="monaco-target">
+
+                        </div>
+                        <textarea asp-for="EditPageRequest.RawHtmlContent" class="page-rawhtmlcontent-textarea d-none"></textarea>
+                    </div>
+                    <div class="tab-pane" id="csscontent-editor-box" role="tabpanel" aria-labelledby="css-tab">
+                        <div id="CssContentEditor" class="monaco-target">
+
+                        </div>
+                        <textarea asp-for="EditPageRequest.CssContent" class="page-csscontent-textarea d-none"></textarea>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-md-3 col-xl-2">
+                <div class="card mb-4">
+                    <div class="card-header">Options</div>
+                    <ul class="list-group list-group-flush">
+                        <li class="list-group-item">
+                            <div class="form-check form-switch mb-2">
+                                <input type="checkbox" asp-for="EditPageRequest.HideSidebar" class="form-check-input">
+                                <label asp-for="EditPageRequest.HideSidebar" class="form-check-label"></label>
+                            </div>
+                        </li>
+                        <li class="list-group-item">
+                            <div class="form-check form-switch mb-2">
+                                <input type="checkbox" asp-for="EditPageRequest.IsPublished" class="form-check-input">
+                                <label asp-for="EditPageRequest.IsPublished" class="form-check-label"></label>
+                            </div>
+                        </li>
+                    </ul>
+                    <div class="card-body">
+                        <div class="form-floating">
+                            <textarea asp-for="EditPageRequest.MetaDescription"
                                       placeholder="@Html.DisplayNameFor(m => m.EditPageRequest.MetaDescription)"
                                       class="form-control form-control-sm h-200px"
                                       spellcheck="false"></textarea>
-                        <label class="form-label" asp-for="EditPageRequest.MetaDescription"></label>
+                            <label class="form-label" asp-for="EditPageRequest.MetaDescription"></label>
+                        </div>
+                        <span asp-validation-for="EditPageRequest.MetaDescription" class="text-danger"></span>
                     </div>
-                    <span asp-validation-for="EditPageRequest.MetaDescription" class="text-danger"></span>
                 </div>
             </div>
         </div>
-    </div>
 
-    <hr />
-
-    <div>
-        <button type="button" class="btn btn-success" id="btn-submit">
-            @Localizer["Save"]
-        </button>
-        @if (!Model.EditPageRequest.IsPublished)
-        {
-            <button type="button" class="btn btn-outline-success" id="btn-preview">
-                <i class="bi-eye"></i>
-                @Localizer["Preview"]
+        <div class="mt-3">
+            <button type="button" class="btn btn-outline-accent" id="btn-submit">
+                @Localizer["Save"]
             </button>
-        }
-        <a asp-page="./BlogPage" class="btn btn-light">@Localizer["Cancel"]</a>
-    </div>
-</form>
+            @if (!Model.EditPageRequest.IsPublished)
+            {
+                <button type="button" class="btn btn-outline-success" id="btn-preview">
+                    @Localizer["Preview"]
+                </button>
+            }
+            <a asp-page="./BlogPage" class="btn btn-outline-secondary">@Localizer["Cancel"]</a>
+        </div>
+    </form>
+</div>

@@ -132,9 +132,6 @@
   <data name="Notification" xml:space="preserve">
     <value>通知</value>
   </data>
-  <data name="Settings" xml:space="preserve">
-    <value>设置</value>
-  </data>
   <data name="Subscription" xml:space="preserve">
     <value>订阅</value>
   </data>

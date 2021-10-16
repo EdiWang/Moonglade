@@ -78,24 +78,20 @@
     </script>
 }
 
-<h3>
-    <i class="bi-folder2 icon-admin-title"></i>
-    @Localizer["Categories"]
-    <a class="btn btn-outline-success float-end" href="javascript:initCreateCategory();">
-        <i class="bi-plus-circle"></i>
+<div class="admin-toolbar ps-4 pe-4 pt-2 pb-2 border-bottom mb-3 shadow-sm">
+    <a class="btn btn-outline-accent" href="javascript:initCreateCategory();">
+        <i class="bi-plus-lg"></i>
         @Localizer["New"]
     </a>
-</h3>
-<hr />
-
+</div>
 
 @Html.AntiForgeryToken()
 
-<div class="row row-cols-1 row-cols-sm-2 row-cols-md-3 row-cols-lg-4 g-4">
+<div class="row row-cols-1 row-cols-sm-2 row-cols-md-3 row-cols-lg-4 g-4 ps-4 pe-4">
     @foreach (var cat in Model.Categories.OrderBy(m => m.DisplayName))
     {
         <div class="col">
-            <div class="card" id="card-@cat.Id">
+            <div class="card shadow-sm" id="card-@cat.Id">
                 <div class="card-body">
                     <h6 class="card-title">
                         <a asp-page="/CategoryList" asp-route-routeName="@cat.RouteName" target="_blank">

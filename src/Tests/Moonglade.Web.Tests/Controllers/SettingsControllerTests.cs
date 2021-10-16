@@ -1,3 +1,4 @@
+using MediatR;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Hosting;
@@ -6,12 +7,13 @@ using Moonglade.Configuration;
 using Moonglade.Core;
 using Moonglade.Data;
 using Moonglade.Data.Entities;
-using Moonglade.Notification.Client;
 using Moonglade.Web.Controllers;
 using Moonglade.Web.Models.Settings;
 using Moq;
 using NUnit.Framework;
 using System;
+using System.ComponentModel.DataAnnotations;
+using System.Linq;
 using System.Threading.Tasks;
 
 namespace Moonglade.Web.Tests.Controllers
@@ -24,6 +26,7 @@ namespace Moonglade.Web.Tests.Controllers
         private Mock<IBlogConfig> _mockBlogConfig;
         private Mock<IBlogAudit> _mockBlogAudit;
         private Mock<ILogger<SettingsController>> _mockLogger;
+        private Mock<IMediator> _mockMediator;
 
         [SetUp]
         public void SetUp()
@@ -33,6 +36,7 @@ namespace Moonglade.Web.Tests.Controllers
             _mockBlogConfig = _mockRepository.Create<IBlogConfig>();
             _mockBlogAudit = _mockRepository.Create<IBlogAudit>();
             _mockLogger = _mockRepository.Create<ILogger<SettingsController>>();
+            _mockMediator = _mockRepository.Create<IMediator>();
         }
 
         private SettingsController CreateSettingsController()
@@ -40,7 +44,8 @@ namespace Moonglade.Web.Tests.Controllers
             return new(
                 _mockBlogConfig.Object,
                 _mockBlogAudit.Object,
-                _mockLogger.Object);
+                _mockLogger.Object,
+                _mockMediator.Object);
         }
 
         [Test]
@@ -159,7 +164,7 @@ namespace Moonglade.Web.Tests.Controllers
         {
             _mockBlogConfig.Setup(p => p.NotificationSettings).Returns(new NotificationSettings());
             var settingsController = CreateSettingsController();
-            NotificationSettingsViewModel model = new();
+            NotificationSettings model = new();
 
             var result = await settingsController.Notification(new(model));
 
@@ -172,9 +177,7 @@ namespace Moonglade.Web.Tests.Controllers
         public async Task SendTestEmail_Post()
         {
             var settingsController = CreateSettingsController();
-            Mock<IBlogNotificationClient> notificationClientMock = new();
-
-            var result = await settingsController.TestEmail(notificationClientMock.Object);
+            var result = await settingsController.TestEmail();
             Assert.IsInstanceOf<OkObjectResult>(result);
         }
 
@@ -183,7 +186,7 @@ namespace Moonglade.Web.Tests.Controllers
         {
             _mockBlogConfig.Setup(p => p.FeedSettings).Returns(new FeedSettings());
             var settingsController = CreateSettingsController();
-            SubscriptionSettingsViewModel model = new();
+            FeedSettings model = new();
 
             var result = await settingsController.Subscription(new(model));
 
@@ -197,7 +200,7 @@ namespace Moonglade.Web.Tests.Controllers
         {
             _mockBlogConfig.Setup(p => p.ImageSettings).Returns(new ImageSettings());
             var settingsController = CreateSettingsController();
-            ImageSettingsViewModel model = new();
+            ImageSettings model = new();
 
             var result = await settingsController.Image(new(model));
 
@@ -227,7 +230,7 @@ namespace Moonglade.Web.Tests.Controllers
         {
             _mockBlogConfig.Setup(p => p.AdvancedSettings).Returns(new AdvancedSettings());
             var settingsController = CreateSettingsController();
-            AdvancedSettingsViewModel model = new();
+            AdvancedSettings model = new();
 
             var result = await settingsController.Advanced(new(model));
 
@@ -237,23 +240,25 @@ namespace Moonglade.Web.Tests.Controllers
         }
 
         [Test]
-        public async Task Image_Post_EnableCDNRedirect_EmptyCDNEndpoint()
+        public void Image_Post_EnableCDNRedirect_EmptyCDNEndpoint()
         {
             _mockBlogConfig.Setup(p => p.ImageSettings).Returns(new ImageSettings());
-            var settingsController = CreateSettingsController();
-            ImageSettingsViewModel model = new() { EnableCDNRedirect = true, CDNEndpoint = string.Empty };
-            var result = await settingsController.Image(new(model));
-            Assert.IsInstanceOf<BadRequestObjectResult>(result);
+            ImageSettings model = new() { EnableCDNRedirect = true, CDNEndpoint = string.Empty };
+
+            var validationContext = new ValidationContext(model);
+            var results = model.Validate(validationContext);
+            Assert.AreEqual(results.Count(), 2);
         }
 
         [Test]
-        public async Task Image_Post_EnableCDNRedirect_InvalidCDNEndpoint()
+        public void Image_Post_EnableCDNRedirect_InvalidCDNEndpoint()
         {
             _mockBlogConfig.Setup(p => p.ImageSettings).Returns(new ImageSettings());
-            var settingsController = CreateSettingsController();
-            ImageSettingsViewModel model = new() { EnableCDNRedirect = true, CDNEndpoint = "996.icu" };
-            var result = await settingsController.Image(new(model));
-            Assert.IsInstanceOf<BadRequestObjectResult>(result);
+            ImageSettings model = new() { EnableCDNRedirect = true, CDNEndpoint = "996.icu" };
+
+            var validationContext = new ValidationContext(model);
+            var results = model.Validate(validationContext);
+            Assert.AreEqual(results.Count(), 1);
         }
 
         [Test]
@@ -261,7 +266,7 @@ namespace Moonglade.Web.Tests.Controllers
         {
             _mockBlogConfig.Setup(p => p.ImageSettings).Returns(new ImageSettings());
             var settingsController = CreateSettingsController();
-            ImageSettingsViewModel model = new() { EnableCDNRedirect = true, CDNEndpoint = "https://cdn.996.icu/fubao" };
+            ImageSettings model = new() { EnableCDNRedirect = true, CDNEndpoint = "https://cdn.996.icu/fubao" };
 
             var result = await settingsController.Image(new(model));
 
@@ -309,7 +314,7 @@ namespace Moonglade.Web.Tests.Controllers
             _mockBlogConfig.Setup(p => p.CustomStyleSheetSettings).Returns(new CustomStyleSheetSettings());
 
             var settingsController = CreateSettingsController();
-            CustomStyleSheetSettingsViewModel model = new()
+            CustomStyleSheetSettings model = new()
             {
                 EnableCustomCss = true,
                 CssCode = string.Empty
@@ -328,7 +333,7 @@ namespace Moonglade.Web.Tests.Controllers
             _mockBlogConfig.Setup(p => p.CustomStyleSheetSettings).Returns(new CustomStyleSheetSettings());
 
             var settingsController = CreateSettingsController();
-            CustomStyleSheetSettingsViewModel model = new()
+            CustomStyleSheetSettings model = new()
             {
                 EnableCustomCss = true,
                 CssCode = ".996-{icu}"
@@ -347,7 +352,7 @@ namespace Moonglade.Web.Tests.Controllers
             _mockBlogConfig.Setup(p => p.CustomStyleSheetSettings).Returns(new CustomStyleSheetSettings());
 
             var settingsController = CreateSettingsController();
-            CustomStyleSheetSettingsViewModel model = new()
+            CustomStyleSheetSettings model = new()
             {
                 EnableCustomCss = true,
                 CssCode = ".icu { color: #996; }"

@@ -3,7 +3,6 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Moonglade.Core.CategoryFeature;
 using Moonglade.Core.PostFeature;
-using Moonglade.Web.Models;
 using System;
 using System.Linq;
 using System.Threading.Tasks;
@@ -71,7 +70,8 @@ namespace Moonglade.Web.Pages.Admin
                 Featured = post.Featured,
                 IsOriginal = post.IsOriginal,
                 OriginLink = post.OriginLink,
-                HeroImageUrl = post.HeroImageUrl
+                HeroImageUrl = post.HeroImageUrl,
+                InlineCss = post.InlineCss
             };
 
             if (post.PubDateUtc is not null)

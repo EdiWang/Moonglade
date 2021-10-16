@@ -228,6 +228,9 @@
   <data name="Incorrect language code format. e.g. en-us" xml:space="preserve">
     <value>语言代码格式错误。样例：zh-cn</value>
   </data>
+  <data name="Inline CSS" xml:space="preserve">
+    <value>内联CSS</value>
+  </data>
   <data name="Invalid Icon CSS Class" xml:space="preserve">
     <value>无效的图标CSS类名</value>
   </data>

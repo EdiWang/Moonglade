@@ -25,14 +25,25 @@
         <link href="~/css/bundle.min.css" rel="stylesheet" asp-append-version="true" />
         @Html.Raw(_javaScriptSnippet.FullScript)
     </environment>
+    <link href="~/theme.css" rel="stylesheet" asp-append-version="true" />
+    @if (BlogConfig.CustomStyleSheetSettings.EnableCustomCss)
+    {
+        <link href="~/custom.css" rel="stylesheet" asp-append-version="true" />
+    }
+    <style>
+        #img-captcha {
+            border-radius: 0 3px 3px 0;
+        }
+    </style>
 </head>
 <body class="bg-gray-1 pt-5">
     <div class="container">
         <div class="row justify-content-md-center">
             <div class="col-md-4">
-                <div class="card">
-                    <h6 class="card-header">@Localizer["Sign In"]</h6>
+                <div class="card shadow">
                     <div class="card-body">
+                        <h5 class="card-title text-center mb-4">@Localizer["Sign In"]</h5>
+
                         <form method="post">
                             <div asp-validation-summary="All" class="text-danger"></div>
                             <div class="form-floating mb-3">
@@ -44,25 +55,23 @@
                                 <label asp-for="Password"></label>
                             </div>
 
-                            <div clas="mb-2">
+                            <div class="mb-3">
                                 <div class="input-group">
-                                    <img id="img-captcha" src="~/captcha-image" data-bs-toggle="tooltip" data-placement="top" title="@Localizer["Can't read? Click to change another image."]" />
                                     <input asp-for="CaptchaCode"
                                            minlength="4"
                                            maxlength="4"
                                            placeholder="Captcha Code"
                                            autocomplete="off"
-                                           class="form-control input-captcha" required />
+                                           class="form-control" required />
+                                    <img id="img-captcha" src="~/captcha-image" data-bs-toggle="tooltip" data-placement="top" title="@Localizer["Can't read? Click to change another image."]" />
                                 </div>
                             </div>
 
-                            <hr />
-                            <input type="submit" value="@Localizer["Sign In"]" class="btn btn-success" />
+                            <input type="submit" value="@Localizer["Sign In"]" class="btn w-100 btn-accent" />
                         </form>
                     </div>
                 </div>
                 <p class="text-muted mt-4 small text-center">
-                    @Html.Raw(Helper.FormatCopyright2Html(BlogConfig.GeneralSettings.Copyright)) <br />
                     Moonglade @Helper.AppVersion
                 </p>
             </div>

@@ -120,9 +120,6 @@
   <data name="Audit Logs" xml:space="preserve">
     <value>审计日志</value>
   </data>
-  <data name="Diagnosis" xml:space="preserve">
-    <value>诊断</value>
-  </data>
   <data name="About" xml:space="preserve">
     <value>关于</value>
   </data>

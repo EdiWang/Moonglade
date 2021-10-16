@@ -56,40 +56,33 @@
 }
 
 <partial name="_SettingsHeader" />
+<div class="ps-4 pe-4">
+    <form id="form-settings" asp-controller="Settings" asp-action="CustomStyleSheet"
+          data-ajax-begin="onUpdateSettingsBegin"
+          data-ajax-complete="onUpdateSettingsComplete"
+          data-ajax-failure="onUpdateSettingsFailed"
+          data-ajax-success="onUpdateSettingsSuccess"
+          data-ajax="true"
+          data-ajax-method="POST">
+        <div asp-validation-summary="ModelOnly" class="alert alert-danger"></div>
 
-<form id="form-settings" asp-controller="Settings" asp-action="CustomStyleSheet"
-      data-ajax-begin="onUpdateSettingsBegin"
-      data-ajax-complete="onUpdateSettingsComplete"
-      data-ajax-failure="onUpdateSettingsFailed"
-      data-ajax-success="onUpdateSettingsSuccess"
-      data-ajax="true"
-      data-ajax-method="POST">
-    <div asp-validation-summary="ModelOnly" class="alert alert-danger"></div>
-    <div class="card">
-        <div class="card-header">
-            Custom CSS
+        <div class="form-check form-switch mb-3">
+            <input type="checkbox" asp-for="ViewModel.EnableCustomCss" class="form-check-input">
+            <label asp-for="ViewModel.EnableCustomCss" class="form-check-label"></label>
         </div>
-        <div class="card-body">
-            <div class="form-check form-switch mb-3">
-                <input type="checkbox" asp-for="ViewModel.EnableCustomCss" class="form-check-input">
-                <label asp-for="ViewModel.EnableCustomCss" class="form-check-label"></label>
-            </div>
 
-            <div id="CssContentEditor" class="monaco-target">
+        <div id="CssContentEditor" class="monaco-target">
 
-            </div>
-            <textarea asp-for="ViewModel.CssCode" class="settings-csscontent-textarea d-none"></textarea>
-            <div>
-                <span asp-validation-for="ViewModel.CssCode" class="text-danger"></span>
-            </div>
         </div>
-    </div>
+        <textarea asp-for="ViewModel.CssCode" class="settings-csscontent-textarea d-none"></textarea>
+        <div>
+            <span asp-validation-for="ViewModel.CssCode" class="text-danger"></span>
+        </div>
 
-    <hr />
-
-    <div>
-        <button type="submit" class="btn btn-success" id="btn-submit">
-            @Localizer["Save"]
-        </button>
-    </div>
-</form>
+        <div class="mt-3">
+            <button type="submit" class="btn btn-outline-accent" id="btn-submit">
+                @Localizer["Save"]
+            </button>
+        </div>
+    </form>
+</div>

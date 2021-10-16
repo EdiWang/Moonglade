@@ -18,15 +18,15 @@ namespace Moonglade.Core.PostFeature
 {
     public class UpdatePostCommand : IRequest<PostEntity>
     {
-        public UpdatePostCommand(Guid id, UpdatePostRequest request)
+        public UpdatePostCommand(Guid id, PostEditModel payload)
         {
             Id = id;
-            Request = request;
+            Payload = payload;
         }
 
         public Guid Id { get; set; }
 
-        public UpdatePostRequest Request { get; set; }
+        public PostEditModel Payload { get; set; }
     }
 
     public class UpdatePostCommandHandler : IRequestHandler<UpdatePostCommand, PostEntity>
@@ -65,10 +65,10 @@ namespace Moonglade.Core.PostFeature
                 throw new InvalidOperationException($"Post {request.Id} is not found.");
             }
 
-            post.CommentEnabled = request.Request.EnableComment;
-            post.PostContent = request.Request.EditorContent;
+            post.CommentEnabled = request.Payload.EnableComment;
+            post.PostContent = request.Payload.EditorContent;
             post.ContentAbstract = ContentProcessor.GetPostAbstract(
-                string.IsNullOrEmpty(request.Request.Abstract) ? request.Request.EditorContent : request.Request.Abstract.Trim(),
+                string.IsNullOrEmpty(request.Payload.Abstract) ? request.Payload.EditorContent : request.Payload.Abstract.Trim(),
                 _settings.PostAbstractWords,
                 _settings.Editor == EditorChoice.Markdown);
 
@@ -76,7 +76,7 @@ namespace Moonglade.Core.PostFeature
             // postModel.IsPublished = request.Request.IsPublished;
             // Edit draft -> save and publish, ignore false case because #221
             bool isNewPublish = false;
-            if (request.Request.IsPublished && !post.IsPublished)
+            if (request.Payload.IsPublished && !post.IsPublished)
             {
                 post.IsPublished = true;
                 post.PubDateUtc = DateTime.UtcNow;
@@ -85,24 +85,25 @@ namespace Moonglade.Core.PostFeature
             }
 
             // #325: Allow changing publish date for published posts
-            if (request.Request.PublishDate is not null && post.PubDateUtc.HasValue)
+            if (request.Payload.PublishDate is not null && post.PubDateUtc.HasValue)
             {
                 var tod = post.PubDateUtc.Value.TimeOfDay;
-                var adjustedDate = request.Request.PublishDate.Value;
+                var adjustedDate = request.Payload.PublishDate.Value;
                 post.PubDateUtc = adjustedDate.AddTicks(tod.Ticks);
             }
 
-            post.Author = request.Request.Author?.Trim();
-            post.Slug = request.Request.Slug.ToLower().Trim();
-            post.Title = request.Request.Title;
-            post.ExposedToSiteMap = request.Request.ExposedToSiteMap;
+            post.Author = request.Payload.Author?.Trim();
+            post.Slug = request.Payload.Slug.ToLower().Trim();
+            post.Title = request.Payload.Title.Trim();
+            post.ExposedToSiteMap = request.Payload.ExposedToSiteMap;
             post.LastModifiedUtc = DateTime.UtcNow;
-            post.IsFeedIncluded = request.Request.IsFeedIncluded;
-            post.ContentLanguageCode = request.Request.ContentLanguageCode;
-            post.IsFeatured = request.Request.IsFeatured;
-            post.IsOriginal = request.Request.IsOriginal;
-            post.OriginLink = string.IsNullOrWhiteSpace(request.Request.OriginLink) ? null : Helper.SterilizeLink(request.Request.OriginLink);
-            post.HeroImageUrl = string.IsNullOrWhiteSpace(request.Request.HeroImageUrl) ? null : Helper.SterilizeLink(request.Request.HeroImageUrl);
+            post.IsFeedIncluded = request.Payload.FeedIncluded;
+            post.ContentLanguageCode = request.Payload.LanguageCode;
+            post.IsFeatured = request.Payload.Featured;
+            post.IsOriginal = request.Payload.IsOriginal;
+            post.OriginLink = string.IsNullOrWhiteSpace(request.Payload.OriginLink) ? null : Helper.SterilizeLink(request.Payload.OriginLink);
+            post.HeroImageUrl = string.IsNullOrWhiteSpace(request.Payload.HeroImageUrl) ? null : Helper.SterilizeLink(request.Payload.HeroImageUrl);
+            post.InlineCss = request.Payload.InlineCss;
 
             // compute hash
             var input = $"{post.Slug}#{post.PubDateUtc.GetValueOrDefault():yyyyMMdd}";
@@ -110,7 +111,11 @@ namespace Moonglade.Core.PostFeature
             post.HashCheckSum = checkSum;
 
             // 1. Add new tags to tag lib
-            foreach (var item in request.Request.Tags.Where(item => !_tagRepo.Any(p => p.DisplayName == item)))
+            var tags = string.IsNullOrWhiteSpace(request.Payload.Tags) ?
+                Array.Empty<string>() :
+                request.Payload.Tags.Split(',').ToArray();
+
+            foreach (var item in tags.Where(item => !_tagRepo.Any(p => p.DisplayName == item)))
             {
                 await _tagRepo.AddAsync(new()
                 {
@@ -124,9 +129,9 @@ namespace Moonglade.Core.PostFeature
 
             // 2. update tags
             post.Tags.Clear();
-            if (request.Request.Tags.Any())
+            if (tags.Any())
             {
-                foreach (var tagName in request.Request.Tags)
+                foreach (var tagName in tags)
                 {
                     if (!Tag.ValidateName(tagName))
                     {
@@ -139,10 +144,12 @@ namespace Moonglade.Core.PostFeature
             }
 
             // 3. update categories
+            var catIds = request.Payload.CategoryList.Where(p => p.IsChecked).Select(p => p.Id).ToArray();
             post.PostCategory.Clear();
-            if (request.Request.CategoryIds is { Length: > 0 })
+
+            if (catIds is { Length: > 0 })
             {
-                foreach (var cid in request.Request.CategoryIds)
+                foreach (var cid in catIds)
                 {
                     post.PostCategory.Add(new()
                     {
