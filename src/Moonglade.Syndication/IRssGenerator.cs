@@ -1,7 +1,6 @@
-﻿namespace Moonglade.Syndication
+﻿namespace Moonglade.Syndication;
+
+public interface IRssGenerator
 {
-    public interface IRssGenerator
-    {
-        Task<string> WriteRssAsync();
-    }
+    Task<string> WriteRssAsync();
 }

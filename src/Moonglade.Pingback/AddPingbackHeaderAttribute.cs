@@ -1,28 +1,27 @@
 ﻿using Microsoft.AspNetCore.Mvc.Filters;
 
-namespace Moonglade.Pingback
+namespace Moonglade.Pingback;
+
+public class AddPingbackHeaderAttribute : ResultFilterAttribute
 {
-    public class AddPingbackHeaderAttribute : ResultFilterAttribute
+    private readonly string _pingbackEndpoint;
+
+    public AddPingbackHeaderAttribute(string pingbackEndpoint)
     {
-        private readonly string _pingbackEndpoint;
+        _pingbackEndpoint = pingbackEndpoint;
+    }
 
-        public AddPingbackHeaderAttribute(string pingbackEndpoint)
+    public override void OnResultExecuting(ResultExecutingContext context)
+    {
+        if (!context.HttpContext.Response.Headers.ContainsKey("x-pingback"))
         {
-            _pingbackEndpoint = pingbackEndpoint;
+            context.HttpContext.Response.Headers.Add("x-pingback",
+                new[]
+                {
+                    $"{context.HttpContext.Request.Scheme}://{context.HttpContext.Request.Host}/{_pingbackEndpoint}"
+                });
         }
 
-        public override void OnResultExecuting(ResultExecutingContext context)
-        {
-            if (!context.HttpContext.Response.Headers.ContainsKey("x-pingback"))
-            {
-                context.HttpContext.Response.Headers.Add("x-pingback",
-                    new[]
-                    {
-                        $"{context.HttpContext.Request.Scheme}://{context.HttpContext.Request.Host}/{_pingbackEndpoint}"
-                    });
-            }
-
-            base.OnResultExecuting(context);
-        }
+        base.OnResultExecuting(context);
     }
 }

@@ -2,34 +2,33 @@
 using Moonglade.Data.Entities;
 using Moonglade.Data.Infrastructure;
 
-namespace Moonglade.Core.PageFeature
-{
-    public class GetPageByIdQuery : IRequest<BlogPage>
-    {
-        public GetPageByIdQuery(Guid id)
-        {
-            Id = id;
-        }
+namespace Moonglade.Core.PageFeature;
 
-        public Guid Id { get; set; }
+public class GetPageByIdQuery : IRequest<BlogPage>
+{
+    public GetPageByIdQuery(Guid id)
+    {
+        Id = id;
     }
 
-    public class GetPageByIdQueryHandler : IRequestHandler<GetPageByIdQuery, BlogPage>
+    public Guid Id { get; set; }
+}
+
+public class GetPageByIdQueryHandler : IRequestHandler<GetPageByIdQuery, BlogPage>
+{
+    private readonly IRepository<PageEntity> _pageRepo;
+
+    public GetPageByIdQueryHandler(IRepository<PageEntity> pageRepo)
     {
-        private readonly IRepository<PageEntity> _pageRepo;
+        _pageRepo = pageRepo;
+    }
 
-        public GetPageByIdQueryHandler(IRepository<PageEntity> pageRepo)
-        {
-            _pageRepo = pageRepo;
-        }
+    public async Task<BlogPage> Handle(GetPageByIdQuery request, CancellationToken cancellationToken)
+    {
+        var entity = await _pageRepo.GetAsync(request.Id);
+        if (entity == null) return null;
 
-        public async Task<BlogPage> Handle(GetPageByIdQuery request, CancellationToken cancellationToken)
-        {
-            var entity = await _pageRepo.GetAsync(request.Id);
-            if (entity == null) return null;
-
-            var item = new BlogPage(entity);
-            return item;
-        }
+        var item = new BlogPage(entity);
+        return item;
     }
 }

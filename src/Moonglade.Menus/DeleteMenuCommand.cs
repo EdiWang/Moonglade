@@ -3,41 +3,40 @@ using Moonglade.Data;
 using Moonglade.Data.Entities;
 using Moonglade.Data.Infrastructure;
 
-namespace Moonglade.Menus
-{
-    public class DeleteMenuCommand : IRequest
-    {
-        public DeleteMenuCommand(Guid id)
-        {
-            Id = id;
-        }
+namespace Moonglade.Menus;
 
-        public Guid Id { get; set; }
+public class DeleteMenuCommand : IRequest
+{
+    public DeleteMenuCommand(Guid id)
+    {
+        Id = id;
     }
 
-    public class DeleteMenuCommandHandler : IRequestHandler<DeleteMenuCommand>
+    public Guid Id { get; set; }
+}
+
+public class DeleteMenuCommandHandler : IRequestHandler<DeleteMenuCommand>
+{
+    private readonly IRepository<MenuEntity> _menuRepo;
+    private readonly IBlogAudit _audit;
+
+    public DeleteMenuCommandHandler(IRepository<MenuEntity> menuRepo, IBlogAudit audit)
     {
-        private readonly IRepository<MenuEntity> _menuRepo;
-        private readonly IBlogAudit _audit;
+        _menuRepo = menuRepo;
+        _audit = audit;
+    }
 
-        public DeleteMenuCommandHandler(IRepository<MenuEntity> menuRepo, IBlogAudit audit)
+    public async Task<Unit> Handle(DeleteMenuCommand request, CancellationToken cancellationToken)
+    {
+        var menu = await _menuRepo.GetAsync(request.Id);
+        if (menu is null)
         {
-            _menuRepo = menuRepo;
-            _audit = audit;
+            throw new InvalidOperationException($"MenuEntity with Id '{request.Id}' not found.");
         }
 
-        public async Task<Unit> Handle(DeleteMenuCommand request, CancellationToken cancellationToken)
-        {
-            var menu = await _menuRepo.GetAsync(request.Id);
-            if (menu is null)
-            {
-                throw new InvalidOperationException($"MenuEntity with Id '{request.Id}' not found.");
-            }
+        await _menuRepo.DeleteAsync(request.Id);
+        await _audit.AddEntry(BlogEventType.Content, BlogEventId.CategoryDeleted, $"Menu '{request.Id}' deleted.");
 
-            await _menuRepo.DeleteAsync(request.Id);
-            await _audit.AddEntry(BlogEventType.Content, BlogEventId.CategoryDeleted, $"Menu '{request.Id}' deleted.");
-
-            return Unit.Value;
-        }
+        return Unit.Value;
     }
 }

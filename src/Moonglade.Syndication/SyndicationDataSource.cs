@@ -7,94 +7,93 @@ using Moonglade.Data.Infrastructure;
 using Moonglade.Data.Spec;
 using Moonglade.Utils;
 
-namespace Moonglade.Syndication
+namespace Moonglade.Syndication;
+
+public interface ISyndicationDataSource
 {
-    public interface ISyndicationDataSource
+    Task<IReadOnlyList<FeedEntry>> GetFeedDataAsync(string categoryName = null);
+}
+
+public class SyndicationDataSource : ISyndicationDataSource
+{
+    private readonly string _baseUrl;
+    private readonly AppSettings _settings;
+    private readonly IBlogConfig _blogConfig;
+    private readonly IRepository<CategoryEntity> _catRepo;
+    private readonly IRepository<PostEntity> _postRepo;
+
+    public SyndicationDataSource(
+        IOptions<AppSettings> settings,
+        IBlogConfig blogConfig,
+        IHttpContextAccessor httpContextAccessor,
+        IRepository<CategoryEntity> catRepo,
+        IRepository<PostEntity> postRepo)
     {
-        Task<IReadOnlyList<FeedEntry>> GetFeedDataAsync(string categoryName = null);
+        _settings = settings.Value;
+        _blogConfig = blogConfig;
+        _catRepo = catRepo;
+        _postRepo = postRepo;
+
+        var acc = httpContextAccessor;
+        _baseUrl = $"{acc.HttpContext.Request.Scheme}://{acc.HttpContext.Request.Host}";
     }
 
-    public class SyndicationDataSource : ISyndicationDataSource
+    public async Task<IReadOnlyList<FeedEntry>> GetFeedDataAsync(string categoryName = null)
     {
-        private readonly string _baseUrl;
-        private readonly AppSettings _settings;
-        private readonly IBlogConfig _blogConfig;
-        private readonly IRepository<CategoryEntity> _catRepo;
-        private readonly IRepository<PostEntity> _postRepo;
-
-        public SyndicationDataSource(
-            IOptions<AppSettings> settings,
-            IBlogConfig blogConfig,
-            IHttpContextAccessor httpContextAccessor,
-            IRepository<CategoryEntity> catRepo,
-            IRepository<PostEntity> postRepo)
+        IReadOnlyList<FeedEntry> itemCollection;
+        if (!string.IsNullOrWhiteSpace(categoryName))
         {
-            _settings = settings.Value;
-            _blogConfig = blogConfig;
-            _catRepo = catRepo;
-            _postRepo = postRepo;
+            var cat = await _catRepo.GetAsync(c => c.RouteName == categoryName);
+            if (cat is null) return null;
 
-            var acc = httpContextAccessor;
-            _baseUrl = $"{acc.HttpContext.Request.Scheme}://{acc.HttpContext.Request.Host}";
+            itemCollection = await GetFeedEntriesAsync(cat.Id);
+        }
+        else
+        {
+            itemCollection = await GetFeedEntriesAsync();
         }
 
-        public async Task<IReadOnlyList<FeedEntry>> GetFeedDataAsync(string categoryName = null)
+        return itemCollection;
+    }
+
+    private async Task<IReadOnlyList<FeedEntry>> GetFeedEntriesAsync(Guid? categoryId = null)
+    {
+        int? top = null;
+        if (_blogConfig.FeedSettings.RssItemCount != 0)
         {
-            IReadOnlyList<FeedEntry> itemCollection;
-            if (!string.IsNullOrWhiteSpace(categoryName))
-            {
-                var cat = await _catRepo.GetAsync(c => c.RouteName == categoryName);
-                if (cat is null) return null;
-
-                itemCollection = await GetFeedEntriesAsync(cat.Id);
-            }
-            else
-            {
-                itemCollection = await GetFeedEntriesAsync();
-            }
-
-            return itemCollection;
+            top = _blogConfig.FeedSettings.RssItemCount;
         }
 
-        private async Task<IReadOnlyList<FeedEntry>> GetFeedEntriesAsync(Guid? categoryId = null)
+        var postSpec = new PostSpec(categoryId, top);
+        var list = await _postRepo.SelectAsync(postSpec, p => p.PubDateUtc != null ? new FeedEntry
         {
-            int? top = null;
-            if (_blogConfig.FeedSettings.RssItemCount != 0)
+            Id = p.Id.ToString(),
+            Title = p.Title,
+            PubDateUtc = p.PubDateUtc.Value,
+            Description = _blogConfig.FeedSettings.UseFullContent ? p.PostContent : p.ContentAbstract,
+            Link = $"{_baseUrl}/post/{p.PubDateUtc.Value.Year}/{p.PubDateUtc.Value.Month}/{p.PubDateUtc.Value.Day}/{p.Slug}",
+            Author = _blogConfig.FeedSettings.AuthorName,
+            AuthorEmail = _blogConfig.GeneralSettings.OwnerEmail,
+            Categories = p.PostCategory.Select(pc => pc.Category.DisplayName).ToArray()
+        } : null);
+
+        // Workaround EF limitation
+        // Man, this is super ugly
+        if (_blogConfig.FeedSettings.UseFullContent && list.Any())
+        {
+            foreach (var simpleFeedItem in list)
             {
-                top = _blogConfig.FeedSettings.RssItemCount;
+                simpleFeedItem.Description = FormatPostContent(simpleFeedItem.Description);
             }
-
-            var postSpec = new PostSpec(categoryId, top);
-            var list = await _postRepo.SelectAsync(postSpec, p => p.PubDateUtc != null ? new FeedEntry
-            {
-                Id = p.Id.ToString(),
-                Title = p.Title,
-                PubDateUtc = p.PubDateUtc.Value,
-                Description = _blogConfig.FeedSettings.UseFullContent ? p.PostContent : p.ContentAbstract,
-                Link = $"{_baseUrl}/post/{p.PubDateUtc.Value.Year}/{p.PubDateUtc.Value.Month}/{p.PubDateUtc.Value.Day}/{p.Slug}",
-                Author = _blogConfig.FeedSettings.AuthorName,
-                AuthorEmail = _blogConfig.GeneralSettings.OwnerEmail,
-                Categories = p.PostCategory.Select(pc => pc.Category.DisplayName).ToArray()
-            } : null);
-
-            // Workaround EF limitation
-            // Man, this is super ugly
-            if (_blogConfig.FeedSettings.UseFullContent && list.Any())
-            {
-                foreach (var simpleFeedItem in list)
-                {
-                    simpleFeedItem.Description = FormatPostContent(simpleFeedItem.Description);
-                }
-            }
-
-            return list;
         }
 
-        private string FormatPostContent(string rawContent)
-        {
-            return _settings.Editor == EditorChoice.Markdown ?
-                ContentProcessor.MarkdownToContent(rawContent, ContentProcessor.MarkdownConvertType.Html, false) :
-                rawContent;
-        }
+        return list;
+    }
+
+    private string FormatPostContent(string rawContent)
+    {
+        return _settings.Editor == EditorChoice.Markdown ?
+            ContentProcessor.MarkdownToContent(rawContent, ContentProcessor.MarkdownConvertType.Html, false) :
+            rawContent;
     }
 }

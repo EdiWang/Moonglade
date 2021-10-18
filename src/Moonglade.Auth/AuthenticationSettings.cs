@@ -1,16 +1,15 @@
-﻿namespace Moonglade.Auth
+﻿namespace Moonglade.Auth;
+
+public class AuthenticationSettings
 {
-    public class AuthenticationSettings
+    public AuthenticationProvider Provider { get; set; }
+
+    public AzureAdOption AzureAd { get; set; }
+
+    public IReadOnlyCollection<ApiKey> ApiKeys { get; set; }
+
+    public AuthenticationSettings()
     {
-        public AuthenticationProvider Provider { get; set; }
-
-        public AzureAdOption AzureAd { get; set; }
-
-        public IReadOnlyCollection<ApiKey> ApiKeys { get; set; }
-
-        public AuthenticationSettings()
-        {
-            Provider = AuthenticationProvider.Local;
-        }
+        Provider = AuthenticationProvider.Local;
     }
 }

@@ -3,37 +3,36 @@ using Moonglade.Data.Entities;
 using Moonglade.Data.Infrastructure;
 using Moonglade.Data.Spec;
 
-namespace Moonglade.FriendLink
-{
-    public class GetLinkQuery : IRequest<Link>
-    {
-        public GetLinkQuery(Guid id)
-        {
-            Id = id;
-        }
+namespace Moonglade.FriendLink;
 
-        public Guid Id { get; set; }
+public class GetLinkQuery : IRequest<Link>
+{
+    public GetLinkQuery(Guid id)
+    {
+        Id = id;
     }
 
-    public class GetLinkQueryHandler : IRequestHandler<GetLinkQuery, Link>
+    public Guid Id { get; set; }
+}
+
+public class GetLinkQueryHandler : IRequestHandler<GetLinkQuery, Link>
+{
+    private readonly IRepository<FriendLinkEntity> _friendlinkRepo;
+
+    public GetLinkQueryHandler(IRepository<FriendLinkEntity> friendlinkRepo)
     {
-        private readonly IRepository<FriendLinkEntity> _friendlinkRepo;
+        _friendlinkRepo = friendlinkRepo;
+    }
 
-        public GetLinkQueryHandler(IRepository<FriendLinkEntity> friendlinkRepo)
-        {
-            _friendlinkRepo = friendlinkRepo;
-        }
-
-        public Task<Link> Handle(GetLinkQuery request, CancellationToken cancellationToken)
-        {
-            var item = _friendlinkRepo.SelectFirstOrDefaultAsync(
-                new FriendLinkSpec(request.Id), f => new Link
-                {
-                    Id = f.Id,
-                    LinkUrl = f.LinkUrl,
-                    Title = f.Title
-                });
-            return item;
-        }
+    public Task<Link> Handle(GetLinkQuery request, CancellationToken cancellationToken)
+    {
+        var item = _friendlinkRepo.SelectFirstOrDefaultAsync(
+            new FriendLinkSpec(request.Id), f => new Link
+            {
+                Id = f.Id,
+                LinkUrl = f.LinkUrl,
+                Title = f.Title
+            });
+        return item;
     }
 }

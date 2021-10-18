@@ -4,63 +4,62 @@ using Moonglade.Utils;
 using System.Text.Json;
 using System.Text.Json.Serialization;
 
-namespace Moonglade.Core
+namespace Moonglade.Core;
+
+public interface IReleaseCheckerClient
 {
-    public interface IReleaseCheckerClient
-    {
-        Task<ReleaseInfo> CheckNewReleaseAsync();
-    }
+    Task<ReleaseInfo> CheckNewReleaseAsync();
+}
 
-    public class ReleaseCheckerClient : IReleaseCheckerClient
-    {
-        private readonly HttpClient _httpClient;
+public class ReleaseCheckerClient : IReleaseCheckerClient
+{
+    private readonly HttpClient _httpClient;
 
-        public ReleaseCheckerClient(
-            IConfiguration configuration,
-            HttpClient httpClient)
+    public ReleaseCheckerClient(
+        IConfiguration configuration,
+        HttpClient httpClient)
+    {
+        var apiAddress = configuration["ReleaseCheckApiAddress"];
+        if (string.IsNullOrWhiteSpace(apiAddress) ||
+            !Uri.IsWellFormedUriString(apiAddress, UriKind.RelativeOrAbsolute))
         {
-            var apiAddress = configuration["ReleaseCheckApiAddress"];
-            if (string.IsNullOrWhiteSpace(apiAddress) ||
-                !Uri.IsWellFormedUriString(apiAddress, UriKind.RelativeOrAbsolute))
-            {
-                throw new InvalidOperationException($"'{apiAddress}' is not a valid API address.");
-            }
-
-            httpClient.BaseAddress = new(apiAddress);
-            httpClient.DefaultRequestHeaders.Add(HeaderNames.Accept, "application/json");
-            httpClient.DefaultRequestHeaders.Add(HeaderNames.UserAgent, $"Moonglade/{Helper.AppVersion}");
-
-            _httpClient = httpClient;
+            throw new InvalidOperationException($"'{apiAddress}' is not a valid API address.");
         }
 
-        public async Task<ReleaseInfo> CheckNewReleaseAsync()
-        {
-            var req = new HttpRequestMessage(HttpMethod.Get, string.Empty);
-            var response = await _httpClient.SendAsync(req);
+        httpClient.BaseAddress = new(apiAddress);
+        httpClient.DefaultRequestHeaders.Add(HeaderNames.Accept, "application/json");
+        httpClient.DefaultRequestHeaders.Add(HeaderNames.UserAgent, $"Moonglade/{Helper.AppVersion}");
 
-            if (!response.IsSuccessStatusCode) throw new($"CheckNewReleaseAsync() failed, response code: '{response.StatusCode}'");
-
-            var json = await response.Content.ReadAsStringAsync();
-            var info = JsonSerializer.Deserialize<ReleaseInfo>(json);
-            return info;
-        }
+        _httpClient = httpClient;
     }
 
-    public class ReleaseInfo
+    public async Task<ReleaseInfo> CheckNewReleaseAsync()
     {
-        [JsonPropertyName("html_url")]
-        public string HtmlUrl { get; set; }
+        var req = new HttpRequestMessage(HttpMethod.Get, string.Empty);
+        var response = await _httpClient.SendAsync(req);
 
-        [JsonPropertyName("tag_name")]
-        public string TagName { get; set; }
+        if (!response.IsSuccessStatusCode) throw new($"CheckNewReleaseAsync() failed, response code: '{response.StatusCode}'");
 
-        [JsonPropertyName("name")]
-        public string Name { get; set; }
-
-        [JsonPropertyName("prerelease")]
-        public bool PreRelease { get; set; }
-
-        [JsonPropertyName("created_at")]
-        public DateTime CreatedAt { get; set; }
+        var json = await response.Content.ReadAsStringAsync();
+        var info = JsonSerializer.Deserialize<ReleaseInfo>(json);
+        return info;
     }
+}
+
+public class ReleaseInfo
+{
+    [JsonPropertyName("html_url")]
+    public string HtmlUrl { get; set; }
+
+    [JsonPropertyName("tag_name")]
+    public string TagName { get; set; }
+
+    [JsonPropertyName("name")]
+    public string Name { get; set; }
+
+    [JsonPropertyName("prerelease")]
+    public bool PreRelease { get; set; }
+
+    [JsonPropertyName("created_at")]
+    public DateTime CreatedAt { get; set; }
 }

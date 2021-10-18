@@ -3,44 +3,43 @@ using Moonglade.Data.Entities;
 using Moonglade.Data.Infrastructure;
 using System.Text.Json;
 
-namespace Moonglade.Theme
+namespace Moonglade.Theme;
+
+public class CreateThemeCommand : IRequest<int>
 {
-    public class CreateThemeCommand : IRequest<int>
+    public CreateThemeCommand(string name, IDictionary<string, string> rules)
     {
-        public CreateThemeCommand(string name, IDictionary<string, string> rules)
-        {
-            Name = name;
-            Rules = rules;
-        }
-
-        public string Name { get; set; }
-
-        public IDictionary<string, string> Rules { get; set; }
+        Name = name;
+        Rules = rules;
     }
 
-    public class CreateThemeCommandHandler : IRequestHandler<CreateThemeCommand, int>
+    public string Name { get; set; }
+
+    public IDictionary<string, string> Rules { get; set; }
+}
+
+public class CreateThemeCommandHandler : IRequestHandler<CreateThemeCommand, int>
+{
+    private readonly IRepository<BlogThemeEntity> _themeRepo;
+
+    public CreateThemeCommandHandler(IRepository<BlogThemeEntity> themeRepo)
     {
-        private readonly IRepository<BlogThemeEntity> _themeRepo;
+        _themeRepo = themeRepo;
+    }
 
-        public CreateThemeCommandHandler(IRepository<BlogThemeEntity> themeRepo)
+    public async Task<int> Handle(CreateThemeCommand request, CancellationToken cancellationToken)
+    {
+        if (_themeRepo.Any(p => p.ThemeName == request.Name.Trim())) return 0;
+
+        var rules = JsonSerializer.Serialize(request.Rules);
+        var blogTheme = new BlogThemeEntity
         {
-            _themeRepo = themeRepo;
-        }
+            ThemeName = request.Name.Trim(),
+            CssRules = rules,
+            ThemeType = ThemeType.User
+        };
 
-        public async Task<int> Handle(CreateThemeCommand request, CancellationToken cancellationToken)
-        {
-            if (_themeRepo.Any(p => p.ThemeName == request.Name.Trim())) return 0;
-
-            var rules = JsonSerializer.Serialize(request.Rules);
-            var blogTheme = new BlogThemeEntity
-            {
-                ThemeName = request.Name.Trim(),
-                CssRules = rules,
-                ThemeType = ThemeType.User
-            };
-
-            await _themeRepo.AddAsync(blogTheme);
-            return blogTheme.Id;
-        }
+        await _themeRepo.AddAsync(blogTheme);
+        return blogTheme.Id;
     }
 }

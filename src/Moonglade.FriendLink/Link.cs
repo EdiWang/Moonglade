@@ -1,11 +1,10 @@
-﻿namespace Moonglade.FriendLink
+﻿namespace Moonglade.FriendLink;
+
+public class Link
 {
-    public class Link
-    {
-        public Guid Id { get; set; }
+    public Guid Id { get; set; }
 
-        public string Title { get; set; }
+    public string Title { get; set; }
 
-        public string LinkUrl { get; set; }
-    }
+    public string LinkUrl { get; set; }
 }

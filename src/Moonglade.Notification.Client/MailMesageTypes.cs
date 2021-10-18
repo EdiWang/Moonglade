@@ -1,10 +1,9 @@
-﻿namespace Moonglade.Notification.Client
+﻿namespace Moonglade.Notification.Client;
+
+public enum MailMesageTypes
 {
-    public enum MailMesageTypes
-    {
-        TestMail = 0,
-        NewCommentNotification = 100,
-        AdminReplyNotification = 101,
-        BeingPinged = 200
-    }
+    TestMail = 0,
+    NewCommentNotification = 100,
+    AdminReplyNotification = 101,
+    BeingPinged = 200
 }

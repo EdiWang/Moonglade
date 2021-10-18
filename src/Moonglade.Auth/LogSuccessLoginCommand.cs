@@ -2,40 +2,39 @@
 using Moonglade.Data.Entities;
 using Moonglade.Data.Infrastructure;
 
-namespace Moonglade.Auth
-{
-    public class LogSuccessLoginCommand : IRequest
-    {
-        public LogSuccessLoginCommand(Guid id, string ipAddress)
-        {
-            Id = id;
-            IpAddress = ipAddress;
-        }
+namespace Moonglade.Auth;
 
-        public Guid Id { get; set; }
-        public string IpAddress { get; set; }
+public class LogSuccessLoginCommand : IRequest
+{
+    public LogSuccessLoginCommand(Guid id, string ipAddress)
+    {
+        Id = id;
+        IpAddress = ipAddress;
     }
 
-    public class LogSuccessLoginCommandHandler : IRequestHandler<LogSuccessLoginCommand>
+    public Guid Id { get; set; }
+    public string IpAddress { get; set; }
+}
+
+public class LogSuccessLoginCommandHandler : IRequestHandler<LogSuccessLoginCommand>
+{
+    private readonly IRepository<LocalAccountEntity> _accountRepo;
+
+    public LogSuccessLoginCommandHandler(IRepository<LocalAccountEntity> accountRepo)
     {
-        private readonly IRepository<LocalAccountEntity> _accountRepo;
+        _accountRepo = accountRepo;
+    }
 
-        public LogSuccessLoginCommandHandler(IRepository<LocalAccountEntity> accountRepo)
+    public async Task<Unit> Handle(LogSuccessLoginCommand request, CancellationToken cancellationToken)
+    {
+        var entity = await _accountRepo.GetAsync(request.Id);
+        if (entity is not null)
         {
-            _accountRepo = accountRepo;
+            entity.LastLoginIp = request.IpAddress.Trim();
+            entity.LastLoginTimeUtc = DateTime.UtcNow;
+            await _accountRepo.UpdateAsync(entity);
         }
 
-        public async Task<Unit> Handle(LogSuccessLoginCommand request, CancellationToken cancellationToken)
-        {
-            var entity = await _accountRepo.GetAsync(request.Id);
-            if (entity is not null)
-            {
-                entity.LastLoginIp = request.IpAddress.Trim();
-                entity.LastLoginTimeUtc = DateTime.UtcNow;
-                await _accountRepo.UpdateAsync(entity);
-            }
-
-            return Unit.Value;
-        }
+        return Unit.Value;
     }
 }

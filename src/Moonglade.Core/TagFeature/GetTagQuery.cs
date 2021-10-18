@@ -3,31 +3,30 @@ using Moonglade.Data.Entities;
 using Moonglade.Data.Infrastructure;
 using Moonglade.Data.Spec;
 
-namespace Moonglade.Core.TagFeature
-{
-    public class GetTagQuery : IRequest<Tag>
-    {
-        public GetTagQuery(string normalizedName)
-        {
-            NormalizedName = normalizedName;
-        }
+namespace Moonglade.Core.TagFeature;
 
-        public string NormalizedName { get; set; }
+public class GetTagQuery : IRequest<Tag>
+{
+    public GetTagQuery(string normalizedName)
+    {
+        NormalizedName = normalizedName;
     }
 
-    public class GetTagQueryHandler : IRequestHandler<GetTagQuery, Tag>
+    public string NormalizedName { get; set; }
+}
+
+public class GetTagQueryHandler : IRequestHandler<GetTagQuery, Tag>
+{
+    private readonly IRepository<TagEntity> _tagRepo;
+
+    public GetTagQueryHandler(IRepository<TagEntity> tagRepo)
     {
-        private readonly IRepository<TagEntity> _tagRepo;
+        _tagRepo = tagRepo;
+    }
 
-        public GetTagQueryHandler(IRepository<TagEntity> tagRepo)
-        {
-            _tagRepo = tagRepo;
-        }
-
-        public Task<Tag> Handle(GetTagQuery request, CancellationToken cancellationToken)
-        {
-            var tag = _tagRepo.SelectFirstOrDefault(new TagSpec(request.NormalizedName), Tag.EntitySelector);
-            return Task.FromResult(tag);
-        }
+    public Task<Tag> Handle(GetTagQuery request, CancellationToken cancellationToken)
+    {
+        var tag = _tagRepo.SelectFirstOrDefault(new TagSpec(request.NormalizedName), Tag.EntitySelector);
+        return Task.FromResult(tag);
     }
 }

@@ -4,58 +4,57 @@ using Moonglade.Data.Infrastructure;
 using System.Text;
 using System.Text.Json;
 
-namespace Moonglade.Theme
-{
-    public class GetStyleSheetQuery : IRequest<string>
-    {
-        public GetStyleSheetQuery(int id)
-        {
-            Id = id;
-        }
+namespace Moonglade.Theme;
 
-        public int Id { get; set; }
+public class GetStyleSheetQuery : IRequest<string>
+{
+    public GetStyleSheetQuery(int id)
+    {
+        Id = id;
     }
 
-    public class GetStyleSheetQueryHandler : IRequestHandler<GetStyleSheetQuery, string>
-    {
-        private readonly IRepository<BlogThemeEntity> _themeRepo;
+    public int Id { get; set; }
+}
 
-        public GetStyleSheetQueryHandler(IRepository<BlogThemeEntity> themeRepo)
+public class GetStyleSheetQueryHandler : IRequestHandler<GetStyleSheetQuery, string>
+{
+    private readonly IRepository<BlogThemeEntity> _themeRepo;
+
+    public GetStyleSheetQueryHandler(IRepository<BlogThemeEntity> themeRepo)
+    {
+        _themeRepo = themeRepo;
+    }
+
+    public async Task<string> Handle(GetStyleSheetQuery request, CancellationToken cancellationToken)
+    {
+        var theme = await _themeRepo.GetAsync(request.Id);
+        if (null == theme) return null;
+
+        if (string.IsNullOrWhiteSpace(theme.CssRules))
         {
-            _themeRepo = themeRepo;
+            throw new InvalidDataException($"Theme id '{request.Id}' is having empty CSS Rules");
         }
 
-        public async Task<string> Handle(GetStyleSheetQuery request, CancellationToken cancellationToken)
+        try
         {
-            var theme = await _themeRepo.GetAsync(request.Id);
-            if (null == theme) return null;
+            var rules = JsonSerializer.Deserialize<IDictionary<string, string>>(theme.CssRules);
 
-            if (string.IsNullOrWhiteSpace(theme.CssRules))
+            var sb = new StringBuilder();
+            sb.Append(":root {");
+            foreach (var (key, value) in rules)
             {
-                throw new InvalidDataException($"Theme id '{request.Id}' is having empty CSS Rules");
-            }
-
-            try
-            {
-                var rules = JsonSerializer.Deserialize<IDictionary<string, string>>(theme.CssRules);
-
-                var sb = new StringBuilder();
-                sb.Append(":root {");
-                foreach (var (key, value) in rules)
+                if (null != key && null != value)
                 {
-                    if (null != key && null != value)
-                    {
-                        sb.Append($"{key}: {value};");
-                    }
+                    sb.Append($"{key}: {value};");
                 }
-                sb.Append('}');
+            }
+            sb.Append('}');
 
-                return sb.ToString();
-            }
-            catch (JsonException)
-            {
-                throw new InvalidDataException($"Theme id '{request.Id}' CssRules is not a valid json");
-            }
+            return sb.ToString();
+        }
+        catch (JsonException)
+        {
+            throw new InvalidDataException($"Theme id '{request.Id}' CssRules is not a valid json");
         }
     }
 }

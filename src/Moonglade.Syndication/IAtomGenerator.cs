@@ -1,7 +1,6 @@
-﻿namespace Moonglade.Syndication
+﻿namespace Moonglade.Syndication;
+
+public interface IAtomGenerator
 {
-    public interface IAtomGenerator
-    {
-        Task<string> WriteAtomAsync();
-    }
+    Task<string> WriteAtomAsync();
 }

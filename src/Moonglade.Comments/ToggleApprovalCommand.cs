@@ -4,49 +4,48 @@ using Moonglade.Data.Entities;
 using Moonglade.Data.Infrastructure;
 using Moonglade.Data.Spec;
 
-namespace Moonglade.Comments
-{
-    public class ToggleApprovalCommand : IRequest
-    {
-        public ToggleApprovalCommand(Guid[] commentIds)
-        {
-            CommentIds = commentIds;
-        }
+namespace Moonglade.Comments;
 
-        public Guid[] CommentIds { get; set; }
+public class ToggleApprovalCommand : IRequest
+{
+    public ToggleApprovalCommand(Guid[] commentIds)
+    {
+        CommentIds = commentIds;
     }
 
-    public class ToggleApprovalCommandHandler : IRequestHandler<ToggleApprovalCommand>
+    public Guid[] CommentIds { get; set; }
+}
+
+public class ToggleApprovalCommandHandler : IRequestHandler<ToggleApprovalCommand>
+{
+    private readonly IBlogAudit _audit;
+    private readonly IRepository<CommentEntity> _commentRepo;
+
+    public ToggleApprovalCommandHandler(IBlogAudit audit, IRepository<CommentEntity> commentRepo)
     {
-        private readonly IBlogAudit _audit;
-        private readonly IRepository<CommentEntity> _commentRepo;
+        _audit = audit;
+        _commentRepo = commentRepo;
+    }
 
-        public ToggleApprovalCommandHandler(IBlogAudit audit, IRepository<CommentEntity> commentRepo)
+    public async Task<Unit> Handle(ToggleApprovalCommand request, CancellationToken cancellationToken)
+    {
+        if (request.CommentIds is null || !request.CommentIds.Any())
         {
-            _audit = audit;
-            _commentRepo = commentRepo;
+            throw new ArgumentNullException(nameof(request.CommentIds));
         }
 
-        public async Task<Unit> Handle(ToggleApprovalCommand request, CancellationToken cancellationToken)
+        var spec = new CommentSpec(request.CommentIds);
+        var comments = await _commentRepo.GetAsync(spec);
+        foreach (var cmt in comments)
         {
-            if (request.CommentIds is null || !request.CommentIds.Any())
-            {
-                throw new ArgumentNullException(nameof(request.CommentIds));
-            }
+            cmt.IsApproved = !cmt.IsApproved;
+            await _commentRepo.UpdateAsync(cmt);
 
-            var spec = new CommentSpec(request.CommentIds);
-            var comments = await _commentRepo.GetAsync(spec);
-            foreach (var cmt in comments)
-            {
-                cmt.IsApproved = !cmt.IsApproved;
-                await _commentRepo.UpdateAsync(cmt);
-
-                string logMessage = $"Updated comment approval status to '{cmt.IsApproved}' for comment id: '{cmt.Id}'";
-                await _audit.AddEntry(
-                    BlogEventType.Content, cmt.IsApproved ? BlogEventId.CommentApproval : BlogEventId.CommentDisapproval, logMessage);
-            }
-
-            return Unit.Value;
+            string logMessage = $"Updated comment approval status to '{cmt.IsApproved}' for comment id: '{cmt.Id}'";
+            await _audit.AddEntry(
+                BlogEventType.Content, cmt.IsApproved ? BlogEventId.CommentApproval : BlogEventId.CommentDisapproval, logMessage);
         }
+
+        return Unit.Value;
     }
 }

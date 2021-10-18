@@ -3,31 +3,30 @@ using Moonglade.Caching;
 using Moonglade.Data.Entities;
 using Moonglade.Data.Infrastructure;
 
-namespace Moonglade.Core.CategoryFeature
+namespace Moonglade.Core.CategoryFeature;
+
+public class GetCategoriesQuery : IRequest<IReadOnlyList<Category>>
 {
-    public class GetCategoriesQuery : IRequest<IReadOnlyList<Category>>
+}
+
+public class GetCategoriesQueryHandler : IRequestHandler<GetCategoriesQuery, IReadOnlyList<Category>>
+{
+    private readonly IRepository<CategoryEntity> _catRepo;
+    private readonly IBlogCache _cache;
+
+    public GetCategoriesQueryHandler(IRepository<CategoryEntity> catRepo, IBlogCache cache)
     {
+        _catRepo = catRepo;
+        _cache = cache;
     }
 
-    public class GetCategoriesQueryHandler : IRequestHandler<GetCategoriesQuery, IReadOnlyList<Category>>
+    public Task<IReadOnlyList<Category>> Handle(GetCategoriesQuery request, CancellationToken cancellationToken)
     {
-        private readonly IRepository<CategoryEntity> _catRepo;
-        private readonly IBlogCache _cache;
-
-        public GetCategoriesQueryHandler(IRepository<CategoryEntity> catRepo, IBlogCache cache)
+        return _cache.GetOrCreateAsync(CacheDivision.General, "allcats", async entry =>
         {
-            _catRepo = catRepo;
-            _cache = cache;
-        }
-
-        public Task<IReadOnlyList<Category>> Handle(GetCategoriesQuery request, CancellationToken cancellationToken)
-        {
-            return _cache.GetOrCreateAsync(CacheDivision.General, "allcats", async entry =>
-            {
-                entry.SlidingExpiration = TimeSpan.FromHours(1);
-                var list = await _catRepo.SelectAsync(Category.EntitySelector);
-                return list;
-            });
-        }
+            entry.SlidingExpiration = TimeSpan.FromHours(1);
+            var list = await _catRepo.SelectAsync(Category.EntitySelector);
+            return list;
+        });
     }
 }

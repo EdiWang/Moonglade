@@ -1,7 +1,6 @@
-﻿namespace Moonglade.Notification.Client
+﻿namespace Moonglade.Notification.Client;
+
+internal class EmptyPayload
 {
-    internal class EmptyPayload
-    {
-        public static EmptyPayload Default => null;
-    }
+    public static EmptyPayload Default => null;
 }

@@ -3,41 +3,40 @@ using Moonglade.Data.Entities;
 using Moonglade.Data.Infrastructure;
 using Moonglade.Data.Spec;
 
-namespace Moonglade.Comments
-{
-    public class GetApprovedCommentsQuery : IRequest<IReadOnlyList<Comment>>
-    {
-        public GetApprovedCommentsQuery(Guid postId)
-        {
-            PostId = postId;
-        }
+namespace Moonglade.Comments;
 
-        public Guid PostId { get; set; }
+public class GetApprovedCommentsQuery : IRequest<IReadOnlyList<Comment>>
+{
+    public GetApprovedCommentsQuery(Guid postId)
+    {
+        PostId = postId;
     }
 
-    public class GetApprovedCommentsQueryHandler : IRequestHandler<GetApprovedCommentsQuery, IReadOnlyList<Comment>>
+    public Guid PostId { get; set; }
+}
+
+public class GetApprovedCommentsQueryHandler : IRequestHandler<GetApprovedCommentsQuery, IReadOnlyList<Comment>>
+{
+    private readonly IRepository<CommentEntity> _commentRepo;
+
+    public GetApprovedCommentsQueryHandler(IRepository<CommentEntity> commentRepo)
     {
-        private readonly IRepository<CommentEntity> _commentRepo;
+        _commentRepo = commentRepo;
+    }
 
-        public GetApprovedCommentsQueryHandler(IRepository<CommentEntity> commentRepo)
+    public Task<IReadOnlyList<Comment>> Handle(GetApprovedCommentsQuery request, CancellationToken cancellationToken)
+    {
+        return _commentRepo.SelectAsync(new CommentSpec(request.PostId), c => new Comment
         {
-            _commentRepo = commentRepo;
-        }
-
-        public Task<IReadOnlyList<Comment>> Handle(GetApprovedCommentsQuery request, CancellationToken cancellationToken)
-        {
-            return _commentRepo.SelectAsync(new CommentSpec(request.PostId), c => new Comment
+            CommentContent = c.CommentContent,
+            CreateTimeUtc = c.CreateTimeUtc,
+            Username = c.Username,
+            Email = c.Email,
+            CommentReplies = c.Replies.Select(cr => new CommentReplyDigest
             {
-                CommentContent = c.CommentContent,
-                CreateTimeUtc = c.CreateTimeUtc,
-                Username = c.Username,
-                Email = c.Email,
-                CommentReplies = c.Replies.Select(cr => new CommentReplyDigest
-                {
-                    ReplyContent = cr.ReplyContent,
-                    ReplyTimeUtc = cr.CreateTimeUtc
-                }).ToList()
-            });
-        }
+                ReplyContent = cr.ReplyContent,
+                ReplyTimeUtc = cr.CreateTimeUtc
+            }).ToList()
+        });
     }
 }

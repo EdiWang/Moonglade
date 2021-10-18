@@ -1,13 +1,12 @@
-﻿namespace Moonglade.Pingback
+﻿namespace Moonglade.Pingback;
+
+public enum PingbackResponse
 {
-    public enum PingbackResponse
-    {
-        Success,
-        GenericError,
-        InvalidPingRequest,
-        Error32TargetUriNotExist,
-        Error48PingbackAlreadyRegistered,
-        Error17SourceNotContainTargetUri,
-        SpamDetectedFakeNotFound
-    }
+    Success,
+    GenericError,
+    InvalidPingRequest,
+    Error32TargetUriNotExist,
+    Error48PingbackAlreadyRegistered,
+    Error17SourceNotContainTargetUri,
+    SpamDetectedFakeNotFound
 }
