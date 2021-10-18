@@ -7,7 +7,7 @@
 
   <ItemGroup>
     <FrameworkReference Include="Microsoft.AspNetCore.App" />
-    <PackageReference Include="Microsoft.Extensions.Http.Polly" Version="5.0.1" />
+    <PackageReference Include="Microsoft.Extensions.Http.Polly" Version="6.0.0-rc.2.21480.10" />
     <PackageReference Include="MediatR" Version="9.0.0" />
   </ItemGroup>
 
