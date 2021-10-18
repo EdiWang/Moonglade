@@ -133,7 +133,7 @@ public static class Helper
         if (string.IsNullOrWhiteSpace(plainMessage)) return string.Empty;
 
         var data = Encoding.UTF8.GetBytes(plainMessage);
-        using var sha = HashAlgorithm.Create("SHA256");
+        using var sha = SHA256.Create();
         sha.TransformFinalBlock(data, 0, data.Length);
         return Convert.ToBase64String(sha.Hash ?? throw new InvalidOperationException());
     }
