@@ -2,23 +2,22 @@ using MediatR;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Moonglade.Core.PostFeature;
 
-namespace Moonglade.Web.Pages
+namespace Moonglade.Web.Pages;
+
+public class ArchiveModel : PageModel
 {
-    public class ArchiveModel : PageModel
+    private readonly IMediator _mediator;
+
+    public ArchiveModel(IMediator mediator)
     {
-        private readonly IMediator _mediator;
+        _mediator = mediator;
+    }
 
-        public ArchiveModel(IMediator mediator)
-        {
-            _mediator = mediator;
-        }
+    public IReadOnlyList<Archive> Archives { get; set; }
 
-        public IReadOnlyList<Archive> Archives { get; set; }
-
-        public async Task OnGet()
-        {
-            var archives = await _mediator.Send(new GetArchiveQuery());
-            Archives = archives;
-        }
+    public async Task OnGet()
+    {
+        var archives = await _mediator.Send(new GetArchiveQuery());
+        Archives = archives;
     }
 }

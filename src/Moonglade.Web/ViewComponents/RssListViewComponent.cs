@@ -2,34 +2,33 @@
 using Microsoft.AspNetCore.Mvc;
 using Moonglade.Core.CategoryFeature;
 
-namespace Moonglade.Web.ViewComponents
+namespace Moonglade.Web.ViewComponents;
+
+public class RssListViewComponent : ViewComponent
 {
-    public class RssListViewComponent : ViewComponent
+    private readonly ILogger<RssListViewComponent> _logger;
+    private readonly IMediator _mediator;
+
+
+    public RssListViewComponent(ILogger<RssListViewComponent> logger, IMediator mediator)
     {
-        private readonly ILogger<RssListViewComponent> _logger;
-        private readonly IMediator _mediator;
+        _logger = logger;
+        _mediator = mediator;
+    }
 
-
-        public RssListViewComponent(ILogger<RssListViewComponent> logger, IMediator mediator)
+    public async Task<IViewComponentResult> InvokeAsync()
+    {
+        try
         {
-            _logger = logger;
-            _mediator = mediator;
+            var cats = await _mediator.Send(new GetCategoriesQuery());
+            var items = cats.Select(c => new KeyValuePair<string, string>(c.DisplayName, c.RouteName));
+
+            return View(items);
         }
-
-        public async Task<IViewComponentResult> InvokeAsync()
+        catch (Exception e)
         {
-            try
-            {
-                var cats = await _mediator.Send(new GetCategoriesQuery());
-                var items = cats.Select(c => new KeyValuePair<string, string>(c.DisplayName, c.RouteName));
-
-                return View(items);
-            }
-            catch (Exception e)
-            {
-                _logger.LogError(e, "Error.");
-                return Content(e.Message);
-            }
+            _logger.LogError(e, "Error.");
+            return Content(e.Message);
         }
     }
 }

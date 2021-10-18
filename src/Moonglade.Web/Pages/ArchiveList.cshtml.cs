@@ -3,40 +3,39 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Moonglade.Core.PostFeature;
 
-namespace Moonglade.Web.Pages
+namespace Moonglade.Web.Pages;
+
+public class ArchiveListModel : PageModel
 {
-    public class ArchiveListModel : PageModel
+    private readonly IMediator _mediator;
+
+    public IReadOnlyList<PostDigest> Posts { get; set; }
+
+    public ArchiveListModel(IMediator mediator)
     {
-        private readonly IMediator _mediator;
+        _mediator = mediator;
+    }
 
-        public IReadOnlyList<PostDigest> Posts { get; set; }
+    public async Task<IActionResult> OnGetAsync(int year, int? month)
+    {
+        if (year > DateTime.UtcNow.Year) return BadRequest();
 
-        public ArchiveListModel(IMediator mediator)
+        IReadOnlyList<PostDigest> model;
+
+        if (month is not null)
         {
-            _mediator = mediator;
+            // {year}/{month}
+            ViewData["ArchiveInfo"] = $"{year}.{month}";
+            model = await _mediator.Send(new ListArchiveQuery(year, month));
+        }
+        else
+        {
+            // {year}
+            ViewData["ArchiveInfo"] = $"{year}";
+            model = await _mediator.Send(new ListArchiveQuery(year));
         }
 
-        public async Task<IActionResult> OnGetAsync(int year, int? month)
-        {
-            if (year > DateTime.UtcNow.Year) return BadRequest();
-
-            IReadOnlyList<PostDigest> model;
-
-            if (month is not null)
-            {
-                // {year}/{month}
-                ViewData["ArchiveInfo"] = $"{year}.{month}";
-                model = await _mediator.Send(new ListArchiveQuery(year, month));
-            }
-            else
-            {
-                // {year}
-                ViewData["ArchiveInfo"] = $"{year}";
-                model = await _mediator.Send(new ListArchiveQuery(year));
-            }
-
-            Posts = model;
-            return Page();
-        }
+        Posts = model;
+        return Page();
     }
 }

@@ -7,50 +7,49 @@ using Moonglade.Core.CategoryFeature;
 using Moonglade.Core.PostFeature;
 using X.PagedList;
 
-namespace Moonglade.Web.Pages
+namespace Moonglade.Web.Pages;
+
+public class CategoryListModel : PageModel
 {
-    public class CategoryListModel : PageModel
+    private readonly IMediator _mediator;
+    private readonly IBlogConfig _blogConfig;
+    private readonly IBlogCache _cache;
+
+    [BindProperty(SupportsGet = true)]
+    public int P { get; set; }
+    public StaticPagedList<PostDigest> Posts { get; set; }
+
+    public CategoryListModel(
+        IBlogConfig blogConfig,
+        IMediator mediator,
+        IBlogCache cache)
     {
-        private readonly IMediator _mediator;
-        private readonly IBlogConfig _blogConfig;
-        private readonly IBlogCache _cache;
+        _blogConfig = blogConfig;
+        _mediator = mediator;
+        _cache = cache;
 
-        [BindProperty(SupportsGet = true)]
-        public int P { get; set; }
-        public StaticPagedList<PostDigest> Posts { get; set; }
+        P = 1;
+    }
 
-        public CategoryListModel(
-            IBlogConfig blogConfig,
-            IMediator mediator,
-            IBlogCache cache)
-        {
-            _blogConfig = blogConfig;
-            _mediator = mediator;
-            _cache = cache;
+    public async Task<IActionResult> OnGetAsync(string routeName)
+    {
+        if (string.IsNullOrWhiteSpace(routeName)) return NotFound();
 
-            P = 1;
-        }
+        var pageSize = _blogConfig.ContentSettings.PostListPageSize;
+        var cat = await _mediator.Send(new GetCategoryByRouteCommand(routeName));
 
-        public async Task<IActionResult> OnGetAsync(string routeName)
-        {
-            if (string.IsNullOrWhiteSpace(routeName)) return NotFound();
+        if (cat is null) return NotFound();
 
-            var pageSize = _blogConfig.ContentSettings.PostListPageSize;
-            var cat = await _mediator.Send(new GetCategoryByRouteCommand(routeName));
+        ViewData["CategoryDisplayName"] = cat.DisplayName;
+        ViewData["CategoryRouteName"] = cat.RouteName;
+        ViewData["CategoryDescription"] = cat.Note;
 
-            if (cat is null) return NotFound();
+        var postCount = await _cache.GetOrCreateAsync(CacheDivision.PostCountCategory, cat.Id.ToString(),
+            _ => _mediator.Send(new CountPostQuery(CountType.Category, cat.Id)));
 
-            ViewData["CategoryDisplayName"] = cat.DisplayName;
-            ViewData["CategoryRouteName"] = cat.RouteName;
-            ViewData["CategoryDescription"] = cat.Note;
+        var postList = await _mediator.Send(new ListPostsQuery(pageSize, P, cat.Id));
 
-            var postCount = await _cache.GetOrCreateAsync(CacheDivision.PostCountCategory, cat.Id.ToString(),
-                _ => _mediator.Send(new CountPostQuery(CountType.Category, cat.Id)));
-
-            var postList = await _mediator.Send(new ListPostsQuery(pageSize, P, cat.Id));
-
-            Posts = new(postList, P, pageSize, postCount);
-            return Page();
-        }
+        Posts = new(postList, P, pageSize, postCount);
+        return Page();
     }
 }

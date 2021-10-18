@@ -1,8 +1,7 @@
-﻿namespace Moonglade.Web.Models
+﻿namespace Moonglade.Web.Models;
+
+public class BlogApiErrorModel
 {
-    public class BlogApiErrorModel
-    {
-        public string CombinedErrorMessage { get; set; }
-        public string RequestId { get; set; }
-    }
+    public string CombinedErrorMessage { get; set; }
+    public string RequestId { get; set; }
 }

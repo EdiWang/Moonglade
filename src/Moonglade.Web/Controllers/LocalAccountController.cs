@@ -7,73 +7,72 @@ using Moonglade.Web.Models.Settings;
 using System.ComponentModel.DataAnnotations;
 using System.Text.RegularExpressions;
 
-namespace Moonglade.Web.Controllers
+namespace Moonglade.Web.Controllers;
+
+[Authorize]
+[ApiController]
+[Route("api/[controller]")]
+public class LocalAccountController : ControllerBase
 {
-    [Authorize]
-    [ApiController]
-    [Route("api/[controller]")]
-    public class LocalAccountController : ControllerBase
+    private readonly IMediator _mediator;
+
+    public LocalAccountController(IMediator mediator)
     {
-        private readonly IMediator _mediator;
+        _mediator = mediator;
+    }
 
-        public LocalAccountController(IMediator mediator)
+    [HttpPost]
+    [ProducesResponseType(StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status409Conflict)]
+    public async Task<IActionResult> Create(EditAccountRequest model)
+    {
+        if (await _mediator.Send(new AccountExistsQuery(model.Username)))
         {
-            _mediator = mediator;
+            ModelState.AddModelError("username", $"User '{model.Username}' already exist.");
+            return Conflict(ModelState);
         }
 
-        [HttpPost]
-        [ProducesResponseType(StatusCodes.Status200OK)]
-        [ProducesResponseType(StatusCodes.Status409Conflict)]
-        public async Task<IActionResult> Create(EditAccountRequest model)
-        {
-            if (await _mediator.Send(new AccountExistsQuery(model.Username)))
-            {
-                ModelState.AddModelError("username", $"User '{model.Username}' already exist.");
-                return Conflict(ModelState);
-            }
+        await _mediator.Send(new CreateAccountCommand(model.Username, model.Password));
+        return Ok();
+    }
 
-            await _mediator.Send(new CreateAccountCommand(model.Username, model.Password));
-            return Ok();
+    [HttpDelete("{id:guid}")]
+    [ProducesResponseType(StatusCodes.Status204NoContent)]
+    [ProducesResponseType(StatusCodes.Status409Conflict)]
+    public async Task<IActionResult> Delete([NotEmpty] Guid id)
+    {
+        var uidClaim = User.Claims.FirstOrDefault(c => c.Type == "uid");
+        if (null == uidClaim || string.IsNullOrWhiteSpace(uidClaim.Value))
+        {
+            return StatusCode(StatusCodes.Status500InternalServerError, "Can not get current uid.");
         }
 
-        [HttpDelete("{id:guid}")]
-        [ProducesResponseType(StatusCodes.Status204NoContent)]
-        [ProducesResponseType(StatusCodes.Status409Conflict)]
-        public async Task<IActionResult> Delete([NotEmpty] Guid id)
+        if (id.ToString() == uidClaim.Value)
         {
-            var uidClaim = User.Claims.FirstOrDefault(c => c.Type == "uid");
-            if (null == uidClaim || string.IsNullOrWhiteSpace(uidClaim.Value))
-            {
-                return StatusCode(StatusCodes.Status500InternalServerError, "Can not get current uid.");
-            }
-
-            if (id.ToString() == uidClaim.Value)
-            {
-                return Conflict("Can not delete current user.");
-            }
-
-            var count = await _mediator.Send(new CountAccountsQuery());
-            if (count == 1)
-            {
-                return Conflict("Can not delete last account.");
-            }
-
-            await _mediator.Send(new DeleteAccountQuery(id));
-            return NoContent();
+            return Conflict("Can not delete current user.");
         }
 
-        [HttpPut("{id:guid}/password")]
-        [ProducesResponseType(StatusCodes.Status204NoContent)]
-        [ProducesResponseType(StatusCodes.Status409Conflict)]
-        public async Task<IActionResult> ResetPassword([NotEmpty] Guid id, [FromBody][Required] string newPassword)
+        var count = await _mediator.Send(new CountAccountsQuery());
+        if (count == 1)
         {
-            if (!Regex.IsMatch(newPassword, @"^(?=.*[A-Za-z])(?=.*\d)[!@#$%^&*A-Za-z\d]{8,}$"))
-            {
-                return Conflict("Password must be minimum eight characters, at least one letter and one number");
-            }
-
-            await _mediator.Send(new UpdatePasswordCommand(id, newPassword));
-            return NoContent();
+            return Conflict("Can not delete last account.");
         }
+
+        await _mediator.Send(new DeleteAccountQuery(id));
+        return NoContent();
+    }
+
+    [HttpPut("{id:guid}/password")]
+    [ProducesResponseType(StatusCodes.Status204NoContent)]
+    [ProducesResponseType(StatusCodes.Status409Conflict)]
+    public async Task<IActionResult> ResetPassword([NotEmpty] Guid id, [FromBody][Required] string newPassword)
+    {
+        if (!Regex.IsMatch(newPassword, @"^(?=.*[A-Za-z])(?=.*\d)[!@#$%^&*A-Za-z\d]{8,}$"))
+        {
+            return Conflict("Password must be minimum eight characters, at least one letter and one number");
+        }
+
+        await _mediator.Send(new UpdatePasswordCommand(id, newPassword));
+        return NoContent();
     }
 }

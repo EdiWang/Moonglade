@@ -4,52 +4,51 @@ using Microsoft.AspNetCore.Mvc;
 using Moonglade.Data.Porting;
 using Moonglade.Utils;
 
-namespace Moonglade.Web.Controllers
+namespace Moonglade.Web.Controllers;
+
+[Authorize]
+[ApiController]
+[Route("api/[controller]")]
+public class DataPortingController : ControllerBase
 {
-    [Authorize]
-    [ApiController]
-    [Route("api/[controller]")]
-    public class DataPortingController : ControllerBase
+    private readonly IMediator _mediator;
+
+    public DataPortingController(IMediator mediator)
     {
-        private readonly IMediator _mediator;
+        _mediator = mediator;
+    }
 
-        public DataPortingController(IMediator mediator)
+    [HttpGet("export/{type}")]
+    [ProducesResponseType(StatusCodes.Status400BadRequest)]
+    public async Task<IActionResult> ExportDownload(ExportType type, CancellationToken cancellationToken)
+    {
+        var exportResult = type switch
         {
-            _mediator = mediator;
-        }
+            ExportType.Tags => await _mediator.Send(new ExportTagsDataCommand(), cancellationToken),
+            ExportType.Categories => await _mediator.Send(new ExportCategoryDataCommand(), cancellationToken),
+            ExportType.FriendLinks => await _mediator.Send(new ExportLinkDataCommand(), cancellationToken),
+            ExportType.Pages => await _mediator.Send(new ExportPageDataCommand(), cancellationToken),
+            ExportType.Posts => await _mediator.Send(new ExportPostDataCommand(), cancellationToken),
+            _ => throw new ArgumentOutOfRangeException(nameof(type), type, null)
+        };
 
-        [HttpGet("export/{type}")]
-        [ProducesResponseType(StatusCodes.Status400BadRequest)]
-        public async Task<IActionResult> ExportDownload(ExportType type, CancellationToken cancellationToken)
+        switch (exportResult.ExportFormat)
         {
-            var exportResult = type switch
-            {
-                ExportType.Tags => await _mediator.Send(new ExportTagsDataCommand(), cancellationToken),
-                ExportType.Categories => await _mediator.Send(new ExportCategoryDataCommand(), cancellationToken),
-                ExportType.FriendLinks => await _mediator.Send(new ExportLinkDataCommand(), cancellationToken),
-                ExportType.Pages => await _mediator.Send(new ExportPageDataCommand(), cancellationToken),
-                ExportType.Posts => await _mediator.Send(new ExportPostDataCommand(), cancellationToken),
-                _ => throw new ArgumentOutOfRangeException(nameof(type), type, null)
-            };
+            case ExportFormat.SingleJsonFile:
+                return new FileContentResult(exportResult.Content, exportResult.ContentType)
+                {
+                    FileDownloadName = $"moonglade-{type.ToString().ToLowerInvariant()}-{DateTime.UtcNow:yyyy-MM-dd-HH-mm-ss}.json"
+                };
 
-            switch (exportResult.ExportFormat)
-            {
-                case ExportFormat.SingleJsonFile:
-                    return new FileContentResult(exportResult.Content, exportResult.ContentType)
-                    {
-                        FileDownloadName = $"moonglade-{type.ToString().ToLowerInvariant()}-{DateTime.UtcNow:yyyy-MM-dd-HH-mm-ss}.json"
-                    };
+            case ExportFormat.SingleCSVFile:
+                Response.Headers.Add("Content-Disposition", $"attachment;filename={Path.GetFileName(exportResult.FilePath)}");
+                return PhysicalFile(exportResult.FilePath, exportResult.ContentType, Path.GetFileName(exportResult.FilePath));
 
-                case ExportFormat.SingleCSVFile:
-                    Response.Headers.Add("Content-Disposition", $"attachment;filename={Path.GetFileName(exportResult.FilePath)}");
-                    return PhysicalFile(exportResult.FilePath, exportResult.ContentType, Path.GetFileName(exportResult.FilePath));
+            case ExportFormat.ZippedJsonFiles:
+                return PhysicalFile(exportResult.FilePath, exportResult.ContentType, Path.GetFileName(exportResult.FilePath));
 
-                case ExportFormat.ZippedJsonFiles:
-                    return PhysicalFile(exportResult.FilePath, exportResult.ContentType, Path.GetFileName(exportResult.FilePath));
-
-                default:
-                    return BadRequest(ModelState.CombineErrorMessages());
-            }
+            default:
+                return BadRequest(ModelState.CombineErrorMessages());
         }
     }
 }
