@@ -1,36 +1,32 @@
 ﻿using MediatR;
 using Moonglade.Data.Entities;
 using Moonglade.Data.Infrastructure;
-using System.Collections.Generic;
-using System.Threading;
-using System.Threading.Tasks;
 
-namespace Moonglade.FriendLink
+namespace Moonglade.FriendLink;
+
+public class GetAllLinksQuery : IRequest<IReadOnlyList<Link>>
 {
-    public class GetAllLinksQuery : IRequest<IReadOnlyList<Link>>
-    {
 
+}
+
+public class GetAllLinksQueryHandler : IRequestHandler<GetAllLinksQuery, IReadOnlyList<Link>>
+{
+    private readonly IRepository<FriendLinkEntity> _friendlinkRepo;
+
+    public GetAllLinksQueryHandler(IRepository<FriendLinkEntity> friendlinkRepo)
+    {
+        _friendlinkRepo = friendlinkRepo;
     }
 
-    public class GetAllLinksQueryHandler : IRequestHandler<GetAllLinksQuery, IReadOnlyList<Link>>
+    public Task<IReadOnlyList<Link>> Handle(GetAllLinksQuery request, CancellationToken cancellationToken)
     {
-        private readonly IRepository<FriendLinkEntity> _friendlinkRepo;
-
-        public GetAllLinksQueryHandler(IRepository<FriendLinkEntity> friendlinkRepo)
+        var data = _friendlinkRepo.SelectAsync(f => new Link
         {
-            _friendlinkRepo = friendlinkRepo;
-        }
+            Id = f.Id,
+            LinkUrl = f.LinkUrl,
+            Title = f.Title
+        });
 
-        public Task<IReadOnlyList<Link>> Handle(GetAllLinksQuery request, CancellationToken cancellationToken)
-        {
-            var data = _friendlinkRepo.SelectAsync(f => new Link
-            {
-                Id = f.Id,
-                LinkUrl = f.LinkUrl,
-                Title = f.Title
-            });
-
-            return data;
-        }
+        return data;
     }
 }

@@ -1,7 +1,4 @@
-﻿using Microsoft.AspNetCore.Http;
-using System.Threading.Tasks;
-
-namespace Moonglade.Web.Middleware
+﻿namespace Moonglade.Web.Middleware
 {
     public class DNTMiddleware
     {

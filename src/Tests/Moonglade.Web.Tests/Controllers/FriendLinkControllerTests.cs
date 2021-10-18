@@ -4,85 +4,82 @@ using Moonglade.FriendLink;
 using Moonglade.Web.Controllers;
 using Moq;
 using NUnit.Framework;
-using System;
-using System.Threading.Tasks;
 
-namespace Moonglade.Web.Tests.Controllers
+namespace Moonglade.Web.Tests.Controllers;
+
+[TestFixture]
+public class FriendLinkControllerTests
 {
-    [TestFixture]
-    public class FriendLinkControllerTests
+    private MockRepository _mockRepository;
+    private Mock<IMediator> _mockMediator;
+
+    private readonly EditLinkRequest _editLinkRequest = new()
     {
-        private MockRepository _mockRepository;
-        private Mock<IMediator> _mockMediator;
+        LinkUrl = FakeData.Url1,
+        Title = "996 ICU"
+    };
 
-        private readonly EditLinkRequest _editLinkRequest = new()
-        {
-            LinkUrl = FakeData.Url1,
-            Title = "996 ICU"
-        };
+    [SetUp]
+    public void SetUp()
+    {
+        _mockRepository = new(MockBehavior.Default);
+        _mockMediator = _mockRepository.Create<IMediator>();
+    }
 
-        [SetUp]
-        public void SetUp()
-        {
-            _mockRepository = new(MockBehavior.Default);
-            _mockMediator = _mockRepository.Create<IMediator>();
-        }
+    private FriendLinkController CreateFriendLinkController()
+    {
+        return new(_mockMediator.Object);
+    }
 
-        private FriendLinkController CreateFriendLinkController()
-        {
-            return new(_mockMediator.Object);
-        }
+    [Test]
+    public async Task Create_OK()
+    {
+        var ctl = CreateFriendLinkController();
 
-        [Test]
-        public async Task Create_OK()
-        {
-            var ctl = CreateFriendLinkController();
+        var result = await ctl.Create(_editLinkRequest);
 
-            var result = await ctl.Create(_editLinkRequest);
+        Assert.IsInstanceOf<CreatedResult>(result);
+        _mockMediator.Verify(p => p.Send(It.IsAny<AddLinkCommand>(), default));
+    }
 
-            Assert.IsInstanceOf<CreatedResult>(result);
-            _mockMediator.Verify(p => p.Send(It.IsAny<AddLinkCommand>(), default));
-        }
+    [Test]
+    public async Task Get_LinkNull()
+    {
+        _mockMediator.Setup(p => p.Send(new GetLinkQuery(Guid.Empty), default)).Returns(Task.FromResult((Link)null));
+        var ctl = CreateFriendLinkController();
+        var result = await ctl.Get(Guid.Empty);
 
-        [Test]
-        public async Task Get_LinkNull()
-        {
-            _mockMediator.Setup(p => p.Send(new GetLinkQuery(Guid.Empty), default)).Returns(Task.FromResult((Link)null));
-            var ctl = CreateFriendLinkController();
-            var result = await ctl.Get(Guid.Empty);
+        Assert.IsInstanceOf<NotFoundResult>(result);
+    }
 
-            Assert.IsInstanceOf<NotFoundResult>(result);
-        }
+    [Test]
+    public async Task Get_OK()
+    {
+        _mockMediator.Setup(p => p.Send(It.IsAny<GetLinkQuery>(), default)).Returns(Task.FromResult(new Link()));
+        var ctl = CreateFriendLinkController();
+        var result = await ctl.Get(FakeData.Uid1);
 
-        [Test]
-        public async Task Get_OK()
-        {
-            _mockMediator.Setup(p => p.Send(It.IsAny<GetLinkQuery>(), default)).Returns(Task.FromResult(new Link()));
-            var ctl = CreateFriendLinkController();
-            var result = await ctl.Get(FakeData.Uid1);
+        Assert.IsInstanceOf<OkObjectResult>(result);
+    }
 
-            Assert.IsInstanceOf<OkObjectResult>(result);
-        }
+    [Test]
+    public async Task Update_OK()
+    {
+        var ctl = CreateFriendLinkController();
 
-        [Test]
-        public async Task Update_OK()
-        {
-            var ctl = CreateFriendLinkController();
+        var result = await ctl.Update(FakeData.Uid1, _editLinkRequest);
 
-            var result = await ctl.Update(FakeData.Uid1, _editLinkRequest);
+        Assert.IsInstanceOf<NoContentResult>(result);
+        _mockMediator.Verify(p => p.Send(It.IsAny<UpdateLinkCommand>(), default));
+    }
 
-            Assert.IsInstanceOf<NoContentResult>(result);
-            _mockMediator.Verify(p => p.Send(It.IsAny<UpdateLinkCommand>(), default));
-        }
+    [Test]
+    public async Task Delete_OK()
+    {
+        var ctl = CreateFriendLinkController();
+        var result = await ctl.Delete(FakeData.Uid1);
 
-        [Test]
-        public async Task Delete_OK()
-        {
-            var ctl = CreateFriendLinkController();
-            var result = await ctl.Delete(FakeData.Uid1);
-
-            Assert.IsInstanceOf<NoContentResult>(result);
-            _mockMediator.Verify(p => p.Send(It.IsAny<DeleteLinkCommand>(), default));
-        }
+        Assert.IsInstanceOf<NoContentResult>(result);
+        _mockMediator.Verify(p => p.Send(It.IsAny<DeleteLinkCommand>(), default));
     }
 }

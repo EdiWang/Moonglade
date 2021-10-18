@@ -1,8 +1,5 @@
 ﻿using Microsoft.AspNetCore.Diagnostics;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.WebUtilities;
-using System;
-using System.Threading.Tasks;
 
 namespace Moonglade.Web.Configuration
 {

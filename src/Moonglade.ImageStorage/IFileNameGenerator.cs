@@ -1,9 +1,8 @@
-﻿namespace Moonglade.ImageStorage
-{
-    public interface IFileNameGenerator
-    {
-        string Name { get; }
+﻿namespace Moonglade.ImageStorage;
 
-        string GetFileName(string fileName, string appendixName = "");
-    }
+public interface IFileNameGenerator
+{
+    string Name { get; }
+
+    string GetFileName(string fileName, string appendixName = "");
 }

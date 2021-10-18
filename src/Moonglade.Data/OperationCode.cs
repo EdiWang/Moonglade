@@ -1,10 +1,9 @@
-﻿namespace Moonglade.Data
+﻿namespace Moonglade.Data;
+
+public enum OperationCode
 {
-    public enum OperationCode
-    {
-        None,
-        ObjectNotFound,
-        Canceled,
-        Done
-    }
+    None,
+    ObjectNotFound,
+    Canceled,
+    Done
 }

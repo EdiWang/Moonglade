@@ -1,8 +1,6 @@
 using MediatR;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Moonglade.FriendLink;
-using System.Collections.Generic;
-using System.Threading.Tasks;
 
 namespace Moonglade.Web.Pages.Admin
 {

@@ -3,41 +3,38 @@ using Moonglade.FriendLink;
 using Moonglade.Web.Pages.Admin;
 using Moq;
 using NUnit.Framework;
-using System.Collections.Generic;
-using System.Threading.Tasks;
 
-namespace Moonglade.Web.Tests.Pages.Admin
+namespace Moonglade.Web.Tests.Pages.Admin;
+
+[TestFixture]
+
+public class FriendLinkModelTests
 {
-    [TestFixture]
+    private MockRepository _mockRepository;
 
-    public class FriendLinkModelTests
+    private Mock<IMediator> _mockMediator;
+
+    [SetUp]
+    public void SetUp()
     {
-        private MockRepository _mockRepository;
+        _mockRepository = new(MockBehavior.Default);
+        _mockMediator = _mockRepository.Create<IMediator>();
+    }
 
-        private Mock<IMediator> _mockMediator;
+    private FriendLinkModel CreateFriendLinkModel()
+    {
+        return new(_mockMediator.Object);
+    }
 
-        [SetUp]
-        public void SetUp()
-        {
-            _mockRepository = new(MockBehavior.Default);
-            _mockMediator = _mockRepository.Create<IMediator>();
-        }
+    [Test]
+    public async Task OnGet_StateUnderTest_ExpectedBehavior()
+    {
+        IReadOnlyList<Link> links = new List<Link>();
+        _mockMediator.Setup(p => p.Send(It.IsAny<GetAllLinksQuery>(), default)).Returns(Task.FromResult(links));
 
-        private FriendLinkModel CreateFriendLinkModel()
-        {
-            return new(_mockMediator.Object);
-        }
+        var friendLinkModel = CreateFriendLinkModel();
+        await friendLinkModel.OnGet();
 
-        [Test]
-        public async Task OnGet_StateUnderTest_ExpectedBehavior()
-        {
-            IReadOnlyList<Link> links = new List<Link>();
-            _mockMediator.Setup(p => p.Send(It.IsAny<GetAllLinksQuery>(), default)).Returns(Task.FromResult(links));
-
-            var friendLinkModel = CreateFriendLinkModel();
-            await friendLinkModel.OnGet();
-
-            Assert.IsNotNull(friendLinkModel.Links);
-        }
+        Assert.IsNotNull(friendLinkModel.Links);
     }
 }

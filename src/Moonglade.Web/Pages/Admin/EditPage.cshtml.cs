@@ -2,8 +2,6 @@ using MediatR;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Moonglade.Core.PageFeature;
-using System;
-using System.Threading.Tasks;
 
 namespace Moonglade.Web.Pages.Admin
 {

@@ -1,7 +1,6 @@
-﻿namespace Moonglade.ImageStorage.Providers
+﻿namespace Moonglade.ImageStorage.Providers;
+
+public class FileSystemSettings
 {
-    public class FileSystemSettings
-    {
-        public string Path { get; set; }
-    }
+    public string Path { get; set; }
 }

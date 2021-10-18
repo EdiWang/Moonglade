@@ -5,12 +5,12 @@
    "version": "0.2.0",
    "configurations": [
         {
-            "name": ".NET 5 Launch (web)",
+            "name": ".NET 6 Launch (web)",
             "type": "coreclr",
             "request": "launch",
             "preLaunchTask": "build",
             // If you have changed target frameworks, make sure to update the program path.
-            "program": "${workspaceFolder}/src/Moonglade.Web/bin/Debug/net5.0/Moonglade.Web.dll",
+            "program": "${workspaceFolder}/src/Moonglade.Web/bin/Debug/net6.0/Moonglade.Web.dll",
             "args": [],
             "cwd": "${workspaceFolder}/src/Moonglade.Web",
             "stopAtEntry": false,
@@ -37,7 +37,7 @@
             }
         },
         {
-            "name": ".NET 5 Attach",
+            "name": ".NET 6 Attach",
             "type": "coreclr",
             "request": "attach",
             "processId": "${command:pickProcess}"

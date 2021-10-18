@@ -2,29 +2,28 @@
 using System.Text.Json;
 using System.Text.Unicode;
 
-namespace Moonglade.Configuration
+namespace Moonglade.Configuration;
+
+public static class JsonExtensions
 {
-    public static class JsonExtensions
+    private static readonly JsonSerializerOptions JsonOptions = new()
     {
-        private static readonly JsonSerializerOptions JsonOptions = new()
-        {
-            // https://en.wikipedia.org/wiki/CJK_Unified_Ideographs_(Unicode_block)
-            Encoder = JavaScriptEncoder.Create(
-                UnicodeRanges.BasicLatin,
-                UnicodeRanges.CjkCompatibility,
-                UnicodeRanges.CjkCompatibilityForms,
-                UnicodeRanges.CjkCompatibilityIdeographs,
-                UnicodeRanges.CjkRadicalsSupplement,
-                UnicodeRanges.CjkStrokes,
-                UnicodeRanges.CjkUnifiedIdeographs,
-                UnicodeRanges.CjkUnifiedIdeographsExtensionA,
-                UnicodeRanges.CjkSymbolsandPunctuation,
-                UnicodeRanges.HalfwidthandFullwidthForms),
-            PropertyNameCaseInsensitive = true
-        };
+        // https://en.wikipedia.org/wiki/CJK_Unified_Ideographs_(Unicode_block)
+        Encoder = JavaScriptEncoder.Create(
+            UnicodeRanges.BasicLatin,
+            UnicodeRanges.CjkCompatibility,
+            UnicodeRanges.CjkCompatibilityForms,
+            UnicodeRanges.CjkCompatibilityIdeographs,
+            UnicodeRanges.CjkRadicalsSupplement,
+            UnicodeRanges.CjkStrokes,
+            UnicodeRanges.CjkUnifiedIdeographs,
+            UnicodeRanges.CjkUnifiedIdeographsExtensionA,
+            UnicodeRanges.CjkSymbolsandPunctuation,
+            UnicodeRanges.HalfwidthandFullwidthForms),
+        PropertyNameCaseInsensitive = true
+    };
 
-        public static T FromJson<T>(this string json) => JsonSerializer.Deserialize<T>(json, JsonOptions);
+    public static T FromJson<T>(this string json) => JsonSerializer.Deserialize<T>(json, JsonOptions);
 
-        public static string ToJson<T>(this T obj) => JsonSerializer.Serialize(obj, JsonOptions);
-    }
+    public static string ToJson<T>(this T obj) => JsonSerializer.Serialize(obj, JsonOptions);
 }

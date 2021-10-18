@@ -1,6 +1,4 @@
-﻿using System.Collections.Generic;
-
-namespace Moonglade.Web.Models
+﻿namespace Moonglade.Web.Models
 {
     // credits: https://datatables.net/forums/discussion/40690/sample-implementation-of-serverside-processing-in-c-mvc-ef-with-paging-sorting-searching
 

@@ -1,9 +1,8 @@
-﻿namespace Moonglade.Comments.Moderators
-{
-    public class CommentModeratorSettings
-    {
-        public string Provider { get; set; }
+﻿namespace Moonglade.Comments.Moderators;
 
-        public AzureContentModeratorSettings AzureContentModeratorSettings { get; set; }
-    }
+public class CommentModeratorSettings
+{
+    public string Provider { get; set; }
+
+    public AzureContentModeratorSettings AzureContentModeratorSettings { get; set; }
 }

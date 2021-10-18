@@ -1,13 +1,8 @@
 ﻿using MediatR;
 using Moonglade.FriendLink;
 using Moonglade.Web.Models;
-using System;
-using System.Collections.Generic;
-using System.IO;
 using System.Security.Cryptography;
 using System.Text;
-using System.Threading;
-using System.Threading.Tasks;
 using System.Xml;
 
 namespace Moonglade.Web.Middleware
@@ -182,7 +177,7 @@ namespace Moonglade.Web.Middleware
         private static string CalculateSha1(string text, Encoding enc)
         {
             var buffer = enc.GetBytes(text);
-            var cryptoTransformSha1 = new SHA1CryptoServiceProvider();
+            var cryptoTransformSha1 = SHA1.Create();
             var hash = BitConverter.ToString(cryptoTransformSha1.ComputeHash(buffer)).Replace("-", string.Empty);
 
             return hash.ToLower();

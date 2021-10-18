@@ -5,7 +5,6 @@ using Moonglade.Caching;
 using Moonglade.Configuration;
 using Moonglade.Core.PostFeature;
 using Moonglade.Core.TagFeature;
-using System.Threading.Tasks;
 using X.PagedList;
 
 namespace Moonglade.Web.Pages

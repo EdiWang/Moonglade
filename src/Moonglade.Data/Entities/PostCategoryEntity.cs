@@ -1,13 +1,10 @@
-﻿using System;
+﻿namespace Moonglade.Data.Entities;
 
-namespace Moonglade.Data.Entities
+public class PostCategoryEntity
 {
-    public class PostCategoryEntity
-    {
-        public Guid PostId { get; set; }
-        public Guid CategoryId { get; set; }
+    public Guid PostId { get; set; }
+    public Guid CategoryId { get; set; }
 
-        public virtual CategoryEntity Category { get; set; }
-        public virtual PostEntity Post { get; set; }
-    }
+    public virtual CategoryEntity Category { get; set; }
+    public virtual PostEntity Post { get; set; }
 }

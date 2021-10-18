@@ -1,9 +1,8 @@
-﻿namespace Moonglade.Data.Porting
+﻿namespace Moonglade.Data.Porting;
+
+public enum ExportFormat
 {
-    public enum ExportFormat
-    {
-        SingleCSVFile,
-        SingleJsonFile,
-        ZippedJsonFiles
-    }
+    SingleCSVFile,
+    SingleJsonFile,
+    ZippedJsonFiles
 }

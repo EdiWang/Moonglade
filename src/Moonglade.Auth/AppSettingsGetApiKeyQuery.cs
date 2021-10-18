@@ -1,25 +1,21 @@
 ﻿using Microsoft.Extensions.Options;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 
-namespace Moonglade.Auth
+namespace Moonglade.Auth;
+
+public class AppSettingsGetApiKeyQuery : IGetApiKeyQuery
 {
-    public class AppSettingsGetApiKeyQuery : IGetApiKeyQuery
+    private readonly IDictionary<string, ApiKey> _apiKeys;
+    public AuthenticationSettings AuthenticationSettings { get; set; }
+
+    public AppSettingsGetApiKeyQuery(IOptions<AuthenticationSettings> authenticationSettings)
     {
-        private readonly IDictionary<string, ApiKey> _apiKeys;
-        public AuthenticationSettings AuthenticationSettings { get; set; }
+        AuthenticationSettings = authenticationSettings.Value;
+        _apiKeys = AuthenticationSettings.ApiKeys.ToDictionary(x => x.Key, x => x);
+    }
 
-        public AppSettingsGetApiKeyQuery(IOptions<AuthenticationSettings> authenticationSettings)
-        {
-            AuthenticationSettings = authenticationSettings.Value;
-            _apiKeys = AuthenticationSettings.ApiKeys.ToDictionary(x => x.Key, x => x);
-        }
-
-        public Task<ApiKey> Execute(string providedApiKey)
-        {
-            _apiKeys.TryGetValue(providedApiKey, out var key);
-            return Task.FromResult(key);
-        }
+    public Task<ApiKey> Execute(string providedApiKey)
+    {
+        _apiKeys.TryGetValue(providedApiKey, out var key);
+        return Task.FromResult(key);
     }
 }

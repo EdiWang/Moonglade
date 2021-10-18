@@ -1,101 +1,97 @@
 ﻿using Azure.Storage.Blobs;
 using Azure.Storage.Blobs.Models;
 using Microsoft.Extensions.Logging;
-using System;
-using System.IO;
-using System.Threading.Tasks;
 
-namespace Moonglade.ImageStorage.Providers
+namespace Moonglade.ImageStorage.Providers;
+
+public class AzureBlobImageStorage : IBlogImageStorage
 {
-    public class AzureBlobImageStorage : IBlogImageStorage
+    public string Name => nameof(AzureBlobImageStorage);
+
+    private readonly BlobContainerClient _container;
+
+    private readonly ILogger<AzureBlobImageStorage> _logger;
+
+    public AzureBlobImageStorage(ILogger<AzureBlobImageStorage> logger, AzureBlobConfiguration blobConfiguration)
     {
-        public string Name => nameof(AzureBlobImageStorage);
+        _logger = logger;
 
-        private readonly BlobContainerClient _container;
+        _container = new(blobConfiguration.ConnectionString, blobConfiguration.ContainerName);
 
-        private readonly ILogger<AzureBlobImageStorage> _logger;
+        logger.LogInformation($"Created {nameof(AzureBlobImageStorage)} for account {_container.AccountName} on container {_container.Name}");
+    }
 
-        public AzureBlobImageStorage(ILogger<AzureBlobImageStorage> logger, AzureBlobConfiguration blobConfiguration)
+    public async Task<string> InsertAsync(string fileName, byte[] imageBytes)
+    {
+        if (string.IsNullOrWhiteSpace(fileName))
         {
-            _logger = logger;
-
-            _container = new(blobConfiguration.ConnectionString, blobConfiguration.ContainerName);
-
-            logger.LogInformation($"Created {nameof(AzureBlobImageStorage)} for account {_container.AccountName} on container {_container.Name}");
+            throw new ArgumentNullException(nameof(fileName));
         }
 
-        public async Task<string> InsertAsync(string fileName, byte[] imageBytes)
+        _logger.LogInformation($"Uploading {fileName} to Azure Blob Storage.");
+
+
+        var blob = _container.GetBlobClient(fileName);
+
+        // Why .NET doesn't have MimeMapping.GetMimeMapping()
+        var blobHttpHeader = new BlobHttpHeaders();
+        var extension = Path.GetExtension(blob.Uri.AbsoluteUri);
+        blobHttpHeader.ContentType = extension.ToLower() switch
         {
-            if (string.IsNullOrWhiteSpace(fileName))
-            {
-                throw new ArgumentNullException(nameof(fileName));
-            }
+            ".jpg" => "image/jpeg",
+            ".jpeg" => "image/jpeg",
+            ".png" => "image/png",
+            ".gif" => "image/gif",
+            _ => blobHttpHeader.ContentType
+        };
 
-            _logger.LogInformation($"Uploading {fileName} to Azure Blob Storage.");
+        await using var fileStream = new MemoryStream(imageBytes);
+        var uploadedBlob = await blob.UploadAsync(fileStream, blobHttpHeader);
 
+        _logger.LogInformation($"Uploaded image file '{fileName}' to Azure Blob Storage, ETag '{uploadedBlob.Value.ETag}'. Yeah, the best cloud!");
 
-            var blob = _container.GetBlobClient(fileName);
+        return fileName;
+    }
 
-            // Why .NET doesn't have MimeMapping.GetMimeMapping()
-            var blobHttpHeader = new BlobHttpHeaders();
-            var extension = Path.GetExtension(blob.Uri.AbsoluteUri);
-            blobHttpHeader.ContentType = extension.ToLower() switch
-            {
-                ".jpg" => "image/jpeg",
-                ".jpeg" => "image/jpeg",
-                ".png" => "image/png",
-                ".gif" => "image/gif",
-                _ => blobHttpHeader.ContentType
-            };
+    public async Task DeleteAsync(string fileName)
+    {
+        await _container.DeleteBlobIfExistsAsync(fileName);
+    }
 
-            await using var fileStream = new MemoryStream(imageBytes);
-            var uploadedBlob = await blob.UploadAsync(fileStream, blobHttpHeader);
-
-            _logger.LogInformation($"Uploaded image file '{fileName}' to Azure Blob Storage, ETag '{uploadedBlob.Value.ETag}'. Yeah, the best cloud!");
-
-            return fileName;
+    public async Task<ImageInfo> GetAsync(string fileName)
+    {
+        var blobClient = _container.GetBlobClient(fileName);
+        await using var memoryStream = new MemoryStream();
+        var extension = Path.GetExtension(fileName);
+        if (string.IsNullOrWhiteSpace(extension))
+        {
+            throw new ArgumentException("File extension is empty");
         }
 
-        public async Task DeleteAsync(string fileName)
+        var existsTask = blobClient.ExistsAsync();
+        var downloadTask = blobClient.DownloadToAsync(memoryStream);
+
+        var exists = await existsTask;
+        if (!exists)
         {
-            await _container.DeleteBlobIfExistsAsync(fileName);
+            _logger.LogWarning($"Blob {fileName} not exist.");
+
+            // Can not throw FileNotFoundException,
+            // because hackers may request a large number of 404 images
+            // to flood .NET runtime with exceptions and take out the server
+            return null;
         }
 
-        public async Task<ImageInfo> GetAsync(string fileName)
+        await downloadTask;
+        var arr = memoryStream.ToArray();
+
+        var fileType = extension.Replace(".", string.Empty);
+        var imageInfo = new ImageInfo
         {
-            var blobClient = _container.GetBlobClient(fileName);
-            await using var memoryStream = new MemoryStream();
-            var extension = Path.GetExtension(fileName);
-            if (string.IsNullOrWhiteSpace(extension))
-            {
-                throw new ArgumentException("File extension is empty");
-            }
+            ImageBytes = arr,
+            ImageExtensionName = fileType
+        };
 
-            var existsTask = blobClient.ExistsAsync();
-            var downloadTask = blobClient.DownloadToAsync(memoryStream);
-
-            var exists = await existsTask;
-            if (!exists)
-            {
-                _logger.LogWarning($"Blob {fileName} not exist.");
-
-                // Can not throw FileNotFoundException,
-                // because hackers may request a large number of 404 images
-                // to flood .NET runtime with exceptions and take out the server
-                return null;
-            }
-
-            await downloadTask;
-            var arr = memoryStream.ToArray();
-
-            var fileType = extension.Replace(".", string.Empty);
-            var imageInfo = new ImageInfo
-            {
-                ImageBytes = arr,
-                ImageExtensionName = fileType
-            };
-
-            return imageInfo;
-        }
+        return imageInfo;
     }
 }

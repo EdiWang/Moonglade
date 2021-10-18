@@ -3,57 +3,51 @@ using Moonglade.Data.Porting;
 using Moonglade.Data.Porting.Exporters;
 using Moq;
 using NUnit.Framework;
-using System;
-using System.Collections.Generic;
-using System.IO;
 using System.Linq.Expressions;
-using System.Threading;
-using System.Threading.Tasks;
 
-namespace Moonglade.Data.Tests.Exporters
+namespace Moonglade.Data.Tests.Exporters;
+
+[TestFixture]
+public class ZippedJsonExporterTests
 {
-    [TestFixture]
-    public class ZippedJsonExporterTests
+    private MockRepository _mockRepository;
+
+    private Mock<IRepository<int>> _mockRepo;
+
+    [SetUp]
+    public void SetUp()
     {
-        private MockRepository _mockRepository;
+        _mockRepository = new(MockBehavior.Default);
+        _mockRepo = _mockRepository.Create<IRepository<int>>();
+    }
 
-        private Mock<IRepository<int>> _mockRepo;
+    private ZippedJsonExporter<int> CreateZippedJsonExporter()
+    {
+        return new(_mockRepo.Object, "996", Path.GetTempPath());
+    }
 
-        [SetUp]
-        public void SetUp()
+    [Test]
+    public async Task ExportData_StateUnderTest_ExpectedBehavior()
+    {
+        IReadOnlyList<KeyValuePair<string, string>> data = new List<KeyValuePair<string, string>>
         {
-            _mockRepository = new(MockBehavior.Default);
-            _mockRepo = _mockRepository.Create<IRepository<int>>();
-        }
+            new("996", "ICU"),
+            new("251", "404")
+        };
 
-        private ZippedJsonExporter<int> CreateZippedJsonExporter()
+        _mockRepo.Setup(p => p.SelectAsync(It.IsAny<Expression<Func<int, KeyValuePair<string, string>>>>())).Returns(Task.FromResult(data));
+        var zippedJsonExporter = CreateZippedJsonExporter();
+
+        var result = await zippedJsonExporter.ExportData(It.IsAny<Expression<Func<int, KeyValuePair<string, string>>>>(), CancellationToken.None);
+
+        Assert.IsNotNull(result);
+        Assert.AreEqual(ExportFormat.ZippedJsonFiles, result.ExportFormat);
+        Assert.IsNotNull(result.FilePath);
+
+        try
         {
-            return new(_mockRepo.Object, "996", Path.GetTempPath());
+            File.Delete(result.FilePath);
         }
-
-        [Test]
-        public async Task ExportData_StateUnderTest_ExpectedBehavior()
-        {
-            IReadOnlyList<KeyValuePair<string, string>> data = new List<KeyValuePair<string, string>>
-            {
-                new("996", "ICU"),
-                new("251", "404")
-            };
-
-            _mockRepo.Setup(p => p.SelectAsync(It.IsAny<Expression<Func<int, KeyValuePair<string, string>>>>())).Returns(Task.FromResult(data));
-            var zippedJsonExporter = CreateZippedJsonExporter();
-
-            var result = await zippedJsonExporter.ExportData(It.IsAny<Expression<Func<int, KeyValuePair<string, string>>>>(), CancellationToken.None);
-
-            Assert.IsNotNull(result);
-            Assert.AreEqual(ExportFormat.ZippedJsonFiles, result.ExportFormat);
-            Assert.IsNotNull(result.FilePath);
-
-            try
-            {
-                File.Delete(result.FilePath);
-            }
-            catch { }
-        }
+        catch { }
     }
 }

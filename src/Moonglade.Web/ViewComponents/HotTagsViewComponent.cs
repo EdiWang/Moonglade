@@ -2,8 +2,6 @@
 using Microsoft.AspNetCore.Mvc;
 using Moonglade.Configuration;
 using Moonglade.Core.TagFeature;
-using System;
-using System.Threading.Tasks;
 
 namespace Moonglade.Web.ViewComponents
 {

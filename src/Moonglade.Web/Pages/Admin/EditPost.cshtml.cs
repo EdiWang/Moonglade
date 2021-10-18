@@ -3,9 +3,6 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Moonglade.Core.CategoryFeature;
 using Moonglade.Core.PostFeature;
-using System;
-using System.Linq;
-using System.Threading.Tasks;
 
 namespace Moonglade.Web.Pages.Admin
 {

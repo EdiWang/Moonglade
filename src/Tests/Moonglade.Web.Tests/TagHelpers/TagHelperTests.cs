@@ -4,181 +4,179 @@ using Moonglade.Web.Middleware;
 using Moonglade.Web.TagHelpers;
 using Moq;
 using NUnit.Framework;
-using System;
 
-namespace Moonglade.Web.Tests.TagHelpers
+namespace Moonglade.Web.Tests.TagHelpers;
+
+[TestFixture]
+public class TagHelperTests
 {
-    [TestFixture]
-    public class TagHelperTests
+    [Test]
+    public void RSDTagHelper_Process()
     {
-        [Test]
-        public void RSDTagHelper_Process()
+        var outputAttributes = new TagHelperAttributeList();
+        var tagHelper = new RSDTagHelper { Href = "https://996.icu/rsd" };
+
+        var context = TagHelperTestsHelpers.MakeTagHelperContext("link");
+        var output = TagHelperTestsHelpers.MakeTagHelperOutput("link", outputAttributes);
+
+        tagHelper.Process(context, output);
+
+        var expectedAttributeList = new TagHelperAttributeList
         {
-            var outputAttributes = new TagHelperAttributeList();
-            var tagHelper = new RSDTagHelper { Href = "https://996.icu/rsd" };
+            new("type", new HtmlString("application/rsd+xml")),
+            new("rel", "edituri"),
+            new("title", "RSD"),
+            new("href", tagHelper.Href)
+        };
 
-            var context = TagHelperTestsHelpers.MakeTagHelperContext("link");
-            var output = TagHelperTestsHelpers.MakeTagHelperOutput("link", outputAttributes);
+        Assert.AreEqual("application/rsd+xml", ((HtmlString)output.Attributes["type"].Value).Value);
+        Assert.AreEqual(expectedAttributeList["rel"], output.Attributes["rel"]);
+        Assert.AreEqual(expectedAttributeList["title"], output.Attributes["title"]);
+        Assert.AreEqual(expectedAttributeList["href"], output.Attributes["href"]);
+    }
 
-            tagHelper.Process(context, output);
+    [Test]
+    public void FoafTagHelper_Process()
+    {
+        var outputAttributes = new TagHelperAttributeList();
 
-            var expectedAttributeList = new TagHelperAttributeList
-            {
-                new("type", new HtmlString("application/rsd+xml")),
-                new("rel", "edituri"),
-                new("title", "RSD"),
-                new("href", tagHelper.Href)
-            };
+        var tagHelper = new FoafTagHelper { Href = "https://996.icu/foaf" };
 
-            Assert.AreEqual("application/rsd+xml", ((HtmlString)output.Attributes["type"].Value).Value);
-            Assert.AreEqual(expectedAttributeList["rel"], output.Attributes["rel"]);
-            Assert.AreEqual(expectedAttributeList["title"], output.Attributes["title"]);
-            Assert.AreEqual(expectedAttributeList["href"], output.Attributes["href"]);
-        }
+        var context = TagHelperTestsHelpers.MakeTagHelperContext("link");
+        var output = TagHelperTestsHelpers.MakeTagHelperOutput("link", outputAttributes);
 
-        [Test]
-        public void FoafTagHelper_Process()
+        tagHelper.Process(context, output);
+
+        var expectedAttributeList = new TagHelperAttributeList
         {
-            var outputAttributes = new TagHelperAttributeList();
+            new("type", new HtmlString(WriterFoafCommand.ContentType)),
+            new("rel", "meta"),
+            new("title", "FOAF"),
+            new("href", tagHelper.Href)
+        };
 
-            var tagHelper = new FoafTagHelper { Href = "https://996.icu/foaf" };
+        Assert.AreEqual(WriterFoafCommand.ContentType, ((HtmlString)output.Attributes["type"].Value).Value);
+        Assert.AreEqual(expectedAttributeList["rel"], output.Attributes["rel"]);
+        Assert.AreEqual(expectedAttributeList["title"], output.Attributes["title"]);
+        Assert.AreEqual(expectedAttributeList["href"], output.Attributes["href"]);
+    }
 
-            var context = TagHelperTestsHelpers.MakeTagHelperContext("link");
-            var output = TagHelperTestsHelpers.MakeTagHelperOutput("link", outputAttributes);
+    [Test]
+    public void RssTagHelper_Process()
+    {
+        var outputAttributes = new TagHelperAttributeList();
 
-            tagHelper.Process(context, output);
-
-            var expectedAttributeList = new TagHelperAttributeList
-            {
-                new("type", new HtmlString(WriterFoafCommand.ContentType)),
-                new("rel", "meta"),
-                new("title", "FOAF"),
-                new("href", tagHelper.Href)
-            };
-
-            Assert.AreEqual(WriterFoafCommand.ContentType, ((HtmlString)output.Attributes["type"].Value).Value);
-            Assert.AreEqual(expectedAttributeList["rel"], output.Attributes["rel"]);
-            Assert.AreEqual(expectedAttributeList["title"], output.Attributes["title"]);
-            Assert.AreEqual(expectedAttributeList["href"], output.Attributes["href"]);
-        }
-
-        [Test]
-        public void RssTagHelper_Process()
+        var tagHelper = new RssTagHelper
         {
-            var outputAttributes = new TagHelperAttributeList();
+            Href = "https://996.icu/rss",
+            Title = FakeData.Title2
+        };
 
-            var tagHelper = new RssTagHelper
-            {
-                Href = "https://996.icu/rss",
-                Title = FakeData.Title2
-            };
+        var context = TagHelperTestsHelpers.MakeTagHelperContext("link");
+        var output = TagHelperTestsHelpers.MakeTagHelperOutput("link", outputAttributes);
 
-            var context = TagHelperTestsHelpers.MakeTagHelperContext("link");
-            var output = TagHelperTestsHelpers.MakeTagHelperOutput("link", outputAttributes);
+        tagHelper.Process(context, output);
 
-            tagHelper.Process(context, output);
-
-            var expectedAttributeList = new TagHelperAttributeList
-            {
-                new("type", new HtmlString(WriterFoafCommand.ContentType)),
-                new("rel", "alternate"),
-                new("title", tagHelper.Title),
-                new("href", tagHelper.Href)
-            };
-
-            Assert.AreEqual("application/rss+xml", ((HtmlString)output.Attributes["type"].Value).Value);
-            Assert.AreEqual(expectedAttributeList["rel"], output.Attributes["rel"]);
-            Assert.AreEqual(expectedAttributeList["title"], output.Attributes["title"]);
-            Assert.AreEqual(expectedAttributeList["href"], output.Attributes["href"]);
-        }
-
-        [Test]
-        public void MetaDescriptionTagHelper_Process()
+        var expectedAttributeList = new TagHelperAttributeList
         {
-            var outputAttributes = new TagHelperAttributeList();
+            new("type", new HtmlString(WriterFoafCommand.ContentType)),
+            new("rel", "alternate"),
+            new("title", tagHelper.Title),
+            new("href", tagHelper.Href)
+        };
 
-            var tagHelper = new MetaDescriptionTagHelper
-            {
-                Description = "Stay away from PDD"
-            };
+        Assert.AreEqual("application/rss+xml", ((HtmlString)output.Attributes["type"].Value).Value);
+        Assert.AreEqual(expectedAttributeList["rel"], output.Attributes["rel"]);
+        Assert.AreEqual(expectedAttributeList["title"], output.Attributes["title"]);
+        Assert.AreEqual(expectedAttributeList["href"], output.Attributes["href"]);
+    }
 
-            var context = TagHelperTestsHelpers.MakeTagHelperContext("meta");
-            var output = TagHelperTestsHelpers.MakeTagHelperOutput("meta", outputAttributes);
+    [Test]
+    public void MetaDescriptionTagHelper_Process()
+    {
+        var outputAttributes = new TagHelperAttributeList();
 
-            tagHelper.Process(context, output);
-
-            var expectedAttributeList = new TagHelperAttributeList
-            {
-                new("name", "description"),
-                new("content", tagHelper.Description.Trim())
-            };
-
-            Assert.AreEqual(expectedAttributeList, output.Attributes);
-        }
-
-        [Test]
-        public void OpenSearchTagHelper_Process()
+        var tagHelper = new MetaDescriptionTagHelper
         {
-            var outputAttributes = new TagHelperAttributeList();
+            Description = "Stay away from PDD"
+        };
 
-            var tagHelper = new OpenSearchTagHelper
-            {
-                Href = "https://996.icu/opensearch",
-                Title = FakeData.Title2
-            };
+        var context = TagHelperTestsHelpers.MakeTagHelperContext("meta");
+        var output = TagHelperTestsHelpers.MakeTagHelperOutput("meta", outputAttributes);
 
-            var context = TagHelperTestsHelpers.MakeTagHelperContext("link");
-            var output = TagHelperTestsHelpers.MakeTagHelperOutput("link", outputAttributes);
+        tagHelper.Process(context, output);
 
-            tagHelper.Process(context, output);
-
-            var expectedAttributeList = new TagHelperAttributeList
-            {
-                new("type", new HtmlString("application/opensearchdescription+xml")),
-                new("rel", "search"),
-                new("title", tagHelper.Title.Trim()),
-                new("href", tagHelper.Href)
-            };
-
-            Assert.AreEqual("application/opensearchdescription+xml", ((HtmlString)output.Attributes["type"].Value).Value);
-            Assert.AreEqual(expectedAttributeList["rel"], output.Attributes["rel"]);
-            Assert.AreEqual(expectedAttributeList["title"], output.Attributes["title"]);
-            Assert.AreEqual(expectedAttributeList["href"], output.Attributes["href"]);
-        }
-
-        [Test]
-        public void PubDateTagHelper_Process()
+        var expectedAttributeList = new TagHelperAttributeList
         {
-            var pubDateUtc = new DateTime(FakeData.Int2, 9, 6);
+            new("name", "description"),
+            new("content", tagHelper.Description.Trim())
+        };
 
-            var dateTimeResolverMock = new Mock<ITimeZoneResolver>();
-            dateTimeResolverMock.Setup(p => p.ToTimeZone(It.IsAny<DateTime>())).Returns(pubDateUtc);
+        Assert.AreEqual(expectedAttributeList, output.Attributes);
+    }
 
-            var outputAttributes = new TagHelperAttributeList();
+    [Test]
+    public void OpenSearchTagHelper_Process()
+    {
+        var outputAttributes = new TagHelperAttributeList();
 
-            var tagHelper = new PubDateTagHelper
-            {
-                PubDateUtc = pubDateUtc,
-                TZoneResolver = dateTimeResolverMock.Object
-            };
+        var tagHelper = new OpenSearchTagHelper
+        {
+            Href = "https://996.icu/opensearch",
+            Title = FakeData.Title2
+        };
 
-            var context = TagHelperTestsHelpers.MakeTagHelperContext("time");
-            var output = TagHelperTestsHelpers.MakeTagHelperOutput("time", outputAttributes);
+        var context = TagHelperTestsHelpers.MakeTagHelperContext("link");
+        var output = TagHelperTestsHelpers.MakeTagHelperOutput("link", outputAttributes);
 
-            tagHelper.Process(context, output);
+        tagHelper.Process(context, output);
 
-            var expectedAttributeList = new TagHelperAttributeList
-            {
-                new("title", $"GMT {pubDateUtc}"),
-                new("datetime", pubDateUtc.ToString("u"))
-            };
+        var expectedAttributeList = new TagHelperAttributeList
+        {
+            new("type", new HtmlString("application/opensearchdescription+xml")),
+            new("rel", "search"),
+            new("title", tagHelper.Title.Trim()),
+            new("href", tagHelper.Href)
+        };
 
-            Assert.AreEqual(expectedAttributeList, output.Attributes);
+        Assert.AreEqual("application/opensearchdescription+xml", ((HtmlString)output.Attributes["type"].Value).Value);
+        Assert.AreEqual(expectedAttributeList["rel"], output.Attributes["rel"]);
+        Assert.AreEqual(expectedAttributeList["title"], output.Attributes["title"]);
+        Assert.AreEqual(expectedAttributeList["href"], output.Attributes["href"]);
+    }
 
-            var d = new DefaultTagHelperContent();
-            var expectedContent = d.SetContent(pubDateUtc.ToLongDateString());
+    [Test]
+    public void PubDateTagHelper_Process()
+    {
+        var pubDateUtc = new DateTime(FakeData.Int2, 9, 6);
 
-            Assert.AreEqual(expectedContent.GetContent(), output.Content.GetContent());
-        }
+        var dateTimeResolverMock = new Mock<ITimeZoneResolver>();
+        dateTimeResolverMock.Setup(p => p.ToTimeZone(It.IsAny<DateTime>())).Returns(pubDateUtc);
+
+        var outputAttributes = new TagHelperAttributeList();
+
+        var tagHelper = new PubDateTagHelper
+        {
+            PubDateUtc = pubDateUtc,
+            TZoneResolver = dateTimeResolverMock.Object
+        };
+
+        var context = TagHelperTestsHelpers.MakeTagHelperContext("time");
+        var output = TagHelperTestsHelpers.MakeTagHelperOutput("time", outputAttributes);
+
+        tagHelper.Process(context, output);
+
+        var expectedAttributeList = new TagHelperAttributeList
+        {
+            new("title", $"GMT {pubDateUtc}"),
+            new("datetime", pubDateUtc.ToString("u"))
+        };
+
+        Assert.AreEqual(expectedAttributeList, output.Attributes);
+
+        var d = new DefaultTagHelperContent();
+        var expectedContent = d.SetContent(pubDateUtc.ToLongDateString());
+
+        Assert.AreEqual(expectedContent.GetContent(), output.Content.GetContent());
     }
 }

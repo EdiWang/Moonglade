@@ -11,166 +11,161 @@ using Moonglade.Utils;
 using Moonglade.Web.Controllers;
 using Moq;
 using NUnit.Framework;
-using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Threading.Tasks;
 
-namespace Moonglade.Web.Tests.Controllers
+namespace Moonglade.Web.Tests.Controllers;
+
+[TestFixture]
+public class ImageControllerTests
 {
-    [TestFixture]
-    public class ImageControllerTests
+    private MockRepository _mockRepository;
+
+    private Mock<IBlogImageStorage> _mockBlogImageStorage;
+    private Mock<ILogger<ImageController>> _mockLogger;
+    private Mock<IBlogConfig> _mockBlogConfig;
+    private IMemoryCache _mockMemoryCache;
+    private Mock<IFileNameGenerator> _mockFileNameGenerator;
+    private Mock<IOptions<AppSettings>> _mockAppSettings;
+    private Mock<IOptions<ImageStorageSettings>> _mockImageStorageSettings;
+
+    [SetUp]
+    public void SetUp()
     {
-        private MockRepository _mockRepository;
+        _mockRepository = new(MockBehavior.Default);
 
-        private Mock<IBlogImageStorage> _mockBlogImageStorage;
-        private Mock<ILogger<ImageController>> _mockLogger;
-        private Mock<IBlogConfig> _mockBlogConfig;
-        private IMemoryCache _mockMemoryCache;
-        private Mock<IFileNameGenerator> _mockFileNameGenerator;
-        private Mock<IOptions<AppSettings>> _mockAppSettings;
-        private Mock<IOptions<ImageStorageSettings>> _mockImageStorageSettings;
+        _mockBlogImageStorage = _mockRepository.Create<IBlogImageStorage>();
+        _mockLogger = _mockRepository.Create<ILogger<ImageController>>();
+        _mockBlogConfig = _mockRepository.Create<IBlogConfig>();
+        _mockMemoryCache = Create.MockedMemoryCache();
+        _mockFileNameGenerator = _mockRepository.Create<IFileNameGenerator>();
+        _mockAppSettings = _mockRepository.Create<IOptions<AppSettings>>();
+        _mockImageStorageSettings = _mockRepository.Create<IOptions<ImageStorageSettings>>();
+    }
 
-        [SetUp]
-        public void SetUp()
+    private ImageController CreateImageController()
+    {
+        return new(
+            _mockBlogImageStorage.Object,
+            _mockLogger.Object,
+            _mockBlogConfig.Object,
+            _mockMemoryCache,
+            _mockFileNameGenerator.Object,
+            _mockAppSettings.Object,
+            _mockImageStorageSettings.Object);
+    }
+
+    [TestCase("<996>.png")]
+    [TestCase(":icu.gif")]
+    [TestCase("|.jpg")]
+    [Platform(Include = "Win")]
+    public async Task GetImage_InvalidFileNames(string filename)
+    {
+        var ctl = CreateImageController();
+        var result = await ctl.Image(filename);
+        Assert.IsInstanceOf(typeof(BadRequestObjectResult), result);
+    }
+
+    [Test]
+    public async Task GetImage_CDN()
+    {
+        const string filename = "test.png";
+
+        _mockBlogConfig.Setup(p => p.ImageSettings).Returns(new ImageSettings()
         {
-            _mockRepository = new(MockBehavior.Default);
+            EnableCDNRedirect = true,
+            CDNEndpoint = "https://cdn.996.icu/fubao"
+        });
 
-            _mockBlogImageStorage = _mockRepository.Create<IBlogImageStorage>();
-            _mockLogger = _mockRepository.Create<ILogger<ImageController>>();
-            _mockBlogConfig = _mockRepository.Create<IBlogConfig>();
-            _mockMemoryCache = Create.MockedMemoryCache();
-            _mockFileNameGenerator = _mockRepository.Create<IFileNameGenerator>();
-            _mockAppSettings = _mockRepository.Create<IOptions<AppSettings>>();
-            _mockImageStorageSettings = _mockRepository.Create<IOptions<ImageStorageSettings>>();
+        var ctl = CreateImageController();
+
+        var result = await ctl.Image(filename);
+        Assert.IsInstanceOf(typeof(RedirectResult), result);
+        if (result is RedirectResult rdResult)
+        {
+            var resultUrl = _mockBlogConfig.Object.ImageSettings.CDNEndpoint.CombineUrl(filename);
+            Assert.That(rdResult.Url, Is.EqualTo(resultUrl));
         }
+    }
 
-        private ImageController CreateImageController()
+    [Test]
+    public async Task Image_Null()
+    {
+        const string filename = "test.png";
+
+        _mockBlogConfig.Setup(p => p.ImageSettings).Returns(new ImageSettings()
         {
-            return new(
-                _mockBlogImageStorage.Object,
-                _mockLogger.Object,
-                _mockBlogConfig.Object,
-                _mockMemoryCache,
-                _mockFileNameGenerator.Object,
-                _mockAppSettings.Object,
-                _mockImageStorageSettings.Object);
-        }
+            EnableCDNRedirect = false,
+        });
 
-        [TestCase("<996>.png")]
-        [TestCase(":icu.gif")]
-        [TestCase("|.jpg")]
-        [Platform(Include = "Win")]
-        public async Task GetImage_InvalidFileNames(string filename)
+        _mockAppSettings.Setup(p => p.Value).Returns(new AppSettings
         {
-            var ctl = CreateImageController();
-            var result = await ctl.Image(filename);
-            Assert.IsInstanceOf(typeof(BadRequestObjectResult), result);
-        }
-
-        [Test]
-        public async Task GetImage_CDN()
-        {
-            const string filename = "test.png";
-
-            _mockBlogConfig.Setup(p => p.ImageSettings).Returns(new ImageSettings()
+            CacheSlidingExpirationMinutes = new Dictionary<string, int>
             {
-                EnableCDNRedirect = true,
-                CDNEndpoint = "https://cdn.996.icu/fubao"
-            });
-
-            var ctl = CreateImageController();
-
-            var result = await ctl.Image(filename);
-            Assert.IsInstanceOf(typeof(RedirectResult), result);
-            if (result is RedirectResult rdResult)
-            {
-                var resultUrl = _mockBlogConfig.Object.ImageSettings.CDNEndpoint.CombineUrl(filename);
-                Assert.That(rdResult.Url, Is.EqualTo(resultUrl));
+                { "Image", FakeData.Int2 }
             }
-        }
+        });
 
-        [Test]
-        public async Task Image_Null()
+        _mockBlogImageStorage.Setup(p => p.GetAsync(It.IsAny<string>()))
+            .Returns(Task.FromResult((ImageInfo)null));
+
+        var ctl = CreateImageController();
+        var result = await ctl.Image(filename);
+
+        Assert.IsInstanceOf<NotFoundResult>(result);
+    }
+
+    [Test]
+    public async Task Image_File()
+    {
+        const string filename = "test.png";
+
+        _mockBlogConfig.Setup(p => p.ImageSettings).Returns(new ImageSettings()
         {
-            const string filename = "test.png";
+            EnableCDNRedirect = false,
+        });
 
-            _mockBlogConfig.Setup(p => p.ImageSettings).Returns(new ImageSettings()
-            {
-                EnableCDNRedirect = false,
-            });
-
-            _mockAppSettings.Setup(p => p.Value).Returns(new AppSettings
-            {
-                CacheSlidingExpirationMinutes = new Dictionary<string, int>
-                {
-                    { "Image", FakeData.Int2 }
-                }
-            });
-
-            _mockBlogImageStorage.Setup(p => p.GetAsync(It.IsAny<string>()))
-                .Returns(Task.FromResult((ImageInfo)null));
-
-            var ctl = CreateImageController();
-            var result = await ctl.Image(filename);
-
-            Assert.IsInstanceOf<NotFoundResult>(result);
-        }
-
-        [Test]
-        public async Task Image_File()
+        _mockAppSettings.Setup(p => p.Value).Returns(new AppSettings
         {
-            const string filename = "test.png";
-
-            _mockBlogConfig.Setup(p => p.ImageSettings).Returns(new ImageSettings()
+            CacheSlidingExpirationMinutes = new Dictionary<string, int>
             {
-                EnableCDNRedirect = false,
-            });
+                { "Image", FakeData.Int2 }
+            }
+        });
 
-            _mockAppSettings.Setup(p => p.Value).Returns(new AppSettings
+        _mockBlogImageStorage.Setup(p => p.GetAsync(It.IsAny<string>()))
+            .Returns(Task.FromResult(new ImageInfo
             {
-                CacheSlidingExpirationMinutes = new Dictionary<string, int>
-                {
-                    { "Image", FakeData.Int2 }
-                }
-            });
+                ImageBytes = Array.Empty<byte>(),
+                ImageExtensionName = ".png"
+            }));
 
-            _mockBlogImageStorage.Setup(p => p.GetAsync(It.IsAny<string>()))
-                .Returns(Task.FromResult(new ImageInfo
-                {
-                    ImageBytes = Array.Empty<byte>(),
-                    ImageExtensionName = ".png"
-                }));
+        var ctl = CreateImageController();
+        var result = await ctl.Image(filename);
 
-            var ctl = CreateImageController();
-            var result = await ctl.Image(filename);
+        Assert.IsInstanceOf<FileContentResult>(result);
+    }
 
-            Assert.IsInstanceOf<FileContentResult>(result);
-        }
+    [Test]
+    public async Task Image_Upload_NullFile()
+    {
+        var ctl = CreateImageController();
+        var result = await ctl.Image((IFormFile)null);
 
-        [Test]
-        public async Task Image_Upload_NullFile()
+        Assert.IsInstanceOf<BadRequestResult>(result);
+    }
+
+    [Test]
+    public async Task Image_Upload_InvalidExtension()
+    {
+        _mockImageStorageSettings.Setup(p => p.Value).Returns(new ImageStorageSettings
         {
-            var ctl = CreateImageController();
-            var result = await ctl.Image((IFormFile)null);
+            AllowedExtensions = new[] { ".png" }
+        });
 
-            Assert.IsInstanceOf<BadRequestResult>(result);
-        }
+        IFormFile file = new FormFile(new MemoryStream(), 0, 1024, "996.jpg", "996.jpg");
 
-        [Test]
-        public async Task Image_Upload_InvalidExtension()
-        {
-            _mockImageStorageSettings.Setup(p => p.Value).Returns(new ImageStorageSettings
-            {
-                AllowedExtensions = new[] { ".png" }
-            });
+        var ctl = CreateImageController();
+        var result = await ctl.Image(file);
 
-            IFormFile file = new FormFile(new MemoryStream(), 0, 1024, "996.jpg", "996.jpg");
-
-            var ctl = CreateImageController();
-            var result = await ctl.Image(file);
-
-            Assert.IsInstanceOf<BadRequestResult>(result);
-        }
+        Assert.IsInstanceOf<BadRequestResult>(result);
     }
 }

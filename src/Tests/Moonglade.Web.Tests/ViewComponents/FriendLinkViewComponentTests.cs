@@ -5,57 +5,54 @@ using Moonglade.FriendLink;
 using Moonglade.Web.ViewComponents;
 using Moq;
 using NUnit.Framework;
-using System.Collections.Generic;
-using System.Threading.Tasks;
 
-namespace Moonglade.Web.Tests.ViewComponents
+namespace Moonglade.Web.Tests.ViewComponents;
+
+[TestFixture]
+public class FriendLinkViewComponentTests
 {
-    [TestFixture]
-    public class FriendLinkViewComponentTests
+    private MockRepository _mockRepository;
+
+    private Mock<ILogger<FriendLinkViewComponent>> _mockLogger;
+    private Mock<IMediator> _mockMediator;
+
+    [SetUp]
+    public void SetUp()
     {
-        private MockRepository _mockRepository;
+        _mockRepository = new(MockBehavior.Default);
 
-        private Mock<ILogger<FriendLinkViewComponent>> _mockLogger;
-        private Mock<IMediator> _mockMediator;
+        _mockLogger = _mockRepository.Create<ILogger<FriendLinkViewComponent>>();
+        _mockMediator = _mockRepository.Create<IMediator>();
+    }
 
-        [SetUp]
-        public void SetUp()
-        {
-            _mockRepository = new(MockBehavior.Default);
+    private FriendLinkViewComponent CreateComponent()
+    {
+        return new(
+            _mockLogger.Object,
+            _mockMediator.Object);
+    }
 
-            _mockLogger = _mockRepository.Create<ILogger<FriendLinkViewComponent>>();
-            _mockMediator = _mockRepository.Create<IMediator>();
-        }
+    [Test]
+    public async Task InvokeAsync_Exception()
+    {
+        _mockMediator.Setup(p => p.Send(It.IsAny<GetAllLinksQuery>(), default)).Throws(new(FakeData.ShortString2));
 
-        private FriendLinkViewComponent CreateComponent()
-        {
-            return new(
-                _mockLogger.Object,
-                _mockMediator.Object);
-        }
+        var component = CreateComponent();
+        var result = await component.InvokeAsync();
 
-        [Test]
-        public async Task InvokeAsync_Exception()
-        {
-            _mockMediator.Setup(p => p.Send(It.IsAny<GetAllLinksQuery>(), default)).Throws(new(FakeData.ShortString2));
+        Assert.IsInstanceOf<ContentViewComponentResult>(result);
+    }
 
-            var component = CreateComponent();
-            var result = await component.InvokeAsync();
+    [Test]
+    public async Task InvokeAsync_View()
+    {
+        IReadOnlyList<Link> links = new List<Link>();
 
-            Assert.IsInstanceOf<ContentViewComponentResult>(result);
-        }
+        _mockMediator.Setup(p => p.Send(It.IsAny<GetAllLinksQuery>(), default)).Returns(Task.FromResult(links));
 
-        [Test]
-        public async Task InvokeAsync_View()
-        {
-            IReadOnlyList<Link> links = new List<Link>();
+        var component = CreateComponent();
+        var result = await component.InvokeAsync();
 
-            _mockMediator.Setup(p => p.Send(It.IsAny<GetAllLinksQuery>(), default)).Returns(Task.FromResult(links));
-
-            var component = CreateComponent();
-            var result = await component.InvokeAsync();
-
-            Assert.IsInstanceOf<ViewViewComponentResult>(result);
-        }
+        Assert.IsInstanceOf<ViewViewComponentResult>(result);
     }
 }

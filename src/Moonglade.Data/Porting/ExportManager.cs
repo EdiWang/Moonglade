@@ -1,24 +1,20 @@
-﻿using System;
-using System.IO;
+﻿namespace Moonglade.Data.Porting;
 
-namespace Moonglade.Data.Porting
+public class ExportManager
 {
-    public class ExportManager
+    public static readonly string DataDir = AppDomain.CurrentDomain.GetData("DataDirectory")?.ToString();
+
+    public static string CreateExportDirectory(string directory, string subDirName)
     {
-        public static readonly string DataDir = AppDomain.CurrentDomain.GetData("DataDirectory")?.ToString();
+        if (directory is null) return null;
 
-        public static string CreateExportDirectory(string directory, string subDirName)
+        var path = Path.Join(directory, "export", subDirName);
+        if (Directory.Exists(path))
         {
-            if (directory is null) return null;
-
-            var path = Path.Join(directory, "export", subDirName);
-            if (Directory.Exists(path))
-            {
-                Directory.Delete(path);
-            }
-
-            Directory.CreateDirectory(path);
-            return path;
+            Directory.Delete(path);
         }
+
+        Directory.CreateDirectory(path);
+        return path;
     }
 }

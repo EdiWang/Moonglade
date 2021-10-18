@@ -1,10 +1,7 @@
 ﻿using MediatR;
 using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Localization;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.Hosting;
-using Microsoft.Extensions.Logging;
 using Microsoft.FeatureManagement.Mvc;
 using Moonglade.Caching;
 using Moonglade.Caching.Filters;
@@ -19,10 +16,8 @@ using Moonglade.Utils;
 using Moonglade.Web.Models;
 using Moonglade.Web.Models.Settings;
 using NUglify;
-using System;
 using System.Data;
 using System.Reflection;
-using System.Threading.Tasks;
 
 namespace Moonglade.Web.Controllers
 {

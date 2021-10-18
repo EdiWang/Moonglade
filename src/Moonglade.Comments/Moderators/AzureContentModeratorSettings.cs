@@ -1,8 +1,7 @@
-﻿namespace Moonglade.Comments.Moderators
+﻿namespace Moonglade.Comments.Moderators;
+
+public class AzureContentModeratorSettings
 {
-    public class AzureContentModeratorSettings
-    {
-        public string OcpApimSubscriptionKey { get; set; }
-        public string Endpoint { get; set; }
-    }
+    public string OcpApimSubscriptionKey { get; set; }
+    public string Endpoint { get; set; }
 }

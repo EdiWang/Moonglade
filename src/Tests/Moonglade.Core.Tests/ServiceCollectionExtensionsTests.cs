@@ -1,20 +1,18 @@
 using Microsoft.Extensions.DependencyInjection;
 using NUnit.Framework;
-using System.Linq;
 
-namespace Moonglade.Core.Tests
+namespace Moonglade.Core.Tests;
+
+[TestFixture]
+public class ServiceCollectionExtensionsTests
 {
-    [TestFixture]
-    public class ServiceCollectionExtensionsTests
+    [Test]
+    public void AddReleaseCheckerClient_OK()
     {
-        [Test]
-        public void AddReleaseCheckerClient_OK()
-        {
-            IServiceCollection services = new ServiceCollection();
-            services.AddReleaseCheckerClient();
+        IServiceCollection services = new ServiceCollection();
+        services.AddReleaseCheckerClient();
 
-            var obj1 = services.FirstOrDefault(p => p.ServiceType == typeof(IReleaseCheckerClient));
-            Assert.IsNotNull(obj1);
-        }
+        var obj1 = services.FirstOrDefault(p => p.ServiceType == typeof(IReleaseCheckerClient));
+        Assert.IsNotNull(obj1);
     }
 }

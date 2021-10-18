@@ -1,25 +1,24 @@
-﻿namespace Moonglade.Data.Porting
+﻿namespace Moonglade.Data.Porting;
+
+public class ExportResult
 {
-    public class ExportResult
+    public ExportFormat ExportFormat { get; set; }
+
+    public string FilePath { get; set; }
+
+    public byte[] Content { get; set; }
+
+    public string ContentType
     {
-        public ExportFormat ExportFormat { get; set; }
-
-        public string FilePath { get; set; }
-
-        public byte[] Content { get; set; }
-
-        public string ContentType
+        get
         {
-            get
+            return ExportFormat switch
             {
-                return ExportFormat switch
-                {
-                    ExportFormat.SingleCSVFile => "text/csv",
-                    ExportFormat.SingleJsonFile => "application/octet-stream",
-                    ExportFormat.ZippedJsonFiles => "application/zip",
-                    _ => string.Empty
-                };
-            }
+                ExportFormat.SingleCSVFile => "text/csv",
+                ExportFormat.SingleJsonFile => "application/octet-stream",
+                ExportFormat.ZippedJsonFiles => "application/zip",
+                _ => string.Empty
+            };
         }
     }
 }

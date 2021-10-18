@@ -1,5 +1,4 @@
 ﻿using MediatR;
-using Microsoft.Extensions.Logging;
 using Moonglade.Configuration;
 using Moonglade.Core.CategoryFeature;
 using Moonglade.Core.PageFeature;
@@ -7,10 +6,7 @@ using Moonglade.Core.PostFeature;
 using Moonglade.Core.TagFeature;
 using Moonglade.ImageStorage;
 using Moonglade.Utils;
-using System;
-using System.Linq;
 using System.Text;
-using System.Threading.Tasks;
 using WilderMinds.MetaWeblog;
 using Post = WilderMinds.MetaWeblog.Post;
 using Tag = WilderMinds.MetaWeblog.Tag;

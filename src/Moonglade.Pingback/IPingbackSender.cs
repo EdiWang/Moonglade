@@ -1,9 +1,6 @@
-﻿using System.Threading.Tasks;
+﻿namespace Moonglade.Pingback;
 
-namespace Moonglade.Pingback
+public interface IPingbackSender
 {
-    public interface IPingbackSender
-    {
-        Task TrySendPingAsync(string postUrl, string postContent);
-    }
+    Task TrySendPingAsync(string postUrl, string postContent);
 }

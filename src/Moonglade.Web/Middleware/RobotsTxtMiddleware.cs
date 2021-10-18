@@ -1,8 +1,5 @@
-﻿using Microsoft.AspNetCore.Builder;
-using Microsoft.AspNetCore.Http;
-using Moonglade.Configuration;
+﻿using Moonglade.Configuration;
 using System.Text;
-using System.Threading.Tasks;
 
 namespace Moonglade.Web.Middleware
 {

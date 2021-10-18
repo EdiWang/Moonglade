@@ -4,97 +4,92 @@ using Microsoft.Rest;
 using Moonglade.Comments.Moderators;
 using Moq;
 using NUnit.Framework;
-using System.Collections.Generic;
-using System.IO;
-using System.Threading;
-using System.Threading.Tasks;
 
-namespace Moonglade.Comments.Tests
+namespace Moonglade.Comments.Tests;
+
+[TestFixture]
+public class AzureContentModeratorTests
 {
-    [TestFixture]
-    public class AzureContentModeratorTests
+    private MockRepository _mockRepository;
+    private Mock<IContentModeratorClient> _mockContentModeratorClient;
+    private Mock<ITextModeration> _mockTextModeration;
+    private readonly Screen _screen = new()
     {
-        private MockRepository _mockRepository;
-        private Mock<IContentModeratorClient> _mockContentModeratorClient;
-        private Mock<ITextModeration> _mockTextModeration;
-        private readonly Screen _screen = new()
-        {
-            Terms = new List<DetectedTerms>()
-        };
+        Terms = new List<DetectedTerms>()
+    };
 
-        [SetUp]
-        public void SetUp()
-        {
-            _mockRepository = new(MockBehavior.Default);
-            _mockContentModeratorClient = _mockRepository.Create<IContentModeratorClient>();
-            _mockTextModeration = _mockRepository.Create<ITextModeration>();
-        }
+    [SetUp]
+    public void SetUp()
+    {
+        _mockRepository = new(MockBehavior.Default);
+        _mockContentModeratorClient = _mockRepository.Create<IContentModeratorClient>();
+        _mockTextModeration = _mockRepository.Create<ITextModeration>();
+    }
 
-        private AzureContentModerator CreateAzureContentModerator()
-        {
-            _mockTextModeration.Setup(p => p.ScreenTextWithHttpMessagesAsync(
-                    "text/plain",
-                    It.IsAny<MemoryStream>(),
-                    null,
-                    false,
-                    false,
-                    null,
-                    false,
-                    null,
-                    CancellationToken.None))
-                .Returns(Task.FromResult(new HttpOperationResponse<Screen>
-                {
-                    Body = _screen
-                }));
+    private AzureContentModerator CreateAzureContentModerator()
+    {
+        _mockTextModeration.Setup(p => p.ScreenTextWithHttpMessagesAsync(
+                "text/plain",
+                It.IsAny<MemoryStream>(),
+                null,
+                false,
+                false,
+                null,
+                false,
+                null,
+                CancellationToken.None))
+            .Returns(Task.FromResult(new HttpOperationResponse<Screen>
+            {
+                Body = _screen
+            }));
 
-            _mockContentModeratorClient.Setup(p => p.TextModeration).Returns(_mockTextModeration.Object);
+        _mockContentModeratorClient.Setup(p => p.TextModeration).Returns(_mockTextModeration.Object);
 
-            return new(_mockContentModeratorClient.Object);
-        }
+        return new(_mockContentModeratorClient.Object);
+    }
 
-        [Test]
-        public async Task ModerateContent_StateUnderTest_ExpectedBehavior()
-        {
-            _screen.Terms.Add(new() { Term = "fuck" });
+    [Test]
+    public async Task ModerateContent_StateUnderTest_ExpectedBehavior()
+    {
+        _screen.Terms.Add(new() { Term = "fuck" });
 
-            var azureContentModerator = CreateAzureContentModerator();
-            string input = "fuck 996";
+        var azureContentModerator = CreateAzureContentModerator();
+        string input = "fuck 996";
 
-            var result = await azureContentModerator.ModerateContent(input);
+        var result = await azureContentModerator.ModerateContent(input);
 
-            Assert.AreEqual("* 996", result);
-        }
+        Assert.AreEqual("* 996", result);
+    }
 
-        [Test]
-        public async Task HasBadWord_True()
-        {
-            _screen.Terms.Add(new() { Term = "fuck" });
+    [Test]
+    public async Task HasBadWord_True()
+    {
+        _screen.Terms.Add(new() { Term = "fuck" });
 
-            var azureContentModerator = CreateAzureContentModerator();
-            string[] input = { "fuck 996" };
+        var azureContentModerator = CreateAzureContentModerator();
+        string[] input = { "fuck 996" };
 
-            var result = await azureContentModerator.HasBadWord(input);
-            Assert.IsTrue(result);
-        }
+        var result = await azureContentModerator.HasBadWord(input);
+        Assert.IsTrue(result);
+    }
 
-        [Test]
-        public async Task HasBadWord_False()
-        {
-            var azureContentModerator = CreateAzureContentModerator();
-            string[] input = { "go to icu" };
+    [Test]
+    public async Task HasBadWord_False()
+    {
+        var azureContentModerator = CreateAzureContentModerator();
+        string[] input = { "go to icu" };
 
-            var result = await azureContentModerator.HasBadWord(input);
-            Assert.IsFalse(result);
-        }
+        var result = await azureContentModerator.HasBadWord(input);
+        Assert.IsFalse(result);
+    }
 
-        [Test]
-        public void Dispose_OK()
-        {
-            var azureContentModerator = CreateAzureContentModerator();
-            azureContentModerator.Dispose();
+    [Test]
+    public void Dispose_OK()
+    {
+        var azureContentModerator = CreateAzureContentModerator();
+        azureContentModerator.Dispose();
 
-            _mockContentModeratorClient.Verify(p => p.Dispose());
-            Assert.Pass();
-        }
+        _mockContentModeratorClient.Verify(p => p.Dispose());
+        Assert.Pass();
     }
 }

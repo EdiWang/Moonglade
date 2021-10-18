@@ -12,111 +12,108 @@ using Moonglade.Core.PostFeature;
 using Moonglade.Web.Pages;
 using Moq;
 using NUnit.Framework;
-using System;
-using System.Threading.Tasks;
 
-namespace Moonglade.Web.Tests.Pages
+namespace Moonglade.Web.Tests.Pages;
+
+[TestFixture]
+
+public class CategoryListModelTests
 {
-    [TestFixture]
+    private MockRepository _mockRepository;
 
-    public class CategoryListModelTests
+    private Mock<IMediator> _mockMediator;
+    private Mock<IBlogConfig> _mockBlogConfig;
+    private Mock<IBlogCache> _mockBlogCache;
+
+    [SetUp]
+    public void SetUp()
     {
-        private MockRepository _mockRepository;
+        _mockRepository = new(MockBehavior.Default);
 
-        private Mock<IMediator> _mockMediator;
-        private Mock<IBlogConfig> _mockBlogConfig;
-        private Mock<IBlogCache> _mockBlogCache;
+        _mockMediator = _mockRepository.Create<IMediator>();
+        _mockBlogConfig = _mockRepository.Create<IBlogConfig>();
+        _mockBlogCache = _mockRepository.Create<IBlogCache>();
 
-        [SetUp]
-        public void SetUp()
+        _mockBlogConfig.Setup(p => p.ContentSettings).Returns(new ContentSettings
         {
-            _mockRepository = new(MockBehavior.Default);
+            PostListPageSize = 10
+        });
+    }
 
-            _mockMediator = _mockRepository.Create<IMediator>();
-            _mockBlogConfig = _mockRepository.Create<IBlogConfig>();
-            _mockBlogCache = _mockRepository.Create<IBlogCache>();
-
-            _mockBlogConfig.Setup(p => p.ContentSettings).Returns(new ContentSettings
-            {
-                PostListPageSize = 10
-            });
-        }
-
-        private CategoryListModel CreateCategoryListModel()
+    private CategoryListModel CreateCategoryListModel()
+    {
+        var httpContext = new DefaultHttpContext();
+        var modelState = new ModelStateDictionary();
+        var actionContext = new ActionContext(httpContext, new(), new PageActionDescriptor(), modelState);
+        var modelMetadataProvider = new EmptyModelMetadataProvider();
+        var viewData = new ViewDataDictionary(modelMetadataProvider, modelState);
+        var tempData = new TempDataDictionary(httpContext, Mock.Of<ITempDataProvider>());
+        var pageContext = new PageContext(actionContext)
         {
-            var httpContext = new DefaultHttpContext();
-            var modelState = new ModelStateDictionary();
-            var actionContext = new ActionContext(httpContext, new(), new PageActionDescriptor(), modelState);
-            var modelMetadataProvider = new EmptyModelMetadataProvider();
-            var viewData = new ViewDataDictionary(modelMetadataProvider, modelState);
-            var tempData = new TempDataDictionary(httpContext, Mock.Of<ITempDataProvider>());
-            var pageContext = new PageContext(actionContext)
-            {
-                ViewData = viewData
-            };
+            ViewData = viewData
+        };
 
-            var model = new CategoryListModel(
-                _mockBlogConfig.Object,
-                _mockMediator.Object,
-                _mockBlogCache.Object)
-            {
-                PageContext = pageContext,
-                TempData = tempData
-            };
-
-            return model;
-        }
-
-        [TestCase(null)]
-        [TestCase("")]
-        [TestCase(" ")]
-        public async Task OnGetAsync_EmptyRouteName(string routeName)
+        var model = new CategoryListModel(
+            _mockBlogConfig.Object,
+            _mockMediator.Object,
+            _mockBlogCache.Object)
         {
-            var categoryListModel = CreateCategoryListModel();
-            var result = await categoryListModel.OnGetAsync(routeName);
-            Assert.IsInstanceOf<NotFoundResult>(result);
-        }
+            PageContext = pageContext,
+            TempData = tempData
+        };
 
-        [Test]
-        public async Task OnGetAsync_NullCat()
+        return model;
+    }
+
+    [TestCase(null)]
+    [TestCase("")]
+    [TestCase(" ")]
+    public async Task OnGetAsync_EmptyRouteName(string routeName)
+    {
+        var categoryListModel = CreateCategoryListModel();
+        var result = await categoryListModel.OnGetAsync(routeName);
+        Assert.IsInstanceOf<NotFoundResult>(result);
+    }
+
+    [Test]
+    public async Task OnGetAsync_NullCat()
+    {
+        _mockMediator
+            .Setup(p => p.Send(It.IsAny<GetCategoryByRouteCommand>(), default))
+            .Returns(Task.FromResult((Category)null));
+
+        var categoryListModel = CreateCategoryListModel();
+        var result = await categoryListModel.OnGetAsync(FakeData.ShortString2);
+        Assert.IsInstanceOf<NotFoundResult>(result);
+    }
+
+    [Test]
+    public async Task OnGetAsync_ValidCat()
+    {
+        var cat = new Category
         {
-            _mockMediator
-                .Setup(p => p.Send(It.IsAny<GetCategoryByRouteCommand>(), default))
-                .Returns(Task.FromResult((Category)null));
+            Id = Guid.Empty,
+            DisplayName = FakeData.Title3,
+            Note = "Get into ICU",
+            RouteName = FakeData.Slug2
+        };
 
-            var categoryListModel = CreateCategoryListModel();
-            var result = await categoryListModel.OnGetAsync(FakeData.ShortString2);
-            Assert.IsInstanceOf<NotFoundResult>(result);
-        }
+        _mockMediator
+            .Setup(p => p.Send(It.IsAny<GetCategoryByRouteCommand>(), default))
+            .Returns(Task.FromResult(cat));
 
-        [Test]
-        public async Task OnGetAsync_ValidCat()
-        {
-            var cat = new Category
-            {
-                Id = Guid.Empty,
-                DisplayName = FakeData.Title3,
-                Note = "Get into ICU",
-                RouteName = FakeData.Slug2
-            };
+        _mockBlogCache.Setup(p =>
+                p.GetOrCreateAsync(CacheDivision.PostCountCategory, It.IsAny<string>(), It.IsAny<Func<ICacheEntry, Task<int>>>()))
+            .Returns(Task.FromResult(35));
 
-            _mockMediator
-                .Setup(p => p.Send(It.IsAny<GetCategoryByRouteCommand>(), default))
-                .Returns(Task.FromResult(cat));
+        _mockMediator.Setup(p => p.Send(It.IsAny<ListPostsQuery>(), default))
+            .Returns(Task.FromResult(FakeData.FakePosts));
 
-            _mockBlogCache.Setup(p =>
-                    p.GetOrCreateAsync(CacheDivision.PostCountCategory, It.IsAny<string>(), It.IsAny<Func<ICacheEntry, Task<int>>>()))
-                .Returns(Task.FromResult(35));
+        var categoryListModel = CreateCategoryListModel();
+        var result = await categoryListModel.OnGetAsync(FakeData.Slug2);
 
-            _mockMediator.Setup(p => p.Send(It.IsAny<ListPostsQuery>(), default))
-                .Returns(Task.FromResult(FakeData.FakePosts));
-
-            var categoryListModel = CreateCategoryListModel();
-            var result = await categoryListModel.OnGetAsync(FakeData.Slug2);
-
-            Assert.IsInstanceOf<PageResult>(result);
-            Assert.IsNotNull(categoryListModel.Posts);
-            Assert.AreEqual(35, categoryListModel.Posts.TotalItemCount);
-        }
+        Assert.IsInstanceOf<PageResult>(result);
+        Assert.IsNotNull(categoryListModel.Posts);
+        Assert.AreEqual(35, categoryListModel.Posts.TotalItemCount);
     }
 }

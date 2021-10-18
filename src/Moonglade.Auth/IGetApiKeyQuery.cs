@@ -1,9 +1,6 @@
-﻿using System.Threading.Tasks;
+﻿namespace Moonglade.Auth;
 
-namespace Moonglade.Auth
+public interface IGetApiKeyQuery
 {
-    public interface IGetApiKeyQuery
-    {
-        Task<ApiKey> Execute(string providedApiKey);
-    }
+    Task<ApiKey> Execute(string providedApiKey);
 }

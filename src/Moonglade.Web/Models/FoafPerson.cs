@@ -1,6 +1,4 @@
-﻿using System.Collections.Generic;
-
-namespace Moonglade.Web.Models
+﻿namespace Moonglade.Web.Models
 {
     public class FoafPerson
     {

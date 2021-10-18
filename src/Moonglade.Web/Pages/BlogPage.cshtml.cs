@@ -5,8 +5,6 @@ using Microsoft.Extensions.Options;
 using Moonglade.Caching;
 using Moonglade.Configuration.Settings;
 using Moonglade.Core.PageFeature;
-using System;
-using System.Threading.Tasks;
 
 namespace Moonglade.Web.Pages
 {

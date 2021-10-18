@@ -1,12 +1,8 @@
 using MediatR;
-using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Routing;
 using Moonglade.Configuration;
 using Moonglade.FriendLink;
 using Moonglade.Utils;
 using Moonglade.Web.Models;
-using System;
-using System.Threading.Tasks;
 
 namespace Moonglade.Web.Middleware
 {

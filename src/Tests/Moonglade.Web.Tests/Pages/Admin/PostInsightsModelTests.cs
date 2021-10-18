@@ -3,43 +3,40 @@ using Moonglade.Core.PostFeature;
 using Moonglade.Web.Pages.Admin;
 using Moq;
 using NUnit.Framework;
-using System.Collections.Generic;
-using System.Threading.Tasks;
 
-namespace Moonglade.Web.Tests.Pages.Admin
+namespace Moonglade.Web.Tests.Pages.Admin;
+
+[TestFixture]
+
+public class PostInsightsModelTests
 {
-    [TestFixture]
+    private MockRepository _mockRepository;
+    private Mock<IMediator> _mockMediator;
 
-    public class PostInsightsModelTests
+    [SetUp]
+    public void SetUp()
     {
-        private MockRepository _mockRepository;
-        private Mock<IMediator> _mockMediator;
+        _mockRepository = new(MockBehavior.Default);
+        _mockMediator = _mockRepository.Create<IMediator>();
+    }
 
-        [SetUp]
-        public void SetUp()
-        {
-            _mockRepository = new(MockBehavior.Default);
-            _mockMediator = _mockRepository.Create<IMediator>();
-        }
+    private PostInsightsModel CreatePostInsightsModel()
+    {
+        return new(_mockMediator.Object);
+    }
 
-        private PostInsightsModel CreatePostInsightsModel()
-        {
-            return new(_mockMediator.Object);
-        }
+    [Test]
+    public async Task OnGet_StateUnderTest_ExpectedBehavior()
+    {
+        IReadOnlyList<PostSegment> segments = new List<PostSegment>();
 
-        [Test]
-        public async Task OnGet_StateUnderTest_ExpectedBehavior()
-        {
-            IReadOnlyList<PostSegment> segments = new List<PostSegment>();
+        _mockMediator.Setup(p => p.Send(It.IsAny<ListInsightsQuery>(), default))
+            .Returns(Task.FromResult(segments));
 
-            _mockMediator.Setup(p => p.Send(It.IsAny<ListInsightsQuery>(), default))
-                .Returns(Task.FromResult(segments));
+        var postInsightsModel = CreatePostInsightsModel();
+        await postInsightsModel.OnGet();
 
-            var postInsightsModel = CreatePostInsightsModel();
-            await postInsightsModel.OnGet();
-
-            Assert.IsNotNull(postInsightsModel.TopReadList);
-            Assert.IsNotNull(postInsightsModel.TopCommentedList);
-        }
+        Assert.IsNotNull(postInsightsModel.TopReadList);
+        Assert.IsNotNull(postInsightsModel.TopCommentedList);
     }
 }

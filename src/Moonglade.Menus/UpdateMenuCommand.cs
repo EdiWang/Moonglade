@@ -3,71 +3,66 @@ using Moonglade.Data;
 using Moonglade.Data.Entities;
 using Moonglade.Data.Infrastructure;
 using Moonglade.Utils;
-using System;
-using System.Linq;
-using System.Threading;
-using System.Threading.Tasks;
 
-namespace Moonglade.Menus
+namespace Moonglade.Menus;
+
+public class UpdateMenuCommand : IRequest
 {
-    public class UpdateMenuCommand : IRequest
+    public UpdateMenuCommand(Guid id, EditMenuRequest payload)
     {
-        public UpdateMenuCommand(Guid id, EditMenuRequest payload)
-        {
-            Id = id;
-            Payload = payload;
-        }
-
-        public Guid Id { get; set; }
-        public EditMenuRequest Payload { get; set; }
+        Id = id;
+        Payload = payload;
     }
 
-    public class UpdateMenuCommandHandler : IRequestHandler<UpdateMenuCommand>
+    public Guid Id { get; set; }
+    public EditMenuRequest Payload { get; set; }
+}
+
+public class UpdateMenuCommandHandler : IRequestHandler<UpdateMenuCommand>
+{
+    private readonly IRepository<MenuEntity> _menuRepo;
+    private readonly IBlogAudit _audit;
+
+    public UpdateMenuCommandHandler(IRepository<MenuEntity> menuRepo, IBlogAudit audit)
     {
-        private readonly IRepository<MenuEntity> _menuRepo;
-        private readonly IBlogAudit _audit;
+        _menuRepo = menuRepo;
+        _audit = audit;
+    }
 
-        public UpdateMenuCommandHandler(IRepository<MenuEntity> menuRepo, IBlogAudit audit)
+    public async Task<Unit> Handle(UpdateMenuCommand request, CancellationToken cancellationToken)
+    {
+        var menu = await _menuRepo.GetAsync(request.Id);
+        if (menu is null)
         {
-            _menuRepo = menuRepo;
-            _audit = audit;
+            throw new InvalidOperationException($"MenuEntity with Id '{request.Id}' not found.");
         }
 
-        public async Task<Unit> Handle(UpdateMenuCommand request, CancellationToken cancellationToken)
+        var url = Helper.SterilizeLink(request.Payload.Url.Trim());
+
+        menu.Title = request.Payload.Title.Trim();
+        menu.Url = url;
+        menu.DisplayOrder = request.Payload.DisplayOrder.GetValueOrDefault();
+        menu.Icon = request.Payload.Icon;
+        menu.IsOpenInNewTab = request.Payload.IsOpenInNewTab;
+
+        if (request.Payload.SubMenus is { Length: > 0 })
         {
-            var menu = await _menuRepo.GetAsync(request.Id);
-            if (menu is null)
+            menu.SubMenus.Clear();
+            var sms = request.Payload.SubMenus.Select(p => new SubMenuEntity
             {
-                throw new InvalidOperationException($"MenuEntity with Id '{request.Id}' not found.");
-            }
+                Id = Guid.NewGuid(),
+                IsOpenInNewTab = p.IsOpenInNewTab,
+                Title = p.Title,
+                Url = p.Url,
+                MenuId = menu.Id
+            });
 
-            var url = Helper.SterilizeLink(request.Payload.Url.Trim());
-
-            menu.Title = request.Payload.Title.Trim();
-            menu.Url = url;
-            menu.DisplayOrder = request.Payload.DisplayOrder.GetValueOrDefault();
-            menu.Icon = request.Payload.Icon;
-            menu.IsOpenInNewTab = request.Payload.IsOpenInNewTab;
-
-            if (request.Payload.SubMenus is { Length: > 0 })
-            {
-                menu.SubMenus.Clear();
-                var sms = request.Payload.SubMenus.Select(p => new SubMenuEntity
-                {
-                    Id = Guid.NewGuid(),
-                    IsOpenInNewTab = p.IsOpenInNewTab,
-                    Title = p.Title,
-                    Url = p.Url,
-                    MenuId = menu.Id
-                });
-
-                menu.SubMenus = sms.ToList();
-            }
-
-            await _menuRepo.UpdateAsync(menu);
-            await _audit.AddEntry(BlogEventType.Content, BlogEventId.MenuUpdated, $"Menu '{request.Id}' updated.");
-
-            return Unit.Value;
+            menu.SubMenus = sms.ToList();
         }
+
+        await _menuRepo.UpdateAsync(menu);
+        await _audit.AddEntry(BlogEventType.Content, BlogEventId.MenuUpdated, $"Menu '{request.Id}' updated.");
+
+        return Unit.Value;
     }
 }

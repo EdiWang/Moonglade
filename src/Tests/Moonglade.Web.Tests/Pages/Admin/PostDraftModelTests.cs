@@ -3,41 +3,38 @@ using Moonglade.Core.PostFeature;
 using Moonglade.Web.Pages.Admin;
 using Moq;
 using NUnit.Framework;
-using System.Collections.Generic;
-using System.Threading.Tasks;
 
-namespace Moonglade.Web.Tests.Pages.Admin
+namespace Moonglade.Web.Tests.Pages.Admin;
+
+[TestFixture]
+
+public class PostDraftModelTests
 {
-    [TestFixture]
+    private MockRepository _mockRepository;
+    private Mock<IMediator> _mockMediator;
 
-    public class PostDraftModelTests
+    [SetUp]
+    public void SetUp()
     {
-        private MockRepository _mockRepository;
-        private Mock<IMediator> _mockMediator;
+        _mockRepository = new(MockBehavior.Default);
+        _mockMediator = _mockRepository.Create<IMediator>();
+    }
 
-        [SetUp]
-        public void SetUp()
-        {
-            _mockRepository = new(MockBehavior.Default);
-            _mockMediator = _mockRepository.Create<IMediator>();
-        }
+    private PostDraftModel CreatePostDraftModel()
+    {
+        return new(_mockMediator.Object);
+    }
 
-        private PostDraftModel CreatePostDraftModel()
-        {
-            return new(_mockMediator.Object);
-        }
+    [Test]
+    public async Task OnGet_StateUnderTest_ExpectedBehavior()
+    {
+        IReadOnlyList<PostSegment> data = new List<PostSegment>();
 
-        [Test]
-        public async Task OnGet_StateUnderTest_ExpectedBehavior()
-        {
-            IReadOnlyList<PostSegment> data = new List<PostSegment>();
+        _mockMediator.Setup(p => p.Send(It.IsAny<ListPostSegmentByStatusQuery>(), default)).Returns(Task.FromResult(data));
 
-            _mockMediator.Setup(p => p.Send(It.IsAny<ListPostSegmentByStatusQuery>(), default)).Returns(Task.FromResult(data));
+        var postDraftModel = CreatePostDraftModel();
+        await postDraftModel.OnGet();
 
-            var postDraftModel = CreatePostDraftModel();
-            await postDraftModel.OnGet();
-
-            Assert.IsNotNull(postDraftModel.PostSegments);
-        }
+        Assert.IsNotNull(postDraftModel.PostSegments);
     }
 }

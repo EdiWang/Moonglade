@@ -3,40 +3,36 @@ using Moonglade.Data.Entities;
 using Moonglade.Data.Infrastructure;
 using Moonglade.Data.Spec;
 using Moonglade.Utils;
-using System.Collections.Generic;
-using System.Threading;
-using System.Threading.Tasks;
 
-namespace Moonglade.Core.PostFeature
+namespace Moonglade.Core.PostFeature;
+
+public class ListFeaturedQuery : IRequest<IReadOnlyList<PostDigest>>
 {
-    public class ListFeaturedQuery : IRequest<IReadOnlyList<PostDigest>>
+    public ListFeaturedQuery(int pageSize, int pageIndex)
     {
-        public ListFeaturedQuery(int pageSize, int pageIndex)
-        {
-            PageSize = pageSize;
-            PageIndex = pageIndex;
-        }
-
-        public int PageSize { get; set; }
-
-        public int PageIndex { get; set; }
+        PageSize = pageSize;
+        PageIndex = pageIndex;
     }
 
-    public class ListFeaturedQueryHandler : IRequestHandler<ListFeaturedQuery, IReadOnlyList<PostDigest>>
+    public int PageSize { get; set; }
+
+    public int PageIndex { get; set; }
+}
+
+public class ListFeaturedQueryHandler : IRequestHandler<ListFeaturedQuery, IReadOnlyList<PostDigest>>
+{
+    private readonly IRepository<PostEntity> _postRepo;
+
+    public ListFeaturedQueryHandler(IRepository<PostEntity> postRepo)
     {
-        private readonly IRepository<PostEntity> _postRepo;
+        _postRepo = postRepo;
+    }
 
-        public ListFeaturedQueryHandler(IRepository<PostEntity> postRepo)
-        {
-            _postRepo = postRepo;
-        }
+    public Task<IReadOnlyList<PostDigest>> Handle(ListFeaturedQuery request, CancellationToken cancellationToken)
+    {
+        Helper.ValidatePagingParameters(request.PageSize, request.PageIndex);
 
-        public Task<IReadOnlyList<PostDigest>> Handle(ListFeaturedQuery request, CancellationToken cancellationToken)
-        {
-            Helper.ValidatePagingParameters(request.PageSize, request.PageIndex);
-
-            var posts = _postRepo.SelectAsync(new FeaturedPostSpec(request.PageSize, request.PageIndex), PostDigest.EntitySelector);
-            return posts;
-        }
+        var posts = _postRepo.SelectAsync(new FeaturedPostSpec(request.PageSize, request.PageIndex), PostDigest.EntitySelector);
+        return posts;
     }
 }

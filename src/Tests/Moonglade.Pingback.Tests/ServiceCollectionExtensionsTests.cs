@@ -1,23 +1,21 @@
 using Microsoft.Extensions.DependencyInjection;
 using NUnit.Framework;
-using System.Linq;
 
-namespace Moonglade.Pingback.Tests
+namespace Moonglade.Pingback.Tests;
+
+[TestFixture]
+public class ServiceCollectionExtensionsTests
 {
-    [TestFixture]
-    public class ServiceCollectionExtensionsTests
+    [Test]
+    public void AddPingback_OK()
     {
-        [Test]
-        public void AddPingback_OK()
-        {
-            IServiceCollection services = new ServiceCollection();
-            services.AddPingback();
+        IServiceCollection services = new ServiceCollection();
+        services.AddPingback();
 
-            var obj1 = services.FirstOrDefault(p => p.ServiceType == typeof(IPingSourceInspector));
-            Assert.IsNotNull(obj1);
+        var obj1 = services.FirstOrDefault(p => p.ServiceType == typeof(IPingSourceInspector));
+        Assert.IsNotNull(obj1);
 
-            var obj3 = services.FirstOrDefault(p => p.ServiceType == typeof(IPingbackSender));
-            Assert.IsNotNull(obj3);
-        }
+        var obj3 = services.FirstOrDefault(p => p.ServiceType == typeof(IPingbackSender));
+        Assert.IsNotNull(obj3);
     }
 }

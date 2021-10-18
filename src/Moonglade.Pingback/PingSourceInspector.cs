@@ -1,59 +1,56 @@
 ﻿using Microsoft.Extensions.Logging;
 using System.Net;
-using System.Net.Http;
 using System.Text.RegularExpressions;
-using System.Threading.Tasks;
 
-namespace Moonglade.Pingback
+namespace Moonglade.Pingback;
+
+public interface IPingSourceInspector
 {
-    public interface IPingSourceInspector
+    Task<PingRequest> ExamineSourceAsync(string sourceUrl, string targetUrl);
+}
+
+public class PingSourceInspector : IPingSourceInspector
+{
+    private readonly ILogger<PingSourceInspector> _logger;
+    private readonly HttpClient _httpClient;
+
+    public PingSourceInspector(ILogger<PingSourceInspector> logger, HttpClient httpClient)
     {
-        Task<PingRequest> ExamineSourceAsync(string sourceUrl, string targetUrl);
+        _logger = logger;
+        _httpClient = httpClient;
     }
 
-    public class PingSourceInspector : IPingSourceInspector
+    public async Task<PingRequest> ExamineSourceAsync(string sourceUrl, string targetUrl)
     {
-        private readonly ILogger<PingSourceInspector> _logger;
-        private readonly HttpClient _httpClient;
-
-        public PingSourceInspector(ILogger<PingSourceInspector> logger, HttpClient httpClient)
+        try
         {
-            _logger = logger;
-            _httpClient = httpClient;
+            var regexHtml = new Regex(
+                @"</?\w+((\s+\w+(\s*=\s*(?:"".*?""|'.*?'|[^'"">\s]+))?)+\s*|\s*)/?>",
+                RegexOptions.Singleline | RegexOptions.Compiled);
+
+            var regexTitle = new Regex(
+                @"(?<=<title.*>)([\s\S]*)(?=</title>)", RegexOptions.IgnoreCase | RegexOptions.Compiled);
+
+            var html = await _httpClient.GetStringAsync(sourceUrl);
+            var title = regexTitle.Match(html).Value.Trim();
+            var containsHtml = regexHtml.IsMatch(title);
+            var sourceHasLink = html.ToUpperInvariant().Contains(targetUrl.ToUpperInvariant());
+
+            var pingRequest = new PingRequest
+            {
+                Title = title,
+                ContainsHtml = containsHtml,
+                SourceHasLink = sourceHasLink,
+                TargetUrl = targetUrl,
+                SourceUrl = sourceUrl
+            };
+
+            return pingRequest;
         }
-
-        public async Task<PingRequest> ExamineSourceAsync(string sourceUrl, string targetUrl)
+        catch (WebException ex)
         {
-            try
-            {
-                var regexHtml = new Regex(
-                    @"</?\w+((\s+\w+(\s*=\s*(?:"".*?""|'.*?'|[^'"">\s]+))?)+\s*|\s*)/?>",
-                    RegexOptions.Singleline | RegexOptions.Compiled);
-
-                var regexTitle = new Regex(
-                    @"(?<=<title.*>)([\s\S]*)(?=</title>)", RegexOptions.IgnoreCase | RegexOptions.Compiled);
-
-                var html = await _httpClient.GetStringAsync(sourceUrl);
-                var title = regexTitle.Match(html).Value.Trim();
-                var containsHtml = regexHtml.IsMatch(title);
-                var sourceHasLink = html.ToUpperInvariant().Contains(targetUrl.ToUpperInvariant());
-
-                var pingRequest = new PingRequest
-                {
-                    Title = title,
-                    ContainsHtml = containsHtml,
-                    SourceHasLink = sourceHasLink,
-                    TargetUrl = targetUrl,
-                    SourceUrl = sourceUrl
-                };
-
-                return pingRequest;
-            }
-            catch (WebException ex)
-            {
-                _logger.LogError(ex, nameof(ExamineSourceAsync));
-                return null;
-            }
+            _logger.LogError(ex, nameof(ExamineSourceAsync));
+            return null;
         }
     }
 }

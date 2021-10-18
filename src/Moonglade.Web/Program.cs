@@ -1,21 +1,12 @@
 ﻿using MediatR;
-using Microsoft.AspNetCore.Hosting;
-using Microsoft.Extensions.Configuration;
-using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Hosting;
-using Microsoft.Extensions.Logging;
 using Moonglade.Configuration;
 using Moonglade.Data.Setup;
 using Moonglade.Utils;
-using System;
 using System.Collections.Concurrent;
 using System.Data;
 using System.Diagnostics;
-using System.IO;
-using System.Linq;
 using System.Text;
 using System.Text.Json;
-using System.Threading.Tasks;
 
 namespace Moonglade.Web
 {

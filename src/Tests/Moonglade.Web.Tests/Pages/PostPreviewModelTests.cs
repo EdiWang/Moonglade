@@ -8,69 +8,66 @@ using Moonglade.Core.PostFeature;
 using Moonglade.Web.Pages;
 using Moq;
 using NUnit.Framework;
-using System;
-using System.Threading.Tasks;
 
-namespace Moonglade.Web.Tests.Pages
+namespace Moonglade.Web.Tests.Pages;
+
+[TestFixture]
+
+public class PostPreviewModelTests
 {
-    [TestFixture]
+    private MockRepository _mockRepository;
+    private Mock<IMediator> _mockMediator;
 
-    public class PostPreviewModelTests
+    [SetUp]
+    public void SetUp()
     {
-        private MockRepository _mockRepository;
-        private Mock<IMediator> _mockMediator;
+        _mockRepository = new(MockBehavior.Default);
+        _mockMediator = _mockRepository.Create<IMediator>();
+    }
 
-        [SetUp]
-        public void SetUp()
+    private PostPreviewModel CreatePostPreviewModel()
+    {
+        var httpContext = new DefaultHttpContext();
+        var modelState = new ModelStateDictionary();
+        var actionContext = new ActionContext(httpContext, new(), new PageActionDescriptor(), modelState);
+        var modelMetadataProvider = new EmptyModelMetadataProvider();
+        var viewData = new ViewDataDictionary(modelMetadataProvider, modelState);
+        var tempData = new TempDataDictionary(httpContext, Mock.Of<ITempDataProvider>());
+        var pageContext = new PageContext(actionContext)
         {
-            _mockRepository = new(MockBehavior.Default);
-            _mockMediator = _mockRepository.Create<IMediator>();
-        }
+            ViewData = viewData
+        };
 
-        private PostPreviewModel CreatePostPreviewModel()
+        var model = new PostPreviewModel(_mockMediator.Object)
         {
-            var httpContext = new DefaultHttpContext();
-            var modelState = new ModelStateDictionary();
-            var actionContext = new ActionContext(httpContext, new(), new PageActionDescriptor(), modelState);
-            var modelMetadataProvider = new EmptyModelMetadataProvider();
-            var viewData = new ViewDataDictionary(modelMetadataProvider, modelState);
-            var tempData = new TempDataDictionary(httpContext, Mock.Of<ITempDataProvider>());
-            var pageContext = new PageContext(actionContext)
-            {
-                ViewData = viewData
-            };
+            PageContext = pageContext,
+            TempData = tempData
+        };
 
-            var model = new PostPreviewModel(_mockMediator.Object)
-            {
-                PageContext = pageContext,
-                TempData = tempData
-            };
+        return model;
+    }
 
-            return model;
-        }
+    [Test]
+    public async Task OnGetAsync_NotFound()
+    {
+        _mockMediator.Setup(p => p.Send(It.IsAny<GetDraftQuery>(), default))
+            .Returns(Task.FromResult((Post)null));
+        var postPreviewModel = CreatePostPreviewModel();
 
-        [Test]
-        public async Task OnGetAsync_NotFound()
-        {
-            _mockMediator.Setup(p => p.Send(It.IsAny<GetDraftQuery>(), default))
-                .Returns(Task.FromResult((Post)null));
-            var postPreviewModel = CreatePostPreviewModel();
+        var result = await postPreviewModel.OnGetAsync(Guid.Empty);
+        Assert.IsInstanceOf<NotFoundResult>(result);
+    }
 
-            var result = await postPreviewModel.OnGetAsync(Guid.Empty);
-            Assert.IsInstanceOf<NotFoundResult>(result);
-        }
+    [Test]
+    public async Task OnGetAsync_Found()
+    {
+        _mockMediator.Setup(p => p.Send(It.IsAny<GetDraftQuery>(), default))
+            .Returns(Task.FromResult(new Post()));
+        var postPreviewModel = CreatePostPreviewModel();
 
-        [Test]
-        public async Task OnGetAsync_Found()
-        {
-            _mockMediator.Setup(p => p.Send(It.IsAny<GetDraftQuery>(), default))
-                .Returns(Task.FromResult(new Post()));
-            var postPreviewModel = CreatePostPreviewModel();
+        var result = await postPreviewModel.OnGetAsync(Guid.Empty);
 
-            var result = await postPreviewModel.OnGetAsync(Guid.Empty);
-
-            Assert.IsNotNull(postPreviewModel.Post);
-            Assert.IsInstanceOf<PageResult>(result);
-        }
+        Assert.IsNotNull(postPreviewModel.Post);
+        Assert.IsInstanceOf<PageResult>(result);
     }
 }

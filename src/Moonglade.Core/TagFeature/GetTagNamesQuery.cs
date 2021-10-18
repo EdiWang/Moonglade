@@ -1,28 +1,24 @@
 ﻿using MediatR;
 using Moonglade.Data.Entities;
 using Moonglade.Data.Infrastructure;
-using System.Collections.Generic;
-using System.Threading;
-using System.Threading.Tasks;
 
-namespace Moonglade.Core.TagFeature
+namespace Moonglade.Core.TagFeature;
+
+public class GetTagNamesQuery : IRequest<IReadOnlyList<string>>
 {
-    public class GetTagNamesQuery : IRequest<IReadOnlyList<string>>
+}
+
+public class GetTagNamesQueryHandler : IRequestHandler<GetTagNamesQuery, IReadOnlyList<string>>
+{
+    private readonly IRepository<TagEntity> _tagRepo;
+
+    public GetTagNamesQueryHandler(IRepository<TagEntity> tagRepo)
     {
+        _tagRepo = tagRepo;
     }
 
-    public class GetTagNamesQueryHandler : IRequestHandler<GetTagNamesQuery, IReadOnlyList<string>>
+    public Task<IReadOnlyList<string>> Handle(GetTagNamesQuery request, CancellationToken cancellationToken)
     {
-        private readonly IRepository<TagEntity> _tagRepo;
-
-        public GetTagNamesQueryHandler(IRepository<TagEntity> tagRepo)
-        {
-            _tagRepo = tagRepo;
-        }
-
-        public Task<IReadOnlyList<string>> Handle(GetTagNamesQuery request, CancellationToken cancellationToken)
-        {
-            return _tagRepo.SelectAsync(t => t.DisplayName);
-        }
+        return _tagRepo.SelectAsync(t => t.DisplayName);
     }
 }

@@ -1,10 +1,9 @@
-﻿namespace Moonglade.Data.Entities
+﻿namespace Moonglade.Data.Entities;
+
+public enum BlogEventType
 {
-    public enum BlogEventType
-    {
-        General = 0,
-        Authentication = 100,
-        Settings = 200,
-        Content = 300
-    }
+    General = 0,
+    Authentication = 100,
+    Settings = 200,
+    Content = 300
 }
