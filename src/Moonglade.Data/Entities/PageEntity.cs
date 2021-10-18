@@ -1,5 +1,3 @@
-using System;
-
 namespace Moonglade.Data.Entities
 {
     public class PageEntity

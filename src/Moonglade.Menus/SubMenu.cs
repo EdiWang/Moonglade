@@ -1,6 +1,4 @@
-﻿using System;
-
-namespace Moonglade.Menus
+﻿namespace Moonglade.Menus
 {
     public class SubMenu
     {

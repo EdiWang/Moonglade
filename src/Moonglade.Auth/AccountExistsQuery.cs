@@ -1,8 +1,6 @@
 ﻿using MediatR;
 using Moonglade.Data.Entities;
 using Moonglade.Data.Infrastructure;
-using System.Threading;
-using System.Threading.Tasks;
 
 namespace Moonglade.Auth
 {

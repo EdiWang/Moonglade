@@ -1,6 +1,5 @@
 ﻿using Moonglade.Web.Models;
 using NUnit.Framework;
-using System;
 
 namespace Moonglade.Web.Tests.Models
 {

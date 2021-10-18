@@ -2,7 +2,6 @@
 using Microsoft.AspNetCore.Http;
 using Moonglade.Web.Configuration;
 using NUnit.Framework;
-using System.Threading.Tasks;
 
 namespace Moonglade.Web.Tests.Configuration
 {

@@ -5,8 +5,6 @@ using Moonglade.Core.PageFeature;
 using Moonglade.Web.Pages.Admin;
 using Moq;
 using NUnit.Framework;
-using System;
-using System.Threading.Tasks;
 
 namespace Moonglade.Web.Tests.Pages.Admin
 {

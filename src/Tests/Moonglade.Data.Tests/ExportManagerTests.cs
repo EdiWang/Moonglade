@@ -1,6 +1,5 @@
 ﻿using Moonglade.Data.Porting;
 using NUnit.Framework;
-using System.IO;
 
 namespace Moonglade.Data.Tests
 {

@@ -1,5 +1,4 @@
 ﻿using Moonglade.Utils;
-using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 
 namespace Moonglade.Configuration

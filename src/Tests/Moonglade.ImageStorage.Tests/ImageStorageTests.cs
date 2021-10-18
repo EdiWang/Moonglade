@@ -1,7 +1,5 @@
 ﻿using Moonglade.ImageStorage.Providers;
 using NUnit.Framework;
-using System;
-using System.IO;
 
 namespace Moonglade.ImageStorage.Tests
 {

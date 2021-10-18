@@ -1,5 +1,4 @@
 ﻿using Moonglade.Configuration;
-using System.Net.Http;
 using System.Text;
 
 namespace Moonglade.Notification.Client

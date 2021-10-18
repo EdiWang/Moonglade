@@ -1,6 +1,5 @@
 using Microsoft.Extensions.DependencyInjection;
 using NUnit.Framework;
-using System.Linq;
 
 namespace Moonglade.Caching.Tests
 {

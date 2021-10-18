@@ -1,6 +1,4 @@
-﻿using System;
-
-namespace Moonglade.Data.Entities
+﻿namespace Moonglade.Data.Entities
 {
     public class CommentReplyEntity
     {

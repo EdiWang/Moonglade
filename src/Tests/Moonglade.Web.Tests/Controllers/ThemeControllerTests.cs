@@ -8,8 +8,6 @@ using Moonglade.Theme;
 using Moonglade.Web.Controllers;
 using Moq;
 using NUnit.Framework;
-using System;
-using System.Threading.Tasks;
 
 namespace Moonglade.Web.Tests.Controllers
 {

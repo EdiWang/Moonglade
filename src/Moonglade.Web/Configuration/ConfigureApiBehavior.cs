@@ -1,8 +1,6 @@
-﻿using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Mvc;
 using Moonglade.Utils;
 using Moonglade.Web.Models;
-using System;
 
 namespace Moonglade.Web.Configuration
 {

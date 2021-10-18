@@ -2,8 +2,6 @@
 using Microsoft.AspNetCore.Http;
 using Moonglade.Configuration;
 using Moonglade.Utils;
-using System.Threading;
-using System.Threading.Tasks;
 
 namespace Moonglade.Syndication
 {

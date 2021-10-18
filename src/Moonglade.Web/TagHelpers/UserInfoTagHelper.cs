@@ -1,6 +1,4 @@
 ﻿using Microsoft.AspNetCore.Razor.TagHelpers;
-using System;
-using System.Linq;
 using System.Security.Claims;
 
 namespace Moonglade.Web.TagHelpers

@@ -9,8 +9,6 @@ using Moonglade.Caching.Filters;
 using Moonglade.Web.Filters;
 using Moq;
 using NUnit.Framework;
-using System.Collections.Generic;
-using System.Threading.Tasks;
 
 namespace Moonglade.Web.Tests.Filters
 {

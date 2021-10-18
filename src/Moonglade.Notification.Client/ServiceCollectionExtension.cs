@@ -1,6 +1,5 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
 using Polly;
-using System;
 
 namespace Moonglade.Notification.Client
 {

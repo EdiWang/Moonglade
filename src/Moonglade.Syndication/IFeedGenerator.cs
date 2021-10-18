@@ -1,6 +1,4 @@
-﻿using System.Collections.Generic;
-
-namespace Moonglade.Syndication
+﻿namespace Moonglade.Syndication
 {
     public interface IFeedGenerator
     {

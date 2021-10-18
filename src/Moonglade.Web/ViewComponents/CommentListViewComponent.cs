@@ -1,9 +1,6 @@
 ﻿using MediatR;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.Logging;
 using Moonglade.Comments;
-using System;
-using System.Threading.Tasks;
 
 namespace Moonglade.Web.ViewComponents
 {

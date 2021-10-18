@@ -1,6 +1,4 @@
-﻿using System;
-
-namespace Moonglade.FriendLink
+﻿namespace Moonglade.FriendLink
 {
     public class Link
     {

@@ -1,6 +1,4 @@
-﻿using System.Collections.Generic;
-
-namespace Moonglade.Data.Entities
+﻿namespace Moonglade.Data.Entities
 {
     public class TagEntity
     {

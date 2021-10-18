@@ -2,9 +2,6 @@
 using Microsoft.Net.Http.Headers;
 using Moonglade.Configuration;
 using Moonglade.Utils;
-using System;
-using System.Net.Http;
-using System.Threading.Tasks;
 
 namespace Moonglade.Notification.Client
 {

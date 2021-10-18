@@ -1,6 +1,4 @@
-﻿using Microsoft.AspNetCore.Http;
-using Moonglade.Utils;
-using System.Threading.Tasks;
+﻿using Moonglade.Utils;
 
 namespace Moonglade.Web.Middleware
 {

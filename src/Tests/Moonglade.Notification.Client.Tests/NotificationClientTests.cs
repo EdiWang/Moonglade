@@ -3,11 +3,7 @@ using Moonglade.Configuration;
 using Moq;
 using Moq.Protected;
 using NUnit.Framework;
-using System;
 using System.Net;
-using System.Net.Http;
-using System.Threading;
-using System.Threading.Tasks;
 
 namespace Moonglade.Notification.Client.Tests
 {

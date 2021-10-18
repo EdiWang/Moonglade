@@ -1,10 +1,6 @@
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.Logging;
 using Moonglade.FriendLink;
-using System;
-using System.Collections.Generic;
-using System.Threading.Tasks;
 
 namespace Moonglade.Web.ViewComponents
 {

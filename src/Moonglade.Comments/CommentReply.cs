@@ -1,6 +1,4 @@
-﻿using System;
-
-namespace Moonglade.Comments
+﻿namespace Moonglade.Comments
 {
     public class CommentReplyDigest
     {

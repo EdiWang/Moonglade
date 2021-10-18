@@ -1,8 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Moonglade.Data.Entities;
 using Moonglade.Data.Infrastructure;
-using System;
-using System.Linq;
 
 namespace Moonglade.Data.Spec
 {

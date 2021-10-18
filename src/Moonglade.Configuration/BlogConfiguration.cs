@@ -1,6 +1,4 @@
-﻿using System;
-
-namespace Moonglade.Configuration
+﻿namespace Moonglade.Configuration
 {
     internal class BlogConfiguration
     {

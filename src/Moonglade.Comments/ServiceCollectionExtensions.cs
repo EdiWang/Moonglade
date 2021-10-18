@@ -2,7 +2,6 @@
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Moonglade.Comments.Moderators;
-using System;
 
 namespace Moonglade.Comments
 {

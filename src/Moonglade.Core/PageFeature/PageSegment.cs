@@ -1,6 +1,4 @@
-﻿using System;
-
-namespace Moonglade.Core.PageFeature
+﻿namespace Moonglade.Core.PageFeature
 {
     public struct PageSegment
     {

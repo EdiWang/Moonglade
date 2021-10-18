@@ -1,6 +1,5 @@
 ﻿using MediatR;
 using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.FeatureManagement.Mvc;
 using Moonglade.Auth;
@@ -8,9 +7,6 @@ using Moonglade.Configuration.Settings;
 using Moonglade.Core.CategoryFeature;
 using Moonglade.Data;
 using Moonglade.Web.Models;
-using System;
-using System.Collections.Generic;
-using System.Threading.Tasks;
 
 namespace Moonglade.Web.Controllers
 {

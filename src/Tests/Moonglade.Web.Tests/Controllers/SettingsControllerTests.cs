@@ -11,10 +11,7 @@ using Moonglade.Web.Controllers;
 using Moonglade.Web.Models.Settings;
 using Moq;
 using NUnit.Framework;
-using System;
 using System.ComponentModel.DataAnnotations;
-using System.Linq;
-using System.Threading.Tasks;
 
 namespace Moonglade.Web.Tests.Controllers
 {

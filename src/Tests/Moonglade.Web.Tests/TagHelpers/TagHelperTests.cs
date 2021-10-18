@@ -4,7 +4,6 @@ using Moonglade.Web.Middleware;
 using Moonglade.Web.TagHelpers;
 using Moq;
 using NUnit.Framework;
-using System;
 
 namespace Moonglade.Web.Tests.TagHelpers
 {

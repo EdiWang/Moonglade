@@ -4,10 +4,6 @@ using Microsoft.Rest;
 using Moonglade.Comments.Moderators;
 using Moq;
 using NUnit.Framework;
-using System.Collections.Generic;
-using System.IO;
-using System.Threading;
-using System.Threading.Tasks;
 
 namespace Moonglade.Comments.Tests
 {

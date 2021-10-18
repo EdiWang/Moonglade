@@ -2,8 +2,6 @@ using MediatR;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Moonglade.Data.Entities;
 using Moonglade.Pingback;
-using System.Collections.Generic;
-using System.Threading.Tasks;
 
 namespace Moonglade.Web.Pages.Admin
 {

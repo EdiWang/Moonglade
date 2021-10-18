@@ -2,9 +2,6 @@
 using Moonglade.Data.Entities;
 using Moonglade.Data.Infrastructure;
 using Moonglade.Data.Spec;
-using System;
-using System.Threading;
-using System.Threading.Tasks;
 
 namespace Moonglade.Core.PostFeature
 {

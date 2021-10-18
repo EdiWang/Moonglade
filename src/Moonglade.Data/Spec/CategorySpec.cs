@@ -1,6 +1,5 @@
 ﻿using Moonglade.Data.Entities;
 using Moonglade.Data.Infrastructure;
-using System;
 
 namespace Moonglade.Data.Spec
 {

@@ -1,5 +1,4 @@
 ﻿using Moonglade.Data.Entities;
-using System;
 
 namespace Moonglade.Auth
 {

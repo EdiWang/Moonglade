@@ -1,6 +1,4 @@
-﻿using System.Threading.Tasks;
-
-namespace Moonglade.Syndication
+﻿namespace Moonglade.Syndication
 {
     public interface IAtomGenerator
     {

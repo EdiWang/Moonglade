@@ -2,7 +2,6 @@
 using Microsoft.AspNetCore.Razor.TagHelpers;
 using Moonglade.Web.TagHelpers;
 using NUnit.Framework;
-using System.Collections.Generic;
 using System.Security.Claims;
 
 namespace Moonglade.Web.Tests.TagHelpers

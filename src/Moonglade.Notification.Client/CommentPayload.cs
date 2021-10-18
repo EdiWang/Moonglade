@@ -1,6 +1,4 @@
-﻿using System;
-
-namespace Moonglade.Notification.Client
+﻿namespace Moonglade.Notification.Client
 {
     internal class CommentPayload
     {

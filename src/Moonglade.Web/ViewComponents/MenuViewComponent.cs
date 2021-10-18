@@ -2,8 +2,6 @@
 using Microsoft.AspNetCore.Mvc;
 using Moonglade.Caching;
 using Moonglade.Menus;
-using System;
-using System.Threading.Tasks;
 
 namespace Moonglade.Web.ViewComponents
 {

@@ -1,6 +1,4 @@
-﻿using System.Threading.Tasks;
-
-namespace Moonglade.Pingback
+﻿namespace Moonglade.Pingback
 {
     public interface IPingbackSender
     {

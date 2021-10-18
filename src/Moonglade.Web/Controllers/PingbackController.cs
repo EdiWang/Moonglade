@@ -1,19 +1,13 @@
 ﻿using MediatR;
 using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Logging;
 using Moonglade.Configuration;
 using Moonglade.Data;
 using Moonglade.Data.Entities;
 using Moonglade.Notification.Client;
 using Moonglade.Pingback;
 using Moonglade.Web.Models;
-using System;
-using System.IO;
 using System.Text;
-using System.Threading.Tasks;
 
 namespace Moonglade.Web.Controllers
 {

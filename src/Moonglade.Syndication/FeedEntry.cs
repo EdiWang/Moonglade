@@ -1,6 +1,4 @@
-﻿using System;
-
-namespace Moonglade.Syndication
+﻿namespace Moonglade.Syndication
 {
     public class FeedEntry
     {

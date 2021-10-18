@@ -1,19 +1,13 @@
 ﻿using Edi.ImageWatermark;
 using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Caching.Memory;
-using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using Moonglade.Configuration;
 using Moonglade.Configuration.Settings;
 using Moonglade.ImageStorage;
 using Moonglade.Utils;
-using System;
 using System.Drawing;
-using System.IO;
-using System.Linq;
-using System.Threading.Tasks;
 
 namespace Moonglade.Web.Controllers
 {

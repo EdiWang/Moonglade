@@ -4,7 +4,6 @@ using Microsoft.FeatureManagement;
 using Moonglade.Configuration.Settings;
 using Moonglade.Data;
 using Moonglade.Data.Entities;
-using System.Threading.Tasks;
 using X.PagedList;
 
 namespace Moonglade.Web.Pages.Admin

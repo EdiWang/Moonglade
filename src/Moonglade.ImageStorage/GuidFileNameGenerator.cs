@@ -1,7 +1,4 @@
-﻿using System;
-using System.IO;
-
-namespace Moonglade.ImageStorage
+﻿namespace Moonglade.ImageStorage
 {
     public class GuidFileNameGenerator : IFileNameGenerator
     {

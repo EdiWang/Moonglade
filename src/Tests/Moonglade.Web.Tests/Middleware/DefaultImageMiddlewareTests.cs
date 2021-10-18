@@ -5,8 +5,6 @@ using Moonglade.Configuration;
 using Moonglade.Web.Middleware;
 using Moq;
 using NUnit.Framework;
-using System.IO;
-using System.Threading.Tasks;
 
 namespace Moonglade.Web.Tests.Middleware
 {

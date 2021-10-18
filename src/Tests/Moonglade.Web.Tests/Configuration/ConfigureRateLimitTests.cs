@@ -4,7 +4,6 @@ using Microsoft.Extensions.DependencyInjection;
 using Moonglade.Web.Configuration;
 using Moq;
 using NUnit.Framework;
-using System.Linq;
 
 namespace Moonglade.Web.Tests.Configuration
 {

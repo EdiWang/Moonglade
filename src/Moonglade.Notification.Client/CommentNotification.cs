@@ -1,9 +1,6 @@
 ﻿using MediatR;
 using Microsoft.Extensions.Logging;
 using Moonglade.Utils;
-using System;
-using System.Threading;
-using System.Threading.Tasks;
 
 namespace Moonglade.Notification.Client
 {

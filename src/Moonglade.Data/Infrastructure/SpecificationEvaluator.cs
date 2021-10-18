@@ -1,6 +1,4 @@
-﻿using System.Linq;
-
-namespace Moonglade.Data.Infrastructure
+﻿namespace Moonglade.Data.Infrastructure
 {
     public class SpecificationEvaluator<T> where T : class
     {

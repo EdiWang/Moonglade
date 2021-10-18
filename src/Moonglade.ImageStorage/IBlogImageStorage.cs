@@ -1,6 +1,4 @@
-﻿using System.Threading.Tasks;
-
-namespace Moonglade.ImageStorage
+﻿namespace Moonglade.ImageStorage
 {
     public interface IBlogImageStorage
     {

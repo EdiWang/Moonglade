@@ -6,11 +6,7 @@ using Moonglade.Data.Entities;
 using Moonglade.Data.Infrastructure;
 using Moq;
 using NUnit.Framework;
-using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Linq.Expressions;
-using System.Threading.Tasks;
 using System.Xml.Linq;
 
 namespace Moonglade.Syndication.Tests

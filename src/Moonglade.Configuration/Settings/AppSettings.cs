@@ -1,6 +1,4 @@
-﻿using System.Collections.Generic;
-
-namespace Moonglade.Configuration.Settings
+﻿namespace Moonglade.Configuration.Settings
 {
     public class AppSettings
     {

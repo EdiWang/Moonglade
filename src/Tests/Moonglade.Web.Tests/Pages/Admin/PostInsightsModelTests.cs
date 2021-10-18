@@ -3,8 +3,6 @@ using Moonglade.Core.PostFeature;
 using Moonglade.Web.Pages.Admin;
 using Moq;
 using NUnit.Framework;
-using System.Collections.Generic;
-using System.Threading.Tasks;
 
 namespace Moonglade.Web.Tests.Pages.Admin
 {
