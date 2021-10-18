@@ -1,12 +1,11 @@
-﻿namespace Moonglade.ImageStorage.Providers
-{
-    public class FileSystemImageConfiguration
-    {
-        public string Path { get; set; }
+﻿namespace Moonglade.ImageStorage.Providers;
 
-        public FileSystemImageConfiguration(string path)
-        {
-            Path = path;
-        }
+public class FileSystemImageConfiguration
+{
+    public string Path { get; set; }
+
+    public FileSystemImageConfiguration(string path)
+    {
+        Path = path;
     }
 }

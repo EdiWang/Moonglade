@@ -1,10 +1,9 @@
-﻿namespace Moonglade.Configuration.Settings
+﻿namespace Moonglade.Configuration.Settings;
+
+public enum FeatureFlags
 {
-    public enum FeatureFlags
-    {
-        EnableWebApi,
-        EnableAudit,
-        Foaf,
-        OPML
-    }
+    EnableWebApi,
+    EnableAudit,
+    Foaf,
+    OPML
 }

@@ -1,11 +1,10 @@
-﻿namespace Moonglade.Data.Porting
+﻿namespace Moonglade.Data.Porting;
+
+public enum ExportType
 {
-    public enum ExportType
-    {
-        Tags,
-        Categories,
-        FriendLinks,
-        Pages,
-        Posts
-    }
+    Tags,
+    Categories,
+    FriendLinks,
+    Pages,
+    Posts
 }

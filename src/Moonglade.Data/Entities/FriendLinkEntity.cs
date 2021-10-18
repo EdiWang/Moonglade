@@ -1,11 +1,10 @@
-﻿namespace Moonglade.Data.Entities
+﻿namespace Moonglade.Data.Entities;
+
+public class FriendLinkEntity
 {
-    public class FriendLinkEntity
-    {
-        public Guid Id { get; set; }
+    public Guid Id { get; set; }
 
-        public string Title { get; set; }
+    public string Title { get; set; }
 
-        public string LinkUrl { get; set; }
-    }
+    public string LinkUrl { get; set; }
 }

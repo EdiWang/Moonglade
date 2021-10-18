@@ -1,11 +1,10 @@
-﻿namespace Moonglade.Data.Entities
-{
-    public class PostTagEntity
-    {
-        public Guid PostId { get; set; }
-        public int TagId { get; set; }
+﻿namespace Moonglade.Data.Entities;
 
-        public virtual PostEntity Post { get; set; }
-        public virtual TagEntity Tag { get; set; }
-    }
+public class PostTagEntity
+{
+    public Guid PostId { get; set; }
+    public int TagId { get; set; }
+
+    public virtual PostEntity Post { get; set; }
+    public virtual TagEntity Tag { get; set; }
 }

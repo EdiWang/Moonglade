@@ -1,13 +1,12 @@
-﻿namespace Moonglade.ImageStorage
+﻿namespace Moonglade.ImageStorage;
+
+public interface IBlogImageStorage
 {
-    public interface IBlogImageStorage
-    {
-        string Name { get; }
+    string Name { get; }
 
-        Task<string> InsertAsync(string fileName, byte[] imageBytes);
+    Task<string> InsertAsync(string fileName, byte[] imageBytes);
 
-        Task<ImageInfo> GetAsync(string fileName);
+    Task<ImageInfo> GetAsync(string fileName);
 
-        Task DeleteAsync(string fileName);
-    }
+    Task DeleteAsync(string fileName);
 }
