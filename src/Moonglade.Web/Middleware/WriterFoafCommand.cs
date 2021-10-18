@@ -177,7 +177,7 @@ namespace Moonglade.Web.Middleware
         private static string CalculateSha1(string text, Encoding enc)
         {
             var buffer = enc.GetBytes(text);
-            var cryptoTransformSha1 = new SHA1CryptoServiceProvider();
+            var cryptoTransformSha1 = SHA1.Create();
             var hash = BitConverter.ToString(cryptoTransformSha1.ComputeHash(buffer)).Replace("-", string.Empty);
 
             return hash.ToLower();

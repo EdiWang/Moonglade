@@ -133,7 +133,7 @@ public static class Helper
         if (string.IsNullOrWhiteSpace(plainMessage)) return string.Empty;
 
         var data = Encoding.UTF8.GetBytes(plainMessage);
-        using HashAlgorithm sha = new SHA256Managed();
+        using var sha = HashAlgorithm.Create("SHA256");
         sha.TransformFinalBlock(data, 0, data.Length);
         return Convert.ToBase64String(sha.Hash ?? throw new InvalidOperationException());
     }
@@ -400,7 +400,8 @@ public static class Helper
             var cBuf = new char[length];
             var count = 0;
 
-            new RNGCryptoServiceProvider().GetBytes(buf);
+            var rng = RandomNumberGenerator.Create();
+            rng.GetBytes(buf);
 
             for (int iter = 0; iter < length; iter++)
             {

@@ -14,7 +14,7 @@ public class PingbackWebRequest : IPingbackWebRequest
 {
     public HttpWebRequest BuildHttpWebRequest(Uri sourceUrl, Uri targetUrl, Uri url)
     {
-        var httpWebRequest = (HttpWebRequest)WebRequest.Create(url);
+        var httpWebRequest = (HttpWebRequest)WebRequest.Create(url); // TODO: migrate this to HttpClient
         httpWebRequest.Method = "POST";
         httpWebRequest.Timeout = 30 * 1000;
         httpWebRequest.ContentType = "text/xml";
