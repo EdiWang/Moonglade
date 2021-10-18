@@ -5,42 +5,41 @@ using Moq;
 using NUnit.Framework;
 using System.Linq.Expressions;
 
-namespace Moonglade.Data.Tests.Exporters
+namespace Moonglade.Data.Tests.Exporters;
+
+[TestFixture]
+public class JsonExporterTests
 {
-    [TestFixture]
-    public class JsonExporterTests
+    private MockRepository _mockRepository;
+    private Mock<IRepository<int>> _mockRepo;
+
+    [SetUp]
+    public void SetUp()
     {
-        private MockRepository _mockRepository;
-        private Mock<IRepository<int>> _mockRepo;
+        _mockRepository = new(MockBehavior.Default);
+        _mockRepo = _mockRepository.Create<IRepository<int>>();
+    }
 
-        [SetUp]
-        public void SetUp()
+    private JsonExporter<int> CreateJsonExporter()
+    {
+        return new(_mockRepo.Object);
+    }
+
+    [Test]
+    public async Task ExportData_StateUnderTest_ExpectedBehavior()
+    {
+        IReadOnlyList<string> data = new List<string>
         {
-            _mockRepository = new(MockBehavior.Default);
-            _mockRepo = _mockRepository.Create<IRepository<int>>();
-        }
+            "996", "ICU"
+        };
 
-        private JsonExporter<int> CreateJsonExporter()
-        {
-            return new(_mockRepo.Object);
-        }
+        _mockRepo.Setup(p => p.SelectAsync(It.IsAny<Expression<Func<int, string>>>())).Returns(Task.FromResult(data));
+        var jsonExporter = CreateJsonExporter();
 
-        [Test]
-        public async Task ExportData_StateUnderTest_ExpectedBehavior()
-        {
-            IReadOnlyList<string> data = new List<string>
-            {
-                "996", "ICU"
-            };
+        var result = await jsonExporter.ExportData(p => "251", CancellationToken.None);
 
-            _mockRepo.Setup(p => p.SelectAsync(It.IsAny<Expression<Func<int, string>>>())).Returns(Task.FromResult(data));
-            var jsonExporter = CreateJsonExporter();
-
-            var result = await jsonExporter.ExportData(p => "251", CancellationToken.None);
-
-            Assert.IsNotNull(result);
-            Assert.AreEqual(ExportFormat.SingleJsonFile, result.ExportFormat);
-            Assert.IsNotNull(result.Content);
-        }
+        Assert.IsNotNull(result);
+        Assert.AreEqual(ExportFormat.SingleJsonFile, result.ExportFormat);
+        Assert.IsNotNull(result.Content);
     }
 }

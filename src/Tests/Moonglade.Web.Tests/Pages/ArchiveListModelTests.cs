@@ -9,81 +9,80 @@ using Moonglade.Web.Pages;
 using Moq;
 using NUnit.Framework;
 
-namespace Moonglade.Web.Tests.Pages
+namespace Moonglade.Web.Tests.Pages;
+
+[TestFixture]
+
+public class ArchiveListModelTests
 {
-    [TestFixture]
+    private MockRepository _mockRepository;
+    private Mock<IMediator> _mockMediator;
 
-    public class ArchiveListModelTests
+    [SetUp]
+    public void SetUp()
     {
-        private MockRepository _mockRepository;
-        private Mock<IMediator> _mockMediator;
+        _mockRepository = new(MockBehavior.Default);
+        _mockMediator = _mockRepository.Create<IMediator>();
+    }
 
-        [SetUp]
-        public void SetUp()
+    private ArchiveListModel CreateArchiveListModel()
+    {
+        var httpContext = new DefaultHttpContext();
+        var modelState = new ModelStateDictionary();
+        var actionContext = new ActionContext(httpContext, new(), new PageActionDescriptor(), modelState);
+        var modelMetadataProvider = new EmptyModelMetadataProvider();
+        var viewData = new ViewDataDictionary(modelMetadataProvider, modelState);
+        var tempData = new TempDataDictionary(httpContext, Mock.Of<ITempDataProvider>());
+        var pageContext = new PageContext(actionContext)
         {
-            _mockRepository = new(MockBehavior.Default);
-            _mockMediator = _mockRepository.Create<IMediator>();
-        }
+            ViewData = viewData
+        };
 
-        private ArchiveListModel CreateArchiveListModel()
+        var model = new ArchiveListModel(_mockMediator.Object)
         {
-            var httpContext = new DefaultHttpContext();
-            var modelState = new ModelStateDictionary();
-            var actionContext = new ActionContext(httpContext, new(), new PageActionDescriptor(), modelState);
-            var modelMetadataProvider = new EmptyModelMetadataProvider();
-            var viewData = new ViewDataDictionary(modelMetadataProvider, modelState);
-            var tempData = new TempDataDictionary(httpContext, Mock.Of<ITempDataProvider>());
-            var pageContext = new PageContext(actionContext)
-            {
-                ViewData = viewData
-            };
+            PageContext = pageContext,
+            TempData = tempData
+        };
 
-            var model = new ArchiveListModel(_mockMediator.Object)
-            {
-                PageContext = pageContext,
-                TempData = tempData
-            };
+        return model;
+    }
 
-            return model;
-        }
+    [Test]
+    public async Task OnGetAsync_BadYear()
+    {
+        // Arrange
+        var archiveListModel = CreateArchiveListModel();
+        int year = 9999;
+        int? month = 1;
 
-        [Test]
-        public async Task OnGetAsync_BadYear()
-        {
-            // Arrange
-            var archiveListModel = CreateArchiveListModel();
-            int year = 9999;
-            int? month = 1;
+        var result = await archiveListModel.OnGetAsync(
+            year,
+            month);
 
-            var result = await archiveListModel.OnGetAsync(
-                year,
-                month);
+        Assert.IsInstanceOf<BadRequestResult>(result);
+    }
 
-            Assert.IsInstanceOf<BadRequestResult>(result);
-        }
+    [Test]
+    public async Task OnGetAsync_Year()
+    {
+        _mockMediator.Setup(p => p.Send(It.IsAny<ListArchiveQuery>(), default))
+            .Returns(Task.FromResult(FakeData.FakePosts));
 
-        [Test]
-        public async Task OnGetAsync_Year()
-        {
-            _mockMediator.Setup(p => p.Send(It.IsAny<ListArchiveQuery>(), default))
-                .Returns(Task.FromResult(FakeData.FakePosts));
+        var model = CreateArchiveListModel();
+        var result = await model.OnGetAsync(2021, null);
 
-            var model = CreateArchiveListModel();
-            var result = await model.OnGetAsync(2021, null);
+        Assert.IsInstanceOf<PageResult>(result);
+        Assert.IsNotNull(model.Posts);
+    }
 
-            Assert.IsInstanceOf<PageResult>(result);
-            Assert.IsNotNull(model.Posts);
-        }
+    [Test]
+    public async Task OnGetAsync_Year_Month()
+    {
+        _mockMediator.Setup(p => p.Send(It.IsAny<ListArchiveQuery>(), default)).Returns(Task.FromResult(FakeData.FakePosts));
 
-        [Test]
-        public async Task OnGetAsync_Year_Month()
-        {
-            _mockMediator.Setup(p => p.Send(It.IsAny<ListArchiveQuery>(), default)).Returns(Task.FromResult(FakeData.FakePosts));
-
-            var model = CreateArchiveListModel();
-            var result = await model.OnGetAsync(2021, 1);
-            Assert.IsInstanceOf<PageResult>(result);
-            Assert.IsNotNull(model.Posts);
-        }
+        var model = CreateArchiveListModel();
+        var result = await model.OnGetAsync(2021, 1);
+        Assert.IsInstanceOf<PageResult>(result);
+        Assert.IsNotNull(model.Posts);
     }
 }

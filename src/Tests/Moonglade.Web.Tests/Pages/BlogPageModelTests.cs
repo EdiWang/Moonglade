@@ -9,71 +9,70 @@ using Moonglade.Web.Pages;
 using Moq;
 using NUnit.Framework;
 
-namespace Moonglade.Web.Tests.Pages
+namespace Moonglade.Web.Tests.Pages;
+
+[TestFixture]
+public class BlogPageModelTests
 {
-    [TestFixture]
-    public class BlogPageModelTests
+    private MockRepository _mockRepository;
+
+    private Mock<IMediator> _mockMediator;
+    private Mock<IBlogCache> _mockBlogCache;
+    private Mock<IOptions<AppSettings>> _mockOptions;
+
+    [SetUp]
+    public void SetUp()
     {
-        private MockRepository _mockRepository;
+        _mockRepository = new(MockBehavior.Default);
 
-        private Mock<IMediator> _mockMediator;
-        private Mock<IBlogCache> _mockBlogCache;
-        private Mock<IOptions<AppSettings>> _mockOptions;
+        _mockMediator = _mockRepository.Create<IMediator>();
+        _mockBlogCache = _mockRepository.Create<IBlogCache>();
+        _mockOptions = _mockRepository.Create<IOptions<AppSettings>>();
+    }
 
-        [SetUp]
-        public void SetUp()
-        {
-            _mockRepository = new(MockBehavior.Default);
+    private BlogPageModel CreateBlogPageModel()
+    {
+        return new(
+            _mockMediator.Object,
+            _mockBlogCache.Object,
+            _mockOptions.Object);
+    }
 
-            _mockMediator = _mockRepository.Create<IMediator>();
-            _mockBlogCache = _mockRepository.Create<IBlogCache>();
-            _mockOptions = _mockRepository.Create<IOptions<AppSettings>>();
-        }
+    [TestCase(null)]
+    [TestCase("")]
+    [TestCase(" ")]
+    public async Task OnGetAsync_EmptySlug(string slug)
+    {
+        var blogPageModel = CreateBlogPageModel();
+        var result = await blogPageModel.OnGetAsync(slug);
+        Assert.IsInstanceOf<BadRequestResult>(result);
+    }
 
-        private BlogPageModel CreateBlogPageModel()
-        {
-            return new(
-                _mockMediator.Object,
-                _mockBlogCache.Object,
-                _mockOptions.Object);
-        }
+    [Test]
+    public async Task OnGetAsync_NotFound_Null()
+    {
+        _mockBlogCache.Setup(p =>
+                p.GetOrCreate(CacheDivision.Page, FakeData.ShortString2, It.IsAny<Func<ICacheEntry, BlogPage>>()))
+            .Returns((BlogPage)null);
 
-        [TestCase(null)]
-        [TestCase("")]
-        [TestCase(" ")]
-        public async Task OnGetAsync_EmptySlug(string slug)
-        {
-            var blogPageModel = CreateBlogPageModel();
-            var result = await blogPageModel.OnGetAsync(slug);
-            Assert.IsInstanceOf<BadRequestResult>(result);
-        }
+        var blogPageModel = CreateBlogPageModel();
+        var result = await blogPageModel.OnGetAsync(FakeData.ShortString2);
 
-        [Test]
-        public async Task OnGetAsync_NotFound_Null()
-        {
-            _mockBlogCache.Setup(p =>
-                    p.GetOrCreate(CacheDivision.Page, FakeData.ShortString2, It.IsAny<Func<ICacheEntry, BlogPage>>()))
-                .Returns((BlogPage)null);
+        Assert.IsInstanceOf<NotFoundResult>(result);
+    }
 
-            var blogPageModel = CreateBlogPageModel();
-            var result = await blogPageModel.OnGetAsync(FakeData.ShortString2);
+    [Test]
+    public async Task OnGetAsync_NotFound_Unpublished()
+    {
+        var page = new BlogPage { IsPublished = false };
 
-            Assert.IsInstanceOf<NotFoundResult>(result);
-        }
+        _mockBlogCache.Setup(p =>
+                p.GetOrCreate(CacheDivision.Page, FakeData.ShortString2, It.IsAny<Func<ICacheEntry, BlogPage>>()))
+            .Returns(page);
 
-        [Test]
-        public async Task OnGetAsync_NotFound_Unpublished()
-        {
-            var page = new BlogPage { IsPublished = false };
+        var blogPageModel = CreateBlogPageModel();
+        var result = await blogPageModel.OnGetAsync(FakeData.ShortString2);
 
-            _mockBlogCache.Setup(p =>
-                    p.GetOrCreate(CacheDivision.Page, FakeData.ShortString2, It.IsAny<Func<ICacheEntry, BlogPage>>()))
-                .Returns(page);
-
-            var blogPageModel = CreateBlogPageModel();
-            var result = await blogPageModel.OnGetAsync(FakeData.ShortString2);
-
-            Assert.IsInstanceOf<NotFoundResult>(result);
-        }
+        Assert.IsInstanceOf<NotFoundResult>(result);
     }
 }

@@ -6,70 +6,69 @@ using Moonglade.Web.Middleware;
 using Moq;
 using NUnit.Framework;
 
-namespace Moonglade.Web.Tests.Middleware
+namespace Moonglade.Web.Tests.Middleware;
+
+[TestFixture]
+public class OpenSearchMiddlewareTests
 {
-    [TestFixture]
-    public class OpenSearchMiddlewareTests
+    [Test]
+    public void UseOpenSearch_Ext()
     {
-        [Test]
-        public void UseOpenSearch_Ext()
+        var serviceCollection = new ServiceCollection();
+        var applicationBuilder = new ApplicationBuilder(serviceCollection.BuildServiceProvider());
+
+        applicationBuilder.UseOpenSearch(options => { });
+
+        var app = applicationBuilder.Build();
+
+        var type = app.Target.GetType();
+        Assert.AreEqual(nameof(UseMiddlewareExtensions), type.DeclaringType.Name);
+    }
+
+    [Test]
+    public async Task Invoke_NonOpenSearchRequestPath()
+    {
+        var reqMock = new Mock<HttpRequest>();
+        reqMock.SetupGet(r => r.Path).Returns("/996");
+
+        var httpContextMock = new Mock<HttpContext>();
+        httpContextMock.Setup(c => c.Request).Returns(reqMock.Object);
+
+        static Task RequestDelegate(HttpContext context) => Task.CompletedTask;
+        var middleware = new OpenSearchMiddleware(RequestDelegate);
+
+        await middleware.Invoke(httpContextMock.Object, null);
+
+        Assert.Pass();
+    }
+
+    [Test]
+    public async Task Invoke_OpenSearchRequestPath()
+    {
+        Mock<IBlogConfig> blogConfigMock = new();
+        blogConfigMock.Setup(p => p.GeneralSettings).Returns(new GeneralSettings
         {
-            var serviceCollection = new ServiceCollection();
-            var applicationBuilder = new ApplicationBuilder(serviceCollection.BuildServiceProvider());
+            CanonicalPrefix = FakeData.Url1,
+            SiteTitle = "996 ICU",
+            Description = FakeData.Title2
+        });
 
-            applicationBuilder.UseOpenSearch(options => { });
-
-            var app = applicationBuilder.Build();
-
-            var type = app.Target.GetType();
-            Assert.AreEqual(nameof(UseMiddlewareExtensions), type.DeclaringType.Name);
-        }
-
-        [Test]
-        public async Task Invoke_NonOpenSearchRequestPath()
+        blogConfigMock.Setup(p => p.AdvancedSettings).Returns(new AdvancedSettings
         {
-            var reqMock = new Mock<HttpRequest>();
-            reqMock.SetupGet(r => r.Path).Returns("/996");
+            EnableOpenSearch = true
+        });
 
-            var httpContextMock = new Mock<HttpContext>();
-            httpContextMock.Setup(c => c.Request).Returns(reqMock.Object);
+        static Task RequestDelegate(HttpContext context) => Task.CompletedTask;
+        var middleware = new OpenSearchMiddleware(RequestDelegate);
+        OpenSearchMiddleware.Options.RequestPath = "/opensearch";
 
-            static Task RequestDelegate(HttpContext context) => Task.CompletedTask;
-            var middleware = new OpenSearchMiddleware(RequestDelegate);
+        var ctx = new DefaultHttpContext();
+        ctx.Response.Body = new MemoryStream();
+        ctx.Request.Path = "/opensearch";
 
-            await middleware.Invoke(httpContextMock.Object, null);
+        await middleware.Invoke(ctx, blogConfigMock.Object);
 
-            Assert.Pass();
-        }
-
-        [Test]
-        public async Task Invoke_OpenSearchRequestPath()
-        {
-            Mock<IBlogConfig> blogConfigMock = new();
-            blogConfigMock.Setup(p => p.GeneralSettings).Returns(new GeneralSettings
-            {
-                CanonicalPrefix = FakeData.Url1,
-                SiteTitle = "996 ICU",
-                Description = FakeData.Title2
-            });
-
-            blogConfigMock.Setup(p => p.AdvancedSettings).Returns(new AdvancedSettings
-            {
-                EnableOpenSearch = true
-            });
-
-            static Task RequestDelegate(HttpContext context) => Task.CompletedTask;
-            var middleware = new OpenSearchMiddleware(RequestDelegate);
-            OpenSearchMiddleware.Options.RequestPath = "/opensearch";
-
-            var ctx = new DefaultHttpContext();
-            ctx.Response.Body = new MemoryStream();
-            ctx.Request.Path = "/opensearch";
-
-            await middleware.Invoke(ctx, blogConfigMock.Object);
-
-            Assert.AreEqual("text/xml", ctx.Response.ContentType);
-            Assert.Pass();
-        }
+        Assert.AreEqual("text/xml", ctx.Response.ContentType);
+        Assert.Pass();
     }
 }

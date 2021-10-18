@@ -5,50 +5,49 @@ using Moq;
 using NUnit.Framework;
 using System.Linq.Expressions;
 
-namespace Moonglade.Data.Tests.Exporters
+namespace Moonglade.Data.Tests.Exporters;
+
+[TestFixture]
+public class CSVExporterTests
 {
-    [TestFixture]
-    public class CSVExporterTests
+    private MockRepository _mockRepository;
+
+    private Mock<IRepository<int>> _mockRepo;
+
+    [SetUp]
+    public void SetUp()
     {
-        private MockRepository _mockRepository;
+        _mockRepository = new(MockBehavior.Default);
+        _mockRepo = _mockRepository.Create<IRepository<int>>();
+    }
 
-        private Mock<IRepository<int>> _mockRepo;
+    private CSVExporter<int> CreateCSVExporter()
+    {
+        return new(_mockRepo.Object, "996", Path.GetTempPath());
+    }
 
-        [SetUp]
-        public void SetUp()
+    [Test]
+    public async Task ExportData_StateUnderTest_ExpectedBehavior()
+    {
+        IReadOnlyList<KeyValuePair<string, string>> data = new List<KeyValuePair<string, string>>
         {
-            _mockRepository = new(MockBehavior.Default);
-            _mockRepo = _mockRepository.Create<IRepository<int>>();
-        }
+            new("996", "ICU"),
+            new("251", "404")
+        };
 
-        private CSVExporter<int> CreateCSVExporter()
+        _mockRepo.Setup(p => p.SelectAsync(It.IsAny<Expression<Func<int, KeyValuePair<string, string>>>>())).Returns(Task.FromResult(data));
+
+        var csvExporter = CreateCSVExporter();
+        var result = await csvExporter.ExportData(It.IsAny<Expression<Func<int, KeyValuePair<string, string>>>>(), CancellationToken.None);
+
+        Assert.IsNotNull(result);
+        Assert.AreEqual(ExportFormat.SingleCSVFile, result.ExportFormat);
+        Assert.IsNotNull(result.FilePath);
+
+        try
         {
-            return new(_mockRepo.Object, "996", Path.GetTempPath());
+            File.Delete(result.FilePath);
         }
-
-        [Test]
-        public async Task ExportData_StateUnderTest_ExpectedBehavior()
-        {
-            IReadOnlyList<KeyValuePair<string, string>> data = new List<KeyValuePair<string, string>>
-            {
-                new("996", "ICU"),
-                new("251", "404")
-            };
-
-            _mockRepo.Setup(p => p.SelectAsync(It.IsAny<Expression<Func<int, KeyValuePair<string, string>>>>())).Returns(Task.FromResult(data));
-
-            var csvExporter = CreateCSVExporter();
-            var result = await csvExporter.ExportData(It.IsAny<Expression<Func<int, KeyValuePair<string, string>>>>(), CancellationToken.None);
-
-            Assert.IsNotNull(result);
-            Assert.AreEqual(ExportFormat.SingleCSVFile, result.ExportFormat);
-            Assert.IsNotNull(result.FilePath);
-
-            try
-            {
-                File.Delete(result.FilePath);
-            }
-            catch { }
-        }
+        catch { }
     }
 }

@@ -4,63 +4,62 @@ using Moq.Protected;
 using NUnit.Framework;
 using System.Net;
 
-namespace Moonglade.Pingback.Tests
+namespace Moonglade.Pingback.Tests;
+
+[TestFixture]
+public class PingSourceInspectorTests
 {
-    [TestFixture]
-    public class PingSourceInspectorTests
+    private MockRepository _mockRepository;
+
+    private Mock<ILogger<PingSourceInspector>> _mockLogger;
+    private Mock<HttpMessageHandler> _handlerMock;
+    private HttpClient _magicHttpClient;
+
+    [SetUp]
+    public void SetUp()
     {
-        private MockRepository _mockRepository;
+        _mockRepository = new(MockBehavior.Default);
+        _mockLogger = _mockRepository.Create<ILogger<PingSourceInspector>>();
+        _handlerMock = _mockRepository.Create<HttpMessageHandler>();
+    }
 
-        private Mock<ILogger<PingSourceInspector>> _mockLogger;
-        private Mock<HttpMessageHandler> _handlerMock;
-        private HttpClient _magicHttpClient;
+    private PingSourceInspector CreatePingSourceInspector()
+    {
+        _magicHttpClient = new(_handlerMock.Object);
+        return new(_mockLogger.Object, _magicHttpClient);
+    }
 
-        [SetUp]
-        public void SetUp()
-        {
-            _mockRepository = new(MockBehavior.Default);
-            _mockLogger = _mockRepository.Create<ILogger<PingSourceInspector>>();
-            _handlerMock = _mockRepository.Create<HttpMessageHandler>();
-        }
+    [Test]
+    public async Task ExamineSourceAsync_StateUnderTest_ExpectedBehavior()
+    {
+        string sourceUrl = "https://996.icu/work-996-sick-icu";
+        string targetUrl = "https://greenhat.today/programmers-special-gift";
 
-        private PingSourceInspector CreatePingSourceInspector()
-        {
-            _magicHttpClient = new(_handlerMock.Object);
-            return new(_mockLogger.Object, _magicHttpClient);
-        }
+        _handlerMock
+            .Protected()
+            .Setup<Task<HttpResponseMessage>>(
+                "SendAsync",
+                ItExpr.IsAny<HttpRequestMessage>(),
+                ItExpr.IsAny<CancellationToken>()
+            )
+            .ReturnsAsync(new HttpResponseMessage
+            {
+                StatusCode = HttpStatusCode.OK,
+                Content = new StringContent($"<html>" +
+                                            $"<head>" +
+                                            $"<title>Programmer's Gift</title>" +
+                                            $"</head>" +
+                                            $"<body>Work 996 and have a <a href=\"{targetUrl}\">green hat</a>!</body>" +
+                                            $"</html>")
+            })
+            .Verifiable();
+        var pingSourceInspector = CreatePingSourceInspector();
 
-        [Test]
-        public async Task ExamineSourceAsync_StateUnderTest_ExpectedBehavior()
-        {
-            string sourceUrl = "https://996.icu/work-996-sick-icu";
-            string targetUrl = "https://greenhat.today/programmers-special-gift";
-
-            _handlerMock
-                .Protected()
-                .Setup<Task<HttpResponseMessage>>(
-                    "SendAsync",
-                    ItExpr.IsAny<HttpRequestMessage>(),
-                    ItExpr.IsAny<CancellationToken>()
-                )
-                .ReturnsAsync(new HttpResponseMessage
-                {
-                    StatusCode = HttpStatusCode.OK,
-                    Content = new StringContent($"<html>" +
-                                                $"<head>" +
-                                                $"<title>Programmer's Gift</title>" +
-                                                $"</head>" +
-                                                $"<body>Work 996 and have a <a href=\"{targetUrl}\">green hat</a>!</body>" +
-                                                $"</html>")
-                })
-                .Verifiable();
-            var pingSourceInspector = CreatePingSourceInspector();
-
-            var result = await pingSourceInspector.ExamineSourceAsync(sourceUrl, targetUrl);
-            Assert.IsFalse(result.ContainsHtml);
-            Assert.IsTrue(result.SourceHasLink);
-            Assert.AreEqual("Programmer's Gift", result.Title);
-            Assert.AreEqual(targetUrl, result.TargetUrl);
-            Assert.AreEqual(sourceUrl, result.SourceUrl);
-        }
+        var result = await pingSourceInspector.ExamineSourceAsync(sourceUrl, targetUrl);
+        Assert.IsFalse(result.ContainsHtml);
+        Assert.IsTrue(result.SourceHasLink);
+        Assert.AreEqual("Programmer's Gift", result.Title);
+        Assert.AreEqual(targetUrl, result.TargetUrl);
+        Assert.AreEqual(sourceUrl, result.SourceUrl);
     }
 }

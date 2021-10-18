@@ -6,54 +6,53 @@ using Moonglade.Web.ViewComponents;
 using Moq;
 using NUnit.Framework;
 
-namespace Moonglade.Web.Tests.ViewComponents
+namespace Moonglade.Web.Tests.ViewComponents;
+
+[TestFixture]
+public class HotTagsViewComponentTests
 {
-    [TestFixture]
-    public class HotTagsViewComponentTests
+    private MockRepository _mockRepository;
+
+    private Mock<IMediator> _mockMediator;
+    private Mock<IBlogConfig> _mockBlogConfig;
+
+    [SetUp]
+    public void SetUp()
     {
-        private MockRepository _mockRepository;
+        _mockRepository = new(MockBehavior.Strict);
 
-        private Mock<IMediator> _mockMediator;
-        private Mock<IBlogConfig> _mockBlogConfig;
+        _mockMediator = _mockRepository.Create<IMediator>();
+        _mockBlogConfig = _mockRepository.Create<IBlogConfig>();
+    }
 
-        [SetUp]
-        public void SetUp()
-        {
-            _mockRepository = new(MockBehavior.Strict);
+    private HotTagsViewComponent CreateComponent()
+    {
+        return new(_mockBlogConfig.Object, _mockMediator.Object);
+    }
 
-            _mockMediator = _mockRepository.Create<IMediator>();
-            _mockBlogConfig = _mockRepository.Create<IBlogConfig>();
-        }
+    [Test]
+    public async Task InvokeAsync_Exception()
+    {
+        _mockBlogConfig.Setup(p => p.ContentSettings).Returns(new ContentSettings { HotTagAmount = FakeData.Int2 });
+        _mockMediator.Setup(p => p.Send(It.IsAny<GetHotTagsQuery>(), default)).Throws(new(FakeData.ShortString2));
 
-        private HotTagsViewComponent CreateComponent()
-        {
-            return new(_mockBlogConfig.Object, _mockMediator.Object);
-        }
+        var component = CreateComponent();
+        var result = await component.InvokeAsync();
 
-        [Test]
-        public async Task InvokeAsync_Exception()
-        {
-            _mockBlogConfig.Setup(p => p.ContentSettings).Returns(new ContentSettings { HotTagAmount = FakeData.Int2 });
-            _mockMediator.Setup(p => p.Send(It.IsAny<GetHotTagsQuery>(), default)).Throws(new(FakeData.ShortString2));
+        Assert.IsInstanceOf<ContentViewComponentResult>(result);
+    }
 
-            var component = CreateComponent();
-            var result = await component.InvokeAsync();
+    [Test]
+    public async Task InvokeAsync_View()
+    {
+        IReadOnlyList<KeyValuePair<Tag, int>> tags = new List<KeyValuePair<Tag, int>>();
 
-            Assert.IsInstanceOf<ContentViewComponentResult>(result);
-        }
+        _mockBlogConfig.Setup(p => p.ContentSettings).Returns(new ContentSettings { HotTagAmount = FakeData.Int2 });
+        _mockMediator.Setup(p => p.Send(It.IsAny<GetHotTagsQuery>(), default)).Returns(Task.FromResult(tags));
 
-        [Test]
-        public async Task InvokeAsync_View()
-        {
-            IReadOnlyList<KeyValuePair<Tag, int>> tags = new List<KeyValuePair<Tag, int>>();
+        var component = CreateComponent();
+        var result = await component.InvokeAsync();
 
-            _mockBlogConfig.Setup(p => p.ContentSettings).Returns(new ContentSettings { HotTagAmount = FakeData.Int2 });
-            _mockMediator.Setup(p => p.Send(It.IsAny<GetHotTagsQuery>(), default)).Returns(Task.FromResult(tags));
-
-            var component = CreateComponent();
-            var result = await component.InvokeAsync();
-
-            Assert.IsInstanceOf<ViewViewComponentResult>(result);
-        }
+        Assert.IsInstanceOf<ViewViewComponentResult>(result);
     }
 }

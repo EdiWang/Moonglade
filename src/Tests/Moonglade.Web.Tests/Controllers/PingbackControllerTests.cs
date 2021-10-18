@@ -10,89 +10,88 @@ using Moonglade.Web.Controllers;
 using Moq;
 using NUnit.Framework;
 
-namespace Moonglade.Web.Tests.Controllers
+namespace Moonglade.Web.Tests.Controllers;
+
+[TestFixture]
+public class PingbackControllerTests
 {
-    [TestFixture]
-    public class PingbackControllerTests
+    private MockRepository _mockRepository;
+
+    private Mock<ILogger<PingbackController>> _mockLogger;
+    private Mock<IBlogConfig> _mockBlogConfig;
+    private Mock<IMediator> _mockMediator;
+    private Mock<IServiceScopeFactory> _mockServiceScopeFactory;
+
+    [SetUp]
+    public void SetUp()
     {
-        private MockRepository _mockRepository;
+        _mockRepository = new(MockBehavior.Loose);
 
-        private Mock<ILogger<PingbackController>> _mockLogger;
-        private Mock<IBlogConfig> _mockBlogConfig;
-        private Mock<IMediator> _mockMediator;
-        private Mock<IServiceScopeFactory> _mockServiceScopeFactory;
+        _mockLogger = _mockRepository.Create<ILogger<PingbackController>>();
+        _mockBlogConfig = _mockRepository.Create<IBlogConfig>();
+        _mockMediator = _mockRepository.Create<IMediator>();
+        _mockServiceScopeFactory = _mockRepository.Create<IServiceScopeFactory>();
+    }
 
-        [SetUp]
-        public void SetUp()
+    private PingbackController CreatePingbackController()
+    {
+        return new(
+            _mockLogger.Object,
+            _mockBlogConfig.Object,
+            _mockMediator.Object);
+    }
+
+    [Test]
+    public async Task Process_PingbackDisabled()
+    {
+        _mockBlogConfig.Setup(p => p.AdvancedSettings).Returns(new AdvancedSettings
         {
-            _mockRepository = new(MockBehavior.Loose);
+            EnablePingbackReceive = false
+        });
 
-            _mockLogger = _mockRepository.Create<ILogger<PingbackController>>();
-            _mockBlogConfig = _mockRepository.Create<IBlogConfig>();
-            _mockMediator = _mockRepository.Create<IMediator>();
-            _mockServiceScopeFactory = _mockRepository.Create<IServiceScopeFactory>();
-        }
+        var pingbackController = CreatePingbackController();
+        var result = await pingbackController.Process(_mockServiceScopeFactory.Object);
+        Assert.IsInstanceOf(typeof(ForbidResult), result);
+    }
 
-        private PingbackController CreatePingbackController()
+    [Test]
+    public async Task Process_OK()
+    {
+        _mockBlogConfig.Setup(p => p.AdvancedSettings).Returns(new AdvancedSettings
         {
-            return new(
-                _mockLogger.Object,
-                _mockBlogConfig.Object,
-                _mockMediator.Object);
-        }
+            EnablePingbackReceive = true
+        });
 
-        [Test]
-        public async Task Process_PingbackDisabled()
+        _mockMediator
+            .Setup(p => p.Send(It.IsAny<ReceivePingCommand>(), default)).Returns(Task.FromResult(PingbackResponse.Success));
+
+        var pingbackController = CreatePingbackController();
+        pingbackController.ControllerContext = new()
         {
-            _mockBlogConfig.Setup(p => p.AdvancedSettings).Returns(new AdvancedSettings
-            {
-                EnablePingbackReceive = false
-            });
+            HttpContext = new DefaultHttpContext()
+        };
 
-            var pingbackController = CreatePingbackController();
-            var result = await pingbackController.Process(_mockServiceScopeFactory.Object);
-            Assert.IsInstanceOf(typeof(ForbidResult), result);
-        }
+        var result = await pingbackController.Process(_mockServiceScopeFactory.Object);
+        Assert.IsInstanceOf(typeof(PingbackResult), result);
+    }
 
-        [Test]
-        public async Task Process_OK()
-        {
-            _mockBlogConfig.Setup(p => p.AdvancedSettings).Returns(new AdvancedSettings
-            {
-                EnablePingbackReceive = true
-            });
+    [Test]
+    public async Task Delete_Success()
+    {
+        var mockBlogAudit = new Mock<IBlogAudit>();
+        var pingbackController = CreatePingbackController();
 
-            _mockMediator
-                .Setup(p => p.Send(It.IsAny<ReceivePingCommand>(), default)).Returns(Task.FromResult(PingbackResponse.Success));
+        var result = await pingbackController.Delete(Guid.Empty, mockBlogAudit.Object);
+        Assert.IsInstanceOf(typeof(NoContentResult), result);
+    }
 
-            var pingbackController = CreatePingbackController();
-            pingbackController.ControllerContext = new()
-            {
-                HttpContext = new DefaultHttpContext()
-            };
+    [Test]
+    public async Task Clear_Success()
+    {
+        var mockBlogAudit = new Mock<IBlogAudit>();
+        var pingbackController = CreatePingbackController();
 
-            var result = await pingbackController.Process(_mockServiceScopeFactory.Object);
-            Assert.IsInstanceOf(typeof(PingbackResult), result);
-        }
-
-        [Test]
-        public async Task Delete_Success()
-        {
-            var mockBlogAudit = new Mock<IBlogAudit>();
-            var pingbackController = CreatePingbackController();
-
-            var result = await pingbackController.Delete(Guid.Empty, mockBlogAudit.Object);
-            Assert.IsInstanceOf(typeof(NoContentResult), result);
-        }
-
-        [Test]
-        public async Task Clear_Success()
-        {
-            var mockBlogAudit = new Mock<IBlogAudit>();
-            var pingbackController = CreatePingbackController();
-
-            var result = await pingbackController.Clear(mockBlogAudit.Object);
-            Assert.IsInstanceOf(typeof(NoContentResult), result);
-        }
+        var result = await pingbackController.Clear(mockBlogAudit.Object);
+        Assert.IsInstanceOf(typeof(NoContentResult), result);
     }
 }

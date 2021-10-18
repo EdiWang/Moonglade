@@ -7,85 +7,84 @@ using Moonglade.Web.Middleware;
 using Moq;
 using NUnit.Framework;
 
-namespace Moonglade.Web.Tests.Middleware
+namespace Moonglade.Web.Tests.Middleware;
+
+[TestFixture]
+public class RobotsTxtMiddlewareTests
 {
-    [TestFixture]
-    public class RobotsTxtMiddlewareTests
+    [Test]
+    public async Task Invoke_NonRobotsTxtRequestPath()
     {
-        [Test]
-        public async Task Invoke_NonRobotsTxtRequestPath()
+        var reqMock = new Mock<HttpRequest>();
+        reqMock.SetupGet(r => r.Path).Returns("/996");
+
+        var httpContextMock = new Mock<HttpContext>();
+        httpContextMock.Setup(c => c.Request).Returns(reqMock.Object);
+
+        static Task RequestDelegate(HttpContext context) => Task.CompletedTask;
+        var middleware = new RobotsTxtMiddleware(RequestDelegate);
+
+        await middleware.Invoke(httpContextMock.Object, null);
+
+        Assert.Pass();
+    }
+
+    [Test]
+    public async Task Invoke_RobotsTxtRequestPath_HasContent()
+    {
+        var blogConfigMock = new Mock<IBlogConfig>();
+        blogConfigMock.Setup(c => c.AdvancedSettings).Returns(new AdvancedSettings
         {
-            var reqMock = new Mock<HttpRequest>();
-            reqMock.SetupGet(r => r.Path).Returns("/996");
+            RobotsTxtContent = FakeData.ShortString2
+        });
 
-            var httpContextMock = new Mock<HttpContext>();
-            httpContextMock.Setup(c => c.Request).Returns(reqMock.Object);
+        static Task RequestDelegate(HttpContext context) => Task.CompletedTask;
+        var middleware = new RobotsTxtMiddleware(RequestDelegate);
 
-            static Task RequestDelegate(HttpContext context) => Task.CompletedTask;
-            var middleware = new RobotsTxtMiddleware(RequestDelegate);
+        var ctx = new DefaultHttpContext();
+        ctx.Response.Body = new MemoryStream();
+        ctx.Request.Path = "/robots.txt";
 
-            await middleware.Invoke(httpContextMock.Object, null);
+        await middleware.Invoke(ctx, blogConfigMock.Object);
 
-            Assert.Pass();
-        }
+        Assert.AreEqual("text/plain", ctx.Response.ContentType);
 
-        [Test]
-        public async Task Invoke_RobotsTxtRequestPath_HasContent()
+        Assert.Pass();
+    }
+
+    [Test]
+    public async Task Invoke_RobotsTxtRequestPath_NoContent()
+    {
+        var blogConfigMock = new Mock<IBlogConfig>();
+        blogConfigMock.Setup(c => c.AdvancedSettings).Returns(new AdvancedSettings
         {
-            var blogConfigMock = new Mock<IBlogConfig>();
-            blogConfigMock.Setup(c => c.AdvancedSettings).Returns(new AdvancedSettings
-            {
-                RobotsTxtContent = FakeData.ShortString2
-            });
+            RobotsTxtContent = string.Empty
+        });
 
-            static Task RequestDelegate(HttpContext context) => Task.CompletedTask;
-            var middleware = new RobotsTxtMiddleware(RequestDelegate);
+        static Task RequestDelegate(HttpContext context) => Task.CompletedTask;
+        var middleware = new RobotsTxtMiddleware(RequestDelegate);
 
-            var ctx = new DefaultHttpContext();
-            ctx.Response.Body = new MemoryStream();
-            ctx.Request.Path = "/robots.txt";
+        var ctx = new DefaultHttpContext();
+        ctx.Response.Body = new MemoryStream();
+        ctx.Request.Path = "/robots.txt";
 
-            await middleware.Invoke(ctx, blogConfigMock.Object);
+        await middleware.Invoke(ctx, blogConfigMock.Object);
 
-            Assert.AreEqual("text/plain", ctx.Response.ContentType);
+        Assert.AreEqual(StatusCodes.Status404NotFound, ctx.Response.StatusCode);
 
-            Assert.Pass();
-        }
+        Assert.Pass();
+    }
 
-        [Test]
-        public async Task Invoke_RobotsTxtRequestPath_NoContent()
-        {
-            var blogConfigMock = new Mock<IBlogConfig>();
-            blogConfigMock.Setup(c => c.AdvancedSettings).Returns(new AdvancedSettings
-            {
-                RobotsTxtContent = string.Empty
-            });
+    [Test]
+    public void UseRobotsTxt_Ext()
+    {
+        var serviceCollection = new ServiceCollection();
+        var applicationBuilder = new ApplicationBuilder(serviceCollection.BuildServiceProvider());
 
-            static Task RequestDelegate(HttpContext context) => Task.CompletedTask;
-            var middleware = new RobotsTxtMiddleware(RequestDelegate);
+        applicationBuilder.UseRobotsTxt();
 
-            var ctx = new DefaultHttpContext();
-            ctx.Response.Body = new MemoryStream();
-            ctx.Request.Path = "/robots.txt";
+        var app = applicationBuilder.Build();
 
-            await middleware.Invoke(ctx, blogConfigMock.Object);
-
-            Assert.AreEqual(StatusCodes.Status404NotFound, ctx.Response.StatusCode);
-
-            Assert.Pass();
-        }
-
-        [Test]
-        public void UseRobotsTxt_Ext()
-        {
-            var serviceCollection = new ServiceCollection();
-            var applicationBuilder = new ApplicationBuilder(serviceCollection.BuildServiceProvider());
-
-            applicationBuilder.UseRobotsTxt();
-
-            var app = applicationBuilder.Build();
-
-            Assert.IsInstanceOf<MapWhenMiddleware>(app.Target);
-        }
+        Assert.IsInstanceOf<MapWhenMiddleware>(app.Target);
     }
 }

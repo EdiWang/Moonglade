@@ -7,60 +7,59 @@ using Moonglade.Web.Pages;
 using Moq;
 using NUnit.Framework;
 
-namespace Moonglade.Web.Tests.Pages
+namespace Moonglade.Web.Tests.Pages;
+
+[TestFixture]
+
+public class IndexModelTests
 {
-    [TestFixture]
+    private MockRepository _mockRepository;
 
-    public class IndexModelTests
+    private Mock<IBlogConfig> _mockBlogConfig;
+    private Mock<IBlogCache> _mockBlogCache;
+    private Mock<IMediator> _mockMediator;
+
+    [SetUp]
+    public void SetUp()
     {
-        private MockRepository _mockRepository;
+        _mockRepository = new(MockBehavior.Default);
 
-        private Mock<IBlogConfig> _mockBlogConfig;
-        private Mock<IBlogCache> _mockBlogCache;
-        private Mock<IMediator> _mockMediator;
+        _mockBlogConfig = _mockRepository.Create<IBlogConfig>();
+        _mockBlogCache = _mockRepository.Create<IBlogCache>();
+        _mockMediator = _mockRepository.Create<IMediator>();
 
-        [SetUp]
-        public void SetUp()
+        _mockBlogConfig.Setup(p => p.ContentSettings).Returns(new ContentSettings
         {
-            _mockRepository = new(MockBehavior.Default);
+            PostListPageSize = 10
+        });
+    }
 
-            _mockBlogConfig = _mockRepository.Create<IBlogConfig>();
-            _mockBlogCache = _mockRepository.Create<IBlogCache>();
-            _mockMediator = _mockRepository.Create<IMediator>();
+    private IndexModel CreateIndexModel()
+    {
+        return new(
+            _mockBlogConfig.Object,
+            _mockBlogCache.Object,
+            _mockMediator.Object);
+    }
 
-            _mockBlogConfig.Setup(p => p.ContentSettings).Returns(new ContentSettings
-            {
-                PostListPageSize = 10
-            });
-        }
+    [Test]
+    public async Task OnGet_StateUnderTest_ExpectedBehavior()
+    {
+        _mockMediator.Setup(p => p.Send(It.IsAny<ListPostsQuery>(), default))
+            .Returns(Task.FromResult(FakeData.FakePosts));
 
-        private IndexModel CreateIndexModel()
-        {
-            return new(
-                _mockBlogConfig.Object,
-                _mockBlogCache.Object,
-                _mockMediator.Object);
-        }
+        _mockMediator.Setup(p => p.Send(It.IsAny<CountPostQuery>(), default)).Returns(Task.FromResult(FakeData.Int2));
 
-        [Test]
-        public async Task OnGet_StateUnderTest_ExpectedBehavior()
-        {
-            _mockMediator.Setup(p => p.Send(It.IsAny<ListPostsQuery>(), default))
-                .Returns(Task.FromResult(FakeData.FakePosts));
+        _mockBlogCache.Setup(p =>
+                p.GetOrCreateAsync(CacheDivision.General, "postcount", It.IsAny<Func<ICacheEntry, Task<int>>>()))
+            .Returns(Task.FromResult(FakeData.Int2));
 
-            _mockMediator.Setup(p => p.Send(It.IsAny<CountPostQuery>(), default)).Returns(Task.FromResult(FakeData.Int2));
+        var indexModel = CreateIndexModel();
+        int p = 1;
 
-            _mockBlogCache.Setup(p =>
-                    p.GetOrCreateAsync(CacheDivision.General, "postcount", It.IsAny<Func<ICacheEntry, Task<int>>>()))
-                .Returns(Task.FromResult(FakeData.Int2));
+        await indexModel.OnGet(p);
 
-            var indexModel = CreateIndexModel();
-            int p = 1;
-
-            await indexModel.OnGet(p);
-
-            Assert.IsNotNull(indexModel.Posts);
-            Assert.AreEqual(FakeData.Int2, indexModel.Posts.TotalItemCount);
-        }
+        Assert.IsNotNull(indexModel.Posts);
+        Assert.AreEqual(FakeData.Int2, indexModel.Posts.TotalItemCount);
     }
 }

@@ -4,42 +4,41 @@ using Moonglade.Web.Pages.Admin;
 using Moq;
 using NUnit.Framework;
 
-namespace Moonglade.Web.Tests.Pages.Admin
+namespace Moonglade.Web.Tests.Pages.Admin;
+
+[TestFixture]
+
+public class CategoryModelTests
 {
-    [TestFixture]
+    private MockRepository _mockRepository;
+    private Mock<IMediator> _mockMediator;
 
-    public class CategoryModelTests
+    [SetUp]
+    public void SetUp()
     {
-        private MockRepository _mockRepository;
-        private Mock<IMediator> _mockMediator;
+        _mockRepository = new(MockBehavior.Default);
+        _mockMediator = _mockRepository.Create<IMediator>();
+    }
 
-        [SetUp]
-        public void SetUp()
+    private CategoryModel CreateCategoryModel()
+    {
+        return new(_mockMediator.Object);
+    }
+
+    [Test]
+    public async Task OnGet_StateUnderTest_ExpectedBehavior()
+    {
+        IReadOnlyList<Category> cats = new List<Category>
         {
-            _mockRepository = new(MockBehavior.Default);
-            _mockMediator = _mockRepository.Create<IMediator>();
-        }
+            new (){Id = Guid.Empty, DisplayName = FakeData.Title3, Note = "Fubao", RouteName = FakeData.Slug2 }
+        };
 
-        private CategoryModel CreateCategoryModel()
-        {
-            return new(_mockMediator.Object);
-        }
+        _mockMediator.Setup(p => p.Send(It.IsAny<GetCategoriesQuery>(), default)).Returns(Task.FromResult(cats));
 
-        [Test]
-        public async Task OnGet_StateUnderTest_ExpectedBehavior()
-        {
-            IReadOnlyList<Category> cats = new List<Category>
-            {
-                new (){Id = Guid.Empty, DisplayName = FakeData.Title3, Note = "Fubao", RouteName = FakeData.Slug2 }
-            };
+        var categoryModel = CreateCategoryModel();
+        await categoryModel.OnGet();
 
-            _mockMediator.Setup(p => p.Send(It.IsAny<GetCategoriesQuery>(), default)).Returns(Task.FromResult(cats));
-
-            var categoryModel = CreateCategoryModel();
-            await categoryModel.OnGet();
-
-            Assert.IsNotNull(categoryModel.Categories);
-            Assert.IsNotNull(categoryModel.EditCategoryRequest);
-        }
+        Assert.IsNotNull(categoryModel.Categories);
+        Assert.IsNotNull(categoryModel.EditCategoryRequest);
     }
 }

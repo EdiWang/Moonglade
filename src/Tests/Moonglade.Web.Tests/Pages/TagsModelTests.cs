@@ -4,44 +4,43 @@ using Moonglade.Web.Pages;
 using Moq;
 using NUnit.Framework;
 
-namespace Moonglade.Web.Tests.Pages
+namespace Moonglade.Web.Tests.Pages;
+
+[TestFixture]
+
+public class TagsModelTests
 {
-    [TestFixture]
+    private MockRepository _mockRepository;
+    private Mock<IMediator> _mockMediator;
 
-    public class TagsModelTests
+    [SetUp]
+    public void SetUp()
     {
-        private MockRepository _mockRepository;
-        private Mock<IMediator> _mockMediator;
+        _mockRepository = new(MockBehavior.Default);
+        _mockMediator = _mockRepository.Create<IMediator>();
+    }
 
-        [SetUp]
-        public void SetUp()
+    private TagsModel CreateTagsModel()
+    {
+        return new(_mockMediator.Object);
+    }
+
+    [Test]
+    public async Task OnGet_StateUnderTest_ExpectedBehavior()
+    {
+        var fakeTags = new List<KeyValuePair<Tag, int>>
         {
-            _mockRepository = new(MockBehavior.Default);
-            _mockMediator = _mockRepository.Create<IMediator>();
-        }
+            new(new() { DisplayName = "Huawei", Id = 35, NormalizedName = "aiguo" }, FakeData.Int1),
+            new(new() { DisplayName = "Ali", Id = 35, NormalizedName = FakeData.ShortString1 }, FakeData.Int2)
+        };
 
-        private TagsModel CreateTagsModel()
-        {
-            return new(_mockMediator.Object);
-        }
+        _mockMediator.Setup(p => p.Send(It.IsAny<GetTagCountListQuery>(), default))
+            .Returns(Task.FromResult((IReadOnlyList<KeyValuePair<Tag, int>>)fakeTags));
 
-        [Test]
-        public async Task OnGet_StateUnderTest_ExpectedBehavior()
-        {
-            var fakeTags = new List<KeyValuePair<Tag, int>>
-            {
-                new(new() { DisplayName = "Huawei", Id = 35, NormalizedName = "aiguo" }, FakeData.Int1),
-                new(new() { DisplayName = "Ali", Id = 35, NormalizedName = FakeData.ShortString1 }, FakeData.Int2)
-            };
+        var tagsModel = CreateTagsModel();
 
-            _mockMediator.Setup(p => p.Send(It.IsAny<GetTagCountListQuery>(), default))
-                .Returns(Task.FromResult((IReadOnlyList<KeyValuePair<Tag, int>>)fakeTags));
+        await tagsModel.OnGet();
 
-            var tagsModel = CreateTagsModel();
-
-            await tagsModel.OnGet();
-
-            Assert.IsNotNull(tagsModel.Tags);
-        }
+        Assert.IsNotNull(tagsModel.Tags);
     }
 }

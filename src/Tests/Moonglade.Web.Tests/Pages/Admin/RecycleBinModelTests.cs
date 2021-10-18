@@ -4,39 +4,38 @@ using Moonglade.Web.Pages.Admin;
 using Moq;
 using NUnit.Framework;
 
-namespace Moonglade.Web.Tests.Pages.Admin
+namespace Moonglade.Web.Tests.Pages.Admin;
+
+[TestFixture]
+
+public class RecycleBinModelTests
 {
-    [TestFixture]
+    private MockRepository _mockRepository;
+    private Mock<IMediator> _mockMediator;
 
-    public class RecycleBinModelTests
+    [SetUp]
+    public void SetUp()
     {
-        private MockRepository _mockRepository;
-        private Mock<IMediator> _mockMediator;
+        _mockRepository = new(MockBehavior.Default);
+        _mockMediator = _mockRepository.Create<IMediator>();
+    }
 
-        [SetUp]
-        public void SetUp()
-        {
-            _mockRepository = new(MockBehavior.Default);
-            _mockMediator = _mockRepository.Create<IMediator>();
-        }
+    private RecycleBinModel CreateRecycleBinModel()
+    {
+        return new(_mockMediator.Object);
+    }
 
-        private RecycleBinModel CreateRecycleBinModel()
-        {
-            return new(_mockMediator.Object);
-        }
+    [Test]
+    public async Task OnGet_StateUnderTest_ExpectedBehavior()
+    {
+        IReadOnlyList<PostSegment> segments = new List<PostSegment>();
 
-        [Test]
-        public async Task OnGet_StateUnderTest_ExpectedBehavior()
-        {
-            IReadOnlyList<PostSegment> segments = new List<PostSegment>();
+        _mockMediator.Setup(p => p.Send(It.IsAny<ListPostSegmentByStatusQuery>(), default))
+            .Returns(Task.FromResult(segments));
 
-            _mockMediator.Setup(p => p.Send(It.IsAny<ListPostSegmentByStatusQuery>(), default))
-                .Returns(Task.FromResult(segments));
+        var recycleBinModel = CreateRecycleBinModel();
+        await recycleBinModel.OnGet();
 
-            var recycleBinModel = CreateRecycleBinModel();
-            await recycleBinModel.OnGet();
-
-            Assert.IsNotNull(recycleBinModel.Posts);
-        }
+        Assert.IsNotNull(recycleBinModel.Posts);
     }
 }

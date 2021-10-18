@@ -4,44 +4,43 @@ using Moonglade.Web.Pages;
 using Moq;
 using NUnit.Framework;
 
-namespace Moonglade.Web.Tests.Pages
+namespace Moonglade.Web.Tests.Pages;
+
+[TestFixture]
+
+public class ArchiveModelTests
 {
-    [TestFixture]
+    private MockRepository _mockRepository;
+    private Mock<IMediator> _mockMediator;
 
-    public class ArchiveModelTests
+    [SetUp]
+    public void SetUp()
     {
-        private MockRepository _mockRepository;
-        private Mock<IMediator> _mockMediator;
+        _mockRepository = new(MockBehavior.Default);
+        _mockMediator = _mockRepository.Create<IMediator>();
+    }
 
-        [SetUp]
-        public void SetUp()
+    private ArchiveModel CreateArchiveModel()
+    {
+        return new(_mockMediator.Object);
+    }
+
+    [Test]
+    public async Task OnGet_StateUnderTest_ExpectedBehavior()
+    {
+        var fakeArchives = new List<Archive>
         {
-            _mockRepository = new(MockBehavior.Default);
-            _mockMediator = _mockRepository.Create<IMediator>();
-        }
+            new (FakeData.Int2,9,6),
+            new (FakeData.Int1,3,5)
+        };
 
-        private ArchiveModel CreateArchiveModel()
-        {
-            return new(_mockMediator.Object);
-        }
+        _mockMediator.Setup(p => p.Send(It.IsAny<GetArchiveQuery>(), default))
+            .Returns(Task.FromResult((IReadOnlyList<Archive>)fakeArchives));
 
-        [Test]
-        public async Task OnGet_StateUnderTest_ExpectedBehavior()
-        {
-            var fakeArchives = new List<Archive>
-            {
-                new (FakeData.Int2,9,6),
-                new (FakeData.Int1,3,5)
-            };
+        var archiveModel = CreateArchiveModel();
 
-            _mockMediator.Setup(p => p.Send(It.IsAny<GetArchiveQuery>(), default))
-                .Returns(Task.FromResult((IReadOnlyList<Archive>)fakeArchives));
+        await archiveModel.OnGet();
 
-            var archiveModel = CreateArchiveModel();
-
-            await archiveModel.OnGet();
-
-            Assert.IsNotNull(archiveModel.Archives);
-        }
+        Assert.IsNotNull(archiveModel.Archives);
     }
 }

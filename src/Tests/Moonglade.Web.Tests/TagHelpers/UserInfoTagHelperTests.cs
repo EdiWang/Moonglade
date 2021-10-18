@@ -4,192 +4,191 @@ using Moonglade.Web.TagHelpers;
 using NUnit.Framework;
 using System.Security.Claims;
 
-namespace Moonglade.Web.Tests.TagHelpers
+namespace Moonglade.Web.Tests.TagHelpers;
+
+[TestFixture]
+public class UserInfoTagHelperTests
 {
-    [TestFixture]
-    public class UserInfoTagHelperTests
+    [Test]
+    public void Process_UserNull()
     {
-        [Test]
-        public void Process_UserNull()
+        var tagHelper = new UserInfoTagHelper
         {
-            var tagHelper = new UserInfoTagHelper
-            {
-                User = null
-            };
+            User = null
+        };
 
-            var outputAttributes = new TagHelperAttributeList();
-            var context = TagHelperTestsHelpers.MakeTagHelperContext("div");
-            var output = TagHelperTestsHelpers.MakeTagHelperOutput("div", outputAttributes);
+        var outputAttributes = new TagHelperAttributeList();
+        var context = TagHelperTestsHelpers.MakeTagHelperContext("div");
+        var output = TagHelperTestsHelpers.MakeTagHelperOutput("div", outputAttributes);
 
-            tagHelper.Process(context, output);
+        tagHelper.Process(context, output);
 
-            var expectedAttributeList = new TagHelperAttributeList();
-            Assert.AreEqual(expectedAttributeList, output.Attributes);
-        }
+        var expectedAttributeList = new TagHelperAttributeList();
+        Assert.AreEqual(expectedAttributeList, output.Attributes);
+    }
 
-        [Test]
-        public void Process_UserIdentityNull()
+    [Test]
+    public void Process_UserIdentityNull()
+    {
+        var tagHelper = new UserInfoTagHelper
         {
-            var tagHelper = new UserInfoTagHelper
-            {
-                User = new()
-            };
+            User = new()
+        };
 
-            var outputAttributes = new TagHelperAttributeList();
-            var context = TagHelperTestsHelpers.MakeTagHelperContext("div");
-            var output = TagHelperTestsHelpers.MakeTagHelperOutput("div", outputAttributes);
+        var outputAttributes = new TagHelperAttributeList();
+        var context = TagHelperTestsHelpers.MakeTagHelperContext("div");
+        var output = TagHelperTestsHelpers.MakeTagHelperOutput("div", outputAttributes);
 
-            tagHelper.Process(context, output);
+        tagHelper.Process(context, output);
 
-            var expectedAttributeList = new TagHelperAttributeList();
-            Assert.AreEqual(expectedAttributeList, output.Attributes);
-        }
+        var expectedAttributeList = new TagHelperAttributeList();
+        Assert.AreEqual(expectedAttributeList, output.Attributes);
+    }
 
-        [TestCase("name")]
-        [TestCase(ClaimTypes.Name)]
-        public void Process_Name(string claimType)
+    [TestCase("name")]
+    [TestCase(ClaimTypes.Name)]
+    public void Process_Name(string claimType)
+    {
+        var tagHelper = new UserInfoTagHelper
         {
-            var tagHelper = new UserInfoTagHelper
+            UserInfoDisplay = UserInfoDisplay.PreferName,
+            User = GetClaimsPrincipal(new Claim[]
             {
-                UserInfoDisplay = UserInfoDisplay.PreferName,
-                User = GetClaimsPrincipal(new Claim[]
-                {
-                    new(claimType, FakeData.ShortString1)
-                })
-            };
+                new(claimType, FakeData.ShortString1)
+            })
+        };
 
-            var outputAttributes = new TagHelperAttributeList();
-            var context = TagHelperTestsHelpers.MakeTagHelperContext("div");
-            var output = TagHelperTestsHelpers.MakeTagHelperOutput("div", outputAttributes);
+        var outputAttributes = new TagHelperAttributeList();
+        var context = TagHelperTestsHelpers.MakeTagHelperContext("div");
+        var output = TagHelperTestsHelpers.MakeTagHelperOutput("div", outputAttributes);
 
-            tagHelper.Process(context, output);
+        tagHelper.Process(context, output);
 
-            var expectedAttributeList = new TagHelperAttributeList
-            {
-                new ("class", UserInfoTagHelper.TagClassBase)
-            };
-
-            Assert.AreEqual(expectedAttributeList, output.Attributes);
-            Assert.AreEqual(FakeData.ShortString1, output.Content.GetContent());
-        }
-
-        [TestCase("email")]
-        [TestCase(ClaimTypes.Email)]
-        public void Process_Email(string claimType)
+        var expectedAttributeList = new TagHelperAttributeList
         {
-            var tagHelper = new UserInfoTagHelper
-            {
-                UserInfoDisplay = UserInfoDisplay.PreferEmail,
-                User = GetClaimsPrincipal(new Claim[]
-                {
-                    new(claimType, "996@icu.com")
-                })
-            };
+            new ("class", UserInfoTagHelper.TagClassBase)
+        };
 
-            var outputAttributes = new TagHelperAttributeList();
-            var context = TagHelperTestsHelpers.MakeTagHelperContext("div");
-            var output = TagHelperTestsHelpers.MakeTagHelperOutput("div", outputAttributes);
+        Assert.AreEqual(expectedAttributeList, output.Attributes);
+        Assert.AreEqual(FakeData.ShortString1, output.Content.GetContent());
+    }
 
-            tagHelper.Process(context, output);
-
-            var expectedAttributeList = new TagHelperAttributeList
-            {
-                new ("class", UserInfoTagHelper.TagClassBase)
-            };
-
-            Assert.AreEqual(expectedAttributeList, output.Attributes);
-            Assert.AreEqual("996@icu.com", output.Content.GetContent());
-        }
-
-        [Test]
-        public void Process_PreferNameWithEmail()
+    [TestCase("email")]
+    [TestCase(ClaimTypes.Email)]
+    public void Process_Email(string claimType)
+    {
+        var tagHelper = new UserInfoTagHelper
         {
-            var tagHelper = new UserInfoTagHelper
+            UserInfoDisplay = UserInfoDisplay.PreferEmail,
+            User = GetClaimsPrincipal(new Claim[]
             {
-                UserInfoDisplay = UserInfoDisplay.PreferName,
-                User = GetClaimsPrincipal(new Claim[]
-                {
-                    new(ClaimTypes.Email, "996@icu.com")
-                })
-            };
+                new(claimType, "996@icu.com")
+            })
+        };
 
-            var outputAttributes = new TagHelperAttributeList();
-            var context = TagHelperTestsHelpers.MakeTagHelperContext("div");
-            var output = TagHelperTestsHelpers.MakeTagHelperOutput("div", outputAttributes);
+        var outputAttributes = new TagHelperAttributeList();
+        var context = TagHelperTestsHelpers.MakeTagHelperContext("div");
+        var output = TagHelperTestsHelpers.MakeTagHelperOutput("div", outputAttributes);
 
-            tagHelper.Process(context, output);
+        tagHelper.Process(context, output);
 
-            var expectedAttributeList = new TagHelperAttributeList
-            {
-                new ("class", UserInfoTagHelper.TagClassBase)
-            };
-
-            Assert.AreEqual(expectedAttributeList, output.Attributes);
-            Assert.AreEqual("996@icu.com", output.Content.GetContent());
-        }
-
-
-        [Test]
-        public void Process_PreferEmailWithName()
+        var expectedAttributeList = new TagHelperAttributeList
         {
-            var tagHelper = new UserInfoTagHelper
-            {
-                UserInfoDisplay = UserInfoDisplay.PreferEmail,
-                User = GetClaimsPrincipal(new Claim[]
-                {
-                    new(ClaimTypes.Name, FakeData.ShortString1)
-                })
-            };
+            new ("class", UserInfoTagHelper.TagClassBase)
+        };
 
-            var outputAttributes = new TagHelperAttributeList();
-            var context = TagHelperTestsHelpers.MakeTagHelperContext("div");
-            var output = TagHelperTestsHelpers.MakeTagHelperOutput("div", outputAttributes);
+        Assert.AreEqual(expectedAttributeList, output.Attributes);
+        Assert.AreEqual("996@icu.com", output.Content.GetContent());
+    }
 
-            tagHelper.Process(context, output);
-
-            var expectedAttributeList = new TagHelperAttributeList
-            {
-                new ("class", UserInfoTagHelper.TagClassBase)
-            };
-
-            Assert.AreEqual(expectedAttributeList, output.Attributes);
-            Assert.AreEqual(FakeData.ShortString1, output.Content.GetContent());
-        }
-
-        [Test]
-        public void Process_Both()
+    [Test]
+    public void Process_PreferNameWithEmail()
+    {
+        var tagHelper = new UserInfoTagHelper
         {
-            var tagHelper = new UserInfoTagHelper
+            UserInfoDisplay = UserInfoDisplay.PreferName,
+            User = GetClaimsPrincipal(new Claim[]
             {
-                UserInfoDisplay = UserInfoDisplay.Both,
-                User = GetClaimsPrincipal(new Claim[]
-                {
-                    new(ClaimTypes.Name, FakeData.ShortString1),
-                    new(ClaimTypes.Email, "996@icu.com")
-                })
-            };
+                new(ClaimTypes.Email, "996@icu.com")
+            })
+        };
 
-            var outputAttributes = new TagHelperAttributeList();
-            var context = TagHelperTestsHelpers.MakeTagHelperContext("div");
-            var output = TagHelperTestsHelpers.MakeTagHelperOutput("div", outputAttributes);
+        var outputAttributes = new TagHelperAttributeList();
+        var context = TagHelperTestsHelpers.MakeTagHelperContext("div");
+        var output = TagHelperTestsHelpers.MakeTagHelperOutput("div", outputAttributes);
 
-            tagHelper.Process(context, output);
+        tagHelper.Process(context, output);
 
-            var expectedAttributeList = new TagHelperAttributeList
-            {
-                new ("class", UserInfoTagHelper.TagClassBase)
-            };
-
-            Assert.AreEqual(expectedAttributeList, output.Attributes);
-            Assert.AreEqual($"<div class='{UserInfoTagHelper.TagClassBase}-name'>fubao</div><email class='{UserInfoTagHelper.TagClassBase}-email'>996@icu.com</email>", output.Content.GetContent());
-        }
-
-        private ClaimsPrincipal GetClaimsPrincipal(IEnumerable<Claim> claims)
+        var expectedAttributeList = new TagHelperAttributeList
         {
-            var ci = new ClaimsIdentity(claims, CookieAuthenticationDefaults.AuthenticationScheme);
-            var p = new ClaimsPrincipal(ci);
+            new ("class", UserInfoTagHelper.TagClassBase)
+        };
 
-            return p;
-        }
+        Assert.AreEqual(expectedAttributeList, output.Attributes);
+        Assert.AreEqual("996@icu.com", output.Content.GetContent());
+    }
+
+
+    [Test]
+    public void Process_PreferEmailWithName()
+    {
+        var tagHelper = new UserInfoTagHelper
+        {
+            UserInfoDisplay = UserInfoDisplay.PreferEmail,
+            User = GetClaimsPrincipal(new Claim[]
+            {
+                new(ClaimTypes.Name, FakeData.ShortString1)
+            })
+        };
+
+        var outputAttributes = new TagHelperAttributeList();
+        var context = TagHelperTestsHelpers.MakeTagHelperContext("div");
+        var output = TagHelperTestsHelpers.MakeTagHelperOutput("div", outputAttributes);
+
+        tagHelper.Process(context, output);
+
+        var expectedAttributeList = new TagHelperAttributeList
+        {
+            new ("class", UserInfoTagHelper.TagClassBase)
+        };
+
+        Assert.AreEqual(expectedAttributeList, output.Attributes);
+        Assert.AreEqual(FakeData.ShortString1, output.Content.GetContent());
+    }
+
+    [Test]
+    public void Process_Both()
+    {
+        var tagHelper = new UserInfoTagHelper
+        {
+            UserInfoDisplay = UserInfoDisplay.Both,
+            User = GetClaimsPrincipal(new Claim[]
+            {
+                new(ClaimTypes.Name, FakeData.ShortString1),
+                new(ClaimTypes.Email, "996@icu.com")
+            })
+        };
+
+        var outputAttributes = new TagHelperAttributeList();
+        var context = TagHelperTestsHelpers.MakeTagHelperContext("div");
+        var output = TagHelperTestsHelpers.MakeTagHelperOutput("div", outputAttributes);
+
+        tagHelper.Process(context, output);
+
+        var expectedAttributeList = new TagHelperAttributeList
+        {
+            new ("class", UserInfoTagHelper.TagClassBase)
+        };
+
+        Assert.AreEqual(expectedAttributeList, output.Attributes);
+        Assert.AreEqual($"<div class='{UserInfoTagHelper.TagClassBase}-name'>fubao</div><email class='{UserInfoTagHelper.TagClassBase}-email'>996@icu.com</email>", output.Content.GetContent());
+    }
+
+    private ClaimsPrincipal GetClaimsPrincipal(IEnumerable<Claim> claims)
+    {
+        var ci = new ClaimsIdentity(claims, CookieAuthenticationDefaults.AuthenticationScheme);
+        var p = new ClaimsPrincipal(ci);
+
+        return p;
     }
 }

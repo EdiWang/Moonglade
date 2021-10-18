@@ -5,27 +5,26 @@ using Moonglade.Web.Configuration;
 using Moq;
 using NUnit.Framework;
 
-namespace Moonglade.Web.Tests.Configuration
+namespace Moonglade.Web.Tests.Configuration;
+
+[TestFixture]
+public class ConfigureRateLimitTests
 {
-    [TestFixture]
-    public class ConfigureRateLimitTests
+    [Test]
+    public void AddRateLimit_OK()
     {
-        [Test]
-        public void AddRateLimit_OK()
-        {
-            var icsMock = new Mock<IConfigurationSection>(MockBehavior.Default);
+        var icsMock = new Mock<IConfigurationSection>(MockBehavior.Default);
 
-            IServiceCollection services = new ServiceCollection();
-            services.AddRateLimit(icsMock.Object);
+        IServiceCollection services = new ServiceCollection();
+        services.AddRateLimit(icsMock.Object);
 
-            var obj1 = services.FirstOrDefault(p => p.ServiceType == typeof(IRateLimitConfiguration));
-            Assert.IsNotNull(obj1);
+        var obj1 = services.FirstOrDefault(p => p.ServiceType == typeof(IRateLimitConfiguration));
+        Assert.IsNotNull(obj1);
 
-            var obj2 = services.FirstOrDefault(p => p.ServiceType == typeof(IRateLimitCounterStore));
-            Assert.IsNotNull(obj2);
+        var obj2 = services.FirstOrDefault(p => p.ServiceType == typeof(IRateLimitCounterStore));
+        Assert.IsNotNull(obj2);
 
-            var obj3 = services.FirstOrDefault(p => p.ServiceType == typeof(IIpPolicyStore));
-            Assert.IsNotNull(obj3);
-        }
+        var obj3 = services.FirstOrDefault(p => p.ServiceType == typeof(IIpPolicyStore));
+        Assert.IsNotNull(obj3);
     }
 }

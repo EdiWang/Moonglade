@@ -3,24 +3,23 @@ using Microsoft.AspNetCore.Http;
 using Moonglade.Web.Configuration;
 using NUnit.Framework;
 
-namespace Moonglade.Web.Tests.Configuration
+namespace Moonglade.Web.Tests.Configuration;
+
+[TestFixture]
+public class ConfigureStatusCodePagesTests
 {
-    [TestFixture]
-    public class ConfigureStatusCodePagesTests
+    [Test]
+    public async Task Handler_OK()
     {
-        [Test]
-        public async Task Handler_OK()
-        {
-            var ctx = new DefaultHttpContext();
-            ctx.HttpContext.Response.StatusCode = 404;
+        var ctx = new DefaultHttpContext();
+        ctx.HttpContext.Response.StatusCode = 404;
 
-            var context = new StatusCodeContext(ctx, new(),
-                _ => Task.CompletedTask);
+        var context = new StatusCodeContext(ctx, new(),
+            _ => Task.CompletedTask);
 
-            var task = ConfigureStatusCodePages.Handler(context);
-            await task;
+        var task = ConfigureStatusCodePages.Handler(context);
+        await task;
 
-            Assert.AreEqual("application/json; charset=utf-8", ctx.HttpContext.Response.ContentType);
-        }
+        Assert.AreEqual("application/json; charset=utf-8", ctx.HttpContext.Response.ContentType);
     }
 }

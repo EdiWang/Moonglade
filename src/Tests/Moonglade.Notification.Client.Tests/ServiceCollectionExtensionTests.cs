@@ -1,19 +1,18 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
 using NUnit.Framework;
 
-namespace Moonglade.Notification.Client.Tests
-{
-    [TestFixture]
-    public class ServiceCollectionExtensionTests
-    {
-        [Test]
-        public void AddNotificationClient_OK()
-        {
-            IServiceCollection services = new ServiceCollection();
-            services.AddNotificationClient();
+namespace Moonglade.Notification.Client.Tests;
 
-            var obj1 = services.FirstOrDefault(p => p.ServiceType == typeof(IBlogNotificationClient));
-            Assert.IsNotNull(obj1);
-        }
+[TestFixture]
+public class ServiceCollectionExtensionTests
+{
+    [Test]
+    public void AddNotificationClient_OK()
+    {
+        IServiceCollection services = new ServiceCollection();
+        services.AddNotificationClient();
+
+        var obj1 = services.FirstOrDefault(p => p.ServiceType == typeof(IBlogNotificationClient));
+        Assert.IsNotNull(obj1);
     }
 }
