@@ -4,58 +4,57 @@ using Moonglade.FriendLink;
 using Moonglade.Utils;
 using Moonglade.Web.Models;
 
-namespace Moonglade.Web.Middleware
+namespace Moonglade.Web.Middleware;
+
+public class FoafMiddleware
 {
-    public class FoafMiddleware
+    private readonly RequestDelegate _next;
+
+    public FoafMiddleware(RequestDelegate next)
     {
-        private readonly RequestDelegate _next;
+        _next = next;
+    }
 
-        public FoafMiddleware(RequestDelegate next)
+    public async Task Invoke(
+        HttpContext context,
+        IBlogConfig blogConfig,
+        IMediator mediator,
+        LinkGenerator linkGenerator)
+    {
+        if (context.Request.Path == "/foaf.xml")
         {
-            _next = next;
+            static Uri GetUri(HttpRequest request)
+            {
+                return new(string.Concat(
+                    request.Scheme,
+                    "://",
+                    request.Host.HasValue
+                        ? (request.Host.Value.IndexOf(",", StringComparison.Ordinal) > 0
+                            ? "MULTIPLE-HOST"
+                            : request.Host.Value)
+                        : "UNKNOWN-HOST",
+                    request.Path.HasValue ? request.Path.Value : string.Empty,
+                    request.QueryString.HasValue ? request.QueryString.Value : string.Empty));
+            }
+
+            var friends = await mediator.Send(new GetAllLinksQuery());
+            var foafDoc = new FoafDoc
+            {
+                Name = blogConfig.GeneralSettings.OwnerName,
+                BlogUrl = Helper.ResolveRootUrl(context, blogConfig.GeneralSettings.CanonicalPrefix, true),
+                Email = blogConfig.GeneralSettings.OwnerEmail,
+                PhotoUrl = linkGenerator.GetUriByAction(context, "Avatar", "Assets")
+            };
+            var requestUrl = GetUri(context.Request).ToString();
+            var xml = await mediator.Send(new WriterFoafCommand(foafDoc, requestUrl, friends));
+
+            //[ResponseCache(Duration = 3600)]
+            context.Response.ContentType = WriterFoafCommand.ContentType;
+            await context.Response.WriteAsync(xml, context.RequestAborted);
         }
-
-        public async Task Invoke(
-            HttpContext context,
-            IBlogConfig blogConfig,
-            IMediator mediator,
-            LinkGenerator linkGenerator)
+        else
         {
-            if (context.Request.Path == "/foaf.xml")
-            {
-                static Uri GetUri(HttpRequest request)
-                {
-                    return new(string.Concat(
-                        request.Scheme,
-                        "://",
-                        request.Host.HasValue
-                            ? (request.Host.Value.IndexOf(",", StringComparison.Ordinal) > 0
-                                ? "MULTIPLE-HOST"
-                                : request.Host.Value)
-                            : "UNKNOWN-HOST",
-                        request.Path.HasValue ? request.Path.Value : string.Empty,
-                        request.QueryString.HasValue ? request.QueryString.Value : string.Empty));
-                }
-
-                var friends = await mediator.Send(new GetAllLinksQuery());
-                var foafDoc = new FoafDoc
-                {
-                    Name = blogConfig.GeneralSettings.OwnerName,
-                    BlogUrl = Helper.ResolveRootUrl(context, blogConfig.GeneralSettings.CanonicalPrefix, true),
-                    Email = blogConfig.GeneralSettings.OwnerEmail,
-                    PhotoUrl = linkGenerator.GetUriByAction(context, "Avatar", "Assets")
-                };
-                var requestUrl = GetUri(context.Request).ToString();
-                var xml = await mediator.Send(new WriterFoafCommand(foafDoc, requestUrl, friends));
-
-                //[ResponseCache(Duration = 3600)]
-                context.Response.ContentType = WriterFoafCommand.ContentType;
-                await context.Response.WriteAsync(xml, context.RequestAborted);
-            }
-            else
-            {
-                await _next(context);
-            }
+            await _next(context);
         }
     }
 }

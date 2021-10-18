@@ -1,21 +1,20 @@
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Moonglade.Configuration;
 
-namespace Moonglade.Web.Pages.Settings
+namespace Moonglade.Web.Pages.Settings;
+
+public class ImageModel : PageModel
 {
-    public class ImageModel : PageModel
+    private readonly IBlogConfig _blogConfig;
+    public ImageSettings ViewModel { get; set; }
+
+    public ImageModel(IBlogConfig blogConfig)
     {
-        private readonly IBlogConfig _blogConfig;
-        public ImageSettings ViewModel { get; set; }
+        _blogConfig = blogConfig;
+    }
 
-        public ImageModel(IBlogConfig blogConfig)
-        {
-            _blogConfig = blogConfig;
-        }
-
-        public void OnGet()
-        {
-            ViewModel = _blogConfig.ImageSettings;
-        }
+    public void OnGet()
+    {
+        ViewModel = _blogConfig.ImageSettings;
     }
 }

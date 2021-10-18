@@ -3,32 +3,31 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Moonglade.Core.PostFeature;
 
-namespace Moonglade.Web.Pages
+namespace Moonglade.Web.Pages;
+
+public class SearchModel : PageModel
 {
-    public class SearchModel : PageModel
+    private readonly IMediator _mediator;
+
+    public SearchModel(IMediator mediator)
     {
-        private readonly IMediator _mediator;
+        _mediator = mediator;
+    }
 
-        public SearchModel(IMediator mediator)
+    public IReadOnlyList<PostDigest> Posts { get; set; }
+
+    public async Task<IActionResult> OnGetAsync(string term)
+    {
+        if (string.IsNullOrWhiteSpace(term))
         {
-            _mediator = mediator;
+            return RedirectToPage("Index");
         }
 
-        public IReadOnlyList<PostDigest> Posts { get; set; }
+        ViewData["TitlePrefix"] = term;
 
-        public async Task<IActionResult> OnGetAsync(string term)
-        {
-            if (string.IsNullOrWhiteSpace(term))
-            {
-                return RedirectToPage("Index");
-            }
+        var posts = await _mediator.Send(new SearchPostQuery(term));
+        Posts = posts;
 
-            ViewData["TitlePrefix"] = term;
-
-            var posts = await _mediator.Send(new SearchPostQuery(term));
-            Posts = posts;
-
-            return Page();
-        }
+        return Page();
     }
 }

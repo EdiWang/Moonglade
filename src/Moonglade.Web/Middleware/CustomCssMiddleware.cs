@@ -1,72 +1,71 @@
 ﻿using Moonglade.Configuration;
 using NUglify;
 
-namespace Moonglade.Web.Middleware
+namespace Moonglade.Web.Middleware;
+
+public class CustomCssMiddleware
 {
-    public class CustomCssMiddleware
+    private readonly RequestDelegate _next;
+
+    public static CustomCssMiddlewareOptions Options { get; set; } = new();
+
+    public CustomCssMiddleware(RequestDelegate next)
     {
-        private readonly RequestDelegate _next;
-
-        public static CustomCssMiddlewareOptions Options { get; set; } = new();
-
-        public CustomCssMiddleware(RequestDelegate next)
-        {
-            _next = next;
-        }
-
-        public async Task Invoke(HttpContext context, IBlogConfig blogConfig)
-        {
-            if (context.Request.Path == Options.RequestPath)
-            {
-                if (!blogConfig.CustomStyleSheetSettings.EnableCustomCss)
-                {
-                    context.Response.StatusCode = StatusCodes.Status404NotFound;
-                    return;
-                }
-
-                var cssCode = blogConfig.CustomStyleSheetSettings.CssCode;
-                if (cssCode.Length > Options.MaxContentLength)
-                {
-                    context.Response.StatusCode = StatusCodes.Status409Conflict;
-                    return;
-                }
-
-                var uglifiedCss = Uglify.Css(cssCode);
-                if (uglifiedCss.HasErrors)
-                {
-                    context.Response.StatusCode = StatusCodes.Status409Conflict;
-                    return;
-                }
-
-                context.Response.StatusCode = StatusCodes.Status200OK;
-                context.Response.ContentType = "text/css";
-                await context.Response.WriteAsync(uglifiedCss.Code, context.RequestAborted);
-            }
-            else
-            {
-                await _next(context);
-            }
-        }
+        _next = next;
     }
 
-    public static partial class ApplicationBuilderExtensions
+    public async Task Invoke(HttpContext context, IBlogConfig blogConfig)
     {
-        public static IApplicationBuilder UseCustomCss(this IApplicationBuilder app, Action<CustomCssMiddlewareOptions> options)
+        if (context.Request.Path == Options.RequestPath)
         {
-            options(CustomCssMiddleware.Options);
-            return app.UseMiddleware<CustomCssMiddleware>();
+            if (!blogConfig.CustomStyleSheetSettings.EnableCustomCss)
+            {
+                context.Response.StatusCode = StatusCodes.Status404NotFound;
+                return;
+            }
+
+            var cssCode = blogConfig.CustomStyleSheetSettings.CssCode;
+            if (cssCode.Length > Options.MaxContentLength)
+            {
+                context.Response.StatusCode = StatusCodes.Status409Conflict;
+                return;
+            }
+
+            var uglifiedCss = Uglify.Css(cssCode);
+            if (uglifiedCss.HasErrors)
+            {
+                context.Response.StatusCode = StatusCodes.Status409Conflict;
+                return;
+            }
+
+            context.Response.StatusCode = StatusCodes.Status200OK;
+            context.Response.ContentType = "text/css";
+            await context.Response.WriteAsync(uglifiedCss.Code, context.RequestAborted);
+        }
+        else
+        {
+            await _next(context);
         }
     }
+}
 
-    public class CustomCssMiddlewareOptions
+public static partial class ApplicationBuilderExtensions
+{
+    public static IApplicationBuilder UseCustomCss(this IApplicationBuilder app, Action<CustomCssMiddlewareOptions> options)
     {
-        public int MaxContentLength { get; set; }
-        public PathString RequestPath { get; set; }
+        options(CustomCssMiddleware.Options);
+        return app.UseMiddleware<CustomCssMiddleware>();
+    }
+}
 
-        public CustomCssMiddlewareOptions()
-        {
-            MaxContentLength = 65536;
-            RequestPath = "/custom.css";
-        }
+public class CustomCssMiddlewareOptions
+{
+    public int MaxContentLength { get; set; }
+    public PathString RequestPath { get; set; }
+
+    public CustomCssMiddlewareOptions()
+    {
+        MaxContentLength = 65536;
+        RequestPath = "/custom.css";
     }
 }
