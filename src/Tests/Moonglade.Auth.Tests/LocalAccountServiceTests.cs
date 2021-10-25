@@ -155,7 +155,11 @@ public class LocalAccountServiceTests
         var handler = new CreateAccountCommandHandler(_mockLocalAccountRepository.Object, _mockBlogAudit.Object);
         Assert.ThrowsAsync<ArgumentNullException>(async () =>
         {
-            await handler.Handle(new(username, clearPassword), default);
+            await handler.Handle(new(new()
+            {
+                Username = username,
+                Password = clearPassword
+            }), default);
         });
     }
 
@@ -163,7 +167,11 @@ public class LocalAccountServiceTests
     public async Task CreateAsync_OK()
     {
         var handler = new CreateAccountCommandHandler(_mockLocalAccountRepository.Object, _mockBlogAudit.Object);
-        var result = await handler.Handle(new("work996", "&Get1n2icu"), default);
+        var result = await handler.Handle(new(new()
+        {
+            Username = "work996",
+            Password = "&Get1n2icu"
+        }), default);
 
         Assert.IsTrue(result != Guid.Empty);
 

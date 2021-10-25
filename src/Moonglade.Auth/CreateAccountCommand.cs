@@ -8,10 +8,10 @@ namespace Moonglade.Auth;
 
 public class CreateAccountCommand : IRequest<Guid>
 {
-    public CreateAccountCommand(string username, string clearPassword)
+    public CreateAccountCommand(EditAccountRequest request)
     {
-        Username = username;
-        ClearPassword = clearPassword;
+        Username = request.Username;
+        ClearPassword = request.Password;
     }
 
     public string Username { get; set; }

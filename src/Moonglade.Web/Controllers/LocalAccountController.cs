@@ -24,15 +24,15 @@ public class LocalAccountController : ControllerBase
     [HttpPost]
     [ProducesResponseType(StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status409Conflict)]
-    public async Task<IActionResult> Create(EditAccountRequest model)
+    public async Task<IActionResult> Create(EditAccountRequest request)
     {
-        if (await _mediator.Send(new AccountExistsQuery(model.Username)))
+        if (await _mediator.Send(new AccountExistsQuery(request.Username)))
         {
-            ModelState.AddModelError("username", $"User '{model.Username}' already exist.");
+            ModelState.AddModelError("username", $"User '{request.Username}' already exist.");
             return Conflict(ModelState);
         }
 
-        await _mediator.Send(new CreateAccountCommand(model.Username, model.Password));
+        await _mediator.Send(new CreateAccountCommand(request));
         return Ok();
     }
 
