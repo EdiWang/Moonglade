@@ -242,8 +242,8 @@ public class Startup
         app.UseSession().UseCaptchaImage(options =>
         {
             options.RequestPath = "/captcha-image";
-            options.ImageHeight = _configuration.GetValue<int>("Captcha:ImageHeight");
-            options.ImageWidth = _configuration.GetValue<int>("Captcha:ImageWidth");
+            options.ImageHeight = 36;
+            options.ImageWidth = 100;
         });
 
         app.UseIpRateLimiting();
