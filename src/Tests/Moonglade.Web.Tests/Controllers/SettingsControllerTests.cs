@@ -146,7 +146,7 @@ public class SettingsControllerTests
     public async Task Content_Post()
     {
         _mockBlogConfig.Setup(p => p.ContentSettings).Returns(new ContentSettings());
-        ContentSettingsViewModel model = new() { WordFilterMode = "Block" };
+        ContentSettingsViewModel model = new() { WordFilterMode = WordFilterMode.Block };
 
         var settingsController = CreateSettingsController();
         var result = await settingsController.Content(new(model));

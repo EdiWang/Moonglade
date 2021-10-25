@@ -1,7 +1,6 @@
 using MediatR;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Moonglade.Auth;
-using Moonglade.Web.Models.Settings;
 
 namespace Moonglade.Web.Pages.Admin;
 

@@ -22,7 +22,7 @@ public class ContentModel : PageModel
             EnableComments = _blogConfig.ContentSettings.EnableComments,
             RequireCommentReview = _blogConfig.ContentSettings.RequireCommentReview,
             EnableWordFilter = _blogConfig.ContentSettings.EnableWordFilter,
-            WordFilterMode = _blogConfig.ContentSettings.WordFilterMode.ToString(),
+            WordFilterMode = _blogConfig.ContentSettings.WordFilterMode,
             PostListPageSize = _blogConfig.ContentSettings.PostListPageSize,
             HotTagAmount = _blogConfig.ContentSettings.HotTagAmount,
             EnableGravatar = _blogConfig.ContentSettings.EnableGravatar,

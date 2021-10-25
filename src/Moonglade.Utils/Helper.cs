@@ -373,8 +373,8 @@ public static class Helper
         if (modelStateDictionary.ErrorCount == 0) return null;
 
         return from modelState in modelStateDictionary.Values
-            from error in modelState.Errors
-            select error.ErrorMessage;
+               from error in modelState.Errors
+               select error.ErrorMessage;
     }
 
     // https://referencesource.microsoft.com/#System.Web/Security/Membership.cs,fe744ec40cace139

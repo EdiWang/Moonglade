@@ -3,7 +3,6 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Moonglade.Auth;
 using Moonglade.Web.Models;
-using Moonglade.Web.Models.Settings;
 using System.ComponentModel.DataAnnotations;
 using System.Text.RegularExpressions;
 

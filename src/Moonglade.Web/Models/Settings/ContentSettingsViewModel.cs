@@ -1,4 +1,5 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using Moonglade.Configuration;
+using System.ComponentModel.DataAnnotations;
 
 namespace Moonglade.Web.Models.Settings;
 
@@ -20,7 +21,7 @@ public class ContentSettingsViewModel
     public bool EnableWordFilter { get; set; }
 
     [Display(Name = "Word filter mode")]
-    public string WordFilterMode { get; set; }
+    public WordFilterMode WordFilterMode { get; set; }
 
     [Required]
     [Display(Name = "Post list page size")]

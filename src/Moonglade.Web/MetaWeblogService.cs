@@ -447,10 +447,10 @@ public class MetaWeblogService : IMetaWeblogProvider
     {
         var allCats = await _mediator.Send(new GetCategoriesQuery());
         var cids = (from postCategory in mPostCategories
-            select allCats.FirstOrDefault(category => category.DisplayName == postCategory)
+                    select allCats.FirstOrDefault(category => category.DisplayName == postCategory)
             into cat
-            where null != cat
-            select cat.Id).ToArray();
+                    where null != cat
+                    select cat.Id).ToArray();
 
         return cids;
     }

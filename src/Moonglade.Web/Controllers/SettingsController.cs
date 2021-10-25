@@ -141,7 +141,7 @@ public class SettingsController : ControllerBase
         settings.EnableComments = model.EnableComments;
         settings.RequireCommentReview = model.RequireCommentReview;
         settings.EnableWordFilter = model.EnableWordFilter;
-        settings.WordFilterMode = Enum.Parse<WordFilterMode>(model.WordFilterMode);
+        settings.WordFilterMode = model.WordFilterMode;
         settings.PostListPageSize = model.PostListPageSize;
         settings.HotTagAmount = model.HotTagAmount;
         settings.EnableGravatar = model.EnableGravatar;
