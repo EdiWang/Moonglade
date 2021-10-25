@@ -132,23 +132,10 @@ public class SettingsController : ControllerBase
 
     [HttpPost("content")]
     [ProducesResponseType(StatusCodes.Status204NoContent)]
-    public async Task<IActionResult> Content([FromForm] MagicWrapper<ContentSettingsViewModel> wrapperModel)
+    public async Task<IActionResult> Content([FromForm] MagicWrapper<ContentSettings> wrapperModel)
     {
         var model = wrapperModel.ViewModel;
-
-        var settings = _blogConfig.ContentSettings;
-        settings.DisharmonyWords = model.DisharmonyWords;
-        settings.EnableComments = model.EnableComments;
-        settings.RequireCommentReview = model.RequireCommentReview;
-        settings.EnableWordFilter = model.EnableWordFilter;
-        settings.WordFilterMode = model.WordFilterMode;
-        settings.PostListPageSize = model.PostListPageSize;
-        settings.HotTagAmount = model.HotTagAmount;
-        settings.EnableGravatar = model.EnableGravatar;
-        settings.ShowCalloutSection = model.ShowCalloutSection;
-        settings.CalloutSectionHtmlPitch = model.CalloutSectionHtmlCode;
-        settings.ShowPostFooter = model.ShowPostFooter;
-        settings.PostFooterHtmlPitch = model.PostFooterHtmlCode;
+        _blogConfig.ContentSettings = model;
 
         await _blogConfig.SaveAsync(_blogConfig.ContentSettings);
         await _blogAudit.AddEntry(BlogEventType.Settings, BlogEventId.SettingsSavedContent, "Content Settings updated.");

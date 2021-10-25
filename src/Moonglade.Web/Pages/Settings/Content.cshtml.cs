@@ -1,13 +1,12 @@
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Moonglade.Configuration;
-using Moonglade.Web.Models.Settings;
 
 namespace Moonglade.Web.Pages.Settings;
 
 public class ContentModel : PageModel
 {
     private readonly IBlogConfig _blogConfig;
-    public ContentSettingsViewModel ViewModel { get; set; }
+    public ContentSettings ViewModel { get; set; }
 
     public ContentModel(IBlogConfig blogConfig)
     {
@@ -27,9 +26,9 @@ public class ContentModel : PageModel
             HotTagAmount = _blogConfig.ContentSettings.HotTagAmount,
             EnableGravatar = _blogConfig.ContentSettings.EnableGravatar,
             ShowCalloutSection = _blogConfig.ContentSettings.ShowCalloutSection,
-            CalloutSectionHtmlCode = _blogConfig.ContentSettings.CalloutSectionHtmlPitch,
+            CalloutSectionHtmlPitch = _blogConfig.ContentSettings.CalloutSectionHtmlPitch,
             ShowPostFooter = _blogConfig.ContentSettings.ShowPostFooter,
-            PostFooterHtmlCode = _blogConfig.ContentSettings.PostFooterHtmlPitch
+            PostFooterHtmlPitch = _blogConfig.ContentSettings.PostFooterHtmlPitch
         };
     }
 }
