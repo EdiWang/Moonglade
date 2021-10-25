@@ -442,6 +442,10 @@ h3 small {
     font-size: 1.25rem;
 }
 
+.ul-tags {
+    text-align: justify !important;
+}
+
 .nav-link {
     color: var(--accent-color1);
 }
