@@ -36,7 +36,7 @@ public class GeneralModel : PageModel
             SiteTitle = _blogConfig.GeneralSettings.SiteTitle,
             Copyright = _blogConfig.GeneralSettings.Copyright,
             SideBarCustomizedHtmlPitch = _blogConfig.GeneralSettings.SideBarCustomizedHtmlPitch,
-            SideBarOption = _blogConfig.GeneralSettings.SideBarOption.ToString(),
+            SideBarOption = _blogConfig.GeneralSettings.SideBarOption,
             FooterCustomizedHtmlPitch = _blogConfig.GeneralSettings.FooterCustomizedHtmlPitch,
             OwnerName = _blogConfig.GeneralSettings.OwnerName,
             OwnerEmail = _blogConfig.GeneralSettings.OwnerEmail,

@@ -223,16 +223,16 @@
                     </h6>
                     <div class="mb-1">
                         <div class="form-check form-check-inline">
-                            @Html.RadioButtonFor(model => model.ViewModel.SideBarOption, SideBarOption.Right.ToString(), new { id = SideBarOption.Right.ToString(), @class = "form-check-input" })
-                            <label class="form-check-label" for="@SideBarOption.Right.ToString()">@Localizer["Right"]</label>
+                            @Html.RadioButtonFor(model => model.ViewModel.SideBarOption, SideBarOption.Right, new { id = SideBarOption.Right.ToString(), @class = "form-check-input" })
+                            <label class="form-check-label" for="@SideBarOption.Right">@Localizer["Right"]</label>
                         </div>
                         <div class="form-check form-check-inline">
-                            @Html.RadioButtonFor(model => model.ViewModel.SideBarOption, SideBarOption.Left.ToString(), new { id = SideBarOption.Left.ToString(), @class = "form-check-input" })
-                            <label class="form-check-label" for="@SideBarOption.Left.ToString()">@Localizer["Left"]</label>
+                            @Html.RadioButtonFor(model => model.ViewModel.SideBarOption, SideBarOption.Left, new { id = SideBarOption.Left.ToString(), @class = "form-check-input" })
+                            <label class="form-check-label" for="@SideBarOption.Left">@Localizer["Left"]</label>
                         </div>
                         <div class="form-check form-check-inline">
-                            @Html.RadioButtonFor(model => model.ViewModel.SideBarOption, SideBarOption.Disabled.ToString(), new { id = SideBarOption.Disabled.ToString(), @class = "form-check-input" })
-                            <label class="form-check-label" for="@SideBarOption.Disabled.ToString()">@Localizer["Disabled"]</label>
+                            @Html.RadioButtonFor(model => model.ViewModel.SideBarOption, SideBarOption.Disabled, new { id = SideBarOption.Disabled.ToString(), @class = "form-check-input" })
+                            <label class="form-check-label" for="@SideBarOption.Disabled">@Localizer["Disabled"]</label>
                         </div>
                     </div>
                     <div class="form-floating">

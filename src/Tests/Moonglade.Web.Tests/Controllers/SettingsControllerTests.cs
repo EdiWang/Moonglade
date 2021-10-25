@@ -129,7 +129,7 @@ public class SettingsControllerTests
         _mockBlogConfig.Setup(p => p.GeneralSettings).Returns(new GeneralSettings());
         var model = new GeneralSettingsViewModel
         {
-            SideBarOption = "Right"
+            SideBarOption = SideBarOption.Right
         };
 
         Mock<ITimeZoneResolver> tZoneResolverMock = new();

@@ -1,4 +1,5 @@
 ﻿using System.ComponentModel.DataAnnotations;
+using Moonglade.Configuration;
 
 namespace Moonglade.Web.Models.Settings;
 
@@ -63,7 +64,7 @@ public class GeneralSettingsViewModel
     public string SideBarCustomizedHtmlPitch { get; set; }
 
     [Display(Name = "Side bar display")]
-    public string SideBarOption { get; set; }
+    public SideBarOption SideBarOption { get; set; }
 
     [Display(Name = "Footer HTML code")]
     [DataType(DataType.MultilineText)]

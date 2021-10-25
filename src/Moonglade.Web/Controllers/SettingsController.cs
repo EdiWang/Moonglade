@@ -110,7 +110,7 @@ public class SettingsController : ControllerBase
         settings.Copyright = model.Copyright;
         settings.LogoText = model.LogoText;
         settings.SideBarCustomizedHtmlPitch = model.SideBarCustomizedHtmlPitch;
-        settings.SideBarOption = Enum.Parse<SideBarOption>(model.SideBarOption);
+        settings.SideBarOption = model.SideBarOption;
         settings.FooterCustomizedHtmlPitch = model.FooterCustomizedHtmlPitch;
         settings.TimeZoneUtcOffset = timeZoneResolver.GetTimeSpanByZoneId(model.SelectedTimeZoneId).ToString();
         settings.TimeZoneId = model.SelectedTimeZoneId;
