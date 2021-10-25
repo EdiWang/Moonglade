@@ -57,7 +57,7 @@ public class SiteMapMiddleware
         await using (var writer = XmlWriter.Create(sb, writerSettings))
         {
             await writer.WriteStartDocumentAsync();
-            writer.WriteStartElement("urlset", siteMapSection["UrlSetNamespace"]);
+            writer.WriteStartElement("urlset", "http://www.sitemaps.org/schemas/sitemap/0.9");
 
             // Posts
             var spec = new PostSitePageSpec();
