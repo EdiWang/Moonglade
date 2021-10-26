@@ -127,7 +127,7 @@ public class SettingsControllerTests
     public async Task General_Post()
     {
         _mockBlogConfig.Setup(p => p.GeneralSettings).Returns(new GeneralSettings());
-        var model = new GeneralSettingsViewModel
+        var model = new GeneralSettings
         {
             SideBarOption = SideBarOption.Right
         };

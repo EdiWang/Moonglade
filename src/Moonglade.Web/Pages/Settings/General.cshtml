@@ -146,7 +146,7 @@
                                     <div class="form-text">@Localizer["Blog posts will use this time zone as date and time display."]</div>
                                 </div>
                                 <div class="col-md-5 text-end">
-                                    <select class="form-select" asp-for="ViewModel.SelectedTimeZoneId" asp-items="@tzList"></select>
+                                    <select class="form-select" asp-for="ViewModel.TimeZoneId" asp-items="@tzList"></select>
                                 </div>
                             </div>
 
@@ -175,18 +175,18 @@
                             </div>
                             <div class="mb-3">
                                 <div class="form-floating">
-                                    <textarea asp-for="ViewModel.OwnerDescription"
-                                              placeholder="@Html.DisplayNameFor(m => m.ViewModel.OwnerDescription)"
+                                    <textarea asp-for="ViewModel.Description"
+                                              placeholder="@Html.DisplayNameFor(m => m.ViewModel.Description)"
                                               class="form-control h-100px"
                                               spellcheck="false" cols="10" rows="10"></textarea>
-                                    <label class="form-label" asp-for="ViewModel.OwnerDescription"></label>
+                                    <label class="form-label" asp-for="ViewModel.Description"></label>
                                 </div>
-                                <span asp-validation-for="ViewModel.OwnerDescription" class="text-danger"></span>
+                                <span asp-validation-for="ViewModel.Description" class="text-danger"></span>
                             </div>
                             <div>
-                                <label class="form-label" asp-for="ViewModel.OwnerShortDescription"></label>
-                                <input asp-for="ViewModel.OwnerShortDescription" class="form-control" />
-                                <span asp-validation-for="ViewModel.OwnerShortDescription" class="text-danger"></span>
+                                <label class="form-label" asp-for="ViewModel.ShortDescription"></label>
+                                <input asp-for="ViewModel.ShortDescription" class="form-control" />
+                                <span asp-validation-for="ViewModel.ShortDescription" class="text-danger"></span>
                                 <small class="form-text text-muted">@Localizer["Short description is for display only on Phone screen."]</small>
                             </div>
                         </div>
@@ -201,7 +201,7 @@
                     <div>
                         <div class="row g-1 mb-3">
                             <div class="col">
-                                <select class="form-select" asp-for="ViewModel.SelectedThemeId" asp-items="@tmList"></select>
+                                <select class="form-select" asp-for="ViewModel.ThemeId" asp-items="@tmList"></select>
                             </div>
                             <div class="col-auto">
                                 <a class="btn btn-outline-accent" href="#" data-bs-toggle="modal" data-bs-target="#thememodal">

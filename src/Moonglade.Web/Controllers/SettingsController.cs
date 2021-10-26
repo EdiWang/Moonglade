@@ -98,28 +98,12 @@ public class SettingsController : ControllerBase
     [HttpPost("general")]
     [ProducesResponseType(StatusCodes.Status204NoContent)]
     [TypeFilter(typeof(ClearBlogCache), Arguments = new object[] { CacheDivision.General, "theme" })]
-    public async Task<IActionResult> General([FromForm] MagicWrapper<GeneralSettingsViewModel> wrapperModel, [FromServices] ITimeZoneResolver timeZoneResolver)
+    public async Task<IActionResult> General([FromForm] MagicWrapper<GeneralSettings> wrapperModel, [FromServices] ITimeZoneResolver timeZoneResolver)
     {
         var model = wrapperModel.ViewModel;
 
-        var settings = _blogConfig.GeneralSettings;
-        settings.MetaKeyword = model.MetaKeyword;
-        settings.MetaDescription = model.MetaDescription;
-        settings.CanonicalPrefix = model.CanonicalPrefix;
-        settings.SiteTitle = model.SiteTitle;
-        settings.Copyright = model.Copyright;
-        settings.LogoText = model.LogoText;
-        settings.SideBarCustomizedHtmlPitch = model.SideBarCustomizedHtmlPitch;
-        settings.SideBarOption = model.SideBarOption;
-        settings.FooterCustomizedHtmlPitch = model.FooterCustomizedHtmlPitch;
-        settings.TimeZoneUtcOffset = timeZoneResolver.GetTimeSpanByZoneId(model.SelectedTimeZoneId).ToString();
-        settings.TimeZoneId = model.SelectedTimeZoneId;
-        settings.ThemeId = model.SelectedThemeId;
-        settings.OwnerName = model.OwnerName;
-        settings.OwnerEmail = model.OwnerEmail;
-        settings.Description = model.OwnerDescription;
-        settings.ShortDescription = model.OwnerShortDescription;
-        settings.AutoDarkLightTheme = model.AutoDarkLightTheme;
+        _blogConfig.GeneralSettings = model;
+        _blogConfig.GeneralSettings.TimeZoneUtcOffset = timeZoneResolver.GetTimeSpanByZoneId(model.TimeZoneId).ToString();
 
         await _blogConfig.SaveAsync(_blogConfig.GeneralSettings);
 
