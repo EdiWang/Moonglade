@@ -3,7 +3,7 @@
 namespace Moonglade.Web.Models;
 
 // https://andrewlock.net/creating-an-empty-guid-validation-attribute/
-[AttributeUsage(AttributeTargets.Property | AttributeTargets.Field | AttributeTargets.Parameter, AllowMultiple = false)]
+[AttributeUsage(AttributeTargets.Property | AttributeTargets.Field | AttributeTargets.Parameter)]
 public class NotEmptyAttribute : ValidationAttribute
 {
     public const string DefaultErrorMessage = "The {0} field must not be empty";

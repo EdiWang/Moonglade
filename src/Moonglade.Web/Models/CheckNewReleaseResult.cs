@@ -1,6 +1,6 @@
 ﻿using Moonglade.Core;
 
-namespace Moonglade.Web.Models.Settings;
+namespace Moonglade.Web.Models;
 
 public class CheckNewReleaseResult
 {

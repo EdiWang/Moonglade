@@ -14,7 +14,6 @@ using Moonglade.Data.Setup;
 using Moonglade.Notification.Client;
 using Moonglade.Utils;
 using Moonglade.Web.Models;
-using Moonglade.Web.Models.Settings;
 using NUglify;
 using System.Data;
 using System.Reflection;

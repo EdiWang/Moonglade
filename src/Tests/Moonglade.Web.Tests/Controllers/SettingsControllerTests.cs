@@ -8,10 +8,10 @@ using Moonglade.Core;
 using Moonglade.Data;
 using Moonglade.Data.Entities;
 using Moonglade.Web.Controllers;
-using Moonglade.Web.Models.Settings;
 using Moq;
 using NUnit.Framework;
 using System.ComponentModel.DataAnnotations;
+using Moonglade.Web.Models;
 
 namespace Moonglade.Web.Tests.Controllers;
 
