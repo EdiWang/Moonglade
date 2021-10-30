@@ -2,6 +2,7 @@
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Options;
 using Moonglade.Caching;
+using Moonglade.Configuration;
 using Moonglade.Configuration.Settings;
 using Moonglade.Core.TagFeature;
 using Moonglade.Data;
@@ -31,6 +32,7 @@ public class UpdatePostCommandHandler : IRequestHandler<UpdatePostCommand, PostE
     private readonly IRepository<TagEntity> _tagRepo;
     private readonly IRepository<PostEntity> _postRepo;
     private readonly IBlogCache _cache;
+    private readonly IBlogConfig _blogConfig;
 
     private readonly IDictionary<string, string> _tagNormalizationDictionary;
 
@@ -40,12 +42,14 @@ public class UpdatePostCommandHandler : IRequestHandler<UpdatePostCommand, PostE
         IOptions<AppSettings> settings,
         IRepository<TagEntity> tagRepo,
         IRepository<PostEntity> postRepo,
-        IBlogCache cache)
+        IBlogCache cache,
+        IBlogConfig blogConfig)
     {
         _audit = audit;
         _tagRepo = tagRepo;
         _postRepo = postRepo;
         _cache = cache;
+        _blogConfig = blogConfig;
         _settings = settings.Value;
 
         _tagNormalizationDictionary =
@@ -64,7 +68,7 @@ public class UpdatePostCommandHandler : IRequestHandler<UpdatePostCommand, PostE
         post.PostContent = request.Payload.EditorContent;
         post.ContentAbstract = ContentProcessor.GetPostAbstract(
             string.IsNullOrEmpty(request.Payload.Abstract) ? request.Payload.EditorContent : request.Payload.Abstract.Trim(),
-            _settings.PostAbstractWords,
+            _blogConfig.ContentSettings.PostAbstractWords,
             _settings.Editor == EditorChoice.Markdown);
 
         // Address #221: Do not allow published posts back to draft status

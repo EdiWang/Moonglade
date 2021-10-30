@@ -2,6 +2,7 @@
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
+using Moonglade.Configuration;
 using Moonglade.Configuration.Settings;
 using Moonglade.Core.TagFeature;
 using Moonglade.Data;
@@ -29,6 +30,8 @@ public class CreatePostCommandHandler : IRequestHandler<CreatePostCommand, PostE
     private readonly ILogger<CreatePostCommandHandler> _logger;
     private readonly IRepository<TagEntity> _tagRepo;
     private readonly AppSettings _settings;
+    private readonly IBlogConfig _blogConfig;
+
     private readonly IDictionary<string, string> _tagNormalizationDictionary;
 
     public CreatePostCommandHandler(
@@ -37,12 +40,14 @@ public class CreatePostCommandHandler : IRequestHandler<CreatePostCommand, PostE
         ILogger<CreatePostCommandHandler> logger,
         IRepository<TagEntity> tagRepo,
         IOptions<AppSettings> settings,
-        IConfiguration configuration)
+        IConfiguration configuration,
+        IBlogConfig blogConfig)
     {
         _postRepo = postRepo;
         _audit = audit;
         _logger = logger;
         _tagRepo = tagRepo;
+        _blogConfig = blogConfig;
         _settings = settings.Value;
 
         _tagNormalizationDictionary =
@@ -53,7 +58,7 @@ public class CreatePostCommandHandler : IRequestHandler<CreatePostCommand, PostE
     {
         var abs = ContentProcessor.GetPostAbstract(
             string.IsNullOrEmpty(request.Payload.Abstract) ? request.Payload.EditorContent : request.Payload.Abstract.Trim(),
-            _settings.PostAbstractWords,
+            _blogConfig.ContentSettings.PostAbstractWords,
             _settings.Editor == EditorChoice.Markdown);
 
         var post = new PostEntity

@@ -119,6 +119,20 @@
                             <span asp-validation-for="ViewModel.PostListPageSize" class="text-danger"></span>
                         </div>
                     </div>
+                    
+                    <div class="row g-3 align-items-center settings-entry mb-4">
+                        <div class="col-auto">
+                            <i class="settings-entry-icon bi-file-word"></i>
+                        </div>
+                        <div class="col">
+                            <label asp-for="ViewModel.PostAbstractWords"></label>
+                            <div class="form-text">@Localizer["Change this value will only affect new posts"]</div>
+                        </div>
+                        <div class="col-md-5">
+                            <input asp-for="ViewModel.PostAbstractWords" class="form-control" />
+                            <span asp-validation-for="ViewModel.PostAbstractWords" class="text-danger"></span>
+                        </div>
+                    </div>
 
                     <div class="row g-3 align-items-center settings-entry mb-4">
                         <div class="col-auto">

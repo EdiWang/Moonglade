@@ -49,12 +49,16 @@ public class ContentSettings : IBlogSettings
     [Display(Name = "Post footer HTML code")]
     public string PostFooterHtmlPitch { get; set; }
 
+    [Display(Name = "Word count in abstract")]
+    public int PostAbstractWords { get; set; }
+
     public ContentSettings()
     {
         DisharmonyWords = string.Empty;
         EnableComments = true;
         PostListPageSize = 10;
         HotTagAmount = 10;
+        PostAbstractWords = 400;
     }
 }
 

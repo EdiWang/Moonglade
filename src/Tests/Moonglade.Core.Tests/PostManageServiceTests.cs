@@ -2,6 +2,7 @@
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using Moonglade.Caching;
+using Moonglade.Configuration;
 using Moonglade.Configuration.Settings;
 using Moonglade.Core.PostFeature;
 using Moonglade.Data;
@@ -25,7 +26,7 @@ public class PostManageServiceTests
     private Mock<ILogger<CreatePostCommandHandler>> _mockLogger2;
     private Mock<IRepository<TagEntity>> _mockTagEntityRepo;
     private Mock<IBlogAudit> _mockBlogAudit;
-    private Mock<IConfiguration> _mockConfiguration;
+    private Mock<IBlogConfig> _mockBlogConfig;
     private Mock<IBlogCache> _mockBlogCache;
 
     private static readonly Guid Uid = Guid.Parse("76169567-6ff3-42c0-b163-a883ff2ac4fb");
@@ -61,8 +62,13 @@ public class PostManageServiceTests
         _mockLogger2 = _mockRepository.Create<ILogger<CreatePostCommandHandler>>();
         _mockTagEntityRepo = _mockRepository.Create<IRepository<TagEntity>>();
         _mockBlogAudit = _mockRepository.Create<IBlogAudit>();
-        _mockConfiguration = _mockRepository.Create<IConfiguration>();
+        _mockBlogConfig = _mockRepository.Create<IBlogConfig>();
         _mockBlogCache = _mockRepository.Create<IBlogCache>();
+
+        _mockBlogConfig.Setup(p => p.ContentSettings).Returns(new ContentSettings
+        {
+            PostAbstractWords = 404
+        });
     }
 
     private IConfigurationRoot GetFakeConfiguration()
@@ -80,7 +86,6 @@ public class PostManageServiceTests
     {
         _mockOptionsAppSettings.Setup(p => p.Value).Returns(new AppSettings
         {
-            PostAbstractWords = 404,
             Editor = EditorChoice.Html
         });
 
@@ -106,7 +111,7 @@ public class PostManageServiceTests
 
         var handler = new CreatePostCommandHandler(_mockPostEntityRepo.Object, _mockBlogAudit.Object,
             _mockLogger2.Object, _mockTagEntityRepo.Object, _mockOptionsAppSettings.Object,
-            GetFakeConfiguration());
+            GetFakeConfiguration(), _mockBlogConfig.Object);
         var result = await handler.Handle(new(req), default);
 
         Assert.IsNotNull(result);
@@ -124,7 +129,8 @@ public class PostManageServiceTests
             _mockOptionsAppSettings.Object,
             _mockTagEntityRepo.Object,
             _mockPostEntityRepo.Object,
-            _mockBlogCache.Object
+            _mockBlogCache.Object,
+            _mockBlogConfig.Object
         );
 
         Assert.ThrowsAsync<InvalidOperationException>(async () =>
@@ -141,7 +147,6 @@ public class PostManageServiceTests
         _mockTagEntityRepo.Setup(p => p.AddAsync(It.IsAny<TagEntity>())).Returns(Task.FromResult(new TagEntity()));
         _mockOptionsAppSettings.Setup(p => p.Value).Returns(new AppSettings
         {
-            PostAbstractWords = 404,
             Editor = EditorChoice.Html
         });
 
@@ -166,7 +171,8 @@ public class PostManageServiceTests
             _mockOptionsAppSettings.Object,
             _mockTagEntityRepo.Object,
             _mockPostEntityRepo.Object,
-            _mockBlogCache.Object
+            _mockBlogCache.Object,
+            _mockBlogConfig.Object
         );
 
         var result = await handler.Handle(new(Uid, req), default);
