@@ -138,7 +138,7 @@ public class Startup
             .AddBlogCache()
             .AddMetaWeblog<MetaWeblogService>()
             .AddScoped<ValidateCaptcha>()
-            .AddScoped<ITimeZoneResolver>(c => new BlogTimeZoneResolver(c.GetService<IBlogConfig>()?.GeneralSettings.TimeZoneUtcOffset))
+            .AddScoped<ITimeZoneResolver, BlogTimeZoneResolver>()
             .AddBlogConfig(_configuration)
             .AddBlogAuthenticaton(_configuration)
             .AddComments(_configuration)

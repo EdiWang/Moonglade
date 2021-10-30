@@ -1,4 +1,5 @@
-﻿using TimeZoneConverter;
+﻿using Moonglade.Configuration;
+using TimeZoneConverter;
 
 namespace Moonglade.Web;
 
@@ -16,9 +17,9 @@ public class BlogTimeZoneResolver : ITimeZoneResolver
 {
     public string UtcOffset { get; }
 
-    public BlogTimeZoneResolver(string utcOffset)
+    public BlogTimeZoneResolver(IBlogConfig _blogConfig)
     {
-        UtcOffset = utcOffset;
+        UtcOffset = _blogConfig.GeneralSettings.TimeZoneUtcOffset;
     }
 
     public DateTime NowOfTimeZone => UtcToZoneTime(DateTime.UtcNow, UtcOffset);
