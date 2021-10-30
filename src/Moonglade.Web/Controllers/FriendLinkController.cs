@@ -23,7 +23,7 @@ public class FriendLinkController : ControllerBase
     public async Task<IActionResult> Create(EditLinkRequest request)
     {
         await _mediator.Send(new AddLinkCommand(request));
-        return Created(string.Empty, request);
+        return Created(new Uri(request.LinkUrl), request);
     }
 
     [HttpGet("{id:guid}")]

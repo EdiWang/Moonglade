@@ -273,4 +273,12 @@ public class SettingsController : ControllerBase
         await _blogAudit.ClearAuditLog();
         return NoContent();
     }
+
+    public class CheckNewReleaseResult
+    {
+        public bool HasNewRelease { get; set; }
+
+        public ReleaseInfo LatestReleaseInfo { get; set; }
+        public string CurrentAssemblyFileVersion { get; set; }
+    }
 }
