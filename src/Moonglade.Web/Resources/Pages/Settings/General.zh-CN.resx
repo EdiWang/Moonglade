@@ -126,9 +126,6 @@
   <data name=".png or .jpg file" xml:space="preserve">
     <value>.png 或 .jpg 文件</value>
   </data>
-  <data name="Auto Light / Dark theme regarding client system settings" xml:space="preserve">
-    <value>根据客户端自动调整明亮/黑暗模式</value>
-  </data>
   <data name="Blog Identity" xml:space="preserve">
     <value>博客身份</value>
   </data>
