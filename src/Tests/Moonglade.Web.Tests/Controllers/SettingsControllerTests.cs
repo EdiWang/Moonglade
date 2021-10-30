@@ -62,7 +62,7 @@ public class SettingsControllerTests
         var result = await ctl.CheckNewRelease(mockReleaseCheckerClient.Object);
         Assert.IsInstanceOf<OkObjectResult>(result);
 
-        var model = ((OkObjectResult)result).Value as CheckNewReleaseResult;
+        var model = ((OkObjectResult)result).Value as SettingsController.CheckNewReleaseResult;
         Assert.IsTrue(model.HasNewRelease);
         Assert.IsNotNull(model.LatestReleaseInfo);
     }
@@ -84,7 +84,7 @@ public class SettingsControllerTests
         var result = await ctl.CheckNewRelease(mockReleaseCheckerClient.Object);
         Assert.IsInstanceOf<OkObjectResult>(result);
 
-        var model = ((OkObjectResult)result).Value as CheckNewReleaseResult;
+        var model = ((OkObjectResult)result).Value as SettingsController.CheckNewReleaseResult;
         Assert.IsFalse(model.HasNewRelease);
         Assert.IsNotNull(model.LatestReleaseInfo);
     }
