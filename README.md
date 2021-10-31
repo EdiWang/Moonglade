@@ -150,5 +150,6 @@ There are a few individuals already setup thier blogs using Moonglade on Azure (
 - [HueiFeng](https://blog.stackable.cn/)
 - [Leslie Wang](https://lesliewxj.com/)
 - [AllenMasters](https://allenmasters.com)
+- [Hao's House](https://haxu.dev/)
 
 *Just Submit PR or issue if you want your blog to be listed here*
