@@ -59,8 +59,7 @@ public class Program
                     .UseStartup<Startup>()
                     .ConfigureAppConfiguration((hostingContext, config) =>
                     {
-                        config.AddJsonFile("manifesticons.json", false, true)
-                            .AddJsonFile("tagnormalization.json", false, true);
+                        config.AddJsonFile("manifesticons.json", false, true);
 
                         var settings = config.Build();
                         if (settings.GetValue<bool>("PreferAzureAppConfiguration"))
