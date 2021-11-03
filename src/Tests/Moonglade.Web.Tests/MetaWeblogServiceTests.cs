@@ -50,7 +50,6 @@ public class MetaWeblogServiceTests
         RawPostContent = "<p>Get some fubao</p>",
         ContentLanguageCode = "en-us",
         Featured = true,
-        ExposedToSiteMap = true,
         IsFeedIncluded = true,
         IsPublished = true,
         CommentEnabled = true,

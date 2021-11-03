@@ -18,7 +18,6 @@ public class PostEntity
     public DateTime CreateTimeUtc { get; set; }
     public string ContentAbstract { get; set; }
     public string ContentLanguageCode { get; set; }
-    public bool ExposedToSiteMap { get; set; }
     public bool IsFeedIncluded { get; set; }
     public DateTime? PubDateUtc { get; set; }
     public DateTime? LastModifiedUtc { get; set; }

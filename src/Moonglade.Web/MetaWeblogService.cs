@@ -128,7 +128,6 @@ public class MetaWeblogService : IMetaWeblogProvider
                 IsPublished = publish,
                 EnableComment = true,
                 FeedIncluded = true,
-                ExposedToSiteMap = true,
                 PublishDate = DateTime.UtcNow
             };
 
@@ -181,7 +180,6 @@ public class MetaWeblogService : IMetaWeblogProvider
                 IsPublished = publish,
                 EnableComment = true,
                 FeedIncluded = true,
-                ExposedToSiteMap = true,
                 PublishDate = DateTime.UtcNow
             };
 

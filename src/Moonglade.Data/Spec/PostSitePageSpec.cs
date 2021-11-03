@@ -6,7 +6,7 @@ namespace Moonglade.Data.Spec;
 public class PostSitePageSpec : BaseSpecification<PostEntity>
 {
     public PostSitePageSpec() : base(p =>
-        p.IsPublished && !p.IsDeleted && p.ExposedToSiteMap)
+        p.IsPublished && !p.IsDeleted)
     {
 
     }

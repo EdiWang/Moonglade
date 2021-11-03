@@ -73,7 +73,6 @@ public class CreatePostCommandHandler : IRequestHandler<CreatePostCommand, PostE
             Author = request.Payload.Author?.Trim(),
             Title = request.Payload.Title.Trim(),
             ContentLanguageCode = request.Payload.LanguageCode,
-            ExposedToSiteMap = request.Payload.ExposedToSiteMap,
             IsFeedIncluded = request.Payload.FeedIncluded,
             PubDateUtc = request.Payload.IsPublished ? DateTime.UtcNow : null,
             IsDeleted = false,

@@ -16,7 +16,6 @@ public class Post
     public DateTime CreateTimeUtc { get; set; }
     public string ContentAbstract { get; set; }
     public bool IsPublished { get; set; }
-    public bool ExposedToSiteMap { get; set; }
     public bool IsFeedIncluded { get; set; }
     public bool Featured { get; set; }
     public string ContentLanguageCode { get; set; }
@@ -42,7 +41,6 @@ public class Post
         PubDateUtc = p.PubDateUtc,
         LastModifiedUtc = p.LastModifiedUtc,
         IsPublished = p.IsPublished,
-        ExposedToSiteMap = p.ExposedToSiteMap,
         IsFeedIncluded = p.IsFeedIncluded,
         Featured = p.IsFeatured,
         IsOriginal = p.IsOriginal,

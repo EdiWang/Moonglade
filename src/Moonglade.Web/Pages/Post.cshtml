@@ -20,7 +20,7 @@
 }
 
 @section meta {
-    @if (!Model.Post.ExposedToSiteMap)
+    @if (!Model.Post.IsFeedIncluded)
     {
         <meta name="robots" content="noindex, nofollow" />
     }

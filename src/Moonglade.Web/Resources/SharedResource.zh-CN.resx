@@ -387,9 +387,6 @@
   <data name="Side bar HTML code" xml:space="preserve">
     <value>侧边栏HTML区域</value>
   </data>
-  <data name="Site Map" xml:space="preserve">
-    <value>加入网站地图</value>
-  </data>
   <data name="Tag amount can only range from 1-50" xml:space="preserve">
     <value>标签数量必须在1-50之间</value>
   </data>

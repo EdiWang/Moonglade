@@ -22,7 +22,6 @@ public class EditPostModel : PageModel
             IsPublished = false,
             Featured = false,
             EnableComment = true,
-            ExposedToSiteMap = true,
             FeedIncluded = true
         };
     }
@@ -60,7 +59,6 @@ public class EditPostModel : PageModel
             Slug = post.Slug,
             Title = post.Title,
             EnableComment = post.CommentEnabled,
-            ExposedToSiteMap = post.ExposedToSiteMap,
             FeedIncluded = post.IsFeedIncluded,
             LanguageCode = post.ContentLanguageCode,
             Abstract = post.ContentAbstract.Replace("\u00A0\u2026", string.Empty),

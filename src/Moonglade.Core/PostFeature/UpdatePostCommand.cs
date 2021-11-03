@@ -94,7 +94,6 @@ public class UpdatePostCommandHandler : IRequestHandler<UpdatePostCommand, PostE
         post.Author = request.Payload.Author?.Trim();
         post.Slug = request.Payload.Slug.ToLower().Trim();
         post.Title = request.Payload.Title.Trim();
-        post.ExposedToSiteMap = request.Payload.ExposedToSiteMap;
         post.LastModifiedUtc = DateTime.UtcNow;
         post.IsFeedIncluded = request.Payload.FeedIncluded;
         post.ContentLanguageCode = request.Payload.LanguageCode;

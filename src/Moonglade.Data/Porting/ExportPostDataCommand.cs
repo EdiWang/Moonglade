@@ -33,7 +33,6 @@ public class ExportPostDataCommandHandler : IRequestHandler<ExportPostDataComman
             p.PostExtension.Likes,
             p.PubDateUtc,
             p.ContentLanguageCode,
-            p.ExposedToSiteMap,
             p.IsDeleted,
             p.IsFeedIncluded,
             p.IsPublished,

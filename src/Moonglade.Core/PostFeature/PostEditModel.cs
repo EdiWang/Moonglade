@@ -42,9 +42,6 @@ public class PostEditModel
     [Display(Name = "Featured")]
     public bool Featured { get; set; }
 
-    [Display(Name = "Site Map")]
-    public bool ExposedToSiteMap { get; set; }
-
     [Display(Name = "Feed Subscription")]
     public bool FeedIncluded { get; set; }
 

@@ -1,7 +1,6 @@
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
-using Moonglade.Configuration;
 using Moonglade.Core.CategoryFeature;
 using Moonglade.Core.PostFeature;
 using Moonglade.Core.TagFeature;
@@ -19,7 +18,6 @@ public class EditPostModelTests
 
     private Mock<IMediator> _mockMediator;
     private Mock<ITimeZoneResolver> _mockTZoneResolver;
-    private Mock<IBlogConfig> _mockBlogConfig;
 
     private static readonly Guid Uid = Guid.Parse("76169567-6ff3-42c0-b163-a883ff2ac4fb");
     private static readonly Category Cat = new()
@@ -39,7 +37,6 @@ public class EditPostModelTests
         RawPostContent = "<p>Get some fubao</p>",
         ContentLanguageCode = "en-us",
         Featured = true,
-        ExposedToSiteMap = true,
         IsFeedIncluded = true,
         IsPublished = true,
         CommentEnabled = true,
@@ -61,7 +58,6 @@ public class EditPostModelTests
 
         _mockMediator = _mockRepository.Create<IMediator>();
         _mockTZoneResolver = _mockRepository.Create<ITimeZoneResolver>();
-        _mockBlogConfig = _mockRepository.Create<IBlogConfig>();
     }
 
     private EditPostModel CreateEditPostModel()
