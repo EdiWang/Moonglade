@@ -24,8 +24,10 @@ using Moonglade.Web.Configuration;
 using Moonglade.Web.Filters;
 using Moonglade.Web.Middleware;
 using System.Globalization;
+using System.Runtime.InteropServices;
 using System.Text.Encodings.Web;
 using System.Text.Unicode;
+using Microsoft.AspNetCore.HttpOverrides;
 using WilderMinds.MetaWeblog;
 
 #endregion
@@ -59,16 +61,28 @@ public class Startup
         services.AddMediatR(AppDomain.CurrentDomain.GetAssemblies());
 
         // ASP.NET Setup
+
+        // Fix docker deployments on Azure App Service blows up with Azure AD authentication
+        // https://docs.microsoft.com/en-us/aspnet/core/host-and-deploy/proxy-load-balancer?view=aspnetcore-6.0
+        // "Outside of using IIS Integration when hosting out-of-process, Forwarded Headers Middleware isn't enabled by default."
+        if (!RuntimeInformation.IsOSPlatform(OSPlatform.Windows) || !Program.IsRunningInsideIIS())
+        {
+            services.Configure<ForwardedHeadersOptions>(options =>
+            {
+                options.ForwardedHeaders = ForwardedHeaders.XForwardedFor | ForwardedHeaders.XForwardedProto;
+            });
+        }
+
         services.AddOptions()
-            .AddHttpContextAccessor()
-            .AddRateLimit(_configuration.GetSection("IpRateLimiting"));
+                .AddHttpContextAccessor()
+                .AddRateLimit(_configuration.GetSection("IpRateLimiting"));
         services.AddFeatureManagement();
         services.AddAzureAppConfiguration()
-            .AddApplicationInsightsTelemetry()
-            .ConfigureTelemetryModule<DependencyTrackingTelemetryModule>((module, _) =>
-            {
-                module.EnableSqlCommandTextInstrumentation = true;
-            });
+                .AddApplicationInsightsTelemetry()
+                .ConfigureTelemetryModule<DependencyTrackingTelemetryModule>((module, _) =>
+                {
+                    module.EnableSqlCommandTextInstrumentation = true;
+                });
 
         services.AddSession(options =>
         {
@@ -79,18 +93,18 @@ public class Startup
         services.AddLocalization(options => options.ResourcesPath = "Resources");
         services.AddSwaggerGen();
         services.AddControllers(options => options.Filters.Add(new AutoValidateAntiforgeryTokenAttribute()))
-            .ConfigureApiBehaviorOptions(ConfigureApiBehavior.BlogApiBehavior);
+                .ConfigureApiBehaviorOptions(ConfigureApiBehavior.BlogApiBehavior);
         services.AddRazorPages()
-            .AddViewLocalization()
-            .AddDataAnnotationsLocalization(options =>
-            {
-                options.DataAnnotationLocalizerProvider = (_, factory) => factory.Create(typeof(SharedResource));
-            })
-            .AddRazorPagesOptions(options =>
-            {
-                options.Conventions.AuthorizeFolder("/Admin");
-                options.Conventions.AuthorizeFolder("/Settings");
-            });
+                .AddViewLocalization()
+                .AddDataAnnotationsLocalization(options =>
+                {
+                    options.DataAnnotationLocalizerProvider = (_, factory) => factory.Create(typeof(SharedResource));
+                })
+                .AddRazorPagesOptions(options =>
+                {
+                    options.Conventions.AuthorizeFolder("/Admin");
+                    options.Conventions.AuthorizeFolder("/Settings");
+                });
 
         // Fix Chinese character being encoded in HTML output
         services.AddSingleton(HtmlEncoder.Create(
@@ -132,22 +146,22 @@ public class Startup
 
         // Blog Services
         services.AddPingback()
-            .AddSyndication()
-            .AddNotificationClient()
-            .AddReleaseCheckerClient()
-            .AddBlogCache()
-            .AddMetaWeblog<MetaWeblogService>()
-            .AddScoped<ValidateCaptcha>()
-            .AddScoped<ITimeZoneResolver, BlogTimeZoneResolver>()
-            .AddBlogConfig(_configuration)
-            .AddBlogAuthenticaton(_configuration)
-            .AddComments(_configuration)
-            .AddDataStorage(_configuration.GetConnectionString("MoongladeDatabase"))
-            .AddImageStorage(_configuration, options =>
-            {
-                options.ContentRootPath = _environment.ContentRootPath;
-            })
-            .Configure<List<ManifestIcon>>(_configuration.GetSection("ManifestIcons"));
+                .AddSyndication()
+                .AddNotificationClient()
+                .AddReleaseCheckerClient()
+                .AddBlogCache()
+                .AddMetaWeblog<MetaWeblogService>()
+                .AddScoped<ValidateCaptcha>()
+                .AddScoped<ITimeZoneResolver, BlogTimeZoneResolver>()
+                .AddBlogConfig(_configuration)
+                .AddBlogAuthenticaton(_configuration)
+                .AddComments(_configuration)
+                .AddDataStorage(_configuration.GetConnectionString("MoongladeDatabase"))
+                .AddImageStorage(_configuration, options =>
+                {
+                    options.ContentRootPath = _environment.ContentRootPath;
+                })
+                .Configure<List<ManifestIcon>>(_configuration.GetSection("ManifestIcons"));
     }
 
     public void Configure(
@@ -158,6 +172,11 @@ public class Startup
         TelemetryConfiguration configuration)
     {
         _logger = logger;
+
+        if (!RuntimeInformation.IsOSPlatform(OSPlatform.Windows) || !Program.IsRunningInsideIIS())
+        {
+            app.UseForwardedHeaders();
+        }
 
         if (_environment.IsDevelopment())
         {
