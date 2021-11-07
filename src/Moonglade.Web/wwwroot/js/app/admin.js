@@ -194,6 +194,7 @@ var postEditor = {
                 paste_data_images: true,
                 images_upload_url: '/image',
                 images_upload_credentials: true,
+                extended_valid_elements: 'img[class|src|border=0|alt|title|hspace|vspace|width|height|align|onmouseover|onmouseout|name|loading=lazy]',
                 body_class: 'post-content',
                 content_css: '/css/tinymce-bs-bundle.min.css',
                 codesample_languages: [

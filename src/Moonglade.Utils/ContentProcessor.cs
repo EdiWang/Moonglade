@@ -6,20 +6,6 @@ namespace Moonglade.Utils;
 
 public static class ContentProcessor
 {
-    public static string AddLazyLoadToImgTag(string rawHtmlContent)
-    {
-        // Replace ONLY IMG tag's src to data-src
-        // Otherwise embedded videos will blow up
-
-        if (string.IsNullOrWhiteSpace(rawHtmlContent)) return rawHtmlContent;
-        var imgSrcRegex = new Regex("<img.+?(src)=[\"'](.+?)[\"'].+?>");
-        var newStr = imgSrcRegex.Replace(rawHtmlContent,
-            match => !match.Value.Contains("loading")
-                ? match.Value.Replace("src", @"loading=""lazy"" src")
-                : match.Value);
-        return newStr;
-    }
-
     public static string GetPostAbstract(string rawContent, int wordCount, bool useMarkdown = false)
     {
         var plainText = useMarkdown ?
