@@ -277,7 +277,7 @@ public class MetaWeblogService : IMetaWeblogProvider
         });
     }
 
-    public Task<WilderMinds.MetaWeblog.Page[]> GetPagesAsync(string blogid, string username, string password, int numPages)
+    public Task<Page[]> GetPagesAsync(string blogid, string username, string password, int numPages)
     {
         EnsureUser(username, password);
 
@@ -309,7 +309,7 @@ public class MetaWeblogService : IMetaWeblogProvider
         });
     }
 
-    public Task<string> AddPageAsync(string blogid, string username, string password, WilderMinds.MetaWeblog.Page page, bool publish)
+    public Task<string> AddPageAsync(string blogid, string username, string password, Page page, bool publish)
     {
         EnsureUser(username, password);
 
@@ -331,7 +331,7 @@ public class MetaWeblogService : IMetaWeblogProvider
         });
     }
 
-    public Task<bool> EditPageAsync(string blogid, string pageid, string username, string password, WilderMinds.MetaWeblog.Page page, bool publish)
+    public Task<bool> EditPageAsync(string blogid, string pageid, string username, string password, Page page, bool publish)
     {
         EnsureUser(username, password);
 
@@ -426,9 +426,9 @@ public class MetaWeblogService : IMetaWeblogProvider
         return mPost;
     }
 
-    private WilderMinds.MetaWeblog.Page ToMetaWeblogPage(BlogPage blogPage)
+    private Page ToMetaWeblogPage(BlogPage blogPage)
     {
-        var mPage = new WilderMinds.MetaWeblog.Page
+        var mPage = new Page
         {
             title = blogPage.Title,
             description = blogPage.RawHtmlContent,
