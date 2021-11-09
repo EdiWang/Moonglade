@@ -7,7 +7,7 @@ using Moonglade.Configuration;
 using Moonglade.Configuration.Settings;
 using Moonglade.ImageStorage;
 using Moonglade.Utils;
-using System.Drawing;
+using SixLabors.ImageSharp;
 
 namespace Moonglade.Web.Controllers;
 
@@ -123,8 +123,7 @@ public class ImageController : ControllerBase
                 || _imageStorageSettings.Watermark.NoWatermarkExtensions.All(
                     p => string.Compare(p, ext, StringComparison.OrdinalIgnoreCase) != 0))
             {
-                using var watermarker = new ImageWatermarker(stream, ext);
-                watermarker.SkipImageSize(_imageStorageSettings.Watermark.WatermarkSkipPixel);
+                using var watermarker = new ImageWatermarker(stream, ext, _imageStorageSettings.Watermark.WatermarkSkipPixel);
 
                 // Get ARGB values
                 var colorArray = _imageStorageSettings.Watermark.WatermarkARGB;
@@ -140,7 +139,7 @@ public class ImageController : ControllerBase
 
                 watermarkedStream = watermarker.AddWatermark(
                     _blogConfig.ImageSettings.WatermarkText,
-                    Color.FromArgb(colorArray[0], colorArray[1], colorArray[2], colorArray[3]),
+                    Color.FromRgba((byte)colorArray[1], (byte)colorArray[2], (byte)colorArray[3], (byte)colorArray[0]),
                     WatermarkPosition.BottomRight,
                     15,
                     _blogConfig.ImageSettings.WatermarkFontSize);
