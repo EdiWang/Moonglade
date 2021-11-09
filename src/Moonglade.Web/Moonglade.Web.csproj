@@ -24,7 +24,6 @@
     <PackageReference Include="Microsoft.Extensions.Logging.AzureAppServices" Version="6.0.0" />
     <PackageReference Include="Microsoft.FeatureManagement.AspNetCore" Version="2.4.0" />
     <PackageReference Include="Microsoft.Web.LibraryManager.Build" Version="2.1.113" />
-    <PackageReference Include="System.Drawing.Common" Version="6.0.0" />
     <PackageReference Include="NUglify" Version="1.16.1" />
     <PackageReference Include="Swashbuckle.AspNetCore" Version="6.2.3" />
     <PackageReference Include="UAParser" Version="3.1.47" />

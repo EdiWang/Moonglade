@@ -1,6 +1,5 @@
-﻿using System.Drawing;
-using System.Drawing.Drawing2D;
-using System.Drawing.Imaging;
+﻿using SixLabors.ImageSharp;
+using SixLabors.ImageSharp.Processing;
 
 namespace Moonglade.Web;
 
@@ -35,7 +34,7 @@ public static class MemoryStreamIconGenerator
         }
 
         using var ms = new MemoryStream(buffer);
-        var image = Image.FromStream(ms);
+        using var image = Image.Load(ms);
         if (image.Height != image.Width)
         {
             throw new InvalidOperationException("Invalid Site Icon Data");
@@ -53,16 +52,16 @@ public static class MemoryStreamIconGenerator
             foreach (var size in value)
             {
                 var fileName = $"{key}{size}x{size}.png";
-                var bytes = ResizeImage(ms, size, size, ImageFormat.Png);
+                var bytes = ResizeImage(image, size, size);
 
                 Program.SiteIconDictionary.TryAdd(fileName, bytes);
             }
         }
 
-        var icon1Bytes = ResizeImage(ms, 192, 192, ImageFormat.Png);
+        var icon1Bytes = ResizeImage(image, 192, 192);
         Program.SiteIconDictionary.TryAdd("apple-icon.png", icon1Bytes);
 
-        var icon2Bytes = ResizeImage(ms, 192, 192, ImageFormat.Png);
+        var icon2Bytes = ResizeImage(image, 192, 192);
         Program.SiteIconDictionary.TryAdd("apple-icon-precomposed.png", icon2Bytes);
     }
 
@@ -72,21 +71,11 @@ public static class MemoryStreamIconGenerator
         return Program.SiteIconDictionary.ContainsKey(fileName) ? Program.SiteIconDictionary[fileName] : null;
     }
 
-    private static byte[] ResizeImage(Stream fromStream, int toWidth, int toHeight, ImageFormat format)
+    private static byte[] ResizeImage(Image image, int toWidth, int toHeight)
     {
-        using var image = new Bitmap(fromStream);
-        var resized = new Bitmap(toWidth, toHeight);
-
-        using var graphics = Graphics.FromImage(resized);
-        graphics.CompositingQuality = CompositingQuality.HighQuality;
-        graphics.InterpolationMode = InterpolationMode.HighQualityBicubic;
-        graphics.CompositingMode = CompositingMode.SourceCopy;
-        graphics.DrawImage(image, 0, 0, toWidth, toHeight);
-
+        image.Mutate(x => x.Resize(toWidth, toHeight));
         using var ms = new MemoryStream();
-        resized.Save(ms, format);
-        ms.Flush();
-
+        image.SaveAsPng(ms);
         return ms.ToArray();
     }
 }
