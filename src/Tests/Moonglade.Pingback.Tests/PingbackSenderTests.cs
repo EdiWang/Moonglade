@@ -59,9 +59,6 @@ public class PingbackSenderTests
             })
             .Verifiable();
 
-        var mockWebResponse = _mockRepository.Create<WebResponse>();
-        _mockPingbackWebRequest.Setup(p => p.GetReponse(It.IsAny<HttpWebRequest>())).Returns(mockWebResponse.Object);
-
         var pingbackSender = CreatePingbackSender();
         string postUrl = "https://996.icu/work-996-sick-icu";
         string postContent = "996 is fubao, reject fubao and you will get <a href=\"https://251.today\">251</a> today!";
@@ -69,8 +66,7 @@ public class PingbackSenderTests
         // Act
         await pingbackSender.TrySendPingAsync(postUrl, postContent);
 
-        _mockPingbackWebRequest.Verify(p => p.BuildHttpWebRequest(It.IsAny<Uri>(), It.IsAny<Uri>(), It.IsAny<Uri>()));
-        _mockPingbackWebRequest.Verify(p => p.GetReponse(It.IsAny<HttpWebRequest>()));
+        _mockPingbackWebRequest.Verify(p => p.Send(It.IsAny<Uri>(), It.IsAny<Uri>(), It.IsAny<Uri>()));
 
         Assert.Pass();
     }

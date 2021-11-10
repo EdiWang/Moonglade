@@ -76,8 +76,7 @@ public class PingbackSender : IPingbackSender
                 bool successUrlCreation = Uri.TryCreate(pingUrl, UriKind.Absolute, out var url);
                 if (successUrlCreation)
                 {
-                    var httpWebRequest = _pingbackWebRequest.BuildHttpWebRequest(sourceUrl, targetUrl, url);
-                    _pingbackWebRequest.GetReponse(httpWebRequest);
+                    var pResponse = await _pingbackWebRequest.Send(sourceUrl, targetUrl, url);
                 }
                 else
                 {

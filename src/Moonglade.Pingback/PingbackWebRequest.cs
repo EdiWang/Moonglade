@@ -1,40 +1,28 @@
-﻿using System.Net;
-using System.Text;
+﻿using System.Text;
 using System.Xml;
 
 namespace Moonglade.Pingback;
 
 public interface IPingbackWebRequest
 {
-    HttpWebRequest BuildHttpWebRequest(Uri sourceUrl, Uri targetUrl, Uri url);
-    WebResponse GetReponse(HttpWebRequest request);
+    Task<HttpResponseMessage> Send(Uri sourceUrl, Uri targetUrl, Uri url);
 }
 
 public class PingbackWebRequest : IPingbackWebRequest
 {
-    public HttpWebRequest BuildHttpWebRequest(Uri sourceUrl, Uri targetUrl, Uri url)
+    private readonly HttpClient _httpClient;
+
+    public PingbackWebRequest(HttpClient httpClient)
     {
-        var httpWebRequest = (HttpWebRequest)WebRequest.Create(url); // TODO: migrate this to HttpClient
-        httpWebRequest.Method = "POST";
-        httpWebRequest.Timeout = 30 * 1000;
-        httpWebRequest.ContentType = "text/xml";
-        httpWebRequest.ProtocolVersion = HttpVersion.Version11;
-        httpWebRequest.Headers["Accept-Language"] = "en-us";
-        AddXmlToRequest(sourceUrl, targetUrl, httpWebRequest);
-        return httpWebRequest;
+        _httpClient = httpClient;
+        _httpClient.Timeout = TimeSpan.FromSeconds(30);
+        _httpClient.DefaultRequestHeaders.AcceptLanguage.ParseAdd("en-us");
     }
 
-    public WebResponse GetReponse(HttpWebRequest request)
+    public async Task<HttpResponseMessage> Send(Uri sourceUrl, Uri targetUrl, Uri url)
     {
-        var webResponse = request.GetResponse();
-        webResponse.Close();
-        return webResponse;
-    }
-
-    private static void AddXmlToRequest(Uri sourceUrl, Uri targetUrl, WebRequest webreqPing)
-    {
-        var stream = webreqPing.GetRequestStream();
-        using var writer = new XmlTextWriter(stream, Encoding.ASCII);
+        await using var sw = new StringWriter();
+        await using var writer = new XmlTextWriter(sw);
         writer.WriteStartDocument(true);
         writer.WriteStartElement("methodCall");
         writer.WriteElementString("methodName", "pingback.ping");
@@ -54,5 +42,10 @@ public class PingbackWebRequest : IPingbackWebRequest
 
         writer.WriteEndElement();
         writer.WriteEndElement();
+
+        var pingXml = sw.ToString();
+        var pingResponse = await _httpClient.PostAsync(url, new StringContent(pingXml, Encoding.ASCII, "text/xml"));
+
+        return pingResponse;
     }
 }
