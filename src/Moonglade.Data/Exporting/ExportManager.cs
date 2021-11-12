@@ -1,4 +1,4 @@
-﻿namespace Moonglade.Data.Porting;
+﻿namespace Moonglade.Data.Exporting;
 
 public class ExportManager
 {

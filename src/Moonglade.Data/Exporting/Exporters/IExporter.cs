@@ -1,6 +1,6 @@
 ﻿using System.Linq.Expressions;
 
-namespace Moonglade.Data.Porting.Exporters;
+namespace Moonglade.Data.Exporting.Exporters;
 
 public interface IExporter<T>
 {

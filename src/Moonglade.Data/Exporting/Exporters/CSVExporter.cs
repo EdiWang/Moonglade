@@ -1,9 +1,9 @@
-﻿using CsvHelper;
-using Moonglade.Data.Infrastructure;
-using System.Globalization;
+﻿using System.Globalization;
 using System.Linq.Expressions;
+using CsvHelper;
+using Moonglade.Data.Infrastructure;
 
-namespace Moonglade.Data.Porting.Exporters;
+namespace Moonglade.Data.Exporting.Exporters;
 
 public class CSVExporter<T> : IExporter<T>
 {

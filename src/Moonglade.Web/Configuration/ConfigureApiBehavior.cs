@@ -11,7 +11,7 @@ public class ConfigureApiBehavior
         options.InvalidModelStateResponseFactory = context =>
         {
             // Refer https://source.dot.net/#Microsoft.AspNetCore.Mvc.Core/ControllerBase.cs,1885
-            var errorModel = new BlogApiErrorModel
+            var errorModel = new
             {
                 CombinedErrorMessage = context.ModelState.CombineErrorMessages(),
                 RequestId = context.HttpContext.TraceIdentifier
