@@ -145,9 +145,9 @@ install_Moonglade()
     set_production
 
     # Install basic packages
-    echo "Installing git vim dotnet-sdk caddy mssql-server mssql-tools nodejs ufw libgdiplus..."
+    echo "Installing git vim dotnet-sdk caddy mssql-server mssql-tools nodejs ufw..."
     add_source > /dev/null
-    ACCEPT_EULA=Y apt install -y apt-transport-https git vim dotnet-sdk-5.0 caddy mssql-server mssql-tools unixodbc-dev nodejs ufw libgdiplus > /dev/null
+    ACCEPT_EULA=Y apt install -y apt-transport-https git vim dotnet-sdk-6.0 caddy mssql-server mssql-tools unixodbc-dev nodejs ufw > /dev/null
 
     # Init database password
     MSSQL_SA_PASSWORD=$dbPassword MSSQL_PID='express' /opt/mssql/bin/mssql-conf -n setup accept-eula
