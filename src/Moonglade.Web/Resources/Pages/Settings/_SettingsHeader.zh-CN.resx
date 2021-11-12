@@ -126,8 +126,8 @@
   <data name="General" xml:space="preserve">
     <value>通用</value>
   </data>
-  <data name="Import &amp;amp; Export Data" xml:space="preserve">
-    <value>导出导入数据</value>
+  <data name="Export Data" xml:space="preserve">
+    <value>导出数据</value>
   </data>
   <data name="Notification" xml:space="preserve">
     <value>通知</value>
