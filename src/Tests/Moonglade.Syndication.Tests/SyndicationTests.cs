@@ -60,7 +60,7 @@ public class SyndicationTests
 
         _mockBlogConfig.Setup(p => p.GeneralSettings).Returns(new GeneralSettings()
         {
-            MetaDescription = "Work 996 Sick ICU"
+            Description = "Work 996 Sick ICU"
         });
 
         _mockBlogConfig.Setup(bc => bc.FeedSettings).Returns(new FeedSettings

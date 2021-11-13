@@ -30,7 +30,7 @@ public class GetRssStringQueryHandler : IRequestHandler<GetRssStringQuery, strin
         _feedGenerator = new(
             baseUrl,
             blogConfig.FeedSettings.RssTitle,
-            blogConfig.GeneralSettings.MetaDescription,
+            blogConfig.GeneralSettings.Description,
             blogConfig.FeedSettings.RssCopyright,
             $"Moonglade v{Helper.AppVersion}",
             baseUrl);

@@ -9,11 +9,6 @@ public class GeneralSettings : IBlogSettings
     [MaxLength(1024)]
     public string MetaKeyword { get; set; }
 
-    [Required(ErrorMessage = "Please enter description")]
-    [Display(Name = "Meta description")]
-    [MaxLength(1024)]
-    public string MetaDescription { get; set; }
-
     [Display(Name = "Canonical URL prefix")]
     [DataType(DataType.Url)]
     [MaxLength(64)]
