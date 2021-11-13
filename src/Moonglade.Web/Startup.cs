@@ -28,6 +28,7 @@ using System.Runtime.InteropServices;
 using System.Text.Encodings.Web;
 using System.Text.Unicode;
 using Microsoft.AspNetCore.HttpOverrides;
+using SixLabors.Fonts;
 using WilderMinds.MetaWeblog;
 
 #endregion
@@ -88,7 +89,10 @@ public class Startup
         {
             options.IdleTimeout = TimeSpan.FromMinutes(20);
             options.Cookie.HttpOnly = true;
-        }).AddSessionBasedCaptcha();
+        }).AddSessionBasedCaptcha(options =>
+        {
+            options.FontStyle = FontStyle.Bold;
+        });
 
         services.AddLocalization(options => options.ResourcesPath = "Resources");
         services.AddSwaggerGen();
