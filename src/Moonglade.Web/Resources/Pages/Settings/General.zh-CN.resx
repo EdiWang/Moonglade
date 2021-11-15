@@ -156,11 +156,8 @@
   <data name="Left" xml:space="preserve">
     <value>左侧</value>
   </data>
-  <data name="New Avatar" xml:space="preserve">
-    <value>新头像</value>
-  </data>
-  <data name="New Icon" xml:space="preserve">
-    <value>新图标</value>
+  <data name="Change" xml:space="preserve">
+    <value>修改</value>
   </data>
   <data name="Right" xml:space="preserve">
     <value>右侧</value>
