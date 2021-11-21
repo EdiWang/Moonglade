@@ -10,11 +10,11 @@
       ]
     },
     {
-      "library": "tinymce@5.10.0",
+      "library": "tinymce@5.10.2",
       "destination": "wwwroot/lib/tinymce"
     },
     {
-      "library": "monaco-editor@0.29.1",
+      "library": "monaco-editor@0.30.1",
       "destination": "wwwroot/lib/monaco-editor/",
       "files": [
         "min/vs/loader.js",
@@ -99,7 +99,7 @@
       ]
     },
     {
-      "library": "bootstrap-icons@1.7.0",
+      "library": "bootstrap-icons@1.7.1",
       "destination": "wwwroot/lib/bootstrap-icons/",
       "files": [
         "font/bootstrap-icons.min.css",
