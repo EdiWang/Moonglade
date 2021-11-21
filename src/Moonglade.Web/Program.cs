@@ -13,14 +13,6 @@ namespace Moonglade.Web;
 public class Program
 {
     public static ConcurrentDictionary<string, byte[]> SiteIconDictionary { get; set; } = new();
-    
-    public static bool IsRunningInsideIIS()
-    {
-        var value = typeof(Microsoft.AspNetCore.Server.IISIntegration.IISDefaults).Namespace;
-        return value != null &&
-               Environment.GetEnvironmentVariable("ASPNETCORE_HOSTINGSTARTUPASSEMBLIES") is { } startupAssemblies &&
-               startupAssemblies.Contains(value);
-    }
 
     public static async Task Main(string[] args)
     {
