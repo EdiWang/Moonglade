@@ -1,10 +1,13 @@
-﻿using SixLabors.ImageSharp;
+﻿using System.Collections.Concurrent;
+using SixLabors.ImageSharp;
 using SixLabors.ImageSharp.Processing;
 
 namespace Moonglade.Web;
 
 public static class MemoryStreamIconGenerator
 {
+    public static ConcurrentDictionary<string, byte[]> SiteIconDictionary { get; set; } = new();
+
     public static void GenerateIcons(string base64Data, string webRootPath, ILogger logger)
     {
         byte[] buffer;
@@ -54,21 +57,21 @@ public static class MemoryStreamIconGenerator
                 var fileName = $"{key}{size}x{size}.png";
                 var bytes = ResizeImage(image, size, size);
 
-                Program.SiteIconDictionary.TryAdd(fileName, bytes);
+                SiteIconDictionary.TryAdd(fileName, bytes);
             }
         }
 
         var icon1Bytes = ResizeImage(image, 192, 192);
-        Program.SiteIconDictionary.TryAdd("apple-icon.png", icon1Bytes);
+        SiteIconDictionary.TryAdd("apple-icon.png", icon1Bytes);
 
         var icon2Bytes = ResizeImage(image, 192, 192);
-        Program.SiteIconDictionary.TryAdd("apple-icon-precomposed.png", icon2Bytes);
+        SiteIconDictionary.TryAdd("apple-icon-precomposed.png", icon2Bytes);
     }
 
     public static byte[] GetIcon(string fileName)
     {
         if (string.IsNullOrWhiteSpace(fileName)) return null;
-        return Program.SiteIconDictionary.ContainsKey(fileName) ? Program.SiteIconDictionary[fileName] : null;
+        return SiteIconDictionary.ContainsKey(fileName) ? SiteIconDictionary[fileName] : null;
     }
 
     private static byte[] ResizeImage(Image image, int toWidth, int toHeight)
