@@ -1,11 +1,8 @@
 ﻿using MediatR;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.FeatureManagement.Mvc;
-using Moonglade.Caching;
-using Moonglade.Configuration;
 using Moonglade.Core.CategoryFeature;
 using Moonglade.Syndication;
-using Moonglade.Utils;
 using System.ComponentModel.DataAnnotations;
 
 namespace Moonglade.Web.Controllers;

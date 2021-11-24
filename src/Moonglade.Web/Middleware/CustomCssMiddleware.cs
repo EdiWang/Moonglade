@@ -1,5 +1,4 @@
-﻿using Moonglade.Configuration;
-using NUglify;
+﻿using NUglify;
 
 namespace Moonglade.Web.Middleware;
 

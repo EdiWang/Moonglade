@@ -1,5 +1,4 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using Moonglade.Utils;
 
 namespace Moonglade.Web.Configuration;
 

@@ -1,5 +1,4 @@
 ﻿using Microsoft.AspNetCore.Http.Extensions;
-using Moonglade.Configuration;
 
 namespace Moonglade.Web.Middleware;
 

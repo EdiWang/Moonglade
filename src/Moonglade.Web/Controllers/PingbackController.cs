@@ -1,8 +1,6 @@
 ﻿using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using Moonglade.Configuration;
-using Moonglade.Data;
 using Moonglade.Data.Entities;
 using Moonglade.Notification.Client;
 using Moonglade.Pingback;

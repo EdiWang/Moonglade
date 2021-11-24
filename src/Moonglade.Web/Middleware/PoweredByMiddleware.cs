@@ -1,6 +1,4 @@
-﻿using Moonglade.Utils;
-
-namespace Moonglade.Web.Middleware;
+﻿namespace Moonglade.Web.Middleware;
 
 public class PoweredByMiddleware
 {

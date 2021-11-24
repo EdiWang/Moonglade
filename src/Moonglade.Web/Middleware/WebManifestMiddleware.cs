@@ -1,5 +1,4 @@
 ﻿using Microsoft.Extensions.Options;
-using Moonglade.Configuration;
 using System.Text.Json.Serialization;
 
 namespace Moonglade.Web.Middleware;

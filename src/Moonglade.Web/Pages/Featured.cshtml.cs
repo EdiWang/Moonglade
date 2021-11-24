@@ -1,7 +1,5 @@
 using MediatR;
 using Microsoft.AspNetCore.Mvc.RazorPages;
-using Moonglade.Caching;
-using Moonglade.Configuration;
 using Moonglade.Core.PostFeature;
 using X.PagedList;
 

@@ -1,10 +1,7 @@
 ﻿using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using Moonglade.Caching;
 using Moonglade.Caching.Filters;
-using Moonglade.Configuration;
-using Moonglade.Utils;
 using SixLabors.ImageSharp;
 
 namespace Moonglade.Web.Controllers;

@@ -1,6 +1,5 @@
 ﻿using MediatR;
 using Microsoft.AspNetCore.Mvc;
-using Moonglade.Comments;
 
 namespace Moonglade.Web.ViewComponents;
 

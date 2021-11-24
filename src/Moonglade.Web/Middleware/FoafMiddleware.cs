@@ -1,7 +1,5 @@
 using MediatR;
-using Moonglade.Configuration;
 using Moonglade.FriendLink;
-using Moonglade.Utils;
 
 namespace Moonglade.Web.Middleware;
 

@@ -1,7 +1,6 @@
 ﻿using MediatR;
 using Microsoft.AspNetCore.Mvc;
 using Moonglade.Core.StatisticFeature;
-using Moonglade.Web.Filters;
 using Moonglade.Web.Models;
 
 namespace Moonglade.Web.Controllers;

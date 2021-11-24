@@ -3,9 +3,6 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Caching.Memory;
 using Microsoft.Extensions.Options;
-using Moonglade.Configuration;
-using Moonglade.ImageStorage;
-using Moonglade.Utils;
 using SixLabors.ImageSharp;
 
 namespace Moonglade.Web.Controllers;

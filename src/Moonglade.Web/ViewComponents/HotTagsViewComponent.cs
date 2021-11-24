@@ -1,6 +1,5 @@
 ﻿using MediatR;
 using Microsoft.AspNetCore.Mvc;
-using Moonglade.Configuration;
 using Moonglade.Core.TagFeature;
 
 namespace Moonglade.Web.ViewComponents;

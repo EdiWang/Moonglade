@@ -7,7 +7,6 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.Extensions.Options;
 using Moonglade.Auth;
-using Moonglade.Data;
 using Moonglade.Data.Entities;
 using System.ComponentModel.DataAnnotations;
 using System.Security.Claims;

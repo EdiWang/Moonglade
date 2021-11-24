@@ -1,6 +1,5 @@
 using MediatR;
 using Microsoft.AspNetCore.Mvc.RazorPages;
-using Moonglade.Comments;
 using X.PagedList;
 
 namespace Moonglade.Web.Pages.Admin;

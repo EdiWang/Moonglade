@@ -1,6 +1,5 @@
 using MediatR;
 using Microsoft.AspNetCore.Mvc.RazorPages;
-using Moonglade.Configuration;
 using Moonglade.Theme;
 
 namespace Moonglade.Web.Pages.Settings;

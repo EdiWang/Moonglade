@@ -1,5 +1,4 @@
 ﻿using Microsoft.Extensions.Diagnostics.HealthChecks;
-using Moonglade.Utils;
 using System.Diagnostics.CodeAnalysis;
 
 namespace Moonglade.Web.Configuration;
