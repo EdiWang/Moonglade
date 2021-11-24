@@ -1,6 +1,5 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.FeatureManagement.Mvc;
-using Moonglade.Auth;
 using Moonglade.Core.CategoryFeature;
 using Moonglade.Web.Models;
 

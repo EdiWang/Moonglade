@@ -1,6 +1,5 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.FeatureManagement.Mvc;
-using Moonglade.Auth;
 using Moonglade.Caching.Filters;
 using Moonglade.Core.TagFeature;
 using System.ComponentModel.DataAnnotations;

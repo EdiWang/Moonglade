@@ -6,7 +6,6 @@ using Microsoft.ApplicationInsights.Extensibility.Implementation;
 using Microsoft.AspNetCore.HttpOverrides;
 using Microsoft.AspNetCore.Rewrite;
 using Microsoft.FeatureManagement;
-using Moonglade.Auth;
 using Moonglade.Data.Setup;
 using Moonglade.Notification.Client;
 using Moonglade.Pingback;

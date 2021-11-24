@@ -3,7 +3,6 @@ using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Authentication.OpenIdConnect;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.Extensions.Options;
-using Moonglade.Auth;
 
 namespace Moonglade.Web.Controllers;
 
