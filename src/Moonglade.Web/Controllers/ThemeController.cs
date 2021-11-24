@@ -1,6 +1,5 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Moonglade.Caching.Filters;
-using Moonglade.Theme;
 using NUglify;
 using System.ComponentModel.DataAnnotations;
 

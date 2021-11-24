@@ -17,6 +17,8 @@
 		<Using Include="Moonglade.Core" />
 		<Using Include="Moonglade.Caching" />
 		<Using Include="Moonglade.Configuration" />
+		<Using Include="Moonglade.Comments" />
+		<Using Include="Moonglade.Theme" />
 		<Using Include="Moonglade.Utils" />
 		<Using Include="Moonglade.Data" />
 		<Using Include="Moonglade.ImageStorage" />

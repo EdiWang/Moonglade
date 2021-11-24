@@ -1,5 +1,4 @@
 using Microsoft.AspNetCore.Mvc.RazorPages;
-using Moonglade.Theme;
 
 namespace Moonglade.Web.Pages.Settings;
 
