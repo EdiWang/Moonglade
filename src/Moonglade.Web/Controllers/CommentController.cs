@@ -6,7 +6,6 @@ using Microsoft.FeatureManagement.Mvc;
 using Moonglade.Auth;
 using Moonglade.Comments;
 using Moonglade.Configuration;
-using Moonglade.Configuration.Settings;
 using Moonglade.Notification.Client;
 using Moonglade.Utils;
 using Moonglade.Web.Filters;

@@ -1,6 +1,5 @@
 ﻿using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using Moonglade.Configuration.Settings;
 
 namespace Moonglade.Configuration;
 

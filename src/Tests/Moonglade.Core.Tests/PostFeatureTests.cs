@@ -1,7 +1,7 @@
 ﻿using Microsoft.Extensions.Caching.Memory;
 using Microsoft.Extensions.Options;
 using Moonglade.Caching;
-using Moonglade.Configuration.Settings;
+using Moonglade.Configuration;
 using Moonglade.Core.PostFeature;
 using Moonglade.Data.Entities;
 using Moonglade.Data.Infrastructure;

@@ -3,7 +3,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.Extensions.Options;
 using Moonglade.Caching;
-using Moonglade.Configuration.Settings;
+using Moonglade.Configuration;
 using Moonglade.Core.PageFeature;
 
 namespace Moonglade.Web.Pages;

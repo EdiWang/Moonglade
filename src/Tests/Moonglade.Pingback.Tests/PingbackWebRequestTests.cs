@@ -1,7 +1,7 @@
-﻿using System.Net;
-using Moq;
+﻿using Moq;
 using Moq.Protected;
 using NUnit.Framework;
+using System.Net;
 
 namespace Moonglade.Pingback.Tests;
 

@@ -1,7 +1,7 @@
 ﻿using MediatR;
 using Microsoft.Extensions.Options;
 using Moonglade.Caching;
-using Moonglade.Configuration.Settings;
+using Moonglade.Configuration;
 using Moonglade.Data.Entities;
 using Moonglade.Data.Infrastructure;
 using Moonglade.Data.Spec;

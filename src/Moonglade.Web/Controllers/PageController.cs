@@ -5,7 +5,7 @@ using Microsoft.FeatureManagement.Mvc;
 using Moonglade.Auth;
 using Moonglade.Caching;
 using Moonglade.Caching.Filters;
-using Moonglade.Configuration.Settings;
+using Moonglade.Configuration;
 using Moonglade.Core.PageFeature;
 using Moonglade.Utils;
 using Moonglade.Web.Models;

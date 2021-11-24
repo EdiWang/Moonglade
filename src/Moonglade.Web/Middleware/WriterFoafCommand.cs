@@ -1,6 +1,5 @@
 ﻿using MediatR;
 using Moonglade.FriendLink;
-using Moonglade.Web.Models;
 using System.Security.Cryptography;
 using System.Text;
 using System.Xml;

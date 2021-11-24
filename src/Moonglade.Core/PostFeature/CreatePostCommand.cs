@@ -3,7 +3,6 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using Moonglade.Configuration;
-using Moonglade.Configuration.Settings;
 using Moonglade.Core.TagFeature;
 using Moonglade.Data;
 using Moonglade.Data.Entities;

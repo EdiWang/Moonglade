@@ -6,7 +6,6 @@ using Microsoft.FeatureManagement.Mvc;
 using Moonglade.Caching;
 using Moonglade.Caching.Filters;
 using Moonglade.Configuration;
-using Moonglade.Configuration.Settings;
 using Moonglade.Core;
 using Moonglade.Data;
 using Moonglade.Data.Entities;

@@ -1,7 +1,7 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.FeatureManagement;
-using Moonglade.Configuration.Settings;
+using Moonglade.Configuration;
 using Moonglade.Data;
 using Moonglade.Data.Entities;
 using X.PagedList;

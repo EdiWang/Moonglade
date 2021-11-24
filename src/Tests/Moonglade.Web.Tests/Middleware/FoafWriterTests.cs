@@ -1,6 +1,5 @@
 using Moonglade.FriendLink;
 using Moonglade.Web.Middleware;
-using Moonglade.Web.Models;
 using NUnit.Framework;
 
 namespace Moonglade.Web.Tests.Middleware;

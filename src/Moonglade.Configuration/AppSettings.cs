@@ -1,4 +1,4 @@
-﻿namespace Moonglade.Configuration.Settings;
+﻿namespace Moonglade.Configuration;
 
 public class AppSettings
 {
