@@ -1,6 +1,4 @@
-﻿using MediatR;
-using Microsoft.AspNetCore.Mvc;
-using Moonglade.Core.CategoryFeature;
+﻿using Moonglade.Core.CategoryFeature;
 
 namespace Moonglade.Web.ViewComponents;
 

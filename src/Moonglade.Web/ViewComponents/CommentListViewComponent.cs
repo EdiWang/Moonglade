@@ -1,7 +1,4 @@
-﻿using MediatR;
-using Microsoft.AspNetCore.Mvc;
-
-namespace Moonglade.Web.ViewComponents;
+﻿namespace Moonglade.Web.ViewComponents;
 
 public class CommentListViewComponent : ViewComponent
 {

@@ -7,6 +7,9 @@
 	</PropertyGroup>
 
 	<ItemGroup>
+		<Using Include="System.Text" />
+		<Using Include="Microsoft.AspNetCore.Mvc" />
+		<Using Include="MediatR" />
 		<Using Include="Moonglade.Web" />
 		<Using Include="Moonglade.Web.Configuration" />
 		<Using Include="Moonglade.Web.Filters" />

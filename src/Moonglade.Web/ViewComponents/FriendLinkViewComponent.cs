@@ -1,5 +1,3 @@
-using MediatR;
-using Microsoft.AspNetCore.Mvc;
 using Moonglade.FriendLink;
 
 namespace Moonglade.Web.ViewComponents;

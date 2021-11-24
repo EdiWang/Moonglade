@@ -1,6 +1,4 @@
-﻿using Microsoft.AspNetCore.Mvc;
-
-namespace Moonglade.Web.Configuration;
+﻿namespace Moonglade.Web.Configuration;
 
 public class ConfigureApiBehavior
 {

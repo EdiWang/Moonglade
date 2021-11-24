@@ -1,5 +1,4 @@
 ﻿using Edi.Captcha;
-using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Filters;
 
 namespace Moonglade.Web.Filters;

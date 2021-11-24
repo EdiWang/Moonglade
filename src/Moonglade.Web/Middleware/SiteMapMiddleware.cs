@@ -2,7 +2,6 @@
 using Moonglade.Data.Infrastructure;
 using Moonglade.Data.Spec;
 using System.Globalization;
-using System.Text;
 using System.Xml;
 
 namespace Moonglade.Web.Middleware;

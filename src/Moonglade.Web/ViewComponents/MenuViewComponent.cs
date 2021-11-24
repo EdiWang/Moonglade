@@ -1,6 +1,4 @@
-﻿using MediatR;
-using Microsoft.AspNetCore.Mvc;
-using Moonglade.Menus;
+﻿using Moonglade.Menus;
 
 namespace Moonglade.Web.ViewComponents;
 

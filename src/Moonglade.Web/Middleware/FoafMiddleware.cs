@@ -1,4 +1,3 @@
-using MediatR;
 using Moonglade.FriendLink;
 
 namespace Moonglade.Web.Middleware;

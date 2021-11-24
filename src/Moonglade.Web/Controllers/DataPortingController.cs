@@ -1,6 +1,4 @@
-﻿using MediatR;
-using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
 using Moonglade.Data.Exporting;
 
 namespace Moonglade.Web.Controllers;

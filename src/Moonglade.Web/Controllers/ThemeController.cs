@@ -1,6 +1,4 @@
-﻿using MediatR;
-using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
 using Moonglade.Caching.Filters;
 using Moonglade.Theme;
 using NUglify;

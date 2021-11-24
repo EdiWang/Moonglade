@@ -1,6 +1,4 @@
-﻿using System.Text;
-
-namespace Moonglade.Web.Middleware;
+﻿namespace Moonglade.Web.Middleware;
 
 public class RobotsTxtMiddleware
 {
