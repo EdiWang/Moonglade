@@ -36,10 +36,6 @@ public class Program
             var loggerFactory = services.GetRequiredService<ILoggerFactory>();
             var logger = loggerFactory.CreateLogger<Program>();
 
-            var dataDir = CreateDataDirectory();
-            AppDomain.CurrentDomain.SetData("DataDirectory", dataDir);
-            logger.LogInformation($"Using data directory '{dataDir}'");
-
             var dbConnection = services.GetRequiredService<IDbConnection>();
             TryInitFirstRun(dbConnection, logger);
 
@@ -98,22 +94,6 @@ public class Program
             // Non critical error, just log, do not block application start
             logger.LogError(e, e.Message);
         }
-    }
-
-    private static string CreateDataDirectory()
-    {
-        // Use Temp folder as best practice
-        // Do NOT create or modify anything under application directory
-        // e.g. Azure Deployment using WEBSITE_RUN_FROM_PACKAGE will make website root directory read only.
-        var tPath = Path.GetTempPath();
-        var appDataPath = Path.Join(tPath, "moonglade", "App_Data");
-        if (Directory.Exists(appDataPath))
-        {
-            Directory.Delete(appDataPath, true);
-        }
-        Directory.CreateDirectory(appDataPath);
-
-        return appDataPath;
     }
 
     private static void TryInitFirstRun(IDbConnection dbConnection, ILogger logger)

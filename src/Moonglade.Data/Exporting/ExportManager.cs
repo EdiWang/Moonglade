@@ -2,7 +2,7 @@
 
 public class ExportManager
 {
-    public static readonly string DataDir = AppDomain.CurrentDomain.GetData("DataDirectory")?.ToString();
+    public static readonly string DataDir = Path.GetTempPath();
 
     public static string CreateExportDirectory(string directory, string subDirName)
     {
