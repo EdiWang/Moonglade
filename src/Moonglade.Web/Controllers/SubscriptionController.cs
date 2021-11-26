@@ -1,5 +1,4 @@
-﻿using Microsoft.FeatureManagement.Mvc;
-using Moonglade.Core.CategoryFeature;
+﻿using Moonglade.Core.CategoryFeature;
 using Moonglade.Syndication;
 using System.ComponentModel.DataAnnotations;
 

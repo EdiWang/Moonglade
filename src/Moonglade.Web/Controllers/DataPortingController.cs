@@ -1,5 +1,4 @@
-﻿using Microsoft.AspNetCore.Authorization;
-using Moonglade.Data.Exporting;
+﻿using Moonglade.Data.Exporting;
 
 namespace Moonglade.Web.Controllers;
 

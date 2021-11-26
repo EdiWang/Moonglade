@@ -1,8 +1,6 @@
-﻿using Microsoft.AspNetCore.Authorization;
-using Moonglade.Data.Entities;
+﻿using Moonglade.Data.Entities;
 using Moonglade.Notification.Client;
 using Moonglade.Pingback;
-using Moonglade.Web.Models;
 
 namespace Moonglade.Web.Controllers;
 

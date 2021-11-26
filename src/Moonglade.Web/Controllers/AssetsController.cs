@@ -1,5 +1,4 @@
-﻿using Microsoft.AspNetCore.Authorization;
-using Moonglade.Caching.Filters;
+﻿using Moonglade.Caching.Filters;
 using SixLabors.ImageSharp;
 
 namespace Moonglade.Web.Controllers;

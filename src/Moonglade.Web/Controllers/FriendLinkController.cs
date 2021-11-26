@@ -1,6 +1,4 @@
-using Microsoft.AspNetCore.Authorization;
 using Moonglade.FriendLink;
-using Moonglade.Web.Models;
 
 namespace Moonglade.Web.Controllers;
 

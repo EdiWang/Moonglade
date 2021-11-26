@@ -8,9 +8,15 @@
 
 	<ItemGroup>
 		<Using Include="System.Text" />
+		
 		<Using Include="Microsoft.AspNetCore.Mvc" />
+		<Using Include="Microsoft.AspNetCore.Authorization" />
+		<Using Include="Microsoft.FeatureManagement.Mvc" />
+
 		<Using Include="MediatR" />
+
 		<Using Include="Moonglade.Web" />
+		<Using Include="Moonglade.Web.Models" />
 		<Using Include="Moonglade.Web.Configuration" />
 		<Using Include="Moonglade.Web.Filters" />
 		<Using Include="Moonglade.Web.Middleware" />

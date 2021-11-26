@@ -1,7 +1,4 @@
-﻿using Microsoft.AspNetCore.Authorization;
-using Microsoft.FeatureManagement.Mvc;
-using Moonglade.Core.CategoryFeature;
-using Moonglade.Web.Models;
+﻿using Moonglade.Core.CategoryFeature;
 
 namespace Moonglade.Web.Controllers;
 

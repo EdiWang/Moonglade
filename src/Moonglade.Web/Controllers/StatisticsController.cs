@@ -1,5 +1,4 @@
 ﻿using Moonglade.Core.StatisticFeature;
-using Moonglade.Web.Models;
 
 namespace Moonglade.Web.Controllers;
 
