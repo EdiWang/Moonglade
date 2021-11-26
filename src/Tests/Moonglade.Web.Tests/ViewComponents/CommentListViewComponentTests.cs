@@ -5,68 +5,64 @@ using Moonglade.Comments;
 using Moonglade.Web.ViewComponents;
 using Moq;
 using NUnit.Framework;
-using System;
-using System.Collections.Generic;
-using System.Threading.Tasks;
 
-namespace Moonglade.Web.Tests.ViewComponents
+namespace Moonglade.Web.Tests.ViewComponents;
+
+[TestFixture]
+public class CommentListViewComponentTests
 {
-    [TestFixture]
-    public class CommentListViewComponentTests
+    private MockRepository _mockRepository;
+
+    private Mock<ILogger<CommentListViewComponent>> _mockLogger;
+    private Mock<IMediator> _mockMediator;
+
+    [SetUp]
+    public void SetUp()
     {
-        private MockRepository _mockRepository;
+        _mockRepository = new(MockBehavior.Default);
 
-        private Mock<ILogger<CommentListViewComponent>> _mockLogger;
-        private Mock<IMediator> _mockMediator;
+        _mockLogger = _mockRepository.Create<ILogger<CommentListViewComponent>>();
+        _mockMediator = _mockRepository.Create<IMediator>();
+    }
 
-        [SetUp]
-        public void SetUp()
-        {
-            _mockRepository = new(MockBehavior.Default);
+    private CommentListViewComponent CreateComponent()
+    {
+        return new(
+            _mockLogger.Object,
+            _mockMediator.Object);
+    }
 
-            _mockLogger = _mockRepository.Create<ILogger<CommentListViewComponent>>();
-            _mockMediator = _mockRepository.Create<IMediator>();
-        }
+    [Test]
+    public async Task InvokeAsync_Exception()
+    {
+        _mockMediator.Setup(p => p.Send(It.IsAny<GetApprovedCommentsQuery>(), default)).Throws(new(FakeData.ShortString2));
 
-        private CommentListViewComponent CreateComponent()
-        {
-            return new(
-                _mockLogger.Object,
-                _mockMediator.Object);
-        }
+        var component = CreateComponent();
+        var result = await component.InvokeAsync(Guid.Parse("5ef8cb0d-963d-47e9-802c-48e40c7f4ef5"));
 
-        [Test]
-        public async Task InvokeAsync_Exception()
-        {
-            _mockMediator.Setup(p => p.Send(It.IsAny<GetApprovedCommentsQuery>(), default)).Throws(new(FakeData.ShortString2));
+        Assert.IsInstanceOf<ContentViewComponentResult>(result);
+    }
 
-            var component = CreateComponent();
-            var result = await component.InvokeAsync(Guid.Parse("5ef8cb0d-963d-47e9-802c-48e40c7f4ef5"));
+    [Test]
+    public async Task InvokeAsync_EmptyId()
+    {
+        var component = CreateComponent();
+        var result = await component.InvokeAsync(Guid.Empty);
 
-            Assert.IsInstanceOf<ContentViewComponentResult>(result);
-        }
+        Assert.IsInstanceOf<ContentViewComponentResult>(result);
+    }
 
-        [Test]
-        public async Task InvokeAsync_EmptyId()
-        {
-            var component = CreateComponent();
-            var result = await component.InvokeAsync(Guid.Empty);
+    [Test]
+    public async Task InvokeAsync_View()
+    {
+        IReadOnlyList<Comment> comments = new List<Comment>();
 
-            Assert.IsInstanceOf<ContentViewComponentResult>(result);
-        }
+        _mockMediator.Setup(p => p.Send(It.IsAny<GetApprovedCommentsQuery>(), default)).Returns(Task.FromResult(comments));
 
-        [Test]
-        public async Task InvokeAsync_View()
-        {
-            IReadOnlyList<Comment> comments = new List<Comment>();
+        var component = CreateComponent();
+        var result = await component.InvokeAsync(Guid.Parse("5ef8cb0d-963d-47e9-802c-48e40c7f4ef5"));
 
-            _mockMediator.Setup(p => p.Send(It.IsAny<GetApprovedCommentsQuery>(), default)).Returns(Task.FromResult(comments));
-
-            var component = CreateComponent();
-            var result = await component.InvokeAsync(Guid.Parse("5ef8cb0d-963d-47e9-802c-48e40c7f4ef5"));
-
-            Assert.IsInstanceOf<ViewViewComponentResult>(result);
-            Assert.AreEqual(null, ((ViewViewComponentResult)result).ViewName);
-        }
+        Assert.IsInstanceOf<ViewViewComponentResult>(result);
+        Assert.AreEqual(null, ((ViewViewComponentResult)result).ViewName);
     }
 }

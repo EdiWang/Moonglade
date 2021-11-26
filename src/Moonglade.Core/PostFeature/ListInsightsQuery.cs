@@ -2,35 +2,31 @@
 using Moonglade.Data.Entities;
 using Moonglade.Data.Infrastructure;
 using Moonglade.Data.Spec;
-using System.Collections.Generic;
-using System.Threading;
-using System.Threading.Tasks;
 
-namespace Moonglade.Core.PostFeature
+namespace Moonglade.Core.PostFeature;
+
+public class ListInsightsQuery : IRequest<IReadOnlyList<PostSegment>>
 {
-    public class ListInsightsQuery : IRequest<IReadOnlyList<PostSegment>>
+    public ListInsightsQuery(PostInsightsType postInsightsType)
     {
-        public ListInsightsQuery(PostInsightsType postInsightsType)
-        {
-            PostInsightsType = postInsightsType;
-        }
-
-        public PostInsightsType PostInsightsType { get; set; }
+        PostInsightsType = postInsightsType;
     }
 
-    public class ListInsightsQueryHandler : IRequestHandler<ListInsightsQuery, IReadOnlyList<PostSegment>>
+    public PostInsightsType PostInsightsType { get; set; }
+}
+
+public class ListInsightsQueryHandler : IRequestHandler<ListInsightsQuery, IReadOnlyList<PostSegment>>
+{
+    private readonly IRepository<PostEntity> _postRepo;
+
+    public ListInsightsQueryHandler(IRepository<PostEntity> postRepo)
     {
-        private readonly IRepository<PostEntity> _postRepo;
+        _postRepo = postRepo;
+    }
 
-        public ListInsightsQueryHandler(IRepository<PostEntity> postRepo)
-        {
-            _postRepo = postRepo;
-        }
-
-        public Task<IReadOnlyList<PostSegment>> Handle(ListInsightsQuery request, CancellationToken cancellationToken)
-        {
-            var spec = new PostInsightsSpec(request.PostInsightsType, 10);
-            return _postRepo.SelectAsync(spec, PostSegment.EntitySelector);
-        }
+    public Task<IReadOnlyList<PostSegment>> Handle(ListInsightsQuery request, CancellationToken cancellationToken)
+    {
+        var spec = new PostInsightsSpec(request.PostInsightsType, 10);
+        return _postRepo.SelectAsync(spec, PostSegment.EntitySelector);
     }
 }

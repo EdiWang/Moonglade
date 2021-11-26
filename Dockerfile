@@ -1,10 +1,11 @@
-FROM mcr.microsoft.com/dotnet/aspnet:5.0-buster-slim AS base
-RUN apt-get update && apt-get install -y libgdiplus
+FROM mcr.microsoft.com/dotnet/aspnet:6.0-alpine AS base
 WORKDIR /app
 EXPOSE 80
 EXPOSE 443
 
-FROM mcr.microsoft.com/dotnet/sdk:5.0 AS build
+ENV ASPNETCORE_FORWARDEDHEADERS_ENABLED=true
+
+FROM mcr.microsoft.com/dotnet/sdk:6.0 AS build
 WORKDIR /src
 
 # Auto copy to prevent 996

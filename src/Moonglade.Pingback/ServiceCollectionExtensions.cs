@@ -1,21 +1,18 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
-using System;
 using System.Net;
-using System.Net.Http;
 
-namespace Moonglade.Pingback
+namespace Moonglade.Pingback;
+
+public static class ServiceCollectionExtensions
 {
-    public static class ServiceCollectionExtensions
+    public static IServiceCollection AddPingback(this IServiceCollection services)
     {
-        public static IServiceCollection AddPingback(this IServiceCollection services)
-        {
-            services.AddHttpClient<IPingSourceInspector, PingSourceInspector>()
-                .ConfigureHttpClient(p => p.Timeout = TimeSpan.FromSeconds(30));
-            services.AddScoped<IPingbackWebRequest, PingbackWebRequest>();
-            services.AddHttpClient<IPingbackSender, PingbackSender>()
-                    .ConfigurePrimaryHttpMessageHandler(() => new HttpClientHandler { Credentials = CredentialCache.DefaultNetworkCredentials });
+        services.AddHttpClient<IPingSourceInspector, PingSourceInspector>()
+            .ConfigureHttpClient(p => p.Timeout = TimeSpan.FromSeconds(30));
+        services.AddHttpClient<IPingbackWebRequest, PingbackWebRequest>();
+        services.AddHttpClient<IPingbackSender, PingbackSender>()
+            .ConfigurePrimaryHttpMessageHandler(() => new HttpClientHandler { Credentials = CredentialCache.DefaultNetworkCredentials });
 
-            return services;
-        }
+        return services;
     }
 }

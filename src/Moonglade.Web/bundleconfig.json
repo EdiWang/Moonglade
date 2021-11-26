@@ -3,7 +3,6 @@
     "outputFileName": "wwwroot/css/tinymce-bs-bundle.css",
     "inputFiles": [
       "wwwroot/lib/twitter-bootstrap/css/bootstrap.min.css",
-      "wwwroot/lib/bootstrap-icons/font/bootstrap-icons.css",
       "wwwroot/css/src/tinymce-content.css",
       "wwwroot/css/src/post-slug.css"
     ]

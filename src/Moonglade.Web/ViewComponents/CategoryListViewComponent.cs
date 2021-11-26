@@ -1,31 +1,26 @@
-﻿using MediatR;
-using Microsoft.AspNetCore.Mvc;
-using Moonglade.Core.CategoryFeature;
-using System;
-using System.Threading.Tasks;
+﻿using Moonglade.Core.CategoryFeature;
 
-namespace Moonglade.Web.ViewComponents
+namespace Moonglade.Web.ViewComponents;
+
+public class CategoryListViewComponent : ViewComponent
 {
-    public class CategoryListViewComponent : ViewComponent
+    private readonly IMediator _mediator;
+
+    public CategoryListViewComponent(IMediator mediator)
     {
-        private readonly IMediator _mediator;
+        _mediator = mediator;
+    }
 
-        public CategoryListViewComponent(IMediator mediator)
+    public async Task<IViewComponentResult> InvokeAsync(bool isMenu)
+    {
+        try
         {
-            _mediator = mediator;
+            var cats = await _mediator.Send(new GetCategoriesQuery());
+            return isMenu ? View("CatMenu", cats) : View(cats);
         }
-
-        public async Task<IViewComponentResult> InvokeAsync(bool isMenu)
+        catch (Exception e)
         {
-            try
-            {
-                var cats = await _mediator.Send(new GetCategoriesQuery());
-                return isMenu ? View("CatMenu", cats) : View(cats);
-            }
-            catch (Exception e)
-            {
-                return Content(e.Message);
-            }
+            return Content(e.Message);
         }
     }
 }

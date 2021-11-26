@@ -2,35 +2,31 @@
 using Moonglade.Data.Entities;
 using Moonglade.Data.Infrastructure;
 using Moonglade.Data.Spec;
-using System.Collections.Generic;
-using System.Threading;
-using System.Threading.Tasks;
 
-namespace Moonglade.Core.PostFeature
+namespace Moonglade.Core.PostFeature;
+
+public class ListPostSegmentByStatusQuery : IRequest<IReadOnlyList<PostSegment>>
 {
-    public class ListPostSegmentByStatusQuery : IRequest<IReadOnlyList<PostSegment>>
+    public ListPostSegmentByStatusQuery(PostStatus status)
     {
-        public ListPostSegmentByStatusQuery(PostStatus status)
-        {
-            Status = status;
-        }
-
-        public PostStatus Status { get; set; }
+        Status = status;
     }
 
-    public class ListPostSegmentByStatusQueryHandler : IRequestHandler<ListPostSegmentByStatusQuery, IReadOnlyList<PostSegment>>
+    public PostStatus Status { get; set; }
+}
+
+public class ListPostSegmentByStatusQueryHandler : IRequestHandler<ListPostSegmentByStatusQuery, IReadOnlyList<PostSegment>>
+{
+    private readonly IRepository<PostEntity> _postRepo;
+
+    public ListPostSegmentByStatusQueryHandler(IRepository<PostEntity> postRepo)
     {
-        private readonly IRepository<PostEntity> _postRepo;
+        _postRepo = postRepo;
+    }
 
-        public ListPostSegmentByStatusQueryHandler(IRepository<PostEntity> postRepo)
-        {
-            _postRepo = postRepo;
-        }
-
-        public Task<IReadOnlyList<PostSegment>> Handle(ListPostSegmentByStatusQuery request, CancellationToken cancellationToken)
-        {
-            var spec = new PostSpec(request.Status);
-            return _postRepo.SelectAsync(spec, PostSegment.EntitySelector);
-        }
+    public Task<IReadOnlyList<PostSegment>> Handle(ListPostSegmentByStatusQuery request, CancellationToken cancellationToken)
+    {
+        var spec = new PostSpec(request.Status);
+        return _postRepo.SelectAsync(spec, PostSegment.EntitySelector);
     }
 }

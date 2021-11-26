@@ -2,37 +2,31 @@
   "ManifestIcons": [
     {
       "SrcTemplate": "android-icon-{0}.png",
-      "Type": "image/png",
       "Pixel": 36,
       "Density": "0.75"
     },
     {
       "SrcTemplate": "android-icon-{0}.png",
-      "Type": "image/png",
       "Pixel": 48,
       "Density": "1.0"
     },
     {
       "SrcTemplate": "android-icon-{0}.png",
-      "Type": "image/png",
       "Pixel": 72,
       "Density": "1.5"
     },
     {
       "SrcTemplate": "android-icon-{0}.png",
-      "Type": "image/png",
       "Pixel": 96,
       "Density": "2.0"
     },
     {
       "SrcTemplate": "android-icon-{0}.png",
-      "Type": "image/png",
       "Pixel": 144,
       "Density": "3.0"
     },
     {
       "SrcTemplate": "android-icon-{0}.png",
-      "Type": "image/png",
       "Pixel": 192,
       "Density": "4.0"
     }

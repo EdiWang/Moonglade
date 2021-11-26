@@ -3,43 +3,40 @@ using Moonglade.Core.TagFeature;
 using Moonglade.Web.Pages.Admin;
 using Moq;
 using NUnit.Framework;
-using System.Collections.Generic;
-using System.Threading.Tasks;
 
-namespace Moonglade.Web.Tests.Pages.Admin
+namespace Moonglade.Web.Tests.Pages.Admin;
+
+[TestFixture]
+
+public class TagsModelTests
 {
-    [TestFixture]
+    private MockRepository _mockRepository;
+    private Mock<IMediator> _mockMediator;
 
-    public class TagsModelTests
+    [SetUp]
+    public void SetUp()
     {
-        private MockRepository _mockRepository;
-        private Mock<IMediator> _mockMediator;
+        _mockRepository = new(MockBehavior.Default);
+        _mockMediator = _mockRepository.Create<IMediator>();
+    }
 
-        [SetUp]
-        public void SetUp()
+    private TagsModel CreateTagsModel()
+    {
+        return new(_mockMediator.Object);
+    }
+
+    [Test]
+    public async Task OnGet_StateUnderTest_ExpectedBehavior()
+    {
+        IReadOnlyList<Tag> tags = new List<Tag>
         {
-            _mockRepository = new(MockBehavior.Default);
-            _mockMediator = _mockRepository.Create<IMediator>();
-        }
+            new() { Id = FakeData.Int2, DisplayName = FakeData.Title3, NormalizedName = FakeData.Slug2 }
+        };
+        _mockMediator.Setup(p => p.Send(It.IsAny<GetTagsQuery>(), default)).Returns(Task.FromResult(tags));
 
-        private TagsModel CreateTagsModel()
-        {
-            return new(_mockMediator.Object);
-        }
+        var tagsModel = CreateTagsModel();
+        await tagsModel.OnGet();
 
-        [Test]
-        public async Task OnGet_StateUnderTest_ExpectedBehavior()
-        {
-            IReadOnlyList<Tag> tags = new List<Tag>
-            {
-                new() { Id = FakeData.Int2, DisplayName = FakeData.Title3, NormalizedName = FakeData.Slug2 }
-            };
-            _mockMediator.Setup(p => p.Send(It.IsAny<GetTagsQuery>(), default)).Returns(Task.FromResult(tags));
-
-            var tagsModel = CreateTagsModel();
-            await tagsModel.OnGet();
-
-            Assert.IsNotNull(tagsModel.Tags);
-        }
+        Assert.IsNotNull(tagsModel.Tags);
     }
 }

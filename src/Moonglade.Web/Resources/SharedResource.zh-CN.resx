@@ -243,9 +243,7 @@
   <data name="Logo text" xml:space="preserve">
     <value>Logo 文字</value>
   </data>
-  <data name="Meta description" xml:space="preserve">
-    <value>网站简介</value>
-  </data>
+
   <data name="Meta keyword" xml:space="preserve">
     <value>网站关键词</value>
   </data>
@@ -302,9 +300,6 @@
   </data>
   <data name="Please enter copyright" xml:space="preserve">
     <value>请输入版权信息</value>
-  </data>
-  <data name="Please enter description" xml:space="preserve">
-    <value>请输入描述</value>
   </data>
   <data name="Please enter keyword" xml:space="preserve">
     <value>请输入关键词</value>
@@ -386,9 +381,6 @@
   </data>
   <data name="Side bar HTML code" xml:space="preserve">
     <value>侧边栏HTML区域</value>
-  </data>
-  <data name="Site Map" xml:space="preserve">
-    <value>加入网站地图</value>
   </data>
   <data name="Tag amount can only range from 1-50" xml:space="preserve">
     <value>标签数量必须在1-50之间</value>

@@ -1,14 +1,13 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
 
-namespace Moonglade.Caching
+namespace Moonglade.Caching;
+
+public static class ServiceCollectionExtensions
 {
-    public static class ServiceCollectionExtensions
+    public static IServiceCollection AddBlogCache(this IServiceCollection services)
     {
-        public static IServiceCollection AddBlogCache(this IServiceCollection services)
-        {
-            services.AddMemoryCache();
-            services.AddSingleton<IBlogCache, BlogMemoryCache>();
-            return services;
-        }
+        services.AddMemoryCache();
+        services.AddSingleton<IBlogCache, BlogMemoryCache>();
+        return services;
     }
 }

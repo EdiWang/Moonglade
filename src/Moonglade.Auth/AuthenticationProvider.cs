@@ -1,8 +1,7 @@
-﻿namespace Moonglade.Auth
+﻿namespace Moonglade.Auth;
+
+public enum AuthenticationProvider
 {
-    public enum AuthenticationProvider
-    {
-        AzureAD,
-        Local
-    }
+    AzureAD,
+    Local
 }

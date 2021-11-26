@@ -3,32 +3,29 @@ using Microsoft.Extensions.Primitives;
 using Moonglade.Web.Middleware;
 using Moq;
 using NUnit.Framework;
-using System.Collections.Generic;
-using System.Threading.Tasks;
 
-namespace Moonglade.Web.Tests.Middleware
+namespace Moonglade.Web.Tests.Middleware;
+
+[TestFixture]
+public class DNTMiddlewareTests
 {
-    [TestFixture]
-    public class DNTMiddlewareTests
+    [Test]
+    public async Task DNTHeader()
     {
-        [Test]
-        public async Task DNTHeader()
-        {
-            var headersArray = new Dictionary<string, StringValues> { { "DNT", "1" } };
+        var headersArray = new Dictionary<string, StringValues> { { "DNT", "1" } };
 
-            var reqMock = new Mock<HttpRequest>();
-            reqMock.SetupGet(r => r.Headers).Returns(new HeaderDictionary(headersArray));
+        var reqMock = new Mock<HttpRequest>();
+        reqMock.SetupGet(r => r.Headers).Returns(new HeaderDictionary(headersArray));
 
-            var httpContextMock = new Mock<HttpContext>();
-            httpContextMock.Setup(c => c.Request).Returns(reqMock.Object);
-            httpContextMock.Setup(c => c.Items).Returns(new Dictionary<object, object>());
+        var httpContextMock = new Mock<HttpContext>();
+        httpContextMock.Setup(c => c.Request).Returns(reqMock.Object);
+        httpContextMock.Setup(c => c.Items).Returns(new Dictionary<object, object>());
 
-            static Task RequestDelegate(HttpContext context) => Task.CompletedTask;
-            var middleware = new DNTMiddleware(RequestDelegate);
+        static Task RequestDelegate(HttpContext context) => Task.CompletedTask;
+        var middleware = new DNTMiddleware(RequestDelegate);
 
-            await middleware.Invoke(httpContextMock.Object);
+        await middleware.Invoke(httpContextMock.Object);
 
-            Assert.AreEqual(true, httpContextMock.Object.Items["DNT"]);
-        }
+        Assert.AreEqual(true, httpContextMock.Object.Items["DNT"]);
     }
 }

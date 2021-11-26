@@ -12,101 +12,98 @@ using Moonglade.Core.TagFeature;
 using Moonglade.Web.Pages;
 using Moq;
 using NUnit.Framework;
-using System;
-using System.Threading.Tasks;
 
-namespace Moonglade.Web.Tests.Pages
+namespace Moonglade.Web.Tests.Pages;
+
+[TestFixture]
+
+public class TagListModelTests
 {
-    [TestFixture]
+    private MockRepository _mockRepository;
 
-    public class TagListModelTests
+    private Mock<IMediator> _mockMediator;
+    private Mock<IBlogConfig> _mockBlogConfig;
+    private Mock<IBlogCache> _mockBlogCache;
+
+    [SetUp]
+    public void SetUp()
     {
-        private MockRepository _mockRepository;
+        _mockRepository = new(MockBehavior.Default);
 
-        private Mock<IMediator> _mockMediator;
-        private Mock<IBlogConfig> _mockBlogConfig;
-        private Mock<IBlogCache> _mockBlogCache;
+        _mockMediator = _mockRepository.Create<IMediator>();
+        _mockBlogConfig = _mockRepository.Create<IBlogConfig>();
+        _mockBlogCache = _mockRepository.Create<IBlogCache>();
 
-        [SetUp]
-        public void SetUp()
+        _mockBlogConfig.Setup(p => p.ContentSettings).Returns(new ContentSettings
         {
-            _mockRepository = new(MockBehavior.Default);
+            PostListPageSize = 10
+        });
+    }
 
-            _mockMediator = _mockRepository.Create<IMediator>();
-            _mockBlogConfig = _mockRepository.Create<IBlogConfig>();
-            _mockBlogCache = _mockRepository.Create<IBlogCache>();
+    private TagListModel CreateTagListModel()
+    {
+        return new(
+            _mockMediator.Object,
+            _mockBlogConfig.Object,
+            _mockBlogCache.Object);
+    }
 
-            _mockBlogConfig.Setup(p => p.ContentSettings).Returns(new ContentSettings
-            {
-                PostListPageSize = 10
-            });
-        }
+    [Test]
+    public async Task OnGet_NullTag()
+    {
+        _mockMediator.Setup(p => p.Send(It.IsAny<GetTagQuery>(), default)).Returns(Task.FromResult((Tag)null));
 
-        private TagListModel CreateTagListModel()
+        // Arrange
+        var tagListModel = CreateTagListModel();
+        string normalizedName = FakeData.ShortString2;
+
+        // Act
+        var result = await tagListModel.OnGet(normalizedName);
+        Assert.IsInstanceOf<NotFoundResult>(result);
+    }
+
+    [Test]
+    public async Task OnGet_ValidTag()
+    {
+        _mockMediator.Setup(p => p.Send(It.IsAny<GetTagQuery>(), default)).Returns(Task.FromResult(new Tag
         {
-            return new(
-                _mockMediator.Object,
-                _mockBlogConfig.Object,
-                _mockBlogCache.Object);
-        }
+            Id = FakeData.Int2,
+            DisplayName = "Fubao",
+            NormalizedName = "fu-bao"
+        }));
 
-        [Test]
-        public async Task OnGet_NullTag()
+        _mockMediator.Setup(p => p.Send(It.IsAny<ListByTagQuery>(), default))
+            .Returns(Task.FromResult(FakeData.FakePosts));
+
+        _mockBlogCache.Setup(p =>
+                p.GetOrCreateAsync(CacheDivision.PostCountTag, It.IsAny<string>(), It.IsAny<Func<ICacheEntry, Task<int>>>()))
+            .Returns(Task.FromResult(FakeData.Int1));
+
+        var httpContext = new DefaultHttpContext();
+        var modelState = new ModelStateDictionary();
+        var actionContext = new ActionContext(httpContext, new(), new PageActionDescriptor(), modelState);
+        var modelMetadataProvider = new EmptyModelMetadataProvider();
+        var viewData = new ViewDataDictionary(modelMetadataProvider, modelState);
+        var tempData = new TempDataDictionary(httpContext, Mock.Of<ITempDataProvider>());
+        var pageContext = new PageContext(actionContext)
         {
-            _mockMediator.Setup(p => p.Send(It.IsAny<GetTagQuery>(), default)).Returns(Task.FromResult((Tag)null));
+            ViewData = viewData
+        };
 
-            // Arrange
-            var tagListModel = CreateTagListModel();
-            string normalizedName = FakeData.ShortString2;
-
-            // Act
-            var result = await tagListModel.OnGet(normalizedName);
-            Assert.IsInstanceOf<NotFoundResult>(result);
-        }
-
-        [Test]
-        public async Task OnGet_ValidTag()
+        var model = new TagListModel(
+            _mockMediator.Object,
+            _mockBlogConfig.Object,
+            _mockBlogCache.Object)
         {
-            _mockMediator.Setup(p => p.Send(It.IsAny<GetTagQuery>(), default)).Returns(Task.FromResult(new Tag
-            {
-                Id = FakeData.Int2,
-                DisplayName = "Fubao",
-                NormalizedName = "fu-bao"
-            }));
+            PageContext = pageContext,
+            TempData = tempData
+        };
 
-            _mockMediator.Setup(p => p.Send(It.IsAny<ListByTagQuery>(), default))
-                .Returns(Task.FromResult(FakeData.FakePosts));
+        string normalizedName = "fu-bao";
 
-            _mockBlogCache.Setup(p =>
-                    p.GetOrCreateAsync(CacheDivision.PostCountTag, It.IsAny<string>(), It.IsAny<Func<ICacheEntry, Task<int>>>()))
-                .Returns(Task.FromResult(FakeData.Int1));
-
-            var httpContext = new DefaultHttpContext();
-            var modelState = new ModelStateDictionary();
-            var actionContext = new ActionContext(httpContext, new(), new PageActionDescriptor(), modelState);
-            var modelMetadataProvider = new EmptyModelMetadataProvider();
-            var viewData = new ViewDataDictionary(modelMetadataProvider, modelState);
-            var tempData = new TempDataDictionary(httpContext, Mock.Of<ITempDataProvider>());
-            var pageContext = new PageContext(actionContext)
-            {
-                ViewData = viewData
-            };
-
-            var model = new TagListModel(
-                _mockMediator.Object,
-                _mockBlogConfig.Object,
-                _mockBlogCache.Object)
-            {
-                PageContext = pageContext,
-                TempData = tempData
-            };
-
-            string normalizedName = "fu-bao";
-
-            // Act
-            var result = await model.OnGet(normalizedName);
-            Assert.IsInstanceOf<PageResult>(result);
-            Assert.AreEqual(FakeData.Int1, model.Posts.TotalItemCount);
-        }
+        // Act
+        var result = await model.OnGet(normalizedName);
+        Assert.IsInstanceOf<PageResult>(result);
+        Assert.AreEqual(FakeData.Int1, model.Posts.TotalItemCount);
     }
 }

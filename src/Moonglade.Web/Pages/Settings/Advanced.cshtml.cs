@@ -1,21 +1,19 @@
 using Microsoft.AspNetCore.Mvc.RazorPages;
-using Moonglade.Configuration;
 
-namespace Moonglade.Web.Pages.Settings
+namespace Moonglade.Web.Pages.Settings;
+
+public class AdvancedModel : PageModel
 {
-    public class AdvancedModel : PageModel
+    private readonly IBlogConfig _blogConfig;
+    public AdvancedSettings ViewModel { get; set; }
+
+    public AdvancedModel(IBlogConfig blogConfig)
     {
-        private readonly IBlogConfig _blogConfig;
-        public AdvancedSettings ViewModel { get; set; }
+        _blogConfig = blogConfig;
+    }
 
-        public AdvancedModel(IBlogConfig blogConfig)
-        {
-            _blogConfig = blogConfig;
-        }
-
-        public void OnGet()
-        {
-            ViewModel = _blogConfig.AdvancedSettings;
-        }
+    public void OnGet()
+    {
+        ViewModel = _blogConfig.AdvancedSettings;
     }
 }

@@ -1,36 +1,29 @@
-using MediatR;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.Logging;
 using Moonglade.FriendLink;
-using System;
-using System.Collections.Generic;
-using System.Threading.Tasks;
 
-namespace Moonglade.Web.ViewComponents
+namespace Moonglade.Web.ViewComponents;
+
+public class FriendLinkViewComponent : ViewComponent
 {
-    public class FriendLinkViewComponent : ViewComponent
+    private readonly ILogger<FriendLinkViewComponent> _logger;
+    private readonly IMediator _mediator;
+
+    public FriendLinkViewComponent(ILogger<FriendLinkViewComponent> logger, IMediator mediator)
     {
-        private readonly ILogger<FriendLinkViewComponent> _logger;
-        private readonly IMediator _mediator;
+        _logger = logger;
+        _mediator = mediator;
+    }
 
-        public FriendLinkViewComponent(ILogger<FriendLinkViewComponent> logger, IMediator mediator)
+    public async Task<IViewComponentResult> InvokeAsync()
+    {
+        try
         {
-            _logger = logger;
-            _mediator = mediator;
+            var links = await _mediator.Send(new GetAllLinksQuery());
+            return View(links ?? new List<Link>());
         }
-
-        public async Task<IViewComponentResult> InvokeAsync()
+        catch (Exception e)
         {
-            try
-            {
-                var links = await _mediator.Send(new GetAllLinksQuery());
-                return View(links ?? new List<Link>());
-            }
-            catch (Exception e)
-            {
-                _logger.LogError(e, "Error Reading FriendLink.");
-                return Content(e.Message);
-            }
+            _logger.LogError(e, "Error Reading FriendLink.");
+            return Content(e.Message);
         }
     }
 }

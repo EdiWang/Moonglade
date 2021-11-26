@@ -1,34 +1,28 @@
-﻿using MediatR;
-using Microsoft.AspNetCore.Mvc;
-using Moonglade.Configuration;
-using Moonglade.Core.TagFeature;
-using System;
-using System.Threading.Tasks;
+﻿using Moonglade.Core.TagFeature;
 
-namespace Moonglade.Web.ViewComponents
+namespace Moonglade.Web.ViewComponents;
+
+public class HotTagsViewComponent : ViewComponent
 {
-    public class HotTagsViewComponent : ViewComponent
+    private readonly IBlogConfig _blogConfig;
+    private readonly IMediator _mediator;
+
+    public HotTagsViewComponent(IBlogConfig blogConfig, IMediator mediator)
     {
-        private readonly IBlogConfig _blogConfig;
-        private readonly IMediator _mediator;
+        _blogConfig = blogConfig;
+        _mediator = mediator;
+    }
 
-        public HotTagsViewComponent(IBlogConfig blogConfig, IMediator mediator)
+    public async Task<IViewComponentResult> InvokeAsync()
+    {
+        try
         {
-            _blogConfig = blogConfig;
-            _mediator = mediator;
+            var tags = await _mediator.Send(new GetHotTagsQuery(_blogConfig.ContentSettings.HotTagAmount));
+            return View(tags);
         }
-
-        public async Task<IViewComponentResult> InvokeAsync()
+        catch (Exception e)
         {
-            try
-            {
-                var tags = await _mediator.Send(new GetHotTagsQuery(_blogConfig.ContentSettings.HotTagAmount));
-                return View(tags);
-            }
-            catch (Exception e)
-            {
-                return Content(e.Message);
-            }
+            return Content(e.Message);
         }
     }
 }

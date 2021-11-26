@@ -1,49 +1,43 @@
-using MediatR;
-using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
-using Moonglade.Caching;
-using Moonglade.Configuration;
 using Moonglade.Core.PostFeature;
 using Moonglade.Core.TagFeature;
-using System.Threading.Tasks;
 using X.PagedList;
 
-namespace Moonglade.Web.Pages
+namespace Moonglade.Web.Pages;
+
+public class TagListModel : PageModel
 {
-    public class TagListModel : PageModel
+    private readonly IMediator _mediator;
+    private readonly IBlogConfig _blogConfig;
+    private readonly IBlogCache _cache;
+
+    [BindProperty(SupportsGet = true)]
+    public int P { get; set; }
+    public StaticPagedList<PostDigest> Posts { get; set; }
+
+    public TagListModel(IMediator mediator, IBlogConfig blogConfig, IBlogCache cache)
     {
-        private readonly IMediator _mediator;
-        private readonly IBlogConfig _blogConfig;
-        private readonly IBlogCache _cache;
+        _mediator = mediator;
+        _blogConfig = blogConfig;
+        _cache = cache;
 
-        [BindProperty(SupportsGet = true)]
-        public int P { get; set; }
-        public StaticPagedList<PostDigest> Posts { get; set; }
+        P = 1;
+    }
 
-        public TagListModel(IMediator mediator, IBlogConfig blogConfig, IBlogCache cache)
-        {
-            _mediator = mediator;
-            _blogConfig = blogConfig;
-            _cache = cache;
+    public async Task<IActionResult> OnGet(string normalizedName)
+    {
+        var tagResponse = await _mediator.Send(new GetTagQuery(normalizedName));
+        if (tagResponse is null) return NotFound();
 
-            P = 1;
-        }
+        var pagesize = _blogConfig.ContentSettings.PostListPageSize;
+        var posts = await _mediator.Send(new ListByTagQuery(tagResponse.Id, pagesize, P));
+        var count = await _cache.GetOrCreateAsync(CacheDivision.PostCountTag, tagResponse.Id.ToString(), _ => _mediator.Send(new CountPostQuery(CountType.Tag, tagId: tagResponse.Id)));
 
-        public async Task<IActionResult> OnGet(string normalizedName)
-        {
-            var tagResponse = await _mediator.Send(new GetTagQuery(normalizedName));
-            if (tagResponse is null) return NotFound();
+        ViewData["TitlePrefix"] = tagResponse.DisplayName;
 
-            var pagesize = _blogConfig.ContentSettings.PostListPageSize;
-            var posts = await _mediator.Send(new ListByTagQuery(tagResponse.Id, pagesize, P));
-            var count = await _cache.GetOrCreateAsync(CacheDivision.PostCountTag, tagResponse.Id.ToString(), _ => _mediator.Send(new CountPostQuery(CountType.Tag, tagId: tagResponse.Id)));
+        var list = new StaticPagedList<PostDigest>(posts, P, pagesize, count);
+        Posts = list;
 
-            ViewData["TitlePrefix"] = tagResponse.DisplayName;
-
-            var list = new StaticPagedList<PostDigest>(posts, P, pagesize, count);
-            Posts = list;
-
-            return Page();
-        }
+        return Page();
     }
 }

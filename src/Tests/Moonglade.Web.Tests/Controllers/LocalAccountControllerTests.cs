@@ -6,162 +6,158 @@ using Moonglade.Auth;
 using Moonglade.Web.Controllers;
 using Moq;
 using NUnit.Framework;
-using System;
-using System.Collections.Generic;
 using System.Security.Claims;
-using System.Threading.Tasks;
 
-namespace Moonglade.Web.Tests.Controllers
+namespace Moonglade.Web.Tests.Controllers;
+
+[TestFixture]
+public class LocalAccountControllerTests
 {
-    [TestFixture]
-    public class LocalAccountControllerTests
+    private MockRepository _mockRepository;
+
+    private Mock<IMediator> _mockMediator;
+
+    [SetUp]
+    public void SetUp()
     {
-        private MockRepository _mockRepository;
+        _mockRepository = new(MockBehavior.Default);
+        _mockMediator = _mockRepository.Create<IMediator>();
+    }
 
-        private Mock<IMediator> _mockMediator;
+    private LocalAccountController CreateLocalAccountController()
+    {
+        return new(_mockMediator.Object);
+    }
 
-        [SetUp]
-        public void SetUp()
+    [Test]
+    public async Task Create_AlreadyExists()
+    {
+        _mockMediator.Setup(p => p.Send(It.IsAny<AccountExistsQuery>(), default)).Returns(Task.FromResult(true));
+
+        var ctl = CreateLocalAccountController();
+        var result = await ctl.Create(new()
         {
-            _mockRepository = new(MockBehavior.Default);
-            _mockMediator = _mockRepository.Create<IMediator>();
-        }
+            Username = FakeData.ShortString2,
+            Password = "icu"
+        });
 
-        private LocalAccountController CreateLocalAccountController()
+        Assert.IsInstanceOf<ConflictObjectResult>(result);
+    }
+
+    [Test]
+    public async Task Create_OK()
+    {
+        _mockMediator.Setup(p => p.Send(It.IsAny<AccountExistsQuery>(), default)).Returns(Task.FromResult(false));
+
+        var ctl = CreateLocalAccountController();
+        var result = await ctl.Create(new()
         {
-            return new(_mockMediator.Object);
-        }
+            Username = FakeData.ShortString2,
+            Password = "icu"
+        });
 
-        [Test]
-        public async Task Create_AlreadyExists()
+        Assert.IsInstanceOf<OkResult>(result);
+    }
+
+    [Test]
+    public async Task Delete_NullCurrentUser()
+    {
+        var ctl = CreateLocalAccountController();
+        ctl.ControllerContext = new()
         {
-            _mockMediator.Setup(p => p.Send(It.IsAny<AccountExistsQuery>(), default)).Returns(Task.FromResult(true));
-
-            var ctl = CreateLocalAccountController();
-            var result = await ctl.Create(new()
+            HttpContext = new DefaultHttpContext
             {
-                Username = FakeData.ShortString2,
-                Password = "icu"
-            });
+                User = new()
+            }
+        };
 
-            Assert.IsInstanceOf<ConflictObjectResult>(result);
-        }
+        var result = await ctl.Delete(Guid.Parse("76169567-6ff3-42c0-b163-a883ff2ac4fb"));
+        Assert.IsInstanceOf<ObjectResult>(result);
 
-        [Test]
-        public async Task Create_OK()
+        Assert.AreEqual(500, ((ObjectResult)result).StatusCode);
+    }
+
+    [Test]
+    public async Task Delete_CurrentUser()
+    {
+        var ctl = CreateLocalAccountController();
+        ctl.ControllerContext = new()
         {
-            _mockMediator.Setup(p => p.Send(It.IsAny<AccountExistsQuery>(), default)).Returns(Task.FromResult(false));
-
-            var ctl = CreateLocalAccountController();
-            var result = await ctl.Create(new()
+            HttpContext = new DefaultHttpContext
             {
-                Username = FakeData.ShortString2,
-                Password = "icu"
-            });
+                User = GetClaimsPrincipal("76169567-6ff3-42c0-b163-a883ff2ac4fb")
+            }
+        };
 
-            Assert.IsInstanceOf<OkResult>(result);
-        }
+        var result = await ctl.Delete(Guid.Parse("76169567-6ff3-42c0-b163-a883ff2ac4fb"));
+        Assert.IsInstanceOf<ConflictObjectResult>(result);
+    }
 
-        [Test]
-        public async Task Delete_NullCurrentUser()
+    [Test]
+    public async Task Delete_LastUser()
+    {
+        _mockMediator.Setup(p => p.Send(It.IsAny<CountAccountsQuery>(), default)).Returns(Task.FromResult(1));
+
+        var ctl = CreateLocalAccountController();
+        ctl.ControllerContext = new()
         {
-            var ctl = CreateLocalAccountController();
-            ctl.ControllerContext = new()
+            HttpContext = new DefaultHttpContext
             {
-                HttpContext = new DefaultHttpContext
-                {
-                    User = new()
-                }
-            };
+                User = GetClaimsPrincipal(FakeData.ShortString2)
+            }
+        };
 
-            var result = await ctl.Delete(Guid.Parse("76169567-6ff3-42c0-b163-a883ff2ac4fb"));
-            Assert.IsInstanceOf<ObjectResult>(result);
+        var result = await ctl.Delete(Guid.Parse("76169567-6ff3-42c0-b163-a883ff2ac4fb"));
+        Assert.IsInstanceOf<ConflictObjectResult>(result);
+    }
 
-            Assert.AreEqual(500, ((ObjectResult)result).StatusCode);
-        }
-
-        [Test]
-        public async Task Delete_CurrentUser()
+    [Test]
+    public async Task Delete_OK()
+    {
+        _mockMediator.Setup(p => p.Send(It.IsAny<CountAccountsQuery>(), default)).Returns(Task.FromResult(996));
+        var ctl = CreateLocalAccountController();
+        ctl.ControllerContext = new()
         {
-            var ctl = CreateLocalAccountController();
-            ctl.ControllerContext = new()
+            HttpContext = new DefaultHttpContext
             {
-                HttpContext = new DefaultHttpContext
-                {
-                    User = GetClaimsPrincipal("76169567-6ff3-42c0-b163-a883ff2ac4fb")
-                }
-            };
+                User = GetClaimsPrincipal(FakeData.ShortString2)
+            }
+        };
 
-            var result = await ctl.Delete(Guid.Parse("76169567-6ff3-42c0-b163-a883ff2ac4fb"));
-            Assert.IsInstanceOf<ConflictObjectResult>(result);
-        }
+        var result = await ctl.Delete(Guid.Parse("76169567-6ff3-42c0-b163-a883ff2ac4fb"));
+        Assert.IsInstanceOf<NoContentResult>(result);
+    }
 
-        [Test]
-        public async Task Delete_LastUser()
+    [Test]
+    public async Task ResetPassword_WeakPassword()
+    {
+        var ctl = CreateLocalAccountController();
+        var result = await ctl.ResetPassword(Guid.Parse("76169567-6ff3-42c0-b163-a883ff2ac4fb"), "996007251404");
+
+        Assert.IsInstanceOf<ConflictObjectResult>(result);
+    }
+
+    [Test]
+    public async Task ResetPassword_OK()
+    {
+        var ctl = CreateLocalAccountController();
+        var result = await ctl.ResetPassword(Guid.Parse("76169567-6ff3-42c0-b163-a883ff2ac4fb"), "Admin@1234");
+
+        Assert.IsInstanceOf<NoContentResult>(result);
+        _mockMediator.Verify(p => p.Send(It.IsAny<UpdatePasswordCommand>(), default));
+    }
+
+    private ClaimsPrincipal GetClaimsPrincipal(string uid)
+    {
+        var claims = new List<Claim>
         {
-            _mockMediator.Setup(p => p.Send(It.IsAny<CountAccountsQuery>(), default)).Returns(Task.FromResult(1));
+            new (ClaimTypes.Name, "moonglade"),
+            new (ClaimTypes.Role, "Administrator"),
+            new ("uid", uid)
+        };
+        var ci = new ClaimsIdentity(claims, CookieAuthenticationDefaults.AuthenticationScheme);
+        var p = new ClaimsPrincipal(ci);
 
-            var ctl = CreateLocalAccountController();
-            ctl.ControllerContext = new()
-            {
-                HttpContext = new DefaultHttpContext
-                {
-                    User = GetClaimsPrincipal(FakeData.ShortString2)
-                }
-            };
-
-            var result = await ctl.Delete(Guid.Parse("76169567-6ff3-42c0-b163-a883ff2ac4fb"));
-            Assert.IsInstanceOf<ConflictObjectResult>(result);
-        }
-
-        [Test]
-        public async Task Delete_OK()
-        {
-            _mockMediator.Setup(p => p.Send(It.IsAny<CountAccountsQuery>(), default)).Returns(Task.FromResult(996));
-            var ctl = CreateLocalAccountController();
-            ctl.ControllerContext = new()
-            {
-                HttpContext = new DefaultHttpContext
-                {
-                    User = GetClaimsPrincipal(FakeData.ShortString2)
-                }
-            };
-
-            var result = await ctl.Delete(Guid.Parse("76169567-6ff3-42c0-b163-a883ff2ac4fb"));
-            Assert.IsInstanceOf<NoContentResult>(result);
-        }
-
-        [Test]
-        public async Task ResetPassword_WeakPassword()
-        {
-            var ctl = CreateLocalAccountController();
-            var result = await ctl.ResetPassword(Guid.Parse("76169567-6ff3-42c0-b163-a883ff2ac4fb"), "996007251404");
-
-            Assert.IsInstanceOf<ConflictObjectResult>(result);
-        }
-
-        [Test]
-        public async Task ResetPassword_OK()
-        {
-            var ctl = CreateLocalAccountController();
-            var result = await ctl.ResetPassword(Guid.Parse("76169567-6ff3-42c0-b163-a883ff2ac4fb"), "Admin@1234");
-
-            Assert.IsInstanceOf<NoContentResult>(result);
-            _mockMediator.Verify(p => p.Send(It.IsAny<UpdatePasswordCommand>(), default));
-        }
-
-        private ClaimsPrincipal GetClaimsPrincipal(string uid)
-        {
-            var claims = new List<Claim>
-            {
-                new (ClaimTypes.Name, "moonglade"),
-                new (ClaimTypes.Role, "Administrator"),
-                new ("uid", uid)
-            };
-            var ci = new ClaimsIdentity(claims, CookieAuthenticationDefaults.AuthenticationScheme);
-            var p = new ClaimsPrincipal(ci);
-
-            return p;
-        }
+        return p;
     }
 }

@@ -1,11 +1,8 @@
-﻿using System.Threading.Tasks;
+﻿namespace Moonglade.Comments.Moderators;
 
-namespace Moonglade.Comments.Moderators
+public interface ICommentModerator
 {
-    public interface ICommentModerator
-    {
-        public Task<string> ModerateContent(string input);
+    public Task<string> ModerateContent(string input);
 
-        public Task<bool> HasBadWord(params string[] input);
-    }
+    public Task<bool> HasBadWord(params string[] input);
 }

@@ -1,25 +1,21 @@
-using MediatR;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Moonglade.Core.PostFeature;
 using Moonglade.Data.Spec;
-using System.Collections.Generic;
-using System.Threading.Tasks;
 
-namespace Moonglade.Web.Pages.Admin
+namespace Moonglade.Web.Pages.Admin;
+
+public class PostDraftModel : PageModel
 {
-    public class PostDraftModel : PageModel
+    private readonly IMediator _mediator;
+    public IReadOnlyList<PostSegment> PostSegments { get; set; }
+
+    public PostDraftModel(IMediator mediator)
     {
-        private readonly IMediator _mediator;
-        public IReadOnlyList<PostSegment> PostSegments { get; set; }
+        _mediator = mediator;
+    }
 
-        public PostDraftModel(IMediator mediator)
-        {
-            _mediator = mediator;
-        }
-
-        public async Task OnGet()
-        {
-            PostSegments = await _mediator.Send(new ListPostSegmentByStatusQuery(PostStatus.Draft));
-        }
+    public async Task OnGet()
+    {
+        PostSegments = await _mediator.Send(new ListPostSegmentByStatusQuery(PostStatus.Draft));
     }
 }

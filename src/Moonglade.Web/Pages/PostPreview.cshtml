@@ -7,7 +7,6 @@
 @{
     ViewBag.BodyClass = "body-post-slug";
     var ec = Settings.Value.Editor;
-    var content = ContentProcessor.AddLazyLoadToImgTag(Model.Post.RawPostContent);
 }
 
 @section meta {
@@ -66,11 +65,11 @@
     <section class="post-content clearfix">
         @if (ec == EditorChoice.Markdown)
         {
-            @Html.Raw(ContentProcessor.MarkdownToContent(content, ContentProcessor.MarkdownConvertType.Html, false))
+            @Html.Raw(ContentProcessor.MarkdownToContent(Model.Post.RawPostContent, ContentProcessor.MarkdownConvertType.Html, false))
         }
         else
         {
-            @Html.Raw(content)
+            @Html.Raw(Model.Post.RawPostContent)
         }
     </section>
     @if (BlogConfig.ContentSettings.ShowPostFooter)

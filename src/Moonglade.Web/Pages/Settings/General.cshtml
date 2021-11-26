@@ -94,7 +94,7 @@
                             <div class="mb-2">
                                 <img src="@Url.Action("SiteIconOrigin", "Assets")" class="img-thumbnail img-fluid blogadmin-siteicon" />
                             </div>
-                            <a class="btn w-100 btn-sm btn-outline-accent" href="#" data-bs-toggle="modal" data-bs-target="#siteiconmodal">@Localizer["New Icon"]</a>
+                            <a class="btn w-100 btn-sm btn-outline-accent" href="#" data-bs-toggle="modal" data-bs-target="#siteiconmodal">@Localizer["Change"]</a>
                         </div>
                         <div class="col-10">
                             <div class="row g-2 mb-3">
@@ -114,15 +114,7 @@
                                 <input asp-for="ViewModel.MetaKeyword" class="form-control" />
                                 <span asp-validation-for="ViewModel.MetaKeyword" class="text-danger"></span>
                             </div>
-                            <div class="mb-3">
-                                <div class="form-floating">
-                                    <textarea asp-for="ViewModel.MetaDescription" placeholder="@Html.DisplayNameFor(m => m.ViewModel.MetaDescription)"
-                                              class="form-control h-100px"></textarea>
-                                    <label class="form-label" asp-for="ViewModel.MetaDescription"></label>
-                                </div>
-                                <span asp-validation-for="ViewModel.MetaDescription" class="text-danger"></span>
-                            </div>
-                            
+
                             <div class="row g-3 align-items-center settings-entry mt-1 mb-4">
                                 <div class="col-auto">
                                     <i class="bi-link settings-entry-icon"></i>
@@ -146,19 +138,18 @@
                                     <div class="form-text">@Localizer["Blog posts will use this time zone as date and time display."]</div>
                                 </div>
                                 <div class="col-md-5 text-end">
-                                    <select class="form-select" asp-for="ViewModel.SelectedTimeZoneId" asp-items="@tzList"></select>
+                                    <select class="form-select" asp-for="ViewModel.TimeZoneId" asp-items="@tzList"></select>
                                 </div>
                             </div>
 
                         </div>
                     </div>
-                    <hr />
                     <div class="row">
                         <div class="col-md-2 col-sm-4">
                             <div class="mb-3">
                                 <img src="@Url.Action("Avatar", "Assets")" class="img-thumbnail img-fluid blogadmin-avatar" />
                             </div>
-                            <a class="btn w-100 btn-sm btn-outline-accent" href="#" data-bs-toggle="modal" data-bs-target="#avatarmodal">@Localizer["New Avatar"]</a>
+                            <a class="btn w-100 btn-sm btn-outline-accent" href="#" data-bs-toggle="modal" data-bs-target="#avatarmodal">@Localizer["Change"]</a>
                         </div>
                         <div class="col-md-10 col-sm-8">
                             <div class="row g-2 mb-3">
@@ -175,18 +166,18 @@
                             </div>
                             <div class="mb-3">
                                 <div class="form-floating">
-                                    <textarea asp-for="ViewModel.OwnerDescription"
-                                              placeholder="@Html.DisplayNameFor(m => m.ViewModel.OwnerDescription)"
+                                    <textarea asp-for="ViewModel.Description"
+                                              placeholder="@Html.DisplayNameFor(m => m.ViewModel.Description)"
                                               class="form-control h-100px"
                                               spellcheck="false" cols="10" rows="10"></textarea>
-                                    <label class="form-label" asp-for="ViewModel.OwnerDescription"></label>
+                                    <label class="form-label" asp-for="ViewModel.Description"></label>
                                 </div>
-                                <span asp-validation-for="ViewModel.OwnerDescription" class="text-danger"></span>
+                                <span asp-validation-for="ViewModel.Description" class="text-danger"></span>
                             </div>
                             <div>
-                                <label class="form-label" asp-for="ViewModel.OwnerShortDescription"></label>
-                                <input asp-for="ViewModel.OwnerShortDescription" class="form-control" />
-                                <span asp-validation-for="ViewModel.OwnerShortDescription" class="text-danger"></span>
+                                <label class="form-label" asp-for="ViewModel.ShortDescription"></label>
+                                <input asp-for="ViewModel.ShortDescription" class="form-control" />
+                                <span asp-validation-for="ViewModel.ShortDescription" class="text-danger"></span>
                                 <small class="form-text text-muted">@Localizer["Short description is for display only on Phone screen."]</small>
                             </div>
                         </div>
@@ -201,7 +192,7 @@
                     <div>
                         <div class="row g-1 mb-3">
                             <div class="col">
-                                <select class="form-select" asp-for="ViewModel.SelectedThemeId" asp-items="@tmList"></select>
+                                <select class="form-select" asp-for="ViewModel.ThemeId" asp-items="@tmList"></select>
                             </div>
                             <div class="col-auto">
                                 <a class="btn btn-outline-accent" href="#" data-bs-toggle="modal" data-bs-target="#thememodal">
@@ -215,7 +206,11 @@
                         </div>
                         <div class="form-check">
                             <input asp-for="ViewModel.AutoDarkLightTheme" class="form-check-input" type="checkbox">
-                            <label asp-for="ViewModel.AutoDarkLightTheme" class="form-check-label">@Localizer["Auto Light / Dark theme regarding client system settings"]</label>
+                            <label asp-for="ViewModel.AutoDarkLightTheme" class="form-check-label"></label>
+                        </div>
+                        <div class="form-check">
+                            <input asp-for="ViewModel.Pride" class="form-check-input" type="checkbox">
+                            <label asp-for="ViewModel.Pride" class="form-check-label"></label>
                         </div>
                     </div>
                     <h6 class="card-subtitle mt-5 mb-2 text-muted">
@@ -223,16 +218,16 @@
                     </h6>
                     <div class="mb-1">
                         <div class="form-check form-check-inline">
-                            @Html.RadioButtonFor(model => model.ViewModel.SideBarOption, SideBarOption.Right.ToString(), new { id = SideBarOption.Right.ToString(), @class = "form-check-input" })
-                            <label class="form-check-label" for="@SideBarOption.Right.ToString()">@Localizer["Right"]</label>
+                            @Html.RadioButtonFor(model => model.ViewModel.SideBarOption, SideBarOption.Right, new { id = SideBarOption.Right.ToString(), @class = "form-check-input" })
+                            <label class="form-check-label" for="@SideBarOption.Right">@Localizer["Right"]</label>
                         </div>
                         <div class="form-check form-check-inline">
-                            @Html.RadioButtonFor(model => model.ViewModel.SideBarOption, SideBarOption.Left.ToString(), new { id = SideBarOption.Left.ToString(), @class = "form-check-input" })
-                            <label class="form-check-label" for="@SideBarOption.Left.ToString()">@Localizer["Left"]</label>
+                            @Html.RadioButtonFor(model => model.ViewModel.SideBarOption, SideBarOption.Left, new { id = SideBarOption.Left.ToString(), @class = "form-check-input" })
+                            <label class="form-check-label" for="@SideBarOption.Left">@Localizer["Left"]</label>
                         </div>
                         <div class="form-check form-check-inline">
-                            @Html.RadioButtonFor(model => model.ViewModel.SideBarOption, SideBarOption.Disabled.ToString(), new { id = SideBarOption.Disabled.ToString(), @class = "form-check-input" })
-                            <label class="form-check-label" for="@SideBarOption.Disabled.ToString()">@Localizer["Disabled"]</label>
+                            @Html.RadioButtonFor(model => model.ViewModel.SideBarOption, SideBarOption.Disabled, new { id = SideBarOption.Disabled.ToString(), @class = "form-check-input" })
+                            <label class="form-check-label" for="@SideBarOption.Disabled">@Localizer["Disabled"]</label>
                         </div>
                     </div>
                     <div class="form-floating">

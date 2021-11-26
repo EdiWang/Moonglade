@@ -1,83 +1,80 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.FeatureManagement;
-using Moonglade.Configuration.Settings;
+using Moonglade.Configuration;
 using Moonglade.Data;
 using Moonglade.Data.Entities;
 using Moonglade.Web.Pages.Admin;
 using Moq;
 using NUnit.Framework;
-using System.Collections.Generic;
-using System.Threading.Tasks;
 
-namespace Moonglade.Web.Tests.Pages.Admin
+namespace Moonglade.Web.Tests.Pages.Admin;
+
+[TestFixture]
+
+public class AuditLogsModelTests
 {
-    [TestFixture]
+    private MockRepository _mockRepository;
 
-    public class AuditLogsModelTests
+    private Mock<IFeatureManager> _mockFeatureManager;
+    private Mock<IBlogAudit> _mockBlogAudit;
+
+    [SetUp]
+    public void SetUp()
     {
-        private MockRepository _mockRepository;
+        _mockRepository = new(MockBehavior.Default);
 
-        private Mock<IFeatureManager> _mockFeatureManager;
-        private Mock<IBlogAudit> _mockBlogAudit;
+        _mockFeatureManager = _mockRepository.Create<IFeatureManager>();
+        _mockBlogAudit = _mockRepository.Create<IBlogAudit>();
+    }
 
-        [SetUp]
-        public void SetUp()
-        {
-            _mockRepository = new(MockBehavior.Default);
+    private AuditLogsModel CreateAuditLogsModel()
+    {
+        return new(
+            _mockFeatureManager.Object,
+            _mockBlogAudit.Object);
+    }
 
-            _mockFeatureManager = _mockRepository.Create<IFeatureManager>();
-            _mockBlogAudit = _mockRepository.Create<IBlogAudit>();
-        }
+    [Test]
+    public async Task OnGetAsync_FeatureDisabled()
+    {
+        _mockFeatureManager.Setup(p => p.IsEnabledAsync(nameof(FeatureFlags.EnableAudit)))
+            .Returns(Task.FromResult(false));
 
-        private AuditLogsModel CreateAuditLogsModel()
-        {
-            return new(
-                _mockFeatureManager.Object,
-                _mockBlogAudit.Object);
-        }
+        var auditLogsModel = CreateAuditLogsModel();
+        int pageIndex = 0;
 
-        [Test]
-        public async Task OnGetAsync_FeatureDisabled()
-        {
-            _mockFeatureManager.Setup(p => p.IsEnabledAsync(nameof(FeatureFlags.EnableAudit)))
-                .Returns(Task.FromResult(false));
+        var result = await auditLogsModel.OnGetAsync(pageIndex);
 
-            var auditLogsModel = CreateAuditLogsModel();
-            int pageIndex = 0;
+        Assert.IsInstanceOf<ForbidResult>(result);
+    }
 
-            var result = await auditLogsModel.OnGetAsync(pageIndex);
+    [TestCase(0)]
+    [TestCase(-1)]
+    public async Task OnGetAsync_FeatureEnabled_BadPageSize(int pageIndex)
+    {
+        _mockFeatureManager.Setup(p => p.IsEnabledAsync(nameof(FeatureFlags.EnableAudit)))
+            .Returns(Task.FromResult(true));
 
-            Assert.IsInstanceOf<ForbidResult>(result);
-        }
+        var auditLogsModel = CreateAuditLogsModel();
+        var result = await auditLogsModel.OnGetAsync(pageIndex);
 
-        [TestCase(0)]
-        [TestCase(-1)]
-        public async Task OnGetAsync_FeatureEnabled_BadPageSize(int pageIndex)
-        {
-            _mockFeatureManager.Setup(p => p.IsEnabledAsync(nameof(FeatureFlags.EnableAudit)))
-                .Returns(Task.FromResult(true));
+        Assert.IsInstanceOf<BadRequestResult>(result);
+    }
 
-            var auditLogsModel = CreateAuditLogsModel();
-            var result = await auditLogsModel.OnGetAsync(pageIndex);
+    [Test]
+    public async Task AuditLogs_View()
+    {
+        _mockFeatureManager.Setup(p => p.IsEnabledAsync(nameof(FeatureFlags.EnableAudit)))
+            .Returns(Task.FromResult(true));
+        (IReadOnlyList<AuditLogEntity> Entries, int Count) data = new(new List<AuditLogEntity>(), 996);
 
-            Assert.IsInstanceOf<BadRequestResult>(result);
-        }
+        _mockBlogAudit.Setup(p => p.GetAuditEntries(It.IsAny<int>(), It.IsAny<int>())).Returns(Task.FromResult(data));
 
-        [Test]
-        public async Task AuditLogs_View()
-        {
-            _mockFeatureManager.Setup(p => p.IsEnabledAsync(nameof(FeatureFlags.EnableAudit)))
-                .Returns(Task.FromResult(true));
-            (IReadOnlyList<AuditLogEntity> Entries, int Count) data = new(new List<AuditLogEntity>(), 996);
+        var auditLogsModel = CreateAuditLogsModel();
+        var result = await auditLogsModel.OnGetAsync(1);
 
-            _mockBlogAudit.Setup(p => p.GetAuditEntries(It.IsAny<int>(), It.IsAny<int>())).Returns(Task.FromResult(data));
-
-            var auditLogsModel = CreateAuditLogsModel();
-            var result = await auditLogsModel.OnGetAsync(1);
-
-            Assert.IsInstanceOf<PageResult>(result);
-            Assert.IsNotNull(auditLogsModel.Entries);
-        }
+        Assert.IsInstanceOf<PageResult>(result);
+        Assert.IsNotNull(auditLogsModel.Entries);
     }
 }

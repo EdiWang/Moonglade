@@ -2,34 +2,30 @@
 using Moonglade.Data.Entities;
 using Moonglade.Data.Infrastructure;
 using Moonglade.Data.Spec;
-using System;
-using System.Threading;
-using System.Threading.Tasks;
 
-namespace Moonglade.Core.CategoryFeature
+namespace Moonglade.Core.CategoryFeature;
+
+public class GetCategoryByIdCommand : IRequest<Category>
 {
-    public class GetCategoryByIdCommand : IRequest<Category>
+    public GetCategoryByIdCommand(Guid id)
     {
-        public GetCategoryByIdCommand(Guid id)
-        {
-            Id = id;
-        }
-
-        public Guid Id { get; set; }
+        Id = id;
     }
 
-    public class GetCategoryByIdCommandHandler : IRequestHandler<GetCategoryByIdCommand, Category>
+    public Guid Id { get; set; }
+}
+
+public class GetCategoryByIdCommandHandler : IRequestHandler<GetCategoryByIdCommand, Category>
+{
+    private readonly IRepository<CategoryEntity> _catRepo;
+
+    public GetCategoryByIdCommandHandler(IRepository<CategoryEntity> catRepo)
     {
-        private readonly IRepository<CategoryEntity> _catRepo;
+        _catRepo = catRepo;
+    }
 
-        public GetCategoryByIdCommandHandler(IRepository<CategoryEntity> catRepo)
-        {
-            _catRepo = catRepo;
-        }
-
-        public Task<Category> Handle(GetCategoryByIdCommand request, CancellationToken cancellationToken)
-        {
-            return _catRepo.SelectFirstOrDefaultAsync(new CategorySpec(request.Id), Category.EntitySelector);
-        }
+    public Task<Category> Handle(GetCategoryByIdCommand request, CancellationToken cancellationToken)
+    {
+        return _catRepo.SelectFirstOrDefaultAsync(new CategorySpec(request.Id), Category.EntitySelector);
     }
 }

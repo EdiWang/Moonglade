@@ -1,22 +1,17 @@
-﻿using Microsoft.AspNetCore.Http;
-using Moonglade.Utils;
-using System.Threading.Tasks;
+﻿namespace Moonglade.Web.Middleware;
 
-namespace Moonglade.Web.Middleware
+public class PoweredByMiddleware
 {
-    public class PoweredByMiddleware
+    private readonly RequestDelegate _next;
+
+    public PoweredByMiddleware(RequestDelegate next)
     {
-        private readonly RequestDelegate _next;
+        _next = next;
+    }
 
-        public PoweredByMiddleware(RequestDelegate next)
-        {
-            _next = next;
-        }
-
-        public Task Invoke(HttpContext httpContext)
-        {
-            httpContext.Response.Headers["X-Powered-By"] = $"Moonglade {Helper.AppVersion}, ASP.NET Core";
-            return _next.Invoke(httpContext);
-        }
+    public Task Invoke(HttpContext httpContext)
+    {
+        httpContext.Response.Headers["X-Powered-By"] = $"Moonglade {Helper.AppVersion}, ASP.NET Core";
+        return _next.Invoke(httpContext);
     }
 }

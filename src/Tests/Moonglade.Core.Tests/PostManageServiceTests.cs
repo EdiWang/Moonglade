@@ -2,7 +2,7 @@
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using Moonglade.Caching;
-using Moonglade.Configuration.Settings;
+using Moonglade.Configuration;
 using Moonglade.Core.PostFeature;
 using Moonglade.Data;
 using Moonglade.Data.Entities;
@@ -10,269 +10,266 @@ using Moonglade.Data.Infrastructure;
 using Moonglade.Data.Spec;
 using Moq;
 using NUnit.Framework;
-using System;
-using System.Collections.Generic;
-using System.IO;
 using System.Linq.Expressions;
 using System.Text;
-using System.Threading.Tasks;
 
-namespace Moonglade.Core.Tests
+namespace Moonglade.Core.Tests;
+
+[TestFixture]
+public class PostManageServiceTests
 {
-    [TestFixture]
-    public class PostManageServiceTests
+    private MockRepository _mockRepository;
+
+    private Mock<IOptions<AppSettings>> _mockOptionsAppSettings;
+    private Mock<IRepository<PostEntity>> _mockPostEntityRepo;
+    private Mock<ILogger<CreatePostCommandHandler>> _mockLogger2;
+    private Mock<IRepository<TagEntity>> _mockTagEntityRepo;
+    private Mock<IBlogAudit> _mockBlogAudit;
+    private Mock<IBlogConfig> _mockBlogConfig;
+    private Mock<IBlogCache> _mockBlogCache;
+
+    private static readonly Guid Uid = Guid.Parse("76169567-6ff3-42c0-b163-a883ff2ac4fb");
+    private readonly PostEntity _postEntity = new()
     {
-        private MockRepository _mockRepository;
+        Id = Uid,
+        Title = "Work 996 and Get into ICU",
+        Slug = "work-996-and-get-into-icu",
+        ContentLanguageCode = "en-us",
+        PostContent = "<p>996 is fubao</p>",
+        ContentAbstract = "996 is fubao",
+        CommentEnabled = true,
+        IsFeedIncluded = true,
+        IsPublished = true,
+        IsFeatured = true,
+        PostExtension = new() { Hits = 996, Likes = 251, PostId = Uid },
+        IsDeleted = false,
+        CreateTimeUtc = new(2020, 9, 9, 6, 35, 7),
+        LastModifiedUtc = new(2021, 2, 5, 1, 4, 4),
+        PubDateUtc = new(2020, 10, 5, 5, 6, 6),
+        Tags = new List<TagEntity> { new() { DisplayName = "996", Id = 996, NormalizedName = "996" } },
+        PostCategory = new List<PostCategoryEntity> { new() { PostId = Uid, CategoryId = Guid.Parse("b20b3a09-f436-4b42-877c-f6acdd16b105") } }
+    };
 
-        private Mock<IOptions<AppSettings>> _mockOptionsAppSettings;
-        private Mock<IRepository<PostEntity>> _mockPostEntityRepo;
-        private Mock<ILogger<CreatePostCommandHandler>> _mockLogger2;
-        private Mock<IRepository<TagEntity>> _mockTagEntityRepo;
-        private Mock<IBlogAudit> _mockBlogAudit;
-        private Mock<IConfiguration> _mockConfiguration;
-        private Mock<IBlogCache> _mockBlogCache;
+    [SetUp]
+    public void SetUp()
+    {
+        _mockRepository = new(MockBehavior.Default);
 
-        private static readonly Guid Uid = Guid.Parse("76169567-6ff3-42c0-b163-a883ff2ac4fb");
-        private readonly PostEntity _postEntity = new()
+        _mockOptionsAppSettings = _mockRepository.Create<IOptions<AppSettings>>();
+        _mockPostEntityRepo = _mockRepository.Create<IRepository<PostEntity>>();
+        _mockLogger2 = _mockRepository.Create<ILogger<CreatePostCommandHandler>>();
+        _mockTagEntityRepo = _mockRepository.Create<IRepository<TagEntity>>();
+        _mockBlogAudit = _mockRepository.Create<IBlogAudit>();
+        _mockBlogConfig = _mockRepository.Create<IBlogConfig>();
+        _mockBlogCache = _mockRepository.Create<IBlogCache>();
+
+        _mockBlogConfig.Setup(p => p.ContentSettings).Returns(new ContentSettings
         {
-            Id = Uid,
+            PostAbstractWords = 404
+        });
+    }
+
+    private IConfigurationRoot GetFakeConfiguration()
+    {
+        var config = @"{""TagNormalization"":{""."": ""dot""}}";
+        var builder = new ConfigurationBuilder();
+        builder.AddJsonStream(new MemoryStream(Encoding.UTF8.GetBytes(config)));
+        var configuration = builder.Build();
+
+        return configuration;
+    }
+
+    [Test]
+    public async Task CreateAsync_HTMLEditor_HappyPath()
+    {
+        _mockOptionsAppSettings.Setup(p => p.Value).Returns(new AppSettings
+        {
+            Editor = EditorChoice.Html
+        });
+
+        _mockPostEntityRepo.Setup(p => p.Any(It.IsAny<PostSpec>())).Returns(false);
+        _mockTagEntityRepo.Setup(p => p.GetAsync(It.IsAny<Expression<Func<TagEntity, bool>>>()))
+            .Returns(Task.FromResult((TagEntity)null));
+        _mockTagEntityRepo.Setup(p => p.AddAsync(It.IsAny<TagEntity>())).Returns(Task.FromResult(new TagEntity()));
+
+        var req = new PostEditModel
+        {
             Title = "Work 996 and Get into ICU",
             Slug = "work-996-and-get-into-icu",
-            ContentLanguageCode = "en-us",
-            PostContent = "<p>996 is fubao</p>",
-            ContentAbstract = "996 is fubao",
-            CommentEnabled = true,
-            ExposedToSiteMap = true,
-            IsFeedIncluded = true,
+            LanguageCode = "en-us",
+            EditorContent = "<p>996 is fubao</p>",
+            EnableComment = true,
+            FeedIncluded = true,
             IsPublished = true,
-            IsFeatured = true,
-            PostExtension = new() { Hits = 996, Likes = 251, PostId = Uid },
-            IsDeleted = false,
-            CreateTimeUtc = new(2020, 9, 9, 6, 35, 7),
-            LastModifiedUtc = new(2021, 2, 5, 1, 4, 4),
-            PubDateUtc = new(2020, 10, 5, 5, 6, 6),
-            Tags = new List<TagEntity> { new() { DisplayName = "996", Id = 996, NormalizedName = "996" } },
-            PostCategory = new List<PostCategoryEntity> { new() { PostId = Uid, CategoryId = Guid.Parse("b20b3a09-f436-4b42-877c-f6acdd16b105") } }
+            Featured = true,
+            Tags = "996,Fubao",
+            CategoryList = new() { new() { Id = Uid, IsChecked = true } }
         };
 
-        [SetUp]
-        public void SetUp()
+        var handler = new CreatePostCommandHandler(_mockPostEntityRepo.Object, _mockBlogAudit.Object,
+            _mockLogger2.Object, _mockTagEntityRepo.Object, _mockOptionsAppSettings.Object,
+            GetFakeConfiguration(), _mockBlogConfig.Object);
+        var result = await handler.Handle(new(req), default);
+
+        Assert.IsNotNull(result);
+        Assert.AreNotEqual(Guid.Empty, result.Id);
+        _mockPostEntityRepo.Verify(p => p.AddAsync(It.IsAny<PostEntity>()));
+    }
+
+    [Test]
+    public void UpdateAsync_NullPost()
+    {
+        _mockPostEntityRepo.Setup(p => p.GetAsync(Uid)).Returns(ValueTask.FromResult((PostEntity)null));
+        var handler = new UpdatePostCommandHandler(
+            _mockBlogAudit.Object,
+            GetFakeConfiguration(),
+            _mockOptionsAppSettings.Object,
+            _mockTagEntityRepo.Object,
+            _mockPostEntityRepo.Object,
+            _mockBlogCache.Object,
+            _mockBlogConfig.Object
+        );
+
+        Assert.ThrowsAsync<InvalidOperationException>(async () =>
         {
-            _mockRepository = new(MockBehavior.Default);
+            await handler.Handle(new(Uid, new()), default);
+        });
+    }
 
-            _mockOptionsAppSettings = _mockRepository.Create<IOptions<AppSettings>>();
-            _mockPostEntityRepo = _mockRepository.Create<IRepository<PostEntity>>();
-            _mockLogger2 = _mockRepository.Create<ILogger<CreatePostCommandHandler>>();
-            _mockTagEntityRepo = _mockRepository.Create<IRepository<TagEntity>>();
-            _mockBlogAudit = _mockRepository.Create<IBlogAudit>();
-            _mockConfiguration = _mockRepository.Create<IConfiguration>();
-            _mockBlogCache = _mockRepository.Create<IBlogCache>();
-        }
-
-        private IConfigurationRoot GetFakeConfiguration()
+    [Test]
+    public async Task UpdateAsync_HTMLEditor_HappyPath()
+    {
+        _mockPostEntityRepo.Setup(p => p.GetAsync(Uid)).Returns(ValueTask.FromResult(_postEntity));
+        _mockTagEntityRepo.Setup(p => p.Any(It.IsAny<Expression<Func<TagEntity, bool>>>())).Returns(false);
+        _mockTagEntityRepo.Setup(p => p.AddAsync(It.IsAny<TagEntity>())).Returns(Task.FromResult(new TagEntity()));
+        _mockOptionsAppSettings.Setup(p => p.Value).Returns(new AppSettings
         {
-            var config = @"{""TagNormalization"":{""."": ""dot""}}";
-            var builder = new ConfigurationBuilder();
-            builder.AddJsonStream(new MemoryStream(Encoding.UTF8.GetBytes(config)));
-            var configuration = builder.Build();
+            Editor = EditorChoice.Html
+        });
 
-            return configuration;
-        }
-
-        [Test]
-        public async Task CreateAsync_HTMLEditor_HappyPath()
+        var req = new PostEditModel
         {
-            _mockOptionsAppSettings.Setup(p => p.Value).Returns(new AppSettings
-            {
-                PostAbstractWords = 404,
-                Editor = EditorChoice.Html
-            });
+            Title = "Work 996 and Get into ICU",
+            Slug = "work-996-and-get-into-icu",
+            LanguageCode = "en-us",
+            EditorContent = "<p>996 is fubao</p>",
+            EnableComment = true,
+            FeedIncluded = true,
+            IsPublished = true,
+            Featured = true,
+            Tags = "996,Fubao",
+            CategoryList = new() { new() { Id = Uid, IsChecked = true } }
+        };
 
-            _mockPostEntityRepo.Setup(p => p.Any(It.IsAny<PostSpec>())).Returns(false);
-            _mockTagEntityRepo.Setup(p => p.GetAsync(It.IsAny<Expression<Func<TagEntity, bool>>>()))
-                .Returns(Task.FromResult((TagEntity)null));
-            _mockTagEntityRepo.Setup(p => p.AddAsync(It.IsAny<TagEntity>())).Returns(Task.FromResult(new TagEntity()));
+        var handler = new UpdatePostCommandHandler(
+            _mockBlogAudit.Object,
+            GetFakeConfiguration(),
+            _mockOptionsAppSettings.Object,
+            _mockTagEntityRepo.Object,
+            _mockPostEntityRepo.Object,
+            _mockBlogCache.Object,
+            _mockBlogConfig.Object
+        );
 
-            var req = new PostEditModel
-            {
-                Title = "Work 996 and Get into ICU",
-                Slug = "work-996-and-get-into-icu",
-                LanguageCode = "en-us",
-                EditorContent = "<p>996 is fubao</p>",
-                EnableComment = true,
-                ExposedToSiteMap = true,
-                FeedIncluded = true,
-                IsPublished = true,
-                Featured = true,
-                Tags = "996,Fubao",
-                CategoryList = new() { new() { Id = Uid, IsChecked = true } }
-            };
+        var result = await handler.Handle(new(Uid, req), default);
 
-            var handler = new CreatePostCommandHandler(_mockPostEntityRepo.Object, _mockBlogAudit.Object,
-                _mockLogger2.Object, _mockTagEntityRepo.Object, _mockOptionsAppSettings.Object,
-                GetFakeConfiguration());
-            var result = await handler.Handle(new(req), default);
+        Assert.IsNotNull(result);
+        Assert.AreNotEqual(Guid.Empty, result.Id);
+        _mockPostEntityRepo.Verify(p => p.UpdateAsync(It.IsAny<PostEntity>()));
+    }
 
-            Assert.IsNotNull(result);
-            Assert.AreNotEqual(Guid.Empty, result.Id);
-            _mockPostEntityRepo.Verify(p => p.AddAsync(It.IsAny<PostEntity>()));
-        }
+    [Test]
+    public async Task RestoreAsync_NullPost()
+    {
+        _mockPostEntityRepo.Setup(p => p.GetAsync(Guid.Empty)).Returns(ValueTask.FromResult((PostEntity)null));
 
-        [Test]
-        public void UpdateAsync_NullPost()
+        var handler = new RestorePostCommandHandler(_mockPostEntityRepo.Object, _mockBlogCache.Object,
+            _mockBlogAudit.Object);
+        await handler.Handle(new(Guid.Empty), default);
+
+        _mockPostEntityRepo.Verify(p => p.UpdateAsync(It.IsAny<PostEntity>()), Times.Never);
+    }
+
+    [Test]
+    public async Task RestoreAsync_OK()
+    {
+        var post = new PostEntity
         {
-            _mockPostEntityRepo.Setup(p => p.GetAsync(Uid)).Returns(ValueTask.FromResult((PostEntity)null));
-            var handler = new UpdatePostCommandHandler(
-                _mockBlogAudit.Object,
-                GetFakeConfiguration(),
-                _mockOptionsAppSettings.Object,
-                _mockTagEntityRepo.Object,
-                _mockPostEntityRepo.Object,
-                _mockBlogCache.Object
-            );
+            IsDeleted = true
+        };
 
-            Assert.ThrowsAsync<InvalidOperationException>(async () =>
-            {
-                await handler.Handle(new(Uid, new()), default);
-            });
-        }
+        _mockPostEntityRepo.Setup(p => p.GetAsync(Uid)).Returns(ValueTask.FromResult(post));
 
-        [Test]
-        public async Task UpdateAsync_HTMLEditor_HappyPath()
+        var handler = new RestorePostCommandHandler(_mockPostEntityRepo.Object, _mockBlogCache.Object,
+            _mockBlogAudit.Object);
+        await handler.Handle(new(Uid), default);
+
+        _mockPostEntityRepo.Verify(p => p.UpdateAsync(It.IsAny<PostEntity>()));
+        Assert.IsFalse(post.IsDeleted);
+    }
+
+    [TestCase(true)]
+    [TestCase(false)]
+    public async Task DeleteAsync_NullPost(bool softDelete)
+    {
+        _mockPostEntityRepo.Setup(p => p.GetAsync(Guid.Empty)).Returns(ValueTask.FromResult((PostEntity)null));
+
+        var handler = new DeletePostCommandHandler(_mockPostEntityRepo.Object, _mockBlogAudit.Object,
+            _mockBlogCache.Object);
+        await handler.Handle(new(Guid.Empty, softDelete), default);
+
+        _mockPostEntityRepo.Verify(p => p.UpdateAsync(It.IsAny<PostEntity>()), Times.Never);
+        _mockPostEntityRepo.Verify(p => p.DeleteAsync(It.IsAny<PostEntity>()), Times.Never);
+    }
+
+    [Test]
+    public async Task DeleteAsync_SoftDelete()
+    {
+        var post = new PostEntity
         {
-            _mockPostEntityRepo.Setup(p => p.GetAsync(Uid)).Returns(ValueTask.FromResult(_postEntity));
-            _mockTagEntityRepo.Setup(p => p.Any(It.IsAny<Expression<Func<TagEntity, bool>>>())).Returns(false);
-            _mockTagEntityRepo.Setup(p => p.AddAsync(It.IsAny<TagEntity>())).Returns(Task.FromResult(new TagEntity()));
-            _mockOptionsAppSettings.Setup(p => p.Value).Returns(new AppSettings
-            {
-                PostAbstractWords = 404,
-                Editor = EditorChoice.Html
-            });
+            IsDeleted = false
+        };
 
-            var req = new PostEditModel
-            {
-                Title = "Work 996 and Get into ICU",
-                Slug = "work-996-and-get-into-icu",
-                LanguageCode = "en-us",
-                EditorContent = "<p>996 is fubao</p>",
-                EnableComment = true,
-                ExposedToSiteMap = true,
-                FeedIncluded = true,
-                IsPublished = true,
-                Featured = true,
-                Tags = "996,Fubao",
-                CategoryList = new() { new() { Id = Uid, IsChecked = true } }
-            };
+        _mockPostEntityRepo.Setup(p => p.GetAsync(Uid)).Returns(ValueTask.FromResult(post));
 
-            var handler = new UpdatePostCommandHandler(
-                _mockBlogAudit.Object,
-                GetFakeConfiguration(),
-                _mockOptionsAppSettings.Object,
-                _mockTagEntityRepo.Object,
-                _mockPostEntityRepo.Object,
-                _mockBlogCache.Object
-               );
+        var handler = new DeletePostCommandHandler(_mockPostEntityRepo.Object, _mockBlogAudit.Object,
+            _mockBlogCache.Object);
+        await handler.Handle(new(Uid, true), default);
 
-            var result = await handler.Handle(new(Uid, req), default);
+        _mockPostEntityRepo.Verify(p => p.UpdateAsync(It.IsAny<PostEntity>()));
+        Assert.IsTrue(post.IsDeleted);
+    }
 
-            Assert.IsNotNull(result);
-            Assert.AreNotEqual(Guid.Empty, result.Id);
-            _mockPostEntityRepo.Verify(p => p.UpdateAsync(It.IsAny<PostEntity>()));
-        }
-
-        [Test]
-        public async Task RestoreAsync_NullPost()
+    [Test]
+    public async Task DeleteAsync_HardDelete()
+    {
+        var post = new PostEntity
         {
-            _mockPostEntityRepo.Setup(p => p.GetAsync(Guid.Empty)).Returns(ValueTask.FromResult((PostEntity)null));
+            IsDeleted = false
+        };
 
-            var handler = new RestorePostCommandHandler(_mockPostEntityRepo.Object, _mockBlogCache.Object,
-                _mockBlogAudit.Object);
-            await handler.Handle(new(Guid.Empty), default);
+        _mockPostEntityRepo.Setup(p => p.GetAsync(Uid)).Returns(ValueTask.FromResult(post));
 
-            _mockPostEntityRepo.Verify(p => p.UpdateAsync(It.IsAny<PostEntity>()), Times.Never);
-        }
+        var handler = new DeletePostCommandHandler(_mockPostEntityRepo.Object, _mockBlogAudit.Object,
+            _mockBlogCache.Object);
+        await handler.Handle(new(Uid), default);
 
-        [Test]
-        public async Task RestoreAsync_OK()
-        {
-            var post = new PostEntity
-            {
-                IsDeleted = true
-            };
+        _mockPostEntityRepo.Verify(p => p.DeleteAsync(It.IsAny<PostEntity>()));
+        Assert.IsFalse(post.IsDeleted);
+    }
 
-            _mockPostEntityRepo.Setup(p => p.GetAsync(Uid)).Returns(ValueTask.FromResult(post));
+    [Test]
+    public async Task PurgeRecycledAsync_OK()
+    {
+        IReadOnlyList<PostEntity> entities = new List<PostEntity> { _postEntity };
 
-            var handler = new RestorePostCommandHandler(_mockPostEntityRepo.Object, _mockBlogCache.Object,
-                _mockBlogAudit.Object);
-            await handler.Handle(new(Uid), default);
+        _mockPostEntityRepo.Setup(p => p.GetAsync(It.IsAny<ISpecification<PostEntity>>()))
+            .Returns(Task.FromResult(entities));
 
-            _mockPostEntityRepo.Verify(p => p.UpdateAsync(It.IsAny<PostEntity>()));
-            Assert.IsFalse(post.IsDeleted);
-        }
+        var handler = new PurgeRecycledCommandHandler(_mockBlogAudit.Object, _mockBlogCache.Object,
+            _mockPostEntityRepo.Object);
+        await handler.Handle(new(), default);
 
-        [TestCase(true)]
-        [TestCase(false)]
-        public async Task DeleteAsync_NullPost(bool softDelete)
-        {
-            _mockPostEntityRepo.Setup(p => p.GetAsync(Guid.Empty)).Returns(ValueTask.FromResult((PostEntity)null));
-
-            var handler = new DeletePostCommandHandler(_mockPostEntityRepo.Object, _mockBlogAudit.Object,
-                _mockBlogCache.Object);
-            await handler.Handle(new(Guid.Empty, softDelete), default);
-
-            _mockPostEntityRepo.Verify(p => p.UpdateAsync(It.IsAny<PostEntity>()), Times.Never);
-            _mockPostEntityRepo.Verify(p => p.DeleteAsync(It.IsAny<PostEntity>()), Times.Never);
-        }
-
-        [Test]
-        public async Task DeleteAsync_SoftDelete()
-        {
-            var post = new PostEntity
-            {
-                IsDeleted = false
-            };
-
-            _mockPostEntityRepo.Setup(p => p.GetAsync(Uid)).Returns(ValueTask.FromResult(post));
-
-            var handler = new DeletePostCommandHandler(_mockPostEntityRepo.Object, _mockBlogAudit.Object,
-                _mockBlogCache.Object);
-            await handler.Handle(new(Uid, true), default);
-
-            _mockPostEntityRepo.Verify(p => p.UpdateAsync(It.IsAny<PostEntity>()));
-            Assert.IsTrue(post.IsDeleted);
-        }
-
-        [Test]
-        public async Task DeleteAsync_HardDelete()
-        {
-            var post = new PostEntity
-            {
-                IsDeleted = false
-            };
-
-            _mockPostEntityRepo.Setup(p => p.GetAsync(Uid)).Returns(ValueTask.FromResult(post));
-
-            var handler = new DeletePostCommandHandler(_mockPostEntityRepo.Object, _mockBlogAudit.Object,
-                _mockBlogCache.Object);
-            await handler.Handle(new(Uid), default);
-
-            _mockPostEntityRepo.Verify(p => p.DeleteAsync(It.IsAny<PostEntity>()));
-            Assert.IsFalse(post.IsDeleted);
-        }
-
-        [Test]
-        public async Task PurgeRecycledAsync_OK()
-        {
-            IReadOnlyList<PostEntity> entities = new List<PostEntity> { _postEntity };
-
-            _mockPostEntityRepo.Setup(p => p.GetAsync(It.IsAny<ISpecification<PostEntity>>()))
-                .Returns(Task.FromResult(entities));
-
-            var handler = new PurgeRecycledCommandHandler(_mockBlogAudit.Object, _mockBlogCache.Object,
-                _mockPostEntityRepo.Object);
-            await handler.Handle(new(), default);
-
-            _mockPostEntityRepo.Verify(p => p.DeleteAsync(It.IsAny<IEnumerable<PostEntity>>()));
-        }
+        _mockPostEntityRepo.Verify(p => p.DeleteAsync(It.IsAny<IEnumerable<PostEntity>>()));
     }
 }

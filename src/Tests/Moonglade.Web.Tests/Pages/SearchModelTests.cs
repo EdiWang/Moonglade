@@ -9,83 +9,80 @@ using Moonglade.Core.TagFeature;
 using Moonglade.Web.Pages;
 using Moq;
 using NUnit.Framework;
-using System.Collections.Generic;
-using System.Threading.Tasks;
 
-namespace Moonglade.Web.Tests.Pages
+namespace Moonglade.Web.Tests.Pages;
+
+[TestFixture]
+
+public class SearchModelTests
 {
-    [TestFixture]
+    private MockRepository _mockRepository;
+    private Mock<IMediator> _mockMediator;
 
-    public class SearchModelTests
+    [SetUp]
+    public void SetUp()
     {
-        private MockRepository _mockRepository;
-        private Mock<IMediator> _mockMediator;
+        _mockRepository = new(MockBehavior.Default);
+        _mockMediator = _mockRepository.Create<IMediator>();
+    }
 
-        [SetUp]
-        public void SetUp()
+    private SearchModel CreateSearchModel()
+    {
+        return new(_mockMediator.Object);
+    }
+
+    [TestCase(null)]
+    [TestCase("")]
+    [TestCase(" ")]
+    public async Task OnGetAsync_EmptyTerm(string term)
+    {
+        var searchModel = CreateSearchModel();
+        var result = await searchModel.OnGetAsync(term);
+
+        Assert.IsInstanceOf<RedirectToPageResult>(result);
+    }
+
+    [Test]
+    public async Task OnGetAsync_ValidTerm()
+    {
+        var fakePosts = new List<PostDigest>
         {
-            _mockRepository = new(MockBehavior.Default);
-            _mockMediator = _mockRepository.Create<IMediator>();
-        }
-
-        private SearchModel CreateSearchModel()
-        {
-            return new(_mockMediator.Object);
-        }
-
-        [TestCase(null)]
-        [TestCase("")]
-        [TestCase(" ")]
-        public async Task OnGetAsync_EmptyTerm(string term)
-        {
-            var searchModel = CreateSearchModel();
-            var result = await searchModel.OnGetAsync(term);
-
-            Assert.IsInstanceOf<RedirectToPageResult>(result);
-        }
-
-        [Test]
-        public async Task OnGetAsync_ValidTerm()
-        {
-            var fakePosts = new List<PostDigest>
+            new()
             {
-                new()
+                Title = FakeData.Title2,
+                ContentAbstract = "This is Jack Ma's fubao",
+                LangCode = "en-us",
+                PubDateUtc = new(FakeData.Int2, 9, 6),
+                Slug = "fuck-jack-ma",
+                Tags = new Tag[] {new()
                 {
-                    Title = FakeData.Title2,
-                    ContentAbstract = "This is Jack Ma's fubao",
-                    LangCode = "en-us",
-                    PubDateUtc = new(FakeData.Int2, 9, 6),
-                    Slug = "fuck-jack-ma",
-                    Tags = new Tag[] {new()
-                    {
-                        DisplayName = "Fubao", NormalizedName = FakeData.ShortString1, Id = FakeData.Int2
-                    }}
-                }
-            };
+                    DisplayName = "Fubao", NormalizedName = FakeData.ShortString1, Id = FakeData.Int2
+                }}
+            }
+        };
 
-            _mockMediator.Setup(p => p.Send(It.IsAny<SearchPostQuery>(), default))
-                .Returns(Task.FromResult((IReadOnlyList<PostDigest>)fakePosts));
+        _mockMediator.Setup(p => p.Send(It.IsAny<SearchPostQuery>(), default))
+            .Returns(Task.FromResult((IReadOnlyList<PostDigest>)fakePosts));
 
-            var httpContext = new DefaultHttpContext();
-            var modelState = new ModelStateDictionary();
-            var actionContext = new ActionContext(httpContext, new(), new PageActionDescriptor(), modelState);
-            var modelMetadataProvider = new EmptyModelMetadataProvider();
-            var viewData = new ViewDataDictionary(modelMetadataProvider, modelState);
-            var tempData = new TempDataDictionary(httpContext, Mock.Of<ITempDataProvider>());
-            var pageContext = new PageContext(actionContext)
-            {
-                ViewData = viewData
-            };
+        var httpContext = new DefaultHttpContext();
+        var modelState = new ModelStateDictionary();
+        var actionContext = new ActionContext(httpContext, new(), new PageActionDescriptor(), modelState);
+        var modelMetadataProvider = new EmptyModelMetadataProvider();
+        var viewData = new ViewDataDictionary(modelMetadataProvider, modelState);
+        var tempData = new TempDataDictionary(httpContext, Mock.Of<ITempDataProvider>());
+        var pageContext = new PageContext(actionContext)
+        {
+            ViewData = viewData
+        };
 
-            var searchModel = new SearchModel(_mockMediator.Object)
-            {
-                PageContext = pageContext,
-                TempData = tempData
-            };
+        var searchModel = new SearchModel(_mockMediator.Object)
+        {
+            PageContext = pageContext,
+            TempData = tempData
+        };
 
-            var result = await searchModel.OnGetAsync(FakeData.ShortString2);
+        var result = await searchModel.OnGetAsync(FakeData.ShortString2);
 
-            Assert.IsNotNull(searchModel.Posts);
-        }
+        Assert.IsNotNull(searchModel.Posts);
     }
 }

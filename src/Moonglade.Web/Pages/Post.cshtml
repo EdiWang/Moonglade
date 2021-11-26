@@ -9,7 +9,6 @@
 @{
     ViewBag.BodyClass = "body-post-slug";
     var ec = Settings.Value.Editor;
-    var content = ContentProcessor.AddLazyLoadToImgTag(Model.Post.RawPostContent);
 }
 
 @section keywords {
@@ -20,7 +19,7 @@
 }
 
 @section meta {
-    @if (!Model.Post.ExposedToSiteMap)
+    @if (!Model.Post.IsFeedIncluded)
     {
         <meta name="robots" content="noindex, nofollow" />
     }
@@ -61,7 +60,7 @@
 }
 
 @section scripts {
-    <script src="~/js/3rd/highlight.pack.js"></script>
+    <script src="~/js/3rd/highlight.min.js"></script>
     <script>
         var fitImageToDevicePixelRatio = @BlogConfig.ImageSettings.FitImageToDevicePixelRatio.ToString().ToLower();
         var pid = $("article").data("postid");
@@ -148,11 +147,11 @@
     <section class="post-content clearfix">
         @if (ec == EditorChoice.Markdown)
         {
-            @Html.Raw(ContentProcessor.MarkdownToContent(content, ContentProcessor.MarkdownConvertType.Html, false))
+            @Html.Raw(ContentProcessor.MarkdownToContent(Model.Post.RawPostContent, ContentProcessor.MarkdownConvertType.Html, false))
         }
         else
         {
-            @Html.Raw(content)
+            @Html.Raw(Model.Post.RawPostContent)
         }
     </section>
 

@@ -1,13 +1,11 @@
 ﻿using Moonglade.Configuration;
-using System.Net.Http;
 using System.Text;
 
-namespace Moonglade.Notification.Client
+namespace Moonglade.Notification.Client;
+
+internal class NotificationContent<T> : StringContent where T : class
 {
-    internal class NotificationContent<T> : StringContent where T : class
-    {
-        public NotificationContent(NotificationRequest<T> req) :
-            base(req.ToJson(), Encoding.UTF8, "application/json")
-        { }
-    }
+    public NotificationContent(NotificationRequest<T> req) :
+        base(req.ToJson(), Encoding.UTF8, "application/json")
+    { }
 }

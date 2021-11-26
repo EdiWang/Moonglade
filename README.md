@@ -31,7 +31,7 @@ To quickly get it running on a new Linux machine without Docker, follow instruct
 
 Tools | Alternative
 --- | ---
-[Visual Studio 2019 v16.10+](https://visualstudio.microsoft.com/) | [Visual Studio Code](https://code.visualstudio.com/) with [.NET 5.0 SDK](http://dot.net)
+[Visual Studio 2022 v17.0+](https://visualstudio.microsoft.com/) | [Visual Studio Code](https://code.visualstudio.com/) with [.NET 6.0 SDK](http://dot.net)
 [SQL Server 2019](https://www.microsoft.com/en-us/sql-server/sql-server-2019) | [SQL Server LocalDB](https://docs.microsoft.com/en-us/sql/database-engine/configure-windows/sql-server-express-localdb?view=sql-server-ver15?WT.mc_id=AZ-MVP-5002809)
 
 ### 💾 Setup Database
@@ -150,5 +150,6 @@ There are a few individuals already setup thier blogs using Moonglade on Azure (
 - [HueiFeng](https://blog.stackable.cn/)
 - [Leslie Wang](https://lesliewxj.com/)
 - [AllenMasters](https://allenmasters.com)
+- [Hao's House](https://haxu.dev/)
 
 *Just Submit PR or issue if you want your blog to be listed here*
