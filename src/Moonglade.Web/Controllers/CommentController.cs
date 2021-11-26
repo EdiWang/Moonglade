@@ -13,7 +13,6 @@ public class CommentController : ControllerBase
 
     private readonly IMediator _mediator;
 
-    private readonly IBlogNotificationClient _notificationClient;
     private readonly ITimeZoneResolver _timeZoneResolver;
     private readonly IBlogConfig _blogConfig;
 
@@ -22,13 +21,11 @@ public class CommentController : ControllerBase
     public CommentController(
         IMediator mediator,
         IBlogConfig blogConfig,
-        ITimeZoneResolver timeZoneResolver,
-        IBlogNotificationClient notificationClient)
+        ITimeZoneResolver timeZoneResolver)
     {
         _mediator = mediator;
         _blogConfig = blogConfig;
         _timeZoneResolver = timeZoneResolver;
-        _notificationClient = notificationClient;
     }
 
     [HttpGet("list/{postId:guid}")]
@@ -77,7 +74,7 @@ public class CommentController : ControllerBase
             return Conflict(ModelState);
         }
 
-        if (_blogConfig.NotificationSettings.SendEmailOnNewComment && _notificationClient is not null)
+        if (_blogConfig.NotificationSettings.SendEmailOnNewComment)
         {
             _ = Task.Run(async () =>
             {

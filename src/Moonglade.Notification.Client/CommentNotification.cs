@@ -51,11 +51,11 @@ public class CommentNotificationHandler : INotificationHandler<CommentNotificati
 
         if (response.IsSuccessStatusCode)
         {
-            _logger.LogInformation($"Test email is sent, server response: '{respBody}'");
+            _logger.LogInformation($"Email is sent, server response: '{respBody}'");
         }
         else
         {
-            throw new($"Test email sending failed, response code: '{response.StatusCode}', response body: '{respBody}'");
+            throw new($"Email sending failed, response code: '{response.StatusCode}', response body: '{respBody}'");
         }
     }
 }

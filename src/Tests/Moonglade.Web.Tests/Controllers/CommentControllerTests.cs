@@ -4,7 +4,6 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.DependencyInjection;
 using Moonglade.Comments;
 using Moonglade.Configuration;
-using Moonglade.Notification.Client;
 using Moonglade.Web.Controllers;
 using Moq;
 using NUnit.Framework;
@@ -18,7 +17,6 @@ public class CommentControllerTests
 
     private Mock<IMediator> _mockMediator;
     private Mock<IBlogConfig> _mockBlogConfig;
-    private Mock<IBlogNotificationClient> _mockBlogNotificationClient;
     private Mock<ITimeZoneResolver> _mockTimeZoneResolver;
     private Mock<IServiceScopeFactory> _mockServiceScopeFactory;
 
@@ -30,7 +28,6 @@ public class CommentControllerTests
         _mockMediator = _mockRepository.Create<IMediator>();
 
         _mockBlogConfig = _mockRepository.Create<IBlogConfig>();
-        _mockBlogNotificationClient = _mockRepository.Create<IBlogNotificationClient>();
         _mockTimeZoneResolver = _mockRepository.Create<ITimeZoneResolver>();
         _mockServiceScopeFactory = _mockRepository.Create<IServiceScopeFactory>();
     }
@@ -40,8 +37,7 @@ public class CommentControllerTests
         return new(
             _mockMediator.Object,
             _mockBlogConfig.Object,
-            _mockTimeZoneResolver.Object,
-            _mockBlogNotificationClient.Object);
+            _mockTimeZoneResolver.Object);
     }
 
     [Test]
