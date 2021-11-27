@@ -25,8 +25,7 @@
       "launchBrowser": true,
       "environmentVariables": {
         "ASPNETCORE_ENVIRONMENT": "Development",
-        "MOONGLADE_TAGS": "local, dev",
-        "ASPNETCORE_HOSTINGSTARTUPASSEMBLIES": "Microsoft.AspNetCore.Mvc.Razor.RuntimeCompilation"
+        "MOONGLADE_TAGS": "local, dev"
       },
       "applicationUrl": "https://localhost:1055;http://localhost:1050"
     }
