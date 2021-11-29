@@ -109,6 +109,8 @@ public class ImageController : ControllerBase
         await using var stream = new MemoryStream();
         await file.CopyToAsync(stream);
 
+        stream.Position = 0;
+
         // Add watermark
         MemoryStream watermarkedStream = null;
         if (_blogConfig.ImageSettings.IsWatermarkEnabled && !skipWatermark)
