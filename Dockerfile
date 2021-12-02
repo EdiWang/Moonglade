@@ -1,4 +1,9 @@
 FROM mcr.microsoft.com/dotnet/aspnet:6.0-alpine AS base
+
+# Fix CultureNotFoundException
+RUN apk add --no-cache icu-libs
+ENV DOTNET_SYSTEM_GLOBALIZATION_INVARIANT=false
+
 WORKDIR /app
 EXPOSE 80
 EXPOSE 443
