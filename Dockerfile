@@ -1,8 +1,7 @@
 FROM mcr.microsoft.com/dotnet/aspnet:6.0 AS base
 
 # Fix Captcha
-#RUN apk add --no-cache msttcorefonts-installer fontconfig
-#RUN update-ms-fonts
+RUN apt-get install -y fonts-open-sans
 
 WORKDIR /app
 EXPOSE 80
