@@ -1,5 +1,9 @@
 FROM mcr.microsoft.com/dotnet/aspnet:6.0-alpine AS base
 
+# Fix Captcha
+RUN apk add --no-cache msttcorefonts-installer fontconfig
+RUN update-ms-fonts
+
 # Fix CultureNotFoundException
 RUN apk add --no-cache icu-libs
 ENV DOTNET_SYSTEM_GLOBALIZATION_INVARIANT=false
