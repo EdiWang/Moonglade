@@ -1,7 +1,7 @@
 FROM mcr.microsoft.com/dotnet/aspnet:6.0 AS base
 
-# Fix Captcha
-RUN apt-get install -y fonts-open-sans
+# Captcha font
+COPY ./OpenSans-Regular.ttf /usr/share/fonts/OpenSans-Regular.ttf
 
 WORKDIR /app
 EXPOSE 80
