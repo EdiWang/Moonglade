@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Authentication.OpenIdConnect;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Options;
+using Microsoft.Identity.Web;
 
 namespace Moonglade.Auth;
 
@@ -18,20 +19,11 @@ public static class ServiceCollectionExtensions
         switch (authentication.Provider)
         {
             case AuthenticationProvider.AzureAD:
-                services.Configure<AzureAdOption>(option =>
-                {
-                    option.CallbackPath = authentication.AzureAd.CallbackPath;
-                    option.ClientId = authentication.AzureAd.ClientId;
-                    option.Domain = authentication.AzureAd.Domain;
-                    option.Instance = authentication.AzureAd.Instance;
-                    option.TenantId = authentication.AzureAd.TenantId;
-                }).AddSingleton<IConfigureOptions<OpenIdConnectOptions>, ConfigureAzureOptions>();
-
                 services.AddAuthentication(options =>
                 {
                     options.DefaultScheme = CookieAuthenticationDefaults.AuthenticationScheme;
                     options.DefaultChallengeScheme = OpenIdConnectDefaults.AuthenticationScheme;
-                }).AddOpenIdConnect().AddCookie().AddApiKeySupport(_ => { });
+                }).AddApiKeySupport(_ => { }).AddMicrosoftIdentityWebApp(configuration.GetSection("Authentication:AzureAd"));
 
                 break;
             case AuthenticationProvider.Local:
@@ -49,29 +41,5 @@ public static class ServiceCollectionExtensions
         }
 
         return services;
-    }
-
-    private class ConfigureAzureOptions : IConfigureNamedOptions<OpenIdConnectOptions>
-    {
-        private readonly AzureAdOption _azureOptions;
-
-        public ConfigureAzureOptions(IOptions<AzureAdOption> azureOptions)
-        {
-            _azureOptions = azureOptions.Value;
-        }
-
-        public void Configure(string name, OpenIdConnectOptions options)
-        {
-            options.ClientId = _azureOptions.ClientId;
-            options.Authority = $"{_azureOptions.Instance}{_azureOptions.TenantId}";
-            options.UseTokenLifetime = true;
-            options.CallbackPath = _azureOptions.CallbackPath;
-            options.RequireHttpsMetadata = false;
-        }
-
-        public void Configure(OpenIdConnectOptions options)
-        {
-            Configure(Options.DefaultName, options);
-        }
     }
 }
