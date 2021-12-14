@@ -12,13 +12,15 @@ public static class ServiceCollectionExtensions
     {
         services.AddTransient<IDbConnection>(_ => new SqlConnection(connectionString));
         services.AddScoped(typeof(IRepository<>), typeof(DbContextRepository<>));
-        services.AddSqlServer<BlogDbContext>(connectionString, options =>
-        {
-            options.EnableRetryOnFailure(3, TimeSpan.FromSeconds(30), null);
-        }, builder =>
-        {
-            builder.UseLazyLoadingProxies();
-        });
+
+        services.AddDbContext<BlogDbContext>(options =>
+        options.UseLazyLoadingProxies()
+               .UseSqlServer(connectionString, builder =>
+               {
+                   builder.EnableRetryOnFailure(3, TimeSpan.FromSeconds(30), null);
+               }).
+               EnableDetailedErrors());
+
         services.AddScoped<IBlogAudit, BlogAudit>();
 
         return services;
