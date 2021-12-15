@@ -3,6 +3,7 @@ using Moonglade.Core.PostFeature;
 
 namespace Moonglade.Web.Pages;
 
+[AddXRobotsTag("noindex, nofollow")]
 public class SearchModel : PageModel
 {
     private readonly IMediator _mediator;

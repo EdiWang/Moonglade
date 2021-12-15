@@ -99,7 +99,7 @@
       ]
     },
     {
-      "library": "bootstrap-icons@1.7.1",
+      "library": "bootstrap-icons@1.7.2",
       "destination": "wwwroot/lib/bootstrap-icons/",
       "files": [
         "font/bootstrap-icons.min.css",
