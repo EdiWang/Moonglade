@@ -9,7 +9,7 @@
     <FrameworkReference Include="Microsoft.AspNetCore.App" />
 
     <PackageReference Include="Microsoft.Win32.Registry" Version="6.0.0-preview.5.21301.5" />
-    <PackageReference Include="NUglify" Version="1.16.4" />
+    <PackageReference Include="NUglify" Version="1.17.2" />
     <PackageReference Include="Markdig" Version="0.26.0" />
   </ItemGroup>
 
