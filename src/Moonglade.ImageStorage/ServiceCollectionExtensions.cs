@@ -40,7 +40,7 @@ public static class ServiceCollectionExtensions
                 break;
             case "filesystem":
                 var path = settings.FileSystemSettings.Path;
-                var fullPath = FileSystemImageStorage.ResolveImageStoragePath(Options.ContentRootPath, path);
+                var fullPath = FileSystemImageStorage.ResolveImageStoragePath(path);
                 services.AddSingleton(_ => new FileSystemImageConfiguration(fullPath));
                 services.AddSingleton<IBlogImageStorage, FileSystemImageStorage>();
                 break;

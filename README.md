@@ -91,10 +91,10 @@ You can also choose File System for image storage, but this will make your site 
 ```json
 "Provider": "filesystem",
 "FileSystemSettings": {
-  "Path": "${basedir}\\UploadedImages"
+  "Path": "C:\\UploadedImages"
 }
 ```
-The ```Path``` can be relative or absolute. ```"$\{basedir\}"``` represents the website's current directory. 
+The ```Path``` can be relative or absolute.
 
 #### [Minio Blob Storage](https://min.io/) (Free)
 
