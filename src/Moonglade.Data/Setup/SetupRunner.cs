@@ -111,18 +111,10 @@ public class SetupRunner
         }
     }
 
-    public bool TestDatabaseConnection(Action<Exception> errorLogAction = null)
+    public bool TestDatabaseConnection()
     {
-        try
-        {
-            var result = _conn.ExecuteScalar<int>("SELECT 1");
-            return result == 1;
-        }
-        catch (Exception e)
-        {
-            errorLogAction?.Invoke(e);
-            return false;
-        }
+        var result = _conn.ExecuteScalar<int>("SELECT 1");
+        return result == 1;
     }
 
     private static string GetEmbeddedSqlScript(string scriptName)

@@ -169,6 +169,7 @@ builder.Services.AddPingback()
 #endregion
 
 var app = builder.Build();
+app.Lifetime.ApplicationStopping.Register(() => { app.Logger.LogInformation("Moonglade is stopping..."); });
 
 #region First Run
 
@@ -179,11 +180,15 @@ using (var scope = app.Services.CreateScope())
 
     var dbConnection = services.GetRequiredService<IDbConnection>();
     var setupHelper = new SetupRunner(dbConnection);
-    if (!setupHelper.TestDatabaseConnection(ex =>
-        {
-            Trace.WriteLine(ex);
-            Console.WriteLine(ex);
-        })) return;
+    try
+    {
+        if (!setupHelper.TestDatabaseConnection()) return;
+    }
+    catch (Exception e)
+    {
+        app.Logger.LogCritical(e, e.Message);
+        return;
+    }
 
     if (setupHelper.IsFirstRun())
     {
@@ -199,10 +204,9 @@ using (var scope = app.Services.CreateScope())
         }
     }
 
-    var mediator = services.GetRequiredService<IMediator>();
-
     try
     {
+        var mediator = services.GetRequiredService<IMediator>();
         var iconData = await mediator.Send(new GetAssetDataQuery(AssetId.SiteIconBase64));
         MemoryStreamIconGenerator.GenerateIcons(iconData, env.WebRootPath, app.Logger);
     }
@@ -219,14 +223,6 @@ using (var scope = app.Services.CreateScope())
 
 app.UseForwardedHeaders();
 
-if (app.Environment.IsDevelopment())
-{
-    app.UseSwagger().UseSwaggerUI(c =>
-        {
-            c.SwaggerEndpoint("/swagger/v1/swagger.json", "Moonglade API V1");
-        });
-}
-
 if (!app.Environment.IsProduction())
 {
     app.Logger.LogWarning($"Running in environment: {app.Environment.EnvironmentName}. Application Insights disabled.");
@@ -235,11 +231,6 @@ if (!app.Environment.IsProduction())
     tc.DisableTelemetry = true;
     TelemetryDebugWriter.IsTracingDisabled = true;
 }
-
-app.Lifetime.ApplicationStopping.Register(() =>
-{
-    app.Logger.LogInformation("Moonglade is stopping...");
-});
 
 app.UseCustomCss(options => options.MaxContentLength = 10240);
 app.UseManifest(options => options.ThemeColor = "#333333");
@@ -271,6 +262,10 @@ if (app.Configuration.GetValue<bool>("PreferAzureAppConfiguration"))
 
 if (app.Environment.IsDevelopment())
 {
+    app.UseSwagger().UseSwaggerUI(c =>
+    {
+        c.SwaggerEndpoint("/swagger/v1/swagger.json", "Moonglade API V1");
+    });
     app.UseRouteDebugger().UseDeveloperExceptionPage();
 }
 else

@@ -108,17 +108,7 @@ public class SetupHelperTests
         var setupHelper = new SetupRunner(_mockDbConnection.Object);
 
         var result = setupHelper.TestDatabaseConnection();
+
         Assert.AreEqual(true, result);
-    }
-
-    [Test]
-    public void TestDatabaseConnection_Exception_NoLogger()
-    {
-        _mockDbConnection.SetupDapper(c => c.ExecuteScalar<int>(It.IsAny<string>(), null, null, null, null))
-            .Throws(new DataException("996"));
-
-        var setupHelper = new SetupRunner(_mockDbConnection.Object);
-        var result = setupHelper.TestDatabaseConnection();
-        Assert.AreEqual(false, result);
     }
 }
