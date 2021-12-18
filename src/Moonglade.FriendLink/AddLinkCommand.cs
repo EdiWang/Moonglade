@@ -1,5 +1,4 @@
 ﻿using MediatR;
-using Moonglade.Data;
 using Moonglade.Data.Entities;
 using Moonglade.Data.Infrastructure;
 using Moonglade.Utils;
@@ -19,12 +18,10 @@ public class AddLinkCommand : IRequest
 public class AddLinkCommandHandler : IRequestHandler<AddLinkCommand>
 {
     private readonly IRepository<FriendLinkEntity> _friendlinkRepo;
-    private readonly IBlogAudit _audit;
 
-    public AddLinkCommandHandler(IRepository<FriendLinkEntity> friendlinkRepo, IBlogAudit audit)
+    public AddLinkCommandHandler(IRepository<FriendLinkEntity> friendlinkRepo)
     {
         _friendlinkRepo = friendlinkRepo;
-        _audit = audit;
     }
 
     public async Task<Unit> Handle(AddLinkCommand request, CancellationToken cancellationToken)
@@ -42,7 +39,6 @@ public class AddLinkCommandHandler : IRequestHandler<AddLinkCommand>
         };
 
         await _friendlinkRepo.AddAsync(link);
-        await _audit.AddEntry(BlogEventType.Content, BlogEventId.FriendLinkCreated, "FriendLink created.");
 
         return Unit.Value;
     }

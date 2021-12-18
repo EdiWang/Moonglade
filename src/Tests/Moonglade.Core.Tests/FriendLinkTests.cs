@@ -12,14 +12,12 @@ namespace Moonglade.Core.Tests;
 public class FriendLinkTests
 {
     private MockRepository _mockRepository;
-    private Mock<IBlogAudit> _mockBlogAudit;
     private Mock<IRepository<FriendLinkEntity>> _mockFriendlinkRepo;
 
     [SetUp]
     public void Setup()
     {
         _mockRepository = new(MockBehavior.Default);
-        _mockBlogAudit = _mockRepository.Create<IBlogAudit>();
         _mockFriendlinkRepo = _mockRepository.Create<IRepository<FriendLinkEntity>>();
     }
 
@@ -46,7 +44,7 @@ public class FriendLinkTests
     [Test]
     public void AddAsync_InvalidUrl()
     {
-        var handler = new AddLinkCommandHandler(_mockFriendlinkRepo.Object, _mockBlogAudit.Object);
+        var handler = new AddLinkCommandHandler(_mockFriendlinkRepo.Object);
 
         Assert.ThrowsAsync<InvalidOperationException>(async () =>
         {
@@ -73,7 +71,7 @@ public class FriendLinkTests
 
         _mockFriendlinkRepo.Setup(p => p.AddAsync(It.IsAny<FriendLinkEntity>())).Returns(tcs.Task);
 
-        var handler = new AddLinkCommandHandler(_mockFriendlinkRepo.Object, _mockBlogAudit.Object);
+        var handler = new AddLinkCommandHandler(_mockFriendlinkRepo.Object);
         await handler.Handle(new(new()
         {
             LinkUrl = "https://dot.net",
@@ -86,17 +84,16 @@ public class FriendLinkTests
     [Test]
     public async Task DeleteAsync_OK()
     {
-        var handler = new DeleteLinkCommandHandler(_mockFriendlinkRepo.Object, _mockBlogAudit.Object);
+        var handler = new DeleteLinkCommandHandler(_mockFriendlinkRepo.Object);
         await handler.Handle(new(Guid.Empty), CancellationToken.None);
 
-        _mockBlogAudit.Verify();
         Assert.Pass();
     }
 
     [Test]
     public void UpdateAsync_InvalidUrl()
     {
-        var handler = new UpdateLinkCommandHandler(_mockFriendlinkRepo.Object, _mockBlogAudit.Object);
+        var handler = new UpdateLinkCommandHandler(_mockFriendlinkRepo.Object);
 
         Assert.ThrowsAsync<InvalidOperationException>(async () =>
         {
@@ -113,7 +110,7 @@ public class FriendLinkTests
     {
         _mockFriendlinkRepo.Setup(p => p.GetAsync(It.IsAny<Guid>()));
 
-        var handler = new UpdateLinkCommandHandler(_mockFriendlinkRepo.Object, _mockBlogAudit.Object);
+        var handler = new UpdateLinkCommandHandler(_mockFriendlinkRepo.Object);
         await handler.Handle(new(Guid.Empty, new()
         {
             LinkUrl = "https://996.icu",
@@ -133,7 +130,7 @@ public class FriendLinkTests
             Title = "Choice of 955"
         }));
 
-        var handler = new UpdateLinkCommandHandler(_mockFriendlinkRepo.Object, _mockBlogAudit.Object);
+        var handler = new UpdateLinkCommandHandler(_mockFriendlinkRepo.Object);
         await handler.Handle(new(Guid.Empty, new()
         {
             LinkUrl = "https://996.icu",
@@ -141,6 +138,5 @@ public class FriendLinkTests
         }), default);
 
         _mockFriendlinkRepo.Verify(p => p.UpdateAsync(It.IsAny<FriendLinkEntity>()));
-        _mockBlogAudit.Verify(p => p.AddEntry(BlogEventType.Content, BlogEventId.FriendLinkUpdated, It.IsAny<string>()));
     }
 }

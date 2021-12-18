@@ -50,9 +50,5 @@ public enum BlogEventId
 
     MenuCreated = 9001,
     MenuUpdated = 9002,
-    MenuDeleted = 9003,
-
-    FriendLinkCreated = 10001,
-    FriendLinkUpdated = 10002,
-    FriendLinkDeleted = 10003,
+    MenuDeleted = 9003
 }
