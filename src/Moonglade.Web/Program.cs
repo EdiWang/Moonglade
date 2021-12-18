@@ -6,12 +6,10 @@ using Microsoft.ApplicationInsights.Extensibility.Implementation;
 using Microsoft.AspNetCore.HttpOverrides;
 using Microsoft.AspNetCore.Rewrite;
 using Microsoft.FeatureManagement;
-using Moonglade.Data.Setup;
 using Moonglade.Notification.Client;
 using Moonglade.Pingback;
 using Moonglade.Syndication;
 using SixLabors.Fonts;
-using System.Data;
 using System.Diagnostics;
 using System.Globalization;
 using System.Text.Encodings.Web;
@@ -169,55 +167,9 @@ builder.Services.AddPingback()
 #endregion
 
 var app = builder.Build();
+await app.InitStartUp();
+
 app.Lifetime.ApplicationStopping.Register(() => { app.Logger.LogInformation("Moonglade is stopping..."); });
-
-#region First Run
-
-using (var scope = app.Services.CreateScope())
-{
-    var services = scope.ServiceProvider;
-    var env = services.GetRequiredService<IWebHostEnvironment>();
-
-    var dbConnection = services.GetRequiredService<IDbConnection>();
-    var setupHelper = new SetupRunner(dbConnection);
-    try
-    {
-        if (!setupHelper.TestDatabaseConnection()) return;
-    }
-    catch (Exception e)
-    {
-        app.Logger.LogCritical(e, e.Message);
-        return;
-    }
-
-    if (setupHelper.IsFirstRun())
-    {
-        try
-        {
-            app.Logger.LogInformation("Initializing first run configuration...");
-            setupHelper.InitFirstRun();
-            app.Logger.LogInformation("Database setup successfully.");
-        }
-        catch (Exception e)
-        {
-            app.Logger.LogCritical(e, e.Message);
-        }
-    }
-
-    try
-    {
-        var mediator = services.GetRequiredService<IMediator>();
-        var iconData = await mediator.Send(new GetAssetDataQuery(AssetId.SiteIconBase64));
-        MemoryStreamIconGenerator.GenerateIcons(iconData, env.WebRootPath, app.Logger);
-    }
-    catch (Exception e)
-    {
-        // Non critical error, just log, do not block application start
-        app.Logger.LogError(e, e.Message);
-    }
-}
-
-#endregion
 
 #region Middleware
 
