@@ -205,12 +205,8 @@ using (var scope = app.Services.CreateScope())
 
     try
     {
-        app.Logger.LogInformation("Generating site icons");
-
         var iconData = await mediator.Send(new GetAssetDataQuery(AssetId.SiteIconBase64));
         MemoryStreamIconGenerator.GenerateIcons(iconData, env.WebRootPath, app.Logger);
-
-        app.Logger.LogInformation($"Generated {MemoryStreamIconGenerator.SiteIconDictionary.Count} icon(s). \n{JsonSerializer.Serialize(MemoryStreamIconGenerator.SiteIconDictionary.Select(p => p.Key).OrderBy(x => x))}");
     }
     catch (Exception e)
     {
