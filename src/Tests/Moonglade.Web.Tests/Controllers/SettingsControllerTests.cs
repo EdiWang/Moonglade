@@ -137,7 +137,7 @@ public class SettingsControllerTests
         var result = await settingsController.General(new(model), tZoneResolverMock.Object);
 
         Assert.IsInstanceOf<NoContentResult>(result);
-        _mockBlogConfig.Verify(p => p.SaveAsync(It.IsAny<GeneralSettings>()));
+        _mockMediator.Verify(p => p.Send(It.IsAny<SaveBlogConfigurationCommand>(), CancellationToken.None));
         _mockBlogAudit.Verify(p => p.AddEntry(BlogEventType.Settings, BlogEventId.SettingsSavedGeneral, It.IsAny<string>()));
     }
 
@@ -151,7 +151,7 @@ public class SettingsControllerTests
         var result = await settingsController.Content(new(model));
 
         Assert.IsInstanceOf<NoContentResult>(result);
-        _mockBlogConfig.Verify(p => p.SaveAsync(It.IsAny<ContentSettings>()));
+        _mockMediator.Verify(p => p.Send(It.IsAny<SaveBlogConfigurationCommand>(), CancellationToken.None));
         _mockBlogAudit.Verify(p => p.AddEntry(BlogEventType.Settings, BlogEventId.SettingsSavedContent, It.IsAny<string>()));
     }
 
@@ -165,7 +165,7 @@ public class SettingsControllerTests
         var result = await settingsController.Notification(new(model));
 
         Assert.IsInstanceOf<NoContentResult>(result);
-        _mockBlogConfig.Verify(p => p.SaveAsync(It.IsAny<NotificationSettings>()));
+        _mockMediator.Verify(p => p.Send(It.IsAny<SaveBlogConfigurationCommand>(), CancellationToken.None));
         _mockBlogAudit.Verify(p => p.AddEntry(BlogEventType.Settings, BlogEventId.SettingsSavedNotification, It.IsAny<string>()));
     }
 
@@ -187,7 +187,7 @@ public class SettingsControllerTests
         var result = await settingsController.Subscription(new(model));
 
         Assert.IsInstanceOf<NoContentResult>(result);
-        _mockBlogConfig.Verify(p => p.SaveAsync(It.IsAny<FeedSettings>()));
+        _mockMediator.Verify(p => p.Send(It.IsAny<SaveBlogConfigurationCommand>(), CancellationToken.None));
         _mockBlogAudit.Verify(p => p.AddEntry(BlogEventType.Settings, BlogEventId.SettingsSavedSubscription, It.IsAny<string>()));
     }
 
@@ -201,7 +201,7 @@ public class SettingsControllerTests
         var result = await settingsController.Image(new(model));
 
         Assert.IsInstanceOf<NoContentResult>(result);
-        _mockBlogConfig.Verify(p => p.SaveAsync(It.IsAny<ImageSettings>()));
+        _mockMediator.Verify(p => p.Send(It.IsAny<SaveBlogConfigurationCommand>(), CancellationToken.None));
         _mockBlogAudit.Verify(p => p.AddEntry(BlogEventType.Settings, BlogEventId.SettingsSavedImage, It.IsAny<string>()));
     }
 
@@ -231,7 +231,7 @@ public class SettingsControllerTests
         var result = await settingsController.Advanced(new(model));
 
         Assert.IsInstanceOf<NoContentResult>(result);
-        _mockBlogConfig.Verify(p => p.SaveAsync(It.IsAny<AdvancedSettings>()));
+        _mockMediator.Verify(p => p.Send(It.IsAny<SaveBlogConfigurationCommand>(), CancellationToken.None));
         _mockBlogAudit.Verify(p => p.AddEntry(BlogEventType.Settings, BlogEventId.SettingsSavedAdvanced, It.IsAny<string>()));
     }
 
@@ -267,7 +267,7 @@ public class SettingsControllerTests
         var result = await settingsController.Image(new(model));
 
         Assert.IsInstanceOf<NoContentResult>(result);
-        _mockBlogConfig.Verify(p => p.SaveAsync(It.IsAny<ImageSettings>()));
+        _mockMediator.Verify(p => p.Send(It.IsAny<SaveBlogConfigurationCommand>(), CancellationToken.None));
         _mockBlogAudit.Verify(p => p.AddEntry(BlogEventType.Settings, BlogEventId.SettingsSavedImage, It.IsAny<string>()));
     }
 
@@ -319,7 +319,6 @@ public class SettingsControllerTests
         var result = await settingsController.CustomStyleSheet(new(model));
 
         Assert.IsInstanceOf<BadRequestObjectResult>(result);
-        _mockBlogConfig.Verify(p => p.SaveAsync(It.IsAny<CustomStyleSheetSettings>()), Times.Never);
         _mockBlogAudit.Verify(p => p.AddEntry(BlogEventType.Settings, BlogEventId.SettingsSavedAdvanced, It.IsAny<string>()), Times.Never);
     }
 
@@ -338,7 +337,6 @@ public class SettingsControllerTests
         var result = await settingsController.CustomStyleSheet(new(model));
 
         Assert.IsInstanceOf<BadRequestObjectResult>(result);
-        _mockBlogConfig.Verify(p => p.SaveAsync(It.IsAny<CustomStyleSheetSettings>()), Times.Never);
         _mockBlogAudit.Verify(p => p.AddEntry(BlogEventType.Settings, BlogEventId.SettingsSavedAdvanced, It.IsAny<string>()), Times.Never);
     }
 
@@ -357,7 +355,7 @@ public class SettingsControllerTests
         var result = await settingsController.CustomStyleSheet(new(model));
 
         Assert.IsInstanceOf<NoContentResult>(result);
-        _mockBlogConfig.Verify(p => p.SaveAsync(It.IsAny<CustomStyleSheetSettings>()));
+        _mockMediator.Verify(p => p.Send(It.IsAny<SaveBlogConfigurationCommand>(), CancellationToken.None));
         _mockBlogAudit.Verify(p => p.AddEntry(BlogEventType.Settings, BlogEventId.SettingsSavedAdvanced, It.IsAny<string>()));
     }
 

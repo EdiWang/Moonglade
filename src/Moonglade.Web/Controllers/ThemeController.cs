@@ -37,7 +37,11 @@ public class ThemeController : ControllerBase
                 if (_blogConfig.GeneralSettings.ThemeId == 0)
                 {
                     _blogConfig.GeneralSettings.ThemeId = 1;
-                    await _blogConfig.SaveAsync(_blogConfig.GeneralSettings);
+
+                    await _mediator.Send(new SaveBlogConfigurationCommand(_blogConfig.GeneralSettings));
+
+                    var configDic = await _mediator.Send(new GetAllConfigurationsQuery());
+                    _blogConfig.Initialize(configDic);
                 }
 
                 var data = await _mediator.Send(new GetStyleSheetQuery(_blogConfig.GeneralSettings.ThemeId));

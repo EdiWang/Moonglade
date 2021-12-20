@@ -11,6 +11,7 @@ public static class WebApplicationExtensions
         var services = scope.ServiceProvider;
         var env = services.GetRequiredService<IWebHostEnvironment>();
         var mediator = services.GetRequiredService<IMediator>();
+        var blogConfig = services.GetRequiredService<IBlogConfig>();
 
         var dbConnection = services.GetRequiredService<IDbConnection>();
         var setupHelper = new SetupRunner(dbConnection);
@@ -41,7 +42,6 @@ public static class WebApplicationExtensions
         {
             // Migration v11.9-v11.10
             // TODO: Remove this code in v11.11
-            var blogConfig = services.GetRequiredService<IBlogConfig>();
 
             // Sidebar
             var sidebarPitch = await mediator.Send(new GetHtmlPitchQuery(PitchKey.Sidebar));
@@ -76,6 +76,10 @@ public static class WebApplicationExtensions
                 }
             }
         }
+
+        // Init Blog Configuration
+        var configDic = await mediator.Send(new GetAllConfigurationsQuery());
+        blogConfig.Initialize(configDic);
 
         try
         {

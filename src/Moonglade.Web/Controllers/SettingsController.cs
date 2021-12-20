@@ -93,7 +93,7 @@ public class SettingsController : ControllerBase
         _blogConfig.GeneralSettings = model;
         _blogConfig.GeneralSettings.TimeZoneUtcOffset = timeZoneResolver.GetTimeSpanByZoneId(model.TimeZoneId).ToString();
 
-        await _blogConfig.SaveAsync(_blogConfig.GeneralSettings);
+        await SaveAsync(_blogConfig.GeneralSettings);
 
         AppDomain.CurrentDomain.SetData("CurrentThemeColor", null);
 
@@ -109,7 +109,7 @@ public class SettingsController : ControllerBase
         var model = wrapperModel.ViewModel;
         _blogConfig.ContentSettings = model;
 
-        await _blogConfig.SaveAsync(_blogConfig.ContentSettings);
+        await SaveAsync(_blogConfig.ContentSettings);
         await _blogAudit.AddEntry(BlogEventType.Settings, BlogEventId.SettingsSavedContent, "Content Settings updated.");
 
         return NoContent();
@@ -122,7 +122,7 @@ public class SettingsController : ControllerBase
         var model = wrapperModel.ViewModel;
         _blogConfig.NotificationSettings = model;
 
-        await _blogConfig.SaveAsync(_blogConfig.NotificationSettings);
+        await SaveAsync(_blogConfig.NotificationSettings);
         await _blogAudit.AddEntry(BlogEventType.Settings, BlogEventId.SettingsSavedNotification, "Notification Settings updated.");
 
         return NoContent();
@@ -151,7 +151,7 @@ public class SettingsController : ControllerBase
         var model = wrapperModel.ViewModel;
         _blogConfig.FeedSettings = model;
 
-        await _blogConfig.SaveAsync(_blogConfig.FeedSettings);
+        await SaveAsync(_blogConfig.FeedSettings);
         await _blogAudit.AddEntry(BlogEventType.Settings, BlogEventId.SettingsSavedSubscription, "Subscription Settings updated.");
 
         return NoContent();
@@ -165,7 +165,7 @@ public class SettingsController : ControllerBase
         var model = wrapperModel.ViewModel;
         _blogConfig.ImageSettings = model;
 
-        await _blogConfig.SaveAsync(_blogConfig.ImageSettings);
+        await SaveAsync(_blogConfig.ImageSettings);
         await _blogAudit.AddEntry(BlogEventType.Settings, BlogEventId.SettingsSavedImage, "Image Settings updated.");
 
         return NoContent();
@@ -183,7 +183,7 @@ public class SettingsController : ControllerBase
 
         _blogConfig.AdvancedSettings = model;
 
-        await _blogConfig.SaveAsync(_blogConfig.AdvancedSettings);
+        await SaveAsync(_blogConfig.AdvancedSettings);
         await _blogAudit.AddEntry(BlogEventType.Settings, BlogEventId.SettingsSavedAdvanced, "Advanced Settings updated.");
         return NoContent();
     }
@@ -237,7 +237,7 @@ public class SettingsController : ControllerBase
 
         _blogConfig.CustomStyleSheetSettings = model;
 
-        await _blogConfig.SaveAsync(_blogConfig.CustomStyleSheetSettings);
+        await SaveAsync(_blogConfig.CustomStyleSheetSettings);
         await _blogAudit.AddEntry(BlogEventType.Settings, BlogEventId.SettingsSavedAdvanced, "Custom Style Sheet Settings updated.");
         return NoContent();
     }
@@ -261,6 +261,14 @@ public class SettingsController : ControllerBase
     {
         await _blogAudit.ClearAuditLog();
         return NoContent();
+    }
+
+    private async Task SaveAsync(IBlogSettings settings)
+    {
+        await _mediator.Send(new SaveBlogConfigurationCommand(settings));
+
+        var configDic = await _mediator.Send(new GetAllConfigurationsQuery());
+        _blogConfig.Initialize(configDic);
     }
 
     public class CheckNewReleaseResult
