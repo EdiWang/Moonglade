@@ -1,14 +1,5 @@
 ﻿namespace Moonglade.Configuration;
 
-internal class BlogAsset
-{
-    public Guid Id { get; set; }
-
-    public string Base64Data { get; set; }
-
-    public DateTime LastModifiedTimeUtc { get; set; }
-}
-
 public class AssetId
 {
     public static Guid SiteIconBase64 = Guid.Parse("aec91802-6867-4618-86bd-0620213802a8");
