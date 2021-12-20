@@ -1,5 +1,4 @@
 ﻿using Microsoft.EntityFrameworkCore;
-using Moonglade.Data.Configurations;
 using Moonglade.Data.Entities;
 using System.Diagnostics.CodeAnalysis;
 
@@ -33,6 +32,7 @@ public class BlogDbContext : DbContext
     public virtual DbSet<AuditLogEntity> AuditLog { get; set; }
     public virtual DbSet<PingbackEntity> Pingback { get; set; }
     public virtual DbSet<BlogThemeEntity> BlogTheme { get; set; }
+    public virtual DbSet<HtmlPitchEntity> HtmlPitch { get; set; }
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
@@ -53,6 +53,7 @@ public class BlogDbContext : DbContext
         modelBuilder.ApplyConfiguration(new AuditLogConfiguration());
         modelBuilder.ApplyConfiguration(new PingbackConfiguration());
         modelBuilder.ApplyConfiguration(new BlogThemeConfiguration());
+        modelBuilder.ApplyConfiguration(new HtmlPitchConfiguration());
 
         modelBuilder
             .Entity<PostEntity>()

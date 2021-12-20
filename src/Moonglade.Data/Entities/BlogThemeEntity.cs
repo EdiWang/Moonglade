@@ -1,4 +1,8 @@
-﻿namespace Moonglade.Data.Entities;
+﻿using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Metadata.Builders;
+using System.Diagnostics.CodeAnalysis;
+
+namespace Moonglade.Data.Entities;
 
 public class BlogThemeEntity
 {
@@ -13,4 +17,14 @@ public enum ThemeType
 {
     System = 0,
     User = 1
+}
+
+[ExcludeFromCodeCoverage]
+public class BlogThemeConfiguration : IEntityTypeConfiguration<BlogThemeEntity>
+{
+    public void Configure(EntityTypeBuilder<BlogThemeEntity> builder)
+    {
+        builder.Property(e => e.Id).UseIdentityColumn();
+        builder.Property(e => e.ThemeName).HasMaxLength(32);
+    }
 }

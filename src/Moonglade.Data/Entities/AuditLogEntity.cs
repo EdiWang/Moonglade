@@ -1,4 +1,8 @@
-﻿namespace Moonglade.Data.Entities;
+﻿using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Metadata.Builders;
+using System.Diagnostics.CodeAnalysis;
+
+namespace Moonglade.Data.Entities;
 
 public class AuditLogEntity
 {
@@ -17,4 +21,13 @@ public class AuditLogEntity
     public string MachineName { get; set; }
 
     public string Message { get; set; }
+}
+
+[ExcludeFromCodeCoverage]
+internal class AuditLogConfiguration : IEntityTypeConfiguration<AuditLogEntity>
+{
+    public void Configure(EntityTypeBuilder<AuditLogEntity> builder)
+    {
+        builder.Property(e => e.Id).UseIdentityColumn();
+    }
 }
