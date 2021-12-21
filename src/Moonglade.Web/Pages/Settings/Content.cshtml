@@ -59,8 +59,6 @@
                         </div>
                     </div>
 
-                    <h6 class="card-subtitle mt-5 mb-4 text-muted">@Localizer["Word filter"]</h6>
-
                     <div class="row g-3 align-items-center settings-entry mb-2">
                         <div class="col-auto">
                             <i class="bi-translate settings-entry-icon"></i>
@@ -100,6 +98,30 @@
                                 <label class="form-check-label" for="@WordFilterMode.Block">@Localizer["Block Comment"]</label>
                             </div>
                         </div>
+                    </div>
+                    <hr />
+                    <div>
+                        <label asp-for="ViewModel.CommentProvider" class="me-4"></label>
+
+                        <div class="form-check form-check-inline">
+                            @Html.RadioButtonFor(model => model.ViewModel.CommentProvider, CommentProvider.BuiltIn, new { id = CommentProvider.BuiltIn.ToString(), @class = "form-check-input" })
+                            <label class="form-check-label" for="@CommentProvider.BuiltIn">@Localizer["Built in"]</label>
+                        </div>
+                        <div class="form-check form-check-inline">
+                            @Html.RadioButtonFor(model => model.ViewModel.CommentProvider, CommentProvider.ThirdParty, new { id = CommentProvider.ThirdParty.ToString(), @class = "form-check-input" })
+                            <label class="form-check-label" for="@CommentProvider.ThirdParty">@Localizer["Third party"]</label>
+                        </div>
+                    </div>
+                    
+                    <div>
+                        <div class="form-floating">
+                            <textarea asp-for="ViewModel.ThirdPartyCommentHtmlPitch"
+                                      placeholder="@Html.DisplayNameFor(m => m.ViewModel.ThirdPartyCommentHtmlPitch)"
+                                      class="form-control form-control-sm h-100px"
+                                      spellcheck="false"></textarea>
+                            <label class="form-label" asp-for="ViewModel.ThirdPartyCommentHtmlPitch"></label>
+                        </div>
+                        <span asp-validation-for="ViewModel.ThirdPartyCommentHtmlPitch" class="text-danger"></span>
                     </div>
                 </div>
             </div>

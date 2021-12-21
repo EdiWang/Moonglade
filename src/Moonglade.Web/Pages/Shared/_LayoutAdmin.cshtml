@@ -98,10 +98,13 @@
                         <i class="bi-folder2 admin-nav-icon"></i>
                         @Localizer["Categories"]
                     </a>
-                    <a asp-page="/Admin/Comments" class="list-group-item list-group-item-action @(currentPage is "/Admin/Comments" ? "active" : null)">
-                        <i class="bi-chat-left-text admin-nav-icon"></i>
-                        @Localizer["Comments"]
-                    </a>
+                    @if (BlogConfig.ContentSettings.CommentProvider == CommentProvider.BuiltIn)
+                    {
+                        <a asp-page="/Admin/Comments" class="list-group-item list-group-item-action @(currentPage is "/Admin/Comments" ? "active" : null)">
+                            <i class="bi-chat-left-text admin-nav-icon"></i>
+                            @Localizer["Comments"]
+                        </a>
+                    }
                     <a asp-page="/Admin/Tags" class="list-group-item list-group-item-action @(currentPage is "/Admin/Tags" ? "active" : null)">
                         <i class="bi-tag admin-nav-icon"></i>
                         @Localizer["Tags"]

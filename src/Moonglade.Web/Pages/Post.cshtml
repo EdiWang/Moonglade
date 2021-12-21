@@ -172,95 +172,102 @@
         </a>
     }
 </article>
-
-<div class="d-print-none">
-    @if (BlogConfig.ContentSettings.EnableComments)
+@if (BlogConfig.ContentSettings.EnableComments)
+{
+    switch (BlogConfig.ContentSettings.CommentProvider)
     {
-        if (Model.Post.CommentEnabled)
-        {
-            <div class="card bg-light comment-form-containter mb-4">
-                <div class="card-header">
-                    <i class="bi-chat-left-text"></i>
-                    @Localizer["Comments"]
-                </div>
-                <form id="comment-form">
-                    <div class="card-body">
-                        <div class="row g-1 mb-2">
-                            <div class="col-md-4">
-                                <input type="text"
-                                       class="form-control"
-                                       placeholder="Your name"
-                                       id="input-comment-name"
-                                       required />
+        case CommentProvider.BuiltIn:
+            <div class="d-print-none">
+                @if (Model.Post.CommentEnabled)
+                {
+                    <div class="card bg-light comment-form-containter mb-4">
+                            <div class="card-header">
+                                <i class="bi-chat-left-text"></i>
+                                @Localizer["Comments"]
                             </div>
-                            <div class="col-md-8">
-                                <input type="email"
-                                       class="form-control"
-                                       placeholder="Email (Optional)"
-                                       id="input-comment-email"
-                                       data-bs-toggle="tooltip"
-                                       data-placement="top"
-                                       title="@Localizer["Providing your email address can enable blog admin to send notifications for replying your comment. Your email address will also be used to show Gravatar if it has one."]" />
-                            </div>
-                        </div>
-                        <div class="comment-md-content mb-2">
-                            <textarea id="input-comment-content"
-                                      class="form-control"
-                                      cols="60"
-                                      rows="4"
-                                      placeholder="@Localizer["Your comments (Markdown supported)"]"
-                                      maxlength="1024"
-                                      required></textarea>
-                        </div>
-                        <div class="row">
-                            <div class="col-9">
-                                <div class="input-group">
-                                    <img id="img-captcha" src="~/captcha-image" data-bs-toggle="tooltip" data-placement="top" title="@Localizer["Can't read? Click to change another image."]" />
-                                    <input type="text"
-                                           id="input-comment-captcha"
-                                           class="form-control input-captcha"
-                                           placeholder="Captcha Code"
-                                           autocomplete="off"
-                                           minlength="4"
-                                           maxlength="4"
-                                           required />
+                            <form id="comment-form">
+                                <div class="card-body">
+                                    <div class="row g-1 mb-2">
+                                        <div class="col-md-4">
+                                            <input type="text"
+                                                   class="form-control"
+                                                   placeholder="Your name"
+                                                   id="input-comment-name"
+                                                   required/>
+                                        </div>
+                                        <div class="col-md-8">
+                                            <input type="email"
+                                                   class="form-control"
+                                                   placeholder="Email (Optional)"
+                                                   id="input-comment-email"
+                                                   data-bs-toggle="tooltip"
+                                                   data-placement="top"
+                                                   title="@Localizer["Providing your email address can enable blog admin to send notifications for replying your comment. Your email address will also be used to show Gravatar if it has one."]"/>
+                                        </div>
+                                    </div>
+                                    <div class="comment-md-content mb-2">
+                                        <textarea id="input-comment-content"
+                                              class="form-control"
+                                              cols="60"
+                                              rows="4"
+                                              placeholder="@Localizer["Your comments (Markdown supported)"]"
+                                              maxlength="1024"
+                                              required></textarea>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-9">
+                                            <div class="input-group">
+                                                <img id="img-captcha" src="~/captcha-image" data-bs-toggle="tooltip" data-placement="top" title="@Localizer["Can't read? Click to change another image."]"/>
+                                                <input type="text"
+                                                       id="input-comment-captcha"
+                                                       class="form-control input-captcha"
+                                                       placeholder="Captcha Code"
+                                                       autocomplete="off"
+                                                       minlength="4"
+                                                       maxlength="4"
+                                                       required/>
+                                            </div>
+                                        </div>
+                                        <div class="col-3">
+                                            <button id="btn-submit-comment" type="submit" class="btn btn-success float-end">
+                                                <span id="loadingIndicator" class="spinner-border spinner-border-sm" role="status" aria-hidden="true" style="display: none;"></span>
+                                                @Localizer["Submit"]
+                                            </button>
+                                        </div>
+                                    </div>
                                 </div>
-                            </div>
-                            <div class="col-3">
-                                <button id="btn-submit-comment" type="submit" class="btn btn-success float-end">
-                                    <span id="loadingIndicator" class="spinner-border spinner-border-sm" role="status" aria-hidden="true" style="display: none;"></span>
-                                    @Localizer["Submit"]
-                                </button>
-                            </div>
-                        </div>
+                            </form>
                     </div>
-                </form>
+                }
+                else
+                {
+                    <div class="alert alert-warning">@Localizer["Comment of this post is disabled."]</div>
+                }
+                
+                <div id="thx-for-comment" class="alert alert-warning" style="display: none;">
+                    @Localizer["Thanks, your comment is pending approval now."] <br/>
+                    @Localizer["It will show up once blog administrator approved your comment."]
+                </div>
+
+                <div id="thx-for-comment-non-review" class="alert alert-success" style="display: none;">
+                    @Localizer["Thanks for your comment."] <br/>
+                    @Localizer["Refresh the page to see your comment."]
+                </div>
+
+                <section id="comments-list">
+                    @await Component.InvokeAsync("CommentList", new {postId = Model.Post.Id})
+                </section>
             </div>
-        }
-        else
-        {
-            <div class="alert alert-warning">@Localizer["Comment of this post is disabled."]</div>
-        }
+            break;
+        case CommentProvider.ThirdParty:
+            @Html.Raw(BlogConfig.ContentSettings.ThirdPartyCommentHtmlPitch)
+            break;
     }
-    else
-    {
-        <div class="alert alert-warning">@Localizer["Comment is disabled by blog administrator."]</div>
-    }
-
-    <div id="thx-for-comment" class="alert alert-warning" style="display: none;">
-        @Localizer["Thanks, your comment is pending approval now."] <br />
-        @Localizer["It will show up once blog administrator approved your comment."]
-    </div>
-
-    <div id="thx-for-comment-non-review" class="alert alert-success" style="display: none;">
-        @Localizer["Thanks for your comment."] <br />
-        @Localizer["Refresh the page to see your comment."]
-    </div>
-
-    <section id="comments-list">
-        @await Component.InvokeAsync("CommentList", new { postId = Model.Post.Id })
-    </section>
-</div>
+}
+else
+{
+    <div class="alert alert-warning">@Localizer["Comment is disabled by blog administrator."]</div>
+}
 
 <partial name="_LightSwitch" />
 
