@@ -67,3 +67,9 @@ public enum WordFilterMode
     Mask = 0,
     Block = 1
 }
+
+public enum CommentProvider
+{
+    BuiltIn = 0,
+    ThirdParty = 1
+}
