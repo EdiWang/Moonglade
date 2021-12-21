@@ -4,6 +4,13 @@ namespace Moonglade.Configuration;
 
 public class ContentSettings : IBlogSettings
 {
+    [Display(Name = "Comment provider")]
+    public CommentProvider CommentProvider { get; set; }
+
+    [Display(Name = "Third party comment html pitch")]
+    [MaxLength(1024)]
+    public string ThirdPartyCommentHtmlPitch { get; set; }
+    
     [Display(Name = "Enable comments")]
     public bool EnableComments { get; set; }
 
