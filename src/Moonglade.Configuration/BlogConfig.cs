@@ -21,8 +21,6 @@ public interface IBlogConfig
 
 public class BlogConfig : IBlogConfig
 {
-    private readonly IDbConnection _dbConnection;
-
     public GeneralSettings GeneralSettings { get; set; }
 
     public ContentSettings ContentSettings { get; set; }
@@ -37,10 +35,8 @@ public class BlogConfig : IBlogConfig
 
     public CustomStyleSheetSettings CustomStyleSheetSettings { get; set; }
 
-    public BlogConfig(IDbConnection dbConnection)
+    public BlogConfig()
     {
-        _dbConnection = dbConnection;
-
         ContentSettings = new();
         GeneralSettings = new();
         NotificationSettings = new();

@@ -1,10 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using MediatR;
-using Microsoft.EntityFrameworkCore;
+﻿using MediatR;
 using Moonglade.Data;
 using Moonglade.Data.Entities;
 using Moonglade.Data.Infrastructure;
@@ -13,12 +7,13 @@ namespace Moonglade.Configuration;
 
 public class SaveBlogConfigurationCommand : IRequest<OperationCode>
 {
-    public SaveBlogConfigurationCommand(IBlogSettings blogSettings)
+    public SaveBlogConfigurationCommand(object blogSettings)
     {
         BlogSettings = blogSettings;
     }
 
-    public IBlogSettings BlogSettings { get; set; }
+    // IBlogSettings will blow up System.Text.Json
+    public object BlogSettings { get; set; }
 }
 
 public class SaveBlogConfigurationCommandHandler : IRequestHandler<SaveBlogConfigurationCommand, OperationCode>
