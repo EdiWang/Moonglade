@@ -1,6 +1,28 @@
 ﻿@page "/admin/settings/content"
 @model Moonglade.Web.Pages.Settings.ContentModel
 
+@section scripts{
+    <script>
+        $(function() {
+            toggleCommentSettingsUI();
+        });
+
+        $(".comment-provider-checkbox").change(function() {
+            toggleCommentSettingsUI();
+        });
+
+        function toggleCommentSettingsUI() {
+            if ($('#BuiltIn').is(":checked")) {
+                $('.comment-settings-built-in').show();
+                $('.comment-settings-3rd').hide();
+            } else {
+                $('.comment-settings-built-in').hide();
+                $('.comment-settings-3rd').show();
+            }
+        }
+    </script>
+}
+
 <partial name="_SettingsHeader" />
 <div class="ps-4 pe-4">
     <form id="form-settings" asp-controller="Settings" asp-action="Content"
@@ -40,11 +62,11 @@
                         </div>
                         <div class="col-md-5 text-end">
                             <div class="form-check form-check-inline">
-                                @Html.RadioButtonFor(model => model.ViewModel.CommentProvider, CommentProvider.BuiltIn, new { id = CommentProvider.BuiltIn.ToString(), @class = "form-check-input" })
+                                @Html.RadioButtonFor(model => model.ViewModel.CommentProvider, CommentProvider.BuiltIn, new { id = CommentProvider.BuiltIn.ToString(), @class = "form-check-input comment-provider-checkbox" })
                                 <label class="form-check-label" for="@CommentProvider.BuiltIn">@Localizer["Built in"]</label>
                             </div>
                             <div class="form-check form-check-inline">
-                                @Html.RadioButtonFor(model => model.ViewModel.CommentProvider, CommentProvider.ThirdParty, new { id = CommentProvider.ThirdParty.ToString(), @class = "form-check-input" })
+                                @Html.RadioButtonFor(model => model.ViewModel.CommentProvider, CommentProvider.ThirdParty, new { id = CommentProvider.ThirdParty.ToString(), @class = "form-check-input comment-provider-checkbox" })
                                 <label class="form-check-label" for="@CommentProvider.ThirdParty">@Localizer["Third party"]</label>
                             </div>
                         </div>
