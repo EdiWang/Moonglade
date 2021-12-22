@@ -33,95 +33,106 @@
 
                     <div class="row g-3 align-items-center settings-entry mb-4">
                         <div class="col-auto">
-                            <i class="bi-person-check settings-entry-icon"></i>
+                            <i class="bi-diagram-2 settings-entry-icon"></i>
                         </div>
                         <div class="col">
-                            <label asp-for="ViewModel.RequireCommentReview" class="form-check-label"></label>
+                            <label asp-for="ViewModel.CommentProvider" class="me-4"></label>
                         </div>
                         <div class="col-md-5 text-end">
-                            <div class="form-check form-switch">
-                                <input type="checkbox" asp-for="ViewModel.RequireCommentReview" class="form-check-input">
+                            <div class="form-check form-check-inline">
+                                @Html.RadioButtonFor(model => model.ViewModel.CommentProvider, CommentProvider.BuiltIn, new { id = CommentProvider.BuiltIn.ToString(), @class = "form-check-input" })
+                                <label class="form-check-label" for="@CommentProvider.BuiltIn">@Localizer["Built in"]</label>
+                            </div>
+                            <div class="form-check form-check-inline">
+                                @Html.RadioButtonFor(model => model.ViewModel.CommentProvider, CommentProvider.ThirdParty, new { id = CommentProvider.ThirdParty.ToString(), @class = "form-check-input" })
+                                <label class="form-check-label" for="@CommentProvider.ThirdParty">@Localizer["Third party"]</label>
                             </div>
                         </div>
                     </div>
 
-                    <div class="row g-3 align-items-center settings-entry mb-4">
-                        <div class="col-auto">
-                            <i class="bi-person-square settings-entry-icon"></i>
-                        </div>
-                        <div class="col">
-                            <label asp-for="ViewModel.EnableGravatar" class="form-check-label"></label>
-                        </div>
-                        <div class="col-md-5 text-end">
-                            <div class="form-check form-switch">
-                                <input type="checkbox" asp-for="ViewModel.EnableGravatar" class="form-check-input">
+                    <div class="comment-settings-built-in">
+
+                        <div class="row g-3 align-items-center settings-entry mb-4">
+                            <div class="col-auto">
+                                <i class="bi-person-check settings-entry-icon"></i>
+                            </div>
+                            <div class="col">
+                                <label asp-for="ViewModel.RequireCommentReview" class="form-check-label"></label>
+                            </div>
+                            <div class="col-md-5 text-end">
+                                <div class="form-check form-switch">
+                                    <input type="checkbox" asp-for="ViewModel.RequireCommentReview" class="form-check-input">
+                                </div>
                             </div>
                         </div>
-                    </div>
 
-                    <div class="row g-3 align-items-center settings-entry mb-2">
-                        <div class="col-auto">
-                            <i class="bi-translate settings-entry-icon"></i>
-                        </div>
-                        <div class="col">
-                            <label asp-for="ViewModel.EnableWordFilter" class="form-check-label"></label>
-                        </div>
-                        <div class="col-md-5 text-end">
-                            <div class="form-check form-switch">
-                                <input type="checkbox" asp-for="ViewModel.EnableWordFilter" class="form-check-input">
+                        <div class="row g-3 align-items-center settings-entry mb-4">
+                            <div class="col-auto">
+                                <i class="bi-person-square settings-entry-icon"></i>
+                            </div>
+                            <div class="col">
+                                <label asp-for="ViewModel.EnableGravatar" class="form-check-label"></label>
+                            </div>
+                            <div class="col-md-5 text-end">
+                                <div class="form-check form-switch">
+                                    <input type="checkbox" asp-for="ViewModel.EnableGravatar" class="form-check-input">
+                                </div>
                             </div>
                         </div>
-                    </div>
 
-                    <div>
-                        <div class="mb-2">
-                            <div class="form-floating">
-                                <textarea asp-for="ViewModel.DisharmonyWords"
-                                          placeholder="@Html.DisplayNameFor(m => m.ViewModel.DisharmonyWords)"
-                                          class="form-control form-control-sm h-200px"
-                                          spellcheck="false"></textarea>
-                                <label class="form-label" asp-for="ViewModel.DisharmonyWords"></label>
+                        <div class="row g-3 align-items-center settings-entry mb-2">
+                            <div class="col-auto">
+                                <i class="bi-translate settings-entry-icon"></i>
                             </div>
-
-                            <span asp-validation-for="ViewModel.DisharmonyWords" class="text-danger"></span>
-                            <small class="form-text text-muted">@Localizer["Blocked words will be masked as *** in comment content."]</small>
+                            <div class="col">
+                                <label asp-for="ViewModel.EnableWordFilter" class="form-check-label"></label>
+                            </div>
+                            <div class="col-md-5 text-end">
+                                <div class="form-check form-switch">
+                                    <input type="checkbox" asp-for="ViewModel.EnableWordFilter" class="form-check-input">
+                                </div>
+                            </div>
                         </div>
+
                         <div>
-                            <label asp-for="ViewModel.WordFilterMode" class="me-4"></label>
+                            <div class="mb-2">
+                                <div class="form-floating">
+                                    <textarea asp-for="ViewModel.DisharmonyWords"
+                                              placeholder="@Html.DisplayNameFor(m => m.ViewModel.DisharmonyWords)"
+                                              class="form-control form-control-sm h-200px"
+                                              spellcheck="false"></textarea>
+                                    <label class="form-label" asp-for="ViewModel.DisharmonyWords"></label>
+                                </div>
 
-                            <div class="form-check form-check-inline">
-                                @Html.RadioButtonFor(model => model.ViewModel.WordFilterMode, WordFilterMode.Mask, new { id = WordFilterMode.Mask.ToString(), @class = "form-check-input" })
-                                <label class="form-check-label" for="@WordFilterMode.Mask">@Localizer["Mask Word"]</label>
+                                <span asp-validation-for="ViewModel.DisharmonyWords" class="text-danger"></span>
+                                <small class="form-text text-muted">@Localizer["Blocked words will be masked as *** in comment content."]</small>
                             </div>
-                            <div class="form-check form-check-inline">
-                                @Html.RadioButtonFor(model => model.ViewModel.WordFilterMode, WordFilterMode.Block, new { id = WordFilterMode.Block.ToString(), @class = "form-check-input" })
-                                <label class="form-check-label" for="@WordFilterMode.Block">@Localizer["Block Comment"]</label>
+                            <div>
+                                <label asp-for="ViewModel.WordFilterMode" class="me-4"></label>
+
+                                <div class="form-check form-check-inline">
+                                    @Html.RadioButtonFor(model => model.ViewModel.WordFilterMode, WordFilterMode.Mask, new { id = WordFilterMode.Mask.ToString(), @class = "form-check-input" })
+                                    <label class="form-check-label" for="@WordFilterMode.Mask">@Localizer["Mask Word"]</label>
+                                </div>
+                                <div class="form-check form-check-inline">
+                                    @Html.RadioButtonFor(model => model.ViewModel.WordFilterMode, WordFilterMode.Block, new { id = WordFilterMode.Block.ToString(), @class = "form-check-input" })
+                                    <label class="form-check-label" for="@WordFilterMode.Block">@Localizer["Block Comment"]</label>
+                                </div>
                             </div>
                         </div>
                     </div>
-                    <hr />
-                    <div>
-                        <label asp-for="ViewModel.CommentProvider" class="me-4"></label>
 
-                        <div class="form-check form-check-inline">
-                            @Html.RadioButtonFor(model => model.ViewModel.CommentProvider, CommentProvider.BuiltIn, new { id = CommentProvider.BuiltIn.ToString(), @class = "form-check-input" })
-                            <label class="form-check-label" for="@CommentProvider.BuiltIn">@Localizer["Built in"]</label>
+                    <div class="comment-settings-3rd">
+                        <div>
+                            <div class="form-floating">
+                                <textarea asp-for="ViewModel.ThirdPartyCommentHtmlPitch"
+                                          placeholder="@Html.DisplayNameFor(m => m.ViewModel.ThirdPartyCommentHtmlPitch)"
+                                          class="form-control form-control-sm h-100px"
+                                          spellcheck="false"></textarea>
+                                <label class="form-label" asp-for="ViewModel.ThirdPartyCommentHtmlPitch"></label>
+                            </div>
+                            <span asp-validation-for="ViewModel.ThirdPartyCommentHtmlPitch" class="text-danger"></span>
                         </div>
-                        <div class="form-check form-check-inline">
-                            @Html.RadioButtonFor(model => model.ViewModel.CommentProvider, CommentProvider.ThirdParty, new { id = CommentProvider.ThirdParty.ToString(), @class = "form-check-input" })
-                            <label class="form-check-label" for="@CommentProvider.ThirdParty">@Localizer["Third party"]</label>
-                        </div>
-                    </div>
-                    
-                    <div>
-                        <div class="form-floating">
-                            <textarea asp-for="ViewModel.ThirdPartyCommentHtmlPitch"
-                                      placeholder="@Html.DisplayNameFor(m => m.ViewModel.ThirdPartyCommentHtmlPitch)"
-                                      class="form-control form-control-sm h-100px"
-                                      spellcheck="false"></textarea>
-                            <label class="form-label" asp-for="ViewModel.ThirdPartyCommentHtmlPitch"></label>
-                        </div>
-                        <span asp-validation-for="ViewModel.ThirdPartyCommentHtmlPitch" class="text-danger"></span>
                     </div>
                 </div>
             </div>
@@ -141,7 +152,7 @@
                             <span asp-validation-for="ViewModel.PostListPageSize" class="text-danger"></span>
                         </div>
                     </div>
-                    
+
                     <div class="row g-3 align-items-center settings-entry mb-4">
                         <div class="col-auto">
                             <i class="settings-entry-icon bi-file-word"></i>
