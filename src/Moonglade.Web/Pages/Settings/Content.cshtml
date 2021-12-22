@@ -2,25 +2,25 @@
 @model Moonglade.Web.Pages.Settings.ContentModel
 
 @section scripts{
-    <script>
-        $(function() {
-            toggleCommentSettingsUI();
-        });
+<script>
+    $(function() {
+        toggleCommentSettingsUI();
+    });
 
-        $(".comment-provider-checkbox").change(function() {
-            toggleCommentSettingsUI();
-        });
+    $(".comment-provider-checkbox").change(function() {
+        toggleCommentSettingsUI();
+    });
 
-        function toggleCommentSettingsUI() {
-            if ($('#BuiltIn').is(":checked")) {
-                $('.comment-settings-built-in').show();
-                $('.comment-settings-3rd').hide();
-            } else {
-                $('.comment-settings-built-in').hide();
-                $('.comment-settings-3rd').show();
-            }
+    function toggleCommentSettingsUI() {
+        if ($('#BuiltIn').is(":checked")) {
+            $('.comment-settings-built-in').show();
+            $('.comment-settings-3rd').hide();
+        } else {
+            $('.comment-settings-built-in').hide();
+            $('.comment-settings-3rd').show();
         }
-    </script>
+    }
+</script>
 }
 
 <partial name="_SettingsHeader" />
@@ -102,7 +102,7 @@
                             </div>
                         </div>
 
-                        <div class="row g-3 align-items-center settings-entry mb-2">
+                        <div class="row g-3 align-items-center settings-entry mb-4">
                             <div class="col-auto">
                                 <i class="bi-translate settings-entry-icon"></i>
                             </div>
@@ -116,22 +116,14 @@
                             </div>
                         </div>
 
-                        <div>
-                            <div class="mb-2">
-                                <div class="form-floating">
-                                    <textarea asp-for="ViewModel.DisharmonyWords"
-                                              placeholder="@Html.DisplayNameFor(m => m.ViewModel.DisharmonyWords)"
-                                              class="form-control form-control-sm h-200px"
-                                              spellcheck="false"></textarea>
-                                    <label class="form-label" asp-for="ViewModel.DisharmonyWords"></label>
-                                </div>
-
-                                <span asp-validation-for="ViewModel.DisharmonyWords" class="text-danger"></span>
-                                <small class="form-text text-muted">@Localizer["Blocked words will be masked as *** in comment content."]</small>
+                        <div class="row g-3 align-items-center settings-entry mb-2">
+                            <div class="col-auto">
+                                <i class="bi-check2-circle settings-entry-icon"></i>
                             </div>
-                            <div>
+                            <div class="col">
                                 <label asp-for="ViewModel.WordFilterMode" class="me-4"></label>
-
+                            </div>
+                            <div class="col-md-5 text-end">
                                 <div class="form-check form-check-inline">
                                     @Html.RadioButtonFor(model => model.ViewModel.WordFilterMode, WordFilterMode.Mask, new { id = WordFilterMode.Mask.ToString(), @class = "form-check-input" })
                                     <label class="form-check-label" for="@WordFilterMode.Mask">@Localizer["Mask Word"]</label>
@@ -141,6 +133,19 @@
                                     <label class="form-check-label" for="@WordFilterMode.Block">@Localizer["Block Comment"]</label>
                                 </div>
                             </div>
+                        </div>
+
+                        <div class="mb-2">
+                            <div class="form-floating">
+                                <textarea asp-for="ViewModel.DisharmonyWords"
+                                          placeholder="@Html.DisplayNameFor(m => m.ViewModel.DisharmonyWords)"
+                                          class="form-control form-control-sm h-200px"
+                                          spellcheck="false"></textarea>
+                                <label class="form-label" asp-for="ViewModel.DisharmonyWords"></label>
+                            </div>
+
+                            <span asp-validation-for="ViewModel.DisharmonyWords" class="text-danger"></span>
+                            <small class="form-text text-muted">@Localizer["Blocked words will be masked as *** in comment content."]</small>
                         </div>
                     </div>
 
