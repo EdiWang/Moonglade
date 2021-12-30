@@ -26,7 +26,6 @@ public class UpdatePostCommand : IRequest<PostEntity>
 
 public class UpdatePostCommandHandler : IRequestHandler<UpdatePostCommand, PostEntity>
 {
-    private readonly IBlogAudit _audit;
     private readonly AppSettings _settings;
     private readonly IRepository<TagEntity> _tagRepo;
     private readonly IRepository<PostEntity> _postRepo;
@@ -36,7 +35,6 @@ public class UpdatePostCommandHandler : IRequestHandler<UpdatePostCommand, PostE
     private readonly IDictionary<string, string> _tagNormalizationDictionary;
 
     public UpdatePostCommandHandler(
-        IBlogAudit audit,
         IConfiguration configuration,
         IOptions<AppSettings> settings,
         IRepository<TagEntity> tagRepo,
@@ -44,7 +42,6 @@ public class UpdatePostCommandHandler : IRequestHandler<UpdatePostCommand, PostE
         IBlogCache cache,
         IBlogConfig blogConfig)
     {
-        _audit = audit;
         _tagRepo = tagRepo;
         _postRepo = postRepo;
         _cache = cache;
@@ -119,9 +116,6 @@ public class UpdatePostCommandHandler : IRequestHandler<UpdatePostCommand, PostE
                 DisplayName = item,
                 NormalizedName = Tag.NormalizeName(item, _tagNormalizationDictionary)
             });
-
-            await _audit.AddEntry(BlogEventType.Content, BlogEventId.TagCreated,
-                $"Tag '{item}' created.");
         }
 
         // 2. update tags
@@ -157,11 +151,6 @@ public class UpdatePostCommandHandler : IRequestHandler<UpdatePostCommand, PostE
         }
 
         await _postRepo.UpdateAsync(post);
-
-        await _audit.AddEntry(
-            BlogEventType.Content,
-            isNewPublish ? BlogEventId.PostPublished : BlogEventId.PostUpdated,
-            $"Post updated, id: {post.Id}");
 
         _cache.Remove(CacheDivision.Post, request.Id.ToString());
         return post;

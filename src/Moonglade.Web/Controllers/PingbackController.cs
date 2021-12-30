@@ -64,21 +64,18 @@ public class PingbackController : ControllerBase
     [Authorize]
     [HttpDelete("{pingbackId:guid}")]
     [ProducesResponseType(StatusCodes.Status204NoContent)]
-    public async Task<IActionResult> Delete([NotEmpty] Guid pingbackId, [FromServices] IBlogAudit blogAudit)
+    public async Task<IActionResult> Delete([NotEmpty] Guid pingbackId)
     {
         await _mediator.Send(new DeletePingbackCommand(pingbackId));
-        await blogAudit.AddEntry(BlogEventType.Content, BlogEventId.PingbackDeleted,
-            $"Pingback '{pingbackId}' deleted.");
         return NoContent();
     }
 
     [Authorize]
     [HttpDelete("clear")]
     [ProducesResponseType(StatusCodes.Status204NoContent)]
-    public async Task<IActionResult> Clear([FromServices] IBlogAudit blogAudit)
+    public async Task<IActionResult> Clear()
     {
         await _mediator.Send(new ClearPingbackCommand());
-        await blogAudit.AddEntry(BlogEventType.Content, BlogEventId.PingbackCleared, "Pingback cleared.");
         return NoContent();
     }
 }

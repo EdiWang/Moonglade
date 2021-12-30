@@ -27,7 +27,6 @@ public class SignInModelTests
     private Mock<IOptions<AuthenticationSettings>> _mockOptions;
     private Mock<IMediator> _mockMediator;
     private Mock<ILogger<SignInModel>> _mockLogger;
-    private Mock<IBlogAudit> _mockBlogAudit;
     private Mock<ISessionBasedCaptcha> _mockSessionBasedCaptcha;
 
     [SetUp]
@@ -38,7 +37,6 @@ public class SignInModelTests
         _mockOptions = _mockRepository.Create<IOptions<AuthenticationSettings>>();
         _mockMediator = _mockRepository.Create<IMediator>();
         _mockLogger = _mockRepository.Create<ILogger<SignInModel>>();
-        _mockBlogAudit = _mockRepository.Create<IBlogAudit>();
         _mockSessionBasedCaptcha = _mockRepository.Create<ISessionBasedCaptcha>();
     }
 
@@ -61,7 +59,6 @@ public class SignInModelTests
             _mockOptions.Object,
             _mockMediator.Object,
             _mockLogger.Object,
-            _mockBlogAudit.Object,
             _mockSessionBasedCaptcha.Object)
         {
             PageContext = pageContext,
@@ -144,8 +141,6 @@ public class SignInModelTests
 
         var modelState = signInModel.ViewData.ModelState;
         Assert.IsFalse(modelState.IsValid);
-
-        _mockBlogAudit.Verify(p => p.AddEntry(BlogEventType.Authentication, BlogEventId.LoginFailedLocal, It.IsAny<string>()));
     }
 
 
@@ -165,8 +160,6 @@ public class SignInModelTests
 
         var modelState = signInModel.ViewData.ModelState;
         Assert.IsFalse(modelState.IsValid);
-
-        _mockBlogAudit.Verify(p => p.AddEntry(BlogEventType.Authentication, BlogEventId.LoginFailedLocal, It.IsAny<string>()));
     }
 
     [Test]

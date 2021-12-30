@@ -24,7 +24,6 @@ public class PostManageServiceTests
     private Mock<IRepository<PostEntity>> _mockPostEntityRepo;
     private Mock<ILogger<CreatePostCommandHandler>> _mockLogger2;
     private Mock<IRepository<TagEntity>> _mockTagEntityRepo;
-    private Mock<IBlogAudit> _mockBlogAudit;
     private Mock<IBlogConfig> _mockBlogConfig;
     private Mock<IBlogCache> _mockBlogCache;
 
@@ -59,7 +58,6 @@ public class PostManageServiceTests
         _mockPostEntityRepo = _mockRepository.Create<IRepository<PostEntity>>();
         _mockLogger2 = _mockRepository.Create<ILogger<CreatePostCommandHandler>>();
         _mockTagEntityRepo = _mockRepository.Create<IRepository<TagEntity>>();
-        _mockBlogAudit = _mockRepository.Create<IBlogAudit>();
         _mockBlogConfig = _mockRepository.Create<IBlogConfig>();
         _mockBlogCache = _mockRepository.Create<IBlogCache>();
 
@@ -106,7 +104,7 @@ public class PostManageServiceTests
             CategoryList = new() { new() { Id = Uid, IsChecked = true } }
         };
 
-        var handler = new CreatePostCommandHandler(_mockPostEntityRepo.Object, _mockBlogAudit.Object,
+        var handler = new CreatePostCommandHandler(_mockPostEntityRepo.Object,
             _mockLogger2.Object, _mockTagEntityRepo.Object, _mockOptionsAppSettings.Object,
             GetFakeConfiguration(), _mockBlogConfig.Object);
         var result = await handler.Handle(new(req), default);
@@ -121,7 +119,6 @@ public class PostManageServiceTests
     {
         _mockPostEntityRepo.Setup(p => p.GetAsync(Uid)).Returns(ValueTask.FromResult((PostEntity)null));
         var handler = new UpdatePostCommandHandler(
-            _mockBlogAudit.Object,
             GetFakeConfiguration(),
             _mockOptionsAppSettings.Object,
             _mockTagEntityRepo.Object,
@@ -162,7 +159,6 @@ public class PostManageServiceTests
         };
 
         var handler = new UpdatePostCommandHandler(
-            _mockBlogAudit.Object,
             GetFakeConfiguration(),
             _mockOptionsAppSettings.Object,
             _mockTagEntityRepo.Object,
@@ -183,8 +179,7 @@ public class PostManageServiceTests
     {
         _mockPostEntityRepo.Setup(p => p.GetAsync(Guid.Empty)).Returns(ValueTask.FromResult((PostEntity)null));
 
-        var handler = new RestorePostCommandHandler(_mockPostEntityRepo.Object, _mockBlogCache.Object,
-            _mockBlogAudit.Object);
+        var handler = new RestorePostCommandHandler(_mockPostEntityRepo.Object, _mockBlogCache.Object);
         await handler.Handle(new(Guid.Empty), default);
 
         _mockPostEntityRepo.Verify(p => p.UpdateAsync(It.IsAny<PostEntity>()), Times.Never);
@@ -200,8 +195,7 @@ public class PostManageServiceTests
 
         _mockPostEntityRepo.Setup(p => p.GetAsync(Uid)).Returns(ValueTask.FromResult(post));
 
-        var handler = new RestorePostCommandHandler(_mockPostEntityRepo.Object, _mockBlogCache.Object,
-            _mockBlogAudit.Object);
+        var handler = new RestorePostCommandHandler(_mockPostEntityRepo.Object, _mockBlogCache.Object);
         await handler.Handle(new(Uid), default);
 
         _mockPostEntityRepo.Verify(p => p.UpdateAsync(It.IsAny<PostEntity>()));
@@ -214,7 +208,7 @@ public class PostManageServiceTests
     {
         _mockPostEntityRepo.Setup(p => p.GetAsync(Guid.Empty)).Returns(ValueTask.FromResult((PostEntity)null));
 
-        var handler = new DeletePostCommandHandler(_mockPostEntityRepo.Object, _mockBlogAudit.Object,
+        var handler = new DeletePostCommandHandler(_mockPostEntityRepo.Object,
             _mockBlogCache.Object);
         await handler.Handle(new(Guid.Empty, softDelete), default);
 
@@ -232,7 +226,7 @@ public class PostManageServiceTests
 
         _mockPostEntityRepo.Setup(p => p.GetAsync(Uid)).Returns(ValueTask.FromResult(post));
 
-        var handler = new DeletePostCommandHandler(_mockPostEntityRepo.Object, _mockBlogAudit.Object,
+        var handler = new DeletePostCommandHandler(_mockPostEntityRepo.Object, 
             _mockBlogCache.Object);
         await handler.Handle(new(Uid, true), default);
 
@@ -250,7 +244,7 @@ public class PostManageServiceTests
 
         _mockPostEntityRepo.Setup(p => p.GetAsync(Uid)).Returns(ValueTask.FromResult(post));
 
-        var handler = new DeletePostCommandHandler(_mockPostEntityRepo.Object, _mockBlogAudit.Object,
+        var handler = new DeletePostCommandHandler(_mockPostEntityRepo.Object,
             _mockBlogCache.Object);
         await handler.Handle(new(Uid), default);
 
@@ -266,7 +260,7 @@ public class PostManageServiceTests
         _mockPostEntityRepo.Setup(p => p.GetAsync(It.IsAny<ISpecification<PostEntity>>()))
             .Returns(Task.FromResult(entities));
 
-        var handler = new PurgeRecycledCommandHandler(_mockBlogAudit.Object, _mockBlogCache.Object,
+        var handler = new PurgeRecycledCommandHandler(_mockBlogCache.Object,
             _mockPostEntityRepo.Object);
         await handler.Handle(new(), default);
 

@@ -18,14 +18,11 @@ public class DeleteCommentsCommand : IRequest
 
 public class DeleteCommentsCommandHandler : IRequestHandler<DeleteCommentsCommand>
 {
-    private readonly IBlogAudit _audit;
     private readonly IRepository<CommentEntity> _commentRepo;
     private readonly IRepository<CommentReplyEntity> _commentReplyRepo;
 
-    public DeleteCommentsCommandHandler(
-        IBlogAudit audit, IRepository<CommentEntity> commentRepo, IRepository<CommentReplyEntity> commentReplyRepo)
+    public DeleteCommentsCommandHandler(IRepository<CommentEntity> commentRepo, IRepository<CommentReplyEntity> commentReplyRepo)
     {
-        _audit = audit;
         _commentRepo = commentRepo;
         _commentReplyRepo = commentReplyRepo;
     }
@@ -50,7 +47,6 @@ public class DeleteCommentsCommandHandler : IRequestHandler<DeleteCommentsComman
 
             // 2. Delete comment itself
             await _commentRepo.DeleteAsync(cmt);
-            await _audit.AddEntry(BlogEventType.Content, BlogEventId.CommentDeleted, $"Comment '{cmt.Id}' deleted.");
         }
 
         return Unit.Value;

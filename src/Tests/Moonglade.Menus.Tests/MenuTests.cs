@@ -13,7 +13,6 @@ public class MenuTests
     private MockRepository _mockRepository;
 
     private Mock<IRepository<MenuEntity>> _mockMenuRepository;
-    private Mock<IBlogAudit> _mockBlogAudit;
 
     private readonly MenuEntity _menu = new()
     {
@@ -42,7 +41,6 @@ public class MenuTests
         _mockRepository = new(MockBehavior.Default);
 
         _mockMenuRepository = _mockRepository.Create<IRepository<MenuEntity>>();
-        _mockBlogAudit = _mockRepository.Create<IBlogAudit>();
     }
 
     [Test]
@@ -86,7 +84,7 @@ public class MenuTests
         _mockMenuRepository.Setup(p => p.GetAsync(It.IsAny<Guid>()))
             .Returns(ValueTask.FromResult((MenuEntity)null));
 
-        var handler = new DeleteMenuCommandHandler(_mockMenuRepository.Object, _mockBlogAudit.Object);
+        var handler = new DeleteMenuCommandHandler(_mockMenuRepository.Object);
         Assert.ThrowsAsync<InvalidOperationException>(async () =>
         {
             await handler.Handle(new(Guid.Empty), default);
@@ -99,16 +97,14 @@ public class MenuTests
         _mockMenuRepository.Setup(p => p.GetAsync(It.IsAny<Guid>()))
             .Returns(ValueTask.FromResult(_menu));
 
-        var handler = new DeleteMenuCommandHandler(_mockMenuRepository.Object, _mockBlogAudit.Object);
+        var handler = new DeleteMenuCommandHandler(_mockMenuRepository.Object);
         await handler.Handle(new(Guid.Empty), default);
-
-        _mockBlogAudit.Verify();
     }
 
     [Test]
     public async Task CreateAsync_OK()
     {
-        var handler = new CreateMenuCommandHandler(_mockMenuRepository.Object, _mockBlogAudit.Object);
+        var handler = new CreateMenuCommandHandler(_mockMenuRepository.Object);
         var result = await handler.Handle(new(new()
         {
             DisplayOrder = 996,
@@ -128,7 +124,6 @@ public class MenuTests
         }), default);
 
         Assert.AreNotEqual(Guid.Empty, result);
-        _mockBlogAudit.Verify(p => p.AddEntry(BlogEventType.Content, BlogEventId.MenuCreated, It.IsAny<string>()));
     }
 
     [Test]
@@ -137,7 +132,7 @@ public class MenuTests
         _mockMenuRepository.Setup(p => p.GetAsync(It.IsAny<Guid>()))
             .Returns(ValueTask.FromResult((MenuEntity)null));
 
-        var handler = new UpdateMenuCommandHandler(_mockMenuRepository.Object, _mockBlogAudit.Object);
+        var handler = new UpdateMenuCommandHandler(_mockMenuRepository.Object);
         Assert.ThrowsAsync<InvalidOperationException>(async () =>
         {
             await handler.Handle(new(Guid.Empty, new()), default);
@@ -150,7 +145,7 @@ public class MenuTests
         _mockMenuRepository.Setup(p => p.GetAsync(It.IsAny<Guid>()))
             .Returns(ValueTask.FromResult(_menu));
 
-        var handler = new UpdateMenuCommandHandler(_mockMenuRepository.Object, _mockBlogAudit.Object);
+        var handler = new UpdateMenuCommandHandler(_mockMenuRepository.Object);
 
         await handler.Handle(new(Guid.Empty, new()
         {
@@ -169,7 +164,5 @@ public class MenuTests
                 }
             }
         }), default);
-
-        _mockBlogAudit.Verify(p => p.AddEntry(BlogEventType.Content, BlogEventId.MenuUpdated, It.IsAny<string>()));
     }
 }

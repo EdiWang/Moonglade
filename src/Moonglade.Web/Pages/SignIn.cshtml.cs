@@ -15,18 +15,16 @@ public class SignInModel : PageModel
     private readonly AuthenticationSettings _authenticationSettings;
     private readonly IMediator _mediator;
     private readonly ILogger<SignInModel> _logger;
-    private readonly IBlogAudit _blogAudit;
     private readonly ISessionBasedCaptcha _captcha;
 
     public SignInModel(
         IOptions<AuthenticationSettings> authSettings,
         IMediator mediator,
         ILogger<SignInModel> logger,
-        IBlogAudit blogAudit, ISessionBasedCaptcha captcha)
+        ISessionBasedCaptcha captcha)
     {
         _mediator = mediator;
         _logger = logger;
-        _blogAudit = blogAudit;
         _captcha = captcha;
         _authenticationSettings = authSettings.Value;
     }
@@ -99,7 +97,6 @@ public class SignInModel : PageModel
                     var successMessage = $@"Authentication success for local account ""{Username}""";
 
                     _logger.LogInformation(successMessage);
-                    await _blogAudit.AddEntry(BlogEventType.Authentication, BlogEventId.LoginSuccessLocal, successMessage);
 
                     return RedirectToPage("/Admin/Post");
                 }
@@ -110,7 +107,6 @@ public class SignInModel : PageModel
             var failMessage = $@"Authentication failed for local account ""{Username}""";
 
             _logger.LogWarning(failMessage);
-            await _blogAudit.AddEntry(BlogEventType.Authentication, BlogEventId.LoginFailedLocal, failMessage);
 
             Response.StatusCode = StatusCodes.Status400BadRequest;
             ModelState.AddModelError(string.Empty, "Bad Request.");

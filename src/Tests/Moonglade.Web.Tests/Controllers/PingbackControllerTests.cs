@@ -78,20 +78,18 @@ public class PingbackControllerTests
     [Test]
     public async Task Delete_Success()
     {
-        var mockBlogAudit = new Mock<IBlogAudit>();
         var pingbackController = CreatePingbackController();
 
-        var result = await pingbackController.Delete(Guid.Empty, mockBlogAudit.Object);
+        var result = await pingbackController.Delete(Guid.Empty);
         Assert.IsInstanceOf(typeof(NoContentResult), result);
     }
 
     [Test]
     public async Task Clear_Success()
     {
-        var mockBlogAudit = new Mock<IBlogAudit>();
         var pingbackController = CreatePingbackController();
 
-        var result = await pingbackController.Clear(mockBlogAudit.Object);
+        var result = await pingbackController.Clear();
         Assert.IsInstanceOf(typeof(NoContentResult), result);
     }
 }

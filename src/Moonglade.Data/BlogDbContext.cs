@@ -30,7 +30,6 @@ public class BlogDbContext : DbContext
     public virtual DbSet<MenuEntity> Menu { get; set; }
     public virtual DbSet<SubMenuEntity> SubMenu { get; set; }
     public virtual DbSet<LocalAccountEntity> LocalAccount { get; set; }
-    public virtual DbSet<AuditLogEntity> AuditLog { get; set; }
     public virtual DbSet<PingbackEntity> Pingback { get; set; }
     public virtual DbSet<BlogThemeEntity> BlogTheme { get; set; }
 
@@ -50,7 +49,6 @@ public class BlogDbContext : DbContext
         modelBuilder.ApplyConfiguration(new MenuConfiguration());
         modelBuilder.ApplyConfiguration(new SubMenuConfiguration());
         modelBuilder.ApplyConfiguration(new LocalAccountConfiguration());
-        modelBuilder.ApplyConfiguration(new AuditLogConfiguration());
         modelBuilder.ApplyConfiguration(new PingbackConfiguration());
         modelBuilder.ApplyConfiguration(new BlogThemeConfiguration());
 

@@ -20,13 +20,11 @@ public class CreateTagCommand : IRequest<Tag>
 public class CreateTagCommandHandler : IRequestHandler<CreateTagCommand, Tag>
 {
     private readonly IRepository<TagEntity> _tagRepo;
-    private readonly IBlogAudit _audit;
     private readonly IDictionary<string, string> _tagNormalizationDictionary;
 
-    public CreateTagCommandHandler(IRepository<TagEntity> tagRepo, IBlogAudit audit, IConfiguration configuration)
+    public CreateTagCommandHandler(IRepository<TagEntity> tagRepo, IConfiguration configuration)
     {
         _tagRepo = tagRepo;
-        _audit = audit;
         _tagNormalizationDictionary =
             configuration.GetSection("TagNormalization").Get<Dictionary<string, string>>();
     }
@@ -48,9 +46,7 @@ public class CreateTagCommandHandler : IRequestHandler<CreateTagCommand, Tag>
         };
 
         var tag = await _tagRepo.AddAsync(newTag);
-        await _audit.AddEntry(BlogEventType.Content, BlogEventId.TagCreated,
-            $"Tag '{tag.NormalizedName}' created.");
-
+        
         return new()
         {
             DisplayName = newTag.DisplayName,

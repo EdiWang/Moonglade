@@ -21,13 +21,11 @@ public class UpdateCategoryCommand : IRequest<OperationCode>
 public class UpdateCategoryCommandHandler : IRequestHandler<UpdateCategoryCommand, OperationCode>
 {
     private readonly IRepository<CategoryEntity> _catRepo;
-    private readonly IBlogAudit _audit;
     private readonly IBlogCache _cache;
 
-    public UpdateCategoryCommandHandler(IRepository<CategoryEntity> catRepo, IBlogAudit audit, IBlogCache cache)
+    public UpdateCategoryCommandHandler(IRepository<CategoryEntity> catRepo, IBlogCache cache)
     {
         _catRepo = catRepo;
-        _audit = audit;
         _cache = cache;
     }
 
@@ -43,7 +41,6 @@ public class UpdateCategoryCommandHandler : IRequestHandler<UpdateCategoryComman
         await _catRepo.UpdateAsync(cat);
         _cache.Remove(CacheDivision.General, "allcats");
 
-        await _audit.AddEntry(BlogEventType.Content, BlogEventId.CategoryUpdated, $"Category '{request.Id}' updated.");
         return OperationCode.Done;
     }
 }

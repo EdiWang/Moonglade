@@ -20,13 +20,11 @@ public class RestorePostCommandHandler : IRequestHandler<RestorePostCommand>
 {
     private readonly IRepository<PostEntity> _postRepo;
     private readonly IBlogCache _cache;
-    private readonly IBlogAudit _audit;
 
-    public RestorePostCommandHandler(IRepository<PostEntity> postRepo, IBlogCache cache, IBlogAudit audit)
+    public RestorePostCommandHandler(IRepository<PostEntity> postRepo, IBlogCache cache)
     {
         _postRepo = postRepo;
         _cache = cache;
-        _audit = audit;
     }
 
     public async Task<Unit> Handle(RestorePostCommand request, CancellationToken cancellationToken)
@@ -36,7 +34,6 @@ public class RestorePostCommandHandler : IRequestHandler<RestorePostCommand>
 
         pp.IsDeleted = false;
         await _postRepo.UpdateAsync(pp);
-        await _audit.AddEntry(BlogEventType.Content, BlogEventId.PostRestored, $"Post restored, id: {request.Id}");
 
         _cache.Remove(CacheDivision.Post, request.Id.ToString());
         return Unit.Value;

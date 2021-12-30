@@ -18,12 +18,10 @@ public class DeleteAccountQuery : IRequest
 public class DeleteAccountQueryHandler : IRequestHandler<DeleteAccountQuery>
 {
     private readonly IRepository<LocalAccountEntity> _accountRepo;
-    private readonly IBlogAudit _audit;
 
-    public DeleteAccountQueryHandler(IRepository<LocalAccountEntity> accountRepo, IBlogAudit audit)
+    public DeleteAccountQueryHandler(IRepository<LocalAccountEntity> accountRepo)
     {
         _accountRepo = accountRepo;
-        _audit = audit;
     }
 
     public async Task<Unit> Handle(DeleteAccountQuery request, CancellationToken cancellationToken)
@@ -35,7 +33,6 @@ public class DeleteAccountQueryHandler : IRequestHandler<DeleteAccountQuery>
         }
 
         await _accountRepo.DeleteAsync(request.Id);
-        await _audit.AddEntry(BlogEventType.Settings, BlogEventId.SettingsDeleteAccount, $"Account '{request.Id}' deleted.");
 
         return Unit.Value;
     }

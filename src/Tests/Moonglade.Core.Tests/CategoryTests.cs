@@ -18,7 +18,6 @@ public class CategoryTests
 
     private Mock<IRepository<CategoryEntity>> _mockCatRepo;
     private Mock<IRepository<PostCategoryEntity>> _mockRepositoryPostCategoryEntity;
-    private Mock<IBlogAudit> _mockBlogAudit;
     private Mock<IBlogCache> _mockBlogCache;
 
     [SetUp]
@@ -28,7 +27,6 @@ public class CategoryTests
 
         _mockCatRepo = _mockRepository.Create<IRepository<CategoryEntity>>();
         _mockRepositoryPostCategoryEntity = _mockRepository.Create<IRepository<PostCategoryEntity>>();
-        _mockBlogAudit = _mockRepository.Create<IBlogAudit>();
         _mockBlogCache = _mockRepository.Create<IBlogCache>();
     }
 
@@ -68,7 +66,7 @@ public class CategoryTests
         _mockCatRepo.Setup(p => p.Any(It.IsAny<Expression<Func<CategoryEntity, bool>>>())).Returns(true);
 
         var handler =
-            new CreateCategoryCommandHandler(_mockCatRepo.Object, _mockBlogAudit.Object, _mockBlogCache.Object);
+            new CreateCategoryCommandHandler(_mockCatRepo.Object, _mockBlogCache.Object);
         await handler.Handle(new(new()
         {
             DisplayName = "Work 996",
@@ -84,7 +82,7 @@ public class CategoryTests
         _mockCatRepo.Setup(p => p.Any(It.IsAny<Expression<Func<CategoryEntity, bool>>>())).Returns(false);
 
         var handler =
-            new CreateCategoryCommandHandler(_mockCatRepo.Object, _mockBlogAudit.Object, _mockBlogCache.Object);
+            new CreateCategoryCommandHandler(_mockCatRepo.Object, _mockBlogCache.Object);
         await handler.Handle(new(new()
         {
             DisplayName = "Work 996",
@@ -103,7 +101,7 @@ public class CategoryTests
             .Returns(false);
 
         var handler = new DeleteCategoryCommandHandler(_mockCatRepo.Object,
-            _mockRepositoryPostCategoryEntity.Object, _mockBlogAudit.Object, _mockBlogCache.Object);
+            _mockRepositoryPostCategoryEntity.Object, _mockBlogCache.Object);
         await handler.Handle(new(Guid.Empty), default);
 
         _mockCatRepo.Verify();
@@ -119,7 +117,7 @@ public class CategoryTests
             .Returns(Task.FromResult(new CategoryEntity()));
 
         var handler = new DeleteCategoryCommandHandler(_mockCatRepo.Object,
-            _mockRepositoryPostCategoryEntity.Object, _mockBlogAudit.Object, _mockBlogCache.Object);
+            _mockRepositoryPostCategoryEntity.Object, _mockBlogCache.Object);
         await handler.Handle(new(Guid.Empty), default);
 
         _mockCatRepo.Verify(p => p.DeleteAsync(It.IsAny<Guid>()));
@@ -133,7 +131,7 @@ public class CategoryTests
             .Returns(ValueTask.FromResult((CategoryEntity)null));
 
         var handler =
-            new UpdateCategoryCommandHandler(_mockCatRepo.Object, _mockBlogAudit.Object, _mockBlogCache.Object);
+            new UpdateCategoryCommandHandler(_mockCatRepo.Object, _mockBlogCache.Object);
         await handler.Handle(new(Guid.Empty, null), default);
 
         _mockCatRepo.Verify(p => p.UpdateAsync(It.IsAny<CategoryEntity>()), Times.Never);
@@ -152,7 +150,7 @@ public class CategoryTests
             }));
 
         var handler =
-            new UpdateCategoryCommandHandler(_mockCatRepo.Object, _mockBlogAudit.Object, _mockBlogCache.Object);
+            new UpdateCategoryCommandHandler(_mockCatRepo.Object, _mockBlogCache.Object);
         await handler.Handle(new(Guid.Empty, new()
         {
             Note = "Fubao",

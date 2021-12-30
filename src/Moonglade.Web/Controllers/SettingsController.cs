@@ -1,6 +1,5 @@
 ﻿using Microsoft.AspNetCore.Localization;
 using Moonglade.Caching.Filters;
-using Moonglade.Data.Entities;
 using Moonglade.Data.Setup;
 using Moonglade.Notification.Client;
 using NUglify;
@@ -18,19 +17,16 @@ public class SettingsController : ControllerBase
 
     private readonly IMediator _mediator;
     private readonly IBlogConfig _blogConfig;
-    private readonly IBlogAudit _blogAudit;
     private readonly ILogger<SettingsController> _logger;
 
     #endregion
 
     public SettingsController(
         IBlogConfig blogConfig,
-        IBlogAudit blogAudit,
         ILogger<SettingsController> logger,
         IMediator mediator)
     {
         _blogConfig = blogConfig;
-        _blogAudit = blogAudit;
 
         _logger = logger;
         _mediator = mediator;
@@ -97,8 +93,6 @@ public class SettingsController : ControllerBase
 
         AppDomain.CurrentDomain.SetData("CurrentThemeColor", null);
 
-        await _blogAudit.AddEntry(BlogEventType.Settings, BlogEventId.SettingsSavedGeneral, "General Settings updated.");
-
         return NoContent();
     }
 
@@ -110,7 +104,6 @@ public class SettingsController : ControllerBase
         _blogConfig.ContentSettings = model;
 
         await _blogConfig.SaveAsync(_blogConfig.ContentSettings);
-        await _blogAudit.AddEntry(BlogEventType.Settings, BlogEventId.SettingsSavedContent, "Content Settings updated.");
 
         return NoContent();
     }
@@ -123,7 +116,6 @@ public class SettingsController : ControllerBase
         _blogConfig.NotificationSettings = model;
 
         await _blogConfig.SaveAsync(_blogConfig.NotificationSettings);
-        await _blogAudit.AddEntry(BlogEventType.Settings, BlogEventId.SettingsSavedNotification, "Notification Settings updated.");
 
         return NoContent();
     }
@@ -152,7 +144,6 @@ public class SettingsController : ControllerBase
         _blogConfig.FeedSettings = model;
 
         await _blogConfig.SaveAsync(_blogConfig.FeedSettings);
-        await _blogAudit.AddEntry(BlogEventType.Settings, BlogEventId.SettingsSavedSubscription, "Subscription Settings updated.");
 
         return NoContent();
     }
@@ -166,7 +157,6 @@ public class SettingsController : ControllerBase
         _blogConfig.ImageSettings = model;
 
         await _blogConfig.SaveAsync(_blogConfig.ImageSettings);
-        await _blogAudit.AddEntry(BlogEventType.Settings, BlogEventId.SettingsSavedImage, "Image Settings updated.");
 
         return NoContent();
     }
@@ -184,7 +174,6 @@ public class SettingsController : ControllerBase
         _blogConfig.AdvancedSettings = model;
 
         await _blogConfig.SaveAsync(_blogConfig.AdvancedSettings);
-        await _blogAudit.AddEntry(BlogEventType.Settings, BlogEventId.SettingsSavedAdvanced, "Advanced Settings updated.");
         return NoContent();
     }
 
@@ -205,8 +194,6 @@ public class SettingsController : ControllerBase
 
         var setupHelper = new SetupRunner(dbConnection);
         setupHelper.ClearData();
-
-        await _blogAudit.AddEntry(BlogEventType.Settings, BlogEventId.SettingsSavedAdvanced, "System reset.");
 
         applicationLifetime.StopApplication();
         return Accepted();
@@ -238,7 +225,6 @@ public class SettingsController : ControllerBase
         _blogConfig.CustomStyleSheetSettings = model;
 
         await _blogConfig.SaveAsync(_blogConfig.CustomStyleSheetSettings);
-        await _blogAudit.AddEntry(BlogEventType.Settings, BlogEventId.SettingsSavedAdvanced, "Custom Style Sheet Settings updated.");
         return NoContent();
     }
 
@@ -252,15 +238,6 @@ public class SettingsController : ControllerBase
             ServerTimeUtc = DateTime.UtcNow,
             Password = password
         });
-    }
-
-    [HttpDelete("auditlogs/clear")]
-    [FeatureGate(FeatureFlags.EnableAudit)]
-    [ProducesResponseType(StatusCodes.Status204NoContent)]
-    public async Task<IActionResult> ClearAuditLogs()
-    {
-        await _blogAudit.ClearAuditLog();
-        return NoContent();
     }
 
     public class CheckNewReleaseResult

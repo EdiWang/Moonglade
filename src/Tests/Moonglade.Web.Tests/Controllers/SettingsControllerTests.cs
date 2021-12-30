@@ -20,7 +20,6 @@ public class SettingsControllerTests
     private MockRepository _mockRepository;
 
     private Mock<IBlogConfig> _mockBlogConfig;
-    private Mock<IBlogAudit> _mockBlogAudit;
     private Mock<ILogger<SettingsController>> _mockLogger;
     private Mock<IMediator> _mockMediator;
 
@@ -30,7 +29,6 @@ public class SettingsControllerTests
         _mockRepository = new(MockBehavior.Default);
 
         _mockBlogConfig = _mockRepository.Create<IBlogConfig>();
-        _mockBlogAudit = _mockRepository.Create<IBlogAudit>();
         _mockLogger = _mockRepository.Create<ILogger<SettingsController>>();
         _mockMediator = _mockRepository.Create<IMediator>();
     }
@@ -39,7 +37,6 @@ public class SettingsControllerTests
     {
         return new(
             _mockBlogConfig.Object,
-            _mockBlogAudit.Object,
             _mockLogger.Object,
             _mockMediator.Object);
     }
@@ -138,7 +135,6 @@ public class SettingsControllerTests
 
         Assert.IsInstanceOf<NoContentResult>(result);
         _mockBlogConfig.Verify(p => p.SaveAsync(It.IsAny<GeneralSettings>()));
-        _mockBlogAudit.Verify(p => p.AddEntry(BlogEventType.Settings, BlogEventId.SettingsSavedGeneral, It.IsAny<string>()));
     }
 
     [Test]
@@ -152,7 +148,6 @@ public class SettingsControllerTests
 
         Assert.IsInstanceOf<NoContentResult>(result);
         _mockBlogConfig.Verify(p => p.SaveAsync(It.IsAny<ContentSettings>()));
-        _mockBlogAudit.Verify(p => p.AddEntry(BlogEventType.Settings, BlogEventId.SettingsSavedContent, It.IsAny<string>()));
     }
 
     [Test]
@@ -166,7 +161,6 @@ public class SettingsControllerTests
 
         Assert.IsInstanceOf<NoContentResult>(result);
         _mockBlogConfig.Verify(p => p.SaveAsync(It.IsAny<NotificationSettings>()));
-        _mockBlogAudit.Verify(p => p.AddEntry(BlogEventType.Settings, BlogEventId.SettingsSavedNotification, It.IsAny<string>()));
     }
 
     [Test]
@@ -188,7 +182,6 @@ public class SettingsControllerTests
 
         Assert.IsInstanceOf<NoContentResult>(result);
         _mockBlogConfig.Verify(p => p.SaveAsync(It.IsAny<FeedSettings>()));
-        _mockBlogAudit.Verify(p => p.AddEntry(BlogEventType.Settings, BlogEventId.SettingsSavedSubscription, It.IsAny<string>()));
     }
 
     [Test]
@@ -202,7 +195,6 @@ public class SettingsControllerTests
 
         Assert.IsInstanceOf<NoContentResult>(result);
         _mockBlogConfig.Verify(p => p.SaveAsync(It.IsAny<ImageSettings>()));
-        _mockBlogAudit.Verify(p => p.AddEntry(BlogEventType.Settings, BlogEventId.SettingsSavedImage, It.IsAny<string>()));
     }
 
     //[Test]
@@ -232,7 +224,6 @@ public class SettingsControllerTests
 
         Assert.IsInstanceOf<NoContentResult>(result);
         _mockBlogConfig.Verify(p => p.SaveAsync(It.IsAny<AdvancedSettings>()));
-        _mockBlogAudit.Verify(p => p.AddEntry(BlogEventType.Settings, BlogEventId.SettingsSavedAdvanced, It.IsAny<string>()));
     }
 
     [Test]
@@ -268,7 +259,6 @@ public class SettingsControllerTests
 
         Assert.IsInstanceOf<NoContentResult>(result);
         _mockBlogConfig.Verify(p => p.SaveAsync(It.IsAny<ImageSettings>()));
-        _mockBlogAudit.Verify(p => p.AddEntry(BlogEventType.Settings, BlogEventId.SettingsSavedImage, It.IsAny<string>()));
     }
 
     [Test]
@@ -320,7 +310,6 @@ public class SettingsControllerTests
 
         Assert.IsInstanceOf<BadRequestObjectResult>(result);
         _mockBlogConfig.Verify(p => p.SaveAsync(It.IsAny<CustomStyleSheetSettings>()), Times.Never);
-        _mockBlogAudit.Verify(p => p.AddEntry(BlogEventType.Settings, BlogEventId.SettingsSavedAdvanced, It.IsAny<string>()), Times.Never);
     }
 
     [Test]
@@ -339,7 +328,6 @@ public class SettingsControllerTests
 
         Assert.IsInstanceOf<BadRequestObjectResult>(result);
         _mockBlogConfig.Verify(p => p.SaveAsync(It.IsAny<CustomStyleSheetSettings>()), Times.Never);
-        _mockBlogAudit.Verify(p => p.AddEntry(BlogEventType.Settings, BlogEventId.SettingsSavedAdvanced, It.IsAny<string>()), Times.Never);
     }
 
     [Test]
@@ -358,7 +346,6 @@ public class SettingsControllerTests
 
         Assert.IsInstanceOf<NoContentResult>(result);
         _mockBlogConfig.Verify(p => p.SaveAsync(It.IsAny<CustomStyleSheetSettings>()));
-        _mockBlogAudit.Verify(p => p.AddEntry(BlogEventType.Settings, BlogEventId.SettingsSavedAdvanced, It.IsAny<string>()));
     }
 
     [Test]
@@ -368,17 +355,6 @@ public class SettingsControllerTests
         var result = settingsController.GeneratePassword();
 
         Assert.IsInstanceOf<OkObjectResult>(result);
-    }
-
-    [Test]
-    public async Task ClearAuditLogs_Redirect()
-    {
-        var ctl = CreateSettingsController();
-        var result = await ctl.ClearAuditLogs();
-
-        _mockBlogAudit.Verify();
-
-        Assert.IsInstanceOf<NoContentResult>(result);
     }
 
     //[Test]

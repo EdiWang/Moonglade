@@ -13,7 +13,6 @@ public class LocalAccountServiceTests
     private MockRepository _mockRepository;
 
     private Mock<IRepository<LocalAccountEntity>> _mockLocalAccountRepository;
-    private Mock<IBlogAudit> _mockBlogAudit;
 
     private static readonly Guid Uid = Guid.Parse("76169567-6ff3-42c0-b163-a883ff2ac4fb");
 
@@ -32,7 +31,6 @@ public class LocalAccountServiceTests
         _mockRepository = new(MockBehavior.Default);
 
         _mockLocalAccountRepository = _mockRepository.Create<IRepository<LocalAccountEntity>>();
-        _mockBlogAudit = _mockRepository.Create<IBlogAudit>();
 
         _accountEntity.PasswordHash = "JAvlGPq9JyTdtvBO6x2llnRI1+gxwIyPqCKAn3THIKk=";
     }
@@ -152,7 +150,7 @@ public class LocalAccountServiceTests
     [TestCase(" ", null)]
     public void CreateAsync_EmptyUsernameOrPassword(string username, string clearPassword)
     {
-        var handler = new CreateAccountCommandHandler(_mockLocalAccountRepository.Object, _mockBlogAudit.Object);
+        var handler = new CreateAccountCommandHandler(_mockLocalAccountRepository.Object);
         Assert.ThrowsAsync<ArgumentNullException>(async () =>
         {
             await handler.Handle(new(new()
@@ -166,7 +164,7 @@ public class LocalAccountServiceTests
     [Test]
     public async Task CreateAsync_OK()
     {
-        var handler = new CreateAccountCommandHandler(_mockLocalAccountRepository.Object, _mockBlogAudit.Object);
+        var handler = new CreateAccountCommandHandler(_mockLocalAccountRepository.Object);
         var result = await handler.Handle(new(new()
         {
             Username = "work996",
@@ -176,7 +174,6 @@ public class LocalAccountServiceTests
         Assert.IsTrue(result != Guid.Empty);
 
         _mockLocalAccountRepository.Verify(p => p.AddAsync(It.IsAny<LocalAccountEntity>()));
-        _mockBlogAudit.Verify(p => p.AddEntry(BlogEventType.Settings, BlogEventId.SettingsAccountCreated, It.IsAny<string>()));
     }
 
     [TestCase(null)]
@@ -184,7 +181,7 @@ public class LocalAccountServiceTests
     [TestCase(" ")]
     public void UpdatePasswordAsync_EmptyPassword(string clearPassword)
     {
-        var handler = new UpdatePasswordCommandHandler(_mockLocalAccountRepository.Object, _mockBlogAudit.Object);
+        var handler = new UpdatePasswordCommandHandler(_mockLocalAccountRepository.Object);
         Assert.ThrowsAsync<ArgumentNullException>(async () =>
         {
             await handler.Handle(new(Uid, clearPassword), default);
@@ -197,7 +194,7 @@ public class LocalAccountServiceTests
         _mockLocalAccountRepository.Setup(p => p.GetAsync(It.IsAny<Guid>()))
             .Returns(ValueTask.FromResult((LocalAccountEntity)null));
 
-        var handler = new UpdatePasswordCommandHandler(_mockLocalAccountRepository.Object, _mockBlogAudit.Object);
+        var handler = new UpdatePasswordCommandHandler(_mockLocalAccountRepository.Object);
         Assert.ThrowsAsync<InvalidOperationException>(async () =>
         {
             await handler.Handle(new(Uid, "Work996"), default);
@@ -210,11 +207,10 @@ public class LocalAccountServiceTests
         _mockLocalAccountRepository.Setup(p => p.GetAsync(It.IsAny<Guid>()))
             .Returns(ValueTask.FromResult(_accountEntity));
 
-        var handler = new UpdatePasswordCommandHandler(_mockLocalAccountRepository.Object, _mockBlogAudit.Object);
+        var handler = new UpdatePasswordCommandHandler(_mockLocalAccountRepository.Object);
         await handler.Handle(new(Uid, "Work996andGetintoICU"), default);
 
         _mockLocalAccountRepository.Verify(p => p.UpdateAsync(It.IsAny<LocalAccountEntity>()));
-        _mockBlogAudit.Verify(p => p.AddEntry(BlogEventType.Settings, BlogEventId.SettingsAccountPasswordUpdated, It.IsAny<string>()));
     }
 
     [Test]
@@ -223,7 +219,7 @@ public class LocalAccountServiceTests
         _mockLocalAccountRepository.Setup(p => p.GetAsync(It.IsAny<Guid>()))
             .Returns(ValueTask.FromResult((LocalAccountEntity)null));
 
-        var handler = new DeleteAccountQueryHandler(_mockLocalAccountRepository.Object, _mockBlogAudit.Object);
+        var handler = new DeleteAccountQueryHandler(_mockLocalAccountRepository.Object);
         Assert.ThrowsAsync<InvalidOperationException>(async () =>
         {
             await handler.Handle(new(Uid), default);
@@ -236,10 +232,9 @@ public class LocalAccountServiceTests
         _mockLocalAccountRepository.Setup(p => p.GetAsync(It.IsAny<Guid>()))
             .Returns(ValueTask.FromResult(_accountEntity));
 
-        var handler = new DeleteAccountQueryHandler(_mockLocalAccountRepository.Object, _mockBlogAudit.Object);
+        var handler = new DeleteAccountQueryHandler(_mockLocalAccountRepository.Object);
         await handler.Handle(new(Uid), default);
 
         _mockLocalAccountRepository.Verify(p => p.DeleteAsync(It.IsAny<Guid>()));
-        _mockBlogAudit.Verify(p => p.AddEntry(BlogEventType.Settings, BlogEventId.SettingsDeleteAccount, It.IsAny<string>()));
     }
 }

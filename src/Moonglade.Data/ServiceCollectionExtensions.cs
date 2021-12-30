@@ -21,8 +21,6 @@ public static class ServiceCollectionExtensions
                }).
                EnableDetailedErrors());
 
-        services.AddScoped<IBlogAudit, BlogAudit>();
-
         return services;
     }
 }

@@ -19,13 +19,11 @@ public class CreateCategoryCommand : IRequest
 public class CreateCategoryCommandHandler : IRequestHandler<CreateCategoryCommand>
 {
     private readonly IRepository<CategoryEntity> _catRepo;
-    private readonly IBlogAudit _audit;
     private readonly IBlogCache _cache;
 
-    public CreateCategoryCommandHandler(IRepository<CategoryEntity> catRepo, IBlogAudit audit, IBlogCache cache)
+    public CreateCategoryCommandHandler(IRepository<CategoryEntity> catRepo, IBlogCache cache)
     {
         _catRepo = catRepo;
-        _audit = audit;
         _cache = cache;
     }
 
@@ -45,7 +43,6 @@ public class CreateCategoryCommandHandler : IRequestHandler<CreateCategoryComman
         await _catRepo.AddAsync(category);
         _cache.Remove(CacheDivision.General, "allcats");
 
-        await _audit.AddEntry(BlogEventType.Content, BlogEventId.CategoryCreated, $"Category '{category.RouteName}' created");
         return Unit.Value;
     }
 }

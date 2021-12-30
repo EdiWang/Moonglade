@@ -20,18 +20,15 @@ public class DeleteCategoryCommandHandler : IRequestHandler<DeleteCategoryComman
 {
     private readonly IRepository<CategoryEntity> _catRepo;
     private readonly IRepository<PostCategoryEntity> _postCatRepo;
-    private readonly IBlogAudit _audit;
     private readonly IBlogCache _cache;
 
     public DeleteCategoryCommandHandler(
         IRepository<CategoryEntity> catRepo,
         IRepository<PostCategoryEntity> postCatRepo,
-        IBlogAudit audit,
         IBlogCache cache)
     {
         _catRepo = catRepo;
         _postCatRepo = postCatRepo;
-        _audit = audit;
         _cache = cache;
     }
 
@@ -46,7 +43,6 @@ public class DeleteCategoryCommandHandler : IRequestHandler<DeleteCategoryComman
         await _catRepo.DeleteAsync(request.Id);
         _cache.Remove(CacheDivision.General, "allcats");
 
-        await _audit.AddEntry(BlogEventType.Content, BlogEventId.CategoryDeleted, $"Category '{request.Id}' deleted.");
         return OperationCode.Done;
     }
 }
