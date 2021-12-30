@@ -195,7 +195,6 @@ public class SignInModelTests
     //        Assert.IsInstanceOf<RedirectToPageResult>(result);
     //        var modelState = signInModel.ViewData.ModelState;
     //        Assert.IsTrue(modelState.IsValid);
-    //        _mockBlogAudit.Verify(p => p.AddEntry(BlogEventType.Authentication, BlogEventId.LoginSuccessLocal, It.IsAny<string>()));
     //        _mockLocalAccountService.Verify(p => p.LogSuccessLoginAsync(FakeData.Uid1, It.IsAny<string>()));
     //    }
 }

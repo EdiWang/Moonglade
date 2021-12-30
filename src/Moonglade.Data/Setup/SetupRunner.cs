@@ -78,9 +78,6 @@ public class SetupRunner
         _conn.Execute("DELETE FROM BlogConfiguration");
         _conn.Execute("DELETE FROM BlogAsset");
 
-        // Clear AuditLog Table
-        _conn.Execute("DELETE FROM AuditLog");
-
         // Clear LocalAccount Table
         _conn.Execute("DELETE FROM LocalAccount");
     }
