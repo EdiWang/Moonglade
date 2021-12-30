@@ -13,8 +13,8 @@ public class CommentProviderGateAttribute : ActionFilterAttribute
     {
         var config = context.HttpContext.RequestServices.GetService<IBlogConfig>();
 
-        if (config != null && 
-            config.ContentSettings.EnableComments && 
+        if (config != null &&
+            config.ContentSettings.EnableComments &&
             config.ContentSettings.CommentProvider == CommentProvider.BuiltIn)
         {
             await next().ConfigureAwait(false);
