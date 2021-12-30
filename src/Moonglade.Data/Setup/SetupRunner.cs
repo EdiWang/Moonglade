@@ -4,11 +4,11 @@ using System.Reflection;
 
 namespace Moonglade.Data.Setup;
 
-public class SetupRunner
+public class SetupRunnerX
 {
     private readonly IDbConnection _conn;
 
-    public SetupRunner(IDbConnection dbConnection)
+    public SetupRunnerX(IDbConnection dbConnection)
     {
         _conn = dbConnection;
     }
@@ -119,7 +119,7 @@ public class SetupRunner
 
     private static string GetEmbeddedSqlScript(string scriptName)
     {
-        var assembly = typeof(SetupRunner).GetTypeInfo().Assembly;
+        var assembly = typeof(SetupRunnerX).GetTypeInfo().Assembly;
         using var stream = assembly.GetManifestResourceStream($"Moonglade.Data.SQLScripts.{scriptName}.sql");
         using var reader = new StreamReader(stream);
         var sql = reader.ReadToEnd();

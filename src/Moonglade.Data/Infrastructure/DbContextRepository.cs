@@ -3,19 +3,16 @@ using System.Linq.Expressions;
 
 namespace Moonglade.Data.Infrastructure;
 
-public class DbContextRepository<T> : IRepository<T> where T : class
+public abstract class DbContextRepository<T> : IRepository<T> where T : class
 {
-    protected readonly BlogDbContext DbContext;
+    protected readonly DbContext DbContext;
 
-    public DbContextRepository(BlogDbContext dbContext)
+    public DbContextRepository(DbContext dbContext)
     {
         DbContext = dbContext;
     }
 
-    public async Task ExecuteSqlRawAsync(string sql)
-    {
-        await DbContext.Database.ExecuteSqlRawAsync(sql);
-    }
+    public abstract Task ExecuteSqlRawAsync(string sql);
 
     public Task<T> GetAsync(Expression<Func<T, bool>> condition)
     {

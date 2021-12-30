@@ -11,11 +11,12 @@ public static class WebApplicationExtensions
         var services = scope.ServiceProvider;
         var env = services.GetRequiredService<IWebHostEnvironment>();
 
-        var dbConnection = services.GetRequiredService<IDbConnection>();
-        var setupHelper = new SetupRunner(dbConnection);
+        //var dbConnection = services.GetRequiredService<IDbConnection>();
+        var setupRunner = services.GetRequiredService<ISetupRunner>();
+
         try
         {
-            if (!setupHelper.TestDatabaseConnection()) return;
+            if (!setupRunner.TestDatabaseConnection()) return;
         }
         catch (Exception e)
         {
@@ -23,12 +24,12 @@ public static class WebApplicationExtensions
             return;
         }
 
-        if (setupHelper.IsFirstRun())
+        if (setupRunner.IsFirstRun())
         {
             try
             {
                 app.Logger.LogInformation("Initializing first run configuration...");
-                setupHelper.InitFirstRun();
+                setupRunner.InitFirstRun();
                 app.Logger.LogInformation("Database setup successfully.");
             }
             catch (Exception e)

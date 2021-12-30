@@ -1,28 +1,12 @@
-﻿using Microsoft.Data.SqlClient;
-using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.DependencyInjection;
-using Moonglade.Data.Infrastructure;
-using System.Data;
+﻿using Microsoft.Extensions.DependencyInjection;
 
 namespace Moonglade.Data;
 
 public static class ServiceCollectionExtensions
 {
-    public static IServiceCollection AddDataStorage(this IServiceCollection services, string connectionString)
+    public static IServiceCollection AddDataStorage(this IServiceCollection services)
     {
-        services.AddTransient<IDbConnection>(_ => new SqlConnection(connectionString));
-        services.AddScoped(typeof(IRepository<>), typeof(DbContextRepository<>));
-
-        services.AddDbContext<BlogDbContext>(options =>
-        options.UseLazyLoadingProxies()
-               .UseSqlServer(connectionString, builder =>
-               {
-                   builder.EnableRetryOnFailure(3, TimeSpan.FromSeconds(30), null);
-               }).
-               EnableDetailedErrors());
-
         services.AddScoped<IBlogAudit, BlogAudit>();
-
         return services;
     }
 }

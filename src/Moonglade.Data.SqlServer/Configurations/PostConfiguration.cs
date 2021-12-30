@@ -3,7 +3,7 @@ using Microsoft.EntityFrameworkCore.Metadata.Builders;
 using Moonglade.Data.Entities;
 using System.Diagnostics.CodeAnalysis;
 
-namespace Moonglade.Data.Configurations;
+namespace Moonglade.Data.SqlServer.Configurations;
 
 [ExcludeFromCodeCoverage]
 internal class PostConfiguration : IEntityTypeConfiguration<PostEntity>
