@@ -1,11 +1,11 @@
 ﻿using Microsoft.Data.SqlClient;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using Moonglade.Data.Infrastructure;
-using System.Data;
-using Moonglade.Data.SqlServer.Infrastructure;
-using Microsoft.EntityFrameworkCore;
+using Moonglade.Data.Infrastructure.SqlServer;
 using Moonglade.Data.Setup;
 using Moonglade.Data.Setup.SqlServer;
+using System.Data;
 
 namespace Moonglade.Data.SqlServer
 {

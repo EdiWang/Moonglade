@@ -1,5 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
-using Moonglade.Data.SqlServer.Configurations;
+using Moonglade.Data.Configurations.SqlServer;
 using System.Diagnostics.CodeAnalysis;
 
 namespace Moonglade.Data.SqlServer
