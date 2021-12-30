@@ -4,7 +4,6 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using Moonglade.Configuration;
-using Moonglade.Data;
 using Moonglade.Pingback;
 using Moonglade.Web.Controllers;
 using Moq;

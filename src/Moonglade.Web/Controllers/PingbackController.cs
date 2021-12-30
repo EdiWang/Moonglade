@@ -1,5 +1,4 @@
-﻿using Moonglade.Data.Entities;
-using Moonglade.Notification.Client;
+﻿using Moonglade.Notification.Client;
 using Moonglade.Pingback;
 
 namespace Moonglade.Web.Controllers;

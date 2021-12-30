@@ -1,6 +1,5 @@
 using Microsoft.Extensions.Configuration;
 using Moonglade.Core.TagFeature;
-using Moonglade.Data;
 using Moonglade.Data.Entities;
 using Moonglade.Data.Infrastructure;
 using Moonglade.Data.Spec;
@@ -90,7 +89,7 @@ public class TagTests
     [Test]
     public async Task Create_InvalidName()
     {
-        var handler = new CreateTagCommandHandler(_mockRepositoryTagEntity.Object, 
+        var handler = new CreateTagCommandHandler(_mockRepositoryTagEntity.Object,
             GetFakeConfiguration());
         var result = await handler.Handle(new("ます"), default);
 

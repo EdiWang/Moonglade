@@ -5,8 +5,6 @@ using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using Moonglade.Configuration;
 using Moonglade.Core;
-using Moonglade.Data;
-using Moonglade.Data.Entities;
 using Moonglade.Web.Controllers;
 using Moq;
 using NUnit.Framework;

@@ -9,8 +9,6 @@ using Microsoft.AspNetCore.Mvc.ViewFeatures;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using Moonglade.Auth;
-using Moonglade.Data;
-using Moonglade.Data.Entities;
 using Moonglade.Web.Pages;
 using Moq;
 using NUnit.Framework;

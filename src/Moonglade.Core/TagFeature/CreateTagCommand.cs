@@ -1,6 +1,5 @@
 ﻿using MediatR;
 using Microsoft.Extensions.Configuration;
-using Moonglade.Data;
 using Moonglade.Data.Entities;
 using Moonglade.Data.Infrastructure;
 using Moonglade.Data.Spec;
@@ -46,7 +45,7 @@ public class CreateTagCommandHandler : IRequestHandler<CreateTagCommand, Tag>
         };
 
         var tag = await _tagRepo.AddAsync(newTag);
-        
+
         return new()
         {
             DisplayName = newTag.DisplayName,

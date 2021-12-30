@@ -4,7 +4,6 @@ using Microsoft.Extensions.Options;
 using Moonglade.Caching;
 using Moonglade.Configuration;
 using Moonglade.Core.PostFeature;
-using Moonglade.Data;
 using Moonglade.Data.Entities;
 using Moonglade.Data.Infrastructure;
 using Moonglade.Data.Spec;
@@ -226,7 +225,7 @@ public class PostManageServiceTests
 
         _mockPostEntityRepo.Setup(p => p.GetAsync(Uid)).Returns(ValueTask.FromResult(post));
 
-        var handler = new DeletePostCommandHandler(_mockPostEntityRepo.Object, 
+        var handler = new DeletePostCommandHandler(_mockPostEntityRepo.Object,
             _mockBlogCache.Object);
         await handler.Handle(new(Uid, true), default);
 

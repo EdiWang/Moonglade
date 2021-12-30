@@ -1,7 +1,6 @@
 using MemoryCache.Testing.Moq;
 using Moonglade.Caching;
 using Moonglade.Core.CategoryFeature;
-using Moonglade.Data;
 using Moonglade.Data.Entities;
 using Moonglade.Data.Infrastructure;
 using Moonglade.Data.Spec;
