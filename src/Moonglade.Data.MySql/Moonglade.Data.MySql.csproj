@@ -1,0 +1,29 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net6.0</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <None Remove="SQLScripts\schema-mysql-8.sql" />
+    <None Remove="SQLScripts\seed-configuration.sql" />
+    <None Remove="SQLScripts\seed-sampledata.sql" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <EmbeddedResource Include="SQLScripts\schema-mysql-8.sql" />
+    <EmbeddedResource Include="SQLScripts\seed-configuration.sql" />
+    <EmbeddedResource Include="SQLScripts\seed-sampledata.sql" />
+  </ItemGroup>
+
+  <ItemGroup>
+	  <PackageReference Include="Pomelo.EntityFrameworkCore.MySql" Version="6.0.0" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\Moonglade.Data\Moonglade.Data.csproj" />
+  </ItemGroup>
+
+</Project>

@@ -6,6 +6,12 @@ namespace Moonglade.Data.Setup
     public abstract class SetupRunnerBase
     {
         private readonly IDbConnection _dbConnection;
+        public void InitFirstRun()
+        {
+            SetupDatabase();
+            ResetDefaultConfiguration();
+            InitSampleData();
+        }
 
         public SetupRunnerBase(IDbConnection dbConnection)
         {
@@ -76,5 +82,7 @@ namespace Moonglade.Data.Setup
         }
 
         protected abstract string GetEmbeddedSqlScript(string scriptName);
+
+        public abstract void SetupDatabase();
     }
 }

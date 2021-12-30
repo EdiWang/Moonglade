@@ -5,7 +5,7 @@ using System.Data;
 using Moonglade.Data.SqlServer.Infrastructure;
 using Microsoft.EntityFrameworkCore;
 using Moonglade.Data.Setup;
-using Moonglade.Data.SqlServer.Setup;
+using Moonglade.Data.Setup.SqlServer;
 
 namespace Moonglade.Data.SqlServer
 {

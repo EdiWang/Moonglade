@@ -106,7 +106,9 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Moonglade.Theme.Tests", "Te
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Moonglade.Data.SqlServer", "Moonglade.Data.SqlServer\Moonglade.Data.SqlServer.csproj", "{1ED1FD2A-703E-471D-AEDA-9885748194FF}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Moonglade.Data.SqlServer.Tests", "Tests\Moonglade.Data.SqlServer.Tests\Moonglade.Data.SqlServer.Tests.csproj", "{B625A8A4-0F10-425E-ADA6-948000498EF0}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Moonglade.Data.SqlServer.Tests", "Tests\Moonglade.Data.SqlServer.Tests\Moonglade.Data.SqlServer.Tests.csproj", "{B625A8A4-0F10-425E-ADA6-948000498EF0}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Moonglade.Data.MySql", "Moonglade.Data.MySql\Moonglade.Data.MySql.csproj", "{0267C513-2DB9-4697-A6FA-39BB83E1CA9B}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -234,6 +236,10 @@ Global
 		{B625A8A4-0F10-425E-ADA6-948000498EF0}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{B625A8A4-0F10-425E-ADA6-948000498EF0}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{B625A8A4-0F10-425E-ADA6-948000498EF0}.Release|Any CPU.Build.0 = Release|Any CPU
+		{0267C513-2DB9-4697-A6FA-39BB83E1CA9B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{0267C513-2DB9-4697-A6FA-39BB83E1CA9B}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{0267C513-2DB9-4697-A6FA-39BB83E1CA9B}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{0267C513-2DB9-4697-A6FA-39BB83E1CA9B}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -273,6 +279,7 @@ Global
 		{035A45DD-E42D-4E36-888D-28633E3F7EE2} = {D56318F7-8E6D-4667-8A11-43B664CDD02C}
 		{1ED1FD2A-703E-471D-AEDA-9885748194FF} = {41072B8B-1052-4CC6-930F-83A5F8EA7482}
 		{B625A8A4-0F10-425E-ADA6-948000498EF0} = {D56318F7-8E6D-4667-8A11-43B664CDD02C}
+		{0267C513-2DB9-4697-A6FA-39BB83E1CA9B} = {41072B8B-1052-4CC6-930F-83A5F8EA7482}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {EBD14882-9899-4C4B-B9BC-22C0B93BD559}
