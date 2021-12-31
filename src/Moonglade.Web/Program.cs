@@ -148,7 +148,7 @@ builder.Services.AddTransient<RequestBodyLoggingMiddleware>()
                 .AddTransient<ResponseBodyLoggingMiddleware>();
 
 // Blog Services
-builder.Services.AddPingback()
+var blogServices = builder.Services.AddPingback()
                 .AddSyndication()
                 .AddNotificationClient()
                 .AddReleaseCheckerClient()
@@ -159,12 +159,27 @@ builder.Services.AddPingback()
                 .AddBlogConfig(builder.Configuration)
                 .AddBlogAuthenticaton(builder.Configuration)
                 .AddComments(builder.Configuration)
-                .AddMySqlStorage(builder.Configuration.GetConnectionString("MoongladeDatabase"))
                 .AddImageStorage(builder.Configuration, options =>
                 {
                     options.ContentRootPath = builder.Environment.ContentRootPath;
                 })
                 .Configure<List<ManifestIcon>>(builder.Configuration.GetSection("ManifestIcons"));
+
+//Add Data Storage
+switch (builder.Configuration.GetConnectionString("DatabaseType").ToLower())
+{
+    case "mysql":
+        {
+            blogServices.AddMySqlStorage(builder.Configuration.GetConnectionString("MoongladeDatabase"));
+        }
+        break;
+    case "sqlserver":
+    default:    //默认 sqlserver
+        {
+            blogServices.AddSqlServerStorage(builder.Configuration.GetConnectionString("MoongladeDatabase"));
+        }
+        break;
+}
 
 #endregion
 

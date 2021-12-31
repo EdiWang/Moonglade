@@ -13,7 +13,7 @@ namespace Moonglade.Data.MySql.Tests
         public void AddCoreBloggingServices_OK()
         {
             IServiceCollection services = new ServiceCollection();
-            services.AddMySqlStorage(@"Server=localhost;Option=16834;Database=moonglade");
+            services.AddMySqlStorage(@"Server=localhost;Port=6612;Database=moonglade;Uid=root;Pwd=pzy@2021;");
 
             var obj1 = services.FirstOrDefault(p => p.ServiceType == typeof(IDbConnection));
             Assert.IsNotNull(obj1);
