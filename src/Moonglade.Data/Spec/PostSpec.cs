@@ -20,15 +20,6 @@ public sealed class PostSpec : BaseSpecification<PostEntity>
         }
     }
 
-    public PostSpec(string slug, DateTime pubDateUtc) :
-        base(p =>
-            p.Slug == slug &&
-            p.PubDateUtc != null &&
-            p.PubDateUtc.Value.Date == EF.Functions.DateFromParts(pubDateUtc.Year, pubDateUtc.Month, pubDateUtc.Day))
-    {
-
-    }
-
     public PostSpec(int year, int month = 0) :
         base(p => p.PubDateUtc.Value.Year == year &&
                   (month == 0 || p.PubDateUtc.Value.Month == month))
@@ -37,6 +28,17 @@ public sealed class PostSpec : BaseSpecification<PostEntity>
         AddCriteria(p => p.IsPublished && !p.IsDeleted);
 
         ApplyOrderByDescending(p => p.PubDateUtc);
+    }
+
+    public PostSpec(string slug, DateTime pubDateUtc) :
+        base(p =>
+        p.Slug == slug &&
+        p.PubDateUtc != null
+        && p.PubDateUtc.Value.Year == pubDateUtc.Year 
+        && p.PubDateUtc.Value.Month == pubDateUtc.Month 
+        && p.PubDateUtc.Value.Day == pubDateUtc.Day)
+    {
+
     }
 
     public PostSpec(int hashCheckSum)
