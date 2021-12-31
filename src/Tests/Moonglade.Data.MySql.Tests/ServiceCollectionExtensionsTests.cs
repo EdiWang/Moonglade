@@ -1,10 +1,10 @@
-﻿using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.DependencyInjection;
 using Moonglade.Data.Infrastructure;
 using NUnit.Framework;
 using System.Data;
 using System.Linq;
 
-namespace Moonglade.Data.SqlServer.Tests
+namespace Moonglade.Data.MySql.Tests
 {
     [TestFixture]
     public class ServiceCollectionExtensionsTests
@@ -13,7 +13,7 @@ namespace Moonglade.Data.SqlServer.Tests
         public void AddCoreBloggingServices_OK()
         {
             IServiceCollection services = new ServiceCollection();
-            services.AddSqlServerStorage(@"Server=(localdb)\\MSSQLLocalDB;Database=moonglade;Trusted_Connection=True;");
+            services.AddMySqlStorage(@"Server=localhost;Option=16834;Database=moonglade");
 
             var obj1 = services.FirstOrDefault(p => p.ServiceType == typeof(IDbConnection));
             Assert.IsNotNull(obj1);
@@ -21,7 +21,7 @@ namespace Moonglade.Data.SqlServer.Tests
             var obj2 = services.FirstOrDefault(p => p.ServiceType == typeof(IRepository<>));
             Assert.IsNotNull(obj2);
 
-            var obj3 = services.FirstOrDefault(p => p.ServiceType == typeof(BlogSqlServerDbContext));
+            var obj3 = services.FirstOrDefault(p => p.ServiceType == typeof(BlogMySqlDbContext));
             Assert.IsNotNull(obj3);
         }
     }

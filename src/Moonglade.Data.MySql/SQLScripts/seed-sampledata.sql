@@ -4,8 +4,11 @@ INSERT INTO Tag(DisplayName, NormalizedName) VALUES ('.NET Core', 'dotnet-core')
 INSERT INTO FriendLink (Id, LinkUrl, Title) VALUES (UUID(), 'https://edi.wang', 'Edi.Wang');
 INSERT INTO Menu(Id, Title, Url, Icon, DisplayOrder, IsOpenInNewTab) VALUES (UUID(), 'About', '/page/about', 'icon-star-full', '0', '0');
 
-SELECT @CatId:= Id FROM Category LIMIT 1;
+DECLARE CatId CHAR(36);
+SELECT @CatId:= Id FROM Category LIMIT 0,1;
+DECLARE NewPostId CHAR(36);
 SET @NewPostId = UUID();
+DECLARE PostCotent LONGTEXT;
 SET @PostCotent = N'Moonglade is the new blog system for https://edi.wang. It is a complete rewrite of the old system using .NET 5 and runs on Microsoft Azure.';
 
 INSERT INTO Post(Id, Title, Slug, Author, PostContent, CommentEnabled, CreateTimeUtc, ContentAbstract, IsPublished, IsFeatured, IsFeedIncluded, LastModifiedUtc, IsDeleted, PubDateUtc, ContentLanguageCode, HashCheckSum, IsOriginal) 

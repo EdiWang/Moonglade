@@ -6,6 +6,7 @@ using Microsoft.ApplicationInsights.Extensibility.Implementation;
 using Microsoft.AspNetCore.HttpOverrides;
 using Microsoft.AspNetCore.Rewrite;
 using Microsoft.FeatureManagement;
+using Moonglade.Data.MySql;
 using Moonglade.Data.SqlServer;
 using Moonglade.Notification.Client;
 using Moonglade.Pingback;
@@ -158,7 +159,7 @@ builder.Services.AddPingback()
                 .AddBlogConfig(builder.Configuration)
                 .AddBlogAuthenticaton(builder.Configuration)
                 .AddComments(builder.Configuration)
-                .AddSqlServerStorage(builder.Configuration.GetConnectionString("MoongladeDatabase"))
+                .AddMySqlStorage(builder.Configuration.GetConnectionString("MoongladeDatabase"))
                 .AddImageStorage(builder.Configuration, options =>
                 {
                     options.ContentRootPath = builder.Environment.ContentRootPath;
