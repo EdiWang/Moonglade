@@ -1,6 +1,7 @@
 ﻿using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Moonglade.ImageStorage.Providers;
+using Pzy.Qiniu;
 
 namespace Moonglade.ImageStorage;
 
@@ -45,13 +46,28 @@ public static class ServiceCollectionExtensions
                 services.AddSingleton<IBlogImageStorage, FileSystemImageStorage>();
                 break;
             case "miniostorage":
-                var endPoint = settings.MinioStorageSettings.EndPoint;
-                var accessKey = settings.MinioStorageSettings.AccessKey;
-                var secretKey = settings.MinioStorageSettings.SecretKey;
-                var bucketName = settings.MinioStorageSettings.BucketName;
-                var withSSL = settings.MinioStorageSettings.WithSSL;
-                services.AddSingleton(_ => new MinioBlobConfiguration(endPoint, accessKey, secretKey, bucketName, withSSL));
-                services.AddSingleton<IBlogImageStorage, MinioBlobImageStorage>();
+                {
+                    var endPoint = settings.MinioStorageSettings.EndPoint;
+                    var accessKey = settings.MinioStorageSettings.AccessKey;
+                    var secretKey = settings.MinioStorageSettings.SecretKey;
+                    var bucketName = settings.MinioStorageSettings.BucketName;
+                    var withSSL = settings.MinioStorageSettings.WithSSL;
+                    services.AddSingleton(_ => new MinioBlobConfiguration(endPoint, accessKey, secretKey, bucketName, withSSL));
+                    services.AddSingleton<IBlogImageStorage, MinioBlobImageStorage>();
+                }
+                break;
+            case "qiniustorage":
+                {
+                    var endPoint = settings.QiniuStorageSettings.EndPoint;
+                    var accessKey = settings.QiniuStorageSettings.AccessKey;
+                    var secretKey = settings.QiniuStorageSettings.SecretKey;
+                    var bucketName = settings.QiniuStorageSettings.BucketName;
+                    var withSSL = settings.QiniuStorageSettings.WithSSL;
+                    services.AddQiniuStorage()
+                        .AddSingleton<IBlogImageStorage, QiniuBlobImageStorage>()
+                        .AddSingleton<IMacSettings>(new MacSettings(accessKey, secretKey))
+                        .AddSingleton<IQiniuConfiguration>(_ => new QiniuBlobConfiguration(endPoint, bucketName, withSSL));
+                }
                 break;
             default:
                 var msg = $"Provider {provider} is not supported.";

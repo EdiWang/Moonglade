@@ -146,7 +146,7 @@ public class ImageController : ControllerBase
             }
         }
 
-        var finalFileName = await _imageStorage.InsertAsync(primaryFileName,
+        var storagePath = await _imageStorage.InsertAsync(primaryFileName,
             watermarkedStream is not null ?
                 watermarkedStream.ToArray() :
                 stream.ToArray());
@@ -161,8 +161,8 @@ public class ImageController : ControllerBase
 
         return Ok(new
         {
-            location = $"/image/{finalFileName}",
-            filename = finalFileName
+            location = $"/image/{primaryFileName}",
+            filename = storagePath
         });
     }
 }
