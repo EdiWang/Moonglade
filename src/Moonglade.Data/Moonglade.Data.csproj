@@ -4,23 +4,10 @@
     <TargetFramework>net6.0</TargetFramework>
     <ImplicitUsings>enable</ImplicitUsings>
   </PropertyGroup>
-
-  <ItemGroup>
-    <None Remove="SQLScripts\schema-mssql-140.sql" />
-    <None Remove="SQLScripts\seed-configuration.sql" />
-    <None Remove="SQLScripts\seed-sampledata.sql" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <EmbeddedResource Include="SQLScripts\schema-mssql-140.sql" />
-    <EmbeddedResource Include="SQLScripts\seed-configuration.sql" />
-    <EmbeddedResource Include="SQLScripts\seed-sampledata.sql" />
-  </ItemGroup>
   <ItemGroup>
     <PackageReference Include="CsvHelper" Version="27.2.1" />
     <PackageReference Include="Dapper" Version="2.0.123" />
     <PackageReference Include="MediatR" Version="9.0.0" />
-    <PackageReference Include="Microsoft.Data.SqlClient" Version="4.0.0" />
     <PackageReference Include="Microsoft.FeatureManagement" Version="2.4.0" />
     <FrameworkReference Include="Microsoft.AspNetCore.App" />
     <PackageReference Include="Microsoft.EntityFrameworkCore" Version="6.0.1" />
@@ -29,7 +16,6 @@
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>
     <PackageReference Include="Microsoft.EntityFrameworkCore.Proxies" Version="6.0.1" />
-    <PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="6.0.1" />
     <PackageReference Include="Microsoft.EntityFrameworkCore.Tools" Version="6.0.1">
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers</IncludeAssets>

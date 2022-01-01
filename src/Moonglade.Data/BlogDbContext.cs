@@ -36,21 +36,12 @@ public class BlogDbContext : DbContext
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
         // base.OnModelCreating(modelBuilder);
-
         modelBuilder.ApplyConfiguration(new CategoryConfiguration());
-        modelBuilder.ApplyConfiguration(new CommentConfiguration());
-        modelBuilder.ApplyConfiguration(new CommentReplyConfiguration());
-        modelBuilder.ApplyConfiguration(new PostConfiguration());
-        modelBuilder.ApplyConfiguration(new PostCategoryConfiguration());
-        modelBuilder.ApplyConfiguration(new PostExtensionConfiguration());
         modelBuilder.ApplyConfiguration(new TagConfiguration());
         modelBuilder.ApplyConfiguration(new FriendLinkConfiguration());
         modelBuilder.ApplyConfiguration(new PageConfiguration());
         modelBuilder.ApplyConfiguration(new MenuConfiguration());
         modelBuilder.ApplyConfiguration(new SubMenuConfiguration());
-        modelBuilder.ApplyConfiguration(new LocalAccountConfiguration());
-        modelBuilder.ApplyConfiguration(new PingbackConfiguration());
-        modelBuilder.ApplyConfiguration(new BlogThemeConfiguration());
 
         modelBuilder
             .Entity<PostEntity>()

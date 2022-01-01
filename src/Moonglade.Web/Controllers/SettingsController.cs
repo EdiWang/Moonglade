@@ -188,12 +188,13 @@ public class SettingsController : ControllerBase
 
     [HttpPost("reset")]
     [ProducesResponseType(StatusCodes.Status202Accepted)]
-    public async Task<IActionResult> Reset([FromServices] IDbConnection dbConnection, [FromServices] IHostApplicationLifetime applicationLifetime)
+    public async Task<IActionResult> Reset([FromServices] ISetupRunner setupRunner, 
+        [FromServices] IHostApplicationLifetime applicationLifetime)
     {
         _logger.LogWarning($"System reset is requested by '{User.Identity?.Name}', IP: {HttpContext.Connection.RemoteIpAddress}.");
 
-        var setupHelper = new SetupRunner(dbConnection);
-        setupHelper.ClearData();
+        //var setupHelper = new SetupRunner(dbConnection);
+        setupRunner.ClearData();
 
         applicationLifetime.StopApplication();
         return Accepted();

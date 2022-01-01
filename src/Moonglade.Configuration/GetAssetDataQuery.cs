@@ -26,7 +26,7 @@ public class GetAssetDataQueryHandler : IRequestHandler<GetAssetDataQuery, strin
     public async Task<string> Handle(GetAssetDataQuery request, CancellationToken cancellationToken)
     {
         var asset = await _dbConnection.QueryFirstOrDefaultAsync<BlogAsset>
-            ("SELECT TOP 1 * FROM BlogAsset ba WHERE ba.Id = @assetId", new { request.AssetId });
+            ("SELECT * FROM BlogAsset ba WHERE ba.Id = @assetId", new { request.AssetId });
 
         return asset?.Base64Data;
     }
