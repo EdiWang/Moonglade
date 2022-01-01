@@ -3,7 +3,6 @@ using Moonglade.Caching.Filters;
 using Moonglade.Data.Setup;
 using Moonglade.Notification.Client;
 using NUglify;
-using System.Data;
 using System.Reflection;
 
 namespace Moonglade.Web.Controllers;
@@ -188,7 +187,7 @@ public class SettingsController : ControllerBase
 
     [HttpPost("reset")]
     [ProducesResponseType(StatusCodes.Status202Accepted)]
-    public async Task<IActionResult> Reset([FromServices] ISetupRunner setupRunner, 
+    public async Task<IActionResult> Reset([FromServices] ISetupRunner setupRunner,
         [FromServices] IHostApplicationLifetime applicationLifetime)
     {
         _logger.LogWarning($"System reset is requested by '{User.Identity?.Name}', IP: {HttpContext.Connection.RemoteIpAddress}.");
