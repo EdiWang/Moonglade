@@ -67,7 +67,7 @@ public static class ServiceCollectionExtensions
 
     private static void AddFileSystemStorage(this IServiceCollection services, ImageStorageSettings storageSettings)
     {
-        if (storageSettings.MinioStorageSettings == null)
+        if (storageSettings.FileSystemSettings == null)
         {
             throw new ArgumentNullException(nameof(ImageStorageSettings.FileSystemSettings), "FileSystemSettings can not be null.");
         }
