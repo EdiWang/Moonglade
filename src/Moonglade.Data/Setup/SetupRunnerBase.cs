@@ -42,9 +42,6 @@ namespace Moonglade.Data.Setup
             _dbConnection.Execute("DELETE FROM BlogConfiguration");
             _dbConnection.Execute("DELETE FROM BlogAsset");
 
-            // Clear AuditLog Table
-            _dbConnection.Execute("DELETE FROM AuditLog");
-
             // Clear LocalAccount Table
             _dbConnection.Execute("DELETE FROM LocalAccount");
         }
