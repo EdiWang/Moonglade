@@ -24,8 +24,6 @@ namespace Moonglade.Data.MySql
                   })
                 .EnableDetailedErrors());
 
-            services.AddDataStorage();
-
             return services;
         }
     }

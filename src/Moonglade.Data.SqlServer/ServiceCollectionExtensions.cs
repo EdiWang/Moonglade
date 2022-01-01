@@ -25,8 +25,6 @@ namespace Moonglade.Data.SqlServer
                    }).
                    EnableDetailedErrors());
 
-            services.AddDataStorage();
-
             return services;
         }
     }

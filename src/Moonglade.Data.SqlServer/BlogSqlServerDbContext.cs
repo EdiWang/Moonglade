@@ -24,7 +24,6 @@ namespace Moonglade.Data.SqlServer
             modelBuilder.ApplyConfiguration(new PostCategoryConfiguration());
             modelBuilder.ApplyConfiguration(new PostExtensionConfiguration());
             modelBuilder.ApplyConfiguration(new LocalAccountConfiguration());
-            modelBuilder.ApplyConfiguration(new AuditLogConfiguration());
             modelBuilder.ApplyConfiguration(new PingbackConfiguration());
             modelBuilder.ApplyConfiguration(new BlogThemeConfiguration());
 
