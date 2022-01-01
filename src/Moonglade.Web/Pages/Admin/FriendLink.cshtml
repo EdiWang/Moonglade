@@ -5,67 +5,67 @@
 }
 
 @section scripts{
-    <script>
-        var editCanvas = new bootstrap.Offcanvas(document.getElementById('editLinkCanvas'));
-        var fid = emptyGuid;
+<script>
+    var editCanvas = new bootstrap.Offcanvas(document.getElementById('editLinkCanvas'));
+    var fid = emptyGuid;
 
-        function deleteFriendLink(friendlinkid) {
-            $(`#span-processing-${friendlinkid}`).show();
+    function deleteFriendLink(friendlinkid) {
+        $(`#span-processing-${friendlinkid}`).show();
 
-            callApi(`/api/friendlink/${friendlinkid}`, 'DELETE', {},
-                (resp) => {
-                    $(`#tr-${friendlinkid}`).hide();
-                });
-        }
+        callApi(`/api/friendlink/${friendlinkid}`, 'DELETE', {},
+            (resp) => {
+                $(`#tr-${friendlinkid}`).hide();
+            });
+    }
 
-        function initCreateFriendLink() {
-            fid = emptyGuid;
-            $('#edit-form')[0].reset();
+    function initCreateFriendLink() {
+        fid = emptyGuid;
+        $('#edit-form')[0].reset();
+        editCanvas.show();
+    }
+
+    function editFriendLink(id) {
+        $.get(`/api/friendlink/${id}`, function (data) {
+            fid = data.id;
+            $('#EditLinkRequest_Title').val(data.title);
+            $('#EditLinkRequest_LinkUrl').val(data.linkUrl);
             editCanvas.show();
-        }
-
-        function editFriendLink(id) {
-            $.get(`/api/friendlink/${id}`, function (data) {
-                fid = data.id;
-                $('#EditLinkRequest_Title').val(data.title);
-                $('#EditLinkRequest_LinkUrl').val(data.linkUrl);
-                editCanvas.show();
-            });
-        }
-
-        $(function () {
-            $(".btn-delete").click(function () {
-                var cfm = confirm("Delete Confirmation?");
-                if (cfm) {
-                    deleteFriendLink($(this).data("friendlinkid"));
-                }
-            });
-
-            $(".btn-edit").click(function () {
-                editFriendLink($(this).data("friendlinkid"));
-            });
         });
+    }
 
-        $(".btn-submit").click(function () {
-            if ($("#edit-form").valid()) {
-                var httpVerb = fid == emptyGuid ? 'POST' : 'PUT';
-                var apiAddress = fid == emptyGuid ? `/api/friendlink` : `/api/friendlink/${fid}`;
-
-                callApi(apiAddress, httpVerb,
-                    {
-                        "Id": fid,
-                        "Title": $("#EditLinkRequest_Title").val(),
-                        "LinkUrl": $("#EditLinkRequest_LinkUrl").val()
-                    },
-                    (resp) => {
-                        $("#edit-form")[0].reset();
-                        $("#editFriendlinkModal").modal('hide');
-                        window.location.reload();
-                    });
+    $(function () {
+        $(".btn-delete").click(function () {
+            var cfm = confirm("Delete Confirmation?");
+            if (cfm) {
+                deleteFriendLink($(this).data("friendlinkid"));
             }
         });
 
-    </script>
+        $(".btn-edit").click(function () {
+            editFriendLink($(this).data("friendlinkid"));
+        });
+    });
+
+    $(".btn-submit").click(function () {
+        if ($("#edit-form").valid()) {
+            var httpVerb = fid == emptyGuid ? 'POST' : 'PUT';
+            var apiAddress = fid == emptyGuid ? `/api/friendlink` : `/api/friendlink/${fid}`;
+
+            callApi(apiAddress, httpVerb,
+                {
+                    "Id": fid,
+                    "Title": $("#EditLinkRequest_Title").val(),
+                    "LinkUrl": $("#EditLinkRequest_LinkUrl").val()
+                },
+                (resp) => {
+                    $("#edit-form")[0].reset();
+                    $("#editFriendlinkModal").modal('hide');
+                    window.location.reload();
+                });
+        }
+    });
+
+</script>
 }
 
 <div class="admin-toolbar ps-4 pe-4 pt-2 pb-2 border-bottom mb-3 shadow-sm">
@@ -76,40 +76,25 @@
 </div>
 
 <div class="ps-4 pe-4">
-
-    <table class="table table-bordered">
-        <thead>
-        <tr>
-            <th>
-                @Localizer["Title"]
-            </th>
-            <th>
-                @Localizer["Link"]
-            </th>
-            <th class="table-item-w20">
-                @Localizer["Action"]
-            </th>
-        </tr>
-        </thead>
-        <tbody>
-        @foreach (var item in Model.Links.OrderBy(m => m.Title))
-        {
-            <tr id="tr-@item.Id">
-                <td>
+    @foreach (var item in Model.Links.OrderBy(m => m.Title))
+    {
+        <div id="tr-@item.Id" class="row">
+            <div class="col">
+                <h6>
                     @item.Title
-                </td>
-                <td>
+                </h6>
+                <div>
                     <a href="@item.LinkUrl" target="_blank">@item.LinkUrl</a>
-                </td>
-                <td>
-                    <a href="javascript:;" data-friendlinkid="@item.Id" class="btn btn-sm btn-outline-accent btn-edit"><i class="bi-pen"></i></a>
-                    <a href="javascript:;" data-friendlinkid="@item.Id" class="btn btn-sm btn-outline-danger btn-delete"><i class="bi-trash"></i></a>
-                    <span id="span-processing-@item.Id" class="spinner-border spinner-border-sm" role="status" aria-hidden="true" style="display: none;"></span>
-                </td>
-            </tr>
-        }
-        </tbody>
-    </table>
+                </div>
+            </div>
+            <div class="col-auto">
+                <a href="javascript:;" data-friendlinkid="@item.Id" class="btn btn-sm btn-outline-accent btn-edit"><i class="bi-pen"></i></a>
+                <a href="javascript:;" data-friendlinkid="@item.Id" class="btn btn-sm btn-outline-danger btn-delete"><i class="bi-trash"></i></a>
+                <span id="span-processing-@item.Id" class="spinner-border spinner-border-sm" role="status" aria-hidden="true" style="display: none;"></span>
+            </div>
+        </div>
+        <hr />
+    }
 
     @Html.AntiForgeryToken()
 

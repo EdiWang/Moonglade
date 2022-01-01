@@ -1,5 +1,4 @@
 ﻿using MediatR;
-using Moonglade.Data;
 using Moonglade.Data.Entities;
 using Moonglade.Data.Infrastructure;
 
@@ -18,12 +17,10 @@ public class DeleteMenuCommand : IRequest
 public class DeleteMenuCommandHandler : IRequestHandler<DeleteMenuCommand>
 {
     private readonly IRepository<MenuEntity> _menuRepo;
-    private readonly IBlogAudit _audit;
 
-    public DeleteMenuCommandHandler(IRepository<MenuEntity> menuRepo, IBlogAudit audit)
+    public DeleteMenuCommandHandler(IRepository<MenuEntity> menuRepo)
     {
         _menuRepo = menuRepo;
-        _audit = audit;
     }
 
     public async Task<Unit> Handle(DeleteMenuCommand request, CancellationToken cancellationToken)
@@ -35,7 +32,6 @@ public class DeleteMenuCommandHandler : IRequestHandler<DeleteMenuCommand>
         }
 
         await _menuRepo.DeleteAsync(request.Id);
-        await _audit.AddEntry(BlogEventType.Content, BlogEventId.CategoryDeleted, $"Menu '{request.Id}' deleted.");
 
         return Unit.Value;
     }
