@@ -44,6 +44,18 @@ Update the `MoongladeDatabase` with your database connection string in `appsetti
 "MoongladeDatabase": "Server=(localdb)\\MSSQLLocalDB;Database=moonglade;Trusted_Connection=True;"
 ```
 
+To use MySQL, set `DatabaseType` to `MySql`
+
+```json
+"DatabaseType": "MySql"
+```
+
+example MySQL connection string:
+
+```json
+"MoongladeDatabase": "Server=localhost;Port=6612;Database=moonglade;Uid=root;Pwd=******;"
+```
+
 ### 🔨 Build Source
 
 Build and run `./src/Moonglade.sln`
