@@ -146,7 +146,7 @@ public class ImageController : ControllerBase
             }
         }
 
-        var storagePath = await _imageStorage.InsertAsync(primaryFileName,
+        var finalFileName = await _imageStorage.InsertAsync(primaryFileName,
             watermarkedStream is not null ?
                 watermarkedStream.ToArray() :
                 stream.ToArray());
@@ -159,10 +159,21 @@ public class ImageController : ControllerBase
 
         _logger.LogInformation($"Image '{primaryFileName}' uloaded.");
 
-        return Ok(new
+        if (_imageStorage.UseCdn)
         {
-            location = $"/image/{primaryFileName}",
-            filename = storagePath
-        });
+            return Ok(new
+            {
+                location = finalFileName,
+                filename = finalFileName
+            });
+        }
+        else
+        {
+            return Ok(new
+            {
+                location = $"/image/{finalFileName}",
+                filename = finalFileName
+            });
+        }
     }
 }

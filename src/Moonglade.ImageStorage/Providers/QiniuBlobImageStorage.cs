@@ -21,6 +21,8 @@ namespace Moonglade.ImageStorage.Providers
 
         public string Name => nameof(QiniuBlobImageStorage);
 
+        public bool UseCdn => true;
+
         public QiniuBlobImageStorage(ILogger<QiniuBlobImageStorage> logger,
             IMemoryCache cache,
             Signature signature,
