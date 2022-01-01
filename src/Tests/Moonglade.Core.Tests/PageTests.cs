@@ -1,5 +1,4 @@
 using Moonglade.Core.PageFeature;
-using Moonglade.Data;
 using Moonglade.Data.Entities;
 using Moonglade.Data.Infrastructure;
 using Moonglade.Data.Spec;
@@ -16,7 +15,6 @@ public class PageTests
     private MockRepository _mockRepository;
 
     private Mock<IRepository<PageEntity>> _mockPageRepository;
-    private Mock<IBlogAudit> _mockBlogAudit;
 
     [SetUp]
     public void SetUp()
@@ -24,7 +22,6 @@ public class PageTests
         _mockRepository = new(MockBehavior.Default);
 
         _mockPageRepository = _mockRepository.Create<IRepository<PageEntity>>();
-        _mockBlogAudit = _mockRepository.Create<IBlogAudit>();
     }
 
     private readonly PageEntity _fakePageEntity = new()
@@ -140,10 +137,8 @@ public class PageTests
             .Returns(ValueTask.FromResult(_fakePageEntity));
         _mockPageRepository.Setup(p => p.DeleteAsync(It.IsAny<Guid>()));
 
-        var handler = new DeletePageCommandHandler(_mockPageRepository.Object, _mockBlogAudit.Object);
+        var handler = new DeletePageCommandHandler(_mockPageRepository.Object);
         await handler.Handle(new(Guid.Empty), default);
-
-        _mockBlogAudit.Verify();
     }
 
     [Test]
@@ -152,7 +147,7 @@ public class PageTests
         _mockPageRepository.Setup(p => p.GetAsync(It.IsAny<Guid>()))
             .Returns(ValueTask.FromResult((PageEntity)null));
 
-        var handler = new DeletePageCommandHandler(_mockPageRepository.Object, _mockBlogAudit.Object);
+        var handler = new DeletePageCommandHandler(_mockPageRepository.Object);
         Assert.ThrowsAsync<InvalidOperationException>(async () =>
         {
             await handler.Handle(new(Guid.Empty), default);
@@ -162,7 +157,7 @@ public class PageTests
     [Test]
     public async Task CreateAsync_OK()
     {
-        var handler = new CreatePageCommandHandler(_mockPageRepository.Object, _mockBlogAudit.Object);
+        var handler = new CreatePageCommandHandler(_mockPageRepository.Object);
         var result = await handler.Handle(new(new()
         {
             CssContent = string.Empty,
@@ -175,7 +170,6 @@ public class PageTests
         }), default);
 
         Assert.AreNotEqual(Guid.Empty, result);
-        _mockBlogAudit.Verify(p => p.AddEntry(BlogEventType.Content, BlogEventId.PageCreated, It.IsAny<string>()));
     }
 
     [Test]
@@ -184,7 +178,7 @@ public class PageTests
         _mockPageRepository.Setup(p => p.GetAsync(It.IsAny<Guid>()))
             .Returns(ValueTask.FromResult((PageEntity)null));
 
-        var handler = new UpdatePageCommandHandler(_mockPageRepository.Object, _mockBlogAudit.Object);
+        var handler = new UpdatePageCommandHandler(_mockPageRepository.Object);
         Assert.ThrowsAsync<InvalidOperationException>(async () =>
         {
             var result = await handler.Handle(new(Guid.Empty, new()), default);
@@ -197,7 +191,7 @@ public class PageTests
         _mockPageRepository.Setup(p => p.GetAsync(It.IsAny<Guid>()))
             .Returns(ValueTask.FromResult(_fakePageEntity));
 
-        var handler = new UpdatePageCommandHandler(_mockPageRepository.Object, _mockBlogAudit.Object);
+        var handler = new UpdatePageCommandHandler(_mockPageRepository.Object);
         var result = await handler.Handle(new(Guid.Empty, new()
         {
             CssContent = string.Empty,
@@ -210,6 +204,5 @@ public class PageTests
         }), default);
 
         Assert.AreEqual(Guid.Empty, result);
-        _mockBlogAudit.Verify(p => p.AddEntry(BlogEventType.Content, BlogEventId.PageUpdated, It.IsAny<string>()));
     }
 }

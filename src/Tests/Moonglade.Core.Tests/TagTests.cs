@@ -1,6 +1,5 @@
 using Microsoft.Extensions.Configuration;
 using Moonglade.Core.TagFeature;
-using Moonglade.Data;
 using Moonglade.Data.Entities;
 using Moonglade.Data.Infrastructure;
 using Moonglade.Data.Spec;
@@ -18,8 +17,6 @@ public class TagTests
 
     private Mock<IRepository<TagEntity>> _mockRepositoryTagEntity;
     private Mock<IRepository<PostTagEntity>> _mockRepositoryPostTagEntity;
-    private Mock<IBlogAudit> _mockBlogAudit;
-    private Mock<IConfiguration> _mockConfiguration;
 
     [SetUp]
     public void SetUp()
@@ -28,8 +25,6 @@ public class TagTests
 
         _mockRepositoryTagEntity = _mockRepository.Create<IRepository<TagEntity>>();
         _mockRepositoryPostTagEntity = _mockRepository.Create<IRepository<PostTagEntity>>();
-        _mockBlogAudit = _mockRepository.Create<IBlogAudit>();
-        _mockConfiguration = _mockRepository.Create<IConfiguration>();
     }
 
     private IConfigurationRoot GetFakeConfiguration()
@@ -84,7 +79,7 @@ public class TagTests
                 p.SelectFirstOrDefault(It.IsAny<TagSpec>(), It.IsAny<Expression<Func<TagEntity, Tag>>>()))
             .Returns(new Tag());
 
-        var handler = new CreateTagCommandHandler(_mockRepositoryTagEntity.Object, _mockBlogAudit.Object,
+        var handler = new CreateTagCommandHandler(_mockRepositoryTagEntity.Object,
             GetFakeConfiguration());
         var result = await handler.Handle(new("Work 996"), default);
 
@@ -94,7 +89,7 @@ public class TagTests
     [Test]
     public async Task Create_InvalidName()
     {
-        var handler = new CreateTagCommandHandler(_mockRepositoryTagEntity.Object, _mockBlogAudit.Object,
+        var handler = new CreateTagCommandHandler(_mockRepositoryTagEntity.Object,
             GetFakeConfiguration());
         var result = await handler.Handle(new("ます"), default);
 
@@ -114,7 +109,7 @@ public class TagTests
                 NormalizedName = "work-996"
             }));
 
-        var handler = new CreateTagCommandHandler(_mockRepositoryTagEntity.Object, _mockBlogAudit.Object,
+        var handler = new CreateTagCommandHandler(_mockRepositoryTagEntity.Object,
             GetFakeConfiguration());
         var result = await handler.Handle(new("Work 996"), default);
 
@@ -127,11 +122,9 @@ public class TagTests
     {
         _mockRepositoryTagEntity.Setup(p => p.GetAsync(It.IsAny<int>())).Returns(null);
 
-        var handler = new UpdateTagCommandHandler(_mockRepositoryTagEntity.Object, _mockBlogAudit.Object,
+        var handler = new UpdateTagCommandHandler(_mockRepositoryTagEntity.Object,
             GetFakeConfiguration());
         await handler.Handle(new(996, "fubao"), default);
-
-        _mockBlogAudit.VerifyNoOtherCalls();
     }
 
     [Test]
@@ -145,11 +138,9 @@ public class TagTests
                 NormalizedName = "ma-yun"
             }));
 
-        var handler = new UpdateTagCommandHandler(_mockRepositoryTagEntity.Object, _mockBlogAudit.Object,
+        var handler = new UpdateTagCommandHandler(_mockRepositoryTagEntity.Object,
             GetFakeConfiguration());
         await handler.Handle(new(996, "fubao"), default);
-
-        _mockBlogAudit.Verify();
     }
 
     [Test]
@@ -166,12 +157,11 @@ public class TagTests
             }));
 
         var handler = new DeleteTagCommandHandler(_mockRepositoryTagEntity.Object,
-            _mockRepositoryPostTagEntity.Object, _mockBlogAudit.Object);
+            _mockRepositoryPostTagEntity.Object);
         await handler.Handle(new(996), default);
 
         _mockRepositoryPostTagEntity.Verify(p => p.DeleteAsync(It.IsAny<IEnumerable<PostTagEntity>>()));
         _mockRepositoryTagEntity.Verify(p => p.DeleteAsync(996));
-        _mockBlogAudit.Verify(p => p.AddEntry(BlogEventType.Content, BlogEventId.TagDeleted, It.IsAny<string>()));
     }
 
     [Test]

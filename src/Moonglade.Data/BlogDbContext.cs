@@ -30,7 +30,6 @@ public class BlogDbContext : DbContext
     public virtual DbSet<MenuEntity> Menu { get; set; }
     public virtual DbSet<SubMenuEntity> SubMenu { get; set; }
     public virtual DbSet<LocalAccountEntity> LocalAccount { get; set; }
-    public virtual DbSet<AuditLogEntity> AuditLog { get; set; }
     public virtual DbSet<PingbackEntity> Pingback { get; set; }
     public virtual DbSet<BlogThemeEntity> BlogTheme { get; set; }
 

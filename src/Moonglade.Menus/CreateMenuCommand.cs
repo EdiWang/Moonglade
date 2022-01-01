@@ -1,5 +1,4 @@
 ﻿using MediatR;
-using Moonglade.Data;
 using Moonglade.Data.Entities;
 using Moonglade.Data.Infrastructure;
 
@@ -18,12 +17,10 @@ public class CreateMenuCommand : IRequest<Guid>
 public class CreateMenuCommandHandler : IRequestHandler<CreateMenuCommand, Guid>
 {
     private readonly IRepository<MenuEntity> _menuRepo;
-    private readonly IBlogAudit _audit;
 
-    public CreateMenuCommandHandler(IRepository<MenuEntity> menuRepo, IBlogAudit audit)
+    public CreateMenuCommandHandler(IRepository<MenuEntity> menuRepo)
     {
         _menuRepo = menuRepo;
-        _audit = audit;
     }
 
     public async Task<Guid> Handle(CreateMenuCommand request, CancellationToken cancellationToken)
@@ -54,7 +51,6 @@ public class CreateMenuCommandHandler : IRequestHandler<CreateMenuCommand, Guid>
         }
 
         await _menuRepo.AddAsync(menu);
-        await _audit.AddEntry(BlogEventType.Content, BlogEventId.MenuCreated, $"Menu '{uid}' created.");
         return uid;
     }
 }

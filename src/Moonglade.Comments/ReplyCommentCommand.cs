@@ -1,5 +1,4 @@
 ﻿using MediatR;
-using Moonglade.Data;
 using Moonglade.Data.Entities;
 using Moonglade.Data.Infrastructure;
 using Moonglade.Utils;
@@ -21,14 +20,11 @@ public class ReplyCommentCommand : IRequest<CommentReply>
 
 public class ReplyCommentCommandHandler : IRequestHandler<ReplyCommentCommand, CommentReply>
 {
-    private readonly IBlogAudit _audit;
     private readonly IRepository<CommentEntity> _commentRepo;
     private readonly IRepository<CommentReplyEntity> _commentReplyRepo;
 
-    public ReplyCommentCommandHandler(
-        IBlogAudit audit, IRepository<CommentEntity> commentRepo, IRepository<CommentReplyEntity> commentReplyRepo)
+    public ReplyCommentCommandHandler(IRepository<CommentEntity> commentRepo, IRepository<CommentReplyEntity> commentReplyRepo)
     {
-        _audit = audit;
         _commentRepo = commentRepo;
         _commentReplyRepo = commentReplyRepo;
     }
@@ -64,7 +60,6 @@ public class ReplyCommentCommandHandler : IRequestHandler<ReplyCommentCommand, C
             Title = cmt.Post.Title
         };
 
-        await _audit.AddEntry(BlogEventType.Content, BlogEventId.CommentReplied, $"Replied comment id '{request.CommentId}'");
         return reply;
     }
 }

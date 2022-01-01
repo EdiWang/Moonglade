@@ -1,5 +1,4 @@
 ﻿using MediatR;
-using Moonglade.Data;
 using Moonglade.Data.Entities;
 using Moonglade.Data.Infrastructure;
 using Moonglade.Data.Spec;
@@ -18,12 +17,10 @@ public class ToggleApprovalCommand : IRequest
 
 public class ToggleApprovalCommandHandler : IRequestHandler<ToggleApprovalCommand>
 {
-    private readonly IBlogAudit _audit;
     private readonly IRepository<CommentEntity> _commentRepo;
 
-    public ToggleApprovalCommandHandler(IBlogAudit audit, IRepository<CommentEntity> commentRepo)
+    public ToggleApprovalCommandHandler(IRepository<CommentEntity> commentRepo)
     {
-        _audit = audit;
         _commentRepo = commentRepo;
     }
 
@@ -40,10 +37,6 @@ public class ToggleApprovalCommandHandler : IRequestHandler<ToggleApprovalComman
         {
             cmt.IsApproved = !cmt.IsApproved;
             await _commentRepo.UpdateAsync(cmt);
-
-            string logMessage = $"Updated comment approval status to '{cmt.IsApproved}' for comment id: '{cmt.Id}'";
-            await _audit.AddEntry(
-                BlogEventType.Content, cmt.IsApproved ? BlogEventId.CommentApproval : BlogEventId.CommentDisapproval, logMessage);
         }
 
         return Unit.Value;

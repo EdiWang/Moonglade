@@ -1,5 +1,4 @@
 ﻿using MediatR;
-using Moonglade.Data;
 using Moonglade.Data.Entities;
 using Moonglade.Data.Infrastructure;
 using Moonglade.Utils;
@@ -21,13 +20,11 @@ public class CreateAccountCommand : IRequest<Guid>
 public class CreateAccountCommandHandler : IRequestHandler<CreateAccountCommand, Guid>
 {
     private readonly IRepository<LocalAccountEntity> _accountRepo;
-    private readonly IBlogAudit _audit;
 
     public CreateAccountCommandHandler(
-        IRepository<LocalAccountEntity> accountRepo, IBlogAudit audit)
+        IRepository<LocalAccountEntity> accountRepo)
     {
         _accountRepo = accountRepo;
-        _audit = audit;
     }
 
     public async Task<Guid> Handle(CreateAccountCommand request, CancellationToken cancellationToken)
@@ -52,7 +49,6 @@ public class CreateAccountCommandHandler : IRequestHandler<CreateAccountCommand,
         };
 
         await _accountRepo.AddAsync(account);
-        await _audit.AddEntry(BlogEventType.Settings, BlogEventId.SettingsAccountCreated, $"Account '{account.Id}' created.");
 
         return uid;
     }
