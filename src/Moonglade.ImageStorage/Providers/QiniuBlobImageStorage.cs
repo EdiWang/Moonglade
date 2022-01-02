@@ -51,7 +51,7 @@ namespace Moonglade.ImageStorage.Providers
 
             _logger.LogInformation($"Uploaded image file '{fileName}' to Qiniu Cloud Storage.");
 
-            return $"{_qiniuBlobConfiguration.EndPoint}/{fileName}";
+            return GetCdnUrl(fileName);
         }
 
         private async Task SaveFileAsync(Stream source, string fileName)
@@ -111,7 +111,7 @@ namespace Moonglade.ImageStorage.Providers
                 entry.SlidingExpiration = TimeSpan.FromSeconds(ExpireSeconds);
                 return GetQiniuBlobToken();
             });
-            var url = $"{_qiniuBlobConfiguration.EndPoint}/{fileName}?e={deadline}&token={blobToken}";
+            var url = $"{GetCdnUrl(fileName)}?e={deadline}&token={blobToken}";
 
             var result = await _httpManager.GetAsync(url, blobToken, true);
 
@@ -123,6 +123,13 @@ namespace Moonglade.ImageStorage.Providers
             };
 
             return imageInfo;
+        }
+
+        private string GetCdnUrl(string fileName)
+        {
+            var uriSchema = _qiniuBlobConfiguration.UseHttps ? Uri.UriSchemeHttps : Uri.UriSchemeHttp;
+
+            return $"{uriSchema}://{_qiniuBlobConfiguration.EndPoint}/{fileName}";
         }
     }
 }
