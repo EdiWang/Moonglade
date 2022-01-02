@@ -8,6 +8,8 @@ public class MinioBlobImageStorage : IBlogImageStorage
 {
     public string Name => nameof(MinioBlobImageStorage);
 
+    public bool UseCdn => false;
+
     private readonly MinioClient _client;
     private readonly string _bucketName;
 

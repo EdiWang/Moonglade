@@ -9,5 +9,6 @@
     <FrameworkReference Include="Microsoft.AspNetCore.App" />
     <PackageReference Include="Azure.Storage.Blobs" Version="12.10.0" />
     <PackageReference Include="Minio" Version="3.1.13" />
+    <PackageReference Include="Pzy.Qiniu" Version="0.1.2" />
   </ItemGroup>
 </Project>

@@ -159,10 +159,21 @@ public class ImageController : ControllerBase
 
         _logger.LogInformation($"Image '{primaryFileName}' uloaded.");
 
-        return Ok(new
+        if (_imageStorage.UseCdn)
         {
-            location = $"/image/{finalFileName}",
-            filename = finalFileName
-        });
+            return Ok(new
+            {
+                location = finalFileName,
+                filename = finalFileName
+            });
+        }
+        else
+        {
+            return Ok(new
+            {
+                location = $"/image/{finalFileName}",
+                filename = finalFileName
+            });
+        }
     }
 }

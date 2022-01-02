@@ -8,6 +8,8 @@ public class AzureBlobImageStorage : IBlogImageStorage
 {
     public string Name => nameof(AzureBlobImageStorage);
 
+    public bool UseCdn => false;
+
     private readonly BlobContainerClient _container;
 
     private readonly ILogger<AzureBlobImageStorage> _logger;

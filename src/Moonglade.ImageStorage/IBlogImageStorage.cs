@@ -4,6 +4,8 @@ public interface IBlogImageStorage
 {
     string Name { get; }
 
+    bool UseCdn { get; }
+
     Task<string> InsertAsync(string fileName, byte[] imageBytes);
 
     Task<ImageInfo> GetAsync(string fileName);
