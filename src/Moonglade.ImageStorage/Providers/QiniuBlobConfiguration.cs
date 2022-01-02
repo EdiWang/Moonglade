@@ -38,6 +38,6 @@ namespace Moonglade.ImageStorage.Providers
 
         public string AccessKey { get; }
 
-        public string SecretKey { get;  }
+        public string SecretKey { get; }
     }
 }

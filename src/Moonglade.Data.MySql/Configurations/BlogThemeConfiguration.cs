@@ -3,7 +3,7 @@ using Microsoft.EntityFrameworkCore.Metadata.Builders;
 using Moonglade.Data.Entities;
 using System.Diagnostics.CodeAnalysis;
 
-namespace Moonglade.Data.Configurations.MySql
+namespace Moonglade.Data.MySql.Configurations
 {
     [ExcludeFromCodeCoverage]
     public class BlogThemeConfiguration : IEntityTypeConfiguration<BlogThemeEntity>

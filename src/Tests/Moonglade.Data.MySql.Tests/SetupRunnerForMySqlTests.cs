@@ -1,5 +1,5 @@
 ﻿using Dapper;
-using Moonglade.Data.Setup.MySql;
+using Moonglade.Data.MySql.Setup;
 using Moq;
 using Moq.Dapper;
 using NUnit.Framework;
