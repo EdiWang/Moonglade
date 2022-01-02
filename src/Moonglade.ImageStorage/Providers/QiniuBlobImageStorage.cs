@@ -16,8 +16,8 @@ namespace Moonglade.ImageStorage.Providers
         /// <summary>
         /// Upload policy expiration time
         /// </summary>
-        private const int _ExpireSeconds = 3600;
-        private const string _BlobTokenKey = "qiniu:blob:token";
+        private const int ExpireSeconds = 3600;
+        private const string BlobTokenKey = "qiniu:blob:token";
 
         public string Name => nameof(QiniuBlobImageStorage);
 
@@ -56,11 +56,11 @@ namespace Moonglade.ImageStorage.Providers
 
         private async Task SaveFileAsync(Stream source, string fileName)
         {
-            var blobToken = _cache.GetOrCreate(_BlobTokenKey, entry =>
+            var blobToken = _cache.GetOrCreate(BlobTokenKey, entry =>
             {
                 _logger.LogTrace($"Qiniu blob token not on cache, fetching token...");
 
-                entry.SlidingExpiration = TimeSpan.FromSeconds(_ExpireSeconds);
+                entry.SlidingExpiration = TimeSpan.FromSeconds(ExpireSeconds);
                 return GetQiniuBlobToken();
             });
             await _formUploader.UploadStreamAsync(source, fileName, blobToken, null);
@@ -84,7 +84,7 @@ namespace Moonglade.ImageStorage.Providers
             //putPolicy.FileType = 1;
 
             // upload policy expiration time (seconds)
-            putPolicy.SetExpires(_ExpireSeconds);
+            putPolicy.SetExpires(ExpireSeconds);
 
             return _signature.SignWithData(putPolicy.ToJsonString());
         }
@@ -104,11 +104,11 @@ namespace Moonglade.ImageStorage.Providers
             }
 
             var deadline = (int)(DateTime.UtcNow.AddMinutes(15) - new DateTime(1970, 1, 1, 0, 0, 0, 0)).TotalSeconds;
-            var blobToken = _cache.GetOrCreate(_BlobTokenKey, entry =>
+            var blobToken = _cache.GetOrCreate(BlobTokenKey, entry =>
             {
                 _logger.LogTrace($"Qiniu blob token not on cache, fetching token...");
 
-                entry.SlidingExpiration = TimeSpan.FromSeconds(_ExpireSeconds);
+                entry.SlidingExpiration = TimeSpan.FromSeconds(ExpireSeconds);
                 return GetQiniuBlobToken();
             });
             var url = $"{_qiniuBlobConfiguration.EndPoint}/{fileName}?e={deadline}&token={blobToken}";
