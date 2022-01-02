@@ -1,7 +1,7 @@
 ﻿using Microsoft.EntityFrameworkCore;
-using Moonglade.Data.MySql;
+using Moonglade.Data.Infrastructure;
 
-namespace Moonglade.Data.Infrastructure.MySql
+namespace Moonglade.Data.MySql.Infrastructure
 {
     public class MySqlDbContextRepository<T> : DbContextRepository<T> where T : class
     {
