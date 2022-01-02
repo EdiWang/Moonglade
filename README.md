@@ -53,7 +53,7 @@ To use MySQL, set `DatabaseType` to `MySql`
 example MySQL connection string:
 
 ```json
-"MoongladeDatabase": "Server=localhost;Port=6612;Database=moonglade;Uid=root;Pwd=******;"
+"MoongladeDatabase": "Server=localhost;Port=3306;Database=moonglade;Uid=root;Pwd=******;"
 ```
 
 ### 🔨 Build Source
