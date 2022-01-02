@@ -34,8 +34,8 @@ public sealed class PostSpec : BaseSpecification<PostEntity>
         base(p =>
         p.Slug == slug &&
         p.PubDateUtc != null
-        && p.PubDateUtc.Value.Year == pubDateUtc.Year 
-        && p.PubDateUtc.Value.Month == pubDateUtc.Month 
+        && p.PubDateUtc.Value.Year == pubDateUtc.Year
+        && p.PubDateUtc.Value.Month == pubDateUtc.Month
         && p.PubDateUtc.Value.Day == pubDateUtc.Day)
     {
 

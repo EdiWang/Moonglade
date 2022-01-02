@@ -5,7 +5,7 @@ using System.Diagnostics.CodeAnalysis;
 namespace Moonglade.Data.SqlServer
 {
     [ExcludeFromCodeCoverage]
-    public class BlogSqlServerDbContext: BlogDbContext
+    public class BlogSqlServerDbContext : BlogDbContext
     {
         public BlogSqlServerDbContext()
         {

@@ -1,5 +1,4 @@
 ﻿using Moonglade.Data.Setup;
-using System.Data;
 
 namespace Moonglade.Web;
 
