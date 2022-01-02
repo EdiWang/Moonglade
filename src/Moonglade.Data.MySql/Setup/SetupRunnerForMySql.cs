@@ -1,8 +1,9 @@
 ﻿using Dapper;
+using Moonglade.Data.Setup;
 using System.Data;
 using System.Reflection;
 
-namespace Moonglade.Data.Setup.MySql
+namespace Moonglade.Data.MySql.Setup
 {
     public class SetupRunnerForMySql : SetupRunnerBase, ISetupRunner
     {

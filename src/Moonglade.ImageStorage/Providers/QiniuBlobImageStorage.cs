@@ -14,10 +14,10 @@ namespace Moonglade.ImageStorage.Providers
         private readonly ILogger<QiniuBlobImageStorage> _logger;
         private readonly IQiniuConfiguration _qiniuBlobConfiguration;
         /// <summary>
-        /// 上传策略过期时间
+        /// Upload policy expiration time
         /// </summary>
-        private const int _ExpireSeconds = 3600;
-        private const string _BlobTokenKey = "qiniu:blob:token";
+        private const int ExpireSeconds = 3600;
+        private const string BlobTokenKey = "qiniu:blob:token";
 
         public string Name => nameof(QiniuBlobImageStorage);
 
@@ -44,7 +44,7 @@ namespace Moonglade.ImageStorage.Providers
 
         public async Task<string> InsertAsync(string fileName, byte[] imageBytes)
         {
-            using (var stream = new MemoryStream(imageBytes))
+            await using (var stream = new MemoryStream(imageBytes))
             {
                 await SaveFileAsync(stream, fileName);
             }
@@ -56,11 +56,11 @@ namespace Moonglade.ImageStorage.Providers
 
         private async Task SaveFileAsync(Stream source, string fileName)
         {
-            var blobToken = _cache.GetOrCreate(_BlobTokenKey, entry =>
+            var blobToken = _cache.GetOrCreate(BlobTokenKey, entry =>
             {
                 _logger.LogTrace($"Qiniu blob token not on cache, fetching token...");
 
-                entry.SlidingExpiration = TimeSpan.FromSeconds(_ExpireSeconds);
+                entry.SlidingExpiration = TimeSpan.FromSeconds(ExpireSeconds);
                 return GetQiniuBlobToken();
             });
             await _formUploader.UploadStreamAsync(source, fileName, blobToken, null);
@@ -68,21 +68,23 @@ namespace Moonglade.ImageStorage.Providers
 
 
         /// <summary>
-        /// 获取上传凭证
+        /// Get upload token
         /// </summary>
         /// <returns></returns>
         private string GetQiniuBlobToken()
         {
-            // 设置上传策略，详见：https://developer.qiniu.com/kodo/manual/1206/put-policy
-            var putPolicy = new PutPolicy();
-            // 设置要上传的目标空间
-            putPolicy.Scope = _qiniuBlobConfiguration.BucketName;
+            // set upload policy, ref: https://developer.qiniu.com/kodo/manual/1206/put-policy
+            var putPolicy = new PutPolicy
+            {
+                // set upload target space
+                Scope = _qiniuBlobConfiguration.BucketName
+            };
 
-            //使用低频存储，以节约资源
+            //Use cold storage to save resources
             //putPolicy.FileType = 1;
 
-            // 上传策略的过期时间(单位:秒)
-            putPolicy.SetExpires(_ExpireSeconds);
+            // upload policy expiration time (seconds)
+            putPolicy.SetExpires(ExpireSeconds);
 
             return _signature.SignWithData(putPolicy.ToJsonString());
         }
@@ -102,11 +104,11 @@ namespace Moonglade.ImageStorage.Providers
             }
 
             var deadline = (int)(DateTime.UtcNow.AddMinutes(15) - new DateTime(1970, 1, 1, 0, 0, 0, 0)).TotalSeconds;
-            var blobToken = _cache.GetOrCreate(_BlobTokenKey, entry =>
+            var blobToken = _cache.GetOrCreate(BlobTokenKey, entry =>
             {
                 _logger.LogTrace($"Qiniu blob token not on cache, fetching token...");
 
-                entry.SlidingExpiration = TimeSpan.FromSeconds(_ExpireSeconds);
+                entry.SlidingExpiration = TimeSpan.FromSeconds(ExpireSeconds);
                 return GetQiniuBlobToken();
             });
             var url = $"{_qiniuBlobConfiguration.EndPoint}/{fileName}?e={deadline}&token={blobToken}";

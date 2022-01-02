@@ -1,5 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
-using Moonglade.Data.Configurations.MySql;
+using Moonglade.Data.MySql.Configurations;
 using System.Diagnostics.CodeAnalysis;
 
 namespace Moonglade.Data.MySql

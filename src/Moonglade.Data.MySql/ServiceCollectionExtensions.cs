@@ -1,9 +1,9 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using Moonglade.Data.Infrastructure;
-using Moonglade.Data.Infrastructure.MySql;
+using Moonglade.Data.MySql.Infrastructure;
+using Moonglade.Data.MySql.Setup;
 using Moonglade.Data.Setup;
-using Moonglade.Data.Setup.MySql;
 using MySqlConnector;
 using System.Data;
 
