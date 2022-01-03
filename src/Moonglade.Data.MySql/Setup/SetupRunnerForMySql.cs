@@ -53,10 +53,10 @@ namespace Moonglade.Data.MySql.Setup
             var catId = Guid.NewGuid();
             _dbConnection.Execute("INSERT INTO Category(Id, DisplayName, Note, RouteName) VALUES (@catId, 'Default', 'Default Category', 'default')", new { catId });
             var postId = Guid.NewGuid();
-            var postCotent = "Moonglade is the new blog system for https://edi.wang. It is a complete rewrite of the old system using .NET 5 and runs on Microsoft Azure.";
+            var postCotent = "Moonglade is the new blog system for https://edi.wang. It is a complete rewrite of the old system using .NET 6 and runs on Microsoft Azure.";
 
             var addPostText = @"INSERT INTO Post(Id, Title, Slug, Author, PostContent, CommentEnabled, CreateTimeUtc, ContentAbstract, IsPublished, IsFeatured, IsFeedIncluded, LastModifiedUtc, IsDeleted, PubDateUtc, ContentLanguageCode, HashCheckSum, IsOriginal) 
-VALUES (@postId, 'Welcome to Moonglade', 'welcome-to-moonglade', 'admin', @postCotent, 1, '2021-1-1', @postCotent, 1, 0, 1, NULL, 0, NOW(), 'en-us', -1688639577, 1);";
+VALUES (@postId, 'Welcome to Moonglade', 'welcome-to-moonglade', 'admin', @postCotent, 1, '2022-1-1', @postCotent, 1, 0, 1, NULL, 0, NOW(), 'en-us', -1688639577, 1);";
             _dbConnection.Execute(addPostText, new { postId, postCotent });
 
             var addPostExtensionText = @"INSERT INTO PostExtension(PostId,  Hits,  Likes) 
