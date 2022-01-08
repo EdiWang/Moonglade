@@ -159,7 +159,7 @@ public class ImageController : ControllerBase
 
         _logger.LogInformation($"Image '{primaryFileName}' uloaded.");
 
-        if (_imageStorage.UseCdn)
+        if (_blogConfig.ImageSettings.EnableCDNRedirect)
         {
             return Ok(new
             {
