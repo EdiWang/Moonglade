@@ -161,10 +161,12 @@ public class ImageController : ControllerBase
 
         if (_blogConfig.ImageSettings.EnableCDNRedirect)
         {
+            var imageUrl = _blogConfig.ImageSettings.CDNEndpoint.CombineUrl(finalFileName);
+
             return Ok(new
             {
-                location = finalFileName,
-                filename = finalFileName
+                location = imageUrl,
+                filename = imageUrl
             });
         }
         else
