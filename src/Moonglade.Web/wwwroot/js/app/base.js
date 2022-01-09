@@ -57,29 +57,6 @@ $(function () {
     
 });
 
-$(document).keydown(function (event) {
-    // Prevent F12
-    if (event.keyCode == 123)
-    {
-        showDebuggerMessage();
-    }
-    // Prevent Ctrl+Shift+I
-    else if (event.ctrlKey && event.shiftKey && event.keyCode == 73)
-    {
-        showDebuggerMessage();
-    }
-});
-
-var hasDebuggerMessageShown = false;
-function showDebuggerMessage() {
-    if (!hasDebuggerMessageShown) {
-        try {
-            window.console && window.console.log && console.log("Submit issues: https://github.com/EdiWang/Moonglade/issues")
-            hasDebuggerMessageShown = true;
-        } catch (e) { }
-    }
-}
-
 function buildErrorMessage(responseObject) {
     if (responseObject.responseJSON) {
         var json = responseObject.responseJSON;
