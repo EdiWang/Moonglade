@@ -78,6 +78,12 @@ public class GeneralSettings : IBlogSettings
     [Display(Name = "Show pride mouse cursor and flag")]
     public bool Pride { get; set; }
 
+    /// <summary>
+    /// Avatar Url
+    /// </summary>
+    [MaxLength(64)]
+    public string AvatarUrl { get; set; }
+
     // Use string instead of TimeSpan as workaround for System.Text.Json issue
     // https://github.com/EdiWang/Moonglade/issues/310
     public string TimeZoneUtcOffset { get; set; }

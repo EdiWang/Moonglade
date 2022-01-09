@@ -4,7 +4,7 @@ using System.Data;
 
 namespace Moonglade.Configuration;
 
-public class SaveAssetCommand : IRequest
+public class SaveAssetCommand : INotification
 {
     public SaveAssetCommand(Guid assetId, string assetBase64)
     {
@@ -16,7 +16,7 @@ public class SaveAssetCommand : IRequest
     public string AssetBase64 { get; set; }
 }
 
-public class SaveAssetCommandHandler : IRequestHandler<SaveAssetCommand>
+public class SaveAssetCommandHandler : INotificationHandler<SaveAssetCommand>
 {
     private readonly IDbConnection _dbConnection;
 
@@ -25,7 +25,7 @@ public class SaveAssetCommandHandler : IRequestHandler<SaveAssetCommand>
         _dbConnection = dbConnection;
     }
 
-    public async Task<Unit> Handle(SaveAssetCommand request, CancellationToken cancellationToken)
+    public async Task Handle(SaveAssetCommand request, CancellationToken cancellationToken)
     {
         if (request.AssetId == Guid.Empty) throw new ArgumentOutOfRangeException(nameof(request.AssetId));
         if (string.IsNullOrWhiteSpace(request.AssetBase64)) throw new ArgumentNullException(nameof(request.AssetBase64));
@@ -56,7 +56,5 @@ public class SaveAssetCommandHandler : IRequestHandler<SaveAssetCommand>
                     DateTime.UtcNow
                 });
         }
-
-        return Unit.Value;
     }
 }

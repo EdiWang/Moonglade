@@ -3,6 +3,12 @@
 @inject Microsoft.ApplicationInsights.AspNetCore.JavaScriptSnippet _javaScriptSnippet
 @inject Microsoft.AspNetCore.Http.IHttpContextAccessor _httpContextAccessor
 @inject Microsoft.AspNetCore.Hosting.IWebHostEnvironment _webHostEnvironment
+@{
+    if (string.IsNullOrEmpty(BlogConfig.GeneralSettings.AvatarUrl))
+    {
+        BlogConfig.GeneralSettings.AvatarUrl = Url.Action("Avatar", "Assets");
+    }
+}
 <!DOCTYPE html>
 <html>
 <head>
@@ -45,7 +51,7 @@
     </title>
 
     @if (BlogConfig.ImageSettings.EnableCDNRedirect &&
-!string.IsNullOrWhiteSpace(BlogConfig.ImageSettings.CDNEndpoint))
+    !string.IsNullOrWhiteSpace(BlogConfig.ImageSettings.CDNEndpoint))
     {
         <link rel="dns-prefetch" href="@Helper.GetDNSPrefetchUrl(BlogConfig.ImageSettings.CDNEndpoint)" />
     }
@@ -185,14 +191,14 @@
         {
             <section class="profile-mobile d-block d-sm-none d-print-none">
                 <div class="card-bkimg-container">
-                    <img class="card-bkimg" alt="" src="@Url.Action("Avatar", "Assets")" />
+                    <img class="card-bkimg" alt="" src="@BlogConfig.GeneralSettings.AvatarUrl" />
                 </div>
                 <div class="blogger-intro-content">
                     <div class="row">
                         <div class="col-3">
-                            <img src="@Url.Action("Avatar", "Assets")"
-                                 alt="@BlogConfig.GeneralSettings.OwnerName"
-                                 class="rounded-circle blogger-head-pic" />
+                            <img src="@BlogConfig.GeneralSettings.AvatarUrl"
+                             alt="@BlogConfig.GeneralSettings.OwnerName"
+                             class="rounded-circle blogger-head-pic" />
                         </div>
                         <div class="col-9">
                             <h4 class="text-center">

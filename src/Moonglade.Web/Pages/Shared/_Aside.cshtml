@@ -2,10 +2,10 @@
     <feature name="Widgets_Profile">
         <section class="blog-info-desktop-lg text-light d-none d-lg-block">
             <div class="card-bkimg-container">
-                <img class="card-bkimg" alt="" src="@Url.Action("Avatar", "Assets")" />
+                <img class="card-bkimg" alt="" src="@BlogConfig.GeneralSettings.AvatarUrl" />
             </div>
             <div class="blog-info-photo-text text-center">
-                <img src="@Url.Action("Avatar", "Assets")"
+                <img src="@BlogConfig.GeneralSettings.AvatarUrl"
                      alt="@BlogConfig.GeneralSettings.OwnerName"
                      class="rounded-circle blogger-head-pic" />
                 <div>

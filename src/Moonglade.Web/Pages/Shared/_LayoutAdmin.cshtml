@@ -5,6 +5,11 @@
 @using Moonglade.Auth
 @{
     var currentPage = ViewContext.RouteData.Values["Page"]?.ToString();
+
+    if (string.IsNullOrEmpty(BlogConfig.GeneralSettings.AvatarUrl))
+    {
+        BlogConfig.GeneralSettings.AvatarUrl = Url.Action("Avatar", "Assets");
+    }
 }
 <!DOCTYPE html>
 <html>
@@ -71,7 +76,7 @@
             </ul>
 
             <span class="navbar-text me-2">
-                <img src="@Url.Action("Avatar", "Assets")"
+                <img src="@BlogConfig.GeneralSettings.AvatarUrl"
                      alt="@BlogConfig.GeneralSettings.OwnerName"
                      class="rounded-circle admin-nav-head-pic me-1" />
                 <userinfo user="User"></userinfo>

@@ -81,7 +81,8 @@ public class AssetsController : ControllerBase
             return Conflict(e.Message);
         }
 
-        await _mediator.Send(new SaveAssetCommand(AssetId.AvatarBase64, base64Img));
+        await _mediator.Publish(new SaveAssetCommand(AssetId.AvatarBase64, base64Img));  
+
         return Ok();
     }
 
@@ -135,7 +136,8 @@ public class AssetsController : ControllerBase
     [HttpPost("siteicon")]
     [ProducesResponseType(StatusCodes.Status204NoContent)]
     [ProducesResponseType(StatusCodes.Status409Conflict)]
-    public async Task<IActionResult> UpdateSiteIcon([FromForm] string base64Img)
+    public async Task<IActionResult> UpdateSiteIcon([FromForm] string base64Img,
+        [FromServices] IBlogImageStorage imageStorage, [FromServices] IBlogConfig blogConfig)
     {
         base64Img = base64Img.Trim();
         if (!Helper.TryParseBase64(base64Img, out var base64Chars))
@@ -146,7 +148,6 @@ public class AssetsController : ControllerBase
 
         using var bmp = await Image.LoadAsync(new MemoryStream(base64Chars));
         if (bmp.Height != bmp.Width) return Conflict("image height must be equal to width");
-
         await _mediator.Send(new SaveAssetCommand(AssetId.SiteIconBase64, base64Img));
 
         return NoContent();
