@@ -55,7 +55,7 @@
 		<PackageReference Include="X.PagedList" Version="8.1.0" />
 		<PackageReference Include="X.PagedList.Mvc.Core" Version="8.1.0" />
 		<PackageReference Include="TimeZoneConverter" Version="3.5.0" />
-		<PackageReference Include="MediatR.Extensions.Microsoft.DependencyInjection" Version="9.0.0" />
+		<PackageReference Include="MediatR.Extensions.Microsoft.DependencyInjection" Version="10.0.0" />
 	</ItemGroup>
 
 	<ItemGroup>
