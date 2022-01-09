@@ -136,8 +136,7 @@ public class AssetsController : ControllerBase
     [HttpPost("siteicon")]
     [ProducesResponseType(StatusCodes.Status204NoContent)]
     [ProducesResponseType(StatusCodes.Status409Conflict)]
-    public async Task<IActionResult> UpdateSiteIcon([FromForm] string base64Img,
-        [FromServices] IBlogImageStorage imageStorage, [FromServices] IBlogConfig blogConfig)
+    public async Task<IActionResult> UpdateSiteIcon([FromForm] string base64Img)
     {
         base64Img = base64Img.Trim();
         if (!Helper.TryParseBase64(base64Img, out var base64Chars))

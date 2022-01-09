@@ -50,8 +50,6 @@ namespace Moonglade.ImageStorage.Providers
             _logger.LogInformation($"Uploaded image file '{fileName}' to Qiniu Cloud Storage.");
 
             return fileName;
-
-            //return GetCdnUrl(fileName);
         }
 
         private async Task SaveFileAsync(Stream source, string fileName)
