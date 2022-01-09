@@ -26,7 +26,6 @@ public class SettingsController : ControllerBase
         IMediator mediator)
     {
         _blogConfig = blogConfig;
-
         _logger = logger;
         _mediator = mediator;
     }
@@ -84,6 +83,7 @@ public class SettingsController : ControllerBase
     public async Task<IActionResult> General([FromForm] MagicWrapper<GeneralSettings> wrapperModel, [FromServices] ITimeZoneResolver timeZoneResolver)
     {
         var model = wrapperModel.ViewModel;
+        model.AvatarUrl = _blogConfig.GeneralSettings.AvatarUrl;
 
         _blogConfig.GeneralSettings = model;
         _blogConfig.GeneralSettings.TimeZoneUtcOffset = timeZoneResolver.GetTimeSpanByZoneId(model.TimeZoneId).ToString();
@@ -150,10 +150,41 @@ public class SettingsController : ControllerBase
     [HttpPost("watermark")]
     [ProducesResponseType(StatusCodes.Status204NoContent)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
-    public async Task<IActionResult> Image([FromForm] MagicWrapper<ImageSettings> wrapperModel)
+    public async Task<IActionResult> Image([FromForm] MagicWrapper<ImageSettings> wrapperModel, [FromServices] IBlogImageStorage imageStorage)
     {
         var model = wrapperModel.ViewModel;
         _blogConfig.ImageSettings = model;
+
+        if (model.EnableCDNRedirect)
+        {
+            if (null != _blogConfig.GeneralSettings.AvatarUrl
+            && !_blogConfig.GeneralSettings.AvatarUrl.StartsWith(model.CDNEndpoint))
+            {
+                try
+                {
+                    var avatarData = await _mediator.Send(new GetAssetDataQuery(AssetId.AvatarBase64));
+
+                    if (!string.IsNullOrWhiteSpace(avatarData))
+                    {
+                        var avatarBytes = Convert.FromBase64String(avatarData);
+                        var fileName = $"avatar-{AssetId.AvatarBase64.ToString("N")}.png";
+                        fileName = await imageStorage.InsertAsync(fileName, avatarBytes);
+                        _blogConfig.GeneralSettings.AvatarUrl = _blogConfig.ImageSettings.CDNEndpoint.CombineUrl(fileName);
+
+                        await _blogConfig.SaveAsync(_blogConfig.GeneralSettings);
+                    }
+                }
+                catch (FormatException e)
+                {
+                    _logger.LogError($"Error {nameof(Image)}(), Invalid Base64 string", e);
+                }
+            }
+        }
+        else
+        {
+            _blogConfig.GeneralSettings.AvatarUrl = Url.Action("Avatar", "Assets");
+            await _blogConfig.SaveAsync(_blogConfig.GeneralSettings);
+        }
 
         await _blogConfig.SaveAsync(_blogConfig.ImageSettings);
 

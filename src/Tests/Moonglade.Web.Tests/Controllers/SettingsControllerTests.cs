@@ -1,10 +1,12 @@
 using MediatR;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Routing;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using Moonglade.Configuration;
 using Moonglade.Core;
+using Moonglade.ImageStorage;
 using Moonglade.Web.Controllers;
 using Moq;
 using NUnit.Framework;
@@ -186,10 +188,19 @@ public class SettingsControllerTests
     public async Task Image_Post()
     {
         _mockBlogConfig.Setup(p => p.ImageSettings).Returns(new ImageSettings());
+        _mockBlogConfig.Setup(p => p.GeneralSettings).Returns(new GeneralSettings());
         var settingsController = CreateSettingsController();
         ImageSettings model = new();
 
-        var result = await settingsController.Image(new(model));
+        var mockBlogImageStorage = _mockRepository.Create<IBlogImageStorage>();
+        mockBlogImageStorage.Setup(p => p.InsertAsync(It.IsAny<string>(), It.IsAny<byte[]>()))
+          .Returns(Task.FromResult("avatar-0922e4dcb47b44e2a49305d4e624381c.png"));
+
+        var urlHelper = _mockRepository.Create<IUrlHelper>();
+        urlHelper.Setup(h => h.Action(It.IsAny<UrlActionContext>())).Returns("/avatar");
+        settingsController.Url = urlHelper.Object;
+
+        var result = await settingsController.Image(new(model), mockBlogImageStorage.Object);
 
         Assert.IsInstanceOf<NoContentResult>(result);
         _mockBlogConfig.Verify(p => p.SaveAsync(It.IsAny<ImageSettings>()));
@@ -250,10 +261,14 @@ public class SettingsControllerTests
     public async Task Image_Post_EnableCDNRedirect_ValidCDNEndpoint()
     {
         _mockBlogConfig.Setup(p => p.ImageSettings).Returns(new ImageSettings());
+        _mockBlogConfig.Setup(p => p.GeneralSettings).Returns(new GeneralSettings());
         var settingsController = CreateSettingsController();
         ImageSettings model = new() { EnableCDNRedirect = true, CDNEndpoint = "https://cdn.996.icu/fubao" };
 
-        var result = await settingsController.Image(new(model));
+        var mockBlogImageStorage = _mockRepository.Create<IBlogImageStorage>();
+        mockBlogImageStorage.Setup(p => p.InsertAsync(It.IsAny<string>(), It.IsAny<byte[]>()))
+           .Returns(Task.FromResult("avatar-0922e4dcb47b44e2a49305d4e624381c.png"));
+        var result = await settingsController.Image(new(model), mockBlogImageStorage.Object);
 
         Assert.IsInstanceOf<NoContentResult>(result);
         _mockBlogConfig.Verify(p => p.SaveAsync(It.IsAny<ImageSettings>()));

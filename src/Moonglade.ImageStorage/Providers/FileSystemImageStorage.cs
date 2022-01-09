@@ -7,8 +7,6 @@ public class FileSystemImageStorage : IBlogImageStorage
 {
     public string Name => nameof(FileSystemImageStorage);
 
-    public bool UseCdn => false;
-
     private readonly ILogger<FileSystemImageStorage> _logger;
 
     private readonly string _path;

@@ -1,6 +1,7 @@
 ﻿using Dapper;
 using System.Data;
 
+
 namespace Moonglade.Configuration;
 
 public interface IBlogSettings
@@ -60,7 +61,6 @@ public class BlogConfig : IBlogConfig
         if (_hasInitialized) return;
 
         var config = GetAllConfigurations();
-
         GeneralSettings = config[nameof(GeneralSettings)].FromJson<GeneralSettings>();
         ContentSettings = config[nameof(ContentSettings)].FromJson<ContentSettings>();
         NotificationSettings = config[nameof(NotificationSettings)].FromJson<NotificationSettings>();

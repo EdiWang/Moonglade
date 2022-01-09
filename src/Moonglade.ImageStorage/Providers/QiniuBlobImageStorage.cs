@@ -21,8 +21,6 @@ namespace Moonglade.ImageStorage.Providers
 
         public string Name => nameof(QiniuBlobImageStorage);
 
-        public bool UseCdn => true;
-
         public QiniuBlobImageStorage(ILogger<QiniuBlobImageStorage> logger,
             IMemoryCache cache,
             Signature signature,
@@ -51,7 +49,7 @@ namespace Moonglade.ImageStorage.Providers
 
             _logger.LogInformation($"Uploaded image file '{fileName}' to Qiniu Cloud Storage.");
 
-            return GetCdnUrl(fileName);
+            return fileName;
         }
 
         private async Task SaveFileAsync(Stream source, string fileName)
