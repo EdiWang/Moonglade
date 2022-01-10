@@ -2,6 +2,25 @@
     ignore: []
 });
 
+function toMagicJson(value) {
+    const newValue = {};
+    for (let item in value) {
+        if (Object.prototype.hasOwnProperty.call(value, item)) {
+            if (value[item] === 'true') {
+                newValue[item.replace('ViewModel.', '')] = true;
+            }
+            else if (value[item] === 'false') {
+                newValue[item.replace('ViewModel.', '')] = false;
+            }
+            else {
+                newValue[item.replace('ViewModel.', '')] = value[item];
+            }
+        }
+    }
+
+    return newValue;
+}
+
 var btnSaveSettings = '#btn-save-settings';
 var onUpdateSettingsBegin = function () {
     $(btnSaveSettings).text('Processing...');

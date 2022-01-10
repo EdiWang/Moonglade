@@ -137,13 +137,11 @@ public class SettingsController : ControllerBase
 
     [HttpPost("subscription")]
     [ProducesResponseType(StatusCodes.Status204NoContent)]
-    public async Task<IActionResult> Subscription([FromForm] MagicWrapper<FeedSettings> wrapperModel)
+    public async Task<IActionResult> Subscription(FeedSettings model)
     {
-        var model = wrapperModel.ViewModel;
         _blogConfig.FeedSettings = model;
 
         await _blogConfig.SaveAsync(_blogConfig.FeedSettings);
-
         return NoContent();
     }
 
