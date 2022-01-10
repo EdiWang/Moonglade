@@ -30,7 +30,7 @@ function handleSettingsSubmit(event) {
     const value = Object.fromEntries(data.entries());
     const newValue = toMagicJson(value);
 
-    callApi(event.currentTarget.apiEndpoint, 'POST', newValue,
+    callApi(event.currentTarget.action, 'POST', newValue,
         (resp) => {
             onUpdateSettingsSuccess();
             onUpdateSettingsComplete();
