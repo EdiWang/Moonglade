@@ -157,7 +157,7 @@ public class SettingsControllerTests
         var settingsController = CreateSettingsController();
         NotificationSettings model = new();
 
-        var result = await settingsController.Notification(new(model));
+        var result = await settingsController.Notification(model);
 
         Assert.IsInstanceOf<NoContentResult>(result);
         _mockBlogConfig.Verify(p => p.SaveAsync(It.IsAny<NotificationSettings>()));
@@ -178,7 +178,7 @@ public class SettingsControllerTests
         var settingsController = CreateSettingsController();
         FeedSettings model = new();
 
-        var result = await settingsController.Subscription(new(model));
+        var result = await settingsController.Subscription(model);
 
         Assert.IsInstanceOf<NoContentResult>(result);
         _mockBlogConfig.Verify(p => p.SaveAsync(It.IsAny<FeedSettings>()));
