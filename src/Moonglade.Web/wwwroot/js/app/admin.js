@@ -21,6 +21,22 @@ function toMagicJson(value) {
     return newValue;
 }
 
+function handleSettingsSubmit(event) {
+    event.preventDefault();
+
+    onUpdateSettingsBegin();
+
+    const data = new FormData(event.target);
+    const value = Object.fromEntries(data.entries());
+    const newValue = toMagicJson(value);
+
+    callApi(event.currentTarget.apiEndpoint, 'POST', newValue,
+        (resp) => {
+            onUpdateSettingsSuccess();
+            onUpdateSettingsComplete();
+        });
+}
+
 var btnSaveSettings = '#btn-save-settings';
 var onUpdateSettingsBegin = function () {
     $(btnSaveSettings).text('Processing...');
