@@ -109,13 +109,11 @@ public class SettingsController : ControllerBase
 
     [HttpPost("notification")]
     [ProducesResponseType(StatusCodes.Status204NoContent)]
-    public async Task<IActionResult> Notification([FromForm] MagicWrapper<NotificationSettings> wrapperModel)
+    public async Task<IActionResult> Notification(NotificationSettings model)
     {
-        var model = wrapperModel.ViewModel;
         _blogConfig.NotificationSettings = model;
 
         await _blogConfig.SaveAsync(_blogConfig.NotificationSettings);
-
         return NoContent();
     }
 
