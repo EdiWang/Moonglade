@@ -180,8 +180,10 @@
                             <label asp-for="ViewModel.PostListPageSize"></label>
                         </div>
                         <div class="col-md-5">
-                            <input asp-for="ViewModel.PostListPageSize" class="form-control" />
-                            <span asp-validation-for="ViewModel.PostListPageSize" class="text-danger"></span>
+                            <input asp-for="ViewModel.PostListPageSize" class="form-range" type="range" oninput="this.nextElementSibling.value = this.value" min="5" max="30" />
+                            <output class="form-text">
+                                @Model.ViewModel.PostListPageSize
+                            </output>
                         </div>
                     </div>
 
@@ -207,8 +209,10 @@
                             <label asp-for="ViewModel.HotTagAmount"></label>
                         </div>
                         <div class="col-md-5">
-                            <input asp-for="ViewModel.HotTagAmount" class="form-control" />
-                            <span asp-validation-for="ViewModel.HotTagAmount" class="text-danger"></span>
+                            <input asp-for="ViewModel.HotTagAmount" class="form-range" type="range" oninput="this.nextElementSibling.value = this.value" min="5" max="20" />
+                            <output class="form-text">
+                                @Model.ViewModel.PostListPageSize
+                            </output>
                         </div>
                     </div>
 
