@@ -228,10 +228,8 @@ public class SettingsController : ControllerBase
     [HttpPost("custom-css")]
     [ProducesResponseType(StatusCodes.Status204NoContent)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
-    public async Task<IActionResult> CustomStyleSheet([FromForm] MagicWrapper<CustomStyleSheetSettings> wrapperModel)
+    public async Task<IActionResult> CustomStyleSheet(CustomStyleSheetSettings model)
     {
-        var model = wrapperModel.ViewModel;
-
         if (model.EnableCustomCss && string.IsNullOrWhiteSpace(model.CssCode))
         {
             ModelState.AddModelError(nameof(CustomStyleSheetSettings.CssCode), "CSS Code is required");
