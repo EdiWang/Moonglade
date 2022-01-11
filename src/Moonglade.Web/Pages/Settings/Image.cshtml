@@ -1,6 +1,8 @@
 ﻿@page "/admin/settings/image"
 @model Moonglade.Web.Pages.Settings.ImageModel
-
+@{
+    ViewBag.SkipJQueryValidation = true;
+}
 @section scripts {
     <script>
         const form = document.querySelector('#form-settings');
@@ -11,8 +13,6 @@
 <partial name="_SettingsHeader" />
 <div class="ps-4 pe-4">
     <form id="form-settings" asp-controller="Settings" asp-action="Image">
-        <div asp-validation-summary="All" class="text-danger"></div>
-
         <div class="row">
             <div class="col-lg-6">
                 <div class="mb-4">
@@ -92,7 +92,6 @@
                         </div>
                         <div class="col-md-5">
                             <input asp-for="ViewModel.WatermarkText" class="form-control" />
-                            <span asp-validation-for="ViewModel.WatermarkText" class="text-danger"></span>
                         </div>
                     </div>
 
@@ -104,8 +103,10 @@
                             <label asp-for="ViewModel.WatermarkFontSize"></label>
                         </div>
                         <div class="col-md-5">
-                            <input asp-for="ViewModel.WatermarkFontSize" class="form-control" />
-                            <span asp-validation-for="ViewModel.WatermarkFontSize" class="text-danger"></span>
+                            <input type="range" asp-for="ViewModel.WatermarkFontSize" class="form-range" min="8" max="32" step="1" oninput="this.nextElementSibling.value = this.value" />
+                            <output class="form-text">
+                                @Model.ViewModel.WatermarkFontSize
+                            </output>
                         </div>
                     </div>
                 </div>
@@ -139,7 +140,6 @@
                     </div>
                     <div class="col-md-5">
                         <input asp-for="ViewModel.CDNEndpoint" class="form-control" />
-                        <span asp-validation-for="ViewModel.CDNEndpoint" class="text-danger"></span>
                     </div>
                 </div>
             </div>
