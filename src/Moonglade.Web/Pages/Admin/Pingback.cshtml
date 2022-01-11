@@ -14,7 +14,12 @@
     <script src="~/js/3rd/datatables.min.js"></script>
     <script>
         $(".btn-delete").click(function () {
-            deletePingback($(this).data("pingbackid"));
+            var pingbackId = $(this).data("pingbackid");
+
+            callApi(`/pingback/${pingbackId}`, 'DELETE', {},
+                (resp) => {
+                    document.querySelector(`#pingback-box-${pingbackId}`).remove();
+                });
         });
 
         $(function () {
@@ -78,8 +83,6 @@
                     <td class="p-2">
                         <a class="btn btn-sm btn-outline-danger btn-delete" href="#" data-pingbackid="@item.Id">
                             <i class="bi-trash"></i>
-
-                            <span id="span-processing-@item.Id" class="spinner-border spinner-border-sm" role="status" aria-hidden="true" style="display: none;"></span>
                         </a>
                     </td>
                 </tr>

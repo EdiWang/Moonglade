@@ -308,10 +308,8 @@ var postEditor = {
         });
 
         $('#btn-preview').click(function (e) {
-            if ($('form').valid()) {
-                submitForm(e);
-                isPreviewRequired = true;
-            }
+            submitForm(e);
+            isPreviewRequired = true;
         });
 
         $('#btn-save').click(function (e) {
@@ -381,15 +379,6 @@ var onPostCreateEditSuccess = function (data) {
     }
 };
 
-var onPostCreateEditFailed = function (context) {
-    var message = buildErrorMessage(context);
-    if (blogToast) {
-        blogToast.error(message);
-    } else {
-        alert(`Error: ${message}`);
-    }
-};
-
 var onPageCreateEditFailed = function (context) {
     var message = buildErrorMessage(context);
 
@@ -438,14 +427,5 @@ function deleteSelectedComments() {
             $.each(cids, function (index, value) {
                 $(`#panel-comment-${value}`).slideUp();
             });
-        });
-}
-
-function deletePingback(pingbackId) {
-    $(`#span-processing-${pingbackId}`).show();
-
-    callApi(`/pingback/${pingbackId}`, 'DELETE', {},
-        (resp) => {
-            $(`#pingback-box-${pingbackId}`).slideUp();
         });
 }
