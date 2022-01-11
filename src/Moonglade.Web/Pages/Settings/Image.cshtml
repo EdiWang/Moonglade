@@ -1,15 +1,16 @@
 ﻿@page "/admin/settings/image"
 @model Moonglade.Web.Pages.Settings.ImageModel
 
+@section scripts {
+    <script>
+        const form = document.querySelector('#form-settings');
+        form.addEventListener('submit', handleSettingsSubmit);
+    </script>
+}
+
 <partial name="_SettingsHeader" />
 <div class="ps-4 pe-4">
-    <form id="form-settings" asp-controller="Settings" asp-action="Image"
-          data-ajax-begin="onUpdateSettingsBegin"
-          data-ajax-complete="onUpdateSettingsComplete"
-          data-ajax-failure="onUpdateSettingsFailed"
-          data-ajax-success="onUpdateSettingsSuccess"
-          data-ajax="true"
-          data-ajax-method="POST">
+    <form id="form-settings" asp-controller="Settings" asp-action="Image">
         <div asp-validation-summary="All" class="text-danger"></div>
 
         <div class="row">
@@ -28,7 +29,7 @@
                         </div>
                         <div class="col-md-5 text-end">
                             <div class="form-check form-switch">
-                                <input type="checkbox" asp-for="ViewModel.UseFriendlyNotFoundImage" class="form-check-input">
+                                <input type="checkbox" name="UseFriendlyNotFoundImage" value="true" class="form-check-input" @(Model.ViewModel.UseFriendlyNotFoundImage ? "checked" : null)>
                             </div>
                         </div>
                     </div>
@@ -42,7 +43,7 @@
                         </div>
                         <div class="col-md-5 text-end">
                             <div class="form-check form-switch">
-                                <input type="checkbox" asp-for="ViewModel.FitImageToDevicePixelRatio" class="form-check-input">
+                                <input type="checkbox" name="FitImageToDevicePixelRatio" value="true" class="form-check-input" @(Model.ViewModel.FitImageToDevicePixelRatio ? "checked" : null)>
                             </div>
                         </div>
                     </div>
@@ -60,7 +61,7 @@
                         </div>
                         <div class="col-md-5 text-end">
                             <div class="form-check form-switch">
-                                <input type="checkbox" asp-for="ViewModel.IsWatermarkEnabled" class="form-check-input">
+                                <input type="checkbox" name="IsWatermarkEnabled" value="true" class="form-check-input" @(Model.ViewModel.IsWatermarkEnabled ? "checked" : null)>
                             </div>
                         </div>
                     </div>
@@ -77,7 +78,7 @@
                         </div>
                         <div class="col-md-5 text-end">
                             <div class="form-check form-switch">
-                                <input type="checkbox" asp-for="ViewModel.KeepOriginImage" class="form-check-input">
+                                <input type="checkbox" name="KeepOriginImage" value="true" class="form-check-input" @(Model.ViewModel.KeepOriginImage ? "checked" : null)>
                             </div>
                         </div>
                     </div>
@@ -123,7 +124,7 @@
                     </div>
                     <div class="col-md-5 text-end">
                         <div class="form-check form-switch">
-                            <input type="checkbox" asp-for="ViewModel.EnableCDNRedirect" class="form-check-input">
+                            <input type="checkbox" name="EnableCDNRedirect" value="true" class="form-check-input" @(Model.ViewModel.EnableCDNRedirect ? "checked" : null)>
                         </div>
                     </div>
                 </div>

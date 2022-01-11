@@ -146,9 +146,8 @@ public class SettingsController : ControllerBase
     [HttpPost("watermark")]
     [ProducesResponseType(StatusCodes.Status204NoContent)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
-    public async Task<IActionResult> Image([FromForm] MagicWrapper<ImageSettings> wrapperModel, [FromServices] IBlogImageStorage imageStorage)
+    public async Task<IActionResult> Image(ImageSettings model, [FromServices] IBlogImageStorage imageStorage)
     {
-        var model = wrapperModel.ViewModel;
         _blogConfig.ImageSettings = model;
 
         if (model.EnableCDNRedirect)
