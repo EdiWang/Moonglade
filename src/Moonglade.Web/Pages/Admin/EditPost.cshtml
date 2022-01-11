@@ -10,105 +10,124 @@
 
     var langList = cultureItems
     .Select(t => new SelectListItem
-    {
-        Text = t.NativeName,
-        Value = t.Value.ToLower()
-    });
+            {
+                Text = t.NativeName,
+                Value = t.Value.ToLower()
+            });
 }
 
 @section scripts{
-    <script src="~/js/3rd/bs-custom-file-input.min.js"></script>
-    <script src="~/lib/typeahead.js/typeahead.bundle.min.js"></script>
+<script src="~/js/3rd/bs-custom-file-input.min.js"></script>
+<script src="~/lib/typeahead.js/typeahead.bundle.min.js"></script>
     @{
         var ec = Settings.Value.Editor;
         switch (ec)
         {
             case EditorChoice.Html:
-                <script src="~/lib/tinymce/tinymce.min.js"></script>
+    <script src="~/lib/tinymce/tinymce.min.js"></script>
                 break;
             case EditorChoice.Markdown:
-                <script src="~/lib/simplemde/simplemde.min.js"></script>
-                <script src="~/js/3rd/inline-attachment.js"></script>
-                <script src="~/js/3rd/codemirror-4.inline-attachment.js"></script>
-                <link id="css-simplemde" href="~/lib/simplemde/simplemde.min.css" rel="stylesheet" />
+    <script src="~/lib/simplemde/simplemde.min.js"></script>
+    <script src="~/js/3rd/inline-attachment.js"></script>
+    <script src="~/js/3rd/codemirror-4.inline-attachment.js"></script>
+    <link id="css-simplemde" href="~/lib/simplemde/simplemde.min.css" rel="stylesheet" />
                 break;
         }
     }
 
-    <script>
-        $(function () {
-            postEditor.initEvents();
-            var editorMode = '@Settings.Value.Editor';
-            if (editorMode == '@nameof(EditorChoice.Html)') {
-                postEditor.loadRichEditor(".post-content-textarea");
-            }
-            if (editorMode == '@nameof(EditorChoice.Markdown)') {
-                postEditor.loadMdEditor(".post-content-textarea");
-            }
-
-            $('#Tags').on('beforeItemAdd', function (event) {
-
-                // Test English with allowed characters
-                if (!/^[a-zA-Z 0-9\.\-\+\#\s]*$/i.test(event.item)) {
-
-                    // Test for Chinese
-                    if (!/(\p{Script=Hani})+/gu.test(event.item)) {
-                        blogToast.error(`Invalid tag name: ${event.item}`);
-                        event.cancel = true;
-                    }
-                }
-            });
-
-            postEditor.keepAlive();
-        });
-
-        $(window).bind('keydown', function(event) {
-            if (event.ctrlKey || event.metaKey) {
-                switch (String.fromCharCode(event.which).toLowerCase()) {
-                case 's':
-                    event.preventDefault();
-                    $("#btn-save").trigger('click');
-                    break;
-                }
-            }
-        });
-
-        var heroImageModal = new bootstrap.Modal(document.getElementById('heroImageModal'));
-
-        function ajaxImageUpload(oFormElement) {
-            const formData = new FormData(oFormElement);
-
-            fetch(oFormElement.action, {
-                method: 'POST',
-                body: formData
-            }).then(async (response) => {
-                if (!response.ok) {
-                    blogToast.error('API Boom');
-                    console.error(err);
-                } else {
-                    var data = await response.json();
-                    $('#ViewModel_HeroImageUrl').val(data.location);
-                }
-            }).then(response => {
-                $('#form-hero-image')[0].reset();
-                heroImageModal.hide();
-            }).catch(err => {
-                blogToast.error(err);
-                console.error(err);
-            });
+<script>
+    $(function () {
+        postEditor.initEvents();
+        var editorMode = '@Settings.Value.Editor';
+        if (editorMode == '@nameof(EditorChoice.Html)') {
+            postEditor.loadRichEditor(".post-content-textarea");
         }
-    </script>
+        if (editorMode == '@nameof(EditorChoice.Markdown)') {
+            postEditor.loadMdEditor(".post-content-textarea");
+        }
+
+        $('#Tags').on('beforeItemAdd', function (event) {
+
+            // Test English with allowed characters
+            if (!/^[a-zA-Z 0-9\.\-\+\#\s]*$/i.test(event.item)) {
+
+                // Test for Chinese
+                if (!/(\p{Script=Hani})+/gu.test(event.item)) {
+                    blogToast.error(`Invalid tag name: ${event.item}`);
+                    event.cancel = true;
+                }
+            }
+        });
+
+        postEditor.keepAlive();
+    });
+
+    $(window).bind('keydown', function(event) {
+        if (event.ctrlKey || event.metaKey) {
+            switch (String.fromCharCode(event.which).toLowerCase()) {
+            case 's':
+                event.preventDefault();
+                $("#btn-save").trigger('click');
+                break;
+            }
+        }
+    });
+
+    var heroImageModal = new bootstrap.Modal(document.getElementById('heroImageModal'));
+
+    function ajaxImageUpload(oFormElement) {
+        const formData = new FormData(oFormElement);
+
+        fetch(oFormElement.action, {
+            method: 'POST',
+            body: formData
+        }).then(async (response) => {
+            if (!response.ok) {
+                blogToast.error('API Boom');
+                console.error(err);
+            } else {
+                var data = await response.json();
+                $('#ViewModel_HeroImageUrl').val(data.location);
+            }
+        }).then(response => {
+            $('#form-hero-image')[0].reset();
+            heroImageModal.hide();
+        }).catch(err => {
+            blogToast.error(err);
+            console.error(err);
+        });
+    }
+
+    function handlePostSubmit(event) {
+        event.preventDefault();
+
+        onPostCreateEditBegin();
+
+        const data = new FormData(event.target);
+        const value = Object.fromEntries(data.entries());
+
+        // Magic code to workaround checkbox with same name
+        var selectedCatIds = data.getAll('SelectedCatIds');
+        value["SelectedCatIds"] = selectedCatIds;
+
+        const newValue = toMagicJson(value);
+
+        callApi(event.currentTarget.action, 'POST', newValue,
+            async (resp) => {
+                var respJson = await resp.json();
+                onPostCreateEditSuccess(respJson);
+                onPostCreateEditComplete();
+            });
+    }
+
+    const form = document.querySelector('.post-edit-form');
+    form.addEventListener('submit', handlePostSubmit);
+</script>
 }
 
 <div class="p-4">
 
-    <form class="post-edit-form" asp-controller="Post" asp-action="CreateOrEdit"
-          data-ajax-begin="onPostCreateEditBegin"
-          data-ajax-complete="onPostCreateEditComplete"
-          data-ajax-failure="onPostCreateEditFailed"
-          data-ajax-success="onPostCreateEditSuccess"
-          data-ajax="true"
-          data-ajax-method="POST">
+    <form class="post-edit-form" asp-controller="Post" asp-action="CreateOrEdit">
         <div asp-validation-summary="ModelOnly" class="alert alert-danger"></div>
         <input type="hidden" asp-for="ViewModel.PostId" />
         <input type="hidden" asp-for="ViewModel.IsPublished" />
@@ -177,25 +196,25 @@
                     <ul class="list-group list-group-flush">
                         <li class="list-group-item">
                             <div class="form-check form-switch mb-2">
-                                <input type="checkbox" asp-for="ViewModel.EnableComment" class="form-check-input">
+                                <input type="checkbox" name="EnableComment" value="true" class="form-check-input" @(Model.ViewModel.EnableComment ? "checked" : null)>
                                 <label asp-for="ViewModel.EnableComment" class="form-check-label"></label>
                             </div>
                         </li>
                         <li class="list-group-item">
                             <div class="form-check form-switch mb-2">
-                                <input type="checkbox" asp-for="ViewModel.Featured" class="form-check-input">
+                                <input type="checkbox" name="Featured" value="true" class="form-check-input" @(Model.ViewModel.Featured ? "checked" : null)>
                                 <label asp-for="ViewModel.Featured" class="form-check-label"></label>
                             </div>
                         </li>
                         <li class="list-group-item">
                             <div class="form-check form-switch mb-2">
-                                <input type="checkbox" asp-for="ViewModel.FeedIncluded" class="form-check-input">
+                                <input type="checkbox" name="FeedIncluded" value="true" class="form-check-input" @(Model.ViewModel.FeedIncluded ? "checked" : null)>
                                 <label asp-for="ViewModel.FeedIncluded" class="form-check-label"></label>
                             </div>
                         </li>
                         <li class="list-group-item">
                             <div class="form-check form-switch mb-2">
-                                <input type="checkbox" asp-for="ViewModel.IsOriginal" class="form-check-input">
+                                <input type="checkbox" name="IsOriginal" value="true" class="form-check-input" @(Model.ViewModel.IsOriginal ? "checked" : null)>
                                 <label asp-for="ViewModel.IsOriginal" class="form-check-label"></label>
                             </div>
                         </li>
@@ -240,21 +259,25 @@
                             @Localizer["Categories"]
                         </h6>
 
-                        @if (null != Model.ViewModel.CategoryList && Model.ViewModel.CategoryList.Any())
+                        @if (null != Model.CategoryList && Model.CategoryList.Any())
                         {
                             <div class="catlist mb-2">
                                 <ul>
-                                    @for (int i = 0; i < Model.ViewModel.CategoryList.Count; i++)
+                                    @foreach (var cat in Model.CategoryList)
                                     {
                                         <li>
                                             <div class="form-check">
-                                                <input type="checkbox" asp-for="@Model.ViewModel.CategoryList[i].IsChecked" class="form-check-input" />
-                                                <label asp-for="@Model.ViewModel.CategoryList[i].IsChecked" class="form-check-label">
-                                                    @Model.ViewModel.CategoryList[i].DisplayText
+                                                <input type="checkbox" 
+                                                       id="category-@cat.Id" 
+                                                       name="SelectedCatIds" 
+                                                       value="@cat.Id" 
+                                                       class="form-check-input"
+                                                       @(cat.IsChecked ? "checked" : null)>
+
+                                                <label for="category-@cat.Id" class="form-check-label">
+                                                    @cat.DisplayText
                                                 </label>
                                             </div>
-                                            <input type="hidden" asp-for="@Model.ViewModel.CategoryList[i].Id" />
-                                            <input type="hidden" asp-for="@Model.ViewModel.CategoryList[i].DisplayText" />
                                         </li>
                                     }
                                 </ul>
@@ -299,7 +322,7 @@
                     <div class="modal-body">
                         <div class="alert alert-warning">@Localizer["Changing publish date will modify the URL of the post, and may cause unexpected results like breaking links on third parties that were pointing to this post. Please check the checkbox below if you confirm."]</div>
                         <div class="mb-2">
-                            <input asp-for="ViewModel.ChangePublishDate" type="checkbox" />
+                            <input type="checkbox" name="ChangePublishDate" value="true" class="form-check-input" @(Model.ViewModel.ChangePublishDate ? "checked" : null)>
                             <label asp-for="ViewModel.ChangePublishDate"></label>
                         </div>
 

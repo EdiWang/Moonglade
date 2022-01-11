@@ -72,25 +72,16 @@ public class PostController : ControllerBase
     [TypeFilter(typeof(ClearBlogCache), Arguments = new object[] { BlogCacheType.PagingCount })]
     [ProducesResponseType(StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status409Conflict)]
-    public async Task<IActionResult> CreateOrEdit(
-        [FromForm] MagicWrapper<PostEditModel> temp, [FromServices] LinkGenerator linkGenerator)
+    public async Task<IActionResult> CreateOrEdit(PostEditModel model, [FromServices] LinkGenerator linkGenerator)
     {
         try
         {
-            if (temp.ViewModel.CategoryList.All(p => !p.IsChecked))
+            if (!model.IsOriginal && string.IsNullOrWhiteSpace(model.OriginLink))
             {
-                ModelState.AddModelError(nameof(temp.ViewModel.CategoryList), "Please select at least one category.");
-            }
-
-            if (!temp.ViewModel.IsOriginal && string.IsNullOrWhiteSpace(temp.ViewModel.OriginLink))
-            {
-                ModelState.AddModelError(nameof(temp.ViewModel.OriginLink), "Please enter the origin link.");
+                ModelState.AddModelError(nameof(model.OriginLink), "Please enter the origin link.");
             }
 
             if (!ModelState.IsValid) return Conflict(ModelState.CombineErrorMessages());
-
-            // temp solution
-            var model = temp.ViewModel;
 
             if (!string.IsNullOrWhiteSpace(model.InlineCss))
             {

@@ -134,12 +134,10 @@ public class UpdatePostCommandHandler : IRequestHandler<UpdatePostCommand, PostE
         }
 
         // 3. update categories
-        var catIds = request.Payload.CategoryList.Where(p => p.IsChecked).Select(p => p.Id).ToArray();
         post.PostCategory.Clear();
-
-        if (catIds is { Length: > 0 })
+        if (request.Payload.SelectedCatIds is { Length: > 0 })
         {
-            foreach (var cid in catIds)
+            foreach (var cid in request.Payload.SelectedCatIds)
             {
                 post.PostCategory.Add(new()
                 {

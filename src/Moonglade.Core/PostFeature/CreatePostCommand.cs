@@ -99,10 +99,9 @@ public class CreatePostCommandHandler : IRequestHandler<CreatePostCommand, PostE
         post.HashCheckSum = checkSum;
 
         // add categories
-        var catIds = request.Payload.CategoryList.Where(p => p.IsChecked).Select(p => p.Id).ToArray();
-        if (catIds is { Length: > 0 })
+        if (request.Payload.SelectedCatIds is { Length: > 0 })
         {
-            foreach (var id in catIds)
+            foreach (var id in request.Payload.SelectedCatIds)
             {
                 post.PostCategory.Add(new()
                 {
