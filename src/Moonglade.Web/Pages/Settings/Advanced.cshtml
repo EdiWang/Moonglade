@@ -1,7 +1,9 @@
 ﻿@page "/admin/settings/advanced"
 @model Moonglade.Web.Pages.Settings.AdvancedModel
 @Html.AntiForgeryToken()
-
+@{
+    ViewBag.SkipJQueryValidation = true;
+}
 @section scripts{
     <script>
         function startTimer(duration, display) {
@@ -88,7 +90,6 @@
 <partial name="_SettingsHeader" />
 <div class="ps-4 pe-4">
     <form id="form-settings" asp-controller="Settings" asp-action="Advanced">
-        <div asp-validation-summary="All" class="text-danger"></div>
         <div class="row g-5">
             <div class="col-md-6">
                 <div class="mb-4">
