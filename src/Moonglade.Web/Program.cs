@@ -15,6 +15,7 @@ using SixLabors.Fonts;
 using System.Diagnostics;
 using System.Globalization;
 using System.Text.Encodings.Web;
+using System.Text.Json.Serialization;
 using System.Text.Unicode;
 using WilderMinds.MetaWeblog;
 
@@ -97,6 +98,7 @@ builder.Services.AddSession(options =>
 builder.Services.AddLocalization(options => options.ResourcesPath = "Resources");
 builder.Services.AddSwaggerGen();
 builder.Services.AddControllers(options => options.Filters.Add(new AutoValidateAntiforgeryTokenAttribute()))
+                .AddJsonOptions(options => options.JsonSerializerOptions.Converters.Add(new JsonStringEnumConverter()))
                 .ConfigureApiBehaviorOptions(ConfigureApiBehavior.BlogApiBehavior);
 builder.Services.AddRazorPages().AddViewLocalization()
                 .AddDataAnnotationsLocalization(options =>

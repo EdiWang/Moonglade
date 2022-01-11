@@ -7,7 +7,7 @@
 
   <ItemGroup>
     <PackageReference Include="Edi.WordFilter" Version="1.6.0" />
-    <PackageReference Include="Edi.Captcha" Version="3.7.0" />
+    <PackageReference Include="Edi.Captcha" Version="3.9.0" />
     <PackageReference Include="MediatR" Version="10.0.0" />
     <PackageReference Include="Microsoft.Azure.CognitiveServices.ContentModerator" Version="2.0.0" />
   </ItemGroup>

@@ -36,12 +36,13 @@
             $("#ViewModel_CssCode").val(cssValue);
         }
 
-        $("#btn-submit").click(function (e) {
+        function handleSubmit(event) {
             assignEditorValues();
-            if (!$("#form-settings").valid()) {
-                e.preventDefault();
-            }
-        });
+            handleSettingsSubmit(event);
+        }
+
+        const form = document.querySelector('#form-settings');
+        form.addEventListener('submit', handleSubmit);
     </script>
 }
 
@@ -57,17 +58,11 @@
 
 <partial name="_SettingsHeader" />
 <div class="ps-4 pe-4">
-    <form id="form-settings" asp-controller="Settings" asp-action="CustomStyleSheet"
-          data-ajax-begin="onUpdateSettingsBegin"
-          data-ajax-complete="onUpdateSettingsComplete"
-          data-ajax-failure="onUpdateSettingsFailed"
-          data-ajax-success="onUpdateSettingsSuccess"
-          data-ajax="true"
-          data-ajax-method="POST">
+    <form id="form-settings" asp-controller="Settings" asp-action="CustomStyleSheet">
         <div asp-validation-summary="ModelOnly" class="alert alert-danger"></div>
 
         <div class="form-check form-switch mb-3">
-            <input type="checkbox" asp-for="ViewModel.EnableCustomCss" class="form-check-input">
+            <input type="checkbox" name="EnableCustomCss" value="true" class="form-check-input" @(Model.ViewModel.EnableCustomCss ? "checked" : null)>
             <label asp-for="ViewModel.EnableCustomCss" class="form-check-label"></label>
         </div>
 

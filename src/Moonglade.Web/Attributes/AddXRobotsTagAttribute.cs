@@ -1,6 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc.Filters;
 
-namespace Moonglade.Web;
+namespace Moonglade.Web.Attributes;
 
 public class AddXRobotsTagAttribute : ResultFilterAttribute
 {

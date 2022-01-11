@@ -80,9 +80,8 @@ public class SettingsController : ControllerBase
     [HttpPost("general")]
     [ProducesResponseType(StatusCodes.Status204NoContent)]
     [TypeFilter(typeof(ClearBlogCache), Arguments = new object[] { CacheDivision.General, "theme" })]
-    public async Task<IActionResult> General([FromForm] MagicWrapper<GeneralSettings> wrapperModel, [FromServices] ITimeZoneResolver timeZoneResolver)
+    public async Task<IActionResult> General(GeneralSettings model, [FromServices] ITimeZoneResolver timeZoneResolver)
     {
-        var model = wrapperModel.ViewModel;
         model.AvatarUrl = _blogConfig.GeneralSettings.AvatarUrl;
 
         _blogConfig.GeneralSettings = model;
@@ -97,25 +96,21 @@ public class SettingsController : ControllerBase
 
     [HttpPost("content")]
     [ProducesResponseType(StatusCodes.Status204NoContent)]
-    public async Task<IActionResult> Content([FromForm] MagicWrapper<ContentSettings> wrapperModel)
+    public async Task<IActionResult> Content(ContentSettings model)
     {
-        var model = wrapperModel.ViewModel;
         _blogConfig.ContentSettings = model;
 
         await _blogConfig.SaveAsync(_blogConfig.ContentSettings);
-
         return NoContent();
     }
 
     [HttpPost("notification")]
     [ProducesResponseType(StatusCodes.Status204NoContent)]
-    public async Task<IActionResult> Notification([FromForm] MagicWrapper<NotificationSettings> wrapperModel)
+    public async Task<IActionResult> Notification(NotificationSettings model)
     {
-        var model = wrapperModel.ViewModel;
         _blogConfig.NotificationSettings = model;
 
         await _blogConfig.SaveAsync(_blogConfig.NotificationSettings);
-
         return NoContent();
     }
 
@@ -137,22 +132,19 @@ public class SettingsController : ControllerBase
 
     [HttpPost("subscription")]
     [ProducesResponseType(StatusCodes.Status204NoContent)]
-    public async Task<IActionResult> Subscription([FromForm] MagicWrapper<FeedSettings> wrapperModel)
+    public async Task<IActionResult> Subscription(FeedSettings model)
     {
-        var model = wrapperModel.ViewModel;
         _blogConfig.FeedSettings = model;
 
         await _blogConfig.SaveAsync(_blogConfig.FeedSettings);
-
         return NoContent();
     }
 
     [HttpPost("watermark")]
     [ProducesResponseType(StatusCodes.Status204NoContent)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
-    public async Task<IActionResult> Image([FromForm] MagicWrapper<ImageSettings> wrapperModel, [FromServices] IBlogImageStorage imageStorage)
+    public async Task<IActionResult> Image(ImageSettings model, [FromServices] IBlogImageStorage imageStorage)
     {
-        var model = wrapperModel.ViewModel;
         _blogConfig.ImageSettings = model;
 
         if (model.EnableCDNRedirect)
@@ -167,7 +159,7 @@ public class SettingsController : ControllerBase
                     if (!string.IsNullOrWhiteSpace(avatarData))
                     {
                         var avatarBytes = Convert.FromBase64String(avatarData);
-                        var fileName = $"avatar-{AssetId.AvatarBase64.ToString("N")}.png";
+                        var fileName = $"avatar-{AssetId.AvatarBase64:N}.png";
                         fileName = await imageStorage.InsertAsync(fileName, avatarBytes);
                         _blogConfig.GeneralSettings.AvatarUrl = _blogConfig.ImageSettings.CDNEndpoint.CombineUrl(fileName);
 
@@ -193,10 +185,8 @@ public class SettingsController : ControllerBase
 
     [HttpPost("advanced")]
     [ProducesResponseType(StatusCodes.Status204NoContent)]
-    public async Task<IActionResult> Advanced([FromForm] MagicWrapper<AdvancedSettings> wrapperModel)
+    public async Task<IActionResult> Advanced(AdvancedSettings model)
     {
-        var model = wrapperModel.ViewModel;
-
         model.MetaWeblogPasswordHash = !string.IsNullOrWhiteSpace(model.MetaWeblogPassword) ?
             Helper.HashPassword(model.MetaWeblogPassword) :
             _blogConfig.AdvancedSettings.MetaWeblogPasswordHash;
@@ -232,10 +222,8 @@ public class SettingsController : ControllerBase
     [HttpPost("custom-css")]
     [ProducesResponseType(StatusCodes.Status204NoContent)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
-    public async Task<IActionResult> CustomStyleSheet([FromForm] MagicWrapper<CustomStyleSheetSettings> wrapperModel)
+    public async Task<IActionResult> CustomStyleSheet(CustomStyleSheetSettings model)
     {
-        var model = wrapperModel.ViewModel;
-
         if (model.EnableCustomCss && string.IsNullOrWhiteSpace(model.CssCode))
         {
             ModelState.AddModelError(nameof(CustomStyleSheetSettings.CssCode), "CSS Code is required");

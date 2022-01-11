@@ -20,18 +20,15 @@
             $('.comment-settings-3rd').show();
         }
     }
+
+    const form = document.querySelector('#form-settings');
+    form.addEventListener('submit', handleSettingsSubmit);
 </script>
 }
 
 <partial name="_SettingsHeader" />
 <div class="ps-4 pe-4">
-    <form id="form-settings" asp-controller="Settings" asp-action="Content"
-          data-ajax-begin="onUpdateSettingsBegin"
-          data-ajax-complete="onUpdateSettingsComplete"
-          data-ajax-failure="onUpdateSettingsFailed"
-          data-ajax-success="onUpdateSettingsSuccess"
-          data-ajax="true"
-          data-ajax-method="POST">
+    <form id="form-settings" asp-controller="Settings" asp-action="Content">
         <div asp-validation-summary="All" class="text-danger"></div>
 
         <div class="row">
@@ -48,7 +45,7 @@
                         </div>
                         <div class="col-md-5 text-end">
                             <div class="form-check form-switch">
-                                <input type="checkbox" asp-for="ViewModel.EnableComments" class="form-check-input">
+                                <input type="checkbox" name="EnableComments" value="true" class="form-check-input" @(Model.ViewModel.EnableComments ? "checked" : null)>
                             </div>
                         </div>
                     </div>
@@ -62,11 +59,19 @@
                         </div>
                         <div class="col-md-5 text-end">
                             <div class="form-check form-check-inline">
-                                @Html.RadioButtonFor(model => model.ViewModel.CommentProvider, CommentProvider.BuiltIn, new { id = CommentProvider.BuiltIn.ToString(), @class = "form-check-input comment-provider-checkbox" })
+                                @Html.RadioButtonFor(model => model.ViewModel.CommentProvider, CommentProvider.BuiltIn, new
+                                {
+                                    id = CommentProvider.BuiltIn.ToString(), 
+                                    @class = "form-check-input comment-provider-checkbox"
+                                })
                                 <label class="form-check-label" for="@CommentProvider.BuiltIn">@Localizer["Built in"]</label>
                             </div>
                             <div class="form-check form-check-inline">
-                                @Html.RadioButtonFor(model => model.ViewModel.CommentProvider, CommentProvider.ThirdParty, new { id = CommentProvider.ThirdParty.ToString(), @class = "form-check-input comment-provider-checkbox" })
+                                @Html.RadioButtonFor(model => model.ViewModel.CommentProvider, CommentProvider.ThirdParty, new
+                                {
+                                    id = CommentProvider.ThirdParty.ToString(), 
+                                    @class = "form-check-input comment-provider-checkbox"
+                                })
                                 <label class="form-check-label" for="@CommentProvider.ThirdParty">@Localizer["Third party"]</label>
                             </div>
                         </div>
@@ -83,7 +88,7 @@
                             </div>
                             <div class="col-md-5 text-end">
                                 <div class="form-check form-switch">
-                                    <input type="checkbox" asp-for="ViewModel.RequireCommentReview" class="form-check-input">
+                                    <input type="checkbox" name="RequireCommentReview" value="true" class="form-check-input" @(Model.ViewModel.RequireCommentReview ? "checked" : null)>
                                 </div>
                             </div>
                         </div>
@@ -97,7 +102,7 @@
                             </div>
                             <div class="col-md-5 text-end">
                                 <div class="form-check form-switch">
-                                    <input type="checkbox" asp-for="ViewModel.EnableGravatar" class="form-check-input">
+                                    <input type="checkbox" name="EnableGravatar" value="true" class="form-check-input" @(Model.ViewModel.EnableGravatar ? "checked" : null)>
                                 </div>
                             </div>
                         </div>
@@ -111,7 +116,7 @@
                             </div>
                             <div class="col-md-5 text-end">
                                 <div class="form-check form-switch">
-                                    <input type="checkbox" asp-for="ViewModel.EnableWordFilter" class="form-check-input">
+                                    <input type="checkbox" name="EnableWordFilter" value="true" class="form-check-input" @(Model.ViewModel.EnableWordFilter ? "checked" : null)>
                                 </div>
                             </div>
                         </div>
@@ -217,7 +222,7 @@
                         </div>
                         <div class="col-md-5 text-end">
                             <div class="form-check form-switch">
-                                <input type="checkbox" asp-for="ViewModel.ShowPostFooter" class="form-check-input">
+                                <input type="checkbox" name="ShowPostFooter" value="true" class="form-check-input" @(Model.ViewModel.ShowPostFooter ? "checked" : null)>
                             </div>
                         </div>
                     </div>
@@ -246,7 +251,7 @@
                         </div>
                         <div class="col-md-5 text-end">
                             <div class="form-check form-switch">
-                                <input type="checkbox" asp-for="ViewModel.ShowCalloutSection" class="form-check-input">
+                                <input type="checkbox" name="ShowCalloutSection" value="true" class="form-check-input" @(Model.ViewModel.ShowCalloutSection ? "checked" : null)>
                             </div>
                         </div>
                     </div>

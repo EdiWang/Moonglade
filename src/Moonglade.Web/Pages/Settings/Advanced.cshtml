@@ -79,18 +79,15 @@
                 $('#ViewModel_MetaWeblogPassword').val(data.password);
             });
         }
+
+        const form = document.querySelector('#form-settings');
+        form.addEventListener('submit', handleSettingsSubmit);
     </script>
 }
 
 <partial name="_SettingsHeader" />
 <div class="ps-4 pe-4">
-    <form id="form-settings" asp-controller="Settings" asp-action="Advanced"
-          data-ajax-begin="onUpdateSettingsBegin"
-          data-ajax-complete="onUpdateSettingsComplete"
-          data-ajax-failure="onUpdateSettingsFailed"
-          data-ajax-success="onUpdateSettingsSuccess"
-          data-ajax="true"
-          data-ajax-method="POST">
+    <form id="form-settings" asp-controller="Settings" asp-action="Advanced">
         <div asp-validation-summary="All" class="text-danger"></div>
         <div class="row g-5">
             <div class="col-md-6">
@@ -106,7 +103,7 @@
                         </div>
                         <div class="col-md-4 text-end">
                             <div class="form-check form-switch">
-                                <input type="checkbox" asp-for="ViewModel.EnablePingbackSend" class="form-check-input">
+                                <input type="checkbox" name="EnablePingbackSend" value="true" class="form-check-input" @(Model.ViewModel.EnablePingbackSend ? "checked" : null)>
                             </div>
                         </div>
                     </div>
@@ -120,7 +117,7 @@
                         </div>
                         <div class="col-md-4 text-end">
                             <div class="form-check form-switch">
-                                <input type="checkbox" asp-for="ViewModel.EnablePingbackReceive" class="form-check-input">
+                                <input type="checkbox" name="EnablePingbackReceive" value="true" class="form-check-input" @(Model.ViewModel.EnablePingbackReceive ? "checked" : null)>
                             </div>
                         </div>
                     </div>
@@ -134,7 +131,7 @@
                         </div>
                         <div class="col-md-4 text-end">
                             <div class="form-check form-switch">
-                                <input type="checkbox" asp-for="ViewModel.EnableOpenGraph" class="form-check-input">
+                                <input type="checkbox" name="EnableOpenGraph" value="true" class="form-check-input" @(Model.ViewModel.EnableOpenGraph ? "checked" : null)>
                             </div>
                         </div>
                     </div>
@@ -148,7 +145,7 @@
                         </div>
                         <div class="col-md-4 text-end">
                             <div class="form-check form-switch">
-                                <input type="checkbox" asp-for="ViewModel.EnableOpenSearch" class="form-check-input">
+                                <input type="checkbox" name="EnableOpenSearch" value="true" class="form-check-input" @(Model.ViewModel.EnableOpenSearch ? "checked" : null)>
                             </div>
                         </div>
                     </div>
@@ -162,7 +159,7 @@
                         </div>
                         <div class="col-md-4 text-end">
                             <div class="form-check form-switch">
-                                <input type="checkbox" asp-for="ViewModel.WarnExternalLink" class="form-check-input">
+                                <input type="checkbox" name="WarnExternalLink" value="true" class="form-check-input" @(Model.ViewModel.WarnExternalLink ? "checked" : null)>
                             </div>
                         </div>
                     </div>
@@ -176,7 +173,7 @@
                         </div>
                         <div class="col-md-4 text-end">
                             <div class="form-check form-switch">
-                                <input type="checkbox" asp-for="ViewModel.AllowScriptsInPage" class="form-check-input">
+                                <input type="checkbox" name="AllowScriptsInPage" value="true" class="form-check-input" @(Model.ViewModel.AllowScriptsInPage ? "checked" : null)>
                             </div>
                         </div>
                     </div>
@@ -190,7 +187,7 @@
                         </div>
                         <div class="col-md-4 text-end">
                             <div class="form-check form-switch">
-                                <input type="checkbox" asp-for="ViewModel.ShowAdminLoginButton" class="form-check-input">
+                                <input type="checkbox" name="ShowAdminLoginButton" value="true" class="form-check-input" @(Model.ViewModel.ShowAdminLoginButton ? "checked" : null)>
                             </div>
                         </div>
                     </div>
@@ -220,7 +217,7 @@
                         </div>
                         <div class="col-md-4 text-end">
                             <div class="form-check form-switch">
-                                <input type="checkbox" asp-for="ViewModel.EnableMetaWeblog" class="form-check-input">
+                                <input type="checkbox" name="EnableMetaWeblog" value="true" class="form-check-input" @(Model.ViewModel.EnableMetaWeblog ? "checked" : null)>
                             </div>
                         </div>
                     </div>

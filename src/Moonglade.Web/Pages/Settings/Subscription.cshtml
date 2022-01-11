@@ -1,18 +1,16 @@
 ﻿@page "/admin/settings/subscription"
 @model Moonglade.Web.Pages.Settings.SubscriptionModel
 
+@section scripts{
+    <script>
+        const form = document.querySelector('#form-settings');
+        form.addEventListener('submit', handleSettingsSubmit);
+    </script>
+}
+
 <partial name="_SettingsHeader" />
 <div class="ps-4 pe-4 pt-4">
-    <form id="form-settings" asp-controller="Settings" asp-action="Subscription"
-          data-ajax-begin="onUpdateSettingsBegin"
-          data-ajax-complete="onUpdateSettingsComplete"
-          data-ajax-failure="onUpdateSettingsFailed"
-          data-ajax-success="onUpdateSettingsSuccess"
-          data-ajax="true"
-          data-ajax-method="POST"
-          spellcheck="false">
-        <div asp-validation-summary="All" class="text-danger"></div>
-
+    <form id="form-settings" asp-controller="Settings" asp-action="Subscription" spellcheck="false">
         <div class="row">
             <div class="col-lg-6">
                 <div class="row g-3 align-items-center settings-entry mb-4">
@@ -80,11 +78,10 @@
                     </div>
                     <div class="col-md-5 text-end">
                         <div class="form-check form-switch">
-                            <input type="checkbox" asp-for="ViewModel.UseFullContent" class="form-check-input">
+                            <input type="checkbox" name="UseFullContent" value="true" class="form-check-input" @(Model.ViewModel.UseFullContent ? "checked" : null)  />
                         </div>
                     </div>
                 </div>
-
             </div>
         </div>
 

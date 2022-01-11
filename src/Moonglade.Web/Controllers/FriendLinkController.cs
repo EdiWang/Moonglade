@@ -1,4 +1,5 @@
 using Moonglade.FriendLink;
+using Moonglade.Web.Attributes;
 
 namespace Moonglade.Web.Controllers;
 
