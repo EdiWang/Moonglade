@@ -1,6 +1,8 @@
 ﻿@page "/admin/settings/subscription"
 @model Moonglade.Web.Pages.Settings.SubscriptionModel
-
+@{
+    ViewBag.SkipJQueryValidation = true;
+}
 @section scripts{
     <script>
         const form = document.querySelector('#form-settings');
@@ -24,8 +26,7 @@
                         </div>
                     </div>
                     <div class="col-md-5">
-                        <input asp-for="ViewModel.RssTitle" class="form-control"/>
-                        <span asp-validation-for="ViewModel.RssTitle" class="text-danger"></span>
+                        <input asp-for="ViewModel.RssTitle" class="form-control" required maxlength="64"/>
                     </div>
                 </div>
 
@@ -37,8 +38,7 @@
                         <label class="form-label" asp-for="ViewModel.AuthorName"></label>
                     </div>
                     <div class="col-md-5">
-                        <input asp-for="ViewModel.AuthorName" class="form-control" />
-                        <span asp-validation-for="ViewModel.AuthorName" class="text-danger"></span>
+                        <input asp-for="ViewModel.AuthorName" class="form-control" required maxlength="32" />
                     </div>
                 </div>
 
@@ -50,8 +50,7 @@
                         <label class="form-label" asp-for="ViewModel.RssCopyright"></label>
                     </div>
                     <div class="col-md-5">
-                        <input asp-for="ViewModel.RssCopyright" class="form-control"/>
-                        <span asp-validation-for="ViewModel.RssCopyright" class="text-danger"></span>
+                        <input asp-for="ViewModel.RssCopyright" class="form-control" required maxlength="64"/>
                     </div>
                 </div>
 
@@ -64,8 +63,7 @@
                         <div class="form-text">@Localizer["The number of entries to include in RSS feed."]</div>
                     </div>
                     <div class="col-md-5">
-                        <input asp-for="ViewModel.RssItemCount" class="form-control" />
-                        <span asp-validation-for="ViewModel.RssItemCount" class="text-danger"></span>
+                        <input asp-for="ViewModel.RssItemCount" class="form-control" required />
                     </div>
                 </div>
 
