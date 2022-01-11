@@ -163,7 +163,7 @@ public class SettingsController : ControllerBase
                     if (!string.IsNullOrWhiteSpace(avatarData))
                     {
                         var avatarBytes = Convert.FromBase64String(avatarData);
-                        var fileName = $"avatar-{AssetId.AvatarBase64.ToString("N")}.png";
+                        var fileName = $"avatar-{AssetId.AvatarBase64:N}.png";
                         fileName = await imageStorage.InsertAsync(fileName, avatarBytes);
                         _blogConfig.GeneralSettings.AvatarUrl = _blogConfig.ImageSettings.CDNEndpoint.CombineUrl(fileName);
 
@@ -189,10 +189,8 @@ public class SettingsController : ControllerBase
 
     [HttpPost("advanced")]
     [ProducesResponseType(StatusCodes.Status204NoContent)]
-    public async Task<IActionResult> Advanced([FromForm] MagicWrapper<AdvancedSettings> wrapperModel)
+    public async Task<IActionResult> Advanced(AdvancedSettings model)
     {
-        var model = wrapperModel.ViewModel;
-
         model.MetaWeblogPasswordHash = !string.IsNullOrWhiteSpace(model.MetaWeblogPassword) ?
             Helper.HashPassword(model.MetaWeblogPassword) :
             _blogConfig.AdvancedSettings.MetaWeblogPasswordHash;
