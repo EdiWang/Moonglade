@@ -7,34 +7,37 @@
 @Html.AntiForgeryToken()
 
 @section head{
-    <link href="~/css/3rd/dataTables.bootstrap5.min.css" rel="stylesheet" />
+<link href="~/css/3rd/dataTables.bootstrap5.min.css" rel="stylesheet" />
 }
 
 @section scripts{
-    <script src="~/js/3rd/datatables.min.js"></script>
-    <script>
-        $(".btn-delete").click(function () {
-            deletePingback($(this).data("pingbackid"));
-        });
+<script src="~/js/3rd/datatables.min.js"></script>
+<script>
+    $(".btn-delete").click(function () {
+        var pingbackId = $(this).data("pingbackid");
 
-        $(function () {
-            $("#pingbacks-table").DataTable({
-                "order": [[3, "desc"]],
-                "lengthMenu": [[10, 20, 50, -1], [10, 20, 50, "All"]],
-                "pageLength": 10
+        callApi(`/pingback/${pingbackId}`, 'DELETE', {},
+            (resp) => {
+                document.querySelector(`#pingback-box-${pingbackId}`).remove();
             });
-        });
+    });
 
-        $('.btn-clear').click(function () {
-            callApi(`/pingback/clear`, 'DELETE', {},
-                (resp) => {
-                    blogToast.success('Pingback logs are cleared');
-                    setTimeout(function () {
-                        window.location.reload();
-                    }, 800);
-                });
-        });
-    </script>
+    $("#pingbacks-table").DataTable({
+        "order": [[3, "desc"]],
+        "lengthMenu": [[10, 20, 50, -1], [10, 20, 50, "All"]],
+        "pageLength": 10
+    });
+
+    $('.btn-clear').click(function () {
+        callApi(`/pingback/clear`, 'DELETE', {},
+            (resp) => {
+                blogToast.success('Pingback logs are cleared');
+                setTimeout(function () {
+                    window.location.reload();
+                }, 800);
+            });
+    });
+</script>
 }
 
 
@@ -78,8 +81,6 @@
                     <td class="p-2">
                         <a class="btn btn-sm btn-outline-danger btn-delete" href="#" data-pingbackid="@item.Id">
                             <i class="bi-trash"></i>
-
-                            <span id="span-processing-@item.Id" class="spinner-border spinner-border-sm" role="status" aria-hidden="true" style="display: none;"></span>
                         </a>
                     </td>
                 </tr>

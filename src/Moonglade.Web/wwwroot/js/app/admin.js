@@ -1,11 +1,4 @@
-﻿$.validator.setDefaults({
-    ignore: []
-});
-
-function toMagicJson(value) {
-
-    console.log(value);
-
+﻿function toMagicJson(value) {
     const newValue = {};
     for (let item in value) {
         if (Object.prototype.hasOwnProperty.call(value, item)) {
@@ -38,7 +31,7 @@ function handleSettingsSubmit(event) {
 
     callApi(event.currentTarget.action, 'POST', newValue,
         (resp) => {
-            onUpdateSettingsSuccess();
+            blogToast.success('Settings Updated');
             onUpdateSettingsComplete();
         });
 }
@@ -54,24 +47,6 @@ var onUpdateSettingsComplete = function () {
     $(btnSaveSettings).text('Save');
     $(btnSaveSettings).removeClass('disabled');
     $(btnSaveSettings).removeAttr('disabled');
-};
-
-var onUpdateSettingsSuccess = function (context) {
-    if (blogToast) {
-        blogToast.success('Settings Updated');
-    } else {
-        alert('Settings Updated');
-    }
-};
-
-var onUpdateSettingsFailed = function (context) {
-    var message = buildErrorMessage(context);
-
-    if (blogToast) {
-        blogToast.error(message);
-    } else {
-        alert(message);
-    }
 };
 
 var emptyGuid = '00000000-0000-0000-0000-000000000000';
@@ -333,10 +308,8 @@ var postEditor = {
         });
 
         $('#btn-preview').click(function (e) {
-            if ($('form').valid()) {
-                submitForm(e);
-                isPreviewRequired = true;
-            }
+            submitForm(e);
+            isPreviewRequired = true;
         });
 
         $('#btn-save').click(function (e) {
@@ -406,15 +379,6 @@ var onPostCreateEditSuccess = function (data) {
     }
 };
 
-var onPostCreateEditFailed = function (context) {
-    var message = buildErrorMessage(context);
-    if (blogToast) {
-        blogToast.error(message);
-    } else {
-        alert(`Error: ${message}`);
-    }
-};
-
 var onPageCreateEditFailed = function (context) {
     var message = buildErrorMessage(context);
 
@@ -463,14 +427,5 @@ function deleteSelectedComments() {
             $.each(cids, function (index, value) {
                 $(`#panel-comment-${value}`).slideUp();
             });
-        });
-}
-
-function deletePingback(pingbackId) {
-    $(`#span-processing-${pingbackId}`).show();
-
-    callApi(`/pingback/${pingbackId}`, 'DELETE', {},
-        (resp) => {
-            $(`#pingback-box-${pingbackId}`).slideUp();
         });
 }

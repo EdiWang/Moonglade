@@ -1,6 +1,9 @@
 ﻿@page "/admin/settings/notification"
 @model Moonglade.Web.Pages.Settings.NotificationModel
 @inject IOptionsSnapshot<AppSettings> _settings
+@{
+    ViewBag.SkipJQueryValidation = true;
+}
 @section scripts{
     <script>
         var sendTestEmail = function () {
@@ -35,8 +38,6 @@
 <partial name="_SettingsHeader" />
 <div class="ps-4 pe-4">
     <form id="form-settings" asp-controller="Settings" asp-action="Notification">
-        <div asp-validation-summary="All" class="text-danger"></div>
-
         <div class="row">
             <div class="col-md-6">
                 <h6 class="card-subtitle mb-4 text-muted">@Localizer["Email Options"]</h6>
@@ -49,8 +50,7 @@
                         <label asp-for="ViewModel.EmailDisplayName"></label>
                     </div>
                     <div class="col-md-5">
-                        <input asp-for="ViewModel.EmailDisplayName" class="form-control" />
-                        <span asp-validation-for="ViewModel.EmailDisplayName" class="text-danger"></span>
+                        <input asp-for="ViewModel.EmailDisplayName" class="form-control" required maxlength="64"/>
                     </div>
                 </div>
 
@@ -64,7 +64,6 @@
                     </div>
                     <div class="col-md-5">
                         <input asp-for="ViewModel.AzureFunctionEndpoint" class="form-control" />
-                        <span asp-validation-for="ViewModel.AzureFunctionEndpoint" class="text-danger"></span>
                     </div>
                 </div>
                 
