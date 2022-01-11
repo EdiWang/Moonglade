@@ -1,11 +1,4 @@
-﻿$.validator.setDefaults({
-    ignore: []
-});
-
-function toMagicJson(value) {
-
-    console.log(value);
-
+﻿function toMagicJson(value) {
     const newValue = {};
     for (let item in value) {
         if (Object.prototype.hasOwnProperty.call(value, item)) {
@@ -38,7 +31,7 @@ function handleSettingsSubmit(event) {
 
     callApi(event.currentTarget.action, 'POST', newValue,
         (resp) => {
-            onUpdateSettingsSuccess();
+            blogToast.success('Settings Updated');
             onUpdateSettingsComplete();
         });
 }
@@ -54,24 +47,6 @@ var onUpdateSettingsComplete = function () {
     $(btnSaveSettings).text('Save');
     $(btnSaveSettings).removeClass('disabled');
     $(btnSaveSettings).removeAttr('disabled');
-};
-
-var onUpdateSettingsSuccess = function (context) {
-    if (blogToast) {
-        blogToast.success('Settings Updated');
-    } else {
-        alert('Settings Updated');
-    }
-};
-
-var onUpdateSettingsFailed = function (context) {
-    var message = buildErrorMessage(context);
-
-    if (blogToast) {
-        blogToast.error(message);
-    } else {
-        alert(message);
-    }
 };
 
 var emptyGuid = '00000000-0000-0000-0000-000000000000';

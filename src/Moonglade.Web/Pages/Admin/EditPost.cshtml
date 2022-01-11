@@ -4,6 +4,7 @@
 @inject IOptions<RequestLocalizationOptions> _locOptions
 @{
     ViewBag.Title = "Manage Posts";
+    ViewBag.SkipJQueryValidation = true;
 
     var cultureItems = _locOptions.Value.SupportedUICultures
         .Select(c => new { Value = c.Name, c.NativeName });
@@ -36,7 +37,7 @@
     }
 
 <script>
-    $(function () {
+    $(function() {
         postEditor.initEvents();
         var editorMode = '@Settings.Value.Editor';
         if (editorMode == '@nameof(EditorChoice.Html)') {
@@ -46,42 +47,45 @@
             postEditor.loadMdEditor(".post-content-textarea");
         }
 
-        $('#Tags').on('beforeItemAdd', function (event) {
+        $('#Tags').on('beforeItemAdd',
+            function(event) {
 
-            // Test English with allowed characters
-            if (!/^[a-zA-Z 0-9\.\-\+\#\s]*$/i.test(event.item)) {
+                // Test English with allowed characters
+                if (!/^[a-zA-Z 0-9\.\-\+\#\s]*$/i.test(event.item)) {
 
-                // Test for Chinese
-                if (!/(\p{Script=Hani})+/gu.test(event.item)) {
-                    blogToast.error(`Invalid tag name: ${event.item}`);
-                    event.cancel = true;
+                    // Test for Chinese
+                    if (!/(\p{Script=Hani})+/gu.test(event.item)) {
+                        blogToast.error(`Invalid tag name: ${event.item}`);
+                        event.cancel = true;
+                    }
                 }
-            }
-        });
+            });
 
         postEditor.keepAlive();
     });
 
-    $(window).bind('keydown', function(event) {
-        if (event.ctrlKey || event.metaKey) {
-            switch (String.fromCharCode(event.which).toLowerCase()) {
-            case 's':
-                event.preventDefault();
-                $("#btn-save").trigger('click');
-                break;
+    $(window).bind('keydown',
+        function(event) {
+            if (event.ctrlKey || event.metaKey) {
+                switch (String.fromCharCode(event.which).toLowerCase()) {
+                case 's':
+                    event.preventDefault();
+                    $("#btn-save").trigger('click');
+                    break;
+                }
             }
-        }
-    });
+        });
 
     var heroImageModal = new bootstrap.Modal(document.getElementById('heroImageModal'));
 
     function ajaxImageUpload(oFormElement) {
         const formData = new FormData(oFormElement);
 
-        fetch(oFormElement.action, {
-            method: 'POST',
-            body: formData
-        }).then(async (response) => {
+        fetch(oFormElement.action,
+            {
+                method: 'POST',
+                body: formData
+            }).then(async (response) => {
             if (!response.ok) {
                 blogToast.error('API Boom');
                 console.error(err);
@@ -101,18 +105,28 @@
     function handlePostSubmit(event) {
         event.preventDefault();
 
-        onPostCreateEditBegin();
-
         const data = new FormData(event.target);
         const value = Object.fromEntries(data.entries());
 
-        // Magic code to workaround checkbox with same name
-        var selectedCatIds = data.getAll('SelectedCatIds');
-        value["SelectedCatIds"] = selectedCatIds;
+        const content = value["ViewModel.EditorContent"];
+        if (!content) {
+            blogToast.error('Please enter content.');
+            return;
+        }
 
+        var selectedCatIds = data.getAll('SelectedCatIds');
+        if (selectedCatIds.length == 0) {
+            blogToast.error('Please select at least 1 category.');
+            return;
+        }
+        
+        value["SelectedCatIds"] = selectedCatIds;
         const newValue = toMagicJson(value);
 
-        callApi(event.currentTarget.action, 'POST', newValue,
+        onPostCreateEditBegin();
+        callApi(event.currentTarget.action,
+            'POST',
+            newValue,
             async (resp) => {
                 var respJson = await resp.json();
                 onPostCreateEditSuccess(respJson);
@@ -128,24 +142,17 @@
 <div class="p-4">
 
     <form class="post-edit-form" asp-controller="Post" asp-action="CreateOrEdit">
-        <div asp-validation-summary="ModelOnly" class="alert alert-danger"></div>
         <input type="hidden" asp-for="ViewModel.PostId" />
         <input type="hidden" asp-for="ViewModel.IsPublished" />
         <div class="row">
             <div class="col-md-9 col-xl-10">
-                <input type="text" asp-for="ViewModel.Title" class="form-control form-control-lg" placeholder="@Localizer["Title"]" />
-                <div>
-                    <span asp-validation-for="ViewModel.Title" class="text-danger"></span>
-                </div>
+                <input type="text" asp-for="ViewModel.Title" class="form-control form-control-lg" placeholder="@Localizer["Title"]" required maxlength="128" />
                 <div class="mt-1">
                     <div class="row g-1">
                         <div class="col">
                             <div class="input-group input-group-sm">
                                 <label class="input-group-text" asp-for="ViewModel.Slug">Slug</label>
-                                <input type="text" asp-for="ViewModel.Slug" class="form-control form-control-sm" placeholder="Slug" spellcheck="false" />
-                            </div>
-                            <div>
-                                <span asp-validation-for="ViewModel.Slug" class="text-danger"></span>
+                                <input type="text" asp-for="ViewModel.Slug" class="form-control form-control-sm" placeholder="Slug" spellcheck="false" required pattern="[a-z0-9\-]+" maxlength="128"/>
                             </div>
                         </div>
                         <div class="col-md-auto">
@@ -164,11 +171,8 @@
                 </div>
 
                 <textarea asp-for="ViewModel.EditorContent" class="post-content-textarea"></textarea>
-                <div class="mb-2">
-                    <span asp-validation-for="ViewModel.EditorContent" class="text-danger"></span>
-                </div>
 
-                <div class="row g-1">
+                <div class="row g-1 mt-1">
                     <div class="col-8">
                         <div class="form-floating">
                             <textarea asp-for="ViewModel.Abstract"
@@ -176,11 +180,11 @@
                                       class="form-control form-control-sm"
                                       data-bs-toggle="tooltip"
                                       data-placement="top"
+                                      maxlength="400"
                                       title="@Localizer["The first {0} character(s) will be used as abstract if you leave this field blank.", BlogConfig.ContentSettings.PostAbstractWords]"
                                       style="height: 90px"></textarea>
                             <label for="ViewModel_Abstract">@Localizer["Abstract"]</label>
                         </div>
-                        <span asp-validation-for="ViewModel.Abstract" class="text-danger"></span>
                     </div>
                     <div class="col-4">
                         <input type="text" asp-for="ViewModel.Tags" placeholder="@Localizer["Tags"]" />
@@ -267,12 +271,12 @@
                                     {
                                         <li>
                                             <div class="form-check">
-                                                <input type="checkbox" 
-                                                       id="category-@cat.Id" 
-                                                       name="SelectedCatIds" 
-                                                       value="@cat.Id" 
-                                                       class="form-check-input"
-                                                       @(cat.IsChecked ? "checked" : null)>
+                                                <input type="checkbox"
+                                               id="category-@cat.Id"
+                                               name="SelectedCatIds"
+                                               value="@cat.Id"
+                                               class="form-check-input"
+                                               @(cat.IsChecked ? "checked" : null)>
 
                                                 <label for="category-@cat.Id" class="form-check-label">
                                                     @cat.DisplayText
@@ -329,7 +333,6 @@
                         <div class="mb-2">
                             <label asp-for="ViewModel.PublishDate"></label>
                             <input asp-for="ViewModel.PublishDate" class="form-control" />
-                            <span asp-validation-for="ViewModel.PublishDate" class="text-danger"></span>
                         </div>
                     </div>
                     <div class="modal-footer">
@@ -351,7 +354,6 @@
                     <div class="modal-body">
                         <div class="mb-2">
                             <textarea asp-for="ViewModel.InlineCss" class="form-control textarea-code h-300px"></textarea>
-                            <span asp-validation-for="ViewModel.InlineCss" class="text-danger"></span>
                         </div>
                     </div>
                     <div class="modal-footer">

@@ -70,13 +70,6 @@
       ]
     },
     {
-      "library": "jquery-ajax-unobtrusive@3.2.6",
-      "destination": "wwwroot/lib/jquery-ajax-unobtrusive/",
-      "files": [
-        "jquery.unobtrusive-ajax.min.js"
-      ]
-    },
-    {
       "library": "jquery-validate@1.19.3",
       "destination": "wwwroot/lib/jquery-validate/",
       "files": [
