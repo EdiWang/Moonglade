@@ -1,5 +1,4 @@
 ﻿using System.ComponentModel.DataAnnotations;
-using System.Text.Json.Serialization;
 
 namespace Moonglade.Configuration;
 
@@ -25,7 +24,6 @@ public class AdvancedSettings : IBlogSettings
     [Display(Name = "Enable OpenSearch")]
     public bool EnableOpenSearch { get; set; }
 
-    [JsonIgnore]
     [MinLength(8), MaxLength(16)]
     [Display(Name = "MetaWeblog password")]
     public string MetaWeblogPassword { get; set; }
