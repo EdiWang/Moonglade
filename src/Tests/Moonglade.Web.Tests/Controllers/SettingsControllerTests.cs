@@ -131,7 +131,7 @@ public class SettingsControllerTests
         Mock<ITimeZoneResolver> tZoneResolverMock = new();
 
         var settingsController = CreateSettingsController();
-        var result = await settingsController.General(new(model), tZoneResolverMock.Object);
+        var result = await settingsController.General(model, tZoneResolverMock.Object);
 
         Assert.IsInstanceOf<NoContentResult>(result);
         _mockBlogConfig.Verify(p => p.SaveAsync(It.IsAny<GeneralSettings>()));

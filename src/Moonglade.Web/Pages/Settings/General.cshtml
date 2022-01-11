@@ -68,6 +68,9 @@
                     blogToast.success('Theme deleted.');
                 });
         });
+
+        const form = document.querySelector('#form-settings');
+        form.addEventListener('submit', handleSettingsSubmit);
     </script>
 }
 
@@ -75,14 +78,7 @@
 
 <div class="ps-4 pe-4">
 
-    <form id="form-settings" asp-controller="Settings" asp-action="General"
-          spellcheck="false"
-          data-ajax-begin="onUpdateSettingsBegin"
-          data-ajax-complete="onUpdateSettingsComplete"
-          data-ajax-failure="onUpdateSettingsFailed"
-          data-ajax-success="onUpdateSettingsSuccess"
-          data-ajax="true"
-          data-ajax-method="POST">
+    <form id="form-settings" asp-controller="Settings" asp-action="General" spellcheck="false">
         <div asp-validation-summary="All" class="text-danger"></div>
 
         <div class="row g-5">
@@ -205,11 +201,11 @@
                             </div>
                         </div>
                         <div class="form-check">
-                            <input asp-for="ViewModel.AutoDarkLightTheme" class="form-check-input" type="checkbox">
+                            <input type="checkbox" name="AutoDarkLightTheme" value="true" class="form-check-input" @(Model.ViewModel.AutoDarkLightTheme ? "checked" : null)>
                             <label asp-for="ViewModel.AutoDarkLightTheme" class="form-check-label"></label>
                         </div>
                         <div class="form-check">
-                            <input asp-for="ViewModel.Pride" class="form-check-input" type="checkbox">
+                            <input type="checkbox" name="Pride" value="true" class="form-check-input" @(Model.ViewModel.Pride ? "checked" : null)>
                             <label asp-for="ViewModel.Pride" class="form-check-label"></label>
                         </div>
                     </div>

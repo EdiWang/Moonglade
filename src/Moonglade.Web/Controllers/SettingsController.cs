@@ -80,9 +80,8 @@ public class SettingsController : ControllerBase
     [HttpPost("general")]
     [ProducesResponseType(StatusCodes.Status204NoContent)]
     [TypeFilter(typeof(ClearBlogCache), Arguments = new object[] { CacheDivision.General, "theme" })]
-    public async Task<IActionResult> General([FromForm] MagicWrapper<GeneralSettings> wrapperModel, [FromServices] ITimeZoneResolver timeZoneResolver)
+    public async Task<IActionResult> General(GeneralSettings model, [FromServices] ITimeZoneResolver timeZoneResolver)
     {
-        var model = wrapperModel.ViewModel;
         model.AvatarUrl = _blogConfig.GeneralSettings.AvatarUrl;
 
         _blogConfig.GeneralSettings = model;
