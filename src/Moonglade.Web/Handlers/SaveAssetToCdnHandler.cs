@@ -23,10 +23,13 @@ public class SaveAssetToCdnHandler : INotificationHandler<SaveAssetCommand>
 
         if (_blogConfig.ImageSettings.EnableCDNRedirect)
         {
-            var fileName = $"avatar-{AssetId.AvatarBase64:N}.png";
+            var fileName = $"avatar-{AssetId.AvatarBase64.ToString("N")[..6]}.png";
             await _imageStorage.DeleteAsync(fileName);
             fileName = await _imageStorage.InsertAsync(fileName, Convert.FromBase64String(request.AssetBase64));
-            _blogConfig.GeneralSettings.AvatarUrl = _blogConfig.ImageSettings.CDNEndpoint.CombineUrl(fileName);
+
+            var random = new Random();
+            _blogConfig.GeneralSettings.AvatarUrl = 
+                _blogConfig.ImageSettings.CDNEndpoint.CombineUrl(fileName) + $"?{random.Next(100, 999)}";   //refresh local cache
             await _blogConfig.SaveAsync(_blogConfig.GeneralSettings);
         }
     }
