@@ -144,7 +144,7 @@ public class SettingsControllerTests
         ContentSettings model = new() { WordFilterMode = WordFilterMode.Block };
 
         var settingsController = CreateSettingsController();
-        var result = await settingsController.Content(new(model));
+        var result = await settingsController.Content(model);
 
         Assert.IsInstanceOf<NoContentResult>(result);
         _mockBlogConfig.Verify(p => p.SaveAsync(It.IsAny<ContentSettings>()));

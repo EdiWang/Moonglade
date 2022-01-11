@@ -97,13 +97,11 @@ public class SettingsController : ControllerBase
 
     [HttpPost("content")]
     [ProducesResponseType(StatusCodes.Status204NoContent)]
-    public async Task<IActionResult> Content([FromForm] MagicWrapper<ContentSettings> wrapperModel)
+    public async Task<IActionResult> Content(ContentSettings model)
     {
-        var model = wrapperModel.ViewModel;
         _blogConfig.ContentSettings = model;
 
         await _blogConfig.SaveAsync(_blogConfig.ContentSettings);
-
         return NoContent();
     }
 
