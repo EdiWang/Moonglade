@@ -2,6 +2,7 @@
 using Moonglade.Core.PostFeature;
 using Moonglade.Data.Spec;
 using Moonglade.Pingback;
+using Moonglade.Web.Attributes;
 using NUglify;
 using System.ComponentModel.DataAnnotations;
 

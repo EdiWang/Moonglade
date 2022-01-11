@@ -1,5 +1,6 @@
 ﻿using Moonglade.Caching.Filters;
 using Moonglade.Menus;
+using Moonglade.Web.Attributes;
 
 namespace Moonglade.Web.Controllers;
 
