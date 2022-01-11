@@ -1,6 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using System.ComponentModel.DataAnnotations;
-using System.Text.Json.Serialization;
 
 namespace Moonglade.Core.PostFeature;
 
@@ -23,14 +22,14 @@ public class PostEditModel
     public string Author { get; set; }
 
     [Required]
-    public List<CategoryCheckBox> CategoryList { get; set; }
+    [MinLength(1)]
+    public Guid[] SelectedCatIds { get; set; }
 
     [Required]
     [Display(Name = "Enable Comment")]
     public bool EnableComment { get; set; }
 
     [Required(ErrorMessage = "Please enter content.")]
-    [JsonIgnore]
     [DataType(DataType.MultilineText)]
     public string EditorContent { get; set; }
 
@@ -83,14 +82,6 @@ public class PostEditModel
     public PostEditModel()
     {
         PostId = Guid.Empty;
-        CategoryList = new();
         IsOriginal = true;
     }
-}
-
-public class CategoryCheckBox
-{
-    public Guid Id { get; set; }
-    public string DisplayText { get; set; }
-    public bool IsChecked { get; set; }
 }

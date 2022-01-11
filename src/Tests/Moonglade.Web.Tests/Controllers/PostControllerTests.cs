@@ -128,9 +128,8 @@ public class PostControllerTests
         var postManageController = CreatePostController();
         postManageController.ModelState.AddModelError("", FakeData.ShortString2);
 
-        MagicWrapper<PostEditModel> model = new() { ViewModel = new() };
         Mock<LinkGenerator> mockLinkGenerator = new();
-        var result = await postManageController.CreateOrEdit(model, mockLinkGenerator.Object);
+        var result = await postManageController.CreateOrEdit(new(), mockLinkGenerator.Object);
 
         Assert.IsInstanceOf<ConflictObjectResult>(result);
     }
@@ -144,26 +143,20 @@ public class PostControllerTests
             HttpContext = new DefaultHttpContext()
         };
 
-        MagicWrapper<PostEditModel> model = new()
+        PostEditModel model = new()
         {
-            ViewModel = new()
-            {
-                PostId = Guid.Empty,
-                Title = Post.Title,
-                Slug = Post.Slug,
-                EditorContent = Post.RawPostContent,
-                LanguageCode = Post.ContentLanguageCode,
-                IsPublished = false,
-                Featured = true,
-                ChangePublishDate = false,
-                EnableComment = true,
-                FeedIncluded = true,
-                Tags = "996,icu",
-                CategoryList = new()
-                {
-                    new() { Id = Guid.Parse("6364e9be-2423-44da-bd11-bc6fa9c3fa5d"), DisplayText = "996", IsChecked = true }
-                }
-            }
+            PostId = Guid.Empty,
+            Title = Post.Title,
+            Slug = Post.Slug,
+            EditorContent = Post.RawPostContent,
+            LanguageCode = Post.ContentLanguageCode,
+            IsPublished = false,
+            Featured = true,
+            ChangePublishDate = false,
+            EnableComment = true,
+            FeedIncluded = true,
+            Tags = "996,icu",
+            SelectedCatIds = new[] { Guid.Parse("6364e9be-2423-44da-bd11-bc6fa9c3fa5d") }
         };
 
         Mock<LinkGenerator> mockLinkGenerator = new();
@@ -180,26 +173,21 @@ public class PostControllerTests
     public async Task CreateOrEdit_Create_Draft()
     {
         var postManageController = CreatePostController();
-        MagicWrapper<PostEditModel> model = new()
+
+        PostEditModel model = new()
         {
-            ViewModel = new()
-            {
-                PostId = Guid.Empty,
-                Title = Post.Title,
-                Slug = Post.Slug,
-                EditorContent = Post.RawPostContent,
-                LanguageCode = Post.ContentLanguageCode,
-                IsPublished = false,
-                Featured = true,
-                ChangePublishDate = false,
-                EnableComment = true,
-                FeedIncluded = true,
-                Tags = "996,icu",
-                CategoryList = new()
-                {
-                    new() { Id = Guid.Parse("6364e9be-2423-44da-bd11-bc6fa9c3fa5d"), DisplayText = "996", IsChecked = true }
-                }
-            }
+            PostId = Guid.Empty,
+            Title = Post.Title,
+            Slug = Post.Slug,
+            EditorContent = Post.RawPostContent,
+            LanguageCode = Post.ContentLanguageCode,
+            IsPublished = false,
+            Featured = true,
+            ChangePublishDate = false,
+            EnableComment = true,
+            FeedIncluded = true,
+            Tags = "996,icu",
+            SelectedCatIds = new[] { Guid.Parse("6364e9be-2423-44da-bd11-bc6fa9c3fa5d") }
         };
 
         Mock<LinkGenerator> mockLinkGenerator = new();
@@ -222,26 +210,20 @@ public class PostControllerTests
             HttpContext = new DefaultHttpContext()
         };
 
-        MagicWrapper<PostEditModel> model = new()
+        PostEditModel model = new()
         {
-            ViewModel = new()
-            {
-                PostId = Guid.Empty,
-                Title = Post.Title,
-                Slug = Post.Slug,
-                EditorContent = Post.RawPostContent,
-                LanguageCode = Post.ContentLanguageCode,
-                IsPublished = true,
-                Featured = true,
-                ChangePublishDate = false,
-                EnableComment = true,
-                FeedIncluded = true,
-                Tags = "996,icu",
-                CategoryList = new()
-                {
-                    new() { Id = Guid.Parse("6364e9be-2423-44da-bd11-bc6fa9c3fa5d"), DisplayText = "996", IsChecked = true }
-                }
-            }
+            PostId = Guid.Empty,
+            Title = Post.Title,
+            Slug = Post.Slug,
+            EditorContent = Post.RawPostContent,
+            LanguageCode = Post.ContentLanguageCode,
+            IsPublished = true,
+            Featured = true,
+            ChangePublishDate = false,
+            EnableComment = true,
+            FeedIncluded = true,
+            Tags = "996,icu",
+            SelectedCatIds = new[] { Guid.Parse("6364e9be-2423-44da-bd11-bc6fa9c3fa5d") }
         };
 
         Mock<LinkGenerator> mockLinkGenerator = new();

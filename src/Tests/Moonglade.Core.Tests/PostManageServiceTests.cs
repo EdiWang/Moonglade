@@ -100,7 +100,7 @@ public class PostManageServiceTests
             IsPublished = true,
             Featured = true,
             Tags = "996,Fubao",
-            CategoryList = new() { new() { Id = Uid, IsChecked = true } }
+            SelectedCatIds = new[] { Uid }
         };
 
         var handler = new CreatePostCommandHandler(_mockPostEntityRepo.Object,
@@ -154,7 +154,7 @@ public class PostManageServiceTests
             IsPublished = true,
             Featured = true,
             Tags = "996,Fubao",
-            CategoryList = new() { new() { Id = Uid, IsChecked = true } }
+            SelectedCatIds = new[] { Uid }
         };
 
         var handler = new UpdatePostCommandHandler(
