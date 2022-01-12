@@ -46,7 +46,7 @@
                         <form method="post">
                             <div asp-validation-summary="All" class="text-danger"></div>
                             <div class="form-floating mb-3">
-                                <input asp-for="Username" class="form-control" placeholder="@Html.DisplayNameFor(m => m.Username)" required minlength="2" maxlength="32"/>
+                                <input asp-for="Username" class="form-control" placeholder="@Html.DisplayNameFor(m => m.Username)" required minlength="2" maxlength="32" />
                                 <label asp-for="Username"></label>
                             </div>
                             <div class="form-floating mb-3">
@@ -62,7 +62,7 @@
                                            placeholder="Captcha Code"
                                            autocomplete="off"
                                            class="form-control" required />
-                                    <img id="img-captcha" src="~/captcha-image" data-bs-toggle="tooltip" data-placement="top" title="@Localizer["Can't read? Click to change another image."]" />
+                                    <img id="img-captcha" onclick="getNewCaptcha()" src="~/captcha-image" data-bs-toggle="tooltip" data-placement="top" title="@Localizer["Can't read? Click to change another image."]" />
                                 </div>
                             </div>
 
@@ -85,10 +85,10 @@
         <script src="~/js/dist/app-bundle.min.js" asp-append-version="true"></script>
     </environment>
     <script>
-        $("#img-captcha").click(function () {
+        function getNewCaptcha() {
             d = new Date();
             $('#img-captcha').attr('src', `/captcha-image?${d.getTime()}`);
-        });
+        };
     </script>
 </body>
 </html>
