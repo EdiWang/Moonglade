@@ -47,15 +47,15 @@
 		<PackageReference Include="Microsoft.ApplicationInsights.AspNetCore" Version="2.20.0" />
 		<PackageReference Include="Microsoft.Extensions.Logging.AzureAppServices" Version="6.0.1" />
 		<PackageReference Include="Microsoft.FeatureManagement.AspNetCore" Version="2.4.0" />
-		<PackageReference Include="Microsoft.Web.LibraryManager.Build" Version="2.1.113" />
-		<PackageReference Include="NUglify" Version="1.17.3" />
+		<PackageReference Include="Microsoft.Web.LibraryManager.Build" Version="2.1.161" />
+		<PackageReference Include="NUglify" Version="1.17.5" />
 		<PackageReference Include="Swashbuckle.AspNetCore" Version="6.2.3" />
 		<PackageReference Include="UAParser" Version="3.1.47" />
 		<PackageReference Include="WilderMinds.MetaWeblog" Version="5.0.0" />
 		<PackageReference Include="X.PagedList" Version="8.1.0" />
 		<PackageReference Include="X.PagedList.Mvc.Core" Version="8.1.0" />
-		<PackageReference Include="TimeZoneConverter" Version="3.5.0" />
-		<PackageReference Include="MediatR.Extensions.Microsoft.DependencyInjection" Version="10.0.0" />
+		<PackageReference Include="TimeZoneConverter" Version="4.0.0" />
+		<PackageReference Include="MediatR.Extensions.Microsoft.DependencyInjection" Version="10.0.1" />
 	</ItemGroup>
 
 	<ItemGroup>
