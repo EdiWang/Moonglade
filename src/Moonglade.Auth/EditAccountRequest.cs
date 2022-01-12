@@ -4,16 +4,16 @@ namespace Moonglade.Auth;
 
 public class EditAccountRequest
 {
-    [Required(ErrorMessage = "Please enter a username.")]
+    [Required]
     [Display(Name = "Username")]
-    [MinLength(2, ErrorMessage = "Username must be at least 2 characters"), MaxLength(32)]
-    [RegularExpression("[a-z0-9]+", ErrorMessage = "Username must be lower case letters or numbers.")]
+    [MinLength(2), MaxLength(32)]
+    [RegularExpression("[a-z0-9]+")]
     public string Username { get; set; }
 
-    [Required(ErrorMessage = "Please enter a password.")]
+    [Required]
     [Display(Name = "Password")]
-    [MinLength(8, ErrorMessage = "Password must be at least 8 characters"), MaxLength(32)]
+    [MinLength(8), MaxLength(32)]
     [DataType(DataType.Password)]
-    [RegularExpression(@"^(?=.*[a-zA-Z])(?=.*[0-9])[A-Za-z0-9._~!@#$^&*]{8,}$", ErrorMessage = "Password must be minimum eight characters, at least one letter and one number")]
+    [RegularExpression(@"^(?=.*[a-zA-Z])(?=.*[0-9])[A-Za-z0-9._~!@#$^&*]{8,}$")]
     public string Password { get; set; }
 }

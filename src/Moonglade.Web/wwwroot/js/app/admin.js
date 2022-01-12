@@ -202,7 +202,7 @@ var postEditor = {
                 branding: false,
                 block_formats: 'Paragraph=p; Header 2=h2; Header 3=h3; Header 4=h4; Preformatted=pre',
                 fontsize_formats: '8pt 10pt 12pt 14pt 18pt 24pt 36pt',
-                plugins: 'advlist autolink hr autosave link image lists charmap print preview hr anchor pagebreak spellchecker searchreplace wordcount visualblocks visualchars code fullscreen insertdatetime media nonbreaking save table directionality template paste codesample imagetools emoticons',
+                plugins: 'advlist autolink hr autosave link image lists charmap print preview hr anchor pagebreak searchreplace wordcount visualblocks visualchars code fullscreen insertdatetime media nonbreaking save table directionality template paste codesample emoticons',
                 toolbar: 'formatselect | fontsizeselect | bold italic underline strikethrough | forecolor backcolor | removeformat | emoticons link hr image table codesample media | alignleft aligncenter alignright alignjustify | bullist numlist outdent indent | code | fullscreen',
                 save_onsavecallback: function () {
                     $('#btn-save').trigger('click');
@@ -344,9 +344,18 @@ var postEditor = {
         var tid = setInterval(postNonce, 60 * 1000);
         function postNonce() {
             var num = Math.random();
-            $.post('/api/post/keep-alive', { nonce: num }, function (data) {
-                console.info(data);
-            });
+            fetch('/api/post/keep-alive',
+                {
+                    method: 'POST',
+                    headers: {
+                        'Accept': 'application/json',
+                        'Content-Type': 'application/json'
+                    },
+                    credentials: 'include',
+                    body: JSON.stringify({ nonce: num })
+                }).then(async (response) => {
+                    console.info('live');
+                });
         }
         function abortTimer() {
             clearInterval(tid);

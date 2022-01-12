@@ -31,12 +31,12 @@ public class ContentSettings : IBlogSettings
 
     [Required]
     [Display(Name = "Post list page size")]
-    [Range(1, 100, ErrorMessage = "Page size can only range from 1-100")]
+    [Range(5, 30)]
     public int PostListPageSize { get; set; }
 
     [Required]
     [Display(Name = "How many tags show on sidebar")]
-    [Range(1, 50, ErrorMessage = "Tag amount can only range from 1-50")]
+    [Range(5, 20)]
     public int HotTagAmount { get; set; }
 
     [Display(Name = "Enable Gravatar in comment list")]

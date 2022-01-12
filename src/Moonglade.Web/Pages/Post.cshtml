@@ -61,6 +61,7 @@
 
 @section scripts {
     <script src="~/js/3rd/highlight.min.js"></script>
+    <script src="~/lib/qrious/qrious.min.js"></script>
     <script>
         var fitImageToDevicePixelRatio = @BlogConfig.ImageSettings.FitImageToDevicePixelRatio.ToString().ToLower();
         var pid = $("article").data("postid");
@@ -75,7 +76,11 @@
             postSlug.resetCaptchaImage();
         });
 
-        $('.post-qrcode').qrcode(document.URL);
+        var q = new QRious({
+                element: document.querySelector('.post-qrcode'), 
+                value: document.URL,
+                size: 200
+            });
 
         @if (BlogConfig.AdvancedSettings.WarnExternalLink)
         {

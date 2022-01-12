@@ -99,6 +99,13 @@
         "font/fonts/bootstrap-icons.woff",
         "font/fonts/bootstrap-icons.woff2"
       ]
+    },
+    {
+      "library": "qrious@4.0.2",
+      "destination": "wwwroot/lib/qrious/",
+      "files": [
+        "qrious.min.js"
+      ]
     }
   ]
 }

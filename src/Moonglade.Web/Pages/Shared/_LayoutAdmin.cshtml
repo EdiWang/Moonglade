@@ -146,7 +146,7 @@
 
     <script src="~/lib/twitter-bootstrap/js/bootstrap.bundle.min.js" asp-append-version="true"></script>
 
-    @if (ViewBag.SkipJQueryValidation != null && !ViewBag.SkipJQueryValidation)
+    @if (ViewBag.SkipJQueryValidation == null || !ViewBag.SkipJQueryValidation)
     {
         <script src="~/lib/jquery-validate/jquery.validate.min.js" asp-append-version="true"></script>
         <script src="~/lib/jquery-validation-unobtrusive/jquery.validate.unobtrusive.min.js" asp-append-version="true"></script>
@@ -157,7 +157,6 @@
         <script src="~/js/dist/admin-bundle.min.js" asp-append-version="true"></script>
     </environment>
     <environment include="Development">
-        <script src="~/js/3rd/jquery.qrcode.min.js"></script>
         <script src="~/js/app/base.js"></script>
         <script src="~/js/app/postslug.js"></script>
         <script src="~/js/app/httpService.js"></script>

@@ -6,14 +6,14 @@ public class LocalAccountModel : PageModel
 {
     private readonly IMediator _mediator;
 
-    public EditAccountRequest EditAccountRequest { get; set; }
+    public EditAccountRequest ViewModel { get; set; }
 
     public IReadOnlyList<Account> Accounts { get; set; }
 
     public LocalAccountModel(IMediator mediator)
     {
         _mediator = mediator;
-        EditAccountRequest = new();
+        ViewModel = new();
     }
 
     public async Task OnGet()

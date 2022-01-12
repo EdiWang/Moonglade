@@ -6,62 +6,70 @@
 }
 
 @section scripts{
-    <script>
-        var editAccountModal = new bootstrap.Modal('#editAccountModal');
-        var resetPasswordModal = new bootstrap.Modal('#resetPasswordModal');
+<script>
+    var editAccountModal = new bootstrap.Modal('#editAccountModal');
+    var resetPasswordModal = new bootstrap.Modal('#resetPasswordModal');
 
-        var cid = '';
+    var cid = '';
 
-        $(function () {
-            $(".btn-delete").click(function () {
-                var cfm = confirm("Delete Confirmation?");
-                if (cfm) {
-                    deleteAccount($(this).data("accountid"));
-                }
-            });
-
-            $(".btn-updatepwd").click(function () {
-                $("#resetpassword-form")[0].reset();
-                resetPasswordModal.show();
-                cid = $(this).data("accountid");
-            });
-        });
-
-        function initCreateAccount() {
-            $("#edit-form")[0].reset();
-            editAccountModal.show();
+    $(".btn-delete").click(function() {
+        var cfm = confirm("Delete Confirmation?");
+        if (cfm) {
+            deleteAccount($(this).data("accountid"));
         }
+    });
 
-        $(".btn-submit").click(function () {
-            if ($("#edit-form").valid()) {
-                callApi(`/api/localaccount`,
-                    'POST',
-                    {
-                        "Username": $("#EditAccountRequest_Username").val(),
-                        "Password": $("#EditAccountRequest_Password").val()
-                    },
-                    (resp) => {
-                        $("#edit-form")[0].reset();
-                        $("#editAccountModal").modal('hide');
-                        window.location.reload();
-                    });
-            }
-        });
+    $(".btn-updatepwd").click(function() {
+        document.querySelector('#resetpassword-form').reset();
+        resetPasswordModal.show();
+        cid = $(this).data("accountid");
+    });
 
-        $(".btn-resetpwd").click(function () {
-            if ($("#resetpassword-form").valid()) {
-                callApi(`/api/localaccount/${cid}/password`,
-                    'PUT', $("#NewPassword").val(),
-                    (resp) => {
-                        $("#resetpassword-form")[0].reset();
-                        $("#resetPasswordModal").modal('hide');
-                        blogToast.success('Password updated.');
-                        cid = '';
-                    });
-            }
-        });
+    function initCreateAccount() {
+        document.querySelector('#new-account-form').reset();
+        editAccountModal.show();
+    }
 
-    </script>
+    function handleNewAccountFormSubmit(event) {
+        event.preventDefault();
+
+        const data = new FormData(event.target);
+        const value = Object.fromEntries(data.entries());
+        const newValue = toMagicJson(value);
+
+        callApi(`/api/localaccount`,
+            'POST',
+            newValue,
+            (resp) => {
+                document.querySelector('#new-account-form').reset();
+                editAccountModal.hide();
+                window.location.reload();
+            });
+    }
+
+    function handleResetPasswordFormSubmit(event) {
+        event.preventDefault();
+
+        const data = new FormData(event.target);
+        const value = Object.fromEntries(data.entries());
+
+        callApi(`/api/localaccount/${cid}/password`,
+            'PUT',
+            value["NewPassword"],
+            (resp) => {
+                document.querySelector('#resetpassword-form').reset();
+                resetPasswordModal.hide();
+                blogToast.success('Password updated.');
+                cid = '';
+            });
+    }
+
+    const newAccountForm = document.querySelector('#new-account-form');
+    newAccountForm.addEventListener('submit', handleNewAccountFormSubmit);
+
+    const resetPasswordForm = document.querySelector('#resetpassword-form');
+    resetPasswordForm.addEventListener('submit', handleResetPasswordFormSubmit);
+</script>
 }
 
 <div class="admin-toolbar ps-4 pe-4 pt-2 pb-2 border-bottom mb-3 shadow-sm">
@@ -76,35 +84,35 @@
     {
         <table class="table table-bordered mt-3">
             <thead>
-            <tr>
-                <th>@Localizer["Username"]</th>
-                <th>@Localizer["Last Login IP"]</th>
-                <th>@Localizer["Last Login Time (UTC)"]</th>
-                <th>@Localizer["Create Time (UTC)"]</th>
-                <th>@Localizer["Action"]</th>
-            </tr>
+                <tr>
+                    <th>@Localizer["Username"]</th>
+                    <th>@Localizer["Last Login IP"]</th>
+                    <th>@Localizer["Last Login Time (UTC)"]</th>
+                    <th>@Localizer["Create Time (UTC)"]</th>
+                    <th>@Localizer["Action"]</th>
+                </tr>
             </thead>
             <tbody>
-            @foreach (var item in Model.Accounts.OrderBy(p => p.Username))
-            {
-                <tr id="tr-@item.Id">
-                    <td>@item.Username</td>
-                    <td>@(item.LastLoginIp ?? "N/A")</td>
-                    <td>@(null != item.LastLoginTimeUtc ? item.LastLoginTimeUtc.ToString() : "N/A")</td>
-                    <td>@item.CreateTimeUtc</td>
-                    <td>
-                        <a href="javascript:;" data-accountid="@item.Id" class="btn btn-sm btn-outline-accent btn-updatepwd">
-                            <i class="bi-key-fill"></i>
-                        </a>
+                @foreach (var item in Model.Accounts.OrderBy(p => p.Username))
+                {
+                    <tr id="tr-@item.Id">
+                        <td>@item.Username</td>
+                        <td>@(item.LastLoginIp ?? "N/A")</td>
+                        <td>@(null != item.LastLoginTimeUtc ? item.LastLoginTimeUtc.ToString() : "N/A")</td>
+                        <td>@item.CreateTimeUtc</td>
+                        <td>
+                            <a href="javascript:;" data-accountid="@item.Id" class="btn btn-sm btn-outline-accent btn-updatepwd">
+                                <i class="bi-key-fill"></i>
+                            </a>
 
-                        @if (null != currentUidClaim && currentUidClaim.Value != item.Id.ToString())
-                        {
-                            <a href="javascript:;" data-accountid="@item.Id" class="btn btn-sm btn-outline-danger btn-delete"><i class="bi-trash"></i></a>
-                            <span id="span-processing-@item.Id" style="display: none">...</span>
-                        }
-                    </td>
-                </tr>
-            }
+                            @if (null != currentUidClaim && currentUidClaim.Value != item.Id.ToString())
+                            {
+                                <a href="javascript:;" data-accountid="@item.Id" class="btn btn-sm btn-outline-danger btn-delete"><i class="bi-trash"></i></a>
+                                <span id="span-processing-@item.Id" style="display: none">...</span>
+                            }
+                        </td>
+                    </tr>
+                }
             </tbody>
         </table>
     }
@@ -122,22 +130,21 @@
                 </button>
             </div>
 
-            <form id="edit-form" method="post">
+            <form id="new-account-form" method="post">
                 <div class="modal-body">
-                    <div asp-validation-summary="All" class="text-danger"></div>
                     <div class="mb-2">
-                        <label asp-for="EditAccountRequest.Username"></label>
-                        <input asp-for="EditAccountRequest.Username" class="form-control" />
-                        <span asp-validation-for="EditAccountRequest.Username" class="text-danger"></span>
+                        <label asp-for="ViewModel.Username"></label>
+                        <input asp-for="ViewModel.Username" class="form-control" required pattern="[a-z0-9]+" minlength="2" maxlength="32" />
+                        <small class="text-muted">Username must be lower case letters or numbers.</small>
                     </div>
                     <div class="mb-2">
-                        <label asp-for="EditAccountRequest.Password"></label>
-                        <input asp-for="EditAccountRequest.Password" class="form-control" />
-                        <span asp-validation-for="EditAccountRequest.Password" class="text-danger"></span>
+                        <label asp-for="ViewModel.Password"></label>
+                        <input asp-for="ViewModel.Password" class="form-control" required pattern="^(?=.*[a-zA-Z])(?=.*[0-9])[A-Za-z0-9._~!@@#$^&*]{8,}$" />
+                        <small class="text-muted">Password must be minimum eight characters, at least one letter and one number</small>
                     </div>
                 </div>
                 <div class="modal-footer">
-                    <button type="button" class="btn btn-outline-accent btn-submit">@Localizer["Submit"]</button>
+                    <button type="submit" class="btn btn-outline-accent btn-submit">@Localizer["Submit"]</button>
                     <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">@Localizer["Cancel"]</button>
                 </div>
             </form>
@@ -159,20 +166,17 @@
                     <div class="mb-2">
                         <label for="NewPassword">New Password</label>
                         <input class="form-control" type="password"
-                               data-val="true"
-                               data-val-regex="Password must be minimum eight characters, at least one letter and one number"
-                               data-val-regex-pattern="^(?=.*[a-zA-Z])(?=.*[0-9])[A-Za-z0-9._~!@@#$^&*]{8,}$"
-                               data-val-required="Password is required."
-                               data-val-minlength="Password must be a string or array type with a minimum length of '8'."
-                               data-val-minlength-min="8"
                                id="NewPassword"
+                               minlength="8"
                                maxlength="32"
-                               name="NewPassword">
-                        <span class="text-danger field-validation-valid" data-valmsg-for="NewPassword" data-valmsg-replace="true"></span>
+                               name="NewPassword"
+                               pattern="^(?=.*[a-zA-Z])(?=.*[0-9])[A-Za-z0-9._~!@@#$^&*]{8,}$"
+                               required>
+                        <span class="text-danger field-validation-valid"></span>
                     </div>
                 </div>
                 <div class="modal-footer">
-                    <button type="button" class="btn btn-outline-accent btn-resetpwd">@Localizer["Submit"]</button>
+                    <button type="submit" class="btn btn-outline-accent btn-resetpwd">@Localizer["Submit"]</button>
                     <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">@Localizer["Cancel"]</button>
                 </div>
             </form>

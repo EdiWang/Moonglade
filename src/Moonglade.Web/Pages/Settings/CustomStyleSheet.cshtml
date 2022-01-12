@@ -8,6 +8,10 @@
     </script>
 }
 
+@{
+    ViewBag.SkipJQueryValidation = true;
+}
+
 @section scripts{
     <script>var require = { paths: { 'vs': '/lib/monaco-editor/min/vs' } };</script>
     <script src="~/lib/monaco-editor/min/vs/loader.js"></script>
@@ -59,8 +63,6 @@
 <partial name="_SettingsHeader" />
 <div class="ps-4 pe-4">
     <form id="form-settings" asp-controller="Settings" asp-action="CustomStyleSheet">
-        <div asp-validation-summary="ModelOnly" class="alert alert-danger"></div>
-
         <div class="form-check form-switch mb-3">
             <input type="checkbox" name="EnableCustomCss" value="true" class="form-check-input" @(Model.ViewModel.EnableCustomCss ? "checked" : null)>
             <label asp-for="ViewModel.EnableCustomCss" class="form-check-label"></label>
