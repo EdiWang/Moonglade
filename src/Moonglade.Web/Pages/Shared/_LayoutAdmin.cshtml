@@ -146,7 +146,7 @@
 
     <script src="~/lib/twitter-bootstrap/js/bootstrap.bundle.min.js" asp-append-version="true"></script>
 
-    @if (ViewBag.SkipJQueryValidation != null && !ViewBag.SkipJQueryValidation)
+    @if (ViewBag.SkipJQueryValidation == null || !ViewBag.SkipJQueryValidation)
     {
         <script src="~/lib/jquery-validate/jquery.validate.min.js" asp-append-version="true"></script>
         <script src="~/lib/jquery-validation-unobtrusive/jquery.validate.unobtrusive.min.js" asp-append-version="true"></script>
