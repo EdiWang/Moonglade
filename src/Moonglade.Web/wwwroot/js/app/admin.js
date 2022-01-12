@@ -344,9 +344,18 @@ var postEditor = {
         var tid = setInterval(postNonce, 60 * 1000);
         function postNonce() {
             var num = Math.random();
-            $.post('/api/post/keep-alive', { nonce: num }, function (data) {
-                console.info(data);
-            });
+            fetch('/api/post/keep-alive',
+                {
+                    method: 'POST',
+                    headers: {
+                        'Accept': 'application/json',
+                        'Content-Type': 'application/json'
+                    },
+                    credentials: 'include',
+                    body: JSON.stringify({ nonce: num })
+                }).then(async (response) => {
+                    console.info('live');
+                });
         }
         function abortTimer() {
             clearInterval(tid);
