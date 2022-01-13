@@ -6,169 +6,159 @@
 
 @{
     <script>
-    var needLoadInitValues = @((!string.IsNullOrWhiteSpace(Model.EditPageRequest.RawHtmlContent) || !string.IsNullOrWhiteSpace(Model.EditPageRequest.CssContent)).ToString().ToLower());
+        var needLoadInitValues = @((!string.IsNullOrWhiteSpace(Model.EditPageRequest.RawHtmlContent) || !string.IsNullOrWhiteSpace(Model.EditPageRequest.CssContent)).ToString().ToLower());
     </script>
 }
 
 @section scripts{
-    <script>var require = { paths: { 'vs': '/lib/monaco-editor/min/vs' } };</script>
-    <script src="~/lib/monaco-editor/min/vs/loader.js"></script>
-    <script>
-        var pageId = '@Model.PageId.ToString()';
+<script>var require = { paths: { 'vs': '/lib/monaco-editor/min/vs' } };</script>
+<script src="~/lib/monaco-editor/min/vs/loader.js"></script>
+<script>
+    var pageId = '@Model.PageId.ToString()';
 
-        $("#Title").change(function () {
-            $("#Slug").val(slugify($(this).val()));
+    var btnSubmitPage = '#btn-submit';
+
+    var htmlContentEditor = null;
+    var cssContentEditor = null;
+    var hasCssEditorInitialized = false;
+
+    require(['vs/editor/editor.main'], function () {
+        initHtmlEditor();
+    });
+
+    var initHtmlEditor = function () {
+        var htmlContentEditorDiv = document.getElementById('RawHtmlContentEditor');
+        htmlContentEditor = monaco.editor.create(htmlContentEditorDiv, {
+            language: 'html'
         });
+        htmlContentEditor.layout();
 
-        var btnSubmitPage = '#btn-submit';
+        if (needLoadInitValues) {
+            var htmlValue = document.querySelector("#EditPageRequest_RawHtmlContent").value;
+            htmlContentEditor.setValue(htmlValue);
+        }
+    }
 
-        var htmlContentEditor = null;
-        var cssContentEditor = null;
-        var hasCssEditorInitialized = false;
-
-        require(['vs/editor/editor.main'], function () {
-            initHtmlEditor();
+    var initCssEditor = function () {
+        var cssContentEditorDiv = document.getElementById('CssContentEditor');
+        cssContentEditor = monaco.editor.create(cssContentEditorDiv, {
+            language: 'css'
         });
+        cssContentEditor.layout();
+        hasCssEditorInitialized = true;
 
-        var initHtmlEditor = function () {
-            var htmlContentEditorDiv = document.getElementById('RawHtmlContentEditor');
-            htmlContentEditor = monaco.editor.create(htmlContentEditorDiv, {
-                language: 'html'
-            });
-            htmlContentEditor.layout();
-
-            if (needLoadInitValues) {
-                var htmlValue = $("#EditPageRequest_RawHtmlContent").val();
-                htmlContentEditor.setValue(htmlValue);
-            }
+        if (needLoadInitValues) {
+            var cssValue = document.querySelector("#EditPageRequest_CssContent").value;
+            window.cssContentEditor.setValue(cssValue);
         }
+    }
 
-        var initCssEditor = function () {
-            var cssContentEditorDiv = document.getElementById('CssContentEditor');
-            cssContentEditor = monaco.editor.create(cssContentEditorDiv, {
-                language: 'css'
-            });
-            cssContentEditor.layout();
-            hasCssEditorInitialized = true;
+    var assignEditorValues = function () {
+        var htmlValue = window.htmlContentEditor.getValue();
 
-            if (needLoadInitValues) {
-                var cssValue = $("#EditPageRequest_CssContent").val();
-                window.cssContentEditor.setValue(cssValue);
-            }
+        // Edit Mode, preserve old value when user has not clicked on CSS tab
+        var oldCssValue = document.querySelector("#EditPageRequest_CssContent").value;
+        var cssValue = hasCssEditorInitialized ? window.cssContentEditor.getValue() : oldCssValue;
+
+        document.querySelector("#EditPageRequest_RawHtmlContent").value = htmlValue;
+        document.querySelector("#EditPageRequest_CssContent").value = cssValue;
+    }
+
+    $('#btn-preview').click(function () {
+        assignEditorValues();
+
+        if ($("#page-edit-form").valid()) {
+            isPreviewRequired = true;
+            postCreateOrEdit();
         }
+    });
 
-        var assignEditorValues = function () {
-            var htmlValue = window.htmlContentEditor.getValue();
+    var onPageCreateEditBegin = function () {
+        document.querySelector(btnSubmitPage).classList.add('disabled');
+        $(btnSubmitPage).attr('disabled', 'disabled');
+    };
 
-            // Edit Mode, preserve old value when user has not clicked on CSS tab
-            var oldCssValue = $("#EditPageRequest_CssContent").val();
-            var cssValue = hasCssEditorInitialized ? window.cssContentEditor.getValue() : oldCssValue;
+    var onPageCreateEditComplete = function () {
+        document.querySelector(btnSubmitPage).classList.remove('disabled');
+        $(btnSubmitPage).removeAttr('disabled');
+    };
 
-            $("#EditPageRequest_RawHtmlContent").val(htmlValue);
-            $("#EditPageRequest_CssContent").val(cssValue);
-        }
+    function postCreateOrEdit() {
+        onPageCreateEditBegin();
 
-        $('#btn-preview').click(function () {
-            assignEditorValues();
+        var apiAddress = pageId == emptyGuid ? `/api/page` : `/api/page/${pageId}`;
+        var verb = pageId == emptyGuid ? 'POST' : 'PUT';
 
-            if ($("#page-edit-form").valid()) {
-                isPreviewRequired = true;
-                postCreateOrEdit();
-            }
-        });
+        callApi(apiAddress, verb,
+            {
+                "Title": $("#EditPageRequest_Title").val(),
+                "Slug": $("#EditPageRequest_Slug").val(),
+                "MetaDescription": $("#EditPageRequest_MetaDescription").val(),
+                "RawHtmlContent": $("#EditPageRequest_RawHtmlContent").val(),
+                "CssContent": $("#EditPageRequest_CssContent").val(),
+                "HideSidebar": $('#EditPageRequest_HideSidebar').prop('checked'),
+                "IsPublished": $('#EditPageRequest_IsPublished').prop('checked')
+            },
+            async (resp) => {
+                onPageCreateEditComplete();
+                var data = await resp.json();
 
-        var onPageCreateEditBegin = function () {
-            $(btnSubmitPage).text('Saving...');
-            $(btnSubmitPage).addClass('disabled');
-            $(btnSubmitPage).attr('disabled', 'disabled');
-        };
+                if (data.pageId) {
+                    pageId = data.pageId;
+                    blogToast.success('Page saved successfully.');
 
-        var onPageCreateEditComplete = function () {
-            $(btnSubmitPage).text('Save');
-            $(btnSubmitPage).removeClass('disabled');
-            $(btnSubmitPage).removeAttr('disabled');
-        };
-
-        function postCreateOrEdit() {
-            onPageCreateEditBegin();
-
-            var apiAddress = pageId == emptyGuid ? `/api/page` : `/api/page/${pageId}`;
-            var verb = pageId == emptyGuid ? 'POST' : 'PUT';
-
-            callApi(apiAddress, verb,
-                {
-                    "Title": $("#EditPageRequest_Title").val(),
-                    "Slug": $("#EditPageRequest_Slug").val(),
-                    "MetaDescription": $("#EditPageRequest_MetaDescription").val(),
-                    "RawHtmlContent": $("#EditPageRequest_RawHtmlContent").val(),
-                    "CssContent": $("#EditPageRequest_CssContent").val(),
-                    "HideSidebar": $('#EditPageRequest_HideSidebar').prop('checked'),
-                    "IsPublished": $('#EditPageRequest_IsPublished').prop('checked')
-                },
-                async (resp) => {
-                    onPageCreateEditComplete();
-                    var data = await resp.json();
-
-                    if (data.pageId) {
-                        pageId = data.pageId;
-                        blogToast.success('Page saved successfully.');
-
-                        if ($('input[name="IsPublished"]:checked').val() === 'true') {
-                            $('#btn-preview').hide();
-                        }
-
-                        if (isPreviewRequired) {
-                            isPreviewRequired = false;
-                            window.open(`/page/preview/${data.pageId}`);
-                        }
+                    if ($('input[name="IsPublished"]:checked').val() === 'true') {
+                        $('#btn-preview').hide();
                     }
-                });
-        }
 
-        $("#btn-submit").click(function () {
-            isPreviewRequired = false;
-            assignEditorValues();
-
-            if ($("#page-edit-form").valid()) {
-                postCreateOrEdit();
-            }
-        });
-
-        $(window).bind('keydown', function (event) {
-            if (event.ctrlKey || event.metaKey) {
-                switch (String.fromCharCode(event.which).toLowerCase()) {
-                    case 's':
-                        event.preventDefault();
-                        $("#btn-submit").trigger('click');
-                        break;
+                    if (isPreviewRequired) {
+                        isPreviewRequired = false;
+                        window.open(`/page/preview/${data.pageId}`);
+                    }
                 }
+            });
+    }
+
+    $("#btn-submit").click(function () {
+        isPreviewRequired = false;
+        assignEditorValues();
+
+        if ($("#page-edit-form").valid()) {
+            postCreateOrEdit();
+        }
+    });
+
+    $(window).bind('keydown', function (event) {
+        if (event.ctrlKey || event.metaKey) {
+            switch (String.fromCharCode(event.which).toLowerCase()) {
+                case 's':
+                    event.preventDefault();
+                    $("#btn-submit").trigger('click');
+                    break;
+            }
+        }
+    });
+
+    $('a[data-bs-toggle="tab"]').on('shown.bs.tab',
+        function (e) {
+            var isCSSTab = e.target.id === "csscontent-tab";
+            if (isCSSTab && !hasCssEditorInitialized) {
+                initCssEditor();
             }
         });
-
-        $(function () {
-            $('a[data-bs-toggle="tab"]').on('shown.bs.tab',
-                function (e) {
-                    var isCSSTab = e.target.id === "csscontent-tab";
-                    if (isCSSTab && !hasCssEditorInitialized) {
-                        initCssEditor();
-                    }
-                });
-        });
-
-
-    </script>
+</script>
 }
 
 @section head{
-    <style>
-        .monaco-target {
-            border-left: 1px solid #dee2e6;
-            border-right: 1px solid #dee2e6;
-            border-bottom: 1px solid #dee2e6;
-            width: 100%;
-            min-height: calc(100vh - 330px);
-        }
-    </style>
+<style>
+    .monaco-target {
+        border-left: 1px solid #dee2e6;
+        border-right: 1px solid #dee2e6;
+        border-bottom: 1px solid #dee2e6;
+        width: 100%;
+        min-height: calc(100vh - 330px);
+    }
+</style>
 }
 
 <div class="p-4">
@@ -209,13 +199,11 @@
                 <div class="tab-content">
                     <div class="tab-pane active" id="rawhtmlcontent-editor-box" role="tabpanel" aria-labelledby="html-tab">
                         <div id="RawHtmlContentEditor" class="monaco-target">
-
                         </div>
                         <textarea asp-for="EditPageRequest.RawHtmlContent" class="page-rawhtmlcontent-textarea d-none"></textarea>
                     </div>
                     <div class="tab-pane" id="csscontent-editor-box" role="tabpanel" aria-labelledby="css-tab">
                         <div id="CssContentEditor" class="monaco-target">
-
                         </div>
                         <textarea asp-for="EditPageRequest.CssContent" class="page-csscontent-textarea d-none"></textarea>
                     </div>

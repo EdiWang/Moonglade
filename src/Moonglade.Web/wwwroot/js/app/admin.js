@@ -61,7 +61,7 @@ function ImageUploader(targetName, hw, imgMimeType) {
 
     this.uploadImage = function (uploadUrl) {
         if (imgDataUrl) {
-            $(`#btn-upload-${targetName}`).addClass('disabled');
+            document.querySelector(`#btn-upload-${targetName}`).classList.add('disabled');
             $(`#btn-upload-${targetName}`).attr('disabled', 'disabled');
 
             var rawData = { base64Img: imgDataUrl.replace(/^data:image\/(png|jpeg|jpg);base64,/, '') };
@@ -75,7 +75,7 @@ function ImageUploader(targetName, hw, imgMimeType) {
                     $(`#${targetName}modal`).modal('hide');
                     blogToast.success('Updated');
                     d = new Date();
-                    $(`.blogadmin-${targetName}`).attr('src', `/${targetName}?${d.getTime()}`);
+                    document.querySelector(`.blogadmin-${targetName}`).src = `/${targetName}?${d.getTime()}`;
                 },
                 statusCode: {
                     400: function (responseObject, textStatus, jqXHR) {
@@ -100,7 +100,7 @@ function ImageUploader(targetName, hw, imgMimeType) {
                     }
                 },
                 error: function (xhr, status, err) {
-                    $(`#btn-upload-${targetName}`).removeClass('disabled');
+                    document.querySelector(`#btn-upload-${targetName}`).classList.remove('disabled');
                     $(`#btn-upload-${targetName}`).removeAttr('disabled');
                 }
             });
@@ -278,7 +278,7 @@ var postEditor = {
     },
     initEvents: function () {
         $('#ViewModel_Title').change(function () {
-            $('#ViewModel_Slug').val(slugify($(this).val()));
+            document.querySelector('#ViewModel_Slug').value = slugify($(this).val());
         });
 
         var tagnames = new Bloodhound({
