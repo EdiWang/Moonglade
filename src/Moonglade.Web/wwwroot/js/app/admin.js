@@ -38,14 +38,12 @@ function handleSettingsSubmit(event) {
 
 var btnSaveSettings = '#btn-save-settings';
 var onUpdateSettingsBegin = function () {
-    $(btnSaveSettings).text('Processing...');
-    $(btnSaveSettings).addClass('disabled');
+    document.querySelector(btnSaveSettings).classList.add('disabled');
     $(btnSaveSettings).attr('disabled', 'disabled');
 };
 
 var onUpdateSettingsComplete = function () {
-    $(btnSaveSettings).text('Save');
-    $(btnSaveSettings).removeClass('disabled');
+    document.querySelector(btnSaveSettings).classList.remove('disabled');
     $(btnSaveSettings).removeAttr('disabled');
 };
 
