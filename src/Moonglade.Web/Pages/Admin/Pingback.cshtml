@@ -28,7 +28,7 @@
         "pageLength": 10
     });
 
-    $('.btn-clear').click(function () {
+    function clearPingback() {
         callApi(`/pingback/clear`, 'DELETE', {},
             (resp) => {
                 blogToast.success('Pingback logs are cleared');
@@ -36,7 +36,7 @@
                     window.location.reload();
                 }, 800);
             });
-    });
+    }
 </script>
 }
 
@@ -101,7 +101,7 @@
                 @Localizer["Are you sure?"]
             </div>
             <div class="modal-footer">
-                <a href="#" class="btn btn-outline-danger btn-clear">@Localizer["Clear Now"]</a>
+                <a href="javascript:clearPingback();" class="btn btn-outline-danger btn-clear">@Localizer["Clear Now"]</a>
                 <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">@Localizer["Cancel"]</button>
             </div>
         </div>
