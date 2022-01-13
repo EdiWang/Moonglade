@@ -2,6 +2,7 @@
 @model Moonglade.Web.Pages.Admin.FriendLinkModel
 @{
     ViewBag.Title = "Manage Friend Links";
+    ViewBag.SkipJQueryValidation = true;
 }
 
 @section scripts{
@@ -10,17 +11,15 @@
     var fid = emptyGuid;
 
     function deleteFriendLink(friendlinkid) {
-        $(`#span-processing-${friendlinkid}`).show();
-
         callApi(`/api/friendlink/${friendlinkid}`, 'DELETE', {},
             (resp) => {
-                $(`#tr-${friendlinkid}`).hide();
+                document.querySelector(`#tr-${friendlinkid}`).remove();
             });
     }
 
     function initCreateFriendLink() {
         fid = emptyGuid;
-        $('#edit-form')[0].reset();
+        document.querySelector('#edit-form').reset();
         editCanvas.show();
     }
 
@@ -64,7 +63,7 @@
                     "LinkUrl": value["EditLinkRequest.LinkUrl"]
                 },
                 (resp) => {
-                    $("#edit-form")[0].reset();
+                    document.querySelector('#edit-form').reset();
                     $("#editFriendlinkModal").modal('hide');
                     window.location.reload();
                 });
@@ -116,16 +115,13 @@
     </div>
     <div class="offcanvas-body">
         <form id="edit-form" method="post">
-            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
             <div class="mb-3">
                 <label class="form-label" asp-for="EditLinkRequest.Title"></label>
-                <input asp-for="EditLinkRequest.Title" class="form-control" />
-                <span asp-validation-for="EditLinkRequest.Title" class="text-danger"></span>
+                <input asp-for="EditLinkRequest.Title" class="form-control" required />
             </div>
             <div class="mb-3">
                 <label class="form-label" asp-for="EditLinkRequest.LinkUrl"></label>
-                <input asp-for="EditLinkRequest.LinkUrl" class="form-control" />
-                <span asp-validation-for="EditLinkRequest.LinkUrl" class="text-danger"></span>
+                <input asp-for="EditLinkRequest.LinkUrl" class="form-control" required />
             </div>
             <div class="mt-3">
                 <button type="submit" class="btn btn-success">@Localizer["Submit"]</button>
