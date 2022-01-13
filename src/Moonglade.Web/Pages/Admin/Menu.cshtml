@@ -129,7 +129,7 @@
 
         function initCreateMenu() {
             $('#topmenu-id').val(emptyGuid);
-            $('#edit-form')[0].reset();
+            document.querySelector('#edit-form').reset();
             $('.btn-delete').hide();
 
             $('.top-menu-list a').removeClass('active');
@@ -201,7 +201,7 @@
                         "SubMenus": father ? father.SubMenus : null
                     },
                     (resp) => {
-                        $("#edit-form")[0].reset();
+                        document.querySelector('#edit-form').reset();
 
                         blogToast.success('Menu updated');
                         setTimeout(function () {

@@ -11,7 +11,7 @@
 
         function initCreateCategory() {
             catId = emptyGuid;
-            $('#edit-form')[0].reset();
+            document.querySelector('#edit-form').reset();
             editCanvas.show();
         }
 
@@ -72,7 +72,7 @@
                         "Note": value["EditCategoryRequest.Note"]
                     },
                     (resp) => {
-                        $("#edit-form")[0].reset();
+                        document.querySelector('#edit-form').reset();
                         $("#editCatModal").modal('hide');
                         window.location.reload();
                     });
