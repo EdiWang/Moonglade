@@ -91,10 +91,10 @@
                 console.error(err);
             } else {
                 var data = await response.json();
-                $('#ViewModel_HeroImageUrl').val(data.location);
+                document.querySelector('#ViewModel_HeroImageUrl').value = data.location;
             }
         }).then(response => {
-            $('#form-hero-image')[0].reset();
+            document.querySelector('#form-hero-image').reset();
             heroImageModal.hide();
         }).catch(err => {
             blogToast.error(err);

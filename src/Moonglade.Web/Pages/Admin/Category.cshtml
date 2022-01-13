@@ -5,83 +5,83 @@
 }
 
 @section scripts{
-    <script>
-        var editCanvas = new bootstrap.Offcanvas(document.getElementById('editCatCanvas'));
-        var catId = emptyGuid;
+<script>
+    var editCanvas = new bootstrap.Offcanvas(document.getElementById('editCatCanvas'));
+    var catId = emptyGuid;
 
-        function initCreateCategory() {
-            catId = emptyGuid;
-            $('#edit-form')[0].reset();
-            editCanvas.show();
-        }
+    function initCreateCategory() {
+        catId = emptyGuid;
+        document.querySelector('#edit-form').reset();
+        editCanvas.show();
+    }
 
-        function editCat(id) {
-            callApi(`/api/category/${id}`, 'GET', {},
-                async (resp) => {
-                    var data = await resp.json();
-                    catId = data.id;
-                    $('#EditCategoryRequest_RouteName').val(data.routeName);
-                    $('#EditCategoryRequest_DisplayName').val(data.displayName);
-                    $('#EditCategoryRequest_Note').val(data.note);
-                    editCanvas.show();
-                });
-        }
+    function editCat(id) {
+        callApi(`/api/category/${id}`, 'GET', {},
+            async (resp) => {
+                var data = await resp.json();
+                catId = data.id;
+                document.querySelector('#EditCategoryRequest_RouteName').value = data.routeName;
+                document.querySelector('#EditCategoryRequest_DisplayName').value = data.displayName;
+                document.querySelector('#EditCategoryRequest_Note').value = data.note;
+                editCanvas.show();
+            });
+    }
 
-        function deleteCat(catid) {
-            $(`#span-processing-${catid}`).show();
+    function deleteCat(catid) {
+        $(`#span-processing-${catid}`).show();
 
-            callApi(`/api/category/${catid}`, 'DELETE', {},
-                (resp) => {
-                    $(`#card-${catid}`).hide();
-                    blogToast.success('Category deleted');
-                });
-        }
+        callApi(`/api/category/${catid}`, 'DELETE', {},
+            (resp) => {
+                $(`#card-${catid}`).hide();
+                blogToast.success('Category deleted');
+            });
+    }
 
-        $(".btn-delete").click(function () {
-            var cfm = confirm("Delete Confirmation?");
-            if (cfm) deleteCat($(this).data("catid"));
-        });
+    $(".btn-delete").click(function () {
+        var cfm = confirm("Delete Confirmation?");
+        if (cfm) deleteCat($(this).data("catid"));
+    });
 
-        $(".btn-edit").click(function () {
-            editCat($(this).data("catid"));
-        });
+    $(".btn-edit").click(function () {
+        editCat($(this).data("catid"));
+    });
 
-        function handleSubmit(event) {
-            event.preventDefault();
+    function handleSubmit(event) {
+        event.preventDefault();
 
-            if ($("#edit-form").valid()) {
-                var apiAddress = '';
-                var verb = '';
+        if ($("#edit-form").valid()) {
+            var apiAddress = '';
+            var verb = '';
 
-                if (catId == emptyGuid) {
-                    apiAddress = '/api/category';
-                    verb = 'POST';
-                }
-                else {
-                    apiAddress = `/api/category/${catId}`;
-                    verb = 'PUT';
-                }
-
-                const data = new FormData(event.target);
-                const value = Object.fromEntries(data.entries());
-
-                callApi(apiAddress, verb,
-                    {
-                        "RouteName": value["EditCategoryRequest.RouteName"],
-                        "DisplayName": value["EditCategoryRequest.DisplayName"],
-                        "Note": value["EditCategoryRequest.Note"]
-                    },
-                    (resp) => {
-                        $("#edit-form")[0].reset();
-                        $("#editCatModal").modal('hide');
-                        window.location.reload();
-                    });
+            if (catId == emptyGuid) {
+                apiAddress = '/api/category';
+                verb = 'POST';
             }
-        }
+            else {
+                apiAddress = `/api/category/${catId}`;
+                verb = 'PUT';
+            }
 
-        const form = document.querySelector('#edit-form');
-        form.addEventListener('submit', handleSubmit);
-    </script>
+            const data = new FormData(event.target);
+            const value = Object.fromEntries(data.entries());
+
+            callApi(apiAddress, verb,
+                {
+                    "RouteName": value["EditCategoryRequest.RouteName"],
+                    "DisplayName": value["EditCategoryRequest.DisplayName"],
+                    "Note": value["EditCategoryRequest.Note"]
+                },
+                (resp) => {
+                    document.querySelector('#edit-form').reset();
+                    $("#editCatModal").modal('hide');
+                    window.location.reload();
+                });
+        }
+    }
+
+    const form = document.querySelector('#edit-form');
+    form.addEventListener('submit', handleSubmit);
+</script>
 }
 
 <div class="admin-toolbar ps-4 pe-4 pt-2 pb-2 border-bottom mb-3 shadow-sm">

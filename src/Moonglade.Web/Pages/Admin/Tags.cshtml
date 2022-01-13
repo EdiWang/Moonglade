@@ -10,7 +10,7 @@
     var editCanvas = new bootstrap.Offcanvas(document.getElementById('editTagCanvas'));
 
     function initCreateTag() {
-        $('#edit-form')[0].reset();
+        document.querySelector('#edit-form').reset();
         editCanvas.show();
     }
 
@@ -43,7 +43,7 @@
 
         callApi(`/api/tags`, 'POST', value.tagName,
             (resp) => {
-                $("#edit-form")[0].reset();
+                document.querySelector('#edit-form').reset();
                 $("#editTagModal").modal('hide');
                 window.location.reload();
             });

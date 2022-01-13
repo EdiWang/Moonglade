@@ -1,9 +1,8 @@
-﻿@inject Microsoft.AspNetCore.Http.IHttpContextAccessor _httpContextAccessor
-@inject Microsoft.AspNetCore.Hosting.IWebHostEnvironment _webHostEnvironment
+﻿@inject IHttpContextAccessor _httpContextAccessor
+@inject IWebHostEnvironment _webHostEnvironment
 @inject IOptions<AuthenticationSettings> _authOptions
 
 @using Moonglade.Auth
-@using Microsoft.EntityFrameworkCore.Metadata.Internal
 @{
     var currentPage = ViewContext.RouteData.Values["Page"]?.ToString();
 
@@ -16,7 +15,7 @@
 <html>
 <head>
     <title>
-        @BlogConfig.GeneralSettings.SiteTitle @Localizer["Admin"]
+        @BlogConfig.GeneralSettings.SiteTitle @Localizer["Admin"] @(ViewBag.Title != null ? $"- {ViewBag.Title}" : null)
     </title>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no" />

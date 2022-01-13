@@ -9,52 +9,44 @@ var bsToast = new bootstrap.Toast(document.getElementById('liveToast'));
 var blogToast = {
     success: function (message) {
         $('#liveToast').removeClass('bg-success bg-warning bg-danger bg-info bg-primary bg-secondary');
-        $('#liveToast').addClass('bg-success');
-        $('#blogtoast-message').html(message);
+        document.querySelector('#liveToast').classList.add('bg-success');
+        document.querySelector('#blogtoast-message').innerHTML = message;
         bsToast.show();
     },
     info: function (message) {
         $('#liveToast').removeClass('bg-success bg-warning bg-danger bg-info bg-primary bg-secondary');
-        $('#liveToast').addClass('bg-info');
-        $('#blogtoast-message').html(message);
+        document.querySelector('#liveToast').classList.add('bg-info');
+        document.querySelector('#blogtoast-message').innerHTML = message;
         bsToast.show();
     },
     warning: function (message) {
         $('#liveToast').removeClass('bg-success bg-warning bg-danger bg-info bg-primary bg-secondary');
-        $('#liveToast').addClass('bg-warning');
-        $('#blogtoast-message').html(message);
+        document.querySelector('#liveToast').classList.add('bg-warning');
+        document.querySelector('#blogtoast-message').innerHTML = message;
         bsToast.show();
     },
     error: function (message) {
         $('#liveToast').removeClass('bg-success bg-warning bg-danger bg-info bg-primary bg-secondary');
-        $('#liveToast').addClass('bg-danger');
-        $('#blogtoast-message').html(message);
+        document.querySelector('#liveToast').classList.add('bg-danger');
+        document.querySelector('#blogtoast-message').innerHTML = message;
         bsToast.show();
     }
 };
 
-$(function () {
-    //if (/Android|webOS|iPhone|iPad|iPod|IEMobile|Opera Mini/i.test(navigator.userAgent)) {
-    //    $('div.container').addClass('container-fluid').removeClass('container');
-    //}
-
-    $('input#term')
-        .focus(function () {
-            $(this).attr('placeholder', '');
-        })
-        .blur(function () {
-            $(this).attr('placeholder', 'Search');
-        });
-
-    $('.lightswitch').click(function () {
-        if (isDarkMode) {
-            themeModeSwitcher.useLightMode();
-        } else {
-            themeModeSwitcher.useDarkMode();
-        }
+$('input#term')
+    .focus(function () {
+        $(this).attr('placeholder', '');
+    })
+    .blur(function () {
+        $(this).attr('placeholder', 'Search');
     });
 
-    
+$('.lightswitch').click(function () {
+    if (isDarkMode) {
+        themeModeSwitcher.useLightMode();
+    } else {
+        themeModeSwitcher.useDarkMode();
+    }
 });
 
 function buildErrorMessage(responseObject) {

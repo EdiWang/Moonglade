@@ -16,7 +16,7 @@ function submitComment() {
             "captchaCode": $('#input-comment-captcha').val()
         },
         (success) => {
-            $('#comment-form')[0].reset();
+            document.querySelector('#comment-form').reset();
             postSlug.resetCaptchaImage();
 
             var httpCode = success.status;

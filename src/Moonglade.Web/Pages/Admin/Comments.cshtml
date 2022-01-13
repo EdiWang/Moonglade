@@ -16,7 +16,7 @@
                 var cid = $(this).data("commentid");
                 callApi('/api/comment', 'DELETE', [cid],
                     (success) => {
-                        $(`#panel-comment-${cid}`).slideUp();
+                        document.querySelector(`#panel-comment-${cid}`).remove();
                     });
             });
 
