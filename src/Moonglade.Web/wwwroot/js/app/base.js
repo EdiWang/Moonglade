@@ -6,40 +6,50 @@ var tooltipList = tooltipTriggerList.map(function (tooltipTriggerEl) {
 });
 
 var bsToast = new bootstrap.Toast(document.getElementById('liveToast'));
+var lt = document.querySelector('#liveToast');
+var blogtoastMessage = document.querySelector('#blogtoast-message');
+
+function removeToastBgColor() {
+    const bgClasses = [
+        'bg-success',
+        'bg-warning',
+        'bg-danger',
+        'bg-info',
+        'bg-primary',
+        'bg-secondary'
+    ];
+
+    for (var i = 0; i < bgClasses.length; i++) {
+        lt.classList.remove(bgClasses[i]);
+    }
+}
+
 var blogToast = {
     success: function (message) {
-        $('#liveToast').removeClass('bg-success bg-warning bg-danger bg-info bg-primary bg-secondary');
-        document.querySelector('#liveToast').classList.add('bg-success');
-        document.querySelector('#blogtoast-message').innerHTML = message;
+        removeToastBgColor();
+        lt.classList.add('bg-success');
+        blogtoastMessage.innerHTML = message;
         bsToast.show();
     },
     info: function (message) {
-        $('#liveToast').removeClass('bg-success bg-warning bg-danger bg-info bg-primary bg-secondary');
-        document.querySelector('#liveToast').classList.add('bg-info');
-        document.querySelector('#blogtoast-message').innerHTML = message;
+        removeToastBgColor();
+        lt.classList.add('bg-info');
+        blogtoastMessage.innerHTML = message;
         bsToast.show();
     },
     warning: function (message) {
-        $('#liveToast').removeClass('bg-success bg-warning bg-danger bg-info bg-primary bg-secondary');
-        document.querySelector('#liveToast').classList.add('bg-warning');
-        document.querySelector('#blogtoast-message').innerHTML = message;
+        removeToastBgColor();
+        lt.classList.add('bg-warning');
+        blogtoastMessage.innerHTML = message;
         bsToast.show();
     },
     error: function (message) {
-        $('#liveToast').removeClass('bg-success bg-warning bg-danger bg-info bg-primary bg-secondary');
-        document.querySelector('#liveToast').classList.add('bg-danger');
-        document.querySelector('#blogtoast-message').innerHTML = message;
+        removeToastBgColor();
+        lt.classList.add('bg-danger');
+        blogtoastMessage.innerHTML = message;
         bsToast.show();
     }
 };
-
-$('input#term')
-    .focus(function () {
-        $(this).attr('placeholder', '');
-    })
-    .blur(function () {
-        $(this).attr('placeholder', 'Search');
-    });
 
 function toggleTheme() {
     if (isDarkMode) {
