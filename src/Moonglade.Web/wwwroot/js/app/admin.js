@@ -64,46 +64,22 @@ function ImageUploader(targetName, hw, imgMimeType) {
             document.querySelector(`#btn-upload-${targetName}`).classList.add('disabled');
             document.querySelector(`#btn-upload-${targetName}`).setAttribute('disabled', 'disabled');
 
-            var rawData = { base64Img: imgDataUrl.replace(/^data:image\/(png|jpeg|jpg);base64,/, '') };
-            $.ajax({
-                type: 'POST',
-                headers: { 'XSRF-TOKEN': $(`input[name=${csrfFieldName}]`).val() },
-                url: uploadUrl,
-                data: rawData,
-                success: function (data) {
-                    console.info(data);
+            var rawData = imgDataUrl.replace(/^data:image\/(png|jpeg|jpg);base64,/, '');
+
+            callApi(uploadUrl,
+                'POST',
+                rawData,
+                function(resp) {
                     $(`#${targetName}modal`).modal('hide');
                     blogToast.success('Updated');
                     d = new Date();
                     document.querySelector(`.blogadmin-${targetName}`).src = `/${targetName}?${d.getTime()}`;
                 },
-                statusCode: {
-                    400: function (responseObject, textStatus, jqXHR) {
-                        var message = buildErrorMessage(responseObject);
-                        blogToast.error(message);
-                    },
-                    401: function (responseObject, textStatus, jqXHR) {
-                        blogToast.error('Unauthorized');
-                    },
-                    404: function (responseObject, textStatus, jqXHR) {
-                        blogToast.error('Endpoint not found');
-                    },
-                    409: function (responseObject, textStatus, jqXHR) {
-                        var message = buildErrorMessage(responseObject);
-                        blogToast.error(message);
-                    },
-                    500: function (responseObject, textStatus, jqXHR) {
-                        blogToast.error('Server went boom');
-                    },
-                    503: function (responseObject, textStatus, jqXHR) {
-                        blogToast.error('Server went boom boom');
-                    }
-                },
-                error: function (xhr, status, err) {
+                function(always) {
                     document.querySelector(`#btn-upload-${targetName}`).classList.remove('disabled');
                     document.querySelector(`#btn-upload-${targetName}`).removeAttribute('disabled');
-                }
-            });
+                });
+
         } else {
             blogToast.error('Please select an image');
         }
