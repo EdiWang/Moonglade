@@ -26,10 +26,9 @@
 }
 
 @section scripts {
-    <script src="~/js/3rd/highlight.pack.js"></script>
+    <script src="~/js/3rd/highlight.min.js"></script>
     <script>
         var fitImageToDevicePixelRatio = @BlogConfig.ImageSettings.FitImageToDevicePixelRatio.ToString().ToLower();
-        var pid = $("article").data("postid");
         postSlug.resizeImages();
         postSlug.applyImageZooming();
         postSlug.renderCodeHighlighter();

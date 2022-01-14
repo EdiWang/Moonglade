@@ -41,13 +41,13 @@ $('input#term')
         $(this).attr('placeholder', 'Search');
     });
 
-$('.lightswitch').click(function () {
+function toggleTheme() {
     if (isDarkMode) {
         themeModeSwitcher.useLightMode();
     } else {
         themeModeSwitcher.useDarkMode();
     }
-});
+}
 
 function buildErrorMessage(responseObject) {
     if (responseObject.responseJSON) {

@@ -49,11 +49,11 @@
         }
 
         function loadMenuEditor(topMenuId) {
-            $('.sub-menu-editor').hide();
+            document.querySelector('.sub-menu-editor').style.display = 'none';
             $('.btn-create-submenu').show();
 
             $('.top-menu-list a').removeClass('active');
-            $(`#menu-${topMenuId}`).addClass('active');
+            document.querySelector(`#menu-${topMenuId}`).classList.add('active');
 
             callApi(`/api/menu/edit/${topMenuId}`,
                 'GET',
@@ -130,7 +130,7 @@
         function initCreateMenu() {
             $('#topmenu-id').val(emptyGuid);
             document.querySelector('#edit-form').reset();
-            $('.btn-delete').hide();
+            document.querySelector('.btn-delete').style.display = 'none';
 
             $('.top-menu-list a').removeClass('active');
             $('.fg-open-in-new-tab').show();
@@ -142,8 +142,8 @@
             isNewSubMenu = true;
             $('.sub-menu-editor').show();
             $('#submenu-id').val(emptyGuid);
-            $('#submenu-title').val('');
-            $('#submenu-url').val('');
+            document.querySelector('#submenu-title').value = '';
+            document.querySelector('#submenu-url').value = '';
             $('#submenu-isopeninnewtab').prop('checked', null);
         }
 
@@ -153,7 +153,7 @@
                 {},
                 (resp) => {
                     initCreateMenu();
-                    $(`#menu-${menuid}`).hide();
+                    document.querySelector(`#menu-${menuid}`).remove();
                 });
         }
 
@@ -165,7 +165,7 @@
             if ($("#edit-form").valid()) {
                 var action = '';
                 var httpVerb = 'POST';
-                var menuId = $("#topmenu-id").val();
+                var menuId = document.querySelector("#topmenu-id").value;
                 if (menuId == emptyGuid) {
                     action = '/api/menu';
                 } else {
@@ -175,15 +175,15 @@
 
                 var father = findTopMenu(menuId);
                 if (!isNewSubMenu) {
-                    currentSm.Id = $('#submenu-id').val();
-                    currentSm.Title = $('#submenu-title').val();
-                    currentSm.Url = $('#submenu-url').val();
+                    currentSm.Id = document.querySelector('#submenu-id').value;
+                    currentSm.Title = document.querySelector('#submenu-title').value;
+                    currentSm.Url = document.querySelector('#submenu-url').value;
                     currentSm.IsOpenInNewTab = $('#submenu-isopeninnewtab').prop('checked');
                 } else {
                     var newSm = {
-                        Id: $('#submenu-id').val(),
-                        Title: $('#submenu-title').val(),
-                        Url: $('#submenu-url').val(),
+                        Id: document.querySelector('#submenu-id').value,
+                        Title: document.querySelector('#submenu-title').value,
+                        Url: document.querySelector('#submenu-url').value,
                         IsOpenInNewTab: $('#submenu-isopeninnewtab').prop('checked')
                     };
                     father.SubMenus.push(newSm);
@@ -192,10 +192,10 @@
                 callApi(`${action}`,
                     httpVerb,
                     {
-                        "Id": $("#topmenu-id").val(),
-                        "Title": $("#topmenu-title").val(),
-                        "Url": $("#topmenu-url").val(),
-                        "Icon": $("#topmenu-iconcssclass").val(),
+                        "Id": document.querySelector("#topmenu-id").value,
+                        "Title": document.querySelector("#topmenu-title").value,
+                        "Url": document.querySelector("#topmenu-url").value,
+                        "Icon": document.querySelector("#topmenu-iconcssclass").value,
                         "DisplayOrder": parseInt($("#topmenu-displayorder").val()),
                         "IsOpenInNewTab": $('#topmenu-isopeninnewtab').prop('checked'),
                         "SubMenus": father ? father.SubMenus : null

@@ -28,11 +28,9 @@
     }
 
     function deleteCat(catid) {
-        $(`#span-processing-${catid}`).show();
-
         callApi(`/api/category/${catid}`, 'DELETE', {},
             (resp) => {
-                $(`#card-${catid}`).hide();
+                document.querySelector(`#card-${catid}`).remove();
                 blogToast.success('Category deleted');
             });
     }
@@ -40,10 +38,6 @@
     $(".btn-delete").click(function () {
         var cfm = confirm("Delete Confirmation?");
         if (cfm) deleteCat($(this).data("catid"));
-    });
-
-    $(".btn-edit").click(function () {
-        editCat($(this).data("catid"));
     });
 
     function handleSubmit(event) {
@@ -67,9 +61,9 @@
 
             callApi(apiAddress, verb,
                 {
-                    "RouteName": value["EditCategoryRequest.RouteName"],
-                    "DisplayName": value["EditCategoryRequest.DisplayName"],
-                    "Note": value["EditCategoryRequest.Note"]
+                    routeName: value["EditCategoryRequest.RouteName"],
+                    displayName: value["EditCategoryRequest.DisplayName"],
+                    note: value["EditCategoryRequest.Note"]
                 },
                 (resp) => {
                     document.querySelector('#edit-form').reset();
@@ -112,10 +106,8 @@
                     <small class="text-muted">@cat.RouteName</small>
                 </div>
                 <div class="card-footer">
-                    <a href="javascript:;" data-catid="@cat.Id" class="btn btn-sm btn-outline-accent btn-edit"><i class="bi-pen"></i></a>
+                    <a href="javascript:editCat('@cat.Id');" class="btn btn-sm btn-outline-accent btn-edit"><i class="bi-pen"></i></a>
                     <a href="javascript:;" data-catid="@cat.Id" class="btn btn-sm btn-outline-danger btn-delete"><i class="bi-trash"></i></a>
-
-                    <span id="span-processing-@cat.Id" class="spinner-border spinner-border-sm" role="status" aria-hidden="true" style="display: none;"></span>
                 </div>
             </div>
         </div>

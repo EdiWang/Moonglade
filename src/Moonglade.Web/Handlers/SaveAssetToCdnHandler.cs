@@ -28,7 +28,7 @@ public class SaveAssetToCdnHandler : INotificationHandler<SaveAssetCommand>
             fileName = await _imageStorage.InsertAsync(fileName, Convert.FromBase64String(request.AssetBase64));
 
             var random = new Random();
-            _blogConfig.GeneralSettings.AvatarUrl = 
+            _blogConfig.GeneralSettings.AvatarUrl =
                 _blogConfig.ImageSettings.CDNEndpoint.CombineUrl(fileName) + $"?{random.Next(100, 999)}";   //refresh local cache
             await _blogConfig.SaveAsync(_blogConfig.GeneralSettings);
         }

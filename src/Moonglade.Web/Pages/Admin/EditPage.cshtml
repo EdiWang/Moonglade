@@ -80,7 +80,7 @@
 
     var onPageCreateEditComplete = function () {
         document.querySelector(btnSubmitPage).classList.remove('disabled');
-        $(btnSubmitPage).removeAttr('disabled');
+        document.querySelector(btnSubmitPage).removeAttribute('disabled');
     };
 
     function postCreateOrEdit() {
@@ -91,13 +91,13 @@
 
         callApi(apiAddress, verb,
             {
-                "Title": $("#EditPageRequest_Title").val(),
-                "Slug": $("#EditPageRequest_Slug").val(),
-                "MetaDescription": $("#EditPageRequest_MetaDescription").val(),
-                "RawHtmlContent": $("#EditPageRequest_RawHtmlContent").val(),
-                "CssContent": $("#EditPageRequest_CssContent").val(),
-                "HideSidebar": $('#EditPageRequest_HideSidebar').prop('checked'),
-                "IsPublished": $('#EditPageRequest_IsPublished').prop('checked')
+                title: document.querySelector("#EditPageRequest_Title").value,
+                slug: document.querySelector("#EditPageRequest_Slug").value,
+                metaDescription: document.querySelector("#EditPageRequest_MetaDescription").value,
+                rawHtmlContent: document.querySelector("#EditPageRequest_RawHtmlContent").value,
+                cssContent: document.querySelector("#EditPageRequest_CssContent").value,
+                hideSidebar: $('#EditPageRequest_HideSidebar').prop('checked'),
+                isPublished: $('#EditPageRequest_IsPublished').prop('checked')
             },
             async (resp) => {
                 onPageCreateEditComplete();
@@ -108,7 +108,7 @@
                     blogToast.success('Page saved successfully.');
 
                     if ($('input[name="IsPublished"]:checked').val() === 'true') {
-                        $('#btn-preview').hide();
+                        document.querySelector('#btn-preview').style.display = 'none';
                     }
 
                     if (isPreviewRequired) {

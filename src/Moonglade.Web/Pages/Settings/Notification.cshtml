@@ -5,34 +5,26 @@
     ViewBag.SkipJQueryValidation = true;
 }
 @section scripts{
-    <script>
-        var sendTestEmail = function () {
-            $('#a-send-test-mail').text('Sending...');
-            $('#a-send-test-mail').addClass('disabled');
-            $('#a-send-test-mail').attr('disabled', 'disabled');
+<script>
+    var sendTestEmail = function () {
+        document.querySelector('#a-send-test-mail').classList.add('disabled');
+        document.querySelector('#a-send-test-mail').setAttribute('disabled', 'disabled');
 
-            $.post('/api/settings/test-email',
-                function (data) {
-                    if (data.isSuccess) {
-                        blogToast.success('Email is sent.');
-                    } else {
-                        blogToast.error(data.message);
-                    }
-                })
-                .fail(function (xhr, status, error) {
-                    var responseJson = $.parseJSON(xhr.responseText);
-                    blogToast.error(responseJson.message);
-                })
-                .always(function () {
-                    $('#a-send-test-mail').text('Send Test Email');
-                    $('#a-send-test-mail').removeClass('disabled');
-                    $('#a-send-test-mail').removeAttr('disabled');
-                });
-        };
+        callApi('/api/settings/test-email',
+            'POST',
+            {},
+            async function(success) {
+                blogToast.success('Email is sent.');
+            },
+            function(always) {
+                document.querySelector('#a-send-test-mail').classList.remove('disabled');
+                document.querySelector('#a-send-test-mail').removeAttribute('disabled');
+            });
+    };
 
-        const form = document.querySelector('#form-settings');
-        form.addEventListener('submit', handleSettingsSubmit);
-    </script>
+    const form = document.querySelector('#form-settings');
+    form.addEventListener('submit', handleSettingsSubmit);
+</script>
 }
 
 <partial name="_SettingsHeader" />
@@ -50,7 +42,7 @@
                         <label asp-for="ViewModel.EmailDisplayName"></label>
                     </div>
                     <div class="col-md-5">
-                        <input asp-for="ViewModel.EmailDisplayName" class="form-control" required maxlength="64"/>
+                        <input asp-for="ViewModel.EmailDisplayName" class="form-control" required maxlength="64" />
                     </div>
                 </div>
 
@@ -66,7 +58,7 @@
                         <input asp-for="ViewModel.AzureFunctionEndpoint" class="form-control" />
                     </div>
                 </div>
-                
+
                 <div class="row g-3 align-items-center settings-entry mb-4">
                     <div class="col-auto">
                         <i class="bi-envelope settings-entry-icon"></i>
