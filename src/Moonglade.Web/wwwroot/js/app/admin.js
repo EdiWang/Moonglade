@@ -39,12 +39,12 @@ function handleSettingsSubmit(event) {
 var btnSaveSettings = '#btn-save-settings';
 var onUpdateSettingsBegin = function () {
     document.querySelector(btnSaveSettings).classList.add('disabled');
-    $(btnSaveSettings).attr('disabled', 'disabled');
+    document.querySelector(btnSaveSettings).setAttribute('disabled', 'disabled');
 };
 
 var onUpdateSettingsComplete = function () {
     document.querySelector(btnSaveSettings).classList.remove('disabled');
-    $(btnSaveSettings).removeAttr('disabled');
+    document.querySelector(btnSaveSettings).removeAttribute('disabled');
 };
 
 var emptyGuid = '00000000-0000-0000-0000-000000000000';
