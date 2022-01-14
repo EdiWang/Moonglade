@@ -56,24 +56,10 @@
       ]
     },
     {
-      "library": "jquery-validation-unobtrusive@3.2.12",
-      "destination": "wwwroot/lib/jquery-validation-unobtrusive/",
-      "files": [
-        "jquery.validate.unobtrusive.min.js"
-      ]
-    },
-    {
       "library": "jquery.AreYouSure@1.9.0",
       "destination": "wwwroot/lib/jquery.AreYouSure/",
       "files": [
         "jquery.are-you-sure.min.js"
-      ]
-    },
-    {
-      "library": "jquery-validate@1.19.3",
-      "destination": "wwwroot/lib/jquery-validate/",
-      "files": [
-        "jquery.validate.min.js"
       ]
     },
     {
