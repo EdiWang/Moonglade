@@ -9,7 +9,7 @@ using NUnit.Framework;
 namespace Moonglade.Web.Tests.Pages;
 
 [TestFixture]
-public class BlogPagePreviewModelTests
+public class PagePreviewModelTests
 {
     private MockRepository _mockRepository;
     private Mock<IMediator> _mockMediator;
@@ -35,7 +35,7 @@ public class BlogPagePreviewModelTests
         _mockMediator = _mockRepository.Create<IMediator>();
     }
 
-    private BlogPagePreviewModel CreateBlogPagePreviewModel()
+    private PagePreviewModel CreateBlogPagePreviewModel()
     {
         return new(_mockMediator.Object);
     }
@@ -58,11 +58,11 @@ public class BlogPagePreviewModelTests
         _mockMediator.Setup(p => p.Send(It.IsAny<GetPageByIdQuery>(), default))
             .Returns(Task.FromResult(_fakeBlogPage));
 
-        var blogPagePreviewModel = CreateBlogPagePreviewModel();
-        var result = await blogPagePreviewModel.OnGetAsync(Guid.Empty);
+        var pagePreviewModel = CreateBlogPagePreviewModel();
+        var result = await pagePreviewModel.OnGetAsync(Guid.Empty);
 
         Assert.IsInstanceOf<PageResult>(result);
-        Assert.IsNotNull(blogPagePreviewModel.BlogPage);
-        Assert.AreEqual(_fakeBlogPage.Title, blogPagePreviewModel.BlogPage.Title);
+        Assert.IsNotNull(pagePreviewModel.BlogPage);
+        Assert.AreEqual(_fakeBlogPage.Title, pagePreviewModel.BlogPage.Title);
     }
 }
