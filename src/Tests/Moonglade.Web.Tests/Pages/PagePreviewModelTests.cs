@@ -35,7 +35,7 @@ public class PagePreviewModelTests
         _mockMediator = _mockRepository.Create<IMediator>();
     }
 
-    private PagePreviewModel CreateBlogPagePreviewModel()
+    private PagePreviewModel CreatePagePreviewModel()
     {
         return new(_mockMediator.Object);
     }
@@ -46,7 +46,7 @@ public class PagePreviewModelTests
         _mockMediator.Setup(p => p.Send(It.IsAny<GetPageByIdQuery>(), default))
             .Returns(Task.FromResult((BlogPage)null));
 
-        var blogPagePreviewModel = CreateBlogPagePreviewModel();
+        var blogPagePreviewModel = CreatePagePreviewModel();
         var result = await blogPagePreviewModel.OnGetAsync(Guid.Empty);
 
         Assert.IsInstanceOf<NotFoundResult>(result);
@@ -58,7 +58,7 @@ public class PagePreviewModelTests
         _mockMediator.Setup(p => p.Send(It.IsAny<GetPageByIdQuery>(), default))
             .Returns(Task.FromResult(_fakeBlogPage));
 
-        var pagePreviewModel = CreateBlogPagePreviewModel();
+        var pagePreviewModel = CreatePagePreviewModel();
         var result = await pagePreviewModel.OnGetAsync(Guid.Empty);
 
         Assert.IsInstanceOf<PageResult>(result);
