@@ -64,17 +64,13 @@
     <script src="~/lib/qrious/qrious.min.js"></script>
     <script>
         var fitImageToDevicePixelRatio = @BlogConfig.ImageSettings.FitImageToDevicePixelRatio.ToString().ToLower();
-        var pid = $("article").data("postid");
+        var pid = document.querySelector('article').dataset.postid;
         postSlug.getStatistics(pid);
         postSlug.registerRatingButtons(pid);
         postSlug.resizeImages();
         postSlug.applyImageZooming();
         postSlug.renderCodeHighlighter();
         postSlug.postStatistics(pid, false);
-
-        $("#img-captcha").click(function() {
-            postSlug.resetCaptchaImage();
-        });
 
         var q = new QRious({
                 element: document.querySelector('.post-qrcode'), 
@@ -222,7 +218,7 @@
                                     <div class="row">
                                         <div class="col-9">
                                             <div class="input-group">
-                                                <img id="img-captcha" src="~/captcha-image" data-bs-toggle="tooltip" data-placement="top" title="@Localizer["Can't read? Click to change another image."]"/>
+                                                <img id="img-captcha" onclick="postSlug.resetCaptchaImage()" src="~/captcha-image" data-bs-toggle="tooltip" data-placement="top" title="@Localizer["Can't read? Click to change another image."]"/>
                                                 <input type="text"
                                                        id="input-comment-captcha"
                                                        class="form-control input-captcha"
