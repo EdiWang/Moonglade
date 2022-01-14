@@ -30,7 +30,7 @@
     function deleteCat(catid) {
         callApi(`/api/category/${catid}`, 'DELETE', {},
             (resp) => {
-                $(`#card-${catid}`).hide();
+                document.querySelector(`#card-${catid}`).remove();
                 blogToast.success('Category deleted');
             });
     }

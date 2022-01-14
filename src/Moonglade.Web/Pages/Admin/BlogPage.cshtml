@@ -5,24 +5,22 @@
 }
 
 @section scripts{
-    <script>
-        function deletePage(pageid) {
-            $(`#span-processing-${pageid}`).show();
+<script>
+    function deletePage(pageid) {
+        callApi(`/api/page/${pageid}`,
+            'DELETE',
+            {},
+            (resp) => {
+                document.querySelector(`#card-${pageid}`).remove();
+                blogToast.success('Page deleted');
+            });
+    }
 
-            callApi(`/api/page/${pageid}`,
-                'DELETE',
-                {},
-                (resp) => {
-                    $(`#card-${pageid}`).hide();
-                    blogToast.success('Page deleted');
-                });
-        }
-
-        $(".btn-delete").click(function () {
-            var cfm = confirm("Delete Confirmation?");
-            if (cfm) deletePage($(this).data("pageid"));
-        });
-    </script>
+    function deleteConfirm(pageid) {
+        var cfm = confirm("Delete Confirmation?");
+        if (cfm) deletePage(pageid);
+    }
+</script>
 }
 
 <div class="admin-toolbar ps-4 pe-4 pt-2 pb-2 border-bottom mb-3 shadow-sm">
@@ -56,11 +54,9 @@
                             <a class="btn btn-outline-accent btn-sm btn-edit" asp-page="./EditPage" asp-route-id="@item.Id">
                                 <i class="bi-pen"></i>
                             </a>
-                            <a class="btn btn-outline-danger btn-sm btn-delete" data-pageid="@item.Id" href="javascript:;">
+                            <a class="btn btn-outline-danger btn-sm btn-delete" href="javascript:deleteConfirm('@item.Id');">
                                 <i class="bi-trash"></i>
                             </a>
-
-                            <span id="span-processing-@item.Id" class="spinner-border spinner-border-sm" role="status" aria-hidden="true" style="display: none;"></span>
                         </div>
                     </div>
                 </div>
