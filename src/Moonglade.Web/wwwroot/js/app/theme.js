@@ -26,8 +26,8 @@
         isDarkMode = true;
         $('.lightswitch').addClass('bg-dark text-light border-secondary');
         $('hr').addClass('hr-dark');
-        $('#lighticon').removeClass('bi-brightness-high');
-        $('#lighticon').addClass('bi-moon');
+        document.querySelector('#lighticon').classList.remove('bi-brightness-high');
+        document.querySelector('#lighticon').classList.add('bi-moon');
     },
     useLightMode: function () {
         $('#blog-nav').addClass('bg-accent1');
@@ -54,7 +54,7 @@
         isDarkMode = false;
         $('.lightswitch').removeClass('bg-dark text-light border-secondary');
         $('hr').removeClass('hr-dark');
-        $('#lighticon').addClass('bi-brightness-high');
-        $('#lighticon').removeClass('bi-moon');
+        document.querySelector('#lighticon').classList.add('bi-brightness-high');
+        document.querySelector('#lighticon').classList.remove('bi-moon');
     }
 }
