@@ -105,6 +105,8 @@
     function handlePostSubmit(event) {
         event.preventDefault();
 
+        isPreviewRequired = event.submitter.id == 'btn-preview';
+
         const data = new FormData(event.target);
         const value = Object.fromEntries(data.entries());
 
