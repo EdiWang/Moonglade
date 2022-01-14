@@ -327,8 +327,8 @@ var postEditor = {
             }
 
             if ($('input[name="ViewModel.IsPublished"]').val() === 'True') {
-                $('#btn-publish').hide();
-                $('#btn-preview').hide();
+                document.querySelector('#btn-publish').style.display = 'none';
+                document.querySelector('#btn-preview').style.display = 'none';
             }
         }
 
@@ -363,15 +363,13 @@ var postEditor = {
 
 var btnSubmitPost = '#btn-save';
 var onPostCreateEditBegin = function () {
-    $(btnSubmitPost).text('Saving...');
-    $(btnSubmitPost).addClass('disabled');
-    $(btnSubmitPost).attr('disabled', 'disabled');
+    document.querySelector(btnSubmitPost).classList.add('disabled');
+    document.querySelector(btnSubmitPost).setAttribute('disabled', 'disabled');
 };
 
 var onPostCreateEditComplete = function () {
-    $(btnSubmitPost).text('Save');
-    $(btnSubmitPost).removeClass('disabled');
-    $(btnSubmitPost).removeAttr('disabled');
+    document.querySelector(btnSubmitPost).classList.remove('disabled');
+    document.querySelector(btnSubmitPost).removeAttribute('disabled');
 };
 
 var onPostCreateEditSuccess = function (data) {
@@ -397,29 +395,18 @@ var onPageCreateEditFailed = function (context) {
 };
 
 function deletePost(postid) {
-    $(`#span-processing-${postid}`).show();
     callApi(`/api/post/${postid}/destroy`, 'DELETE', {},
         (resp) => {
-            $(`#tr-${postid}`).hide();
+            document.querySelector(`#tr-${postid}`).remove();
             blogToast.success('Post deleted');
         });
 }
 
 function restorePost(postid) {
-    $(`#span-processing-${postid}`).show();
     callApi(`/api/post/${postid}/restore`, 'POST', {},
         (resp) => {
-            $(`#tr-${postid}`).hide();
+            document.querySelector(`#tr-${postid}`).remove();
             blogToast.success('Post restored');
-        });
-}
-
-function deleteAccount(accountid) {
-    $(`#span-processing-${accountid}`).show();
-
-    callApi(`/api/localaccount/${accountid}`, 'DELETE', {},
-        (resp) => {
-            $(`#tr-${accountid}`).hide();
         });
 }
 
@@ -432,7 +419,7 @@ function deleteSelectedComments() {
     callApi('/api/comment/delete', 'DELETE', cids,
         (success) => {
             $.each(cids, function (index, value) {
-                $(`#panel-comment-${value}`).slideUp();
+                document.querySelector(`#panel-comment-${value}`).remove();
             });
         });
 }

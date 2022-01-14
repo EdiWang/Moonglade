@@ -19,6 +19,13 @@
         }
     }
 
+    function deleteAccount(accountid) {
+        callApi(`/api/localaccount/${accountid}`, 'DELETE', {},
+            (resp) => {
+                $(`#tr-${accountid}`).hide();
+            });
+    }
+
     function resetPassword(accountId) {
         document.querySelector('#resetpassword-form').reset();
         resetPasswordModal.show();
@@ -108,7 +115,6 @@
                             @if (null != currentUidClaim && currentUidClaim.Value != item.Id.ToString())
                             {
                                 <a href="javascript:deleteConfirm('@item.Id');" class="btn btn-sm btn-outline-danger btn-delete"><i class="bi-trash"></i></a>
-                                <span id="span-processing-@item.Id" style="display: none">...</span>
                             }
                         </td>
                     </tr>
