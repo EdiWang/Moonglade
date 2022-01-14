@@ -158,24 +158,20 @@ public class ImageController : ControllerBase
         }
 
         _logger.LogInformation($"Image '{primaryFileName}' uloaded.");
+        var location = $"/image/{finalFileName}";
+        var filename = location;
 
         if (_blogConfig.ImageSettings.EnableCDNRedirect)
         {
             var imageUrl = _blogConfig.ImageSettings.CDNEndpoint.CombineUrl(finalFileName);
+            location = imageUrl;
+            filename = imageUrl;
+        }
 
-            return Ok(new
-            {
-                location = imageUrl,
-                filename = imageUrl
-            });
-        }
-        else
+        return Ok(new
         {
-            return Ok(new
-            {
-                location = $"/image/{finalFileName}",
-                filename = finalFileName
-            });
-        }
+            location,
+            filename
+        });
     }
 }
