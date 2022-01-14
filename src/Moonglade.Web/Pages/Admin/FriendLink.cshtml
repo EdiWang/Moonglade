@@ -53,9 +53,9 @@
         callApi(apiAddress,
             httpVerb,
             {
-                "Id": fid,
-                "Title": value["EditLinkRequest.Title"],
-                "LinkUrl": value["EditLinkRequest.LinkUrl"]
+                id: fid,
+                title: value["EditLinkRequest.Title"],
+                linkUrl: value["EditLinkRequest.LinkUrl"]
             },
             (resp) => {
                 document.querySelector('#edit-form').reset();
