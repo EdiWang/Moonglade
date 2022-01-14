@@ -3,7 +3,6 @@
 @{
     ViewBag.Title = "Manage Accounts";
     var currentUidClaim = User.Claims.FirstOrDefault(c => c.Type == "uid");
-    ViewBag.SkipJQueryValidation = true;
 }
 
 @section scripts{

@@ -4,7 +4,6 @@
 @inject IOptions<RequestLocalizationOptions> _locOptions
 @{
     ViewBag.Title = "Manage Posts";
-    ViewBag.SkipJQueryValidation = true;
 
     var cultureItems = _locOptions.Value.SupportedUICultures
         .Select(c => new { Value = c.Name, c.NativeName });

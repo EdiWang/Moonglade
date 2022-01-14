@@ -1,9 +1,6 @@
 ﻿@page "/admin/settings/notification"
 @model Moonglade.Web.Pages.Settings.NotificationModel
 @inject IOptionsSnapshot<AppSettings> _settings
-@{
-    ViewBag.SkipJQueryValidation = true;
-}
 @section scripts{
 <script>
     var sendTestEmail = function () {

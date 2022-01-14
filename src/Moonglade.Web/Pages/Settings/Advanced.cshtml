@@ -1,9 +1,6 @@
 ﻿@page "/admin/settings/advanced"
 @model Moonglade.Web.Pages.Settings.AdvancedModel
 @Html.AntiForgeryToken()
-@{
-    ViewBag.SkipJQueryValidation = true;
-}
 @section scripts{
     <script>
         function startTimer(duration, display) {
