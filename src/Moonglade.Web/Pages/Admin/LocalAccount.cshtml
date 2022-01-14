@@ -12,18 +12,18 @@
 
     var cid = '';
 
-    $(".btn-delete").click(function() {
+    function deleteConfirm(accountId) {
         var cfm = confirm("Delete Confirmation?");
         if (cfm) {
-            deleteAccount($(this).data("accountid"));
+            deleteAccount(accountId);
         }
-    });
+    }
 
-    $(".btn-updatepwd").click(function() {
+    function resetPassword(accountId) {
         document.querySelector('#resetpassword-form').reset();
         resetPasswordModal.show();
-        cid = $(this).data("accountid");
-    });
+        cid = accountId;
+    }
 
     function initCreateAccount() {
         document.querySelector('#new-account-form').reset();
@@ -101,13 +101,13 @@
                         <td>@(null != item.LastLoginTimeUtc ? item.LastLoginTimeUtc.ToString() : "N/A")</td>
                         <td>@item.CreateTimeUtc</td>
                         <td>
-                            <a href="javascript:;" data-accountid="@item.Id" class="btn btn-sm btn-outline-accent btn-updatepwd">
+                            <a href="javascript:resetPassword('@item.Id');" class="btn btn-sm btn-outline-accent btn-updatepwd">
                                 <i class="bi-key-fill"></i>
                             </a>
 
                             @if (null != currentUidClaim && currentUidClaim.Value != item.Id.ToString())
                             {
-                                <a href="javascript:;" data-accountid="@item.Id" class="btn btn-sm btn-outline-danger btn-delete"><i class="bi-trash"></i></a>
+                                <a href="javascript:deleteConfirm('@item.Id');" class="btn btn-sm btn-outline-danger btn-delete"><i class="bi-trash"></i></a>
                                 <span id="span-processing-@item.Id" style="display: none">...</span>
                             }
                         </td>
