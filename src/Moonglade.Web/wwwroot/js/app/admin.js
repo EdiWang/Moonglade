@@ -101,7 +101,7 @@ function ImageUploader(targetName, hw, imgMimeType) {
                 },
                 error: function (xhr, status, err) {
                     document.querySelector(`#btn-upload-${targetName}`).classList.remove('disabled');
-                    $(`#btn-upload-${targetName}`).removeAttr('disabled');
+                    document.querySelector(`#btn-upload-${targetName}`).removeAttribute('disabled');
                 }
             });
         } else {
