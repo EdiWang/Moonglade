@@ -4,7 +4,7 @@ namespace Moonglade.Configuration;
 
 public class GeneralSettings : IBlogSettings
 {
-    [Required(ErrorMessage = "Please enter keyword")]
+    [Required]
     [Display(Name = "Meta keyword")]
     [MaxLength(1024)]
     public string MetaKeyword { get; set; }
@@ -14,23 +14,23 @@ public class GeneralSettings : IBlogSettings
     [MaxLength(64)]
     public string CanonicalPrefix { get; set; }
 
-    [Required(ErrorMessage = "Please enter logo text")]
+    [Required]
     [Display(Name = "Logo text")]
     [MaxLength(16)]
     public string LogoText { get; set; }
 
-    [Required(ErrorMessage = "Please enter copyright")]
+    [Required]
     [RegularExpression(@"[a-zA-Z0-9\s.\-\[\]]+", ErrorMessage = "Only letters, numbers, - and [] are allowed.")]
     [Display(Name = "Copyright")]
     [MaxLength(64)]
     public string Copyright { get; set; }
 
-    [Required(ErrorMessage = "Please enter blog title")]
+    [Required]
     [Display(Name = "Blog title")]
     [MaxLength(16)]
     public string SiteTitle { get; set; }
 
-    [Required(ErrorMessage = "Please enter your name")]
+    [Required]
     [Display(Name = "Your name")]
     [MaxLength(32)]
     public string OwnerName { get; set; }
@@ -41,13 +41,13 @@ public class GeneralSettings : IBlogSettings
     [MaxLength(64)]
     public string OwnerEmail { get; set; }
 
-    [Required(ErrorMessage = "Please enter your description")]
+    [Required]
     [Display(Name = "Your description")]
     [DataType(DataType.MultilineText)]
     [MaxLength(256)]
     public string Description { get; set; }
 
-    [Required(ErrorMessage = "Please enter short description")]
+    [Required]
     [Display(Name = "Short description")]
     [MaxLength(32)]
     public string ShortDescription { get; set; }
