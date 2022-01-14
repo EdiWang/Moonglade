@@ -14,7 +14,7 @@
       "wwwroot/js/app/postslug.js",
       "wwwroot/js/app/httpService.js",
       "wwwroot/js/app/comments.js",
-      "wwwroot/js/app/darklighttheme.js"
+      "wwwroot/js/app/theme.js"
     ]
   },
   {
