@@ -144,14 +144,7 @@
     <partial name="_Toast" />
 
     <script src="~/lib/twitter-bootstrap/js/bootstrap.bundle.min.js" asp-append-version="true"></script>
-
-    @if (ViewBag.SkipJQueryValidation == null || !ViewBag.SkipJQueryValidation)
-    {
-        <script src="~/lib/jquery-validate/jquery.validate.min.js" asp-append-version="true"></script>
-        <script src="~/lib/jquery-validation-unobtrusive/jquery.validate.unobtrusive.min.js" asp-append-version="true"></script>
-    }
-
-    <environment exclude="Development">
+<environment exclude="Development">
         <script src="~/js/dist/app-bundle.min.js" asp-append-version="true"></script>
         <script src="~/js/dist/admin-bundle.min.js" asp-append-version="true"></script>
     </environment>
@@ -160,7 +153,7 @@
         <script src="~/js/app/postslug.js"></script>
         <script src="~/js/app/httpService.js"></script>
         <script src="~/js/app/comments.js"></script>
-        <script src="~/js/app/darklighttheme.js"></script>
+        <script src="~/js/app/theme.js"></script>
         <script src="~/js/3rd/bootstrap-tagsinput.min.js"></script>
         <script src="~/lib/jquery.AreYouSure/jquery.are-you-sure.min.js"></script>
         <script src="~/js/app/admin.js"></script>

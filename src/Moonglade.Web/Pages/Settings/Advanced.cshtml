@@ -1,9 +1,6 @@
 ﻿@page "/admin/settings/advanced"
 @model Moonglade.Web.Pages.Settings.AdvancedModel
 @Html.AntiForgeryToken()
-@{
-    ViewBag.SkipJQueryValidation = true;
-}
 @section scripts{
     <script>
         function startTimer(duration, display) {
@@ -196,7 +193,6 @@
                     <div class="mt-5 mb-2">
                         <h6 class="card-subtitle mb-3 text-muted">@Html.DisplayNameFor(m => m.ViewModel.RobotsTxtContent)</h6>
                         <textarea asp-for="ViewModel.RobotsTxtContent" class="form-control textarea-code" cols="60" rows="10" spellcheck="false"></textarea>
-                        <span asp-validation-for="ViewModel.RobotsTxtContent" class="text-danger"></span>
                     </div>
                 </div>
             </div>
@@ -235,8 +231,7 @@
                             </div>
                         </div>
                         <div class="col-md-4">
-                            <input asp-for="ViewModel.MetaWeblogPassword" class="form-control" />
-                            <span asp-validation-for="ViewModel.MetaWeblogPassword" class="text-danger"></span>
+                            <input asp-for="ViewModel.MetaWeblogPassword" class="form-control" minlength="8" maxlength="16" />
 
                             <a href="javascript:;" class="btn btn-sm btn-outline-accent mt-2" onclick="generateMetaWeblogPassword()">@Localizer["Generate password"]</a>
                         </div>

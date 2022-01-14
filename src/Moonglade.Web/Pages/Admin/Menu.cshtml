@@ -22,7 +22,7 @@
                 h += `<a id="menu-${sm.id}" href="javascript:loadSubMenuEditor('${topMenuId}', '${sm.id}');" class="list-group-item list-group-item-action">${sm.title}</a>`;
             });
 
-            $('.submenu-list').html(h);
+            document.querySelector('.submenu-list').innerHTML = h;
         }
 
         function findTopMenu(topMenuId) {
@@ -45,12 +45,12 @@
         }
 
         function clearSubMenus() {
-            $('.submenu-list').html('');
+            document.querySelector('.submenu-list').innerHTML = '';
         }
 
         function loadMenuEditor(topMenuId) {
             document.querySelector('.sub-menu-editor').style.display = 'none';
-            $('.btn-create-submenu').show();
+            document.querySelector('.btn-create-submenu').style.display = 'block';
 
             $('.top-menu-list a').removeClass('active');
             document.querySelector(`#menu-${topMenuId}`).classList.add('active');
@@ -85,8 +85,8 @@
         }
 
         function loadSubMenuEditor(topMenuId, subMenuId) {
-            $('.sub-menu-editor').show();
-            $('.btn-delete-submenu').show();
+            document.querySelector('.sub-menu-editor').style.display = 'block';
+            document.querySelector('.btn-delete-submenu').style.display = 'block';
             $('.btn-delete-submenu').data('tmd', topMenuId);
             $('.btn-delete-submenu').data('smd', subMenuId);
 
@@ -94,9 +94,12 @@
             currentSm = findSubMenu(father, subMenuId);
 
             isNewSubMenu = false;
-            $('#submenu-id').val(currentSm.Id);
-            $('#submenu-title').val(currentSm.Title);
-            $('#submenu-url').val(currentSm.Url);
+            document.querySelector('#submenu-id').value = currentSm.Id;
+            document.querySelector('#submenu-title').value = currentSm.Title;
+            document.querySelector('#submenu-url').value = currentSm.Url;
+
+            document.querySelector('#submenu-title').setAttribute('required', '');
+            document.querySelector('#submenu-url').setAttribute('required', '');
 
             if (currentSm.IsOpenInNewTab) {
                 $('#submenu-isopeninnewtab').prop('checked', 'checked');
@@ -128,20 +131,23 @@
         });
 
         function initCreateMenu() {
-            $('#topmenu-id').val(emptyGuid);
+            document.querySelector('#topmenu-id').value = emptyGuid;
             document.querySelector('#edit-form').reset();
             document.querySelector('.btn-delete').style.display = 'none';
 
             $('.top-menu-list a').removeClass('active');
-            $('.fg-open-in-new-tab').show();
             $('#topmenu-url, #topmenu-iconcssclass').attr('readonly', null);
             clearSubMenus();
         }
 
         function initCreateSubMenu() {
+
+            document.querySelector('#submenu-title').setAttribute('required', '');
+            document.querySelector('#submenu-url').setAttribute('required', '');
+
             isNewSubMenu = true;
             $('.sub-menu-editor').show();
-            $('#submenu-id').val(emptyGuid);
+            document.querySelector('#submenu-id').value = emptyGuid;
             document.querySelector('#submenu-title').value = '';
             document.querySelector('#submenu-url').value = '';
             $('#submenu-isopeninnewtab').prop('checked', null);
@@ -157,59 +163,58 @@
                 });
         }
 
-        $(".btn-submit").click(function() {
-            updateMenus();
-        });
+        function updateMenus(e) {
+            if(e) e.preventDefault();
 
-        function updateMenus() {
-            if ($("#edit-form").valid()) {
-                var action = '';
-                var httpVerb = 'POST';
-                var menuId = document.querySelector("#topmenu-id").value;
-                if (menuId == emptyGuid) {
-                    action = '/api/menu';
-                } else {
-                    action = '/api/menu/edit';
-                    httpVerb = 'PUT';
-                }
-
-                var father = findTopMenu(menuId);
-                if (!isNewSubMenu) {
-                    currentSm.Id = document.querySelector('#submenu-id').value;
-                    currentSm.Title = document.querySelector('#submenu-title').value;
-                    currentSm.Url = document.querySelector('#submenu-url').value;
-                    currentSm.IsOpenInNewTab = $('#submenu-isopeninnewtab').prop('checked');
-                } else {
-                    var newSm = {
-                        Id: document.querySelector('#submenu-id').value,
-                        Title: document.querySelector('#submenu-title').value,
-                        Url: document.querySelector('#submenu-url').value,
-                        IsOpenInNewTab: $('#submenu-isopeninnewtab').prop('checked')
-                    };
-                    father.SubMenus.push(newSm);
-                }
-
-                callApi(`${action}`,
-                    httpVerb,
-                    {
-                        "Id": document.querySelector("#topmenu-id").value,
-                        "Title": document.querySelector("#topmenu-title").value,
-                        "Url": document.querySelector("#topmenu-url").value,
-                        "Icon": document.querySelector("#topmenu-iconcssclass").value,
-                        "DisplayOrder": parseInt($("#topmenu-displayorder").val()),
-                        "IsOpenInNewTab": $('#topmenu-isopeninnewtab').prop('checked'),
-                        "SubMenus": father ? father.SubMenus : null
-                    },
-                    (resp) => {
-                        document.querySelector('#edit-form').reset();
-
-                        blogToast.success('Menu updated');
-                        setTimeout(function () {
-                            window.location.reload();
-                        }, 800);
-                    });
+            var action = '';
+            var httpVerb = 'POST';
+            var menuId = document.querySelector("#topmenu-id").value;
+            if (menuId == emptyGuid) {
+                action = '/api/menu';
+            } else {
+                action = '/api/menu/edit';
+                httpVerb = 'PUT';
             }
+
+            var father = findTopMenu(menuId);
+            if (!isNewSubMenu) {
+                currentSm.Id = document.querySelector('#submenu-id').value;
+                currentSm.Title = document.querySelector('#submenu-title').value;
+                currentSm.Url = document.querySelector('#submenu-url').value;
+                currentSm.IsOpenInNewTab = $('#submenu-isopeninnewtab').prop('checked');
+            } else {
+                var newSm = {
+                    Id: document.querySelector('#submenu-id').value,
+                    Title: document.querySelector('#submenu-title').value,
+                    Url: document.querySelector('#submenu-url').value,
+                    IsOpenInNewTab: $('#submenu-isopeninnewtab').prop('checked')
+                };
+                father.SubMenus.push(newSm);
+            }
+
+            callApi(`${action}`,
+                httpVerb,
+                {
+                    "Id": document.querySelector("#topmenu-id").value,
+                    "Title": document.querySelector("#topmenu-title").value,
+                    "Url": document.querySelector("#topmenu-url").value,
+                    "Icon": document.querySelector("#topmenu-iconcssclass").value,
+                    "DisplayOrder": parseInt($("#topmenu-displayorder").val()),
+                    "IsOpenInNewTab": $('#topmenu-isopeninnewtab').prop('checked'),
+                    "SubMenus": father ? father.SubMenus : null
+                },
+                (resp) => {
+                    document.querySelector('#edit-form').reset();
+
+                    blogToast.success('Menu updated');
+                    setTimeout(function () {
+                        window.location.reload();
+                    }, 800);
+                });
         }
+
+        const form = document.querySelector('#edit-form');
+        form.addEventListener('submit', updateMenus);
 
         $(function() {
             initCreateMenu();
@@ -319,10 +324,10 @@
                         <div class="row">
                             <div class="col-10">
                                 <div class="mb-2">
-                                    <input id="submenu-title" placeholder="@Localizer["Title"]" class="form-control" max-length="64" required />
+                                    <input id="submenu-title" placeholder="@Localizer["Title"]" class="form-control" max-length="64" />
                                 </div>
                                 <div class="mb-2">
-                                    <input id="submenu-url" placeholder="@Localizer["Url (Relative or Absolute)"]" class="form-control" max-length="256" required />
+                                    <input id="submenu-url" placeholder="@Localizer["Url (Relative or Absolute)"]" class="form-control" max-length="256" />
                                 </div>
                             </div>
                             <div class="col-2">
@@ -339,8 +344,7 @@
                     </div>
 
                     <hr />
-                    <button type="button" class="btn btn-outline-accent btn-submit">@Localizer["Submit"]</button>
-                    <button type="button" class="btn btn-outline-secondary">@Localizer["Cancel"]</button>
+                    <button type="submit" class="btn btn-outline-accent btn-submit">@Localizer["Submit"]</button>
 
                     <a href="javascript:;" data-menuid="" class="btn btn-outline-danger btn-delete" style="display: none;"><i class="bi-trash"></i></a>
                 </form>

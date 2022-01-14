@@ -307,7 +307,6 @@ var postEditor = {
 
         $('#btn-preview').click(function (e) {
             submitForm(e);
-            isPreviewRequired = true;
         });
 
         $('#btn-save').click(function (e) {
@@ -315,10 +314,8 @@ var postEditor = {
         });
 
         $('#btn-publish').click(function (e) {
-            if ($('form').valid()) {
-                $('input[name="ViewModel.IsPublished"]').val('True');
-                submitForm(e);
-            }
+            $('input[name="ViewModel.IsPublished"]').val('True');
+            submitForm(e);
         });
 
         function submitForm(e) {

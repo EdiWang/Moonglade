@@ -1,36 +1,27 @@
 ﻿@page "/admin/settings/content"
 @model Moonglade.Web.Pages.Settings.ContentModel
-
 @section scripts{
 <script>
-    $(function() {
-        toggleCommentSettingsUI();
-    });
-
-    $(".comment-provider-checkbox").change(function() {
-        toggleCommentSettingsUI();
-    });
-
     function toggleCommentSettingsUI() {
         if ($('#BuiltIn').is(":checked")) {
-            $('.comment-settings-built-in').show();
-            $('.comment-settings-3rd').hide();
+            document.querySelector('.comment-settings-built-in').style.display = 'block';
+            document.querySelector('.comment-settings-3rd').style.display = 'none';
         } else {
-            $('.comment-settings-built-in').hide();
-            $('.comment-settings-3rd').show();
+            document.querySelector('.comment-settings-built-in').style.display = 'none';
+            document.querySelector('.comment-settings-3rd').style.display = 'block';
         }
     }
 
     const form = document.querySelector('#form-settings');
     form.addEventListener('submit', handleSettingsSubmit);
+
+    toggleCommentSettingsUI();
 </script>
 }
 
 <partial name="_SettingsHeader" />
 <div class="ps-4 pe-4">
     <form id="form-settings" asp-controller="Settings" asp-action="Content">
-        <div asp-validation-summary="All" class="text-danger"></div>
-
         <div class="row">
             <div class="col-md-6">
                 <div>
@@ -62,7 +53,8 @@
                                 @Html.RadioButtonFor(model => model.ViewModel.CommentProvider, CommentProvider.BuiltIn, new
                                 {
                                     id = CommentProvider.BuiltIn.ToString(), 
-                                    @class = "form-check-input comment-provider-checkbox"
+                                    @class = "form-check-input comment-provider-checkbox",
+                                    onchange = "toggleCommentSettingsUI()"
                                 })
                                 <label class="form-check-label" for="@CommentProvider.BuiltIn">@Localizer["Built in"]</label>
                             </div>
@@ -70,7 +62,8 @@
                                 @Html.RadioButtonFor(model => model.ViewModel.CommentProvider, CommentProvider.ThirdParty, new
                                 {
                                     id = CommentProvider.ThirdParty.ToString(), 
-                                    @class = "form-check-input comment-provider-checkbox"
+                                    @class = "form-check-input comment-provider-checkbox",
+                                    onchange = "toggleCommentSettingsUI()"
                                 })
                                 <label class="form-check-label" for="@CommentProvider.ThirdParty">@Localizer["Third party"]</label>
                             </div>
@@ -149,7 +142,6 @@
                                 <label class="form-label" asp-for="ViewModel.DisharmonyWords"></label>
                             </div>
 
-                            <span asp-validation-for="ViewModel.DisharmonyWords" class="text-danger"></span>
                             <small class="form-text text-muted">@Localizer["Blocked words will be masked as *** in comment content."]</small>
                         </div>
                     </div>
@@ -163,7 +155,6 @@
                                           spellcheck="false"></textarea>
                                 <label class="form-label" asp-for="ViewModel.ThirdPartyCommentHtmlPitch"></label>
                             </div>
-                            <span asp-validation-for="ViewModel.ThirdPartyCommentHtmlPitch" class="text-danger"></span>
                         </div>
                     </div>
                 </div>
@@ -196,8 +187,7 @@
                             <div class="form-text">@Localizer["Change this value will only affect new posts"]</div>
                         </div>
                         <div class="col-md-5">
-                            <input asp-for="ViewModel.PostAbstractWords" class="form-control" />
-                            <span asp-validation-for="ViewModel.PostAbstractWords" class="text-danger"></span>
+                            <input asp-for="ViewModel.PostAbstractWords" class="form-control" required />
                         </div>
                     </div>
 
@@ -239,7 +229,6 @@
                                       spellcheck="false"></textarea>
                             <label class="form-label" asp-for="ViewModel.PostFooterHtmlPitch"></label>
                         </div>
-                        <span asp-validation-for="ViewModel.PostFooterHtmlPitch" class="text-danger"></span>
                     </div>
                 </div>
                 <div class="mt-5">
@@ -267,7 +256,6 @@
                                       spellcheck="false"></textarea>
                             <label class="form-label" asp-for="ViewModel.CalloutSectionHtmlPitch"></label>
                         </div>
-                        <span asp-validation-for="ViewModel.CalloutSectionHtmlPitch" class="text-danger"></span>
                     </div>
                 </div>
             </div>

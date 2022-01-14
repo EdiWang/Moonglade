@@ -4,28 +4,26 @@ namespace Moonglade.Core.PageFeature;
 
 public class EditPageRequest
 {
-    [Required(ErrorMessage = "Please enter a title.")]
+    [Required]
     [MaxLength(128)]
     public string Title { get; set; }
 
-    [Required(ErrorMessage = "Please enter a slug.")]
+    [Required]
     [RegularExpression(@"[a-z0-9\-]+", ErrorMessage = "Only lower case letters and hyphens are allowed.")]
     [MaxLength(128)]
     public string Slug { get; set; }
 
-    [Required(ErrorMessage = "Please enter the meta description.")]
+    [Required]
     [DataType(DataType.MultilineText)]
     [MaxLength(256)]
     public string MetaDescription { get; set; }
 
-    [Required(ErrorMessage = "Please enter content.")]
     [DataType(DataType.MultilineText)]
     public string RawHtmlContent { get; set; }
 
     [DataType(DataType.MultilineText)]
     public string CssContent { get; set; }
 
-    [Required]
     [Display(Name = "Hide Sidebar")]
     public bool HideSidebar { get; set; }
 

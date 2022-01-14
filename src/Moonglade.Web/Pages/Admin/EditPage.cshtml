@@ -64,15 +64,6 @@
         document.querySelector("#EditPageRequest_CssContent").value = cssValue;
     }
 
-    $('#btn-preview').click(function () {
-        assignEditorValues();
-
-        if ($("#page-edit-form").valid()) {
-            isPreviewRequired = true;
-            postCreateOrEdit();
-        }
-    });
-
     var onPageCreateEditBegin = function () {
         document.querySelector(btnSubmitPage).classList.add('disabled');
         $(btnSubmitPage).attr('disabled', 'disabled');
@@ -96,8 +87,8 @@
                 metaDescription: document.querySelector("#EditPageRequest_MetaDescription").value,
                 rawHtmlContent: document.querySelector("#EditPageRequest_RawHtmlContent").value,
                 cssContent: document.querySelector("#EditPageRequest_CssContent").value,
-                hideSidebar: $('#EditPageRequest_HideSidebar').prop('checked'),
-                isPublished: $('#EditPageRequest_IsPublished').prop('checked')
+                hideSidebar: document.querySelector('#EditPageRequest_HideSidebar').checked,
+                isPublished: document.querySelector('#EditPageRequest_IsPublished').checked
             },
             async (resp) => {
                 onPageCreateEditComplete();
@@ -107,7 +98,7 @@
                     pageId = data.pageId;
                     blogToast.success('Page saved successfully.');
 
-                    if ($('input[name="IsPublished"]:checked').val() === 'true') {
+                    if (document.querySelector('#EditPageRequest_IsPublished').checked) {
                         document.querySelector('#btn-preview').style.display = 'none';
                     }
 
@@ -118,15 +109,6 @@
                 }
             });
     }
-
-    $("#btn-submit").click(function () {
-        isPreviewRequired = false;
-        assignEditorValues();
-
-        if ($("#page-edit-form").valid()) {
-            postCreateOrEdit();
-        }
-    });
 
     $(window).bind('keydown', function (event) {
         if (event.ctrlKey || event.metaKey) {
@@ -146,6 +128,18 @@
                 initCssEditor();
             }
         });
+
+    function handleSubmit(e) {
+        e.preventDefault();
+
+        isPreviewRequired = e.submitter.id == 'btn-preview';
+        assignEditorValues();
+
+        postCreateOrEdit();
+    }
+
+    const form = document.querySelector('#page-edit-form');
+    form.addEventListener('submit', handleSubmit);
 </script>
 }
 
@@ -164,27 +158,13 @@
 <div class="p-4">
 
     <form id="page-edit-form" method="post">
-        <div asp-validation-summary="ModelOnly" class="alert alert-danger"></div>
         <div class="row">
             <div class="col-md-9 col-xl-10">
-                <input type="text" asp-for="EditPageRequest.Title" class="form-control form-control-lg mb-1" placeholder="Title" />
-                <div>
-                    <span asp-validation-for="EditPageRequest.Title" class="text-danger"></span>
-                </div>
+                <input type="text" asp-for="EditPageRequest.Title" class="form-control form-control-lg mb-1" placeholder="Title" required />
 
                 <div class="input-group input-group-sm">
                     <span class="input-group-text" id="basic-addon3">page/</span>
-                    <input type="text" asp-for="EditPageRequest.Slug" class="form-control form-control-sm" placeholder="slug" />
-                </div>
-                <div>
-                    <span asp-validation-for="EditPageRequest.Slug" class="text-danger"></span>
-                </div>
-
-                <div>
-                    <span asp-validation-for="EditPageRequest.RawHtmlContent" class="text-danger"></span>
-                </div>
-                <div>
-                    <span asp-validation-for="EditPageRequest.CssContent" class="text-danger"></span>
+                    <input type="text" asp-for="EditPageRequest.Slug" class="form-control form-control-sm" placeholder="Slug" required />
                 </div>
 
                 <ul class="nav nav-tabs mt-3" id="editor-box-tabs" role="tablist">
@@ -232,22 +212,22 @@
                             <textarea asp-for="EditPageRequest.MetaDescription"
                                       placeholder="@Html.DisplayNameFor(m => m.EditPageRequest.MetaDescription)"
                                       class="form-control form-control-sm h-200px"
-                                      spellcheck="false"></textarea>
+                                      spellcheck="false"
+                                      required></textarea>
                             <label class="form-label" asp-for="EditPageRequest.MetaDescription"></label>
                         </div>
-                        <span asp-validation-for="EditPageRequest.MetaDescription" class="text-danger"></span>
                     </div>
                 </div>
             </div>
         </div>
 
         <div class="mt-3">
-            <button type="button" class="btn btn-outline-accent" id="btn-submit">
+            <button type="submit" class="btn btn-outline-accent" id="btn-submit">
                 @Localizer["Save"]
             </button>
             @if (!Model.EditPageRequest.IsPublished)
             {
-                <button type="button" class="btn btn-outline-success" id="btn-preview">
+                <button type="submit" class="btn btn-outline-success" id="btn-preview">
                     @Localizer["Preview"]
                 </button>
             }

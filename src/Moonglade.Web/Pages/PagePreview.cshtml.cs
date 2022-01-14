@@ -4,13 +4,13 @@ using Moonglade.Core.PageFeature;
 namespace Moonglade.Web.Pages;
 
 [Authorize]
-public class BlogPagePreviewModel : PageModel
+public class PagePreviewModel : PageModel
 {
     private readonly IMediator _mediator;
 
     public BlogPage BlogPage { get; set; }
 
-    public BlogPagePreviewModel(IMediator mediator)
+    public PagePreviewModel(IMediator mediator)
     {
         _mediator = mediator;
     }

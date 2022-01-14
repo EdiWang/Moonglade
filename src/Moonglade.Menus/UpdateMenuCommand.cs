@@ -42,7 +42,7 @@ public class UpdateMenuCommandHandler : IRequestHandler<UpdateMenuCommand>
         menu.Icon = request.Payload.Icon;
         menu.IsOpenInNewTab = request.Payload.IsOpenInNewTab;
 
-        if (request.Payload.SubMenus is { Length: > 0 })
+        if (request.Payload.SubMenus != null)
         {
             menu.SubMenus.Clear();
             var sms = request.Payload.SubMenus.Select(p => new SubMenuEntity

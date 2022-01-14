@@ -8,10 +8,6 @@
     </script>
 }
 
-@{
-    ViewBag.SkipJQueryValidation = true;
-}
-
 @section scripts{
     <script>var require = { paths: { 'vs': '/lib/monaco-editor/min/vs' } };</script>
     <script src="~/lib/monaco-editor/min/vs/loader.js"></script>
@@ -72,9 +68,6 @@
 
         </div>
         <textarea asp-for="ViewModel.CssCode" class="settings-csscontent-textarea d-none"></textarea>
-        <div>
-            <span asp-validation-for="ViewModel.CssCode" class="text-danger"></span>
-        </div>
 
         <div class="mt-3">
             <button type="submit" class="btn btn-outline-accent" id="btn-save-settings">

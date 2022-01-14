@@ -43,7 +43,7 @@
             callApi(oFormElement.action,
                 'POST',
                 {
-                    Name: $('#ThemeRequest_Name').val(),
+                    Name: document.querySelector('#ThemeRequest_Name').value,
                     AccentColor1: $('#ThemeRequest_AccentColor1').val(),
                     AccentColor2: $('#ThemeRequest_AccentColor2').val(),
                     AccentColor3: $('#ThemeRequest_AccentColor3').val()
@@ -59,7 +59,7 @@
         }
 
         $('.btn-delete-theme').click(function () {
-            var selectedThemeId = $('#ViewModel_SelectedThemeId').val();
+            var selectedThemeId = document.querySelector('#ViewModel_SelectedThemeId').value;
             callApi(`/api/theme/${selectedThemeId}`,
                 'DELETE',
                 {},
@@ -79,8 +79,6 @@
 <div class="ps-4 pe-4">
 
     <form id="form-settings" asp-controller="Settings" asp-action="General" spellcheck="false">
-        <div asp-validation-summary="All" class="text-danger"></div>
-
         <div class="row g-5">
             <div class="col-md-6">
                 <div class="mb-3">
@@ -96,19 +94,16 @@
                             <div class="row g-2 mb-3">
                                 <div class="col">
                                     <label class="form-label" asp-for="ViewModel.SiteTitle"></label>
-                                    <input asp-for="ViewModel.SiteTitle" class="form-control" />
-                                    <span asp-validation-for="ViewModel.SiteTitle" class="text-danger"></span>
+                                    <input asp-for="ViewModel.SiteTitle" class="form-control" required />
                                 </div>
                                 <div class="col">
                                     <label class="form-label" asp-for="ViewModel.LogoText"></label>
-                                    <input asp-for="ViewModel.LogoText" class="form-control" />
-                                    <span asp-validation-for="ViewModel.LogoText" class="text-danger"></span>
+                                    <input asp-for="ViewModel.LogoText" class="form-control" required />
                                 </div>
                             </div>
                             <div class="mb-1">
                                 <label class="form-label" asp-for="ViewModel.MetaKeyword"></label>
-                                <input asp-for="ViewModel.MetaKeyword" class="form-control" />
-                                <span asp-validation-for="ViewModel.MetaKeyword" class="text-danger"></span>
+                                <input asp-for="ViewModel.MetaKeyword" class="form-control" required />
                             </div>
 
                             <div class="row g-3 align-items-center settings-entry mt-1 mb-4">
@@ -121,7 +116,6 @@
                                 </div>
                                 <div class="col-md-5 text-end">
                                     <input asp-for="ViewModel.CanonicalPrefix" class="form-control" />
-                                    <span asp-validation-for="ViewModel.CanonicalPrefix" class="text-danger"></span>
                                 </div>
                             </div>
                             
@@ -151,13 +145,11 @@
                             <div class="row g-2 mb-3">
                                 <div class="col">
                                     <label class="form-label" asp-for="ViewModel.OwnerName"></label>
-                                    <input asp-for="ViewModel.OwnerName" class="form-control" />
-                                    <span asp-validation-for="ViewModel.OwnerName" class="text-danger"></span>
+                                    <input asp-for="ViewModel.OwnerName" class="form-control" required />
                                 </div>
                                 <div class="col">
                                     <label class="form-label" asp-for="ViewModel.OwnerEmail"></label>
-                                    <input asp-for="ViewModel.OwnerEmail" class="form-control" title="@Localizer["Email address to receive notifications from this blog."]" />
-                                    <span asp-validation-for="ViewModel.OwnerEmail" class="text-danger"></span>
+                                    <input asp-for="ViewModel.OwnerEmail" class="form-control" required title="@Localizer["Email address to receive notifications from this blog."]" />
                                 </div>
                             </div>
                             <div class="mb-3">
@@ -165,15 +157,13 @@
                                     <textarea asp-for="ViewModel.Description"
                                               placeholder="@Html.DisplayNameFor(m => m.ViewModel.Description)"
                                               class="form-control h-100px"
-                                              spellcheck="false" cols="10" rows="10"></textarea>
+                                              spellcheck="false" cols="10" rows="10" required></textarea>
                                     <label class="form-label" asp-for="ViewModel.Description"></label>
                                 </div>
-                                <span asp-validation-for="ViewModel.Description" class="text-danger"></span>
                             </div>
                             <div>
                                 <label class="form-label" asp-for="ViewModel.ShortDescription"></label>
-                                <input asp-for="ViewModel.ShortDescription" class="form-control" />
-                                <span asp-validation-for="ViewModel.ShortDescription" class="text-danger"></span>
+                                <input asp-for="ViewModel.ShortDescription" class="form-control" required />
                                 <small class="form-text text-muted">@Localizer["Short description is for display only on Phone screen."]</small>
                             </div>
                         </div>
@@ -235,7 +225,6 @@
                                   rows="10"></textarea>
                         <label class="form-label" asp-for="ViewModel.SideBarCustomizedHtmlPitch"></label>
                     </div>
-                    <span asp-validation-for="ViewModel.SideBarCustomizedHtmlPitch" class="text-danger"></span>
 
                     <div class="mt-5">
                         <h6 class="card-subtitle mb-4 text-muted">
@@ -251,8 +240,7 @@
                                 <div class="form-text">@Localizer["Use [c] for copyright mark: &copy;, [year] for current year."]</div>
                             </div>
                             <div class="col-md-5 text-end">
-                                <input asp-for="ViewModel.Copyright" class="form-control" />
-                                <span asp-validation-for="ViewModel.Copyright" class="text-danger"></span>
+                                <input asp-for="ViewModel.Copyright" class="form-control" required />
                             </div>
                         </div>
 
@@ -263,7 +251,6 @@
                                       spellcheck="false" rows="10" cols="10"></textarea>
                             <label class="form-label" asp-for="ViewModel.FooterCustomizedHtmlPitch"></label>
                         </div>
-                        <span asp-validation-for="ViewModel.FooterCustomizedHtmlPitch" class="text-danger"></span>
                     </div>
                 </div>
             </div>
@@ -351,31 +338,21 @@
             <form method="post" action="/api/theme" onsubmit="createTheme(this);return false;">
                 <div class="modal-body">
                     <div class="mb-2">
-                        <input type="text" asp-for="ThemeRequest.Name" class="form-control" placeholder="@Localizer["Name"]" />
-                        <span asp-validation-for="ThemeRequest.Name" class="text-danger"></span>
+                        <input type="text" asp-for="ThemeRequest.Name" class="form-control" placeholder="@Localizer["Name"]" required />
                     </div>
                     <div class="row g-2">
                         <div class="col">
                             <label asp-for="ThemeRequest.AccentColor1" class="form-label">Accent Color 1</label>
-                            <input type="color" class="form-control form-control-color" asp-for="ThemeRequest.AccentColor1" value="#2a579a" title="Accent Color 1">
+                            <input type="color" class="form-control form-control-color" asp-for="ThemeRequest.AccentColor1" value="#2a579a" title="Accent Color 1" required>
                         </div>
                         <div class="col">
                             <label asp-for="ThemeRequest.AccentColor2" class="form-label">Accent Color 2</label>
-                            <input type="color" class="form-control form-control-color" asp-for="ThemeRequest.AccentColor2" value="#1a365f" title="Accent Color 2">
+                            <input type="color" class="form-control form-control-color" asp-for="ThemeRequest.AccentColor2" value="#1a365f" title="Accent Color 2" required>
                         </div>
                         <div class="col">
                             <label asp-for="ThemeRequest.AccentColor3" class="form-label">Accent Color 3</label>
-                            <input type="color" class="form-control form-control-color" asp-for="ThemeRequest.AccentColor3" value="#3e6db5" title="Accent Color 3">
+                            <input type="color" class="form-control form-control-color" asp-for="ThemeRequest.AccentColor3" value="#3e6db5" title="Accent Color 3" required>
                         </div>
-                    </div>
-                    <div>
-                        <span asp-validation-for="ThemeRequest.AccentColor1" class="text-danger"></span>
-                    </div>
-                    <div>
-                        <span asp-validation-for="ThemeRequest.AccentColor2" class="text-danger"></span>
-                    </div>
-                    <div>
-                        <span asp-validation-for="ThemeRequest.AccentColor3" class="text-danger"></span>
                     </div>
                 </div>
                 <div class="modal-footer">
