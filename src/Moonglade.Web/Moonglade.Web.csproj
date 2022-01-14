@@ -54,7 +54,7 @@
 		<PackageReference Include="WilderMinds.MetaWeblog" Version="5.0.0" />
 		<PackageReference Include="X.PagedList" Version="8.1.0" />
 		<PackageReference Include="X.PagedList.Mvc.Core" Version="8.1.0" />
-		<PackageReference Include="TimeZoneConverter" Version="4.0.0" />
+		<PackageReference Include="TimeZoneConverter" Version="5.0.0" />
 		<PackageReference Include="MediatR.Extensions.Microsoft.DependencyInjection" Version="10.0.1" />
 	</ItemGroup>
 
