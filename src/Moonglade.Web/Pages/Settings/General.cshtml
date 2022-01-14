@@ -43,23 +43,23 @@
             callApi(oFormElement.action,
                 'POST',
                 {
-                    Name: document.querySelector('#ThemeRequest_Name').value,
-                    AccentColor1: $('#ThemeRequest_AccentColor1').val(),
-                    AccentColor2: $('#ThemeRequest_AccentColor2').val(),
-                    AccentColor3: $('#ThemeRequest_AccentColor3').val()
+                    name: document.querySelector('#ThemeRequest_Name').value,
+                    accentColor1: document.querySelector('#ThemeRequest_AccentColor1').value,
+                    accentColor2: document.querySelector('#ThemeRequest_AccentColor2').value,
+                    accentColor3: document.querySelector('#ThemeRequest_AccentColor3').value
                 },
                 async (resp) => {
                     var id = await resp.json();
                     console.info(id);
 
                     themeModal.hide();
-                    $("#ViewModel_SelectedThemeId").append(new Option($('#ThemeRequest_Name').val(), id));
+                    $("#ViewModel_SelectedThemeId").append(new Option(document.querySelector('#ThemeRequest_Name').value, id));
                     blogToast.success('Theme created');
                 });
         }
 
-        $('.btn-delete-theme').click(function () {
-            var selectedThemeId = document.querySelector('#ViewModel_SelectedThemeId').value;
+        function deleteTheme() {
+            var selectedThemeId = document.querySelector('#ViewModel_ThemeId').value;
             callApi(`/api/theme/${selectedThemeId}`,
                 'DELETE',
                 {},
@@ -67,7 +67,7 @@
                     $(`#ViewModel_SelectedThemeId option[value='${selectedThemeId}']`).remove();
                     blogToast.success('Theme deleted.');
                 });
-        });
+        }
 
         const form = document.querySelector('#form-settings');
         form.addEventListener('submit', handleSettingsSubmit);
@@ -185,7 +185,7 @@
                                     <i class="bi-palette"></i>
                                     New
                                 </a>
-                                <a class="btn btn-outline-danger btn-delete-theme" href="#">
+                                <a class="btn btn-outline-danger btn-delete-theme" href="javascript:deleteTheme();">
                                     <i class="bi-trash"></i>
                                 </a>
                             </div>

@@ -22,7 +22,7 @@
     function deleteAccount(accountid) {
         callApi(`/api/localaccount/${accountid}`, 'DELETE', {},
             (resp) => {
-                $(`#tr-${accountid}`).hide();
+                document.querySelector(`#tr-${accountid}`).remove();
             });
     }
 

@@ -58,7 +58,7 @@ public class AssetsController : ControllerBase
     [ProducesResponseType(StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status409Conflict)]
     [TypeFilter(typeof(ClearBlogCache), Arguments = new object[] { CacheDivision.General, "avatar" })]
-    public async Task<IActionResult> Avatar([FromForm] string base64Img)
+    public async Task<IActionResult> Avatar([FromBody] string base64Img)
     {
         base64Img = base64Img.Trim();
         if (!Helper.TryParseBase64(base64Img, out var base64Chars))
@@ -136,7 +136,7 @@ public class AssetsController : ControllerBase
     [HttpPost("siteicon")]
     [ProducesResponseType(StatusCodes.Status204NoContent)]
     [ProducesResponseType(StatusCodes.Status409Conflict)]
-    public async Task<IActionResult> UpdateSiteIcon([FromForm] string base64Img)
+    public async Task<IActionResult> UpdateSiteIcon([FromBody] string base64Img)
     {
         base64Img = base64Img.Trim();
         if (!Helper.TryParseBase64(base64Img, out var base64Chars))
