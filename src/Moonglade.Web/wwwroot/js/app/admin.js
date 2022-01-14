@@ -62,7 +62,7 @@ function ImageUploader(targetName, hw, imgMimeType) {
     this.uploadImage = function (uploadUrl) {
         if (imgDataUrl) {
             document.querySelector(`#btn-upload-${targetName}`).classList.add('disabled');
-            $(`#btn-upload-${targetName}`).attr('disabled', 'disabled');
+            document.querySelector(`#btn-upload-${targetName}`).setAttribute('disabled', 'disabled');
 
             var rawData = { base64Img: imgDataUrl.replace(/^data:image\/(png|jpeg|jpg);base64,/, '') };
             $.ajax({
@@ -157,8 +157,8 @@ function ImageUploader(targetName, hw, imgMimeType) {
 
                     var div = $(`#${targetName}DropTarget`);
                     div.html(`<img class="img-fluid" src="${imgDataUrl}" />`);
-                    $(`#btn-upload-${targetName}`).removeClass('disabled');
-                    $(`#btn-upload-${targetName}`).removeAttr('disabled');
+                    document.querySelector(`#btn-upload-${targetName}`).classList.remove('disabled');
+                    document.querySelector(`#btn-upload-${targetName}`).removeAttribute('disabled');
                 }
             }
             reader.readAsDataURL(file);
