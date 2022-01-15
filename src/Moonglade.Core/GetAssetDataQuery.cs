@@ -1,8 +1,8 @@
-﻿using Dapper;
-using MediatR;
-using System.Data;
+﻿using MediatR;
+using Moonglade.Data.Entities;
+using Moonglade.Data.Infrastructure;
 
-namespace Moonglade.Configuration;
+namespace Moonglade.Core;
 
 public class GetAssetDataQuery : IRequest<string>
 {
@@ -16,18 +16,16 @@ public class GetAssetDataQuery : IRequest<string>
 
 public class GetAssetDataQueryHandler : IRequestHandler<GetAssetDataQuery, string>
 {
-    private readonly IDbConnection _dbConnection;
+    private readonly IRepository<BlogAssetEntity> _repository;
 
-    public GetAssetDataQueryHandler(IDbConnection dbConnection)
+    public GetAssetDataQueryHandler(IRepository<BlogAssetEntity> repository)
     {
-        _dbConnection = dbConnection;
+        _repository = repository;
     }
 
     public async Task<string> Handle(GetAssetDataQuery request, CancellationToken cancellationToken)
     {
-        var asset = await _dbConnection.QueryFirstOrDefaultAsync<BlogAsset>
-            ("SELECT * FROM BlogAsset ba WHERE ba.Id = @assetId", new { request.AssetId });
-
+        var asset = await _repository.GetAsync(request.AssetId);
         return asset?.Base64Data;
     }
 }

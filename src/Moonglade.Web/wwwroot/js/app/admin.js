@@ -93,7 +93,7 @@ function ImageUploader(targetName, hw, imgMimeType) {
             var file;
             if (evt.dataTransfer) {
                 file = evt.dataTransfer.files[0];
-                $(`.custom-file-label-${targetName}`).text(file.name);
+                document.querySelector(`.custom-file-label-${targetName}`).innerText(file.name);
             } else {
                 file = evt.target.files[0];
             }
@@ -131,8 +131,8 @@ function ImageUploader(targetName, hw, imgMimeType) {
                     ctx.drawImage(this, 0, 0, tempW, tempH);
                     imgDataUrl = canvas.toDataURL(imgMimeType);
 
-                    var div = $(`#${targetName}DropTarget`);
-                    div.html(`<img class="img-fluid" src="${imgDataUrl}" />`);
+                    var div = document.querySelector(`#${targetName}DropTarget`);
+                    div.innerHTML = `<img class="img-fluid" src="${imgDataUrl}" />`;
                     document.querySelector(`#btn-upload-${targetName}`).classList.remove('disabled');
                     document.querySelector(`#btn-upload-${targetName}`).removeAttribute('disabled');
                 }
@@ -194,11 +194,14 @@ var postEditor = {
                     { text: 'C++', value: 'cpp' },
                     { text: 'CSS', value: 'css' },
                     { text: 'Dart', value: 'dart' },
+                    { text: 'Dockerfile', value: 'dockerfile' },
                     { text: 'F#', value: 'fsharp' },
                     { text: 'Go', value: 'go' },
                     { text: 'HTML/XML', value: 'markup' },
                     { text: 'JavaScript', value: 'javascript' },
                     { text: 'Json', value: 'json' },
+                    { text: 'Less', value: 'less' },
+                    { text: 'Lua', value: 'lua' },
                     { text: 'Markdown', value: 'markdown' },
                     { text: 'PowerShell', value: 'powershell' },
                     { text: 'Plain Text', value: 'plaintext' },
@@ -206,7 +209,9 @@ var postEditor = {
                     { text: 'PHP', value: 'php' },
                     { text: 'Ruby', value: 'ruby' },
                     { text: 'Rust', value: 'rust' },
+                    { text: 'SCSS', value: 'scss' },
                     { text: 'SQL', value: 'sql' },
+                    { text: 'Swift', value: 'swift' },
                     { text: 'TypeScript', value: 'typescript' },
                     { text: 'Visual Basic', value: 'vb' },
                     { text: 'YAML', value: 'yaml' }
@@ -309,7 +314,7 @@ var postEditor = {
             message: 'You have unsaved changes, are you sure to leave this page?'
         });
 
-        $('#ViewModel_Title').focus();
+        document.querySelector('#ViewModel_Title').focus();
     },
     keepAlive: function () {
         var tid = setInterval(postNonce, 60 * 1000);

@@ -5,9 +5,10 @@ var postSlug = {
         fetch(uri)
             .then(response => response.json())
             .then(data => {
-                $('.post-hit-number-text').text(data.hits);
-                if ($('.likehits-num')) {
-                    $('.likehits-num').text(data.likes);
+                document.querySelector('.post-hit-number-text').innerText = data.hits;
+                var likehitsNum = document.querySelector('.likehits-num');
+                if (likehitsNum) {
+                    likehitsNum.innerText = data.likes;
                 }
             })
             .catch(err => {
@@ -24,9 +25,9 @@ var postSlug = {
         callApi('/api/statistics', 'POST', req,
             (success) => {
                 if (isLike) {
-                    let oldVal = parseInt($('.likehits-num').text(), 10);
-                    $('.likehits-num').html(++oldVal);
-                    $('.btn-ratings').attr('disabled', 'disabled');
+                    let oldVal = parseInt(document.querySelector('.likehits-num').innerText, 10);
+                    document.querySelector('.likehits-num').innerHTML = ++oldVal;
+                    document.querySelector('.btn-ratings').setAttribute('disabled', 'disabled');
                 }
             });
     },
@@ -51,12 +52,11 @@ var postSlug = {
         $('.post-content img').click(function (e) {
             var src = $(this).attr('src');
 
-            $('#imgzoom').attr('src', src);
+            document.querySelector('#imgzoom').src = src;
 
             if (fitImageToDevicePixelRatio) {
                 setTimeout(function () {
                     var w = $('#imgzoom')[0].naturalWidth;
-                    console.info(w);
 
                     $('#imgzoom').css('width', getImageWidthInDevicePixelRatio(w));
                 }, 100);
@@ -107,7 +107,6 @@ var postSlug = {
 };
 
 function getImageWidthInDevicePixelRatio(width) {
-    console.info(width);
     if (width <= 0) return 0;
     var dpr = window.devicePixelRatio;
     if (dpr === 1) return width;

@@ -1,8 +1,8 @@
-﻿using Dapper;
+﻿using System.Data;
+using Dapper;
 using MediatR;
-using System.Data;
 
-namespace Moonglade.Configuration;
+namespace Moonglade.Core;
 
 public class SaveAssetCommand : INotification
 {

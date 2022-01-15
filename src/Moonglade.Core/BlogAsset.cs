@@ -1,4 +1,4 @@
-﻿namespace Moonglade.Configuration;
+﻿namespace Moonglade.Core;
 
 internal class BlogAsset
 {
