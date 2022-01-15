@@ -1,6 +1,6 @@
-﻿using System.Data;
-using Dapper;
-using MediatR;
+﻿using MediatR;
+using Moonglade.Data.Entities;
+using Moonglade.Data.Infrastructure;
 
 namespace Moonglade.Core;
 
@@ -18,11 +18,11 @@ public class SaveAssetCommand : INotification
 
 public class SaveAssetCommandHandler : INotificationHandler<SaveAssetCommand>
 {
-    private readonly IDbConnection _dbConnection;
+    private readonly IRepository<BlogAssetEntity> _repository;
 
-    public SaveAssetCommandHandler(IDbConnection dbConnection)
+    public SaveAssetCommandHandler(IRepository<BlogAssetEntity> repository)
     {
-        _dbConnection = dbConnection;
+        _repository = repository;
     }
 
     public async Task Handle(SaveAssetCommand request, CancellationToken cancellationToken)
@@ -30,31 +30,22 @@ public class SaveAssetCommandHandler : INotificationHandler<SaveAssetCommand>
         if (request.AssetId == Guid.Empty) throw new ArgumentOutOfRangeException(nameof(request.AssetId));
         if (string.IsNullOrWhiteSpace(request.AssetBase64)) throw new ArgumentNullException(nameof(request.AssetBase64));
 
-        var exists = await
-            _dbConnection.ExecuteScalarAsync<int>("SELECT COUNT(1) FROM BlogAsset ba WHERE ba.Id = @assetId",
-                new { request.AssetId });
+        var entity = await _repository.GetAsync(request.AssetId);
 
-        if (exists == 0)
+        if (null == entity)
         {
-            await _dbConnection.ExecuteAsync(
-                "INSERT INTO BlogAsset(Id, Base64Data, LastModifiedTimeUtc) VALUES (@assetId, @assetBase64, @utcNow)",
-                new
-                {
-                    request.AssetId,
-                    request.AssetBase64,
-                    DateTime.UtcNow
-                });
+            await _repository.AddAsync(new()
+            {
+                Id = request.AssetId,
+                Base64Data = request.AssetBase64,
+                LastModifiedTimeUtc = DateTime.UtcNow
+            });
         }
         else
         {
-            await _dbConnection.ExecuteAsync(
-                "UPDATE BlogAsset SET Base64Data = @assetBase64, LastModifiedTimeUtc = @utcNow WHERE Id = @assetId",
-                new
-                {
-                    request.AssetId,
-                    request.AssetBase64,
-                    DateTime.UtcNow
-                });
+            entity.Base64Data = request.AssetBase64;
+            entity.LastModifiedTimeUtc = DateTime.UtcNow;
+            await _repository.UpdateAsync(entity);
         }
     }
 }
