@@ -93,7 +93,7 @@ function ImageUploader(targetName, hw, imgMimeType) {
             var file;
             if (evt.dataTransfer) {
                 file = evt.dataTransfer.files[0];
-                $(`.custom-file-label-${targetName}`).text(file.name);
+                document.querySelector(`.custom-file-label-${targetName}`).innerText(file.name);
             } else {
                 file = evt.target.files[0];
             }
@@ -131,8 +131,8 @@ function ImageUploader(targetName, hw, imgMimeType) {
                     ctx.drawImage(this, 0, 0, tempW, tempH);
                     imgDataUrl = canvas.toDataURL(imgMimeType);
 
-                    var div = $(`#${targetName}DropTarget`);
-                    div.html(`<img class="img-fluid" src="${imgDataUrl}" />`);
+                    var div = document.querySelector(`#${targetName}DropTarget`);
+                    div.innerHTML = `<img class="img-fluid" src="${imgDataUrl}" />`;
                     document.querySelector(`#btn-upload-${targetName}`).classList.remove('disabled');
                     document.querySelector(`#btn-upload-${targetName}`).removeAttribute('disabled');
                 }
@@ -314,7 +314,7 @@ var postEditor = {
             message: 'You have unsaved changes, are you sure to leave this page?'
         });
 
-        $('#ViewModel_Title').focus();
+        document.querySelector('#ViewModel_Title').focus();
     },
     keepAlive: function () {
         var tid = setInterval(postNonce, 60 * 1000);

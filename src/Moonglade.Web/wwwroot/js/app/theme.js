@@ -5,7 +5,7 @@
         $('.post-publish-info-mobile').removeClass('bg-light');
         $('.post-publish-info-mobile').addClass('bg-dark');
 
-        $('#blog-footer').removeClass('bg-accent2');
+        document.querySelector('#blog-footer').classList.remove('bg-accent2');
         $('').addClass('bg-dark');
 
         $('body').addClass('bg-moca-dark text-light darkmode');
@@ -35,7 +35,7 @@
         $('.post-publish-info-mobile').removeClass('bg-dark');
         $('.post-publish-info-mobile').addClass('bg-light');
 
-        $('#blog-footer').addClass('bg-accent2');
+        document.querySelector('#blog-footer').classList.add('bg-accent2');
 
         $('body').removeClass('bg-moca-dark text-light darkmode');
         $('body.body-post-slug').addClass('bg-gray-1');
