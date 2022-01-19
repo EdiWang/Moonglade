@@ -48,7 +48,7 @@
 		<PackageReference Include="Microsoft.Extensions.Logging.AzureAppServices" Version="6.0.1" />
 		<PackageReference Include="Microsoft.FeatureManagement.AspNetCore" Version="2.4.0" />
 		<PackageReference Include="Microsoft.Web.LibraryManager.Build" Version="2.1.161" />
-		<PackageReference Include="NUglify" Version="1.17.6" />
+		<PackageReference Include="NUglify" Version="1.17.9" />
 		<PackageReference Include="Swashbuckle.AspNetCore" Version="6.2.3" />
 		<PackageReference Include="UAParser" Version="3.1.47" />
 		<PackageReference Include="WilderMinds.MetaWeblog" Version="5.0.0" />
