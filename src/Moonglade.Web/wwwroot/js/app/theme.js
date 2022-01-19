@@ -3,9 +3,6 @@
         document.querySelector('#blog-nav').classList.remove('bg-accent1');
         document.querySelector('#blog-nav').classList.add('bg-dark');
         document.querySelector('#blog-footer').classList.add('bg-dark');
-        var ppim = document.querySelector('.post-publish-info-mobile');
-        if(ppim) ppim.classList.remove('bg-light');
-        if(ppim) ppim.classList.add('bg-dark');
         document.querySelector('#blog-footer').classList.remove('bg-accent2');
         $('').addClass('bg-dark');
 
@@ -33,8 +30,6 @@
     useLightMode: function () {
         $('#blog-nav').addClass('bg-accent1');
         $('#blog-nav, #moonglade-footer').removeClass('bg-dark');
-        $('.post-publish-info-mobile').removeClass('bg-dark');
-        $('.post-publish-info-mobile').addClass('bg-light');
 
         document.querySelector('#blog-footer').classList.add('bg-accent2');
 
