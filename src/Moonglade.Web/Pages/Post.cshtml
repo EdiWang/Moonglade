@@ -95,9 +95,7 @@
 <article class="article-post-slug box border position-relative mb-4" data-postid="@Model.Post.Id" lang="@Model.Post.ContentLanguageCode">
     @if (Model.Post.Featured)
     {
-        <a asp-page="/Featured">
-            <img src="~/images/featured-post.svg" class="featured-post-banner position-absolute d-none d-md-block" title="@Localizer["Featured"]" alt="@Localizer["Featured"]" />
-        </a>
+        <partial name="_FeaturedTag" />
     }
 
     <header class="post-header">

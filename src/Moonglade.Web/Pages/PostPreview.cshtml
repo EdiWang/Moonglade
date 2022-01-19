@@ -49,9 +49,7 @@
 <article class="article-post-slug box border position-relative mb-4" data-postid="@Model.Post.Id" lang="@Model.Post.ContentLanguageCode">
     @if (Model.Post.Featured)
     {
-        <a asp-page="/Featured">
-            <img src="~/images/featured-post.svg" class="featured-post-banner position-absolute d-none d-md-block" title="@Localizer["Featured"]" alt="@Localizer["Featured"]" />
-        </a>
+        <partial name="_FeaturedTag" />
     }
 
     <header class="post-header">
@@ -79,6 +77,14 @@
     }
 
     <partial name="_PostActions" model="Model.Post" />
+    
+    @if (!string.IsNullOrWhiteSpace(Model.Post.OriginLink))
+    {
+        <a href="@Helper.SterilizeLink(Model.Post.OriginLink)" target="_blank">
+            <i class="bi-link"></i>
+            @Localizer["Read origin article"]
+        </a>
+    }
 </article>
 
 <partial name="_LightSwitch" />
