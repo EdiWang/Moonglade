@@ -95,9 +95,7 @@
 <article class="article-post-slug box border position-relative mb-4" data-postid="@Model.Post.Id" lang="@Model.Post.ContentLanguageCode">
     @if (Model.Post.Featured)
     {
-        <a asp-page="/Featured">
-            <img src="~/images/featured-post.svg" class="featured-post-banner position-absolute d-none d-md-block" title="@Localizer["Featured"]" alt="@Localizer["Featured"]" />
-        </a>
+        <partial name="_FeaturedTag" />
     }
 
     <header class="post-header">
@@ -105,24 +103,16 @@
             @Model.Post.Title
         </h1>
 
-        <div class="d-block d-sm-none">
-            <div class="post-publish-info post-publish-info-mobile bg-light">
-                <i class="bi-calendar-event"></i>
-                <pubdate t-zone-resolver="@_zoneResolver" pub-date-utc="@Model.Post.PubDateUtc"></pubdate>
-                @BlogConfig.GeneralSettings.TimeZoneId
-            </div>
-        </div>
-
-        <div class="d-none d-md-block post-publish-info text-muted mb-2">
+        <div class="post-publish-info text-muted mb-2">
             @if (Model.Post.IsOriginal)
             {
-                <span class="badge bg-secondary me-2">@Localizer["Original"]</span>
+                <span class="badge bg-secondary me-2 d-none d-sm-inline">@Localizer["Original"]</span>
             }
 
             @if (!string.IsNullOrWhiteSpace(Model.Post.Author))
             {
-                <i class="bi-person"></i>
-                <span class="me-2">@Model.Post.Author</span>
+                <i class="bi-person d-none d-sm-inline"></i>
+                <span class="me-2 d-none d-sm-inline">@Model.Post.Author</span>
             }
 
             <i class="bi-calendar-event"></i>
@@ -131,8 +121,8 @@
                 @BlogConfig.GeneralSettings.TimeZoneId
             </span>
 
-            <i class="bi-eye"></i>
-            <span class="post-hit-number"><span class="post-hit-number-text">...</span> @Localizer["Reads"]</span>
+            <i class="bi-eye d-none d-sm-inline"></i>
+            <span class="post-hit-number d-none d-sm-inline"><span class="post-hit-number-text">...</span> @Localizer["Reads"]</span>
         </div>
 
         <hr class="d-none d-md-block" />

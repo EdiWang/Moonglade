@@ -1,10 +1,8 @@
 ﻿var themeModeSwitcher = {
     useDarkMode: function () {
-        $('#blog-nav').removeClass('bg-accent1');
-        $('#blog-nav, #moonglade-footer').addClass('bg-dark');
-        $('.post-publish-info-mobile').removeClass('bg-light');
-        $('.post-publish-info-mobile').addClass('bg-dark');
-
+        document.querySelector('#blog-nav').classList.remove('bg-accent1');
+        document.querySelector('#blog-nav').classList.add('bg-dark');
+        document.querySelector('#blog-footer').classList.add('bg-dark');
         document.querySelector('#blog-footer').classList.remove('bg-accent2');
         $('').addClass('bg-dark');
 
@@ -25,15 +23,13 @@
 
         isDarkMode = true;
         $('.lightswitch').addClass('bg-dark text-light border-secondary');
-        $('hr').addClass('hr-dark');
+        document.querySelector('hr').classList.add('hr-dark');
         document.querySelector('#lighticon').classList.remove('bi-brightness-high');
         document.querySelector('#lighticon').classList.add('bi-moon');
     },
     useLightMode: function () {
         $('#blog-nav').addClass('bg-accent1');
         $('#blog-nav, #moonglade-footer').removeClass('bg-dark');
-        $('.post-publish-info-mobile').removeClass('bg-dark');
-        $('.post-publish-info-mobile').addClass('bg-light');
 
         document.querySelector('#blog-footer').classList.add('bg-accent2');
 
