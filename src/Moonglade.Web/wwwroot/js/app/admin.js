@@ -305,8 +305,13 @@ var postEditor = {
             }
 
             if ($('input[name="ViewModel.IsPublished"]').val() === 'True') {
-                document.querySelector('#btn-publish').style.display = 'none';
-                document.querySelector('#btn-preview').style.display = 'none';
+                if (document.querySelector('#btn-publish')) {
+                    document.querySelector('#btn-publish').style.display = 'none';
+                };
+
+                if (document.querySelector('#btn-publish')) {
+                    document.querySelector('#btn-preview').style.display = 'none';
+                }
             }
         }
 
