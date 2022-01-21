@@ -309,7 +309,7 @@ var postEditor = {
                     document.querySelector('#btn-publish').style.display = 'none';
                 };
 
-                if (document.querySelector('#btn-publish')) {
+                if (document.querySelector('#btn-preview')) {
                     document.querySelector('#btn-preview').style.display = 'none';
                 }
             }
