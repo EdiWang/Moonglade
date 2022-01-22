@@ -5,11 +5,11 @@ using System.Reflection;
 
 namespace Moonglade.Data.MySql.Setup
 {
-    public class SetupRunnerForMySql : SetupRunnerBase, ISetupRunner
+    public class MySqlSetupRunner : SetupRunnerBase, ISetupRunner
     {
         private readonly IDbConnection _dbConnection;
 
-        public SetupRunnerForMySql(IDbConnection dbConnection)
+        public MySqlSetupRunner(IDbConnection dbConnection)
             : base(dbConnection)
         {
             _dbConnection = dbConnection;
@@ -70,7 +70,7 @@ INSERT INTO PostCategory (PostId, CategoryId) VALUES (@postId, @catId);";
 
         protected override string? GetEmbeddedSqlScript(string scriptName)
         {
-            var assembly = typeof(SetupRunnerForMySql).GetTypeInfo().Assembly;
+            var assembly = typeof(MySqlSetupRunner).GetTypeInfo().Assembly;
             using var stream = assembly.GetManifestResourceStream($"Moonglade.Data.MySql.SQLScripts.{scriptName}.sql");
 
             if (stream == null)
