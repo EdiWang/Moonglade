@@ -9,6 +9,7 @@ namespace Moonglade.Data.Setup
         public void InitFirstRun()
         {
             SetupDatabase();
+            ClearData();
             InitSampleData();
         }
 
@@ -32,7 +33,7 @@ namespace Moonglade.Data.Setup
             _dbConnection.Execute("DELETE FROM Tag");
             _dbConnection.Execute("DELETE FROM Comment");
             _dbConnection.Execute("DELETE FROM FriendLink");
-            _dbConnection.Execute("DELETE FROM PingbackHistory");
+            _dbConnection.Execute("DELETE FROM Pingback");
             _dbConnection.Execute("DELETE FROM PostExtension");
             _dbConnection.Execute("DELETE FROM Post");
             _dbConnection.Execute("DELETE FROM Menu");
@@ -40,6 +41,7 @@ namespace Moonglade.Data.Setup
             // Clear Configuration Table
             _dbConnection.Execute("DELETE FROM BlogConfiguration");
             _dbConnection.Execute("DELETE FROM BlogAsset");
+            _dbConnection.Execute("DELETE FROM BlogTheme");
 
             // Clear LocalAccount Table
             _dbConnection.Execute("DELETE FROM LocalAccount");
