@@ -1,6 +1,4 @@
-﻿INSERT INTO [Menu]([Id], [Title], [Url], [Icon], [DisplayOrder], [IsOpenInNewTab]) VALUES (NEWID(), 'About', '/page/about', 'icon-star-full', '0', '0')
-
-DECLARE @CatId UNIQUEIDENTIFIER
+﻿DECLARE @CatId UNIQUEIDENTIFIER
 SELECT TOP 1 @CatId = Id FROM Category
 
 DECLARE @NewPostId UNIQUEIDENTIFIER

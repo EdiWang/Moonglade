@@ -17,6 +17,7 @@ public class Seed
             await dbContext.Category.AddRangeAsync(GetCategories());
             await dbContext.Tag.AddRangeAsync(GetTags());
             await dbContext.FriendLink.AddRangeAsync(GetFriendLinks());
+            await dbContext.Menu.AddRangeAsync(GetMenus());
 
             await dbContext.SaveChangesAsync();
         }
@@ -173,6 +174,22 @@ public class Seed
                 Id = Guid.NewGuid(),
                 Title = "Edi.Wang",
                 LinkUrl = "https://edi.wang"
+            }
+        };
+    }
+
+    private static IEnumerable<MenuEntity> GetMenus()
+    {
+        return new List<MenuEntity>
+        {
+            new()
+            {
+                Id = Guid.NewGuid(),
+                DisplayOrder = 0,
+                IsOpenInNewTab = false,
+                Icon = "icon-star-full",
+                Title = "About",
+                Url = "/page/about"
             }
         };
     }
