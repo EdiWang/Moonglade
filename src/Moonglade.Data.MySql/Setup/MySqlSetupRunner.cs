@@ -50,8 +50,7 @@ namespace Moonglade.Data.MySql.Setup
 
         public override void InitSampleData()
         {
-            var catId = Guid.NewGuid();
-            _dbConnection.Execute("INSERT INTO Category(Id, DisplayName, Note, RouteName) VALUES (@catId, 'Default', 'Default Category', 'default')", new { catId });
+            var catId = Guid.Parse("b0c15707-dfc8-4b09-9aa0-5bfca744c50b");
             var postId = Guid.NewGuid();
             var postCotent = "Moonglade is the new blog system for https://edi.wang. It is a complete rewrite of the old system using .NET 6 and runs on Microsoft Azure.";
 

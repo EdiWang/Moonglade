@@ -14,6 +14,7 @@ public class Seed
             await dbContext.BlogConfiguration.AddRangeAsync(GetBlogConfiguration());
             await dbContext.LocalAccount.AddRangeAsync(GetLocalAccounts());
             await dbContext.BlogTheme.AddRangeAsync(GetThemes());
+            await dbContext.Category.AddRangeAsync(GetCategories());
 
             await dbContext.SaveChangesAsync();
         }
@@ -134,6 +135,20 @@ public class Seed
             new ()
             {
                 ThemeName = "Metal Blue", CssRules = "{\"--accent-color1\": \"#4E5967\",\"--accent-color2\": \"#333942\",\"--accent-color3\": \"#6e7c8e\"}", ThemeType = 0
+            }
+        };
+    }
+
+    private static IEnumerable<CategoryEntity> GetCategories()
+    {
+        return new List<CategoryEntity>
+        {
+            new()
+            {
+                Id = Guid.Parse("b0c15707-dfc8-4b09-9aa0-5bfca744c50b"),
+                DisplayName = "Default",
+                Note = "Default Category",
+                RouteName = "default"
             }
         };
     }
