@@ -41,14 +41,7 @@ public static class WebApplicationExtensions
         // load configurations into singleton
         var config = await mediator.Send(new GetAllConfigurationsQuery());
         var bc = app.Services.GetRequiredService<IBlogConfig>();
-
-        bc.GeneralSettings = config[nameof(GeneralSettings)].FromJson<GeneralSettings>();
-        bc.ContentSettings = config[nameof(ContentSettings)].FromJson<ContentSettings>();
-        bc.NotificationSettings = config[nameof(NotificationSettings)].FromJson<NotificationSettings>();
-        bc.FeedSettings = config[nameof(FeedSettings)].FromJson<FeedSettings>();
-        bc.ImageSettings = config[nameof(ImageSettings)].FromJson<ImageSettings>();
-        bc.AdvancedSettings = config[nameof(AdvancedSettings)].FromJson<AdvancedSettings>();
-        bc.CustomStyleSheetSettings = config[nameof(CustomStyleSheetSettings)].FromJson<CustomStyleSheetSettings>();
+        bc.LoadFromConfig(config);
 
         try
         {

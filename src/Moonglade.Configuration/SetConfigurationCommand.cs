@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using MediatR;
+﻿using MediatR;
 using Moonglade.Data;
 using Moonglade.Data.Entities;
 using Moonglade.Data.Infrastructure;
@@ -12,12 +7,15 @@ namespace Moonglade.Configuration;
 
 public class SetConfigurationCommand : IRequest<OperationCode>
 {
-    public SetConfigurationCommand(IBlogSettings blogSettings)
+    public SetConfigurationCommand(string name, string json)
     {
-        BlogSettings = blogSettings;
+        Name = name;
+        Json = json;
     }
 
-    public IBlogSettings BlogSettings { get; set; }
+    public string Name { get; set; }
+
+    public string Json { get; set; }
 }
 
 public class SetConfigurationCommandHandler : IRequestHandler<SetConfigurationCommand, OperationCode>
@@ -31,12 +29,10 @@ public class SetConfigurationCommandHandler : IRequestHandler<SetConfigurationCo
 
     public async Task<OperationCode> Handle(SetConfigurationCommand request, CancellationToken cancellationToken)
     {
-        var json = request.BlogSettings.ToJson();
-
-        var entity = await _repository.GetAsync(p => p.CfgKey == nameof(request.BlogSettings));
+        var entity = await _repository.GetAsync(p => p.CfgKey == request.Name);
         if (entity == null) return OperationCode.ObjectNotFound;
 
-        entity.CfgValue = json;
+        entity.CfgValue = request.Json;
         entity.LastModifiedTimeUtc = DateTime.UtcNow;
 
         await _repository.UpdateAsync(entity);

@@ -13,7 +13,8 @@ public interface IBlogConfig
     ImageSettings ImageSettings { get; set; }
     AdvancedSettings AdvancedSettings { get; set; }
     CustomStyleSheetSettings CustomStyleSheetSettings { get; set; }
-    Task SaveAsync(IBlogSettings fuck);
+    void LoadFromConfig(IDictionary<string, string> config);
+    KeyValuePair<string, string> UpdateAsync<T>(T blogSettings) where T : IBlogSettings;
 }
 
 public class BlogConfig : IBlogConfig
@@ -31,8 +32,27 @@ public class BlogConfig : IBlogConfig
     public AdvancedSettings AdvancedSettings { get; set; }
 
     public CustomStyleSheetSettings CustomStyleSheetSettings { get; set; }
-    public Task SaveAsync(IBlogSettings fuck)
+
+    public void LoadFromConfig(IDictionary<string, string> config)
     {
-        throw new NotImplementedException();
+        GeneralSettings = config[nameof(GeneralSettings)].FromJson<GeneralSettings>();
+        ContentSettings = config[nameof(ContentSettings)].FromJson<ContentSettings>();
+        NotificationSettings = config[nameof(NotificationSettings)].FromJson<NotificationSettings>();
+        FeedSettings = config[nameof(FeedSettings)].FromJson<FeedSettings>();
+        ImageSettings = config[nameof(ImageSettings)].FromJson<ImageSettings>();
+        AdvancedSettings = config[nameof(AdvancedSettings)].FromJson<AdvancedSettings>();
+        CustomStyleSheetSettings = config[nameof(CustomStyleSheetSettings)].FromJson<CustomStyleSheetSettings>();
+    }
+
+    public KeyValuePair<string, string> UpdateAsync<T>(T blogSettings) where T : IBlogSettings
+    {
+        var name = typeof(T).Name;
+        var json = blogSettings.ToJson();
+
+        // update singleton itself
+        var prop = GetType().GetProperty(name);
+        if (prop != null) prop.SetValue(this, blogSettings);
+
+        return new(name, json);
     }
 }
