@@ -20,6 +20,39 @@ public class Seed
             await dbContext.Menu.AddRangeAsync(GetMenus());
             await dbContext.CustomPage.AddRangeAsync(GetPages());
 
+            // Add example post
+            var content =
+                "Moonglade is the new blog system for https://edi.wang. It is a complete rewrite of the old system using .NET 6 and runs on Microsoft Azure.";
+
+            var post = new PostEntity
+            {
+                Id = Guid.NewGuid(),
+                Title = "Welcome to Moonglade",
+                Slug = "welcome-to-moonglade",
+                Author = "admin",
+                PostContent = content,
+                CommentEnabled = true,
+                CreateTimeUtc = DateTime.UtcNow,
+                ContentAbstract = content,
+                IsPublished = true,
+                IsFeatured = true,
+                IsFeedIncluded = true,
+                LastModifiedUtc = DateTime.UtcNow,
+                PubDateUtc = DateTime.UtcNow,
+                ContentLanguageCode = "en-us",
+                HashCheckSum = -1688639577,
+                IsOriginal = true,
+                PostExtension = new ()
+                {
+                    Hits = 1024,
+                    Likes = 512
+                },
+                Tags = dbContext.Tag.ToList(),
+                PostCategory = dbContext.PostCategory.ToList()
+            };
+
+            await dbContext.Post.AddAsync(post);
+
             await dbContext.SaveChangesAsync();
         }
         catch (Exception e)

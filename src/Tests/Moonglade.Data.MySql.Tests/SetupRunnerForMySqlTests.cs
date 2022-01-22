@@ -66,18 +66,6 @@ namespace Moonglade.Data.MySql.Tests
         }
 
         [Test]
-        public void InitSampleData_OK()
-        {
-            _mockDbConnection.SetupDapper(c => c.Execute(It.IsAny<string>(), null, null, null, null)).Returns(251);
-            var setupHelper = new MySqlSetupRunner(_mockDbConnection.Object);
-
-            Assert.DoesNotThrow(() =>
-            {
-                setupHelper.InitSampleData();
-            });
-        }
-
-        [Test]
         public void InitFirstRun_OK()
         {
             _mockDbConnection.SetupDapper(c => c.Execute(It.IsAny<string>(), null, null, null, null)).Returns(251);

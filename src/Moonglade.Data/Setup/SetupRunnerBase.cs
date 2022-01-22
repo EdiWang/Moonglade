@@ -10,7 +10,6 @@ namespace Moonglade.Data.Setup
         {
             SetupDatabase();
             ClearData();
-            InitSampleData();
         }
 
         public SetupRunnerBase(IDbConnection dbConnection)
@@ -51,19 +50,6 @@ namespace Moonglade.Data.Setup
         {
             var result = _dbConnection.ExecuteScalar<int>("SELECT 1");
             return result == 1;
-        }
-
-        public virtual void InitSampleData()
-        {
-            var sql = GetEmbeddedSqlScript("seed-sampledata");
-            if (!string.IsNullOrWhiteSpace(sql))
-            {
-                _dbConnection.Execute(sql);
-            }
-            else
-            {
-                throw new InvalidDataException("SQL Script is empty.");
-            }
         }
 
         protected abstract string GetEmbeddedSqlScript(string scriptName);

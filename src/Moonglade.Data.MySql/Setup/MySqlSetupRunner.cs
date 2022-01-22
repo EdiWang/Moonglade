@@ -48,25 +48,6 @@ namespace Moonglade.Data.MySql.Setup
             }
         }
 
-        public override void InitSampleData()
-        {
-            var catId = Guid.Parse("b0c15707-dfc8-4b09-9aa0-5bfca744c50b");
-            var postId = Guid.NewGuid();
-            var postCotent = "Moonglade is the new blog system for https://edi.wang. It is a complete rewrite of the old system using .NET 6 and runs on Microsoft Azure.";
-
-            var addPostText = @"INSERT INTO Post(Id, Title, Slug, Author, PostContent, CommentEnabled, CreateTimeUtc, ContentAbstract, IsPublished, IsFeatured, IsFeedIncluded, LastModifiedUtc, IsDeleted, PubDateUtc, ContentLanguageCode, HashCheckSum, IsOriginal) 
-VALUES (@postId, 'Welcome to Moonglade', 'welcome-to-moonglade', 'admin', @postCotent, 1, '2022-1-1', @postCotent, 1, 0, 1, NULL, 0, NOW(), 'en-us', -1688639577, 1);";
-            _dbConnection.Execute(addPostText, new { postId, postCotent });
-
-            var addPostExtensionText = @"INSERT INTO PostExtension(PostId,  Hits,  Likes) 
-VALUES (@postId,  1024,  512);
-INSERT INTO PostCategory (PostId, CategoryId) VALUES (@postId, @catId);";
-
-            _dbConnection.Execute(addPostExtensionText, new { postId, catId });
-
-            base.InitSampleData();
-        }
-
         protected override string? GetEmbeddedSqlScript(string scriptName)
         {
             var assembly = typeof(MySqlSetupRunner).GetTypeInfo().Assembly;

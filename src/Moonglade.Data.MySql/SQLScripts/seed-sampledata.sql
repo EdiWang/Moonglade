@@ -1,1 +1,0 @@
-﻿INSERT INTO PostTag (PostId, TagId) (SELECT p.Id, t.Id FROM `Post` p LEFT JOIN `Tag` t ON 1 = 1);
