@@ -1,5 +1,4 @@
-﻿INSERT INTO FriendLink (Id, LinkUrl, Title) VALUES (UUID(), 'https://edi.wang', 'Edi.Wang');
-INSERT INTO Menu(Id, Title, Url, Icon, DisplayOrder, IsOpenInNewTab) VALUES (UUID(), 'About', '/page/about', 'icon-star-full', '0', '0');
+﻿INSERT INTO Menu(Id, Title, Url, Icon, DisplayOrder, IsOpenInNewTab) VALUES (UUID(), 'About', '/page/about', 'icon-star-full', '0', '0');
 
 INSERT INTO PostTag (PostId, TagId) (SELECT p.Id, t.Id FROM `Post` p LEFT JOIN `Tag` t ON 1 = 1);
 

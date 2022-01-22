@@ -16,6 +16,7 @@ public class Seed
             await dbContext.BlogTheme.AddRangeAsync(GetThemes());
             await dbContext.Category.AddRangeAsync(GetCategories());
             await dbContext.Tag.AddRangeAsync(GetTags());
+            await dbContext.FriendLink.AddRangeAsync(GetFriendLinks());
 
             await dbContext.SaveChangesAsync();
         }
@@ -160,6 +161,19 @@ public class Seed
         {
             new() { DisplayName = "Moonglade", NormalizedName = "moonglade" },
             new() { DisplayName = ".NET", NormalizedName = "dot-net" }
+        };
+    }
+
+    private static IEnumerable<FriendLinkEntity> GetFriendLinks()
+    {
+        return new List<FriendLinkEntity>
+        {
+            new()
+            {
+                Id = Guid.NewGuid(),
+                Title = "Edi.Wang",
+                LinkUrl = "https://edi.wang"
+            }
         };
     }
 }
