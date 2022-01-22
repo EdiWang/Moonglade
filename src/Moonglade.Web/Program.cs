@@ -63,6 +63,8 @@ var cultures = builder.Configuration.GetSection("Cultures").Get<string[]>()
 AppDomain.CurrentDomain.Load("Moonglade.FriendLink");
 AppDomain.CurrentDomain.Load("Moonglade.Menus");
 AppDomain.CurrentDomain.Load("Moonglade.Theme");
+AppDomain.CurrentDomain.Load("Moonglade.Configuration");
+
 builder.Services.AddMediatR(AppDomain.CurrentDomain.GetAssemblies());
 
 // ASP.NET Setup
