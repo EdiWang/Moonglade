@@ -33,6 +33,7 @@ public class BlogDbContext : DbContext
     public virtual DbSet<PingbackEntity> Pingback { get; set; }
     public virtual DbSet<BlogThemeEntity> BlogTheme { get; set; }
     public virtual DbSet<BlogAssetEntity> BlogAsset { get; set; }
+    public virtual DbSet<BlogConfigurationEntity> BlogConfiguration { get; set; }
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
@@ -43,6 +44,7 @@ public class BlogDbContext : DbContext
         modelBuilder.ApplyConfiguration(new PageConfiguration());
         modelBuilder.ApplyConfiguration(new MenuConfiguration());
         modelBuilder.ApplyConfiguration(new SubMenuConfiguration());
+        modelBuilder.ApplyConfiguration(new BlogConfigurationConfiguration());
 
         modelBuilder
             .Entity<PostEntity>()

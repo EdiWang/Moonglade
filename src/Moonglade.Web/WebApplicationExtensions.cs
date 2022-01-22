@@ -10,7 +10,6 @@ public static class WebApplicationExtensions
         var services = scope.ServiceProvider;
         var env = services.GetRequiredService<IWebHostEnvironment>();
 
-        //var dbConnection = services.GetRequiredService<IDbConnection>();
         var setupRunner = services.GetRequiredService<ISetupRunner>();
 
         try
@@ -37,9 +36,15 @@ public static class WebApplicationExtensions
             }
         }
 
+        var mediator = services.GetRequiredService<IMediator>();
+
+        // load configurations into singleton
+        var config = await mediator.Send(new GetAllConfigurationsQuery());
+        var bc = app.Services.GetRequiredService<IBlogConfig>();
+        bc.LoadFromConfig(config);
+
         try
         {
-            var mediator = services.GetRequiredService<IMediator>();
             var iconData = await mediator.Send(new GetAssetDataQuery(AssetId.SiteIconBase64));
             MemoryStreamIconGenerator.GenerateIcons(iconData, env.WebRootPath, app.Logger);
         }
