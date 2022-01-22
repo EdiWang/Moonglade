@@ -66,18 +66,6 @@ namespace Moonglade.Data.SqlServer.Tests
         }
 
         [Test]
-        public void ResetDefaultConfiguration_OK()
-        {
-            _mockDbConnection.SetupDapper(c => c.Execute(It.IsAny<string>(), null, null, null, null)).Returns(251);
-            var setupHelper = new SetupRunnerForSqlServer(_mockDbConnection.Object);
-
-            Assert.DoesNotThrow(() =>
-            {
-                setupHelper.ResetDefaultConfiguration();
-            });
-        }
-
-        [Test]
         public void InitSampleData_OK()
         {
             _mockDbConnection.SetupDapper(c => c.Execute(It.IsAny<string>(), null, null, null, null)).Returns(251);

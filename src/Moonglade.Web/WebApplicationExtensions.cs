@@ -1,4 +1,5 @@
-﻿using Moonglade.Data.Setup;
+﻿using Microsoft.EntityFrameworkCore;
+using Moonglade.Data.Setup;
 
 namespace Moonglade.Web;
 
@@ -27,6 +28,10 @@ public static class WebApplicationExtensions
             try
             {
                 app.Logger.LogInformation("Initializing first run configuration...");
+
+                var dbContext = services.GetRequiredService<BlogDbContext>();
+                await Seed.SeedAsync(dbContext, app.Logger);
+
                 setupRunner.InitFirstRun();
                 app.Logger.LogInformation("Database setup successfully.");
             }

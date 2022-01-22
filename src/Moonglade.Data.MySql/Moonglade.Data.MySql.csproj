@@ -8,13 +8,11 @@
 
   <ItemGroup>
     <None Remove="SQLScripts\schema-mysql-8.sql" />
-    <None Remove="SQLScripts\seed-configuration.sql" />
     <None Remove="SQLScripts\seed-sampledata.sql" />
   </ItemGroup>
 
   <ItemGroup>
     <EmbeddedResource Include="SQLScripts\schema-mysql-8.sql" />
-    <EmbeddedResource Include="SQLScripts\seed-configuration.sql" />
     <EmbeddedResource Include="SQLScripts\seed-sampledata.sql" />
   </ItemGroup>
 
