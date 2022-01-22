@@ -1,5 +1,5 @@
 using Dapper;
-using Moonglade.Data.Setup.SqlServer;
+using Moonglade.Data.SqlServer.Setup;
 using Moq;
 using Moq.Dapper;
 using NUnit.Framework;
@@ -25,7 +25,7 @@ namespace Moonglade.Data.SqlServer.Tests
         public void IsFirstRun_Yes()
         {
             _mockDbConnection.SetupDapper(c => c.ExecuteScalar<int>(It.IsAny<string>(), null, null, null, null)).Returns(0);
-            var setupHelper = new SetupRunnerForSqlServer(_mockDbConnection.Object);
+            var setupHelper = new SqlServerSetupRunner(_mockDbConnection.Object);
 
             var result = setupHelper.IsFirstRun();
             Assert.IsTrue(result);
@@ -35,7 +35,7 @@ namespace Moonglade.Data.SqlServer.Tests
         public void IsFirstRun_No()
         {
             _mockDbConnection.SetupDapper(c => c.ExecuteScalar<int>(It.IsAny<string>(), null, null, null, null)).Returns(1);
-            var setupHelper = new SetupRunnerForSqlServer(_mockDbConnection.Object);
+            var setupHelper = new SqlServerSetupRunner(_mockDbConnection.Object);
 
             var result = setupHelper.IsFirstRun();
             Assert.IsFalse(result);
@@ -45,7 +45,7 @@ namespace Moonglade.Data.SqlServer.Tests
         public void SetupDatabase_OK()
         {
             _mockDbConnection.SetupDapper(c => c.Execute(It.IsAny<string>(), null, null, null, null)).Returns(996);
-            var setupHelper = new SetupRunnerForSqlServer(_mockDbConnection.Object);
+            var setupHelper = new SqlServerSetupRunner(_mockDbConnection.Object);
 
             Assert.DoesNotThrow(() =>
             {
@@ -57,7 +57,7 @@ namespace Moonglade.Data.SqlServer.Tests
         public void ClearData_OK()
         {
             _mockDbConnection.SetupDapper(c => c.Execute(It.IsAny<string>(), null, null, null, null)).Returns(251);
-            var setupHelper = new SetupRunnerForSqlServer(_mockDbConnection.Object);
+            var setupHelper = new SqlServerSetupRunner(_mockDbConnection.Object);
 
             Assert.DoesNotThrow(() =>
             {
@@ -66,34 +66,10 @@ namespace Moonglade.Data.SqlServer.Tests
         }
 
         [Test]
-        public void ResetDefaultConfiguration_OK()
-        {
-            _mockDbConnection.SetupDapper(c => c.Execute(It.IsAny<string>(), null, null, null, null)).Returns(251);
-            var setupHelper = new SetupRunnerForSqlServer(_mockDbConnection.Object);
-
-            Assert.DoesNotThrow(() =>
-            {
-                setupHelper.ResetDefaultConfiguration();
-            });
-        }
-
-        [Test]
-        public void InitSampleData_OK()
-        {
-            _mockDbConnection.SetupDapper(c => c.Execute(It.IsAny<string>(), null, null, null, null)).Returns(251);
-            var setupHelper = new SetupRunnerForSqlServer(_mockDbConnection.Object);
-
-            Assert.DoesNotThrow(() =>
-            {
-                setupHelper.InitSampleData();
-            });
-        }
-
-        [Test]
         public void InitFirstRun_OK()
         {
             _mockDbConnection.SetupDapper(c => c.Execute(It.IsAny<string>(), null, null, null, null)).Returns(251);
-            var setupHelper = new SetupRunnerForSqlServer(_mockDbConnection.Object);
+            var setupHelper = new SqlServerSetupRunner(_mockDbConnection.Object);
 
             Assert.DoesNotThrow(() =>
             {
@@ -105,7 +81,7 @@ namespace Moonglade.Data.SqlServer.Tests
         public void TestDatabaseConnection_OK()
         {
             _mockDbConnection.SetupDapper(c => c.ExecuteScalar<int>(It.IsAny<string>(), null, null, null, null)).Returns(1);
-            var setupHelper = new SetupRunnerForSqlServer(_mockDbConnection.Object);
+            var setupHelper = new SqlServerSetupRunner(_mockDbConnection.Object);
 
             var result = setupHelper.TestDatabaseConnection();
 

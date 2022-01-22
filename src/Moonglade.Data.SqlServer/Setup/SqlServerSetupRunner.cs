@@ -1,14 +1,15 @@
 ﻿using Dapper;
+using Moonglade.Data.Setup;
 using System.Data;
 using System.Reflection;
 
-namespace Moonglade.Data.Setup.SqlServer
+namespace Moonglade.Data.SqlServer.Setup
 {
-    public class SetupRunnerForSqlServer : SetupRunnerBase, ISetupRunner
+    public class SqlServerSetupRunner : SetupRunnerBase, ISetupRunner
     {
         private readonly IDbConnection _dbConnection;
 
-        public SetupRunnerForSqlServer(IDbConnection dbConnection)
+        public SqlServerSetupRunner(IDbConnection dbConnection)
             : base(dbConnection)
         {
             _dbConnection = dbConnection;
@@ -50,7 +51,7 @@ namespace Moonglade.Data.Setup.SqlServer
 
         protected override string? GetEmbeddedSqlScript(string scriptName)
         {
-            var assembly = typeof(SetupRunnerForSqlServer).GetTypeInfo().Assembly;
+            var assembly = typeof(SqlServerSetupRunner).GetTypeInfo().Assembly;
             using var stream = assembly.GetManifestResourceStream($"Moonglade.Data.SqlServer.SQLScripts.{scriptName}.sql");
 
             if (stream == null)

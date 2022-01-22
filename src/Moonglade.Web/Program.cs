@@ -173,15 +173,11 @@ var blogServices = builder.Services.AddPingback()
 switch (builder.Configuration.GetConnectionString("DatabaseType").ToLower())
 {
     case "mysql":
-        {
-            blogServices.AddMySqlStorage(builder.Configuration.GetConnectionString("MoongladeDatabase"));
-        }
+        blogServices.AddMySqlStorage(builder.Configuration.GetConnectionString("MoongladeDatabase"));
         break;
     case "sqlserver":
-    default:    //默认 sqlserver
-        {
-            blogServices.AddSqlServerStorage(builder.Configuration.GetConnectionString("MoongladeDatabase"));
-        }
+    default:
+        blogServices.AddSqlServerStorage(builder.Configuration.GetConnectionString("MoongladeDatabase"));
         break;
 }
 

@@ -14,7 +14,7 @@ namespace Moonglade.Data.MySql
         public static IServiceCollection AddMySqlStorage(this IServiceCollection services, string connectionString)
         {
             services.AddTransient<IDbConnection>(_ => new MySqlConnection(connectionString));
-            services.AddTransient<ISetupRunner, SetupRunnerForMySql>();
+            services.AddTransient<ISetupRunner, MySqlSetupRunner>();
             services.AddScoped(typeof(IRepository<>), typeof(MySqlDbContextRepository<>));
 
             services.AddDbContext<BlogMySqlDbContext>(optionsAction => optionsAction.UseLazyLoadingProxies()

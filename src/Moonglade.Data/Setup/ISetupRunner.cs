@@ -20,8 +20,6 @@
         /// </summary>
         void ClearData();
 
-        void ResetDefaultConfiguration();
-
         bool TestDatabaseConnection();
     }
 }

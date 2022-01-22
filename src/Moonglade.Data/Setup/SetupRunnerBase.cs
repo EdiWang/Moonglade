@@ -9,8 +9,7 @@ namespace Moonglade.Data.Setup
         public void InitFirstRun()
         {
             SetupDatabase();
-            ResetDefaultConfiguration();
-            InitSampleData();
+            ClearData();
         }
 
         public SetupRunnerBase(IDbConnection dbConnection)
@@ -33,7 +32,7 @@ namespace Moonglade.Data.Setup
             _dbConnection.Execute("DELETE FROM Tag");
             _dbConnection.Execute("DELETE FROM Comment");
             _dbConnection.Execute("DELETE FROM FriendLink");
-            _dbConnection.Execute("DELETE FROM PingbackHistory");
+            _dbConnection.Execute("DELETE FROM Pingback");
             _dbConnection.Execute("DELETE FROM PostExtension");
             _dbConnection.Execute("DELETE FROM Post");
             _dbConnection.Execute("DELETE FROM Menu");
@@ -41,6 +40,7 @@ namespace Moonglade.Data.Setup
             // Clear Configuration Table
             _dbConnection.Execute("DELETE FROM BlogConfiguration");
             _dbConnection.Execute("DELETE FROM BlogAsset");
+            _dbConnection.Execute("DELETE FROM BlogTheme");
 
             // Clear LocalAccount Table
             _dbConnection.Execute("DELETE FROM LocalAccount");
@@ -50,32 +50,6 @@ namespace Moonglade.Data.Setup
         {
             var result = _dbConnection.ExecuteScalar<int>("SELECT 1");
             return result == 1;
-        }
-
-        public virtual void ResetDefaultConfiguration()
-        {
-            var sql = GetEmbeddedSqlScript("seed-configuration");
-            if (!string.IsNullOrWhiteSpace(sql))
-            {
-                _dbConnection.Execute(sql);
-            }
-            else
-            {
-                throw new InvalidDataException("SQL Script is empty.");
-            }
-        }
-
-        public virtual void InitSampleData()
-        {
-            var sql = GetEmbeddedSqlScript("seed-sampledata");
-            if (!string.IsNullOrWhiteSpace(sql))
-            {
-                _dbConnection.Execute(sql);
-            }
-            else
-            {
-                throw new InvalidDataException("SQL Script is empty.");
-            }
         }
 
         protected abstract string GetEmbeddedSqlScript(string scriptName);
