@@ -1,6 +1,4 @@
-﻿INSERT INTO Tag(DisplayName, NormalizedName) VALUES ('Moonglade', 'moonglade')
-INSERT INTO Tag(DisplayName, NormalizedName) VALUES ('.NET Core', 'dotnet-core')
-INSERT INTO FriendLink (Id, LinkUrl, Title) VALUES (NEWID(), 'https://edi.wang', 'Edi.Wang')
+﻿INSERT INTO FriendLink (Id, LinkUrl, Title) VALUES (NEWID(), 'https://edi.wang', 'Edi.Wang')
 INSERT INTO [Menu]([Id], [Title], [Url], [Icon], [DisplayOrder], [IsOpenInNewTab]) VALUES (NEWID(), 'About', '/page/about', 'icon-star-full', '0', '0')
 
 DECLARE @CatId UNIQUEIDENTIFIER

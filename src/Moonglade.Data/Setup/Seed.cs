@@ -15,6 +15,7 @@ public class Seed
             await dbContext.LocalAccount.AddRangeAsync(GetLocalAccounts());
             await dbContext.BlogTheme.AddRangeAsync(GetThemes());
             await dbContext.Category.AddRangeAsync(GetCategories());
+            await dbContext.Tag.AddRangeAsync(GetTags());
 
             await dbContext.SaveChangesAsync();
         }
@@ -150,6 +151,15 @@ public class Seed
                 Note = "Default Category",
                 RouteName = "default"
             }
+        };
+    }
+
+    private static IEnumerable<TagEntity> GetTags()
+    {
+        return new List<TagEntity>
+        {
+            new() { DisplayName = "Moonglade", NormalizedName = "moonglade" },
+            new() { DisplayName = ".NET", NormalizedName = "dot-net" }
         };
     }
 }
