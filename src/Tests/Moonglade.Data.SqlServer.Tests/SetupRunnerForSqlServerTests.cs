@@ -40,29 +40,5 @@ namespace Moonglade.Data.SqlServer.Tests
             var result = setupHelper.IsFirstRun();
             Assert.IsFalse(result);
         }
-
-        [Test]
-        public void SetupDatabase_OK()
-        {
-            _mockDbConnection.SetupDapper(c => c.Execute(It.IsAny<string>(), null, null, null, null)).Returns(996);
-            var setupHelper = new SqlServerSetupRunner(_mockDbConnection.Object);
-
-            Assert.DoesNotThrow(() =>
-            {
-                setupHelper.SetupDatabase();
-            });
-        }
-
-        [Test]
-        public void ClearData_OK()
-        {
-            _mockDbConnection.SetupDapper(c => c.Execute(It.IsAny<string>(), null, null, null, null)).Returns(251);
-            var setupHelper = new SqlServerSetupRunner(_mockDbConnection.Object);
-
-            Assert.DoesNotThrow(() =>
-            {
-                setupHelper.ClearData();
-            });
-        }
     }
 }
