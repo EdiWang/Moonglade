@@ -34,35 +34,9 @@ namespace Moonglade.Data.SqlServer.Setup
             return true;
         }
 
-        /// <summary>
-        /// Execute SQL to build database schema
-        /// </summary>
-        public async Task SetupDatabase(DatabaseFacade dbFacade)
+        public Task SetupDatabase(DatabaseFacade dbFacade)
         {
-            var sql = GetEmbeddedSqlScript("schema-mssql-140");
-            if (!string.IsNullOrWhiteSpace(sql))
-            {
-                await dbFacade.ExecuteSqlRawAsync(sql);
-            }
-            else
-            {
-                throw new InvalidOperationException("Database Schema Script is empty.");
-            }
-        }
-
-        protected string? GetEmbeddedSqlScript(string scriptName)
-        {
-            var assembly = typeof(SqlServerSetupRunner).GetTypeInfo().Assembly;
-            using var stream = assembly.GetManifestResourceStream($"Moonglade.Data.SqlServer.SQLScripts.{scriptName}.sql");
-
-            if (stream == null)
-            {
-                return null;
-            }
-
-            using var reader = new StreamReader(stream);
-            var sql = reader.ReadToEnd();
-            return sql;
+            throw new NotImplementedException();
         }
     }
 }
