@@ -184,9 +184,28 @@ switch (builder.Configuration.GetConnectionString("DatabaseType").ToLower())
 #endregion
 
 var app = builder.Build();
-await app.InitStartUp();
-
 app.Lifetime.ApplicationStopping.Register(() => { app.Logger.LogInformation("Moonglade is stopping..."); });
+
+var startUpResut = await app.InitStartUp();
+switch (startUpResut)
+{
+    case StartupInitResult.DatabaseConnectionFail:
+        app.MapGet("/", x =>
+        {
+            x.Response.StatusCode = StatusCodes.Status500InternalServerError;
+            return x.Response.WriteAsync("Database connection test failed, please check your connection string and firewall settings, then RESTART Moonglade manually.");
+        });
+        app.Run();
+        return;
+    case StartupInitResult.DatabaseSetupFail:
+        app.MapGet("/", x =>
+        {
+            x.Response.StatusCode = StatusCodes.Status500InternalServerError;
+            return x.Response.WriteAsync("Database setup failed, please check error log, then RESTART Moonglade manually.");
+        });
+        app.Run();
+        return;
+}
 
 #region Middleware
 
