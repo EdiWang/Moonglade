@@ -19,7 +19,5 @@
         /// Clear all data in database but preserve tables schema
         /// </summary>
         void ClearData();
-
-        bool TestDatabaseConnection();
     }
 }

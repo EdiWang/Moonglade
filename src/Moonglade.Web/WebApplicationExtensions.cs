@@ -13,10 +13,12 @@ public static class WebApplicationExtensions
         var env = services.GetRequiredService<IWebHostEnvironment>();
 
         var setupRunner = services.GetRequiredService<ISetupRunner>();
+        var context = services.GetRequiredService<BlogSqlServerDbContext>() ?? (BlogDbContext)services.GetRequiredService<BlogMySqlDbContext>();
 
         try
         {
-            if (!setupRunner.TestDatabaseConnection()) return;
+            bool canConnect = await context.Database.CanConnectAsync();
+            if (!canConnect) return;
         }
         catch (Exception e)
         {
@@ -32,8 +34,6 @@ public static class WebApplicationExtensions
                 app.Logger.LogInformation("Initializing first run configuration...");
 
                 setupRunner.InitFirstRun();
-
-                var context = services.GetRequiredService<BlogSqlServerDbContext>() ?? (BlogDbContext)services.GetRequiredService<BlogMySqlDbContext>();
                 await Seed.SeedAsync(context, app.Logger);
 
                 app.Logger.LogInformation("Database setup successfully.");

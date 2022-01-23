@@ -46,12 +46,6 @@ namespace Moonglade.Data.Setup
             _dbConnection.Execute("DELETE FROM LocalAccount");
         }
 
-        public virtual bool TestDatabaseConnection()
-        {
-            var result = _dbConnection.ExecuteScalar<int>("SELECT 1");
-            return result == 1;
-        }
-
         protected abstract string GetEmbeddedSqlScript(string scriptName);
 
         public abstract void SetupDatabase();
