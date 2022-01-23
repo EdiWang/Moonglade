@@ -152,8 +152,7 @@ builder.Services.AddHealthChecks();
 builder.Services.AddTransient<RequestBodyLoggingMiddleware>()
                 .AddTransient<ResponseBodyLoggingMiddleware>();
 
-// Blog Services
-var blogServices = builder.Services.AddPingback()
+builder.Services.AddPingback()
                 .AddSyndication()
                 .AddNotificationClient()
                 .AddReleaseCheckerClient()
@@ -171,14 +170,15 @@ var blogServices = builder.Services.AddPingback()
                 .Configure<List<ManifestIcon>>(builder.Configuration.GetSection("ManifestIcons"));
 
 //Add Data Storage
-switch (builder.Configuration.GetConnectionString("DatabaseType").ToLower())
+string dbType = builder.Configuration.GetConnectionString("DatabaseType");
+switch (dbType.ToLower())
 {
     case "mysql":
-        blogServices.AddMySqlStorage(builder.Configuration.GetConnectionString("MoongladeDatabase"));
+        builder.Services.AddMySqlStorage(builder.Configuration.GetConnectionString("MoongladeDatabase"));
         break;
     case "sqlserver":
     default:
-        blogServices.AddSqlServerStorage(builder.Configuration.GetConnectionString("MoongladeDatabase"));
+        builder.Services.AddSqlServerStorage(builder.Configuration.GetConnectionString("MoongladeDatabase"));
         break;
 }
 
@@ -189,7 +189,7 @@ app.Lifetime.ApplicationStopping.Register(() => { app.Logger.LogInformation("Moo
 
 try
 {
-    var startUpResut = await app.InitStartUp();
+    var startUpResut = await app.InitStartUp(dbType);
     switch (startUpResut)
     {
         case StartupInitResult.DatabaseConnectionFail:

@@ -6,14 +6,14 @@ namespace Moonglade.Web;
 
 public static class WebApplicationExtensions
 {
-    public static async Task<StartupInitResult> InitStartUp(this WebApplication app)
+    public static async Task<StartupInitResult> InitStartUp(this WebApplication app, string dbType)
     {
         using var scope = app.Services.CreateScope();
         var services = scope.ServiceProvider;
         var env = services.GetRequiredService<IWebHostEnvironment>();
 
         BlogDbContext context;
-        switch (app.Configuration.GetConnectionString("DatabaseType").ToLower())
+        switch (dbType)
         {
             case "mysql":
                 context = services.GetRequiredService<BlogMySqlDbContext>();
