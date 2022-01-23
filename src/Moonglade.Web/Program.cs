@@ -1,4 +1,5 @@
-﻿using AspNetCoreRateLimit;
+﻿using System.Data;
+using AspNetCoreRateLimit;
 using Edi.Captcha;
 using Microsoft.ApplicationInsights.DependencyCollector;
 using Microsoft.ApplicationInsights.Extensibility;
@@ -190,19 +191,13 @@ var startUpResut = await app.InitStartUp();
 switch (startUpResut)
 {
     case StartupInitResult.DatabaseConnectionFail:
-        app.MapGet("/", x =>
-        {
-            x.Response.StatusCode = StatusCodes.Status500InternalServerError;
-            return x.Response.WriteAsync("Database connection test failed, please check your connection string and firewall settings, then RESTART Moonglade manually.");
-        });
+        app.MapGet("/", _ => throw new DataException(
+            "Database connection test failed, please check your connection string and firewall settings, then RESTART Moonglade manually."));
         app.Run();
         return;
     case StartupInitResult.DatabaseSetupFail:
-        app.MapGet("/", x =>
-        {
-            x.Response.StatusCode = StatusCodes.Status500InternalServerError;
-            return x.Response.WriteAsync("Database setup failed, please check error log, then RESTART Moonglade manually.");
-        });
+        app.MapGet("/", _ => throw new DataException(
+            "Database setup failed, please check error log, then RESTART Moonglade manually."));
         app.Run();
         return;
 }
