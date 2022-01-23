@@ -1,9 +1,6 @@
 ﻿using Dapper;
-using Microsoft.EntityFrameworkCore;
-using Microsoft.EntityFrameworkCore.Infrastructure;
 using Moonglade.Data.Setup;
 using System.Data;
-using System.Reflection;
 
 namespace Moonglade.Data.MySql.Setup
 {
@@ -31,37 +28,6 @@ namespace Moonglade.Data.MySql.Setup
             }
 
             return true;
-        }
-
-        /// <summary>
-        /// Execute SQL to build database schema
-        /// </summary>
-        public async Task SetupDatabase(DatabaseFacade dbFacade)
-        {
-            var sql = GetEmbeddedSqlScript("schema-mysql-8");
-            if (!string.IsNullOrWhiteSpace(sql))
-            {
-                await dbFacade.ExecuteSqlRawAsync(sql);
-            }
-            else
-            {
-                throw new InvalidOperationException("Database Schema Script is empty.");
-            }
-        }
-
-        protected string? GetEmbeddedSqlScript(string scriptName)
-        {
-            var assembly = typeof(MySqlSetupRunner).GetTypeInfo().Assembly;
-            using var stream = assembly.GetManifestResourceStream($"Moonglade.Data.MySql.SQLScripts.{scriptName}.sql");
-
-            if (stream == null)
-            {
-                return null;
-            }
-
-            using var reader = new StreamReader(stream);
-            var sql = reader.ReadToEnd();
-            return sql;
         }
     }
 }

@@ -187,19 +187,28 @@ switch (builder.Configuration.GetConnectionString("DatabaseType").ToLower())
 var app = builder.Build();
 app.Lifetime.ApplicationStopping.Register(() => { app.Logger.LogInformation("Moonglade is stopping..."); });
 
-var startUpResut = await app.InitStartUp();
-switch (startUpResut)
+try
 {
-    case StartupInitResult.DatabaseConnectionFail:
-        app.MapGet("/", _ => throw new DataException(
-            "Database connection test failed, please check your connection string and firewall settings, then RESTART Moonglade manually."));
-        app.Run();
-        return;
-    case StartupInitResult.DatabaseSetupFail:
-        app.MapGet("/", _ => throw new DataException(
-            "Database setup failed, please check error log, then RESTART Moonglade manually."));
-        app.Run();
-        return;
+    var startUpResut = await app.InitStartUp();
+    switch (startUpResut)
+    {
+        case StartupInitResult.DatabaseConnectionFail:
+            app.MapGet("/", _ => throw new DataException(
+                "Database connection test failed, please check your connection string and firewall settings, then RESTART Moonglade manually."));
+            app.Run();
+            return;
+        case StartupInitResult.DatabaseSetupFail:
+            app.MapGet("/", _ => throw new DataException(
+                "Database setup failed, please check error log, then RESTART Moonglade manually."));
+            app.Run();
+            return;
+    }
+}
+catch (Exception e)
+{
+    app.MapGet("/", _ => throw new ("Start up failed: " + e.Message));
+    app.Run();
+    return;
 }
 
 #region Middleware

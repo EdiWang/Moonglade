@@ -7,14 +7,6 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <None Remove="SQLScripts\schema-mysql-8.sql" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <EmbeddedResource Include="SQLScripts\schema-mysql-8.sql" />
-  </ItemGroup>
-
-  <ItemGroup>
 	  <PackageReference Include="Pomelo.EntityFrameworkCore.MySql" Version="6.0.0" />
   </ItemGroup>
 

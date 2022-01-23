@@ -1,5 +1,4 @@
-﻿using Microsoft.EntityFrameworkCore;
-using Moonglade.Data.MySql;
+﻿using Moonglade.Data.MySql;
 using Moonglade.Data.Setup;
 using Moonglade.Data.SqlServer;
 
@@ -14,7 +13,18 @@ public static class WebApplicationExtensions
         var env = services.GetRequiredService<IWebHostEnvironment>();
 
         var setupRunner = services.GetRequiredService<ISetupRunner>();
-        var context = services.GetRequiredService<BlogSqlServerDbContext>() ?? (BlogDbContext)services.GetRequiredService<BlogMySqlDbContext>();
+
+        BlogDbContext context;
+        switch (app.Configuration.GetConnectionString("DatabaseType").ToLower())
+        {
+            case "mysql":
+                context = services.GetRequiredService<BlogMySqlDbContext>();
+                break;
+            case "sqlserver":
+            default:
+                context = services.GetRequiredService<BlogSqlServerDbContext>();
+                break;
+        }
 
         bool canConnect = await context.Database.CanConnectAsync();
         if (!canConnect) return StartupInitResult.DatabaseConnectionFail;
@@ -25,16 +35,7 @@ public static class WebApplicationExtensions
             {
                 app.Logger.LogInformation("Initializing first run configuration...");
 
-                if (context.Database.IsSqlServer())
-                {
-                    await context.Database.EnsureCreatedAsync();
-                }
-                else
-                {
-                    // TODO: MySQL EnsureCreatedAsync
-                    await setupRunner.SetupDatabase(context.Database);
-                }
-
+                await context.Database.EnsureCreatedAsync();
                 await context.ClearAllData();
 
                 await Seed.SeedAsync(context, app.Logger);
