@@ -1,9 +1,9 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using System.Diagnostics.CodeAnalysis;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 using Moonglade.Data.Entities;
-using System.Diagnostics.CodeAnalysis;
 
-namespace Moonglade.Data.Configurations.SqlServer;
+namespace Moonglade.Data.SqlServer.Configurations;
 
 [ExcludeFromCodeCoverage]
 internal class PostExtensionConfiguration : IEntityTypeConfiguration<PostExtensionEntity>

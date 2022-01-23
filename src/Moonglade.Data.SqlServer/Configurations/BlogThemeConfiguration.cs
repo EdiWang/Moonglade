@@ -1,17 +1,16 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using System.Diagnostics.CodeAnalysis;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 using Moonglade.Data.Entities;
-using System.Diagnostics.CodeAnalysis;
 
-namespace Moonglade.Data.Configurations.SqlServer
+namespace Moonglade.Data.SqlServer.Configurations;
+
+[ExcludeFromCodeCoverage]
+public class BlogThemeConfiguration : IEntityTypeConfiguration<BlogThemeEntity>
 {
-    [ExcludeFromCodeCoverage]
-    public class BlogThemeConfiguration : IEntityTypeConfiguration<BlogThemeEntity>
+    public void Configure(EntityTypeBuilder<BlogThemeEntity> builder)
     {
-        public void Configure(EntityTypeBuilder<BlogThemeEntity> builder)
-        {
-            builder.Property(e => e.Id).UseIdentityColumn();
-            builder.Property(e => e.ThemeName).HasMaxLength(32);
-        }
+        builder.Property(e => e.Id).UseIdentityColumn();
+        builder.Property(e => e.ThemeName).HasMaxLength(32);
     }
 }

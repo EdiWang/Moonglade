@@ -1,4 +1,7 @@
-﻿namespace Moonglade.Data.Entities;
+﻿using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Metadata.Builders;
+
+namespace Moonglade.Data.Entities;
 
 public class BlogAssetEntity
 {
