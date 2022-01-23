@@ -4,7 +4,7 @@ using Moonglade.Data.Entities;
 
 namespace Moonglade.Data.SqlServer.Configurations;
 
-internal class BlogConfigurationConfiguration: IEntityTypeConfiguration<BlogConfigurationEntity>
+internal class BlogConfigurationConfiguration : IEntityTypeConfiguration<BlogConfigurationEntity>
 {
     public void Configure(EntityTypeBuilder<BlogConfigurationEntity> builder)
     {

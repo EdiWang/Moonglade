@@ -41,7 +41,6 @@ public class BlogDbContext : DbContext
         modelBuilder.ApplyConfiguration(new CategoryConfiguration());
         modelBuilder.ApplyConfiguration(new TagConfiguration());
         modelBuilder.ApplyConfiguration(new FriendLinkConfiguration());
-        modelBuilder.ApplyConfiguration(new PageConfiguration());
         modelBuilder.ApplyConfiguration(new MenuConfiguration());
         modelBuilder.ApplyConfiguration(new SubMenuConfiguration());
         modelBuilder.ApplyConfiguration(new BlogConfigurationConfiguration());
