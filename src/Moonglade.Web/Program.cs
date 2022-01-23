@@ -1,5 +1,4 @@
-﻿using System.Data;
-using AspNetCoreRateLimit;
+﻿using AspNetCoreRateLimit;
 using Edi.Captcha;
 using Microsoft.ApplicationInsights.DependencyCollector;
 using Microsoft.ApplicationInsights.Extensibility;
@@ -13,6 +12,7 @@ using Moonglade.Notification.Client;
 using Moonglade.Pingback;
 using Moonglade.Syndication;
 using SixLabors.Fonts;
+using System.Data;
 using System.Diagnostics;
 using System.Globalization;
 using System.Text.Encodings.Web;
@@ -206,7 +206,7 @@ try
 }
 catch (Exception e)
 {
-    app.MapGet("/", _ => throw new ("Start up failed: " + e.Message));
+    app.MapGet("/", _ => throw new("Start up failed: " + e.Message));
     app.Run();
     return;
 }

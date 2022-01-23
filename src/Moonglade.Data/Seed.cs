@@ -1,7 +1,7 @@
 ﻿using Microsoft.Extensions.Logging;
 using Moonglade.Data.Entities;
 
-namespace Moonglade.Data.Setup;
+namespace Moonglade.Data;
 
 public class Seed
 {
