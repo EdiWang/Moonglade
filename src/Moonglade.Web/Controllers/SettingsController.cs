@@ -208,12 +208,12 @@ public class SettingsController : ControllerBase
 
     [HttpPost("reset")]
     [ProducesResponseType(StatusCodes.Status202Accepted)]
-    public IActionResult Reset([FromServices] ISetupRunner setupRunner,
+    public async Task<IActionResult> Reset([FromServices] BlogDbContext context,
         [FromServices] IHostApplicationLifetime applicationLifetime)
     {
         _logger.LogWarning($"System reset is requested by '{User.Identity?.Name}', IP: {HttpContext.Connection.RemoteIpAddress}.");
 
-        setupRunner.ClearData();
+        await context.ClearAllData();
 
         applicationLifetime.StopApplication();
         return Accepted();

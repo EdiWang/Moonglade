@@ -24,7 +24,9 @@ public static class WebApplicationExtensions
             {
                 app.Logger.LogInformation("Initializing first run configuration...");
 
-                setupRunner.InitFirstRun();
+                setupRunner.SetupDatabase();
+                await context.ClearAllData();
+
                 await Seed.SeedAsync(context, app.Logger);
 
                 app.Logger.LogInformation("Database setup successfully.");

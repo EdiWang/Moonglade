@@ -5,12 +5,11 @@ using System.Reflection;
 
 namespace Moonglade.Data.SqlServer.Setup
 {
-    public class SqlServerSetupRunner : SetupRunnerBase, ISetupRunner
+    public class SqlServerSetupRunner : ISetupRunner
     {
         private readonly IDbConnection _dbConnection;
 
         public SqlServerSetupRunner(IDbConnection dbConnection)
-            : base(dbConnection)
         {
             _dbConnection = dbConnection;
         }
@@ -36,7 +35,7 @@ namespace Moonglade.Data.SqlServer.Setup
         /// <summary>
         /// Execute SQL to build database schema
         /// </summary>
-        public override void SetupDatabase()
+        public void SetupDatabase()
         {
             var sql = GetEmbeddedSqlScript("schema-mssql-140");
             if (!string.IsNullOrWhiteSpace(sql))
@@ -49,7 +48,7 @@ namespace Moonglade.Data.SqlServer.Setup
             }
         }
 
-        protected override string? GetEmbeddedSqlScript(string scriptName)
+        protected string? GetEmbeddedSqlScript(string scriptName)
         {
             var assembly = typeof(SqlServerSetupRunner).GetTypeInfo().Assembly;
             using var stream = assembly.GetManifestResourceStream($"Moonglade.Data.SqlServer.SQLScripts.{scriptName}.sql");

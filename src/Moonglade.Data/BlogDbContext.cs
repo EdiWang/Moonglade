@@ -61,3 +61,27 @@ public class BlogDbContext : DbContext
                     .HasForeignKey(pt => pt.PostId));
     }
 }
+
+public static class BlogDbContextExtension
+{
+    public static async Task ClearAllData(this BlogDbContext context)
+    {
+        context.PostTag.RemoveRange();
+        context.PostCategory.RemoveRange();
+        context.CommentReply.RemoveRange();
+        context.Category.RemoveRange();
+        context.Tag.RemoveRange();
+        context.Comment.RemoveRange();
+        context.FriendLink.RemoveRange();
+        context.Pingback.RemoveRange();
+        context.PostExtension.RemoveRange();
+        context.Post.RemoveRange();
+        context.Menu.RemoveRange();
+        context.BlogConfiguration.RemoveRange();
+        context.BlogAsset.RemoveRange();
+        context.BlogTheme.RemoveRange();
+        context.LocalAccount.RemoveRange();
+
+        await context.SaveChangesAsync();
+    }
+}

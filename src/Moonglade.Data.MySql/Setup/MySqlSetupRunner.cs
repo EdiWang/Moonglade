@@ -5,12 +5,11 @@ using System.Reflection;
 
 namespace Moonglade.Data.MySql.Setup
 {
-    public class MySqlSetupRunner : SetupRunnerBase, ISetupRunner
+    public class MySqlSetupRunner : ISetupRunner
     {
         private readonly IDbConnection _dbConnection;
 
         public MySqlSetupRunner(IDbConnection dbConnection)
-            : base(dbConnection)
         {
             _dbConnection = dbConnection;
         }
@@ -35,7 +34,7 @@ namespace Moonglade.Data.MySql.Setup
         /// <summary>
         /// Execute SQL to build database schema
         /// </summary>
-        public override void SetupDatabase()
+        public void SetupDatabase()
         {
             var sql = GetEmbeddedSqlScript("schema-mysql-8");
             if (!string.IsNullOrWhiteSpace(sql))
@@ -48,7 +47,7 @@ namespace Moonglade.Data.MySql.Setup
             }
         }
 
-        protected override string? GetEmbeddedSqlScript(string scriptName)
+        protected string? GetEmbeddedSqlScript(string scriptName)
         {
             var assembly = typeof(MySqlSetupRunner).GetTypeInfo().Assembly;
             using var stream = assembly.GetManifestResourceStream($"Moonglade.Data.MySql.SQLScripts.{scriptName}.sql");
