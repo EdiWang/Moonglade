@@ -1,5 +1,4 @@
-﻿using Microsoft.EntityFrameworkCore;
-using Moonglade.Data.MySql;
+﻿using Moonglade.Data.MySql;
 using Moonglade.Data.Setup;
 using Moonglade.Data.SqlServer;
 

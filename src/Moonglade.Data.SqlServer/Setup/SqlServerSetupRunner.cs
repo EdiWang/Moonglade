@@ -1,9 +1,9 @@
 ﻿using Dapper;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Infrastructure;
 using Moonglade.Data.Setup;
 using System.Data;
 using System.Reflection;
-using Microsoft.EntityFrameworkCore;
-using Microsoft.EntityFrameworkCore.Infrastructure;
 
 namespace Moonglade.Data.SqlServer.Setup
 {

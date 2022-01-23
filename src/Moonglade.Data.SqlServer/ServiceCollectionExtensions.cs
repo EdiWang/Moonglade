@@ -3,9 +3,9 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using Moonglade.Data.Infrastructure;
 using Moonglade.Data.Setup;
+using Moonglade.Data.SqlServer.Infrastructure;
 using Moonglade.Data.SqlServer.Setup;
 using System.Data;
-using Moonglade.Data.SqlServer.Infrastructure;
 
 namespace Moonglade.Data.SqlServer
 {
