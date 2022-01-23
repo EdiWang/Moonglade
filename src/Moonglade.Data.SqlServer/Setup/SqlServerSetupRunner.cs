@@ -2,6 +2,8 @@
 using Moonglade.Data.Setup;
 using System.Data;
 using System.Reflection;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Infrastructure;
 
 namespace Moonglade.Data.SqlServer.Setup
 {
@@ -35,12 +37,12 @@ namespace Moonglade.Data.SqlServer.Setup
         /// <summary>
         /// Execute SQL to build database schema
         /// </summary>
-        public void SetupDatabase()
+        public async Task SetupDatabase(DatabaseFacade dbFacade)
         {
             var sql = GetEmbeddedSqlScript("schema-mssql-140");
             if (!string.IsNullOrWhiteSpace(sql))
             {
-                _dbConnection.Execute(sql);
+                await dbFacade.ExecuteSqlRawAsync(sql);
             }
             else
             {

@@ -1,4 +1,5 @@
-﻿using Moonglade.Data.MySql;
+﻿using Microsoft.EntityFrameworkCore;
+using Moonglade.Data.MySql;
 using Moonglade.Data.Setup;
 using Moonglade.Data.SqlServer;
 
@@ -24,7 +25,7 @@ public static class WebApplicationExtensions
             {
                 app.Logger.LogInformation("Initializing first run configuration...");
 
-                setupRunner.SetupDatabase();
+                await setupRunner.SetupDatabase(context.Database);
                 await context.ClearAllData();
 
                 await Seed.SeedAsync(context, app.Logger);

@@ -1,4 +1,6 @@
-﻿namespace Moonglade.Data.Setup
+﻿using Microsoft.EntityFrameworkCore.Infrastructure;
+
+namespace Moonglade.Data.Setup
 {
     public interface ISetupRunner
     {
@@ -11,6 +13,6 @@
         /// <summary>
         /// Execute SQL to build database schema
         /// </summary>
-        void SetupDatabase();
+        Task SetupDatabase(DatabaseFacade dbFacade);
     }
 }
