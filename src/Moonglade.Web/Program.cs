@@ -12,6 +12,7 @@ using Moonglade.Notification.Client;
 using Moonglade.Pingback;
 using Moonglade.Syndication;
 using SixLabors.Fonts;
+using System.Data;
 using System.Diagnostics;
 using System.Globalization;
 using System.Text.Encodings.Web;
@@ -63,6 +64,8 @@ var cultures = builder.Configuration.GetSection("Cultures").Get<string[]>()
 AppDomain.CurrentDomain.Load("Moonglade.FriendLink");
 AppDomain.CurrentDomain.Load("Moonglade.Menus");
 AppDomain.CurrentDomain.Load("Moonglade.Theme");
+AppDomain.CurrentDomain.Load("Moonglade.Configuration");
+
 builder.Services.AddMediatR(AppDomain.CurrentDomain.GetAssemblies());
 
 // ASP.NET Setup
@@ -149,8 +152,7 @@ builder.Services.AddHealthChecks();
 builder.Services.AddTransient<RequestBodyLoggingMiddleware>()
                 .AddTransient<ResponseBodyLoggingMiddleware>();
 
-// Blog Services
-var blogServices = builder.Services.AddPingback()
+builder.Services.AddPingback()
                 .AddSyndication()
                 .AddNotificationClient()
                 .AddReleaseCheckerClient()
@@ -168,27 +170,46 @@ var blogServices = builder.Services.AddPingback()
                 .Configure<List<ManifestIcon>>(builder.Configuration.GetSection("ManifestIcons"));
 
 //Add Data Storage
-switch (builder.Configuration.GetConnectionString("DatabaseType").ToLower())
+string dbType = builder.Configuration.GetConnectionString("DatabaseType");
+switch (dbType.ToLower())
 {
     case "mysql":
-        {
-            blogServices.AddMySqlStorage(builder.Configuration.GetConnectionString("MoongladeDatabase"));
-        }
+        builder.Services.AddMySqlStorage(builder.Configuration.GetConnectionString("MoongladeDatabase"));
         break;
     case "sqlserver":
-    default:    //默认 sqlserver
-        {
-            blogServices.AddSqlServerStorage(builder.Configuration.GetConnectionString("MoongladeDatabase"));
-        }
+    default:
+        builder.Services.AddSqlServerStorage(builder.Configuration.GetConnectionString("MoongladeDatabase"));
         break;
 }
 
 #endregion
 
 var app = builder.Build();
-await app.InitStartUp();
-
 app.Lifetime.ApplicationStopping.Register(() => { app.Logger.LogInformation("Moonglade is stopping..."); });
+
+try
+{
+    var startUpResut = await app.InitStartUp(dbType);
+    switch (startUpResut)
+    {
+        case StartupInitResult.DatabaseConnectionFail:
+            app.MapGet("/", _ => throw new DataException(
+                "Database connection test failed, please check your connection string and firewall settings, then RESTART Moonglade manually."));
+            app.Run();
+            return;
+        case StartupInitResult.DatabaseSetupFail:
+            app.MapGet("/", _ => throw new DataException(
+                "Database setup failed, please check error log, then RESTART Moonglade manually."));
+            app.Run();
+            return;
+    }
+}
+catch (Exception e)
+{
+    app.MapGet("/", _ => throw new("Start up failed: " + e.Message));
+    app.Run();
+    return;
+}
 
 #region Middleware
 

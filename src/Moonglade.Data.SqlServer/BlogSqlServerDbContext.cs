@@ -1,5 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
-using Moonglade.Data.Configurations.SqlServer;
+using Moonglade.Data.SqlServer.Configurations;
 using System.Diagnostics.CodeAnalysis;
 
 namespace Moonglade.Data.SqlServer
@@ -26,6 +26,9 @@ namespace Moonglade.Data.SqlServer
             modelBuilder.ApplyConfiguration(new LocalAccountConfiguration());
             modelBuilder.ApplyConfiguration(new PingbackConfiguration());
             modelBuilder.ApplyConfiguration(new BlogThemeConfiguration());
+            modelBuilder.ApplyConfiguration(new BlogAssetConfiguration());
+            modelBuilder.ApplyConfiguration(new BlogConfigurationConfiguration());
+            modelBuilder.ApplyConfiguration(new PageConfiguration());
 
             base.OnModelCreating(modelBuilder);
         }

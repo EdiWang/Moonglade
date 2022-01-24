@@ -1,7 +1,7 @@
 ﻿using Microsoft.EntityFrameworkCore;
-using Moonglade.Data.SqlServer;
+using Moonglade.Data.Infrastructure;
 
-namespace Moonglade.Data.Infrastructure.SqlServer
+namespace Moonglade.Data.SqlServer.Infrastructure
 {
     public class SqlServerDbContextRepository<T> : DbContextRepository<T> where T : class
     {

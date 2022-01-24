@@ -1,45 +1,63 @@
-﻿using Moonglade.Data.Setup;
+﻿using Microsoft.EntityFrameworkCore;
+using Moonglade.Data.MySql;
+using Moonglade.Data.SqlServer;
 
 namespace Moonglade.Web;
 
 public static class WebApplicationExtensions
 {
-    public static async Task InitStartUp(this WebApplication app)
+    public static async Task<StartupInitResult> InitStartUp(this WebApplication app, string dbType)
     {
         using var scope = app.Services.CreateScope();
         var services = scope.ServiceProvider;
         var env = services.GetRequiredService<IWebHostEnvironment>();
 
-        //var dbConnection = services.GetRequiredService<IDbConnection>();
-        var setupRunner = services.GetRequiredService<ISetupRunner>();
-
-        try
+        BlogDbContext context;
+        switch (dbType)
         {
-            if (!setupRunner.TestDatabaseConnection()) return;
-        }
-        catch (Exception e)
-        {
-            app.Logger.LogCritical(e, e.Message);
-            return;
+            case "mysql":
+                context = services.GetRequiredService<BlogMySqlDbContext>();
+                break;
+            case "sqlserver":
+            default:
+                context = services.GetRequiredService<BlogSqlServerDbContext>();
+                break;
         }
 
-        if (setupRunner.IsFirstRun())
+        bool canConnect = await context.Database.CanConnectAsync();
+        if (!canConnect) return StartupInitResult.DatabaseConnectionFail;
+
+        await context.Database.EnsureCreatedAsync();
+
+        bool isNew = !await context.BlogConfiguration.AnyAsync();
+        if (isNew)
         {
             try
             {
-                app.Logger.LogInformation("Initializing first run configuration...");
-                setupRunner.InitFirstRun();
-                app.Logger.LogInformation("Database setup successfully.");
+                app.Logger.LogInformation("Seeding database...");
+
+                await context.ClearAllData();
+                await Seed.SeedAsync(context, app.Logger);
+
+                app.Logger.LogInformation("Database seeding successfully.");
+
             }
             catch (Exception e)
             {
                 app.Logger.LogCritical(e, e.Message);
+                return StartupInitResult.DatabaseSetupFail;
             }
         }
 
+        var mediator = services.GetRequiredService<IMediator>();
+
+        // load configurations into singleton
+        var config = await mediator.Send(new GetAllConfigurationsQuery());
+        var bc = app.Services.GetRequiredService<IBlogConfig>();
+        bc.LoadFromConfig(config);
+
         try
         {
-            var mediator = services.GetRequiredService<IMediator>();
             var iconData = await mediator.Send(new GetAssetDataQuery(AssetId.SiteIconBase64));
             MemoryStreamIconGenerator.GenerateIcons(iconData, env.WebRootPath, app.Logger);
         }
@@ -48,5 +66,14 @@ public static class WebApplicationExtensions
             // Non critical error, just log, do not block application start
             app.Logger.LogError(e, e.Message);
         }
+
+        return StartupInitResult.None;
     }
+}
+
+public enum StartupInitResult
+{
+    None = 0,
+    DatabaseConnectionFail = 1,
+    DatabaseSetupFail = 2
 }

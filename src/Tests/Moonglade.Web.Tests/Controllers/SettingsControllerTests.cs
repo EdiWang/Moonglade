@@ -134,7 +134,7 @@ public class SettingsControllerTests
         var result = await settingsController.General(model, tZoneResolverMock.Object);
 
         Assert.IsInstanceOf<NoContentResult>(result);
-        _mockBlogConfig.Verify(p => p.SaveAsync(It.IsAny<GeneralSettings>()));
+        _mockBlogConfig.Verify(p => p.UpdateAsync(It.IsAny<GeneralSettings>()));
     }
 
     [Test]
@@ -147,7 +147,7 @@ public class SettingsControllerTests
         var result = await settingsController.Content(model);
 
         Assert.IsInstanceOf<NoContentResult>(result);
-        _mockBlogConfig.Verify(p => p.SaveAsync(It.IsAny<ContentSettings>()));
+        _mockBlogConfig.Verify(p => p.UpdateAsync(It.IsAny<ContentSettings>()));
     }
 
     [Test]
@@ -160,7 +160,7 @@ public class SettingsControllerTests
         var result = await settingsController.Notification(model);
 
         Assert.IsInstanceOf<NoContentResult>(result);
-        _mockBlogConfig.Verify(p => p.SaveAsync(It.IsAny<NotificationSettings>()));
+        _mockBlogConfig.Verify(p => p.UpdateAsync(It.IsAny<NotificationSettings>()));
     }
 
     [Test]
@@ -181,7 +181,7 @@ public class SettingsControllerTests
         var result = await settingsController.Subscription(model);
 
         Assert.IsInstanceOf<NoContentResult>(result);
-        _mockBlogConfig.Verify(p => p.SaveAsync(It.IsAny<FeedSettings>()));
+        _mockBlogConfig.Verify(p => p.UpdateAsync(It.IsAny<FeedSettings>()));
     }
 
     [Test]
@@ -203,7 +203,7 @@ public class SettingsControllerTests
         var result = await settingsController.Image(model, mockBlogImageStorage.Object);
 
         Assert.IsInstanceOf<NoContentResult>(result);
-        _mockBlogConfig.Verify(p => p.SaveAsync(It.IsAny<ImageSettings>()));
+        _mockBlogConfig.Verify(p => p.UpdateAsync(It.IsAny<ImageSettings>()));
     }
 
     //[Test]
@@ -232,7 +232,7 @@ public class SettingsControllerTests
         var result = await settingsController.Advanced(model);
 
         Assert.IsInstanceOf<NoContentResult>(result);
-        _mockBlogConfig.Verify(p => p.SaveAsync(It.IsAny<AdvancedSettings>()));
+        _mockBlogConfig.Verify(p => p.UpdateAsync(It.IsAny<AdvancedSettings>()));
     }
 
     [Test]
@@ -271,7 +271,7 @@ public class SettingsControllerTests
         var result = await settingsController.Image(model, mockBlogImageStorage.Object);
 
         Assert.IsInstanceOf<NoContentResult>(result);
-        _mockBlogConfig.Verify(p => p.SaveAsync(It.IsAny<ImageSettings>()));
+        _mockBlogConfig.Verify(p => p.UpdateAsync(It.IsAny<ImageSettings>()));
     }
 
     [Test]
@@ -322,7 +322,7 @@ public class SettingsControllerTests
         var result = await settingsController.CustomStyleSheet(model);
 
         Assert.IsInstanceOf<BadRequestObjectResult>(result);
-        _mockBlogConfig.Verify(p => p.SaveAsync(It.IsAny<CustomStyleSheetSettings>()), Times.Never);
+        _mockBlogConfig.Verify(p => p.UpdateAsync(It.IsAny<CustomStyleSheetSettings>()), Times.Never);
     }
 
     [Test]
@@ -340,7 +340,7 @@ public class SettingsControllerTests
         var result = await settingsController.CustomStyleSheet(model);
 
         Assert.IsInstanceOf<BadRequestObjectResult>(result);
-        _mockBlogConfig.Verify(p => p.SaveAsync(It.IsAny<CustomStyleSheetSettings>()), Times.Never);
+        _mockBlogConfig.Verify(p => p.UpdateAsync(It.IsAny<CustomStyleSheetSettings>()), Times.Never);
     }
 
     [Test]
@@ -358,7 +358,7 @@ public class SettingsControllerTests
         var result = await settingsController.CustomStyleSheet(model);
 
         Assert.IsInstanceOf<NoContentResult>(result);
-        _mockBlogConfig.Verify(p => p.SaveAsync(It.IsAny<CustomStyleSheetSettings>()));
+        _mockBlogConfig.Verify(p => p.UpdateAsync(It.IsAny<CustomStyleSheetSettings>()));
     }
 
     [Test]

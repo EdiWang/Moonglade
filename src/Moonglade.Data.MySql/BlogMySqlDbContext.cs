@@ -26,6 +26,9 @@ namespace Moonglade.Data.MySql
             modelBuilder.ApplyConfiguration(new LocalAccountConfiguration());
             modelBuilder.ApplyConfiguration(new PingbackConfiguration());
             modelBuilder.ApplyConfiguration(new BlogThemeConfiguration());
+            modelBuilder.ApplyConfiguration(new BlogAssetConfiguration());
+            modelBuilder.ApplyConfiguration(new BlogConfigurationConfiguration());
+            modelBuilder.ApplyConfiguration(new PageConfiguration());
 
             base.OnModelCreating(modelBuilder);
         }

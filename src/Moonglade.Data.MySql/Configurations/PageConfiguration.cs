@@ -1,11 +1,9 @@
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 using Moonglade.Data.Entities;
-using System.Diagnostics.CodeAnalysis;
 
-namespace Moonglade.Data.Configurations;
+namespace Moonglade.Data.MySql.Configurations;
 
-[ExcludeFromCodeCoverage]
 internal class PageConfiguration : IEntityTypeConfiguration<PageEntity>
 {
     public void Configure(EntityTypeBuilder<PageEntity> builder)
@@ -14,5 +12,7 @@ internal class PageConfiguration : IEntityTypeConfiguration<PageEntity>
         builder.Property(e => e.Title).HasMaxLength(128);
         builder.Property(e => e.Slug).HasMaxLength(128);
         builder.Property(e => e.MetaDescription).HasMaxLength(256);
+        builder.Property(e => e.CreateTimeUtc).HasColumnType("datetime");
+        builder.Property(e => e.UpdateTimeUtc).HasColumnType("datetime");
     }
 }

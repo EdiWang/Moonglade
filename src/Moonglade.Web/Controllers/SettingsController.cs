@@ -1,6 +1,5 @@
 ﻿using Microsoft.AspNetCore.Localization;
 using Moonglade.Caching.Filters;
-using Moonglade.Data.Setup;
 using Moonglade.Notification.Client;
 using NUglify;
 using System.Reflection;
@@ -87,7 +86,7 @@ public class SettingsController : ControllerBase
         _blogConfig.GeneralSettings = model;
         _blogConfig.GeneralSettings.TimeZoneUtcOffset = timeZoneResolver.GetTimeSpanByZoneId(model.TimeZoneId).ToString();
 
-        await _blogConfig.SaveAsync(_blogConfig.GeneralSettings);
+        await SaveConfigAsync(_blogConfig.GeneralSettings);
 
         AppDomain.CurrentDomain.SetData("CurrentThemeColor", null);
 
@@ -100,7 +99,7 @@ public class SettingsController : ControllerBase
     {
         _blogConfig.ContentSettings = model;
 
-        await _blogConfig.SaveAsync(_blogConfig.ContentSettings);
+        await SaveConfigAsync(_blogConfig.ContentSettings);
         return NoContent();
     }
 
@@ -110,7 +109,7 @@ public class SettingsController : ControllerBase
     {
         _blogConfig.NotificationSettings = model;
 
-        await _blogConfig.SaveAsync(_blogConfig.NotificationSettings);
+        await SaveConfigAsync(_blogConfig.NotificationSettings);
         return NoContent();
     }
 
@@ -136,7 +135,7 @@ public class SettingsController : ControllerBase
     {
         _blogConfig.FeedSettings = model;
 
-        await _blogConfig.SaveAsync(_blogConfig.FeedSettings);
+        await SaveConfigAsync(_blogConfig.FeedSettings);
         return NoContent();
     }
 
@@ -163,7 +162,7 @@ public class SettingsController : ControllerBase
                         fileName = await imageStorage.InsertAsync(fileName, avatarBytes);
                         _blogConfig.GeneralSettings.AvatarUrl = _blogConfig.ImageSettings.CDNEndpoint.CombineUrl(fileName);
 
-                        await _blogConfig.SaveAsync(_blogConfig.GeneralSettings);
+                        await SaveConfigAsync(_blogConfig.GeneralSettings);
                     }
                 }
                 catch (FormatException e)
@@ -175,10 +174,10 @@ public class SettingsController : ControllerBase
         else
         {
             _blogConfig.GeneralSettings.AvatarUrl = Url.Action("Avatar", "Assets");
-            await _blogConfig.SaveAsync(_blogConfig.GeneralSettings);
+            await SaveConfigAsync(_blogConfig.GeneralSettings);
         }
 
-        await _blogConfig.SaveAsync(_blogConfig.ImageSettings);
+        await SaveConfigAsync(_blogConfig.ImageSettings);
 
         return NoContent();
     }
@@ -193,7 +192,7 @@ public class SettingsController : ControllerBase
 
         _blogConfig.AdvancedSettings = model;
 
-        await _blogConfig.SaveAsync(_blogConfig.AdvancedSettings);
+        await SaveConfigAsync(_blogConfig.AdvancedSettings);
         return NoContent();
     }
 
@@ -208,12 +207,12 @@ public class SettingsController : ControllerBase
 
     [HttpPost("reset")]
     [ProducesResponseType(StatusCodes.Status202Accepted)]
-    public IActionResult Reset([FromServices] ISetupRunner setupRunner,
+    public async Task<IActionResult> Reset([FromServices] BlogDbContext context,
         [FromServices] IHostApplicationLifetime applicationLifetime)
     {
         _logger.LogWarning($"System reset is requested by '{User.Identity?.Name}', IP: {HttpContext.Connection.RemoteIpAddress}.");
 
-        setupRunner.ClearData();
+        await context.ClearAllData();
 
         applicationLifetime.StopApplication();
         return Accepted();
@@ -242,7 +241,7 @@ public class SettingsController : ControllerBase
 
         _blogConfig.CustomStyleSheetSettings = model;
 
-        await _blogConfig.SaveAsync(_blogConfig.CustomStyleSheetSettings);
+        await SaveConfigAsync(_blogConfig.CustomStyleSheetSettings);
         return NoContent();
     }
 
@@ -256,6 +255,12 @@ public class SettingsController : ControllerBase
             ServerTimeUtc = DateTime.UtcNow,
             Password = password
         });
+    }
+
+    private async Task SaveConfigAsync<T>(T blogSettings) where T : IBlogSettings
+    {
+        var kvp = _blogConfig.UpdateAsync(blogSettings);
+        await _mediator.Send(new SetConfigurationCommand(kvp.Key, kvp.Value));
     }
 
     public class CheckNewReleaseResult
