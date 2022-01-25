@@ -21,7 +21,7 @@ namespace Moonglade.Data.MySql.Tests
             var obj2 = services.FirstOrDefault(p => p.ServiceType == typeof(IRepository<>));
             Assert.IsNotNull(obj2);
 
-            var obj3 = services.FirstOrDefault(p => p.ServiceType == typeof(BlogMySqlDbContext));
+            var obj3 = services.FirstOrDefault(p => p.ServiceType == typeof(MySqlBlogDbContext));
             Assert.IsNotNull(obj3);
         }
     }

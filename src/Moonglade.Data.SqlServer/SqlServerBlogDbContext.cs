@@ -1,17 +1,17 @@
 ﻿using Microsoft.EntityFrameworkCore;
-using Moonglade.Data.MySql.Configurations;
+using Moonglade.Data.SqlServer.Configurations;
 using System.Diagnostics.CodeAnalysis;
 
-namespace Moonglade.Data.MySql
+namespace Moonglade.Data.SqlServer
 {
     [ExcludeFromCodeCoverage]
-    public class BlogMySqlDbContext : BlogDbContext
+    public class SqlServerBlogDbContext : BlogDbContext
     {
-        public BlogMySqlDbContext()
+        public SqlServerBlogDbContext()
         {
         }
 
-        public BlogMySqlDbContext(DbContextOptions options)
+        public SqlServerBlogDbContext(DbContextOptions options)
             : base(options)
         {
         }

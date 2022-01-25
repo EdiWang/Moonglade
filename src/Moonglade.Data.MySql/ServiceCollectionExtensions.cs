@@ -14,7 +14,7 @@ namespace Moonglade.Data.MySql
             services.AddTransient<IDbConnection>(_ => new MySqlConnection(connectionString));
             services.AddScoped(typeof(IRepository<>), typeof(MySqlDbContextRepository<>));
 
-            services.AddDbContext<BlogMySqlDbContext>(optionsAction => optionsAction.UseLazyLoadingProxies()
+            services.AddDbContext<MySqlBlogDbContext>(optionsAction => optionsAction.UseLazyLoadingProxies()
                 .UseMySql(connectionString, ServerVersion.AutoDetect(connectionString), builder =>
                   {
                       builder.EnableRetryOnFailure(3, TimeSpan.FromSeconds(30), null);

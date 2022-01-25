@@ -5,7 +5,7 @@ namespace Moonglade.Data.SqlServer.Infrastructure
 {
     public class SqlServerDbContextRepository<T> : DbContextRepository<T> where T : class
     {
-        public SqlServerDbContextRepository(BlogSqlServerDbContext dbContext)
+        public SqlServerDbContextRepository(SqlServerBlogDbContext dbContext)
             : base(dbContext)
         {
         }

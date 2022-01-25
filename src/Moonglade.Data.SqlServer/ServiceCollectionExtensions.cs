@@ -14,7 +14,7 @@ namespace Moonglade.Data.SqlServer
             services.AddTransient<IDbConnection>(_ => new SqlConnection(connectionString));
             services.AddScoped(typeof(IRepository<>), typeof(SqlServerDbContextRepository<>));
 
-            services.AddDbContext<BlogSqlServerDbContext>(options =>
+            services.AddDbContext<SqlServerBlogDbContext>(options =>
             options.UseLazyLoadingProxies()
                    .UseSqlServer(connectionString, builder =>
                    {
