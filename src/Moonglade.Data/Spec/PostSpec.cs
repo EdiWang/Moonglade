@@ -1,5 +1,4 @@
-﻿using Microsoft.EntityFrameworkCore;
-using Moonglade.Data.Entities;
+﻿using Moonglade.Data.Entities;
 using Moonglade.Data.Infrastructure;
 
 namespace Moonglade.Data.Spec;
