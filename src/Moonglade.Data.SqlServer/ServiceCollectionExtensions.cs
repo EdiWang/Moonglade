@@ -3,23 +3,22 @@ using Microsoft.Extensions.DependencyInjection;
 using Moonglade.Data.Infrastructure;
 using Moonglade.Data.SqlServer.Infrastructure;
 
-namespace Moonglade.Data.SqlServer
+namespace Moonglade.Data.SqlServer;
+
+public static class ServiceCollectionExtensions
 {
-    public static class ServiceCollectionExtensions
+    public static IServiceCollection AddSqlServerStorage(this IServiceCollection services, string connectionString)
     {
-        public static IServiceCollection AddSqlServerStorage(this IServiceCollection services, string connectionString)
-        {
-            services.AddScoped(typeof(IRepository<>), typeof(SqlServerDbContextRepository<>));
+        services.AddScoped(typeof(IRepository<>), typeof(SqlServerDbContextRepository<>));
 
-            services.AddDbContext<SqlServerBlogDbContext>(options =>
+        services.AddDbContext<SqlServerBlogDbContext>(options =>
             options.UseLazyLoadingProxies()
-                   .UseSqlServer(connectionString, builder =>
-                   {
-                       builder.EnableRetryOnFailure(3, TimeSpan.FromSeconds(30), null);
-                   }).
-                   EnableDetailedErrors());
+                .UseSqlServer(connectionString, builder =>
+                {
+                    builder.EnableRetryOnFailure(3, TimeSpan.FromSeconds(30), null);
+                }).
+                EnableDetailedErrors());
 
-            return services;
-        }
+        return services;
     }
 }

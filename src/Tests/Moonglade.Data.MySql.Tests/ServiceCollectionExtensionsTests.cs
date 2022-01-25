@@ -4,25 +4,24 @@ using NUnit.Framework;
 using System.Data;
 using System.Linq;
 
-namespace Moonglade.Data.MySql.Tests
+namespace Moonglade.Data.MySql.Tests;
+
+[TestFixture]
+public class ServiceCollectionExtensionsTests
 {
-    [TestFixture]
-    public class ServiceCollectionExtensionsTests
+    [Test]
+    public void AddCoreBloggingServices_OK()
     {
-        [Test]
-        public void AddCoreBloggingServices_OK()
-        {
-            IServiceCollection services = new ServiceCollection();
-            services.AddMySqlStorage(@"Server=localhost;Port=6612;Database=moonglade;Uid=root;Pwd=****;");
+        IServiceCollection services = new ServiceCollection();
+        services.AddMySqlStorage(@"Server=localhost;Port=6612;Database=moonglade;Uid=root;Pwd=****;");
 
-            var obj1 = services.FirstOrDefault(p => p.ServiceType == typeof(IDbConnection));
-            Assert.IsNotNull(obj1);
+        var obj1 = services.FirstOrDefault(p => p.ServiceType == typeof(IDbConnection));
+        Assert.IsNotNull(obj1);
 
-            var obj2 = services.FirstOrDefault(p => p.ServiceType == typeof(IRepository<>));
-            Assert.IsNotNull(obj2);
+        var obj2 = services.FirstOrDefault(p => p.ServiceType == typeof(IRepository<>));
+        Assert.IsNotNull(obj2);
 
-            var obj3 = services.FirstOrDefault(p => p.ServiceType == typeof(MySqlBlogDbContext));
-            Assert.IsNotNull(obj3);
-        }
+        var obj3 = services.FirstOrDefault(p => p.ServiceType == typeof(MySqlBlogDbContext));
+        Assert.IsNotNull(obj3);
     }
 }

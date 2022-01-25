@@ -1,18 +1,17 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Moonglade.Data.Infrastructure;
 
-namespace Moonglade.Data.MySql.Infrastructure
-{
-    public class MySqlDbContextRepository<T> : DbContextRepository<T> where T : class
-    {
-        public MySqlDbContextRepository(MySqlBlogDbContext dbContext)
-            : base(dbContext)
-        {
-        }
+namespace Moonglade.Data.MySql.Infrastructure;
 
-        public override async Task ExecuteSqlRawAsync(string sql)
-        {
-            await DbContext.Database.ExecuteSqlRawAsync(sql);
-        }
+public class MySqlDbContextRepository<T> : DbContextRepository<T> where T : class
+{
+    public MySqlDbContextRepository(MySqlBlogDbContext dbContext)
+        : base(dbContext)
+    {
+    }
+
+    public override async Task ExecuteSqlRawAsync(string sql)
+    {
+        await DbContext.Database.ExecuteSqlRawAsync(sql);
     }
 }
