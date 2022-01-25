@@ -171,14 +171,15 @@ builder.Services.AddPingback()
 
 //Add Data Storage
 string dbType = builder.Configuration.GetConnectionString("DatabaseType");
+string connStr = builder.Configuration.GetConnectionString("MoongladeDatabase");
 switch (dbType.ToLower())
 {
     case "mysql":
-        builder.Services.AddMySqlStorage(builder.Configuration.GetConnectionString("MoongladeDatabase"));
+        builder.Services.AddMySqlStorage(connStr);
         break;
     case "sqlserver":
     default:
-        builder.Services.AddSqlServerStorage(builder.Configuration.GetConnectionString("MoongladeDatabase"));
+        builder.Services.AddSqlServerStorage(connStr);
         break;
 }
 
