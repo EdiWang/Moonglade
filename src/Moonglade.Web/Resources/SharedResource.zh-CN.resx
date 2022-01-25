@@ -243,7 +243,6 @@
   <data name="Logo text" xml:space="preserve">
     <value>Logo 文字</value>
   </data>
-
   <data name="Meta keyword" xml:space="preserve">
     <value>网站关键词</value>
   </data>
@@ -279,21 +278,6 @@
   </data>
   <data name="Password must be minimum eight characters, at least one letter and one number" xml:space="preserve">
     <value>密码至少8位，且必须包含至少一个英文字母及一个数字</value>
-  </data>
-  <data name="Please enter a password." xml:space="preserve">
-    <value>请输入密码</value>
-  </data>
-  <data name="Please enter a slug." xml:space="preserve">
-    <value>请输入Slug</value>
-  </data>
-  <data name="Please enter a title." xml:space="preserve">
-    <value>请输入标题</value>
-  </data>
-  <data name="Please enter a username." xml:space="preserve">
-    <value>请输入用户名</value>
-  </data>
-  <data name="Please enter blog title" xml:space="preserve">
-    <value>请输入博客标题</value>
   </data>
   <data name="Please enter content." xml:space="preserve">
     <value>请输入内容</value>
