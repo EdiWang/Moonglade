@@ -267,50 +267,14 @@
   <data name="Owner email" xml:space="preserve">
     <value>博主邮箱</value>
   </data>
-  <data name="Page size can only range from 1-100" xml:space="preserve">
-    <value>分页数量必须在1-100之间</value>
-  </data>
   <data name="Password" xml:space="preserve">
     <value>密码</value>
-  </data>
-  <data name="Password must be at least 8 characters" xml:space="preserve">
-    <value>密码至少需要8位</value>
-  </data>
-  <data name="Password must be minimum eight characters, at least one letter and one number" xml:space="preserve">
-    <value>密码至少8位，且必须包含至少一个英文字母及一个数字</value>
-  </data>
-  <data name="Please enter content." xml:space="preserve">
-    <value>请输入内容</value>
-  </data>
-  <data name="Please enter copyright" xml:space="preserve">
-    <value>请输入版权信息</value>
-  </data>
-  <data name="Please enter keyword" xml:space="preserve">
-    <value>请输入关键词</value>
-  </data>
-  <data name="Please enter language code." xml:space="preserve">
-    <value>请输入语言代码</value>
-  </data>
-  <data name="Please enter logo text" xml:space="preserve">
-    <value>请输入Logo文字</value>
-  </data>
-  <data name="Please enter short description" xml:space="preserve">
-    <value>请输入短简介</value>
-  </data>
-  <data name="Please enter the meta description." xml:space="preserve">
-    <value>请输入简要描述</value>
-  </data>
-  <data name="Please enter the slug." xml:space="preserve">
-    <value>请输入slug</value>
   </data>
   <data name="Please enter watermark text" xml:space="preserve">
     <value>请输入水印文字</value>
   </data>
   <data name="Please enter your description" xml:space="preserve">
     <value>请输入您的简介</value>
-  </data>
-  <data name="Please enter your name" xml:space="preserve">
-    <value>请输入您的名字</value>
   </data>
   <data name="Please select at least one category." xml:space="preserve">
     <value>请选择至少一个分类</value>
