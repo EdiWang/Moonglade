@@ -2,8 +2,6 @@
 using Microsoft.Extensions.DependencyInjection;
 using Moonglade.Data.Infrastructure;
 using Moonglade.Data.MySql.Infrastructure;
-using MySqlConnector;
-using System.Data;
 
 namespace Moonglade.Data.MySql
 {
@@ -11,7 +9,6 @@ namespace Moonglade.Data.MySql
     {
         public static IServiceCollection AddMySqlStorage(this IServiceCollection services, string connectionString)
         {
-            services.AddTransient<IDbConnection>(_ => new MySqlConnection(connectionString));
             services.AddScoped(typeof(IRepository<>), typeof(MySqlDbContextRepository<>));
 
             services.AddDbContext<MySqlBlogDbContext>(optionsAction => optionsAction.UseLazyLoadingProxies()

@@ -1,9 +1,7 @@
-﻿using Microsoft.Data.SqlClient;
-using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using Moonglade.Data.Infrastructure;
 using Moonglade.Data.SqlServer.Infrastructure;
-using System.Data;
 
 namespace Moonglade.Data.SqlServer
 {
@@ -11,7 +9,6 @@ namespace Moonglade.Data.SqlServer
     {
         public static IServiceCollection AddSqlServerStorage(this IServiceCollection services, string connectionString)
         {
-            services.AddTransient<IDbConnection>(_ => new SqlConnection(connectionString));
             services.AddScoped(typeof(IRepository<>), typeof(SqlServerDbContextRepository<>));
 
             services.AddDbContext<SqlServerBlogDbContext>(options =>
