@@ -15,9 +15,6 @@ public class ServiceCollectionExtensionsTests
         IServiceCollection services = new ServiceCollection();
         services.AddMySqlStorage(@"Server=localhost;Port=6612;Database=moonglade;Uid=root;Pwd=****;");
 
-        var obj1 = services.FirstOrDefault(p => p.ServiceType == typeof(IDbConnection));
-        Assert.IsNotNull(obj1);
-
         var obj2 = services.FirstOrDefault(p => p.ServiceType == typeof(IRepository<>));
         Assert.IsNotNull(obj2);
 
