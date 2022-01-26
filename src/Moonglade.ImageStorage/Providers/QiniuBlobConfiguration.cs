@@ -4,28 +4,24 @@ namespace Moonglade.ImageStorage.Providers;
 
 public class QiniuBlobConfiguration : DefaultQiniuConfiguration
 {
-    private readonly bool _withSSL;
-    private readonly string _endPoint;
-    private readonly string _bucketName;
-
     public QiniuBlobConfiguration(string endPoint, string bucketName, bool withSSL)
     {
-        _endPoint = endPoint;
-        _bucketName = bucketName;
-        _withSSL = withSSL;
+        EndPoint = endPoint;
+        BucketName = bucketName;
+        UseHttps = withSSL;
     }
 
     public override Zone Zone => Zone.ZONE_CN_South;
 
-    public override bool UseHttps => _withSSL;
+    public override bool UseHttps { get; }
 
     public override bool UseCdnDomains => true;
 
     public override ChunkUnit ChunkSize => ChunkUnit.U512K;
 
-    public override string EndPoint => _endPoint;
+    public override string EndPoint { get; }
 
-    public override string BucketName => _bucketName;
+    public override string BucketName { get; }
 }
 
 public class MacSettings : IMacSettings

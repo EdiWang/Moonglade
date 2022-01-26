@@ -6,7 +6,7 @@ public abstract class DbContextRepository<T> : IRepository<T> where T : class
 {
     protected readonly DbContext DbContext;
 
-    public DbContextRepository(DbContext dbContext)
+    protected DbContextRepository(DbContext dbContext)
     {
         DbContext = dbContext;
     }

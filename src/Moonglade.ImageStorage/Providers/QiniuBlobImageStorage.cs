@@ -56,7 +56,7 @@ public class QiniuBlobImageStorage : IBlogImageStorage
     {
         var blobToken = _cache.GetOrCreate(BlobTokenKey, entry =>
         {
-            _logger.LogTrace($"Qiniu blob token not on cache, fetching token...");
+            _logger.LogTrace("Qiniu blob token not on cache, fetching token...");
 
             entry.SlidingExpiration = TimeSpan.FromSeconds(ExpireSeconds);
             return GetQiniuBlobToken();
@@ -104,7 +104,7 @@ public class QiniuBlobImageStorage : IBlogImageStorage
         var deadline = (int)(DateTime.UtcNow.AddMinutes(15) - new DateTime(1970, 1, 1, 0, 0, 0, 0)).TotalSeconds;
         var blobToken = _cache.GetOrCreate(BlobTokenKey, entry =>
         {
-            _logger.LogTrace($"Qiniu blob token not on cache, fetching token...");
+            _logger.LogTrace("Qiniu blob token not on cache, fetching token...");
 
             entry.SlidingExpiration = TimeSpan.FromSeconds(ExpireSeconds);
             return GetQiniuBlobToken();
