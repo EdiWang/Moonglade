@@ -16,11 +16,11 @@ public static class WebApplicationExtensions
         switch (dbType)
         {
             case "mysql":
-                context = services.GetRequiredService<BlogMySqlDbContext>();
+                context = services.GetRequiredService<MySqlBlogDbContext>();
                 break;
             case "sqlserver":
             default:
-                context = services.GetRequiredService<BlogSqlServerDbContext>();
+                context = services.GetRequiredService<SqlServerBlogDbContext>();
                 break;
         }
 

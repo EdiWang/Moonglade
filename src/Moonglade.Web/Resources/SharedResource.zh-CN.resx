@@ -153,9 +153,6 @@
   <data name="Copyright" xml:space="preserve">
     <value>版权信息</value>
   </data>
-  <data name="Default language code" xml:space="preserve">
-    <value>默认语言代码</value>
-  </data>
   <data name="Description" xml:space="preserve">
     <value>描述</value>
   </data>
@@ -225,9 +222,6 @@
   <data name="How many tags show on sidebar" xml:space="preserve">
     <value>侧边栏显示标签数量</value>
   </data>
-  <data name="Incorrect language code format. e.g. en-us" xml:space="preserve">
-    <value>语言代码格式错误。样例：zh-cn</value>
-  </data>
   <data name="Inline CSS" xml:space="preserve">
     <value>内联CSS</value>
   </data>
@@ -243,7 +237,6 @@
   <data name="Logo text" xml:space="preserve">
     <value>Logo 文字</value>
   </data>
-
   <data name="Meta keyword" xml:space="preserve">
     <value>网站关键词</value>
   </data>
@@ -268,68 +261,8 @@
   <data name="Owner email" xml:space="preserve">
     <value>博主邮箱</value>
   </data>
-  <data name="Page size can only range from 1-100" xml:space="preserve">
-    <value>分页数量必须在1-100之间</value>
-  </data>
   <data name="Password" xml:space="preserve">
     <value>密码</value>
-  </data>
-  <data name="Password must be at least 8 characters" xml:space="preserve">
-    <value>密码至少需要8位</value>
-  </data>
-  <data name="Password must be minimum eight characters, at least one letter and one number" xml:space="preserve">
-    <value>密码至少8位，且必须包含至少一个英文字母及一个数字</value>
-  </data>
-  <data name="Please enter a password." xml:space="preserve">
-    <value>请输入密码</value>
-  </data>
-  <data name="Please enter a slug." xml:space="preserve">
-    <value>请输入Slug</value>
-  </data>
-  <data name="Please enter a title." xml:space="preserve">
-    <value>请输入标题</value>
-  </data>
-  <data name="Please enter a username." xml:space="preserve">
-    <value>请输入用户名</value>
-  </data>
-  <data name="Please enter blog title" xml:space="preserve">
-    <value>请输入博客标题</value>
-  </data>
-  <data name="Please enter content." xml:space="preserve">
-    <value>请输入内容</value>
-  </data>
-  <data name="Please enter copyright" xml:space="preserve">
-    <value>请输入版权信息</value>
-  </data>
-  <data name="Please enter keyword" xml:space="preserve">
-    <value>请输入关键词</value>
-  </data>
-  <data name="Please enter language code." xml:space="preserve">
-    <value>请输入语言代码</value>
-  </data>
-  <data name="Please enter logo text" xml:space="preserve">
-    <value>请输入Logo文字</value>
-  </data>
-  <data name="Please enter short description" xml:space="preserve">
-    <value>请输入短简介</value>
-  </data>
-  <data name="Please enter the meta description." xml:space="preserve">
-    <value>请输入简要描述</value>
-  </data>
-  <data name="Please enter the slug." xml:space="preserve">
-    <value>请输入slug</value>
-  </data>
-  <data name="Please enter watermark text" xml:space="preserve">
-    <value>请输入水印文字</value>
-  </data>
-  <data name="Please enter your description" xml:space="preserve">
-    <value>请输入您的简介</value>
-  </data>
-  <data name="Please enter your name" xml:space="preserve">
-    <value>请输入您的名字</value>
-  </data>
-  <data name="Please select at least one category." xml:space="preserve">
-    <value>请选择至少一个分类</value>
   </data>
   <data name="Post footer HTML code" xml:space="preserve">
     <value>文章页脚HTML内容</value>
@@ -348,9 +281,6 @@
   </data>
   <data name="Route Name" xml:space="preserve">
     <value>路由名称</value>
-  </data>
-  <data name="Route Name can only accept lower case English letters (a-z) and numbers (0-9) with/out hyphen (-) in middle." xml:space="preserve">
-    <value>路由名称必须为小写英文字符(a-z)、数字(0-9)或中划线(-)</value>
   </data>
   <data name="RSS Items" xml:space="preserve">
     <value>RSS条目数量</value>
@@ -382,9 +312,6 @@
   <data name="Side bar HTML code" xml:space="preserve">
     <value>侧边栏HTML区域</value>
   </data>
-  <data name="Tag amount can only range from 1-50" xml:space="preserve">
-    <value>标签数量必须在1-50之间</value>
-  </data>
   <data name="Tags" xml:space="preserve">
     <value>标签</value>
   </data>
@@ -402,12 +329,6 @@
   </data>
   <data name="Username" xml:space="preserve">
     <value>用户名</value>
-  </data>
-  <data name="Username must be at least 2 characters" xml:space="preserve">
-    <value>用户名必须为至少两个字符</value>
-  </data>
-  <data name="Username must be lower case letters or numbers." xml:space="preserve">
-    <value>用户名必须为小写英文字母或数字</value>
   </data>
   <data name="Watermark text" xml:space="preserve">
     <value>水印文字</value>

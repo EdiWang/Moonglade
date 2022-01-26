@@ -1,5 +1,4 @@
-﻿using Microsoft.EntityFrameworkCore;
-using System.Linq.Expressions;
+﻿using System.Linq.Expressions;
 
 namespace Moonglade.Data.Infrastructure;
 
@@ -7,7 +6,7 @@ public abstract class DbContextRepository<T> : IRepository<T> where T : class
 {
     protected readonly DbContext DbContext;
 
-    public DbContextRepository(DbContext dbContext)
+    protected DbContextRepository(DbContext dbContext)
     {
         DbContext = dbContext;
     }
