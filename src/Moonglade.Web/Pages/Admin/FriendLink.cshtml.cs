@@ -7,7 +7,7 @@ public class FriendLinkModel : PageModel
 {
     private readonly IMediator _mediator;
 
-    public EditLinkRequest EditLinkRequest { get; set; }
+    public UpdateLinkCommand EditLinkRequest { get; set; }
 
     public IReadOnlyList<Link> Links { get; set; }
 
