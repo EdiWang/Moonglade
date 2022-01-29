@@ -5,15 +5,7 @@ using Moonglade.Data.Spec;
 
 namespace Moonglade.Core.CategoryFeature;
 
-public class GetCategoryByIdQuery : IRequest<Category>
-{
-    public GetCategoryByIdQuery(Guid id)
-    {
-        Id = id;
-    }
-
-    public Guid Id { get; set; }
-}
+public record GetCategoryByIdQuery(Guid Id) : IRequest<Category>;
 
 public class GetCategoryByIdQueryHandler : IRequestHandler<GetCategoryByIdQuery, Category>
 {

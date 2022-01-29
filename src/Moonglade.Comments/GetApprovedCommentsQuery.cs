@@ -5,15 +5,7 @@ using Moonglade.Data.Spec;
 
 namespace Moonglade.Comments;
 
-public class GetApprovedCommentsQuery : IRequest<IReadOnlyList<Comment>>
-{
-    public GetApprovedCommentsQuery(Guid postId)
-    {
-        PostId = postId;
-    }
-
-    public Guid PostId { get; set; }
-}
+public record GetApprovedCommentsQuery(Guid PostId) : IRequest<IReadOnlyList<Comment>>;
 
 public class GetApprovedCommentsQueryHandler : IRequestHandler<GetApprovedCommentsQuery, IReadOnlyList<Comment>>
 {

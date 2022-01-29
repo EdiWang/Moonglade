@@ -4,15 +4,7 @@ using Moonglade.Data.Infrastructure;
 
 namespace Moonglade.Menus;
 
-public class GetMenuQuery : IRequest<Menu>
-{
-    public GetMenuQuery(Guid id)
-    {
-        Id = id;
-    }
-
-    public Guid Id { get; set; }
-}
+public record GetMenuQuery(Guid Id) : IRequest<Menu>;
 
 public class GetMenuQueryHandler : IRequestHandler<GetMenuQuery, Menu>
 {

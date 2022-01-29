@@ -5,15 +5,7 @@ using Moonglade.Utils;
 
 namespace Moonglade.Syndication;
 
-public class GetRssStringQuery : IRequest<string>
-{
-    public GetRssStringQuery(string categoryName = null)
-    {
-        CategoryName = categoryName;
-    }
-
-    public string CategoryName { get; set; }
-}
+public record GetRssStringQuery(string CategoryName = null) : IRequest<string>;
 
 public class GetRssStringQueryHandler : IRequestHandler<GetRssStringQuery, string>
 {

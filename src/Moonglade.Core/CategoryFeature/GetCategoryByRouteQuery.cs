@@ -5,15 +5,7 @@ using Moonglade.Data.Spec;
 
 namespace Moonglade.Core.CategoryFeature;
 
-public class GetCategoryByRouteQuery : IRequest<Category>
-{
-    public GetCategoryByRouteQuery(string routeName)
-    {
-        RouteName = routeName;
-    }
-
-    public string RouteName { get; set; }
-}
+public record GetCategoryByRouteQuery(string RouteName) : IRequest<Category>;
 
 public class GetCategoryByRouteQueryHandler : IRequestHandler<GetCategoryByRouteQuery, Category>
 {
