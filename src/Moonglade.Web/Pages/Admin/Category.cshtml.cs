@@ -7,7 +7,7 @@ public class CategoryModel : PageModel
 {
     private readonly IMediator _mediator;
 
-    public EditCategoryRequest EditCategoryRequest { get; set; }
+    public CreateCategoryCommand EditCategoryRequest { get; set; }
 
     public IReadOnlyList<Category> Categories { get; set; }
 

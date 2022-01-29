@@ -30,7 +30,7 @@ public class CategoryControllerTests
     public async Task Create_ValidModel()
     {
         var categoryController = CreateCategoryController();
-        var model = new EditCategoryRequest
+        var model = new CreateCategoryCommand
         {
             DisplayName = FakeData.ShortString2,
             RouteName = FakeData.ShortString2,
@@ -69,11 +69,11 @@ public class CategoryControllerTests
     public async Task Update_ValidModel()
     {
         _mockMediator
-            .Setup(p => p.Send(It.IsAny<UpdateCategoryCommand>(), default))
+            .Setup(p => p.Send<OperationCode>(It.IsAny<UpdateCategoryCommand>(), default))
             .Returns(Task.FromResult(OperationCode.Done));
 
         var categoryController = CreateCategoryController();
-        var model = new EditCategoryRequest
+        var model = new UpdateCategoryCommand
         {
             DisplayName = FakeData.ShortString2,
             RouteName = FakeData.ShortString2,
@@ -88,11 +88,11 @@ public class CategoryControllerTests
     public async Task Update_NotFound()
     {
         _mockMediator
-            .Setup(p => p.Send(It.IsAny<UpdateCategoryCommand>(), default))
+            .Setup(p => p.Send<OperationCode>(It.IsAny<UpdateCategoryCommand>(), default))
             .Returns(Task.FromResult(OperationCode.ObjectNotFound));
 
         var categoryController = CreateCategoryController();
-        var model = new EditCategoryRequest
+        var model = new UpdateCategoryCommand
         {
             DisplayName = FakeData.ShortString2,
             RouteName = FakeData.ShortString2,
