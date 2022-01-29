@@ -10,19 +10,7 @@ using Moonglade.Utils;
 
 namespace Moonglade.Core.PostFeature;
 
-public class UpdatePostCommand : IRequest<PostEntity>
-{
-    public UpdatePostCommand(Guid id, PostEditModel payload)
-    {
-        Id = id;
-        Payload = payload;
-    }
-
-    public Guid Id { get; set; }
-
-    public PostEditModel Payload { get; set; }
-}
-
+public record UpdatePostCommand(Guid Id, PostEditModel Payload) : IRequest<PostEntity>;
 public class UpdatePostCommandHandler : IRequestHandler<UpdatePostCommand, PostEntity>
 {
     private readonly AppSettings _settings;

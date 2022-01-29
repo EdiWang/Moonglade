@@ -5,18 +5,7 @@ using Moonglade.Data.Infrastructure;
 
 namespace Moonglade.Core.PostFeature;
 
-public class DeletePostCommand : IRequest
-{
-    public DeletePostCommand(Guid id, bool softDelete = false)
-    {
-        Id = id;
-        SoftDelete = softDelete;
-    }
-
-    public Guid Id { get; set; }
-
-    public bool SoftDelete { get; set; }
-}
+public record DeletePostCommand(Guid Id, bool SoftDelete = false) : IRequest;
 
 public class DeletePostCommandHandler : IRequestHandler<DeletePostCommand>
 {

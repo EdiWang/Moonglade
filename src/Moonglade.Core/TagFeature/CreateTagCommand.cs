@@ -6,15 +6,7 @@ using Moonglade.Data.Spec;
 
 namespace Moonglade.Core.TagFeature;
 
-public class CreateTagCommand : IRequest<Tag>
-{
-    public CreateTagCommand(string name)
-    {
-        Name = name;
-    }
-
-    public string Name { get; set; }
-}
+public record CreateTagCommand(string Name) : IRequest<Tag>;
 
 public class CreateTagCommandHandler : IRequestHandler<CreateTagCommand, Tag>
 {

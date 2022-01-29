@@ -4,17 +4,7 @@ using Moonglade.Data.Infrastructure;
 
 namespace Moonglade.Core.PageFeature;
 
-public class UpdatePageCommand : IRequest<Guid>
-{
-    public UpdatePageCommand(Guid id, EditPageRequest payload)
-    {
-        Id = id;
-        Payload = payload;
-    }
-
-    public Guid Id { get; set; }
-    public EditPageRequest Payload { get; set; }
-}
+public record UpdatePageCommand(Guid Id, EditPageRequest Payload) : IRequest<Guid>;
 
 public class UpdatePageCommandHandler : IRequestHandler<UpdatePageCommand, Guid>
 {

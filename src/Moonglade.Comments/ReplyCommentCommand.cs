@@ -5,18 +5,7 @@ using Moonglade.Utils;
 
 namespace Moonglade.Comments;
 
-public class ReplyCommentCommand : IRequest<CommentReply>
-{
-    public ReplyCommentCommand(Guid commentId, string replyContent)
-    {
-        CommentId = commentId;
-        ReplyContent = replyContent;
-    }
-
-    public Guid CommentId { get; set; }
-
-    public string ReplyContent { get; set; }
-}
+public record ReplyCommentCommand(Guid CommentId, string ReplyContent) : IRequest<CommentReply>;
 
 public class ReplyCommentCommandHandler : IRequestHandler<ReplyCommentCommand, CommentReply>
 {

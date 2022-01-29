@@ -6,17 +6,7 @@ using Moonglade.Data.Infrastructure;
 
 namespace Moonglade.Core.TagFeature;
 
-public class UpdateTagCommand : IRequest<OperationCode>
-{
-    public int Id { get; set; }
-    public string Name { get; set; }
-
-    public UpdateTagCommand(int id, string name)
-    {
-        Id = id;
-        Name = name;
-    }
-}
+public record UpdateTagCommand(int Id, string Name) : IRequest<OperationCode>;
 
 public class UpdateTagCommandHandler : IRequestHandler<UpdateTagCommand, OperationCode>
 {

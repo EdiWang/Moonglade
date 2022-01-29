@@ -5,15 +5,7 @@ using Moonglade.Data.Spec;
 
 namespace Moonglade.Comments;
 
-public class DeleteCommentsCommand : IRequest
-{
-    public DeleteCommentsCommand(Guid[] ids)
-    {
-        Ids = ids;
-    }
-
-    public Guid[] Ids { get; set; }
-}
+public record DeleteCommentsCommand(Guid[] Ids) : IRequest;
 
 public class DeleteCommentsCommandHandler : IRequestHandler<DeleteCommentsCommand>
 {

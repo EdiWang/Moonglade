@@ -6,9 +6,7 @@ using Moonglade.Data.Spec;
 
 namespace Moonglade.Core.PostFeature;
 
-public class PurgeRecycledCommand : IRequest
-{
-}
+public record PurgeRecycledCommand : IRequest;
 
 public class PurgeRecycledCommandHandler : IRequestHandler<PurgeRecycledCommand>
 {

@@ -4,17 +4,7 @@ using Moonglade.Data.Infrastructure;
 
 namespace Moonglade.Core;
 
-public class SaveAssetCommand : INotification
-{
-    public SaveAssetCommand(Guid assetId, string assetBase64)
-    {
-        AssetId = assetId;
-        AssetBase64 = assetBase64;
-    }
-
-    public Guid AssetId { get; set; }
-    public string AssetBase64 { get; set; }
-}
+public record SaveAssetCommand(Guid AssetId, string AssetBase64) : INotification;
 
 public class SaveAssetCommandHandler : INotificationHandler<SaveAssetCommand>
 {

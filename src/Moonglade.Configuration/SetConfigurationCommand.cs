@@ -5,18 +5,7 @@ using Moonglade.Data.Infrastructure;
 
 namespace Moonglade.Configuration;
 
-public class SetConfigurationCommand : IRequest<OperationCode>
-{
-    public SetConfigurationCommand(string name, string json)
-    {
-        Name = name;
-        Json = json;
-    }
-
-    public string Name { get; set; }
-
-    public string Json { get; set; }
-}
+public record SetConfigurationCommand(string Name, string Json) : IRequest<OperationCode>;
 
 public class SetConfigurationCommandHandler : IRequestHandler<SetConfigurationCommand, OperationCode>
 {

@@ -5,17 +5,7 @@ using Moonglade.Utils;
 
 namespace Moonglade.Auth;
 
-public class UpdatePasswordCommand : IRequest
-{
-    public UpdatePasswordCommand(Guid id, string clearPassword)
-    {
-        Id = id;
-        ClearPassword = clearPassword;
-    }
-
-    public Guid Id { get; set; }
-    public string ClearPassword { get; set; }
-}
+public record UpdatePasswordCommand(Guid Id, string ClearPassword) : IRequest;
 
 public class UpdatePasswordCommandHandler : IRequestHandler<UpdatePasswordCommand>
 {

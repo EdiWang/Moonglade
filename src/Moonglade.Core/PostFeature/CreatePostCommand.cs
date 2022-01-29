@@ -11,15 +11,7 @@ using Moonglade.Utils;
 
 namespace Moonglade.Core.PostFeature;
 
-public class CreatePostCommand : IRequest<PostEntity>
-{
-    public CreatePostCommand(PostEditModel payload)
-    {
-        Payload = payload;
-    }
-
-    public PostEditModel Payload { get; set; }
-}
+public record CreatePostCommand(PostEditModel Payload) : IRequest<PostEntity>;
 
 public class CreatePostCommandHandler : IRequestHandler<CreatePostCommand, PostEntity>
 {

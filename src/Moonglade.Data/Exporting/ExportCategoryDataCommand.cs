@@ -5,9 +5,7 @@ using Moonglade.Data.Infrastructure;
 
 namespace Moonglade.Data.Exporting;
 
-public class ExportCategoryDataCommand : IRequest<ExportResult>
-{
-}
+public record ExportCategoryDataCommand : IRequest<ExportResult>;
 
 public class ExportCategoryDataCommandHandler : IRequestHandler<ExportCategoryDataCommand, ExportResult>
 {

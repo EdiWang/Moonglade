@@ -4,15 +4,7 @@ using Moonglade.Data.Infrastructure;
 
 namespace Moonglade.FriendLink;
 
-public class DeleteLinkCommand : IRequest
-{
-    public DeleteLinkCommand(Guid id)
-    {
-        Id = id;
-    }
-
-    public Guid Id { get; set; }
-}
+public record DeleteLinkCommand(Guid Id) : IRequest;
 
 public class DeleteLinkCommandHandler : IRequestHandler<DeleteLinkCommand>
 {

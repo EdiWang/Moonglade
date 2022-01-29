@@ -4,15 +4,7 @@ using Moonglade.Data.Infrastructure;
 
 namespace Moonglade.Menus;
 
-public class CreateMenuCommand : IRequest<Guid>
-{
-    public CreateMenuCommand(EditMenuRequest payload)
-    {
-        Payload = payload;
-    }
-
-    public EditMenuRequest Payload { get; set; }
-}
+public record CreateMenuCommand(EditMenuRequest Payload) : IRequest<Guid>;
 
 public class CreateMenuCommandHandler : IRequestHandler<CreateMenuCommand, Guid>
 {

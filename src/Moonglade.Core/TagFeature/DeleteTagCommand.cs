@@ -6,15 +6,7 @@ using Moonglade.Data.Spec;
 
 namespace Moonglade.Core.TagFeature;
 
-public class DeleteTagCommand : IRequest<OperationCode>
-{
-    public DeleteTagCommand(int id)
-    {
-        Id = id;
-    }
-
-    public int Id { get; set; }
-}
+public record DeleteTagCommand(int Id) : IRequest<OperationCode>;
 
 public class DeleteTagCommandHandler : IRequestHandler<DeleteTagCommand, OperationCode>
 {

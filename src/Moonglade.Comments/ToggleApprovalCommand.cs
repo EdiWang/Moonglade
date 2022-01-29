@@ -5,15 +5,7 @@ using Moonglade.Data.Spec;
 
 namespace Moonglade.Comments;
 
-public class ToggleApprovalCommand : IRequest
-{
-    public ToggleApprovalCommand(Guid[] commentIds)
-    {
-        CommentIds = commentIds;
-    }
-
-    public Guid[] CommentIds { get; set; }
-}
+public record ToggleApprovalCommand(Guid[] CommentIds) : IRequest;
 
 public class ToggleApprovalCommandHandler : IRequestHandler<ToggleApprovalCommand>
 {

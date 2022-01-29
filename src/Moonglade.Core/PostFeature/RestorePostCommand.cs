@@ -5,15 +5,7 @@ using Moonglade.Data.Infrastructure;
 
 namespace Moonglade.Core.PostFeature;
 
-public class RestorePostCommand : IRequest
-{
-    public RestorePostCommand(Guid id)
-    {
-        Id = id;
-    }
-
-    public Guid Id { get; set; }
-}
+public record RestorePostCommand(Guid Id) : IRequest;
 
 public class RestorePostCommandHandler : IRequestHandler<RestorePostCommand>
 {

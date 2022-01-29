@@ -4,15 +4,7 @@ using Moonglade.Data.Infrastructure;
 
 namespace Moonglade.Auth;
 
-public class DeleteAccountCommand : IRequest
-{
-    public DeleteAccountCommand(Guid id)
-    {
-        Id = id;
-    }
-
-    public Guid Id { get; set; }
-}
+public record DeleteAccountCommand(Guid Id) : IRequest;
 
 public class DeleteAccountCommandHandler : IRequestHandler<DeleteAccountCommand>
 {

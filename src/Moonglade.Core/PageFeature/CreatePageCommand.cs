@@ -4,15 +4,7 @@ using Moonglade.Data.Infrastructure;
 
 namespace Moonglade.Core.PageFeature;
 
-public class CreatePageCommand : IRequest<Guid>
-{
-    public CreatePageCommand(EditPageRequest payload)
-    {
-        Payload = payload;
-    }
-
-    public EditPageRequest Payload { get; set; }
-}
+public record CreatePageCommand(EditPageRequest Payload) : IRequest<Guid>;
 
 public class CreatePageCommandHandler : IRequestHandler<CreatePageCommand, Guid>
 {

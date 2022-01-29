@@ -5,17 +5,7 @@ using Moonglade.Utils;
 
 namespace Moonglade.Menus;
 
-public class UpdateMenuCommand : IRequest
-{
-    public UpdateMenuCommand(Guid id, EditMenuRequest payload)
-    {
-        Id = id;
-        Payload = payload;
-    }
-
-    public Guid Id { get; set; }
-    public EditMenuRequest Payload { get; set; }
-}
+public record UpdateMenuCommand(Guid Id, EditMenuRequest Payload) : IRequest;
 
 public class UpdateMenuCommandHandler : IRequestHandler<UpdateMenuCommand>
 {
