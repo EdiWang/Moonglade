@@ -44,7 +44,7 @@ public class CategoryControllerTests
     [Test]
     public async Task Get_NonExists()
     {
-        _mockMediator.Setup(c => c.Send(It.IsAny<GetCategoryByIdCommand>(), default))
+        _mockMediator.Setup(c => c.Send(It.IsAny<GetCategoryByIdQuery>(), default))
             .Returns(Task.FromResult((Category)null));
 
         var categoryController = CreateCategoryController();
@@ -56,7 +56,7 @@ public class CategoryControllerTests
     [Test]
     public async Task Get_Exists()
     {
-        _mockMediator.Setup(c => c.Send(It.IsAny<GetCategoryByIdCommand>(), default))
+        _mockMediator.Setup(c => c.Send(It.IsAny<GetCategoryByIdQuery>(), default))
             .Returns(Task.FromResult(new Category()));
 
         var categoryController = CreateCategoryController();

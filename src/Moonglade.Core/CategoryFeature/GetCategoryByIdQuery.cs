@@ -5,9 +5,9 @@ using Moonglade.Data.Spec;
 
 namespace Moonglade.Core.CategoryFeature;
 
-public class GetCategoryByIdCommand : IRequest<Category>
+public class GetCategoryByIdQuery : IRequest<Category>
 {
-    public GetCategoryByIdCommand(Guid id)
+    public GetCategoryByIdQuery(Guid id)
     {
         Id = id;
     }
@@ -15,16 +15,16 @@ public class GetCategoryByIdCommand : IRequest<Category>
     public Guid Id { get; set; }
 }
 
-public class GetCategoryByIdCommandHandler : IRequestHandler<GetCategoryByIdCommand, Category>
+public class GetCategoryByIdQueryHandler : IRequestHandler<GetCategoryByIdQuery, Category>
 {
     private readonly IRepository<CategoryEntity> _catRepo;
 
-    public GetCategoryByIdCommandHandler(IRepository<CategoryEntity> catRepo)
+    public GetCategoryByIdQueryHandler(IRepository<CategoryEntity> catRepo)
     {
         _catRepo = catRepo;
     }
 
-    public Task<Category> Handle(GetCategoryByIdCommand request, CancellationToken cancellationToken)
+    public Task<Category> Handle(GetCategoryByIdQuery request, CancellationToken cancellationToken)
     {
         return _catRepo.SelectFirstOrDefaultAsync(new CategorySpec(request.Id), Category.EntitySelector);
     }

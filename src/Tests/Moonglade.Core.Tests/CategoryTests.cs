@@ -44,7 +44,7 @@ public class CategoryTests
     [Test]
     public async Task Get_ByName()
     {
-        var handler = new GetCategoryByRouteCommandHandler(_mockCatRepo.Object);
+        var handler = new GetCategoryByRouteQueryHandler(_mockCatRepo.Object);
         await handler.Handle(new("work996"), default);
 
         _mockCatRepo.Verify(p => p.SelectFirstOrDefaultAsync(It.IsAny<CategorySpec>(), It.IsAny<Expression<Func<CategoryEntity, Category>>>()));
@@ -53,7 +53,7 @@ public class CategoryTests
     [Test]
     public async Task Get_ById()
     {
-        var handler = new GetCategoryByIdCommandHandler(_mockCatRepo.Object);
+        var handler = new GetCategoryByIdQueryHandler(_mockCatRepo.Object);
         var result = await handler.Handle(new(Guid.Empty), default);
 
         _mockCatRepo.Verify(p => p.SelectFirstOrDefaultAsync(It.IsAny<CategorySpec>(), It.IsAny<Expression<Func<CategoryEntity, Category>>>()));

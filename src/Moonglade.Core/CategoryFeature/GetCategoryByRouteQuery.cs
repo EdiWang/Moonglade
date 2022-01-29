@@ -5,9 +5,9 @@ using Moonglade.Data.Spec;
 
 namespace Moonglade.Core.CategoryFeature;
 
-public class GetCategoryByRouteCommand : IRequest<Category>
+public class GetCategoryByRouteQuery : IRequest<Category>
 {
-    public GetCategoryByRouteCommand(string routeName)
+    public GetCategoryByRouteQuery(string routeName)
     {
         RouteName = routeName;
     }
@@ -15,16 +15,16 @@ public class GetCategoryByRouteCommand : IRequest<Category>
     public string RouteName { get; set; }
 }
 
-public class GetCategoryByRouteCommandHandler : IRequestHandler<GetCategoryByRouteCommand, Category>
+public class GetCategoryByRouteQueryHandler : IRequestHandler<GetCategoryByRouteQuery, Category>
 {
     private readonly IRepository<CategoryEntity> _catRepo;
 
-    public GetCategoryByRouteCommandHandler(IRepository<CategoryEntity> catRepo)
+    public GetCategoryByRouteQueryHandler(IRepository<CategoryEntity> catRepo)
     {
         _catRepo = catRepo;
     }
 
-    public Task<Category> Handle(GetCategoryByRouteCommand request, CancellationToken cancellationToken)
+    public Task<Category> Handle(GetCategoryByRouteQuery request, CancellationToken cancellationToken)
     {
         return _catRepo.SelectFirstOrDefaultAsync(new CategorySpec(request.RouteName), Category.EntitySelector);
     }
