@@ -218,7 +218,7 @@ public class LocalAccountServiceTests
         _mockLocalAccountRepository.Setup(p => p.GetAsync(It.IsAny<Guid>()))
             .Returns(ValueTask.FromResult((LocalAccountEntity)null));
 
-        var handler = new DeleteAccountQueryHandler(_mockLocalAccountRepository.Object);
+        var handler = new DeleteAccountCommandHandler(_mockLocalAccountRepository.Object);
         Assert.ThrowsAsync<InvalidOperationException>(async () =>
         {
             await handler.Handle(new(Uid), default);
@@ -231,7 +231,7 @@ public class LocalAccountServiceTests
         _mockLocalAccountRepository.Setup(p => p.GetAsync(It.IsAny<Guid>()))
             .Returns(ValueTask.FromResult(_accountEntity));
 
-        var handler = new DeleteAccountQueryHandler(_mockLocalAccountRepository.Object);
+        var handler = new DeleteAccountCommandHandler(_mockLocalAccountRepository.Object);
         await handler.Handle(new(Uid), default);
 
         _mockLocalAccountRepository.Verify(p => p.DeleteAsync(It.IsAny<Guid>()));

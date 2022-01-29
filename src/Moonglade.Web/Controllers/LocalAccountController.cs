@@ -53,7 +53,7 @@ public class LocalAccountController : ControllerBase
             return Conflict("Can not delete last account.");
         }
 
-        await _mediator.Send(new DeleteAccountQuery(id));
+        await _mediator.Send(new DeleteAccountCommand(id));
         return NoContent();
     }
 

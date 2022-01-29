@@ -4,9 +4,9 @@ using Moonglade.Data.Infrastructure;
 
 namespace Moonglade.Auth;
 
-public class DeleteAccountQuery : IRequest
+public class DeleteAccountCommand : IRequest
 {
-    public DeleteAccountQuery(Guid id)
+    public DeleteAccountCommand(Guid id)
     {
         Id = id;
     }
@@ -14,16 +14,16 @@ public class DeleteAccountQuery : IRequest
     public Guid Id { get; set; }
 }
 
-public class DeleteAccountQueryHandler : IRequestHandler<DeleteAccountQuery>
+public class DeleteAccountCommandHandler : IRequestHandler<DeleteAccountCommand>
 {
     private readonly IRepository<LocalAccountEntity> _accountRepo;
 
-    public DeleteAccountQueryHandler(IRepository<LocalAccountEntity> accountRepo)
+    public DeleteAccountCommandHandler(IRepository<LocalAccountEntity> accountRepo)
     {
         _accountRepo = accountRepo;
     }
 
-    public async Task<Unit> Handle(DeleteAccountQuery request, CancellationToken cancellationToken)
+    public async Task<Unit> Handle(DeleteAccountCommand request, CancellationToken cancellationToken)
     {
         var account = await _accountRepo.GetAsync(request.Id);
         if (account is null)
