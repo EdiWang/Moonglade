@@ -4,9 +4,7 @@ using Moonglade.Data.Infrastructure;
 
 namespace Moonglade.Menus;
 
-public class GetAllMenusQuery : IRequest<IReadOnlyList<Menu>>
-{
-}
+public record GetAllMenusQuery : IRequest<IReadOnlyList<Menu>>;
 
 public class GetAllMenusQueryHandler : IRequestHandler<GetAllMenusQuery, IReadOnlyList<Menu>>
 {

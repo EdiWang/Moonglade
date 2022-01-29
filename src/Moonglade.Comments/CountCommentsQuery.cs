@@ -4,9 +4,7 @@ using Moonglade.Data.Infrastructure;
 
 namespace Moonglade.Comments;
 
-public class CountCommentsQuery : IRequest<int>
-{
-}
+public record CountCommentsQuery : IRequest<int>;
 
 public class CountCommentsQueryHandler : IRequestHandler<CountCommentsQuery, int>
 {

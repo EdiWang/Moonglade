@@ -4,10 +4,7 @@ using Moonglade.Data.Infrastructure;
 
 namespace Moonglade.FriendLink;
 
-public class GetAllLinksQuery : IRequest<IReadOnlyList<Link>>
-{
-
-}
+public record GetAllLinksQuery : IRequest<IReadOnlyList<Link>>;
 
 public class GetAllLinksQueryHandler : IRequestHandler<GetAllLinksQuery, IReadOnlyList<Link>>
 {

@@ -4,9 +4,7 @@ using Moonglade.Data.Infrastructure;
 
 namespace Moonglade.Core.PageFeature;
 
-public class ListPageSegmentQuery : IRequest<IReadOnlyList<PageSegment>>
-{
-}
+public record ListPageSegmentQuery : IRequest<IReadOnlyList<PageSegment>>;
 
 public class ListPageSegmentQueryHandler : IRequestHandler<ListPageSegmentQuery, IReadOnlyList<PageSegment>>
 {
