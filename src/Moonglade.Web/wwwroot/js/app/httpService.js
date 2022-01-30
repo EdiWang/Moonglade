@@ -1,6 +1,6 @@
 ﻿var csrfFieldName = 'CSRF-TOKEN-MOONGLADE-FORM';
 function callApi(uri, method, request, funcSuccess, funcAlways) {
-    const csrfValue = $(`input[name=${csrfFieldName}]`).val();
+    const csrfValue = document.querySelector(`input[name=${csrfFieldName}]`).value;
     fetch(uri, {
         method: method,
         headers: {

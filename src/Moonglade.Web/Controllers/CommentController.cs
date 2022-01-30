@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc.ModelBinding;
 using Moonglade.Notification.Client;
+using Moonglade.Web.Attributes;
 using System.ComponentModel.DataAnnotations;
 
 namespace Moonglade.Web.Controllers;
@@ -7,6 +8,7 @@ namespace Moonglade.Web.Controllers;
 [Authorize]
 [ApiController]
 [Route("api/[controller]")]
+[CommentProviderGate]
 public class CommentController : ControllerBase
 {
     #region Private Fields

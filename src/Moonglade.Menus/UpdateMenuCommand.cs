@@ -1,32 +1,19 @@
 ﻿using MediatR;
-using Moonglade.Data;
 using Moonglade.Data.Entities;
 using Moonglade.Data.Infrastructure;
 using Moonglade.Utils;
 
 namespace Moonglade.Menus;
 
-public class UpdateMenuCommand : IRequest
-{
-    public UpdateMenuCommand(Guid id, EditMenuRequest payload)
-    {
-        Id = id;
-        Payload = payload;
-    }
-
-    public Guid Id { get; set; }
-    public EditMenuRequest Payload { get; set; }
-}
+public record UpdateMenuCommand(Guid Id, EditMenuRequest Payload) : IRequest;
 
 public class UpdateMenuCommandHandler : IRequestHandler<UpdateMenuCommand>
 {
     private readonly IRepository<MenuEntity> _menuRepo;
-    private readonly IBlogAudit _audit;
 
-    public UpdateMenuCommandHandler(IRepository<MenuEntity> menuRepo, IBlogAudit audit)
+    public UpdateMenuCommandHandler(IRepository<MenuEntity> menuRepo)
     {
         _menuRepo = menuRepo;
-        _audit = audit;
     }
 
     public async Task<Unit> Handle(UpdateMenuCommand request, CancellationToken cancellationToken)
@@ -45,7 +32,7 @@ public class UpdateMenuCommandHandler : IRequestHandler<UpdateMenuCommand>
         menu.Icon = request.Payload.Icon;
         menu.IsOpenInNewTab = request.Payload.IsOpenInNewTab;
 
-        if (request.Payload.SubMenus is { Length: > 0 })
+        if (request.Payload.SubMenus != null)
         {
             menu.SubMenus.Clear();
             var sms = request.Payload.SubMenus.Select(p => new SubMenuEntity
@@ -61,7 +48,6 @@ public class UpdateMenuCommandHandler : IRequestHandler<UpdateMenuCommand>
         }
 
         await _menuRepo.UpdateAsync(menu);
-        await _audit.AddEntry(BlogEventType.Content, BlogEventId.MenuUpdated, $"Menu '{request.Id}' updated.");
 
         return Unit.Value;
     }

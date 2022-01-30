@@ -26,10 +26,9 @@
 }
 
 @section scripts {
-    <script src="~/js/3rd/highlight.pack.js"></script>
+    <script src="~/js/3rd/highlight.min.js"></script>
     <script>
         var fitImageToDevicePixelRatio = @BlogConfig.ImageSettings.FitImageToDevicePixelRatio.ToString().ToLower();
-        var pid = $("article").data("postid");
         postSlug.resizeImages();
         postSlug.applyImageZooming();
         postSlug.renderCodeHighlighter();
@@ -50,9 +49,7 @@
 <article class="article-post-slug box border position-relative mb-4" data-postid="@Model.Post.Id" lang="@Model.Post.ContentLanguageCode">
     @if (Model.Post.Featured)
     {
-        <a asp-page="/Featured">
-            <img src="~/images/featured-post.svg" class="featured-post-banner position-absolute d-none d-md-block" title="@Localizer["Featured"]" alt="@Localizer["Featured"]" />
-        </a>
+        <partial name="_FeaturedTag" />
     }
 
     <header class="post-header">
@@ -62,6 +59,14 @@
 
         <hr class="d-none d-md-block" />
     </header>
+
+    @if (!string.IsNullOrWhiteSpace(Model.Post.HeroImageUrl))
+    {
+        <div class="post-hero-image-container text-center mb-3">
+            <img src="@Helper.SterilizeLink(Model.Post.HeroImageUrl)" class="post-hero-image img-fluid rounded-3 shadow-sm" />
+        </div>
+    }
+
     <section class="post-content clearfix">
         @if (ec == EditorChoice.Markdown)
         {
@@ -80,6 +85,14 @@
     }
 
     <partial name="_PostActions" model="Model.Post" />
+    
+    @if (!string.IsNullOrWhiteSpace(Model.Post.OriginLink))
+    {
+        <a href="@Helper.SterilizeLink(Model.Post.OriginLink)" target="_blank">
+            <i class="bi-link"></i>
+            @Localizer["Read origin article"]
+        </a>
+    }
 </article>
 
 <partial name="_LightSwitch" />

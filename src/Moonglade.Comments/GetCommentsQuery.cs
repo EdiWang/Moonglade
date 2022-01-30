@@ -5,17 +5,7 @@ using Moonglade.Data.Spec;
 
 namespace Moonglade.Comments;
 
-public class GetCommentsQuery : IRequest<IReadOnlyList<CommentDetailedItem>>
-{
-    public GetCommentsQuery(int pageSize, int pageIndex)
-    {
-        PageSize = pageSize;
-        PageIndex = pageIndex;
-    }
-
-    public int PageSize { get; set; }
-    public int PageIndex { get; set; }
-}
+public record GetCommentsQuery(int PageSize, int PageIndex) : IRequest<IReadOnlyList<CommentDetailedItem>>;
 
 public class GetCommentsQueryHandler : IRequestHandler<GetCommentsQuery, IReadOnlyList<CommentDetailedItem>>
 {

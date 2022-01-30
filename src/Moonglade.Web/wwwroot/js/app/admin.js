@@ -1,36 +1,50 @@
-﻿$.validator.setDefaults({
-    ignore: []
-});
+﻿function toMagicJson(value) {
+    const newValue = {};
+    for (let item in value) {
+        if (Object.prototype.hasOwnProperty.call(value, item)) {
+            if (!value[item]) {
+                newValue[item.replace('ViewModel.', '')] = null;
+            }
+            else if (value[item] && !Array.isArray(value[item]) && value[item].toLowerCase() === 'true') {
+                newValue[item.replace('ViewModel.', '')] = true;
+            }
+            else if (value[item] && !Array.isArray(value[item]) && value[item].toLowerCase() === 'false') {
+                newValue[item.replace('ViewModel.', '')] = false;
+            }
+            else {
+                newValue[item.replace('ViewModel.', '')] = value[item];
+            }
+        }
+    }
+
+    return newValue;
+}
+
+function handleSettingsSubmit(event) {
+    event.preventDefault();
+
+    onUpdateSettingsBegin();
+
+    const data = new FormData(event.target);
+    const value = Object.fromEntries(data.entries());
+    const newValue = toMagicJson(value);
+
+    callApi(event.currentTarget.action, 'POST', newValue,
+        (resp) => {
+            blogToast.success('Settings Updated');
+            onUpdateSettingsComplete();
+        });
+}
 
 var btnSaveSettings = '#btn-save-settings';
 var onUpdateSettingsBegin = function () {
-    $(btnSaveSettings).text('Processing...');
-    $(btnSaveSettings).addClass('disabled');
-    $(btnSaveSettings).attr('disabled', 'disabled');
+    document.querySelector(btnSaveSettings).classList.add('disabled');
+    document.querySelector(btnSaveSettings).setAttribute('disabled', 'disabled');
 };
 
 var onUpdateSettingsComplete = function () {
-    $(btnSaveSettings).text('Save');
-    $(btnSaveSettings).removeClass('disabled');
-    $(btnSaveSettings).removeAttr('disabled');
-};
-
-var onUpdateSettingsSuccess = function (context) {
-    if (blogToast) {
-        blogToast.success('Settings Updated');
-    } else {
-        alert('Settings Updated');
-    }
-};
-
-var onUpdateSettingsFailed = function (context) {
-    var message = buildErrorMessage(context);
-
-    if (blogToast) {
-        blogToast.error(message);
-    } else {
-        alert(message);
-    }
+    document.querySelector(btnSaveSettings).classList.remove('disabled');
+    document.querySelector(btnSaveSettings).removeAttribute('disabled');
 };
 
 var emptyGuid = '00000000-0000-0000-0000-000000000000';
@@ -47,49 +61,25 @@ function ImageUploader(targetName, hw, imgMimeType) {
 
     this.uploadImage = function (uploadUrl) {
         if (imgDataUrl) {
-            $(`#btn-upload-${targetName}`).addClass('disabled');
-            $(`#btn-upload-${targetName}`).attr('disabled', 'disabled');
+            document.querySelector(`#btn-upload-${targetName}`).classList.add('disabled');
+            document.querySelector(`#btn-upload-${targetName}`).setAttribute('disabled', 'disabled');
 
-            var rawData = { base64Img: imgDataUrl.replace(/^data:image\/(png|jpeg|jpg);base64,/, '') };
-            $.ajax({
-                type: 'POST',
-                headers: { 'XSRF-TOKEN': $(`input[name=${csrfFieldName}]`).val() },
-                url: uploadUrl,
-                data: rawData,
-                success: function (data) {
-                    console.info(data);
+            var rawData = imgDataUrl.replace(/^data:image\/(png|jpeg|jpg);base64,/, '');
+
+            callApi(uploadUrl,
+                'POST',
+                rawData,
+                function(resp) {
                     $(`#${targetName}modal`).modal('hide');
                     blogToast.success('Updated');
                     d = new Date();
-                    $(`.blogadmin-${targetName}`).attr('src', `/${targetName}?${d.getTime()}`);
+                    document.querySelector(`.blogadmin-${targetName}`).src = `/${targetName}?${d.getTime()}`;
                 },
-                statusCode: {
-                    400: function (responseObject, textStatus, jqXHR) {
-                        var message = buildErrorMessage(responseObject);
-                        blogToast.error(message);
-                    },
-                    401: function (responseObject, textStatus, jqXHR) {
-                        blogToast.error('Unauthorized');
-                    },
-                    404: function (responseObject, textStatus, jqXHR) {
-                        blogToast.error('Endpoint not found');
-                    },
-                    409: function (responseObject, textStatus, jqXHR) {
-                        var message = buildErrorMessage(responseObject);
-                        blogToast.error(message);
-                    },
-                    500: function (responseObject, textStatus, jqXHR) {
-                        blogToast.error('Server went boom');
-                    },
-                    503: function (responseObject, textStatus, jqXHR) {
-                        blogToast.error('Server went boom boom');
-                    }
-                },
-                error: function (xhr, status, err) {
-                    $(`#btn-upload-${targetName}`).removeClass('disabled');
-                    $(`#btn-upload-${targetName}`).removeAttr('disabled');
-                }
-            });
+                function(always) {
+                    document.querySelector(`#btn-upload-${targetName}`).classList.remove('disabled');
+                    document.querySelector(`#btn-upload-${targetName}`).removeAttribute('disabled');
+                });
+
         } else {
             blogToast.error('Please select an image');
         }
@@ -103,7 +93,7 @@ function ImageUploader(targetName, hw, imgMimeType) {
             var file;
             if (evt.dataTransfer) {
                 file = evt.dataTransfer.files[0];
-                $(`.custom-file-label-${targetName}`).text(file.name);
+                document.querySelector(`.custom-file-label-${targetName}`).innerText(file.name);
             } else {
                 file = evt.target.files[0];
             }
@@ -141,10 +131,10 @@ function ImageUploader(targetName, hw, imgMimeType) {
                     ctx.drawImage(this, 0, 0, tempW, tempH);
                     imgDataUrl = canvas.toDataURL(imgMimeType);
 
-                    var div = $(`#${targetName}DropTarget`);
-                    div.html(`<img class="img-fluid" src="${imgDataUrl}" />`);
-                    $(`#btn-upload-${targetName}`).removeClass('disabled');
-                    $(`#btn-upload-${targetName}`).removeAttr('disabled');
+                    var div = document.querySelector(`#${targetName}DropTarget`);
+                    div.innerHTML = `<img class="img-fluid" src="${imgDataUrl}" />`;
+                    document.querySelector(`#btn-upload-${targetName}`).classList.remove('disabled');
+                    document.querySelector(`#btn-upload-${targetName}`).removeAttribute('disabled');
                 }
             }
             reader.readAsDataURL(file);
@@ -186,7 +176,7 @@ var postEditor = {
                 branding: false,
                 block_formats: 'Paragraph=p; Header 2=h2; Header 3=h3; Header 4=h4; Preformatted=pre',
                 fontsize_formats: '8pt 10pt 12pt 14pt 18pt 24pt 36pt',
-                plugins: 'advlist autolink hr autosave link image lists charmap print preview hr anchor pagebreak spellchecker searchreplace wordcount visualblocks visualchars code fullscreen insertdatetime media nonbreaking save table directionality template paste codesample imagetools emoticons',
+                plugins: 'advlist autolink hr autosave link image lists charmap print preview hr anchor pagebreak searchreplace wordcount visualblocks visualchars code fullscreen insertdatetime media nonbreaking save table directionality template paste codesample emoticons',
                 toolbar: 'formatselect | fontsizeselect | bold italic underline strikethrough | forecolor backcolor | removeformat | emoticons link hr image table codesample media | alignleft aligncenter alignright alignjustify | bullist numlist outdent indent | code | fullscreen',
                 save_onsavecallback: function () {
                     $('#btn-save').trigger('click');
@@ -204,11 +194,14 @@ var postEditor = {
                     { text: 'C++', value: 'cpp' },
                     { text: 'CSS', value: 'css' },
                     { text: 'Dart', value: 'dart' },
+                    { text: 'Dockerfile', value: 'dockerfile' },
                     { text: 'F#', value: 'fsharp' },
                     { text: 'Go', value: 'go' },
                     { text: 'HTML/XML', value: 'markup' },
                     { text: 'JavaScript', value: 'javascript' },
                     { text: 'Json', value: 'json' },
+                    { text: 'Less', value: 'less' },
+                    { text: 'Lua', value: 'lua' },
                     { text: 'Markdown', value: 'markdown' },
                     { text: 'PowerShell', value: 'powershell' },
                     { text: 'Plain Text', value: 'plaintext' },
@@ -216,7 +209,9 @@ var postEditor = {
                     { text: 'PHP', value: 'php' },
                     { text: 'Ruby', value: 'ruby' },
                     { text: 'Rust', value: 'rust' },
+                    { text: 'SCSS', value: 'scss' },
                     { text: 'SQL', value: 'sql' },
+                    { text: 'Swift', value: 'swift' },
                     { text: 'TypeScript', value: 'typescript' },
                     { text: 'Visual Basic', value: 'vb' },
                     { text: 'YAML', value: 'yaml' }
@@ -241,7 +236,7 @@ var postEditor = {
 
             inlineAttachment.editors.codemirror4.attach(simplemde.codemirror, {
                 uploadUrl: '/image',
-                urlText: '![file](/image/{filename})',
+                urlText: '![file]({filename})',
                 onFileUploadResponse: function (xhr) {
                     var result = JSON.parse(xhr.responseText),
                         filename = result[this.settings.jsonFieldName];
@@ -264,7 +259,7 @@ var postEditor = {
     },
     initEvents: function () {
         $('#ViewModel_Title').change(function () {
-            $('#ViewModel_Slug').val(slugify($(this).val()));
+            document.querySelector('#ViewModel_Slug').value = slugify($(this).val());
         });
 
         var tagnames = new Bloodhound({
@@ -292,10 +287,7 @@ var postEditor = {
         });
 
         $('#btn-preview').click(function (e) {
-            if ($('form').valid()) {
-                submitForm(e);
-                isPreviewRequired = true;
-            }
+            submitForm(e);
         });
 
         $('#btn-save').click(function (e) {
@@ -303,10 +295,8 @@ var postEditor = {
         });
 
         $('#btn-publish').click(function (e) {
-            if ($('form').valid()) {
-                $('input[name="ViewModel.IsPublished"]').val('True');
-                submitForm(e);
-            }
+            $('input[name="ViewModel.IsPublished"]').val('True');
+            submitForm(e);
         });
 
         function submitForm(e) {
@@ -315,8 +305,13 @@ var postEditor = {
             }
 
             if ($('input[name="ViewModel.IsPublished"]').val() === 'True') {
-                $('#btn-publish').hide();
-                $('#btn-preview').hide();
+                if (document.querySelector('#btn-publish')) {
+                    document.querySelector('#btn-publish').style.display = 'none';
+                };
+
+                if (document.querySelector('#btn-preview')) {
+                    document.querySelector('#btn-preview').style.display = 'none';
+                }
             }
         }
 
@@ -324,15 +319,24 @@ var postEditor = {
             message: 'You have unsaved changes, are you sure to leave this page?'
         });
 
-        $('#ViewModel_Title').focus();
+        document.querySelector('#ViewModel_Title').focus();
     },
     keepAlive: function () {
         var tid = setInterval(postNonce, 60 * 1000);
         function postNonce() {
             var num = Math.random();
-            $.post('/api/post/keep-alive', { nonce: num }, function (data) {
-                console.info(data);
-            });
+            fetch('/api/post/keep-alive',
+                {
+                    method: 'POST',
+                    headers: {
+                        'Accept': 'application/json',
+                        'Content-Type': 'application/json'
+                    },
+                    credentials: 'include',
+                    body: JSON.stringify({ nonce: num })
+                }).then(async (response) => {
+                    console.info('live');
+                });
         }
         function abortTimer() {
             clearInterval(tid);
@@ -342,15 +346,13 @@ var postEditor = {
 
 var btnSubmitPost = '#btn-save';
 var onPostCreateEditBegin = function () {
-    $(btnSubmitPost).text('Saving...');
-    $(btnSubmitPost).addClass('disabled');
-    $(btnSubmitPost).attr('disabled', 'disabled');
+    document.querySelector(btnSubmitPost).classList.add('disabled');
+    document.querySelector(btnSubmitPost).setAttribute('disabled', 'disabled');
 };
 
 var onPostCreateEditComplete = function () {
-    $(btnSubmitPost).text('Save');
-    $(btnSubmitPost).removeClass('disabled');
-    $(btnSubmitPost).removeAttr('disabled');
+    document.querySelector(btnSubmitPost).classList.remove('disabled');
+    document.querySelector(btnSubmitPost).removeAttribute('disabled');
 };
 
 var onPostCreateEditSuccess = function (data) {
@@ -365,15 +367,6 @@ var onPostCreateEditSuccess = function (data) {
     }
 };
 
-var onPostCreateEditFailed = function (context) {
-    var message = buildErrorMessage(context);
-    if (blogToast) {
-        blogToast.error(message);
-    } else {
-        alert(`Error: ${message}`);
-    }
-};
-
 var onPageCreateEditFailed = function (context) {
     var message = buildErrorMessage(context);
 
@@ -385,29 +378,18 @@ var onPageCreateEditFailed = function (context) {
 };
 
 function deletePost(postid) {
-    $(`#span-processing-${postid}`).show();
     callApi(`/api/post/${postid}/destroy`, 'DELETE', {},
         (resp) => {
-            $(`#tr-${postid}`).hide();
+            document.querySelector(`#tr-${postid}`).remove();
             blogToast.success('Post deleted');
         });
 }
 
 function restorePost(postid) {
-    $(`#span-processing-${postid}`).show();
     callApi(`/api/post/${postid}/restore`, 'POST', {},
         (resp) => {
-            $(`#tr-${postid}`).hide();
+            document.querySelector(`#tr-${postid}`).remove();
             blogToast.success('Post restored');
-        });
-}
-
-function deleteAccount(accountid) {
-    $(`#span-processing-${accountid}`).show();
-
-    callApi(`/api/localaccount/${accountid}`, 'DELETE', {},
-        (resp) => {
-            $(`#tr-${accountid}`).hide();
         });
 }
 
@@ -420,16 +402,7 @@ function deleteSelectedComments() {
     callApi('/api/comment/delete', 'DELETE', cids,
         (success) => {
             $.each(cids, function (index, value) {
-                $(`#panel-comment-${value}`).slideUp();
+                document.querySelector(`#panel-comment-${value}`).remove();
             });
-        });
-}
-
-function deletePingback(pingbackId) {
-    $(`#span-processing-${pingbackId}`).show();
-
-    callApi(`/pingback/${pingbackId}`, 'DELETE', {},
-        (resp) => {
-            $(`#pingback-box-${pingbackId}`).slideUp();
         });
 }

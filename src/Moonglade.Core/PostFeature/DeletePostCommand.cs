@@ -1,34 +1,20 @@
 ﻿using MediatR;
 using Moonglade.Caching;
-using Moonglade.Data;
 using Moonglade.Data.Entities;
 using Moonglade.Data.Infrastructure;
 
 namespace Moonglade.Core.PostFeature;
 
-public class DeletePostCommand : IRequest
-{
-    public DeletePostCommand(Guid id, bool softDelete = false)
-    {
-        Id = id;
-        SoftDelete = softDelete;
-    }
-
-    public Guid Id { get; set; }
-
-    public bool SoftDelete { get; set; }
-}
+public record DeletePostCommand(Guid Id, bool SoftDelete = false) : IRequest;
 
 public class DeletePostCommandHandler : IRequestHandler<DeletePostCommand>
 {
     private readonly IRepository<PostEntity> _postRepo;
-    private readonly IBlogAudit _audit;
     private readonly IBlogCache _cache;
 
-    public DeletePostCommandHandler(IRepository<PostEntity> postRepo, IBlogAudit audit, IBlogCache cache)
+    public DeletePostCommandHandler(IRepository<PostEntity> postRepo, IBlogCache cache)
     {
         _postRepo = postRepo;
-        _audit = audit;
         _cache = cache;
     }
 
@@ -41,12 +27,10 @@ public class DeletePostCommandHandler : IRequestHandler<DeletePostCommand>
         {
             post.IsDeleted = true;
             await _postRepo.UpdateAsync(post);
-            await _audit.AddEntry(BlogEventType.Content, BlogEventId.PostRecycled, $"Post '{request.Id}' moved to Recycle Bin.");
         }
         else
         {
             await _postRepo.DeleteAsync(post);
-            await _audit.AddEntry(BlogEventType.Content, BlogEventId.PostDeleted, $"Post '{request.Id}' deleted from Recycle Bin.");
         }
 
         _cache.Remove(CacheDivision.Post, request.Id.ToString());

@@ -1,12 +1,12 @@
 using MediatR;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Routing;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using Moonglade.Configuration;
 using Moonglade.Core;
-using Moonglade.Data;
-using Moonglade.Data.Entities;
+using Moonglade.ImageStorage;
 using Moonglade.Web.Controllers;
 using Moq;
 using NUnit.Framework;
@@ -20,7 +20,6 @@ public class SettingsControllerTests
     private MockRepository _mockRepository;
 
     private Mock<IBlogConfig> _mockBlogConfig;
-    private Mock<IBlogAudit> _mockBlogAudit;
     private Mock<ILogger<SettingsController>> _mockLogger;
     private Mock<IMediator> _mockMediator;
 
@@ -30,7 +29,6 @@ public class SettingsControllerTests
         _mockRepository = new(MockBehavior.Default);
 
         _mockBlogConfig = _mockRepository.Create<IBlogConfig>();
-        _mockBlogAudit = _mockRepository.Create<IBlogAudit>();
         _mockLogger = _mockRepository.Create<ILogger<SettingsController>>();
         _mockMediator = _mockRepository.Create<IMediator>();
     }
@@ -39,7 +37,6 @@ public class SettingsControllerTests
     {
         return new(
             _mockBlogConfig.Object,
-            _mockBlogAudit.Object,
             _mockLogger.Object,
             _mockMediator.Object);
     }
@@ -134,11 +131,10 @@ public class SettingsControllerTests
         Mock<ITimeZoneResolver> tZoneResolverMock = new();
 
         var settingsController = CreateSettingsController();
-        var result = await settingsController.General(new(model), tZoneResolverMock.Object);
+        var result = await settingsController.General(model, tZoneResolverMock.Object);
 
         Assert.IsInstanceOf<NoContentResult>(result);
-        _mockBlogConfig.Verify(p => p.SaveAsync(It.IsAny<GeneralSettings>()));
-        _mockBlogAudit.Verify(p => p.AddEntry(BlogEventType.Settings, BlogEventId.SettingsSavedGeneral, It.IsAny<string>()));
+        _mockBlogConfig.Verify(p => p.UpdateAsync(It.IsAny<GeneralSettings>()));
     }
 
     [Test]
@@ -148,11 +144,10 @@ public class SettingsControllerTests
         ContentSettings model = new() { WordFilterMode = WordFilterMode.Block };
 
         var settingsController = CreateSettingsController();
-        var result = await settingsController.Content(new(model));
+        var result = await settingsController.Content(model);
 
         Assert.IsInstanceOf<NoContentResult>(result);
-        _mockBlogConfig.Verify(p => p.SaveAsync(It.IsAny<ContentSettings>()));
-        _mockBlogAudit.Verify(p => p.AddEntry(BlogEventType.Settings, BlogEventId.SettingsSavedContent, It.IsAny<string>()));
+        _mockBlogConfig.Verify(p => p.UpdateAsync(It.IsAny<ContentSettings>()));
     }
 
     [Test]
@@ -162,11 +157,10 @@ public class SettingsControllerTests
         var settingsController = CreateSettingsController();
         NotificationSettings model = new();
 
-        var result = await settingsController.Notification(new(model));
+        var result = await settingsController.Notification(model);
 
         Assert.IsInstanceOf<NoContentResult>(result);
-        _mockBlogConfig.Verify(p => p.SaveAsync(It.IsAny<NotificationSettings>()));
-        _mockBlogAudit.Verify(p => p.AddEntry(BlogEventType.Settings, BlogEventId.SettingsSavedNotification, It.IsAny<string>()));
+        _mockBlogConfig.Verify(p => p.UpdateAsync(It.IsAny<NotificationSettings>()));
     }
 
     [Test]
@@ -184,25 +178,32 @@ public class SettingsControllerTests
         var settingsController = CreateSettingsController();
         FeedSettings model = new();
 
-        var result = await settingsController.Subscription(new(model));
+        var result = await settingsController.Subscription(model);
 
         Assert.IsInstanceOf<NoContentResult>(result);
-        _mockBlogConfig.Verify(p => p.SaveAsync(It.IsAny<FeedSettings>()));
-        _mockBlogAudit.Verify(p => p.AddEntry(BlogEventType.Settings, BlogEventId.SettingsSavedSubscription, It.IsAny<string>()));
+        _mockBlogConfig.Verify(p => p.UpdateAsync(It.IsAny<FeedSettings>()));
     }
 
     [Test]
     public async Task Image_Post()
     {
         _mockBlogConfig.Setup(p => p.ImageSettings).Returns(new ImageSettings());
+        _mockBlogConfig.Setup(p => p.GeneralSettings).Returns(new GeneralSettings());
         var settingsController = CreateSettingsController();
         ImageSettings model = new();
 
-        var result = await settingsController.Image(new(model));
+        var mockBlogImageStorage = _mockRepository.Create<IBlogImageStorage>();
+        mockBlogImageStorage.Setup(p => p.InsertAsync(It.IsAny<string>(), It.IsAny<byte[]>()))
+          .Returns(Task.FromResult("avatar-0922e4dcb47b44e2a49305d4e624381c.png"));
+
+        var urlHelper = _mockRepository.Create<IUrlHelper>();
+        urlHelper.Setup(h => h.Action(It.IsAny<UrlActionContext>())).Returns("/avatar");
+        settingsController.Url = urlHelper.Object;
+
+        var result = await settingsController.Image(model, mockBlogImageStorage.Object);
 
         Assert.IsInstanceOf<NoContentResult>(result);
-        _mockBlogConfig.Verify(p => p.SaveAsync(It.IsAny<ImageSettings>()));
-        _mockBlogAudit.Verify(p => p.AddEntry(BlogEventType.Settings, BlogEventId.SettingsSavedImage, It.IsAny<string>()));
+        _mockBlogConfig.Verify(p => p.UpdateAsync(It.IsAny<ImageSettings>()));
     }
 
     //[Test]
@@ -228,11 +229,10 @@ public class SettingsControllerTests
         var settingsController = CreateSettingsController();
         AdvancedSettings model = new();
 
-        var result = await settingsController.Advanced(new(model));
+        var result = await settingsController.Advanced(model);
 
         Assert.IsInstanceOf<NoContentResult>(result);
-        _mockBlogConfig.Verify(p => p.SaveAsync(It.IsAny<AdvancedSettings>()));
-        _mockBlogAudit.Verify(p => p.AddEntry(BlogEventType.Settings, BlogEventId.SettingsSavedAdvanced, It.IsAny<string>()));
+        _mockBlogConfig.Verify(p => p.UpdateAsync(It.IsAny<AdvancedSettings>()));
     }
 
     [Test]
@@ -261,14 +261,17 @@ public class SettingsControllerTests
     public async Task Image_Post_EnableCDNRedirect_ValidCDNEndpoint()
     {
         _mockBlogConfig.Setup(p => p.ImageSettings).Returns(new ImageSettings());
+        _mockBlogConfig.Setup(p => p.GeneralSettings).Returns(new GeneralSettings());
         var settingsController = CreateSettingsController();
         ImageSettings model = new() { EnableCDNRedirect = true, CDNEndpoint = "https://cdn.996.icu/fubao" };
 
-        var result = await settingsController.Image(new(model));
+        var mockBlogImageStorage = _mockRepository.Create<IBlogImageStorage>();
+        mockBlogImageStorage.Setup(p => p.InsertAsync(It.IsAny<string>(), It.IsAny<byte[]>()))
+           .Returns(Task.FromResult("avatar-0922e4dcb47b44e2a49305d4e624381c.png"));
+        var result = await settingsController.Image(model, mockBlogImageStorage.Object);
 
         Assert.IsInstanceOf<NoContentResult>(result);
-        _mockBlogConfig.Verify(p => p.SaveAsync(It.IsAny<ImageSettings>()));
-        _mockBlogAudit.Verify(p => p.AddEntry(BlogEventType.Settings, BlogEventId.SettingsSavedImage, It.IsAny<string>()));
+        _mockBlogConfig.Verify(p => p.UpdateAsync(It.IsAny<ImageSettings>()));
     }
 
     [Test]
@@ -316,11 +319,10 @@ public class SettingsControllerTests
             CssCode = string.Empty
         };
 
-        var result = await settingsController.CustomStyleSheet(new(model));
+        var result = await settingsController.CustomStyleSheet(model);
 
         Assert.IsInstanceOf<BadRequestObjectResult>(result);
-        _mockBlogConfig.Verify(p => p.SaveAsync(It.IsAny<CustomStyleSheetSettings>()), Times.Never);
-        _mockBlogAudit.Verify(p => p.AddEntry(BlogEventType.Settings, BlogEventId.SettingsSavedAdvanced, It.IsAny<string>()), Times.Never);
+        _mockBlogConfig.Verify(p => p.UpdateAsync(It.IsAny<CustomStyleSheetSettings>()), Times.Never);
     }
 
     [Test]
@@ -335,11 +337,10 @@ public class SettingsControllerTests
             CssCode = ".996-{icu}"
         };
 
-        var result = await settingsController.CustomStyleSheet(new(model));
+        var result = await settingsController.CustomStyleSheet(model);
 
         Assert.IsInstanceOf<BadRequestObjectResult>(result);
-        _mockBlogConfig.Verify(p => p.SaveAsync(It.IsAny<CustomStyleSheetSettings>()), Times.Never);
-        _mockBlogAudit.Verify(p => p.AddEntry(BlogEventType.Settings, BlogEventId.SettingsSavedAdvanced, It.IsAny<string>()), Times.Never);
+        _mockBlogConfig.Verify(p => p.UpdateAsync(It.IsAny<CustomStyleSheetSettings>()), Times.Never);
     }
 
     [Test]
@@ -354,11 +355,10 @@ public class SettingsControllerTests
             CssCode = ".icu { color: #996; }"
         };
 
-        var result = await settingsController.CustomStyleSheet(new(model));
+        var result = await settingsController.CustomStyleSheet(model);
 
         Assert.IsInstanceOf<NoContentResult>(result);
-        _mockBlogConfig.Verify(p => p.SaveAsync(It.IsAny<CustomStyleSheetSettings>()));
-        _mockBlogAudit.Verify(p => p.AddEntry(BlogEventType.Settings, BlogEventId.SettingsSavedAdvanced, It.IsAny<string>()));
+        _mockBlogConfig.Verify(p => p.UpdateAsync(It.IsAny<CustomStyleSheetSettings>()));
     }
 
     [Test]
@@ -368,17 +368,6 @@ public class SettingsControllerTests
         var result = settingsController.GeneratePassword();
 
         Assert.IsInstanceOf<OkObjectResult>(result);
-    }
-
-    [Test]
-    public async Task ClearAuditLogs_Redirect()
-    {
-        var ctl = CreateSettingsController();
-        var result = await ctl.ClearAuditLogs();
-
-        _mockBlogAudit.Verify();
-
-        Assert.IsInstanceOf<NoContentResult>(result);
     }
 
     //[Test]

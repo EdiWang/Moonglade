@@ -1,31 +1,18 @@
 ﻿using MediatR;
-using Moonglade.Data;
 using Moonglade.Data.Entities;
 using Moonglade.Data.Infrastructure;
 
 namespace Moonglade.Core.PageFeature;
 
-public class UpdatePageCommand : IRequest<Guid>
-{
-    public UpdatePageCommand(Guid id, EditPageRequest payload)
-    {
-        Id = id;
-        Payload = payload;
-    }
-
-    public Guid Id { get; set; }
-    public EditPageRequest Payload { get; set; }
-}
+public record UpdatePageCommand(Guid Id, EditPageRequest Payload) : IRequest<Guid>;
 
 public class UpdatePageCommandHandler : IRequestHandler<UpdatePageCommand, Guid>
 {
     private readonly IRepository<PageEntity> _pageRepo;
-    private readonly IBlogAudit _audit;
 
-    public UpdatePageCommandHandler(IRepository<PageEntity> pageRepo, IBlogAudit audit)
+    public UpdatePageCommandHandler(IRepository<PageEntity> pageRepo)
     {
         _pageRepo = pageRepo;
-        _audit = audit;
     }
 
     public async Task<Guid> Handle(UpdatePageCommand request, CancellationToken cancellationToken)
@@ -46,7 +33,6 @@ public class UpdatePageCommandHandler : IRequestHandler<UpdatePageCommand, Guid>
         page.IsPublished = request.Payload.IsPublished;
 
         await _pageRepo.UpdateAsync(page);
-        await _audit.AddEntry(BlogEventType.Content, BlogEventId.PageUpdated, $"Page '{request.Id}' updated.");
 
         return page.Id;
     }

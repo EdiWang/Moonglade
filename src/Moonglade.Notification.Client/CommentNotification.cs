@@ -47,6 +47,12 @@ public class CommentNotificationHandler : INotificationHandler<CommentNotificati
         );
 
         var response = await _client.SendNotification(MailMesageTypes.NewCommentNotification, payload);
+
+        if (response is null)
+        {
+            return;
+        }
+
         var respBody = await response.Content.ReadAsStringAsync(cancellationToken);
 
         if (response.IsSuccessStatusCode)

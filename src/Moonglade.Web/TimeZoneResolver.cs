@@ -16,9 +16,9 @@ public class BlogTimeZoneResolver : ITimeZoneResolver
 {
     public string UtcOffset { get; }
 
-    public BlogTimeZoneResolver(IBlogConfig _blogConfig)
+    public BlogTimeZoneResolver(IBlogConfig blogConfig)
     {
-        UtcOffset = _blogConfig.GeneralSettings.TimeZoneUtcOffset;
+        UtcOffset = blogConfig.GeneralSettings.TimeZoneUtcOffset;
     }
 
     public DateTime NowOfTimeZone => UtcToZoneTime(DateTime.UtcNow, UtcOffset);

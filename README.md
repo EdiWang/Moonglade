@@ -32,16 +32,28 @@ To quickly get it running on a new Linux machine without Docker, follow instruct
 Tools | Alternative
 --- | ---
 [Visual Studio 2022 v17.0+](https://visualstudio.microsoft.com/) | [Visual Studio Code](https://code.visualstudio.com/) with [.NET 6.0 SDK](http://dot.net)
-[SQL Server 2019](https://www.microsoft.com/en-us/sql-server/sql-server-2019) | [SQL Server LocalDB](https://docs.microsoft.com/en-us/sql/database-engine/configure-windows/sql-server-express-localdb?view=sql-server-ver15?WT.mc_id=AZ-MVP-5002809)
+[SQL Server 2019](https://www.microsoft.com/en-us/sql-server/sql-server-2019) | [SQL Server LocalDB](https://docs.microsoft.com/en-us/sql/database-engine/configure-windows/sql-server-express-localdb?view=sql-server-ver15?WT.mc_id=AZ-MVP-5002809) or MySQL
 
 ### 💾 Setup Database
 
-Create a SQL Server 2019 or LocalDB database. e.g. ```moonglade```
+Create a SQL Server 2019, a LocalDB, or an MySQL database. e.g. ```moonglade```
 
 Update the `MoongladeDatabase` with your database connection string in `appsettings.Development.json`
 
 ```json
 "MoongladeDatabase": "Server=(localdb)\\MSSQLLocalDB;Database=moonglade;Trusted_Connection=True;"
+```
+
+To use MySQL, set `DatabaseType` to `MySql`
+
+```json
+"DatabaseType": "MySql"
+```
+
+example MySQL connection string:
+
+```json
+"MoongladeDatabase": "Server=localhost;Port=3306;Database=moonglade;Uid=root;Pwd=******;"
 ```
 
 ### 🔨 Build Source
@@ -91,10 +103,10 @@ You can also choose File System for image storage, but this will make your site 
 ```json
 "Provider": "filesystem",
 "FileSystemSettings": {
-  "Path": "${basedir}\\UploadedImages"
+  "Path": "C:\\UploadedImages"
 }
 ```
-The ```Path``` can be relative or absolute. ```"$\{basedir\}"``` represents the website's current directory. 
+The ```Path``` can be relative or absolute.
 
 #### [Minio Blob Storage](https://min.io/) (Free)
 
@@ -110,6 +122,22 @@ You need to hava an [**Minio Server**](https://docs.min.io/).
   "WithSSL": false
 }
 ```
+
+#### [Qiniu Blob Storage](https://qiniu.com/) (Almost free)
+
+You need to hava an Qiniu cloud account, and use [Kodo](https://www.qiniu.com/products/kodo) storage service. 
+
+```json
+"Provider": "qiniustorage"
+"QiniuStorageSettings": {
+  "EndPoint": "Your Custom Domain",
+  "AccessKey": "Your Access Key",
+  "SecretKey": "Your Secret Key",
+  "BucketName": "Your BucketName",
+  "WithSSL": false
+}
+```
+
 ### 🤬 Comment Moderator
 
 - [Comment Moderator Settings](https://github.com/EdiWang/Moonglade/wiki/Comment-Moderator-Settings)

@@ -1,4 +1,6 @@
-﻿namespace Moonglade.Data.Entities;
+﻿using Microsoft.EntityFrameworkCore.Metadata.Builders;
+
+namespace Moonglade.Data.Entities;
 
 public class CategoryEntity
 {
@@ -13,4 +15,15 @@ public class CategoryEntity
     public string Note { get; set; }
 
     public virtual ICollection<PostCategoryEntity> PostCategory { get; set; }
+}
+
+internal class CategoryConfiguration : IEntityTypeConfiguration<CategoryEntity>
+{
+    public void Configure(EntityTypeBuilder<CategoryEntity> builder)
+    {
+        builder.Property(e => e.Id).ValueGeneratedNever();
+        builder.Property(e => e.DisplayName).HasMaxLength(64);
+        builder.Property(e => e.Note).HasMaxLength(128);
+        builder.Property(e => e.RouteName).HasMaxLength(64);
+    }
 }

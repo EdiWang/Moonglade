@@ -4,7 +4,6 @@ using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Authentication.OpenIdConnect;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.Extensions.Options;
-using Moonglade.Data.Entities;
 using System.ComponentModel.DataAnnotations;
 using System.Security.Claims;
 
@@ -15,35 +14,33 @@ public class SignInModel : PageModel
     private readonly AuthenticationSettings _authenticationSettings;
     private readonly IMediator _mediator;
     private readonly ILogger<SignInModel> _logger;
-    private readonly IBlogAudit _blogAudit;
     private readonly ISessionBasedCaptcha _captcha;
 
     public SignInModel(
         IOptions<AuthenticationSettings> authSettings,
         IMediator mediator,
         ILogger<SignInModel> logger,
-        IBlogAudit blogAudit, ISessionBasedCaptcha captcha)
+        ISessionBasedCaptcha captcha)
     {
         _mediator = mediator;
         _logger = logger;
-        _blogAudit = blogAudit;
         _captcha = captcha;
         _authenticationSettings = authSettings.Value;
     }
 
     [BindProperty]
-    [Required(ErrorMessage = "Please enter a username.")]
+    [Required]
     [Display(Name = "Username")]
-    [MinLength(2, ErrorMessage = "Username must be at least 2 characters"), MaxLength(32)]
-    [RegularExpression("[a-z0-9]+", ErrorMessage = "Username must be lower case letters or numbers.")]
+    [MinLength(2), MaxLength(32)]
+    [RegularExpression("[a-z0-9]+")]
     public string Username { get; set; }
 
     [BindProperty]
-    [Required(ErrorMessage = "Please enter a password.")]
+    [Required]
     [Display(Name = "Password")]
     [DataType(DataType.Password)]
-    [MinLength(8, ErrorMessage = "Password must be at least 8 characters"), MaxLength(32)]
-    [RegularExpression(@"^(?=.*[a-zA-Z])(?=.*[0-9])[A-Za-z0-9._~!@#$^&*]{8,}$", ErrorMessage = "Password must be minimum eight characters, at least one letter and one number")]
+    [MinLength(8), MaxLength(32)]
+    [RegularExpression(@"^(?=.*[a-zA-Z])(?=.*[0-9])[A-Za-z0-9._~!@#$^&*]{8,}$")]
     public string Password { get; set; }
 
     [BindProperty]
@@ -99,7 +96,6 @@ public class SignInModel : PageModel
                     var successMessage = $@"Authentication success for local account ""{Username}""";
 
                     _logger.LogInformation(successMessage);
-                    await _blogAudit.AddEntry(BlogEventType.Authentication, BlogEventId.LoginSuccessLocal, successMessage);
 
                     return RedirectToPage("/Admin/Post");
                 }
@@ -110,7 +106,6 @@ public class SignInModel : PageModel
             var failMessage = $@"Authentication failed for local account ""{Username}""";
 
             _logger.LogWarning(failMessage);
-            await _blogAudit.AddEntry(BlogEventType.Authentication, BlogEventId.LoginFailedLocal, failMessage);
 
             Response.StatusCode = StatusCodes.Status400BadRequest;
             ModelState.AddModelError(string.Empty, "Bad Request.");

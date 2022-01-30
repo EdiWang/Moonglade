@@ -1,18 +1,15 @@
 ﻿@page "/admin/settings/subscription"
 @model Moonglade.Web.Pages.Settings.SubscriptionModel
+@section scripts{
+    <script>
+        const form = document.querySelector('#form-settings');
+        form.addEventListener('submit', handleSettingsSubmit);
+    </script>
+}
 
 <partial name="_SettingsHeader" />
 <div class="ps-4 pe-4 pt-4">
-    <form id="form-settings" asp-controller="Settings" asp-action="Subscription"
-          data-ajax-begin="onUpdateSettingsBegin"
-          data-ajax-complete="onUpdateSettingsComplete"
-          data-ajax-failure="onUpdateSettingsFailed"
-          data-ajax-success="onUpdateSettingsSuccess"
-          data-ajax="true"
-          data-ajax-method="POST"
-          spellcheck="false">
-        <div asp-validation-summary="All" class="text-danger"></div>
-
+    <form id="form-settings" asp-controller="Settings" asp-action="Subscription" spellcheck="false">
         <div class="row">
             <div class="col-lg-6">
                 <div class="row g-3 align-items-center settings-entry mb-4">
@@ -26,8 +23,7 @@
                         </div>
                     </div>
                     <div class="col-md-5">
-                        <input asp-for="ViewModel.RssTitle" class="form-control"/>
-                        <span asp-validation-for="ViewModel.RssTitle" class="text-danger"></span>
+                        <input asp-for="ViewModel.RssTitle" class="form-control" required maxlength="64"/>
                     </div>
                 </div>
 
@@ -39,8 +35,7 @@
                         <label class="form-label" asp-for="ViewModel.AuthorName"></label>
                     </div>
                     <div class="col-md-5">
-                        <input asp-for="ViewModel.AuthorName" class="form-control" />
-                        <span asp-validation-for="ViewModel.AuthorName" class="text-danger"></span>
+                        <input asp-for="ViewModel.AuthorName" class="form-control" required maxlength="32" />
                     </div>
                 </div>
 
@@ -52,8 +47,7 @@
                         <label class="form-label" asp-for="ViewModel.RssCopyright"></label>
                     </div>
                     <div class="col-md-5">
-                        <input asp-for="ViewModel.RssCopyright" class="form-control"/>
-                        <span asp-validation-for="ViewModel.RssCopyright" class="text-danger"></span>
+                        <input asp-for="ViewModel.RssCopyright" class="form-control" required maxlength="64"/>
                     </div>
                 </div>
 
@@ -66,8 +60,7 @@
                         <div class="form-text">@Localizer["The number of entries to include in RSS feed."]</div>
                     </div>
                     <div class="col-md-5">
-                        <input asp-for="ViewModel.RssItemCount" class="form-control" />
-                        <span asp-validation-for="ViewModel.RssItemCount" class="text-danger"></span>
+                        <input asp-for="ViewModel.RssItemCount" class="form-control" required />
                     </div>
                 </div>
 
@@ -80,11 +73,10 @@
                     </div>
                     <div class="col-md-5 text-end">
                         <div class="form-check form-switch">
-                            <input type="checkbox" asp-for="ViewModel.UseFullContent" class="form-check-input">
+                            <input type="checkbox" name="UseFullContent" value="true" class="form-check-input" @(Model.ViewModel.UseFullContent ? "checked" : null)  />
                         </div>
                     </div>
                 </div>
-
             </div>
         </div>
 

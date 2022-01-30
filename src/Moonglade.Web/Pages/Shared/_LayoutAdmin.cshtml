@@ -1,16 +1,21 @@
-﻿@inject Microsoft.AspNetCore.Http.IHttpContextAccessor _httpContextAccessor
-@inject Microsoft.AspNetCore.Hosting.IWebHostEnvironment _webHostEnvironment
+﻿@inject IHttpContextAccessor _httpContextAccessor
+@inject IWebHostEnvironment _webHostEnvironment
 @inject IOptions<AuthenticationSettings> _authOptions
 
 @using Moonglade.Auth
 @{
     var currentPage = ViewContext.RouteData.Values["Page"]?.ToString();
+
+    if (string.IsNullOrEmpty(BlogConfig.GeneralSettings.AvatarUrl))
+    {
+        BlogConfig.GeneralSettings.AvatarUrl = Url.Action("Avatar", "Assets");
+    }
 }
 <!DOCTYPE html>
 <html>
 <head>
     <title>
-        @BlogConfig.GeneralSettings.SiteTitle @Localizer["Admin"]
+        @BlogConfig.GeneralSettings.SiteTitle @Localizer["Admin"] @(ViewBag.Title != null ? $"- {ViewBag.Title}" : null)
     </title>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no" />
@@ -71,7 +76,7 @@
             </ul>
 
             <span class="navbar-text me-2">
-                <img src="@Url.Action("Avatar", "Assets")"
+                <img src="@BlogConfig.GeneralSettings.AvatarUrl"
                      alt="@BlogConfig.GeneralSettings.OwnerName"
                      class="rounded-circle admin-nav-head-pic me-1" />
                 <userinfo user="User"></userinfo>
@@ -98,10 +103,13 @@
                         <i class="bi-folder2 admin-nav-icon"></i>
                         @Localizer["Categories"]
                     </a>
-                    <a asp-page="/Admin/Comments" class="list-group-item list-group-item-action @(currentPage is "/Admin/Comments" ? "active" : null)">
-                        <i class="bi-chat-left-text admin-nav-icon"></i>
-                        @Localizer["Comments"]
-                    </a>
+                    @if (BlogConfig.ContentSettings.CommentProvider == CommentProvider.BuiltIn)
+                    {
+                        <a asp-page="/Admin/Comments" class="list-group-item list-group-item-action @(currentPage is "/Admin/Comments" ? "active" : null)">
+                            <i class="bi-chat-left-text admin-nav-icon"></i>
+                            @Localizer["Comments"]
+                        </a>
+                    }
                     <a asp-page="/Admin/Tags" class="list-group-item list-group-item-action @(currentPage is "/Admin/Tags" ? "active" : null)">
                         <i class="bi-tag admin-nav-icon"></i>
                         @Localizer["Tags"]
@@ -136,20 +144,16 @@
     <partial name="_Toast" />
 
     <script src="~/lib/twitter-bootstrap/js/bootstrap.bundle.min.js" asp-append-version="true"></script>
-    <script src="~/lib/jquery-validate/jquery.validate.min.js" asp-append-version="true"></script>
-    <script src="~/lib/jquery-validation-unobtrusive/jquery.validate.unobtrusive.min.js" asp-append-version="true"></script>
-    <script src="~/lib/jquery-ajax-unobtrusive/jquery.unobtrusive-ajax.min.js" asp-append-version="true"></script>
-    <environment exclude="Development">
+<environment exclude="Development">
         <script src="~/js/dist/app-bundle.min.js" asp-append-version="true"></script>
         <script src="~/js/dist/admin-bundle.min.js" asp-append-version="true"></script>
     </environment>
     <environment include="Development">
-        <script src="~/js/3rd/jquery.qrcode.min.js"></script>
         <script src="~/js/app/base.js"></script>
         <script src="~/js/app/postslug.js"></script>
         <script src="~/js/app/httpService.js"></script>
         <script src="~/js/app/comments.js"></script>
-        <script src="~/js/app/darklighttheme.js"></script>
+        <script src="~/js/app/theme.js"></script>
         <script src="~/js/3rd/bootstrap-tagsinput.min.js"></script>
         <script src="~/lib/jquery.AreYouSure/jquery.are-you-sure.min.js"></script>
         <script src="~/js/app/admin.js"></script>

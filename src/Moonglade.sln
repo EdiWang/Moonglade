@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio Version 16
-VisualStudioVersion = 16.0.28621.142
+# Visual Studio Version 17
+VisualStudioVersion = 17.0.32014.148
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Moonglade.Web", "Moonglade.Web\Moonglade.Web.csproj", "{2BC1D1F3-B0B2-4184-A84B-34A6B531BD4A}"
 EndProject
@@ -103,6 +103,14 @@ EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Moonglade.Theme", "Moonglade.Theme\Moonglade.Theme.csproj", "{59770DF9-9CC5-4912-8677-5E99DA9C96CA}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Moonglade.Theme.Tests", "Tests\Moonglade.Theme.Tests\Moonglade.Theme.Tests.csproj", "{035A45DD-E42D-4E36-888D-28633E3F7EE2}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Moonglade.Data.SqlServer", "Moonglade.Data.SqlServer\Moonglade.Data.SqlServer.csproj", "{1ED1FD2A-703E-471D-AEDA-9885748194FF}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Moonglade.Data.SqlServer.Tests", "Tests\Moonglade.Data.SqlServer.Tests\Moonglade.Data.SqlServer.Tests.csproj", "{B625A8A4-0F10-425E-ADA6-948000498EF0}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Moonglade.Data.MySql", "Moonglade.Data.MySql\Moonglade.Data.MySql.csproj", "{0267C513-2DB9-4697-A6FA-39BB83E1CA9B}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Moonglade.Data.MySql.Tests", "Tests\Moonglade.Data.MySql.Tests\Moonglade.Data.MySql.Tests.csproj", "{43EB8AE4-8FDE-47BC-A2C5-62EAE6742155}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -222,6 +230,22 @@ Global
 		{035A45DD-E42D-4E36-888D-28633E3F7EE2}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{035A45DD-E42D-4E36-888D-28633E3F7EE2}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{035A45DD-E42D-4E36-888D-28633E3F7EE2}.Release|Any CPU.Build.0 = Release|Any CPU
+		{1ED1FD2A-703E-471D-AEDA-9885748194FF}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{1ED1FD2A-703E-471D-AEDA-9885748194FF}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{1ED1FD2A-703E-471D-AEDA-9885748194FF}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{1ED1FD2A-703E-471D-AEDA-9885748194FF}.Release|Any CPU.Build.0 = Release|Any CPU
+		{B625A8A4-0F10-425E-ADA6-948000498EF0}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{B625A8A4-0F10-425E-ADA6-948000498EF0}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{B625A8A4-0F10-425E-ADA6-948000498EF0}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{B625A8A4-0F10-425E-ADA6-948000498EF0}.Release|Any CPU.Build.0 = Release|Any CPU
+		{0267C513-2DB9-4697-A6FA-39BB83E1CA9B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{0267C513-2DB9-4697-A6FA-39BB83E1CA9B}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{0267C513-2DB9-4697-A6FA-39BB83E1CA9B}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{0267C513-2DB9-4697-A6FA-39BB83E1CA9B}.Release|Any CPU.Build.0 = Release|Any CPU
+		{43EB8AE4-8FDE-47BC-A2C5-62EAE6742155}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{43EB8AE4-8FDE-47BC-A2C5-62EAE6742155}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{43EB8AE4-8FDE-47BC-A2C5-62EAE6742155}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{43EB8AE4-8FDE-47BC-A2C5-62EAE6742155}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -259,6 +283,10 @@ Global
 		{7D9A2924-41E0-4D11-9937-6CE41D32A483} = {D56318F7-8E6D-4667-8A11-43B664CDD02C}
 		{59770DF9-9CC5-4912-8677-5E99DA9C96CA} = {97439361-03B4-46C9-BC06-49F76BA57879}
 		{035A45DD-E42D-4E36-888D-28633E3F7EE2} = {D56318F7-8E6D-4667-8A11-43B664CDD02C}
+		{1ED1FD2A-703E-471D-AEDA-9885748194FF} = {41072B8B-1052-4CC6-930F-83A5F8EA7482}
+		{B625A8A4-0F10-425E-ADA6-948000498EF0} = {D56318F7-8E6D-4667-8A11-43B664CDD02C}
+		{0267C513-2DB9-4697-A6FA-39BB83E1CA9B} = {41072B8B-1052-4CC6-930F-83A5F8EA7482}
+		{43EB8AE4-8FDE-47BC-A2C5-62EAE6742155} = {D56318F7-8E6D-4667-8A11-43B664CDD02C}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {EBD14882-9899-4C4B-B9BC-22C0B93BD559}

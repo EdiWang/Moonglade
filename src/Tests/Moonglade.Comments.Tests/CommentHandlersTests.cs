@@ -1,6 +1,5 @@
 using Moonglade.Comments.Moderators;
 using Moonglade.Configuration;
-using Moonglade.Data;
 using Moonglade.Data.Entities;
 using Moonglade.Data.Infrastructure;
 using Moonglade.Data.Spec;
@@ -16,7 +15,6 @@ public class CommentHandlersTests
     private MockRepository _mockRepository;
 
     private Mock<IBlogConfig> _mockBlogConfig;
-    private Mock<IBlogAudit> _mockBlogAudit;
     private Mock<IRepository<CommentEntity>> _mockCommentEntityRepo;
     private Mock<IRepository<CommentReplyEntity>> _mockCommentReplyEntityRepo;
     private Mock<IRepository<PostEntity>> _mockPostEntityRepo;
@@ -28,7 +26,6 @@ public class CommentHandlersTests
         _mockRepository = new(MockBehavior.Default);
 
         _mockBlogConfig = _mockRepository.Create<IBlogConfig>();
-        _mockBlogAudit = _mockRepository.Create<IBlogAudit>();
         _mockCommentEntityRepo = _mockRepository.Create<IRepository<CommentEntity>>();
         _mockCommentReplyEntityRepo = _mockRepository.Create<IRepository<CommentReplyEntity>>();
         _mockPostEntityRepo = _mockRepository.Create<IRepository<PostEntity>>();
@@ -57,7 +54,7 @@ public class CommentHandlersTests
     [Test]
     public void ToggleApprovalAsync_EmptyIds()
     {
-        var handler = new ToggleApprovalCommandHandler(_mockBlogAudit.Object, _mockCommentEntityRepo.Object);
+        var handler = new ToggleApprovalCommandHandler(_mockCommentEntityRepo.Object);
         Assert.ThrowsAsync<ArgumentNullException>(async () =>
         {
             await handler.Handle(new(Array.Empty<Guid>()), default);
@@ -85,7 +82,7 @@ public class CommentHandlersTests
 
         _mockCommentEntityRepo.Setup(p => p.GetAsync(It.IsAny<CommentSpec>())).Returns(Task.FromResult(fakeComments));
 
-        var handler = new ToggleApprovalCommandHandler(_mockBlogAudit.Object, _mockCommentEntityRepo.Object);
+        var handler = new ToggleApprovalCommandHandler(_mockCommentEntityRepo.Object);
         await handler.Handle(new(new[] { Guid.Empty }), default);
 
         Assert.IsTrue(cmt.IsApproved);
@@ -95,7 +92,7 @@ public class CommentHandlersTests
     [Test]
     public void DeleteAsync_EmptyIds()
     {
-        var handler = new DeleteCommentsCommandHandler(_mockBlogAudit.Object, _mockCommentEntityRepo.Object,
+        var handler = new DeleteCommentsCommandHandler(_mockCommentEntityRepo.Object,
             _mockCommentReplyEntityRepo.Object);
 
         Assert.ThrowsAsync<ArgumentNullException>(async () => { await handler.Handle(new(Array.Empty<Guid>()), default); });
@@ -135,7 +132,7 @@ public class CommentHandlersTests
             .Setup(p => p.GetAsync(It.IsAny<CommentReplySpec>()))
             .Returns(Task.FromResult(replyEntities));
 
-        var handler = new DeleteCommentsCommandHandler(_mockBlogAudit.Object, _mockCommentEntityRepo.Object,
+        var handler = new DeleteCommentsCommandHandler(_mockCommentEntityRepo.Object,
             _mockCommentReplyEntityRepo.Object);
 
         await handler.Handle(new(new[] { Guid.Empty }), default);
@@ -207,7 +204,7 @@ public class CommentHandlersTests
     {
         _mockCommentEntityRepo.Setup(p => p.GetAsync(It.IsAny<Guid>())).Returns(ValueTask.FromResult((CommentEntity)null));
 
-        var handler = new ReplyCommentCommandHandler(_mockBlogAudit.Object, _mockCommentEntityRepo.Object, _mockCommentReplyEntityRepo.Object);
+        var handler = new ReplyCommentCommandHandler(_mockCommentEntityRepo.Object, _mockCommentReplyEntityRepo.Object);
         Assert.ThrowsAsync<InvalidOperationException>(async () =>
         {
             await handler.Handle(new(Guid.Empty, "996"), default);

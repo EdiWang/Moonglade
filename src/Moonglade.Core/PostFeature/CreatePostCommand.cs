@@ -4,7 +4,6 @@ using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using Moonglade.Configuration;
 using Moonglade.Core.TagFeature;
-using Moonglade.Data;
 using Moonglade.Data.Entities;
 using Moonglade.Data.Infrastructure;
 using Moonglade.Data.Spec;
@@ -12,20 +11,11 @@ using Moonglade.Utils;
 
 namespace Moonglade.Core.PostFeature;
 
-public class CreatePostCommand : IRequest<PostEntity>
-{
-    public CreatePostCommand(PostEditModel payload)
-    {
-        Payload = payload;
-    }
-
-    public PostEditModel Payload { get; set; }
-}
+public record CreatePostCommand(PostEditModel Payload) : IRequest<PostEntity>;
 
 public class CreatePostCommandHandler : IRequestHandler<CreatePostCommand, PostEntity>
 {
     private readonly IRepository<PostEntity> _postRepo;
-    private readonly IBlogAudit _audit;
     private readonly ILogger<CreatePostCommandHandler> _logger;
     private readonly IRepository<TagEntity> _tagRepo;
     private readonly AppSettings _settings;
@@ -35,7 +25,6 @@ public class CreatePostCommandHandler : IRequestHandler<CreatePostCommand, PostE
 
     public CreatePostCommandHandler(
         IRepository<PostEntity> postRepo,
-        IBlogAudit audit,
         ILogger<CreatePostCommandHandler> logger,
         IRepository<TagEntity> tagRepo,
         IOptions<AppSettings> settings,
@@ -43,7 +32,6 @@ public class CreatePostCommandHandler : IRequestHandler<CreatePostCommand, PostE
         IBlogConfig blogConfig)
     {
         _postRepo = postRepo;
-        _audit = audit;
         _logger = logger;
         _tagRepo = tagRepo;
         _blogConfig = blogConfig;
@@ -103,10 +91,9 @@ public class CreatePostCommandHandler : IRequestHandler<CreatePostCommand, PostE
         post.HashCheckSum = checkSum;
 
         // add categories
-        var catIds = request.Payload.CategoryList.Where(p => p.IsChecked).Select(p => p.Id).ToArray();
-        if (catIds is { Length: > 0 })
+        if (request.Payload.SelectedCatIds is { Length: > 0 })
         {
-            foreach (var id in catIds)
+            foreach (var id in request.Payload.SelectedCatIds)
             {
                 post.PostCategory.Add(new()
                 {
@@ -133,7 +120,6 @@ public class CreatePostCommandHandler : IRequestHandler<CreatePostCommand, PostE
         }
 
         await _postRepo.AddAsync(post);
-        await _audit.AddEntry(BlogEventType.Content, BlogEventId.PostCreated, $"Post created, id: {post.Id}");
 
         return post;
     }
@@ -147,8 +133,6 @@ public class CreatePostCommandHandler : IRequestHandler<CreatePostCommand, PostE
         };
 
         var tag = await _tagRepo.AddAsync(newTag);
-        await _audit.AddEntry(BlogEventType.Content, BlogEventId.TagCreated,
-            $"Tag '{tag.NormalizedName}' created.");
         return tag;
     }
 }

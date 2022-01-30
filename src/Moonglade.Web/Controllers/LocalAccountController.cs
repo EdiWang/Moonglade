@@ -1,4 +1,5 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using Moonglade.Web.Attributes;
+using System.ComponentModel.DataAnnotations;
 using System.Text.RegularExpressions;
 
 namespace Moonglade.Web.Controllers;
@@ -18,15 +19,15 @@ public class LocalAccountController : ControllerBase
     [HttpPost]
     [ProducesResponseType(StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status409Conflict)]
-    public async Task<IActionResult> Create(EditAccountRequest request)
+    public async Task<IActionResult> Create(CreateAccountCommand command)
     {
-        if (await _mediator.Send(new AccountExistsQuery(request.Username)))
+        if (await _mediator.Send(new AccountExistsQuery(command.Username)))
         {
-            ModelState.AddModelError("username", $"User '{request.Username}' already exist.");
+            ModelState.AddModelError("username", $"User '{command.Username}' already exist.");
             return Conflict(ModelState);
         }
 
-        await _mediator.Send(new CreateAccountCommand(request));
+        await _mediator.Send(command);
         return Ok();
     }
 
@@ -52,7 +53,7 @@ public class LocalAccountController : ControllerBase
             return Conflict("Can not delete last account.");
         }
 
-        await _mediator.Send(new DeleteAccountQuery(id));
+        await _mediator.Send(new DeleteAccountCommand(id));
         return NoContent();
     }
 

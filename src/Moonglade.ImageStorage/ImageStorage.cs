@@ -15,6 +15,8 @@ public class ImageStorageSettings
     public FileSystemSettings FileSystemSettings { get; set; }
 
     public MinioStorageSettings MinioStorageSettings { get; set; }
+
+    public QiniuStorageSettings QiniuStorageSettings { get; set; }
 }
 
 public class WatermarkSettings

@@ -5,18 +5,7 @@ using System.Text.Json;
 
 namespace Moonglade.Theme;
 
-public class CreateThemeCommand : IRequest<int>
-{
-    public CreateThemeCommand(string name, IDictionary<string, string> rules)
-    {
-        Name = name;
-        Rules = rules;
-    }
-
-    public string Name { get; set; }
-
-    public IDictionary<string, string> Rules { get; set; }
-}
+public record CreateThemeCommand(string Name, IDictionary<string, string> Rules) : IRequest<int>;
 
 public class CreateThemeCommandHandler : IRequestHandler<CreateThemeCommand, int>
 {

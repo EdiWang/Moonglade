@@ -41,27 +41,29 @@
 		<PackageReference Include="AspNetCoreRateLimit" Version="4.0.1" />
 		<PackageReference Include="BuildBundlerMinifier" Version="3.2.449" />
 		<PackageReference Include="Edi.RouteDebugger" Version="1.3.3" />
-		<PackageReference Include="Edi.ImageWatermark" Version="2.3.0" />
-		<PackageReference Include="Edi.Captcha" Version="3.7.0" />
+		<PackageReference Include="Edi.ImageWatermark" Version="2.6.0" />
+		<PackageReference Include="Edi.Captcha" Version="3.9.0" />
 		<PackageReference Include="Microsoft.Azure.AppConfiguration.AspNetCore" Version="4.5.1" />
-		<PackageReference Include="Microsoft.ApplicationInsights.AspNetCore" Version="2.19.0" />
+		<PackageReference Include="Microsoft.ApplicationInsights.AspNetCore" Version="2.20.0" />
 		<PackageReference Include="Microsoft.Extensions.Logging.AzureAppServices" Version="6.0.1" />
 		<PackageReference Include="Microsoft.FeatureManagement.AspNetCore" Version="2.4.0" />
-		<PackageReference Include="Microsoft.Web.LibraryManager.Build" Version="2.1.113" />
-		<PackageReference Include="NUglify" Version="1.17.2" />
+		<PackageReference Include="Microsoft.Web.LibraryManager.Build" Version="2.1.161" />
+		<PackageReference Include="NUglify" Version="1.17.10" />
 		<PackageReference Include="Swashbuckle.AspNetCore" Version="6.2.3" />
 		<PackageReference Include="UAParser" Version="3.1.47" />
 		<PackageReference Include="WilderMinds.MetaWeblog" Version="5.0.0" />
 		<PackageReference Include="X.PagedList" Version="8.1.0" />
 		<PackageReference Include="X.PagedList.Mvc.Core" Version="8.1.0" />
-		<PackageReference Include="TimeZoneConverter" Version="3.5.0" />
-		<PackageReference Include="MediatR.Extensions.Microsoft.DependencyInjection" Version="9.0.0" />
+		<PackageReference Include="TimeZoneConverter" Version="5.0.0" />
+		<PackageReference Include="MediatR.Extensions.Microsoft.DependencyInjection" Version="10.0.1" />
 	</ItemGroup>
 
 	<ItemGroup>
 		<ProjectReference Include="..\Moonglade.Auth\Moonglade.Auth.csproj" />
 		<ProjectReference Include="..\Moonglade.Comments\Moonglade.Comments.csproj" />
 		<ProjectReference Include="..\Moonglade.Core\Moonglade.Core.csproj" />
+		<ProjectReference Include="..\Moonglade.Data.MySql\Moonglade.Data.MySql.csproj" />
+		<ProjectReference Include="..\Moonglade.Data.SqlServer\Moonglade.Data.SqlServer.csproj" />
 		<ProjectReference Include="..\Moonglade.FriendLink\Moonglade.FriendLink.csproj" />
 		<ProjectReference Include="..\Moonglade.ImageStorage\Moonglade.ImageStorage.csproj" />
 		<ProjectReference Include="..\Moonglade.Menus\Moonglade.Menus.csproj" />

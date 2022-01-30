@@ -4,9 +4,7 @@ using Moonglade.Data.Infrastructure;
 
 namespace Moonglade.Pingback;
 
-public class ClearPingbackCommand : IRequest
-{
-}
+public record ClearPingbackCommand : IRequest;
 
 public class ClearPingbackCommandHandler : IRequestHandler<ClearPingbackCommand>
 {

@@ -15,7 +15,7 @@ public class ImageSettings : IBlogSettings, IValidatableObject
     [Range(8, 32)]
     public int WatermarkFontSize { get; set; }
 
-    [Required(ErrorMessage = "Please enter watermark text")]
+    [Required]
     [Display(Name = "Watermark text")]
     [MaxLength(32)]
     public string WatermarkText { get; set; }

@@ -5,9 +5,7 @@ using Moonglade.Data.Infrastructure;
 
 namespace Moonglade.Core.CategoryFeature;
 
-public class GetCategoriesQuery : IRequest<IReadOnlyList<Category>>
-{
-}
+public record GetCategoriesQuery : IRequest<IReadOnlyList<Category>>;
 
 public class GetCategoriesQueryHandler : IRequestHandler<GetCategoriesQuery, IReadOnlyList<Category>>
 {

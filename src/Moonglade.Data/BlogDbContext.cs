@@ -1,6 +1,4 @@
-﻿using Microsoft.EntityFrameworkCore;
-using Moonglade.Data.Configurations;
-using Moonglade.Data.Entities;
+﻿using Moonglade.Data.Entities;
 using System.Diagnostics.CodeAnalysis;
 
 namespace Moonglade.Data;
@@ -30,29 +28,20 @@ public class BlogDbContext : DbContext
     public virtual DbSet<MenuEntity> Menu { get; set; }
     public virtual DbSet<SubMenuEntity> SubMenu { get; set; }
     public virtual DbSet<LocalAccountEntity> LocalAccount { get; set; }
-    public virtual DbSet<AuditLogEntity> AuditLog { get; set; }
     public virtual DbSet<PingbackEntity> Pingback { get; set; }
     public virtual DbSet<BlogThemeEntity> BlogTheme { get; set; }
+    public virtual DbSet<BlogAssetEntity> BlogAsset { get; set; }
+    public virtual DbSet<BlogConfigurationEntity> BlogConfiguration { get; set; }
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
         // base.OnModelCreating(modelBuilder);
-
         modelBuilder.ApplyConfiguration(new CategoryConfiguration());
-        modelBuilder.ApplyConfiguration(new CommentConfiguration());
-        modelBuilder.ApplyConfiguration(new CommentReplyConfiguration());
-        modelBuilder.ApplyConfiguration(new PostConfiguration());
-        modelBuilder.ApplyConfiguration(new PostCategoryConfiguration());
-        modelBuilder.ApplyConfiguration(new PostExtensionConfiguration());
         modelBuilder.ApplyConfiguration(new TagConfiguration());
         modelBuilder.ApplyConfiguration(new FriendLinkConfiguration());
-        modelBuilder.ApplyConfiguration(new PageConfiguration());
         modelBuilder.ApplyConfiguration(new MenuConfiguration());
         modelBuilder.ApplyConfiguration(new SubMenuConfiguration());
-        modelBuilder.ApplyConfiguration(new LocalAccountConfiguration());
-        modelBuilder.ApplyConfiguration(new AuditLogConfiguration());
-        modelBuilder.ApplyConfiguration(new PingbackConfiguration());
-        modelBuilder.ApplyConfiguration(new BlogThemeConfiguration());
+        modelBuilder.ApplyConfiguration(new BlogConfigurationConfiguration());
 
         modelBuilder
             .Entity<PostEntity>()
@@ -67,5 +56,29 @@ public class BlogDbContext : DbContext
                     .HasOne(pt => pt.Post)
                     .WithMany()
                     .HasForeignKey(pt => pt.PostId));
+    }
+}
+
+public static class BlogDbContextExtension
+{
+    public static async Task ClearAllData(this BlogDbContext context)
+    {
+        context.PostTag.RemoveRange();
+        context.PostCategory.RemoveRange();
+        context.CommentReply.RemoveRange();
+        context.Category.RemoveRange();
+        context.Tag.RemoveRange();
+        context.Comment.RemoveRange();
+        context.FriendLink.RemoveRange();
+        context.Pingback.RemoveRange();
+        context.PostExtension.RemoveRange();
+        context.Post.RemoveRange();
+        context.Menu.RemoveRange();
+        context.BlogConfiguration.RemoveRange();
+        context.BlogAsset.RemoveRange();
+        context.BlogTheme.RemoveRange();
+        context.LocalAccount.RemoveRange();
+
+        await context.SaveChangesAsync();
     }
 }

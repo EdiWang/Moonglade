@@ -1,33 +1,20 @@
 ﻿using MediatR;
-using Moonglade.Data;
 using Moonglade.Data.Entities;
 using Moonglade.Data.Infrastructure;
 using Moonglade.Utils;
 
 namespace Moonglade.Auth;
 
-public class UpdatePasswordCommand : IRequest
-{
-    public UpdatePasswordCommand(Guid id, string clearPassword)
-    {
-        Id = id;
-        ClearPassword = clearPassword;
-    }
-
-    public Guid Id { get; set; }
-    public string ClearPassword { get; set; }
-}
+public record UpdatePasswordCommand(Guid Id, string ClearPassword) : IRequest;
 
 public class UpdatePasswordCommandHandler : IRequestHandler<UpdatePasswordCommand>
 {
     private readonly IRepository<LocalAccountEntity> _accountRepo;
-    private readonly IBlogAudit _audit;
 
     public UpdatePasswordCommandHandler(
-        IRepository<LocalAccountEntity> accountRepo, IBlogAudit audit)
+        IRepository<LocalAccountEntity> accountRepo)
     {
         _accountRepo = accountRepo;
-        _audit = audit;
     }
 
     public async Task<Unit> Handle(UpdatePasswordCommand request, CancellationToken cancellationToken)
@@ -46,7 +33,6 @@ public class UpdatePasswordCommandHandler : IRequestHandler<UpdatePasswordComman
         account.PasswordHash = Helper.HashPassword(request.ClearPassword);
         await _accountRepo.UpdateAsync(account);
 
-        await _audit.AddEntry(BlogEventType.Settings, BlogEventId.SettingsAccountPasswordUpdated, $"Account password for '{request.Id}' updated.");
         return Unit.Value;
     }
 }

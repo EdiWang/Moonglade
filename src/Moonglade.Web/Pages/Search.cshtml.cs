@@ -1,5 +1,6 @@
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Moonglade.Core.PostFeature;
+using Moonglade.Web.Attributes;
 
 namespace Moonglade.Web.Pages;
 

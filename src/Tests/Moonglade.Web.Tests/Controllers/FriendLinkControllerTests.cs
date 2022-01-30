@@ -13,7 +13,7 @@ public class FriendLinkControllerTests
     private MockRepository _mockRepository;
     private Mock<IMediator> _mockMediator;
 
-    private readonly EditLinkRequest _editLinkRequest = new()
+    private readonly UpdateLinkCommand _upc = new()
     {
         LinkUrl = FakeData.Url1,
         Title = "996 ICU"
@@ -36,7 +36,7 @@ public class FriendLinkControllerTests
     {
         var ctl = CreateFriendLinkController();
 
-        var result = await ctl.Create(_editLinkRequest);
+        var result = await ctl.Create(_upc);
 
         Assert.IsInstanceOf<CreatedResult>(result);
         _mockMediator.Verify(p => p.Send(It.IsAny<AddLinkCommand>(), default));
@@ -67,7 +67,7 @@ public class FriendLinkControllerTests
     {
         var ctl = CreateFriendLinkController();
 
-        var result = await ctl.Update(FakeData.Uid1, _editLinkRequest);
+        var result = await ctl.Update(FakeData.Uid1, _upc);
 
         Assert.IsInstanceOf<NoContentResult>(result);
         _mockMediator.Verify(p => p.Send(It.IsAny<UpdateLinkCommand>(), default));

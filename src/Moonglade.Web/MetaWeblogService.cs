@@ -118,7 +118,7 @@ public class MetaWeblogService : IMetaWeblogProvider
                 Slug = post.wp_slug ?? ToSlug(post.title),
                 EditorContent = post.description,
                 Tags = post.mt_keywords,
-                CategoryList = cids.Select(p => new CategoryCheckBox { Id = p, IsChecked = true }).ToList(),
+                SelectedCatIds = cids,
                 LanguageCode = "en-us",
                 IsPublished = publish,
                 EnableComment = true,
@@ -170,7 +170,7 @@ public class MetaWeblogService : IMetaWeblogProvider
                 Slug = post.wp_slug ?? ToSlug(post.title),
                 EditorContent = post.description,
                 Tags = post.mt_keywords,
-                CategoryList = cids.Select(p => new CategoryCheckBox { Id = p, IsChecked = true }).ToList(),
+                SelectedCatIds = cids,
                 LanguageCode = "en-us",
                 IsPublished = publish,
                 EnableComment = true,
@@ -209,12 +209,12 @@ public class MetaWeblogService : IMetaWeblogProvider
 
         return TryExecuteAsync(async () =>
         {
-            await _mediator.Send(new CreateCategoryCommand(new()
+            await _mediator.Send(new CreateCategoryCommand
             {
                 DisplayName = category.name.Trim(),
                 RouteName = category.slug.ToLower(),
                 Note = category.description.Trim()
-            }));
+            });
 
             return 996;
         });

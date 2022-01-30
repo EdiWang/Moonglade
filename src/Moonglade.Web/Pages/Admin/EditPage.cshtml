@@ -6,195 +6,165 @@
 
 @{
     <script>
-    var needLoadInitValues = @((!string.IsNullOrWhiteSpace(Model.EditPageRequest.RawHtmlContent) || !string.IsNullOrWhiteSpace(Model.EditPageRequest.CssContent)).ToString().ToLower());
+        var needLoadInitValues = @((!string.IsNullOrWhiteSpace(Model.EditPageRequest.RawHtmlContent) || !string.IsNullOrWhiteSpace(Model.EditPageRequest.CssContent)).ToString().ToLower());
     </script>
 }
 
 @section scripts{
-    <script>var require = { paths: { 'vs': '/lib/monaco-editor/min/vs' } };</script>
-    <script src="~/lib/monaco-editor/min/vs/loader.js"></script>
-    <script>
-        var pageId = '@Model.PageId.ToString()';
+<script>var require = { paths: { 'vs': '/lib/monaco-editor/min/vs' } };</script>
+<script src="~/lib/monaco-editor/min/vs/loader.js"></script>
+<script>
+    var pageId = '@Model.PageId.ToString()';
 
-        $("#Title").change(function () {
-            $("#Slug").val(slugify($(this).val()));
+    var btnSubmitPage = '#btn-submit';
+
+    var htmlContentEditor = null;
+    var cssContentEditor = null;
+    var hasCssEditorInitialized = false;
+
+    require(['vs/editor/editor.main'], function () {
+        initHtmlEditor();
+    });
+
+    var initHtmlEditor = function () {
+        var htmlContentEditorDiv = document.getElementById('RawHtmlContentEditor');
+        htmlContentEditor = monaco.editor.create(htmlContentEditorDiv, {
+            language: 'html'
         });
+        htmlContentEditor.layout();
 
-        var btnSubmitPage = '#btn-submit';
+        if (needLoadInitValues) {
+            var htmlValue = document.querySelector("#EditPageRequest_RawHtmlContent").value;
+            htmlContentEditor.setValue(htmlValue);
+        }
+    }
 
-        var htmlContentEditor = null;
-        var cssContentEditor = null;
-        var hasCssEditorInitialized = false;
-
-        require(['vs/editor/editor.main'], function () {
-            initHtmlEditor();
+    var initCssEditor = function () {
+        var cssContentEditorDiv = document.getElementById('CssContentEditor');
+        cssContentEditor = monaco.editor.create(cssContentEditorDiv, {
+            language: 'css'
         });
+        cssContentEditor.layout();
+        hasCssEditorInitialized = true;
 
-        var initHtmlEditor = function () {
-            var htmlContentEditorDiv = document.getElementById('RawHtmlContentEditor');
-            htmlContentEditor = monaco.editor.create(htmlContentEditorDiv, {
-                language: 'html'
-            });
-            htmlContentEditor.layout();
-
-            if (needLoadInitValues) {
-                var htmlValue = $("#EditPageRequest_RawHtmlContent").val();
-                htmlContentEditor.setValue(htmlValue);
-            }
+        if (needLoadInitValues) {
+            var cssValue = document.querySelector("#EditPageRequest_CssContent").value;
+            window.cssContentEditor.setValue(cssValue);
         }
+    }
 
-        var initCssEditor = function () {
-            var cssContentEditorDiv = document.getElementById('CssContentEditor');
-            cssContentEditor = monaco.editor.create(cssContentEditorDiv, {
-                language: 'css'
-            });
-            cssContentEditor.layout();
-            hasCssEditorInitialized = true;
+    var assignEditorValues = function () {
+        var htmlValue = window.htmlContentEditor.getValue();
 
-            if (needLoadInitValues) {
-                var cssValue = $("#EditPageRequest_CssContent").val();
-                window.cssContentEditor.setValue(cssValue);
-            }
-        }
+        // Edit Mode, preserve old value when user has not clicked on CSS tab
+        var oldCssValue = document.querySelector("#EditPageRequest_CssContent").value;
+        var cssValue = hasCssEditorInitialized ? window.cssContentEditor.getValue() : oldCssValue;
 
-        var assignEditorValues = function () {
-            var htmlValue = window.htmlContentEditor.getValue();
+        document.querySelector("#EditPageRequest_RawHtmlContent").value = htmlValue;
+        document.querySelector("#EditPageRequest_CssContent").value = cssValue;
+    }
 
-            // Edit Mode, preserve old value when user has not clicked on CSS tab
-            var oldCssValue = $("#EditPageRequest_CssContent").val();
-            var cssValue = hasCssEditorInitialized ? window.cssContentEditor.getValue() : oldCssValue;
+    var onPageCreateEditBegin = function () {
+        document.querySelector(btnSubmitPage).classList.add('disabled');
+        $(btnSubmitPage).attr('disabled', 'disabled');
+    };
 
-            $("#EditPageRequest_RawHtmlContent").val(htmlValue);
-            $("#EditPageRequest_CssContent").val(cssValue);
-        }
+    var onPageCreateEditComplete = function () {
+        document.querySelector(btnSubmitPage).classList.remove('disabled');
+        document.querySelector(btnSubmitPage).removeAttribute('disabled');
+    };
 
-        $('#btn-preview').click(function () {
-            assignEditorValues();
+    function postCreateOrEdit() {
+        onPageCreateEditBegin();
 
-            if ($("#page-edit-form").valid()) {
-                isPreviewRequired = true;
-                postCreateOrEdit();
-            }
-        });
+        var apiAddress = pageId == emptyGuid ? `/api/page` : `/api/page/${pageId}`;
+        var verb = pageId == emptyGuid ? 'POST' : 'PUT';
 
-        var onPageCreateEditBegin = function () {
-            $(btnSubmitPage).text('Saving...');
-            $(btnSubmitPage).addClass('disabled');
-            $(btnSubmitPage).attr('disabled', 'disabled');
-        };
+        callApi(apiAddress, verb,
+            {
+                title: document.querySelector("#EditPageRequest_Title").value,
+                slug: document.querySelector("#EditPageRequest_Slug").value,
+                metaDescription: document.querySelector("#EditPageRequest_MetaDescription").value,
+                rawHtmlContent: document.querySelector("#EditPageRequest_RawHtmlContent").value,
+                cssContent: document.querySelector("#EditPageRequest_CssContent").value,
+                hideSidebar: document.querySelector('#EditPageRequest_HideSidebar').checked,
+                isPublished: document.querySelector('#EditPageRequest_IsPublished').checked
+            },
+            async (resp) => {
+                onPageCreateEditComplete();
+                var data = await resp.json();
 
-        var onPageCreateEditComplete = function () {
-            $(btnSubmitPage).text('Save');
-            $(btnSubmitPage).removeClass('disabled');
-            $(btnSubmitPage).removeAttr('disabled');
-        };
+                if (data.pageId) {
+                    pageId = data.pageId;
+                    blogToast.success('Page saved successfully.');
 
-        function postCreateOrEdit() {
-            onPageCreateEditBegin();
-
-            var apiAddress = pageId == emptyGuid ? `/api/page` : `/api/page/${pageId}`;
-            var verb = pageId == emptyGuid ? 'POST' : 'PUT';
-
-            callApi(apiAddress, verb,
-                {
-                    "Title": $("#EditPageRequest_Title").val(),
-                    "Slug": $("#EditPageRequest_Slug").val(),
-                    "MetaDescription": $("#EditPageRequest_MetaDescription").val(),
-                    "RawHtmlContent": $("#EditPageRequest_RawHtmlContent").val(),
-                    "CssContent": $("#EditPageRequest_CssContent").val(),
-                    "HideSidebar": $('#EditPageRequest_HideSidebar').prop('checked'),
-                    "IsPublished": $('#EditPageRequest_IsPublished').prop('checked')
-                },
-                async (resp) => {
-                    onPageCreateEditComplete();
-                    var data = await resp.json();
-
-                    if (data.pageId) {
-                        pageId = data.pageId;
-                        blogToast.success('Page saved successfully.');
-
-                        if ($('input[name="IsPublished"]:checked').val() === 'true') {
-                            $('#btn-preview').hide();
-                        }
-
-                        if (isPreviewRequired) {
-                            isPreviewRequired = false;
-                            window.open(`/page/preview/${data.pageId}`);
-                        }
+                    if (document.querySelector('#EditPageRequest_IsPublished').checked) {
+                        document.querySelector('#btn-preview').style.display = 'none';
                     }
-                });
-        }
 
-        $("#btn-submit").click(function () {
-            isPreviewRequired = false;
-            assignEditorValues();
-
-            if ($("#page-edit-form").valid()) {
-                postCreateOrEdit();
-            }
-        });
-
-        $(window).bind('keydown', function (event) {
-            if (event.ctrlKey || event.metaKey) {
-                switch (String.fromCharCode(event.which).toLowerCase()) {
-                    case 's':
-                        event.preventDefault();
-                        $("#btn-submit").trigger('click');
-                        break;
+                    if (isPreviewRequired) {
+                        isPreviewRequired = false;
+                        window.open(`/page/preview/${data.pageId}`);
+                    }
                 }
+            });
+    }
+
+    $(window).bind('keydown', function (event) {
+        if (event.ctrlKey || event.metaKey) {
+            switch (String.fromCharCode(event.which).toLowerCase()) {
+                case 's':
+                    event.preventDefault();
+                    $("#btn-submit").trigger('click');
+                    break;
+            }
+        }
+    });
+
+    $('a[data-bs-toggle="tab"]').on('shown.bs.tab',
+        function (e) {
+            var isCSSTab = e.target.id === "csscontent-tab";
+            if (isCSSTab && !hasCssEditorInitialized) {
+                initCssEditor();
             }
         });
 
-        $(function () {
-            $('a[data-bs-toggle="tab"]').on('shown.bs.tab',
-                function (e) {
-                    var isCSSTab = e.target.id === "csscontent-tab";
-                    if (isCSSTab && !hasCssEditorInitialized) {
-                        initCssEditor();
-                    }
-                });
-        });
+    function handleSubmit(e) {
+        e.preventDefault();
 
+        isPreviewRequired = e.submitter.id == 'btn-preview';
+        assignEditorValues();
 
-    </script>
+        postCreateOrEdit();
+    }
+
+    const form = document.querySelector('#page-edit-form');
+    form.addEventListener('submit', handleSubmit);
+</script>
 }
 
 @section head{
-    <style>
-        .monaco-target {
-            border-left: 1px solid #dee2e6;
-            border-right: 1px solid #dee2e6;
-            border-bottom: 1px solid #dee2e6;
-            width: 100%;
-            min-height: calc(100vh - 330px);
-        }
-    </style>
+<style>
+    .monaco-target {
+        border-left: 1px solid #dee2e6;
+        border-right: 1px solid #dee2e6;
+        border-bottom: 1px solid #dee2e6;
+        width: 100%;
+        min-height: calc(100vh - 330px);
+    }
+</style>
 }
 
 <div class="p-4">
 
     <form id="page-edit-form" method="post">
-        <div asp-validation-summary="ModelOnly" class="alert alert-danger"></div>
         <div class="row">
             <div class="col-md-9 col-xl-10">
-                <input type="text" asp-for="EditPageRequest.Title" class="form-control form-control-lg mb-1" placeholder="Title" />
-                <div>
-                    <span asp-validation-for="EditPageRequest.Title" class="text-danger"></span>
-                </div>
+                <input type="text" asp-for="EditPageRequest.Title" class="form-control form-control-lg mb-1" placeholder="Title" required />
 
                 <div class="input-group input-group-sm">
                     <span class="input-group-text" id="basic-addon3">page/</span>
-                    <input type="text" asp-for="EditPageRequest.Slug" class="form-control form-control-sm" placeholder="slug" />
-                </div>
-                <div>
-                    <span asp-validation-for="EditPageRequest.Slug" class="text-danger"></span>
-                </div>
-
-                <div>
-                    <span asp-validation-for="EditPageRequest.RawHtmlContent" class="text-danger"></span>
-                </div>
-                <div>
-                    <span asp-validation-for="EditPageRequest.CssContent" class="text-danger"></span>
+                    <input type="text" asp-for="EditPageRequest.Slug" class="form-control form-control-sm" placeholder="Slug" required />
                 </div>
 
                 <ul class="nav nav-tabs mt-3" id="editor-box-tabs" role="tablist">
@@ -209,13 +179,11 @@
                 <div class="tab-content">
                     <div class="tab-pane active" id="rawhtmlcontent-editor-box" role="tabpanel" aria-labelledby="html-tab">
                         <div id="RawHtmlContentEditor" class="monaco-target">
-
                         </div>
                         <textarea asp-for="EditPageRequest.RawHtmlContent" class="page-rawhtmlcontent-textarea d-none"></textarea>
                     </div>
                     <div class="tab-pane" id="csscontent-editor-box" role="tabpanel" aria-labelledby="css-tab">
                         <div id="CssContentEditor" class="monaco-target">
-
                         </div>
                         <textarea asp-for="EditPageRequest.CssContent" class="page-csscontent-textarea d-none"></textarea>
                     </div>
@@ -244,22 +212,22 @@
                             <textarea asp-for="EditPageRequest.MetaDescription"
                                       placeholder="@Html.DisplayNameFor(m => m.EditPageRequest.MetaDescription)"
                                       class="form-control form-control-sm h-200px"
-                                      spellcheck="false"></textarea>
+                                      spellcheck="false"
+                                      required></textarea>
                             <label class="form-label" asp-for="EditPageRequest.MetaDescription"></label>
                         </div>
-                        <span asp-validation-for="EditPageRequest.MetaDescription" class="text-danger"></span>
                     </div>
                 </div>
             </div>
         </div>
 
         <div class="mt-3">
-            <button type="button" class="btn btn-outline-accent" id="btn-submit">
+            <button type="submit" class="btn btn-outline-accent" id="btn-submit">
                 @Localizer["Save"]
             </button>
             @if (!Model.EditPageRequest.IsPublished)
             {
-                <button type="button" class="btn btn-outline-success" id="btn-preview">
+                <button type="submit" class="btn btn-outline-success" id="btn-preview">
                     @Localizer["Preview"]
                 </button>
             }

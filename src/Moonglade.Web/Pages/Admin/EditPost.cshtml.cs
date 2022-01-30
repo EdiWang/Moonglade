@@ -10,6 +10,7 @@ public class EditPostModel : PageModel
     private readonly ITimeZoneResolver _timeZoneResolver;
 
     public PostEditModel ViewModel { get; set; }
+    public List<CategoryCheckBox> CategoryList { get; set; }
 
     public EditPostModel(IMediator mediator, ITimeZoneResolver timeZoneResolver)
     {
@@ -39,7 +40,7 @@ public class EditPostModel : PageModel
                         IsChecked = false
                     });
 
-                ViewModel.CategoryList = cbCatList.ToList();
+                CategoryList = cbCatList.ToList();
             }
 
             return Page();
@@ -89,9 +90,16 @@ public class EditPostModel : PageModel
                     DisplayText = p.DisplayName,
                     IsChecked = post.Categories.Any(q => q.Id == p.Id)
                 });
-            ViewModel.CategoryList = cbCatList.ToList();
+            CategoryList = cbCatList.ToList();
         }
 
         return Page();
     }
+}
+
+public class CategoryCheckBox
+{
+    public Guid Id { get; set; }
+    public string DisplayText { get; set; }
+    public bool IsChecked { get; set; }
 }

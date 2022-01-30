@@ -6,27 +6,17 @@ using Moonglade.Data.Spec;
 
 namespace Moonglade.Core.TagFeature;
 
-public class DeleteTagCommand : IRequest<OperationCode>
-{
-    public DeleteTagCommand(int id)
-    {
-        Id = id;
-    }
-
-    public int Id { get; set; }
-}
+public record DeleteTagCommand(int Id) : IRequest<OperationCode>;
 
 public class DeleteTagCommandHandler : IRequestHandler<DeleteTagCommand, OperationCode>
 {
     private readonly IRepository<TagEntity> _tagRepo;
     private readonly IRepository<PostTagEntity> _postTagRepo;
-    private readonly IBlogAudit _audit;
 
-    public DeleteTagCommandHandler(IRepository<TagEntity> tagRepo, IRepository<PostTagEntity> postTagRepo, IBlogAudit audit)
+    public DeleteTagCommandHandler(IRepository<TagEntity> tagRepo, IRepository<PostTagEntity> postTagRepo)
     {
         _tagRepo = tagRepo;
         _postTagRepo = postTagRepo;
-        _audit = audit;
     }
 
     public async Task<OperationCode> Handle(DeleteTagCommand request, CancellationToken cancellationToken)
@@ -40,7 +30,6 @@ public class DeleteTagCommandHandler : IRequestHandler<DeleteTagCommand, Operati
 
         // 2. Delte Tag itslef
         await _tagRepo.DeleteAsync(request.Id);
-        await _audit.AddEntry(BlogEventType.Content, BlogEventId.TagDeleted, $"Tag id '{request.Id}' is deleted");
 
         return OperationCode.Done;
     }

@@ -4,9 +4,7 @@ using Moonglade.Data.Infrastructure;
 
 namespace Moonglade.Core.TagFeature;
 
-public class GetTagCountListQuery : IRequest<IReadOnlyList<KeyValuePair<Tag, int>>>
-{
-}
+public record GetTagCountListQuery : IRequest<IReadOnlyList<KeyValuePair<Tag, int>>>;
 
 public class GetTagCountListQueryHandler : IRequestHandler<GetTagCountListQuery, IReadOnlyList<KeyValuePair<Tag, int>>>
 {

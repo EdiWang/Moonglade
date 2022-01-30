@@ -1,29 +1,18 @@
 ﻿using MediatR;
-using Moonglade.Data;
 using Moonglade.Data.Entities;
 using Moonglade.Data.Infrastructure;
 
 namespace Moonglade.Core.PageFeature;
 
-public class CreatePageCommand : IRequest<Guid>
-{
-    public CreatePageCommand(EditPageRequest payload)
-    {
-        Payload = payload;
-    }
-
-    public EditPageRequest Payload { get; set; }
-}
+public record CreatePageCommand(EditPageRequest Payload) : IRequest<Guid>;
 
 public class CreatePageCommandHandler : IRequestHandler<CreatePageCommand, Guid>
 {
     private readonly IRepository<PageEntity> _pageRepo;
-    private readonly IBlogAudit _audit;
 
-    public CreatePageCommandHandler(IRepository<PageEntity> pageRepo, IBlogAudit audit)
+    public CreatePageCommandHandler(IRepository<PageEntity> pageRepo)
     {
         _pageRepo = pageRepo;
-        _audit = audit;
     }
 
     public async Task<Guid> Handle(CreatePageCommand request, CancellationToken cancellationToken)
@@ -43,7 +32,6 @@ public class CreatePageCommandHandler : IRequestHandler<CreatePageCommand, Guid>
         };
 
         await _pageRepo.AddAsync(page);
-        await _audit.AddEntry(BlogEventType.Content, BlogEventId.PageCreated, $"Page '{page.Id}' created.");
 
         return uid;
     }

@@ -5,15 +5,7 @@ using Moonglade.Data.Spec;
 
 namespace Moonglade.FriendLink;
 
-public class GetLinkQuery : IRequest<Link>
-{
-    public GetLinkQuery(Guid id)
-    {
-        Id = id;
-    }
-
-    public Guid Id { get; set; }
-}
+public record GetLinkQuery(Guid Id) : IRequest<Link>;
 
 public class GetLinkQueryHandler : IRequestHandler<GetLinkQuery, Link>
 {

@@ -79,7 +79,7 @@ public class CategoryListModelTests
     public async Task OnGetAsync_NullCat()
     {
         _mockMediator
-            .Setup(p => p.Send(It.IsAny<GetCategoryByRouteCommand>(), default))
+            .Setup(p => p.Send(It.IsAny<GetCategoryByRouteQuery>(), default))
             .Returns(Task.FromResult((Category)null));
 
         var categoryListModel = CreateCategoryListModel();
@@ -99,7 +99,7 @@ public class CategoryListModelTests
         };
 
         _mockMediator
-            .Setup(p => p.Send(It.IsAny<GetCategoryByRouteCommand>(), default))
+            .Setup(p => p.Send(It.IsAny<GetCategoryByRouteQuery>(), default))
             .Returns(Task.FromResult(cat));
 
         _mockBlogCache.Setup(p =>

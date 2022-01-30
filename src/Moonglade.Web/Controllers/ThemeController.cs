@@ -37,7 +37,8 @@ public class ThemeController : ControllerBase
                 if (_blogConfig.GeneralSettings.ThemeId == 0)
                 {
                     _blogConfig.GeneralSettings.ThemeId = 1;
-                    await _blogConfig.SaveAsync(_blogConfig.GeneralSettings);
+                    var kvp = _blogConfig.UpdateAsync(_blogConfig.GeneralSettings);
+                    await _mediator.Send(new SetConfigurationCommand(kvp.Key, kvp.Value));
                 }
 
                 var data = await _mediator.Send(new GetStyleSheetQuery(_blogConfig.GeneralSettings.ThemeId));

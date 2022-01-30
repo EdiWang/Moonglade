@@ -4,10 +4,7 @@ using Moonglade.Data.Infrastructure;
 
 namespace Moonglade.Auth;
 
-public class CountAccountsQuery : IRequest<int>
-{
-
-}
+public record CountAccountsQuery : IRequest<int>;
 
 public class CountAccountsQueryHandler : IRequestHandler<CountAccountsQuery, int>
 {

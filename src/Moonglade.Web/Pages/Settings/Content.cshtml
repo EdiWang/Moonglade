@@ -1,17 +1,27 @@
 ﻿@page "/admin/settings/content"
 @model Moonglade.Web.Pages.Settings.ContentModel
+@section scripts{
+<script>
+    function toggleCommentSettingsUI() {
+        if ($('#BuiltIn').is(":checked")) {
+            document.querySelector('.comment-settings-built-in').style.display = 'block';
+            document.querySelector('.comment-settings-3rd').style.display = 'none';
+        } else {
+            document.querySelector('.comment-settings-built-in').style.display = 'none';
+            document.querySelector('.comment-settings-3rd').style.display = 'block';
+        }
+    }
+
+    const form = document.querySelector('#form-settings');
+    form.addEventListener('submit', handleSettingsSubmit);
+
+    toggleCommentSettingsUI();
+</script>
+}
 
 <partial name="_SettingsHeader" />
 <div class="ps-4 pe-4">
-    <form id="form-settings" asp-controller="Settings" asp-action="Content"
-          data-ajax-begin="onUpdateSettingsBegin"
-          data-ajax-complete="onUpdateSettingsComplete"
-          data-ajax-failure="onUpdateSettingsFailed"
-          data-ajax-success="onUpdateSettingsSuccess"
-          data-ajax="true"
-          data-ajax-method="POST">
-        <div asp-validation-summary="All" class="text-danger"></div>
-
+    <form id="form-settings" asp-controller="Settings" asp-action="Content">
         <div class="row">
             <div class="col-md-6">
                 <div>
@@ -26,56 +36,103 @@
                         </div>
                         <div class="col-md-5 text-end">
                             <div class="form-check form-switch">
-                                <input type="checkbox" asp-for="ViewModel.EnableComments" class="form-check-input">
+                                <input type="checkbox" name="EnableComments" value="true" class="form-check-input" @(Model.ViewModel.EnableComments ? "checked" : null)>
                             </div>
                         </div>
                     </div>
 
                     <div class="row g-3 align-items-center settings-entry mb-4">
                         <div class="col-auto">
-                            <i class="bi-person-check settings-entry-icon"></i>
+                            <i class="bi-diagram-2 settings-entry-icon"></i>
                         </div>
                         <div class="col">
-                            <label asp-for="ViewModel.RequireCommentReview" class="form-check-label"></label>
+                            <label asp-for="ViewModel.CommentProvider" class="me-4"></label>
                         </div>
                         <div class="col-md-5 text-end">
-                            <div class="form-check form-switch">
-                                <input type="checkbox" asp-for="ViewModel.RequireCommentReview" class="form-check-input">
+                            <div class="form-check form-check-inline">
+                                @Html.RadioButtonFor(model => model.ViewModel.CommentProvider, CommentProvider.BuiltIn, new
+                                {
+                                    id = CommentProvider.BuiltIn.ToString(), 
+                                    @class = "form-check-input comment-provider-checkbox",
+                                    onchange = "toggleCommentSettingsUI()"
+                                })
+                                <label class="form-check-label" for="@CommentProvider.BuiltIn">@Localizer["Built in"]</label>
+                            </div>
+                            <div class="form-check form-check-inline">
+                                @Html.RadioButtonFor(model => model.ViewModel.CommentProvider, CommentProvider.ThirdParty, new
+                                {
+                                    id = CommentProvider.ThirdParty.ToString(), 
+                                    @class = "form-check-input comment-provider-checkbox",
+                                    onchange = "toggleCommentSettingsUI()"
+                                })
+                                <label class="form-check-label" for="@CommentProvider.ThirdParty">@Localizer["Third party"]</label>
                             </div>
                         </div>
                     </div>
 
-                    <div class="row g-3 align-items-center settings-entry mb-4">
-                        <div class="col-auto">
-                            <i class="bi-person-square settings-entry-icon"></i>
-                        </div>
-                        <div class="col">
-                            <label asp-for="ViewModel.EnableGravatar" class="form-check-label"></label>
-                        </div>
-                        <div class="col-md-5 text-end">
-                            <div class="form-check form-switch">
-                                <input type="checkbox" asp-for="ViewModel.EnableGravatar" class="form-check-input">
+                    <div class="comment-settings-built-in">
+
+                        <div class="row g-3 align-items-center settings-entry mb-4">
+                            <div class="col-auto">
+                                <i class="bi-person-check settings-entry-icon"></i>
+                            </div>
+                            <div class="col">
+                                <label asp-for="ViewModel.RequireCommentReview" class="form-check-label"></label>
+                            </div>
+                            <div class="col-md-5 text-end">
+                                <div class="form-check form-switch">
+                                    <input type="checkbox" name="RequireCommentReview" value="true" class="form-check-input" @(Model.ViewModel.RequireCommentReview ? "checked" : null)>
+                                </div>
                             </div>
                         </div>
-                    </div>
 
-                    <h6 class="card-subtitle mt-5 mb-4 text-muted">@Localizer["Word filter"]</h6>
-
-                    <div class="row g-3 align-items-center settings-entry mb-2">
-                        <div class="col-auto">
-                            <i class="bi-translate settings-entry-icon"></i>
-                        </div>
-                        <div class="col">
-                            <label asp-for="ViewModel.EnableWordFilter" class="form-check-label"></label>
-                        </div>
-                        <div class="col-md-5 text-end">
-                            <div class="form-check form-switch">
-                                <input type="checkbox" asp-for="ViewModel.EnableWordFilter" class="form-check-input">
+                        <div class="row g-3 align-items-center settings-entry mb-4">
+                            <div class="col-auto">
+                                <i class="bi-person-square settings-entry-icon"></i>
+                            </div>
+                            <div class="col">
+                                <label asp-for="ViewModel.EnableGravatar" class="form-check-label"></label>
+                            </div>
+                            <div class="col-md-5 text-end">
+                                <div class="form-check form-switch">
+                                    <input type="checkbox" name="EnableGravatar" value="true" class="form-check-input" @(Model.ViewModel.EnableGravatar ? "checked" : null)>
+                                </div>
                             </div>
                         </div>
-                    </div>
 
-                    <div>
+                        <div class="row g-3 align-items-center settings-entry mb-4">
+                            <div class="col-auto">
+                                <i class="bi-translate settings-entry-icon"></i>
+                            </div>
+                            <div class="col">
+                                <label asp-for="ViewModel.EnableWordFilter" class="form-check-label"></label>
+                            </div>
+                            <div class="col-md-5 text-end">
+                                <div class="form-check form-switch">
+                                    <input type="checkbox" name="EnableWordFilter" value="true" class="form-check-input" @(Model.ViewModel.EnableWordFilter ? "checked" : null)>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="row g-3 align-items-center settings-entry mb-2">
+                            <div class="col-auto">
+                                <i class="bi-check2-circle settings-entry-icon"></i>
+                            </div>
+                            <div class="col">
+                                <label asp-for="ViewModel.WordFilterMode" class="me-4"></label>
+                            </div>
+                            <div class="col-md-5 text-end">
+                                <div class="form-check form-check-inline">
+                                    @Html.RadioButtonFor(model => model.ViewModel.WordFilterMode, WordFilterMode.Mask, new { id = WordFilterMode.Mask.ToString(), @class = "form-check-input" })
+                                    <label class="form-check-label" for="@WordFilterMode.Mask">@Localizer["Mask Word"]</label>
+                                </div>
+                                <div class="form-check form-check-inline">
+                                    @Html.RadioButtonFor(model => model.ViewModel.WordFilterMode, WordFilterMode.Block, new { id = WordFilterMode.Block.ToString(), @class = "form-check-input" })
+                                    <label class="form-check-label" for="@WordFilterMode.Block">@Localizer["Block Comment"]</label>
+                                </div>
+                            </div>
+                        </div>
+
                         <div class="mb-2">
                             <div class="form-floating">
                                 <textarea asp-for="ViewModel.DisharmonyWords"
@@ -85,19 +142,18 @@
                                 <label class="form-label" asp-for="ViewModel.DisharmonyWords"></label>
                             </div>
 
-                            <span asp-validation-for="ViewModel.DisharmonyWords" class="text-danger"></span>
                             <small class="form-text text-muted">@Localizer["Blocked words will be masked as *** in comment content."]</small>
                         </div>
-                        <div>
-                            <label asp-for="ViewModel.WordFilterMode" class="me-4"></label>
+                    </div>
 
-                            <div class="form-check form-check-inline">
-                                @Html.RadioButtonFor(model => model.ViewModel.WordFilterMode, WordFilterMode.Mask, new { id = WordFilterMode.Mask.ToString(), @class = "form-check-input" })
-                                <label class="form-check-label" for="@WordFilterMode.Mask">@Localizer["Mask Word"]</label>
-                            </div>
-                            <div class="form-check form-check-inline">
-                                @Html.RadioButtonFor(model => model.ViewModel.WordFilterMode, WordFilterMode.Block, new { id = WordFilterMode.Block.ToString(), @class = "form-check-input" })
-                                <label class="form-check-label" for="@WordFilterMode.Block">@Localizer["Block Comment"]</label>
+                    <div class="comment-settings-3rd">
+                        <div>
+                            <div class="form-floating">
+                                <textarea asp-for="ViewModel.ThirdPartyCommentHtmlPitch"
+                                          placeholder="@Html.DisplayNameFor(m => m.ViewModel.ThirdPartyCommentHtmlPitch)"
+                                          class="form-control form-control-sm h-100px"
+                                          spellcheck="false"></textarea>
+                                <label class="form-label" asp-for="ViewModel.ThirdPartyCommentHtmlPitch"></label>
                             </div>
                         </div>
                     </div>
@@ -115,11 +171,13 @@
                             <label asp-for="ViewModel.PostListPageSize"></label>
                         </div>
                         <div class="col-md-5">
-                            <input asp-for="ViewModel.PostListPageSize" class="form-control" />
-                            <span asp-validation-for="ViewModel.PostListPageSize" class="text-danger"></span>
+                            <input asp-for="ViewModel.PostListPageSize" class="form-range" type="range" oninput="this.nextElementSibling.value = this.value" min="5" max="30" />
+                            <output class="form-text">
+                                @Model.ViewModel.PostListPageSize
+                            </output>
                         </div>
                     </div>
-                    
+
                     <div class="row g-3 align-items-center settings-entry mb-4">
                         <div class="col-auto">
                             <i class="settings-entry-icon bi-file-word"></i>
@@ -129,8 +187,7 @@
                             <div class="form-text">@Localizer["Change this value will only affect new posts"]</div>
                         </div>
                         <div class="col-md-5">
-                            <input asp-for="ViewModel.PostAbstractWords" class="form-control" />
-                            <span asp-validation-for="ViewModel.PostAbstractWords" class="text-danger"></span>
+                            <input asp-for="ViewModel.PostAbstractWords" class="form-control" required />
                         </div>
                     </div>
 
@@ -142,8 +199,10 @@
                             <label asp-for="ViewModel.HotTagAmount"></label>
                         </div>
                         <div class="col-md-5">
-                            <input asp-for="ViewModel.HotTagAmount" class="form-control" />
-                            <span asp-validation-for="ViewModel.HotTagAmount" class="text-danger"></span>
+                            <input asp-for="ViewModel.HotTagAmount" class="form-range" type="range" oninput="this.nextElementSibling.value = this.value" min="5" max="20" />
+                            <output class="form-text">
+                                @Model.ViewModel.PostListPageSize
+                            </output>
                         </div>
                     </div>
 
@@ -157,7 +216,7 @@
                         </div>
                         <div class="col-md-5 text-end">
                             <div class="form-check form-switch">
-                                <input type="checkbox" asp-for="ViewModel.ShowPostFooter" class="form-check-input">
+                                <input type="checkbox" name="ShowPostFooter" value="true" class="form-check-input" @(Model.ViewModel.ShowPostFooter ? "checked" : null)>
                             </div>
                         </div>
                     </div>
@@ -170,7 +229,6 @@
                                       spellcheck="false"></textarea>
                             <label class="form-label" asp-for="ViewModel.PostFooterHtmlPitch"></label>
                         </div>
-                        <span asp-validation-for="ViewModel.PostFooterHtmlPitch" class="text-danger"></span>
                     </div>
                 </div>
                 <div class="mt-5">
@@ -186,7 +244,7 @@
                         </div>
                         <div class="col-md-5 text-end">
                             <div class="form-check form-switch">
-                                <input type="checkbox" asp-for="ViewModel.ShowCalloutSection" class="form-check-input">
+                                <input type="checkbox" name="ShowCalloutSection" value="true" class="form-check-input" @(Model.ViewModel.ShowCalloutSection ? "checked" : null)>
                             </div>
                         </div>
                     </div>
@@ -198,7 +256,6 @@
                                       spellcheck="false"></textarea>
                             <label class="form-label" asp-for="ViewModel.CalloutSectionHtmlPitch"></label>
                         </div>
-                        <span asp-validation-for="ViewModel.CalloutSectionHtmlPitch" class="text-danger"></span>
                     </div>
                 </div>
             </div>

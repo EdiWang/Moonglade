@@ -9,8 +9,6 @@ using Microsoft.AspNetCore.Mvc.ViewFeatures;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using Moonglade.Auth;
-using Moonglade.Data;
-using Moonglade.Data.Entities;
 using Moonglade.Web.Pages;
 using Moq;
 using NUnit.Framework;
@@ -27,7 +25,6 @@ public class SignInModelTests
     private Mock<IOptions<AuthenticationSettings>> _mockOptions;
     private Mock<IMediator> _mockMediator;
     private Mock<ILogger<SignInModel>> _mockLogger;
-    private Mock<IBlogAudit> _mockBlogAudit;
     private Mock<ISessionBasedCaptcha> _mockSessionBasedCaptcha;
 
     [SetUp]
@@ -38,7 +35,6 @@ public class SignInModelTests
         _mockOptions = _mockRepository.Create<IOptions<AuthenticationSettings>>();
         _mockMediator = _mockRepository.Create<IMediator>();
         _mockLogger = _mockRepository.Create<ILogger<SignInModel>>();
-        _mockBlogAudit = _mockRepository.Create<IBlogAudit>();
         _mockSessionBasedCaptcha = _mockRepository.Create<ISessionBasedCaptcha>();
     }
 
@@ -61,7 +57,6 @@ public class SignInModelTests
             _mockOptions.Object,
             _mockMediator.Object,
             _mockLogger.Object,
-            _mockBlogAudit.Object,
             _mockSessionBasedCaptcha.Object)
         {
             PageContext = pageContext,
@@ -144,8 +139,6 @@ public class SignInModelTests
 
         var modelState = signInModel.ViewData.ModelState;
         Assert.IsFalse(modelState.IsValid);
-
-        _mockBlogAudit.Verify(p => p.AddEntry(BlogEventType.Authentication, BlogEventId.LoginFailedLocal, It.IsAny<string>()));
     }
 
 
@@ -165,8 +158,6 @@ public class SignInModelTests
 
         var modelState = signInModel.ViewData.ModelState;
         Assert.IsFalse(modelState.IsValid);
-
-        _mockBlogAudit.Verify(p => p.AddEntry(BlogEventType.Authentication, BlogEventId.LoginFailedLocal, It.IsAny<string>()));
     }
 
     [Test]
@@ -204,7 +195,6 @@ public class SignInModelTests
     //        Assert.IsInstanceOf<RedirectToPageResult>(result);
     //        var modelState = signInModel.ViewData.ModelState;
     //        Assert.IsTrue(modelState.IsValid);
-    //        _mockBlogAudit.Verify(p => p.AddEntry(BlogEventType.Authentication, BlogEventId.LoginSuccessLocal, It.IsAny<string>()));
     //        _mockLocalAccountService.Verify(p => p.LogSuccessLoginAsync(FakeData.Uid1, It.IsAny<string>()));
     //    }
 }

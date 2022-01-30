@@ -6,28 +6,19 @@ using Moonglade.Data.Infrastructure;
 
 namespace Moonglade.Core.CategoryFeature;
 
-public class UpdateCategoryCommand : IRequest<OperationCode>
+public class UpdateCategoryCommand : CreateCategoryCommand, IRequest<OperationCode>
 {
-    public UpdateCategoryCommand(Guid id, EditCategoryRequest payload)
-    {
-        Id = id;
-        Payload = payload;
-    }
-
     public Guid Id { get; set; }
-    public EditCategoryRequest Payload { get; set; }
 }
 
 public class UpdateCategoryCommandHandler : IRequestHandler<UpdateCategoryCommand, OperationCode>
 {
     private readonly IRepository<CategoryEntity> _catRepo;
-    private readonly IBlogAudit _audit;
     private readonly IBlogCache _cache;
 
-    public UpdateCategoryCommandHandler(IRepository<CategoryEntity> catRepo, IBlogAudit audit, IBlogCache cache)
+    public UpdateCategoryCommandHandler(IRepository<CategoryEntity> catRepo, IBlogCache cache)
     {
         _catRepo = catRepo;
-        _audit = audit;
         _cache = cache;
     }
 
@@ -36,14 +27,13 @@ public class UpdateCategoryCommandHandler : IRequestHandler<UpdateCategoryComman
         var cat = await _catRepo.GetAsync(request.Id);
         if (cat is null) return OperationCode.ObjectNotFound;
 
-        cat.RouteName = request.Payload.RouteName.Trim();
-        cat.DisplayName = request.Payload.DisplayName.Trim();
-        cat.Note = request.Payload.Note?.Trim();
+        cat.RouteName = request.RouteName.Trim();
+        cat.DisplayName = request.DisplayName.Trim();
+        cat.Note = request.Note?.Trim();
 
         await _catRepo.UpdateAsync(cat);
         _cache.Remove(CacheDivision.General, "allcats");
 
-        await _audit.AddEntry(BlogEventType.Content, BlogEventId.CategoryUpdated, $"Category '{request.Id}' updated.");
         return OperationCode.Done;
     }
 }

@@ -14,7 +14,7 @@
       "destination": "wwwroot/lib/tinymce"
     },
     {
-      "library": "monaco-editor@0.30.1",
+      "library": "monaco-editor@0.31.1",
       "destination": "wwwroot/lib/monaco-editor/",
       "files": [
         "min/vs/loader.js",
@@ -56,31 +56,10 @@
       ]
     },
     {
-      "library": "jquery-validation-unobtrusive@3.2.12",
-      "destination": "wwwroot/lib/jquery-validation-unobtrusive/",
-      "files": [
-        "jquery.validate.unobtrusive.min.js"
-      ]
-    },
-    {
       "library": "jquery.AreYouSure@1.9.0",
       "destination": "wwwroot/lib/jquery.AreYouSure/",
       "files": [
         "jquery.are-you-sure.min.js"
-      ]
-    },
-    {
-      "library": "jquery-ajax-unobtrusive@3.2.6",
-      "destination": "wwwroot/lib/jquery-ajax-unobtrusive/",
-      "files": [
-        "jquery.unobtrusive-ajax.min.js"
-      ]
-    },
-    {
-      "library": "jquery-validate@1.19.3",
-      "destination": "wwwroot/lib/jquery-validate/",
-      "files": [
-        "jquery.validate.min.js"
       ]
     },
     {
@@ -105,6 +84,13 @@
         "font/bootstrap-icons.min.css",
         "font/fonts/bootstrap-icons.woff",
         "font/fonts/bootstrap-icons.woff2"
+      ]
+    },
+    {
+      "library": "qrious@4.0.2",
+      "destination": "wwwroot/lib/qrious/",
+      "files": [
+        "qrious.min.js"
       ]
     }
   ]

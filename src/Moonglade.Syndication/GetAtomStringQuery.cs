@@ -5,10 +5,7 @@ using Moonglade.Utils;
 
 namespace Moonglade.Syndication;
 
-public class GetAtomStringQuery : IRequest<string>
-{
-
-}
+public record GetAtomStringQuery : IRequest<string>;
 
 public class GetAtomStringQueryHandler : IRequestHandler<GetAtomStringQuery, string>
 {

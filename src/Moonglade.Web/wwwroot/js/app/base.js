@@ -6,77 +6,56 @@ var tooltipList = tooltipTriggerList.map(function (tooltipTriggerEl) {
 });
 
 var bsToast = new bootstrap.Toast(document.getElementById('liveToast'));
+var lt = document.querySelector('#liveToast');
+var blogtoastMessage = document.querySelector('#blogtoast-message');
+
+function removeToastBgColor() {
+    const bgClasses = [
+        'bg-success',
+        'bg-warning',
+        'bg-danger',
+        'bg-info',
+        'bg-primary',
+        'bg-secondary'
+    ];
+
+    for (var i = 0; i < bgClasses.length; i++) {
+        lt.classList.remove(bgClasses[i]);
+    }
+}
+
 var blogToast = {
     success: function (message) {
-        $('#liveToast').removeClass('bg-success bg-warning bg-danger bg-info bg-primary bg-secondary');
-        $('#liveToast').addClass('bg-success');
-        $('#blogtoast-message').html(message);
+        removeToastBgColor();
+        lt.classList.add('bg-success');
+        blogtoastMessage.innerHTML = message;
         bsToast.show();
     },
     info: function (message) {
-        $('#liveToast').removeClass('bg-success bg-warning bg-danger bg-info bg-primary bg-secondary');
-        $('#liveToast').addClass('bg-info');
-        $('#blogtoast-message').html(message);
+        removeToastBgColor();
+        lt.classList.add('bg-info');
+        blogtoastMessage.innerHTML = message;
         bsToast.show();
     },
     warning: function (message) {
-        $('#liveToast').removeClass('bg-success bg-warning bg-danger bg-info bg-primary bg-secondary');
-        $('#liveToast').addClass('bg-warning');
-        $('#blogtoast-message').html(message);
+        removeToastBgColor();
+        lt.classList.add('bg-warning');
+        blogtoastMessage.innerHTML = message;
         bsToast.show();
     },
     error: function (message) {
-        $('#liveToast').removeClass('bg-success bg-warning bg-danger bg-info bg-primary bg-secondary');
-        $('#liveToast').addClass('bg-danger');
-        $('#blogtoast-message').html(message);
+        removeToastBgColor();
+        lt.classList.add('bg-danger');
+        blogtoastMessage.innerHTML = message;
         bsToast.show();
     }
 };
 
-$(function () {
-    //if (/Android|webOS|iPhone|iPad|iPod|IEMobile|Opera Mini/i.test(navigator.userAgent)) {
-    //    $('div.container').addClass('container-fluid').removeClass('container');
-    //}
-
-    $('input#term')
-        .focus(function () {
-            $(this).attr('placeholder', '');
-        })
-        .blur(function () {
-            $(this).attr('placeholder', 'Search');
-        });
-
-    $('.lightswitch').click(function () {
-        if (isDarkMode) {
-            themeModeSwitcher.useLightMode();
-        } else {
-            themeModeSwitcher.useDarkMode();
-        }
-    });
-
-    
-});
-
-$(document).keydown(function (event) {
-    // Prevent F12
-    if (event.keyCode == 123)
-    {
-        showDebuggerMessage();
-    }
-    // Prevent Ctrl+Shift+I
-    else if (event.ctrlKey && event.shiftKey && event.keyCode == 73)
-    {
-        showDebuggerMessage();
-    }
-});
-
-var hasDebuggerMessageShown = false;
-function showDebuggerMessage() {
-    if (!hasDebuggerMessageShown) {
-        try {
-            window.console && window.console.log && console.log("Submit issues: https://github.com/EdiWang/Moonglade/issues")
-            hasDebuggerMessageShown = true;
-        } catch (e) { }
+function toggleTheme() {
+    if (isDarkMode) {
+        themeModeSwitcher.useLightMode();
+    } else {
+        themeModeSwitcher.useDarkMode();
     }
 }
 

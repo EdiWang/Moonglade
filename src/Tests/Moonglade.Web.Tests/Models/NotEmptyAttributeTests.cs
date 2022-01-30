@@ -1,4 +1,4 @@
-﻿using Moonglade.Web.Models;
+﻿using Moonglade.Web.Attributes;
 using NUnit.Framework;
 
 namespace Moonglade.Web.Tests.Models;

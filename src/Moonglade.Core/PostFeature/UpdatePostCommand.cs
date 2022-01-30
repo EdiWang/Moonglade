@@ -4,29 +4,15 @@ using Microsoft.Extensions.Options;
 using Moonglade.Caching;
 using Moonglade.Configuration;
 using Moonglade.Core.TagFeature;
-using Moonglade.Data;
 using Moonglade.Data.Entities;
 using Moonglade.Data.Infrastructure;
 using Moonglade.Utils;
 
 namespace Moonglade.Core.PostFeature;
 
-public class UpdatePostCommand : IRequest<PostEntity>
-{
-    public UpdatePostCommand(Guid id, PostEditModel payload)
-    {
-        Id = id;
-        Payload = payload;
-    }
-
-    public Guid Id { get; set; }
-
-    public PostEditModel Payload { get; set; }
-}
-
+public record UpdatePostCommand(Guid Id, PostEditModel Payload) : IRequest<PostEntity>;
 public class UpdatePostCommandHandler : IRequestHandler<UpdatePostCommand, PostEntity>
 {
-    private readonly IBlogAudit _audit;
     private readonly AppSettings _settings;
     private readonly IRepository<TagEntity> _tagRepo;
     private readonly IRepository<PostEntity> _postRepo;
@@ -36,7 +22,6 @@ public class UpdatePostCommandHandler : IRequestHandler<UpdatePostCommand, PostE
     private readonly IDictionary<string, string> _tagNormalizationDictionary;
 
     public UpdatePostCommandHandler(
-        IBlogAudit audit,
         IConfiguration configuration,
         IOptions<AppSettings> settings,
         IRepository<TagEntity> tagRepo,
@@ -44,7 +29,6 @@ public class UpdatePostCommandHandler : IRequestHandler<UpdatePostCommand, PostE
         IBlogCache cache,
         IBlogConfig blogConfig)
     {
-        _audit = audit;
         _tagRepo = tagRepo;
         _postRepo = postRepo;
         _cache = cache;
@@ -119,9 +103,6 @@ public class UpdatePostCommandHandler : IRequestHandler<UpdatePostCommand, PostE
                 DisplayName = item,
                 NormalizedName = Tag.NormalizeName(item, _tagNormalizationDictionary)
             });
-
-            await _audit.AddEntry(BlogEventType.Content, BlogEventId.TagCreated,
-                $"Tag '{item}' created.");
         }
 
         // 2. update tags
@@ -141,12 +122,10 @@ public class UpdatePostCommandHandler : IRequestHandler<UpdatePostCommand, PostE
         }
 
         // 3. update categories
-        var catIds = request.Payload.CategoryList.Where(p => p.IsChecked).Select(p => p.Id).ToArray();
         post.PostCategory.Clear();
-
-        if (catIds is { Length: > 0 })
+        if (request.Payload.SelectedCatIds is { Length: > 0 })
         {
-            foreach (var cid in catIds)
+            foreach (var cid in request.Payload.SelectedCatIds)
             {
                 post.PostCategory.Add(new()
                 {
@@ -157,11 +136,6 @@ public class UpdatePostCommandHandler : IRequestHandler<UpdatePostCommand, PostE
         }
 
         await _postRepo.UpdateAsync(post);
-
-        await _audit.AddEntry(
-            BlogEventType.Content,
-            isNewPublish ? BlogEventId.PostPublished : BlogEventId.PostUpdated,
-            $"Post updated, id: {post.Id}");
 
         _cache.Remove(CacheDivision.Post, request.Id.ToString());
         return post;

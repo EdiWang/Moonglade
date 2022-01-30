@@ -5,15 +5,7 @@ using Moonglade.Data.Spec;
 
 namespace Moonglade.Core.PostFeature;
 
-public class ListInsightsQuery : IRequest<IReadOnlyList<PostSegment>>
-{
-    public ListInsightsQuery(PostInsightsType postInsightsType)
-    {
-        PostInsightsType = postInsightsType;
-    }
-
-    public PostInsightsType PostInsightsType { get; set; }
-}
+public record ListInsightsQuery(PostInsightsType PostInsightsType) : IRequest<IReadOnlyList<PostSegment>>;
 
 public class ListInsightsQueryHandler : IRequestHandler<ListInsightsQuery, IReadOnlyList<PostSegment>>
 {

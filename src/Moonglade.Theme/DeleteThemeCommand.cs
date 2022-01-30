@@ -5,15 +5,7 @@ using Moonglade.Data.Infrastructure;
 
 namespace Moonglade.Theme;
 
-public class DeleteThemeCommand : IRequest<OperationCode>
-{
-    public DeleteThemeCommand(int id)
-    {
-        Id = id;
-    }
-
-    public int Id { get; set; }
-}
+public record DeleteThemeCommand(int Id) : IRequest<OperationCode>;
 
 public class DeleteThemeCommandHandler : IRequestHandler<DeleteThemeCommand, OperationCode>
 {

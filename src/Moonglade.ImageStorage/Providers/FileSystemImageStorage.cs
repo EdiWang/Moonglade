@@ -72,22 +72,12 @@ public class FileSystemImageStorage : IBlogImageStorage
         return fileName;
     }
 
-    public static string ResolveImageStoragePath(string contentRootPath, string path)
+    public static string ResolveImageStoragePath(string path)
     {
         if (string.IsNullOrWhiteSpace(path))
         {
             throw new ArgumentNullException(nameof(path));
         }
-
-        const string basedirStr = "${basedir}"; // Do not use "." because there could be "." in path.
-
-        path = path.IndexOf(basedirStr, StringComparison.Ordinal) switch
-        {
-            // Warning: Write data under application directory may blow up on Azure App Services when WEBSITE_RUN_FROM_PACKAGE = 1, which set the directory read-only.
-            > 0 => throw new NotSupportedException($"{basedirStr} can only be at the beginning."),
-            0 => path.Replace(basedirStr, contentRootPath),
-            _ => path
-        };
 
         // Handle Path for non-Windows environment #412
         if (!RuntimeInformation.IsOSPlatform(OSPlatform.Windows) || Path.DirectorySeparatorChar != '\\')
