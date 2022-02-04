@@ -1,6 +1,6 @@
 ﻿namespace Moonglade.Menus;
 
-public class SubMenu
+public record SubMenu
 {
     public Guid Id { get; set; }
 

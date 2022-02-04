@@ -1,6 +1,6 @@
 ﻿namespace Moonglade.ImageStorage.Providers;
 
-public class MinioStorageSettings
+public record MinioStorageSettings
 {
     public string EndPoint { get; set; }
     public string AccessKey { get; set; }
