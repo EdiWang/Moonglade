@@ -4,25 +4,21 @@ using Moonglade.Utils;
 
 namespace Moonglade.Notification.Client;
 
-public class CommentNotification : INotification
-{
-    public CommentNotification(string username, string email, string ipAddress, string postTitle, string commentContent, DateTime createTimeUtc)
-    {
-        Username = username;
-        Email = email;
-        IPAddress = ipAddress;
-        PostTitle = postTitle;
-        CommentContent = commentContent;
-        CreateTimeUtc = createTimeUtc;
-    }
+public record CommentNotification(
+    string Username,
+    string Email,
+    string IPAddress,
+    string PostTitle,
+    string CommentContent,
+    DateTime CreateTimeUtc) : INotification;
 
-    public string Username { get; set; }
-    public string Email { get; set; }
-    public string IPAddress { get; set; }
-    public string PostTitle { get; set; }
-    public string CommentContent { get; set; }
-    public DateTime CreateTimeUtc { get; set; }
-}
+internal record CommentPayload(
+    string Username,
+    string Email,
+    string IpAddress,
+    string PostTitle,
+    string CommentContent,
+    DateTime CreateTimeUtc);
 
 public class CommentNotificationHandler : INotificationHandler<CommentNotification>
 {

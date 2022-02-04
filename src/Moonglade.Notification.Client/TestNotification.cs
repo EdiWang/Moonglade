@@ -3,9 +3,7 @@ using Microsoft.Extensions.Logging;
 
 namespace Moonglade.Notification.Client;
 
-public class TestNotification : INotification
-{
-}
+public record TestNotification : INotification;
 
 public class TestNotificationHandler : INotificationHandler<TestNotification>
 {

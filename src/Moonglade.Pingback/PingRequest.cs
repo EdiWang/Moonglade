@@ -1,6 +1,6 @@
 ﻿namespace Moonglade.Pingback;
 
-public class PingRequest
+public record PingRequest
 {
     public string SourceUrl { get; set; }
 
