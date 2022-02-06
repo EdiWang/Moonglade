@@ -1,8 +1,4 @@
-﻿using MediatR;
-using Moonglade.Data.Entities;
-using Moonglade.Data.Infrastructure;
-
-namespace Moonglade.Core.PageFeature;
+﻿namespace Moonglade.Core.PageFeature;
 
 public record CreatePageCommand(EditPageRequest Payload) : IRequest<Guid>;
 

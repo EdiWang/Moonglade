@@ -1,5 +1,4 @@
-﻿using MediatR;
-using Moonglade.Data.Entities;
+﻿using Moonglade.Data.Entities;
 using Moonglade.Data.Infrastructure;
 using Moonglade.Utils;
 using System.ComponentModel.DataAnnotations;

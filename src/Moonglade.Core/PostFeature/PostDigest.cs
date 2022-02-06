@@ -1,5 +1,4 @@
 ﻿using Moonglade.Core.TagFeature;
-using Moonglade.Data.Entities;
 using System.Linq.Expressions;
 
 namespace Moonglade.Core.PostFeature;

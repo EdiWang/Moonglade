@@ -1,7 +1,4 @@
-﻿using MediatR;
-using Microsoft.Extensions.Configuration;
-using Moonglade.Data.Entities;
-using Moonglade.Data.Infrastructure;
+﻿using Microsoft.Extensions.Configuration;
 using Moonglade.Data.Spec;
 
 namespace Moonglade.Core.TagFeature;

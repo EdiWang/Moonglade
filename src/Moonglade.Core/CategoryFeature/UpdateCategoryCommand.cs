@@ -1,8 +1,5 @@
-﻿using MediatR;
-using Moonglade.Caching;
+﻿using Moonglade.Caching;
 using Moonglade.Data;
-using Moonglade.Data.Entities;
-using Moonglade.Data.Infrastructure;
 
 namespace Moonglade.Core.CategoryFeature;
 

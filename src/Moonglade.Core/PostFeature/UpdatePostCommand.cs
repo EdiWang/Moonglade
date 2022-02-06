@@ -1,11 +1,8 @@
-﻿using MediatR;
-using Microsoft.Extensions.Configuration;
+﻿using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Options;
 using Moonglade.Caching;
 using Moonglade.Configuration;
 using Moonglade.Core.TagFeature;
-using Moonglade.Data.Entities;
-using Moonglade.Data.Infrastructure;
 using Moonglade.Utils;
 
 namespace Moonglade.Core.PostFeature;

@@ -1,5 +1,4 @@
-﻿using Moonglade.Data.Entities;
-using System.Linq.Expressions;
+﻿using System.Linq.Expressions;
 
 namespace Moonglade.Core.CategoryFeature;
 

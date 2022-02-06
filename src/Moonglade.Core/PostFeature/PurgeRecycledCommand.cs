@@ -1,7 +1,4 @@
-﻿using MediatR;
-using Moonglade.Caching;
-using Moonglade.Data.Entities;
-using Moonglade.Data.Infrastructure;
+﻿using Moonglade.Caching;
 using Moonglade.Data.Spec;
 
 namespace Moonglade.Core.PostFeature;
