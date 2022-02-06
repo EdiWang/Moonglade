@@ -2,9 +2,11 @@
 using Microsoft.Extensions.DependencyInjection;
 using Moonglade.Data.Infrastructure;
 using Moonglade.Data.MySql.Infrastructure;
+using System.Diagnostics.CodeAnalysis;
 
 namespace Moonglade.Data.MySql;
 
+[ExcludeFromCodeCoverage]
 public static class ServiceCollectionExtensions
 {
     public static IServiceCollection AddMySqlStorage(this IServiceCollection services, string connectionString)

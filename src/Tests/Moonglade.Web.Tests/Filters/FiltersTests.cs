@@ -13,7 +13,6 @@ using NUnit.Framework;
 namespace Moonglade.Web.Tests.Filters;
 
 [TestFixture]
-
 public class FiltersTests
 {
     [Test]

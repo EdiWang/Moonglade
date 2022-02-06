@@ -3,23 +3,19 @@ using Microsoft.Extensions.Logging;
 
 namespace Moonglade.Notification.Client;
 
-public class CommentReplyNotification : INotification
-{
-    public CommentReplyNotification(string email, string commentContent, string title, string replyContentHtml, string postLink)
-    {
-        Email = email;
-        CommentContent = commentContent;
-        Title = title;
-        ReplyContentHtml = replyContentHtml;
-        PostLink = postLink;
-    }
+public record CommentReplyNotification(
+    string Email,
+    string CommentContent,
+    string Title,
+    string ReplyContentHtml,
+    string PostLink) : INotification;
 
-    public string Email { get; set; }
-    public string CommentContent { get; set; }
-    public string Title { get; set; }
-    public string ReplyContentHtml { get; set; }
-    public string PostLink { get; set; }
-}
+internal record CommentReplyPayload(
+    string Email,
+    string CommentContent,
+    string Title,
+    string ReplyContentHtml,
+    string PostLink);
 
 public class CommentReplyNotificationHandler : INotificationHandler<CommentReplyNotification>
 {

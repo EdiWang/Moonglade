@@ -8,7 +8,8 @@ trigger:
 
 jobs:
 - job: ASPNETCore
-  pool: 'Default'
+  pool:
+    vmImage: 'windows-latest'
   steps:
   - task: UseDotNet@2
     inputs:
