@@ -1,10 +1,12 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using System.Diagnostics.CodeAnalysis;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using Moonglade.Data.Infrastructure;
 using Moonglade.Data.MySql.Infrastructure;
 
 namespace Moonglade.Data.MySql;
 
+[ExcludeFromCodeCoverage]
 public static class ServiceCollectionExtensions
 {
     public static IServiceCollection AddMySqlStorage(this IServiceCollection services, string connectionString)

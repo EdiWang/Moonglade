@@ -1,9 +1,11 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using System.Diagnostics.CodeAnalysis;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 using Moonglade.Data.Entities;
 
 namespace Moonglade.Data.MySql.Configurations;
 
+[ExcludeFromCodeCoverage]
 internal class BlogAssetConfiguration : IEntityTypeConfiguration<BlogAssetEntity>
 {
     public void Configure(EntityTypeBuilder<BlogAssetEntity> builder)
