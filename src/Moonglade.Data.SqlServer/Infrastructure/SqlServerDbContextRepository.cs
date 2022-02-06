@@ -1,6 +1,6 @@
-﻿using System.Diagnostics.CodeAnalysis;
-using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.EntityFrameworkCore;
 using Moonglade.Data.Infrastructure;
+using System.Diagnostics.CodeAnalysis;
 
 namespace Moonglade.Data.SqlServer.Infrastructure;
 

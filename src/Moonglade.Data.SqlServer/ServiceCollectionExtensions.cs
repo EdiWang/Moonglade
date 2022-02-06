@@ -1,8 +1,8 @@
-﻿using System.Diagnostics.CodeAnalysis;
-using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using Moonglade.Data.Infrastructure;
 using Moonglade.Data.SqlServer.Infrastructure;
+using System.Diagnostics.CodeAnalysis;
 
 namespace Moonglade.Data.SqlServer;
 
