@@ -1,5 +1,8 @@
 FROM mcr.microsoft.com/dotnet/aspnet:6.0 AS base
 
+# If use aspnet:6.0-alpine, see https://github.com/dotnet/dotnet-docker/issues/1366
+#RUN apk add --no-cache tzdata
+
 # Captcha font
 COPY ./OpenSans-Regular.ttf /usr/share/fonts/OpenSans-Regular.ttf
 

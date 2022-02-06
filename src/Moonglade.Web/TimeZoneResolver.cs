@@ -1,6 +1,4 @@
-﻿using TimeZoneConverter;
-
-namespace Moonglade.Web;
+﻿namespace Moonglade.Web;
 
 public interface ITimeZoneResolver
 {
@@ -45,8 +43,7 @@ public class BlogTimeZoneResolver : ITimeZoneResolver
             return TimeSpan.Zero;
         }
 
-        // Reference: https://devblogs.microsoft.com/dotnet/cross-platform-time-zones-with-net-core/
-        var tz = TZConvert.GetTimeZoneInfo(timeZoneId);
+        var tz = TimeZoneInfo.FindSystemTimeZoneById(timeZoneId);
         return tz.BaseUtcOffset;
     }
 
