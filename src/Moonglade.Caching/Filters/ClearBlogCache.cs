@@ -2,12 +2,13 @@
 
 namespace Moonglade.Caching.Filters;
 
+[Flags]
 public enum BlogCacheType
 {
-    None,
-    Subscription,
-    SiteMap,
-    PagingCount
+    None = 1,
+    Subscription = 2,
+    SiteMap = 4,
+    PagingCount = 8
 }
 
 public class ClearBlogCache : ActionFilterAttribute
@@ -34,26 +35,29 @@ public class ClearBlogCache : ActionFilterAttribute
     public override void OnActionExecuted(ActionExecutedContext context)
     {
         base.OnActionExecuted(context);
-        switch (_type)
+
+        if (_type.HasFlag(BlogCacheType.None))
         {
-            case BlogCacheType.None:
-                _cache.Remove(_division, _cacheKey);
-                break;
-            case BlogCacheType.Subscription:
-                _cache.Remove(CacheDivision.General, "rss");
-                _cache.Remove(CacheDivision.General, "atom");
-                _cache.Remove(CacheDivision.RssCategory);
-                break;
-            case BlogCacheType.SiteMap:
-                _cache.Remove(CacheDivision.General, "sitemap");
-                break;
-            case BlogCacheType.PagingCount:
-                _cache.Remove(CacheDivision.General, "postcount");
-                _cache.Remove(CacheDivision.PostCountCategory);
-                _cache.Remove(CacheDivision.PostCountTag);
-                break;
-            default:
-                throw new ArgumentOutOfRangeException();
+            _cache.Remove(_division, _cacheKey);
+        }
+
+        if (_type.HasFlag(BlogCacheType.Subscription))
+        {
+            _cache.Remove(CacheDivision.General, "rss");
+            _cache.Remove(CacheDivision.General, "atom");
+            _cache.Remove(CacheDivision.RssCategory);
+        }
+
+        if (_type.HasFlag(BlogCacheType.SiteMap))
+        {
+            _cache.Remove(CacheDivision.General, "sitemap");
+        }
+
+        if (_type.HasFlag(BlogCacheType.PagingCount))
+        {
+            _cache.Remove(CacheDivision.General, "postcount");
+            _cache.Remove(CacheDivision.PostCountCategory);
+            _cache.Remove(CacheDivision.PostCountTag);
         }
     }
 }
