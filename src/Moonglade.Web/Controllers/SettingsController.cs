@@ -260,7 +260,7 @@ public class SettingsController : ControllerBase
     private async Task SaveConfigAsync<T>(T blogSettings) where T : IBlogSettings
     {
         var kvp = _blogConfig.UpdateAsync(blogSettings);
-        await _mediator.Send(new SetConfigurationCommand(kvp.Key, kvp.Value));
+        await _mediator.Send(new UpdateConfigurationCommand(kvp.Key, kvp.Value));
     }
 
     public class CheckNewReleaseResult
