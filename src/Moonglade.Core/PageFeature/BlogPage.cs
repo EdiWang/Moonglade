@@ -1,6 +1,4 @@
-﻿using Moonglade.Data.Entities;
-
-namespace Moonglade.Core.PageFeature;
+﻿namespace Moonglade.Core.PageFeature;
 
 public class BlogPage
 {

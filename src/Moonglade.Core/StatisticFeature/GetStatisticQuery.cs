@@ -1,8 +1,4 @@
-﻿using MediatR;
-using Moonglade.Data.Entities;
-using Moonglade.Data.Infrastructure;
-
-namespace Moonglade.Core.StatisticFeature;
+﻿namespace Moonglade.Core.StatisticFeature;
 
 public record GetStatisticQuery(Guid PostId) : IRequest<(int Hits, int Likes)>;
 

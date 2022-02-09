@@ -1,5 +1,4 @@
-﻿using MediatR;
-using Moonglade.Data.Entities;
+﻿using Moonglade.Data.Entities;
 using Moonglade.Data.Infrastructure;
 
 namespace Moonglade.Auth;

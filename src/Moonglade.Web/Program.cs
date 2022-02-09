@@ -265,9 +265,9 @@ else
 {
     app.UseStatusCodePages(ConfigureStatusCodePages.Handler)
        .UseExceptionHandler("/error");
-    app.UseHttpsRedirection().UseHsts();
 }
 
+app.UseHttpsRedirection().UseHsts();
 app.UseRequestLocalization(new RequestLocalizationOptions
 {
     DefaultRequestCulture = new("en-US"),

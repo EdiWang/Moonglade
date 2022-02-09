@@ -1,7 +1,4 @@
-﻿using MediatR;
-using Microsoft.EntityFrameworkCore;
-using Moonglade.Data.Entities;
-using Moonglade.Data.Infrastructure;
+﻿using Microsoft.EntityFrameworkCore;
 using System.Text.RegularExpressions;
 
 namespace Moonglade.Core.PostFeature;
