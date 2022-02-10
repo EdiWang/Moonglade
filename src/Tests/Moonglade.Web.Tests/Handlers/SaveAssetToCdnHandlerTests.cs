@@ -79,6 +79,6 @@ public class SaveAssetToCdnHandlerTests
         _mockBlogImageStorage.Verify(p => p.DeleteAsync(It.IsAny<string>()));
         _mockBlogImageStorage.Verify(p => p.InsertAsync(It.IsAny<string>(), It.IsAny<byte[]>()));
         _mockBlogConfig.Verify(p => p.UpdateAsync(It.IsAny<GeneralSettings>()));
-        _mockMediator.Verify(p => p.Send(It.IsAny<SetConfigurationCommand>(), default));
+        _mockMediator.Verify(p => p.Send(It.IsAny<UpdateConfigurationCommand>(), default));
     }
 }

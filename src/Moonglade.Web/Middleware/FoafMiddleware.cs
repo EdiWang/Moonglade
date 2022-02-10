@@ -55,7 +55,7 @@ public class FoafMiddleware
     }
 }
 
-public class FoafDoc
+public record FoafDoc
 {
     public string Name { get; set; }
 
@@ -66,66 +66,20 @@ public class FoafDoc
     public string PhotoUrl { get; set; }
 }
 
-public class FoafPerson
+public record FoafPerson(string Id)
 {
-    public FoafPerson(string id)
-    {
-        Birthday = string.Empty;
-        Blog = string.Empty;
-        Email = string.Empty;
-        FirstName = string.Empty;
-        Homepage = string.Empty;
-        Image = string.Empty;
-        LastName = string.Empty;
-        Name = string.Empty;
-        Phone = string.Empty;
-        PhotoUrl = string.Empty;
-        Rdf = string.Empty;
-        Title = string.Empty;
-        Id = id;
-    }
-
-    public FoafPerson(
-        string id,
-        string name,
-        string title,
-        string email,
-        string homepage,
-        string blog,
-        string rdf,
-        string firstName,
-        string lastName,
-        string image,
-        string birthday,
-        string phone)
-    {
-        PhotoUrl = string.Empty;
-        Id = id;
-        Name = name;
-        Title = title;
-        Email = email;
-        Homepage = homepage;
-        Blog = blog;
-        Rdf = rdf;
-        FirstName = firstName;
-        LastName = lastName;
-        Image = image;
-        Birthday = birthday;
-        Phone = phone;
-    }
-
-    public string Birthday { get; set; }
-    public string Blog { get; set; }
-    public string Email { get; set; }
-    public string FirstName { get; set; }
+    public string Birthday { get; set; } = string.Empty;
+    public string Blog { get; set; } = string.Empty;
+    public string Email { get; set; } = string.Empty;
+    public string FirstName { get; set; } = string.Empty;
     public List<FoafPerson> Friends { get; set; }
-    public string Homepage { get; set; }
-    public string Id { get; set; }
-    public string Image { get; set; }
-    public string LastName { get; set; }
-    public string Name { get; set; }
-    public string Phone { get; set; }
-    public string PhotoUrl { get; set; }
-    public string Rdf { get; set; }
-    public string Title { get; set; }
+    public string Homepage { get; set; } = string.Empty;
+    public string Id { get; set; } = Id;
+    public string Image { get; set; } = string.Empty;
+    public string LastName { get; set; } = string.Empty;
+    public string Name { get; set; } = string.Empty;
+    public string Phone { get; set; } = string.Empty;
+    public string PhotoUrl { get; set; } = string.Empty;
+    public string Rdf { get; set; } = string.Empty;
+    public string Title { get; set; } = string.Empty;
 }

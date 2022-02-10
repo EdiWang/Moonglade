@@ -13,20 +13,21 @@ public class UpdatePageCommandHandler : IRequestHandler<UpdatePageCommand, Guid>
 
     public async Task<Guid> Handle(UpdatePageCommand request, CancellationToken cancellationToken)
     {
-        var page = await _pageRepo.GetAsync(request.Id);
+        var (guid, payload) = request;
+        var page = await _pageRepo.GetAsync(guid);
         if (page is null)
         {
-            throw new InvalidOperationException($"PageEntity with Id '{request.Id}' not found.");
+            throw new InvalidOperationException($"PageEntity with Id '{guid}' not found.");
         }
 
-        page.Title = request.Payload.Title.Trim();
-        page.Slug = request.Payload.Slug.ToLower().Trim();
-        page.MetaDescription = request.Payload.MetaDescription;
-        page.HtmlContent = request.Payload.RawHtmlContent;
-        page.CssContent = request.Payload.CssContent;
-        page.HideSidebar = request.Payload.HideSidebar;
+        page.Title = payload.Title.Trim();
+        page.Slug = payload.Slug.ToLower().Trim();
+        page.MetaDescription = payload.MetaDescription;
+        page.HtmlContent = payload.RawHtmlContent;
+        page.CssContent = payload.CssContent;
+        page.HideSidebar = payload.HideSidebar;
         page.UpdateTimeUtc = DateTime.UtcNow;
-        page.IsPublished = request.Payload.IsPublished;
+        page.IsPublished = payload.IsPublished;
 
         await _pageRepo.UpdateAsync(page);
 

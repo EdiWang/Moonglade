@@ -20,11 +20,12 @@ public class UpdateTagCommandHandler : IRequestHandler<UpdateTagCommand, Operati
 
     public async Task<OperationCode> Handle(UpdateTagCommand request, CancellationToken cancellationToken)
     {
-        var tag = await _tagRepo.GetAsync(request.Id);
+        var (id, name) = request;
+        var tag = await _tagRepo.GetAsync(id);
         if (null == tag) return OperationCode.ObjectNotFound;
 
-        tag.DisplayName = request.Name;
-        tag.NormalizedName = Tag.NormalizeName(request.Name, _tagNormalizationDictionary);
+        tag.DisplayName = name;
+        tag.NormalizedName = Tag.NormalizeName(name, _tagNormalizationDictionary);
         await _tagRepo.UpdateAsync(tag);
 
         return OperationCode.Done;

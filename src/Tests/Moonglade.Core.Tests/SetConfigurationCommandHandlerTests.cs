@@ -28,7 +28,7 @@ public class SetConfigurationCommandHandlerTests
             .Setup(p => p.GetAsync(It.IsAny<Expression<Func<BlogConfigurationEntity, bool>>>()))
             .Returns(Task.FromResult((BlogConfigurationEntity)null));
 
-        var handler = new SetConfigurationCommandHandler(_mockBlogConfigurationRepo.Object);
+        var handler = new UpdateConfigurationCommandHandler(_mockBlogConfigurationRepo.Object);
         var oc = await handler.Handle(new("Work", "{}"), default);
 
         Assert.AreEqual(OperationCode.ObjectNotFound, oc);
@@ -43,7 +43,7 @@ public class SetConfigurationCommandHandlerTests
             .Setup(p => p.GetAsync(It.IsAny<Expression<Func<BlogConfigurationEntity, bool>>>()))
             .Returns(Task.FromResult(entity));
 
-        var handler = new SetConfigurationCommandHandler(_mockBlogConfigurationRepo.Object);
+        var handler = new UpdateConfigurationCommandHandler(_mockBlogConfigurationRepo.Object);
         var oc = await handler.Handle(new("Work", "{}"), default);
 
         _mockBlogConfigurationRepo.Verify(p => p.UpdateAsync(It.IsAny<BlogConfigurationEntity>()));

@@ -18,12 +18,13 @@ public class CreateThemeCommandHandler : IRequestHandler<CreateThemeCommand, int
 
     public async Task<int> Handle(CreateThemeCommand request, CancellationToken cancellationToken)
     {
-        if (_themeRepo.Any(p => p.ThemeName == request.Name.Trim())) return 0;
+        var (name, dictionary) = request;
+        if (_themeRepo.Any(p => p.ThemeName == name.Trim())) return 0;
 
-        var rules = JsonSerializer.Serialize(request.Rules);
+        var rules = JsonSerializer.Serialize(dictionary);
         var blogTheme = new BlogThemeEntity
         {
-            ThemeName = request.Name.Trim(),
+            ThemeName = name.Trim(),
             CssRules = rules,
             ThemeType = ThemeType.User
         };

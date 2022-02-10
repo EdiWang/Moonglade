@@ -17,10 +17,11 @@ public class DeletePostCommandHandler : IRequestHandler<DeletePostCommand>
 
     public async Task<Unit> Handle(DeletePostCommand request, CancellationToken cancellationToken)
     {
-        var post = await _postRepo.GetAsync(request.Id);
+        var (guid, softDelete) = request;
+        var post = await _postRepo.GetAsync(guid);
         if (null == post) return Unit.Value;
 
-        if (request.SoftDelete)
+        if (softDelete)
         {
             post.IsDeleted = true;
             await _postRepo.UpdateAsync(post);
@@ -30,7 +31,7 @@ public class DeletePostCommandHandler : IRequestHandler<DeletePostCommand>
             await _postRepo.DeleteAsync(post);
         }
 
-        _cache.Remove(CacheDivision.Post, request.Id.ToString());
+        _cache.Remove(CacheDivision.Post, guid.ToString());
         return Unit.Value;
     }
 }

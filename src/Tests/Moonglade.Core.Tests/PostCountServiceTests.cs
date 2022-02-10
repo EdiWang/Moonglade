@@ -53,7 +53,7 @@ public class PostCountServiceTests
     {
         var handler = new CountPostQueryHandler(_mockPostEntityRepo.Object, _mockPostTagEntityRepo.Object,
             _mockPostCategoryRepo.Object);
-        handler.Handle(new(CountType.Tag, tagId: 996), default);
+        handler.Handle(new(CountType.Tag, TagId: 996), default);
 
         _mockPostTagEntityRepo.Verify(p => p.Count(It.IsAny<Expression<Func<PostTagEntity, bool>>>()));
     }
