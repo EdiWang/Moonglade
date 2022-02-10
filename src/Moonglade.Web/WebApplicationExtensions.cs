@@ -13,7 +13,7 @@ public static class WebApplicationExtensions
         var env = services.GetRequiredService<IWebHostEnvironment>();
 
         BlogDbContext context;
-        switch (dbType)
+        switch (dbType.ToLowerInvariant())
         {
             case "mysql":
                 context = services.GetRequiredService<MySqlBlogDbContext>();
