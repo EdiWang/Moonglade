@@ -1,19 +1,8 @@
-﻿using MediatR;
-using Moonglade.Caching;
-using Moonglade.Data.Entities;
-using Moonglade.Data.Infrastructure;
+﻿using Moonglade.Caching;
 
 namespace Moonglade.Core.PostFeature;
 
-public class RestorePostCommand : IRequest
-{
-    public RestorePostCommand(Guid id)
-    {
-        Id = id;
-    }
-
-    public Guid Id { get; set; }
-}
+public record RestorePostCommand(Guid Id) : IRequest;
 
 public class RestorePostCommandHandler : IRequestHandler<RestorePostCommand>
 {

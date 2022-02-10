@@ -1,19 +1,8 @@
-﻿using MediatR;
-using Moonglade.Data.Entities;
-using Moonglade.Data.Infrastructure;
-using Moonglade.Data.Spec;
+﻿using Moonglade.Data.Spec;
 
 namespace Moonglade.Core.TagFeature;
 
-public class GetTagQuery : IRequest<Tag>
-{
-    public GetTagQuery(string normalizedName)
-    {
-        NormalizedName = normalizedName;
-    }
-
-    public string NormalizedName { get; set; }
-}
+public record GetTagQuery(string NormalizedName) : IRequest<Tag>;
 
 public class GetTagQueryHandler : IRequestHandler<GetTagQuery, Tag>
 {

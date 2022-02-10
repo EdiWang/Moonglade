@@ -1,18 +1,6 @@
-﻿using MediatR;
-using Moonglade.Data.Entities;
-using Moonglade.Data.Infrastructure;
+﻿namespace Moonglade.Core.PageFeature;
 
-namespace Moonglade.Core.PageFeature;
-
-public class GetPageByIdQuery : IRequest<BlogPage>
-{
-    public GetPageByIdQuery(Guid id)
-    {
-        Id = id;
-    }
-
-    public Guid Id { get; set; }
-}
+public record GetPageByIdQuery(Guid Id) : IRequest<BlogPage>;
 
 public class GetPageByIdQueryHandler : IRequestHandler<GetPageByIdQuery, BlogPage>
 {

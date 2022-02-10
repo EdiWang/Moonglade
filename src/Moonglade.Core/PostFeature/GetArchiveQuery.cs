@@ -1,14 +1,9 @@
-﻿using MediatR;
-using Moonglade.Data.Entities;
-using Moonglade.Data.Infrastructure;
-using Moonglade.Data.Spec;
+﻿using Moonglade.Data.Spec;
 using System.Linq.Expressions;
 
 namespace Moonglade.Core.PostFeature;
 
-public class GetArchiveQuery : IRequest<IReadOnlyList<Archive>>
-{
-}
+public record GetArchiveQuery : IRequest<IReadOnlyList<Archive>>;
 
 public class GetArchiveQueryHandler : IRequestHandler<GetArchiveQuery, IReadOnlyList<Archive>>
 {

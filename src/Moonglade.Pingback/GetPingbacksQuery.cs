@@ -4,10 +4,7 @@ using Moonglade.Data.Infrastructure;
 
 namespace Moonglade.Pingback;
 
-public class GetPingbacksQuery : IRequest<IReadOnlyList<PingbackEntity>>
-{
-
-}
+public record GetPingbacksQuery : IRequest<IReadOnlyList<PingbackEntity>>;
 
 public class GetPingbacksQueryHandler : IRequestHandler<GetPingbacksQuery, IReadOnlyList<PingbackEntity>>
 {

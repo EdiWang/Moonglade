@@ -1,6 +1,6 @@
 ﻿namespace Moonglade.ImageStorage.Providers;
 
-public class QiniuStorageSettings
+public record QiniuStorageSettings
 {
     public string EndPoint { get; set; }
     public string AccessKey { get; set; }

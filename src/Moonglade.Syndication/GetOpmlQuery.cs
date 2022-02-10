@@ -4,15 +4,7 @@ using System.Xml;
 
 namespace Moonglade.Syndication;
 
-public class GetOpmlQuery : IRequest<string>
-{
-    public GetOpmlQuery(OpmlDoc opmlDoc)
-    {
-        OpmlDoc = opmlDoc;
-    }
-
-    public OpmlDoc OpmlDoc { get; set; }
-}
+public record GetOpmlQuery(OpmlDoc OpmlDoc) : IRequest<string>;
 
 public class GetOpmlQueryHandler : IRequestHandler<GetOpmlQuery, string>
 {

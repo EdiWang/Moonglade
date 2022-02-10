@@ -1,8 +1,4 @@
-﻿using MediatR;
-using Moonglade.Data.Entities;
-using Moonglade.Data.Infrastructure;
-
-namespace Moonglade.Core.PostFeature;
+﻿namespace Moonglade.Core.PostFeature;
 
 public enum CountType
 {
@@ -12,21 +8,7 @@ public enum CountType
     Featured
 }
 
-public class CountPostQuery : IRequest<int>
-{
-    public CountPostQuery(CountType countType, Guid? catId = null, int? tagId = null)
-    {
-        CountType = countType;
-        CatId = catId;
-        TagId = tagId;
-    }
-
-    public CountType CountType { get; set; }
-
-    public Guid? CatId { get; set; }
-
-    public int? TagId { get; set; }
-}
+public record CountPostQuery(CountType CountType, Guid? CatId = null, int? TagId = null) : IRequest<int>;
 
 public class CountPostQueryHandler : IRequestHandler<CountPostQuery, int>
 {

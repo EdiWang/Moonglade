@@ -1,20 +1,6 @@
-﻿using MediatR;
-using Moonglade.Data.Entities;
-using Moonglade.Data.Infrastructure;
+﻿namespace Moonglade.Core.PageFeature;
 
-namespace Moonglade.Core.PageFeature;
-
-public class UpdatePageCommand : IRequest<Guid>
-{
-    public UpdatePageCommand(Guid id, EditPageRequest payload)
-    {
-        Id = id;
-        Payload = payload;
-    }
-
-    public Guid Id { get; set; }
-    public EditPageRequest Payload { get; set; }
-}
+public record UpdatePageCommand(Guid Id, EditPageRequest Payload) : IRequest<Guid>;
 
 public class UpdatePageCommandHandler : IRequestHandler<UpdatePageCommand, Guid>
 {
@@ -27,20 +13,21 @@ public class UpdatePageCommandHandler : IRequestHandler<UpdatePageCommand, Guid>
 
     public async Task<Guid> Handle(UpdatePageCommand request, CancellationToken cancellationToken)
     {
-        var page = await _pageRepo.GetAsync(request.Id);
+        var (guid, payload) = request;
+        var page = await _pageRepo.GetAsync(guid);
         if (page is null)
         {
-            throw new InvalidOperationException($"PageEntity with Id '{request.Id}' not found.");
+            throw new InvalidOperationException($"PageEntity with Id '{guid}' not found.");
         }
 
-        page.Title = request.Payload.Title.Trim();
-        page.Slug = request.Payload.Slug.ToLower().Trim();
-        page.MetaDescription = request.Payload.MetaDescription;
-        page.HtmlContent = request.Payload.RawHtmlContent;
-        page.CssContent = request.Payload.CssContent;
-        page.HideSidebar = request.Payload.HideSidebar;
+        page.Title = payload.Title.Trim();
+        page.Slug = payload.Slug.ToLower().Trim();
+        page.MetaDescription = payload.MetaDescription;
+        page.HtmlContent = payload.RawHtmlContent;
+        page.CssContent = payload.CssContent;
+        page.HideSidebar = payload.HideSidebar;
         page.UpdateTimeUtc = DateTime.UtcNow;
-        page.IsPublished = request.Payload.IsPublished;
+        page.IsPublished = payload.IsPublished;
 
         await _pageRepo.UpdateAsync(page);
 

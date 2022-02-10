@@ -1,6 +1,6 @@
 ﻿namespace Moonglade.Syndication;
 
-public class FeedEntry
+public record FeedEntry
 {
     public string Id { get; set; }
     public DateTime PubDateUtc { get; set; }

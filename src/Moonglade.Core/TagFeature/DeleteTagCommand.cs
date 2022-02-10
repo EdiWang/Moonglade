@@ -1,20 +1,9 @@
-﻿using MediatR;
-using Moonglade.Data;
-using Moonglade.Data.Entities;
-using Moonglade.Data.Infrastructure;
+﻿using Moonglade.Data;
 using Moonglade.Data.Spec;
 
 namespace Moonglade.Core.TagFeature;
 
-public class DeleteTagCommand : IRequest<OperationCode>
-{
-    public DeleteTagCommand(int id)
-    {
-        Id = id;
-    }
-
-    public int Id { get; set; }
-}
+public record DeleteTagCommand(int Id) : IRequest<OperationCode>;
 
 public class DeleteTagCommandHandler : IRequestHandler<DeleteTagCommand, OperationCode>
 {

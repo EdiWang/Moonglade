@@ -1,12 +1,6 @@
-﻿using MediatR;
-using Moonglade.Data.Entities;
-using Moonglade.Data.Infrastructure;
+﻿namespace Moonglade.Core.TagFeature;
 
-namespace Moonglade.Core.TagFeature;
-
-public class GetTagsQuery : IRequest<IReadOnlyList<Tag>>
-{
-}
+public record GetTagsQuery : IRequest<IReadOnlyList<Tag>>;
 
 public class GetTagsQueryHandler : IRequestHandler<GetTagsQuery, IReadOnlyList<Tag>>
 {

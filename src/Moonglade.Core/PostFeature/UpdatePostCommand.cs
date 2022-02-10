@@ -1,28 +1,13 @@
-﻿using MediatR;
-using Microsoft.Extensions.Configuration;
+﻿using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Options;
 using Moonglade.Caching;
 using Moonglade.Configuration;
 using Moonglade.Core.TagFeature;
-using Moonglade.Data.Entities;
-using Moonglade.Data.Infrastructure;
 using Moonglade.Utils;
 
 namespace Moonglade.Core.PostFeature;
 
-public class UpdatePostCommand : IRequest<PostEntity>
-{
-    public UpdatePostCommand(Guid id, PostEditModel payload)
-    {
-        Id = id;
-        Payload = payload;
-    }
-
-    public Guid Id { get; set; }
-
-    public PostEditModel Payload { get; set; }
-}
-
+public record UpdatePostCommand(Guid Id, PostEditModel Payload) : IRequest<PostEntity>;
 public class UpdatePostCommandHandler : IRequestHandler<UpdatePostCommand, PostEntity>
 {
     private readonly AppSettings _settings;
@@ -53,50 +38,45 @@ public class UpdatePostCommandHandler : IRequestHandler<UpdatePostCommand, PostE
 
     public async Task<PostEntity> Handle(UpdatePostCommand request, CancellationToken cancellationToken)
     {
-        var post = await _postRepo.GetAsync(request.Id);
+        var (guid, postEditModel) = request;
+        var post = await _postRepo.GetAsync(guid);
         if (null == post)
         {
-            throw new InvalidOperationException($"Post {request.Id} is not found.");
+            throw new InvalidOperationException($"Post {guid} is not found.");
         }
 
-        post.CommentEnabled = request.Payload.EnableComment;
-        post.PostContent = request.Payload.EditorContent;
+        post.CommentEnabled = postEditModel.EnableComment;
+        post.PostContent = postEditModel.EditorContent;
         post.ContentAbstract = ContentProcessor.GetPostAbstract(
-            string.IsNullOrEmpty(request.Payload.Abstract) ? request.Payload.EditorContent : request.Payload.Abstract.Trim(),
+            string.IsNullOrEmpty(postEditModel.Abstract) ? postEditModel.EditorContent : postEditModel.Abstract.Trim(),
             _blogConfig.ContentSettings.PostAbstractWords,
             _settings.Editor == EditorChoice.Markdown);
 
-        // Address #221: Do not allow published posts back to draft status
-        // postModel.IsPublished = request.Request.IsPublished;
-        // Edit draft -> save and publish, ignore false case because #221
-        bool isNewPublish = false;
-        if (request.Payload.IsPublished && !post.IsPublished)
+        if (postEditModel.IsPublished && !post.IsPublished)
         {
             post.IsPublished = true;
             post.PubDateUtc = DateTime.UtcNow;
-
-            isNewPublish = true;
         }
 
         // #325: Allow changing publish date for published posts
-        if (request.Payload.PublishDate is not null && post.PubDateUtc.HasValue)
+        if (postEditModel.PublishDate is not null && post.PubDateUtc.HasValue)
         {
             var tod = post.PubDateUtc.Value.TimeOfDay;
-            var adjustedDate = request.Payload.PublishDate.Value;
+            var adjustedDate = postEditModel.PublishDate.Value;
             post.PubDateUtc = adjustedDate.AddTicks(tod.Ticks);
         }
 
-        post.Author = request.Payload.Author?.Trim();
-        post.Slug = request.Payload.Slug.ToLower().Trim();
-        post.Title = request.Payload.Title.Trim();
+        post.Author = postEditModel.Author?.Trim();
+        post.Slug = postEditModel.Slug.ToLower().Trim();
+        post.Title = postEditModel.Title.Trim();
         post.LastModifiedUtc = DateTime.UtcNow;
-        post.IsFeedIncluded = request.Payload.FeedIncluded;
-        post.ContentLanguageCode = request.Payload.LanguageCode;
-        post.IsFeatured = request.Payload.Featured;
-        post.IsOriginal = request.Payload.IsOriginal;
-        post.OriginLink = string.IsNullOrWhiteSpace(request.Payload.OriginLink) ? null : Helper.SterilizeLink(request.Payload.OriginLink);
-        post.HeroImageUrl = string.IsNullOrWhiteSpace(request.Payload.HeroImageUrl) ? null : Helper.SterilizeLink(request.Payload.HeroImageUrl);
-        post.InlineCss = request.Payload.InlineCss;
+        post.IsFeedIncluded = postEditModel.FeedIncluded;
+        post.ContentLanguageCode = postEditModel.LanguageCode;
+        post.IsFeatured = postEditModel.Featured;
+        post.IsOriginal = postEditModel.IsOriginal;
+        post.OriginLink = string.IsNullOrWhiteSpace(postEditModel.OriginLink) ? null : Helper.SterilizeLink(postEditModel.OriginLink);
+        post.HeroImageUrl = string.IsNullOrWhiteSpace(postEditModel.HeroImageUrl) ? null : Helper.SterilizeLink(postEditModel.HeroImageUrl);
+        post.InlineCss = postEditModel.InlineCss;
 
         // compute hash
         var input = $"{post.Slug}#{post.PubDateUtc.GetValueOrDefault():yyyyMMdd}";
@@ -104,9 +84,9 @@ public class UpdatePostCommandHandler : IRequestHandler<UpdatePostCommand, PostE
         post.HashCheckSum = checkSum;
 
         // 1. Add new tags to tag lib
-        var tags = string.IsNullOrWhiteSpace(request.Payload.Tags) ?
+        var tags = string.IsNullOrWhiteSpace(postEditModel.Tags) ?
             Array.Empty<string>() :
-            request.Payload.Tags.Split(',').ToArray();
+            postEditModel.Tags.Split(',').ToArray();
 
         foreach (var item in tags.Where(item => !_tagRepo.Any(p => p.DisplayName == item)))
         {
@@ -135,9 +115,9 @@ public class UpdatePostCommandHandler : IRequestHandler<UpdatePostCommand, PostE
 
         // 3. update categories
         post.PostCategory.Clear();
-        if (request.Payload.SelectedCatIds is { Length: > 0 })
+        if (postEditModel.SelectedCatIds is { Length: > 0 })
         {
-            foreach (var cid in request.Payload.SelectedCatIds)
+            foreach (var cid in postEditModel.SelectedCatIds)
             {
                 post.PostCategory.Add(new()
                 {
@@ -149,7 +129,7 @@ public class UpdatePostCommandHandler : IRequestHandler<UpdatePostCommand, PostE
 
         await _postRepo.UpdateAsync(post);
 
-        _cache.Remove(CacheDivision.Post, request.Id.ToString());
+        _cache.Remove(CacheDivision.Post, guid.ToString());
         return post;
     }
 }

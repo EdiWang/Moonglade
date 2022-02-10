@@ -1,23 +1,12 @@
-﻿using MediatR;
-using Microsoft.Extensions.Options;
+﻿using Microsoft.Extensions.Options;
 using Moonglade.Caching;
 using Moonglade.Configuration;
-using Moonglade.Data.Entities;
-using Moonglade.Data.Infrastructure;
 using Moonglade.Data.Spec;
 using Moonglade.Utils;
 
 namespace Moonglade.Core.PostFeature;
 
-public class GetPostBySlugQuery : IRequest<Post>
-{
-    public GetPostBySlugQuery(PostSlug slug)
-    {
-        Slug = slug;
-    }
-
-    public PostSlug Slug { get; set; }
-}
+public record GetPostBySlugQuery(PostSlug Slug) : IRequest<Post>;
 
 public class GetPostBySlugQueryHandler : IRequestHandler<GetPostBySlugQuery, Post>
 {

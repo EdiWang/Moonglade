@@ -1,18 +1,25 @@
-﻿using MediatR;
-using Moonglade.Caching;
-using Moonglade.Data.Entities;
-using Moonglade.Data.Infrastructure;
+﻿using Moonglade.Caching;
+using System.ComponentModel.DataAnnotations;
 
 namespace Moonglade.Core.CategoryFeature;
 
 public class CreateCategoryCommand : IRequest
 {
-    public CreateCategoryCommand(EditCategoryRequest payload)
-    {
-        Payload = payload;
-    }
+    [Required]
+    [Display(Name = "Display Name")]
+    [MaxLength(64)]
+    public string DisplayName { get; set; }
 
-    public EditCategoryRequest Payload { get; set; }
+    [Required]
+    [Display(Name = "Route Name")]
+    [RegularExpression("(?!-)([a-z0-9-]+)")]
+    [MaxLength(64)]
+    public string RouteName { get; set; }
+
+    [Required]
+    [Display(Name = "Description")]
+    [MaxLength(128)]
+    public string Note { get; set; }
 }
 
 public class CreateCategoryCommandHandler : IRequestHandler<CreateCategoryCommand>
@@ -28,15 +35,15 @@ public class CreateCategoryCommandHandler : IRequestHandler<CreateCategoryComman
 
     public async Task<Unit> Handle(CreateCategoryCommand request, CancellationToken cancellationToken)
     {
-        var exists = _catRepo.Any(c => c.RouteName == request.Payload.RouteName);
+        var exists = _catRepo.Any(c => c.RouteName == request.RouteName);
         if (exists) return Unit.Value;
 
         var category = new CategoryEntity
         {
             Id = Guid.NewGuid(),
-            RouteName = request.Payload.RouteName.Trim(),
-            Note = request.Payload.Note?.Trim(),
-            DisplayName = request.Payload.DisplayName.Trim()
+            RouteName = request.RouteName.Trim(),
+            Note = request.Note?.Trim(),
+            DisplayName = request.DisplayName.Trim()
         };
 
         await _catRepo.AddAsync(category);

@@ -2,17 +2,22 @@
 using Moonglade.Data.Entities;
 using Moonglade.Data.Infrastructure;
 using Moonglade.Utils;
+using System.ComponentModel.DataAnnotations;
 
 namespace Moonglade.FriendLink;
 
 public class AddLinkCommand : IRequest
 {
-    public AddLinkCommand(EditLinkRequest payload)
-    {
-        Payload = payload;
-    }
+    [Required]
+    [Display(Name = "Title")]
+    [MaxLength(64)]
+    public string Title { get; set; }
 
-    public EditLinkRequest Payload { get; set; }
+    [Required]
+    [Display(Name = "Link")]
+    [DataType(DataType.Url)]
+    [MaxLength(256)]
+    public string LinkUrl { get; set; }
 }
 
 public class AddLinkCommandHandler : IRequestHandler<AddLinkCommand>
@@ -26,16 +31,16 @@ public class AddLinkCommandHandler : IRequestHandler<AddLinkCommand>
 
     public async Task<Unit> Handle(AddLinkCommand request, CancellationToken cancellationToken)
     {
-        if (!Uri.IsWellFormedUriString(request.Payload.LinkUrl, UriKind.Absolute))
+        if (!Uri.IsWellFormedUriString(request.LinkUrl, UriKind.Absolute))
         {
-            throw new InvalidOperationException($"{nameof(request.Payload.LinkUrl)} is not a valid url.");
+            throw new InvalidOperationException($"{nameof(request.LinkUrl)} is not a valid url.");
         }
 
         var link = new FriendLinkEntity
         {
             Id = Guid.NewGuid(),
-            LinkUrl = Helper.SterilizeLink(request.Payload.LinkUrl),
-            Title = request.Payload.Title
+            LinkUrl = Helper.SterilizeLink(request.LinkUrl),
+            Title = request.Title
         };
 
         await _friendlinkRepo.AddAsync(link);

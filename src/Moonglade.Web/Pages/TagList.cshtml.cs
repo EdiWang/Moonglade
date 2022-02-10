@@ -31,7 +31,7 @@ public class TagListModel : PageModel
 
         var pagesize = _blogConfig.ContentSettings.PostListPageSize;
         var posts = await _mediator.Send(new ListByTagQuery(tagResponse.Id, pagesize, P));
-        var count = await _cache.GetOrCreateAsync(CacheDivision.PostCountTag, tagResponse.Id.ToString(), _ => _mediator.Send(new CountPostQuery(CountType.Tag, tagId: tagResponse.Id)));
+        var count = await _cache.GetOrCreateAsync(CacheDivision.PostCountTag, tagResponse.Id.ToString(), _ => _mediator.Send(new CountPostQuery(CountType.Tag, TagId: tagResponse.Id)));
 
         ViewData["TitlePrefix"] = tagResponse.DisplayName;
 

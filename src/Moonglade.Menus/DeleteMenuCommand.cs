@@ -4,15 +4,7 @@ using Moonglade.Data.Infrastructure;
 
 namespace Moonglade.Menus;
 
-public class DeleteMenuCommand : IRequest
-{
-    public DeleteMenuCommand(Guid id)
-    {
-        Id = id;
-    }
-
-    public Guid Id { get; set; }
-}
+public record DeleteMenuCommand(Guid Id) : IRequest;
 
 public class DeleteMenuCommandHandler : IRequestHandler<DeleteMenuCommand>
 {

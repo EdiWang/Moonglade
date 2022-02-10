@@ -32,7 +32,7 @@ public class CategoryListModel : PageModel
         if (string.IsNullOrWhiteSpace(routeName)) return NotFound();
 
         var pageSize = _blogConfig.ContentSettings.PostListPageSize;
-        var cat = await _mediator.Send(new GetCategoryByRouteCommand(routeName));
+        var cat = await _mediator.Send(new GetCategoryByRouteQuery(routeName));
 
         if (cat is null) return NotFound();
 

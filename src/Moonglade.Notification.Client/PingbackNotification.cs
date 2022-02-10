@@ -3,25 +3,21 @@ using Microsoft.Extensions.Logging;
 
 namespace Moonglade.Notification.Client;
 
-public class PingbackNotification : INotification
-{
-    public PingbackNotification(string targetPostTitle, DateTime pingTimeUtc, string domain, string sourceIp, string sourceUrl, string sourceTitle)
-    {
-        TargetPostTitle = targetPostTitle;
-        PingTimeUtc = pingTimeUtc;
-        Domain = domain;
-        SourceIp = sourceIp;
-        SourceUrl = sourceUrl;
-        SourceTitle = sourceTitle;
-    }
+public record PingbackNotification(
+    string TargetPostTitle,
+    DateTime PingTimeUtc,
+    string Domain,
+    string SourceIp,
+    string SourceUrl,
+    string SourceTitle) : INotification;
 
-    public string TargetPostTitle { get; set; }
-    public DateTime PingTimeUtc { get; set; }
-    public string Domain { get; set; }
-    public string SourceIp { get; set; }
-    public string SourceUrl { get; set; }
-    public string SourceTitle { get; set; }
-}
+internal record PingPayload(
+    string TargetPostTitle,
+    DateTime PingTimeUtc,
+    string Domain,
+    string SourceIp,
+    string SourceUrl,
+    string SourceTitle);
 
 public class PingbackNotificationHandler : INotificationHandler<PingbackNotification>
 {

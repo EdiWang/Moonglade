@@ -5,18 +5,7 @@ using System.Text.Json;
 
 namespace Moonglade.Theme;
 
-public class CreateThemeCommand : IRequest<int>
-{
-    public CreateThemeCommand(string name, IDictionary<string, string> rules)
-    {
-        Name = name;
-        Rules = rules;
-    }
-
-    public string Name { get; set; }
-
-    public IDictionary<string, string> Rules { get; set; }
-}
+public record CreateThemeCommand(string Name, IDictionary<string, string> Rules) : IRequest<int>;
 
 public class CreateThemeCommandHandler : IRequestHandler<CreateThemeCommand, int>
 {
@@ -29,12 +18,13 @@ public class CreateThemeCommandHandler : IRequestHandler<CreateThemeCommand, int
 
     public async Task<int> Handle(CreateThemeCommand request, CancellationToken cancellationToken)
     {
-        if (_themeRepo.Any(p => p.ThemeName == request.Name.Trim())) return 0;
+        var (name, dictionary) = request;
+        if (_themeRepo.Any(p => p.ThemeName == name.Trim())) return 0;
 
-        var rules = JsonSerializer.Serialize(request.Rules);
+        var rules = JsonSerializer.Serialize(dictionary);
         var blogTheme = new BlogThemeEntity
         {
-            ThemeName = request.Name.Trim(),
+            ThemeName = name.Trim(),
             CssRules = rules,
             ThemeType = ThemeType.User
         };

@@ -1,6 +1,6 @@
 ﻿namespace Moonglade.Syndication;
 
-public class OpmlDoc
+public record OpmlDoc
 {
     public string HtmlUrl { get; set; }
 

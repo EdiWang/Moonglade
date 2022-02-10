@@ -1,8 +1,7 @@
-﻿@using Moonglade.Configuration
-@using Moonglade.Utils
+﻿@using Moonglade.Utils
 @inject Microsoft.ApplicationInsights.AspNetCore.JavaScriptSnippet _javaScriptSnippet
-@inject Microsoft.AspNetCore.Http.IHttpContextAccessor _httpContextAccessor
-@inject Microsoft.AspNetCore.Hosting.IWebHostEnvironment _webHostEnvironment
+@inject IHttpContextAccessor _httpContextAccessor
+@inject IWebHostEnvironment _webHostEnvironment
 @{
     if (string.IsNullOrEmpty(BlogConfig.GeneralSettings.AvatarUrl))
     {

@@ -47,11 +47,11 @@ public class FriendLinkTests
 
         Assert.ThrowsAsync<InvalidOperationException>(async () =>
         {
-            await handler.Handle(new(new()
+            await handler.Handle(new()
             {
                 LinkUrl = "Fubao",
                 Title = "work006"
-            }), CancellationToken.None);
+            }, CancellationToken.None);
         });
     }
 
@@ -71,11 +71,11 @@ public class FriendLinkTests
         _mockFriendlinkRepo.Setup(p => p.AddAsync(It.IsAny<FriendLinkEntity>())).Returns(tcs.Task);
 
         var handler = new AddLinkCommandHandler(_mockFriendlinkRepo.Object);
-        await handler.Handle(new(new()
+        await handler.Handle(new()
         {
             LinkUrl = "https://dot.net",
             Title = "Choice of 955"
-        }), CancellationToken.None);
+        }, CancellationToken.None);
 
         Assert.Pass();
     }
@@ -96,11 +96,12 @@ public class FriendLinkTests
 
         Assert.ThrowsAsync<InvalidOperationException>(async () =>
         {
-            await handler.Handle(new(Guid.Empty, new()
+            await handler.Handle(new()
             {
+                Id = Guid.Empty,
                 LinkUrl = "Fubao",
                 Title = "work006"
-            }), default);
+            }, default);
         });
     }
 
@@ -110,11 +111,12 @@ public class FriendLinkTests
         _mockFriendlinkRepo.Setup(p => p.GetAsync(It.IsAny<Guid>()));
 
         var handler = new UpdateLinkCommandHandler(_mockFriendlinkRepo.Object);
-        await handler.Handle(new(Guid.Empty, new()
+        await handler.Handle(new()
         {
+            Id = Guid.Empty,
             LinkUrl = "https://996.icu",
             Title = "work"
-        }), default);
+        }, default);
 
         _mockFriendlinkRepo.Verify(p => p.UpdateAsync(It.IsAny<FriendLinkEntity>()), Times.Never);
     }
@@ -130,11 +132,12 @@ public class FriendLinkTests
         }));
 
         var handler = new UpdateLinkCommandHandler(_mockFriendlinkRepo.Object);
-        await handler.Handle(new(Guid.Empty, new()
+        await handler.Handle(new()
         {
+            Id = Guid.Empty,
             LinkUrl = "https://996.icu",
             Title = "work"
-        }), default);
+        }, default);
 
         _mockFriendlinkRepo.Verify(p => p.UpdateAsync(It.IsAny<FriendLinkEntity>()));
     }

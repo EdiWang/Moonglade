@@ -4,10 +4,7 @@ using Moonglade.Data.Infrastructure;
 
 namespace Moonglade.Configuration;
 
-public class GetAllConfigurationsQuery : IRequest<IDictionary<string, string>>
-{
-
-}
+public record GetAllConfigurationsQuery : IRequest<IDictionary<string, string>>;
 
 public class GetAllConfigurationsQueryHandler : IRequestHandler<GetAllConfigurationsQuery, IDictionary<string, string>>
 {

@@ -1,29 +1,20 @@
-﻿using MediatR;
-using Moonglade.Data.Entities;
+﻿using Moonglade.Data.Entities;
 using Moonglade.Data.Infrastructure;
 
 namespace Moonglade.Auth;
 
-public class DeleteAccountQuery : IRequest
-{
-    public DeleteAccountQuery(Guid id)
-    {
-        Id = id;
-    }
+public record DeleteAccountCommand(Guid Id) : IRequest;
 
-    public Guid Id { get; set; }
-}
-
-public class DeleteAccountQueryHandler : IRequestHandler<DeleteAccountQuery>
+public class DeleteAccountCommandHandler : IRequestHandler<DeleteAccountCommand>
 {
     private readonly IRepository<LocalAccountEntity> _accountRepo;
 
-    public DeleteAccountQueryHandler(IRepository<LocalAccountEntity> accountRepo)
+    public DeleteAccountCommandHandler(IRepository<LocalAccountEntity> accountRepo)
     {
         _accountRepo = accountRepo;
     }
 
-    public async Task<Unit> Handle(DeleteAccountQuery request, CancellationToken cancellationToken)
+    public async Task<Unit> Handle(DeleteAccountCommand request, CancellationToken cancellationToken)
     {
         var account = await _accountRepo.GetAsync(request.Id);
         if (account is null)

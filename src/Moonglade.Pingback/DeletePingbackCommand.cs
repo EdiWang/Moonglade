@@ -4,15 +4,7 @@ using Moonglade.Data.Infrastructure;
 
 namespace Moonglade.Pingback;
 
-public class DeletePingbackCommand : IRequest
-{
-    public DeletePingbackCommand(Guid id)
-    {
-        Id = id;
-    }
-
-    public Guid Id { get; set; }
-}
+public record DeletePingbackCommand(Guid Id) : IRequest;
 
 public class DeletePingbackCommandHandler : IRequestHandler<DeletePingbackCommand>
 {

@@ -4,9 +4,7 @@ using Moonglade.Data.Infrastructure;
 
 namespace Moonglade.Theme;
 
-public class GetAllThemeSegmentQuery : IRequest<IReadOnlyList<ThemeSegment>>
-{
-}
+public record GetAllThemeSegmentQuery : IRequest<IReadOnlyList<ThemeSegment>>;
 
 public class GetAllThemeSegmentQueryHandler : IRequestHandler<GetAllThemeSegmentQuery, IReadOnlyList<ThemeSegment>>
 {

@@ -1,20 +1,9 @@
-﻿using MediatR;
-using Microsoft.EntityFrameworkCore;
-using Moonglade.Data.Entities;
-using Moonglade.Data.Infrastructure;
+﻿using Microsoft.EntityFrameworkCore;
 using System.Text.RegularExpressions;
 
 namespace Moonglade.Core.PostFeature;
 
-public class SearchPostQuery : IRequest<IReadOnlyList<PostDigest>>
-{
-    public SearchPostQuery(string keyword)
-    {
-        Keyword = keyword;
-    }
-
-    public string Keyword { get; set; }
-}
+public record SearchPostQuery(string Keyword) : IRequest<IReadOnlyList<PostDigest>>;
 
 public class SearchPostQueryHandler : IRequestHandler<SearchPostQuery, IReadOnlyList<PostDigest>>
 {

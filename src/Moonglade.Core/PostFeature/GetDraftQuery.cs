@@ -1,19 +1,8 @@
-﻿using MediatR;
-using Moonglade.Data.Entities;
-using Moonglade.Data.Infrastructure;
-using Moonglade.Data.Spec;
+﻿using Moonglade.Data.Spec;
 
 namespace Moonglade.Core.PostFeature;
 
-public class GetDraftQuery : IRequest<Post>
-{
-    public GetDraftQuery(Guid id)
-    {
-        Id = id;
-    }
-
-    public Guid Id { get; set; }
-}
+public record GetDraftQuery(Guid Id) : IRequest<Post>;
 
 public class GetDraftQueryHandler : IRequestHandler<GetDraftQuery, Post>
 {

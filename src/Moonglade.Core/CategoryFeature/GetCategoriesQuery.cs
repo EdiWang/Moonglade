@@ -1,13 +1,8 @@
-﻿using MediatR;
-using Moonglade.Caching;
-using Moonglade.Data.Entities;
-using Moonglade.Data.Infrastructure;
+﻿using Moonglade.Caching;
 
 namespace Moonglade.Core.CategoryFeature;
 
-public class GetCategoriesQuery : IRequest<IReadOnlyList<Category>>
-{
-}
+public record GetCategoriesQuery : IRequest<IReadOnlyList<Category>>;
 
 public class GetCategoriesQueryHandler : IRequestHandler<GetCategoriesQuery, IReadOnlyList<Category>>
 {

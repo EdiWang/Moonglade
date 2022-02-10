@@ -1,19 +1,8 @@
-﻿using MediatR;
-using Moonglade.Data.Entities;
-using Moonglade.Data.Infrastructure;
-using Moonglade.Data.Spec;
+﻿using Moonglade.Data.Spec;
 
 namespace Moonglade.Core.PostFeature;
 
-public class GetPostByIdQuery : IRequest<Post>
-{
-    public GetPostByIdQuery(Guid id)
-    {
-        Id = id;
-    }
-
-    public Guid Id { get; set; }
-}
+public record GetPostByIdQuery(Guid Id) : IRequest<Post>;
 
 public class GetPostByIdQueryHandler : IRequestHandler<GetPostByIdQuery, Post>
 {

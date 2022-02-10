@@ -1,20 +1,24 @@
-﻿using MediatR;
-using Moonglade.Data.Entities;
+﻿using Moonglade.Data.Entities;
 using Moonglade.Data.Infrastructure;
 using Moonglade.Utils;
+using System.ComponentModel.DataAnnotations;
 
 namespace Moonglade.Auth;
 
 public class CreateAccountCommand : IRequest<Guid>
 {
-    public CreateAccountCommand(EditAccountRequest request)
-    {
-        Username = request.Username;
-        ClearPassword = request.Password;
-    }
-
+    [Required]
+    [Display(Name = "Username")]
+    [MinLength(2), MaxLength(32)]
+    [RegularExpression("[a-z0-9]+")]
     public string Username { get; set; }
-    public string ClearPassword { get; set; }
+
+    [Required]
+    [Display(Name = "Password")]
+    [MinLength(8), MaxLength(32)]
+    [DataType(DataType.Password)]
+    [RegularExpression(@"^(?=.*[a-zA-Z])(?=.*[0-9])[A-Za-z0-9._~!@#$^&*]{8,}$")]
+    public string Password { get; set; }
 }
 
 public class CreateAccountCommandHandler : IRequestHandler<CreateAccountCommand, Guid>
@@ -34,9 +38,9 @@ public class CreateAccountCommandHandler : IRequestHandler<CreateAccountCommand,
             throw new ArgumentNullException(nameof(request.Username), "value must not be empty.");
         }
 
-        if (string.IsNullOrWhiteSpace(request.ClearPassword))
+        if (string.IsNullOrWhiteSpace(request.Password))
         {
-            throw new ArgumentNullException(nameof(request.ClearPassword), "value must not be empty.");
+            throw new ArgumentNullException(nameof(request.Password), "value must not be empty.");
         }
 
         var uid = Guid.NewGuid();
@@ -45,7 +49,7 @@ public class CreateAccountCommandHandler : IRequestHandler<CreateAccountCommand,
             Id = uid,
             CreateTimeUtc = DateTime.UtcNow,
             Username = request.Username.ToLower().Trim(),
-            PasswordHash = Helper.HashPassword(request.ClearPassword.Trim())
+            PasswordHash = Helper.HashPassword(request.Password.Trim())
         };
 
         await _accountRepo.AddAsync(account);

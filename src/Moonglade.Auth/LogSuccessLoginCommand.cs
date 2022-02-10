@@ -1,20 +1,9 @@
-﻿using MediatR;
-using Moonglade.Data.Entities;
+﻿using Moonglade.Data.Entities;
 using Moonglade.Data.Infrastructure;
 
 namespace Moonglade.Auth;
 
-public class LogSuccessLoginCommand : IRequest
-{
-    public LogSuccessLoginCommand(Guid id, string ipAddress)
-    {
-        Id = id;
-        IpAddress = ipAddress;
-    }
-
-    public Guid Id { get; set; }
-    public string IpAddress { get; set; }
-}
+public record LogSuccessLoginCommand(Guid Id, string IpAddress) : IRequest;
 
 public class LogSuccessLoginCommandHandler : IRequestHandler<LogSuccessLoginCommand>
 {

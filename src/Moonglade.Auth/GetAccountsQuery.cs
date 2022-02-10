@@ -1,13 +1,9 @@
-﻿using MediatR;
-using Moonglade.Data.Entities;
+﻿using Moonglade.Data.Entities;
 using Moonglade.Data.Infrastructure;
 
 namespace Moonglade.Auth;
 
-public class GetAccountsQuery : IRequest<IReadOnlyList<Account>>
-{
-
-}
+public record GetAccountsQuery : IRequest<IReadOnlyList<Account>>;
 
 public class GetAccountsQueryHandler : IRequestHandler<GetAccountsQuery, IReadOnlyList<Account>>
 {

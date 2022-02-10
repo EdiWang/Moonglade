@@ -6,16 +6,7 @@ using System.Text.Json;
 
 namespace Moonglade.Theme;
 
-public class GetStyleSheetQuery : IRequest<string>
-{
-    public GetStyleSheetQuery(int id)
-    {
-        Id = id;
-    }
-
-    public int Id { get; set; }
-}
-
+public record GetStyleSheetQuery(int Id) : IRequest<string>;
 public class GetStyleSheetQueryHandler : IRequestHandler<GetStyleSheetQuery, string>
 {
     private readonly IRepository<BlogThemeEntity> _themeRepo;

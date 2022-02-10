@@ -1,19 +1,8 @@
-﻿using MediatR;
-using Moonglade.Data.Entities;
-using Moonglade.Data.Infrastructure;
-using Moonglade.Data.Spec;
+﻿using Moonglade.Data.Spec;
 
 namespace Moonglade.Core.PageFeature;
 
-public class GetPagesQuery : IRequest<IReadOnlyList<BlogPage>>
-{
-    public GetPagesQuery(int top)
-    {
-        Top = top;
-    }
-
-    public int Top { get; set; }
-}
+public record GetPagesQuery(int Top) : IRequest<IReadOnlyList<BlogPage>>;
 
 public class GetPagesQueryHandler : IRequestHandler<GetPagesQuery, IReadOnlyList<BlogPage>>
 {

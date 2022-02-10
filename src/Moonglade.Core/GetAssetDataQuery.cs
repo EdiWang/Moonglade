@@ -1,18 +1,6 @@
-﻿using MediatR;
-using Moonglade.Data.Entities;
-using Moonglade.Data.Infrastructure;
+﻿namespace Moonglade.Core;
 
-namespace Moonglade.Core;
-
-public class GetAssetDataQuery : IRequest<string>
-{
-    public GetAssetDataQuery(Guid assetId)
-    {
-        AssetId = assetId;
-    }
-
-    public Guid AssetId { get; set; }
-}
+public record GetAssetDataQuery(Guid AssetId) : IRequest<string>;
 
 public class GetAssetDataQueryHandler : IRequestHandler<GetAssetDataQuery, string>
 {

@@ -44,7 +44,7 @@ public class CategoryTests
     [Test]
     public async Task Get_ByName()
     {
-        var handler = new GetCategoryByRouteCommandHandler(_mockCatRepo.Object);
+        var handler = new GetCategoryByRouteQueryHandler(_mockCatRepo.Object);
         await handler.Handle(new("work996"), default);
 
         _mockCatRepo.Verify(p => p.SelectFirstOrDefaultAsync(It.IsAny<CategorySpec>(), It.IsAny<Expression<Func<CategoryEntity, Category>>>()));
@@ -53,7 +53,7 @@ public class CategoryTests
     [Test]
     public async Task Get_ById()
     {
-        var handler = new GetCategoryByIdCommandHandler(_mockCatRepo.Object);
+        var handler = new GetCategoryByIdQueryHandler(_mockCatRepo.Object);
         var result = await handler.Handle(new(Guid.Empty), default);
 
         _mockCatRepo.Verify(p => p.SelectFirstOrDefaultAsync(It.IsAny<CategorySpec>(), It.IsAny<Expression<Func<CategoryEntity, Category>>>()));
@@ -66,11 +66,11 @@ public class CategoryTests
 
         var handler =
             new CreateCategoryCommandHandler(_mockCatRepo.Object, _mockBlogCache.Object);
-        await handler.Handle(new(new()
+        await handler.Handle(new()
         {
             DisplayName = "Work 996",
             RouteName = "work-996"
-        }), default);
+        }, default);
 
         _mockCatRepo.Verify(p => p.AddAsync(It.IsAny<CategoryEntity>()), Times.Never);
     }
@@ -82,12 +82,12 @@ public class CategoryTests
 
         var handler =
             new CreateCategoryCommandHandler(_mockCatRepo.Object, _mockBlogCache.Object);
-        await handler.Handle(new(new()
+        await handler.Handle(new()
         {
             DisplayName = "Work 996",
             RouteName = "work-996",
             Note = "Fubao"
-        }), default);
+        }, default);
 
         _mockCatRepo.Verify(p => p.AddAsync(It.IsAny<CategoryEntity>()));
         _mockBlogCache.Verify(p => p.Remove(CacheDivision.General, "allcats"));
@@ -131,7 +131,7 @@ public class CategoryTests
 
         var handler =
             new UpdateCategoryCommandHandler(_mockCatRepo.Object, _mockBlogCache.Object);
-        await handler.Handle(new(Guid.Empty, null), default);
+        await handler.Handle(new() { Id = Guid.Empty }, default);
 
         _mockCatRepo.Verify(p => p.UpdateAsync(It.IsAny<CategoryEntity>()), Times.Never);
     }
@@ -150,12 +150,13 @@ public class CategoryTests
 
         var handler =
             new UpdateCategoryCommandHandler(_mockCatRepo.Object, _mockBlogCache.Object);
-        await handler.Handle(new(Guid.Empty, new()
+        await handler.Handle(new()
         {
+            Id = Guid.Empty,
             Note = "Fubao",
             RouteName = "fubao",
             DisplayName = "ICU"
-        }), default);
+        }, default);
 
         _mockCatRepo.Verify(p => p.UpdateAsync(It.IsAny<CategoryEntity>()));
     }

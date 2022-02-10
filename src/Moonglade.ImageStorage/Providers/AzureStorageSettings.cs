@@ -1,6 +1,6 @@
 ﻿namespace Moonglade.ImageStorage.Providers;
 
-public class AzureStorageSettings
+public record AzureStorageSettings
 {
     public string ConnectionString { get; set; }
 

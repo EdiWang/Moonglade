@@ -6,7 +6,7 @@ public class LocalAccountModel : PageModel
 {
     private readonly IMediator _mediator;
 
-    public EditAccountRequest ViewModel { get; set; }
+    public CreateAccountCommand ViewModel { get; set; }
 
     public IReadOnlyList<Account> Accounts { get; set; }
 

@@ -1,22 +1,8 @@
-﻿using MediatR;
-using Moonglade.Caching;
-using Moonglade.Data.Entities;
-using Moonglade.Data.Infrastructure;
+﻿using Moonglade.Caching;
 
 namespace Moonglade.Core.PostFeature;
 
-public class DeletePostCommand : IRequest
-{
-    public DeletePostCommand(Guid id, bool softDelete = false)
-    {
-        Id = id;
-        SoftDelete = softDelete;
-    }
-
-    public Guid Id { get; set; }
-
-    public bool SoftDelete { get; set; }
-}
+public record DeletePostCommand(Guid Id, bool SoftDelete = false) : IRequest;
 
 public class DeletePostCommandHandler : IRequestHandler<DeletePostCommand>
 {
@@ -31,10 +17,11 @@ public class DeletePostCommandHandler : IRequestHandler<DeletePostCommand>
 
     public async Task<Unit> Handle(DeletePostCommand request, CancellationToken cancellationToken)
     {
-        var post = await _postRepo.GetAsync(request.Id);
+        var (guid, softDelete) = request;
+        var post = await _postRepo.GetAsync(guid);
         if (null == post) return Unit.Value;
 
-        if (request.SoftDelete)
+        if (softDelete)
         {
             post.IsDeleted = true;
             await _postRepo.UpdateAsync(post);
@@ -44,7 +31,7 @@ public class DeletePostCommandHandler : IRequestHandler<DeletePostCommand>
             await _postRepo.DeleteAsync(post);
         }
 
-        _cache.Remove(CacheDivision.Post, request.Id.ToString());
+        _cache.Remove(CacheDivision.Post, guid.ToString());
         return Unit.Value;
     }
 }

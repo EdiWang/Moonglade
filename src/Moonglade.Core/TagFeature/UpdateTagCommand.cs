@@ -1,22 +1,9 @@
-﻿using MediatR;
-using Microsoft.Extensions.Configuration;
+﻿using Microsoft.Extensions.Configuration;
 using Moonglade.Data;
-using Moonglade.Data.Entities;
-using Moonglade.Data.Infrastructure;
 
 namespace Moonglade.Core.TagFeature;
 
-public class UpdateTagCommand : IRequest<OperationCode>
-{
-    public int Id { get; set; }
-    public string Name { get; set; }
-
-    public UpdateTagCommand(int id, string name)
-    {
-        Id = id;
-        Name = name;
-    }
-}
+public record UpdateTagCommand(int Id, string Name) : IRequest<OperationCode>;
 
 public class UpdateTagCommandHandler : IRequestHandler<UpdateTagCommand, OperationCode>
 {
@@ -33,11 +20,12 @@ public class UpdateTagCommandHandler : IRequestHandler<UpdateTagCommand, Operati
 
     public async Task<OperationCode> Handle(UpdateTagCommand request, CancellationToken cancellationToken)
     {
-        var tag = await _tagRepo.GetAsync(request.Id);
+        var (id, name) = request;
+        var tag = await _tagRepo.GetAsync(id);
         if (null == tag) return OperationCode.ObjectNotFound;
 
-        tag.DisplayName = request.Name;
-        tag.NormalizedName = Tag.NormalizeName(request.Name, _tagNormalizationDictionary);
+        tag.DisplayName = name;
+        tag.NormalizedName = Tag.NormalizeName(name, _tagNormalizationDictionary);
         await _tagRepo.UpdateAsync(tag);
 
         return OperationCode.Done;

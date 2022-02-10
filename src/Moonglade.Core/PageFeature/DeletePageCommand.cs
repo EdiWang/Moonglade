@@ -1,18 +1,6 @@
-﻿using MediatR;
-using Moonglade.Data.Entities;
-using Moonglade.Data.Infrastructure;
+﻿namespace Moonglade.Core.PageFeature;
 
-namespace Moonglade.Core.PageFeature;
-
-public class DeletePageCommand : IRequest
-{
-    public DeletePageCommand(Guid id)
-    {
-        Id = id;
-    }
-
-    public Guid Id { get; set; }
-}
+public record DeletePageCommand(Guid Id) : IRequest;
 
 public class DeletePageCommandHandler : IRequestHandler<DeletePageCommand>
 {

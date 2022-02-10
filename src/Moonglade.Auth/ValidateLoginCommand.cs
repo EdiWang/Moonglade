@@ -1,21 +1,10 @@
-﻿using MediatR;
-using Moonglade.Data.Entities;
+﻿using Moonglade.Data.Entities;
 using Moonglade.Data.Infrastructure;
 using Moonglade.Utils;
 
 namespace Moonglade.Auth;
 
-public class ValidateLoginCommand : IRequest<Guid>
-{
-    public ValidateLoginCommand(string username, string inputPassword)
-    {
-        Username = username;
-        InputPassword = inputPassword;
-    }
-
-    public string Username { get; set; }
-    public string InputPassword { get; set; }
-}
+public record ValidateLoginCommand(string Username, string InputPassword) : IRequest<Guid>;
 
 public class ValidateLoginCommandHandler : IRequestHandler<ValidateLoginCommand, Guid>
 {

@@ -1,19 +1,8 @@
-﻿using MediatR;
-using Moonglade.Data.Entities;
-using Moonglade.Data.Infrastructure;
-using Moonglade.Data.Spec;
+﻿using Moonglade.Data.Spec;
 
 namespace Moonglade.Core.TagFeature;
 
-public class GetHotTagsQuery : IRequest<IReadOnlyList<KeyValuePair<Tag, int>>>
-{
-    public GetHotTagsQuery(int top)
-    {
-        Top = top;
-    }
-
-    public int Top { get; set; }
-}
+public record GetHotTagsQuery(int Top) : IRequest<IReadOnlyList<KeyValuePair<Tag, int>>>;
 
 public class GetHotTagsQueryHandler : IRequestHandler<GetHotTagsQuery, IReadOnlyList<KeyValuePair<Tag, int>>>
 {

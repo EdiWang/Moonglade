@@ -2,9 +2,11 @@
 using Microsoft.Extensions.DependencyInjection;
 using Moonglade.Data.Infrastructure;
 using Moonglade.Data.SqlServer.Infrastructure;
+using System.Diagnostics.CodeAnalysis;
 
 namespace Moonglade.Data.SqlServer;
 
+[ExcludeFromCodeCoverage]
 public static class ServiceCollectionExtensions
 {
     public static IServiceCollection AddSqlServerStorage(this IServiceCollection services, string connectionString)

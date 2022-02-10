@@ -5,17 +5,7 @@ using Moonglade.Utils;
 
 namespace Moonglade.Menus;
 
-public class UpdateMenuCommand : IRequest
-{
-    public UpdateMenuCommand(Guid id, EditMenuRequest payload)
-    {
-        Id = id;
-        Payload = payload;
-    }
-
-    public Guid Id { get; set; }
-    public EditMenuRequest Payload { get; set; }
-}
+public record UpdateMenuCommand(Guid Id, EditMenuRequest Payload) : IRequest;
 
 public class UpdateMenuCommandHandler : IRequestHandler<UpdateMenuCommand>
 {
@@ -28,24 +18,25 @@ public class UpdateMenuCommandHandler : IRequestHandler<UpdateMenuCommand>
 
     public async Task<Unit> Handle(UpdateMenuCommand request, CancellationToken cancellationToken)
     {
-        var menu = await _menuRepo.GetAsync(request.Id);
+        var (guid, payload) = request;
+        var menu = await _menuRepo.GetAsync(guid);
         if (menu is null)
         {
-            throw new InvalidOperationException($"MenuEntity with Id '{request.Id}' not found.");
+            throw new InvalidOperationException($"MenuEntity with Id '{guid}' not found.");
         }
 
-        var url = Helper.SterilizeLink(request.Payload.Url.Trim());
+        var url = Helper.SterilizeLink(payload.Url.Trim());
 
-        menu.Title = request.Payload.Title.Trim();
+        menu.Title = payload.Title.Trim();
         menu.Url = url;
-        menu.DisplayOrder = request.Payload.DisplayOrder.GetValueOrDefault();
-        menu.Icon = request.Payload.Icon;
-        menu.IsOpenInNewTab = request.Payload.IsOpenInNewTab;
+        menu.DisplayOrder = payload.DisplayOrder.GetValueOrDefault();
+        menu.Icon = payload.Icon;
+        menu.IsOpenInNewTab = payload.IsOpenInNewTab;
 
-        if (request.Payload.SubMenus != null)
+        if (payload.SubMenus != null)
         {
             menu.SubMenus.Clear();
-            var sms = request.Payload.SubMenus.Select(p => new SubMenuEntity
+            var sms = payload.SubMenus.Select(p => new SubMenuEntity
             {
                 Id = Guid.NewGuid(),
                 IsOpenInNewTab = p.IsOpenInNewTab,

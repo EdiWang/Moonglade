@@ -1,21 +1,6 @@
-﻿using MediatR;
-using Moonglade.Data.Entities;
-using Moonglade.Data.Infrastructure;
+﻿namespace Moonglade.Core.StatisticFeature;
 
-namespace Moonglade.Core.StatisticFeature;
-
-public class UpdateStatisticCommand : IRequest
-{
-    public UpdateStatisticCommand(Guid postId, bool isLike)
-    {
-        PostId = postId;
-        IsLike = isLike;
-    }
-
-    public Guid PostId { get; set; }
-
-    public bool IsLike { get; set; }
-}
+public record UpdateStatisticCommand(Guid PostId, bool IsLike) : IRequest;
 
 public class UpdateStatisticCommandHandler : IRequestHandler<UpdateStatisticCommand>
 {

@@ -1,18 +1,9 @@
-﻿using MediatR;
-using Moonglade.Data.Entities;
+﻿using Moonglade.Data.Entities;
 using Moonglade.Data.Infrastructure;
 
 namespace Moonglade.Auth;
 
-public class GetAccountQuery : IRequest<Account>
-{
-    public GetAccountQuery(Guid id)
-    {
-        Id = id;
-    }
-
-    public Guid Id { get; set; }
-}
+public record GetAccountQuery(Guid Id) : IRequest<Account>;
 
 public class GetAccountQueryHandler : IRequestHandler<GetAccountQuery, Account>
 {

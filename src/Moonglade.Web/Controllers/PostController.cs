@@ -67,9 +67,12 @@ public class PostController : ControllerBase
     }
 
     [HttpPost("createoredit")]
-    [TypeFilter(typeof(ClearBlogCache), Arguments = new object[] { BlogCacheType.SiteMap })]
-    [TypeFilter(typeof(ClearBlogCache), Arguments = new object[] { BlogCacheType.Subscription })]
-    [TypeFilter(typeof(ClearBlogCache), Arguments = new object[] { BlogCacheType.PagingCount })]
+    [TypeFilter(typeof(ClearBlogCache), Arguments = new object[]
+    {
+        BlogCacheType.SiteMap |
+        BlogCacheType.Subscription |
+        BlogCacheType.PagingCount
+    })]
     [ProducesResponseType(StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status409Conflict)]
     public async Task<IActionResult> CreateOrEdit(PostEditModel model, [FromServices] LinkGenerator linkGenerator)
@@ -141,9 +144,12 @@ public class PostController : ControllerBase
         }
     }
 
-    [TypeFilter(typeof(ClearBlogCache), Arguments = new object[] { BlogCacheType.Subscription })]
-    [TypeFilter(typeof(ClearBlogCache), Arguments = new object[] { BlogCacheType.SiteMap })]
-    [TypeFilter(typeof(ClearBlogCache), Arguments = new object[] { BlogCacheType.PagingCount })]
+    [TypeFilter(typeof(ClearBlogCache), Arguments = new object[]
+    {
+        BlogCacheType.SiteMap |
+        BlogCacheType.Subscription |
+        BlogCacheType.PagingCount
+    })]
     [HttpPost("{postId:guid}/restore")]
     [ProducesResponseType(StatusCodes.Status204NoContent)]
     public async Task<IActionResult> Restore([NotEmpty] Guid postId)
@@ -152,9 +158,12 @@ public class PostController : ControllerBase
         return NoContent();
     }
 
-    [TypeFilter(typeof(ClearBlogCache), Arguments = new object[] { BlogCacheType.Subscription })]
-    [TypeFilter(typeof(ClearBlogCache), Arguments = new object[] { BlogCacheType.SiteMap })]
-    [TypeFilter(typeof(ClearBlogCache), Arguments = new object[] { BlogCacheType.PagingCount })]
+    [TypeFilter(typeof(ClearBlogCache), Arguments = new object[]
+    {
+        BlogCacheType.SiteMap |
+        BlogCacheType.Subscription |
+        BlogCacheType.PagingCount
+    })]
     [HttpDelete("{postId:guid}/recycle")]
     [ProducesResponseType(StatusCodes.Status204NoContent)]
     public async Task<IActionResult> Delete([NotEmpty] Guid postId)
@@ -163,8 +172,7 @@ public class PostController : ControllerBase
         return NoContent();
     }
 
-    [TypeFilter(typeof(ClearBlogCache), Arguments = new object[] { BlogCacheType.Subscription })]
-    [TypeFilter(typeof(ClearBlogCache), Arguments = new object[] { BlogCacheType.SiteMap })]
+    [TypeFilter(typeof(ClearBlogCache), Arguments = new object[] { BlogCacheType.Subscription | BlogCacheType.SiteMap })]
     [HttpDelete("{postId:guid}/destroy")]
     [ProducesResponseType(StatusCodes.Status204NoContent)]
     public async Task<IActionResult> DeleteFromRecycleBin([NotEmpty] Guid postId)
@@ -173,8 +181,7 @@ public class PostController : ControllerBase
         return NoContent();
     }
 
-    [TypeFilter(typeof(ClearBlogCache), Arguments = new object[] { BlogCacheType.Subscription })]
-    [TypeFilter(typeof(ClearBlogCache), Arguments = new object[] { BlogCacheType.SiteMap })]
+    [TypeFilter(typeof(ClearBlogCache), Arguments = new object[] { BlogCacheType.Subscription | BlogCacheType.SiteMap })]
     [HttpDelete("empty-recycle-bin")]
     [ProducesResponseType(StatusCodes.Status204NoContent)]
     public async Task<IActionResult> EmptyRecycleBin()

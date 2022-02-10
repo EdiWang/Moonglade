@@ -20,7 +20,7 @@ public class CategoryController : ControllerBase
     [ProducesResponseType(StatusCodes.Status404NotFound)]
     public async Task<IActionResult> Get([NotEmpty] Guid id)
     {
-        var cat = await _mediator.Send(new GetCategoryByIdCommand(id));
+        var cat = await _mediator.Send(new GetCategoryByIdQuery(id));
         if (null == cat) return NotFound();
 
         return Ok(cat);
@@ -38,17 +38,18 @@ public class CategoryController : ControllerBase
 
     [HttpPost]
     [ProducesResponseType(StatusCodes.Status201Created)]
-    public async Task<IActionResult> Create(EditCategoryRequest model)
+    public async Task<IActionResult> Create(CreateCategoryCommand command)
     {
-        await _mediator.Send(new CreateCategoryCommand(model));
-        return Created(string.Empty, model);
+        await _mediator.Send(command);
+        return Created(string.Empty, command);
     }
 
     [HttpPut("{id:guid}")]
     [ApiConventionMethod(typeof(DefaultApiConventions), nameof(DefaultApiConventions.Put))]
-    public async Task<IActionResult> Update([NotEmpty] Guid id, EditCategoryRequest model)
+    public async Task<IActionResult> Update([NotEmpty] Guid id, UpdateCategoryCommand command)
     {
-        var oc = await _mediator.Send(new UpdateCategoryCommand(id, model));
+        command.Id = id;
+        var oc = await _mediator.Send<OperationCode>(command);
         if (oc == OperationCode.ObjectNotFound) return NotFound();
 
         return NoContent();

@@ -209,12 +209,12 @@ public class MetaWeblogService : IMetaWeblogProvider
 
         return TryExecuteAsync(async () =>
         {
-            await _mediator.Send(new CreateCategoryCommand(new()
+            await _mediator.Send(new CreateCategoryCommand
             {
                 DisplayName = category.name.Trim(),
                 RouteName = category.slug.ToLower(),
                 Note = category.description.Trim()
-            }));
+            });
 
             return 996;
         });

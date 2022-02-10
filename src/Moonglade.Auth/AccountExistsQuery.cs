@@ -1,18 +1,9 @@
-﻿using MediatR;
-using Moonglade.Data.Entities;
+﻿using Moonglade.Data.Entities;
 using Moonglade.Data.Infrastructure;
 
 namespace Moonglade.Auth;
 
-public class AccountExistsQuery : IRequest<bool>
-{
-    public AccountExistsQuery(string username)
-    {
-        Username = username;
-    }
-
-    public string Username { get; set; }
-}
+public record AccountExistsQuery(string Username) : IRequest<bool>;
 
 public class AccountExistsQueryHandler : IRequestHandler<AccountExistsQuery, bool>
 {
