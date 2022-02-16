@@ -113,7 +113,7 @@ public class SettingsController : ControllerBase
         return NoContent();
     }
 
-    [HttpPost("test-email")]
+    [HttpPost("email/test")]
     [IgnoreAntiforgeryToken]
     [ProducesResponseType(StatusCodes.Status200OK)]
     public async Task<IActionResult> TestEmail()

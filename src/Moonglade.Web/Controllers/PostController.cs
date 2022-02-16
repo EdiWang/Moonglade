@@ -47,7 +47,7 @@ public class PostController : ControllerBase
 
     [HttpPost]
     [IgnoreAntiforgeryToken]
-    [Route("list-published")]
+    [Route("list/published")]
     [ProducesResponseType(typeof(JqDataTable<PostSegment>), StatusCodes.Status200OK)]
     public async Task<IActionResult> ListPublished([FromForm] DataTableRequest model)
     {
@@ -182,7 +182,7 @@ public class PostController : ControllerBase
     }
 
     [TypeFilter(typeof(ClearBlogCache), Arguments = new object[] { BlogCacheType.Subscription | BlogCacheType.SiteMap })]
-    [HttpDelete("empty-recycle-bin")]
+    [HttpDelete("recyclebin")]
     [ProducesResponseType(StatusCodes.Status204NoContent)]
     public async Task<IActionResult> EmptyRecycleBin()
     {

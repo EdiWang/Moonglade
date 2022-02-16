@@ -7,7 +7,7 @@
         document.querySelector('#a-send-test-mail').classList.add('disabled');
         document.querySelector('#a-send-test-mail').setAttribute('disabled', 'disabled');
 
-        callApi('/api/settings/test-email',
+        callApi('/api/settings/email/test',
             'POST',
             {},
             async function(success) {
