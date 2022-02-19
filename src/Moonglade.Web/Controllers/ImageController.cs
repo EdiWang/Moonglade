@@ -157,12 +157,13 @@ public class ImageController : ControllerBase
         var location = $"/image/{finalName}";
         var filename = location;
 
-        if (_blogConfig.ImageSettings.EnableCDNRedirect)
-        {
-            var url = _blogConfig.ImageSettings.CDNEndpoint.CombineUrl(finalName);
-            location = url;
-            filename = url;
-        }
+        // Do NOT use CDN url here because CDN endpoint can change
+        //if (_blogConfig.ImageSettings.EnableCDNRedirect)
+        //{
+        //    var url = _blogConfig.ImageSettings.CDNEndpoint.CombineUrl(finalName);
+        //    location = url;
+        //    filename = url;
+        //}
 
         return Ok(new
         {
