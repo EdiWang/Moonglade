@@ -68,7 +68,11 @@
         postSlug.getStatistics(pid);
         postSlug.registerRatingButtons(pid);
         postSlug.resizeImages();
-        postSlug.applyImageZooming();
+
+        if (window.innerWidth >= 768) {
+            postSlug.applyImageZooming();
+        }
+
         postSlug.renderCodeHighlighter();
         postSlug.postStatistics(pid, false);
 
