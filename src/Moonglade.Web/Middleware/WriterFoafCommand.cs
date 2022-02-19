@@ -142,7 +142,7 @@ public class WriterFoafCommandHandler : IRequestHandler<WriterFoafCommand, strin
             await writer.WriteElementStringAsync("foaf", "phone", null, person.Phone);
         }
 
-        if (person.Friends != null && person.Friends.Count > 0)
+        if (person.Friends is { Count: > 0 })
         {
             foreach (var friend in person.Friends)
             {

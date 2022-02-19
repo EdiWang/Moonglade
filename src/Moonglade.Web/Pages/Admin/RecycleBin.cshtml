@@ -19,7 +19,7 @@
             });
 
             $('.btn-empty-recbin').click(function () {
-                callApi(`/api/post/empty-recycle-bin`, 'DELETE', {},
+                callApi(`/api/post/recyclebin`, 'DELETE', {},
                     (resp) => {
                         blogToast.success('Cleared');
                         setTimeout(function () {
