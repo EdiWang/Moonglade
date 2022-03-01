@@ -34,7 +34,7 @@ public class HotTagsViewComponentTests
     public async Task InvokeAsync_Exception()
     {
         _mockBlogConfig.Setup(p => p.ContentSettings).Returns(new ContentSettings { HotTagAmount = FakeData.Int2 });
-        _mockMediator.Setup(p => p.Send(It.IsAny<GetHotTagsQuery>(), default)).Throws(new(FakeData.ShortString2));
+        _mockMediator.Setup(p => p.Send(It.IsAny<GetHotTagsQuery>(), default)).Throws(new Exception(FakeData.ShortString2));
 
         var component = CreateComponent();
         var result = await component.InvokeAsync();

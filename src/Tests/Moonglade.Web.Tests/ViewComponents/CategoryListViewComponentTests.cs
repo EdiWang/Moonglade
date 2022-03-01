@@ -36,7 +36,7 @@ public class CategoryListViewComponentTests
     [Test]
     public async Task InvokeAsync_Exception()
     {
-        _mockMediator.Setup(p => p.Send(It.IsAny<GetCategoriesQuery>(), default)).Throws(new(FakeData.ShortString2));
+        _mockMediator.Setup(p => p.Send(It.IsAny<GetCategoriesQuery>(), default)).Throws(new Exception(FakeData.ShortString2));
 
         var component = CreateComponent();
         var result = await component.InvokeAsync(false);
