@@ -51,19 +51,18 @@ ConfigureMiddleware(app, app.Services);
 
 app.Run();
 
-void ConfigureConfiguration(ConfigurationManager configuration)
+void ConfigureConfiguration(IConfiguration configuration)
 {
     builder.Logging.AddAzureWebAppDiagnostics();
     builder.Host.ConfigureAppConfiguration(config =>
     {
         config.AddJsonFile("manifesticons.json", false, true);
 
-        var settings = config.Build();
-        if (settings.GetValue<bool>("PreferAzureAppConfiguration"))
+        if (configuration.GetValue<bool>("PreferAzureAppConfiguration"))
         {
             config.AddAzureAppConfiguration(options =>
             {
-                options.Connect(settings["ConnectionStrings:AzureAppConfig"])
+                options.Connect(configuration["ConnectionStrings:AzureAppConfig"])
                     .ConfigureRefresh(refresh =>
                     {
                         refresh.Register("Moonglade:Settings:Sentinel", refreshAll: true)
