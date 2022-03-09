@@ -107,7 +107,7 @@ public class SignInModelTests
         _mockSessionBasedCaptcha.Setup(p => p.Validate(It.IsAny<string>(), It.IsAny<ISession>(), true, true)).Returns(true);
 
         _mockMediator.Setup(p => p.Send(It.IsAny<ValidateLoginCommand>(), default))
-            .Throws(new(FakeData.ShortString2));
+            .Throws(new Exception(FakeData.ShortString2));
 
         // Arrange
         var signInModel = CreateSignInModel();

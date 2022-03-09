@@ -161,7 +161,7 @@ public class PostControllerTests
 
         Mock<LinkGenerator> mockLinkGenerator = new();
 
-        _mockMediator.Setup(p => p.Send(It.IsAny<CreatePostCommand>(), default)).Throws(new("Work 996"));
+        _mockMediator.Setup(p => p.Send(It.IsAny<CreatePostCommand>(), default)).Throws(new Exception("Work 996"));
 
         var result = await postManageController.CreateOrEdit(model, mockLinkGenerator.Object);
         Assert.IsInstanceOf<ConflictObjectResult>(result);

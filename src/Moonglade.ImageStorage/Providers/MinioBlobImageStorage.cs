@@ -17,11 +17,15 @@ public class MinioBlobImageStorage : IBlogImageStorage
     {
         _logger = logger;
 
-        _client = new(blobConfiguration.EndPoint, blobConfiguration.AccessKey, blobConfiguration.SecretKey);
+        _client = new MinioClient()
+            .WithEndpoint(blobConfiguration.EndPoint)
+            .WithCredentials(blobConfiguration.AccessKey, blobConfiguration.SecretKey);
         if (blobConfiguration.WithSSL)
         {
             _client = _client.WithSSL();
         }
+        _client.Build();
+
         _bucketName = blobConfiguration.BucketName;
 
         logger.LogInformation($"Created {nameof(MinioBlobImageStorage)} at {blobConfiguration.EndPoint}");
@@ -29,9 +33,11 @@ public class MinioBlobImageStorage : IBlogImageStorage
 
     protected virtual async Task CreateBucketIfNotExists()
     {
-        if (!await _client.BucketExistsAsync(_bucketName))
+        var arg = new BucketExistsArgs().WithBucket(_bucketName);
+        if (!await _client.BucketExistsAsync(arg))
         {
-            await _client.MakeBucketAsync(_bucketName);
+            var arg1 = new MakeBucketArgs().WithBucket(_bucketName);
+            await _client.MakeBucketAsync(arg1);
         }
     }
 
@@ -47,7 +53,14 @@ public class MinioBlobImageStorage : IBlogImageStorage
         await CreateBucketIfNotExists();
 
         await using var fileStream = new MemoryStream(imageBytes);
-        await _client.PutObjectAsync(_bucketName, fileName, fileStream, fileStream.Length);
+
+        var putObjectArg = new PutObjectArgs()
+            .WithBucket(_bucketName)
+            .WithFileName(fileName)
+            .WithStreamData(fileStream)
+            .WithObjectSize(fileStream.Length);
+
+        await _client.PutObjectAsync(putObjectArg);
 
         _logger.LogInformation($"Uploaded image file '{fileName}' to Minio Blob Storage.");
 
@@ -58,18 +71,25 @@ public class MinioBlobImageStorage : IBlogImageStorage
     {
         if (await BlobExistsAsync(fileName))
         {
-            await _client.RemoveObjectAsync(_bucketName, fileName);
+            await _client.RemoveObjectAsync(
+                new RemoveObjectArgs()
+                    .WithBucket(_bucketName)
+                    .WithObject(fileName));
         }
     }
 
     private async Task<bool> BlobExistsAsync(string fileName)
     {
         // Make sure Blob Container exists.
-        if (!await _client.BucketExistsAsync(_bucketName)) return false;
+        if (!await _client.BucketExistsAsync(new BucketExistsArgs().WithBucket(_bucketName))) return false;
 
         try
         {
-            await _client.StatObjectAsync(_bucketName, fileName);
+            var arg = new StatObjectArgs()
+                .WithBucket(_bucketName)
+                .WithObject(fileName);
+
+            await _client.StatObjectAsync(arg);
         }
         catch (Exception e)
         {
@@ -98,10 +118,15 @@ public class MinioBlobImageStorage : IBlogImageStorage
             return null;
         }
 
-        await _client.GetObjectAsync(_bucketName, fileName, stream =>
+        var arg = new GetObjectArgs()
+            .WithBucket(_bucketName)
+            .WithFile(fileName)
+            .WithCallbackStream(stream =>
         {
             stream?.CopyTo(memoryStream);
         });
+
+        await _client.GetObjectAsync(arg);
         var arr = memoryStream.ToArray();
 
         var fileType = extension.Replace(".", string.Empty);

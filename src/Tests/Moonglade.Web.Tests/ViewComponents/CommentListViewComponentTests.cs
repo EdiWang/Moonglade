@@ -35,7 +35,7 @@ public class CommentListViewComponentTests
     [Test]
     public async Task InvokeAsync_Exception()
     {
-        _mockMediator.Setup(p => p.Send(It.IsAny<GetApprovedCommentsQuery>(), default)).Throws(new(FakeData.ShortString2));
+        _mockMediator.Setup(p => p.Send(It.IsAny<GetApprovedCommentsQuery>(), default)).Throws(new Exception(FakeData.ShortString2));
 
         var component = CreateComponent();
         var result = await component.InvokeAsync(Guid.Parse("5ef8cb0d-963d-47e9-802c-48e40c7f4ef5"));

@@ -45,11 +45,11 @@
 		<PackageReference Include="Edi.Captcha" Version="3.10.0" />
 		<PackageReference Include="Microsoft.Azure.AppConfiguration.AspNetCore" Version="5.0.0" />
 		<PackageReference Include="Microsoft.ApplicationInsights.AspNetCore" Version="2.20.0" />
-		<PackageReference Include="Microsoft.Extensions.Logging.AzureAppServices" Version="6.0.2" />
+		<PackageReference Include="Microsoft.Extensions.Logging.AzureAppServices" Version="6.0.3" />
 		<PackageReference Include="Microsoft.FeatureManagement.AspNetCore" Version="2.4.0" />
 		<PackageReference Include="Microsoft.Web.LibraryManager.Build" Version="2.1.161" />
-		<PackageReference Include="NUglify" Version="1.17.10" />
-		<PackageReference Include="Swashbuckle.AspNetCore" Version="6.2.3" />
+		<PackageReference Include="NUglify" Version="1.17.14" />
+		<PackageReference Include="Swashbuckle.AspNetCore" Version="6.3.0" />
 		<PackageReference Include="UAParser" Version="3.1.47" />
 		<PackageReference Include="WilderMinds.MetaWeblog" Version="5.0.0" />
 		<PackageReference Include="X.PagedList" Version="8.1.0" />

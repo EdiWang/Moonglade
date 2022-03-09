@@ -35,7 +35,7 @@ public class FriendLinkViewComponentTests
     [Test]
     public async Task InvokeAsync_Exception()
     {
-        _mockMediator.Setup(p => p.Send(It.IsAny<GetAllLinksQuery>(), default)).Throws(new(FakeData.ShortString2));
+        _mockMediator.Setup(p => p.Send(It.IsAny<GetAllLinksQuery>(), default)).Throws(new Exception(FakeData.ShortString2));
 
         var component = CreateComponent();
         var result = await component.InvokeAsync();
