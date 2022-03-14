@@ -11,7 +11,11 @@ public abstract class DbContextRepository<T> : IRepository<T> where T : class
         DbContext = dbContext;
     }
 
-    public abstract Task ExecuteSqlRawAsync(string sql);
+    public Task Clear()
+    {
+        DbContext.RemoveRange(DbContext.Set<T>());
+        return DbContext.SaveChangesAsync();
+    }
 
     public Task<T> GetAsync(Expression<Func<T, bool>> condition)
     {

@@ -4,7 +4,7 @@ namespace Moonglade.Data.Infrastructure;
 
 public interface IRepository<T> //where T : class
 {
-    Task ExecuteSqlRawAsync(string sql);
+    Task Clear();
 
     ValueTask<T> GetAsync(object key);
 
