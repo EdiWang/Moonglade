@@ -4,15 +4,15 @@ namespace Moonglade.Data.Infrastructure;
 
 public interface IRepository<T> //where T : class
 {
-    Task ExecuteSqlRawAsync(string sql);
+    Task Clear();
 
     ValueTask<T> GetAsync(object key);
 
     Task<T> GetAsync(Expression<Func<T, bool>> condition);
 
-    Task<IReadOnlyList<T>> GetAsync();
+    Task<IReadOnlyList<T>> ListAsync();
 
-    Task<IReadOnlyList<T>> GetAsync(ISpecification<T> spec);
+    Task<IReadOnlyList<T>> ListAsync(ISpecification<T> spec);
 
     IQueryable<T> GetAsQueryable();
 

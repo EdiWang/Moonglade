@@ -102,7 +102,7 @@ public class PageTests
     {
         IReadOnlyList<PageEntity> pageEntities = new List<PageEntity> { _fakePageEntity };
 
-        _mockPageRepository.Setup(p => p.GetAsync(It.IsAny<PageSpec>()))
+        _mockPageRepository.Setup(p => p.ListAsync(It.IsAny<PageSpec>()))
             .Returns(Task.FromResult(pageEntities));
 
         var handler = new GetPagesQueryHandler(_mockPageRepository.Object);

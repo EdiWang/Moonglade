@@ -17,7 +17,7 @@ public class ClearPingbackCommandHandler : IRequestHandler<ClearPingbackCommand>
 
     public async Task<Unit> Handle(ClearPingbackCommand request, CancellationToken cancellationToken)
     {
-        await _pingbackRepo.ExecuteSqlRawAsync("DELETE FROM Pingback");
+        await _pingbackRepo.Clear();
         return Unit.Value;
     }
 }

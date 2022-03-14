@@ -24,7 +24,7 @@ public class ToggleApprovalCommandHandler : IRequestHandler<ToggleApprovalComman
         }
 
         var spec = new CommentSpec(request.CommentIds);
-        var comments = await _commentRepo.GetAsync(spec);
+        var comments = await _commentRepo.ListAsync(spec);
         foreach (var cmt in comments)
         {
             cmt.IsApproved = !cmt.IsApproved;
