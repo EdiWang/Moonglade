@@ -10,9 +10,9 @@ public interface IRepository<T> //where T : class
 
     Task<T> GetAsync(Expression<Func<T, bool>> condition);
 
-    Task<IReadOnlyList<T>> GetAsync();
+    Task<IReadOnlyList<T>> ListAsync();
 
-    Task<IReadOnlyList<T>> GetAsync(ISpecification<T> spec);
+    Task<IReadOnlyList<T>> ListAsync(ISpecification<T> spec);
 
     IQueryable<T> GetAsQueryable();
 

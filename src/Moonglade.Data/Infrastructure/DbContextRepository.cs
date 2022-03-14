@@ -27,12 +27,12 @@ public abstract class DbContextRepository<T> : IRepository<T> where T : class
         return DbContext.Set<T>().FindAsync(key);
     }
 
-    public async Task<IReadOnlyList<T>> GetAsync()
+    public async Task<IReadOnlyList<T>> ListAsync()
     {
         return await DbContext.Set<T>().AsNoTracking().ToListAsync();
     }
 
-    public async Task<IReadOnlyList<T>> GetAsync(ISpecification<T> spec)
+    public async Task<IReadOnlyList<T>> ListAsync(ISpecification<T> spec)
     {
         return await ApplySpecification(spec).AsNoTracking().ToListAsync();
     }

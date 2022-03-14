@@ -22,7 +22,7 @@ public class DeleteTagCommandHandler : IRequestHandler<DeleteTagCommand, Operati
         if (!exists) return OperationCode.ObjectNotFound;
 
         // 1. Delete Post-Tag Association
-        var postTags = await _postTagRepo.GetAsync(new PostTagSpec(request.Id));
+        var postTags = await _postTagRepo.ListAsync(new PostTagSpec(request.Id));
         await _postTagRepo.DeleteAsync(postTags);
 
         // 2. Delte Tag itslef

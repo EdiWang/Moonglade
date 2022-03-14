@@ -80,7 +80,7 @@ public class CommentHandlersTests
             cmt
         };
 
-        _mockCommentEntityRepo.Setup(p => p.GetAsync(It.IsAny<CommentSpec>())).Returns(Task.FromResult(fakeComments));
+        _mockCommentEntityRepo.Setup(p => p.ListAsync(It.IsAny<CommentSpec>())).Returns(Task.FromResult(fakeComments));
 
         var handler = new ToggleApprovalCommandHandler(_mockCommentEntityRepo.Object);
         await handler.Handle(new(new[] { Guid.Empty }), default);
@@ -115,7 +115,7 @@ public class CommentHandlersTests
             }
         };
         _mockCommentEntityRepo
-            .Setup(p => p.GetAsync(It.IsAny<CommentSpec>()))
+            .Setup(p => p.ListAsync(It.IsAny<CommentSpec>()))
             .Returns(Task.FromResult(comments));
 
         IReadOnlyList<CommentReplyEntity> replyEntities = new List<CommentReplyEntity>()
@@ -129,7 +129,7 @@ public class CommentHandlersTests
             }
         };
         _mockCommentReplyEntityRepo
-            .Setup(p => p.GetAsync(It.IsAny<CommentReplySpec>()))
+            .Setup(p => p.ListAsync(It.IsAny<CommentReplySpec>()))
             .Returns(Task.FromResult(replyEntities));
 
         var handler = new DeleteCommentsCommandHandler(_mockCommentEntityRepo.Object,

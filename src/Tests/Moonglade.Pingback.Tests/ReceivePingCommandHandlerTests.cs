@@ -199,12 +199,12 @@ public class ReceivePingCommandHandlerTests
             }
         };
 
-        _mockPingbackRepo.Setup(p => p.GetAsync()).Returns(Task.FromResult(list));
+        _mockPingbackRepo.Setup(p => p.ListAsync()).Returns(Task.FromResult(list));
 
         var handler = new GetPingbacksQueryHandler(_mockPingbackRepo.Object);
         var data = await handler.Handle(new(), default);
 
         Assert.IsNotNull(data);
-        _mockPingbackRepo.Verify(p => p.GetAsync());
+        _mockPingbackRepo.Verify(p => p.ListAsync());
     }
 }

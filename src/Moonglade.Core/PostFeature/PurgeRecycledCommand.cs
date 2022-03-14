@@ -19,7 +19,7 @@ public class PurgeRecycledCommandHandler : IRequestHandler<PurgeRecycledCommand>
     public async Task<Unit> Handle(PurgeRecycledCommand request, CancellationToken cancellationToken)
     {
         var spec = new PostSpec(true);
-        var posts = await _postRepo.GetAsync(spec);
+        var posts = await _postRepo.ListAsync(spec);
         await _postRepo.DeleteAsync(posts);
 
         foreach (var guid in posts.Select(p => p.Id))

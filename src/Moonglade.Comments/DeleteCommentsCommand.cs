@@ -26,11 +26,11 @@ public class DeleteCommentsCommandHandler : IRequestHandler<DeleteCommentsComman
         }
 
         var spec = new CommentSpec(request.Ids);
-        var comments = await _commentRepo.GetAsync(spec);
+        var comments = await _commentRepo.ListAsync(spec);
         foreach (var cmt in comments)
         {
             // 1. Delete all replies
-            var cReplies = await _commentReplyRepo.GetAsync(new CommentReplySpec(cmt.Id));
+            var cReplies = await _commentReplyRepo.ListAsync(new CommentReplySpec(cmt.Id));
             if (cReplies.Any())
             {
                 await _commentReplyRepo.DeleteAsync(cReplies);

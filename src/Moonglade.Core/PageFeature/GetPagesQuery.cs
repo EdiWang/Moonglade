@@ -17,7 +17,7 @@ public class GetPagesQueryHandler : IRequestHandler<GetPagesQuery, IReadOnlyList
     {
         if (request.Top <= 0) throw new ArgumentOutOfRangeException(nameof(request.Top));
 
-        var pages = await _pageRepo.GetAsync(new PageSpec(request.Top));
+        var pages = await _pageRepo.ListAsync(new PageSpec(request.Top));
         var list = pages.Select(p => new BlogPage(p)).ToList();
         return list;
     }
