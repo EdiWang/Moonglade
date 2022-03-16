@@ -6,7 +6,7 @@ namespace Moonglade.Auth;
 
 public record UpdatePasswordCommand(Guid Id, string ClearPassword) : IRequest;
 
-public class UpdatePasswordCommandHandler : IRequestHandler<UpdatePasswordCommand>
+public class UpdatePasswordCommandHandler : AsyncRequestHandler<UpdatePasswordCommand>
 {
     private readonly IRepository<LocalAccountEntity> _accountRepo;
 
@@ -16,7 +16,7 @@ public class UpdatePasswordCommandHandler : IRequestHandler<UpdatePasswordComman
         _accountRepo = accountRepo;
     }
 
-    public async Task<Unit> Handle(UpdatePasswordCommand request, CancellationToken cancellationToken)
+    protected override async Task Handle(UpdatePasswordCommand request, CancellationToken cancellationToken)
     {
         if (string.IsNullOrWhiteSpace(request.ClearPassword))
         {
@@ -31,7 +31,5 @@ public class UpdatePasswordCommandHandler : IRequestHandler<UpdatePasswordComman
 
         account.PasswordHash = Helper.HashPassword(request.ClearPassword);
         await _accountRepo.UpdateAsync(account);
-
-        return Unit.Value;
     }
 }

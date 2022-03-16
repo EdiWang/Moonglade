@@ -7,7 +7,7 @@ namespace Moonglade.Comments;
 
 public record ToggleApprovalCommand(Guid[] CommentIds) : IRequest;
 
-public class ToggleApprovalCommandHandler : IRequestHandler<ToggleApprovalCommand>
+public class ToggleApprovalCommandHandler : AsyncRequestHandler<ToggleApprovalCommand>
 {
     private readonly IRepository<CommentEntity> _commentRepo;
 
@@ -16,7 +16,7 @@ public class ToggleApprovalCommandHandler : IRequestHandler<ToggleApprovalComman
         _commentRepo = commentRepo;
     }
 
-    public async Task<Unit> Handle(ToggleApprovalCommand request, CancellationToken cancellationToken)
+    protected override async Task Handle(ToggleApprovalCommand request, CancellationToken cancellationToken)
     {
         if (request.CommentIds is null || !request.CommentIds.Any())
         {
@@ -30,7 +30,5 @@ public class ToggleApprovalCommandHandler : IRequestHandler<ToggleApprovalComman
             cmt.IsApproved = !cmt.IsApproved;
             await _commentRepo.UpdateAsync(cmt);
         }
-
-        return Unit.Value;
     }
 }

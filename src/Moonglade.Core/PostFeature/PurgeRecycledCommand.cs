@@ -5,7 +5,7 @@ namespace Moonglade.Core.PostFeature;
 
 public record PurgeRecycledCommand : IRequest;
 
-public class PurgeRecycledCommandHandler : IRequestHandler<PurgeRecycledCommand>
+public class PurgeRecycledCommandHandler : AsyncRequestHandler<PurgeRecycledCommand>
 {
     private readonly IBlogCache _cache;
     private readonly IRepository<PostEntity> _postRepo;
@@ -16,7 +16,7 @@ public class PurgeRecycledCommandHandler : IRequestHandler<PurgeRecycledCommand>
         _postRepo = postRepo;
     }
 
-    public async Task<Unit> Handle(PurgeRecycledCommand request, CancellationToken cancellationToken)
+    protected override async Task Handle(PurgeRecycledCommand request, CancellationToken cancellationToken)
     {
         var spec = new PostSpec(true);
         var posts = await _postRepo.ListAsync(spec);
@@ -26,7 +26,5 @@ public class PurgeRecycledCommandHandler : IRequestHandler<PurgeRecycledCommand>
         {
             _cache.Remove(CacheDivision.Post, guid.ToString());
         }
-
-        return Unit.Value;
     }
 }
