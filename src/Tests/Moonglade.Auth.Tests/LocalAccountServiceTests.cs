@@ -110,30 +110,6 @@ public class LocalAccountServiceTests
     }
 
     [Test]
-    public async Task LogSuccessLoginAsync_EntityNull()
-    {
-        _mockLocalAccountRepository.Setup(p => p.GetAsync(It.IsAny<Guid>()))
-            .Returns(ValueTask.FromResult((LocalAccountEntity)null));
-
-        var handler = new LogSuccessLoginCommandHandler(_mockLocalAccountRepository.Object);
-        await handler.Handle(new(Guid.Empty, "1.1.1.1"), default);
-
-        _mockLocalAccountRepository.Verify(p => p.UpdateAsync(It.IsAny<LocalAccountEntity>()), Times.Never);
-    }
-
-    [Test]
-    public async Task LogSuccessLoginAsync_OK()
-    {
-        _mockLocalAccountRepository.Setup(p => p.GetAsync(It.IsAny<Guid>()))
-            .Returns(ValueTask.FromResult(_accountEntity));
-
-        var handler = new LogSuccessLoginCommandHandler(_mockLocalAccountRepository.Object);
-        await handler.Handle(new(Uid, "1.1.1.1"), default);
-
-        _mockLocalAccountRepository.Verify(p => p.UpdateAsync(It.IsAny<LocalAccountEntity>()), Times.Once);
-    }
-
-    [Test]
     public void Exist_ToHaveBeenCalled()
     {
         var handler = new AccountExistsQueryHandler(_mockLocalAccountRepository.Object);
@@ -173,67 +149,5 @@ public class LocalAccountServiceTests
         Assert.IsTrue(result != Guid.Empty);
 
         _mockLocalAccountRepository.Verify(p => p.AddAsync(It.IsAny<LocalAccountEntity>()));
-    }
-
-    [TestCase(null)]
-    [TestCase("")]
-    [TestCase(" ")]
-    public void UpdatePasswordAsync_EmptyPassword(string clearPassword)
-    {
-        var handler = new UpdatePasswordCommandHandler(_mockLocalAccountRepository.Object);
-        Assert.ThrowsAsync<ArgumentNullException>(async () =>
-        {
-            await handler.Handle(new(Uid, clearPassword), default);
-        });
-    }
-
-    [Test]
-    public void UpdatePasswordAsync_AccountNull()
-    {
-        _mockLocalAccountRepository.Setup(p => p.GetAsync(It.IsAny<Guid>()))
-            .Returns(ValueTask.FromResult((LocalAccountEntity)null));
-
-        var handler = new UpdatePasswordCommandHandler(_mockLocalAccountRepository.Object);
-        Assert.ThrowsAsync<InvalidOperationException>(async () =>
-        {
-            await handler.Handle(new(Uid, "Work996"), default);
-        });
-    }
-
-    [Test]
-    public async Task UpdatePasswordAsync_OK()
-    {
-        _mockLocalAccountRepository.Setup(p => p.GetAsync(It.IsAny<Guid>()))
-            .Returns(ValueTask.FromResult(_accountEntity));
-
-        var handler = new UpdatePasswordCommandHandler(_mockLocalAccountRepository.Object);
-        await handler.Handle(new(Uid, "Work996andGetintoICU"), default);
-
-        _mockLocalAccountRepository.Verify(p => p.UpdateAsync(It.IsAny<LocalAccountEntity>()));
-    }
-
-    [Test]
-    public void DeleteAsync_AccountNull()
-    {
-        _mockLocalAccountRepository.Setup(p => p.GetAsync(It.IsAny<Guid>()))
-            .Returns(ValueTask.FromResult((LocalAccountEntity)null));
-
-        var handler = new DeleteAccountCommandHandler(_mockLocalAccountRepository.Object);
-        Assert.ThrowsAsync<InvalidOperationException>(async () =>
-        {
-            await handler.Handle(new(Uid), default);
-        });
-    }
-
-    [Test]
-    public async Task DeleteAsync_OK()
-    {
-        _mockLocalAccountRepository.Setup(p => p.GetAsync(It.IsAny<Guid>()))
-            .Returns(ValueTask.FromResult(_accountEntity));
-
-        var handler = new DeleteAccountCommandHandler(_mockLocalAccountRepository.Object);
-        await handler.Handle(new(Uid), default);
-
-        _mockLocalAccountRepository.Verify(p => p.DeleteAsync(It.IsAny<Guid>()));
     }
 }

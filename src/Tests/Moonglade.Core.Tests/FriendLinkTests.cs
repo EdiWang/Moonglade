@@ -41,55 +41,6 @@ public class FriendLinkTests
     }
 
     [Test]
-    public void AddAsync_InvalidUrl()
-    {
-        var handler = new AddLinkCommandHandler(_mockFriendlinkRepo.Object);
-
-        Assert.ThrowsAsync<InvalidOperationException>(async () =>
-        {
-            await handler.Handle(new()
-            {
-                LinkUrl = "Fubao",
-                Title = "work006"
-            }, CancellationToken.None);
-        });
-    }
-
-    [Test]
-    public async Task AddAsync_Valid()
-    {
-        var uid = Guid.NewGuid();
-        var friendLinkEntity = new FriendLinkEntity
-        {
-            Id = uid,
-            LinkUrl = "https://dot.net",
-            Title = "Choice of 955"
-        };
-        var tcs = new TaskCompletionSource<FriendLinkEntity>();
-        tcs.SetResult(friendLinkEntity);
-
-        _mockFriendlinkRepo.Setup(p => p.AddAsync(It.IsAny<FriendLinkEntity>())).Returns(tcs.Task);
-
-        var handler = new AddLinkCommandHandler(_mockFriendlinkRepo.Object);
-        await handler.Handle(new()
-        {
-            LinkUrl = "https://dot.net",
-            Title = "Choice of 955"
-        }, CancellationToken.None);
-
-        Assert.Pass();
-    }
-
-    [Test]
-    public async Task DeleteAsync_OK()
-    {
-        var handler = new DeleteLinkCommandHandler(_mockFriendlinkRepo.Object);
-        await handler.Handle(new(Guid.Empty), CancellationToken.None);
-
-        Assert.Pass();
-    }
-
-    [Test]
     public void UpdateAsync_InvalidUrl()
     {
         var handler = new UpdateLinkCommandHandler(_mockFriendlinkRepo.Object);

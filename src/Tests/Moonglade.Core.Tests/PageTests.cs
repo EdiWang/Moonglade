@@ -131,30 +131,6 @@ public class PageTests
     }
 
     [Test]
-    public async Task DeleteAsync_PageExists()
-    {
-        _mockPageRepository.Setup(p => p.GetAsync(It.IsAny<Guid>()))
-            .Returns(ValueTask.FromResult(_fakePageEntity));
-        _mockPageRepository.Setup(p => p.DeleteAsync(It.IsAny<Guid>()));
-
-        var handler = new DeletePageCommandHandler(_mockPageRepository.Object);
-        await handler.Handle(new(Guid.Empty), default);
-    }
-
-    [Test]
-    public void DeleteAsync_PageNotExists()
-    {
-        _mockPageRepository.Setup(p => p.GetAsync(It.IsAny<Guid>()))
-            .Returns(ValueTask.FromResult((PageEntity)null));
-
-        var handler = new DeletePageCommandHandler(_mockPageRepository.Object);
-        Assert.ThrowsAsync<InvalidOperationException>(async () =>
-        {
-            await handler.Handle(new(Guid.Empty), default);
-        });
-    }
-
-    [Test]
     public async Task CreateAsync_OK()
     {
         var handler = new CreatePageCommandHandler(_mockPageRepository.Object);

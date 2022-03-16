@@ -60,40 +60,6 @@ public class CategoryTests
     }
 
     [Test]
-    public async Task CreateAsync_Exists()
-    {
-        _mockCatRepo.Setup(p => p.Any(It.IsAny<Expression<Func<CategoryEntity, bool>>>())).Returns(true);
-
-        var handler =
-            new CreateCategoryCommandHandler(_mockCatRepo.Object, _mockBlogCache.Object);
-        await handler.Handle(new()
-        {
-            DisplayName = "Work 996",
-            RouteName = "work-996"
-        }, default);
-
-        _mockCatRepo.Verify(p => p.AddAsync(It.IsAny<CategoryEntity>()), Times.Never);
-    }
-
-    [Test]
-    public async Task CreateAsync_Success()
-    {
-        _mockCatRepo.Setup(p => p.Any(It.IsAny<Expression<Func<CategoryEntity, bool>>>())).Returns(false);
-
-        var handler =
-            new CreateCategoryCommandHandler(_mockCatRepo.Object, _mockBlogCache.Object);
-        await handler.Handle(new()
-        {
-            DisplayName = "Work 996",
-            RouteName = "work-996",
-            Note = "Fubao"
-        }, default);
-
-        _mockCatRepo.Verify(p => p.AddAsync(It.IsAny<CategoryEntity>()));
-        _mockBlogCache.Verify(p => p.Remove(CacheDivision.General, "allcats"));
-    }
-
-    [Test]
     public async Task DeleteAsync_NotExists()
     {
         _mockCatRepo.Setup(c => c.Any(It.IsAny<Expression<Func<CategoryEntity, bool>>>()))
