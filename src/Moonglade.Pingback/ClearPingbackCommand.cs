@@ -6,7 +6,7 @@ namespace Moonglade.Pingback;
 
 public record ClearPingbackCommand : IRequest;
 
-public class ClearPingbackCommandHandler : IRequestHandler<ClearPingbackCommand>
+public class ClearPingbackCommandHandler : AsyncRequestHandler<ClearPingbackCommand>
 {
     private readonly IRepository<PingbackEntity> _pingbackRepo;
 
@@ -15,9 +15,6 @@ public class ClearPingbackCommandHandler : IRequestHandler<ClearPingbackCommand>
         _pingbackRepo = pingbackRepo;
     }
 
-    public async Task<Unit> Handle(ClearPingbackCommand request, CancellationToken cancellationToken)
-    {
+    protected override async Task Handle(ClearPingbackCommand request, CancellationToken cancellationToken) =>
         await _pingbackRepo.Clear();
-        return Unit.Value;
-    }
 }
