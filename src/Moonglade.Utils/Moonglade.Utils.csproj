@@ -7,7 +7,7 @@
 
   <ItemGroup>
     <FrameworkReference Include="Microsoft.AspNetCore.App" />
-    <PackageReference Include="NUglify" Version="1.17.14" />
+    <PackageReference Include="NUglify" Version="1.19.0" />
     <PackageReference Include="Markdig" Version="0.28.0" />
   </ItemGroup>
 
