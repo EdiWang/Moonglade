@@ -91,7 +91,7 @@ public class SignInModel : PageModel
                     var p = new ClaimsPrincipal(ci);
 
                     await HttpContext.SignInAsync(CookieAuthenticationDefaults.AuthenticationScheme, p);
-                    await _mediator.Send(new LogSuccessLoginCommand(uid, HttpContext.Connection.RemoteIpAddress?.ToString()));
+                    await _mediator.Send(new LogSuccessLoginCommand(uid, Helper.GetClientIP(HttpContext)));
 
                     var successMessage = $@"Authentication success for local account ""{Username}""";
 

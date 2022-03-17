@@ -34,7 +34,7 @@ public class PingbackController : ControllerBase
             return Forbid();
         }
 
-        var ip = HttpContext.Connection.RemoteIpAddress?.ToString();
+        var ip = Helper.GetClientIP(HttpContext);
         var requestBody = await new StreamReader(HttpContext.Request.Body, Encoding.Default).ReadToEndAsync();
 
         var response = await _mediator.Send(new ReceivePingCommand(requestBody, ip,

@@ -25,7 +25,8 @@ public class ConfigureEndpoints
             DotNetVersion = Environment.Version.ToString(),
             EnvironmentTags = Helper.GetEnvironmentTags(),
             GeoMatch = context.Request.Headers["geo-match"],
-            RequestIpAddress = context.Connection.RemoteIpAddress?.ToString()
+            RequestIpAddress = context.Connection.RemoteIpAddress?.ToString(),
+            ForwardHeaders = context.Request.Headers["X-Forwarded-For"]
         };
 
         return context.Response.WriteAsJsonAsync(obj);
