@@ -10,13 +10,7 @@ public class GetPingbacksQueryHandler : IRequestHandler<GetPingbacksQuery, IRead
 {
     private readonly IRepository<PingbackEntity> _pingbackRepo;
 
-    public GetPingbacksQueryHandler(IRepository<PingbackEntity> pingbackRepo)
-    {
-        _pingbackRepo = pingbackRepo;
-    }
+    public GetPingbacksQueryHandler(IRepository<PingbackEntity> pingbackRepo) => _pingbackRepo = pingbackRepo;
 
-    public Task<IReadOnlyList<PingbackEntity>> Handle(GetPingbacksQuery request, CancellationToken cancellationToken)
-    {
-        return _pingbackRepo.ListAsync();
-    }
+    public Task<IReadOnlyList<PingbackEntity>> Handle(GetPingbacksQuery request, CancellationToken cancellationToken) => _pingbackRepo.ListAsync();
 }

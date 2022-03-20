@@ -7,7 +7,7 @@ namespace Moonglade.Comments;
 
 public record DeleteCommentsCommand(Guid[] Ids) : IRequest;
 
-public class DeleteCommentsCommandHandler : IRequestHandler<DeleteCommentsCommand>
+public class DeleteCommentsCommandHandler : AsyncRequestHandler<DeleteCommentsCommand>
 {
     private readonly IRepository<CommentEntity> _commentRepo;
     private readonly IRepository<CommentReplyEntity> _commentReplyRepo;
@@ -18,7 +18,7 @@ public class DeleteCommentsCommandHandler : IRequestHandler<DeleteCommentsComman
         _commentReplyRepo = commentReplyRepo;
     }
 
-    public async Task<Unit> Handle(DeleteCommentsCommand request, CancellationToken cancellationToken)
+    protected override async Task Handle(DeleteCommentsCommand request, CancellationToken cancellationToken)
     {
         if (request.Ids is null || !request.Ids.Any())
         {
@@ -39,7 +39,5 @@ public class DeleteCommentsCommandHandler : IRequestHandler<DeleteCommentsComman
             // 2. Delete comment itself
             await _commentRepo.DeleteAsync(cmt);
         }
-
-        return Unit.Value;
     }
 }

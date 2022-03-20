@@ -11,10 +11,7 @@ public class TagsController : ControllerBase
 {
     private readonly IMediator _mediator;
 
-    public TagsController(IMediator mediator)
-    {
-        _mediator = mediator;
-    }
+    public TagsController(IMediator mediator) => _mediator = mediator;
 
     [HttpGet("list")]
     [FeatureGate(FeatureFlags.EnableWebApi)]

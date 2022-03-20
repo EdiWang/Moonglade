@@ -6,19 +6,14 @@ public class GetTagCountListQueryHandler : IRequestHandler<GetTagCountListQuery,
 {
     private readonly IRepository<TagEntity> _tagRepo;
 
-    public GetTagCountListQueryHandler(IRepository<TagEntity> tagRepo)
-    {
-        _tagRepo = tagRepo;
-    }
+    public GetTagCountListQueryHandler(IRepository<TagEntity> tagRepo) => _tagRepo = tagRepo;
 
-    public Task<IReadOnlyList<KeyValuePair<Tag, int>>> Handle(GetTagCountListQuery request, CancellationToken cancellationToken)
-    {
-        return _tagRepo.SelectAsync(t =>
+    public Task<IReadOnlyList<KeyValuePair<Tag, int>>> Handle(GetTagCountListQuery request, CancellationToken cancellationToken) =>
+        _tagRepo.SelectAsync(t =>
             new KeyValuePair<Tag, int>(new()
             {
                 Id = t.Id,
                 DisplayName = t.DisplayName,
                 NormalizedName = t.NormalizedName
             }, t.Posts.Count));
-    }
 }

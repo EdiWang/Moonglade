@@ -8,11 +8,7 @@ public record SearchPostQuery(string Keyword) : IRequest<IReadOnlyList<PostDiges
 public class SearchPostQueryHandler : IRequestHandler<SearchPostQuery, IReadOnlyList<PostDigest>>
 {
     private readonly IRepository<PostEntity> _postRepo;
-
-    public SearchPostQueryHandler(IRepository<PostEntity> postRepo)
-    {
-        _postRepo = postRepo;
-    }
+    public SearchPostQueryHandler(IRepository<PostEntity> postRepo) => _postRepo = postRepo;
 
     public async Task<IReadOnlyList<PostDigest>> Handle(SearchPostQuery request, CancellationToken cancellationToken)
     {

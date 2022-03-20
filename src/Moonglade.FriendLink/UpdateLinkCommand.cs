@@ -10,16 +10,13 @@ public class UpdateLinkCommand : AddLinkCommand
     public Guid Id { get; set; }
 }
 
-public class UpdateLinkCommandHandler : IRequestHandler<UpdateLinkCommand>
+public class UpdateLinkCommandHandler : AsyncRequestHandler<UpdateLinkCommand>
 {
     private readonly IRepository<FriendLinkEntity> _friendlinkRepo;
 
-    public UpdateLinkCommandHandler(IRepository<FriendLinkEntity> friendlinkRepo)
-    {
-        _friendlinkRepo = friendlinkRepo;
-    }
+    public UpdateLinkCommandHandler(IRepository<FriendLinkEntity> friendlinkRepo) => _friendlinkRepo = friendlinkRepo;
 
-    public async Task<Unit> Handle(UpdateLinkCommand request, CancellationToken cancellationToken)
+    protected override async Task Handle(UpdateLinkCommand request, CancellationToken cancellationToken)
     {
         if (!Uri.IsWellFormedUriString(request.LinkUrl, UriKind.Absolute))
         {
@@ -34,7 +31,5 @@ public class UpdateLinkCommandHandler : IRequestHandler<UpdateLinkCommand>
 
             await _friendlinkRepo.UpdateAsync(link);
         }
-
-        return Unit.Value;
     }
 }

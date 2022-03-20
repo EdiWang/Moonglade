@@ -6,10 +6,7 @@ public class GetPageByIdQueryHandler : IRequestHandler<GetPageByIdQuery, BlogPag
 {
     private readonly IRepository<PageEntity> _pageRepo;
 
-    public GetPageByIdQueryHandler(IRepository<PageEntity> pageRepo)
-    {
-        _pageRepo = pageRepo;
-    }
+    public GetPageByIdQueryHandler(IRepository<PageEntity> pageRepo) => _pageRepo = pageRepo;
 
     public async Task<BlogPage> Handle(GetPageByIdQuery request, CancellationToken cancellationToken)
     {

@@ -7,10 +7,7 @@ public class ValidateCaptcha : ActionFilterAttribute
 {
     private readonly ISessionBasedCaptcha _captcha;
 
-    public ValidateCaptcha(ISessionBasedCaptcha captcha)
-    {
-        _captcha = captcha;
-    }
+    public ValidateCaptcha(ISessionBasedCaptcha captcha) => _captcha = captcha;
 
     public override void OnActionExecuting(ActionExecutingContext context)
     {

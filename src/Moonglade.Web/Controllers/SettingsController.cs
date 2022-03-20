@@ -210,7 +210,7 @@ public class SettingsController : ControllerBase
     public async Task<IActionResult> Reset([FromServices] BlogDbContext context,
         [FromServices] IHostApplicationLifetime applicationLifetime)
     {
-        _logger.LogWarning($"System reset is requested by '{User.Identity?.Name}', IP: {HttpContext.Connection.RemoteIpAddress}.");
+        _logger.LogWarning($"System reset is requested by '{User.Identity?.Name}', IP: {Helper.GetClientIP(HttpContext)}.");
 
         await context.ClearAllData();
 

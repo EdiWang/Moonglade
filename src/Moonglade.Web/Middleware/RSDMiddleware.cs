@@ -6,10 +6,7 @@ public class RSDMiddleware
 {
     private readonly RequestDelegate _next;
 
-    public RSDMiddleware(RequestDelegate next)
-    {
-        _next = next;
-    }
+    public RSDMiddleware(RequestDelegate next) => _next = next;
 
     public async Task Invoke(HttpContext httpContext, IBlogConfig blogConfig)
     {

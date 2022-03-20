@@ -24,8 +24,5 @@ public class GuidFileNameGenerator : IFileNameGenerator
         return newFileName;
     }
 
-    public GuidFileNameGenerator(Guid id)
-    {
-        UniqueId = id;
-    }
+    public GuidFileNameGenerator(Guid id) => UniqueId = id;
 }

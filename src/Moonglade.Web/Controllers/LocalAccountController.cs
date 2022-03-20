@@ -11,10 +11,7 @@ public class LocalAccountController : ControllerBase
 {
     private readonly IMediator _mediator;
 
-    public LocalAccountController(IMediator mediator)
-    {
-        _mediator = mediator;
-    }
+    public LocalAccountController(IMediator mediator) => _mediator = mediator;
 
     [HttpPost]
     [ProducesResponseType(StatusCodes.Status200OK)]

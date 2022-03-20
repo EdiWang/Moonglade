@@ -11,10 +11,8 @@ public class StatisticsController : ControllerBase
 
     private bool DNT => (bool)HttpContext.Items["DNT"];
 
-    public StatisticsController(IMediator mediator)
-    {
-        _mediator = mediator;
-    }
+    public StatisticsController(IMediator mediator) => _mediator = mediator;
+
 
     [HttpGet("{postId:guid}")]
     [ProducesResponseType(typeof(Tuple<int, int>), StatusCodes.Status200OK)]

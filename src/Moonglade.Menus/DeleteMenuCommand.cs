@@ -6,16 +6,13 @@ namespace Moonglade.Menus;
 
 public record DeleteMenuCommand(Guid Id) : IRequest;
 
-public class DeleteMenuCommandHandler : IRequestHandler<DeleteMenuCommand>
+public class DeleteMenuCommandHandler : AsyncRequestHandler<DeleteMenuCommand>
 {
     private readonly IRepository<MenuEntity> _menuRepo;
 
-    public DeleteMenuCommandHandler(IRepository<MenuEntity> menuRepo)
-    {
-        _menuRepo = menuRepo;
-    }
+    public DeleteMenuCommandHandler(IRepository<MenuEntity> menuRepo) => _menuRepo = menuRepo;
 
-    public async Task<Unit> Handle(DeleteMenuCommand request, CancellationToken cancellationToken)
+    protected override async Task Handle(DeleteMenuCommand request, CancellationToken cancellationToken)
     {
         var menu = await _menuRepo.GetAsync(request.Id);
         if (menu is null)
@@ -24,7 +21,5 @@ public class DeleteMenuCommandHandler : IRequestHandler<DeleteMenuCommand>
         }
 
         await _menuRepo.DeleteAsync(request.Id);
-
-        return Unit.Value;
     }
 }

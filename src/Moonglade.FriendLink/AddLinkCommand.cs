@@ -20,16 +20,13 @@ public class AddLinkCommand : IRequest
     public string LinkUrl { get; set; }
 }
 
-public class AddLinkCommandHandler : IRequestHandler<AddLinkCommand>
+public class AddLinkCommandHandler : AsyncRequestHandler<AddLinkCommand>
 {
     private readonly IRepository<FriendLinkEntity> _friendlinkRepo;
 
-    public AddLinkCommandHandler(IRepository<FriendLinkEntity> friendlinkRepo)
-    {
-        _friendlinkRepo = friendlinkRepo;
-    }
+    public AddLinkCommandHandler(IRepository<FriendLinkEntity> friendlinkRepo) => _friendlinkRepo = friendlinkRepo;
 
-    public async Task<Unit> Handle(AddLinkCommand request, CancellationToken cancellationToken)
+    protected override async Task Handle(AddLinkCommand request, CancellationToken cancellationToken)
     {
         if (!Uri.IsWellFormedUriString(request.LinkUrl, UriKind.Absolute))
         {
@@ -44,7 +41,5 @@ public class AddLinkCommandHandler : IRequestHandler<AddLinkCommand>
         };
 
         await _friendlinkRepo.AddAsync(link);
-
-        return Unit.Value;
     }
 }

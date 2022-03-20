@@ -11,10 +11,7 @@ public class GetArchiveQueryHandler : IRequestHandler<GetArchiveQuery, IReadOnly
     private readonly Expression<Func<IGrouping<(int Year, int Month), PostEntity>, Archive>> _archiveSelector =
         p => new(p.Key.Year, p.Key.Month, p.Count());
 
-    public GetArchiveQueryHandler(IRepository<PostEntity> postRepo)
-    {
-        _postRepo = postRepo;
-    }
+    public GetArchiveQueryHandler(IRepository<PostEntity> postRepo) => _postRepo = postRepo;
 
     public async Task<IReadOnlyList<Archive>> Handle(GetArchiveQuery request, CancellationToken cancellationToken)
     {

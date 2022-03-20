@@ -6,18 +6,11 @@ namespace Moonglade.FriendLink;
 
 public record DeleteLinkCommand(Guid Id) : IRequest;
 
-public class DeleteLinkCommandHandler : IRequestHandler<DeleteLinkCommand>
+public class DeleteLinkCommandHandler : AsyncRequestHandler<DeleteLinkCommand>
 {
     private readonly IRepository<FriendLinkEntity> _friendlinkRepo;
 
-    public DeleteLinkCommandHandler(IRepository<FriendLinkEntity> friendlinkRepo)
-    {
-        _friendlinkRepo = friendlinkRepo;
-    }
+    public DeleteLinkCommandHandler(IRepository<FriendLinkEntity> friendlinkRepo) => _friendlinkRepo = friendlinkRepo;
 
-    public async Task<Unit> Handle(DeleteLinkCommand request, CancellationToken cancellationToken)
-    {
-        await _friendlinkRepo.DeleteAsync(request.Id);
-        return Unit.Value;
-    }
+    protected override async Task Handle(DeleteLinkCommand request, CancellationToken cancellationToken) => await _friendlinkRepo.DeleteAsync(request.Id);
 }

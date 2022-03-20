@@ -9,10 +9,7 @@ public class WebManifestMiddleware
 
     public static WebManifestMiddlewareOptions Options { get; set; } = new();
 
-    public WebManifestMiddleware(RequestDelegate next)
-    {
-        _next = next;
-    }
+    public WebManifestMiddleware(RequestDelegate next) => _next = next;
 
     public async Task Invoke(
         HttpContext context, IBlogConfig blogConfig, IOptions<List<ManifestIcon>> manifestIcons)

@@ -6,10 +6,7 @@ public class UpdatePageCommandHandler : IRequestHandler<UpdatePageCommand, Guid>
 {
     private readonly IRepository<PageEntity> _pageRepo;
 
-    public UpdatePageCommandHandler(IRepository<PageEntity> pageRepo)
-    {
-        _pageRepo = pageRepo;
-    }
+    public UpdatePageCommandHandler(IRepository<PageEntity> pageRepo) => _pageRepo = pageRepo;
 
     public async Task<Guid> Handle(UpdatePageCommand request, CancellationToken cancellationToken)
     {

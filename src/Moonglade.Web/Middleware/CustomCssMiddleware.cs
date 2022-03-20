@@ -8,10 +8,7 @@ public class CustomCssMiddleware
 
     public static CustomCssMiddlewareOptions Options { get; set; } = new();
 
-    public CustomCssMiddleware(RequestDelegate next)
-    {
-        _next = next;
-    }
+    public CustomCssMiddleware(RequestDelegate next) => _next = next;
 
     public async Task Invoke(HttpContext context, IBlogConfig blogConfig)
     {

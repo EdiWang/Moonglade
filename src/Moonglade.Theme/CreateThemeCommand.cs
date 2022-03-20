@@ -11,10 +11,7 @@ public class CreateThemeCommandHandler : IRequestHandler<CreateThemeCommand, int
 {
     private readonly IRepository<BlogThemeEntity> _themeRepo;
 
-    public CreateThemeCommandHandler(IRepository<BlogThemeEntity> themeRepo)
-    {
-        _themeRepo = themeRepo;
-    }
+    public CreateThemeCommandHandler(IRepository<BlogThemeEntity> themeRepo) => _themeRepo = themeRepo;
 
     public async Task<int> Handle(CreateThemeCommand request, CancellationToken cancellationToken)
     {

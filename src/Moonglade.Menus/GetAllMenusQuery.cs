@@ -10,10 +10,7 @@ public class GetAllMenusQueryHandler : IRequestHandler<GetAllMenusQuery, IReadOn
 {
     private readonly IRepository<MenuEntity> _menuRepo;
 
-    public GetAllMenusQueryHandler(IRepository<MenuEntity> menuRepo)
-    {
-        _menuRepo = menuRepo;
-    }
+    public GetAllMenusQueryHandler(IRepository<MenuEntity> menuRepo) => _menuRepo = menuRepo;
 
     public Task<IReadOnlyList<Menu>> Handle(GetAllMenusQuery request, CancellationToken cancellationToken)
     {

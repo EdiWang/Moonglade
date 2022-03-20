@@ -10,7 +10,7 @@ public enum CountType
 
 public record CountPostQuery(CountType CountType, Guid? CatId = null, int? TagId = null) : IRequest<int>;
 
-public class CountPostQueryHandler : IRequestHandler<CountPostQuery, int>
+public class CountPostQueryHandler : RequestHandler<CountPostQuery, int>
 {
     private readonly IRepository<PostEntity> _postRepo;
     private readonly IRepository<PostTagEntity> _postTagRepo;
@@ -26,7 +26,7 @@ public class CountPostQueryHandler : IRequestHandler<CountPostQuery, int>
         _postCatRepo = postCatRepo;
     }
 
-    public Task<int> Handle(CountPostQuery request, CancellationToken cancellationToken)
+    protected override int Handle(CountPostQuery request)
     {
         int count = 0;
 
@@ -53,6 +53,6 @@ public class CountPostQueryHandler : IRequestHandler<CountPostQuery, int>
                 break;
         }
 
-        return Task.FromResult(count);
+        return count;
     }
 }

@@ -10,10 +10,7 @@ public class CreateMenuCommandHandler : IRequestHandler<CreateMenuCommand, Guid>
 {
     private readonly IRepository<MenuEntity> _menuRepo;
 
-    public CreateMenuCommandHandler(IRepository<MenuEntity> menuRepo)
-    {
-        _menuRepo = menuRepo;
-    }
+    public CreateMenuCommandHandler(IRepository<MenuEntity> menuRepo) => _menuRepo = menuRepo;
 
     public async Task<Guid> Handle(CreateMenuCommand request, CancellationToken cancellationToken)
     {

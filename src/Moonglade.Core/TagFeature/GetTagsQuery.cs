@@ -7,13 +7,7 @@ public class GetTagsQueryHandler : IRequestHandler<GetTagsQuery, IReadOnlyList<T
     private readonly IRepository<TagEntity> _tagRepo;
 
 
-    public GetTagsQueryHandler(IRepository<TagEntity> tagRepo)
-    {
-        _tagRepo = tagRepo;
-    }
+    public GetTagsQueryHandler(IRepository<TagEntity> tagRepo) => _tagRepo = tagRepo;
 
-    public Task<IReadOnlyList<Tag>> Handle(GetTagsQuery request, CancellationToken cancellationToken)
-    {
-        return _tagRepo.SelectAsync(Tag.EntitySelector);
-    }
+    public Task<IReadOnlyList<Tag>> Handle(GetTagsQuery request, CancellationToken cancellationToken) => _tagRepo.SelectAsync(Tag.EntitySelector);
 }
