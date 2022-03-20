@@ -8,10 +8,7 @@ public class GetPagesQueryHandler : IRequestHandler<GetPagesQuery, IReadOnlyList
 {
     private readonly IRepository<PageEntity> _pageRepo;
 
-    public GetPagesQueryHandler(IRepository<PageEntity> pageRepo)
-    {
-        _pageRepo = pageRepo;
-    }
+    public GetPagesQueryHandler(IRepository<PageEntity> pageRepo) => _pageRepo = pageRepo;
 
     public async Task<IReadOnlyList<BlogPage>> Handle(GetPagesQuery request, CancellationToken cancellationToken)
     {

@@ -8,10 +8,7 @@ public class ListInsightsQueryHandler : IRequestHandler<ListInsightsQuery, IRead
 {
     private readonly IRepository<PostEntity> _postRepo;
 
-    public ListInsightsQueryHandler(IRepository<PostEntity> postRepo)
-    {
-        _postRepo = postRepo;
-    }
+    public ListInsightsQueryHandler(IRepository<PostEntity> postRepo) => _postRepo = postRepo;
 
     public Task<IReadOnlyList<PostSegment>> Handle(ListInsightsQuery request, CancellationToken cancellationToken)
     {

@@ -6,10 +6,7 @@ public class GetPageBySlugQueryHandler : IRequestHandler<GetPageBySlugQuery, Blo
 {
     private readonly IRepository<PageEntity> _pageRepo;
 
-    public GetPageBySlugQueryHandler(IRepository<PageEntity> pageRepo)
-    {
-        _pageRepo = pageRepo;
-    }
+    public GetPageBySlugQueryHandler(IRepository<PageEntity> pageRepo) => _pageRepo = pageRepo;
 
     public async Task<BlogPage> Handle(GetPageBySlugQuery request, CancellationToken cancellationToken)
     {

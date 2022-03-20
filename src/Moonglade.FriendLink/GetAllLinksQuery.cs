@@ -10,10 +10,7 @@ public class GetAllLinksQueryHandler : IRequestHandler<GetAllLinksQuery, IReadOn
 {
     private readonly IRepository<FriendLinkEntity> _friendlinkRepo;
 
-    public GetAllLinksQueryHandler(IRepository<FriendLinkEntity> friendlinkRepo)
-    {
-        _friendlinkRepo = friendlinkRepo;
-    }
+    public GetAllLinksQueryHandler(IRepository<FriendLinkEntity> friendlinkRepo) => _friendlinkRepo = friendlinkRepo;
 
     public Task<IReadOnlyList<Link>> Handle(GetAllLinksQuery request, CancellationToken cancellationToken)
     {

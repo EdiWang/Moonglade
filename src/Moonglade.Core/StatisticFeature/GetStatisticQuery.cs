@@ -6,10 +6,7 @@ public class GetStatisticQueryHandler : IRequestHandler<GetStatisticQuery, (int 
 {
     private readonly IRepository<PostExtensionEntity> _postExtensionRepo;
 
-    public GetStatisticQueryHandler(IRepository<PostExtensionEntity> postExtensionRepo)
-    {
-        _postExtensionRepo = postExtensionRepo;
-    }
+    public GetStatisticQueryHandler(IRepository<PostExtensionEntity> postExtensionRepo) => _postExtensionRepo = postExtensionRepo;
 
     public async Task<(int Hits, int Likes)> Handle(GetStatisticQuery request, CancellationToken cancellationToken)
     {

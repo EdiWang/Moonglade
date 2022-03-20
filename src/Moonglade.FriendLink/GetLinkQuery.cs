@@ -11,10 +11,7 @@ public class GetLinkQueryHandler : IRequestHandler<GetLinkQuery, Link>
 {
     private readonly IRepository<FriendLinkEntity> _friendlinkRepo;
 
-    public GetLinkQueryHandler(IRepository<FriendLinkEntity> friendlinkRepo)
-    {
-        _friendlinkRepo = friendlinkRepo;
-    }
+    public GetLinkQueryHandler(IRepository<FriendLinkEntity> friendlinkRepo) => _friendlinkRepo = friendlinkRepo;
 
     public Task<Link> Handle(GetLinkQuery request, CancellationToken cancellationToken)
     {

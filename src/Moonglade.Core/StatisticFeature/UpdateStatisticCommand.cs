@@ -6,10 +6,7 @@ public class UpdateStatisticCommandHandler : AsyncRequestHandler<UpdateStatistic
 {
     private readonly IRepository<PostExtensionEntity> _postExtensionRepo;
 
-    public UpdateStatisticCommandHandler(IRepository<PostExtensionEntity> postExtensionRepo)
-    {
-        _postExtensionRepo = postExtensionRepo;
-    }
+    public UpdateStatisticCommandHandler(IRepository<PostExtensionEntity> postExtensionRepo) => _postExtensionRepo = postExtensionRepo;
 
     protected override async Task Handle(UpdateStatisticCommand request, CancellationToken cancellationToken)
     {

@@ -23,10 +23,7 @@ public class ListPostsQueryHandler : IRequestHandler<ListPostsQuery, IReadOnlyLi
 {
     private readonly IRepository<PostEntity> _postRepo;
 
-    public ListPostsQueryHandler(IRepository<PostEntity> postRepo)
-    {
-        _postRepo = postRepo;
-    }
+    public ListPostsQueryHandler(IRepository<PostEntity> postRepo) => _postRepo = postRepo;
 
     public Task<IReadOnlyList<PostDigest>> Handle(ListPostsQuery request, CancellationToken cancellationToken)
     {

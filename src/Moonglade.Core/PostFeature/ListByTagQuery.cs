@@ -22,11 +22,7 @@ public class ListByTagQuery : IRequest<IReadOnlyList<PostDigest>>
 public class ListByTagQueryHandler : IRequestHandler<ListByTagQuery, IReadOnlyList<PostDigest>>
 {
     private readonly IRepository<PostTagEntity> _postTagRepo;
-
-    public ListByTagQueryHandler(IRepository<PostTagEntity> postTagRepo)
-    {
-        _postTagRepo = postTagRepo;
-    }
+    public ListByTagQueryHandler(IRepository<PostTagEntity> postTagRepo) => _postTagRepo = postTagRepo;
 
     public Task<IReadOnlyList<PostDigest>> Handle(ListByTagQuery request, CancellationToken cancellationToken)
     {

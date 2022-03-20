@@ -6,10 +6,7 @@ public class ListPageSegmentQueryHandler : IRequestHandler<ListPageSegmentQuery,
 {
     private readonly IRepository<PageEntity> _pageRepo;
 
-    public ListPageSegmentQueryHandler(IRepository<PageEntity> pageRepo)
-    {
-        _pageRepo = pageRepo;
-    }
+    public ListPageSegmentQueryHandler(IRepository<PageEntity> pageRepo) => _pageRepo = pageRepo;
 
     public Task<IReadOnlyList<PageSegment>> Handle(ListPageSegmentQuery request, CancellationToken cancellationToken)
     {

@@ -9,16 +9,14 @@ public class ListFeaturedQueryHandler : IRequestHandler<ListFeaturedQuery, IRead
 {
     private readonly IRepository<PostEntity> _postRepo;
 
-    public ListFeaturedQueryHandler(IRepository<PostEntity> postRepo)
-    {
-        _postRepo = postRepo;
-    }
+    public ListFeaturedQueryHandler(IRepository<PostEntity> postRepo) => _postRepo = postRepo;
 
     public Task<IReadOnlyList<PostDigest>> Handle(ListFeaturedQuery request, CancellationToken cancellationToken)
     {
-        Helper.ValidatePagingParameters(request.PageSize, request.PageIndex);
+        var (pageSize, pageIndex) = request;
+        Helper.ValidatePagingParameters(pageSize, pageIndex);
 
-        var posts = _postRepo.SelectAsync(new FeaturedPostSpec(request.PageSize, request.PageIndex), PostDigest.EntitySelector);
+        var posts = _postRepo.SelectAsync(new FeaturedPostSpec(pageSize, pageIndex), PostDigest.EntitySelector);
         return posts;
     }
 }

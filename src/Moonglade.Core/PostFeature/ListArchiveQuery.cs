@@ -17,11 +17,7 @@ public class ListArchiveQuery : IRequest<IReadOnlyList<PostDigest>>
 public class ListArchiveQueryHandler : IRequestHandler<ListArchiveQuery, IReadOnlyList<PostDigest>>
 {
     private readonly IRepository<PostEntity> _postRepo;
-
-    public ListArchiveQueryHandler(IRepository<PostEntity> postRepo)
-    {
-        _postRepo = postRepo;
-    }
+    public ListArchiveQueryHandler(IRepository<PostEntity> postRepo) => _postRepo = postRepo;
 
     public Task<IReadOnlyList<PostDigest>> Handle(ListArchiveQuery request, CancellationToken cancellationToken)
     {

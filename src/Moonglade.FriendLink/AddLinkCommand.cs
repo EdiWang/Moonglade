@@ -24,10 +24,7 @@ public class AddLinkCommandHandler : AsyncRequestHandler<AddLinkCommand>
 {
     private readonly IRepository<FriendLinkEntity> _friendlinkRepo;
 
-    public AddLinkCommandHandler(IRepository<FriendLinkEntity> friendlinkRepo)
-    {
-        _friendlinkRepo = friendlinkRepo;
-    }
+    public AddLinkCommandHandler(IRepository<FriendLinkEntity> friendlinkRepo) => _friendlinkRepo = friendlinkRepo;
 
     protected override async Task Handle(AddLinkCommand request, CancellationToken cancellationToken)
     {

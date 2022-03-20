@@ -6,10 +6,7 @@ public class GetAssetDataQueryHandler : IRequestHandler<GetAssetDataQuery, strin
 {
     private readonly IRepository<BlogAssetEntity> _repository;
 
-    public GetAssetDataQueryHandler(IRepository<BlogAssetEntity> repository)
-    {
-        _repository = repository;
-    }
+    public GetAssetDataQueryHandler(IRepository<BlogAssetEntity> repository) => _repository = repository;
 
     public async Task<string> Handle(GetAssetDataQuery request, CancellationToken cancellationToken)
     {

@@ -8,10 +8,7 @@ public class GetCategoryByIdQueryHandler : IRequestHandler<GetCategoryByIdQuery,
 {
     private readonly IRepository<CategoryEntity> _catRepo;
 
-    public GetCategoryByIdQueryHandler(IRepository<CategoryEntity> catRepo)
-    {
-        _catRepo = catRepo;
-    }
+    public GetCategoryByIdQueryHandler(IRepository<CategoryEntity> catRepo) => _catRepo = catRepo;
 
     public Task<Category> Handle(GetCategoryByIdQuery request, CancellationToken cancellationToken)
     {

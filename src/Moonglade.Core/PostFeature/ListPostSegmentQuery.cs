@@ -25,11 +25,7 @@ public class ListPostSegmentQuery : IRequest<(IReadOnlyList<PostSegment> Posts, 
 public class ListPostSegmentQueryHandler : IRequestHandler<ListPostSegmentQuery, (IReadOnlyList<PostSegment> Posts, int TotalRows)>
 {
     private readonly IRepository<PostEntity> _postRepo;
-
-    public ListPostSegmentQueryHandler(IRepository<PostEntity> postRepo)
-    {
-        _postRepo = postRepo;
-    }
+    public ListPostSegmentQueryHandler(IRepository<PostEntity> postRepo) => _postRepo = postRepo;
 
     public async Task<(IReadOnlyList<PostSegment> Posts, int TotalRows)> Handle(ListPostSegmentQuery request, CancellationToken cancellationToken)
     {

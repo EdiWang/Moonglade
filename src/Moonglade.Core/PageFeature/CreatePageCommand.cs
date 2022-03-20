@@ -5,11 +5,7 @@ public record CreatePageCommand(EditPageRequest Payload) : IRequest<Guid>;
 public class CreatePageCommandHandler : IRequestHandler<CreatePageCommand, Guid>
 {
     private readonly IRepository<PageEntity> _pageRepo;
-
-    public CreatePageCommandHandler(IRepository<PageEntity> pageRepo)
-    {
-        _pageRepo = pageRepo;
-    }
+    public CreatePageCommandHandler(IRepository<PageEntity> pageRepo) => _pageRepo = pageRepo;
 
     public async Task<Guid> Handle(CreatePageCommand request, CancellationToken cancellationToken)
     {
