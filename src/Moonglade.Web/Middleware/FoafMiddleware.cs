@@ -6,10 +6,7 @@ public class FoafMiddleware
 {
     private readonly RequestDelegate _next;
 
-    public FoafMiddleware(RequestDelegate next)
-    {
-        _next = next;
-    }
+    public FoafMiddleware(RequestDelegate next) => _next = next;
 
     public async Task Invoke(
         HttpContext context,

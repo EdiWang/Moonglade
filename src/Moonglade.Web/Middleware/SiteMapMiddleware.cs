@@ -10,10 +10,7 @@ public class SiteMapMiddleware
 {
     private readonly RequestDelegate _next;
 
-    public SiteMapMiddleware(RequestDelegate next)
-    {
-        _next = next;
-    }
+    public SiteMapMiddleware(RequestDelegate next) => _next = next;
 
     public async Task Invoke(
         HttpContext httpContext,

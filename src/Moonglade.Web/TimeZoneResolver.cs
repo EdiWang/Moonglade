@@ -14,27 +14,15 @@ public class BlogTimeZoneResolver : ITimeZoneResolver
 {
     public string UtcOffset { get; }
 
-    public BlogTimeZoneResolver(IBlogConfig blogConfig)
-    {
-        UtcOffset = blogConfig.GeneralSettings.TimeZoneUtcOffset;
-    }
+    public BlogTimeZoneResolver(IBlogConfig blogConfig) => UtcOffset = blogConfig.GeneralSettings.TimeZoneUtcOffset;
 
     public DateTime NowOfTimeZone => UtcToZoneTime(DateTime.UtcNow, UtcOffset);
 
-    public DateTime ToTimeZone(DateTime utcDateTime)
-    {
-        return UtcToZoneTime(utcDateTime, UtcOffset);
-    }
+    public DateTime ToTimeZone(DateTime utcDateTime) => UtcToZoneTime(utcDateTime, UtcOffset);
 
-    public DateTime ToUtc(DateTime userDateTime)
-    {
-        return ZoneTimeToUtc(userDateTime, UtcOffset);
-    }
+    public DateTime ToUtc(DateTime userDateTime) => ZoneTimeToUtc(userDateTime, UtcOffset);
 
-    public IEnumerable<TimeZoneInfo> ListTimeZones()
-    {
-        return TimeZoneInfo.GetSystemTimeZones();
-    }
+    public IEnumerable<TimeZoneInfo> ListTimeZones() => TimeZoneInfo.GetSystemTimeZones();
 
     public TimeSpan GetTimeSpanByZoneId(string timeZoneId)
     {

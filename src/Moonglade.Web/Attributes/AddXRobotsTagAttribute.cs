@@ -6,10 +6,7 @@ public class AddXRobotsTagAttribute : ResultFilterAttribute
 {
     private readonly string _content;
 
-    public AddXRobotsTagAttribute(string content)
-    {
-        _content = content;
-    }
+    public AddXRobotsTagAttribute(string content) => _content = content;
 
     public override void OnResultExecuting(ResultExecutingContext context)
     {

@@ -9,10 +9,7 @@ public class DefaultImageMiddleware
 
     public static DefaultImageMiddlewareOptions Options { get; set; } = new();
 
-    public DefaultImageMiddleware(RequestDelegate next)
-    {
-        _next = next;
-    }
+    public DefaultImageMiddleware(RequestDelegate next) => _next = next;
 
     public async Task Invoke(HttpContext context, IBlogConfig blogConfig)
     {

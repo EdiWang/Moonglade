@@ -4,10 +4,7 @@ public class DNTMiddleware
 {
     private readonly RequestDelegate _next;
 
-    public DNTMiddleware(RequestDelegate next)
-    {
-        _next = next;
-    }
+    public DNTMiddleware(RequestDelegate next) => _next = next;
 
     public Task Invoke(HttpContext httpContext)
     {

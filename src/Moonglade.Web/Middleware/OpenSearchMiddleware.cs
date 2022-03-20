@@ -7,10 +7,7 @@ public class OpenSearchMiddleware
     private readonly RequestDelegate _next;
     public static OpenSearchMiddlewareOptions Options { get; set; } = new();
 
-    public OpenSearchMiddleware(RequestDelegate next)
-    {
-        _next = next;
-    }
+    public OpenSearchMiddleware(RequestDelegate next) => _next = next;
 
     public async Task Invoke(HttpContext httpContext, IBlogConfig blogConfig)
     {
