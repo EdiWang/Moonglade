@@ -11,10 +11,7 @@ public class DeleteThemeCommandHandler : IRequestHandler<DeleteThemeCommand, Ope
 {
     private readonly IRepository<BlogThemeEntity> _themeRepo;
 
-    public DeleteThemeCommandHandler(IRepository<BlogThemeEntity> themeRepo)
-    {
-        _themeRepo = themeRepo;
-    }
+    public DeleteThemeCommandHandler(IRepository<BlogThemeEntity> themeRepo) => _themeRepo = themeRepo;
 
     public async Task<OperationCode> Handle(DeleteThemeCommand request, CancellationToken cancellationToken)
     {

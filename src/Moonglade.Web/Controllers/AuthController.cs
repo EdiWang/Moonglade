@@ -11,10 +11,8 @@ public class AuthController : ControllerBase
     private readonly AuthenticationSettings _authenticationSettings;
 
     public AuthController(
-        IOptions<AuthenticationSettings> authSettings)
-    {
+        IOptions<AuthenticationSettings> authSettings) =>
         _authenticationSettings = authSettings.Value;
-    }
 
     [HttpGet("signout")]
     [ProducesResponseType(StatusCodes.Status302Found)]

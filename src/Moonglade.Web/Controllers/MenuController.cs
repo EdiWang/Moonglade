@@ -11,10 +11,7 @@ public class MenuController : ControllerBase
 {
     private readonly IMediator _mediator;
 
-    public MenuController(IMediator mediator)
-    {
-        _mediator = mediator;
-    }
+    public MenuController(IMediator mediator) => _mediator = mediator;
 
     [HttpPost]
     [TypeFilter(typeof(ClearBlogCache), Arguments = new object[] { CacheDivision.General, "menu" })]

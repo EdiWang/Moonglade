@@ -11,10 +11,7 @@ public class GetStyleSheetQueryHandler : IRequestHandler<GetStyleSheetQuery, str
 {
     private readonly IRepository<BlogThemeEntity> _themeRepo;
 
-    public GetStyleSheetQueryHandler(IRepository<BlogThemeEntity> themeRepo)
-    {
-        _themeRepo = themeRepo;
-    }
+    public GetStyleSheetQueryHandler(IRepository<BlogThemeEntity> themeRepo) => _themeRepo = themeRepo;
 
     public async Task<string> Handle(GetStyleSheetQuery request, CancellationToken cancellationToken)
     {

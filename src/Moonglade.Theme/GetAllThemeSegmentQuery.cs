@@ -10,10 +10,7 @@ public class GetAllThemeSegmentQueryHandler : IRequestHandler<GetAllThemeSegment
 {
     private readonly IRepository<BlogThemeEntity> _themeRepo;
 
-    public GetAllThemeSegmentQueryHandler(IRepository<BlogThemeEntity> themeRepo)
-    {
-        _themeRepo = themeRepo;
-    }
+    public GetAllThemeSegmentQueryHandler(IRepository<BlogThemeEntity> themeRepo) => _themeRepo = themeRepo;
 
     public Task<IReadOnlyList<ThemeSegment>> Handle(GetAllThemeSegmentQuery request, CancellationToken cancellationToken)
     {

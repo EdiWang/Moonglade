@@ -10,10 +10,7 @@ public class CategoryController : ControllerBase
 {
     private readonly IMediator _mediator;
 
-    public CategoryController(IMediator mediator)
-    {
-        _mediator = mediator;
-    }
+    public CategoryController(IMediator mediator) => _mediator = mediator;
 
     [HttpGet("{id:guid}")]
     [ProducesResponseType(typeof(Category), StatusCodes.Status200OK)]

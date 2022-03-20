@@ -9,10 +9,7 @@ public class DataPortingController : ControllerBase
 {
     private readonly IMediator _mediator;
 
-    public DataPortingController(IMediator mediator)
-    {
-        _mediator = mediator;
-    }
+    public DataPortingController(IMediator mediator) => _mediator = mediator;
 
     [HttpGet("export/{type}")]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]

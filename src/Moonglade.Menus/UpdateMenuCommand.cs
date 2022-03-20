@@ -11,10 +11,7 @@ public class UpdateMenuCommandHandler : AsyncRequestHandler<UpdateMenuCommand>
 {
     private readonly IRepository<MenuEntity> _menuRepo;
 
-    public UpdateMenuCommandHandler(IRepository<MenuEntity> menuRepo)
-    {
-        _menuRepo = menuRepo;
-    }
+    public UpdateMenuCommandHandler(IRepository<MenuEntity> menuRepo) => _menuRepo = menuRepo;
 
     protected override async Task Handle(UpdateMenuCommand request, CancellationToken cancellationToken)
     {

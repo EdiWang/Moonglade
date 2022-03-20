@@ -10,10 +10,7 @@ public class FriendLinkController : ControllerBase
 {
     private readonly IMediator _mediator;
 
-    public FriendLinkController(IMediator mediator)
-    {
-        _mediator = mediator;
-    }
+    public FriendLinkController(IMediator mediator) => _mediator = mediator;
 
     [HttpPost]
     [ProducesResponseType(StatusCodes.Status201Created)]

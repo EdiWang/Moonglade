@@ -10,10 +10,7 @@ public class ClearPingbackCommandHandler : AsyncRequestHandler<ClearPingbackComm
 {
     private readonly IRepository<PingbackEntity> _pingbackRepo;
 
-    public ClearPingbackCommandHandler(IRepository<PingbackEntity> pingbackRepo)
-    {
-        _pingbackRepo = pingbackRepo;
-    }
+    public ClearPingbackCommandHandler(IRepository<PingbackEntity> pingbackRepo) => _pingbackRepo = pingbackRepo;
 
     protected override async Task Handle(ClearPingbackCommand request, CancellationToken cancellationToken) =>
         await _pingbackRepo.Clear();

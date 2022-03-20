@@ -10,10 +10,7 @@ public class DeleteMenuCommandHandler : AsyncRequestHandler<DeleteMenuCommand>
 {
     private readonly IRepository<MenuEntity> _menuRepo;
 
-    public DeleteMenuCommandHandler(IRepository<MenuEntity> menuRepo)
-    {
-        _menuRepo = menuRepo;
-    }
+    public DeleteMenuCommandHandler(IRepository<MenuEntity> menuRepo) => _menuRepo = menuRepo;
 
     protected override async Task Handle(DeleteMenuCommand request, CancellationToken cancellationToken)
     {
