@@ -1,28 +1,30 @@
 ﻿@page "/admin/pingback"
 @model Moonglade.Web.Pages.Admin.PingbackModel
+@inject ITimeZoneResolver _zoneResolver
+
 @{
     ViewBag.Title = "Pingback";
 }
 
 @Html.AntiForgeryToken()
 
-@section head{
-<link href="~/css/3rd/dataTables.bootstrap5.min.css" rel="stylesheet" />
+@section head {
+    <style>
+        .pingbacks-container {
+            height: calc(100vh - 230px);
+            overflow-y: scroll;
+            overflow-x: hidden;
+        }
+    </style>
 }
 
 @section scripts{
-<script src="~/js/3rd/datatables.min.js"></script>
 <script>
-    $("#pingbacks-table").DataTable({
-        "order": [[3, "desc"]],
-        "lengthMenu": [[10, 20, 50, -1], [10, 20, 50, "All"]],
-        "pageLength": 10
-    });
-
     function deletePingback(pingbackId) {
         callApi(`/pingback/${pingbackId}`, 'DELETE', {},
             (resp) => {
                 document.querySelector(`#pingback-box-${pingbackId}`).remove();
+                document.querySelector(`#pingback-box-hr-${pingbackId}`).remove();
             });
     }
 
@@ -40,51 +42,52 @@
 
 
 <div class="admin-toolbar ps-4 pe-4 pt-2 pb-2 border-bottom mb-3 shadow-sm">
-    <a class="btn btn-outline-danger" href="javascript:;" data-bs-toggle="modal" data-bs-target="#clearpingbackModal">
-        <i class="bi-trash"></i>
-        @Localizer["Clear all"]
-    </a>
+    <div class="row">
+        <div class="col">
+            <a class="btn btn-outline-danger" href="javascript:;" data-bs-toggle="modal" data-bs-target="#clearpingbackModal">
+                <i class="bi-trash"></i>
+                @Localizer["Clear all"]
+            </a>
+        </div>
+        <div class="col-auto">
+            <div class="text-muted admin-toolbar-text">
+                <span id="pingback-count">@Model.PingbackRecords.Count</span> item(s)
+            </div>
+        </div>
+    </div>
 </div>
 
 <div class="ps-4 pe-4">
-    <table id="pingbacks-table" class="table table-bordered">
-        <thead>
-            <tr>
-                <th>@Localizer["Link"]</th>
-                <th>@Localizer["Destination Server"]</th>
-                <th>@Localizer["Referenced Post"]</th>
-                <th>@Localizer["Ping Time (UTC)"]</th>
-                <th>@Localizer["Operation"]</th>
-            </tr>
-        </thead>
-        <tbody>
-            @foreach (var item in Model.PingbackRecords.OrderByDescending(p => p.PingTimeUtc))
-            {
-                <tr id="pingback-box-@item.Id">
-                    <td class="table-item-w30">
+    <div class="pingbacks-container">
+        @foreach (var item in Model.PingbackRecords.OrderByDescending(p => p.PingTimeUtc))
+        {
+            <div id="pingback-box-@item.Id" class="row">
+                <div class="col">
+                    <strong>
                         <a href="@item.SourceUrl" target="_blank">@item.SourceTitle</a>
-                    </td>
-                    <td>
-                        @item.Domain <br />
-                        <small class="text-muted">
-                            @item.SourceIp
-                        </small>
-                    </td>
-                    <td class="table-item-w30">
+                    </strong>
+
+                    <div>
+                        <i class="bi-link"></i>
+
                         @item.TargetPostTitle
-                    </td>
-                    <td data-sort="@item.PingTimeUtc.ToString("yyyyMMddHHmmss")">
-                        @item.PingTimeUtc
-                    </td>
-                    <td class="p-2">
-                        <a class="btn btn-sm btn-outline-danger btn-delete" href="javascript:deletePingback('@item.Id');">
-                            <i class="bi-trash"></i>
-                        </a>
-                    </td>
-                </tr>
-            }
-        </tbody>
-    </table>
+                    </div>
+
+                    <div class="text-muted">
+                        @item.Domain, @item.SourceIp,
+                        <pubdate t-zone-resolver="@_zoneResolver" pub-date-utc="@item.PingTimeUtc"></pubdate>
+                    </div>
+                </div>
+
+                <div class="col-auto">
+                    <a class="btn btn-sm btn-outline-danger btn-delete" href="javascript:deletePingback('@item.Id');">
+                        <i class="bi-trash"></i>
+                    </a>
+                </div>
+            </div>
+            <hr id="pingback-box-hr-@item.Id" />
+        }
+    </div>
 </div>
 
 <div class="modal fade" id="clearpingbackModal" tabindex="-1" role="dialog" aria-labelledby="clearpingbackModalLabel" aria-hidden="true">
