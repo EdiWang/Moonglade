@@ -43,7 +43,6 @@ ConfigureConfiguration(builder.Configuration);
 ConfigureServices(builder.Services);
 
 var app = builder.Build();
-app.Lifetime.ApplicationStopping.Register(() => { app.Logger.LogInformation("Moonglade is stopping..."); });
 
 await FirstRun();
 
@@ -57,12 +56,13 @@ void ConfigureConfiguration(IConfiguration configuration)
     builder.Host.ConfigureAppConfiguration(config =>
     {
         config.AddJsonFile("manifesticons.json", false, true);
+        var appConfigConn = configuration["ConnectionStrings:AzureAppConfig"];
 
-        if (configuration.GetValue<bool>("PreferAzureAppConfiguration"))
+        if (!string.IsNullOrWhiteSpace(appConfigConn))
         {
             config.AddAzureAppConfiguration(options =>
             {
-                options.Connect(configuration["ConnectionStrings:AzureAppConfig"])
+                options.Connect(appConfigConn)
                     .ConfigureRefresh(refresh =>
                     {
                         refresh.Register("Moonglade:Settings:Sentinel", refreshAll: true)
