@@ -16,7 +16,7 @@ This is the way https://edi.wang is deployed, by taking advantage of as many Azu
 
 This diagram shows a full Azure deployment for Moonglade for reference.
 
-![image](https://blog.ediwangcdn.com/web-assets/ediwang-azure-arch-visio.png)
+![image](https://ediwang.cdn.moonglade.blog/web-assets/ediwang-azure-arch-visio.png)
 
 ### 🐋 Quick Deploy on Azure
 
