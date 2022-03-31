@@ -529,4 +529,11 @@ public static class Helper
                 $"{nameof(pageIndex)} can not be less than 1, current value: {pageIndex}.");
         }
     }
+
+    public static Dictionary<string, string> TagNormalizationDictionary => new()
+    {
+        { ".", "dot" },
+        { "#", "sharp" },
+        { " ", "-" }
+    };
 }
