@@ -86,10 +86,12 @@ Set `Authentication:Provider` to `"Local"`. You can manage accounts in `/admin/s
 You need to create an [**Azure Blob Storage**](https://azure.microsoft.com/en-us/services/storage/blobs/) with **container level permission**. 
 
 ```json
-"Provider": "azurestorage"
-"AzureStorageSettings": {
-  "ConnectionString": "YOUR CONNECTION STRING",
-  "ContainerName": "YOUR CONTAINER NAME"
+{
+  "Provider": "azurestorage"
+  "AzureStorageSettings": {
+    "ConnectionString": "YOUR CONNECTION STRING",
+    "ContainerName": "YOUR CONTAINER NAME"
+  }
 }
 ```
 
@@ -100,9 +102,9 @@ When configured the image storage to use Azure Blob, you can take advantage of C
 You can also choose File System for image storage, but this will make your site root not read-only, which would be a potential security issue. And it will be harder for you to backup or update the website.
 
 ```json
-"Provider": "filesystem",
-"FileSystemSettings": {
-  "Path": "C:\\UploadedImages"
+{
+  "Provider": "filesystem",
+  "FileSystemPath": "C:\\UploadedImages"
 }
 ```
 The ```Path``` can be relative or absolute.
