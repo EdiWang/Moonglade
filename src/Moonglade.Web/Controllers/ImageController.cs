@@ -111,8 +111,8 @@ public class ImageController : ControllerBase
         MemoryStream watermarkedStream = null;
         if (_blogConfig.ImageSettings.IsWatermarkEnabled && !skipWatermark)
         {
-            if (null == _imageStorageSettings.Watermark.NoWatermarkExtensions
-                || _imageStorageSettings.Watermark.NoWatermarkExtensions.All(
+            if (null == _imageStorageSettings.Watermark.SkipExtensions
+                || _imageStorageSettings.Watermark.SkipExtensions.All(
                     p => string.Compare(p, ext, StringComparison.OrdinalIgnoreCase) != 0))
             {
                 using var watermarker = new ImageWatermarker(stream, ext, _imageStorageSettings.Watermark.WatermarkSkipPixel);

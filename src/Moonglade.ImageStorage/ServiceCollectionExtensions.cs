@@ -67,13 +67,12 @@ public static class ServiceCollectionExtensions
 
     private static void AddFileSystemStorage(this IServiceCollection services, ImageStorageSettings storageSettings)
     {
-        if (storageSettings.FileSystemSettings == null)
+        if (string.IsNullOrWhiteSpace(storageSettings.FileSystemPath))
         {
-            throw new ArgumentNullException(nameof(ImageStorageSettings.FileSystemSettings), "FileSystemSettings can not be null.");
+            throw new ArgumentNullException(nameof(storageSettings.FileSystemPath), "FileSystemPath can not be null or empty.");
         }
 
-        var path = storageSettings.FileSystemSettings.Path;
-        var fullPath = FileSystemImageStorage.ResolveImageStoragePath(path);
+        var fullPath = FileSystemImageStorage.ResolveImageStoragePath(storageSettings.FileSystemPath);
         services.AddSingleton(_ => new FileSystemImageConfiguration(fullPath))
            .AddSingleton<IBlogImageStorage, FileSystemImageStorage>()
            .AddScoped<IFileNameGenerator>(_ => new GuidFileNameGenerator(Guid.NewGuid()));

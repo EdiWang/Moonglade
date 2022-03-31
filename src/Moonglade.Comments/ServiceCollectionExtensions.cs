@@ -14,7 +14,7 @@ public static class ServiceCollectionExtensions
 
         services.Configure<AzureContentModeratorSettings>(section);
 
-        if (settings != null && 
+        if (settings != null &&
             !string.IsNullOrWhiteSpace(settings.Endpoint) &&
             !string.IsNullOrWhiteSpace(settings.OcpApimSubscriptionKey))
         {
