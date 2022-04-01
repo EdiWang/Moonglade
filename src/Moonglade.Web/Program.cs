@@ -33,11 +33,7 @@ var builder = WebApplication.CreateBuilder(args);
 string dbType = builder.Configuration.GetConnectionString("DatabaseType");
 string connStr = builder.Configuration.GetConnectionString("MoongladeDatabase");
 
-// Workaround stupid ASP.NET "by design" issue
-// https://github.com/aspnet/Configuration/issues/451
-var cultures = builder.Configuration.GetSection("Cultures").Get<string[]>()
-    .Select(p => new CultureInfo(p))
-    .ToList();
+var cultures = new[] { "en-US", "zh-CN" }.Select(p => new CultureInfo(p)).ToList();
 
 ConfigureConfiguration(builder.Configuration);
 ConfigureServices(builder.Services);
