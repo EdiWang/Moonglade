@@ -20,6 +20,22 @@ public class ImageSettings : IBlogSettings, IValidatableObject
     [MaxLength(32)]
     public string WatermarkText { get; set; }
 
+    [Display(Name = "A")]
+    [Range(0, 255)]
+    public int WatermarkColorA { get; set; }
+
+    [Display(Name = "R")]
+    [Range(0, 255)]
+    public int WatermarkColorR { get; set; }
+
+    [Display(Name = "G")]
+    [Range(0, 255)]
+    public int WatermarkColorG { get; set; }
+
+    [Display(Name = "B")]
+    [Range(0, 255)]
+    public int WatermarkColorB { get; set; }
+
     [Display(Name = "Use friendly 404 image")]
     public bool UseFriendlyNotFoundImage { get; set; }
 
@@ -33,6 +49,14 @@ public class ImageSettings : IBlogSettings, IValidatableObject
     [MaxLength(128)]
     [Display(Name = "CDN endpoint")]
     public string CDNEndpoint { get; set; }
+
+    public ImageSettings()
+    {
+        WatermarkColorA = 128;
+        WatermarkColorR = 128;
+        WatermarkColorG = 128;
+        WatermarkColorB = 128;
+    }
 
     public IEnumerable<ValidationResult> Validate(ValidationContext validationContext)
     {
