@@ -11,9 +11,24 @@
 }
 
 @section scripts{
-<script>var require = { paths: { 'vs': '/lib/monaco-editor/min/vs' } };</script>
-<script src="~/lib/monaco-editor/min/vs/loader.js"></script>
+<script type="text/javascript" src="https://unpkg.com/monaco-editor@latest/min/vs/loader.js"></script>
 <script>
+    require.config({ paths: { 'vs': 'https://unpkg.com/monaco-editor@latest/min/vs' }});
+    // Before loading vs/editor/editor.main, define a global MonacoEnvironment that overwrites
+    // the default worker url location (used when creating WebWorkers). The problem here is that
+    // HTML5 does not allow cross-domain web workers, so we need to proxy the instantiation of
+    // a web worker through a same-domain script
+    window.MonacoEnvironment = {
+        getWorkerUrl: function(workerId, label) {
+            return `data:text/javascript;charset=utf-8,${encodeURIComponent(`
+        self.MonacoEnvironment = {
+          baseUrl: 'https://unpkg.com/monaco-editor@latest/min/'
+        };
+        importScripts('https://unpkg.com/monaco-editor@latest/min/vs/base/worker/workerMain.js');`
+            )}`;
+        }
+    };
+
     var pageId = '@Model.PageId.ToString()';
 
     var btnSubmitPage = '#btn-submit';
@@ -113,10 +128,10 @@
     $(window).bind('keydown', function (event) {
         if (event.ctrlKey || event.metaKey) {
             switch (String.fromCharCode(event.which).toLowerCase()) {
-                case 's':
-                    event.preventDefault();
-                    $("#btn-submit").trigger('click');
-                    break;
+            case 's':
+                event.preventDefault();
+                $("#btn-submit").trigger('click');
+                break;
             }
         }
     });
