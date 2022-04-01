@@ -1,5 +1,4 @@
-﻿using Microsoft.Extensions.Configuration;
-using Moonglade.Data;
+﻿using Moonglade.Data;
 using Moonglade.Utils;
 
 namespace Moonglade.Core.TagFeature;

@@ -1,5 +1,4 @@
-﻿using Microsoft.Extensions.Configuration;
-using Microsoft.Extensions.Options;
+﻿using Microsoft.Extensions.Options;
 using Moonglade.Caching;
 using Moonglade.Configuration;
 using Moonglade.Core.TagFeature;
