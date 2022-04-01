@@ -110,7 +110,7 @@ public class ImageController : ControllerBase
                 || _imageStorageSettings.Watermark.SkipExtensions.All(
                     p => string.Compare(p, ext, StringComparison.OrdinalIgnoreCase) != 0))
             {
-                using var watermarker = new ImageWatermarker(stream, ext, _imageStorageSettings.Watermark.WatermarkSkipPixel);
+                using var watermarker = new ImageWatermarker(stream, ext, _imageStorageSettings.Watermark.SkipPixel);
 
                 watermarkedStream = watermarker.AddWatermark(
                     _blogConfig.ImageSettings.WatermarkText,
