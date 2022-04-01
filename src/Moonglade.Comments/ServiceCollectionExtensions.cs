@@ -9,7 +9,7 @@ public static class ServiceCollectionExtensions
 {
     public static IServiceCollection AddComments(this IServiceCollection services, IConfiguration configuration)
     {
-        var section = configuration.GetSection("AzureContentModeratorSettings");
+        var section = configuration.GetSection("AzureContentModerator");
         var settings = section.Get<AzureContentModeratorSettings>();
 
         services.Configure<AzureContentModeratorSettings>(section);
