@@ -10,6 +10,6 @@ public class GetCategoryByIdQueryHandler : IRequestHandler<GetCategoryByIdQuery,
 
     public GetCategoryByIdQueryHandler(IRepository<CategoryEntity> catRepo) => _catRepo = catRepo;
 
-    public Task<Category> Handle(GetCategoryByIdQuery request, CancellationToken cancellationToken) => 
+    public Task<Category> Handle(GetCategoryByIdQuery request, CancellationToken cancellationToken) =>
         _catRepo.SelectFirstOrDefaultAsync(new CategorySpec(request.Id), Category.EntitySelector);
 }
