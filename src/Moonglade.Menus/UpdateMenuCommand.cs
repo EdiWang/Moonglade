@@ -5,7 +5,7 @@ using Moonglade.Utils;
 
 namespace Moonglade.Menus;
 
-public record UpdateMenuCommand(Guid Id, EditMenuRequest Payload) : IRequest;
+public record UpdateMenuCommand(EditMenuRequest Payload) : IRequest;
 
 public class UpdateMenuCommandHandler : AsyncRequestHandler<UpdateMenuCommand>
 {
@@ -15,25 +15,24 @@ public class UpdateMenuCommandHandler : AsyncRequestHandler<UpdateMenuCommand>
 
     protected override async Task Handle(UpdateMenuCommand request, CancellationToken cancellationToken)
     {
-        var (guid, payload) = request;
-        var menu = await _menuRepo.GetAsync(guid);
+        var menu = await _menuRepo.GetAsync(request.Payload.Id);
         if (menu is null)
         {
-            throw new InvalidOperationException($"MenuEntity with Id '{guid}' not found.");
+            throw new InvalidOperationException($"MenuEntity with Id '{request.Payload.Id}' not found.");
         }
 
-        var url = Helper.SterilizeLink(payload.Url.Trim());
+        var url = Helper.SterilizeLink(request.Payload.Url.Trim());
 
-        menu.Title = payload.Title.Trim();
+        menu.Title = request.Payload.Title.Trim();
         menu.Url = url;
-        menu.DisplayOrder = payload.DisplayOrder.GetValueOrDefault();
-        menu.Icon = payload.Icon;
-        menu.IsOpenInNewTab = payload.IsOpenInNewTab;
+        menu.DisplayOrder = request.Payload.DisplayOrder.GetValueOrDefault();
+        menu.Icon = request.Payload.Icon;
+        menu.IsOpenInNewTab = request.Payload.IsOpenInNewTab;
 
-        if (payload.SubMenus != null)
+        if (request.Payload.SubMenus != null)
         {
             menu.SubMenus.Clear();
-            var sms = payload.SubMenus.Select(p => new SubMenuEntity
+            var sms = request.Payload.SubMenus.Select(p => new SubMenuEntity
             {
                 Id = Guid.NewGuid(),
                 IsOpenInNewTab = p.IsOpenInNewTab,
