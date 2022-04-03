@@ -52,7 +52,7 @@ public interface IRepository<T> //where T : class
         Expression<Func<IGrouping<TGroup, T>, TResult>> selector,
         ISpecification<T> spec = null);
 
-    Task<T> AddAsync(T entity);
+    Task<T> AddAsync(T entity, CancellationToken ct = default);
 
     Task UpdateAsync(T entity);
 }

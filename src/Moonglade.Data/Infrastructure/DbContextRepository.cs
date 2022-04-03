@@ -113,10 +113,10 @@ public abstract class DbContextRepository<T> : IRepository<T> where T : class
             await DbContext.Set<T>().AsNoTracking().GroupBy(groupExpression).Select(selector).ToListAsync();
     }
 
-    public async Task<T> AddAsync(T entity)
+    public async Task<T> AddAsync(T entity, CancellationToken ct)
     {
-        await DbContext.Set<T>().AddAsync(entity);
-        await DbContext.SaveChangesAsync();
+        await DbContext.Set<T>().AddAsync(entity, ct);
+        await DbContext.SaveChangesAsync(ct);
 
         return entity;
     }
