@@ -47,6 +47,6 @@ public class CreateAccountCommandHandler : AsyncRequestHandler<CreateAccountComm
             PasswordHash = Helper.HashPassword(request.Password.Trim())
         };
 
-        return _accountRepo.AddAsync(account);
+        return _accountRepo.AddAsync(account, cancellationToken);
     }
 }

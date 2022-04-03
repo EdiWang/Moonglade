@@ -40,6 +40,6 @@ public class AddLinkCommandHandler : AsyncRequestHandler<AddLinkCommand>
             Title = request.Title
         };
 
-        await _friendlinkRepo.AddAsync(link);
+        await _friendlinkRepo.AddAsync(link, cancellationToken);
     }
 }

@@ -32,7 +32,7 @@ public class ReplyCommentCommandHandler : IRequestHandler<ReplyCommentCommand, C
             CommentId = request.CommentId
         };
 
-        await _commentReplyRepo.AddAsync(model);
+        await _commentReplyRepo.AddAsync(model, cancellationToken);
 
         var reply = new CommentReply
         {

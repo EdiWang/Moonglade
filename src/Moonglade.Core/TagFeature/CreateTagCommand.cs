@@ -27,7 +27,7 @@ public class CreateTagCommandHandler : IRequestHandler<CreateTagCommand, Tag>
             NormalizedName = normalizedName
         };
 
-        var tag = await _tagRepo.AddAsync(newTag);
+        var tag = await _tagRepo.AddAsync(newTag, cancellationToken);
 
         return new()
         {

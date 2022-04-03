@@ -87,7 +87,7 @@ public class UpdatePostCommandHandler : IRequestHandler<UpdatePostCommand, PostE
             {
                 DisplayName = item,
                 NormalizedName = Tag.NormalizeName(item, Helper.TagNormalizationDictionary)
-            });
+            }, cancellationToken);
         }
 
         // 2. update tags

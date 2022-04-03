@@ -111,7 +111,7 @@ public class CreatePostCommandHandler : IRequestHandler<CreatePostCommand, PostE
             }
         }
 
-        await _postRepo.AddAsync(post);
+        await _postRepo.AddAsync(post, cancellationToken);
 
         return post;
     }

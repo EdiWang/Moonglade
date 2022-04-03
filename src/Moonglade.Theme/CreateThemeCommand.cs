@@ -26,7 +26,7 @@ public class CreateThemeCommandHandler : IRequestHandler<CreateThemeCommand, int
             ThemeType = ThemeType.User
         };
 
-        await _themeRepo.AddAsync(blogTheme);
+        await _themeRepo.AddAsync(blogTheme, cancellationToken);
         return blogTheme.Id;
     }
 }

@@ -71,7 +71,7 @@ public class CreateCommentCommandHandler : IRequestHandler<CreateCommentCommand,
             IsApproved = !_blogConfig.ContentSettings.RequireCommentReview
         };
 
-        await _commentRepo.AddAsync(model);
+        await _commentRepo.AddAsync(model, cancellationToken);
 
         var spec = new PostSpec(request.PostId, false);
         var postTitle = await _postRepo.SelectFirstOrDefaultAsync(spec, p => p.Title);

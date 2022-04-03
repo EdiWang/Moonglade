@@ -107,7 +107,7 @@ public class ReceivePingCommandHandler : IRequestHandler<ReceivePingCommand, Pin
                 SourceIp = request.IP
             };
 
-            await _pingbackRepo.AddAsync(obj);
+            await _pingbackRepo.AddAsync(obj, cancellationToken);
             request.Action?.Invoke(obj);
 
             return PingbackResponse.Success;

@@ -23,7 +23,7 @@ public class CreatePageCommandHandler : IRequestHandler<CreatePageCommand, Guid>
             IsPublished = request.Payload.IsPublished
         };
 
-        await _pageRepo.AddAsync(page);
+        await _pageRepo.AddAsync(page, cancellationToken);
 
         return uid;
     }
