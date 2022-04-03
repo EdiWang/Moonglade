@@ -45,6 +45,6 @@ public class UpdateMenuCommandHandler : AsyncRequestHandler<UpdateMenuCommand>
             menu.SubMenus = sms.ToList();
         }
 
-        await _menuRepo.UpdateAsync(menu);
+        await _menuRepo.UpdateAsync(menu, cancellationToken);
     }
 }

@@ -24,7 +24,7 @@ public class ToggleApprovalCommandHandler : AsyncRequestHandler<ToggleApprovalCo
         foreach (var cmt in comments)
         {
             cmt.IsApproved = !cmt.IsApproved;
-            await _commentRepo.UpdateAsync(cmt);
+            await _commentRepo.UpdateAsync(cmt, cancellationToken);
         }
     }
 }

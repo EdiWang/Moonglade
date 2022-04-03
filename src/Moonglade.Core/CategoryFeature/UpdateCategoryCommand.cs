@@ -28,7 +28,7 @@ public class UpdateCategoryCommandHandler : IRequestHandler<UpdateCategoryComman
         cat.DisplayName = request.DisplayName.Trim();
         cat.Note = request.Note?.Trim();
 
-        await _catRepo.UpdateAsync(cat);
+        await _catRepo.UpdateAsync(cat, cancellationToken);
         _cache.Remove(CacheDivision.General, "allcats");
 
         return OperationCode.Done;

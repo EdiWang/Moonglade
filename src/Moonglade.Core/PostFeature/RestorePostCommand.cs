@@ -21,7 +21,7 @@ public class RestorePostCommandHandler : AsyncRequestHandler<RestorePostCommand>
         if (null == pp) return;
 
         pp.IsDeleted = false;
-        await _postRepo.UpdateAsync(pp);
+        await _postRepo.UpdateAsync(pp, cancellationToken);
 
         _cache.Remove(CacheDivision.Post, request.Id.ToString());
     }

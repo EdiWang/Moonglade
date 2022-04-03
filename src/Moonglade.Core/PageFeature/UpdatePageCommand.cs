@@ -26,7 +26,7 @@ public class UpdatePageCommandHandler : IRequestHandler<UpdatePageCommand, Guid>
         page.UpdateTimeUtc = DateTime.UtcNow;
         page.IsPublished = payload.IsPublished;
 
-        await _pageRepo.UpdateAsync(page);
+        await _pageRepo.UpdateAsync(page, cancellationToken);
 
         return page.Id;
     }

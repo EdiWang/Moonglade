@@ -121,10 +121,10 @@ public abstract class DbContextRepository<T> : IRepository<T> where T : class
         return entity;
     }
 
-    public async Task UpdateAsync(T entity)
+    public async Task UpdateAsync(T entity, CancellationToken ct = default)
     {
         DbContext.Entry(entity).State = EntityState.Modified;
-        await DbContext.SaveChangesAsync();
+        await DbContext.SaveChangesAsync(ct);
     }
 
     public Task<int> CountAsync(ISpecification<T> spec)

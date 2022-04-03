@@ -120,7 +120,7 @@ public class UpdatePostCommandHandler : IRequestHandler<UpdatePostCommand, PostE
             }
         }
 
-        await _postRepo.UpdateAsync(post);
+        await _postRepo.UpdateAsync(post, cancellationToken);
 
         _cache.Remove(CacheDivision.Post, guid.ToString());
         return post;

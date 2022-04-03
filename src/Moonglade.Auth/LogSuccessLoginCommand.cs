@@ -19,7 +19,7 @@ public class LogSuccessLoginCommandHandler : AsyncRequestHandler<LogSuccessLogin
         {
             entity.LastLoginIp = ipAddress.Trim();
             entity.LastLoginTimeUtc = DateTime.UtcNow;
-            await _accountRepo.UpdateAsync(entity);
+            await _accountRepo.UpdateAsync(entity, cancellationToken);
         }
     }
 }

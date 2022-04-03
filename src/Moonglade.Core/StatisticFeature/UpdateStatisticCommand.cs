@@ -24,6 +24,6 @@ public class UpdateStatisticCommandHandler : AsyncRequestHandler<UpdateStatistic
             pp.Hits += 1;
         }
 
-        await _postExtensionRepo.UpdateAsync(pp);
+        await _postExtensionRepo.UpdateAsync(pp, cancellationToken);
     }
 }

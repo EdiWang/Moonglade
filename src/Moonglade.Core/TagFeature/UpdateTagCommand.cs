@@ -19,7 +19,7 @@ public class UpdateTagCommandHandler : IRequestHandler<UpdateTagCommand, Operati
 
         tag.DisplayName = name;
         tag.NormalizedName = Tag.NormalizeName(name, Helper.TagNormalizationDictionary);
-        await _tagRepo.UpdateAsync(tag);
+        await _tagRepo.UpdateAsync(tag, cancellationToken);
 
         return OperationCode.Done;
     }

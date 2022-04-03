@@ -24,7 +24,7 @@ public class DeletePostCommandHandler : AsyncRequestHandler<DeletePostCommand>
         if (softDelete)
         {
             post.IsDeleted = true;
-            await _postRepo.UpdateAsync(post);
+            await _postRepo.UpdateAsync(post, cancellationToken);
         }
         else
         {
