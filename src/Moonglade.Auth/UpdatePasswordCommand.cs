@@ -9,12 +9,7 @@ public record UpdatePasswordCommand(Guid Id, string ClearPassword) : IRequest;
 public class UpdatePasswordCommandHandler : AsyncRequestHandler<UpdatePasswordCommand>
 {
     private readonly IRepository<LocalAccountEntity> _accountRepo;
-
-    public UpdatePasswordCommandHandler(
-        IRepository<LocalAccountEntity> accountRepo)
-    {
-        _accountRepo = accountRepo;
-    }
+    public UpdatePasswordCommandHandler(IRepository<LocalAccountEntity> accountRepo) => _accountRepo = accountRepo;
 
     protected override async Task Handle(UpdatePasswordCommand request, CancellationToken cancellationToken)
     {

@@ -5,7 +5,7 @@ using System.ComponentModel.DataAnnotations;
 
 namespace Moonglade.Auth;
 
-public class CreateAccountCommand : IRequest<Guid>
+public class CreateAccountCommand : IRequest
 {
     [Required]
     [Display(Name = "Username")]
@@ -21,17 +21,12 @@ public class CreateAccountCommand : IRequest<Guid>
     public string Password { get; set; }
 }
 
-public class CreateAccountCommandHandler : IRequestHandler<CreateAccountCommand, Guid>
+public class CreateAccountCommandHandler : AsyncRequestHandler<CreateAccountCommand>
 {
     private readonly IRepository<LocalAccountEntity> _accountRepo;
+    public CreateAccountCommandHandler(IRepository<LocalAccountEntity> accountRepo) => _accountRepo = accountRepo;
 
-    public CreateAccountCommandHandler(
-        IRepository<LocalAccountEntity> accountRepo)
-    {
-        _accountRepo = accountRepo;
-    }
-
-    public async Task<Guid> Handle(CreateAccountCommand request, CancellationToken cancellationToken)
+    protected override Task Handle(CreateAccountCommand request, CancellationToken cancellationToken)
     {
         if (string.IsNullOrWhiteSpace(request.Username))
         {
@@ -52,8 +47,6 @@ public class CreateAccountCommandHandler : IRequestHandler<CreateAccountCommand,
             PasswordHash = Helper.HashPassword(request.Password.Trim())
         };
 
-        await _accountRepo.AddAsync(account);
-
-        return uid;
+        return _accountRepo.AddAsync(account);
     }
 }

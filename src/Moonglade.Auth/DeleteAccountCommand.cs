@@ -8,11 +8,7 @@ public record DeleteAccountCommand(Guid Id) : IRequest;
 public class DeleteAccountCommandHandler : AsyncRequestHandler<DeleteAccountCommand>
 {
     private readonly IRepository<LocalAccountEntity> _accountRepo;
-
-    public DeleteAccountCommandHandler(IRepository<LocalAccountEntity> accountRepo)
-    {
-        _accountRepo = accountRepo;
-    }
+    public DeleteAccountCommandHandler(IRepository<LocalAccountEntity> accountRepo) => _accountRepo = accountRepo;
 
     protected override async Task Handle(DeleteAccountCommand request, CancellationToken cancellationToken)
     {
