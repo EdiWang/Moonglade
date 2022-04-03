@@ -19,7 +19,7 @@ public class DeleteThemeCommandHandler : IRequestHandler<DeleteThemeCommand, Ope
         if (null == theme) return OperationCode.ObjectNotFound;
         if (theme.ThemeType == ThemeType.System) return OperationCode.Canceled;
 
-        await _themeRepo.DeleteAsync(request.Id);
+        await _themeRepo.DeleteAsync(request.Id, cancellationToken);
         return OperationCode.Done;
     }
 }

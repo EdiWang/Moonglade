@@ -12,6 +12,6 @@ public class DeletePingbackCommandHandler : AsyncRequestHandler<DeletePingbackCo
 
     public DeletePingbackCommandHandler(IRepository<PingbackEntity> pingbackRepo) => _pingbackRepo = pingbackRepo;
 
-    protected override async Task Handle(DeletePingbackCommand request, CancellationToken cancellationToken) =>
-        await _pingbackRepo.DeleteAsync(request.Id);
+    protected override Task Handle(DeletePingbackCommand request, CancellationToken cancellationToken) =>
+        _pingbackRepo.DeleteAsync(request.Id, cancellationToken);
 }

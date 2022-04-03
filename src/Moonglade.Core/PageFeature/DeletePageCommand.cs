@@ -16,6 +16,6 @@ public class DeletePageCommandHandler : AsyncRequestHandler<DeletePageCommand>
             throw new InvalidOperationException($"CustomPageEntity with Id '{request.Id}' not found.");
         }
 
-        await _pageRepo.DeleteAsync(request.Id);
+        await _pageRepo.DeleteAsync(request.Id, cancellationToken);
     }
 }

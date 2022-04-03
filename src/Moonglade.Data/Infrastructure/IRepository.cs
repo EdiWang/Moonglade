@@ -20,11 +20,11 @@ public interface IRepository<T> //where T : class
         ISpecification<T> spec,
         Expression<Func<T, TResult>> selector);
 
-    Task DeleteAsync(T entity);
+    Task DeleteAsync(T entity, CancellationToken ct = default);
 
-    Task DeleteAsync(IEnumerable<T> entities);
+    Task DeleteAsync(IEnumerable<T> entities, CancellationToken ct = default);
 
-    Task DeleteAsync(object key);
+    Task DeleteAsync(object key, CancellationToken ct = default);
 
     int Count(ISpecification<T> spec = null);
 

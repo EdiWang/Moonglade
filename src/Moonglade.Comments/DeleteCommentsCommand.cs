@@ -33,11 +33,11 @@ public class DeleteCommentsCommandHandler : AsyncRequestHandler<DeleteCommentsCo
             var cReplies = await _commentReplyRepo.ListAsync(new CommentReplySpec(cmt.Id));
             if (cReplies.Any())
             {
-                await _commentReplyRepo.DeleteAsync(cReplies);
+                await _commentReplyRepo.DeleteAsync(cReplies, cancellationToken);
             }
 
             // 2. Delete comment itself
-            await _commentRepo.DeleteAsync(cmt);
+            await _commentRepo.DeleteAsync(cmt, cancellationToken);
         }
     }
 }

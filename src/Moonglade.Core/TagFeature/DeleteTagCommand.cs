@@ -23,10 +23,10 @@ public class DeleteTagCommandHandler : IRequestHandler<DeleteTagCommand, Operati
 
         // 1. Delete Post-Tag Association
         var postTags = await _postTagRepo.ListAsync(new PostTagSpec(request.Id));
-        await _postTagRepo.DeleteAsync(postTags);
+        await _postTagRepo.DeleteAsync(postTags, cancellationToken);
 
         // 2. Delte Tag itslef
-        await _tagRepo.DeleteAsync(request.Id);
+        await _tagRepo.DeleteAsync(request.Id, cancellationToken);
 
         return OperationCode.Done;
     }

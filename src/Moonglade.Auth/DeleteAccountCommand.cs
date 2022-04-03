@@ -18,6 +18,6 @@ public class DeleteAccountCommandHandler : AsyncRequestHandler<DeleteAccountComm
             throw new InvalidOperationException($"LocalAccountEntity with Id '{request.Id}' not found.");
         }
 
-        await _accountRepo.DeleteAsync(request.Id);
+        await _accountRepo.DeleteAsync(request.Id, cancellationToken);
     }
 }

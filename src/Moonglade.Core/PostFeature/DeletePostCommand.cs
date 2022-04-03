@@ -28,7 +28,7 @@ public class DeletePostCommandHandler : AsyncRequestHandler<DeletePostCommand>
         }
         else
         {
-            await _postRepo.DeleteAsync(post);
+            await _postRepo.DeleteAsync(post, cancellationToken);
         }
 
         _cache.Remove(CacheDivision.Post, guid.ToString());

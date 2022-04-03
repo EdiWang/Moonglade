@@ -6,10 +6,7 @@ public abstract class DbContextRepository<T> : IRepository<T> where T : class
 {
     protected readonly DbContext DbContext;
 
-    protected DbContextRepository(DbContext dbContext)
-    {
-        DbContext = dbContext;
-    }
+    protected DbContextRepository(DbContext dbContext) => DbContext = dbContext;
 
     public Task Clear()
     {
@@ -22,10 +19,7 @@ public abstract class DbContextRepository<T> : IRepository<T> where T : class
         return DbContext.Set<T>().FirstOrDefaultAsync(condition);
     }
 
-    public virtual ValueTask<T> GetAsync(object key)
-    {
-        return DbContext.Set<T>().FindAsync(key);
-    }
+    public virtual ValueTask<T> GetAsync(object key) => DbContext.Set<T>().FindAsync(key);
 
     public async Task<IReadOnlyList<T>> ListAsync()
     {
@@ -37,10 +31,7 @@ public abstract class DbContextRepository<T> : IRepository<T> where T : class
         return await ApplySpecification(spec).AsNoTracking().ToListAsync();
     }
 
-    public IQueryable<T> GetAsQueryable()
-    {
-        return DbContext.Set<T>();
-    }
+    public IQueryable<T> GetAsQueryable() => DbContext.Set<T>();
 
     public TResult SelectFirstOrDefault<TResult>(
         ISpecification<T> spec, Expression<Func<T, TResult>> selector)
@@ -48,22 +39,22 @@ public abstract class DbContextRepository<T> : IRepository<T> where T : class
         return ApplySpecification(spec).AsNoTracking().Select(selector).FirstOrDefault();
     }
 
-    public async Task DeleteAsync(T entity)
+    public async Task DeleteAsync(T entity, CancellationToken ct = default)
     {
         DbContext.Set<T>().Remove(entity);
-        await DbContext.SaveChangesAsync();
+        await DbContext.SaveChangesAsync(ct);
     }
 
-    public Task DeleteAsync(IEnumerable<T> entities)
+    public Task DeleteAsync(IEnumerable<T> entities, CancellationToken ct = default)
     {
         DbContext.Set<T>().RemoveRange(entities);
-        return DbContext.SaveChangesAsync();
+        return DbContext.SaveChangesAsync(ct);
     }
 
-    public async Task DeleteAsync(object key)
+    public async Task DeleteAsync(object key, CancellationToken ct = default)
     {
         var entity = await GetAsync(key);
-        if (entity is not null) await DeleteAsync(entity);
+        if (entity is not null) await DeleteAsync(entity, ct);
     }
 
     public int Count(ISpecification<T> spec = null)
@@ -76,10 +67,7 @@ public abstract class DbContextRepository<T> : IRepository<T> where T : class
         return DbContext.Set<T>().Count(condition);
     }
 
-    public bool Any(ISpecification<T> spec)
-    {
-        return ApplySpecification(spec).Any();
-    }
+    public bool Any(ISpecification<T> spec) => ApplySpecification(spec).Any();
 
     public bool Any(Expression<Func<T, bool>> condition = null)
     {
