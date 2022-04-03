@@ -9,16 +9,12 @@ public record ExportCategoryDataCommand : IRequest<ExportResult>;
 
 public class ExportCategoryDataCommandHandler : IRequestHandler<ExportCategoryDataCommand, ExportResult>
 {
-    private readonly IRepository<CategoryEntity> _catRepository;
-
-    public ExportCategoryDataCommandHandler(IRepository<CategoryEntity> catRepository)
-    {
-        _catRepository = catRepository;
-    }
+    private readonly IRepository<CategoryEntity> _repo;
+    public ExportCategoryDataCommandHandler(IRepository<CategoryEntity> repo) => _repo = repo;
 
     public Task<ExportResult> Handle(ExportCategoryDataCommand request, CancellationToken cancellationToken)
     {
-        var catExp = new CSVExporter<CategoryEntity>(_catRepository, "moonglade-categories", ExportManager.DataDir);
+        var catExp = new CSVExporter<CategoryEntity>(_repo, "moonglade-categories", ExportManager.DataDir);
         return catExp.ExportData(p => new
         {
             p.Id,

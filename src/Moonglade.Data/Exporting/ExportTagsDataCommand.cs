@@ -9,16 +9,12 @@ public record ExportTagsDataCommand : IRequest<ExportResult>;
 
 public class ExportTagsDataCommandHandler : IRequestHandler<ExportTagsDataCommand, ExportResult>
 {
-    private readonly IRepository<TagEntity> _tagRepository;
-
-    public ExportTagsDataCommandHandler(IRepository<TagEntity> tagRepository)
-    {
-        _tagRepository = tagRepository;
-    }
+    private readonly IRepository<TagEntity> _repo;
+    public ExportTagsDataCommandHandler(IRepository<TagEntity> repo) => _repo = repo;
 
     public Task<ExportResult> Handle(ExportTagsDataCommand request, CancellationToken cancellationToken)
     {
-        var tagExp = new CSVExporter<TagEntity>(_tagRepository, "moonglade-tags", ExportManager.DataDir);
+        var tagExp = new CSVExporter<TagEntity>(_repo, "moonglade-tags", ExportManager.DataDir);
         return tagExp.ExportData(p => new
         {
             p.Id,
