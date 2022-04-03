@@ -90,15 +90,15 @@ void ConfigureServices(IServiceCollection services)
     });
 
     services.AddOptions()
-                    .AddHttpContextAccessor()
-                    .AddRateLimit(builder.Configuration.GetSection("IpRateLimiting"))
-                    .AddFeatureManagement();
+            .AddHttpContextAccessor()
+            .AddRateLimit(builder.Configuration.GetSection("IpRateLimiting"))
+            .AddFeatureManagement();
     services.AddAzureAppConfiguration()
-                    .AddApplicationInsightsTelemetry()
-                    .ConfigureTelemetryModule<DependencyTrackingTelemetryModule>((module, _) =>
-                    {
-                        module.EnableSqlCommandTextInstrumentation = true;
-                    });
+            .AddApplicationInsightsTelemetry()
+            .ConfigureTelemetryModule<DependencyTrackingTelemetryModule>((module, _) =>
+            {
+                module.EnableSqlCommandTextInstrumentation = true;
+            });
 
     services.AddSession(options =>
     {
@@ -112,18 +112,18 @@ void ConfigureServices(IServiceCollection services)
     services.AddLocalization(options => options.ResourcesPath = "Resources");
     services.AddSwaggerGen();
     services.AddControllers(options => options.Filters.Add(new AutoValidateAntiforgeryTokenAttribute()))
-                    .AddJsonOptions(options => options.JsonSerializerOptions.Converters.Add(new JsonStringEnumConverter()))
-                    .ConfigureApiBehaviorOptions(ConfigureApiBehavior.BlogApiBehavior);
+            .AddJsonOptions(options => options.JsonSerializerOptions.Converters.Add(new JsonStringEnumConverter()))
+            .ConfigureApiBehaviorOptions(ConfigureApiBehavior.BlogApiBehavior);
     services.AddRazorPages().AddViewLocalization()
-                    .AddDataAnnotationsLocalization(options =>
-                    {
-                        options.DataAnnotationLocalizerProvider = (_, factory) => factory.Create(typeof(SharedResource));
-                    })
-                    .AddRazorPagesOptions(options =>
-                    {
-                        options.Conventions.AuthorizeFolder("/Admin");
-                        options.Conventions.AuthorizeFolder("/Settings");
-                    });
+            .AddDataAnnotationsLocalization(options =>
+            {
+                options.DataAnnotationLocalizerProvider = (_, factory) => factory.Create(typeof(SharedResource));
+            })
+            .AddRazorPagesOptions(options =>
+            {
+                options.Conventions.AuthorizeFolder("/Admin");
+                options.Conventions.AuthorizeFolder("/Settings");
+            });
 
     // Fix Chinese character being encoded in HTML output
     services.AddSingleton(HtmlEncoder.Create(
@@ -164,21 +164,21 @@ void ConfigureServices(IServiceCollection services)
                     .AddTransient<ResponseBodyLoggingMiddleware>();
 
     services.AddPingback()
-                    .AddSyndication()
-                    .AddNotificationClient()
-                    .AddReleaseCheckerClient()
-                    .AddBlogCache()
-                    .AddMetaWeblog<Moonglade.Web.MetaWeblogService>()
-                    .AddScoped<ValidateCaptcha>()
-                    .AddScoped<ITimeZoneResolver, BlogTimeZoneResolver>()
-                    .AddBlogConfig(builder.Configuration)
-                    .AddBlogAuthenticaton(builder.Configuration)
-                    .AddComments(builder.Configuration)
-                    .AddImageStorage(builder.Configuration, options =>
-                    {
-                        options.ContentRootPath = builder.Environment.ContentRootPath;
-                    })
-                    .Configure<List<ManifestIcon>>(builder.Configuration.GetSection("ManifestIcons"));
+            .AddSyndication()
+            .AddNotificationClient()
+            .AddReleaseCheckerClient()
+            .AddBlogCache()
+            .AddMetaWeblog<Moonglade.Web.MetaWeblogService>()
+            .AddScoped<ValidateCaptcha>()
+            .AddScoped<ITimeZoneResolver, BlogTimeZoneResolver>()
+            .AddBlogConfig(builder.Configuration)
+            .AddBlogAuthenticaton(builder.Configuration)
+            .AddComments(builder.Configuration)
+            .AddImageStorage(builder.Configuration, options =>
+            {
+                options.ContentRootPath = builder.Environment.ContentRootPath;
+            })
+            .Configure<List<ManifestIcon>>(builder.Configuration.GetSection("ManifestIcons"));
 
 
     switch (dbType.ToLower())
@@ -252,8 +252,8 @@ void ConfigureMiddleware(IApplicationBuilder appBuilder, IServiceProvider servic
     }
 
     appBuilder.UseMiddleware<SiteMapMiddleware>()
-       .UseMiddleware<PoweredByMiddleware>()
-       .UseMiddleware<DNTMiddleware>();
+              .UseMiddleware<PoweredByMiddleware>()
+              .UseMiddleware<DNTMiddleware>();
 
     if (app.Configuration.GetValue<bool>("PreferAzureAppConfiguration"))
     {
@@ -270,8 +270,7 @@ void ConfigureMiddleware(IApplicationBuilder appBuilder, IServiceProvider servic
     }
     else
     {
-        appBuilder.UseStatusCodePages(ConfigureStatusCodePages.Handler)
-           .UseExceptionHandler("/error");
+        appBuilder.UseStatusCodePages(ConfigureStatusCodePages.Handler).UseExceptionHandler("/error");
     }
 
     appBuilder.UseHttpsRedirection().UseHsts();
