@@ -18,7 +18,7 @@ public class CommentListViewComponent : ViewComponent
         {
             if (postId == Guid.Empty)
             {
-                _logger.LogWarning($"postId: {postId} is not a valid GUID");
+                _logger.LogError($"postId: {postId} is not a valid GUID");
                 throw new ArgumentOutOfRangeException(nameof(postId));
             }
 
