@@ -16,16 +16,15 @@ public class SaveAssetToCdnHandler : INotificationHandler<SaveAssetCommand>
     public async Task Handle(SaveAssetCommand request, CancellationToken cancellationToken)
     {
         // Currently only avatar
-        if (request.AssetId != AssetId.AvatarBase64)
-        {
-            return;
-        }
+        var (assetId, assetBase64) = request;
+
+        if (assetId != AssetId.AvatarBase64) return;
 
         if (_blogConfig.ImageSettings.EnableCDNRedirect)
         {
             var fileName = $"avatar-{AssetId.AvatarBase64.ToString("N")[..6]}.png";
             await _imageStorage.DeleteAsync(fileName);
-            fileName = await _imageStorage.InsertAsync(fileName, Convert.FromBase64String(request.AssetBase64));
+            fileName = await _imageStorage.InsertAsync(fileName, Convert.FromBase64String(assetBase64));
 
             var random = new Random();
             _blogConfig.GeneralSettings.AvatarUrl =
