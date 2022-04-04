@@ -127,6 +127,21 @@
                 
                 <div class="row g-3 align-items-center settings-entry mb-4">
                     <div class="col-auto">
+                        <i class="bi-input-cursor-text settings-entry-icon"></i>
+                    </div>
+                    <div class="col">
+                        <label asp-for="ViewModel.WatermarkSkipPixel"></label>
+                        <div class="form-text">
+                            Add watermark only when image pixcel (HxW) is greater than this value.
+                        </div>
+                    </div>
+                    <div class="col-md-5">
+                        <input asp-for="ViewModel.WatermarkSkipPixel" required min="0" max="@int.MaxValue" class="form-control" />
+                    </div>
+                </div>
+                
+                <div class="row g-3 align-items-center settings-entry mb-4">
+                    <div class="col-auto">
                         <i class="bi-palette settings-entry-icon"></i>
                     </div>
                     <div class="col">
@@ -134,10 +149,10 @@
                     </div>
                     <div class="col-md-7">
                         <div class="row g-1">
-                            <div class="col"><input asp-for="ViewModel.WatermarkColorR" class="form-control"/></div>
-                            <div class="col"><input asp-for="ViewModel.WatermarkColorG" class="form-control"/></div>
-                            <div class="col"><input asp-for="ViewModel.WatermarkColorB" class="form-control"/></div>
-                            <div class="col"><input asp-for="ViewModel.WatermarkColorA" class="form-control"/></div>
+                            <div class="col"><input asp-for="ViewModel.WatermarkColorR" required min="0" max="255" class="form-control"/></div>
+                            <div class="col"><input asp-for="ViewModel.WatermarkColorG" required min="0" max="255" class="form-control"/></div>
+                            <div class="col"><input asp-for="ViewModel.WatermarkColorB" required min="0" max="255" class="form-control"/></div>
+                            <div class="col"><input asp-for="ViewModel.WatermarkColorA" required min="0" max="255" class="form-control"/></div>
                         </div>
                     </div>
                 </div>

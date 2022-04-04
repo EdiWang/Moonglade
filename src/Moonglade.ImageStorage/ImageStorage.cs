@@ -22,5 +22,4 @@ public class ImageStorageSettings
 public class WatermarkSettings
 {
     public string[] SkipExtensions { get; set; }
-    public int SkipPixel { get; set; }
 }
