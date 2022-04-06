@@ -287,11 +287,7 @@ void ConfigureMiddleware(IApplicationBuilder appBuilder, IServiceProvider servic
         options.DefaultImagePath = app.Configuration["ImageStorage:DefaultImagePath"];
     });
 
-    var newAdminPortalUrl = app.Configuration["Experimental:NewAdminPortal"];
-    var rewriteOptions = string.IsNullOrWhiteSpace(newAdminPortalUrl) ?
-        new RewriteOptions().AddRedirect("^admin$", "admin/post") :
-        new RewriteOptions().AddRedirect("^admin|^settings", Helper.SterilizeLink(newAdminPortalUrl));
-
+    var rewriteOptions = new RewriteOptions().AddRedirect("^admin$", "admin/post");
     appBuilder.UseRewriter(rewriteOptions);
 
     appBuilder.UseStaticFiles();
