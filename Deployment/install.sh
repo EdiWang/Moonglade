@@ -43,6 +43,7 @@ install_Moonglade()
     moonglade_path="$(pwd)/apps/moongladeApp"
     #rm ./Moonglade/src/Moonglade.Web/libman.json # Remove libman because it is easy to crash.
     dotnet publish -c Release -o $moonglade_path -r linux-x64 --no-self-contained ./Moonglade/src/Moonglade.Web/Moonglade.Web.csproj
+    cp ~/Moonglade/OpenSans-Regular.ttf /usr/share/fonts/OpenSans-Regular.ttf
     rm ~/Moonglade -rf
     cat $moonglade_path/appsettings.json > $moonglade_path/appsettings.Production.json
 
