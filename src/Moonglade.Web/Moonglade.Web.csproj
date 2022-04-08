@@ -46,7 +46,7 @@
 		<PackageReference Include="Microsoft.Azure.AppConfiguration.AspNetCore" Version="5.0.0" />
 		<PackageReference Include="Microsoft.ApplicationInsights.AspNetCore" Version="2.20.0" />
 		<PackageReference Include="Microsoft.Extensions.Logging.AzureAppServices" Version="6.0.3" />
-		<PackageReference Include="Microsoft.FeatureManagement.AspNetCore" Version="2.4.0" />
+		<PackageReference Include="Microsoft.FeatureManagement.AspNetCore" Version="2.5.1" />
 		<PackageReference Include="Microsoft.Web.LibraryManager.Build" Version="2.1.161" />
 		<PackageReference Include="NUglify" Version="1.19.2" />
 		<PackageReference Include="Swashbuckle.AspNetCore" Version="6.3.0" />
