@@ -183,9 +183,6 @@
   <data name="Enable MetaWeblog API" xml:space="preserve">
     <value>启用 MetaWeblog API</value>
   </data>
-  <data name="Enable OpenGraph" xml:space="preserve">
-    <value>启用 OpenGraph</value>
-  </data>
   <data name="Enable OpenSearch" xml:space="preserve">
     <value>启用 OpenSearch</value>
   </data>
