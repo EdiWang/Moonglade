@@ -23,17 +23,13 @@
     }
 
     @await RenderSectionAsync("meta", false)
-    @if (BlogConfig.AdvancedSettings.EnableOpenGraph)
+    @if (IsSectionDefined("opengraph"))
     {
-        @if (IsSectionDefined("opengraph"))
-        {
-            @await RenderSectionAsync("opengraph", false)
-        }
-        else
-        {
-            <partial name="_OpenGraph" />
-
-        }
+        @await RenderSectionAsync("opengraph", false)
+    }
+    else
+    {
+        <partial name="_OpenGraph" />
     }
 
     @if (IsSectionDefined("metadescription"))

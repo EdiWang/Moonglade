@@ -41,17 +41,14 @@
     }
 }
 
-@if (BlogConfig.AdvancedSettings.EnableOpenGraph)
-{
-    @section opengraph{
-        <meta property="og:site_name" content="@BlogConfig.GeneralSettings.SiteTitle">
-        <meta property="og:title" content="@Model.Post.Title">
-        <meta property="og:type" content="article" />
-        <meta property="og:description" content="@Model.Post.ContentAbstract" />
-        @if (!string.IsNullOrWhiteSpace(BlogConfig.GeneralSettings.CanonicalPrefix))
-        {
-            <meta property="og:url" content="@(Helper.ResolveCanonicalUrl(BlogConfig.GeneralSettings.CanonicalPrefix, HttpContext.Request.Path))" />
-        }
+@section opengraph{
+    <meta property="og:site_name" content="@BlogConfig.GeneralSettings.SiteTitle">
+    <meta property="og:title" content="@Model.Post.Title">
+    <meta property="og:type" content="article" />
+    <meta property="og:description" content="@Model.Post.ContentAbstract" />
+    @if (!string.IsNullOrWhiteSpace(BlogConfig.GeneralSettings.CanonicalPrefix))
+    {
+        <meta property="og:url" content="@(Helper.ResolveCanonicalUrl(BlogConfig.GeneralSettings.CanonicalPrefix, HttpContext.Request.Path))" />
     }
 }
 
