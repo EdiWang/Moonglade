@@ -38,13 +38,13 @@ public class PageController : Controller
     [HttpPost]
     [TypeFilter(typeof(ClearBlogCache), Arguments = new object[] { BlogCacheType.SiteMap })]
     [ProducesResponseType(StatusCodes.Status200OK)]
-    public Task<IActionResult> Create(EditPageRequest model) => 
+    public Task<IActionResult> Create(EditPageRequest model) =>
         CreateOrEdit(model, async request => await _mediator.Send(new CreatePageCommand(request)));
 
     [HttpPut("{id:guid}")]
     [TypeFilter(typeof(ClearBlogCache), Arguments = new object[] { BlogCacheType.SiteMap })]
     [ProducesResponseType(StatusCodes.Status200OK)]
-    public Task<IActionResult> Edit([NotEmpty] Guid id, EditPageRequest model) => 
+    public Task<IActionResult> Edit([NotEmpty] Guid id, EditPageRequest model) =>
         CreateOrEdit(model, async request => await _mediator.Send(new UpdatePageCommand(id, request)));
 
     private async Task<IActionResult> CreateOrEdit(EditPageRequest model, Func<EditPageRequest, Task<Guid>> pageServiceAction)

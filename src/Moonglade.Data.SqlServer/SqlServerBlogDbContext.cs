@@ -1,10 +1,9 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Moonglade.Data.SqlServer.Configurations;
-using System.Diagnostics.CodeAnalysis;
 
 namespace Moonglade.Data.SqlServer;
 
-[ExcludeFromCodeCoverage]
+
 public class SqlServerBlogDbContext : BlogDbContext
 {
     public SqlServerBlogDbContext()

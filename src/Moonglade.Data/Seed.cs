@@ -1,10 +1,8 @@
 ﻿using Microsoft.Extensions.Logging;
 using Moonglade.Data.Entities;
-using System.Diagnostics.CodeAnalysis;
 
 namespace Moonglade.Data;
 
-[ExcludeFromCodeCoverage]
 public class Seed
 {
     public static async Task SeedAsync(BlogDbContext dbContext, ILogger logger, int retry = 0)

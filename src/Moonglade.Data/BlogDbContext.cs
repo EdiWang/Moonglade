@@ -1,9 +1,7 @@
 ﻿using Moonglade.Data.Entities;
-using System.Diagnostics.CodeAnalysis;
 
 namespace Moonglade.Data;
 
-[ExcludeFromCodeCoverage]
 public class BlogDbContext : DbContext
 {
     public BlogDbContext()

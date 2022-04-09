@@ -1,5 +1,4 @@
 ﻿using Microsoft.EntityFrameworkCore.Metadata.Builders;
-using System.Diagnostics.CodeAnalysis;
 
 namespace Moonglade.Data.Entities;
 
@@ -14,7 +13,7 @@ public class BlogConfigurationEntity
     public DateTime? LastModifiedTimeUtc { get; set; }
 }
 
-[ExcludeFromCodeCoverage]
+
 internal class BlogConfigurationConfiguration : IEntityTypeConfiguration<BlogConfigurationEntity>
 {
     public void Configure(EntityTypeBuilder<BlogConfigurationEntity> builder)

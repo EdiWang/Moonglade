@@ -1,11 +1,10 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 using Moonglade.Data.Entities;
-using System.Diagnostics.CodeAnalysis;
 
 namespace Moonglade.Data.SqlServer.Configurations;
 
-[ExcludeFromCodeCoverage]
+
 internal class PostCategoryConfiguration : IEntityTypeConfiguration<PostCategoryEntity>
 {
     public void Configure(EntityTypeBuilder<PostCategoryEntity> builder)
