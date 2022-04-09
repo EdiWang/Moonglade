@@ -112,7 +112,7 @@ public class Seed
             {
                 Id = 6,
                 CfgKey = "AdvancedSettings",
-                CfgValue = "{\"DNSPrefetchEndpoint\":\"\",\"EnableOpenGraph\":true,\"EnablePingBackSend\":true,\"EnablePingBackReceive\":true,\"EnableOpenSearch\":true,\"WarnExternalLink\":true,\"AllowScriptsInPage\":false,\"ShowAdminLoginButton\":false,\"EnablePostRawEndpoint\":true}",
+                CfgValue = "{\"DNSPrefetchEndpoint\":\"\",\"EnablePingBackSend\":true,\"EnablePingBackReceive\":true,\"EnableOpenSearch\":true,\"WarnExternalLink\":true,\"AllowScriptsInPage\":false,\"ShowAdminLoginButton\":false,\"EnablePostRawEndpoint\":true}",
                 LastModifiedTimeUtc = DateTime.UtcNow
             },
             new()
