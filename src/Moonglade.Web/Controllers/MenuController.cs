@@ -31,7 +31,7 @@ public class MenuController : ControllerBase
         return NoContent();
     }
 
-    [HttpGet("edit/{id:guid}")]
+    [HttpGet("{id:guid}")]
     [ProducesResponseType(typeof(EditMenuRequest), StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
     public async Task<IActionResult> Edit([NotEmpty] Guid id)

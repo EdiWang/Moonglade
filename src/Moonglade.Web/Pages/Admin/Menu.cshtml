@@ -55,7 +55,7 @@
             $('.top-menu-list a').removeClass('active');
             document.querySelector(`#menu-${topMenuId}`).classList.add('active');
 
-            callApi(`/api/menu/edit/${topMenuId}`,
+            callApi(`/api/menu/${topMenuId}`,
                 'GET',
                 {},
                 async (resp) => {
