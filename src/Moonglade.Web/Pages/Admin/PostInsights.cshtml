@@ -1,12 +1,16 @@
 ﻿@page "/admin/post/insight"
-@model Moonglade.Web.Pages.Admin.PostInsightsModel
+@using Moonglade.Core.PostFeature
+@using Moonglade.Data.Spec
+@inject IMediator _mediator
 @{
     ViewBag.Title = "Insights";
+    var topReadList = await _mediator.Send(new ListInsightsQuery(PostInsightsType.TopRead));
+    var topCommentedList = await _mediator.Send(new ListInsightsQuery(PostInsightsType.TopCommented));
 }
 
 <partial name="_PostManageHeader" />
 <div class="ps-4 pe-4">
-    @if (Model.TopReadList.Any() || Model.TopReadList.Any())
+    @if (topReadList.Any() || topCommentedList.Any())
     {
         <div class="row">
             <div class="col-md-6">
@@ -20,7 +24,7 @@
                         </tr>
                     </thead>
                     <tbody>
-                        @foreach (var post in Model.TopReadList.OrderByDescending(p => p.Hits))
+                        @foreach (var post in topReadList.OrderByDescending(p => p.Hits))
                         {
                             <tr id="tr-@post.Id">
                                 <td>
@@ -51,7 +55,7 @@
                         </tr>
                     </thead>
                     <tbody>
-                        @foreach (var post in Model.TopCommentedList)
+                        @foreach (var post in topCommentedList)
                         {
                             <tr id="tr-@post.Id">
                                 <td>

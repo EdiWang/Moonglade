@@ -1,7 +1,9 @@
 ﻿@page "/admin/page"
-@model Moonglade.Web.Pages.Admin.BlogPageModel
+@using Moonglade.Core.PageFeature
+@inject IMediator _mediator
 @{
     ViewBag.Title = "Manage Pages";
+    var pageSegments = await _mediator.Send(new ListPageSegmentQuery());
 }
 
 @section scripts{
@@ -30,14 +32,13 @@
     </a>
 </div>
 
-
-@if (Model.PageSegments.Any())
+@if (pageSegments.Any())
 {
     <div class="ps-4 pe-4">
         @Html.AntiForgeryToken()
 
         <div class="row row-cols-1 row-cols-sm-2 row-cols-md-3 row-cols-lg-4 g-4">
-            @foreach (var item in Model.PageSegments.OrderByDescending(p => p.CreateTimeUtc))
+            @foreach (var item in pageSegments.OrderByDescending(p => p.CreateTimeUtc))
             {
                 <div class="col">
                     <div class="card shadow-sm mb-4" id="card-@item.Id">
