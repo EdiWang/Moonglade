@@ -8,13 +8,7 @@ public class SubscriptionModel : PageModel
 
     public FeedSettings ViewModel { get; set; }
 
-    public SubscriptionModel(IBlogConfig blogConfig)
-    {
-        _blogConfig = blogConfig;
-    }
+    public SubscriptionModel(IBlogConfig blogConfig) => _blogConfig = blogConfig;
 
-    public void OnGet()
-    {
-        ViewModel = _blogConfig.FeedSettings;
-    }
+    public void OnGet() => ViewModel = _blogConfig.FeedSettings;
 }
