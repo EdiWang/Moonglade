@@ -9,10 +9,7 @@ public class ArchiveListModel : PageModel
 
     public IReadOnlyList<PostDigest> Posts { get; set; }
 
-    public ArchiveListModel(IMediator mediator)
-    {
-        _mediator = mediator;
-    }
+    public ArchiveListModel(IMediator mediator) => _mediator = mediator;
 
     public async Task<IActionResult> OnGetAsync(int year, int? month)
     {
