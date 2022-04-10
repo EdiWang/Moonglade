@@ -10,13 +10,7 @@ public class PingbackModel : PageModel
 
     public IReadOnlyList<PingbackEntity> PingbackRecords { get; set; }
 
-    public PingbackModel(IMediator mediator)
-    {
-        _mediator = mediator;
-    }
+    public PingbackModel(IMediator mediator) => _mediator = mediator;
 
-    public async Task OnGet()
-    {
-        PingbackRecords = await _mediator.Send(new GetPingbacksQuery());
-    }
+    public async Task OnGet() => PingbackRecords = await _mediator.Send(new GetPingbacksQuery());
 }

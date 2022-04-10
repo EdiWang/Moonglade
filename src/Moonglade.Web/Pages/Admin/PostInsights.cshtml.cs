@@ -12,10 +12,7 @@ public class PostInsightsModel : PageModel
 
     public IReadOnlyList<PostSegment> TopCommentedList { get; set; }
 
-    public PostInsightsModel(IMediator mediator)
-    {
-        _mediator = mediator;
-    }
+    public PostInsightsModel(IMediator mediator) => _mediator = mediator;
 
     public async Task OnGet()
     {

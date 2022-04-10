@@ -9,10 +9,7 @@ public class CommentsModel : PageModel
 
     public StaticPagedList<CommentDetailedItem> CommentDetailedItems { get; set; }
 
-    public CommentsModel(IMediator mediator)
-    {
-        _mediator = mediator;
-    }
+    public CommentsModel(IMediator mediator) => _mediator = mediator;
 
     public async Task OnGet(int pageIndex = 1)
     {

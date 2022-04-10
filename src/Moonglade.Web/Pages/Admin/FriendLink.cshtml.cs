@@ -17,8 +17,5 @@ public class FriendLinkModel : PageModel
         EditLinkRequest = new();
     }
 
-    public async Task OnGet()
-    {
-        Links = await _mediator.Send(new GetAllLinksQuery());
-    }
+    public async Task OnGet() => Links = await _mediator.Send(new GetAllLinksQuery());
 }

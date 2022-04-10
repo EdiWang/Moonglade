@@ -16,8 +16,5 @@ public class MenuModel : PageModel
         MenuItems = new List<Menu>();
     }
 
-    public async Task OnGet()
-    {
-        MenuItems = await _mediator.Send(new GetAllMenusQuery());
-    }
+    public async Task OnGet() => MenuItems = await _mediator.Send(new GetAllMenusQuery());
 }

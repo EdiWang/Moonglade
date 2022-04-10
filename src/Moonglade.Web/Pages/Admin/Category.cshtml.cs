@@ -17,8 +17,5 @@ public class CategoryModel : PageModel
         EditCategoryRequest = new();
     }
 
-    public async Task OnGet()
-    {
-        Categories = await _mediator.Send(new GetCategoriesQuery());
-    }
+    public async Task OnGet() => Categories = await _mediator.Send(new GetCategoriesQuery());
 }

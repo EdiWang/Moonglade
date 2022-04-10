@@ -9,13 +9,7 @@ public class BlogPageModel : PageModel
 
     public IReadOnlyList<PageSegment> PageSegments { get; set; }
 
-    public BlogPageModel(IMediator mediator)
-    {
-        _mediator = mediator;
-    }
+    public BlogPageModel(IMediator mediator) => _mediator = mediator;
 
-    public async Task OnGet()
-    {
-        PageSegments = await _mediator.Send(new ListPageSegmentQuery());
-    }
+    public async Task OnGet() => PageSegments = await _mediator.Send(new ListPageSegmentQuery());
 }

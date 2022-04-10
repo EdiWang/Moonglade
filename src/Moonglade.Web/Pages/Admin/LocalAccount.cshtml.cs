@@ -16,8 +16,5 @@ public class LocalAccountModel : PageModel
         ViewModel = new();
     }
 
-    public async Task OnGet()
-    {
-        Accounts = await _mediator.Send(new GetAccountsQuery());
-    }
+    public async Task OnGet() => Accounts = await _mediator.Send(new GetAccountsQuery());
 }

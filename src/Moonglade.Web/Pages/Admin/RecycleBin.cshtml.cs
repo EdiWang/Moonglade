@@ -10,13 +10,7 @@ public class RecycleBinModel : PageModel
 
     public IReadOnlyList<PostSegment> Posts { get; set; }
 
-    public RecycleBinModel(IMediator mediator)
-    {
-        _mediator = mediator;
-    }
+    public RecycleBinModel(IMediator mediator) => _mediator = mediator;
 
-    public async Task OnGet()
-    {
-        Posts = await _mediator.Send(new ListPostSegmentByStatusQuery(PostStatus.Deleted));
-    }
+    public async Task OnGet() => Posts = await _mediator.Send(new ListPostSegmentByStatusQuery(PostStatus.Deleted));
 }
