@@ -202,13 +202,17 @@ async Task FirstRun()
         switch (startUpResut)
         {
             case StartupInitResult.DatabaseConnectionFail:
-                app.MapGet("/", _ => throw new DataException(
-                    "Database connection test failed, please check your connection string and firewall settings, then RESTART Moonglade manually."));
+                app.MapGet("/", () => Results.Problem(
+                    detail: "Database connection test failed, please check your connection string and firewall settings, then RESTART Moonglade manually.",
+                    statusCode: 500
+                    ));
                 app.Run();
                 return;
             case StartupInitResult.DatabaseSetupFail:
-                app.MapGet("/", _ => throw new DataException(
-                    "Database setup failed, please check error log, then RESTART Moonglade manually."));
+                app.MapGet("/", () => Results.Problem(
+                    detail: "Database setup failed, please check error log, then RESTART Moonglade manually.",
+                    statusCode: 500
+                ));
                 app.Run();
                 return;
         }
