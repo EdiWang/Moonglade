@@ -27,9 +27,9 @@ public class DeleteCategoryCommandHandler : IRequestHandler<DeleteCategoryComman
         if (!exists) return OperationCode.ObjectNotFound;
 
         var pcs = await _postCatRepo.GetAsync(pc => pc.CategoryId == request.Id);
-        if (pcs is not null) await _postCatRepo.DeleteAsync(pcs);
+        if (pcs is not null) await _postCatRepo.DeleteAsync(pcs, cancellationToken);
 
-        await _catRepo.DeleteAsync(request.Id);
+        await _catRepo.DeleteAsync(request.Id, cancellationToken);
         _cache.Remove(CacheDivision.General, "allcats");
 
         return OperationCode.Done;

@@ -46,7 +46,7 @@ public class CreateCategoryCommandHandler : AsyncRequestHandler<CreateCategoryCo
             DisplayName = request.DisplayName.Trim()
         };
 
-        await _catRepo.AddAsync(category);
+        await _catRepo.AddAsync(category, cancellationToken);
         _cache.Remove(CacheDivision.General, "allcats");
     }
 }

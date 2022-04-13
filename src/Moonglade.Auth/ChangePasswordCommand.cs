@@ -4,19 +4,14 @@ using Moonglade.Utils;
 
 namespace Moonglade.Auth;
 
-public record UpdatePasswordCommand(Guid Id, string ClearPassword) : IRequest;
+public record ChangePasswordCommand(Guid Id, string ClearPassword) : IRequest;
 
-public class UpdatePasswordCommandHandler : AsyncRequestHandler<UpdatePasswordCommand>
+public class ChangePasswordCommandHandler : AsyncRequestHandler<ChangePasswordCommand>
 {
     private readonly IRepository<LocalAccountEntity> _accountRepo;
+    public ChangePasswordCommandHandler(IRepository<LocalAccountEntity> accountRepo) => _accountRepo = accountRepo;
 
-    public UpdatePasswordCommandHandler(
-        IRepository<LocalAccountEntity> accountRepo)
-    {
-        _accountRepo = accountRepo;
-    }
-
-    protected override async Task Handle(UpdatePasswordCommand request, CancellationToken cancellationToken)
+    protected override async Task Handle(ChangePasswordCommand request, CancellationToken cancellationToken)
     {
         if (string.IsNullOrWhiteSpace(request.ClearPassword))
         {
@@ -30,6 +25,6 @@ public class UpdatePasswordCommandHandler : AsyncRequestHandler<UpdatePasswordCo
         }
 
         account.PasswordHash = Helper.HashPassword(request.ClearPassword);
-        await _accountRepo.UpdateAsync(account);
+        await _accountRepo.UpdateAsync(account, cancellationToken);
     }
 }

@@ -79,11 +79,6 @@ public class PostController : ControllerBase
     {
         try
         {
-            if (!model.IsOriginal && string.IsNullOrWhiteSpace(model.OriginLink))
-            {
-                ModelState.AddModelError(nameof(model.OriginLink), "Please enter the origin link.");
-            }
-
             if (!ModelState.IsValid) return Conflict(ModelState.CombineErrorMessages());
 
             if (!string.IsNullOrWhiteSpace(model.InlineCss))

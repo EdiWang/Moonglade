@@ -117,19 +117,19 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
-  <data name="Destination Server" xml:space="preserve">
-    <value>目标服务器</value>
+  <data name="Are you sure?" xml:space="preserve">
+    <value>确定吗？</value>
   </data>
-  <data name="Link" xml:space="preserve">
-    <value>链接</value>
+  <data name="Cancel" xml:space="preserve">
+    <value>取消</value>
   </data>
-  <data name="Operation" xml:space="preserve">
-    <value>操作</value>
+  <data name="Clear all" xml:space="preserve">
+    <value>清空全部</value>
   </data>
-  <data name="Ping Time (UTC)" xml:space="preserve">
-    <value>引用时间 (UTC)</value>
+  <data name="Clear Now" xml:space="preserve">
+    <value>立即清空</value>
   </data>
-  <data name="Referenced Post" xml:space="preserve">
-    <value>引用的文章</value>
+  <data name="Clear Pingback Logs" xml:space="preserve">
+    <value>清空Pingback日志</value>
   </data>
 </root>

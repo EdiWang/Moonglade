@@ -10,10 +10,7 @@ public class PostPreviewModel : PageModel
 
     public Post Post { get; set; }
 
-    public PostPreviewModel(IMediator mediator)
-    {
-        _mediator = mediator;
-    }
+    public PostPreviewModel(IMediator mediator) => _mediator = mediator;
 
     public async Task<IActionResult> OnGetAsync(Guid postId)
     {

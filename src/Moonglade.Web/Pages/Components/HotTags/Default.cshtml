@@ -1,0 +1,14 @@
+﻿@model IReadOnlyList<KeyValuePair<Moonglade.Core.TagFeature.Tag, int>>
+
+@if (Model.Any())
+{
+    foreach (var (key, value) in Model)
+    {
+        <a asp-page="/TagList"
+           asp-route-normalizedName="@key.NormalizedName"
+           rel="@value"
+           class="d-inline-block btn btn-sm btn-accent mb-2 me-1">
+            @key.DisplayName
+        </a>
+    }
+}

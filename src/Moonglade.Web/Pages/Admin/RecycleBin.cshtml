@@ -1,7 +1,10 @@
 ﻿@page "/admin/post/recycle-bin"
-@model Moonglade.Web.Pages.Admin.RecycleBinModel
+@using Moonglade.Core.PostFeature
+@using Moonglade.Data.Spec
+@inject IMediator _mediator
 @{
     ViewBag.Title = "Recycle Bin";
+    var posts = await _mediator.Send(new ListPostSegmentByStatusQuery(PostStatus.Deleted));
 }
 
 @section scripts{
@@ -39,7 +42,7 @@
         @Localizer["Empty Recycle Bin"]
     </a>
 
-    @if (Model.Posts.Any())
+    @if (posts.Any())
     {
         <table class="table table-bordered mt-3">
             <thead>
@@ -50,7 +53,7 @@
                 </tr>
             </thead>
             <tbody>
-                @foreach (var post in Model.Posts.OrderByDescending(p => p.CreateTimeUtc))
+                @foreach (var post in posts.OrderByDescending(p => p.CreateTimeUtc))
                 {
                     <tr id="tr-@post.Id">
                         <td>@post.Title</td>

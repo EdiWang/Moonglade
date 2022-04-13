@@ -1,9 +1,8 @@
 ﻿using Microsoft.Extensions.Diagnostics.HealthChecks;
-using System.Diagnostics.CodeAnalysis;
 
 namespace Moonglade.Web.Configuration;
 
-[ExcludeFromCodeCoverage]
+
 public class ConfigureEndpoints
 {
     public static Action<IEndpointRouteBuilder> BlogEndpoints => endpoints =>

@@ -9,16 +9,12 @@ public record ExportLinkDataCommand : IRequest<ExportResult>;
 
 public class ExportLinkDataCommandHandler : IRequestHandler<ExportLinkDataCommand, ExportResult>
 {
-    private readonly IRepository<FriendLinkEntity> _friendlinkRepository;
-
-    public ExportLinkDataCommandHandler(IRepository<FriendLinkEntity> friendlinkRepository)
-    {
-        _friendlinkRepository = friendlinkRepository;
-    }
+    private readonly IRepository<FriendLinkEntity> _repo;
+    public ExportLinkDataCommandHandler(IRepository<FriendLinkEntity> repo) => _repo = repo;
 
     public Task<ExportResult> Handle(ExportLinkDataCommand request, CancellationToken cancellationToken)
     {
-        var fdExp = new CSVExporter<FriendLinkEntity>(_friendlinkRepository, "moonglade-friendlinks", ExportManager.DataDir);
+        var fdExp = new CSVExporter<FriendLinkEntity>(_repo, "moonglade-friendlinks", ExportManager.DataDir);
         return fdExp.ExportData(p => p, cancellationToken);
     }
 }

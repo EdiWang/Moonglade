@@ -1,10 +1,9 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Moonglade.Data.MySql.Configurations;
-using System.Diagnostics.CodeAnalysis;
 
 namespace Moonglade.Data.MySql;
 
-[ExcludeFromCodeCoverage]
+
 public class MySqlBlogDbContext : BlogDbContext
 {
     public MySqlBlogDbContext()

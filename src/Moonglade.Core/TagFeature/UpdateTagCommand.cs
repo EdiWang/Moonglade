@@ -1,5 +1,5 @@
-﻿using Microsoft.Extensions.Configuration;
-using Moonglade.Data;
+﻿using Moonglade.Data;
+using Moonglade.Utils;
 
 namespace Moonglade.Core.TagFeature;
 
@@ -8,15 +8,8 @@ public record UpdateTagCommand(int Id, string Name) : IRequest<OperationCode>;
 public class UpdateTagCommandHandler : IRequestHandler<UpdateTagCommand, OperationCode>
 {
     private readonly IRepository<TagEntity> _tagRepo;
-    private readonly IDictionary<string, string> _tagNormalizationDictionary;
 
-    public UpdateTagCommandHandler(IRepository<TagEntity> tagRepo, IConfiguration configuration)
-    {
-        _tagRepo = tagRepo;
-
-        _tagNormalizationDictionary =
-            configuration.GetSection("TagNormalization").Get<Dictionary<string, string>>();
-    }
+    public UpdateTagCommandHandler(IRepository<TagEntity> tagRepo) => _tagRepo = tagRepo;
 
     public async Task<OperationCode> Handle(UpdateTagCommand request, CancellationToken cancellationToken)
     {
@@ -25,8 +18,8 @@ public class UpdateTagCommandHandler : IRequestHandler<UpdateTagCommand, Operati
         if (null == tag) return OperationCode.ObjectNotFound;
 
         tag.DisplayName = name;
-        tag.NormalizedName = Tag.NormalizeName(name, _tagNormalizationDictionary);
-        await _tagRepo.UpdateAsync(tag);
+        tag.NormalizedName = Tag.NormalizeName(name, Helper.TagNormalizationDictionary);
+        await _tagRepo.UpdateAsync(tag, cancellationToken);
 
         return OperationCode.Done;
     }

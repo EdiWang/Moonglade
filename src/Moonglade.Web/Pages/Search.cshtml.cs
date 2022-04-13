@@ -9,10 +9,7 @@ public class SearchModel : PageModel
 {
     private readonly IMediator _mediator;
 
-    public SearchModel(IMediator mediator)
-    {
-        _mediator = mediator;
-    }
+    public SearchModel(IMediator mediator) => _mediator = mediator;
 
     public IReadOnlyList<PostDigest> Posts { get; set; }
 

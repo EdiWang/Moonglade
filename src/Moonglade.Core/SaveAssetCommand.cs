@@ -25,13 +25,13 @@ public class SaveAssetCommandHandler : INotificationHandler<SaveAssetCommand>
                 Id = request.AssetId,
                 Base64Data = request.AssetBase64,
                 LastModifiedTimeUtc = DateTime.UtcNow
-            });
+            }, cancellationToken);
         }
         else
         {
             entity.Base64Data = request.AssetBase64;
             entity.LastModifiedTimeUtc = DateTime.UtcNow;
-            await _repository.UpdateAsync(entity);
+            await _repository.UpdateAsync(entity, cancellationToken);
         }
     }
 }

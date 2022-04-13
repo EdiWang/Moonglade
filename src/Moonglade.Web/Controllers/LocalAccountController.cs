@@ -64,7 +64,7 @@ public class LocalAccountController : ControllerBase
             return Conflict("Password must be minimum eight characters, at least one letter and one number");
         }
 
-        await _mediator.Send(new UpdatePasswordCommand(id, newPassword));
+        await _mediator.Send(new ChangePasswordCommand(id, newPassword));
         return NoContent();
     }
 }

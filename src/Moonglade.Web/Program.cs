@@ -33,17 +33,12 @@ var builder = WebApplication.CreateBuilder(args);
 string dbType = builder.Configuration.GetConnectionString("DatabaseType");
 string connStr = builder.Configuration.GetConnectionString("MoongladeDatabase");
 
-// Workaround stupid ASP.NET "by design" issue
-// https://github.com/aspnet/Configuration/issues/451
-var cultures = builder.Configuration.GetSection("Cultures").Get<string[]>()
-    .Select(p => new CultureInfo(p))
-    .ToList();
+var cultures = new[] { "en-US", "zh-CN" }.Select(p => new CultureInfo(p)).ToList();
 
 ConfigureConfiguration(builder.Configuration);
 ConfigureServices(builder.Services);
 
 var app = builder.Build();
-app.Lifetime.ApplicationStopping.Register(() => { app.Logger.LogInformation("Moonglade is stopping..."); });
 
 await FirstRun();
 
@@ -57,12 +52,13 @@ void ConfigureConfiguration(IConfiguration configuration)
     builder.Host.ConfigureAppConfiguration(config =>
     {
         config.AddJsonFile("manifesticons.json", false, true);
+        var appConfigConn = configuration["ConnectionStrings:AzureAppConfig"];
 
-        if (configuration.GetValue<bool>("PreferAzureAppConfiguration"))
+        if (!string.IsNullOrWhiteSpace(appConfigConn))
         {
             config.AddAzureAppConfiguration(options =>
             {
-                options.Connect(configuration["ConnectionStrings:AzureAppConfig"])
+                options.Connect(appConfigConn)
                     .ConfigureRefresh(refresh =>
                     {
                         refresh.Register("Moonglade:Settings:Sentinel", refreshAll: true)
@@ -80,6 +76,7 @@ void ConfigureServices(IServiceCollection services)
     AppDomain.CurrentDomain.Load("Moonglade.Menus");
     AppDomain.CurrentDomain.Load("Moonglade.Theme");
     AppDomain.CurrentDomain.Load("Moonglade.Configuration");
+    AppDomain.CurrentDomain.Load("Moonglade.Data");
 
     services.AddMediatR(AppDomain.CurrentDomain.GetAssemblies());
 
@@ -94,15 +91,15 @@ void ConfigureServices(IServiceCollection services)
     });
 
     services.AddOptions()
-                    .AddHttpContextAccessor()
-                    .AddRateLimit(builder.Configuration.GetSection("IpRateLimiting"))
-                    .AddFeatureManagement();
+            .AddHttpContextAccessor()
+            .AddRateLimit(builder.Configuration.GetSection("IpRateLimiting"))
+            .AddFeatureManagement();
     services.AddAzureAppConfiguration()
-                    .AddApplicationInsightsTelemetry()
-                    .ConfigureTelemetryModule<DependencyTrackingTelemetryModule>((module, _) =>
-                    {
-                        module.EnableSqlCommandTextInstrumentation = true;
-                    });
+            .AddApplicationInsightsTelemetry()
+            .ConfigureTelemetryModule<DependencyTrackingTelemetryModule>((module, _) =>
+            {
+                module.EnableSqlCommandTextInstrumentation = true;
+            });
 
     services.AddSession(options =>
     {
@@ -116,18 +113,18 @@ void ConfigureServices(IServiceCollection services)
     services.AddLocalization(options => options.ResourcesPath = "Resources");
     services.AddSwaggerGen();
     services.AddControllers(options => options.Filters.Add(new AutoValidateAntiforgeryTokenAttribute()))
-                    .AddJsonOptions(options => options.JsonSerializerOptions.Converters.Add(new JsonStringEnumConverter()))
-                    .ConfigureApiBehaviorOptions(ConfigureApiBehavior.BlogApiBehavior);
+            .AddJsonOptions(options => options.JsonSerializerOptions.Converters.Add(new JsonStringEnumConverter()))
+            .ConfigureApiBehaviorOptions(ConfigureApiBehavior.BlogApiBehavior);
     services.AddRazorPages().AddViewLocalization()
-                    .AddDataAnnotationsLocalization(options =>
-                    {
-                        options.DataAnnotationLocalizerProvider = (_, factory) => factory.Create(typeof(SharedResource));
-                    })
-                    .AddRazorPagesOptions(options =>
-                    {
-                        options.Conventions.AuthorizeFolder("/Admin");
-                        options.Conventions.AuthorizeFolder("/Settings");
-                    });
+            .AddDataAnnotationsLocalization(options =>
+            {
+                options.DataAnnotationLocalizerProvider = (_, factory) => factory.Create(typeof(SharedResource));
+            })
+            .AddRazorPagesOptions(options =>
+            {
+                options.Conventions.AuthorizeFolder("/Admin");
+                options.Conventions.AuthorizeFolder("/Settings");
+            });
 
     // Fix Chinese character being encoded in HTML output
     services.AddSingleton(HtmlEncoder.Create(
@@ -168,21 +165,21 @@ void ConfigureServices(IServiceCollection services)
                     .AddTransient<ResponseBodyLoggingMiddleware>();
 
     services.AddPingback()
-                    .AddSyndication()
-                    .AddNotificationClient()
-                    .AddReleaseCheckerClient()
-                    .AddBlogCache()
-                    .AddMetaWeblog<Moonglade.Web.MetaWeblogService>()
-                    .AddScoped<ValidateCaptcha>()
-                    .AddScoped<ITimeZoneResolver, BlogTimeZoneResolver>()
-                    .AddBlogConfig(builder.Configuration)
-                    .AddBlogAuthenticaton(builder.Configuration)
-                    .AddComments(builder.Configuration)
-                    .AddImageStorage(builder.Configuration, options =>
-                    {
-                        options.ContentRootPath = builder.Environment.ContentRootPath;
-                    })
-                    .Configure<List<ManifestIcon>>(builder.Configuration.GetSection("ManifestIcons"));
+            .AddSyndication()
+            .AddNotificationClient()
+            .AddReleaseCheckerClient()
+            .AddBlogCache()
+            .AddMetaWeblog<Moonglade.Web.MetaWeblogService>()
+            .AddScoped<ValidateCaptcha>()
+            .AddScoped<ITimeZoneResolver, BlogTimeZoneResolver>()
+            .AddBlogConfig(builder.Configuration)
+            .AddBlogAuthenticaton(builder.Configuration)
+            .AddComments(builder.Configuration)
+            .AddImageStorage(builder.Configuration, options =>
+            {
+                options.ContentRootPath = builder.Environment.ContentRootPath;
+            })
+            .Configure<List<ManifestIcon>>(builder.Configuration.GetSection("ManifestIcons"));
 
 
     switch (dbType.ToLower())
@@ -205,13 +202,17 @@ async Task FirstRun()
         switch (startUpResut)
         {
             case StartupInitResult.DatabaseConnectionFail:
-                app.MapGet("/", _ => throw new DataException(
-                    "Database connection test failed, please check your connection string and firewall settings, then RESTART Moonglade manually."));
+                app.MapGet("/", () => Results.Problem(
+                    detail: "Database connection test failed, please check your connection string and firewall settings, then RESTART Moonglade manually.",
+                    statusCode: 500
+                    ));
                 app.Run();
                 return;
             case StartupInitResult.DatabaseSetupFail:
-                app.MapGet("/", _ => throw new DataException(
-                    "Database setup failed, please check error log, then RESTART Moonglade manually."));
+                app.MapGet("/", () => Results.Problem(
+                    detail: "Database setup failed, please check error log, then RESTART Moonglade manually.",
+                    statusCode: 500
+                ));
                 app.Run();
                 return;
         }
@@ -256,8 +257,8 @@ void ConfigureMiddleware(IApplicationBuilder appBuilder, IServiceProvider servic
     }
 
     appBuilder.UseMiddleware<SiteMapMiddleware>()
-       .UseMiddleware<PoweredByMiddleware>()
-       .UseMiddleware<DNTMiddleware>();
+              .UseMiddleware<PoweredByMiddleware>()
+              .UseMiddleware<DNTMiddleware>();
 
     if (app.Configuration.GetValue<bool>("PreferAzureAppConfiguration"))
     {
@@ -274,8 +275,7 @@ void ConfigureMiddleware(IApplicationBuilder appBuilder, IServiceProvider servic
     }
     else
     {
-        appBuilder.UseStatusCodePages(ConfigureStatusCodePages.Handler)
-           .UseExceptionHandler("/error");
+        appBuilder.UseStatusCodePages(ConfigureStatusCodePages.Handler).UseExceptionHandler("/error");
     }
 
     appBuilder.UseHttpsRedirection().UseHsts();

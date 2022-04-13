@@ -1,8 +1,10 @@
 ﻿@page "/tags"
 @using System.Web
-@model Moonglade.Web.Pages.TagsModel
+@using Moonglade.Core.TagFeature
+@inject IMediator _mediator
 @{
     ViewBag.TitlePrefix = "Tags";
+    var tags = await _mediator.Send(new GetTagCountListQuery());
 }
 
 @functions {
@@ -25,12 +27,12 @@
 </h3>
 <hr />
 
-@if (Model.Tags.Any())
+@if (tags.Any())
 {
-    var tagMax = Model.Tags.Select(p => p.Value).Max();
+    var tagMax = tags.Select(p => p.Value).Max();
 
     <ul class="list-unstyled ul-tags">
-        @foreach (var tag in Model.Tags.OrderBy(t => t.Key.DisplayName))
+        @foreach (var tag in tags.OrderBy(t => t.Key.DisplayName))
         {
             var weightPercent = tag.Value * 1.0 / tagMax * 100;
             var weight = Weight(weightPercent);

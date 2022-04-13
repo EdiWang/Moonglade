@@ -10,11 +10,7 @@ public record GetCommentsQuery(int PageSize, int PageIndex) : IRequest<IReadOnly
 public class GetCommentsQueryHandler : IRequestHandler<GetCommentsQuery, IReadOnlyList<CommentDetailedItem>>
 {
     private readonly IRepository<CommentEntity> _commentRepo;
-
-    public GetCommentsQueryHandler(IRepository<CommentEntity> commentRepo)
-    {
-        _commentRepo = commentRepo;
-    }
+    public GetCommentsQueryHandler(IRepository<CommentEntity> commentRepo) => _commentRepo = commentRepo;
 
     public Task<IReadOnlyList<CommentDetailedItem>> Handle(GetCommentsQuery request, CancellationToken cancellationToken)
     {

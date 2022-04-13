@@ -72,11 +72,6 @@ public class ImageController : ControllerBase
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
     public async Task<IActionResult> Image(IFormFile file, [FromQuery] bool skipWatermark = false)
     {
-        static bool IsValidColorValue(int colorValue)
-        {
-            return colorValue is >= 0 and <= 255;
-        }
-
         if (file is null or { Length: <= 0 })
         {
             _logger.LogError("file is null.");
@@ -111,27 +106,19 @@ public class ImageController : ControllerBase
         MemoryStream watermarkedStream = null;
         if (_blogConfig.ImageSettings.IsWatermarkEnabled && !skipWatermark)
         {
-            if (null == _imageStorageSettings.Watermark.NoWatermarkExtensions
-                || _imageStorageSettings.Watermark.NoWatermarkExtensions.All(
+            if (null == _imageStorageSettings.WatermarkSkipExtensions
+                || _imageStorageSettings.WatermarkSkipExtensions.All(
                     p => string.Compare(p, ext, StringComparison.OrdinalIgnoreCase) != 0))
             {
-                using var watermarker = new ImageWatermarker(stream, ext, _imageStorageSettings.Watermark.WatermarkSkipPixel);
-
-                // Get ARGB values
-                var colors = _imageStorageSettings.Watermark.WatermarkARGB;
-                if (colors.Length != 4)
-                {
-                    throw new InvalidDataException($"'{nameof(_imageStorageSettings.Watermark.WatermarkARGB)}' must be an integer array with 4 items.");
-                }
-
-                if (colors.Any(c => !IsValidColorValue(c)))
-                {
-                    throw new InvalidDataException($"'{nameof(_imageStorageSettings.Watermark.WatermarkARGB)}' values must all fall in range 0-255.");
-                }
+                using var watermarker = new ImageWatermarker(stream, ext, _blogConfig.ImageSettings.WatermarkSkipPixel);
 
                 watermarkedStream = watermarker.AddWatermark(
                     _blogConfig.ImageSettings.WatermarkText,
-                    Color.FromRgba((byte)colors[1], (byte)colors[2], (byte)colors[3], (byte)colors[0]),
+                    Color.FromRgba(
+                        (byte)_blogConfig.ImageSettings.WatermarkColorR,
+                        (byte)_blogConfig.ImageSettings.WatermarkColorG,
+                        (byte)_blogConfig.ImageSettings.WatermarkColorB,
+                        (byte)_blogConfig.ImageSettings.WatermarkColorA),
                     WatermarkPosition.BottomRight,
                     15,
                     _blogConfig.ImageSettings.WatermarkFontSize);

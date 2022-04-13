@@ -12,5 +12,6 @@ public class DeleteLinkCommandHandler : AsyncRequestHandler<DeleteLinkCommand>
 
     public DeleteLinkCommandHandler(IRepository<FriendLinkEntity> friendlinkRepo) => _friendlinkRepo = friendlinkRepo;
 
-    protected override async Task Handle(DeleteLinkCommand request, CancellationToken cancellationToken) => await _friendlinkRepo.DeleteAsync(request.Id);
+    protected override Task Handle(DeleteLinkCommand request, CancellationToken cancellationToken) =>
+        _friendlinkRepo.DeleteAsync(request.Id, cancellationToken);
 }

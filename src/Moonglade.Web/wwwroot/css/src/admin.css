@@ -97,6 +97,10 @@
         background-color: var(--accent-color1);
     }
 
+.admin-toolbar-text {
+    line-height: 36px;
+}
+
 @media (min-width: 768px) {
     .admin-nav {
         margin-left: 15px;

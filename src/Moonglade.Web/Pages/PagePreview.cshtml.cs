@@ -10,10 +10,7 @@ public class PagePreviewModel : PageModel
 
     public BlogPage BlogPage { get; set; }
 
-    public PagePreviewModel(IMediator mediator)
-    {
-        _mediator = mediator;
-    }
+    public PagePreviewModel(IMediator mediator) => _mediator = mediator;
 
     public async Task<IActionResult> OnGetAsync(Guid pageId)
     {

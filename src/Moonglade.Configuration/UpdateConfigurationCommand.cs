@@ -10,11 +10,7 @@ public record UpdateConfigurationCommand(string Name, string Json) : IRequest<Op
 public class UpdateConfigurationCommandHandler : IRequestHandler<UpdateConfigurationCommand, OperationCode>
 {
     private readonly IRepository<BlogConfigurationEntity> _repository;
-
-    public UpdateConfigurationCommandHandler(IRepository<BlogConfigurationEntity> repository)
-    {
-        _repository = repository;
-    }
+    public UpdateConfigurationCommandHandler(IRepository<BlogConfigurationEntity> repository) => _repository = repository;
 
     public async Task<OperationCode> Handle(UpdateConfigurationCommand request, CancellationToken cancellationToken)
     {
@@ -25,7 +21,7 @@ public class UpdateConfigurationCommandHandler : IRequestHandler<UpdateConfigura
         entity.CfgValue = json;
         entity.LastModifiedTimeUtc = DateTime.UtcNow;
 
-        await _repository.UpdateAsync(entity);
+        await _repository.UpdateAsync(entity, cancellationToken);
         return OperationCode.Done;
     }
 }

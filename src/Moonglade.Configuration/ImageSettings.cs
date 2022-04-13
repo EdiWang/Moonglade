@@ -11,6 +11,7 @@ public class ImageSettings : IBlogSettings, IValidatableObject
     [Display(Name = "Keep origin image")]
     public bool KeepOriginImage { get; set; }
 
+    [Required]
     [Display(Name = "Font size")]
     [Range(8, 32)]
     public int WatermarkFontSize { get; set; }
@@ -19,6 +20,31 @@ public class ImageSettings : IBlogSettings, IValidatableObject
     [Display(Name = "Watermark text")]
     [MaxLength(32)]
     public string WatermarkText { get; set; }
+
+    [Required]
+    [Display(Name = "A")]
+    [Range(0, 255)]
+    public int WatermarkColorA { get; set; }
+
+    [Required]
+    [Display(Name = "R")]
+    [Range(0, 255)]
+    public int WatermarkColorR { get; set; }
+
+    [Required]
+    [Display(Name = "G")]
+    [Range(0, 255)]
+    public int WatermarkColorG { get; set; }
+
+    [Required]
+    [Display(Name = "B")]
+    [Range(0, 255)]
+    public int WatermarkColorB { get; set; }
+
+    [Required]
+    [Display(Name = "Watermark skip pixel threshold")]
+    [Range(0, int.MaxValue)]
+    public int WatermarkSkipPixel { get; set; }
 
     [Display(Name = "Use friendly 404 image")]
     public bool UseFriendlyNotFoundImage { get; set; }
@@ -33,6 +59,16 @@ public class ImageSettings : IBlogSettings, IValidatableObject
     [MaxLength(128)]
     [Display(Name = "CDN endpoint")]
     public string CDNEndpoint { get; set; }
+
+    public ImageSettings()
+    {
+        WatermarkColorA = 128;
+        WatermarkColorR = 128;
+        WatermarkColorG = 128;
+        WatermarkColorB = 128;
+
+        WatermarkSkipPixel = 40000;
+    }
 
     public IEnumerable<ValidationResult> Validate(ValidationContext validationContext)
     {

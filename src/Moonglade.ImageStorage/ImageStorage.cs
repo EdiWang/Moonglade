@@ -8,20 +8,13 @@ public class ImageStorageSettings
 
     public string Provider { get; set; }
 
-    public WatermarkSettings Watermark { get; set; }
+    public string FileSystemPath { get; set; }
+
+    public string[] WatermarkSkipExtensions { get; set; }
 
     public AzureStorageSettings AzureStorageSettings { get; set; }
-
-    public FileSystemSettings FileSystemSettings { get; set; }
 
     public MinioStorageSettings MinioStorageSettings { get; set; }
 
     public QiniuStorageSettings QiniuStorageSettings { get; set; }
-}
-
-public class WatermarkSettings
-{
-    public string[] NoWatermarkExtensions { get; set; }
-    public int[] WatermarkARGB { get; set; }
-    public int WatermarkSkipPixel { get; set; }
 }

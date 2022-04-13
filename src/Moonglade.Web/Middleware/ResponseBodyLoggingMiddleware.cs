@@ -20,7 +20,7 @@ public class ResponseBodyLoggingMiddleware : IMiddleware
             var responseBody = await reader.ReadToEndAsync();
 
             memoryStream.Position = 0;
-            await memoryStream.CopyToAsync(originalBodyStream);
+            await memoryStream.CopyToAsync(originalBodyStream, context.RequestAborted);
 
             if (context.Response.StatusCode != 404 &&
                 context.Response.StatusCode is >= 400 and <= 599)

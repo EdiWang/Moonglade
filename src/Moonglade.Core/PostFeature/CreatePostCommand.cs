@@ -18,8 +18,6 @@ public class CreatePostCommandHandler : IRequestHandler<CreatePostCommand, PostE
     private readonly AppSettings _settings;
     private readonly IBlogConfig _blogConfig;
 
-    private readonly IDictionary<string, string> _tagNormalizationDictionary;
-
     public CreatePostCommandHandler(
         IRepository<PostEntity> postRepo,
         ILogger<CreatePostCommandHandler> logger,
@@ -33,9 +31,6 @@ public class CreatePostCommandHandler : IRequestHandler<CreatePostCommand, PostE
         _tagRepo = tagRepo;
         _blogConfig = blogConfig;
         _settings = settings.Value;
-
-        _tagNormalizationDictionary =
-            configuration.GetSection("TagNormalization").Get<Dictionary<string, string>>();
     }
 
     public async Task<PostEntity> Handle(CreatePostCommand request, CancellationToken cancellationToken)
@@ -116,7 +111,7 @@ public class CreatePostCommandHandler : IRequestHandler<CreatePostCommand, PostE
             }
         }
 
-        await _postRepo.AddAsync(post);
+        await _postRepo.AddAsync(post, cancellationToken);
 
         return post;
     }
@@ -126,7 +121,7 @@ public class CreatePostCommandHandler : IRequestHandler<CreatePostCommand, PostE
         var newTag = new TagEntity
         {
             DisplayName = item,
-            NormalizedName = Tag.NormalizeName(item, _tagNormalizationDictionary)
+            NormalizedName = Tag.NormalizeName(item, Helper.TagNormalizationDictionary)
         };
 
         var tag = await _tagRepo.AddAsync(newTag);

@@ -17,19 +17,19 @@ public static class MemoryStreamIconGenerator
         {
             logger.LogWarning("SiteIconBase64 is empty or not valid, fall back to default image.");
 
-            var defaultImagePath = Path.Join($"{webRootPath}", "images", "siteicon-default.png");
-            if (!File.Exists(defaultImagePath))
+            var defaultIconImage = Path.Join($"{webRootPath}", "images", "siteicon-default.png");
+            if (!File.Exists(defaultIconImage))
             {
-                throw new FileNotFoundException("Can not find source image for generating favicons.", defaultImagePath);
+                throw new FileNotFoundException("Can not find source image for generating favicons.", defaultIconImage);
             }
 
-            var ext = Path.GetExtension(defaultImagePath);
+            var ext = Path.GetExtension(defaultIconImage);
             if (ext is not null && ext.ToLower() is not ".png")
             {
                 throw new FormatException("Source file is not an PNG image.");
             }
 
-            buffer = File.ReadAllBytes(defaultImagePath);
+            buffer = File.ReadAllBytes(defaultIconImage);
         }
         else
         {

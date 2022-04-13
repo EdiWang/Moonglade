@@ -23,17 +23,13 @@
     }
 
     @await RenderSectionAsync("meta", false)
-    @if (BlogConfig.AdvancedSettings.EnableOpenGraph)
+    @if (IsSectionDefined("opengraph"))
     {
-        @if (IsSectionDefined("opengraph"))
-        {
-            @await RenderSectionAsync("opengraph", false)
-        }
-        else
-        {
-            <partial name="_OpenGraph" />
-
-        }
+        @await RenderSectionAsync("opengraph", false)
+    }
+    else
+    {
+        <partial name="_OpenGraph" />
     }
 
     @if (IsSectionDefined("metadescription"))
@@ -76,7 +72,7 @@
     </feature>
     <partial name="_Favicons" />
     <link href="~/lib/twitter-bootstrap/css/bootstrap.min.css" rel="stylesheet" asp-append-version="true" />
-    <link href="~/lib/bootstrap-icons/font/bootstrap-icons.min.css" rel="stylesheet" />
+    <link href="~/lib/bootstrap-icons/font/bootstrap-icons.min.css" rel="stylesheet" asp-append-version="true" />
     <environment exclude="Development">
         <link href="~/css/bundle.min.css" rel="stylesheet" asp-append-version="true" />
     </environment>

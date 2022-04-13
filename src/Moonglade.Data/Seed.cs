@@ -1,10 +1,8 @@
 ﻿using Microsoft.Extensions.Logging;
 using Moonglade.Data.Entities;
-using System.Diagnostics.CodeAnalysis;
 
 namespace Moonglade.Data;
 
-[ExcludeFromCodeCoverage]
 public class Seed
 {
     public static async Task SeedAsync(BlogDbContext dbContext, ILogger logger, int retry = 0)
@@ -112,7 +110,7 @@ public class Seed
             {
                 Id = 6,
                 CfgKey = "AdvancedSettings",
-                CfgValue = "{\"DNSPrefetchEndpoint\":\"\",\"EnableOpenGraph\":true,\"EnablePingBackSend\":true,\"EnablePingBackReceive\":true,\"EnableOpenSearch\":true,\"WarnExternalLink\":true,\"AllowScriptsInPage\":false,\"ShowAdminLoginButton\":false,\"EnablePostRawEndpoint\":true}",
+                CfgValue = "{\"DNSPrefetchEndpoint\":\"\",\"EnablePingBackSend\":true,\"EnablePingBackReceive\":true,\"EnableOpenSearch\":true,\"WarnExternalLink\":true,\"AllowScriptsInPage\":false,\"ShowAdminLoginButton\":false,\"EnablePostRawEndpoint\":true}",
                 LastModifiedTimeUtc = DateTime.UtcNow
             },
             new()

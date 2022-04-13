@@ -39,7 +39,7 @@ public class CreateMenuCommandHandler : IRequestHandler<CreateMenuCommand, Guid>
             menu.SubMenus = sms.ToList();
         }
 
-        await _menuRepo.AddAsync(menu);
+        await _menuRepo.AddAsync(menu, cancellationToken);
         return uid;
     }
 }

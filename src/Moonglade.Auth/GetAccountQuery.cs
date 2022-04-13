@@ -9,10 +9,7 @@ public class GetAccountQueryHandler : IRequestHandler<GetAccountQuery, Account>
 {
     private readonly IRepository<LocalAccountEntity> _accountRepo;
 
-    public GetAccountQueryHandler(IRepository<LocalAccountEntity> accountRepo)
-    {
-        _accountRepo = accountRepo;
-    }
+    public GetAccountQueryHandler(IRepository<LocalAccountEntity> accountRepo) => _accountRepo = accountRepo;
 
     public async Task<Account> Handle(GetAccountQuery request, CancellationToken cancellationToken)
     {

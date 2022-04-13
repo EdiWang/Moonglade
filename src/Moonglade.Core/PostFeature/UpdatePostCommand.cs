@@ -1,5 +1,4 @@
-﻿using Microsoft.Extensions.Configuration;
-using Microsoft.Extensions.Options;
+﻿using Microsoft.Extensions.Options;
 using Moonglade.Caching;
 using Moonglade.Configuration;
 using Moonglade.Core.TagFeature;
@@ -16,10 +15,7 @@ public class UpdatePostCommandHandler : IRequestHandler<UpdatePostCommand, PostE
     private readonly IBlogCache _cache;
     private readonly IBlogConfig _blogConfig;
 
-    private readonly IDictionary<string, string> _tagNormalizationDictionary;
-
     public UpdatePostCommandHandler(
-        IConfiguration configuration,
         IOptions<AppSettings> settings,
         IRepository<TagEntity> tagRepo,
         IRepository<PostEntity> postRepo,
@@ -31,9 +27,6 @@ public class UpdatePostCommandHandler : IRequestHandler<UpdatePostCommand, PostE
         _cache = cache;
         _blogConfig = blogConfig;
         _settings = settings.Value;
-
-        _tagNormalizationDictionary =
-            configuration.GetSection("TagNormalization").Get<Dictionary<string, string>>();
     }
 
     public async Task<PostEntity> Handle(UpdatePostCommand request, CancellationToken cancellationToken)
@@ -93,8 +86,8 @@ public class UpdatePostCommandHandler : IRequestHandler<UpdatePostCommand, PostE
             await _tagRepo.AddAsync(new()
             {
                 DisplayName = item,
-                NormalizedName = Tag.NormalizeName(item, _tagNormalizationDictionary)
-            });
+                NormalizedName = Tag.NormalizeName(item, Helper.TagNormalizationDictionary)
+            }, cancellationToken);
         }
 
         // 2. update tags
@@ -127,7 +120,7 @@ public class UpdatePostCommandHandler : IRequestHandler<UpdatePostCommand, PostE
             }
         }
 
-        await _postRepo.UpdateAsync(post);
+        await _postRepo.UpdateAsync(post, cancellationToken);
 
         _cache.Remove(CacheDivision.Post, guid.ToString());
         return post;

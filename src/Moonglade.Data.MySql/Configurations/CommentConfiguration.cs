@@ -1,11 +1,10 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 using Moonglade.Data.Entities;
-using System.Diagnostics.CodeAnalysis;
 
 namespace Moonglade.Data.MySql.Configurations;
 
-[ExcludeFromCodeCoverage]
+
 internal class CommentConfiguration : IEntityTypeConfiguration<CommentEntity>
 {
     public void Configure(EntityTypeBuilder<CommentEntity> builder)

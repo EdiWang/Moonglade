@@ -4,7 +4,7 @@ namespace Moonglade.Data.Infrastructure;
 
 public interface IRepository<T> //where T : class
 {
-    Task Clear();
+    Task Clear(CancellationToken ct = default);
 
     ValueTask<T> GetAsync(object key);
 
@@ -20,11 +20,11 @@ public interface IRepository<T> //where T : class
         ISpecification<T> spec,
         Expression<Func<T, TResult>> selector);
 
-    Task DeleteAsync(T entity);
+    Task DeleteAsync(T entity, CancellationToken ct = default);
 
-    Task DeleteAsync(IEnumerable<T> entities);
+    Task DeleteAsync(IEnumerable<T> entities, CancellationToken ct = default);
 
-    Task DeleteAsync(object key);
+    Task DeleteAsync(object key, CancellationToken ct = default);
 
     int Count(ISpecification<T> spec = null);
 
@@ -52,7 +52,7 @@ public interface IRepository<T> //where T : class
         Expression<Func<IGrouping<TGroup, T>, TResult>> selector,
         ISpecification<T> spec = null);
 
-    Task<T> AddAsync(T entity);
+    Task<T> AddAsync(T entity, CancellationToken ct = default);
 
-    Task UpdateAsync(T entity);
+    Task UpdateAsync(T entity, CancellationToken ct = default);
 }

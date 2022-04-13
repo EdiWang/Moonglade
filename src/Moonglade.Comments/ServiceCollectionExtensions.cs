@@ -9,35 +9,26 @@ public static class ServiceCollectionExtensions
 {
     public static IServiceCollection AddComments(this IServiceCollection services, IConfiguration configuration)
     {
-        var section = configuration.GetSection("CommentModerator");
-        var settings = section.Get<CommentModeratorSettings>();
+        var section = configuration.GetSection("AzureContentModerator");
+        var settings = section.Get<AzureContentModeratorSettings>();
 
-        services.Configure<CommentModeratorSettings>(section);
+        services.Configure<AzureContentModeratorSettings>(section);
 
-        if (string.IsNullOrWhiteSpace(settings.Provider))
+        if (settings != null &&
+            !string.IsNullOrWhiteSpace(settings.Endpoint) &&
+            !string.IsNullOrWhiteSpace(settings.OcpApimSubscriptionKey))
         {
-            throw new ArgumentNullException("Provider", "Provider can not be null.");
+            var cred = new ApiKeyServiceClientCredentials(settings.OcpApimSubscriptionKey);
+            services.AddTransient<IContentModeratorClient>(_ => new ContentModeratorClient(cred)
+            {
+                Endpoint = settings.Endpoint
+            });
+
+            services.AddScoped<ICommentModerator, AzureContentModerator>();
         }
-
-        var provider = settings.Provider.ToLower();
-
-        switch (provider)
+        else
         {
-            case "local":
-                services.AddScoped<ICommentModerator, LocalWordFilterModerator>();
-                break;
-            case "azure":
-                var cred = new ApiKeyServiceClientCredentials(settings.AzureContentModeratorSettings.OcpApimSubscriptionKey);
-                services.AddTransient<IContentModeratorClient>(_ => new ContentModeratorClient(cred)
-                {
-                    Endpoint = settings.AzureContentModeratorSettings.Endpoint
-                });
-
-                services.AddScoped<ICommentModerator, AzureContentModerator>();
-                break;
-            default:
-                var msg = $"Provider {provider} is not supported.";
-                throw new NotSupportedException(msg);
+            services.AddScoped<ICommentModerator, LocalWordFilterModerator>();
         }
 
         return services;

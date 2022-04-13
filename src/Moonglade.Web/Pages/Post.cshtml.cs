@@ -11,10 +11,7 @@ public class PostModel : PageModel
 
     public Post Post { get; set; }
 
-    public PostModel(IMediator mediator)
-    {
-        _mediator = mediator;
-    }
+    public PostModel(IMediator mediator) => _mediator = mediator;
 
     public async Task<IActionResult> OnGetAsync(int year, int month, int day, string slug)
     {

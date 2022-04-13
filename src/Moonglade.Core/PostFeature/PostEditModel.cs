@@ -2,7 +2,7 @@
 
 namespace Moonglade.Core.PostFeature;
 
-public class PostEditModel
+public class PostEditModel : IValidatableObject
 {
     [HiddenInput]
     public Guid PostId { get; set; }
@@ -82,5 +82,13 @@ public class PostEditModel
     {
         PostId = Guid.Empty;
         IsOriginal = true;
+    }
+
+    public IEnumerable<ValidationResult> Validate(ValidationContext validationContext)
+    {
+        if (!IsOriginal && string.IsNullOrWhiteSpace(OriginLink))
+        {
+            yield return new("Please enter the origin link.", new[] { nameof(OriginLink) });
+        }
     }
 }

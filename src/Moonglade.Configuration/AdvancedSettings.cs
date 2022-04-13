@@ -15,9 +15,6 @@ public class AdvancedSettings : IBlogSettings
     [Display(Name = "Enable Pingback receive")]
     public bool EnablePingbackReceive { get; set; }
 
-    [Display(Name = "Enable OpenGraph")]
-    public bool EnableOpenGraph { get; set; }
-
     [Display(Name = "Enable MetaWeblog API")]
     public bool EnableMetaWeblog { get; set; }
 

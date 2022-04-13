@@ -20,6 +20,6 @@ public class DeleteMenuCommandHandler : AsyncRequestHandler<DeleteMenuCommand>
             throw new InvalidOperationException($"MenuEntity with Id '{request.Id}' not found.");
         }
 
-        await _menuRepo.DeleteAsync(request.Id);
+        await _menuRepo.DeleteAsync(request.Id, cancellationToken);
     }
 }

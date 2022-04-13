@@ -11,14 +11,9 @@ namespace Moonglade.Web.Controllers;
 [CommentProviderGate]
 public class CommentController : ControllerBase
 {
-    #region Private Fields
-
     private readonly IMediator _mediator;
-
     private readonly ITimeZoneResolver _timeZoneResolver;
     private readonly IBlogConfig _blogConfig;
-
-    #endregion
 
     public CommentController(
         IMediator mediator,

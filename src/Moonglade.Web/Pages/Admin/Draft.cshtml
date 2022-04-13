@@ -1,40 +1,44 @@
 ﻿@page "/admin/post/draft"
-@model Moonglade.Web.Pages.Admin.PostDraftModel
+@using Moonglade.Core.PostFeature
+@using Moonglade.Data.Spec
+@inject IMediator _mediator
+@inject ITimeZoneResolver _zoneResolver
 @{
     ViewBag.Title = "Drafts";
+    var posts = await _mediator.Send(new ListPostSegmentByStatusQuery(PostStatus.Draft));
 }
-@inject ITimeZoneResolver _zoneResolver
+
 @section scripts{
-    <script>
-        $(function () {
-            $(".btn-delete").click(function () {
-                var cfm = confirm("Delete Confirmation?");
-                if (cfm) {
-                    deletePost($(this).data("postid"));
-                }
-            });
+<script>
+    $(function () {
+        $(".btn-delete").click(function () {
+            var cfm = confirm("Delete Confirmation?");
+            if (cfm) {
+                deletePost($(this).data("postid"));
+            }
         });
+    });
 
-        function deletePost(postid) {
-            $(`#span-processing-${postid}`).show();
+    function deletePost(postid) {
+        $(`#span-processing-${postid}`).show();
 
-            callApi(`/api/post/${postid}/recycle`, 'DELETE', {},
-                (resp) => {
-                    $(`#tr-${postid}`).hide();
-                });
-        }
-    </script>
+        callApi(`/api/post/${postid}/recycle`, 'DELETE', {},
+            (resp) => {
+                $(`#tr-${postid}`).hide();
+            });
+    }
+</script>
 }
 
 <partial name="_PostManageHeader" />
 
 <div class="ps-4 pe-4">
 
-    @if (Model.PostSegments.Any())
+    @if (posts.Any())
     {
         @Html.AntiForgeryToken()
 
-        @foreach (var post in Model.PostSegments.OrderByDescending(p => p.LastModifiedUtc))
+        @foreach (var post in posts.OrderByDescending(p => p.LastModifiedUtc))
         {
             <div class="card mb-3" id="tr-@post.Id">
                 <div class="card-body">

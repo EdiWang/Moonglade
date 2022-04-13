@@ -29,7 +29,7 @@ public class UpdateLinkCommandHandler : AsyncRequestHandler<UpdateLinkCommand>
             link.Title = request.Title;
             link.LinkUrl = Helper.SterilizeLink(request.LinkUrl);
 
-            await _friendlinkRepo.UpdateAsync(link);
+            await _friendlinkRepo.UpdateAsync(link, cancellationToken);
         }
     }
 }

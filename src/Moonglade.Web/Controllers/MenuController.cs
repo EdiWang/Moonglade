@@ -16,30 +16,8 @@ public class MenuController : ControllerBase
     [HttpPost]
     [TypeFilter(typeof(ClearBlogCache), Arguments = new object[] { CacheDivision.General, "menu" })]
     [ProducesResponseType(typeof(Guid), StatusCodes.Status200OK)]
-    public async Task<IActionResult> Create(EditMenuRequest model)
+    public async Task<IActionResult> Create(EditMenuRequest request)
     {
-        var request = new EditMenuRequest
-        {
-            DisplayOrder = model.DisplayOrder.GetValueOrDefault(),
-            Icon = model.Icon,
-            Title = model.Title,
-            Url = model.Url,
-            IsOpenInNewTab = model.IsOpenInNewTab
-        };
-
-        if (null != model.SubMenus)
-        {
-            var subMenuRequests = model.SubMenus
-                .Select(p => new EditSubMenuRequest
-                {
-                    Title = p.Title,
-                    Url = p.Url,
-                    IsOpenInNewTab = p.IsOpenInNewTab
-                }).ToArray();
-
-            request.SubMenus = subMenuRequests;
-        }
-
         var response = await _mediator.Send(new CreateMenuCommand(request));
         return Ok(response);
     }
@@ -53,7 +31,7 @@ public class MenuController : ControllerBase
         return NoContent();
     }
 
-    [HttpGet("edit/{id:guid}")]
+    [HttpGet("{id:guid}")]
     [ProducesResponseType(typeof(EditMenuRequest), StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
     public async Task<IActionResult> Edit([NotEmpty] Guid id)
@@ -84,31 +62,9 @@ public class MenuController : ControllerBase
     [HttpPut("edit")]
     [TypeFilter(typeof(ClearBlogCache), Arguments = new object[] { CacheDivision.General, "menu" })]
     [ProducesResponseType(StatusCodes.Status204NoContent)]
-    public async Task<IActionResult> Edit(EditMenuRequest model)
+    public async Task<IActionResult> Edit(EditMenuRequest request)
     {
-        var request = new EditMenuRequest
-        {
-            Title = model.Title,
-            DisplayOrder = model.DisplayOrder.GetValueOrDefault(),
-            Icon = model.Icon,
-            Url = model.Url,
-            IsOpenInNewTab = model.IsOpenInNewTab
-        };
-
-        if (null != model.SubMenus)
-        {
-            var subMenuRequests = model.SubMenus
-                .Select(p => new EditSubMenuRequest
-                {
-                    Title = p.Title,
-                    Url = p.Url,
-                    IsOpenInNewTab = p.IsOpenInNewTab
-                }).ToArray();
-
-            request.SubMenus = subMenuRequests;
-        }
-
-        await _mediator.Send(new UpdateMenuCommand(model.Id, request));
+        await _mediator.Send(new UpdateMenuCommand(request));
         return NoContent();
     }
 }

@@ -10,11 +10,7 @@ public record ToggleApprovalCommand(Guid[] CommentIds) : IRequest;
 public class ToggleApprovalCommandHandler : AsyncRequestHandler<ToggleApprovalCommand>
 {
     private readonly IRepository<CommentEntity> _commentRepo;
-
-    public ToggleApprovalCommandHandler(IRepository<CommentEntity> commentRepo)
-    {
-        _commentRepo = commentRepo;
-    }
+    public ToggleApprovalCommandHandler(IRepository<CommentEntity> commentRepo) => _commentRepo = commentRepo;
 
     protected override async Task Handle(ToggleApprovalCommand request, CancellationToken cancellationToken)
     {
@@ -28,7 +24,7 @@ public class ToggleApprovalCommandHandler : AsyncRequestHandler<ToggleApprovalCo
         foreach (var cmt in comments)
         {
             cmt.IsApproved = !cmt.IsApproved;
-            await _commentRepo.UpdateAsync(cmt);
+            await _commentRepo.UpdateAsync(cmt, cancellationToken);
         }
     }
 }

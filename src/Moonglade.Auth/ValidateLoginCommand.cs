@@ -10,10 +10,7 @@ public class ValidateLoginCommandHandler : IRequestHandler<ValidateLoginCommand,
 {
     private readonly IRepository<LocalAccountEntity> _accountRepo;
 
-    public ValidateLoginCommandHandler(IRepository<LocalAccountEntity> accountRepo)
-    {
-        _accountRepo = accountRepo;
-    }
+    public ValidateLoginCommandHandler(IRepository<LocalAccountEntity> accountRepo) => _accountRepo = accountRepo;
 
     public async Task<Guid> Handle(ValidateLoginCommand request, CancellationToken cancellationToken)
     {
