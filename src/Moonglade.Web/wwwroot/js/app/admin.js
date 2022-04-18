@@ -161,6 +161,7 @@ function ImageUploader(targetName, hw, imgMimeType) {
     };
 };
 
+var simplemde = null;
 var isPreviewRequired = false;
 
 var postEditor = {
@@ -228,7 +229,7 @@ var postEditor = {
     },
     loadMdEditor: function (textareaSelector) {
         if (window.SimpleMDE) {
-            var simplemde = new SimpleMDE({
+            simplemde = new SimpleMDE({
                 element: $(textareaSelector)[0],
                 spellChecker: false,
                 status: false
@@ -302,6 +303,11 @@ var postEditor = {
         function submitForm(e) {
             if (window.tinyMCE) {
                 window.tinyMCE.triggerSave();
+            }
+
+            if (window.SimpleMDE) {
+                var newVal = simplemde.value();
+                $(".post-content-textarea").val(newVal);
             }
 
             if ($('input[name="ViewModel.IsPublished"]').val() === 'True') {
