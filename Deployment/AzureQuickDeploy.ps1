@@ -8,16 +8,66 @@
 # Reference: https://docs.microsoft.com/en-us/cli/azure/?view=azure-cli-latest
 
 param(
-    $subscriptionName = "Microsoft MVP", 
     $regionName = "East Asia", 
     [bool] $useLinuxPlanWithDocker = 1, 
     [bool] $createCDN = 0
 )
 
+function Get-UrlStatusCode([string] $Url) {
+    try {
+        [System.Net.WebRequest]::Create($Url).GetResponse().StatusCode
+    }
+    catch [Net.WebException] {
+        [int]$_.Exception.Response.StatusCode
+    }
+}
+
+[Console]::ResetColor()
+# az login --use-device-code
+$output = az account show -o json | ConvertFrom-Json
+$subscriptionList = az account list -o json | ConvertFrom-Json 
+$subscriptionList | Format-Table name, id, tenantId -AutoSize
+$subscriptionName = $output.name
+Write-Host "Currently logged in to subscription """$output.name.Trim()""" in tenant " $output.tenantId
+$subscriptionName = Read-Host "Enter subscription Id ("$output.id")"
+$subscriptionName = $subscriptionName.Trim()
+if ([string]::IsNullOrWhiteSpace($subscriptionName)) {
+    $subscriptionName = $output.id
+}
+else {
+    # az account set --subscription $subscriptionName
+    Write-Host "Changed to subscription ("$subscriptionName")"
+}
+
+while($true) {
+    $webAppName = Read-Host -Prompt "Enter webapp name"
+    $webAppName = $webAppName.Trim()
+    if($webAppName.ToLower() -match "xbox") {
+        Write-Host "Webapp name cannot have keywords xbox,windows,login,microsoft"
+        continue
+    } elseif ($webAppName.ToLower() -match "windows") {
+        Write-Host "Webapp name cannot have keywords xbox,windows,login,microsoft"
+        continue
+    } elseif ($webAppName.ToLower() -match "login") {
+        Write-Host "Webapp name cannot have keywords xbox,windows,login,microsoft"
+        continue
+    } elseif ($webAppName.ToLower() -match "microsoft") {
+        Write-Host "Webapp name cannot have keywords xbox,windows,login,microsoft"
+        continue
+    }
+    # Create the request
+    $HTTP_Status = Get-UrlStatusCode('http://' + $webAppName + '.azurewebsites.net')
+    if($HTTP_Status -eq 0) {
+        break
+    } else {
+        Write-Host "Webapp name taken"
+    }
+}
+
 # Start script
 $rndNumber = Get-Random -Minimum 100 -Maximum 999
 $rsgName = "moongladersg$rndNumber"
-$webAppName = "moongladeweb$rndNumber"
+#$webAppName = "moongladeweb$rndNumber"
 $aspName = "moongladeplan$rndNumber"
 $storageAccountName = "moongladestorage$rndNumber"
 $storageContainerName = "moongladeimages$rndNumber"
@@ -29,11 +79,11 @@ $cdnEndpointName = "moongladecep$rndNumber"
 
 function Get-RandomCharacters($length, $characters) {
     $random = 1..$length | ForEach-Object { Get-Random -Maximum $characters.length }
-    $private:ofs=""
+    $private:ofs = ""
     return [String]$characters[$random]
 }
  
-function Scramble-String([string]$inputString){     
+function Scramble-String([string]$inputString) {     
     $characterArray = $inputString.ToCharArray()   
     $scrambledStringArray = $characterArray | Get-Random -Count $characterArray.Length     
     $outputString = -join $scrambledStringArray
@@ -208,7 +258,7 @@ if ($createCDN) {
     Write-Host "It can take up to 10 minutes for endpoint '$cdnEndpointName.azureedge.net' to propagate, after that, please set CDN endpoint to 'https://#$cdnEndpointName.azureedge.net/$storageContainerName' in blog admin settings." -ForegroundColor Yellow
 }
 
-if (!$useLinuxPlanWithDocker){
+if (!$useLinuxPlanWithDocker) {
     Write-Host "Pulling source code and run build on Azure (this takes time, please wait)..."
     $echo = az webapp deployment source config --branch master --manual-integration --name $webAppName --repo-url https://github.com/EdiWang/Moonglade --resource-group $rsgName
 }
