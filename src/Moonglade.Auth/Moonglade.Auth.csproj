@@ -17,7 +17,7 @@
 		<FrameworkReference Include="Microsoft.AspNetCore.App" />
 		<PackageReference Include="MediatR" Version="10.0.1" />
 		<PackageReference Include="Microsoft.AspNetCore.Authentication.OpenIdConnect" Version="6.0.4" />
-		<PackageReference Include="Microsoft.Identity.Web" Version="1.23.1" />
+		<PackageReference Include="Microsoft.Identity.Web" Version="1.24.1" />
 	</ItemGroup>
 
 	<ItemGroup>
