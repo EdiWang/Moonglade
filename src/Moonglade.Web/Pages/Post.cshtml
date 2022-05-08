@@ -137,13 +137,19 @@
     }
 
     <section class="post-content clearfix">
+        @{
+            var content = BlogConfig.ImageSettings.EnableCDNRedirect ? 
+                Model.Post.RawPostContent.ReplaceCDNEndpointToImgTags(BlogConfig.ImageSettings.CDNEndpoint) : 
+                Model.Post.RawPostContent;
+        }
+
         @if (ec == EditorChoice.Markdown)
         {
-            @Html.Raw(ContentProcessor.MarkdownToContent(Model.Post.RawPostContent, ContentProcessor.MarkdownConvertType.Html, false))
+            @Html.Raw(ContentProcessor.MarkdownToContent(content, ContentProcessor.MarkdownConvertType.Html, false))
         }
         else
         {
-            @Html.Raw(Model.Post.RawPostContent)
+            @Html.Raw(content)
         }
     </section>
 
