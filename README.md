@@ -95,7 +95,7 @@ You need to create an [**Azure Blob Storage**](https://azure.microsoft.com/en-us
 }
 ```
 
-When configured the image storage to use Azure Blob, you can take advantage of CDN for your image resources. Just enable CDN in admin settings, the blog will get images from client browser using a 302 redirect.
+When configured the image storage to use Azure Blob, you can take advantage of CDN for your image resources. Just enable CDN in admin settings, the blog will get images from CDN.
 
 #### File System (Not Recommended)
 

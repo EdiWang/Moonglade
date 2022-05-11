@@ -48,6 +48,7 @@ public class ImageController : ControllerBase
             return BadRequest("invalid filename");
         }
 
+        // Fallback method for legacy "/image/..." references (e.g. from third party websites)
         if (_blogConfig.ImageSettings.EnableCDNRedirect)
         {
             var imageUrl = _blogConfig.ImageSettings.CDNEndpoint.CombineUrl(filename);
