@@ -1,10 +1,10 @@
 ﻿@page "/tags"
 @using System.Web
 @using Moonglade.Core.TagFeature
-@inject IMediator _mediator
+@inject IMediator Mediator
 @{
     ViewBag.TitlePrefix = "Tags";
-    var tags = await _mediator.Send(new GetTagCountListQuery());
+    var tags = await Mediator.Send(new GetTagCountListQuery());
 }
 
 @functions {
