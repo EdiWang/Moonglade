@@ -1,11 +1,11 @@
 ﻿@page "/admin/post/insight"
 @using Moonglade.Core.PostFeature
 @using Moonglade.Data.Spec
-@inject IMediator _mediator
+@inject IMediator Mediator
 @{
     ViewBag.Title = "Insights";
-    var topReadList = await _mediator.Send(new ListInsightsQuery(PostInsightsType.TopRead));
-    var topCommentedList = await _mediator.Send(new ListInsightsQuery(PostInsightsType.TopCommented));
+    var topReadList = await Mediator.Send(new ListInsightsQuery(PostInsightsType.TopRead));
+    var topCommentedList = await Mediator.Send(new ListInsightsQuery(PostInsightsType.TopCommented));
 }
 
 <partial name="_PostManageHeader" />

@@ -1,9 +1,9 @@
 ﻿@page "/admin/tags"
 @using Moonglade.Core.TagFeature
-@inject IMediator _mediator
+@inject IMediator Mediator
 @{
     ViewBag.Title = "Manage Tags";
-    var tags = await _mediator.Send(new GetTagsQuery());
+    var tags = await Mediator.Send(new GetTagsQuery());
 }
 
 @Html.AntiForgeryToken()

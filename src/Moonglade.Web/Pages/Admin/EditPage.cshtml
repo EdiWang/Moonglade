@@ -138,8 +138,8 @@
 
     $('a[data-bs-toggle="tab"]').on('shown.bs.tab',
         function (e) {
-            var isCSSTab = e.target.id === "csscontent-tab";
-            if (isCSSTab && !hasCssEditorInitialized) {
+            var isCssTab = e.target.id === "csscontent-tab";
+            if (isCssTab && !hasCssEditorInitialized) {
                 initCssEditor();
             }
         });

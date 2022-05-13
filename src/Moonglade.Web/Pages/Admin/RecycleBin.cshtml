@@ -1,10 +1,10 @@
 ﻿@page "/admin/post/recycle-bin"
 @using Moonglade.Core.PostFeature
 @using Moonglade.Data.Spec
-@inject IMediator _mediator
+@inject IMediator Mediator
 @{
     ViewBag.Title = "Recycle Bin";
-    var posts = await _mediator.Send(new ListPostSegmentByStatusQuery(PostStatus.Deleted));
+    var posts = await Mediator.Send(new ListPostSegmentByStatusQuery(PostStatus.Deleted));
 }
 
 @section scripts{

@@ -1,10 +1,10 @@
 ﻿@page "/admin/pingback"
 @using Moonglade.Pingback
-@inject ITimeZoneResolver _zoneResolver
-@inject IMediator _mediator
+@inject ITimeZoneResolver ZoneResolver
+@inject IMediator Mediator
 @{
     ViewBag.Title = "Pingback";
-    var pingbackRecords = await _mediator.Send(new GetPingbacksQuery());
+    var pingbackRecords = await Mediator.Send(new GetPingbacksQuery());
 }
 
 @Html.AntiForgeryToken()
@@ -76,7 +76,7 @@
 
                     <div class="text-muted">
                         @item.Domain, @item.SourceIp,
-                        <pubdate t-zone-resolver="@_zoneResolver" pub-date-utc="@item.PingTimeUtc"></pubdate>
+                        <pubdate t-zone-resolver="@ZoneResolver" pub-date-utc="@item.PingTimeUtc"></pubdate>
                     </div>
                 </div>
 
