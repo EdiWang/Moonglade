@@ -1,11 +1,11 @@
 ﻿@page "/admin/post/edit/{id:guid?}"
 @using Microsoft.AspNetCore.Builder
 @model Moonglade.Web.Pages.Admin.EditPostModel
-@inject IOptions<RequestLocalizationOptions> _locOptions
+@inject IOptions<RequestLocalizationOptions> LocOptions
 @{
     ViewBag.Title = "Manage Posts";
 
-    var cultureItems = _locOptions.Value.SupportedUICultures
+    var cultureItems = LocOptions.Value.SupportedUICultures
         .Select(c => new { Value = c.Name, c.NativeName });
 
     var langList = cultureItems
