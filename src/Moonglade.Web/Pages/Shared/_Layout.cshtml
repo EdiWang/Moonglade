@@ -1,7 +1,7 @@
 ﻿@using Moonglade.Utils
-@inject Microsoft.ApplicationInsights.AspNetCore.JavaScriptSnippet _javaScriptSnippet
-@inject IHttpContextAccessor _httpContextAccessor
-@inject IWebHostEnvironment _webHostEnvironment
+@inject Microsoft.ApplicationInsights.AspNetCore.JavaScriptSnippet JavaScriptSnippet
+@inject IHttpContextAccessor HttpContextAccessor
+@inject IWebHostEnvironment WebHostEnvironment
 @{
     if (string.IsNullOrEmpty(BlogConfig.GeneralSettings.AvatarUrl))
     {
@@ -95,7 +95,7 @@
     <environment include="Production">
         @if (!(bool)Context.Items["DNT"])
         {
-            @Html.Raw(_javaScriptSnippet.FullScript)
+            @Html.Raw(JavaScriptSnippet.FullScript)
         }
     </environment>
     <script src="~/lib/jquery/jquery.min.js" asp-append-version="true"></script>

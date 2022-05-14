@@ -1,6 +1,6 @@
 ﻿@page "/auth/signin"
 @model Moonglade.Web.Pages.SignInModel
-@inject Microsoft.ApplicationInsights.AspNetCore.JavaScriptSnippet _javaScriptSnippet
+@inject Microsoft.ApplicationInsights.AspNetCore.JavaScriptSnippet JavaScriptSnippet
 @using Moonglade.Utils
 @{
     Layout = null;
@@ -21,7 +21,7 @@
     </environment>
     <environment exclude="Development">
         <link href="~/css/bundle.min.css" rel="stylesheet" asp-append-version="true" />
-        @Html.Raw(_javaScriptSnippet.FullScript)
+        @Html.Raw(JavaScriptSnippet.FullScript)
     </environment>
     <link href="~/theme.css" rel="stylesheet" asp-append-version="true" />
     @if (BlogConfig.CustomStyleSheetSettings.EnableCustomCss)

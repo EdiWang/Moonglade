@@ -1,7 +1,7 @@
 ﻿@page "/admin/about"
 @using System.Diagnostics
 @using Moonglade.Utils
-@inject IWebHostEnvironment _webHostEnvironment
+@inject IWebHostEnvironment WebHostEnvironment
 
 @{
     var process = Process.GetCurrentProcess();
@@ -27,7 +27,7 @@
                 </tr>
                 <tr>
                     <td>@Localizer["Environment"]</td>
-                    <td>@_webHostEnvironment.EnvironmentName</td>
+                    <td>@WebHostEnvironment.EnvironmentName</td>
                 </tr>
                 <tr>
                     <td>@Localizer["Editor"]</td>

@@ -1,10 +1,8 @@
 ﻿@page "/admin/settings/general"
-@using Microsoft.Extensions.Configuration
 @model Moonglade.Web.Pages.Settings.GeneralModel
-@inject ITimeZoneResolver _zoneResolver
-@inject IConfiguration _configuration
+@inject ITimeZoneResolver ZoneResolver
 @{
-    var tzList = _zoneResolver.ListTimeZones().Select(t => new SelectListItem
+    var tzList = ZoneResolver.ListTimeZones().Select(t => new SelectListItem
     {
         Text = t.DisplayName,
         Value = t.Id

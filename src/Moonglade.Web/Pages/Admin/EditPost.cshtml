@@ -1,11 +1,11 @@
 ﻿@page "/admin/post/edit/{id:guid?}"
 @using Microsoft.AspNetCore.Builder
 @model Moonglade.Web.Pages.Admin.EditPostModel
-@inject IOptions<RequestLocalizationOptions> _locOptions
+@inject IOptions<RequestLocalizationOptions> LocOptions
 @{
     ViewBag.Title = "Manage Posts";
 
-    var cultureItems = _locOptions.Value.SupportedUICultures
+    var cultureItems = LocOptions.Value.SupportedUICultures
         .Select(c => new { Value = c.Name, c.NativeName });
 
     var langList = cultureItems
@@ -24,13 +24,13 @@
         switch (ec)
         {
             case EditorChoice.Html:
-    <script src="~/lib/tinymce/tinymce.min.js"></script>
+                <script src="~/lib/tinymce/tinymce.min.js"></script>
                 break;
             case EditorChoice.Markdown:
-    <script src="~/lib/simplemde/simplemde.min.js"></script>
-    <script src="~/js/3rd/inline-attachment.js"></script>
-    <script src="~/js/3rd/codemirror-4.inline-attachment.js"></script>
-    <link id="css-simplemde" href="~/lib/simplemde/simplemde.min.css" rel="stylesheet" />
+                <script src="https://unpkg.com/simplemde@1.11.2/dist/simplemde.min.js"></script>
+                <script src="~/js/3rd/inline-attachment.js"></script>
+                <script src="~/js/3rd/codemirror-4.inline-attachment.js"></script>
+                <link id="css-simplemde" href="https://unpkg.com/simplemde@1.11.2/dist/simplemde.min.css" rel="stylesheet" />
                 break;
         }
     }

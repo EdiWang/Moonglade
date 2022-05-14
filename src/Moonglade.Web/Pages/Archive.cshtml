@@ -1,10 +1,10 @@
 ﻿@page "/archive"
 @using System.Globalization
 @using Moonglade.Core.PostFeature
-@inject IMediator _mediator
+@inject IMediator Mediator
 @{
     ViewBag.TitlePrefix = "Archive ";
-    var archives = await _mediator.Send(new GetArchiveQuery());
+    var archives = await Mediator.Send(new GetArchiveQuery());
 }
 
 @{

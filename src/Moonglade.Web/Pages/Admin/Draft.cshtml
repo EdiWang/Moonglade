@@ -1,11 +1,11 @@
 ﻿@page "/admin/post/draft"
 @using Moonglade.Core.PostFeature
 @using Moonglade.Data.Spec
-@inject IMediator _mediator
-@inject ITimeZoneResolver _zoneResolver
+@inject IMediator Mediator
+@inject ITimeZoneResolver ZoneResolver
 @{
     ViewBag.Title = "Drafts";
-    var posts = await _mediator.Send(new ListPostSegmentByStatusQuery(PostStatus.Draft));
+    var posts = await Mediator.Send(new ListPostSegmentByStatusQuery(PostStatus.Draft));
 }
 
 @section scripts{
@@ -50,7 +50,7 @@
                         @post.ContentAbstract
                     </p>
 
-                    <small class="text-muted">@_zoneResolver.ToTimeZone(post.CreateTimeUtc).ToLongDateString() @_zoneResolver.ToTimeZone(post.CreateTimeUtc).ToShortTimeString()</small>
+                    <small class="text-muted">@ZoneResolver.ToTimeZone(post.CreateTimeUtc).ToLongDateString() @ZoneResolver.ToTimeZone(post.CreateTimeUtc).ToShortTimeString()</small>
                 </div>
                 <div class="card-footer">
                     <a class="btn btn-outline-accent btn-sm btn-edit" asp-page="./EditPost" asp-route-id="@post.Id">
