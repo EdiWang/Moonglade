@@ -10,7 +10,7 @@
       ]
     },
     {
-      "library": "tinymce@5.10.4",
+      "library": "tinymce@6.0.2",
       "destination": "wwwroot/lib/tinymce"
     },
     {
