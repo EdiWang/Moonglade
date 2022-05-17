@@ -26,12 +26,14 @@ public class PostModel : PageModel
 
     public async Task OnGet(int pageIndex = 1, string searchTerm = null)
     {
-        await GetPosts(pageIndex, searchTerm);
+        if (!string.IsNullOrWhiteSpace(searchTerm)) SearchTerm = searchTerm;
+
+        await GetPosts(pageIndex);
     }
 
-    private async Task GetPosts(int pageIndex, string searchTerm = null)
+    private async Task GetPosts(int pageIndex)
     {
-        var (posts, totalRows) = await _mediator.Send(new ListPostSegmentQuery(PostStatus.Published, (pageIndex - 1) * PageSize, PageSize, SearchTerm ?? searchTerm));
+        var (posts, totalRows) = await _mediator.Send(new ListPostSegmentQuery(PostStatus.Published, (pageIndex - 1) * PageSize, PageSize, SearchTerm));
         PostSegments = new(posts, pageIndex, PageSize, totalRows);
     }
 }
