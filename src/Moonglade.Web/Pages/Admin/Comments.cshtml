@@ -11,8 +11,8 @@
 
 @section scripts{
     <script>
-        $(function () {
-            $(".btn-delete").click(function () {
+        $(function() {
+            $(".btn-delete").click(function() {
                 var cid = $(this).data("commentid");
                 callApi('/api/comment', 'DELETE', [cid],
                     (success) => {
@@ -20,12 +20,12 @@
                     });
             });
 
-            $(".btn-reply").click(function () {
+            $(".btn-reply").click(function() {
                 var cid = $(this).data("commentid");
                 $(`#panel-comment-${cid} .reply-ui`).show();
             });
 
-            $(".btn-reply-post").click(function () {
+            $(".btn-reply-post").click(function() {
                 var cid = $(this).data("commentid");
                 var replyContent = $(`#replycontent-${cid}`).val();
 
@@ -39,7 +39,7 @@
                     });
             });
 
-            $(".btn-approve").click(function () {
+            $(".btn-approve").click(function() {
                 callApi(`/api/comment/${$(this).data("commentid")}/approval/toggle`, 'PUT', {},
                     async (resp) => {
                         var data = await resp.json();
@@ -51,7 +51,7 @@
     </script>
 }
 
-@section head{
+    @section head{
     <style>
         .mdrendered-comment-content img {
             max-width: 720px;
@@ -64,14 +64,14 @@
     </style>
 }
 
-<div class="admin-toolbar ps-4 pe-4 pt-2 pb-2 border-bottom mb-3 shadow-sm">
-    <a href="javascript:deleteSelectedComments();" class="btn btn-outline-danger btn-delete-selected">
-        <i class="bi-trash"></i> @Localizer["Delete selected"]
-    </a>
-</div>
+    <div class="admin-toolbar ps-4 pe-4 pt-2 pb-2 border-bottom mb-3 shadow-sm">
+        <a href="javascript:deleteSelectedComments();" class="btn btn-outline-danger btn-delete-selected">
+            <i class="bi-trash"></i> @Localizer["Delete selected"]
+        </a>
+    </div>
 
-<div class="ps-4 pe-4">
-    @if (Model.CommentDetailedItems.Count == 0)
+    <div class="ps-4 pe-4">
+        @if (Model.CommentDetailedItems.Count == 0)
     {
         <div class="alert alert-info">
             @Localizer["No Comments"]
@@ -81,13 +81,62 @@
     {
         foreach (var item in Model.CommentDetailedItems)
         {
-            <div id="panel-comment-@item.Id" class="mb-4">
-                <div class="float-end">
-                    <div class="form-check mb-2 text-end">
-                        <input type="checkbox" class="form-check-input chk-cid" id="comment-item-chk-@item.Id" data-cid="@item.Id" />
-                        <label class="form-check-label" for="comment-item-chk-@item.Id"></label>
+            <div id="panel-comment-@item.Id" class="mb-4 d-flex flex-row">
+                <div class="form-check">
+                    <input type="checkbox" class="form-check-input chk-cid" id="comment-item-chk-@item.Id" data-cid="@item.Id" />
+                    <label class="form-check-label" for="comment-item-chk-@item.Id"></label>
+                </div>
+
+                <div class="flex-sm-grow-1">
+                    <h6>
+                        @item.Username
+                        @if (!string.IsNullOrWhiteSpace(item.Email))
+                        {
+                            <text>
+                                (<a href="mailto:@item.Email" class="d-none d-sm-inline">@item.Email</a>)
+                            </text>
+                        }
+                    </h6>
+                    <div class="mdrendered-comment-content">
+                        @Html.Raw(ContentProcessor.MarkdownToContent(item.CommentContent, ContentProcessor.MarkdownConvertType.Html))
+                    </div>
+                    <div class="text-muted">
+                        @item.PostTitle
                     </div>
 
+                    <small class="text-muted">
+                        <span>@ZoneResolver.ToTimeZone(item.CreateTimeUtc).ToString("yyyy-MM-dd HH:mm")</span> <span class="text-muted d-none d-sm-inline">(@item.IpAddress)</span>
+                    </small>
+
+                    <div class="reply-ui mt-3" style="display: none;">
+                        <form>
+                            <div class="mb-2">
+                                <textarea class="form-control"
+                                  id="replycontent-@item.Id"
+                                  name="ReplyContent"
+                                  placeholder="Content" type="text"></textarea>
+                            </div>
+
+                            <a class="btn btn-outline-success btn-reply-post" href="#" data-commentid="@item.Id">
+                                @Localizer["Reply"]
+                            </a>
+                        </form>
+                    </div>
+                    <div class="reply-list">
+                        @foreach (var reply in item.CommentReplies.OrderByDescending(t => t.ReplyTimeUtc))
+                        {
+                            <hr />
+                            <div class="reply-container">
+                                <div>
+                                    @Html.Raw(ContentProcessor.MarkdownToContent(reply.ReplyContent, ContentProcessor.MarkdownConvertType.Html))
+                                </div>
+                                <small class="text-muted">@ZoneResolver.ToTimeZone(reply.ReplyTimeUtc)</small>
+                            </div>
+                        }
+                    </div>
+                </div>
+                
+                <div>
                     <a href="javascript:;" class="btn btn-sm @(item.IsApproved ? "btn-success" : "btn-outline-success") btn-approve" data-commentid="@item.Id">
                         <i class="bi-star-fill"></i>
                     </a>
@@ -98,53 +147,6 @@
                         <i class="bi-trash"></i>
                     </button>
                 </div>
-
-                <h6>
-                    @item.Username
-                    @if (!string.IsNullOrWhiteSpace(item.Email))
-                    {
-                        <text>
-                            (<a href="mailto:@item.Email" class="d-none d-sm-inline">@item.Email</a>)
-                        </text>
-                    }
-                </h6>
-                <div class="mdrendered-comment-content">
-                    @Html.Raw(ContentProcessor.MarkdownToContent(item.CommentContent, ContentProcessor.MarkdownConvertType.Html))
-                </div>
-                <div class="text-muted">
-                    @item.PostTitle
-                </div>
-
-                <small class="text-muted">
-                    <span>@ZoneResolver.ToTimeZone(item.CreateTimeUtc).ToString("yyyy-MM-dd HH:mm")</span> <span class="text-muted d-none d-sm-inline">(@item.IpAddress)</span>
-                </small>
-
-                <div class="reply-ui mt-3" style="display: none;">
-                    <form>
-                        <div class="mb-2">
-                            <textarea class="form-control"
-                                      id="replycontent-@item.Id"
-                                      name="ReplyContent"
-                                      placeholder="Content" type="text"></textarea>
-                        </div>
-
-                        <a class="btn btn-success btn-reply-post" href="#" data-commentid="@item.Id">
-                            @Localizer["Reply"]
-                        </a>
-                    </form>
-                </div>
-                <div class="reply-list">
-                    @foreach (var reply in item.CommentReplies.OrderByDescending(t => t.ReplyTimeUtc))
-                    {
-                        <hr />
-                        <div class="reply-container">
-                            <div>
-                                @Html.Raw(ContentProcessor.MarkdownToContent(reply.ReplyContent, ContentProcessor.MarkdownConvertType.Html))
-                            </div>
-                            <small class="text-muted">@ZoneResolver.ToTimeZone(reply.ReplyTimeUtc)</small>
-                        </div>
-                    }
-                </div>
             </div>
 
             <hr />
@@ -153,9 +155,9 @@
 
     @Html.PagedListPager(Model.CommentDetailedItems, page => $"?pageIndex={page}", new PagedListRenderOptions
     {
-        LiElementClasses = new[] { "page-item" },
-        PageClasses = new[] { "page-link" },
-        UlElementClasses = new[] { "pagination justify-content-end" },
-        DisplayEllipsesWhenNotShowingAllPageNumbers = false
+    LiElementClasses = new[] { "page-item" },
+    PageClasses = new[] { "page-link" },
+    UlElementClasses = new[] { "pagination justify-content-end" },
+    DisplayEllipsesWhenNotShowingAllPageNumbers = false
     })
 </div>
