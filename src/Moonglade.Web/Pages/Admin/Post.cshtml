@@ -1,122 +1,76 @@
 ﻿@page "/admin/post"
+@using X.PagedList.Mvc.Core
+@using X.PagedList.Web.Common
+@inject ITimeZoneResolver ZoneResolver
+@model Moonglade.Web.Pages.Admin.PostModel
 @{
     ViewBag.Title = "Manage Posts";
 }
 
-@section head{
-    <link href="~/css/3rd/dataTables.bootstrap5.min.css" rel="stylesheet" />
-}
-
 @section scripts{
-    <script src="~/js/3rd/datatables.min.js"></script>
     <script>
-        $(function () {
-            var table = $("#posts-table").DataTable({
-                "order": [[1, "desc"]],
-                "lengthMenu": [[10, 15, 20, 25, 50, -1], [10, 15, 20, 25, 50, "All"]],
-                "pageLength": 10,
-                "processing": true,
-                "serverSide": true,
-                "ordering": false,
-                "ajax":
-                {
-                    url: "/api/post/list/published",
-                    type: "POST"
-                },
-                "initComplete": function (settings, json) {
-                    $('.dataTables_filter input').unbind();
-                    $('.dataTables_filter input').bind('keyup blur',
-                        function (e) {
-                            console.info(e);
-                            if (e.keyCode == 13 || e.type == 'blur') {
-                                table.search(this.value).draw();
-                            }
-                        });
-                },
-                "columns": [
-                    { "data": null },
-                    { "data": "pubDateUtc" },
-                    { "data": "hits" },
-                    { "data": null }
-                ],
-                "columnDefs": [
-                    {
-                        "targets": -1,
-                        "render": function (data, type, row, meta) {
-                            return `<a class="btn btn-outline-accent btn-sm btn-edit" href="/admin/post/edit/${data.id}"><i class="bi-pen"></i></a> <button class="btn btn-outline-danger btn-sm btn-delete"><i class="bi-trash"></i></button>`;
-                        }
-                    },
-                    {
-                        "targets": 0,
-                        "render": function (data, type, row, meta) {
-                            return `<a href="/post/${(new Date(data.pubDateUtc)).getFullYear()}/${(new Date(data.pubDateUtc)).getMonth() + 1}/${(new Date(data.pubDateUtc)).getDate()}/${data.slug}" target="_blank">${data.title}</a>`;
-                        }
-                    },
-                    {
-                        "targets": 1,
-                        "data": "pubDateUtc",
-                        "render": function (data, type, row, meta) {
-                            return `<span class="text-muted">${(new Date(data + 'Z')).toLocaleString()}</span>`;
-                        }
-                    },
-                    {
-                        "targets": 2,
-                        "data": "hits",
-                        "render": function (data, type, row, meta) {
-                            return `<span class="text-muted">${data}</span>`;
-                        }
-                    }
-                ]
-            });
-
-            $(".btn-refresh").click(function () {
-                table.ajax.reload();
-                blogToast.success("Data Refreshed");
-            });
-
-            $('#posts-table tbody').on('click', 'button', function () {
-                var data = table.row($(this).parents('tr')).data();
-                console.info(data);
-                var cfm = confirm("Delete Confirmation?");
-                if (cfm) {
-                    deletePost(data.id);
-                    $(this).parents('tr').hide();
-                }
-            });
-        });
+        function deleteConfirm(postid) {
+            var cfm = confirm("Delete Confirmation?");
+            if (cfm) {
+                deletePost(postid);
+            }
+        }
 
         function deletePost(postid) {
-            $(`#span-processing-${postid}`).show();
+            console.info(postid);
 
             callApi(`/api/post/${postid}/recycle`,
                 'DELETE',
                 {},
                 (resp) => {
-                    $(`#tr-${postid}`).hide();
+                    $(`#post-${postid}`).remove();
                 });
         }
     </script>
 }
 
 <partial name="_PostManageHeader" />
-
 @Html.AntiForgeryToken()
 
 <div class="ps-4 pe-4">
-    <div class="float-end">
-        <button class="btn btn-sm btn-outline-accent btn-refresh">
-            Refresh
-        </button>
-    </div>
+    @if (Model.PostSegments.Count == 0)
+    {
+        <partial name="_NoPosts"/>
+    }
+    else
+    {
+        foreach (var item in Model.PostSegments)
+        {
+            <div id="post-@item.Id" class="d-flex">
+                <div class="flex-grow-1">
+                    <a asp-page="/Post"
+                       asp-route-year="@item.PubDateUtc.GetValueOrDefault().Year"
+                       asp-route-month="@item.PubDateUtc.GetValueOrDefault().Month"
+                       asp-route-day="@item.PubDateUtc.GetValueOrDefault().Day"
+                       asp-route-slug="@item.Slug">
+                        <h6>
+                            @item.Title
+                        </h6>
+                    </a>
+                    <div>
+                        <span class="text-muted">@ZoneResolver.ToTimeZone(item.PubDateUtc.GetValueOrDefault()).ToString("yyyy-MM-dd HH:mm")</span> <span class="text-muted">@item.Hits</span>
+                    </div>
+                </div>
 
-    <table id="posts-table" class="table table-bordered">
-        <thead>
-            <tr>
-                <th>@Localizer["Title"]</th>
-                <th class="table-item-w20">@Localizer["Published"]</th>
-                <th class="table-item-w10">@Localizer["Hits"]</th>
-                <th class="table-item-w20">@Localizer["Options"]</th>
-            </tr>
-        </thead>
-    </table>
+                <div>
+                    <a class="btn btn-outline-accent btn-sm btn-edit" asp-page="./EditPost" asp-route-id="@item.Id"><i class="bi-pen"></i></a>
+                    <button class="btn btn-outline-danger btn-sm btn-delete" onclick="deleteConfirm('@item.Id')"><i class="bi-trash"></i></button>
+                </div>
+            </div>
+            <hr />
+        }
+
+        @Html.PagedListPager(Model.PostSegments, page => $"?pageIndex={page}", new PagedListRenderOptions
+        {
+            LiElementClasses = new[] {"page-item"},
+            PageClasses = new[] {"page-link"},
+            UlElementClasses = new[] {"pagination justify-content-end"},
+            DisplayEllipsesWhenNotShowingAllPageNumbers = false
+        })
+    }
 </div>
