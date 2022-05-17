@@ -33,6 +33,13 @@
 @Html.AntiForgeryToken()
 
 <div class="ps-4 pe-4">
+    <form method="post">
+        <div class="d-flex search-box mb-4">
+            <input type="search" aria-label="Search" asp-for="SearchTerm" class="form-control" placeholder="Search" />
+            <button class="btn btn-light btn-search my-sm-0" type="submit"><i class="bi-search text-dark"></i></button>
+        </div>
+    </form>
+
     @if (Model.PostSegments.Count == 0)
     {
         <partial name="_NoPosts"/>
@@ -47,13 +54,18 @@
                        asp-route-year="@item.PubDateUtc.GetValueOrDefault().Year"
                        asp-route-month="@item.PubDateUtc.GetValueOrDefault().Month"
                        asp-route-day="@item.PubDateUtc.GetValueOrDefault().Day"
-                       asp-route-slug="@item.Slug">
+                       asp-route-slug="@item.Slug"
+                       target="_blank">
                         <h6>
                             @item.Title
                         </h6>
                     </a>
                     <div>
-                        <span class="text-muted">@ZoneResolver.ToTimeZone(item.PubDateUtc.GetValueOrDefault()).ToString("yyyy-MM-dd HH:mm")</span> <span class="text-muted">@item.Hits</span>
+                        <i class="bi-calendar-event"></i>
+                        <span class="text-muted me-2">@ZoneResolver.ToTimeZone(item.PubDateUtc.GetValueOrDefault()).ToString("yyyy-MM-dd HH:mm")</span>
+
+                        <i class="bi-eye"></i>
+                        <span class="text-muted">@item.Hits</span>
                     </div>
                 </div>
 
@@ -62,10 +74,10 @@
                     <button class="btn btn-outline-danger btn-sm btn-delete" onclick="deleteConfirm('@item.Id')"><i class="bi-trash"></i></button>
                 </div>
             </div>
-            <hr />
+            <hr/>
         }
 
-        @Html.PagedListPager(Model.PostSegments, page => $"?pageIndex={page}", new PagedListRenderOptions
+        @Html.PagedListPager(Model.PostSegments, page => $"?pageIndex={page}&searchTerm={Model.SearchTerm}", new PagedListRenderOptions
         {
             LiElementClasses = new[] {"page-item"},
             PageClasses = new[] {"page-link"},
