@@ -16,7 +16,6 @@
 		<Using Include="MediatR" />
 
 		<Using Include="Moonglade.Web" />
-		<Using Include="Moonglade.Web.Models" />
 		<Using Include="Moonglade.Web.Configuration" />
 		<Using Include="Moonglade.Web.Filters" />
 		<Using Include="Moonglade.Web.Middleware" />
