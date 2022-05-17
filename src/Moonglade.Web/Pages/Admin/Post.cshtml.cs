@@ -1,7 +1,7 @@
-﻿using System.ComponentModel.DataAnnotations;
-using Microsoft.AspNetCore.Mvc.RazorPages;
+﻿using Microsoft.AspNetCore.Mvc.RazorPages;
 using Moonglade.Core.PostFeature;
 using Moonglade.Data.Spec;
+using System.ComponentModel.DataAnnotations;
 using X.PagedList;
 
 namespace Moonglade.Web.Pages.Admin;
@@ -31,7 +31,7 @@ public class PostModel : PageModel
 
     private async Task GetPosts(int pageIndex, string searchTerm = null)
     {
-        var (posts, totalRows) = await _mediator.Send(new ListPostSegmentQuery(PostStatus.Published, pageIndex * PageSize, PageSize, SearchTerm ?? searchTerm));
+        var (posts, totalRows) = await _mediator.Send(new ListPostSegmentQuery(PostStatus.Published, (pageIndex - 1) * PageSize, PageSize, SearchTerm ?? searchTerm));
         PostSegments = new(posts, pageIndex, PageSize, totalRows);
     }
 }
