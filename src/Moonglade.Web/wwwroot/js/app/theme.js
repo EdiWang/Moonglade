@@ -28,7 +28,7 @@
         document.querySelector('#lighticon').classList.add('bi-moon');
     },
     useLightMode: function () {
-        $('#blog-nav').addClass('bg-accent1');
+        document.querySelector('#blog-nav').classList.add('bg-accent1');
         $('#blog-nav, #moonglade-footer').removeClass('bg-dark');
 
         document.querySelector('#blog-footer').classList.add('bg-accent2');
