@@ -206,13 +206,8 @@ h3 small {
     transition: all .3s ease-in-out;
 }
 
-.article-post-summary {
-    position: relative;
-}
-
 .post-date-box {
-    position: absolute;
-    width: 70px;
+    flex-basis: 85px;
 }
 
 .post-date-day {
@@ -239,7 +234,7 @@ h3 small {
 }
 
 .post-summary-box {
-    margin-left: 105px;
+    flex-basis: fit-content;
 }
 
 .post-summary-text {
