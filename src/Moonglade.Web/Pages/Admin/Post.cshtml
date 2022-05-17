@@ -48,36 +48,39 @@
     {
         foreach (var item in Model.PostSegments)
         {
-            <div id="post-@item.Id" class="d-flex">
-                <div class="flex-grow-1">
-                    <a asp-page="/Post"
-                       asp-route-year="@item.PubDateUtc.GetValueOrDefault().Year"
-                       asp-route-month="@item.PubDateUtc.GetValueOrDefault().Month"
-                       asp-route-day="@item.PubDateUtc.GetValueOrDefault().Day"
-                       asp-route-slug="@item.Slug"
-                       target="_blank">
-                        <h6>
-                            @item.Title
-                        </h6>
-                    </a>
-                    <div>
-                        <i class="bi-calendar-event"></i>
-                        <span class="text-muted me-2">@ZoneResolver.ToTimeZone(item.PubDateUtc.GetValueOrDefault()).ToString("yyyy-MM-dd HH:mm")</span>
+            <div id="post-@item.Id">
+                <div class="d-flex">
+                    <div class="flex-grow-1">
+                        <a asp-page="/Post"
+                           asp-route-year="@item.PubDateUtc.GetValueOrDefault().Year"
+                           asp-route-month="@item.PubDateUtc.GetValueOrDefault().Month"
+                           asp-route-day="@item.PubDateUtc.GetValueOrDefault().Day"
+                           asp-route-slug="@item.Slug"
+                           title="@item.Slug"
+                           target="_blank">
+                            <h6>
+                                @item.Title
+                            </h6>
+                        </a>
+                        <div>
+                            <i class="bi-calendar-event"></i>
+                            <span class="text-muted me-2">@ZoneResolver.ToTimeZone(item.PubDateUtc.GetValueOrDefault()).ToString("yyyy-MM-dd HH:mm")</span>
 
-                        <i class="bi-eye"></i>
-                        <span class="text-muted">@item.Hits</span>
+                            <i class="bi-eye"></i>
+                            <span class="text-muted">@item.Hits</span>
+                        </div>
+                    </div>
+
+                    <div>
+                        <a class="btn btn-outline-accent btn-sm btn-edit" asp-page="./EditPost" asp-route-id="@item.Id"><i class="bi-pen"></i></a>
+                        <button class="btn btn-outline-danger btn-sm btn-delete" onclick="deleteConfirm('@item.Id')"><i class="bi-trash"></i></button>
                     </div>
                 </div>
-
-                <div>
-                    <a class="btn btn-outline-accent btn-sm btn-edit" asp-page="./EditPost" asp-route-id="@item.Id"><i class="bi-pen"></i></a>
-                    <button class="btn btn-outline-danger btn-sm btn-delete" onclick="deleteConfirm('@item.Id')"><i class="bi-trash"></i></button>
-                </div>
+                <hr/>
             </div>
-            <hr/>
         }
 
-        @Html.PagedListPager(Model.PostSegments, page => $"?pageIndex={page}&searchTerm={Model.SearchTerm}", new PagedListRenderOptions
+        @Html.PagedListPager(Model.PostSegments, page => $"?pageIndex={page}&searchTerm={Model.SearchTerm}", new ()
         {
             LiElementClasses = new[] {"page-item"},
             PageClasses = new[] {"page-link"},

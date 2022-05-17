@@ -383,22 +383,6 @@ var onPageCreateEditFailed = function (context) {
     }
 };
 
-function deletePost(postid) {
-    callApi(`/api/post/${postid}/destroy`, 'DELETE', {},
-        (resp) => {
-            document.querySelector(`#tr-${postid}`).remove();
-            blogToast.success('Post deleted');
-        });
-}
-
-function restorePost(postid) {
-    callApi(`/api/post/${postid}/restore`, 'POST', {},
-        (resp) => {
-            document.querySelector(`#tr-${postid}`).remove();
-            blogToast.success('Post restored');
-        });
-}
-
 function deleteSelectedComments() {
     var cids = [];
     $('.chk-cid:checked').each(function () {
