@@ -8,21 +8,12 @@ public class DisallowSpiderUA : ActionFilterAttribute
     public override void OnActionExecuting(ActionExecutingContext context)
     {
         var userAgent = context.HttpContext.Request.Headers["User-Agent"];
-        if (!string.IsNullOrWhiteSpace(userAgent))
+        if (!string.IsNullOrWhiteSpace(userAgent) && IsMachineUA(userAgent))
         {
-            if (IsMachineUA(userAgent))
-            {
-                context.Result = new ForbidResult();
-            }
-            else
-            {
-                base.OnActionExecuting(context);
-            }
+            context.Result = new ForbidResult();
         }
-        else
-        {
-            context.Result = new BadRequestResult();
-        }
+
+        base.OnActionExecuting(context);
     }
 
     private static bool IsMachineUA(string userAgent)
