@@ -152,7 +152,9 @@
                     <div class="row g-1">
                         <div class="col">
                             <div class="input-group input-group-sm">
-                                <label class="input-group-text" asp-for="ViewModel.Slug">Slug</label>
+                                <label class="input-group-text" asp-for="ViewModel.Slug">
+                                    <i class="bi-link-45deg"></i>
+                                </label>
                                 <input type="text" asp-for="ViewModel.Slug" class="form-control form-control-sm" placeholder="Slug" spellcheck="false" required pattern="[a-z0-9\-]+" maxlength="128"/>
                             </div>
                         </div>
@@ -164,7 +166,9 @@
                         </div>
                         <div class="col-md-auto">
                             <div class="input-group input-group-sm mb-2">
-                                <label class="input-group-text" asp-for="ViewModel.LanguageCode"></label>
+                                <label class="input-group-text" asp-for="ViewModel.LanguageCode">
+                                    <i class="bi-globe"></i>
+                                </label>
                                 <select class="form-select" asp-for="ViewModel.LanguageCode" asp-items="@langList"></select>
                             </div>
                         </div>
@@ -198,33 +202,25 @@
                         <i class="bi-clipboard-check me-1"></i>
                         @Localizer["Options"]
                     </div>
-                    <ul class="list-group list-group-flush">
-                        <li class="list-group-item">
-                            <div class="form-check form-switch mb-2">
-                                <input type="checkbox" name="EnableComment" value="true" class="form-check-input" @(Model.ViewModel.EnableComment ? "checked" : null)>
-                                <label asp-for="ViewModel.EnableComment" class="form-check-label"></label>
-                            </div>
-                        </li>
-                        <li class="list-group-item">
-                            <div class="form-check form-switch mb-2">
-                                <input type="checkbox" name="Featured" value="true" class="form-check-input" @(Model.ViewModel.Featured ? "checked" : null)>
-                                <label asp-for="ViewModel.Featured" class="form-check-label"></label>
-                            </div>
-                        </li>
-                        <li class="list-group-item">
-                            <div class="form-check form-switch mb-2">
-                                <input type="checkbox" name="FeedIncluded" value="true" class="form-check-input" @(Model.ViewModel.FeedIncluded ? "checked" : null)>
-                                <label asp-for="ViewModel.FeedIncluded" class="form-check-label"></label>
-                            </div>
-                        </li>
-                        <li class="list-group-item">
-                            <div class="form-check form-switch mb-2">
-                                <input type="checkbox" name="IsOriginal" value="true" class="form-check-input" @(Model.ViewModel.IsOriginal ? "checked" : null)>
-                                <label asp-for="ViewModel.IsOriginal" class="form-check-label"></label>
-                            </div>
-                        </li>
-                    </ul>
                     <div class="card-body">
+                        <div class="form-check form-switch mb-2">
+                            <input type="checkbox" name="EnableComment" value="true" class="form-check-input" @(Model.ViewModel.EnableComment ? "checked" : null)>
+                            <label asp-for="ViewModel.EnableComment" class="form-check-label"></label>
+                        </div>
+                        <div class="form-check form-switch mb-2">
+                            <input type="checkbox" name="Featured" value="true" class="form-check-input" @(Model.ViewModel.Featured ? "checked" : null)>
+                            <label asp-for="ViewModel.Featured" class="form-check-label"></label>
+                        </div>
+                        <div class="form-check form-switch mb-2">
+                            <input type="checkbox" name="FeedIncluded" value="true" class="form-check-input" @(Model.ViewModel.FeedIncluded ? "checked" : null)>
+                            <label asp-for="ViewModel.FeedIncluded" class="form-check-label"></label>
+                        </div>
+                        <div class="form-check form-switch">
+                            <input type="checkbox" name="IsOriginal" value="true" class="form-check-input" @(Model.ViewModel.IsOriginal ? "checked" : null)>
+                            <label asp-for="ViewModel.IsOriginal" class="form-check-label"></label>
+                        </div>
+                    </div>
+                    <div class="card-body border-top">
                         <div class="form-floating mb-2">
                             <textarea asp-for="ViewModel.OriginLink" class="form-control form-control-sm" placeholder="@Localizer["Origin Link"]"></textarea>
                             <label for="ViewModel_OriginLink">@Localizer["Origin Link"]</label>
