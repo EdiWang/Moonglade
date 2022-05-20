@@ -20,7 +20,6 @@
   {
     "outputFileName": "wwwroot/js/dist/admin-bundle.js",
     "inputFiles": [
-      "wwwroot/js/3rd/bootstrap-tagsinput.min.js",
       "wwwroot/lib/jquery.AreYouSure/jquery.are-you-sure.min.js",
       "wwwroot/js/app/admin.js"
     ]
@@ -41,8 +40,6 @@
   {
     "outputFileName": "wwwroot/css/admin-bundle.css",
     "inputFiles": [
-      "wwwroot/css/3rd/bootstrap-tagsinput.css",
-      "wwwroot/css/3rd/bootstrap-tagsinput-typeahead.css",
       "wwwroot/css/src/admin.css"
     ]
   }
