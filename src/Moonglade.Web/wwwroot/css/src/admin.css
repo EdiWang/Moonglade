@@ -266,24 +266,6 @@ div.mce-fullscreen {
     width: 100%;
 }
 
-.bootstrap-tagsinput {
-    display: inherit;
-    box-shadow: inherit;
-    min-height: 90px;
-}
-
-    .bootstrap-tagsinput .tag {
-        background: var(--accent-color1);
-        padding: 2px 5px;
-        border-radius: 3px;
-        margin-bottom: 3px;
-        display: inline-block;
-    }
-
-        .bootstrap-tagsinput .tag [data-role="remove"]:hover {
-            box-shadow: inherit;
-        }
-
 .icon-admin-title {
     font-size: 1.4rem;
     color: var(--accent-color2);
@@ -320,4 +302,26 @@ table.dataTable {
     display: inline-block;
     min-height: inherit;
     margin-bottom: 0;
+}
+
+.tags-dropdown .tagify__dropdown__item {
+    display: inline-block;
+    border-radius: 3px;
+    padding: .3em .5em;
+    border: 1px solid #CCC;
+    background: #F3F3F3;
+    margin: .2em;
+    font-size: .85em;
+    color: black;
+    transition: 0s;
+}
+
+.tags-dropdown .tagify__dropdown__item--active {
+    color: black;
+}
+
+.tags-dropdown .tagify__dropdown__item:hover {
+    background: var(--accent-color1);
+    border-color: var(--accent-color1);
+    color: #fff;
 }

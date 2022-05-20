@@ -263,30 +263,6 @@ var postEditor = {
             document.querySelector('#ViewModel_Slug').value = slugify($(this).val());
         });
 
-        var tagnames = new Bloodhound({
-            datumTokenizer: Bloodhound.tokenizers.obj.whitespace('name'),
-            queryTokenizer: Bloodhound.tokenizers.whitespace,
-            prefetch: {
-                url: '/api/tags/names',
-                filter: function (list) {
-                    return $.map(list, function (tagname) {
-                        return { name: tagname };
-                    });
-                }
-            }
-        });
-
-        tagnames.initialize();
-        $('#ViewModel_Tags').tagsinput({
-            typeaheadjs: {
-                name: 'tagnames',
-                displayKey: 'name',
-                valueKey: 'name',
-                source: tagnames.ttAdapter()
-            },
-            trimValue: true
-        });
-
         $('#btn-preview').click(function (e) {
             submitForm(e);
         });

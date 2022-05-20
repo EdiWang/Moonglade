@@ -21,13 +21,6 @@
       ]
     },
     {
-      "library": "typeahead.js@0.11.1",
-      "destination": "wwwroot/lib/typeahead.js/",
-      "files": [
-        "typeahead.bundle.min.js"
-      ]
-    },
-    {
       "library": "twitter-bootstrap@5.1.3",
       "destination": "wwwroot/lib/twitter-bootstrap/",
       "files": [
@@ -49,6 +42,14 @@
       "destination": "wwwroot/lib/qrious/",
       "files": [
         "qrious.min.js"
+      ]
+    },
+    {
+      "library": "tagify@4.12.0",
+      "destination": "wwwroot/lib/tagify/",
+      "files": [
+        "tagify.min.js",
+        "tagify.min.css"
       ]
     }
   ]
