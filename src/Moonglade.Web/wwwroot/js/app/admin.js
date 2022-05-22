@@ -341,17 +341,3 @@ var onPostCreateEditSuccess = function (data) {
         }
     }
 };
-
-function deleteSelectedComments() {
-    var cids = [];
-    $('.chk-cid:checked').each(function () {
-        cids.push($(this).data('cid'));
-    });
-
-    callApi('/api/comment/delete', 'DELETE', cids,
-        (success) => {
-            $.each(cids, function (index, value) {
-                document.querySelector(`#panel-comment-${value}`).remove();
-            });
-        });
-}
