@@ -1,6 +1,6 @@
 [
   {
-    "outputFileName": "wwwroot/css/tinymce-bs-bundle.css",
+    "outputFileName": "wwwroot/css/dist/tinymce-bs-bundle.css",
     "inputFiles": [
       "wwwroot/lib/twitter-bootstrap/css/bootstrap.min.css",
       "wwwroot/css/src/tinymce-content.css",
@@ -22,7 +22,7 @@
     ]
   },
   {
-    "outputFileName": "wwwroot/css/bundle.css",
+    "outputFileName": "wwwroot/css/dist/bundle.css",
     "inputFiles": [
       "wwwroot/css/src/fonts.css",
       "wwwroot/css/src/base.css",
