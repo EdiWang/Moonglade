@@ -22,8 +22,10 @@
 
 function handleSettingsSubmit(event) {
     event.preventDefault();
+    var btnSaveSettings = '#btn-save-settings';
 
-    onUpdateSettingsBegin();
+    document.querySelector(btnSaveSettings).classList.add('disabled');
+    document.querySelector(btnSaveSettings).setAttribute('disabled', 'disabled');
 
     const data = new FormData(event.target);
     const value = Object.fromEntries(data.entries());
@@ -32,20 +34,11 @@ function handleSettingsSubmit(event) {
     callApi(event.currentTarget.action, 'POST', newValue,
         (resp) => {
             blogToast.success('Settings Updated');
-            onUpdateSettingsComplete();
+
+            document.querySelector(btnSaveSettings).classList.remove('disabled');
+            document.querySelector(btnSaveSettings).removeAttribute('disabled');
         });
 }
-
-var btnSaveSettings = '#btn-save-settings';
-var onUpdateSettingsBegin = function () {
-    document.querySelector(btnSaveSettings).classList.add('disabled');
-    document.querySelector(btnSaveSettings).setAttribute('disabled', 'disabled');
-};
-
-var onUpdateSettingsComplete = function () {
-    document.querySelector(btnSaveSettings).classList.remove('disabled');
-    document.querySelector(btnSaveSettings).removeAttribute('disabled');
-};
 
 var emptyGuid = '00000000-0000-0000-0000-000000000000';
 
