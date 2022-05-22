@@ -81,19 +81,18 @@
         viewpost.getStatistics(pid);
         viewpost.registerRatingButtons(pid);
         viewpost.postStatistics(pid, false);
-    </script>
-    <script>
+        
         var fitImageToDevicePixelRatio = @BlogConfig.ImageSettings.FitImageToDevicePixelRatio.ToString().ToLower();
 
         var q = new QRious({
-                element: document.querySelector('.post-qrcode'), 
-                value: document.URL,
-                size: 200
-            });
+            element: document.querySelector('.post-qrcode'), 
+            value: document.URL,
+            size: 200
+        });
 
         $('#comment-form').on('submit', function (e) {
             e.preventDefault();
-            submitComment();
+            viewpost.submitComment(pid);
         });
     </script>
 }

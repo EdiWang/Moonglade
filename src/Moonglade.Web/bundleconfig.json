@@ -11,8 +11,7 @@
     "outputFileName": "wwwroot/js/dist/app-bundle.js",
     "inputFiles": [
       "wwwroot/js/app/base.js",
-      "wwwroot/js/app/httpService.js",
-      "wwwroot/js/app/comments.js"
+      "wwwroot/js/app/httpService.js"
     ]
   },
   {
