@@ -53,9 +53,9 @@ var blogToast = {
 
 function toggleTheme() {
     if (isDarkMode) {
-        themeModeSwitcher.useLightMode();
+        theme.useLightMode();
     } else {
-        themeModeSwitcher.useDarkMode();
+        theme.useDarkMode();
     }
 }
 

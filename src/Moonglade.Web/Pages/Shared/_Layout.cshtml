@@ -235,17 +235,19 @@
         <script src="~/js/app/base.js"></script>
         <script src="~/js/app/httpService.js"></script>
         <script src="~/js/app/comments.js"></script>
-        <script src="~/js/app/theme.js"></script>
     </environment>
 
     @if (BlogConfig.GeneralSettings.AutoDarkLightTheme && (ViewBag.DisableLightSwitch == null || !ViewBag.DisableLightSwitch))
     {
-        <script>
-            if (window.matchMedia && window.themeModeSwitcher) {
+        <script type="module">
+            import * as theme from '/js/app/theme.module.js'
+            window.theme = theme;
+
+            if (window.matchMedia && window.theme) {
                 if (window.matchMedia('(prefers-color-scheme: dark)').matches) {
-                    themeModeSwitcher.useDarkMode();
+                    theme.useDarkMode();
                 } else {
-                    themeModeSwitcher.useLightMode();
+                    theme.useLightMode();
                 }
             }
         </script>
