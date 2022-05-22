@@ -51,14 +51,6 @@ var blogToast = {
     }
 };
 
-function toggleTheme() {
-    if (isDarkMode) {
-        theme.useLightMode();
-    } else {
-        theme.useDarkMode();
-    }
-}
-
 function buildErrorMessage(responseObject) {
     if (responseObject.responseJSON) {
         var json = responseObject.responseJSON;

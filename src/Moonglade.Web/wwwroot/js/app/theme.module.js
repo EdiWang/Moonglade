@@ -53,3 +53,11 @@ export function useLightMode() {
     document.querySelector('#lighticon').classList.add('bi-brightness-high');
     document.querySelector('#lighticon').classList.remove('bi-moon');
 }
+
+export function toggleTheme() {
+    if (isDarkMode) {
+        useLightMode();
+    } else {
+        useDarkMode();
+    }
+}
