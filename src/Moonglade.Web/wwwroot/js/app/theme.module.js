@@ -1,4 +1,6 @@
-﻿export function useDarkMode() {
+﻿let isDarkMode = false;
+
+export function useDarkMode() {
     document.querySelector('#blog-nav').classList.remove('bg-accent1');
     document.querySelector('#blog-nav').classList.add('bg-dark');
     document.querySelector('#blog-footer').classList.add('bg-dark');
