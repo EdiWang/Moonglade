@@ -11,8 +11,8 @@ admin-bundle.js
 admin-bundle.min.js
 bundle.css
 bundle.min.css
-admin-bundle.css
-admin-bundle.min.css
+admin.css
+admin.min.css
 tinymce-bs-bundle.css
 tinymce-bs-bundle.min.css
 

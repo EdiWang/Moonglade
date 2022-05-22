@@ -35,9 +35,9 @@
     ]
   },
   {
-    "outputFileName": "wwwroot/css/admin-bundle.css",
+    "outputFileName": "wwwroot/css/dist/admin.css",
     "inputFiles": [
-      "wwwroot/css/src/admin.css"
+      "wwwroot/css/src/adminsrc.css"
     ]
   }
 ]

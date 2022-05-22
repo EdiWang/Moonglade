@@ -53,6 +53,30 @@ async function handleHttpError(response) {
     }
 }
 
+function buildErrorMessage(responseObject) {
+    if (responseObject.responseJSON) {
+        var json = responseObject.responseJSON;
+        if (json.combinedErrorMessage) {
+            return json.combinedErrorMessage;
+        } else {
+            var errorMessage = 'Error(s):\n\r';
+
+            Object.keys(json).forEach(function (k) {
+                errorMessage += (k + ': ' + json[k]) + '\n\r';
+            });
+
+            return errorMessage;
+        }
+    }
+
+    if (responseObject.responseText) {
+        return responseObject.responseText.trim();
+    }
+
+    return responseObject.status;
+}
+
+
 async function buildErrorMessage2(response) {
     const contentType = response.headers.get('content-type');
     if (contentType && contentType.indexOf('application/json') !== -1) {
