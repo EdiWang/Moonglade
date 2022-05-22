@@ -17,7 +17,7 @@ function submitComment() {
         },
         (success) => {
             document.querySelector('#comment-form').reset();
-            postSlug.resetCaptchaImage();
+            viewpost.resetCaptchaImage();
 
             var httpCode = success.status;
             if (httpCode === 201) {

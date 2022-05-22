@@ -27,11 +27,16 @@
 
 @section scripts {
     <script src="~/js/3rd/highlight.min.js"></script>
-    <script>
+    <script type="module">
+        import * as viewpost from '/js/app/viewpost.module.js'
+
         var fitImageToDevicePixelRatio = @BlogConfig.ImageSettings.FitImageToDevicePixelRatio.ToString().ToLower();
-        postSlug.resizeImages();
-        postSlug.applyImageZooming();
-        postSlug.renderCodeHighlighter();
+        viewpost.resizeImages();
+        viewpost.renderCodeHighlighter();
+
+        if (window.innerWidth >= 768) {
+            viewpost.applyImageZooming();
+        }
 
         @if (BlogConfig.AdvancedSettings.WarnExternalLink)
         {

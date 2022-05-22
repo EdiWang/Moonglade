@@ -59,32 +59,37 @@
 @section scripts {
     <script src="~/js/3rd/highlight.min.js"></script>
     <script src="~/lib/qrious/qrious.min.js"></script>
-    <script>
-        var fitImageToDevicePixelRatio = @BlogConfig.ImageSettings.FitImageToDevicePixelRatio.ToString().ToLower();
-        var pid = document.querySelector('article').dataset.postid;
-        postSlug.getStatistics(pid);
-        postSlug.registerRatingButtons(pid);
-        postSlug.resizeImages();
-
+    <script type="module">    
+        import * as viewpost from '/js/app/viewpost.module.js'
+        
+        window.viewpost = viewpost;
+        
+        viewpost.resizeImages();
         if (window.innerWidth >= 768) {
-            postSlug.applyImageZooming();
+            viewpost.applyImageZooming();
         }
 
-        postSlug.renderCodeHighlighter();
-        postSlug.postStatistics(pid, false);
+        viewpost.renderCodeHighlighter();
+        @if (BlogConfig.AdvancedSettings.WarnExternalLink)
+        {
+            <text>
+                viewpost.warnExtLink();
+            </text>
+        }
+
+        var pid = document.querySelector('article').dataset.postid;
+        viewpost.getStatistics(pid);
+        viewpost.registerRatingButtons(pid);
+        viewpost.postStatistics(pid, false);
+    </script>
+    <script>
+        var fitImageToDevicePixelRatio = @BlogConfig.ImageSettings.FitImageToDevicePixelRatio.ToString().ToLower();
 
         var q = new QRious({
                 element: document.querySelector('.post-qrcode'), 
                 value: document.URL,
                 size: 200
             });
-
-        @if (BlogConfig.AdvancedSettings.WarnExternalLink)
-        {
-            <text>
-                postSlug.warnExtLink();
-            </text>
-        }
 
         $('#comment-form').on('submit', function (e) {
             e.preventDefault();
@@ -215,7 +220,7 @@
                                     <div class="row">
                                         <div class="col-9">
                                             <div class="input-group">
-                                                <img id="img-captcha" onclick="postSlug.resetCaptchaImage()" src="~/captcha-image" data-bs-toggle="tooltip" data-placement="top" title="@Localizer["Can't read? Click to change another image."]"/>
+                                                <img id="img-captcha" onclick="viewpost.resetCaptchaImage()" src="~/captcha-image" data-bs-toggle="tooltip" data-placement="top" title="@Localizer["Can't read? Click to change another image."]"/>
                                                 <input type="text"
                                                        id="input-comment-captcha"
                                                        class="form-control input-captcha"
