@@ -342,16 +342,6 @@ var onPostCreateEditSuccess = function (data) {
     }
 };
 
-var onPageCreateEditFailed = function (context) {
-    var message = buildErrorMessage(context);
-
-    if (blogToast) {
-        blogToast.error(message);
-    } else {
-        alert(`Error: ${message}`);
-    }
-};
-
 function deleteSelectedComments() {
     var cids = [];
     $('.chk-cid:checked').each(function () {
