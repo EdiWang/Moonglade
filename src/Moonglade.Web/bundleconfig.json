@@ -15,13 +15,6 @@
     ]
   },
   {
-    "outputFileName": "wwwroot/js/dist/admin-bundle.js",
-    "inputFiles": [
-      "wwwroot/lib/jquery.AreYouSure/jquery.are-you-sure.min.js",
-      "wwwroot/js/app/admin.js"
-    ]
-  },
-  {
     "outputFileName": "wwwroot/css/dist/bundle.css",
     "inputFiles": [
       "wwwroot/css/src/fonts.css",
