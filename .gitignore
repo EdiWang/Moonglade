@@ -5,8 +5,6 @@
 appsettings.Development.json
 
 ## Auto Generated Files
-app-bundle.js
-app-bundle.min.js
 bundle.css
 bundle.min.css
 tinymce-bs-bundle.css

@@ -8,13 +8,6 @@
     ]
   },
   {
-    "outputFileName": "wwwroot/js/dist/app-bundle.js",
-    "inputFiles": [
-      "wwwroot/js/app/base.js",
-      "wwwroot/js/app/httpService.js"
-    ]
-  },
-  {
     "outputFileName": "wwwroot/css/dist/bundle.css",
     "inputFiles": [
       "wwwroot/css/src/fonts.css",
