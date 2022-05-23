@@ -8,7 +8,9 @@ The [.NET](https://dotnet.microsoft.com/) blog system of [edi.wang](https://edi.
 
 ## 📦 Deployment
 
-> It is recommended to use stable code from [Release](https://github.com/EdiWang/Moonglade/releases) rather than master branch.
+- It is recommended to use stable code from [Release](https://github.com/EdiWang/Moonglade/releases) rather than master branch.
+
+- It is recommended to enable HTTP/2 support on your web server.
 
 ### ☁ Full Deploy on Azure (Recommend)
 
