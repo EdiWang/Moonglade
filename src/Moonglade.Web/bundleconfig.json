@@ -33,11 +33,5 @@
       "wwwroot/css/src/darkmode.css",
       "wwwroot/css/src/highlighter-custom.css"
     ]
-  },
-  {
-    "outputFileName": "wwwroot/css/dist/admin.css",
-    "inputFiles": [
-      "wwwroot/css/src/adminsrc.css"
-    ]
   }
 ]
