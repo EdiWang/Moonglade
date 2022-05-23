@@ -4,7 +4,7 @@ FROM mcr.microsoft.com/dotnet/aspnet:6.0 AS base
 #RUN apk add --no-cache tzdata
 
 # Captcha font
-COPY ./OpenSans-Regular.ttf /usr/share/fonts/OpenSans-Regular.ttf
+COPY ./build/OpenSans-Regular.ttf /usr/share/fonts/OpenSans-Regular.ttf
 
 WORKDIR /app
 EXPOSE 80
