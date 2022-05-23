@@ -227,12 +227,8 @@
     <partial name="_EnvInfo" />
     <partial name="_Toast" />
     
-    <script type="module">
-        import * as blogToast from '/js/app/blogtoast.module.js'
-        window.blogToast = blogToast;
-    </script>
     <script src="~/lib/twitter-bootstrap/js/bootstrap.bundle.min.js" asp-append-version="true"></script>
-    <script src="~/js/app/base.js" asp-append-version="true"></script>
+    <script type="module" src="~/js/app/base.js" asp-append-version="true"></script>
     <script src="~/js/app/httpService.js" asp-append-version="true"></script>
 
     @if (BlogConfig.GeneralSettings.AutoDarkLightTheme && (ViewBag.DisableLightSwitch == null || !ViewBag.DisableLightSwitch))
