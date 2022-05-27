@@ -37,15 +37,16 @@
 
     <script type="module">
         import * as utils from '/js/app/utils.module.js'
+        import * as editor from '/js/app/admin.editor.module.js'
         
         $(function() {
             postEditor.initEvents();
             var editorMode = '@Settings.Value.Editor';
             if (editorMode == '@nameof(EditorChoice.Html)') {
-                postEditor.loadRichEditor(".post-content-textarea");
+                editor.loadTinyMCE(".post-content-textarea");
             }
             if (editorMode == '@nameof(EditorChoice.Markdown)') {
-                postEditor.loadMdEditor(".post-content-textarea");
+                editor.loadMdEditor(".post-content-textarea");
             }
 
             callApi('/api/tags/names',
