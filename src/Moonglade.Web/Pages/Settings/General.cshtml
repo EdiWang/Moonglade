@@ -27,14 +27,12 @@
         var siteiconUploader = new ImageUploader('siteicon', 512, 'image/png');
         siteiconUploader.bindEvents();
 
-        $(document).ready(function () {
-            bsCustomFileInput.init();
-            $("#btn-upload-avatar").click(function () {
-                avatarUploader.uploadImage('/avatar');
-            });
-            $("#btn-upload-siteicon").click(function () {
-                siteiconUploader.uploadImage('/siteicon');
-            });
+        bsCustomFileInput.init();
+        $("#btn-upload-avatar").click(function () {
+            avatarUploader.uploadImage('/avatar');
+        });
+        $("#btn-upload-siteicon").click(function () {
+            siteiconUploader.uploadImage('/siteicon');
         });
 
         var themeModal = new bootstrap.Modal(document.getElementById('thememodal'));
