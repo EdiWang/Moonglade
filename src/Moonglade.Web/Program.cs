@@ -12,7 +12,6 @@ using Moonglade.Notification.Client;
 using Moonglade.Pingback;
 using Moonglade.Syndication;
 using SixLabors.Fonts;
-using System.Data;
 using System.Globalization;
 using System.Text.Encodings.Web;
 using System.Text.Json.Serialization;
