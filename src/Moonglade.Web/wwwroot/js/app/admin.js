@@ -1,6 +1,4 @@
-﻿var emptyGuid = '00000000-0000-0000-0000-000000000000';
-
-function ImageUploader(targetName, hw, imgMimeType) {
+﻿function ImageUploader(targetName, hw, imgMimeType) {
     var imgDataUrl = '';
 
     this.uploadImage = function (uploadUrl) {
@@ -103,29 +101,4 @@ function ImageUploader(targetName, hw, imgMimeType) {
     this.getDataUrl = function () {
         return imgDataUrl;
     };
-};
-
-var isPreviewRequired = false;
-
-var btnSubmitPost = '#btn-save';
-var onPostCreateEditBegin = function () {
-    document.querySelector(btnSubmitPost).classList.add('disabled');
-    document.querySelector(btnSubmitPost).setAttribute('disabled', 'disabled');
-};
-
-var onPostCreateEditComplete = function () {
-    document.querySelector(btnSubmitPost).classList.remove('disabled');
-    document.querySelector(btnSubmitPost).removeAttribute('disabled');
-};
-
-var onPostCreateEditSuccess = function (data) {
-    if (data.postId) {
-        $('input[name="ViewModel.PostId"]').val(data.postId);
-        blogToast.success('Post saved successfully.');
-
-        if (isPreviewRequired) {
-            isPreviewRequired = false;
-            window.open(`/post/preview/${data.postId}`);
-        }
-    }
 };

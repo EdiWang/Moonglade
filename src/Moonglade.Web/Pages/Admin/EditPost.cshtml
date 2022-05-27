@@ -38,7 +38,10 @@
     <script type="module">
         import * as utils from '/js/app/utils.module.js'
         import * as editor from '/js/app/admin.editor.module.js'
-        
+
+        var btnSubmitPost = '#btn-save';
+        var isPreviewRequired = false;
+
         $(function() {
             editor.initEvents();
             var editorMode = '@Settings.Value.Editor';
@@ -113,14 +116,26 @@
             value["SelectedCatIds"] = selectedCatIds;
             const newValue = utils.toMagicJson(value);
 
-            onPostCreateEditBegin();
+            document.querySelector(btnSubmitPost).classList.add('disabled');
+            document.querySelector(btnSubmitPost).setAttribute('disabled', 'disabled');
+
             callApi(event.currentTarget.action,
                 'POST',
                 newValue,
                 async (resp) => {
                     var respJson = await resp.json();
-                    onPostCreateEditSuccess(respJson);
-                    onPostCreateEditComplete();
+                    if (respJson.postId) {
+                        $('input[name="ViewModel.PostId"]').val(respJson.postId);
+                        blogToast.success('Post saved successfully.');
+
+                        if (isPreviewRequired) {
+                            isPreviewRequired = false;
+                            window.open(`/post/preview/${respJson.postId}`);
+                        }
+                    }
+
+                    document.querySelector(btnSubmitPost).classList.remove('disabled');
+                    document.querySelector(btnSubmitPost).removeAttribute('disabled');
                 });
         }
 
@@ -129,7 +144,7 @@
     </script>
 }
 
-    @section head{
+@section head{
     <link href="~/lib/tagify/tagify.min.css" rel="stylesheet" />
 }
 

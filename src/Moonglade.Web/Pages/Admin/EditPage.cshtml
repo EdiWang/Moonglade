@@ -7,6 +7,8 @@
 @{
     <script>
         var needLoadInitValues = @((!string.IsNullOrWhiteSpace(Model.EditPageRequest.RawHtmlContent) || !string.IsNullOrWhiteSpace(Model.EditPageRequest.CssContent)).ToString().ToLower());
+
+        var isPreviewRequired = false;
     </script>
 }
 
