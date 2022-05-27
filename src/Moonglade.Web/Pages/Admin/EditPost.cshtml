@@ -40,7 +40,7 @@
         import * as editor from '/js/app/admin.editor.module.js'
         
         $(function() {
-            postEditor.initEvents();
+            editor.initEvents();
             var editorMode = '@Settings.Value.Editor';
             if (editorMode == '@nameof(EditorChoice.Html)') {
                 editor.loadTinyMCE(".post-content-textarea");
@@ -71,9 +71,7 @@
                             });
                 });
 
-
-
-            postEditor.keepAlive();
+            editor.keepAlive();
         });
 
         $(window).bind('keydown',

@@ -1,4 +1,50 @@
-﻿export function loadTinyMCE(textareaSelector) {
+﻿export function initEvents() {
+    $('#ViewModel_Title').change(function () {
+        document.querySelector('#ViewModel_Slug').value = slugify($(this).val());
+    });
+
+    $('#btn-preview').click(function (e) {
+        submitForm(e);
+    });
+
+    $('#btn-save').click(function (e) {
+        submitForm(e);
+    });
+
+    $('#btn-publish').click(function (e) {
+        $('input[name="ViewModel.IsPublished"]').val('True');
+        submitForm(e);
+    });
+
+    function submitForm(e) {
+        if (window.tinyMCE) {
+            window.tinyMCE.triggerSave();
+        }
+
+        if (window.SimpleMDE) {
+            var newVal = simplemde.value();
+            $(".post-content-textarea").val(newVal);
+        }
+
+        if ($('input[name="ViewModel.IsPublished"]').val() === 'True') {
+            if (document.querySelector('#btn-publish')) {
+                document.querySelector('#btn-publish').style.display = 'none';
+            };
+
+            if (document.querySelector('#btn-preview')) {
+                document.querySelector('#btn-preview').style.display = 'none';
+            }
+        }
+    }
+
+    $('.post-edit-form').areYouSure({
+        message: 'You have unsaved changes, are you sure to leave this page?'
+    });
+
+    document.querySelector('#ViewModel_Title').focus();
+}
+
+export function loadTinyMCE(textareaSelector) {
     if (window.tinyMCE !== undefined) {
         window.tinyMCE.init({
             selector: textareaSelector,
@@ -90,5 +136,27 @@ export function loadMdEditor(textareaSelector) {
                 return false;
             }
         });
+    }
+}
+
+export function keepAlive() {
+    var tid = setInterval(postNonce, 60 * 1000);
+    function postNonce() {
+        var num = Math.random();
+        fetch('/api/post/keep-alive',
+            {
+                method: 'POST',
+                headers: {
+                    'Accept': 'application/json',
+                    'Content-Type': 'application/json'
+                },
+                credentials: 'include',
+                body: JSON.stringify({ nonce: num })
+            }).then(async (response) => {
+            console.info('live');
+        });
+    }
+    function abortTimer() {
+        clearInterval(tid);
     }
 }
