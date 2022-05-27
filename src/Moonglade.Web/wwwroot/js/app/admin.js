@@ -1,46 +1,4 @@
-﻿function toMagicJson(value) {
-    const newValue = {};
-    for (let item in value) {
-        if (Object.prototype.hasOwnProperty.call(value, item)) {
-            if (!value[item]) {
-                newValue[item.replace('ViewModel.', '')] = null;
-            }
-            else if (value[item] && !Array.isArray(value[item]) && value[item].toLowerCase() === 'true') {
-                newValue[item.replace('ViewModel.', '')] = true;
-            }
-            else if (value[item] && !Array.isArray(value[item]) && value[item].toLowerCase() === 'false') {
-                newValue[item.replace('ViewModel.', '')] = false;
-            }
-            else {
-                newValue[item.replace('ViewModel.', '')] = value[item];
-            }
-        }
-    }
-
-    return newValue;
-}
-
-function handleSettingsSubmit(event) {
-    event.preventDefault();
-    var btnSaveSettings = '#btn-save-settings';
-
-    document.querySelector(btnSaveSettings).classList.add('disabled');
-    document.querySelector(btnSaveSettings).setAttribute('disabled', 'disabled');
-
-    const data = new FormData(event.target);
-    const value = Object.fromEntries(data.entries());
-    const newValue = toMagicJson(value);
-
-    callApi(event.currentTarget.action, 'POST', newValue,
-        (resp) => {
-            blogToast.success('Settings Updated');
-
-            document.querySelector(btnSaveSettings).classList.remove('disabled');
-            document.querySelector(btnSaveSettings).removeAttribute('disabled');
-        });
-}
-
-var emptyGuid = '00000000-0000-0000-0000-000000000000';
+﻿var emptyGuid = '00000000-0000-0000-0000-000000000000';
 
 function slugify(text) {
     return text

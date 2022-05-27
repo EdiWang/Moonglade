@@ -18,7 +18,9 @@
 
 @section scripts{
     <script src="~/js/3rd/bs-custom-file-input.min.js"></script>
-    <script>
+    <script type="module">
+        import * as settings from '/js/app/admin.settings.module.js';
+
         var avatarUploader = new ImageUploader('avatar', 300, 'image/jpeg');
         avatarUploader.bindEvents();
 
@@ -68,7 +70,7 @@
         }
 
         const form = document.querySelector('#form-settings');
-        form.addEventListener('submit', handleSettingsSubmit);
+        form.addEventListener('submit', settings.handleSettingsSubmit);
     </script>
 }
 

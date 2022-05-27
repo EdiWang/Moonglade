@@ -6,7 +6,9 @@
 }
 
 @section scripts{
-<script>
+<script type="module">
+    import * as utils from '/js/app/utils.module.js'
+    
     var editAccountModal = new bootstrap.Modal('#editAccountModal');
     var resetPasswordModal = new bootstrap.Modal('#resetPasswordModal');
 
@@ -42,7 +44,7 @@
 
         const data = new FormData(event.target);
         const value = Object.fromEntries(data.entries());
-        const newValue = toMagicJson(value);
+        const newValue = utils.toMagicJson(value);
 
         callApi(`/api/localaccount`,
             'POST',

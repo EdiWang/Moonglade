@@ -1,9 +1,11 @@
 ﻿@page "/admin/settings/image"
 @model Moonglade.Web.Pages.Settings.ImageModel
 @section scripts {
-<script>
+<script type="module">
+    import * as settings from '/js/app/admin.settings.module.js';
+    
     const form = document.querySelector('#form-settings');
-    form.addEventListener('submit', handleSettingsSubmit);
+    form.addEventListener('submit', settings.handleSettingsSubmit);
 </script>
 }
 

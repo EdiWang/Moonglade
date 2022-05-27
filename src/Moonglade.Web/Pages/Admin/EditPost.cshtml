@@ -35,7 +35,9 @@
         }
     }
 
-    <script>
+    <script type="module">
+        import * as utils from '/js/app/utils.module.js'
+        
         $(function() {
             postEditor.initEvents();
             var editorMode = '@Settings.Value.Editor';
@@ -132,7 +134,7 @@
             }
 
             value["SelectedCatIds"] = selectedCatIds;
-            const newValue = toMagicJson(value);
+            const newValue = utils.toMagicJson(value);
 
             onPostCreateEditBegin();
             callApi(event.currentTarget.action,

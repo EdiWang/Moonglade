@@ -50,10 +50,13 @@
             var cssValue = window.cssContentEditor.getValue();
             document.querySelector("#ViewModel_CssCode").value = cssValue;
         }
-
+    </script>
+    <script type="module">
+        import * as settings from '/js/app/admin.settings.module.js';
+        
         function handleSubmit(event) {
             assignEditorValues();
-            handleSettingsSubmit(event);
+            settings.handleSettingsSubmit(event);
         }
 
         const form = document.querySelector('#form-settings');

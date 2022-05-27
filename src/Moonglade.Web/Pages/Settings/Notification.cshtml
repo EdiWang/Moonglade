@@ -2,7 +2,9 @@
 @model Moonglade.Web.Pages.Settings.NotificationModel
 @inject IOptionsSnapshot<AppSettings> Settings
 @section scripts{
-<script>
+<script type="module">
+    import * as settings from '/js/app/admin.settings.module.js';
+    
     var sendTestEmail = function () {
         document.querySelector('#a-send-test-mail').classList.add('disabled');
         document.querySelector('#a-send-test-mail').setAttribute('disabled', 'disabled');
@@ -20,7 +22,7 @@
     };
 
     const form = document.querySelector('#form-settings');
-    form.addEventListener('submit', handleSettingsSubmit);
+    form.addEventListener('submit', settings.handleSettingsSubmit);
 </script>
 }
 
