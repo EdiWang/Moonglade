@@ -16,7 +16,7 @@ public class CreateTagCommandHandler : IRequestHandler<CreateTagCommand, Tag>
         if (!Tag.ValidateName(request.Name)) return null;
 
         var normalizedName = Tag.NormalizeName(request.Name, Helper.TagNormalizationDictionary);
-        if (_tagRepo.Any(t => t.NormalizedName == normalizedName))
+        if (await _tagRepo.AnyAsync(t => t.NormalizedName == normalizedName))
         {
             return _tagRepo.SelectFirstOrDefault(new TagSpec(normalizedName), Tag.EntitySelector);
         }
@@ -31,8 +31,8 @@ public class CreateTagCommandHandler : IRequestHandler<CreateTagCommand, Tag>
 
         return new()
         {
-            DisplayName = newTag.DisplayName,
-            NormalizedName = newTag.NormalizedName
+            DisplayName = tag.DisplayName,
+            NormalizedName = tag.NormalizedName
         };
     }
 }

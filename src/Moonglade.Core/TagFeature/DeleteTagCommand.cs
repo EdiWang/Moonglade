@@ -18,7 +18,7 @@ public class DeleteTagCommandHandler : IRequestHandler<DeleteTagCommand, Operati
 
     public async Task<OperationCode> Handle(DeleteTagCommand request, CancellationToken cancellationToken)
     {
-        var exists = _tagRepo.Any(c => c.Id == request.Id);
+        var exists = await _tagRepo.AnyAsync(c => c.Id == request.Id);
         if (!exists) return OperationCode.ObjectNotFound;
 
         // 1. Delete Post-Tag Association

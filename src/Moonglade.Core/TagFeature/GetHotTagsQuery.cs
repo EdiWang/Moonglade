@@ -15,7 +15,7 @@ public class GetHotTagsQueryHandler : IRequestHandler<GetHotTagsQuery, IReadOnly
 
     public async Task<IReadOnlyList<KeyValuePair<Tag, int>>> Handle(GetHotTagsQuery request, CancellationToken cancellationToken)
     {
-        if (!_tagRepo.Any()) return new List<KeyValuePair<Tag, int>>();
+        if (!await _tagRepo.AnyAsync()) return new List<KeyValuePair<Tag, int>>();
 
         var spec = new TagSpec(request.Top);
         var tags = await _tagRepo.SelectAsync(spec, t =>

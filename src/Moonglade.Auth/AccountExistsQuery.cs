@@ -5,11 +5,12 @@ namespace Moonglade.Auth;
 
 public record AccountExistsQuery(string Username) : IRequest<bool>;
 
-public class AccountExistsQueryHandler : RequestHandler<AccountExistsQuery, bool>
+public class AccountExistsQueryHandler : IRequestHandler<AccountExistsQuery, bool>
 {
     private readonly IRepository<LocalAccountEntity> _accountRepo;
 
     public AccountExistsQueryHandler(IRepository<LocalAccountEntity> accountRepo) => _accountRepo = accountRepo;
 
-    protected override bool Handle(AccountExistsQuery request) => _accountRepo.Any(p => p.Username == request.Username.ToLower());
+    public Task<bool> Handle(AccountExistsQuery request, CancellationToken cancellationToken) => 
+        _accountRepo.AnyAsync(p => p.Username == request.Username.ToLower());
 }

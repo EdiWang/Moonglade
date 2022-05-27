@@ -15,7 +15,7 @@ public class GetArchiveQueryHandler : IRequestHandler<GetArchiveQuery, IReadOnly
 
     public async Task<IReadOnlyList<Archive>> Handle(GetArchiveQuery request, CancellationToken cancellationToken)
     {
-        if (!_postRepo.Any(p => p.IsPublished && !p.IsDeleted))
+        if (!await _postRepo.AnyAsync(p => p.IsPublished && !p.IsDeleted))
         {
             return new List<Archive>();
         }
