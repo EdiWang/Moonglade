@@ -41,6 +41,28 @@
         message: 'You have unsaved changes, are you sure to leave this page?'
     });
 
+    callApi('/api/tags/names',
+        'GET',
+        {},
+        async (resp) => {
+            var data = await resp.json();
+
+            var input = document.querySelector('#ViewModel_Tags'),
+                tagify = new Tagify(input,
+                    {
+                        pattern: /^[a-zA-Z 0-9\.\-\+\#\s]*$/i,
+                        whitelist: data,
+                        originalInputValueFormat: valuesArr => valuesArr.map(item => item.value).join(','),
+                        maxTags: 10,
+                        dropdown: {
+                            maxItems: 30,
+                            classname: 'tags-dropdown',
+                            enabled: 0,
+                            closeOnSelect: false
+                        }
+                    });
+        });
+
     document.querySelector('#ViewModel_Title').focus();
 }
 
