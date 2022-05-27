@@ -28,6 +28,8 @@
     <meta name="displaydate" content="@Model.Post.PubDateUtc.GetValueOrDefault().ToString("u")">
     <meta name="copyright" content="(C) @Model.Post.PubDateUtc.GetValueOrDefault().Year @BlogConfig.GeneralSettings.SiteTitle">
     <meta name="author" content="@(string.IsNullOrWhiteSpace(Model.Post.Author) ? BlogConfig.GeneralSettings.OwnerName : Model.Post.Author) " />
+    
+    <link href="~/css/src/highlighter-custom.css" rel="stylesheet" asp-append-version="true" />
 
     @if (!string.IsNullOrWhiteSpace(Model.Post.InlineCss))
     {
