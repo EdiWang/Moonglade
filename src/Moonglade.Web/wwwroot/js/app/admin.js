@@ -1,12 +1,5 @@
 ﻿var emptyGuid = '00000000-0000-0000-0000-000000000000';
 
-function slugify(text) {
-    return text
-        .toLowerCase()
-        .replace(/[^\w ]+/g, '')
-        .replace(/ +/g, '-');
-}
-
 function ImageUploader(targetName, hw, imgMimeType) {
     var imgDataUrl = '';
 
@@ -112,7 +105,6 @@ function ImageUploader(targetName, hw, imgMimeType) {
     };
 };
 
-var simplemde = null;
 var isPreviewRequired = false;
 
 var btnSubmitPost = '#btn-save';

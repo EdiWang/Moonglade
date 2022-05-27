@@ -1,4 +1,13 @@
-﻿export function initEvents() {
+﻿export let simplemde = null;
+
+function slugify(text) {
+    return text
+        .toLowerCase()
+        .replace(/[^\w ]+/g, '')
+        .replace(/ +/g, '-');
+}
+
+export function initEvents() {
     $('#ViewModel_Title').change(function () {
         document.querySelector('#ViewModel_Slug').value = slugify($(this).val());
     });
