@@ -2,7 +2,6 @@
   {
     "outputFileName": "wwwroot/css/dist/bundle.css",
     "inputFiles": [
-      "wwwroot/css/src/fonts.css",
       "wwwroot/css/src/base.css",
       "wwwroot/css/src/rwd.css",
       "wwwroot/css/src/navigation.css",
