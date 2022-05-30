@@ -7,8 +7,6 @@ appsettings.Development.json
 ## Auto Generated Files
 bundle.css
 bundle.min.css
-tinymce-bs-bundle.css
-tinymce-bs-bundle.min.css
 
 ## Libman Restore on dotnet build
 lib/
