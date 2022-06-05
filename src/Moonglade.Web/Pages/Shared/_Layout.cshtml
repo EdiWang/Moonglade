@@ -1,7 +1,5 @@
 ﻿@using Moonglade.Utils
 @inject Microsoft.ApplicationInsights.AspNetCore.JavaScriptSnippet JavaScriptSnippet
-@inject IHttpContextAccessor HttpContextAccessor
-@inject IWebHostEnvironment WebHostEnvironment
 @{
     if (string.IsNullOrEmpty(BlogConfig.GeneralSettings.AvatarUrl))
     {
@@ -223,7 +221,7 @@
     <partial name="_Footer" />
     <partial name="_EnvInfo" />
     <partial name="_Toast" />
-    
+
     <script src="~/lib/twitter-bootstrap/js/bootstrap.bundle.min.js" asp-append-version="true"></script>
     <script type="module" src="~/js/app/base.js" asp-append-version="true"></script>
     <script src="~/js/app/httpService.js" asp-append-version="true"></script>
@@ -243,7 +241,7 @@
             }
         </script>
     }
-    
+
     @await RenderSectionAsync("scripts", false)
 </body>
 </html>

@@ -1,6 +1,4 @@
-﻿@inject IHttpContextAccessor HttpContextAccessor
-@inject IWebHostEnvironment WebHostEnvironment
-@inject IOptions<AuthenticationSettings> AuthOptions
+﻿@inject IOptions<AuthenticationSettings> AuthOptions
 
 @using Moonglade.Auth
 @{
@@ -46,7 +44,7 @@
             @BlogConfig.GeneralSettings.SiteTitle
         </a>
         <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent"
-            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+                aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
             <span class="navbar-toggler-icon"></span>
         </button>
 
@@ -72,7 +70,7 @@
 
             <span class="navbar-text me-2">
                 <img src="@BlogConfig.GeneralSettings.AvatarUrl" alt="@BlogConfig.GeneralSettings.OwnerName"
-                    class="rounded-circle admin-nav-head-pic me-1" />
+                     class="rounded-circle admin-nav-head-pic me-1" />
                 <userinfo user="User"></userinfo>
             </span>
 
@@ -86,52 +84,52 @@
             <section class="admin-nav-section rounded-3 shadow-sm border bg-white mt-4 mb-3">
                 <div class="list-group list-group-flush">
                     <a asp-page="/Admin/Post"
-                        class="list-group-item list-group-item-action @(currentPage is "/Admin/Post" or "/Admin/EditPost" or "/Admin/Draft" or "/Admin/PostInsights" or "/Admin/RecycleBin" ? "active" : null)">
+                       class="list-group-item list-group-item-action @(currentPage is "/Admin/Post" or "/Admin/EditPost" or "/Admin/Draft" or "/Admin/PostInsights" or "/Admin/RecycleBin" ? "active" : null)">
                         <i class="bi-file-earmark-richtext admin-nav-icon"></i>
                         @Localizer["Posts"]
                     </a>
                     <a asp-page="/Admin/BlogPage"
-                        class="list-group-item list-group-item-action @(currentPage is "/Admin/BlogPage" or "/Admin/EditPage" ? "active" : null)">
+                       class="list-group-item list-group-item-action @(currentPage is "/Admin/BlogPage" or "/Admin/EditPage" ? "active" : null)">
                         <i class="bi-file-earmark-post admin-nav-icon"></i>
                         @Localizer["Pages"]
                     </a>
                     <a asp-page="/Admin/Category"
-                        class="list-group-item list-group-item-action @(currentPage is "/Admin/Category" ? "active" : null)">
+                       class="list-group-item list-group-item-action @(currentPage is "/Admin/Category" ? "active" : null)">
                         <i class="bi-folder2 admin-nav-icon"></i>
                         @Localizer["Categories"]
                     </a>
                     @if (BlogConfig.ContentSettings.CommentProvider == CommentProvider.BuiltIn)
                     {
                         <a asp-page="/Admin/Comments"
-                        class="list-group-item list-group-item-action @(currentPage is "/Admin/Comments" ? "active" : null)">
+                       class="list-group-item list-group-item-action @(currentPage is "/Admin/Comments" ? "active" : null)">
                             <i class="bi-chat-left-text admin-nav-icon"></i>
                             @Localizer["Comments"]
                         </a>
                     }
                     <a asp-page="/Admin/Tags"
-                        class="list-group-item list-group-item-action @(currentPage is "/Admin/Tags" ? "active" : null)">
+                       class="list-group-item list-group-item-action @(currentPage is "/Admin/Tags" ? "active" : null)">
                         <i class="bi-tag admin-nav-icon"></i>
                         @Localizer["Tags"]
                     </a>
                     <a asp-page="/Admin/Menu"
-                        class="list-group-item list-group-item-action @(currentPage is "/Admin/Menu" ? "active" : null)">
+                       class="list-group-item list-group-item-action @(currentPage is "/Admin/Menu" ? "active" : null)">
                         <i class="bi-menu-button-wide admin-nav-icon"></i>
                         @Localizer["Menus"]
                     </a>
                     <a asp-page="/Admin/FriendLink"
-                        class="list-group-item list-group-item-action @(currentPage is "/Admin/FriendLink" ? "active" : null)">
+                       class="list-group-item list-group-item-action @(currentPage is "/Admin/FriendLink" ? "active" : null)">
                         <i class="bi-link-45deg admin-nav-icon"></i>
                         @Localizer["Friend Links"]
                     </a>
                     <a asp-page="/Admin/Pingback"
-                        class="list-group-item list-group-item-action @(currentPage is "/Admin/Pingback" ? "active" : null)">
+                       class="list-group-item list-group-item-action @(currentPage is "/Admin/Pingback" ? "active" : null)">
                         <i class="bi-arrow-left-right admin-nav-icon"></i>
                         @Localizer["Pingbacks"]
                     </a>
                     @if (AuthOptions.Value.Provider == AuthenticationProvider.Local)
                     {
                         <a asp-page="/Admin/LocalAccount"
-                        class="list-group-item list-group-item-action @(currentPage is "/Admin/LocalAccount" ? "active" : null)">
+                       class="list-group-item list-group-item-action @(currentPage is "/Admin/LocalAccount" ? "active" : null)">
                             <i class="bi-people admin-nav-icon"></i>
                             @Localizer["Accounts"]
                         </a>
