@@ -59,6 +59,8 @@ example MySQL connection string:
 
 ### 🔨 Build Source
 
+> Special hint: If you are in China, it's strongly recommended to use a "magic network" to ensure libman can restore front-end libraries successfully.
+
 Build and run `./src/Moonglade.sln`
 - Admin entrance: `https://localhost:1055/admin`
 - Default username: `admin`
