@@ -48,7 +48,6 @@ public class PostEditModel : IValidatableObject
     public string Tags { get; set; }
 
     [Required]
-    [Display(Name = "Content Language")]
     [RegularExpression("^[a-z]{2}-[a-zA-Z]{2}$")]
     public string LanguageCode { get; set; }
 

@@ -1,7 +1,9 @@
 ﻿@page "/admin/settings/content"
 @model Moonglade.Web.Pages.Settings.ContentModel
 @section scripts{
-<script>
+<script type="module">
+    import * as settings from '/js/app/admin.settings.module.js';
+
     function toggleCommentSettingsUI() {
         if ($('#BuiltIn').is(":checked")) {
             document.querySelector('.comment-settings-built-in').style.display = 'block';
@@ -13,7 +15,7 @@
     }
 
     const form = document.querySelector('#form-settings');
-    form.addEventListener('submit', handleSettingsSubmit);
+    form.addEventListener('submit', settings.handleSettingsSubmit);
 
     toggleCommentSettingsUI();
 </script>

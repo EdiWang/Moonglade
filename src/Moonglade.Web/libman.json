@@ -6,11 +6,11 @@
       "library": "jquery@3.6.0",
       "destination": "wwwroot/lib/jquery/",
       "files": [
-        "jquery.min.js"
+        "jquery.slim.min.js"
       ]
     },
     {
-      "library": "tinymce@5.10.4",
+      "library": "tinymce@6.0.3",
       "destination": "wwwroot/lib/tinymce"
     },
     {
@@ -18,13 +18,6 @@
       "destination": "wwwroot/lib/jquery.AreYouSure/",
       "files": [
         "jquery.are-you-sure.min.js"
-      ]
-    },
-    {
-      "library": "typeahead.js@0.11.1",
-      "destination": "wwwroot/lib/typeahead.js/",
-      "files": [
-        "typeahead.bundle.min.js"
       ]
     },
     {
@@ -36,7 +29,7 @@
       ]
     },
     {
-      "library": "bootstrap-icons@1.8.1",
+      "library": "bootstrap-icons@1.8.3",
       "destination": "wwwroot/lib/bootstrap-icons/",
       "files": [
         "font/bootstrap-icons.min.css",
@@ -49,6 +42,14 @@
       "destination": "wwwroot/lib/qrious/",
       "files": [
         "qrious.min.js"
+      ]
+    },
+    {
+      "library": "tagify@4.12.0",
+      "destination": "wwwroot/lib/tagify/",
+      "files": [
+        "tagify.min.js",
+        "tagify.min.css"
       ]
     }
   ]

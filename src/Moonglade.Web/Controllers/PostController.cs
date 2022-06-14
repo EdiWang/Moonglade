@@ -45,27 +45,6 @@ public class PostController : ControllerBase
         return Ok(list);
     }
 
-    [HttpPost]
-    [IgnoreAntiforgeryToken]
-    [Route("list/published")]
-    [ProducesResponseType(typeof(JqDataTable<PostSegment>), StatusCodes.Status200OK)]
-    public async Task<IActionResult> ListPublished([FromForm] DataTableRequest model)
-    {
-        var searchBy = model.Search?.Value;
-        var take = model.Length;
-        var offset = model.Start;
-
-        var (posts, totalRows) = await _mediator.Send(new ListPostSegmentQuery(PostStatus.Published, offset, take, searchBy));
-        var response = new JqDataTable<PostSegment>
-        {
-            Draw = model.Draw,
-            RecordsFiltered = totalRows,
-            RecordsTotal = totalRows,
-            Data = posts
-        };
-        return Ok(response);
-    }
-
     [HttpPost("createoredit")]
     [TypeFilter(typeof(ClearBlogCache), Arguments = new object[]
     {

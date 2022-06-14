@@ -93,8 +93,5 @@ public class WebManifestMiddlewareOptions
 {
     public string ThemeColor { get; set; }
 
-    public WebManifestMiddlewareOptions()
-    {
-        ThemeColor = "#333333";
-    }
+    public WebManifestMiddlewareOptions() => ThemeColor = "#333333";
 }

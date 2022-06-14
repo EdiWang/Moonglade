@@ -17,22 +17,23 @@
 }
 
 @section scripts{
+    <script src="~/js/app/imageuploader.js"></script>
     <script src="~/js/3rd/bs-custom-file-input.min.js"></script>
-    <script>
+    <script type="module">
+        import * as settings from '/js/app/admin.settings.module.js';
+
         var avatarUploader = new ImageUploader('avatar', 300, 'image/jpeg');
         avatarUploader.bindEvents();
 
         var siteiconUploader = new ImageUploader('siteicon', 512, 'image/png');
         siteiconUploader.bindEvents();
 
-        $(document).ready(function () {
-            bsCustomFileInput.init();
-            $("#btn-upload-avatar").click(function () {
-                avatarUploader.uploadImage('/avatar');
-            });
-            $("#btn-upload-siteicon").click(function () {
-                siteiconUploader.uploadImage('/siteicon');
-            });
+        bsCustomFileInput.init();
+        $("#btn-upload-avatar").click(function () {
+            avatarUploader.uploadImage('/avatar');
+        });
+        $("#btn-upload-siteicon").click(function () {
+            siteiconUploader.uploadImage('/siteicon');
         });
 
         var themeModal = new bootstrap.Modal(document.getElementById('thememodal'));
@@ -68,7 +69,7 @@
         }
 
         const form = document.querySelector('#form-settings');
-        form.addEventListener('submit', handleSettingsSubmit);
+        form.addEventListener('submit', settings.handleSettingsSubmit);
     </script>
 }
 

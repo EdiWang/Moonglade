@@ -32,9 +32,9 @@ public interface IRepository<T> //where T : class
 
     Task<int> CountAsync(ISpecification<T> spec);
 
-    bool Any(ISpecification<T> spec);
+    Task<bool> AnyAsync(ISpecification<T> spec);
 
-    bool Any(Expression<Func<T, bool>> condition = null);
+    Task<bool> AnyAsync(Expression<Func<T, bool>> condition = null);
 
     Task<IReadOnlyList<TResult>> SelectAsync<TResult>(
         Expression<Func<T, TResult>> selector);

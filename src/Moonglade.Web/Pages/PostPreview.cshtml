@@ -2,11 +2,9 @@
 @model Moonglade.Web.Pages.PostPreviewModel
 @using Moonglade.Utils
 @using NUglify
-@inject ITimeZoneResolver ZoneResolver
 
 @{
     ViewBag.BodyClass = "body-post-slug";
-    var ec = Settings.Value.Editor;
 }
 
 @section meta {
@@ -26,12 +24,17 @@
 }
 
 @section scripts {
-    <script src="~/js/3rd/highlight.min.js"></script>
-    <script>
+    <script src="~/js/3rd/highlight.min.js" asp-append-version="true"></script>
+    <script type="module">
+        import * as viewpost from '/js/app/viewpost.module.js'
+
         var fitImageToDevicePixelRatio = @BlogConfig.ImageSettings.FitImageToDevicePixelRatio.ToString().ToLower();
-        postSlug.resizeImages();
-        postSlug.applyImageZooming();
-        postSlug.renderCodeHighlighter();
+        viewpost.resizeImages();
+        viewpost.renderCodeHighlighter();
+
+        if (window.innerWidth >= 768) {
+            viewpost.applyImageZooming();
+        }
 
         @if (BlogConfig.AdvancedSettings.WarnExternalLink)
         {
@@ -68,20 +71,7 @@
     }
 
     <section class="post-content clearfix">
-        @{
-            var content = BlogConfig.ImageSettings.EnableCDNRedirect ? 
-                Model.Post.RawPostContent.ReplaceCDNEndpointToImgTags(BlogConfig.ImageSettings.CDNEndpoint) : 
-                Model.Post.RawPostContent;
-        }
-
-        @if (ec == EditorChoice.Markdown)
-        {
-            @Html.Raw(ContentProcessor.MarkdownToContent(content, ContentProcessor.MarkdownConvertType.Html, false))
-        }
-        else
-        {
-            @Html.Raw(content)
-        }
+        <partial name="_PostContentRender" model="Model.Post.RawPostContent" />
     </section>
     @if (BlogConfig.ContentSettings.ShowPostFooter)
     {

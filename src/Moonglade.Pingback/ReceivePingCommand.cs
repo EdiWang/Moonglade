@@ -85,7 +85,7 @@ public class ReceivePingCommandHandler : IRequestHandler<ReceivePingCommand, Pin
 
             _logger.LogInformation($"Post '{id}:{title}' is found for ping.");
 
-            var pinged = _pingbackRepo.Any(p =>
+            var pinged = await _pingbackRepo.AnyAsync(p =>
                 p.TargetPostId == id &&
                 p.SourceUrl == pingRequest.SourceUrl &&
                 p.SourceIp.Trim() == request.IP);

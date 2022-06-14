@@ -17,8 +17,8 @@
 }
 
 @section scripts{
-<script src="~/js/3rd/bs-custom-file-input.min.js"></script>
-<script src="~/lib/typeahead.js/typeahead.bundle.min.js"></script>
+    <script src="~/lib/tagify/tagify.min.js"></script>
+    <script src="~/js/3rd/bs-custom-file-input.min.js"></script>
     @{
         var ec = Settings.Value.Editor;
         switch (ec)
@@ -35,220 +35,222 @@
         }
     }
 
-<script>
-    $(function() {
-        postEditor.initEvents();
-        var editorMode = '@Settings.Value.Editor';
-        if (editorMode == '@nameof(EditorChoice.Html)') {
-            postEditor.loadRichEditor(".post-content-textarea");
-        }
-        if (editorMode == '@nameof(EditorChoice.Markdown)') {
-            postEditor.loadMdEditor(".post-content-textarea");
-        }
+    <script type="module">
+        import * as utils from '/js/app/utils.module.js'
+        import * as editor from '/js/app/admin.editor.module.js'
 
-        $('#Tags').on('beforeItemAdd',
+        var btnSubmitPost = '#btn-save';
+        var isPreviewRequired = false;
+
+        $(function() {
+            editor.initEvents();
+            var editorMode = '@Settings.Value.Editor';
+            if (editorMode == '@nameof(EditorChoice.Html)') {
+                editor.loadTinyMCE(".post-content-textarea");
+            }
+            if (editorMode == '@nameof(EditorChoice.Markdown)') {
+                editor.loadMdEditor(".post-content-textarea");
+            }
+
+            editor.keepAlive();
+        });
+
+        $(window).bind('keydown',
             function(event) {
-
-                // Test English with allowed characters
-                if (!/^[a-zA-Z 0-9\.\-\+\#\s]*$/i.test(event.item)) {
-
-                    // Test for Chinese
-                    if (!/(\p{Script=Hani})+/gu.test(event.item)) {
-                        blogToast.error(`Invalid tag name: ${event.item}`);
-                        event.cancel = true;
+                if (event.ctrlKey || event.metaKey) {
+                    switch (String.fromCharCode(event.which).toLowerCase()) {
+                        case 's':
+                            event.preventDefault();
+                            $("#btn-save").trigger('click');
+                            break;
                     }
                 }
             });
 
-        postEditor.keepAlive();
-    });
+        var heroImageModal = new bootstrap.Modal(document.getElementById('heroImageModal'));
 
-    $(window).bind('keydown',
-        function(event) {
-            if (event.ctrlKey || event.metaKey) {
-                switch (String.fromCharCode(event.which).toLowerCase()) {
-                case 's':
-                    event.preventDefault();
-                    $("#btn-save").trigger('click');
-                    break;
-                }
-            }
-        });
+        function ajaxImageUpload(oFormElement) {
+            const formData = new FormData(oFormElement);
 
-    var heroImageModal = new bootstrap.Modal(document.getElementById('heroImageModal'));
-
-    function ajaxImageUpload(oFormElement) {
-        const formData = new FormData(oFormElement);
-
-        fetch(oFormElement.action,
-            {
-                method: 'POST',
-                body: formData
-            }).then(async (response) => {
-            if (!response.ok) {
-                blogToast.error('API Boom');
-                console.error(err);
-            } else {
-                var data = await response.json();
-                document.querySelector('#ViewModel_HeroImageUrl').value = data.location;
-            }
-        }).then(response => {
-            document.querySelector('#form-hero-image').reset();
-            heroImageModal.hide();
-        }).catch(err => {
-            blogToast.error(err);
-            console.error(err);
-        });
-    }
-
-    function handlePostSubmit(event) {
-        event.preventDefault();
-
-        isPreviewRequired = event.submitter.id == 'btn-preview';
-
-        const data = new FormData(event.target);
-        const value = Object.fromEntries(data.entries());
-
-        const content = value["ViewModel.EditorContent"];
-        if (!content) {
-            blogToast.error('Please enter content.');
-            return;
+            fetch(oFormElement.action,
+                {
+                    method: 'POST',
+                    body: formData
+                }).then(async (response) => {
+                    if (!response.ok) {
+                        blogToast.error('API Boom');
+                        console.error(err);
+                    } else {
+                        var data = await response.json();
+                        document.querySelector('#ViewModel_HeroImageUrl').value = data.location;
+                    }
+                }).then(response => {
+                    document.querySelector('#form-hero-image').reset();
+                    heroImageModal.hide();
+                }).catch(err => {
+                    blogToast.error(err);
+                    console.error(err);
+                });
         }
 
-        var selectedCatIds = data.getAll('SelectedCatIds');
-        if (selectedCatIds.length == 0) {
-            blogToast.error('Please select at least 1 category.');
-            return;
+        function handlePostSubmit(event) {
+            event.preventDefault();
+
+            isPreviewRequired = event.submitter.id == 'btn-preview';
+
+            const data = new FormData(event.target);
+            const value = Object.fromEntries(data.entries());
+
+            const content = value["ViewModel.EditorContent"];
+            if (!content) {
+                blogToast.error('Please enter content.');
+                return;
+            }
+
+            var selectedCatIds = data.getAll('SelectedCatIds');
+            if (selectedCatIds.length == 0) {
+                blogToast.error('Please select at least 1 category.');
+                return;
+            }
+
+            value["SelectedCatIds"] = selectedCatIds;
+            const newValue = utils.toMagicJson(value);
+
+            document.querySelector(btnSubmitPost).classList.add('disabled');
+            document.querySelector(btnSubmitPost).setAttribute('disabled', 'disabled');
+
+            callApi(event.currentTarget.action,
+                'POST',
+                newValue,
+                async (resp) => {
+                    var respJson = await resp.json();
+                    if (respJson.postId) {
+                        $('input[name="ViewModel.PostId"]').val(respJson.postId);
+                        blogToast.success('Post saved successfully.');
+
+                        if (isPreviewRequired) {
+                            isPreviewRequired = false;
+                            window.open(`/post/preview/${respJson.postId}`);
+                        }
+                    }
+
+                    document.querySelector(btnSubmitPost).classList.remove('disabled');
+                    document.querySelector(btnSubmitPost).removeAttribute('disabled');
+                });
         }
-        
-        value["SelectedCatIds"] = selectedCatIds;
-        const newValue = toMagicJson(value);
 
-        onPostCreateEditBegin();
-        callApi(event.currentTarget.action,
-            'POST',
-            newValue,
-            async (resp) => {
-                var respJson = await resp.json();
-                onPostCreateEditSuccess(respJson);
-                onPostCreateEditComplete();
-            });
-    }
-
-    const form = document.querySelector('.post-edit-form');
-    form.addEventListener('submit', handlePostSubmit);
-</script>
+        const form = document.querySelector('.post-edit-form');
+        form.addEventListener('submit', handlePostSubmit);
+    </script>
 }
 
-<div class="p-4">
+@section head{
+    <link href="~/lib/tagify/tagify.min.css" rel="stylesheet" />
+}
 
-    <form class="post-edit-form" asp-controller="Post" asp-action="CreateOrEdit">
-        <input type="hidden" asp-for="ViewModel.PostId" />
-        <input type="hidden" asp-for="ViewModel.IsPublished" />
-        <div class="row">
-            <div class="col-md-9 col-xl-10">
-                <input type="text" asp-for="ViewModel.Title" class="form-control form-control-lg" placeholder="@Localizer["Title"]" required maxlength="128" />
-                <div class="mt-1">
-                    <div class="row g-1">
-                        <div class="col">
-                            <div class="input-group input-group-sm">
-                                <label class="input-group-text" asp-for="ViewModel.Slug">Slug</label>
-                                <input type="text" asp-for="ViewModel.Slug" class="form-control form-control-sm" placeholder="Slug" spellcheck="false" required pattern="[a-z0-9\-]+" maxlength="128"/>
+    <div class="p-4">
+
+        <form class="post-edit-form" asp-controller="Post" asp-action="CreateOrEdit">
+            <input type="hidden" asp-for="ViewModel.PostId" />
+            <input type="hidden" asp-for="ViewModel.IsPublished" />
+            <div class="row">
+                <div class="col-md-9 col-xl-10">
+                    <input type="text" asp-for="ViewModel.Title" class="form-control form-control-lg" placeholder="@Localizer["Title"]" required maxlength="128" />
+                    <div class="mt-1">
+                        <div class="row g-1">
+                            <div class="col">
+                                <div class="input-group input-group-sm">
+                                    <label class="input-group-text" asp-for="ViewModel.Slug">
+                                        <i class="bi-link-45deg"></i>
+                                    </label>
+                                    <input type="text" asp-for="ViewModel.Slug" class="form-control form-control-sm" placeholder="Slug" spellcheck="false" required pattern="[a-z0-9\-]+" maxlength="128" />
+                                </div>
                             </div>
-                        </div>
-                        <div class="col-md-auto">
-                            <div class="input-group input-group-sm mb-2">
-                                <label class="input-group-text" asp-for="ViewModel.Author"></label>
-                                <input type="text" class="form-control form-control-sm" spellcheck="false" asp-for="ViewModel.Author" />
+                            <div class="col-md-auto">
+                                <div class="input-group input-group-sm mb-2">
+                                    <label class="input-group-text" asp-for="ViewModel.Author"></label>
+                                    <input type="text" class="form-control form-control-sm" spellcheck="false" asp-for="ViewModel.Author" />
+                                </div>
                             </div>
-                        </div>
-                        <div class="col-md-auto">
-                            <div class="input-group input-group-sm mb-2">
-                                <label class="input-group-text" asp-for="ViewModel.LanguageCode"></label>
-                                <select class="form-select" asp-for="ViewModel.LanguageCode" asp-items="@langList"></select>
+                            <div class="col-md-auto">
+                                <div class="input-group input-group-sm mb-2">
+                                    <label class="input-group-text" asp-for="ViewModel.LanguageCode">
+                                        <i class="bi-globe"></i>
+                                    </label>
+                                    <select class="form-select" asp-for="ViewModel.LanguageCode" asp-items="@langList"></select>
+                                </div>
                             </div>
                         </div>
                     </div>
-                </div>
 
-                <textarea asp-for="ViewModel.EditorContent" class="post-content-textarea"></textarea>
+                    <textarea asp-for="ViewModel.EditorContent" class="post-content-textarea"></textarea>
 
-                <div class="row g-1 mt-1">
-                    <div class="col-8">
+                    <div class="mt-1">
+                        <input type="text" asp-for="ViewModel.Tags" placeholder="@Localizer["Tags"]" />
+                    </div>
+                    <div class="mt-1">
                         <div class="form-floating">
                             <textarea asp-for="ViewModel.Abstract"
-                                      placeholder="@Localizer["Abstract"]"
-                                      class="form-control form-control-sm"
-                                      data-bs-toggle="tooltip"
-                                      data-placement="top"
-                                      maxlength="400"
-                                      title="@Localizer["The first {0} character(s) will be used as abstract if you leave this field blank.", BlogConfig.ContentSettings.PostAbstractWords]"
-                                      style="height: 90px"></textarea>
+                                  placeholder="@Localizer["Abstract"]"
+                                  class="form-control form-control-sm"
+                                  data-bs-toggle="tooltip"
+                                  data-placement="top"
+                                  maxlength="400"
+                                  title="@Localizer["The first {0} character(s) will be used as abstract if you leave this field blank.", BlogConfig.ContentSettings.PostAbstractWords]"
+                                  style="height: 90px"></textarea>
                             <label for="ViewModel_Abstract">@Localizer["Abstract"]</label>
                         </div>
                     </div>
-                    <div class="col-4">
-                        <input type="text" asp-for="ViewModel.Tags" placeholder="@Localizer["Tags"]" />
-                    </div>
                 </div>
-            </div>
-            <div class="col-md-3 col-xl-2">
-                <div class="card mb-3">
-                    <div class="card-header">
-                        <i class="bi-clipboard-check me-1"></i>
-                        @Localizer["Options"]
-                    </div>
-                    <ul class="list-group list-group-flush">
-                        <li class="list-group-item">
+                <div class="col-md-3 col-xl-2">
+                    <div class="card mb-3">
+                        <div class="card-header">
+                            <i class="bi-clipboard-check me-1"></i>
+                            @Localizer["Options"]
+                        </div>
+                        <div class="card-body">
                             <div class="form-check form-switch mb-2">
                                 <input type="checkbox" name="EnableComment" value="true" class="form-check-input" @(Model.ViewModel.EnableComment ? "checked" : null)>
                                 <label asp-for="ViewModel.EnableComment" class="form-check-label"></label>
                             </div>
-                        </li>
-                        <li class="list-group-item">
                             <div class="form-check form-switch mb-2">
                                 <input type="checkbox" name="Featured" value="true" class="form-check-input" @(Model.ViewModel.Featured ? "checked" : null)>
                                 <label asp-for="ViewModel.Featured" class="form-check-label"></label>
                             </div>
-                        </li>
-                        <li class="list-group-item">
                             <div class="form-check form-switch mb-2">
                                 <input type="checkbox" name="FeedIncluded" value="true" class="form-check-input" @(Model.ViewModel.FeedIncluded ? "checked" : null)>
                                 <label asp-for="ViewModel.FeedIncluded" class="form-check-label"></label>
                             </div>
-                        </li>
-                        <li class="list-group-item">
-                            <div class="form-check form-switch mb-2">
+                            <div class="form-check form-switch">
                                 <input type="checkbox" name="IsOriginal" value="true" class="form-check-input" @(Model.ViewModel.IsOriginal ? "checked" : null)>
                                 <label asp-for="ViewModel.IsOriginal" class="form-check-label"></label>
                             </div>
-                        </li>
-                    </ul>
-                    <div class="card-body">
-                        <div class="form-floating mb-2">
-                            <textarea asp-for="ViewModel.OriginLink" class="form-control form-control-sm" placeholder="@Localizer["Origin Link"]"></textarea>
-                            <label for="ViewModel_OriginLink">@Localizer["Origin Link"]</label>
                         </div>
-                        <div class="form-floating mb-1">
-                            <textarea asp-for="ViewModel.HeroImageUrl"
+                        <div class="card-body border-top">
+                            <div class="form-floating mb-2">
+                                <textarea asp-for="ViewModel.OriginLink" class="form-control form-control-sm" placeholder="@Localizer["Origin Link"]"></textarea>
+                                <label for="ViewModel_OriginLink">@Localizer["Origin Link"]</label>
+                            </div>
+                            <div class="form-floating mb-1">
+                                <textarea asp-for="ViewModel.HeroImageUrl"
                                       class="form-control form-control-sm"
                                       placeholder="@Html.DisplayNameFor(m => m.ViewModel.HeroImageUrl)"></textarea>
-                            <label class="form-label" asp-for="ViewModel.HeroImageUrl"></label>
-                        </div>
-                        <div>
-                            <a class="btn btn-sm btn-outline-secondary w-100" data-bs-toggle="modal" data-bs-target="#heroImageModal">
-                                <i class="bi-upload"></i>
-                                @Localizer["Upload Image"]
-                            </a>
-                        </div>
-                        <div class="mt-2">
-                            <a class="btn btn-sm btn-outline-secondary w-100" data-bs-toggle="modal" data-bs-target="#inlineCssModal">
-                                <i class="bi-brush"></i>
-                                @Localizer["Inline CSS"]
-                            </a>
-                        </div>
+                                <label class="form-label" asp-for="ViewModel.HeroImageUrl"></label>
+                            </div>
+                            <div>
+                                <a class="btn btn-sm btn-outline-secondary w-100" data-bs-toggle="modal" data-bs-target="#heroImageModal">
+                                    <i class="bi-upload"></i>
+                                    @Localizer["Upload Image"]
+                                </a>
+                            </div>
+                            <div class="mt-2">
+                                <a class="btn btn-sm btn-outline-secondary w-100" data-bs-toggle="modal" data-bs-target="#inlineCssModal">
+                                    <i class="bi-brush"></i>
+                                    @Localizer["Inline CSS"]
+                                </a>
+                            </div>
 
-                        @if (Model.ViewModel.PostId != Guid.Empty)
+                            @if (Model.ViewModel.PostId != Guid.Empty)
                         {
                             <div class="mt-2">
                                 <a class="btn btn-sm btn-outline-secondary w-100" data-bs-toggle="modal" data-bs-target="#changePublishDateModal">

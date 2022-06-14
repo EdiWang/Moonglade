@@ -8,7 +8,6 @@
 
 @{
     ViewBag.BodyClass = "body-post-slug";
-    var ec = Settings.Value.Editor;
 }
 
 @section keywords {
@@ -28,6 +27,9 @@
     <meta name="displaydate" content="@Model.Post.PubDateUtc.GetValueOrDefault().ToString("u")">
     <meta name="copyright" content="(C) @Model.Post.PubDateUtc.GetValueOrDefault().Year @BlogConfig.GeneralSettings.SiteTitle">
     <meta name="author" content="@(string.IsNullOrWhiteSpace(Model.Post.Author) ? BlogConfig.GeneralSettings.OwnerName : Model.Post.Author) " />
+    
+    <link href="~/css/src/post-slug.css" rel="stylesheet" asp-append-version="true" />
+    <link href="~/css/src/highlighter-custom.css" rel="stylesheet" asp-append-version="true" />
 
     @if (!string.IsNullOrWhiteSpace(Model.Post.InlineCss))
     {
@@ -57,38 +59,42 @@
 }
 
 @section scripts {
-    <script src="~/js/3rd/highlight.min.js"></script>
+    <script src="~/js/3rd/highlight.min.js" asp-append-version="true"></script>
     <script src="~/lib/qrious/qrious.min.js"></script>
-    <script>
-        var fitImageToDevicePixelRatio = @BlogConfig.ImageSettings.FitImageToDevicePixelRatio.ToString().ToLower();
-        var pid = document.querySelector('article').dataset.postid;
-        postSlug.getStatistics(pid);
-        postSlug.registerRatingButtons(pid);
-        postSlug.resizeImages();
-
+    <script type="module">    
+        import * as viewpost from '/js/app/viewpost.module.js'
+        
+        window.viewpost = viewpost;
+        
+        viewpost.resizeImages();
         if (window.innerWidth >= 768) {
-            postSlug.applyImageZooming();
+            viewpost.applyImageZooming();
         }
 
-        postSlug.renderCodeHighlighter();
-        postSlug.postStatistics(pid, false);
-
-        var q = new QRious({
-                element: document.querySelector('.post-qrcode'), 
-                value: document.URL,
-                size: 200
-            });
-
+        viewpost.renderCodeHighlighter();
         @if (BlogConfig.AdvancedSettings.WarnExternalLink)
         {
             <text>
-                postSlug.warnExtLink();
+                viewpost.warnExtLink();
             </text>
         }
 
+        var pid = document.querySelector('article').dataset.postid;
+        viewpost.getStatistics(pid);
+        viewpost.registerRatingButtons(pid);
+        viewpost.postStatistics(pid, false);
+        
+        var fitImageToDevicePixelRatio = @BlogConfig.ImageSettings.FitImageToDevicePixelRatio.ToString().ToLower();
+
+        var q = new QRious({
+            element: document.querySelector('.post-qrcode'), 
+            value: document.URL,
+            size: 200
+        });
+
         $('#comment-form').on('submit', function (e) {
             e.preventDefault();
-            submitComment();
+            viewpost.submitComment(pid);
         });
     </script>
 }
@@ -137,20 +143,7 @@
     }
 
     <section class="post-content clearfix">
-        @{
-            var content = BlogConfig.ImageSettings.EnableCDNRedirect ? 
-                Model.Post.RawPostContent.ReplaceCDNEndpointToImgTags(BlogConfig.ImageSettings.CDNEndpoint) : 
-                Model.Post.RawPostContent;
-        }
-
-        @if (ec == EditorChoice.Markdown)
-        {
-            @Html.Raw(ContentProcessor.MarkdownToContent(content, ContentProcessor.MarkdownConvertType.Html, false))
-        }
-        else
-        {
-            @Html.Raw(content)
-        }
+        <partial name="_PostContentRender" model="Model.Post.RawPostContent" />
     </section>
 
     @if (BlogConfig.ContentSettings.ShowPostFooter)
@@ -215,7 +208,7 @@
                                     <div class="row">
                                         <div class="col-9">
                                             <div class="input-group">
-                                                <img id="img-captcha" onclick="postSlug.resetCaptchaImage()" src="~/captcha-image" data-bs-toggle="tooltip" data-placement="top" title="@Localizer["Can't read? Click to change another image."]"/>
+                                                <img id="img-captcha" onclick="viewpost.resetCaptchaImage()" src="~/captcha-image" data-bs-toggle="tooltip" data-placement="top" title="@Localizer["Can't read? Click to change another image."]"/>
                                                 <input type="text"
                                                        id="input-comment-captcha"
                                                        class="form-control input-captcha"

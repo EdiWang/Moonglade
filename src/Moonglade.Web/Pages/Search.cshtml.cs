@@ -15,10 +15,7 @@ public class SearchModel : PageModel
 
     public async Task<IActionResult> OnGetAsync(string term)
     {
-        if (string.IsNullOrWhiteSpace(term))
-        {
-            return RedirectToPage("Index");
-        }
+        if (string.IsNullOrWhiteSpace(term)) return RedirectToPage("Index");
 
         ViewData["TitlePrefix"] = term;
 

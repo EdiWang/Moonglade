@@ -5,6 +5,7 @@
     display: block;
     overflow-x: auto;
     padding: 1em;
+    border-radius: 5px;
 }
 
 .darkmode .hljs {

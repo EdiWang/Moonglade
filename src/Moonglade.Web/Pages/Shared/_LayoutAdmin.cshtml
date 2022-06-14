@@ -1,6 +1,4 @@
-﻿@inject IHttpContextAccessor HttpContextAccessor
-@inject IWebHostEnvironment WebHostEnvironment
-@inject IOptions<AuthenticationSettings> AuthOptions
+﻿@inject IOptions<AuthenticationSettings> AuthOptions
 
 @using Moonglade.Auth
 @{
@@ -13,6 +11,7 @@
 }
 <!DOCTYPE html>
 <html>
+
 <head>
     <title>
         @BlogConfig.GeneralSettings.SiteTitle @Localizer["Admin"] @(ViewBag.Title != null ? $"- {ViewBag.Title}" : null)
@@ -32,26 +31,20 @@
     <partial name="_Favicons" />
     <link href="~/lib/twitter-bootstrap/css/bootstrap.min.css" rel="stylesheet" asp-append-version="true" />
     <link href="~/lib/bootstrap-icons/font/bootstrap-icons.min.css" rel="stylesheet" />
-    <environment exclude="Development">
-        <link href="~/css/bundle.min.css" rel="stylesheet" asp-append-version="true" />
-        <link href="~/css/admin-bundle.min.css" rel="stylesheet" asp-append-version="true" />
-    </environment>
-    <environment include="Development">
-        <link href="~/css/bundle.css" rel="stylesheet" asp-append-version="true" />
-        <link href="~/css/3rd/bootstrap-tagsinput.css" rel="stylesheet" />
-        <link href="~/css/3rd/bootstrap-tagsinput-typeahead.css" rel="stylesheet" />
-        <link href="~/css/src/admin.css" rel="stylesheet" />
-    </environment>
+    <link href="~/css/dist/bundle.css" rel="stylesheet" asp-append-version="true" />
+    <link href="~/css/src/admin.css" rel="stylesheet" asp-append-version="true" />
     <link href="~/theme.css" rel="stylesheet" asp-append-version="true" />
     @await RenderSectionAsync("head", false)
-    <script src="~/lib/jquery/jquery.min.js" asp-append-version="true"></script>
+    <script src="~/lib/jquery/jquery.slim.min.js" asp-append-version="true"></script>
 </head>
+
 <body class="admin-body bg-gray-1">
     <nav class="admin-navbar navbar sticky-top navbar-expand-lg navbar-dark bg-accent2">
         <a class="navbar-brand font-sairas" asp-page="/Admin/Post">
             @BlogConfig.GeneralSettings.SiteTitle
         </a>
-        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent"
+                aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
             <span class="navbar-toggler-icon"></span>
         </button>
 
@@ -76,8 +69,7 @@
             </ul>
 
             <span class="navbar-text me-2">
-                <img src="@BlogConfig.GeneralSettings.AvatarUrl"
-                     alt="@BlogConfig.GeneralSettings.OwnerName"
+                <img src="@BlogConfig.GeneralSettings.AvatarUrl" alt="@BlogConfig.GeneralSettings.OwnerName"
                      class="rounded-circle admin-nav-head-pic me-1" />
                 <userinfo user="User"></userinfo>
             </span>
@@ -91,44 +83,53 @@
         <aside class="admin-nav">
             <section class="admin-nav-section rounded-3 shadow-sm border bg-white mt-4 mb-3">
                 <div class="list-group list-group-flush">
-                    <a asp-page="/Admin/Post" class="list-group-item list-group-item-action @(currentPage is "/Admin/Post" or "/Admin/EditPost" or "/Admin/Draft" or "/Admin/PostInsights" or "/Admin/RecycleBin" ? "active" : null)">
+                    <a asp-page="/Admin/Post"
+                       class="list-group-item list-group-item-action @(currentPage is "/Admin/Post" or "/Admin/EditPost" or "/Admin/Draft" or "/Admin/PostInsights" or "/Admin/RecycleBin" ? "active" : null)">
                         <i class="bi-file-earmark-richtext admin-nav-icon"></i>
                         @Localizer["Posts"]
                     </a>
-                    <a asp-page="/Admin/BlogPage" class="list-group-item list-group-item-action @(currentPage is "/Admin/BlogPage" or "/Admin/EditPage" ? "active" : null)">
+                    <a asp-page="/Admin/BlogPage"
+                       class="list-group-item list-group-item-action @(currentPage is "/Admin/BlogPage" or "/Admin/EditPage" ? "active" : null)">
                         <i class="bi-file-earmark-post admin-nav-icon"></i>
                         @Localizer["Pages"]
                     </a>
-                    <a asp-page="/Admin/Category" class="list-group-item list-group-item-action @(currentPage is "/Admin/Category" ? "active" : null)">
+                    <a asp-page="/Admin/Category"
+                       class="list-group-item list-group-item-action @(currentPage is "/Admin/Category" ? "active" : null)">
                         <i class="bi-folder2 admin-nav-icon"></i>
                         @Localizer["Categories"]
                     </a>
                     @if (BlogConfig.ContentSettings.CommentProvider == CommentProvider.BuiltIn)
                     {
-                        <a asp-page="/Admin/Comments" class="list-group-item list-group-item-action @(currentPage is "/Admin/Comments" ? "active" : null)">
+                        <a asp-page="/Admin/Comments"
+                       class="list-group-item list-group-item-action @(currentPage is "/Admin/Comments" ? "active" : null)">
                             <i class="bi-chat-left-text admin-nav-icon"></i>
                             @Localizer["Comments"]
                         </a>
                     }
-                    <a asp-page="/Admin/Tags" class="list-group-item list-group-item-action @(currentPage is "/Admin/Tags" ? "active" : null)">
+                    <a asp-page="/Admin/Tags"
+                       class="list-group-item list-group-item-action @(currentPage is "/Admin/Tags" ? "active" : null)">
                         <i class="bi-tag admin-nav-icon"></i>
                         @Localizer["Tags"]
                     </a>
-                    <a asp-page="/Admin/Menu" class="list-group-item list-group-item-action @(currentPage is "/Admin/Menu" ? "active" : null)">
+                    <a asp-page="/Admin/Menu"
+                       class="list-group-item list-group-item-action @(currentPage is "/Admin/Menu" ? "active" : null)">
                         <i class="bi-menu-button-wide admin-nav-icon"></i>
                         @Localizer["Menus"]
                     </a>
-                    <a asp-page="/Admin/FriendLink" class="list-group-item list-group-item-action @(currentPage is "/Admin/FriendLink" ? "active" : null)">
+                    <a asp-page="/Admin/FriendLink"
+                       class="list-group-item list-group-item-action @(currentPage is "/Admin/FriendLink" ? "active" : null)">
                         <i class="bi-link-45deg admin-nav-icon"></i>
                         @Localizer["Friend Links"]
                     </a>
-                    <a asp-page="/Admin/Pingback" class="list-group-item list-group-item-action @(currentPage is "/Admin/Pingback" ? "active" : null)">
+                    <a asp-page="/Admin/Pingback"
+                       class="list-group-item list-group-item-action @(currentPage is "/Admin/Pingback" ? "active" : null)">
                         <i class="bi-arrow-left-right admin-nav-icon"></i>
                         @Localizer["Pingbacks"]
                     </a>
                     @if (AuthOptions.Value.Provider == AuthenticationProvider.Local)
                     {
-                        <a asp-page="/Admin/LocalAccount" class="list-group-item list-group-item-action @(currentPage is "/Admin/LocalAccount" ? "active" : null)">
+                        <a asp-page="/Admin/LocalAccount"
+                       class="list-group-item list-group-item-action @(currentPage is "/Admin/LocalAccount" ? "active" : null)">
                             <i class="bi-people admin-nav-icon"></i>
                             @Localizer["Accounts"]
                         </a>
@@ -144,20 +145,10 @@
     <partial name="_Toast" />
 
     <script src="~/lib/twitter-bootstrap/js/bootstrap.bundle.min.js" asp-append-version="true"></script>
-<environment exclude="Development">
-        <script src="~/js/dist/app-bundle.min.js" asp-append-version="true"></script>
-        <script src="~/js/dist/admin-bundle.min.js" asp-append-version="true"></script>
-    </environment>
-    <environment include="Development">
-        <script src="~/js/app/base.js"></script>
-        <script src="~/js/app/postslug.js"></script>
-        <script src="~/js/app/httpService.js"></script>
-        <script src="~/js/app/comments.js"></script>
-        <script src="~/js/app/theme.js"></script>
-        <script src="~/js/3rd/bootstrap-tagsinput.min.js"></script>
-        <script src="~/lib/jquery.AreYouSure/jquery.are-you-sure.min.js"></script>
-        <script src="~/js/app/admin.js"></script>
-    </environment>
+    <script type="module" src="~/js/app/base.js"></script>
+    <script src="~/js/app/httpService.js"></script>
+    <script src="~/lib/jquery.AreYouSure/jquery.are-you-sure.min.js"></script>
     @await RenderSectionAsync("scripts", false)
 </body>
+
 </html>

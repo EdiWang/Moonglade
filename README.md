@@ -8,7 +8,9 @@ The [.NET](https://dotnet.microsoft.com/) blog system of [edi.wang](https://edi.
 
 ## 📦 Deployment
 
-> It is recommended to use stable code from [Release](https://github.com/EdiWang/Moonglade/releases) rather than master branch.
+- It is recommended to use stable code from [Release](https://github.com/EdiWang/Moonglade/releases) rather than master branch.
+
+- It is recommended to enable HTTP/2 support on your web server.
 
 ### ☁ Full Deploy on Azure (Recommend)
 
@@ -56,6 +58,8 @@ example MySQL connection string:
 ```
 
 ### 🔨 Build Source
+
+> Special hint: If you are in China, it's strongly recommended to use a "magic network" to ensure libman can restore front-end libraries successfully.
 
 Build and run `./src/Moonglade.sln`
 - Admin entrance: `https://localhost:1055/admin`

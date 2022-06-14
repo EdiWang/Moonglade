@@ -9,12 +9,12 @@ public class StatisticsController : ControllerBase
 {
     private readonly IMediator _mediator;
 
-    private bool DNT => (bool)HttpContext.Items["DNT"];
+    private bool DNT => (bool)HttpContext.Items["DNT"]!;
 
     public StatisticsController(IMediator mediator) => _mediator = mediator;
 
-
     [HttpGet("{postId:guid}")]
+    [DisallowSpiderUA]
     [ProducesResponseType(typeof(Tuple<int, int>), StatusCodes.Status200OK)]
     public async Task<IActionResult> Get([NotEmpty] Guid postId)
     {
@@ -34,10 +34,4 @@ public class StatisticsController : ControllerBase
     }
 }
 
-public class StatisticsRequest
-{
-    [NotEmpty]
-    public Guid PostId { get; set; }
-
-    public bool IsLike { get; set; }
-}
+public record StatisticsRequest([NotEmpty] Guid PostId, bool IsLike);

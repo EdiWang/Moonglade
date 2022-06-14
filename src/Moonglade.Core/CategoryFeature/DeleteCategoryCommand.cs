@@ -23,7 +23,7 @@ public class DeleteCategoryCommandHandler : IRequestHandler<DeleteCategoryComman
 
     public async Task<OperationCode> Handle(DeleteCategoryCommand request, CancellationToken cancellationToken)
     {
-        var exists = _catRepo.Any(c => c.Id == request.Id);
+        var exists = await _catRepo.AnyAsync(c => c.Id == request.Id);
         if (!exists) return OperationCode.ObjectNotFound;
 
         var pcs = await _postCatRepo.GetAsync(pc => pc.CategoryId == request.Id);

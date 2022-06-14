@@ -81,13 +81,16 @@ public class UpdatePostCommandHandler : IRequestHandler<UpdatePostCommand, PostE
             Array.Empty<string>() :
             postEditModel.Tags.Split(',').ToArray();
 
-        foreach (var item in tags.Where(item => !_tagRepo.Any(p => p.DisplayName == item)))
+        foreach (var item in tags)
         {
-            await _tagRepo.AddAsync(new()
+            if (!await _tagRepo.AnyAsync(p => p.DisplayName == item))
             {
-                DisplayName = item,
-                NormalizedName = Tag.NormalizeName(item, Helper.TagNormalizationDictionary)
-            }, cancellationToken);
+                await _tagRepo.AddAsync(new()
+                {
+                    DisplayName = item,
+                    NormalizedName = Tag.NormalizeName(item, Helper.TagNormalizationDictionary)
+                }, cancellationToken);
+            }
         }
 
         // 2. update tags

@@ -35,7 +35,7 @@ public class CreateCategoryCommandHandler : AsyncRequestHandler<CreateCategoryCo
 
     protected override async Task Handle(CreateCategoryCommand request, CancellationToken cancellationToken)
     {
-        var exists = _catRepo.Any(c => c.RouteName == request.RouteName);
+        var exists = await _catRepo.AnyAsync(c => c.RouteName == request.RouteName);
         if (exists) return;
 
         var category = new CategoryEntity

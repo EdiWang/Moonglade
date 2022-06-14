@@ -2,7 +2,9 @@
 @model Moonglade.Web.Pages.Settings.AdvancedModel
 @Html.AntiForgeryToken()
 @section scripts{
-    <script>
+    <script type="module">
+        import * as settings from '/js/app/admin.settings.module.js';
+
         function startTimer(duration, display) {
             var timer = duration, minutes, seconds;
             setInterval(function () {
@@ -80,7 +82,7 @@
         }
 
         const form = document.querySelector('#form-settings');
-        form.addEventListener('submit', handleSettingsSubmit);
+        form.addEventListener('submit', settings.handleSettingsSubmit);
     </script>
 }
 
