@@ -4,10 +4,6 @@
 ## Sensitive data
 appsettings.Development.json
 
-## Auto Generated Files
-bundle.css
-bundle.min.css
-
 ## Libman Restore on dotnet build
 lib/
 
