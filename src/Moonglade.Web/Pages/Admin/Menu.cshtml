@@ -9,7 +9,7 @@
         var menuJson = @Html.Raw(Model.MenuItems.ToJson());
         var isNewSubMenu = false;
         var currentSm = {
-            Id: emptyGuid,
+            Id: window.emptyGuid,
             Title: '',
             Url: '',
             IsOpenInNewTab: false
@@ -131,7 +131,7 @@
         });
 
         function initCreateMenu() {
-            document.querySelector('#topmenu-id').value = emptyGuid;
+            document.querySelector('#topmenu-id').value = window.emptyGuid;
             document.querySelector('#edit-form').reset();
             document.querySelector('.btn-delete').style.display = 'none';
 
@@ -147,7 +147,7 @@
 
             isNewSubMenu = true;
             $('.sub-menu-editor').show();
-            document.querySelector('#submenu-id').value = emptyGuid;
+            document.querySelector('#submenu-id').value = window.emptyGuid;
             document.querySelector('#submenu-title').value = '';
             document.querySelector('#submenu-url').value = '';
             $('#submenu-isopeninnewtab').prop('checked', null);
@@ -169,7 +169,7 @@
             var action = '';
             var httpVerb = 'POST';
             var menuId = document.querySelector("#topmenu-id").value;
-            if (menuId == emptyGuid) {
+            if (menuId == window.emptyGuid) {
                 action = '/api/menu';
             } else {
                 action = '/api/menu/edit';
