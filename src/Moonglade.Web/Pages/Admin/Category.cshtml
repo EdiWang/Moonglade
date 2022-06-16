@@ -7,10 +7,10 @@
 @section scripts{
 <script>
     var editCanvas = new bootstrap.Offcanvas(document.getElementById('editCatCanvas'));
-    var catId = emptyGuid;
+    var catId = window.emptyGuid;
 
     function initCreateCategory() {
-        catId = emptyGuid;
+        catId = window.emptyGuid;
         document.querySelector('#edit-form').reset();
         editCanvas.show();
     }
@@ -46,7 +46,7 @@
         var apiAddress = '';
         var verb = '';
 
-        if (catId == emptyGuid) {
+        if (catId == window.emptyGuid) {
             apiAddress = '/api/category';
             verb = 'POST';
         }

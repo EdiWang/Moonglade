@@ -94,8 +94,8 @@
     function postCreateOrEdit() {
         onPageCreateEditBegin();
 
-        var apiAddress = pageId == emptyGuid ? `/api/page` : `/api/page/${pageId}`;
-        var verb = pageId == emptyGuid ? 'POST' : 'PUT';
+        var apiAddress = pageId == window.emptyGuid ? `/api/page` : `/api/page/${pageId}`;
+        var verb = pageId == window.emptyGuid ? 'POST' : 'PUT';
 
         callApi(apiAddress, verb,
             {
