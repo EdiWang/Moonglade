@@ -5,9 +5,6 @@
 @{
     ViewBag.TitlePrefix = "Archive ";
     var archives = await Mediator.Send(new GetArchiveQuery());
-}
-
-@{
     int[] yearList = null;
     if (null != Model && archives.Any())
     {
@@ -24,6 +21,9 @@
     }
 }
 
+@section head{
+    <link href="~/css/src/timeline.css" rel="stylesheet" />
+}
 
 <h3>
     @Localizer["Archive Timeline"]
