@@ -36,7 +36,6 @@ public class PostController : ControllerBase
 
     [HttpGet("segment/published")]
     [FeatureGate(FeatureFlags.EnableWebApi)]
-    [Authorize(AuthenticationSchemes = BlogAuthSchemas.All)]
     [ProducesResponseType(typeof(IReadOnlyList<PostSegment>), StatusCodes.Status200OK)]
     public async Task<IActionResult> Segment()
     {
