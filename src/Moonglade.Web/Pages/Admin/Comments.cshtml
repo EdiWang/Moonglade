@@ -93,13 +93,13 @@
     {
         foreach (var item in Model.CommentDetailedItems)
         {
-            <div id="panel-comment-@item.Id" class="mb-4 d-flex flex-row">
-                <div class="form-check">
+            <div id="panel-comment-@item.Id" class="mb-4 row g-1">
+                <div class="form-check col-auto">
                     <input type="checkbox" class="form-check-input chk-cid" id="comment-item-chk-@item.Id" data-cid="@item.Id" />
                     <label class="form-check-label" for="comment-item-chk-@item.Id"></label>
                 </div>
 
-                <div class="flex-sm-grow-1">
+                <div class="col">
                     <h6>
                         @item.Username
                         @if (!string.IsNullOrWhiteSpace(item.Email))
@@ -148,7 +148,7 @@
                     </div>
                 </div>
 
-                <div>
+                <div class="col-auto">
                     <a href="javascript:;" class="btn btn-sm @(item.IsApproved ? "btn-success" : "btn-outline-success") btn-approve" data-commentid="@item.Id">
                         <i class="bi-star-fill"></i>
                     </a>
