@@ -9,57 +9,61 @@
 }
 
 @section scripts{
-<script>
-    $(function () {
-        $(".btn-delete").click(function () {
-            var cfm = confirm("Delete Confirmation?");
-            if (cfm) {
-                deletePost($(this).data("postid"));
-            }
-        });
-    });
-
-    function deletePost(postid) {
-        $(`#span-processing-${postid}`).show();
-
-        callApi(`/api/post/${postid}/recycle`, 'DELETE', {},
-            (resp) => {
-                $(`#tr-${postid}`).hide();
+    <script>
+        $(function() {
+            $(".btn-delete").click(function() {
+                var cfm = confirm("Delete Confirmation?");
+                if (cfm) {
+                    deletePost($(this).data("postid"));
+                }
             });
-    }
-</script>
+        });
+
+        function deletePost(postid) {
+            $(`#span-processing-${postid}`).show();
+
+            callApi(`/api/post/${postid}/recycle`, 'DELETE', {},
+                (resp) => {
+                    $(`#tr-${postid}`).hide();
+                });
+        }
+    </script>
 }
 
 <partial name="_PostManageHeader" />
 
 <div class="ps-4 pe-4">
-
     @if (posts.Any())
     {
         @Html.AntiForgeryToken()
 
         @foreach (var post in posts.OrderByDescending(p => p.LastModifiedUtc))
         {
-            <div class="card mb-3" id="tr-@post.Id">
-                <div class="card-body">
-                    <h6 class="card-title">
-                        <a asp-page="./EditPost" asp-route-id="@post.Id">@post.Title</a>
-                    </h6>
+            <div id="post-@post.Id">
+                <div class="d-flex">
+                    <div class="flex-grow-1">
+                        <a asp-page="./EditPost" asp-route-id="@post.Id">
+                            <h6>
+                                @post.Title
+                            </h6>
+                        </a>
+                        <div>
+                            <i class="bi-calendar-event"></i>
+                            <span class="text-muted me-2">@ZoneResolver.ToTimeZone(post.CreateTimeUtc).ToString("yyyy-MM-dd HH:mm")</span>
 
-                    <p class="mt-2 text-muted">
-                        @post.ContentAbstract
-                    </p>
+                            <i class="bi-eye"></i>
+                            <span class="text-muted">@post.Hits</span>
+                        </div>
+                    </div>
 
-                    <small class="text-muted">@ZoneResolver.ToTimeZone(post.CreateTimeUtc).ToLongDateString() @ZoneResolver.ToTimeZone(post.CreateTimeUtc).ToShortTimeString()</small>
+                    <div>
+                        <a class="btn btn-outline-accent btn-sm btn-edit" asp-page="./EditPost" asp-route-id="@post.Id"><i class="bi-pen"></i></a>
+                        <a class="btn btn-outline-danger btn-sm btn-delete" data-postid="@post.Id" href="javascript:;">
+                            <i class="bi-trash"></i>
+                        </a>
+                    </div>
                 </div>
-                <div class="card-footer">
-                    <a class="btn btn-outline-accent btn-sm btn-edit" asp-page="./EditPost" asp-route-id="@post.Id">
-                        <i class="bi-pen"></i>
-                    </a>
-                    <a class="btn btn-outline-danger btn-sm btn-delete" data-postid="@post.Id" href="javascript:;">
-                        <i class="bi-trash"></i>
-                    </a>
-                </div>
+                <hr />
             </div>
         }
     }
