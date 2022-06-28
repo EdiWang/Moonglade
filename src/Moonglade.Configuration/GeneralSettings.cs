@@ -88,10 +88,7 @@ public class GeneralSettings : IBlogSettings
     // https://github.com/EdiWang/Moonglade/issues/310
     public string TimeZoneUtcOffset { get; set; }
 
-    public GeneralSettings()
-    {
-        ThemeId = 1;
-    }
+    public GeneralSettings() => ThemeId = 1;
 }
 
 public enum SideBarOption
