@@ -16,11 +16,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no" />
     <partial name="_Favicons" />
     <link href="~/lib/twitter-bootstrap/css/bootstrap.min.css" rel="stylesheet" asp-append-version="true" />
-    <environment include="Development">
-        <link href="~/css/dist/bundle.css" rel="stylesheet" asp-append-version="true" />
-    </environment>
+    <link href="~/css/src/base.css" rel="stylesheet" asp-append-version="true" />
     <environment exclude="Development">
-        <link href="~/css/dist/bundle.min.css" rel="stylesheet" asp-append-version="true" />
         @Html.Raw(JavaScriptSnippet.FullScript)
     </environment>
     <link href="~/theme.css" rel="stylesheet" asp-append-version="true" />
