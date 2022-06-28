@@ -1,6 +1,5 @@
-﻿using Microsoft.Extensions.Options;
+﻿using Microsoft.Extensions.Configuration;
 using Moonglade.Caching;
-using Moonglade.Configuration;
 using Moonglade.Data.Spec;
 using Moonglade.Utils;
 
@@ -12,13 +11,13 @@ public class GetPostBySlugQueryHandler : IRequestHandler<GetPostBySlugQuery, Pos
 {
     private readonly IRepository<PostEntity> _postRepo;
     private readonly IBlogCache _cache;
-    private readonly AppSettings _settings;
+    private readonly IConfiguration _configuration;
 
-    public GetPostBySlugQueryHandler(IRepository<PostEntity> postRepo, IBlogCache cache, IOptions<AppSettings> settings)
+    public GetPostBySlugQueryHandler(IRepository<PostEntity> postRepo, IBlogCache cache, IConfiguration configuration)
     {
         _postRepo = postRepo;
         _cache = cache;
-        _settings = settings.Value;
+        _configuration = configuration;
     }
 
     public async Task<Post> Handle(GetPostBySlugQuery request, CancellationToken cancellationToken)
@@ -42,12 +41,12 @@ public class GetPostBySlugQueryHandler : IRequestHandler<GetPostBySlugQuery, Pos
             var p = await _postRepo.GetAsync(pid);
             p.HashCheckSum = slugCheckSum;
 
-            await _postRepo.UpdateAsync(p);
+            await _postRepo.UpdateAsync(p, cancellationToken);
         }
 
         var psm = await _cache.GetOrCreateAsync(CacheDivision.Post, $"{pid}", async entry =>
         {
-            entry.SlidingExpiration = TimeSpan.FromMinutes(_settings.CacheSlidingExpirationMinutes["Post"]);
+            entry.SlidingExpiration = TimeSpan.FromMinutes(int.Parse(_configuration["CacheSlidingExpirationMinutes:Post"]));
 
             var post = await _postRepo.SelectFirstOrDefaultAsync(spec, Post.EntitySelector);
             return post;
