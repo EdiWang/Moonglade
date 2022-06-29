@@ -38,11 +38,15 @@
     </div>
 </div>
 
-@if (BlogConfig.AdvancedSettings.AllowScriptsInPage)
-{
-    @Html.Raw(Model.BlogPage.RawHtmlContent)
-}
-else
-{
-    @Html.Raw(Helper.RemoveScriptTagFromHtml(Model.BlogPage.RawHtmlContent))
-}
+<div class="page-content">
+    @if (BlogConfig.AdvancedSettings.AllowScriptsInPage)
+    {
+        @Html.Raw(Model.BlogPage.RawHtmlContent)
+    }
+    else
+    {
+        @Html.Raw(Helper.RemoveScriptTagFromHtml(Model.BlogPage.RawHtmlContent))
+    }
+</div>
+
+<partial name="_PageForestageAdmin" />
