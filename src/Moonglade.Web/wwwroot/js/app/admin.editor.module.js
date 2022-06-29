@@ -97,7 +97,7 @@ export function loadTinyMCE(textareaSelector) {
             images_upload_credentials: true,
             extended_valid_elements: 'img[class|src|border=0|alt|title|hspace|vspace|width|height|align|onmouseover|onmouseout|name|loading=lazy]',
             body_class: 'post-content',
-            content_css: '/css/src/tinymce-custom.css',
+            content_css: '/css/tinymce-custom.css',
             codesample_languages: [
                 { text: 'Bash', value: 'bash' },
                 { text: 'C#', value: 'csharp' },
