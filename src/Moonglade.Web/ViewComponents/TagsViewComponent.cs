@@ -2,12 +2,12 @@
 
 namespace Moonglade.Web.ViewComponents;
 
-public class HotTagsViewComponent : ViewComponent
+public class TagsViewComponent : ViewComponent
 {
     private readonly IBlogConfig _blogConfig;
     private readonly IMediator _mediator;
 
-    public HotTagsViewComponent(IBlogConfig blogConfig, IMediator mediator)
+    public TagsViewComponent(IBlogConfig blogConfig, IMediator mediator)
     {
         _blogConfig = blogConfig;
         _mediator = mediator;

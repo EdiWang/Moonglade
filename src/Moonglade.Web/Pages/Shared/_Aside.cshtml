@@ -31,7 +31,7 @@
                 <div class="card-header">@Localizer["Tags"]</div>
                 <div class="card-body">
                     <cache expires-after="@TimeSpan.FromMinutes(60)">
-                        @await Component.InvokeAsync("HotTags")
+                        @await Component.InvokeAsync("Tags")
                     </cache>
                     <hr />
                     <a asp-page="/Tags" class="card-link">
