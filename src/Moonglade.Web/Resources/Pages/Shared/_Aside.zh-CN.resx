@@ -126,8 +126,8 @@
   <data name="Categories" xml:space="preserve">
     <value>分类</value>
   </data>
-  <data name="Hot Tags" xml:space="preserve">
-    <value>热门标签</value>
+  <data name="Tags" xml:space="preserve">
+    <value>标签</value>
   </data>
   <data name="Close" xml:space="preserve">
     <value>关闭</value>
