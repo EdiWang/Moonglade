@@ -101,7 +101,7 @@ export function applyImageZooming() {
 
         document.querySelector('#imgzoom').src = src;
 
-        if (fitImageToDevicePixelRatio) {
+        if (window.fitImageToDevicePixelRatio) {
             setTimeout(function () {
                 var w = $('#imgzoom')[0].naturalWidth;
 
