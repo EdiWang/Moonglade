@@ -1,6 +1,4 @@
-﻿@model Moonglade.Web.Pages.BlogPageModel
-
-@if (User.Identity is { IsAuthenticated: true })
+﻿@if (User.Identity is { IsAuthenticated: true })
 {
     @Html.AntiForgeryToken()
     <script>
