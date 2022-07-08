@@ -12,7 +12,7 @@ public class ContentSettings : IBlogSettings
     public string ThirdPartyCommentHtmlPitch { get; set; }
 
     [Display(Name = "Enable comments")]
-    public bool EnableComments { get; set; }
+    public bool EnableComments { get; set; } = true;
 
     [Display(Name = "Comments require review and approval")]
     public bool RequireCommentReview { get; set; }
@@ -20,7 +20,7 @@ public class ContentSettings : IBlogSettings
     [DataType(DataType.MultilineText)]
     [Display(Name = "Blocked words")]
     [MaxLength(2048)]
-    public string DisharmonyWords { get; set; }
+    public string DisharmonyWords { get; set; } = string.Empty;
 
     [Display(Name = "Enable word filter")]
     public bool EnableWordFilter { get; set; }
@@ -31,12 +31,12 @@ public class ContentSettings : IBlogSettings
     [Required]
     [Display(Name = "Post list page size")]
     [Range(5, 30)]
-    public int PostListPageSize { get; set; }
+    public int PostListPageSize { get; set; } = 10;
 
     [Required]
     [Display(Name = "How many tags show on sidebar")]
     [Range(5, 20)]
-    public int HotTagAmount { get; set; }
+    public int HotTagAmount { get; set; } = 10;
 
     [Display(Name = "Enable Gravatar in comment list")]
     public bool EnableGravatar { get; set; }
@@ -56,16 +56,7 @@ public class ContentSettings : IBlogSettings
     public string PostFooterHtmlPitch { get; set; }
 
     [Display(Name = "Word count in abstract")]
-    public int PostAbstractWords { get; set; }
-
-    public ContentSettings()
-    {
-        DisharmonyWords = string.Empty;
-        EnableComments = true;
-        PostListPageSize = 10;
-        HotTagAmount = 10;
-        PostAbstractWords = 400;
-    }
+    public int PostAbstractWords { get; set; } = 400;
 }
 
 public enum WordFilterMode
