@@ -75,7 +75,8 @@
                     </div>
                     <div class="col-md-5 text-end">
                         <div class="form-check form-switch">
-                            <input type="checkbox" name="UseFullContent" value="true" class="form-check-input" @(Model.ViewModel.UseFullContent ? "checked" : null)  />
+                            <input type="hidden" name="UseFullContent" value="false">
+                            <input type="checkbox" name="UseFullContent" value="true" class="form-check-input" @(Model.ViewModel.UseFullContent ? "checked" : null)/>
                         </div>
                     </div>
                 </div>

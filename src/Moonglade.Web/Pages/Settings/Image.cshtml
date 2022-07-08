@@ -28,6 +28,7 @@
                         </div>
                         <div class="col-md-5 text-end">
                             <div class="form-check form-switch">
+                                <input type="hidden" name="UseFriendlyNotFoundImage" value="false">
                                 <input type="checkbox" name="UseFriendlyNotFoundImage" value="true" class="form-check-input" @(Model.ViewModel.UseFriendlyNotFoundImage ? "checked" : null)>
                             </div>
                         </div>
@@ -42,6 +43,7 @@
                         </div>
                         <div class="col-md-5 text-end">
                             <div class="form-check form-switch">
+                                <input type="hidden" name="FitImageToDevicePixelRatio" value="false">
                                 <input type="checkbox" name="FitImageToDevicePixelRatio" value="true" class="form-check-input" @(Model.ViewModel.FitImageToDevicePixelRatio ? "checked" : null)>
                             </div>
                         </div>
@@ -60,6 +62,7 @@
                         </div>
                         <div class="col-md-5 text-end">
                             <div class="form-check form-switch">
+                                <input type="hidden" name="EnableCDNRedirect" value="false">
                                 <input type="checkbox" name="EnableCDNRedirect" value="true" class="form-check-input" @(Model.ViewModel.EnableCDNRedirect ? "checked" : null)>
                             </div>
                         </div>
@@ -93,6 +96,7 @@
                     </div>
                     <div class="col-md-5 text-end">
                         <div class="form-check form-switch">
+                            <input type="hidden" name="IsWatermarkEnabled" value="false">
                             <input type="checkbox" name="IsWatermarkEnabled" value="true" class="form-check-input" @(Model.ViewModel.IsWatermarkEnabled ? "checked" : null)>
                         </div>
                     </div>
@@ -110,6 +114,7 @@
                     </div>
                     <div class="col-md-5 text-end">
                         <div class="form-check form-switch">
+                            <input type="hidden" name="KeepOriginImage" value="false">
                             <input type="checkbox" name="KeepOriginImage" value="true" class="form-check-input" @(Model.ViewModel.KeepOriginImage ? "checked" : null)>
                         </div>
                     </div>

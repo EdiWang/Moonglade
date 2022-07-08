@@ -82,6 +82,7 @@
                     </div>
                     <div class="col-md-5 text-end">
                         <div class="form-check form-switch">
+                            <input type="hidden" name="EnableEmailSending" value="false">
                             <input type="checkbox" name="EnableEmailSending" value="true" class="form-check-input" @(Model.ViewModel.EnableEmailSending ? "checked" : null)>
                         </div>
                     </div>
@@ -96,6 +97,7 @@
                     </div>
                     <div class="col-md-5 text-end">
                         <div class="form-check form-switch">
+                            <input type="hidden" name="SendEmailOnNewComment" value="false">
                             <input type="checkbox" name="SendEmailOnNewComment" value="true" class="form-check-input" @(Model.ViewModel.SendEmailOnNewComment ? "checked" : null)>
                         </div>
                     </div>
@@ -110,6 +112,7 @@
                     </div>
                     <div class="col-md-5 text-end">
                         <div class="form-check form-switch">
+                            <input type="hidden" name="SendEmailOnCommentReply" value="false">
                             <input type="checkbox" name="SendEmailOnCommentReply" value="true" class="form-check-input" @(Model.ViewModel.SendEmailOnCommentReply ? "checked" : null)>
                         </div>
                     </div>
