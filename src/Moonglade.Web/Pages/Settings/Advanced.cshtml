@@ -121,6 +121,20 @@
                             </div>
                         </div>
                     </div>
+                    
+                    <div class="row g-3 align-items-center settings-entry mb-4">
+                        <div class="col-auto">
+                            <i class="bi-map settings-entry-icon"></i>
+                        </div>
+                        <div class="col">
+                            <label asp-for="ViewModel.EnableSiteMap" class="form-check-label"></label>
+                        </div>
+                        <div class="col-md-4 text-end">
+                            <div class="form-check form-switch">
+                                <input type="checkbox" name="EnableSiteMap" value="true" class="form-check-input" @(Model.ViewModel.EnableSiteMap ? "checked" : null)>
+                            </div>
+                        </div>
+                    </div>
 
                     <div class="row g-3 align-items-center settings-entry mb-4">
                         <div class="col-auto">

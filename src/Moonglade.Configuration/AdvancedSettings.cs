@@ -10,16 +10,19 @@ public class AdvancedSettings : IBlogSettings
     public string RobotsTxtContent { get; set; }
 
     [Display(Name = "Enable Pingback send")]
-    public bool EnablePingbackSend { get; set; }
+    public bool EnablePingbackSend { get; set; } = true;
 
     [Display(Name = "Enable Pingback receive")]
-    public bool EnablePingbackReceive { get; set; }
+    public bool EnablePingbackReceive { get; set; } = true;
 
     [Display(Name = "Enable MetaWeblog API")]
-    public bool EnableMetaWeblog { get; set; }
+    public bool EnableMetaWeblog { get; set; } = true;
 
     [Display(Name = "Enable OpenSearch")]
-    public bool EnableOpenSearch { get; set; }
+    public bool EnableOpenSearch { get; set; } = true;
+
+    [Display(Name = "Enable Site Map")]
+    public bool EnableSiteMap { get; set; } = true;
 
     [MinLength(8), MaxLength(16)]
     [Display(Name = "MetaWeblog password")]

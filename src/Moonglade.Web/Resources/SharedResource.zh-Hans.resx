@@ -192,6 +192,9 @@
   <data name="Enable Pingback send" xml:space="preserve">
     <value>启用 Pingback 发送</value>
   </data>
+  <data name="Enable Site Map" xml:space="preserve">
+    <value>启用网站地图</value>
+  </data>
   <data name="Enable word filter" xml:space="preserve">
     <value>启用违禁词过滤</value>
   </data>

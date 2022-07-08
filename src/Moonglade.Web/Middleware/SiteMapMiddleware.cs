@@ -20,7 +20,7 @@ public class SiteMapMiddleware
         IRepository<PostEntity> postRepo,
         IRepository<PageEntity> pageRepo)
     {
-        if (httpContext.Request.Path == "/sitemap.xml")
+        if (blogConfig.AdvancedSettings.EnableSiteMap && httpContext.Request.Path == "/sitemap.xml")
         {
             var xml = await cache.GetOrCreateAsync(CacheDivision.General, "sitemap", async _ =>
             {
