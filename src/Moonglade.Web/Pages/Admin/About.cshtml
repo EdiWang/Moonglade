@@ -2,6 +2,7 @@
 @using System.Diagnostics
 @using Moonglade.Utils
 @inject IWebHostEnvironment WebHostEnvironment
+@inject IConfiguration Configuration
 
 @{
     var process = Process.GetCurrentProcess();
@@ -31,7 +32,7 @@
                 </tr>
                 <tr>
                     <td>@Localizer["Editor"]</td>
-                    <td>@Settings.Value.Editor</td>
+                    <td>@(Configuration.GetSection("Editor").Get<EditorChoice>())</td>
                 </tr>
             </tbody>
         </table>

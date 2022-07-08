@@ -1,7 +1,8 @@
 ﻿@model string
+@inject IConfiguration Configuration
 
 @{
-    var ec = Settings.Value.Editor;
+    var ec = Configuration.GetSection("Editor").Get<EditorChoice>();
     var content = BlogConfig.ImageSettings.EnableCDNRedirect ? 
         Model.ReplaceCDNEndpointToImgTags(BlogConfig.ImageSettings.CDNEndpoint) : 
         Model;

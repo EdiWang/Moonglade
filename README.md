@@ -83,7 +83,7 @@ See [Wiki document](https://github.com/EdiWang/Moonglade/wiki/Use-Azure-Active-D
 Set `Authentication:Provider` to `"Local"`. You can manage accounts in `/admin/settings/account`
 
 ### 🖼 Image Storage
-`AppSettings:ImageStorage` controls how blog post images are stored.
+`ImageStorage` controls how blog post images are stored.
 
 #### [Azure Blob Storage](https://azure.microsoft.com/en-us/services/storage/blobs/) (Preferred)
 

@@ -2,6 +2,8 @@
 @using Microsoft.AspNetCore.Builder
 @model Moonglade.Web.Pages.Admin.EditPostModel
 @inject IOptions<RequestLocalizationOptions> LocOptions
+@inject IConfiguration Configuration
+
 @{
     ViewBag.Title = "Manage Posts";
 
@@ -20,7 +22,7 @@
     <script src="~/lib/tagify/tagify.min.js"></script>
     <script src="~/js/3rd/bs-custom-file-input.min.js"></script>
     @{
-        var ec = Settings.Value.Editor;
+        var ec = Configuration.GetSection("Editor").Get<EditorChoice>();
         switch (ec)
         {
             case EditorChoice.Html:
@@ -44,7 +46,7 @@
 
         $(function() {
             editor.initEvents();
-            var editorMode = '@Settings.Value.Editor';
+            var editorMode = '@ec';
             if (editorMode == '@nameof(EditorChoice.Html)') {
                 editor.loadTinyMCE(".post-content-textarea");
             }
