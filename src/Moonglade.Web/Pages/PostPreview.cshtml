@@ -46,7 +46,7 @@
 }
 
 <div class="alert alert-info">
-    @Localizer["This is a preview for draft content."]
+    @SharedLocalizer["This is a preview for draft content."]
 </div>
 
 <article class="article-post-slug box border position-relative mb-4" data-postid="@Model.Post.Id" lang="@Model.Post.ContentLanguageCode">
@@ -86,7 +86,7 @@
     {
         <a href="@Helper.SterilizeLink(Model.Post.OriginLink)" target="_blank">
             <i class="bi-link"></i>
-            @Localizer["Read origin article"]
+            @SharedLocalizer["Read origin article"]
         </a>
     }
 </article>
