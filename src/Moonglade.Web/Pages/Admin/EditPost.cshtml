@@ -219,7 +219,7 @@
                                 <input type="checkbox" name="Featured" value="true" class="form-check-input" @(Model.ViewModel.Featured ? "checked" : null)>
                                 <label asp-for="ViewModel.Featured" class="form-check-label"></label>
                             </div>
-                            <div class="form-check form-switch mb-2">
+                            <div class="form-check form-switch">
                                 <input type="checkbox" name="FeedIncluded" value="true" class="form-check-input" @(Model.ViewModel.FeedIncluded ? "checked" : null)>
                                 <label asp-for="ViewModel.FeedIncluded" class="form-check-label"></label>
                             </div>
@@ -270,7 +270,7 @@
 
                         @if (null != Model.CategoryList && Model.CategoryList.Any())
                         {
-                            <div class="catlist mb-2">
+                            <div class="catlist">
                                 <ul>
                                     @foreach (var cat in Model.CategoryList)
                                     {
