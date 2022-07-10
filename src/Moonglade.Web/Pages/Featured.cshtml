@@ -2,7 +2,7 @@
 @model Moonglade.Web.Pages.FeaturedModel
 
 <h3>
-    @Localizer["Featured Posts"]
+    @SharedLocalizer["Featured Posts"]
 </h3>
 <hr />
 
@@ -13,7 +13,7 @@
 else
 {
     <div class="alert alert-info">
-        @Localizer["No Posts"]
+        @SharedLocalizer["No Posts"]
     </div>
 }
 
