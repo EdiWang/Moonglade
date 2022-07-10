@@ -55,7 +55,7 @@ public class CreatePostCommandHandler : IRequestHandler<CreatePostCommand, PostE
             IsDeleted = false,
             IsPublished = request.Payload.IsPublished,
             IsFeatured = request.Payload.Featured,
-            IsOriginal = request.Payload.IsOriginal,
+            IsOriginal = string.IsNullOrWhiteSpace(request.Payload.OriginLink),
             OriginLink = string.IsNullOrWhiteSpace(request.Payload.OriginLink) ? null : Helper.SterilizeLink(request.Payload.OriginLink),
             HeroImageUrl = string.IsNullOrWhiteSpace(request.Payload.HeroImageUrl) ? null : Helper.SterilizeLink(request.Payload.HeroImageUrl),
             InlineCss = request.Payload.InlineCss,

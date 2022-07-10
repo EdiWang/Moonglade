@@ -223,10 +223,6 @@
                                 <input type="checkbox" name="FeedIncluded" value="true" class="form-check-input" @(Model.ViewModel.FeedIncluded ? "checked" : null)>
                                 <label asp-for="ViewModel.FeedIncluded" class="form-check-label"></label>
                             </div>
-                            <div class="form-check form-switch">
-                                <input type="checkbox" name="IsOriginal" value="true" class="form-check-input" @(Model.ViewModel.IsOriginal ? "checked" : null)>
-                                <label asp-for="ViewModel.IsOriginal" class="form-check-label"></label>
-                            </div>
                         </div>
                         <div class="card-body border-top">
                             <div class="form-floating mb-2">
@@ -266,6 +262,10 @@
                         <h6 class="card-subtitle mb-3 text-muted">
                             <i class="bi-folder2 me-1"></i>
                             @Localizer["Categories"]
+                            
+                            <a asp-page="./Category" target="_blank" class="float-end">
+                                <i class="bi-box-arrow-up-right"></i>
+                            </a>
                         </h6>
 
                         @if (null != Model.CategoryList && Model.CategoryList.Any())
@@ -292,11 +292,6 @@
                                 </ul>
                             </div>
                         }
-
-                        <a asp-page="./Category" class="btn btn-sm btn-outline-secondary w-100">
-                            <i class="bi-box-arrow-up-right"></i>
-                            @Localizer["Manage"]
-                        </a>
                     </div>
                 </div>
             </div>
