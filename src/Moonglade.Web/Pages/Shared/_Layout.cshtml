@@ -122,7 +122,7 @@
                             <li id="navbar-dropdown-post" class="nav-item dropdown">
                                 <a href="#" class="nav-link dropdown-toggle" role="button" data-bs-toggle="dropdown">
                                     <i class="bi-folder2 nav-item-icon"></i>
-                                    <strong>@Localizer["Categories"]</strong>
+                                    <strong>@SharedLocalizer["Categories"]</strong>
                                 </a>
                                 @await Component.InvokeAsync("CategoryList", new { isMenu = true })
                             </li>
@@ -132,7 +132,7 @@
                             <li class="nav-item">
                                 <a asp-page="/Tags" class="nav-link">
                                     <i class="bi-tag nav-item-icon"></i>
-                                    <strong>@Localizer["Tags"]</strong>
+                                    <strong>@SharedLocalizer["Tags"]</strong>
                                 </a>
                             </li>
                         </feature>
@@ -141,7 +141,7 @@
                             <li class="nav-item">
                                 <a asp-page="/Archive" class="nav-link">
                                     <i class="bi-calendar3 nav-item-icon"></i>
-                                    <strong>@Localizer["Archive"]</strong>
+                                    <strong>@SharedLocalizer["Archive"]</strong>
                                 </a>
                             </li>
                         </feature>
@@ -153,9 +153,9 @@
                                class="form-control bg-transparent me-sm-2"
                                type="search"
                                value=""
-                               title="@Localizer["Search"]"
+                               title="@SharedLocalizer["Search"]"
                                aria-label="Search"
-                               placeholder="@Localizer["Search"]"
+                               placeholder="@SharedLocalizer["Search"]"
                                name="term"
                                maxlength="30">
                         <button class="btn btn-outline-light btn-search my-sm-0" type="submit"><i class="bi-search"></i></button>

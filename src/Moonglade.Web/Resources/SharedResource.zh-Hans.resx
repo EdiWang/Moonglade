@@ -117,14 +117,29 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
+  <data name="Accounts" xml:space="preserve">
+    <value>账户</value>
+  </data>
+  <data name="Admin" xml:space="preserve">
+    <value>管理</value>
+  </data>
   <data name="Admin Login" xml:space="preserve">
     <value>管理员登录</value>
+  </data>
+  <data name="Admin Sign In" xml:space="preserve">
+    <value>管理员登录</value>
+  </data>
+  <data name="All Posts" xml:space="preserve">
+    <value>全部文章</value>
   </data>
   <data name="All Tags" xml:space="preserve">
     <value>全部标签</value>
   </data>
   <data name="Allow javascript in pages" xml:space="preserve">
     <value>允许页面中执JavaScript代码</value>
+  </data>
+  <data name="Archive" xml:space="preserve">
+    <value>归档</value>
   </data>
   <data name="Author" xml:space="preserve">
     <value>作者</value>
@@ -158,6 +173,9 @@
   </data>
   <data name="Close" xml:space="preserve">
     <value>关闭</value>
+  </data>
+  <data name="Comments" xml:space="preserve">
+    <value>评论</value>
   </data>
   <data name="Comments require review and approval" xml:space="preserve">
     <value>评论需要管理员审核</value>
@@ -228,8 +246,14 @@
   <data name="Footer HTML code" xml:space="preserve">
     <value>页脚HTML区域</value>
   </data>
+  <data name="Friend Links" xml:space="preserve">
+    <value>友情链接</value>
+  </data>
   <data name="Hide Sidebar" xml:space="preserve">
     <value>隐藏侧边栏</value>
+  </data>
+  <data name="Home" xml:space="preserve">
+    <value>主页</value>
   </data>
   <data name="How many tags show on sidebar" xml:space="preserve">
     <value>侧边栏显示标签数量</value>
@@ -252,11 +276,17 @@
   <data name="Logo text" xml:space="preserve">
     <value>Logo 文字</value>
   </data>
+  <data name="Menus" xml:space="preserve">
+    <value>菜单</value>
+  </data>
   <data name="Meta keyword" xml:space="preserve">
     <value>网站关键词</value>
   </data>
   <data name="MetaWeblog password" xml:space="preserve">
     <value>MetaWeblog 密码</value>
+  </data>
+  <data name="No Comments" xml:space="preserve">
+    <value>没有评论</value>
   </data>
   <data name="No Matching Result" xml:space="preserve">
     <value>找不到相关结果</value>
@@ -285,14 +315,23 @@
   <data name="Owner email" xml:space="preserve">
     <value>博主邮箱</value>
   </data>
+  <data name="Pages" xml:space="preserve">
+    <value>页面</value>
+  </data>
   <data name="Password" xml:space="preserve">
     <value>密码</value>
+  </data>
+  <data name="Pingbacks" xml:space="preserve">
+    <value>引用</value>
   </data>
   <data name="Post footer HTML code" xml:space="preserve">
     <value>文章页脚HTML内容</value>
   </data>
   <data name="Post list page size" xml:space="preserve">
     <value>文章分页数量</value>
+  </data>
+  <data name="Posts" xml:space="preserve">
+    <value>文章</value>
   </data>
   <data name="Publish" xml:space="preserve">
     <value>发布</value>
@@ -303,11 +342,20 @@
   <data name="Publish Now" xml:space="preserve">
     <value>立即发布</value>
   </data>
+  <data name="Replied at" xml:space="preserve">
+    <value>回复于</value>
+  </data>
   <data name="Route Name" xml:space="preserve">
     <value>路由名称</value>
   </data>
   <data name="RSS Items" xml:space="preserve">
     <value>RSS条目数量</value>
+  </data>
+  <data name="Scan QR Code on your phone" xml:space="preserve">
+    <value>在手机上扫描二维码</value>
+  </data>
+  <data name="Search" xml:space="preserve">
+    <value>搜索</value>
   </data>
   <data name="Search Result" xml:space="preserve">
     <value>搜索结果</value>
@@ -338,6 +386,12 @@
   </data>
   <data name="Side bar HTML code" xml:space="preserve">
     <value>侧边栏HTML区域</value>
+  </data>
+  <data name="Sign In" xml:space="preserve">
+    <value>登录</value>
+  </data>
+  <data name="Subscribe Recent 20 Posts" xml:space="preserve">
+    <value>订阅最近20篇文章</value>
   </data>
   <data name="Tags" xml:space="preserve">
     <value>标签</value>

@@ -14,7 +14,7 @@
 
 <head>
     <title>
-        @BlogConfig.GeneralSettings.SiteTitle @Localizer["Admin"] @(ViewBag.Title != null ? $"- {ViewBag.Title}" : null)
+        @BlogConfig.GeneralSettings.SiteTitle @SharedLocalizer["Admin"] @(ViewBag.Title != null ? $"- {ViewBag.Title}" : null)
     </title>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no" />
@@ -87,52 +87,52 @@
                     <a asp-page="/Admin/Post"
                        class="list-group-item list-group-item-action @(currentPage is "/Admin/Post" or "/Admin/EditPost" or "/Admin/Draft" or "/Admin/PostInsights" or "/Admin/RecycleBin" ? "active" : null)">
                         <i class="bi-file-earmark-richtext admin-nav-icon"></i>
-                        @Localizer["Posts"]
+                        @SharedLocalizer["Posts"]
                     </a>
                     <a asp-page="/Admin/BlogPage"
                        class="list-group-item list-group-item-action @(currentPage is "/Admin/BlogPage" or "/Admin/EditPage" ? "active" : null)">
                         <i class="bi-file-earmark-post admin-nav-icon"></i>
-                        @Localizer["Pages"]
+                        @SharedLocalizer["Pages"]
                     </a>
                     <a asp-page="/Admin/Category"
                        class="list-group-item list-group-item-action @(currentPage is "/Admin/Category" ? "active" : null)">
                         <i class="bi-folder2 admin-nav-icon"></i>
-                        @Localizer["Categories"]
+                        @SharedLocalizer["Categories"]
                     </a>
                     @if (BlogConfig.ContentSettings.CommentProvider == CommentProvider.BuiltIn)
                     {
                         <a asp-page="/Admin/Comments"
                        class="list-group-item list-group-item-action @(currentPage is "/Admin/Comments" ? "active" : null)">
                             <i class="bi-chat-left-text admin-nav-icon"></i>
-                            @Localizer["Comments"]
+                            @SharedLocalizer["Comments"]
                         </a>
                     }
                     <a asp-page="/Admin/Tags"
                        class="list-group-item list-group-item-action @(currentPage is "/Admin/Tags" ? "active" : null)">
                         <i class="bi-tag admin-nav-icon"></i>
-                        @Localizer["Tags"]
+                        @SharedLocalizer["Tags"]
                     </a>
                     <a asp-page="/Admin/Menu"
                        class="list-group-item list-group-item-action @(currentPage is "/Admin/Menu" ? "active" : null)">
                         <i class="bi-menu-button-wide admin-nav-icon"></i>
-                        @Localizer["Menus"]
+                        @SharedLocalizer["Menus"]
                     </a>
                     <a asp-page="/Admin/FriendLink"
                        class="list-group-item list-group-item-action @(currentPage is "/Admin/FriendLink" ? "active" : null)">
                         <i class="bi-link-45deg admin-nav-icon"></i>
-                        @Localizer["Friend Links"]
+                        @SharedLocalizer["Friend Links"]
                     </a>
                     <a asp-page="/Admin/Pingback"
                        class="list-group-item list-group-item-action @(currentPage is "/Admin/Pingback" ? "active" : null)">
                         <i class="bi-arrow-left-right admin-nav-icon"></i>
-                        @Localizer["Pingbacks"]
+                        @SharedLocalizer["Pingbacks"]
                     </a>
                     @if (AuthOptions.Value.Provider == AuthenticationProvider.Local)
                     {
                         <a asp-page="/Admin/LocalAccount"
                        class="list-group-item list-group-item-action @(currentPage is "/Admin/LocalAccount" ? "active" : null)">
                             <i class="bi-people admin-nav-icon"></i>
-                            @Localizer["Accounts"]
+                            @SharedLocalizer["Accounts"]
                         </a>
                     }
                 </div>
