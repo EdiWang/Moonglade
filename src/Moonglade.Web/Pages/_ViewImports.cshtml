@@ -1,5 +1,6 @@
 ﻿@using Microsoft.Extensions.Options
 @using Microsoft.AspNetCore.Mvc.Localization
+@using Microsoft.Extensions.Localization
 
 @using Moonglade.Web
 @using Moonglade.Web.Pages
@@ -11,3 +12,4 @@
 @addTagHelper *, Moonglade.Web
 @inject IBlogConfig BlogConfig
 @inject IViewLocalizer Localizer
+@inject IStringLocalizer<SharedResource> SharedLocalizer

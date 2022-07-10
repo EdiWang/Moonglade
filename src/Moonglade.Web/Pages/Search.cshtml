@@ -7,13 +7,13 @@
 }
 
 <h3>
-    @Localizer["Search Result"]
+    @SharedLocalizer["Search Result"]
 </h3>
 <hr />
 @if (!Model.Posts.Any())
 {
     <div class="alert alert-info">
-        @Localizer["No Matching Result"]
+        @SharedLocalizer["No Matching Result"]
     </div>
 }
 else
