@@ -86,9 +86,8 @@ export function loadTinyMCE(textareaSelector) {
             browser_spellcheck: true,
             branding: false,
             block_formats: 'Paragraph=p; Header 2=h2; Header 3=h3; Header 4=h4; Preformatted=pre',
-            fontsize_formats: '8pt 10pt 12pt 14pt 18pt 24pt 36pt',
             plugins: 'advlist autolink autosave link image lists charmap preview anchor pagebreak searchreplace wordcount visualblocks visualchars code fullscreen insertdatetime media nonbreaking save table directionality template codesample emoticons',
-            toolbar: 'formatselect | fontsizeselect | bold italic underline strikethrough | forecolor backcolor | removeformat | emoticons link hr image table codesample media | alignleft aligncenter alignright alignjustify | bullist numlist outdent indent | code | fullscreen',
+            toolbar: 'blocks | bold italic underline strikethrough | forecolor backcolor | removeformat | charmap emoticons link hr image table codesample media | alignleft aligncenter alignright alignjustify | bullist numlist outdent indent | code | fullscreen',
             save_onsavecallback: function () {
                 $('#btn-save').trigger('click');
             },
