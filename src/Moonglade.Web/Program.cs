@@ -48,6 +48,10 @@ app.Run();
 void ConfigureConfiguration(IConfiguration configuration)
 {
     builder.Logging.AddAzureWebAppDiagnostics();
+    builder.Services.AddHttpsRedirection(options =>
+    {
+        options.RedirectStatusCode = (int)HttpStatusCode.Redirect;
+    });
     builder.Host.ConfigureAppConfiguration(config =>
     {
         config.AddJsonFile("manifesticons.json", false, true);
