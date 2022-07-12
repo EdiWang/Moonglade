@@ -157,7 +157,7 @@
             <input type="hidden" asp-for="ViewModel.IsPublished" />
             <div class="row">
                 <div class="col-md-9 col-xl-10">
-                    <input type="text" asp-for="ViewModel.Title" class="form-control form-control-lg" placeholder="@Localizer["Title"]" required maxlength="128" />
+                    <input type="text" asp-for="ViewModel.Title" class="form-control form-control-lg" placeholder="@SharedLocalizer["Title"]" required maxlength="128" />
                     <div class="mt-1">
                         <div class="row g-1">
                             <div class="col">
@@ -188,19 +188,19 @@
                     <textarea asp-for="ViewModel.EditorContent" class="post-content-textarea"></textarea>
 
                     <div class="mt-1">
-                        <input type="text" asp-for="ViewModel.Tags" placeholder="@Localizer["Tags"]" />
+                        <input type="text" asp-for="ViewModel.Tags" placeholder="@SharedLocalizer["Tags"]" />
                     </div>
                     <div class="mt-1">
                         <div class="form-floating">
                             <textarea asp-for="ViewModel.Abstract"
-                                  placeholder="@Localizer["Abstract"]"
+                                  placeholder="@SharedLocalizer["Abstract"]"
                                   class="form-control form-control-sm"
                                   data-bs-toggle="tooltip"
                                   data-placement="top"
                                   maxlength="400"
-                                  title="@Localizer["The first {0} character(s) will be used as abstract if you leave this field blank.", BlogConfig.ContentSettings.PostAbstractWords]"
+                                  title="@SharedLocalizer["The first {0} character(s) will be used as abstract if you leave this field blank.", BlogConfig.ContentSettings.PostAbstractWords]"
                                   style="height: 90px"></textarea>
-                            <label for="ViewModel_Abstract">@Localizer["Abstract"]</label>
+                            <label for="ViewModel_Abstract">@SharedLocalizer["Abstract"]</label>
                         </div>
                     </div>
                 </div>
@@ -208,7 +208,7 @@
                     <div class="card mb-3">
                         <div class="card-header">
                             <i class="bi-clipboard-check me-1"></i>
-                            @Localizer["Options"]
+                            @SharedLocalizer["Options"]
                         </div>
                         <div class="card-body">
                             <div class="form-check form-switch mb-2">
@@ -226,8 +226,8 @@
                         </div>
                         <div class="card-body border-top">
                             <div class="form-floating mb-2">
-                                <textarea asp-for="ViewModel.OriginLink" class="form-control form-control-sm" placeholder="@Localizer["Origin Link"]"></textarea>
-                                <label for="ViewModel_OriginLink">@Localizer["Origin Link"]</label>
+                                <textarea asp-for="ViewModel.OriginLink" class="form-control form-control-sm" placeholder="@SharedLocalizer["Origin Link"]"></textarea>
+                                <label for="ViewModel_OriginLink">@SharedLocalizer["Origin Link"]</label>
                             </div>
                             <div class="form-floating mb-1">
                                 <textarea asp-for="ViewModel.HeroImageUrl"
@@ -238,13 +238,13 @@
                             <div>
                                 <a class="btn btn-sm btn-outline-secondary w-100" data-bs-toggle="modal" data-bs-target="#heroImageModal">
                                     <i class="bi-upload"></i>
-                                    @Localizer["Upload Image"]
+                                    @SharedLocalizer["Upload Image"]
                                 </a>
                             </div>
                             <div class="mt-2">
                                 <a class="btn btn-sm btn-outline-secondary w-100" data-bs-toggle="modal" data-bs-target="#inlineCssModal">
                                     <i class="bi-brush"></i>
-                                    @Localizer["Inline CSS"]
+                                    @SharedLocalizer["Inline CSS"]
                                 </a>
                             </div>
 
@@ -253,7 +253,7 @@
                             <div class="mt-2">
                                 <a class="btn btn-sm btn-outline-secondary w-100" data-bs-toggle="modal" data-bs-target="#changePublishDateModal">
                                     <i class="bi-clock-history"></i>
-                                    @Localizer["Change Publish Date"]
+                                    @SharedLocalizer["Change Publish Date"]
                                 </a>
                             </div>
                         }
@@ -261,7 +261,7 @@
                     <div class="card-body border-top">
                         <h6 class="card-subtitle mb-3 text-muted">
                             <i class="bi-folder2 me-1"></i>
-                            @Localizer["Categories"]
+                            @SharedLocalizer["Categories"]
                             
                             <a asp-page="./Category" target="_blank" class="float-end">
                                 <i class="bi-box-arrow-up-right"></i>
@@ -301,30 +301,30 @@
 
         <div>
             <button type="submit" class="btn btn-accent ediblogeditor-save" id="btn-save">
-                @Localizer["Save"]
+                @SharedLocalizer["Save"]
             </button>
             @if (!Model.ViewModel.IsPublished)
             {
                 <button type="submit" class="btn btn-outline-accent ediblogeditor-publish" id="btn-publish">
-                    @Localizer["Publish"]
+                    @SharedLocalizer["Publish"]
                 </button>
                 <button class="btn btn-outline-success ediblogeditor-preview" id="btn-preview">
-                    @Localizer["Preview"]
+                    @SharedLocalizer["Preview"]
                 </button>
             }
-            <a asp-page="./Post" class="btn btn-outline-secondary">@Localizer["Cancel"]</a>
+            <a asp-page="./Post" class="btn btn-outline-secondary">@SharedLocalizer["Cancel"]</a>
         </div>
 
         <div class="modal fade" id="changePublishDateModal" tabindex="-1" role="dialog" aria-labelledby="changePublishDateModalLabel" aria-hidden="true">
             <div class="modal-dialog" role="document">
                 <div class="modal-content">
                     <div class="modal-header">
-                        <h5 class="modal-title" id="changePublishDateModalLabel">@Localizer["Change Publish Date"]</h5>
+                        <h5 class="modal-title" id="changePublishDateModalLabel">@SharedLocalizer["Change Publish Date"]</h5>
                         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close">
                         </button>
                     </div>
                     <div class="modal-body">
-                        <div class="alert alert-warning">@Localizer["Changing publish date will modify the URL of the post, and may cause unexpected results like breaking links on third parties that were pointing to this post. Please check the checkbox below if you confirm."]</div>
+                        <div class="alert alert-warning">@SharedLocalizer["Changing publish date will modify the URL of the post, and may cause unexpected results like breaking links on third parties that were pointing to this post. Please check the checkbox below if you confirm."]</div>
                         <div class="mb-2">
                             <input type="checkbox" name="ChangePublishDate" value="true" class="form-check-input" @(Model.ViewModel.ChangePublishDate ? "checked" : null)>
                             <label asp-for="ViewModel.ChangePublishDate"></label>
@@ -336,8 +336,8 @@
                         </div>
                     </div>
                     <div class="modal-footer">
-                        <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">@Localizer["Cancel"]</button>
-                        <button type="button" class="btn btn-danger" data-bs-dismiss="modal">@Localizer["Continue"]</button>
+                        <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">@SharedLocalizer["Cancel"]</button>
+                        <button type="button" class="btn btn-danger" data-bs-dismiss="modal">@SharedLocalizer["Continue"]</button>
                     </div>
                 </div>
             </div>
@@ -347,7 +347,7 @@
             <div class="modal-dialog modal-lg" role="document">
                 <div class="modal-content">
                     <div class="modal-header">
-                        <h5 class="modal-title" id="inlineCssModalLabel">@Localizer["Inline CSS"]</h5>
+                        <h5 class="modal-title" id="inlineCssModalLabel">@SharedLocalizer["Inline CSS"]</h5>
                         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close">
                         </button>
                     </div>
@@ -357,8 +357,8 @@
                         </div>
                     </div>
                     <div class="modal-footer">
-                        <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">@Localizer["Cancel"]</button>
-                        <button type="button" class="btn btn-accent" data-bs-dismiss="modal">@Localizer["OK"]</button>
+                        <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">@SharedLocalizer["Cancel"]</button>
+                        <button type="button" class="btn btn-accent" data-bs-dismiss="modal">@SharedLocalizer["OK"]</button>
                     </div>
                 </div>
             </div>
@@ -372,7 +372,7 @@
             <div class="modal-dialog" role="document">
                 <div class="modal-content">
                     <div class="modal-header">
-                        <h5 class="modal-title" id="heroImageModalLabel">@Localizer["Upload Image"]</h5>
+                        <h5 class="modal-title" id="heroImageModalLabel">@SharedLocalizer["Upload Image"]</h5>
                         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close">
                         </button>
                     </div>
@@ -380,8 +380,8 @@
                         <input type="file" accept="image/png, image/jpeg" class="form-control" id="heroImageFile" name="file">
                     </div>
                     <div class="modal-footer">
-                        <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">@Localizer["Cancel"]</button>
-                        <button type="submit" class="btn btn-accent"><i class="bi-upload"></i> @Localizer["Upload"]</button>
+                        <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">@SharedLocalizer["Cancel"]</button>
+                        <button type="submit" class="btn btn-accent"><i class="bi-upload"></i> @SharedLocalizer["Upload"]</button>
                     </div>
                 </div>
             </div>

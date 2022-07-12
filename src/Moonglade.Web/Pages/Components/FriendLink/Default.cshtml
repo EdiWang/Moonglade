@@ -4,7 +4,7 @@
 @if (Model.Any())
 {
     <div class="card">
-        <div class="card-header">@Localizer["Links"]</div>
+        <div class="card-header">@SharedLocalizer["Links"]</div>
         
         <div class="card-body">
             @foreach (var item in Model.OrderBy(c => c.Title))

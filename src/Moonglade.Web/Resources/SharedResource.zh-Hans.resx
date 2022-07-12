@@ -138,8 +138,17 @@
   <data name="About" xml:space="preserve">
     <value>关于</value>
   </data>
+  <data name="Abstract" xml:space="preserve">
+    <value>摘要</value>
+  </data>
+  <data name="Account Information" xml:space="preserve">
+    <value>账号信息</value>
+  </data>
   <data name="Accounts" xml:space="preserve">
     <value>账户</value>
+  </data>
+  <data name="Action" xml:space="preserve">
+    <value>操作</value>
   </data>
   <data name="Admin" xml:space="preserve">
     <value>管理</value>
@@ -176,6 +185,9 @@
   </data>
   <data name="Are you sure to restart website? All current requests will be terminated." xml:space="preserve">
     <value>你确定要重启网站吗？所有当前请求都会被终止。</value>
+  </data>
+  <data name="Are you sure?" xml:space="preserve">
+    <value>确定吗？</value>
   </data>
   <data name="Author" xml:space="preserve">
     <value>作者</value>
@@ -246,11 +258,23 @@
   <data name="Change Site Icon" xml:space="preserve">
     <value>更换网站图标</value>
   </data>
+  <data name="Changing publish date will modify the URL of the post, and may cause unexpected results like breaking links on third parties that were pointing to this post. Please check the checkbox below if you confirm." xml:space="preserve">
+    <value>更改发布日期会影响文章URL，可能破坏其他地方指向文章的链接。仍要更改，请勾选下面的复选框。</value>
+  </data>
   <data name="Check now" xml:space="preserve">
     <value>立即检查更新</value>
   </data>
   <data name="Check online for new Moonglade release." xml:space="preserve">
     <value>在线检查新版本的 Moonglade</value>
+  </data>
+  <data name="Clear all" xml:space="preserve">
+    <value>清空全部</value>
+  </data>
+  <data name="Clear Now" xml:space="preserve">
+    <value>立即清空</value>
+  </data>
+  <data name="Clear Pingback Logs" xml:space="preserve">
+    <value>清空Pingback日志</value>
   </data>
   <data name="Close" xml:space="preserve">
     <value>关闭</value>
@@ -270,8 +294,20 @@
   <data name="Content" xml:space="preserve">
     <value>内容</value>
   </data>
+  <data name="Continue" xml:space="preserve">
+    <value>继续</value>
+  </data>
   <data name="Copyright" xml:space="preserve">
     <value>版权信息</value>
+  </data>
+  <data name="Create" xml:space="preserve">
+    <value>新建</value>
+  </data>
+  <data name="Create Tag" xml:space="preserve">
+    <value>创建标签</value>
+  </data>
+  <data name="Create Time (UTC)" xml:space="preserve">
+    <value>创建时间 (UTC)</value>
   </data>
   <data name="Current Endpoint:" xml:space="preserve">
     <value>当前终端：</value>
@@ -284,6 +320,9 @@
   </data>
   <data name="Data Directory" xml:space="preserve">
     <value>数据目录</value>
+  </data>
+  <data name="Delete" xml:space="preserve">
+    <value>彻底删除</value>
   </data>
   <data name="Delete cached objects both in memory and on disk" xml:space="preserve">
     <value>删除内存及磁盘上的数据对象</value>
@@ -332,6 +371,9 @@
   </data>
   <data name="Email Options" xml:space="preserve">
     <value>Email 选项</value>
+  </data>
+  <data name="Empty Recycle Bin" xml:space="preserve">
+    <value>清空回收站</value>
   </data>
   <data name="Enable CDN for images" xml:space="preserve">
     <value>启用图片 CDN</value>
@@ -405,6 +447,12 @@
   <data name="Footer HTML code" xml:space="preserve">
     <value>页脚HTML区域</value>
   </data>
+  <data name="Friend Link Information" xml:space="preserve">
+    <value>友情链接信息</value>
+  </data>
+  <data name="Friend Link Options" xml:space="preserve">
+    <value>友情链接选项</value>
+  </data>
   <data name="Friend Links" xml:space="preserve">
     <value>友情链接</value>
   </data>
@@ -429,6 +477,12 @@
   <data name="HTML Pitch" xml:space="preserve">
     <value>HTML区域</value>
   </data>
+  <data name="Icon" xml:space="preserve">
+    <value>图标</value>
+  </data>
+  <data name="Icon CSS Class" xml:space="preserve">
+    <value>图标CSS类名</value>
+  </data>
   <data name="Image" xml:space="preserve">
     <value>图片</value>
   </data>
@@ -446,6 +500,15 @@
   </data>
   <data name="Keep origin image" xml:space="preserve">
     <value>保留原图</value>
+  </data>
+  <data name="Language" xml:space="preserve">
+    <value>语言</value>
+  </data>
+  <data name="Last Login IP" xml:space="preserve">
+    <value>最后登录 IP</value>
+  </data>
+  <data name="Last Login Time (UTC)" xml:space="preserve">
+    <value>最后登录时间 (UTC)</value>
   </data>
   <data name="Latest Posts" xml:space="preserve">
     <value>最新文章</value>
@@ -467,6 +530,9 @@
   </data>
   <data name="Memory" xml:space="preserve">
     <value>内存</value>
+  </data>
+  <data name="Menu Editor" xml:space="preserve">
+    <value>菜单编辑器</value>
   </data>
   <data name="Menus" xml:space="preserve">
     <value>菜单</value>
@@ -495,11 +561,17 @@
   <data name="No Comments" xml:space="preserve">
     <value>没有评论</value>
   </data>
+  <data name="No Customized Menus" xml:space="preserve">
+    <value>无自定义菜单</value>
+  </data>
   <data name="no items to show" xml:space="preserve">
     <value>无条目需要显示</value>
   </data>
   <data name="No Matching Result" xml:space="preserve">
     <value>找不到相关结果</value>
+  </data>
+  <data name="No Pages" xml:space="preserve">
+    <value>暂无页面</value>
   </data>
   <data name="No Posts" xml:space="preserve">
     <value>暂无文章</value>
@@ -527,6 +599,12 @@
   </data>
   <data name="Options" xml:space="preserve">
     <value>选项</value>
+  </data>
+  <data name="or override with environment variables." xml:space="preserve">
+    <value>或使用变量覆盖</value>
+  </data>
+  <data name="Order" xml:space="preserve">
+    <value>序号</value>
   </data>
   <data name="Origin Link" xml:space="preserve">
     <value>原文链接</value>
@@ -600,11 +678,17 @@
   <data name="Reset" xml:space="preserve">
     <value>重置</value>
   </data>
+  <data name="Reset Password" xml:space="preserve">
+    <value>重置密码</value>
+  </data>
   <data name="Restart" xml:space="preserve">
     <value>重启</value>
   </data>
   <data name="Restart Website" xml:space="preserve">
     <value>重启网站</value>
+  </data>
+  <data name="Restore" xml:space="preserve">
+    <value>恢复</value>
   </data>
   <data name="Right" xml:space="preserve">
     <value>右侧</value>
@@ -681,6 +765,12 @@
   <data name="Start Time" xml:space="preserve">
     <value>启动时间</value>
   </data>
+  <data name="Sub Menu" xml:space="preserve">
+    <value>子菜单</value>
+  </data>
+  <data name="Sub Menu Properties" xml:space="preserve">
+    <value>子菜单属性</value>
+  </data>
   <data name="Submit" xml:space="preserve">
     <value>提交</value>
   </data>
@@ -711,6 +801,9 @@
   <data name="The call-out section will display on top of every page in the website." xml:space="preserve">
     <value>公告区将在网站中每个页面顶部显示</value>
   </data>
+  <data name="The first {0} character(s) will be used as abstract if you leave this field blank." xml:space="preserve">
+    <value>留空自动选取文章前 {0} 字符作为摘要</value>
+  </data>
   <data name="The number of entries to include in RSS feed." xml:space="preserve">
     <value>RSS中包含的条目数量</value>
   </data>
@@ -729,6 +822,21 @@
   <data name="Title" xml:space="preserve">
     <value>标题</value>
   </data>
+  <data name="To turn on / off system navigation items (Categories / Tags / Archive), edit" xml:space="preserve">
+    <value>打开或关闭系统导航菜单（分类/标签/归档），编辑</value>
+  </data>
+  <data name="Top 10 Commented Posts / Past Year" xml:space="preserve">
+    <value>过去一年中评论最多的10篇文章</value>
+  </data>
+  <data name="Top 10 Read Posts / Past Year" xml:space="preserve">
+    <value>过去一年中阅读最多的10篇文章</value>
+  </data>
+  <data name="Top Level" xml:space="preserve">
+    <value>顶级菜单</value>
+  </data>
+  <data name="Top Menu Properties" xml:space="preserve">
+    <value>顶级菜单属性</value>
+  </data>
   <data name="Try to shutdown and restart the website, this will terminate all current requests." xml:space="preserve">
     <value>尝试关闭并重新启动网站，该操作会终止所有当前请求</value>
   </data>
@@ -738,6 +846,15 @@
   <data name="Upload" xml:space="preserve">
     <value>上传</value>
   </data>
+  <data name="Upload Image" xml:space="preserve">
+    <value>上传头图</value>
+  </data>
+  <data name="URL" xml:space="preserve">
+    <value>链接</value>
+  </data>
+  <data name="Url (Relative or Absolute)" xml:space="preserve">
+    <value>链接 (相对或绝对)</value>
+  </data>
   <data name="Use friendly 404 image" xml:space="preserve">
     <value>启用友好404图片</value>
   </data>
@@ -746,6 +863,9 @@
   </data>
   <data name="Use [c] for copyright mark: &amp;copy;, [year] for current year." xml:space="preserve">
     <value>使用 [c] 表示版权符号 &amp;copy; ，[year] 表示当前年份</value>
+  </data>
+  <data name="User Account" xml:space="preserve">
+    <value>用户账户</value>
   </data>
   <data name="User Name" xml:space="preserve">
     <value>用户名</value>
