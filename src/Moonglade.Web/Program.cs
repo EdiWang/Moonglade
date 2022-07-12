@@ -114,7 +114,7 @@ void ConfigureServices(IServiceCollection services)
     services.AddControllers(options => options.Filters.Add(new AutoValidateAntiforgeryTokenAttribute()))
             .AddJsonOptions(options => options.JsonSerializerOptions.Converters.Add(new JsonStringEnumConverter()))
             .ConfigureApiBehaviorOptions(ConfigureApiBehavior.BlogApiBehavior);
-    services.AddRazorPages().AddViewLocalization()
+    services.AddRazorPages()
             .AddDataAnnotationsLocalization(options =>
             {
                 options.DataAnnotationLocalizerProvider = (_, factory) => factory.Create(typeof(SharedResource));
