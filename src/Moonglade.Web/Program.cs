@@ -1,4 +1,4 @@
-﻿using AspNetCoreRateLimit;
+using AspNetCoreRateLimit;
 using Edi.Captcha;
 using Microsoft.ApplicationInsights.DependencyCollector;
 using Microsoft.ApplicationInsights.Extensibility;
@@ -13,6 +13,7 @@ using Moonglade.Pingback;
 using Moonglade.Syndication;
 using SixLabors.Fonts;
 using System.Globalization;
+using System.Net;
 using System.Text.Encodings.Web;
 using System.Text.Json.Serialization;
 using System.Text.Unicode;
