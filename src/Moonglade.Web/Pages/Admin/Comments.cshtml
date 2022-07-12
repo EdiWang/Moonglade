@@ -78,7 +78,7 @@
 
     <div class="admin-toolbar ps-4 pe-4 pt-2 pb-2 border-bottom mb-3 shadow-sm">
         <a href="javascript:deleteSelectedComments();" class="btn btn-outline-danger btn-delete-selected">
-            <i class="bi-trash"></i> @Localizer["Delete selected"]
+            <i class="bi-trash"></i> @SharedLocalizer["Delete selected"]
         </a>
     </div>
 
@@ -86,7 +86,7 @@
         @if (Model.CommentDetailedItems.Count == 0)
     {
         <div class="alert alert-info">
-            @Localizer["No Comments"]
+            @SharedLocalizer["No Comments"]
         </div>
     }
     else
@@ -130,7 +130,7 @@
                             </div>
 
                             <a class="btn btn-outline-success btn-reply-post" href="#" data-commentid="@item.Id">
-                                @Localizer["Reply"]
+                                @SharedLocalizer["Reply"]
                             </a>
                         </form>
                     </div>

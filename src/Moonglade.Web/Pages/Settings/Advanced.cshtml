@@ -92,7 +92,7 @@
         <div class="row g-5">
             <div class="col-md-6">
                 <div class="mb-4">
-                    <h6 class="card-subtitle mb-4 text-muted">@Localizer["Advanced Settings"]</h6>
+                    <h6 class="card-subtitle mb-4 text-muted">@SharedLocalizer["Advanced Settings"]</h6>
 
                     <div class="row g-3 align-items-center settings-entry mb-4">
                         <div class="col-auto">
@@ -218,7 +218,7 @@
                         <div class="col">
                             <label asp-for="ViewModel.EnableMetaWeblog" class="form-check-label"></label>
                             <div class="form-text">
-                                @Localizer["* Requires restarting application"]
+                                @SharedLocalizer["* Requires restarting application"]
                             </div>
                         </div>
                         <div class="col-md-4 text-end">
@@ -234,22 +234,22 @@
                             <i class="bi-key settings-entry-icon"></i>
                         </div>
                         <div class="col">
-                            @Localizer["Password"]
+                            @SharedLocalizer["Password"]
                             <div class="form-text">
-                                @Localizer["Leave blank if you don't need to change password."]
-                                @Localizer["* Username: moonglade"]
+                                @SharedLocalizer["Leave blank if you don't need to change password."]
+                                @SharedLocalizer["* Username: moonglade"]
                             </div>
                         </div>
                         <div class="col-md-4">
                             <input asp-for="ViewModel.MetaWeblogPassword" class="form-control" minlength="8" maxlength="16" />
 
-                            <a href="javascript:;" class="btn btn-sm btn-outline-accent mt-2" onclick="generateMetaWeblogPassword()">@Localizer["Generate password"]</a>
+                            <a href="javascript:;" class="btn btn-sm btn-outline-accent mt-2" onclick="generateMetaWeblogPassword()">@SharedLocalizer["Generate password"]</a>
                         </div>
                     </div>
                 </div>
                 <div>
                     <h6 class="card-subtitle mb-4 text-muted">
-                        @Localizer["Options"]
+                        @SharedLocalizer["Options"]
                     </h6>
 
                     <div class="row g-3 align-items-center settings-entry mb-4">
@@ -257,14 +257,14 @@
                             <i class="bi-moon-stars settings-entry-icon"></i>
                         </div>
                         <div class="col">
-                            @Localizer["Update"]
+                            @SharedLocalizer["Update"]
                             <div class="form-text">
-                                @Localizer["Check online for new Moonglade release."]
+                                @SharedLocalizer["Check online for new Moonglade release."]
                             </div>
                         </div>
                         <div class="col-md-5 text-end">
                             <a href="#" class="btn btn-sm btn-outline-accent btn-check-update">
-                                @Localizer["Check now"]
+                                @SharedLocalizer["Check now"]
                             </a>
                         </div>
                     </div>
@@ -274,14 +274,14 @@
                             <i class="bi-power settings-entry-icon"></i>
                         </div>
                         <div class="col">
-                            @Localizer["Restart Website"]
+                            @SharedLocalizer["Restart Website"]
                             <div class="form-text">
-                                @Localizer["Try to shutdown and restart the website, this will terminate all current requests."]
+                                @SharedLocalizer["Try to shutdown and restart the website, this will terminate all current requests."]
                             </div>
                         </div>
                         <div class="col-md-5 text-end">
                             <a href="javascript:;" class="btn btn-sm btn-outline-accent" data-bs-toggle="modal" data-bs-target="#restartModal">
-                                @Localizer["Restart"]
+                                @SharedLocalizer["Restart"]
                             </a>
                         </div>
                     </div>
@@ -291,14 +291,14 @@
                             <i class="bi-eraser settings-entry-icon"></i>
                         </div>
                         <div class="col">
-                            @Localizer["System Reset"]
+                            @SharedLocalizer["System Reset"]
                             <div class="form-text">
-                                @Localizer["Erase all data and configuration."]
+                                @SharedLocalizer["Erase all data and configuration."]
                             </div>
                         </div>
                         <div class="col-md-5 text-end">
                             <a href="javascript:;" class="btn btn-sm btn-danger" data-bs-toggle="modal" data-bs-target="#resetModal">
-                                @Localizer["Reset"]
+                                @SharedLocalizer["Reset"]
                             </a>
                         </div>
                     </div>
@@ -306,7 +306,7 @@
             </div>
         </div>
         <div class="mb-4">
-            <input id="btn-save-settings" type="submit" value="@Localizer["Save"]" class="btn btn-outline-accent" />
+            <input id="btn-save-settings" type="submit" value="@SharedLocalizer["Save"]" class="btn btn-outline-accent" />
         </div>
     </form>
 </div>
@@ -314,16 +314,16 @@
     <div class="modal-dialog" role="document">
         <div class="modal-content">
             <div class="modal-header">
-                <h5 class="modal-title" id="restartModalLabel">@Localizer["Restart Website"]</h5>
+                <h5 class="modal-title" id="restartModalLabel">@SharedLocalizer["Restart Website"]</h5>
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close">
                 </button>
             </div>
             <div class="modal-body">
-                @Localizer["Are you sure to restart website? All current requests will be terminated."]
+                @SharedLocalizer["Are you sure to restart website? All current requests will be terminated."]
             </div>
             <div class="modal-footer">
                 <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Cancel</button>
-                <button type="button" class="btn btn-danger btn-restart">@Localizer["Restart"]</button>
+                <button type="button" class="btn btn-danger btn-restart">@SharedLocalizer["Restart"]</button>
             </div>
         </div>
     </div>
@@ -333,16 +333,16 @@
     <div class="modal-dialog" role="document">
         <div class="modal-content">
             <div class="modal-header">
-                <h5 class="modal-title" id="resetModalLabel">@Localizer["System Reset"]</h5>
+                <h5 class="modal-title" id="resetModalLabel">@SharedLocalizer["System Reset"]</h5>
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close">
                 </button>
             </div>
             <div class="modal-body">
-                @Localizer["Are you ABSOLUTELY sure? ALL data and configuration will be erased!"]
+                @SharedLocalizer["Are you ABSOLUTELY sure? ALL data and configuration will be erased!"]
             </div>
             <div class="modal-footer">
                 <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Cancel</button>
-                <button type="button" class="btn btn-danger btn-reset">@Localizer["Reset"]</button>
+                <button type="button" class="btn btn-danger btn-reset">@SharedLocalizer["Reset"]</button>
             </div>
         </div>
     </div>
@@ -350,7 +350,7 @@
 
 <div class="offcanvas offcanvas-end" tabindex="-1" id="updateCheckCanvas" aria-labelledby="updateCheckCanvasLabel">
     <div class="offcanvas-header">
-        <h5 class="offcanvas-title" id="updateCheckCanvasLabel">@Localizer["Moonglade Update"]</h5>
+        <h5 class="offcanvas-title" id="updateCheckCanvasLabel">@SharedLocalizer["Moonglade Update"]</h5>
         <button type="button" class="btn-close text-reset" data-bs-dismiss="offcanvas" aria-label="Close"></button>
     </div>
     <div class="offcanvas-body">
@@ -376,7 +376,7 @@
             <hr />
             <div class="mb-1 row">
                 <label for="releaseName" class="col-4 col-form-label">
-                    <strong>@Localizer["Name"]</strong>
+                    <strong>@SharedLocalizer["Name"]</strong>
                 </label>
                 <div class="col-8">
                     <input type="text" readonly class="form-control-plaintext" id="releaseName" value="...">
@@ -384,7 +384,7 @@
             </div>
             <div class="mb-1 row">
                 <label for="releaseTagName" class="col-4 col-form-label">
-                    <strong>@Localizer["Tag name"]</strong>
+                    <strong>@SharedLocalizer["Tag name"]</strong>
                 </label>
                 <div class="col-8">
                     <input type="text" readonly class="form-control-plaintext" id="releaseTagName" value="...">
@@ -392,7 +392,7 @@
             </div>
             <div class="mb-1 row">
                 <label for="releaseCreatedAt" class="col-4 col-form-label">
-                    <strong>@Localizer["Release time"]</strong>
+                    <strong>@SharedLocalizer["Release time"]</strong>
                 </label>
                 <div class="col-8">
                     <input type="text" readonly class="form-control-plaintext" id="releaseCreatedAt" value="...">
@@ -403,9 +403,9 @@
         <div class="mt-3">
             <a href="#" target="_blank" class="btn btn-outline-accent disabled btn-get-update">
                 <i class="bi-download"></i>
-                @Localizer["Get update"]
+                @SharedLocalizer["Get update"]
             </a>
-            <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="offcanvas">@Localizer["Cancel"]</button>
+            <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="offcanvas">@SharedLocalizer["Cancel"]</button>
         </div>
     </div>
 </div>

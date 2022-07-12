@@ -17,21 +17,21 @@
                 <tr>
                     <th colspan="2">
                         <i class="bi-moon-stars"></i>
-                        @Localizer["Moonglade Configuration"]
+                        @SharedLocalizer["Moonglade Configuration"]
                     </th>
                 </tr>
             </thead>
             <tbody>
                 <tr>
-                    <td class="w-25">@Localizer["Version"]</td>
+                    <td class="w-25">@SharedLocalizer["Version"]</td>
                     <td>@Helper.AppVersion</td>
                 </tr>
                 <tr>
-                    <td>@Localizer["Environment"]</td>
+                    <td>@SharedLocalizer["Environment"]</td>
                     <td>@WebHostEnvironment.EnvironmentName</td>
                 </tr>
                 <tr>
-                    <td>@Localizer["Editor"]</td>
+                    <td>@SharedLocalizer["Editor"]</td>
                     <td>@(Configuration.GetSection("Editor").Get<EditorChoice>())</td>
                 </tr>
             </tbody>
@@ -44,45 +44,45 @@
                 <tr>
                     <th colspan="2">
                         <i class="bi-tools"></i>
-                        @Localizer["Server Information"]
+                        @SharedLocalizer["Server Information"]
                     </th>
                 </tr>
             </thead>
             <tbody>
                 <tr>
-                    <td class="w-25">@Localizer["System"]</td>
+                    <td class="w-25">@SharedLocalizer["System"]</td>
                     <td>@Helper.TryGetFullOSVersion() @(Environment.Is64BitOperatingSystem ? "(64-bit)": "(32-bit)")</td>
                 </tr>
                 <tr>
-                    <td>@Localizer["Directory"]</td>
+                    <td>@SharedLocalizer["Directory"]</td>
                     <td>@Environment.CurrentDirectory</td>
                 </tr>
                 <tr>
-                    <td>@Localizer["Machine Name"]</td>
+                    <td>@SharedLocalizer["Machine Name"]</td>
                     <td>@Environment.MachineName</td>
                 </tr>
                 <tr>
-                    <td>@Localizer["User Name"]</td>
+                    <td>@SharedLocalizer["User Name"]</td>
                     <td>@Environment.UserDomainName\@Environment.UserName</td>
                 </tr>
                 <tr>
-                    <td>@Localizer[".NET Version"]</td>
+                    <td>@SharedLocalizer[".NET Version"]</td>
                     <td>@Environment.Version</td>
                 </tr>
                 <tr>
-                    <td>@Localizer["Worker Process"]</td>
+                    <td>@SharedLocalizer["Worker Process"]</td>
                     <td>[@process.Id] @process.ProcessName @(Environment.Is64BitProcess ? "(64-bit)" : "(32-bit)")</td>
                 </tr>
                 <tr>
-                    <td>@Localizer["Start Time"]</td>
+                    <td>@SharedLocalizer["Start Time"]</td>
                     <td>@process.StartTime.ToUniversalTime() (UTC)</td>
                 </tr>
                 <tr>
-                    <td>@Localizer["Memory"]</td>
+                    <td>@SharedLocalizer["Memory"]</td>
                     <td>@(process.WorkingSet64 / 1024 / 1024) MB</td>
                 </tr>
                 <tr>
-                    <td>@Localizer["Docker Container"]</td>
+                    <td>@SharedLocalizer["Docker Container"]</td>
                     <td>@(Environment.GetEnvironmentVariable("DOTNET_RUNNING_IN_CONTAINER") == "true")</td>
                 </tr>
             </tbody>

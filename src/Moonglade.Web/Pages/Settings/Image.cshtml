@@ -16,7 +16,7 @@
             <div class="col-lg-6">
                 <div class="mb-4">
                     <h6 class="card-subtitle mb-4 text-muted">
-                        @Localizer["General"]
+                        @SharedLocalizer["General"]
                     </h6>
 
                     <div class="row g-3 align-items-center settings-entry mb-4">
@@ -74,7 +74,7 @@
                         </div>
                         <div class="col">
                             <label asp-for="ViewModel.CDNEndpoint"></label>
-                            <div class="form-text">@Localizer["e.g. https://blog.ediwangcdn.com/ediwang-images"]</div>
+                            <div class="form-text">@SharedLocalizer["e.g. https://blog.ediwangcdn.com/ediwang-images"]</div>
                         </div>
                         <div class="col-md-5">
                             <input asp-for="ViewModel.CDNEndpoint" class="form-control" />
@@ -84,7 +84,7 @@
             </div>
             <div class="col-lg-6">
                 <h6 class="card-subtitle mb-4 text-muted">
-                    @Localizer["Watermark"]
+                    @SharedLocalizer["Watermark"]
                 </h6>
 
                 <div class="row g-3 align-items-center settings-entry mb-4">
@@ -183,7 +183,7 @@
         </div>
 
         <div class="mb-2">
-            <input id="btn-save-settings" type="submit" value="@Localizer["Save"]" class="btn btn-outline-accent" />
+            <input id="btn-save-settings" type="submit" value="@SharedLocalizer["Save"]" class="btn btn-outline-accent" />
         </div>
     </form>
 </div>
