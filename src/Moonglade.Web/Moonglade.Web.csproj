@@ -42,7 +42,7 @@
 		<PackageReference Include="Edi.Captcha" Version="3.11.0" />
 		<PackageReference Include="Microsoft.Azure.AppConfiguration.AspNetCore" Version="5.0.0" />
 		<PackageReference Include="Microsoft.ApplicationInsights.AspNetCore" Version="2.20.0" />
-		<PackageReference Include="Microsoft.Extensions.Logging.AzureAppServices" Version="6.0.6" />
+		<PackageReference Include="Microsoft.Extensions.Logging.AzureAppServices" Version="6.0.7" />
 		<PackageReference Include="Microsoft.FeatureManagement.AspNetCore" Version="2.5.1" />
 		<PackageReference Include="Microsoft.Web.LibraryManager.Build" Version="2.1.175" />
 		<PackageReference Include="NUglify" Version="1.20.0" />
