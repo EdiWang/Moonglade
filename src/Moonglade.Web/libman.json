@@ -29,7 +29,7 @@
       ]
     },
     {
-      "library": "bootstrap-icons@1.8.3",
+      "library": "bootstrap-icons@1.9.0",
       "destination": "wwwroot/lib/bootstrap-icons/",
       "files": [
         "font/bootstrap-icons.min.css",
