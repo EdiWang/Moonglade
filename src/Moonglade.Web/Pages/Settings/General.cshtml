@@ -81,13 +81,13 @@
         <div class="row g-5">
             <div class="col-md-6">
                 <div class="mb-3">
-                    <h6 class="card-subtitle mb-3 text-muted">@Localizer["Blog Identity"]</h6>
+                    <h6 class="card-subtitle mb-3 text-muted">@SharedLocalizer["Blog Identity"]</h6>
                     <div class="row">
                         <div class="col-2">
                             <div class="mb-2">
                                 <img src="@Url.Action("SiteIconOrigin", "Assets")" class="img-thumbnail img-fluid blogadmin-siteicon" />
                             </div>
-                            <a class="btn w-100 btn-sm btn-outline-accent" href="#" data-bs-toggle="modal" data-bs-target="#siteiconmodal">@Localizer["Change"]</a>
+                            <a class="btn w-100 btn-sm btn-outline-accent" href="#" data-bs-toggle="modal" data-bs-target="#siteiconmodal">@SharedLocalizer["Change"]</a>
                         </div>
                         <div class="col-10">
                             <div class="row g-2 mb-3">
@@ -111,7 +111,7 @@
                                 </div>
                                 <div class="col">
                                     <label asp-for="ViewModel.CanonicalPrefix"></label>
-                                    <div class="form-text">@Localizer["Set a primary domain if your website binds to multiple domian names."]</div>
+                                    <div class="form-text">@SharedLocalizer["Set a primary domain if your website binds to multiple domian names."]</div>
                                 </div>
                                 <div class="col-md-5 text-end">
                                     <input asp-for="ViewModel.CanonicalPrefix" class="form-control" />
@@ -123,8 +123,8 @@
                                     <i class="bi-clock settings-entry-icon"></i>
                                 </div>
                                 <div class="col">
-                                    <label for="SelectedUtcOffset">@Localizer["Time Zone"]</label>
-                                    <div class="form-text">@Localizer["Blog posts will use this time zone as date and time display."]</div>
+                                    <label for="SelectedUtcOffset">@SharedLocalizer["Time Zone"]</label>
+                                    <div class="form-text">@SharedLocalizer["Blog posts will use this time zone as date and time display."]</div>
                                 </div>
                                 <div class="col-md-5 text-end">
                                     <select class="form-select" asp-for="ViewModel.TimeZoneId" asp-items="@tzList"></select>
@@ -138,7 +138,7 @@
                             <div class="mb-3">
                                 <img src="@BlogConfig.GeneralSettings.AvatarUrl" class="img-thumbnail img-fluid blogadmin-avatar" />
                             </div>
-                            <a class="btn w-100 btn-sm btn-outline-accent" href="#" data-bs-toggle="modal" data-bs-target="#avatarmodal">@Localizer["Change"]</a>
+                            <a class="btn w-100 btn-sm btn-outline-accent" href="#" data-bs-toggle="modal" data-bs-target="#avatarmodal">@SharedLocalizer["Change"]</a>
                         </div>
                         <div class="col-md-10 col-sm-8">
                             <div class="row g-2 mb-3">
@@ -148,7 +148,7 @@
                                 </div>
                                 <div class="col">
                                     <label class="form-label" asp-for="ViewModel.OwnerEmail"></label>
-                                    <input asp-for="ViewModel.OwnerEmail" class="form-control" required title="@Localizer["Email address to receive notifications from this blog."]" />
+                                    <input asp-for="ViewModel.OwnerEmail" class="form-control" required title="@SharedLocalizer["Email address to receive notifications from this blog."]" />
                                 </div>
                             </div>
                             <div class="mb-3">
@@ -163,7 +163,7 @@
                             <div>
                                 <label class="form-label" asp-for="ViewModel.ShortDescription"></label>
                                 <input asp-for="ViewModel.ShortDescription" class="form-control" required />
-                                <small class="form-text text-muted">@Localizer["Short description is for display only on Phone screen."]</small>
+                                <small class="form-text text-muted">@SharedLocalizer["Short description is for display only on Phone screen."]</small>
                             </div>
                         </div>
                     </div>
@@ -172,7 +172,7 @@
             <div class="col-md-6">
                 <div class="mb-3">
                     <h6 class="card-subtitle mb-2 text-muted">
-                        @Localizer["Theme"]
+                        @SharedLocalizer["Theme"]
                     </h6>
                     <div>
                         <div class="row g-1 mb-3">
@@ -190,29 +190,31 @@
                             </div>
                         </div>
                         <div class="form-check">
+                            <input type="hidden" name="AutoDarkLightTheme" value="false">
                             <input type="checkbox" name="AutoDarkLightTheme" value="true" class="form-check-input" @(Model.ViewModel.AutoDarkLightTheme ? "checked" : null)>
                             <label asp-for="ViewModel.AutoDarkLightTheme" class="form-check-label"></label>
                         </div>
                         <div class="form-check">
+                            <input type="hidden" name="Pride" value="false">
                             <input type="checkbox" name="Pride" value="true" class="form-check-input" @(Model.ViewModel.Pride ? "checked" : null)>
                             <label asp-for="ViewModel.Pride" class="form-check-label"></label>
                         </div>
                     </div>
                     <h6 class="card-subtitle mt-5 mb-2 text-muted">
-                        @Localizer["Side Bar"]
+                        @SharedLocalizer["Side Bar"]
                     </h6>
                     <div class="mb-1">
                         <div class="form-check form-check-inline">
                             @Html.RadioButtonFor(model => model.ViewModel.SideBarOption, SideBarOption.Right, new { id = SideBarOption.Right.ToString(), @class = "form-check-input" })
-                            <label class="form-check-label" for="@SideBarOption.Right">@Localizer["Right"]</label>
+                            <label class="form-check-label" for="@SideBarOption.Right">@SharedLocalizer["Right"]</label>
                         </div>
                         <div class="form-check form-check-inline">
                             @Html.RadioButtonFor(model => model.ViewModel.SideBarOption, SideBarOption.Left, new { id = SideBarOption.Left.ToString(), @class = "form-check-input" })
-                            <label class="form-check-label" for="@SideBarOption.Left">@Localizer["Left"]</label>
+                            <label class="form-check-label" for="@SideBarOption.Left">@SharedLocalizer["Left"]</label>
                         </div>
                         <div class="form-check form-check-inline">
                             @Html.RadioButtonFor(model => model.ViewModel.SideBarOption, SideBarOption.Disabled, new { id = SideBarOption.Disabled.ToString(), @class = "form-check-input" })
-                            <label class="form-check-label" for="@SideBarOption.Disabled">@Localizer["Disabled"]</label>
+                            <label class="form-check-label" for="@SideBarOption.Disabled">@SharedLocalizer["Disabled"]</label>
                         </div>
                     </div>
                     <div class="form-floating">
@@ -227,7 +229,7 @@
 
                     <div class="mt-5">
                         <h6 class="card-subtitle mb-4 text-muted">
-                            @Localizer["Footer"]
+                            @SharedLocalizer["Footer"]
                         </h6>
                         
                         <div class="row g-3 align-items-center settings-entry mb-2">
@@ -236,7 +238,7 @@
                             </div>
                             <div class="col">
                                 <label asp-for="ViewModel.Copyright"></label>
-                                <div class="form-text">@Localizer["Use [c] for copyright mark: &copy;, [year] for current year."]</div>
+                                <div class="form-text">@SharedLocalizer["Use [c] for copyright mark: &copy;, [year] for current year."]</div>
                             </div>
                             <div class="col-md-5 text-end">
                                 <input asp-for="ViewModel.Copyright" class="form-control" required />
@@ -256,7 +258,7 @@
         </div>
 
         <div class="mb-4">
-            <input id="btn-save-settings" type="submit" value="@Localizer["Save"]" class="btn btn-outline-accent" />
+            <input id="btn-save-settings" type="submit" value="@SharedLocalizer["Save"]" class="btn btn-outline-accent" />
         </div>
     </form>
 </div>
@@ -265,7 +267,7 @@
     <div class="modal-dialog modal-sm" role="document">
         <div class="modal-content">
             <div class="modal-header">
-                <h5 class="modal-title" id="avatarmodalLabel">@Localizer["Change Avatar"]</h5>
+                <h5 class="modal-title" id="avatarmodalLabel">@SharedLocalizer["Change Avatar"]</h5>
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close">
                 </button>
             </div>
@@ -273,21 +275,21 @@
 
                 <div class="mb-2">
                     <div id="avatarDropTarget" style="width: 256px; height: 256px;" class="img-thumbnail bg-light text-center">
-                        @Localizer["Drag and drop image file here"]
+                        @SharedLocalizer["Drag and drop image file here"]
                     </div>
 
                     <div class="input-group mt-2">
                         <div>
-                            <label class="form-label" for="avatarImageFile" aria-describedby="avatarImageFileAddon">@Localizer[".png or .jpg file"]</label>
+                            <label class="form-label" for="avatarImageFile" aria-describedby="avatarImageFileAddon">@SharedLocalizer[".png or .jpg file"]</label>
                             <input type="file" accept="image/png, image/jpeg" id="avatarImageFile" class="form-control" name="avatarImageFile">
                         </div>
                     </div>
 
-                    <p class="small text-muted text-center mt-2">@Localizer["* Image width and height must be equal"]</p>
+                    <p class="small text-muted text-center mt-2">@SharedLocalizer["* Image width and height must be equal"]</p>
                 </div>
             </div>
             <div class="modal-footer">
-                <button class="btn btn-success disabled" id="btn-upload-avatar" disabled="disabled">@Localizer["Upload"]</button>
+                <button class="btn btn-success disabled" id="btn-upload-avatar" disabled="disabled">@SharedLocalizer["Upload"]</button>
             </div>
         </div>
     </div>
@@ -297,7 +299,7 @@
     <div class="modal-dialog modal-sm" role="document">
         <div class="modal-content">
             <div class="modal-header">
-                <h5 class="modal-title" id="siteiconmodalLabel">@Localizer["Change Site Icon"]</h5>
+                <h5 class="modal-title" id="siteiconmodalLabel">@SharedLocalizer["Change Site Icon"]</h5>
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close">
                 </button>
             </div>
@@ -305,22 +307,22 @@
 
                 <div class="mb-2">
                     <div id="siteiconDropTarget" style="width: 256px; height: 256px;" class="img-thumbnail bg-light text-center">
-                        @Localizer["Drag and drop image file here"]
+                        @SharedLocalizer["Drag and drop image file here"]
                     </div>
 
                     <div class="input-group mt-2">
                         <div>
-                            <label class="form-label" for="siteiconImageFile" aria-describedby="siteiconImageFileAddon">@Localizer[".png file"]</label>
+                            <label class="form-label" for="siteiconImageFile" aria-describedby="siteiconImageFileAddon">@SharedLocalizer[".png file"]</label>
                             <input type="file" accept="image/png" class="form-control" id="siteiconImageFile" name="siteiconImageFile">
                         </div>
                     </div>
 
-                    <p class="small text-muted text-center mt-2">@Localizer["* Image width and height must be equal"]</p>
-                    <p class="small text-danger text-center mt-1">@Localizer["* Changing site icon requires restarting the application"]</p>
+                    <p class="small text-muted text-center mt-2">@SharedLocalizer["* Image width and height must be equal"]</p>
+                    <p class="small text-danger text-center mt-1">@SharedLocalizer["* Changing site icon requires restarting the application"]</p>
                 </div>
             </div>
             <div class="modal-footer">
-                <button class="btn btn-success disabled" id="btn-upload-siteicon" disabled="disabled">@Localizer["Upload"]</button>
+                <button class="btn btn-success disabled" id="btn-upload-siteicon" disabled="disabled">@SharedLocalizer["Upload"]</button>
             </div>
         </div>
     </div>
@@ -330,14 +332,14 @@
     <div class="modal-dialog" role="document">
         <div class="modal-content">
             <div class="modal-header">
-                <h5 class="modal-title" id="themeLabel">@Localizer["Custom Theme"]</h5>
+                <h5 class="modal-title" id="themeLabel">@SharedLocalizer["Custom Theme"]</h5>
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close">
                 </button>
             </div>
             <form method="post" action="/api/theme" onsubmit="createTheme(this);return false;">
                 <div class="modal-body">
                     <div class="mb-2">
-                        <input type="text" asp-for="ThemeRequest.Name" class="form-control" placeholder="@Localizer["Name"]" required />
+                        <input type="text" asp-for="ThemeRequest.Name" class="form-control" placeholder="@SharedLocalizer["Name"]" required />
                     </div>
                     <div class="row g-2">
                         <div class="col">
@@ -355,7 +357,7 @@
                     </div>
                 </div>
                 <div class="modal-footer">
-                    <button type="submit" class="btn btn-success" id="btn-save-theme">@Localizer["Save"]</button>
+                    <button type="submit" class="btn btn-success" id="btn-save-theme">@SharedLocalizer["Save"]</button>
                 </div>
             </form>
         </div>

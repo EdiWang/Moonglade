@@ -10,13 +10,13 @@
 <html>
 <head>
     <title>
-        @Localizer["Admin Sign In"]
+        @SharedLocalizer["Admin Sign In"]
     </title>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no" />
     <partial name="_Favicons" />
     <link href="~/lib/twitter-bootstrap/css/bootstrap.min.css" rel="stylesheet" asp-append-version="true" />
-    <link href="~/css/src/base.css" rel="stylesheet" asp-append-version="true" />
+    <link href="~/css/base.css" rel="stylesheet" asp-append-version="true" />
     <environment exclude="Development">
         @Html.Raw(JavaScriptSnippet.FullScript)
     </environment>
@@ -42,7 +42,7 @@
             <div class="col-md-4">
                 <div class="card shadow">
                     <div class="card-body">
-                        <h5 class="card-title text-center mb-4">@Localizer["Sign In"]</h5>
+                        <h5 class="card-title text-center mb-4">@SharedLocalizer["Sign In"]</h5>
 
                         <form method="post">
                             <div asp-validation-summary="All" class="text-danger"></div>
@@ -63,11 +63,11 @@
                                            placeholder="Captcha Code"
                                            autocomplete="off"
                                            class="form-control" required />
-                                    <img id="img-captcha" onclick="getNewCaptcha()" src="~/captcha-image" data-bs-toggle="tooltip" data-placement="top" title="@Localizer["Can't read? Click to change another image."]" />
+                                    <img id="img-captcha" onclick="getNewCaptcha()" src="~/captcha-image" data-bs-toggle="tooltip" data-placement="top" title="@SharedLocalizer["Can't read? Click to change another image."]" />
                                 </div>
                             </div>
 
-                            <input type="submit" value="@Localizer["Sign In"]" class="btn w-100 btn-accent" />
+                            <input type="submit" value="@SharedLocalizer["Sign In"]" class="btn w-100 btn-accent" />
                         </form>
                     </div>
                 </div>

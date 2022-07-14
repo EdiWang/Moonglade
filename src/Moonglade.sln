@@ -38,7 +38,6 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Deployment", "Deployment", 
 	ProjectSection(SolutionItems) = preProject
 		..\Deployment\AzureQuickDeploy.ps1 = ..\Deployment\AzureQuickDeploy.ps1
 		..\Deployment\install.sh = ..\Deployment\install.sh
-		..\Deployment\RunCodeMetrics_Win64_VS2019.ps1 = ..\Deployment\RunCodeMetrics_Win64_VS2019.ps1
 		..\Deployment\uninstall.sh = ..\Deployment\uninstall.sh
 	EndProjectSection
 EndProject

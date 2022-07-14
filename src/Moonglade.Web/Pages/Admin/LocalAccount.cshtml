@@ -84,7 +84,7 @@
 <div class="admin-toolbar ps-4 pe-4 pt-2 pb-2 border-bottom mb-3 shadow-sm">
     <a class="btn btn-outline-accent" href="javascript:initCreateAccount();">
         <i class="bi-plus-lg"></i>
-        @Localizer["Create"]
+        @SharedLocalizer["Create"]
     </a>
 </div>
 
@@ -94,11 +94,11 @@
         <table class="table table-bordered mt-3">
             <thead>
                 <tr>
-                    <th>@Localizer["Username"]</th>
-                    <th>@Localizer["Last Login IP"]</th>
-                    <th>@Localizer["Last Login Time (UTC)"]</th>
-                    <th>@Localizer["Create Time (UTC)"]</th>
-                    <th>@Localizer["Action"]</th>
+                    <th>@SharedLocalizer["Username"]</th>
+                    <th>@SharedLocalizer["Last Login IP"]</th>
+                    <th>@SharedLocalizer["Last Login Time (UTC)"]</th>
+                    <th>@SharedLocalizer["Create Time (UTC)"]</th>
+                    <th>@SharedLocalizer["Action"]</th>
                 </tr>
             </thead>
             <tbody>
@@ -133,7 +133,7 @@
     <div class="modal-dialog" role="document">
         <div class="modal-content">
             <div class="modal-header">
-                <h5 class="modal-title" id="editAccountModalLabel">@Localizer["Account Information"]</h5>
+                <h5 class="modal-title" id="editAccountModalLabel">@SharedLocalizer["Account Information"]</h5>
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close">
                 </button>
             </div>
@@ -152,8 +152,8 @@
                     </div>
                 </div>
                 <div class="modal-footer">
-                    <button type="submit" class="btn btn-outline-accent btn-submit">@Localizer["Submit"]</button>
-                    <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">@Localizer["Cancel"]</button>
+                    <button type="submit" class="btn btn-outline-accent btn-submit">@SharedLocalizer["Submit"]</button>
+                    <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">@SharedLocalizer["Cancel"]</button>
                 </div>
             </form>
         </div>
@@ -164,7 +164,7 @@
     <div class="modal-dialog" role="document">
         <div class="modal-content">
             <div class="modal-header">
-                <h5 class="modal-title" id="resetPasswordModalLabel">@Localizer["Reset Password"]</h5>
+                <h5 class="modal-title" id="resetPasswordModalLabel">@SharedLocalizer["Reset Password"]</h5>
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close">
                 </button>
             </div>
@@ -184,8 +184,8 @@
                     </div>
                 </div>
                 <div class="modal-footer">
-                    <button type="submit" class="btn btn-outline-accent btn-resetpwd">@Localizer["Submit"]</button>
-                    <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">@Localizer["Cancel"]</button>
+                    <button type="submit" class="btn btn-outline-accent btn-resetpwd">@SharedLocalizer["Submit"]</button>
+                    <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">@SharedLocalizer["Cancel"]</button>
                 </div>
             </form>
         </div>

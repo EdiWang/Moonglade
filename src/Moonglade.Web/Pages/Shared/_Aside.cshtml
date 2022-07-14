@@ -28,15 +28,15 @@
     <feature name="Widgets_HotTags">
         <section id="aside-tags" class="mt-4 mb-4">
             <div class="card">
-                <div class="card-header">@Localizer["Hot Tags"]</div>
+                <div class="card-header">@SharedLocalizer["Tags"]</div>
                 <div class="card-body">
                     <cache expires-after="@TimeSpan.FromMinutes(60)">
-                        @await Component.InvokeAsync("HotTags")
+                        @await Component.InvokeAsync("Tags")
                     </cache>
                     <hr />
                     <a asp-page="/Tags" class="card-link">
                         <i class="bi-tag me-1"></i>
-                        @Localizer["All Tags"]
+                        @SharedLocalizer["All Tags"]
                     </a>
                 </div>
             </div>
@@ -46,7 +46,7 @@
     <feature name="Widgets_CategoryList">
         <section id="aside-cats" class="mb-4">
             <div class="card">
-                <div class="card-header">@Localizer["Categories"]</div>
+                <div class="card-header">@SharedLocalizer["Categories"]</div>
                 @await Component.InvokeAsync("CategoryList", new { isMenu = false })
             </div>
         </section>
@@ -79,7 +79,7 @@
     @if (BlogConfig.AdvancedSettings.ShowAdminLoginButton)
     {
         <div class="text-center">
-            <a href="/admin" class="btn btn-sm btn-light">@Localizer["Admin Login"]</a>
+            <a href="/admin" class="btn btn-sm btn-light">@SharedLocalizer["Admin Login"]</a>
         </div>
     }
 </aside>
@@ -96,12 +96,12 @@
                     <div class="row mb-4">
                         <div class="col-6">
                             <a asp-controller="Subscription" asp-action="rss" class="btn w-100 btn-outline-success">
-                                @Localizer["Latest Posts"] (RSS)
+                                @SharedLocalizer["Latest Posts"] (RSS)
                             </a>
                         </div>
                         <div class="col-6">
                             <a asp-controller="Subscription" asp-action="Atom" class="btn w-100 btn-outline-success">
-                                @Localizer["Latest Posts"] (Atom)
+                                @SharedLocalizer["Latest Posts"] (Atom)
                             </a>
                         </div>
                     </div>
@@ -110,7 +110,7 @@
                     </div>
                 </div>
                 <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">@Localizer["Close"]</button>
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">@SharedLocalizer["Close"]</button>
                 </div>
             </div>
         </div>

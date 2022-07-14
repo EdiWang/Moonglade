@@ -22,11 +22,11 @@
 }
 
 @section head{
-    <link href="~/css/src/timeline.css" rel="stylesheet" />
+    <link href="~/css/timeline.css" rel="stylesheet" asp-append-version="true" />
 }
 
 <h3>
-    @Localizer["Archive Timeline"]
+    @SharedLocalizer["Archive Timeline"]
 </h3>
 <hr />
 
@@ -77,7 +77,7 @@
 }
 else
 {
-    <div class="alert alert-info">@Localizer["No Archive"]</div>
+    <div class="alert alert-info">@SharedLocalizer["No Archive"]</div>
 }
 
 <partial name="_LightSwitch" />

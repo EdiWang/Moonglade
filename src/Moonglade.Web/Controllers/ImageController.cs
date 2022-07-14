@@ -14,7 +14,7 @@ public class ImageController : ControllerBase
     private readonly IBlogConfig _blogConfig;
     private readonly IMemoryCache _cache;
     private readonly IFileNameGenerator _fileNameGen;
-    private readonly AppSettings _settings;
+    private readonly IConfiguration _configuration;
     private readonly ImageStorageSettings _imageStorageSettings;
 
     public ImageController(
@@ -23,7 +23,7 @@ public class ImageController : ControllerBase
         IBlogConfig blogConfig,
         IMemoryCache cache,
         IFileNameGenerator fileNameGen,
-        IOptions<AppSettings> settings,
+        IConfiguration configuration,
         IOptions<ImageStorageSettings> imageStorageSettings)
     {
         _imageStorage = imageStorage;
@@ -31,7 +31,7 @@ public class ImageController : ControllerBase
         _blogConfig = blogConfig;
         _cache = cache;
         _fileNameGen = fileNameGen;
-        _settings = settings.Value;
+        _configuration = configuration;
         _imageStorageSettings = imageStorageSettings.Value;
     }
 
@@ -57,7 +57,7 @@ public class ImageController : ControllerBase
 
         var image = await _cache.GetOrCreateAsync(filename, async entry =>
         {
-            entry.SlidingExpiration = TimeSpan.FromMinutes(_settings.CacheSlidingExpirationMinutes["Image"]);
+            entry.SlidingExpiration = TimeSpan.FromMinutes(int.Parse(_configuration["CacheSlidingExpirationMinutes:Image"]));
             var imageInfo = await _imageStorage.GetAsync(filename);
             return imageInfo;
         });
@@ -107,9 +107,7 @@ public class ImageController : ControllerBase
         MemoryStream watermarkedStream = null;
         if (_blogConfig.ImageSettings.IsWatermarkEnabled && !skipWatermark)
         {
-            if (null == _imageStorageSettings.WatermarkSkipExtensions
-                || _imageStorageSettings.WatermarkSkipExtensions.All(
-                    p => string.Compare(p, ext, StringComparison.OrdinalIgnoreCase) != 0))
+            if (string.Compare(".gif", ext, StringComparison.OrdinalIgnoreCase) != 0)
             {
                 using var watermarker = new ImageWatermarker(stream, ext, _blogConfig.ImageSettings.WatermarkSkipPixel);
 

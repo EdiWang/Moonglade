@@ -13,7 +13,6 @@ public static class ServiceCollectionExtensions
         var section = configuration.GetSection("Authentication");
         var authentication = section.Get<AuthenticationSettings>();
         services.Configure<AuthenticationSettings>(section);
-        services.AddScoped<IGetApiKeyQuery, AppSettingsGetApiKeyQuery>();
 
         switch (authentication.Provider)
         {
@@ -22,7 +21,7 @@ public static class ServiceCollectionExtensions
                 {
                     options.DefaultScheme = CookieAuthenticationDefaults.AuthenticationScheme;
                     options.DefaultChallengeScheme = OpenIdConnectDefaults.AuthenticationScheme;
-                }).AddApiKeySupport(_ => { }).AddMicrosoftIdentityWebApp(configuration.GetSection("Authentication:AzureAd"));
+                }).AddMicrosoftIdentityWebApp(configuration.GetSection("Authentication:AzureAd"));
 
                 break;
             case AuthenticationProvider.Local:
@@ -32,7 +31,7 @@ public static class ServiceCollectionExtensions
                         options.AccessDeniedPath = "/auth/accessdenied";
                         options.LoginPath = "/auth/signin";
                         options.LogoutPath = "/auth/signout";
-                    }).AddApiKeySupport(_ => { });
+                    });
                 break;
             default:
                 var msg = $"Provider {authentication.Provider} is not supported.";

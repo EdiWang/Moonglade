@@ -1,5 +1,5 @@
 ﻿using Microsoft.AspNetCore.Http;
-using Microsoft.Extensions.Options;
+using Microsoft.Extensions.Configuration;
 using Moonglade.Configuration;
 using Moonglade.Data.Entities;
 using Moonglade.Data.Infrastructure;
@@ -16,22 +16,22 @@ public interface ISyndicationDataSource
 public class SyndicationDataSource : ISyndicationDataSource
 {
     private readonly string _baseUrl;
-    private readonly AppSettings _settings;
     private readonly IBlogConfig _blogConfig;
     private readonly IRepository<CategoryEntity> _catRepo;
     private readonly IRepository<PostEntity> _postRepo;
+    private readonly IConfiguration _configuration;
 
     public SyndicationDataSource(
-        IOptions<AppSettings> settings,
         IBlogConfig blogConfig,
         IHttpContextAccessor httpContextAccessor,
         IRepository<CategoryEntity> catRepo,
-        IRepository<PostEntity> postRepo)
+        IRepository<PostEntity> postRepo,
+        IConfiguration configuration)
     {
-        _settings = settings.Value;
         _blogConfig = blogConfig;
         _catRepo = catRepo;
         _postRepo = postRepo;
+        _configuration = configuration;
 
         var acc = httpContextAccessor;
         _baseUrl = $"{acc.HttpContext.Request.Scheme}://{acc.HttpContext.Request.Host}";
@@ -91,7 +91,7 @@ public class SyndicationDataSource : ISyndicationDataSource
 
     private string FormatPostContent(string rawContent)
     {
-        return _settings.Editor == EditorChoice.Markdown ?
+        return _configuration.GetSection("Editor").Get<EditorChoice>() == EditorChoice.Markdown ?
             ContentProcessor.MarkdownToContent(rawContent, ContentProcessor.MarkdownConvertType.Html, false) :
             rawContent;
     }

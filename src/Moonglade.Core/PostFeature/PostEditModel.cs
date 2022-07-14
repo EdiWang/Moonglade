@@ -2,7 +2,7 @@
 
 namespace Moonglade.Core.PostFeature;
 
-public class PostEditModel : IValidatableObject
+public class PostEditModel
 {
     [HiddenInput]
     public Guid PostId { get; set; }
@@ -62,9 +62,6 @@ public class PostEditModel : IValidatableObject
     [Display(Name = "Change Publish Date")]
     public bool ChangePublishDate { get; set; }
 
-    [Display(Name = "Original")]
-    public bool IsOriginal { get; set; }
-
     [Display(Name = "Origin Link")]
     [DataType(DataType.Url)]
     public string OriginLink { get; set; }
@@ -80,14 +77,5 @@ public class PostEditModel : IValidatableObject
     public PostEditModel()
     {
         PostId = Guid.Empty;
-        IsOriginal = true;
-    }
-
-    public IEnumerable<ValidationResult> Validate(ValidationContext validationContext)
-    {
-        if (!IsOriginal && string.IsNullOrWhiteSpace(OriginLink))
-        {
-            yield return new("Please enter the origin link.", new[] { nameof(OriginLink) });
-        }
     }
 }

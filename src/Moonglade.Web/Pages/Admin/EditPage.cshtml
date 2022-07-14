@@ -240,15 +240,15 @@
 
         <div class="mt-3">
             <button type="submit" class="btn btn-outline-accent" id="btn-submit">
-                @Localizer["Save"]
+                @SharedLocalizer["Save"]
             </button>
             @if (!Model.EditPageRequest.IsPublished)
             {
                 <button type="submit" class="btn btn-outline-success" id="btn-preview">
-                    @Localizer["Preview"]
+                    @SharedLocalizer["Preview"]
                 </button>
             }
-            <a asp-page="./BlogPage" class="btn btn-outline-secondary">@Localizer["Cancel"]</a>
+            <a asp-page="./BlogPage" class="btn btn-outline-secondary">@SharedLocalizer["Cancel"]</a>
         </div>
     </form>
 </div>

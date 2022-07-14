@@ -60,7 +60,12 @@
 <div class="admin-toolbar ps-4 pe-4 pt-2 pb-2 border-bottom mb-3 shadow-sm">
     <a class="btn btn-outline-accent" href="javascript:initCreateTag();">
         <i class="bi-plus-lg"></i>
-        @Localizer["New"]
+        @SharedLocalizer["New"]
+    </a>
+    
+    <a asp-action="ExportDownload" asp-controller="DataPorting" asp-route-type="Tags" class="btn btn-outline-accent" target="_blank">
+        <i class="bi-upload"></i>
+        @SharedLocalizer["Export"]
     </a>
 </div>
 
@@ -81,18 +86,18 @@
 
 <div class="offcanvas offcanvas-end" tabindex="-1" id="editTagCanvas" aria-labelledby="editTagCanvasLabel">
     <div class="offcanvas-header">
-        <h5 class="offcanvas-title" id="editTagCanvasLabel">@Localizer["Create Tag"]</h5>
+        <h5 class="offcanvas-title" id="editTagCanvasLabel">@SharedLocalizer["Create Tag"]</h5>
         <button type="button" class="btn-close text-reset" data-bs-dismiss="offcanvas" aria-label="Close"></button>
     </div>
     <div class="offcanvas-body">
         <form id="edit-form" method="post">
             <div class="mb-2">
-                <label class="form-label">@Localizer["Name"]</label>
+                <label class="form-label">@SharedLocalizer["Name"]</label>
                 <input type="text" name="tagName" id="input-tag-name" class="form-control" required />
             </div>
             <div class="mt-3">
-                <button type="submit" class="btn btn-success">@Localizer["Submit"]</button>
-                <button type="button" class="btn btn-secondary" data-bs-dismiss="offcanvas">@Localizer["Cancel"]</button>
+                <button type="submit" class="btn btn-success">@SharedLocalizer["Submit"]</button>
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="offcanvas">@SharedLocalizer["Cancel"]</button>
             </div>
         </form>
     </div>

@@ -78,6 +78,7 @@
 <div class="ps-4 pe-4">
     <form id="form-settings" asp-controller="Settings" asp-action="CustomStyleSheet">
         <div class="form-check form-switch mb-3">
+            <input type="hidden" name="EnableCustomCss" value="false">
             <input type="checkbox" name="EnableCustomCss" value="true" class="form-check-input" @(Model.ViewModel.EnableCustomCss ? "checked" : null)>
             <label asp-for="ViewModel.EnableCustomCss" class="form-check-label"></label>
         </div>
@@ -89,7 +90,7 @@
 
         <div class="mt-3">
             <button type="submit" class="btn btn-outline-accent" id="btn-save-settings">
-                @Localizer["Save"]
+                @SharedLocalizer["Save"]
             </button>
         </div>
     </form>

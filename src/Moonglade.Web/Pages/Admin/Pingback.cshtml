@@ -47,7 +47,7 @@
         <div class="col">
             <a class="btn btn-outline-danger" href="javascript:;" data-bs-toggle="modal" data-bs-target="#clearpingbackModal">
                 <i class="bi-trash"></i>
-                @Localizer["Clear all"]
+                @SharedLocalizer["Clear all"]
             </a>
         </div>
         <div class="col-auto">
@@ -95,16 +95,16 @@
     <div class="modal-dialog" role="document">
         <div class="modal-content">
             <div class="modal-header">
-                <h5 class="modal-title" id="clearpingbackModalLabel">@Localizer["Clear Pingback Logs"]</h5>
+                <h5 class="modal-title" id="clearpingbackModalLabel">@SharedLocalizer["Clear Pingback Logs"]</h5>
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close">
                 </button>
             </div>
             <div class="modal-body">
-                @Localizer["Are you sure?"]
+                @SharedLocalizer["Are you sure?"]
             </div>
             <div class="modal-footer">
-                <a href="javascript:clearPingback();" class="btn btn-outline-danger btn-clear">@Localizer["Clear Now"]</a>
-                <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">@Localizer["Cancel"]</button>
+                <a href="javascript:clearPingback();" class="btn btn-outline-danger btn-clear">@SharedLocalizer["Clear Now"]</a>
+                <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">@SharedLocalizer["Cancel"]</button>
             </div>
         </div>
     </div>

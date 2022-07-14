@@ -1,6 +1,5 @@
 ﻿using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
-using Microsoft.Extensions.Options;
 using Moonglade.Configuration;
 using Moonglade.Core.TagFeature;
 using Moonglade.Data.Spec;
@@ -15,22 +14,21 @@ public class CreatePostCommandHandler : IRequestHandler<CreatePostCommand, PostE
     private readonly IRepository<PostEntity> _postRepo;
     private readonly ILogger<CreatePostCommandHandler> _logger;
     private readonly IRepository<TagEntity> _tagRepo;
-    private readonly AppSettings _settings;
     private readonly IBlogConfig _blogConfig;
+    private readonly IConfiguration _configuration;
 
     public CreatePostCommandHandler(
         IRepository<PostEntity> postRepo,
         ILogger<CreatePostCommandHandler> logger,
         IRepository<TagEntity> tagRepo,
-        IOptions<AppSettings> settings,
         IConfiguration configuration,
         IBlogConfig blogConfig)
     {
         _postRepo = postRepo;
         _logger = logger;
         _tagRepo = tagRepo;
+        _configuration = configuration;
         _blogConfig = blogConfig;
-        _settings = settings.Value;
     }
 
     public async Task<PostEntity> Handle(CreatePostCommand request, CancellationToken cancellationToken)
@@ -38,7 +36,7 @@ public class CreatePostCommandHandler : IRequestHandler<CreatePostCommand, PostE
         var abs = ContentProcessor.GetPostAbstract(
             string.IsNullOrEmpty(request.Payload.Abstract) ? request.Payload.EditorContent : request.Payload.Abstract.Trim(),
             _blogConfig.ContentSettings.PostAbstractWords,
-            _settings.Editor == EditorChoice.Markdown);
+            _configuration.GetSection("Editor").Get<EditorChoice>() == EditorChoice.Markdown);
 
         var post = new PostEntity
         {
@@ -57,7 +55,7 @@ public class CreatePostCommandHandler : IRequestHandler<CreatePostCommand, PostE
             IsDeleted = false,
             IsPublished = request.Payload.IsPublished,
             IsFeatured = request.Payload.Featured,
-            IsOriginal = request.Payload.IsOriginal,
+            IsOriginal = string.IsNullOrWhiteSpace(request.Payload.OriginLink),
             OriginLink = string.IsNullOrWhiteSpace(request.Payload.OriginLink) ? null : Helper.SterilizeLink(request.Payload.OriginLink),
             HeroImageUrl = string.IsNullOrWhiteSpace(request.Payload.HeroImageUrl) ? null : Helper.SterilizeLink(request.Payload.HeroImageUrl),
             InlineCss = request.Payload.InlineCss,

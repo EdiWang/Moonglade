@@ -62,7 +62,6 @@ public class EditPostModel : PageModel
             LanguageCode = post.ContentLanguageCode,
             Abstract = post.ContentAbstract.Replace("\u00A0\u2026", string.Empty),
             Featured = post.Featured,
-            IsOriginal = post.IsOriginal,
             OriginLink = post.OriginLink,
             HeroImageUrl = post.HeroImageUrl,
             InlineCss = post.InlineCss

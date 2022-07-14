@@ -28,8 +28,8 @@
     <meta name="copyright" content="(C) @Model.Post.PubDateUtc.GetValueOrDefault().Year @BlogConfig.GeneralSettings.SiteTitle">
     <meta name="author" content="@(string.IsNullOrWhiteSpace(Model.Post.Author) ? BlogConfig.GeneralSettings.OwnerName : Model.Post.Author) " />
     
-    <link href="~/css/src/post-slug.css" rel="stylesheet" asp-append-version="true" />
-    <link href="~/css/src/highlighter-custom.css" rel="stylesheet" asp-append-version="true" />
+    <link href="~/css/post-slug.css" rel="stylesheet" asp-append-version="true" />
+    <link href="~/css/highlighter-custom.css" rel="stylesheet" asp-append-version="true" />
 
     @if (!string.IsNullOrWhiteSpace(Model.Post.InlineCss))
     {
@@ -84,7 +84,7 @@
         viewpost.registerRatingButtons(pid);
         viewpost.postStatistics(pid, false);
         
-        var fitImageToDevicePixelRatio = @BlogConfig.ImageSettings.FitImageToDevicePixelRatio.ToString().ToLower();
+        window.fitImageToDevicePixelRatio = @BlogConfig.ImageSettings.FitImageToDevicePixelRatio.ToString().ToLower();
 
         var q = new QRious({
             element: document.querySelector('.post-qrcode'), 
@@ -113,7 +113,7 @@
         <div class="post-publish-info text-muted mb-2">
             @if (Model.Post.IsOriginal)
             {
-                <span class="badge bg-secondary me-2 d-none d-sm-inline">@Localizer["Original"]</span>
+                <span class="badge bg-secondary me-2 d-none d-sm-inline">@SharedLocalizer["Original"]</span>
             }
 
             @if (!string.IsNullOrWhiteSpace(Model.Post.Author))
@@ -129,7 +129,7 @@
             </span>
 
             <i class="bi-eye d-none d-sm-inline"></i>
-            <span class="post-hit-number d-none d-sm-inline"><span class="post-hit-number-text">...</span> @Localizer["Reads"]</span>
+            <span class="post-hit-number d-none d-sm-inline"><span class="post-hit-number-text">...</span> @SharedLocalizer["Reads"]</span>
         </div>
 
         <hr class="d-none d-md-block" />
@@ -159,7 +159,7 @@
     {
         <a href="@Helper.SterilizeLink(Model.Post.OriginLink)" target="_blank">
             <i class="bi-link"></i>
-            @Localizer["Read origin article"]
+            @SharedLocalizer["Read origin article"]
         </a>
     }
 </article>
@@ -174,7 +174,7 @@
                     <div class="card bg-light comment-form-containter mb-4">
                             <div class="card-header">
                                 <i class="bi-chat-left-text"></i>
-                                @Localizer["Comments"]
+                                @SharedLocalizer["Comments"]
                             </div>
                             <form id="comment-form">
                                 <div class="card-body">
@@ -193,7 +193,7 @@
                                                    id="input-comment-email"
                                                    data-bs-toggle="tooltip"
                                                    data-placement="top"
-                                                   title="@Localizer["Providing your email address can enable blog admin to send notifications for replying your comment. Your email address will also be used to show Gravatar if it has one."]"/>
+                                                   title="@SharedLocalizer["Providing your email address can enable blog admin to send notifications for replying your comment. Your email address will also be used to show Gravatar if it has one."]"/>
                                         </div>
                                     </div>
                                     <div class="comment-md-content mb-2">
@@ -201,14 +201,14 @@
                                               class="form-control"
                                               cols="60"
                                               rows="4"
-                                              placeholder="@Localizer["Your comments (Markdown supported)"]"
+                                              placeholder="@SharedLocalizer["Your comments (Markdown supported)"]"
                                               maxlength="1024"
                                               required></textarea>
                                     </div>
                                     <div class="row">
                                         <div class="col-9">
                                             <div class="input-group">
-                                                <img id="img-captcha" onclick="viewpost.resetCaptchaImage()" src="~/captcha-image" data-bs-toggle="tooltip" data-placement="top" title="@Localizer["Can't read? Click to change another image."]"/>
+                                                <img id="img-captcha" onclick="viewpost.resetCaptchaImage()" src="~/captcha-image" data-bs-toggle="tooltip" data-placement="top" title="@SharedLocalizer["Can't read? Click to change another image."]"/>
                                                 <input type="text"
                                                        id="input-comment-captcha"
                                                        class="form-control input-captcha"
@@ -222,7 +222,7 @@
                                         <div class="col-3">
                                             <button id="btn-submit-comment" type="submit" class="btn btn-success float-end">
                                                 <span id="loadingIndicator" class="spinner-border spinner-border-sm" role="status" aria-hidden="true" style="display: none;"></span>
-                                                @Localizer["Submit"]
+                                                @SharedLocalizer["Submit"]
                                             </button>
                                         </div>
                                     </div>
@@ -232,17 +232,17 @@
                 }
                 else
                 {
-                    <div class="alert alert-warning">@Localizer["Comment of this post is disabled."]</div>
+                    <div class="alert alert-warning">@SharedLocalizer["Comment of this post is disabled."]</div>
                 }
                 
                 <div id="thx-for-comment" class="alert alert-warning" style="display: none;">
-                    @Localizer["Thanks, your comment is pending approval now."] <br/>
-                    @Localizer["It will show up once blog administrator approved your comment."]
+                    @SharedLocalizer["Thanks, your comment is pending approval now."] <br/>
+                    @SharedLocalizer["It will show up once blog administrator approved your comment."]
                 </div>
 
                 <div id="thx-for-comment-non-review" class="alert alert-success" style="display: none;">
-                    @Localizer["Thanks for your comment."] <br/>
-                    @Localizer["Refresh the page to see your comment."]
+                    @SharedLocalizer["Thanks for your comment."] <br/>
+                    @SharedLocalizer["Refresh the page to see your comment."]
                 </div>
 
                 <section id="comments-list">
@@ -257,7 +257,7 @@
 }
 else
 {
-    <div class="alert alert-warning">@Localizer["Comment is disabled by blog administrator."]</div>
+    <div class="alert alert-warning">@SharedLocalizer["Comment is disabled by blog administrator."]</div>
 }
 
 <partial name="_LightSwitch" />
@@ -274,3 +274,5 @@ else
 {
     <partial name="_ExternalLink" />
 }
+
+<partial name="_PostForestageAdmin" />

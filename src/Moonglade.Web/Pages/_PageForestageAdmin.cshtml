@@ -1,0 +1,28 @@
+﻿@if (User.Identity is { IsAuthenticated: true })
+{
+    @Html.AntiForgeryToken()
+    <script>
+        function deletePage(pageid) {
+            callApi(`/api/page/${pageid}`,
+                'DELETE',
+                {},
+                (resp) => {
+                    blogToast.success('Page deleted');
+                    $('.page-content').html('Deleted');
+                });
+        }
+
+        function deleteConfirm(pageid) {
+            var cfm = confirm("Delete Confirmation?");
+            if (cfm) deletePage(pageid);
+        }
+    </script>
+    <div class="admin-actions">
+        <a class="btn btn-outline-accent btn-sm btn-edit" asp-page="./Admin/EditPage" asp-route-id="@Model.BlogPage.Id">
+            <i class="bi-pen"></i>
+        </a>
+        <a class="btn btn-outline-danger btn-sm btn-delete" href="javascript:deleteConfirm('@Model.BlogPage.Id');">
+            <i class="bi-trash"></i>
+        </a>
+    </div>
+}

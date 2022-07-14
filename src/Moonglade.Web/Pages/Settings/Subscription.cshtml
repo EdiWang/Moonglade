@@ -59,7 +59,7 @@
                     </div>
                     <div class="col">
                         <label asp-for="ViewModel.RssItemCount"></label>
-                        <div class="form-text">@Localizer["The number of entries to include in RSS feed."]</div>
+                        <div class="form-text">@SharedLocalizer["The number of entries to include in RSS feed."]</div>
                     </div>
                     <div class="col-md-5">
                         <input asp-for="ViewModel.RssItemCount" class="form-control" required />
@@ -75,7 +75,8 @@
                     </div>
                     <div class="col-md-5 text-end">
                         <div class="form-check form-switch">
-                            <input type="checkbox" name="UseFullContent" value="true" class="form-check-input" @(Model.ViewModel.UseFullContent ? "checked" : null)  />
+                            <input type="hidden" name="UseFullContent" value="false">
+                            <input type="checkbox" name="UseFullContent" value="true" class="form-check-input" @(Model.ViewModel.UseFullContent ? "checked" : null)/>
                         </div>
                     </div>
                 </div>
@@ -83,7 +84,7 @@
         </div>
 
         <div class="mb-2">
-            <input id="btn-save-settings" type="submit" value="@Localizer["Save"]" class="btn btn-outline-accent" />
+            <input id="btn-save-settings" type="submit" value="@SharedLocalizer["Save"]" class="btn btn-outline-accent" />
         </div>
     </form>
 </div>

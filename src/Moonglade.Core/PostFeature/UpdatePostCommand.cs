@@ -1,4 +1,4 @@
-﻿using Microsoft.Extensions.Options;
+﻿using Microsoft.Extensions.Configuration;
 using Moonglade.Caching;
 using Moonglade.Configuration;
 using Moonglade.Core.TagFeature;
@@ -9,24 +9,23 @@ namespace Moonglade.Core.PostFeature;
 public record UpdatePostCommand(Guid Id, PostEditModel Payload) : IRequest<PostEntity>;
 public class UpdatePostCommandHandler : IRequestHandler<UpdatePostCommand, PostEntity>
 {
-    private readonly AppSettings _settings;
     private readonly IRepository<TagEntity> _tagRepo;
     private readonly IRepository<PostEntity> _postRepo;
     private readonly IBlogCache _cache;
     private readonly IBlogConfig _blogConfig;
+    private readonly IConfiguration _configuration;
 
     public UpdatePostCommandHandler(
-        IOptions<AppSettings> settings,
         IRepository<TagEntity> tagRepo,
         IRepository<PostEntity> postRepo,
         IBlogCache cache,
-        IBlogConfig blogConfig)
+        IBlogConfig blogConfig, IConfiguration configuration)
     {
         _tagRepo = tagRepo;
         _postRepo = postRepo;
         _cache = cache;
         _blogConfig = blogConfig;
-        _settings = settings.Value;
+        _configuration = configuration;
     }
 
     public async Task<PostEntity> Handle(UpdatePostCommand request, CancellationToken cancellationToken)
@@ -43,7 +42,7 @@ public class UpdatePostCommandHandler : IRequestHandler<UpdatePostCommand, PostE
         post.ContentAbstract = ContentProcessor.GetPostAbstract(
             string.IsNullOrEmpty(postEditModel.Abstract) ? postEditModel.EditorContent : postEditModel.Abstract.Trim(),
             _blogConfig.ContentSettings.PostAbstractWords,
-            _settings.Editor == EditorChoice.Markdown);
+            _configuration.GetSection("Editor").Get<EditorChoice>() == EditorChoice.Markdown);
 
         if (postEditModel.IsPublished && !post.IsPublished)
         {
@@ -66,7 +65,7 @@ public class UpdatePostCommandHandler : IRequestHandler<UpdatePostCommand, PostE
         post.IsFeedIncluded = postEditModel.FeedIncluded;
         post.ContentLanguageCode = postEditModel.LanguageCode;
         post.IsFeatured = postEditModel.Featured;
-        post.IsOriginal = postEditModel.IsOriginal;
+        post.IsOriginal = string.IsNullOrWhiteSpace(request.Payload.OriginLink);
         post.OriginLink = string.IsNullOrWhiteSpace(postEditModel.OriginLink) ? null : Helper.SterilizeLink(postEditModel.OriginLink);
         post.HeroImageUrl = string.IsNullOrWhiteSpace(postEditModel.HeroImageUrl) ? null : Helper.SterilizeLink(postEditModel.HeroImageUrl);
         post.InlineCss = postEditModel.InlineCss;

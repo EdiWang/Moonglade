@@ -25,7 +25,6 @@ public class CategoryController : ControllerBase
 
     [HttpGet("list")]
     [FeatureGate(FeatureFlags.EnableWebApi)]
-    [Authorize(AuthenticationSchemes = BlogAuthSchemas.All)]
     [ProducesResponseType(typeof(IReadOnlyList<Category>), StatusCodes.Status200OK)]
     public async Task<IActionResult> List()
     {

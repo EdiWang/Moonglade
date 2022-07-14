@@ -15,7 +15,6 @@ public class TagsController : ControllerBase
 
     [HttpGet("list")]
     [FeatureGate(FeatureFlags.EnableWebApi)]
-    [Authorize(AuthenticationSchemes = BlogAuthSchemas.All)]
     [ProducesResponseType(typeof(IReadOnlyList<Tag>), StatusCodes.Status200OK)]
     public async Task<IActionResult> List()
     {

@@ -54,7 +54,7 @@
 <div class="ps-4 pe-4">
     <a href="#" class="btn btn-sm btn-outline-danger btn-empty-recbin mb-4">
             <i class="bi-trash"></i>
-            @Localizer["Empty Recycle Bin"]
+            @SharedLocalizer["Empty Recycle Bin"]
     </a>
     @if (posts.Any())
     {
@@ -73,10 +73,10 @@
                     </div>
                     <div>
                         <a class="btn btn-sm btn-outline-accent btn-restore" data-postid="@post.Id" href="javascript:;">
-                            <i class="bi-reply-fill"></i> @Localizer["Restore"]
+                            <i class="bi-reply-fill"></i> @SharedLocalizer["Restore"]
                         </a>
                         <a class="btn btn-outline-danger btn-sm btn-delete" data-postid="@post.Id" href="javascript:;">
-                            <i class="bi-trash"></i> @Localizer["Delete"]
+                            <i class="bi-trash"></i> @SharedLocalizer["Delete"]
                         </a>
                     </div>
                 </div>

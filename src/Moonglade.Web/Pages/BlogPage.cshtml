@@ -21,7 +21,7 @@
 }
 
 @section head{
-    <link href="~/css/src/timeline.css" rel="stylesheet" />
+    <link href="~/css/timeline.css" rel="stylesheet" asp-append-version="true" />
 
     @if (!string.IsNullOrWhiteSpace(css))
     {
@@ -39,16 +39,20 @@
 {
     <div class="container mt-3 mb-4">
         <div class="alert alert-info">
-            @Localizer["This is a preview for draft content."]
+            @SharedLocalizer["This is a preview for draft content."]
         </div>
     </div>
 }
 
-@if (BlogConfig.AdvancedSettings.AllowScriptsInPage)
-{
-    @Html.Raw(Model.BlogPage.RawHtmlContent)
-}
-else
-{
-    @Html.Raw(Helper.RemoveScriptTagFromHtml(Model.BlogPage.RawHtmlContent))
-}
+<div class="page-content">
+    @if (BlogConfig.AdvancedSettings.AllowScriptsInPage)
+    {
+        @Html.Raw(Model.BlogPage.RawHtmlContent)
+    }
+    else
+    {
+        @Html.Raw(Helper.RemoveScriptTagFromHtml(Model.BlogPage.RawHtmlContent))
+    }
+</div>
+
+<partial name="_PageForestageAdmin" />

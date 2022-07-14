@@ -1,0 +1,8 @@
+﻿@if (User.Identity is { IsAuthenticated: true })
+{
+    <div class="admin-actions">
+        <div>
+            <a class="btn btn-outline-accent btn-sm btn-edit" asp-page="./Admin/EditPost" asp-route-id="@Model.Post.Id"><i class="bi-pen"></i></a>
+        </div>
+    </div>
+}

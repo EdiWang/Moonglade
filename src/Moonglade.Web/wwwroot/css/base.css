@@ -584,3 +584,9 @@ div.animbrand a:hover {
     border-color: var(--accent-color1);
     box-shadow: none;
 }
+
+.admin-actions {
+    position: fixed;
+    bottom: 60px;
+    right: 20px;
+}

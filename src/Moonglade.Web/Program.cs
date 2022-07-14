@@ -32,7 +32,7 @@ var builder = WebApplication.CreateBuilder(args);
 string dbType = builder.Configuration.GetConnectionString("DatabaseType");
 string connStr = builder.Configuration.GetConnectionString("MoongladeDatabase");
 
-var cultures = new[] { "en-US", "zh-CN" }.Select(p => new CultureInfo(p)).ToList();
+var cultures = new[] { "en-US", "zh-Hans" }.Select(p => new CultureInfo(p)).ToList();
 
 ConfigureConfiguration(builder.Configuration);
 ConfigureServices(builder.Services);
@@ -114,7 +114,7 @@ void ConfigureServices(IServiceCollection services)
     services.AddControllers(options => options.Filters.Add(new AutoValidateAntiforgeryTokenAttribute()))
             .AddJsonOptions(options => options.JsonSerializerOptions.Converters.Add(new JsonStringEnumConverter()))
             .ConfigureApiBehaviorOptions(ConfigureApiBehavior.BlogApiBehavior);
-    services.AddRazorPages().AddViewLocalization()
+    services.AddRazorPages()
             .AddDataAnnotationsLocalization(options =>
             {
                 options.DataAnnotationLocalizerProvider = (_, factory) => factory.Create(typeof(SharedResource));
@@ -161,7 +161,7 @@ void ConfigureServices(IServiceCollection services)
 
     services.AddHealthChecks();
     services.AddTransient<RequestBodyLoggingMiddleware>()
-                    .AddTransient<ResponseBodyLoggingMiddleware>();
+            .AddTransient<ResponseBodyLoggingMiddleware>();
 
     services.AddPingback()
             .AddSyndication()
@@ -306,8 +306,11 @@ void ConfigureMiddleware(IApplicationBuilder appBuilder, IServiceProvider servic
     appBuilder.UseRouting();
     appBuilder.UseAuthentication().UseAuthorization();
 
-    appBuilder.UseMiddleware<RequestBodyLoggingMiddleware>()
-              .UseMiddleware<ResponseBodyLoggingMiddleware>();
+    if (app.Environment.IsDevelopment())
+    {
+        appBuilder.UseMiddleware<RequestBodyLoggingMiddleware>()
+                  .UseMiddleware<ResponseBodyLoggingMiddleware>();
+    }
 
     appBuilder.UseEndpoints(ConfigureEndpoints.BlogEndpoints);
 }

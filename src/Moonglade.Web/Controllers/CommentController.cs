@@ -27,7 +27,6 @@ public class CommentController : ControllerBase
 
     [HttpGet("list/{postId:guid}")]
     [FeatureGate(FeatureFlags.EnableWebApi)]
-    [Authorize(AuthenticationSchemes = BlogAuthSchemas.All)]
     [ProducesResponseType(StatusCodes.Status200OK)]
     public async Task<IActionResult> List([NotEmpty] Guid postId)
     {
