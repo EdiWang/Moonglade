@@ -1,4 +1,4 @@
-using AspNetCoreRateLimit;
+﻿using AspNetCoreRateLimit;
 using Edi.Captcha;
 using Microsoft.ApplicationInsights.DependencyCollector;
 using Microsoft.ApplicationInsights.Extensibility;
@@ -13,7 +13,6 @@ using Moonglade.Pingback;
 using Moonglade.Syndication;
 using SixLabors.Fonts;
 using System.Globalization;
-using System.Net;
 using System.Text.Encodings.Web;
 using System.Text.Json.Serialization;
 using System.Text.Unicode;
@@ -49,10 +48,6 @@ app.Run();
 void ConfigureConfiguration(IConfiguration configuration)
 {
     builder.Logging.AddAzureWebAppDiagnostics();
-    builder.Services.AddHttpsRedirection(options =>
-    {
-        options.RedirectStatusCode = (int)HttpStatusCode.Redirect;
-    });
     builder.Host.ConfigureAppConfiguration(config =>
     {
         config.AddJsonFile("manifesticons.json", false, true);
