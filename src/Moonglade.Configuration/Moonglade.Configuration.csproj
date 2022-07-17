@@ -7,7 +7,6 @@
 
   <ItemGroup>
     <FrameworkReference Include="Microsoft.AspNetCore.App" />
-    <PackageReference Include="MediatR" Version="10.0.1" />
   </ItemGroup>
 
   <ItemGroup>
