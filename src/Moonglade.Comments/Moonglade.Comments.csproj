@@ -1,4 +1,4 @@
-<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
     <TargetFramework>net6.0</TargetFramework>
@@ -8,14 +8,11 @@
   <ItemGroup>
     <PackageReference Include="Edi.WordFilter" Version="1.6.0" />
     <PackageReference Include="Edi.Captcha" Version="3.11.0" />
-    <PackageReference Include="MediatR" Version="10.0.1" />
     <PackageReference Include="Microsoft.Azure.CognitiveServices.ContentModerator" Version="2.0.0" />
   </ItemGroup>
 
   <ItemGroup>
     <ProjectReference Include="..\Moonglade.Configuration\Moonglade.Configuration.csproj" />
-    <ProjectReference Include="..\Moonglade.Data\Moonglade.Data.csproj" />
-    <ProjectReference Include="..\Moonglade.Utils\Moonglade.Utils.csproj" />
   </ItemGroup>
 
 </Project>

@@ -1,4 +1,4 @@
-<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
     <TargetFramework>net6.0</TargetFramework>
@@ -8,12 +8,10 @@
   <ItemGroup>
     <FrameworkReference Include="Microsoft.AspNetCore.App" />
     <PackageReference Include="Microsoft.Extensions.Http.Polly" Version="6.0.7" />
-    <PackageReference Include="MediatR" Version="10.0.1" />
   </ItemGroup>
 
   <ItemGroup>
     <ProjectReference Include="..\Moonglade.Configuration\Moonglade.Configuration.csproj" />
-    <ProjectReference Include="..\Moonglade.Utils\Moonglade.Utils.csproj" />
   </ItemGroup>
 
 </Project>

@@ -4,9 +4,6 @@
 ## Sensitive data
 appsettings.Development.json
 
-## Libman Restore on dotnet build
-lib/
-
 # User-specific files
 *.suo
 *.user
