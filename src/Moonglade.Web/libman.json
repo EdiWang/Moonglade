@@ -24,13 +24,6 @@
       ]
     },
     {
-      "library": "qrious@4.0.2",
-      "destination": "wwwroot/lib/qrious/",
-      "files": [
-        "qrious.min.js"
-      ]
-    },
-    {
       "library": "tagify@4.12.0",
       "destination": "wwwroot/lib/tagify/",
       "files": [
