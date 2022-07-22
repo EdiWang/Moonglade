@@ -7,14 +7,7 @@
       "destination": "wwwroot/lib/tinymce"
     },
     {
-      "library": "jquery.AreYouSure@1.9.0",
-      "destination": "wwwroot/lib/jquery.AreYouSure/",
-      "files": [
-        "jquery.are-you-sure.min.js"
-      ]
-    },
-    {
-      "library": "twitter-bootstrap@5.1.3",
+      "library": "twitter-bootstrap@5.2.0",
       "destination": "wwwroot/lib/twitter-bootstrap/",
       "files": [
         "css/bootstrap.min.css",
