@@ -3,13 +3,6 @@
   "defaultProvider": "cdnjs",
   "libraries": [
     {
-      "library": "jquery@3.6.0",
-      "destination": "wwwroot/lib/jquery/",
-      "files": [
-        "jquery.slim.min.js"
-      ]
-    },
-    {
       "library": "tinymce@6.1.0",
       "destination": "wwwroot/lib/tinymce"
     },
