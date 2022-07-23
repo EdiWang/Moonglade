@@ -4,7 +4,7 @@
 <script type="module">
     import * as settings from '/js/app/admin.settings.module.js';
 
-    function toggleCommentSettingsUI() {
+    window.toggleCommentSettingsUI = function() {
         if ($('#BuiltIn').is(":checked")) {
             document.querySelector('.comment-settings-built-in').style.display = 'block';
             document.querySelector('.comment-settings-3rd').style.display = 'none';
@@ -57,7 +57,7 @@
                                 {
                                     id = CommentProvider.BuiltIn.ToString(), 
                                     @class = "form-check-input comment-provider-checkbox",
-                                    onchange = "toggleCommentSettingsUI()"
+                                    onchange = "window.toggleCommentSettingsUI()"
                                 })
                                 <label class="form-check-label" for="@CommentProvider.BuiltIn">@SharedLocalizer["Built in"]</label>
                             </div>
@@ -66,7 +66,7 @@
                                 {
                                     id = CommentProvider.ThirdParty.ToString(), 
                                     @class = "form-check-input comment-provider-checkbox",
-                                    onchange = "toggleCommentSettingsUI()"
+                                    onchange = "window.toggleCommentSettingsUI()"
                                 })
                                 <label class="form-check-label" for="@CommentProvider.ThirdParty">@SharedLocalizer["Third party"]</label>
                             </div>
