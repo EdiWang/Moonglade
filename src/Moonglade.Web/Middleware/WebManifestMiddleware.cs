@@ -33,7 +33,8 @@ public class WebManifestMiddleware
             context.Response.ContentType = "application/manifest+json";
             context.Response.Headers.TryAdd("cache-control", "public,max-age=3600");
 
-            await context.Response.WriteAsJsonAsync(model, context.RequestAborted);
+            // Do not use `WriteAsJsonAsync` because it will override ContentType header
+            await context.Response.WriteAsync(System.Text.Json.JsonSerializer.Serialize(model), context.RequestAborted);
         }
         else
         {

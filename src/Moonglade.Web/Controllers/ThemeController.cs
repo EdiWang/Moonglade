@@ -50,7 +50,7 @@ public class ThemeController : ControllerBase
             var uCss = Uglify.Css(css);
             if (uCss.HasErrors) return Conflict(uCss.Errors);
 
-            return Content(uCss.Code, "text/css");
+            return Content(uCss.Code, "text/css; charset=utf-8");
         }
         catch (InvalidDataException e)
         {
