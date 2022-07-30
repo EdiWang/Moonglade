@@ -35,7 +35,7 @@ public class CustomCssMiddleware
             }
 
             context.Response.StatusCode = StatusCodes.Status200OK;
-            context.Response.ContentType = "text/css";
+            context.Response.ContentType = "text/css; charset=utf-8";
             await context.Response.WriteAsync(uglifiedCss.Code, context.RequestAborted);
         }
         else
