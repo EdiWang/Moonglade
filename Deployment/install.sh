@@ -2,9 +2,13 @@ aiur() { arg="$( cut -d ' ' -f 2- <<< "$@" )" && curl -sL https://github.com/Aiu
 
 install_Moonglade()
 {
-    server="$1"
-    aiur console/success "Initializing..."
 
+    aiur console/success "Updating..."
+    apt-get update --allow-releaseinfo-change
+    apt upgrade -y
+    server="$1"
+    
+    aiur console/success "Checking..."
     # Valid domain is required
     if [[ $(curl -sL ifconfig.me) == "$(dig +short $server)" ]]; 
     then
@@ -32,7 +36,7 @@ install_Moonglade()
     aiur install/sql_server $dbPassword
     aiur install/node
 
-    aiur console/success "Downloading..."
+    aiur console/success "Cloning..."
     ls | grep -q Moonglade && rm ./Moonglade -rf
     mkdir Storage
     chmod -R 777 ~/Storage/
