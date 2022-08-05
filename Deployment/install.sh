@@ -34,7 +34,7 @@ install_Moonglade()
     aiur install/dotnet
     aiur install/caddy
     aiur install/sql_server $dbPassword
-    aiur install/node
+    #aiur install/node
 
     aiur console/success "Cloning..."
     ls | grep -q Moonglade && rm ./Moonglade -rf
@@ -59,7 +59,7 @@ install_Moonglade()
     aiur text/edit_json "ImageStorage.FileSystemPath" '\/root\/Storage' $moonglade_path/appsettings.Production.json
     aiur text/edit_json "ImageStorage.FileSystemSettings.Path" '\/root\/Storage' $moonglade_path/appsettings.Production.json
         
-    npm install web-push -g
+    #npm install web-push -g
 
     # Create database.
     aiur console/success 'Seeding...'
