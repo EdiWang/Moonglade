@@ -26,7 +26,7 @@ Use automated deployment script to get your Moonglade up and running in 10 minut
 
 ### 🐧 Quick Deploy on Linux without Docker
 
-To quickly get it running on a new Linux machine without Docker, follow instructions [here](https://github.com/EdiWang/Moonglade/wiki/Quick-Install-on-Linux-Machine).
+To quickly get it running on a new Linux machine without Docker, follow instructions [here](https://github.com/EdiWang/Moonglade/wiki/Quick-Install-on-Linux-Machine). You can watch video tutorial [here](https://anduins-site.player.aiur.site/moonglade-install.mp4).
 
 ## 🐵 Development
 
