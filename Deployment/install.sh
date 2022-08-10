@@ -2,9 +2,13 @@ aiur() { arg="$( cut -d ' ' -f 2- <<< "$@" )" && curl -sL https://github.com/Aiu
 
 install_Moonglade()
 {
-    server="$1"
-    aiur console/success "Initializing..."
 
+    aiur console/success "Updating..."
+    apt-get update --allow-releaseinfo-change
+    apt upgrade -y
+    server="$1"
+    
+    aiur console/success "Checking..."
     # Valid domain is required
     if [[ $(curl -sL ifconfig.me) == "$(dig +short $server)" ]]; 
     then
@@ -30,9 +34,9 @@ install_Moonglade()
     aiur install/dotnet
     aiur install/caddy
     aiur install/sql_server $dbPassword
-    aiur install/node
+    #aiur install/node
 
-    aiur console/success "Downloading..."
+    aiur console/success "Cloning..."
     ls | grep -q Moonglade && rm ./Moonglade -rf
     mkdir Storage
     chmod -R 777 ~/Storage/
@@ -43,7 +47,7 @@ install_Moonglade()
     moonglade_path="$(pwd)/apps/moongladeApp"
     #rm ./Moonglade/src/Moonglade.Web/libman.json # Remove libman because it is easy to crash.
     dotnet publish -c Release -o $moonglade_path -r linux-x64 --no-self-contained ./Moonglade/src/Moonglade.Web/Moonglade.Web.csproj
-    cp ~/Moonglade/OpenSans-Regular.ttf /usr/share/fonts/OpenSans-Regular.ttf
+    cp ~/Moonglade/build/OpenSans-Regular.ttf /usr/share/fonts/OpenSans-Regular.ttf
     rm ~/Moonglade -rf
     cat $moonglade_path/appsettings.json > $moonglade_path/appsettings.Production.json
 
@@ -55,7 +59,7 @@ install_Moonglade()
     aiur text/edit_json "ImageStorage.FileSystemPath" '\/root\/Storage' $moonglade_path/appsettings.Production.json
     aiur text/edit_json "ImageStorage.FileSystemSettings.Path" '\/root\/Storage' $moonglade_path/appsettings.Production.json
         
-    npm install web-push -g
+    #npm install web-push -g
 
     # Create database.
     aiur console/success 'Seeding...'
