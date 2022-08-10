@@ -15,6 +15,7 @@ delete_service()
 delete_service "mssql-server.service"
 delete_service "caddy.service"
 delete_service "moonglade.service"
+delete_service "mysql.service"
 
 rm ~/apps/moongladeApp -rvf
 rm ~/Moonglade -rvf
@@ -23,5 +24,6 @@ rm /var/opt/mssql/ -rvf
 
 apt remove caddy -y
 apt remove mssql-server -y
+apt remove mysql-server -y
 
 echo "Successfully uninstalled Kahla on your machine!"
