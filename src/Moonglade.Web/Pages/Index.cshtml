@@ -10,6 +10,15 @@
     <a class="float-end d-none d-md-block" asp-controller="Subscription" asp-action="Rss" target="_blank" title="@SharedLocalizer["Subscribe Recent 20 Posts"]">
         <i class="bi-rss font-125rem"></i>
     </a>
+
+    <span class="float-end mr-1" style="margin-right: 1rem">
+        <select class="form-select" id="sort-selection">
+            <option selected disabled>Sort by...</option>
+            <option value="Recent">Recent</option>
+            <option value="Popular">Most popular</option>
+        </select>
+    </span>
+
     <span>
         @SharedLocalizer["All Posts"]
     </span>
@@ -28,3 +37,15 @@ else
 }
 
 <partial name="_LightSwitch" />
+
+@section scripts{
+    <script>
+        var sortSelect = document.getElementById("sort-selection");
+        sortSelect.addEventListener("change", function () {
+            var value = sortSelect.value;
+            var searchParams = new URLSearchParams(window.location.search);
+            searchParams.set("sortBy", value);
+            window.location.search = searchParams.toString();
+        });
+    </script>
+}

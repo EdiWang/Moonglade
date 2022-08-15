@@ -24,8 +24,8 @@ public static class WebApplicationExtensions
                 break;
         }
 
-        bool canConnect = await context.Database.CanConnectAsync();
-        if (!canConnect) return StartupInitResult.DatabaseConnectionFail;
+        //bool canConnect = await context.Database.CanConnectAsync();
+        //if (!canConnect) return StartupInitResult.DatabaseConnectionFail;
 
         await context.Database.EnsureCreatedAsync();
 
