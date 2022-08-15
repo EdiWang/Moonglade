@@ -3,16 +3,22 @@ using Moonglade.Data.Infrastructure;
 
 namespace Moonglade.Data.Spec;
 
+public enum PostsSortBy
+{
+    Recent,
+    Popular
+}
+
 public sealed class PostPagingSpec : BaseSpecification<PostEntity>
 {
-    public PostPagingSpec(int pageSize, int pageIndex, Guid? categoryId = null)
+    public PostPagingSpec(int pageSize, int pageIndex, Guid? categoryId = null, PostsSortBy postsSortBy = PostsSortBy.Recent)
         : base(p => !p.IsDeleted && p.IsPublished &&
                     (categoryId == null || p.PostCategory.Select(c => c.CategoryId).Contains(categoryId.Value)))
     {
         var startRow = (pageIndex - 1) * pageSize;
 
         ApplyPaging(startRow, pageSize);
-        ApplyOrderByDescending(p => p.PubDateUtc);
+        ApplyOrderByDescending(p => postsSortBy == PostsSortBy.Recent ? p.PubDateUtc : p.PostExtension.Hits);
     }
 
     public PostPagingSpec(PostStatus postStatus, string keyword, int pageSize, int offset)
