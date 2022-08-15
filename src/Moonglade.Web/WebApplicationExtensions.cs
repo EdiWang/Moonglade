@@ -24,10 +24,15 @@ public static class WebApplicationExtensions
                 break;
         }
 
-        bool canConnect = await context.Database.CanConnectAsync();
-        if (!canConnect) return StartupInitResult.DatabaseConnectionFail;
-
-        await context.Database.EnsureCreatedAsync();
+        try
+        {
+            await context.Database.EnsureCreatedAsync();
+        }
+        catch (Exception e)
+        {
+            app.Logger.LogCritical(e, e.Message);
+            return StartupInitResult.DatabaseConnectionFail;
+        }
 
         bool isNew = !await context.BlogConfiguration.AnyAsync();
         if (isNew)
