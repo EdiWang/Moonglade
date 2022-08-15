@@ -6,7 +6,8 @@ namespace Moonglade.Data.Spec;
 public enum PostsSortBy
 {
     Recent,
-    Popular
+    Popular,
+    Featured
 }
 
 public sealed class PostPagingSpec : BaseSpecification<PostEntity>
@@ -17,8 +18,19 @@ public sealed class PostPagingSpec : BaseSpecification<PostEntity>
     {
         var startRow = (pageIndex - 1) * pageSize;
 
+        switch (postsSortBy)
+        {
+            case PostsSortBy.Recent:
+                ApplyOrderByDescending(p => p.PubDateUtc);
+                break;
+            case PostsSortBy.Featured:
+                ApplyOrderByDescending(p => p.IsFeatured);
+                break;
+            case PostsSortBy.Popular:
+                ApplyOrderByDescending(p => p.PostExtension.Hits);
+                break;
+        }
         ApplyPaging(startRow, pageSize);
-        ApplyOrderByDescending(p => postsSortBy == PostsSortBy.Recent ? p.PubDateUtc : p.PostExtension.Hits);
     }
 
     public PostPagingSpec(PostStatus postStatus, string keyword, int pageSize, int offset)
