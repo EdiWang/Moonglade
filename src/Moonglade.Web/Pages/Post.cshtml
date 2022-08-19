@@ -85,7 +85,12 @@
         viewpost.registerRatingButtons(pid);
         viewpost.postStatistics(pid, false);
 
-        let outline = new DocumentOutline();
+        let outline = new DocumentOutline(
+                '.post-content h1, ' +
+                '.post-content h2, ' +
+                '.post-content h3, ' +
+                '.post-content h4, ' +
+                '.post-content h5');
 
         window.fitImageToDevicePixelRatio = @BlogConfig.ImageSettings.FitImageToDevicePixelRatio.ToString().ToLower();
 

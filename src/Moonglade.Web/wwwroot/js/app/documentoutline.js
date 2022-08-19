@@ -6,18 +6,13 @@ let DocumentOutline;
 
     DocumentOutline = class DocumentOutline {
 
-        constructor() {
+        constructor(querySelectors) {
             this._headingMap = [];
             this._parentList = [];
             this._open = window.innerWidth > 1440;
 
             // get heading tags
-            const headingList = document.querySelectorAll(
-                '.post-content h1, ' +
-                '.post-content h2, ' +
-                '.post-content h3, ' +
-                '.post-content h4, ' +
-                '.post-content h5');
+            const headingList = document.querySelectorAll(querySelectors);
             headingList.forEach(tag => {
                 this._headingMap.push({
                     tag,
