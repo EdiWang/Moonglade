@@ -27,9 +27,9 @@
     <meta name="displaydate" content="@Model.Post.PubDateUtc.GetValueOrDefault().ToString("u")">
     <meta name="copyright" content="(C) @Model.Post.PubDateUtc.GetValueOrDefault().Year @BlogConfig.GeneralSettings.SiteTitle">
     <meta name="author" content="@(string.IsNullOrWhiteSpace(Model.Post.Author) ? BlogConfig.GeneralSettings.OwnerName : Model.Post.Author) " />
-    
     <link href="~/css/post-slug.css" rel="stylesheet" asp-append-version="true" />
     <link href="~/css/highlighter-custom.css" rel="stylesheet" asp-append-version="true" />
+    <link href="~/css/outline.css" rel="stylesheet" />
 
     @if (!string.IsNullOrWhiteSpace(Model.Post.InlineCss))
     {
@@ -61,6 +61,7 @@
 @section scripts {
     <script src="~/js/3rd/highlight.min.js" asp-append-version="true"></script>
     <script src="~/js/3rd/qrious.min.js"></script>
+    <script src="~/js/app/documentoutline.js"></script>
     <script type="module">    
         import * as viewpost from '/js/app/viewpost.module.js'
         
@@ -80,11 +81,12 @@
         }
 
         var pid = document.querySelector('article').dataset.postid;
-        viewpost.addAnchorTags();
         viewpost.getStatistics(pid);
         viewpost.registerRatingButtons(pid);
         viewpost.postStatistics(pid, false);
-        
+
+        let outline = new DocumentOutline();
+
         window.fitImageToDevicePixelRatio = @BlogConfig.ImageSettings.FitImageToDevicePixelRatio.ToString().ToLower();
 
         var q = new QRious({
