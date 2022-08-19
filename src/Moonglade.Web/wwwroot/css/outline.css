@@ -9,10 +9,9 @@
     background-color: var(--outline-bg-color);
     width: 251px;
     position: fixed;
-    height: calc(100vh - 50px);
     z-index: 10;
-    bottom: 0;
-    left: 0;
+    top: 80px;
+    left: 10px;
     overflow-x: hidden;
     overflow-y: visible;
     overflow-wrap: break-word;
@@ -20,10 +19,11 @@
     line-height: 1.5em;
     transition: width .35s, opacity .25s;
     box-shadow: 5px 0 10px rgba(0,0,0,.15);
+    border-radius: 8px;
+    max-height: calc(100vh - 100px);
 }
 
 .outline-nav-collapsed {
-    padding: 25px 0 !important;
     width: 55px;
 }
 
@@ -96,6 +96,7 @@
 
 #outline-list-root {
     transition: opacity .2s;
+    margin-right: 2em;
 }
 
 .li-content {
