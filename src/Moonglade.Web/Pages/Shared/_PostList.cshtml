@@ -1,5 +1,4 @@
 ﻿@using X.PagedList.Mvc.Core
-@using X.PagedList.Web.Common
 
 @model X.PagedList.StaticPagedList<Moonglade.Core.PostFeature.PostDigest>
 
@@ -19,7 +18,7 @@ else
         <hr class="d-none d-md-block" />
     }
 
-    @Html.PagedListPager(Model, page => $"?p={page}", new PagedListRenderOptions
+    @Html.PagedListPager(Model, page => ViewData["sortBy"] == null ? $"?p={page}" : $"?p={page}&sortBy={ViewData["sortBy"]}", new()
     {
         LiElementClasses = new[] { "page-item" },
         PageClasses = new[] { "page-link" },
