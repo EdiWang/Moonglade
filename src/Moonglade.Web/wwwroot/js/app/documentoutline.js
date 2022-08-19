@@ -9,7 +9,7 @@ let DocumentOutline;
         constructor() {
             this._headingMap = [];
             this._parentList = [];
-            this._open = !window.innerWidth < 1280;
+            this._open = window.innerWidth > 1440;
 
             // get heading tags
             const headingList = document.querySelectorAll(
