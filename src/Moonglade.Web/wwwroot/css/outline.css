@@ -1,12 +1,5 @@
-:root {
-    --outline-text-color: white;
-    --outline-text-color-light: lightgrey;
-    --outline-primary-color: rgb(128, 128, 128);
-    --outline-bg-color: rgb(37, 37, 37);
-}
-
 .outline-nav {
-    background-color: var(--outline-bg-color);
+    background-color: var(--transparent-light-15);
     width: 251px;
     position: fixed;
     z-index: 10;
@@ -17,9 +10,9 @@
     overflow-wrap: break-word;
     font-size: 1em;
     line-height: 1.5em;
-    transition: width .35s, opacity .25s;
-    box-shadow: 5px 0 10px rgba(0,0,0,.15);
+    transition: width .35s;
     border-radius: 8px;
+    border: 1px solid var(--gray-3);
     max-height: calc(100vh - 100px);
 }
 
@@ -44,7 +37,7 @@
     cursor: pointer;
     border-radius: 2em;
     align-items: start;
-    color: white;
+    color: var(--accent-color);
     font-size: 25px;
 }
 
@@ -55,7 +48,7 @@
 
 .outline-menu-icon-container svg {
     width: 100%;
-    fill: var(--outline-primary-color);
+    fill: var(--accent-color3);
 }
 
 .outline-menu-container-collapsed svg {
@@ -77,11 +70,11 @@
 }
 
     .outline-nav span:hover {
-        color: var(--outline-primary-color);
+        color: var(--accent-color3);
     }
 
 .outline-nav li {
-    color: var(--outline-text-color-light);
+    color: var(--accent-color2);
 }
 
     .outline-nav li:not(.list-head) div {
@@ -105,7 +98,6 @@
 
 .li-title-1 {
     font-size: 1.1em;
-    color: var(--outline-text-color);
 }
 
 .li-title-2 {
@@ -126,35 +118,6 @@
 
 .li-title-6 {
     font-size: .7em;
-}
-
-.slide-left {
-    -webkit-animation: slide-left 0.5s cubic-bezier(0.250, 0.460, 0.450, 0.940) both;
-    animation: slide-left 0.5s cubic-bezier(0.250, 0.460, 0.450, 0.940) both;
-}
-
-@-webkit-keyframes slide-left {
-    0% {
-        -webkit-transform: translateX(0);
-        transform: translateX(0);
-    }
-
-    100% {
-        -webkit-transform: translateX(-100px);
-        transform: translateX(-100px);
-    }
-}
-
-@keyframes slide-left {
-    0% {
-        -webkit-transform: translateX(0);
-        transform: translateX(0);
-    }
-
-    100% {
-        -webkit-transform: translateX(-100px);
-        transform: translateX(-100px);
-    }
 }
 
 @media only screen and (max-width: 1280px) {
