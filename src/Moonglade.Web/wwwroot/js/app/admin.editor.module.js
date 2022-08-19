@@ -1,10 +1,14 @@
 ﻿export let simplemde = null;
 
 function slugify(text) {
-    return text
-        .toLowerCase()
-        .replace(/[^\w ]+/g, '')
-        .replace(/ +/g, '-');
+    var isEngNum = /^[A-Za-z][A-Za-z0-9 ]*$/.test(text);
+    if (isEngNum) {
+        return text
+            .toLowerCase()
+            .replace(/[^\w ]+/g, '')
+            .replace(/ +/g, '-');
+    }
+    return '';
 }
 
 export function initEvents() {

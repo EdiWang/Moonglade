@@ -119,6 +119,36 @@ export function resetCaptchaImage() {
     document.querySelector('#img-captcha').src = `/captcha-image?${d.getTime()}`;
 }
 
+export function addAnchorTags() {
+    $('.post-content h2').each(function (i, e) {
+        var name = getAnchorName(i, e, 'h2');
+        $(`<a name="${name}" class="dynamic-heading-tag"></a>`).insertBefore(e);
+    });
+
+    $('.post-content h3').each(function (i, e) {
+        var name = getAnchorName(i, e, 'h3');
+        $(`<a name="${name}" class="dynamic-heading-tag"></a>`).insertBefore(e);
+    });
+}
+
+function getAnchorName(i, e, h) {
+    var hContent = e.innerText;
+    var name = slugify(hContent);
+    if (!name) name = `${h}-${i}`;
+    return name;
+}
+
+function slugify(text) {
+    var isEngNum = /^[A-Za-z][A-Za-z0-9 ]*$/.test(text);
+    if (isEngNum) {
+        return text
+            .toLowerCase()
+            .replace(/[^\w ]+/g, '')
+            .replace(/ +/g, '-');
+    }
+    return '';
+}
+
 var btnSubmitComment = '#btn-submit-comment';
 
 export function submitComment(pid) {

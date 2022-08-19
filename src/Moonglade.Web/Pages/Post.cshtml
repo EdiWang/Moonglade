@@ -80,6 +80,7 @@
         }
 
         var pid = document.querySelector('article').dataset.postid;
+        viewpost.addAnchorTags();
         viewpost.getStatistics(pid);
         viewpost.registerRatingButtons(pid);
         viewpost.postStatistics(pid, false);
