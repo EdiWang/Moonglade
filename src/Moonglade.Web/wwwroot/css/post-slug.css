@@ -91,20 +91,20 @@ h1.post-title,
     padding: 10px 20px;
 }
 
-.post-content blockquote p:last-child,
-.post-content blockquote ul:last-child,
-.post-content blockquote ol:last-child {
-    margin-bottom: 0;
-}
+    .post-content blockquote p:last-child,
+    .post-content blockquote ul:last-child,
+    .post-content blockquote ol:last-child {
+        margin-bottom: 0;
+    }
 
-.post-content blockquote footer,
-.post-content blockquote small,
-.post-content blockquote .small {
-    color: var(--gray-4);
-    display: block;
-    font-size: 80%;
-    line-height: 1.42857143;
-}
+    .post-content blockquote footer,
+    .post-content blockquote small,
+    .post-content blockquote .small {
+        color: var(--gray-4);
+        display: block;
+        font-size: 80%;
+        line-height: 1.42857143;
+    }
 
 .comment-list .thumbnail {
     padding: 0;
@@ -114,43 +114,47 @@ h1.post-title,
     position: relative;
 }
 
-.comment-list .card>.card-header:after,
-.comment-list .card>.card-header:before {
-    border-color: transparent;
-    border-style: solid solid outset;
-    content: " ";
-    display: block;
-    height: 0;
-    left: -16px;
-    pointer-events: none;
-    position: absolute;
-    right: 100%;
-    top: 11px;
-    width: 0;
-}
+    .comment-list .card > .card-header:after,
+    .comment-list .card > .card-header:before {
+        border-color: transparent;
+        border-style: solid solid outset;
+        content: " ";
+        display: block;
+        height: 0;
+        left: -16px;
+        pointer-events: none;
+        position: absolute;
+        right: 100%;
+        top: 11px;
+        width: 0;
+    }
 
-.comment-list .card>.card-header:after {
-    border-right-color: rgba(0, 0, 0, .03);
-    border-width: 7px;
-    margin-left: 2px;
-    margin-top: 1px;
-}
+    .comment-list .card > .card-header:after {
+        border-right-color: rgba(0, 0, 0, .03);
+        border-width: 7px;
+        margin-left: 2px;
+        margin-top: 1px;
+    }
 
-.comment-list .card>.card-header:before {
-    border-right-color: var(--transparent-dark-2);
-    border-width: 8px;
-}
-
+    .comment-list .card > .card-header:before {
+        border-right-color: var(--transparent-dark-2);
+        border-width: 8px;
+    }
 
 pre,
 code {
     font-family: "Cascadia Code", SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
 }
 
-@media (max-width: 767px) {
+.dynamic-heading-tag {
+    display: block;
+    position: relative;
+    top: -65px;
+    visibility: hidden;
+}
 
-    h1.post-title,
-    .post-content h1 {
+@media (max-width: 767px) {
+    h1 .post-title, .post-content h1 {
         font-size: 1.4rem;
     }
 
