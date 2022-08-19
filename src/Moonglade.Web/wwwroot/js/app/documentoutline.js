@@ -2,7 +2,7 @@ let DocumentOutline;
 
 (function () {
     const menuIcon = '<i class="bi bi-list-ul"></i>';
-    const closeSvg = '<i class="bi bi-arrow-left-circle"></i>';
+    const closeIcon = '<i class="bi bi-arrow-left-circle"></i>';
 
     DocumentOutline = class DocumentOutline {
 
@@ -33,11 +33,13 @@ let DocumentOutline;
             for (let i = 0; i < this._parentList.length; i++) {
                 let node = this._parentList[i];
 
-                if (node.level < level)
+                if (node.level < level) {
                     return node;
+                }
 
-                if (node.level === level && node.elem.tagName == 'UL')
+                if (node.level === level && node.elem.tagName == 'UL') {
                     return node;
+                }
             }
         }
 
@@ -48,8 +50,7 @@ let DocumentOutline;
             for (let i = 0; i < family.length; i++) {
                 let node = family[i];
 
-                if (node.level === level)
-                    return true;
+                if (node.level === level) return true;
             }
             return false;
         }
@@ -129,7 +130,7 @@ let DocumentOutline;
             document.body.appendChild(this._main);
             document.body.appendChild(this._nav);
 
-            this._addIconSvg(this._menuIcon, 'close');
+            this._addIcon(this._menuIcon, this._open ? 'close' : 'menu');
 
             this._menuIcon.addEventListener('click', e => {
                 if (this._open) this.hideOutline();
@@ -138,8 +139,8 @@ let DocumentOutline;
             });
         }
 
-        _addIconSvg = (container, icon) => {
-            let html = icon === 'menu' ? menuIcon : closeSvg;
+        _addIcon = (container, icon) => {
+            let html = icon === 'menu' ? menuIcon : closeIcon;
             container.innerHTML = html;
         }
 
@@ -159,13 +160,13 @@ let DocumentOutline;
                 this._root.style.opacity = 1;
                 this._nav.style.overflowY = 'visible';
                 this._menuIcon.style.visibility = 'visible';
-                this._addIconSvg(this._menuIcon, 'close');
+                this._addIcon(this._menuIcon, 'close');
             }, 400);
         }
 
         hideOutline = () => {
             this._menuIcon.style.visibility = 'hidden';
-            this._addIconSvg(this._menuIcon, 'menu');
+            this._addIcon(this._menuIcon, 'menu');
             this._navHeader.classList.add('outline-nav-header-collapsed');
 
             this._nav.style.overflowY = 'hidden';

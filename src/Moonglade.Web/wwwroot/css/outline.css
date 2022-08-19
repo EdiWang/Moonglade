@@ -80,11 +80,7 @@
         color: var(--outline-primary-color);
     }
 
-.outline-nav li.list-head {
-    color: var(--outline-text-color);
-}
-
-.outline-nav li:not(.list-head) {
+.outline-nav li {
     color: var(--outline-text-color-light);
 }
 
