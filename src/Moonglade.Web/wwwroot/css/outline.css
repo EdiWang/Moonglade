@@ -1,5 +1,5 @@
 .outline-nav {
-    background-color: var(--transparent-light-15);
+    background-color: var(--bs-white);
     width: 251px;
     position: fixed;
     z-index: 10;
@@ -17,6 +17,7 @@
 }
 
 .darkmode .outline-nav {
+    background-color: var(--gray-7);
     border: 1px solid var(--gray-6);
 }
 
