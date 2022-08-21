@@ -11,6 +11,8 @@ public class IndexModel : PageModel
     private readonly IMediator _mediator;
     private readonly IBlogCache _cache;
 
+    public string SortBy { get; set; }
+
     public StaticPagedList<PostDigest> Posts { get; set; }
 
     public IndexModel(
@@ -26,6 +28,8 @@ public class IndexModel : PageModel
         var pagesize = _blogConfig.ContentSettings.PostListPageSize;
         if (Enum.TryParse(sortBy, out PostsSortBy sortByEnum))
         {
+            ViewData["sortBy"] = sortBy;
+
             var posts = await _mediator.Send(new ListPostsQuery(pagesize, p, sortBy: sortByEnum));
             var totalPostsCount = await _cache.GetOrCreateAsync(CacheDivision.General, "postcount", _ => _mediator.Send(new CountPostQuery(CountType.Public)));
 

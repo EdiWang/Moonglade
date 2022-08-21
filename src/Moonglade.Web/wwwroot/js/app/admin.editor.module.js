@@ -1,10 +1,14 @@
 ﻿export let simplemde = null;
 
 function slugify(text) {
-    return text
-        .toLowerCase()
-        .replace(/[^\w ]+/g, '')
-        .replace(/ +/g, '-');
+    var isEngNum = /^[A-Za-z][A-Za-z0-9 ]*$/.test(text);
+    if (isEngNum) {
+        return text
+            .toLowerCase()
+            .replace(/[^\w ]+/g, '')
+            .replace(/ +/g, '-');
+    }
+    return '';
 }
 
 export function initEvents() {
@@ -103,7 +107,6 @@ export function loadTinyMCE(textareaSelector) {
                 { text: 'C', value: 'c' },
                 { text: 'C++', value: 'cpp' },
                 { text: 'CSS', value: 'css' },
-                { text: 'Dart', value: 'dart' },
                 { text: 'Dockerfile', value: 'dockerfile' },
                 { text: 'F#', value: 'fsharp' },
                 { text: 'Go', value: 'go' },

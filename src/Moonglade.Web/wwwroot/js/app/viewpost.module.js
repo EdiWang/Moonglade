@@ -62,7 +62,7 @@ export function renderCodeHighlighter() {
     });
 
     $('pre code').each(function (i, block) {
-        hljs.highlightBlock(block);
+        hljs.highlightElement(block);
     });
 }
 
