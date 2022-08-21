@@ -4,5 +4,5 @@ public enum FeatureFlags
 {
     EnableWebApi,
     Foaf,
-    OPML
+    Opml
 }

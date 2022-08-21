@@ -74,7 +74,7 @@ public class SiteMapMiddleware
                 page.IsPublished)
             );
 
-            foreach (var (createdTimeUtc, slug, isPublished) in pages.Where(p => p.Item3))
+            foreach (var (createdTimeUtc, slug, _) in pages.Where(p => p.Item3))
             {
                 writer.WriteStartElement("url");
                 writer.WriteElementString("loc", $"{siteRootUrl}/page/{slug.ToLower()}");

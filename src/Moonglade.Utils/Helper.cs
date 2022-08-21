@@ -44,7 +44,7 @@ public static class Helper
     {
         if (null == context) return null;
 
-        string ip = context.Connection.RemoteIpAddress?.ToString();
+        var ip = context.Connection.RemoteIpAddress?.ToString();
 
         var forwardHeaders = context.Request.Headers["X-Forwarded-For"];
         if (forwardHeaders.Any() && null != ip)
@@ -76,10 +76,10 @@ public static class Helper
         // https://andrewlock.net/why-is-string-gethashcode-different-each-time-i-run-my-program-in-net-core/
         unchecked
         {
-            int hash1 = (5381 << 16) + 5381;
-            int hash2 = hash1;
+            var hash1 = (5381 << 16) + 5381;
+            var hash2 = hash1;
 
-            for (int i = 0; i < input.Length; i += 2)
+            for (var i = 0; i < input.Length; i += 2)
             {
                 hash1 = ((hash1 << 5) + hash1) ^ input[i];
                 if (i == input.Length - 1) break;
@@ -202,7 +202,7 @@ public static class Helper
             return false;
         }
 
-        string invalidReturn = "#";
+        var invalidReturn = "#";
         if (string.IsNullOrWhiteSpace(rawUrl))
         {
             return invalidReturn;
@@ -314,7 +314,7 @@ public static class Helper
 
         var tagRegex = new Regex(@"^[a-zA-Z0-9-#@$()\[\]/]+$");
         var tags = tagsEnv.Split(',');
-        foreach (string tag in tags)
+        foreach (var tag in tags)
         {
             var t = tag.Trim();
             if (tagRegex.IsMatch(t))
@@ -337,7 +337,7 @@ public static class Helper
             return regEx.Match(value).Length > 0;
         }
 
-        int atCount = value.Count(c => c == '@');
+        var atCount = value.Count(c => c == '@');
 
         return (atCount == 1
                 && value[0] != '@'
@@ -368,7 +368,7 @@ public static class Helper
 
     public static string GenerateSlug(this string phrase)
     {
-        string str = phrase.RemoveAccent().ToLower();
+        var str = phrase.RemoveAccent().ToLower();
         // invalid chars           
         str = Regex.Replace(str, @"[^a-z0-9\s-]", "");
         // convert multiple spaces into one space   
@@ -381,7 +381,7 @@ public static class Helper
 
     public static string RemoveAccent(this string txt)
     {
-        byte[] bytes = Encoding.GetEncoding("Cyrillic").GetBytes(txt);
+        var bytes = Encoding.GetEncoding("Cyrillic").GetBytes(txt);
         return Encoding.ASCII.GetString(bytes);
     }
 
@@ -417,7 +417,6 @@ public static class Helper
         }
 
         string password;
-        int index;
 
         do
         {
@@ -428,9 +427,9 @@ public static class Helper
             var rng = RandomNumberGenerator.Create();
             rng.GetBytes(buf);
 
-            for (int iter = 0; iter < length; iter++)
+            for (var iter = 0; iter < length; iter++)
             {
-                int i = (int)(buf[iter] % 87);
+                var i = buf[iter] % 87;
                 switch (i)
                 {
                     case < 10:
@@ -469,29 +468,26 @@ public static class Helper
 
             password = new(cBuf);
         }
-        while (IsDangerousString(password, out index));
+        while (IsDangerousString(password));
 
         return password;
     }
 
     private static readonly char[] StartingChars = { '<', '&' };
-    private static bool IsDangerousString(string s, out int matchIndex)
+    private static bool IsDangerousString(string s)
     {
         //bool inComment = false;
-        matchIndex = 0;
 
-        for (int i = 0; ;)
+        for (var i = 0; ;)
         {
             // Look for the start of one of our patterns
-            int n = s.IndexOfAny(StartingChars, i);
+            var n = s.IndexOfAny(StartingChars, i);
 
             // If not found, the string is safe
             if (n < 0) return false;
 
             // If it's the last char, it's safe
             if (n == s.Length - 1) return false;
-
-            matchIndex = n;
 
             switch (s[n])
             {

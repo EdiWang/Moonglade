@@ -28,7 +28,7 @@ public class CountPostQueryHandler : RequestHandler<CountPostQuery, int>
 
     protected override int Handle(CountPostQuery request)
     {
-        int count = 0;
+        int count;
 
         switch (request.CountType)
         {
@@ -51,6 +51,8 @@ public class CountPostQueryHandler : RequestHandler<CountPostQuery, int>
             case CountType.Featured:
                 count = _postRepo.Count(p => p.IsFeatured && p.IsPublished && !p.IsDeleted);
                 break;
+            default:
+                throw new ArgumentOutOfRangeException();
         }
 
         return count;

@@ -29,6 +29,8 @@ public sealed class PostPagingSpec : BaseSpecification<PostEntity>
             case PostsSortBy.Popular:
                 ApplyOrderByDescending(p => p.PostExtension.Hits);
                 break;
+            default:
+                throw new ArgumentOutOfRangeException(nameof(postsSortBy), postsSortBy, "PostsSortBy is out of range.");
         }
         ApplyPaging(startRow, pageSize);
     }

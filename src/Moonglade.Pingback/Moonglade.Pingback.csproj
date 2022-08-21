@@ -1,9 +1,11 @@
-﻿<Project Sdk="Microsoft.NET.Sdk">
+<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
     <TargetFramework>net6.0</TargetFramework>
     <Description>.NET implementation for Pingback http://www.hixie.ch/specs/pingback/pingback</Description>
     <ImplicitUsings>enable</ImplicitUsings>
+    <OutputType>Library</OutputType>
+    <Nullable>enable</Nullable>
   </PropertyGroup>
 
   <ItemGroup>

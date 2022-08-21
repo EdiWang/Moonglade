@@ -25,7 +25,8 @@ public class GetStyleSheetQueryHandler : IRequestHandler<GetStyleSheetQuery, str
 
         try
         {
-            var rules = JsonSerializer.Deserialize<IDictionary<string, string>>(theme.CssRules);
+            var rules = JsonSerializer.Deserialize<IDictionary<string, string>>(theme.CssRules) ??
+                new Dictionary<string, string>();
 
             var sb = new StringBuilder();
             sb.Append(":root {");

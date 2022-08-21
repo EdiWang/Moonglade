@@ -121,10 +121,7 @@ public class MinioBlobImageStorage : IBlogImageStorage
         var arg = new GetObjectArgs()
             .WithBucket(_bucketName)
             .WithFile(fileName)
-            .WithCallbackStream(stream =>
-        {
-            stream?.CopyTo(memoryStream);
-        });
+            .WithCallbackStream(stream => stream?.CopyTo(memoryStream));
 
         await _client.GetObjectAsync(arg);
         var arr = memoryStream.ToArray();

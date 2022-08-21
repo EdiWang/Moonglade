@@ -33,8 +33,8 @@ public class SyndicationDataSource : ISyndicationDataSource
         _postRepo = postRepo;
         _configuration = configuration;
 
-        var acc = httpContextAccessor;
-        _baseUrl = $"{acc.HttpContext.Request.Scheme}://{acc.HttpContext.Request.Host}";
+        var acc = httpContextAccessor.HttpContext ?? throw new ArgumentNullException($"{nameof(httpContextAccessor)}.HttpContext is null.");
+        _baseUrl = $"{acc.Request.Scheme}://{acc.Request.Host}";
     }
 
     public async Task<IReadOnlyList<FeedEntry>> GetFeedDataAsync(string categoryName = null)

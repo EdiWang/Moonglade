@@ -18,7 +18,6 @@ public static class WebApplicationExtensions
             case "mysql":
                 context = services.GetRequiredService<MySqlBlogDbContext>();
                 break;
-            case "sqlserver":
             default:
                 context = services.GetRequiredService<SqlServerBlogDbContext>();
                 break;
@@ -34,7 +33,7 @@ public static class WebApplicationExtensions
             return StartupInitResult.DatabaseConnectionFail;
         }
 
-        bool isNew = !await context.BlogConfiguration.AnyAsync();
+        var isNew = !await context.BlogConfiguration.AnyAsync();
         if (isNew)
         {
             try

@@ -62,21 +62,22 @@ public class PingbackSender : IPingbackSender
             var (key, value) = response.Headers.FirstOrDefault(
                 h => h.Key.ToLower() == "x-pingback" || h.Key.ToLower() == "pingback");
 
-            if (key is null || value is null)
+            var values = value as string[] ?? value.ToArray();
+            if (string.IsNullOrWhiteSpace(key) || values.All(string.IsNullOrWhiteSpace))
             {
                 _logger?.LogInformation($"Pingback endpoint is not found for URL '{targetUrl}', ping request is terminated.");
                 return;
             }
 
-            var pingUrl = value.FirstOrDefault();
+            var pingUrl = values.FirstOrDefault();
             if (pingUrl is not null)
             {
                 _logger?.LogInformation($"Found Ping service URL '{pingUrl}' on target '{sourceUrl}'");
 
-                bool successUrlCreation = Uri.TryCreate(pingUrl, UriKind.Absolute, out var url);
+                var successUrlCreation = Uri.TryCreate(pingUrl, UriKind.Absolute, out var url);
                 if (successUrlCreation)
                 {
-                    var pResponse = await _pingbackWebRequest.Send(sourceUrl, targetUrl, url);
+                    await _pingbackWebRequest.Send(sourceUrl, targetUrl, url);
                 }
                 else
                 {

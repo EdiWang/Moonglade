@@ -29,8 +29,8 @@ Encoding.RegisterProvider(CodePagesEncodingProvider.Instance);
 
 var builder = WebApplication.CreateBuilder(args);
 
-string dbType = builder.Configuration.GetConnectionString("DatabaseType");
-string connStr = builder.Configuration.GetConnectionString("MoongladeDatabase");
+var dbType = builder.Configuration.GetConnectionString("DatabaseType");
+var connStr = builder.Configuration.GetConnectionString("MoongladeDatabase");
 
 var cultures = new[] { "en-US", "zh-Hans" }.Select(p => new CultureInfo(p)).ToList();
 
@@ -186,7 +186,6 @@ void ConfigureServices(IServiceCollection services)
         case "mysql":
             services.AddMySqlStorage(connStr);
             break;
-        case "sqlserver":
         default:
             services.AddSqlServerStorage(connStr);
             break;

@@ -21,7 +21,7 @@ public class PingbackResult : IActionResult
         }
 
         string content = null;
-        int statusCode = StatusCodes.Status201Created;
+        var statusCode = StatusCodes.Status201Created;
         IActionResult actionResult = null;
 
         switch (PingbackResponse)

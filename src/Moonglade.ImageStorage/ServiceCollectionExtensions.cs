@@ -26,7 +26,7 @@ public static class ServiceCollectionExtensions
         var provider = settings.Provider?.ToLower();
         if (string.IsNullOrWhiteSpace(provider))
         {
-            throw new ArgumentNullException("Provider", "Provider can not be empty.");
+            throw new NullReferenceException("Provider can not be empty.");
         }
 
         switch (provider)

@@ -122,16 +122,16 @@ public class ReceivePingCommandHandler : IRequestHandler<ReceivePingCommand, Pin
     private static (string Slug, DateTime PubDate) GetSlugInfoFromUrl(string url)
     {
         var blogSlugRegex = new Regex(@"^https?:\/\/.*\/post\/(?<yyyy>\d{4})\/(?<MM>\d{1,12})\/(?<dd>\d{1,31})\/(?<slug>.*)$");
-        Match match = blogSlugRegex.Match(url);
+        var match = blogSlugRegex.Match(url);
         if (!match.Success)
         {
             throw new FormatException("Invalid Slug Format");
         }
 
-        int year = int.Parse(match.Groups["yyyy"].Value);
-        int month = int.Parse(match.Groups["MM"].Value);
-        int day = int.Parse(match.Groups["dd"].Value);
-        string slug = match.Groups["slug"].Value;
+        var year = int.Parse(match.Groups["yyyy"].Value);
+        var month = int.Parse(match.Groups["MM"].Value);
+        var day = int.Parse(match.Groups["dd"].Value);
+        var slug = match.Groups["slug"].Value;
         var date = new DateTime(year, month, day);
 
         return (slug, date);

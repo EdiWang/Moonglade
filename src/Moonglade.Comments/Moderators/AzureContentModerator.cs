@@ -14,7 +14,7 @@ public class AzureContentModerator : ICommentModerator, IDisposable
 
     public async Task<string> ModerateContent(string input)
     {
-        byte[] textBytes = Encoding.UTF8.GetBytes(input);
+        var textBytes = Encoding.UTF8.GetBytes(input);
         var stream = new MemoryStream(textBytes);
         var screenResult = await _client.TextModeration.ScreenTextAsync("text/plain", stream);
 
@@ -34,7 +34,7 @@ public class AzureContentModerator : ICommentModerator, IDisposable
     {
         foreach (var s in input)
         {
-            byte[] textBytes = Encoding.UTF8.GetBytes(s);
+            var textBytes = Encoding.UTF8.GetBytes(s);
             var stream = new MemoryStream(textBytes);
             var screenResult = await _client.TextModeration.ScreenTextAsync("text/plain", stream);
             if (screenResult.Terms is not null && screenResult.Terms.Count > 0)

@@ -50,7 +50,7 @@ public class FileSystemImageStorage : IBlogImageStorage
     {
         await using var file = new FileStream(filename, FileMode.Open, FileAccess.Read, FileShare.Read, 4096, true);
         var buff = new byte[file.Length];
-        await file.ReadAsync(buff.AsMemory(0, (int)file.Length));
+        _ = await file.ReadAsync(buff.AsMemory(0, (int)file.Length));
         return buff;
     }
 

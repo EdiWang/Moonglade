@@ -46,7 +46,7 @@ public class SubscriptionController : ControllerBase
     [HttpGet("rss/{routeName?}")]
     public async Task<IActionResult> Rss([MaxLength(64)] string routeName = null)
     {
-        bool hasRoute = !string.IsNullOrWhiteSpace(routeName);
+        var hasRoute = !string.IsNullOrWhiteSpace(routeName);
         var route = hasRoute ? routeName.ToLower().Trim() : null;
 
         return await _cache.GetOrCreateAsync(

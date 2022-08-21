@@ -35,10 +35,10 @@ public class DataPortingController : ControllerBase
 
             case ExportFormat.SingleCSVFile:
                 Response.Headers.Add("Content-Disposition", $"attachment;filename={Path.GetFileName(exportResult.FilePath)}");
-                return PhysicalFile(exportResult.FilePath, exportResult.ContentType, Path.GetFileName(exportResult.FilePath));
+                return PhysicalFile(exportResult.FilePath ?? throw new NullReferenceException("FilePath is null!"), exportResult.ContentType, Path.GetFileName(exportResult.FilePath));
 
             case ExportFormat.ZippedJsonFiles:
-                return PhysicalFile(exportResult.FilePath, exportResult.ContentType, Path.GetFileName(exportResult.FilePath));
+                return PhysicalFile(exportResult.FilePath ?? throw new NullReferenceException("FilePath is null!"), exportResult.ContentType, Path.GetFileName(exportResult.FilePath));
 
             default:
                 return BadRequest(ModelState.CombineErrorMessages());

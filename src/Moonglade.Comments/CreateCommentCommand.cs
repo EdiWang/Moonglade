@@ -56,6 +56,8 @@ public class CreateCommentCommandHandler : IRequestHandler<CreateCommentCommand,
                         return null;
                     }
                     break;
+                default:
+                    throw new ArgumentOutOfRangeException();
             }
         }
 

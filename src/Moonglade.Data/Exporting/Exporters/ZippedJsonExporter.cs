@@ -29,7 +29,7 @@ public class ZippedJsonExporter<T> : IExporter<T>
     private async Task<ExportResult> ToZippedJsonResult<TE>(IEnumerable<TE> list, CancellationToken cancellationToken)
     {
         var tempId = Guid.NewGuid().ToString();
-        string exportDirectory = ExportManager.CreateExportDirectory(_directory, tempId);
+        var exportDirectory = ExportManager.CreateExportDirectory(_directory, tempId);
         foreach (var item in list)
         {
             var json = JsonSerializer.Serialize(item, MoongladeJsonSerializerOptions.Default);

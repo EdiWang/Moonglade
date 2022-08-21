@@ -28,7 +28,7 @@ public class CSVExporter<T> : IExporter<T>
     private async Task<ExportResult> ToCSVResult<TResult>(IEnumerable<TResult> data, CancellationToken cancellationToken)
     {
         var tempId = Guid.NewGuid().ToString();
-        string exportDirectory = ExportManager.CreateExportDirectory(_directory, tempId);
+        var exportDirectory = ExportManager.CreateExportDirectory(_directory, tempId);
 
         var distPath = Path.Join(exportDirectory, $"{_fileNamePrefix}-{DateTime.UtcNow:yyyy-MM-dd-HH-mm-ss}.csv");
 

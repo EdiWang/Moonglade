@@ -35,8 +35,9 @@ public class SettingsController : ControllerBase
     {
         var info = await releaseCheckerClient.CheckNewReleaseAsync();
 
-        var asm = Assembly.GetEntryAssembly();
-        var currentVersion = new Version(asm.GetCustomAttribute<AssemblyFileVersionAttribute>()?.Version);
+        var asm = Assembly.GetEntryAssembly() ?? throw new NullReferenceException("Entry assembly is null!");
+        var currentVersion = new Version(asm.GetCustomAttribute<AssemblyFileVersionAttribute>()?.Version 
+            ?? throw new NullReferenceException("Current version info is null!"));
         var latestVersion = new Version(info.TagName.Replace("v", string.Empty));
 
         var hasNewVersion = latestVersion > currentVersion && !info.PreRelease;
@@ -167,7 +168,7 @@ public class SettingsController : ControllerBase
                 }
                 catch (FormatException e)
                 {
-                    _logger.LogError($"Error {nameof(Image)}(), Invalid Base64 string", e);
+                    _logger.LogError(e, $"Error {nameof(Image)}(), Invalid Base64 string");
                 }
             }
         }
