@@ -96,12 +96,16 @@ let DocumentOutline;
                 this._parentList.unshift(node);
             }
 
-            // save list root
-            this._root = this._parentList[this._parentList.length - 2].elem;
-            this._root.setAttribute('id', 'outline-list-root');
+            if (this._headingMap.length > 0) {
+                // save list root
+                this._root = this._parentList[this._parentList.length - 2].elem;
+                this._root.setAttribute('id', 'outline-list-root');
+            }
         }
 
         _renderOutline = () => {
+            if (this._headingMap.length <= 0) return;
+
             this._nav = document.createElement('nav');
             this._main = document.createElement('div');
 
