@@ -37,21 +37,27 @@ Tools | Alternative
 
 ### 💾 Setup Database
 
-Create a SQL Server 2019, a LocalDB, or an MySQL database. e.g. ```moonglade```
+Moonglade supports two types of database. You can choose either of SQL Server or MySQL.
 
-Update the `MoongladeDatabase` with your database connection string in `appsettings.Development.json`
+#### SQL Server
+
+Create a SQL Server 2019 database, e.g. ```moonglade```
+
+Set the `MoongladeDatabase` to your database connection string in `appsettings.Development.json`
 
 ```json
 "MoongladeDatabase": "Server=(localdb)\\MSSQLLocalDB;Database=moonglade;Trusted_Connection=True;"
 ```
 
-To use MySQL, set `DatabaseType` to `MySql`
+#### MySQL
+
+Set `DatabaseType` to `MySql`
 
 ```json
 "DatabaseType": "MySql"
 ```
 
-example MySQL connection string:
+Set the `MoongladeDatabase` to your database connection string in `appsettings.Development.json`
 
 ```json
 "MoongladeDatabase": "Server=localhost;Port=3306;Database=moonglade;Uid=root;Pwd=******;"
