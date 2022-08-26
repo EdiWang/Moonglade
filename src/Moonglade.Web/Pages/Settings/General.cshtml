@@ -38,7 +38,7 @@
 
         var themeModal = new bootstrap.Modal(document.getElementById('thememodal'));
 
-        function createTheme(oFormElement) {
+        window.createTheme = function(oFormElement) {
             callApi(oFormElement.action,
                 'POST',
                 {
@@ -57,7 +57,7 @@
                 });
         }
 
-        function deleteTheme() {
+        window.deleteTheme = function() {
             var selectedThemeId = document.querySelector('#ViewModel_ThemeId').value;
             callApi(`/api/theme/${selectedThemeId}`,
                 'DELETE',

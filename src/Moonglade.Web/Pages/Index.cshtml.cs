@@ -1,5 +1,6 @@
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Moonglade.Core.PostFeature;
+using Moonglade.Data.Spec;
 using X.PagedList;
 
 namespace Moonglade.Web.Pages;
@@ -9,6 +10,8 @@ public class IndexModel : PageModel
     private readonly IBlogConfig _blogConfig;
     private readonly IMediator _mediator;
     private readonly IBlogCache _cache;
+
+    public string SortBy { get; set; }
 
     public StaticPagedList<PostDigest> Posts { get; set; }
 
@@ -20,14 +23,23 @@ public class IndexModel : PageModel
         _mediator = mediator;
     }
 
-    public async Task OnGet(int p = 1)
+    public async Task OnGet(int p = 1, string sortBy = "Recent")
     {
         var pagesize = _blogConfig.ContentSettings.PostListPageSize;
-        var posts = await _mediator.Send(new ListPostsQuery(pagesize, p));
-        var count = await _cache.GetOrCreateAsync(CacheDivision.General, "postcount", _ => _mediator.Send(new CountPostQuery(CountType.Public)));
+        if (Enum.TryParse(sortBy, out PostsSortBy sortByEnum))
+        {
+            ViewData["sortBy"] = sortBy;
 
-        var list = new StaticPagedList<PostDigest>(posts, p, pagesize, count);
+            var posts = await _mediator.Send(new ListPostsQuery(pagesize, p, sortBy: sortByEnum));
+            var totalPostsCount = await _cache.GetOrCreateAsync(CacheDivision.General, "postcount", _ => _mediator.Send(new CountPostQuery(CountType.Public)));
 
-        Posts = list;
+            var list = new StaticPagedList<PostDigest>(posts, p, pagesize, totalPostsCount);
+
+            Posts = list;
+        }
+        else
+        {
+            throw new ArgumentException(message: $"Invalid argument value '{sortBy}' for argument: '{nameof(sortBy)}'!");
+        }
     }
 }

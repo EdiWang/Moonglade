@@ -6,89 +6,89 @@
 }
 
 @section scripts{
-<script type="module">
-    import * as utils from '/js/app/utils.module.js'
-    
-    var editAccountModal = new bootstrap.Modal('#editAccountModal');
-    var resetPasswordModal = new bootstrap.Modal('#resetPasswordModal');
+    <script type="module">
+        import * as utils from '/js/app/utils.module.js'
 
-    var cid = '';
+        var editAccountModal = new bootstrap.Modal('#editAccountModal');
+        var resetPasswordModal = new bootstrap.Modal('#resetPasswordModal');
 
-    function deleteConfirm(accountId) {
-        var cfm = confirm("Delete Confirmation?");
-        if (cfm) {
-            deleteAccount(accountId);
+        var cid = '';
+
+        window.deleteConfirm = function (accountId) {
+            var cfm = confirm("Delete Confirmation?");
+            if (cfm) {
+                deleteAccount(accountId);
+            }
         }
-    }
 
-    function deleteAccount(accountid) {
-        callApi(`/api/localaccount/${accountid}`, 'DELETE', {},
-            (resp) => {
-                document.querySelector(`#tr-${accountid}`).remove();
-            });
-    }
+        window.deleteAccount = function (accountid) {
+            callApi(`/api/localaccount/${accountid}`, 'DELETE', {},
+                (resp) => {
+                    document.querySelector(`#tr-${accountid}`).remove();
+                });
+        }
 
-    function resetPassword(accountId) {
-        document.querySelector('#resetpassword-form').reset();
-        resetPasswordModal.show();
-        cid = accountId;
-    }
+        window.resetPassword = function (accountId) {
+            document.querySelector('#resetpassword-form').reset();
+            resetPasswordModal.show();
+            cid = accountId;
+        }
 
-    function initCreateAccount() {
-        document.querySelector('#new-account-form').reset();
-        editAccountModal.show();
-    }
+        window.initCreateAccount = function () {
+            document.querySelector('#new-account-form').reset();
+            editAccountModal.show();
+        }
 
-    function handleNewAccountFormSubmit(event) {
-        event.preventDefault();
+        window.handleNewAccountFormSubmit = function (event) {
+            event.preventDefault();
 
-        const data = new FormData(event.target);
-        const value = Object.fromEntries(data.entries());
-        const newValue = utils.toMagicJson(value);
+            const data = new FormData(event.target);
+            const value = Object.fromEntries(data.entries());
+            const newValue = utils.toMagicJson(value);
 
-        callApi(`/api/localaccount`,
-            'POST',
-            newValue,
-            (resp) => {
-                document.querySelector('#new-account-form').reset();
-                editAccountModal.hide();
-                window.location.reload();
-            });
-    }
+            callApi(`/api/localaccount`,
+                'POST',
+                newValue,
+                (resp) => {
+                    document.querySelector('#new-account-form').reset();
+                    editAccountModal.hide();
+                    window.location.reload();
+                });
+        }
 
-    function handleResetPasswordFormSubmit(event) {
-        event.preventDefault();
+        window.handleResetPasswordFormSubmit = function (event) {
+            event.preventDefault();
 
-        const data = new FormData(event.target);
-        const value = Object.fromEntries(data.entries());
+            const data = new FormData(event.target);
+            const value = Object.fromEntries(data.entries());
 
-        callApi(`/api/localaccount/${cid}/password`,
-            'PUT',
-            value["NewPassword"],
-            (resp) => {
-                document.querySelector('#resetpassword-form').reset();
-                resetPasswordModal.hide();
-                blogToast.success('Password updated.');
-                cid = '';
-            });
-    }
+            callApi(`/api/localaccount/${cid}/password`,
+                'PUT',
+                value["NewPassword"],
+                (resp) => {
+                    document.querySelector('#resetpassword-form').reset();
+                    resetPasswordModal.hide();
+                    blogToast.success('Password updated.');
+                    cid = '';
+                });
+        }
 
-    const newAccountForm = document.querySelector('#new-account-form');
-    newAccountForm.addEventListener('submit', handleNewAccountFormSubmit);
+        const newAccountForm = document.querySelector('#new-account-form');
+        newAccountForm.addEventListener('submit', handleNewAccountFormSubmit);
 
-    const resetPasswordForm = document.querySelector('#resetpassword-form');
-    resetPasswordForm.addEventListener('submit', handleResetPasswordFormSubmit);
-</script>
+        const resetPasswordForm = document.querySelector('#resetpassword-form');
+        resetPasswordForm.addEventListener('submit', handleResetPasswordFormSubmit);
+    </script>
 }
 
-<div class="admin-toolbar ps-4 pe-4 pt-2 pb-2 border-bottom mb-3 shadow-sm">
-    <a class="btn btn-outline-accent" href="javascript:initCreateAccount();">
-        <i class="bi-plus-lg"></i>
-        @SharedLocalizer["Create"]
-    </a>
-</div>
+    <div class="admin-toolbar ps-4 pe-4 pt-2 pb-2 border-bottom mb-3 shadow-sm">
+        <a class="btn btn-outline-accent" href="javascript:initCreateAccount();">
+            <i class="bi-plus-lg"></i>
+            @SharedLocalizer["Create"]
+        </a>
+    </div>
 
-<div class="ps-4 pe-4">
+    <div class="ps-4 pe-4">
     @if (null != Model.Accounts && Model.Accounts.Any())
     {
         <table class="table table-bordered mt-3">

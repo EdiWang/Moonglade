@@ -71,7 +71,7 @@
 
         var heroImageModal = new bootstrap.Modal(document.getElementById('heroImageModal'));
 
-        function ajaxImageUpload(oFormElement) {
+        window.ajaxImageUpload = function(oFormElement) {
             const formData = new FormData(oFormElement);
 
             fetch(oFormElement.action,

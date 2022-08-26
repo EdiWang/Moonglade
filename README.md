@@ -37,21 +37,27 @@ Tools | Alternative
 
 ### 💾 Setup Database
 
-Create a SQL Server 2019, a LocalDB, or an MySQL database. e.g. ```moonglade```
+Moonglade supports two types of database. You can choose either of SQL Server or MySQL.
 
-Update the `MoongladeDatabase` with your database connection string in `appsettings.Development.json`
+#### SQL Server
+
+Create a SQL Server 2019 database, e.g. ```moonglade```
+
+Set the `MoongladeDatabase` to your database connection string in `appsettings.Development.json`
 
 ```json
 "MoongladeDatabase": "Server=(localdb)\\MSSQLLocalDB;Database=moonglade;Trusted_Connection=True;"
 ```
 
-To use MySQL, set `DatabaseType` to `MySql`
+#### MySQL
+
+Set `DatabaseType` to `MySql`
 
 ```json
 "DatabaseType": "MySql"
 ```
 
-example MySQL connection string:
+Set the `MoongladeDatabase` to your database connection string in `appsettings.Development.json`
 
 ```json
 "MoongladeDatabase": "Server=localhost;Port=3306;Database=moonglade;Uid=root;Pwd=******;"
@@ -59,10 +65,8 @@ example MySQL connection string:
 
 ### 🔨 Build Source
 
-> Special hint: If you are in China, it's strongly recommended to use a "magic network" to ensure libman can restore front-end libraries successfully.
-
 Build and run `./src/Moonglade.sln`
-- Admin entrance: `https://localhost:1055/admin`
+- Admin: `https://localhost:1055/admin`
 - Default username: `admin`
 - Default password: `admin123`
 
@@ -101,18 +105,6 @@ You need to create an [**Azure Blob Storage**](https://azure.microsoft.com/en-us
 
 When configured the image storage to use Azure Blob, you can take advantage of CDN for your image resources. Just enable CDN in admin settings, the blog will get images from CDN.
 
-#### File System (Not Recommended)
-
-You can also choose File System for image storage, but this will make your site root not read-only, which would be a potential security issue. And it will be harder for you to backup or update the website.
-
-```json
-{
-  "Provider": "filesystem",
-  "FileSystemPath": "C:\\UploadedImages"
-}
-```
-The ```Path``` can be relative or absolute.
-
 #### [Minio Blob Storage](https://min.io/) (Free)
 
 You need to hava an [**Minio Server**](https://docs.min.io/). 
@@ -140,6 +132,17 @@ You need to hava an Qiniu cloud account, and use [Kodo](https://www.qiniu.com/pr
   "SecretKey": "Your Secret Key",
   "BucketName": "Your BucketName",
   "WithSSL": false
+}
+```
+
+#### File System (Not Recommended)
+
+You can also choose File System for image storage if you don't have a cloud option.
+
+```json
+{
+  "Provider": "filesystem",
+  "FileSystemPath": "C:\\UploadedImages"
 }
 ```
 

@@ -74,7 +74,7 @@
             });
         });
 
-        function generateMetaWeblogPassword() {
+        window.generateMetaWeblogPassword = function() {
             callApi('/api/settings/password/generate', 'GET', {}, async (resp) => {
                 var data = await resp.json();
                 $('#ViewModel_MetaWeblogPassword').val(data.password);

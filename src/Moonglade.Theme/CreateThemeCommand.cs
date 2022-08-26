@@ -16,7 +16,7 @@ public class CreateThemeCommandHandler : IRequestHandler<CreateThemeCommand, int
     public async Task<int> Handle(CreateThemeCommand request, CancellationToken cancellationToken)
     {
         var (name, dictionary) = request;
-        if (!await _themeRepo.AnyAsync(p => p.ThemeName == name.Trim())) return 0;
+        if (await _themeRepo.AnyAsync(p => p.ThemeName == name.Trim())) return 0;
 
         var rules = JsonSerializer.Serialize(dictionary);
         var blogTheme = new BlogThemeEntity
