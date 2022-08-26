@@ -27,7 +27,22 @@ public class ValidateLoginCommandHandler : IRequestHandler<ValidateLoginCommand,
         var account = await _accountRepo.GetAsync(p => p.Username == request.Username);
         if (account is null) return Guid.Empty;
 
-        var valid = account.PasswordHash == Helper.HashPassword(request.InputPassword.Trim());
+        var valid = account.PasswordHash == (string.IsNullOrWhiteSpace(account.PasswordSalt)
+            ? Helper.HashPassword(request.InputPassword.Trim())
+            : Helper.HashPassword2(request.InputPassword.Trim(), account.PasswordSalt));
+
+        // migrate old account to salt
+        if (valid && string.IsNullOrWhiteSpace(account.PasswordSalt))
+        {
+            var salt = Helper.GenerateSalt();
+            var newHash = Helper.HashPassword2(request.InputPassword.Trim(), salt);
+
+            account.PasswordSalt = salt;
+            account.PasswordHash = newHash;
+
+            await _accountRepo.UpdateAsync(account, cancellationToken);
+        }
+
         return valid ? account.Id : Guid.Empty;
     }
 }
