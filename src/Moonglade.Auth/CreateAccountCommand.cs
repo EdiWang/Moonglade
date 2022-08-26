@@ -39,12 +39,16 @@ public class CreateAccountCommandHandler : AsyncRequestHandler<CreateAccountComm
         }
 
         var uid = Guid.NewGuid();
+        var salt = Helper.GenerateSalt();
+        var pwdHash = Helper.HashPassword2(request.Password.Trim(), salt);
+
         var account = new LocalAccountEntity
         {
             Id = uid,
             CreateTimeUtc = DateTime.UtcNow,
             Username = request.Username.ToLower().Trim(),
-            PasswordHash = Helper.HashPassword(request.Password.Trim())
+            PasswordSalt = salt,
+            PasswordHash = pwdHash
         };
 
         return _accountRepo.AddAsync(account, cancellationToken);
