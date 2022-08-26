@@ -24,7 +24,10 @@ public class ChangePasswordCommandHandler : AsyncRequestHandler<ChangePasswordCo
             throw new InvalidOperationException($"LocalAccountEntity with Id '{request.Id}' not found.");
         }
 
-        account.PasswordHash = Helper.HashPassword(request.ClearPassword);
+        var newSalt = Helper.GenerateSalt();
+        account.PasswordSalt = newSalt;
+        account.PasswordHash = Helper.HashPassword2(request.ClearPassword, newSalt);
+
         await _accountRepo.UpdateAsync(account, cancellationToken);
     }
 }
