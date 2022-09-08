@@ -30,6 +30,7 @@ public class BlogDbContext : DbContext
     public virtual DbSet<BlogThemeEntity> BlogTheme { get; set; }
     public virtual DbSet<BlogAssetEntity> BlogAsset { get; set; }
     public virtual DbSet<BlogConfigurationEntity> BlogConfiguration { get; set; }
+    public virtual DbSet<EmailNotificationEntity> EmailNotification { get; set; }
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
@@ -76,6 +77,7 @@ public static class BlogDbContextExtension
         context.BlogAsset.RemoveRange();
         context.BlogTheme.RemoveRange();
         context.LocalAccount.RemoveRange();
+        context.EmailNotification.RemoveRange();
 
         await context.SaveChangesAsync();
     }
