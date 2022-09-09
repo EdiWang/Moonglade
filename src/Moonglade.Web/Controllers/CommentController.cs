@@ -14,15 +14,18 @@ public class CommentController : ControllerBase
     private readonly IMediator _mediator;
     private readonly ITimeZoneResolver _timeZoneResolver;
     private readonly IBlogConfig _blogConfig;
+    private readonly ILogger<CommentController> _logger;
 
     public CommentController(
         IMediator mediator,
         IBlogConfig blogConfig,
-        ITimeZoneResolver timeZoneResolver)
+        ITimeZoneResolver timeZoneResolver,
+        ILogger<CommentController> logger)
     {
         _mediator = mediator;
         _blogConfig = blogConfig;
         _timeZoneResolver = timeZoneResolver;
+        _logger = logger;
     }
 
     [HttpGet("list/{postId:guid}")]
@@ -72,21 +75,20 @@ public class CommentController : ControllerBase
 
         if (_blogConfig.NotificationSettings.SendEmailOnNewComment)
         {
-            _ = Task.Run(async () =>
+            try
             {
-                var scope = factory.CreateScope();
-                var mediator = scope.ServiceProvider.GetService<IMediator>();
-                if (mediator != null)
-                {
-                    await mediator.Publish(new CommentNotification(
-                        item.Username,
-                        item.Email,
-                        item.IpAddress,
-                        item.PostTitle,
-                        item.CommentContent,
-                        item.CreateTimeUtc));
-                }
-            });
+                await _mediator.Publish(new CommentNotification(
+                    item.Username,
+                    item.Email,
+                    item.IpAddress,
+                    item.PostTitle,
+                    item.CommentContent,
+                    item.CreateTimeUtc));
+            }
+            catch (Exception e)
+            {
+                _logger.LogError(e, e.Message);
+            }
         }
 
         if (_blogConfig.ContentSettings.RequireCommentReview)
@@ -135,20 +137,20 @@ public class CommentController : ControllerBase
         if (_blogConfig.NotificationSettings.SendEmailOnCommentReply && !string.IsNullOrWhiteSpace(reply.Email))
         {
             var postLink = GetPostUrl(linkGenerator, reply.PubDateUtc, reply.Slug);
-            _ = Task.Run(async () =>
+
+            try
             {
-                var scope = factory.CreateScope();
-                var mediator = scope.ServiceProvider.GetService<IMediator>();
-                if (mediator != null)
-                {
-                    await mediator.Publish(new CommentReplyNotification(
-                        reply.Email,
-                        reply.CommentContent,
-                        reply.Title,
-                        reply.ReplyContentHtml,
-                        postLink));
-                }
-            });
+                await _mediator.Publish(new CommentReplyNotification(
+                    reply.Email,
+                    reply.CommentContent,
+                    reply.Title,
+                    reply.ReplyContentHtml,
+                    postLink));
+            }
+            catch (Exception e)
+            {
+                _logger.LogError(e, e.Message);
+            }
         }
 
         return Ok(reply);

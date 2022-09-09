@@ -165,7 +165,7 @@ void ConfigureServices(IServiceCollection services)
 
     services.AddPingback()
             .AddSyndication()
-            .AddNotificationClient()
+            .AddNotification()
             .AddReleaseCheckerClient()
             .AddBlogCache()
             .AddMetaWeblog<Moonglade.Web.MetaWeblogService>()

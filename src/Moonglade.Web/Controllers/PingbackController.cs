@@ -1,4 +1,5 @@
-﻿using Moonglade.Notification.Client;
+﻿using Moonglade.Data.Entities;
+using Moonglade.Notification.Client;
 using Moonglade.Pingback;
 using Moonglade.Web.Attributes;
 
@@ -37,28 +38,22 @@ public class PingbackController : ControllerBase
         var ip = Helper.GetClientIP(HttpContext);
         var requestBody = await new StreamReader(HttpContext.Request.Body, Encoding.Default).ReadToEndAsync();
 
-        var response = await _mediator.Send(new ReceivePingCommand(requestBody, ip,
-            history =>
-            {
-                _ = Task.Run(async () =>
-                {
-                    var scope = factory.CreateScope();
-                    var mediator = scope.ServiceProvider.GetService<IMediator>();
-                    if (mediator != null)
-                    {
-                        await mediator.Publish(new PingbackNotification(
-                            history.TargetPostTitle,
-                            history.PingTimeUtc,
-                            history.Domain,
-                            history.SourceIp,
-                            history.SourceUrl,
-                            history.SourceTitle));
-                    }
-                });
-            }));
+        var response = await _mediator.Send(new ReceivePingCommand(requestBody, ip, SendPingbackEmailAction));
 
         _logger.LogInformation($"Pingback Processor Response: {response}");
         return new PingbackResult(response);
+    }
+
+    private async void SendPingbackEmailAction(PingbackEntity history)
+    {
+        try
+        {
+            await _mediator.Publish(new PingbackNotification(history.TargetPostTitle, history.PingTimeUtc, history.Domain, history.SourceIp, history.SourceUrl, history.SourceTitle));
+        }
+        catch (Exception e)
+        {
+            _logger.LogError(e, e.Message);
+        }
     }
 
     [Authorize]

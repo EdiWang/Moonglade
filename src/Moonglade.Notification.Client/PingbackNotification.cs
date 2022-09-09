@@ -1,5 +1,5 @@
 ﻿using MediatR;
-using Microsoft.Extensions.Logging;
+using Moonglade.Configuration;
 
 namespace Moonglade.Notification.Client;
 
@@ -21,13 +21,13 @@ internal record PingPayload(
 
 public class PingbackNotificationHandler : INotificationHandler<PingbackNotification>
 {
-    private readonly IBlogNotificationClient _client;
-    private readonly ILogger<PingbackNotificationHandler> _logger;
+    private readonly IMoongladeNotification _moongladeNotification;
+    private readonly IBlogConfig _blogConfig;
 
-    public PingbackNotificationHandler(IBlogNotificationClient client, ILogger<PingbackNotificationHandler> logger)
+    public PingbackNotificationHandler(IMoongladeNotification moongladeNotification, IBlogConfig blogConfig)
     {
-        _client = client;
-        _logger = logger;
+        _moongladeNotification = moongladeNotification;
+        _blogConfig = blogConfig;
     }
 
     public async Task Handle(PingbackNotification notification, CancellationToken cancellationToken)
@@ -40,16 +40,7 @@ public class PingbackNotificationHandler : INotificationHandler<PingbackNotifica
             notification.SourceUrl,
             notification.SourceTitle);
 
-        var response = await _client.SendNotification(MailMesageTypes.BeingPinged, payload);
-        var respBody = await response.Content.ReadAsStringAsync(cancellationToken);
-
-        if (response.IsSuccessStatusCode)
-        {
-            _logger.LogInformation($"Test email is sent, server response: '{respBody}'");
-        }
-        else
-        {
-            throw new($"Test email sending failed, response code: '{response.StatusCode}', response body: '{respBody}'");
-        }
+        var dl = new[] { _blogConfig.NotificationSettings.AdminEmail };
+        await _moongladeNotification.EnqueueNotification(MailMesageTypes.BeingPinged, dl, payload);
     }
 }
