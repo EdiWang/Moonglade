@@ -1,12 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Microsoft.Extensions.Configuration;
+﻿using System.Text.Json;
 using Microsoft.Extensions.Logging;
 using Moonglade.Configuration;
 using Moonglade.Data.Entities;
+using Moonglade.Data.Exporting.Exporters;
 using Moonglade.Data.Infrastructure;
 
 namespace Moonglade.Notification.Client;
@@ -36,6 +32,27 @@ public class MoongladeNotification : IMoongladeNotification
     {
         if (!_isEnabled) return Guid.Empty;
 
-        throw new NotImplementedException();
+        try
+        {
+            var uid = Guid.NewGuid();
+            var en = new EmailNotificationEntity
+            {
+                Id = uid,
+                DistributionList = string.Join(';', toAddresses),
+                MessageType = type.ToString(),
+                MessageBody = JsonSerializer.Serialize(payload, MoongladeJsonSerializerOptions.Default),
+                CreateTimeUtc = DateTime.UtcNow,
+                SendingStatus = 1,
+                RetryCount = 0
+            };
+
+            await _repo.AddAsync(en);
+            return uid;
+        }
+        catch (Exception e)
+        {
+            _logger.LogError(e, e.Message);
+            throw;
+        }
     }
 }
