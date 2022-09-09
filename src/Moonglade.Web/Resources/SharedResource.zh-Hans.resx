@@ -198,8 +198,8 @@
   <data name="Auto Light / Dark theme regarding client system settings" xml:space="preserve">
     <value>在客户端自动适配明亮/黑暗主题</value>
   </data>
-  <data name="Azure Function endpoint" xml:space="preserve">
-    <value>Azure Function 终端地址</value>
+  <data name="Admin Email" xml:space="preserve">
+    <value>博主 Email</value>
   </data>
   <data name="Block Comment" xml:space="preserve">
     <value>阻止评论</value>
