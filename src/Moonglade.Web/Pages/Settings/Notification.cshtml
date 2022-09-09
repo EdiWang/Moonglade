@@ -4,7 +4,7 @@
 <script type="module">
     import * as settings from '/js/app/admin.settings.module.js';
     
-    var sendTestEmail = function () {
+    window.sendTestEmail = function () {
         document.querySelector('#a-send-test-mail').classList.add('disabled');
         document.querySelector('#a-send-test-mail').setAttribute('disabled', 'disabled');
 
