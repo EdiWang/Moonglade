@@ -13,10 +13,9 @@ using Moonglade.Pingback;
 using Moonglade.Syndication;
 using SixLabors.Fonts;
 using System.Globalization;
-using System.Text.Encodings.Web;
 using System.Text.Json.Serialization;
-using System.Text.Unicode;
 using WilderMinds.MetaWeblog;
+using Encoder = Moonglade.Web.Configuration.Encoder;
 
 var info = $"App:\tMoonglade {Helper.AppVersion}\n" +
            $"Path:\t{Environment.CurrentDirectory} \n" +
@@ -126,20 +125,7 @@ void ConfigureServices(IServiceCollection services)
             });
 
     // Fix Chinese character being encoded in HTML output
-    services.AddSingleton(HtmlEncoder.Create(
-        UnicodeRanges.BasicLatin,
-        UnicodeRanges.CjkCompatibility,
-        UnicodeRanges.CjkCompatibilityForms,
-        UnicodeRanges.CjkCompatibilityIdeographs,
-        UnicodeRanges.CjkRadicalsSupplement,
-        UnicodeRanges.CjkStrokes,
-        UnicodeRanges.CjkUnifiedIdeographs,
-        UnicodeRanges.CjkUnifiedIdeographsExtensionA,
-        UnicodeRanges.CjkSymbolsandPunctuation,
-        UnicodeRanges.EnclosedCjkLettersandMonths,
-        UnicodeRanges.MiscellaneousSymbols,
-        UnicodeRanges.HalfwidthandFullwidthForms
-    ));
+    services.AddSingleton(Encoder.MoongladeHtmlEncoder);
 
     services.AddAntiforgery(options =>
     {
