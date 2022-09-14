@@ -10,7 +10,7 @@
 		<PackageReference Include="MediatR" Version="10.0.1" />
 		<FrameworkReference Include="Microsoft.AspNetCore.App" />
 		
-		<PackageReference Include="Microsoft.EntityFrameworkCore.Proxies" Version="6.0.8" />
+		<PackageReference Include="Microsoft.EntityFrameworkCore.Proxies" Version="6.0.9" />
 	</ItemGroup>
 
 </Project>
