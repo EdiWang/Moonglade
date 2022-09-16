@@ -11,10 +11,7 @@ public class GetApprovedCommentsQueryHandler : IRequestHandler<GetApprovedCommen
 {
     private readonly IRepository<CommentEntity> _commentRepo;
 
-    public GetApprovedCommentsQueryHandler(IRepository<CommentEntity> commentRepo)
-    {
-        _commentRepo = commentRepo;
-    }
+    public GetApprovedCommentsQueryHandler(IRepository<CommentEntity> commentRepo) => _commentRepo = commentRepo;
 
     public Task<IReadOnlyList<Comment>> Handle(GetApprovedCommentsQuery request, CancellationToken cancellationToken)
     {
