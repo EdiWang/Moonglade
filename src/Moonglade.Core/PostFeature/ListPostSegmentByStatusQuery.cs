@@ -6,12 +6,12 @@ public record ListPostSegmentByStatusQuery(PostStatus Status) : IRequest<IReadOn
 
 public class ListPostSegmentByStatusQueryHandler : IRequestHandler<ListPostSegmentByStatusQuery, IReadOnlyList<PostSegment>>
 {
-    private readonly IRepository<PostEntity> _postRepo;
-    public ListPostSegmentByStatusQueryHandler(IRepository<PostEntity> postRepo) => _postRepo = postRepo;
+    private readonly IRepository<PostEntity> _repo;
+    public ListPostSegmentByStatusQueryHandler(IRepository<PostEntity> repo) => _repo = repo;
 
-    public Task<IReadOnlyList<PostSegment>> Handle(ListPostSegmentByStatusQuery request, CancellationToken cancellationToken)
+    public Task<IReadOnlyList<PostSegment>> Handle(ListPostSegmentByStatusQuery request, CancellationToken ct)
     {
         var spec = new PostSpec(request.Status);
-        return _postRepo.SelectAsync(spec, PostSegment.EntitySelector);
+        return _repo.SelectAsync(spec, PostSegment.EntitySelector);
     }
 }

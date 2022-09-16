@@ -8,19 +8,19 @@ public record PurgeRecycledCommand : IRequest;
 public class PurgeRecycledCommandHandler : AsyncRequestHandler<PurgeRecycledCommand>
 {
     private readonly IBlogCache _cache;
-    private readonly IRepository<PostEntity> _postRepo;
+    private readonly IRepository<PostEntity> _repo;
 
-    public PurgeRecycledCommandHandler(IBlogCache cache, IRepository<PostEntity> postRepo)
+    public PurgeRecycledCommandHandler(IBlogCache cache, IRepository<PostEntity> repo)
     {
         _cache = cache;
-        _postRepo = postRepo;
+        _repo = repo;
     }
 
-    protected override async Task Handle(PurgeRecycledCommand request, CancellationToken cancellationToken)
+    protected override async Task Handle(PurgeRecycledCommand request, CancellationToken ct)
     {
         var spec = new PostSpec(true);
-        var posts = await _postRepo.ListAsync(spec);
-        await _postRepo.DeleteAsync(posts);
+        var posts = await _repo.ListAsync(spec);
+        await _repo.DeleteAsync(posts, ct);
 
         foreach (var guid in posts.Select(p => p.Id))
         {

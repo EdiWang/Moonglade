@@ -24,10 +24,10 @@ public class ListPostSegmentQuery : IRequest<(IReadOnlyList<PostSegment> Posts, 
 
 public class ListPostSegmentQueryHandler : IRequestHandler<ListPostSegmentQuery, (IReadOnlyList<PostSegment> Posts, int TotalRows)>
 {
-    private readonly IRepository<PostEntity> _postRepo;
-    public ListPostSegmentQueryHandler(IRepository<PostEntity> postRepo) => _postRepo = postRepo;
+    private readonly IRepository<PostEntity> _repo;
+    public ListPostSegmentQueryHandler(IRepository<PostEntity> repo) => _repo = repo;
 
-    public async Task<(IReadOnlyList<PostSegment> Posts, int TotalRows)> Handle(ListPostSegmentQuery request, CancellationToken cancellationToken)
+    public async Task<(IReadOnlyList<PostSegment> Posts, int TotalRows)> Handle(ListPostSegmentQuery request, CancellationToken ct)
     {
         if (request.PageSize < 1)
         {
@@ -41,7 +41,7 @@ public class ListPostSegmentQueryHandler : IRequestHandler<ListPostSegmentQuery,
         }
 
         var spec = new PostPagingSpec(request.PostStatus, request.Keyword, request.PageSize, request.Offset);
-        var posts = await _postRepo.SelectAsync(spec, PostSegment.EntitySelector);
+        var posts = await _repo.SelectAsync(spec, PostSegment.EntitySelector);
 
         Expression<Func<PostEntity, bool>> countExp = p => null == request.Keyword || p.Title.Contains(request.Keyword);
 
@@ -63,7 +63,7 @@ public class ListPostSegmentQueryHandler : IRequestHandler<ListPostSegmentQuery,
                 throw new ArgumentOutOfRangeException(nameof(request.PostStatus), request.PostStatus, null);
         }
 
-        var totalRows = _postRepo.Count(countExp);
+        var totalRows = _repo.Count(countExp);
         return (posts, totalRows);
     }
 }

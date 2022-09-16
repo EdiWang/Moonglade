@@ -7,10 +7,10 @@ public record SearchPostQuery(string Keyword) : IRequest<IReadOnlyList<PostDiges
 
 public class SearchPostQueryHandler : IRequestHandler<SearchPostQuery, IReadOnlyList<PostDigest>>
 {
-    private readonly IRepository<PostEntity> _postRepo;
-    public SearchPostQueryHandler(IRepository<PostEntity> postRepo) => _postRepo = postRepo;
+    private readonly IRepository<PostEntity> _repo;
+    public SearchPostQueryHandler(IRepository<PostEntity> repo) => _repo = repo;
 
-    public async Task<IReadOnlyList<PostDigest>> Handle(SearchPostQuery request, CancellationToken cancellationToken)
+    public async Task<IReadOnlyList<PostDigest>> Handle(SearchPostQuery request, CancellationToken ct)
     {
         if (null == request || string.IsNullOrWhiteSpace(request.Keyword))
         {
@@ -18,14 +18,14 @@ public class SearchPostQueryHandler : IRequestHandler<SearchPostQuery, IReadOnly
         }
 
         var postList = SearchByKeyword(request.Keyword);
-        var resultList = await postList.Select(PostDigest.EntitySelector).ToListAsync(cancellationToken);
+        var resultList = await postList.Select(PostDigest.EntitySelector).ToListAsync(ct);
 
         return resultList;
     }
 
     private IQueryable<PostEntity> SearchByKeyword(string keyword)
     {
-        var query = _postRepo.GetAsQueryable()
+        var query = _repo.GetAsQueryable()
             .Where(p => !p.IsDeleted && p.IsPublished).AsNoTracking();
 
         var str = Regex.Replace(keyword, @"\s+", " ");
