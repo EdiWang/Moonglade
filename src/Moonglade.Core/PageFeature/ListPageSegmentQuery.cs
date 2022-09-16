@@ -4,13 +4,13 @@ public record ListPageSegmentQuery : IRequest<IReadOnlyList<PageSegment>>;
 
 public class ListPageSegmentQueryHandler : IRequestHandler<ListPageSegmentQuery, IReadOnlyList<PageSegment>>
 {
-    private readonly IRepository<PageEntity> _pageRepo;
+    private readonly IRepository<PageEntity> _repo;
 
-    public ListPageSegmentQueryHandler(IRepository<PageEntity> pageRepo) => _pageRepo = pageRepo;
+    public ListPageSegmentQueryHandler(IRepository<PageEntity> repo) => _repo = repo;
 
-    public Task<IReadOnlyList<PageSegment>> Handle(ListPageSegmentQuery request, CancellationToken cancellationToken)
+    public Task<IReadOnlyList<PageSegment>> Handle(ListPageSegmentQuery request, CancellationToken ct)
     {
-        return _pageRepo.SelectAsync(page => new PageSegment
+        return _repo.SelectAsync(page => new PageSegment
         {
             Id = page.Id,
             CreateTimeUtc = page.CreateTimeUtc,

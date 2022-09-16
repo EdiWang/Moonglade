@@ -4,10 +4,10 @@ public record CreatePageCommand(EditPageRequest Payload) : IRequest<Guid>;
 
 public class CreatePageCommandHandler : IRequestHandler<CreatePageCommand, Guid>
 {
-    private readonly IRepository<PageEntity> _pageRepo;
-    public CreatePageCommandHandler(IRepository<PageEntity> pageRepo) => _pageRepo = pageRepo;
+    private readonly IRepository<PageEntity> _repo;
+    public CreatePageCommandHandler(IRepository<PageEntity> repo) => _repo = repo;
 
-    public async Task<Guid> Handle(CreatePageCommand request, CancellationToken cancellationToken)
+    public async Task<Guid> Handle(CreatePageCommand request, CancellationToken ct)
     {
         var uid = Guid.NewGuid();
         var page = new PageEntity
@@ -23,7 +23,7 @@ public class CreatePageCommandHandler : IRequestHandler<CreatePageCommand, Guid>
             IsPublished = request.Payload.IsPublished
         };
 
-        await _pageRepo.AddAsync(page, cancellationToken);
+        await _repo.AddAsync(page, ct);
 
         return uid;
     }

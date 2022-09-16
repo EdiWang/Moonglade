@@ -1,6 +1,6 @@
 ﻿namespace Moonglade.Core.PageFeature;
 
-public struct PageSegment
+public record PageSegment
 {
     public Guid Id { get; set; }
 

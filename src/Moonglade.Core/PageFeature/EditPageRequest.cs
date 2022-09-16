@@ -25,13 +25,8 @@ public class EditPageRequest
     public string CssContent { get; set; }
 
     [Display(Name = "Hide Sidebar")]
-    public bool HideSidebar { get; set; }
+    public bool HideSidebar { get; set; } = true;
 
     [Display(Name = "Publish")]
     public bool IsPublished { get; set; }
-
-    public EditPageRequest()
-    {
-        HideSidebar = true;
-    }
 }

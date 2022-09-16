@@ -4,9 +4,9 @@ public record DeletePageCommand(Guid Id) : IRequest;
 
 public class DeletePageCommandHandler : AsyncRequestHandler<DeletePageCommand>
 {
-    private readonly IRepository<PageEntity> _pageRepo;
-    public DeletePageCommandHandler(IRepository<PageEntity> pageRepo) => _pageRepo = pageRepo;
+    private readonly IRepository<PageEntity> _repo;
+    public DeletePageCommandHandler(IRepository<PageEntity> repo) => _repo = repo;
 
-    protected override async Task Handle(DeletePageCommand request, CancellationToken cancellationToken) =>
-        await _pageRepo.DeleteAsync(request.Id, cancellationToken);
+    protected override async Task Handle(DeletePageCommand request, CancellationToken ct) =>
+        await _repo.DeleteAsync(request.Id, ct);
 }
