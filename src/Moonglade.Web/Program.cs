@@ -132,9 +132,6 @@ void ConfigureServices(IServiceCollection services)
     });
 
     services.AddHealthChecks();
-    services.AddTransient<RequestBodyLoggingMiddleware>()
-            .AddTransient<ResponseBodyLoggingMiddleware>();
-
     services.AddPingback()
             .AddSyndication()
             .AddNotification()
@@ -273,12 +270,6 @@ void ConfigureMiddleware(IApplicationBuilder appBuilder, IServiceProvider servic
     appBuilder.UseIpRateLimiting();
     appBuilder.UseRouting();
     appBuilder.UseAuthentication().UseAuthorization();
-
-    if (app.Environment.IsDevelopment())
-    {
-        appBuilder.UseMiddleware<RequestBodyLoggingMiddleware>()
-                  .UseMiddleware<ResponseBodyLoggingMiddleware>();
-    }
 
     appBuilder.UseEndpoints(ConfigureEndpoints.BlogEndpoints);
 }
