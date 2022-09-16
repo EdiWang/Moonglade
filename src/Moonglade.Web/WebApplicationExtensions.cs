@@ -58,7 +58,7 @@ public static class WebApplicationExtensions
 
         try
         {
-            var iconData = await mediator.Send(new GetAssetDataQuery(AssetId.SiteIconBase64));
+            var iconData = await mediator.Send(new GetAssetQuery(AssetId.SiteIconBase64));
             MemoryStreamIconGenerator.GenerateIcons(iconData, env.WebRootPath, app.Logger);
         }
         catch (Exception e)
