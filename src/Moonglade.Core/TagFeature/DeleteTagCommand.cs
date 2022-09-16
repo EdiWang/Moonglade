@@ -16,17 +16,17 @@ public class DeleteTagCommandHandler : IRequestHandler<DeleteTagCommand, Operati
         _postTagRepo = postTagRepo;
     }
 
-    public async Task<OperationCode> Handle(DeleteTagCommand request, CancellationToken cancellationToken)
+    public async Task<OperationCode> Handle(DeleteTagCommand request, CancellationToken ct)
     {
-        var exists = await _tagRepo.AnyAsync(c => c.Id == request.Id);
+        var exists = await _tagRepo.AnyAsync(c => c.Id == request.Id, ct);
         if (!exists) return OperationCode.ObjectNotFound;
 
         // 1. Delete Post-Tag Association
         var postTags = await _postTagRepo.ListAsync(new PostTagSpec(request.Id));
-        await _postTagRepo.DeleteAsync(postTags, cancellationToken);
+        await _postTagRepo.DeleteAsync(postTags, ct);
 
         // 2. Delte Tag itslef
-        await _tagRepo.DeleteAsync(request.Id, cancellationToken);
+        await _tagRepo.DeleteAsync(request.Id, ct);
 
         return OperationCode.Done;
     }

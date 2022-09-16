@@ -6,19 +6,16 @@ public record GetHotTagsQuery(int Top) : IRequest<IReadOnlyList<KeyValuePair<Tag
 
 public class GetHotTagsQueryHandler : IRequestHandler<GetHotTagsQuery, IReadOnlyList<KeyValuePair<Tag, int>>>
 {
-    private readonly IRepository<TagEntity> _tagRepo;
+    private readonly IRepository<TagEntity> _repo;
 
-    public GetHotTagsQueryHandler(IRepository<TagEntity> tagRepo)
-    {
-        _tagRepo = tagRepo;
-    }
+    public GetHotTagsQueryHandler(IRepository<TagEntity> repo) => _repo = repo;
 
-    public async Task<IReadOnlyList<KeyValuePair<Tag, int>>> Handle(GetHotTagsQuery request, CancellationToken cancellationToken)
+    public async Task<IReadOnlyList<KeyValuePair<Tag, int>>> Handle(GetHotTagsQuery request, CancellationToken ct)
     {
-        if (!await _tagRepo.AnyAsync()) return new List<KeyValuePair<Tag, int>>();
+        if (!await _repo.AnyAsync(ct: ct)) return new List<KeyValuePair<Tag, int>>();
 
         var spec = new TagSpec(request.Top);
-        var tags = await _tagRepo.SelectAsync(spec, t =>
+        var tags = await _repo.SelectAsync(spec, t =>
             new KeyValuePair<Tag, int>(new()
             {
                 Id = t.Id,

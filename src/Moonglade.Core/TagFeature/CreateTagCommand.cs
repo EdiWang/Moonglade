@@ -7,18 +7,18 @@ public record CreateTagCommand(string Name) : IRequest<Tag>;
 
 public class CreateTagCommandHandler : IRequestHandler<CreateTagCommand, Tag>
 {
-    private readonly IRepository<TagEntity> _tagRepo;
+    private readonly IRepository<TagEntity> _repo;
 
-    public CreateTagCommandHandler(IRepository<TagEntity> tagRepo) => _tagRepo = tagRepo;
+    public CreateTagCommandHandler(IRepository<TagEntity> repo) => _repo = repo;
 
-    public async Task<Tag> Handle(CreateTagCommand request, CancellationToken cancellationToken)
+    public async Task<Tag> Handle(CreateTagCommand request, CancellationToken ct)
     {
         if (!Tag.ValidateName(request.Name)) return null;
 
         var normalizedName = Tag.NormalizeName(request.Name, Helper.TagNormalizationDictionary);
-        if (await _tagRepo.AnyAsync(t => t.NormalizedName == normalizedName))
+        if (await _repo.AnyAsync(t => t.NormalizedName == normalizedName, ct))
         {
-            return _tagRepo.SelectFirstOrDefault(new TagSpec(normalizedName), Tag.EntitySelector);
+            return _repo.SelectFirstOrDefault(new TagSpec(normalizedName), Tag.EntitySelector);
         }
 
         var newTag = new TagEntity
@@ -27,7 +27,7 @@ public class CreateTagCommandHandler : IRequestHandler<CreateTagCommand, Tag>
             NormalizedName = normalizedName
         };
 
-        var tag = await _tagRepo.AddAsync(newTag, cancellationToken);
+        var tag = await _repo.AddAsync(newTag, ct);
 
         return new()
         {

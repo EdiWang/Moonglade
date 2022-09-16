@@ -4,13 +4,13 @@ public record GetAssetQuery(Guid AssetId) : IRequest<string>;
 
 public class GetAssetQueryHandler : IRequestHandler<GetAssetQuery, string>
 {
-    private readonly IRepository<BlogAssetEntity> _repository;
+    private readonly IRepository<BlogAssetEntity> _repo;
 
-    public GetAssetQueryHandler(IRepository<BlogAssetEntity> repository) => _repository = repository;
+    public GetAssetQueryHandler(IRepository<BlogAssetEntity> repo) => _repo = repo;
 
-    public async Task<string> Handle(GetAssetQuery request, CancellationToken cancellationToken)
+    public async Task<string> Handle(GetAssetQuery request, CancellationToken ct)
     {
-        var asset = await _repository.GetAsync(request.AssetId);
+        var asset = await _repo.GetAsync(request.AssetId);
         return asset?.Base64Data;
     }
 }
