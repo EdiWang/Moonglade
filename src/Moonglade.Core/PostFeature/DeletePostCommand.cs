@@ -18,7 +18,7 @@ public class DeletePostCommandHandler : AsyncRequestHandler<DeletePostCommand>
     protected override async Task Handle(DeletePostCommand request, CancellationToken ct)
     {
         var (guid, softDelete) = request;
-        var post = await _repo.GetAsync(guid);
+        var post = await _repo.GetAsync(guid, ct);
         if (null == post) return;
 
         if (softDelete)

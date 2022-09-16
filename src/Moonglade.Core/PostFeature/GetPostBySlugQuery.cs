@@ -38,7 +38,7 @@ public class GetPostBySlugQueryHandler : IRequestHandler<GetPostBySlugQuery, Pos
             if (pid == Guid.Empty) return null;
 
             // Post is found, fill it's checksum so that next time the query can be run against checksum
-            var p = await _repo.GetAsync(pid);
+            var p = await _repo.GetAsync(pid, ct);
             p.HashCheckSum = slugCheckSum;
 
             await _repo.UpdateAsync(p, ct);

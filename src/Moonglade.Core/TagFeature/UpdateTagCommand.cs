@@ -14,7 +14,7 @@ public class UpdateTagCommandHandler : IRequestHandler<UpdateTagCommand, Operati
     public async Task<OperationCode> Handle(UpdateTagCommand request, CancellationToken ct)
     {
         var (id, name) = request;
-        var tag = await _repo.GetAsync(id);
+        var tag = await _repo.GetAsync(id, ct);
         if (null == tag) return OperationCode.ObjectNotFound;
 
         tag.DisplayName = name;

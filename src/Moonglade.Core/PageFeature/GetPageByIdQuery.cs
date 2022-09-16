@@ -10,7 +10,7 @@ public class GetPageByIdQueryHandler : IRequestHandler<GetPageByIdQuery, BlogPag
 
     public async Task<BlogPage> Handle(GetPageByIdQuery request, CancellationToken ct)
     {
-        var entity = await _repo.GetAsync(request.Id);
+        var entity = await _repo.GetAsync(request.Id, ct);
         if (entity == null) return null;
 
         var item = new BlogPage(entity);

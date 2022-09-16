@@ -11,7 +11,7 @@ public class UpdatePageCommandHandler : IRequestHandler<UpdatePageCommand, Guid>
     public async Task<Guid> Handle(UpdatePageCommand request, CancellationToken ct)
     {
         var (guid, payload) = request;
-        var page = await _repo.GetAsync(guid);
+        var page = await _repo.GetAsync(guid, ct);
         if (page is null)
         {
             throw new InvalidOperationException($"PageEntity with Id '{guid}' not found.");

@@ -12,5 +12,5 @@ public class GetPingbacksQueryHandler : IRequestHandler<GetPingbacksQuery, IRead
 
     public GetPingbacksQueryHandler(IRepository<PingbackEntity> repo) => _repo = repo;
 
-    public Task<IReadOnlyList<PingbackEntity>> Handle(GetPingbacksQuery request, CancellationToken cancellationToken) => _repo.ListAsync();
+    public Task<IReadOnlyList<PingbackEntity>> Handle(GetPingbacksQuery request, CancellationToken ct) => _repo.ListAsync(ct);
 }

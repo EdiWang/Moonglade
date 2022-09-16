@@ -10,7 +10,7 @@ public class UpdateStatisticCommandHandler : AsyncRequestHandler<UpdateStatistic
 
     protected override async Task Handle(UpdateStatisticCommand request, CancellationToken ct)
     {
-        var pp = await _repo.GetAsync(request.PostId);
+        var pp = await _repo.GetAsync(request.PostId, ct);
         if (pp is null) return;
 
         if (request.IsLike)

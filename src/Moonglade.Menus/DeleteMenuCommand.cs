@@ -14,7 +14,7 @@ public class DeleteMenuCommandHandler : AsyncRequestHandler<DeleteMenuCommand>
 
     protected override async Task Handle(DeleteMenuCommand request, CancellationToken ct)
     {
-        var menu = await _repo.GetAsync(request.Id);
+        var menu = await _repo.GetAsync(request.Id, ct);
         if (menu != null) await _repo.DeleteAsync(request.Id, ct);
     }
 }

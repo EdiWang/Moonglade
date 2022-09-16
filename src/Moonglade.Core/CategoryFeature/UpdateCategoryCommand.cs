@@ -21,7 +21,7 @@ public class UpdateCategoryCommandHandler : IRequestHandler<UpdateCategoryComman
 
     public async Task<OperationCode> Handle(UpdateCategoryCommand request, CancellationToken ct)
     {
-        var cat = await _repo.GetAsync(request.Id);
+        var cat = await _repo.GetAsync(request.Id, ct);
         if (cat is null) return OperationCode.ObjectNotFound;
 
         cat.RouteName = request.RouteName.Trim();

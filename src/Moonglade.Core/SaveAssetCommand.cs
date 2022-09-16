@@ -13,7 +13,7 @@ public class SaveAssetCommandHandler : INotificationHandler<SaveAssetCommand>
         if (request.AssetId == Guid.Empty) throw new ArgumentOutOfRangeException(nameof(request.AssetId));
         if (string.IsNullOrWhiteSpace(request.AssetBase64)) throw new ArgumentNullException(nameof(request.AssetBase64));
 
-        var entity = await _repo.GetAsync(request.AssetId);
+        var entity = await _repo.GetAsync(request.AssetId, ct);
 
         if (null == entity)
         {

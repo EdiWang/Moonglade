@@ -31,7 +31,7 @@ public class UpdatePostCommandHandler : IRequestHandler<UpdatePostCommand, PostE
     public async Task<PostEntity> Handle(UpdatePostCommand request, CancellationToken ct)
     {
         var (guid, postEditModel) = request;
-        var post = await _postRepo.GetAsync(guid);
+        var post = await _postRepo.GetAsync(guid, ct);
         if (null == post)
         {
             throw new InvalidOperationException($"Post {guid} is not found.");

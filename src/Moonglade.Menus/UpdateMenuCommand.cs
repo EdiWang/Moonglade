@@ -15,7 +15,7 @@ public class UpdateMenuCommandHandler : AsyncRequestHandler<UpdateMenuCommand>
 
     protected override async Task Handle(UpdateMenuCommand request, CancellationToken ct)
     {
-        var menu = await _repo.GetAsync(request.Payload.Id);
+        var menu = await _repo.GetAsync(request.Payload.Id, ct);
         if (menu is null)
         {
             throw new InvalidOperationException($"MenuEntity with Id '{request.Payload.Id}' not found.");

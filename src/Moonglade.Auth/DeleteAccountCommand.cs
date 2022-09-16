@@ -12,7 +12,7 @@ public class DeleteAccountCommandHandler : AsyncRequestHandler<DeleteAccountComm
 
     protected override async Task Handle(DeleteAccountCommand request, CancellationToken ct)
     {
-        var account = await _repo.GetAsync(request.Id);
+        var account = await _repo.GetAsync(request.Id, ct);
         if (account != null)
         {
             await _repo.DeleteAsync(request.Id, ct);

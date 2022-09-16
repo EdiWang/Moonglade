@@ -10,7 +10,7 @@ public class GetStatisticQueryHandler : IRequestHandler<GetStatisticQuery, (int 
 
     public async Task<(int Hits, int Likes)> Handle(GetStatisticQuery request, CancellationToken ct)
     {
-        var pp = await _repo.GetAsync(request.PostId);
+        var pp = await _repo.GetAsync(request.PostId, ct);
         return (pp.Hits, pp.Likes);
     }
 }

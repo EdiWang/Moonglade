@@ -15,7 +15,7 @@ public class DeleteThemeCommandHandler : IRequestHandler<DeleteThemeCommand, Ope
 
     public async Task<OperationCode> Handle(DeleteThemeCommand request, CancellationToken cancellationToken)
     {
-        var theme = await _repo.GetAsync(request.Id);
+        var theme = await _repo.GetAsync(request.Id, cancellationToken);
         if (null == theme) return OperationCode.ObjectNotFound;
         if (theme.ThemeType == ThemeType.System) return OperationCode.Canceled;
 

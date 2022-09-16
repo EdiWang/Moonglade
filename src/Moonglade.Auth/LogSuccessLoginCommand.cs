@@ -14,7 +14,7 @@ public class LogSuccessLoginCommandHandler : AsyncRequestHandler<LogSuccessLogin
     {
         var (id, ipAddress) = request;
 
-        var entity = await _accountRepo.GetAsync(id);
+        var entity = await _accountRepo.GetAsync(id, ct);
         if (entity is not null)
         {
             entity.LastLoginIp = ipAddress.Trim();

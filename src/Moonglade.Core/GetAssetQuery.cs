@@ -10,7 +10,7 @@ public class GetAssetQueryHandler : IRequestHandler<GetAssetQuery, string>
 
     public async Task<string> Handle(GetAssetQuery request, CancellationToken ct)
     {
-        var asset = await _repo.GetAsync(request.AssetId);
+        var asset = await _repo.GetAsync(request.AssetId, ct);
         return asset?.Base64Data;
     }
 }

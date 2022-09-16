@@ -20,7 +20,7 @@ public class ReplyCommentCommandHandler : IRequestHandler<ReplyCommentCommand, C
 
     public async Task<CommentReply> Handle(ReplyCommentCommand request, CancellationToken ct)
     {
-        var cmt = await _commentRepo.GetAsync(request.CommentId);
+        var cmt = await _commentRepo.GetAsync(request.CommentId, ct);
         if (cmt is null) throw new InvalidOperationException($"Comment {request.CommentId} is not found.");
 
         var id = Guid.NewGuid();

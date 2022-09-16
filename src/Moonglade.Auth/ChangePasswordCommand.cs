@@ -18,7 +18,7 @@ public class ChangePasswordCommandHandler : AsyncRequestHandler<ChangePasswordCo
             throw new ArgumentNullException(nameof(request.ClearPassword), "value must not be empty.");
         }
 
-        var account = await _accountRepo.GetAsync(request.Id);
+        var account = await _accountRepo.GetAsync(request.Id, ct);
         if (account is null)
         {
             throw new InvalidOperationException($"LocalAccountEntity with Id '{request.Id}' not found.");

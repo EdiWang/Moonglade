@@ -17,7 +17,7 @@ public class RestorePostCommandHandler : AsyncRequestHandler<RestorePostCommand>
 
     protected override async Task Handle(RestorePostCommand request, CancellationToken ct)
     {
-        var pp = await _repo.GetAsync(request.Id);
+        var pp = await _repo.GetAsync(request.Id, ct);
         if (null == pp) return;
 
         pp.IsDeleted = false;

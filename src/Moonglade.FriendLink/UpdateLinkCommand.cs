@@ -23,7 +23,7 @@ public class UpdateLinkCommandHandler : AsyncRequestHandler<UpdateLinkCommand>
             throw new InvalidOperationException($"{nameof(request.LinkUrl)} is not a valid url.");
         }
 
-        var link = await _repo.GetAsync(request.Id);
+        var link = await _repo.GetAsync(request.Id, ct);
         if (link is not null)
         {
             link.Title = request.Title;

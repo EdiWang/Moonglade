@@ -6,11 +6,11 @@ public interface IRepository<T> //where T : class
 {
     Task Clear(CancellationToken ct = default);
 
-    ValueTask<T> GetAsync(object key);
+    ValueTask<T> GetAsync(object key, CancellationToken ct = default);
 
     Task<T> GetAsync(Expression<Func<T, bool>> condition);
 
-    Task<IReadOnlyList<T>> ListAsync();
+    Task<IReadOnlyList<T>> ListAsync(CancellationToken ct = default);
 
     Task<IReadOnlyList<T>> ListAsync(ISpecification<T> spec);
 
