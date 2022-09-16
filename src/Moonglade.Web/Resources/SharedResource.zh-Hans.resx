@@ -897,4 +897,7 @@
   <data name="Your name" xml:space="preserve">
     <value>博主名字</value>
   </data>
+  <data name="Center" xml:space="preserve">
+    <value>剧中</value>
+  </data>
 </root>
