@@ -22,11 +22,11 @@ public class AddLinkCommand : IRequest
 
 public class AddLinkCommandHandler : AsyncRequestHandler<AddLinkCommand>
 {
-    private readonly IRepository<FriendLinkEntity> _friendlinkRepo;
+    private readonly IRepository<FriendLinkEntity> _repo;
 
-    public AddLinkCommandHandler(IRepository<FriendLinkEntity> friendlinkRepo) => _friendlinkRepo = friendlinkRepo;
+    public AddLinkCommandHandler(IRepository<FriendLinkEntity> repo) => _repo = repo;
 
-    protected override async Task Handle(AddLinkCommand request, CancellationToken cancellationToken)
+    protected override async Task Handle(AddLinkCommand request, CancellationToken ct)
     {
         if (!Uri.IsWellFormedUriString(request.LinkUrl, UriKind.Absolute))
         {
@@ -40,6 +40,6 @@ public class AddLinkCommandHandler : AsyncRequestHandler<AddLinkCommand>
             Title = request.Title
         };
 
-        await _friendlinkRepo.AddAsync(link, cancellationToken);
+        await _repo.AddAsync(link, ct);
     }
 }

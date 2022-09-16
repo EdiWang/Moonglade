@@ -8,10 +8,10 @@ public record DeleteLinkCommand(Guid Id) : IRequest;
 
 public class DeleteLinkCommandHandler : AsyncRequestHandler<DeleteLinkCommand>
 {
-    private readonly IRepository<FriendLinkEntity> _friendlinkRepo;
+    private readonly IRepository<FriendLinkEntity> _repo;
 
-    public DeleteLinkCommandHandler(IRepository<FriendLinkEntity> friendlinkRepo) => _friendlinkRepo = friendlinkRepo;
+    public DeleteLinkCommandHandler(IRepository<FriendLinkEntity> repo) => _repo = repo;
 
-    protected override Task Handle(DeleteLinkCommand request, CancellationToken cancellationToken) =>
-        _friendlinkRepo.DeleteAsync(request.Id, cancellationToken);
+    protected override Task Handle(DeleteLinkCommand request, CancellationToken ct) =>
+        _repo.DeleteAsync(request.Id, ct);
 }

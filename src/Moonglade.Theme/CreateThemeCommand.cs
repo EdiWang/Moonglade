@@ -9,14 +9,14 @@ public record CreateThemeCommand(string Name, IDictionary<string, string> Rules)
 
 public class CreateThemeCommandHandler : IRequestHandler<CreateThemeCommand, int>
 {
-    private readonly IRepository<BlogThemeEntity> _themeRepo;
+    private readonly IRepository<BlogThemeEntity> _repo;
 
-    public CreateThemeCommandHandler(IRepository<BlogThemeEntity> themeRepo) => _themeRepo = themeRepo;
+    public CreateThemeCommandHandler(IRepository<BlogThemeEntity> repo) => _repo = repo;
 
-    public async Task<int> Handle(CreateThemeCommand request, CancellationToken cancellationToken)
+    public async Task<int> Handle(CreateThemeCommand request, CancellationToken ct)
     {
         var (name, dictionary) = request;
-        if (await _themeRepo.AnyAsync(p => p.ThemeName == name.Trim())) return 0;
+        if (await _repo.AnyAsync(p => p.ThemeName == name.Trim(), ct)) return 0;
 
         var rules = JsonSerializer.Serialize(dictionary);
         var blogTheme = new BlogThemeEntity
@@ -26,7 +26,7 @@ public class CreateThemeCommandHandler : IRequestHandler<CreateThemeCommand, int
             ThemeType = ThemeType.User
         };
 
-        await _themeRepo.AddAsync(blogTheme, cancellationToken);
+        await _repo.AddAsync(blogTheme, ct);
         return blogTheme.Id;
     }
 }
