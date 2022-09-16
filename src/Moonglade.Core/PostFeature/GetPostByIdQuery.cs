@@ -6,17 +6,14 @@ public record GetPostByIdQuery(Guid Id) : IRequest<Post>;
 
 public class GetPostByIdQueryHandler : IRequestHandler<GetPostByIdQuery, Post>
 {
-    private readonly IRepository<PostEntity> _postRepo;
+    private readonly IRepository<PostEntity> _repo;
 
-    public GetPostByIdQueryHandler(IRepository<PostEntity> postRepo)
-    {
-        _postRepo = postRepo;
-    }
+    public GetPostByIdQueryHandler(IRepository<PostEntity> repo) => _repo = repo;
 
-    public Task<Post> Handle(GetPostByIdQuery request, CancellationToken cancellationToken)
+    public Task<Post> Handle(GetPostByIdQuery request, CancellationToken ct)
     {
         var spec = new PostSpec(request.Id);
-        var post = _postRepo.SelectFirstOrDefaultAsync(spec, Post.EntitySelector);
+        var post = _repo.SelectFirstOrDefaultAsync(spec, Post.EntitySelector);
         return post;
     }
 }

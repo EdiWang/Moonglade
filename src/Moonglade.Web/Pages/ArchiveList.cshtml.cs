@@ -13,7 +13,8 @@ public class ArchiveListModel : PageModel
 
     public async Task<IActionResult> OnGetAsync(int year, int? month)
     {
-        if (year > DateTime.UtcNow.Year) return BadRequest();
+        if (year < DateTime.MinValue.Year || year > DateTime.UtcNow.Year) return BadRequest();
+        if (month is > 12 or < 0) return BadRequest();
 
         IReadOnlyList<PostDigest> model;
 

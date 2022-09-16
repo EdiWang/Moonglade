@@ -3,33 +3,19 @@ using Moonglade.Utils;
 
 namespace Moonglade.Core.PostFeature;
 
-public class ListByTagQuery : IRequest<IReadOnlyList<PostDigest>>
-{
-    public ListByTagQuery(int tagId, int pageSize, int pageIndex)
-    {
-        TagId = tagId;
-        PageSize = pageSize;
-        PageIndex = pageIndex;
-    }
-
-    public int TagId { get; set; }
-
-    public int PageSize { get; set; }
-
-    public int PageIndex { get; set; }
-}
+public record ListByTagQuery(int TagId, int PageSize, int PageIndex) : IRequest<IReadOnlyList<PostDigest>>;
 
 public class ListByTagQueryHandler : IRequestHandler<ListByTagQuery, IReadOnlyList<PostDigest>>
 {
-    private readonly IRepository<PostTagEntity> _postTagRepo;
-    public ListByTagQueryHandler(IRepository<PostTagEntity> postTagRepo) => _postTagRepo = postTagRepo;
+    private readonly IRepository<PostTagEntity> _repo;
+    public ListByTagQueryHandler(IRepository<PostTagEntity> repo) => _repo = repo;
 
-    public Task<IReadOnlyList<PostDigest>> Handle(ListByTagQuery request, CancellationToken cancellationToken)
+    public Task<IReadOnlyList<PostDigest>> Handle(ListByTagQuery request, CancellationToken ct)
     {
         if (request.TagId <= 0) throw new ArgumentOutOfRangeException(nameof(request.TagId));
         Helper.ValidatePagingParameters(request.PageSize, request.PageIndex);
 
-        var posts = _postTagRepo.SelectAsync(new PostTagSpec(request.TagId, request.PageSize, request.PageIndex), PostDigest.EntitySelectorByTag);
+        var posts = _repo.SelectAsync(new PostTagSpec(request.TagId, request.PageSize, request.PageIndex), PostDigest.EntitySelectorByTag);
         return posts;
     }
 }

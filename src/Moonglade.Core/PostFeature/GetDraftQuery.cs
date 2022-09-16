@@ -6,17 +6,14 @@ public record GetDraftQuery(Guid Id) : IRequest<Post>;
 
 public class GetDraftQueryHandler : IRequestHandler<GetDraftQuery, Post>
 {
-    private readonly IRepository<PostEntity> _postRepo;
+    private readonly IRepository<PostEntity> _repo;
 
-    public GetDraftQueryHandler(IRepository<PostEntity> postRepo)
-    {
-        _postRepo = postRepo;
-    }
+    public GetDraftQueryHandler(IRepository<PostEntity> repo) => _repo = repo;
 
-    public Task<Post> Handle(GetDraftQuery request, CancellationToken cancellationToken)
+    public Task<Post> Handle(GetDraftQuery request, CancellationToken ct)
     {
         var spec = new PostSpec(request.Id);
-        var post = _postRepo.SelectFirstOrDefaultAsync(spec, Post.EntitySelector);
+        var post = _repo.SelectFirstOrDefaultAsync(spec, Post.EntitySelector);
         return post;
     }
 }
