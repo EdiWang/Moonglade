@@ -4,6 +4,8 @@
 		<TargetFramework>net6.0</TargetFramework>
 		<PackageLicenseExpression>GNU General Public License v3.0</PackageLicenseExpression>
 		<ImplicitUsings>enable</ImplicitUsings>
+		<PackageProjectUrl>https://github.com/EdiWang/Moonglade</PackageProjectUrl>
+		<RepositoryUrl>https://github.com/EdiWang/Moonglade</RepositoryUrl>
 	</PropertyGroup>
 
 	<ItemGroup>
