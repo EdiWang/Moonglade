@@ -106,6 +106,7 @@ void ConfigureServices(IServiceCollection services)
             .AddDataAnnotationsLocalization(options => options.DataAnnotationLocalizerProvider = (_, factory) => factory.Create(typeof(SharedResource)))
             .AddRazorPagesOptions(options =>
             {
+                options.Conventions.AddPageRoute("/Admin/Post", "admin");
                 options.Conventions.AuthorizeFolder("/Admin");
                 options.Conventions.AuthorizeFolder("/Settings");
             });
@@ -252,9 +253,6 @@ void ConfigureMiddleware(IApplicationBuilder appBuilder)
         options.AllowedExtensions = app.Configuration.GetSection("ImageStorage:AllowedExtensions").Get<string[]>();
         options.DefaultImagePath = app.Configuration["ImageStorage:DefaultImagePath"];
     });
-
-    var rewriteOptions = new RewriteOptions().AddRedirect("^admin$", "admin/post");
-    appBuilder.UseRewriter(rewriteOptions);
 
     appBuilder.UseStaticFiles();
     appBuilder.UseSession().UseCaptchaImage(options =>
