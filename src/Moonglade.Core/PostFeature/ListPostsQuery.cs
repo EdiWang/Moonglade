@@ -19,7 +19,7 @@ public class ListPostsQuery : IRequest<IReadOnlyList<PostDigest>>
 
     public Guid? CatId { get; set; }
 
-    public PostsSortBy SortBy { get; set; } 
+    public PostsSortBy SortBy { get; set; }
 }
 
 public class ListPostsQueryHandler : IRequestHandler<ListPostsQuery, IReadOnlyList<PostDigest>>

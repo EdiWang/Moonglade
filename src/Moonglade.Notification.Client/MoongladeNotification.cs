@@ -1,9 +1,9 @@
-﻿using System.Text.Json;
-using Microsoft.Extensions.Logging;
+﻿using Microsoft.Extensions.Logging;
 using Moonglade.Configuration;
 using Moonglade.Data.Entities;
 using Moonglade.Data.Exporting.Exporters;
 using Moonglade.Data.Infrastructure;
+using System.Text.Json;
 
 namespace Moonglade.Notification.Client;
 

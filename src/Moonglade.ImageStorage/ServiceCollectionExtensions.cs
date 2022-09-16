@@ -90,8 +90,8 @@ public static class ServiceCollectionExtensions
                 .AddScoped<IFileNameGenerator>(_ => new GuidFileNameGenerator(Guid.NewGuid()))
                 .AddSingleton(_ => new MinioBlobConfiguration(
                     settings.EndPoint,
-                    settings.AccessKey, 
-                    settings.SecretKey, 
+                    settings.AccessKey,
+                    settings.SecretKey,
                     settings.BucketName,
                     settings.WithSSL));
     }
@@ -103,8 +103,8 @@ public static class ServiceCollectionExtensions
                 .AddSingleton<IBlogImageStorage, QiniuBlobImageStorage>()
                 .AddSingleton<IMacSettings>(new MacSettings(settings.AccessKey, settings.SecretKey))
                 .AddSingleton<IQiniuConfiguration>(_ => new QiniuBlobConfiguration(
-                    settings.EndPoint, 
-                    settings.BucketName, 
+                    settings.EndPoint,
+                    settings.BucketName,
                     settings.WithSSL));
     }
 }
