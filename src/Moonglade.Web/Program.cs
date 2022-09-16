@@ -40,7 +40,7 @@ var app = builder.Build();
 
 await FirstRun();
 
-ConfigureMiddleware(app, app.Services);
+ConfigureMiddleware(app);
 
 app.Run();
 
@@ -188,7 +188,7 @@ async Task FirstRun()
     }
 }
 
-void ConfigureMiddleware(IApplicationBuilder appBuilder, IServiceProvider services)
+void ConfigureMiddleware(IApplicationBuilder appBuilder)
 {
     appBuilder.UseForwardedHeaders();
 
@@ -196,7 +196,7 @@ void ConfigureMiddleware(IApplicationBuilder appBuilder, IServiceProvider servic
     {
         app.Logger.LogWarning($"Running in environment: {app.Environment.EnvironmentName}. Application Insights disabled.");
 
-        var tc = services.GetRequiredService<TelemetryConfiguration>();
+        var tc = app.Services.GetRequiredService<TelemetryConfiguration>();
         tc.DisableTelemetry = true;
         TelemetryDebugWriter.IsTracingDisabled = true;
     }
@@ -231,10 +231,7 @@ void ConfigureMiddleware(IApplicationBuilder appBuilder, IServiceProvider servic
 
     if (app.Environment.IsDevelopment())
     {
-        appBuilder.UseSwagger().UseSwaggerUI(c =>
-        {
-            c.SwaggerEndpoint("/swagger/v1/swagger.json", "Moonglade API V1");
-        });
+        appBuilder.UseSwagger().UseSwaggerUI(c => c.SwaggerEndpoint("/swagger/v1/swagger.json", "Moonglade API V1"));
         appBuilder.UseRouteDebugger().UseDeveloperExceptionPage();
     }
     else
