@@ -11,7 +11,7 @@ public class ChangePasswordCommandHandler : AsyncRequestHandler<ChangePasswordCo
     private readonly IRepository<LocalAccountEntity> _accountRepo;
     public ChangePasswordCommandHandler(IRepository<LocalAccountEntity> accountRepo) => _accountRepo = accountRepo;
 
-    protected override async Task Handle(ChangePasswordCommand request, CancellationToken cancellationToken)
+    protected override async Task Handle(ChangePasswordCommand request, CancellationToken ct)
     {
         if (string.IsNullOrWhiteSpace(request.ClearPassword))
         {
@@ -28,6 +28,6 @@ public class ChangePasswordCommandHandler : AsyncRequestHandler<ChangePasswordCo
         account.PasswordSalt = newSalt;
         account.PasswordHash = Helper.HashPassword2(request.ClearPassword, newSalt);
 
-        await _accountRepo.UpdateAsync(account, cancellationToken);
+        await _accountRepo.UpdateAsync(account, ct);
     }
 }

@@ -13,7 +13,7 @@ public class GetApprovedCommentsQueryHandler : IRequestHandler<GetApprovedCommen
 
     public GetApprovedCommentsQueryHandler(IRepository<CommentEntity> commentRepo) => _commentRepo = commentRepo;
 
-    public Task<IReadOnlyList<Comment>> Handle(GetApprovedCommentsQuery request, CancellationToken cancellationToken)
+    public Task<IReadOnlyList<Comment>> Handle(GetApprovedCommentsQuery request, CancellationToken ct)
     {
         return _commentRepo.SelectAsync(new CommentSpec(request.PostId), c => new Comment
         {

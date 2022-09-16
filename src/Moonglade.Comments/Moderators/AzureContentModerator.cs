@@ -7,10 +7,7 @@ public class AzureContentModerator : ICommentModerator, IDisposable
 {
     private readonly IContentModeratorClient _client;
 
-    public AzureContentModerator(IContentModeratorClient client)
-    {
-        _client = client;
-    }
+    public AzureContentModerator(IContentModeratorClient client) => _client = client;
 
     public async Task<string> ModerateContent(string input)
     {
@@ -46,8 +43,5 @@ public class AzureContentModerator : ICommentModerator, IDisposable
         return false;
     }
 
-    public void Dispose()
-    {
-        _client?.Dispose();
-    }
+    public void Dispose() => _client?.Dispose();
 }

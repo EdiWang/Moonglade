@@ -10,7 +10,7 @@ public class LogSuccessLoginCommandHandler : AsyncRequestHandler<LogSuccessLogin
     private readonly IRepository<LocalAccountEntity> _accountRepo;
     public LogSuccessLoginCommandHandler(IRepository<LocalAccountEntity> accountRepo) => _accountRepo = accountRepo;
 
-    protected override async Task Handle(LogSuccessLoginCommand request, CancellationToken cancellationToken)
+    protected override async Task Handle(LogSuccessLoginCommand request, CancellationToken ct)
     {
         var (id, ipAddress) = request;
 
@@ -19,7 +19,7 @@ public class LogSuccessLoginCommandHandler : AsyncRequestHandler<LogSuccessLogin
         {
             entity.LastLoginIp = ipAddress.Trim();
             entity.LastLoginTimeUtc = DateTime.UtcNow;
-            await _accountRepo.UpdateAsync(entity, cancellationToken);
+            await _accountRepo.UpdateAsync(entity, ct);
         }
     }
 }

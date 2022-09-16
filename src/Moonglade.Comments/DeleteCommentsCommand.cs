@@ -18,7 +18,7 @@ public class DeleteCommentsCommandHandler : AsyncRequestHandler<DeleteCommentsCo
         _commentReplyRepo = commentReplyRepo;
     }
 
-    protected override async Task Handle(DeleteCommentsCommand request, CancellationToken cancellationToken)
+    protected override async Task Handle(DeleteCommentsCommand request, CancellationToken ct)
     {
         if (request.Ids is null || !request.Ids.Any())
         {
@@ -33,11 +33,11 @@ public class DeleteCommentsCommandHandler : AsyncRequestHandler<DeleteCommentsCo
             var cReplies = await _commentReplyRepo.ListAsync(new CommentReplySpec(cmt.Id));
             if (cReplies.Any())
             {
-                await _commentReplyRepo.DeleteAsync(cReplies, cancellationToken);
+                await _commentReplyRepo.DeleteAsync(cReplies, ct);
             }
 
             // 2. Delete comment itself
-            await _commentRepo.DeleteAsync(cmt, cancellationToken);
+            await _commentRepo.DeleteAsync(cmt, ct);
         }
     }
 }

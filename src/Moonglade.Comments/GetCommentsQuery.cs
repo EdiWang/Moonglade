@@ -12,7 +12,7 @@ public class GetCommentsQueryHandler : IRequestHandler<GetCommentsQuery, IReadOn
     private readonly IRepository<CommentEntity> _commentRepo;
     public GetCommentsQueryHandler(IRepository<CommentEntity> commentRepo) => _commentRepo = commentRepo;
 
-    public Task<IReadOnlyList<CommentDetailedItem>> Handle(GetCommentsQuery request, CancellationToken cancellationToken)
+    public Task<IReadOnlyList<CommentDetailedItem>> Handle(GetCommentsQuery request, CancellationToken ct)
     {
         if (request.PageSize < 1)
         {

@@ -15,7 +15,7 @@ public class DeletePostCommandHandler : AsyncRequestHandler<DeletePostCommand>
         _cache = cache;
     }
 
-    protected override async Task Handle(DeletePostCommand request, CancellationToken cancellationToken)
+    protected override async Task Handle(DeletePostCommand request, CancellationToken ct)
     {
         var (guid, softDelete) = request;
         var post = await _postRepo.GetAsync(guid);
@@ -24,11 +24,11 @@ public class DeletePostCommandHandler : AsyncRequestHandler<DeletePostCommand>
         if (softDelete)
         {
             post.IsDeleted = true;
-            await _postRepo.UpdateAsync(post, cancellationToken);
+            await _postRepo.UpdateAsync(post, ct);
         }
         else
         {
-            await _postRepo.DeleteAsync(post, cancellationToken);
+            await _postRepo.DeleteAsync(post, ct);
         }
 
         _cache.Remove(CacheDivision.Post, guid.ToString());

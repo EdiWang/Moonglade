@@ -12,8 +12,6 @@ public class GetPagesQueryHandler : IRequestHandler<GetPagesQuery, IReadOnlyList
 
     public async Task<IReadOnlyList<BlogPage>> Handle(GetPagesQuery request, CancellationToken cancellationToken)
     {
-        if (request.Top <= 0) throw new ArgumentOutOfRangeException(nameof(request.Top));
-
         var pages = await _pageRepo.ListAsync(new PageSpec(request.Top));
         var list = pages.Select(p => new BlogPage(p)).ToList();
         return list;

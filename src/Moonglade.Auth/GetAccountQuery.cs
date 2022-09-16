@@ -11,7 +11,7 @@ public class GetAccountQueryHandler : IRequestHandler<GetAccountQuery, Account>
 
     public GetAccountQueryHandler(IRepository<LocalAccountEntity> accountRepo) => _accountRepo = accountRepo;
 
-    public async Task<Account> Handle(GetAccountQuery request, CancellationToken cancellationToken)
+    public async Task<Account> Handle(GetAccountQuery request, CancellationToken ct)
     {
         var entity = await _accountRepo.GetAsync(request.Id);
         var item = new Account(entity);

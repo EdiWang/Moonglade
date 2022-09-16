@@ -54,12 +54,12 @@ public abstract class DbContextRepository<T> : IRepository<T> where T : class
     public int Count(Expression<Func<T, bool>> condition) => DbContext.Set<T>().Count(condition);
     public Task<int> CountAsync(ISpecification<T> spec) => ApplySpecification(spec).CountAsync();
 
-    public Task<bool> AnyAsync(ISpecification<T> spec) => ApplySpecification(spec).AnyAsync();
+    public Task<bool> AnyAsync(ISpecification<T> spec, CancellationToken ct = default) => ApplySpecification(spec).AnyAsync(cancellationToken: ct);
 
-    public Task<bool> AnyAsync(Expression<Func<T, bool>> condition = null) =>
+    public Task<bool> AnyAsync(Expression<Func<T, bool>> condition = null, CancellationToken ct = default) =>
         null != condition ?
-            DbContext.Set<T>().AnyAsync(condition) :
-            DbContext.Set<T>().AnyAsync();
+            DbContext.Set<T>().AnyAsync(condition, cancellationToken: ct) :
+            DbContext.Set<T>().AnyAsync(cancellationToken: ct);
 
     public async Task<IReadOnlyList<TResult>> SelectAsync<TResult>(Expression<Func<T, TResult>> selector) =>
         await DbContext.Set<T>().AsNoTracking().Select(selector).ToListAsync();

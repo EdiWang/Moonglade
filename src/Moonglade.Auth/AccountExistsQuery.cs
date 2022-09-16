@@ -11,6 +11,6 @@ public class AccountExistsQueryHandler : IRequestHandler<AccountExistsQuery, boo
 
     public AccountExistsQueryHandler(IRepository<LocalAccountEntity> accountRepo) => _accountRepo = accountRepo;
 
-    public Task<bool> Handle(AccountExistsQuery request, CancellationToken cancellationToken) =>
-        _accountRepo.AnyAsync(p => p.Username == request.Username.ToLower());
+    public Task<bool> Handle(AccountExistsQuery request, CancellationToken ct) =>
+        _accountRepo.AnyAsync(p => p.Username == request.Username.ToLower(), ct);
 }

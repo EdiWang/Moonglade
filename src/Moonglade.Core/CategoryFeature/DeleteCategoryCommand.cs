@@ -21,15 +21,15 @@ public class DeleteCategoryCommandHandler : IRequestHandler<DeleteCategoryComman
         _cache = cache;
     }
 
-    public async Task<OperationCode> Handle(DeleteCategoryCommand request, CancellationToken cancellationToken)
+    public async Task<OperationCode> Handle(DeleteCategoryCommand request, CancellationToken ct)
     {
-        var exists = await _catRepo.AnyAsync(c => c.Id == request.Id);
+        var exists = await _catRepo.AnyAsync(c => c.Id == request.Id, ct);
         if (!exists) return OperationCode.ObjectNotFound;
 
         var pcs = await _postCatRepo.GetAsync(pc => pc.CategoryId == request.Id);
-        if (pcs is not null) await _postCatRepo.DeleteAsync(pcs, cancellationToken);
+        if (pcs is not null) await _postCatRepo.DeleteAsync(pcs, ct);
 
-        await _catRepo.DeleteAsync(request.Id, cancellationToken);
+        await _catRepo.DeleteAsync(request.Id, ct);
         _cache.Remove(CacheDivision.General, "allcats");
 
         return OperationCode.Done;

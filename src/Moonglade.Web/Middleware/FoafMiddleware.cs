@@ -39,10 +39,10 @@ public class FoafMiddleware
                 PhotoUrl = linkGenerator.GetUriByAction(context, "Avatar", "Assets")
             };
             var requestUrl = GetUri(context.Request).ToString();
-            var xml = await mediator.Send(new WriterFoafCommand(foafDoc, requestUrl, friends));
+            var xml = await mediator.Send(new WriteFoafCommand(foafDoc, requestUrl, friends));
 
             //[ResponseCache(Duration = 3600)]
-            context.Response.ContentType = WriterFoafCommand.ContentType;
+            context.Response.ContentType = WriteFoafCommand.ContentType;
             await context.Response.WriteAsync(xml, context.RequestAborted);
         }
         else

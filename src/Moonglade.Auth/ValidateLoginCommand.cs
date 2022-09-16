@@ -12,18 +12,8 @@ public class ValidateLoginCommandHandler : IRequestHandler<ValidateLoginCommand,
 
     public ValidateLoginCommandHandler(IRepository<LocalAccountEntity> accountRepo) => _accountRepo = accountRepo;
 
-    public async Task<Guid> Handle(ValidateLoginCommand request, CancellationToken cancellationToken)
+    public async Task<Guid> Handle(ValidateLoginCommand request, CancellationToken ct)
     {
-        if (string.IsNullOrWhiteSpace(request.Username))
-        {
-            throw new ArgumentNullException(nameof(request.Username), "value must not be empty.");
-        }
-
-        if (string.IsNullOrWhiteSpace(request.InputPassword))
-        {
-            throw new ArgumentNullException(nameof(request.InputPassword), "value must not be empty.");
-        }
-
         var account = await _accountRepo.GetAsync(p => p.Username == request.Username);
         if (account is null) return Guid.Empty;
 
@@ -40,7 +30,7 @@ public class ValidateLoginCommandHandler : IRequestHandler<ValidateLoginCommand,
             account.PasswordSalt = salt;
             account.PasswordHash = newHash;
 
-            await _accountRepo.UpdateAsync(account, cancellationToken);
+            await _accountRepo.UpdateAsync(account, ct);
         }
 
         return valid ? account.Id : Guid.Empty;

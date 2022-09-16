@@ -900,4 +900,7 @@
   <data name="Center" xml:space="preserve">
     <value>剧中</value>
   </data>
+  <data name="Export" xml:space="preserve">
+    <value>导出</value>
+  </data>
 </root>

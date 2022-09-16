@@ -13,13 +13,7 @@ public class LocalWordFilterModerator : ICommentModerator
         _filter = new MaskWordFilter(sw);
     }
 
-    public Task<string> ModerateContent(string input)
-    {
-        return Task.FromResult(_filter.FilterContent(input));
-    }
+    public Task<string> ModerateContent(string input) => Task.FromResult(_filter.FilterContent(input));
 
-    public Task<bool> HasBadWord(params string[] input)
-    {
-        return Task.FromResult(input.Any(s => _filter.ContainsAnyWord(s)));
-    }
+    public Task<bool> HasBadWord(params string[] input) => Task.FromResult(input.Any(s => _filter.ContainsAnyWord(s)));
 }
