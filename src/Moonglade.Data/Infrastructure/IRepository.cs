@@ -6,11 +6,11 @@ public interface IRepository<T> //where T : class
 {
     Task Clear(CancellationToken ct = default);
 
-    ValueTask<T> GetAsync(object key);
+    ValueTask<T> GetAsync(object key, CancellationToken ct = default);
 
     Task<T> GetAsync(Expression<Func<T, bool>> condition);
 
-    Task<IReadOnlyList<T>> ListAsync();
+    Task<IReadOnlyList<T>> ListAsync(CancellationToken ct = default);
 
     Task<IReadOnlyList<T>> ListAsync(ISpecification<T> spec);
 
@@ -32,9 +32,9 @@ public interface IRepository<T> //where T : class
 
     Task<int> CountAsync(ISpecification<T> spec);
 
-    Task<bool> AnyAsync(ISpecification<T> spec);
+    Task<bool> AnyAsync(ISpecification<T> spec, CancellationToken ct = default);
 
-    Task<bool> AnyAsync(Expression<Func<T, bool>> condition = null);
+    Task<bool> AnyAsync(Expression<Func<T, bool>> condition = null, CancellationToken ct = default);
 
     Task<IReadOnlyList<TResult>> SelectAsync<TResult>(
         Expression<Func<T, TResult>> selector);

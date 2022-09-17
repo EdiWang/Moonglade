@@ -9,13 +9,13 @@ public record UpdateMenuCommand(EditMenuRequest Payload) : IRequest;
 
 public class UpdateMenuCommandHandler : AsyncRequestHandler<UpdateMenuCommand>
 {
-    private readonly IRepository<MenuEntity> _menuRepo;
+    private readonly IRepository<MenuEntity> _repo;
 
-    public UpdateMenuCommandHandler(IRepository<MenuEntity> menuRepo) => _menuRepo = menuRepo;
+    public UpdateMenuCommandHandler(IRepository<MenuEntity> repo) => _repo = repo;
 
-    protected override async Task Handle(UpdateMenuCommand request, CancellationToken cancellationToken)
+    protected override async Task Handle(UpdateMenuCommand request, CancellationToken ct)
     {
-        var menu = await _menuRepo.GetAsync(request.Payload.Id);
+        var menu = await _repo.GetAsync(request.Payload.Id, ct);
         if (menu is null)
         {
             throw new InvalidOperationException($"MenuEntity with Id '{request.Payload.Id}' not found.");
@@ -44,6 +44,6 @@ public class UpdateMenuCommandHandler : AsyncRequestHandler<UpdateMenuCommand>
             menu.SubMenus = sms.ToList();
         }
 
-        await _menuRepo.UpdateAsync(menu, cancellationToken);
+        await _repo.UpdateAsync(menu, ct);
     }
 }

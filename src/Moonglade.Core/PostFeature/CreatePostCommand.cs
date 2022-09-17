@@ -31,7 +31,7 @@ public class CreatePostCommandHandler : IRequestHandler<CreatePostCommand, PostE
         _blogConfig = blogConfig;
     }
 
-    public async Task<PostEntity> Handle(CreatePostCommand request, CancellationToken cancellationToken)
+    public async Task<PostEntity> Handle(CreatePostCommand request, CancellationToken ct)
     {
         var abs = ContentProcessor.GetPostAbstract(
             string.IsNullOrEmpty(request.Payload.Abstract) ? request.Payload.EditorContent : request.Payload.Abstract.Trim(),
@@ -68,7 +68,7 @@ public class CreatePostCommandHandler : IRequestHandler<CreatePostCommand, PostE
 
         // check if exist same slug under the same day
         var todayUtc = DateTime.UtcNow.Date;
-        if (await _postRepo.AnyAsync(new PostSpec(post.Slug, todayUtc)))
+        if (await _postRepo.AnyAsync(new PostSpec(post.Slug, todayUtc), ct))
         {
             var uid = Guid.NewGuid();
             post.Slug += $"-{uid.ToString().ToLower()[..8]}";
@@ -109,7 +109,7 @@ public class CreatePostCommandHandler : IRequestHandler<CreatePostCommand, PostE
             }
         }
 
-        await _postRepo.AddAsync(post, cancellationToken);
+        await _postRepo.AddAsync(post, ct);
 
         return post;
     }

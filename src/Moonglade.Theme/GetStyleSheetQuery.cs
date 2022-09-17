@@ -9,13 +9,13 @@ namespace Moonglade.Theme;
 public record GetStyleSheetQuery(int Id) : IRequest<string>;
 public class GetStyleSheetQueryHandler : IRequestHandler<GetStyleSheetQuery, string>
 {
-    private readonly IRepository<BlogThemeEntity> _themeRepo;
+    private readonly IRepository<BlogThemeEntity> _repo;
 
-    public GetStyleSheetQueryHandler(IRepository<BlogThemeEntity> themeRepo) => _themeRepo = themeRepo;
+    public GetStyleSheetQueryHandler(IRepository<BlogThemeEntity> repo) => _repo = repo;
 
-    public async Task<string> Handle(GetStyleSheetQuery request, CancellationToken cancellationToken)
+    public async Task<string> Handle(GetStyleSheetQuery request, CancellationToken ct)
     {
-        var theme = await _themeRepo.GetAsync(request.Id);
+        var theme = await _repo.GetAsync(request.Id, ct);
         if (null == theme) return null;
 
         if (string.IsNullOrWhiteSpace(theme.CssRules))

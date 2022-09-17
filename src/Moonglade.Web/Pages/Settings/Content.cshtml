@@ -168,6 +168,25 @@
             <div class="col-md-6">
                 <div class="mb-3">
                     <h6 class="card-subtitle mb-4 text-muted">@SharedLocalizer["Blog posts"]</h6>
+                    
+                    <div class="row g-3 align-items-center settings-entry mb-4">
+                        <div class="col-auto">
+                            <i class="bi-check2-circle settings-entry-icon"></i>
+                        </div>
+                        <div class="col">
+                            <label asp-for="ViewModel.PostTitleAlignment" class="me-4"></label>
+                        </div>
+                        <div class="col-md-5 text-end">
+                            <div class="form-check form-check-inline">
+                                    @Html.RadioButtonFor(model => model.ViewModel.PostTitleAlignment, PostTitleAlignment.Left, new { id = PostTitleAlignment.Left.ToString(), @class = "form-check-input" })
+                                <label class="form-check-label" for="@PostTitleAlignment.Left">@SharedLocalizer["Left"]</label>
+                            </div>
+                            <div class="form-check form-check-inline">
+                                    @Html.RadioButtonFor(model => model.ViewModel.PostTitleAlignment, PostTitleAlignment.Center, new { id = PostTitleAlignment.Center.ToString(), @class = "form-check-input" })
+                                    <label class="form-check-label" for="@PostTitleAlignment.Center">@SharedLocalizer["Center"]</label>
+                            </div>
+                        </div>
+                    </div>
 
                     <div class="row g-3 align-items-center settings-entry mb-4">
                         <div class="col-auto">

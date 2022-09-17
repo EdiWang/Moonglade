@@ -9,12 +9,9 @@ public class GetAccountsQueryHandler : IRequestHandler<GetAccountsQuery, IReadOn
 {
     private readonly IRepository<LocalAccountEntity> _accountRepo;
 
-    public GetAccountsQueryHandler(IRepository<LocalAccountEntity> accountRepo)
-    {
-        _accountRepo = accountRepo;
-    }
+    public GetAccountsQueryHandler(IRepository<LocalAccountEntity> accountRepo) => _accountRepo = accountRepo;
 
-    public Task<IReadOnlyList<Account>> Handle(GetAccountsQuery request, CancellationToken cancellationToken)
+    public Task<IReadOnlyList<Account>> Handle(GetAccountsQuery request, CancellationToken ct)
     {
         var list = _accountRepo.SelectAsync(p => new Account
         {

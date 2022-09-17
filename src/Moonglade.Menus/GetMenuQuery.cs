@@ -8,13 +8,13 @@ public record GetMenuQuery(Guid Id) : IRequest<Menu>;
 
 public class GetMenuQueryHandler : IRequestHandler<GetMenuQuery, Menu>
 {
-    private readonly IRepository<MenuEntity> _menuRepo;
+    private readonly IRepository<MenuEntity> _repo;
 
-    public GetMenuQueryHandler(IRepository<MenuEntity> menuRepo) => _menuRepo = menuRepo;
+    public GetMenuQueryHandler(IRepository<MenuEntity> repo) => _repo = repo;
 
-    public async Task<Menu> Handle(GetMenuQuery request, CancellationToken cancellationToken)
+    public async Task<Menu> Handle(GetMenuQuery request, CancellationToken ct)
     {
-        var entity = await _menuRepo.GetAsync(request.Id);
+        var entity = await _repo.GetAsync(request.Id, ct);
         if (null == entity) return null;
 
         var item = new Menu(entity);

@@ -18,9 +18,9 @@ public class ReplyCommentCommandHandler : IRequestHandler<ReplyCommentCommand, C
         _commentReplyRepo = commentReplyRepo;
     }
 
-    public async Task<CommentReply> Handle(ReplyCommentCommand request, CancellationToken cancellationToken)
+    public async Task<CommentReply> Handle(ReplyCommentCommand request, CancellationToken ct)
     {
-        var cmt = await _commentRepo.GetAsync(request.CommentId);
+        var cmt = await _commentRepo.GetAsync(request.CommentId, ct);
         if (cmt is null) throw new InvalidOperationException($"Comment {request.CommentId} is not found.");
 
         var id = Guid.NewGuid();
@@ -32,7 +32,7 @@ public class ReplyCommentCommandHandler : IRequestHandler<ReplyCommentCommand, C
             CommentId = request.CommentId
         };
 
-        await _commentReplyRepo.AddAsync(model, cancellationToken);
+        await _commentReplyRepo.AddAsync(model, ct);
 
         var reply = new CommentReply
         {

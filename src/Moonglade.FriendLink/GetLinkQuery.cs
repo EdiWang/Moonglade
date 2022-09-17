@@ -9,13 +9,13 @@ public record GetLinkQuery(Guid Id) : IRequest<Link>;
 
 public class GetLinkQueryHandler : IRequestHandler<GetLinkQuery, Link>
 {
-    private readonly IRepository<FriendLinkEntity> _friendlinkRepo;
+    private readonly IRepository<FriendLinkEntity> _repo;
 
-    public GetLinkQueryHandler(IRepository<FriendLinkEntity> friendlinkRepo) => _friendlinkRepo = friendlinkRepo;
+    public GetLinkQueryHandler(IRepository<FriendLinkEntity> repo) => _repo = repo;
 
-    public Task<Link> Handle(GetLinkQuery request, CancellationToken cancellationToken)
+    public Task<Link> Handle(GetLinkQuery request, CancellationToken ct)
     {
-        var item = _friendlinkRepo.SelectFirstOrDefaultAsync(
+        var item = _repo.SelectFirstOrDefaultAsync(
             new FriendLinkSpec(request.Id), f => new Link
             {
                 Id = f.Id,

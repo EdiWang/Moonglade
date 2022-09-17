@@ -5,7 +5,7 @@ namespace Moonglade.Core.PostFeature;
 public class PostEditModel
 {
     [HiddenInput]
-    public Guid PostId { get; set; }
+    public Guid PostId { get; set; } = Guid.Empty;
 
     [Required]
     [MaxLength(128)]
@@ -73,9 +73,4 @@ public class PostEditModel
     [Display(Name = "Inline CSS")]
     [MaxLength(2048)]
     public string InlineCss { get; set; }
-
-    public PostEditModel()
-    {
-        PostId = Guid.Empty;
-    }
 }

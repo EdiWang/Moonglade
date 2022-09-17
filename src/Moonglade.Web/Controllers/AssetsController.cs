@@ -32,7 +32,7 @@ public class AssetsController : ControllerBase
             {
                 _logger.LogTrace("Avatar not on cache, getting new avatar image...");
 
-                var data = await _mediator.Send(new GetAssetDataQuery(AssetId.AvatarBase64));
+                var data = await _mediator.Send(new GetAssetQuery(AssetId.AvatarBase64));
                 if (string.IsNullOrWhiteSpace(data)) return null;
 
                 var avatarBytes = Convert.FromBase64String(data);
@@ -113,7 +113,7 @@ public class AssetsController : ControllerBase
     [HttpGet("siteicon")]
     public async Task<IActionResult> SiteIconOrigin()
     {
-        var data = await _mediator.Send(new GetAssetDataQuery(AssetId.SiteIconBase64));
+        var data = await _mediator.Send(new GetAssetQuery(AssetId.SiteIconBase64));
         var fallbackImageFile = Path.Join($"{_env.WebRootPath}", "images", "siteicon-default.png");
         if (string.IsNullOrWhiteSpace(data))
         {

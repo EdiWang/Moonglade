@@ -8,10 +8,10 @@ public record DeletePingbackCommand(Guid Id) : IRequest;
 
 public class DeletePingbackCommandHandler : AsyncRequestHandler<DeletePingbackCommand>
 {
-    private readonly IRepository<PingbackEntity> _pingbackRepo;
+    private readonly IRepository<PingbackEntity> _repo;
 
-    public DeletePingbackCommandHandler(IRepository<PingbackEntity> pingbackRepo) => _pingbackRepo = pingbackRepo;
+    public DeletePingbackCommandHandler(IRepository<PingbackEntity> repo) => _repo = repo;
 
-    protected override Task Handle(DeletePingbackCommand request, CancellationToken cancellationToken) =>
-        _pingbackRepo.DeleteAsync(request.Id, cancellationToken);
+    protected override Task Handle(DeletePingbackCommand request, CancellationToken ct) =>
+        _repo.DeleteAsync(request.Id, ct);
 }

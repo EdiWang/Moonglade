@@ -4,14 +4,14 @@ public record UpdatePageCommand(Guid Id, EditPageRequest Payload) : IRequest<Gui
 
 public class UpdatePageCommandHandler : IRequestHandler<UpdatePageCommand, Guid>
 {
-    private readonly IRepository<PageEntity> _pageRepo;
+    private readonly IRepository<PageEntity> _repo;
 
-    public UpdatePageCommandHandler(IRepository<PageEntity> pageRepo) => _pageRepo = pageRepo;
+    public UpdatePageCommandHandler(IRepository<PageEntity> repo) => _repo = repo;
 
-    public async Task<Guid> Handle(UpdatePageCommand request, CancellationToken cancellationToken)
+    public async Task<Guid> Handle(UpdatePageCommand request, CancellationToken ct)
     {
         var (guid, payload) = request;
-        var page = await _pageRepo.GetAsync(guid);
+        var page = await _repo.GetAsync(guid, ct);
         if (page is null)
         {
             throw new InvalidOperationException($"PageEntity with Id '{guid}' not found.");
@@ -26,7 +26,7 @@ public class UpdatePageCommandHandler : IRequestHandler<UpdatePageCommand, Guid>
         page.UpdateTimeUtc = DateTime.UtcNow;
         page.IsPublished = payload.IsPublished;
 
-        await _pageRepo.UpdateAsync(page, cancellationToken);
+        await _repo.UpdateAsync(page, ct);
 
         return page.Id;
     }

@@ -4,9 +4,9 @@ using System.Xml;
 
 namespace Moonglade.Web.Middleware;
 
-public class WriterFoafCommand : IRequest<string>
+public class WriteFoafCommand : IRequest<string>
 {
-    public WriterFoafCommand(FoafDoc doc, string currentRequestUrl, IReadOnlyList<Link> links)
+    public WriteFoafCommand(FoafDoc doc, string currentRequestUrl, IReadOnlyList<Link> links)
     {
         Doc = doc;
         CurrentRequestUrl = currentRequestUrl;
@@ -25,7 +25,7 @@ public class WriterFoafCommand : IRequest<string>
 /// <summary>
 /// http://xmlns.com/foaf/spec/20140114.html
 /// </summary>
-public class WriterFoafCommandHandler : IRequestHandler<WriterFoafCommand, string>
+public class WriteFoafCommandHandler : IRequestHandler<WriteFoafCommand, string>
 {
     private static Dictionary<string, string> _xmlNamespaces;
     private static Dictionary<string, string> SupportedNamespaces =>
@@ -35,7 +35,7 @@ public class WriterFoafCommandHandler : IRequestHandler<WriterFoafCommand, strin
             { "rdfs", "http://www.w3.org/2000/01/rdf-schema#" }
         };
 
-    public async Task<string> Handle(WriterFoafCommand request, CancellationToken cancellationToken)
+    public async Task<string> Handle(WriteFoafCommand request, CancellationToken cancellationToken)
     {
         var sw = new StringWriter();
         var writer = await GetWriter(sw);

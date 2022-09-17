@@ -7,6 +7,9 @@ public class ContentSettings : IBlogSettings
     [Display(Name = "Comment provider")]
     public CommentProvider CommentProvider { get; set; }
 
+    [Display(Name = "Post title alignment")]
+    public PostTitleAlignment PostTitleAlignment { get; set; } = PostTitleAlignment.Left;
+
     [Display(Name = "Third party comment html pitch")]
     [MaxLength(1024)]
     public string ThirdPartyCommentHtmlPitch { get; set; }
@@ -69,4 +72,10 @@ public enum CommentProvider
 {
     BuiltIn = 0,
     ThirdParty = 1
+}
+
+public enum PostTitleAlignment
+{
+    Left = 0,
+    Center = 1
 }

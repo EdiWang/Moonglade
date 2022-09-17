@@ -1,5 +1,5 @@
 ﻿using MediatR;
-using Microsoft.Extensions.Logging;
+using Moonglade.Configuration;
 using Moonglade.Utils;
 
 namespace Moonglade.Notification.Client;
@@ -22,13 +22,13 @@ internal record CommentPayload(
 
 public class CommentNotificationHandler : INotificationHandler<CommentNotification>
 {
-    private readonly IBlogNotificationClient _client;
-    private readonly ILogger<CommentNotificationHandler> _logger;
+    private readonly IMoongladeNotification _moongladeNotification;
+    private readonly IBlogConfig _blogConfig;
 
-    public CommentNotificationHandler(IBlogNotificationClient client, ILogger<CommentNotificationHandler> logger)
+    public CommentNotificationHandler(IMoongladeNotification moongladeNotification, IBlogConfig blogConfig)
     {
-        _client = client;
-        _logger = logger;
+        _moongladeNotification = moongladeNotification;
+        _blogConfig = blogConfig;
     }
 
     public async Task Handle(CommentNotification notification, CancellationToken cancellationToken)
@@ -42,22 +42,7 @@ public class CommentNotificationHandler : INotificationHandler<CommentNotificati
             notification.CreateTimeUtc
         );
 
-        var response = await _client.SendNotification(MailMesageTypes.NewCommentNotification, payload);
-
-        if (response is null)
-        {
-            return;
-        }
-
-        var respBody = await response.Content.ReadAsStringAsync(cancellationToken);
-
-        if (response.IsSuccessStatusCode)
-        {
-            _logger.LogInformation($"Email is sent, server response: '{respBody}'");
-        }
-        else
-        {
-            throw new($"Email sending failed, response code: '{response.StatusCode}', response body: '{respBody}'");
-        }
+        var dl = new[] { _blogConfig.NotificationSettings.AdminEmail };
+        await _moongladeNotification.EnqueueNotification(MailMesageTypes.NewCommentNotification, dl, payload);
     }
 }

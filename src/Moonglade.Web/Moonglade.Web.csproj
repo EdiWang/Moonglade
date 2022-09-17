@@ -4,6 +4,8 @@
 		<TargetFramework>net6.0</TargetFramework>
 		<PackageLicenseExpression>GNU General Public License v3.0</PackageLicenseExpression>
 		<ImplicitUsings>enable</ImplicitUsings>
+		<PackageProjectUrl>https://github.com/EdiWang/Moonglade</PackageProjectUrl>
+		<RepositoryUrl>https://github.com/EdiWang/Moonglade</RepositoryUrl>
 	</PropertyGroup>
 
 	<ItemGroup>
@@ -40,7 +42,7 @@
 		<PackageReference Include="Edi.ImageWatermark" Version="2.6.2" />
 		<PackageReference Include="Microsoft.Azure.AppConfiguration.AspNetCore" Version="5.1.0" />
 		<PackageReference Include="Microsoft.ApplicationInsights.AspNetCore" Version="2.21.0" />
-		<PackageReference Include="Microsoft.Extensions.Logging.AzureAppServices" Version="6.0.8" />
+		<PackageReference Include="Microsoft.Extensions.Logging.AzureAppServices" Version="6.0.9" />
 		<PackageReference Include="Microsoft.FeatureManagement.AspNetCore" Version="2.5.1" />
 		<PackageReference Include="Swashbuckle.AspNetCore" Version="6.4.0" />
 		<PackageReference Include="UAParser" Version="3.1.47" />

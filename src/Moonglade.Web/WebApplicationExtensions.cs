@@ -12,17 +12,12 @@ public static class WebApplicationExtensions
         var services = scope.ServiceProvider;
         var env = services.GetRequiredService<IWebHostEnvironment>();
 
-        BlogDbContext context;
-        switch (dbType.ToLowerInvariant())
+        BlogDbContext context = dbType.ToLowerInvariant() switch
         {
-            case "mysql":
-                context = services.GetRequiredService<MySqlBlogDbContext>();
-                break;
-            case "sqlserver":
-            default:
-                context = services.GetRequiredService<SqlServerBlogDbContext>();
-                break;
-        }
+            "mysql" => services.GetRequiredService<MySqlBlogDbContext>(),
+            "sqlserver" => services.GetRequiredService<SqlServerBlogDbContext>(),
+            _ => throw new ArgumentOutOfRangeException(nameof(dbType))
+        };
 
         try
         {
@@ -63,7 +58,7 @@ public static class WebApplicationExtensions
 
         try
         {
-            var iconData = await mediator.Send(new GetAssetDataQuery(AssetId.SiteIconBase64));
+            var iconData = await mediator.Send(new GetAssetQuery(AssetId.SiteIconBase64));
             MemoryStreamIconGenerator.GenerateIcons(iconData, env.WebRootPath, app.Logger);
         }
         catch (Exception e)

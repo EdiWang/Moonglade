@@ -26,7 +26,7 @@ public class CreateAccountCommandHandler : AsyncRequestHandler<CreateAccountComm
     private readonly IRepository<LocalAccountEntity> _accountRepo;
     public CreateAccountCommandHandler(IRepository<LocalAccountEntity> accountRepo) => _accountRepo = accountRepo;
 
-    protected override Task Handle(CreateAccountCommand request, CancellationToken cancellationToken)
+    protected override Task Handle(CreateAccountCommand request, CancellationToken ct)
     {
         if (string.IsNullOrWhiteSpace(request.Username))
         {
@@ -39,14 +39,18 @@ public class CreateAccountCommandHandler : AsyncRequestHandler<CreateAccountComm
         }
 
         var uid = Guid.NewGuid();
+        var salt = Helper.GenerateSalt();
+        var hash = Helper.HashPassword2(request.Password.Trim(), salt);
+
         var account = new LocalAccountEntity
         {
             Id = uid,
             CreateTimeUtc = DateTime.UtcNow,
             Username = request.Username.ToLower().Trim(),
-            PasswordHash = Helper.HashPassword(request.Password.Trim())
+            PasswordSalt = salt,
+            PasswordHash = hash
         };
 
-        return _accountRepo.AddAsync(account, cancellationToken);
+        return _accountRepo.AddAsync(account, ct);
     }
 }

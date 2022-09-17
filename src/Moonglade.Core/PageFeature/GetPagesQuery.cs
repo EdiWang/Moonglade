@@ -6,15 +6,13 @@ public record GetPagesQuery(int Top) : IRequest<IReadOnlyList<BlogPage>>;
 
 public class GetPagesQueryHandler : IRequestHandler<GetPagesQuery, IReadOnlyList<BlogPage>>
 {
-    private readonly IRepository<PageEntity> _pageRepo;
+    private readonly IRepository<PageEntity> _repo;
 
-    public GetPagesQueryHandler(IRepository<PageEntity> pageRepo) => _pageRepo = pageRepo;
+    public GetPagesQueryHandler(IRepository<PageEntity> repo) => _repo = repo;
 
-    public async Task<IReadOnlyList<BlogPage>> Handle(GetPagesQuery request, CancellationToken cancellationToken)
+    public async Task<IReadOnlyList<BlogPage>> Handle(GetPagesQuery request, CancellationToken ct)
     {
-        if (request.Top <= 0) throw new ArgumentOutOfRangeException(nameof(request.Top));
-
-        var pages = await _pageRepo.ListAsync(new PageSpec(request.Top));
+        var pages = await _repo.ListAsync(new PageSpec(request.Top));
         var list = pages.Select(p => new BlogPage(p)).ToList();
         return list;
     }

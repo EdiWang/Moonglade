@@ -8,13 +8,13 @@ public record GetAllMenusQuery : IRequest<IReadOnlyList<Menu>>;
 
 public class GetAllMenusQueryHandler : IRequestHandler<GetAllMenusQuery, IReadOnlyList<Menu>>
 {
-    private readonly IRepository<MenuEntity> _menuRepo;
+    private readonly IRepository<MenuEntity> _repo;
 
-    public GetAllMenusQueryHandler(IRepository<MenuEntity> menuRepo) => _menuRepo = menuRepo;
+    public GetAllMenusQueryHandler(IRepository<MenuEntity> repo) => _repo = repo;
 
-    public Task<IReadOnlyList<Menu>> Handle(GetAllMenusQuery request, CancellationToken cancellationToken)
+    public Task<IReadOnlyList<Menu>> Handle(GetAllMenusQuery request, CancellationToken ct)
     {
-        var list = _menuRepo.SelectAsync(p => new Menu
+        var list = _repo.SelectAsync(p => new Menu
         {
             Id = p.Id,
             DisplayOrder = p.DisplayOrder,

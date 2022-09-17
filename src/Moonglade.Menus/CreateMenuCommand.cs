@@ -8,11 +8,11 @@ public record CreateMenuCommand(EditMenuRequest Payload) : IRequest<Guid>;
 
 public class CreateMenuCommandHandler : IRequestHandler<CreateMenuCommand, Guid>
 {
-    private readonly IRepository<MenuEntity> _menuRepo;
+    private readonly IRepository<MenuEntity> _repo;
 
-    public CreateMenuCommandHandler(IRepository<MenuEntity> menuRepo) => _menuRepo = menuRepo;
+    public CreateMenuCommandHandler(IRepository<MenuEntity> repo) => _repo = repo;
 
-    public async Task<Guid> Handle(CreateMenuCommand request, CancellationToken cancellationToken)
+    public async Task<Guid> Handle(CreateMenuCommand request, CancellationToken ct)
     {
         var uid = Guid.NewGuid();
         var menu = new MenuEntity
@@ -39,7 +39,7 @@ public class CreateMenuCommandHandler : IRequestHandler<CreateMenuCommand, Guid>
             menu.SubMenus = sms.ToList();
         }
 
-        await _menuRepo.AddAsync(menu, cancellationToken);
+        await _repo.AddAsync(menu, ct);
         return uid;
     }
 }

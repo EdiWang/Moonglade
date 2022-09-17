@@ -32,16 +32,32 @@ public static class ServiceCollectionExtensions
         switch (provider)
         {
             case "azurestorage":
-                services.AddAzureStorage(settings);
+                if (settings.AzureStorageSettings == null)
+                {
+                    throw new ArgumentNullException(nameof(settings.AzureStorageSettings), "AzureStorageSettings can not be null.");
+                }
+                services.AddAzureStorage(settings.AzureStorageSettings);
                 break;
             case "filesystem":
-                services.AddFileSystemStorage(settings);
+                if (string.IsNullOrWhiteSpace(settings.FileSystemPath))
+                {
+                    throw new ArgumentNullException(nameof(settings.FileSystemPath), "FileSystemPath can not be null or empty.");
+                }
+                services.AddFileSystemStorage(settings.FileSystemPath);
                 break;
             case "miniostorage":
-                services.AddMinioStorage(settings);
+                if (settings.MinioStorageSettings == null)
+                {
+                    throw new ArgumentNullException(nameof(settings.MinioStorageSettings), "MinioStorageSettings can not be null.");
+                }
+                services.AddMinioStorage(settings.MinioStorageSettings);
                 break;
             case "qiniustorage":
-                services.AddQiniuStorage(settings);
+                if (settings.QiniuStorageSettings == null)
+                {
+                    throw new ArgumentNullException(nameof(settings.QiniuStorageSettings), "QiniuStorageSettings can not be null.");
+                }
+                services.AddQiniuStorage(settings.QiniuStorageSettings);
                 break;
             default:
                 var msg = $"Provider {provider} is not supported.";
@@ -51,67 +67,44 @@ public static class ServiceCollectionExtensions
         return services;
     }
 
-    private static void AddAzureStorage(this IServiceCollection services, ImageStorageSettings storageSettings)
+    private static void AddAzureStorage(this IServiceCollection services, AzureStorageSettings settings)
     {
-        if (storageSettings.AzureStorageSettings == null)
-        {
-            throw new ArgumentNullException(nameof(ImageStorageSettings.AzureStorageSettings), "AzureStorageSettings can not be null.");
-        }
-
-        var conn = storageSettings.AzureStorageSettings.ConnectionString;
-        var container = storageSettings.AzureStorageSettings.ContainerName;
+        var conn = settings.ConnectionString;
+        var container = settings.ContainerName;
         services.AddSingleton(_ => new AzureBlobConfiguration(conn, container))
-            .AddSingleton<IBlogImageStorage, AzureBlobImageStorage>()
-            .AddScoped<IFileNameGenerator>(_ => new GuidFileNameGenerator(Guid.NewGuid()));
+                .AddSingleton<IBlogImageStorage, AzureBlobImageStorage>()
+                .AddScoped<IFileNameGenerator>(_ => new GuidFileNameGenerator(Guid.NewGuid()));
     }
 
-    private static void AddFileSystemStorage(this IServiceCollection services, ImageStorageSettings storageSettings)
+    private static void AddFileSystemStorage(this IServiceCollection services, string fileSystemPath)
     {
-        if (string.IsNullOrWhiteSpace(storageSettings.FileSystemPath))
-        {
-            throw new ArgumentNullException(nameof(storageSettings.FileSystemPath), "FileSystemPath can not be null or empty.");
-        }
-
-        var fullPath = FileSystemImageStorage.ResolveImageStoragePath(storageSettings.FileSystemPath);
+        var fullPath = FileSystemImageStorage.ResolveImageStoragePath(fileSystemPath);
         services.AddSingleton(_ => new FileSystemImageConfiguration(fullPath))
-           .AddSingleton<IBlogImageStorage, FileSystemImageStorage>()
-           .AddScoped<IFileNameGenerator>(_ => new GuidFileNameGenerator(Guid.NewGuid()));
+                .AddSingleton<IBlogImageStorage, FileSystemImageStorage>()
+                .AddScoped<IFileNameGenerator>(_ => new GuidFileNameGenerator(Guid.NewGuid()));
     }
 
-    private static void AddMinioStorage(this IServiceCollection services, ImageStorageSettings storageSettings)
+    private static void AddMinioStorage(this IServiceCollection services, MinioStorageSettings settings)
     {
-        if (storageSettings.MinioStorageSettings == null)
-        {
-            throw new ArgumentNullException(nameof(ImageStorageSettings.MinioStorageSettings), "MinioStorageSettings can not be null.");
-        }
-
-        var endPoint = storageSettings.MinioStorageSettings.EndPoint;
-        var accessKey = storageSettings.MinioStorageSettings.AccessKey;
-        var secretKey = storageSettings.MinioStorageSettings.SecretKey;
-        var bucketName = storageSettings.MinioStorageSettings.BucketName;
-        var withSSL = storageSettings.MinioStorageSettings.WithSSL;
         services.AddSingleton<IBlogImageStorage, MinioBlobImageStorage>()
-            .AddScoped<IFileNameGenerator>(_ => new GuidFileNameGenerator(Guid.NewGuid()))
-            .AddSingleton(_ => new MinioBlobConfiguration(endPoint, accessKey, secretKey, bucketName, withSSL));
+                .AddScoped<IFileNameGenerator>(_ => new GuidFileNameGenerator(Guid.NewGuid()))
+                .AddSingleton(_ => new MinioBlobConfiguration(
+                    settings.EndPoint,
+                    settings.AccessKey,
+                    settings.SecretKey,
+                    settings.BucketName,
+                    settings.WithSSL));
     }
 
-    private static void AddQiniuStorage(this IServiceCollection services, ImageStorageSettings storageSettings)
+    private static void AddQiniuStorage(this IServiceCollection services, QiniuStorageSettings settings)
     {
-        if (storageSettings.QiniuStorageSettings == null)
-        {
-            throw new ArgumentNullException(nameof(ImageStorageSettings.QiniuStorageSettings), "QiniuStorageSettings can not be null.");
-        }
-
-        var endPoint = storageSettings.QiniuStorageSettings.EndPoint;
-        var accessKey = storageSettings.QiniuStorageSettings.AccessKey;
-        var secretKey = storageSettings.QiniuStorageSettings.SecretKey;
-        var bucketName = storageSettings.QiniuStorageSettings.BucketName;
-        var withSSL = storageSettings.QiniuStorageSettings.WithSSL;
-
         services.AddQiniuStorage()
-            .AddScoped<IFileNameGenerator, RegularFileNameGenerator>()
-            .AddSingleton<IBlogImageStorage, QiniuBlobImageStorage>()
-            .AddSingleton<IMacSettings>(new MacSettings(accessKey, secretKey))
-            .AddSingleton<IQiniuConfiguration>(_ => new QiniuBlobConfiguration(endPoint, bucketName, withSSL));
+                .AddScoped<IFileNameGenerator, RegularFileNameGenerator>()
+                .AddSingleton<IBlogImageStorage, QiniuBlobImageStorage>()
+                .AddSingleton<IMacSettings>(new MacSettings(settings.AccessKey, settings.SecretKey))
+                .AddSingleton<IQiniuConfiguration>(_ => new QiniuBlobConfiguration(
+                    settings.EndPoint,
+                    settings.BucketName,
+                    settings.WithSSL));
     }
 }

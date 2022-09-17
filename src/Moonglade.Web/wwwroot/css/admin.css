@@ -325,3 +325,7 @@ table.dataTable {
     border-color: var(--accent-color1);
     color: #fff;
 }
+
+.tox-promotion {
+    display: none !important;
+}

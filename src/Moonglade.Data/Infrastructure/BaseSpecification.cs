@@ -9,14 +9,10 @@ public abstract class BaseSpecification<T> : ISpecification<T>
     {
     }
 
-    protected BaseSpecification(Expression<Func<T, bool>> criteria)
-    {
-        Criteria = criteria;
-    }
+    protected BaseSpecification(Expression<Func<T, bool>> criteria) => Criteria = criteria;
 
     public Expression<Func<T, bool>> Criteria { get; private set; }
     public Func<IQueryable<T>, IIncludableQueryable<T, object>> Include { get; private set; }
-    public List<string> IncludeStrings { get; } = new();
     public Expression<Func<T, object>> OrderBy { get; private set; }
     public Expression<Func<T, object>> OrderByDescending { get; private set; }
 
@@ -29,15 +25,7 @@ public abstract class BaseSpecification<T> : ISpecification<T>
         Criteria = Criteria is not null ? Criteria.AndAlso(criteria) : criteria;
     }
 
-    protected virtual void AddInclude(Func<IQueryable<T>, IIncludableQueryable<T, object>> includeExpression)
-    {
-        Include = includeExpression;
-    }
-
-    protected virtual void AddInclude(string includeString)
-    {
-        IncludeStrings.Add(includeString);
-    }
+    protected virtual void AddInclude(Func<IQueryable<T>, IIncludableQueryable<T, object>> expression) => Include = expression;
 
     protected virtual void ApplyPaging(int skip, int take)
     {
@@ -46,15 +34,9 @@ public abstract class BaseSpecification<T> : ISpecification<T>
         IsPagingEnabled = true;
     }
 
-    protected virtual void ApplyOrderBy(Expression<Func<T, object>> orderByExpression)
-    {
-        OrderBy = orderByExpression;
-    }
+    protected virtual void ApplyOrderBy(Expression<Func<T, object>> expression) => OrderBy = expression;
 
-    protected virtual void ApplyOrderByDescending(Expression<Func<T, object>> orderByDescendingExpression)
-    {
-        OrderByDescending = orderByDescendingExpression;
-    }
+    protected virtual void ApplyOrderByDescending(Expression<Func<T, object>> expression) => OrderByDescending = expression;
 }
 
 // https://stackoverflow.com/questions/457316/combining-two-expressions-expressionfunct-bool

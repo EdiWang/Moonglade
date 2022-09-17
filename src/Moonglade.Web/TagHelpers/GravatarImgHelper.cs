@@ -4,7 +4,7 @@ using System.Text.Encodings.Web;
 namespace Moonglade.Web.TagHelpers;
 
 [HtmlTargetElement("gravatar", TagStructure = TagStructure.NormalOrSelfClosing)]
-public class GravatarImageHelper : TagHelper
+public class GravatarImgHelper : TagHelper
 {
     public string Email { get; set; }
 

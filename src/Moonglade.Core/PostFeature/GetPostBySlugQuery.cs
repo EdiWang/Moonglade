@@ -9,18 +9,18 @@ public record GetPostBySlugQuery(PostSlug Slug) : IRequest<Post>;
 
 public class GetPostBySlugQueryHandler : IRequestHandler<GetPostBySlugQuery, Post>
 {
-    private readonly IRepository<PostEntity> _postRepo;
+    private readonly IRepository<PostEntity> _repo;
     private readonly IBlogCache _cache;
     private readonly IConfiguration _configuration;
 
-    public GetPostBySlugQueryHandler(IRepository<PostEntity> postRepo, IBlogCache cache, IConfiguration configuration)
+    public GetPostBySlugQueryHandler(IRepository<PostEntity> repo, IBlogCache cache, IConfiguration configuration)
     {
-        _postRepo = postRepo;
+        _repo = repo;
         _cache = cache;
         _configuration = configuration;
     }
 
-    public async Task<Post> Handle(GetPostBySlugQuery request, CancellationToken cancellationToken)
+    public async Task<Post> Handle(GetPostBySlugQuery request, CancellationToken ct)
     {
         var date = new DateTime(request.Slug.Year, request.Slug.Month, request.Slug.Day);
 
@@ -28,27 +28,27 @@ public class GetPostBySlugQueryHandler : IRequestHandler<GetPostBySlugQuery, Pos
         var slugCheckSum = Helper.ComputeCheckSum($"{request.Slug.Slug}#{date:yyyyMMdd}");
         ISpecification<PostEntity> spec = new PostSpec(slugCheckSum);
 
-        var pid = await _postRepo.SelectFirstOrDefaultAsync(spec, p => p.Id);
+        var pid = await _repo.SelectFirstOrDefaultAsync(spec, p => p.Id);
         if (pid == Guid.Empty)
         {
             // Post does not have a checksum, fall back to old method
             spec = new PostSpec(date, request.Slug.Slug);
-            pid = await _postRepo.SelectFirstOrDefaultAsync(spec, x => x.Id);
+            pid = await _repo.SelectFirstOrDefaultAsync(spec, x => x.Id);
 
             if (pid == Guid.Empty) return null;
 
             // Post is found, fill it's checksum so that next time the query can be run against checksum
-            var p = await _postRepo.GetAsync(pid);
+            var p = await _repo.GetAsync(pid, ct);
             p.HashCheckSum = slugCheckSum;
 
-            await _postRepo.UpdateAsync(p, cancellationToken);
+            await _repo.UpdateAsync(p, ct);
         }
 
         var psm = await _cache.GetOrCreateAsync(CacheDivision.Post, $"{pid}", async entry =>
         {
             entry.SlidingExpiration = TimeSpan.FromMinutes(int.Parse(_configuration["CacheSlidingExpirationMinutes:Post"]));
 
-            var post = await _postRepo.SelectFirstOrDefaultAsync(spec, Post.EntitySelector);
+            var post = await _repo.SelectFirstOrDefaultAsync(spec, Post.EntitySelector);
             return post;
         });
 

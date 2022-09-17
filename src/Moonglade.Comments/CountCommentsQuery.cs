@@ -8,9 +8,9 @@ public record CountCommentsQuery : IRequest<int>;
 
 public class CountCommentsQueryHandler : RequestHandler<CountCommentsQuery, int>
 {
-    private readonly IRepository<CommentEntity> _commentRepo;
+    private readonly IRepository<CommentEntity> _repo;
 
-    public CountCommentsQueryHandler(IRepository<CommentEntity> commentRepo) => _commentRepo = commentRepo;
+    public CountCommentsQueryHandler(IRepository<CommentEntity> repo) => _repo = repo;
 
-    protected override int Handle(CountCommentsQuery request) => _commentRepo.Count(c => true);
+    protected override int Handle(CountCommentsQuery request) => _repo.Count(c => true);
 }

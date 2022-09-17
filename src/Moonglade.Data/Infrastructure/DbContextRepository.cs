@@ -6,7 +6,7 @@ public abstract class DbContextRepository<T> : IRepository<T> where T : class
 {
     protected readonly DbContext DbContext;
 
-    protected DbContextRepository(DbContext dbContext) => DbContext = dbContext;
+    protected DbContextRepository(DbContext ctx) => DbContext = ctx;
 
     public Task Clear(CancellationToken ct = default)
     {
@@ -14,13 +14,17 @@ public abstract class DbContextRepository<T> : IRepository<T> where T : class
         return DbContext.SaveChangesAsync(ct);
     }
 
-    public Task<T> GetAsync(Expression<Func<T, bool>> condition) => DbContext.Set<T>().FirstOrDefaultAsync(condition);
+    public Task<T> GetAsync(Expression<Func<T, bool>> condition) =>
+        DbContext.Set<T>().FirstOrDefaultAsync(condition);
 
-    public virtual ValueTask<T> GetAsync(object key) => DbContext.Set<T>().FindAsync(key);
+    public virtual ValueTask<T> GetAsync(object key, CancellationToken ct = default) =>
+        DbContext.Set<T>().FindAsync(keyValues: new[] { key }, cancellationToken: ct);
 
-    public async Task<IReadOnlyList<T>> ListAsync() => await DbContext.Set<T>().AsNoTracking().ToListAsync();
+    public async Task<IReadOnlyList<T>> ListAsync(CancellationToken ct = default) =>
+        await DbContext.Set<T>().AsNoTracking().ToListAsync(cancellationToken: ct);
 
-    public async Task<IReadOnlyList<T>> ListAsync(ISpecification<T> spec) => await ApplySpecification(spec).AsNoTracking().ToListAsync();
+    public async Task<IReadOnlyList<T>> ListAsync(ISpecification<T> spec) =>
+        await ApplySpecification(spec).AsNoTracking().ToListAsync();
 
     public IQueryable<T> GetAsQueryable() => DbContext.Set<T>();
 
@@ -42,7 +46,7 @@ public abstract class DbContextRepository<T> : IRepository<T> where T : class
 
     public async Task DeleteAsync(object key, CancellationToken ct = default)
     {
-        var entity = await GetAsync(key);
+        var entity = await GetAsync(key, ct);
         if (entity is not null) await DeleteAsync(entity, ct);
     }
 
@@ -54,12 +58,13 @@ public abstract class DbContextRepository<T> : IRepository<T> where T : class
     public int Count(Expression<Func<T, bool>> condition) => DbContext.Set<T>().Count(condition);
     public Task<int> CountAsync(ISpecification<T> spec) => ApplySpecification(spec).CountAsync();
 
-    public Task<bool> AnyAsync(ISpecification<T> spec) => ApplySpecification(spec).AnyAsync();
+    public Task<bool> AnyAsync(ISpecification<T> spec, CancellationToken ct = default) =>
+        ApplySpecification(spec).AnyAsync(cancellationToken: ct);
 
-    public Task<bool> AnyAsync(Expression<Func<T, bool>> condition = null) =>
+    public Task<bool> AnyAsync(Expression<Func<T, bool>> condition = null, CancellationToken ct = default) =>
         null != condition ?
-            DbContext.Set<T>().AnyAsync(condition) :
-            DbContext.Set<T>().AnyAsync();
+            DbContext.Set<T>().AnyAsync(condition, cancellationToken: ct) :
+            DbContext.Set<T>().AnyAsync(cancellationToken: ct);
 
     public async Task<IReadOnlyList<TResult>> SelectAsync<TResult>(Expression<Func<T, TResult>> selector) =>
         await DbContext.Set<T>().AsNoTracking().Select(selector).ToListAsync();
@@ -80,7 +85,7 @@ public abstract class DbContextRepository<T> : IRepository<T> where T : class
             await ApplySpecification(spec).AsNoTracking().GroupBy(groupExpression).Select(selector).ToListAsync() :
             await DbContext.Set<T>().AsNoTracking().GroupBy(groupExpression).Select(selector).ToListAsync();
 
-    public async Task<T> AddAsync(T entity, CancellationToken ct)
+    public async Task<T> AddAsync(T entity, CancellationToken ct = default)
     {
         await DbContext.Set<T>().AddAsync(entity, ct);
         await DbContext.SaveChangesAsync(ct);

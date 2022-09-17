@@ -33,9 +33,9 @@ public class CreateCategoryCommandHandler : AsyncRequestHandler<CreateCategoryCo
         _cache = cache;
     }
 
-    protected override async Task Handle(CreateCategoryCommand request, CancellationToken cancellationToken)
+    protected override async Task Handle(CreateCategoryCommand request, CancellationToken ct)
     {
-        var exists = await _catRepo.AnyAsync(c => c.RouteName == request.RouteName);
+        var exists = await _catRepo.AnyAsync(c => c.RouteName == request.RouteName, ct);
         if (exists) return;
 
         var category = new CategoryEntity
@@ -46,7 +46,7 @@ public class CreateCategoryCommandHandler : AsyncRequestHandler<CreateCategoryCo
             DisplayName = request.DisplayName.Trim()
         };
 
-        await _catRepo.AddAsync(category, cancellationToken);
+        await _catRepo.AddAsync(category, ct);
         _cache.Remove(CacheDivision.General, "allcats");
     }
 }

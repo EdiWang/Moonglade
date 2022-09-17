@@ -10,25 +10,25 @@ public class UpdateCategoryCommand : CreateCategoryCommand, IRequest<OperationCo
 
 public class UpdateCategoryCommandHandler : IRequestHandler<UpdateCategoryCommand, OperationCode>
 {
-    private readonly IRepository<CategoryEntity> _catRepo;
+    private readonly IRepository<CategoryEntity> _repo;
     private readonly IBlogCache _cache;
 
-    public UpdateCategoryCommandHandler(IRepository<CategoryEntity> catRepo, IBlogCache cache)
+    public UpdateCategoryCommandHandler(IRepository<CategoryEntity> repo, IBlogCache cache)
     {
-        _catRepo = catRepo;
+        _repo = repo;
         _cache = cache;
     }
 
-    public async Task<OperationCode> Handle(UpdateCategoryCommand request, CancellationToken cancellationToken)
+    public async Task<OperationCode> Handle(UpdateCategoryCommand request, CancellationToken ct)
     {
-        var cat = await _catRepo.GetAsync(request.Id);
+        var cat = await _repo.GetAsync(request.Id, ct);
         if (cat is null) return OperationCode.ObjectNotFound;
 
         cat.RouteName = request.RouteName.Trim();
         cat.DisplayName = request.DisplayName.Trim();
         cat.Note = request.Note?.Trim();
 
-        await _catRepo.UpdateAsync(cat, cancellationToken);
+        await _repo.UpdateAsync(cat, ct);
         _cache.Remove(CacheDivision.General, "allcats");
 
         return OperationCode.Done;

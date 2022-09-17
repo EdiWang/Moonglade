@@ -6,13 +6,13 @@ public record ListInsightsQuery(PostInsightsType PostInsightsType) : IRequest<IR
 
 public class ListInsightsQueryHandler : IRequestHandler<ListInsightsQuery, IReadOnlyList<PostSegment>>
 {
-    private readonly IRepository<PostEntity> _postRepo;
+    private readonly IRepository<PostEntity> _repo;
 
-    public ListInsightsQueryHandler(IRepository<PostEntity> postRepo) => _postRepo = postRepo;
+    public ListInsightsQueryHandler(IRepository<PostEntity> repo) => _repo = repo;
 
-    public Task<IReadOnlyList<PostSegment>> Handle(ListInsightsQuery request, CancellationToken cancellationToken)
+    public Task<IReadOnlyList<PostSegment>> Handle(ListInsightsQuery request, CancellationToken ct)
     {
         var spec = new PostInsightsSpec(request.PostInsightsType, 10);
-        return _postRepo.SelectAsync(spec, PostSegment.EntitySelector);
+        return _repo.SelectAsync(spec, PostSegment.EntitySelector);
     }
 }

@@ -153,7 +153,7 @@ public class SettingsController : ControllerBase
             {
                 try
                 {
-                    var avatarData = await _mediator.Send(new GetAssetDataQuery(AssetId.AvatarBase64));
+                    var avatarData = await _mediator.Send(new GetAssetQuery(AssetId.AvatarBase64));
 
                     if (!string.IsNullOrWhiteSpace(avatarData))
                     {

@@ -28,10 +28,10 @@ public class UpdatePostCommandHandler : IRequestHandler<UpdatePostCommand, PostE
         _configuration = configuration;
     }
 
-    public async Task<PostEntity> Handle(UpdatePostCommand request, CancellationToken cancellationToken)
+    public async Task<PostEntity> Handle(UpdatePostCommand request, CancellationToken ct)
     {
         var (guid, postEditModel) = request;
-        var post = await _postRepo.GetAsync(guid);
+        var post = await _postRepo.GetAsync(guid, ct);
         if (null == post)
         {
             throw new InvalidOperationException($"Post {guid} is not found.");
@@ -82,13 +82,13 @@ public class UpdatePostCommandHandler : IRequestHandler<UpdatePostCommand, PostE
 
         foreach (var item in tags)
         {
-            if (!await _tagRepo.AnyAsync(p => p.DisplayName == item))
+            if (!await _tagRepo.AnyAsync(p => p.DisplayName == item, ct))
             {
                 await _tagRepo.AddAsync(new()
                 {
                     DisplayName = item,
                     NormalizedName = Tag.NormalizeName(item, Helper.TagNormalizationDictionary)
-                }, cancellationToken);
+                }, ct);
             }
         }
 
@@ -122,7 +122,7 @@ public class UpdatePostCommandHandler : IRequestHandler<UpdatePostCommand, PostE
             }
         }
 
-        await _postRepo.UpdateAsync(post, cancellationToken);
+        await _postRepo.UpdateAsync(post, ct);
 
         _cache.Remove(CacheDivision.Post, guid.ToString());
         return post;
