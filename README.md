@@ -63,6 +63,20 @@ Set the `MoongladeDatabase` to your database connection string in `appsettings.D
 "MoongladeDatabase": "Server=localhost;Port=3306;Database=moonglade;Uid=root;Pwd=******;"
 ```
 
+#### PostgreSql
+
+Set `DatabaseType` to `PostgreSql`
+
+```json
+"DatabaseType": "PostgreSql"
+```
+
+Set the `MoongladeDatabase` to your database connection string in `appsettings.Development.json`
+
+```json
+"MoongladeDatabase": "User ID=****;Password=****;Host=localhost;Port=5432;Database=****;Pooling=true;"
+```
+
 ### 🔨 Build Source
 
 Build and run `./src/Moonglade.sln`
