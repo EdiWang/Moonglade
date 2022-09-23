@@ -57,7 +57,6 @@
 		<ProjectReference Include="..\Moonglade.Comments\Moonglade.Comments.csproj" />
 		<ProjectReference Include="..\Moonglade.Core\Moonglade.Core.csproj" />
 		<ProjectReference Include="..\Moonglade.Data.MySql\Moonglade.Data.MySql.csproj" />
-		<ProjectReference Include="..\Moonglade.Data.MySql\Moonglade.Data.PostgreSql.csproj" />
 		<ProjectReference Include="..\Moonglade.Data.PostgreSql\Moonglade.Data.PostgreSql.csproj" />
 		<ProjectReference Include="..\Moonglade.Data.SqlServer\Moonglade.Data.SqlServer.csproj" />
 		<ProjectReference Include="..\Moonglade.FriendLink\Moonglade.FriendLink.csproj" />
