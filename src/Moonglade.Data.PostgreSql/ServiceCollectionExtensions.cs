@@ -11,6 +11,7 @@ public static class ServiceCollectionExtensions
     {
         services.AddScoped(typeof(IRepository<>), typeof(PostgreSqlDbContextRepository<>));
 
+        AppContext.SetSwitch("Npgsql.EnableLegacyTimestampBehavior", true);
         services.AddDbContext<PostgreSqlBlogDbContext>(optionsAction => optionsAction
             .UseLazyLoadingProxies()
             .EnableDetailedErrors()

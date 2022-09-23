@@ -10,7 +10,7 @@ internal class CommentReplyConfiguration : IEntityTypeConfiguration<CommentReply
     public void Configure(EntityTypeBuilder<CommentReplyEntity> builder)
     {
         builder.Property(e => e.Id).ValueGeneratedNever();
-        builder.Property(e => e.CreateTimeUtc).HasColumnType("datetime");
+        builder.Property(e => e.CreateTimeUtc).HasColumnType("timestamp");
         builder.HasOne(d => d.Comment)
             .WithMany(p => p.Replies)
             .HasForeignKey(d => d.CommentId);

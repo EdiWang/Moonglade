@@ -9,6 +9,6 @@ internal class BlogConfigurationConfiguration : IEntityTypeConfiguration<BlogCon
     public void Configure(EntityTypeBuilder<BlogConfigurationEntity> builder)
     {
         builder.Property(e => e.Id).ValueGeneratedNever();
-        builder.Property(e => e.LastModifiedTimeUtc).HasColumnType("datetime");
+        builder.Property(e => e.LastModifiedTimeUtc).HasColumnType("timestamp");
     }
 }

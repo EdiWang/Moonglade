@@ -12,7 +12,7 @@ public class EmailNotificationConfiguration : IEntityTypeConfiguration<EmailNoti
         builder.Property(e => e.DistributionList).IsRequired().HasMaxLength(1024);
         builder.Property(e => e.MessageType).IsRequired().HasMaxLength(32);
         builder.Property(e => e.MessageBody).HasMaxLength(2048);
-        builder.Property(e => e.CreateTimeUtc).HasColumnType("datetime");
-        builder.Property(e => e.SentTimeUtc).HasColumnType("datetime");
+        builder.Property(e => e.CreateTimeUtc).HasColumnType("timestamp");
+        builder.Property(e => e.SentTimeUtc).HasColumnType("timestamp");
     }
 }
