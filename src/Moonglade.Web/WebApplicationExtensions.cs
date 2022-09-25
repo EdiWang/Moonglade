@@ -1,5 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Moonglade.Data.MySql;
+using Moonglade.Data.PostgreSql;
 using Moonglade.Data.SqlServer;
 
 namespace Moonglade.Web;
@@ -16,6 +17,7 @@ public static class WebApplicationExtensions
         {
             "mysql" => services.GetRequiredService<MySqlBlogDbContext>(),
             "sqlserver" => services.GetRequiredService<SqlServerBlogDbContext>(),
+            "postgresql" => services.GetRequiredService<PostgreSqlBlogDbContext>(),
             _ => throw new ArgumentOutOfRangeException(nameof(dbType))
         };
 

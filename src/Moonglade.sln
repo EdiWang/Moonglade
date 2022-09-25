@@ -78,6 +78,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Moonglade.Data.SqlServer", 
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Moonglade.Data.MySql", "Moonglade.Data.MySql\Moonglade.Data.MySql.csproj", "{0267C513-2DB9-4697-A6FA-39BB83E1CA9B}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Moonglade.Data.PostgreSql", "Moonglade.Data.PostgreSql\Moonglade.Data.PostgreSql.csproj", "{5750F136-DD4B-42F8-BA64-2371C2527505}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -152,6 +154,10 @@ Global
 		{0267C513-2DB9-4697-A6FA-39BB83E1CA9B}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{0267C513-2DB9-4697-A6FA-39BB83E1CA9B}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{0267C513-2DB9-4697-A6FA-39BB83E1CA9B}.Release|Any CPU.Build.0 = Release|Any CPU
+		{5750F136-DD4B-42F8-BA64-2371C2527505}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{5750F136-DD4B-42F8-BA64-2371C2527505}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{5750F136-DD4B-42F8-BA64-2371C2527505}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{5750F136-DD4B-42F8-BA64-2371C2527505}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -178,6 +184,7 @@ Global
 		{59770DF9-9CC5-4912-8677-5E99DA9C96CA} = {97439361-03B4-46C9-BC06-49F76BA57879}
 		{1ED1FD2A-703E-471D-AEDA-9885748194FF} = {41072B8B-1052-4CC6-930F-83A5F8EA7482}
 		{0267C513-2DB9-4697-A6FA-39BB83E1CA9B} = {41072B8B-1052-4CC6-930F-83A5F8EA7482}
+		{5750F136-DD4B-42F8-BA64-2371C2527505} = {41072B8B-1052-4CC6-930F-83A5F8EA7482}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {EBD14882-9899-4C4B-B9BC-22C0B93BD559}

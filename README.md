@@ -33,11 +33,11 @@ To quickly get it running on a new Linux machine without Docker, follow instruct
 Tools | Alternative
 --- | ---
 [Visual Studio 2022 v17.0+](https://visualstudio.microsoft.com/) | [Visual Studio Code](https://code.visualstudio.com/) with [.NET 6.0 SDK](http://dot.net)
-[SQL Server 2019](https://www.microsoft.com/en-us/sql-server/sql-server-2019) | [SQL Server LocalDB](https://docs.microsoft.com/en-us/sql/database-engine/configure-windows/sql-server-express-localdb?view=sql-server-ver15?WT.mc_id=AZ-MVP-5002809) or MySQL
+[SQL Server 2019](https://www.microsoft.com/en-us/sql-server/sql-server-2019) | [SQL Server LocalDB](https://docs.microsoft.com/en-us/sql/database-engine/configure-windows/sql-server-express-localdb?view=sql-server-ver15?WT.mc_id=AZ-MVP-5002809), PostgreSQL or MySQL 
 
 ### 💾 Setup Database
 
-Moonglade supports two types of database. You can choose either of SQL Server or MySQL.
+Moonglade supports three types of database. You can choose from SQL Server, PostgreSQL or MySQL.
 
 #### SQL Server
 
@@ -61,6 +61,20 @@ Set the `MoongladeDatabase` to your database connection string in `appsettings.D
 
 ```json
 "MoongladeDatabase": "Server=localhost;Port=3306;Database=moonglade;Uid=root;Pwd=******;"
+```
+
+#### PostgreSql
+
+Set `DatabaseType` to `PostgreSql`
+
+```json
+"DatabaseType": "PostgreSql"
+```
+
+Set the `MoongladeDatabase` to your database connection string in `appsettings.Development.json`
+
+```json
+"MoongladeDatabase": "User ID=****;Password=****;Host=localhost;Port=5432;Database=****;Pooling=true;"
 ```
 
 ### 🔨 Build Source
