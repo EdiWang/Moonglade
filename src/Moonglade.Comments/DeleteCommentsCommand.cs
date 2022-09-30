@@ -20,11 +20,6 @@ public class DeleteCommentsCommandHandler : AsyncRequestHandler<DeleteCommentsCo
 
     protected override async Task Handle(DeleteCommentsCommand request, CancellationToken ct)
     {
-        if (request.Ids is null || !request.Ids.Any())
-        {
-            throw new ArgumentNullException(nameof(request.Ids));
-        }
-
         var spec = new CommentSpec(request.Ids);
         var comments = await _commentRepo.ListAsync(spec);
         foreach (var cmt in comments)

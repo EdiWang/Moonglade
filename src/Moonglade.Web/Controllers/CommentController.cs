@@ -110,14 +110,8 @@ public class CommentController : ControllerBase
     [HttpDelete]
     [ProducesResponseType(typeof(Guid[]), StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(string), StatusCodes.Status400BadRequest)]
-    public async Task<IActionResult> Delete([FromBody] Guid[] commentIds)
+    public async Task<IActionResult> Delete([FromBody][MinLength(1)] Guid[] commentIds)
     {
-        if (commentIds.Length == 0)
-        {
-            ModelState.AddModelError(nameof(commentIds), "value is empty");
-            return BadRequest(ModelState.CombineErrorMessages());
-        }
-
         await _mediator.Send(new DeleteCommentsCommand(commentIds));
         return Ok(commentIds);
     }
