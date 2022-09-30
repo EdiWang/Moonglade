@@ -9,17 +9,17 @@ public record ToggleApprovalCommand(Guid[] CommentIds) : IRequest;
 
 public class ToggleApprovalCommandHandler : AsyncRequestHandler<ToggleApprovalCommand>
 {
-    private readonly IRepository<CommentEntity> _commentRepo;
-    public ToggleApprovalCommandHandler(IRepository<CommentEntity> commentRepo) => _commentRepo = commentRepo;
+    private readonly IRepository<CommentEntity> _repo;
+    public ToggleApprovalCommandHandler(IRepository<CommentEntity> repo) => _repo = repo;
 
     protected override async Task Handle(ToggleApprovalCommand request, CancellationToken ct)
     {
         var spec = new CommentSpec(request.CommentIds);
-        var comments = await _commentRepo.ListAsync(spec);
+        var comments = await _repo.ListAsync(spec);
         foreach (var cmt in comments)
         {
             cmt.IsApproved = !cmt.IsApproved;
-            await _commentRepo.UpdateAsync(cmt, ct);
+            await _repo.UpdateAsync(cmt, ct);
         }
     }
 }
