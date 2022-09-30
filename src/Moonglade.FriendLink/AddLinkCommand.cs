@@ -6,7 +6,7 @@ using System.ComponentModel.DataAnnotations;
 
 namespace Moonglade.FriendLink;
 
-public class AddLinkCommand : IRequest
+public class AddLinkCommand : IRequest, IValidatableObject
 {
     [Required]
     [Display(Name = "Title")]
@@ -18,6 +18,14 @@ public class AddLinkCommand : IRequest
     [DataType(DataType.Url)]
     [MaxLength(256)]
     public string LinkUrl { get; set; }
+
+    public IEnumerable<ValidationResult> Validate(ValidationContext validationContext)
+    {
+        if (!Uri.IsWellFormedUriString(LinkUrl, UriKind.Absolute))
+        {
+            yield return new($"{nameof(LinkUrl)} is not a valid url.");
+        }
+    }
 }
 
 public class AddLinkCommandHandler : AsyncRequestHandler<AddLinkCommand>
@@ -28,11 +36,6 @@ public class AddLinkCommandHandler : AsyncRequestHandler<AddLinkCommand>
 
     protected override async Task Handle(AddLinkCommand request, CancellationToken ct)
     {
-        if (!Uri.IsWellFormedUriString(request.LinkUrl, UriKind.Absolute))
-        {
-            throw new InvalidOperationException($"{nameof(request.LinkUrl)} is not a valid url.");
-        }
-
         var link = new FriendLinkEntity
         {
             Id = Guid.NewGuid(),
