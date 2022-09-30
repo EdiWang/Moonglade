@@ -8,13 +8,13 @@ public record ValidateLoginCommand(string Username, string InputPassword) : IReq
 
 public class ValidateLoginCommandHandler : IRequestHandler<ValidateLoginCommand, Guid>
 {
-    private readonly IRepository<LocalAccountEntity> _accountRepo;
+    private readonly IRepository<LocalAccountEntity> _repo;
 
-    public ValidateLoginCommandHandler(IRepository<LocalAccountEntity> accountRepo) => _accountRepo = accountRepo;
+    public ValidateLoginCommandHandler(IRepository<LocalAccountEntity> repo) => _repo = repo;
 
     public async Task<Guid> Handle(ValidateLoginCommand request, CancellationToken ct)
     {
-        var account = await _accountRepo.GetAsync(p => p.Username == request.Username);
+        var account = await _repo.GetAsync(p => p.Username == request.Username);
         if (account is null) return Guid.Empty;
 
         var valid = account.PasswordHash == (string.IsNullOrWhiteSpace(account.PasswordSalt)
@@ -30,7 +30,7 @@ public class ValidateLoginCommandHandler : IRequestHandler<ValidateLoginCommand,
             account.PasswordSalt = salt;
             account.PasswordHash = newHash;
 
-            await _accountRepo.UpdateAsync(account, ct);
+            await _repo.UpdateAsync(account, ct);
         }
 
         return valid ? account.Id : Guid.Empty;

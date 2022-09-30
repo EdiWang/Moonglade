@@ -8,17 +8,12 @@ public record ChangePasswordCommand(Guid Id, string ClearPassword) : IRequest;
 
 public class ChangePasswordCommandHandler : AsyncRequestHandler<ChangePasswordCommand>
 {
-    private readonly IRepository<LocalAccountEntity> _accountRepo;
-    public ChangePasswordCommandHandler(IRepository<LocalAccountEntity> accountRepo) => _accountRepo = accountRepo;
+    private readonly IRepository<LocalAccountEntity> _repo;
+    public ChangePasswordCommandHandler(IRepository<LocalAccountEntity> repo) => _repo = repo;
 
     protected override async Task Handle(ChangePasswordCommand request, CancellationToken ct)
     {
-        if (string.IsNullOrWhiteSpace(request.ClearPassword))
-        {
-            throw new ArgumentNullException(nameof(request.ClearPassword), "value must not be empty.");
-        }
-
-        var account = await _accountRepo.GetAsync(request.Id, ct);
+        var account = await _repo.GetAsync(request.Id, ct);
         if (account is null)
         {
             throw new InvalidOperationException($"LocalAccountEntity with Id '{request.Id}' not found.");
@@ -28,6 +23,6 @@ public class ChangePasswordCommandHandler : AsyncRequestHandler<ChangePasswordCo
         account.PasswordSalt = newSalt;
         account.PasswordHash = Helper.HashPassword2(request.ClearPassword, newSalt);
 
-        await _accountRepo.UpdateAsync(account, ct);
+        await _repo.UpdateAsync(account, ct);
     }
 }

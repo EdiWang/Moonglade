@@ -7,10 +7,10 @@ public record AccountExistsQuery(string Username) : IRequest<bool>;
 
 public class AccountExistsQueryHandler : IRequestHandler<AccountExistsQuery, bool>
 {
-    private readonly IRepository<LocalAccountEntity> _accountRepo;
+    private readonly IRepository<LocalAccountEntity> _repo;
 
-    public AccountExistsQueryHandler(IRepository<LocalAccountEntity> accountRepo) => _accountRepo = accountRepo;
+    public AccountExistsQueryHandler(IRepository<LocalAccountEntity> repo) => _repo = repo;
 
     public Task<bool> Handle(AccountExistsQuery request, CancellationToken ct) =>
-        _accountRepo.AnyAsync(p => p.Username == request.Username.ToLower(), ct);
+        _repo.AnyAsync(p => p.Username == request.Username.ToLower(), ct);
 }
