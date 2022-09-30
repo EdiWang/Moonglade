@@ -122,8 +122,7 @@ public class CommentController : ControllerBase
     public async Task<IActionResult> Reply(
         [NotEmpty] Guid commentId,
         [Required][FromBody] string replyContent,
-        [FromServices] LinkGenerator linkGenerator,
-        [FromServices] IServiceScopeFactory factory)
+        [FromServices] LinkGenerator linkGenerator)
     {
         if (!_blogConfig.ContentSettings.EnableComments) return Forbid();
 
