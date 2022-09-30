@@ -15,13 +15,12 @@ public class GetLinkQueryHandler : IRequestHandler<GetLinkQuery, Link>
 
     public Task<Link> Handle(GetLinkQuery request, CancellationToken ct)
     {
-        var item = _repo.SelectFirstOrDefaultAsync(
-            new FriendLinkSpec(request.Id), f => new Link
-            {
-                Id = f.Id,
-                LinkUrl = f.LinkUrl,
-                Title = f.Title
-            });
-        return item;
+        return _repo.SelectFirstOrDefaultAsync(
+             new FriendLinkSpec(request.Id), f => new Link
+             {
+                 Id = f.Id,
+                 LinkUrl = f.LinkUrl,
+                 Title = f.Title
+             });
     }
 }
