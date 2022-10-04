@@ -82,8 +82,7 @@ public class CommentController : ControllerBase
                     item.Email,
                     item.IpAddress,
                     item.PostTitle,
-                    item.CommentContent,
-                    item.CreateTimeUtc));
+                    item.CommentContent));
             }
             catch (Exception e)
             {

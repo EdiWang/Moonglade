@@ -9,16 +9,14 @@ public record CommentNotification(
     string Email,
     string IPAddress,
     string PostTitle,
-    string CommentContent,
-    DateTime CreateTimeUtc) : INotification;
+    string CommentContent) : INotification;
 
 internal record CommentPayload(
     string Username,
     string Email,
     string IpAddress,
     string PostTitle,
-    string CommentContent,
-    DateTime CreateTimeUtc);
+    string CommentContent);
 
 public class CommentNotificationHandler : INotificationHandler<CommentNotification>
 {
@@ -38,8 +36,7 @@ public class CommentNotificationHandler : INotificationHandler<CommentNotificati
             notification.Email,
             notification.IPAddress,
             notification.PostTitle,
-            ContentProcessor.MarkdownToContent(notification.CommentContent, ContentProcessor.MarkdownConvertType.Html),
-            notification.CreateTimeUtc
+            ContentProcessor.MarkdownToContent(notification.CommentContent, ContentProcessor.MarkdownConvertType.Html)
         );
 
         var dl = new[] { _blogConfig.NotificationSettings.AdminEmail };

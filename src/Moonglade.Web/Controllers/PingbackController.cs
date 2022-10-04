@@ -48,7 +48,7 @@ public class PingbackController : ControllerBase
     {
         try
         {
-            await _mediator.Publish(new PingbackNotification(history.TargetPostTitle, history.PingTimeUtc, history.Domain, history.SourceIp, history.SourceUrl, history.SourceTitle));
+            await _mediator.Publish(new PingbackNotification(history.TargetPostTitle, history.Domain, history.SourceIp, history.SourceUrl, history.SourceTitle));
         }
         catch (Exception e)
         {
