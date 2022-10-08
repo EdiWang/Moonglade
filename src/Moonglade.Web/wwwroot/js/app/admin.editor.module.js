@@ -1,10 +1,16 @@
 ﻿export let simplemde = null;
 
 function slugify(text) {
-    var isEngNum = /^[A-Za-z][A-Za-z0-9 ]*$/.test(text);
-    if (isEngNum) {
+    var isValidTitle = /^[A-Za-z][A-Za-z0-9 \(\)#,\.\?]*$/.test(text);
+    if (isValidTitle) {
         return text
             .toLowerCase()
+            .replace('(', '')
+            .replace(')', '')
+            .replace('#', '')
+            .replace(',', '')
+            .replace('.', '')
+            .replace('?', '')
             .replace(/[^\w ]+/g, '')
             .replace(/ +/g, '-');
     }
