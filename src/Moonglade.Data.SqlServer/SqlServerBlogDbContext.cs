@@ -28,7 +28,6 @@ public class SqlServerBlogDbContext : BlogDbContext
         modelBuilder.ApplyConfiguration(new BlogAssetConfiguration());
         modelBuilder.ApplyConfiguration(new BlogConfigurationConfiguration());
         modelBuilder.ApplyConfiguration(new PageConfiguration());
-        modelBuilder.ApplyConfiguration(new EmailNotificationConfiguration());
 
         base.OnModelCreating(modelBuilder);
     }
