@@ -107,6 +107,12 @@ public class SettingsController : ControllerBase
     [ProducesResponseType(StatusCodes.Status204NoContent)]
     public async Task<IActionResult> Notification(NotificationSettings model)
     {
+        if (model.EnableEmailSending && string.IsNullOrWhiteSpace(model.AzureStorageQueueConnection))
+        {
+            ModelState.AddModelError(nameof(model.AzureStorageQueueConnection), "Azure Storage Queue Connection is required.");
+            return BadRequest(ModelState.CombineErrorMessages());
+        }
+
         _blogConfig.NotificationSettings = model;
 
         await SaveConfigAsync(_blogConfig.NotificationSettings);

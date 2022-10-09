@@ -21,4 +21,7 @@ public class NotificationSettings : IBlogSettings
     [Display(Name = "Admin Email")]
     [EmailAddress]
     public string AdminEmail { get; set; }
+
+    [Display(Name = "Azure Storage Queue Connection String")]
+    public string AzureStorageQueueConnection { get; set; }
 }
