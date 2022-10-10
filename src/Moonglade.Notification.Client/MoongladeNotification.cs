@@ -33,7 +33,6 @@ public class MoongladeNotification : IMoongladeNotification
         {
             var queue = new QueueClient(_notificationSettings.AzureStorageQueueConnection, "moongladeemailqueue");
 
-            var uid = Guid.NewGuid();
             var en = new EmailNotificationV3
             {
                 DistributionList = string.Join(';', toAddresses),
