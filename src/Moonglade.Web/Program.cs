@@ -236,7 +236,7 @@ void ConfigureMiddleware(IApplicationBuilder appBuilder)
     if (app.Environment.IsDevelopment())
     {
         appBuilder.UseSwagger().UseSwaggerUI(c => c.SwaggerEndpoint("/swagger/v1/swagger.json", "Moonglade API V1"));
-        appBuilder.UseRouteDebugger().UseDeveloperExceptionPage();
+        appBuilder.UseDeveloperExceptionPage();
     }
     else
     {
