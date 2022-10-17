@@ -82,8 +82,7 @@ public class CommentController : ControllerBase
                     item.Email,
                     item.IpAddress,
                     item.PostTitle,
-                    item.CommentContent,
-                    item.CreateTimeUtc));
+                    item.CommentContent));
             }
             catch (Exception e)
             {
@@ -110,14 +109,8 @@ public class CommentController : ControllerBase
     [HttpDelete]
     [ProducesResponseType(typeof(Guid[]), StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(string), StatusCodes.Status400BadRequest)]
-    public async Task<IActionResult> Delete([FromBody] Guid[] commentIds)
+    public async Task<IActionResult> Delete([FromBody][MinLength(1)] Guid[] commentIds)
     {
-        if (commentIds.Length == 0)
-        {
-            ModelState.AddModelError(nameof(commentIds), "value is empty");
-            return BadRequest(ModelState.CombineErrorMessages());
-        }
-
         await _mediator.Send(new DeleteCommentsCommand(commentIds));
         return Ok(commentIds);
     }
@@ -128,8 +121,7 @@ public class CommentController : ControllerBase
     public async Task<IActionResult> Reply(
         [NotEmpty] Guid commentId,
         [Required][FromBody] string replyContent,
-        [FromServices] LinkGenerator linkGenerator,
-        [FromServices] IServiceScopeFactory factory)
+        [FromServices] LinkGenerator linkGenerator)
     {
         if (!_blogConfig.ContentSettings.EnableComments) return Forbid();
 

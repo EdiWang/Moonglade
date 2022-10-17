@@ -14,13 +14,11 @@ public class GetAllLinksQueryHandler : IRequestHandler<GetAllLinksQuery, IReadOn
 
     public Task<IReadOnlyList<Link>> Handle(GetAllLinksQuery request, CancellationToken ct)
     {
-        var data = _repo.SelectAsync(f => new Link
+        return _repo.SelectAsync(f => new Link
         {
             Id = f.Id,
             LinkUrl = f.LinkUrl,
             Title = f.Title
         });
-
-        return data;
     }
 }

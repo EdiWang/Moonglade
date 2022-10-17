@@ -7,13 +7,13 @@ public record GetAccountQuery(Guid Id) : IRequest<Account>;
 
 public class GetAccountQueryHandler : IRequestHandler<GetAccountQuery, Account>
 {
-    private readonly IRepository<LocalAccountEntity> _accountRepo;
+    private readonly IRepository<LocalAccountEntity> _repo;
 
-    public GetAccountQueryHandler(IRepository<LocalAccountEntity> accountRepo) => _accountRepo = accountRepo;
+    public GetAccountQueryHandler(IRepository<LocalAccountEntity> repo) => _repo = repo;
 
     public async Task<Account> Handle(GetAccountQuery request, CancellationToken ct)
     {
-        var entity = await _accountRepo.GetAsync(request.Id, ct);
+        var entity = await _repo.GetAsync(request.Id, ct);
         var item = new Account(entity);
         return item;
     }

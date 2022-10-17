@@ -23,8 +23,8 @@ public class CreateAccountCommand : IRequest
 
 public class CreateAccountCommandHandler : AsyncRequestHandler<CreateAccountCommand>
 {
-    private readonly IRepository<LocalAccountEntity> _accountRepo;
-    public CreateAccountCommandHandler(IRepository<LocalAccountEntity> accountRepo) => _accountRepo = accountRepo;
+    private readonly IRepository<LocalAccountEntity> _repo;
+    public CreateAccountCommandHandler(IRepository<LocalAccountEntity> repo) => _repo = repo;
 
     protected override Task Handle(CreateAccountCommand request, CancellationToken ct)
     {
@@ -51,6 +51,6 @@ public class CreateAccountCommandHandler : AsyncRequestHandler<CreateAccountComm
             PasswordHash = hash
         };
 
-        return _accountRepo.AddAsync(account, ct);
+        return _repo.AddAsync(account, ct);
     }
 }

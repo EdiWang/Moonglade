@@ -1,16 +1,14 @@
 ﻿using Microsoft.EntityFrameworkCore;
-using Moonglade.Data.SqlServer.Configurations;
+using Moonglade.Data.PostgreSql.Configurations;
 
-namespace Moonglade.Data.SqlServer;
-
-
-public class SqlServerBlogDbContext : BlogDbContext
+namespace Moonglade.Data.PostgreSql;
+public class PostgreSqlBlogDbContext : BlogDbContext
 {
-    public SqlServerBlogDbContext()
+    public PostgreSqlBlogDbContext()
     {
     }
 
-    public SqlServerBlogDbContext(DbContextOptions options)
+    public PostgreSqlBlogDbContext(DbContextOptions options)
         : base(options)
     {
     }

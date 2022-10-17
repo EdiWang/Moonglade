@@ -5,7 +5,6 @@ namespace Moonglade.Notification.Client;
 
 public record PingbackNotification(
     string TargetPostTitle,
-    DateTime PingTimeUtc,
     string Domain,
     string SourceIp,
     string SourceUrl,
@@ -13,7 +12,6 @@ public record PingbackNotification(
 
 internal record PingPayload(
     string TargetPostTitle,
-    DateTime PingTimeUtc,
     string Domain,
     string SourceIp,
     string SourceUrl,
@@ -34,7 +32,6 @@ public class PingbackNotificationHandler : INotificationHandler<PingbackNotifica
     {
         var payload = new PingPayload(
             notification.TargetPostTitle,
-            notification.PingTimeUtc,
             notification.Domain,
             notification.SourceIp,
             notification.SourceUrl,

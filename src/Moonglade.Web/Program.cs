@@ -6,6 +6,7 @@ using Microsoft.ApplicationInsights.Extensibility.Implementation;
 using Microsoft.AspNetCore.HttpOverrides;
 using Microsoft.FeatureManagement;
 using Moonglade.Data.MySql;
+using Moonglade.Data.PostgreSql;
 using Moonglade.Data.SqlServer;
 using Moonglade.Notification.Client;
 using Moonglade.Pingback;
@@ -151,6 +152,9 @@ void ConfigureServices(IServiceCollection services)
         case "mysql":
             services.AddMySqlStorage(connStr);
             break;
+        case "postgresql":
+            services.AddPostgreSqlStorage(connStr);
+            break;
         case "sqlserver":
         default:
             services.AddSqlServerStorage(connStr);
@@ -232,7 +236,7 @@ void ConfigureMiddleware(IApplicationBuilder appBuilder)
     if (app.Environment.IsDevelopment())
     {
         appBuilder.UseSwagger().UseSwaggerUI(c => c.SwaggerEndpoint("/swagger/v1/swagger.json", "Moonglade API V1"));
-        appBuilder.UseRouteDebugger().UseDeveloperExceptionPage();
+        appBuilder.UseDeveloperExceptionPage();
     }
     else
     {
