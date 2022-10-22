@@ -59,7 +59,7 @@ public class ContentSettings : IBlogSettings
     public string PostFooterHtmlPitch { get; set; }
 
     [Display(Name = "Show post outline as side navigation")]
-    public bool DocumentOutline { get; set; }
+    public bool DocumentOutline { get; set; } = true;
 
     [Display(Name = "Word count in abstract")]
     public int PostAbstractWords { get; set; } = 400;
