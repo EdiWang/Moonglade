@@ -90,10 +90,7 @@ public class GeneralSettings : IBlogSettings
     [MaxLength(64)]
     public string AvatarUrl { get; set; }
 
-    // Use string instead of TimeSpan as workaround for System.Text.Json issue
-    // https://github.com/EdiWang/Moonglade/issues/310
-    // TODO: .NET 6.0 fixed this bug, remove this workaround
-    public string TimeZoneUtcOffset { get; set; }
+    public TimeSpan TimeZoneUtcOffset { get; set; }
 
     public GeneralSettings() => ThemeId = 1;
 }

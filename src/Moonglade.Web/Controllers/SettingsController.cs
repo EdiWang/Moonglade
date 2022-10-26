@@ -84,7 +84,7 @@ public class SettingsController : ControllerBase
         model.AvatarUrl = _blogConfig.GeneralSettings.AvatarUrl;
 
         _blogConfig.GeneralSettings = model;
-        _blogConfig.GeneralSettings.TimeZoneUtcOffset = timeZoneResolver.GetTimeSpanByZoneId(model.TimeZoneId).ToString();
+        _blogConfig.GeneralSettings.TimeZoneUtcOffset = timeZoneResolver.GetTimeSpanByZoneId(model.TimeZoneId);
 
         await SaveConfigAsync(_blogConfig.GeneralSettings);
 
