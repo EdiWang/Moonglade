@@ -78,14 +78,15 @@ public class GeneralSettings : IBlogSettings
     [Display(Name = "Show pride mouse cursor and flag")]
     public bool Pride { get; set; }
 
-    /// <summary>
-    /// Avatar Url
-    /// </summary>
+    [Display(Name = "Tags")] 
+    public bool WidgetsTags { get; set; } = true;
+
     [MaxLength(64)]
     public string AvatarUrl { get; set; }
 
     // Use string instead of TimeSpan as workaround for System.Text.Json issue
     // https://github.com/EdiWang/Moonglade/issues/310
+    // TODO: .NET 6.0 fixed this bug, remove this workaround
     public string TimeZoneUtcOffset { get; set; }
 
     public GeneralSettings() => ThemeId = 1;

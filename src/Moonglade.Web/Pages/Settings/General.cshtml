@@ -217,7 +217,7 @@
                             <label class="form-check-label" for="@SideBarOption.Disabled">@SharedLocalizer["Disabled"]</label>
                         </div>
                     </div>
-                    <div class="form-floating">
+                    <div class="form-floating mb-4">
                         <textarea asp-for="ViewModel.SideBarCustomizedHtmlPitch"
                                   placeholder="@Html.DisplayNameFor(m => m.ViewModel.SideBarCustomizedHtmlPitch)"
                                   class="form-control form-control-sm h-100px textarea-code"
@@ -225,6 +225,21 @@
                                   cols="10"
                                   rows="10"></textarea>
                         <label class="form-label" asp-for="ViewModel.SideBarCustomizedHtmlPitch"></label>
+                    </div>
+                    
+                    <div class="row g-3 align-items-center settings-entry mb-4">
+                        <div class="col-auto">
+                            <i class="bi-tags settings-entry-icon"></i>
+                        </div>
+                        <div class="col">
+                            <label asp-for="ViewModel.WidgetsTags" class="form-check-label"></label>
+                        </div>
+                        <div class="col-md-5 text-end">
+                            <div class="form-check form-switch">
+                                <input type="hidden" name="WidgetsTags" value="false">
+                                <input type="checkbox" name="WidgetsTags" value="true" class="form-check-input" @(Model.ViewModel.WidgetsTags ? "checked" : null)>
+                            </div>
+                        </div>
                     </div>
 
                     <div class="mt-5">

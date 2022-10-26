@@ -24,8 +24,9 @@
     {
         @Html.Raw(BlogConfig.GeneralSettings.SideBarCustomizedHtmlPitch)
     }
-
-    <feature name="Widgets_HotTags">
+    
+    @if (BlogConfig.GeneralSettings.WidgetsTags)
+    {
         <section id="aside-tags" class="mt-4 mb-4">
             <div class="card">
                 <div class="card-header">@SharedLocalizer["Tags"]</div>
@@ -41,7 +42,7 @@
                 </div>
             </div>
         </section>
-    </feature>
+    }
 
     <feature name="Widgets_CategoryList">
         <section id="aside-cats" class="mb-4">
