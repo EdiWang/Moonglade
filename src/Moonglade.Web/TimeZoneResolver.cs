@@ -4,8 +4,8 @@ public interface ITimeZoneResolver
 {
     DateTime NowOfTimeZone { get; }
 
-    DateTime ToTimeZone(DateTime utcDateTime);
-    DateTime ToUtc(DateTime userDateTime);
+    DateTime ToTimeZone(DateTime utcTime);
+    DateTime ToUtc(DateTime userTime);
     IEnumerable<TimeZoneInfo> ListTimeZones();
     TimeSpan GetTimeSpanByZoneId(string timeZoneId);
 }
@@ -18,9 +18,9 @@ public class BlogTimeZoneResolver : ITimeZoneResolver
 
     public DateTime NowOfTimeZone => UtcToZoneTime(DateTime.UtcNow, UtcOffset);
 
-    public DateTime ToTimeZone(DateTime utcDateTime) => UtcToZoneTime(utcDateTime, UtcOffset);
+    public DateTime ToTimeZone(DateTime utcTime) => UtcToZoneTime(utcTime, UtcOffset);
 
-    public DateTime ToUtc(DateTime userDateTime) => ZoneTimeToUtc(userDateTime, UtcOffset);
+    public DateTime ToUtc(DateTime userTime) => ZoneTimeToUtc(userTime, UtcOffset);
 
     public IEnumerable<TimeZoneInfo> ListTimeZones() => TimeZoneInfo.GetSystemTimeZones();
 
