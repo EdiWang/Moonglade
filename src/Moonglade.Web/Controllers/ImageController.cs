@@ -139,7 +139,7 @@ public class ImageController : ControllerBase
             _ = Task.Run(async () => await _imageStorage.InsertAsync(secondaryFieName, arr));
         }
 
-        _logger.LogInformation($"Image '{primaryFileName}' uloaded.");
+        _logger.LogInformation($"Image '{primaryFileName}' uploaded.");
         var location = $"/image/{finalName}";
         var filename = location;
 
