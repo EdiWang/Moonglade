@@ -256,6 +256,21 @@
                             </div>
                         </div>
                     </div>
+                    
+                    <div class="row g-3 align-items-center settings-entry mb-4">
+                        <div class="col-auto">
+                            <i class="bi-link-45deg settings-entry-icon"></i>
+                        </div>
+                        <div class="col">
+                            <label asp-for="ViewModel.WidgetsFriendLink" class="form-check-label"></label>
+                        </div>
+                        <div class="col-md-5 text-end">
+                            <div class="form-check form-switch">
+                                <input type="hidden" name="WidgetsFriendLink" value="false">
+                                <input type="checkbox" name="WidgetsFriendLink" value="true" class="form-check-input" @(Model.ViewModel.WidgetsFriendLink ?"checked" : null)>
+                            </div>
+                        </div>
+                    </div>
 
                     <div class="mt-5">
                         <h6 class="card-subtitle mb-4 text-muted">

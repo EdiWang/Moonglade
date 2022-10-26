@@ -84,6 +84,9 @@ public class GeneralSettings : IBlogSettings
     [Display(Name = "Categories")] 
     public bool WidgetsCategoryList { get; set; } = true;
 
+    [Display(Name = "Friend links")]
+    public bool WidgetsFriendLink { get; set; } = true;
+
     [MaxLength(64)]
     public string AvatarUrl { get; set; }
 
