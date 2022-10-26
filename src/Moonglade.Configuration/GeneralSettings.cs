@@ -81,6 +81,9 @@ public class GeneralSettings : IBlogSettings
     [Display(Name = "Tags")] 
     public bool WidgetsTags { get; set; } = true;
 
+    [Display(Name = "Categories")] 
+    public bool WidgetsCategoryList { get; set; } = true;
+
     [MaxLength(64)]
     public string AvatarUrl { get; set; }
 

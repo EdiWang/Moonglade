@@ -43,15 +43,16 @@
             </div>
         </section>
     }
-
-    <feature name="Widgets_CategoryList">
+    
+    @if (BlogConfig.GeneralSettings.WidgetsCategoryList)
+    {
         <section id="aside-cats" class="mb-4">
             <div class="card">
                 <div class="card-header">@SharedLocalizer["Categories"]</div>
                 @await Component.InvokeAsync("CategoryList", new { isMenu = false })
             </div>
         </section>
-    </feature>
+    }
 
     <feature name="Widgets_FriendLink">
         <section id="aside-friendlink" class="mb-4">
