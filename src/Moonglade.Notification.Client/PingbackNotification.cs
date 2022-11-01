@@ -37,7 +37,7 @@ public class PingbackNotificationHandler : INotificationHandler<PingbackNotifica
             notification.SourceUrl,
             notification.SourceTitle);
 
-        var dl = new[] { _blogConfig.NotificationSettings.AdminEmail };
+        var dl = new[] { _blogConfig.GeneralSettings.OwnerEmail };
         await _moongladeNotification.EnqueueNotification(MailMesageTypes.BeingPinged, dl, payload);
     }
 }

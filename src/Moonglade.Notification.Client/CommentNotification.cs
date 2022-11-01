@@ -39,7 +39,7 @@ public class CommentNotificationHandler : INotificationHandler<CommentNotificati
             ContentProcessor.MarkdownToContent(notification.CommentContent, ContentProcessor.MarkdownConvertType.Html)
         );
 
-        var dl = new[] { _blogConfig.NotificationSettings.AdminEmail };
+        var dl = new[] { _blogConfig.GeneralSettings.OwnerEmail };
         await _moongladeNotification.EnqueueNotification(MailMesageTypes.NewCommentNotification, dl, payload);
     }
 }
