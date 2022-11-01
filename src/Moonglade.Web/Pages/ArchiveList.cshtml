@@ -1,7 +1,7 @@
 ﻿@page "/archive/{year:int:length(4)}/{month:int:range(1,12)?}"
 @model Moonglade.Web.Pages.ArchiveListModel
 @{
-    ViewBag.TitlePrefix = $"All Posts in {ViewBag.ArchiveInfo}";
+    ViewBag.TitlePrefix = $"All Posts in {Model.ArchiveInfo}";
 }
 
 <h3>

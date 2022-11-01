@@ -9,6 +9,8 @@ public class ArchiveListModel : PageModel
 
     public IReadOnlyList<PostDigest> Posts { get; set; }
 
+    public string ArchiveInfo { get; set; }
+
     public ArchiveListModel(IMediator mediator) => _mediator = mediator;
 
     public async Task<IActionResult> OnGetAsync(int year, int? month)
@@ -21,13 +23,13 @@ public class ArchiveListModel : PageModel
         if (month is not null)
         {
             // {year}/{month}
-            ViewData["ArchiveInfo"] = $"{year}.{month}";
+            ArchiveInfo = $"{year}.{month}";
             model = await _mediator.Send(new ListArchiveQuery(year, month));
         }
         else
         {
             // {year}
-            ViewData["ArchiveInfo"] = $"{year}";
+            ArchiveInfo = $"{year}";
             model = await _mediator.Send(new ListArchiveQuery(year));
         }
 
