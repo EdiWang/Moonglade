@@ -46,11 +46,6 @@ public abstract class DbContextRepository<T> : IRepository<T> where T : class
         if (entity is not null) await DeleteAsync(entity, ct);
     }
 
-    public int Count(ISpecification<T> spec = null) =>
-        null != spec ?
-            ApplySpecification(spec).Count() :
-            DbContext.Set<T>().Count();
-
     public int Count(Expression<Func<T, bool>> condition) => DbContext.Set<T>().Count(condition);
 
     public Task<int> CountAsync(Expression<Func<T, bool>> condition) => DbContext.Set<T>().CountAsync(condition);

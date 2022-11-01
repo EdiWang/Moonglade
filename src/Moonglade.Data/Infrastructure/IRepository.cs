@@ -22,8 +22,6 @@ public interface IRepository<T> //where T : class
 
     Task DeleteAsync(object key, CancellationToken ct = default);
 
-    int Count(ISpecification<T> spec = null);
-
     int Count(Expression<Func<T, bool>> condition);
 
     Task<int> CountAsync(Expression<Func<T, bool>> condition);
