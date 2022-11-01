@@ -14,6 +14,7 @@ public class CategoryListModel : PageModel
     [BindProperty(SupportsGet = true)]
     public int P { get; set; }
     public StaticPagedList<PostDigest> Posts { get; set; }
+    public Category Cat { get; set; }
 
     public CategoryListModel(
         IBlogConfig blogConfig,
@@ -32,18 +33,14 @@ public class CategoryListModel : PageModel
         if (string.IsNullOrWhiteSpace(routeName)) return NotFound();
 
         var pageSize = _blogConfig.ContentSettings.PostListPageSize;
-        var cat = await _mediator.Send(new GetCategoryByRouteQuery(routeName));
+        Cat = await _mediator.Send(new GetCategoryByRouteQuery(routeName));
 
-        if (cat is null) return NotFound();
+        if (Cat is null) return NotFound();
 
-        ViewData["CategoryDisplayName"] = cat.DisplayName;
-        ViewData["CategoryRouteName"] = cat.RouteName;
-        ViewData["CategoryDescription"] = cat.Note;
+        var postCount = await _cache.GetOrCreateAsync(CacheDivision.PostCountCategory, Cat.Id.ToString(),
+            _ => _mediator.Send(new CountPostQuery(CountType.Category, Cat.Id)));
 
-        var postCount = await _cache.GetOrCreateAsync(CacheDivision.PostCountCategory, cat.Id.ToString(),
-            _ => _mediator.Send(new CountPostQuery(CountType.Category, cat.Id)));
-
-        var postList = await _mediator.Send(new ListPostsQuery(pageSize, P, cat.Id));
+        var postList = await _mediator.Send(new ListPostsQuery(pageSize, P, Cat.Id));
 
         Posts = new(postList, P, pageSize, postCount);
         return Page();
