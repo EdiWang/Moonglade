@@ -251,12 +251,6 @@ void ConfigureMiddleware(IApplicationBuilder appBuilder)
         SupportedUICultures = cultures
     });
 
-    appBuilder.UseDefaultImage(options =>
-    {
-        options.AllowedExtensions = app.Configuration.GetSection("ImageStorage:AllowedExtensions").Get<string[]>();
-        options.DefaultImagePath = app.Configuration["ImageStorage:DefaultImagePath"];
-    });
-
     appBuilder.UseStaticFiles();
     appBuilder.UseSession().UseCaptchaImage(options =>
     {
