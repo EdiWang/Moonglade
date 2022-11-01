@@ -203,7 +203,7 @@
                     <h6 class="card-subtitle mt-5 mb-2 text-muted">
                         @SharedLocalizer["Side Bar"]
                     </h6>
-                    <div class="mb-1">
+                    <div class="mb-4">
                         <div class="form-check form-check-inline">
                             @Html.RadioButtonFor(model => model.ViewModel.SideBarOption, SideBarOption.Right, new { id = SideBarOption.Right.ToString(), @class = "form-check-input" })
                             <label class="form-check-label" for="@SideBarOption.Right">@SharedLocalizer["Right"]</label>
@@ -217,19 +217,10 @@
                             <label class="form-check-label" for="@SideBarOption.Disabled">@SharedLocalizer["Disabled"]</label>
                         </div>
                     </div>
-                    <div class="form-floating mb-4">
-                        <textarea asp-for="ViewModel.SideBarCustomizedHtmlPitch"
-                                  placeholder="@Html.DisplayNameFor(m => m.ViewModel.SideBarCustomizedHtmlPitch)"
-                                  class="form-control form-control-sm h-100px textarea-code"
-                                  spellcheck="false"
-                                  cols="10"
-                                  rows="10"></textarea>
-                        <label class="form-label" asp-for="ViewModel.SideBarCustomizedHtmlPitch"></label>
-                    </div>
                     
-                    <div class="row g-3 align-items-center settings-entry mb-4">
+                    <div class="row g-3 align-items-center settings-entry mb-2">
                         <div class="col-auto">
-                            <i class="bi-tags settings-entry-icon"></i>
+                            <i class="bi-file-person settings-entry-icon"></i>
                         </div>
                         <div class="col">
                             <label asp-for="ViewModel.WidgetsProfile" class="form-check-label"></label>
@@ -240,6 +231,16 @@
                                 <input type="checkbox" name="WidgetsProfile" value="true" class="form-check-input" @(Model.ViewModel.WidgetsProfile ? "checked" :null)>
                             </div>
                         </div>
+                    </div>
+
+                    <div class="form-floating mb-4">
+                        <textarea asp-for="ViewModel.SideBarCustomizedHtmlPitch"
+                                  placeholder="@Html.DisplayNameFor(m => m.ViewModel.SideBarCustomizedHtmlPitch)"
+                                  class="form-control form-control-sm h-100px textarea-code"
+                                  spellcheck="false"
+                                  cols="10"
+                                  rows="10"></textarea>
+                        <label class="form-label" asp-for="ViewModel.SideBarCustomizedHtmlPitch"></label>
                     </div>
                     
                     <div class="row g-3 align-items-center settings-entry mb-4">
@@ -289,7 +290,7 @@
                     
                     <div class="row g-3 align-items-center settings-entry mb-4">
                         <div class="col-auto">
-                            <i class="bi-link-45deg settings-entry-icon"></i>
+                            <i class="bi-menu-button settings-entry-icon"></i>
                         </div>
                         <div class="col">
                             <label asp-for="ViewModel.WidgetsSubscriptionButtons" class="form-check-label"></label>
