@@ -71,7 +71,7 @@ public class SyndicationDataSource : ISyndicationDataSource
             PubDateUtc = p.PubDateUtc.Value,
             Description = _blogConfig.FeedSettings.UseFullContent ? p.PostContent : p.ContentAbstract,
             Link = $"{_baseUrl}/post/{p.PubDateUtc.Value.Year}/{p.PubDateUtc.Value.Month}/{p.PubDateUtc.Value.Day}/{p.Slug}",
-            Author = _blogConfig.FeedSettings.AuthorName,
+            Author = _blogConfig.GeneralSettings.OwnerName,
             AuthorEmail = _blogConfig.GeneralSettings.OwnerEmail,
             Categories = p.PostCategory.Select(pc => pc.Category.DisplayName).ToArray()
         } : null);
