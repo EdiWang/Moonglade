@@ -3,12 +3,12 @@
     {
         <section class="blog-info-desktop-lg text-light d-none d-lg-block">
             <div class="card-bkimg-container">
-                <img class="card-bkimg" alt="" src="@BlogConfig.GeneralSettings.AvatarUrl"/>
+                <img class="card-bkimg" alt="" src="@BlogConfig.GeneralSettings.AvatarUrl" />
             </div>
             <div class="blog-info-photo-text text-center">
                 <img src="@BlogConfig.GeneralSettings.AvatarUrl"
-                     alt="@BlogConfig.GeneralSettings.OwnerName"
-                     class="rounded-circle blogger-head-pic"/>
+                 alt="@BlogConfig.GeneralSettings.OwnerName"
+                 class="rounded-circle blogger-head-pic" />
                 <div>
                     <h3 class="mt-3 text-white font-sairas">
                         @BlogConfig.GeneralSettings.OwnerName
@@ -35,7 +35,7 @@
                     <cache expires-after="@TimeSpan.FromMinutes(60)">
                         @await Component.InvokeAsync("Tags")
                     </cache>
-                    <hr/>
+                    <hr />
                     <a asp-page="/Tags" class="card-link">
                         <i class="bi-tag me-1"></i>
                         @SharedLocalizer["All Tags"]
@@ -89,7 +89,8 @@
     }
 </aside>
 
-<feature name="Widgets_SubscriptionButtons">
+@if (BlogConfig.GeneralSettings.WidgetsSubscriptionButtons)
+{
     <div class="modal fade" id="subscriptionmodal" tabindex="-1" role="dialog" aria-labelledby="subscriptionmodalLabel" aria-hidden="true">
         <div class="modal-dialog" role="document">
             <div class="modal-content">
@@ -120,5 +121,4 @@
             </div>
         </div>
     </div>
-</feature>
-
+}
