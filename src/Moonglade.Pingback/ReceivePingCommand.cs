@@ -76,7 +76,7 @@ public class ReceivePingCommandHandler : IRequestHandler<ReceivePingCommand, Pin
 
             var (slug, pubDate) = GetSlugInfoFromUrl(pingRequest.TargetUrl);
             var spec = new PostSpec(pubDate, slug);
-            var (id, title) = await _postRepo.SelectFirstOrDefaultAsync(spec, p => new Tuple<Guid, string>(p.Id, p.Title));
+            var (id, title) = await _postRepo.FirstOrDefaultAsync(spec, p => new Tuple<Guid, string>(p.Id, p.Title));
             if (id == Guid.Empty)
             {
                 _logger.LogError($"Can not get post id and title for url '{pingRequest.TargetUrl}'");

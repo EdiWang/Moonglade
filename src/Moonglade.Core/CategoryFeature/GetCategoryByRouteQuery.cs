@@ -10,5 +10,5 @@ public class GetCategoryByRouteQueryHandler : IRequestHandler<GetCategoryByRoute
     public GetCategoryByRouteQueryHandler(IRepository<CategoryEntity> repo) => _repo = repo;
 
     public Task<Category> Handle(GetCategoryByRouteQuery request, CancellationToken cancellationToken) =>
-        _repo.SelectFirstOrDefaultAsync(new CategorySpec(request.RouteName), Category.EntitySelector);
+        _repo.FirstOrDefaultAsync(new CategorySpec(request.RouteName), Category.EntitySelector);
 }

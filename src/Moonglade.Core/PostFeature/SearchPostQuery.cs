@@ -25,7 +25,7 @@ public class SearchPostQueryHandler : IRequestHandler<SearchPostQuery, IReadOnly
 
     private IQueryable<PostEntity> SearchByKeyword(string keyword)
     {
-        var query = _repo.GetAsQueryable()
+        var query = _repo.AsQueryable()
             .Where(p => !p.IsDeleted && p.IsPublished).AsNoTracking();
 
         var str = Regex.Replace(keyword, @"\s+", " ");
