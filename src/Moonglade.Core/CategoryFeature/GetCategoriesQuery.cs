@@ -20,7 +20,7 @@ public class GetCategoriesQueryHandler : IRequestHandler<GetCategoriesQuery, IRe
         return _cache.GetOrCreateAsync(CacheDivision.General, "allcats", async entry =>
         {
             entry.SlidingExpiration = TimeSpan.FromHours(1);
-            var list = await _repo.SelectAsync(Category.EntitySelector);
+            var list = await _repo.SelectAsync(Category.EntitySelector, ct);
             return list;
         });
     }

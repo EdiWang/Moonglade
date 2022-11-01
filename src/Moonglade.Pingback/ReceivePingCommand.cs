@@ -46,7 +46,7 @@ public class ReceivePingCommandHandler : IRequestHandler<ReceivePingCommand, Pin
         _postRepo = postRepo;
     }
 
-    public async Task<PingbackResponse> Handle(ReceivePingCommand request, CancellationToken cancellationToken)
+    public async Task<PingbackResponse> Handle(ReceivePingCommand request, CancellationToken ct)
     {
         try
         {
@@ -107,7 +107,7 @@ public class ReceivePingCommandHandler : IRequestHandler<ReceivePingCommand, Pin
                 SourceIp = request.IP
             };
 
-            await _pingbackRepo.AddAsync(obj, cancellationToken);
+            await _pingbackRepo.AddAsync(obj, ct);
             request.Action?.Invoke(obj);
 
             return PingbackResponse.Success;

@@ -19,6 +19,6 @@ public class GetAllLinksQueryHandler : IRequestHandler<GetAllLinksQuery, IReadOn
             Id = f.Id,
             LinkUrl = f.LinkUrl,
             Title = f.Title
-        });
+        }, ct);
     }
 }

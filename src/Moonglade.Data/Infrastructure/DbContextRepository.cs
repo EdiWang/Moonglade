@@ -46,14 +46,13 @@ public abstract class DbContextRepository<T> : IRepository<T> where T : class
         if (entity is not null) await DeleteAsync(entity, ct);
     }
 
-    public int Count(Expression<Func<T, bool>> condition) => DbContext.Set<T>().Count(condition);
+    public Task<int> CountAsync(Expression<Func<T, bool>> condition, CancellationToken ct = default) => 
+        DbContext.Set<T>().CountAsync(condition, ct);
 
-    public Task<int> CountAsync(Expression<Func<T, bool>> condition) => DbContext.Set<T>().CountAsync(condition);
-
-    public Task<int> CountAsync(ISpecification<T> spec = null) => 
+    public Task<int> CountAsync(ISpecification<T> spec = null, CancellationToken ct = default) =>
         null != spec ?
-            ApplySpecification(spec).CountAsync() :
-            DbContext.Set<T>().CountAsync();
+            ApplySpecification(spec).CountAsync(cancellationToken: ct) :
+            DbContext.Set<T>().CountAsync(cancellationToken: ct);
 
     public Task<bool> AnyAsync(ISpecification<T> spec, CancellationToken ct = default) =>
         ApplySpecification(spec).AnyAsync(cancellationToken: ct);
@@ -63,8 +62,8 @@ public abstract class DbContextRepository<T> : IRepository<T> where T : class
             DbContext.Set<T>().AnyAsync(condition, cancellationToken: ct) :
             DbContext.Set<T>().AnyAsync(cancellationToken: ct);
 
-    public async Task<IReadOnlyList<TResult>> SelectAsync<TResult>(Expression<Func<T, TResult>> selector) =>
-        await DbContext.Set<T>().AsNoTracking().Select(selector).ToListAsync();
+    public async Task<IReadOnlyList<TResult>> SelectAsync<TResult>(Expression<Func<T, TResult>> selector, CancellationToken ct = default) =>
+        await DbContext.Set<T>().AsNoTracking().Select(selector).ToListAsync(cancellationToken: ct);
 
     public async Task<IReadOnlyList<TResult>> SelectAsync<TResult>(
         ISpecification<T> spec, Expression<Func<T, TResult>> selector) =>

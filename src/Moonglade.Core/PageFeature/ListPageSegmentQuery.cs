@@ -17,6 +17,6 @@ public class ListPageSegmentQueryHandler : IRequestHandler<ListPageSegmentQuery,
             Slug = page.Slug,
             Title = page.Title,
             IsPublished = page.IsPublished
-        });
+        }, ct);
     }
 }

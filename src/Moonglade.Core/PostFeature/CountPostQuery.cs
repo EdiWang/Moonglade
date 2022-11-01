@@ -33,23 +33,23 @@ public class CountPostQueryHandler : IRequestHandler<CountPostQuery, int>
         switch (request.CountType)
         {
             case CountType.Public:
-                count = await _postRepo.CountAsync(p => p.IsPublished && !p.IsDeleted);
+                count = await _postRepo.CountAsync(p => p.IsPublished && !p.IsDeleted, ct);
                 break;
 
             case CountType.Category:
                 if (request.CatId == null) throw new ArgumentNullException(nameof(request.CatId));
                 count = await _postCatRepo.CountAsync(c => c.CategoryId == request.CatId.Value
                                                            && c.Post.IsPublished
-                                                           && !c.Post.IsDeleted);
+                                                           && !c.Post.IsDeleted, ct);
                 break;
 
             case CountType.Tag:
                 if (request.TagId == null) throw new ArgumentNullException(nameof(request.TagId));
-                count = await _postTagRepo.CountAsync(p => p.TagId == request.TagId.Value && p.Post.IsPublished && !p.Post.IsDeleted);
+                count = await _postTagRepo.CountAsync(p => p.TagId == request.TagId.Value && p.Post.IsPublished && !p.Post.IsDeleted, ct);
                 break;
 
             case CountType.Featured:
-                count = await _postRepo.CountAsync(p => p.IsFeatured && p.IsPublished && !p.IsDeleted);
+                count = await _postRepo.CountAsync(p => p.IsFeatured && p.IsPublished && !p.IsDeleted, ct);
                 break;
         }
 

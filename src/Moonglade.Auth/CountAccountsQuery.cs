@@ -11,5 +11,5 @@ public class CountAccountsQueryHandler : IRequestHandler<CountAccountsQuery, int
 
     public CountAccountsQueryHandler(IRepository<LocalAccountEntity> repo) => _repo = repo;
 
-    public Task<int> Handle(CountAccountsQuery request, CancellationToken ct) => _repo.CountAsync();
+    public Task<int> Handle(CountAccountsQuery request, CancellationToken ct) => _repo.CountAsync(ct: ct);
 }

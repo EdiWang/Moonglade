@@ -6,7 +6,7 @@ using System.Text.Json;
 
 namespace Moonglade.Data.Exporting.Exporters;
 
-public class ZippedJsonExporter<T> : IExporter<T>
+public class ZippedJsonExporter<T> : IExporter<T> where T : class
 {
     private readonly IRepository<T> _repository;
     private readonly string _fileNamePrefix;
@@ -19,10 +19,10 @@ public class ZippedJsonExporter<T> : IExporter<T>
         _directory = directory;
     }
 
-    public async Task<ExportResult> ExportData<TResult>(Expression<Func<T, TResult>> selector, CancellationToken cancellationToken)
+    public async Task<ExportResult> ExportData<TResult>(Expression<Func<T, TResult>> selector, CancellationToken ct)
     {
-        var data = await _repository.SelectAsync(selector);
-        var result = await ToZippedJsonResult(data, cancellationToken);
+        var data = await _repository.SelectAsync(selector, ct);
+        var result = await ToZippedJsonResult(data, ct);
         return result;
     }
 

@@ -40,7 +40,7 @@
     }
 
     <title>
-        @(ViewBag?.TitlePrefix)@(null == ViewBag?.TitlePrefix ? string.Empty : " - ")@BlogConfig.GeneralSettings.SiteTitle
+        @(ViewBag.TitlePrefix)@(null == ViewBag.TitlePrefix ? string.Empty : " - ")@BlogConfig.GeneralSettings.SiteTitle
     </title>
 
     @if (BlogConfig.ImageSettings.EnableCDNRedirect &&

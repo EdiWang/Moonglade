@@ -6,11 +6,11 @@ namespace Moonglade.Comments;
 
 public record CountCommentsQuery : IRequest<int>;
 
-public class CountCommentsQueryHandler : RequestHandler<CountCommentsQuery, int>
+public class CountCommentsQueryHandler : IRequestHandler<CountCommentsQuery, int>
 {
     private readonly IRepository<CommentEntity> _repo;
 
     public CountCommentsQueryHandler(IRepository<CommentEntity> repo) => _repo = repo;
 
-    protected override int Handle(CountCommentsQuery request) => _repo.Count(c => true);
+    public Task<int> Handle(CountCommentsQuery request, CancellationToken ct) => _repo.CountAsync(ct: ct);
 }

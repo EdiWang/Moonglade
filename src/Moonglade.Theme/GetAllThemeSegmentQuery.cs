@@ -18,6 +18,6 @@ public class GetAllThemeSegmentQueryHandler : IRequestHandler<GetAllThemeSegment
         {
             Id = p.Id,
             Name = p.ThemeName
-        });
+        }, ct);
     }
 }

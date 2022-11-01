@@ -29,7 +29,7 @@ public class GetAllMenusQueryHandler : IRequestHandler<GetAllMenusQuery, IReadOn
                 Url = sm.Url,
                 IsOpenInNewTab = sm.IsOpenInNewTab
             }).ToList()
-        });
+        }, ct);
 
         return list;
     }

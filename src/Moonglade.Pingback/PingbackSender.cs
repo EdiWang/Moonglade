@@ -59,6 +59,7 @@ public class PingbackSender : IPingbackSender
         try
         {
             var response = await _httpClient.GetAsync(targetUrl);
+
             var (key, value) = response.Headers.FirstOrDefault(
                 h => h.Key.ToLower() == "x-pingback" || h.Key.ToLower() == "pingback");
 
