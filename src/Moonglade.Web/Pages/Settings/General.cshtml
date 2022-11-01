@@ -232,6 +232,21 @@
                             <i class="bi-tags settings-entry-icon"></i>
                         </div>
                         <div class="col">
+                            <label asp-for="ViewModel.WidgetsProfile" class="form-check-label"></label>
+                        </div>
+                        <div class="col-md-5 text-end">
+                            <div class="form-check form-switch">
+                                <input type="hidden" name="WidgetsProfile" value="false">
+                                <input type="checkbox" name="WidgetsProfile" value="true" class="form-check-input" @(Model.ViewModel.WidgetsProfile ? "checked" :null)>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="row g-3 align-items-center settings-entry mb-4">
+                        <div class="col-auto">
+                            <i class="bi-tags settings-entry-icon"></i>
+                        </div>
+                        <div class="col">
                             <label asp-for="ViewModel.WidgetsTags" class="form-check-label"></label>
                         </div>
                         <div class="col-md-5 text-end">
