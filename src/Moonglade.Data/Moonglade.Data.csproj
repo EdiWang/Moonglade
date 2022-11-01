@@ -6,7 +6,7 @@
 	</PropertyGroup>
 	<ItemGroup>
 		<Using Include="Microsoft.EntityFrameworkCore" />
-		<PackageReference Include="CsvHelper" Version="29.0.0" />
+		<PackageReference Include="CsvHelper" Version="30.0.0" />
 		<PackageReference Include="MediatR" Version="11.0.0" />
 		<FrameworkReference Include="Microsoft.AspNetCore.App" />
 		
