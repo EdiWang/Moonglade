@@ -12,9 +12,9 @@ public class ExportLinkDataCommandHandler : IRequestHandler<ExportLinkDataComman
     private readonly IRepository<FriendLinkEntity> _repo;
     public ExportLinkDataCommandHandler(IRepository<FriendLinkEntity> repo) => _repo = repo;
 
-    public Task<ExportResult> Handle(ExportLinkDataCommand request, CancellationToken cancellationToken)
+    public Task<ExportResult> Handle(ExportLinkDataCommand request, CancellationToken ct)
     {
         var fdExp = new CSVExporter<FriendLinkEntity>(_repo, "moonglade-friendlinks", ExportManager.DataDir);
-        return fdExp.ExportData(p => p, cancellationToken);
+        return fdExp.ExportData(p => p, ct);
     }
 }
