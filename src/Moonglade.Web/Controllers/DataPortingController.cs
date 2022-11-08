@@ -13,15 +13,15 @@ public class DataPortingController : ControllerBase
 
     [HttpGet("export/{type}")]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
-    public async Task<IActionResult> ExportDownload(ExportType type, CancellationToken cancellationToken)
+    public async Task<IActionResult> ExportDownload(ExportType type, CancellationToken ct)
     {
         var exportResult = type switch
         {
-            ExportType.Tags => await _mediator.Send(new ExportTagsDataCommand(), cancellationToken),
-            ExportType.Categories => await _mediator.Send(new ExportCategoryDataCommand(), cancellationToken),
-            ExportType.FriendLinks => await _mediator.Send(new ExportLinkDataCommand(), cancellationToken),
-            ExportType.Pages => await _mediator.Send(new ExportPageDataCommand(), cancellationToken),
-            ExportType.Posts => await _mediator.Send(new ExportPostDataCommand(), cancellationToken),
+            ExportType.Tags => await _mediator.Send(new ExportTagsDataCommand(), ct),
+            ExportType.Categories => await _mediator.Send(new ExportCategoryDataCommand(), ct),
+            ExportType.FriendLinks => await _mediator.Send(new ExportLinkDataCommand(), ct),
+            ExportType.Pages => await _mediator.Send(new ExportPageDataCommand(), ct),
+            ExportType.Posts => await _mediator.Send(new ExportPostDataCommand(), ct),
             _ => throw new ArgumentOutOfRangeException(nameof(type), type, null)
         };
 
