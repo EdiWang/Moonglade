@@ -28,7 +28,7 @@ public class GetAtomStringQueryHandler : IRequestHandler<GetAtomStringQuery, str
             baseUrl);
     }
 
-    public async Task<string> Handle(GetAtomStringQuery request, CancellationToken cancellationToken)
+    public async Task<string> Handle(GetAtomStringQuery request, CancellationToken ct)
     {
         _feedGenerator.FeedItemCollection = await _sdds.GetFeedDataAsync();
         var xml = await _feedGenerator.WriteAtomAsync();
