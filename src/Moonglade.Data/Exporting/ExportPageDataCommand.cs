@@ -12,7 +12,7 @@ public class ExportPageDataCommandHandler : IRequestHandler<ExportPageDataComman
     private readonly IRepository<PageEntity> _repo;
     public ExportPageDataCommandHandler(IRepository<PageEntity> repo) => _repo = repo;
 
-    public Task<ExportResult> Handle(ExportPageDataCommand request, CancellationToken cancellationToken)
+    public Task<ExportResult> Handle(ExportPageDataCommand request, CancellationToken ct)
     {
         var pgExp = new ZippedJsonExporter<PageEntity>(_repo, "moonglade-pages", ExportManager.DataDir);
         return pgExp.ExportData(p => new
@@ -27,6 +27,6 @@ public class ExportPageDataCommandHandler : IRequestHandler<ExportPageDataComman
             p.IsPublished,
             p.CreateTimeUtc,
             p.UpdateTimeUtc
-        }, cancellationToken);
+        }, ct);
     }
 }
