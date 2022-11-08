@@ -29,7 +29,7 @@ public class CommentNotificationHandler : INotificationHandler<CommentNotificati
         _blogConfig = blogConfig;
     }
 
-    public async Task Handle(CommentNotification notification, CancellationToken cancellationToken)
+    public async Task Handle(CommentNotification notification, CancellationToken ct)
     {
         var payload = new CommentPayload(
             notification.Username,
