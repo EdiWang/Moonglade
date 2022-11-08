@@ -98,7 +98,6 @@ void ConfigureServices(IServiceCollection services)
     }).AddSessionBasedCaptcha(options => options.FontStyle = FontStyle.Bold);
 
     services.AddLocalization(options => options.ResourcesPath = "Resources");
-    services.AddSwaggerGen();
     services.AddControllers(options => options.Filters.Add(new AutoValidateAntiforgeryTokenAttribute()))
             .AddJsonOptions(options => options.JsonSerializerOptions.Converters.Add(new JsonStringEnumConverter()))
             .ConfigureApiBehaviorOptions(ConfigureApiBehavior.BlogApiBehavior);
@@ -235,7 +234,6 @@ void ConfigureMiddleware(IApplicationBuilder appBuilder)
 
     if (app.Environment.IsDevelopment())
     {
-        appBuilder.UseSwagger().UseSwaggerUI(c => c.SwaggerEndpoint("/swagger/v1/swagger.json", "Moonglade API V1"));
         appBuilder.UseDeveloperExceptionPage();
     }
     else
