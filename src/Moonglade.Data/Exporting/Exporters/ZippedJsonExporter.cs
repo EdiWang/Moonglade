@@ -26,14 +26,14 @@ public class ZippedJsonExporter<T> : IExporter<T> where T : class
         return result;
     }
 
-    private async Task<ExportResult> ToZippedJsonResult<TE>(IEnumerable<TE> list, CancellationToken cancellationToken)
+    private async Task<ExportResult> ToZippedJsonResult<TE>(IEnumerable<TE> list, CancellationToken ct)
     {
         var tempId = Guid.NewGuid().ToString();
         string exportDirectory = ExportManager.CreateExportDirectory(_directory, tempId);
         foreach (var item in list)
         {
             var json = JsonSerializer.Serialize(item, MoongladeJsonSerializerOptions.Default);
-            await SaveJsonToDirectory(json, exportDirectory, $"{Guid.NewGuid()}.json", cancellationToken);
+            await SaveJsonToDirectory(json, exportDirectory, $"{Guid.NewGuid()}.json", ct);
         }
 
         var distPath = Path.Join(_directory, "export", $"{_fileNamePrefix}-{DateTime.UtcNow:yyyy-MM-dd-HH-mm-ss}.zip");
@@ -46,9 +46,9 @@ public class ZippedJsonExporter<T> : IExporter<T> where T : class
         };
     }
 
-    private static async Task SaveJsonToDirectory(string json, string directory, string filename, CancellationToken cancellationToken)
+    private static async Task SaveJsonToDirectory(string json, string directory, string filename, CancellationToken ct)
     {
         var path = Path.Join(directory, filename);
-        await File.WriteAllTextAsync(path, json, Encoding.UTF8, cancellationToken);
+        await File.WriteAllTextAsync(path, json, Encoding.UTF8, ct);
     }
 }
