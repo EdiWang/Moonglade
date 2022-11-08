@@ -35,7 +35,7 @@ public class WriteFoafCommandHandler : IRequestHandler<WriteFoafCommand, string>
             { "rdfs", "http://www.w3.org/2000/01/rdf-schema#" }
         };
 
-    public async Task<string> Handle(WriteFoafCommand request, CancellationToken cancellationToken)
+    public async Task<string> Handle(WriteFoafCommand request, CancellationToken ct)
     {
         var sw = new StringWriter();
         var writer = await GetWriter(sw);
