@@ -24,7 +24,7 @@ public class CommentReplyNotificationHandler : INotificationHandler<CommentReply
         _moongladeNotification = moongladeNotification;
     }
 
-    public async Task Handle(CommentReplyNotification notification, CancellationToken cancellationToken)
+    public async Task Handle(CommentReplyNotification notification, CancellationToken ct)
     {
         var payload = new CommentReplyPayload(
             notification.CommentContent,
