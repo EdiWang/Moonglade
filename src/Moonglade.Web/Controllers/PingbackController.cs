@@ -27,7 +27,7 @@ public class PingbackController : ControllerBase
     [IgnoreAntiforgeryToken]
     [ProducesResponseType(StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status403Forbidden)]
-    public async Task<IActionResult> Process([FromServices] IServiceScopeFactory factory)
+    public async Task<IActionResult> Process()
     {
         if (!_blogConfig.AdvancedSettings.EnablePingbackReceive)
         {
