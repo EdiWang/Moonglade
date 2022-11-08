@@ -34,16 +34,6 @@ public class PostController : ControllerBase
         _logger = logger;
     }
 
-    [HttpGet("segment/published")]
-    [FeatureGate(FeatureFlags.EnableWebApi)]
-    [ProducesResponseType(typeof(IReadOnlyList<PostSegment>), StatusCodes.Status200OK)]
-    public async Task<IActionResult> Segment()
-    {
-        // for security, only allow published posts to be listed to third party API calls
-        var list = await _mediator.Send(new ListPostSegmentByStatusQuery(PostStatus.Published));
-        return Ok(list);
-    }
-
     [HttpPost("createoredit")]
     [TypeFilter(typeof(ClearBlogCache), Arguments = new object[]
     {

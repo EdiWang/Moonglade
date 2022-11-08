@@ -21,19 +21,6 @@ public class PageController : Controller
         _mediator = mediator;
     }
 
-    [HttpGet("segment/published")]
-    [FeatureGate(FeatureFlags.EnableWebApi)]
-    [ProducesResponseType(typeof(IEnumerable<PageSegment>), StatusCodes.Status200OK)]
-    public async Task<IActionResult> Segment()
-    {
-        var pageSegments = await _mediator.Send(new ListPageSegmentQuery());
-        if (pageSegments is null) return Ok(Array.Empty<PageSegment>());
-
-        // for security, only allow published pages to be listed to third party API calls
-        var published = pageSegments.Where(p => p.IsPublished);
-        return Ok(published);
-    }
-
     [HttpPost]
     [TypeFilter(typeof(ClearBlogCache), Arguments = new object[] { BlogCacheType.SiteMap })]
     [ProducesResponseType(StatusCodes.Status200OK)]

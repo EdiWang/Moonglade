@@ -2,7 +2,6 @@
 
 public enum FeatureFlags
 {
-    EnableWebApi,
     Foaf,
     OPML
 }

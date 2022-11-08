@@ -28,24 +28,6 @@ public class CommentController : ControllerBase
         _logger = logger;
     }
 
-    [HttpGet("list/{postId:guid}")]
-    [FeatureGate(FeatureFlags.EnableWebApi)]
-    [ProducesResponseType(StatusCodes.Status200OK)]
-    public async Task<IActionResult> List([NotEmpty] Guid postId)
-    {
-        var comments = await _mediator.Send(new GetApprovedCommentsQuery(postId));
-        var resp = comments.Select(p => new
-        {
-            p.Username,
-            Content = p.CommentContent,
-            p.CreateTimeUtc,
-            CreateTimeLocal = _timeZoneResolver.ToTimeZone(p.CreateTimeUtc),
-            Replies = p.CommentReplies
-        });
-
-        return Ok(resp);
-    }
-
     [HttpPost("{postId:guid}")]
     [AllowAnonymous]
     [ServiceFilter(typeof(ValidateCaptcha))]
