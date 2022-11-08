@@ -25,7 +25,7 @@ public class CSVExporter<T> : IExporter<T> where T : class
         return result;
     }
 
-    private async Task<ExportResult> ToCSVResult<TResult>(IEnumerable<TResult> data, CancellationToken cancellationToken)
+    private async Task<ExportResult> ToCSVResult<TResult>(IEnumerable<TResult> data, CancellationToken ct)
     {
         var tempId = Guid.NewGuid().ToString();
         string exportDirectory = ExportManager.CreateExportDirectory(_directory, tempId);
@@ -34,7 +34,7 @@ public class CSVExporter<T> : IExporter<T> where T : class
 
         await using var writer = new StreamWriter(distPath);
         await using var csv = new CsvWriter(writer, CultureInfo.InvariantCulture);
-        await csv.WriteRecordsAsync(data, cancellationToken);
+        await csv.WriteRecordsAsync(data, ct);
 
         return new()
         {

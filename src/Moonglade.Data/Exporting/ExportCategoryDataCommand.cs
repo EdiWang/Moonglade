@@ -12,7 +12,7 @@ public class ExportCategoryDataCommandHandler : IRequestHandler<ExportCategoryDa
     private readonly IRepository<CategoryEntity> _repo;
     public ExportCategoryDataCommandHandler(IRepository<CategoryEntity> repo) => _repo = repo;
 
-    public Task<ExportResult> Handle(ExportCategoryDataCommand request, CancellationToken cancellationToken)
+    public Task<ExportResult> Handle(ExportCategoryDataCommand request, CancellationToken ct)
     {
         var catExp = new CSVExporter<CategoryEntity>(_repo, "moonglade-categories", ExportManager.DataDir);
         return catExp.ExportData(p => new
@@ -21,6 +21,6 @@ public class ExportCategoryDataCommandHandler : IRequestHandler<ExportCategoryDa
             p.DisplayName,
             p.RouteName,
             p.Note
-        }, cancellationToken);
+        }, ct);
     }
 }
