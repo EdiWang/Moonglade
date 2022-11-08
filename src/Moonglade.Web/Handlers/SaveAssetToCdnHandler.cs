@@ -13,7 +13,7 @@ public class SaveAssetToCdnHandler : INotificationHandler<SaveAssetCommand>
         _mediator = mediator;
     }
 
-    public async Task Handle(SaveAssetCommand request, CancellationToken cancellationToken)
+    public async Task Handle(SaveAssetCommand request, CancellationToken ct)
     {
         // Currently only avatar
         var (assetId, assetBase64) = request;
@@ -31,7 +31,7 @@ public class SaveAssetToCdnHandler : INotificationHandler<SaveAssetCommand>
                 _blogConfig.ImageSettings.CDNEndpoint.CombineUrl(fileName) + $"?{random.Next(100, 999)}";   //refresh local cache
 
             var kvp = _blogConfig.UpdateAsync(_blogConfig.GeneralSettings);
-            await _mediator.Send(new UpdateConfigurationCommand(kvp.Key, kvp.Value), cancellationToken);
+            await _mediator.Send(new UpdateConfigurationCommand(kvp.Key, kvp.Value), ct);
         }
     }
 }
