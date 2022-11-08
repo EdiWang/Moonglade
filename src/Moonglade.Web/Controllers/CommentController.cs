@@ -12,19 +12,16 @@ namespace Moonglade.Web.Controllers;
 public class CommentController : ControllerBase
 {
     private readonly IMediator _mediator;
-    private readonly ITimeZoneResolver _timeZoneResolver;
     private readonly IBlogConfig _blogConfig;
     private readonly ILogger<CommentController> _logger;
 
     public CommentController(
         IMediator mediator,
         IBlogConfig blogConfig,
-        ITimeZoneResolver timeZoneResolver,
         ILogger<CommentController> logger)
     {
         _mediator = mediator;
         _blogConfig = blogConfig;
-        _timeZoneResolver = timeZoneResolver;
         _logger = logger;
     }
 
