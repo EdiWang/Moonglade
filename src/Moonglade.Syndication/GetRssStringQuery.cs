@@ -28,7 +28,7 @@ public class GetRssStringQueryHandler : IRequestHandler<GetRssStringQuery, strin
             baseUrl);
     }
 
-    public async Task<string> Handle(GetRssStringQuery request, CancellationToken cancellationToken)
+    public async Task<string> Handle(GetRssStringQuery request, CancellationToken ct)
     {
         var data = await _sdds.GetFeedDataAsync(request.CategoryName);
         if (data is null) return null;
