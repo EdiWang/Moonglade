@@ -28,7 +28,7 @@ public class PingbackNotificationHandler : INotificationHandler<PingbackNotifica
         _blogConfig = blogConfig;
     }
 
-    public async Task Handle(PingbackNotification notification, CancellationToken cancellationToken)
+    public async Task Handle(PingbackNotification notification, CancellationToken ct)
     {
         var payload = new PingPayload(
             notification.TargetPostTitle,
