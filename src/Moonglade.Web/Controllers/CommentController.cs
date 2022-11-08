@@ -33,7 +33,7 @@ public class CommentController : ControllerBase
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
     [ProducesResponseType(StatusCodes.Status403Forbidden)]
     [ProducesResponseType(typeof(ModelStateDictionary), StatusCodes.Status409Conflict)]
-    public async Task<IActionResult> Create([NotEmpty] Guid postId, CommentRequest request, [FromServices] IServiceScopeFactory factory)
+    public async Task<IActionResult> Create([NotEmpty] Guid postId, CommentRequest request)
     {
         if (!string.IsNullOrWhiteSpace(request.Email) && !Helper.IsValidEmailAddress(request.Email))
         {
