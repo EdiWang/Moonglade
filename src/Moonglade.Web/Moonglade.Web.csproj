@@ -1,7 +1,7 @@
 <Project Sdk="Microsoft.NET.Sdk.Web">
 
 	<PropertyGroup>
-		<TargetFramework>net6.0</TargetFramework>
+		<TargetFramework>net7.0</TargetFramework>
 		<PackageLicenseExpression>GNU General Public License v3.0</PackageLicenseExpression>
 		<ImplicitUsings>enable</ImplicitUsings>
 		<PackageProjectUrl>https://github.com/EdiWang/Moonglade</PackageProjectUrl>
@@ -41,7 +41,8 @@
 		<PackageReference Include="Edi.ImageWatermark" Version="2.6.2" />
 		<PackageReference Include="Microsoft.Azure.AppConfiguration.AspNetCore" Version="5.1.0" />
 		<PackageReference Include="Microsoft.ApplicationInsights.AspNetCore" Version="2.21.0" />
-		<PackageReference Include="Microsoft.Extensions.Logging.AzureAppServices" Version="6.0.10" />
+		<PackageReference Include="Microsoft.EntityFrameworkCore.Relational" Version="7.0.0" />
+		<PackageReference Include="Microsoft.Extensions.Logging.AzureAppServices" Version="7.0.0" />
 		<PackageReference Include="Microsoft.FeatureManagement.AspNetCore" Version="2.5.1" />
 		<PackageReference Include="UAParser" Version="3.1.47" />
 		<PackageReference Include="WilderMinds.MetaWeblog" Version="5.0.0" />

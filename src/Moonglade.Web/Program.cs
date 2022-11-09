@@ -47,25 +47,22 @@ app.Run();
 void ConfigureConfiguration(IConfiguration configuration)
 {
     builder.Logging.AddAzureWebAppDiagnostics();
-    builder.Host.ConfigureAppConfiguration(config =>
-    {
-        config.AddJsonFile("manifesticons.json", false, true);
-        var appConfigConn = configuration["ConnectionStrings:AzureAppConfig"];
+    builder.Configuration.AddJsonFile("manifesticons.json", false, true);
+    var appConfigConn = configuration["ConnectionStrings:AzureAppConfig"];
 
-        if (!string.IsNullOrWhiteSpace(appConfigConn))
+    if (!string.IsNullOrWhiteSpace(appConfigConn))
+    {
+        builder.Configuration.AddAzureAppConfiguration(options =>
         {
-            config.AddAzureAppConfiguration(options =>
-            {
-                options.Connect(appConfigConn)
-                    .ConfigureRefresh(refresh =>
-                    {
-                        refresh.Register("Moonglade:Settings:Sentinel", refreshAll: true)
-                            .SetCacheExpiration(TimeSpan.FromSeconds(10));
-                    })
-                    .UseFeatureFlags(o => o.Label = "Moonglade");
-            });
-        }
-    });
+            options.Connect(appConfigConn)
+                .ConfigureRefresh(refresh =>
+                {
+                    refresh.Register("Moonglade:Settings:Sentinel", refreshAll: true)
+                        .SetCacheExpiration(TimeSpan.FromSeconds(10));
+                })
+                .UseFeatureFlags(o => o.Label = "Moonglade");
+        });
+    }
 }
 
 void ConfigureServices(IServiceCollection services)
