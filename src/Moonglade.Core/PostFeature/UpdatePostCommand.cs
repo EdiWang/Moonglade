@@ -1,14 +1,17 @@
-﻿using Microsoft.Extensions.Configuration;
-using Moonglade.Caching;
-using Moonglade.Configuration;
-using Moonglade.Core.TagFeature;
-using Moonglade.Utils;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Configuration;
+using MoongladePure.Caching;
+using MoongladePure.Configuration;
+using MoongladePure.Core.TagFeature;
+using MoongladePure.Utils;
 
 namespace Moonglade.Core.PostFeature;
 
 public record UpdatePostCommand(Guid Id, PostEditModel Payload) : IRequest<PostEntity>;
 public class UpdatePostCommandHandler : IRequestHandler<UpdatePostCommand, PostEntity>
 {
+    private readonly IRepository<PostCategoryEntity> _pcRepository;
+    private readonly IRepository<PostTagEntity> _ptRepository;
     private readonly IRepository<TagEntity> _tagRepo;
     private readonly IRepository<PostEntity> _postRepo;
     private readonly IBlogCache _cache;
@@ -16,11 +19,15 @@ public class UpdatePostCommandHandler : IRequestHandler<UpdatePostCommand, PostE
     private readonly IConfiguration _configuration;
 
     public UpdatePostCommandHandler(
+        IRepository<PostCategoryEntity> pcRepository,
+        IRepository<PostTagEntity> ptRepository,
         IRepository<TagEntity> tagRepo,
         IRepository<PostEntity> postRepo,
         IBlogCache cache,
         IBlogConfig blogConfig, IConfiguration configuration)
     {
+        _ptRepository = ptRepository;
+        _pcRepository = pcRepository;
         _tagRepo = tagRepo;
         _postRepo = postRepo;
         _cache = cache;
@@ -93,6 +100,8 @@ public class UpdatePostCommandHandler : IRequestHandler<UpdatePostCommand, PostE
         }
 
         // 2. update tags
+        var oldTags = await _ptRepository.AsQueryable().Where(pc => pc.PostId == post.Id).ToListAsync();
+        await _ptRepository.DeleteAsync(oldTags);
         post.Tags.Clear();
         if (tags.Any())
         {
@@ -109,8 +118,11 @@ public class UpdatePostCommandHandler : IRequestHandler<UpdatePostCommand, PostE
         }
 
         // 3. update categories
+        var oldpcs = await _pcRepository.AsQueryable().Where(pc => pc.PostId == post.Id).ToListAsync();
+        await _pcRepository.DeleteAsync(oldpcs);
+
         post.PostCategory.Clear();
-        if (postEditModel.SelectedCatIds is { Length: > 0 })
+        if (postEditModel.SelectedCatIds.Any())
         {
             foreach (var cid in postEditModel.SelectedCatIds)
             {
