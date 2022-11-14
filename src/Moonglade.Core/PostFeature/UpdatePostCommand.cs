@@ -1,9 +1,9 @@
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
-using MoongladePure.Caching;
-using MoongladePure.Configuration;
-using MoongladePure.Core.TagFeature;
-using MoongladePure.Utils;
+using Moonglade.Caching;
+using Moonglade.Configuration;
+using Moonglade.Core.TagFeature;
+using Moonglade.Utils;
 
 namespace Moonglade.Core.PostFeature;
 
