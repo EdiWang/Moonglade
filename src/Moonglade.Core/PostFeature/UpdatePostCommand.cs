@@ -17,7 +17,7 @@ public class UpdatePostCommandHandler : IRequestHandler<UpdatePostCommand, PostE
     private readonly IBlogCache _cache;
     private readonly IBlogConfig _blogConfig;
     private readonly IConfiguration _configuration;
-    private readonly bool _useMySQLWorkaround;
+    private readonly bool _useMySqlWorkaround;
 
     public UpdatePostCommandHandler(
         IRepository<PostCategoryEntity> pcRepository,
@@ -36,7 +36,7 @@ public class UpdatePostCommandHandler : IRequestHandler<UpdatePostCommand, PostE
         _configuration = configuration;
 
         string dbType = configuration.GetConnectionString("DatabaseType");
-        _useMySQLWorkaround = dbType.ToLower().Trim() == "mysql";
+        _useMySqlWorkaround = dbType.ToLower().Trim() == "mysql";
     }
 
     public async Task<PostEntity> Handle(UpdatePostCommand request, CancellationToken ct)
@@ -104,7 +104,7 @@ public class UpdatePostCommandHandler : IRequestHandler<UpdatePostCommand, PostE
         }
 
         // 2. update tags
-        if (_useMySQLWorkaround)
+        if (_useMySqlWorkaround)
         {
             var oldTags = await _ptRepository.AsQueryable().Where(pc => pc.PostId == post.Id).ToListAsync(cancellationToken: ct);
             await _ptRepository.DeleteAsync(oldTags, ct);
@@ -126,7 +126,7 @@ public class UpdatePostCommandHandler : IRequestHandler<UpdatePostCommand, PostE
         }
 
         // 3. update categories
-        if (_useMySQLWorkaround)
+        if (_useMySqlWorkaround)
         {
             var oldpcs = await _pcRepository.AsQueryable().Where(pc => pc.PostId == post.Id)
                 .ToListAsync(cancellationToken: ct);
