@@ -17,6 +17,7 @@ public class UpdatePostCommandHandler : IRequestHandler<UpdatePostCommand, PostE
     private readonly IBlogCache _cache;
     private readonly IBlogConfig _blogConfig;
     private readonly IConfiguration _configuration;
+    private readonly bool _useMySQLWorkaround;
 
     public UpdatePostCommandHandler(
         IRepository<PostCategoryEntity> pcRepository,
@@ -33,6 +34,9 @@ public class UpdatePostCommandHandler : IRequestHandler<UpdatePostCommand, PostE
         _cache = cache;
         _blogConfig = blogConfig;
         _configuration = configuration;
+
+        string dbType = configuration.GetConnectionString("DatabaseType");
+        _useMySQLWorkaround = dbType.ToLower().Trim() == "mysql";
     }
 
     public async Task<PostEntity> Handle(UpdatePostCommand request, CancellationToken ct)
@@ -100,8 +104,12 @@ public class UpdatePostCommandHandler : IRequestHandler<UpdatePostCommand, PostE
         }
 
         // 2. update tags
-        var oldTags = await _ptRepository.AsQueryable().Where(pc => pc.PostId == post.Id).ToListAsync();
-        await _ptRepository.DeleteAsync(oldTags);
+        if (_useMySQLWorkaround)
+        {
+            var oldTags = await _ptRepository.AsQueryable().Where(pc => pc.PostId == post.Id).ToListAsync(cancellationToken: ct);
+            await _ptRepository.DeleteAsync(oldTags, ct);
+        }
+
         post.Tags.Clear();
         if (tags.Any())
         {
@@ -118,8 +126,12 @@ public class UpdatePostCommandHandler : IRequestHandler<UpdatePostCommand, PostE
         }
 
         // 3. update categories
-        var oldpcs = await _pcRepository.AsQueryable().Where(pc => pc.PostId == post.Id).ToListAsync();
-        await _pcRepository.DeleteAsync(oldpcs);
+        if (_useMySQLWorkaround)
+        {
+            var oldpcs = await _pcRepository.AsQueryable().Where(pc => pc.PostId == post.Id)
+                .ToListAsync(cancellationToken: ct);
+            await _pcRepository.DeleteAsync(oldpcs, ct);
+        }
 
         post.PostCategory.Clear();
         if (postEditModel.SelectedCatIds.Any())
