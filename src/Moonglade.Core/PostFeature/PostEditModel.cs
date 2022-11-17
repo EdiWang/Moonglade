@@ -48,7 +48,7 @@ public class PostEditModel
     public string Tags { get; set; }
 
     [Required]
-    [RegularExpression("^[a-z]{2}-[a-zA-Z]{2}$")]
+    [RegularExpression("^[a-z]{2}-[a-zA-Z]{2,4}$")]
     public string LanguageCode { get; set; }
 
     [DataType(DataType.MultilineText)]
