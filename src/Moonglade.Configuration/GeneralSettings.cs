@@ -81,10 +81,10 @@ public class GeneralSettings : IBlogSettings
     [Display(Name = "Profile")]
     public bool WidgetsProfile { get; set; } = true;
 
-    [Display(Name = "Tags")] 
+    [Display(Name = "Tags")]
     public bool WidgetsTags { get; set; } = true;
 
-    [Display(Name = "Categories")] 
+    [Display(Name = "Categories")]
     public bool WidgetsCategoryList { get; set; } = true;
 
     [Display(Name = "Friend links")]

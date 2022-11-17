@@ -10,6 +10,6 @@ public class GetTagQueryHandler : IRequestHandler<GetTagQuery, Tag>
 
     public GetTagQueryHandler(IRepository<TagEntity> repo) => _repo = repo;
 
-    public Task<Tag> Handle(GetTagQuery request, CancellationToken ct) => 
+    public Task<Tag> Handle(GetTagQuery request, CancellationToken ct) =>
         _repo.FirstOrDefaultAsync(new TagSpec(request.NormalizedName), Tag.EntitySelector);
 }
