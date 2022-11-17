@@ -10,7 +10,7 @@
             "request": "launch",
             "preLaunchTask": "build",
             // If you have changed target frameworks, make sure to update the program path.
-            "program": "${workspaceFolder}/src/Moonglade.Web/bin/Debug/net6.0/Moonglade.Web.dll",
+            "program": "${workspaceFolder}/src/Moonglade.Web/bin/Debug/net7.0/Moonglade.Web.dll",
             "args": [],
             "cwd": "${workspaceFolder}/src/Moonglade.Web",
             "stopAtEntry": false,
