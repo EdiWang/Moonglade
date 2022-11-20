@@ -41,7 +41,7 @@ Moonglade supports three types of database. You can choose from SQL Server, Post
 
 #### SQL Server
 
-Create a SQL Server 2019 database, e.g. ```moonglade```
+Create a SQL Server 2022 database, e.g. ```moonglade```
 
 Set the `MoongladeDatabase` to your database connection string in `appsettings.Development.json`
 
