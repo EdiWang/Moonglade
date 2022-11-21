@@ -36,7 +36,7 @@ public class UpdatePostCommandHandler : IRequestHandler<UpdatePostCommand, PostE
         _configuration = configuration;
 
         string dbType = configuration.GetConnectionString("DatabaseType");
-        _useMySqlWorkaround = dbType.ToLower().Trim() == "mysql";
+        _useMySqlWorkaround = dbType!.ToLower().Trim() == "mysql";
     }
 
     public async Task<PostEntity> Handle(UpdatePostCommand request, CancellationToken ct)

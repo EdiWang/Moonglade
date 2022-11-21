@@ -88,7 +88,7 @@ public class ReceivePingCommandHandler : IRequestHandler<ReceivePingCommand, Pin
             var pinged = await _pingbackRepo.AnyAsync(p =>
                 p.TargetPostId == id &&
                 p.SourceUrl == pingRequest.SourceUrl &&
-                p.SourceIp.Trim() == request.IP);
+                p.SourceIp.Trim() == request.IP, ct);
 
             if (pinged) return PingbackResponse.Error48PingbackAlreadyRegistered;
 
