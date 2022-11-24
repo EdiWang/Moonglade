@@ -31,7 +31,7 @@ public class SettingsController : ControllerBase
 
     [HttpGet("release/check")]
     [ProducesResponseType(typeof(CheckNewReleaseResult), StatusCodes.Status200OK)]
-    public async Task<IActionResult> CheckNewRelease([FromServices] IReleaseCheckerClient releaseCheckerClient)
+    public async Task<IActionResult> CheckNewRelease(IReleaseCheckerClient releaseCheckerClient)
     {
         var info = await releaseCheckerClient.CheckNewReleaseAsync();
 
@@ -79,7 +79,7 @@ public class SettingsController : ControllerBase
     [HttpPost("general")]
     [ProducesResponseType(StatusCodes.Status204NoContent)]
     [TypeFilter(typeof(ClearBlogCache), Arguments = new object[] { CacheDivision.General, "theme" })]
-    public async Task<IActionResult> General(GeneralSettings model, [FromServices] ITimeZoneResolver timeZoneResolver)
+    public async Task<IActionResult> General(GeneralSettings model, ITimeZoneResolver timeZoneResolver)
     {
         model.AvatarUrl = _blogConfig.GeneralSettings.AvatarUrl;
 
@@ -148,7 +148,7 @@ public class SettingsController : ControllerBase
     [HttpPost("watermark")]
     [ProducesResponseType(StatusCodes.Status204NoContent)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
-    public async Task<IActionResult> Image(ImageSettings model, [FromServices] IBlogImageStorage imageStorage)
+    public async Task<IActionResult> Image(ImageSettings model, IBlogImageStorage imageStorage)
     {
         _blogConfig.ImageSettings = model;
 
@@ -204,7 +204,7 @@ public class SettingsController : ControllerBase
 
     [HttpPost("shutdown")]
     [ProducesResponseType(StatusCodes.Status202Accepted)]
-    public IActionResult Shutdown([FromServices] IHostApplicationLifetime applicationLifetime)
+    public IActionResult Shutdown(IHostApplicationLifetime applicationLifetime)
     {
         _logger.LogWarning($"Shutdown is requested by '{User.Identity?.Name}'.");
         applicationLifetime.StopApplication();
@@ -213,8 +213,7 @@ public class SettingsController : ControllerBase
 
     [HttpPost("reset")]
     [ProducesResponseType(StatusCodes.Status202Accepted)]
-    public async Task<IActionResult> Reset([FromServices] BlogDbContext context,
-        [FromServices] IHostApplicationLifetime applicationLifetime)
+    public async Task<IActionResult> Reset(BlogDbContext context, IHostApplicationLifetime applicationLifetime)
     {
         _logger.LogWarning($"System reset is requested by '{User.Identity?.Name}', IP: {Helper.GetClientIP(HttpContext)}.");
 

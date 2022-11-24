@@ -42,7 +42,7 @@ public class PostController : ControllerBase
     })]
     [ProducesResponseType(StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status409Conflict)]
-    public async Task<IActionResult> CreateOrEdit(PostEditModel model, [FromServices] LinkGenerator linkGenerator)
+    public async Task<IActionResult> CreateOrEdit(PostEditModel model, LinkGenerator linkGenerator)
     {
         try
         {
