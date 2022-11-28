@@ -195,12 +195,12 @@ void ConfigureMiddleware(IApplicationBuilder appBuilder)
     });
 
     var bc = app.Services.GetRequiredService<IBlogConfig>();
-    
+
     if (bc.AdvancedSettings.EnableFoaf)
     {
         appBuilder.UseMiddleware<FoafMiddleware>();
     }
-    
+
     if (bc.AdvancedSettings.EnableMetaWeblog)
     {
         appBuilder.UseMiddleware<RSDMiddleware>().UseMetaWeblog("/metaweblog");
