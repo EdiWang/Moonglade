@@ -21,6 +21,9 @@ public class AdvancedSettings : IBlogSettings
     [Display(Name = "Enable OpenSearch")]
     public bool EnableOpenSearch { get; set; } = true;
 
+    [Display(Name = "Enable FOAF")]
+    public bool EnableFoaf { get; set; } = true;
+
     [Display(Name = "Enable Site Map")]
     public bool EnableSiteMap { get; set; } = true;
 

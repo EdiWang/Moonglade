@@ -2,6 +2,5 @@
 
 public enum FeatureFlags
 {
-    Foaf,
     OPML
 }

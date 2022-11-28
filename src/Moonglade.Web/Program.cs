@@ -212,9 +212,13 @@ void ConfigureMiddleware(IApplicationBuilder appBuilder)
         options.IconFilePath = "/favicon-16x16.png";
     });
 
-    appBuilder.UseMiddlewareForFeature<FoafMiddleware>(nameof(FeatureFlags.Foaf));
-
     var bc = app.Services.GetRequiredService<IBlogConfig>();
+    
+    if (bc.AdvancedSettings.EnableFoaf)
+    {
+        appBuilder.UseMiddleware<FoafMiddleware>();
+    }
+    
     if (bc.AdvancedSettings.EnableMetaWeblog)
     {
         appBuilder.UseMiddleware<RSDMiddleware>().UseMetaWeblog("/metaweblog");
