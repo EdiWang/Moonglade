@@ -21,10 +21,11 @@ public class SubscriptionController : ControllerBase
         _mediator = mediator;
     }
 
-    [FeatureGate(FeatureFlags.OPML)]
     [HttpGet("opml")]
     public async Task<IActionResult> Opml()
     {
+        if (!_blogConfig.AdvancedSettings.EnableOpml) return NotFound();
+
         var cats = await _mediator.Send(new GetCategoriesQuery());
         var catInfos = cats.Select(c => new KeyValuePair<string, string>(c.DisplayName, c.RouteName));
         var rootUrl = Helper.ResolveRootUrl(HttpContext, _blogConfig.GeneralSettings.CanonicalPrefix);

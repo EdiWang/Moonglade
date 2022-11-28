@@ -65,9 +65,10 @@
     {
         <rsd href="/rsd" />
     }
-    <feature name="Foaf">
+    @if (BlogConfig.AdvancedSettings.EnableFoaf)
+    {
         <foaf href="/foaf.xml" />
-    </feature>
+    }
     <partial name="_Favicons" />
     <link href="~/lib/twitter-bootstrap/css/bootstrap.min.css" rel="stylesheet" asp-append-version="true" />
     <link href="~/lib/bootstrap-icons/font/bootstrap-icons.min.css" rel="stylesheet" asp-append-version="true" />

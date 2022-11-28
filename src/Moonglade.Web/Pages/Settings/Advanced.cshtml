@@ -169,6 +169,21 @@
                             </div>
                         </div>
                     </div>
+                    
+                    <div class="row g-3 align-items-center settings-entry mb-4">
+                        <div class="col-auto">
+                            <i class="bi-filetype-xml settings-entry-icon"></i>
+                        </div>
+                        <div class="col">
+                            <label asp-for="ViewModel.EnableOpml" class="form-check-label"></label>
+                        </div>
+                        <div class="col-md-4 text-end">
+                            <div class="form-check form-switch">
+                                <input type="hidden" name="EnableOpml" value="false">
+                                <input type="checkbox" name="EnableOpml" value="true" class="form-check-input" @(Model.ViewModel.EnableOpml ? "checked" : null)>
+                            </div>
+                        </div>
+                    </div>
 
                     <div class="row g-3 align-items-center settings-entry mb-4">
                         <div class="col-auto">
