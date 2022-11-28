@@ -4,7 +4,6 @@ using Microsoft.ApplicationInsights.DependencyCollector;
 using Microsoft.ApplicationInsights.Extensibility;
 using Microsoft.ApplicationInsights.Extensibility.Implementation;
 using Microsoft.AspNetCore.HttpOverrides;
-using Microsoft.FeatureManagement;
 using Moonglade.Data.MySql;
 using Moonglade.Data.PostgreSql;
 using Moonglade.Data.SqlServer;
@@ -33,7 +32,7 @@ string connStr = builder.Configuration.GetConnectionString("MoongladeDatabase");
 
 var cultures = new[] { "en-US", "zh-Hans" }.Select(p => new CultureInfo(p)).ToList();
 
-ConfigureConfiguration(builder.Configuration);
+ConfigureConfiguration();
 ConfigureServices(builder.Services);
 
 var app = builder.Build();
@@ -44,25 +43,10 @@ ConfigureMiddleware(app);
 
 app.Run();
 
-void ConfigureConfiguration(IConfiguration configuration)
+void ConfigureConfiguration()
 {
     builder.Logging.AddAzureWebAppDiagnostics();
     builder.Configuration.AddJsonFile("manifesticons.json", false, true);
-    var appConfigConn = configuration["ConnectionStrings:AzureAppConfig"];
-
-    if (!string.IsNullOrWhiteSpace(appConfigConn))
-    {
-        builder.Configuration.AddAzureAppConfiguration(options =>
-        {
-            options.Connect(appConfigConn)
-                .ConfigureRefresh(refresh =>
-                {
-                    refresh.Register("Moonglade:Settings:Sentinel", refreshAll: true)
-                        .SetCacheExpiration(TimeSpan.FromSeconds(10));
-                })
-                .UseFeatureFlags(o => o.Label = "Moonglade");
-        });
-    }
 }
 
 void ConfigureServices(IServiceCollection services)
@@ -82,10 +66,8 @@ void ConfigureServices(IServiceCollection services)
 
     services.AddOptions()
             .AddHttpContextAccessor()
-            .AddRateLimit(builder.Configuration.GetSection("IpRateLimiting"))
-            .AddFeatureManagement();
-    services.AddAzureAppConfiguration()
-            .AddApplicationInsightsTelemetry()
+            .AddRateLimit(builder.Configuration.GetSection("IpRateLimiting"));
+    services.AddApplicationInsightsTelemetry()
             .ConfigureTelemetryModule<DependencyTrackingTelemetryModule>((module, _) => module.EnableSqlCommandTextInstrumentation = true);
 
     services.AddSession(options =>
@@ -227,11 +209,6 @@ void ConfigureMiddleware(IApplicationBuilder appBuilder)
     appBuilder.UseMiddleware<SiteMapMiddleware>()
               .UseMiddleware<PoweredByMiddleware>()
               .UseMiddleware<DNTMiddleware>();
-
-    if (app.Configuration.GetValue<bool>("PreferAzureAppConfiguration"))
-    {
-        appBuilder.UseAzureAppConfiguration();
-    }
 
     if (app.Environment.IsDevelopment())
     {
