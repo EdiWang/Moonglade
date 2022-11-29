@@ -29,18 +29,13 @@ public class PingbackController : ControllerBase
     [ProducesResponseType(StatusCodes.Status403Forbidden)]
     public async Task<IActionResult> Process()
     {
-        if (!_blogConfig.AdvancedSettings.EnablePingbackReceive)
-        {
-            _logger.LogInformation("Pingback receive is disabled");
-            return Forbid();
-        }
+        if (!_blogConfig.AdvancedSettings.EnablePingbackReceive) return Forbid();
 
         var ip = Helper.GetClientIP(HttpContext);
         var requestBody = await new StreamReader(HttpContext.Request.Body, Encoding.Default).ReadToEndAsync();
 
         var response = await _mediator.Send(new ReceivePingCommand(requestBody, ip, SendPingbackEmailAction));
 
-        _logger.LogInformation($"Pingback Processor Response: {response}");
         return new PingbackResult(response);
     }
 
