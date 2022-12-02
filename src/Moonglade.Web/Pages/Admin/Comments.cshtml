@@ -31,7 +31,7 @@
             callApi(`/api/comment/${cid}/reply`, 'POST', replyContent,
                 async (resp) => {
                     var data = await resp.json();
-                    $(`#panel-comment-${data.commentId} .reply-ui`).slideUp();
+                    $(`#panel-comment-${data.commentId} .reply-ui`).hide();
                     $(`#panel-comment-${data.commentId} .reply-list`).prepend(
                         `<hr /><div class="reply-container"><div><strong>Reply</strong><span class="pull-right text-muted">${data.replyTimeUtc
                         }</span></div><p>${data.replyContentHtml}</p></div>`);
