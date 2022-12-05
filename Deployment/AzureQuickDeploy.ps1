@@ -56,7 +56,7 @@ while($true) {
         continue
     }
     # Create the request
-    $HTTP_Status = Get-UrlStatusCode('http://' + $webAppName + '.azurewebsites.net')
+    $HTTP_Status = Get-UrlStatusCode('https://' + $webAppName + '.azurewebsites.net')
     if($HTTP_Status -eq 0) {
         break
     } else {
