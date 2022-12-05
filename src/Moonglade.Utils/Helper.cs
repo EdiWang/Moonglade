@@ -54,10 +54,14 @@ public static class Helper
 
             // f looks like: "x.x.x.x:xxxxx, x.x.x.x:xxxx, ..."
             // need to extract values
-            var ipArray = f.Split(',').Select(x =>
-                x.Trim().IndexOf(":", StringComparison.Ordinal) > 0 ?
-                    x.Trim()[..(x.IndexOf(":", StringComparison.Ordinal) - 1)] :
-                    x.Trim());
+            var ipArray = f.Split(',')
+                .Select(p => p.Trim())
+                .Select(x => x.IndexOf(":", StringComparison.Ordinal) > 0
+                    ? x[..(x.IndexOf(":", StringComparison.Ordinal))]
+                    : x)
+                .ToArray();
+
+            if (ipArray.Any(p => p == ip)) return ip;
 
             var dip = ipArray.FirstOrDefault(p => p != ip);
             if (dip != null) ip = dip;
