@@ -10,7 +10,7 @@ namespace Moonglade.Syndication;
 
 public interface ISyndicationDataSource
 {
-    Task<IReadOnlyList<FeedEntry>> GetFeedDataAsync(string categoryName = null);
+    Task<IReadOnlyList<FeedEntry>> GetFeedDataAsync(string catRoute = null);
 }
 
 public class SyndicationDataSource : ISyndicationDataSource
@@ -37,12 +37,12 @@ public class SyndicationDataSource : ISyndicationDataSource
         _baseUrl = $"{acc.HttpContext.Request.Scheme}://{acc.HttpContext.Request.Host}";
     }
 
-    public async Task<IReadOnlyList<FeedEntry>> GetFeedDataAsync(string categoryName = null)
+    public async Task<IReadOnlyList<FeedEntry>> GetFeedDataAsync(string catRoute = null)
     {
         IReadOnlyList<FeedEntry> itemCollection;
-        if (!string.IsNullOrWhiteSpace(categoryName))
+        if (!string.IsNullOrWhiteSpace(catRoute))
         {
-            var cat = await _catRepo.GetAsync(c => c.RouteName == categoryName);
+            var cat = await _catRepo.GetAsync(c => c.RouteName == catRoute);
             if (cat is null) return null;
 
             itemCollection = await GetFeedEntriesAsync(cat.Id);
@@ -55,7 +55,7 @@ public class SyndicationDataSource : ISyndicationDataSource
         return itemCollection;
     }
 
-    private async Task<IReadOnlyList<FeedEntry>> GetFeedEntriesAsync(Guid? categoryId = null)
+    private async Task<IReadOnlyList<FeedEntry>> GetFeedEntriesAsync(Guid? catId = null)
     {
         int? top = null;
         if (_blogConfig.FeedSettings.RssItemCount != 0)
@@ -63,7 +63,7 @@ public class SyndicationDataSource : ISyndicationDataSource
             top = _blogConfig.FeedSettings.RssItemCount;
         }
 
-        var postSpec = new PostSpec(categoryId, top);
+        var postSpec = new PostSpec(catId, top);
         var list = await _postRepo.SelectAsync(postSpec, p => p.PubDateUtc != null ? new FeedEntry
         {
             Id = p.Id.ToString(),
@@ -71,7 +71,7 @@ public class SyndicationDataSource : ISyndicationDataSource
             PubDateUtc = p.PubDateUtc.Value,
             Description = _blogConfig.FeedSettings.UseFullContent ? p.PostContent : p.ContentAbstract,
             Link = $"{_baseUrl}/post/{p.PubDateUtc.Value.Year}/{p.PubDateUtc.Value.Month}/{p.PubDateUtc.Value.Day}/{p.Slug}",
-            Author = _blogConfig.FeedSettings.AuthorName,
+            Author = _blogConfig.GeneralSettings.OwnerName,
             AuthorEmail = _blogConfig.GeneralSettings.OwnerEmail,
             Categories = p.PostCategory.Select(pc => pc.Category.DisplayName).ToArray()
         } : null);

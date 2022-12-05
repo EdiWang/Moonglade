@@ -28,12 +28,12 @@ public class GetPostBySlugQueryHandler : IRequestHandler<GetPostBySlugQuery, Pos
         var slugCheckSum = Helper.ComputeCheckSum($"{request.Slug.Slug}#{date:yyyyMMdd}");
         ISpecification<PostEntity> spec = new PostSpec(slugCheckSum);
 
-        var pid = await _repo.SelectFirstOrDefaultAsync(spec, p => p.Id);
+        var pid = await _repo.FirstOrDefaultAsync(spec, p => p.Id);
         if (pid == Guid.Empty)
         {
             // Post does not have a checksum, fall back to old method
             spec = new PostSpec(date, request.Slug.Slug);
-            pid = await _repo.SelectFirstOrDefaultAsync(spec, x => x.Id);
+            pid = await _repo.FirstOrDefaultAsync(spec, x => x.Id);
 
             if (pid == Guid.Empty) return null;
 
@@ -46,9 +46,9 @@ public class GetPostBySlugQueryHandler : IRequestHandler<GetPostBySlugQuery, Pos
 
         var psm = await _cache.GetOrCreateAsync(CacheDivision.Post, $"{pid}", async entry =>
         {
-            entry.SlidingExpiration = TimeSpan.FromMinutes(int.Parse(_configuration["CacheSlidingExpirationMinutes:Post"]));
+            entry.SlidingExpiration = TimeSpan.FromMinutes(int.Parse(_configuration["CacheSlidingExpirationMinutes:Post"]!));
 
-            var post = await _repo.SelectFirstOrDefaultAsync(spec, Post.EntitySelector);
+            var post = await _repo.FirstOrDefaultAsync(spec, Post.EntitySelector);
             return post;
         });
 

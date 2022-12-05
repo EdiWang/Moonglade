@@ -13,7 +13,7 @@ public class GetPostByIdQueryHandler : IRequestHandler<GetPostByIdQuery, Post>
     public Task<Post> Handle(GetPostByIdQuery request, CancellationToken ct)
     {
         var spec = new PostSpec(request.Id);
-        var post = _repo.SelectFirstOrDefaultAsync(spec, Post.EntitySelector);
+        var post = _repo.FirstOrDefaultAsync(spec, Post.EntitySelector);
         return post;
     }
 }

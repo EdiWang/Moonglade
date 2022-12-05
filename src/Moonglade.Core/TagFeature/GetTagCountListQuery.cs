@@ -15,5 +15,5 @@ public class GetTagCountListQueryHandler : IRequestHandler<GetTagCountListQuery,
                 Id = t.Id,
                 DisplayName = t.DisplayName,
                 NormalizedName = t.NormalizedName
-            }, t.Posts.Count));
+            }, t.Posts.Count), ct);
 }

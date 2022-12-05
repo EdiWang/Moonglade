@@ -1,7 +1,7 @@
 # Moonglade Blog
 
 [![Build Status](https://dev.azure.com/ediwang/Edi-GitHub/_apis/build/status/EdiWang.Moonglade?branchName=master)](https://dev.azure.com/ediwang/Moonglade%20DevOps/_build/latest?definitionId=68&branchName=master) 
-![Docker Build and Push](https://github.com/EdiWang/Moonglade/workflows/Docker%20Build%20and%20Push/badge.svg) 
+[![Docker Linux x64](https://github.com/EdiWang/Moonglade/actions/workflows/docker.yml/badge.svg)](https://github.com/EdiWang/Moonglade/actions/workflows/docker.yml)
 ![.NET Build Linux](https://github.com/EdiWang/Moonglade/workflows/.NET%20Build%20Linux/badge.svg) 
 
 The [.NET](https://dotnet.microsoft.com/) blog system of [edi.wang](https://edi.wang) that runs on [**Microsoft Azure**](https://azure.microsoft.com/en-us/). Designed for developers, enabling most common blogging features including posts, comments, categories, archive, tags and pages.
@@ -18,7 +18,7 @@ This is the way https://edi.wang is deployed, by taking advantage of as many Azu
 
 This diagram shows a full Azure deployment for Moonglade for reference.
 
-![image](https://ediwang.cdn.moonglade.blog/web-assets/ediwang-azure-arch-visio.png)
+![image](https://ediwang.cdn.moonglade.blog/web-assets/ediwang-azure-arch-visio-nov2022.png)
 
 ### 🐋 Quick Deploy on Azure
 
@@ -32,8 +32,8 @@ To quickly get it running on a new Linux machine without Docker, follow instruct
 
 Tools | Alternative
 --- | ---
-[Visual Studio 2022 v17.0+](https://visualstudio.microsoft.com/) | [Visual Studio Code](https://code.visualstudio.com/) with [.NET 6.0 SDK](http://dot.net)
-[SQL Server 2019](https://www.microsoft.com/en-us/sql-server/sql-server-2019) | [SQL Server LocalDB](https://docs.microsoft.com/en-us/sql/database-engine/configure-windows/sql-server-express-localdb?view=sql-server-ver15?WT.mc_id=AZ-MVP-5002809), PostgreSQL or MySQL 
+[Visual Studio 2022 v17.4+](https://visualstudio.microsoft.com/) | [Visual Studio Code](https://code.visualstudio.com/) with [.NET 7.0 SDK](http://dot.net)
+[SQL Server 2022](https://www.microsoft.com/en-us/sql-server/sql-server-2022) | [SQL Server LocalDB](https://learn.microsoft.com/en-us/sql/database-engine/configure-windows/sql-server-express-localdb?view=sql-server-ver16&WT.mc_id=AZ-MVP-5002809), PostgreSQL or MySQL 
 
 ### 💾 Setup Database
 
@@ -41,7 +41,7 @@ Moonglade supports three types of database. You can choose from SQL Server, Post
 
 #### SQL Server
 
-Create a SQL Server 2019 database, e.g. ```moonglade```
+Create a SQL Server 2022 database, e.g. ```moonglade```
 
 Set the `MoongladeDatabase` to your database connection string in `appsettings.Development.json`
 

@@ -18,7 +18,7 @@ public class CreateTagCommandHandler : IRequestHandler<CreateTagCommand, Tag>
         var normalizedName = Tag.NormalizeName(request.Name, Helper.TagNormalizationDictionary);
         if (await _repo.AnyAsync(t => t.NormalizedName == normalizedName, ct))
         {
-            return _repo.SelectFirstOrDefault(new TagSpec(normalizedName), Tag.EntitySelector);
+            return await _repo.FirstOrDefaultAsync(new TagSpec(normalizedName), Tag.EntitySelector);
         }
 
         var newTag = new TagEntity

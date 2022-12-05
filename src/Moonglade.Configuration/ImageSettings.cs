@@ -46,9 +46,6 @@ public class ImageSettings : IBlogSettings, IValidatableObject
     [Range(0, int.MaxValue)]
     public int WatermarkSkipPixel { get; set; }
 
-    [Display(Name = "Use friendly 404 image")]
-    public bool UseFriendlyNotFoundImage { get; set; }
-
     [Display(Name = "Fit image to device pixel ratio")]
     public bool FitImageToDevicePixelRatio { get; set; }
 

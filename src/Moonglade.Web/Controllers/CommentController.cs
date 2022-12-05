@@ -12,38 +12,17 @@ namespace Moonglade.Web.Controllers;
 public class CommentController : ControllerBase
 {
     private readonly IMediator _mediator;
-    private readonly ITimeZoneResolver _timeZoneResolver;
     private readonly IBlogConfig _blogConfig;
     private readonly ILogger<CommentController> _logger;
 
     public CommentController(
         IMediator mediator,
         IBlogConfig blogConfig,
-        ITimeZoneResolver timeZoneResolver,
         ILogger<CommentController> logger)
     {
         _mediator = mediator;
         _blogConfig = blogConfig;
-        _timeZoneResolver = timeZoneResolver;
         _logger = logger;
-    }
-
-    [HttpGet("list/{postId:guid}")]
-    [FeatureGate(FeatureFlags.EnableWebApi)]
-    [ProducesResponseType(StatusCodes.Status200OK)]
-    public async Task<IActionResult> List([NotEmpty] Guid postId)
-    {
-        var comments = await _mediator.Send(new GetApprovedCommentsQuery(postId));
-        var resp = comments.Select(p => new
-        {
-            p.Username,
-            Content = p.CommentContent,
-            p.CreateTimeUtc,
-            CreateTimeLocal = _timeZoneResolver.ToTimeZone(p.CreateTimeUtc),
-            Replies = p.CommentReplies
-        });
-
-        return Ok(resp);
     }
 
     [HttpPost("{postId:guid}")]
@@ -54,7 +33,7 @@ public class CommentController : ControllerBase
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
     [ProducesResponseType(StatusCodes.Status403Forbidden)]
     [ProducesResponseType(typeof(ModelStateDictionary), StatusCodes.Status409Conflict)]
-    public async Task<IActionResult> Create([NotEmpty] Guid postId, CommentRequest request, [FromServices] IServiceScopeFactory factory)
+    public async Task<IActionResult> Create([NotEmpty] Guid postId, CommentRequest request)
     {
         if (!string.IsNullOrWhiteSpace(request.Email) && !Helper.IsValidEmailAddress(request.Email))
         {
@@ -121,7 +100,7 @@ public class CommentController : ControllerBase
     public async Task<IActionResult> Reply(
         [NotEmpty] Guid commentId,
         [Required][FromBody] string replyContent,
-        [FromServices] LinkGenerator linkGenerator)
+        LinkGenerator linkGenerator)
     {
         if (!_blogConfig.ContentSettings.EnableComments) return Forbid();
 

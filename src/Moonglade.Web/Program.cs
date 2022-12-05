@@ -4,7 +4,6 @@ using Microsoft.ApplicationInsights.DependencyCollector;
 using Microsoft.ApplicationInsights.Extensibility;
 using Microsoft.ApplicationInsights.Extensibility.Implementation;
 using Microsoft.AspNetCore.HttpOverrides;
-using Microsoft.FeatureManagement;
 using Moonglade.Data.MySql;
 using Moonglade.Data.PostgreSql;
 using Moonglade.Data.SqlServer;
@@ -33,7 +32,7 @@ string connStr = builder.Configuration.GetConnectionString("MoongladeDatabase");
 
 var cultures = new[] { "en-US", "zh-Hans" }.Select(p => new CultureInfo(p)).ToList();
 
-ConfigureConfiguration(builder.Configuration);
+ConfigureConfiguration();
 ConfigureServices(builder.Services);
 
 var app = builder.Build();
@@ -44,28 +43,10 @@ ConfigureMiddleware(app);
 
 app.Run();
 
-void ConfigureConfiguration(IConfiguration configuration)
+void ConfigureConfiguration()
 {
     builder.Logging.AddAzureWebAppDiagnostics();
-    builder.Host.ConfigureAppConfiguration(config =>
-    {
-        config.AddJsonFile("manifesticons.json", false, true);
-        var appConfigConn = configuration["ConnectionStrings:AzureAppConfig"];
-
-        if (!string.IsNullOrWhiteSpace(appConfigConn))
-        {
-            config.AddAzureAppConfiguration(options =>
-            {
-                options.Connect(appConfigConn)
-                    .ConfigureRefresh(refresh =>
-                    {
-                        refresh.Register("Moonglade:Settings:Sentinel", refreshAll: true)
-                            .SetCacheExpiration(TimeSpan.FromSeconds(10));
-                    })
-                    .UseFeatureFlags(o => o.Label = "Moonglade");
-            });
-        }
-    });
+    builder.Configuration.AddJsonFile("manifesticons.json", false, true);
 }
 
 void ConfigureServices(IServiceCollection services)
@@ -85,10 +66,8 @@ void ConfigureServices(IServiceCollection services)
 
     services.AddOptions()
             .AddHttpContextAccessor()
-            .AddRateLimit(builder.Configuration.GetSection("IpRateLimiting"))
-            .AddFeatureManagement();
-    services.AddAzureAppConfiguration()
-            .AddApplicationInsightsTelemetry()
+            .AddRateLimit(builder.Configuration.GetSection("IpRateLimiting"));
+    services.AddApplicationInsightsTelemetry()
             .ConfigureTelemetryModule<DependencyTrackingTelemetryModule>((module, _) => module.EnableSqlCommandTextInstrumentation = true);
 
     services.AddSession(options =>
@@ -98,7 +77,6 @@ void ConfigureServices(IServiceCollection services)
     }).AddSessionBasedCaptcha(options => options.FontStyle = FontStyle.Bold);
 
     services.AddLocalization(options => options.ResourcesPath = "Resources");
-    services.AddSwaggerGen();
     services.AddControllers(options => options.Filters.Add(new AutoValidateAntiforgeryTokenAttribute()))
             .AddJsonOptions(options => options.JsonSerializerOptions.Converters.Add(new JsonStringEnumConverter()))
             .ConfigureApiBehaviorOptions(ConfigureApiBehavior.BlogApiBehavior);
@@ -216,9 +194,13 @@ void ConfigureMiddleware(IApplicationBuilder appBuilder)
         options.IconFilePath = "/favicon-16x16.png";
     });
 
-    appBuilder.UseMiddlewareForFeature<FoafMiddleware>(nameof(FeatureFlags.Foaf));
-
     var bc = app.Services.GetRequiredService<IBlogConfig>();
+
+    if (bc.AdvancedSettings.EnableFoaf)
+    {
+        appBuilder.UseMiddleware<FoafMiddleware>();
+    }
+
     if (bc.AdvancedSettings.EnableMetaWeblog)
     {
         appBuilder.UseMiddleware<RSDMiddleware>().UseMetaWeblog("/metaweblog");
@@ -228,14 +210,8 @@ void ConfigureMiddleware(IApplicationBuilder appBuilder)
               .UseMiddleware<PoweredByMiddleware>()
               .UseMiddleware<DNTMiddleware>();
 
-    if (app.Configuration.GetValue<bool>("PreferAzureAppConfiguration"))
-    {
-        appBuilder.UseAzureAppConfiguration();
-    }
-
     if (app.Environment.IsDevelopment())
     {
-        appBuilder.UseSwagger().UseSwaggerUI(c => c.SwaggerEndpoint("/swagger/v1/swagger.json", "Moonglade API V1"));
         appBuilder.UseDeveloperExceptionPage();
     }
     else
@@ -249,12 +225,6 @@ void ConfigureMiddleware(IApplicationBuilder appBuilder)
         DefaultRequestCulture = new("en-US"),
         SupportedCultures = cultures,
         SupportedUICultures = cultures
-    });
-
-    appBuilder.UseDefaultImage(options =>
-    {
-        options.AllowedExtensions = app.Configuration.GetSection("ImageStorage:AllowedExtensions").Get<string[]>();
-        options.DefaultImagePath = app.Configuration["ImageStorage:DefaultImagePath"];
     });
 
     appBuilder.UseStaticFiles();

@@ -23,15 +23,6 @@ public class CategoryController : ControllerBase
         return Ok(cat);
     }
 
-    [HttpGet("list")]
-    [FeatureGate(FeatureFlags.EnableWebApi)]
-    [ProducesResponseType(typeof(IReadOnlyList<Category>), StatusCodes.Status200OK)]
-    public async Task<IActionResult> List()
-    {
-        var cats = await _mediator.Send(new GetCategoriesQuery());
-        return Ok(cats);
-    }
-
     [HttpPost]
     [ProducesResponseType(StatusCodes.Status201Created)]
     public async Task<IActionResult> Create(CreateCategoryCommand command)

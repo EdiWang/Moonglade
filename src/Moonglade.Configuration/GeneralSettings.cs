@@ -78,15 +78,25 @@ public class GeneralSettings : IBlogSettings
     [Display(Name = "Show pride mouse cursor and flag")]
     public bool Pride { get; set; }
 
-    /// <summary>
-    /// Avatar Url
-    /// </summary>
+    [Display(Name = "Profile")]
+    public bool WidgetsProfile { get; set; } = true;
+
+    [Display(Name = "Tags")]
+    public bool WidgetsTags { get; set; } = true;
+
+    [Display(Name = "Categories")]
+    public bool WidgetsCategoryList { get; set; } = true;
+
+    [Display(Name = "Friend links")]
+    public bool WidgetsFriendLink { get; set; } = true;
+
+    [Display(Name = "Subscription buttons")]
+    public bool WidgetsSubscriptionButtons { get; set; } = true;
+
     [MaxLength(64)]
     public string AvatarUrl { get; set; }
 
-    // Use string instead of TimeSpan as workaround for System.Text.Json issue
-    // https://github.com/EdiWang/Moonglade/issues/310
-    public string TimeZoneUtcOffset { get; set; }
+    public TimeSpan TimeZoneUtcOffset { get; set; }
 
     public GeneralSettings() => ThemeId = 1;
 }

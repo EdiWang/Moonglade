@@ -1,6 +1,6 @@
-FROM mcr.microsoft.com/dotnet/aspnet:6.0 AS base
+FROM mcr.microsoft.com/dotnet/aspnet:7.0 AS base
 
-# If use aspnet:6.0-alpine, see https://github.com/dotnet/dotnet-docker/issues/1366
+# If use aspnet:7.0-alpine, see https://github.com/dotnet/dotnet-docker/issues/1366
 #RUN apk add --no-cache tzdata
 
 # Captcha font
@@ -12,7 +12,7 @@ EXPOSE 443
 
 ENV ASPNETCORE_FORWARDEDHEADERS_ENABLED=true
 
-FROM mcr.microsoft.com/dotnet/sdk:6.0 AS build
+FROM mcr.microsoft.com/dotnet/sdk:7.0 AS build
 WORKDIR /src
 
 # Auto copy to prevent 996

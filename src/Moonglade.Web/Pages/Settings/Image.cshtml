@@ -21,21 +21,6 @@
 
                     <div class="row g-3 align-items-center settings-entry mb-4">
                         <div class="col-auto">
-                            <i class="bi-file-earmark-image settings-entry-icon"></i>
-                        </div>
-                        <div class="col">
-                            <label asp-for="ViewModel.UseFriendlyNotFoundImage" class="form-check-label"></label>
-                        </div>
-                        <div class="col-md-5 text-end">
-                            <div class="form-check form-switch">
-                                <input type="hidden" name="UseFriendlyNotFoundImage" value="false">
-                                <input type="checkbox" name="UseFriendlyNotFoundImage" value="true" class="form-check-input" @(Model.ViewModel.UseFriendlyNotFoundImage ? "checked" : null)>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="row g-3 align-items-center settings-entry mb-4">
-                        <div class="col-auto">
                             <i class="bi-fullscreen settings-entry-icon"></i>
                         </div>
                         <div class="col">

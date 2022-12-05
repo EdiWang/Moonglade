@@ -13,13 +13,13 @@ public class DeleteThemeCommandHandler : IRequestHandler<DeleteThemeCommand, Ope
 
     public DeleteThemeCommandHandler(IRepository<BlogThemeEntity> repo) => _repo = repo;
 
-    public async Task<OperationCode> Handle(DeleteThemeCommand request, CancellationToken cancellationToken)
+    public async Task<OperationCode> Handle(DeleteThemeCommand request, CancellationToken ct)
     {
-        var theme = await _repo.GetAsync(request.Id, cancellationToken);
+        var theme = await _repo.GetAsync(request.Id, ct);
         if (null == theme) return OperationCode.ObjectNotFound;
         if (theme.ThemeType == ThemeType.System) return OperationCode.Canceled;
 
-        await _repo.DeleteAsync(request.Id, cancellationToken);
+        await _repo.DeleteAsync(request.Id, ct);
         return OperationCode.Done;
     }
 }

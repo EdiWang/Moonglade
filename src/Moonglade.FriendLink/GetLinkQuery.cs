@@ -15,7 +15,7 @@ public class GetLinkQueryHandler : IRequestHandler<GetLinkQuery, Link>
 
     public Task<Link> Handle(GetLinkQuery request, CancellationToken ct)
     {
-        return _repo.SelectFirstOrDefaultAsync(
+        return _repo.FirstOrDefaultAsync(
              new FriendLinkSpec(request.Id), f => new Link
              {
                  Id = f.Id,

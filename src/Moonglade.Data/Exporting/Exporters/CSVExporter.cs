@@ -5,7 +5,7 @@ using System.Linq.Expressions;
 
 namespace Moonglade.Data.Exporting.Exporters;
 
-public class CSVExporter<T> : IExporter<T>
+public class CSVExporter<T> : IExporter<T> where T : class
 {
     private readonly IRepository<T> _repository;
     private readonly string _fileNamePrefix;
@@ -18,14 +18,14 @@ public class CSVExporter<T> : IExporter<T>
         _directory = directory;
     }
 
-    public async Task<ExportResult> ExportData<TResult>(Expression<Func<T, TResult>> selector, CancellationToken cancellationToken)
+    public async Task<ExportResult> ExportData<TResult>(Expression<Func<T, TResult>> selector, CancellationToken ct)
     {
-        var data = await _repository.SelectAsync(selector);
-        var result = await ToCSVResult(data, cancellationToken);
+        var data = await _repository.SelectAsync(selector, ct);
+        var result = await ToCSVResult(data, ct);
         return result;
     }
 
-    private async Task<ExportResult> ToCSVResult<TResult>(IEnumerable<TResult> data, CancellationToken cancellationToken)
+    private async Task<ExportResult> ToCSVResult<TResult>(IEnumerable<TResult> data, CancellationToken ct)
     {
         var tempId = Guid.NewGuid().ToString();
         string exportDirectory = ExportManager.CreateExportDirectory(_directory, tempId);
@@ -34,7 +34,7 @@ public class CSVExporter<T> : IExporter<T>
 
         await using var writer = new StreamWriter(distPath);
         await using var csv = new CsvWriter(writer, CultureInfo.InvariantCulture);
-        await csv.WriteRecordsAsync(data, cancellationToken);
+        await csv.WriteRecordsAsync(data, ct);
 
         return new()
         {

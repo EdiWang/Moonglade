@@ -4,11 +4,12 @@ namespace Moonglade.Core.TagFeature;
 
 public record GetTagQuery(string NormalizedName) : IRequest<Tag>;
 
-public class GetTagQueryHandler : RequestHandler<GetTagQuery, Tag>
+public class GetTagQueryHandler : IRequestHandler<GetTagQuery, Tag>
 {
     private readonly IRepository<TagEntity> _repo;
 
     public GetTagQueryHandler(IRepository<TagEntity> repo) => _repo = repo;
 
-    protected override Tag Handle(GetTagQuery request) => _repo.SelectFirstOrDefault(new TagSpec(request.NormalizedName), Tag.EntitySelector);
+    public Task<Tag> Handle(GetTagQuery request, CancellationToken ct) =>
+        _repo.FirstOrDefaultAsync(new TagSpec(request.NormalizedName), Tag.EntitySelector);
 }

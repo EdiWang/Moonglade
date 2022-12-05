@@ -28,7 +28,7 @@ public class PingbackNotificationHandler : INotificationHandler<PingbackNotifica
         _blogConfig = blogConfig;
     }
 
-    public async Task Handle(PingbackNotification notification, CancellationToken cancellationToken)
+    public async Task Handle(PingbackNotification notification, CancellationToken ct)
     {
         var payload = new PingPayload(
             notification.TargetPostTitle,
@@ -37,7 +37,7 @@ public class PingbackNotificationHandler : INotificationHandler<PingbackNotifica
             notification.SourceUrl,
             notification.SourceTitle);
 
-        var dl = new[] { _blogConfig.NotificationSettings.AdminEmail };
+        var dl = new[] { _blogConfig.GeneralSettings.OwnerEmail };
         await _moongladeNotification.EnqueueNotification(MailMesageTypes.BeingPinged, dl, payload);
     }
 }

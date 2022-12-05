@@ -1,7 +1,7 @@
 ﻿@page "/category/{routeName:regex(^(?!-)([a-zA-Z0-9-]){{1,64}}$)}"
 @model Moonglade.Web.Pages.CategoryListModel
 @{
-    ViewBag.TitlePrefix = ViewBag.CategoryDisplayName;
+    ViewBag.TitlePrefix = Model.Cat.DisplayName;
     ViewBag.ActionName = "list";
 }
 
@@ -9,12 +9,12 @@
     <a class="float-end d-none d-md-block"
        asp-controller="Subscription"
        asp-action="Rss"
-       asp-route-routeName="@(((string)ViewBag.CategoryRouteName).ToLower())" target="_blank"
-       title="Subscribe @(ViewBag.CategoryDisplayName)">
+       asp-route-routeName="@Model.Cat.RouteName.ToLower()" target="_blank"
+       title="Subscribe @(Model.Cat.DisplayName)">
         <i class="bi-rss font-125rem"></i>
     </a>
-    <span>@ViewBag.CategoryDisplayName</span>
-    <small class="d-none d-md-inline text-muted">@ViewBag.CategoryDescription</small>
+    <span>@Model.Cat.DisplayName</span>
+    <small class="d-none d-md-inline text-muted">@Model.Cat.Note</small>
 </h3>
 <hr />
 @if (Model.Posts.Any())

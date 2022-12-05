@@ -8,7 +8,7 @@ public record GetOpmlQuery(OpmlDoc OpmlDoc) : IRequest<string>;
 
 public class GetOpmlQueryHandler : IRequestHandler<GetOpmlQuery, string>
 {
-    public async Task<string> Handle(GetOpmlQuery request, CancellationToken cancellationToken)
+    public async Task<string> Handle(GetOpmlQuery request, CancellationToken ct)
     {
         var sb = new StringBuilder();
 

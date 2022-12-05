@@ -13,7 +13,7 @@ public class GetDraftQueryHandler : IRequestHandler<GetDraftQuery, Post>
     public Task<Post> Handle(GetDraftQuery request, CancellationToken ct)
     {
         var spec = new PostSpec(request.Id);
-        var post = _repo.SelectFirstOrDefaultAsync(spec, Post.EntitySelector);
+        var post = _repo.FirstOrDefaultAsync(spec, Post.EntitySelector);
         return post;
     }
 }

@@ -151,7 +151,7 @@
                                     <input asp-for="ViewModel.OwnerEmail" class="form-control" required title="@SharedLocalizer["Email address to receive notifications from this blog."]" />
                                 </div>
                             </div>
-                            <div class="mb-3">
+                            <div class="mb-4">
                                 <div class="form-floating">
                                     <textarea asp-for="ViewModel.Description"
                                               placeholder="@Html.DisplayNameFor(m => m.ViewModel.Description)"
@@ -160,10 +160,18 @@
                                     <label class="form-label" asp-for="ViewModel.Description"></label>
                                 </div>
                             </div>
-                            <div>
-                                <label class="form-label" asp-for="ViewModel.ShortDescription"></label>
-                                <input asp-for="ViewModel.ShortDescription" class="form-control" required />
-                                <small class="form-text text-muted">@SharedLocalizer["Short description is for display only on Phone screen."]</small>
+                            
+                            <div class="row g-3 align-items-center settings-entry mb-2">
+                                <div class="col-auto">
+                                    <i class="bi-text-center settings-entry-icon"></i>
+                                </div>
+                                <div class="col">
+                                    <label asp-for="ViewModel.ShortDescription"></label>
+                                    <div class="form-text">@SharedLocalizer["Short description is for display only on Phone screen."]</div>
+                                </div>
+                                <div class="col-md-5 text-end">
+                                    <input asp-for="ViewModel.ShortDescription" class="form-control" required />
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -175,7 +183,7 @@
                         @SharedLocalizer["Theme"]
                     </h6>
                     <div>
-                        <div class="row g-1 mb-3">
+                        <div class="row g-1 mb-4">
                             <div class="col">
                                 <select class="form-select" asp-for="ViewModel.ThemeId" asp-items="@tmList"></select>
                             </div>
@@ -189,21 +197,41 @@
                                 </a>
                             </div>
                         </div>
-                        <div class="form-check">
-                            <input type="hidden" name="AutoDarkLightTheme" value="false">
-                            <input type="checkbox" name="AutoDarkLightTheme" value="true" class="form-check-input" @(Model.ViewModel.AutoDarkLightTheme ? "checked" : null)>
-                            <label asp-for="ViewModel.AutoDarkLightTheme" class="form-check-label"></label>
+                        
+                        <div class="row g-3 align-items-center settings-entry mb-4">
+                            <div class="col-auto">
+                                <i class="bi-moon settings-entry-icon"></i>
+                            </div>
+                            <div class="col">
+                                <label asp-for="ViewModel.AutoDarkLightTheme" class="form-check-label"></label>
+                            </div>
+                            <div class="col-md-5 text-end">
+                                <div class="form-check form-switch">
+                                    <input type="hidden" name="AutoDarkLightTheme" value="false">
+                                    <input type="checkbox" name="AutoDarkLightTheme" value="true" class="form-check-input" @(Model.ViewModel.AutoDarkLightTheme ? "checked" :null)>
+                                </div>
+                            </div>
                         </div>
-                        <div class="form-check">
-                            <input type="hidden" name="Pride" value="false">
-                            <input type="checkbox" name="Pride" value="true" class="form-check-input" @(Model.ViewModel.Pride ? "checked" : null)>
-                            <label asp-for="ViewModel.Pride" class="form-check-label"></label>
+                        
+                        <div class="row g-3 align-items-center settings-entry">
+                            <div class="col-auto">
+                                <i class="bi-rainbow settings-entry-icon"></i>
+                            </div>
+                            <div class="col">
+                                <label asp-for="ViewModel.Pride" class="form-check-label"></label>
+                            </div>
+                            <div class="col-md-5 text-end">
+                                <div class="form-check form-switch">
+                                    <input type="hidden" name="Pride" value="false">
+                                    <input type="checkbox" name="Pride" value="true" class="form-check-input" (Model.ViewModel.Pride ? "checked" :null)>
+                                </div>
+                            </div>
                         </div>
                     </div>
                     <h6 class="card-subtitle mt-5 mb-2 text-muted">
                         @SharedLocalizer["Side Bar"]
                     </h6>
-                    <div class="mb-1">
+                    <div class="mb-4">
                         <div class="form-check form-check-inline">
                             @Html.RadioButtonFor(model => model.ViewModel.SideBarOption, SideBarOption.Right, new { id = SideBarOption.Right.ToString(), @class = "form-check-input" })
                             <label class="form-check-label" for="@SideBarOption.Right">@SharedLocalizer["Right"]</label>
@@ -217,7 +245,23 @@
                             <label class="form-check-label" for="@SideBarOption.Disabled">@SharedLocalizer["Disabled"]</label>
                         </div>
                     </div>
-                    <div class="form-floating">
+                    
+                    <div class="row g-3 align-items-center settings-entry mb-2">
+                        <div class="col-auto">
+                            <i class="bi-file-person settings-entry-icon"></i>
+                        </div>
+                        <div class="col">
+                            <label asp-for="ViewModel.WidgetsProfile" class="form-check-label"></label>
+                        </div>
+                        <div class="col-md-5 text-end">
+                            <div class="form-check form-switch">
+                                <input type="hidden" name="WidgetsProfile" value="false">
+                                <input type="checkbox" name="WidgetsProfile" value="true" class="form-check-input" @(Model.ViewModel.WidgetsProfile ? "checked" :null)>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="form-floating mb-4">
                         <textarea asp-for="ViewModel.SideBarCustomizedHtmlPitch"
                                   placeholder="@Html.DisplayNameFor(m => m.ViewModel.SideBarCustomizedHtmlPitch)"
                                   class="form-control form-control-sm h-100px textarea-code"
@@ -225,6 +269,66 @@
                                   cols="10"
                                   rows="10"></textarea>
                         <label class="form-label" asp-for="ViewModel.SideBarCustomizedHtmlPitch"></label>
+                    </div>
+                    
+                    <div class="row g-3 align-items-center settings-entry mb-4">
+                        <div class="col-auto">
+                            <i class="bi-tags settings-entry-icon"></i>
+                        </div>
+                        <div class="col">
+                            <label asp-for="ViewModel.WidgetsTags" class="form-check-label"></label>
+                        </div>
+                        <div class="col-md-5 text-end">
+                            <div class="form-check form-switch">
+                                <input type="hidden" name="WidgetsTags" value="false">
+                                <input type="checkbox" name="WidgetsTags" value="true" class="form-check-input" @(Model.ViewModel.WidgetsTags ? "checked" : null)>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="row g-3 align-items-center settings-entry mb-4">
+                        <div class="col-auto">
+                            <i class="bi-folder2 settings-entry-icon"></i>
+                        </div>
+                        <div class="col">
+                            <label asp-for="ViewModel.WidgetsCategoryList" class="form-check-label"></label>
+                        </div>
+                        <div class="col-md-5 text-end">
+                            <div class="form-check form-switch">
+                                <input type="hidden" name="WidgetsCategoryList" value="false">
+                                <input type="checkbox" name="WidgetsCategoryList" value="true" class="form-check-input" @(Model.ViewModel.WidgetsCategoryList ?"checked" : null)>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="row g-3 align-items-center settings-entry mb-4">
+                        <div class="col-auto">
+                            <i class="bi-link-45deg settings-entry-icon"></i>
+                        </div>
+                        <div class="col">
+                            <label asp-for="ViewModel.WidgetsFriendLink" class="form-check-label"></label>
+                        </div>
+                        <div class="col-md-5 text-end">
+                            <div class="form-check form-switch">
+                                <input type="hidden" name="WidgetsFriendLink" value="false">
+                                <input type="checkbox" name="WidgetsFriendLink" value="true" class="form-check-input" @(Model.ViewModel.WidgetsFriendLink ?"checked" : null)>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="row g-3 align-items-center settings-entry mb-4">
+                        <div class="col-auto">
+                            <i class="bi-menu-button settings-entry-icon"></i>
+                        </div>
+                        <div class="col">
+                            <label asp-for="ViewModel.WidgetsSubscriptionButtons" class="form-check-label"></label>
+                        </div>
+                        <div class="col-md-5 text-end">
+                            <div class="form-check form-switch">
+                                <input type="hidden" name="WidgetsSubscriptionButtons" value="false">
+                                <input type="checkbox" name="WidgetsSubscriptionButtons" value="true" class="form-check-input" @(Model.ViewModel.WidgetsSubscriptionButtons ?"checked" : null)>
+                            </div>
+                        </div>
                     </div>
 
                     <div class="mt-5">

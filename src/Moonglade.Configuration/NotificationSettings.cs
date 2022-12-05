@@ -18,10 +18,6 @@ public class NotificationSettings : IBlogSettings
     [MaxLength(64)]
     public string EmailDisplayName { get; set; }
 
-    [Display(Name = "Admin Email")]
-    [EmailAddress]
-    public string AdminEmail { get; set; }
-
     [Display(Name = "Azure Storage Queue Connection String")]
     public string AzureStorageQueueConnection { get; set; }
 }

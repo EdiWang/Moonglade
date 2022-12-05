@@ -63,7 +63,7 @@ public class ListPostSegmentQueryHandler : IRequestHandler<ListPostSegmentQuery,
                 throw new ArgumentOutOfRangeException(nameof(request.PostStatus), request.PostStatus, null);
         }
 
-        var totalRows = _repo.Count(countExp);
+        var totalRows = await _repo.CountAsync(countExp, ct);
         return (posts, totalRows);
     }
 }

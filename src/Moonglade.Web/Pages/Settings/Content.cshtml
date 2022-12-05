@@ -1,295 +1,310 @@
 ﻿@page "/admin/settings/content"
 @model Moonglade.Web.Pages.Settings.ContentModel
 @section scripts{
-<script type="module">
-    import * as settings from '/js/app/admin.settings.module.js';
+    <script type="module">
+        import * as settings from '/js/app/admin.settings.module.js';
 
-    window.toggleCommentSettingsUI = function() {
-        if ($('#BuiltIn').is(":checked")) {
-            document.querySelector('.comment-settings-built-in').style.display = 'block';
-            document.querySelector('.comment-settings-3rd').style.display = 'none';
-        } else {
-            document.querySelector('.comment-settings-built-in').style.display = 'none';
-            document.querySelector('.comment-settings-3rd').style.display = 'block';
+        window.toggleCommentSettingsUI = function () {
+            if ($('#BuiltIn').is(":checked")) {
+                document.querySelector('.comment-settings-built-in').style.display = 'block';
+                document.querySelector('.comment-settings-3rd').style.display = 'none';
+            } else {
+                document.querySelector('.comment-settings-built-in').style.display = 'none';
+                document.querySelector('.comment-settings-3rd').style.display = 'block';
+            }
         }
-    }
 
-    const form = document.querySelector('#form-settings');
-    form.addEventListener('submit', settings.handleSettingsSubmit);
+        const form = document.querySelector('#form-settings');
+        form.addEventListener('submit', settings.handleSettingsSubmit);
 
-    toggleCommentSettingsUI();
-</script>
+        toggleCommentSettingsUI();
+    </script>
 }
 
-<partial name="_SettingsHeader" />
-<div class="ps-4 pe-4">
-    <form id="form-settings" asp-controller="Settings" asp-action="Content">
-        <div class="row">
-            <div class="col-md-6">
-                <div>
-                    <h6 class="card-subtitle mb-4 text-muted">@SharedLocalizer["Comments"]</h6>
-
-                    <div class="row g-3 align-items-center settings-entry mb-4">
-                        <div class="col-auto">
-                            <i class="bi-chat-left-dots settings-entry-icon"></i>
-                        </div>
-                        <div class="col">
-                            <label asp-for="ViewModel.EnableComments" class="form-check-label"></label>
-                        </div>
-                        <div class="col-md-5 text-end">
-                            <div class="form-check form-switch">
-                                <input type="hidden" name="EnableComments" value="false">
-                                <input type="checkbox" name="EnableComments" value="true" class="form-check-input" @(Model.ViewModel.EnableComments ? "checked" : null)>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="row g-3 align-items-center settings-entry mb-4">
-                        <div class="col-auto">
-                            <i class="bi-diagram-2 settings-entry-icon"></i>
-                        </div>
-                        <div class="col">
-                            <label asp-for="ViewModel.CommentProvider" class="me-4"></label>
-                        </div>
-                        <div class="col-md-5 text-end">
-                            <div class="form-check form-check-inline">
-                                @Html.RadioButtonFor(model => model.ViewModel.CommentProvider, CommentProvider.BuiltIn, new
-                                {
-                                    id = CommentProvider.BuiltIn.ToString(), 
-                                    @class = "form-check-input comment-provider-checkbox",
-                                    onchange = "window.toggleCommentSettingsUI()"
-                                })
-                                <label class="form-check-label" for="@CommentProvider.BuiltIn">@SharedLocalizer["Built in"]</label>
-                            </div>
-                            <div class="form-check form-check-inline">
-                                @Html.RadioButtonFor(model => model.ViewModel.CommentProvider, CommentProvider.ThirdParty, new
-                                {
-                                    id = CommentProvider.ThirdParty.ToString(), 
-                                    @class = "form-check-input comment-provider-checkbox",
-                                    onchange = "window.toggleCommentSettingsUI()"
-                                })
-                                <label class="form-check-label" for="@CommentProvider.ThirdParty">@SharedLocalizer["Third party"]</label>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="comment-settings-built-in">
+    <partial name="_SettingsHeader" />
+    <div class="ps-4 pe-4">
+        <form id="form-settings" asp-controller="Settings" asp-action="Content">
+            <div class="row">
+                <div class="col-md-6">
+                    <div>
+                        <h6 class="card-subtitle mb-4 text-muted">@SharedLocalizer["Comments"]</h6>
 
                         <div class="row g-3 align-items-center settings-entry mb-4">
                             <div class="col-auto">
-                                <i class="bi-person-check settings-entry-icon"></i>
+                                <i class="bi-chat-left-dots settings-entry-icon"></i>
                             </div>
                             <div class="col">
-                                <label asp-for="ViewModel.RequireCommentReview" class="form-check-label"></label>
+                                <label asp-for="ViewModel.EnableComments" class="form-check-label"></label>
                             </div>
                             <div class="col-md-5 text-end">
                                 <div class="form-check form-switch">
-                                    <input type="hidden" name="RequireCommentReview" value="false">
-                                    <input type="checkbox" name="RequireCommentReview" value="true" class="form-check-input" @(Model.ViewModel.RequireCommentReview ? "checked" : null)>
+                                    <input type="hidden" name="EnableComments" value="false">
+                                    <input type="checkbox" name="EnableComments" value="true" class="form-check-input" @(Model.ViewModel.EnableComments ? "checked" : null)>
                                 </div>
                             </div>
                         </div>
 
                         <div class="row g-3 align-items-center settings-entry mb-4">
                             <div class="col-auto">
-                                <i class="bi-person-square settings-entry-icon"></i>
+                                <i class="bi-diagram-2 settings-entry-icon"></i>
                             </div>
                             <div class="col">
-                                <label asp-for="ViewModel.EnableGravatar" class="form-check-label"></label>
+                                <label asp-for="ViewModel.CommentProvider" class="me-4"></label>
                             </div>
                             <div class="col-md-5 text-end">
-                                <div class="form-check form-switch">
-                                    <input type="hidden" name="EnableGravatar" value="false">
-                                    <input type="checkbox" name="EnableGravatar" value="true" class="form-check-input" @(Model.ViewModel.EnableGravatar ? "checked" : null)>
+                                <div class="form-check form-check-inline">
+                                    @Html.RadioButtonFor(model => model.ViewModel.CommentProvider, CommentProvider.BuiltIn, new
+                                {
+                                id = CommentProvider.BuiltIn.ToString(),
+                                @class = "form-check-input comment-provider-checkbox",
+                                onchange = "window.toggleCommentSettingsUI()"
+                                })
+                                    <label class="form-check-label" for="@CommentProvider.BuiltIn">@SharedLocalizer["Built in"]</label>
+                                </div>
+                                <div class="form-check form-check-inline">
+                                    @Html.RadioButtonFor(model => model.ViewModel.CommentProvider, CommentProvider.ThirdParty, new
+                                {
+                                id = CommentProvider.ThirdParty.ToString(),
+                                @class = "form-check-input comment-provider-checkbox",
+                                onchange = "window.toggleCommentSettingsUI()"
+                                })
+                                    <label class="form-check-label" for="@CommentProvider.ThirdParty">@SharedLocalizer["Third party"]</label>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="comment-settings-built-in">
+
+                            <div class="row g-3 align-items-center settings-entry mb-4">
+                                <div class="col-auto">
+                                    <i class="bi-person-check settings-entry-icon"></i>
+                                </div>
+                                <div class="col">
+                                    <label asp-for="ViewModel.RequireCommentReview" class="form-check-label"></label>
+                                </div>
+                                <div class="col-md-5 text-end">
+                                    <div class="form-check form-switch">
+                                        <input type="hidden" name="RequireCommentReview" value="false">
+                                        <input type="checkbox" name="RequireCommentReview" value="true" class="form-check-input" @(Model.ViewModel.RequireCommentReview ? "checked" : null)>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="row g-3 align-items-center settings-entry mb-4">
+                                <div class="col-auto">
+                                    <i class="bi-person-square settings-entry-icon"></i>
+                                </div>
+                                <div class="col">
+                                    <label asp-for="ViewModel.EnableGravatar" class="form-check-label"></label>
+                                </div>
+                                <div class="col-md-5 text-end">
+                                    <div class="form-check form-switch">
+                                        <input type="hidden" name="EnableGravatar" value="false">
+                                        <input type="checkbox" name="EnableGravatar" value="true" class="form-check-input" @(Model.ViewModel.EnableGravatar ? "checked" : null)>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="row g-3 align-items-center settings-entry mb-4">
+                                <div class="col-auto">
+                                    <i class="bi-translate settings-entry-icon"></i>
+                                </div>
+                                <div class="col">
+                                    <label asp-for="ViewModel.EnableWordFilter" class="form-check-label"></label>
+                                </div>
+                                <div class="col-md-5 text-end">
+                                    <div class="form-check form-switch">
+                                        <input type="hidden" name="EnableWordFilter" value="false">
+                                        <input type="checkbox" name="EnableWordFilter" value="true" class="form-check-input" @(Model.ViewModel.EnableWordFilter ? "checked" : null)>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="row g-3 align-items-center settings-entry mb-2">
+                                <div class="col-auto">
+                                    <i class="bi-check2-circle settings-entry-icon"></i>
+                                </div>
+                                <div class="col">
+                                    <label asp-for="ViewModel.WordFilterMode" class="me-4"></label>
+                                </div>
+                                <div class="col-md-5 text-end">
+                                    <div class="form-check form-check-inline">
+                                        @Html.RadioButtonFor(model => model.ViewModel.WordFilterMode, WordFilterMode.Mask, new { id = WordFilterMode.Mask.ToString(), @class = "form-check-input" })
+                                        <label class="form-check-label" for="@WordFilterMode.Mask">@SharedLocalizer["Mask Word"]</label>
+                                    </div>
+                                    <div class="form-check form-check-inline">
+                                        @Html.RadioButtonFor(model => model.ViewModel.WordFilterMode, WordFilterMode.Block, new { id = WordFilterMode.Block.ToString(), @class = "form-check-input" })
+                                        <label class="form-check-label" for="@WordFilterMode.Block">@SharedLocalizer["Block Comment"]</label>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="mb-2">
+                                <div class="form-floating">
+                                    <textarea asp-for="ViewModel.DisharmonyWords"
+                                          placeholder="@Html.DisplayNameFor(m => m.ViewModel.DisharmonyWords)"
+                                          class="form-control form-control-sm h-200px"
+                                          spellcheck="false"></textarea>
+                                    <label class="form-label" asp-for="ViewModel.DisharmonyWords"></label>
+                                </div>
+
+                                <small class="form-text text-muted">@SharedLocalizer["Blocked words will be masked as *** in comment content."]</small>
+                            </div>
+                        </div>
+
+                        <div class="comment-settings-3rd">
+                            <div>
+                                <div class="form-floating">
+                                    <textarea asp-for="ViewModel.ThirdPartyCommentHtmlPitch"
+                                          placeholder="@Html.DisplayNameFor(m => m.ViewModel.ThirdPartyCommentHtmlPitch)"
+                                          class="form-control form-control-sm h-100px"
+                                          spellcheck="false"></textarea>
+                                    <label class="form-label" asp-for="ViewModel.ThirdPartyCommentHtmlPitch"></label>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="mb-3">
+                        <h6 class="card-subtitle mb-4 text-muted">@SharedLocalizer["Blog posts"]</h6>
+
+                        <div class="row g-3 align-items-center settings-entry mb-4">
+                            <div class="col-auto">
+                                <i class="bi-check2-circle settings-entry-icon"></i>
+                            </div>
+                            <div class="col">
+                                <label asp-for="ViewModel.PostTitleAlignment" class="me-4"></label>
+                            </div>
+                            <div class="col-md-5 text-end">
+                                <div class="form-check form-check-inline">
+                                    @Html.RadioButtonFor(model => model.ViewModel.PostTitleAlignment, PostTitleAlignment.Left, new { id = PostTitleAlignment.Left.ToString(), @class = "form-check-input" })
+                                    <label class="form-check-label" for="@PostTitleAlignment.Left">@SharedLocalizer["Left"]</label>
+                                </div>
+                                <div class="form-check form-check-inline">
+                                    @Html.RadioButtonFor(model => model.ViewModel.PostTitleAlignment, PostTitleAlignment.Center, new { id = PostTitleAlignment.Center.ToString(), @class = "form-check-input" })
+                                    <label class="form-check-label" for="@PostTitleAlignment.Center">@SharedLocalizer["Center"]</label>
                                 </div>
                             </div>
                         </div>
 
                         <div class="row g-3 align-items-center settings-entry mb-4">
                             <div class="col-auto">
-                                <i class="bi-translate settings-entry-icon"></i>
+                                <i class="bi-sort-numeric-down settings-entry-icon"></i>
                             </div>
                             <div class="col">
-                                <label asp-for="ViewModel.EnableWordFilter" class="form-check-label"></label>
+                                <label asp-for="ViewModel.PostListPageSize"></label>
+                            </div>
+                            <div class="col-md-5">
+                                <input asp-for="ViewModel.PostListPageSize" class="form-range" type="range" oninput="this.nextElementSibling.value = this.value" min="5" max="30" />
+                                <output class="form-text">
+                                    @Model.ViewModel.PostListPageSize
+                                </output>
+                            </div>
+                        </div>
+
+                        <div class="row g-3 align-items-center settings-entry mb-4">
+                            <div class="col-auto">
+                                <i class="settings-entry-icon bi-file-word"></i>
+                            </div>
+                            <div class="col">
+                                <label asp-for="ViewModel.PostAbstractWords"></label>
+                                <div class="form-text">@SharedLocalizer["Change this value will only affect new posts"]</div>
+                            </div>
+                            <div class="col-md-5">
+                                <input asp-for="ViewModel.PostAbstractWords" class="form-control" required />
+                            </div>
+                        </div>
+
+                        <div class="row g-3 align-items-center settings-entry mb-4">
+                            <div class="col-auto">
+                                <i class="bi-tags settings-entry-icon"></i>
+                            </div>
+                            <div class="col">
+                                <label asp-for="ViewModel.HotTagAmount"></label>
+                            </div>
+                            <div class="col-md-5">
+                                <input asp-for="ViewModel.HotTagAmount" class="form-range" type="range" oninput="this.nextElementSibling.value = this.value" min="5" max="20" />
+                                <output class="form-text">
+                                    @Model.ViewModel.PostListPageSize
+                                </output>
+                            </div>
+                        </div>
+
+                        <div class="row g-3 align-items-center settings-entry mb-4">
+                            <div class="col-auto">
+                                <i class="bi-list-nested settings-entry-icon"></i>
+                            </div>
+                            <div class="col">
+                                <label asp-for="ViewModel.DocumentOutline" class="form-check-label"></label>
                             </div>
                             <div class="col-md-5 text-end">
                                 <div class="form-check form-switch">
-                                    <input type="hidden" name="EnableWordFilter" value="false">
-                                    <input type="checkbox" name="EnableWordFilter" value="true" class="form-check-input" @(Model.ViewModel.EnableWordFilter ? "checked" : null)>
+                                    <input type="hidden" name="DocumentOutline" value="false">
+                                    <input type="checkbox" name="DocumentOutline" value="true" class="form-check-input" @(Model.ViewModel.DocumentOutline ? "checked" : null)>
                                 </div>
                             </div>
                         </div>
 
                         <div class="row g-3 align-items-center settings-entry mb-2">
                             <div class="col-auto">
-                                <i class="bi-check2-circle settings-entry-icon"></i>
+                                <i class="bi-card-text settings-entry-icon"></i>
                             </div>
                             <div class="col">
-                                <label asp-for="ViewModel.WordFilterMode" class="me-4"></label>
+                                <label asp-for="ViewModel.ShowPostFooter" class="form-check-label"></label>
+                                <div class="form-text">@SharedLocalizer["e.g. Your blog post license information."]</div>
                             </div>
                             <div class="col-md-5 text-end">
-                                <div class="form-check form-check-inline">
-                                    @Html.RadioButtonFor(model => model.ViewModel.WordFilterMode, WordFilterMode.Mask, new { id = WordFilterMode.Mask.ToString(), @class = "form-check-input" })
-                                    <label class="form-check-label" for="@WordFilterMode.Mask">@SharedLocalizer["Mask Word"]</label>
-                                </div>
-                                <div class="form-check form-check-inline">
-                                    @Html.RadioButtonFor(model => model.ViewModel.WordFilterMode, WordFilterMode.Block, new { id = WordFilterMode.Block.ToString(), @class = "form-check-input" })
-                                    <label class="form-check-label" for="@WordFilterMode.Block">@SharedLocalizer["Block Comment"]</label>
+                                <div class="form-check form-switch">
+                                    <input type="hidden" name="ShowPostFooter" value="false">
+                                    <input type="checkbox" name="ShowPostFooter" value="true" class="form-check-input" @(Model.ViewModel.ShowPostFooter ? "checked" : null)>
                                 </div>
                             </div>
                         </div>
 
-                        <div class="mb-2">
-                            <div class="form-floating">
-                                <textarea asp-for="ViewModel.DisharmonyWords"
-                                          placeholder="@Html.DisplayNameFor(m => m.ViewModel.DisharmonyWords)"
-                                          class="form-control form-control-sm h-200px"
-                                          spellcheck="false"></textarea>
-                                <label class="form-label" asp-for="ViewModel.DisharmonyWords"></label>
-                            </div>
-
-                            <small class="form-text text-muted">@SharedLocalizer["Blocked words will be masked as *** in comment content."]</small>
-                        </div>
-                    </div>
-
-                    <div class="comment-settings-3rd">
                         <div>
                             <div class="form-floating">
-                                <textarea asp-for="ViewModel.ThirdPartyCommentHtmlPitch"
-                                          placeholder="@Html.DisplayNameFor(m => m.ViewModel.ThirdPartyCommentHtmlPitch)"
-                                          class="form-control form-control-sm h-100px"
-                                          spellcheck="false"></textarea>
-                                <label class="form-label" asp-for="ViewModel.ThirdPartyCommentHtmlPitch"></label>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <div class="col-md-6">
-                <div class="mb-3">
-                    <h6 class="card-subtitle mb-4 text-muted">@SharedLocalizer["Blog posts"]</h6>
-                    
-                    <div class="row g-3 align-items-center settings-entry mb-4">
-                        <div class="col-auto">
-                            <i class="bi-check2-circle settings-entry-icon"></i>
-                        </div>
-                        <div class="col">
-                            <label asp-for="ViewModel.PostTitleAlignment" class="me-4"></label>
-                        </div>
-                        <div class="col-md-5 text-end">
-                            <div class="form-check form-check-inline">
-                                    @Html.RadioButtonFor(model => model.ViewModel.PostTitleAlignment, PostTitleAlignment.Left, new { id = PostTitleAlignment.Left.ToString(), @class = "form-check-input" })
-                                <label class="form-check-label" for="@PostTitleAlignment.Left">@SharedLocalizer["Left"]</label>
-                            </div>
-                            <div class="form-check form-check-inline">
-                                    @Html.RadioButtonFor(model => model.ViewModel.PostTitleAlignment, PostTitleAlignment.Center, new { id = PostTitleAlignment.Center.ToString(), @class = "form-check-input" })
-                                    <label class="form-check-label" for="@PostTitleAlignment.Center">@SharedLocalizer["Center"]</label>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="row g-3 align-items-center settings-entry mb-4">
-                        <div class="col-auto">
-                            <i class="bi-sort-numeric-down settings-entry-icon"></i>
-                        </div>
-                        <div class="col">
-                            <label asp-for="ViewModel.PostListPageSize"></label>
-                        </div>
-                        <div class="col-md-5">
-                            <input asp-for="ViewModel.PostListPageSize" class="form-range" type="range" oninput="this.nextElementSibling.value = this.value" min="5" max="30" />
-                            <output class="form-text">
-                                @Model.ViewModel.PostListPageSize
-                            </output>
-                        </div>
-                    </div>
-
-                    <div class="row g-3 align-items-center settings-entry mb-4">
-                        <div class="col-auto">
-                            <i class="settings-entry-icon bi-file-word"></i>
-                        </div>
-                        <div class="col">
-                            <label asp-for="ViewModel.PostAbstractWords"></label>
-                            <div class="form-text">@SharedLocalizer["Change this value will only affect new posts"]</div>
-                        </div>
-                        <div class="col-md-5">
-                            <input asp-for="ViewModel.PostAbstractWords" class="form-control" required />
-                        </div>
-                    </div>
-
-                    <div class="row g-3 align-items-center settings-entry mb-4">
-                        <div class="col-auto">
-                            <i class="bi-tags settings-entry-icon"></i>
-                        </div>
-                        <div class="col">
-                            <label asp-for="ViewModel.HotTagAmount"></label>
-                        </div>
-                        <div class="col-md-5">
-                            <input asp-for="ViewModel.HotTagAmount" class="form-range" type="range" oninput="this.nextElementSibling.value = this.value" min="5" max="20" />
-                            <output class="form-text">
-                                @Model.ViewModel.PostListPageSize
-                            </output>
-                        </div>
-                    </div>
-
-                    <div class="row g-3 align-items-center settings-entry mb-2">
-                        <div class="col-auto">
-                            <i class="bi-card-text settings-entry-icon"></i>
-                        </div>
-                        <div class="col">
-                            <label asp-for="ViewModel.ShowPostFooter" class="form-check-label"></label>
-                            <div class="form-text">@SharedLocalizer["e.g. Your blog post license information."]</div>
-                        </div>
-                        <div class="col-md-5 text-end">
-                            <div class="form-check form-switch">
-                                <input type="hidden" name="ShowPostFooter" value="false">
-                                <input type="checkbox" name="ShowPostFooter" value="true" class="form-check-input" @(Model.ViewModel.ShowPostFooter ? "checked" : null)>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div>
-                        <div class="form-floating">
-                            <textarea asp-for="ViewModel.PostFooterHtmlPitch"
+                                <textarea asp-for="ViewModel.PostFooterHtmlPitch"
                                       placeholder="@Html.DisplayNameFor(m => m.ViewModel.PostFooterHtmlPitch)"
                                       class="form-control form-control-sm h-100px"
                                       spellcheck="false"></textarea>
-                            <label class="form-label" asp-for="ViewModel.PostFooterHtmlPitch"></label>
-                        </div>
-                    </div>
-                </div>
-                <div class="mt-5">
-                    <h6 class="card-subtitle mb-4 text-muted">@SharedLocalizer["Call-out"]</h6>
-
-                    <div class="row g-3 align-items-center settings-entry mb-2">
-                        <div class="col-auto">
-                            <i class="bi-menu-button-wide-fill settings-entry-icon"></i>
-                        </div>
-                        <div class="col">
-                            <label asp-for="ViewModel.ShowCalloutSection" class="form-check-label"></label>
-                            <div class="form-text">@SharedLocalizer["The call-out section will display on top of every page in the website."]</div>
-                        </div>
-                        <div class="col-md-5 text-end">
-                            <div class="form-check form-switch">
-                                <input type="hidden" name="ShowCalloutSection" value="false">
-                                <input type="checkbox" name="ShowCalloutSection" value="true" class="form-check-input" @(Model.ViewModel.ShowCalloutSection ? "checked" : null)>
+                                <label class="form-label" asp-for="ViewModel.PostFooterHtmlPitch"></label>
                             </div>
                         </div>
                     </div>
-                    <div>
-                        <div class="form-floating">
-                            <textarea asp-for="ViewModel.CalloutSectionHtmlPitch"
+                    <div class="mt-5">
+                        <h6 class="card-subtitle mb-4 text-muted">@SharedLocalizer["Call-out"]</h6>
+
+                        <div class="row g-3 align-items-center settings-entry mb-2">
+                            <div class="col-auto">
+                                <i class="bi-menu-button-wide-fill settings-entry-icon"></i>
+                            </div>
+                            <div class="col">
+                                <label asp-for="ViewModel.ShowCalloutSection" class="form-check-label"></label>
+                                <div class="form-text">@SharedLocalizer["The call-out section will display on top of every page in the website."]</div>
+                            </div>
+                            <div class="col-md-5 text-end">
+                                <div class="form-check form-switch">
+                                    <input type="hidden" name="ShowCalloutSection" value="false">
+                                    <input type="checkbox" name="ShowCalloutSection" value="true" class="form-check-input" @(Model.ViewModel.ShowCalloutSection ? "checked" : null)>
+                                </div>
+                            </div>
+                        </div>
+                        <div>
+                            <div class="form-floating">
+                                <textarea asp-for="ViewModel.CalloutSectionHtmlPitch"
                                       placeholder="@Html.DisplayNameFor(m => m.ViewModel.CalloutSectionHtmlPitch)"
                                       class="form-control form-control-sm h-100px"
                                       spellcheck="false"></textarea>
-                            <label class="form-label" asp-for="ViewModel.CalloutSectionHtmlPitch"></label>
+                                <label class="form-label" asp-for="ViewModel.CalloutSectionHtmlPitch"></label>
+                            </div>
                         </div>
                     </div>
                 </div>
             </div>
-        </div>
 
-        <div class="mt-4 mb-4">
-            <input id="btn-save-settings" type="submit" value="@SharedLocalizer["Save"]" class="btn btn-outline-accent" />
-        </div>
-    </form>
-</div>
+            <div class="mt-4 mb-4">
+                <input id="btn-save-settings" type="submit" value="@SharedLocalizer["Save"]" class="btn btn-outline-accent" />
+            </div>
+        </form>
+    </div>

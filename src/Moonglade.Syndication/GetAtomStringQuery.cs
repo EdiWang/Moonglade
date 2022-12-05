@@ -23,12 +23,12 @@ public class GetAtomStringQueryHandler : IRequestHandler<GetAtomStringQuery, str
             baseUrl,
             blogConfig.FeedSettings.RssTitle,
             blogConfig.GeneralSettings.Description,
-            blogConfig.FeedSettings.RssCopyright,
+            Helper.FormatCopyright2Html(blogConfig.GeneralSettings.Copyright).Replace("&copy;", "©"),
             $"Moonglade v{Helper.AppVersion}",
             baseUrl);
     }
 
-    public async Task<string> Handle(GetAtomStringQuery request, CancellationToken cancellationToken)
+    public async Task<string> Handle(GetAtomStringQuery request, CancellationToken ct)
     {
         _feedGenerator.FeedItemCollection = await _sdds.GetFeedDataAsync();
         var xml = await _feedGenerator.WriteAtomAsync();

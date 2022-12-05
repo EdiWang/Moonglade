@@ -13,15 +13,6 @@ public class TagsController : ControllerBase
 
     public TagsController(IMediator mediator) => _mediator = mediator;
 
-    [HttpGet("list")]
-    [FeatureGate(FeatureFlags.EnableWebApi)]
-    [ProducesResponseType(typeof(IReadOnlyList<Tag>), StatusCodes.Status200OK)]
-    public async Task<IActionResult> List()
-    {
-        var tags = await _mediator.Send(new GetTagsQuery());
-        return Ok(tags);
-    }
-
     [HttpGet("names")]
     [ProducesResponseType(typeof(IReadOnlyList<string>), StatusCodes.Status200OK)]
     public async Task<IActionResult> Names()

@@ -46,7 +46,7 @@ public class ReceivePingCommandHandler : IRequestHandler<ReceivePingCommand, Pin
         _postRepo = postRepo;
     }
 
-    public async Task<PingbackResponse> Handle(ReceivePingCommand request, CancellationToken cancellationToken)
+    public async Task<PingbackResponse> Handle(ReceivePingCommand request, CancellationToken ct)
     {
         try
         {
@@ -76,7 +76,7 @@ public class ReceivePingCommandHandler : IRequestHandler<ReceivePingCommand, Pin
 
             var (slug, pubDate) = GetSlugInfoFromUrl(pingRequest.TargetUrl);
             var spec = new PostSpec(pubDate, slug);
-            var (id, title) = await _postRepo.SelectFirstOrDefaultAsync(spec, p => new Tuple<Guid, string>(p.Id, p.Title));
+            var (id, title) = await _postRepo.FirstOrDefaultAsync(spec, p => new Tuple<Guid, string>(p.Id, p.Title));
             if (id == Guid.Empty)
             {
                 _logger.LogError($"Can not get post id and title for url '{pingRequest.TargetUrl}'");
@@ -88,7 +88,7 @@ public class ReceivePingCommandHandler : IRequestHandler<ReceivePingCommand, Pin
             var pinged = await _pingbackRepo.AnyAsync(p =>
                 p.TargetPostId == id &&
                 p.SourceUrl == pingRequest.SourceUrl &&
-                p.SourceIp.Trim() == request.IP);
+                p.SourceIp.Trim() == request.IP, ct);
 
             if (pinged) return PingbackResponse.Error48PingbackAlreadyRegistered;
 
@@ -107,7 +107,7 @@ public class ReceivePingCommandHandler : IRequestHandler<ReceivePingCommand, Pin
                 SourceIp = request.IP
             };
 
-            await _pingbackRepo.AddAsync(obj, cancellationToken);
+            await _pingbackRepo.AddAsync(obj, ct);
             request.Action?.Invoke(obj);
 
             return PingbackResponse.Success;

@@ -10,7 +10,7 @@ public enum CountType
 
 public record CountPostQuery(CountType CountType, Guid? CatId = null, int? TagId = null) : IRequest<int>;
 
-public class CountPostQueryHandler : RequestHandler<CountPostQuery, int>
+public class CountPostQueryHandler : IRequestHandler<CountPostQuery, int>
 {
     private readonly IRepository<PostEntity> _postRepo;
     private readonly IRepository<PostTagEntity> _postTagRepo;
@@ -26,30 +26,30 @@ public class CountPostQueryHandler : RequestHandler<CountPostQuery, int>
         _postCatRepo = postCatRepo;
     }
 
-    protected override int Handle(CountPostQuery request)
+    public async Task<int> Handle(CountPostQuery request, CancellationToken ct)
     {
         int count = 0;
 
         switch (request.CountType)
         {
             case CountType.Public:
-                count = _postRepo.Count(p => p.IsPublished && !p.IsDeleted);
+                count = await _postRepo.CountAsync(p => p.IsPublished && !p.IsDeleted, ct);
                 break;
 
             case CountType.Category:
                 if (request.CatId == null) throw new ArgumentNullException(nameof(request.CatId));
-                count = _postCatRepo.Count(c => c.CategoryId == request.CatId.Value
-                                                && c.Post.IsPublished
-                                                && !c.Post.IsDeleted);
+                count = await _postCatRepo.CountAsync(c => c.CategoryId == request.CatId.Value
+                                                           && c.Post.IsPublished
+                                                           && !c.Post.IsDeleted, ct);
                 break;
 
             case CountType.Tag:
                 if (request.TagId == null) throw new ArgumentNullException(nameof(request.TagId));
-                count = _postTagRepo.Count(p => p.TagId == request.TagId.Value && p.Post.IsPublished && !p.Post.IsDeleted);
+                count = await _postTagRepo.CountAsync(p => p.TagId == request.TagId.Value && p.Post.IsPublished && !p.Post.IsDeleted, ct);
                 break;
 
             case CountType.Featured:
-                count = _postRepo.Count(p => p.IsFeatured && p.IsPublished && !p.IsDeleted);
+                count = await _postRepo.CountAsync(p => p.IsFeatured && p.IsPublished && !p.IsDeleted, ct);
                 break;
         }
 

@@ -29,13 +29,17 @@ public class GetStyleSheetQueryHandler : IRequestHandler<GetStyleSheetQuery, str
 
             var sb = new StringBuilder();
             sb.Append(":root {");
-            foreach (var (key, value) in rules)
+            if (rules != null)
             {
-                if (null != key && null != value)
+                foreach (var (key, value) in rules)
                 {
-                    sb.Append($"{key}: {value};");
+                    if (null != key && null != value)
+                    {
+                        sb.Append($"{key}: {value};");
+                    }
                 }
             }
+
             sb.Append('}');
 
             return sb.ToString();

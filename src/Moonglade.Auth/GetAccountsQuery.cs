@@ -20,6 +20,6 @@ public class GetAccountsQueryHandler : IRequestHandler<GetAccountsQuery, IReadOn
             LastLoginIp = p.LastLoginIp,
             LastLoginTimeUtc = p.LastLoginTimeUtc,
             Username = p.Username
-        });
+        }, ct);
     }
 }

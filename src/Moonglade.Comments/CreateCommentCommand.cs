@@ -74,7 +74,7 @@ public class CreateCommentCommandHandler : IRequestHandler<CreateCommentCommand,
         await _commentRepo.AddAsync(model, ct);
 
         var spec = new PostSpec(request.PostId, false);
-        var postTitle = await _postRepo.SelectFirstOrDefaultAsync(spec, p => p.Title);
+        var postTitle = await _postRepo.FirstOrDefaultAsync(spec, p => p.Title);
 
         var item = new CommentDetailedItem
         {
