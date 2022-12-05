@@ -56,7 +56,7 @@ while($true) {
         continue
     }
     # Create the request
-    $HTTP_Status = Get-UrlStatusCode('http://' + $webAppName + '.azurewebsites.net')
+    $HTTP_Status = Get-UrlStatusCode('https://' + $webAppName + '.azurewebsites.net')
     if($HTTP_Status -eq 0) {
         break
     } else {
@@ -262,5 +262,7 @@ if (!$useLinuxPlanWithDocker) {
     Write-Host "Pulling source code and run build on Azure (this takes time, please wait)..."
     $echo = az webapp deployment source config --branch master --manual-integration --name $webAppName --repo-url https://github.com/EdiWang/Moonglade --resource-group $rsgName
 }
+
+az webapp restart --name $webAppName --resource-group $rsgName
 
 Read-Host -Prompt "Setup is done, you should be able to run Moonglade on '$webAppUrl' now, press [ENTER] to exit."
