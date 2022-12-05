@@ -263,4 +263,6 @@ if (!$useLinuxPlanWithDocker) {
     $echo = az webapp deployment source config --branch master --manual-integration --name $webAppName --repo-url https://github.com/EdiWang/Moonglade --resource-group $rsgName
 }
 
+az webapp restart --name $webAppName --resource-group $rsgName
+
 Read-Host -Prompt "Setup is done, you should be able to run Moonglade on '$webAppUrl' now, press [ENTER] to exit."
