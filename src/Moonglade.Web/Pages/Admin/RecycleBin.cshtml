@@ -1,7 +1,6 @@
 ﻿@page "/admin/post/recycle-bin"
 @using Moonglade.Core.PostFeature
 @using Moonglade.Data.Spec
-@inject ITimeZoneResolver ZoneResolver
 @inject IMediator Mediator
 @{
     ViewBag.Title = "Recycle Bin";
@@ -9,7 +8,9 @@
 }
 
 @section scripts{
-    <script>
+    <script type="module">
+        import * as utils from '/js/app/utils.module.js'
+
         $('.btn-delete').click(function() {
             var cfm = confirm('Delete Confirmation?');
             if (cfm) {
@@ -46,6 +47,8 @@
                     blogToast.success('Post restored');
                 });
         }
+
+        utils.formatUtcTime();
     </script>
 }
 @Html.AntiForgeryToken()
@@ -68,7 +71,7 @@
                         </h6>
                         <div>
                             <i class="bi-calendar-event"></i>
-                            @ZoneResolver.ToTimeZone(post.CreateTimeUtc).ToString("MM/dd/yyyy HH:mm")
+                            <time data-utc-label="@post.CreateTimeUtc.ToString("u")">@post.CreateTimeUtc</time>
                         </div>
                     </div>
                     <div>

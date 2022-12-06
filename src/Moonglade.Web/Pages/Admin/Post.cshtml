@@ -1,23 +1,22 @@
 ﻿@page "/admin/post"
 @using X.PagedList.Mvc.Core
-@inject ITimeZoneResolver ZoneResolver
 @model Moonglade.Web.Pages.Admin.PostModel
 @{
     ViewBag.Title = "Manage Posts";
 }
 
 @section scripts{
-    <script>
-        function deleteConfirm(postid) {
+    <script type="module">
+        import * as utils from '/js/app/utils.module.js'
+
+        window.deleteConfirm = function(postid) {
             var cfm = confirm("Delete Confirmation?");
             if (cfm) {
-                deletePost(postid);
+                window.deletePost(postid);
             }
         }
 
-        function deletePost(postid) {
-            console.info(postid);
-
+        window.deletePost = function(postid) {
             callApi(`/api/post/${postid}/recycle`,
                 'DELETE',
                 {},
@@ -25,6 +24,8 @@
                     $(`#post-${postid}`).remove();
                 });
         }
+
+        utils.formatUtcTime();
     </script>
 }
 
@@ -63,7 +64,9 @@
                         </a>
                         <div>
                             <i class="bi-calendar-event"></i>
-                            <span class="text-muted me-2">@ZoneResolver.ToTimeZone(item.PubDateUtc.GetValueOrDefault()).ToString("yyyy-MM-dd HH:mm")</span>
+                            <span class="text-muted me-2">
+                                <time data-utc-label="@item.CreateTimeUtc.ToString("u")">@item.CreateTimeUtc</time>
+                            </span>
 
                             <i class="bi-eye"></i>
                             <span class="text-muted">@item.Hits</span>
@@ -72,7 +75,7 @@
 
                     <div>
                         <a class="btn btn-outline-accent btn-sm btn-edit" asp-page="./EditPost" asp-route-id="@item.Id"><i class="bi-pen"></i></a>
-                        <button class="btn btn-outline-danger btn-sm btn-delete" onclick="deleteConfirm('@item.Id')"><i class="bi-trash"></i></button>
+                        <button class="btn btn-outline-danger btn-sm btn-delete" onclick="window.deleteConfirm('@item.Id')"><i class="bi-trash"></i></button>
                     </div>
                 </div>
                 <hr/>
