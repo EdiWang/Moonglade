@@ -16,7 +16,6 @@ public class SiteMapMiddleware
         HttpContext httpContext,
         IBlogConfig blogConfig,
         IBlogCache cache,
-        IConfiguration configuration,
         IRepository<PostEntity> postRepo,
         IRepository<PageEntity> pageRepo)
     {
@@ -25,7 +24,7 @@ public class SiteMapMiddleware
             var xml = await cache.GetOrCreateAsync(CacheDivision.General, "sitemap", async _ =>
             {
                 var url = Helper.ResolveRootUrl(httpContext, blogConfig.GeneralSettings.CanonicalPrefix, true, true);
-                var data = await GetSiteMapData(url, configuration.GetSection("SiteMap"), postRepo, pageRepo);
+                var data = await GetSiteMapData(url, postRepo, pageRepo);
                 return data;
             });
 
@@ -40,7 +39,6 @@ public class SiteMapMiddleware
 
     private static async Task<string> GetSiteMapData(
         string siteRootUrl,
-        IConfiguration siteMapSection,
         IRepository<PostEntity> postRepo,
         IRepository<PageEntity> pageRepo)
     {
@@ -89,14 +87,14 @@ public class SiteMapMiddleware
             writer.WriteStartElement("url");
             writer.WriteElementString("loc", $"{siteRootUrl}/tags");
             writer.WriteElementString("lastmod", DateTime.UtcNow.ToString("yyyy-MM-dd", CultureInfo.InvariantCulture));
-            writer.WriteElementString("changefreq", siteMapSection["ChangeFreq:Default"]);
+            writer.WriteElementString("changefreq", "weekly");
             await writer.WriteEndElementAsync();
 
             // Archive
             writer.WriteStartElement("url");
             writer.WriteElementString("loc", $"{siteRootUrl}/archive");
             writer.WriteElementString("lastmod", DateTime.UtcNow.ToString("yyyy-MM-dd", CultureInfo.InvariantCulture));
-            writer.WriteElementString("changefreq", siteMapSection["ChangeFreq:Default"]);
+            writer.WriteElementString("changefreq", "monthly");
             await writer.WriteEndElementAsync();
 
             await writer.WriteEndElementAsync();
