@@ -219,7 +219,7 @@ void ConfigureMiddleware(IApplicationBuilder appBuilder)
         appBuilder.UseStatusCodePages(ConfigureStatusCodePages.Handler).UseExceptionHandler("/error");
     }
 
-    appBuilder.UseHttpsRedirection().UseHsts();
+    appBuilder.UseHttpsRedirection();
     appBuilder.UseRequestLocalization(new RequestLocalizationOptions
     {
         DefaultRequestCulture = new("en-US"),
