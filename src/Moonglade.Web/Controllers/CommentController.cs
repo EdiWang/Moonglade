@@ -43,7 +43,7 @@ public class CommentController : ControllerBase
 
         if (!_blogConfig.ContentSettings.EnableComments) return Forbid();
 
-        var ip = (bool)HttpContext.Items["DNT"] ? "N/A" : Helper.GetClientIP(HttpContext);
+        var ip = (bool)HttpContext.Items["DNT"]! ? "N/A" : Helper.GetClientIP(HttpContext);
         var item = await _mediator.Send(new CreateCommentCommand(postId, request, ip));
 
         if (item is null)

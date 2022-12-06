@@ -72,7 +72,7 @@ public class SettingsController : ControllerBase
             _logger.LogError(e, e.Message, culture, returnUrl);
 
             // We shall not respect the return URL now, because the returnUrl might be hacking.
-            return LocalRedirect("~/");
+            return NoContent();
         }
     }
 
