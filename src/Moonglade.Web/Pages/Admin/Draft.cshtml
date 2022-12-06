@@ -2,31 +2,32 @@
 @using Moonglade.Core.PostFeature
 @using Moonglade.Data.Spec
 @inject IMediator Mediator
-@inject ITimeZoneResolver ZoneResolver
 @{
     ViewBag.Title = "Drafts";
     var posts = await Mediator.Send(new ListPostSegmentByStatusQuery(PostStatus.Draft));
 }
 
 @section scripts{
-    <script>
-        $(function() {
-            $(".btn-delete").click(function() {
-                var cfm = confirm("Delete Confirmation?");
-                if (cfm) {
-                    deletePost($(this).data("postid"));
-                }
-            });
-        });
-
-        function deletePost(postid) {
+    <script type="module">
+        import * as utils from '/js/app/utils.module.js'
+        
+        window.deletePost = function(postid) {
             $(`#span-processing-${postid}`).show();
 
             callApi(`/api/post/${postid}/recycle`, 'DELETE', {},
                 (resp) => {
-                    $(`#tr-${postid}`).hide();
+                    $(`#post-${postid}`).hide();
                 });
         }
+
+        $(".btn-delete").click(function () {
+            var cfm = confirm("Delete Confirmation?");
+            if (cfm) {
+                window.deletePost($(this).data("postid"));
+            }
+        });
+        
+        utils.formatUtcTime();
     </script>
 }
 
@@ -49,10 +50,9 @@
                         </a>
                         <div>
                             <i class="bi-calendar-event"></i>
-                            <span class="text-muted me-2">@ZoneResolver.ToTimeZone(post.CreateTimeUtc).ToString("yyyy-MM-dd HH:mm")</span>
-
-                            <i class="bi-eye"></i>
-                            <span class="text-muted">@post.Hits</span>
+                            <span class="text-muted me-2">
+                                <time data-utc-label="@post.CreateTimeUtc.ToString("u")">@post.CreateTimeUtc</time>
+                            </span>
                         </div>
                     </div>
 
