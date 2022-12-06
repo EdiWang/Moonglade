@@ -54,16 +54,17 @@ public class SiteMapMiddleware
 
             // Posts
             var spec = new PostSitePageSpec();
-            var posts = await postRepo.SelectAsync(spec, p => new Tuple<string, DateTime?>(p.Slug, p.PubDateUtc));
+            var posts = await postRepo
+                .SelectAsync(spec, p => new Tuple<string, DateTime?, DateTime?>(p.Slug, p.PubDateUtc, p.LastModifiedUtc));
 
-            foreach (var (slug, pubDateUtc) in posts.OrderByDescending(p => p.Item2))
+            foreach (var (slug, pubDateUtc, lastModifyUtc) in posts.OrderByDescending(p => p.Item2))
             {
                 var pubDate = pubDateUtc.GetValueOrDefault();
 
                 writer.WriteStartElement("url");
                 writer.WriteElementString("loc", $"{siteRootUrl}/post/{pubDate.Year}/{pubDate.Month}/{pubDate.Day}/{slug.ToLower()}");
                 writer.WriteElementString("lastmod", pubDate.ToString("yyyy-MM-dd", CultureInfo.InvariantCulture));
-                writer.WriteElementString("changefreq", siteMapSection["ChangeFreq:Posts"]);
+                writer.WriteElementString("changefreq", GetChangeFreq(pubDateUtc.GetValueOrDefault(), lastModifyUtc));
                 await writer.WriteEndElementAsync();
             }
 
@@ -102,5 +103,28 @@ public class SiteMapMiddleware
 
         var xml = sb.ToString();
         return xml;
+    }
+
+    private static string GetChangeFreq(DateTime pubDate, DateTime? modifyDate)
+    {
+        if (modifyDate == null || modifyDate == pubDate) return "monthly";
+
+        var lastModifyFromNow = (DateTime.UtcNow - modifyDate.Value).Days;
+        switch (lastModifyFromNow)
+        {
+            case <= 60:
+            {
+                var interval = Math.Abs((modifyDate.Value - pubDate).Days);
+
+                return interval switch
+                {
+                    < 7 => "daily",
+                    >= 7 and <= 14 => "weekly",
+                    > 14 => "monthly"
+                };
+            }
+            case > 60:
+                return "yearly";
+        }
     }
 }
