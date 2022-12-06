@@ -125,17 +125,17 @@ void ConfigureServices(IServiceCollection services)
             .AddImageStorage(builder.Configuration, options => options.ContentRootPath = builder.Environment.ContentRootPath)
             .Configure<List<ManifestIcon>>(builder.Configuration.GetSection("ManifestIcons"));
 
-    switch (dbType.ToLower())
+    switch (dbType!.ToLower())
     {
         case "mysql":
-            services.AddMySqlStorage(connStr);
+            services.AddMySqlStorage(connStr!);
             break;
         case "postgresql":
-            services.AddPostgreSqlStorage(connStr);
+            services.AddPostgreSqlStorage(connStr!);
             break;
         case "sqlserver":
         default:
-            services.AddSqlServerStorage(connStr);
+            services.AddSqlServerStorage(connStr!);
             break;
     }
 }
