@@ -19,3 +19,13 @@
 
     return newValue;
 }
+
+export function formatUtcTime() {
+    $('time').each(function (i, e) {
+        var utclabel = $(e).data('utc-label');
+        if (utclabel) {
+            var localTime = new Date(utclabel);
+            $(e).html(localTime);
+        }
+    });
+}
