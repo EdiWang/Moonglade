@@ -2,7 +2,6 @@
 @using Moonglade.Utils
 @using X.PagedList.Mvc.Core
 @using X.PagedList.Web.Common
-@inject ITimeZoneResolver ZoneResolver
 @model Moonglade.Web.Pages.Admin.CommentsModel
 @{
     ViewBag.Title = "Manage Comments";
@@ -10,7 +9,9 @@
 @Html.AntiForgeryToken()
 
 @section scripts{
-    <script>
+    <script type="module">
+        import * as utils from '/js/app/utils.module.js'
+
         $(".btn-delete").click(function() {
             var cid = $(this).data("commentid");
             callApi('/api/comment', 'DELETE', [cid],
@@ -47,7 +48,7 @@
                 });
         });
 
-        function deleteSelectedComments() {
+        window.deleteSelectedComments = function() {
             var cids = [];
             $('.chk-cid:checked').each(function () {
                 cids.push($(this).data('cid'));
@@ -60,6 +61,8 @@
                     });
                 });
         }
+
+        utils.formatUtcTime();
     </script>
 }
 
@@ -77,7 +80,7 @@
 }
 
     <div class="admin-toolbar ps-4 pe-4 pt-2 pb-2 border-bottom mb-3 shadow-sm">
-        <a href="javascript:deleteSelectedComments();" class="btn btn-outline-danger btn-delete-selected">
+        <a href="javascript:window.deleteSelectedComments();" class="btn btn-outline-danger btn-delete-selected">
             <i class="bi-trash"></i> @SharedLocalizer["Delete selected"]
         </a>
     </div>
@@ -117,7 +120,10 @@
                     </div>
 
                     <small class="text-muted">
-                        <span>@ZoneResolver.ToTimeZone(item.CreateTimeUtc).ToString("yyyy-MM-dd HH:mm")</span> <span class="text-muted d-none d-sm-inline">(@item.IpAddress)</span>
+                        <span>
+                            <time data-utc-label="@item.CreateTimeUtc.ToString("u")">@item.CreateTimeUtc</time>
+                        </span> 
+                        <span class="text-muted d-none d-sm-inline">(@item.IpAddress)</span>
                     </small>
 
                     <div class="reply-ui mt-3" style="display: none;">
@@ -142,7 +148,9 @@
                                 <div>
                                     @Html.Raw(ContentProcessor.MarkdownToContent(reply.ReplyContent, ContentProcessor.MarkdownConvertType.Html))
                                 </div>
-                                <small class="text-muted">@ZoneResolver.ToTimeZone(reply.ReplyTimeUtc)</small>
+                                <small class="text-muted">
+                                    <time data-utc-label="@reply.ReplyTimeUtc.ToString("u")">@reply.ReplyTimeUtc</time>
+                                </small>
                             </div>
                         }
                     </div>
