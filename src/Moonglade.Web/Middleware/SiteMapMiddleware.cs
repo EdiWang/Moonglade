@@ -69,18 +69,19 @@ public class SiteMapMiddleware
             }
 
             // Pages
-            var pages = await pageRepo.SelectAsync(page => new Tuple<DateTime, string, bool>(
+            var pages = await pageRepo.SelectAsync(page => new Tuple<DateTime, DateTime?, string, bool>(
                 page.CreateTimeUtc,
+                page.UpdateTimeUtc,
                 page.Slug,
                 page.IsPublished)
             );
 
-            foreach (var (createdTimeUtc, slug, isPublished) in pages.Where(p => p.Item3))
+            foreach (var (createdTimeUtc, updateTimeUtc, slug, isPublished) in pages.Where(p => p.Item4))
             {
                 writer.WriteStartElement("url");
                 writer.WriteElementString("loc", $"{siteRootUrl}/page/{slug.ToLower()}");
                 writer.WriteElementString("lastmod", createdTimeUtc.ToString("yyyy-MM-dd", CultureInfo.InvariantCulture));
-                writer.WriteElementString("changefreq", siteMapSection["ChangeFreq:Pages"]);
+                writer.WriteElementString("changefreq", GetChangeFreq(createdTimeUtc, updateTimeUtc));
                 await writer.WriteEndElementAsync();
             }
 
@@ -113,16 +114,16 @@ public class SiteMapMiddleware
         switch (lastModifyFromNow)
         {
             case <= 60:
-            {
-                var interval = Math.Abs((modifyDate.Value - pubDate).Days);
-
-                return interval switch
                 {
-                    < 7 => "daily",
-                    >= 7 and <= 14 => "weekly",
-                    > 14 => "monthly"
-                };
-            }
+                    var interval = Math.Abs((modifyDate.Value - pubDate).Days);
+
+                    return interval switch
+                    {
+                        < 7 => "daily",
+                        >= 7 and <= 14 => "weekly",
+                        > 14 => "monthly"
+                    };
+                }
             case > 60:
                 return "yearly";
         }
