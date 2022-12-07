@@ -2,7 +2,6 @@
 using Moonglade.Caching.Filters;
 using Moonglade.Notification.Client;
 using NUglify;
-using System.Reflection;
 
 namespace Moonglade.Web.Controllers;
 
@@ -27,28 +26,6 @@ public class SettingsController : ControllerBase
         _blogConfig = blogConfig;
         _logger = logger;
         _mediator = mediator;
-    }
-
-    [HttpGet("release/check")]
-    [ProducesResponseType(typeof(CheckNewReleaseResult), StatusCodes.Status200OK)]
-    public async Task<IActionResult> CheckNewRelease(IReleaseCheckerClient releaseCheckerClient)
-    {
-        var info = await releaseCheckerClient.CheckNewReleaseAsync();
-
-        var asm = Assembly.GetEntryAssembly();
-        var currentVersion = new Version(asm.GetCustomAttribute<AssemblyFileVersionAttribute>()?.Version);
-        var latestVersion = new Version(info.TagName.Replace("v", string.Empty));
-
-        var hasNewVersion = latestVersion > currentVersion && !info.PreRelease;
-
-        var result = new CheckNewReleaseResult
-        {
-            HasNewRelease = hasNewVersion,
-            CurrentAssemblyFileVersion = currentVersion.ToString(),
-            LatestReleaseInfo = info
-        };
-
-        return Ok(result);
     }
 
     [AllowAnonymous]
@@ -266,13 +243,5 @@ public class SettingsController : ControllerBase
     {
         var kvp = _blogConfig.UpdateAsync(blogSettings);
         await _mediator.Send(new UpdateConfigurationCommand(kvp.Key, kvp.Value));
-    }
-
-    public class CheckNewReleaseResult
-    {
-        public bool HasNewRelease { get; set; }
-
-        public ReleaseInfo LatestReleaseInfo { get; set; }
-        public string CurrentAssemblyFileVersion { get; set; }
     }
 }

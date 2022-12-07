@@ -51,6 +51,7 @@ void ConfigureConfiguration()
 
 void ConfigureServices(IServiceCollection services)
 {
+    AppDomain.CurrentDomain.Load("Moonglade.Core");
     AppDomain.CurrentDomain.Load("Moonglade.FriendLink");
     AppDomain.CurrentDomain.Load("Moonglade.Menus");
     AppDomain.CurrentDomain.Load("Moonglade.Theme");
@@ -114,7 +115,6 @@ void ConfigureServices(IServiceCollection services)
     services.AddPingback()
             .AddSyndication()
             .AddNotification()
-            .AddReleaseCheckerClient()
             .AddBlogCache()
             .AddMetaWeblog<Moonglade.Web.MetaWeblogService>()
             .AddScoped<ValidateCaptcha>()
