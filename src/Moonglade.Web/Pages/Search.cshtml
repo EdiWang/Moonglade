@@ -1,10 +1,19 @@
 ﻿@page "/search"
-@model Moonglade.Web.Pages.SearchModel
+@using Moonglade.Core.PostFeature
+@using Microsoft.AspNetCore.Mvc.TagHelpers
+@inject IMediator Mediator
+
 @section meta
 {
     <meta name="robots" content="noindex, nofollow" />
 }
 @{
+    var term = Request.Query["term"];
+    if (string.IsNullOrWhiteSpace(term)) RedirectToPage("Index");
+    
+    var posts = await Mediator.Send(new SearchPostQuery(term));
+
+    ViewBag.TitlePrefix = term.ToString();
     HttpContext.Response.Headers.Add("X-Robots-Tag", "noindex, nofollow");
 }
 
@@ -12,7 +21,7 @@
     @SharedLocalizer["Search Result"]
 </h3>
 <hr />
-@if (!Model.Posts.Any())
+@if (!posts.Any())
 {
     <div class="alert alert-info">
         @SharedLocalizer["No Matching Result"]
@@ -20,7 +29,7 @@
 }
 else
 {
-    foreach (var item in Model.Posts.OrderByDescending(s => s.PubDateUtc))
+    foreach (var item in posts.OrderByDescending(s => s.PubDateUtc))
     {
         <partial name="_PostListEntry" model="item" />
         <div class="mb-4 d-none d-md-block"></div>
