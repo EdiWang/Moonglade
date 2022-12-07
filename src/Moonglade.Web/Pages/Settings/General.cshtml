@@ -1,6 +1,7 @@
 ﻿@page "/admin/settings/general"
 @model Moonglade.Web.Pages.Settings.GeneralModel
 @inject ITimeZoneResolver ZoneResolver
+@inject IMediator Mediator
 @{
     var tzList = ZoneResolver.ListTimeZones().Select(t => new SelectListItem
     {
@@ -8,12 +9,14 @@
         Value = t.Id
     });
 
-    var tmList = Model.Themes
+    var themes = await Mediator.Send(new GetAllThemeSegmentQuery());
+    var tmList = themes
         .Select(t => new SelectListItem
         {
             Text = t.Name,
             Value = t.Id.ToString()
         });
+
 }
 
 @section scripts{
