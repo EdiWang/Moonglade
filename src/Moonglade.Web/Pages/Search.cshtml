@@ -1,9 +1,11 @@
 ﻿@page "/search"
 @model Moonglade.Web.Pages.SearchModel
-
 @section meta
 {
     <meta name="robots" content="noindex, nofollow" />
+}
+@{
+    HttpContext.Response.Headers.Add("X-Robots-Tag", "noindex, nofollow");
 }
 
 <h3>
