@@ -7,6 +7,10 @@
 
 @{
     ViewBag.BodyClass = "body-post-slug";
+    if (!Model.Post.IsFeedIncluded)
+    {
+        HttpContext.Response.Headers.Add("X-Robots-Tag", "noindex, nofollow");
+    }
 }
 
 @section keywords {
