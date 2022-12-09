@@ -12,6 +12,7 @@ using Moonglade.Pingback;
 using Moonglade.Syndication;
 using SixLabors.Fonts;
 using System.Globalization;
+using System.Net;
 using System.Text.Json.Serialization;
 using WilderMinds.MetaWeblog;
 using Encoder = Moonglade.Web.Configuration.Encoder;
@@ -63,7 +64,20 @@ void ConfigureServices(IServiceCollection services)
     // Fix docker deployments on Azure App Service blows up with Azure AD authentication
     // https://docs.microsoft.com/en-us/aspnet/core/host-and-deploy/proxy-load-balancer?view=aspnetcore-6.0
     // "Outside of using IIS Integration when hosting out-of-process, Forwarded Headers Middleware isn't enabled by default."
-    services.Configure<ForwardedHeadersOptions>(options => options.ForwardedHeaders = ForwardedHeaders.XForwardedFor | ForwardedHeaders.XForwardedProto);
+    var knownProxies = builder.Configuration.GetSection("AzureKnownProxies").Get<string[]>();
+    builder.Services.Configure<ForwardedHeadersOptions>(options =>
+    {
+        options.ForwardedHeaders = ForwardedHeaders.XForwardedFor | ForwardedHeaders.XForwardedProto;
+        options.ForwardLimit = null;
+        options.KnownProxies.Clear();
+        if (knownProxies != null)
+        {
+            foreach (var ip in knownProxies)
+            {
+                options.KnownProxies.Add(IPAddress.Parse(ip));
+            }
+        }
+    });
 
     services.AddOptions()
             .AddHttpContextAccessor()
