@@ -60,6 +60,10 @@
                            target="_blank">
                             <h6>
                                 @item.Title
+                                @if (item.IsFeatured)
+                                {
+                                    <i class="bi-star-fill text-warning"></i>
+                                }
                             </h6>
                         </a>
                         <div>
