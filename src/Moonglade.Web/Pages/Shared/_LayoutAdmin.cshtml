@@ -18,13 +18,7 @@
     </title>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no" />
-    <meta name="keywords" content="@Html.Raw(BlogConfig.GeneralSettings.MetaKeyword)" />
     <link rel="start" title="@BlogConfig.GeneralSettings.SiteTitle" href="~/" />
-    <rss title="@BlogConfig.FeedSettings.RssTitle" href="@Url.Action("Rss", "Subscription")" />
-    @if (BlogConfig.AdvancedSettings.EnableOpenSearch)
-    {
-        <opensearch href="/opensearch" title="@BlogConfig.GeneralSettings.SiteTitle" />
-    }
     <partial name="_Favicons" />
     <link href="~/lib/twitter-bootstrap/css/bootstrap.min.css" rel="stylesheet" asp-append-version="true" />
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.2/font/bootstrap-icons.css">
