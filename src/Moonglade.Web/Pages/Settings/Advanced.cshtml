@@ -234,21 +234,6 @@
                         </div>
                     </div>
 
-                    <div class="row g-3 align-items-center settings-entry mb-4">
-                        <div class="col-auto">
-                            <i class="bi-hand-index settings-entry-icon"></i>
-                        </div>
-                        <div class="col">
-                            <label asp-for="@settings.ShowAdminLoginButton" class="form-check-label"></label>
-                        </div>
-                        <div class="col-md-4 text-end">
-                            <div class="form-check form-switch">
-                                <input type="hidden" name="ShowAdminLoginButton" value="false">
-                                <input type="checkbox" name="ShowAdminLoginButton" value="true" class="form-check-input" @(settings.ShowAdminLoginButton ? "checked" : null)>
-                            </div>
-                        </div>
-                    </div>
-
                     <div class="mt-5 mb-2">
                         <h6 class="card-subtitle mb-3 text-muted">@Html.DisplayNameFor(m => settings.RobotsTxtContent)</h6>
                         <textarea asp-for="@settings.RobotsTxtContent" class="form-control textarea-code" cols="60" rows="10" spellcheck="false"></textarea>

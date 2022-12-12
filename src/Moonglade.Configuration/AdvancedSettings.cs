@@ -40,8 +40,5 @@ public class AdvancedSettings : IBlogSettings
     [Display(Name = "Allow javascript in pages")]
     public bool AllowScriptsInPage { get; set; }
 
-    [Display(Name = "Show Admin login button under sidebar")]
-    public bool ShowAdminLoginButton { get; set; }
-
     public string MetaWeblogPasswordHash { get; set; }
 }
