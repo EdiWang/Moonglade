@@ -91,7 +91,7 @@ export function loadTinyMCE(textareaSelector) {
             selector: textareaSelector,
             themes: 'silver',
             skin: 'tinymce-5',
-            // height: ,
+            height: 'calc(100vh - 400px)',
             relative_urls: false, // avoid image upload fuck up
             browser_spellcheck: true,
             branding: false,
