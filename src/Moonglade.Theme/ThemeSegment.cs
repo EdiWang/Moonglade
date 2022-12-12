@@ -1,6 +1,6 @@
 ﻿namespace Moonglade.Theme;
 
-public struct ThemeSegment
+public record ThemeSegment
 {
     public int Id { get; set; }
     public string Name { get; set; }

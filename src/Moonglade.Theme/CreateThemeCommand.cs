@@ -19,14 +19,14 @@ public class CreateThemeCommandHandler : IRequestHandler<CreateThemeCommand, int
         if (await _repo.AnyAsync(p => p.ThemeName == name.Trim(), ct)) return 0;
 
         var rules = JsonSerializer.Serialize(dictionary);
-        var blogTheme = new BlogThemeEntity
+        var entity = new BlogThemeEntity
         {
             ThemeName = name.Trim(),
             CssRules = rules,
             ThemeType = ThemeType.User
         };
 
-        await _repo.AddAsync(blogTheme, ct);
-        return blogTheme.Id;
+        await _repo.AddAsync(entity, ct);
+        return entity.Id;
     }
 }
