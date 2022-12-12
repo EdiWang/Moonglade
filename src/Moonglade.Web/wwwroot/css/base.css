@@ -92,6 +92,10 @@ footer {
             color: var(--bs-white);
         }
 
+.bg-gray-1 {
+    background-color: var(--gray-1);
+}
+
 .nav-item-icon {
     width: 16px;
     display: inline-block;
