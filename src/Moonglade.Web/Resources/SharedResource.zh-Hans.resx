@@ -177,9 +177,6 @@
   <data name="Archive" xml:space="preserve">
     <value>归档</value>
   </data>
-  <data name="Archive Timeline" xml:space="preserve">
-    <value>归档时间轴</value>
-  </data>
   <data name="Are you ABSOLUTELY sure? ALL data and configuration will be erased!" xml:space="preserve">
     <value>你真的确定吗？所有数据和配置都将灰飞烟灭！</value>
   </data>
