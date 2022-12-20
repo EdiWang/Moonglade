@@ -33,16 +33,13 @@
             <div class="col-md-6">
                 <h6 class="card-subtitle mb-4 text-muted">@SharedLocalizer["Email Options"]</h6>
 
-                <div class="alert alert-info mb-4">
-                    Please follow instructions <a href="https://github.com/EdiWang/Moonglade/blob/master/README.md#email-notification" target="_blank">here</a> to setup notification API.
-                </div>
-
                 <div class="row g-3 align-items-center settings-entry mb-4">
                     <div class="col-auto">
                         <i class="bi-link settings-entry-icon"></i>
                     </div>
                     <div class="col">
                         <label asp-for="@settings.AzureStorageQueueConnection"></label>
+                        <div class="form-text">Please follow instructions <a href="https://github.com/EdiWang/Moonglade/blob/master/README.md#email-notification" target="_blank">here</a> to setup notification API.</div>
                     </div>
                     <div class="col-md-5">
                         <input asp-for="@settings.AzureStorageQueueConnection" class="form-control" spellcheck="false" />
@@ -74,7 +71,8 @@
                         </a>
                     </div>
                 </div>
-
+            </div>
+            <div class="col-md-6">
                 <h6 class="card-subtitle mb-4 text-muted">@SharedLocalizer["Notification Options"]</h6>
 
                 <div class="row g-3 align-items-center settings-entry mb-4">
