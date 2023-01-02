@@ -49,12 +49,17 @@ void WriteParameterTable()
         Title = new($"Moonglade.Web {appVersion} | .NET {Environment.Version}")
     };
 
+    var strHostName = Dns.GetHostName();
+    var ipEntry = Dns.GetHostEntry(strHostName);
+    var ips = ipEntry.AddressList;
+
     table.AddColumn("Parameter");
     table.AddColumn("Value");
     table.AddRow(new Markup("[blue]Path[/]"), new Text(Environment.CurrentDirectory));
     table.AddRow(new Markup("[blue]System[/]"), new Text(Helper.TryGetFullOSVersion()));
-    table.AddRow(new Markup("[blue]Host[/]"), new Text(Environment.MachineName));
     table.AddRow(new Markup("[blue]User[/]"), new Text(Environment.UserName));
+    table.AddRow(new Markup("[blue]Host[/]"), new Text(Environment.MachineName));
+    table.AddRow(new Markup("[blue]IP addresses[/]"), new Rows(ips.Select(p => new Text(p.ToString()))));
     table.AddRow(new Markup("[blue]Database type[/]"), new Text(dbType!));
     table.AddRow(new Markup("[blue]Image storage[/]"), new Text(builder.Configuration["ImageStorage:Provider"]!));
     table.AddRow(new Markup("[blue]Authentication provider[/]"), new Text(builder.Configuration["Authentication:Provider"]!));
