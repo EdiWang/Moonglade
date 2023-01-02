@@ -28,6 +28,7 @@ string connStr = builder.Configuration.GetConnectionString("MoongladeDatabase");
 var cultures = new[] { "en-US", "zh-Hans" }.Select(p => new CultureInfo(p)).ToList();
 
 WriteParameterTable();
+AnsiConsole.MarkupLine("[link=https://github.com/EdiWang/Moonglade]GitHub: EdiWang/Moonglade[/]");
 
 ConfigureConfiguration();
 ConfigureServices(builder.Services);
@@ -54,7 +55,11 @@ void WriteParameterTable()
     table.AddRow(new Markup("[blue]System[/]"), new Text(Helper.TryGetFullOSVersion()));
     table.AddRow(new Markup("[blue]Host[/]"), new Text(Environment.MachineName));
     table.AddRow(new Markup("[blue]User[/]"), new Text(Environment.UserName));
-    table.AddRow(new Markup("[blue]Database Type[/]"), new Text(dbType!));
+    table.AddRow(new Markup("[blue]Database type[/]"), new Text(dbType!));
+    table.AddRow(new Markup("[blue]Image storage[/]"), new Text(builder.Configuration["ImageStorage:Provider"]!));
+    table.AddRow(new Markup("[blue]Authentication provider[/]"), new Text(builder.Configuration["Authentication:Provider"]!));
+    table.AddRow(new Markup("[blue]Editor[/]"), new Text(builder.Configuration["Editor"]!));
+
     AnsiConsole.Write(table);
 }
 
@@ -90,6 +95,10 @@ void ConfigureServices(IServiceCollection services)
             {
                 options.KnownProxies.Add(IPAddress.Parse(ip));
             }
+
+            AnsiConsole.MarkupLine("Added known proxies [green]({0})[/]: {1}",
+                knownProxies.Length, 
+                System.Text.Json.JsonSerializer.Serialize(knownProxies).EscapeMarkup());
         }
     });
 
