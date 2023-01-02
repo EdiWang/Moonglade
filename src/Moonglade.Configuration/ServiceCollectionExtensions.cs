@@ -1,11 +1,10 @@
-﻿using Microsoft.Extensions.Configuration;
-using Microsoft.Extensions.DependencyInjection;
+﻿using Microsoft.Extensions.DependencyInjection;
 
 namespace Moonglade.Configuration;
 
 public static class ServiceCollectionExtensions
 {
-    public static IServiceCollection AddBlogConfig(this IServiceCollection services, IConfiguration configuration)
+    public static IServiceCollection AddBlogConfig(this IServiceCollection services)
     {
         services.AddSingleton<IBlogConfig, BlogConfig>();
         return services;

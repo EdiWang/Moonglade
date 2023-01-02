@@ -1,6 +1,5 @@
 ﻿using AspNetCoreRateLimit;
 using Edi.Captcha;
-using Microsoft.ApplicationInsights.DependencyCollector;
 using Microsoft.ApplicationInsights.Extensibility;
 using Microsoft.ApplicationInsights.Extensibility.Implementation;
 using Microsoft.AspNetCore.HttpOverrides;
@@ -11,19 +10,14 @@ using Moonglade.Notification.Client;
 using Moonglade.Pingback;
 using Moonglade.Syndication;
 using SixLabors.Fonts;
+using Spectre.Console;
 using System.Globalization;
 using System.Net;
 using System.Text.Json.Serialization;
 using WilderMinds.MetaWeblog;
 using Encoder = Moonglade.Web.Configuration.Encoder;
 
-var info = $"App:\tMoonglade {Helper.AppVersion}\n" +
-           $"Path:\t{Environment.CurrentDirectory} \n" +
-           $"System:\t{Helper.TryGetFullOSVersion()} \n" +
-           $"Host:\t{Environment.MachineName} \n" +
-           $"User:\t{Environment.UserName}";
-Console.WriteLine(info);
-
+Console.OutputEncoding = Encoding.UTF8;
 Encoding.RegisterProvider(CodePagesEncodingProvider.Instance);
 
 var builder = WebApplication.CreateBuilder(args);
@@ -33,6 +27,8 @@ string connStr = builder.Configuration.GetConnectionString("MoongladeDatabase");
 
 var cultures = new[] { "en-US", "zh-Hans" }.Select(p => new CultureInfo(p)).ToList();
 
+WriteParameterTable();
+
 ConfigureConfiguration();
 ConfigureServices(builder.Services);
 
@@ -40,9 +36,27 @@ var app = builder.Build();
 
 await FirstRun();
 
-ConfigureMiddleware(app);
+ConfigureMiddleware();
 
 app.Run();
+
+void WriteParameterTable()
+{
+    var appVersion = Helper.AppVersion;
+    var table = new Table
+    {
+        Title = new($"Moonglade.Web {appVersion} | .NET {Environment.Version}")
+    };
+
+    table.AddColumn("Parameter");
+    table.AddColumn("Value");
+    table.AddRow(new Markup("[blue]Path[/]"), new Text(Environment.CurrentDirectory));
+    table.AddRow(new Markup("[blue]System[/]"), new Text(Helper.TryGetFullOSVersion()));
+    table.AddRow(new Markup("[blue]Host[/]"), new Text(Environment.MachineName));
+    table.AddRow(new Markup("[blue]User[/]"), new Text(Environment.UserName));
+    table.AddRow(new Markup("[blue]Database Type[/]"), new Text(dbType!));
+    AnsiConsole.Write(table);
+}
 
 void ConfigureConfiguration()
 {
@@ -82,8 +96,7 @@ void ConfigureServices(IServiceCollection services)
     services.AddOptions()
             .AddHttpContextAccessor()
             .AddRateLimit(builder.Configuration.GetSection("IpRateLimiting"));
-    services.AddApplicationInsightsTelemetry()
-            .ConfigureTelemetryModule<DependencyTrackingTelemetryModule>((module, _) => module.EnableSqlCommandTextInstrumentation = true);
+    services.AddApplicationInsightsTelemetry();
 
     services.AddSession(options =>
     {
@@ -133,7 +146,7 @@ void ConfigureServices(IServiceCollection services)
             .AddMetaWeblog<Moonglade.Web.MetaWeblogService>()
             .AddScoped<ValidateCaptcha>()
             .AddScoped<ITimeZoneResolver, BlogTimeZoneResolver>()
-            .AddBlogConfig(builder.Configuration)
+            .AddBlogConfig()
             .AddBlogAuthenticaton(builder.Configuration)
             .AddComments(builder.Configuration)
             .AddImageStorage(builder.Configuration, options => options.ContentRootPath = builder.Environment.ContentRootPath)
@@ -184,9 +197,9 @@ async Task FirstRun()
     }
 }
 
-void ConfigureMiddleware(IApplicationBuilder appBuilder)
+void ConfigureMiddleware()
 {
-    appBuilder.UseForwardedHeaders();
+    app.UseForwardedHeaders();
 
     if (!app.Environment.IsProduction())
     {
@@ -197,11 +210,11 @@ void ConfigureMiddleware(IApplicationBuilder appBuilder)
         TelemetryDebugWriter.IsTracingDisabled = true;
     }
 
-    appBuilder.UseCustomCss(options => options.MaxContentLength = 10240);
-    appBuilder.UseManifest(options => options.ThemeColor = "#333333");
-    appBuilder.UseRobotsTxt();
+    app.UseCustomCss(options => options.MaxContentLength = 10240);
+    app.UseManifest(options => options.ThemeColor = "#333333");
+    app.UseRobotsTxt();
 
-    appBuilder.UseOpenSearch(options =>
+    app.UseOpenSearch(options =>
     {
         options.RequestPath = "/opensearch";
         options.IconFileType = "image/png";
@@ -212,46 +225,46 @@ void ConfigureMiddleware(IApplicationBuilder appBuilder)
 
     if (bc.AdvancedSettings.EnableFoaf)
     {
-        appBuilder.UseMiddleware<FoafMiddleware>();
+        app.UseMiddleware<FoafMiddleware>();
     }
 
     if (bc.AdvancedSettings.EnableMetaWeblog)
     {
-        appBuilder.UseMiddleware<RSDMiddleware>().UseMetaWeblog("/metaweblog");
+        app.UseMiddleware<RSDMiddleware>().UseMetaWeblog("/metaweblog");
     }
 
-    appBuilder.UseMiddleware<SiteMapMiddleware>()
+    app.UseMiddleware<SiteMapMiddleware>()
               .UseMiddleware<PoweredByMiddleware>()
               .UseMiddleware<DNTMiddleware>();
 
     if (app.Environment.IsDevelopment())
     {
-        appBuilder.UseDeveloperExceptionPage();
+        app.UseDeveloperExceptionPage();
     }
     else
     {
-        appBuilder.UseStatusCodePages(ConfigureStatusCodePages.Handler).UseExceptionHandler("/error");
+        app.UseStatusCodePages(ConfigureStatusCodePages.Handler).UseExceptionHandler("/error");
     }
 
-    appBuilder.UseHttpsRedirection();
-    appBuilder.UseRequestLocalization(new RequestLocalizationOptions
+    app.UseHttpsRedirection();
+    app.UseRequestLocalization(new RequestLocalizationOptions
     {
         DefaultRequestCulture = new("en-US"),
         SupportedCultures = cultures,
         SupportedUICultures = cultures
     });
 
-    appBuilder.UseStaticFiles();
-    appBuilder.UseSession().UseCaptchaImage(options =>
+    app.UseStaticFiles();
+    app.UseSession().UseCaptchaImage(options =>
     {
         options.RequestPath = "/captcha-image";
         options.ImageHeight = 36;
         options.ImageWidth = 100;
     });
 
-    appBuilder.UseIpRateLimiting();
-    appBuilder.UseRouting();
-    appBuilder.UseAuthentication().UseAuthorization();
+    app.UseIpRateLimiting();
+    app.UseRouting();
+    app.UseAuthentication().UseAuthorization();
 
-    appBuilder.UseEndpoints(ConfigureEndpoints.BlogEndpoints);
+    app.UseEndpoints(ConfigureEndpoints.BlogEndpoints);
 }
