@@ -3,11 +3,14 @@
 @using Moonglade.Utils
 @using NUglify
 
-@inject ITimeZoneResolver ZoneResolver
 @Html.AntiForgeryToken()
 
 @{
     ViewBag.BodyClass = "body-post-slug";
+    if (!Model.Post.IsFeedIncluded)
+    {
+        HttpContext.Response.Headers.Add("X-Robots-Tag", "noindex, nofollow");
+    }
 }
 
 @section keywords {
@@ -25,7 +28,7 @@
 
     <meta name="title" content="@Model.Post.Title" />
     <meta name="displaydate" content="@Model.Post.PubDateUtc.GetValueOrDefault().ToString("u")">
-    <meta name="copyright" content="(C) @Model.Post.PubDateUtc.GetValueOrDefault().Year @BlogConfig.GeneralSettings.SiteTitle">
+    <meta name="copyright" content="(C) @DateTime.UtcNow.Year @BlogConfig.GeneralSettings.SiteTitle">
     <meta name="author" content="@(string.IsNullOrWhiteSpace(Model.Post.Author) ? BlogConfig.GeneralSettings.OwnerName : Model.Post.Author) " />
     <link href="~/css/post-slug.css" rel="stylesheet" asp-append-version="true" />
     <link href="~/css/highlighter-custom.css" rel="stylesheet" asp-append-version="true" />
@@ -78,6 +81,7 @@
     }
     <script type="module">    
         import * as viewpost from '/js/app/viewpost.module.js'
+        import * as utils from '/js/app/utils.module.js'
         
         window.viewpost = viewpost;
         
@@ -111,6 +115,8 @@
             e.preventDefault();
             viewpost.submitComment(pid);
         });
+        
+        utils.formatUtcTime();
     </script>
 }
 
@@ -139,8 +145,7 @@
 
             <i class="bi-calendar-event"></i>
             <span class="me-2">
-                <pubdate t-zone-resolver="@ZoneResolver" pub-date-utc="@Model.Post.PubDateUtc"></pubdate>
-                @BlogConfig.GeneralSettings.TimeZoneId
+                <time data-utc-label="@Model.Post.PubDateUtc.GetValueOrDefault().ToString("u")">@Model.Post.PubDateUtc</time>
             </span>
 
             <i class="bi-eye d-none d-sm-inline"></i>

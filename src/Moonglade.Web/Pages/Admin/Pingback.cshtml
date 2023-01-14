@@ -1,6 +1,5 @@
 ﻿@page "/admin/pingback"
 @using Moonglade.Pingback
-@inject ITimeZoneResolver ZoneResolver
 @inject IMediator Mediator
 @{
     ViewBag.Title = "Pingback";
@@ -20,25 +19,29 @@
 }
 
 @section scripts{
-<script>
-    function deletePingback(pingbackId) {
-        callApi(`/pingback/${pingbackId}`, 'DELETE', {},
-            (resp) => {
-                document.querySelector(`#pingback-box-${pingbackId}`).remove();
-                document.querySelector(`#pingback-box-hr-${pingbackId}`).remove();
-            });
-    }
+    <script type="module">
+        import * as utils from '/js/app/utils.module.js'
 
-    function clearPingback() {
-        callApi(`/pingback/clear`, 'DELETE', {},
-            (resp) => {
-                blogToast.success('Pingback logs are cleared');
-                setTimeout(function () {
-                    window.location.reload();
-                }, 800);
-            });
-    }
-</script>
+        window.deletePingback = function(pingbackId) {
+            callApi(`/pingback/${pingbackId}`, 'DELETE', {},
+                (resp) => {
+                    document.querySelector(`#pingback-box-${pingbackId}`).remove();
+                    document.querySelector(`#pingback-box-hr-${pingbackId}`).remove();
+                });
+        }
+
+        window.clearPingback = function() {
+            callApi(`/pingback/clear`, 'DELETE', {},
+                (resp) => {
+                    blogToast.success('Pingback logs are cleared');
+                    setTimeout(function () {
+                        window.location.reload();
+                    }, 800);
+                });
+        }
+
+        utils.formatUtcTime();
+    </script>
 }
 
 
@@ -76,12 +79,12 @@
 
                     <div class="text-muted">
                         @item.Domain, @item.SourceIp,
-                        <pubdate t-zone-resolver="@ZoneResolver" pub-date-utc="@item.PingTimeUtc"></pubdate>
+                        <time data-utc-label="@item.PingTimeUtc.ToString("u")">@item.PingTimeUtc</time>
                     </div>
                 </div>
 
                 <div class="col-auto">
-                    <a class="btn btn-sm btn-outline-danger btn-delete" href="javascript:deletePingback('@item.Id');">
+                    <a class="btn btn-sm btn-outline-danger btn-delete" href="javascript:window.deletePingback('@item.Id');">
                         <i class="bi-trash"></i>
                     </a>
                 </div>

@@ -1,6 +1,7 @@
 ﻿@page "/admin/settings/general"
 @model Moonglade.Web.Pages.Settings.GeneralModel
 @inject ITimeZoneResolver ZoneResolver
+@inject IMediator Mediator
 @{
     var tzList = ZoneResolver.ListTimeZones().Select(t => new SelectListItem
     {
@@ -8,12 +9,14 @@
         Value = t.Id
     });
 
-    var tmList = Model.Themes
+    var themes = await Mediator.Send(new GetAllThemeSegmentQuery());
+    var tmList = themes
         .Select(t => new SelectListItem
         {
             Text = t.Name,
             Value = t.Id.ToString()
         });
+
 }
 
 @section scripts{
@@ -330,6 +333,21 @@
                             </div>
                         </div>
                     </div>
+                    
+                    <div class="row g-3 align-items-center settings-entry mb-4">
+                        <div class="col-auto">
+                            <i class="bi-hand-index settings-entry-icon"></i>
+                        </div>
+                        <div class="col">
+                            <label asp-for="ViewModel.ShowAdminLoginButton" class="form-check-label"></label>
+                        </div>
+                        <div class="col-md-4 text-end">
+                            <div class="form-check form-switch">
+                                <input type="hidden" name="ShowAdminLoginButton" value="false">
+                                <input type="checkbox" name="ShowAdminLoginButton" value="true" class="form-check-input" @(Model.ViewModel.ShowAdminLoginButton ? "checked" : null)>
+                            </div>
+                        </div>
+                    </div>
 
                     <div class="mt-5">
                         <h6 class="card-subtitle mb-4 text-muted">
@@ -393,7 +411,7 @@
                 </div>
             </div>
             <div class="modal-footer">
-                <button class="btn btn-success disabled" id="btn-upload-avatar" disabled="disabled">@SharedLocalizer["Upload"]</button>
+                <button class="btn btn-accent disabled" id="btn-upload-avatar" disabled="disabled">@SharedLocalizer["Upload"]</button>
             </div>
         </div>
     </div>
@@ -426,7 +444,7 @@
                 </div>
             </div>
             <div class="modal-footer">
-                <button class="btn btn-success disabled" id="btn-upload-siteicon" disabled="disabled">@SharedLocalizer["Upload"]</button>
+                <button class="btn btn-accent disabled" id="btn-upload-siteicon" disabled="disabled">@SharedLocalizer["Upload"]</button>
             </div>
         </div>
     </div>

@@ -1,5 +1,4 @@
 ﻿@page "/admin/settings/subscription"
-@model Moonglade.Web.Pages.Settings.SubscriptionModel
 @section scripts{
     <script type="module">
         import * as settings from '/js/app/admin.settings.module.js';
@@ -7,6 +6,9 @@
         const form = document.querySelector('#form-settings');
         form.addEventListener('submit', settings.handleSettingsSubmit);
     </script>
+}
+@{
+    var settings = BlogConfig.FeedSettings;
 }
 
 <partial name="_SettingsHeader" />
@@ -16,29 +18,14 @@
             <div class="col-lg-6">
                 <div class="row g-3 align-items-center settings-entry mb-4">
                     <div class="col-auto">
-                        <i class="bi-hr settings-entry-icon"></i>
-                    </div>
-                    <div class="col">
-                        <label asp-for="ViewModel.RssTitle"></label>
-                        <div class="form-text">
-                            Title on RSS/ATOM readers
-                        </div>
-                    </div>
-                    <div class="col-md-5">
-                        <input asp-for="ViewModel.RssTitle" class="form-control" required maxlength="64"/>
-                    </div>
-                </div>
-
-                <div class="row g-3 align-items-center settings-entry mb-4">
-                    <div class="col-auto">
                         <i class="bi-list-ol settings-entry-icon"></i>
                     </div>
                     <div class="col">
-                        <label asp-for="ViewModel.RssItemCount"></label>
+                        <label asp-for="@settings.RssItemCount"></label>
                         <div class="form-text">@SharedLocalizer["The number of entries to include in RSS feed."]</div>
                     </div>
                     <div class="col-md-5">
-                        <input asp-for="ViewModel.RssItemCount" class="form-control" required />
+                        <input asp-for="@settings.RssItemCount" class="form-control" required />
                     </div>
                 </div>
 
@@ -47,12 +34,12 @@
                         <i class="bi-justify-left settings-entry-icon"></i>
                     </div>
                     <div class="col">
-                        <label asp-for="ViewModel.UseFullContent" class="form-check-label"></label>
+                        <label asp-for="@settings.UseFullContent" class="form-check-label"></label>
                     </div>
                     <div class="col-md-5 text-end">
                         <div class="form-check form-switch">
                             <input type="hidden" name="UseFullContent" value="false">
-                            <input type="checkbox" name="UseFullContent" value="true" class="form-check-input" @(Model.ViewModel.UseFullContent ? "checked" : null)/>
+                            <input type="checkbox" name="UseFullContent" value="true" class="form-check-input" @(@settings.UseFullContent ? "checked" : null) />
                         </div>
                     </div>
                 </div>

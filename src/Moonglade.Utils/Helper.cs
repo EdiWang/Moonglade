@@ -41,30 +41,7 @@ public static class Helper
         }
     }
 
-    public static string GetClientIP(HttpContext context)
-    {
-        if (null == context) return null;
-
-        string ip = context.Connection.RemoteIpAddress?.ToString();
-
-        var forwardHeaders = context.Request.Headers["X-Forwarded-For"];
-        if (forwardHeaders.Any() && null != ip)
-        {
-            var f = forwardHeaders.First();
-
-            // f looks like: "x.x.x.x:xxxxx, x.x.x.x:xxxx, ..."
-            // need to extract values
-            var ipArray = f.Split(',').Select(x =>
-                x.Trim().IndexOf(":", StringComparison.Ordinal) > 0 ?
-                    x.Trim()[..(x.IndexOf(":", StringComparison.Ordinal) - 1)] :
-                    x.Trim());
-
-            var dip = ipArray.FirstOrDefault(p => p != ip);
-            if (dip != null) ip = dip;
-        }
-
-        return ip;
-    }
+    public static string GetClientIP(HttpContext context) => context?.Connection.RemoteIpAddress?.ToString();
 
     public static int ComputeCheckSum(string input)
     {

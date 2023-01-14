@@ -11,7 +11,6 @@ namespace Moonglade.Web;
 public class MetaWeblogService : IMetaWeblogProvider
 {
     private readonly IBlogConfig _blogConfig;
-    private readonly ITimeZoneResolver _timeZoneResolver;
     private readonly ILogger<MetaWeblogService> _logger;
     private readonly IBlogImageStorage _blogImageStorage;
     private readonly IFileNameGenerator _fileNameGenerator;
@@ -19,14 +18,12 @@ public class MetaWeblogService : IMetaWeblogProvider
 
     public MetaWeblogService(
         IBlogConfig blogConfig,
-        ITimeZoneResolver timeZoneResolver,
         ILogger<MetaWeblogService> logger,
         IBlogImageStorage blogImageStorage,
         IFileNameGenerator fileNameGenerator,
         IMediator mediator)
     {
         _blogConfig = blogConfig;
-        _timeZoneResolver = timeZoneResolver;
         _logger = logger;
         _blogImageStorage = blogImageStorage;
         _fileNameGenerator = fileNameGenerator;
@@ -407,7 +404,7 @@ public class MetaWeblogService : IMetaWeblogProvider
         {
             postid = post.Id,
             categories = post.Categories.Select(p => p.DisplayName).ToArray(),
-            dateCreated = _timeZoneResolver.ToTimeZone(post.CreateTimeUtc),
+            dateCreated = post.CreateTimeUtc,
             description = post.ContentAbstract,
             link = link,
             permalink = $"{Helper.ResolveRootUrl(null, _blogConfig.GeneralSettings.CanonicalPrefix, true)}/{link}",
@@ -427,7 +424,7 @@ public class MetaWeblogService : IMetaWeblogProvider
         {
             title = blogPage.Title,
             description = blogPage.RawHtmlContent,
-            dateCreated = _timeZoneResolver.ToTimeZone(blogPage.CreateTimeUtc),
+            dateCreated = blogPage.CreateTimeUtc,
             categories = Array.Empty<string>(),
             page_id = blogPage.Id.ToString(),
             wp_author_id = _blogConfig.GeneralSettings.OwnerName

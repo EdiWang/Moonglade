@@ -1,12 +1,14 @@
 ﻿@page "/admin/settings/image"
-@model Moonglade.Web.Pages.Settings.ImageModel
 @section scripts {
-<script type="module">
-    import * as settings from '/js/app/admin.settings.module.js';
-    
-    const form = document.querySelector('#form-settings');
-    form.addEventListener('submit', settings.handleSettingsSubmit);
-</script>
+    <script type="module">
+        import * as settings from '/js/app/admin.settings.module.js';
+
+        const form = document.querySelector('#form-settings');
+        form.addEventListener('submit', settings.handleSettingsSubmit);
+    </script>
+}
+@{
+    var settings = BlogConfig.ImageSettings;
 }
 
 <partial name="_SettingsHeader" />
@@ -24,12 +26,12 @@
                             <i class="bi-fullscreen settings-entry-icon"></i>
                         </div>
                         <div class="col">
-                            <label asp-for="ViewModel.FitImageToDevicePixelRatio" class="form-check-label"></label>
+                            <label asp-for="@settings.FitImageToDevicePixelRatio" class="form-check-label"></label>
                         </div>
                         <div class="col-md-5 text-end">
                             <div class="form-check form-switch">
                                 <input type="hidden" name="FitImageToDevicePixelRatio" value="false">
-                                <input type="checkbox" name="FitImageToDevicePixelRatio" value="true" class="form-check-input" @(Model.ViewModel.FitImageToDevicePixelRatio ? "checked" : null)>
+                                <input type="checkbox" name="FitImageToDevicePixelRatio" value="true" class="form-check-input" @(settings.FitImageToDevicePixelRatio ? "checked" : null)>
                             </div>
                         </div>
                     </div>
@@ -43,12 +45,12 @@
                             <i class="bi-globe settings-entry-icon"></i>
                         </div>
                         <div class="col">
-                            <label asp-for="ViewModel.EnableCDNRedirect" class="form-check-label"></label>
+                            <label asp-for="@settings.EnableCDNRedirect" class="form-check-label"></label>
                         </div>
                         <div class="col-md-5 text-end">
                             <div class="form-check form-switch">
                                 <input type="hidden" name="EnableCDNRedirect" value="false">
-                                <input type="checkbox" name="EnableCDNRedirect" value="true" class="form-check-input" @(Model.ViewModel.EnableCDNRedirect ? "checked" : null)>
+                                <input type="checkbox" name="EnableCDNRedirect" value="true" class="form-check-input" @(settings.EnableCDNRedirect ? "checked" : null)>
                             </div>
                         </div>
                     </div>
@@ -58,11 +60,11 @@
                             <i class="bi-link settings-entry-icon"></i>
                         </div>
                         <div class="col">
-                            <label asp-for="ViewModel.CDNEndpoint"></label>
+                            <label asp-for="@settings.CDNEndpoint"></label>
                             <div class="form-text">@SharedLocalizer["e.g. https://blog.ediwangcdn.com/ediwang-images"]</div>
                         </div>
                         <div class="col-md-5">
-                            <input asp-for="ViewModel.CDNEndpoint" class="form-control" />
+                            <input asp-for="@settings.CDNEndpoint" class="form-control" />
                         </div>
                     </div>
                 </div>
@@ -77,12 +79,12 @@
                         <i class="bi-file-earmark-font settings-entry-icon"></i>
                     </div>
                     <div class="col">
-                        <label asp-for="ViewModel.IsWatermarkEnabled" class="form-check-label"></label>
+                        <label asp-for="@settings.IsWatermarkEnabled" class="form-check-label"></label>
                     </div>
                     <div class="col-md-5 text-end">
                         <div class="form-check form-switch">
                             <input type="hidden" name="IsWatermarkEnabled" value="false">
-                            <input type="checkbox" name="IsWatermarkEnabled" value="true" class="form-check-input" @(Model.ViewModel.IsWatermarkEnabled ? "checked" : null)>
+                            <input type="checkbox" name="IsWatermarkEnabled" value="true" class="form-check-input" @(settings.IsWatermarkEnabled ? "checked" : null)>
                         </div>
                     </div>
                 </div>
@@ -92,7 +94,7 @@
                         <i class="bi-images settings-entry-icon"></i>
                     </div>
                     <div class="col">
-                        <label asp-for="ViewModel.KeepOriginImage" class="form-check-label"></label>
+                        <label asp-for="@settings.KeepOriginImage" class="form-check-label"></label>
                         <div class="form-text">
                             Also save the origin image as a backup while adding watermark
                         </div>
@@ -100,7 +102,7 @@
                     <div class="col-md-5 text-end">
                         <div class="form-check form-switch">
                             <input type="hidden" name="KeepOriginImage" value="false">
-                            <input type="checkbox" name="KeepOriginImage" value="true" class="form-check-input" @(Model.ViewModel.KeepOriginImage ? "checked" : null)>
+                            <input type="checkbox" name="KeepOriginImage" value="true" class="form-check-input" @(settings.KeepOriginImage ? "checked" : null)>
                         </div>
                     </div>
                 </div>
@@ -110,28 +112,28 @@
                         <i class="bi-input-cursor-text settings-entry-icon"></i>
                     </div>
                     <div class="col">
-                        <label asp-for="ViewModel.WatermarkText"></label>
+                        <label asp-for="@settings.WatermarkText"></label>
                     </div>
                     <div class="col-md-5">
-                        <input asp-for="ViewModel.WatermarkText" class="form-control" />
+                        <input asp-for="@settings.WatermarkText" class="form-control" />
                     </div>
                 </div>
-                
+
                 <div class="row g-3 align-items-center settings-entry mb-4">
                     <div class="col-auto">
                         <i class="bi-input-cursor-text settings-entry-icon"></i>
                     </div>
                     <div class="col">
-                        <label asp-for="ViewModel.WatermarkSkipPixel"></label>
+                        <label asp-for="@settings.WatermarkSkipPixel"></label>
                         <div class="form-text">
                             Add watermark only when image pixcel (HxW) is greater than this value.
                         </div>
                     </div>
                     <div class="col-md-5">
-                        <input asp-for="ViewModel.WatermarkSkipPixel" required min="0" max="@int.MaxValue" class="form-control" />
+                        <input asp-for="@settings.WatermarkSkipPixel" required min="0" max="@int.MaxValue" class="form-control" />
                     </div>
                 </div>
-                
+
                 <div class="row g-3 align-items-center settings-entry mb-4">
                     <div class="col-auto">
                         <i class="bi-palette settings-entry-icon"></i>
@@ -141,10 +143,10 @@
                     </div>
                     <div class="col-md-7">
                         <div class="row g-1">
-                            <div class="col"><input asp-for="ViewModel.WatermarkColorR" required min="0" max="255" class="form-control"/></div>
-                            <div class="col"><input asp-for="ViewModel.WatermarkColorG" required min="0" max="255" class="form-control"/></div>
-                            <div class="col"><input asp-for="ViewModel.WatermarkColorB" required min="0" max="255" class="form-control"/></div>
-                            <div class="col"><input asp-for="ViewModel.WatermarkColorA" required min="0" max="255" class="form-control"/></div>
+                            <div class="col"><input asp-for="@settings.WatermarkColorR" required min="0" max="255" class="form-control" /></div>
+                            <div class="col"><input asp-for="@settings.WatermarkColorG" required min="0" max="255" class="form-control" /></div>
+                            <div class="col"><input asp-for="@settings.WatermarkColorB" required min="0" max="255" class="form-control" /></div>
+                            <div class="col"><input asp-for="@settings.WatermarkColorA" required min="0" max="255" class="form-control" /></div>
                         </div>
                     </div>
                 </div>
@@ -155,12 +157,12 @@
                         <i class="bi-fonts settings-entry-icon"></i>
                     </div>
                     <div class="col">
-                        <label asp-for="ViewModel.WatermarkFontSize"></label>
+                        <label asp-for="@settings.WatermarkFontSize"></label>
                     </div>
                     <div class="col-md-5">
-                        <input type="range" asp-for="ViewModel.WatermarkFontSize" class="form-range" min="8" max="32" step="1" oninput="this.nextElementSibling.value = this.value" />
+                        <input type="range" asp-for="@settings.WatermarkFontSize" class="form-range" min="8" max="32" step="1" oninput="this.nextElementSibling.value = this.value" />
                         <output class="form-text">
-                            @Model.ViewModel.WatermarkFontSize
+                            @Model.@settings.WatermarkFontSize
                         </output>
                     </div>
                 </div>

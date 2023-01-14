@@ -1,12 +1,16 @@
 ﻿@page "/admin/menu"
-@model Moonglade.Web.Pages.Admin.MenuModel
+@using Moonglade.Menus
+@using Microsoft.AspNetCore.Mvc.TagHelpers
+@inject IMediator Mediator
+
 @{
     ViewBag.Title = "Manage Menus";
+    var menuItems = await Mediator.Send(new GetAllMenusQuery());
 }
 
 @section scripts{
     <script>
-        var menuJson = @Html.Raw(Model.MenuItems.ToJson());
+        var menuJson = @Html.Raw(menuItems.ToJson());
         var isNewSubMenu = false;
         var currentSm = {
             Id: window.emptyGuid,
@@ -224,7 +228,7 @@
 
 <div class="p-4">
 
-    @if (Model.MenuItems.Count == 0)
+    @if (menuItems.Count == 0)
     {
         <div class="alert alert-info">@SharedLocalizer["No Customized Menus"]</div>
     }
@@ -234,7 +238,7 @@
             <h5>@SharedLocalizer["Top Level"]</h5>
             <hr />
             <div class="list-group top-menu-list mb-2">
-                @foreach (var menu in Model.MenuItems.OrderBy(m => m.DisplayOrder))
+                @foreach (var menu in menuItems.OrderBy(m => m.DisplayOrder))
                 {
                     @if (menu.SubMenus.Count > 0)
                     {

@@ -1,6 +1,13 @@
 ﻿@page "/admin/settings/advanced"
-@model Moonglade.Web.Pages.Settings.AdvancedModel
+@using System.Reflection
+@using Microsoft.AspNetCore.Mvc.TagHelpers
 @Html.AntiForgeryToken()
+@{
+    var settings = BlogConfig.AdvancedSettings;
+
+    var asm = Assembly.GetEntryAssembly();
+    var currentVersion = (new Version(asm!.GetCustomAttribute<AssemblyFileVersionAttribute>()?.Version)).ToString();
+}
 @section scripts{
     <script type="module">
         import * as settings from '/js/app/admin.settings.module.js';
@@ -54,30 +61,42 @@
             var updateCheckCanvas = new bootstrap.Offcanvas(document.getElementById('updateCheckCanvas'));
             updateCheckCanvas.show();
 
-            callApi('/api/settings/release/check', 'GET', {}, async (resp) => {
+            fetch('https://api.github.com/repos/EdiWang/Moonglade/releases/latest', {
+                method: 'GET',
+                headers: {
+                    'Accept': 'application/json',
+                    'Content-Type': 'application/json'
+                }
+            }).then(async (resp) => {
                 var data = await resp.json();
                 $('.spinner-border').hide();
 
-                $('#currentAssemblyFileVersion').val(data.latestReleaseInfo.currentAssemblyFileVersion);
-                $('#releaseName').val(data.latestReleaseInfo.name);
-                $('#releaseTagName').val(data.latestReleaseInfo.tag_name);
-                $('#releaseCreatedAt').val(data.latestReleaseInfo.created_at);
+                $('#currentAssemblyFileVersion').val('@currentVersion');
+                $('#releaseName').val(data.name);
+                $('#releaseTagName').val(data.tag_name);
+                $('#releaseCreatedAt').val(new Date(data.created_at));
 
-                if (data.hasNewRelease) {
+                var c = settings.compareVersionNumbers(data.tag_name.replace('v', ''), '@currentVersion');
+                var hasNewVersion = c == 1 && !data.prerelease;
+
+                if (hasNewVersion) {
                     $('.alert-has-new-release').show();
                     $('.btn-get-update').removeClass('disabled');
-                    $('.btn-get-update').attr('href', data.latestReleaseInfo.html_url);
+                    $('.btn-get-update').attr('href', data.html_url);
                 }
                 else {
                     $('.alert-no-new-release').show();
                 }
+            }).catch(err => {
+                blogToast.error(err);
+                console.error(err);
             });
         });
 
         window.generateMetaWeblogPassword = function() {
             callApi('/api/settings/password/generate', 'GET', {}, async (resp) => {
                 var data = await resp.json();
-                $('#ViewModel_MetaWeblogPassword').val(data.password);
+                $('#settings_MetaWeblogPassword').val(data.password);
             });
         }
 
@@ -99,12 +118,12 @@
                             <i class="bi-arrow-right-circle settings-entry-icon"></i>
                         </div>
                         <div class="col">
-                            <label asp-for="ViewModel.EnablePingbackSend" class="form-check-label"></label>
+                            <label asp-for="@settings.EnablePingbackSend" class="form-check-label"></label>
                         </div>
                         <div class="col-md-4 text-end">
                             <div class="form-check form-switch">
                                 <input type="hidden" name="EnablePingbackSend" value="false">
-                                <input type="checkbox" name="EnablePingbackSend" value="true" class="form-check-input" @(Model.ViewModel.EnablePingbackSend ? "checked" : null)>
+                                <input type="checkbox" name="EnablePingbackSend" value="true" class="form-check-input" @(settings.EnablePingbackSend ? "checked" : null)>
                             </div>
                         </div>
                     </div>
@@ -114,12 +133,12 @@
                             <i class="bi-arrow-left-circle settings-entry-icon"></i>
                         </div>
                         <div class="col">
-                            <label asp-for="ViewModel.EnablePingbackReceive" class="form-check-label"></label>
+                            <label asp-for="@settings.EnablePingbackReceive" class="form-check-label"></label>
                         </div>
                         <div class="col-md-4 text-end">
                             <div class="form-check form-switch">
                                 <input type="hidden" name="EnablePingbackReceive" value="false">
-                                <input type="checkbox" name="EnablePingbackReceive" value="true" class="form-check-input" @(Model.ViewModel.EnablePingbackReceive ? "checked" : null)>
+                                <input type="checkbox" name="EnablePingbackReceive" value="true" class="form-check-input" @(settings.EnablePingbackReceive ? "checked" : null)>
                             </div>
                         </div>
                     </div>
@@ -129,12 +148,12 @@
                             <i class="bi-map settings-entry-icon"></i>
                         </div>
                         <div class="col">
-                            <label asp-for="ViewModel.EnableSiteMap" class="form-check-label"></label>
+                            <label asp-for="@settings.EnableSiteMap" class="form-check-label"></label>
                         </div>
                         <div class="col-md-4 text-end">
                             <div class="form-check form-switch">
                                 <input type="hidden" name="EnableSiteMap" value="false">
-                                <input type="checkbox" name="EnableSiteMap" value="true" class="form-check-input" @(Model.ViewModel.EnableSiteMap ? "checked" : null)>
+                                <input type="checkbox" name="EnableSiteMap" value="true" class="form-check-input" @(settings.EnableSiteMap ? "checked" : null)>
                             </div>
                         </div>
                     </div>
@@ -144,12 +163,12 @@
                             <i class="bi-search settings-entry-icon"></i>
                         </div>
                         <div class="col">
-                            <label asp-for="ViewModel.EnableOpenSearch" class="form-check-label"></label>
+                            <label asp-for="@settings.EnableOpenSearch" class="form-check-label"></label>
                         </div>
                         <div class="col-md-4 text-end">
                             <div class="form-check form-switch">
                                 <input type="hidden" name="EnableOpenSearch" value="false">
-                                <input type="checkbox" name="EnableOpenSearch" value="true" class="form-check-input" @(Model.ViewModel.EnableOpenSearch ? "checked" : null)>
+                                <input type="checkbox" name="EnableOpenSearch" value="true" class="form-check-input" @(settings.EnableOpenSearch ? "checked" : null)>
                             </div>
                         </div>
                     </div>
@@ -159,13 +178,13 @@
                             <i class="bi-diagram-2 settings-entry-icon"></i>
                         </div>
                         <div class="col">
-                            <label asp-for="ViewModel.EnableFoaf" class="form-check-label"></label>
+                            <label asp-for="@settings.EnableFoaf" class="form-check-label"></label>
                             <div class="form-text">@SharedLocalizer["* Requires restarting application"]</div>
                         </div>
                         <div class="col-md-4 text-end">
                             <div class="form-check form-switch">
                                 <input type="hidden" name="EnableFoaf" value="false">
-                                <input type="checkbox" name="EnableFoaf" value="true" class="form-check-input" @(Model.ViewModel.EnableFoaf ? "checked" : null)>
+                                <input type="checkbox" name="EnableFoaf" value="true" class="form-check-input" @(settings.EnableFoaf ? "checked" : null)>
                             </div>
                         </div>
                     </div>
@@ -175,12 +194,12 @@
                             <i class="bi-filetype-xml settings-entry-icon"></i>
                         </div>
                         <div class="col">
-                            <label asp-for="ViewModel.EnableOpml" class="form-check-label"></label>
+                            <label asp-for="@settings.EnableOpml" class="form-check-label"></label>
                         </div>
                         <div class="col-md-4 text-end">
                             <div class="form-check form-switch">
                                 <input type="hidden" name="EnableOpml" value="false">
-                                <input type="checkbox" name="EnableOpml" value="true" class="form-check-input" @(Model.ViewModel.EnableOpml ? "checked" : null)>
+                                <input type="checkbox" name="EnableOpml" value="true" class="form-check-input" @(settings.EnableOpml ? "checked" : null)>
                             </div>
                         </div>
                     </div>
@@ -190,12 +209,12 @@
                             <i class="bi-exclamation-triangle settings-entry-icon"></i>
                         </div>
                         <div class="col">
-                            <label asp-for="ViewModel.WarnExternalLink" class="form-check-label"></label>
+                            <label asp-for="@settings.WarnExternalLink" class="form-check-label"></label>
                         </div>
                         <div class="col-md-4 text-end">
                             <div class="form-check form-switch">
                                 <input type="hidden" name="WarnExternalLink" value="false">
-                                <input type="checkbox" name="WarnExternalLink" value="true" class="form-check-input" @(Model.ViewModel.WarnExternalLink ? "checked" : null)>
+                                <input type="checkbox" name="WarnExternalLink" value="true" class="form-check-input" @(settings.WarnExternalLink ? "checked" : null)>
                             </div>
                         </div>
                     </div>
@@ -205,34 +224,19 @@
                             <i class="bi-code settings-entry-icon"></i>
                         </div>
                         <div class="col">
-                            <label asp-for="ViewModel.AllowScriptsInPage" class="form-check-label"></label>
+                            <label asp-for="@settings.AllowScriptsInPage" class="form-check-label"></label>
                         </div>
                         <div class="col-md-4 text-end">
                             <div class="form-check form-switch">
                                 <input type="hidden" name="AllowScriptsInPage" value="false">
-                                <input type="checkbox" name="AllowScriptsInPage" value="true" class="form-check-input" @(Model.ViewModel.AllowScriptsInPage ? "checked" : null)>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="row g-3 align-items-center settings-entry mb-4">
-                        <div class="col-auto">
-                            <i class="bi-hand-index settings-entry-icon"></i>
-                        </div>
-                        <div class="col">
-                            <label asp-for="ViewModel.ShowAdminLoginButton" class="form-check-label"></label>
-                        </div>
-                        <div class="col-md-4 text-end">
-                            <div class="form-check form-switch">
-                                <input type="hidden" name="ShowAdminLoginButton" value="false">
-                                <input type="checkbox" name="ShowAdminLoginButton" value="true" class="form-check-input" @(Model.ViewModel.ShowAdminLoginButton ? "checked" : null)>
+                                <input type="checkbox" name="AllowScriptsInPage" value="true" class="form-check-input" @(settings.AllowScriptsInPage ? "checked" : null)>
                             </div>
                         </div>
                     </div>
 
                     <div class="mt-5 mb-2">
-                        <h6 class="card-subtitle mb-3 text-muted">@Html.DisplayNameFor(m => m.ViewModel.RobotsTxtContent)</h6>
-                        <textarea asp-for="ViewModel.RobotsTxtContent" class="form-control textarea-code" cols="60" rows="10" spellcheck="false"></textarea>
+                        <h6 class="card-subtitle mb-3 text-muted">@Html.DisplayNameFor(m => settings.RobotsTxtContent)</h6>
+                        <textarea asp-for="@settings.RobotsTxtContent" class="form-control textarea-code" cols="60" rows="10" spellcheck="false"></textarea>
                     </div>
                 </div>
             </div>
@@ -247,7 +251,7 @@
                             <i class="bi-puzzle settings-entry-icon"></i>
                         </div>
                         <div class="col">
-                            <label asp-for="ViewModel.EnableMetaWeblog" class="form-check-label"></label>
+                            <label asp-for="@settings.EnableMetaWeblog" class="form-check-label"></label>
                             <div class="form-text">
                                 @SharedLocalizer["* Requires restarting application"]
                             </div>
@@ -255,7 +259,7 @@
                         <div class="col-md-4 text-end">
                             <div class="form-check form-switch">
                                 <input type="hidden" name="EnableMetaWeblog" value="false">
-                                <input type="checkbox" name="EnableMetaWeblog" value="true" class="form-check-input" @(Model.ViewModel.EnableMetaWeblog ? "checked" : null)>
+                                <input type="checkbox" name="EnableMetaWeblog" value="true" class="form-check-input" @(settings.EnableMetaWeblog ? "checked" : null)>
                             </div>
                         </div>
                     </div>
@@ -272,7 +276,7 @@
                             </div>
                         </div>
                         <div class="col-md-4">
-                            <input asp-for="ViewModel.MetaWeblogPassword" class="form-control" minlength="8" maxlength="16" />
+                            <input asp-for="@settings.MetaWeblogPassword" class="form-control" minlength="8" maxlength="16" />
 
                             <a href="javascript:;" class="btn btn-sm btn-outline-accent mt-2" onclick="generateMetaWeblogPassword()">@SharedLocalizer["Generate password"]</a>
                         </div>

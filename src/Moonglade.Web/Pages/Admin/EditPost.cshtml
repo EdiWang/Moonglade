@@ -32,7 +32,7 @@
                 <script src="https://unpkg.com/simplemde@1.11.2/dist/simplemde.min.js"></script>
                 <script src="~/js/3rd/inline-attachment.js"></script>
                 <script src="~/js/3rd/codemirror-4.inline-attachment.js"></script>
-                <link id="css-simplemde" href="https://unpkg.com/simplemde@1.11.2/dist/simplemde.min.css" rel="stylesheet" />
+                <link id="css-simplemde" href="https://unpkg.com/simplemde@1.11.2/dist/simplemde.min.css" rel="stylesheet"/>
                 break;
         }
     }
@@ -135,7 +135,7 @@
                             window.open(`/post/preview/${respJson.postId}`);
                         }
                     }
-
+                }, function(resp) {
                     document.querySelector(btnSubmitPost).classList.remove('disabled');
                     document.querySelector(btnSubmitPost).removeAttribute('disabled');
                 });
@@ -297,9 +297,7 @@
             </div>
         </div>
 
-        <hr />
-
-        <div>
+        <div class="mt-3">
             <button type="submit" class="btn btn-accent ediblogeditor-save" id="btn-save">
                 @SharedLocalizer["Save"]
             </button>

@@ -33,7 +33,7 @@ public class MoongladeNotification : IMoongladeNotification
         {
             var queue = new QueueClient(_notificationSettings.AzureStorageQueueConnection, "moongladeemailqueue");
 
-            var en = new EmailNotificationV3
+            var en = new EmailNotification
             {
                 DistributionList = string.Join(';', toAddresses),
                 MessageType = type.ToString(),
@@ -49,7 +49,7 @@ public class MoongladeNotification : IMoongladeNotification
         }
     }
 
-    private async Task InsertMessageAsync(QueueClient queue, EmailNotificationV3 emailNotification)
+    private async Task InsertMessageAsync(QueueClient queue, EmailNotification emailNotification)
     {
         if (null != await queue.CreateIfNotExistsAsync())
         {
@@ -64,7 +64,7 @@ public class MoongladeNotification : IMoongladeNotification
     }
 }
 
-internal class EmailNotificationV3
+internal class EmailNotification
 {
     public string DistributionList { get; set; }
     public string MessageType { get; set; }

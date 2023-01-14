@@ -1,25 +1,5 @@
 {
-  "iisSettings": {
-    "windowsAuthentication": false,
-    "anonymousAuthentication": true,
-    "iis": {
-      "applicationUrl": "https://localhost",
-      "sslPort": 0
-    },
-    "iisExpress": {
-      "applicationUrl": "http://localhost:6646",
-      "sslPort": 44370
-    }
-  },
   "profiles": {
-    "IIS": {
-      "commandName": "IIS",
-      "launchBrowser": true,
-      "environmentVariables": {
-        "ASPNETCORE_ENVIRONMENT": "Development"
-      },
-      "ancmHostingModel": "InProcess"
-    },
     "Moonglade.Web": {
       "commandName": "Project",
       "launchBrowser": true,
@@ -27,7 +7,7 @@
         "ASPNETCORE_ENVIRONMENT": "Development",
         "MOONGLADE_TAGS": "local, dev"
       },
-      "applicationUrl": "https://localhost:1055;http://localhost:1050"
+      "applicationUrl": "https://localhost:1055"
     }
   }
 }

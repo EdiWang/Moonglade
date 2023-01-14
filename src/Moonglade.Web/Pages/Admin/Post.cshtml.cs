@@ -19,10 +19,7 @@ public class PostModel : PageModel
 
     public PostModel(IMediator mediator) => _mediator = mediator;
 
-    public async Task OnPost()
-    {
-        await GetPosts(1);
-    }
+    public async Task OnPost() => await GetPosts(1);
 
     public async Task OnGet(int pageIndex = 1, string searchTerm = null)
     {
