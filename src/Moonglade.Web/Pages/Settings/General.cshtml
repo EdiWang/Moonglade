@@ -1,7 +1,9 @@
 ﻿@page "/admin/settings/general"
 @model Moonglade.Web.Pages.Settings.GeneralModel
 @inject ITimeZoneResolver ZoneResolver
+@inject IOptions<RequestLocalizationOptions> LocOptions
 @inject IMediator Mediator
+
 @{
     var tzList = ZoneResolver.ListTimeZones().Select(t => new SelectListItem
     {
@@ -17,6 +19,16 @@
             Value = t.Id.ToString()
         });
 
+
+    var cultureItems = LocOptions.Value.SupportedUICultures
+        .Select(c => new { Value = c.Name, c.NativeName });
+
+    var langList = cultureItems
+        .Select(t => new SelectListItem
+        {
+            Text = t.NativeName,
+            Value = t.Value.ToLower()
+        });
 }
 
 @section scripts{
@@ -133,7 +145,19 @@
                                     <select class="form-select" asp-for="ViewModel.TimeZoneId" asp-items="@tzList"></select>
                                 </div>
                             </div>
-
+                            
+                            <div class="row g-3 align-items-center settings-entry mb-4">
+                                <div class="col-auto">
+                                    <i class="bi-globe settings-entry-icon"></i>
+                                </div>
+                                <div class="col">
+                                    <label for="DefaultLanguageCode">@SharedLocalizer["Default language"]</label>
+                                    <div class="form-text">@SharedLocalizer["Blog will use this language for SEO by default unless specified in blog post."]</div>
+                                </div>
+                                <div class="col-md-5 text-end">
+                                    <select class="form-select" asp-for="ViewModel.DefaultLanguageCode" asp-items="@langList"></select>
+                                </div>
+                            </div>
                         </div>
                     </div>
                     <div class="row">
