@@ -102,7 +102,7 @@ void ConfigureServices(IServiceCollection services)
             }
 
             AnsiConsole.MarkupLine("Added known proxies [green]({0})[/]: {1}",
-                knownProxies.Length, 
+                knownProxies.Length,
                 System.Text.Json.JsonSerializer.Serialize(knownProxies).EscapeMarkup());
         }
     });

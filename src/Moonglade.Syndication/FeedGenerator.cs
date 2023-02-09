@@ -55,7 +55,7 @@ public class FeedGenerator : IFeedGenerator, IRssGenerator, IAtomGenerator
             await writer.WritePubDate(DateTimeOffset.UtcNow);
             await writer.WriteCopyright(Copyright);
             await writer.WriteGenerator(Generator);
-            await writer.WriteLanguage(new (Language));
+            await writer.WriteLanguage(new(Language));
 
             foreach (var item in feed)
             {

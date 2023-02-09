@@ -51,7 +51,7 @@ public class BlogConfig : IBlogConfig
 
         // update singleton itself
         var prop = GetType().GetProperty(name);
-        if (prop != null) prop.SetValue(this, blogSettings);
+        prop?.SetValue(this, blogSettings);
 
         return new(name, json);
     }
