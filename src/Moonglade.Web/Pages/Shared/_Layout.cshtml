@@ -1,13 +1,34 @@
 ﻿@using Moonglade.Utils
+@using Moonglade.Web.TagHelpers
+@using Microsoft.AspNetCore.Mvc.TagHelpers
+@using Microsoft.AspNetCore.Localization
+@using System.Globalization
 @inject Microsoft.ApplicationInsights.AspNetCore.JavaScriptSnippet JavaScriptSnippet
 @{
     if (string.IsNullOrEmpty(BlogConfig.GeneralSettings.AvatarUrl))
     {
         BlogConfig.GeneralSettings.AvatarUrl = Url.Action("Avatar", "Assets");
     }
+
+    // Resolve culture
+    // Post language > User set display language > System default language
+    var langCode = BlogConfig.GeneralSettings.DefaultLanguageCode;
+    if (ViewBag.PostLangCode != null)
+    {
+        langCode = ViewBag.PostLangCode;
+    }
+    else
+    {
+        // CultureInfo.CurrentUICulture always has value, can not determine if is user selection
+        var cultureCookie = Context.Request.Cookies[CookieRequestCultureProvider.DefaultCookieName];
+        if (cultureCookie != null)
+        {
+            langCode = CultureInfo.CurrentUICulture.ToString().ToLower();
+        }
+    }
 }
 <!DOCTYPE html>
-<html>
+<html lang="@langCode">
 <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
