@@ -103,7 +103,7 @@ public class GeneralSettings : IBlogSettings
 
     [Required]
     [RegularExpression("^[a-z]{2}-[a-zA-Z]{2,4}$")]
-    public string DefaultLanguageCode { get; set; }
+    public string DefaultLanguageCode { get; set; } = "en-us";
 
     public GeneralSettings() => ThemeId = 1;
 }
