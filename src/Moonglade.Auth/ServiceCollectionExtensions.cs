@@ -22,6 +22,7 @@ public static class ServiceCollectionExtensions
                     options.DefaultScheme = CookieAuthenticationDefaults.AuthenticationScheme;
                     options.DefaultChallengeScheme = OpenIdConnectDefaults.AuthenticationScheme;
                 }).AddMicrosoftIdentityWebApp(configuration.GetSection("Authentication:AzureAd"));
+                // Internally pass `null` to cookie options so there's no way to add `AccessDeniedPath` here.
 
                 break;
             case AuthenticationProvider.Local:
