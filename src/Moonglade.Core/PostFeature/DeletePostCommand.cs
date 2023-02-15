@@ -4,7 +4,7 @@ namespace Moonglade.Core.PostFeature;
 
 public record DeletePostCommand(Guid Id, bool SoftDelete = false) : IRequest;
 
-public class DeletePostCommandHandler : AsyncRequestHandler<DeletePostCommand>
+public class DeletePostCommandHandler : IRequestHandler<DeletePostCommand>
 {
     private readonly IRepository<PostEntity> _repo;
     private readonly IBlogCache _cache;
@@ -15,7 +15,7 @@ public class DeletePostCommandHandler : AsyncRequestHandler<DeletePostCommand>
         _cache = cache;
     }
 
-    protected override async Task Handle(DeletePostCommand request, CancellationToken ct)
+    public async Task Handle(DeletePostCommand request, CancellationToken ct)
     {
         var (guid, softDelete) = request;
         var post = await _repo.GetAsync(guid, ct);

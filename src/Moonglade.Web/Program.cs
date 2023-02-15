@@ -83,7 +83,7 @@ void ConfigureServices(IServiceCollection services)
     AppDomain.CurrentDomain.Load("Moonglade.Configuration");
     AppDomain.CurrentDomain.Load("Moonglade.Data");
 
-    services.AddMediatR(AppDomain.CurrentDomain.GetAssemblies());
+    services.AddMediatR(config => config.RegisterServicesFromAssemblies(AppDomain.CurrentDomain.GetAssemblies()));
 
     // Fix docker deployments on Azure App Service blows up with Azure AD authentication
     // https://docs.microsoft.com/en-us/aspnet/core/host-and-deploy/proxy-load-balancer?view=aspnetcore-6.0

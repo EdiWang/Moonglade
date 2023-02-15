@@ -4,7 +4,7 @@ namespace Moonglade.Core.PostFeature;
 
 public record RestorePostCommand(Guid Id) : IRequest;
 
-public class RestorePostCommandHandler : AsyncRequestHandler<RestorePostCommand>
+public class RestorePostCommandHandler : IRequestHandler<RestorePostCommand>
 {
     private readonly IRepository<PostEntity> _repo;
     private readonly IBlogCache _cache;
@@ -15,7 +15,7 @@ public class RestorePostCommandHandler : AsyncRequestHandler<RestorePostCommand>
         _cache = cache;
     }
 
-    protected override async Task Handle(RestorePostCommand request, CancellationToken ct)
+    public async Task Handle(RestorePostCommand request, CancellationToken ct)
     {
         var pp = await _repo.GetAsync(request.Id, ct);
         if (null == pp) return;
