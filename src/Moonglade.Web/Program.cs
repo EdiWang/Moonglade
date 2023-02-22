@@ -92,19 +92,31 @@ void ConfigureServices(IServiceCollection services)
     builder.Services.Configure<ForwardedHeadersOptions>(options =>
     {
         options.ForwardedHeaders = ForwardedHeaders.XForwardedFor | ForwardedHeaders.XForwardedProto;
-        //options.ForwardLimit = null;
-        options.KnownProxies.Clear();
-        // if (knownProxies != null)
-        // {
-        //     foreach (var ip in knownProxies)
-        //     {
-        //         options.KnownProxies.Add(IPAddress.Parse(ip));
-        //     }
 
-        //     AnsiConsole.MarkupLine("Added known proxies [green]({0})[/]: {1}",
-        //         knownProxies.Length,
-        //         System.Text.Json.JsonSerializer.Serialize(knownProxies).EscapeMarkup());
-        // }
+        if (Environment.GetEnvironmentVariable("DOTNET_RUNNING_IN_CONTAINER") == "true")
+        {
+            // Fix #712
+            // Adding KnownProxies will make Azure App Service boom boom with Azure AD redirect URL
+            // Result in `https` incorrectly written into `http` and make `/signin-oidc` url invalid.
+            AnsiConsole.MarkupLine("[yellow]Running in Docker, skip adding 'KnownProxies'.[/]");
+        }
+        else
+        {
+            options.ForwardLimit = null;
+            options.KnownProxies.Clear();
+
+            if (knownProxies != null)
+            {
+                foreach (var ip in knownProxies)
+                {
+                    options.KnownProxies.Add(IPAddress.Parse(ip));
+                }
+
+                AnsiConsole.MarkupLine("Added known proxies [green]({0})[/]: {1}",
+                    knownProxies.Length,
+                    System.Text.Json.JsonSerializer.Serialize(knownProxies).EscapeMarkup());
+            }
+        }
     });
 
     services.AddOptions()
