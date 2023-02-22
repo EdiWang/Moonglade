@@ -237,6 +237,7 @@ if ($useLinuxPlanWithDocker) {
     $echo = az webapp config appsettings set -g $rsgName -n $webAppName --settings ImageStorage__Provider=azurestorage
     $echo = az webapp config appsettings set -g $rsgName -n $webAppName --settings ImageStorage__AzureStorageSettings__ConnectionString=$scon
     $echo = az webapp config appsettings set -g $rsgName -n $webAppName --settings ImageStorage__AzureStorageSettings__ContainerName=$storageContainerName
+    $echo = az webapp config appsettings set -g $rsgName -n $webAppName --settings ASPNETCORE_FORWARDEDHEADERS_ENABLED=true
 }
 else {
     $echo = az webapp config appsettings set -g $rsgName -n $webAppName --settings ImageStorage:Provider=azurestorage
@@ -264,5 +265,8 @@ if (!$useLinuxPlanWithDocker) {
 }
 
 az webapp restart --name $webAppName --resource-group $rsgName
+
+# Container warm up
+Start-Sleep -Seconds 20
 
 Read-Host -Prompt "Setup is done, you should be able to run Moonglade on '$webAppUrl' now, press [ENTER] to exit."
