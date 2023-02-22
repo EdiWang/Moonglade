@@ -92,7 +92,7 @@ void ConfigureServices(IServiceCollection services)
     builder.Services.Configure<ForwardedHeadersOptions>(options =>
     {
         options.ForwardedHeaders = ForwardedHeaders.XForwardedFor | ForwardedHeaders.XForwardedProto;
-        options.ForwardLimit = null;
+        //options.ForwardLimit = null;
         options.KnownProxies.Clear();
         if (knownProxies != null)
         {
