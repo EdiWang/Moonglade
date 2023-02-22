@@ -94,17 +94,17 @@ void ConfigureServices(IServiceCollection services)
         options.ForwardedHeaders = ForwardedHeaders.XForwardedFor | ForwardedHeaders.XForwardedProto;
         //options.ForwardLimit = null;
         options.KnownProxies.Clear();
-        if (knownProxies != null)
-        {
-            foreach (var ip in knownProxies)
-            {
-                options.KnownProxies.Add(IPAddress.Parse(ip));
-            }
+        // if (knownProxies != null)
+        // {
+        //     foreach (var ip in knownProxies)
+        //     {
+        //         options.KnownProxies.Add(IPAddress.Parse(ip));
+        //     }
 
-            AnsiConsole.MarkupLine("Added known proxies [green]({0})[/]: {1}",
-                knownProxies.Length,
-                System.Text.Json.JsonSerializer.Serialize(knownProxies).EscapeMarkup());
-        }
+        //     AnsiConsole.MarkupLine("Added known proxies [green]({0})[/]: {1}",
+        //         knownProxies.Length,
+        //         System.Text.Json.JsonSerializer.Serialize(knownProxies).EscapeMarkup());
+        // }
     });
 
     services.AddOptions()
