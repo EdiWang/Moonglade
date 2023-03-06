@@ -43,6 +43,7 @@ export function initEvents(slugifyTitle) {
         if (confirm(message)) {
             $('#ViewModel_Slug').removeAttr('readonly');
             $('#ViewModel_Slug').focus();
+            $('.btn-modify-slug').hide();
         }
     })
 
