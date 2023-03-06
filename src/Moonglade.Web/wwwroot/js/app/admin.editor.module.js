@@ -17,10 +17,12 @@ function slugify(text) {
     return '';
 }
 
-export function initEvents() {
-    $('#ViewModel_Title').change(function () {
-        document.querySelector('#ViewModel_Slug').value = slugify($(this).val());
-    });
+export function initEvents(slugifyTitle) {
+    if (slugifyTitle) {
+        $('#ViewModel_Title').change(function () {
+            document.querySelector('#ViewModel_Slug').value = slugify($(this).val());
+        });
+    }
 
     $('#btn-preview').click(function (e) {
         submitForm(e);
@@ -34,6 +36,16 @@ export function initEvents() {
         $('input[name="ViewModel.IsPublished"]').val('True');
         submitForm(e);
     });
+
+    $('.btn-modify-slug').click(function () {
+        var message = 'This post was published for more than 7 days, changing slug will result in breaking SEO, would you like to continue?';
+
+        if (confirm(message)) {
+            $('#ViewModel_Slug').removeAttr('readonly');
+            $('#ViewModel_Slug').focus();
+            $('.btn-modify-slug').hide();
+        }
+    })
 
     function submitForm(e) {
         if (window.tinyMCE) {

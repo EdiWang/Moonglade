@@ -6,6 +6,7 @@
 
 @{
     ViewBag.Title = "Manage Posts";
+    var wsm = Model.ViewModel.WarnSlugModification;
 
     var cultureItems = LocOptions.Value.SupportedUICultures
         .Select(c => new { Value = c.Name, c.NativeName });
@@ -32,7 +33,7 @@
                 <script src="https://unpkg.com/simplemde@1.11.2/dist/simplemde.min.js"></script>
                 <script src="~/js/3rd/inline-attachment.js"></script>
                 <script src="~/js/3rd/codemirror-4.inline-attachment.js"></script>
-                <link id="css-simplemde" href="https://unpkg.com/simplemde@1.11.2/dist/simplemde.min.css" rel="stylesheet"/>
+                <link id="css-simplemde" href="https://unpkg.com/simplemde@1.11.2/dist/simplemde.min.css" rel="stylesheet" />
                 break;
         }
     }
@@ -44,8 +45,8 @@
         var btnSubmitPost = '#btn-save';
         var isPreviewRequired = false;
 
-        $(function() {
-            editor.initEvents();
+        $(function () {
+            editor.initEvents(@((!wsm).ToString().ToLower()));
             var editorMode = '@ec';
             if (editorMode == '@nameof(EditorChoice.Html)') {
                 editor.loadTinyMCE(".post-content-textarea");
@@ -58,7 +59,7 @@
         });
 
         $(window).bind('keydown',
-            function(event) {
+            function (event) {
                 if (event.ctrlKey || event.metaKey) {
                     switch (String.fromCharCode(event.which).toLowerCase()) {
                         case 's':
@@ -71,7 +72,7 @@
 
         var heroImageModal = new bootstrap.Modal(document.getElementById('heroImageModal'));
 
-        window.ajaxImageUpload = function(oFormElement) {
+        window.ajaxImageUpload = function (oFormElement) {
             const formData = new FormData(oFormElement);
 
             fetch(oFormElement.action,
@@ -135,7 +136,7 @@
                             window.open(`/post/preview/${respJson.postId}`);
                         }
                     }
-                }, function(resp) {
+                }, function (resp) {
                     document.querySelector(btnSubmitPost).classList.remove('disabled');
                     document.querySelector(btnSubmitPost).removeAttribute('disabled');
                 });
@@ -150,49 +151,53 @@
     <link href="~/lib/tagify/tagify.min.css" rel="stylesheet" />
 }
 
-    <div class="p-4">
+<div class="p-4">
 
-        <form class="post-edit-form" asp-controller="Post" asp-action="CreateOrEdit">
-            <input type="hidden" asp-for="ViewModel.PostId" />
-            <input type="hidden" asp-for="ViewModel.IsPublished" />
-            <div class="row">
-                <div class="col-md-9 col-xl-10">
-                    <input type="text" asp-for="ViewModel.Title" class="form-control form-control-lg" placeholder="@SharedLocalizer["Title"]" required maxlength="128" />
-                    <div class="mt-1">
-                        <div class="row g-1">
-                            <div class="col">
-                                <div class="input-group input-group-sm">
-                                    <label class="input-group-text" asp-for="ViewModel.Slug">
-                                        <i class="bi-link-45deg"></i>
-                                    </label>
-                                    <input type="text" asp-for="ViewModel.Slug" class="form-control form-control-sm" placeholder="Slug" spellcheck="false" required pattern="[a-z0-9\-]+" maxlength="128" />
-                                </div>
+    <form class="post-edit-form" asp-controller="Post" asp-action="CreateOrEdit">
+        <input type="hidden" asp-for="ViewModel.PostId" />
+        <input type="hidden" asp-for="ViewModel.IsPublished" />
+        <div class="row">
+            <div class="col-md-9 col-xl-10">
+                <input type="text" asp-for="ViewModel.Title" class="form-control form-control-lg" placeholder="@SharedLocalizer["Title"]" required maxlength="128" />
+                <div class="mt-1">
+                    <div class="row g-1">
+                        <div class="col">
+                            <div class="input-group input-group-sm">
+                                <label class="input-group-text" asp-for="ViewModel.Slug">
+                                    <i class="bi-link-45deg"></i>
+                                </label>
+                                <input type="text" asp-for="ViewModel.Slug" class="form-control form-control-sm" placeholder="Slug" spellcheck="false" required pattern="[a-z0-9\-]+" maxlength="128" readonly="@wsm" />
+                                @if (wsm)
+                                {
+                                    <a class="btn btn-warning btn-sm btn-modify-slug">Modify</a>
+                                }
                             </div>
-                            <div class="col-md-auto">
-                                <div class="input-group input-group-sm mb-2">
-                                    <label class="input-group-text" asp-for="ViewModel.Author"></label>
-                                    <input type="text" class="form-control form-control-sm" spellcheck="false" asp-for="ViewModel.Author" />
-                                </div>
+                        </div>
+                        <div class="col-md-auto">
+                            <div class="input-group input-group-sm mb-2">
+                                <label class="input-group-text" asp-for="ViewModel.Author"></label>
+                                <input type="text" class="form-control form-control-sm" spellcheck="false" asp-for="ViewModel.Author" />
                             </div>
-                            <div class="col-md-auto">
-                                <div class="input-group input-group-sm mb-2">
-                                    <label class="input-group-text" asp-for="ViewModel.LanguageCode">
-                                        <i class="bi-globe"></i>
-                                    </label>
-                                    <select class="form-select" asp-for="ViewModel.LanguageCode" asp-items="@langList"></select>
-                                </div>
+                        </div>
+                        <div class="col-md-auto">
+                            <div class="input-group input-group-sm mb-2">
+                                <label class="input-group-text" asp-for="ViewModel.LanguageCode">
+                                    <i class="bi-globe"></i>
+                                </label>
+                                <select class="form-select" asp-for="ViewModel.LanguageCode" asp-items="@langList"></select>
                             </div>
                         </div>
                     </div>
+                </div>
 
-                    <textarea asp-for="ViewModel.EditorContent" class="post-content-textarea"></textarea>
+                <textarea asp-for="ViewModel.EditorContent" class="post-content-textarea"></textarea>
 
-                    <div class="mt-1">
-                        <input type="text" asp-for="ViewModel.Tags" placeholder="@SharedLocalizer["Tags"]" />
-                    </div>
-                    <div class="mt-1">
-                        <div class="form-floating">
-                            <textarea asp-for="ViewModel.Abstract"
+                <div class="mt-1">
+                    <input type="text" asp-for="ViewModel.Tags" placeholder="@SharedLocalizer["Tags"]" />
+                </div>
+                <div class="mt-1">
+                    <div class="form-floating">
+                        <textarea asp-for="ViewModel.Abstract"
                                   placeholder="@SharedLocalizer["Abstract"]"
                                   class="form-control form-control-sm"
                                   data-bs-toggle="tooltip"
@@ -200,55 +205,55 @@
                                   maxlength="400"
                                   title="@SharedLocalizer["The first {0} character(s) will be used as abstract if you leave this field blank.", BlogConfig.ContentSettings.PostAbstractWords]"
                                   style="height: 90px"></textarea>
-                            <label for="ViewModel_Abstract">@SharedLocalizer["Abstract"]</label>
-                        </div>
+                        <label for="ViewModel_Abstract">@SharedLocalizer["Abstract"]</label>
                     </div>
                 </div>
-                <div class="col-md-3 col-xl-2">
-                    <div class="card mb-3">
-                        <div class="card-header">
-                            <i class="bi-clipboard-check me-1"></i>
-                            @SharedLocalizer["Options"]
+            </div>
+            <div class="col-md-3 col-xl-2">
+                <div class="card mb-3">
+                    <div class="card-header">
+                        <i class="bi-clipboard-check me-1"></i>
+                        @SharedLocalizer["Options"]
+                    </div>
+                    <div class="card-body">
+                        <div class="form-check form-switch mb-2">
+                            <input type="checkbox" name="EnableComment" value="true" class="form-check-input" @(Model.ViewModel.EnableComment ? "checked" : null)>
+                            <label asp-for="ViewModel.EnableComment" class="form-check-label"></label>
                         </div>
-                        <div class="card-body">
-                            <div class="form-check form-switch mb-2">
-                                <input type="checkbox" name="EnableComment" value="true" class="form-check-input" @(Model.ViewModel.EnableComment ? "checked" : null)>
-                                <label asp-for="ViewModel.EnableComment" class="form-check-label"></label>
-                            </div>
-                            <div class="form-check form-switch mb-2">
-                                <input type="checkbox" name="Featured" value="true" class="form-check-input" @(Model.ViewModel.Featured ? "checked" : null)>
-                                <label asp-for="ViewModel.Featured" class="form-check-label"></label>
-                            </div>
-                            <div class="form-check form-switch">
-                                <input type="checkbox" name="FeedIncluded" value="true" class="form-check-input" @(Model.ViewModel.FeedIncluded ? "checked" : null)>
-                                <label asp-for="ViewModel.FeedIncluded" class="form-check-label"></label>
-                            </div>
+                        <div class="form-check form-switch mb-2">
+                            <input type="checkbox" name="Featured" value="true" class="form-check-input" @(Model.ViewModel.Featured ? "checked" : null)>
+                            <label asp-for="ViewModel.Featured" class="form-check-label"></label>
                         </div>
-                        <div class="card-body border-top">
-                            <div class="form-floating mb-2">
-                                <textarea asp-for="ViewModel.OriginLink" class="form-control form-control-sm" placeholder="@SharedLocalizer["Origin Link"]"></textarea>
-                                <label for="ViewModel_OriginLink">@SharedLocalizer["Origin Link"]</label>
-                            </div>
-                            <div class="form-floating mb-1">
-                                <textarea asp-for="ViewModel.HeroImageUrl"
+                        <div class="form-check form-switch">
+                            <input type="checkbox" name="FeedIncluded" value="true" class="form-check-input" @(Model.ViewModel.FeedIncluded ? "checked" : null)>
+                            <label asp-for="ViewModel.FeedIncluded" class="form-check-label"></label>
+                        </div>
+                    </div>
+                    <div class="card-body border-top">
+                        <div class="form-floating mb-2">
+                            <textarea asp-for="ViewModel.OriginLink" class="form-control form-control-sm" placeholder="@SharedLocalizer["Origin Link"]"></textarea>
+                            <label for="ViewModel_OriginLink">@SharedLocalizer["Origin Link"]</label>
+                        </div>
+                        <div class="form-floating mb-1">
+                            <textarea asp-for="ViewModel.HeroImageUrl"
                                       class="form-control form-control-sm"
                                       placeholder="@Html.DisplayNameFor(m => m.ViewModel.HeroImageUrl)"></textarea>
-                                <label class="form-label" asp-for="ViewModel.HeroImageUrl"></label>
-                            </div>
-                            <div>
-                                <a class="btn btn-sm btn-outline-secondary w-100" data-bs-toggle="modal" data-bs-target="#heroImageModal">
-                                    <i class="bi-upload"></i>
-                                    @SharedLocalizer["Upload Image"]
-                                </a>
-                            </div>
-                            <div class="mt-2">
-                                <a class="btn btn-sm btn-outline-secondary w-100" data-bs-toggle="modal" data-bs-target="#inlineCssModal">
-                                    <i class="bi-brush"></i>
-                                    @SharedLocalizer["Inline CSS"]
-                                </a>
-                            </div>
+                            <label class="form-label" asp-for="ViewModel.HeroImageUrl"></label>
+                        </div>
+                        <div>
+                            <a class="btn btn-sm btn-outline-secondary w-100" data-bs-toggle="modal" data-bs-target="#heroImageModal">
+                                <i class="bi-upload"></i>
+                                @SharedLocalizer["Upload Image"]
+                            </a>
+                        </div>
+                        <div class="mt-2">
+                            <a class="btn btn-sm btn-outline-secondary w-100" data-bs-toggle="modal" data-bs-target="#inlineCssModal">
+                                <i class="bi-brush"></i>
+                                @SharedLocalizer["Inline CSS"]
+                            </a>
+                        </div>
 
-                            @if (Model.ViewModel.PostId != Guid.Empty)
+                        @if (Model.ViewModel.PostId != Guid.Empty)
                         {
                             <div class="mt-2">
                                 <a class="btn btn-sm btn-outline-secondary w-100" data-bs-toggle="modal" data-bs-target="#changePublishDateModal">
@@ -262,7 +267,7 @@
                         <h6 class="card-subtitle mb-3 text-muted">
                             <i class="bi-folder2 me-1"></i>
                             @SharedLocalizer["Categories"]
-                            
+
                             <a asp-page="./Category" target="_blank" class="float-end">
                                 <i class="bi-box-arrow-up-right"></i>
                             </a>
@@ -277,11 +282,11 @@
                                         <li>
                                             <div class="form-check">
                                                 <input type="checkbox"
-                                               id="category-@cat.Id"
-                                               name="SelectedCatIds"
-                                               value="@cat.Id"
-                                               class="form-check-input"
-                                               @(cat.IsChecked ? "checked" : null)>
+                                                       id="category-@cat.Id"
+                                                       name="SelectedCatIds"
+                                                       value="@cat.Id"
+                                                       class="form-check-input"
+                                                @(cat.IsChecked ? "checked" : null)>
 
                                                 <label for="category-@cat.Id" class="form-check-label">
                                                     @cat.DisplayText
