@@ -13,7 +13,7 @@ public class FeedGenerator : IFeedGenerator, IRssGenerator, IAtomGenerator
         FeedItemCollection = new List<FeedEntry>();
     }
 
-    public FeedGenerator(string hostUrl, string headTitle, string headDescription, string copyright, string generator, string trackBackUrl)
+    public FeedGenerator(string hostUrl, string headTitle, string headDescription, string copyright, string generator, string trackBackUrl, string language)
     {
         HostUrl = hostUrl;
         HeadTitle = headTitle;
@@ -21,6 +21,7 @@ public class FeedGenerator : IFeedGenerator, IRssGenerator, IAtomGenerator
         Copyright = copyright;
         Generator = generator;
         TrackBackUrl = trackBackUrl;
+        Language = language;
 
         FeedItemCollection = new List<FeedEntry>();
     }
@@ -35,6 +36,7 @@ public class FeedGenerator : IFeedGenerator, IRssGenerator, IAtomGenerator
     public string Generator { get; set; }
     public string TrackBackUrl { get; set; }
     public string GeneratorVersion { get; set; }
+    public string Language { get; set; }
 
     #endregion
 
@@ -53,6 +55,7 @@ public class FeedGenerator : IFeedGenerator, IRssGenerator, IAtomGenerator
             await writer.WritePubDate(DateTimeOffset.UtcNow);
             await writer.WriteCopyright(Copyright);
             await writer.WriteGenerator(Generator);
+            await writer.WriteLanguage(new(Language));
 
             foreach (var item in feed)
             {

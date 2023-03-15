@@ -5,12 +5,12 @@ namespace Moonglade.Auth;
 
 public record LogSuccessLoginCommand(Guid Id, string IpAddress) : IRequest;
 
-public class LogSuccessLoginCommandHandler : AsyncRequestHandler<LogSuccessLoginCommand>
+public class LogSuccessLoginCommandHandler : IRequestHandler<LogSuccessLoginCommand>
 {
     private readonly IRepository<LocalAccountEntity> _repo;
     public LogSuccessLoginCommandHandler(IRepository<LocalAccountEntity> repo) => _repo = repo;
 
-    protected override async Task Handle(LogSuccessLoginCommand request, CancellationToken ct)
+    public async Task Handle(LogSuccessLoginCommand request, CancellationToken ct)
     {
         var (id, ipAddress) = request;
 

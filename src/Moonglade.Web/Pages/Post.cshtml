@@ -11,6 +11,8 @@
     {
         HttpContext.Response.Headers.Add("X-Robots-Tag", "noindex, nofollow");
     }
+
+    ViewBag.PostLangCode = Model.Post.ContentLanguageCode;
 }
 
 @section keywords {

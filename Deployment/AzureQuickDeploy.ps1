@@ -177,7 +177,7 @@ $storageAccountCheck = az storage account list --query "[?name=='$storageAccount
 $storageAccountExists = $storageAccountCheck.Length -gt 0
 if (!$storageAccountExists) {
     Write-Host "Creating Storage Account"
-    $echo = az storage account create --name $storageAccountName --resource-group $rsgName --location $regionName --sku Standard_LRS --kind StorageV2
+    $echo = az storage account create --name $storageAccountName --resource-group $rsgName --location $regionName --sku Standard_LRS --kind --allow-blob-public-access true StorageV2
 }
 
 $storageConn = az storage account show-connection-string -g $rsgName -n $storageAccountName | ConvertFrom-Json
@@ -237,6 +237,7 @@ if ($useLinuxPlanWithDocker) {
     $echo = az webapp config appsettings set -g $rsgName -n $webAppName --settings ImageStorage__Provider=azurestorage
     $echo = az webapp config appsettings set -g $rsgName -n $webAppName --settings ImageStorage__AzureStorageSettings__ConnectionString=$scon
     $echo = az webapp config appsettings set -g $rsgName -n $webAppName --settings ImageStorage__AzureStorageSettings__ContainerName=$storageContainerName
+    $echo = az webapp config appsettings set -g $rsgName -n $webAppName --settings ASPNETCORE_FORWARDEDHEADERS_ENABLED=true
 }
 else {
     $echo = az webapp config appsettings set -g $rsgName -n $webAppName --settings ImageStorage:Provider=azurestorage
@@ -264,5 +265,8 @@ if (!$useLinuxPlanWithDocker) {
 }
 
 az webapp restart --name $webAppName --resource-group $rsgName
+
+# Container warm up
+Start-Sleep -Seconds 20
 
 Read-Host -Prompt "Setup is done, you should be able to run Moonglade on '$webAppUrl' now, press [ENTER] to exit."

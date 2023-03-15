@@ -14,7 +14,6 @@ public class StatisticsController : ControllerBase
     public StatisticsController(IMediator mediator) => _mediator = mediator;
 
     [HttpGet("{postId:guid}")]
-    [DisallowSpiderUA]
     [ProducesResponseType(typeof(Tuple<int, int>), StatusCodes.Status200OK)]
     public async Task<IActionResult> Get([NotEmpty] Guid postId)
     {

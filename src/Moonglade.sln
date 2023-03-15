@@ -64,21 +64,13 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = ".vscode", ".vscode", "{FE0F
 		..\.vscode\tasks.json = ..\.vscode\tasks.json
 	EndProjectSection
 EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = ".github", ".github", "{9505BDE6-E5CB-43E1-A2F0-07E67BEF6948}"
-EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "workflows", "workflows", "{2C27F5AF-7A99-4B49-A053-8E3486319F2B}"
-	ProjectSection(SolutionItems) = preProject
-		..\.github\workflows\docker.yml = ..\.github\workflows\docker.yml
-		..\.github\workflows\dotnet.yml = ..\.github\workflows\dotnet.yml
-	EndProjectSection
-EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Moonglade.Theme", "Moonglade.Theme\Moonglade.Theme.csproj", "{59770DF9-9CC5-4912-8677-5E99DA9C96CA}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Moonglade.Data.SqlServer", "Moonglade.Data.SqlServer\Moonglade.Data.SqlServer.csproj", "{1ED1FD2A-703E-471D-AEDA-9885748194FF}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Moonglade.Data.MySql", "Moonglade.Data.MySql\Moonglade.Data.MySql.csproj", "{0267C513-2DB9-4697-A6FA-39BB83E1CA9B}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Moonglade.Data.PostgreSql", "Moonglade.Data.PostgreSql\Moonglade.Data.PostgreSql.csproj", "{5750F136-DD4B-42F8-BA64-2371C2527505}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Moonglade.Data.PostgreSql", "Moonglade.Data.PostgreSql\Moonglade.Data.PostgreSql.csproj", "{5750F136-DD4B-42F8-BA64-2371C2527505}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -179,8 +171,6 @@ Global
 		{5B888FFB-8BF0-4AED-9D1E-91396290BC05} = {97439361-03B4-46C9-BC06-49F76BA57879}
 		{A5ED355A-D024-4176-B453-2F8F42E29414} = {97439361-03B4-46C9-BC06-49F76BA57879}
 		{FE0F6EA1-5520-4DD9-9CD4-7A2365A03C8C} = {BE685106-CE96-4A43-A161-3425565C6A9D}
-		{9505BDE6-E5CB-43E1-A2F0-07E67BEF6948} = {BE685106-CE96-4A43-A161-3425565C6A9D}
-		{2C27F5AF-7A99-4B49-A053-8E3486319F2B} = {9505BDE6-E5CB-43E1-A2F0-07E67BEF6948}
 		{59770DF9-9CC5-4912-8677-5E99DA9C96CA} = {97439361-03B4-46C9-BC06-49F76BA57879}
 		{1ED1FD2A-703E-471D-AEDA-9885748194FF} = {41072B8B-1052-4CC6-930F-83A5F8EA7482}
 		{0267C513-2DB9-4697-A6FA-39BB83E1CA9B} = {41072B8B-1052-4CC6-930F-83A5F8EA7482}

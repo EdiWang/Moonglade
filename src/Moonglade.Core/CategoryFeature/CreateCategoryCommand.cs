@@ -22,7 +22,7 @@ public class CreateCategoryCommand : IRequest
     public string Note { get; set; }
 }
 
-public class CreateCategoryCommandHandler : AsyncRequestHandler<CreateCategoryCommand>
+public class CreateCategoryCommandHandler : IRequestHandler<CreateCategoryCommand>
 {
     private readonly IRepository<CategoryEntity> _catRepo;
     private readonly IBlogCache _cache;
@@ -33,7 +33,7 @@ public class CreateCategoryCommandHandler : AsyncRequestHandler<CreateCategoryCo
         _cache = cache;
     }
 
-    protected override async Task Handle(CreateCategoryCommand request, CancellationToken ct)
+    public async Task Handle(CreateCategoryCommand request, CancellationToken ct)
     {
         var exists = await _catRepo.AnyAsync(c => c.RouteName == request.RouteName, ct);
         if (exists) return;

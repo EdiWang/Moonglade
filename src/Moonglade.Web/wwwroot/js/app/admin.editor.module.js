@@ -17,10 +17,12 @@ function slugify(text) {
     return '';
 }
 
-export function initEvents() {
-    $('#ViewModel_Title').change(function () {
-        document.querySelector('#ViewModel_Slug').value = slugify($(this).val());
-    });
+export function initEvents(slugifyTitle) {
+    if (slugifyTitle) {
+        $('#ViewModel_Title').change(function () {
+            document.querySelector('#ViewModel_Slug').value = slugify($(this).val());
+        });
+    }
 
     $('#btn-preview').click(function (e) {
         submitForm(e);
@@ -34,6 +36,16 @@ export function initEvents() {
         $('input[name="ViewModel.IsPublished"]').val('True');
         submitForm(e);
     });
+
+    $('.btn-modify-slug').click(function () {
+        var message = 'This post was published for more than 7 days, changing slug will result in breaking SEO, would you like to continue?';
+
+        if (confirm(message)) {
+            $('#ViewModel_Slug').removeAttr('readonly');
+            $('#ViewModel_Slug').focus();
+            $('.btn-modify-slug').hide();
+        }
+    })
 
     function submitForm(e) {
         if (window.tinyMCE) {
@@ -119,6 +131,7 @@ export function loadTinyMCE(textareaSelector) {
                 { text: 'HTML/XML', value: 'markup' },
                 { text: 'JavaScript', value: 'javascript' },
                 { text: 'Json', value: 'json' },
+                { text: 'Kotlin', value: 'kotlin' },
                 { text: 'Less', value: 'less' },
                 { text: 'Lua', value: 'lua' },
                 { text: 'Markdown', value: 'markdown' },
@@ -126,6 +139,7 @@ export function loadTinyMCE(textareaSelector) {
                 { text: 'Plain Text', value: 'plaintext' },
                 { text: 'Python', value: 'python' },
                 { text: 'PHP', value: 'php' },
+                { text: 'R', value: 'r' },
                 { text: 'Ruby', value: 'ruby' },
                 { text: 'Rust', value: 'rust' },
                 { text: 'SCSS', value: 'scss' },

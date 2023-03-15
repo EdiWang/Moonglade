@@ -35,7 +35,12 @@ public class AuthController : ControllerBase
     }
 
     [AllowAnonymous]
+    [HttpGet("/account/accessdenied")]
     [HttpGet("accessdenied")]
     [ProducesResponseType(StatusCodes.Status403Forbidden)]
-    public IActionResult AccessDenied() => Forbid();
+    public IActionResult AccessDenied()
+    {
+        Response.StatusCode = StatusCodes.Status403Forbidden;
+        return Content("Access Denied");
+    }
 }

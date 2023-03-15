@@ -6,12 +6,12 @@ namespace Moonglade.Auth;
 
 public record ChangePasswordCommand(Guid Id, string ClearPassword) : IRequest;
 
-public class ChangePasswordCommandHandler : AsyncRequestHandler<ChangePasswordCommand>
+public class ChangePasswordCommandHandler : IRequestHandler<ChangePasswordCommand>
 {
     private readonly IRepository<LocalAccountEntity> _repo;
     public ChangePasswordCommandHandler(IRepository<LocalAccountEntity> repo) => _repo = repo;
 
-    protected override async Task Handle(ChangePasswordCommand request, CancellationToken ct)
+    public async Task Handle(ChangePasswordCommand request, CancellationToken ct)
     {
         var account = await _repo.GetAsync(request.Id, ct);
         if (account is null)

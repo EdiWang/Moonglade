@@ -1,13 +1,34 @@
 ﻿@using Moonglade.Utils
+@using Moonglade.Web.TagHelpers
+@using Microsoft.AspNetCore.Mvc.TagHelpers
+@using Microsoft.AspNetCore.Localization
+@using System.Globalization
 @inject Microsoft.ApplicationInsights.AspNetCore.JavaScriptSnippet JavaScriptSnippet
 @{
     if (string.IsNullOrEmpty(BlogConfig.GeneralSettings.AvatarUrl))
     {
         BlogConfig.GeneralSettings.AvatarUrl = Url.Action("Avatar", "Assets");
     }
+
+    // Resolve culture
+    // Post language > User set display language > System default language
+    var langCode = BlogConfig.GeneralSettings.DefaultLanguageCode;
+    if (ViewBag.PostLangCode != null)
+    {
+        langCode = ViewBag.PostLangCode;
+    }
+    else
+    {
+        // CultureInfo.CurrentUICulture always has value, can not determine if is user selection
+        var cultureCookie = Context.Request.Cookies[CookieRequestCultureProvider.DefaultCookieName];
+        if (cultureCookie != null)
+        {
+            langCode = CultureInfo.CurrentUICulture.ToString().ToLower();
+        }
+    }
 }
 <!DOCTYPE html>
-<html>
+<html lang="@langCode">
 <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
@@ -71,7 +92,7 @@
     }
     <partial name="_Favicons" />
     <link href="~/lib/twitter-bootstrap/css/bootstrap.min.css" rel="stylesheet" asp-append-version="true" />
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.2/font/bootstrap-icons.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.3/font/bootstrap-icons.css">
     <link href="~/css/base.css" rel="stylesheet" asp-append-version="true" />
     <link href="~/css/rwd.css" rel="stylesheet" asp-append-version="true" />
     <link href="~/css/darkmode.css" rel="stylesheet" asp-append-version="true" />

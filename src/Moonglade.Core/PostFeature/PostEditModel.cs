@@ -73,4 +73,6 @@ public class PostEditModel
     [Display(Name = "Inline CSS")]
     [MaxLength(2048)]
     public string InlineCss { get; set; }
+
+    public bool WarnSlugModification => PublishDate.HasValue && (DateTime.UtcNow - PublishDate.Value).Days > 7;
 }

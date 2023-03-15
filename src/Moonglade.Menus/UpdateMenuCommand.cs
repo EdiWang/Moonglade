@@ -7,13 +7,13 @@ namespace Moonglade.Menus;
 
 public record UpdateMenuCommand(EditMenuRequest Payload) : IRequest;
 
-public class UpdateMenuCommandHandler : AsyncRequestHandler<UpdateMenuCommand>
+public class UpdateMenuCommandHandler : IRequestHandler<UpdateMenuCommand>
 {
     private readonly IRepository<MenuEntity> _repo;
 
     public UpdateMenuCommandHandler(IRepository<MenuEntity> repo) => _repo = repo;
 
-    protected override async Task Handle(UpdateMenuCommand request, CancellationToken ct)
+    public async Task Handle(UpdateMenuCommand request, CancellationToken ct)
     {
         var menu = await _repo.GetAsync(request.Payload.Id, ct);
         if (menu is null)

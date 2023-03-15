@@ -101,6 +101,10 @@ public class GeneralSettings : IBlogSettings
 
     public TimeSpan TimeZoneUtcOffset { get; set; }
 
+    [Required]
+    [RegularExpression("^[a-z]{2}-[a-zA-Z]{2,4}$")]
+    public string DefaultLanguageCode { get; set; } = "en-us";
+
     public GeneralSettings() => ThemeId = 1;
 }
 
