@@ -28,7 +28,7 @@ export function formatUtcTime() {
     $('time').each(function (i, e) {
         var utclabel = $(e).data('utc-label');
         if (utclabel) {
-            var localTime = new Date(utclabel);
+            var localTime = new Date(utclabel.replace(/-/g, "/"));
             $(e).html(localTime.toLocaleString());
         }
     });
