@@ -102,16 +102,12 @@
     {
         <link href="~/custom.css" rel="stylesheet" asp-append-version="true" />
     }
-
     <environment include="Production">
         @if (!(bool)Context.Items["DNT"])
         {
-            <script>
-                @Html.Raw(JavaScriptSnippet.ScriptBody)
-            </script>
+            @Html.Raw(JavaScriptSnippet.FullScript)
         }
     </environment>
-
     <script src="~/js/3rd/jquery.slim.min.js" asp-append-version="true"></script>
     @if (BlogConfig.GeneralSettings.Pride)
     {
@@ -200,8 +196,8 @@
                     <div class="row">
                         <div class="col-3">
                             <img src="@BlogConfig.GeneralSettings.AvatarUrl"
-                                 alt="@BlogConfig.GeneralSettings.OwnerName"
-                                 class="rounded-circle blogger-head-pic" />
+                             alt="@BlogConfig.GeneralSettings.OwnerName"
+                             class="rounded-circle blogger-head-pic" />
                         </div>
                         <div class="col-9">
                             <h4 class="text-center">
