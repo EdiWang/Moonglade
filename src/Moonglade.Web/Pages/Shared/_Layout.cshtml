@@ -109,14 +109,6 @@
         }
     </environment>
     <script src="~/js/3rd/jquery.slim.min.js" asp-append-version="true"></script>
-    @if (BlogConfig.GeneralSettings.Pride)
-    {
-        <style>
-            body {
-                cursor: url('/images/pride-heart-24.svg'), auto;
-            }
-        </style>
-    }
 </head>
 <body class="@ViewBag.BodyClass">
     @if (BlogConfig.ContentSettings.ShowCalloutSection)

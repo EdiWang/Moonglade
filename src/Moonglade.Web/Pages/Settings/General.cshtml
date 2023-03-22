@@ -239,21 +239,6 @@
                                 </div>
                             </div>
                         </div>
-                        
-                        <div class="row g-3 align-items-center settings-entry">
-                            <div class="col-auto">
-                                <i class="bi-rainbow settings-entry-icon"></i>
-                            </div>
-                            <div class="col">
-                                <label asp-for="ViewModel.Pride" class="form-check-label"></label>
-                            </div>
-                            <div class="col-md-5 text-end">
-                                <div class="form-check form-switch">
-                                    <input type="hidden" name="Pride" value="false">
-                                    <input type="checkbox" name="Pride" value="true" class="form-check-input" (Model.ViewModel.Pride ? "checked" :null)>
-                                </div>
-                            </div>
-                        </div>
                     </div>
                     <h6 class="card-subtitle mt-5 mb-2 text-muted">
                         @SharedLocalizer["Side Bar"]
