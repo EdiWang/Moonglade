@@ -15,6 +15,12 @@
             overflow-y: scroll;
             overflow-x: hidden;
         }
+
+        .pingback-item {
+            border-bottom: 1px solid #CECECE;
+            padding-bottom: 15px;
+            margin-bottom: 15px;
+        }
     </style>
 }
 
@@ -26,7 +32,6 @@
             callApi(`/pingback/${pingbackId}`, 'DELETE', {},
                 (resp) => {
                     document.querySelector(`#pingback-box-${pingbackId}`).remove();
-                    document.querySelector(`#pingback-box-hr-${pingbackId}`).remove();
                 });
         }
 
@@ -99,7 +104,6 @@
                     </a>
                 </div>
             </div>
-            <hr id="pingback-box-hr-@item.Id"/>
         }
     </div>
 </div>
