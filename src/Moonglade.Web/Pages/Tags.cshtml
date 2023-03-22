@@ -22,6 +22,26 @@
     }
 }
 
+@section scripts {
+    <script>
+        $("#tagFilter").on("keyup", function () {
+            var value = $(this).val().toLowerCase();
+
+            $(".ul-tags li").filter(function () {
+                var show = $(this).text().toLowerCase().indexOf(value) > -1;
+                if (show) {
+                    $(this).addClass('d-inline-block');
+                    $(this).removeClass('d-none');
+                }
+                else {
+                    $(this).removeClass('d-inline-block');
+                    $(this).addClass('d-none');
+                }
+            });
+        });
+    </script>
+}
+
 <h3>
     @SharedLocalizer["Tags"]
 </h3>
@@ -30,6 +50,8 @@
 @if (tags.Any())
 {
     var tagMax = tags.Select(p => p.Value).Max();
+
+    <input id="tagFilter" type="text" class="form-control mb-3" maxlength="32" placeholder="Filter..">
 
     <ul class="list-unstyled ul-tags">
         @foreach (var tag in tags.OrderBy(t => t.Key.DisplayName))
