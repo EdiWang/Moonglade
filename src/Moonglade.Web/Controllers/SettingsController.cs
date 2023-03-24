@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Localization;
 using Moonglade.Caching.Filters;
+using Moonglade.Configuration;
 using Moonglade.Notification.Client;
 using NUglify;
 
@@ -243,5 +244,11 @@ public class SettingsController : ControllerBase
     {
         var kvp = _blogConfig.UpdateAsync(blogSettings);
         await _mediator.Send(new UpdateConfigurationCommand(kvp.Key, kvp.Value));
+    }
+
+    public async Task SaveConfigNoJsonAsync<T>(T blogSettings, string processedValue) where T : IBlogSettings
+    {
+        var kvp = _blogConfig.UpdateAsync(blogSettings);
+        await _mediator.Send(new UpdateConfigurationCommand(kvp.Key, processedValue));
     }
 }
