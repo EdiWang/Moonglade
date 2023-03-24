@@ -16,7 +16,7 @@ public interface IBlogConfig
     CustomMenuSettings CustomMenuSettings { get; set; }
 
     IEnumerable<(int, string)> LoadFromConfig(IDictionary<string, string> config);
-    KeyValuePair<string, string> UpdateAsync<T>(T blogSettings, bool skipJson = false) where T : IBlogSettings;
+    KeyValuePair<string, string> UpdateAsync<T>(T blogSettings) where T : IBlogSettings;
 }
 
 public class BlogConfig : IBlogConfig
@@ -59,20 +59,15 @@ public class BlogConfig : IBlogConfig
         }
     }
 
-    public KeyValuePair<string, string> UpdateAsync<T>(T blogSettings, bool skipJson = false) where T : IBlogSettings
+    public KeyValuePair<string, string> UpdateAsync<T>(T blogSettings) where T : IBlogSettings
     {
         var name = typeof(T).Name;
-        
+        var json = blogSettings.ToJson();
+
         // update singleton itself
         var prop = GetType().GetProperty(name);
         prop?.SetValue(this, blogSettings);
 
-        if (!skipJson)
-        {
-            var json = blogSettings.ToJson();
-            return new(name, json);
-        }
-
-        return new(name, string.Empty);
+        return new(name, json);
     }
 }

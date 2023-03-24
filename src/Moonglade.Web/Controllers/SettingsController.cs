@@ -228,6 +228,23 @@ public class SettingsController : ControllerBase
         return NoContent();
     }
 
+    [HttpPost("custom-menu")]
+    [ProducesResponseType(StatusCodes.Status204NoContent)]
+    [ProducesResponseType(StatusCodes.Status400BadRequest)]
+    public async Task<IActionResult> CustomMenu(CustomMenuSettings model)
+    {
+        if (model.IsEnabled && string.IsNullOrWhiteSpace(model.MenuJson))
+        {
+            ModelState.AddModelError(nameof(CustomStyleSheetSettings.CssCode), "MenuJson is required");
+            return BadRequest(ModelState.CombineErrorMessages());
+        }
+
+        _blogConfig.CustomMenuSettings = model;
+
+        await SaveConfigAsync(_blogConfig.CustomMenuSettings);
+        return NoContent();
+    }
+
     [HttpGet("password/generate")]
     [ProducesResponseType(StatusCodes.Status200OK)]
     public IActionResult GeneratePassword()
@@ -244,11 +261,5 @@ public class SettingsController : ControllerBase
     {
         var kvp = _blogConfig.UpdateAsync(blogSettings);
         await _mediator.Send(new UpdateConfigurationCommand(kvp.Key, kvp.Value));
-    }
-
-    public async Task SaveConfigNoJsonAsync<T>(T blogSettings, string processedValue) where T : IBlogSettings
-    {
-        var kvp = _blogConfig.UpdateAsync(blogSettings);
-        await _mediator.Send(new UpdateConfigurationCommand(kvp.Key, processedValue));
     }
 }
