@@ -5,7 +5,7 @@
     var settings = new CustomMenuSettingsJsonModel
             {
                 IsEnabled = bc.IsEnabled,
-                MenuJson = bc.Menus.ToJson()
+                MenuJson = bc.Menus.ToJson(true)
             };
 }
 
