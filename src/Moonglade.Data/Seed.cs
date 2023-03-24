@@ -17,7 +17,6 @@ public class Seed
             await dbContext.Category.AddRangeAsync(GetCategories());
             await dbContext.Tag.AddRangeAsync(GetTags());
             await dbContext.FriendLink.AddRangeAsync(GetFriendLinks());
-            await dbContext.Menu.AddRangeAsync(GetMenus());
             await dbContext.CustomPage.AddRangeAsync(GetPages());
 
             // Add example post
@@ -119,6 +118,13 @@ public class Seed
                 CfgKey = "CustomStyleSheetSettings",
                 CfgValue = "{\"EnableCustomCss\":false,\"CssCode\":\"\"}",
                 LastModifiedTimeUtc = DateTime.UtcNow
+            },
+            new()
+            {
+                Id = 10,
+                CfgKey = "CustomMenuSettings",
+                CfgValue = "{\"IsEnabled\":true,\"Menus\":[{\"Title\":\"About\",\"Url\":\"/page/about\",\"Icon\":\"bi-star\",\"DisplayOrder\":1,\"IsOpenInNewTab\":false,\"SubMenus\":[]}]}",
+                LastModifiedTimeUtc = DateTime.UtcNow
             }
         };
     }
@@ -208,22 +214,6 @@ public class Seed
                 Id = Guid.NewGuid(),
                 Title = "Edi.Wang",
                 LinkUrl = "https://edi.wang"
-            }
-        };
-    }
-
-    private static IEnumerable<MenuEntity> GetMenus()
-    {
-        return new List<MenuEntity>
-        {
-            new()
-            {
-                Id = Guid.NewGuid(),
-                DisplayOrder = 0,
-                IsOpenInNewTab = false,
-                Icon = "icon-star-full",
-                Title = "About",
-                Url = "/page/about"
             }
         };
     }

@@ -78,7 +78,6 @@ void ConfigureServices(IServiceCollection services)
 {
     AppDomain.CurrentDomain.Load("Moonglade.Core");
     AppDomain.CurrentDomain.Load("Moonglade.FriendLink");
-    AppDomain.CurrentDomain.Load("Moonglade.Menus");
     AppDomain.CurrentDomain.Load("Moonglade.Theme");
     AppDomain.CurrentDomain.Load("Moonglade.Configuration");
     AppDomain.CurrentDomain.Load("Moonglade.Data");

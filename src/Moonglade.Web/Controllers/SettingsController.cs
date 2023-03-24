@@ -227,6 +227,27 @@ public class SettingsController : ControllerBase
         return NoContent();
     }
 
+    [HttpPost("custom-menu")]
+    [ProducesResponseType(StatusCodes.Status204NoContent)]
+    [ProducesResponseType(StatusCodes.Status400BadRequest)]
+    public async Task<IActionResult> CustomMenu(CustomMenuSettingsJsonModel model)
+    {
+        if (model.IsEnabled && string.IsNullOrWhiteSpace(model.MenuJson))
+        {
+            ModelState.AddModelError(nameof(CustomMenuSettingsJsonModel.MenuJson), "Menus is required");
+            return BadRequest(ModelState.CombineErrorMessages());
+        }
+
+        _blogConfig.CustomMenuSettings = new()
+        {
+            IsEnabled = model.IsEnabled,
+            Menus = model.MenuJson.FromJson<Menu[]>()
+        };
+
+        await SaveConfigAsync(_blogConfig.CustomMenuSettings);
+        return NoContent();
+    }
+
     [HttpGet("password/generate")]
     [ProducesResponseType(StatusCodes.Status200OK)]
     public IActionResult GeneratePassword()

@@ -1,31 +1,20 @@
-﻿using Moonglade.Menus;
-
-namespace Moonglade.Web.ViewComponents;
+﻿namespace Moonglade.Web.ViewComponents;
 
 public class MenuViewComponent : ViewComponent
 {
-    private readonly IBlogCache _cache;
-    private readonly IMediator _mediator;
+    private readonly IBlogConfig _blogConfig;
 
-    public MenuViewComponent(IBlogCache cache, IMediator mediator)
+    public MenuViewComponent(IBlogConfig blogConfig)
     {
-        _cache = cache;
-        _mediator = mediator;
+        _blogConfig = blogConfig;
     }
 
-    public async Task<IViewComponentResult> InvokeAsync()
+    public IViewComponentResult Invoke()
     {
         try
         {
-            var menus = await _cache.GetOrCreateAsync(CacheDivision.General, "menu", async entry =>
-            {
-                entry.SlidingExpiration = TimeSpan.FromMinutes(20);
-
-                var items = await _mediator.Send(new GetAllMenusQuery());
-                return items;
-            });
-
-            return View(menus);
+            var settings = _blogConfig.CustomMenuSettings;
+            return View(settings);
         }
         catch (Exception e)
         {

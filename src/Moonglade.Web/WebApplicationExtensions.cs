@@ -56,7 +56,19 @@ public static class WebApplicationExtensions
         // load configurations into singleton
         var config = await mediator.Send(new GetAllConfigurationsQuery());
         var bc = app.Services.GetRequiredService<IBlogConfig>();
-        bc.LoadFromConfig(config);
+        var keysToAdd = bc.LoadFromConfig(config);
+
+        var toAdd = keysToAdd as int[] ?? keysToAdd.ToArray();
+        if (toAdd.Any())
+        {
+            foreach (var key in toAdd)
+            {
+                if (key == 10)
+                {
+                    await mediator.Send(new AddEmptyConfigurationCommand(key, nameof(CustomMenuSettings), new CustomMenuSettings().ToJson()));
+                }
+            }
+        }
 
         try
         {

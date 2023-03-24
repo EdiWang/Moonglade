@@ -13,7 +13,9 @@ public interface IBlogConfig
     ImageSettings ImageSettings { get; set; }
     AdvancedSettings AdvancedSettings { get; set; }
     CustomStyleSheetSettings CustomStyleSheetSettings { get; set; }
-    void LoadFromConfig(IDictionary<string, string> config);
+    CustomMenuSettings CustomMenuSettings { get; set; }
+
+    IEnumerable<int> LoadFromConfig(IDictionary<string, string> config);
     KeyValuePair<string, string> UpdateAsync<T>(T blogSettings) where T : IBlogSettings;
 }
 
@@ -33,7 +35,9 @@ public class BlogConfig : IBlogConfig
 
     public CustomStyleSheetSettings CustomStyleSheetSettings { get; set; }
 
-    public void LoadFromConfig(IDictionary<string, string> config)
+    public CustomMenuSettings CustomMenuSettings { get; set; }
+
+    public IEnumerable<int> LoadFromConfig(IDictionary<string, string> config)
     {
         GeneralSettings = config[nameof(GeneralSettings)].FromJson<GeneralSettings>();
         ContentSettings = config[nameof(ContentSettings)].FromJson<ContentSettings>();
@@ -42,6 +46,17 @@ public class BlogConfig : IBlogConfig
         ImageSettings = config[nameof(ImageSettings)].FromJson<ImageSettings>();
         AdvancedSettings = config[nameof(AdvancedSettings)].FromJson<AdvancedSettings>();
         CustomStyleSheetSettings = config[nameof(CustomStyleSheetSettings)].FromJson<CustomStyleSheetSettings>();
+
+        // Curry code: only migrate new keys added after version 12.9.x
+        if (config.ContainsKey(nameof(CustomMenuSettings)))
+        {
+            CustomMenuSettings = config[nameof(CustomMenuSettings)].FromJson<CustomMenuSettings>();
+        }
+        else
+        {
+            CustomMenuSettings = new();
+            yield return 10;
+        }
     }
 
     public KeyValuePair<string, string> UpdateAsync<T>(T blogSettings) where T : IBlogSettings
