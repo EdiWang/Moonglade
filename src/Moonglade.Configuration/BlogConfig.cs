@@ -13,6 +13,8 @@ public interface IBlogConfig
     ImageSettings ImageSettings { get; set; }
     AdvancedSettings AdvancedSettings { get; set; }
     CustomStyleSheetSettings CustomStyleSheetSettings { get; set; }
+    CustomMenuSettings CustomMenuSettings { get; set; }
+
     IEnumerable<(int, string)> LoadFromConfig(IDictionary<string, string> config);
     KeyValuePair<string, string> UpdateAsync<T>(T blogSettings, bool skipJson = false) where T : IBlogSettings;
 }
