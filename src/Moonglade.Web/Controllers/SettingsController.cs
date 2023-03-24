@@ -231,15 +231,19 @@ public class SettingsController : ControllerBase
     [HttpPost("custom-menu")]
     [ProducesResponseType(StatusCodes.Status204NoContent)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
-    public async Task<IActionResult> CustomMenu(CustomMenuSettings model)
+    public async Task<IActionResult> CustomMenu(CustomMenuSettingsJsonModel model)
     {
         if (model.IsEnabled && string.IsNullOrWhiteSpace(model.MenuJson))
         {
-            ModelState.AddModelError(nameof(CustomStyleSheetSettings.CssCode), "MenuJson is required");
+            ModelState.AddModelError(nameof(CustomMenuSettingsJsonModel.MenuJson), "Menus is required");
             return BadRequest(ModelState.CombineErrorMessages());
         }
 
-        _blogConfig.CustomMenuSettings = model;
+        _blogConfig.CustomMenuSettings = new()
+        {
+            IsEnabled = model.IsEnabled,
+            Menus = model.MenuJson.FromJson<Menu[]>()
+        };
 
         await SaveConfigAsync(_blogConfig.CustomMenuSettings);
         return NoContent();

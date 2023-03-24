@@ -5,7 +5,7 @@ using Moonglade.Data.Infrastructure;
 
 namespace Moonglade.Configuration;
 
-public record AddEmptyConfigurationCommand(int Id, string CfgKey) : IRequest<OperationCode>;
+public record AddEmptyConfigurationCommand(int Id, string CfgKey, string DefaultJson) : IRequest<OperationCode>;
 
 public class AddEmptyConfigurationCommandHandler : IRequestHandler<AddEmptyConfigurationCommand, OperationCode>
 {
@@ -18,7 +18,7 @@ public class AddEmptyConfigurationCommandHandler : IRequestHandler<AddEmptyConfi
         {
             Id = request.Id,
             CfgKey = request.CfgKey,
-            CfgValue = "{}",
+            CfgValue = request.DefaultJson,
             LastModifiedTimeUtc = DateTime.UtcNow
         };
 

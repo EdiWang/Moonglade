@@ -1,11 +1,12 @@
 ﻿@page "/admin/settings/custom-menu"
 @Html.AntiForgeryToken()
 @{
-    var settings = BlogConfig.CustomMenuSettings;
-
-    <script>
-        var needLoadInitValues = @((!string.IsNullOrWhiteSpace(settings.MenuJson)).ToString().ToLower());
-    </script>
+    var bc = BlogConfig.CustomMenuSettings;
+    var settings = new CustomMenuSettingsJsonModel
+            {
+                IsEnabled = bc.IsEnabled,
+                MenuJson = bc.Menus.ToJson()
+            };
 }
 
 @section scripts{
@@ -19,10 +20,10 @@
         window.MonacoEnvironment = {
             getWorkerUrl: function (workerId, label) {
                 return `data:text/javascript;charset=utf-8,${encodeURIComponent(`
-                self.MonacoEnvironment = {
-                  baseUrl: 'https://unpkg.com/monaco-editor@latest/min/'
-                };
-                importScripts('https://unpkg.com/monaco-editor@latest/min/vs/base/worker/workerMain.js');`
+                                self.MonacoEnvironment = {
+                                  baseUrl: 'https://unpkg.com/monaco-editor@latest/min/'
+                                };
+                                importScripts('https://unpkg.com/monaco-editor@latest/min/vs/base/worker/workerMain.js');`
                 )}`;
             }
         };
@@ -40,10 +41,8 @@
             });
             jsonContentEditor.layout();
 
-            if (needLoadInitValues) {
-                var jsonValue = document.querySelector("#settings_MenuJson").value;
-                window.jsonContentEditor.setValue(jsonValue);
-            }
+            var jsonValue = document.querySelector("#settings_MenuJson").value;
+            window.jsonContentEditor.setValue(jsonValue);
         }
 
         var assignEditorValues = function () {
@@ -74,7 +73,9 @@
     </style>
 }
 
-<partial name="_SettingsHeader" />
+<div class="admin-toolbar ps-4 pe-4 pt-2 pb-2 border-bottom mb-3 shadow-sm">
+</div>
+
 <div class="ps-4 pe-4">
     <form id="form-settings" asp-controller="Settings" asp-action="CustomMenu">
         <div class="form-check form-switch mb-3">

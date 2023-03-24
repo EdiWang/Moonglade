@@ -58,12 +58,15 @@ public static class WebApplicationExtensions
         var bc = app.Services.GetRequiredService<IBlogConfig>();
         var keysToAdd = bc.LoadFromConfig(config);
 
-        var valueTuples = keysToAdd as (int, string)[] ?? keysToAdd.ToArray();
-        if (valueTuples.Any())
+        var toAdd = keysToAdd as int[] ?? keysToAdd.ToArray();
+        if (toAdd.Any())
         {
-            foreach (var kv in valueTuples)
+            foreach (var key in toAdd)
             {
-                await mediator.Send(new AddEmptyConfigurationCommand(kv.Item1, kv.Item2));
+                if (key == 10)
+                {
+                    await mediator.Send(new AddEmptyConfigurationCommand(key, nameof(CustomMenuSettings), new CustomMenuSettings().ToJson()));
+                }
             }
         }
 

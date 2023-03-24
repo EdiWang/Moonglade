@@ -15,7 +15,7 @@ public interface IBlogConfig
     CustomStyleSheetSettings CustomStyleSheetSettings { get; set; }
     CustomMenuSettings CustomMenuSettings { get; set; }
 
-    IEnumerable<(int, string)> LoadFromConfig(IDictionary<string, string> config);
+    IEnumerable<int> LoadFromConfig(IDictionary<string, string> config);
     KeyValuePair<string, string> UpdateAsync<T>(T blogSettings) where T : IBlogSettings;
 }
 
@@ -37,7 +37,7 @@ public class BlogConfig : IBlogConfig
 
     public CustomMenuSettings CustomMenuSettings { get; set; }
 
-    public IEnumerable<(int, string)> LoadFromConfig(IDictionary<string, string> config)
+    public IEnumerable<int> LoadFromConfig(IDictionary<string, string> config)
     {
         GeneralSettings = config[nameof(GeneralSettings)].FromJson<GeneralSettings>();
         ContentSettings = config[nameof(ContentSettings)].FromJson<ContentSettings>();
@@ -55,7 +55,7 @@ public class BlogConfig : IBlogConfig
         else
         {
             CustomMenuSettings = new();
-            yield return (10, nameof(CustomMenuSettings));
+            yield return 10;
         }
     }
 
