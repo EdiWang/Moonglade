@@ -20,10 +20,10 @@
         window.MonacoEnvironment = {
             getWorkerUrl: function (workerId, label) {
                 return `data:text/javascript;charset=utf-8,${encodeURIComponent(`
-                                self.MonacoEnvironment = {
-                                  baseUrl: 'https://unpkg.com/monaco-editor@latest/min/'
-                                };
-                                importScripts('https://unpkg.com/monaco-editor@latest/min/vs/base/worker/workerMain.js');`
+                                        self.MonacoEnvironment = {
+                                          baseUrl: 'https://unpkg.com/monaco-editor@latest/min/'
+                                        };
+                                        importScripts('https://unpkg.com/monaco-editor@latest/min/vs/base/worker/workerMain.js');`
                 )}`;
             }
         };
@@ -48,6 +48,11 @@
         var assignEditorValues = function () {
             var jsonValue = window.jsonContentEditor.getValue();
             document.querySelector("#settings_MenuJson").value = jsonValue;
+        }
+
+        var clearMenus = function () {
+            window.jsonContentEditor.setValue("[]");
+            document.querySelector("#settings_MenuJson").value = "[]";
         }
     </script>
     <script type="module">
@@ -74,6 +79,9 @@
 }
 
 <div class="admin-toolbar ps-4 pe-4 pt-2 pb-2 border-bottom mb-3 shadow-sm">
+    <a href="javascript:window.clearMenus();" class="btn btn-outline-danger btn-delete-selected">
+        <i class="bi-trash"></i> @SharedLocalizer["Clear menus"]
+    </a>
 </div>
 
 <div class="ps-4 pe-4">
