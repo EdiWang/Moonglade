@@ -1,6 +1,5 @@
 ﻿using Microsoft.AspNetCore.Localization;
 using Moonglade.Caching.Filters;
-using Moonglade.Configuration;
 using Moonglade.Notification.Client;
 using NUglify;
 
