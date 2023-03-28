@@ -36,18 +36,13 @@
                 </tr>
 
                 <tr>
-                    <td>ForwardedHeadersProxies:UseForwardedHeaders</td>
+                    <td>UseForwardedHeaders</td>
                     <td>@Configuration["ForwardedHeadersProxies:UseForwardedHeaders"]</td>
                 </tr>
 
                 <tr>
-                    <td>ForwardedHeadersProxies:ForwardedForHeaderName</td>
+                    <td>ForwardedForHeaderName</td>
                     <td>@Configuration["ForwardedHeadersProxies:ForwardedForHeaderName"]</td>
-                </tr>
-
-                <tr>
-                    <td>ForwardedHeadersProxies:AddKnownProxies</td>
-                    <td>@Configuration["ForwardedHeadersProxies:AddKnownProxies"]</td>
                 </tr>
             </tbody>
         </table>
@@ -99,21 +94,6 @@
                 <tr>
                     <td>@SharedLocalizer["Docker Container"]</td>
                     <td>@(Environment.GetEnvironmentVariable("DOTNET_RUNNING_IN_CONTAINER") == "true")</td>
-                </tr>
-
-                <tr>
-                    <td>X-Forwarded-For</td>
-                    <td>@Request.Headers["X-Forwarded-For"].ToJson(true)</td>
-                </tr>
-
-                <tr>
-                    <td>X-Azure-ClientIP</td>
-                    <td>@Request.Headers["X-Azure-ClientIP"]</td>
-                </tr>
-
-                <tr>
-                    <td>ASP.NET Core Remote IP</td>
-                    <td>@Request.HttpContext.Connection.RemoteIpAddress</td>
                 </tr>
             </tbody>
         </table>

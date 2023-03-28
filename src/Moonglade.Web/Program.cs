@@ -208,9 +208,6 @@ void ConfigureMiddleware()
             fho.ForwardedForHeaderName = forwardedForHeaderName;
         }
 
-        fho.KnownNetworks.Add(new IPNetwork(IPAddress.Any, 0));
-        fho.KnownNetworks.Add(new IPNetwork(IPAddress.IPv6Any, 0));
-
         bool addKnownProxies = builder.Configuration.GetSection("ForwardedHeadersProxies:AddKnownProxies").Get<bool>();
         if (addKnownProxies)
         {
@@ -243,6 +240,15 @@ void ConfigureMiddleware()
                         System.Text.Json.JsonSerializer.Serialize(knownProxies).EscapeMarkup());
                 }
             }
+        }
+        else
+        {
+            // Fix deployment on AFD would not get the correct client IP address because it doesn't trust network other than localhost by default
+            // Add this can make ASP.NET Core read forward headers from any network with a potential security issue
+            // Attackers can hide their IP by sending a fake header
+            // This is OK because Moonglade is just a blog, nothing to hack, let it be
+            fho.KnownNetworks.Add(new IPNetwork(IPAddress.Any, 0));
+            fho.KnownNetworks.Add(new IPNetwork(IPAddress.IPv6Any, 0));
         }
 
         app.UseForwardedHeaders(fho);
