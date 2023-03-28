@@ -190,7 +190,7 @@ async Task FirstRun()
 
 void ConfigureMiddleware()
 {
-    bool useFWHeaders = builder.Configuration.GetSection("ForwardedHeaders:UseForwardedHeaders").Get<bool>();
+    bool useFWHeaders = builder.Configuration.GetSection("ForwardedHeaders:Enabled").Get<bool>();
 
     if (useFWHeaders)
     {
