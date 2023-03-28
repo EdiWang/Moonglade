@@ -189,57 +189,63 @@ async Task FirstRun()
 
 void ConfigureMiddleware()
 {
-    var fho = new ForwardedHeadersOptions
+    bool useFWHeaders = builder.Configuration.GetSection("ForwardedHeadersProxies:UseForwardedHeaders").Get<bool>();
+
+    if (useFWHeaders)
     {
-        ForwardedHeaders = ForwardedHeaders.XForwardedFor | ForwardedHeaders.XForwardedProto
-    };
-
-    // ASP.NET Core always use the last value in XFF header, which is AFD's IP address
-    // Need to set as `X-Azure-ClientIP` as workaround
-    // https://learn.microsoft.com/en-us/azure/frontdoor/front-door-http-headers-protocol
-    var afdHeader = builder.Configuration["ForwardedHeadersProxies:AFDHeader"];
-    app.Logger.LogWarning($"afdHeader: {afdHeader}");
-
-    if (!string.IsNullOrWhiteSpace(afdHeader))
-    {
-        fho.ForwardedForHeaderName = afdHeader;
-    }
-
-    bool enableForwardedHeadersProxies = builder.Configuration.GetSection("ForwardedHeadersProxies:AddKnownProxies").Get<bool>();
-    if (enableForwardedHeadersProxies)
-    {
-        // Fix docker deployments on Azure App Service blows up with Azure AD authentication
-        // https://docs.microsoft.com/en-us/aspnet/core/host-and-deploy/proxy-load-balancer?view=aspnetcore-6.0
-        // "Outside of using IIS Integration when hosting out-of-process, Forwarded Headers Middleware isn't enabled by default."
-        var knownProxies = builder.Configuration.GetSection("ForwardedHeadersProxies:KnownProxies").Get<string[]>();
-
-        if (Environment.GetEnvironmentVariable("DOTNET_RUNNING_IN_CONTAINER") == "true")
+        var fho = new ForwardedHeadersOptions
         {
-            // Fix #712
-            // Adding KnownProxies will make Azure App Service boom boom with Azure AD redirect URL
-            // Result in `https` incorrectly written into `http` and make `/signin-oidc` url invalid.
-            app.Logger.LogWarning("unning in Docker, skip adding 'KnownProxies'.");
+            ForwardedHeaders = ForwardedHeaders.XForwardedFor | ForwardedHeaders.XForwardedProto
+        };
+
+        // ASP.NET Core always use the last value in XFF header, which is AFD's IP address
+        // Need to set as `X-Azure-ClientIP` as workaround
+        // https://learn.microsoft.com/en-us/azure/frontdoor/front-door-http-headers-protocol
+        var afdHeader = builder.Configuration["ForwardedHeadersProxies:AFDHeader"];
+        app.Logger.LogWarning($"afdHeader: {afdHeader}");
+
+        if (!string.IsNullOrWhiteSpace(afdHeader))
+        {
+            fho.ForwardedForHeaderName = afdHeader;
         }
-        else
+
+        bool enableForwardedHeadersProxies =
+            builder.Configuration.GetSection("ForwardedHeadersProxies:AddKnownProxies").Get<bool>();
+        if (enableForwardedHeadersProxies)
         {
-            fho.ForwardLimit = null;
-            fho.KnownProxies.Clear();
+            // Fix docker deployments on Azure App Service blows up with Azure AD authentication
+            // https://docs.microsoft.com/en-us/aspnet/core/host-and-deploy/proxy-load-balancer?view=aspnetcore-6.0
+            // "Outside of using IIS Integration when hosting out-of-process, Forwarded Headers Middleware isn't enabled by default."
+            var knownProxies = builder.Configuration.GetSection("ForwardedHeadersProxies:KnownProxies").Get<string[]>();
 
-            if (knownProxies != null)
+            if (Environment.GetEnvironmentVariable("DOTNET_RUNNING_IN_CONTAINER") == "true")
             {
-                foreach (var ip in knownProxies)
-                {
-                    fho.KnownProxies.Add(IPAddress.Parse(ip));
-                }
+                // Fix #712
+                // Adding KnownProxies will make Azure App Service boom boom with Azure AD redirect URL
+                // Result in `https` incorrectly written into `http` and make `/signin-oidc` url invalid.
+                app.Logger.LogWarning("unning in Docker, skip adding 'KnownProxies'.");
+            }
+            else
+            {
+                fho.ForwardLimit = null;
+                fho.KnownProxies.Clear();
 
-                app.Logger.LogInformation("Added known proxies ({0}): {1}",
-                    knownProxies.Length,
-                    System.Text.Json.JsonSerializer.Serialize(knownProxies).EscapeMarkup());
+                if (knownProxies != null)
+                {
+                    foreach (var ip in knownProxies)
+                    {
+                        fho.KnownProxies.Add(IPAddress.Parse(ip));
+                    }
+
+                    app.Logger.LogInformation("Added known proxies ({0}): {1}",
+                        knownProxies.Length,
+                        System.Text.Json.JsonSerializer.Serialize(knownProxies).EscapeMarkup());
+                }
             }
         }
+
+        app.UseForwardedHeaders(fho);
     }
-        
-    app.UseForwardedHeaders(fho);
 
     if (!app.Environment.IsProduction())
     {
