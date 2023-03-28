@@ -1,4 +1,5 @@
-﻿using Microsoft.Extensions.Diagnostics.HealthChecks;
+﻿using Azure.Core;
+using Microsoft.Extensions.Diagnostics.HealthChecks;
 
 namespace Moonglade.Web.Configuration;
 
@@ -24,7 +25,8 @@ public class ConfigureEndpoints
             DotNetVersion = Environment.Version.ToString(),
             EnvironmentTags = Helper.GetEnvironmentTags(),
             GeoMatch = context.Request.Headers["geo-match"],
-            RequestIpAddress = context.Connection.RemoteIpAddress?.ToString()
+            RequestIpAddress = context.Connection.RemoteIpAddress?.ToString(),
+            XFF = context.Request.Headers["X-Forwarded-For"]
         };
 
         return context.Response.WriteAsJsonAsync(obj);
