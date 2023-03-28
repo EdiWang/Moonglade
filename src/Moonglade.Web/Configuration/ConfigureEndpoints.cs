@@ -18,18 +18,13 @@ public class ConfigureEndpoints
 
     private static Task WriteResponse(HttpContext context, HealthReport result)
     {
-        // debug
-        var xff = context.Request.Headers["X-Forwarded-For"];
-
         var obj = new
         {
             Helper.AppVersion,
             DotNetVersion = Environment.Version.ToString(),
             EnvironmentTags = Helper.GetEnvironmentTags(),
             GeoMatch = context.Request.Headers["geo-match"],
-            RequestIpAddress = context.Connection.RemoteIpAddress?.ToString(),
-            XFF = xff,
-            XAC = context.Request.Headers["X-Azure-ClientIP"]
+            RequestIpAddress = context.Connection.RemoteIpAddress?.ToString()
         };
 
         return context.Response.WriteAsJsonAsync(obj);

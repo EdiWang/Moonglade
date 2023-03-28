@@ -34,6 +34,16 @@
                     <td>@SharedLocalizer["Editor"]</td>
                     <td>@(Configuration.GetSection("Editor").Get<EditorChoice>())</td>
                 </tr>
+
+                <tr>
+                    <td>ForwardedHeadersProxies:AFDHeader</td>
+                    <td>@Configuration["ForwardedHeadersProxies:AFDHeader"]</td>
+                </tr>
+
+                <tr>
+                    <td>ForwardedHeadersProxies:AddKnownProxies</td>
+                    <td>@Configuration["ForwardedHeadersProxies:AddKnownProxies"]</td>
+                </tr>
             </tbody>
         </table>
     </div>
@@ -51,7 +61,7 @@
             <tbody>
                 <tr>
                     <td class="w-25">@SharedLocalizer["System"]</td>
-                    <td>@Helper.TryGetFullOSVersion() @(Environment.Is64BitOperatingSystem ? "(64-bit)": "(32-bit)")</td>
+                    <td>@Helper.TryGetFullOSVersion() @(Environment.Is64BitOperatingSystem ? "(64-bit)" : "(32-bit)")</td>
                 </tr>
                 <tr>
                     <td>@SharedLocalizer["Directory"]</td>
@@ -84,6 +94,16 @@
                 <tr>
                     <td>@SharedLocalizer["Docker Container"]</td>
                     <td>@(Environment.GetEnvironmentVariable("DOTNET_RUNNING_IN_CONTAINER") == "true")</td>
+                </tr>
+
+                <tr>
+                    <td>X-Forwarded-For</td>
+                    <td>@Request.Headers["X-Forwarded-For"].ToJson(true)</td>
+                </tr>
+
+                <tr>
+                    <td>X-Azure-ClientIP</td>
+                    <td>@Request.Headers["X-Azure-ClientIP"]</td>
                 </tr>
             </tbody>
         </table>
