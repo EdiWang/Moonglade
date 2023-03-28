@@ -28,7 +28,8 @@ public class ConfigureEndpoints
             EnvironmentTags = Helper.GetEnvironmentTags(),
             GeoMatch = context.Request.Headers["geo-match"],
             RequestIpAddress = context.Connection.RemoteIpAddress?.ToString(),
-            XFF = xff
+            XFF = xff,
+            XAC = context.Request.Headers["X-Azure-ClientIP"]
         };
 
         return context.Response.WriteAsJsonAsync(obj);
