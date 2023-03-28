@@ -3,6 +3,7 @@ using Edi.Captcha;
 using Microsoft.ApplicationInsights.Extensibility;
 using Microsoft.ApplicationInsights.Extensibility.Implementation;
 using Microsoft.AspNetCore.HttpOverrides;
+using Microsoft.Extensions.Options;
 using Moonglade.Data.MySql;
 using Moonglade.Data.PostgreSql;
 using Moonglade.Data.SqlServer;
@@ -195,18 +196,20 @@ void ConfigureMiddleware()
     {
         var fho = new ForwardedHeadersOptions
         {
-            ForwardedHeaders = ForwardedHeaders.XForwardedFor | ForwardedHeaders.XForwardedProto,
-            ForwardedForHeaderName = "X-Azure-ClientIP" // try hard code to debug on prod
+            ForwardedHeaders = ForwardedHeaders.XForwardedFor | ForwardedHeaders.XForwardedProto
         };
 
         // ASP.NET Core always use the last value in XFF header, which is AFD's IP address
         // Need to set as `X-Azure-ClientIP` as workaround
         // https://learn.microsoft.com/en-us/azure/frontdoor/front-door-http-headers-protocol
-        //var forwardedForHeaderName = builder.Configuration["ForwardedHeadersProxies:ForwardedForHeaderName"];
-        //if (!string.IsNullOrWhiteSpace(forwardedForHeaderName))
-        //{
-        //    fho.ForwardedForHeaderName = forwardedForHeaderName;
-        //}
+        var forwardedForHeaderName = builder.Configuration["ForwardedHeadersProxies:ForwardedForHeaderName"];
+        if (!string.IsNullOrWhiteSpace(forwardedForHeaderName))
+        {
+            fho.ForwardedForHeaderName = forwardedForHeaderName;
+        }
+
+        fho.KnownNetworks.Add(new IPNetwork(IPAddress.Any, 0));
+        fho.KnownNetworks.Add(new IPNetwork(IPAddress.IPv6Any, 0));
 
         bool addKnownProxies = builder.Configuration.GetSection("ForwardedHeadersProxies:AddKnownProxies").Get<bool>();
         if (addKnownProxies)
