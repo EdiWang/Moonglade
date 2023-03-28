@@ -201,12 +201,12 @@ void ConfigureMiddleware()
         // ASP.NET Core always use the last value in XFF header, which is AFD's IP address
         // Need to set as `X-Azure-ClientIP` as workaround
         // https://learn.microsoft.com/en-us/azure/frontdoor/front-door-http-headers-protocol
-        var afdHeader = builder.Configuration["ForwardedHeadersProxies:AFDHeader"];
-        app.Logger.LogWarning($"afdHeader: {afdHeader}");
+        var forwardedForHeaderName = builder.Configuration["ForwardedHeadersProxies:ForwardedForHeaderName"];
+        app.Logger.LogWarning($"ForwardedForHeaderName: {forwardedForHeaderName}");
 
-        if (!string.IsNullOrWhiteSpace(afdHeader))
+        if (!string.IsNullOrWhiteSpace(forwardedForHeaderName))
         {
-            fho.ForwardedForHeaderName = afdHeader;
+            fho.ForwardedForHeaderName = forwardedForHeaderName;
         }
 
         bool enableForwardedHeadersProxies =
