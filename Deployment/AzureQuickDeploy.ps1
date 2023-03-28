@@ -237,6 +237,7 @@ if ($useLinuxPlanWithDocker) {
     $echo = az webapp config appsettings set -g $rsgName -n $webAppName --settings ImageStorage__Provider=azurestorage
     $echo = az webapp config appsettings set -g $rsgName -n $webAppName --settings ImageStorage__AzureStorageSettings__ConnectionString=$scon
     $echo = az webapp config appsettings set -g $rsgName -n $webAppName --settings ImageStorage__AzureStorageSettings__ContainerName=$storageContainerName
+    $echo = az webapp config appsettings set -g $rsgName -n $webAppName --settings ForwardedHeadersProxies__UseForwardedHeaders=true
     $echo = az webapp config appsettings set -g $rsgName -n $webAppName --settings ASPNETCORE_FORWARDEDHEADERS_ENABLED=true
 }
 else {
