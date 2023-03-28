@@ -190,7 +190,7 @@ async Task FirstRun()
 
 void ConfigureMiddleware()
 {
-    bool useFWHeaders = builder.Configuration.GetSection("ForwardedHeadersProxies:UseForwardedHeaders").Get<bool>();
+    bool useFWHeaders = builder.Configuration.GetSection("ForwardedHeaders:UseForwardedHeaders").Get<bool>();
 
     if (useFWHeaders)
     {
@@ -202,43 +202,38 @@ void ConfigureMiddleware()
         // ASP.NET Core always use the last value in XFF header, which is AFD's IP address
         // Need to set as `X-Azure-ClientIP` as workaround
         // https://learn.microsoft.com/en-us/azure/frontdoor/front-door-http-headers-protocol
-        var forwardedForHeaderName = builder.Configuration["ForwardedHeadersProxies:ForwardedForHeaderName"];
+        var forwardedForHeaderName = builder.Configuration["ForwardedHeaders:ForwardedForHeaderName"];
         if (!string.IsNullOrWhiteSpace(forwardedForHeaderName))
         {
             fho.ForwardedForHeaderName = forwardedForHeaderName;
         }
 
-        bool addKnownProxies = builder.Configuration.GetSection("ForwardedHeadersProxies:AddKnownProxies").Get<bool>();
-        if (addKnownProxies)
+        var knownProxies = builder.Configuration.GetSection("ForwardedHeaders:KnownProxies").Get<string[]>();
+        if (knownProxies is { Length: > 0 })
         {
             // Fix docker deployments on Azure App Service blows up with Azure AD authentication
             // https://docs.microsoft.com/en-us/aspnet/core/host-and-deploy/proxy-load-balancer?view=aspnetcore-6.0
             // "Outside of using IIS Integration when hosting out-of-process, Forwarded Headers Middleware isn't enabled by default."
-            var knownProxies = builder.Configuration.GetSection("ForwardedHeadersProxies:KnownProxies").Get<string[]>();
-
             if (Environment.GetEnvironmentVariable("DOTNET_RUNNING_IN_CONTAINER") == "true")
             {
                 // Fix #712
                 // Adding KnownProxies will make Azure App Service boom boom with Azure AD redirect URL
                 // Result in `https` incorrectly written into `http` and make `/signin-oidc` url invalid.
-                app.Logger.LogWarning("unning in Docker, skip adding 'KnownProxies'.");
+                app.Logger.LogWarning("Running in Docker, skip adding 'KnownProxies'.");
             }
             else
             {
                 fho.ForwardLimit = null;
                 fho.KnownProxies.Clear();
 
-                if (knownProxies != null)
+                foreach (var ip in knownProxies)
                 {
-                    foreach (var ip in knownProxies)
-                    {
-                        fho.KnownProxies.Add(IPAddress.Parse(ip));
-                    }
-
-                    app.Logger.LogInformation("Added known proxies ({0}): {1}",
-                        knownProxies.Length,
-                        System.Text.Json.JsonSerializer.Serialize(knownProxies).EscapeMarkup());
+                    fho.KnownProxies.Add(IPAddress.Parse(ip));
                 }
+
+                app.Logger.LogInformation("Added known proxies ({0}): {1}",
+                    knownProxies.Length,
+                    System.Text.Json.JsonSerializer.Serialize(knownProxies).EscapeMarkup());
             }
         }
         else
