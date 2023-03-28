@@ -84,7 +84,9 @@ void ConfigureServices(IServiceCollection services)
 
     services.AddMediatR(config => config.RegisterServicesFromAssemblies(AppDomain.CurrentDomain.GetAssemblies()));
 
-    bool enableForwardedHeadersProxies = builder.Configuration.GetSection("ForwardedHeadersProxies:Enabled").Get<bool>();
+    bool enableForwardedHeadersProxies = builder.Configuration.GetSection("ForwardedHeadersProxies:AddKnownProxies").Get<bool>();
+    var afdHeader = builder.Configuration.GetSection("ForwardedHeadersProxies:AFDHeader").Get<string>();
+
     if (enableForwardedHeadersProxies)
     {
         // Fix docker deployments on Azure App Service blows up with Azure AD authentication
@@ -119,6 +121,11 @@ void ConfigureServices(IServiceCollection services)
                         System.Text.Json.JsonSerializer.Serialize(knownProxies).EscapeMarkup());
                 }
             }
+
+            if (!string.IsNullOrWhiteSpace(afdHeader))
+            {
+                options.ForwardedForHeaderName = afdHeader;
+            }
         });
     }
     else
@@ -126,6 +133,11 @@ void ConfigureServices(IServiceCollection services)
         builder.Services.Configure<ForwardedHeadersOptions>(options =>
         {
             options.ForwardedHeaders = ForwardedHeaders.XForwardedFor | ForwardedHeaders.XForwardedProto;
+
+            if (!string.IsNullOrWhiteSpace(afdHeader))
+            {
+                options.ForwardedForHeaderName = afdHeader;
+            }
         });
     }
 
