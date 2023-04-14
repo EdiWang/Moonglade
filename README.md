@@ -184,6 +184,7 @@ If you need email notification for new comments, new replies and pingbacks, you 
 - [X] FOAF
 - [X] RSD
 - [X] MetaWeblog (Basic Support)
+- [X] Dublin Core Metadata (Basic Support)
 - [ ] BlogML - Under triage
 - [ ] APML - Not planned
 - [ ] Trackback - Not planned
@@ -201,5 +202,6 @@ There are a few individuals already setup thier blogs using Moonglade on Azure (
 - [Leslie Wang](https://lesliewxj.com/)
 - [AllenMasters](https://allenmasters.com)
 - [Hao's House](https://haxu.dev/)
+- [Sascha.Manns](https://saschamanns.de/)
 
 *Just Submit PR or issue if you want your blog to be listed here*

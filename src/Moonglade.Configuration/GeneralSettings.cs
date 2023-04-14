@@ -102,6 +102,12 @@ public class GeneralSettings : IBlogSettings
     [RegularExpression("^[a-z]{2}-[a-zA-Z]{2,4}$")]
     public string DefaultLanguageCode { get; set; } = "en-us";
 
+    [Display(Name = "Use Dublin Core Metadata")]
+    public bool UseDublinCoreMetaData { get; set; }
+
+    [Display(Name = "Dublin Core License URL")]
+    public string DcLicenseUrl { get; set; }
+
     public GeneralSettings() => ThemeId = 1;
 }
 
