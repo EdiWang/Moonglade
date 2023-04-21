@@ -93,12 +93,12 @@ public class ImageSettings : IBlogSettings, IValidatableObject
 
     [JsonIgnore]
     public static ImageSettings DefaultValue =>
-	    new()
-	    {
-		    IsWatermarkEnabled = true,
-		    KeepOriginImage = false,
-		    WatermarkFontSize = 20,
-		    WatermarkText = "Moonglade",
-		    FitImageToDevicePixelRatio = true
-	    };
+        new()
+        {
+            IsWatermarkEnabled = true,
+            KeepOriginImage = false,
+            WatermarkFontSize = 20,
+            WatermarkText = "Moonglade",
+            FitImageToDevicePixelRatio = true
+        };
 }

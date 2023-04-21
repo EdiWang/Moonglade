@@ -14,7 +14,7 @@ public class FeedSettings : IBlogSettings
     [JsonIgnore]
     public static FeedSettings DefaultValue => new()
     {
-		RssItemCount = 20,
-		UseFullContent = false
-	};
+        RssItemCount = 20,
+        UseFullContent = false
+    };
 }

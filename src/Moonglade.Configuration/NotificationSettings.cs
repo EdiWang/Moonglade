@@ -26,10 +26,10 @@ public class NotificationSettings : IBlogSettings
     [JsonIgnore]
     public static NotificationSettings DefaultValue => new()
     {
-		EnableEmailSending = false,
-		SendEmailOnCommentReply = false,
-		SendEmailOnNewComment = false,
-		EmailDisplayName = "Moonglade",
-		AzureStorageQueueConnection = string.Empty
-	};
+        EnableEmailSending = false,
+        SendEmailOnCommentReply = false,
+        SendEmailOnNewComment = false,
+        EmailDisplayName = "Moonglade",
+        AzureStorageQueueConnection = string.Empty
+    };
 }

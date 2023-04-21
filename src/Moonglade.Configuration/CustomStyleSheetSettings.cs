@@ -13,9 +13,9 @@ public class CustomStyleSheetSettings : IBlogSettings
 
     [JsonIgnore]
     public static CustomStyleSheetSettings DefaultValue =>
-	    new()
-	    {
-		    EnableCustomCss = false,
-		    CssCode = string.Empty
-	    };
+        new()
+        {
+            EnableCustomCss = false,
+            CssCode = string.Empty
+        };
 }

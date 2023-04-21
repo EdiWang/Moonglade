@@ -3,7 +3,6 @@ using Edi.Captcha;
 using Microsoft.ApplicationInsights.Extensibility;
 using Microsoft.ApplicationInsights.Extensibility.Implementation;
 using Microsoft.AspNetCore.HttpOverrides;
-using Microsoft.Extensions.Options;
 using Moonglade.Data.MySql;
 using Moonglade.Data.PostgreSql;
 using Moonglade.Data.SqlServer;
