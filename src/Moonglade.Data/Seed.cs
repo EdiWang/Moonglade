@@ -85,13 +85,6 @@ public class Seed
             },
             new()
             {
-                Id = 3,
-                CfgKey = "FeedSettings",
-                CfgValue = "{\"RssItemCount\":20,\"RssCopyright\":\"(c) {year} Moonglade\",\"RssDescription\":\"Latest posts from Moonglade\",\"RssTitle\":\"Moonglade\",\"AuthorName\":\"Admin\",\"UseFullContent\":false}",
-                LastModifiedTimeUtc = DateTime.UtcNow
-            },
-            new()
-            {
                 Id = 4,
                 CfgKey = "GeneralSettings",
                 CfgValue = "{\"OwnerName\":\"Admin\",\"OwnerEmail\":\"admin@edi.wang\",\"Description\":\"Moonglade Admin\",\"ShortDescription\":\"Moonglade Admin\",\"AvatarBase64\":\"\",\"SiteTitle\":\"Moonglade\",\"LogoText\":\"moonglade\",\"MetaKeyword\":\"moonglade\",\"MetaDescription\":\"Just another .NET blog system\",\"Copyright\":\"[c] 2023\",\"SideBarCustomizedHtmlPitch\":\"\",\"FooterCustomizedHtmlPitch\":\"\",\"UserTimeZoneBaseUtcOffset\":\"08:00:00\",\"TimeZoneId\":\"China Standard Time\",\"AutoDarkLightTheme\":true,\"ThemeId\":1}",

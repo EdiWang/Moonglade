@@ -44,7 +44,16 @@ public class BlogConfig : IBlogConfig
 		GeneralSettings = config[nameof(GeneralSettings)].FromJson<GeneralSettings>();
 		ContentSettings = config[nameof(ContentSettings)].FromJson<ContentSettings>();
 		NotificationSettings = config[nameof(NotificationSettings)].FromJson<NotificationSettings>();
-		FeedSettings = config[nameof(FeedSettings)].FromJson<FeedSettings>();
+
+		if (config.TryGetValue(nameof(FeedSettings), out var feedSettings))
+		{
+			FeedSettings = feedSettings.FromJson<FeedSettings>();
+		}
+		else
+		{
+			FeedSettings = FeedSettings.DefaultValue;
+			yield return 3;
+		}
 
 		if (config.TryGetValue(nameof(ImageSettings), out var imageSettings))
 		{
@@ -53,7 +62,7 @@ public class BlogConfig : IBlogConfig
 		else
 		{
 			ImageSettings = ImageSettings.DefaultValue;
-			yield return 6;
+			yield return 5;
 		}
 
 		if (config.TryGetValue(nameof(AdvancedSettings), out var advancedSettings))
