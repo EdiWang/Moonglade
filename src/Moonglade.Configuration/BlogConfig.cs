@@ -1,5 +1,4 @@
-﻿using System;
-
+﻿
 namespace Moonglade.Configuration;
 
 public interface IBlogSettings
@@ -41,8 +40,6 @@ public class BlogConfig : IBlogConfig
 
 	public IEnumerable<int> LoadFromConfig(IDictionary<string, string> config)
 	{
-		GeneralSettings = config[nameof(GeneralSettings)].FromJson<GeneralSettings>();
-
 		if (config.TryGetValue(nameof(ContentSettings), out var contentSettings))
 		{
 			ContentSettings = contentSettings.FromJson<ContentSettings>();
@@ -71,6 +68,16 @@ public class BlogConfig : IBlogConfig
 		{
 			FeedSettings = FeedSettings.DefaultValue;
 			yield return 3;
+		}
+
+		if (config.TryGetValue(nameof(GeneralSettings), out var generalSettings))
+		{
+			GeneralSettings = generalSettings.FromJson<GeneralSettings>();
+		}
+		else
+		{
+			GeneralSettings = GeneralSettings.DefaultValue;
+			yield return 4;
 		}
 
 		if (config.TryGetValue(nameof(ImageSettings), out var imageSettings))

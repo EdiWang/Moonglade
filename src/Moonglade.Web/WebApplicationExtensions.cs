@@ -74,6 +74,9 @@ public static class WebApplicationExtensions
 					case 3:
 						await mediator.Send(new AddDefaultConfigurationCommand(key, nameof(FeedSettings), FeedSettings.DefaultValue.ToJson()));
 						break;
+					case 4:
+						await mediator.Send(new AddDefaultConfigurationCommand(key, nameof(GeneralSettings), GeneralSettings.DefaultValue.ToJson()));
+						break;
 					case 5:
 						await mediator.Send(new AddDefaultConfigurationCommand(key, nameof(ImageSettings), ImageSettings.DefaultValue.ToJson()));
 						break;

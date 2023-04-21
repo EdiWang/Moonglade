@@ -11,7 +11,6 @@ public class Seed
 
         try
         {
-            await dbContext.BlogConfiguration.AddRangeAsync(GetBlogConfiguration());
             await dbContext.LocalAccount.AddRangeAsync(GetLocalAccounts());
             await dbContext.BlogTheme.AddRangeAsync(GetThemes());
             await dbContext.Category.AddRangeAsync(GetCategories());
@@ -63,27 +62,6 @@ public class Seed
             await SeedAsync(dbContext, logger, retryForAvailability);
             throw;
         }
-    }
-
-    private static IEnumerable<BlogConfigurationEntity> GetBlogConfiguration()
-    {
-        return new List<BlogConfigurationEntity>
-        {
-            new()
-            {
-                Id = 1,
-                CfgKey = "ContentSettings",
-                CfgValue = "{\"EnableComments\":true,\"RequireCommentReview\":true,\"EnableWordFilter\":false,\"PostListPageSize\":10,\"HotTagAmount\":10,\"DisharmonyWords\":\"fuck|shit\",\"ShowCalloutSection\":false,\"CalloutSectionHtmlPitch\":\"\"}",
-                LastModifiedTimeUtc = DateTime.UtcNow
-            },
-            new()
-            {
-                Id = 4,
-                CfgKey = "GeneralSettings",
-                CfgValue = "{\"OwnerName\":\"Admin\",\"OwnerEmail\":\"admin@edi.wang\",\"Description\":\"Moonglade Admin\",\"ShortDescription\":\"Moonglade Admin\",\"AvatarBase64\":\"\",\"SiteTitle\":\"Moonglade\",\"LogoText\":\"moonglade\",\"MetaKeyword\":\"moonglade\",\"MetaDescription\":\"Just another .NET blog system\",\"Copyright\":\"[c] 2023\",\"SideBarCustomizedHtmlPitch\":\"\",\"FooterCustomizedHtmlPitch\":\"\",\"UserTimeZoneBaseUtcOffset\":\"08:00:00\",\"TimeZoneId\":\"China Standard Time\",\"AutoDarkLightTheme\":true,\"ThemeId\":1}",
-                LastModifiedTimeUtc = DateTime.UtcNow
-            }
-        };
     }
 
     private static IEnumerable<LocalAccountEntity> GetLocalAccounts()
