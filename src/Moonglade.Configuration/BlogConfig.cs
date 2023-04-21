@@ -43,7 +43,16 @@ public class BlogConfig : IBlogConfig
 	{
 		GeneralSettings = config[nameof(GeneralSettings)].FromJson<GeneralSettings>();
 		ContentSettings = config[nameof(ContentSettings)].FromJson<ContentSettings>();
-		NotificationSettings = config[nameof(NotificationSettings)].FromJson<NotificationSettings>();
+
+		if (config.TryGetValue(nameof(NotificationSettings), out var notiSettings))
+		{
+			NotificationSettings = notiSettings.FromJson<NotificationSettings>();
+		}
+		else
+		{
+			NotificationSettings = NotificationSettings.DefaultValue;
+			yield return 2;
+		}
 
 		if (config.TryGetValue(nameof(FeedSettings), out var feedSettings))
 		{

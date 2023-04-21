@@ -65,6 +65,9 @@ public static class WebApplicationExtensions
 			{
 				switch (key)
 				{
+					case 2:
+						await mediator.Send(new AddDefaultConfigurationCommand(key, nameof(NotificationSettings), NotificationSettings.DefaultValue.ToJson()));
+						break;
 					case 3:
 						await mediator.Send(new AddDefaultConfigurationCommand(key, nameof(FeedSettings), FeedSettings.DefaultValue.ToJson()));
 						break;
