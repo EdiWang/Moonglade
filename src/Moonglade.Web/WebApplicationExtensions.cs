@@ -63,10 +63,15 @@ public static class WebApplicationExtensions
         {
             foreach (var key in toAdd)
             {
-                if (key == 10)
-                {
-                    await mediator.Send(new AddEmptyConfigurationCommand(key, nameof(CustomMenuSettings), CustomMenuSettings.DefaultValue.ToJson()));
-                }
+	            switch (key)
+	            {
+		            case 7:
+			            await mediator.Send(new AddDefaultConfigurationCommand(key, nameof(CustomStyleSheetSettings), CustomStyleSheetSettings.DefaultValue.ToJson()));
+			            break;
+		            case 10:
+			            await mediator.Send(new AddDefaultConfigurationCommand(key, nameof(CustomMenuSettings), CustomMenuSettings.DefaultValue.ToJson()));
+			            break;
+	            }
             }
         }
 

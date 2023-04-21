@@ -54,7 +54,7 @@ public class BlogConfig : IBlogConfig
 		}
 		else
 		{
-			CustomStyleSheetSettings = new();
+			CustomStyleSheetSettings = CustomStyleSheetSettings.DefaultValue;
 			yield return 7;
 		}
 

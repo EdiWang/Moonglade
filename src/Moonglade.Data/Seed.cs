@@ -111,13 +111,6 @@ public class Seed
                 CfgKey = "AdvancedSettings",
                 CfgValue = "{\"DNSPrefetchEndpoint\":\"\",\"EnablePingBackSend\":true,\"EnablePingBackReceive\":true,\"EnableOpenSearch\":true,\"WarnExternalLink\":true,\"AllowScriptsInPage\":false,\"ShowAdminLoginButton\":false,\"EnablePostRawEndpoint\":true}",
                 LastModifiedTimeUtc = DateTime.UtcNow
-            },
-            new()
-            {
-                Id = 7,
-                CfgKey = "CustomStyleSheetSettings",
-                CfgValue = "{\"EnableCustomCss\":false,\"CssCode\":\"\"}",
-                LastModifiedTimeUtc = DateTime.UtcNow
             }
         };
     }

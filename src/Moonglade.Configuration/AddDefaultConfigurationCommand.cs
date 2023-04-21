@@ -5,14 +5,14 @@ using Moonglade.Data.Infrastructure;
 
 namespace Moonglade.Configuration;
 
-public record AddEmptyConfigurationCommand(int Id, string CfgKey, string DefaultJson) : IRequest<OperationCode>;
+public record AddDefaultConfigurationCommand(int Id, string CfgKey, string DefaultJson) : IRequest<OperationCode>;
 
-public class AddEmptyConfigurationCommandHandler : IRequestHandler<AddEmptyConfigurationCommand, OperationCode>
+public class AddDefaultConfigurationCommandHandler : IRequestHandler<AddDefaultConfigurationCommand, OperationCode>
 {
     private readonly IRepository<BlogConfigurationEntity> _repository;
-    public AddEmptyConfigurationCommandHandler(IRepository<BlogConfigurationEntity> repository) => _repository = repository;
+    public AddDefaultConfigurationCommandHandler(IRepository<BlogConfigurationEntity> repository) => _repository = repository;
 
-    public async Task<OperationCode> Handle(AddEmptyConfigurationCommand request, CancellationToken ct)
+    public async Task<OperationCode> Handle(AddDefaultConfigurationCommand request, CancellationToken ct)
     {
         var entity = new BlogConfigurationEntity
         {
