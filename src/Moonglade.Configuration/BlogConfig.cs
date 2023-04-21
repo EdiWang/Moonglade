@@ -42,7 +42,16 @@ public class BlogConfig : IBlogConfig
 	public IEnumerable<int> LoadFromConfig(IDictionary<string, string> config)
 	{
 		GeneralSettings = config[nameof(GeneralSettings)].FromJson<GeneralSettings>();
-		ContentSettings = config[nameof(ContentSettings)].FromJson<ContentSettings>();
+
+		if (config.TryGetValue(nameof(ContentSettings), out var contentSettings))
+		{
+			ContentSettings = contentSettings.FromJson<ContentSettings>();
+		}
+		else
+		{
+			ContentSettings = ContentSettings.DefaultValue;
+			yield return 1;
+		}
 
 		if (config.TryGetValue(nameof(NotificationSettings), out var notiSettings))
 		{

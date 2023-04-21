@@ -1,4 +1,5 @@
 ﻿using System.ComponentModel.DataAnnotations;
+using System.Text.Json.Serialization;
 
 namespace Moonglade.Configuration;
 
@@ -63,6 +64,19 @@ public class ContentSettings : IBlogSettings
 
     [Display(Name = "Word count in abstract")]
     public int PostAbstractWords { get; set; } = 400;
+
+    [JsonIgnore]
+    public static ContentSettings DefaultValue => new()
+    {
+        EnableComments = true,
+        RequireCommentReview = true,
+        EnableGravatar = true,
+        EnableWordFilter = false,
+        PostListPageSize = 10,
+        HotTagAmount = 10,
+        DisharmonyWords = "fuck|shit",
+        CalloutSectionHtmlPitch = string.Empty
+    };
 }
 
 public enum WordFilterMode
