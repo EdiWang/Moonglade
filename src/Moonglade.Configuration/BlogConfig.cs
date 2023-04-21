@@ -40,85 +40,30 @@ public class BlogConfig : IBlogConfig
 
 	public IEnumerable<int> LoadFromConfig(IDictionary<string, string> config)
 	{
-		if (config.TryGetValue(nameof(ContentSettings), out var contentSettings))
+		ContentSettings = AssignValueForConfigItem(1, ContentSettings.DefaultValue, config);
+		NotificationSettings = AssignValueForConfigItem(2, NotificationSettings.DefaultValue, config);
+		FeedSettings = AssignValueForConfigItem(3, FeedSettings.DefaultValue, config);
+		GeneralSettings = AssignValueForConfigItem(4, GeneralSettings.DefaultValue, config);
+		ImageSettings = AssignValueForConfigItem(5, ImageSettings.DefaultValue, config);
+		AdvancedSettings = AssignValueForConfigItem(6, AdvancedSettings.DefaultValue, config);
+		CustomStyleSheetSettings = AssignValueForConfigItem(7, CustomStyleSheetSettings.DefaultValue, config);
+		CustomMenuSettings = AssignValueForConfigItem(10, CustomMenuSettings.DefaultValue, config);
+
+		return _keysToInit.AsEnumerable();
+	}
+
+	private readonly List<int> _keysToInit = new();
+	private T AssignValueForConfigItem<T>(int index, T defaultValue, IDictionary<string, string> config) where T : IBlogSettings
+	{
+		var name = typeof(T).Name;
+
+		if (config.TryGetValue(name, out var value))
 		{
-			ContentSettings = contentSettings.FromJson<ContentSettings>();
-		}
-		else
-		{
-			ContentSettings = ContentSettings.DefaultValue;
-			yield return 1;
+			return value.FromJson<T>();
 		}
 
-		if (config.TryGetValue(nameof(NotificationSettings), out var notiSettings))
-		{
-			NotificationSettings = notiSettings.FromJson<NotificationSettings>();
-		}
-		else
-		{
-			NotificationSettings = NotificationSettings.DefaultValue;
-			yield return 2;
-		}
-
-		if (config.TryGetValue(nameof(FeedSettings), out var feedSettings))
-		{
-			FeedSettings = feedSettings.FromJson<FeedSettings>();
-		}
-		else
-		{
-			FeedSettings = FeedSettings.DefaultValue;
-			yield return 3;
-		}
-
-		if (config.TryGetValue(nameof(GeneralSettings), out var generalSettings))
-		{
-			GeneralSettings = generalSettings.FromJson<GeneralSettings>();
-		}
-		else
-		{
-			GeneralSettings = GeneralSettings.DefaultValue;
-			yield return 4;
-		}
-
-		if (config.TryGetValue(nameof(ImageSettings), out var imageSettings))
-		{
-			ImageSettings = imageSettings.FromJson<ImageSettings>();
-		}
-		else
-		{
-			ImageSettings = ImageSettings.DefaultValue;
-			yield return 5;
-		}
-
-		if (config.TryGetValue(nameof(AdvancedSettings), out var advancedSettings))
-		{
-			AdvancedSettings = advancedSettings.FromJson<AdvancedSettings>();
-		}
-		else
-		{
-			AdvancedSettings = AdvancedSettings.DefaultValue;
-			yield return 6;
-		}
-
-		if (config.TryGetValue(nameof(CustomStyleSheetSettings), out var customStyleSheetSettings))
-		{
-			CustomStyleSheetSettings = customStyleSheetSettings.FromJson<CustomStyleSheetSettings>();
-		}
-		else
-		{
-			CustomStyleSheetSettings = CustomStyleSheetSettings.DefaultValue;
-			yield return 7;
-		}
-
-		if (config.TryGetValue(nameof(CustomMenuSettings), out var customMenuSettings))
-		{
-			CustomMenuSettings = customMenuSettings.FromJson<CustomMenuSettings>();
-		}
-		else
-		{
-			CustomMenuSettings = CustomMenuSettings.DefaultValue;
-			yield return 10;
-		}
+		_keysToInit.Add(index);
+		return defaultValue;
 	}
 
 	public KeyValuePair<string, string> UpdateAsync<T>(T blogSettings) where T : IBlogSettings
