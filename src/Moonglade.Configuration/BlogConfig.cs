@@ -48,9 +48,9 @@ public class BlogConfig : IBlogConfig
         CustomStyleSheetSettings = config[nameof(CustomStyleSheetSettings)].FromJson<CustomStyleSheetSettings>();
 
         // Curry code: only migrate new keys added after version 12.9.x
-        if (config.ContainsKey(nameof(CustomMenuSettings)))
+        if (config.TryGetValue(nameof(CustomMenuSettings), out var value))
         {
-            CustomMenuSettings = config[nameof(CustomMenuSettings)].FromJson<CustomMenuSettings>();
+            CustomMenuSettings = value.FromJson<CustomMenuSettings>();
         }
         else
         {
