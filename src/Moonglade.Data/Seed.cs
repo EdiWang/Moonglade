@@ -20,8 +20,7 @@ public class Seed
             await dbContext.CustomPage.AddRangeAsync(GetPages());
 
             // Add example post
-            var content =
-                "Moonglade is the new blog system for https://edi.wang. It is a complete rewrite of the old system using .NET 6 and runs on Microsoft Azure.";
+            var content = "Moonglade is the blog system for https://edi.wang. Powered by .NET 7 and runs on Microsoft Azure.";
 
             var post = new PostEntity
             {
