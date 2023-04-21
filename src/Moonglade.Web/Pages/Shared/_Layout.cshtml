@@ -29,9 +29,14 @@
 }
 <!DOCTYPE html>
 <html lang="@langCode">
-<head>
+<head profile=@(BlogConfig.GeneralSettings.UseDublinCoreMetaData ? "http://dublincore.org/documents/dcq-html/" : null)>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
+    @if (BlogConfig.GeneralSettings.UseDublinCoreMetaData)
+    {
+	    <link rel="schema.DC"      href="http://purl.org/dc/elements/1.1/" />
+	    <link rel="schema.DCTERMS" href="http://purl.org/dc/terms/" />
+    }
     @if (IsSectionDefined("keywords"))
     {
         @await RenderSectionAsync("keywords", false)

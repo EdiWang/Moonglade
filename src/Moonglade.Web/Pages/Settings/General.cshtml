@@ -5,36 +5,36 @@
 @inject IMediator Mediator
 
 @{
-    var tzList = ZoneResolver.ListTimeZones().Select(t => new SelectListItem
-    {
-        Text = t.DisplayName,
-        Value = t.Id
-    });
+	var tzList = ZoneResolver.ListTimeZones().Select(t => new SelectListItem
+	{
+		Text = t.DisplayName,
+		Value = t.Id
+	});
 
-    var themes = await Mediator.Send(new GetAllThemeSegmentQuery());
-    var tmList = themes
-        .Select(t => new SelectListItem
-        {
-            Text = t.Name,
-            Value = t.Id.ToString()
-        });
+	var themes = await Mediator.Send(new GetAllThemeSegmentQuery());
+	var tmList = themes
+		.Select(t => new SelectListItem
+		{
+			Text = t.Name,
+			Value = t.Id.ToString()
+		});
 
 
-    var cultureItems = LocOptions.Value.SupportedUICultures
-        .Select(c => new { Value = c.Name, c.NativeName });
+	var cultureItems = LocOptions.Value.SupportedUICultures
+		.Select(c => new { Value = c.Name, c.NativeName });
 
-    var langList = cultureItems
-        .Select(t => new SelectListItem
-        {
-            Text = t.NativeName,
-            Value = t.Value.ToLower()
-        });
+	var langList = cultureItems
+		.Select(t => new SelectListItem
+		{
+			Text = t.NativeName,
+			Value = t.Value.ToLower()
+		});
 }
 
 @section scripts{
-    <script src="~/js/app/imageuploader.js"></script>
-    <script src="~/js/3rd/bs-custom-file-input.min.js"></script>
-    <script type="module">
+	<script src="~/js/app/imageuploader.js"></script>
+	<script src="~/js/3rd/bs-custom-file-input.min.js"></script>
+	<script type="module">
         import * as settings from '/js/app/admin.settings.module.js';
 
         var avatarUploader = new ImageUploader('avatar', 300, 'image/jpeg');
@@ -88,409 +88,433 @@
     </script>
 }
 
-<partial name="_SettingsHeader" />
+<partial name="_SettingsHeader"/>
 
 <div class="ps-4 pe-4">
 
-    <form id="form-settings" asp-controller="Settings" asp-action="General" spellcheck="false">
-        <div class="row g-5">
-            <div class="col-md-6">
-                <div class="mb-3">
-                    <h6 class="card-subtitle mb-3 text-muted">@SharedLocalizer["Blog Identity"]</h6>
-                    <div class="row">
-                        <div class="col-2">
-                            <div class="mb-2">
-                                <img src="@Url.Action("SiteIconOrigin", "Assets")" class="img-thumbnail img-fluid blogadmin-siteicon" />
-                            </div>
-                            <a class="btn w-100 btn-sm btn-outline-accent" href="#" data-bs-toggle="modal" data-bs-target="#siteiconmodal">@SharedLocalizer["Change"]</a>
-                        </div>
-                        <div class="col-10">
-                            <div class="row g-2 mb-3">
-                                <div class="col">
-                                    <label class="form-label" asp-for="ViewModel.SiteTitle"></label>
-                                    <input asp-for="ViewModel.SiteTitle" class="form-control" required />
-                                </div>
-                                <div class="col">
-                                    <label class="form-label" asp-for="ViewModel.LogoText"></label>
-                                    <input asp-for="ViewModel.LogoText" class="form-control" required />
-                                </div>
-                            </div>
-                            <div class="mb-1">
-                                <label class="form-label" asp-for="ViewModel.MetaKeyword"></label>
-                                <input asp-for="ViewModel.MetaKeyword" class="form-control" required />
-                            </div>
+<form id="form-settings" asp-controller="Settings" asp-action="General" spellcheck="false">
+<div class="row g-5">
+<div class="col-md-6">
+	<div class="mb-3">
+		<h6 class="card-subtitle mb-3 text-muted">@SharedLocalizer["Blog Identity"]</h6>
+		<div class="row">
+			<div class="col-2">
+				<div class="mb-2">
+					<img src="@Url.Action("SiteIconOrigin", "Assets")" class="img-thumbnail img-fluid blogadmin-siteicon"/>
+				</div>
+				<a class="btn w-100 btn-sm btn-outline-accent" href="#" data-bs-toggle="modal" data-bs-target="#siteiconmodal">@SharedLocalizer["Change"]</a>
+			</div>
+			<div class="col-10">
+				<div class="row g-2 mb-3">
+					<div class="col">
+						<label class="form-label" asp-for="ViewModel.SiteTitle"></label>
+						<input asp-for="ViewModel.SiteTitle" class="form-control" required/>
+					</div>
+					<div class="col">
+						<label class="form-label" asp-for="ViewModel.LogoText"></label>
+						<input asp-for="ViewModel.LogoText" class="form-control" required/>
+					</div>
+				</div>
+				<div class="mb-1">
+					<label class="form-label" asp-for="ViewModel.MetaKeyword"></label>
+					<input asp-for="ViewModel.MetaKeyword" class="form-control" required/>
+				</div>
 
-                            <div class="row g-3 align-items-center settings-entry mt-1 mb-4">
-                                <div class="col-auto">
-                                    <i class="bi-link settings-entry-icon"></i>
-                                </div>
-                                <div class="col">
-                                    <label asp-for="ViewModel.CanonicalPrefix"></label>
-                                    <div class="form-text">@SharedLocalizer["Set a primary domain if your website binds to multiple domian names."]</div>
-                                </div>
-                                <div class="col-md-5 text-end">
-                                    <input asp-for="ViewModel.CanonicalPrefix" class="form-control" />
-                                </div>
-                            </div>
-                            
-                            <div class="row g-3 align-items-center settings-entry mb-4">
-                                <div class="col-auto">
-                                    <i class="bi-clock settings-entry-icon"></i>
-                                </div>
-                                <div class="col">
-                                    <label for="SelectedUtcOffset">@SharedLocalizer["Time Zone"]</label>
-                                    <div class="form-text">@SharedLocalizer["Blog posts will use this time zone as date and time display."]</div>
-                                </div>
-                                <div class="col-md-5 text-end">
-                                    <select class="form-select" asp-for="ViewModel.TimeZoneId" asp-items="@tzList"></select>
-                                </div>
-                            </div>
-                            
-                            <div class="row g-3 align-items-center settings-entry mb-4">
-                                <div class="col-auto">
-                                    <i class="bi-globe settings-entry-icon"></i>
-                                </div>
-                                <div class="col">
-                                    <label for="DefaultLanguageCode">@SharedLocalizer["Default language"]</label>
-                                    <div class="form-text">@SharedLocalizer["Blog will use this language for SEO by default unless specified in blog post."]</div>
-                                </div>
-                                <div class="col-md-5 text-end">
-                                    <select class="form-select" asp-for="ViewModel.DefaultLanguageCode" asp-items="@langList"></select>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="row">
-                        <div class="col-md-2 col-sm-4">
-                            <div class="mb-3">
-                                <img src="@BlogConfig.GeneralSettings.AvatarUrl" class="img-thumbnail img-fluid blogadmin-avatar" />
-                            </div>
-                            <a class="btn w-100 btn-sm btn-outline-accent" href="#" data-bs-toggle="modal" data-bs-target="#avatarmodal">@SharedLocalizer["Change"]</a>
-                        </div>
-                        <div class="col-md-10 col-sm-8">
-                            <div class="row g-2 mb-3">
-                                <div class="col">
-                                    <label class="form-label" asp-for="ViewModel.OwnerName"></label>
-                                    <input asp-for="ViewModel.OwnerName" class="form-control" required />
-                                </div>
-                                <div class="col">
-                                    <label class="form-label" asp-for="ViewModel.OwnerEmail"></label>
-                                    <input asp-for="ViewModel.OwnerEmail" class="form-control" required title="@SharedLocalizer["Email address to receive notifications from this blog."]" />
-                                </div>
-                            </div>
-                            <div class="mb-4">
-                                <div class="form-floating">
-                                    <textarea asp-for="ViewModel.Description"
+				<div class="row g-3 align-items-center settings-entry mt-1 mb-4">
+					<div class="col-auto">
+						<i class="bi-link settings-entry-icon"></i>
+					</div>
+					<div class="col">
+						<label asp-for="ViewModel.CanonicalPrefix"></label>
+						<div class="form-text">@SharedLocalizer["Set a primary domain if your website binds to multiple domian names."]</div>
+					</div>
+					<div class="col-md-5 text-end">
+						<input asp-for="ViewModel.CanonicalPrefix" class="form-control"/>
+					</div>
+				</div>
+
+				<div class="row g-3 align-items-center settings-entry mb-4">
+					<div class="col-auto">
+						<i class="bi-clock settings-entry-icon"></i>
+					</div>
+					<div class="col">
+						<label for="SelectedUtcOffset">@SharedLocalizer["Time Zone"]</label>
+						<div class="form-text">@SharedLocalizer["Blog posts will use this time zone as date and time display."]</div>
+					</div>
+					<div class="col-md-5 text-end">
+						<select class="form-select" asp-for="ViewModel.TimeZoneId" asp-items="@tzList"></select>
+					</div>
+				</div>
+
+				<div class="row g-3 align-items-center settings-entry mb-4">
+					<div class="col-auto">
+						<i class="bi-globe settings-entry-icon"></i>
+					</div>
+					<div class="col">
+						<label for="DefaultLanguageCode">@SharedLocalizer["Default language"]</label>
+						<div class="form-text">@SharedLocalizer["Blog will use this language for SEO by default unless specified in blog post."]</div>
+					</div>
+					<div class="col-md-5 text-end">
+						<select class="form-select" asp-for="ViewModel.DefaultLanguageCode" asp-items="@langList"></select>
+					</div>
+				</div>
+			</div>
+		</div>
+		<div class="row">
+			<div class="col-md-2 col-sm-4">
+				<div class="mb-3">
+					<img src="@BlogConfig.GeneralSettings.AvatarUrl" class="img-thumbnail img-fluid blogadmin-avatar"/>
+				</div>
+				<a class="btn w-100 btn-sm btn-outline-accent" href="#" data-bs-toggle="modal" data-bs-target="#avatarmodal">@SharedLocalizer["Change"]</a>
+			</div>
+			<div class="col-md-10 col-sm-8">
+				<div class="row g-2 mb-3">
+					<div class="col">
+						<label class="form-label" asp-for="ViewModel.OwnerName"></label>
+						<input asp-for="ViewModel.OwnerName" class="form-control" required/>
+					</div>
+					<div class="col">
+						<label class="form-label" asp-for="ViewModel.OwnerEmail"></label>
+						<input asp-for="ViewModel.OwnerEmail" class="form-control" required title="@SharedLocalizer["Email address to receive notifications from this blog."]"/>
+					</div>
+				</div>
+				<div class="mb-4">
+					<div class="form-floating">
+						<textarea asp-for="ViewModel.Description"
                                               placeholder="@Html.DisplayNameFor(m => m.ViewModel.Description)"
                                               class="form-control h-100px"
                                               spellcheck="false" cols="10" rows="10" required></textarea>
-                                    <label class="form-label" asp-for="ViewModel.Description"></label>
-                                </div>
-                            </div>
-                            
-                            <div class="row g-3 align-items-center settings-entry mb-2">
-                                <div class="col-auto">
-                                    <i class="bi-text-center settings-entry-icon"></i>
-                                </div>
-                                <div class="col">
-                                    <label asp-for="ViewModel.ShortDescription"></label>
-                                    <div class="form-text">@SharedLocalizer["Short description is for display only on Phone screen."]</div>
-                                </div>
-                                <div class="col-md-5 text-end">
-                                    <input asp-for="ViewModel.ShortDescription" class="form-control" required />
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <div class="col-md-6">
-                <div class="mb-3">
-                    <h6 class="card-subtitle mb-2 text-muted">
-                        @SharedLocalizer["Theme"]
-                    </h6>
-                    <div>
-                        <div class="row g-1 mb-4">
-                            <div class="col">
-                                <select class="form-select" asp-for="ViewModel.ThemeId" asp-items="@tmList"></select>
-                            </div>
-                            <div class="col-auto">
-                                <a class="btn btn-outline-accent" href="#" data-bs-toggle="modal" data-bs-target="#thememodal">
-                                    <i class="bi-palette"></i>
-                                    New
-                                </a>
-                                <a class="btn btn-outline-danger btn-delete-theme" href="javascript:deleteTheme();">
-                                    <i class="bi-trash"></i>
-                                </a>
-                            </div>
-                        </div>
-                        
-                        <div class="row g-3 align-items-center settings-entry mb-4">
-                            <div class="col-auto">
-                                <i class="bi-moon settings-entry-icon"></i>
-                            </div>
-                            <div class="col">
-                                <label asp-for="ViewModel.AutoDarkLightTheme" class="form-check-label"></label>
-                            </div>
-                            <div class="col-md-5 text-end">
-                                <div class="form-check form-switch">
-                                    <input type="hidden" name="AutoDarkLightTheme" value="false">
-                                    <input type="checkbox" name="AutoDarkLightTheme" value="true" class="form-check-input" @(Model.ViewModel.AutoDarkLightTheme ? "checked" :null)>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    <h6 class="card-subtitle mt-5 mb-2 text-muted">
-                        @SharedLocalizer["Side Bar"]
-                    </h6>
-                    <div class="mb-4">
-                        <div class="form-check form-check-inline">
-                            @Html.RadioButtonFor(model => model.ViewModel.SideBarOption, SideBarOption.Right, new { id = SideBarOption.Right.ToString(), @class = "form-check-input" })
-                            <label class="form-check-label" for="@SideBarOption.Right">@SharedLocalizer["Right"]</label>
-                        </div>
-                        <div class="form-check form-check-inline">
-                            @Html.RadioButtonFor(model => model.ViewModel.SideBarOption, SideBarOption.Left, new { id = SideBarOption.Left.ToString(), @class = "form-check-input" })
-                            <label class="form-check-label" for="@SideBarOption.Left">@SharedLocalizer["Left"]</label>
-                        </div>
-                        <div class="form-check form-check-inline">
-                            @Html.RadioButtonFor(model => model.ViewModel.SideBarOption, SideBarOption.Disabled, new { id = SideBarOption.Disabled.ToString(), @class = "form-check-input" })
-                            <label class="form-check-label" for="@SideBarOption.Disabled">@SharedLocalizer["Disabled"]</label>
-                        </div>
-                    </div>
-                    
-                    <div class="row g-3 align-items-center settings-entry mb-2">
-                        <div class="col-auto">
-                            <i class="bi-file-person settings-entry-icon"></i>
-                        </div>
-                        <div class="col">
-                            <label asp-for="ViewModel.WidgetsProfile" class="form-check-label"></label>
-                        </div>
-                        <div class="col-md-5 text-end">
-                            <div class="form-check form-switch">
-                                <input type="hidden" name="WidgetsProfile" value="false">
-                                <input type="checkbox" name="WidgetsProfile" value="true" class="form-check-input" @(Model.ViewModel.WidgetsProfile ? "checked" :null)>
-                            </div>
-                        </div>
-                    </div>
+						<label class="form-label" asp-for="ViewModel.Description"></label>
+					</div>
+				</div>
 
-                    <div class="form-floating mb-4">
-                        <textarea asp-for="ViewModel.SideBarCustomizedHtmlPitch"
+				<div class="row g-3 align-items-center settings-entry mb-2">
+					<div class="col-auto">
+						<i class="bi-text-center settings-entry-icon"></i>
+					</div>
+					<div class="col">
+						<label asp-for="ViewModel.ShortDescription"></label>
+						<div class="form-text">@SharedLocalizer["Short description is for display only on Phone screen."]</div>
+					</div>
+					<div class="col-md-5 text-end">
+						<input asp-for="ViewModel.ShortDescription" class="form-control" required/>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+<div class="col-md-6">
+<div class="mb-3">
+<h6 class="card-subtitle mb-2 text-muted">
+	@SharedLocalizer["Theme"]
+</h6>
+<div>
+	<div class="row g-1 mb-4">
+		<div class="col">
+			<select class="form-select" asp-for="ViewModel.ThemeId" asp-items="@tmList"></select>
+		</div>
+		<div class="col-auto">
+			<a class="btn btn-outline-accent" href="#" data-bs-toggle="modal" data-bs-target="#thememodal">
+				<i class="bi-palette"></i>
+				New
+			</a>
+			<a class="btn btn-outline-danger btn-delete-theme" href="javascript:deleteTheme();">
+				<i class="bi-trash"></i>
+			</a>
+		</div>
+	</div>
+
+	<div class="row g-3 align-items-center settings-entry mb-4">
+		<div class="col-auto">
+			<i class="bi-moon settings-entry-icon"></i>
+		</div>
+		<div class="col">
+			<label asp-for="ViewModel.AutoDarkLightTheme" class="form-check-label"></label>
+		</div>
+		<div class="col-md-5 text-end">
+			<div class="form-check form-switch">
+				<input type="hidden" name="AutoDarkLightTheme" value="false">
+				<input type="checkbox" name="AutoDarkLightTheme" value="true" class="form-check-input" @(Model.ViewModel.AutoDarkLightTheme ? "checked" : null)>
+			</div>
+		</div>
+	</div>
+</div>
+<h6 class="card-subtitle mt-5 mb-2 text-muted">
+	@SharedLocalizer["Side Bar"]
+</h6>
+<div class="mb-4">
+	<div class="form-check form-check-inline">
+		@Html.RadioButtonFor(model => model.ViewModel.SideBarOption, SideBarOption.Right, new { id = SideBarOption.Right.ToString(), @class = "form-check-input" })
+		<label class="form-check-label" for="@SideBarOption.Right">@SharedLocalizer["Right"]</label>
+	</div>
+	<div class="form-check form-check-inline">
+		@Html.RadioButtonFor(model => model.ViewModel.SideBarOption, SideBarOption.Left, new { id = SideBarOption.Left.ToString(), @class = "form-check-input" })
+		<label class="form-check-label" for="@SideBarOption.Left">@SharedLocalizer["Left"]</label>
+	</div>
+	<div class="form-check form-check-inline">
+		@Html.RadioButtonFor(model => model.ViewModel.SideBarOption, SideBarOption.Disabled, new { id = SideBarOption.Disabled.ToString(), @class = "form-check-input" })
+		<label class="form-check-label" for="@SideBarOption.Disabled">@SharedLocalizer["Disabled"]</label>
+	</div>
+</div>
+
+<div class="row g-3 align-items-center settings-entry mb-2">
+	<div class="col-auto">
+		<i class="bi-file-person settings-entry-icon"></i>
+	</div>
+	<div class="col">
+		<label asp-for="ViewModel.WidgetsProfile" class="form-check-label"></label>
+	</div>
+	<div class="col-md-5 text-end">
+		<div class="form-check form-switch">
+			<input type="hidden" name="WidgetsProfile" value="false">
+			<input type="checkbox" name="WidgetsProfile" value="true" class="form-check-input" @(Model.ViewModel.WidgetsProfile ? "checked" : null)>
+		</div>
+	</div>
+</div>
+
+<div class="form-floating mb-4">
+	<textarea asp-for="ViewModel.SideBarCustomizedHtmlPitch"
                                   placeholder="@Html.DisplayNameFor(m => m.ViewModel.SideBarCustomizedHtmlPitch)"
                                   class="form-control form-control-sm h-100px textarea-code"
                                   spellcheck="false"
                                   cols="10"
                                   rows="10"></textarea>
-                        <label class="form-label" asp-for="ViewModel.SideBarCustomizedHtmlPitch"></label>
-                    </div>
-                    
-                    <div class="row g-3 align-items-center settings-entry mb-4">
-                        <div class="col-auto">
-                            <i class="bi-tags settings-entry-icon"></i>
-                        </div>
-                        <div class="col">
-                            <label asp-for="ViewModel.WidgetsTags" class="form-check-label"></label>
-                        </div>
-                        <div class="col-md-5 text-end">
-                            <div class="form-check form-switch">
-                                <input type="hidden" name="WidgetsTags" value="false">
-                                <input type="checkbox" name="WidgetsTags" value="true" class="form-check-input" @(Model.ViewModel.WidgetsTags ? "checked" : null)>
-                            </div>
-                        </div>
-                    </div>
-                    
-                    <div class="row g-3 align-items-center settings-entry mb-4">
-                        <div class="col-auto">
-                            <i class="bi-folder2 settings-entry-icon"></i>
-                        </div>
-                        <div class="col">
-                            <label asp-for="ViewModel.WidgetsCategoryList" class="form-check-label"></label>
-                        </div>
-                        <div class="col-md-5 text-end">
-                            <div class="form-check form-switch">
-                                <input type="hidden" name="WidgetsCategoryList" value="false">
-                                <input type="checkbox" name="WidgetsCategoryList" value="true" class="form-check-input" @(Model.ViewModel.WidgetsCategoryList ?"checked" : null)>
-                            </div>
-                        </div>
-                    </div>
-                    
-                    <div class="row g-3 align-items-center settings-entry mb-4">
-                        <div class="col-auto">
-                            <i class="bi-link-45deg settings-entry-icon"></i>
-                        </div>
-                        <div class="col">
-                            <label asp-for="ViewModel.WidgetsFriendLink" class="form-check-label"></label>
-                        </div>
-                        <div class="col-md-5 text-end">
-                            <div class="form-check form-switch">
-                                <input type="hidden" name="WidgetsFriendLink" value="false">
-                                <input type="checkbox" name="WidgetsFriendLink" value="true" class="form-check-input" @(Model.ViewModel.WidgetsFriendLink ?"checked" : null)>
-                            </div>
-                        </div>
-                    </div>
-                    
-                    <div class="row g-3 align-items-center settings-entry mb-4">
-                        <div class="col-auto">
-                            <i class="bi-menu-button settings-entry-icon"></i>
-                        </div>
-                        <div class="col">
-                            <label asp-for="ViewModel.WidgetsSubscriptionButtons" class="form-check-label"></label>
-                        </div>
-                        <div class="col-md-5 text-end">
-                            <div class="form-check form-switch">
-                                <input type="hidden" name="WidgetsSubscriptionButtons" value="false">
-                                <input type="checkbox" name="WidgetsSubscriptionButtons" value="true" class="form-check-input" @(Model.ViewModel.WidgetsSubscriptionButtons ?"checked" : null)>
-                            </div>
-                        </div>
-                    </div>
-                    
-                    <div class="row g-3 align-items-center settings-entry mb-4">
-                        <div class="col-auto">
-                            <i class="bi-hand-index settings-entry-icon"></i>
-                        </div>
-                        <div class="col">
-                            <label asp-for="ViewModel.ShowAdminLoginButton" class="form-check-label"></label>
-                        </div>
-                        <div class="col-md-4 text-end">
-                            <div class="form-check form-switch">
-                                <input type="hidden" name="ShowAdminLoginButton" value="false">
-                                <input type="checkbox" name="ShowAdminLoginButton" value="true" class="form-check-input" @(Model.ViewModel.ShowAdminLoginButton ? "checked" : null)>
-                            </div>
-                        </div>
-                    </div>
+	<label class="form-label" asp-for="ViewModel.SideBarCustomizedHtmlPitch"></label>
+</div>
 
-                    <div class="mt-5">
-                        <h6 class="card-subtitle mb-4 text-muted">
-                            @SharedLocalizer["Footer"]
-                        </h6>
-                        
-                        <div class="row g-3 align-items-center settings-entry mb-2">
-                            <div class="col-auto">
-                                <i class="bi-check2-square settings-entry-icon"></i>
-                            </div>
-                            <div class="col">
-                                <label asp-for="ViewModel.Copyright"></label>
-                                <div class="form-text">@SharedLocalizer["Use [c] for copyright mark: &copy;, [year] for current year."]</div>
-                            </div>
-                            <div class="col-md-5 text-end">
-                                <input asp-for="ViewModel.Copyright" class="form-control" required />
-                            </div>
-                        </div>
+<div class="row g-3 align-items-center settings-entry mb-4">
+	<div class="col-auto">
+		<i class="bi-tags settings-entry-icon"></i>
+	</div>
+	<div class="col">
+		<label asp-for="ViewModel.WidgetsTags" class="form-check-label"></label>
+	</div>
+	<div class="col-md-5 text-end">
+		<div class="form-check form-switch">
+			<input type="hidden" name="WidgetsTags" value="false">
+			<input type="checkbox" name="WidgetsTags" value="true" class="form-check-input" @(Model.ViewModel.WidgetsTags ? "checked" : null)>
+		</div>
+	</div>
+</div>
 
-                        <div class="form-floating">
-                            <textarea asp-for="ViewModel.FooterCustomizedHtmlPitch"
+<div class="row g-3 align-items-center settings-entry mb-4">
+	<div class="col-auto">
+		<i class="bi-folder2 settings-entry-icon"></i>
+	</div>
+	<div class="col">
+		<label asp-for="ViewModel.WidgetsCategoryList" class="form-check-label"></label>
+	</div>
+	<div class="col-md-5 text-end">
+		<div class="form-check form-switch">
+			<input type="hidden" name="WidgetsCategoryList" value="false">
+			<input type="checkbox" name="WidgetsCategoryList" value="true" class="form-check-input" @(Model.ViewModel.WidgetsCategoryList ? "checked" : null)>
+		</div>
+	</div>
+</div>
+
+<div class="row g-3 align-items-center settings-entry mb-4">
+	<div class="col-auto">
+		<i class="bi-link-45deg settings-entry-icon"></i>
+	</div>
+	<div class="col">
+		<label asp-for="ViewModel.WidgetsFriendLink" class="form-check-label"></label>
+	</div>
+	<div class="col-md-5 text-end">
+		<div class="form-check form-switch">
+			<input type="hidden" name="WidgetsFriendLink" value="false">
+			<input type="checkbox" name="WidgetsFriendLink" value="true" class="form-check-input" @(Model.ViewModel.WidgetsFriendLink ? "checked" : null)>
+		</div>
+	</div>
+</div>
+
+<div class="row g-3 align-items-center settings-entry mb-4">
+	<div class="col-auto">
+		<i class="bi-menu-button settings-entry-icon"></i>
+	</div>
+	<div class="col">
+		<label asp-for="ViewModel.WidgetsSubscriptionButtons" class="form-check-label"></label>
+	</div>
+	<div class="col-md-5 text-end">
+		<div class="form-check form-switch">
+			<input type="hidden" name="WidgetsSubscriptionButtons" value="false">
+			<input type="checkbox" name="WidgetsSubscriptionButtons" value="true" class="form-check-input" @(Model.ViewModel.WidgetsSubscriptionButtons ? "checked" : null)>
+		</div>
+	</div>
+</div>
+
+<div class="row g-3 align-items-center settings-entry mb-4">
+	<div class="col-auto">
+		<i class="bi-hand-index settings-entry-icon"></i>
+	</div>
+	<div class="col">
+		<label asp-for="ViewModel.ShowAdminLoginButton" class="form-check-label"></label>
+	</div>
+	<div class="col-md-4 text-end">
+		<div class="form-check form-switch">
+			<input type="hidden" name="ShowAdminLoginButton" value="false">
+			<input type="checkbox" name="ShowAdminLoginButton" value="true" class="form-check-input" @(Model.ViewModel.ShowAdminLoginButton ? "checked" : null)>
+		</div>
+	</div>
+</div>
+
+<div class="mt-5">
+	<h6 class="card-subtitle mb-4 text-muted">
+		@SharedLocalizer["Footer"]
+	</h6>
+
+	<div class="row g-3 align-items-center settings-entry mb-2">
+		<div class="col-auto">
+			<i class="bi-check2-square settings-entry-icon"></i>
+		</div>
+		<div class="col">
+			<label asp-for="ViewModel.Copyright"></label>
+			<div class="form-text">@SharedLocalizer["Use [c] for copyright mark: &copy;, [year] for current year."]</div>
+		</div>
+		<div class="col-md-5 text-end">
+			<input asp-for="ViewModel.Copyright" class="form-control" required/>
+		</div>
+	</div>
+
+	<div class="form-floating">
+		<textarea asp-for="ViewModel.FooterCustomizedHtmlPitch"
                                       placeholder="@Html.DisplayNameFor(m => m.ViewModel.FooterCustomizedHtmlPitch)"
                                       class="form-control form-control-sm h-100px textarea-code"
                                       spellcheck="false" rows="10" cols="10"></textarea>
-                            <label class="form-label" asp-for="ViewModel.FooterCustomizedHtmlPitch"></label>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
+		<label class="form-label" asp-for="ViewModel.FooterCustomizedHtmlPitch"></label>
+	</div>
+</div>
 
-        <div class="mb-4">
-            <input id="btn-save-settings" type="submit" value="@SharedLocalizer["Save"]" class="btn btn-outline-accent" />
-        </div>
-    </form>
+<div class="mt-5">
+	<h6 class="card-subtitle mb-4 text-muted">
+		@SharedLocalizer["Dublin Core Metadata"]
+	</h6>
+	<div class="row g-3 align-items-center settings-entry mb-4">
+		<div class="col-auto">
+			<i class="bi bi-globe settings-entry-icon"></i>
+		</div>
+		<div class="col">
+			<label asp-for="@BlogConfig.GeneralSettings.UseDublinCoreMetaData" class="form-check-label"></label>
+		</div>
+		<div class="col-md-5 text-end">
+			<div class="form-check form-switch">
+				<input type="hidden" name="UseDublinCoreMetaData" value="false">
+				<input type="checkbox" name="UseDublinCoreMetaData" value="true" class="form-check-input" @(BlogConfig.GeneralSettings.UseDublinCoreMetaData ? "checked" : null)>
+			</div>
+		</div>
+	</div>
+	<div class="mb-1">
+		<label class="form-label" asp-for="@BlogConfig.GeneralSettings.DcLicenseUrl"></label>
+		<input asp-for="@BlogConfig.GeneralSettings.DcLicenseUrl" class="form-control"/>
+	</div>
+</div>
+</div>
+</div>
+</div>
+
+<div class="mb-4">
+	<input id="btn-save-settings" type="submit" value="@SharedLocalizer["Save"]" class="btn btn-outline-accent"/>
+</div>
+</form>
 </div>
 
 <div class="modal fade" id="avatarmodal" tabindex="-1" role="dialog" aria-labelledby="avatarmodalLabel" aria-hidden="true">
-    <div class="modal-dialog modal-sm" role="document">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title" id="avatarmodalLabel">@SharedLocalizer["Change Avatar"]</h5>
-                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close">
-                </button>
-            </div>
-            <div class="modal-body">
+	<div class="modal-dialog modal-sm" role="document">
+		<div class="modal-content">
+			<div class="modal-header">
+				<h5 class="modal-title" id="avatarmodalLabel">@SharedLocalizer["Change Avatar"]</h5>
+				<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close">
+				</button>
+			</div>
+			<div class="modal-body">
 
-                <div class="mb-2">
-                    <div id="avatarDropTarget" style="width: 256px; height: 256px;" class="img-thumbnail bg-light text-center">
-                        @SharedLocalizer["Drag and drop image file here"]
-                    </div>
+				<div class="mb-2">
+					<div id="avatarDropTarget" style="width: 256px; height: 256px;" class="img-thumbnail bg-light text-center">
+						@SharedLocalizer["Drag and drop image file here"]
+					</div>
 
-                    <div class="input-group mt-2">
-                        <div>
-                            <label class="form-label" for="avatarImageFile" aria-describedby="avatarImageFileAddon">@SharedLocalizer[".png or .jpg file"]</label>
-                            <input type="file" accept="image/png, image/jpeg" id="avatarImageFile" class="form-control" name="avatarImageFile">
-                        </div>
-                    </div>
+					<div class="input-group mt-2">
+						<div>
+							<label class="form-label" for="avatarImageFile" aria-describedby="avatarImageFileAddon">@SharedLocalizer[".png or .jpg file"]</label>
+							<input type="file" accept="image/png, image/jpeg" id="avatarImageFile" class="form-control" name="avatarImageFile">
+						</div>
+					</div>
 
-                    <p class="small text-muted text-center mt-2">@SharedLocalizer["* Image width and height must be equal"]</p>
-                </div>
-            </div>
-            <div class="modal-footer">
-                <button class="btn btn-accent disabled" id="btn-upload-avatar" disabled="disabled">@SharedLocalizer["Upload"]</button>
-            </div>
-        </div>
-    </div>
+					<p class="small text-muted text-center mt-2">@SharedLocalizer["* Image width and height must be equal"]</p>
+				</div>
+			</div>
+			<div class="modal-footer">
+				<button class="btn btn-accent disabled" id="btn-upload-avatar" disabled="disabled">@SharedLocalizer["Upload"]</button>
+			</div>
+		</div>
+	</div>
 </div>
 
 <div class="modal fade" id="siteiconmodal" tabindex="-1" role="dialog" aria-labelledby="siteiconLabel" aria-hidden="true">
-    <div class="modal-dialog modal-sm" role="document">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title" id="siteiconmodalLabel">@SharedLocalizer["Change Site Icon"]</h5>
-                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close">
-                </button>
-            </div>
-            <div class="modal-body">
+	<div class="modal-dialog modal-sm" role="document">
+		<div class="modal-content">
+			<div class="modal-header">
+				<h5 class="modal-title" id="siteiconmodalLabel">@SharedLocalizer["Change Site Icon"]</h5>
+				<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close">
+				</button>
+			</div>
+			<div class="modal-body">
 
-                <div class="mb-2">
-                    <div id="siteiconDropTarget" style="width: 256px; height: 256px;" class="img-thumbnail bg-light text-center">
-                        @SharedLocalizer["Drag and drop image file here"]
-                    </div>
+				<div class="mb-2">
+					<div id="siteiconDropTarget" style="width: 256px; height: 256px;" class="img-thumbnail bg-light text-center">
+						@SharedLocalizer["Drag and drop image file here"]
+					</div>
 
-                    <div class="input-group mt-2">
-                        <div>
-                            <label class="form-label" for="siteiconImageFile" aria-describedby="siteiconImageFileAddon">@SharedLocalizer[".png file"]</label>
-                            <input type="file" accept="image/png" class="form-control" id="siteiconImageFile" name="siteiconImageFile">
-                        </div>
-                    </div>
+					<div class="input-group mt-2">
+						<div>
+							<label class="form-label" for="siteiconImageFile" aria-describedby="siteiconImageFileAddon">@SharedLocalizer[".png file"]</label>
+							<input type="file" accept="image/png" class="form-control" id="siteiconImageFile" name="siteiconImageFile">
+						</div>
+					</div>
 
-                    <p class="small text-muted text-center mt-2">@SharedLocalizer["* Image width and height must be equal"]</p>
-                    <p class="small text-danger text-center mt-1">@SharedLocalizer["* Changing site icon requires restarting the application"]</p>
-                </div>
-            </div>
-            <div class="modal-footer">
-                <button class="btn btn-accent disabled" id="btn-upload-siteicon" disabled="disabled">@SharedLocalizer["Upload"]</button>
-            </div>
-        </div>
-    </div>
+					<p class="small text-muted text-center mt-2">@SharedLocalizer["* Image width and height must be equal"]</p>
+					<p class="small text-danger text-center mt-1">@SharedLocalizer["* Changing site icon requires restarting the application"]</p>
+				</div>
+			</div>
+			<div class="modal-footer">
+				<button class="btn btn-accent disabled" id="btn-upload-siteicon" disabled="disabled">@SharedLocalizer["Upload"]</button>
+			</div>
+		</div>
+	</div>
 </div>
 
 <div class="modal fade" id="thememodal" tabindex="-1" role="dialog" aria-labelledby="themeLabel" aria-hidden="true">
-    <div class="modal-dialog" role="document">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title" id="themeLabel">@SharedLocalizer["Custom Theme"]</h5>
-                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close">
-                </button>
-            </div>
-            <form method="post" action="/api/theme" onsubmit="createTheme(this);return false;">
-                <div class="modal-body">
-                    <div class="mb-2">
-                        <input type="text" asp-for="ThemeRequest.Name" class="form-control" placeholder="@SharedLocalizer["Name"]" required />
-                    </div>
-                    <div class="row g-2">
-                        <div class="col">
-                            <label asp-for="ThemeRequest.AccentColor1" class="form-label">Accent Color 1</label>
-                            <input type="color" class="form-control form-control-color" asp-for="ThemeRequest.AccentColor1" value="#2a579a" title="Accent Color 1" required>
-                        </div>
-                        <div class="col">
-                            <label asp-for="ThemeRequest.AccentColor2" class="form-label">Accent Color 2</label>
-                            <input type="color" class="form-control form-control-color" asp-for="ThemeRequest.AccentColor2" value="#1a365f" title="Accent Color 2" required>
-                        </div>
-                        <div class="col">
-                            <label asp-for="ThemeRequest.AccentColor3" class="form-label">Accent Color 3</label>
-                            <input type="color" class="form-control form-control-color" asp-for="ThemeRequest.AccentColor3" value="#3e6db5" title="Accent Color 3" required>
-                        </div>
-                    </div>
-                </div>
-                <div class="modal-footer">
-                    <button type="submit" class="btn btn-success" id="btn-save-theme">@SharedLocalizer["Save"]</button>
-                </div>
-            </form>
-        </div>
-    </div>
+	<div class="modal-dialog" role="document">
+		<div class="modal-content">
+			<div class="modal-header">
+				<h5 class="modal-title" id="themeLabel">@SharedLocalizer["Custom Theme"]</h5>
+				<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close">
+				</button>
+			</div>
+			<form method="post" action="/api/theme" onsubmit="createTheme(this);return false;">
+				<div class="modal-body">
+					<div class="mb-2">
+						<input type="text" asp-for="ThemeRequest.Name" class="form-control" placeholder="@SharedLocalizer["Name"]" required/>
+					</div>
+					<div class="row g-2">
+						<div class="col">
+							<label asp-for="ThemeRequest.AccentColor1" class="form-label">Accent Color 1</label>
+							<input type="color" class="form-control form-control-color" asp-for="ThemeRequest.AccentColor1" value="#2a579a" title="Accent Color 1" required>
+						</div>
+						<div class="col">
+							<label asp-for="ThemeRequest.AccentColor2" class="form-label">Accent Color 2</label>
+							<input type="color" class="form-control form-control-color" asp-for="ThemeRequest.AccentColor2" value="#1a365f" title="Accent Color 2" required>
+						</div>
+						<div class="col">
+							<label asp-for="ThemeRequest.AccentColor3" class="form-label">Accent Color 3</label>
+							<input type="color" class="form-control form-control-color" asp-for="ThemeRequest.AccentColor3" value="#3e6db5" title="Accent Color 3" required>
+						</div>
+					</div>
+				</div>
+				<div class="modal-footer">
+					<button type="submit" class="btn btn-success" id="btn-save-theme">@SharedLocalizer["Save"]</button>
+				</div>
+			</form>
+		</div>
+	</div>
 </div>
