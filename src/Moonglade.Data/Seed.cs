@@ -118,13 +118,6 @@ public class Seed
                 CfgKey = "CustomStyleSheetSettings",
                 CfgValue = "{\"EnableCustomCss\":false,\"CssCode\":\"\"}",
                 LastModifiedTimeUtc = DateTime.UtcNow
-            },
-            new()
-            {
-                Id = 10,
-                CfgKey = "CustomMenuSettings",
-                CfgValue = "{\"IsEnabled\":true,\"Menus\":[{\"Title\":\"About\",\"Url\":\"/page/about\",\"Icon\":\"bi-star\",\"DisplayOrder\":1,\"IsOpenInNewTab\":false,\"SubMenus\":[]}]}",
-                LastModifiedTimeUtc = DateTime.UtcNow
             }
         };
     }

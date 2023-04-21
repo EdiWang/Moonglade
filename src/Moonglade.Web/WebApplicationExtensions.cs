@@ -65,7 +65,7 @@ public static class WebApplicationExtensions
             {
                 if (key == 10)
                 {
-                    await mediator.Send(new AddEmptyConfigurationCommand(key, nameof(CustomMenuSettings), new CustomMenuSettings().ToJson()));
+                    await mediator.Send(new AddEmptyConfigurationCommand(key, nameof(CustomMenuSettings), CustomMenuSettings.DefaultValue.ToJson()));
                 }
             }
         }
