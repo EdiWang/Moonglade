@@ -193,7 +193,6 @@ If you need email notification for new comments, new replies and pingbacks, you 
 
 There are a few individuals already setup thier blogs using Moonglade on Azure (Global or China), Alibaba Cloud, Tencent Cloud, etc.
 
-- [Anduin Xue](https://anduin.aiursoft.com/)
 - [zchwei](https://zchwei.com/)
 - [yycoding](https://www.yycoding.xyz/)
 - [51azure](https://www.51azure.cloud/)
