@@ -18,7 +18,7 @@ This is the way https://edi.wang is deployed, by taking advantage of as many Azu
 
 This diagram shows a full Azure deployment for Moonglade for reference.
 
-![image](https://ediwang.cdn.moonglade.blog/web-assets/ediwang-azure-arch-visio-nov2022.png)
+![image](https://cdn-blog.edi.wang/web-assets/ediwang-azure-arch-visio-nov2022.png)
 
 ### 🐋 Quick Deploy on Azure
 
@@ -184,6 +184,7 @@ If you need email notification for new comments, new replies and pingbacks, you 
 - [X] FOAF
 - [X] RSD
 - [X] MetaWeblog (Basic Support)
+- [X] Dublin Core Metadata (Basic Support)
 - [ ] BlogML - Under triage
 - [ ] APML - Not planned
 - [ ] Trackback - Not planned
@@ -192,7 +193,6 @@ If you need email notification for new comments, new replies and pingbacks, you 
 
 There are a few individuals already setup thier blogs using Moonglade on Azure (Global or China), Alibaba Cloud, Tencent Cloud, etc.
 
-- [Anduin Xue](https://anduin.aiursoft.com/)
 - [zchwei](https://zchwei.com/)
 - [yycoding](https://www.yycoding.xyz/)
 - [51azure](https://www.51azure.cloud/)
@@ -201,5 +201,6 @@ There are a few individuals already setup thier blogs using Moonglade on Azure (
 - [Leslie Wang](https://lesliewxj.com/)
 - [AllenMasters](https://allenmasters.com)
 - [Hao's House](https://haxu.dev/)
+- [Sascha.Manns](https://saschamanns.de/)
 
 *Just Submit PR or issue if you want your blog to be listed here*

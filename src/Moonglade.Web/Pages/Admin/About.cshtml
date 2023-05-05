@@ -34,6 +34,16 @@
                     <td>@SharedLocalizer["Editor"]</td>
                     <td>@(Configuration.GetSection("Editor").Get<EditorChoice>())</td>
                 </tr>
+
+                <tr>
+                    <td>UseForwardedHeaders</td>
+                    <td>@Configuration["ForwardedHeaders:Enabled"]</td>
+                </tr>
+
+                <tr>
+                    <td>ForwardedForHeaderName</td>
+                    <td>@Configuration["ForwardedHeaders:ForwardedForHeaderName"]</td>
+                </tr>
             </tbody>
         </table>
     </div>
@@ -51,7 +61,7 @@
             <tbody>
                 <tr>
                     <td class="w-25">@SharedLocalizer["System"]</td>
-                    <td>@Helper.TryGetFullOSVersion() @(Environment.Is64BitOperatingSystem ? "(64-bit)": "(32-bit)")</td>
+                    <td>@Helper.TryGetFullOSVersion() @(Environment.Is64BitOperatingSystem ? "(64-bit)" : "(32-bit)")</td>
                 </tr>
                 <tr>
                     <td>@SharedLocalizer["Directory"]</td>

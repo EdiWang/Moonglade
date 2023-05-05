@@ -9,52 +9,59 @@
 @Html.AntiForgeryToken()
 
 @section scripts{
-<script>
-    var editCanvas = new bootstrap.Offcanvas(document.getElementById('editTagCanvas'));
+    <script>
+        var editCanvas = new bootstrap.Offcanvas(document.getElementById('editTagCanvas'));
 
-    function initCreateTag() {
-        document.querySelector('#edit-form').reset();
-        editCanvas.show();
-    }
+        function initCreateTag() {
+            document.querySelector('#edit-form').reset();
+            editCanvas.show();
+        }
 
-    $(".btn-delete").click(function () {
-        var tagid = $(this).data("tagid");
-        var cfm = confirm(`Confirm to delete tag: ${$(this).text().trim()}`);
-        if (cfm) {
-            callApi(`/api/tags/${tagid}`, 'DELETE', {},
+        $(".btn-delete").click(function () {
+            var tagid = $(this).data("tagid");
+            var cfm = confirm(`Confirm to delete tag: ${$(this).text().trim()}`);
+            if (cfm) {
+                callApi(`/api/tags/${tagid}`, 'DELETE', {},
+                    (resp) => {
+                        $(`#li-tag-${tagid}`).hide();
+                        blogToast.success('Tag deleted');
+                    });
+            }
+        });
+
+        $(".span-tagcontent-editable").blur(function () {
+            var tagId = $(this).data("tagid");
+            var newTagName = $(this).text().trim();
+
+            callApi(`/api/tags/${tagId}`, 'PUT', newTagName, (resp) => {
+                blogToast.success('Tag updated');
+            });
+        });
+
+        $("#tagFilter").on("keyup", function () {
+            var value = $(this).val().toLowerCase();
+            $(".ul-tag-mgr li").filter(function () {
+                $(this).toggle($(this).text().toLowerCase().indexOf(value) > -1);
+            });
+        });
+
+        function handleSubmit(event) {
+            event.preventDefault();
+
+            const data = new FormData(event.target);
+            const value = Object.fromEntries(data.entries());
+
+            callApi(`/api/tags`, 'POST', value.tagName,
                 (resp) => {
-                    $(`#li-tag-${tagid}`).hide();
-                    blogToast.success('Tag deleted');
+                    document.querySelector('#edit-form').reset();
+                    $("#editTagModal").modal('hide');
+                    window.location.reload();
                 });
         }
-    });
 
-    $(".span-tagcontent-editable").blur(function () {
-        var tagId = $(this).data("tagid");
-        var newTagName = $(this).text().trim();
-
-        callApi(`/api/tags/${tagId}`, 'PUT', newTagName, (resp) => {
-            blogToast.success('Tag updated');
-        });
-    });
-
-    function handleSubmit(event) {
-        event.preventDefault();
-
-        const data = new FormData(event.target);
-        const value = Object.fromEntries(data.entries());
-
-        callApi(`/api/tags`, 'POST', value.tagName,
-            (resp) => {
-                document.querySelector('#edit-form').reset();
-                $("#editTagModal").modal('hide');
-                window.location.reload();
-            });
-    }
-
-    const form = document.querySelector('#edit-form');
-    form.addEventListener('submit', handleSubmit);
-</script>
+        const form = document.querySelector('#edit-form');
+        form.addEventListener('submit', handleSubmit);
+    </script>
 }
 
 <div class="admin-toolbar ps-4 pe-4 pt-2 pb-2 border-bottom mb-3 shadow-sm">
@@ -62,7 +69,7 @@
         <i class="bi-plus-lg"></i>
         @SharedLocalizer["New"]
     </a>
-    
+
     <a asp-action="ExportDownload" asp-controller="DataPorting" asp-route-type="Tags" class="btn btn-outline-accent" target="_blank">
         <i class="bi-upload"></i>
         @SharedLocalizer["Export"]
@@ -70,6 +77,8 @@
 </div>
 
 <div class="ps-4 pe-4">
+    <input id="tagFilter" type="text" class="form-control mb-3" maxlength="32" placeholder="Filter..">
+
     <ul class="list-unstyled ul-tag-mgr">
         @foreach (var tag in tags.OrderBy(model => model.DisplayName))
         {

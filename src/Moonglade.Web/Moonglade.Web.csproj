@@ -39,9 +39,9 @@
 		<PackageReference Include="AspNetCoreRateLimit" Version="5.0.0" />
 		<PackageReference Include="Edi.ImageWatermark" Version="2.8.0" />
 		<PackageReference Include="Microsoft.ApplicationInsights.AspNetCore" Version="2.21.0" />
-		<PackageReference Include="Microsoft.Extensions.Logging.AzureAppServices" Version="7.0.4" />
+		<PackageReference Include="Microsoft.Extensions.Logging.AzureAppServices" Version="7.0.5" />
 		<PackageReference Include="UAParser" Version="3.1.47" />
-		<PackageReference Include="WilderMinds.MetaWeblog" Version="5.1.0" />
+		<PackageReference Include="WilderMinds.MetaWeblog" Version="5.1.1" />
 		<PackageReference Include="Spectre.Console" Version="0.46.0" />
 		<PackageReference Include="X.PagedList.Mvc.Core" Version="8.4.7" />
 	</ItemGroup>
@@ -55,7 +55,6 @@
 		<ProjectReference Include="..\Moonglade.Data.SqlServer\Moonglade.Data.SqlServer.csproj" />
 		<ProjectReference Include="..\Moonglade.FriendLink\Moonglade.FriendLink.csproj" />
 		<ProjectReference Include="..\Moonglade.ImageStorage\Moonglade.ImageStorage.csproj" />
-		<ProjectReference Include="..\Moonglade.Menus\Moonglade.Menus.csproj" />
 		<ProjectReference Include="..\Moonglade.Notification.Client\Moonglade.Notification.Client.csproj" />
 		<ProjectReference Include="..\Moonglade.Pingback\Moonglade.Pingback.csproj" />
 		<ProjectReference Include="..\Moonglade.Syndication\Moonglade.Syndication.csproj" />

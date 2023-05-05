@@ -109,7 +109,7 @@ export function loadTinyMCE(textareaSelector) {
             branding: false,
             block_formats: 'Paragraph=p; Header 2=h2; Header 3=h3; Header 4=h4; Preformatted=pre',
             plugins: 'advlist autolink autosave link image lists charmap preview anchor pagebreak searchreplace wordcount visualblocks visualchars code fullscreen insertdatetime media nonbreaking save table directionality template codesample emoticons',
-            toolbar: 'blocks | bold italic underline strikethrough | forecolor backcolor | removeformat | charmap emoticons link hr image table codesample media | alignleft aligncenter alignright alignjustify | bullist numlist outdent indent | code | fullscreen',
+            toolbar: 'undo redo | blocks | bold italic underline strikethrough | forecolor backcolor | paste pastetext removeformat | hr link image codesample | charmap emoticons table media | alignleft aligncenter alignright alignjustify | bullist numlist outdent indent | code | fullscreen',
             save_onsavecallback: function () {
                 $('#btn-save').trigger('click');
             },

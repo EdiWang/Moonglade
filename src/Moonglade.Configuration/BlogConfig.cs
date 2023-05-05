@@ -1,4 +1,5 @@
-﻿namespace Moonglade.Configuration;
+﻿
+namespace Moonglade.Configuration;
 
 public interface IBlogSettings
 {
@@ -13,7 +14,9 @@ public interface IBlogConfig
     ImageSettings ImageSettings { get; set; }
     AdvancedSettings AdvancedSettings { get; set; }
     CustomStyleSheetSettings CustomStyleSheetSettings { get; set; }
-    void LoadFromConfig(IDictionary<string, string> config);
+    CustomMenuSettings CustomMenuSettings { get; set; }
+
+    IEnumerable<int> LoadFromConfig(IDictionary<string, string> config);
     KeyValuePair<string, string> UpdateAsync<T>(T blogSettings) where T : IBlogSettings;
 }
 
@@ -33,15 +36,34 @@ public class BlogConfig : IBlogConfig
 
     public CustomStyleSheetSettings CustomStyleSheetSettings { get; set; }
 
-    public void LoadFromConfig(IDictionary<string, string> config)
+    public CustomMenuSettings CustomMenuSettings { get; set; }
+
+    public IEnumerable<int> LoadFromConfig(IDictionary<string, string> config)
     {
-        GeneralSettings = config[nameof(GeneralSettings)].FromJson<GeneralSettings>();
-        ContentSettings = config[nameof(ContentSettings)].FromJson<ContentSettings>();
-        NotificationSettings = config[nameof(NotificationSettings)].FromJson<NotificationSettings>();
-        FeedSettings = config[nameof(FeedSettings)].FromJson<FeedSettings>();
-        ImageSettings = config[nameof(ImageSettings)].FromJson<ImageSettings>();
-        AdvancedSettings = config[nameof(AdvancedSettings)].FromJson<AdvancedSettings>();
-        CustomStyleSheetSettings = config[nameof(CustomStyleSheetSettings)].FromJson<CustomStyleSheetSettings>();
+        ContentSettings = AssignValueForConfigItem(1, ContentSettings.DefaultValue, config);
+        NotificationSettings = AssignValueForConfigItem(2, NotificationSettings.DefaultValue, config);
+        FeedSettings = AssignValueForConfigItem(3, FeedSettings.DefaultValue, config);
+        GeneralSettings = AssignValueForConfigItem(4, GeneralSettings.DefaultValue, config);
+        ImageSettings = AssignValueForConfigItem(5, ImageSettings.DefaultValue, config);
+        AdvancedSettings = AssignValueForConfigItem(6, AdvancedSettings.DefaultValue, config);
+        CustomStyleSheetSettings = AssignValueForConfigItem(7, CustomStyleSheetSettings.DefaultValue, config);
+        CustomMenuSettings = AssignValueForConfigItem(10, CustomMenuSettings.DefaultValue, config);
+
+        return _keysToInit.AsEnumerable();
+    }
+
+    private readonly List<int> _keysToInit = new();
+    private T AssignValueForConfigItem<T>(int index, T defaultValue, IDictionary<string, string> config) where T : IBlogSettings
+    {
+        var name = typeof(T).Name;
+
+        if (config.TryGetValue(name, out var value))
+        {
+            return value.FromJson<T>();
+        }
+
+        _keysToInit.Add(index);
+        return defaultValue;
     }
 
     public KeyValuePair<string, string> UpdateAsync<T>(T blogSettings) where T : IBlogSettings

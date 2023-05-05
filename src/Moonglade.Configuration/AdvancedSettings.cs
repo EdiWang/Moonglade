@@ -1,4 +1,5 @@
 ﻿using System.ComponentModel.DataAnnotations;
+using System.Text.Json.Serialization;
 
 namespace Moonglade.Configuration;
 
@@ -41,4 +42,7 @@ public class AdvancedSettings : IBlogSettings
     public bool AllowScriptsInPage { get; set; }
 
     public string MetaWeblogPasswordHash { get; set; }
+
+    [JsonIgnore]
+    public static AdvancedSettings DefaultValue => new();
 }

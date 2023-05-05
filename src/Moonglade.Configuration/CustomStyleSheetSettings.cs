@@ -1,4 +1,5 @@
 ﻿using System.ComponentModel.DataAnnotations;
+using System.Text.Json.Serialization;
 
 namespace Moonglade.Configuration;
 
@@ -9,4 +10,12 @@ public class CustomStyleSheetSettings : IBlogSettings
 
     [MaxLength(10240)]
     public string CssCode { get; set; }
+
+    [JsonIgnore]
+    public static CustomStyleSheetSettings DefaultValue =>
+        new()
+        {
+            EnableCustomCss = false,
+            CssCode = string.Empty
+        };
 }

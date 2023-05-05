@@ -15,6 +15,12 @@
             overflow-y: scroll;
             overflow-x: hidden;
         }
+
+        .pingback-item {
+            border-bottom: 1px solid #CECECE;
+            padding-bottom: 15px;
+            margin-bottom: 15px;
+        }
     </style>
 }
 
@@ -26,7 +32,6 @@
             callApi(`/pingback/${pingbackId}`, 'DELETE', {},
                 (resp) => {
                     document.querySelector(`#pingback-box-${pingbackId}`).remove();
-                    document.querySelector(`#pingback-box-hr-${pingbackId}`).remove();
                 });
         }
 
@@ -41,6 +46,14 @@
         }
 
         utils.formatUtcTime();
+    </script>
+    <script>
+        $("#pingFilter").on("keyup", function () {
+            var value = $(this).val().toLowerCase();
+            $(".pingbacks-container .pingback-item").filter(function () {
+                $(this).toggle($(this).text().toLowerCase().indexOf(value) > -1);
+            });
+        });
     </script>
 }
 
@@ -62,10 +75,12 @@
 </div>
 
 <div class="ps-4 pe-4">
+    <input id="pingFilter" type="text" class="form-control mb-3" maxlength="32" placeholder="Filter..">
+
     <div class="pingbacks-container">
         @foreach (var item in pingbackRecords.OrderByDescending(p => p.PingTimeUtc))
         {
-            <div id="pingback-box-@item.Id" class="row">
+            <div id="pingback-box-@item.Id" class="pingback-item row">
                 <div class="col">
                     <strong>
                         <a href="@item.SourceUrl" target="_blank">@item.SourceTitle</a>
@@ -89,7 +104,6 @@
                     </a>
                 </div>
             </div>
-            <hr id="pingback-box-hr-@item.Id" />
         }
     </div>
 </div>

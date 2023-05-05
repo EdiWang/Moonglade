@@ -1,15 +1,14 @@
 ﻿@using Moonglade.Utils
-@model IReadOnlyList<Moonglade.Menus.Menu>
+@model CustomMenuSettings
 
-@if (Model.Count > 0)
+@if (Model.IsEnabled && Model.Menus.Length > 0)
 {
-    foreach (var menuModel in Model.OrderBy(m => m.DisplayOrder))
+    foreach (var menuModel in Model.Menus.OrderBy(m => m.DisplayOrder))
     {
         if (menuModel.SubMenus.Count == 0)
         {
-            <li id="menu-li-@menuModel.Id" class="nav-item">
-                <a id="menu-a-@menuModel.Id"
-                   href="@Helper.SterilizeLink(menuModel.Url)"
+            <li class="nav-item">
+                <a href="@Helper.SterilizeLink(menuModel.Url)"
                    class="nav-link"
                    target="@(menuModel.IsOpenInNewTab ? "_blank" : null)">
                     <span class="@menuModel.Icon"></span>
@@ -19,12 +18,12 @@
         }
         else
         {
-            <li id="navbar-dropdown-@menuModel.Id" class="nav-item dropdown">
+            <li class="nav-item dropdown">
                 <a href="#" class="nav-link dropdown-toggle" role="button" data-bs-toggle="dropdown">
                     <span class="@menuModel.Icon"></span>
                     <strong>@menuModel.Title</strong>
                 </a>
-                <ul class="dropdown-menu menu-@menuModel.Id">
+                <ul class="dropdown-menu">
                     @foreach (var subMenu in menuModel.SubMenus.OrderBy(sm => sm.Title))
                     {
                         <li>

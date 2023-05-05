@@ -32,6 +32,28 @@
     <meta name="displaydate" content="@Model.Post.PubDateUtc.GetValueOrDefault().ToString("u")">
     <meta name="copyright" content="(C) @DateTime.UtcNow.Year @BlogConfig.GeneralSettings.SiteTitle">
     <meta name="author" content="@(string.IsNullOrWhiteSpace(Model.Post.Author) ? BlogConfig.GeneralSettings.OwnerName : Model.Post.Author) " />
+    @if (BlogConfig.GeneralSettings.UseDublinCoreMetaData)
+    {
+	    <meta name="DC.Title" content="@Model.Post.Title" />
+	    <meta name="DC.Publisher" content="@(string.IsNullOrWhiteSpace(Model.Post.Author) ? BlogConfig.GeneralSettings.OwnerName : Model.Post.Author)" />
+	    <meta name="DC.Language" content="@Model.Post.ContentLanguageCode" />
+	    <meta name="DC.Creator" content="@(string.IsNullOrWhiteSpace(Model.Post.Author) ? BlogConfig.GeneralSettings.OwnerName : Model.Post.Author)" />
+	    <meta name="DC.Type" content="Text" />
+	    <meta name="DC.Format" content="text/html" />
+	    <meta name="DC.Format.MIME" content="text/html" />
+	    <meta name="DC.Format.SysReq" content="Internet browser" />
+	    @if (Model.Post.OriginLink != null)
+	    {
+		    <meta name="DC.Source" content="@Model.Post.OriginLink">
+	    }
+	    <meta name="DC.Subject" content="@string.Join(", ", Model.Post.Categories.Select(t => t.DisplayName))" />
+	    <meta name="DC.Subject.Keyword" content="@string.Join(", ", Model.Post.Tags.Select(t => t.NormalizedName))" />
+		@if (BlogConfig.GeneralSettings.DcLicenseUrl != null)
+		{
+			<meta name="DCTERMS.license"  scheme="DCTERMS.URI" content="@BlogConfig.GeneralSettings.DcLicenseUrl" />
+			<meta name="DCTERMS.rightsHolder" content="@(string.IsNullOrWhiteSpace(Model.Post.Author) ? BlogConfig.GeneralSettings.OwnerName : Model.Post.Author) "/>
+		}
+    }
     <link href="~/css/post-slug.css" rel="stylesheet" asp-append-version="true" />
     <link href="~/css/highlighter-custom.css" rel="stylesheet" asp-append-version="true" />
     @if (BlogConfig.ContentSettings.DocumentOutline)
@@ -81,12 +103,12 @@
                 '.post-content h5');
         </script>
     }
-    <script type="module">    
+    <script type="module">
         import * as viewpost from '/js/app/viewpost.module.js'
         import * as utils from '/js/app/utils.module.js'
-        
+
         window.viewpost = viewpost;
-        
+
         viewpost.resizeImages();
         if (window.innerWidth >= 768) {
             viewpost.applyImageZooming();
@@ -108,7 +130,7 @@
         window.fitImageToDevicePixelRatio = @BlogConfig.ImageSettings.FitImageToDevicePixelRatio.ToString().ToLower();
 
         var q = new QRious({
-            element: document.querySelector('.post-qrcode'), 
+            element: document.querySelector('.post-qrcode'),
             value: document.URL,
             size: 200
         });
@@ -117,7 +139,7 @@
             e.preventDefault();
             viewpost.submitComment(pid);
         });
-        
+
         utils.formatUtcTime();
     </script>
 }
@@ -256,7 +278,7 @@
                 {
                     <div class="alert alert-warning">@SharedLocalizer["Comment of this post is disabled."]</div>
                 }
-                
+
                 <div id="thx-for-comment" class="alert alert-warning" style="display: none;">
                     @SharedLocalizer["Thanks, your comment is pending approval now."] <br/>
                     @SharedLocalizer["It will show up once blog administrator approved your comment."]

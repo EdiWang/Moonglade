@@ -1,4 +1,5 @@
 ﻿using System.ComponentModel.DataAnnotations;
+using System.Text.Json.Serialization;
 
 namespace Moonglade.Configuration;
 
@@ -21,4 +22,14 @@ public class NotificationSettings : IBlogSettings
     [MaxLength(512)]
     [Display(Name = "Azure Storage Queue Connection String")]
     public string AzureStorageQueueConnection { get; set; }
+
+    [JsonIgnore]
+    public static NotificationSettings DefaultValue => new()
+    {
+        EnableEmailSending = false,
+        SendEmailOnCommentReply = false,
+        SendEmailOnNewComment = false,
+        EmailDisplayName = "Moonglade",
+        AzureStorageQueueConnection = string.Empty
+    };
 }

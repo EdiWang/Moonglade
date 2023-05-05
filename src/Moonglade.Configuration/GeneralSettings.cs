@@ -1,4 +1,5 @@
 ﻿using System.ComponentModel.DataAnnotations;
+using System.Text.Json.Serialization;
 
 namespace Moonglade.Configuration;
 
@@ -75,9 +76,6 @@ public class GeneralSettings : IBlogSettings
 
     public int ThemeId { get; set; }
 
-    [Display(Name = "Show pride mouse cursor and flag")]
-    public bool Pride { get; set; }
-
     [Display(Name = "Profile")]
     public bool WidgetsProfile { get; set; } = true;
 
@@ -105,7 +103,30 @@ public class GeneralSettings : IBlogSettings
     [RegularExpression("^[a-z]{2}-[a-zA-Z]{2,4}$")]
     public string DefaultLanguageCode { get; set; } = "en-us";
 
+    [Display(Name = "Use Dublin Core Metadata")]
+    public bool UseDublinCoreMetaData { get; set; }
+
+    [Display(Name = "Dublin Core License URL")]
+    public string DcLicenseUrl { get; set; }
+
     public GeneralSettings() => ThemeId = 1;
+
+    [JsonIgnore]
+    public static GeneralSettings DefaultValue = new()
+    {
+        OwnerName = "Admin",
+        OwnerEmail = "admin@edi.wang",
+        SiteTitle = "Moonglade",
+        Description = "Moonglade Admin",
+        ShortDescription = "Moonglade Admin",
+        AutoDarkLightTheme = true,
+        LogoText = "moonglade",
+        MetaKeyword = "moonglade",
+        Copyright = $"[c] {DateTime.UtcNow.Year}",
+        TimeZoneId = "China Standard Time",
+        TimeZoneUtcOffset = TimeSpan.FromHours(8),
+        ThemeId = 1
+    };
 }
 
 public enum SideBarOption
