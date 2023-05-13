@@ -94,6 +94,9 @@ public class GeneralSettings : IBlogSettings
     [Display(Name = "Show Admin login button under sidebar")]
     public bool ShowAdminLoginButton { get; set; }
 
+    [Display(Name = "IndexNow API Key")]
+    public string IndexNowAPIKey { get; set; }
+
     [MaxLength(64)]
     public string AvatarUrl { get; set; }
 

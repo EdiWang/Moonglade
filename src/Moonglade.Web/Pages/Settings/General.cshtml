@@ -20,6 +20,8 @@
 		});
 
 
+	var settings = BlogConfig.GeneralSettings;
+
 	var cultureItems = LocOptions.Value.SupportedUICultures
 		.Select(c => new { Value = c.Name, c.NativeName });
 
@@ -356,64 +358,76 @@
 			<input type="checkbox" name="ShowAdminLoginButton" value="true" class="form-check-input" @(Model.ViewModel.ShowAdminLoginButton ? "checked" : null)>
 		</div>
 	</div>
-</div>
-
-<div class="mt-5">
-	<h6 class="card-subtitle mb-4 text-muted">
-		@SharedLocalizer["Footer"]
-	</h6>
-
-	<div class="row g-3 align-items-center settings-entry mb-2">
+	<h6 class="card-subtitle mb-3 text-muted">IndexNow</h6>
+	<div class="row g-3 align-items-center settings-entry mt-1 mb-4">
 		<div class="col-auto">
-			<i class="bi-check2-square settings-entry-icon"></i>
+			<i class="bi-search settings-entry-icon"></i>
 		</div>
 		<div class="col">
-			<label asp-for="ViewModel.Copyright"></label>
-			<div class="form-text">@SharedLocalizer["Use [c] for copyright mark: &copy;, [year] for current year."]</div>
+			<label asp-for="@settings.IndexNowAPIKey"></label>
 		</div>
 		<div class="col-md-5 text-end">
-			<input asp-for="ViewModel.Copyright" class="form-control" required/>
+			<input asp-for="@settings.IndexNowAPIKey" class="form-control"/>
 		</div>
 	</div>
 
-	<div class="form-floating">
-		<textarea asp-for="ViewModel.FooterCustomizedHtmlPitch"
+	<div class="mt-5">
+		<h6 class="card-subtitle mb-4 text-muted">
+			@SharedLocalizer["Footer"]
+		</h6>
+
+		<div class="row g-3 align-items-center settings-entry mb-2">
+			<div class="col-auto">
+				<i class="bi-check2-square settings-entry-icon"></i>
+			</div>
+			<div class="col">
+				<label asp-for="ViewModel.Copyright"></label>
+				<div class="form-text">@SharedLocalizer["Use [c] for copyright mark: &copy;, [year] for current year."]</div>
+			</div>
+			<div class="col-md-5 text-end">
+				<input asp-for="ViewModel.Copyright" class="form-control" required/>
+			</div>
+		</div>
+
+		<div class="form-floating">
+			<textarea asp-for="ViewModel.FooterCustomizedHtmlPitch"
                                       placeholder="@Html.DisplayNameFor(m => m.ViewModel.FooterCustomizedHtmlPitch)"
                                       class="form-control form-control-sm h-100px textarea-code"
                                       spellcheck="false" rows="10" cols="10"></textarea>
-		<label class="form-label" asp-for="ViewModel.FooterCustomizedHtmlPitch"></label>
+			<label class="form-label" asp-for="ViewModel.FooterCustomizedHtmlPitch"></label>
+		</div>
 	</div>
-</div>
 
-<div class="mt-5">
-	<h6 class="card-subtitle mb-4 text-muted">
-		@SharedLocalizer["Dublin Core Metadata"]
-	</h6>
-	<div class="row g-3 align-items-center settings-entry mb-4">
-		<div class="col-auto">
-			<i class="bi bi-globe settings-entry-icon"></i>
-		</div>
-		<div class="col">
-			<label asp-for="@BlogConfig.GeneralSettings.UseDublinCoreMetaData" class="form-check-label"></label>
-		</div>
-		<div class="col-md-5 text-end">
-			<div class="form-check form-switch">
-				<input type="hidden" name="UseDublinCoreMetaData" value="false">
-				<input type="checkbox" name="UseDublinCoreMetaData" value="true" class="form-check-input" @(BlogConfig.GeneralSettings.UseDublinCoreMetaData ? "checked" : null)>
+	<div class="mt-5">
+		<h6 class="card-subtitle mb-4 text-muted">
+			@SharedLocalizer["Dublin Core Metadata"]
+		</h6>
+		<div class="row g-3 align-items-center settings-entry mb-4">
+			<div class="col-auto">
+				<i class="bi bi-globe settings-entry-icon"></i>
+			</div>
+			<div class="col">
+				<label asp-for="@BlogConfig.GeneralSettings.UseDublinCoreMetaData" class="form-check-label"></label>
+			</div>
+			<div class="col-md-5 text-end">
+				<div class="form-check form-switch">
+					<input type="hidden" name="UseDublinCoreMetaData" value="false">
+					<input type="checkbox" name="UseDublinCoreMetaData" value="true" class="form-check-input" @(BlogConfig.GeneralSettings.UseDublinCoreMetaData ? "checked" : null)>
+				</div>
 			</div>
 		</div>
+		<div class="mb-1">
+			<label class="form-label" asp-for="@BlogConfig.GeneralSettings.DcLicenseUrl"></label>
+			<input asp-for="@BlogConfig.GeneralSettings.DcLicenseUrl" class="form-control"/>
+		</div>
 	</div>
-	<div class="mb-1">
-		<label class="form-label" asp-for="@BlogConfig.GeneralSettings.DcLicenseUrl"></label>
-		<input asp-for="@BlogConfig.GeneralSettings.DcLicenseUrl" class="form-control"/>
-	</div>
-</div>
 </div>
 </div>
 </div>
 
 <div class="mb-4">
 	<input id="btn-save-settings" type="submit" value="@SharedLocalizer["Save"]" class="btn btn-outline-accent"/>
+</div>
 </div>
 </form>
 </div>
