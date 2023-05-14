@@ -19,9 +19,6 @@
 			Value = t.Id.ToString()
 		});
 
-
-	var settings = BlogConfig.GeneralSettings;
-
 	var cultureItems = LocOptions.Value.SupportedUICultures
 		.Select(c => new { Value = c.Name, c.NativeName });
 
@@ -364,10 +361,10 @@
 			<i class="bi-search settings-entry-icon"></i>
 		</div>
 		<div class="col">
-			<label asp-for="@settings.IndexNowAPIKey"></label>
+			<label asp-for="@BlogConfig.GeneralSettings.IndexNowAPIKey"></label>
 		</div>
 		<div class="col-md-5 text-end">
-			<input asp-for="@settings.IndexNowAPIKey" class="form-control"/>
+			<input asp-for="@BlogConfig.GeneralSettings.IndexNowAPIKey" class="form-control"/>
 		</div>
 	</div>
 
