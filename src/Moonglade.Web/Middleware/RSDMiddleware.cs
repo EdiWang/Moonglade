@@ -40,7 +40,7 @@ public class RSDMiddleware
             // Service 
             writer.WriteStartElement("service");
             writer.WriteElementString("engineName", $"Moonglade {Helper.AppVersion}");
-            writer.WriteElementString("engineLink", "https://moonglade.blog");
+            writer.WriteElementString("engineLink", "https://github.com/EdiWang/Moonglade");
             writer.WriteElementString("homePageLink", siteRootUrl);
 
             // APIs
