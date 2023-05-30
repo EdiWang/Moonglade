@@ -41,8 +41,7 @@ public class Seed
                 IsOriginal = true,
                 PostExtension = new()
                 {
-                    Hits = 1024,
-                    Likes = 512
+                    Hits = 1024
                 },
                 Tags = dbContext.Tag.ToList(),
                 PostCategory = dbContext.PostCategory.ToList()

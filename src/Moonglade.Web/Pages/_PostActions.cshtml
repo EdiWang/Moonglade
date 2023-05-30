@@ -1,21 +1,10 @@
 ﻿@model Moonglade.Core.PostFeature.Post
-@{
-    bool isDNT = (bool)Context.Items["DNT"];
-}
 
 <hr />
 <div class="post-slug-actions clearfix mb-2 d-print-none">
     @if (null == ViewBag.IsDraftPreview)
     {
         <div class="float-end">
-            @if (!isDNT)
-            {
-                <a href="javascript:;" class="btn-ratings text-muted d-inline-block me-3">
-                    <i class="bi-heart-fill"></i>
-                    <span class="likehits-num"></span>
-                </a>
-            }
-
             <a href="javascript:;" class="text-muted d-inline-block" data-bs-toggle="modal" data-bs-target="#qrcode-window">
                 <i class="bi-qr-code-scan"></i>
             </a>
@@ -60,7 +49,6 @@
             <div class="modal-header">
                 <div class="modal-title" id="qrcodewindowLabel">@Model.Title</div>
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close">
-                    
                 </button>
             </div>
             <div class="modal-body">

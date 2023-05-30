@@ -124,8 +124,7 @@
 
         var pid = document.querySelector('article').dataset.postid;
         viewpost.getStatistics(pid);
-        viewpost.registerRatingButtons(pid);
-        viewpost.postStatistics(pid, false);
+        viewpost.postStatistics(pid);
 
         window.fitImageToDevicePixelRatio = @BlogConfig.ImageSettings.FitImageToDevicePixelRatio.ToString().ToLower();
 

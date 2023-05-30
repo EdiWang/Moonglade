@@ -1,6 +1,6 @@
 ﻿namespace Moonglade.Core.StatisticFeature;
 
-public record UpdateStatisticCommand(Guid PostId, bool IsLike) : IRequest;
+public record UpdateStatisticCommand(Guid PostId) : IRequest;
 
 public class UpdateStatisticCommandHandler : IRequestHandler<UpdateStatisticCommand>
 {
@@ -13,16 +13,8 @@ public class UpdateStatisticCommandHandler : IRequestHandler<UpdateStatisticComm
         var pp = await _repo.GetAsync(request.PostId, ct);
         if (pp is null) return;
 
-        if (request.IsLike)
-        {
-            if (pp.Likes >= int.MaxValue) return;
-            pp.Likes += 1;
-        }
-        else
-        {
-            if (pp.Hits >= int.MaxValue) return;
-            pp.Hits += 1;
-        }
+        if (pp.Hits >= int.MaxValue) return;
+        pp.Hits += 1;
 
         await _repo.UpdateAsync(pp, ct);
     }

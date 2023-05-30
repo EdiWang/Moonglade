@@ -61,8 +61,7 @@ public class CreatePostCommandHandler : IRequestHandler<CreatePostCommand, PostE
             InlineCss = request.Payload.InlineCss,
             PostExtension = new()
             {
-                Hits = 0,
-                Likes = 0
+                Hits = 0
             }
         };
 

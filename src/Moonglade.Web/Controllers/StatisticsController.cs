@@ -17,8 +17,8 @@ public class StatisticsController : ControllerBase
     [ProducesResponseType(typeof(Tuple<int, int>), StatusCodes.Status200OK)]
     public async Task<IActionResult> Get([NotEmpty] Guid postId)
     {
-        var (hits, likes) = await _mediator.Send(new GetStatisticQuery(postId));
-        return Ok(new { Hits = hits, Likes = likes });
+        var hits = await _mediator.Send(new GetStatisticQuery(postId));
+        return Ok(new { Hits = hits });
     }
 
     [HttpPost]
@@ -28,9 +28,9 @@ public class StatisticsController : ControllerBase
     {
         if (DNT) return NoContent();
 
-        await _mediator.Send(new UpdateStatisticCommand(request.PostId, request.IsLike));
+        await _mediator.Send(new UpdateStatisticCommand(request.PostId));
         return NoContent();
     }
 }
 
-public record StatisticsRequest([NotEmpty] Guid PostId, bool IsLike);
+public record StatisticsRequest([NotEmpty] Guid PostId);
