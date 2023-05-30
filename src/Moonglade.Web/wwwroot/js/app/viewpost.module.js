@@ -17,19 +17,13 @@ export function getStatistics(pid) {
         });
 }
 
-export function postStatistics(pid, isLike) {
+export function postStatistics(pid) {
     const req = {
-        postId: pid,
-        isLike: isLike
+        postId: pid
     };
 
     callApi('/api/statistics', 'POST', req,
         (success) => {
-            if (isLike) {
-                let oldVal = parseInt(document.querySelector('.likehits-num').innerText, 10);
-                document.querySelector('.likehits-num').innerHTML = ++oldVal;
-                document.querySelector('.btn-ratings').setAttribute('disabled', 'disabled');
-            }
         });
 }
 
@@ -37,15 +31,6 @@ export function resizeImages() {
     $('.post-content img').removeAttr('height');
     $('.post-content img').removeAttr('width');
     $('.post-content img').addClass('img-fluid img-thumbnail');
-}
-
-export function registerRatingButtons(pid) {
-    $('.btn-ratings').click(function () {
-        if (!hasLiked) {
-            postStatistics(pid, true);
-            hasLiked = true;
-        }
-    });
 }
 
 export function renderCodeHighlighter() {
