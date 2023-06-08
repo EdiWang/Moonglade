@@ -228,6 +228,10 @@
                             <input type="checkbox" name="FeedIncluded" value="true" class="form-check-input" @(Model.ViewModel.FeedIncluded ? "checked" : null)>
                             <label asp-for="ViewModel.FeedIncluded" class="form-check-label"></label>
                         </div>
+                        <div class="form-check form-switch">
+                            <input type="checkbox" name="IsOutdated" value="true" class="form-check-input" @(Model.ViewModel.IsOutdated ? "checked" : null)>
+                            <label asp-for="ViewModel.IsOutdated" class="form-check-label"></label>
+                        </div>
                     </div>
                     <div class="card-body border-top">
                         <div class="form-floating mb-2">
