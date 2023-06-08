@@ -17,11 +17,11 @@ internal record CommentReplyPayload(
 
 public class CommentReplyNotificationHandler : INotificationHandler<CommentReplyNotification>
 {
-    private readonly IMoongladeNotification _moongladeNotification;
+    private readonly IBlogNotification _blogNotification;
 
-    public CommentReplyNotificationHandler(IMoongladeNotification moongladeNotification)
+    public CommentReplyNotificationHandler(IBlogNotification blogNotification)
     {
-        _moongladeNotification = moongladeNotification;
+        _blogNotification = blogNotification;
     }
 
     public async Task Handle(CommentReplyNotification notification, CancellationToken ct)
@@ -33,6 +33,6 @@ public class CommentReplyNotificationHandler : INotificationHandler<CommentReply
             notification.PostLink);
 
         var dl = new[] { notification.Email };
-        await _moongladeNotification.EnqueueNotification(MailMesageTypes.AdminReplyNotification, dl, payload);
+        await _blogNotification.EnqueueNotification(MailMesageTypes.AdminReplyNotification, dl, payload);
     }
 }

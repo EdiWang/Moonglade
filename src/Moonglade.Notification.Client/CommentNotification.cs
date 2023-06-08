@@ -20,12 +20,12 @@ internal record CommentPayload(
 
 public class CommentNotificationHandler : INotificationHandler<CommentNotification>
 {
-    private readonly IMoongladeNotification _moongladeNotification;
+    private readonly IBlogNotification _blogNotification;
     private readonly IBlogConfig _blogConfig;
 
-    public CommentNotificationHandler(IMoongladeNotification moongladeNotification, IBlogConfig blogConfig)
+    public CommentNotificationHandler(IBlogNotification blogNotification, IBlogConfig blogConfig)
     {
-        _moongladeNotification = moongladeNotification;
+        _blogNotification = blogNotification;
         _blogConfig = blogConfig;
     }
 
@@ -40,6 +40,6 @@ public class CommentNotificationHandler : INotificationHandler<CommentNotificati
         );
 
         var dl = new[] { _blogConfig.GeneralSettings.OwnerEmail };
-        await _moongladeNotification.EnqueueNotification(MailMesageTypes.NewCommentNotification, dl, payload);
+        await _blogNotification.EnqueueNotification(MailMesageTypes.NewCommentNotification, dl, payload);
     }
 }

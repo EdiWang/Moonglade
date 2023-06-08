@@ -7,18 +7,18 @@ using System.Text.Json;
 
 namespace Moonglade.Notification.Client;
 
-public interface IMoongladeNotification
+public interface IBlogNotification
 {
     Task EnqueueNotification<T>(MailMesageTypes type, string[] toAddresses, T payload) where T : class;
 }
 
-public class MoongladeNotification : IMoongladeNotification
+public class BlogNotification : IBlogNotification
 {
-    private readonly ILogger<MoongladeNotification> _logger;
+    private readonly ILogger<BlogNotification> _logger;
     private readonly NotificationSettings _notificationSettings;
 
-    public MoongladeNotification(
-        ILogger<MoongladeNotification> logger,
+    public BlogNotification(
+        ILogger<BlogNotification> logger,
         IBlogConfig blogConfig)
     {
         _logger = logger;
