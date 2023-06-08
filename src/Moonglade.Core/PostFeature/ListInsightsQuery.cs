@@ -2,7 +2,7 @@
 
 namespace Moonglade.Core.PostFeature;
 
-public record ListInsightsQuery(PostInsightsType PostInsightsType) : IRequest<IReadOnlyList<PostSegment>>;
+public record ListInsightsQuery : IRequest<IReadOnlyList<PostSegment>>;
 
 public class ListInsightsQueryHandler : IRequestHandler<ListInsightsQuery, IReadOnlyList<PostSegment>>
 {
@@ -12,7 +12,7 @@ public class ListInsightsQueryHandler : IRequestHandler<ListInsightsQuery, IRead
 
     public Task<IReadOnlyList<PostSegment>> Handle(ListInsightsQuery request, CancellationToken ct)
     {
-        var spec = new PostInsightsSpec(request.PostInsightsType, 10);
+        var spec = new PostInsightsSpec(10);
         return _repo.SelectAsync(spec, PostSegment.EntitySelector);
     }
 }

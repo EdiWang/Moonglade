@@ -6,7 +6,6 @@ namespace Moonglade.Data.Spec;
 public enum PostsSortBy
 {
     Recent,
-    Popular,
     Featured
 }
 
@@ -25,9 +24,6 @@ public sealed class PostPagingSpec : BaseSpecification<PostEntity>
                 break;
             case PostsSortBy.Featured:
                 ApplyOrderByDescending(p => p.IsFeatured);
-                break;
-            case PostsSortBy.Popular:
-                ApplyOrderByDescending(p => p.PostExtension.Hits);
                 break;
         }
         ApplyPaging(startRow, pageSize);

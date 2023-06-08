@@ -123,8 +123,6 @@
         }
 
         var pid = document.querySelector('article').dataset.postid;
-        viewpost.getStatistics(pid);
-        viewpost.postStatistics(pid);
 
         window.fitImageToDevicePixelRatio = @BlogConfig.ImageSettings.FitImageToDevicePixelRatio.ToString().ToLower();
 
@@ -170,9 +168,6 @@
             <span class="me-2">
                 <time data-utc-label="@Model.Post.PubDateUtc.GetValueOrDefault().ToString("u")">@Model.Post.PubDateUtc</time>
             </span>
-
-            <i class="bi-eye d-none d-sm-inline"></i>
-            <span class="post-hit-number d-none d-sm-inline"><span class="post-hit-number-text">...</span> @SharedLocalizer["Reads"]</span>
         </div>
 
         <hr class="d-none d-md-block" />

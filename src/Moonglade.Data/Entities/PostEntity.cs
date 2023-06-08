@@ -30,7 +30,6 @@ public class PostEntity
     public bool IsFeatured { get; set; }
     public int HashCheckSum { get; set; }
 
-    public virtual PostExtensionEntity PostExtension { get; set; }
     public virtual ICollection<CommentEntity> Comments { get; set; }
     public virtual ICollection<PostCategoryEntity> PostCategory { get; set; }
     public virtual ICollection<TagEntity> Tags { get; set; }
