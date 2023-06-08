@@ -172,6 +172,11 @@
 
         <hr class="d-none d-md-block" />
     </header>
+    
+    @if (Model.Post.IsOutdated)
+    {
+        <partial name="_PostOutdatedMessage" />
+    }
 
     @if (!string.IsNullOrWhiteSpace(Model.Post.HeroImageUrl))
     {
