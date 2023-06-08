@@ -657,9 +657,6 @@
   <data name="Read origin article" xml:space="preserve">
     <value>阅读原文</value>
   </data>
-  <data name="Reads" xml:space="preserve">
-    <value>次阅读</value>
-  </data>
   <data name="Recycle Bin" xml:space="preserve">
     <value>回收站</value>
   </data>
