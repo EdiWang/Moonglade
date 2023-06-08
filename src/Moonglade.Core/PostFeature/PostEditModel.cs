@@ -74,5 +74,8 @@ public class PostEditModel
     [MaxLength(2048)]
     public string InlineCss { get; set; }
 
+    [Display(Name = "Mark as outdated")]
+    public bool IsOutdated { get; set; }
+
     public bool WarnSlugModification => PublishDate.HasValue && (DateTime.UtcNow - PublishDate.Value).Days > 7;
 }
