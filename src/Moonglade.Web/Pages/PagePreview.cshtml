@@ -1,7 +1,6 @@
 ﻿@page "/page/preview/{pageId:guid}"
 @model Moonglade.Web.Pages.PagePreviewModel
 @using NUglify
-@using Moonglade.Utils
 
 @{
     ViewBag.TitlePrefix = Model.BlogPage.Title;
@@ -39,14 +38,7 @@
 </div>
 
 <div class="page-content">
-    @if (BlogConfig.AdvancedSettings.AllowScriptsInPage)
-    {
-        @Html.Raw(Model.BlogPage.RawHtmlContent)
-    }
-    else
-    {
-        @Html.Raw(Helper.RemoveScriptTagFromHtml(Model.BlogPage.RawHtmlContent))
-    }
+    @Html.Raw(Model.BlogPage.RawHtmlContent)
 </div>
 
 <partial name="_PageForestageAdmin" />

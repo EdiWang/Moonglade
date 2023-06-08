@@ -171,9 +171,6 @@
   <data name="All Tags" xml:space="preserve">
     <value>全部标签</value>
   </data>
-  <data name="Allow javascript in pages" xml:space="preserve">
-    <value>允许页面中执JavaScript代码</value>
-  </data>
   <data name="Archive" xml:space="preserve">
     <value>归档</value>
   </data>

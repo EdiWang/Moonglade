@@ -1,7 +1,6 @@
 ﻿@page "/page/{slug:regex(^(?!-)([a-zA-Z0-9-]){{1,128}}$)}"
 @model Moonglade.Web.Pages.BlogPageModel
 @using NUglify
-@using Moonglade.Utils
 
 @{
     ViewBag.TitlePrefix = Model.BlogPage.Title;
@@ -45,14 +44,7 @@
 }
 
 <div class="page-content">
-    @if (BlogConfig.AdvancedSettings.AllowScriptsInPage)
-    {
-        @Html.Raw(Model.BlogPage.RawHtmlContent)
-    }
-    else
-    {
-        @Html.Raw(Helper.RemoveScriptTagFromHtml(Model.BlogPage.RawHtmlContent))
-    }
+    @Html.Raw(Model.BlogPage.RawHtmlContent)
 </div>
 
 <partial name="_PageForestageAdmin" />

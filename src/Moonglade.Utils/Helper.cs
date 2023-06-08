@@ -94,15 +94,6 @@ public static class Helper
         return osVer.VersionString;
     }
 
-    public static string RemoveScriptTagFromHtml(string html)
-    {
-        if (string.IsNullOrWhiteSpace(html)) return string.Empty;
-
-        var regex = new Regex("\\<script(.+?)\\</script\\>", RegexOptions.Singleline | RegexOptions.IgnoreCase);
-        var result = regex.Replace(html, string.Empty);
-        return result;
-    }
-
     public static string GetDNSPrefetchUrl(string cdnEndpoint)
     {
         if (string.IsNullOrWhiteSpace(cdnEndpoint)) return string.Empty;

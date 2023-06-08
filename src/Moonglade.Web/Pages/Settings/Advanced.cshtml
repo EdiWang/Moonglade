@@ -219,21 +219,6 @@
                         </div>
                     </div>
 
-                    <div class="row g-3 align-items-center settings-entry mb-4">
-                        <div class="col-auto">
-                            <i class="bi-code settings-entry-icon"></i>
-                        </div>
-                        <div class="col">
-                            <label asp-for="@settings.AllowScriptsInPage" class="form-check-label"></label>
-                        </div>
-                        <div class="col-md-4 text-end">
-                            <div class="form-check form-switch">
-                                <input type="hidden" name="AllowScriptsInPage" value="false">
-                                <input type="checkbox" name="AllowScriptsInPage" value="true" class="form-check-input" @(settings.AllowScriptsInPage ? "checked" : null)>
-                            </div>
-                        </div>
-                    </div>
-
                     <div class="mt-5 mb-2">
                         <h6 class="card-subtitle mb-3 text-muted">@Html.DisplayNameFor(m => settings.RobotsTxtContent)</h6>
                         <textarea asp-for="@settings.RobotsTxtContent" class="form-control textarea-code" cols="60" rows="10" spellcheck="false"></textarea>

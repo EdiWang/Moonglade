@@ -38,9 +38,6 @@ public class AdvancedSettings : IBlogSettings
     [Display(Name = "Show warning when clicking external links")]
     public bool WarnExternalLink { get; set; }
 
-    [Display(Name = "Allow javascript in pages")]
-    public bool AllowScriptsInPage { get; set; }
-
     public string MetaWeblogPasswordHash { get; set; }
 
     [JsonIgnore]
