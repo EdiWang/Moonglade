@@ -24,6 +24,7 @@ public class PostEntity
     public bool IsPublished { get; set; }
     public bool IsDeleted { get; set; }
     public bool IsOriginal { get; set; }
+    public bool IsOutdated { get; set; }
     public string OriginLink { get; set; }
     public string HeroImageUrl { get; set; }
     public string InlineCss { get; set; }

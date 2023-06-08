@@ -18,6 +18,7 @@ public class EditPostModel : PageModel
         _timeZoneResolver = timeZoneResolver;
         ViewModel = new()
         {
+            IsOutdated = false,
             IsPublished = false,
             Featured = false,
             EnableComment = true,
@@ -64,7 +65,8 @@ public class EditPostModel : PageModel
             Featured = post.Featured,
             OriginLink = post.OriginLink,
             HeroImageUrl = post.HeroImageUrl,
-            InlineCss = post.InlineCss
+            InlineCss = post.InlineCss,
+            IsOutdated = post.IsOutdated
         };
 
         if (post.PubDateUtc is not null)
