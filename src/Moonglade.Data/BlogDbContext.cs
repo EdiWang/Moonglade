@@ -18,7 +18,6 @@ public class BlogDbContext : DbContext
     public virtual DbSet<CommentReplyEntity> CommentReply { get; set; }
     public virtual DbSet<PostEntity> Post { get; set; }
     public virtual DbSet<PostCategoryEntity> PostCategory { get; set; }
-    public virtual DbSet<PostExtensionEntity> PostExtension { get; set; }
     public virtual DbSet<PostTagEntity> PostTag { get; set; }
     public virtual DbSet<TagEntity> Tag { get; set; }
     public virtual DbSet<FriendLinkEntity> FriendLink { get; set; }
@@ -65,7 +64,6 @@ public static class BlogDbContextExtension
         context.Comment.RemoveRange();
         context.FriendLink.RemoveRange();
         context.Pingback.RemoveRange();
-        context.PostExtension.RemoveRange();
         context.Post.RemoveRange();
         context.BlogConfiguration.RemoveRange();
         context.BlogAsset.RemoveRange();

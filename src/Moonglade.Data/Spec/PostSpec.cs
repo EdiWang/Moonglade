@@ -44,7 +44,6 @@ public sealed class PostSpec : BaseSpecification<PostEntity>
         : base(p => p.HashCheckSum == hashCheckSum && p.IsPublished && !p.IsDeleted)
     {
         AddInclude(post => post
-            .Include(p => p.PostExtension)
             .Include(p => p.Comments)
             .Include(pt => pt.Tags)
             .Include(p => p.PostCategory).ThenInclude(pc => pc.Category));
@@ -57,7 +56,6 @@ public sealed class PostSpec : BaseSpecification<PostEntity>
                     !p.IsDeleted)
     {
         AddInclude(post => post
-            .Include(p => p.PostExtension)
             .Include(p => p.Comments)
             .Include(pt => pt.Tags)
             .Include(p => p.PostCategory).ThenInclude(pc => pc.Category));

@@ -1,33 +1,4 @@
-﻿export let hasLiked = false;
-
-export function getStatistics(pid) {
-    const uri = `/api/statistics/${pid}`;
-    fetch(uri)
-        .then(response => response.json())
-        .then(data => {
-            document.querySelector('.post-hit-number-text').innerText = data.hits;
-            var likehitsNum = document.querySelector('.likehits-num');
-            if (likehitsNum) {
-                likehitsNum.innerText = data.likes;
-            }
-        })
-        .catch(err => {
-            blogToast.error(err);
-            console.error(err);
-        });
-}
-
-export function postStatistics(pid) {
-    const req = {
-        postId: pid
-    };
-
-    callApi('/api/statistics', 'POST', req,
-        (success) => {
-        });
-}
-
-export function resizeImages() {
+﻿export function resizeImages() {
     $('.post-content img').removeAttr('height');
     $('.post-content img').removeAttr('width');
     $('.post-content img').addClass('img-fluid img-thumbnail');
