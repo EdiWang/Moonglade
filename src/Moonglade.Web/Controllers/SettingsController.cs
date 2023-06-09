@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Localization;
+﻿using Edi.PasswordGenerator;
+using Microsoft.AspNetCore.Localization;
 using Moonglade.Caching.Filters;
 using Moonglade.Notification.Client;
 using NUglify;
@@ -250,9 +251,9 @@ public class SettingsController : ControllerBase
 
     [HttpGet("password/generate")]
     [ProducesResponseType(StatusCodes.Status200OK)]
-    public IActionResult GeneratePassword()
+    public IActionResult GeneratePassword([FromServices] IPasswordGenerator passwordGenerator)
     {
-        var password = Helper.GeneratePassword(10, 3);
+        var password = passwordGenerator.GeneratePassword(new(10, 3));
         return Ok(new
         {
             ServerTimeUtc = DateTime.UtcNow,

@@ -1,5 +1,6 @@
 ﻿using AspNetCoreRateLimit;
 using Edi.Captcha;
+using Edi.PasswordGenerator;
 using Microsoft.ApplicationInsights.Extensibility;
 using Microsoft.ApplicationInsights.Extensibility.Implementation;
 using Microsoft.AspNetCore.HttpOverrides;
@@ -127,6 +128,8 @@ void ConfigureServices(IServiceCollection services)
         options.LowercaseQueryStrings = true;
         options.AppendTrailingSlash = false;
     });
+
+    services.AddTransient<IPasswordGenerator, DefaultPasswordGenerator>();
 
     services.AddHealthChecks();
     services.AddPingback()
