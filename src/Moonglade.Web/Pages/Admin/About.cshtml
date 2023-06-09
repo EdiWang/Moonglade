@@ -10,7 +10,7 @@
 
 <partial name="_DiagnosisHeader" />
 
-<div class="ps-4 pe-4">
+<div class="ps-4 pe-4 pb-3">
     <div class="row">
         <table class="table table-borderless">
             <thead class="table-light">
@@ -36,13 +36,8 @@
                 </tr>
 
                 <tr>
-                    <td>UseForwardedHeaders</td>
-                    <td>@Configuration["ForwardedHeaders:Enabled"]</td>
-                </tr>
-
-                <tr>
-                    <td>ForwardedForHeaderName</td>
-                    <td>@Configuration["ForwardedHeaders:ForwardedForHeaderName"]</td>
+                    <td>Forwarded Headers</td>
+                    <td>@Configuration["ForwardedHeaders:Enabled"]: @Configuration["ForwardedHeaders:ForwardedForHeaderName"]</td>
                 </tr>
 
                 <tr>
@@ -56,57 +51,56 @@
     <div class="row">
         <table class="table table-borderless">
             <thead class="table-light">
-                <tr>
-                    <th colspan="2">
-                        <i class="bi-tools"></i>
-                        @SharedLocalizer["Server Information"]
-                    </th>
-                </tr>
+            <tr>
+                <th colspan="2">
+                    <i class="bi-tools"></i>
+                    @SharedLocalizer["Server Information"]
+                </th>
+            </tr>
             </thead>
             <tbody>
-                <tr>
-                    <td class="w-25">@SharedLocalizer["System"]</td>
-                    <td>@Helper.TryGetFullOSVersion() @(Environment.Is64BitOperatingSystem ? "(64-bit)" : "(32-bit)")</td>
-                </tr>
-                <tr>
-                    <td>@SharedLocalizer["Directory"]</td>
-                    <td>@Environment.CurrentDirectory</td>
-                </tr>
-                <tr>
-                    <td>@SharedLocalizer["Machine Name"]</td>
-                    <td>@Environment.MachineName</td>
-                </tr>
-                <tr>
-                    <td>@SharedLocalizer["User Name"]</td>
-                    <td>@Environment.UserDomainName\@Environment.UserName</td>
-                </tr>
-                <tr>
-                    <td>@SharedLocalizer[".NET Version"]</td>
-                    <td>@Environment.Version</td>
-                </tr>
-                <tr>
-                    <td>@SharedLocalizer["Worker Process"]</td>
-                    <td>[@process.Id] @process.ProcessName @(Environment.Is64BitProcess ? "(64-bit)" : "(32-bit)")</td>
-                </tr>
-                <tr>
-                    <td>@SharedLocalizer["Start Time"]</td>
-                    <td>@process.StartTime.ToUniversalTime() (UTC)</td>
-                </tr>
-                <tr>
-                    <td>@SharedLocalizer["Memory"]</td>
-                    <td>@(process.WorkingSet64 / 1024 / 1024) MB</td>
-                </tr>
-                <tr>
-                    <td>@SharedLocalizer["Docker Container"]</td>
-                    <td>@(Environment.GetEnvironmentVariable("DOTNET_RUNNING_IN_CONTAINER") == "true")</td>
-                </tr>
+            <tr>
+                <td class="w-25">@SharedLocalizer["System"]</td>
+                <td>@Helper.TryGetFullOSVersion() @(Environment.Is64BitOperatingSystem ? "(64-bit)" : "(32-bit)")</td>
+            </tr>
+            <tr>
+                <td>@SharedLocalizer["Directory"]</td>
+                <td>@Environment.CurrentDirectory</td>
+            </tr>
+            <tr>
+                <td>@SharedLocalizer["Machine Name"]</td>
+                <td>@Environment.MachineName</td>
+            </tr>
+            <tr>
+                <td>@SharedLocalizer["User Name"]</td>
+                <td>@Environment.UserDomainName\@Environment.UserName</td>
+            </tr>
+            <tr>
+                <td>@SharedLocalizer[".NET Version"]</td>
+                <td>@Environment.Version</td>
+            </tr>
+            <tr>
+                <td>@SharedLocalizer["Worker Process"]</td>
+                <td>[@process.Id] @process.ProcessName @(Environment.Is64BitProcess ? "(64-bit)" : "(32-bit)")</td>
+            </tr>
+            <tr>
+                <td>@SharedLocalizer["Start Time"]</td>
+                <td>@process.StartTime.ToUniversalTime() (UTC)</td>
+            </tr>
+            <tr>
+                <td>@SharedLocalizer["Memory"]</td>
+                <td>@(process.WorkingSet64 / 1024 / 1024) MB</td>
+            </tr>
+            <tr>
+                <td>@SharedLocalizer["Docker Container"]</td>
+                <td>@(Environment.GetEnvironmentVariable("DOTNET_RUNNING_IN_CONTAINER") == "true")</td>
+            </tr>
             </tbody>
         </table>
-
-        <a class="mt-2 d-inline-block" href="https://github.com/EdiWang/Moonglade/issues" target="_blank">
-            <i class="bi-bug"></i>
-            Report an issue
-        </a>
     </div>
 
+    <a class="mt-2 mb-2" href="https://github.com/EdiWang/Moonglade/issues" target="_blank">
+        <i class="bi-bug"></i>
+        Report an issue
+    </a>
 </div>
