@@ -44,6 +44,11 @@
                     <td>ForwardedForHeaderName</td>
                     <td>@Configuration["ForwardedHeaders:ForwardedForHeaderName"]</td>
                 </tr>
+
+                <tr>
+                    <td>Client IP Address</td>
+                    <td>@HttpContext.Connection.RemoteIpAddress?.ToString()</td>
+                </tr>
             </tbody>
         </table>
     </div>
