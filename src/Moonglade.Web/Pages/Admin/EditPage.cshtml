@@ -13,174 +13,177 @@
 }
 
 @section scripts{
-<script type="text/javascript" src="https://unpkg.com/monaco-editor@latest/min/vs/loader.js"></script>
-<script>
-    require.config({ paths: { 'vs': 'https://unpkg.com/monaco-editor@latest/min/vs' }});
-    // Before loading vs/editor/editor.main, define a global MonacoEnvironment that overwrites
-    // the default worker url location (used when creating WebWorkers). The problem here is that
-    // HTML5 does not allow cross-domain web workers, so we need to proxy the instantiation of
-    // a web worker through a same-domain script
-    window.MonacoEnvironment = {
-        getWorkerUrl: function(workerId, label) {
-            return `data:text/javascript;charset=utf-8,${encodeURIComponent(`
-        self.MonacoEnvironment = {
-          baseUrl: 'https://unpkg.com/monaco-editor@latest/min/'
+    <script type="text/javascript" src="https://unpkg.com/monaco-editor@latest/min/vs/loader.js"></script>
+    <script>
+        require.config({ paths: { 'vs': 'https://unpkg.com/monaco-editor@latest/min/vs' } });
+        // Before loading vs/editor/editor.main, define a global MonacoEnvironment that overwrites
+        // the default worker url location (used when creating WebWorkers). The problem here is that
+        // HTML5 does not allow cross-domain web workers, so we need to proxy the instantiation of
+        // a web worker through a same-domain script
+        window.MonacoEnvironment = {
+            getWorkerUrl: function (workerId, label) {
+                return `data:text/javascript;charset=utf-8,${encodeURIComponent(`
+                self.MonacoEnvironment = {
+                  baseUrl: 'https://unpkg.com/monaco-editor@latest/min/'
+                };
+                importScripts('https://unpkg.com/monaco-editor@latest/min/vs/base/worker/workerMain.js');`
+                )}`;
+            }
         };
-        importScripts('https://unpkg.com/monaco-editor@latest/min/vs/base/worker/workerMain.js');`
-            )}`;
-        }
-    };
 
-    var pageId = '@Model.PageId.ToString()';
+        var pageId = '@Model.PageId.ToString()';
 
-    var btnSubmitPage = '#btn-submit';
+        var btnSubmitPage = '#btn-submit';
 
-    var htmlContentEditor = null;
-    var cssContentEditor = null;
-    var hasCssEditorInitialized = false;
+        var htmlContentEditor = null;
+        var cssContentEditor = null;
+        var hasCssEditorInitialized = false;
 
-    require(['vs/editor/editor.main'], function () {
-        initHtmlEditor();
-    });
-
-    var initHtmlEditor = function () {
-        var htmlContentEditorDiv = document.getElementById('RawHtmlContentEditor');
-        htmlContentEditor = monaco.editor.create(htmlContentEditorDiv, {
-            language: 'html'
+        require(['vs/editor/editor.main'], function () {
+            initHtmlEditor();
         });
-        htmlContentEditor.layout();
 
-        if (needLoadInitValues) {
-            var htmlValue = document.querySelector("#EditPageRequest_RawHtmlContent").value;
-            htmlContentEditor.setValue(htmlValue);
+        var initHtmlEditor = function () {
+            var htmlContentEditorDiv = document.getElementById('RawHtmlContentEditor');
+            htmlContentEditor = monaco.editor.create(htmlContentEditorDiv, {
+                language: 'html'
+            });
+            htmlContentEditor.layout();
+
+            if (needLoadInitValues) {
+                var htmlValue = document.querySelector("#EditPageRequest_RawHtmlContent").value;
+                htmlContentEditor.setValue(htmlValue);
+            }
         }
-    }
 
-    var initCssEditor = function () {
-        var cssContentEditorDiv = document.getElementById('CssContentEditor');
-        cssContentEditor = monaco.editor.create(cssContentEditorDiv, {
-            language: 'css'
+        var initCssEditor = function () {
+            var cssContentEditorDiv = document.getElementById('CssContentEditor');
+            cssContentEditor = monaco.editor.create(cssContentEditorDiv, {
+                language: 'css'
+            });
+            cssContentEditor.layout();
+            hasCssEditorInitialized = true;
+
+            if (needLoadInitValues) {
+                var cssValue = document.querySelector("#EditPageRequest_CssContent").value;
+                window.cssContentEditor.setValue(cssValue);
+            }
+        }
+
+        var assignEditorValues = function () {
+            var htmlValue = window.htmlContentEditor.getValue();
+
+            // Edit Mode, preserve old value when user has not clicked on CSS tab
+            var oldCssValue = document.querySelector("#EditPageRequest_CssContent").value;
+            var cssValue = hasCssEditorInitialized ? window.cssContentEditor.getValue() : oldCssValue;
+
+            document.querySelector("#EditPageRequest_RawHtmlContent").value = htmlValue;
+            document.querySelector("#EditPageRequest_CssContent").value = cssValue;
+        }
+
+        var onPageCreateEditBegin = function () {
+            document.querySelector(btnSubmitPage).classList.add('disabled');
+            $(btnSubmitPage).attr('disabled', 'disabled');
+        };
+
+        var onPageCreateEditComplete = function () {
+            document.querySelector(btnSubmitPage).classList.remove('disabled');
+            document.querySelector(btnSubmitPage).removeAttribute('disabled');
+        };
+
+        function postCreateOrEdit() {
+            onPageCreateEditBegin();
+
+            var apiAddress = pageId == window.emptyGuid ? `/api/page` : `/api/page/${pageId}`;
+            var verb = pageId == window.emptyGuid ? 'POST' : 'PUT';
+
+            callApi(apiAddress, verb,
+                {
+                    title: document.querySelector("#EditPageRequest_Title").value,
+                    slug: document.querySelector("#EditPageRequest_Slug").value,
+                    metaDescription: document.querySelector("#EditPageRequest_MetaDescription").value,
+                    rawHtmlContent: document.querySelector("#EditPageRequest_RawHtmlContent").value,
+                    cssContent: document.querySelector("#EditPageRequest_CssContent").value,
+                    hideSidebar: document.querySelector('#EditPageRequest_HideSidebar').checked,
+                    isPublished: document.querySelector('#EditPageRequest_IsPublished').checked
+                },
+                async (resp) => {
+                    onPageCreateEditComplete();
+                    var data = await resp.json();
+
+                    if (data.pageId) {
+                        pageId = data.pageId;
+                        blogToast.success('Page saved successfully.');
+
+                        if (document.querySelector('#EditPageRequest_IsPublished').checked) {
+                            document.querySelector('#btn-preview').style.display = 'none';
+                        }
+
+                        if (isPreviewRequired) {
+                            isPreviewRequired = false;
+                            window.open(`/page/preview/${data.pageId}`);
+                        }
+                    }
+                });
+        }
+
+        $(window).bind('keydown', function (event) {
+            if (event.ctrlKey || event.metaKey) {
+                switch (String.fromCharCode(event.which).toLowerCase()) {
+                    case 's':
+                        event.preventDefault();
+                        $("#btn-submit").trigger('click');
+                        break;
+                }
+            }
         });
-        cssContentEditor.layout();
-        hasCssEditorInitialized = true;
 
-        if (needLoadInitValues) {
-            var cssValue = document.querySelector("#EditPageRequest_CssContent").value;
-            window.cssContentEditor.setValue(cssValue);
-        }
-    }
-
-    var assignEditorValues = function () {
-        var htmlValue = window.htmlContentEditor.getValue();
-
-        // Edit Mode, preserve old value when user has not clicked on CSS tab
-        var oldCssValue = document.querySelector("#EditPageRequest_CssContent").value;
-        var cssValue = hasCssEditorInitialized ? window.cssContentEditor.getValue() : oldCssValue;
-
-        document.querySelector("#EditPageRequest_RawHtmlContent").value = htmlValue;
-        document.querySelector("#EditPageRequest_CssContent").value = cssValue;
-    }
-
-    var onPageCreateEditBegin = function () {
-        document.querySelector(btnSubmitPage).classList.add('disabled');
-        $(btnSubmitPage).attr('disabled', 'disabled');
-    };
-
-    var onPageCreateEditComplete = function () {
-        document.querySelector(btnSubmitPage).classList.remove('disabled');
-        document.querySelector(btnSubmitPage).removeAttribute('disabled');
-    };
-
-    function postCreateOrEdit() {
-        onPageCreateEditBegin();
-
-        var apiAddress = pageId == window.emptyGuid ? `/api/page` : `/api/page/${pageId}`;
-        var verb = pageId == window.emptyGuid ? 'POST' : 'PUT';
-
-        callApi(apiAddress, verb,
-            {
-                title: document.querySelector("#EditPageRequest_Title").value,
-                slug: document.querySelector("#EditPageRequest_Slug").value,
-                metaDescription: document.querySelector("#EditPageRequest_MetaDescription").value,
-                rawHtmlContent: document.querySelector("#EditPageRequest_RawHtmlContent").value,
-                cssContent: document.querySelector("#EditPageRequest_CssContent").value,
-                hideSidebar: document.querySelector('#EditPageRequest_HideSidebar').checked,
-                isPublished: document.querySelector('#EditPageRequest_IsPublished').checked
-            },
-            async (resp) => {
-                onPageCreateEditComplete();
-                var data = await resp.json();
-
-                if (data.pageId) {
-                    pageId = data.pageId;
-                    blogToast.success('Page saved successfully.');
-
-                    if (document.querySelector('#EditPageRequest_IsPublished').checked) {
-                        document.querySelector('#btn-preview').style.display = 'none';
-                    }
-
-                    if (isPreviewRequired) {
-                        isPreviewRequired = false;
-                        window.open(`/page/preview/${data.pageId}`);
-                    }
+        $('a[data-bs-toggle="tab"]').on('shown.bs.tab',
+            function (e) {
+                var isCssTab = e.target.id === "csscontent-tab";
+                if (isCssTab && !hasCssEditorInitialized) {
+                    initCssEditor();
                 }
             });
-    }
 
-    $(window).bind('keydown', function (event) {
-        if (event.ctrlKey || event.metaKey) {
-            switch (String.fromCharCode(event.which).toLowerCase()) {
-            case 's':
-                event.preventDefault();
-                $("#btn-submit").trigger('click');
-                break;
-            }
+        function handleSubmit(e) {
+            e.preventDefault();
+
+            isPreviewRequired = e.submitter.id == 'btn-preview';
+            assignEditorValues();
+
+            postCreateOrEdit();
         }
-    });
 
-    $('a[data-bs-toggle="tab"]').on('shown.bs.tab',
-        function (e) {
-            var isCssTab = e.target.id === "csscontent-tab";
-            if (isCssTab && !hasCssEditorInitialized) {
-                initCssEditor();
-            }
-        });
-
-    function handleSubmit(e) {
-        e.preventDefault();
-
-        isPreviewRequired = e.submitter.id == 'btn-preview';
-        assignEditorValues();
-
-        postCreateOrEdit();
-    }
-
-    const form = document.querySelector('#page-edit-form');
-    form.addEventListener('submit', handleSubmit);
-</script>
+        const form = document.querySelector('#page-edit-form');
+        form.addEventListener('submit', handleSubmit);
+    </script>
 }
 
 @section head{
-<style>
-    .monaco-target {
-        border-left: 1px solid #dee2e6;
-        border-right: 1px solid #dee2e6;
-        border-bottom: 1px solid #dee2e6;
-        width: 100%;
-        min-height: calc(100vh - 330px);
-    }
-</style>
+    <style>
+        .monaco-target {
+            border-left: 1px solid #dee2e6;
+            border-right: 1px solid #dee2e6;
+            border-bottom: 1px solid #dee2e6;
+            width: 100%;
+            min-height: calc(100vh - 330px);
+        }
+    </style>
 }
 
 <div class="p-4">
 
     <form id="page-edit-form" method="post">
-        <div class="row">
+        <div class="row g-2">
             <div class="col-md-9 col-xl-10">
                 <input type="text" asp-for="EditPageRequest.Title" class="form-control form-control-lg mb-1" placeholder="Title" required />
 
                 <div class="input-group input-group-sm">
-                    <span class="input-group-text" id="basic-addon3">page/</span>
+                    <label class="input-group-text" asp-for="EditPageRequest.Slug">
+                        <i class="bi-link-45deg">
+                        </i>
+                    </label>
                     <input type="text" asp-for="EditPageRequest.Slug" class="form-control form-control-sm" placeholder="Slug" required />
                 </div>
 
@@ -206,25 +209,19 @@
                     </div>
                 </div>
             </div>
-
             <div class="col-md-3 col-xl-2">
                 <div class="card mb-4">
-                    <div class="card-header">Options</div>
-                    <ul class="list-group list-group-flush">
-                        <li class="list-group-item">
-                            <div class="form-check form-switch mb-2">
-                                <input type="checkbox" asp-for="EditPageRequest.HideSidebar" class="form-check-input">
-                                <label asp-for="EditPageRequest.HideSidebar" class="form-check-label"></label>
-                            </div>
-                        </li>
-                        <li class="list-group-item">
-                            <div class="form-check form-switch mb-2">
-                                <input type="checkbox" asp-for="EditPageRequest.IsPublished" class="form-check-input">
-                                <label asp-for="EditPageRequest.IsPublished" class="form-check-label"></label>
-                            </div>
-                        </li>
-                    </ul>
                     <div class="card-body">
+                        <div class="form-check form-switch mb-2">
+                            <input type="checkbox" asp-for="EditPageRequest.HideSidebar" class="form-check-input">
+                            <label asp-for="EditPageRequest.HideSidebar" class="form-check-label"></label>
+                        </div>
+                        <div class="form-check form-switch mb-2">
+                            <input type="checkbox" asp-for="EditPageRequest.IsPublished" class="form-check-input">
+                            <label asp-for="EditPageRequest.IsPublished" class="form-check-label"></label>
+                        </div>
+                    </div>
+                    <div class="card-body border-top">
                         <div class="form-floating">
                             <textarea asp-for="EditPageRequest.MetaDescription"
                                       placeholder="@Html.DisplayNameFor(m => m.EditPageRequest.MetaDescription)"
