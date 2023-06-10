@@ -397,16 +397,16 @@ public static class Helper
 
     public static void ValidatePagingParameters(int pageSize, int pageIndex)
     {
-        if (pageSize < 1)
+        if (pageSize is < 1 or > 1024)
         {
             throw new ArgumentOutOfRangeException(nameof(pageSize),
-                $"{nameof(pageSize)} can not be less than 1, current value: {pageSize}.");
+                $"{nameof(pageSize)} out of range, current value: {pageSize}.");
         }
 
-        if (pageIndex < 1)
+        if (pageIndex is 1 or > 1024)
         {
             throw new ArgumentOutOfRangeException(nameof(pageIndex),
-                $"{nameof(pageIndex)} can not be less than 1, current value: {pageIndex}.");
+                $"{nameof(pageIndex)} out of range, current value: {pageIndex}.");
         }
     }
 
