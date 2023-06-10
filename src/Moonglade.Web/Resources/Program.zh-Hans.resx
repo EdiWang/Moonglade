@@ -726,9 +726,6 @@
   <data name="Short description" xml:space="preserve">
     <value>博主简介(短)</value>
   </data>
-  <data name="Short description is for display only on Phone screen." xml:space="preserve">
-    <value>仅用于在手机版视图显示</value>
-  </data>
   <data name="Show Admin login button under sidebar" xml:space="preserve">
     <value>在侧边栏下显示管理员登录按钮</value>
   </data>

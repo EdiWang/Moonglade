@@ -48,11 +48,6 @@ public class GeneralSettings : IBlogSettings
     [MaxLength(256)]
     public string Description { get; set; }
 
-    [Required]
-    [Display(Name = "Short description")]
-    [MaxLength(32)]
-    public string ShortDescription { get; set; }
-
     [Display(Name = "Side bar HTML code")]
     [DataType(DataType.MultilineText)]
     [MaxLength(2048)]
@@ -118,7 +113,6 @@ public class GeneralSettings : IBlogSettings
         OwnerEmail = "admin@edi.wang",
         SiteTitle = "Moonglade",
         Description = "Moonglade Admin",
-        ShortDescription = "Moonglade Admin",
         AutoDarkLightTheme = true,
         LogoText = "moonglade",
         MetaKeyword = "moonglade",

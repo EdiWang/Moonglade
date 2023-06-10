@@ -43,7 +43,7 @@
     }
 
     .card-bkimg-container {
-        height: 95px !important;
+        height: 105px !important;
     }
 
     .card-bkimg {
@@ -72,7 +72,6 @@
         font-size: 1rem;
         padding: 5px;
         text-shadow: 2px 0 2px #000;
-        transform: translate(0, 50%);
     }
 
     .navbar .nav-item {
