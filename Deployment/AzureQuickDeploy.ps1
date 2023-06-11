@@ -177,7 +177,7 @@ $storageAccountCheck = az storage account list --query "[?name=='$storageAccount
 $storageAccountExists = $storageAccountCheck.Length -gt 0
 if (!$storageAccountExists) {
     Write-Host "Creating Storage Account"
-    $echo = az storage account create --name $storageAccountName --resource-group $rsgName --location $regionName --sku Standard_LRS --kind --allow-blob-public-access true StorageV2
+    $echo = az storage account create --name $storageAccountName --resource-group $rsgName --location $regionName --sku Standard_LRS --kind StorageV2 --allow-blob-public-access true
 }
 
 $storageConn = az storage account show-connection-string -g $rsgName -n $storageAccountName | ConvertFrom-Json
