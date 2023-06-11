@@ -403,7 +403,7 @@ public static class Helper
                 $"{nameof(pageSize)} out of range, current value: {pageSize}.");
         }
 
-        if (pageIndex is 1 or > 1024)
+        if (pageIndex is < 1 or > 1024)
         {
             throw new ArgumentOutOfRangeException(nameof(pageIndex),
                 $"{nameof(pageIndex)} out of range, current value: {pageIndex}.");
