@@ -26,31 +26,23 @@ public class AssetsController : ControllerBase
     {
         var fallbackImageFile = Path.Join($"{_env.WebRootPath}", "images", "default-avatar.png");
 
-        try
+        var bytes = await cache.GetOrCreateAsync(CacheDivision.General, "avatar", async _ =>
         {
-            var bytes = await cache.GetOrCreateAsync(CacheDivision.General, "avatar", async _ =>
-            {
-                _logger.LogTrace("Avatar not on cache, getting new avatar image...");
+            _logger.LogTrace("Avatar not on cache, getting new avatar image...");
 
-                var data = await _mediator.Send(new GetAssetQuery(AssetId.AvatarBase64));
-                if (string.IsNullOrWhiteSpace(data)) return null;
+            var data = await _mediator.Send(new GetAssetQuery(AssetId.AvatarBase64));
+            if (string.IsNullOrWhiteSpace(data)) return null;
 
-                var avatarBytes = Convert.FromBase64String(data);
-                return avatarBytes;
-            });
+            var avatarBytes = Convert.FromBase64String(data);
+            return avatarBytes;
+        });
 
-            if (null == bytes)
-            {
-                return PhysicalFile(fallbackImageFile, "image/png");
-            }
-
-            return File(bytes, "image/png");
-        }
-        catch (FormatException e)
+        if (null == bytes)
         {
-            _logger.LogError($"Error {nameof(Avatar)}(), Invalid Base64 string", e);
             return PhysicalFile(fallbackImageFile, "image/png");
         }
+
+        return File(bytes, "image/png");
     }
 
     [Authorize]
