@@ -1,8 +1,8 @@
-﻿using Microsoft.SyndicationFeed;
-using Microsoft.SyndicationFeed.Atom;
-using Microsoft.SyndicationFeed.Rss;
-using System.Text;
+﻿using System.Text;
 using System.Xml;
+using Edi.SyndicationFeed.ReaderWriter;
+using Edi.SyndicationFeed.ReaderWriter.Atom;
+using Edi.SyndicationFeed.ReaderWriter.Rss;
 
 namespace Moonglade.Syndication;
 
