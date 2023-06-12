@@ -38,7 +38,7 @@
 }
 
 ::selection {
-    background-color: var(--bs-primary);
+    background-color: var(--accent-color1);
     color: var(--bs-white);
     text-shadow: none;
 }
