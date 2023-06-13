@@ -56,7 +56,7 @@ public class SettingsController : ControllerBase
 
     [HttpPost("general")]
     [ProducesResponseType(StatusCodes.Status204NoContent)]
-    [TypeFilter(typeof(ClearBlogCache), Arguments = new object[] { CacheDivision.General, "theme" })]
+    [TypeFilter(typeof(ClearBlogCache), Arguments = new object[] { CachePartition.General, "theme" })]
     public async Task<IActionResult> General(GeneralSettings model, ITimeZoneResolver timeZoneResolver)
     {
         model.AvatarUrl = _blogConfig.GeneralSettings.AvatarUrl;

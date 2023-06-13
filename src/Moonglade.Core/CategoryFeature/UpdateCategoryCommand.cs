@@ -29,7 +29,7 @@ public class UpdateCategoryCommandHandler : IRequestHandler<UpdateCategoryComman
         cat.Note = request.Note?.Trim();
 
         await _repo.UpdateAsync(cat, ct);
-        _cache.Remove(CacheDivision.General, "allcats");
+        _cache.Remove(CachePartition.General, "allcats");
 
         return OperationCode.Done;
     }

@@ -30,7 +30,7 @@ public class DeleteCategoryCommandHandler : IRequestHandler<DeleteCategoryComman
         if (pcs is not null) await _postCatRepo.DeleteAsync(pcs, ct);
 
         await _catRepo.DeleteAsync(request.Id, ct);
-        _cache.Remove(CacheDivision.General, "allcats");
+        _cache.Remove(CachePartition.General, "allcats");
 
         return OperationCode.Done;
     }

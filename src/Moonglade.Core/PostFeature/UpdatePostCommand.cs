@@ -149,7 +149,7 @@ public class UpdatePostCommandHandler : IRequestHandler<UpdatePostCommand, PostE
 
         await _postRepo.UpdateAsync(post, ct);
 
-        _cache.Remove(CacheDivision.Post, guid.ToString());
+        _cache.Remove(CachePartition.Post, guid.ToString());
         return post;
     }
 }

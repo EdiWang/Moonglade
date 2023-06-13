@@ -3,7 +3,7 @@ using System.Collections.Concurrent;
 
 namespace Moonglade.Caching;
 
-public enum CacheDivision
+public enum CachePartition
 {
     General,
     Post,
@@ -35,20 +35,20 @@ public class BlogMemoryCache : IBlogCache
         CacheDivision = new();
     }
 
-    public TItem GetOrCreate<TItem>(CacheDivision division, string key, Func<ICacheEntry, TItem> factory)
+    public TItem GetOrCreate<TItem>(CachePartition partition, string key, Func<ICacheEntry, TItem> factory)
     {
         if (string.IsNullOrWhiteSpace(key)) return default;
 
-        AddToDivision(division.ToString(), key);
-        return _memoryCache.GetOrCreate($"{division}-{key}", factory);
+        AddToDivision(partition.ToString(), key);
+        return _memoryCache.GetOrCreate($"{partition}-{key}", factory);
     }
 
-    public Task<TItem> GetOrCreateAsync<TItem>(CacheDivision division, string key, Func<ICacheEntry, Task<TItem>> factory)
+    public Task<TItem> GetOrCreateAsync<TItem>(CachePartition partition, string key, Func<ICacheEntry, Task<TItem>> factory)
     {
         if (string.IsNullOrWhiteSpace(key)) return Task.FromResult(default(TItem));
 
-        AddToDivision(division.ToString(), key);
-        return _memoryCache.GetOrCreateAsync($"{division}-{key}", factory);
+        AddToDivision(partition.ToString(), key);
+        return _memoryCache.GetOrCreateAsync($"{partition}-{key}", factory);
     }
 
     public void RemoveAllCache()
@@ -65,24 +65,24 @@ public class BlogMemoryCache : IBlogCache
         }
     }
 
-    public void Remove(CacheDivision division)
+    public void Remove(CachePartition partition)
     {
-        if (!CacheDivision.ContainsKey(division.ToString())) return;
+        if (!CacheDivision.ContainsKey(partition.ToString())) return;
 
-        var cacheKeys = CacheDivision[division.ToString()];
+        var cacheKeys = CacheDivision[partition.ToString()];
         if (cacheKeys.Any())
         {
             foreach (var key in cacheKeys)
             {
-                _memoryCache.Remove($"{division}-{key}");
+                _memoryCache.Remove($"{partition}-{key}");
             }
         }
     }
 
-    public void Remove(CacheDivision division, string key)
+    public void Remove(CachePartition partition, string key)
     {
-        if ((string.IsNullOrWhiteSpace(key)) || !CacheDivision.ContainsKey(division.ToString())) return;
-        _memoryCache.Remove($"{division}-{key}");
+        if ((string.IsNullOrWhiteSpace(key)) || !CacheDivision.ContainsKey(partition.ToString())) return;
+        _memoryCache.Remove($"{partition}-{key}");
     }
 
     private void AddToDivision(string divisionKey, string cacheKey)

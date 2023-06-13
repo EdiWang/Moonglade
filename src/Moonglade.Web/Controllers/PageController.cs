@@ -50,7 +50,7 @@ public class PageController : Controller
 
         var uid = await pageServiceAction(model);
 
-        _cache.Remove(CacheDivision.Page, model.Slug.ToLower());
+        _cache.Remove(CachePartition.Page, model.Slug.ToLower());
         return Ok(new { PageId = uid });
     }
 
@@ -63,7 +63,7 @@ public class PageController : Controller
 
         await _mediator.Send(new DeletePageCommand(id));
 
-        _cache.Remove(CacheDivision.Page, page.Slug);
+        _cache.Remove(CachePartition.Page, page.Slug);
         return NoContent();
     }
 }
