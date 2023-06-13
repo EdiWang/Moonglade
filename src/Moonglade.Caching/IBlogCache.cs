@@ -1,6 +1,6 @@
 ﻿using Microsoft.Extensions.Caching.Memory;
 
-namespace Moonglade.Caching;
+namespace Moonglade.CacheAside.InMemory;
 
 public interface IBlogCache
 {

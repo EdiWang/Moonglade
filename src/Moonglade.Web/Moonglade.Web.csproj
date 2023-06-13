@@ -22,7 +22,7 @@
 		<Using Include="Moonglade.Web.Middleware" />
 		<Using Include="Moonglade.Auth" />
 		<Using Include="Moonglade.Core" />
-		<Using Include="Moonglade.Caching" />
+		<Using Include="Moonglade.CacheAside.InMemory" />
 		<Using Include="Moonglade.Configuration" />
 		<Using Include="Moonglade.Comments" />
 		<Using Include="Moonglade.Theme" />

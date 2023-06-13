@@ -1,5 +1,5 @@
 ﻿using Microsoft.Extensions.Configuration;
-using Moonglade.Caching;
+using Moonglade.CacheAside.InMemory;
 using Moonglade.Data.Spec;
 using Moonglade.Utils;
 

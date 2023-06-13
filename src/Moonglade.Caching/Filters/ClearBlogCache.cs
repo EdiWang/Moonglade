@@ -1,6 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc.Filters;
 
-namespace Moonglade.Caching.Filters;
+namespace Moonglade.CacheAside.InMemory.Filters;
 
 [Flags]
 public enum BlogCacheType

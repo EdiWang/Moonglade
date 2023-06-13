@@ -1,6 +1,6 @@
 ﻿using Edi.PasswordGenerator;
 using Microsoft.AspNetCore.Localization;
-using Moonglade.Caching.Filters;
+using Moonglade.CacheAside.InMemory.Filters;
 using Moonglade.Notification.Client;
 using NUglify;
 

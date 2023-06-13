@@ -1,6 +1,6 @@
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
-using Moonglade.Caching;
+using Moonglade.CacheAside.InMemory;
 using Moonglade.Configuration;
 using Moonglade.Core.TagFeature;
 using Moonglade.Utils;

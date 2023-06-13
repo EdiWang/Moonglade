@@ -1,4 +1,4 @@
-﻿using Moonglade.Caching;
+﻿using Moonglade.CacheAside.InMemory;
 using Moonglade.Data.Spec;
 
 namespace Moonglade.Core.PostFeature;

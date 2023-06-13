@@ -1,7 +1,7 @@
 ﻿using Microsoft.Extensions.Caching.Memory;
 using System.Collections.Concurrent;
 
-namespace Moonglade.Caching;
+namespace Moonglade.CacheAside.InMemory;
 
 public enum CachePartition
 {

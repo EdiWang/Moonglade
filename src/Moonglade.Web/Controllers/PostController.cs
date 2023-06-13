@@ -1,4 +1,4 @@
-﻿using Moonglade.Caching.Filters;
+﻿using Moonglade.CacheAside.InMemory.Filters;
 using Moonglade.Core.PostFeature;
 using Moonglade.Pingback;
 using Moonglade.Web.Attributes;

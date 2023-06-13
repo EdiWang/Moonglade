@@ -1,4 +1,4 @@
-﻿using Moonglade.Caching.Filters;
+﻿using Moonglade.CacheAside.InMemory.Filters;
 using SixLabors.ImageSharp;
 
 namespace Moonglade.Web.Controllers;

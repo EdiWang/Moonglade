@@ -1,4 +1,4 @@
-﻿using Moonglade.Caching.Filters;
+﻿using Moonglade.CacheAside.InMemory.Filters;
 using Moonglade.Core.TagFeature;
 using System.ComponentModel.DataAnnotations;
 
