@@ -3,17 +3,6 @@ using System.Collections.Concurrent;
 
 namespace Moonglade.CacheAside.InMemory;
 
-public enum CachePartition
-{
-    General,
-    Post,
-    Page,
-    PostCountCategory,
-    PostCountTag,
-    PostCountFeatured,
-    RssCategory
-}
-
 public class MemoryCacheAside : ICacheAside
 {
     /* Create Key-Value mapping for cache divisions to workaround
