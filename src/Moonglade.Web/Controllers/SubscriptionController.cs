@@ -8,12 +8,12 @@ namespace Moonglade.Web.Controllers;
 public class SubscriptionController : ControllerBase
 {
     private readonly IBlogConfig _blogConfig;
-    private readonly IBlogCache _cache;
+    private readonly ICacheAside _cache;
     private readonly IMediator _mediator;
 
     public SubscriptionController(
         IBlogConfig blogConfig,
-        IBlogCache cache,
+        ICacheAside cache,
         IMediator mediator)
     {
         _blogConfig = blogConfig;

@@ -7,9 +7,9 @@ public record DeletePostCommand(Guid Id, bool SoftDelete = false) : IRequest;
 public class DeletePostCommandHandler : IRequestHandler<DeletePostCommand>
 {
     private readonly IRepository<PostEntity> _repo;
-    private readonly IBlogCache _cache;
+    private readonly ICacheAside _cache;
 
-    public DeletePostCommandHandler(IRepository<PostEntity> repo, IBlogCache cache)
+    public DeletePostCommandHandler(IRepository<PostEntity> repo, ICacheAside cache)
     {
         _repo = repo;
         _cache = cache;

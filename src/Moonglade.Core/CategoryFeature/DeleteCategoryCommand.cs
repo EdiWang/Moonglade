@@ -9,12 +9,12 @@ public class DeleteCategoryCommandHandler : IRequestHandler<DeleteCategoryComman
 {
     private readonly IRepository<CategoryEntity> _catRepo;
     private readonly IRepository<PostCategoryEntity> _postCatRepo;
-    private readonly IBlogCache _cache;
+    private readonly ICacheAside _cache;
 
     public DeleteCategoryCommandHandler(
         IRepository<CategoryEntity> catRepo,
         IRepository<PostCategoryEntity> postCatRepo,
-        IBlogCache cache)
+        ICacheAside cache)
     {
         _catRepo = catRepo;
         _postCatRepo = postCatRepo;

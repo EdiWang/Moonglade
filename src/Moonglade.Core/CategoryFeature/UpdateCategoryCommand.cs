@@ -11,9 +11,9 @@ public class UpdateCategoryCommand : CreateCategoryCommand, IRequest<OperationCo
 public class UpdateCategoryCommandHandler : IRequestHandler<UpdateCategoryCommand, OperationCode>
 {
     private readonly IRepository<CategoryEntity> _repo;
-    private readonly IBlogCache _cache;
+    private readonly ICacheAside _cache;
 
-    public UpdateCategoryCommandHandler(IRepository<CategoryEntity> repo, IBlogCache cache)
+    public UpdateCategoryCommandHandler(IRepository<CategoryEntity> repo, ICacheAside cache)
     {
         _repo = repo;
         _cache = cache;

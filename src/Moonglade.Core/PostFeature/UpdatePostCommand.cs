@@ -14,7 +14,7 @@ public class UpdatePostCommandHandler : IRequestHandler<UpdatePostCommand, PostE
     private readonly IRepository<PostTagEntity> _ptRepository;
     private readonly IRepository<TagEntity> _tagRepo;
     private readonly IRepository<PostEntity> _postRepo;
-    private readonly IBlogCache _cache;
+    private readonly ICacheAside _cache;
     private readonly IBlogConfig _blogConfig;
     private readonly IConfiguration _configuration;
     private readonly bool _useMySqlWorkaround;
@@ -24,7 +24,7 @@ public class UpdatePostCommandHandler : IRequestHandler<UpdatePostCommand, PostE
         IRepository<PostTagEntity> ptRepository,
         IRepository<TagEntity> tagRepo,
         IRepository<PostEntity> postRepo,
-        IBlogCache cache,
+        ICacheAside cache,
         IBlogConfig blogConfig, IConfiguration configuration)
     {
         _ptRepository = ptRepository;

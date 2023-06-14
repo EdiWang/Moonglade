@@ -10,11 +10,11 @@ namespace Moonglade.Web.Controllers;
 [Route("api/[controller]")]
 public class PageController : Controller
 {
-    private readonly IBlogCache _cache;
+    private readonly ICacheAside _cache;
     private readonly IMediator _mediator;
 
     public PageController(
-        IBlogCache cache,
+        ICacheAside cache,
         IMediator mediator)
     {
         _cache = cache;

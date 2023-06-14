@@ -9,7 +9,7 @@ public class CategoryListModel : PageModel
 {
     private readonly IMediator _mediator;
     private readonly IBlogConfig _blogConfig;
-    private readonly IBlogCache _cache;
+    private readonly ICacheAside _cache;
 
     [BindProperty(SupportsGet = true)]
     public int P { get; set; }
@@ -19,7 +19,7 @@ public class CategoryListModel : PageModel
     public CategoryListModel(
         IBlogConfig blogConfig,
         IMediator mediator,
-        IBlogCache cache)
+        ICacheAside cache)
     {
         _blogConfig = blogConfig;
         _mediator = mediator;

@@ -8,11 +8,11 @@ public class FeaturedModel : PageModel
 {
     private readonly IBlogConfig _blogConfig;
     private readonly IMediator _mediator;
-    private readonly IBlogCache _cache;
+    private readonly ICacheAside _cache;
     public StaticPagedList<PostDigest> Posts { get; set; }
 
     public FeaturedModel(
-        IBlogConfig blogConfig, IBlogCache cache, IMediator mediator)
+        IBlogConfig blogConfig, ICacheAside cache, IMediator mediator)
     {
         _blogConfig = blogConfig;
         _cache = cache;

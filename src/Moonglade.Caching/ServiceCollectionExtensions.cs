@@ -7,7 +7,7 @@ public static class ServiceCollectionExtensions
     public static IServiceCollection AddBlogCache(this IServiceCollection services)
     {
         services.AddMemoryCache();
-        services.AddSingleton<IBlogCache, BlogMemoryCache>();
+        services.AddSingleton<ICacheAside, MemoryCacheAside>();
         return services;
     }
 }

@@ -10,10 +10,10 @@ public record GetPostBySlugQuery(PostSlug Slug) : IRequest<Post>;
 public class GetPostBySlugQueryHandler : IRequestHandler<GetPostBySlugQuery, Post>
 {
     private readonly IRepository<PostEntity> _repo;
-    private readonly IBlogCache _cache;
+    private readonly ICacheAside _cache;
     private readonly IConfiguration _configuration;
 
-    public GetPostBySlugQueryHandler(IRepository<PostEntity> repo, IBlogCache cache, IConfiguration configuration)
+    public GetPostBySlugQueryHandler(IRepository<PostEntity> repo, ICacheAside cache, IConfiguration configuration)
     {
         _repo = repo;
         _cache = cache;

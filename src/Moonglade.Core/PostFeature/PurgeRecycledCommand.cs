@@ -7,10 +7,10 @@ public record PurgeRecycledCommand : IRequest;
 
 public class PurgeRecycledCommandHandler : IRequestHandler<PurgeRecycledCommand>
 {
-    private readonly IBlogCache _cache;
+    private readonly ICacheAside _cache;
     private readonly IRepository<PostEntity> _repo;
 
-    public PurgeRecycledCommandHandler(IBlogCache cache, IRepository<PostEntity> repo)
+    public PurgeRecycledCommandHandler(ICacheAside cache, IRepository<PostEntity> repo)
     {
         _cache = cache;
         _repo = repo;

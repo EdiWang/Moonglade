@@ -10,10 +10,10 @@ public class ThemeController : ControllerBase
 {
     private readonly IMediator _mediator;
 
-    private readonly IBlogCache _cache;
+    private readonly ICacheAside _cache;
     private readonly IBlogConfig _blogConfig;
 
-    public ThemeController(IMediator mediator, IBlogCache cache, IBlogConfig blogConfig)
+    public ThemeController(IMediator mediator, ICacheAside cache, IBlogConfig blogConfig)
     {
         _mediator = mediator;
 

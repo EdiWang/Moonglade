@@ -15,7 +15,7 @@ public class SiteMapMiddleware
     public async Task Invoke(
         HttpContext httpContext,
         IBlogConfig blogConfig,
-        IBlogCache cache,
+        ICacheAside cache,
         IRepository<PostEntity> postRepo,
         IRepository<PageEntity> pageRepo)
     {

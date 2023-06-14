@@ -7,12 +7,12 @@ public class BlogPageModel : PageModel
 {
     private readonly IMediator _mediator;
 
-    private readonly IBlogCache _cache;
+    private readonly ICacheAside _cache;
     private readonly IConfiguration _configuration;
     public BlogPage BlogPage { get; set; }
 
     public BlogPageModel(
-        IMediator mediator, IBlogCache cache, IConfiguration configuration)
+        IMediator mediator, ICacheAside cache, IConfiguration configuration)
     {
         _cache = cache;
         _configuration = configuration;

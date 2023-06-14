@@ -9,14 +9,14 @@ public class IndexModel : PageModel
 {
     private readonly IBlogConfig _blogConfig;
     private readonly IMediator _mediator;
-    private readonly IBlogCache _cache;
+    private readonly ICacheAside _cache;
 
     public string SortBy { get; set; }
 
     public StaticPagedList<PostDigest> Posts { get; set; }
 
     public IndexModel(
-        IBlogConfig blogConfig, IBlogCache cache, IMediator mediator)
+        IBlogConfig blogConfig, ICacheAside cache, IMediator mediator)
     {
         _blogConfig = blogConfig;
         _cache = cache;

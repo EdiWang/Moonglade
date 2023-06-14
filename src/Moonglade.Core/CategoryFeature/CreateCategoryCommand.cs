@@ -25,9 +25,9 @@ public class CreateCategoryCommand : IRequest
 public class CreateCategoryCommandHandler : IRequestHandler<CreateCategoryCommand>
 {
     private readonly IRepository<CategoryEntity> _catRepo;
-    private readonly IBlogCache _cache;
+    private readonly ICacheAside _cache;
 
-    public CreateCategoryCommandHandler(IRepository<CategoryEntity> catRepo, IBlogCache cache)
+    public CreateCategoryCommandHandler(IRepository<CategoryEntity> catRepo, ICacheAside cache)
     {
         _catRepo = catRepo;
         _cache = cache;

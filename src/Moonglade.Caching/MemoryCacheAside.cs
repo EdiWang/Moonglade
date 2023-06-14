@@ -14,7 +14,7 @@ public enum CachePartition
     RssCategory
 }
 
-public class BlogMemoryCache : IBlogCache
+public class MemoryCacheAside : ICacheAside
 {
     /* Create Key-Value mapping for cache divisions to workaround
      * https://github.com/aspnet/Caching/issues/422
@@ -29,7 +29,7 @@ public class BlogMemoryCache : IBlogCache
 
     private readonly IMemoryCache _memoryCache;
 
-    public BlogMemoryCache(IMemoryCache memoryCache)
+    public MemoryCacheAside(IMemoryCache memoryCache)
     {
         _memoryCache = memoryCache;
         CacheDivision = new();

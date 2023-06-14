@@ -9,13 +9,13 @@ public class TagListModel : PageModel
 {
     private readonly IMediator _mediator;
     private readonly IBlogConfig _blogConfig;
-    private readonly IBlogCache _cache;
+    private readonly ICacheAside _cache;
 
     [BindProperty(SupportsGet = true)]
     public int P { get; set; }
     public StaticPagedList<PostDigest> Posts { get; set; }
 
-    public TagListModel(IMediator mediator, IBlogConfig blogConfig, IBlogCache cache)
+    public TagListModel(IMediator mediator, IBlogConfig blogConfig, ICacheAside cache)
     {
         _mediator = mediator;
         _blogConfig = blogConfig;

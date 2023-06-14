@@ -22,7 +22,7 @@ public class AssetsController : ControllerBase
 
     [HttpGet("avatar")]
     [ResponseCache(Duration = 300)]
-    public async Task<IActionResult> Avatar(IBlogCache cache)
+    public async Task<IActionResult> Avatar(ICacheAside cache)
     {
         var fallbackImageFile = Path.Join($"{_env.WebRootPath}", "images", "default-avatar.png");
 

@@ -13,19 +13,19 @@ public enum BlogCacheType
 
 public class ClearBlogCache : ActionFilterAttribute
 {
-    private readonly IBlogCache _cache;
+    private readonly ICacheAside _cache;
 
     private readonly string _cacheKey;
     private readonly CachePartition _partition;
     private readonly BlogCacheType _type = BlogCacheType.None;
 
-    public ClearBlogCache(BlogCacheType type, IBlogCache cache)
+    public ClearBlogCache(BlogCacheType type, ICacheAside cache)
     {
         _cache = cache;
         _type = type;
     }
 
-    public ClearBlogCache(CachePartition partition, string cacheKey, IBlogCache cache)
+    public ClearBlogCache(CachePartition partition, string cacheKey, ICacheAside cache)
     {
         _partition = partition;
         _cacheKey = cacheKey;
