@@ -51,7 +51,7 @@ public class MemoryCacheAside : ICacheAside
         return _memoryCache.GetOrCreateAsync($"{partition}-{key}", factory);
     }
 
-    public void RemoveAllCache()
+    public void Clear()
     {
         var keys =
             from kvp in CachePartitions
