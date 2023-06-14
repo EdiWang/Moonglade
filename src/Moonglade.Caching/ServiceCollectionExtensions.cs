@@ -1,6 +1,6 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
 
-namespace Moonglade.CacheAside.InMemory;
+namespace Edi.CacheAside.InMemory;
 
 public static class ServiceCollectionExtensions
 {

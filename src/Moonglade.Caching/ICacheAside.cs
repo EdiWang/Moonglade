@@ -1,6 +1,6 @@
 ﻿using Microsoft.Extensions.Caching.Memory;
 
-namespace Moonglade.CacheAside.InMemory;
+namespace Edi.CacheAside.InMemory;
 
 public interface ICacheAside
 {

@@ -1,7 +1,7 @@
 ﻿using Microsoft.Extensions.Caching.Memory;
 using System.Collections.Concurrent;
 
-namespace Moonglade.CacheAside.InMemory;
+namespace Edi.CacheAside.InMemory;
 
 public class MemoryCacheAside : ICacheAside
 {
