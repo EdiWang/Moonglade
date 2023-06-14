@@ -17,7 +17,7 @@ public class GetCategoriesQueryHandler : IRequestHandler<GetCategoriesQuery, IRe
 
     public Task<IReadOnlyList<Category>> Handle(GetCategoriesQuery request, CancellationToken ct)
     {
-        return _cache.GetOrCreateAsync(CachePartition.General, "allcats", async entry =>
+        return _cache.GetOrCreateAsync(CachePartition.General.ToString(), "allcats", async entry =>
         {
             entry.SlidingExpiration = TimeSpan.FromHours(1);
             var list = await _repo.SelectAsync(Category.EntitySelector, ct);

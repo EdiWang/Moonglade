@@ -26,7 +26,7 @@ public class AssetsController : ControllerBase
     {
         var fallbackImageFile = Path.Join($"{_env.WebRootPath}", "images", "default-avatar.png");
 
-        var bytes = await cache.GetOrCreateAsync(CachePartition.General, "avatar", async _ =>
+        var bytes = await cache.GetOrCreateAsync(CachePartition.General.ToString(), "avatar", async _ =>
         {
             _logger.LogTrace("Avatar not on cache, getting new avatar image...");
 

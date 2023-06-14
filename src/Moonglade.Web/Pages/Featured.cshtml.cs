@@ -23,7 +23,7 @@ public class FeaturedModel : PageModel
     {
         var pagesize = _blogConfig.ContentSettings.PostListPageSize;
         var posts = await _mediator.Send(new ListFeaturedQuery(pagesize, p));
-        var count = await _cache.GetOrCreateAsync(CachePartition.PostCountFeatured, "featured", _ => _mediator.Send(new CountPostQuery(CountType.Featured)));
+        var count = await _cache.GetOrCreateAsync(CachePartition.PostCountFeatured.ToString(), "featured", _ => _mediator.Send(new CountPostQuery(CountType.Featured)));
 
         var list = new StaticPagedList<PostDigest>(posts, p, pagesize, count);
         Posts = list;

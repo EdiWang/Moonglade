@@ -38,26 +38,26 @@ public class ClearBlogCache : ActionFilterAttribute
 
         if (_type.HasFlag(BlogCacheType.None))
         {
-            _cache.Remove(_partition, _cacheKey);
+            _cache.Remove(_partition.ToString(), _cacheKey);
         }
 
         if (_type.HasFlag(BlogCacheType.Subscription))
         {
-            _cache.Remove(CachePartition.General, "rss");
-            _cache.Remove(CachePartition.General, "atom");
-            _cache.Remove(CachePartition.RssCategory);
+            _cache.Remove(CachePartition.General.ToString(), "rss");
+            _cache.Remove(CachePartition.General.ToString(), "atom");
+            _cache.Remove(CachePartition.RssCategory.ToString());
         }
 
         if (_type.HasFlag(BlogCacheType.SiteMap))
         {
-            _cache.Remove(CachePartition.General, "sitemap");
+            _cache.Remove(CachePartition.General.ToString(), "sitemap");
         }
 
         if (_type.HasFlag(BlogCacheType.PagingCount))
         {
-            _cache.Remove(CachePartition.General, "postcount");
-            _cache.Remove(CachePartition.PostCountCategory);
-            _cache.Remove(CachePartition.PostCountTag);
+            _cache.Remove(CachePartition.General.ToString(), "postcount");
+            _cache.Remove(CachePartition.PostCountCategory.ToString());
+            _cache.Remove(CachePartition.PostCountTag.ToString());
         }
     }
 }

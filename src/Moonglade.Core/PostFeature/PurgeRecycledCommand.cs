@@ -24,7 +24,7 @@ public class PurgeRecycledCommandHandler : IRequestHandler<PurgeRecycledCommand>
 
         foreach (var guid in posts.Select(p => p.Id))
         {
-            _cache.Remove(CachePartition.Post, guid.ToString());
+            _cache.Remove(CachePartition.Post.ToString(), guid.ToString());
         }
     }
 }

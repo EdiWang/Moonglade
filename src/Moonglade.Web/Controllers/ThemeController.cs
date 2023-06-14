@@ -29,7 +29,7 @@ public class ThemeController : ControllerBase
     {
         try
         {
-            var css = await _cache.GetOrCreateAsync(CachePartition.General, "theme", async entry =>
+            var css = await _cache.GetOrCreateAsync(CachePartition.General.ToString(), "theme", async entry =>
             {
                 entry.SlidingExpiration = TimeSpan.FromMinutes(20);
 

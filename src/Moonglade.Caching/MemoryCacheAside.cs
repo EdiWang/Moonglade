@@ -35,19 +35,19 @@ public class MemoryCacheAside : ICacheAside
         CachePartitions = new();
     }
 
-    public TItem GetOrCreate<TItem>(CachePartition partition, string key, Func<ICacheEntry, TItem> factory)
+    public TItem GetOrCreate<TItem>(string partition, string key, Func<ICacheEntry, TItem> factory)
     {
         if (string.IsNullOrWhiteSpace(key)) return default;
 
-        AddToPartition(partition.ToString(), key);
+        AddToPartition(partition, key);
         return _memoryCache.GetOrCreate($"{partition}-{key}", factory);
     }
 
-    public Task<TItem> GetOrCreateAsync<TItem>(CachePartition partition, string key, Func<ICacheEntry, Task<TItem>> factory)
+    public Task<TItem> GetOrCreateAsync<TItem>(string partition, string key, Func<ICacheEntry, Task<TItem>> factory)
     {
         if (string.IsNullOrWhiteSpace(key)) return Task.FromResult(default(TItem));
 
-        AddToPartition(partition.ToString(), key);
+        AddToPartition(partition, key);
         return _memoryCache.GetOrCreateAsync($"{partition}-{key}", factory);
     }
 
@@ -65,11 +65,11 @@ public class MemoryCacheAside : ICacheAside
         }
     }
 
-    public void Remove(CachePartition partition)
+    public void Remove(string partition)
     {
-        if (!CachePartitions.ContainsKey(partition.ToString())) return;
+        if (!CachePartitions.ContainsKey(partition)) return;
 
-        var cacheKeys = CachePartitions[partition.ToString()];
+        var cacheKeys = CachePartitions[partition];
         if (cacheKeys.Any())
         {
             foreach (var key in cacheKeys)
@@ -79,9 +79,9 @@ public class MemoryCacheAside : ICacheAside
         }
     }
 
-    public void Remove(CachePartition partition, string key)
+    public void Remove(string partition, string key)
     {
-        if ((string.IsNullOrWhiteSpace(key)) || !CachePartitions.ContainsKey(partition.ToString())) return;
+        if ((string.IsNullOrWhiteSpace(key)) || !CachePartitions.ContainsKey(partition)) return;
         _memoryCache.Remove($"{partition}-{key}");
     }
 

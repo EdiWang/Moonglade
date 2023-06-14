@@ -47,6 +47,6 @@ public class CreateCategoryCommandHandler : IRequestHandler<CreateCategoryComman
         };
 
         await _catRepo.AddAsync(category, ct);
-        _cache.Remove(CachePartition.General, "allcats");
+        _cache.Remove(CachePartition.General.ToString(), "allcats");
     }
 }

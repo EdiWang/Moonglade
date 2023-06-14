@@ -23,7 +23,7 @@ public class BlogPageModel : PageModel
     {
         if (string.IsNullOrWhiteSpace(slug)) return BadRequest();
 
-        var page = await _cache.GetOrCreateAsync(CachePartition.Page, slug.ToLower(), async entry =>
+        var page = await _cache.GetOrCreateAsync(CachePartition.Page.ToString(), slug.ToLower(), async entry =>
         {
             entry.SlidingExpiration = TimeSpan.FromMinutes(int.Parse(_configuration["CacheSlidingExpirationMinutes:Page"]));
 

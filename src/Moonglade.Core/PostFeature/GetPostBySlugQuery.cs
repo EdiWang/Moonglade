@@ -44,7 +44,7 @@ public class GetPostBySlugQueryHandler : IRequestHandler<GetPostBySlugQuery, Pos
             await _repo.UpdateAsync(p, ct);
         }
 
-        var psm = await _cache.GetOrCreateAsync(CachePartition.Post, $"{pid}", async entry =>
+        var psm = await _cache.GetOrCreateAsync(CachePartition.Post.ToString(), $"{pid}", async entry =>
         {
             entry.SlidingExpiration = TimeSpan.FromMinutes(int.Parse(_configuration["CacheSlidingExpirationMinutes:Post"]!));
 

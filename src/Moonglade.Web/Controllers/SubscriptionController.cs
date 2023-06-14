@@ -51,7 +51,7 @@ public class SubscriptionController : ControllerBase
         var route = hasRoute ? routeName.ToLower().Trim() : null;
 
         return await _cache.GetOrCreateAsync(
-            hasRoute ? CachePartition.PostCountCategory : CachePartition.General, route ?? "rss", async entry =>
+            hasRoute ? CachePartition.PostCountCategory.ToString() : CachePartition.General.ToString(), route ?? "rss", async entry =>
             {
                 entry.SlidingExpiration = TimeSpan.FromHours(1);
 
@@ -68,7 +68,7 @@ public class SubscriptionController : ControllerBase
     [HttpGet("atom")]
     public async Task<IActionResult> Atom()
     {
-        return await _cache.GetOrCreateAsync(CachePartition.General, "atom", async entry =>
+        return await _cache.GetOrCreateAsync(CachePartition.General.ToString(), "atom", async entry =>
         {
             entry.SlidingExpiration = TimeSpan.FromHours(1);
 

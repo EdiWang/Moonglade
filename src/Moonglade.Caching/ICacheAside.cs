@@ -4,9 +4,9 @@ namespace Moonglade.CacheAside.InMemory;
 
 public interface ICacheAside
 {
-    TItem GetOrCreate<TItem>(CachePartition partition, string key, Func<ICacheEntry, TItem> factory);
-    Task<TItem> GetOrCreateAsync<TItem>(CachePartition partition, string key, Func<ICacheEntry, Task<TItem>> factory);
+    TItem GetOrCreate<TItem>(string partition, string key, Func<ICacheEntry, TItem> factory);
+    Task<TItem> GetOrCreateAsync<TItem>(string partition, string key, Func<ICacheEntry, Task<TItem>> factory);
     void Clear();
-    void Remove(CachePartition partition);
-    void Remove(CachePartition partition, string key);
+    void Remove(string partition);
+    void Remove(string partition, string key);
 }
