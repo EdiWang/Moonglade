@@ -16,7 +16,7 @@ public class ClearBlogCache : ActionFilterAttribute
     private readonly ICacheAside _cache;
 
     private readonly string _cacheKey;
-    private readonly CachePartition _partition;
+    private readonly BlogCachePartition _partition;
     private readonly BlogCacheType _type = BlogCacheType.None;
 
     public ClearBlogCache(BlogCacheType type, ICacheAside cache)
@@ -25,7 +25,7 @@ public class ClearBlogCache : ActionFilterAttribute
         _type = type;
     }
 
-    public ClearBlogCache(CachePartition partition, string cacheKey, ICacheAside cache)
+    public ClearBlogCache(BlogCachePartition partition, string cacheKey, ICacheAside cache)
     {
         _partition = partition;
         _cacheKey = cacheKey;
@@ -43,21 +43,21 @@ public class ClearBlogCache : ActionFilterAttribute
 
         if (_type.HasFlag(BlogCacheType.Subscription))
         {
-            _cache.Remove(CachePartition.General.ToString(), "rss");
-            _cache.Remove(CachePartition.General.ToString(), "atom");
-            _cache.Remove(CachePartition.RssCategory.ToString());
+            _cache.Remove(BlogCachePartition.General.ToString(), "rss");
+            _cache.Remove(BlogCachePartition.General.ToString(), "atom");
+            _cache.Remove(BlogCachePartition.RssCategory.ToString());
         }
 
         if (_type.HasFlag(BlogCacheType.SiteMap))
         {
-            _cache.Remove(CachePartition.General.ToString(), "sitemap");
+            _cache.Remove(BlogCachePartition.General.ToString(), "sitemap");
         }
 
         if (_type.HasFlag(BlogCacheType.PagingCount))
         {
-            _cache.Remove(CachePartition.General.ToString(), "postcount");
-            _cache.Remove(CachePartition.PostCountCategory.ToString());
-            _cache.Remove(CachePartition.PostCountTag.ToString());
+            _cache.Remove(BlogCachePartition.General.ToString(), "postcount");
+            _cache.Remove(BlogCachePartition.PostCountCategory.ToString());
+            _cache.Remove(BlogCachePartition.PostCountTag.ToString());
         }
     }
 }

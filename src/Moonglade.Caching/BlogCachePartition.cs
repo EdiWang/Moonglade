@@ -1,6 +1,6 @@
 ﻿namespace Moonglade.CacheAside.InMemory;
 
-public enum CachePartition
+public enum BlogCachePartition
 {
     General,
     Post,

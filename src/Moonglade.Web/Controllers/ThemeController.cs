@@ -29,7 +29,7 @@ public class ThemeController : ControllerBase
     {
         try
         {
-            var css = await _cache.GetOrCreateAsync(CachePartition.General.ToString(), "theme", async entry =>
+            var css = await _cache.GetOrCreateAsync(BlogCachePartition.General.ToString(), "theme", async entry =>
             {
                 entry.SlidingExpiration = TimeSpan.FromMinutes(20);
 
@@ -62,7 +62,7 @@ public class ThemeController : ControllerBase
     [HttpPost]
     [ProducesResponseType(typeof(string), StatusCodes.Status409Conflict)]
     [ProducesResponseType(typeof(int), StatusCodes.Status200OK)]
-    [TypeFilter(typeof(ClearBlogCache), Arguments = new object[] { CachePartition.General, "theme" })]
+    [TypeFilter(typeof(ClearBlogCache), Arguments = new object[] { BlogCachePartition.General, "theme" })]
     public async Task<IActionResult> Create(CreateThemeRequest request)
     {
         var dic = new Dictionary<string, string>
@@ -81,7 +81,7 @@ public class ThemeController : ControllerBase
     [Authorize]
     [HttpDelete("{id:int}")]
     [ApiConventionMethod(typeof(DefaultApiConventions), nameof(DefaultApiConventions.Delete))]
-    [TypeFilter(typeof(ClearBlogCache), Arguments = new object[] { CachePartition.General, "theme" })]
+    [TypeFilter(typeof(ClearBlogCache), Arguments = new object[] { BlogCachePartition.General, "theme" })]
     public async Task<IActionResult> Delete([Range(1, int.MaxValue)] int id)
     {
         var oc = await _mediator.Send(new DeleteThemeCommand(id));

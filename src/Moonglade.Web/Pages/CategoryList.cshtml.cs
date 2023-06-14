@@ -37,7 +37,7 @@ public class CategoryListModel : PageModel
 
         if (Cat is null) return NotFound();
 
-        var postCount = await _cache.GetOrCreateAsync(CachePartition.PostCountCategory.ToString(), Cat.Id.ToString(),
+        var postCount = await _cache.GetOrCreateAsync(BlogCachePartition.PostCountCategory.ToString(), Cat.Id.ToString(),
             _ => _mediator.Send(new CountPostQuery(CountType.Category, Cat.Id)));
 
         var postList = await _mediator.Send(new ListPostsQuery(pageSize, P, Cat.Id));

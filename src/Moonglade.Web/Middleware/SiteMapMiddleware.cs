@@ -21,7 +21,7 @@ public class SiteMapMiddleware
     {
         if (blogConfig.AdvancedSettings.EnableSiteMap && httpContext.Request.Path == "/sitemap.xml")
         {
-            var xml = await cache.GetOrCreateAsync(CachePartition.General.ToString(), "sitemap", async _ =>
+            var xml = await cache.GetOrCreateAsync(BlogCachePartition.General.ToString(), "sitemap", async _ =>
             {
                 var url = Helper.ResolveRootUrl(httpContext, blogConfig.GeneralSettings.CanonicalPrefix, true, true);
                 var data = await GetSiteMapData(url, postRepo, pageRepo);

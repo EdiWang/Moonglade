@@ -31,7 +31,7 @@ public class IndexModel : PageModel
             ViewData["sortBy"] = sortBy;
 
             var posts = await _mediator.Send(new ListPostsQuery(pagesize, p, sortBy: sortByEnum));
-            var totalPostsCount = await _cache.GetOrCreateAsync(CachePartition.General.ToString(), "postcount", _ => _mediator.Send(new CountPostQuery(CountType.Public)));
+            var totalPostsCount = await _cache.GetOrCreateAsync(BlogCachePartition.General.ToString(), "postcount", _ => _mediator.Send(new CountPostQuery(CountType.Public)));
 
             var list = new StaticPagedList<PostDigest>(posts, p, pagesize, totalPostsCount);
 

@@ -26,7 +26,7 @@ public class AssetsController : ControllerBase
     {
         var fallbackImageFile = Path.Join($"{_env.WebRootPath}", "images", "default-avatar.png");
 
-        var bytes = await cache.GetOrCreateAsync(CachePartition.General.ToString(), "avatar", async _ =>
+        var bytes = await cache.GetOrCreateAsync(BlogCachePartition.General.ToString(), "avatar", async _ =>
         {
             _logger.LogTrace("Avatar not on cache, getting new avatar image...");
 
@@ -49,7 +49,7 @@ public class AssetsController : ControllerBase
     [HttpPost("avatar")]
     [ProducesResponseType(StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status409Conflict)]
-    [TypeFilter(typeof(ClearBlogCache), Arguments = new object[] { CachePartition.General, "avatar" })]
+    [TypeFilter(typeof(ClearBlogCache), Arguments = new object[] { BlogCachePartition.General, "avatar" })]
     public async Task<IActionResult> Avatar([FromBody] string base64Img)
     {
         base64Img = base64Img.Trim();

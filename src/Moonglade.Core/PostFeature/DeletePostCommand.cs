@@ -31,6 +31,6 @@ public class DeletePostCommandHandler : IRequestHandler<DeletePostCommand>
             await _repo.DeleteAsync(post, ct);
         }
 
-        _cache.Remove(CachePartition.Post.ToString(), guid.ToString());
+        _cache.Remove(BlogCachePartition.Post.ToString(), guid.ToString());
     }
 }

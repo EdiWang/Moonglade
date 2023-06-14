@@ -23,6 +23,6 @@ public class RestorePostCommandHandler : IRequestHandler<RestorePostCommand>
         pp.IsDeleted = false;
         await _repo.UpdateAsync(pp, ct);
 
-        _cache.Remove(CachePartition.Post.ToString(), request.Id.ToString());
+        _cache.Remove(BlogCachePartition.Post.ToString(), request.Id.ToString());
     }
 }
