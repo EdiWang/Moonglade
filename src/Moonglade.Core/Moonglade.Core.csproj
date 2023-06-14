@@ -3,6 +3,9 @@
 		<TargetFramework>net7.0</TargetFramework>
 		<ImplicitUsings>enable</ImplicitUsings>
 	</PropertyGroup>
+	<ItemGroup>
+	  <PackageReference Include="Edi.CacheAside.InMemory" Version="1.0.0" />
+	</ItemGroup>
 
 	<ItemGroup>
 		<Using Include="System.Text" />
@@ -17,7 +20,6 @@
 	</ItemGroup>
 
 	<ItemGroup>
-		<ProjectReference Include="..\Moonglade.Caching\Edi.CacheAside.InMemory.csproj" />
 		<ProjectReference Include="..\Moonglade.Configuration\Moonglade.Configuration.csproj" />
 	</ItemGroup>
 </Project>
