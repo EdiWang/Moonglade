@@ -41,7 +41,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Deployment", "Deployment", 
 		..\Deployment\uninstall.sh = ..\Deployment\uninstall.sh
 	EndProjectSection
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Moonglade.CacheAside.InMemory", "Moonglade.Caching\Moonglade.CacheAside.InMemory.csproj", "{BBC1C4FB-52C8-4E89-BED5-B461298A652B}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Edi.CacheAside.InMemory", "Moonglade.Caching\Edi.CacheAside.InMemory.csproj", "{BBC1C4FB-52C8-4E89-BED5-B461298A652B}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Infrastructure", "Infrastructure", "{F9400B71-ADCD-4FBE-A88F-F85873FDC60B}"
 EndProject

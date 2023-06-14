@@ -17,7 +17,7 @@
 	</ItemGroup>
 
 	<ItemGroup>
-		<ProjectReference Include="..\Moonglade.Caching\Moonglade.CacheAside.InMemory.csproj" />
+		<ProjectReference Include="..\Moonglade.Caching\Edi.CacheAside.InMemory.csproj" />
 		<ProjectReference Include="..\Moonglade.Configuration\Moonglade.Configuration.csproj" />
 	</ItemGroup>
 </Project>
