@@ -1,5 +1,4 @@
-﻿using Moonglade.CacheAside.InMemory.Filters;
-using Moonglade.Core.PageFeature;
+﻿using Moonglade.Core.PageFeature;
 using Moonglade.Web.Attributes;
 using NUglify;
 

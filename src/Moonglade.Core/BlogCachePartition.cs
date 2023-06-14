@@ -1,4 +1,4 @@
-﻿namespace Moonglade.CacheAside.InMemory;
+﻿namespace Moonglade.Core;
 
 public enum BlogCachePartition
 {
