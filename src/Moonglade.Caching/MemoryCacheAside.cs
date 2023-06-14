@@ -39,7 +39,7 @@ public class MemoryCacheAside : ICacheAside
     {
         if (string.IsNullOrWhiteSpace(key)) return default;
 
-        AddToDivision(partition.ToString(), key);
+        AddToPartition(partition.ToString(), key);
         return _memoryCache.GetOrCreate($"{partition}-{key}", factory);
     }
 
@@ -47,7 +47,7 @@ public class MemoryCacheAside : ICacheAside
     {
         if (string.IsNullOrWhiteSpace(key)) return Task.FromResult(default(TItem));
 
-        AddToDivision(partition.ToString(), key);
+        AddToPartition(partition.ToString(), key);
         return _memoryCache.GetOrCreateAsync($"{partition}-{key}", factory);
     }
 
@@ -85,16 +85,16 @@ public class MemoryCacheAside : ICacheAside
         _memoryCache.Remove($"{partition}-{key}");
     }
 
-    private void AddToDivision(string divisionKey, string cacheKey)
+    private void AddToPartition(string partitionKey, string cacheKey)
     {
-        if (!CachePartitions.ContainsKey(divisionKey))
+        if (!CachePartitions.ContainsKey(partitionKey))
         {
-            CachePartitions.TryAdd(divisionKey, new[] { cacheKey }.ToList());
+            CachePartitions.TryAdd(partitionKey, new[] { cacheKey }.ToList());
         }
 
-        if (!CachePartitions[divisionKey].Contains(cacheKey))
+        if (!CachePartitions[partitionKey].Contains(cacheKey))
         {
-            CachePartitions[divisionKey].Add(cacheKey);
+            CachePartitions[partitionKey].Add(cacheKey);
         }
     }
 }
