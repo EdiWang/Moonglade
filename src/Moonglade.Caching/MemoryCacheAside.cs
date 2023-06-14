@@ -25,14 +25,14 @@ public class MemoryCacheAside : ICacheAside
      * Post              | { "<guid>", "<guid>", "<guid"> ... }
      * General           | { "avatar", ... }
      */
-    public ConcurrentDictionary<string, IList<string>> CacheDivision { get; }
+    public ConcurrentDictionary<string, IList<string>> CachePartitions { get; }
 
     private readonly IMemoryCache _memoryCache;
 
     public MemoryCacheAside(IMemoryCache memoryCache)
     {
         _memoryCache = memoryCache;
-        CacheDivision = new();
+        CachePartitions = new();
     }
 
     public TItem GetOrCreate<TItem>(CachePartition partition, string key, Func<ICacheEntry, TItem> factory)
@@ -54,7 +54,7 @@ public class MemoryCacheAside : ICacheAside
     public void RemoveAllCache()
     {
         var keys =
-            from kvp in CacheDivision
+            from kvp in CachePartitions
             let prefix = kvp.Key
             from val in kvp.Value
             select $"{prefix}-{val}";
@@ -67,9 +67,9 @@ public class MemoryCacheAside : ICacheAside
 
     public void Remove(CachePartition partition)
     {
-        if (!CacheDivision.ContainsKey(partition.ToString())) return;
+        if (!CachePartitions.ContainsKey(partition.ToString())) return;
 
-        var cacheKeys = CacheDivision[partition.ToString()];
+        var cacheKeys = CachePartitions[partition.ToString()];
         if (cacheKeys.Any())
         {
             foreach (var key in cacheKeys)
@@ -81,20 +81,20 @@ public class MemoryCacheAside : ICacheAside
 
     public void Remove(CachePartition partition, string key)
     {
-        if ((string.IsNullOrWhiteSpace(key)) || !CacheDivision.ContainsKey(partition.ToString())) return;
+        if ((string.IsNullOrWhiteSpace(key)) || !CachePartitions.ContainsKey(partition.ToString())) return;
         _memoryCache.Remove($"{partition}-{key}");
     }
 
     private void AddToDivision(string divisionKey, string cacheKey)
     {
-        if (!CacheDivision.ContainsKey(divisionKey))
+        if (!CachePartitions.ContainsKey(divisionKey))
         {
-            CacheDivision.TryAdd(divisionKey, new[] { cacheKey }.ToList());
+            CachePartitions.TryAdd(divisionKey, new[] { cacheKey }.ToList());
         }
 
-        if (!CacheDivision[divisionKey].Contains(cacheKey))
+        if (!CachePartitions[divisionKey].Contains(cacheKey))
         {
-            CacheDivision[divisionKey].Add(cacheKey);
+            CachePartitions[divisionKey].Add(cacheKey);
         }
     }
 }
