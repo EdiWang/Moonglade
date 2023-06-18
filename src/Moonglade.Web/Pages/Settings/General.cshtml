@@ -95,101 +95,129 @@
 <form id="form-settings" asp-controller="Settings" asp-action="General" spellcheck="false">
 <div class="row g-5">
 <div class="col-md-6">
-	<div class="mb-3">
-		<h6 class="card-subtitle mb-3 text-muted">@SharedLocalizer["Blog Identity"]</h6>
-		<div class="row">
-			<div class="col-2">
-				<div class="mb-2">
-					<img src="@Url.Action("SiteIconOrigin", "Assets")" class="img-thumbnail img-fluid blogadmin-siteicon"/>
-				</div>
-				<a class="btn w-100 btn-sm btn-outline-accent" href="#" data-bs-toggle="modal" data-bs-target="#siteiconmodal">@SharedLocalizer["Change"]</a>
-			</div>
-			<div class="col-10">
-				<div class="row g-2 mb-3">
-					<div class="col">
-						<label class="form-label" asp-for="ViewModel.SiteTitle"></label>
-						<input asp-for="ViewModel.SiteTitle" class="form-control" required/>
-					</div>
-					<div class="col">
-						<label class="form-label" asp-for="ViewModel.LogoText"></label>
-						<input asp-for="ViewModel.LogoText" class="form-control" required/>
-					</div>
-				</div>
-				<div class="mb-1">
-					<label class="form-label" asp-for="ViewModel.MetaKeyword"></label>
-					<input asp-for="ViewModel.MetaKeyword" class="form-control" required/>
-				</div>
+    <div class="mb-3">
+        <h6 class="card-subtitle mb-3 text-muted">@SharedLocalizer["Blog Identity"]</h6>
+        <div class="row">
+            <div class="col-2">
+                <div class="mb-2">
+                    <img src="@Url.Action("SiteIconOrigin", "Assets")" class="img-thumbnail img-fluid blogadmin-siteicon"/>
+                </div>
+                <a class="btn w-100 btn-sm btn-outline-accent" href="#" data-bs-toggle="modal" data-bs-target="#siteiconmodal">@SharedLocalizer["Change"]</a>
+                <span class="text-muted text-center d-block">(favicon)</span>
+            </div>
+            <div class="col-10">
+                <div class="row g-2 mb-3">
+                    <div class="col">
+                        <label class="form-label" asp-for="ViewModel.SiteTitle"></label>
+                        <input asp-for="ViewModel.SiteTitle" class="form-control" required/>
+                    </div>
+                    <div class="col">
+                        <label class="form-label" asp-for="ViewModel.LogoText"></label>
+                        <input asp-for="ViewModel.LogoText" class="form-control" required/>
+                    </div>
+                </div>
+                <div class="mb-1">
+                    <label class="form-label" asp-for="ViewModel.MetaKeyword"></label>
+                    <input asp-for="ViewModel.MetaKeyword" class="form-control" required/>
+                </div>
 
-				<div class="row g-3 align-items-center settings-entry mt-1 mb-4">
-					<div class="col-auto">
-						<i class="bi-link settings-entry-icon"></i>
-					</div>
-					<div class="col">
-						<label asp-for="ViewModel.CanonicalPrefix"></label>
-						<div class="form-text">@SharedLocalizer["Set a primary domain if your website binds to multiple domian names."]</div>
-					</div>
-					<div class="col-md-5 text-end">
-						<input asp-for="ViewModel.CanonicalPrefix" class="form-control"/>
-					</div>
-				</div>
+                <div class="row g-3 align-items-center settings-entry mt-1 mb-4">
+                    <div class="col-auto">
+                        <i class="bi-link settings-entry-icon"></i>
+                    </div>
+                    <div class="col">
+                        <label asp-for="ViewModel.CanonicalPrefix"></label>
+                        <div class="form-text">@SharedLocalizer["Set a primary domain if your website binds to multiple domian names."]</div>
+                    </div>
+                    <div class="col-md-5 text-end">
+                        <input asp-for="ViewModel.CanonicalPrefix" class="form-control"/>
+                    </div>
+                </div>
 
-				<div class="row g-3 align-items-center settings-entry mb-4">
-					<div class="col-auto">
-						<i class="bi-clock settings-entry-icon"></i>
-					</div>
-					<div class="col">
-						<label for="SelectedUtcOffset">@SharedLocalizer["Time Zone"]</label>
-						<div class="form-text">@SharedLocalizer["Blog posts will use this time zone as date and time display."]</div>
-					</div>
-					<div class="col-md-5 text-end">
-						<select class="form-select" asp-for="ViewModel.TimeZoneId" asp-items="@tzList"></select>
-					</div>
-				</div>
+                <div class="row g-3 align-items-center settings-entry mb-4">
+                    <div class="col-auto">
+                        <i class="bi-clock settings-entry-icon"></i>
+                    </div>
+                    <div class="col">
+                        <label for="SelectedUtcOffset">@SharedLocalizer["Time Zone"]</label>
+                        <div class="form-text">@SharedLocalizer["Blog posts will use this time zone as date and time display."]</div>
+                    </div>
+                    <div class="col-md-5 text-end">
+                        <select class="form-select" asp-for="ViewModel.TimeZoneId" asp-items="@tzList"></select>
+                    </div>
+                </div>
 
-				<div class="row g-3 align-items-center settings-entry mb-4">
-					<div class="col-auto">
-						<i class="bi-globe settings-entry-icon"></i>
-					</div>
-					<div class="col">
-						<label for="DefaultLanguageCode">@SharedLocalizer["Default language"]</label>
-						<div class="form-text">@SharedLocalizer["Blog will use this language for SEO by default unless specified in blog post."]</div>
-					</div>
-					<div class="col-md-5 text-end">
-						<select class="form-select" asp-for="ViewModel.DefaultLanguageCode" asp-items="@langList"></select>
-					</div>
-				</div>
-			</div>
-		</div>
-		<div class="row">
-			<div class="col-md-2 col-sm-4">
-				<div class="mb-3">
-					<img src="@BlogConfig.GeneralSettings.AvatarUrl" class="img-thumbnail img-fluid blogadmin-avatar"/>
-				</div>
-				<a class="btn w-100 btn-sm btn-outline-accent" href="#" data-bs-toggle="modal" data-bs-target="#avatarmodal">@SharedLocalizer["Change"]</a>
-			</div>
-			<div class="col-md-10 col-sm-8">
-				<div class="row g-2 mb-3">
-					<div class="col">
-						<label class="form-label" asp-for="ViewModel.OwnerName"></label>
-						<input asp-for="ViewModel.OwnerName" class="form-control" required/>
-					</div>
-					<div class="col">
-						<label class="form-label" asp-for="ViewModel.OwnerEmail"></label>
-						<input asp-for="ViewModel.OwnerEmail" class="form-control" required title="@SharedLocalizer["Email address to receive notifications from this blog."]"/>
-					</div>
-				</div>
-				<div class="mb-4">
-					<div class="form-floating">
-						<textarea asp-for="ViewModel.Description"
+                <div class="row g-3 align-items-center settings-entry mb-4">
+                    <div class="col-auto">
+                        <i class="bi-globe settings-entry-icon"></i>
+                    </div>
+                    <div class="col">
+                        <label for="DefaultLanguageCode">@SharedLocalizer["Default language"]</label>
+                        <div class="form-text">@SharedLocalizer["Blog will use this language for SEO by default unless specified in blog post."]</div>
+                    </div>
+                    <div class="col-md-5 text-end">
+                        <select class="form-select" asp-for="ViewModel.DefaultLanguageCode" asp-items="@langList"></select>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-2 col-sm-4">
+                <div class="mb-3">
+                    <img src="@BlogConfig.GeneralSettings.AvatarUrl" class="img-thumbnail img-fluid blogadmin-avatar"/>
+                </div>
+                <a class="btn w-100 btn-sm btn-outline-accent" href="#" data-bs-toggle="modal" data-bs-target="#avatarmodal">@SharedLocalizer["Change"]</a>
+				<span class="text-muted text-center d-block">(Avatar)</span>
+            </div>
+            <div class="col-md-10 col-sm-8">
+                <div class="row g-2 mb-3">
+                    <div class="col">
+                        <label class="form-label" asp-for="ViewModel.OwnerName"></label>
+                        <input asp-for="ViewModel.OwnerName" class="form-control" required/>
+                    </div>
+                    <div class="col">
+                        <label class="form-label" asp-for="ViewModel.OwnerEmail"></label>
+                        <input asp-for="ViewModel.OwnerEmail" class="form-control" required title="@SharedLocalizer["Email address to receive notifications from this blog."]"/>
+                    </div>
+                </div>
+                <div class="mb-4">
+                    <div class="form-floating">
+                        <textarea asp-for="ViewModel.Description"
                                               placeholder="@Html.DisplayNameFor(m => m.ViewModel.Description)"
                                               class="form-control h-100px"
                                               spellcheck="false" cols="10" rows="10" required></textarea>
-						<label class="form-label" asp-for="ViewModel.Description"></label>
-					</div>
-				</div>
+                        <label class="form-label" asp-for="ViewModel.Description"></label>
+                    </div>
+                </div>
             </div>
-		</div>
-	</div>
+        </div>
+    </div>
+    <div>
+        <h6 class="card-subtitle mb-4 text-muted">
+            @SharedLocalizer["Footer"]
+        </h6>
+
+        <div class="row g-3 align-items-center settings-entry mb-2">
+            <div class="col-auto">
+                <i class="bi-check2-square settings-entry-icon"></i>
+            </div>
+            <div class="col">
+                <label asp-for="ViewModel.Copyright"></label>
+                <div class="form-text">@SharedLocalizer["Use [c] for copyright mark: &copy;, [year] for current year."]</div>
+            </div>
+            <div class="col-md-5 text-end">
+                <input asp-for="ViewModel.Copyright" class="form-control" required/>
+            </div>
+        </div>
+
+        <div class="form-floating">
+            <textarea asp-for="ViewModel.FooterCustomizedHtmlPitch"
+                                      placeholder="@Html.DisplayNameFor(m => m.ViewModel.FooterCustomizedHtmlPitch)"
+                                      class="form-control form-control-sm h-100px textarea-code"
+                                      spellcheck="false" rows="10" cols="10"></textarea>
+            <label class="form-label" asp-for="ViewModel.FooterCustomizedHtmlPitch"></label>
+        </div>
+    </div>
 </div>
 <div class="col-md-6">
 <div class="mb-3">
@@ -345,32 +373,6 @@
 	</div>
 </div>
 
-<div class="mt-5">
-	<h6 class="card-subtitle mb-4 text-muted">
-		@SharedLocalizer["Footer"]
-	</h6>
-
-	<div class="row g-3 align-items-center settings-entry mb-2">
-		<div class="col-auto">
-			<i class="bi-check2-square settings-entry-icon"></i>
-		</div>
-		<div class="col">
-			<label asp-for="ViewModel.Copyright"></label>
-			<div class="form-text">@SharedLocalizer["Use [c] for copyright mark: &copy;, [year] for current year."]</div>
-		</div>
-		<div class="col-md-5 text-end">
-			<input asp-for="ViewModel.Copyright" class="form-control" required/>
-		</div>
-	</div>
-
-	<div class="form-floating">
-		<textarea asp-for="ViewModel.FooterCustomizedHtmlPitch"
-                                      placeholder="@Html.DisplayNameFor(m => m.ViewModel.FooterCustomizedHtmlPitch)"
-                                      class="form-control form-control-sm h-100px textarea-code"
-                                      spellcheck="false" rows="10" cols="10"></textarea>
-		<label class="form-label" asp-for="ViewModel.FooterCustomizedHtmlPitch"></label>
-	</div>
-</div>
 
 <div class="mt-5">
 	<h6 class="card-subtitle mb-4 text-muted">
