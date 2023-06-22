@@ -145,7 +145,7 @@
     <value>账号信息</value>
   </data>
   <data name="Accounts" xml:space="preserve">
-    <value>账户</value>
+    <value>账号</value>
   </data>
   <data name="Action" xml:space="preserve">
     <value>操作</value>
@@ -241,7 +241,7 @@
     <value>分类信息</value>
   </data>
   <data name="Change" xml:space="preserve">
-    <value>修改</value>
+    <value>更改</value>
   </data>
   <data name="Change Avatar" xml:space="preserve">
     <value>更换头像</value>
@@ -719,9 +719,6 @@
   </data>
   <data name="Set a primary domain if your website binds to multiple domian names." xml:space="preserve">
     <value>若您的网站绑定了多个域名，请填写主域名</value>
-  </data>
-  <data name="Short description" xml:space="preserve">
-    <value>博主简介(短)</value>
   </data>
   <data name="Show Admin login button under sidebar" xml:space="preserve">
     <value>在侧边栏下显示管理员登录按钮</value>
