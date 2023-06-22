@@ -9,7 +9,7 @@ namespace Moonglade.Notification.Client;
 
 public interface IBlogNotification
 {
-    Task EnqueueNotification<T>(MailMesageTypes type, string[] toAddresses, T payload) where T : class;
+    Task Enqueue<T>(MailMesageTypes type, string[] receipts, T payload) where T : class;
 }
 
 public class BlogNotification : IBlogNotification
@@ -25,7 +25,7 @@ public class BlogNotification : IBlogNotification
         _notificationSettings = blogConfig.NotificationSettings;
     }
 
-    public async Task EnqueueNotification<T>(MailMesageTypes type, string[] toAddresses, T payload) where T : class
+    public async Task Enqueue<T>(MailMesageTypes type, string[] receipts, T payload) where T : class
     {
         if (!_notificationSettings.EnableEmailSending) return;
 
@@ -35,7 +35,7 @@ public class BlogNotification : IBlogNotification
 
             var en = new EmailNotification
             {
-                DistributionList = string.Join(';', toAddresses),
+                DistributionList = string.Join(';', receipts),
                 MessageType = type.ToString(),
                 MessageBody = JsonSerializer.Serialize(payload, MoongladeJsonSerializerOptions.Default),
             };
@@ -62,11 +62,4 @@ public class BlogNotification : IBlogNotification
 
         await queue.SendMessageAsync(base64Json);
     }
-}
-
-internal class EmailNotification
-{
-    public string DistributionList { get; set; }
-    public string MessageType { get; set; }
-    public string MessageBody { get; set; }
 }

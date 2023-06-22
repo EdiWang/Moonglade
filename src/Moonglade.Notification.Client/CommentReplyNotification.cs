@@ -33,6 +33,6 @@ public class CommentReplyNotificationHandler : INotificationHandler<CommentReply
             notification.PostLink);
 
         var dl = new[] { notification.Email };
-        await _blogNotification.EnqueueNotification(MailMesageTypes.AdminReplyNotification, dl, payload);
+        await _blogNotification.Enqueue(MailMesageTypes.AdminReplyNotification, dl, payload);
     }
 }

@@ -24,6 +24,6 @@ public class PingbackNotificationHandler : INotificationHandler<PingbackNotifica
     public async Task Handle(PingbackNotification notification, CancellationToken ct)
     {
         var dl = new[] { _blogConfig.GeneralSettings.OwnerEmail };
-        await _blogNotification.EnqueueNotification(MailMesageTypes.BeingPinged, dl, notification);
+        await _blogNotification.Enqueue(MailMesageTypes.BeingPinged, dl, notification);
     }
 }

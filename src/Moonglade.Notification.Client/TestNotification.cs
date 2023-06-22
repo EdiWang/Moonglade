@@ -19,6 +19,6 @@ public class TestNotificationHandler : INotificationHandler<TestNotification>
     public async Task Handle(TestNotification notification, CancellationToken ct)
     {
         var dl = new[] { _blogConfig.GeneralSettings.OwnerEmail };
-        await _blogNotification.EnqueueNotification(MailMesageTypes.TestMail, dl, EmptyPayload.Default);
+        await _blogNotification.Enqueue(MailMesageTypes.TestMail, dl, EmptyPayload.Default);
     }
 }
