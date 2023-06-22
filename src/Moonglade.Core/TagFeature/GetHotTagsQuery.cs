@@ -21,7 +21,7 @@ public class GetHotTagsQueryHandler : IRequestHandler<GetHotTagsQuery, IReadOnly
                 Id = t.Id,
                 DisplayName = t.DisplayName,
                 NormalizedName = t.NormalizedName
-            }, t.Posts.Count));
+            }, t.Posts.Count), ct);
 
         return tags;
     }

@@ -16,7 +16,7 @@ public class ListFeaturedQueryHandler : IRequestHandler<ListFeaturedQuery, IRead
         var (pageSize, pageIndex) = request;
         Helper.ValidatePagingParameters(pageSize, pageIndex);
 
-        var posts = _repo.SelectAsync(new FeaturedPostSpec(pageSize, pageIndex), PostDigest.EntitySelector);
+        var posts = _repo.SelectAsync(new FeaturedPostSpec(pageSize, pageIndex), PostDigest.EntitySelector, ct);
         return posts;
     }
 }

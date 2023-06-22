@@ -26,6 +26,6 @@ public class GetApprovedCommentsQueryHandler : IRequestHandler<GetApprovedCommen
                 ReplyContent = cr.ReplyContent,
                 ReplyTimeUtc = cr.CreateTimeUtc
             }).ToList()
-        });
+        }, ct);
     }
 }

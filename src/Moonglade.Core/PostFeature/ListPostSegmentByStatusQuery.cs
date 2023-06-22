@@ -12,6 +12,6 @@ public class ListPostSegmentByStatusQueryHandler : IRequestHandler<ListPostSegme
     public Task<IReadOnlyList<PostSegment>> Handle(ListPostSegmentByStatusQuery request, CancellationToken ct)
     {
         var spec = new PostSpec(request.Status);
-        return _repo.SelectAsync(spec, PostSegment.EntitySelector);
+        return _repo.SelectAsync(spec, PostSegment.EntitySelector, ct);
     }
 }

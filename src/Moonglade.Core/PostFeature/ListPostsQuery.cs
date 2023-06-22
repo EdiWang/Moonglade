@@ -33,6 +33,6 @@ public class ListPostsQueryHandler : IRequestHandler<ListPostsQuery, IReadOnlyLi
         Helper.ValidatePagingParameters(request.PageSize, request.PageIndex);
 
         var spec = new PostPagingSpec(request.PageSize, request.PageIndex, request.CatId, request.SortBy);
-        return _repo.SelectAsync(spec, PostDigest.EntitySelector);
+        return _repo.SelectAsync(spec, PostDigest.EntitySelector, ct);
     }
 }

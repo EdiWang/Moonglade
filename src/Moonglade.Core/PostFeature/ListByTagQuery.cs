@@ -15,7 +15,7 @@ public class ListByTagQueryHandler : IRequestHandler<ListByTagQuery, IReadOnlyLi
         if (request.TagId <= 0) throw new ArgumentOutOfRangeException(nameof(request.TagId));
         Helper.ValidatePagingParameters(request.PageSize, request.PageIndex);
 
-        var posts = _repo.SelectAsync(new PostTagSpec(request.TagId, request.PageSize, request.PageIndex), PostDigest.EntitySelectorByTag);
+        var posts = _repo.SelectAsync(new PostTagSpec(request.TagId, request.PageSize, request.PageIndex), PostDigest.EntitySelectorByTag, ct);
         return posts;
     }
 }

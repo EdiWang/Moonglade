@@ -24,7 +24,7 @@ public class SiteMapMiddleware
             var xml = await cache.GetOrCreateAsync(BlogCachePartition.General.ToString(), "sitemap", async _ =>
             {
                 var url = Helper.ResolveRootUrl(httpContext, blogConfig.GeneralSettings.CanonicalPrefix, true, true);
-                var data = await GetSiteMapData(url, postRepo, pageRepo);
+                var data = await GetSiteMapData(url, postRepo, pageRepo, httpContext.RequestAborted);
                 return data;
             });
 
@@ -40,7 +40,8 @@ public class SiteMapMiddleware
     private static async Task<string> GetSiteMapData(
         string siteRootUrl,
         IRepository<PostEntity> postRepo,
-        IRepository<PageEntity> pageRepo)
+        IRepository<PageEntity> pageRepo,
+        CancellationToken ct)
     {
         var sb = new StringBuilder();
 
@@ -53,7 +54,7 @@ public class SiteMapMiddleware
             // Posts
             var spec = new PostSitePageSpec();
             var posts = await postRepo
-                .SelectAsync(spec, p => new Tuple<string, DateTime?, DateTime?>(p.Slug, p.PubDateUtc, p.LastModifiedUtc));
+                .SelectAsync(spec, p => new Tuple<string, DateTime?, DateTime?>(p.Slug, p.PubDateUtc, p.LastModifiedUtc), ct);
 
             foreach (var (slug, pubDateUtc, lastModifyUtc) in posts.OrderByDescending(p => p.Item2))
             {

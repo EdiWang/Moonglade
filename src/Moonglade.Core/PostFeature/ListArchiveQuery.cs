@@ -12,7 +12,7 @@ public class ListArchiveQueryHandler : IRequestHandler<ListArchiveQuery, IReadOn
     public Task<IReadOnlyList<PostDigest>> Handle(ListArchiveQuery request, CancellationToken ct)
     {
         var spec = new PostSpec(request.Year, request.Month.GetValueOrDefault());
-        var list = _repo.SelectAsync(spec, PostDigest.EntitySelector);
+        var list = _repo.SelectAsync(spec, PostDigest.EntitySelector, ct);
         return list;
     }
 }

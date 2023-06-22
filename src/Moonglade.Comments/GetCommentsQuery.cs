@@ -15,7 +15,7 @@ public class GetCommentsQueryHandler : IRequestHandler<GetCommentsQuery, IReadOn
     public Task<IReadOnlyList<CommentDetailedItem>> Handle(GetCommentsQuery request, CancellationToken ct)
     {
         var spec = new CommentSpec(request.PageSize, request.PageIndex);
-        var comments = _repo.SelectAsync(spec, CommentDetailedItem.EntitySelector);
+        var comments = _repo.SelectAsync(spec, CommentDetailedItem.EntitySelector, ct);
 
         return comments;
     }
