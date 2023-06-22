@@ -28,7 +28,7 @@ public static class ServiceCollectionExtensions
         }
         else
         {
-            services.AddScoped<ICommentModerator, LocalWordFilterModerator>();
+            services.AddScoped<ICommentModerator, LocalModerator>();
         }
 
         return services;
