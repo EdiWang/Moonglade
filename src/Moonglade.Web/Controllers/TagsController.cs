@@ -16,8 +16,8 @@ public class TagsController : ControllerBase
     [ProducesResponseType(typeof(IReadOnlyList<string>), StatusCodes.Status200OK)]
     public async Task<IActionResult> Names()
     {
-        var tagNames = await _mediator.Send(new GetTagNamesQuery());
-        return Ok(tagNames);
+        var names = await _mediator.Send(new GetTagNamesQuery());
+        return Ok(names);
     }
 
     [HttpPost]
