@@ -162,7 +162,7 @@
                     <div class="col-md-5">
                         <input type="range" asp-for="@settings.WatermarkFontSize" class="form-range" min="8" max="32" step="1" oninput="this.nextElementSibling.value = this.value" />
                         <output class="form-text">
-                            @Model.@settings.WatermarkFontSize
+                            @settings.WatermarkFontSize
                         </output>
                     </div>
                 </div>
