@@ -1,7 +1,7 @@
 ﻿using MediatR;
 using Moonglade.Configuration;
 
-namespace Moonglade.Notification.Client;
+namespace Moonglade.Email.Client;
 
 public record PingbackNotification(
     string TargetPostTitle,

@@ -2,7 +2,7 @@
 using Moonglade.Configuration;
 using Moonglade.Utils;
 
-namespace Moonglade.Notification.Client;
+namespace Moonglade.Email.Client;
 
 public record CommentNotification(
     string Username,

@@ -1,11 +1,11 @@
-﻿using Azure.Storage.Queues;
+﻿using System.Text;
+using System.Text.Json;
+using Azure.Storage.Queues;
 using Microsoft.Extensions.Logging;
 using Moonglade.Configuration;
 using Moonglade.Data.Exporting.Exporters;
-using System.Text;
-using System.Text.Json;
 
-namespace Moonglade.Notification.Client;
+namespace Moonglade.Email.Client;
 
 public interface IBlogNotification
 {

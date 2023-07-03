@@ -1,4 +1,4 @@
-﻿namespace Moonglade.Notification.Client;
+﻿namespace Moonglade.Email.Client;
 
 public enum MailMesageTypes
 {

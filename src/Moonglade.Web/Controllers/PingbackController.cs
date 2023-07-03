@@ -1,5 +1,5 @@
 ﻿using Moonglade.Data.Entities;
-using Moonglade.Notification.Client;
+using Moonglade.Email.Client;
 using Moonglade.Pingback;
 using Moonglade.Web.Attributes;
 

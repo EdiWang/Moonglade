@@ -1,6 +1,6 @@
 ﻿using MediatR;
 
-namespace Moonglade.Notification.Client;
+namespace Moonglade.Email.Client;
 
 public record CommentReplyNotification(
     string Email,

@@ -1,6 +1,6 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
 
-namespace Moonglade.Notification.Client;
+namespace Moonglade.Email.Client;
 
 public static class ServiceCollectionExtension
 {
