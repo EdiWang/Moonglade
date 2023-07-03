@@ -118,31 +118,16 @@
                             <i class="bi-arrow-right-circle settings-entry-icon"></i>
                         </div>
                         <div class="col">
-                            <label asp-for="@settings.EnablePingbackSend" class="form-check-label"></label>
+                            <label asp-for="@settings.EnablePingback" class="form-check-label"></label>
                         </div>
                         <div class="col-md-4 text-end">
                             <div class="form-check form-switch">
-                                <input type="hidden" name="EnablePingbackSend" value="false">
-                                <input type="checkbox" name="EnablePingbackSend" value="true" class="form-check-input" @(settings.EnablePingbackSend ? "checked" : null)>
+                                <input type="hidden" name="EnablePingback" value="false">
+                                <input type="checkbox" name="EnablePingback" value="true" class="form-check-input" @(settings.EnablePingback ? "checked" : null)>
                             </div>
                         </div>
                     </div>
 
-                    <div class="row g-3 align-items-center settings-entry mb-4">
-                        <div class="col-auto">
-                            <i class="bi-arrow-left-circle settings-entry-icon"></i>
-                        </div>
-                        <div class="col">
-                            <label asp-for="@settings.EnablePingbackReceive" class="form-check-label"></label>
-                        </div>
-                        <div class="col-md-4 text-end">
-                            <div class="form-check form-switch">
-                                <input type="hidden" name="EnablePingbackReceive" value="false">
-                                <input type="checkbox" name="EnablePingbackReceive" value="true" class="form-check-input" @(settings.EnablePingbackReceive ? "checked" : null)>
-                            </div>
-                        </div>
-                    </div>
-                    
                     <div class="row g-3 align-items-center settings-entry mb-4">
                         <div class="col-auto">
                             <i class="bi-map settings-entry-icon"></i>

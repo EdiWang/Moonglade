@@ -90,7 +90,7 @@ public class PostController : ControllerBase
                         postEntity.Slug
                     });
 
-                if (_blogConfig.AdvancedSettings.EnablePingbackSend)
+                if (_blogConfig.AdvancedSettings.EnablePingback)
                 {
                     _ = Task.Run(async () => { await _pingbackSender.TrySendPingAsync(link, postEntity.PostContent); });
                 }

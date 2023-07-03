@@ -29,7 +29,7 @@ public class PingbackController : ControllerBase
     [ProducesResponseType(StatusCodes.Status403Forbidden)]
     public async Task<IActionResult> Process()
     {
-        if (!_blogConfig.AdvancedSettings.EnablePingbackReceive) return Forbid();
+        if (!_blogConfig.AdvancedSettings.EnablePingback) return Forbid();
 
         var ip = Helper.GetClientIP(HttpContext);
         var requestBody = await new StreamReader(HttpContext.Request.Body, Encoding.Default).ReadToEndAsync();

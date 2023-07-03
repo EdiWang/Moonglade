@@ -396,11 +396,8 @@
   <data name="Enable FOAF" xml:space="preserve">
     <value>启用 FOAF</value>
   </data>
-  <data name="Enable Pingback receive" xml:space="preserve">
-    <value>启用 Pingback 接受</value>
-  </data>
-  <data name="Enable Pingback send" xml:space="preserve">
-    <value>启用 Pingback 发送</value>
+  <data name="Enable Pingback" xml:space="preserve">
+    <value>启用 Pingback</value>
   </data>
   <data name="Enable Site Map" xml:space="preserve">
     <value>启用网站地图</value>
