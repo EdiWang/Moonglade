@@ -885,4 +885,7 @@
   <data name="Export" xml:space="preserve">
     <value>导出</value>
   </data>
+  <data name="lower case English letters (a-z) and numbers (0-9) with/out hyphen (-) in middle." xml:space="preserve">
+    <value>小写英文字母（a-z）和数字（0-9），可以带或不带连符（-）</value>
+  </data>
 </root>

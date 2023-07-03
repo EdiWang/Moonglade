@@ -132,7 +132,7 @@
                 <label class="form-label" asp-for="EditCategoryRequest.RouteName"></label>
                 <input asp-for="EditCategoryRequest.RouteName" class="form-control" required pattern="(?!-)([a-z0-9-]+)" />
                 <small class="text-muted">
-                    lower case English letters (a-z) and numbers (0-9) with/out hyphen (-) in middle.
+                    @SharedLocalizer["lower case English letters (a-z) and numbers (0-9) with/out hyphen (-) in middle."]
                 </small>
             </div>
             <div class="mb-3">
