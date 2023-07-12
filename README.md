@@ -202,5 +202,6 @@ There are a few individuals already setup thier blogs using Moonglade on Azure (
 - [AllenMasters](https://allenmasters.com)
 - [Hao's House](https://haxu.dev/)
 - [Sascha.Manns](https://saschamanns.de/)
+- [王高峰博客](https://blog.wanggaofeng.net)
 
 *Just Submit PR or issue if you want your blog to be listed here*
