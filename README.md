@@ -94,7 +94,7 @@ Build and run `./src/Moonglade.sln`
 
 #### [Microsoft Entra ID](https://azure.microsoft.com/en-us/services/active-directory/)
 
-See [Wiki document](https://github.com/EdiWang/Moonglade/wiki/Use-Azure-Active-Directory-Authentication)
+See [Wiki document](https://github.com/EdiWang/Moonglade/wiki/Use-Microsoft-Entra-ID-Authentication)
 
 #### Local Account (Alternative)
 
