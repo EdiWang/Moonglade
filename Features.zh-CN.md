@@ -133,7 +133,7 @@
 
 ### OIDC
 
-- Azure Active Directory
+- Microsoft Entra ID
 
 ### 本地账号
 

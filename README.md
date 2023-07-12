@@ -92,7 +92,7 @@ Build and run `./src/Moonglade.sln`
 
 ### 🛡 Authentication
 
-#### [Azure Active Directory](https://azure.microsoft.com/en-us/services/active-directory/)
+#### [Microsoft Entra ID](https://azure.microsoft.com/en-us/services/active-directory/)
 
 See [Wiki document](https://github.com/EdiWang/Moonglade/wiki/Use-Azure-Active-Directory-Authentication)
 
