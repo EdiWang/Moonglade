@@ -14,15 +14,15 @@ The [.NET](https://dotnet.microsoft.com/) blog system of [edi.wang](https://edi.
 
 ### ☁ Full Deploy on Azure (Recommend)
 
-This is the way https://edi.wang is deployed, by taking advantage of as many Azure services as possible, the blog can run very fast and secure.
+This is the way https://edi.wang is deployed, by taking advantage of as many Azure services as possible, the blog can run very fast and secure. 
 
-This diagram shows a full Azure deployment for Moonglade for reference.
+But there is no automated script to deploy it, you need to manually create all the resources and configure them.
 
 ![image](https://cdn-blog.edi.wang/web-assets/ediwang-azure-arch-visio-nov2022.png)
 
 ### 🐋 Quick Deploy on Azure (App Service on Linux)
 
-Use automated deployment script to get your Moonglade up and running in 10 minutes, follow instructions [here](https://github.com/EdiWang/Moonglade/wiki/Quick-Deploy-on-Azure)
+Use automated deployment script to get your Moonglade up and running in 10 minutes with minimal Azure components, follow instructions [here](https://github.com/EdiWang/Moonglade/wiki/Quick-Deploy-on-Azure)
 
 ### 🐧 Quick Deploy on Linux without Docker
 
@@ -39,42 +39,32 @@ Tools | Alternative
 
 Moonglade supports three types of database. You can choose from SQL Server, PostgreSQL or MySQL.
 
+Update your database connection string in `appsettings.*.json`
+
 #### SQL Server
 
-Create a SQL Server 2022 database, e.g. ```moonglade```
-
-Set the `MoongladeDatabase` to your database connection string in `appsettings.Development.json`
-
 ```json
-"MoongladeDatabase": "Server=(localdb)\\MSSQLLocalDB;Database=moonglade;Trusted_Connection=True;"
+"ConnectionStrings": {
+  "MoongladeDatabase": "Server=(localdb)\\MSSQLLocalDB;Database=Moonglade;Trusted_Connection=True;",
+  "DatabaseType": "SqlServer"
+}
 ```
-
 #### MySQL
 
-Set `DatabaseType` to `MySql`
-
 ```json
-"DatabaseType": "MySql"
-```
-
-Set the `MoongladeDatabase` to your database connection string in `appsettings.Development.json`
-
-```json
-"MoongladeDatabase": "Server=localhost;Port=3306;Database=moonglade;Uid=root;Pwd=******;"
+"ConnectionStrings": {
+  "MoongladeDatabase": "Server=localhost;Port=3306;Database=moonglade;Uid=root;Pwd=******;",
+  "DatabaseType": "MySql"
+}
 ```
 
 #### PostgreSql
 
-Set `DatabaseType` to `PostgreSql`
-
 ```json
-"DatabaseType": "PostgreSql"
-```
-
-Set the `MoongladeDatabase` to your database connection string in `appsettings.Development.json`
-
-```json
-"MoongladeDatabase": "User ID=****;Password=****;Host=localhost;Port=5432;Database=****;Pooling=true;"
+"ConnectionStrings": {
+  "MoongladeDatabase": "User ID=****;Password=****;Host=localhost;Port=5432;Database=****;Pooling=true;",
+  "DatabaseType": "PostgreSql"
+}
 ```
 
 ### 🔨 Build Source
