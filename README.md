@@ -20,7 +20,7 @@ This diagram shows a full Azure deployment for Moonglade for reference.
 
 ![image](https://cdn-blog.edi.wang/web-assets/ediwang-azure-arch-visio-nov2022.png)
 
-### 🐋 Quick Deploy on Azure
+### 🐋 Quick Deploy on Azure (App Service on Linux)
 
 Use automated deployment script to get your Moonglade up and running in 10 minutes, follow instructions [here](https://github.com/EdiWang/Moonglade/wiki/Quick-Deploy-on-Azure)
 
