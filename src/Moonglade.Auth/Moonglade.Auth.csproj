@@ -16,7 +16,7 @@
 	<ItemGroup>
 		<FrameworkReference Include="Microsoft.AspNetCore.App" />
 		
-		<PackageReference Include="Microsoft.Identity.Web" Version="2.12.4" />
+		<PackageReference Include="Microsoft.Identity.Web" Version="2.13.0" />
 	</ItemGroup>
 
 	<ItemGroup>
