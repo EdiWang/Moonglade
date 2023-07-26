@@ -111,10 +111,6 @@
             }
 
             var selectedCatIds = data.getAll('SelectedCatIds');
-            if (selectedCatIds.length == 0) {
-                blogToast.error('Please select at least 1 category.');
-                return;
-            }
 
             value["SelectedCatIds"] = selectedCatIds;
             const newValue = utils.toMagicJson(value);

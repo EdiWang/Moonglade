@@ -20,8 +20,6 @@ public class PostEditModel
     [MaxLength(64)]
     public string Author { get; set; }
 
-    [Required]
-    [MinLength(1)]
     public Guid[] SelectedCatIds { get; set; }
 
     [Required]
