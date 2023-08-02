@@ -262,6 +262,7 @@ void ConfigureMiddleware()
 
     app.UseCustomCss(options => options.MaxContentLength = 10240);
     app.UseManifest(options => options.ThemeColor = "#333333");
+    app.MapHealthChecks("status");
     app.UseRobotsTxt();
 
     app.UseOpenSearch(options =>
