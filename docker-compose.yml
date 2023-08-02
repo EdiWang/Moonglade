@@ -15,6 +15,7 @@ services:
     environment:
       ConnectionStrings__MoongladeDatabase: "Server=db;Database=AppDatabase;Uid=WebApp;Pwd=WebApp@Passw0rd;"
       ConnectionStrings__DatabaseType: "MySQL"
+      ImageStorage__FileSystemPath: "/app/images"
     ports:
       - "8080:80"
     depends_on:
