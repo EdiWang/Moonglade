@@ -20,8 +20,13 @@
 
 @if (null != Model && Model.Any())
 {
+    var orderedList =
+        BlogConfig.ContentSettings.CommentOrder == CommentOrder.NewToOld ?
+            Model.OrderByDescending(m => m.CreateTimeUtc) :
+            Model.OrderBy(m => m.CreateTimeUtc);
+
     <div class="comment-list row">
-        @foreach (var item in Model.OrderBy(m => m.CreateTimeUtc))
+        @foreach (var item in orderedList)
         {
             <div class="col-md-1 mb-3 d-none d-sm-block">
                 @if (BlogConfig.ContentSettings.EnableGravatar && !string.IsNullOrWhiteSpace(item.Email))
@@ -56,9 +61,10 @@
                                         <strong>
                                             @SharedLocalizer["Author"]
                                         </strong>
-                                        <span class="float-end text-muted">@SharedLocalizer["Replied at"]
+                                        <span class="float-end text-muted">
+                                            @SharedLocalizer["Replied at"]
                                             <time data-utc-label="@reply.ReplyTimeUtc.ToString("u")">@reply.ReplyTimeUtc</time>
-                                            </span>
+                                        </span>
                                     </div>
                                     <p>
                                         @Html.Raw(ContentProcessor.MarkdownToContent(reply.ReplyContent, ContentProcessor.MarkdownConvertType.Html))
