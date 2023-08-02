@@ -55,21 +55,40 @@
                             <div class="col-md-5 text-end">
                                 <div class="form-check form-check-inline">
                                     @Html.RadioButtonFor(model => settings.CommentProvider, CommentProvider.BuiltIn, new
-                                {
-                                id = CommentProvider.BuiltIn.ToString(),
-                                @class = "form-check-input comment-provider-checkbox",
-                                onchange = "window.toggleCommentSettingsUI()"
-                                })
+                                    {
+                                        id = CommentProvider.BuiltIn.ToString(),
+                                        @class = "form-check-input comment-provider-checkbox",
+                                        onchange = "window.toggleCommentSettingsUI()"
+                                    })
                                     <label class="form-check-label" for="@CommentProvider.BuiltIn">@SharedLocalizer["Built in"]</label>
                                 </div>
                                 <div class="form-check form-check-inline">
                                     @Html.RadioButtonFor(model => settings.CommentProvider, CommentProvider.ThirdParty, new
-                                {
-                                id = CommentProvider.ThirdParty.ToString(),
-                                @class = "form-check-input comment-provider-checkbox",
-                                onchange = "window.toggleCommentSettingsUI()"
-                                })
+                                    {
+                                        id = CommentProvider.ThirdParty.ToString(),
+                                        @class = "form-check-input comment-provider-checkbox",
+                                        onchange = "window.toggleCommentSettingsUI()"
+                                    })
                                     <label class="form-check-label" for="@CommentProvider.ThirdParty">@SharedLocalizer["Third party"]</label>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="row g-3 align-items-center settings-entry mb-4">
+                            <div class="col-auto">
+                                <i class="bi-check2-circle settings-entry-icon"></i>
+                            </div>
+                            <div class="col">
+                                <label asp-for="@settings.CommentOrder" class="me-4"></label>
+                            </div>
+                            <div class="col-md-5 text-end">
+                                <div class="form-check form-check-inline">
+                                @Html.RadioButtonFor(model => settings.CommentOrder, CommentOrder.OldToNew, new { id = CommentOrder.OldToNew.ToString(), @class = "form-check-input" })
+                                <label class="form-check-label" for="@CommentOrder.OldToNew">@SharedLocalizer["Old to new"]</label>
+                                </div>
+                                <div class="form-check form-check-inline">
+                                @Html.RadioButtonFor(model => settings.CommentOrder, CommentOrder.NewToOld, new { id = CommentOrder.NewToOld.ToString(), @class = "form-check-input" })
+                                <label class="form-check-label" for="@CommentOrder.NewToOld">@SharedLocalizer["New to old"]</label>
                                 </div>
                             </div>
                         </div>
