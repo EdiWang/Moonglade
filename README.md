@@ -24,6 +24,17 @@ But there is no automated script to deploy it, you need to manually create all t
 
 Use automated deployment script to get your Moonglade up and running in 10 minutes with minimal Azure components, follow instructions [here](https://github.com/EdiWang/Moonglade/wiki/Quick-Deploy-on-Azure)
 
+### 🐋 Quick Deploy with Docker-Compose
+
+Simply go the the root folder of this repo and run:
+
+```bash
+docker-compose build
+docker-compose up
+```
+
+That's it! Now open: [Browser: http://localhost:8080](http://localhost:8080)
+
 ### 🐧 Quick Deploy on Linux without Docker
 
 To quickly get it running on a new Linux machine without Docker, follow instructions [here](https://github.com/EdiWang/Moonglade/wiki/Quick-Install-on-Linux-Machine). You can watch video tutorial [here](https://anduins-site.player.aiur.site/moonglade-install.mp4).
