@@ -7,6 +7,9 @@ public class ContentSettings : IBlogSettings
 {
     [Display(Name = "Comment provider")]
     public CommentProvider CommentProvider { get; set; }
+    
+    [Display(Name = "Comments display order")]
+    public CommentOrder CommentOrder { get; set; }
 
     [Display(Name = "Post title alignment")]
     public PostTitleAlignment PostTitleAlignment { get; set; } = PostTitleAlignment.Left;
@@ -89,6 +92,12 @@ public enum CommentProvider
 {
     BuiltIn = 0,
     ThirdParty = 1
+}
+
+public enum CommentOrder
+{
+    OldToNew = 0,
+    NewToOld = 1
 }
 
 public enum PostTitleAlignment
