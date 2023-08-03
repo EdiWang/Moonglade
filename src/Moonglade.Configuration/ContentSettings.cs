@@ -24,6 +24,10 @@ public class ContentSettings : IBlogSettings
     [Display(Name = "Comments require review and approval")]
     public bool RequireCommentReview { get; set; }
 
+    [Display(Name = "Automatically close comments on posts older than x days")]
+    [Range(0, 65536)]
+    public int CloseCommentAfterDays { get; set; }
+
     [DataType(DataType.MultilineText)]
     [Display(Name = "Blocked words")]
     [MaxLength(2048)]
