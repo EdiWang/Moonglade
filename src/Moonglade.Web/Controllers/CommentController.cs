@@ -46,10 +46,14 @@ public class CommentController : ControllerBase
         var ip = (bool)HttpContext.Items["DNT"]! ? "N/A" : Helper.GetClientIP(HttpContext);
         var item = await _mediator.Send(new CreateCommentCommand(postId, request, ip));
 
-        if (item is null)
+        switch (item.Status)
         {
-            ModelState.AddModelError(nameof(request.Content), "Your comment contains bad bad word.");
-            return Conflict(ModelState);
+            case -1:
+                ModelState.AddModelError(nameof(request.Content), "Your comment contains bad bad word.");
+                return Conflict(ModelState);
+            case -2:
+                ModelState.AddModelError(nameof(postId), "Comment is closed for this post.");
+                return Conflict(ModelState);
         }
 
         if (_blogConfig.NotificationSettings.SendEmailOnNewComment)
@@ -57,11 +61,11 @@ public class CommentController : ControllerBase
             try
             {
                 await _mediator.Publish(new CommentNotification(
-                    item.Username,
-                    item.Email,
-                    item.IpAddress,
-                    item.PostTitle,
-                    item.CommentContent));
+                    item.Item.Username,
+                    item.Item.Email,
+                    item.Item.IpAddress,
+                    item.Item.PostTitle,
+                    item.Item.CommentContent));
             }
             catch (Exception e)
             {
