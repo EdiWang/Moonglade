@@ -7,7 +7,7 @@ using Moonglade.Data.Spec;
 
 namespace Moonglade.Comments;
 
-public class CreateCommentCommand : IRequest<CommentDetailedItem>
+public class CreateCommentCommand : IRequest<(int Status, CommentDetailedItem Item)>
 {
     public CreateCommentCommand(Guid postId, CommentRequest payload, string ipAddress)
     {
@@ -23,7 +23,7 @@ public class CreateCommentCommand : IRequest<CommentDetailedItem>
     public string IpAddress { get; set; }
 }
 
-public class CreateCommentCommandHandler : IRequestHandler<CreateCommentCommand, CommentDetailedItem>
+public class CreateCommentCommandHandler : IRequestHandler<CreateCommentCommand, (int Status, CommentDetailedItem Item)>
 {
     private readonly IBlogConfig _blogConfig;
     private readonly IRepository<PostEntity> _postRepo;
@@ -39,7 +39,7 @@ public class CreateCommentCommandHandler : IRequestHandler<CreateCommentCommand,
         _commentRepo = commentRepo;
     }
 
-    public async Task<CommentDetailedItem> Handle(CreateCommentCommand request, CancellationToken ct)
+    public async Task<(int Status, CommentDetailedItem Item)> Handle(CreateCommentCommand request, CancellationToken ct)
     {
         if (_blogConfig.ContentSettings.EnableWordFilter)
         {
@@ -53,9 +53,25 @@ public class CreateCommentCommandHandler : IRequestHandler<CreateCommentCommand,
                     if (await _moderator.HasBadWord(request.Payload.Username, request.Payload.Content))
                     {
                         await Task.CompletedTask;
-                        return null;
+                        return (-1, null);
                     }
                     break;
+            }
+        }
+
+        var spec = new PostSpec(request.PostId, false);
+        var postInfo = await _postRepo.FirstOrDefaultAsync(spec, p => new
+        {
+            p.Title,
+            p.PubDateUtc
+        });
+
+        if (_blogConfig.ContentSettings.CloseCommentAfterDays > 0)
+        {
+            var days = DateTime.UtcNow.Date.Subtract(postInfo.PubDateUtc.GetValueOrDefault()).Days;
+            if (days > _blogConfig.ContentSettings.CloseCommentAfterDays)
+            {
+                return (-2, null);
             }
         }
 
@@ -73,9 +89,6 @@ public class CreateCommentCommandHandler : IRequestHandler<CreateCommentCommand,
 
         await _commentRepo.AddAsync(model, ct);
 
-        var spec = new PostSpec(request.PostId, false);
-        var postTitle = await _postRepo.FirstOrDefaultAsync(spec, p => p.Title);
-
         var item = new CommentDetailedItem
         {
             Id = model.Id,
@@ -84,10 +97,10 @@ public class CreateCommentCommandHandler : IRequestHandler<CreateCommentCommand,
             Email = model.Email,
             IpAddress = model.IPAddress,
             IsApproved = model.IsApproved,
-            PostTitle = postTitle,
+            PostTitle = postInfo.Title,
             Username = model.Username
         };
 
-        return item;
+        return (0, item);
     }
 }
