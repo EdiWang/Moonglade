@@ -208,13 +208,11 @@
 </article>
 @if (BlogConfig.ContentSettings.EnableComments)
 {
-    if (BlogConfig.ContentSettings.CloseCommentAfterDays > 0)
+    var days = DateTime.UtcNow.Date.Subtract(Model.Post.PubDateUtc.GetValueOrDefault()).Days;
+
+    if (BlogConfig.ContentSettings.CloseCommentAfterDays > 0 && days > BlogConfig.ContentSettings.CloseCommentAfterDays)
     {
-        var days = DateTime.UtcNow.Date.Subtract(Model.Post.PubDateUtc.GetValueOrDefault()).Days;
-        if (days > BlogConfig.ContentSettings.CloseCommentAfterDays)
-        {
-            <div class="alert alert-warning">@SharedLocalizer["Comment is closed."]</div>
-        }
+        <div class="alert alert-warning">@SharedLocalizer["Comment is closed."]</div>
     }
     else
     {
