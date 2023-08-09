@@ -40,7 +40,7 @@
         <PackageReference Include="Edi.ImageWatermark" Version="2.8.0" />
         <PackageReference Include="Edi.PasswordGenerator" Version="1.0.0" />
         <PackageReference Include="Microsoft.ApplicationInsights.AspNetCore" Version="2.21.0" />
-        <PackageReference Include="Microsoft.Extensions.Logging.AzureAppServices" Version="7.0.9" />
+        <PackageReference Include="Microsoft.Extensions.Logging.AzureAppServices" Version="7.0.10" />
         <PackageReference Include="UAParser" Version="3.1.47" />
         <PackageReference Include="WilderMinds.MetaWeblog" Version="5.1.1" />
         <PackageReference Include="Spectre.Console" Version="0.47.0" />
