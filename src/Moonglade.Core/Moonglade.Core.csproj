@@ -1,25 +1,25 @@
 <Project Sdk="Microsoft.NET.Sdk">
-	<PropertyGroup>
-		<TargetFramework>net7.0</TargetFramework>
-		<ImplicitUsings>enable</ImplicitUsings>
-	</PropertyGroup>
-	<ItemGroup>
-	  <PackageReference Include="Edi.CacheAside.InMemory" Version="1.0.0" />
-	</ItemGroup>
-
-	<ItemGroup>
-		<Using Include="System.Text" />
-
-		<Using Include="Microsoft.AspNetCore.Mvc" />
-		<Using Include="Microsoft.AspNetCore.Authorization" />
-
-		<Using Include="MediatR" />
-
-		<Using Include="Moonglade.Data.Entities" />
-		<Using Include="Moonglade.Data.Infrastructure" />
-	</ItemGroup>
-
-	<ItemGroup>
-		<ProjectReference Include="..\Moonglade.Configuration\Moonglade.Configuration.csproj" />
-	</ItemGroup>
+    <PropertyGroup>
+        <OutputType>Library</OutputType>
+        <TargetFramework>net7.0</TargetFramework>
+        <AssemblyName>Moonglade.Core</AssemblyName>
+        <RootNamespace>Moonglade.Core</RootNamespace>
+        <IsTestProject>false</IsTestProject>
+        <IsPackable>false</IsPackable>
+        <ImplicitUsings>enable</ImplicitUsings>
+    </PropertyGroup>
+    <ItemGroup>
+        <PackageReference Include="Edi.CacheAside.InMemory" Version="1.0.0" />
+    </ItemGroup>
+    <ItemGroup>
+        <Using Include="System.Text" />
+        <Using Include="Microsoft.AspNetCore.Mvc" />
+        <Using Include="Microsoft.AspNetCore.Authorization" />
+        <Using Include="MediatR" />
+        <Using Include="Moonglade.Data.Entities" />
+        <Using Include="Moonglade.Data.Infrastructure" />
+    </ItemGroup>
+    <ItemGroup>
+        <ProjectReference Include="..\Moonglade.Configuration\Moonglade.Configuration.csproj" />
+    </ItemGroup>
 </Project>

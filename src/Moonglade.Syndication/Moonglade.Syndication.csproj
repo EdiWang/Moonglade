@@ -1,16 +1,18 @@
-﻿<Project Sdk="Microsoft.NET.Sdk">
-
-  <PropertyGroup>
-    <TargetFramework>net7.0</TargetFramework>
-    <ImplicitUsings>enable</ImplicitUsings>
-  </PropertyGroup>
-
-  <ItemGroup>
-    <PackageReference Include="Edi.SyndicationFeed.ReaderWriter" Version="2.0.1" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <FrameworkReference Include="Microsoft.AspNetCore.App" />
-    <ProjectReference Include="..\Moonglade.Configuration\Moonglade.Configuration.csproj" />
-  </ItemGroup>
+<Project Sdk="Microsoft.NET.Sdk">
+    <PropertyGroup>
+        <OutputType>Library</OutputType>
+        <TargetFramework>net7.0</TargetFramework>
+        <AssemblyName>Moonglade.Syndication</AssemblyName>
+        <RootNamespace>Moonglade.Syndication</RootNamespace>
+        <IsTestProject>false</IsTestProject>
+        <IsPackable>false</IsPackable>
+        <ImplicitUsings>enable</ImplicitUsings>
+    </PropertyGroup>
+    <ItemGroup>
+        <PackageReference Include="Edi.SyndicationFeed.ReaderWriter" Version="2.0.1" />
+    </ItemGroup>
+    <ItemGroup>
+        <FrameworkReference Include="Microsoft.AspNetCore.App" />
+        <ProjectReference Include="..\Moonglade.Configuration\Moonglade.Configuration.csproj" />
+    </ItemGroup>
 </Project>
