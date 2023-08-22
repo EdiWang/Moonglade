@@ -1,13 +1,15 @@
 <Project Sdk="Microsoft.NET.Sdk">
-
-  <PropertyGroup>
-    <TargetFramework>net7.0</TargetFramework>
-    <AllowUnsafeBlocks>False</AllowUnsafeBlocks>
-    <ImplicitUsings>enable</ImplicitUsings>
-  </PropertyGroup>
-
-  <ItemGroup>
-    <ProjectReference Include="..\Moonglade.Data\Moonglade.Data.csproj" />
-  </ItemGroup>
-
+    <PropertyGroup>
+        <OutputType>Library</OutputType>
+        <TargetFramework>net7.0</TargetFramework>
+        <AssemblyName>Moonglade.Theme</AssemblyName>
+        <RootNamespace>Moonglade.Theme</RootNamespace>
+        <IsTestProject>false</IsTestProject>
+        <IsPackable>false</IsPackable>
+        <ImplicitUsings>enable</ImplicitUsings>
+        <AllowUnsafeBlocks>False</AllowUnsafeBlocks>
+    </PropertyGroup>
+    <ItemGroup>
+        <ProjectReference Include="..\Moonglade.Data\Moonglade.Data.csproj" />
+    </ItemGroup>
 </Project>
