@@ -35,7 +35,7 @@
     </ItemGroup>
     <ItemGroup>
         <PackageReference Include="AspNetCoreRateLimit" Version="5.0.0" />
-        <PackageReference Include="Edi.ImageWatermark" Version="2.8.0" />
+        <PackageReference Include="Edi.ImageWatermark" Version="2.9.0" />
         <PackageReference Include="Edi.PasswordGenerator" Version="1.0.0" />
         <PackageReference Include="Microsoft.ApplicationInsights.AspNetCore" Version="2.21.0" />
         <PackageReference Include="Microsoft.Extensions.Logging.AzureAppServices" Version="7.0.10" />
