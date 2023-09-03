@@ -21,27 +21,32 @@ public class CustomCssMiddleware
             }
 
             var cssCode = blogConfig.CustomStyleSheetSettings.CssCode;
-            if (cssCode.Length > Options.MaxContentLength)
-            {
-                context.Response.StatusCode = StatusCodes.Status409Conflict;
-                return;
-            }
-
-            var uglifiedCss = Uglify.Css(cssCode);
-            if (uglifiedCss.HasErrors)
-            {
-                context.Response.StatusCode = StatusCodes.Status409Conflict;
-                return;
-            }
-
-            context.Response.StatusCode = StatusCodes.Status200OK;
-            context.Response.ContentType = "text/css; charset=utf-8";
-            await context.Response.WriteAsync(uglifiedCss.Code, context.RequestAborted);
+            await WriteStyleSheet(context, cssCode);
         }
         else
         {
             await _next(context);
         }
+    }
+
+    private static async Task WriteStyleSheet(HttpContext context, string cssCode)
+    {
+        if (cssCode.Length > Options.MaxContentLength)
+        {
+            context.Response.StatusCode = StatusCodes.Status409Conflict;
+            return;
+        }
+
+        var uglifiedCss = Uglify.Css(cssCode);
+        if (uglifiedCss.HasErrors)
+        {
+            context.Response.StatusCode = StatusCodes.Status409Conflict;
+            return;
+        }
+
+        context.Response.StatusCode = StatusCodes.Status200OK;
+        context.Response.ContentType = "text/css; charset=utf-8";
+        await context.Response.WriteAsync(uglifiedCss.Code, context.RequestAborted);
     }
 }
 
