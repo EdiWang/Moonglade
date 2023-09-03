@@ -36,21 +36,17 @@ public class StyleSheetMiddleware
         {
             // Get query string value
             var qs = HttpUtility.ParseQueryString(context.Request.QueryString.Value!);
-            string slug = qs["slug"];
+            string hash = qs["h"];
 
-            if (!string.IsNullOrWhiteSpace(slug))
+            if (!string.IsNullOrWhiteSpace(hash))
             {
-                slug = slug.ToLower();
+                // TODO: validate hash
 
-                var slugRegex = "^(?!-)([a-zA-Z0-9-]){1,128}$";
-                if (!Regex.IsMatch(slug, slugRegex, RegexOptions.Compiled, TimeSpan.FromSeconds(1)))
-                {
-                    context.Response.StatusCode = StatusCodes.Status404NotFound;
-                }
-                
                 // TODO: Output blog page css
                 // Need a server side cache
                 // Need pattern validation
+
+
             }
             else
             {
