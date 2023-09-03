@@ -23,6 +23,12 @@ public class CustomCssMiddleware
             var cssCode = blogConfig.CustomStyleSheetSettings.CssCode;
             await WriteStyleSheet(context, cssCode);
         }
+        else if (context.Request.QueryString.HasValue)
+        {
+            // TODO: Output blog page css
+            // Need a server side cache
+            // Need pattern validation
+        }
         else
         {
             await _next(context);
