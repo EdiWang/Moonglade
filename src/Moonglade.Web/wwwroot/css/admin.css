@@ -73,6 +73,7 @@
 .admin-nav {
     width: 190px;
     min-height: calc(100vh - 54px);
+    border-right: 1px solid #ddd;
 }
 
     .admin-nav .list-group-item span {
@@ -103,7 +104,7 @@
 
 @media (min-width: 768px) {
     .admin-nav {
-        margin-left: 15px;
+        margin-left: 5px;
     }
 
     .admin-main {
@@ -137,7 +138,7 @@ hr.admin-nav-divider {
 
 .admin-nav-section .list-group-item {
     background-color: transparent;
-    border-left: 4px solid transparent;
+    border-left: 2px solid transparent;
     border-top: 0;
     border-bottom: 0;
     border-right: 0;
@@ -145,7 +146,11 @@ hr.admin-nav-divider {
 
     .admin-nav-section .list-group-item.active,
     .admin-nav-section .list-group-item:hover {
-        border-left: 4px solid var(--accent-color2);
+        border-left: 2px solid var(--accent-color2);
+    }
+
+    .admin-nav-section .list-group-item:hover {
+        background-color: #EBEBEB;
     }
 
 .admin-nav-link:active {
