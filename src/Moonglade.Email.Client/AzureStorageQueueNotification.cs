@@ -12,13 +12,13 @@ public interface IBlogNotification
     Task Enqueue<T>(MailMesageTypes type, string[] receipts, T payload) where T : class;
 }
 
-public class BlogNotification : IBlogNotification
+public class AzureStorageQueueNotification : IBlogNotification
 {
-    private readonly ILogger<BlogNotification> _logger;
+    private readonly ILogger<AzureStorageQueueNotification> _logger;
     private readonly NotificationSettings _notificationSettings;
 
-    public BlogNotification(
-        ILogger<BlogNotification> logger,
+    public AzureStorageQueueNotification(
+        ILogger<AzureStorageQueueNotification> logger,
         IBlogConfig blogConfig)
     {
         _logger = logger;
