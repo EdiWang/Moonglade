@@ -5,13 +5,13 @@ using NUglify;
 
 namespace Moonglade.Web.Middleware;
 
-public class CustomCssMiddleware
+public class StyleSheetMiddleware
 {
     private readonly RequestDelegate _next;
 
     public static CustomCssMiddlewareOptions Options { get; set; } = new();
 
-    public CustomCssMiddleware(RequestDelegate next) => _next = next;
+    public StyleSheetMiddleware(RequestDelegate next) => _next = next;
 
     public async Task Invoke(HttpContext context, IBlogConfig blogConfig)
     {
@@ -88,8 +88,8 @@ public static partial class ApplicationBuilderExtensions
 {
     public static IApplicationBuilder UseCustomCss(this IApplicationBuilder app, Action<CustomCssMiddlewareOptions> options)
     {
-        options(CustomCssMiddleware.Options);
-        return app.UseMiddleware<CustomCssMiddleware>();
+        options(StyleSheetMiddleware.Options);
+        return app.UseMiddleware<StyleSheetMiddleware>();
     }
 }
 
