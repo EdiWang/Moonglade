@@ -1,4 +1,6 @@
-﻿using NUglify;
+﻿using System.Net;
+using System.Web;
+using NUglify;
 
 namespace Moonglade.Web.Middleware;
 
@@ -12,6 +14,12 @@ public class CustomCssMiddleware
 
     public async Task Invoke(HttpContext context, IBlogConfig blogConfig)
     {
+        if (!context.Request.Path.ToString().ToLower().EndsWith(".css"))
+        {
+            await _next(context);
+            return;
+        }
+        
         if (context.Request.Path == Options.DefaultPath)
         {
             if (!blogConfig.CustomStyleSheetSettings.EnableCustomCss)
@@ -23,11 +31,22 @@ public class CustomCssMiddleware
             var cssCode = blogConfig.CustomStyleSheetSettings.CssCode;
             await WriteStyleSheet(context, cssCode);
         }
-        else if (context.Request.QueryString.HasValue)
+        else if (context.Request.Path == "/page.css" && context.Request.QueryString.HasValue)
         {
-            // TODO: Output blog page css
-            // Need a server side cache
-            // Need pattern validation
+            // Get query string value
+            var qs = HttpUtility.ParseQueryString(context.Request.QueryString.Value!);
+            string slug = qs["slug"];
+
+            if (!string.IsNullOrWhiteSpace(slug))
+            {
+                // TODO: Output blog page css
+                // Need a server side cache
+                // Need pattern validation
+            }
+            else
+            {
+                await _next(context);
+            }
         }
         else
         {
