@@ -31,7 +31,7 @@ public class EditPageModel : PageModel
             Title = page.Title,
             Slug = page.Slug,
             MetaDescription = page.MetaDescription,
-            CssContent = page.CssContent,
+            //CssContent = page.CssId,
             RawHtmlContent = page.RawHtmlContent,
             HideSidebar = page.HideSidebar,
             IsPublished = page.IsPublished
