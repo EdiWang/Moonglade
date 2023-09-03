@@ -12,7 +12,7 @@ public class CustomCssMiddleware
 
     public async Task Invoke(HttpContext context, IBlogConfig blogConfig)
     {
-        if (context.Request.Path == Options.RequestPath)
+        if (context.Request.Path == Options.DefaultPath)
         {
             if (!blogConfig.CustomStyleSheetSettings.EnableCustomCss)
             {
@@ -56,12 +56,6 @@ public static partial class ApplicationBuilderExtensions
 
 public class CustomCssMiddlewareOptions
 {
-    public int MaxContentLength { get; set; }
-    public PathString RequestPath { get; set; }
-
-    public CustomCssMiddlewareOptions()
-    {
-        MaxContentLength = 65536;
-        RequestPath = "/custom.css";
-    }
+    public int MaxContentLength { get; set; } = 65536;
+    public PathString DefaultPath { get; set; } = "/custom.css";
 }
