@@ -1,4 +1,5 @@
 ﻿using System.Net;
+using System.Text.RegularExpressions;
 using System.Web;
 using NUglify;
 
@@ -39,6 +40,14 @@ public class CustomCssMiddleware
 
             if (!string.IsNullOrWhiteSpace(slug))
             {
+                slug = slug.ToLower();
+
+                var slugRegex = "^(?!-)([a-zA-Z0-9-]){1,128}$";
+                if (!Regex.IsMatch(slug, slugRegex, RegexOptions.Compiled, TimeSpan.FromSeconds(1)))
+                {
+                    context.Response.StatusCode = StatusCodes.Status404NotFound;
+                }
+                
                 // TODO: Output blog page css
                 // Need a server side cache
                 // Need pattern validation
