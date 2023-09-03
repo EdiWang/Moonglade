@@ -23,6 +23,7 @@ public class PostgreSqlBlogDbContext : BlogDbContext
         modelBuilder.ApplyConfiguration(new PingbackConfiguration());
         modelBuilder.ApplyConfiguration(new BlogThemeConfiguration());
         modelBuilder.ApplyConfiguration(new BlogAssetConfiguration());
+        modelBuilder.ApplyConfiguration(new StyleSheetConfiguration());
         modelBuilder.ApplyConfiguration(new BlogConfigurationConfiguration());
         modelBuilder.ApplyConfiguration(new PageConfiguration());
 
