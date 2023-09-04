@@ -31,6 +31,7 @@
 
 .admin-body {
     padding-top: 0 !important;
+    background-color: #FAFAFA;
 }
 
 .admin-body-wrapper {
@@ -102,21 +103,18 @@
     line-height: 36px;
 }
 
-@media (min-width: 768px) {
-    .admin-nav {
-        margin-left: 5px;
-    }
-
-    .admin-main {
-        min-width: 0;
-        width: 100%;
-    }
-
-    .admin-body-wrapper.toggled .admin-nav {
-        margin-left: -15rem;
-    }
+.admin-nav {
+    margin-left: 5px;
 }
 
+.admin-main {
+    min-width: 0;
+    width: 100%;
+}
+
+.admin-body-wrapper.toggled .admin-nav {
+    margin-left: -15rem;
+}
 
 .textarea-code {
     font-family: 'Consolas';
