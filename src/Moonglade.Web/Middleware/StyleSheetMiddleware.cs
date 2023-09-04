@@ -30,7 +30,7 @@ public class StyleSheetMiddleware
             var cssCode = blogConfig.CustomStyleSheetSettings.CssCode;
             await WriteStyleSheet(context, cssCode);
         }
-        else if (context.Request.Path == "/page.css" && context.Request.QueryString.HasValue)
+        else if (context.Request.Path == "/content.css" && context.Request.QueryString.HasValue)
         {
             // Get query string value
             var qs = HttpUtility.ParseQueryString(context.Request.QueryString.Value!);
