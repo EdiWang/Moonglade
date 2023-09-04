@@ -15,12 +15,6 @@
             overflow-y: scroll;
             overflow-x: hidden;
         }
-
-        .pingback-item {
-            border-bottom: 1px solid #CECECE;
-            padding-bottom: 15px;
-            margin-bottom: 15px;
-        }
     </style>
 }
 
@@ -28,14 +22,14 @@
     <script type="module">
         import * as utils from '/js/app/utils.module.js'
 
-        window.deletePingback = function(pingbackId) {
+        window.deletePingback = function (pingbackId) {
             callApi(`/pingback/${pingbackId}`, 'DELETE', {},
                 (resp) => {
                     document.querySelector(`#pingback-box-${pingbackId}`).remove();
                 });
         }
 
-        window.clearPingback = function() {
+        window.clearPingback = function () {
             callApi(`/pingback/clear`, 'DELETE', {},
                 (resp) => {
                     blogToast.success('Pingback logs are cleared');
@@ -57,51 +51,54 @@
     </script>
 }
 
-
-<div class="admin-toolbar ps-4 pe-4 pt-2 pb-2 border-bottom mb-3 shadow-sm">
-    <div class="row">
-        <div class="col">
-            <a class="btn btn-outline-danger" href="javascript:;" data-bs-toggle="modal" data-bs-target="#clearpingbackModal">
-                <i class="bi-trash"></i>
-                @SharedLocalizer["Clear all"]
-            </a>
-        </div>
-        <div class="col-auto">
-            <div class="text-muted admin-toolbar-text">
-                <span id="pingback-count">@pingbackRecords.Count</span> item(s)
+@section admintoolbar{
+    <div class="admin-toolbar pb-2 border-bottom mb-3">
+        <div class="row">
+            <div class="col">
+                <a class="btn btn-outline-danger" href="javascript:;" data-bs-toggle="modal" data-bs-target="#clearpingbackModal">
+                    <i class="bi-trash"></i>
+                    @SharedLocalizer["Clear all"]
+                </a>
+            </div>
+            <div class="col-auto">
+                <div class="text-muted admin-toolbar-text">
+                    <span id="pingback-count">@pingbackRecords.Count</span> item(s)
+                </div>
             </div>
         </div>
     </div>
-</div>
+}
 
-<div class="ps-4 pe-4">
+<div>
     <input id="pingFilter" type="text" class="form-control mb-3" maxlength="32" placeholder="Filter..">
 
     <div class="pingbacks-container">
         @foreach (var item in pingbackRecords.OrderByDescending(p => p.PingTimeUtc))
         {
-            <div id="pingback-box-@item.Id" class="pingback-item row">
-                <div class="col">
-                    <strong>
-                        <a href="@item.SourceUrl" target="_blank">@item.SourceTitle</a>
-                    </strong>
+            <div class="p-3 mb-2 rounded-3 shadow-sm border bg-white">
+                <div id="pingback-box-@item.Id" class="pingback-item row">
+                    <div class="col">
+                        <strong>
+                            <a href="@item.SourceUrl" target="_blank">@item.SourceTitle</a>
+                        </strong>
 
-                    <div>
-                        <i class="bi-link"></i>
+                        <div>
+                            <i class="bi-link"></i>
 
-                        @item.TargetPostTitle
+                            @item.TargetPostTitle
+                        </div>
+
+                        <div class="text-muted">
+                            @item.Domain, @item.SourceIp,
+                            <time data-utc-label="@item.PingTimeUtc.ToString("u")">@item.PingTimeUtc</time>
+                        </div>
                     </div>
 
-                    <div class="text-muted">
-                        @item.Domain, @item.SourceIp,
-                        <time data-utc-label="@item.PingTimeUtc.ToString("u")">@item.PingTimeUtc</time>
+                    <div class="col-auto">
+                        <a class="btn btn-sm btn-outline-danger btn-delete" href="javascript:window.deletePingback('@item.Id');">
+                            <i class="bi-trash"></i>
+                        </a>
                     </div>
-                </div>
-
-                <div class="col-auto">
-                    <a class="btn btn-sm btn-outline-danger btn-delete" href="javascript:window.deletePingback('@item.Id');">
-                        <i class="bi-trash"></i>
-                    </a>
                 </div>
             </div>
         }

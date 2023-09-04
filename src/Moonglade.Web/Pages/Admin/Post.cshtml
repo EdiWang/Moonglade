@@ -9,14 +9,14 @@
     <script type="module">
         import * as utils from '/js/app/utils.module.js'
 
-        window.deleteConfirm = function(postid) {
+        window.deleteConfirm = function (postid) {
             var cfm = confirm("Delete Confirmation?");
             if (cfm) {
                 window.deletePost(postid);
             }
         }
 
-        window.deletePost = function(postid) {
+        window.deletePost = function (postid) {
             callApi(`/api/post/${postid}/recycle`,
                 'DELETE',
                 {},
@@ -29,12 +29,15 @@
     </script>
 }
 
-<partial name="_PostManageHeader" />
+@section admintoolbar{
+    <partial name="_PostManageHeader" />
+}
+
 @Html.AntiForgeryToken()
 
-<div class="ps-4 pe-4">
+<div>
     <form method="post">
-        <div class="d-flex search-box mb-4">
+        <div class="d-flex search-box mb-3">
             <input type="search" aria-label="Search" asp-for="SearchTerm" class="form-control" placeholder="Search" />
             <button class="btn btn-light btn-search my-sm-0" type="submit"><i class="bi-search text-dark"></i></button>
         </div>
@@ -42,13 +45,13 @@
 
     @if (Model.PostSegments.Count == 0)
     {
-        <partial name="_NoPosts"/>
+        <partial name="_NoPosts" />
     }
     else
     {
         foreach (var item in Model.PostSegments)
         {
-            <div id="post-@item.Id">
+            <div id="post-@item.Id" class="p-3 mb-2 rounded-3 shadow-sm border bg-white">
                 <div class="d-flex">
                     <div class="flex-grow-1">
                         <a asp-page="/Post"
@@ -79,16 +82,15 @@
                         <button class="btn btn-outline-danger btn-sm btn-delete" onclick="window.deleteConfirm('@item.Id')"><i class="bi-trash"></i></button>
                     </div>
                 </div>
-                <hr/>
             </div>
         }
 
         @Html.PagedListPager(Model.PostSegments, page => $"?pageIndex={page}&searchTerm={Model.SearchTerm}", new ()
-        {
-            LiElementClasses = new[] {"page-item"},
-            PageClasses = new[] {"page-link"},
-            UlElementClasses = new[] {"pagination justify-content-end"},
-            DisplayEllipsesWhenNotShowingAllPageNumbers = false
-        })
+    {
+    LiElementClasses = new[] {"page-item"},
+    PageClasses = new[] {"page-link"},
+    UlElementClasses = new[] {"pagination justify-content-end"},
+    DisplayEllipsesWhenNotShowingAllPageNumbers = false
+    })
     }
 </div>

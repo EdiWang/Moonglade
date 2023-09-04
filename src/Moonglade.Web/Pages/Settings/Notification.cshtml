@@ -26,96 +26,104 @@
 @{
     var settings = BlogConfig.NotificationSettings;
 }
-<partial name="_SettingsHeader" />
-<div class="ps-4 pe-4">
+
+@section admintoolbar{
+    <partial name="_SettingsHeader" />
+}
+
+<div>
     <form id="form-settings" asp-controller="Settings" asp-action="Notification">
         <div class="row">
             <div class="col-md-6">
-                <h6 class="card-subtitle mb-4 text-muted">@SharedLocalizer["Email Options"]</h6>
+                <div class="p-3 rounded-3 shadow-sm border bg-white">
+                    <h6 class="card-subtitle mb-4 text-muted">@SharedLocalizer["Email Options"]</h6>
 
-                <div class="row g-3 align-items-center settings-entry mb-4">
-                    <div class="col-auto">
-                        <i class="bi-link settings-entry-icon"></i>
+                    <div class="row g-3 align-items-center settings-entry mb-4">
+                        <div class="col-auto">
+                            <i class="bi-link settings-entry-icon"></i>
+                        </div>
+                        <div class="col">
+                            <label asp-for="@settings.AzureStorageQueueConnection"></label>
+                            <div class="form-text">Please follow instructions <a href="https://github.com/EdiWang/Moonglade/blob/master/README.md#email-notification" target="_blank">here</a> to setup email API.</div>
+                        </div>
+                        <div class="col-md-5">
+                            <input asp-for="@settings.AzureStorageQueueConnection" class="form-control" spellcheck="false" />
+                        </div>
                     </div>
-                    <div class="col">
-                        <label asp-for="@settings.AzureStorageQueueConnection"></label>
-                        <div class="form-text">Please follow instructions <a href="https://github.com/EdiWang/Moonglade/blob/master/README.md#email-notification" target="_blank">here</a> to setup email API.</div>
-                    </div>
-                    <div class="col-md-5">
-                        <input asp-for="@settings.AzureStorageQueueConnection" class="form-control" spellcheck="false" />
-                    </div>
-                </div>
 
-                <div class="row g-3 align-items-center settings-entry mb-4">
-                    <div class="col-auto">
-                        <i class="bi-pen settings-entry-icon"></i>
+                    <div class="row g-3 align-items-center settings-entry mb-4">
+                        <div class="col-auto">
+                            <i class="bi-pen settings-entry-icon"></i>
+                        </div>
+                        <div class="col">
+                            <label asp-for="@settings.EmailDisplayName"></label>
+                        </div>
+                        <div class="col-md-5">
+                            <input asp-for="@settings.EmailDisplayName" class="form-control" required maxlength="64" />
+                        </div>
                     </div>
-                    <div class="col">
-                        <label asp-for="@settings.EmailDisplayName"></label>
-                    </div>
-                    <div class="col-md-5">
-                        <input asp-for="@settings.EmailDisplayName" class="form-control" required maxlength="64" />
-                    </div>
-                </div>
 
-                <div class="row g-3 align-items-center settings-entry mb-4">
-                    <div class="col-auto">
-                        <i class="bi-envelope settings-entry-icon"></i>
-                    </div>
-                    <div class="col">
-                        @SharedLocalizer["Send Test Email"]
-                    </div>
-                    <div class="col-md-5 text-end">
-                        <a href="javascript:sendTestEmail();" id="a-send-test-mail" class="btn btn-sm btn-outline-accent">
-                            Send
-                        </a>
+                    <div class="row g-3 align-items-center settings-entry">
+                        <div class="col-auto">
+                            <i class="bi-envelope settings-entry-icon"></i>
+                        </div>
+                        <div class="col">
+                            @SharedLocalizer["Send Test Email"]
+                        </div>
+                        <div class="col-md-5 text-end">
+                            <a href="javascript:sendTestEmail();" id="a-send-test-mail" class="btn btn-sm btn-outline-accent">
+                                Send
+                            </a>
+                        </div>
                     </div>
                 </div>
             </div>
             <div class="col-md-6">
-                <h6 class="card-subtitle mb-4 text-muted">@SharedLocalizer["Notification Options"]</h6>
+                <div class="p-3 rounded-3 shadow-sm border bg-white">
+                    <h6 class="card-subtitle mb-4 text-muted">@SharedLocalizer["Notification Options"]</h6>
 
-                <div class="row g-3 align-items-center settings-entry mb-4">
-                    <div class="col-auto">
-                        <i class="bi-envelope settings-entry-icon"></i>
-                    </div>
-                    <div class="col">
-                        <label asp-for="@settings.EnableEmailSending" class="form-check-label"></label>
-                    </div>
-                    <div class="col-md-5 text-end">
-                        <div class="form-check form-switch">
-                            <input type="hidden" name="EnableEmailSending" value="false">
-                            <input type="checkbox" name="EnableEmailSending" value="true" class="form-check-input" @(settings.EnableEmailSending ? "checked" : null)>
+                    <div class="row g-3 align-items-center settings-entry mb-4">
+                        <div class="col-auto">
+                            <i class="bi-envelope settings-entry-icon"></i>
+                        </div>
+                        <div class="col">
+                            <label asp-for="@settings.EnableEmailSending" class="form-check-label"></label>
+                        </div>
+                        <div class="col-md-5 text-end">
+                            <div class="form-check form-switch">
+                                <input type="hidden" name="EnableEmailSending" value="false">
+                                <input type="checkbox" name="EnableEmailSending" value="true" class="form-check-input" @(settings.EnableEmailSending ? "checked" : null)>
+                            </div>
                         </div>
                     </div>
-                </div>
 
-                <div class="row g-3 align-items-center settings-entry mb-4">
-                    <div class="col-auto">
-                        <i class="bi-chat-left settings-entry-icon"></i>
-                    </div>
-                    <div class="col">
-                        <label asp-for="@settings.SendEmailOnNewComment" class="form-check-label"></label>
-                    </div>
-                    <div class="col-md-5 text-end">
-                        <div class="form-check form-switch">
-                            <input type="hidden" name="SendEmailOnNewComment" value="false">
-                            <input type="checkbox" name="SendEmailOnNewComment" value="true" class="form-check-input" @(settings.SendEmailOnNewComment ? "checked" : null)>
+                    <div class="row g-3 align-items-center settings-entry mb-4">
+                        <div class="col-auto">
+                            <i class="bi-chat-left settings-entry-icon"></i>
+                        </div>
+                        <div class="col">
+                            <label asp-for="@settings.SendEmailOnNewComment" class="form-check-label"></label>
+                        </div>
+                        <div class="col-md-5 text-end">
+                            <div class="form-check form-switch">
+                                <input type="hidden" name="SendEmailOnNewComment" value="false">
+                                <input type="checkbox" name="SendEmailOnNewComment" value="true" class="form-check-input" @(settings.SendEmailOnNewComment ? "checked" : null)>
+                            </div>
                         </div>
                     </div>
-                </div>
 
-                <div class="row g-3 align-items-center settings-entry mb-4">
-                    <div class="col-auto">
-                        <i class="bi-reply settings-entry-icon"></i>
-                    </div>
-                    <div class="col">
-                        <label asp-for="@settings.SendEmailOnCommentReply" class="form-check-label"></label>
-                    </div>
-                    <div class="col-md-5 text-end">
-                        <div class="form-check form-switch">
-                            <input type="hidden" name="SendEmailOnCommentReply" value="false">
-                            <input type="checkbox" name="SendEmailOnCommentReply" value="true" class="form-check-input" @(settings.SendEmailOnCommentReply ? "checked" : null)>
+                    <div class="row g-3 align-items-center settings-entry mb-4">
+                        <div class="col-auto">
+                            <i class="bi-reply settings-entry-icon"></i>
+                        </div>
+                        <div class="col">
+                            <label asp-for="@settings.SendEmailOnCommentReply" class="form-check-label"></label>
+                        </div>
+                        <div class="col-md-5 text-end">
+                            <div class="form-check form-switch">
+                                <input type="hidden" name="SendEmailOnCommentReply" value="false">
+                                <input type="checkbox" name="SendEmailOnCommentReply" value="true" class="form-check-input" @(settings.SendEmailOnCommentReply ? "checked" : null)>
+                            </div>
                         </div>
                     </div>
                 </div>

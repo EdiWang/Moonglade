@@ -52,10 +52,13 @@
     </script>
 }
 @Html.AntiForgeryToken()
-<partial name="_PostManageHeader" />
 
-<div class="ps-4 pe-4">
-    <a href="#" class="btn btn-sm btn-outline-danger btn-empty-recbin mb-4">
+@section admintoolbar{
+    <partial name="_PostManageHeader" />
+}
+
+<div>
+    <a href="#" class="btn btn-sm btn-outline-danger btn-empty-recbin mb-3">
             <i class="bi-trash"></i>
             @SharedLocalizer["Empty Recycle Bin"]
     </a>
@@ -63,7 +66,7 @@
     {
         foreach (var post in posts.OrderByDescending(p => p.CreateTimeUtc))
         {
-            <div id="post-@post.Id">
+            <div id="post-@post.Id" class="p-3 mb-2 rounded-3 shadow-sm border bg-white">
                 <div class="d-flex">
                     <div class="flex-grow-1">
                         <h6>
@@ -83,7 +86,6 @@
                         </a>
                     </div>
                 </div>
-                <hr />
             </div>
         }
     }

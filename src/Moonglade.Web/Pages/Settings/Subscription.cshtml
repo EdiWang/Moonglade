@@ -2,7 +2,7 @@
 @section scripts{
     <script type="module">
         import * as settings from '/js/app/admin.settings.module.js';
-        
+
         const form = document.querySelector('#form-settings');
         form.addEventListener('submit', settings.handleSettingsSubmit);
     </script>
@@ -11,35 +11,40 @@
     var settings = BlogConfig.FeedSettings;
 }
 
-<partial name="_SettingsHeader" />
-<div class="ps-4 pe-4 pt-4">
-    <form id="form-settings" asp-controller="Settings" asp-action="Subscription" spellcheck="false">
-        <div class="row">
-            <div class="col-lg-6">
-                <div class="row g-3 align-items-center settings-entry mb-4">
-                    <div class="col-auto">
-                        <i class="bi-list-ol settings-entry-icon"></i>
-                    </div>
-                    <div class="col">
-                        <label asp-for="@settings.RssItemCount"></label>
-                        <div class="form-text">@SharedLocalizer["The number of entries to include in RSS feed."]</div>
-                    </div>
-                    <div class="col-md-5">
-                        <input asp-for="@settings.RssItemCount" class="form-control" required />
-                    </div>
-                </div>
+@section admintoolbar{
+    <partial name="_SettingsHeader" />
+}
 
-                <div class="row g-3 align-items-center settings-entry mb-4">
-                    <div class="col-auto">
-                        <i class="bi-justify-left settings-entry-icon"></i>
+<div>
+    <form id="form-settings" asp-controller="Settings" asp-action="Subscription" spellcheck="false">
+        <div class="row mb-3">
+            <div class="col-lg-6">
+                <div class="p-3 rounded-3 shadow-sm border bg-white">
+                    <div class="row g-3 align-items-center settings-entry mt-1 mb-4">
+                        <div class="col-auto">
+                            <i class="bi-list-ol settings-entry-icon"></i>
+                        </div>
+                        <div class="col">
+                            <label asp-for="@settings.RssItemCount"></label>
+                            <div class="form-text">@SharedLocalizer["The number of entries to include in RSS feed."]</div>
+                        </div>
+                        <div class="col-md-5">
+                            <input asp-for="@settings.RssItemCount" class="form-control" required />
+                        </div>
                     </div>
-                    <div class="col">
-                        <label asp-for="@settings.UseFullContent" class="form-check-label"></label>
-                    </div>
-                    <div class="col-md-5 text-end">
-                        <div class="form-check form-switch">
-                            <input type="hidden" name="UseFullContent" value="false">
-                            <input type="checkbox" name="UseFullContent" value="true" class="form-check-input" @(@settings.UseFullContent ? "checked" : null) />
+
+                    <div class="row g-3 align-items-center settings-entry">
+                        <div class="col-auto">
+                            <i class="bi-justify-left settings-entry-icon"></i>
+                        </div>
+                        <div class="col">
+                            <label asp-for="@settings.UseFullContent" class="form-check-label"></label>
+                        </div>
+                        <div class="col-md-5 text-end">
+                            <div class="form-check form-switch">
+                                <input type="hidden" name="UseFullContent" value="false">
+                                <input type="checkbox" name="UseFullContent" value="true" class="form-check-input" @(@settings.UseFullContent ? "checked" : null) />
+                            </div>
                         </div>
                     </div>
                 </div>

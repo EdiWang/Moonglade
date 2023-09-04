@@ -60,16 +60,19 @@
     </style>
 }
 
-<partial name="_SettingsHeader" />
-<div class="ps-4 pe-4">
+@section admintoolbar{
+    <partial name="_SettingsHeader" />
+}
+
+<div>
     <form id="form-settings" asp-controller="Settings" asp-action="CustomStyleSheet">
-        <div class="form-check form-switch mb-3">
+        <div class="form-check form-switch mx-3 mb-3">
             <input type="hidden" name="EnableCustomCss" value="false">
             <input type="checkbox" name="EnableCustomCss" value="true" class="form-check-input" @(settings.EnableCustomCss ? "checked" : null)>
             <label asp-for="@settings.EnableCustomCss" class="form-check-label"></label>
         </div>
 
-        <div id="CssContentEditor" class="monaco-target">
+        <div id="CssContentEditor" class="monaco-target p-3 rounded-3 shadow-sm border bg-white">
 
         </div>
         <textarea asp-for="@settings.CssCode" class="settings-csscontent-textarea d-none"></textarea>
