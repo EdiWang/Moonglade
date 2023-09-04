@@ -93,7 +93,7 @@
             });
         });
 
-        window.generateMetaWeblogPassword = function() {
+        window.generateMetaWeblogPassword = function () {
             callApi('/api/settings/password/generate', 'GET', {}, async (resp) => {
                 var data = await resp.json();
                 $('#settings_MetaWeblogPassword').val(data.password);
@@ -106,14 +106,14 @@
 }
 
 @section admintoolbar{
-    <partial name="_SettingsHeader"/>
+    <partial name="_SettingsHeader" />
 }
 
-<div class="ps-4 pe-4">
+<div>
     <form id="form-settings" asp-controller="Settings" asp-action="Advanced">
-        <div class="row g-5">
+        <div class="row">
             <div class="col-md-6">
-                <div class="mb-4">
+                <div class="mb-4 p-3 rounded-3 shadow-sm border bg-white">
                     <h6 class="card-subtitle mb-4 text-muted">@SharedLocalizer["Advanced Settings"]</h6>
 
                     <div class="row g-3 align-items-center settings-entry mb-4">
@@ -160,7 +160,7 @@
                             </div>
                         </div>
                     </div>
-                    
+
                     <div class="row g-3 align-items-center settings-entry mb-4">
                         <div class="col-auto">
                             <i class="bi-diagram-2 settings-entry-icon"></i>
@@ -176,7 +176,7 @@
                             </div>
                         </div>
                     </div>
-                    
+
                     <div class="row g-3 align-items-center settings-entry mb-4">
                         <div class="col-auto">
                             <i class="bi-filetype-xml settings-entry-icon"></i>
@@ -192,7 +192,7 @@
                         </div>
                     </div>
 
-                    <div class="row g-3 align-items-center settings-entry mb-4">
+                    <div class="row g-3 align-items-center settings-entry">
                         <div class="col-auto">
                             <i class="bi-exclamation-triangle settings-entry-icon"></i>
                         </div>
@@ -206,15 +206,16 @@
                             </div>
                         </div>
                     </div>
-
-                    <div class="mt-5 mb-2">
+                </div>
+                <div class="p-3 rounded-3 shadow-sm border bg-white mb-3">
+                    <div class="mb-2">
                         <h6 class="card-subtitle mb-3 text-muted">@Html.DisplayNameFor(m => settings.RobotsTxtContent)</h6>
                         <textarea asp-for="@settings.RobotsTxtContent" class="form-control textarea-code" cols="60" rows="10" spellcheck="false"></textarea>
                     </div>
                 </div>
             </div>
             <div class="col-md-6">
-                <div class="mb-5">
+                <div class="mb-3 p-3 rounded-3 shadow-sm border bg-white">
                     <h6 class="card-subtitle mb-4 text-muted">
                         MetaWeblog
                     </h6>
@@ -255,7 +256,7 @@
                         </div>
                     </div>
                 </div>
-                <div>
+                <div class="p-3 rounded-3 shadow-sm border bg-white">
                     <h6 class="card-subtitle mb-4 text-muted">
                         @SharedLocalizer["Options"]
                     </h6>
