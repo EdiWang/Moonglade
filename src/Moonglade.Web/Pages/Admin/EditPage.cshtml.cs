@@ -1,5 +1,6 @@
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Moonglade.Core.PageFeature;
+using Moonglade.Data.Entities;
 
 namespace Moonglade.Web.Pages.Admin;
 
@@ -24,6 +25,12 @@ public class EditPageModel : PageModel
         var page = await _mediator.Send(new GetPageByIdQuery(id.Value));
         if (page is null) return NotFound();
 
+        StyleSheetEntity css = null;
+        if (!string.IsNullOrWhiteSpace(page.CssId))
+        {
+            css = await _mediator.Send(new GetStyleSheetQuery(Guid.Parse(page.CssId)));
+        }
+
         PageId = page.Id;
 
         EditPageRequest = new()
@@ -31,7 +38,7 @@ public class EditPageModel : PageModel
             Title = page.Title,
             Slug = page.Slug,
             MetaDescription = page.MetaDescription,
-            CssContent = page.CssContent,
+            CssContent = css?.CssContent,
             RawHtmlContent = page.RawHtmlContent,
             HideSidebar = page.HideSidebar,
             IsPublished = page.IsPublished

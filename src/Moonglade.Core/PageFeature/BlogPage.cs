@@ -7,7 +7,7 @@ public class BlogPage
     public string Slug { get; set; }
     public string MetaDescription { get; set; }
     public string RawHtmlContent { get; set; }
-    public string CssContent { get; set; }
+    public string CssId { get; set; }
     public bool HideSidebar { get; set; }
     public bool IsPublished { get; set; }
     public DateTime CreateTimeUtc { get; set; }
@@ -25,7 +25,7 @@ public class BlogPage
         Id = entity.Id;
         Title = entity.Title.Trim();
         CreateTimeUtc = entity.CreateTimeUtc;
-        CssContent = entity.CssContent;
+        CssId = entity.CssId;
         RawHtmlContent = entity.HtmlContent;
         HideSidebar = entity.HideSidebar;
         Slug = entity.Slug.Trim().ToLower();

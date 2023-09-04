@@ -1,32 +1,16 @@
 ﻿@page "/page/{slug:regex(^(?!-)([a-zA-Z0-9-]){{1,128}}$)}"
 @model Moonglade.Web.Pages.BlogPageModel
-@using NUglify
 
 @{
     ViewBag.TitlePrefix = Model.BlogPage.Title;
     ViewBag.HideSideBar = Model.BlogPage.HideSidebar;
     ViewBag.DisableLightSwitch = true;
-
-    string css = null;
-    if (!string.IsNullOrWhiteSpace(Model.BlogPage.CssContent))
-    {
-        var uglifyResult = Uglify.Css(Model.BlogPage.CssContent);
-        if (!uglifyResult.HasErrors)
-        {
-            css = uglifyResult.Code;
-        }
-    }
-
 }
 
 @section head{
-    <link href="~/css/timeline.css" rel="stylesheet" asp-append-version="true" />
-
-    @if (!string.IsNullOrWhiteSpace(css))
+    @if (!string.IsNullOrWhiteSpace(Model.BlogPage.CssId))
     {
-        <style>
-            @Html.Raw(css)
-            </style>
+        <link href="~/page.css?id=@Model.BlogPage.CssId" rel="stylesheet" asp-append-version="true" />
     }
 }
 

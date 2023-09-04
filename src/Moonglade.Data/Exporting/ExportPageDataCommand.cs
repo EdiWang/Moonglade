@@ -22,7 +22,7 @@ public class ExportPageDataCommandHandler : IRequestHandler<ExportPageDataComman
             p.Slug,
             p.MetaDescription,
             p.HtmlContent,
-            p.CssContent,
+            p.CssId,
             p.HideSidebar,
             p.IsPublished,
             p.CreateTimeUtc,

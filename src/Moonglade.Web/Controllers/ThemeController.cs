@@ -40,7 +40,7 @@ public class ThemeController : ControllerBase
                     await _mediator.Send(new UpdateConfigurationCommand(kvp.Key, kvp.Value));
                 }
 
-                var data = await _mediator.Send(new GetStyleSheetQuery(_blogConfig.GeneralSettings.ThemeId));
+                var data = await _mediator.Send(new GetSiteThemeStyleSheetQuery(_blogConfig.GeneralSettings.ThemeId));
                 return data;
             });
 

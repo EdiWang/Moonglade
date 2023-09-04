@@ -1,6 +1,4 @@
-﻿using System.Net;
-using System.Text.RegularExpressions;
-using System.Web;
+﻿using System.Web;
 using NUglify;
 
 namespace Moonglade.Web.Middleware;
@@ -13,14 +11,14 @@ public class StyleSheetMiddleware
 
     public StyleSheetMiddleware(RequestDelegate next) => _next = next;
 
-    public async Task Invoke(HttpContext context, IBlogConfig blogConfig)
+    public async Task Invoke(HttpContext context, IBlogConfig blogConfig, IMediator mediator)
     {
         if (!context.Request.Path.ToString().ToLower().EndsWith(".css"))
         {
             await _next(context);
             return;
         }
-        
+
         if (context.Request.Path == Options.DefaultPath)
         {
             if (!blogConfig.CustomStyleSheetSettings.EnableCustomCss)
@@ -36,21 +34,26 @@ public class StyleSheetMiddleware
         {
             // Get query string value
             var qs = HttpUtility.ParseQueryString(context.Request.QueryString.Value!);
-            string slug = qs["slug"];
+            var id = qs["id"];
 
-            if (!string.IsNullOrWhiteSpace(slug))
+            if (!string.IsNullOrWhiteSpace(id))
             {
-                slug = slug.ToLower();
-
-                var slugRegex = "^(?!-)([a-zA-Z0-9-]){1,128}$";
-                if (!Regex.IsMatch(slug, slugRegex, RegexOptions.Compiled, TimeSpan.FromSeconds(1)))
+                if (!Guid.TryParse(id, out var guid))
                 {
                     context.Response.StatusCode = StatusCodes.Status404NotFound;
                 }
-                
-                // TODO: Output blog page css
-                // Need a server side cache
-                // Need pattern validation
+                else
+                {
+                    var css = await mediator.Send(new GetStyleSheetQuery(guid));
+                    if (css == null)
+                    {
+                        context.Response.StatusCode = StatusCodes.Status404NotFound;
+                        return;
+                    }
+
+                    // TODO: May need a server side cache
+                    await WriteStyleSheet(context, css.CssContent);
+                }
             }
             else
             {
