@@ -52,7 +52,10 @@
     </script>
 }
 @Html.AntiForgeryToken()
-<partial name="_PostManageHeader" />
+
+@section admintoolbar{
+    <partial name="_PostManageHeader" />
+}
 
 <div class="ps-4 pe-4">
     <a href="#" class="btn btn-sm btn-outline-danger btn-empty-recbin mb-4">
