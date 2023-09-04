@@ -9,7 +9,7 @@
             return "N/A";
         }
 
-        var sets = username.Split(' ');
+        var sets = username.Split(' ').Where(t => !string.IsNullOrWhiteSpace(t)).ToArray();
         if (sets.Length == 1)
         {
             return sets[0].First().ToString().ToUpper();
