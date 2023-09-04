@@ -114,9 +114,9 @@ public class ImageController : ControllerBase
                 watermarkedStream = watermarker.AddWatermark(
                     _blogConfig.ImageSettings.WatermarkText,
                     Color.FromRgba(
-                        (byte)_blogConfig.ImageSettings.WatermarkColorR,
-                        (byte)_blogConfig.ImageSettings.WatermarkColorG,
-                        (byte)_blogConfig.ImageSettings.WatermarkColorB,
+                        (byte)128,
+                        (byte)128,
+                        (byte)128,
                         (byte)_blogConfig.ImageSettings.WatermarkColorA),
                     WatermarkPosition.BottomRight,
                     15,

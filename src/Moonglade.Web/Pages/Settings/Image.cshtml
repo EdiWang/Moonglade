@@ -24,7 +24,7 @@
                         @SharedLocalizer["General"]
                     </h6>
 
-                    <div class="row g-3 align-items-center settings-entry mb-4">
+                    <div class="row g-3 align-items-center settings-entry">
                         <div class="col-auto">
                             <i class="bi-fullscreen settings-entry-icon"></i>
                         </div>
@@ -60,18 +60,20 @@
                         </div>
                     </div>
 
-                    <div class="row g-3 align-items-center settings-entry">
+                    <div class="row g-3 align-items-center settings-entry mb-3">
                         <div class="col-auto">
                             <i class="bi-link settings-entry-icon"></i>
                         </div>
                         <div class="col">
                             <label asp-for="@settings.CDNEndpoint"></label>
-                            <div class="form-text">@SharedLocalizer["e.g. https://blog.ediwangcdn.com/ediwang-images"]</div>
+                            <div class="form-text">e.g. https://cdn-blog.edi.wang/ediwang-images</div>
                         </div>
                         <div class="col-md-5">
                             <input asp-for="@settings.CDNEndpoint" class="form-control" />
                         </div>
                     </div>
+                    
+                    <div class="text-muted">* Recommend to use <a href="https://learn.microsoft.com/en-us/azure/cdn/cdn-overview?WT.mc_id=AZ-MVP-5002809" target="_blank">Azure CDN</a></div>
                 </div>
             </div>
             <div class="col-lg-6">
@@ -88,6 +90,9 @@
                         </div>
                         <div class="col">
                             <label asp-for="@settings.IsWatermarkEnabled" class="form-check-label"></label>
+                            <div class="form-text">
+                                Watermark will be placed at the right bottom corner of the image
+                            </div>
                         </div>
                         <div class="col-md-5 text-end">
                             <div class="form-check form-switch">
@@ -107,7 +112,7 @@
                                 Also save the origin image as a backup while adding watermark
                             </div>
                         </div>
-                        <div class="col-md-5 text-end">
+                        <div class="col-5 text-end">
                             <div class="form-check form-switch">
                                 <input type="hidden" name="KeepOriginImage" value="false">
                                 <input type="checkbox" name="KeepOriginImage" value="true" class="form-check-input" @(settings.KeepOriginImage ? "checked" : null)>
@@ -122,7 +127,7 @@
                         <div class="col">
                             <label asp-for="@settings.WatermarkText"></label>
                         </div>
-                        <div class="col-md-5">
+                        <div class="col-5">
                             <input asp-for="@settings.WatermarkText" class="form-control" />
                         </div>
                     </div>
@@ -137,7 +142,7 @@
                                 Add watermark only when image pixcel (HxW) is greater than this value.
                             </div>
                         </div>
-                        <div class="col-md-5">
+                        <div class="col-5">
                             <input asp-for="@settings.WatermarkSkipPixel" required min="0" max="@int.MaxValue" class="form-control" />
                         </div>
                     </div>
@@ -147,14 +152,16 @@
                             <i class="bi-palette settings-entry-icon"></i>
                         </div>
                         <div class="col">
-                            <label>Color (RGBA)</label>
+                            <label>Alpha</label>
+                            <div class="form-text">
+                                Transparency value (0-255).
+                            </div>
                         </div>
-                        <div class="col-md-7">
+                        <div class="col-5">
                             <div class="row g-1">
-                                <div class="col"><input asp-for="@settings.WatermarkColorR" required min="0" max="255" class="form-control" /></div>
-                                <div class="col"><input asp-for="@settings.WatermarkColorG" required min="0" max="255" class="form-control" /></div>
-                                <div class="col"><input asp-for="@settings.WatermarkColorB" required min="0" max="255" class="form-control" /></div>
-                                <div class="col"><input asp-for="@settings.WatermarkColorA" required min="0" max="255" class="form-control" /></div>
+                                <div class="col">
+                                    <input asp-for="@settings.WatermarkColorA" required min="0" max="255" class="form-control" />
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -168,10 +175,7 @@
                             <label asp-for="@settings.WatermarkFontSize"></label>
                         </div>
                         <div class="col-md-5">
-                            <input type="range" asp-for="@settings.WatermarkFontSize" class="form-range" min="8" max="32" step="1" oninput="this.nextElementSibling.value = this.value" />
-                            <output class="form-text">
-                                @settings.WatermarkFontSize
-                            </output>
+                            <input asp-for="@settings.WatermarkFontSize" min="8" max="32" class="form-control" />
                         </div>
                     </div>
                 </div>

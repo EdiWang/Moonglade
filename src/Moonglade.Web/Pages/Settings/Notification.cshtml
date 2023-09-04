@@ -33,7 +33,7 @@
 
 <div>
     <form id="form-settings" asp-controller="Settings" asp-action="Notification">
-        <div class="row">
+        <div class="row mb-3">
             <div class="col-md-6">
                 <div class="p-3 rounded-3 shadow-sm border bg-white">
                     <h6 class="card-subtitle mb-4 text-muted">@SharedLocalizer["Email Options"]</h6>
@@ -44,9 +44,9 @@
                         </div>
                         <div class="col">
                             <label asp-for="@settings.AzureStorageQueueConnection"></label>
-                            <div class="form-text">Please follow instructions <a href="https://github.com/EdiWang/Moonglade/blob/master/README.md#email-notification" target="_blank">here</a> to setup email API.</div>
+                            <div class="form-text">Please follow <a href="https://github.com/EdiWang/Moonglade/blob/master/README.md#email-notification" target="_blank">instructions</a> to setup email API.</div>
                         </div>
-                        <div class="col-md-5">
+                        <div class="col-6">
                             <input asp-for="@settings.AzureStorageQueueConnection" class="form-control" spellcheck="false" />
                         </div>
                     </div>
@@ -58,7 +58,7 @@
                         <div class="col">
                             <label asp-for="@settings.EmailDisplayName"></label>
                         </div>
-                        <div class="col-md-5">
+                        <div class="col-6">
                             <input asp-for="@settings.EmailDisplayName" class="form-control" required maxlength="64" />
                         </div>
                     </div>
@@ -130,7 +130,7 @@
             </div>
         </div>
 
-        <div class="mb-4">
+        <div>
             <input id="btn-save-settings" type="submit" value="@SharedLocalizer["Save"]" class="btn btn-outline-accent" />
         </div>
     </form>
