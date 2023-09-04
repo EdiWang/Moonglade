@@ -13,7 +13,7 @@ public class CommentsModel : PageModel
 
     public async Task OnGet(int pageIndex = 1)
     {
-        const int pageSize = 10;
+        const int pageSize = 5;
         var comments = await _mediator.Send(new GetCommentsQuery(pageSize, pageIndex));
         var count = await _mediator.Send(new CountCommentsQuery());
         CommentDetailedItems = new(comments, pageIndex, pageSize, count);
