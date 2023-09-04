@@ -106,8 +106,8 @@
                             <label asp-for="@settings.CloseCommentAfterDays"></label>
                             <div class="form-text">@SharedLocalizer["Set to 0 to never close comments after any days"]</div>
                         </div>
-                        <div class="col-md-5">
-                            <input asp-for="@settings.CloseCommentAfterDays" class="form-control" required />
+                        <div class="col-4">
+                            <input asp-for="@settings.CloseCommentAfterDays" class="form-control" min="0" max="65536" required />
                         </div>
                     </div>
 
@@ -233,11 +233,8 @@
                         <div class="col">
                             <label asp-for="@settings.PostListPageSize"></label>
                         </div>
-                        <div class="col-md-5">
-                            <input asp-for="@settings.PostListPageSize" class="form-range" type="range" oninput="this.nextElementSibling.value = this.value" min="5" max="30" />
-                            <output class="form-text">
-                                @settings.PostListPageSize
-                            </output>
+                        <div class="col-4">
+                            <input asp-for="@settings.PostListPageSize" class="form-control" min="1" max="30" required />
                         </div>
                     </div>
 
@@ -249,8 +246,8 @@
                             <label asp-for="@settings.PostAbstractWords"></label>
                             <div class="form-text">@SharedLocalizer["Change this value will only affect new posts"]</div>
                         </div>
-                        <div class="col-md-5">
-                            <input asp-for="@settings.PostAbstractWords" class="form-control" required />
+                        <div class="col-4">
+                            <input asp-for="@settings.PostAbstractWords" class="form-control" max="65536" required />
                         </div>
                     </div>
 
@@ -261,11 +258,8 @@
                         <div class="col">
                             <label asp-for="@settings.HotTagAmount"></label>
                         </div>
-                        <div class="col-md-5">
-                            <input asp-for="@settings.HotTagAmount" class="form-range" type="range" oninput="this.nextElementSibling.value = this.value" min="5" max="20" />
-                            <output class="form-text">
-                                @settings.PostListPageSize
-                            </output>
+                        <div class="col-4">
+                            <input asp-for="@settings.HotTagAmount" class="form-control" min="1" max="32" />
                         </div>
                     </div>
 
