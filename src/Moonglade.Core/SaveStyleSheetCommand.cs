@@ -23,7 +23,7 @@ public class SaveStyleSheetCommandHandler : IRequestHandler<SaveStyleSheetComman
             entity = new()
             {
                 Id = Guid.NewGuid(),
-                FriendlyName = slug,
+                FriendlyName = $"page_{slug}",
                 CssContent = css,
                 Hash = hash,
                 LastModifiedTimeUtc = DateTime.UtcNow
@@ -33,6 +33,7 @@ public class SaveStyleSheetCommandHandler : IRequestHandler<SaveStyleSheetComman
         }
         else
         {
+            entity.FriendlyName = $"page_{slug}";
             entity.CssContent = css;
             entity.Hash = hash;
             entity.LastModifiedTimeUtc = DateTime.UtcNow;
