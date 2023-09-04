@@ -80,26 +80,6 @@
 
                     <div class="row g-3 align-items-center settings-entry mb-4">
                         <div class="col-auto">
-                            <i class="bi-sort-numeric-down settings-entry-icon"></i>
-                        </div>
-                        <div class="col">
-                            <label asp-for="@settings.CommentOrder" class="me-4"></label>
-                        </div>
-                        <div class="col-md-5 text-end">
-                            <div class="form-check form-check-inline">
-                                @Html.RadioButtonFor(model => settings.CommentOrder, CommentOrder.OldToNew, new { id = CommentOrder.OldToNew.ToString(), @class = "form-check-input" })
-                                <label class="form-check-label" for="@CommentOrder.OldToNew">@SharedLocalizer["Old to new"]</label>
-                            </div>
-                            <div class="form-check form-check-inline">
-                                @Html.RadioButtonFor(model => settings.CommentOrder, CommentOrder.NewToOld, new { id = CommentOrder.NewToOld.ToString(), @class = "form-check-input" })
-                                <label class="form-check-label" for="@CommentOrder.NewToOld">@SharedLocalizer["New to old"]</label>
-                            </div>
-                        </div>
-                    </div>
-
-
-                    <div class="row g-3 align-items-center settings-entry mb-4">
-                        <div class="col-auto">
                             <i class="settings-entry-icon bi-hourglass-split"></i>
                         </div>
                         <div class="col">
@@ -112,6 +92,25 @@
                     </div>
 
                     <div class="comment-settings-built-in">
+                        
+                        <div class="row g-3 align-items-center settings-entry mb-4">
+                            <div class="col-auto">
+                                <i class="bi-sort-numeric-down settings-entry-icon"></i>
+                            </div>
+                            <div class="col">
+                                <label asp-for="@settings.CommentOrder" class="me-4"></label>
+                            </div>
+                            <div class="col-md-5 text-end">
+                                <div class="form-check form-check-inline">
+                                    @Html.RadioButtonFor(model => settings.CommentOrder, CommentOrder.OldToNew, new { id = CommentOrder.OldToNew.ToString(), @class = "form-check-input" })
+                                    <label class="form-check-label" for="@CommentOrder.OldToNew">@SharedLocalizer["Old to new"]</label>
+                                </div>
+                                <div class="form-check form-check-inline">
+                                    @Html.RadioButtonFor(model => settings.CommentOrder, CommentOrder.NewToOld, new { id = CommentOrder.NewToOld.ToString(), @class = "form-check-input" })
+                                    <label class="form-check-label" for="@CommentOrder.NewToOld">@SharedLocalizer["New to old"]</label>
+                                </div>
+                            </div>
+                        </div>
 
                         <div class="row g-3 align-items-center settings-entry mb-4">
                             <div class="col-auto">
