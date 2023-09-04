@@ -334,3 +334,7 @@ table.dataTable {
 .tox-promotion {
     display: none !important;
 }
+
+.admin-h3 {
+    font-size: 20px;
+}

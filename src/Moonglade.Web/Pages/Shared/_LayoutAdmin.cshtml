@@ -129,8 +129,12 @@
                 </div>
             </section>
         </aside>
-        <div class="admin-main rounded-3 shadow-sm border bg-white mt-3 mb-3 me-3 ms-3">
-            @RenderBody()
+        <div class="admin-main mt-3 mb-3 me-3 ms-3">
+            @await RenderSectionAsync("admin-toolbar", false)
+            
+            <div class="admin-main-body">
+                @RenderBody()
+            </div>
         </div>
     </div>
 
