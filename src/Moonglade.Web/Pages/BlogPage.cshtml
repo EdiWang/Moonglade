@@ -8,7 +8,10 @@
 }
 
 @section head{
-    <link href="~/page.css?id=@Model.BlogPage.CssId" rel="stylesheet" asp-append-version="true" />
+    @if (!string.IsNullOrWhiteSpace(Model.BlogPage.CssId))
+    {
+        <link href="~/page.css?id=@Model.BlogPage.CssId" rel="stylesheet" asp-append-version="true" />
+    }
 }
 
 @section metadescription{
