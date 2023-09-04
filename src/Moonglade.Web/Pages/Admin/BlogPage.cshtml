@@ -25,7 +25,7 @@
 </script>
 }
 
-<div class="admin-toolbar ps-4 pe-4 pt-2 pb-2 border-bottom mb-3 shadow-sm">
+<div class="admin-toolbar pt-2 pb-2 border-bottom mb-3">
     <a class="btn btn-outline-accent" asp-page="./EditPage">
         <i class="bi-plus-lg"></i>
         @SharedLocalizer["New"]
@@ -39,7 +39,7 @@
 
 @if (pageSegments.Any())
 {
-    <div class="ps-4 pe-4">
+    <div>
         @Html.AntiForgeryToken()
 
         <div class="row row-cols-1 row-cols-sm-2 row-cols-md-3 row-cols-lg-4 g-4">
