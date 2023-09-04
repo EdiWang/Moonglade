@@ -22,7 +22,11 @@
 @{
     var settings = BlogConfig.ContentSettings;
 }
+
+@section admintoolbar{
     <partial name="_SettingsHeader" />
+}
+
     <div class="ps-4 pe-4">
         <form id="form-settings" asp-controller="Settings" asp-action="Content">
             <div class="row">

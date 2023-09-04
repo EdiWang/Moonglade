@@ -105,7 +105,10 @@
     </script>
 }
 
-<partial name="_SettingsHeader" />
+@section admintoolbar{
+    <partial name="_SettingsHeader"/>
+}
+
 <div class="ps-4 pe-4">
     <form id="form-settings" asp-controller="Settings" asp-action="Advanced">
         <div class="row g-5">

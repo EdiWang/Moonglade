@@ -60,7 +60,10 @@
     </style>
 }
 
-<partial name="_SettingsHeader" />
+@section admintoolbar{
+    <partial name="_SettingsHeader" />
+}
+
 <div class="ps-4 pe-4">
     <form id="form-settings" asp-controller="Settings" asp-action="CustomStyleSheet">
         <div class="form-check form-switch mb-3">
