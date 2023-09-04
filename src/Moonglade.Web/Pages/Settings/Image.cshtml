@@ -15,11 +15,11 @@
     <partial name="_SettingsHeader" />
 }
 
-<div class="ps-4 pe-4">
+<div>
     <form id="form-settings" asp-controller="Settings" asp-action="Image">
         <div class="row">
             <div class="col-lg-6">
-                <div class="mb-4">
+                <div class="mb-4 p-3 rounded-3 shadow-sm border bg-white">
                     <h6 class="card-subtitle mb-4 text-muted">
                         @SharedLocalizer["General"]
                     </h6>
@@ -39,6 +39,8 @@
                         </div>
                     </div>
 
+                </div>
+                <div class="p-3 rounded-3 shadow-sm border bg-white">
                     <h6 class="card-subtitle mb-4 text-muted">
                         CDN
                     </h6>
@@ -73,100 +75,104 @@
                 </div>
             </div>
             <div class="col-lg-6">
-                <h6 class="card-subtitle mb-4 text-muted">
-                    @SharedLocalizer["Watermark"]
-                </h6>
+                <div class="p-3 rounded-3 shadow-sm border bg-white">
 
-                <div class="row g-3 align-items-center settings-entry mb-4">
-                    <div class="col-auto">
-                        <i class="bi-file-earmark-font settings-entry-icon"></i>
-                    </div>
-                    <div class="col">
-                        <label asp-for="@settings.IsWatermarkEnabled" class="form-check-label"></label>
-                    </div>
-                    <div class="col-md-5 text-end">
-                        <div class="form-check form-switch">
-                            <input type="hidden" name="IsWatermarkEnabled" value="false">
-                            <input type="checkbox" name="IsWatermarkEnabled" value="true" class="form-check-input" @(settings.IsWatermarkEnabled ? "checked" : null)>
+
+                    <h6 class="card-subtitle mb-4 text-muted">
+                        @SharedLocalizer["Watermark"]
+                    </h6>
+
+                    <div class="row g-3 align-items-center settings-entry mb-4">
+                        <div class="col-auto">
+                            <i class="bi-file-earmark-font settings-entry-icon"></i>
+                        </div>
+                        <div class="col">
+                            <label asp-for="@settings.IsWatermarkEnabled" class="form-check-label"></label>
+                        </div>
+                        <div class="col-md-5 text-end">
+                            <div class="form-check form-switch">
+                                <input type="hidden" name="IsWatermarkEnabled" value="false">
+                                <input type="checkbox" name="IsWatermarkEnabled" value="true" class="form-check-input" @(settings.IsWatermarkEnabled ? "checked" : null)>
+                            </div>
                         </div>
                     </div>
-                </div>
 
-                <div class="row g-3 align-items-center settings-entry mb-4">
-                    <div class="col-auto">
-                        <i class="bi-images settings-entry-icon"></i>
-                    </div>
-                    <div class="col">
-                        <label asp-for="@settings.KeepOriginImage" class="form-check-label"></label>
-                        <div class="form-text">
-                            Also save the origin image as a backup while adding watermark
+                    <div class="row g-3 align-items-center settings-entry mb-4">
+                        <div class="col-auto">
+                            <i class="bi-images settings-entry-icon"></i>
+                        </div>
+                        <div class="col">
+                            <label asp-for="@settings.KeepOriginImage" class="form-check-label"></label>
+                            <div class="form-text">
+                                Also save the origin image as a backup while adding watermark
+                            </div>
+                        </div>
+                        <div class="col-md-5 text-end">
+                            <div class="form-check form-switch">
+                                <input type="hidden" name="KeepOriginImage" value="false">
+                                <input type="checkbox" name="KeepOriginImage" value="true" class="form-check-input" @(settings.KeepOriginImage ? "checked" : null)>
+                            </div>
                         </div>
                     </div>
-                    <div class="col-md-5 text-end">
-                        <div class="form-check form-switch">
-                            <input type="hidden" name="KeepOriginImage" value="false">
-                            <input type="checkbox" name="KeepOriginImage" value="true" class="form-check-input" @(settings.KeepOriginImage ? "checked" : null)>
+
+                    <div class="row g-3 align-items-center settings-entry mb-4">
+                        <div class="col-auto">
+                            <i class="bi-input-cursor-text settings-entry-icon"></i>
+                        </div>
+                        <div class="col">
+                            <label asp-for="@settings.WatermarkText"></label>
+                        </div>
+                        <div class="col-md-5">
+                            <input asp-for="@settings.WatermarkText" class="form-control" />
                         </div>
                     </div>
-                </div>
 
-                <div class="row g-3 align-items-center settings-entry mb-4">
-                    <div class="col-auto">
-                        <i class="bi-input-cursor-text settings-entry-icon"></i>
-                    </div>
-                    <div class="col">
-                        <label asp-for="@settings.WatermarkText"></label>
-                    </div>
-                    <div class="col-md-5">
-                        <input asp-for="@settings.WatermarkText" class="form-control" />
-                    </div>
-                </div>
-
-                <div class="row g-3 align-items-center settings-entry mb-4">
-                    <div class="col-auto">
-                        <i class="bi-input-cursor-text settings-entry-icon"></i>
-                    </div>
-                    <div class="col">
-                        <label asp-for="@settings.WatermarkSkipPixel"></label>
-                        <div class="form-text">
-                            Add watermark only when image pixcel (HxW) is greater than this value.
+                    <div class="row g-3 align-items-center settings-entry mb-4">
+                        <div class="col-auto">
+                            <i class="bi-input-cursor-text settings-entry-icon"></i>
+                        </div>
+                        <div class="col">
+                            <label asp-for="@settings.WatermarkSkipPixel"></label>
+                            <div class="form-text">
+                                Add watermark only when image pixcel (HxW) is greater than this value.
+                            </div>
+                        </div>
+                        <div class="col-md-5">
+                            <input asp-for="@settings.WatermarkSkipPixel" required min="0" max="@int.MaxValue" class="form-control" />
                         </div>
                     </div>
-                    <div class="col-md-5">
-                        <input asp-for="@settings.WatermarkSkipPixel" required min="0" max="@int.MaxValue" class="form-control" />
-                    </div>
-                </div>
 
-                <div class="row g-3 align-items-center settings-entry mb-4">
-                    <div class="col-auto">
-                        <i class="bi-palette settings-entry-icon"></i>
-                    </div>
-                    <div class="col">
-                        <label>Color (RGBA)</label>
-                    </div>
-                    <div class="col-md-7">
-                        <div class="row g-1">
-                            <div class="col"><input asp-for="@settings.WatermarkColorR" required min="0" max="255" class="form-control" /></div>
-                            <div class="col"><input asp-for="@settings.WatermarkColorG" required min="0" max="255" class="form-control" /></div>
-                            <div class="col"><input asp-for="@settings.WatermarkColorB" required min="0" max="255" class="form-control" /></div>
-                            <div class="col"><input asp-for="@settings.WatermarkColorA" required min="0" max="255" class="form-control" /></div>
+                    <div class="row g-3 align-items-center settings-entry mb-4">
+                        <div class="col-auto">
+                            <i class="bi-palette settings-entry-icon"></i>
+                        </div>
+                        <div class="col">
+                            <label>Color (RGBA)</label>
+                        </div>
+                        <div class="col-md-7">
+                            <div class="row g-1">
+                                <div class="col"><input asp-for="@settings.WatermarkColorR" required min="0" max="255" class="form-control" /></div>
+                                <div class="col"><input asp-for="@settings.WatermarkColorG" required min="0" max="255" class="form-control" /></div>
+                                <div class="col"><input asp-for="@settings.WatermarkColorB" required min="0" max="255" class="form-control" /></div>
+                                <div class="col"><input asp-for="@settings.WatermarkColorA" required min="0" max="255" class="form-control" /></div>
+                            </div>
                         </div>
                     </div>
-                </div>
 
 
-                <div class="row g-3 align-items-center settings-entry mb-4">
-                    <div class="col-auto">
-                        <i class="bi-fonts settings-entry-icon"></i>
-                    </div>
-                    <div class="col">
-                        <label asp-for="@settings.WatermarkFontSize"></label>
-                    </div>
-                    <div class="col-md-5">
-                        <input type="range" asp-for="@settings.WatermarkFontSize" class="form-range" min="8" max="32" step="1" oninput="this.nextElementSibling.value = this.value" />
-                        <output class="form-text">
-                            @settings.WatermarkFontSize
-                        </output>
+                    <div class="row g-3 align-items-center settings-entry mb-4">
+                        <div class="col-auto">
+                            <i class="bi-fonts settings-entry-icon"></i>
+                        </div>
+                        <div class="col">
+                            <label asp-for="@settings.WatermarkFontSize"></label>
+                        </div>
+                        <div class="col-md-5">
+                            <input type="range" asp-for="@settings.WatermarkFontSize" class="form-range" min="8" max="32" step="1" oninput="this.nextElementSibling.value = this.value" />
+                            <output class="form-text">
+                                @settings.WatermarkFontSize
+                            </output>
+                        </div>
                     </div>
                 </div>
             </div>
