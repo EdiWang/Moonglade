@@ -20,7 +20,7 @@ public class CreatePageCommandHandler : IRequestHandler<CreatePageCommand, Guid>
         Guid? cssId = null;
         if (!string.IsNullOrWhiteSpace(request.Payload.CssContent))
         {
-            cssId = await _mediator.Send(new SaveStyleSheetCommand(slug, request.Payload.CssContent), ct);
+            cssId = await _mediator.Send(new SaveStyleSheetCommand(Guid.NewGuid(), slug, request.Payload.CssContent), ct);
         }
 
         var uid = Guid.NewGuid();

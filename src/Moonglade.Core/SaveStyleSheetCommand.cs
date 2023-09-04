@@ -1,9 +1,8 @@
 ﻿using System.Security.Cryptography;
-using Moonglade.Data.Spec;
 
 namespace Moonglade.Core;
 
-public record SaveStyleSheetCommand(string Slug, string CssContent) : IRequest<Guid>;
+public record SaveStyleSheetCommand(Guid Id, string Slug, string CssContent) : IRequest<Guid>;
 
 public class SaveStyleSheetCommandHandler : IRequestHandler<SaveStyleSheetCommand, Guid>
 {
@@ -17,12 +16,12 @@ public class SaveStyleSheetCommandHandler : IRequestHandler<SaveStyleSheetComman
         var css = request.CssContent.Trim();
         var hash = CalculateHash($"{slug}_{css}");
 
-        var entity = await _repo.GetAsync(new StyleSheetByFriendlyNameSpec(slug), cancellationToken);
+        var entity = await _repo.GetAsync(request.Id, cancellationToken);
         if (entity is null)
         {
             entity = new()
             {
-                Id = Guid.NewGuid(),
+                Id = request.Id,
                 FriendlyName = $"page_{slug}",
                 CssContent = css,
                 Hash = hash,

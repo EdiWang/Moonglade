@@ -27,7 +27,7 @@ public class UpdatePageCommandHandler : IRequestHandler<UpdatePageCommand, Guid>
         Guid? cssId = null;
         if (!string.IsNullOrWhiteSpace(request.Payload.CssContent))
         {
-            cssId = await _mediator.Send(new SaveStyleSheetCommand(slug, request.Payload.CssContent), ct);
+            cssId = await _mediator.Send(new SaveStyleSheetCommand(page.Id, slug, request.Payload.CssContent), ct);
         }
 
         page.Title = payload.Title.Trim();
