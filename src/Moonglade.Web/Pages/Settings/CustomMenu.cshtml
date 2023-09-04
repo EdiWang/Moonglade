@@ -64,13 +64,15 @@
     </style>
 }
 
-<div class="admin-toolbar ps-4 pe-4 pt-2 pb-2 border-bottom mb-3 shadow-sm">
-    <a href="javascript:window.clearMenus();" class="btn btn-outline-danger btn-delete-selected">
-        <i class="bi-trash"></i> @SharedLocalizer["Clear menus"]
-    </a>
-</div>
+@section admintoolbar{
+    <div class="admin-toolbar pt-2 pb-2 border-bottom mb-3">
+        <a href="javascript:window.clearMenus();" class="btn btn-outline-danger btn-delete-selected">
+            <i class="bi-trash"></i> @SharedLocalizer["Clear menus"]
+        </a>
+    </div>
+}
 
-<div class="ps-4 pe-4">
+<div>
     <div class="row">
         <div class="col-8">
             <form id="form-settings" asp-controller="Settings" asp-action="CustomMenu">
@@ -80,7 +82,7 @@
                     <label asp-for="@settings.IsEnabled" class="form-check-label"></label>
                 </div>
 
-                <div id="JsonContentEditor" class="monaco-target">
+                <div id="JsonContentEditor" class="monaco-target p-3 rounded-3 shadow-sm border bg-white overflow-y-hidden">
                 </div>
                 <textarea asp-for="@settings.MenuJson" class="settings-jsoncontent-textarea d-none"></textarea>
 
@@ -128,7 +130,7 @@
 ]
 </code>
 </pre>
-                    
+
                 </div>
             </div>
         </div>
