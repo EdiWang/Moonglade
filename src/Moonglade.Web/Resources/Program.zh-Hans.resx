@@ -480,9 +480,6 @@
   <data name="Image" xml:space="preserve">
     <value>图片</value>
   </data>
-  <data name="Inline CSS" xml:space="preserve">
-    <value>内联CSS</value>
-  </data>
   <data name="Invalid Icon CSS Class" xml:space="preserve">
     <value>无效的图标CSS类名</value>
   </data>

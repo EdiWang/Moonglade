@@ -21,7 +21,6 @@ public class Post
     public bool IsOriginal { get; set; }
     public string OriginLink { get; set; }
     public string HeroImageUrl { get; set; }
-    public string InlineCss { get; set; }
     public bool IsOutdated { get; set; }
     public Tag[] Tags { get; set; }
     public Category[] Categories { get; set; }
@@ -46,7 +45,6 @@ public class Post
         IsOriginal = p.IsOriginal,
         OriginLink = p.OriginLink,
         HeroImageUrl = p.HeroImageUrl,
-        InlineCss = p.InlineCss,
         IsOutdated = p.IsOutdated,
         ContentLanguageCode = p.ContentLanguageCode,
         Tags = p.Tags.Select(pt => new Tag

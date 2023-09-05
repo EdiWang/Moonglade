@@ -47,21 +47,6 @@ public class PostController : ControllerBase
         {
             if (!ModelState.IsValid) return Conflict(ModelState.CombineErrorMessages());
 
-            if (!string.IsNullOrWhiteSpace(model.InlineCss))
-            {
-                var uglifyTest = Uglify.Css(model.InlineCss);
-                if (uglifyTest.HasErrors)
-                {
-                    foreach (var err in uglifyTest.Errors)
-                    {
-                        ModelState.AddModelError(model.InlineCss, err.ToString());
-                    }
-                    return BadRequest(ModelState.CombineErrorMessages());
-                }
-
-                model.InlineCss = uglifyTest.Code;
-            }
-
             var tzDate = _timeZoneResolver.NowOfTimeZone;
             if (model.ChangePublishDate &&
                 model.PublishDate.HasValue &&
