@@ -79,7 +79,6 @@ public class UpdatePostCommandHandler : IRequestHandler<UpdatePostCommand, PostE
         post.IsOriginal = string.IsNullOrWhiteSpace(request.Payload.OriginLink);
         post.OriginLink = string.IsNullOrWhiteSpace(postEditModel.OriginLink) ? null : Helper.SterilizeLink(postEditModel.OriginLink);
         post.HeroImageUrl = string.IsNullOrWhiteSpace(postEditModel.HeroImageUrl) ? null : Helper.SterilizeLink(postEditModel.HeroImageUrl);
-        post.InlineCss = postEditModel.InlineCss;
         post.IsOutdated = postEditModel.IsOutdated;
 
         // compute hash

@@ -68,10 +68,6 @@ public class PostEditModel
     [DataType(DataType.Url)]
     public string HeroImageUrl { get; set; }
 
-    [Display(Name = "Inline CSS")]
-    [MaxLength(2048)]
-    public string InlineCss { get; set; }
-
     [Display(Name = "Mark as outdated")]
     public bool IsOutdated { get; set; }
 

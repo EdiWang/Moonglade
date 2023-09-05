@@ -60,17 +60,6 @@
     {
         <link href="~/css/outline.css" rel="stylesheet" />
     }
-
-    @if (!string.IsNullOrWhiteSpace(Model.Post.InlineCss))
-    {
-        var uglifiedCss = Uglify.Css(Model.Post.InlineCss);
-        if (!uglifiedCss.HasErrors)
-        {
-            <style>
-                @uglifiedCss.Code
-            </style>
-        }
-    }
 }
 
 @section opengraph{

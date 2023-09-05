@@ -65,7 +65,6 @@ public class EditPostModel : PageModel
             Featured = post.Featured,
             OriginLink = post.OriginLink,
             HeroImageUrl = post.HeroImageUrl,
-            InlineCss = post.InlineCss,
             IsOutdated = post.IsOutdated
         };
 

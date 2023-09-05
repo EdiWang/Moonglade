@@ -27,7 +27,6 @@ public class PostEntity
     public bool IsOutdated { get; set; }
     public string OriginLink { get; set; }
     public string HeroImageUrl { get; set; }
-    public string InlineCss { get; set; }
     public bool IsFeatured { get; set; }
     public int HashCheckSum { get; set; }
 

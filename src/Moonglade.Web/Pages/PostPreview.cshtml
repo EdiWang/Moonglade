@@ -13,17 +13,6 @@
     <meta name="author" content="@(string.IsNullOrWhiteSpace(Model.Post.Author) ? BlogConfig.GeneralSettings.OwnerName : Model.Post.Author) " />
     <link href="~/css/post-slug.css" rel="stylesheet" asp-append-version="true" />
     <link href="~/css/highlighter-custom.css" rel="stylesheet" asp-append-version="true" />
-
-    @if (!string.IsNullOrWhiteSpace(Model.Post.InlineCss))
-    {
-        var uglifiedCss = Uglify.Css(Model.Post.InlineCss);
-        if (!uglifiedCss.HasErrors)
-        {
-            <style>
-                @uglifiedCss.Code
-            </style>
-        }
-    }
 }
 
 @section scripts {
