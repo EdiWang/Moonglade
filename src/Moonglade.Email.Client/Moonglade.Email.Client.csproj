@@ -13,6 +13,6 @@
     </ItemGroup>
     <ItemGroup>
         <ProjectReference Include="..\Moonglade.Configuration\Moonglade.Configuration.csproj" />
-        <PackageReference Include="Azure.Storage.Queues" Version="12.15.0" />
+        <PackageReference Include="Azure.Storage.Queues" Version="12.16.0" />
     </ItemGroup>
 </Project>
