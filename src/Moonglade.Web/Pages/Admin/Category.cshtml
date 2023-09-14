@@ -5,6 +5,7 @@
 }
 
 @section scripts{
+    <script src="~/js/app/dataexport.js"></script>
     <script>
         var editCanvas = new bootstrap.Offcanvas(document.getElementById('editCatCanvas'));
         var catId = window.emptyGuid;
@@ -88,30 +89,6 @@
             }
 
             return csvRows.join('\n');
-        }
-
-        function downloadCSV(csvData, filename) {
-            const blob = new Blob([csvData], { type: 'text/csv' });
-            const url = URL.createObjectURL(blob);
-            const a = document.createElement('a');
-            a.setAttribute('hidden', '');
-            a.setAttribute('href', url);
-            a.setAttribute('download', filename);
-            document.body.appendChild(a);
-            a.click();
-            document.body.removeChild(a);
-        }
-
-        function exportCSV(api, filename) {
-            fetch(api)
-                .then(response => response.json())
-                .then(data => {
-                    const csvData = convertJSONtoCSV(data);
-                    downloadCSV(csvData, filename);
-                })
-                .catch(error => {
-                    console.error('Error:', error);
-                });
         }
     </script>
 }
