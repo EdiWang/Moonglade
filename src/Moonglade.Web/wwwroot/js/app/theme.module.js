@@ -22,6 +22,9 @@ export function useDarkMode() {
     $('#aside-tags .btn-accent').removeClass('btn-accent').addClass('btn-dark');
     $('.post-summary-tags .btn-accent').removeClass('btn-accent').addClass('btn-dark');
 
+    $('.aside-widget').addClass('border-dark');
+    $('.aside-widget .card-subtitle').removeClass('text-muted').addClass('text-light-emphasis');
+
     isDarkMode = true;
     $('.lightswitch').addClass('bg-dark text-light border-secondary');
     document.querySelector('hr').classList.add('hr-dark');
@@ -48,6 +51,9 @@ export function useLightMode() {
     $('aside .btn-light').removeClass('btn-dark').addClass('btn-light');
     $('#aside-tags .btn-dark').removeClass('btn-dark').addClass('btn-accent');
     $('.post-summary-tags .btn-dark').removeClass('btn-dark').addClass('btn-accent');
+
+    $('.aside-widget').removeClass('border-dark');
+    $('.aside-widget .card-subtitle').addClass('text-muted').removeClass('text-light-emphasis');
 
     isDarkMode = false;
     $('.lightswitch').removeClass('bg-dark text-light border-secondary');
