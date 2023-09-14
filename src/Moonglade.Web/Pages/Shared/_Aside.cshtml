@@ -29,9 +29,9 @@
     @if (BlogConfig.GeneralSettings.WidgetsTags)
     {
         <section id="aside-tags" class="mt-4 mb-4">
-            <div class="card">
-                <div class="card-header">@SharedLocalizer["Tags"]</div>
-                <div class="card-body">
+            <div class="aside-widget p-3 rounded-3 shadow-sm border">
+                <h6 class="card-subtitle mb-3 text-muted">@SharedLocalizer["Tags"]</h6>
+                <div>
                     <cache expires-after="@TimeSpan.FromMinutes(60)">
                         @await Component.InvokeAsync("Tags")
                     </cache>

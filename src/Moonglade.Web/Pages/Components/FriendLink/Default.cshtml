@@ -3,10 +3,10 @@
 
 @if (Model.Any())
 {
-    <div class="card">
-        <div class="card-header">@SharedLocalizer["Links"]</div>
+    <div class="aside-widget p-3 rounded-3 shadow-sm border">
+        <h6 class="card-subtitle mb-3 text-muted">@SharedLocalizer["Links"]</h6>
         
-        <div class="card-body">
+        <div>
             @foreach (var item in Model.OrderBy(c => c.Title))
             {
                 <a href="@Helper.SterilizeLink(item.LinkUrl)" target="_blank" class="d-block mb-3 mt-2">
