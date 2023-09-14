@@ -31,6 +31,14 @@ public class FriendLinkController : ControllerBase
         return Ok(link);
     }
 
+    [HttpGet("list")]
+    [ProducesResponseType(typeof(Link), StatusCodes.Status200OK)]
+    public async Task<IActionResult> List()
+    {
+        var list = await _mediator.Send(new GetAllLinksQuery());
+        return Ok(list);
+    }
+
     [HttpPut("{id:guid}")]
     [ProducesResponseType(StatusCodes.Status204NoContent)]
     public async Task<IActionResult> Update([NotEmpty] Guid id, UpdateLinkCommand command)
