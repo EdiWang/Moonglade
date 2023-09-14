@@ -23,6 +23,14 @@ public class CategoryController : ControllerBase
         return Ok(cat);
     }
 
+    [HttpGet]
+    [ProducesResponseType(typeof(Category), StatusCodes.Status200OK)]
+    public async Task<IActionResult> List()
+    {
+        var list = await _mediator.Send(new GetCategoriesQuery());
+        return Ok(list);
+    }
+
     [HttpPost]
     [ProducesResponseType(StatusCodes.Status201Created)]
     public async Task<IActionResult> Create(CreateCategoryCommand command)

@@ -18,7 +18,6 @@ public class DataPortingController : ControllerBase
         var exportResult = type switch
         {
             ExportType.Tags => await _mediator.Send(new ExportTagsDataCommand(), ct),
-            ExportType.Categories => await _mediator.Send(new ExportCategoryDataCommand(), ct),
             ExportType.FriendLinks => await _mediator.Send(new ExportLinkDataCommand(), ct),
             ExportType.Pages => await _mediator.Send(new ExportPageDataCommand(), ct),
             ExportType.Posts => await _mediator.Send(new ExportPostDataCommand(), ct),
