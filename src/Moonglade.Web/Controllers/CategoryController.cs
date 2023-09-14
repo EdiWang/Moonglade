@@ -23,7 +23,7 @@ public class CategoryController : ControllerBase
         return Ok(cat);
     }
 
-    [HttpGet]
+    [HttpGet("list")]
     [ProducesResponseType(typeof(Category), StatusCodes.Status200OK)]
     public async Task<IActionResult> List()
     {
