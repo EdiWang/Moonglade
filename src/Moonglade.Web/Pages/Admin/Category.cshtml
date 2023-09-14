@@ -74,22 +74,6 @@
 
         const form = document.querySelector('#edit-form');
         form.addEventListener('submit', handleSubmit);
-
-        function convertJSONtoCSV(data) {
-            const csvRows = [];
-            const headers = Object.keys(data[0]);
-            csvRows.push(headers.join(','));
-
-            for (const row of data) {
-                const values = headers.map(header => {
-                    const escapedValue = ('' + row[header]).replace(/"/g, '\\"');
-                    return `"${escapedValue}"`;
-                });
-                csvRows.push(values.join(','));
-            }
-
-            return csvRows.join('\n');
-        }
     </script>
 }
 

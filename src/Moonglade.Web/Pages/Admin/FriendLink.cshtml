@@ -5,6 +5,7 @@
 }
 
 @section scripts{
+    <script src="~/js/app/dataexport.js"></script>
     <script>
         var editCanvas = new bootstrap.Offcanvas(document.getElementById('editLinkCanvas'));
         var fid = window.emptyGuid;
@@ -75,7 +76,7 @@
             @SharedLocalizer["New"]
         </a>
 
-        <a asp-action="ExportDownload" asp-controller="DataPorting" asp-route-type="FriendLinks" class="btn btn-outline-accent" target="_blank">
+        <a class="btn btn-outline-accent" href="javascript:exportCSV('/api/friendlink/list','moonglade-friendlink.csv');">
             <i class="bi-upload"></i>
             @SharedLocalizer["Export"]
         </a>

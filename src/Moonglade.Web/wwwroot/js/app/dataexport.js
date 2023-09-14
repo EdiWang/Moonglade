@@ -1,3 +1,19 @@
+function convertJSONtoCSV(data) {
+    const csvRows = [];
+    const headers = Object.keys(data[0]);
+    csvRows.push(headers.join(','));
+
+    for (const row of data) {
+        const values = headers.map(header => {
+            const escapedValue = ('' + row[header]).replace(/"/g, '\\"');
+            return `"${escapedValue}"`;
+        });
+        csvRows.push(values.join(','));
+    }
+
+    return csvRows.join('\n');
+}
+
 function downloadCSV(csvData, filename) {
     const blob = new Blob([csvData], { type: 'text/csv' });
     const url = URL.createObjectURL(blob);
