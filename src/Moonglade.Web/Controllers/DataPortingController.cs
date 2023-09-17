@@ -22,19 +22,11 @@ public class DataPortingController : ControllerBase
             _ => throw new ArgumentOutOfRangeException(nameof(type), type, null)
         };
 
-        switch (exportResult.ExportFormat)
+        return exportResult.ExportFormat switch
         {
-            case ExportFormat.SingleJsonFile:
-                return new FileContentResult(exportResult.Content, exportResult.ContentType)
-                {
-                    FileDownloadName = $"moonglade-{type.ToString().ToLowerInvariant()}-{DateTime.UtcNow:yyyy-MM-dd-HH-mm-ss}.json"
-                };
-
-            case ExportFormat.ZippedJsonFiles:
-                return PhysicalFile(exportResult.FilePath, exportResult.ContentType, Path.GetFileName(exportResult.FilePath));
-
-            default:
-                return BadRequest(ModelState.CombineErrorMessages());
-        }
+            ExportFormat.ZippedJsonFiles => PhysicalFile(exportResult.FilePath, exportResult.ContentType,
+                Path.GetFileName(exportResult.FilePath)),
+            _ => BadRequest(ModelState.CombineErrorMessages())
+        };
     }
 }

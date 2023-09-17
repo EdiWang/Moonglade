@@ -14,7 +14,6 @@ public class ExportResult
         {
             return ExportFormat switch
             {
-                ExportFormat.SingleJsonFile => "application/octet-stream",
                 ExportFormat.ZippedJsonFiles => "application/zip",
                 _ => string.Empty
             };
