@@ -9,6 +9,7 @@
 @Html.AntiForgeryToken()
 
 @section scripts{
+    <script src="~/js/app/dataexport.js"></script>
     <script>
         var editCanvas = new bootstrap.Offcanvas(document.getElementById('editTagCanvas'));
 
@@ -71,8 +72,8 @@
             @SharedLocalizer["New"]
         </a>
 
-        <a asp-action="ExportDownload" asp-controller="DataPorting" asp-route-type="Tags" class="btn btn-outline-accent" target="_blank">
-            <i class="bi-upload"></i>
+        <a class="btn btn-outline-accent" href="javascript:exportCSV('/api/tags/list','moonglade-tags.csv');">
+            <i class="bi-filetype-csv"></i>
             @SharedLocalizer["Export"]
         </a>
     </div>

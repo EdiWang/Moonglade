@@ -20,6 +20,14 @@ public class TagsController : ControllerBase
         return Ok(names);
     }
 
+    [HttpGet("list")]
+    [ProducesResponseType(typeof(IReadOnlyList<Tag>), StatusCodes.Status200OK)]
+    public async Task<IActionResult> List()
+    {
+        var list = await _mediator.Send(new GetTagsQuery());
+        return Ok(list);
+    }
+
     [HttpPost]
     [ProducesResponseType(StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]

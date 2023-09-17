@@ -1,7 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc.ModelBinding;
+using Moonglade.Email.Client;
 using Moonglade.Web.Attributes;
 using System.ComponentModel.DataAnnotations;
-using Moonglade.Email.Client;
 
 namespace Moonglade.Web.Controllers;
 
