@@ -32,7 +32,7 @@ public class FriendLinkController : ControllerBase
     }
 
     [HttpGet("list")]
-    [ProducesResponseType(typeof(Link), StatusCodes.Status200OK)]
+    [ProducesResponseType(typeof(IReadOnlyList<Link>), StatusCodes.Status200OK)]
     public async Task<IActionResult> List()
     {
         var list = await _mediator.Send(new GetAllLinksQuery());

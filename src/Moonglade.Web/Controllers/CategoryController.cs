@@ -24,7 +24,7 @@ public class CategoryController : ControllerBase
     }
 
     [HttpGet("list")]
-    [ProducesResponseType(typeof(Category), StatusCodes.Status200OK)]
+    [ProducesResponseType(typeof(IReadOnlyList<Category>), StatusCodes.Status200OK)]
     public async Task<IActionResult> List()
     {
         var list = await _mediator.Send(new GetCategoriesQuery());
