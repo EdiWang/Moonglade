@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.HttpOverrides;
 using Moonglade.Data.MySql;
 using Moonglade.Data.PostgreSql;
 using Moonglade.Data.SqlServer;
+using Moonglade.Email.Client;
 using Moonglade.Pingback;
 using Moonglade.Syndication;
 using SixLabors.Fonts;
@@ -14,7 +15,6 @@ using Spectre.Console;
 using System.Globalization;
 using System.Net;
 using System.Text.Json.Serialization;
-using Moonglade.Email.Client;
 using WilderMinds.MetaWeblog;
 using Encoder = Moonglade.Web.Configuration.Encoder;
 

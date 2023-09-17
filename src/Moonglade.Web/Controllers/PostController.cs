@@ -1,7 +1,6 @@
 ﻿using Moonglade.Core.PostFeature;
 using Moonglade.Pingback;
 using Moonglade.Web.Attributes;
-using NUglify;
 using System.ComponentModel.DataAnnotations;
 
 namespace Moonglade.Web.Controllers;

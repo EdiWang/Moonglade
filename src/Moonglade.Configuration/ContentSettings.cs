@@ -7,7 +7,7 @@ public class ContentSettings : IBlogSettings
 {
     [Display(Name = "Comment provider")]
     public CommentProvider CommentProvider { get; set; }
-    
+
     [Display(Name = "Comments display order")]
     public CommentOrder CommentOrder { get; set; }
 

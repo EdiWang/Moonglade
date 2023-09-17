@@ -1,5 +1,4 @@
 ﻿using Moonglade.Core.TagFeature;
-using Moonglade.FriendLink;
 using System.ComponentModel.DataAnnotations;
 
 namespace Moonglade.Web.Controllers;
