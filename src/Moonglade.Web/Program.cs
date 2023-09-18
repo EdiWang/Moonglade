@@ -117,12 +117,16 @@ void ConfigureServices(IServiceCollection services)
         options.Cookie.Name = $"X-{csrfName}";
         options.FormFieldName = $"{csrfName}-FORM";
         options.HeaderName = "XSRF-TOKEN";
-    }).Configure<RequestLocalizationOptions>(options =>
+    });
+
+    services.Configure<RequestLocalizationOptions>(options =>
     {
         options.DefaultRequestCulture = new("en-US");
         options.SupportedCultures = cultures;
         options.SupportedUICultures = cultures;
-    }).Configure<RouteOptions>(options =>
+    });
+
+    services.Configure<RouteOptions>(options =>
     {
         options.LowercaseUrls = true;
         options.LowercaseQueryStrings = true;
