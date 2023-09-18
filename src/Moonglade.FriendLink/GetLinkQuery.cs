@@ -1,26 +1,19 @@
 ﻿using MediatR;
 using Moonglade.Data.Entities;
 using Moonglade.Data.Infrastructure;
-using Moonglade.Data.Spec;
 
 namespace Moonglade.FriendLink;
 
-public record GetLinkQuery(Guid Id) : IRequest<Link>;
+public record GetLinkQuery(Guid Id) : IRequest<FriendLinkEntity>;
 
-public class GetLinkQueryHandler : IRequestHandler<GetLinkQuery, Link>
+public class GetLinkQueryHandler : IRequestHandler<GetLinkQuery, FriendLinkEntity>
 {
     private readonly IRepository<FriendLinkEntity> _repo;
 
     public GetLinkQueryHandler(IRepository<FriendLinkEntity> repo) => _repo = repo;
 
-    public Task<Link> Handle(GetLinkQuery request, CancellationToken ct)
+    public async Task<FriendLinkEntity> Handle(GetLinkQuery request, CancellationToken ct)
     {
-        return _repo.FirstOrDefaultAsync(
-             new FriendLinkSpec(request.Id), f => new Link
-             {
-                 Id = f.Id,
-                 LinkUrl = f.LinkUrl,
-                 Title = f.Title
-             });
+        return await _repo.GetAsync(request.Id, ct);
     }
 }
