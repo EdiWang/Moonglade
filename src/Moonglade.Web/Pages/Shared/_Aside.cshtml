@@ -102,22 +102,19 @@
                 <div class="modal-body">
                     <div class="row mb-4">
                         <div class="col-6">
-                            <a asp-controller="Subscription" asp-action="rss" class="btn w-100 btn-outline-success">
+                            <a asp-controller="Subscription" asp-action="rss" class="btn w-100 btn-outline-accent">
                                 @SharedLocalizer["Latest Posts"] (RSS)
                             </a>
                         </div>
                         <div class="col-6">
-                            <a asp-controller="Subscription" asp-action="Atom" class="btn w-100 btn-outline-success">
+                            <a asp-controller="Subscription" asp-action="Atom" class="btn w-100 btn-outline-accent">
                                 @SharedLocalizer["Latest Posts"] (Atom)
                             </a>
                         </div>
                     </div>
                     <div class="row">
-                        @await Component.InvokeAsync("RssList")
+                        @await Component.InvokeAsync("SubList")
                     </div>
-                </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">@SharedLocalizer["Close"]</button>
                 </div>
             </div>
         </div>

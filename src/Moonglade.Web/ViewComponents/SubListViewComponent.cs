@@ -2,13 +2,13 @@
 
 namespace Moonglade.Web.ViewComponents;
 
-public class RssListViewComponent : ViewComponent
+public class SubListViewComponent : ViewComponent
 {
-    private readonly ILogger<RssListViewComponent> _logger;
+    private readonly ILogger<SubListViewComponent> _logger;
     private readonly IMediator _mediator;
 
 
-    public RssListViewComponent(ILogger<RssListViewComponent> logger, IMediator mediator)
+    public SubListViewComponent(ILogger<SubListViewComponent> logger, IMediator mediator)
     {
         _logger = logger;
         _mediator = mediator;
