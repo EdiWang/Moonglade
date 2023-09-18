@@ -51,7 +51,7 @@ public class SubscriptionController : ControllerBase
         var route = hasRoute ? routeName.ToLower().Trim() : null;
 
         return await _cache.GetOrCreateAsync(
-            hasRoute ? BlogCachePartition.PostCountCategory.ToString() : BlogCachePartition.General.ToString(), route ?? "rss", async entry =>
+            hasRoute ? BlogCachePartition.RssCategory.ToString() : BlogCachePartition.General.ToString(), route ?? "rss", async entry =>
             {
                 entry.SlidingExpiration = TimeSpan.FromHours(1);
 
