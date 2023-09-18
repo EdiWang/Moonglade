@@ -283,9 +283,9 @@ void ConfigureMiddleware()
         app.UseMiddleware<RSDMiddleware>().UseMetaWeblog("/metaweblog");
     }
 
-    app.UseMiddleware<SiteMapMiddleware>()
-              .UseMiddleware<PoweredByMiddleware>()
-              .UseMiddleware<DNTMiddleware>();
+    app.UseMiddleware<SiteMapMiddleware>();
+    app.UseMiddleware<PoweredByMiddleware>();
+    app.UseMiddleware<DNTMiddleware>();
 
     if (app.Environment.IsDevelopment())
     {
