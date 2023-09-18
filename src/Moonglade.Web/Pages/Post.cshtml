@@ -1,7 +1,6 @@
 ﻿@page "/post/{year:int:min(1900):length(4)}/{month:int:range(1,12)}/{day:int:range(1,31)}/{slug:regex(^(?!-)([a-zA-Z0-9-]){{1,128}}$)}"
 @model Moonglade.Web.Pages.PostModel
 @using Moonglade.Utils
-@using NUglify
 
 @Html.AntiForgeryToken()
 
@@ -130,7 +129,7 @@
     </script>
 }
 
-<article class="article-post-slug box border position-relative mb-4" data-postid="@Model.Post.Id" lang="@Model.Post.ContentLanguageCode">
+<article class="article-post-slug position-relative p-4 rounded-3 shadow-sm border bg-white mb-4" data-postid="@Model.Post.Id" lang="@Model.Post.ContentLanguageCode">
     @if (Model.Post.Featured)
     {
         <partial name="_FeaturedTag" />

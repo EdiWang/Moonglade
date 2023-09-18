@@ -9,7 +9,7 @@ export function useDarkMode() {
 
     $('body').addClass('bg-moca-dark text-light darkmode');
     $('body.body-post-slug').removeClass('bg-gray-1');
-    $('.article-post-slug').removeClass('box border');
+    $('.article-post-slug').removeClass('bg-white p-4 border');
 
     $('.card').addClass('text-white bg-dark');
     $('.list-group-item, .card-body').addClass('bg-moca-dark text-light');
@@ -40,7 +40,8 @@ export function useLightMode() {
 
     $('body').removeClass('bg-moca-dark text-light darkmode');
     $('body.body-post-slug').addClass('bg-gray-1');
-    $('.article-post-slug').addClass('box border');
+    $('.article-post-slug').addClass('bg-white p-4 border');
+
     $('.card').removeClass('text-white bg-dark');
     $('.list-group-item, .card-body').removeClass('bg-moca-dark text-light');
 

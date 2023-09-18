@@ -121,14 +121,6 @@ h5 {
         font-size: 60%;
     }
 
-.box {
-    background-color: var(--bs-white);
-    border: 1px solid var(--gray-2);
-    padding: 1.8rem;
-    box-shadow: 0 1.6px 3.6px 0 var(--transparent-dark-3), 0 .3px .9px 0 var(--transparent-dark-1);
-    border-radius: 3px;
-}
-
 .font-sairas {
     font-family: "Saira Semi Condensed Bold", "Saira Semi Condensed", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Microsoft YaHei" !important;
     font-weight: bold;
