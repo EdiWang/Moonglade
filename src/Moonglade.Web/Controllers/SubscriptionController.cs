@@ -66,8 +66,11 @@ public class SubscriptionController : ControllerBase
     }
 
     [HttpGet("atom")]
-    public async Task<IActionResult> Atom()
+    public async Task<IActionResult> Atom([MaxLength(64)] string routeName = null)
     {
+        bool hasRoute = !string.IsNullOrWhiteSpace(routeName);
+        var route = hasRoute ? routeName.ToLower().Trim() : null;
+
         return await _cache.GetOrCreateAsync(BlogCachePartition.General.ToString(), "atom", async entry =>
         {
             entry.SlidingExpiration = TimeSpan.FromHours(1);
