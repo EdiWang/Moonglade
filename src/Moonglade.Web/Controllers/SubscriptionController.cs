@@ -65,17 +65,18 @@ public class SubscriptionController : ControllerBase
             });
     }
 
-    [HttpGet("atom")]
+    [HttpGet("atom/{routeName?}")]
     public async Task<IActionResult> Atom([MaxLength(64)] string routeName = null)
     {
         bool hasRoute = !string.IsNullOrWhiteSpace(routeName);
         var route = hasRoute ? routeName.ToLower().Trim() : null;
 
-        return await _cache.GetOrCreateAsync(BlogCachePartition.General.ToString(), "atom", async entry =>
+        return await _cache.GetOrCreateAsync(
+            hasRoute ? BlogCachePartition.AtomCategory.ToString() : BlogCachePartition.General.ToString(), route ?? "atom", async entry =>
         {
             entry.SlidingExpiration = TimeSpan.FromHours(1);
 
-            var xml = await _mediator.Send(new GetAtomStringQuery());
+            var xml = await _mediator.Send(new GetAtomStringQuery(routeName));
             return Content(xml, "text/xml");
         });
     }

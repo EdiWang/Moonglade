@@ -8,5 +8,6 @@ public enum BlogCachePartition
     PostCountCategory,
     PostCountTag,
     PostCountFeatured,
-    RssCategory
+    RssCategory,
+    AtomCategory
 }

@@ -5,7 +5,7 @@ using Moonglade.Utils;
 
 namespace Moonglade.Syndication;
 
-public record GetAtomStringQuery : IRequest<string>;
+public record GetAtomStringQuery(string CategoryName = null) : IRequest<string>;
 
 public class GetAtomStringQueryHandler : IRequestHandler<GetAtomStringQuery, string>
 {
@@ -31,7 +31,10 @@ public class GetAtomStringQueryHandler : IRequestHandler<GetAtomStringQuery, str
 
     public async Task<string> Handle(GetAtomStringQuery request, CancellationToken ct)
     {
-        _feedGenerator.FeedItemCollection = await _sdds.GetFeedDataAsync();
+        var data = await _sdds.GetFeedDataAsync(request.CategoryName);
+        if (data is null) return null;
+
+        _feedGenerator.FeedItemCollection = data;
         var xml = await _feedGenerator.WriteAtomAsync();
         return xml;
     }
