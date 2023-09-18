@@ -12,6 +12,10 @@
     color: var(--gray-3);
 }
 
+.darkmode .article-post-slug {
+    background-color: transparent !important;
+}
+
 .darkmode .post-content blockquote,
 .darkmode .post-content .blockquote {
     border-left: 5px solid var(--gray-6);
