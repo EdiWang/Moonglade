@@ -39,6 +39,7 @@
 
 .darkmode .timeline>li>.timeline-panel {
     border: 1px solid var(--gray-5);
+    background-color: transparent !important;
 }
 
 .darkmode .timeline>li>.timeline-panel:before {
