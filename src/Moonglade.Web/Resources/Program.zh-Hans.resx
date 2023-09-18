@@ -888,4 +888,7 @@
   <data name="RSS / Atom Feed" xml:space="preserve">
     <value>RSS / Atom 订阅</value>
   </data>
+  <data name="ASP.NET Core Environment" xml:space="preserve">
+    <value>ASP.NET Core 环境</value>
+  </data>
 </root>

@@ -332,6 +332,6 @@ table.dataTable {
     display: none !important;
 }
 
-.admin-h3 {
-    font-size: 20px;
+.admin-subtitle {
+    font-size: 0.9rem;
 }
