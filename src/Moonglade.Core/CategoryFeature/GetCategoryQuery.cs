@@ -2,14 +2,14 @@
 
 namespace Moonglade.Core.CategoryFeature;
 
-public record GetCategoryByIdQuery(Guid Id) : IRequest<Category>;
+public record GetCategoryQuery(Guid Id) : IRequest<Category>;
 
-public class GetCategoryByIdQueryHandler : IRequestHandler<GetCategoryByIdQuery, Category>
+public class GetCategoryByIdQueryHandler : IRequestHandler<GetCategoryQuery, Category>
 {
     private readonly IRepository<CategoryEntity> _repo;
 
     public GetCategoryByIdQueryHandler(IRepository<CategoryEntity> repo) => _repo = repo;
 
-    public Task<Category> Handle(GetCategoryByIdQuery request, CancellationToken ct) =>
+    public Task<Category> Handle(GetCategoryQuery request, CancellationToken ct) =>
         _repo.FirstOrDefaultAsync(new CategorySpec(request.Id), Category.EntitySelector);
 }

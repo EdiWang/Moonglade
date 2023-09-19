@@ -17,7 +17,7 @@ public class CategoryController : ControllerBase
     [ProducesResponseType(StatusCodes.Status404NotFound)]
     public async Task<IActionResult> Get([NotEmpty] Guid id)
     {
-        var cat = await _mediator.Send(new GetCategoryByIdQuery(id));
+        var cat = await _mediator.Send(new GetCategoryQuery(id));
         if (null == cat) return NotFound();
 
         return Ok(cat);
