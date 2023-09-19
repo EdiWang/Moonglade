@@ -34,7 +34,7 @@ export function useDarkMode() {
 
 export function useLightMode() {
     document.querySelector('#blog-nav').classList.add('bg-accent1');
-    $('#blog-nav, #moonglade-footer').removeClass('bg-dark');
+    $('#blog-nav, #blog-footer').removeClass('bg-dark');
 
     document.querySelector('#blog-footer').classList.add('bg-accent2');
 
