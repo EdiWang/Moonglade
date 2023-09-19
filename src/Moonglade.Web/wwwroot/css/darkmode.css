@@ -16,6 +16,11 @@
     background-color: transparent !important;
 }
 
+.darkmode .comment-form-containter {
+    background-color: transparent !important;
+    border-color: var(--gray-5) !important;
+}
+
 .darkmode .post-content blockquote,
 .darkmode .post-content .blockquote {
     border-left: 5px solid var(--gray-6);
