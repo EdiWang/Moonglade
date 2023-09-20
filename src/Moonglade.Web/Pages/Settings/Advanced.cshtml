@@ -113,10 +113,10 @@
     <form id="form-settings" asp-controller="Settings" asp-action="Advanced">
         <div class="row">
             <div class="col-md-6">
-                <div class="mb-4 p-3 rounded-3 shadow-sm border bg-white">
-                    <h6 class="card-subtitle mb-4 text-muted">@SharedLocalizer["Advanced Settings"]</h6>
+                <div class="mb-4">
+                    <h4 class="admin-subtitle fw-bold mb-2">@SharedLocalizer["Advanced Settings"]</h4>
 
-                    <div class="row g-3 align-items-center settings-entry mb-4">
+                    <div class="settings-entry2 row align-items-center py-3 px-2 rounded-3 shadow-sm border bg-white mb-2">
                         <div class="col-auto">
                             <i class="bi-arrow-right-circle settings-entry-icon"></i>
                         </div>
@@ -124,14 +124,14 @@
                             <label asp-for="@settings.EnablePingback" class="form-check-label"></label>
                         </div>
                         <div class="col-md-4 text-end">
-                            <div class="form-check form-switch">
+                            <div class="form-check form-switch form-control-lg">
                                 <input type="hidden" name="EnablePingback" value="false">
                                 <input type="checkbox" name="EnablePingback" value="true" class="form-check-input" @(settings.EnablePingback ? "checked" : null)>
                             </div>
                         </div>
                     </div>
 
-                    <div class="row g-3 align-items-center settings-entry mb-4">
+                    <div class="settings-entry2 row align-items-center py-3 px-2 rounded-3 shadow-sm border bg-white mb-2">
                         <div class="col-auto">
                             <i class="bi-map settings-entry-icon"></i>
                         </div>
@@ -139,14 +139,14 @@
                             <label asp-for="@settings.EnableSiteMap" class="form-check-label"></label>
                         </div>
                         <div class="col-md-4 text-end">
-                            <div class="form-check form-switch">
+                            <div class="form-check form-switch form-control-lg">
                                 <input type="hidden" name="EnableSiteMap" value="false">
                                 <input type="checkbox" name="EnableSiteMap" value="true" class="form-check-input" @(settings.EnableSiteMap ? "checked" : null)>
                             </div>
                         </div>
                     </div>
 
-                    <div class="row g-3 align-items-center settings-entry mb-4">
+                    <div class="settings-entry2 row align-items-center py-3 px-2 rounded-3 shadow-sm border bg-white mb-2">
                         <div class="col-auto">
                             <i class="bi-search settings-entry-icon"></i>
                         </div>
@@ -154,14 +154,14 @@
                             <label asp-for="@settings.EnableOpenSearch" class="form-check-label"></label>
                         </div>
                         <div class="col-md-4 text-end">
-                            <div class="form-check form-switch">
+                            <div class="form-check form-switch form-control-lg">
                                 <input type="hidden" name="EnableOpenSearch" value="false">
                                 <input type="checkbox" name="EnableOpenSearch" value="true" class="form-check-input" @(settings.EnableOpenSearch ? "checked" : null)>
                             </div>
                         </div>
                     </div>
 
-                    <div class="row g-3 align-items-center settings-entry mb-4">
+                    <div class="settings-entry2 row align-items-center py-3 px-2 rounded-3 shadow-sm border bg-white mb-2">
                         <div class="col-auto">
                             <i class="bi-diagram-2 settings-entry-icon"></i>
                         </div>
@@ -170,14 +170,14 @@
                             <div class="form-text">@SharedLocalizer["* Requires restarting application"]</div>
                         </div>
                         <div class="col-md-4 text-end">
-                            <div class="form-check form-switch">
+                            <div class="form-check form-switch form-control-lg">
                                 <input type="hidden" name="EnableFoaf" value="false">
                                 <input type="checkbox" name="EnableFoaf" value="true" class="form-check-input" @(settings.EnableFoaf ? "checked" : null)>
                             </div>
                         </div>
                     </div>
 
-                    <div class="row g-3 align-items-center settings-entry mb-4">
+                    <div class="settings-entry2 row align-items-center py-3 px-2 rounded-3 shadow-sm border bg-white mb-2">
                         <div class="col-auto">
                             <i class="bi-filetype-xml settings-entry-icon"></i>
                         </div>
@@ -185,14 +185,14 @@
                             <label asp-for="@settings.EnableOpml" class="form-check-label"></label>
                         </div>
                         <div class="col-md-4 text-end">
-                            <div class="form-check form-switch">
+                            <div class="form-check form-switch form-control-lg">
                                 <input type="hidden" name="EnableOpml" value="false">
                                 <input type="checkbox" name="EnableOpml" value="true" class="form-check-input" @(settings.EnableOpml ? "checked" : null)>
                             </div>
                         </div>
                     </div>
 
-                    <div class="row g-3 align-items-center settings-entry">
+                    <div class="settings-entry2 row align-items-center py-3 px-2 rounded-3 shadow-sm border bg-white">
                         <div class="col-auto">
                             <i class="bi-exclamation-triangle settings-entry-icon"></i>
                         </div>
@@ -200,27 +200,26 @@
                             <label asp-for="@settings.WarnExternalLink" class="form-check-label"></label>
                         </div>
                         <div class="col-md-4 text-end">
-                            <div class="form-check form-switch">
+                            <div class="form-check form-switch form-control-lg">
                                 <input type="hidden" name="WarnExternalLink" value="false">
                                 <input type="checkbox" name="WarnExternalLink" value="true" class="form-check-input" @(settings.WarnExternalLink ? "checked" : null)>
                             </div>
                         </div>
                     </div>
                 </div>
+
+                <h4 class="admin-subtitle fw-bold mb-2">@Html.DisplayNameFor(m => settings.RobotsTxtContent)</h4>
                 <div class="p-3 rounded-3 shadow-sm border bg-white mb-3">
-                    <div class="mb-2">
-                        <h6 class="card-subtitle mb-3 text-muted">@Html.DisplayNameFor(m => settings.RobotsTxtContent)</h6>
-                        <textarea asp-for="@settings.RobotsTxtContent" class="form-control textarea-code" cols="60" rows="10" spellcheck="false"></textarea>
-                    </div>
+                    <textarea asp-for="@settings.RobotsTxtContent" class="form-control textarea-code" cols="60" rows="10" spellcheck="false"></textarea>
                 </div>
             </div>
             <div class="col-md-6">
-                <div class="mb-3 p-3 rounded-3 shadow-sm border bg-white">
-                    <h6 class="card-subtitle mb-4 text-muted">
+                <div class="mb-3">
+                    <h4 class="admin-subtitle fw-bold mb-2">
                         MetaWeblog
-                    </h6>
+                    </h4>
 
-                    <div class="row g-3 align-items-center settings-entry mb-4">
+                    <div class="settings-entry2 row align-items-center py-3 px-2 rounded-3 shadow-sm border bg-white mb-2">
                         <div class="col-auto">
                             <i class="bi-puzzle settings-entry-icon"></i>
                         </div>
@@ -231,14 +230,14 @@
                             </div>
                         </div>
                         <div class="col-md-4 text-end">
-                            <div class="form-check form-switch">
+                            <div class="form-check form-switch form-control-lg">
                                 <input type="hidden" name="EnableMetaWeblog" value="false">
                                 <input type="checkbox" name="EnableMetaWeblog" value="true" class="form-check-input" @(settings.EnableMetaWeblog ? "checked" : null)>
                             </div>
                         </div>
                     </div>
 
-                    <div class="row g-3 align-items-center settings-entry">
+                    <div class="settings-entry2 row align-items-center py-3 px-2 rounded-3 shadow-sm border bg-white">
                         <div class="col-auto">
                             <i class="bi-key settings-entry-icon"></i>
                         </div>
@@ -256,12 +255,12 @@
                         </div>
                     </div>
                 </div>
-                <div class="p-3 rounded-3 shadow-sm border bg-white">
-                    <h6 class="card-subtitle mb-4 text-muted">
+                <div>
+                    <h4 class="admin-subtitle fw-bold mb-2">
                         @SharedLocalizer["Options"]
-                    </h6>
+                    </h4>
 
-                    <div class="row g-3 align-items-center settings-entry mb-4">
+                    <div class="settings-entry2 row align-items-center py-3 px-2 rounded-3 shadow-sm border bg-white mb-2">
                         <div class="col-auto">
                             <i class="bi-moon-stars settings-entry-icon"></i>
                         </div>
@@ -278,7 +277,7 @@
                         </div>
                     </div>
 
-                    <div class="row g-3 align-items-center settings-entry mb-4">
+                    <div class="settings-entry2 row align-items-center py-3 px-2 rounded-3 shadow-sm border bg-white mb-2">
                         <div class="col-auto">
                             <i class="bi-power settings-entry-icon"></i>
                         </div>
@@ -295,7 +294,7 @@
                         </div>
                     </div>
 
-                    <div class="row g-3 align-items-center settings-entry">
+                    <div class="settings-entry2 row align-items-center py-3 px-2 rounded-3 shadow-sm border bg-white">
                         <div class="col-auto">
                             <i class="bi-eraser settings-entry-icon"></i>
                         </div>
