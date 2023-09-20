@@ -35,10 +35,10 @@
     <form id="form-settings" asp-controller="Settings" asp-action="Notification">
         <div class="row mb-3">
             <div class="col-md-6">
-                <div class="p-3 rounded-3 shadow-sm border bg-white">
-                    <h6 class="card-subtitle mb-4 text-muted">@SharedLocalizer["Email Options"]</h6>
-
-                    <div class="row g-3 align-items-center settings-entry mb-4">
+                <div>
+                    <h4 class="admin-subtitle fw-bold mb-2">@SharedLocalizer["Email Options"]</h4>
+                    
+                    <div class="settings-entry2 row align-items-center py-3 px-2 rounded-3 shadow-sm border bg-white mb-2">
                         <div class="col-auto">
                             <i class="bi-link settings-entry-icon"></i>
                         </div>
@@ -51,7 +51,7 @@
                         </div>
                     </div>
 
-                    <div class="row g-3 align-items-center settings-entry mb-4">
+                    <div class="settings-entry2 row align-items-center py-3 px-2 rounded-3 shadow-sm border bg-white mb-2">
                         <div class="col-auto">
                             <i class="bi-pen settings-entry-icon"></i>
                         </div>
@@ -63,7 +63,7 @@
                         </div>
                     </div>
 
-                    <div class="row g-3 align-items-center settings-entry">
+                    <div class="settings-entry2 row align-items-center py-3 px-2 rounded-3 shadow-sm border bg-white mb-2">
                         <div class="col-auto">
                             <i class="bi-envelope settings-entry-icon"></i>
                         </div>
@@ -79,10 +79,10 @@
                 </div>
             </div>
             <div class="col-md-6">
-                <div class="p-3 rounded-3 shadow-sm border bg-white">
-                    <h6 class="card-subtitle mb-4 text-muted">@SharedLocalizer["Notification Options"]</h6>
+                <div>
+                    <h4 class="admin-subtitle fw-bold mb-2">@SharedLocalizer["Notification Options"]</h4>
 
-                    <div class="row g-3 align-items-center settings-entry mb-4">
+                    <div class="settings-entry2 row align-items-center py-3 px-2 rounded-3 shadow-sm border bg-white mb-2">
                         <div class="col-auto">
                             <i class="bi-envelope settings-entry-icon"></i>
                         </div>
@@ -90,14 +90,14 @@
                             <label asp-for="@settings.EnableEmailSending" class="form-check-label"></label>
                         </div>
                         <div class="col-md-5 text-end">
-                            <div class="form-check form-switch">
+                            <div class="form-check form-switch form-control-lg">
                                 <input type="hidden" name="EnableEmailSending" value="false">
                                 <input type="checkbox" name="EnableEmailSending" value="true" class="form-check-input" @(settings.EnableEmailSending ? "checked" : null)>
                             </div>
                         </div>
                     </div>
 
-                    <div class="row g-3 align-items-center settings-entry mb-4">
+                    <div class="settings-entry2 row align-items-center py-3 px-2 rounded-3 shadow-sm border bg-white mb-2">
                         <div class="col-auto">
                             <i class="bi-chat-left settings-entry-icon"></i>
                         </div>
@@ -105,14 +105,14 @@
                             <label asp-for="@settings.SendEmailOnNewComment" class="form-check-label"></label>
                         </div>
                         <div class="col-md-5 text-end">
-                            <div class="form-check form-switch">
+                            <div class="form-check form-switch form-control-lg">
                                 <input type="hidden" name="SendEmailOnNewComment" value="false">
                                 <input type="checkbox" name="SendEmailOnNewComment" value="true" class="form-check-input" @(settings.SendEmailOnNewComment ? "checked" : null)>
                             </div>
                         </div>
                     </div>
 
-                    <div class="row g-3 align-items-center settings-entry">
+                    <div class="settings-entry2 row align-items-center py-3 px-2 rounded-3 shadow-sm border bg-white mb-2">
                         <div class="col-auto">
                             <i class="bi-reply settings-entry-icon"></i>
                         </div>
@@ -120,7 +120,7 @@
                             <label asp-for="@settings.SendEmailOnCommentReply" class="form-check-label"></label>
                         </div>
                         <div class="col-md-5 text-end">
-                            <div class="form-check form-switch">
+                            <div class="form-check form-switch form-control-lg">
                                 <input type="hidden" name="SendEmailOnCommentReply" value="false">
                                 <input type="checkbox" name="SendEmailOnCommentReply" value="true" class="form-check-input" @(settings.SendEmailOnCommentReply ? "checked" : null)>
                             </div>
