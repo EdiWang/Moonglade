@@ -276,32 +276,34 @@
                             </div>
                         </div>
                     </div>
-
-                    <div class="settings-entry2 row align-items-center py-3 px-2 rounded-3 shadow-sm border bg-white mb-2">
-                        <div class="col-auto">
-                            <i class="bi-card-text settings-entry-icon"></i>
-                        </div>
-                        <div class="col">
-                            <label asp-for="@settings.ShowPostFooter" class="form-check-label"></label>
-                            <div class="form-text">@SharedLocalizer["e.g. Your blog post license information."]</div>
-                        </div>
-                        <div class="col-md-5 text-end">
-                            <div class="form-check form-switch form-control-lg">
-                                <input type="hidden" name="ShowPostFooter" value="false">
-                                <input type="checkbox" name="ShowPostFooter" value="true" class="form-check-input" @(settings.ShowPostFooter ? "checked" : null)>
+                    
+                    <div class="rounded-3 shadow-sm border bg-white">
+                        <div class="settings-entry2 row align-items-center py-3 px-2">
+                            <div class="col-auto">
+                                <i class="bi-card-text settings-entry-icon"></i>
+                            </div>
+                            <div class="col">
+                                <label asp-for="@settings.ShowPostFooter" class="form-check-label"></label>
+                                <div class="form-text">@SharedLocalizer["e.g. Your blog post license information."]</div>
+                            </div>
+                            <div class="col-md-5 text-end">
+                                <div class="form-check form-switch form-control-lg">
+                                    <input type="hidden" name="ShowPostFooter" value="false">
+                                    <input type="checkbox" name="ShowPostFooter" value="true" class="form-check-input" @(settings.ShowPostFooter ? "checked" : null)>
+                                </div>
                             </div>
                         </div>
-                    </div>
-
-                    <div>
-                        <div class="form-floating">
-                            <textarea asp-for="@settings.PostFooterHtmlPitch"
+                        <div class="border-top py-3 px-2">
+                            <div class="form-floating">
+                                <textarea asp-for="@settings.PostFooterHtmlPitch"
                                       placeholder="@Html.DisplayNameFor(m => settings.PostFooterHtmlPitch)"
                                       class="form-control form-control-sm h-100px"
                                       spellcheck="false"></textarea>
-                            <label class="form-label" asp-for="@settings.PostFooterHtmlPitch"></label>
+                                <label class="form-label" asp-for="@settings.PostFooterHtmlPitch"></label>
+                            </div>
                         </div>
                     </div>
+                    
                 </div>
                 <div>
                     <h4 class="admin-subtitle fw-bold mb-2">@SharedLocalizer["Call-out"]</h4>
