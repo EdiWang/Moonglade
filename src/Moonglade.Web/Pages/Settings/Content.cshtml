@@ -31,10 +31,10 @@
     <form id="form-settings" asp-controller="Settings" asp-action="Content">
         <div class="row">
             <div class="col-md-6">
-                <div class="p-3 rounded-3 shadow-sm border bg-white">
-                    <h6 class="card-subtitle mb-4 text-muted">@SharedLocalizer["Comments"]</h6>
+                <div>
+                    <h4 class="admin-subtitle fw-bold mb-2">@SharedLocalizer["Comments"]</h4>
 
-                    <div class="row g-3 align-items-center settings-entry mb-4">
+                    <div class="settings-entry2 row align-items-center py-3 px-2 rounded-3 shadow-sm border bg-white mb-2">
                         <div class="col-auto">
                             <i class="bi-chat-left-dots settings-entry-icon"></i>
                         </div>
@@ -42,14 +42,14 @@
                             <label asp-for="@settings.EnableComments" class="form-check-label"></label>
                         </div>
                         <div class="col-md-5 text-end">
-                            <div class="form-check form-switch">
+                            <div class="form-check form-switch form-control-lg">
                                 <input type="hidden" name="EnableComments" value="false">
                                 <input type="checkbox" name="EnableComments" value="true" class="form-check-input" @(settings.EnableComments ? "checked" : null)>
                             </div>
                         </div>
                     </div>
 
-                    <div class="row g-3 align-items-center settings-entry mb-4">
+                    <div class="settings-entry2 row align-items-center py-3 px-2 rounded-3 shadow-sm border bg-white mb-2">
                         <div class="col-auto">
                             <i class="bi-diagram-2 settings-entry-icon"></i>
                         </div>
@@ -78,7 +78,7 @@
                         </div>
                     </div>
 
-                    <div class="row g-3 align-items-center settings-entry mb-4">
+                    <div class="settings-entry2 row align-items-center py-3 px-2 rounded-3 shadow-sm border bg-white mb-2">
                         <div class="col-auto">
                             <i class="settings-entry-icon bi-hourglass-split"></i>
                         </div>
@@ -93,7 +93,7 @@
 
                     <div class="comment-settings-built-in">
                         
-                        <div class="row g-3 align-items-center settings-entry mb-4">
+                        <div class="settings-entry2 row align-items-center py-3 px-2 rounded-3 shadow-sm border bg-white mb-2">
                             <div class="col-auto">
                                 <i class="bi-sort-numeric-down settings-entry-icon"></i>
                             </div>
@@ -112,7 +112,7 @@
                             </div>
                         </div>
 
-                        <div class="row g-3 align-items-center settings-entry mb-4">
+                        <div class="settings-entry2 row align-items-center py-3 px-2 rounded-3 shadow-sm border bg-white mb-2">
                             <div class="col-auto">
                                 <i class="bi-person-check settings-entry-icon"></i>
                             </div>
@@ -120,14 +120,14 @@
                                 <label asp-for="@settings.RequireCommentReview" class="form-check-label"></label>
                             </div>
                             <div class="col-md-5 text-end">
-                                <div class="form-check form-switch">
+                                <div class="form-check form-switch form-control-lg">
                                     <input type="hidden" name="RequireCommentReview" value="false">
                                     <input type="checkbox" name="RequireCommentReview" value="true" class="form-check-input" @(settings.RequireCommentReview ? "checked" : null)>
                                 </div>
                             </div>
                         </div>
 
-                        <div class="row g-3 align-items-center settings-entry mb-4">
+                        <div class="settings-entry2 row align-items-center py-3 px-2 rounded-3 shadow-sm border bg-white mb-2">
                             <div class="col-auto">
                                 <i class="bi-person-square settings-entry-icon"></i>
                             </div>
@@ -135,14 +135,14 @@
                                 <label asp-for="@settings.EnableGravatar" class="form-check-label"></label>
                             </div>
                             <div class="col-md-5 text-end">
-                                <div class="form-check form-switch">
+                                <div class="form-check form-switch form-control-lg">
                                     <input type="hidden" name="EnableGravatar" value="false">
                                     <input type="checkbox" name="EnableGravatar" value="true" class="form-check-input" @(settings.EnableGravatar ? "checked" : null)>
                                 </div>
                             </div>
                         </div>
 
-                        <div class="row g-3 align-items-center settings-entry mb-4">
+                        <div class="settings-entry2 row align-items-center py-3 px-2 rounded-3 shadow-sm border bg-white mb-2">
                             <div class="col-auto">
                                 <i class="bi-translate settings-entry-icon"></i>
                             </div>
@@ -150,14 +150,14 @@
                                 <label asp-for="@settings.EnableWordFilter" class="form-check-label"></label>
                             </div>
                             <div class="col-md-5 text-end">
-                                <div class="form-check form-switch">
+                                <div class="form-check form-switch form-control-lg">
                                     <input type="hidden" name="EnableWordFilter" value="false">
                                     <input type="checkbox" name="EnableWordFilter" value="true" class="form-check-input" @(settings.EnableWordFilter ? "checked" : null)>
                                 </div>
                             </div>
                         </div>
 
-                        <div class="row g-3 align-items-center settings-entry mb-2">
+                        <div class="settings-entry2 row align-items-center py-3 px-2 rounded-3 shadow-sm border bg-white mb-2">
                             <div class="col-auto">
                                 <i class="bi-check2-circle settings-entry-icon"></i>
                             </div>
@@ -203,10 +203,10 @@
                 </div>
             </div>
             <div class="col-md-6">
-                <div class="mb-3 p-3 rounded-3 shadow-sm border bg-white">
-                    <h6 class="card-subtitle mb-4 text-muted">@SharedLocalizer["Blog posts"]</h6>
+                <div class="mb-3">
+                    <h4 class="admin-subtitle fw-bold mb-2">@SharedLocalizer["Blog posts"]</h4>
 
-                    <div class="row g-3 align-items-center settings-entry mb-4">
+                    <div class="settings-entry2 row align-items-center py-3 px-2 rounded-3 shadow-sm border bg-white mb-2">
                         <div class="col-auto">
                             <i class="bi-check2-circle settings-entry-icon"></i>
                         </div>
@@ -225,7 +225,7 @@
                         </div>
                     </div>
 
-                    <div class="row g-3 align-items-center settings-entry mb-4">
+                    <div class="settings-entry2 row align-items-center py-3 px-2 rounded-3 shadow-sm border bg-white mb-2">
                         <div class="col-auto">
                             <i class="bi-sort-numeric-down settings-entry-icon"></i>
                         </div>
@@ -237,7 +237,7 @@
                         </div>
                     </div>
 
-                    <div class="row g-3 align-items-center settings-entry mb-4">
+                    <div class="settings-entry2 row align-items-center py-3 px-2 rounded-3 shadow-sm border bg-white mb-2">
                         <div class="col-auto">
                             <i class="settings-entry-icon bi-file-word"></i>
                         </div>
@@ -250,7 +250,7 @@
                         </div>
                     </div>
 
-                    <div class="row g-3 align-items-center settings-entry mb-4">
+                    <div class="settings-entry2 row align-items-center py-3 px-2 rounded-3 shadow-sm border bg-white mb-2">
                         <div class="col-auto">
                             <i class="bi-tags settings-entry-icon"></i>
                         </div>
@@ -262,7 +262,7 @@
                         </div>
                     </div>
 
-                    <div class="row g-3 align-items-center settings-entry mb-4">
+                    <div class="settings-entry2 row align-items-center py-3 px-2 rounded-3 shadow-sm border bg-white mb-2">
                         <div class="col-auto">
                             <i class="bi-list-nested settings-entry-icon"></i>
                         </div>
@@ -270,14 +270,14 @@
                             <label asp-for="@settings.DocumentOutline" class="form-check-label"></label>
                         </div>
                         <div class="col-md-5 text-end">
-                            <div class="form-check form-switch">
+                            <div class="form-check form-switch form-control-lg">
                                 <input type="hidden" name="DocumentOutline" value="false">
                                 <input type="checkbox" name="DocumentOutline" value="true" class="form-check-input" @(settings.DocumentOutline ? "checked" : null)>
                             </div>
                         </div>
                     </div>
 
-                    <div class="row g-3 align-items-center settings-entry mb-2">
+                    <div class="settings-entry2 row align-items-center py-3 px-2 rounded-3 shadow-sm border bg-white mb-2">
                         <div class="col-auto">
                             <i class="bi-card-text settings-entry-icon"></i>
                         </div>
@@ -286,7 +286,7 @@
                             <div class="form-text">@SharedLocalizer["e.g. Your blog post license information."]</div>
                         </div>
                         <div class="col-md-5 text-end">
-                            <div class="form-check form-switch">
+                            <div class="form-check form-switch form-control-lg">
                                 <input type="hidden" name="ShowPostFooter" value="false">
                                 <input type="checkbox" name="ShowPostFooter" value="true" class="form-check-input" @(settings.ShowPostFooter ? "checked" : null)>
                             </div>
@@ -303,10 +303,10 @@
                         </div>
                     </div>
                 </div>
-                <div class="p-3 rounded-3 shadow-sm border bg-white">
-                    <h6 class="card-subtitle mb-4 text-muted">@SharedLocalizer["Call-out"]</h6>
+                <div>
+                    <h4 class="admin-subtitle fw-bold mb-2">@SharedLocalizer["Call-out"]</h4>
 
-                    <div class="row g-3 align-items-center settings-entry mb-2">
+                    <div class="settings-entry2 row align-items-center py-3 px-2 rounded-3 shadow-sm border bg-white mb-2">
                         <div class="col-auto">
                             <i class="bi-menu-button-wide-fill settings-entry-icon"></i>
                         </div>
@@ -315,7 +315,7 @@
                             <div class="form-text">@SharedLocalizer["The call-out section will display on top of every page in the website."]</div>
                         </div>
                         <div class="col-md-5 text-end">
-                            <div class="form-check form-switch">
+                            <div class="form-check form-switch form-control-lg">
                                 <input type="hidden" name="ShowCalloutSection" value="false">
                                 <input type="checkbox" name="ShowCalloutSection" value="true" class="form-check-input" @(settings.ShowCalloutSection ? "checked" : null)>
                             </div>
