@@ -98,29 +98,35 @@
             <div class="col-md-6">
                 <div class="mb-3">
                     <h4 class="admin-subtitle fw-bold mb-2">@SharedLocalizer["Blog Identity"]</h4>
-                    <div class="row">
-                        <div class="col-2">
-                            <div class="mb-2">
-                                <img src="@Url.Action("SiteIconOrigin", "Assets")" class="img-thumbnail img-fluid blogadmin-siteicon" />
-                            </div>
-                            <a class="btn w-100 btn-sm btn-outline-accent" href="#" data-bs-toggle="modal" data-bs-target="#siteiconmodal">@SharedLocalizer["Change"]</a>
-                            <span class="text-muted text-center d-block">(favicon)</span>
+                    <div class="settings-entry2 row align-items-center py-3 px-2 rounded-3 shadow-sm border bg-white mb-2">
+                        <div class="col-auto">
+                            <i class="bi-app-indicator settings-entry-icon"></i>
                         </div>
-                        <div class="col-10">
-                            <div class="settings-entry2 row align-items-center py-3 px-2 rounded-3 shadow-sm border bg-white mb-2">
-                                <div class="col">
-                                    <label class="form-label" asp-for="ViewModel.SiteTitle"></label>
-                                    <input asp-for="ViewModel.SiteTitle" class="form-control" required />
-                                </div>
-                                <div class="col">
-                                    <label class="form-label" asp-for="ViewModel.LogoText"></label>
-                                    <input asp-for="ViewModel.LogoText" class="form-control" required />
-                                </div>
+
+                        <div class="col">
+                            <label>Favicon</label>
+                        </div>
+
+                        <div class="col-md-5 text-end">
+                            <img src="@Url.Action("SiteIconOrigin", "Assets")" class="blogadmin-siteicon" />
+                            <a class="btn btn-sm btn-outline-accent" href="#" data-bs-toggle="modal" data-bs-target="#siteiconmodal">@SharedLocalizer["Change"]</a>
+                        </div>
+                    </div>
+
+                    <div>
+                        <div class="settings-entry2 row align-items-center py-3 px-2 rounded-3 shadow-sm border bg-white mb-2">
+                            <div class="col">
+                                <label class="form-label" asp-for="ViewModel.SiteTitle"></label>
+                                <input asp-for="ViewModel.SiteTitle" class="form-control" required />
                             </div>
-                            <div class="settings-entry2 row align-items-center py-3 px-2 rounded-3 shadow-sm border bg-white mb-2">
-                                <label class="form-label" asp-for="ViewModel.MetaKeyword"></label>
-                                <input asp-for="ViewModel.MetaKeyword" class="form-control" required />
+                            <div class="col">
+                                <label class="form-label" asp-for="ViewModel.LogoText"></label>
+                                <input asp-for="ViewModel.LogoText" class="form-control" required />
                             </div>
+                        </div>
+                        <div class="settings-entry2 row align-items-center py-3 px-2 rounded-3 shadow-sm border bg-white mb-2">
+                            <label class="form-label" asp-for="ViewModel.MetaKeyword"></label>
+                            <input asp-for="ViewModel.MetaKeyword" class="form-control" required />
                         </div>
                     </div>
 
@@ -269,7 +275,7 @@
                         <div class="col">
                             <label asp-for="ViewModel.SideBarOption" class="me-4"></label>
                         </div>
-                        
+
                         <div class="col-md-5 text-end">
                             <div class="form-check form-check-inline">
                                 @Html.RadioButtonFor(model => model.ViewModel.SideBarOption, SideBarOption.Right, new { id = SideBarOption.Right.ToString(), @class = "form-check-input" })
@@ -404,7 +410,7 @@
                             </div>
                         </div>
                     </div>
-                    
+
                     <div class="settings-entry2 row align-items-center py-3 px-2 rounded-3 shadow-sm border bg-white mb-2">
                         <div class="col-auto">
                             <i class="bi-link settings-entry-icon"></i>

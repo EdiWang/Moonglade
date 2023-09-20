@@ -282,6 +282,11 @@ table.dataTable {
     border-spacing: inherit !important;
 }
 
+.blogadmin-siteicon {
+    width: 32px;
+    height: 32px;
+}
+
 .settings-entry-icon {
     font-size: 24px;
 }
