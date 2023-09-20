@@ -282,25 +282,10 @@ table.dataTable {
     border-spacing: inherit !important;
 }
 
-.settings-entry {
-    background-color: var(--bs-gray-100);
-    border-radius: 5px;
-    padding-bottom: 12px;
-    padding-left: 10px;
-    padding-right: 10px;
-    margin-left: 0;
-    margin-right: 0;
-}
-
-    .settings-entry.row > * {
-        margin-top: 12px;
-    }
-
 .settings-entry-icon {
     font-size: 24px;
 }
 
-.settings-entry .form-switch,
 .settings-entry2 .form-switch {
     display: inline-block;
     min-height: inherit;
