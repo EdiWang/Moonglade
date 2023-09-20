@@ -196,8 +196,8 @@
                 </div>
             </div>
             <div class="col-md-3 col-xl-2">
-                <div class="card mb-4">
-                    <div class="card-body">
+                <div class="p-3 rounded-3 shadow-sm border bg-white mb-4">
+                    <div class="mb-3">
                         <div class="form-check form-switch mb-2">
                             <input type="checkbox" asp-for="EditPageRequest.HideSidebar" class="form-check-input">
                             <label asp-for="EditPageRequest.HideSidebar" class="form-check-label"></label>
@@ -207,7 +207,7 @@
                             <label asp-for="EditPageRequest.IsPublished" class="form-check-label"></label>
                         </div>
                     </div>
-                    <div class="card-body border-top">
+                    <div class="border-top pt-3">
                         <div class="form-floating">
                             <textarea asp-for="EditPageRequest.MetaDescription"
                                       placeholder="@Html.DisplayNameFor(m => m.EditPageRequest.MetaDescription)"

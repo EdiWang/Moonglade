@@ -300,10 +300,20 @@ table.dataTable {
     font-size: 24px;
 }
 
-.settings-entry .form-switch {
+.settings-entry .form-switch,
+.settings-entry2 .form-switch {
     display: inline-block;
     min-height: inherit;
     margin-bottom: 0;
+}
+
+    .settings-entry2 .form-switch.form-control-lg {
+        padding: 0 !important;
+    }
+
+.settings-entry2 {
+    margin-left: 0;
+    margin-right: 0;
 }
 
 .tags-dropdown .tagify__dropdown__item {
