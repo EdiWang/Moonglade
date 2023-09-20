@@ -76,10 +76,20 @@
     <div class="row">
         <div class="col-8">
             <form id="form-settings" asp-controller="Settings" asp-action="CustomMenu">
-                <div class="form-check form-switch mb-3">
-                    <input type="hidden" name="IsEnabled" value="false">
-                    <input type="checkbox" name="IsEnabled" value="true" class="form-check-input" @(settings.IsEnabled ? "checked" : null)>
-                    <label asp-for="@settings.IsEnabled" class="form-check-label"></label>
+
+                <div class="settings-entry2 row align-items-center py-3 px-2 rounded-3 shadow-sm border bg-white mb-2">
+                    <div class="col-auto">
+                        <i class="bi-palette settings-entry-icon"></i>
+                    </div>
+                    <div class="col">
+                        <label asp-for="@settings.IsEnabled" class="form-check-label"></label>
+                    </div>
+                    <div class="col-md-5 text-end">
+                        <div class="form-check form-switch form-control-lg">
+                            <input type="hidden" name="IsEnabled" value="false">
+                            <input type="checkbox" name="IsEnabled" value="true" class="form-check-input" @(@settings.IsEnabled ? "checked" : null) />
+                        </div>
+                    </div>
                 </div>
 
                 <div id="JsonContentEditor" class="monaco-target p-3 rounded-3 shadow-sm border bg-white overflow-y-hidden">
