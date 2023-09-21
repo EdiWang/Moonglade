@@ -891,4 +891,7 @@
   <data name="ASP.NET Core Environment" xml:space="preserve">
     <value>ASP.NET Core 环境</value>
   </data>
+  <data name="Warning: This blog post is marked as outdated by it's author. Consider finding more recent information on this topic to ensure that you are utilizing the most up-to-date and effective strategies." xml:space="preserve">
+    <value>警告：此博客文章已被作者标记为过时。请考虑寻找关于该主题的更近期的信息，以确保您使用的是最新和最有效的策略。</value>
+  </data>
 </root>
