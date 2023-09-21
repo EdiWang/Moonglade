@@ -86,7 +86,7 @@ public class GeneralSettings : IBlogSettings
     [Display(Name = "Subscription buttons")]
     public bool WidgetsSubscriptionButtons { get; set; } = true;
 
-    [Display(Name = "Show Admin login button under sidebar")]
+    [Display(Name = "Admin login button")]
     public bool ShowAdminLoginButton { get; set; }
 
     [MaxLength(64)]

@@ -341,80 +341,85 @@
                             </div>
                         </div>
                     </div>
-
                     
-
-                    <div class="settings-entry2 row align-items-center py-3 px-2 rounded-3 shadow-sm border bg-white mb-2">
-                        <div class="col-auto">
-                            <i class="bi-tags settings-entry-icon"></i>
+                    <div class="rounded-3 shadow-sm border bg-white mb-2">
+                        <div class="settings-entry2 row align-items-center py-3 px-2">
+                            <label>Side bar items</label>
+                            <div class="text-muted">Show or hide widgets that display on the side bar</div>
                         </div>
-                        <div class="col">
-                            <label asp-for="ViewModel.WidgetsTags" class="form-check-label"></label>
-                        </div>
-                        <div class="col-md-5 text-end">
-                            <div class="form-check form-switch form-control-lg">
-                                <input type="hidden" name="WidgetsTags" value="false">
-                                <input type="checkbox" name="WidgetsTags" value="true" class="form-check-input" @(Model.ViewModel.WidgetsTags ? "checked" : null)>
+                       
+                        <div class="border-top settings-entry2 row align-items-center py-3 px-2">
+                            <div class="col-auto">
+                                <i class="bi-tags settings-entry-icon"></i>
+                            </div>
+                            <div class="col">
+                                <label asp-for="ViewModel.WidgetsTags" class="form-check-label"></label>
+                            </div>
+                            <div class="col-md-5 text-end">
+                                <div class="form-check form-switch form-control-lg">
+                                    <input type="hidden" name="WidgetsTags" value="false">
+                                    <input type="checkbox" name="WidgetsTags" value="true" class="form-check-input" @(Model.ViewModel.WidgetsTags ? "checked" : null)>
+                                </div>
                             </div>
                         </div>
-                    </div>
-
-                    <div class="settings-entry2 row align-items-center py-3 px-2 rounded-3 shadow-sm border bg-white mb-2">
-                        <div class="col-auto">
-                            <i class="bi-folder2 settings-entry-icon"></i>
-                        </div>
-                        <div class="col">
-                            <label asp-for="ViewModel.WidgetsCategoryList" class="form-check-label"></label>
-                        </div>
-                        <div class="col-md-5 text-end">
-                            <div class="form-check form-switch form-control-lg">
-                                <input type="hidden" name="WidgetsCategoryList" value="false">
-                                <input type="checkbox" name="WidgetsCategoryList" value="true" class="form-check-input" @(Model.ViewModel.WidgetsCategoryList ? "checked" : null)>
+                        
+                        <div class="border-top settings-entry2 row align-items-center py-3 px-2">
+                            <div class="col-auto">
+                                <i class="bi-folder2 settings-entry-icon"></i>
+                            </div>
+                            <div class="col">
+                                <label asp-for="ViewModel.WidgetsCategoryList" class="form-check-label"></label>
+                            </div>
+                            <div class="col-md-5 text-end">
+                                <div class="form-check form-switch form-control-lg">
+                                    <input type="hidden" name="WidgetsCategoryList" value="false">
+                                    <input type="checkbox" name="WidgetsCategoryList" value="true" class="form-check-input" @(Model.ViewModel.WidgetsCategoryList ? "checked" : null)>
+                                </div>
                             </div>
                         </div>
-                    </div>
-
-                    <div class="settings-entry2 row align-items-center py-3 px-2 rounded-3 shadow-sm border bg-white mb-2">
-                        <div class="col-auto">
-                            <i class="bi-link-45deg settings-entry-icon"></i>
-                        </div>
-                        <div class="col">
-                            <label asp-for="ViewModel.WidgetsFriendLink" class="form-check-label"></label>
-                        </div>
-                        <div class="col-md-5 text-end">
-                            <div class="form-check form-switch form-control-lg">
-                                <input type="hidden" name="WidgetsFriendLink" value="false">
-                                <input type="checkbox" name="WidgetsFriendLink" value="true" class="form-check-input" @(Model.ViewModel.WidgetsFriendLink ? "checked" : null)>
+                        
+                        <div class="border-top settings-entry2 row align-items-center py-3 px-2">
+                            <div class="col-auto">
+                                <i class="bi-link-45deg settings-entry-icon"></i>
+                            </div>
+                            <div class="col">
+                                <label asp-for="ViewModel.WidgetsFriendLink" class="form-check-label"></label>
+                            </div>
+                            <div class="col-md-5 text-end">
+                                <div class="form-check form-switch form-control-lg">
+                                    <input type="hidden" name="WidgetsFriendLink" value="false">
+                                    <input type="checkbox" name="WidgetsFriendLink" value="true" class="form-check-input" @(Model.ViewModel.WidgetsFriendLink ? "checked" : null)>
+                                </div>
                             </div>
                         </div>
-                    </div>
-
-                    <div class="settings-entry2 row align-items-center py-3 px-2 rounded-3 shadow-sm border bg-white mb-2">
-                        <div class="col-auto">
-                            <i class="bi-menu-button settings-entry-icon"></i>
-                        </div>
-                        <div class="col">
-                            <label asp-for="ViewModel.WidgetsSubscriptionButtons" class="form-check-label"></label>
-                        </div>
-                        <div class="col-md-5 text-end">
-                            <div class="form-check form-switch form-control-lg">
-                                <input type="hidden" name="WidgetsSubscriptionButtons" value="false">
-                                <input type="checkbox" name="WidgetsSubscriptionButtons" value="true" class="form-check-input" @(Model.ViewModel.WidgetsSubscriptionButtons ? "checked" : null)>
+                        
+                        <div class="border-top settings-entry2 row align-items-center py-3 px-2">
+                            <div class="col-auto">
+                                <i class="bi-menu-button settings-entry-icon"></i>
+                            </div>
+                            <div class="col">
+                                <label asp-for="ViewModel.WidgetsSubscriptionButtons" class="form-check-label"></label>
+                            </div>
+                            <div class="col-md-5 text-end">
+                                <div class="form-check form-switch form-control-lg">
+                                    <input type="hidden" name="WidgetsSubscriptionButtons" value="false">
+                                    <input type="checkbox" name="WidgetsSubscriptionButtons" value="true" class="form-check-input" @(Model.ViewModel.WidgetsSubscriptionButtons ? "checked" : null)>
+                                </div>
                             </div>
                         </div>
-                    </div>
-
-                    <div class="settings-entry2 row align-items-center py-3 px-2 rounded-3 shadow-sm border bg-white mb-2">
-                        <div class="col-auto">
-                            <i class="bi-hand-index settings-entry-icon"></i>
-                        </div>
-                        <div class="col">
-                            <label asp-for="ViewModel.ShowAdminLoginButton" class="form-check-label"></label>
-                        </div>
-                        <div class="col-md-4 text-end">
-                            <div class="form-check form-switch form-control-lg">
-                                <input type="hidden" name="ShowAdminLoginButton" value="false">
-                                <input type="checkbox" name="ShowAdminLoginButton" value="true" class="form-check-input" @(Model.ViewModel.ShowAdminLoginButton ? "checked" : null)>
+                        
+                        <div class="border-top settings-entry2 row align-items-center py-3 px-2">
+                            <div class="col-auto">
+                                <i class="bi-hand-index settings-entry-icon"></i>
+                            </div>
+                            <div class="col">
+                                <label asp-for="ViewModel.ShowAdminLoginButton" class="form-check-label"></label>
+                            </div>
+                            <div class="col-md-4 text-end">
+                                <div class="form-check form-switch form-control-lg">
+                                    <input type="hidden" name="ShowAdminLoginButton" value="false">
+                                    <input type="checkbox" name="ShowAdminLoginButton" value="true" class="form-check-input" @(Model.ViewModel.ShowAdminLoginButton ? "checked" : null)>
+                                </div>
                             </div>
                         </div>
                     </div>
