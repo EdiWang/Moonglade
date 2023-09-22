@@ -57,8 +57,6 @@
 @section head{
     <style>
         .monaco-target {
-            border: 1px solid #dee2e6;
-            width: 100%;
             min-height: 560px;
         }
     </style>
@@ -94,9 +92,12 @@
                 </div>
             </div>
         </div>
-
-        <div id="JsonContentEditor" class="monaco-target p-3 rounded-3 shadow-sm border bg-white overflow-y-hidden">
+        
+        <div class="py-3 rounded-3 shadow-sm border bg-white">
+            <div id="JsonContentEditor" class="monaco-target overflow-y-hidden">
+            </div>
         </div>
+        
         <textarea asp-for="@settings.MenuJson" class="settings-jsoncontent-textarea d-none"></textarea>
 
         <div class="mt-3">
