@@ -335,3 +335,9 @@ table.dataTable {
 .admin-subtitle {
     font-size: 0.9rem;
 }
+
+.admin-settings-entry-container {
+    height: calc(100vh - 215px);
+    overflow-y: scroll;
+    overflow-x: hidden;
+}
