@@ -15,9 +15,9 @@
     <partial name="_SettingsHeader" />
 }
 
-<div>
-    <form id="form-settings" asp-controller="Settings" asp-action="Subscription" spellcheck="false">
-        <div class="row mb-3">
+<form id="form-settings" asp-controller="Settings" asp-action="Subscription" spellcheck="false">
+    <div class="admin-settings-entry-container">
+        <div class="row">
             <div class="col-lg-6">
                 <div class="settings-entry2 row align-items-center py-3 px-2 rounded-3 shadow-sm border bg-white mb-2">
                     <div class="col-auto">
@@ -48,9 +48,8 @@
                 </div>
             </div>
         </div>
-
-        <div class="mb-2">
-            <input id="btn-save-settings" type="submit" value="@SharedLocalizer["Save"]" class="btn btn-outline-accent" />
-        </div>
-    </form>
-</div>
+    </div>
+    <div class="admin-settings-action-container border-top pt-2 mt-2">
+        <input id="btn-save-settings" type="submit" value="@SharedLocalizer["Save"]" class="btn btn-outline-accent" />
+    </div>
+</form>
