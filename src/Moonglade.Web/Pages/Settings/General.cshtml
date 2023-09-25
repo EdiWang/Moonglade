@@ -57,18 +57,18 @@
             callApi(oFormElement.action,
                 'POST',
                 {
-                    name: document.querySelector('#ThemeRequest_Name').value,
-                    accentColor1: document.querySelector('#ThemeRequest_AccentColor1').value,
-                    accentColor2: document.querySelector('#ThemeRequest_AccentColor2').value,
-                    accentColor3: document.querySelector('#ThemeRequest_AccentColor3').value
+                    name: document.querySelector('#Name').value,
+                    accentColor1: document.querySelector('#AccentColor1').value,
+                    accentColor2: document.querySelector('#AccentColor2').value,
+                    accentColor3: document.querySelector('#AccentColor3').value
                 },
                 async (resp) => {
                     var id = await resp.json();
                     console.info(id);
 
                     themeModal.hide();
-                    $("#ViewModel_SelectedThemeId").append(new Option(document.querySelector('#ThemeRequest_Name').value, id));
-                    blogToast.success('Theme created');
+                    $("#ViewModel_SelectedThemeId").append(new Option(document.querySelector('#Name').value, id));
+                    blogToast.success('Theme created, refresh to see.');
                 });
         }
 
