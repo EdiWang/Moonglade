@@ -98,7 +98,7 @@
             <div class="col-md-6">
                 <div class="mb-3">
                     <h4 class="admin-subtitle fw-bold mb-2">@SharedLocalizer["Blog Identity"]</h4>
-                    
+
                     <div class="settings-entry2 row align-items-center py-3 px-2 rounded-3 shadow-sm border bg-white mb-2">
                         <div class="col-auto">
                             <i class="bi-card-heading settings-entry-icon"></i>
@@ -110,7 +110,7 @@
                             <input asp-for="ViewModel.SiteTitle" class="form-control" required />
                         </div>
                     </div>
-                    
+
                     <div class="settings-entry2 row align-items-center py-3 px-2 rounded-3 shadow-sm border bg-white mb-2">
                         <div class="col-auto">
                             <i class="bi-input-cursor settings-entry-icon"></i>
@@ -134,7 +134,7 @@
                             <input asp-for="ViewModel.MetaKeyword" class="form-control" required />
                         </div>
                     </div>
-                    
+
                     <div class="settings-entry2 row align-items-center py-3 px-2 rounded-3 shadow-sm border bg-white mb-2">
                         <div class="col-auto">
                             <i class="bi-app-indicator settings-entry-icon"></i>
@@ -189,7 +189,7 @@
                         </div>
                     </div>
                 </div>
-                
+
                 <div class="mb-3">
                     <h4 class="admin-subtitle fw-bold mb-2">
                         @SharedLocalizer["Theme"]
@@ -282,7 +282,7 @@
                             </div>
                         </div>
                     </div>
-                    
+
                     <div class="rounded-3 shadow-sm border bg-white mb-2">
                         <div class="settings-entry2 row align-items-center py-3 px-2">
                             <div class="col-auto">
@@ -298,7 +298,7 @@
                                 </div>
                             </div>
                         </div>
-                    
+
                         <div class="border-top py-3 px-2">
                             <div class="row">
                                 <div class="col-md-2 col-sm-4">
@@ -318,7 +318,7 @@
                                             <input asp-for="ViewModel.OwnerEmail" class="form-control" required title="@SharedLocalizer["Email address to receive notifications from this blog."]" />
                                         </div>
                                     </div>
-                            
+
                                     <div class="form-floating">
                                         <input asp-for="ViewModel.Description"
                                                placeholder="@Html.DisplayNameFor(m => m.ViewModel.Description)"
@@ -328,26 +328,26 @@
                                 </div>
                             </div>
                         </div>
-                        
+
                         <div class="border-top py-3 px-2">
                             <div class="form-floating">
                                 <textarea asp-for="ViewModel.SideBarCustomizedHtmlPitch"
-                                  placeholder="@Html.DisplayNameFor(m => m.ViewModel.SideBarCustomizedHtmlPitch)"
-                                  class="form-control form-control-sm h-100px textarea-code"
-                                  spellcheck="false"
-                                  cols="10"
-                                  rows="10"></textarea>
+                                          placeholder="@Html.DisplayNameFor(m => m.ViewModel.SideBarCustomizedHtmlPitch)"
+                                          class="form-control form-control-sm h-100px textarea-code"
+                                          spellcheck="false"
+                                          cols="10"
+                                          rows="10"></textarea>
                                 <label class="form-label" asp-for="ViewModel.SideBarCustomizedHtmlPitch"></label>
                             </div>
                         </div>
                     </div>
-                    
+
                     <div class="rounded-3 shadow-sm border bg-white mb-2">
                         <div class="settings-entry2 row align-items-center py-3 px-2">
                             <label>Side bar items</label>
                             <div class="text-muted">Show or hide widgets that display on the side bar</div>
                         </div>
-                       
+
                         <div class="border-top settings-entry2 row align-items-center py-3 px-2">
                             <div class="col-auto">
                                 <i class="bi-tags settings-entry-icon"></i>
@@ -362,7 +362,7 @@
                                 </div>
                             </div>
                         </div>
-                        
+
                         <div class="border-top settings-entry2 row align-items-center py-3 px-2">
                             <div class="col-auto">
                                 <i class="bi-folder2 settings-entry-icon"></i>
@@ -377,7 +377,7 @@
                                 </div>
                             </div>
                         </div>
-                        
+
                         <div class="border-top settings-entry2 row align-items-center py-3 px-2">
                             <div class="col-auto">
                                 <i class="bi-link-45deg settings-entry-icon"></i>
@@ -392,7 +392,7 @@
                                 </div>
                             </div>
                         </div>
-                        
+
                         <div class="border-top settings-entry2 row align-items-center py-3 px-2">
                             <div class="col-auto">
                                 <i class="bi-menu-button settings-entry-icon"></i>
@@ -407,7 +407,7 @@
                                 </div>
                             </div>
                         </div>
-                        
+
                         <div class="border-top settings-entry2 row align-items-center py-3 px-2">
                             <div class="col-auto">
                                 <i class="bi-hand-index settings-entry-icon"></i>
@@ -466,4 +466,4 @@
 
 <partial name="_AvatarModal" />
 <partial name="_FaviconModal" />
-<partial name="_ThemeModal" />
+<partial name="_ThemeModal" model="Model.ThemeRequest" />
