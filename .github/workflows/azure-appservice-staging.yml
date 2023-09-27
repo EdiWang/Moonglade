@@ -36,7 +36,9 @@ jobs:
 
       - name: Build with dotnet
         working-directory: ./src
-        run: dotnet build --configuration Release
+        run: |
+          echo ${{ github.head_ref }}.${{ github.sha }}
+          dotnet build --configuration Release
 
       - name: dotnet publish
         working-directory: ./src
