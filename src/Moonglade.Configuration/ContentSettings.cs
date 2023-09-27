@@ -60,6 +60,9 @@ public class ContentSettings : IBlogSettings
     [Display(Name = "Show call-out section")]
     public bool ShowCalloutSection { get; set; }
 
+    [Display(Name = "Display time for publish date")]
+    public bool DisplayTimeForPubDate { get; set; } = true;
+
     [Display(Name = "Show customize footer on each post")]
     public bool ShowPostFooter { get; set; }
 
