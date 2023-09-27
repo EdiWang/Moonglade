@@ -3,7 +3,7 @@ name: Azure App Service (Staging)
 env:
   AZURE_WEBAPP_NAME: moonglade-ediwang-ea
   SLOT_NAME: staging
-  AZURE_WEBAPP_PACKAGE_PATH: './src'
+  AZURE_WEBAPP_PACKAGE_PATH: '.'
   DOTNET_VERSION: '7.0.x'
 
 on:
@@ -35,9 +35,11 @@ jobs:
             ${{ runner.os }}-nuget-
 
       - name: Build with dotnet
+        working-directory: ./src
         run: dotnet build --configuration Release
 
       - name: dotnet publish
+        working-directory: ./src
         run: dotnet publish -c Release -o ${{env.DOTNET_ROOT}}/moonglade
 
       - name: Upload artifact for deployment job
