@@ -38,11 +38,11 @@ jobs:
         working-directory: ./src
         run: |
           echo ${{ github.head_ref }}.${{ github.sha }}
-          dotnet build --configuration Release
+          dotnet build --configuration Release -p:SourceRevisionId=${{ github.sha }}
 
       - name: dotnet publish
         working-directory: ./src
-        run: dotnet publish -c Release -o ${{env.DOTNET_ROOT}}/moonglade
+        run: dotnet publish -c Release -p:SourceRevisionId=${{ github.sha }} -o ${{env.DOTNET_ROOT}}/moonglade
 
       - name: Upload artifact for deployment job
         uses: actions/upload-artifact@v3
