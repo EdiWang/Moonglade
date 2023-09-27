@@ -200,7 +200,8 @@ h3 small {
 .post-date-day {
     color: var(--accent-color1);
     font-size: 46px;
-    margin: 0;
+    height: 55px;
+    margin-top: -12px;
     text-align: right;
 }
 

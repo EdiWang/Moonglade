@@ -1,6 +1,11 @@
 ﻿@page "/archive/featured"
 @model Moonglade.Web.Pages.FeaturedModel
 
+@{
+    ViewBag.TitlePrefix = "Featured Posts";
+    ViewBag.BodyClass = "body-featured-list bg-gray-1";
+}
+
 <h3>
     @SharedLocalizer["Featured Posts"]
 </h3>
