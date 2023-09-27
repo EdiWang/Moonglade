@@ -103,9 +103,9 @@ footer {
     color: var(--transparent-light-50);
 }
 
-    h3 small {
-        font-size: 60%;
-    }
+h3 small {
+    font-size: 60%;
+}
 
 .font-sairas {
     font-family: "Saira Semi Condensed Bold", "Saira Semi Condensed", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Microsoft YaHei" !important;
@@ -199,20 +199,13 @@ footer {
 
 .post-date-day {
     color: var(--accent-color1);
-    border: 1px solid var(--accent-color1);
-    border-radius: 3px 3px 0 0;
-    font-size: 42px;
-    height: 60px;
+    font-size: 46px;
     margin: 0;
-    padding-right: 7px;
     text-align: right;
 }
 
 .post-date-month {
-    background-color: var(--accent-color1);
-    padding: 1px 10px;
     text-align: right;
-    border-radius: 0 0 3px 3px;
 }
 
 .post-summary-title {
@@ -262,6 +255,10 @@ footer {
     top: 32px;
     width: 100%;
     z-index: 999;
+}
+
+.text-accent {
+    color: var(--accent-color1);
 }
 
 .bg-accent1 {

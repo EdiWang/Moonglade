@@ -14,8 +14,6 @@ else
     foreach (var item in Model)
     {
         <partial name="_PostListEntry" model="item" />
-        <div class="mb-4 d-none d-md-block"></div>
-        <hr class="d-none d-md-block" />
     }
 
     @Html.PagedListPager(Model, page => ViewData["sortBy"] == null ? $"?p={page}" : $"?p={page}&sortBy={ViewData["sortBy"]}", new()
