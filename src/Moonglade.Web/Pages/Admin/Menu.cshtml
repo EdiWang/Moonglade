@@ -57,7 +57,9 @@
 @section head{
     <style>
         .monaco-target {
-            min-height: 560px;
+            border: 1px solid #dee2e6;
+            width: 100%;
+            min-height: calc(100vh - 370px);
         }
     </style>
 }
@@ -67,7 +69,7 @@
         <a href="javascript:window.clearMenus();" class="btn btn-outline-danger btn-delete-selected">
             <i class="bi-trash"></i> @SharedLocalizer["Clear menus"]
         </a>
-        
+
         <a class="btn btn-outline-accent" href="#" data-bs-toggle="modal" data-bs-target="#examplecodemodal">
             <i class="bi-code"></i>
             Example code
@@ -75,9 +77,8 @@
     </div>
 }
 
-<div>
-    <form id="form-settings" asp-controller="Settings" asp-action="CustomMenu">
-
+<form id="form-settings" asp-controller="Settings" asp-action="CustomMenu">
+    <div class="admin-settings-entry-container">
         <div class="settings-entry2 row align-items-center py-3 px-2 rounded-3 shadow-sm border bg-white mb-2">
             <div class="col-auto">
                 <i class="bi-menu-app settings-entry-icon"></i>
@@ -92,21 +93,21 @@
                 </div>
             </div>
         </div>
-        
+
         <div class="py-3 rounded-3 shadow-sm border bg-white">
             <div id="JsonContentEditor" class="monaco-target overflow-y-hidden">
             </div>
         </div>
-        
-        <textarea asp-for="@settings.MenuJson" class="settings-jsoncontent-textarea d-none"></textarea>
+    </div>
 
-        <div class="mt-3">
-            <button type="submit" class="btn btn-outline-accent" id="btn-save-settings">
-                @SharedLocalizer["Save"]
-            </button>
-        </div>
-    </form>
-</div>
+    <textarea asp-for="@settings.MenuJson" class="settings-jsoncontent-textarea d-none"></textarea>
+
+    <div class="admin-settings-action-container border-top pt-2 mt-2">
+        <button type="submit" class="btn btn-outline-accent" id="btn-save-settings">
+            @SharedLocalizer["Save"]
+        </button>
+    </div>
+</form>
 
 <div class="modal fade" id="examplecodemodal" tabindex="-1" role="dialog" aria-labelledby="exampleLabel" aria-hidden="true">
     <div class="modal-dialog" role="document">
@@ -116,7 +117,7 @@
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close">
                 </button>
             </div>
-            
+
             <div class="modal-body">
                 <pre>
 <code>
