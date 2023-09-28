@@ -11,22 +11,22 @@
     <script type="module">
         import * as utils from '/js/app/utils.module.js'
 
-        $('.btn-delete').click(function() {
+        $('.btn-delete').click(function () {
             var cfm = confirm('Delete Confirmation?');
             if (cfm) {
                 deletePost($(this).data('postid'));
             }
         });
 
-        $('.btn-restore').click(function() {
+        $('.btn-restore').click(function () {
             restorePost($(this).data("postid"));
         });
 
-        $('.btn-empty-recbin').click(function() {
+        $('.btn-empty-recbin').click(function () {
             callApi(`/api/post/recyclebin`, 'DELETE', {},
                 (resp) => {
                     blogToast.success('Cleared');
-                    setTimeout(function() {
+                    setTimeout(function () {
                         window.location.reload();
                     }, 800);
                 });
@@ -57,11 +57,7 @@
     <partial name="_PostManageHeader" />
 }
 
-<div>
-    <a href="#" class="btn btn-sm btn-outline-danger btn-empty-recbin mb-3">
-            <i class="bi-trash"></i>
-            @SharedLocalizer["Empty Recycle Bin"]
-    </a>
+<div class="admin-main-entry-container">
     @if (posts.Any())
     {
         foreach (var post in posts.OrderByDescending(p => p.CreateTimeUtc))
@@ -93,4 +89,11 @@
     {
         <partial name="_NoPosts" />
     }
+</div>
+
+<div class="admin-settings-action-container border-top pt-2 mt-2">
+    <a href="#" class="btn btn-outline-danger btn-empty-recbin mb-3">
+        <i class="bi-trash"></i>
+        @SharedLocalizer["Empty Recycle Bin"]
+    </a>
 </div>
