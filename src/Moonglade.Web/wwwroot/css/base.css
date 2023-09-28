@@ -154,6 +154,14 @@ h3 small {
     text-align: left;
 }
 
+.heading-ownername {
+    text-shadow: 1px 1px 3px #4A4A4A;
+}
+
+.p-description {
+    text-shadow: 1px 1px 1px #333;
+}
+
 .hottag-li a > span {
     display: block;
     font-size: 30px;
