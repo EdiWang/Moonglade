@@ -19,7 +19,7 @@
                         <a class="btn btn-sm btn-outline-secondary mb-1"
                            asp-page="/CategoryList"
                            asp-route-routeName="@item.RouteName.ToLower()">
-                            <i class="bi-folder-fill" aria-hidden="true"></i>
+                            <i class="bi-folder2" aria-hidden="true"></i>
                             @item.DisplayName
                         </a>
                     </li>
@@ -32,7 +32,7 @@
                         <li>
                             <a asp-page="/TagList"
                                asp-route-normalizedName="@item.NormalizedName" class="btn btn-sm btn-outline-secondary mb-1">
-                                <i class="bi-tag-fill" aria-hidden="true"></i>
+                                <i class="bi-tag" aria-hidden="true"></i>
                                 @item.DisplayName
                             </a>
                         </li>
@@ -61,7 +61,7 @@
                 </div>
             </div>
             <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">@SharedLocalizer["Close"]</button>
+                <button type="button" class="btn btn-outline-accent" data-bs-dismiss="modal">@SharedLocalizer["Close"]</button>
             </div>
         </div>
     </div>
