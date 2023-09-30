@@ -1,7 +1,7 @@
 ﻿@page "/post/{year:int:length(4)}/{month:int:range(1,12)?}"
 @model Moonglade.Web.Pages.ArchiveListModel
 @{
-    ViewBag.TitlePrefix = $"All Posts in {Model.ArchiveInfo}";
+    ViewBag.TitlePrefix = $"Posts in {Model.ArchiveInfo}";
     ViewBag.BodyClass = "body-archive-list bg-gray-1";
 }
 
@@ -21,8 +21,6 @@
         foreach (var item in Model.Posts.OrderByDescending(s => s.PubDateUtc))
         {
             <partial name="_PostListEntry" model="item" />
-            <div class="mb-4 d-none d-md-block"></div>
-            <hr class="d-none d-md-block" />
         }
     }
 </div>
