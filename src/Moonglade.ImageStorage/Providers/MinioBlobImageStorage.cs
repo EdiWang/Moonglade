@@ -1,5 +1,6 @@
 ﻿using Microsoft.Extensions.Logging;
 using Minio;
+using Minio.DataModel.Args;
 using Minio.Exceptions;
 
 namespace Moonglade.ImageStorage.Providers;
@@ -8,7 +9,7 @@ public class MinioBlobImageStorage : IBlogImageStorage
 {
     public string Name => nameof(MinioBlobImageStorage);
 
-    private readonly MinioClient _client;
+    private readonly IMinioClient _client;
     private readonly string _bucketName;
 
     private readonly ILogger<MinioBlobImageStorage> _logger;
