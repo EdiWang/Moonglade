@@ -13,6 +13,4 @@ public class ImageStorageSettings
     public AzureStorageSettings AzureStorageSettings { get; set; }
 
     public MinioStorageSettings MinioStorageSettings { get; set; }
-
-    public QiniuStorageSettings QiniuStorageSettings { get; set; }
 }

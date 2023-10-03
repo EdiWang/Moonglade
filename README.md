@@ -133,21 +133,6 @@ You need to hava an [**Minio Server**](https://docs.min.io/).
 }
 ```
 
-#### [Qiniu Blob Storage](https://qiniu.com/) (Almost free)
-
-You need to hava an Qiniu cloud account, and use [Kodo](https://www.qiniu.com/products/kodo) storage service. 
-
-```json
-"Provider": "qiniustorage"
-"QiniuStorageSettings": {
-  "EndPoint": "Your Custom Domain",
-  "AccessKey": "Your Access Key",
-  "SecretKey": "Your Secret Key",
-  "BucketName": "Your BucketName",
-  "WithSSL": false
-}
-```
-
 #### File System (Not Recommended)
 
 You can also choose File System for image storage if you don't have a cloud option.
