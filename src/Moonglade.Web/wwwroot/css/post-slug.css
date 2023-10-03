@@ -2,6 +2,7 @@
     top: 0;
     right: 0;
     width: 50px;
+    border-radius: 0 var(--bs-border-radius-lg);
 }
 
 #extlink-url {
@@ -139,7 +140,7 @@ h1.post-title,
 
 pre,
 code {
-    font-family: "Cascadia Code", SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
+    font-family: "Cascadia Code", Consolas, SFMono-Regular, Menlo, Monaco, "Liberation Mono", "Courier New", monospace;
 }
 
 .dynamic-heading-tag {
