@@ -92,8 +92,6 @@
             </text>
         }
 
-                                                var pid = document.querySelector('article').dataset.postid;
-
         window.fitImageToDevicePixelRatio = @BlogConfig.ImageSettings.FitImageToDevicePixelRatio.ToString().ToLower();
 
         var q = new QRious({
@@ -104,6 +102,7 @@
 
         $('#comment-form').on('submit', function (e) {
             e.preventDefault();
+            let pid = document.querySelector('article').dataset.postid;
             viewpost.submitComment(pid);
         });
 
@@ -185,6 +184,7 @@
         </a>
     }
 </article>
+
 @if (BlogConfig.ContentSettings.EnableComments)
 {
     var days = DateTime.UtcNow.Date.Subtract(Model.Post.PubDateUtc.GetValueOrDefault()).Days;
@@ -201,13 +201,13 @@
                 <div class="d-print-none">
                     @if (Model.Post.CommentEnabled)
                     {
-                        <div class="comment-form-containter p-3 rounded-3 shadow-sm border bg-white mb-4">
+                        <section class="comment-form-containter p-3 rounded-3 shadow-sm border bg-white mb-4">
                             <h6 class="card-subtitle mb-3 text-muted">
                                 <i class="bi-chat-left-text"></i>
                                 @SharedLocalizer["Comments"]
                             </h6>
                             <partial name="_CommentForm" />
-                        </div>
+                        </section>
                     }
                     else
                     {
