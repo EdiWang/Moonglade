@@ -151,7 +151,7 @@ code {
 }
 
 @media (max-width: 767px) {
-    h1 .post-title, .post-content h1 {
+    h1.post-title, .post-content h1 {
         font-size: 1.4rem;
     }
 
