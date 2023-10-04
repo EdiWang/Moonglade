@@ -192,7 +192,7 @@ There are a few individuals already setup thier blogs using Moonglade on Azure (
 
 *Just Submit PR or issue if you want your blog to be listed here*
 
-## Disclaimer
+## ⚖️ Disclaimer
 
 The following disclaimer applies to the software named "Moonglade" developed by Edi Wang and other [contributors](https://github.com/EdiWang/Moonglade/graphs/contributors) (hereinafter referred to as "the software developer"):
 
