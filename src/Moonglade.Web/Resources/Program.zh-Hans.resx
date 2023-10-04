@@ -546,11 +546,8 @@
   <data name="No Archive" xml:space="preserve">
     <value>暂无归档</value>
   </data>
-  <data name="No Comments" xml:space="preserve">
-    <value>没有评论</value>
-  </data>
-  <data name="No Customized Menus" xml:space="preserve">
-    <value>无自定义菜单</value>
+  <data name="No comments yet" xml:space="preserve">
+    <value>暂无评论</value>
   </data>
   <data name="no items to show" xml:space="preserve">
     <value>无条目需要显示</value>
@@ -738,9 +735,6 @@
   <data name="Sign In" xml:space="preserve">
     <value>登录</value>
   </data>
-  <data name="Site Icon Files" xml:space="preserve">
-    <value>网站图标文件</value>
-  </data>
   <data name="Start Time" xml:space="preserve">
     <value>启动时间</value>
   </data>
@@ -752,9 +746,6 @@
   </data>
   <data name="Submit" xml:space="preserve">
     <value>提交</value>
-  </data>
-  <data name="Subscribe Recent 20 Posts" xml:space="preserve">
-    <value>订阅最近20篇文章</value>
   </data>
   <data name="Subscription" xml:space="preserve">
     <value>订阅</value>
@@ -793,7 +784,7 @@
     <value>必填</value>
   </data>
   <data name="This is a preview for draft content." xml:space="preserve">
-    <value>本文为草稿预览</value>
+    <value>该页面为草稿预览</value>
   </data>
   <data name="Time Zone" xml:space="preserve">
     <value>时区</value>
