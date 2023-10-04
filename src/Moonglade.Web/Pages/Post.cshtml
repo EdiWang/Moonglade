@@ -33,25 +33,7 @@
     <meta name="author" content="@(string.IsNullOrWhiteSpace(Model.Post.Author) ? BlogConfig.GeneralSettings.OwnerName : Model.Post.Author) " />
     @if (BlogConfig.GeneralSettings.UseDublinCoreMetaData)
     {
-        <meta name="DC.Title" content="@Model.Post.Title" />
-        <meta name="DC.Publisher" content="@(string.IsNullOrWhiteSpace(Model.Post.Author) ? BlogConfig.GeneralSettings.OwnerName : Model.Post.Author)" />
-        <meta name="DC.Language" content="@Model.Post.ContentLanguageCode" />
-        <meta name="DC.Creator" content="@(string.IsNullOrWhiteSpace(Model.Post.Author) ? BlogConfig.GeneralSettings.OwnerName : Model.Post.Author)" />
-        <meta name="DC.Type" content="Text" />
-        <meta name="DC.Format" content="text/html" />
-        <meta name="DC.Format.MIME" content="text/html" />
-        <meta name="DC.Format.SysReq" content="Internet browser" />
-        @if (Model.Post.OriginLink != null)
-        {
-            <meta name="DC.Source" content="@Model.Post.OriginLink">
-        }
-        <meta name="DC.Subject" content="@string.Join(", ", Model.Post.Categories.Select(t => t.DisplayName))" />
-        <meta name="DC.Subject.Keyword" content="@string.Join(", ", Model.Post.Tags.Select(t => t.NormalizedName))" />
-        @if (BlogConfig.GeneralSettings.DcLicenseUrl != null)
-        {
-            <meta name="DCTERMS.license" scheme="DCTERMS.URI" content="@BlogConfig.GeneralSettings.DcLicenseUrl" />
-            <meta name="DCTERMS.rightsHolder" content="@(string.IsNullOrWhiteSpace(Model.Post.Author) ? BlogConfig.GeneralSettings.OwnerName : Model.Post.Author) " />
-        }
+        <partial name="_DublinCoreMetaData" model="Model" />
     }
     <link href="~/css/post-slug.css" rel="stylesheet" asp-append-version="true" />
     <link href="~/css/highlighter-custom.css" rel="stylesheet" asp-append-version="true" />
@@ -110,7 +92,7 @@
             </text>
         }
 
-                                var pid = document.querySelector('article').dataset.postid;
+                                        var pid = document.querySelector('article').dataset.postid;
 
         window.fitImageToDevicePixelRatio = @BlogConfig.ImageSettings.FitImageToDevicePixelRatio.ToString().ToLower();
 
@@ -270,7 +252,7 @@
                                         <div class="col-3">
                                             <button id="btn-submit-comment" type="submit" class="btn btn-accent float-end">
                                                 <span id="loadingIndicator" class="spinner-border spinner-border-sm" role="status" aria-hidden="true" style="display: none;"></span>
-                                                
+
                                                 <span class="bi-send"></span>
                                                 @SharedLocalizer["Submit"]
                                             </button>
