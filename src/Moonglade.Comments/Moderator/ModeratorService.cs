@@ -69,8 +69,36 @@ public class AzureFunctionModeratorService : IModeratorService
         }
     }
 
-    public Task<bool> Detect(params string[] input)
+    public async Task<bool> Detect(params string[] input)
     {
-        throw new NotImplementedException();
+        try
+        {
+            var contents = input.Select(p => new Content()
+            {
+                Id = Guid.NewGuid().ToString(),
+                RawText = p
+            });
+
+            var payload = new Payload
+            {
+                OriginAspNetRequestId = _httpContextAccessor.HttpContext?.TraceIdentifier,
+                Contents = contents.ToArray()
+            };
+
+            var response = await _httpClient.PostAsync(
+                $"/api/{_provider}/detect",
+                new StringContent(JsonSerializer.Serialize(payload),
+                    Encoding.UTF8,
+                    "application/json"));
+
+            response.EnsureSuccessStatusCode();
+            var moderatorResponse = await response.Content.ReadFromJsonAsync<ModeratorResponse>();
+            return moderatorResponse?.Positive ?? false;
+        }
+        catch (Exception e)
+        {
+            _logger.LogError(e.Message, e);
+            return false;
+        }
     }
 }
