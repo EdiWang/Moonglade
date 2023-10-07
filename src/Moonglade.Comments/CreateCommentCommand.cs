@@ -1,5 +1,4 @@
 ﻿using MediatR;
-using Moonglade.Comments.Moderators;
 using Moonglade.Configuration;
 using Moonglade.Data.Entities;
 using Moonglade.Data.Infrastructure;
@@ -27,11 +26,11 @@ public class CreateCommentCommandHandler : IRequestHandler<CreateCommentCommand,
 {
     private readonly IBlogConfig _blogConfig;
     private readonly IRepository<PostEntity> _postRepo;
-    private readonly ICommentModerator _moderator;
+    private readonly IModeratorService _moderator;
     private readonly IRepository<CommentEntity> _commentRepo;
 
     public CreateCommentCommandHandler(
-        IBlogConfig blogConfig, IRepository<PostEntity> postRepo, ICommentModerator moderator, IRepository<CommentEntity> commentRepo)
+        IBlogConfig blogConfig, IRepository<PostEntity> postRepo, IModeratorService moderator, IRepository<CommentEntity> commentRepo)
     {
         _blogConfig = blogConfig;
         _postRepo = postRepo;
@@ -46,11 +45,11 @@ public class CreateCommentCommandHandler : IRequestHandler<CreateCommentCommand,
             switch (_blogConfig.ContentSettings.WordFilterMode)
             {
                 case WordFilterMode.Mask:
-                    request.Payload.Username = await _moderator.ModerateContent(request.Payload.Username);
-                    request.Payload.Content = await _moderator.ModerateContent(request.Payload.Content);
+                    request.Payload.Username = await _moderator.Mask(request.Payload.Username);
+                    request.Payload.Content = await _moderator.Mask(request.Payload.Content);
                     break;
                 case WordFilterMode.Block:
-                    if (await _moderator.HasBadWord(request.Payload.Username, request.Payload.Content))
+                    if (await _moderator.Detect(request.Payload.Username, request.Payload.Content))
                     {
                         await Task.CompletedTask;
                         return (-1, null);

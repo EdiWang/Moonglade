@@ -145,7 +145,7 @@ void ConfigureServices(IServiceCollection services)
             .AddScoped<ITimeZoneResolver, BlogTimeZoneResolver>()
             .AddBlogConfig()
             .AddBlogAuthenticaton(builder.Configuration)
-            .AddComments(builder.Configuration)
+            .AddContentModerator(builder.Configuration)
             .AddImageStorage(builder.Configuration, options => options.ContentRootPath = builder.Environment.ContentRootPath)
             .Configure<List<ManifestIcon>>(builder.Configuration.GetSection("ManifestIcons"));
 
