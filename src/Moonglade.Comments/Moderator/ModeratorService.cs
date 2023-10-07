@@ -20,6 +20,7 @@ public class AzureFunctionModeratorService : IModeratorService
     private readonly ILogger<AzureFunctionModeratorService> _logger;
     private readonly string _provider;
     private readonly HttpClient _httpClient;
+    private readonly bool _enabled;
 
     public AzureFunctionModeratorService(
         IHttpContextAccessor httpContextAccessor, ILogger<AzureFunctionModeratorService> logger, HttpClient httpClient, IConfiguration configuration)
@@ -34,17 +35,20 @@ public class AzureFunctionModeratorService : IModeratorService
         if (!string.IsNullOrWhiteSpace(configuration["ContentModerator:FunctionEndpoint"]))
         {
             _httpClient.BaseAddress = new(configuration["ContentModerator:FunctionEndpoint"]);
+            _httpClient.DefaultRequestHeaders.Add("x-functions-key", configuration["ContentModerator:FunctionKey"]);
+            _enabled = true;
         }
         else
         {
-            _logger.LogWarning("ContentModerator:FunctionEndpoint is empty");
+            _logger.LogError("ContentModerator:FunctionEndpoint is empty");
+            _enabled = false;
         }
-
-        _httpClient.DefaultRequestHeaders.Add("x-functions-key", configuration["ContentModerator:FunctionKey"]);
     }
 
     public async Task<string> Mask(string input)
     {
+        if (!_enabled) return input;
+
         try
         {
             var payload = new Payload
@@ -80,6 +84,8 @@ public class AzureFunctionModeratorService : IModeratorService
 
     public async Task<bool> Detect(params string[] input)
     {
+        if (!_enabled) return false;
+
         try
         {
             var contents = input.Select(p => new Content()
