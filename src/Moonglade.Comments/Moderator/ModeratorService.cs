@@ -30,7 +30,16 @@ public class AzureFunctionModeratorService : IModeratorService
         _httpClient = httpClient;
 
         _httpClient.Timeout = TimeSpan.FromSeconds(30);
-        _httpClient.BaseAddress = new(configuration["ContentModerator:FunctionEndpoint"]!);
+
+        if (!string.IsNullOrWhiteSpace(configuration["ContentModerator:FunctionEndpoint"]))
+        {
+            _httpClient.BaseAddress = new(configuration["ContentModerator:FunctionEndpoint"]);
+        }
+        else
+        {
+            _logger.LogWarning("ContentModerator:FunctionEndpoint is empty");
+        }
+
         _httpClient.DefaultRequestHeaders.Add("x-functions-key", configuration["ContentModerator:FunctionKey"]);
     }
 
