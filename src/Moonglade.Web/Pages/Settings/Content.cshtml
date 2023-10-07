@@ -1,4 +1,6 @@
 ﻿@page "/admin/settings/content"
+@inject IConfiguration Configuration
+
 @section scripts{
     <script type="module">
         import * as settings from '/js/app/admin.settings.module.js';
@@ -142,41 +144,58 @@
                             </div>
                         </div>
 
-                        <div class="settings-entry2 row align-items-center py-3 px-2 rounded-3 shadow-sm border bg-white mb-2">
-                            <div class="col-auto">
-                                <i class="bi-translate settings-entry-icon"></i>
-                            </div>
-                            <div class="col">
-                                <label asp-for="@settings.EnableWordFilter" class="form-check-label"></label>
-                                <div class="form-text">Please follow <a href="https://github.com/EdiWang/Moonglade.ContentSecurity" target="_blank">instruction</a> to setup content security function</div>
-                            </div>
-                            <div class="col-md-5 text-end">
-                                <div class="form-check form-switch form-control-lg">
-                                    <input type="hidden" name="EnableWordFilter" value="false">
-                                    <input type="checkbox" name="EnableWordFilter" value="true" class="form-check-input" @(settings.EnableWordFilter ? "checked" : null)>
+                        @if (!string.IsNullOrWhiteSpace(Configuration["ContentModerator:FunctionEndpoint"]))
+                        {
+                            <div class="settings-entry2 row align-items-center py-3 px-2 rounded-3 shadow-sm border bg-white mb-2">
+                                <div class="col-auto">
+                                    <i class="bi-translate settings-entry-icon"></i>
+                                </div>
+                                <div class="col">
+                                    <label asp-for="@settings.EnableWordFilter" class="form-check-label"></label>
+                                </div>
+                                <div class="col-md-5 text-end">
+                                    <div class="form-check form-switch form-control-lg">
+                                        <input type="hidden" name="EnableWordFilter" value="false">
+                                        <input type="checkbox" name="EnableWordFilter" value="true" class="form-check-input" @(settings.EnableWordFilter ? "checked" : null)>
+                                    </div>
                                 </div>
                             </div>
-                        </div>
 
-                        <div class="settings-entry2 row align-items-center py-3 px-2 rounded-3 shadow-sm border bg-white mb-2">
-                            <div class="col-auto">
-                                <i class="bi-check2-circle settings-entry-icon"></i>
-                            </div>
-                            <div class="col">
-                                <label asp-for="@settings.WordFilterMode" class="me-4"></label>
-                                <div class="form-text">@SharedLocalizer["Blocked words will be masked as * in content."]</div>
-                            </div>
-                            <div class="col-md-5 text-end">
-                                <div class="form-check form-check-inline">
-                                    @Html.RadioButtonFor(model => settings.WordFilterMode, WordFilterMode.Mask, new { id = WordFilterMode.Mask.ToString(), @class = "form-check-input" })
-                                    <label class="form-check-label" for="@WordFilterMode.Mask">@SharedLocalizer["Mask Word"]</label>
+                            <div class="settings-entry2 row align-items-center py-3 px-2 rounded-3 shadow-sm border bg-white mb-2">
+                                <div class="col-auto">
+                                    <i class="bi-check2-circle settings-entry-icon"></i>
                                 </div>
-                                <div class="form-check form-check-inline">
-                                    @Html.RadioButtonFor(model => settings.WordFilterMode, WordFilterMode.Block, new { id = WordFilterMode.Block.ToString(), @class = "form-check-input" })
-                                    <label class="form-check-label" for="@WordFilterMode.Block">@SharedLocalizer["Block Comment"]</label>
+                                <div class="col">
+                                    <label asp-for="@settings.WordFilterMode" class="me-4"></label>
+                                    <div class="form-text">@SharedLocalizer["Blocked words will be masked as * in content."]</div>
+                                </div>
+                                <div class="col-md-5 text-end">
+                                    <div class="form-check form-check-inline">
+                                        @Html.RadioButtonFor(model => settings.WordFilterMode, WordFilterMode.Mask, new { id = WordFilterMode.Mask.ToString(), @class = "form-check-input" })
+                                        <label class="form-check-label" for="@WordFilterMode.Mask">@SharedLocalizer["Mask Word"]</label>
+                                    </div>
+                                    <div class="form-check form-check-inline">
+                                        @Html.RadioButtonFor(model => settings.WordFilterMode, WordFilterMode.Block, new { id = WordFilterMode.Block.ToString(), @class = "form-check-input" })
+                                        <label class="form-check-label" for="@WordFilterMode.Block">@SharedLocalizer["Block Comment"]</label>
+                                    </div>
                                 </div>
                             </div>
-                        </div>
+                        }
+                        else
+                        {
+                            <div class="settings-entry2 row align-items-center py-3 px-2 rounded-3 shadow-sm border bg-white mb-2">
+                                <div class="col-auto">
+                                    <i class="bi-translate settings-entry-icon"></i>
+                                </div>
+                                <div class="col">
+                                    <label asp-for="@settings.EnableWordFilter" class="form-check-label"></label>
+                                    <div class="form-text">Please follow <a href="https://github.com/EdiWang/Moonglade.ContentSecurity" target="_blank">instruction</a> to setup content security function</div>
+                                </div>
+                                <div class="col-md-5 text-end">
+                                    <a class="btn btn-sm btn-outline-accent" href="https://github.com/EdiWang/Moonglade.ContentSecurity" target="_blank">Setup</a>
+                                </div>
+                            </div>
+                        }
                     </div>
 
                     <div class="comment-settings-3rd">
