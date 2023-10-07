@@ -1,7 +1,6 @@
-﻿using Moonglade.FriendLink;
+﻿using Moonglade.Data.Entities;
 using System.Security.Cryptography;
 using System.Xml;
-using Moonglade.Data.Entities;
 
 namespace Moonglade.Web.Middleware;
 

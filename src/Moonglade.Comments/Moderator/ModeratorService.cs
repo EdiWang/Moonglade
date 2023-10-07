@@ -1,7 +1,7 @@
 ﻿using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
 
-namespace Moonglade.Comments;
+namespace Moonglade.Comments.Moderator;
 
 public interface IModeratorService
 {

@@ -1,4 +1,5 @@
 ﻿using MediatR;
+using Moonglade.Comments.Moderator;
 using Moonglade.Configuration;
 using Moonglade.Data.Entities;
 using Moonglade.Data.Infrastructure;
