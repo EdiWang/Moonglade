@@ -28,11 +28,6 @@ public class ContentSettings : IBlogSettings
     [Range(0, 65536)]
     public int CloseCommentAfterDays { get; set; }
 
-    [DataType(DataType.MultilineText)]
-    [Display(Name = "Blocked words")]
-    [MaxLength(2048)]
-    public string DisharmonyWords { get; set; } = string.Empty;
-
     [Display(Name = "Enable word filter")]
     public bool EnableWordFilter { get; set; }
 
@@ -84,7 +79,6 @@ public class ContentSettings : IBlogSettings
         EnableWordFilter = false,
         PostListPageSize = 10,
         HotTagAmount = 10,
-        DisharmonyWords = "fuck|shit",
         CalloutSectionHtmlPitch = string.Empty
     };
 }

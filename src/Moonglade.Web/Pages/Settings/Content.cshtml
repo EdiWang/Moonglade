@@ -148,6 +148,7 @@
                             </div>
                             <div class="col">
                                 <label asp-for="@settings.EnableWordFilter" class="form-check-label"></label>
+                                <div class="form-text">Please follow <a href="https://github.com/EdiWang/Moonglade.ContentSecurity" target="_blank">instruction</a> to setup content security function</div>
                             </div>
                             <div class="col-md-5 text-end">
                                 <div class="form-check form-switch form-control-lg">
@@ -163,6 +164,7 @@
                             </div>
                             <div class="col">
                                 <label asp-for="@settings.WordFilterMode" class="me-4"></label>
+                                <div class="form-text">@SharedLocalizer["Blocked words will be masked as * in content."]</div>
                             </div>
                             <div class="col-md-5 text-end">
                                 <div class="form-check form-check-inline">
@@ -174,18 +176,6 @@
                                     <label class="form-check-label" for="@WordFilterMode.Block">@SharedLocalizer["Block Comment"]</label>
                                 </div>
                             </div>
-                        </div>
-
-                        <div class="mb-2">
-                            <div class="form-floating">
-                                <textarea asp-for="@settings.DisharmonyWords"
-                                          placeholder="@Html.DisplayNameFor(m => settings.DisharmonyWords)"
-                                          class="form-control form-control-sm h-200px"
-                                          spellcheck="false"></textarea>
-                                <label class="form-label" asp-for="@settings.DisharmonyWords"></label>
-                            </div>
-
-                            <small class="form-text text-muted">@SharedLocalizer["Blocked words will be masked as *** in comment content."]</small>
                         </div>
                     </div>
 
@@ -276,7 +266,7 @@
                             </div>
                         </div>
                     </div>
-                    
+
                     <div class="settings-entry2 row align-items-center py-3 px-2 rounded-3 shadow-sm border bg-white mb-2">
                         <div class="col-auto">
                             <i class="bi-alarm settings-entry-icon"></i>
