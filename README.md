@@ -148,7 +148,7 @@ You can also choose File System for image storage if you don't have a cloud opti
 
 ### 🤬 Comment Moderator
 
-- [Comment Moderator Settings](https://github.com/EdiWang/Moonglade/wiki/Comment-Moderator-Settings)
+See https://github.com/EdiWang/Moonglade.ContentSecurity
 
 ### 📧 Email Notification
 
