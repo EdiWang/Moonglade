@@ -2,7 +2,5 @@
 
 public class AuthenticationSettings
 {
-    public AuthenticationProvider Provider { get; set; }
-
-    public AuthenticationSettings() => Provider = AuthenticationProvider.Local;
+    public AuthenticationProvider Provider { get; set; } = AuthenticationProvider.Local;
 }

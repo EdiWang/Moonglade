@@ -68,7 +68,7 @@ public class AssetsController : ControllerBase
         }
         catch (Exception e)
         {
-            _logger.LogError("Invalid base64img Image", e);
+            _logger.LogError(e, "Invalid base64img Image");
             return Conflict(e.Message);
         }
 
@@ -80,8 +80,8 @@ public class AssetsController : ControllerBase
     #region Site Icon
 
     [ResponseCache(Duration = 3600)]
-    [HttpHead(@"/{filename:regex(^(favicon|android-icon|apple-icon).*(ico|png)$)}")]
-    [HttpGet(@"/{filename:regex(^(favicon|android-icon|apple-icon).*(ico|png)$)}")]
+    [HttpHead("/{filename:regex(^(favicon|android-icon|apple-icon).*(ico|png)$)}")]
+    [HttpGet("/{filename:regex(^(favicon|android-icon|apple-icon).*(ico|png)$)}")]
     [ProducesResponseType(StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
     public IActionResult SiteIcon(string filename)
@@ -118,7 +118,7 @@ public class AssetsController : ControllerBase
         }
         catch (FormatException e)
         {
-            _logger.LogError($"Error {nameof(SiteIconOrigin)}(), Invalid Base64 string", e);
+            _logger.LogError(e, $"Error {nameof(SiteIconOrigin)}(), Invalid Base64 string");
             return PhysicalFile(fallbackImageFile, "image/png");
         }
     }

@@ -93,7 +93,5 @@ public static partial class ApplicationBuilderExtensions
 
 public class WebManifestMiddlewareOptions
 {
-    public string ThemeColor { get; set; }
-
-    public WebManifestMiddlewareOptions() => ThemeColor = "#333333";
+    public string ThemeColor { get; set; } = "#333333";
 }

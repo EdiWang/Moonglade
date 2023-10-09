@@ -150,7 +150,7 @@ public class SettingsController : ControllerBase
                 }
                 catch (FormatException e)
                 {
-                    _logger.LogError($"Error {nameof(Image)}(), Invalid Base64 string", e);
+                    _logger.LogError(e, $"Error {nameof(Image)}(), Invalid Base64 string");
                 }
             }
         }
