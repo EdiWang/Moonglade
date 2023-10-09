@@ -28,7 +28,7 @@ public class CommentListViewComponent : ViewComponent
         catch (Exception e)
         {
             _logger.LogError(e, $"Error reading comments for post id: {postId}");
-            return Content(e.Message);
+            return Content("ERROR");
         }
     }
 }

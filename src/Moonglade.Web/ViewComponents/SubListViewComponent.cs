@@ -25,8 +25,8 @@ public class SubListViewComponent : ViewComponent
         }
         catch (Exception e)
         {
-            _logger.LogError(e, "Error.");
-            return Content(e.Message);
+            _logger.LogError(e, e.Message);
+            return Content("ERROR");
         }
     }
 }

@@ -2,11 +2,13 @@
 
 public class MenuViewComponent : ViewComponent
 {
+    private readonly ILogger<MenuViewComponent> _logger;
     private readonly IBlogConfig _blogConfig;
 
-    public MenuViewComponent(IBlogConfig blogConfig)
+    public MenuViewComponent(IBlogConfig blogConfig, ILogger<MenuViewComponent> logger)
     {
         _blogConfig = blogConfig;
+        _logger = logger;
     }
 
     public IViewComponentResult Invoke()
@@ -18,7 +20,8 @@ public class MenuViewComponent : ViewComponent
         }
         catch (Exception e)
         {
-            return Content(e.Message);
+            _logger.LogError(e, e.Message);
+            return Content("ERROR");
         }
     }
 }
