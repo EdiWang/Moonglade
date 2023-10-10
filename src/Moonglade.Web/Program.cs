@@ -299,6 +299,7 @@ void ConfigureMiddleware()
     else
     {
         app.UseStatusCodePages(ConfigureStatusCodePages.Handler).UseExceptionHandler("/error");
+        app.UseHsts();
     }
 
     app.UseHttpsRedirection();
