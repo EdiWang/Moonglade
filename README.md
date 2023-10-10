@@ -10,7 +10,7 @@ The [.NET](https://dotnet.microsoft.com/) blog system that optimized for [**Micr
 
 - Please use stable code from [Release](https://github.com/EdiWang/Moonglade/releases) branch rather than master branch.
 
-- It is recommended to enable HTTP/2 support on your web server.
+- HTTPS is required, and it is recommended to enable HTTP/2 support on your web server.
 
 ### ☁ Full Deploy on Azure
 
