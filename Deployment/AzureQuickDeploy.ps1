@@ -247,22 +247,12 @@ else {
 }
 
 if ($createCDN) {
-    #Write-Host "Configuring CDN endpoint for Image Storage"
-    #if ($useLinuxPlanWithDocker){
-    #    $echo = az webapp config appsettings set -g $rsgName -n $webAppName --settings ImageStorage__CDNSettings__EnableCDNRedirect=true
-    #    $echo = az webapp config appsettings set -g $rsgName -n $webAppName --settings ImageStorage__CDNSettings__CDNEndpoint="https://#$cdnEndpointName.azureedge.net/$storageContainerName"
-    #}
-    #else{
-    #    $echo = az webapp config appsettings set -g $rsgName -n $webAppName --settings ImageStorage:CDNSettings:EnableCDNRedirect=true
-    #    $echo = az webapp config appsettings set -g $rsgName -n $webAppName --settings ImageStorage:CDNSettings:CDNEndpoint="https://#$cdnEndpointName.azureedge.net/$storageContainerName"
-    #}
-    
     Write-Host "It can take up to 10 minutes for endpoint '$cdnEndpointName.azureedge.net' to propagate, after that, please set CDN endpoint to 'https://#$cdnEndpointName.azureedge.net/$storageContainerName' in blog admin settings." -ForegroundColor Yellow
 }
 
 if (!$useLinuxPlanWithDocker) {
     Write-Host "Pulling source code and run build on Azure (this takes time, please wait)..."
-    $echo = az webapp deployment source config --branch master --manual-integration --name $webAppName --repo-url https://github.com/EdiWang/Moonglade --resource-group $rsgName
+    $echo = az webapp deployment source config --branch release --manual-integration --name $webAppName --repo-url https://github.com/EdiWang/Moonglade --resource-group $rsgName
 }
 
 az webapp restart --name $webAppName --resource-group $rsgName
