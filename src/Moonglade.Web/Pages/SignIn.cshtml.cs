@@ -52,7 +52,7 @@ public class SignInModel : PageModel
     {
         switch (_authenticationSettings.Provider)
         {
-            case AuthenticationProvider.AzureAD:
+            case AuthenticationProvider.EntraID:
                 return Challenge(
                     new AuthenticationProperties { RedirectUri = "/" },
                     OpenIdConnectDefaults.AuthenticationScheme);
