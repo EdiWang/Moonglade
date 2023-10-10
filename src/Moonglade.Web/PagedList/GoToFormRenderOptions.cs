@@ -39,11 +39,6 @@ public class GoToFormRenderOptions
     ///</example>
     public string SubmitButtonFormat { get; set; }
 
-    /// <summary>
-    /// Submit button width in px
-    /// </summary>
-    public int SubmitButtonWidth { get; set; }
-
     ///<summary>
     /// The querystring key this form should submit the new page number as.
     ///</summary>
@@ -59,19 +54,4 @@ public class GoToFormRenderOptions
     /// "number"
     ///</example>
     public string InputFieldType { get; set; }
-
-    /// <summary>
-    /// Input width in px
-    /// </summary>
-    public int InputWidth { get; set; }
-
-    /// <summary>
-    /// Class that will be applied for input field
-    /// </summary>
-    public String InputFieldClass { get; set; }
-
-    /// <summary>
-    /// Class that will be applied for submit button
-    /// </summary>
-    public string SubmitButtonClass { get; set; }
 }

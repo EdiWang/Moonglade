@@ -1,5 +1,5 @@
-﻿using System.Text.Encodings.Web;
-using Microsoft.AspNetCore.Mvc.Rendering;
+﻿using Microsoft.AspNetCore.Mvc.Rendering;
+using System.Text.Encodings.Web;
 
 namespace Moonglade.Web.PagedList;
 
