@@ -31,12 +31,6 @@ public class HtmlHelper
             .ToString(TagRenderMode.Normal);
     }
 
-    private static string TagBuilderToString(TagBuilder tagBuilder, TagRenderMode renderMode)
-    {
-        return tagBuilder
-            .ToString(renderMode);
-    }
-
     private TagBuilder WrapInListItem(string text)
     {
         var li = _tagBuilderFactory
