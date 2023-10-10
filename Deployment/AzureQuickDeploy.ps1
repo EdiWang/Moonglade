@@ -42,17 +42,9 @@ else {
 while($true) {
     $webAppName = Read-Host -Prompt "Enter webapp name"
     $webAppName = $webAppName.Trim()
-    if($webAppName.ToLower() -match "xbox") {
-        Write-Host "Webapp name cannot have keywords xbox,windows,login,microsoft"
-        continue
-    } elseif ($webAppName.ToLower() -match "windows") {
-        Write-Host "Webapp name cannot have keywords xbox,windows,login,microsoft"
-        continue
-    } elseif ($webAppName.ToLower() -match "login") {
-        Write-Host "Webapp name cannot have keywords xbox,windows,login,microsoft"
-        continue
-    } elseif ($webAppName.ToLower() -match "microsoft") {
-        Write-Host "Webapp name cannot have keywords xbox,windows,login,microsoft"
+    $keywords = @("xbox", "windows", "login", "microsoft")
+    if ($keywords -contains $webAppName.ToLower()) {
+        Write-Host "Webapp name cannot have keywords xbox, windows, login, microsoft"
         continue
     }
     # Create the request
