@@ -438,48 +438,4 @@ public class HtmlHelper
 
         return TagBuilderToString(outerDiv);
     }
-
-    public string PagedListGoToPageForm(IPagedList list, string formAction, GoToFormRenderOptions options)
-    {
-        var form = _tagBuilderFactory
-            .Create("form");
-
-        form.AddCssClass("PagedList-goToPage");
-        form.Attributes.Add("action", formAction);
-        form.Attributes.Add("method", "get");
-
-        var fieldset = _tagBuilderFactory
-            .Create("fieldset");
-
-        var label = _tagBuilderFactory
-            .Create("label");
-
-        label.Attributes.Add("for", options.InputFieldName);
-
-        SetInnerText(label, options.LabelFormat);
-
-        var input = _tagBuilderFactory
-            .Create("input");
-
-        input.Attributes.Add("type", options.InputFieldType);
-        input.Attributes.Add("name", options.InputFieldName);
-        input.Attributes.Add("value", list.PageNumber.ToString());
-        input.Attributes.Add("class", options.InputFieldClass);
-        input.Attributes.Add("Style", $"width: {options.InputWidth}px");
-
-        var submit = _tagBuilderFactory
-            .Create("input");
-
-        submit.Attributes.Add("type", "submit");
-        submit.Attributes.Add("value", options.SubmitButtonFormat);
-        submit.Attributes.Add("class", options.SubmitButtonClass);
-        submit.Attributes.Add("Style", $"width: {options.SubmitButtonWidth}px");
-
-        AppendHtml(fieldset, TagBuilderToString(label));
-        AppendHtml(fieldset, TagBuilderToString(input, TagRenderMode.SelfClosing));
-        AppendHtml(fieldset, TagBuilderToString(submit, TagRenderMode.SelfClosing));
-        AppendHtml(form, TagBuilderToString(fieldset));
-
-        return TagBuilderToString(form);
-    }
 }

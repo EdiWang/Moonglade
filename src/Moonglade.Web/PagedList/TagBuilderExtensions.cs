@@ -6,20 +6,9 @@ namespace Moonglade.Web.PagedList;
 
 public static class TagBuilderExtensions
 {
-    public static void AddCssClass(this TagBuilder tagBuilder, string value)
-    {
-        tagBuilder.AddCssClass(value);
-    }
-
     public static void AppendHtml(this TagBuilder tagBuilder, string innerHtml)
     {
         tagBuilder.InnerHtml.AppendHtml(innerHtml);
-    }
-
-    public static void MergeAttribute(this TagBuilder tagBuilder, string key, string value)
-    {
-        tagBuilder
-            .MergeAttribute(key, value);
     }
 
     public static void SetInnerText(this TagBuilder tagBuilder, string innerText)
@@ -31,11 +20,9 @@ public static class TagBuilderExtensions
     {
         encoder ??= HtmlEncoder.Create(new TextEncoderSettings());
 
-        using (var writer = new StringWriter() as TextWriter)
-        {
-            tagBuilder.WriteTo(writer, encoder);
+        using var writer = new StringWriter() as TextWriter;
+        tagBuilder.WriteTo(writer, encoder);
 
-            return writer.ToString();
-        }
+        return writer.ToString();
     }
 }
