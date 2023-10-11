@@ -22,7 +22,7 @@ public class FriendLinkController : ControllerBase
     }
 
     [HttpGet("{id:guid}")]
-    [ProducesResponseType(typeof(FriendLinkEntity), StatusCodes.Status200OK)]
+    [ProducesResponseType<FriendLinkEntity>(StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
     public async Task<IActionResult> Get([NotEmpty] Guid id)
     {
@@ -33,7 +33,7 @@ public class FriendLinkController : ControllerBase
     }
 
     [HttpGet("list")]
-    [ProducesResponseType(typeof(List<FriendLinkEntity>), StatusCodes.Status200OK)]
+    [ProducesResponseType<List<FriendLinkEntity>>(StatusCodes.Status200OK)]
     public async Task<IActionResult> List()
     {
         var list = await _mediator.Send(new GetAllLinksQuery());

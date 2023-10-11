@@ -23,7 +23,7 @@ public class ThemeController : ControllerBase
     [HttpGet("/theme.css")]
     [ProducesResponseType(StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
-    [ProducesResponseType(typeof(List<UglifyError>), StatusCodes.Status409Conflict)]
+    [ProducesResponseType<List<UglifyError>>(StatusCodes.Status409Conflict)]
     public async Task<IActionResult> Css()
     {
         try
@@ -59,8 +59,8 @@ public class ThemeController : ControllerBase
 
     [Authorize]
     [HttpPost]
-    [ProducesResponseType(typeof(string), StatusCodes.Status409Conflict)]
-    [ProducesResponseType(typeof(int), StatusCodes.Status200OK)]
+    [ProducesResponseType<string>(StatusCodes.Status409Conflict)]
+    [ProducesResponseType<int>(StatusCodes.Status200OK)]
     [TypeFilter(typeof(ClearBlogCache), Arguments = new object[] { BlogCachePartition.General, "theme" })]
     public async Task<IActionResult> Create(CreateThemeRequest request)
     {

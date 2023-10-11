@@ -13,7 +13,7 @@ public class TagsController : ControllerBase
     public TagsController(IMediator mediator) => _mediator = mediator;
 
     [HttpGet("names")]
-    [ProducesResponseType(typeof(IReadOnlyList<string>), StatusCodes.Status200OK)]
+    [ProducesResponseType<IReadOnlyList<string>>(StatusCodes.Status200OK)]
     public async Task<IActionResult> Names()
     {
         var names = await _mediator.Send(new GetTagNamesQuery());
@@ -21,7 +21,7 @@ public class TagsController : ControllerBase
     }
 
     [HttpGet("list")]
-    [ProducesResponseType(typeof(IReadOnlyList<Tag>), StatusCodes.Status200OK)]
+    [ProducesResponseType<IReadOnlyList<Tag>>(StatusCodes.Status200OK)]
     public async Task<IActionResult> List()
     {
         var list = await _mediator.Send(new GetTagsQuery());
