@@ -18,6 +18,7 @@ using System.Net;
 using System.Text.Json.Serialization;
 using WilderMinds.MetaWeblog;
 using Encoder = Moonglade.Web.Configuration.Encoder;
+using IPNetwork = Microsoft.AspNetCore.HttpOverrides.IPNetwork;
 
 Console.OutputEncoding = Encoding.UTF8;
 Encoding.RegisterProvider(CodePagesEncodingProvider.Instance);
