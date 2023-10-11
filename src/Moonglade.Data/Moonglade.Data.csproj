@@ -1,7 +1,7 @@
 <Project Sdk="Microsoft.NET.Sdk">
     <PropertyGroup>
         <OutputType>Library</OutputType>
-        <TargetFramework>net7.0</TargetFramework>
+        <TargetFramework>net8.0</TargetFramework>
         <AssemblyName>Moonglade.Data</AssemblyName>
         <RootNamespace>Moonglade.Data</RootNamespace>
         <IsTestProject>false</IsTestProject>
@@ -12,6 +12,6 @@
         <Using Include="Microsoft.EntityFrameworkCore" />
         <PackageReference Include="MediatR" Version="12.1.1" />
         <FrameworkReference Include="Microsoft.AspNetCore.App" />
-        <PackageReference Include="Microsoft.EntityFrameworkCore.Proxies" Version="7.0.12" />
+        <PackageReference Include="Microsoft.EntityFrameworkCore.Proxies" Version="8.0.0-rc.2.23480.1" />
     </ItemGroup>
 </Project>
