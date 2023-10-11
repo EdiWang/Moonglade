@@ -4,7 +4,7 @@ env:
   AZURE_WEBAPP_NAME: moonglade-ediwang-ea
   SLOT_NAME: staging
   AZURE_WEBAPP_PACKAGE_PATH: '.'
-  DOTNET_VERSION: '7.0.x'
+  DOTNET_VERSION: '8.0.x'
 
 on:
   push:
