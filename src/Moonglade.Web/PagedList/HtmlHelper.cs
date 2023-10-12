@@ -5,9 +5,9 @@ namespace Moonglade.Web.PagedList;
 
 public class HtmlHelper
 {
-    private readonly ITagBuilderFactory _tagBuilderFactory;
+    private readonly TagBuilderFactory _tagBuilderFactory;
 
-    public HtmlHelper(ITagBuilderFactory tagBuilderFactory)
+    public HtmlHelper(TagBuilderFactory tagBuilderFactory)
     {
         _tagBuilderFactory = tagBuilderFactory;
     }
