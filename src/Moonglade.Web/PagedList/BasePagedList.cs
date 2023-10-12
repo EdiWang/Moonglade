@@ -110,14 +110,5 @@ public abstract class BasePagedList<T> : PagedListMetaData, IPagedList<T>
     /// </summary>
     public virtual int Count => Subset.Count;
 
-    ///<summary>
-    /// Gets a non-enumerable copy of this paged list.
-    ///</summary>
-    ///<returns>A non-enumerable copy of this paged list.</returns>
-    public PagedListMetaData GetMetaData()
-    {
-        return new PagedListMetaData(this);
-    }
-
     #endregion
 }
