@@ -11,27 +11,9 @@
 /// <typeparam name="T">The type of object the collection should contain.</typeparam>
 /// <seealso cref="IPagedList{T}"/>
 /// <seealso cref="BasePagedList{T}"/>
-/// <seealso cref="PagedList{T}"/>
 /// <seealso cref="List{T}"/>
 public class StaticPagedList<T> : BasePagedList<T>
 {
-    /// <summary>
-    /// Initializes a new instance of the <see cref="StaticPagedList{T}"/> class that contains the already
-    /// divided subset and information about the size of the superset and the subset's position within it.
-    /// </summary>
-    /// <param name="subset">The single subset this collection should represent.</param>
-    /// <param name="metaData">
-    /// Supply the ".MetaData" property of an existing IPagedList instance to recreate
-    /// it here (such as when creating a new instance of a PagedList after having used Automapper to convert
-    /// its contents to a DTO.)
-    /// </param>
-    /// <exception cref="ArgumentOutOfRangeException">The specified index cannot be less than zero.</exception>
-    /// <exception cref="ArgumentOutOfRangeException">The specified page size cannot be less than one.</exception>
-    public StaticPagedList(IEnumerable<T> subset, IPagedList metaData)
-        : this(subset, metaData.PageNumber, metaData.PageSize, metaData.TotalItemCount)
-    {
-    }
-
     /// <summary>
     /// Initializes a new instance of the <see cref="StaticPagedList{T}"/> class that contains the already
     /// divided subset and information about the size of the superset and the subset's position within it.
@@ -47,12 +29,4 @@ public class StaticPagedList<T> : BasePagedList<T>
     {
         Subset.AddRange(subset);
     }
-
-    /// <summary>
-    /// Create empty static paged list
-    /// </summary>
-    /// <param name="pageSize"></param>
-    /// <returns></returns>
-    public static StaticPagedList<T> Empty(int pageSize = DefaultPageSize) =>
-        new(Array.Empty<T>(), 1, pageSize, 0);
 }
