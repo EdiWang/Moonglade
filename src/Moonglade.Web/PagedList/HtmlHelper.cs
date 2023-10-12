@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc.Rendering;
 using System.Collections.Immutable;
+using System.Text.Encodings.Web;
 using Microsoft.AspNetCore.Html;
 
 namespace Moonglade.Web.PagedList;
@@ -27,8 +28,12 @@ public class HtmlHelper
 
     private static string TagBuilderToString(TagBuilder tagBuilder)
     {
-        return tagBuilder
-            .ToString(TagRenderMode.Normal);
+        var encoder = HtmlEncoder.Create(new TextEncoderSettings());
+
+        using var writer = new StringWriter() as TextWriter;
+        tagBuilder.WriteTo(writer, encoder);
+
+        return writer.ToString();
     }
 
     private TagBuilder WrapInListItem(string text)
