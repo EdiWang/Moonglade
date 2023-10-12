@@ -1,14 +1,15 @@
 ﻿using Microsoft.AspNetCore.Mvc.Rendering;
 using System.Collections.Immutable;
-using X.PagedList;
+using System.Text.Encodings.Web;
+using Microsoft.AspNetCore.Html;
 
 namespace Moonglade.Web.PagedList;
 
 public class HtmlHelper
 {
-    private readonly ITagBuilderFactory _tagBuilderFactory;
+    private readonly TagBuilderFactory _tagBuilderFactory;
 
-    public HtmlHelper(ITagBuilderFactory tagBuilderFactory)
+    public HtmlHelper(TagBuilderFactory tagBuilderFactory)
     {
         _tagBuilderFactory = tagBuilderFactory;
     }
@@ -17,18 +18,22 @@ public class HtmlHelper
 
     private static void SetInnerText(TagBuilder tagBuilder, string innerText)
     {
-        tagBuilder.SetInnerText(innerText);
+        tagBuilder.InnerHtml.SetContent(innerText);
     }
 
     private static void AppendHtml(TagBuilder tagBuilder, string innerHtml)
     {
-        tagBuilder.AppendHtml(innerHtml);
+        tagBuilder.InnerHtml.AppendHtml(innerHtml);
     }
 
     private static string TagBuilderToString(TagBuilder tagBuilder)
     {
-        return tagBuilder
-            .ToString(TagRenderMode.Normal);
+        var encoder = HtmlEncoder.Create(new TextEncoderSettings());
+
+        using var writer = new StringWriter() as TextWriter;
+        tagBuilder.WriteTo(writer, encoder);
+
+        return writer.ToString();
     }
 
     private TagBuilder WrapInListItem(string text)

@@ -1,5 +1,5 @@
 using Microsoft.AspNetCore.Mvc.RazorPages;
-using X.PagedList;
+using Moonglade.Web.PagedList;
 
 namespace Moonglade.Web.Pages.Admin;
 
