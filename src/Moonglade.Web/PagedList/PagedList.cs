@@ -1,6 +1,4 @@
-﻿using System.Linq.Expressions;
-
-namespace Moonglade.Web.PagedList;
+﻿namespace Moonglade.Web.PagedList;
 
 /// <summary>
 /// Represents a subset of a collection of objects that can be individually accessed by index and containing
