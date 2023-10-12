@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc.Rendering;
 using System.Collections.Immutable;
+using Microsoft.AspNetCore.Html;
 
 namespace Moonglade.Web.PagedList;
 
@@ -16,12 +17,12 @@ public class HtmlHelper
 
     private static void SetInnerText(TagBuilder tagBuilder, string innerText)
     {
-        tagBuilder.SetInnerText(innerText);
+        tagBuilder.InnerHtml.SetContent(innerText);
     }
 
     private static void AppendHtml(TagBuilder tagBuilder, string innerHtml)
     {
-        tagBuilder.AppendHtml(innerHtml);
+        tagBuilder.InnerHtml.AppendHtml(innerHtml);
     }
 
     private static string TagBuilderToString(TagBuilder tagBuilder)
