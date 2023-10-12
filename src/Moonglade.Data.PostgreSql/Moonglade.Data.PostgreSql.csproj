@@ -1,7 +1,7 @@
 <Project Sdk="Microsoft.NET.Sdk">
     <PropertyGroup>
         <OutputType>Library</OutputType>
-        <TargetFramework>net7.0</TargetFramework>
+        <TargetFramework>net8.0</TargetFramework>
         <AssemblyName>Moonglade.Data.PostgreSql</AssemblyName>
         <RootNamespace>Moonglade.Data.PostgreSql</RootNamespace>
         <IsTestProject>false</IsTestProject>
@@ -10,7 +10,7 @@
         <Nullable>enable</Nullable>
     </PropertyGroup>
     <ItemGroup>
-        <PackageReference Include="Npgsql.EntityFrameworkCore.PostgreSQL" Version="7.0.11" />
+        <PackageReference Include="Npgsql.EntityFrameworkCore.PostgreSQL" Version="8.0.0-rc.1" />
     </ItemGroup>
     <ItemGroup>
         <ProjectReference Include="..\Moonglade.Data\Moonglade.Data.csproj" />

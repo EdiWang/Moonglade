@@ -32,7 +32,7 @@ public class CommentController : ControllerBase
     [ProducesResponseType(StatusCodes.Status201Created)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
     [ProducesResponseType(StatusCodes.Status403Forbidden)]
-    [ProducesResponseType(typeof(ModelStateDictionary), StatusCodes.Status409Conflict)]
+    [ProducesResponseType<ModelStateDictionary>(StatusCodes.Status409Conflict)]
     public async Task<IActionResult> Create([NotEmpty] Guid postId, CommentRequest request)
     {
         if (!string.IsNullOrWhiteSpace(request.Email) && !Helper.IsValidEmailAddress(request.Email))
@@ -82,7 +82,7 @@ public class CommentController : ControllerBase
     }
 
     [HttpPut("{commentId:guid}/approval/toggle")]
-    [ProducesResponseType(typeof(Guid), StatusCodes.Status200OK)]
+    [ProducesResponseType<Guid>(StatusCodes.Status200OK)]
     public async Task<IActionResult> Approval([NotEmpty] Guid commentId)
     {
         await _mediator.Send(new ToggleApprovalCommand(new[] { commentId }));
@@ -90,8 +90,8 @@ public class CommentController : ControllerBase
     }
 
     [HttpDelete]
-    [ProducesResponseType(typeof(Guid[]), StatusCodes.Status200OK)]
-    [ProducesResponseType(typeof(string), StatusCodes.Status400BadRequest)]
+    [ProducesResponseType<Guid[]>(StatusCodes.Status200OK)]
+    [ProducesResponseType<string>(StatusCodes.Status400BadRequest)]
     public async Task<IActionResult> Delete([FromBody][MinLength(1)] Guid[] commentIds)
     {
         await _mediator.Send(new DeleteCommentsCommand(commentIds));
@@ -99,7 +99,7 @@ public class CommentController : ControllerBase
     }
 
     [HttpPost("{commentId:guid}/reply")]
-    [ProducesResponseType(typeof(CommentReply), StatusCodes.Status200OK)]
+    [ProducesResponseType<CommentReply>(StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status403Forbidden)]
     public async Task<IActionResult> Reply(
         [NotEmpty] Guid commentId,

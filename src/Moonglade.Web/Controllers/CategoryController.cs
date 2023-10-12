@@ -13,7 +13,7 @@ public class CategoryController : ControllerBase
     public CategoryController(IMediator mediator) => _mediator = mediator;
 
     [HttpGet("{id:guid}")]
-    [ProducesResponseType(typeof(Category), StatusCodes.Status200OK)]
+    [ProducesResponseType<Category>(StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
     public async Task<IActionResult> Get([NotEmpty] Guid id)
     {
@@ -24,7 +24,7 @@ public class CategoryController : ControllerBase
     }
 
     [HttpGet("list")]
-    [ProducesResponseType(typeof(IReadOnlyList<Category>), StatusCodes.Status200OK)]
+    [ProducesResponseType<IReadOnlyList<Category>>(StatusCodes.Status200OK)]
     public async Task<IActionResult> List()
     {
         var list = await _mediator.Send(new GetCategoriesQuery());
