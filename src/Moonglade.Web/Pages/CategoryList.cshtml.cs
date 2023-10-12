@@ -1,7 +1,7 @@
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Moonglade.Core.CategoryFeature;
 using Moonglade.Core.PostFeature;
-using X.PagedList;
+using Moonglade.Web.PagedList;
 
 namespace Moonglade.Web.Pages;
 
