@@ -1,8 +1,6 @@
-﻿using System;
-using System.Collections;
-using System.Collections.Generic;
+﻿using System.Collections;
 
-namespace X.PagedList;
+namespace Moonglade.Web.PagedList;
 
 /// <summary>
 /// Represents a subset of a collection of objects that can be individually accessed by index and containing

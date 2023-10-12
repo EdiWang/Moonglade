@@ -1,6 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc.Rendering;
 using System.Collections.Immutable;
-using X.PagedList;
 
 namespace Moonglade.Web.PagedList;
 

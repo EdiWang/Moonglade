@@ -1,9 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Linq.Expressions;
+﻿using System.Linq.Expressions;
 
-namespace X.PagedList;
+namespace Moonglade.Web.PagedList;
 
 public class PagedList<T, TKey> : BasePagedList<T>
 {
@@ -89,7 +86,7 @@ public class PagedList<T> : BasePagedList<T>
         if (TotalItemCount > 0 && superset != null)
         {
             var skip = (pageNumber - 1) * pageSize;
-            
+
             Subset.AddRange(superset.Skip(skip).Take(pageSize));
         }
     }
@@ -131,7 +128,7 @@ public class PagedList<T> : BasePagedList<T>
         LastItemOnPage = pagedList.LastItemOnPage;
 
         Subset.AddRange(collection);
-        
+
         if (Subset.Count > PageSize)
         {
             throw new Exception($"{nameof(collection)} size can't be greater than PageSize");
@@ -144,6 +141,6 @@ public class PagedList<T> : BasePagedList<T>
     /// </summary>
     /// <param name="pageSize"></param>
     /// <returns></returns>
-    public static PagedList<T> Empty(int pageSize = DefaultPageSize) => 
+    public static PagedList<T> Empty(int pageSize = DefaultPageSize) =>
         new(Array.Empty<T>(), 1, pageSize);
 }

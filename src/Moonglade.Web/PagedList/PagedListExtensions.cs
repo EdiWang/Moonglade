@@ -1,12 +1,6 @@
-﻿using JetBrains.Annotations;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Linq.Expressions;
-using System.Threading;
-using System.Threading.Tasks;
+﻿using System.Linq.Expressions;
 
-namespace X.PagedList;
+namespace Moonglade.Web.PagedList;
 
 /// <summary>
 /// Container for extension methods designed to simplify the creation of instances of <see cref="PagedList{T}"/>.
@@ -125,14 +119,14 @@ public static class PagedListExtensions
         }
 
         var supersetCount = superset.Count();
-        
+
         if (supersetCount > totalSetCount)
         {
             throw new ArgumentOutOfRangeException($"superset count = {supersetCount} superset count cannot be more than {totalSetCount.Value}.");
         }
 
         List<T> subset;
-        
+
         var totalCount = totalSetCount ?? supersetCount;
 
         if ((totalCount <= 0 || totalSetCount.HasValue) && supersetCount <= pageSize)
@@ -180,7 +174,7 @@ public static class PagedListExtensions
     public static IPagedList<TResult> Select<TSource, TResult>(this IPagedList<TSource> source, Func<TSource, TResult> selector)
     {
         var subset = ((IEnumerable<TSource>)source).Select(selector);
-        
+
         return new PagedList<TResult>(source, subset);
     }
 
@@ -376,7 +370,7 @@ public static class PagedListExtensions
     {
         return superset ?? new EnumerableQuery<T>(new List<T>());
     }
-    
+
     private static IQueryable<T> AsQueryable<T>(IEnumerable<T> superset)
     {
         return superset == null ? new EnumerableQuery<T>(new List<T>()) : superset.AsQueryable();

@@ -1,5 +1,5 @@
 ﻿
-namespace X.PagedList;
+namespace Moonglade.Web.PagedList;
 
 ///<summary>
 /// Non-enumerable version of the PagedList class.

@@ -1,7 +1,6 @@
 ﻿using Microsoft.AspNetCore.Html;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using System.Web;
-using X.PagedList;
 
 namespace Moonglade.Web.PagedList;
 
