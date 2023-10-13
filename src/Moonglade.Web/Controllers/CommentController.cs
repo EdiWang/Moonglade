@@ -9,22 +9,11 @@ namespace Moonglade.Web.Controllers;
 [ApiController]
 [Route("api/[controller]")]
 [CommentProviderGate]
-public class CommentController : ControllerBase
-{
-    private readonly IMediator _mediator;
-    private readonly IBlogConfig _blogConfig;
-    private readonly ILogger<CommentController> _logger;
-
-    public CommentController(
+public class CommentController(
         IMediator mediator,
         IBlogConfig blogConfig,
-        ILogger<CommentController> logger)
-    {
-        _mediator = mediator;
-        _blogConfig = blogConfig;
-        _logger = logger;
-    }
-
+        ILogger<CommentController> logger) : ControllerBase
+{
     [HttpPost("{postId:guid}")]
     [AllowAnonymous]
     [ServiceFilter(typeof(ValidateCaptcha))]
@@ -41,10 +30,10 @@ public class CommentController : ControllerBase
             return BadRequest(ModelState.CombineErrorMessages());
         }
 
-        if (!_blogConfig.ContentSettings.EnableComments) return Forbid();
+        if (!blogConfig.ContentSettings.EnableComments) return Forbid();
 
         var ip = (bool)HttpContext.Items["DNT"]! ? "N/A" : Helper.GetClientIP(HttpContext);
-        var item = await _mediator.Send(new CreateCommentCommand(postId, request, ip));
+        var item = await mediator.Send(new CreateCommentCommand(postId, request, ip));
 
         switch (item.Status)
         {
@@ -56,11 +45,11 @@ public class CommentController : ControllerBase
                 return Conflict(ModelState);
         }
 
-        if (_blogConfig.NotificationSettings.SendEmailOnNewComment)
+        if (blogConfig.NotificationSettings.SendEmailOnNewComment)
         {
             try
             {
-                await _mediator.Publish(new CommentNotification(
+                await mediator.Publish(new CommentNotification(
                     item.Item.Username,
                     item.Item.Email,
                     item.Item.IpAddress,
@@ -69,11 +58,11 @@ public class CommentController : ControllerBase
             }
             catch (Exception e)
             {
-                _logger.LogError(e, e.Message);
+                logger.LogError(e, e.Message);
             }
         }
 
-        if (_blogConfig.ContentSettings.RequireCommentReview)
+        if (blogConfig.ContentSettings.RequireCommentReview)
         {
             return Created("moonglade://empty", item);
         }
@@ -85,7 +74,7 @@ public class CommentController : ControllerBase
     [ProducesResponseType<Guid>(StatusCodes.Status200OK)]
     public async Task<IActionResult> Approval([NotEmpty] Guid commentId)
     {
-        await _mediator.Send(new ToggleApprovalCommand(new[] { commentId }));
+        await mediator.Send(new ToggleApprovalCommand(new[] { commentId }));
         return Ok(commentId);
     }
 
@@ -94,7 +83,7 @@ public class CommentController : ControllerBase
     [ProducesResponseType<string>(StatusCodes.Status400BadRequest)]
     public async Task<IActionResult> Delete([FromBody][MinLength(1)] Guid[] commentIds)
     {
-        await _mediator.Send(new DeleteCommentsCommand(commentIds));
+        await mediator.Send(new DeleteCommentsCommand(commentIds));
         return Ok(commentIds);
     }
 
@@ -106,16 +95,16 @@ public class CommentController : ControllerBase
         [Required][FromBody] string replyContent,
         LinkGenerator linkGenerator)
     {
-        if (!_blogConfig.ContentSettings.EnableComments) return Forbid();
+        if (!blogConfig.ContentSettings.EnableComments) return Forbid();
 
-        var reply = await _mediator.Send(new ReplyCommentCommand(commentId, replyContent));
-        if (_blogConfig.NotificationSettings.SendEmailOnCommentReply && !string.IsNullOrWhiteSpace(reply.Email))
+        var reply = await mediator.Send(new ReplyCommentCommand(commentId, replyContent));
+        if (blogConfig.NotificationSettings.SendEmailOnCommentReply && !string.IsNullOrWhiteSpace(reply.Email))
         {
             var postLink = GetPostUrl(linkGenerator, reply.PubDateUtc, reply.Slug);
 
             try
             {
-                await _mediator.Publish(new CommentReplyNotification(
+                await mediator.Publish(new CommentReplyNotification(
                     reply.Email,
                     reply.CommentContent,
                     reply.Title,
@@ -124,7 +113,7 @@ public class CommentController : ControllerBase
             }
             catch (Exception e)
             {
-                _logger.LogError(e, e.Message);
+                logger.LogError(e, e.Message);
             }
         }
 
