@@ -3,33 +3,20 @@
 namespace Moonglade.Web.Controllers;
 
 [ApiController]
-public class AssetsController : ControllerBase
+public class AssetsController(
+    IMediator mediator, IWebHostEnvironment env, ILogger<AssetsController> logger) : ControllerBase
 {
-    private readonly IMediator _mediator;
-    private readonly IWebHostEnvironment _env;
-    private readonly ILogger<AssetsController> _logger;
-
-    public AssetsController(
-        ILogger<AssetsController> logger,
-        IMediator mediator,
-        IWebHostEnvironment env)
-    {
-        _mediator = mediator;
-        _env = env;
-        _logger = logger;
-    }
-
     [HttpGet("avatar")]
     [ResponseCache(Duration = 300)]
     public async Task<IActionResult> Avatar(ICacheAside cache)
     {
-        var fallbackImageFile = Path.Join($"{_env.WebRootPath}", "images", "default-avatar.png");
+        var fallbackImageFile = Path.Join($"{env.WebRootPath}", "images", "default-avatar.png");
 
         var bytes = await cache.GetOrCreateAsync(BlogCachePartition.General.ToString(), "avatar", async _ =>
         {
-            _logger.LogTrace("Avatar not on cache, getting new avatar image...");
+            logger.LogTrace("Avatar not on cache, getting new avatar image...");
 
-            var data = await _mediator.Send(new GetAssetQuery(AssetId.AvatarBase64));
+            var data = await mediator.Send(new GetAssetQuery(AssetId.AvatarBase64));
             if (string.IsNullOrWhiteSpace(data)) return null;
 
             var avatarBytes = Convert.FromBase64String(data);
@@ -54,7 +41,7 @@ public class AssetsController : ControllerBase
         base64Img = base64Img.Trim();
         if (!Helper.TryParseBase64(base64Img, out var base64Chars))
         {
-            _logger.LogWarning("Bad base64 is used when setting avatar.");
+            logger.LogWarning("Bad base64 is used when setting avatar.");
             return Conflict("Bad base64 data");
         }
 
@@ -68,11 +55,11 @@ public class AssetsController : ControllerBase
         }
         catch (Exception e)
         {
-            _logger.LogError(e, "Invalid base64img Image");
+            logger.LogError(e, "Invalid base64img Image");
             return Conflict(e.Message);
         }
 
-        await _mediator.Publish(new SaveAssetCommand(AssetId.AvatarBase64, base64Img));
+        await mediator.Publish(new SaveAssetCommand(AssetId.AvatarBase64, base64Img));
 
         return Ok();
     }
@@ -104,8 +91,8 @@ public class AssetsController : ControllerBase
     [HttpGet("siteicon")]
     public async Task<IActionResult> SiteIconOrigin()
     {
-        var data = await _mediator.Send(new GetAssetQuery(AssetId.SiteIconBase64));
-        var fallbackImageFile = Path.Join($"{_env.WebRootPath}", "images", "siteicon-default.png");
+        var data = await mediator.Send(new GetAssetQuery(AssetId.SiteIconBase64));
+        var fallbackImageFile = Path.Join($"{env.WebRootPath}", "images", "siteicon-default.png");
         if (string.IsNullOrWhiteSpace(data))
         {
             return PhysicalFile(fallbackImageFile, "image/png");
@@ -118,7 +105,7 @@ public class AssetsController : ControllerBase
         }
         catch (FormatException e)
         {
-            _logger.LogError(e, $"Error {nameof(SiteIconOrigin)}(), Invalid Base64 string");
+            logger.LogError(e, $"Error {nameof(SiteIconOrigin)}(), Invalid Base64 string");
             return PhysicalFile(fallbackImageFile, "image/png");
         }
     }
@@ -132,13 +119,13 @@ public class AssetsController : ControllerBase
         base64Img = base64Img.Trim();
         if (!Helper.TryParseBase64(base64Img, out var base64Chars))
         {
-            _logger.LogWarning("Bad base64 is used when setting site icon.");
+            logger.LogWarning("Bad base64 is used when setting site icon.");
             return Conflict("Bad base64 data");
         }
 
         using var bmp = await Image.LoadAsync(new MemoryStream(base64Chars));
         if (bmp.Height != bmp.Width) return Conflict("image height must be equal to width");
-        await _mediator.Publish(new SaveAssetCommand(AssetId.SiteIconBase64, base64Img));
+        await mediator.Publish(new SaveAssetCommand(AssetId.SiteIconBase64, base64Img));
 
         return NoContent();
     }
