@@ -21,11 +21,8 @@ public class CreateAccountCommand : IRequest
     public string Password { get; set; }
 }
 
-public class CreateAccountCommandHandler : IRequestHandler<CreateAccountCommand>
+public class CreateAccountCommandHandler(IRepository<LocalAccountEntity> repo) : IRequestHandler<CreateAccountCommand>
 {
-    private readonly IRepository<LocalAccountEntity> _repo;
-    public CreateAccountCommandHandler(IRepository<LocalAccountEntity> repo) => _repo = repo;
-
     public Task Handle(CreateAccountCommand request, CancellationToken ct)
     {
         if (string.IsNullOrWhiteSpace(request.Username))
@@ -51,6 +48,6 @@ public class CreateAccountCommandHandler : IRequestHandler<CreateAccountCommand>
             PasswordHash = hash
         };
 
-        return _repo.AddAsync(account, ct);
+        return repo.AddAsync(account, ct);
     }
 }
