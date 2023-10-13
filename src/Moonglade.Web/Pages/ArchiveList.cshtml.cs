@@ -3,15 +3,11 @@ using Moonglade.Core.PostFeature;
 
 namespace Moonglade.Web.Pages;
 
-public class ArchiveListModel : PageModel
+public class ArchiveListModel(IMediator mediator) : PageModel
 {
-    private readonly IMediator _mediator;
-
     public IReadOnlyList<PostDigest> Posts { get; set; }
 
     public string ArchiveInfo { get; set; }
-
-    public ArchiveListModel(IMediator mediator) => _mediator = mediator;
 
     public async Task<IActionResult> OnGetAsync(int year, int? month)
     {
@@ -24,13 +20,13 @@ public class ArchiveListModel : PageModel
         {
             // {year}/{month}
             ArchiveInfo = $"{year}.{month}";
-            model = await _mediator.Send(new ListArchiveQuery(year, month));
+            model = await mediator.Send(new ListArchiveQuery(year, month));
         }
         else
         {
             // {year}
             ArchiveInfo = $"{year}";
-            model = await _mediator.Send(new ListArchiveQuery(year));
+            model = await mediator.Send(new ListArchiveQuery(year));
         }
 
         Posts = model;
