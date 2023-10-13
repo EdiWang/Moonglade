@@ -7,15 +7,11 @@ using System.Text.Json;
 namespace Moonglade.Theme;
 
 public record GetSiteThemeStyleSheetQuery(int Id) : IRequest<string>;
-public class GetStyleSheetQueryHandler : IRequestHandler<GetSiteThemeStyleSheetQuery, string>
+public class GetStyleSheetQueryHandler(IRepository<BlogThemeEntity> repo) : IRequestHandler<GetSiteThemeStyleSheetQuery, string>
 {
-    private readonly IRepository<BlogThemeEntity> _repo;
-
-    public GetStyleSheetQueryHandler(IRepository<BlogThemeEntity> repo) => _repo = repo;
-
     public async Task<string> Handle(GetSiteThemeStyleSheetQuery request, CancellationToken ct)
     {
-        var theme = await _repo.GetAsync(request.Id, ct);
+        var theme = await repo.GetAsync(request.Id, ct);
         if (null == theme) return null;
 
         if (string.IsNullOrWhiteSpace(theme.CssRules))
