@@ -18,17 +18,8 @@ internal record CommentPayload(
     string PostTitle,
     string CommentContent);
 
-public class CommentNotificationHandler : INotificationHandler<CommentNotification>
+public class CommentNotificationHandler(IBlogNotification blogNotification, IBlogConfig blogConfig) : INotificationHandler<CommentNotification>
 {
-    private readonly IBlogNotification _blogNotification;
-    private readonly IBlogConfig _blogConfig;
-
-    public CommentNotificationHandler(IBlogNotification blogNotification, IBlogConfig blogConfig)
-    {
-        _blogNotification = blogNotification;
-        _blogConfig = blogConfig;
-    }
-
     public async Task Handle(CommentNotification notification, CancellationToken ct)
     {
         var payload = new CommentPayload(
@@ -39,7 +30,7 @@ public class CommentNotificationHandler : INotificationHandler<CommentNotificati
             ContentProcessor.MarkdownToContent(notification.CommentContent, ContentProcessor.MarkdownConvertType.Html)
         );
 
-        var dl = new[] { _blogConfig.GeneralSettings.OwnerEmail };
-        await _blogNotification.Enqueue(MailMesageTypes.NewCommentNotification, dl, payload);
+        var dl = new[] { blogConfig.GeneralSettings.OwnerEmail };
+        await blogNotification.Enqueue(MailMesageTypes.NewCommentNotification, dl, payload);
     }
 }
