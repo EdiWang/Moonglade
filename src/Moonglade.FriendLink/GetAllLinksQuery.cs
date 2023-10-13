@@ -6,14 +6,10 @@ namespace Moonglade.FriendLink;
 
 public record GetAllLinksQuery : IRequest<IReadOnlyList<FriendLinkEntity>>;
 
-public class GetAllLinksQueryHandler : IRequestHandler<GetAllLinksQuery, IReadOnlyList<FriendLinkEntity>>
+public class GetAllLinksQueryHandler(IRepository<FriendLinkEntity> repo) : IRequestHandler<GetAllLinksQuery, IReadOnlyList<FriendLinkEntity>>
 {
-    private readonly IRepository<FriendLinkEntity> _repo;
-
-    public GetAllLinksQueryHandler(IRepository<FriendLinkEntity> repo) => _repo = repo;
-
     public Task<IReadOnlyList<FriendLinkEntity>> Handle(GetAllLinksQuery request, CancellationToken ct)
     {
-        return _repo.ListAsync(ct);
+        return repo.ListAsync(ct);
     }
 }
