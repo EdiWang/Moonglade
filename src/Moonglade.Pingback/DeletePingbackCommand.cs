@@ -6,11 +6,7 @@ namespace Moonglade.Pingback;
 
 public record DeletePingbackCommand(Guid Id) : IRequest;
 
-public class DeletePingbackCommandHandler : IRequestHandler<DeletePingbackCommand>
+public class DeletePingbackCommandHandler(IRepository<PingbackEntity> repo) : IRequestHandler<DeletePingbackCommand>
 {
-    private readonly IRepository<PingbackEntity> _repo;
-
-    public DeletePingbackCommandHandler(IRepository<PingbackEntity> repo) => _repo = repo;
-
-    public Task Handle(DeletePingbackCommand request, CancellationToken ct) => _repo.DeleteAsync(request.Id, ct);
+    public Task Handle(DeletePingbackCommand request, CancellationToken ct) => repo.DeleteAsync(request.Id, ct);
 }
