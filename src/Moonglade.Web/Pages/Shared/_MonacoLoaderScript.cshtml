@@ -4,6 +4,21 @@
 <script>
     require.config({ paths: { 'vs': 'https://cdnjs.cloudflare.com/ajax/libs/monaco-editor/0.40.0/min/vs' } });
 
+    function initEditor(containerId, textAreaQuerySelector, lang, needLoadInitValues) {
+        var editorDiv = document.getElementById(containerId);
+        var editorInstance = monaco.editor.create(editorDiv, {
+            language: lang
+        });
+        editorInstance.layout();
+
+        if (needLoadInitValues) {
+            var editorValue = document.querySelector(textAreaQuerySelector).value;
+            editorInstance.setValue(editorValue);
+        }
+
+        return editorInstance;
+    }
+
     function insertTextToMonacoEditor(editor, text) {
         var selection = editor.getSelection();
         var range = new monaco.Range(selection.startLineNumber, selection.startColumn, selection.endLineNumber, selection.endColumn);

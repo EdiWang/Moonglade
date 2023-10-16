@@ -14,21 +14,8 @@
         var cssContentEditor = null;
 
         require(['vs/editor/editor.main'], function () {
-            initCssEditor();
+            cssContentEditor = initEditor('CssContentEditor', "#settings_CssCode", 'css', needLoadInitValues)
         });
-
-        var initCssEditor = function () {
-            var cssContentEditorDiv = document.getElementById('CssContentEditor');
-            cssContentEditor = monaco.editor.create(cssContentEditorDiv, {
-                language: 'css'
-            });
-            cssContentEditor.layout();
-
-            if (needLoadInitValues) {
-                var cssValue = document.querySelector("#settings_CssCode").value;
-                window.cssContentEditor.setValue(cssValue);
-            }
-        }
     </script>
     <script type="module">
         import * as settings from '/js/app/admin.settings.module.js';
