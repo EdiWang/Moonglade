@@ -171,22 +171,23 @@ async Task FirstRun()
     try
     {
         var startUpResut = await app.InitStartUp(dbType);
-        switch (startUpResut)
+        
+        // Change `switch-case` to `if-else` for workaround https://github.com/dotnet/aspnetcore/issues/51285
+        if (startUpResut == StartupInitResult.DatabaseConnectionFail)
         {
-            case StartupInitResult.DatabaseConnectionFail:
-                app.MapGet("/", () => Results.Problem(
-                    detail: "Database connection test failed, please check your connection string and firewall settings, then RESTART Moonglade manually.",
-                    statusCode: 500
-                    ));
-                app.Run();
-                return;
-            case StartupInitResult.DatabaseSetupFail:
-                app.MapGet("/", () => Results.Problem(
-                    detail: "Database setup failed, please check error log, then RESTART Moonglade manually.",
-                    statusCode: 500
+            app.MapGet("/", () => Results.Problem(
+                detail: "Database connection test failed, please check your connection string and firewall settings, then RESTART Moonglade manually.",
+                statusCode: 500
                 ));
-                app.Run();
-                return;
+            app.Run();
+        }
+        else if (startUpResut == StartupInitResult.DatabaseSetupFail)
+        {
+            app.MapGet("/", () => Results.Problem(
+                detail: "Database setup failed, please check error log, then RESTART Moonglade manually.",
+                statusCode: 500
+            ));
+            app.Run();
         }
     }
     catch (Exception e)
