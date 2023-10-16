@@ -24,35 +24,8 @@
         var hasCssEditorInitialized = false;
 
         require(['vs/editor/editor.main'], function () {
-            initHtmlEditor();
+            htmlContentEditor = initEditor('RawHtmlContentEditor', "#EditPageRequest_RawHtmlContent", 'html', needLoadInitValues);
         });
-
-        var initHtmlEditor = function () {
-            var htmlContentEditorDiv = document.getElementById('RawHtmlContentEditor');
-            htmlContentEditor = monaco.editor.create(htmlContentEditorDiv, {
-                language: 'html'
-            });
-            htmlContentEditor.layout();
-
-            if (needLoadInitValues) {
-                var htmlValue = document.querySelector("#EditPageRequest_RawHtmlContent").value;
-                htmlContentEditor.setValue(htmlValue);
-            }
-        }
-
-        var initCssEditor = function () {
-            var cssContentEditorDiv = document.getElementById('CssContentEditor');
-            cssContentEditor = monaco.editor.create(cssContentEditorDiv, {
-                language: 'css'
-            });
-            cssContentEditor.layout();
-            hasCssEditorInitialized = true;
-
-            if (needLoadInitValues) {
-                var cssValue = document.querySelector("#EditPageRequest_CssContent").value;
-                window.cssContentEditor.setValue(cssValue);
-            }
-        }
 
         var assignEditorValues2 = function () {
             assignEditorValues(htmlContentEditor, "#EditPageRequest_RawHtmlContent")
@@ -127,7 +100,8 @@
             function (e) {
                 var isCssTab = e.target.id === "csscontent-tab";
                 if (isCssTab && !hasCssEditorInitialized) {
-                    initCssEditor();
+                    cssContentEditor = initEditor('CssContentEditor', "#EditPageRequest_CssContent", 'css', needLoadInitValues);
+                    hasCssEditorInitialized = true;
                 }
             });
 
