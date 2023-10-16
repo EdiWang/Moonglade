@@ -141,7 +141,6 @@ export function loadTinyMCE(textareaSelector) {
                 { text: 'PowerShell', value: 'powershell' },
                 { text: 'Plain Text', value: 'plaintext' },
                 { text: 'Python', value: 'python' },
-                { text: 'PHP', value: 'php' },
                 { text: 'R', value: 'r' },
                 { text: 'Ruby', value: 'ruby' },
                 { text: 'Rust', value: 'rust' },
