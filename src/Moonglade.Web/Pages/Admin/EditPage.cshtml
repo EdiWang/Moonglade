@@ -99,7 +99,9 @@
                         blogToast.success('Page saved successfully.');
 
                         if (document.querySelector('#EditPageRequest_IsPublished').checked) {
-                            document.querySelector('#btn-preview').style.display = 'none';
+                            if (document.querySelector('#btn-preview')) {
+                                document.querySelector('#btn-preview').style.display = 'none';
+                            }
                         }
 
                         if (isPreviewRequired) {
