@@ -12,7 +12,7 @@
     </script>
 }
 
-@section scripts{
+@section scripts {
     <partial name="_MonacoLoaderScript" />
     <script>
         var pageId = '@Model.PageId.ToString()';
@@ -54,14 +54,13 @@
             }
         }
 
-        var assignEditorValues = function () {
-            var htmlValue = window.htmlContentEditor.getValue();
+        var assignEditorValues2 = function () {
+            assignEditorValues(htmlContentEditor, "#EditPageRequest_RawHtmlContent")
 
             // Edit Mode, preserve old value when user has not clicked on CSS tab
             var oldCssValue = document.querySelector("#EditPageRequest_CssContent").value;
             var cssValue = hasCssEditorInitialized ? window.cssContentEditor.getValue() : oldCssValue;
 
-            document.querySelector("#EditPageRequest_RawHtmlContent").value = htmlValue;
             document.querySelector("#EditPageRequest_CssContent").value = cssValue;
         }
 
@@ -134,7 +133,7 @@
             e.preventDefault();
 
             isPreviewRequired = e.submitter.id == 'btn-preview';
-            assignEditorValues();
+            assignEditorValues2();
 
             postCreateOrEdit();
         }
@@ -144,7 +143,7 @@
     </script>
 }
 
-@section head{
+@section head {
     <style>
         .monaco-target {
             border-left: 1px solid #dee2e6;
@@ -161,35 +160,43 @@
     <form id="page-edit-form" method="post">
         <div class="row g-2">
             <div class="col-md-9 col-xl-10">
-                <input type="text" asp-for="EditPageRequest.Title" class="form-control form-control-lg mb-1" placeholder="Title" required />
+                <input type="text" asp-for="EditPageRequest.Title" class="form-control form-control-lg mb-1"
+                    placeholder="Title" required />
 
                 <div class="input-group input-group-sm">
                     <label class="input-group-text" asp-for="EditPageRequest.Slug">
                         <i class="bi-link-45deg">
                         </i>
                     </label>
-                    <input type="text" asp-for="EditPageRequest.Slug" class="form-control form-control-sm" placeholder="Slug" required />
+                    <input type="text" asp-for="EditPageRequest.Slug" class="form-control form-control-sm"
+                        placeholder="Slug" required />
                 </div>
 
                 <ul class="nav nav-tabs mt-3" id="editor-box-tabs" role="tablist">
                     <li class="nav-item">
-                        <a class="nav-link active" id="profile-tab" data-bs-toggle="tab" href="#rawhtmlcontent-editor-box" role="tab" aria-controls="html" aria-selected="false">HTML</a>
+                        <a class="nav-link active" id="profile-tab" data-bs-toggle="tab"
+                            href="#rawhtmlcontent-editor-box" role="tab" aria-controls="html"
+                            aria-selected="false">HTML</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" id="csscontent-tab" data-bs-toggle="tab" href="#csscontent-editor-box" role="tab" aria-controls="css" aria-selected="true">CSS</a>
+                        <a class="nav-link" id="csscontent-tab" data-bs-toggle="tab" href="#csscontent-editor-box"
+                            role="tab" aria-controls="css" aria-selected="true">CSS</a>
                     </li>
                 </ul>
 
                 <div class="tab-content">
-                    <div class="tab-pane active" id="rawhtmlcontent-editor-box" role="tabpanel" aria-labelledby="html-tab">
+                    <div class="tab-pane active" id="rawhtmlcontent-editor-box" role="tabpanel"
+                        aria-labelledby="html-tab">
                         <div id="RawHtmlContentEditor" class="monaco-target">
                         </div>
-                        <textarea asp-for="EditPageRequest.RawHtmlContent" class="page-rawhtmlcontent-textarea d-none"></textarea>
+                        <textarea asp-for="EditPageRequest.RawHtmlContent"
+                            class="page-rawhtmlcontent-textarea d-none"></textarea>
                     </div>
                     <div class="tab-pane" id="csscontent-editor-box" role="tabpanel" aria-labelledby="css-tab">
                         <div id="CssContentEditor" class="monaco-target">
                         </div>
-                        <textarea asp-for="EditPageRequest.CssContent" class="page-csscontent-textarea d-none"></textarea>
+                        <textarea asp-for="EditPageRequest.CssContent"
+                            class="page-csscontent-textarea d-none"></textarea>
                     </div>
                 </div>
             </div>
@@ -208,10 +215,8 @@
                     <div class="border-top pt-3">
                         <div class="form-floating">
                             <textarea asp-for="EditPageRequest.MetaDescription"
-                                      placeholder="@Html.DisplayNameFor(m => m.EditPageRequest.MetaDescription)"
-                                      class="form-control form-control-sm h-200px"
-                                      spellcheck="false"
-                                      required></textarea>
+                                placeholder="@Html.DisplayNameFor(m => m.EditPageRequest.MetaDescription)"
+                                class="form-control form-control-sm h-200px" spellcheck="false" required></textarea>
                             <label class="form-label" asp-for="EditPageRequest.MetaDescription"></label>
                         </div>
                     </div>

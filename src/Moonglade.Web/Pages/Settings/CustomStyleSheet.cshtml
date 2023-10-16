@@ -29,17 +29,12 @@
                 window.cssContentEditor.setValue(cssValue);
             }
         }
-
-        var assignEditorValues = function () {
-            var cssValue = window.cssContentEditor.getValue();
-            document.querySelector("#settings_CssCode").value = cssValue;
-        }
     </script>
     <script type="module">
         import * as settings from '/js/app/admin.settings.module.js';
 
         function handleSubmit(event) {
-            assignEditorValues();
+            assignEditorValues(cssContentEditor, "#settings_CssCode");
             settings.handleSettingsSubmit(event);
         }
 

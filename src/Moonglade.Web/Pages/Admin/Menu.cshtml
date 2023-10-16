@@ -29,11 +29,6 @@
             window.jsonContentEditor.setValue(jsonValue);
         }
 
-        var assignEditorValues = function () {
-            var jsonValue = window.jsonContentEditor.getValue();
-            document.querySelector("#settings_MenuJson").value = jsonValue;
-        }
-
         var clearMenus = function () {
             window.jsonContentEditor.setValue("[]");
             document.querySelector("#settings_MenuJson").value = "[]";
@@ -43,7 +38,7 @@
         import * as settings from '/js/app/admin.settings.module.js';
 
         function handleSubmit(event) {
-            assignEditorValues();
+            assignEditorValues(jsonContentEditor, "#settings_MenuJson");
             settings.handleSettingsSubmit(event);
         }
 
