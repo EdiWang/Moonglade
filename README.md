@@ -192,7 +192,7 @@ There are a few individuals already setup thier blogs using Moonglade on Azure (
 
 *Just Submit PR or issue if you want your blog to be listed here*
 
-## ⚖️ Disclaimer
+## ⚖️ Disclaimer (Global)
 
 The following disclaimer applies to the software named "Moonglade" developed by Edi Wang and other [contributors](https://github.com/EdiWang/Moonglade/graphs/contributors) (hereinafter referred to as "the software developer"):
 
@@ -216,12 +216,20 @@ As a user of Moonglade, it is your responsibility to ensure compliance with appl
 
 The software developer may release updates or modifications to Moonglade from time to time. It is recommended that users stay informed about these updates and apply them to ensure optimal performance and security.
 
-## 免责申明
+## 免责申明 Disclaimer (China)
 
 Moonglade 及其配套组件项目均为免费开源的产品，仅用于学习交流使用！
 
+Moonglade and its associated components are free and open-source products intended solely for learning and communication purposes.
+
 不可用于任何违反中华人民共和国(含台湾省)或使用者所在地区法律法规的用途。
+
+They should not be used for any activities that violate the laws and regulations of the People's Republic of China (including Taiwan) or the user's jurisdiction.
 
 因为作者即本人仅完成代码的开发和开源活动(开源即任何人都可以下载使用)，从未参与用户的任何运营和盈利活动。
 
+As the author, I have only developed and open-sourced the code and have never been involved in any user operations or profit-making activities.
+
 且不知晓用户后续将程序源代码用于何种用途，故用户使用过程中所带来的任何法律责任即由用户自己承担。
+
+Furthermore, I am unaware of how users will utilize the program's source code in the future, so any legal responsibilities arising from the user's usage are solely the user's own responsibility.
