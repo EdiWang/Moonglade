@@ -215,3 +215,13 @@ As a user of Moonglade, it is your responsibility to ensure compliance with appl
 ### Updates and Modifications
 
 The software developer may release updates or modifications to Moonglade from time to time. It is recommended that users stay informed about these updates and apply them to ensure optimal performance and security.
+
+## 免责申明
+
+Moonglade 及其配套组件项目均为免费开源的产品，仅用于学习交流使用！
+
+不可用于任何违反中华人民共和国(含台湾省)或使用者所在地区法律法规的用途。
+
+因为作者即本人仅完成代码的开发和开源活动(开源即任何人都可以下载使用)，从未参与用户的任何运营和盈利活动。
+
+且不知晓用户后续将程序源代码用于何种用途，故用户使用过程中所带来的任何法律责任即由用户自己承担。
