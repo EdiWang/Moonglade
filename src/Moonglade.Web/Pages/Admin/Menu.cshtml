@@ -1,6 +1,8 @@
 ﻿@page "/admin/menu"
 @Html.AntiForgeryToken()
 @{
+    ViewBag.Title = "Menu";
+
     var bc = BlogConfig.CustomMenuSettings;
     var settings = new CustomMenuSettingsJsonModel
             {

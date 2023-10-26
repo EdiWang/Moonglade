@@ -2,7 +2,7 @@
 @using Moonglade.Core.PageFeature
 @inject IMediator Mediator
 @{
-    ViewBag.Title = "Manage Pages";
+    ViewBag.Title = "Pages";
     var pageSegments = await Mediator.Send(new ListPageSegmentQuery());
 }
 

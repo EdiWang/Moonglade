@@ -2,7 +2,7 @@
 @using Moonglade.Core.TagFeature
 @inject IMediator Mediator
 @{
-    ViewBag.Title = "Manage Tags";
+    ViewBag.Title = "Tags";
     var tags = await Mediator.Send(new GetTagsQuery());
 }
 
