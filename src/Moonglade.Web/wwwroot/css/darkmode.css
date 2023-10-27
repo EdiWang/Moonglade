@@ -2,6 +2,12 @@
     border-top: 1px solid var(--transparent-light-15) !important;
 }
 
+.darkmode .form-select {
+    background: transparent;
+    color: var(--bs-gray-100);
+    border-color: var(--bs-gray-dark);
+}
+
 .darkmode .box {
     background-color: var(--moca-dark);
     border: 1px solid var(--gray-2);
