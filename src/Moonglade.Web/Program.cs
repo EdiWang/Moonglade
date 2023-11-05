@@ -67,6 +67,7 @@ void WriteParameterTable()
     table.AddRow(new Markup("[blue]Image storage[/]"), new Text(builder.Configuration["ImageStorage:Provider"]!));
     table.AddRow(new Markup("[blue]Authentication provider[/]"), new Text(builder.Configuration["Authentication:Provider"]!));
     table.AddRow(new Markup("[blue]Editor[/]"), new Text(builder.Configuration["Editor"]!));
+    table.AddRow(new Markup("[blue]ASPNETCORE_ENVIRONMENT[/]"), new Text(Environment.GetEnvironmentVariable("ASPNETCORE_ENVIRONMENT")));
 
     AnsiConsole.Write(table);
 }
@@ -171,7 +172,7 @@ async Task FirstRun()
     try
     {
         var startUpResut = await app.InitStartUp(dbType);
-        
+
         // Change `switch-case` to `if-else` for workaround https://github.com/dotnet/aspnetcore/issues/51285
         if (startUpResut == StartupInitResult.DatabaseConnectionFail)
         {
