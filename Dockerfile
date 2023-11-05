@@ -7,7 +7,7 @@ FROM mcr.microsoft.com/dotnet/aspnet:8.0 AS base
 COPY ./build/OpenSans-Regular.ttf /usr/share/fonts/OpenSans-Regular.ttf
 
 WORKDIR /app
-EXPOSE 80
+#EXPOSE 80
 EXPOSE 443
 
 ENV ASPNETCORE_FORWARDEDHEADERS_ENABLED=true
