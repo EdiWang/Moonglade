@@ -67,7 +67,7 @@ void WriteParameterTable()
     table.AddRow(new Markup("[blue]Image storage[/]"), new Text(builder.Configuration["ImageStorage:Provider"]!));
     table.AddRow(new Markup("[blue]Authentication provider[/]"), new Text(builder.Configuration["Authentication:Provider"]!));
     table.AddRow(new Markup("[blue]Editor[/]"), new Text(builder.Configuration["Editor"]!));
-    table.AddRow(new Markup("[blue]ASPNETCORE_ENVIRONMENT[/]"), new Text(Environment.GetEnvironmentVariable("ASPNETCORE_ENVIRONMENT")));
+    table.AddRow(new Markup("[blue]ASPNETCORE_ENVIRONMENT[/]"), new Text(Environment.GetEnvironmentVariable("ASPNETCORE_ENVIRONMENT") ?? "N/A"));
 
     AnsiConsole.Write(table);
 }
