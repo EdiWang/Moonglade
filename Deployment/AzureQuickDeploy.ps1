@@ -126,18 +126,54 @@ if ($rsgExists -eq 'false') {
     $echo = az group create -l $regionName -n $rsgName
 }
 
-Write-Host "Deploying App Service..." -ForegroundColor Green
+Write-Host "Deploying App Service Plan..." -ForegroundColor Green
 # App Service Plan
 $planCheck = az appservice plan list --query "[?name=='$aspName']" | ConvertFrom-Json
 $planExists = $planCheck.Length -gt 0
 if (!$planExists) {
-    Write-Host "Creating App Service Plan"
     if ($useLinuxPlanWithDocker) {
         $echo = az appservice plan create -n $aspName -g $rsgName --is-linux --sku S1 --location $regionName
     }
     else {
         $echo = az appservice plan create -n $aspName -g $rsgName --sku S1 --location $regionName
     }
+}
+
+# Azure SQL
+Write-Host "Deploying Azure SQL..." -ForegroundColor Green
+$sqlServerCheck = az sql server list --query "[?name=='$sqlServerName']" | ConvertFrom-Json
+$sqlServerExists = $sqlServerCheck.Length -gt 0
+if (!$sqlServerExists) {
+    Write-Host "Creating SQL Server"
+    $echo = az sql server create --name $sqlServerName --resource-group $rsgName --location $regionName --admin-user $sqlServerUsername --admin-password $sqlServerPassword
+
+    Write-Host "Setting Firewall to Allow Azure Connection"
+    # When both starting IP and end IP are set to 0.0.0.0, the firewall is only opened for other Azure resources.
+    $echo = az sql server firewall-rule create --resource-group $rsgName --server $sqlServerName --name AllowAllIps --start-ip-address 0.0.0.0 --end-ip-address 0.0.0.0
+}
+
+$sqlDbCheck = az sql db list --resource-group $rsgName --server $sqlServerName --query "[?name=='$sqlDatabaseName']" | ConvertFrom-Json
+$sqlDbExists = $sqlDbCheck.Length -gt 0
+if (!$sqlDbExists) {
+    Write-Host "Creating SQL Database"
+    $echo = az sql db create --resource-group $rsgName --server $sqlServerName --name $sqlDatabaseName --service-objective S0 --backup-storage-redundancy Local
+    Write-Host "SQL Server Password: $sqlServerPassword" -ForegroundColor Yellow
+}
+
+# Storage Account
+Write-Host "Deploying Storage..." -ForegroundColor Green
+$storageAccountCheck = az storage account list --query "[?name=='$storageAccountName']" | ConvertFrom-Json
+$storageAccountExists = $storageAccountCheck.Length -gt 0
+if (!$storageAccountExists) {
+    Write-Host "Creating Storage Account"
+    $echo = az storage account create --name $storageAccountName --resource-group $rsgName --location $regionName --sku Standard_LRS --kind StorageV2 --allow-blob-public-access true
+}
+
+$storageConn = az storage account show-connection-string -g $rsgName -n $storageAccountName | ConvertFrom-Json
+$storageContainerExists = az storage container exists --name $storageContainerName --connection-string $storageConn.connectionString | ConvertFrom-Json
+if (!$storageContainerExists.exists) {
+    Write-Host "Creating storage container"
+    $echo = az storage container create --name $storageContainerName --connection-string $storageConn.connectionString --public-access container
 }
 
 # Web App
@@ -161,58 +197,6 @@ $createdExists = $createdApp.Length -gt 0
 if ($createdExists) {
     $webAppUrl = "https://" + $createdApp.defaultHostName
     Write-Host "Web App URL: $webAppUrl"
-}
-
-# Storage Account
-Write-Host "Deploying Storage..." -ForegroundColor Green
-$storageAccountCheck = az storage account list --query "[?name=='$storageAccountName']" | ConvertFrom-Json
-$storageAccountExists = $storageAccountCheck.Length -gt 0
-if (!$storageAccountExists) {
-    Write-Host "Creating Storage Account"
-    $echo = az storage account create --name $storageAccountName --resource-group $rsgName --location $regionName --sku Standard_LRS --kind StorageV2 --allow-blob-public-access true
-}
-
-$storageConn = az storage account show-connection-string -g $rsgName -n $storageAccountName | ConvertFrom-Json
-$storageContainerExists = az storage container exists --name $storageContainerName --connection-string $storageConn.connectionString | ConvertFrom-Json
-if (!$storageContainerExists.exists) {
-    Write-Host "Creating storage container"
-    $echo = az storage container create --name $storageContainerName --connection-string $storageConn.connectionString --public-access container
-}
-
-if ($createCDN) {
-    # CDN
-    Write-Host "Deploying CDN..." -ForegroundColor Green
-    $cdnProfileCheck = az cdn profile list -g $rsgName --query "[?name=='$cdnProfileName']" | ConvertFrom-Json
-    $cdnProfileExists = $cdnProfileCheck.Length -gt 0
-    if (!$cdnProfileExists) {
-        Write-Host "Creating CDN Profile"
-        $echo = az cdn profile create --name $cdnProfileName --resource-group $rsgName --location $regionName --sku Standard_Microsoft
-
-        Write-Host "Creating CDN Endpoint"
-        $storageOrigion = "$storageAccountName.blob.core.windows.net"
-        $echo = az cdn endpoint create -g $rsgName -n $cdnEndpointName --profile-name $cdnProfileName --origin $storageOrigion --origin-host-header $storageOrigion --enable-compression
-    }
-}
-
-# Azure SQL
-Write-Host "Deploying Azure SQL..." -ForegroundColor Green
-$sqlServerCheck = az sql server list --query "[?name=='$sqlServerName']" | ConvertFrom-Json
-$sqlServerExists = $sqlServerCheck.Length -gt 0
-if (!$sqlServerExists) {
-    Write-Host "Creating SQL Server"
-    $echo = az sql server create --name $sqlServerName --resource-group $rsgName --location $regionName --admin-user $sqlServerUsername --admin-password $sqlServerPassword
-
-    Write-Host "Setting Firewall to Allow Azure Connection"
-    # When both starting IP and end IP are set to 0.0.0.0, the firewall is only opened for other Azure resources.
-    $echo = az sql server firewall-rule create --resource-group $rsgName --server $sqlServerName --name AllowAllIps --start-ip-address 0.0.0.0 --end-ip-address 0.0.0.0
-}
-
-$sqlDbCheck = az sql db list --resource-group $rsgName --server $sqlServerName --query "[?name=='$sqlDatabaseName']" | ConvertFrom-Json
-$sqlDbExists = $sqlDbCheck.Length -gt 0
-if (!$sqlDbExists) {
-    Write-Host "Creating SQL Database"
-    $echo = az sql db create --resource-group $rsgName --server $sqlServerName --name $sqlDatabaseName --service-objective S0 --backup-storage-redundancy Local
-    Write-Host "SQL Server Password: $sqlServerPassword" -ForegroundColor Yellow
 }
 
 # Configuration Update
@@ -248,6 +232,21 @@ if (!$useLinuxPlanWithDocker) {
 }
 
 az webapp restart --name $webAppName --resource-group $rsgName
+
+if ($createCDN) {
+    # CDN
+    Write-Host "Deploying CDN..." -ForegroundColor Green
+    $cdnProfileCheck = az cdn profile list -g $rsgName --query "[?name=='$cdnProfileName']" | ConvertFrom-Json
+    $cdnProfileExists = $cdnProfileCheck.Length -gt 0
+    if (!$cdnProfileExists) {
+        Write-Host "Creating CDN Profile"
+        $echo = az cdn profile create --name $cdnProfileName --resource-group $rsgName --location $regionName --sku Standard_Microsoft
+
+        Write-Host "Creating CDN Endpoint"
+        $storageOrigion = "$storageAccountName.blob.core.windows.net"
+        $echo = az cdn endpoint create -g $rsgName -n $cdnEndpointName --profile-name $cdnProfileName --origin $storageOrigion --origin-host-header $storageOrigion --enable-compression
+    }
+}
 
 # Container warm up
 Start-Sleep -Seconds 20
