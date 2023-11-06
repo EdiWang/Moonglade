@@ -17,11 +17,11 @@ services:
       ConnectionStrings__DatabaseType: "MySQL"
       ImageStorage__FileSystemPath: "/app/images"
     ports:
-      - "8080:80"
+      - "8080:8080"
     depends_on:
       - db
     healthcheck:
-      test: ["CMD", "curl", "-f", "http://localhost:80"]
+      test: ["CMD", "curl", "-f", "http://localhost:8080"]
       interval: 30s
       timeout: 10s
       retries: 5
