@@ -1,14 +1,13 @@
-# ---------------------------------------------------------------------------------------------------------
+# ----------------------------------------------------------------------------------------
 # Quick Start deployment script for running Moonglade on Microsoft Azure
 # Author: Edi Wang
-# ---------------------------------------------------------------------------------------------------------
+# ----------------------------------------------------------------------------------------
 # You need to install Azure CLI and login to Azure before running this script.
 # To install Azure CLI, please run:
 # Invoke-WebRequest -Uri https://aka.ms/installazurecliwindows -OutFile .\AzureCLI.msi; Start-Process msiexec.exe -Wait -ArgumentList '/I AzureCLI.msi /quiet'
 # Reference: https://docs.microsoft.com/en-us/cli/azure/?view=azure-cli-latest
 
 param(
-    $regionName = "East Asia", 
     [bool] $useLinuxPlanWithDocker = 1, 
     [bool] $createCDN = 0
 )
@@ -27,6 +26,9 @@ function Get-UrlStatusCode([string] $Url) {
 $output = az account show -o json | ConvertFrom-Json
 $subscriptionList = az account list -o json | ConvertFrom-Json 
 $subscriptionList | Format-Table name, id, tenantId -AutoSize
+
+# Get subscription id
+
 $subscriptionName = $output.name
 Write-Host "Currently logged in to subscription """$output.name.Trim()""" in tenant " $output.tenantId
 $subscriptionName = Read-Host "Enter subscription Id ("$output.id")"
@@ -37,6 +39,16 @@ if ([string]::IsNullOrWhiteSpace($subscriptionName)) {
 else {
     # az account set --subscription $subscriptionName
     Write-Host "Changed to subscription ("$subscriptionName")"
+}
+
+# Get region name
+
+$regionName = Read-Host "Enter region name (default: East Asia)"
+if ([string]::IsNullOrWhiteSpace($regionName)) {
+    $regionName = "East Asia"
+}
+else {
+    $regionName = $regionName.Trim()
 }
 
 while($true) {
