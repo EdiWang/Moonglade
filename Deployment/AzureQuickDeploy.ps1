@@ -8,8 +8,7 @@
 # Reference: https://docs.microsoft.com/en-us/cli/azure/?view=azure-cli-latest
 
 param(
-    [bool] $useLinuxPlanWithDocker = 1, 
-    [bool] $createCDN = 0
+    [bool] $useLinuxPlanWithDocker = 1
 )
 
 function Get-UrlStatusCode([string] $Url) {
@@ -51,7 +50,7 @@ else {
     $regionName = $regionName.Trim()
 }
 
-while($true) {
+while ($true) {
     $webAppName = Read-Host -Prompt "Enter webapp name"
     $webAppName = $webAppName.Trim()
     $keywords = @("xbox", "windows", "login", "microsoft")
@@ -61,9 +60,10 @@ while($true) {
     }
     # Create the request
     $HTTP_Status = Get-UrlStatusCode('https://' + $webAppName + '.azurewebsites.net')
-    if($HTTP_Status -eq 0) {
+    if ($HTTP_Status -eq 0) {
         break
-    } else {
+    }
+    else {
         Write-Host "Webapp name taken"
     }
 }
@@ -78,8 +78,6 @@ $storageContainerName = "moongladeimages$rndNumber"
 $sqlServerUsername = "moonglade"
 $sqlServerName = "moongladesql$rndNumber"
 $sqlDatabaseName = "moongladedb$rndNumber"
-$cdnProfileName = "moongladecdn$rndNumber"
-$cdnEndpointName = "moongladecep$rndNumber"
 
 function Get-RandomCharacters($length, $characters) {
     $random = 1..$length | ForEach-Object { Get-Random -Maximum $characters.length }
@@ -120,9 +118,6 @@ Clear-Host
 Write-Host "Your Moonglade will be deployed to [$rsgName] in [$regionName] under Azure subscription [$subscriptionName]. Please confirm before continue." -ForegroundColor Green
 if ($useLinuxPlanWithDocker) {
     Write-Host "+ Linux App Service Plan with Docker" -ForegroundColor Cyan
-}
-if ($createCDN) {
-    Write-Host "+ CDN (10 minutes to propagate)" -ForegroundColor Cyan
 }
 
 Read-Host -Prompt "Press [ENTER] to continue, [CTRL + C] to cancel"
@@ -234,10 +229,6 @@ else {
     $echo = az webapp config appsettings set -g $rsgName -n $webAppName --settings ImageStorage:AzureStorageSettings:ContainerName=$storageContainerName
 }
 
-if ($createCDN) {
-    Write-Host "It can take up to 10 minutes for endpoint '$cdnEndpointName.azureedge.net' to propagate, after that, please set CDN endpoint to 'https://#$cdnEndpointName.azureedge.net/$storageContainerName' in blog admin settings." -ForegroundColor Yellow
-}
-
 if (!$useLinuxPlanWithDocker) {
     Write-Host "Pulling source code and run build on Azure (this takes time, please wait)..."
     $echo = az webapp deployment source config --branch release --manual-integration --name $webAppName --repo-url https://github.com/EdiWang/Moonglade --resource-group $rsgName
@@ -245,22 +236,10 @@ if (!$useLinuxPlanWithDocker) {
 
 az webapp restart --name $webAppName --resource-group $rsgName
 
-if ($createCDN) {
-    # CDN
-    Write-Host "Deploying CDN..." -ForegroundColor Green
-    $cdnProfileCheck = az cdn profile list -g $rsgName --query "[?name=='$cdnProfileName']" | ConvertFrom-Json
-    $cdnProfileExists = $cdnProfileCheck.Length -gt 0
-    if (!$cdnProfileExists) {
-        Write-Host "Creating CDN Profile"
-        $echo = az cdn profile create --name $cdnProfileName --resource-group $rsgName --location $regionName --sku Standard_Microsoft
-
-        Write-Host "Creating CDN Endpoint"
-        $storageOrigion = "$storageAccountName.blob.core.windows.net"
-        $echo = az cdn endpoint create -g $rsgName -n $cdnEndpointName --profile-name $cdnProfileName --origin $storageOrigion --origin-host-header $storageOrigion --enable-compression
-    }
-}
-
 # Container warm up
-Start-Sleep -Seconds 20
+if ($useLinuxPlanWithDocker) {
+    Write-Host "Warming up the container..."
+    Start-Sleep -Seconds 20
+}
 
 Read-Host -Prompt "Setup is done, you should be able to run Moonglade on '$webAppUrl' now, press [ENTER] to exit."
