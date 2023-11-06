@@ -9,11 +9,14 @@ LABEL repo="https://github.com/EdiWang/Moonglade"
 COPY ./build/OpenSans-Regular.ttf /usr/share/fonts/OpenSans-Regular.ttf
 
 WORKDIR /app
-EXPOSE 80
+#EXPOSE 80
+# https://learn.microsoft.com/en-us/dotnet/core/compatibility/containers/8.0/aspnet-port
+# Breaking changes: Default ASP.NET Core port changed from 80 to 8080
+EXPOSE 8080
 EXPOSE 443
 
 ENV ASPNETCORE_FORWARDEDHEADERS_ENABLED=true
-ENV ASPNETCORE_URLS=http://+:80
+#ENV ASPNETCORE_URLS=http://+:80
 
 FROM mcr.microsoft.com/dotnet/sdk:8.0 AS build
 WORKDIR /src
