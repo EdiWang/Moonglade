@@ -32,15 +32,15 @@ public class AzureFunctionModeratorService : IModeratorService
 
         _httpClient.Timeout = TimeSpan.FromSeconds(30);
 
-        if (!string.IsNullOrWhiteSpace(configuration["ContentModerator:FunctionEndpoint"]))
+        if (!string.IsNullOrWhiteSpace(configuration["ContentModerator:ApiEndpoint"]))
         {
-            _httpClient.BaseAddress = new(configuration["ContentModerator:FunctionEndpoint"]);
-            _httpClient.DefaultRequestHeaders.Add("x-functions-key", configuration["ContentModerator:FunctionKey"]);
+            _httpClient.BaseAddress = new(configuration["ContentModerator:ApiEndpoint"]);
+            _httpClient.DefaultRequestHeaders.Add("x-functions-key", configuration["ContentModerator:ApiKey"]);
             _enabled = true;
         }
         else
         {
-            _logger.LogError("ContentModerator:FunctionEndpoint is empty");
+            _logger.LogError("ContentModerator:ApiEndpoint is empty");
             _enabled = false;
         }
     }
