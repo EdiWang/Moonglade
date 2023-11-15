@@ -5,15 +5,8 @@ using Microsoft.AspNetCore.Html;
 
 namespace Moonglade.Web.PagedList;
 
-public class HtmlHelper
+public class HtmlHelper(TagBuilderFactory tagBuilderFactory)
 {
-    private readonly TagBuilderFactory _tagBuilderFactory;
-
-    public HtmlHelper(TagBuilderFactory tagBuilderFactory)
-    {
-        _tagBuilderFactory = tagBuilderFactory;
-    }
-
     #region Private methods
 
     private static void SetInnerText(TagBuilder tagBuilder, string innerText)
@@ -38,7 +31,7 @@ public class HtmlHelper
 
     private TagBuilder WrapInListItem(string text)
     {
-        var li = _tagBuilderFactory
+        var li = tagBuilderFactory
             .Create("li");
 
         SetInnerText(li, text);
@@ -48,7 +41,7 @@ public class HtmlHelper
 
     private TagBuilder WrapInListItem(TagBuilder inner, PagedListRenderOptions options, params string[] classes)
     {
-        var li = _tagBuilderFactory.Create("li");
+        var li = tagBuilderFactory.Create("li");
 
         foreach (var @class in classes)
         {
@@ -68,7 +61,7 @@ public class HtmlHelper
     private TagBuilder First(IPagedList list, Func<int, string> generatePageUrl, PagedListRenderOptions options)
     {
         const int targetPageNumber = 1;
-        var first = _tagBuilderFactory
+        var first = tagBuilderFactory
             .Create("a");
 
         AppendHtml(first, string.Format(options.LinkToFirstPageFormat, targetPageNumber));
@@ -91,7 +84,7 @@ public class HtmlHelper
     private TagBuilder Previous(IPagedList list, Func<int, string> generatePageUrl, PagedListRenderOptions options)
     {
         var targetPageNumber = list.PageNumber - 1;
-        var previous = _tagBuilderFactory
+        var previous = tagBuilderFactory
             .Create("a");
 
         AppendHtml(previous, string.Format(options.LinkToPreviousPageFormat, targetPageNumber));
@@ -119,9 +112,9 @@ public class HtmlHelper
                      ?? (pageNumber => string.Format(options.LinkToIndividualPageFormat, pageNumber));
         var targetPageNumber = i;
         var page = i == list.PageNumber
-            ? _tagBuilderFactory
+            ? tagBuilderFactory
                 .Create("span")
-            : _tagBuilderFactory
+            : tagBuilderFactory
                 .Create("a");
 
         SetInnerText(page, format(targetPageNumber));
@@ -144,7 +137,7 @@ public class HtmlHelper
     private TagBuilder Next(IPagedList list, Func<int, string> generatePageUrl, PagedListRenderOptions options)
     {
         var targetPageNumber = list.PageNumber + 1;
-        var next = _tagBuilderFactory
+        var next = tagBuilderFactory
             .Create("a");
 
         AppendHtml(next, string.Format(options.LinkToNextPageFormat, targetPageNumber));
@@ -169,7 +162,7 @@ public class HtmlHelper
     private TagBuilder Last(IPagedList list, Func<int, string> generatePageUrl, PagedListRenderOptions options)
     {
         var targetPageNumber = list.PageCount;
-        var last = _tagBuilderFactory
+        var last = tagBuilderFactory
             .Create("a");
 
         AppendHtml(last, string.Format(options.LinkToLastPageFormat, targetPageNumber));
@@ -191,7 +184,7 @@ public class HtmlHelper
 
     private TagBuilder PageCountAndLocationText(IPagedList list, PagedListRenderOptions options)
     {
-        var text = _tagBuilderFactory
+        var text = tagBuilderFactory
             .Create("a");
 
         SetInnerText(text, string.Format(options.PageCountAndCurrentLocationFormat, list.PageNumber, list.PageCount));
@@ -201,7 +194,7 @@ public class HtmlHelper
 
     private TagBuilder ItemSliceAndTotalText(IPagedList list, PagedListRenderOptions options)
     {
-        var text = _tagBuilderFactory
+        var text = tagBuilderFactory
             .Create("a");
 
         SetInnerText(text, string.Format(options.ItemSliceAndTotalFormat, list.FirstItemOnPage, list.LastItemOnPage, list.TotalItemCount));
@@ -211,7 +204,7 @@ public class HtmlHelper
 
     private TagBuilder PreviousEllipsis(IPagedList list, Func<int, string> generatePageUrl, PagedListRenderOptions options, int firstPageToDisplay)
     {
-        var previous = _tagBuilderFactory
+        var previous = tagBuilderFactory
             .Create("a");
 
         AppendHtml(previous, options.EllipsesFormat);
@@ -238,7 +231,7 @@ public class HtmlHelper
 
     private TagBuilder NextEllipsis(IPagedList list, Func<int, string> generatePageUrl, PagedListRenderOptions options, int lastPageToDisplay)
     {
-        var next = _tagBuilderFactory
+        var next = tagBuilderFactory
             .Create("a");
 
         AppendHtml(next, options.EllipsesFormat);
@@ -407,7 +400,7 @@ public class HtmlHelper
             (sb, listItem) => sb.Append(TagBuilderToString(listItem)),
             sb => sb.ToString());
 
-        var ul = _tagBuilderFactory
+        var ul = tagBuilderFactory
             .Create("ul");
 
         AppendHtml(ul, listItemLinksString);
@@ -425,7 +418,7 @@ public class HtmlHelper
             }
         }
 
-        var outerDiv = _tagBuilderFactory
+        var outerDiv = tagBuilderFactory
             .Create("div");
 
         foreach (var c in options.ContainerDivClasses ?? Enumerable.Empty<string>())

@@ -6,12 +6,8 @@ using System.Xml;
 
 namespace Moonglade.Web.Middleware;
 
-public class SiteMapMiddleware
+public class SiteMapMiddleware(RequestDelegate next)
 {
-    private readonly RequestDelegate _next;
-
-    public SiteMapMiddleware(RequestDelegate next) => _next = next;
-
     public async Task Invoke(
         HttpContext httpContext,
         IBlogConfig blogConfig,
@@ -33,7 +29,7 @@ public class SiteMapMiddleware
         }
         else
         {
-            await _next(httpContext);
+            await next(httpContext);
         }
     }
 

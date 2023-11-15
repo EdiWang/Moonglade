@@ -2,11 +2,10 @@
 
 namespace Moonglade.Data.Infrastructure;
 
-public abstract class DbContextRepository<T> : IRepository<T> where T : class
+public abstract class DbContextRepository<T>(DbContext ctx) : IRepository<T>
+    where T : class
 {
-    protected readonly DbContext DbContext;
-
-    protected DbContextRepository(DbContext ctx) => DbContext = ctx;
+    protected readonly DbContext DbContext = ctx;
 
     public Task Clear(CancellationToken ct = default)
     {

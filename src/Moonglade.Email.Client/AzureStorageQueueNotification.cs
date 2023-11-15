@@ -12,18 +12,11 @@ public interface IBlogNotification
     Task Enqueue<T>(MailMesageTypes type, string[] receipts, T payload) where T : class;
 }
 
-public class AzureStorageQueueNotification : IBlogNotification
-{
-    private readonly ILogger<AzureStorageQueueNotification> _logger;
-    private readonly NotificationSettings _notificationSettings;
-
-    public AzureStorageQueueNotification(
-        ILogger<AzureStorageQueueNotification> logger,
+public class AzureStorageQueueNotification(ILogger<AzureStorageQueueNotification> logger,
         IBlogConfig blogConfig)
-    {
-        _logger = logger;
-        _notificationSettings = blogConfig.NotificationSettings;
-    }
+    : IBlogNotification
+{
+    private readonly NotificationSettings _notificationSettings = blogConfig.NotificationSettings;
 
     public async Task Enqueue<T>(MailMesageTypes type, string[] receipts, T payload) where T : class
     {
@@ -44,7 +37,7 @@ public class AzureStorageQueueNotification : IBlogNotification
         }
         catch (Exception e)
         {
-            _logger.LogError(e, e.Message);
+            logger.LogError(e, e.Message);
             throw;
         }
     }
@@ -53,7 +46,7 @@ public class AzureStorageQueueNotification : IBlogNotification
     {
         if (null != await queue.CreateIfNotExistsAsync())
         {
-            _logger.LogInformation($"Azure Storage Queue '{queue.Name}' was created.");
+            logger.LogInformation($"Azure Storage Queue '{queue.Name}' was created.");
         }
 
         var json = JsonSerializer.Serialize(emailNotification);

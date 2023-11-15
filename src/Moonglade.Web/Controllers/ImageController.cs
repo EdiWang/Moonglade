@@ -7,33 +7,16 @@ namespace Moonglade.Web.Controllers;
 
 [ApiController]
 [Route("image")]
-public class ImageController : ControllerBase
-{
-    private readonly IBlogImageStorage _imageStorage;
-    private readonly ILogger<ImageController> _logger;
-    private readonly IBlogConfig _blogConfig;
-    private readonly IMemoryCache _cache;
-    private readonly IFileNameGenerator _fileNameGen;
-    private readonly IConfiguration _configuration;
-    private readonly ImageStorageSettings _imageStorageSettings;
-
-    public ImageController(
-        IBlogImageStorage imageStorage,
+public class ImageController(IBlogImageStorage imageStorage,
         ILogger<ImageController> logger,
         IBlogConfig blogConfig,
         IMemoryCache cache,
         IFileNameGenerator fileNameGen,
         IConfiguration configuration,
         IOptions<ImageStorageSettings> imageStorageSettings)
-    {
-        _imageStorage = imageStorage;
-        _logger = logger;
-        _blogConfig = blogConfig;
-        _cache = cache;
-        _fileNameGen = fileNameGen;
-        _configuration = configuration;
-        _imageStorageSettings = imageStorageSettings.Value;
-    }
+    : ControllerBase
+{
+    private readonly ImageStorageSettings _imageStorageSettings = imageStorageSettings.Value;
 
     [HttpGet(@"{filename:regex((?!-)([[a-z0-9-]]+)\.(png|jpg|jpeg|gif|bmp))}")]
     [ProducesResponseType(StatusCodes.Status200OK)]
@@ -49,16 +32,16 @@ public class ImageController : ControllerBase
         }
 
         // Fallback method for legacy "/image/..." references (e.g. from third party websites)
-        if (_blogConfig.ImageSettings.EnableCDNRedirect)
+        if (blogConfig.ImageSettings.EnableCDNRedirect)
         {
-            var imageUrl = _blogConfig.ImageSettings.CDNEndpoint.CombineUrl(filename);
+            var imageUrl = blogConfig.ImageSettings.CDNEndpoint.CombineUrl(filename);
             return Redirect(imageUrl);
         }
 
-        var image = await _cache.GetOrCreateAsync(filename, async entry =>
+        var image = await cache.GetOrCreateAsync(filename, async entry =>
         {
-            entry.SlidingExpiration = TimeSpan.FromMinutes(int.Parse(_configuration["CacheSlidingExpirationMinutes:Image"]));
-            var imageInfo = await _imageStorage.GetAsync(filename);
+            entry.SlidingExpiration = TimeSpan.FromMinutes(int.Parse(configuration["CacheSlidingExpirationMinutes:Image"]));
+            var imageInfo = await imageStorage.GetAsync(filename);
             return imageInfo;
         });
 
@@ -75,7 +58,7 @@ public class ImageController : ControllerBase
     {
         if (file is null or { Length: <= 0 })
         {
-            _logger.LogError("file is null.");
+            logger.LogError("file is null.");
             return BadRequest();
         }
 
@@ -91,12 +74,12 @@ public class ImageController : ControllerBase
 
         if (!allowedExts.Contains(ext))
         {
-            _logger.LogError($"Invalid file extension: {ext}");
+            logger.LogError($"Invalid file extension: {ext}");
             return BadRequest();
         }
 
-        var primaryFileName = _fileNameGen.GetFileName(name);
-        var secondaryFieName = _fileNameGen.GetFileName(name, "origin");
+        var primaryFileName = fileNameGen.GetFileName(name);
+        var secondaryFieName = fileNameGen.GetFileName(name, "origin");
 
         await using var stream = new MemoryStream();
         await file.CopyToAsync(stream);
@@ -105,41 +88,41 @@ public class ImageController : ControllerBase
 
         // Add watermark
         MemoryStream watermarkedStream = null;
-        if (_blogConfig.ImageSettings.IsWatermarkEnabled && !skipWatermark)
+        if (blogConfig.ImageSettings.IsWatermarkEnabled && !skipWatermark)
         {
             if (string.Compare(".gif", ext, StringComparison.OrdinalIgnoreCase) != 0)
             {
-                using var watermarker = new ImageWatermarker(stream, ext, _blogConfig.ImageSettings.WatermarkSkipPixel);
+                using var watermarker = new ImageWatermarker(stream, ext, blogConfig.ImageSettings.WatermarkSkipPixel);
 
                 watermarkedStream = watermarker.AddWatermark(
-                    _blogConfig.ImageSettings.WatermarkText,
+                    blogConfig.ImageSettings.WatermarkText,
                     Color.FromRgba(
                         128,
                         128,
                         128,
-                        (byte)_blogConfig.ImageSettings.WatermarkColorA),
+                        (byte)blogConfig.ImageSettings.WatermarkColorA),
                     WatermarkPosition.BottomRight,
                     15,
-                    _blogConfig.ImageSettings.WatermarkFontSize);
+                    blogConfig.ImageSettings.WatermarkFontSize);
             }
             else
             {
-                _logger.LogInformation($"Skipped watermark for extension name: {ext}");
+                logger.LogInformation($"Skipped watermark for extension name: {ext}");
             }
         }
 
-        var finalName = await _imageStorage.InsertAsync(primaryFileName,
+        var finalName = await imageStorage.InsertAsync(primaryFileName,
             watermarkedStream is not null ?
                 watermarkedStream.ToArray() :
                 stream.ToArray());
 
-        if (_blogConfig.ImageSettings.IsWatermarkEnabled && _blogConfig.ImageSettings.KeepOriginImage || !skipWatermark)
+        if (blogConfig.ImageSettings.IsWatermarkEnabled && blogConfig.ImageSettings.KeepOriginImage || !skipWatermark)
         {
             var arr = stream.ToArray();
-            _ = Task.Run(async () => await _imageStorage.InsertAsync(secondaryFieName, arr));
+            _ = Task.Run(async () => await imageStorage.InsertAsync(secondaryFieName, arr));
         }
 
-        _logger.LogInformation($"Image '{primaryFileName}' uploaded.");
+        logger.LogInformation($"Image '{primaryFileName}' uploaded.");
         var location = $"/image/{finalName}";
         var filename = location;
 

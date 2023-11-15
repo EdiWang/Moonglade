@@ -9,17 +9,8 @@ public interface IPingSourceInspector
     Task<PingRequest> ExamineSourceAsync(string sourceUrl, string targetUrl);
 }
 
-public class PingSourceInspector : IPingSourceInspector
+public class PingSourceInspector(ILogger<PingSourceInspector> logger, HttpClient httpClient) : IPingSourceInspector
 {
-    private readonly ILogger<PingSourceInspector> _logger;
-    private readonly HttpClient _httpClient;
-
-    public PingSourceInspector(ILogger<PingSourceInspector> logger, HttpClient httpClient)
-    {
-        _logger = logger;
-        _httpClient = httpClient;
-    }
-
     public async Task<PingRequest> ExamineSourceAsync(string sourceUrl, string targetUrl)
     {
         try
@@ -31,7 +22,7 @@ public class PingSourceInspector : IPingSourceInspector
             var regexTitle = new Regex(
                 @"(?<=<title.*>)([\s\S]*)(?=</title>)", RegexOptions.IgnoreCase | RegexOptions.Compiled);
 
-            var html = await _httpClient.GetStringAsync(sourceUrl);
+            var html = await httpClient.GetStringAsync(sourceUrl);
             var title = regexTitle.Match(html).Value.Trim();
             var containsHtml = regexHtml.IsMatch(title);
             var sourceHasLink = html.ToUpperInvariant().Contains(targetUrl.ToUpperInvariant());
@@ -49,7 +40,7 @@ public class PingSourceInspector : IPingSourceInspector
         }
         catch (WebException ex)
         {
-            _logger.LogError(ex, nameof(ExamineSourceAsync));
+            logger.LogError(ex, nameof(ExamineSourceAsync));
             return null;
         }
     }

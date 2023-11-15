@@ -8,20 +8,14 @@ using System.Xml;
 
 namespace Moonglade.Pingback;
 
-public class ReceivePingCommand : IRequest<PingbackResponse>
+public class ReceivePingCommand(string requestBody, string ip, Action<PingbackEntity> action)
+    : IRequest<PingbackResponse>
 {
-    public ReceivePingCommand(string requestBody, string ip, Action<PingbackEntity> action)
-    {
-        RequestBody = requestBody;
-        IP = ip;
-        Action = action;
-    }
+    public string RequestBody { get; set; } = requestBody;
 
-    public string RequestBody { get; set; }
+    public string IP { get; set; } = ip;
 
-    public string IP { get; set; }
-
-    public Action<PingbackEntity> Action { get; set; }
+    public Action<PingbackEntity> Action { get; set; } = action;
 }
 
 public class ReceivePingCommandHandler(
