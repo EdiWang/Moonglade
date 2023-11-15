@@ -41,7 +41,7 @@
         <PackageReference Include="WilderMinds.MetaWeblog" Version="5.1.1" />
         <PackageReference Include="Spectre.Console" Version="0.47.0" />
         <PackageReference Include="Microsoft.ApplicationInsights.AspNetCore" Version="2.21.0" />
-        <PackageReference Include="Microsoft.Extensions.Logging.AzureAppServices" Version="8.0.0-rc.2.23480.2" />
+        <PackageReference Include="Microsoft.Extensions.Logging.AzureAppServices" Version="8.0.0" />
     </ItemGroup>
     <ItemGroup>
         <ProjectReference Include="..\Moonglade.Auth\Moonglade.Auth.csproj" />
