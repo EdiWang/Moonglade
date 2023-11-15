@@ -68,8 +68,7 @@ public class SiteMapMiddleware(RequestDelegate next)
                 page.CreateTimeUtc,
                 page.UpdateTimeUtc,
                 page.Slug,
-                page.IsPublished)
-            );
+                page.IsPublished), ct);
 
             foreach (var (createdTimeUtc, updateTimeUtc, slug, isPublished) in pages.Where(p => p.Item4))
             {
