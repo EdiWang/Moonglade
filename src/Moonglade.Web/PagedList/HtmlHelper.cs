@@ -1,7 +1,7 @@
-﻿using Microsoft.AspNetCore.Mvc.Rendering;
+﻿using Microsoft.AspNetCore.Html;
+using Microsoft.AspNetCore.Mvc.Rendering;
 using System.Collections.Immutable;
 using System.Text.Encodings.Web;
-using Microsoft.AspNetCore.Html;
 
 namespace Moonglade.Web.PagedList;
 
