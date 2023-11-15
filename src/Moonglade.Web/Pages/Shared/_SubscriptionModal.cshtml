@@ -1,0 +1,27 @@
+﻿<div class="modal modal-lg fade" id="subscriptionmodal" tabindex="-1" role="dialog" aria-labelledby="subscriptionmodalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h6 class="modal-title" id="subscriptionmodalLabel">@SharedLocalizer["RSS / Atom Feed"]</h6>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <div class="row mb-4">
+                    <div class="col-6">
+                        <a asp-controller="Subscription" asp-action="rss" class="btn w-100 btn-outline-accent">
+                            @SharedLocalizer["Latest Posts"] (RSS)
+                        </a>
+                    </div>
+                    <div class="col-6">
+                        <a asp-controller="Subscription" asp-action="Atom" class="btn w-100 btn-outline-accent">
+                            @SharedLocalizer["Latest Posts"] (Atom)
+                        </a>
+                    </div>
+                </div>
+                <div class="row">
+                    @await Component.InvokeAsync("SubList")
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

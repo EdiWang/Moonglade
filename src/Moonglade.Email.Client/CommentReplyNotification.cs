@@ -15,15 +15,8 @@ internal record CommentReplyPayload(
     string ReplyContentHtml,
     string PostLink);
 
-public class CommentReplyNotificationHandler : INotificationHandler<CommentReplyNotification>
+public class CommentReplyNotificationHandler(IBlogNotification blogNotification) : INotificationHandler<CommentReplyNotification>
 {
-    private readonly IBlogNotification _blogNotification;
-
-    public CommentReplyNotificationHandler(IBlogNotification blogNotification)
-    {
-        _blogNotification = blogNotification;
-    }
-
     public async Task Handle(CommentReplyNotification notification, CancellationToken ct)
     {
         var payload = new CommentReplyPayload(
@@ -33,6 +26,6 @@ public class CommentReplyNotificationHandler : INotificationHandler<CommentReply
             notification.PostLink);
 
         var dl = new[] { notification.Email };
-        await _blogNotification.Enqueue(MailMesageTypes.AdminReplyNotification, dl, payload);
+        await blogNotification.Enqueue(MailMesageTypes.AdminReplyNotification, dl, payload);
     }
 }

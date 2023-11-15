@@ -4,19 +4,15 @@ namespace Moonglade.Core;
 
 public record SaveStyleSheetCommand(Guid Id, string Slug, string CssContent) : IRequest<Guid>;
 
-public class SaveStyleSheetCommandHandler : IRequestHandler<SaveStyleSheetCommand, Guid>
+public class SaveStyleSheetCommandHandler(IRepository<StyleSheetEntity> repo) : IRequestHandler<SaveStyleSheetCommand, Guid>
 {
-    private readonly IRepository<StyleSheetEntity> _repo;
-
-    public SaveStyleSheetCommandHandler(IRepository<StyleSheetEntity> repo) => _repo = repo;
-
     public async Task<Guid> Handle(SaveStyleSheetCommand request, CancellationToken cancellationToken)
     {
         var slug = request.Slug.ToLower().Trim();
         var css = request.CssContent.Trim();
         var hash = CalculateHash($"{slug}_{css}");
 
-        var entity = await _repo.GetAsync(request.Id, cancellationToken);
+        var entity = await repo.GetAsync(request.Id, cancellationToken);
         if (entity is null)
         {
             entity = new()
@@ -28,7 +24,7 @@ public class SaveStyleSheetCommandHandler : IRequestHandler<SaveStyleSheetComman
                 LastModifiedTimeUtc = DateTime.UtcNow
             };
 
-            await _repo.AddAsync(entity, cancellationToken);
+            await repo.AddAsync(entity, cancellationToken);
         }
         else
         {
@@ -37,7 +33,7 @@ public class SaveStyleSheetCommandHandler : IRequestHandler<SaveStyleSheetComman
             entity.Hash = hash;
             entity.LastModifiedTimeUtc = DateTime.UtcNow;
 
-            await _repo.UpdateAsync(entity, cancellationToken);
+            await repo.UpdateAsync(entity, cancellationToken);
         }
 
         return entity.Id;

@@ -9,7 +9,7 @@ export function useDarkMode() {
 
     $('body').addClass('bg-moca-dark text-light darkmode');
     $('body.body-post-slug').removeClass('bg-gray-1');
-    $('.article-post-slug').removeClass('box border');
+    $('.article-post-slug').removeClass('p-4 border');
 
     $('.card').addClass('text-white bg-dark');
     $('.list-group-item, .card-body').addClass('bg-moca-dark text-light');
@@ -22,6 +22,9 @@ export function useDarkMode() {
     $('#aside-tags .btn-accent').removeClass('btn-accent').addClass('btn-dark');
     $('.post-summary-tags .btn-accent').removeClass('btn-accent').addClass('btn-dark');
 
+    $('.aside-widget').removeClass('bg-white').addClass('border-dark');
+    $('.aside-widget .card-subtitle').removeClass('text-muted').addClass('text-light-emphasis');
+
     isDarkMode = true;
     $('.lightswitch').addClass('bg-dark text-light border-secondary');
     document.querySelector('hr').classList.add('hr-dark');
@@ -31,13 +34,14 @@ export function useDarkMode() {
 
 export function useLightMode() {
     document.querySelector('#blog-nav').classList.add('bg-accent1');
-    $('#blog-nav, #moonglade-footer').removeClass('bg-dark');
+    $('#blog-nav, #blog-footer').removeClass('bg-dark');
 
     document.querySelector('#blog-footer').classList.add('bg-accent2');
 
     $('body').removeClass('bg-moca-dark text-light darkmode');
     $('body.body-post-slug').addClass('bg-gray-1');
-    $('.article-post-slug').addClass('box border');
+    $('.article-post-slug').addClass('p-4 border');
+
     $('.card').removeClass('text-white bg-dark');
     $('.list-group-item, .card-body').removeClass('bg-moca-dark text-light');
 
@@ -48,6 +52,9 @@ export function useLightMode() {
     $('aside .btn-light').removeClass('btn-dark').addClass('btn-light');
     $('#aside-tags .btn-dark').removeClass('btn-dark').addClass('btn-accent');
     $('.post-summary-tags .btn-dark').removeClass('btn-dark').addClass('btn-accent');
+
+    $('.aside-widget').addClass('bg-white').removeClass('border-dark');
+    $('.aside-widget .card-subtitle').addClass('text-muted').removeClass('text-light-emphasis');
 
     isDarkMode = false;
     $('.lightswitch').removeClass('bg-dark text-light border-secondary');

@@ -1,4 +1,4 @@
-﻿using Moonglade.FriendLink;
+﻿using Moonglade.Data.Entities;
 using System.Security.Cryptography;
 using System.Xml;
 
@@ -6,7 +6,7 @@ namespace Moonglade.Web.Middleware;
 
 public class WriteFoafCommand : IRequest<string>
 {
-    public WriteFoafCommand(FoafDoc doc, string currentRequestUrl, IReadOnlyList<Link> links)
+    public WriteFoafCommand(FoafDoc doc, string currentRequestUrl, IReadOnlyList<FriendLinkEntity> links)
     {
         Doc = doc;
         CurrentRequestUrl = currentRequestUrl;
@@ -17,7 +17,7 @@ public class WriteFoafCommand : IRequest<string>
 
     public string CurrentRequestUrl { get; set; }
 
-    public IReadOnlyList<Link> Links { get; set; }
+    public IReadOnlyList<FriendLinkEntity> Links { get; set; }
 
     public static string ContentType => "application/rdf+xml";
 }

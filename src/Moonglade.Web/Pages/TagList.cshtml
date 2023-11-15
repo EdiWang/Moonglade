@@ -1,10 +1,12 @@
 ﻿@page "/tags/{normalizedName:regex(^(?!-)([a-zA-Z0-9-]){{1,32}}$)}"
 @model Moonglade.Web.Pages.TagListModel
+@{
+    ViewBag.BodyClass = "body-tag-list bg-gray-1";
+}
 
-<h3>
+<h3 class="mb-4">
     @ViewBag.TitlePrefix
 </h3>
-<hr />
 
 @if (Model.Posts.Any())
 {

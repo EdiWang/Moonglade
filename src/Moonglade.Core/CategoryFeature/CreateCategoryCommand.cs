@@ -22,20 +22,11 @@ public class CreateCategoryCommand : IRequest
     public string Note { get; set; }
 }
 
-public class CreateCategoryCommandHandler : IRequestHandler<CreateCategoryCommand>
+public class CreateCategoryCommandHandler(IRepository<CategoryEntity> catRepo, ICacheAside cache) : IRequestHandler<CreateCategoryCommand>
 {
-    private readonly IRepository<CategoryEntity> _catRepo;
-    private readonly ICacheAside _cache;
-
-    public CreateCategoryCommandHandler(IRepository<CategoryEntity> catRepo, ICacheAside cache)
-    {
-        _catRepo = catRepo;
-        _cache = cache;
-    }
-
     public async Task Handle(CreateCategoryCommand request, CancellationToken ct)
     {
-        var exists = await _catRepo.AnyAsync(c => c.RouteName == request.RouteName, ct);
+        var exists = await catRepo.AnyAsync(c => c.RouteName == request.RouteName, ct);
         if (exists) return;
 
         var category = new CategoryEntity
@@ -46,7 +37,7 @@ public class CreateCategoryCommandHandler : IRequestHandler<CreateCategoryComman
             DisplayName = request.DisplayName.Trim()
         };
 
-        await _catRepo.AddAsync(category, ct);
-        _cache.Remove(BlogCachePartition.General.ToString(), "allcats");
+        await catRepo.AddAsync(category, ct);
+        cache.Remove(BlogCachePartition.General.ToString(), "allcats");
     }
 }

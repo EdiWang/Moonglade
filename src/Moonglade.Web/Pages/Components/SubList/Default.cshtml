@@ -1,0 +1,22 @@
+﻿@model IEnumerable<KeyValuePair<string, string>>
+
+@foreach (var (key, value) in Model.OrderBy(c => c.Key))
+{
+    <div class="col-6 mb-2">
+        <span>
+            <i class="bi-folder2 me-1"></i>
+            @key
+        </span>
+        <span>(</span>
+        <a asp-controller="Subscription" asp-action="Rss" asp-route-routeName="@value"
+           title="@key">
+            RSS
+        </a>
+        <span> | </span>
+        <a asp-controller="Subscription" asp-action="Atom" asp-route-routeName="@value"
+           title="@key">
+            Atom
+        </a>
+        <span>)</span>
+    </div>
+}

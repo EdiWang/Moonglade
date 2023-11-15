@@ -4,6 +4,8 @@
 @inject IMediator Mediator
 @{
     ViewBag.TitlePrefix = "Archive ";
+    ViewBag.BodyClass = "body-archive-index bg-gray-1";
+
     var archives = await Mediator.Send(new GetArchiveQuery());
     int[] yearList = null;
     if (null != Model && archives.Any())
@@ -25,10 +27,9 @@
     <link href="~/css/timeline.css" rel="stylesheet" asp-append-version="true" />
 }
 
-<h3>
+<h3 class="mb-4">
     @SharedLocalizer["Archive"]
 </h3>
-<hr />
 
 @if (null != Model && archives.Any() && null != yearList)
 {
@@ -49,7 +50,7 @@
 
             <li class="@(item % 2 == 0 ? "timeline-inverted" : null)">
                 <div class="timeline-badge @badgeClass"><i class="bi-calendar2-week"></i></div>
-                <div class="timeline-panel">
+                <div class="timeline-panel shadow-sm bg-white">
                     <div class="timeline-heading">
                         <h3 class="timeline-title">
                             <a asp-page="./ArchiveList" asp-route-year="@item">@item</a>

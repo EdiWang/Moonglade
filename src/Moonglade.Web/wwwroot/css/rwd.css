@@ -16,9 +16,9 @@
 
 @media (max-width: 767px) {
 
-    .article-post-slug.box {
-        padding: 0;
-        box-shadow: none;
+    .article-post-slug {
+        padding: 0 !important;
+        box-shadow: none !important;
         border: none !important;
     }
 
@@ -65,14 +65,14 @@
         width: 100%;
     }
 
-    .blogger-intro-content h4 {
-        background-color: var(--transparent-light-20);
-        border-radius: 5px;
-        color: var(--bs-white);
-        font-size: 1rem;
-        padding: 5px;
-        text-shadow: 2px 0 2px #000;
-    }
+        .blogger-intro-content h4 {
+            background-color: var(--transparent-light-20);
+            border-radius: 5px;
+            color: var(--bs-white);
+            font-size: 1rem;
+            padding: 5px;
+            text-shadow: 2px 0 2px #000;
+        }
 
     .navbar .nav-item {
         margin: 0 !important;

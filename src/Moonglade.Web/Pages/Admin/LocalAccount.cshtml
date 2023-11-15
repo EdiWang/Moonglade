@@ -1,7 +1,7 @@
 ﻿@page "/admin/account"
 @model Moonglade.Web.Pages.Admin.LocalAccountModel
 @{
-    ViewBag.Title = "Manage Accounts";
+    ViewBag.Title = "Accounts";
     var currentUidClaim = User.Claims.FirstOrDefault(c => c.Type == "uid");
 }
 
@@ -81,14 +81,17 @@
     </script>
 }
 
-    <div class="admin-toolbar ps-4 pe-4 pt-2 pb-2 border-bottom mb-3 shadow-sm">
+
+@section admintoolbar{
+    <div class="admin-toolbar pb-2 border-bottom mb-3">
         <a class="btn btn-outline-accent" href="javascript:initCreateAccount();">
             <i class="bi-plus-lg"></i>
             @SharedLocalizer["Create"]
         </a>
     </div>
+}
 
-    <div class="ps-4 pe-4">
+
     @if (null != Model.Accounts && Model.Accounts.Any())
     {
         <table class="table table-bordered mt-3">
@@ -125,9 +128,8 @@
         </table>
     }
 
-    <p class="text-muted">Check out <a href="https://azure.microsoft.com/en-us/services/active-directory?WT.mc_id=AZ-MVP-5002809">Azure Active Directoy</a> and empower your blog to achieve more!</p>
+    <p class="text-muted">Check out <a href="https://learn.microsoft.com/en-us/azure/active-directory/fundamentals/whatis?WT.mc_id=AZ-MVP-5002809">Microsoft Entra ID</a> and empower your blog to achieve more!</p>
 
-</div>
 
 <div class="modal fade" id="editAccountModal" tabindex="-1" role="dialog" aria-labelledby="editAccountModalLabel" aria-hidden="true">
     <div class="modal-dialog" role="document">

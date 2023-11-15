@@ -7,21 +7,18 @@ namespace Moonglade.Configuration;
 
 public record UpdateConfigurationCommand(string Name, string Json) : IRequest<OperationCode>;
 
-public class UpdateConfigurationCommandHandler : IRequestHandler<UpdateConfigurationCommand, OperationCode>
+public class UpdateConfigurationCommandHandler(IRepository<BlogConfigurationEntity> repository) : IRequestHandler<UpdateConfigurationCommand, OperationCode>
 {
-    private readonly IRepository<BlogConfigurationEntity> _repository;
-    public UpdateConfigurationCommandHandler(IRepository<BlogConfigurationEntity> repository) => _repository = repository;
-
     public async Task<OperationCode> Handle(UpdateConfigurationCommand request, CancellationToken ct)
     {
         var (name, json) = request;
-        var entity = await _repository.GetAsync(p => p.CfgKey == name);
+        var entity = await repository.GetAsync(p => p.CfgKey == name);
         if (entity == null) return OperationCode.ObjectNotFound;
 
         entity.CfgValue = json;
         entity.LastModifiedTimeUtc = DateTime.UtcNow;
 
-        await _repository.UpdateAsync(entity, ct);
+        await repository.UpdateAsync(entity, ct);
         return OperationCode.Done;
     }
 }

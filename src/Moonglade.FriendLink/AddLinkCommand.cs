@@ -28,12 +28,8 @@ public class AddLinkCommand : IRequest, IValidatableObject
     }
 }
 
-public class AddLinkCommandHandler : IRequestHandler<AddLinkCommand>
+public class AddLinkCommandHandler(IRepository<FriendLinkEntity> repo) : IRequestHandler<AddLinkCommand>
 {
-    private readonly IRepository<FriendLinkEntity> _repo;
-
-    public AddLinkCommandHandler(IRepository<FriendLinkEntity> repo) => _repo = repo;
-
     public async Task Handle(AddLinkCommand request, CancellationToken ct)
     {
         var link = new FriendLinkEntity
@@ -43,6 +39,6 @@ public class AddLinkCommandHandler : IRequestHandler<AddLinkCommand>
             Title = request.Title
         };
 
-        await _repo.AddAsync(link, ct);
+        await repo.AddAsync(link, ct);
     }
 }

@@ -1,4 +1,6 @@
 ﻿@page "/admin/settings/content"
+@inject IConfiguration Configuration
+
 @section scripts{
     <script type="module">
         import * as settings from '/js/app/admin.settings.module.js';
@@ -27,14 +29,14 @@
     <partial name="_SettingsHeader" />
 }
 
-<div>
-    <form id="form-settings" asp-controller="Settings" asp-action="Content">
+<form id="form-settings" asp-controller="Settings" asp-action="Content">
+    <div class="admin-settings-entry-container">
         <div class="row">
             <div class="col-md-6">
-                <div class="p-3 rounded-3 shadow-sm border bg-white">
-                    <h6 class="card-subtitle mb-4 text-muted">@SharedLocalizer["Comments"]</h6>
+                <div>
+                    <h4 class="admin-subtitle fw-bold mb-2">@SharedLocalizer["Comments"]</h4>
 
-                    <div class="row g-3 align-items-center settings-entry mb-4">
+                    <div class="settings-entry2 row align-items-center py-3 px-2 rounded-3 shadow-sm border bg-white mb-2">
                         <div class="col-auto">
                             <i class="bi-chat-left-dots settings-entry-icon"></i>
                         </div>
@@ -42,14 +44,14 @@
                             <label asp-for="@settings.EnableComments" class="form-check-label"></label>
                         </div>
                         <div class="col-md-5 text-end">
-                            <div class="form-check form-switch">
+                            <div class="form-check form-switch form-control-lg">
                                 <input type="hidden" name="EnableComments" value="false">
                                 <input type="checkbox" name="EnableComments" value="true" class="form-check-input" @(settings.EnableComments ? "checked" : null)>
                             </div>
                         </div>
                     </div>
 
-                    <div class="row g-3 align-items-center settings-entry mb-4">
+                    <div class="settings-entry2 row align-items-center py-3 px-2 rounded-3 shadow-sm border bg-white mb-2">
                         <div class="col-auto">
                             <i class="bi-diagram-2 settings-entry-icon"></i>
                         </div>
@@ -78,7 +80,7 @@
                         </div>
                     </div>
 
-                    <div class="row g-3 align-items-center settings-entry mb-4">
+                    <div class="settings-entry2 row align-items-center py-3 px-2 rounded-3 shadow-sm border bg-white mb-2">
                         <div class="col-auto">
                             <i class="settings-entry-icon bi-hourglass-split"></i>
                         </div>
@@ -92,8 +94,8 @@
                     </div>
 
                     <div class="comment-settings-built-in">
-                        
-                        <div class="row g-3 align-items-center settings-entry mb-4">
+
+                        <div class="settings-entry2 row align-items-center py-3 px-2 rounded-3 shadow-sm border bg-white mb-2">
                             <div class="col-auto">
                                 <i class="bi-sort-numeric-down settings-entry-icon"></i>
                             </div>
@@ -112,7 +114,7 @@
                             </div>
                         </div>
 
-                        <div class="row g-3 align-items-center settings-entry mb-4">
+                        <div class="settings-entry2 row align-items-center py-3 px-2 rounded-3 shadow-sm border bg-white mb-2">
                             <div class="col-auto">
                                 <i class="bi-person-check settings-entry-icon"></i>
                             </div>
@@ -120,14 +122,14 @@
                                 <label asp-for="@settings.RequireCommentReview" class="form-check-label"></label>
                             </div>
                             <div class="col-md-5 text-end">
-                                <div class="form-check form-switch">
+                                <div class="form-check form-switch form-control-lg">
                                     <input type="hidden" name="RequireCommentReview" value="false">
                                     <input type="checkbox" name="RequireCommentReview" value="true" class="form-check-input" @(settings.RequireCommentReview ? "checked" : null)>
                                 </div>
                             </div>
                         </div>
 
-                        <div class="row g-3 align-items-center settings-entry mb-4">
+                        <div class="settings-entry2 row align-items-center py-3 px-2 rounded-3 shadow-sm border bg-white mb-2">
                             <div class="col-auto">
                                 <i class="bi-person-square settings-entry-icon"></i>
                             </div>
@@ -135,58 +137,65 @@
                                 <label asp-for="@settings.EnableGravatar" class="form-check-label"></label>
                             </div>
                             <div class="col-md-5 text-end">
-                                <div class="form-check form-switch">
+                                <div class="form-check form-switch form-control-lg">
                                     <input type="hidden" name="EnableGravatar" value="false">
                                     <input type="checkbox" name="EnableGravatar" value="true" class="form-check-input" @(settings.EnableGravatar ? "checked" : null)>
                                 </div>
                             </div>
                         </div>
 
-                        <div class="row g-3 align-items-center settings-entry mb-4">
-                            <div class="col-auto">
-                                <i class="bi-translate settings-entry-icon"></i>
-                            </div>
-                            <div class="col">
-                                <label asp-for="@settings.EnableWordFilter" class="form-check-label"></label>
-                            </div>
-                            <div class="col-md-5 text-end">
-                                <div class="form-check form-switch">
-                                    <input type="hidden" name="EnableWordFilter" value="false">
-                                    <input type="checkbox" name="EnableWordFilter" value="true" class="form-check-input" @(settings.EnableWordFilter ? "checked" : null)>
+                        @if (!string.IsNullOrWhiteSpace(Configuration["ContentModerator:ApiEndpoint"]))
+                        {
+                            <div class="settings-entry2 row align-items-center py-3 px-2 rounded-3 shadow-sm border bg-white mb-2">
+                                <div class="col-auto">
+                                    <i class="bi-translate settings-entry-icon"></i>
+                                </div>
+                                <div class="col">
+                                    <label asp-for="@settings.EnableWordFilter" class="form-check-label"></label>
+                                </div>
+                                <div class="col-md-5 text-end">
+                                    <div class="form-check form-switch form-control-lg">
+                                        <input type="hidden" name="EnableWordFilter" value="false">
+                                        <input type="checkbox" name="EnableWordFilter" value="true" class="form-check-input" @(settings.EnableWordFilter ? "checked" : null)>
+                                    </div>
                                 </div>
                             </div>
-                        </div>
 
-                        <div class="row g-3 align-items-center settings-entry mb-2">
-                            <div class="col-auto">
-                                <i class="bi-check2-circle settings-entry-icon"></i>
-                            </div>
-                            <div class="col">
-                                <label asp-for="@settings.WordFilterMode" class="me-4"></label>
-                            </div>
-                            <div class="col-md-5 text-end">
-                                <div class="form-check form-check-inline">
-                                    @Html.RadioButtonFor(model => settings.WordFilterMode, WordFilterMode.Mask, new { id = WordFilterMode.Mask.ToString(), @class = "form-check-input" })
-                                    <label class="form-check-label" for="@WordFilterMode.Mask">@SharedLocalizer["Mask Word"]</label>
+                            <div class="settings-entry2 row align-items-center py-3 px-2 rounded-3 shadow-sm border bg-white mb-2">
+                                <div class="col-auto">
+                                    <i class="bi-check2-circle settings-entry-icon"></i>
                                 </div>
-                                <div class="form-check form-check-inline">
-                                    @Html.RadioButtonFor(model => settings.WordFilterMode, WordFilterMode.Block, new { id = WordFilterMode.Block.ToString(), @class = "form-check-input" })
-                                    <label class="form-check-label" for="@WordFilterMode.Block">@SharedLocalizer["Block Comment"]</label>
+                                <div class="col">
+                                    <label asp-for="@settings.WordFilterMode" class="me-4"></label>
+                                    <div class="form-text">@SharedLocalizer["Blocked words will be masked as * in content."]</div>
+                                </div>
+                                <div class="col-md-5 text-end">
+                                    <div class="form-check form-check-inline">
+                                        @Html.RadioButtonFor(model => settings.WordFilterMode, WordFilterMode.Mask, new { id = WordFilterMode.Mask.ToString(), @class = "form-check-input" })
+                                        <label class="form-check-label" for="@WordFilterMode.Mask">@SharedLocalizer["Mask Word"]</label>
+                                    </div>
+                                    <div class="form-check form-check-inline">
+                                        @Html.RadioButtonFor(model => settings.WordFilterMode, WordFilterMode.Block, new { id = WordFilterMode.Block.ToString(), @class = "form-check-input" })
+                                        <label class="form-check-label" for="@WordFilterMode.Block">@SharedLocalizer["Block Comment"]</label>
+                                    </div>
                                 </div>
                             </div>
-                        </div>
-
-                        <div class="mb-2">
-                            <div class="form-floating">
-                                <textarea asp-for="@settings.DisharmonyWords"
-                                          placeholder="@Html.DisplayNameFor(m => settings.DisharmonyWords)"
-                                          class="form-control form-control-sm h-200px"
-                                          spellcheck="false"></textarea>
-                                <label class="form-label" asp-for="@settings.DisharmonyWords"></label>
+                        }
+                        else
+                        {
+                            <div class="settings-entry2 row align-items-center py-3 px-2 rounded-3 shadow-sm border bg-white mb-2">
+                                <div class="col-auto">
+                                    <i class="bi-translate settings-entry-icon"></i>
+                                </div>
+                                <div class="col">
+                                    <label asp-for="@settings.EnableWordFilter" class="form-check-label"></label>
+                                    <div class="form-text">Please follow <a href="https://github.com/EdiWang/Moonglade.ContentSecurity" target="_blank">instruction</a> to setup content security API</div>
+                                </div>
+                                <div class="col-md-5 text-end">
+                                    <a class="btn btn-sm btn-outline-accent" href="https://github.com/EdiWang/Moonglade.ContentSecurity" target="_blank">Setup</a>
+                                </div>
                             </div>
-
-                            <small class="form-text text-muted">@SharedLocalizer["Blocked words will be masked as *** in comment content."]</small>
-                        </div>
+                        }
                     </div>
 
                     <div class="comment-settings-3rd">
@@ -203,10 +212,10 @@
                 </div>
             </div>
             <div class="col-md-6">
-                <div class="mb-3 p-3 rounded-3 shadow-sm border bg-white">
-                    <h6 class="card-subtitle mb-4 text-muted">@SharedLocalizer["Blog posts"]</h6>
+                <div class="mb-3">
+                    <h4 class="admin-subtitle fw-bold mb-2">@SharedLocalizer["Blog posts"]</h4>
 
-                    <div class="row g-3 align-items-center settings-entry mb-4">
+                    <div class="settings-entry2 row align-items-center py-3 px-2 rounded-3 shadow-sm border bg-white mb-2">
                         <div class="col-auto">
                             <i class="bi-check2-circle settings-entry-icon"></i>
                         </div>
@@ -225,7 +234,7 @@
                         </div>
                     </div>
 
-                    <div class="row g-3 align-items-center settings-entry mb-4">
+                    <div class="settings-entry2 row align-items-center py-3 px-2 rounded-3 shadow-sm border bg-white mb-2">
                         <div class="col-auto">
                             <i class="bi-sort-numeric-down settings-entry-icon"></i>
                         </div>
@@ -237,7 +246,7 @@
                         </div>
                     </div>
 
-                    <div class="row g-3 align-items-center settings-entry mb-4">
+                    <div class="settings-entry2 row align-items-center py-3 px-2 rounded-3 shadow-sm border bg-white mb-2">
                         <div class="col-auto">
                             <i class="settings-entry-icon bi-file-word"></i>
                         </div>
@@ -250,7 +259,7 @@
                         </div>
                     </div>
 
-                    <div class="row g-3 align-items-center settings-entry mb-4">
+                    <div class="settings-entry2 row align-items-center py-3 px-2 rounded-3 shadow-sm border bg-white mb-2">
                         <div class="col-auto">
                             <i class="bi-tags settings-entry-icon"></i>
                         </div>
@@ -262,7 +271,7 @@
                         </div>
                     </div>
 
-                    <div class="row g-3 align-items-center settings-entry mb-4">
+                    <div class="settings-entry2 row align-items-center py-3 px-2 rounded-3 shadow-sm border bg-white mb-2">
                         <div class="col-auto">
                             <i class="bi-list-nested settings-entry-icon"></i>
                         </div>
@@ -270,72 +279,91 @@
                             <label asp-for="@settings.DocumentOutline" class="form-check-label"></label>
                         </div>
                         <div class="col-md-5 text-end">
-                            <div class="form-check form-switch">
+                            <div class="form-check form-switch form-control-lg">
                                 <input type="hidden" name="DocumentOutline" value="false">
                                 <input type="checkbox" name="DocumentOutline" value="true" class="form-check-input" @(settings.DocumentOutline ? "checked" : null)>
                             </div>
                         </div>
                     </div>
 
-                    <div class="row g-3 align-items-center settings-entry mb-2">
+                    <div class="settings-entry2 row align-items-center py-3 px-2 rounded-3 shadow-sm border bg-white mb-2">
                         <div class="col-auto">
-                            <i class="bi-card-text settings-entry-icon"></i>
+                            <i class="bi-alarm settings-entry-icon"></i>
                         </div>
                         <div class="col">
-                            <label asp-for="@settings.ShowPostFooter" class="form-check-label"></label>
-                            <div class="form-text">@SharedLocalizer["e.g. Your blog post license information."]</div>
+                            <label asp-for="@settings.DisplayTimeForPubDate" class="form-check-label"></label>
+                            <div class="form-text">@SharedLocalizer["e.g. 6/27/2016 2:51:35 PM"]</div>
                         </div>
                         <div class="col-md-5 text-end">
-                            <div class="form-check form-switch">
-                                <input type="hidden" name="ShowPostFooter" value="false">
-                                <input type="checkbox" name="ShowPostFooter" value="true" class="form-check-input" @(settings.ShowPostFooter ? "checked" : null)>
+                            <div class="form-check form-switch form-control-lg">
+                                <input type="hidden" name="DisplayTimeForPubDate" value="false">
+                                <input type="checkbox" name="DisplayTimeForPubDate" value="true" class="form-check-input" @(settings.DisplayTimeForPubDate ? "checked" : null)>
                             </div>
                         </div>
                     </div>
 
-                    <div>
-                        <div class="form-floating">
-                            <textarea asp-for="@settings.PostFooterHtmlPitch"
-                                      placeholder="@Html.DisplayNameFor(m => settings.PostFooterHtmlPitch)"
-                                      class="form-control form-control-sm h-100px"
-                                      spellcheck="false"></textarea>
-                            <label class="form-label" asp-for="@settings.PostFooterHtmlPitch"></label>
+                    <div class="rounded-3 shadow-sm border bg-white">
+                        <div class="settings-entry2 row align-items-center py-3 px-2">
+                            <div class="col-auto">
+                                <i class="bi-card-text settings-entry-icon"></i>
+                            </div>
+                            <div class="col">
+                                <label asp-for="@settings.ShowPostFooter" class="form-check-label"></label>
+                                <div class="form-text">@SharedLocalizer["e.g. Your blog post license information."]</div>
+                            </div>
+                            <div class="col-md-5 text-end">
+                                <div class="form-check form-switch form-control-lg">
+                                    <input type="hidden" name="ShowPostFooter" value="false">
+                                    <input type="checkbox" name="ShowPostFooter" value="true" class="form-check-input" @(settings.ShowPostFooter ? "checked" : null)>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="border-top py-3 px-2">
+                            <div class="form-floating">
+                                <textarea asp-for="@settings.PostFooterHtmlPitch"
+                                          placeholder="@Html.DisplayNameFor(m => settings.PostFooterHtmlPitch)"
+                                          class="form-control form-control-sm h-100px"
+                                          spellcheck="false"></textarea>
+                                <label class="form-label" asp-for="@settings.PostFooterHtmlPitch"></label>
+                            </div>
                         </div>
                     </div>
+
                 </div>
-                <div class="p-3 rounded-3 shadow-sm border bg-white">
-                    <h6 class="card-subtitle mb-4 text-muted">@SharedLocalizer["Call-out"]</h6>
+                <div>
+                    <h4 class="admin-subtitle fw-bold mb-2">@SharedLocalizer["Call-out"]</h4>
 
-                    <div class="row g-3 align-items-center settings-entry mb-2">
-                        <div class="col-auto">
-                            <i class="bi-menu-button-wide-fill settings-entry-icon"></i>
-                        </div>
-                        <div class="col">
-                            <label asp-for="@settings.ShowCalloutSection" class="form-check-label"></label>
-                            <div class="form-text">@SharedLocalizer["The call-out section will display on top of every page in the website."]</div>
-                        </div>
-                        <div class="col-md-5 text-end">
-                            <div class="form-check form-switch">
-                                <input type="hidden" name="ShowCalloutSection" value="false">
-                                <input type="checkbox" name="ShowCalloutSection" value="true" class="form-check-input" @(settings.ShowCalloutSection ? "checked" : null)>
+                    <div class="rounded-3 shadow-sm border bg-white mb-2">
+                        <div class="settings-entry2 row align-items-center py-3 px-2">
+                            <div class="col-auto">
+                                <i class="bi-menu-button-wide-fill settings-entry-icon"></i>
+                            </div>
+                            <div class="col">
+                                <label asp-for="@settings.ShowCalloutSection" class="form-check-label"></label>
+                                <div class="form-text">@SharedLocalizer["The call-out section will display on top of every page in the website."]</div>
+                            </div>
+                            <div class="col-md-5 text-end">
+                                <div class="form-check form-switch form-control-lg">
+                                    <input type="hidden" name="ShowCalloutSection" value="false">
+                                    <input type="checkbox" name="ShowCalloutSection" value="true" class="form-check-input" @(settings.ShowCalloutSection ? "checked" : null)>
+                                </div>
                             </div>
                         </div>
-                    </div>
-                    <div>
-                        <div class="form-floating">
-                            <textarea asp-for="@settings.CalloutSectionHtmlPitch"
-                                      placeholder="@Html.DisplayNameFor(m => settings.CalloutSectionHtmlPitch)"
-                                      class="form-control form-control-sm h-100px"
-                                      spellcheck="false"></textarea>
-                            <label class="form-label" asp-for="@settings.CalloutSectionHtmlPitch"></label>
+                        <div class="border-top py-3 px-2">
+                            <div class="form-floating">
+                                <textarea asp-for="@settings.CalloutSectionHtmlPitch"
+                                          placeholder="@Html.DisplayNameFor(m => settings.CalloutSectionHtmlPitch)"
+                                          class="form-control form-control-sm h-100px"
+                                          spellcheck="false"></textarea>
+                                <label class="form-label" asp-for="@settings.CalloutSectionHtmlPitch"></label>
+                            </div>
                         </div>
                     </div>
                 </div>
             </div>
         </div>
-
-        <div class="mt-4 mb-4">
-            <input id="btn-save-settings" type="submit" value="@SharedLocalizer["Save"]" class="btn btn-outline-accent" />
-        </div>
-    </form>
-</div>
+    </div>
+    <div class="admin-settings-action-container border-top pt-2 mt-2">
+        <input id="btn-save-settings" type="submit" value="@SharedLocalizer["Save"]" class="btn btn-outline-accent" />
+    </div>
+</form>

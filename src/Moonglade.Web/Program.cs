@@ -4,9 +4,11 @@ using Edi.PasswordGenerator;
 using Microsoft.ApplicationInsights.Extensibility;
 using Microsoft.ApplicationInsights.Extensibility.Implementation;
 using Microsoft.AspNetCore.HttpOverrides;
+using Moonglade.Comments.Moderator;
 using Moonglade.Data.MySql;
 using Moonglade.Data.PostgreSql;
 using Moonglade.Data.SqlServer;
+using Moonglade.Email.Client;
 using Moonglade.Pingback;
 using Moonglade.Syndication;
 using SixLabors.Fonts;
@@ -14,9 +16,9 @@ using Spectre.Console;
 using System.Globalization;
 using System.Net;
 using System.Text.Json.Serialization;
-using Moonglade.Email.Client;
 using WilderMinds.MetaWeblog;
 using Encoder = Moonglade.Web.Configuration.Encoder;
+using IPNetwork = Microsoft.AspNetCore.HttpOverrides.IPNetwork;
 
 Console.OutputEncoding = Encoding.UTF8;
 Encoding.RegisterProvider(CodePagesEncodingProvider.Instance);
@@ -54,6 +56,8 @@ void WriteParameterTable()
     var ipEntry = Dns.GetHostEntry(strHostName);
     var ips = ipEntry.AddressList;
 
+    var envName = Environment.GetEnvironmentVariable("ASPNETCORE_ENVIRONMENT");
+
     table.AddColumn("Parameter");
     table.AddColumn("Value");
     table.AddRow(new Markup("[blue]Path[/]"), new Text(Environment.CurrentDirectory));
@@ -62,9 +66,16 @@ void WriteParameterTable()
     table.AddRow(new Markup("[blue]Host[/]"), new Text(Environment.MachineName));
     table.AddRow(new Markup("[blue]IP addresses[/]"), new Rows(ips.Select(p => new Text(p.ToString()))));
     table.AddRow(new Markup("[blue]Database type[/]"), new Text(dbType!));
+
+    if (!string.IsNullOrWhiteSpace(envName) && envName.ToLower() == "development")
+    {
+        table.AddRow(new Markup("[blue]Connection String[/]"), new Text(builder.Configuration.GetConnectionString("MoongladeDatabase")));
+    }
+
     table.AddRow(new Markup("[blue]Image storage[/]"), new Text(builder.Configuration["ImageStorage:Provider"]!));
     table.AddRow(new Markup("[blue]Authentication provider[/]"), new Text(builder.Configuration["Authentication:Provider"]!));
     table.AddRow(new Markup("[blue]Editor[/]"), new Text(builder.Configuration["Editor"]!));
+    table.AddRow(new Markup("[blue]ASPNETCORE_ENVIRONMENT[/]"), new Text(envName ?? "N/A"));
 
     AnsiConsole.Write(table);
 }
@@ -117,12 +128,16 @@ void ConfigureServices(IServiceCollection services)
         options.Cookie.Name = $"X-{csrfName}";
         options.FormFieldName = $"{csrfName}-FORM";
         options.HeaderName = "XSRF-TOKEN";
-    }).Configure<RequestLocalizationOptions>(options =>
+    });
+
+    services.Configure<RequestLocalizationOptions>(options =>
     {
         options.DefaultRequestCulture = new("en-US");
         options.SupportedCultures = cultures;
         options.SupportedUICultures = cultures;
-    }).Configure<RouteOptions>(options =>
+    });
+
+    services.Configure<RouteOptions>(options =>
     {
         options.LowercaseUrls = true;
         options.LowercaseQueryStrings = true;
@@ -141,7 +156,7 @@ void ConfigureServices(IServiceCollection services)
             .AddScoped<ITimeZoneResolver, BlogTimeZoneResolver>()
             .AddBlogConfig()
             .AddBlogAuthenticaton(builder.Configuration)
-            .AddComments(builder.Configuration)
+            .AddContentModerator(builder.Configuration)
             .AddImageStorage(builder.Configuration, options => options.ContentRootPath = builder.Environment.ContentRootPath)
             .Configure<List<ManifestIcon>>(builder.Configuration.GetSection("ManifestIcons"));
 
@@ -165,22 +180,23 @@ async Task FirstRun()
     try
     {
         var startUpResut = await app.InitStartUp(dbType);
-        switch (startUpResut)
+
+        // Change `switch-case` to `if-else` for workaround https://github.com/dotnet/aspnetcore/issues/51285
+        if (startUpResut == StartupInitResult.DatabaseConnectionFail)
         {
-            case StartupInitResult.DatabaseConnectionFail:
-                app.MapGet("/", () => Results.Problem(
-                    detail: "Database connection test failed, please check your connection string and firewall settings, then RESTART Moonglade manually.",
-                    statusCode: 500
-                    ));
-                app.Run();
-                return;
-            case StartupInitResult.DatabaseSetupFail:
-                app.MapGet("/", () => Results.Problem(
-                    detail: "Database setup failed, please check error log, then RESTART Moonglade manually.",
-                    statusCode: 500
+            app.MapGet("/", () => Results.Problem(
+                detail: "Database connection test failed, please check your connection string and firewall settings, then RESTART Moonglade manually.",
+                statusCode: 500
                 ));
-                app.Run();
-                return;
+            app.Run();
+        }
+        else if (startUpResut == StartupInitResult.DatabaseSetupFail)
+        {
+            app.MapGet("/", () => Results.Problem(
+                detail: "Database setup failed, please check error log, then RESTART Moonglade manually.",
+                statusCode: 500
+            ));
+            app.Run();
         }
     }
     catch (Exception e)
@@ -204,10 +220,10 @@ void ConfigureMiddleware()
         // ASP.NET Core always use the last value in XFF header, which is AFD's IP address
         // Need to set as `X-Azure-ClientIP` as workaround
         // https://learn.microsoft.com/en-us/azure/frontdoor/front-door-http-headers-protocol
-        var forwardedForHeaderName = builder.Configuration["ForwardedHeaders:ForwardedForHeaderName"];
-        if (!string.IsNullOrWhiteSpace(forwardedForHeaderName))
+        var headerName = builder.Configuration["ForwardedHeaders:HeaderName"];
+        if (!string.IsNullOrWhiteSpace(headerName))
         {
-            fho.ForwardedForHeaderName = forwardedForHeaderName;
+            fho.ForwardedForHeaderName = headerName;
         }
 
         var knownProxies = builder.Configuration.GetSection("ForwardedHeaders:KnownProxies").Get<string[]>();
@@ -283,9 +299,9 @@ void ConfigureMiddleware()
         app.UseMiddleware<RSDMiddleware>().UseMetaWeblog("/metaweblog");
     }
 
-    app.UseMiddleware<SiteMapMiddleware>()
-              .UseMiddleware<PoweredByMiddleware>()
-              .UseMiddleware<DNTMiddleware>();
+    app.UseMiddleware<SiteMapMiddleware>();
+    app.UseMiddleware<PoweredByMiddleware>();
+    app.UseMiddleware<DNTMiddleware>();
 
     if (app.Environment.IsDevelopment())
     {
@@ -294,6 +310,7 @@ void ConfigureMiddleware()
     else
     {
         app.UseStatusCodePages(ConfigureStatusCodePages.Handler).UseExceptionHandler("/error");
+        // app.UseHsts();
     }
 
     app.UseHttpsRedirection();

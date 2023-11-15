@@ -1,0 +1,56 @@
+﻿<form id="comment-form">
+    <div>
+        <div class="row g-1 mb-2">
+            <div class="col-md-4">
+                <input type="text"
+                       class="form-control"
+                       placeholder="Your name"
+                       id="input-comment-name"
+                       required />
+            </div>
+            <div class="col-md-8">
+                <input type="email"
+                       class="form-control"
+                       placeholder="Email (Optional)"
+                       id="input-comment-email"
+                       data-bs-toggle="tooltip"
+                       data-placement="top"
+                       title="@SharedLocalizer["Providing your email address can enable blog admin to send notifications for replying your comment. Your email address will also be used to show Gravatar if it has one."]" />
+            </div>
+        </div>
+        <div class="comment-md-content mb-2">
+            <textarea id="input-comment-content"
+                      class="form-control"
+                      cols="60"
+                      rows="4"
+                      placeholder="@SharedLocalizer["Your comments (Markdown supported)"]"
+                      maxlength="1024"
+                      required></textarea>
+        </div>
+        <div class="row">
+            <div class="col-9">
+                <div class="input-group">
+                    <img id="img-captcha" onclick="viewpost.resetCaptchaImage()" src="~/captcha-image" data-bs-toggle="tooltip" data-placement="top" title="@SharedLocalizer["Can't read? Click to change another image."]" alt="Captcha image" />
+                    <input type="text"
+                           id="input-comment-captcha"
+                           class="form-control input-captcha"
+                           placeholder="Captcha Code"
+                           autocomplete="off"
+                           minlength="4"
+                           maxlength="4"
+                           required />
+                </div>
+            </div>
+            <div class="col-3">
+                <button id="btn-submit-comment" type="submit" class="btn btn-accent float-end">
+                    <span id="loadingIndicator" class="spinner-border spinner-border-sm" role="status" aria-hidden="true" style="display: none;"></span>
+
+                    <span class="bi-send"></span>
+                    <span class="d-none d-md-inline-block">
+                        @SharedLocalizer["Submit"]
+                    </span>
+                </button>
+            </div>
+        </div>
+    </div>
+</form>

@@ -7,14 +7,11 @@ namespace Moonglade.Data.Exporting;
 
 public record ExportPostDataCommand : IRequest<ExportResult>;
 
-public class ExportPostDataCommandHandler : IRequestHandler<ExportPostDataCommand, ExportResult>
+public class ExportPostDataCommandHandler(IRepository<PostEntity> repo) : IRequestHandler<ExportPostDataCommand, ExportResult>
 {
-    private readonly IRepository<PostEntity> _repo;
-    public ExportPostDataCommandHandler(IRepository<PostEntity> repo) => _repo = repo;
-
     public Task<ExportResult> Handle(ExportPostDataCommand request, CancellationToken ct)
     {
-        var poExp = new ZippedJsonExporter<PostEntity>(_repo, "moonglade-posts", ExportManager.DataDir);
+        var poExp = new ZippedJsonExporter<PostEntity>(repo, "moonglade-posts", ExportManager.DataDir);
         var poExportData = poExp.ExportData(p => new
         {
             p.Title,

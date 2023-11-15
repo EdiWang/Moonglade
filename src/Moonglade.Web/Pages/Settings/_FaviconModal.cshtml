@@ -1,0 +1,32 @@
+﻿<div class="modal fade" id="siteiconmodal" tabindex="-1" role="dialog" aria-labelledby="siteiconLabel" aria-hidden="true">
+    <div class="modal-dialog modal-sm" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="siteiconmodalLabel">@SharedLocalizer["Change Site Icon"]</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close">
+                </button>
+            </div>
+            <div class="modal-body">
+
+                <div class="mb-2">
+                    <div id="siteiconDropTarget" style="width: 256px; height: 256px;" class="img-thumbnail bg-light text-center">
+                        @SharedLocalizer["Drag and drop image file here"]
+                    </div>
+
+                    <div class="input-group mt-2">
+                        <div>
+                            <label class="form-label" for="siteiconImageFile" aria-describedby="siteiconImageFileAddon">@SharedLocalizer[".png file"]</label>
+                            <input type="file" accept="image/png" class="form-control" id="siteiconImageFile" name="siteiconImageFile">
+                        </div>
+                    </div>
+
+                    <p class="small text-muted text-center mt-2">@SharedLocalizer["* Image width and height must be equal"]</p>
+                    <p class="small text-danger text-center mt-1">@SharedLocalizer["* Changing site icon requires restarting the application"]</p>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-accent disabled" id="btn-upload-siteicon" disabled="disabled">@SharedLocalizer["Upload"]</button>
+            </div>
+        </div>
+    </div>
+</div>

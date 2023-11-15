@@ -1,7 +1,7 @@
 <Project Sdk="Microsoft.NET.Sdk">
     <PropertyGroup>
         <OutputType>Library</OutputType>
-        <TargetFramework>net7.0</TargetFramework>
+        <TargetFramework>net8.0</TargetFramework>
         <AssemblyName>Moonglade.Data.MySql</AssemblyName>
         <RootNamespace>Moonglade.Data.MySql</RootNamespace>
         <IsTestProject>false</IsTestProject>
@@ -10,7 +10,7 @@
         <Nullable>enable</Nullable>
     </PropertyGroup>
     <ItemGroup>
-        <PackageReference Include="Pomelo.EntityFrameworkCore.MySql" Version="7.0.0" />
+        <PackageReference Include="Pomelo.EntityFrameworkCore.MySql" Version="8.0.0-beta.1" />
     </ItemGroup>
     <ItemGroup>
         <ProjectReference Include="..\Moonglade.Data\Moonglade.Data.csproj" />

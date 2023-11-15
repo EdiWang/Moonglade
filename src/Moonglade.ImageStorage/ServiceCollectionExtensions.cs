@@ -1,7 +1,6 @@
 ﻿using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Moonglade.ImageStorage.Providers;
-using Pzy.Qiniu;
 
 namespace Moonglade.ImageStorage;
 
@@ -52,13 +51,6 @@ public static class ServiceCollectionExtensions
                 }
                 services.AddMinioStorage(settings.MinioStorageSettings);
                 break;
-            case "qiniustorage":
-                if (settings.QiniuStorageSettings == null)
-                {
-                    throw new ArgumentNullException(nameof(settings.QiniuStorageSettings), "QiniuStorageSettings can not be null.");
-                }
-                services.AddQiniuStorage(settings.QiniuStorageSettings);
-                break;
             default:
                 var msg = $"Provider {provider} is not supported.";
                 throw new NotSupportedException(msg);
@@ -92,18 +84,6 @@ public static class ServiceCollectionExtensions
                     settings.EndPoint,
                     settings.AccessKey,
                     settings.SecretKey,
-                    settings.BucketName,
-                    settings.WithSSL));
-    }
-
-    private static void AddQiniuStorage(this IServiceCollection services, QiniuStorageSettings settings)
-    {
-        services.AddQiniuStorage()
-                .AddScoped<IFileNameGenerator, RegularFileNameGenerator>()
-                .AddSingleton<IBlogImageStorage, QiniuBlobImageStorage>()
-                .AddSingleton<IMacSettings>(new MacSettings(settings.AccessKey, settings.SecretKey))
-                .AddSingleton<IQiniuConfiguration>(_ => new QiniuBlobConfiguration(
-                    settings.EndPoint,
                     settings.BucketName,
                     settings.WithSSL));
     }

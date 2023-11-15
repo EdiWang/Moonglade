@@ -1,0 +1,37 @@
+﻿@model CreateThemeRequest
+
+<div class="modal fade" id="thememodal" tabindex="-1" role="dialog" aria-labelledby="themeLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="themeLabel">@SharedLocalizer["Custom Theme"]</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close">
+                </button>
+            </div>
+            <form method="post" action="/api/theme" onsubmit="createTheme(this);return false;">
+                <div class="modal-body">
+                    <div class="mb-2">
+                        <input type="text" asp-for="Name" class="form-control" placeholder="@SharedLocalizer["Name"]" required />
+                    </div>
+                    <div class="row g-2">
+                        <div class="col">
+                            <label asp-for="AccentColor1" class="form-label">Accent Color 1</label>
+                            <input type="color" class="form-control form-control-color" asp-for="AccentColor1" value="#2a579a" title="Accent Color 1" required>
+                        </div>
+                        <div class="col">
+                            <label asp-for="AccentColor2" class="form-label">Accent Color 2</label>
+                            <input type="color" class="form-control form-control-color" asp-for="AccentColor2" value="#1a365f" title="Accent Color 2" required>
+                        </div>
+                        <div class="col">
+                            <label asp-for="AccentColor3" class="form-label">Accent Color 3</label>
+                            <input type="color" class="form-control form-control-color" asp-for="AccentColor3" value="#3e6db5" title="Accent Color 3" required>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="submit" class="btn btn-success" id="btn-save-theme">@SharedLocalizer["Save"]</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>

@@ -1,0 +1,31 @@
+﻿<div class="modal fade" id="avatarmodal" tabindex="-1" role="dialog" aria-labelledby="avatarmodalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-sm" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="avatarmodalLabel">@SharedLocalizer["Change Avatar"]</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close">
+                </button>
+            </div>
+            <div class="modal-body">
+
+                <div class="mb-2">
+                    <div id="avatarDropTarget" style="width: 256px; height: 256px;" class="img-thumbnail bg-light text-center">
+                        @SharedLocalizer["Drag and drop image file here"]
+                    </div>
+
+                    <div class="input-group mt-2">
+                        <div>
+                            <label class="form-label" for="avatarImageFile" aria-describedby="avatarImageFileAddon">@SharedLocalizer[".png or .jpg file"]</label>
+                            <input type="file" accept="image/png, image/jpeg" id="avatarImageFile" class="form-control" name="avatarImageFile">
+                        </div>
+                    </div>
+
+                    <p class="small text-muted text-center mt-2">@SharedLocalizer["* Image width and height must be equal"]</p>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-accent disabled" id="btn-upload-avatar" disabled="disabled">@SharedLocalizer["Upload"]</button>
+            </div>
+        </div>
+    </div>
+</div>

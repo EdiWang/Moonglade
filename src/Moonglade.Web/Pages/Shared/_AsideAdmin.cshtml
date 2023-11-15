@@ -1,0 +1,62 @@
+﻿@inject IOptions<AuthenticationSettings> AuthOptions
+@{
+    var currentPage = ViewContext.RouteData.Values["Page"]?.ToString();
+}
+
+<aside class="admin-nav">
+    <section class="admin-nav-section mt-3 mb-3">
+        <div class="list-group list-group-flush">
+            <a asp-page="/Admin/Post"
+               class="list-group-item list-group-item-action @(currentPage is "/Admin/Post" or "/Admin/EditPost" or "/Admin/Draft" or "/Admin/RecycleBin" ? "active" : null)" title="Manage posts link">
+                <i class="bi-file-earmark-richtext admin-nav-icon"></i>
+                @SharedLocalizer["Posts"]
+            </a>
+            <a asp-page="/Admin/BlogPage"
+               class="list-group-item list-group-item-action @(currentPage is "/Admin/BlogPage" or "/Admin/EditPage" ? "active" : null)" title="Manage pages link">
+                <i class="bi-file-earmark-post admin-nav-icon"></i>
+                @SharedLocalizer["Pages"]
+            </a>
+            <a asp-page="/Admin/Category"
+               class="list-group-item list-group-item-action @(currentPage is "/Admin/Category" ? "active" : null)">
+                <i class="bi-folder2 admin-nav-icon" title="Manage categories link"></i>
+                @SharedLocalizer["Categories"]
+            </a>
+            @if (BlogConfig.ContentSettings.CommentProvider == CommentProvider.BuiltIn)
+            {
+                <a asp-page="/Admin/Comments"
+                   class="list-group-item list-group-item-action @(currentPage is "/Admin/Comments" ? "active" : null)">
+                    <i class="bi-chat-left-text admin-nav-icon" title="Manage comments link"></i>
+                    @SharedLocalizer["Comments"]
+                </a>
+            }
+            <a asp-page="/Admin/Tags"
+               class="list-group-item list-group-item-action @(currentPage is "/Admin/Tags" ? "active" : null)">
+                <i class="bi-tag admin-nav-icon" title="Manage tags link"></i>
+                @SharedLocalizer["Tags"]
+            </a>
+            <a asp-page="/Admin/Menu"
+               class="list-group-item list-group-item-action @(currentPage is "/Admin/Menu" ? "active" : null)">
+                <i class="bi-menu-button-wide admin-nav-icon" title="Manage menus link"></i>
+                @SharedLocalizer["Menus"]
+            </a>
+            <a asp-page="/Admin/FriendLink"
+               class="list-group-item list-group-item-action @(currentPage is "/Admin/FriendLink" ? "active" : null)">
+                <i class="bi-link-45deg admin-nav-icon" title="Manage friend links"></i>
+                @SharedLocalizer["Friend links"]
+            </a>
+            <a asp-page="/Admin/Pingback"
+               class="list-group-item list-group-item-action @(currentPage is "/Admin/Pingback" ? "active" : null)">
+                <i class="bi-arrow-left-right admin-nav-icon" title="Manage Pingback link"></i>
+                @SharedLocalizer["Pingbacks"]
+            </a>
+            @if (AuthOptions.Value.Provider == AuthenticationProvider.Local)
+            {
+                <a asp-page="/Admin/LocalAccount"
+                   class="list-group-item list-group-item-action @(currentPage is "/Admin/LocalAccount" ? "active" : null)">
+                    <i class="bi-people admin-nav-icon" title="Manage local account link"></i>
+                    @SharedLocalizer["Accounts"]
+                </a>
+            }
+        </div>
+    </section>
+</aside>

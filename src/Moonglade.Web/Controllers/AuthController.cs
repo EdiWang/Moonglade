@@ -20,7 +20,7 @@ public class AuthController : ControllerBase
     {
         switch (_authenticationSettings.Provider)
         {
-            case AuthenticationProvider.AzureAD:
+            case AuthenticationProvider.EntraID:
                 var callbackUrl = Url.Page("/Index", null, null, Request.Scheme);
                 return SignOut(
                     new AuthenticationProperties { RedirectUri = callbackUrl },

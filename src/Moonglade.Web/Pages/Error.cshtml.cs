@@ -6,18 +6,11 @@ namespace Moonglade.Web.Pages;
 
 [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
 [IgnoreAntiforgeryToken]
-public class ErrorModel : PageModel
+public class ErrorModel(ILogger<ErrorModel> logger) : PageModel
 {
-    private readonly ILogger<ErrorModel> _logger;
-
     public string RequestId { get; set; }
 
     public bool ShowRequestId => !string.IsNullOrEmpty(RequestId);
-
-    public ErrorModel(ILogger<ErrorModel> logger)
-    {
-        _logger = logger;
-    }
 
     public void OnGet()
     {
@@ -30,7 +23,7 @@ public class ErrorModel : PageModel
 
             // Get the exception that occurred
             var exceptionThatOccurred = exceptionFeature.Error;
-            _logger.LogError($"Error: {routeWhereExceptionOccurred}, " +
+            logger.LogError($"Error: {routeWhereExceptionOccurred}, " +
                              $"client IP: {Helper.GetClientIP(HttpContext)}, " +
                              $"request id: {requestId}", exceptionThatOccurred);
         }

@@ -2,17 +2,8 @@
 
 public record CreatePageCommand(EditPageRequest Payload) : IRequest<Guid>;
 
-public class CreatePageCommandHandler : IRequestHandler<CreatePageCommand, Guid>
+public class CreatePageCommandHandler(IRepository<PageEntity> repo, IMediator mediator) : IRequestHandler<CreatePageCommand, Guid>
 {
-    private readonly IRepository<PageEntity> _repo;
-    private readonly IMediator _mediator;
-
-    public CreatePageCommandHandler(IRepository<PageEntity> repo, IMediator mediator)
-    {
-        _repo = repo;
-        _mediator = mediator;
-    }
-
     public async Task<Guid> Handle(CreatePageCommand request, CancellationToken ct)
     {
         var slug = request.Payload.Slug.ToLower().Trim();
@@ -20,7 +11,7 @@ public class CreatePageCommandHandler : IRequestHandler<CreatePageCommand, Guid>
         Guid? cssId = null;
         if (!string.IsNullOrWhiteSpace(request.Payload.CssContent))
         {
-            cssId = await _mediator.Send(new SaveStyleSheetCommand(Guid.NewGuid(), slug, request.Payload.CssContent), ct);
+            cssId = await mediator.Send(new SaveStyleSheetCommand(Guid.NewGuid(), slug, request.Payload.CssContent), ct);
         }
 
         var uid = Guid.NewGuid();
@@ -37,7 +28,7 @@ public class CreatePageCommandHandler : IRequestHandler<CreatePageCommand, Guid>
             CssId = cssId.ToString()
         };
 
-        await _repo.AddAsync(page, ct);
+        await repo.AddAsync(page, ct);
 
         return uid;
     }

@@ -5,11 +5,7 @@ namespace Moonglade.Auth;
 
 public record CountAccountsQuery : IRequest<int>;
 
-public class CountAccountsQueryHandler : IRequestHandler<CountAccountsQuery, int>
+public class CountAccountsQueryHandler(IRepository<LocalAccountEntity> repo) : IRequestHandler<CountAccountsQuery, int>
 {
-    private readonly IRepository<LocalAccountEntity> _repo;
-
-    public CountAccountsQueryHandler(IRepository<LocalAccountEntity> repo) => _repo = repo;
-
-    public Task<int> Handle(CountAccountsQuery request, CancellationToken ct) => _repo.CountAsync(ct: ct);
+    public Task<int> Handle(CountAccountsQuery request, CancellationToken ct) => repo.CountAsync(ct: ct);
 }

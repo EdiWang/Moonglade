@@ -1,22 +1,22 @@
 # Moonglade Blog
 
-[![Build Status](https://dev.azure.com/ediwang/Edi-GitHub/_apis/build/status/EdiWang.Moonglade?branchName=master)](https://dev.azure.com/ediwang/Moonglade%20DevOps/_build/latest?definitionId=68&branchName=master) 
 [![Docker Linux x64](https://github.com/EdiWang/Moonglade/actions/workflows/docker.yml/badge.svg)](https://github.com/EdiWang/Moonglade/actions/workflows/docker.yml)
-![.NET Build Linux](https://github.com/EdiWang/Moonglade/workflows/.NET%20Build%20Linux/badge.svg) 
 
 The [.NET](https://dotnet.microsoft.com/) blog system that optimized for [**Microsoft Azure**](https://azure.microsoft.com/en-us/). Designed for developers, enabling most common blogging features including posts, comments, categories, archive, tags and pages.
 
+**IMPORTANT: Moonglade will move to .NET 8 LTS in November 2023 with v14.x release**
+
 ## 📦 Deployment
 
-- It is recommended to use stable code from [Release](https://github.com/EdiWang/Moonglade/releases) rather than master branch.
+- Please use stable code from [Release](https://github.com/EdiWang/Moonglade/releases) branch rather than master branch.
 
-- It is recommended to enable HTTP/2 support on your web server.
+- HTTPS is required, and it is recommended to enable HTTP/2 support on your web server.
 
-### ☁ Full Deploy on Azure (Recommend)
+### ☁ Full Deploy on Azure
 
 This is the way https://edi.wang is deployed, by taking advantage of as many Azure services as possible, the blog can run very fast and secure. 
 
-But there is no automated script to deploy it, you need to manually create all the resources and configure them.
+There is no automated script to deploy it, you need to manually create all the resources.
 
 ![image](https://cdn-blog.edi.wang/web-assets/ediwang-azure-arch-visio-nov2022.png)
 
@@ -43,7 +43,7 @@ To quickly get it running on a new Linux machine without Docker, follow instruct
 
 Tools | Alternative
 --- | ---
-[Visual Studio 2022 v17.4+](https://visualstudio.microsoft.com/) | [Visual Studio Code](https://code.visualstudio.com/) with [.NET 7.0 SDK](http://dot.net)
+[Visual Studio 2022 v17.8+](https://visualstudio.microsoft.com/) | [Visual Studio Code](https://code.visualstudio.com/) with [.NET 8.0 SDK](http://dot.net)
 [SQL Server 2022](https://www.microsoft.com/en-us/sql-server/sql-server-2022) | [SQL Server LocalDB](https://learn.microsoft.com/en-us/sql/database-engine/configure-windows/sql-server-express-localdb?view=sql-server-ver16&WT.mc_id=AZ-MVP-5002809), PostgreSQL or MySQL 
 
 ### 💾 Setup Database
@@ -87,17 +87,17 @@ Build and run `./src/Moonglade.sln`
 
 ## ⚙ Configuration
 
-> This section discuss system settings in **appsettings.[env].json**. For blog settings, please use "/admin/settings" UI.
-
-**For production, it is strongly recommended to use Environment Variables over appsetting.json file.**
+> This section discuss environment settings in **appsettings.[env].json**. For blog settings, please use "/admin/settings" UI.
 
 ### 🛡 Authentication
+
+> You can choose one authentication provider from below.
 
 #### [Microsoft Entra ID](https://azure.microsoft.com/en-us/services/active-directory/)
 
 See [Wiki document](https://github.com/EdiWang/Moonglade/wiki/Use-Microsoft-Entra-ID-Authentication)
 
-#### Local Account (Alternative)
+#### Local Account
 
 Set `Authentication:Provider` to `"Local"`. You can manage accounts in `/admin/settings/account`
 
@@ -120,7 +120,7 @@ You need to create an [**Azure Blob Storage**](https://azure.microsoft.com/en-us
 
 When configured the image storage to use Azure Blob, you can take advantage of CDN for your image resources. Just enable CDN in admin settings, the blog will get images from CDN.
 
-#### [Minio Blob Storage](https://min.io/) (Free)
+#### [Minio Blob Storage](https://min.io/)
 
 You need to hava an [**Minio Server**](https://docs.min.io/). 
 
@@ -128,21 +128,6 @@ You need to hava an [**Minio Server**](https://docs.min.io/).
 "Provider": "miniostorage"
 "MinioStorageSettings": {
   "EndPoint": "Minio Server Endpoint(eg:localhost:9600)",
-  "AccessKey": "Your Access Key",
-  "SecretKey": "Your Secret Key",
-  "BucketName": "Your BucketName",
-  "WithSSL": false
-}
-```
-
-#### [Qiniu Blob Storage](https://qiniu.com/) (Almost free)
-
-You need to hava an Qiniu cloud account, and use [Kodo](https://www.qiniu.com/products/kodo) storage service. 
-
-```json
-"Provider": "qiniustorage"
-"QiniuStorageSettings": {
-  "EndPoint": "Your Custom Domain",
   "AccessKey": "Your Access Key",
   "SecretKey": "Your Secret Key",
   "BucketName": "Your BucketName",
@@ -163,7 +148,7 @@ You can also choose File System for image storage if you don't have a cloud opti
 
 ### 🤬 Comment Moderator
 
-- [Comment Moderator Settings](https://github.com/EdiWang/Moonglade/wiki/Comment-Moderator-Settings)
+See https://github.com/EdiWang/Moonglade.ContentSecurity
 
 ### 📧 Email Notification
 
@@ -186,23 +171,44 @@ If you need email notification for new comments, new replies and pingbacks, you 
 - [X] RSD
 - [X] MetaWeblog (Basic Support)
 - [X] Dublin Core Metadata (Basic Support)
-- [ ] BlogML - Under triage
+- [ ] BlogML - Not planned
 - [ ] APML - Not planned
 - [ ] Trackback - Not planned
 
-## 🐼 Example Blogs
+## ⚖️ Disclaimer (Global)
 
-There are a few individuals already setup thier blogs using Moonglade on Azure (Global or China), Alibaba Cloud, Tencent Cloud, etc.
+The following disclaimer applies to the software named "Moonglade" developed by Edi Wang and other [contributors](https://github.com/EdiWang/Moonglade/graphs/contributors) (hereinafter referred to as "the software developer"):
 
-- [zchwei](https://zchwei.com/)
-- [yycoding](https://www.yycoding.xyz/)
-- [51azure](https://www.51azure.cloud/)
-- [Zhuangkh](https://zhuangkh.com/)
-- [HueiFeng](https://blog.stackable.cn/)
-- [Leslie Wang](https://lesliewxj.com/)
-- [AllenMasters](https://allenmasters.com)
-- [Hao's House](https://haxu.dev/)
-- [Sascha.Manns](https://saschamanns.de/)
-- [王高峰博客](https://blog.wanggaofeng.net)
+This project is not affiliated with Microsoft Corporation. All product names, logos, and brands are property of their respective owners. All company, product and service names used in this website are for identification purposes only. Use of these names, logos, and brands does not imply endorsement.
 
-*Just Submit PR or issue if you want your blog to be listed here*
+The software developer does not provide any warranties or guarantees regarding the functionality, performance, or suitability of Moonglade for any specific purpose. The software is provided "as is," and the software developer shall not be held liable for any direct or indirect damages arising from the use or inability to use Moonglade.
+
+### Data Privacy
+
+Moonglade does not send any user data or information to any government, **including the Chinese government**. The software is designed to prioritize and respect user privacy.
+
+### Data Collection
+
+While using Moonglade, please note that the platform on which you deploy the software may collect data and usage information. This data collection is solely the responsibility of the platform and not the software developer. We encourage you to review thier privacy policy and terms of service of the platform to understand how your data is handled.
+
+### User Responsibility
+
+As a user of Moonglade, it is your responsibility to ensure compliance with applicable laws and regulations regarding data privacy and usage. The software developer shall not be held liable for any misuse, unauthorized access, or mishandling of data by the user or the platform on which Moonglade is deployed.
+
+### Updates and Modifications
+
+The software developer may release updates or modifications to Moonglade from time to time. It is recommended that users stay informed about these updates and apply them to ensure optimal performance and security.
+
+## 免责申明
+
+此项目(Moonglade)及其配套组件均为免费开源的产品，仅用于学习交流，并且不直接向中国提供服务，中国用户请于下载后立即删除。
+
+任何中国境内的组织及个人不得使用此项目(Moonglade)及其配套组件构建任何形式的面向中国境内用户的网站或服务。
+
+不可用于任何违反中华人民共和国(含台湾省)或使用者所在地区法律法规的用途。
+
+因为作者即本人仅完成代码的开发和开源活动(开源即任何人都可以下载使用)，从未参与用户的任何运营和盈利活动。
+
+且不知晓用户后续将程序源代码用于何种用途，故用户使用过程中所带来的任何法律责任即由用户自己承担。
+
+[《开源软件有漏洞，作者需要负责吗？是的！》](https://go.edi.wang/aka/os251)

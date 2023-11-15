@@ -1,9 +1,9 @@
-﻿using System.Text;
-using System.Text.Json;
-using Azure.Storage.Queues;
+﻿using Azure.Storage.Queues;
 using Microsoft.Extensions.Logging;
 using Moonglade.Configuration;
 using Moonglade.Data.Exporting.Exporters;
+using System.Text;
+using System.Text.Json;
 
 namespace Moonglade.Email.Client;
 

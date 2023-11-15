@@ -1,0 +1,61 @@
+﻿<div class="offcanvas offcanvas-end" tabindex="-1" id="updateCheckCanvas" aria-labelledby="updateCheckCanvasLabel">
+    <div class="offcanvas-header">
+        <h5 class="offcanvas-title" id="updateCheckCanvasLabel">@SharedLocalizer["Moonglade Update"]</h5>
+        <button type="button" class="btn-close text-reset" data-bs-dismiss="offcanvas" aria-label="Close"></button>
+    </div>
+    <div class="offcanvas-body">
+        <div class="spinner-border" role="status" style="display: none;">
+            <span class="visually-hidden">Loading...</span>
+        </div>
+
+        <div class="alert alert-info alert-no-new-release">
+            <i class="bi-info-circle"></i>
+            You are running the latest version already.
+        </div>
+
+        <div class="alert alert-success alert-has-new-release">
+            <i class="bi-lightbulb"></i>
+            There is a new version of Moonglade available!
+        </div>
+
+        <div class="release-info">
+            <h6>
+                <i class="bi-box-seam"></i>
+                Latest Release
+            </h6>
+            <hr />
+            <div class="mb-1 row">
+                <label for="releaseName" class="col-4 col-form-label">
+                    <strong>@SharedLocalizer["Name"]</strong>
+                </label>
+                <div class="col-8">
+                    <input type="text" readonly class="form-control-plaintext" id="releaseName" value="...">
+                </div>
+            </div>
+            <div class="mb-1 row">
+                <label for="releaseTagName" class="col-4 col-form-label">
+                    <strong>@SharedLocalizer["Tag name"]</strong>
+                </label>
+                <div class="col-8">
+                    <input type="text" readonly class="form-control-plaintext" id="releaseTagName" value="...">
+                </div>
+            </div>
+            <div class="mb-1 row">
+                <label for="releaseCreatedAt" class="col-4 col-form-label">
+                    <strong>@SharedLocalizer["Release time"]</strong>
+                </label>
+                <div class="col-8">
+                    <input type="text" readonly class="form-control-plaintext" id="releaseCreatedAt" value="...">
+                </div>
+            </div>
+        </div>
+        <hr />
+        <div class="mt-3">
+            <a href="#" target="_blank" class="btn btn-outline-accent disabled btn-get-update">
+                <i class="bi-download"></i>
+                @SharedLocalizer["Get update"]
+            </a>
+            <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="offcanvas">@SharedLocalizer["Cancel"]</button>
+        </div>
+    </div>
+</div>

@@ -1,6 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
-using Moonglade.Data.Entities;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
+using Moonglade.Data.Entities;
 
 namespace Moonglade.Data.SqlServer.Configurations;
 

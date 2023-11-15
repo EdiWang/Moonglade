@@ -1,7 +1,7 @@
 ﻿@page "/admin/page/edit/{id:guid?}"
 @model Moonglade.Web.Pages.Admin.EditPageModel
 @{
-    ViewBag.Title = "Manage Pages";
+    ViewBag.Title = "Edit Page";
 }
 
 @{
@@ -12,11 +12,9 @@
     </script>
 }
 
-@section scripts{
+@section scripts {
     <partial name="_MonacoLoaderScript" />
     <script>
-        require.config({ paths: { 'vs': 'https://cdnjs.cloudflare.com/ajax/libs/monaco-editor/0.40.0/min/vs' } });
-
         var pageId = '@Model.PageId.ToString()';
 
         var btnSubmitPage = '#btn-submit';
@@ -26,44 +24,16 @@
         var hasCssEditorInitialized = false;
 
         require(['vs/editor/editor.main'], function () {
-            initHtmlEditor();
+            htmlContentEditor = initEditor('RawHtmlContentEditor', "#EditPageRequest_RawHtmlContent", 'html', needLoadInitValues);
         });
 
-        var initHtmlEditor = function () {
-            var htmlContentEditorDiv = document.getElementById('RawHtmlContentEditor');
-            htmlContentEditor = monaco.editor.create(htmlContentEditorDiv, {
-                language: 'html'
-            });
-            htmlContentEditor.layout();
-
-            if (needLoadInitValues) {
-                var htmlValue = document.querySelector("#EditPageRequest_RawHtmlContent").value;
-                htmlContentEditor.setValue(htmlValue);
-            }
-        }
-
-        var initCssEditor = function () {
-            var cssContentEditorDiv = document.getElementById('CssContentEditor');
-            cssContentEditor = monaco.editor.create(cssContentEditorDiv, {
-                language: 'css'
-            });
-            cssContentEditor.layout();
-            hasCssEditorInitialized = true;
-
-            if (needLoadInitValues) {
-                var cssValue = document.querySelector("#EditPageRequest_CssContent").value;
-                window.cssContentEditor.setValue(cssValue);
-            }
-        }
-
-        var assignEditorValues = function () {
-            var htmlValue = window.htmlContentEditor.getValue();
+        var assignEditorValues2 = function () {
+            assignEditorValues(htmlContentEditor, "#EditPageRequest_RawHtmlContent")
 
             // Edit Mode, preserve old value when user has not clicked on CSS tab
             var oldCssValue = document.querySelector("#EditPageRequest_CssContent").value;
             var cssValue = hasCssEditorInitialized ? window.cssContentEditor.getValue() : oldCssValue;
 
-            document.querySelector("#EditPageRequest_RawHtmlContent").value = htmlValue;
             document.querySelector("#EditPageRequest_CssContent").value = cssValue;
         }
 
@@ -102,7 +72,9 @@
                         blogToast.success('Page saved successfully.');
 
                         if (document.querySelector('#EditPageRequest_IsPublished').checked) {
-                            document.querySelector('#btn-preview').style.display = 'none';
+                            if (document.querySelector('#btn-preview')) {
+                                document.querySelector('#btn-preview').style.display = 'none';
+                            }
                         }
 
                         if (isPreviewRequired) {
@@ -128,7 +100,8 @@
             function (e) {
                 var isCssTab = e.target.id === "csscontent-tab";
                 if (isCssTab && !hasCssEditorInitialized) {
-                    initCssEditor();
+                    cssContentEditor = initEditor('CssContentEditor', "#EditPageRequest_CssContent", 'css', needLoadInitValues);
+                    hasCssEditorInitialized = true;
                 }
             });
 
@@ -136,7 +109,7 @@
             e.preventDefault();
 
             isPreviewRequired = e.submitter.id == 'btn-preview';
-            assignEditorValues();
+            assignEditorValues2();
 
             postCreateOrEdit();
         }
@@ -146,7 +119,7 @@
     </script>
 }
 
-@section head{
+@section head {
     <style>
         .monaco-target {
             border-left: 1px solid #dee2e6;
@@ -163,41 +136,49 @@
     <form id="page-edit-form" method="post">
         <div class="row g-2">
             <div class="col-md-9 col-xl-10">
-                <input type="text" asp-for="EditPageRequest.Title" class="form-control form-control-lg mb-1" placeholder="Title" required />
+                <input type="text" asp-for="EditPageRequest.Title" class="form-control form-control-lg mb-1"
+                    placeholder="Title" required />
 
                 <div class="input-group input-group-sm">
                     <label class="input-group-text" asp-for="EditPageRequest.Slug">
                         <i class="bi-link-45deg">
                         </i>
                     </label>
-                    <input type="text" asp-for="EditPageRequest.Slug" class="form-control form-control-sm" placeholder="Slug" required />
+                    <input type="text" asp-for="EditPageRequest.Slug" class="form-control form-control-sm"
+                        placeholder="Slug" required />
                 </div>
 
                 <ul class="nav nav-tabs mt-3" id="editor-box-tabs" role="tablist">
                     <li class="nav-item">
-                        <a class="nav-link active" id="profile-tab" data-bs-toggle="tab" href="#rawhtmlcontent-editor-box" role="tab" aria-controls="html" aria-selected="false">HTML</a>
+                        <a class="nav-link active" id="profile-tab" data-bs-toggle="tab"
+                            href="#rawhtmlcontent-editor-box" role="tab" aria-controls="html"
+                            aria-selected="false">HTML</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" id="csscontent-tab" data-bs-toggle="tab" href="#csscontent-editor-box" role="tab" aria-controls="css" aria-selected="true">CSS</a>
+                        <a class="nav-link" id="csscontent-tab" data-bs-toggle="tab" href="#csscontent-editor-box"
+                            role="tab" aria-controls="css" aria-selected="true">CSS</a>
                     </li>
                 </ul>
 
                 <div class="tab-content">
-                    <div class="tab-pane active" id="rawhtmlcontent-editor-box" role="tabpanel" aria-labelledby="html-tab">
+                    <div class="tab-pane active" id="rawhtmlcontent-editor-box" role="tabpanel"
+                        aria-labelledby="html-tab">
                         <div id="RawHtmlContentEditor" class="monaco-target">
                         </div>
-                        <textarea asp-for="EditPageRequest.RawHtmlContent" class="page-rawhtmlcontent-textarea d-none"></textarea>
+                        <textarea asp-for="EditPageRequest.RawHtmlContent"
+                            class="page-rawhtmlcontent-textarea d-none"></textarea>
                     </div>
                     <div class="tab-pane" id="csscontent-editor-box" role="tabpanel" aria-labelledby="css-tab">
                         <div id="CssContentEditor" class="monaco-target">
                         </div>
-                        <textarea asp-for="EditPageRequest.CssContent" class="page-csscontent-textarea d-none"></textarea>
+                        <textarea asp-for="EditPageRequest.CssContent"
+                            class="page-csscontent-textarea d-none"></textarea>
                     </div>
                 </div>
             </div>
             <div class="col-md-3 col-xl-2">
-                <div class="card mb-4">
-                    <div class="card-body">
+                <div class="p-3 rounded-3 shadow-sm border bg-white mb-4">
+                    <div class="mb-3">
                         <div class="form-check form-switch mb-2">
                             <input type="checkbox" asp-for="EditPageRequest.HideSidebar" class="form-check-input">
                             <label asp-for="EditPageRequest.HideSidebar" class="form-check-label"></label>
@@ -207,13 +188,11 @@
                             <label asp-for="EditPageRequest.IsPublished" class="form-check-label"></label>
                         </div>
                     </div>
-                    <div class="card-body border-top">
+                    <div class="border-top pt-3">
                         <div class="form-floating">
                             <textarea asp-for="EditPageRequest.MetaDescription"
-                                      placeholder="@Html.DisplayNameFor(m => m.EditPageRequest.MetaDescription)"
-                                      class="form-control form-control-sm h-200px"
-                                      spellcheck="false"
-                                      required></textarea>
+                                placeholder="@Html.DisplayNameFor(m => m.EditPageRequest.MetaDescription)"
+                                class="form-control form-control-sm h-200px" spellcheck="false" required></textarea>
                             <label class="form-label" asp-for="EditPageRequest.MetaDescription"></label>
                         </div>
                     </div>

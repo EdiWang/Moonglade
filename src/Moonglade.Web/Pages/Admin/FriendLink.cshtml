@@ -1,10 +1,11 @@
 ﻿@page "/admin/friendlink"
 @model Moonglade.Web.Pages.Admin.FriendLinkModel
 @{
-    ViewBag.Title = "Manage Friend Links";
+    ViewBag.Title = "Friend Links";
 }
 
 @section scripts{
+    <script src="~/js/app/dataexport.js"></script>
     <script>
         var editCanvas = new bootstrap.Offcanvas(document.getElementById('editLinkCanvas'));
         var fid = window.emptyGuid;
@@ -75,8 +76,8 @@
             @SharedLocalizer["New"]
         </a>
 
-        <a asp-action="ExportDownload" asp-controller="DataPorting" asp-route-type="FriendLinks" class="btn btn-outline-accent" target="_blank">
-            <i class="bi-upload"></i>
+        <a class="btn btn-outline-accent" href="javascript:exportCSV('/api/friendlink/list','moonglade-friendlink.csv');">
+            <i class="bi-filetype-csv"></i>
             @SharedLocalizer["Export"]
         </a>
     </div>
@@ -105,7 +106,7 @@
 
     @Html.AntiForgeryToken()
 
-    <p class="text-muted mt-4">@SharedLocalizer["* Note: Friend link cache refreshes every 60 minutes, you may need to wait for some time to see the new data."]</p>
+    <p class="text-muted mt-4">@SharedLocalizer["* Note: Friend link cache refreshes every 30 minutes, you may need to wait for some time to see the new data."]</p>
 </div>
 
 <div class="offcanvas offcanvas-end" tabindex="-1" id="editLinkCanvas" aria-labelledby="editLinkCanvasLabel">

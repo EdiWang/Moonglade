@@ -31,7 +31,6 @@
 
 .admin-body {
     padding-top: 0 !important;
-    background-color: #FAFAFA;
 }
 
 .admin-body-wrapper {
@@ -283,28 +282,28 @@ table.dataTable {
     border-spacing: inherit !important;
 }
 
-.settings-entry {
-    background-color: var(--bs-gray-100);
-    border-radius: 5px;
-    padding-bottom: 12px;
-    padding-left: 10px;
-    padding-right: 10px;
-    margin-left: 0;
-    margin-right: 0;
+.blogadmin-siteicon {
+    width: 32px;
+    height: 32px;
 }
-
-    .settings-entry.row > * {
-        margin-top: 12px;
-    }
 
 .settings-entry-icon {
     font-size: 24px;
 }
 
-.settings-entry .form-switch {
+.settings-entry2 .form-switch {
     display: inline-block;
     min-height: inherit;
     margin-bottom: 0;
+}
+
+    .settings-entry2 .form-switch.form-control-lg {
+        padding: 0 !important;
+    }
+
+.settings-entry2 {
+    margin-left: 0;
+    margin-right: 0;
 }
 
 .tags-dropdown .tagify__dropdown__item {
@@ -333,6 +332,18 @@ table.dataTable {
     display: none !important;
 }
 
-.admin-h3 {
-    font-size: 20px;
+.admin-subtitle {
+    font-size: 0.9rem;
+}
+
+.admin-settings-entry-container {
+    height: calc(100vh - 215px);
+    overflow-y: scroll;
+    overflow-x: hidden;
+}
+
+.admin-main-entry-container {
+    height: calc(100vh - 230px);
+    overflow-y: scroll;
+    overflow-x: hidden;
 }

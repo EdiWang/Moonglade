@@ -2,6 +2,12 @@
     border-top: 1px solid var(--transparent-light-15) !important;
 }
 
+.darkmode .form-select {
+    background: transparent;
+    color: var(--bs-gray-100);
+    border-color: var(--bs-gray-dark);
+}
+
 .darkmode .box {
     background-color: var(--moca-dark);
     border: 1px solid var(--gray-2);
@@ -10,6 +16,15 @@
 
 .darkmode a {
     color: var(--gray-3);
+}
+
+.darkmode .article-post-slug {
+    background-color: transparent !important;
+}
+
+.darkmode .comment-form-containter {
+    background-color: transparent !important;
+    border-color: var(--gray-5) !important;
 }
 
 .darkmode .post-content blockquote,
@@ -39,6 +54,7 @@
 
 .darkmode .timeline>li>.timeline-panel {
     border: 1px solid var(--gray-5);
+    background-color: transparent !important;
 }
 
 .darkmode .timeline>li>.timeline-panel:before {
@@ -55,17 +71,25 @@
     color: var(--bs-white);
 }
 
+.darkmode .article-post-summary {
+    background-color: transparent !important;
+    border-color: var(--gray-7) !important;
+}
+
+.darkmode .article-post-summary .post-date-box {
+    border-color: var(--gray-7) !important;
+}
+
 .darkmode .timeline-body a {
     color: var(--gray-3);
 }
 
 .darkmode .post-date-day {
-    border: 1px solid var(--gray-5);
     color: var(--gray-5);
 }
 
 .darkmode .post-date-month {
-    background-color: var(--gray-5);
+    color: var(--gray-5);
 }
 
 .darkmode .post-summary-text {

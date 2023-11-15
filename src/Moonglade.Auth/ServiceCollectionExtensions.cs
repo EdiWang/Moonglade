@@ -16,12 +16,12 @@ public static class ServiceCollectionExtensions
 
         switch (authentication.Provider)
         {
-            case AuthenticationProvider.AzureAD:
+            case AuthenticationProvider.EntraID:
                 services.AddAuthentication(options =>
                 {
                     options.DefaultScheme = CookieAuthenticationDefaults.AuthenticationScheme;
                     options.DefaultChallengeScheme = OpenIdConnectDefaults.AuthenticationScheme;
-                }).AddMicrosoftIdentityWebApp(configuration.GetSection("Authentication:AzureAd"));
+                }).AddMicrosoftIdentityWebApp(configuration.GetSection("Authentication:EntraID"));
                 // Internally pass `null` to cookie options so there's no way to add `AccessDeniedPath` here.
 
                 break;

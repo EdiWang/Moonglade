@@ -5,15 +5,11 @@ namespace Moonglade.Auth;
 
 public record GetAccountsQuery : IRequest<IReadOnlyList<Account>>;
 
-public class GetAccountsQueryHandler : IRequestHandler<GetAccountsQuery, IReadOnlyList<Account>>
+public class GetAccountsQueryHandler(IRepository<LocalAccountEntity> repo) : IRequestHandler<GetAccountsQuery, IReadOnlyList<Account>>
 {
-    private readonly IRepository<LocalAccountEntity> _repo;
-
-    public GetAccountsQueryHandler(IRepository<LocalAccountEntity> repo) => _repo = repo;
-
     public Task<IReadOnlyList<Account>> Handle(GetAccountsQuery request, CancellationToken ct)
     {
-        return _repo.SelectAsync(p => new Account
+        return repo.SelectAsync(p => new Account
         {
             Id = p.Id,
             CreateTimeUtc = p.CreateTimeUtc,
