@@ -2,6 +2,8 @@ FROM mcr.microsoft.com/dotnet/aspnet:8.0 AS base
 LABEL maintainer="edi.wang@outlook.com"
 LABEL repo="https://github.com/EdiWang/Moonglade"
 
+USER app
+
 # If use aspnet:8.0-alpine, see https://github.com/dotnet/dotnet-docker/issues/1366
 #RUN apk add --no-cache tzdata
 
@@ -9,11 +11,8 @@ LABEL repo="https://github.com/EdiWang/Moonglade"
 COPY ./build/OpenSans-Regular.ttf /usr/share/fonts/OpenSans-Regular.ttf
 
 WORKDIR /app
-#EXPOSE 80
-# https://learn.microsoft.com/en-us/dotnet/core/compatibility/containers/8.0/aspnet-port
-# Breaking changes: Default ASP.NET Core port changed from 80 to 8080
 EXPOSE 8080
-EXPOSE 443
+EXPOSE 8081
 
 ENV ASPNETCORE_FORWARDEDHEADERS_ENABLED=true
 #ENV ASPNETCORE_URLS=http://+:80
