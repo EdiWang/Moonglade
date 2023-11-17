@@ -17,6 +17,7 @@ EXPOSE 8081
 ENV ASPNETCORE_FORWARDEDHEADERS_ENABLED=true
 
 FROM mcr.microsoft.com/dotnet/sdk:8.0 AS build
+ARG BUILD_CONFIGURATION=Release
 WORKDIR /src
 
 # Auto copy to prevent 996
@@ -26,10 +27,11 @@ RUN for file in $(ls *.csproj); do mkdir -p ./${file%.*}/ && mv $file ./${file%.
 RUN dotnet restore "Moonglade.Web/Moonglade.Web.csproj"
 COPY ./src .
 WORKDIR "/src/Moonglade.Web"
-RUN dotnet build "Moonglade.Web.csproj" -c Release -o /app/build
+RUN dotnet build "Moonglade.Web.csproj" -c $BUILD_CONFIGURATION -o /app/build
 
 FROM build AS publish
-RUN dotnet publish "Moonglade.Web.csproj" -c Release -o /app/publish
+ARG BUILD_CONFIGURATION=Release
+RUN dotnet publish "Moonglade.Web.csproj" -c $BUILD_CONFIGURATION -o /app/publish
 
 FROM base AS final
 WORKDIR /app
