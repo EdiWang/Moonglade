@@ -3,19 +3,15 @@ using System.Web;
 
 namespace Moonglade.Web.Middleware;
 
-public class StyleSheetMiddleware
+public class StyleSheetMiddleware(RequestDelegate next)
 {
-    private readonly RequestDelegate _next;
-
     public static CustomCssMiddlewareOptions Options { get; set; } = new();
-
-    public StyleSheetMiddleware(RequestDelegate next) => _next = next;
 
     public async Task Invoke(HttpContext context, IBlogConfig blogConfig, IMediator mediator)
     {
         if (!context.Request.Path.ToString().ToLower().EndsWith(".css"))
         {
-            await _next(context);
+            await next(context);
             return;
         }
 
@@ -57,12 +53,12 @@ public class StyleSheetMiddleware
             }
             else
             {
-                await _next(context);
+                await next(context);
             }
         }
         else
         {
-            await _next(context);
+            await next(context);
         }
     }
 

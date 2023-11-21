@@ -5,11 +5,8 @@ namespace Moonglade.Core.PostFeature;
 
 public record SearchPostQuery(string Keyword) : IRequest<IReadOnlyList<PostDigest>>;
 
-public class SearchPostQueryHandler : IRequestHandler<SearchPostQuery, IReadOnlyList<PostDigest>>
+public class SearchPostQueryHandler(IRepository<PostEntity> repo) : IRequestHandler<SearchPostQuery, IReadOnlyList<PostDigest>>
 {
-    private readonly IRepository<PostEntity> _repo;
-    public SearchPostQueryHandler(IRepository<PostEntity> repo) => _repo = repo;
-
     public async Task<IReadOnlyList<PostDigest>> Handle(SearchPostQuery request, CancellationToken ct)
     {
         if (null == request || string.IsNullOrWhiteSpace(request.Keyword))
@@ -25,7 +22,7 @@ public class SearchPostQueryHandler : IRequestHandler<SearchPostQuery, IReadOnly
 
     private IQueryable<PostEntity> SearchByKeyword(string keyword)
     {
-        var query = _repo.AsQueryable()
+        var query = repo.AsQueryable()
             .Where(p => !p.IsDeleted && p.IsPublished).AsNoTracking();
 
         var str = Regex.Replace(keyword, @"\s+", " ");

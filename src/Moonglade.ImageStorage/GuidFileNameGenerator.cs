@@ -1,10 +1,10 @@
 ﻿namespace Moonglade.ImageStorage;
 
-public class GuidFileNameGenerator : IFileNameGenerator
+public class GuidFileNameGenerator(Guid id) : IFileNameGenerator
 {
     public string Name => nameof(GuidFileNameGenerator);
 
-    public Guid UniqueId { get; }
+    public Guid UniqueId { get; } = id;
 
     public string GetFileName(string fileName, string appendixName = "")
     {
@@ -23,6 +23,4 @@ public class GuidFileNameGenerator : IFileNameGenerator
         var newFileName = $"img-{UniqueId}{(string.IsNullOrWhiteSpace(appendixName) ? string.Empty : "-" + appendixName)}{ext}".ToLower();
         return newFileName;
     }
-
-    public GuidFileNameGenerator(Guid id) => UniqueId = id;
 }

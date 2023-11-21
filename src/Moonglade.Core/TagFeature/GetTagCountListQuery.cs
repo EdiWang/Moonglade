@@ -2,14 +2,10 @@
 
 public record GetTagCountListQuery : IRequest<IReadOnlyList<KeyValuePair<Tag, int>>>;
 
-public class GetTagCountListQueryHandler : IRequestHandler<GetTagCountListQuery, IReadOnlyList<KeyValuePair<Tag, int>>>
+public class GetTagCountListQueryHandler(IRepository<TagEntity> repo) : IRequestHandler<GetTagCountListQuery, IReadOnlyList<KeyValuePair<Tag, int>>>
 {
-    private readonly IRepository<TagEntity> _repo;
-
-    public GetTagCountListQueryHandler(IRepository<TagEntity> repo) => _repo = repo;
-
     public Task<IReadOnlyList<KeyValuePair<Tag, int>>> Handle(GetTagCountListQuery request, CancellationToken ct) =>
-        _repo.SelectAsync(t =>
+        repo.SelectAsync(t =>
             new KeyValuePair<Tag, int>(new()
             {
                 Id = t.Id,

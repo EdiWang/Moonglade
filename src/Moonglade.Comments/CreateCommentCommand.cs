@@ -7,20 +7,13 @@ using Moonglade.Data.Spec;
 
 namespace Moonglade.Comments;
 
-public class CreateCommentCommand : IRequest<(int Status, CommentDetailedItem Item)>
+public class CreateCommentCommand(Guid postId, CommentRequest payload, string ipAddress) : IRequest<(int Status, CommentDetailedItem Item)>
 {
-    public CreateCommentCommand(Guid postId, CommentRequest payload, string ipAddress)
-    {
-        PostId = postId;
-        Payload = payload;
-        IpAddress = ipAddress;
-    }
+    public Guid PostId { get; set; } = postId;
 
-    public Guid PostId { get; set; }
+    public CommentRequest Payload { get; set; } = payload;
 
-    public CommentRequest Payload { get; set; }
-
-    public string IpAddress { get; set; }
+    public string IpAddress { get; set; } = ipAddress;
 }
 
 public class CreateCommentCommandHandler(IBlogConfig blogConfig, IRepository<PostEntity> postRepo, IModeratorService moderator, IRepository<CommentEntity> commentRepo) :

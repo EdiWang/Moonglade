@@ -3,19 +3,11 @@ using Moonglade.Core.CategoryFeature;
 
 namespace Moonglade.Web.Pages.Admin;
 
-public class CategoryModel : PageModel
+public class CategoryModel(IMediator mediator) : PageModel
 {
-    private readonly IMediator _mediator;
-
-    public CreateCategoryCommand EditCategoryRequest { get; set; }
+    public CreateCategoryCommand EditCategoryRequest { get; set; } = new();
 
     public IReadOnlyList<Category> Categories { get; set; }
 
-    public CategoryModel(IMediator mediator)
-    {
-        _mediator = mediator;
-        EditCategoryRequest = new();
-    }
-
-    public async Task OnGet() => Categories = await _mediator.Send(new GetCategoriesQuery());
+    public async Task OnGet() => Categories = await mediator.Send(new GetCategoriesQuery());
 }

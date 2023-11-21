@@ -10,11 +10,9 @@ public interface ITimeZoneResolver
     TimeSpan GetTimeSpanByZoneId(string timeZoneId);
 }
 
-public class BlogTimeZoneResolver : ITimeZoneResolver
+public class BlogTimeZoneResolver(IBlogConfig blogConfig) : ITimeZoneResolver
 {
-    public TimeSpan UtcOffset { get; }
-
-    public BlogTimeZoneResolver(IBlogConfig blogConfig) => UtcOffset = blogConfig.GeneralSettings.TimeZoneUtcOffset;
+    public TimeSpan UtcOffset { get; } = blogConfig.GeneralSettings.TimeZoneUtcOffset;
 
     public DateTime NowOfTimeZone => UtcToZoneTime(DateTime.UtcNow, UtcOffset);
 

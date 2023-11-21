@@ -2,12 +2,8 @@
 
 namespace Moonglade.Web.Middleware;
 
-public class RSDMiddleware
+public class RSDMiddleware(RequestDelegate next)
 {
-    private readonly RequestDelegate _next;
-
-    public RSDMiddleware(RequestDelegate next) => _next = next;
-
     public async Task Invoke(HttpContext httpContext, IBlogConfig blogConfig)
     {
         if (httpContext.Request.Path == "/rsd")
@@ -20,7 +16,7 @@ public class RSDMiddleware
         }
         else
         {
-            await _next(httpContext);
+            await next(httpContext);
         }
     }
 

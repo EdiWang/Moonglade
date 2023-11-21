@@ -6,13 +6,9 @@ using Microsoft.Extensions.Options;
 namespace Moonglade.Web.Controllers;
 
 [Route("auth")]
-public class AuthController : ControllerBase
+public class AuthController(IOptions<AuthenticationSettings> authSettings) : ControllerBase
 {
-    private readonly AuthenticationSettings _authenticationSettings;
-
-    public AuthController(
-        IOptions<AuthenticationSettings> authSettings) =>
-        _authenticationSettings = authSettings.Value;
+    private readonly AuthenticationSettings _authenticationSettings = authSettings.Value;
 
     [HttpGet("signout")]
     [ProducesResponseType(StatusCodes.Status302Found)]
