@@ -5,7 +5,7 @@
 
 The [.NET](https://dotnet.microsoft.com/) blog system that optimized for [**Microsoft Azure**](https://azure.microsoft.com/en-us/). Designed for developers, enabling most common blogging features including posts, comments, categories, archive, tags and pages.
 
-**IMPORTANT: Moonglade will move to .NET 8 LTS in November 2023 with v14.x release**
+**IMPORTANT: Moonglade was move to .NET 8 LTS in November 2023 with v14.x release, please upgrade your server to use v14**
 
 ## 📦 Deployment
 
