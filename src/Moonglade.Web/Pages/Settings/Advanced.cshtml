@@ -207,55 +207,65 @@
                     </div>
                 </div>
 
-                <h4 class="admin-subtitle fw-bold mb-2">@Html.DisplayNameFor(m => settings.RobotsTxtContent)</h4>
-                <div class="p-3 rounded-3 shadow-sm border bg-white mb-3">
-                    <textarea asp-for="@settings.RobotsTxtContent" class="form-control textarea-code" cols="60" rows="10" spellcheck="false"></textarea>
+                <h4 class="admin-subtitle fw-bold mb-2">
+                    MetaWeblog
+                </h4>
+
+                <div class="settings-entry2 row align-items-center py-3 px-2 rounded-3 shadow-sm border bg-white mb-2">
+                    <div class="col-auto">
+                        <i class="bi-puzzle settings-entry-icon"></i>
+                    </div>
+                    <div class="col">
+                        <label asp-for="@settings.EnableMetaWeblog" class="form-check-label"></label>
+                        <div class="form-text">
+                            @SharedLocalizer["* Requires restarting application"]
+                        </div>
+                    </div>
+                    <div class="col-md-4 text-end">
+                        <div class="form-check form-switch form-control-lg">
+                            <input type="hidden" name="EnableMetaWeblog" value="false">
+                            <input type="checkbox" name="EnableMetaWeblog" value="true" class="form-check-input" @(settings.EnableMetaWeblog ? "checked" : null)>
+                        </div>
+                    </div>
                 </div>
 
-                <h4 class="admin-subtitle fw-bold mb-2">@Html.DisplayNameFor(m => settings.FootScripts)</h4>
-                <div class="p-3 rounded-3 shadow-sm border bg-white mb-3">
-                    <textarea asp-for="@settings.FootScripts" class="form-control textarea-code" cols="60" rows="10" spellcheck="false"></textarea>
+                <div class="settings-entry2 row align-items-center py-3 px-2 rounded-3 shadow-sm border bg-white">
+                    <div class="col-auto">
+                        <i class="bi-key settings-entry-icon"></i>
+                    </div>
+                    <div class="col">
+                        @SharedLocalizer["Password"]
+                        <div class="form-text">
+                            @SharedLocalizer["Leave blank if you don't need to change password."]
+                            @SharedLocalizer["* Username: moonglade"]
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <input asp-for="@settings.MetaWeblogPassword" class="form-control" minlength="8" maxlength="16" />
+
+                        <a href="javascript:;" class="btn btn-sm btn-outline-accent mt-2" onclick="generateMetaWeblogPassword()">@SharedLocalizer["Generate password"]</a>
+                    </div>
                 </div>
             </div>
             <div class="col-md-6">
                 <div class="mb-3">
-                    <h4 class="admin-subtitle fw-bold mb-2">
-                        MetaWeblog
-                    </h4>
-
-                    <div class="settings-entry2 row align-items-center py-3 px-2 rounded-3 shadow-sm border bg-white mb-2">
-                        <div class="col-auto">
-                            <i class="bi-puzzle settings-entry-icon"></i>
-                        </div>
-                        <div class="col">
-                            <label asp-for="@settings.EnableMetaWeblog" class="form-check-label"></label>
-                            <div class="form-text">
-                                @SharedLocalizer["* Requires restarting application"]
-                            </div>
-                        </div>
-                        <div class="col-md-4 text-end">
-                            <div class="form-check form-switch form-control-lg">
-                                <input type="hidden" name="EnableMetaWeblog" value="false">
-                                <input type="checkbox" name="EnableMetaWeblog" value="true" class="form-check-input" @(settings.EnableMetaWeblog ? "checked" : null)>
-                            </div>
-                        </div>
+                    <h4 class="admin-subtitle fw-bold mb-2">@Html.DisplayNameFor(m => settings.RobotsTxtContent)</h4>
+                    <div class="p-3 rounded-3 shadow-sm border bg-white mb-3">
+                        <textarea asp-for="@settings.RobotsTxtContent" class="form-control textarea-code" cols="60" rows="10" spellcheck="false"></textarea>
                     </div>
 
-                    <div class="settings-entry2 row align-items-center py-3 px-2 rounded-3 shadow-sm border bg-white">
-                        <div class="col-auto">
-                            <i class="bi-key settings-entry-icon"></i>
+                    <h4 class="admin-subtitle fw-bold mb-2">@Html.DisplayNameFor(m => settings.FootScripts)</h4>
+                    <div class="p-3 rounded-3 shadow-sm border bg-white mb-3">
+                        <div class="alert alert-warning">
+                            Using a third party script may cause your website to be blocked by some browsers or ad blockers, it can have security risks too. Please use with caution.
                         </div>
-                        <div class="col">
-                            @SharedLocalizer["Password"]
-                            <div class="form-text">
-                                @SharedLocalizer["Leave blank if you don't need to change password."]
-                                @SharedLocalizer["* Username: moonglade"]
-                            </div>
-                        </div>
-                        <div class="col-md-4">
-                            <input asp-for="@settings.MetaWeblogPassword" class="form-control" minlength="8" maxlength="16" />
 
-                            <a href="javascript:;" class="btn btn-sm btn-outline-accent mt-2" onclick="generateMetaWeblogPassword()">@SharedLocalizer["Generate password"]</a>
+                        <textarea asp-for="@settings.FootScripts" class="form-control textarea-code" cols="60" rows="10" spellcheck="false"></textarea>
+
+                        <div class="form-text">
+                            * Global script that will be injected into every page's footer, before the ending of <code>body</code> tag. Typically used for third party analytics services. <br/>
+
+                            * Please use valid <code>&lt;script&gt;...&lt;/script&gt;</code> code.
                         </div>
                     </div>
                 </div>
