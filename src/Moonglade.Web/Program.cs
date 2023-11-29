@@ -38,6 +38,7 @@ ConfigureServices(builder.Services);
 
 var app = builder.Build();
 
+await BlockChina();
 await FirstRun();
 
 ConfigureMiddleware();
@@ -173,6 +174,12 @@ void ConfigureServices(IServiceCollection services)
             services.AddSqlServerStorage(connStr!);
             break;
     }
+}
+
+async Task BlockChina()
+{
+    // Read config `Experimental:BlockChina` to decide whether to block China
+    var blockChina = builder.Configuration.GetSection("Experimental:BlockChina").Get<bool>();
 }
 
 async Task FirstRun()
