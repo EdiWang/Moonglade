@@ -32,8 +32,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     @if (BlogConfig.GeneralSettings.UseDublinCoreMetaData)
     {
-	    <link rel="schema.DC"      href="http://purl.org/dc/elements/1.1/" />
-	    <link rel="schema.DCTERMS" href="http://purl.org/dc/terms/" />
+        <link rel="schema.DC" href="http://purl.org/dc/elements/1.1/" />
+        <link rel="schema.DCTERMS" href="http://purl.org/dc/terms/" />
     }
     @if (IsSectionDefined("keywords"))
     {
@@ -195,8 +195,8 @@
                     <div class="row">
                         <div class="col-3">
                             <img src="@BlogConfig.GeneralSettings.AvatarUrl"
-                             alt="@BlogConfig.GeneralSettings.OwnerName"
-                             class="rounded-circle blogger-head-pic" />
+                                 alt="@BlogConfig.GeneralSettings.OwnerName"
+                                 class="rounded-circle blogger-head-pic" />
                         </div>
                         <div class="col-9 position-relative">
                             <h4 class="text-center w-100 position-absolute top-50 start-50 translate-middle">
@@ -251,5 +251,10 @@
     }
 
     @await RenderSectionAsync("scripts", false)
+
+    @if (!string.IsNullOrWhiteSpace(BlogConfig.AdvancedSettings.FootScripts))
+    {
+        @Html.Raw(BlogConfig.AdvancedSettings.FootScripts)
+    }
 </body>
 </html>
