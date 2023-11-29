@@ -7,7 +7,7 @@
     var asm = Assembly.GetEntryAssembly();
     var currentVersion = (new Version(asm!.GetCustomAttribute<AssemblyFileVersionAttribute>()?.Version)).ToString();
 }
-@section scripts{
+@section scripts {
     <script type="module">
         import * as settings from '/js/app/admin.settings.module.js';
 
@@ -104,7 +104,7 @@
     </script>
 }
 
-@section admintoolbar{
+@section admintoolbar {
     <partial name="_SettingsHeader" />
 }
 
@@ -210,6 +210,11 @@
                 <h4 class="admin-subtitle fw-bold mb-2">@Html.DisplayNameFor(m => settings.RobotsTxtContent)</h4>
                 <div class="p-3 rounded-3 shadow-sm border bg-white mb-3">
                     <textarea asp-for="@settings.RobotsTxtContent" class="form-control textarea-code" cols="60" rows="10" spellcheck="false"></textarea>
+                </div>
+
+                <h4 class="admin-subtitle fw-bold mb-2">@Html.DisplayNameFor(m => settings.FootScripts)</h4>
+                <div class="p-3 rounded-3 shadow-sm border bg-white mb-3">
+                    <textarea asp-for="@settings.FootScripts" class="form-control textarea-code" cols="60" rows="10" spellcheck="false"></textarea>
                 </div>
             </div>
             <div class="col-md-6">
