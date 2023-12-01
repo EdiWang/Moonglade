@@ -1,5 +1,6 @@
 ﻿using AspNetCoreRateLimit;
 using Edi.Captcha;
+using Edi.ChinaDetector;
 using Edi.PasswordGenerator;
 using Microsoft.ApplicationInsights.Extensibility;
 using Microsoft.ApplicationInsights.Extensibility.Implementation;
@@ -38,7 +39,7 @@ ConfigureServices(builder.Services);
 
 var app = builder.Build();
 
-await BlockChina();
+await DetectChina();
 await FirstRun();
 
 ConfigureMiddleware();
@@ -176,10 +177,24 @@ void ConfigureServices(IServiceCollection services)
     }
 }
 
-async Task BlockChina()
+async Task DetectChina()
 {
-    // Read config `Experimental:BlockChina` to decide whether to block China
-    var blockChina = builder.Configuration.GetSection("Experimental:BlockChina").Get<bool>();
+    // Read config `Experimental:DetectChina` to decide how to deal with China
+    var detectChina = builder.Configuration["Experimental:DetectChina"];
+    if (detectChina == "block")
+    {
+        var service = new OfflineChinaDetectService();
+        var result = await service.Detect(DetectionMethod.TimeZone | DetectionMethod.Culture);
+
+        if (result.Rank >= 1)
+        {
+            app.MapGet("/", () => Results.Problem(
+                detail: "Based on policy limitations, we regret to inform you that deploying Moonglade on servers located in Mainland China is currently not possible.",
+                statusCode: 251
+            ));
+            app.Run();
+        }
+    }
 }
 
 async Task FirstRun()
