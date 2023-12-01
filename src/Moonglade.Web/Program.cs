@@ -181,18 +181,32 @@ async Task DetectChina()
 {
     // Read config `Experimental:DetectChina` to decide how to deal with China
     var detectChina = builder.Configuration["Experimental:DetectChina"];
-    if (detectChina == "block")
+    if (!string.IsNullOrWhiteSpace(detectChina))
     {
         var service = new OfflineChinaDetectService();
         var result = await service.Detect(DetectionMethod.TimeZone | DetectionMethod.Culture);
-
         if (result.Rank >= 1)
         {
-            app.MapGet("/", () => Results.Problem(
-                detail: "Based on policy limitations, we regret to inform you that deploying Moonglade on servers located in Mainland China is currently not possible.",
-                statusCode: 251
-            ));
-            app.Run();
+            switch (detectChina.ToLower())
+            {
+                case "block":
+                    app.MapGet("/", () => Results.Problem(
+                        detail: "Based on policy limitations, we regret to inform you that deploying Moonglade on servers located in Mainland China is currently not possible.",
+                        statusCode: 251
+                    ));
+                    app.Run();
+
+                    break;
+                case "limit":
+                    app.Logger.LogWarning("Due to suspicions that the current server is located in Mainland China, Moonglade's functionality may be limited.");
+
+                    break;
+                case "allow":
+                default:
+                    app.Logger.LogInformation("Current server is suspected to be located in Mainland China, Moonglade will still run on full functionality.");
+
+                    break;
+            }
         }
     }
 }
