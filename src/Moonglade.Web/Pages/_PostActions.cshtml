@@ -1,5 +1,12 @@
-﻿@model Moonglade.Core.PostFeature.Post
+﻿@using Edi.ChinaDetector
+@model Moonglade.Core.PostFeature.Post
 @inject IConfiguration Configuration
+@inject IChinaDetectService ChinaDetectService
+
+@{
+    var detectResult = await ChinaDetectService.Detect(DetectionMethod.TimeZone | DetectionMethod.Culture);
+    var isChina = detectResult.Rank > 0;
+}
 
 <hr />
 <div class="row g-1 align-items-center post-slug-actions clearfix mb-2 d-print-none">
@@ -37,7 +44,7 @@
     @if (null == ViewBag.IsDraftPreview)
     {
         <div class="col-auto">
-            @if (bool.Parse(Configuration["Experimental:ShowTwitterShareButton"]!))
+            @if (bool.Parse(Configuration["Experimental:ShowTwitterShareButton"]!) && !isChina)
             {
                 <div class="twitter-share-container mt-1 me-2">
                     <a href="https://twitter.com/share?ref_src=twsrc%5Etfw" class="twitter-share-button" data-show-count="false">Tweet</a>
