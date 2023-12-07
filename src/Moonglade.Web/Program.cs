@@ -147,7 +147,6 @@ void ConfigureServices(IServiceCollection services)
     });
 
     services.AddTransient<IPasswordGenerator, DefaultPasswordGenerator>();
-    services.AddScoped<IChinaDetectService, OfflineChinaDetectService>();
 
     services.AddHealthChecks();
     services.AddPingback()
