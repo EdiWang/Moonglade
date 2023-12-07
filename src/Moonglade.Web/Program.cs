@@ -181,6 +181,7 @@ void ConfigureServices(IServiceCollection services)
 async Task DetectChina()
 {
     // Read config `Experimental:DetectChina` to decide how to deal with China
+    // Refer: https://go.edi.wang/aka/os251
     var detectChina = builder.Configuration["Experimental:DetectChina"];
     if (!string.IsNullOrWhiteSpace(detectChina))
     {
@@ -191,8 +192,8 @@ async Task DetectChina()
             switch (detectChina.ToLower())
             {
                 case "block":
-                    app.MapGet("/", () => Results.Problem(
-                        detail: "Based on policy limitations, we regret to inform you that deploying Moonglade on servers located in Mainland China is currently not possible.",
+                    app.MapGet("/", () => Results.Text(
+                        "Due to legal and regulation concerns, we regret to inform you that deploying Moonglade on servers located in Mainland China is currently not possible",
                         statusCode: 251
                     ));
                     app.Run();
