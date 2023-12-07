@@ -199,10 +199,6 @@ async Task DetectChina()
                     app.Run();
 
                     break;
-                case "limit":
-                    app.Logger.LogWarning("Due to suspicions that the current server is located in Mainland China, Moonglade's functionality may be limited.");
-
-                    break;
                 case "allow":
                 default:
                     app.Logger.LogInformation("Current server is suspected to be located in Mainland China, Moonglade will still run on full functionality.");
