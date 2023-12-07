@@ -188,23 +188,38 @@ async Task DetectChina()
         var result = await service.Detect(DetectionMethod.TimeZone | DetectionMethod.Culture);
         if (result.Rank >= 1)
         {
-            switch (detectChina.ToLower())
+            DealWithChina(detectChina);
+        }
+        else
+        {
+            // Try online detection
+            var onlineService = new OnlineChinaDetectService(new());
+            var onlineResult = await onlineService.Detect(DetectionMethod.IPAddress | DetectionMethod.GFWTest);
+            if (onlineResult.Rank >= 1)
             {
-                case "block":
-                    app.MapGet("/", () => Results.Text(
-                        "Due to legal and regulation concerns, we regret to inform you that deploying Moonglade on servers located in Mainland China is currently not possible",
-                        statusCode: 251
-                    ));
-                    app.Run();
-
-                    break;
-                case "allow":
-                default:
-                    app.Logger.LogInformation("Current server is suspected to be located in Mainland China, Moonglade will still run on full functionality.");
-
-                    break;
+                DealWithChina(detectChina);
             }
         }
+    }
+}
+
+void DealWithChina(string detectChina)
+{
+    switch (detectChina.ToLower())
+    {
+        case "block":
+            app.MapGet("/", () => Results.Text(
+                "Due to legal and regulation concerns, we regret to inform you that deploying Moonglade on servers located in Mainland China is currently not possible",
+                statusCode: 251
+            ));
+            app.Run();
+
+            break;
+        case "allow":
+        default:
+            app.Logger.LogInformation("Current server is suspected to be located in Mainland China, Moonglade will still run on full functionality.");
+
+            break;
     }
 }
 
