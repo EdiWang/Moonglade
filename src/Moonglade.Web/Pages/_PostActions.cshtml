@@ -4,8 +4,14 @@
 @inject IChinaDetectService ChinaDetectService
 
 @{
-    var detectResult = await ChinaDetectService.Detect(DetectionMethod.TimeZone | DetectionMethod.Culture);
-    var isChina = detectResult.Rank > 0;
+    bool allowTwitterShare = true;
+    
+    var detectChina = Configuration["Experimental:DetectChina"];
+    if (!string.IsNullOrWhiteSpace(detectChina) && detectChina == "limit")
+    {
+        var detectResult = await ChinaDetectService.Detect(DetectionMethod.TimeZone | DetectionMethod.Culture);
+        allowTwitterShare = detectResult.Rank == 0;
+    }
 }
 
 <hr />
@@ -44,7 +50,7 @@
     @if (null == ViewBag.IsDraftPreview)
     {
         <div class="col-auto">
-            @if (bool.Parse(Configuration["Experimental:ShowTwitterShareButton"]!) && !isChina)
+            @if (bool.Parse(Configuration["Experimental:ShowTwitterShareButton"]!) && allowTwitterShare)
             {
                 <div class="twitter-share-container mt-1 me-2">
                     <a href="https://twitter.com/share?ref_src=twsrc%5Etfw" class="twitter-share-button" data-show-count="false">Tweet</a>
