@@ -1,8 +1,7 @@
-﻿@using Moonglade.Utils
-@using Moonglade.Web.TagHelpers
-@using Microsoft.AspNetCore.Mvc.TagHelpers
+@using Moonglade.Utils
 @using Microsoft.AspNetCore.Localization
 @using System.Globalization
+@using Syncfusion.EJ2
 @inject Microsoft.ApplicationInsights.AspNetCore.JavaScriptSnippet JavaScriptSnippet
 @{
     if (string.IsNullOrEmpty(BlogConfig.GeneralSettings.AvatarUrl))
@@ -26,16 +25,48 @@
             langCode = CultureInfo.CurrentUICulture.ToString().ToLower();
         }
     }
+    string syncVersion = BlogConfig.GeneralSettings.SyncfusionVersion;
+    string syncStyle = "https://cdn.syncfusion.com/ej2/" + syncVersion + "/bootstrap5-dark.css";
+    string syncScript = "https://cdn.syncfusion.com/ej2/" + syncVersion + "/dist/ej2.min.js";
+    string revisitAfter = BlogConfig.AdvancedSettings.RobotsRevisitAfter.ToString() + " " + "days";
+    string shareThisPropertyID = BlogConfig.ContentSettings.ShareThisPropertyId;
+    string shareThis = "https://platform-api.sharethis.com/js/sharethis.js#property=" + shareThisPropertyID + "&product=inline-share-buttons&source=platform";
 }
 <!DOCTYPE html>
 <html lang="@langCode">
-<head profile=@(BlogConfig.GeneralSettings.UseDublinCoreMetaData ? "http://dublincore.org/documents/dcq-html/" : null)>
+<head>
     <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     @if (BlogConfig.GeneralSettings.UseDublinCoreMetaData)
     {
-	    <link rel="schema.DC"      href="http://purl.org/dc/elements/1.1/" />
-	    <link rel="schema.DCTERMS" href="http://purl.org/dc/terms/" />
+        <link rel="schema.DC" href="http://purl.org/dc/elements/1.1/" />
+        <link rel="schema.DCTERMS" href="http://purl.org/dc/terms/" />
+    }
+    <meta name='contact' content='@BlogConfig.GeneralSettings.OwnerEmail' />
+    <meta itemprop="copyrightHolder" name='copyright' content='Copyright (c) 2017 - @DateTime.Now.Year @BlogConfig.GeneralSettings.OwnerName' />
+    <meta itemprop="copyrightYear" content="@DateTime.Now.Year" />
+    <meta name="Distribution" content="global" />
+    <meta name="rating" content="General" />
+    <meta name="Robots" content="index, all" />
+    <meta name="Robots" content="index, follow" />
+    <meta name="revisit-after" content="@revisitAfter" />
+    <meta name="MSSmartTagsPreventParsing" content="True" />
+    @if (BlogConfig.GeneralSettings.BingSiteVerificationCode != null)
+    {
+        <meta name="msvalidate.01" content="@BlogConfig.GeneralSettings.BingSiteVerificationCode" />
+    }
+    @if (BlogConfig.GeneralSettings.YandexSiteVerificationCode != null)
+    {
+        <meta name='yandex-verification' content='@BlogConfig.GeneralSettings.YandexSiteVerificationCode' />
+    }
+    @if (BlogConfig.GeneralSettings.NortonSaveWebVerificationCode != null)
+    {
+        <meta name='norton-safeweb-site-verification' content='@BlogConfig.GeneralSettings.NortonSaveWebVerificationCode' />
+    }
+    @if (BlogConfig.GeneralSettings.WorldOfTrustVerificationCode != null)
+    {
+        <meta name='wot-verification' content='@BlogConfig.GeneralSettings.WorldOfTrustVerificationCode' />
     }
     @if (IsSectionDefined("keywords"))
     {
@@ -96,17 +127,46 @@
         <foaf href="/foaf.xml" />
     }
     <partial name="_Favicons" />
-    <link href="~/lib/twitter-bootstrap/css/bootstrap.min.css" rel="stylesheet" asp-append-version="true" />
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.3/font/bootstrap-icons.css">
-    <link href="~/css/base.css" rel="stylesheet" asp-append-version="true" />
-    <link href="~/css/rwd.css" rel="stylesheet" asp-append-version="true" />
-    <link href="~/css/darkmode.css" rel="stylesheet" asp-append-version="true" />
+    <environment exclude="Development">
+        <link href="~/lib/twitter-bootstrap/css/bootstrap.min.css" rel="stylesheet" asp-append-version="true" />
+        <link href="https://cdn.jsdelivr.net/npm/cookieconsent@@3.1.1/src/styles/base.css" rel="stylesheet" />
+        <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.3/font/bootstrap-icons.css" rel="stylesheet">
+        <link href="https://cdn.jsdelivr.net/npm/@@fortawesome/fontawesome-free@@6.2.1/css/all.min.css" rel="stylesheet" />
+        <link href="~/css/fonts.min.css" rel="stylesheet" asp-append-version="true" />
+        <link href="~/css/base.min.css" rel="stylesheet" asp-append-version="true" />
+        <link href="~/css/rwd.min.css" rel="stylesheet" asp-append-version="true" />
+        <link href="~/css/darkmode.min.css" rel="stylesheet" asp-append-version="true" />
+    </environment>
+    <environment include="Development">
+        <link href="~/lib/twitter-bootstrap/css/bootstrap.min.css" rel="stylesheet" asp-append-version="true" />
+        <link href="https://cdn.jsdelivr.net/npm/cookieconsent@@3.1.1/src/styles/base.css" rel="stylesheet" />
+        <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.2/font/bootstrap-icons.css" rel="stylesheet">
+        <link href="https://cdn.jsdelivr.net/npm/@@fortawesome/fontawesome-free@@6.2.1/css/all.css" rel="stylesheet" />
+        <link href="~/css/fonts.min.css" rel="stylesheet" asp-append-version="true" />
+        <link href="~/css/base.css" rel="stylesheet" asp-append-version="true" />
+        <link href="~/css/rwd.css" rel="stylesheet" asp-append-version="true" />
+        <link href="~/css/darkmode.css" rel="stylesheet" asp-append-version="true" />
+    </environment>
+
+    <!-- Syncfusion Essential JS 2 Styles -->
+    @if (BlogConfig.GeneralSettings.SyncfusionVersion != null)
+    {
+        <link rel="stylesheet" href="@syncStyle" />
+
+        <!-- Syncfusion ASP.NET Core controls scripts -->
+        <script src="@syncScript"></script>
+    }
+
+    <link href="~/lib/cookieconsent/cookieconsent.min.css" rel="stylesheet" asp-append-version="true" />
+
     @await RenderSectionAsync("head", false)
+
     <link href="~/theme.css" rel="stylesheet" asp-append-version="true" />
     @if (BlogConfig.CustomStyleSheetSettings.EnableCustomCss)
     {
         <link href="~/custom.css" rel="stylesheet" asp-append-version="true" />
     }
+
     <environment include="Production">
         @if (!(bool)Context.Items["DNT"])
         {
@@ -114,6 +174,11 @@
         }
     </environment>
     <script src="~/js/3rd/jquery.slim.min.js" asp-append-version="true"></script>
+
+    @if (BlogConfig.ContentSettings.EnableSharingButtons)
+    {
+        <script type="text/javascript" src="@shareThis" async="async"></script>
+    }
 </head>
 <body class="@ViewBag.BodyClass">
     @if (BlogConfig.ContentSettings.ShowCalloutSection)
@@ -178,10 +243,14 @@
         </nav>
     </header>
 
+    <partial name="_CookieConsentPartial" />
+
     <div id="page-content" class="content">
         @if (null != ViewBag.HideSideBar && ViewBag.HideSideBar)
         {
-            @RenderBody()
+            <main>
+                @RenderBody()
+            </main>
         }
         else
         {
@@ -193,12 +262,12 @@
                     <div class="row">
                         <div class="col-3">
                             <img src="@BlogConfig.GeneralSettings.AvatarUrl"
-                             alt="@BlogConfig.GeneralSettings.OwnerName"
-                             class="rounded-circle blogger-head-pic" />
+                                 alt="@BlogConfig.GeneralSettings.OwnerName"
+                                 class="rounded-circle blogger-head-pic" />
                         </div>
-                        <div class="col-9">
-                            <h4 class="text-center">
-                                @BlogConfig.GeneralSettings.ShortDescription
+                        <div class="col-9 position-relative">
+                            <h4 class="text-center w-100 position-absolute top-50 start-50 translate-middle">
+                                @BlogConfig.GeneralSettings.Description
                             </h4>
                         </div>
                     </div>
@@ -211,9 +280,9 @@
                         <partial name="_Aside" />
                     }
 
-                    <section class="col-md-12 @(BlogConfig.GeneralSettings.SideBarOption == SideBarOption.Disabled ? null : "col-lg-9")">
+                    <main class="col-md-12 @(BlogConfig.GeneralSettings.SideBarOption == SideBarOption.Disabled ? null : "col-lg-9")">
                         @RenderBody()
-                    </section>
+                    </main>
 
                     @if (BlogConfig.GeneralSettings.SideBarOption == SideBarOption.Right)
                     {
@@ -230,24 +299,86 @@
 
     <script src="~/lib/twitter-bootstrap/js/bootstrap.bundle.min.js" asp-append-version="true"></script>
     <script type="module" src="~/js/app/base.js" asp-append-version="true"></script>
-    <script src="~/js/app/httpService.js" asp-append-version="true"></script>
+    <environment include="Developent">
+        <script src="~/js/app/httpService.js" asp-append-version="true"></script>
+        <script src="~/lib/codersrank/activity/codersrank-activity.js"></script>
+        <script src="~/lib/codersrank/education/codersrank-education.js"></script>
+        <script src="~/lib/codersrank/portfolio/codersrank-portfolio.js"></script>
+        <script src="~/lib/codersrank/skills-chart/codersrank-skills-chart.js"></script>
+        <script src="~/lib/codersrank/summary/codersrank-summary.js"></script>
+        <script src="~/lib/codersrank/work-experience/codersrank-work-experience.js"></script>
+        <script src="https://cdn.jsdelivr.net/npm/@@fortawesome/fontawesome-free@@6.2.1/js/all.js"></script>
+        <script src="https://cdn.jsdelivr.net/npm/cookieconsent@@3.1.1/src/cookieconsent.js"></script>
+    </environment>
+    <environment exclude="Development">
+        <script src="~/js/app/httpService.min.js" asp-append-version="true"></script>
+        <script src="~/lib/codersrank/activity/codersrank-activity.min.js"></script>
+        <script src="~/lib/codersrank/education/codersrank-education.min.js"></script>
+        <script src="~/lib/codersrank/portfolio/codersrank-portfolio.min.js"></script>
+        <script src="~/lib/codersrank/skills-chart/codersrank-skills-chart.min.js"></script>
+        <script src="~/lib/codersrank/summary/codersrank-summary.min.js"></script>
+        <script src="~/lib/codersrank/work-experience/codersrank-work-experience.min.js"></script>
+        <script src="https://cdn.jsdelivr.net/npm/@@fortawesome/fontawesome-free@@6.2.1/js/all.js.css"></script>
+        <script src="https://cdn.jsdelivr.net/npm/cookieconsent@@3.1.1/src/cookieconsent.js"></script>
+    </environment>
 
-    @if (BlogConfig.GeneralSettings.AutoDarkLightTheme && (ViewBag.DisableLightSwitch == null || !ViewBag.DisableLightSwitch))
+    @* @if (BlogConfig.GeneralSettings.AutoDarkLightTheme && (ViewBag.DisableLightSwitch == null || !ViewBag.DisableLightSwitch))
+    { *@
+    <script type="module">
+        import * as theme from '/js/app/theme.module.js'
+        window.theme = theme;
+
+        // if (window.matchMedia && window.theme) {
+        //     if (window.matchMedia('(prefers-color-scheme: dark)').matches) {
+        theme.useDarkMode();
+        //     } else {
+        //         theme.useLightMode();
+        //     }
+        // }
+    </script>
+    @* } *@
+
+    @if (BlogConfig.GeneralSettings.ClarityProjectId != null)
     {
-        <script type="module">
-            import * as theme from '/js/app/theme.module.js'
-            window.theme = theme;
-
-            if (window.matchMedia && window.theme) {
-                if (window.matchMedia('(prefers-color-scheme: dark)').matches) {
-                    theme.useDarkMode();
-                } else {
-                    theme.useLightMode();
-                }
-            }
+        <script type="text/javascript">
+            (function (c, l, a, r, i, t, y) {
+                c[a] = c[a] || function () { (c[a].q = c[a].q || []).push(arguments) };
+                t = l.createElement(r); t.async = 1; t.src = "https://www.clarity.ms/tag/" + i;
+                y = l.getElementsByTagName(r)[0]; y.parentNode.insertBefore(t, y);
+            })(window, document, "clarity", "script", "@(BlogConfig.GeneralSettings.ClarityProjectId)");
         </script>
     }
 
+    @if (BlogConfig.GeneralSettings.GoogleAnalytics != null)
+    {
+        @* <script type="text/javascript">
+    var gaJsHost = (("https:" == document.location.protocol) ? "https://ssl." : "https://www.");
+    document.write(unescape("%3Cscript src='" + gaJsHost + "google-analytics.com/ga.js' type='text/javascript'%3E%3C/script%3E"));
+    </script>
+    <script type="text/javascript">
+    var pageTracker = _gat._getTracker("@(BlogConfig.GeneralSettings.GoogleAnalytics)");
+    pageTracker._initData();
+    pageTracker._trackPageview();
+    </script> *@
+
+        <script async src="https://www.googletagmanager.com/gtag/js?id=@BlogConfig.GeneralSettings.GoogleAnalytics"></script>
+        <script>
+            window.dataLayer = window.dataLayer || [];
+            function gtag() { dataLayer.push(arguments); }
+            gtag('js', new Date());
+
+            gtag('config', '@BlogConfig.GeneralSettings.GoogleAnalytics');
+        </script>
+    }
+
+    <!-- Syncfusion ASP.NET Core Script Manager -->
+    <ejs-scripts></ejs-scripts>
+
     @await RenderSectionAsync("scripts", false)
+
+    @if (!string.IsNullOrWhiteSpace(BlogConfig.AdvancedSettings.FootScripts))
+    {
+        @Html.Raw(BlogConfig.AdvancedSettings.FootScripts)
+    }
 </body>
 </html>

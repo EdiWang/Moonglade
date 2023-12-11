@@ -7,24 +7,20 @@ namespace Moonglade.Web.Controllers;
 [Authorize]
 [ApiController]
 [Route("api/[controller]")]
-public class LocalAccountController : ControllerBase
+public class LocalAccountController(IMediator mediator) : ControllerBase
 {
-    private readonly IMediator _mediator;
-
-    public LocalAccountController(IMediator mediator) => _mediator = mediator;
-
     [HttpPost]
     [ProducesResponseType(StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status409Conflict)]
     public async Task<IActionResult> Create(CreateAccountCommand command)
     {
-        if (await _mediator.Send(new AccountExistsQuery(command.Username)))
+        if (await mediator.Send(new AccountExistsQuery(command.Username)))
         {
             ModelState.AddModelError("username", $"User '{command.Username}' already exist.");
             return Conflict(ModelState);
         }
 
-        await _mediator.Send(command);
+        await mediator.Send(command);
         return Ok();
     }
 
@@ -44,13 +40,13 @@ public class LocalAccountController : ControllerBase
             return Conflict("Can not delete current user.");
         }
 
-        var count = await _mediator.Send(new CountAccountsQuery());
+        var count = await mediator.Send(new CountAccountsQuery());
         if (count == 1)
         {
             return Conflict("Can not delete last account.");
         }
 
-        await _mediator.Send(new DeleteAccountCommand(id));
+        await mediator.Send(new DeleteAccountCommand(id));
         return NoContent();
     }
 
@@ -64,7 +60,7 @@ public class LocalAccountController : ControllerBase
             return Conflict("Password must be minimum eight characters, at least one letter and one number");
         }
 
-        await _mediator.Send(new ChangePasswordCommand(id, newPassword));
+        await mediator.Send(new ChangePasswordCommand(id, newPassword));
         return NoContent();
     }
 }

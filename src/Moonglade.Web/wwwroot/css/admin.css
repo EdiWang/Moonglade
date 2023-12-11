@@ -73,6 +73,7 @@
 .admin-nav {
     width: 190px;
     min-height: calc(100vh - 54px);
+    border-right: 1px solid #ddd;
 }
 
     .admin-nav .list-group-item span {
@@ -101,21 +102,18 @@
     line-height: 36px;
 }
 
-@media (min-width: 768px) {
-    .admin-nav {
-        margin-left: 15px;
-    }
-
-    .admin-main {
-        min-width: 0;
-        width: 100%;
-    }
-
-    .admin-body-wrapper.toggled .admin-nav {
-        margin-left: -15rem;
-    }
+.admin-nav {
+    margin-left: 5px;
 }
 
+.admin-main {
+    min-width: 0;
+    width: 100%;
+}
+
+.admin-body-wrapper.toggled .admin-nav {
+    margin-left: -15rem;
+}
 
 .textarea-code {
     font-family: 'Consolas';
@@ -137,7 +135,7 @@ hr.admin-nav-divider {
 
 .admin-nav-section .list-group-item {
     background-color: transparent;
-    border-left: 4px solid transparent;
+    border-left: 2px solid transparent;
     border-top: 0;
     border-bottom: 0;
     border-right: 0;
@@ -145,7 +143,11 @@ hr.admin-nav-divider {
 
     .admin-nav-section .list-group-item.active,
     .admin-nav-section .list-group-item:hover {
-        border-left: 4px solid var(--accent-color2);
+        border-left: 2px solid var(--accent-color2);
+    }
+
+    .admin-nav-section .list-group-item:hover {
+        background-color: #EBEBEB;
     }
 
 .admin-nav-link:active {
@@ -280,28 +282,28 @@ table.dataTable {
     border-spacing: inherit !important;
 }
 
-.settings-entry {
-    background-color: var(--bs-gray-100);
-    border-radius: 5px;
-    padding-bottom: 12px;
-    padding-left: 10px;
-    padding-right: 10px;
-    margin-left: 0;
-    margin-right: 0;
+.blogadmin-siteicon {
+    width: 32px;
+    height: 32px;
 }
-
-    .settings-entry.row > * {
-        margin-top: 12px;
-    }
 
 .settings-entry-icon {
     font-size: 24px;
 }
 
-.settings-entry .form-switch {
+.settings-entry2 .form-switch {
     display: inline-block;
     min-height: inherit;
     margin-bottom: 0;
+}
+
+    .settings-entry2 .form-switch.form-control-lg {
+        padding: 0 !important;
+    }
+
+.settings-entry2 {
+    margin-left: 0;
+    margin-right: 0;
 }
 
 .tags-dropdown .tagify__dropdown__item {
@@ -328,4 +330,20 @@ table.dataTable {
 
 .tox-promotion {
     display: none !important;
+}
+
+.admin-subtitle {
+    font-size: 0.9rem;
+}
+
+.admin-settings-entry-container {
+    height: calc(100vh - 215px);
+    overflow-y: scroll;
+    overflow-x: hidden;
+}
+
+.admin-main-entry-container {
+    height: calc(100vh - 230px);
+    overflow-y: scroll;
+    overflow-x: hidden;
 }

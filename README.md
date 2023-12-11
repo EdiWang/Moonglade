@@ -1,28 +1,40 @@
-# Moonglade Blog
+# Moonglade-saigkill Blog
 
-[![Build Status](https://dev.azure.com/ediwang/Edi-GitHub/_apis/build/status/EdiWang.Moonglade?branchName=master)](https://dev.azure.com/ediwang/Moonglade%20DevOps/_build/latest?definitionId=68&branchName=master) 
 [![Docker Linux x64](https://github.com/EdiWang/Moonglade/actions/workflows/docker.yml/badge.svg)](https://github.com/EdiWang/Moonglade/actions/workflows/docker.yml)
-![.NET Build Linux](https://github.com/EdiWang/Moonglade/workflows/.NET%20Build%20Linux/badge.svg) 
+![Man hours](https://manhours.aiursoft.cn/r/github.com/ediwang/moonglade.svg)
 
-The [.NET](https://dotnet.microsoft.com/) blog system of [edi.wang](https://edi.wang) that runs on [**Microsoft Azure**](https://azure.microsoft.com/en-us/). Designed for developers, enabling most common blogging features including posts, comments, categories, archive, tags and pages.
+The upstream project provides managing sites. This feature is also present in this version. Becuase of a lack of page localization i decided to use plain razor pages for my pages. If you want to use my fork, and want to use the native pages support, so delete the pages `About`, `Contact`, `CurriculumVitae`, `Imprint`, `Privacy`, `Talks` and `Testimonials`.
+
+> IMPORTANT: Moonglade has moved to .NET 8 LTS in November 2023 with v14.x release, please upgrade your server to use v14
 
 ## 📦 Deployment
 
-- It is recommended to use stable code from [Release](https://github.com/EdiWang/Moonglade/releases) rather than master branch.
+- Please use stable code from [Release](https://github.com/EdiWang/Moonglade/releases) branch rather than master branch.
 
-- It is recommended to enable HTTP/2 support on your web server.
+- HTTPS is required, and it is recommended to enable HTTP/2 support on your web server.
 
-### ☁ Full Deploy on Azure (Recommend)
+### ☁ Full Deploy on Azure
 
-This is the way https://edi.wang is deployed, by taking advantage of as many Azure services as possible, the blog can run very fast and secure.
+This is the way https://edi.wang is deployed, by taking advantage of as many Azure services as possible, the blog can run very fast and secure. 
 
-This diagram shows a full Azure deployment for Moonglade for reference.
+There is no automated script to deploy it, you need to manually create all the resources.
 
 ![image](https://cdn-blog.edi.wang/web-assets/ediwang-azure-arch-visio-nov2022.png)
 
-### 🐋 Quick Deploy on Azure
+### 🐋 Quick Deploy on Azure (App Service on Linux)
 
-Use automated deployment script to get your Moonglade up and running in 10 minutes, follow instructions [here](https://github.com/EdiWang/Moonglade/wiki/Quick-Deploy-on-Azure)
+Use automated deployment script to get your Moonglade up and running in 10 minutes with minimal Azure components, follow instructions [here](https://github.com/EdiWang/Moonglade/wiki/Quick-Deploy-on-Azure)
+
+### 🐋 Quick Deploy with Docker-Compose
+
+Simply go the the root folder of this repo and run:
+
+```bash
+docker-compose build
+docker-compose up
+```
+
+That's it! Now open: [Browser: http://localhost:8080](http://localhost:8080)
 
 ### 🐧 Quick Deploy on Linux without Docker
 
@@ -32,49 +44,39 @@ To quickly get it running on a new Linux machine without Docker, follow instruct
 
 Tools | Alternative
 --- | ---
-[Visual Studio 2022 v17.4+](https://visualstudio.microsoft.com/) | [Visual Studio Code](https://code.visualstudio.com/) with [.NET 7.0 SDK](http://dot.net)
+[Visual Studio 2022 v17.8+](https://visualstudio.microsoft.com/) | [Visual Studio Code](https://code.visualstudio.com/) with [.NET 8.0 SDK](http://dot.net)
 [SQL Server 2022](https://www.microsoft.com/en-us/sql-server/sql-server-2022) | [SQL Server LocalDB](https://learn.microsoft.com/en-us/sql/database-engine/configure-windows/sql-server-express-localdb?view=sql-server-ver16&WT.mc_id=AZ-MVP-5002809), PostgreSQL or MySQL 
 
 ### 💾 Setup Database
 
 Moonglade supports three types of database. You can choose from SQL Server, PostgreSQL or MySQL.
 
+Update your database connection string in `appsettings.*.json`
+
 #### SQL Server
 
-Create a SQL Server 2022 database, e.g. ```moonglade```
-
-Set the `MoongladeDatabase` to your database connection string in `appsettings.Development.json`
-
 ```json
-"MoongladeDatabase": "Server=(localdb)\\MSSQLLocalDB;Database=moonglade;Trusted_Connection=True;"
+"ConnectionStrings": {
+  "MoongladeDatabase": "Server=(localdb)\\MSSQLLocalDB;Database=Moonglade;Trusted_Connection=True;",
+  "DatabaseType": "SqlServer"
+}
 ```
-
 #### MySQL
 
-Set `DatabaseType` to `MySql`
-
 ```json
-"DatabaseType": "MySql"
-```
-
-Set the `MoongladeDatabase` to your database connection string in `appsettings.Development.json`
-
-```json
-"MoongladeDatabase": "Server=localhost;Port=3306;Database=moonglade;Uid=root;Pwd=******;"
+"ConnectionStrings": {
+  "MoongladeDatabase": "Server=localhost;Port=3306;Database=moonglade;Uid=root;Pwd=******;",
+  "DatabaseType": "MySql"
+}
 ```
 
 #### PostgreSql
 
-Set `DatabaseType` to `PostgreSql`
-
 ```json
-"DatabaseType": "PostgreSql"
-```
-
-Set the `MoongladeDatabase` to your database connection string in `appsettings.Development.json`
-
-```json
-"MoongladeDatabase": "User ID=****;Password=****;Host=localhost;Port=5432;Database=****;Pooling=true;"
+"ConnectionStrings": {
+  "MoongladeDatabase": "User ID=****;Password=****;Host=localhost;Port=5432;Database=****;Pooling=true;",
+  "DatabaseType": "PostgreSql"
+}
 ```
 
 ### 🔨 Build Source
@@ -86,17 +88,17 @@ Build and run `./src/Moonglade.sln`
 
 ## ⚙ Configuration
 
-> This section discuss system settings in **appsettings.[env].json**. For blog settings, please use "/admin/settings" UI.
-
-**For production, it is strongly recommended to use Environment Variables over appsetting.json file.**
+> This section discuss environment settings in **appsettings.[env].json**. For blog settings, please use "/admin/settings" UI.
 
 ### 🛡 Authentication
 
-#### [Azure Active Directory](https://azure.microsoft.com/en-us/services/active-directory/)
+> You can choose one authentication provider from below.
 
-See [Wiki document](https://github.com/EdiWang/Moonglade/wiki/Use-Azure-Active-Directory-Authentication)
+#### [Microsoft Entra ID](https://azure.microsoft.com/en-us/services/active-directory/)
 
-#### Local Account (Alternative)
+See [Wiki document](https://github.com/EdiWang/Moonglade/wiki/Use-Microsoft-Entra-ID-Authentication)
+
+#### Local Account
 
 Set `Authentication:Provider` to `"Local"`. You can manage accounts in `/admin/settings/account`
 
@@ -119,7 +121,7 @@ You need to create an [**Azure Blob Storage**](https://azure.microsoft.com/en-us
 
 When configured the image storage to use Azure Blob, you can take advantage of CDN for your image resources. Just enable CDN in admin settings, the blog will get images from CDN.
 
-#### [Minio Blob Storage](https://min.io/) (Free)
+#### [Minio Blob Storage](https://min.io/)
 
 You need to hava an [**Minio Server**](https://docs.min.io/). 
 
@@ -127,21 +129,6 @@ You need to hava an [**Minio Server**](https://docs.min.io/).
 "Provider": "miniostorage"
 "MinioStorageSettings": {
   "EndPoint": "Minio Server Endpoint(eg:localhost:9600)",
-  "AccessKey": "Your Access Key",
-  "SecretKey": "Your Secret Key",
-  "BucketName": "Your BucketName",
-  "WithSSL": false
-}
-```
-
-#### [Qiniu Blob Storage](https://qiniu.com/) (Almost free)
-
-You need to hava an Qiniu cloud account, and use [Kodo](https://www.qiniu.com/products/kodo) storage service. 
-
-```json
-"Provider": "qiniustorage"
-"QiniuStorageSettings": {
-  "EndPoint": "Your Custom Domain",
   "AccessKey": "Your Access Key",
   "SecretKey": "Your Secret Key",
   "BucketName": "Your BucketName",
@@ -162,11 +149,11 @@ You can also choose File System for image storage if you don't have a cloud opti
 
 ### 🤬 Comment Moderator
 
-- [Comment Moderator Settings](https://github.com/EdiWang/Moonglade/wiki/Comment-Moderator-Settings)
+See https://github.com/EdiWang/Moonglade.ContentSecurity
 
 ### 📧 Email Notification
 
-If you need email notification for new comments, new replies and pingbacks, you have to setup the [Moonglade.Notification Azure Function](https://github.com/EdiWang/Moonglade.Notification) first, and then enable notification in admin portal.
+If you need email notification for new comments, new replies and pingbacks, you have to setup the [Moonglade.Email Azure Function](https://github.com/EdiWang/Moonglade.Email) first, and then enable notification in admin portal.
 
 ### 🔩 Others
 
@@ -185,22 +172,20 @@ If you need email notification for new comments, new replies and pingbacks, you 
 - [X] RSD
 - [X] MetaWeblog (Basic Support)
 - [X] Dublin Core Metadata (Basic Support)
-- [ ] BlogML - Under triage
+- [ ] BlogML - Not planned
 - [ ] APML - Not planned
 - [ ] Trackback - Not planned
 
-## 🐼 Example Blogs
+## 免责申明
 
-There are a few individuals already setup thier blogs using Moonglade on Azure (Global or China), Alibaba Cloud, Tencent Cloud, etc.
+此项目(Moonglade)及其配套组件均为免费开源的产品，仅用于学习交流，并且不直接向中国提供服务，中国用户请于下载后立即删除。
 
-- [zchwei](https://zchwei.com/)
-- [yycoding](https://www.yycoding.xyz/)
-- [51azure](https://www.51azure.cloud/)
-- [Zhuangkh](https://zhuangkh.com/)
-- [HueiFeng](https://blog.stackable.cn/)
-- [Leslie Wang](https://lesliewxj.com/)
-- [AllenMasters](https://allenmasters.com)
-- [Hao's House](https://haxu.dev/)
-- [Sascha.Manns](https://saschamanns.de/)
+任何中国境内的组织及个人不得使用此项目(Moonglade)及其配套组件构建任何形式的面向中国境内用户的网站或服务。
 
-*Just Submit PR or issue if you want your blog to be listed here*
+不可用于任何违反中华人民共和国(含台湾省)或使用者所在地区法律法规的用途。
+
+因为作者即本人仅完成代码的开发和开源活动(开源即任何人都可以下载使用)，从未参与用户的任何运营和盈利活动。
+
+且不知晓用户后续将程序源代码用于何种用途，故用户使用过程中所带来的任何法律责任即由用户自己承担。
+
+[《开源软件有漏洞，作者需要负责吗？是的！》](https://go.edi.wang/aka/os251)

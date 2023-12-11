@@ -1,32 +1,23 @@
-﻿using Moonglade.Data.Spec;
+﻿using Moonglade.Data.Generated.Entities;
+using Moonglade.Data.Spec;
 using System.Linq.Expressions;
 
 namespace Moonglade.Core.PostFeature;
 
-public class ListPostSegmentQuery : IRequest<(IReadOnlyList<PostSegment> Posts, int TotalRows)>
+public class ListPostSegmentQuery(PostStatus postStatus, int offset, int pageSize, string keyword = null)
+    : IRequest<(IReadOnlyList<PostSegment> Posts, int TotalRows)>
 {
-    public ListPostSegmentQuery(PostStatus postStatus, int offset, int pageSize, string keyword = null)
-    {
-        PostStatus = postStatus;
-        Offset = offset;
-        PageSize = pageSize;
-        Keyword = keyword;
-    }
+    public PostStatus PostStatus { get; set; } = postStatus;
 
-    public PostStatus PostStatus { get; set; }
+    public int Offset { get; set; } = offset;
 
-    public int Offset { get; set; }
+    public int PageSize { get; set; } = pageSize;
 
-    public int PageSize { get; set; }
-
-    public string Keyword { get; set; }
+    public string Keyword { get; set; } = keyword;
 }
 
-public class ListPostSegmentQueryHandler : IRequestHandler<ListPostSegmentQuery, (IReadOnlyList<PostSegment> Posts, int TotalRows)>
+public class ListPostSegmentQueryHandler(IRepository<PostEntity> repo) : IRequestHandler<ListPostSegmentQuery, (IReadOnlyList<PostSegment> Posts, int TotalRows)>
 {
-    private readonly IRepository<PostEntity> _repo;
-    public ListPostSegmentQueryHandler(IRepository<PostEntity> repo) => _repo = repo;
-
     public async Task<(IReadOnlyList<PostSegment> Posts, int TotalRows)> Handle(ListPostSegmentQuery request, CancellationToken ct)
     {
         if (request.PageSize < 1)
@@ -41,7 +32,7 @@ public class ListPostSegmentQueryHandler : IRequestHandler<ListPostSegmentQuery,
         }
 
         var spec = new PostPagingSpec(request.PostStatus, request.Keyword, request.PageSize, request.Offset);
-        var posts = await _repo.SelectAsync(spec, PostSegment.EntitySelector);
+        var posts = await repo.SelectAsync(spec, PostSegment.EntitySelector, ct);
 
         Expression<Func<PostEntity, bool>> countExp = p => null == request.Keyword || p.Title.Contains(request.Keyword);
 
@@ -63,7 +54,7 @@ public class ListPostSegmentQueryHandler : IRequestHandler<ListPostSegmentQuery,
                 throw new ArgumentOutOfRangeException(nameof(request.PostStatus), request.PostStatus, null);
         }
 
-        var totalRows = await _repo.CountAsync(countExp, ct);
+        var totalRows = await repo.CountAsync(countExp, ct);
         return (posts, totalRows);
     }
 }

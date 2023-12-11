@@ -1,4 +1,4 @@
-﻿using Moonglade.Data.Entities;
+﻿using Moonglade.Data.Generated.Entities;
 using Moonglade.Data.Infrastructure;
 using Moonglade.Data.Spec;
 using System.Globalization;
@@ -6,25 +6,21 @@ using System.Xml;
 
 namespace Moonglade.Web.Middleware;
 
-public class SiteMapMiddleware
+public class SiteMapMiddleware(RequestDelegate next)
 {
-    private readonly RequestDelegate _next;
-
-    public SiteMapMiddleware(RequestDelegate next) => _next = next;
-
     public async Task Invoke(
         HttpContext httpContext,
         IBlogConfig blogConfig,
-        IBlogCache cache,
+        ICacheAside cache,
         IRepository<PostEntity> postRepo,
         IRepository<PageEntity> pageRepo)
     {
         if (blogConfig.AdvancedSettings.EnableSiteMap && httpContext.Request.Path == "/sitemap.xml")
         {
-            var xml = await cache.GetOrCreateAsync(CacheDivision.General, "sitemap", async _ =>
+            var xml = await cache.GetOrCreateAsync(BlogCachePartition.General.ToString(), "sitemap", async _ =>
             {
                 var url = Helper.ResolveRootUrl(httpContext, blogConfig.GeneralSettings.CanonicalPrefix, true, true);
-                var data = await GetSiteMapData(url, postRepo, pageRepo);
+                var data = await GetSiteMapData(url, postRepo, pageRepo, httpContext.RequestAborted);
                 return data;
             });
 
@@ -33,14 +29,15 @@ public class SiteMapMiddleware
         }
         else
         {
-            await _next(httpContext);
+            await next(httpContext);
         }
     }
 
     private static async Task<string> GetSiteMapData(
         string siteRootUrl,
         IRepository<PostEntity> postRepo,
-        IRepository<PageEntity> pageRepo)
+        IRepository<PageEntity> pageRepo,
+        CancellationToken ct)
     {
         var sb = new StringBuilder();
 
@@ -53,7 +50,7 @@ public class SiteMapMiddleware
             // Posts
             var spec = new PostSitePageSpec();
             var posts = await postRepo
-                .SelectAsync(spec, p => new Tuple<string, DateTime?, DateTime?>(p.Slug, p.PubDateUtc, p.LastModifiedUtc));
+                .SelectAsync(spec, p => new Tuple<string, DateTime?, DateTime?>(p.Slug, p.PubDateUtc, p.LastModifiedUtc), ct);
 
             foreach (var (slug, pubDateUtc, lastModifyUtc) in posts.OrderByDescending(p => p.Item2))
             {
@@ -71,8 +68,7 @@ public class SiteMapMiddleware
                 page.CreateTimeUtc,
                 page.UpdateTimeUtc,
                 page.Slug,
-                page.IsPublished)
-            );
+                page.IsPublished), ct);
 
             foreach (var (createdTimeUtc, updateTimeUtc, slug, isPublished) in pages.Where(p => p.Item4))
             {

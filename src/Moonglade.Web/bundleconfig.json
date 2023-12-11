@@ -1,0 +1,146 @@
+[
+  {
+    "outputFileName": "wwwroot/css/base.min.css",
+    "inputFiles": [
+      "wwwroot/css/base.css"
+    ]
+  },
+  {
+    "outputFileName": "wwwroot/css/contact.min.css",
+    "inputFiles": [
+      "wwwroot/css/contact.css"
+    ]
+  },
+  {
+    "outputFileName": "wwwroot/css/cv.min.css",
+    "inputFiles": [
+      "wwwroot/css/cv.css"
+    ]
+  },
+  {
+    "outputFileName": "wwwroot/css/rwd.min.css",
+    "inputFiles": [
+      "wwwroot/css/rwd.css"
+    ]
+  },
+  {
+    "outputFileName": "wwwroot/css/darkmode.min.css",
+    "inputFiles": [
+      "wwwroot/css/darkmode.css"
+    ]
+  },
+  {
+    "outputFileName": "wwwroot/css/fonts.min.css",
+    "inputFiles": [
+      "wwwroot/css/fonts.css"
+    ]
+  },
+  {
+    "outputFileName": "wwwroot/css/testimonials.min.css",
+    "inputFiles": [
+      "wwwroot/css/testimonials.css"
+    ]
+  },
+  {
+    "outputFileName": "wwwroot/css/highlighter-custom.min.css",
+    "inputFiles": [
+      "wwwroot/css/highlighter-custom.css"
+    ]
+  },
+  {
+    "outputFileName": "wwwroot/css/outline.min.css",
+    "inputFiles": [
+      "wwwroot/css/outline.css"
+    ]
+  },
+  {
+    "outputFileName": "wwwroot/css/post-slug.min.css",
+    "inputFiles": [
+      "wwwroot/css/post-slug.css"
+    ]
+  },
+  {
+    "outputFileName": "wwwroot/css/donations.min.css",
+    "inputFiles": [
+      "wwwroot/css/donations.css"
+    ]
+  },
+  {
+    "outputFileName": "wwwroot/css/timeline.min.css",
+    "inputFiles": [
+      "wwwroot/css/timeline.css"
+    ]
+  },
+  {
+    "outputFileName": "wwwroot/css/tinymce-custom.min.css",
+    "inputFiles": [
+      "wwwroot/css/tinymce-custom.css"
+    ]
+  },
+  {
+    "outputFileName": "wwwroot/js/3rd/codemirror-4.inline-attachment.min.js",
+    "inputFiles": [
+      "wwwroot/js/3rd/codemirror-4.inline-attachment.js"
+    ]
+  },
+  {
+    "outputFileName": "wwwroot/js/3rd/inline-attachment.min.js",
+    "inputFiles": [
+      "wwwroot/js/3rd/inline-attachment.js"
+    ]
+  },
+  {
+    "outputFileName": "wwwroot/js/app/blogtoast.module.min.js",
+    "inputFiles": [
+      "wwwroot/js/app/blogtoast.module.js"
+    ]
+  },
+  {
+    "outputFileName": "wwwroot/js/app/documentoutline.min.js",
+    "inputFiles": [
+      "wwwroot/js/app/documentoutline.js"
+    ]
+  },
+  {
+    "outputFileName": "wwwroot/js/app/httpService.min.js",
+    "inputFiles": [
+      "wwwroot/js/app/httpService.js"
+    ]
+  },
+  {
+    "outputFileName": "wwwroot/js/app/imageuploader.min.js",
+    "inputFiles": [
+      "wwwroot/js/app/imageuploader.js"
+    ]
+  },
+  {
+    "outputFileName": "wwwroot/js/app/theme.module.min.js",
+    "inputFiles": [
+      "wwwroot/js/app/theme.module.js"
+    ]
+  },
+  {
+    "outputFileName": "wwwroot/js/app/utils.module.min.js",
+    "inputFiles": [
+      "wwwroot/js/app/utils.module.js"
+    ]
+  },
+  {
+    "outputFileName": "wwwroot/js/app/viewpost.module.min.js",
+    "inputFiles": [
+      "wwwroot/js/app/viewpost.module.js"
+    ]
+  },
+  {
+    "outputFileName": "wwwroot/js/app/about.min.js",
+    "inputFiles": [
+      "wwwroot/js/app/about.js"
+    ]
+  },
+  {
+    "outputFileName": "wwwroot/css/about.min.css",
+    "inputFiles": [
+      "wwwroot/css/about.css"
+    ]
+  }
+]

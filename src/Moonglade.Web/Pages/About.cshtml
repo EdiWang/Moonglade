@@ -1,0 +1,167 @@
+@page "/about"
+@using Microsoft.AspNetCore.Mvc.Localization
+@using Microsoft.AspNetCore.Mvc.TagHelpers
+@using Moonglade.Data.ExternalAPI.GitHub
+@using Moonglade.Data.ExternalAPI.GitHub.Models
+@using Newtonsoft.Json
+@using RestSharp
+@inject Moonglade.Web.Services.GithubUserRepositoriesProvider _repos
+@inject Moonglade.Data.Services.HonoraryPositionService _hpoService
+@inject Moonglade.Data.Services.CertificateService _certService
+@inject Moonglade.Data.Services.MandateService _mandateService
+@inject Moonglade.Data.Services.MembershipService _membershipService
+@inject Moonglade.Data.Services.PublicationService _publicationService
+@{
+    //var repos = await _repos.GetUserRepositories();
+}
+@section head {
+    <environment include="Development">
+        <link rel="stylesheet" href="~/css/about.min.css" />
+        <link href="https://cdn.jsdelivr.net/npm/@@fortawesome/fontawesome-free@6.2.1/css/all.css" rel="stylesheet" />
+    </environment>
+    <environment exclude="Development">
+        <link rel="stylesheet" href="~/css/about.css" />
+        <link href="https://cdn.jsdelivr.net/npm/@@fortawesome/fontawesome-free@6.2.1/css/all.min.css" rel="stylesheet" />
+    </environment>
+}
+
+@section scripts {
+    <environment include="Development">
+        <script src="~/js/app/about.js"></script>
+    </environment>
+    <environment exclude="Development">
+        <script src="~/js/app/about.min.js"></script>
+    </environment>
+}
+<div class="sec pt-4">
+    <div class="container">
+        <h3>@SharedLocalizer["Me and the Blog"]</h3>
+        <hr />
+        <div class="row">
+            <div class="col-md-5">
+                <div class="center-align">
+                    <img class="img-fluid img-thumbnail" width="45%" src="https://moongladestorage722.blob.core.windows.net/moongladeimages722/Sascha1.jpg" />
+                    <img class="img-fluid img-thumbnail" width="45%" src="https://moongladestorage722.blob.core.windows.net/moongladeimages722/coat-of-arms.png" />
+                    <p>@SharedLocalizer["about-coat-of-arms"]</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="sec">
+    <h4 class="center-text"><@SharedLocalizer["about-connect"]</h4>
+    <partial name="Shared/_SocialProfiles" />
+</div>
+
+<div class="sec">
+    <h4 class="center-text">@SharedLocalizer["about-memberships"]</h4>
+    @foreach (var membership in _membershipService.GetMembershipEntity())
+    {
+        @if (membership.Active)
+        {
+            <div tabindex="0" class="e-card" id="@membership.Id">
+                <div class="card-header">
+                    <div class="e-card-header-caption">
+                        <h4 class="card-subtitle"><a href="@membership.Link" target="_blank" class="">@membership.Organzation</a></h4>
+                    </div>
+                </div>
+                <div class="e-card-content">
+                    @if (!string.IsNullOrWhiteSpace(membership.Summary))
+                    {
+                        <div class="muted"><small>@membership.Summary</small></div>
+                    }
+                </div>
+            </div>
+        }
+    }
+</div>
+
+<div class="sec">
+    <h4 class="center-text">@SharedLocalizer["about-mandates"]</h4>
+    @foreach (var mandates in _mandateService.GetMandateEntitys())
+    {
+        <div tabindex="0" class="e-card" id="@mandates.Id">
+            <div class="card-header">
+                <div class="e-card-header-caption">
+                    <h4 class="card-subtitle"><a href="@mandates.Link" target="_blank" class="">@mandates.Summary</a></h4>
+                </div>
+            </div>
+            <div class="e-card-content">
+                <div class="muted"><small>@mandates.Organization - @mandates.Years</small></div>
+            </div>
+        </div>
+    }
+</div>
+
+<div class="sec">
+    <h4 class="center-text">@SharedLocalizer["about-hpos"]</h4>
+    @foreach (var pos in _hpoService.GetHonoraryPositions())
+    {
+        @if (pos.Active)
+        {
+            <div tabindex="0" class="e-card" id="@pos.Id">
+                <div class="card-header">
+                    <div class="e-card-header-caption">
+                        <h4 class="card-subtitle"><a href="@pos.Link" target="_blank" class="">@pos.Summary</a></h4>
+                    </div>
+                </div>
+                <div class="e-card-content">
+                    @if (!string.IsNullOrWhiteSpace(pos.Organization))
+                    {
+                        <div class="muted"><small>@pos.Organization</small></div>
+                    }
+                </div>
+            </div>
+        }
+    }
+</div>
+
+<div class="sec">
+    <h4 class="center-text">@SharedLocalizer["about-publications"]</h4>
+    <div style="height: 500px; overflow-y: scroll;">
+        @foreach (var pub in _publicationService.GetPublicationEntity())
+        {
+            <div tabindex="0" class="e-card" id="@pub.Id">
+                <div class="card-header">
+                    <div class="e-card-header-caption">
+                        <h4 class="card-subtitle"><a href="@pub.Link" target="_blank" class="">@pub.Title</a></h4>
+                    </div>
+                </div>
+                <div class="e-card-content">
+
+                    <div class="card-text"><small>@pub.Authors</small></div>
+                    <div class="card-text"><small>@pub.PublicationName - @pub.Publisher</small></div>
+                    @if (!string.IsNullOrWhiteSpace(pub.Identifier))
+                    {
+                        <div class="muted"><small>@pub.Identifier, @SharedLocalizer["Published"]: <time datetime="@pub.DatePublished">@pub.DatePublished</time></small></div>
+                    }
+                    else
+                    {
+                        <div class="muted"><small>@SharedLocalizer["Published"]: @pub.DatePublished</small></div>
+                    }
+                </div>
+            </div>
+        }
+    </div>
+</div>
+
+@* <div class="sec">
+    <h4 class="center-text">@SharedLocalizer["about-opensource"]</h4>
+    <div style="height: 500px; overflow-y: scroll;">
+        @foreach (var repo in await _repos.GetUserRepositories())
+        {
+            <div tabindex="0" class="e-card" id="@repo.id">
+                <div class="card-header">
+                    <div class="e-card-header-caption">
+                        <h4 class="card-subtitle"><a href="@repo.html_url" target="_blank" class="">@repo.name</a></h4>
+                    </div>
+                </div>
+                <div class="e-card-content">
+                    <div class="card-text">@repo.description</div>
+                    <div class="muted"><small>@SharedLocalizer["last-updated"]: <time datetime="@repo.updated_at">@repo.updated_at</time></small></div>
+                </div>
+            </div>
+        }
+    </div>
+</div> *@

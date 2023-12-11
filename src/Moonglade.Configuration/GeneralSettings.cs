@@ -48,11 +48,6 @@ public class GeneralSettings : IBlogSettings
     [MaxLength(256)]
     public string Description { get; set; }
 
-    [Required]
-    [Display(Name = "Short description")]
-    [MaxLength(32)]
-    public string ShortDescription { get; set; }
-
     [Display(Name = "Side bar HTML code")]
     [DataType(DataType.MultilineText)]
     [MaxLength(2048)]
@@ -74,7 +69,7 @@ public class GeneralSettings : IBlogSettings
     [Display(Name = "Auto Light / Dark theme regarding client system settings")]
     public bool AutoDarkLightTheme { get; set; }
 
-    public int ThemeId { get; set; }
+    public int ThemeId { get; set; } = 1;
 
     [Display(Name = "Profile")]
     public bool WidgetsProfile { get; set; } = true;
@@ -91,8 +86,42 @@ public class GeneralSettings : IBlogSettings
     [Display(Name = "Subscription buttons")]
     public bool WidgetsSubscriptionButtons { get; set; } = true;
 
-    [Display(Name = "Show Admin login button under sidebar")]
+    [Display(Name = "Admin login button")]
     public bool ShowAdminLoginButton { get; set; }
+
+    [Display(Name = "Bings Site Verification Code")]
+    public string BingSiteVerificationCode { get; set; }
+
+    [Display(Name = "Yandex Verification Code")]
+    public string YandexSiteVerificationCode { get; set; }
+
+    [Display(Name = "Facebook App ID")]
+    public string FacebookAppId { get; set; }
+
+    [Display(Name = "Norton Save Web Site Verification Code")]
+    public string NortonSaveWebVerificationCode { get; set; }
+
+    [Display(Name = "World of Trust Verification Code")]
+    public string WorldOfTrustVerificationCode { get; set; }
+
+    [Display(Name = "Google Analytics Tracker Id")]
+    public string GoogleAnalytics { get; set; }
+
+
+    [Display(Name = "Clarity Project Id")]
+    public string ClarityProjectId { get; set; }
+
+    /// <summary>
+    /// Gets or sets the used version.
+    /// </summary>
+    /// <value>
+    /// The used version.
+    /// </value>
+    [Display(Name = "Current used Syncfusion Version. If the official Version is 20.4.0.38 use 20.4.38")]
+    public string SyncfusionVersion { get; set; }
+
+    [Display(Name = "Github PAT")]
+    public string GithubPAT { get; set; }
 
     [Display(Name = "IndexNow API Key")]
     public string IndexNowAPIKey { get; set; }
@@ -112,8 +141,6 @@ public class GeneralSettings : IBlogSettings
     [Display(Name = "Dublin Core License URL")]
     public string DcLicenseUrl { get; set; }
 
-    public GeneralSettings() => ThemeId = 1;
-
     [JsonIgnore]
     public static GeneralSettings DefaultValue = new()
     {
@@ -121,7 +148,6 @@ public class GeneralSettings : IBlogSettings
         OwnerEmail = "admin@edi.wang",
         SiteTitle = "Moonglade",
         Description = "Moonglade Admin",
-        ShortDescription = "Moonglade Admin",
         AutoDarkLightTheme = true,
         LogoText = "moonglade",
         MetaKeyword = "moonglade",
@@ -138,3 +164,4 @@ public enum SideBarOption
     Left = 1,
     Disabled = 2
 }
+

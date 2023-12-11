@@ -1,33 +1,18 @@
 ﻿@page "/page/preview/{pageId:guid}"
 @model Moonglade.Web.Pages.PagePreviewModel
-@using NUglify
-@using Moonglade.Utils
 
 @{
     ViewBag.TitlePrefix = Model.BlogPage.Title;
     ViewBag.HideSideBar = Model.BlogPage.HideSidebar;
     ViewBag.DisableLightSwitch = true;
-
-    string css = null;
-    if (!string.IsNullOrWhiteSpace(Model.BlogPage.CssContent))
-    {
-        var uglifyResult = Uglify.Css(Model.BlogPage.CssContent);
-        if (!uglifyResult.HasErrors)
-        {
-            css = uglifyResult.Code;
-        }
-    }
 }
 
 @section head{
-    @if (!string.IsNullOrWhiteSpace(css))
+    @if (!string.IsNullOrWhiteSpace(Model.BlogPage.CssId))
     {
-        <style>
-            @Html.Raw(css)
-        </style>
+        <link href="~/content.css?id=@Model.BlogPage.CssId" rel="stylesheet" asp-append-version="true" />
     }
 }
-
 @section metadescription{
     <metadesc description="@Model.BlogPage.MetaDescription" />
 }
@@ -39,14 +24,7 @@
 </div>
 
 <div class="page-content">
-    @if (BlogConfig.AdvancedSettings.AllowScriptsInPage)
-    {
-        @Html.Raw(Model.BlogPage.RawHtmlContent)
-    }
-    else
-    {
-        @Html.Raw(Helper.RemoveScriptTagFromHtml(Model.BlogPage.RawHtmlContent))
-    }
+    @Html.Raw(Model.BlogPage.RawHtmlContent)
 </div>
 
 <partial name="_PageForestageAdmin" />

@@ -20,7 +20,10 @@ function slugify(text) {
 export function initEvents(slugifyTitle) {
     if (slugifyTitle) {
         $('#ViewModel_Title').change(function () {
-            document.querySelector('#ViewModel_Slug').value = slugify($(this).val());
+            var newSlug = slugify($(this).val());
+            if (newSlug) {
+                document.querySelector('#ViewModel_Slug').value = newSlug;
+            }
         });
     }
 
@@ -138,7 +141,6 @@ export function loadTinyMCE(textareaSelector) {
                 { text: 'PowerShell', value: 'powershell' },
                 { text: 'Plain Text', value: 'plaintext' },
                 { text: 'Python', value: 'python' },
-                { text: 'PHP', value: 'php' },
                 { text: 'R', value: 'r' },
                 { text: 'Ruby', value: 'ruby' },
                 { text: 'Rust', value: 'rust' },
@@ -206,8 +208,8 @@ export function keepAlive() {
                 credentials: 'include',
                 body: JSON.stringify({ nonce: num })
             }).then(async (response) => {
-            console.info('live');
-        });
+                console.info('live');
+            });
     }
     function abortTimer() {
         clearInterval(tid);

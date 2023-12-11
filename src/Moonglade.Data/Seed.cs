@@ -1,5 +1,5 @@
-﻿using Microsoft.Extensions.Logging;
-using Moonglade.Data.Entities;
+using Microsoft.Extensions.Logging;
+using Moonglade.Data.Generated.Entities;
 
 namespace Moonglade.Data;
 
@@ -19,7 +19,7 @@ public class Seed
             await dbContext.CustomPage.AddRangeAsync(GetPages());
 
             // Add example post
-            var content = "Moonglade is the blog system for https://edi.wang. Powered by .NET 7 and runs on Microsoft Azure.";
+            var content = "Moonglade is the blog system for https://edi.wang. Powered by .NET 8 and runs on Microsoft Azure, the best cloud on the planet.";
 
             var post = new PostEntity
             {
@@ -39,11 +39,6 @@ public class Seed
                 ContentLanguageCode = "en-us",
                 HashCheckSum = -1688639577,
                 IsOriginal = true,
-                PostExtension = new()
-                {
-                    Hits = 1024,
-                    Likes = 512
-                },
                 Tags = dbContext.Tag.ToList(),
                 PostCategory = dbContext.PostCategory.ToList()
             };
@@ -64,9 +59,8 @@ public class Seed
         }
     }
 
-    private static IEnumerable<LocalAccountEntity> GetLocalAccounts()
-    {
-        return new List<LocalAccountEntity>
+    private static IEnumerable<LocalAccountEntity> GetLocalAccounts() =>
+        new List<LocalAccountEntity>
         {
             new()
             {
@@ -76,11 +70,9 @@ public class Seed
                 CreateTimeUtc = DateTime.UtcNow
             }
         };
-    }
 
-    private static IEnumerable<BlogThemeEntity> GetThemes()
-    {
-        return new List<BlogThemeEntity>
+    private static IEnumerable<BlogThemeEntity> GetThemes() =>
+        new List<BlogThemeEntity>
         {
             new ()
             {
@@ -115,11 +107,9 @@ public class Seed
                 ThemeName = "Metal Blue", CssRules = "{\"--accent-color1\": \"#4E5967\",\"--accent-color2\": \"#333942\",\"--accent-color3\": \"#6e7c8e\"}", ThemeType = 0
             }
         };
-    }
 
-    private static IEnumerable<CategoryEntity> GetCategories()
-    {
-        return new List<CategoryEntity>
+    private static IEnumerable<CategoryEntity> GetCategories() =>
+        new List<CategoryEntity>
         {
             new()
             {
@@ -129,20 +119,16 @@ public class Seed
                 RouteName = "default"
             }
         };
-    }
 
-    private static IEnumerable<TagEntity> GetTags()
-    {
-        return new List<TagEntity>
+    private static IEnumerable<TagEntity> GetTags() =>
+        new List<TagEntity>
         {
             new() { DisplayName = "Moonglade", NormalizedName = "moonglade" },
             new() { DisplayName = ".NET", NormalizedName = "dot-net" }
         };
-    }
 
-    private static IEnumerable<FriendLinkEntity> GetFriendLinks()
-    {
-        return new List<FriendLinkEntity>
+    private static IEnumerable<FriendLinkEntity> GetFriendLinks() =>
+        new List<FriendLinkEntity>
         {
             new()
             {
@@ -151,11 +137,9 @@ public class Seed
                 LinkUrl = "https://edi.wang"
             }
         };
-    }
 
-    private static IEnumerable<PageEntity> GetPages()
-    {
-        return new List<PageEntity>
+    private static IEnumerable<PageEntity> GetPages() =>
+        new List<PageEntity>
         {
             new()
             {
@@ -170,5 +154,4 @@ public class Seed
                 UpdateTimeUtc = DateTime.UtcNow
             }
         };
-    }
 }

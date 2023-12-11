@@ -1,10 +1,9 @@
 ﻿@page "/admin/comments"
 @using Moonglade.Utils
-@using X.PagedList.Mvc.Core
-@using X.PagedList.Web.Common
+@using Moonglade.Web.PagedList
 @model Moonglade.Web.Pages.Admin.CommentsModel
 @{
-    ViewBag.Title = "Manage Comments";
+    ViewBag.Title = "Comments";
 }
 @Html.AntiForgeryToken()
 
@@ -12,7 +11,7 @@
     <script type="module">
         import * as utils from '/js/app/utils.module.js'
 
-        $(".btn-delete").click(function() {
+        $(".btn-delete").click(function () {
             var cid = $(this).data("commentid");
             callApi('/api/comment', 'DELETE', [cid],
                 (success) => {
@@ -20,12 +19,12 @@
                 });
         });
 
-        $(".btn-reply").click(function() {
+        $(".btn-reply").click(function () {
             var cid = $(this).data("commentid");
             $(`#panel-comment-${cid} .reply-ui`).show();
         });
 
-        $(".btn-reply-post").click(function() {
+        $(".btn-reply-post").click(function () {
             var cid = $(this).data("commentid");
             var replyContent = $(`#replycontent-${cid}`).val();
 
@@ -39,7 +38,7 @@
                 });
         });
 
-        $(".btn-approve").click(function() {
+        $(".btn-approve").click(function () {
             callApi(`/api/comment/${$(this).data("commentid")}/approval/toggle`, 'PUT', {},
                 async (resp) => {
                     var data = await resp.json();
@@ -48,7 +47,7 @@
                 });
         });
 
-        window.deleteSelectedComments = function() {
+        window.deleteSelectedComments = function () {
             var cids = [];
             $('.chk-cid:checked').each(function () {
                 cids.push($(this).data('cid'));
@@ -66,7 +65,7 @@
     </script>
 }
 
-    @section head{
+@section head{
     <style>
         .mdrendered-comment-content img {
             max-width: 720px;
@@ -78,15 +77,16 @@
         }
     </style>
 }
-
-    <div class="admin-toolbar ps-4 pe-4 pt-2 pb-2 border-bottom mb-3 shadow-sm">
+@section admintoolbar{
+    <div class="admin-toolbar pb-2 border-bottom mb-3">
         <a href="javascript:window.deleteSelectedComments();" class="btn btn-outline-danger btn-delete-selected">
             <i class="bi-trash"></i> @SharedLocalizer["Delete selected"]
         </a>
     </div>
+}
 
-    <div class="ps-4 pe-4">
-        @if (Model.CommentDetailedItems.Count == 0)
+<div>
+    @if (Model.CommentDetailedItems.Count == 0)
     {
         <div class="alert alert-info">
             @SharedLocalizer["No Comments"]
@@ -96,7 +96,7 @@
     {
         foreach (var item in Model.CommentDetailedItems)
         {
-            <div id="panel-comment-@item.Id" class="mb-4 row g-1">
+            <div id="panel-comment-@item.Id" class="p-3 mb-3 rounded-3 shadow-sm border bg-white row g-1">
                 <div class="form-check col-auto">
                     <input type="checkbox" class="form-check-input chk-cid" id="comment-item-chk-@item.Id" data-cid="@item.Id" />
                     <label class="form-check-label" for="comment-item-chk-@item.Id"></label>
@@ -122,7 +122,7 @@
                     <small class="text-muted">
                         <span>
                             <time data-utc-label="@item.CreateTimeUtc.ToString("u")">@item.CreateTimeUtc</time>
-                        </span> 
+                        </span>
                         <span class="text-muted d-none d-sm-inline">(@item.IpAddress)</span>
                     </small>
 
@@ -130,9 +130,9 @@
                         <form>
                             <div class="mb-2">
                                 <textarea class="form-control"
-                                  id="replycontent-@item.Id"
-                                  name="ReplyContent"
-                                  placeholder="Content" type="text"></textarea>
+                                          id="replycontent-@item.Id"
+                                          name="ReplyContent"
+                                          placeholder="Content" type="text"></textarea>
                             </div>
 
                             <a class="btn btn-outline-success btn-reply-post" href="#" data-commentid="@item.Id">
@@ -168,8 +168,6 @@
                     </button>
                 </div>
             </div>
-
-            <hr />
         }
     }
 
@@ -177,7 +175,7 @@
     {
     LiElementClasses = new[] { "page-item" },
     PageClasses = new[] { "page-link" },
-    UlElementClasses = new[] { "pagination justify-content-end" },
+    UlElementClasses = new[] { "pagination mt-3" },
     DisplayEllipsesWhenNotShowingAllPageNumbers = false
     })
 </div>

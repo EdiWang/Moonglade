@@ -1,4 +1,5 @@
 ﻿using System.Linq.Expressions;
+using Moonglade.Data.Generated.Entities;
 
 namespace Moonglade.Core.PostFeature;
 
@@ -13,7 +14,6 @@ public struct PostSegment
     public DateTime? LastModifiedUtc { get; set; }
     public bool IsPublished { get; set; }
     public bool IsFeatured { get; set; }
-    public int Hits { get; set; }
     public bool IsDeleted { get; set; }
 
     public static readonly Expression<Func<PostEntity, PostSegment>> EntitySelector = p => new()
@@ -27,7 +27,6 @@ public struct PostSegment
         IsDeleted = p.IsDeleted,
         CreateTimeUtc = p.CreateTimeUtc,
         LastModifiedUtc = p.LastModifiedUtc,
-        ContentAbstract = p.ContentAbstract,
-        Hits = p.PostExtension.Hits
+        ContentAbstract = p.ContentAbstract
     };
 }

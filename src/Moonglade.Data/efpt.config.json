@@ -1,0 +1,88 @@
+﻿{
+   "CodeGenerationMode": 3,
+   "ContextClassName": "Moonglade1",
+   "ContextNamespace": null,
+   "DefaultDacpacSchema": null,
+   "FilterSchemas": false,
+   "IncludeConnectionString": false,
+   "ModelNamespace": null,
+   "OutputContextPath": null,
+   "OutputPath": "Entities",
+   "PreserveCasingWithRegex": true,
+   "ProjectRootNamespace": "Moonglade.Data",
+   "Schemas": null,
+   "SelectedHandlebarsLanguage": 2,
+   "SelectedToBeGenerated": 2,
+   "T4TemplatePath": null,
+   "Tables": [
+      {
+         "Name": "[dbo].[Calendar]",
+         "ObjectType": 0
+      },
+      {
+         "Name": "[dbo].[Certificates]",
+         "ObjectType": 0
+      },
+      {
+         "Name": "[dbo].[CustomPage]",
+         "ObjectType": 0
+      },
+      {
+         "Name": "[dbo].[HonoraryPositons]",
+         "ObjectType": 0
+      },
+      {
+         "Name": "[dbo].[Mandates]",
+         "ObjectType": 0
+      },
+      {
+         "Name": "[dbo].[Memberships]",
+         "ObjectType": 0
+      },
+      {
+         "Name": "[dbo].[PostExtension]",
+         "ObjectType": 0
+      },
+      {
+         "Name": "[dbo].[Projects]",
+         "ObjectType": 0
+      },
+      {
+         "Name": "[dbo].[Publications]",
+         "ObjectType": 0
+      },
+      {
+         "Name": "[dbo].[Talks]",
+         "ObjectType": 0
+      },
+      {
+         "Name": "[dbo].[Testimonials]",
+         "ObjectType": 0
+      },
+      {
+         "Name": "[dbo].[Videos]",
+         "ObjectType": 0
+      }
+   ],
+   "UiHint": "moongladesql722.moongladedb722.dbo",
+   "UncountableWords": null,
+   "UseBoolPropertiesWithoutDefaultSql": false,
+   "UseDatabaseNames": true,
+   "UseDateOnlyTimeOnly": false,
+   "UseDbContextSplitting": false,
+   "UseFluentApiOnly": false,
+   "UseHandleBars": false,
+   "UseHierarchyId": false,
+   "UseInflector": true,
+   "UseLegacyPluralizer": false,
+   "UseManyToManyEntity": false,
+   "UseNoDefaultConstructor": false,
+   "UseNoNavigations": false,
+   "UseNoObjectFilter": false,
+   "UseNodaTime": false,
+   "UseNullableReferences": false,
+   "UseSchemaFolders": false,
+   "UseSchemaNamespaces": false,
+   "UseSpatial": false,
+   "UseT4": false
+}

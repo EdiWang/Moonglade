@@ -1,0 +1,201 @@
+@page "/curriculum_vitae"
+@inject Moonglade.Data.Services.CertificateService _certService
+@{
+    int age = DateTime.Now.Year - 1979;
+    int experience = DateTime.Now.Year - 2009;
+}
+@section head {
+    <environment exclude="Development">
+        <link href="~/css/cv.min.css" rel="stylesheet" />
+    </environment>
+    <environment include="Development">
+        <link href="~/css/cv.css" rel="stylesheet" />
+    </environment>
+}
+@section scripts {
+    <environment exclude="Development">
+        <script src="https://unpkg.com/@@codersrank/activity@@0.9.14/codersrank-activity.min.js"></script>
+        <script src="https://unpkg.com/@@codersrank/education@@0.9.12/codersrank-education.min.js"></script>
+        <script src="https://unpkg.com/@@codersrank/portfolio@@0.9.10/codersrank-portfolio.min.js"></script>
+        <script src="https://unpkg.com/@@codersrank/skills-chart@@0.9.21/codersrank-skills-chart.min.js"></script>
+        <script src="https://unpkg.com/@@codersrank/summary@@0.9.13/codersrank-summary.min.js"></script>
+        <script src="https://unpkg.com/@@codersrank/work-experience@@0.9.8/codersrank-work-experience.min.js"></script>
+    </environment>
+    <environment include="Development">
+        <script src="https://unpkg.com/@@codersrank/activity@@0.9.14/codersrank-activity.js"></script>
+        <script src="https://unpkg.com/@@codersrank/education@@0.9.12/codersrank-education.js"></script>
+        <script src="https://unpkg.com/@@codersrank/portfolio@@0.9.10/codersrank-portfolio.js"></script>
+        <script src="https://unpkg.com/@@codersrank/skills-chart@@0.9.21/codersrank-skills-chart.js"></script>
+        <script src="https://unpkg.com/@@codersrank/summary@@0.9.13/codersrank-summary.js"></script>
+        <script src="https://unpkg.com/@@codersrank/work-experience@@0.9.8/codersrank-work-experience.js"></script>
+    </environment>
+    <script src="https://unpkg.com/typeit@8.7.1/dist/index.umd.js"></script>
+    <script src="~/js/app/replaceJobs.js"></script>
+}
+
+<section id="intro">
+    <div class="container">
+        <div class="row">
+            <div class="col-md-6 col-lg-5">
+                <p class="lead mt-4 mb-5" style="text-align: center;">@SharedLocalizer["masterhead-lead"].</p>
+            </div>
+        </div>
+    </div>
+</section>
+
+<hr />
+<!-- About -->
+<section id="about" class="section">
+    <div class="intro">
+        <div class="container">
+            <div class="row align-items-center">
+                <div class="col-md-5">
+                    <h3 class="text-uppercase">@SharedLocalizer["about-name"] <span class="text-primary">Sascha Manns.</span> @SharedLocalizer["about-jobs"] @age @SharedLocalizer["about-year"] <br /> <span id="replaceJobs"></span></h3>
+                    <div class="mt-5 pt-2">
+                        <p>@SharedLocalizer["about-program"]</p>
+                        <div class="">
+                            <div tabindex="0" class="e-card" id="basic">
+                                <div class="e-card-content">
+                                    <div class="col-md-8">
+                                        <div class="font-gray"><span class="">@experience</span></div><div class="font-gray">@SharedLocalizer["about-year1"]<br> @SharedLocalizer["about-experience"]</div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-6 col-lg-5 offset-lg-2 offset-md-1 mt-4">
+                    <codersrank-summary username="saigkill" layout="vertical"></codersrank-summary>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<hr />
+
+<!-- Skills -->
+<section id="skills" class="section">
+    <h1>@SharedLocalizer["skills-title"]</h1>
+    <div class="intro">
+        <div class="container">
+            <div class="row align-items-center">
+                <div class="col-md-5">
+                    <codersrank-skills-chart username="saigkill"
+                                             labels
+                                             legend
+                                             tooltip></codersrank-skills-chart>
+                </div>
+                <div class="col-md-6 col-lg-5 offset-lg-2 offset-md-1 mt-4">
+                    <h6>.NET Framework,Visual Basic.NET,Windows Forms</h6>
+                    <div class="progress mb-5">
+                        <div class="progress-bar" role="progressbar" style="width: 60%" aria-valuenow="60" aria-valuemin="0" aria-valuemax="100">
+                        </div>
+                    </div>
+                    <h6 class="pt-2">.NET Core,MVC,Entity Framework Core,API,WPF,WinUI3,Razor Pages</h6>
+                    <div class="progress mb-5">
+                        <div class="progress-bar" role="progressbar" style="width: 80%" aria-valuenow="80" aria-valuemin="0" aria-valuemax="100"></div>
+                    </div>
+                    <h6 class="pt-2">HTML5,JS,CSS,Node.js</h6>
+                    <div class="progress mb-5">
+                        <div class="progress-bar" role="progressbar" style="width: 70%" aria-valuenow="70" aria-valuemin="0" aria-valuemax="100">
+                        </div>
+                    </div>
+                    <h6 class="pt-2">MS-SQL,MySQL</h6>
+                    <div class="progress mb-5">
+                        <div class="progress-bar" role="progressbar" style="width: 80%" aria-valuenow="80" aria-valuemin="0" aria-valuemax="100"></div>
+                    </div>
+                    <h6 class="pt-2">API (SOAP & REST)</h6>
+                    <div class="progress mb-5">
+                        <div class="progress-bar" role="progressbar" style="width: 70%" aria-valuenow="70" aria-valuemin="0" aria-valuemax="100"></div>
+                    </div>
+                </div>
+                <p>@SharedLocalizer["about-other-skills"] JSON, XML, Wordpress, SCRUM, Git, Linux, Windows, Apache httpd/Tomcat, Azure (SQL, WebApp, API, Blob), Azure DevOps, OOP, Swagger, Visual Basic, Visual Studio, Syncfusion Controls, DevExpress Controls, Postman, MS Teams, Docker.</p>
+            </div>
+        </div>
+    </div>
+</section>
+
+<hr />
+
+<!-- Activity -->
+<section id="activity" class="section">
+    <div class="intro">
+        <div class="container">
+            <h1>@SharedLocalizer["activity-all"]</h1>
+            <figure style="width: 130%;"><embed src="https://wakatime.com/share/@@saigkill/9e796a7c-915e-4a42-bbd4-ee884ae9ee06.svg"></embed></figure>
+            <h1>@SharedLocalizer["activity-last30"]</h1>
+            <figure style="width: 67%;"><embed src="https://wakatime.com/share/@@saigkill/897cc830-131e-4c0a-a1ef-169f11557af4.svg"></embed></figure>
+        </div>
+    </div>
+</section>
+
+<hr />
+
+<!-- Jobs -->
+<section id="jobs" class="section">
+    <div class="intro">
+        <div class="container">
+            <h1>@SharedLocalizer["jobs-title"]</h1>
+            <codersrank-work-experience username="saigkill" logos grid></codersrank-work-experience>
+        </div>
+    </div>
+</section>
+
+<hr />
+
+<!-- Education -->
+<section id="education" class="section">
+    <div class="intro">
+        <div class="container">
+            <h1>@SharedLocalizer["education-title"]</h1>
+            <codersrank-education username="saigkill" grid education certificates certificates-link education-section-title="Education" certificates-section-title="Certificates"></codersrank-education>
+        </div>
+    </div>
+</section>
+
+<hr />
+
+<!-- Certs -->
+<section id="certs" class="section">
+    <div class="col-md-offset2 col-md-8">
+        <div class="control-container center-align" style="width: 950px;">
+            <ejs-carousel id="certCarousel" animationEffect="Fade" buttonsVisibility="Hidden" showIndicators="false">
+                <e-carousel-items>
+                    @foreach (var cert in _certService.GetCertificateEntity())
+                    {
+                        string cssClass;
+                        if (cert.Landscape)
+                        {
+                            cssClass = "certificate landscape";
+                        }
+                        else
+                        {
+                            cssClass = "certificate portrait";
+                        }
+                        <e-carousel-item template='<div style="text-align: center" class="certificate">
+		                    <div class="pic">
+			                    <a href="@cert.Link"><img class="@cssClass" src="@cert.Image" alt=""></img></a>
+		                    </div>
+		                    <p class="description">
+			                    @cert.Content
+		                    </p>
+	                    </div>'></e-carousel-item>
+                    }
+                </e-carousel-items>
+            </ejs-carousel>
+        </div>
+    </div>
+</section>
+
+<hr />
+
+<!-- Portfolio -->
+<section id="portfolio" class="section">
+    <div class="intro">
+        <div class="container">
+            <h1>@SharedLocalizer["portfolio-title"]</h1>
+            <codersrank-portfolio username="saigkill" grid dates logos></codersrank-portfolio>
+        </div>
+    </div>
+</section>

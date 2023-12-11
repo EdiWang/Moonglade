@@ -145,7 +145,7 @@
     <value>账号信息</value>
   </data>
   <data name="Accounts" xml:space="preserve">
-    <value>账户</value>
+    <value>账号</value>
   </data>
   <data name="Action" xml:space="preserve">
     <value>操作</value>
@@ -170,9 +170,6 @@
   </data>
   <data name="All Tags" xml:space="preserve">
     <value>全部标签</value>
-  </data>
-  <data name="Allow javascript in pages" xml:space="preserve">
-    <value>允许页面中执JavaScript代码</value>
   </data>
   <data name="Archive" xml:space="preserve">
     <value>归档</value>
@@ -244,7 +241,7 @@
     <value>分类信息</value>
   </data>
   <data name="Change" xml:space="preserve">
-    <value>修改</value>
+    <value>更改</value>
   </data>
   <data name="Change Avatar" xml:space="preserve">
     <value>更换头像</value>
@@ -399,11 +396,8 @@
   <data name="Enable FOAF" xml:space="preserve">
     <value>启用 FOAF</value>
   </data>
-  <data name="Enable Pingback receive" xml:space="preserve">
-    <value>启用 Pingback 接受</value>
-  </data>
-  <data name="Enable Pingback send" xml:space="preserve">
-    <value>启用 Pingback 发送</value>
+  <data name="Enable Pingback" xml:space="preserve">
+    <value>启用 Pingback</value>
   </data>
   <data name="Enable Site Map" xml:space="preserve">
     <value>启用网站地图</value>
@@ -453,7 +447,7 @@
   <data name="Friend Link Options" xml:space="preserve">
     <value>友情链接选项</value>
   </data>
-  <data name="Friend Links" xml:space="preserve">
+  <data name="Friend links" xml:space="preserve">
     <value>友情链接</value>
   </data>
   <data name="General" xml:space="preserve">
@@ -485,12 +479,6 @@
   </data>
   <data name="Image" xml:space="preserve">
     <value>图片</value>
-  </data>
-  <data name="Inline CSS" xml:space="preserve">
-    <value>内联CSS</value>
-  </data>
-  <data name="Insights" xml:space="preserve">
-    <value>洞察</value>
   </data>
   <data name="Invalid Icon CSS Class" xml:space="preserve">
     <value>无效的图标CSS类名</value>
@@ -558,11 +546,8 @@
   <data name="No Archive" xml:space="preserve">
     <value>暂无归档</value>
   </data>
-  <data name="No Comments" xml:space="preserve">
-    <value>没有评论</value>
-  </data>
-  <data name="No Customized Menus" xml:space="preserve">
-    <value>无自定义菜单</value>
+  <data name="No comments yet" xml:space="preserve">
+    <value>暂无评论</value>
   </data>
   <data name="no items to show" xml:space="preserve">
     <value>无条目需要显示</value>
@@ -657,9 +642,6 @@
   <data name="Read origin article" xml:space="preserve">
     <value>阅读原文</value>
   </data>
-  <data name="Reads" xml:space="preserve">
-    <value>次阅读</value>
-  </data>
   <data name="Recycle Bin" xml:space="preserve">
     <value>回收站</value>
   </data>
@@ -729,14 +711,8 @@
   <data name="Set a primary domain if your website binds to multiple domian names." xml:space="preserve">
     <value>若您的网站绑定了多个域名，请填写主域名</value>
   </data>
-  <data name="Short description" xml:space="preserve">
-    <value>博主简介(短)</value>
-  </data>
-  <data name="Short description is for display only on Phone screen." xml:space="preserve">
-    <value>仅用于在手机版视图显示</value>
-  </data>
-  <data name="Show Admin login button under sidebar" xml:space="preserve">
-    <value>在侧边栏下显示管理员登录按钮</value>
+  <data name="Admin login button" xml:space="preserve">
+    <value>管理员登录按钮</value>
   </data>
   <data name="Show call-out section" xml:space="preserve">
     <value>显示横幅区</value>
@@ -759,9 +735,6 @@
   <data name="Sign In" xml:space="preserve">
     <value>登录</value>
   </data>
-  <data name="Site Icon Files" xml:space="preserve">
-    <value>网站图标文件</value>
-  </data>
   <data name="Start Time" xml:space="preserve">
     <value>启动时间</value>
   </data>
@@ -773,9 +746,6 @@
   </data>
   <data name="Submit" xml:space="preserve">
     <value>提交</value>
-  </data>
-  <data name="Subscribe Recent 20 Posts" xml:space="preserve">
-    <value>订阅最近20篇文章</value>
   </data>
   <data name="Subscription" xml:space="preserve">
     <value>订阅</value>
@@ -814,7 +784,7 @@
     <value>必填</value>
   </data>
   <data name="This is a preview for draft content." xml:space="preserve">
-    <value>本文为草稿预览</value>
+    <value>该页面为草稿预览</value>
   </data>
   <data name="Time Zone" xml:space="preserve">
     <value>时区</value>
@@ -898,9 +868,21 @@
     <value>博主名字</value>
   </data>
   <data name="Center" xml:space="preserve">
-    <value>剧中</value>
+    <value>居中</value>
   </data>
   <data name="Export" xml:space="preserve">
     <value>导出</value>
+  </data>
+  <data name="lower case English letters (a-z) and numbers (0-9) with/out hyphen (-) in middle." xml:space="preserve">
+    <value>小写英文字母（a-z）和数字（0-9），可以带或不带连符（-）</value>
+  </data>
+  <data name="RSS / Atom Feed" xml:space="preserve">
+    <value>RSS / Atom 订阅</value>
+  </data>
+  <data name="ASP.NET Core Environment" xml:space="preserve">
+    <value>ASP.NET Core 环境</value>
+  </data>
+  <data name="Warning: This blog post is marked as outdated by it's author. Consider finding more recent information on this topic to ensure that you are utilizing the most up-to-date and effective strategies." xml:space="preserve">
+    <value>警告：此博客文章已被作者标记为过时。请考虑寻找关于该主题的更近期的信息，以确保您使用的是最新和最有效的策略。</value>
   </data>
 </root>

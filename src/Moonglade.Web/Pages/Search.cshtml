@@ -5,13 +5,14 @@
     <meta name="robots" content="noindex, nofollow" />
 }
 @{
+    ViewBag.BodyClass = "body-search-list bg-gray-1";
     HttpContext.Response.Headers.Add("X-Robots-Tag", "noindex, nofollow");
 }
 
-<h3>
+<h3 class="mb-4">
     @SharedLocalizer["Search Result"]
 </h3>
-<hr />
+
 @if (!Model.Posts.Any())
 {
     <div class="alert alert-info">
@@ -23,8 +24,6 @@ else
     foreach (var item in Model.Posts.OrderByDescending(s => s.PubDateUtc))
     {
         <partial name="_PostListEntry" model="item" />
-        <div class="mb-4 d-none d-md-block"></div>
-        <hr class="d-none d-md-block" />
     }
 }
 

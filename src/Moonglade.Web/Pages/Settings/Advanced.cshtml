@@ -1,6 +1,5 @@
-﻿@page "/admin/settings/advanced"
+@page "/admin/settings/advanced"
 @using System.Reflection
-@using Microsoft.AspNetCore.Mvc.TagHelpers
 @Html.AntiForgeryToken()
 @{
     var settings = BlogConfig.AdvancedSettings;
@@ -8,7 +7,10 @@
     var asm = Assembly.GetEntryAssembly();
     var currentVersion = (new Version(asm!.GetCustomAttribute<AssemblyFileVersionAttribute>()?.Version)).ToString();
 }
-@section scripts{
+@section head {
+    <link href="https://cdn.jsdelivr.net/npm/@@fortawesome/fontawesome-free@@6.2.1/css/all.css" rel="stylesheet" />
+}
+@section scripts {
     <script type="module">
         import * as settings from '/js/app/admin.settings.module.js';
 
@@ -93,7 +95,7 @@
             });
         });
 
-        window.generateMetaWeblogPassword = function() {
+        window.generateMetaWeblogPassword = function () {
             callApi('/api/settings/password/generate', 'GET', {}, async (resp) => {
                 var data = await resp.json();
                 $('#settings_MetaWeblogPassword').val(data.password);
@@ -105,45 +107,33 @@
     </script>
 }
 
-<partial name="_SettingsHeader" />
-<div class="ps-4 pe-4">
-    <form id="form-settings" asp-controller="Settings" asp-action="Advanced">
-        <div class="row g-5">
+@section admintoolbar {
+    <partial name="_SettingsHeader" />
+}
+
+<form id="form-settings" asp-controller="Settings" asp-action="Advanced">
+    <div class="admin-settings-entry-container">
+        <div class="row">
             <div class="col-md-6">
                 <div class="mb-4">
-                    <h6 class="card-subtitle mb-4 text-muted">@SharedLocalizer["Advanced Settings"]</h6>
+                    <h4 class="admin-subtitle fw-bold mb-2">@SharedLocalizer["Advanced Settings"]</h4>
 
-                    <div class="row g-3 align-items-center settings-entry mb-4">
+                    <div class="settings-entry2 row align-items-center py-3 px-2 rounded-3 shadow-sm border bg-white mb-2">
                         <div class="col-auto">
                             <i class="bi-arrow-right-circle settings-entry-icon"></i>
                         </div>
                         <div class="col">
-                            <label asp-for="@settings.EnablePingbackSend" class="form-check-label"></label>
+                            <label asp-for="@settings.EnablePingback" class="form-check-label"></label>
                         </div>
                         <div class="col-md-4 text-end">
-                            <div class="form-check form-switch">
-                                <input type="hidden" name="EnablePingbackSend" value="false">
-                                <input type="checkbox" name="EnablePingbackSend" value="true" class="form-check-input" @(settings.EnablePingbackSend ? "checked" : null)>
+                            <div class="form-check form-switch form-control-lg">
+                                <input type="hidden" name="EnablePingback" value="false">
+                                <input type="checkbox" name="EnablePingback" value="true" class="form-check-input" @(settings.EnablePingback ? "checked" : null)>
                             </div>
                         </div>
                     </div>
 
-                    <div class="row g-3 align-items-center settings-entry mb-4">
-                        <div class="col-auto">
-                            <i class="bi-arrow-left-circle settings-entry-icon"></i>
-                        </div>
-                        <div class="col">
-                            <label asp-for="@settings.EnablePingbackReceive" class="form-check-label"></label>
-                        </div>
-                        <div class="col-md-4 text-end">
-                            <div class="form-check form-switch">
-                                <input type="hidden" name="EnablePingbackReceive" value="false">
-                                <input type="checkbox" name="EnablePingbackReceive" value="true" class="form-check-input" @(settings.EnablePingbackReceive ? "checked" : null)>
-                            </div>
-                        </div>
-                    </div>
-                    
-                    <div class="row g-3 align-items-center settings-entry mb-4">
+                    <div class="settings-entry2 row align-items-center py-3 px-2 rounded-3 shadow-sm border bg-white mb-2">
                         <div class="col-auto">
                             <i class="bi-map settings-entry-icon"></i>
                         </div>
@@ -151,14 +141,14 @@
                             <label asp-for="@settings.EnableSiteMap" class="form-check-label"></label>
                         </div>
                         <div class="col-md-4 text-end">
-                            <div class="form-check form-switch">
+                            <div class="form-check form-switch form-control-lg">
                                 <input type="hidden" name="EnableSiteMap" value="false">
                                 <input type="checkbox" name="EnableSiteMap" value="true" class="form-check-input" @(settings.EnableSiteMap ? "checked" : null)>
                             </div>
                         </div>
                     </div>
 
-                    <div class="row g-3 align-items-center settings-entry mb-4">
+                    <div class="settings-entry2 row align-items-center py-3 px-2 rounded-3 shadow-sm border bg-white mb-2">
                         <div class="col-auto">
                             <i class="bi-search settings-entry-icon"></i>
                         </div>
@@ -166,14 +156,14 @@
                             <label asp-for="@settings.EnableOpenSearch" class="form-check-label"></label>
                         </div>
                         <div class="col-md-4 text-end">
-                            <div class="form-check form-switch">
+                            <div class="form-check form-switch form-control-lg">
                                 <input type="hidden" name="EnableOpenSearch" value="false">
                                 <input type="checkbox" name="EnableOpenSearch" value="true" class="form-check-input" @(settings.EnableOpenSearch ? "checked" : null)>
                             </div>
                         </div>
                     </div>
-                    
-                    <div class="row g-3 align-items-center settings-entry mb-4">
+
+                    <div class="settings-entry2 row align-items-center py-3 px-2 rounded-3 shadow-sm border bg-white mb-2">
                         <div class="col-auto">
                             <i class="bi-diagram-2 settings-entry-icon"></i>
                         </div>
@@ -182,14 +172,14 @@
                             <div class="form-text">@SharedLocalizer["* Requires restarting application"]</div>
                         </div>
                         <div class="col-md-4 text-end">
-                            <div class="form-check form-switch">
+                            <div class="form-check form-switch form-control-lg">
                                 <input type="hidden" name="EnableFoaf" value="false">
                                 <input type="checkbox" name="EnableFoaf" value="true" class="form-check-input" @(settings.EnableFoaf ? "checked" : null)>
                             </div>
                         </div>
                     </div>
-                    
-                    <div class="row g-3 align-items-center settings-entry mb-4">
+
+                    <div class="settings-entry2 row align-items-center py-3 px-2 rounded-3 shadow-sm border bg-white mb-2">
                         <div class="col-auto">
                             <i class="bi-filetype-xml settings-entry-icon"></i>
                         </div>
@@ -197,14 +187,14 @@
                             <label asp-for="@settings.EnableOpml" class="form-check-label"></label>
                         </div>
                         <div class="col-md-4 text-end">
-                            <div class="form-check form-switch">
+                            <div class="form-check form-switch form-control-lg">
                                 <input type="hidden" name="EnableOpml" value="false">
                                 <input type="checkbox" name="EnableOpml" value="true" class="form-check-input" @(settings.EnableOpml ? "checked" : null)>
                             </div>
                         </div>
                     </div>
 
-                    <div class="row g-3 align-items-center settings-entry mb-4">
+                    <div class="settings-entry2 row align-items-center py-3 px-2 rounded-3 shadow-sm border bg-white">
                         <div class="col-auto">
                             <i class="bi-exclamation-triangle settings-entry-icon"></i>
                         </div>
@@ -212,82 +202,82 @@
                             <label asp-for="@settings.WarnExternalLink" class="form-check-label"></label>
                         </div>
                         <div class="col-md-4 text-end">
-                            <div class="form-check form-switch">
+                            <div class="form-check form-switch form-control-lg">
                                 <input type="hidden" name="WarnExternalLink" value="false">
                                 <input type="checkbox" name="WarnExternalLink" value="true" class="form-check-input" @(settings.WarnExternalLink ? "checked" : null)>
                             </div>
                         </div>
                     </div>
+                </div>
 
-                    <div class="row g-3 align-items-center settings-entry mb-4">
-                        <div class="col-auto">
-                            <i class="bi-code settings-entry-icon"></i>
-                        </div>
-                        <div class="col">
-                            <label asp-for="@settings.AllowScriptsInPage" class="form-check-label"></label>
-                        </div>
-                        <div class="col-md-4 text-end">
-                            <div class="form-check form-switch">
-                                <input type="hidden" name="AllowScriptsInPage" value="false">
-                                <input type="checkbox" name="AllowScriptsInPage" value="true" class="form-check-input" @(settings.AllowScriptsInPage ? "checked" : null)>
-                            </div>
+                <h4 class="admin-subtitle fw-bold mb-2">
+                    MetaWeblog
+                </h4>
+
+                <div class="settings-entry2 row align-items-center py-3 px-2 rounded-3 shadow-sm border bg-white mb-2">
+                    <div class="col-auto">
+                        <i class="bi-puzzle settings-entry-icon"></i>
+                    </div>
+                    <div class="col">
+                        <label asp-for="@settings.EnableMetaWeblog" class="form-check-label"></label>
+                        <div class="form-text">
+                            @SharedLocalizer["* Requires restarting application"]
                         </div>
                     </div>
+                    <div class="col-md-4 text-end">
+                        <div class="form-check form-switch form-control-lg">
+                            <input type="hidden" name="EnableMetaWeblog" value="false">
+                            <input type="checkbox" name="EnableMetaWeblog" value="true" class="form-check-input" @(settings.EnableMetaWeblog ? "checked" : null)>
+                        </div>
+                    </div>
+                </div>
 
-                    <div class="mt-5 mb-2">
-                        <h6 class="card-subtitle mb-3 text-muted">@Html.DisplayNameFor(m => settings.RobotsTxtContent)</h6>
-                        <textarea asp-for="@settings.RobotsTxtContent" class="form-control textarea-code" cols="60" rows="10" spellcheck="false"></textarea>
+                <div class="settings-entry2 row align-items-center py-3 px-2 rounded-3 shadow-sm border bg-white">
+                    <div class="col-auto">
+                        <i class="bi-key settings-entry-icon"></i>
+                    </div>
+                    <div class="col">
+                        @SharedLocalizer["Password"]
+                        <div class="form-text">
+                            @SharedLocalizer["Leave blank if you don't need to change password."]
+                            @SharedLocalizer["* Username: moonglade"]
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <input asp-for="@settings.MetaWeblogPassword" class="form-control" minlength="8" maxlength="16" />
+
+                        <a href="javascript:;" class="btn btn-sm btn-outline-accent mt-2" onclick="generateMetaWeblogPassword()">@SharedLocalizer["Generate password"]</a>
                     </div>
                 </div>
             </div>
             <div class="col-md-6">
-                <div class="mb-5">
-                    <h6 class="card-subtitle mb-4 text-muted">
-                        MetaWeblog
-                    </h6>
-
-                    <div class="row g-3 align-items-center settings-entry mb-4">
-                        <div class="col-auto">
-                            <i class="bi-puzzle settings-entry-icon"></i>
-                        </div>
-                        <div class="col">
-                            <label asp-for="@settings.EnableMetaWeblog" class="form-check-label"></label>
-                            <div class="form-text">
-                                @SharedLocalizer["* Requires restarting application"]
-                            </div>
-                        </div>
-                        <div class="col-md-4 text-end">
-                            <div class="form-check form-switch">
-                                <input type="hidden" name="EnableMetaWeblog" value="false">
-                                <input type="checkbox" name="EnableMetaWeblog" value="true" class="form-check-input" @(settings.EnableMetaWeblog ? "checked" : null)>
-                            </div>
-                        </div>
+                <div class="mb-3">
+                    <h4 class="admin-subtitle fw-bold mb-2">@Html.DisplayNameFor(m => settings.RobotsTxtContent)</h4>
+                    <div class="p-3 rounded-3 shadow-sm border bg-white mb-3">
+                        <textarea asp-for="@settings.RobotsTxtContent" class="form-control textarea-code" cols="60" rows="10" spellcheck="false"></textarea>
                     </div>
 
-                    <div class="row g-3 align-items-center settings-entry mb-4">
-                        <div class="col-auto">
-                            <i class="bi-key settings-entry-icon"></i>
+                    <h4 class="admin-subtitle fw-bold mb-2">@Html.DisplayNameFor(m => settings.FootScripts)</h4>
+                    <div class="p-3 rounded-3 shadow-sm border bg-white mb-3">
+                        <div class="alert alert-warning">
+                            Using a third party script may cause your website to be blocked by some browsers or ad blockers, it can have security risks too. Please use with caution.
                         </div>
-                        <div class="col">
-                            @SharedLocalizer["Password"]
-                            <div class="form-text">
-                                @SharedLocalizer["Leave blank if you don't need to change password."]
-                                @SharedLocalizer["* Username: moonglade"]
-                            </div>
-                        </div>
-                        <div class="col-md-4">
-                            <input asp-for="@settings.MetaWeblogPassword" class="form-control" minlength="8" maxlength="16" />
 
-                            <a href="javascript:;" class="btn btn-sm btn-outline-accent mt-2" onclick="generateMetaWeblogPassword()">@SharedLocalizer["Generate password"]</a>
+                        <textarea asp-for="@settings.FootScripts" class="form-control textarea-code" cols="60" rows="10" spellcheck="false"></textarea>
+
+                        <div class="form-text">
+                            * Global script that will be injected into every page's footer, before the ending of <code>body</code> tag. Typically used for third party analytics services. <br />
+
+                            * Please use valid <code>&lt;script&gt;...&lt;/script&gt;</code> code.
                         </div>
                     </div>
                 </div>
                 <div>
-                    <h6 class="card-subtitle mb-4 text-muted">
+                    <h4 class="admin-subtitle fw-bold mb-2">
                         @SharedLocalizer["Options"]
-                    </h6>
+                    </h4>
 
-                    <div class="row g-3 align-items-center settings-entry mb-4">
+                    <div class="settings-entry2 row align-items-center py-3 px-2 rounded-3 shadow-sm border bg-white mb-2">
                         <div class="col-auto">
                             <i class="bi-moon-stars settings-entry-icon"></i>
                         </div>
@@ -304,7 +294,7 @@
                         </div>
                     </div>
 
-                    <div class="row g-3 align-items-center settings-entry mb-4">
+                    <div class="settings-entry2 row align-items-center py-3 px-2 rounded-3 shadow-sm border bg-white mb-2">
                         <div class="col-auto">
                             <i class="bi-power settings-entry-icon"></i>
                         </div>
@@ -314,14 +304,14 @@
                                 @SharedLocalizer["Try to shutdown and restart the website, this will terminate all current requests."]
                             </div>
                         </div>
-                        <div class="col-md-5 text-end">
+                        <div class="col-md-3 text-end">
                             <a href="javascript:;" class="btn btn-sm btn-outline-accent" data-bs-toggle="modal" data-bs-target="#restartModal">
                                 @SharedLocalizer["Restart"]
                             </a>
                         </div>
                     </div>
 
-                    <div class="row g-3 align-items-center settings-entry mb-4">
+                    <div class="settings-entry2 row align-items-center py-3 px-2 rounded-3 shadow-sm border bg-white">
                         <div class="col-auto">
                             <i class="bi-eraser settings-entry-icon"></i>
                         </div>
@@ -331,116 +321,175 @@
                                 @SharedLocalizer["Erase all data and configuration."]
                             </div>
                         </div>
-                        <div class="col-md-5 text-end">
+                        <div class="col-md-3 text-end">
                             <a href="javascript:;" class="btn btn-sm btn-danger" data-bs-toggle="modal" data-bs-target="#resetModal">
                                 @SharedLocalizer["Reset"]
                             </a>
                         </div>
                     </div>
+                    <h4 class="admin-subtitle fw-bold mb-2">
+                        @SharedLocalizer["Syndication"]
+                    </h4>
+                    <div class="settings-entry2 row align-items-center py-3 px-2 rounded-3 shadow-sm border bg-white">
+
+                        <div class="row g-3 align-items-center settings-entry mb-4">
+                            <div class="col-auto">
+                                <i class="bi bi-book settings-entry-icon"></i>
+                            </div>
+                            <div class="col">
+                                <label asp-for="@settings.EnableSyndication" class="form-check-label"></label>
+                            </div>
+                            <div class="col-md-4 text-end">
+                                <div class="form-check form-switch">
+                                    <input type="hidden" name="EnableSyndication" value="false">
+                                    <input type="checkbox" name="EnableSyndication" value="true" class="form-check-input" @(settings.EnableSyndication ? "checked" : null)>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row g-3 align-items-center settings-entry mt-1 mb-4">
+                            <div class="col-auto">
+                                <i class="bi bi-book settings-entry-icon"></i>
+                            </div>
+                            <div class="col">
+                                <label asp-for="@settings.NetvibesUrl"></label>
+                            </div>
+                            <div class="col-md-5 text-end">
+                                <input asp-for="@settings.NetvibesUrl" class="form-control" />
+                            </div>
+                        </div>
+                        <div class="row g-3 align-items-center settings-entry mt-1 mb-4">
+                            <div class="col-auto">
+                                <i class="bi bi-book settings-entry-icon"></i>
+                            </div>
+                            <div class="col">
+                                <label asp-for="@settings.BlogaramaUrl"></label>
+                            </div>
+                            <div class="col-md-5 text-end">
+                                <input asp-for="@settings.BlogaramaUrl" class="form-control" />
+                            </div>
+                        </div>
+                        <div class="row g-3 align-items-center settings-entry mt-1 mb-4">
+                            <div class="col-auto">
+                                <i class="bi bi-book settings-entry-icon"></i>
+                            </div>
+                            <div class="col">
+                                <label asp-for="@settings.YahooUrl"></label>
+                            </div>
+                            <div class="col-md-5 text-end">
+                                <input asp-for="@settings.YahooUrl" class="form-control" />
+                            </div>
+                        </div>
+                        <div class="row g-3 align-items-center settings-entry mt-1 mb-4">
+                            <div class="col-auto">
+                                <i class="bi bi-book settings-entry-icon"></i>
+                            </div>
+                            <div class="col">
+                                <label asp-for="@settings.BloglovinUrl"></label>
+                            </div>
+                            <div class="col-md-5 text-end">
+                                <input asp-for="@settings.BloglovinUrl" class="form-control" />
+                            </div>
+                        </div>
+                        <div class="row g-3 align-items-center settings-entry mt-1 mb-4">
+                            <div class="col-auto">
+                                <i class="bi bi-book settings-entry-icon"></i>
+                            </div>
+                            <div class="col">
+                                <label asp-for="@settings.OntoplistUrl"></label>
+                            </div>
+                            <div class="col-md-5 text-end">
+                                <input asp-for="@settings.OntoplistUrl" class="form-control" />
+                            </div>
+                        </div>
+                        <div class="row g-3 align-items-center settings-entry mt-1 mb-4">
+                            <div class="col-auto">
+                                <i class="bi bi-book settings-entry-icon"></i>
+                            </div>
+                            <div class="col">
+                                <label asp-for="@settings.OntoplistID"></label>
+                            </div>
+                            <div class="col-md-5 text-end">
+                                <input asp-for="@settings.OntoplistID" class="form-control" />
+                            </div>
+                        </div>
+                        <div class="row g-3 align-items-center settings-entry mb-4">
+                            <div class="col-auto">
+                                <i class="bi bi-book settings-entry-icon"></i>
+                            </div>
+                            <div class="col">
+                                <label asp-for="@settings.BloggereiEnabled" class="form-check-label"></label>
+                            </div>
+                            <div class="col-md-4 text-end">
+                                <div class="form-check form-switch">
+                                    <input type="hidden" name="BloggereiEnabled" value="false">
+                                    <input type="checkbox" name="BloggereiEnabled" value="true" class="form-check-input" @(settings.BloggereiEnabled ? "checked" : null)>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row g-3 align-items-center settings-entry mb-4">
+                            <div class="col-auto">
+                                <i class="bi bi-book settings-entry-icon"></i>
+                            </div>
+                            <div class="col">
+                                <label asp-for="@settings.BloggingfusionEnabled" class="form-check-label"></label>
+                            </div>
+                            <div class="col-md-4 text-end">
+                                <div class="form-check form-switch">
+                                    <input type="hidden" name="BloggingfusionEnabled" value="false">
+                                    <input type="checkbox" name="BloggingfusionEnabled" value="true" class="form-check-input" @(settings.BloggingfusionEnabled ? "checked" : null)>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="row g-3 align-items-center settings-entry mb-4">
+                            <div class="col-auto">
+                                <i class="bi bi-book settings-entry-icon"></i>
+                            </div>
+                            <div class="col">
+                                <label asp-for="@settings.BloggeramtEnabled" class="form-check-label"></label>
+                            </div>
+                            <div class="col-md-4 text-end">
+                                <div class="form-check form-switch">
+                                    <input type="hidden" name="BloggeramtEnabled" value="false">
+                                    <input type="checkbox" name="BloggeramtEnabled" value="true" class="form-check-input" @(settings.BloggeramtEnabled ? "checked" : null)>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row g-3 align-items-center settings-entry mb-4">
+                            <div class="col-auto">
+                                <i class="bi bi-book settings-entry-icon"></i>
+                            </div>
+                            <div class="col">
+                                <label asp-for="@settings.TopblogsEnabled" class="form-check-label"></label>
+                            </div>
+                            <div class="col-md-4 text-end">
+                                <div class="form-check form-switch">
+                                    <input type="hidden" name="TopblogsEnabled" value="false">
+                                    <input type="checkbox" name="TopblogsEnabled" value="true" class="form-check-input" @(settings.TopblogsEnabled ? "checked" : null)>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row g-3 align-items-center settings-entry mt-1 mb-4">
+                            <div class="col-auto">
+                                <i class="bi bi-book settings-entry-icon"></i>
+                            </div>
+                            <div class="col">
+                                <label asp-for="@settings.TopblogsTrackerID"></label>
+                            </div>
+                            <div class="col-md-5 text-end">
+                                <input asp-for="@settings.TopblogsTrackerID" class="form-control" />
+                            </div>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
-        <div class="mb-4">
-            <input id="btn-save-settings" type="submit" value="@SharedLocalizer["Save"]" class="btn btn-outline-accent" />
-        </div>
-    </form>
-</div>
-<div class="modal fade" id="restartModal" tabindex="-1" role="dialog" aria-labelledby="restartModalLabel" aria-hidden="true">
-    <div class="modal-dialog" role="document">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title" id="restartModalLabel">@SharedLocalizer["Restart Website"]</h5>
-                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close">
-                </button>
-            </div>
-            <div class="modal-body">
-                @SharedLocalizer["Are you sure to restart website? All current requests will be terminated."]
-            </div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Cancel</button>
-                <button type="button" class="btn btn-danger btn-restart">@SharedLocalizer["Restart"]</button>
-            </div>
-        </div>
     </div>
-</div>
-
-<div class="modal fade" id="resetModal" tabindex="-1" role="dialog" aria-labelledby="resetModalLabel" aria-hidden="true">
-    <div class="modal-dialog" role="document">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title" id="resetModalLabel">@SharedLocalizer["System Reset"]</h5>
-                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close">
-                </button>
-            </div>
-            <div class="modal-body">
-                @SharedLocalizer["Are you ABSOLUTELY sure? ALL data and configuration will be erased!"]
-            </div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Cancel</button>
-                <button type="button" class="btn btn-danger btn-reset">@SharedLocalizer["Reset"]</button>
-            </div>
-        </div>
+    <div class="admin-settings-action-container border-top pt-2 mt-2">
+        <input id="btn-save-settings" type="submit" value="@SharedLocalizer["Save"]" class="btn btn-outline-accent" />
     </div>
-</div>
+</form>
 
-<div class="offcanvas offcanvas-end" tabindex="-1" id="updateCheckCanvas" aria-labelledby="updateCheckCanvasLabel">
-    <div class="offcanvas-header">
-        <h5 class="offcanvas-title" id="updateCheckCanvasLabel">@SharedLocalizer["Moonglade Update"]</h5>
-        <button type="button" class="btn-close text-reset" data-bs-dismiss="offcanvas" aria-label="Close"></button>
-    </div>
-    <div class="offcanvas-body">
-        <div class="spinner-border" role="status" style="display: none;">
-            <span class="visually-hidden">Loading...</span>
-        </div>
-
-        <div class="alert alert-info alert-no-new-release">
-            <i class="bi-info-circle"></i>
-            You are running the latest version already.
-        </div>
-
-        <div class="alert alert-success alert-has-new-release">
-            <i class="bi-lightbulb"></i>
-            There is a new version of Moonglade available!
-        </div>
-
-        <div class="release-info">
-            <h6>
-                <i class="bi-box-seam"></i>
-                Latest Release
-            </h6>
-            <hr />
-            <div class="mb-1 row">
-                <label for="releaseName" class="col-4 col-form-label">
-                    <strong>@SharedLocalizer["Name"]</strong>
-                </label>
-                <div class="col-8">
-                    <input type="text" readonly class="form-control-plaintext" id="releaseName" value="...">
-                </div>
-            </div>
-            <div class="mb-1 row">
-                <label for="releaseTagName" class="col-4 col-form-label">
-                    <strong>@SharedLocalizer["Tag name"]</strong>
-                </label>
-                <div class="col-8">
-                    <input type="text" readonly class="form-control-plaintext" id="releaseTagName" value="...">
-                </div>
-            </div>
-            <div class="mb-1 row">
-                <label for="releaseCreatedAt" class="col-4 col-form-label">
-                    <strong>@SharedLocalizer["Release time"]</strong>
-                </label>
-                <div class="col-8">
-                    <input type="text" readonly class="form-control-plaintext" id="releaseCreatedAt" value="...">
-                </div>
-            </div>
-        </div>
-        <hr />
-        <div class="mt-3">
-            <a href="#" target="_blank" class="btn btn-outline-accent disabled btn-get-update">
-                <i class="bi-download"></i>
-                @SharedLocalizer["Get update"]
-            </a>
-            <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="offcanvas">@SharedLocalizer["Cancel"]</button>
-        </div>
-    </div>
-</div>
+<partial name="_RestartModal" />
+<partial name="_ResetModal" />
+<partial name="_UpdateCheckCanvas" />

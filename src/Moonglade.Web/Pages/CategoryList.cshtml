@@ -2,10 +2,11 @@
 @model Moonglade.Web.Pages.CategoryListModel
 @{
     ViewBag.TitlePrefix = Model.Cat.DisplayName;
+    ViewBag.BodyClass = "body-cat-list bg-gray-1";
     ViewBag.ActionName = "list";
 }
 
-<h3>
+<h3 class="mb-4">
     <a class="float-end d-none d-md-block"
        asp-controller="Subscription"
        asp-action="Rss"
@@ -16,7 +17,7 @@
     <span>@Model.Cat.DisplayName</span>
     <small class="d-none d-md-inline text-muted">@Model.Cat.Note</small>
 </h3>
-<hr />
+
 @if (Model.Posts.Any())
 {
     <partial name="_PostList" model="Model.Posts" />

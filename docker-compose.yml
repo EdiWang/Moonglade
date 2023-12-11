@@ -1,0 +1,27 @@
+version: '3'
+services:
+  db:
+    image: mariadb
+    restart: always
+    environment:
+      MYSQL_ROOT_PASSWORD: ROOT_SUPER_EVIL_PASSWORD@1234
+      MYSQL_DATABASE: AppDatabase
+      MYSQL_USER: WebApp
+      MYSQL_PASSWORD: WebApp@Passw0rd
+    ports:
+      - "3306:3306"
+  web:
+    build: .
+    environment:
+      ConnectionStrings__MoongladeDatabase: "Server=db;Database=AppDatabase;Uid=WebApp;Pwd=WebApp@Passw0rd;"
+      ConnectionStrings__DatabaseType: "MySQL"
+      ImageStorage__FileSystemPath: "/app/images"
+    ports:
+      - "8080:8080"
+    depends_on:
+      - db
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8080"]
+      interval: 30s
+      timeout: 10s
+      retries: 5

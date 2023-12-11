@@ -1,14 +1,10 @@
-﻿namespace Moonglade.Web.Middleware;
+namespace Moonglade.Web.Middleware;
 
-public class PoweredByMiddleware
+public class PoweredByMiddleware(RequestDelegate next)
 {
-    private readonly RequestDelegate _next;
-
-    public PoweredByMiddleware(RequestDelegate next) => _next = next;
-
     public Task Invoke(HttpContext httpContext)
     {
-        httpContext.Response.Headers["X-Powered-By"] = $"Moonglade {Helper.AppVersion}";
-        return _next.Invoke(httpContext);
+        httpContext.Response.Headers["X-Powered-By"] = $"Moonglade-saigkill {Helper.AppVersion}";
+        return next.Invoke(httpContext);
     }
 }

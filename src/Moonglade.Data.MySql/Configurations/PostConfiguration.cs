@@ -1,6 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
-using Moonglade.Data.Entities;
+using Moonglade.Data.Generated.Entities;
 
 namespace Moonglade.Data.MySql.Configurations;
 
@@ -24,6 +24,5 @@ internal class PostConfiguration : IEntityTypeConfiguration<PostEntity>
         builder.Property(e => e.Title).HasMaxLength(128);
         builder.Property(e => e.OriginLink).HasMaxLength(256);
         builder.Property(e => e.HeroImageUrl).HasMaxLength(256);
-        builder.Property(e => e.InlineCss).HasMaxLength(2048);
     }
 }

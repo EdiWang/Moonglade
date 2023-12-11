@@ -1,0 +1,63 @@
+@page "/contact"
+@using Microsoft.AspNetCore.Mvc.TagHelpers
+@using Syncfusion.EJ2.RichTextEditor
+@model Moonglade.Email.Client.ContactNotification
+@{
+}
+@addTagHelper*, Microsoft.AspNetCore.Mvc.TagHelpers
+@Html.AntiForgeryToken()
+@Html.ValidationSummary(false, "", new { @class = "text-danger" })
+@section scripts {
+    @*<script type="module">
+        import * as settings from '/js/app/admin.settings.module.js';
+
+        const form = document.querySelector('#form1');
+        form.addEventListener('submit', settings.handleSettingsSubmit);
+    </script>*@
+}
+
+<div class="col-lg-12 control-section" id="control-fluid">
+    @*<h4 style="text-align: center;">@_localizer["viewbag-pagename"]</h4>*@
+    <h1>Currently contact is disabled.</h1>
+    <div class="control_wrapper" id="control_wrapper">
+        <form id="form1" class="form-vertical" asp-controller="Page" asp-action="ContactEmail" method="post">
+            <div class="form-group" style="padding-top: 11px;">
+                <div class="e-float-input">
+                    <input class="e-input" name="Name" type="text" asp-for="Name" data-required-message="@SharedLocalizer["contact-enter-name"]" required data-msg-containerid="nameError" placeholder="@SharedLocalizer["Your name"]" />
+                    <span class="e-float-line"></span>
+                    <label class="e-float-text e-label-top" for="Name">@SharedLocalizer["Your name"]</label>
+                    <div id="nameError"></div>
+                </div>
+            </div>
+            <div class="form-group" style="padding-top: 11px;">
+                <div class="e-float-input">
+                    <input class="e-input" name="Subject" type="text" asp-for="Subject" data-required-message="@SharedLocalizer["contact-enter-subject"]" required data-msg-containerid="subjectError" placeholder="@SharedLocalizer["contact-subject"]" />
+                    <span class="e-float-line"></span>
+                    <label class="e-float-text e-label-top" for="Subject">@SharedLocalizer["contact-subject"]</label>
+                    <div id="subjectError"></div>
+                </div>
+            </div>
+            <div class="form-group" style="padding-top: 11px;">
+                <div class="e-float-input">
+                    <input class="e-input" name="Email" type="text" asp-for="Email" data-validation="email" data-required-message="@SharedLocalizer["contact-enter-email"]" required data-msg-containerid="mailError" placeholder="@SharedLocalizer["email"]" />
+                    <span class="e-float-line"></span>
+                    <label class="e-float-text e-label-top" for="Email">@SharedLocalizer["email"]</label>
+                    <div id="mailError"></div>
+                </div>
+            </div>
+            <div class="form-group" style="padding-top: 11px;">
+                <div class="e-float-input">
+                    <textarea asp-for="@Model.Body"
+                              placeholder="@SharedLocalizer["contact-enter-body"]"
+                              class="form-control h-100px"
+                              spellcheck="false" cols="10" rows="10" required></textarea>
+                    <label class="form-label" asp-for="@Model.Body">@SharedLocalizer["contact-message"]</label>
+                </div>
+            </div>
+            <div style="text-align: center; padding-top: 11px;">
+                <input id="submit-btn" class="samplebtn e-control e-btn" type="submit" value="@SharedLocalizer["contact-submit"]" data-ripple="true"></input>
+                <button id="resetbtn" class="samplebtn e-control e-btn" type="reset" data-ripple="true">Reset</button>
+            </div>
+        </form>
+    </div>
+</div>

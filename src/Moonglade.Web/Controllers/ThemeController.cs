@@ -1,47 +1,33 @@
-﻿using Moonglade.Caching.Filters;
-using NUglify;
+﻿using NUglify;
 using System.ComponentModel.DataAnnotations;
 
 namespace Moonglade.Web.Controllers;
 
 [ApiController]
 [Route("api/[controller]")]
-public class ThemeController : ControllerBase
+public class ThemeController(IMediator mediator, ICacheAside cache, IBlogConfig blogConfig) : ControllerBase
 {
-    private readonly IMediator _mediator;
-
-    private readonly IBlogCache _cache;
-    private readonly IBlogConfig _blogConfig;
-
-    public ThemeController(IMediator mediator, IBlogCache cache, IBlogConfig blogConfig)
-    {
-        _mediator = mediator;
-
-        _cache = cache;
-        _blogConfig = blogConfig;
-    }
-
     [HttpGet("/theme.css")]
     [ProducesResponseType(StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
-    [ProducesResponseType(typeof(List<UglifyError>), StatusCodes.Status409Conflict)]
+    [ProducesResponseType<List<UglifyError>>(StatusCodes.Status409Conflict)]
     public async Task<IActionResult> Css()
     {
         try
         {
-            var css = await _cache.GetOrCreateAsync(CacheDivision.General, "theme", async entry =>
+            var css = await cache.GetOrCreateAsync(BlogCachePartition.General.ToString(), "theme", async entry =>
             {
                 entry.SlidingExpiration = TimeSpan.FromMinutes(20);
 
                 // Fall back to default theme for migration
-                if (_blogConfig.GeneralSettings.ThemeId == 0)
+                if (blogConfig.GeneralSettings.ThemeId == 0)
                 {
-                    _blogConfig.GeneralSettings.ThemeId = 1;
-                    var kvp = _blogConfig.UpdateAsync(_blogConfig.GeneralSettings);
-                    await _mediator.Send(new UpdateConfigurationCommand(kvp.Key, kvp.Value));
+                    blogConfig.GeneralSettings.ThemeId = 1;
+                    var kvp = blogConfig.UpdateAsync(blogConfig.GeneralSettings);
+                    await mediator.Send(new UpdateConfigurationCommand(kvp.Key, kvp.Value));
                 }
 
-                var data = await _mediator.Send(new GetStyleSheetQuery(_blogConfig.GeneralSettings.ThemeId));
+                var data = await mediator.Send(new GetSiteThemeStyleSheetQuery(blogConfig.GeneralSettings.ThemeId));
                 return data;
             });
 
@@ -60,9 +46,9 @@ public class ThemeController : ControllerBase
 
     [Authorize]
     [HttpPost]
-    [ProducesResponseType(typeof(string), StatusCodes.Status409Conflict)]
-    [ProducesResponseType(typeof(int), StatusCodes.Status200OK)]
-    [TypeFilter(typeof(ClearBlogCache), Arguments = new object[] { CacheDivision.General, "theme" })]
+    [ProducesResponseType<string>(StatusCodes.Status409Conflict)]
+    [ProducesResponseType<int>(StatusCodes.Status200OK)]
+    [TypeFilter(typeof(ClearBlogCache), Arguments = new object[] { BlogCachePartition.General, "theme" })]
     public async Task<IActionResult> Create(CreateThemeRequest request)
     {
         var dic = new Dictionary<string, string>
@@ -72,7 +58,7 @@ public class ThemeController : ControllerBase
             { "--accent-color3", request.AccentColor3 }
         };
 
-        var id = await _mediator.Send(new CreateThemeCommand(request.Name, dic));
+        var id = await mediator.Send(new CreateThemeCommand(request.Name, dic));
         if (id == 0) return Conflict("Theme with same name already exists");
 
         return Ok(id);
@@ -81,10 +67,10 @@ public class ThemeController : ControllerBase
     [Authorize]
     [HttpDelete("{id:int}")]
     [ApiConventionMethod(typeof(DefaultApiConventions), nameof(DefaultApiConventions.Delete))]
-    [TypeFilter(typeof(ClearBlogCache), Arguments = new object[] { CacheDivision.General, "theme" })]
+    [TypeFilter(typeof(ClearBlogCache), Arguments = new object[] { BlogCachePartition.General, "theme" })]
     public async Task<IActionResult> Delete([Range(1, int.MaxValue)] int id)
     {
-        var oc = await _mediator.Send(new DeleteThemeCommand(id));
+        var oc = await mediator.Send(new DeleteThemeCommand(id));
         return oc switch
         {
             OperationCode.ObjectNotFound => NotFound(),

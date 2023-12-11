@@ -20,8 +20,6 @@ public class PostEditModel
     [MaxLength(64)]
     public string Author { get; set; }
 
-    [Required]
-    [MinLength(1)]
     public Guid[] SelectedCatIds { get; set; }
 
     [Required]
@@ -70,9 +68,9 @@ public class PostEditModel
     [DataType(DataType.Url)]
     public string HeroImageUrl { get; set; }
 
-    [Display(Name = "Inline CSS")]
-    [MaxLength(2048)]
-    public string InlineCss { get; set; }
+    [Display(Name = "Mark as outdated")]
+    public bool IsOutdated { get; set; }
 
     public bool WarnSlugModification => PublishDate.HasValue && (DateTime.UtcNow - PublishDate.Value).Days > 7;
 }
+

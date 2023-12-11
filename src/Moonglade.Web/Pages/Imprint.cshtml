@@ -1,0 +1,89 @@
+@page "/imprint"
+@using Syncfusion.EJ2.Maps
+@{
+    var TextStyle = new MapsFont { Size = "16px", FontFamily = "inherit" };
+    var CenterPosition = new MapsCenterPosition { Latitude = 50.33, Longitude = 7.26 };
+    var Markers = new List<Syncfusion.EJ2.Maps.MapsMarker>
+    {
+        new Syncfusion.EJ2.Maps.MapsMarker
+        {
+            Visible = true,
+            Template = "<div><img src='images/marker-pen.png' alt='Marker for a location' style='height:50px;width:40px;'></img></div>",
+            TooltipSettings = new MapsTooltipSettings { Visible = true, ValuePath="name" },
+            DataSource = new[]
+            {
+                new
+                {
+                    name="Mayen, Rhinleland Palatinate, Germany",
+                    latitude=50.32715,
+                    longitude=7.21777
+                }
+
+            }
+        }
+    };
+}
+@section Scripts {
+    <script>
+        function onMapLoad(args) {
+        }
+    </script>
+}
+<h1>@SharedLocalizer["imprint-header"]</h1>
+<h2 id="m46">@SharedLocalizer["imprint-service"]</h2>
+<p>Sascha Manns</p>
+<p>Kelbergerstraße 18</p>
+<p>56727 Mayen</p>
+<p>Deutschland</p>
+<div class="control-section">
+    <div class="row">
+        <div class="col-md-12">
+            <ejs-maps id="maps" load="window.onMapLoad" centerPosition="CenterPosition">
+                <e-maps-titlesettings alignment="@Syncfusion.EJ2.Maps.Alignment.Center" text="Headquarter of Sascha Manns" textStyle="@TextStyle">
+                </e-maps-titlesettings>
+                <e-maps-zoomsettings zoomFactor="10" enable="false"></e-maps-zoomsettings>
+                <e-maps-layers>
+                    <e-maps-layer layerType="@Syncfusion.EJ2.Maps.ShapeLayerType.OSM" markerSettings="@Markers">
+                    </e-maps-layer>
+                </e-maps-layers>
+            </ejs-maps>
+            <div style="float: right">
+                <a href="https://www.openstreetmap.org/copyright" rel="noopener" target="_blank">© OpenStreetMap contributors</a>
+            </div>
+        </div>
+    </div>
+</div>
+<h2 id="m56">@SharedLocalizer["contact"]</h2>
+<p><strong>@SharedLocalizer["contact-form"]:</strong> <a href="https://saschamanns.de/contact" target="_blank" rel="noopener">https://saschamanns.de/contact</a></p>
+<h2 id="m154">@SharedLocalizer["journalistic"]</h2><p><strong>@SharedLocalizer["responsibility"]:</strong> Sascha Manns (@SharedLocalizer["adress"])</p>
+<h2 id="m172">@SharedLocalizer["socialmedia"]</h2><p><strong>@SharedLocalizer["other"]:</strong> </p>
+<p><a href="https://social.linux.pizza/@@saigkill" target="_blank" rel="noopener">https://social.linux.pizza/@@saigkill</a></p>
+<p><a href="https://www.reddit.com/user/saigkill" target="_blank" rel="noopener">https://www.reddit.com/user/saigkill</a></p>
+<p><a href="https://profile.codersrank.io/user/saigkill" target="_blank" rel="noopener">https://profile.codersrank.io/user/saigkill</a></p>
+<p><a href="https://www.amazon.de/-/e/B07J3CPKR1" target="_blank" rel="noopener">https://www.amazon.de/-/e/B07J3CPKR1</a></p>
+<p><a href="https://steamcommunity.com/id/saigkill/" target="_blank" rel="noopener">https://steamcommunity.com/id/saigkill/</a></p>
+<p><a href="https://wa.me/00491731580453" target="_blank" rel="noopener">https://wa.me/00491731580453</a></p>
+<p><a href="https://discord.com/channels/@@saigkill001#3216" target="_blank" rel="noopener">https://discord.com/channels/@@saigkill001#3216</a></p>
+<p><a href="https://open.spotify.com/user/saigkill?si=0d9cb55469d04c87" target="_blank" rel="noopener">https://open.spotify.com/user/saigkill?si=0d9cb55469d04c87</a></p>
+<p><a href="https://www.facebook.com/sascha.manns" target="_blank" rel="noopener">https://www.facebook.com/sascha.manns</a></p>
+<p><a href="https://matrix.to/#/@@saigkill0:matrix.org" target="_blank" rel="noopener">https://matrix.to/#/@@saigkill0:matrix.org</a></p>
+<p><a href="https://twitter.com/saigkill" target="_blank" rel="noopener">https://twitter.com/saigkill</a></p>
+<p><a href="https://paypal.me/SaschaManns" target="_blank" rel="noopener">https://paypal.me/SaschaManns</a></p>
+<p><a href="https://www.patreon.com/saigkill" target="_blank" rel="noopener">https://www.patreon.com/saigkill</a></p>
+<p><a href="https://liberapay.com/saigkill/donate" target="_blank" rel="noopener">https://liberapay.com/saigkill/donate</a></p>
+<p><a href="https://www.amazon.de/registry/wishlist/D75HOEQ00BDD" target="_blank" rel="noopener">https://www.amazon.de/registry/wishlist/D75HOEQ00BDD</a></p>
+<p><a href="https://www.buymeacoffee.com/PE0y8DF" target="_blank" rel="noopener">https://www.buymeacoffee.com/PE0y8DF</a></p>
+<p><a href="https://codestats.net/users/saigkill" target="_blank" rel="noopener">https://codestats.net/users/saigkill</a></p>
+<p><a href="https://openhub.net/accounts/saigkill" target="_blank" rel="noopener">https://openhub.net/accounts/saigkill</a></p>
+<p><a href="https://instagram.com/sascha.manns" target="_blank" rel="noopener">https://instagram.com/sascha.manns</a></p>
+<p><a href="https://www.linkedin.com/in/saigkill" target="_blank" rel="noopener">https://www.linkedin.com/in/saigkill</a></p>
+<p><a href="https://www.xing.com/profile/SaschaZyroslawKyrill_Manns/cv" target="_blank" rel="noopener">https://www.xing.com/profile/SaschaZyroslawKyrill_Manns/cv</a></p>
+<p><a href="https://github.com/saigkill" target="_blank" rel="noopener">https://github.com/saigkill</a></p>
+<p><a href="https://stackoverflow.com/users/7404985/sascha-manns" target="_blank" rel="noopener">https://stackoverflow.com/users/7404985/sascha-manns</a></p>
+<p><a href="https://dev.to/saigkill" target="_blank" rel="noopener">https://dev.to/saigkill</a></p>
+<p><a href="https://www.last.fm/user/illuminatus1979" target="_blank" rel="noopener">https://www.last.fm/user/illuminatus1979</a></p>
+<h2 id="m65">@SharedLocalizer["liability"]</h2><p><strong>@SharedLocalizer["disclaimer"]</strong>: @SharedLocalizer["disclaimer1"]</p>
+<p>@Html.Raw(@SharedLocalizer["disclaimer2"])</p>
+<p>@Html.Raw(@SharedLocalizer["disclaimer3"])</p>
+<p>@Html.Raw(@SharedLocalizer["disclaimer4"])</p>
+<p class="seal"><a href="https://datenschutz-generator.de/?l=de" title="Rechtstext von Dr. Schwenke - für weitere Informationen bitte anklicken." target="_blank" rel="noopener noreferrer nofollow">@SharedLocalizer["seal"]</a></p>

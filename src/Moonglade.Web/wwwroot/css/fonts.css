@@ -1,0 +1,39 @@
+﻿@font-face {
+    font-family: 'Isonorm Pro';
+    font-style: normal;
+    font-weight: 400;
+    src: local('Isonorm Pro'), url(../webfonts/Isonorm-Pro.ttf) format('ttf');
+    /* unicode-range: U+0100-024F, U+1E00-1EFF, U+20A0-20AB, U+20AD-20CF, U+2C60-2C7F, U+A720-A7FF; */
+}
+
+@font-face {
+    font-family: 'Koblenz Pro';
+    font-style: normal;
+    font-weight: 400;
+    src: local('Koblenz Pro'), local('KoblenzPro'), url(../webfonts/koblenz-pro-regular-webfont.woff) format('woff');
+    /* unicode-range: U+0100-024F, U+1E00-1EFF, U+20A0-20AB, U+20AD-20CF, U+2C60-2C7F, U+A720-A7FF; */
+}
+
+@font-face {
+    font-family: 'Stafford Pro Light';
+    font-style: normal;
+    font-weight: 400;
+    src: local('Stafford Pro Light'), url(../webfonts/stafford-pro-light-webfont.woff) format('woff');
+    /* unicode-range: U+0100-024F, U+1E00-1EFF, U+20A0-20AB, U+20AD-20CF, U+2C60-2C7F, U+A720-A7FF; */
+}
+
+@font-face {
+    font-family: 'Segoe UI Light';
+    font-style: normal;
+    font-weight: 400;
+    src: local('Segoe UI Light'), local('SegoeUILight'), url(../webfonts/segoeuil.ttf) format('ttf');
+    /* unicode-range: U+0100-024F, U+1E00-1EFF, U+20A0-20AB, U+20AD-20CF, U+2C60-2C7F, U+A720-A7FF; */
+}
+
+@font-face {
+    font-family: 'Space Grotesk Light';
+    font-style: normal;
+    font-weight: 400;
+    src: local('Space Grotesk Light'), local('SpaceGroteskLight'), url(../webfonts/SpaceGrotesk-VariableFont_wght.ttf) format('ttf');
+    /* unicode-range: U+0100-024F, U+1E00-1EFF, U+20A0-20AB, U+20AD-20CF, U+2C60-2C7F, U+A720-A7FF; */
+}

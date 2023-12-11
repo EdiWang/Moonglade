@@ -5,7 +5,7 @@
 @inject IConfiguration Configuration
 
 @{
-    ViewBag.Title = "Manage Posts";
+    ViewBag.Title = "Edit Post";
     var wsm = Model.ViewModel.WarnSlugModification;
 
     var cultureItems = LocOptions.Value.SupportedUICultures
@@ -27,13 +27,13 @@
         switch (ec)
         {
             case EditorChoice.Html:
-                <script src="https://cdnjs.cloudflare.com/ajax/libs/tinymce/6.2.0/tinymce.min.js" integrity="sha512-tofxIFo8lTkPN/ggZgV89daDZkgh1DunsMYBq41usfs3HbxMRVHWFAjSi/MXrT+Vw5XElng9vAfMmOWdLg0YbA==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+                <script src="https://cdnjs.cloudflare.com/ajax/libs/tinymce/6.7.2/tinymce.min.js" integrity="sha512-AHsE0IVoihNpGako20z2Tsgg77r5h9VS20XIKa+ZZ8WzzXxdbiUszgVUmXqpUE8GVUEQ88BKQqtlB/xKIY3tUg==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
                 break;
             case EditorChoice.Markdown:
-                <script src="https://unpkg.com/simplemde@1.11.2/dist/simplemde.min.js"></script>
+                <script src="https://cdnjs.cloudflare.com/ajax/libs/simplemde/1.11.2/simplemde.min.js" integrity="sha512-ksSfTk6JIdsze75yZ8c+yDVLu09SNefa9IicxEE+HZvWo9kLPY1vrRlmucEMHQReWmEdKqusQWaDMpkTb3M2ug==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
                 <script src="~/js/3rd/inline-attachment.js"></script>
                 <script src="~/js/3rd/codemirror-4.inline-attachment.js"></script>
-                <link id="css-simplemde" href="https://unpkg.com/simplemde@1.11.2/dist/simplemde.min.css" rel="stylesheet" />
+                <link id="css-simplemde" rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/simplemde/1.11.2/simplemde.min.css" integrity="sha512-lB03MbtC3LxImQ+BKnZIyvVHTQ8SSmQ15AhVh5U/+CCp4wKtZMvgLGXbZIjIBBbnKsmk3/6n2vcF8a9CtVVSfA==" crossorigin="anonymous" referrerpolicy="no-referrer" />
                 break;
         }
     }
@@ -111,10 +111,6 @@
             }
 
             var selectedCatIds = data.getAll('SelectedCatIds');
-            if (selectedCatIds.length == 0) {
-                blogToast.error('Please select at least 1 category.');
-                return;
-            }
 
             value["SelectedCatIds"] = selectedCatIds;
             const newValue = utils.toMagicJson(value);
@@ -148,15 +144,19 @@
 }
 
 @section head{
-    <link href="~/lib/tagify/tagify.min.css" rel="stylesheet" />
+    <link href="~/lib/tagify/tagify.css" rel="stylesheet" />
+    <style>
+        .tagify {
+            width: 100% !important;
+        }
+    </style>
 }
 
-<div class="p-4">
-
+<div>
     <form class="post-edit-form" asp-controller="Post" asp-action="CreateOrEdit">
         <input type="hidden" asp-for="ViewModel.PostId" />
         <input type="hidden" asp-for="ViewModel.IsPublished" />
-        <div class="row">
+        <div class="row g-2">
             <div class="col-md-9 col-xl-10">
                 <input type="text" asp-for="ViewModel.Title" class="form-control form-control-lg" placeholder="@SharedLocalizer["Title"]" required maxlength="128" />
                 <div class="mt-1">
@@ -192,7 +192,7 @@
 
                 <textarea asp-for="ViewModel.EditorContent" class="post-content-textarea"></textarea>
 
-                <div class="mt-1">
+                <div class="mt-1 bg-white">
                     <input type="text" asp-for="ViewModel.Tags" placeholder="@SharedLocalizer["Tags"]" />
                 </div>
                 <div class="mt-1">
@@ -211,10 +211,6 @@
             </div>
             <div class="col-md-3 col-xl-2">
                 <div class="card mb-3">
-                    <div class="card-header">
-                        <i class="bi-clipboard-check me-1"></i>
-                        @SharedLocalizer["Options"]
-                    </div>
                     <div class="card-body">
                         <div class="form-check form-switch mb-2">
                             <input type="checkbox" name="EnableComment" value="true" class="form-check-input" @(Model.ViewModel.EnableComment ? "checked" : null)>
@@ -227,6 +223,10 @@
                         <div class="form-check form-switch">
                             <input type="checkbox" name="FeedIncluded" value="true" class="form-check-input" @(Model.ViewModel.FeedIncluded ? "checked" : null)>
                             <label asp-for="ViewModel.FeedIncluded" class="form-check-label"></label>
+                        </div>
+                        <div class="form-check form-switch">
+                            <input type="checkbox" name="IsOutdated" value="true" class="form-check-input" @(Model.ViewModel.IsOutdated ? "checked" : null)>
+                            <label asp-for="ViewModel.IsOutdated" class="form-check-label"></label>
                         </div>
                     </div>
                     <div class="card-body border-top">
@@ -244,12 +244,6 @@
                             <a class="btn btn-sm btn-outline-secondary w-100" data-bs-toggle="modal" data-bs-target="#heroImageModal">
                                 <i class="bi-upload"></i>
                                 @SharedLocalizer["Upload Image"]
-                            </a>
-                        </div>
-                        <div class="mt-2">
-                            <a class="btn btn-sm btn-outline-secondary w-100" data-bs-toggle="modal" data-bs-target="#inlineCssModal">
-                                <i class="bi-brush"></i>
-                                @SharedLocalizer["Inline CSS"]
                             </a>
                         </div>
 
@@ -341,27 +335,6 @@
                     <div class="modal-footer">
                         <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">@SharedLocalizer["Cancel"]</button>
                         <button type="button" class="btn btn-danger" data-bs-dismiss="modal">@SharedLocalizer["Continue"]</button>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        <div class="modal fade" id="inlineCssModal" tabindex="-1" role="dialog" aria-labelledby="inlineCssModalLabel" aria-hidden="true">
-            <div class="modal-dialog modal-lg" role="document">
-                <div class="modal-content">
-                    <div class="modal-header">
-                        <h5 class="modal-title" id="inlineCssModalLabel">@SharedLocalizer["Inline CSS"]</h5>
-                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close">
-                        </button>
-                    </div>
-                    <div class="modal-body">
-                        <div class="mb-2">
-                            <textarea asp-for="ViewModel.InlineCss" class="form-control textarea-code h-300px"></textarea>
-                        </div>
-                    </div>
-                    <div class="modal-footer">
-                        <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">@SharedLocalizer["Cancel"]</button>
-                        <button type="button" class="btn btn-accent" data-bs-dismiss="modal">@SharedLocalizer["OK"]</button>
                     </div>
                 </div>
             </div>

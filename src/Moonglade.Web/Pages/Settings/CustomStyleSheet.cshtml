@@ -9,53 +9,19 @@
 }
 
 @section scripts{
-    <script type="text/javascript" src="https://unpkg.com/monaco-editor@latest/min/vs/loader.js"></script>
+    <partial name="_MonacoLoaderScript" />
     <script>
-        require.config({ paths: { 'vs': 'https://unpkg.com/monaco-editor@latest/min/vs' }});
-        // Before loading vs/editor/editor.main, define a global MonacoEnvironment that overwrites
-        // the default worker url location (used when creating WebWorkers). The problem here is that
-        // HTML5 does not allow cross-domain web workers, so we need to proxy the instantiation of
-        // a web worker through a same-domain script
-        window.MonacoEnvironment = {
-            getWorkerUrl: function(workerId, label) {
-                return `data:text/javascript;charset=utf-8,${encodeURIComponent(`
-        self.MonacoEnvironment = {
-          baseUrl: 'https://unpkg.com/monaco-editor@latest/min/'
-        };
-        importScripts('https://unpkg.com/monaco-editor@latest/min/vs/base/worker/workerMain.js');`
-                )}`;
-            }
-        };
-
         var cssContentEditor = null;
 
         require(['vs/editor/editor.main'], function () {
-            initCssEditor();
+            cssContentEditor = initEditor('CssContentEditor', "#settings_CssCode", 'css', needLoadInitValues);
         });
-
-        var initCssEditor = function () {
-            var cssContentEditorDiv = document.getElementById('CssContentEditor');
-            cssContentEditor = monaco.editor.create(cssContentEditorDiv, {
-                language: 'css'
-            });
-            cssContentEditor.layout();
-
-            if (needLoadInitValues) {
-                var cssValue = document.querySelector("#settings_CssCode").value;
-                window.cssContentEditor.setValue(cssValue);
-            }
-        }
-
-        var assignEditorValues = function () {
-            var cssValue = window.cssContentEditor.getValue();
-            document.querySelector("#settings_CssCode").value = cssValue;
-        }
     </script>
     <script type="module">
         import * as settings from '/js/app/admin.settings.module.js';
-        
+
         function handleSubmit(event) {
-            assignEditorValues();
+            assignEditorValues(cssContentEditor, "#settings_CssCode");
             settings.handleSettingsSubmit(event);
         }
 
@@ -69,29 +35,40 @@
         .monaco-target {
             border: 1px solid #dee2e6;
             width: 100%;
-            min-height: 512px;
+            min-height: calc(100vh - 370px);
         }
     </style>
 }
 
-<partial name="_SettingsHeader" />
-<div class="ps-4 pe-4">
-    <form id="form-settings" asp-controller="Settings" asp-action="CustomStyleSheet">
-        <div class="form-check form-switch mb-3">
-            <input type="hidden" name="EnableCustomCss" value="false">
-            <input type="checkbox" name="EnableCustomCss" value="true" class="form-check-input" @(settings.EnableCustomCss ? "checked" : null)>
-            <label asp-for="@settings.EnableCustomCss" class="form-check-label"></label>
+@section admintoolbar{
+    <partial name="_SettingsHeader" />
+}
+
+<form id="form-settings" asp-controller="Settings" asp-action="CustomStyleSheet">
+    <div class="admin-settings-entry-container">
+        <div class="settings-entry2 row align-items-center py-3 px-2 rounded-3 shadow-sm border bg-white mb-2">
+            <div class="col-auto">
+                <i class="bi-palette settings-entry-icon"></i>
+            </div>
+            <div class="col">
+                <label asp-for="@settings.EnableCustomCss" class="form-check-label"></label>
+            </div>
+            <div class="col-md-5 text-end">
+                <div class="form-check form-switch form-control-lg">
+                    <input type="hidden" name="EnableCustomCss" value="false">
+                    <input type="checkbox" name="EnableCustomCss" value="true" class="form-check-input" @(@settings.EnableCustomCss ? "checked" : null) />
+                </div>
+            </div>
         </div>
 
-        <div id="CssContentEditor" class="monaco-target">
-
+        <div id="CssContentEditor" class="monaco-target p-3 rounded-3 shadow-sm border bg-white">
         </div>
         <textarea asp-for="@settings.CssCode" class="settings-csscontent-textarea d-none"></textarea>
+    </div>
 
-        <div class="mt-3">
-            <button type="submit" class="btn btn-outline-accent" id="btn-save-settings">
-                @SharedLocalizer["Save"]
-            </button>
-        </div>
-    </form>
-</div>
+    <div class="admin-settings-action-container border-top pt-2 mt-2">
+        <button type="submit" class="btn btn-outline-accent" id="btn-save-settings">
+            @SharedLocalizer["Save"]
+        </button>
+    </div>
+</form>

@@ -1,4 +1,4 @@
-﻿using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations;
 using System.Text.Json.Serialization;
 
 namespace Moonglade.Configuration;
@@ -17,7 +17,7 @@ public class CustomMenuSettings : IBlogSettings
     public bool IsEnabled { get; set; }
 
     [MaxLength(5)]
-    public Menu[] Menus { get; set; }
+    public Menu[] Menus { get; set; } = Array.Empty<Menu>();
 
     [JsonIgnore]
     public static CustomMenuSettings DefaultValue
@@ -41,10 +41,5 @@ public class CustomMenuSettings : IBlogSettings
                 }
             };
         }
-    }
-
-    public CustomMenuSettings()
-    {
-        Menus = Array.Empty<Menu>();
     }
 }

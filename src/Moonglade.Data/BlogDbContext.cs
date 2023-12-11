@@ -1,4 +1,4 @@
-﻿using Moonglade.Data.Entities;
+﻿using Moonglade.Data.Generated.Entities;
 
 namespace Moonglade.Data;
 
@@ -18,7 +18,6 @@ public class BlogDbContext : DbContext
     public virtual DbSet<CommentReplyEntity> CommentReply { get; set; }
     public virtual DbSet<PostEntity> Post { get; set; }
     public virtual DbSet<PostCategoryEntity> PostCategory { get; set; }
-    public virtual DbSet<PostExtensionEntity> PostExtension { get; set; }
     public virtual DbSet<PostTagEntity> PostTag { get; set; }
     public virtual DbSet<TagEntity> Tag { get; set; }
     public virtual DbSet<FriendLinkEntity> FriendLink { get; set; }
@@ -26,6 +25,7 @@ public class BlogDbContext : DbContext
     public virtual DbSet<LocalAccountEntity> LocalAccount { get; set; }
     public virtual DbSet<PingbackEntity> Pingback { get; set; }
     public virtual DbSet<BlogThemeEntity> BlogTheme { get; set; }
+    public virtual DbSet<StyleSheetEntity> StyleSheet { get; set; }
     public virtual DbSet<BlogAssetEntity> BlogAsset { get; set; }
     public virtual DbSet<BlogConfigurationEntity> BlogConfiguration { get; set; }
 
@@ -65,7 +65,6 @@ public static class BlogDbContextExtension
         context.Comment.RemoveRange();
         context.FriendLink.RemoveRange();
         context.Pingback.RemoveRange();
-        context.PostExtension.RemoveRange();
         context.Post.RemoveRange();
         context.BlogConfiguration.RemoveRange();
         context.BlogAsset.RemoveRange();

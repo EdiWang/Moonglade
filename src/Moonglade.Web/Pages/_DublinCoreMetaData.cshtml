@@ -1,0 +1,21 @@
+﻿@model Moonglade.Web.Pages.PostModel
+
+<meta name="DC.Title" content="@Model.Post.Title" />
+<meta name="DC.Publisher" content="@(string.IsNullOrWhiteSpace(Model.Post.Author) ? BlogConfig.GeneralSettings.OwnerName : Model.Post.Author)" />
+<meta name="DC.Language" content="@Model.Post.ContentLanguageCode" />
+<meta name="DC.Creator" content="@(string.IsNullOrWhiteSpace(Model.Post.Author) ? BlogConfig.GeneralSettings.OwnerName : Model.Post.Author)" />
+<meta name="DC.Type" content="Text" />
+<meta name="DC.Format" content="text/html" />
+<meta name="DC.Format.MIME" content="text/html" />
+<meta name="DC.Format.SysReq" content="Internet browser" />
+@if (Model.Post.OriginLink != null)
+{
+    <meta name="DC.Source" content="@Model.Post.OriginLink">
+}
+<meta name="DC.Subject" content="@string.Join(", ", Model.Post.Categories.Select(t => t.DisplayName))" />
+<meta name="DC.Subject.Keyword" content="@string.Join(", ", Model.Post.Tags.Select(t => t.NormalizedName))" />
+@if (BlogConfig.GeneralSettings.DcLicenseUrl != null)
+{
+    <meta name="DCTERMS.license" scheme="DCTERMS.URI" content="@BlogConfig.GeneralSettings.DcLicenseUrl" />
+    <meta name="DCTERMS.rightsHolder" content="@(string.IsNullOrWhiteSpace(Model.Post.Author) ? BlogConfig.GeneralSettings.OwnerName : Model.Post.Author) " />
+}

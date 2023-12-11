@@ -1,0 +1,41 @@
+@page "/testimonials"
+@inject Moonglade.Data.Services.TestimonialService _tests
+@{
+}
+@section head {
+    <environment exclude="Development">
+        <link rel="stylesheet" href="~/css/testimonials.min.css" />
+    </environment>
+    <environment include="Development">
+        <link rel="stylesheet" href="~/css/testimonials.css" />
+    </environment>
+}
+<h1>@SharedLocalizer["testimonial-testimonials"]</h1>
+<h2>@SharedLocalizer["tests"]</h2>
+<div class="container">
+    <div class="row">
+        <div class="col-md-offset2 col-md-8">
+            <div class="control-container">
+                <ejs-carousel id="defaultCarousel" animationEffect="Fade" ´buttonsVisibility="Hidden" showIndicators="false">
+                    <e-carousel-items>
+                        @foreach (var testimonial in _tests.GetTestimonialEntity())
+                        {
+                            <e-carousel-item template='<div class="testimonial">
+                        <div class="pic">
+                            <img src="@testimonial.ImagePath" alt="">
+                        </div>
+                        <p class="description">
+                            @testimonial.Summary
+                        </p>
+                        <h3 class="title">
+                            @testimonial.Recommender
+                            <span class="post"> - @testimonial.RecommenderJob, @testimonial.RecommenderLocation</span>
+                        </h3>
+                    </div>'></e-carousel-item>
+                        }
+                    </e-carousel-items>
+                </ejs-carousel>
+            </div>
+        </div>
+    </div>
+</div>

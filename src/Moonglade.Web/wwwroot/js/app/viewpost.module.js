@@ -1,51 +1,7 @@
-﻿export let hasLiked = false;
-
-export function getStatistics(pid) {
-    const uri = `/api/statistics/${pid}`;
-    fetch(uri)
-        .then(response => response.json())
-        .then(data => {
-            document.querySelector('.post-hit-number-text').innerText = data.hits;
-            var likehitsNum = document.querySelector('.likehits-num');
-            if (likehitsNum) {
-                likehitsNum.innerText = data.likes;
-            }
-        })
-        .catch(err => {
-            blogToast.error(err);
-            console.error(err);
-        });
-}
-
-export function postStatistics(pid, isLike) {
-    const req = {
-        postId: pid,
-        isLike: isLike
-    };
-
-    callApi('/api/statistics', 'POST', req,
-        (success) => {
-            if (isLike) {
-                let oldVal = parseInt(document.querySelector('.likehits-num').innerText, 10);
-                document.querySelector('.likehits-num').innerHTML = ++oldVal;
-                document.querySelector('.btn-ratings').setAttribute('disabled', 'disabled');
-            }
-        });
-}
-
-export function resizeImages() {
+﻿export function resizeImages() {
     $('.post-content img').removeAttr('height');
     $('.post-content img').removeAttr('width');
     $('.post-content img').addClass('img-fluid img-thumbnail');
-}
-
-export function registerRatingButtons(pid) {
-    $('.btn-ratings').click(function () {
-        if (!hasLiked) {
-            postStatistics(pid, true);
-            hasLiked = true;
-        }
-    });
 }
 
 export function renderCodeHighlighter() {

@@ -31,16 +31,18 @@
     </script>
 }
 
-<partial name="_PostManageHeader" />
+@section admintoolbar{
+    <partial name="_PostManageHeader" />
+}
 
-<div class="ps-4 pe-4">
+<div>
     @if (posts.Any())
     {
         @Html.AntiForgeryToken()
 
         @foreach (var post in posts.OrderByDescending(p => p.LastModifiedUtc))
         {
-            <div id="post-@post.Id">
+            <div id="post-@post.Id" class="p-3 mb-2 rounded-3 shadow-sm border bg-white">
                 <div class="d-flex">
                     <div class="flex-grow-1">
                         <a asp-page="./EditPost" asp-route-id="@post.Id">
@@ -63,7 +65,6 @@
                         </a>
                     </div>
                 </div>
-                <hr />
             </div>
         }
     }

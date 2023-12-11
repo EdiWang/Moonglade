@@ -1,64 +1,68 @@
-﻿<Project Sdk="Microsoft.NET.Sdk.Web">
-
-	<PropertyGroup>
-		<TargetFramework>net7.0</TargetFramework>
-		<PackageLicenseExpression>GNU General Public License v3.0</PackageLicenseExpression>
-		<ImplicitUsings>enable</ImplicitUsings>
-		<PackageProjectUrl>https://github.com/EdiWang/Moonglade</PackageProjectUrl>
-		<RepositoryUrl>https://github.com/EdiWang/Moonglade</RepositoryUrl>
-	</PropertyGroup>
-
-	<ItemGroup>
-		<Using Include="System.Text" />
-		
-		<Using Include="Microsoft.AspNetCore.Mvc" />
-		<Using Include="Microsoft.AspNetCore.Authorization" />
-
-		<Using Include="MediatR" />
-
-		<Using Include="Moonglade.Web" />
-		<Using Include="Moonglade.Web.Configuration" />
-		<Using Include="Moonglade.Web.Filters" />
-		<Using Include="Moonglade.Web.Middleware" />
-		<Using Include="Moonglade.Auth" />
-		<Using Include="Moonglade.Core" />
-		<Using Include="Moonglade.Caching" />
-		<Using Include="Moonglade.Configuration" />
-		<Using Include="Moonglade.Comments" />
-		<Using Include="Moonglade.Theme" />
-		<Using Include="Moonglade.Utils" />
-		<Using Include="Moonglade.Data" />
-		<Using Include="Moonglade.ImageStorage" />
-	</ItemGroup>
-
-	<ItemGroup>
-		<Content Update="appsettings.Development.json" CopyToPublishDirectory="Never" />
-	</ItemGroup>
-
-	<ItemGroup>
-		<PackageReference Include="AspNetCoreRateLimit" Version="5.0.0" />
-		<PackageReference Include="Edi.ImageWatermark" Version="2.8.0" />
-		<PackageReference Include="Microsoft.ApplicationInsights.AspNetCore" Version="2.21.0" />
-		<PackageReference Include="Microsoft.Extensions.Logging.AzureAppServices" Version="7.0.5" />
-		<PackageReference Include="UAParser" Version="3.1.47" />
-		<PackageReference Include="WilderMinds.MetaWeblog" Version="5.1.1" />
-		<PackageReference Include="Spectre.Console" Version="0.46.0" />
-		<PackageReference Include="X.PagedList.Mvc.Core" Version="8.4.7" />
-	</ItemGroup>
-
-	<ItemGroup>
-		<ProjectReference Include="..\Moonglade.Auth\Moonglade.Auth.csproj" />
-		<ProjectReference Include="..\Moonglade.Comments\Moonglade.Comments.csproj" />
-		<ProjectReference Include="..\Moonglade.Core\Moonglade.Core.csproj" />
-		<ProjectReference Include="..\Moonglade.Data.ExternalApi\Moonglade.Data.ExternalApi.csproj" />
-		<ProjectReference Include="..\Moonglade.Data.MySql\Moonglade.Data.MySql.csproj" />
-		<ProjectReference Include="..\Moonglade.Data.PostgreSql\Moonglade.Data.PostgreSql.csproj" />
-		<ProjectReference Include="..\Moonglade.Data.SqlServer\Moonglade.Data.SqlServer.csproj" />
-		<ProjectReference Include="..\Moonglade.FriendLink\Moonglade.FriendLink.csproj" />
-		<ProjectReference Include="..\Moonglade.ImageStorage\Moonglade.ImageStorage.csproj" />
-		<ProjectReference Include="..\Moonglade.Notification.Client\Moonglade.Notification.Client.csproj" />
-		<ProjectReference Include="..\Moonglade.Pingback\Moonglade.Pingback.csproj" />
-		<ProjectReference Include="..\Moonglade.Syndication\Moonglade.Syndication.csproj" />
-		<ProjectReference Include="..\Moonglade.Theme\Moonglade.Theme.csproj" />
-	</ItemGroup>
+<Project Sdk="Microsoft.NET.Sdk.Web">
+  <PropertyGroup>
+    <OutputType>Exe</OutputType>
+    <TargetFramework>net8.0</TargetFramework>
+    <AssemblyName>Moonglade.Web</AssemblyName>
+    <RootNamespace>Moonglade.Web</RootNamespace>
+    <IsTestProject>false</IsTestProject>
+    <IsPackable>false</IsPackable>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <PackageLicenseExpression>GNU General Public License v3.0</PackageLicenseExpression>
+    <PackageProjectUrl>https://github.com/EdiWang/Moonglade</PackageProjectUrl>
+    <RepositoryUrl>https://github.com/EdiWang/Moonglade</RepositoryUrl>
+    <UserSecretsId>bbb2a205-c78d-404b-8c7d-c5b8e9bea4d8</UserSecretsId>
+  </PropertyGroup>
+  <ItemGroup>
+    <Using Include="System.Text" />
+    <Using Include="Microsoft.AspNetCore.Mvc" />
+    <Using Include="Microsoft.AspNetCore.Authorization" />
+    <Using Include="MediatR" />
+    <Using Include="Edi.CacheAside.InMemory" />
+    <Using Include="Moonglade.Web" />
+    <Using Include="Moonglade.Web.Configuration" />
+    <Using Include="Moonglade.Web.Filters" />
+    <Using Include="Moonglade.Web.Middleware" />
+    <Using Include="Moonglade.Auth" />
+    <Using Include="Moonglade.Core" />
+    <Using Include="Moonglade.Configuration" />
+    <Using Include="Moonglade.Comments" />
+    <Using Include="Moonglade.Theme" />
+    <Using Include="Moonglade.Utils" />
+    <Using Include="Moonglade.Data" />
+    <Using Include="Moonglade.ImageStorage" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Update="appsettings.Development.json" CopyToPublishDirectory="Never" />
+    <Content Update="wwwroot\zkqtj-aoH1Kt7YftLq4plV.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+  </ItemGroup>
+  <ItemGroup>
+    <PackageReference Include="AspNetCoreRateLimit" Version="5.0.0" />
+    <PackageReference Include="Edi.ChinaDetector" Version="0.2.251-preview.1" />
+    <PackageReference Include="Edi.ImageWatermark" Version="2.11.1" />
+    <PackageReference Include="Edi.PasswordGenerator" Version="1.1.0" />
+    <PackageReference Include="Syncfusion.EJ2.AspNet.Core" Version="23.2.7" />
+    <PackageReference Include="Syncfusion.Licensing" Version="23.2.7" />
+    <PackageReference Include="UAParser" Version="3.1.47" />
+    <PackageReference Include="WilderMinds.MetaWeblog" Version="5.1.1" />
+    <PackageReference Include="Spectre.Console" Version="0.48.0" />
+    <PackageReference Include="Microsoft.ApplicationInsights.AspNetCore" Version="2.22.0" />
+    <PackageReference Include="Microsoft.Extensions.Logging.AzureAppServices" Version="8.0.0" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\Moonglade.Auth\Moonglade.Auth.csproj" />
+    <ProjectReference Include="..\Moonglade.Comments\Moonglade.Comments.csproj" />
+    <ProjectReference Include="..\Moonglade.Core\Moonglade.Core.csproj" />
+    <ProjectReference Include="..\Moonglade.Data.MySql\Moonglade.Data.MySql.csproj" />
+    <ProjectReference Include="..\Moonglade.Data.PostgreSql\Moonglade.Data.PostgreSql.csproj" />
+    <ProjectReference Include="..\Moonglade.Data.SqlServer\Moonglade.Data.SqlServer.csproj" />
+    <ProjectReference Include="..\Moonglade.Data.ExternalAPI\Moonglade.Data.ExternalAPI.csproj" />
+    <ProjectReference Include="..\Moonglade.FriendLink\Moonglade.FriendLink.csproj" />
+    <ProjectReference Include="..\Moonglade.ImageStorage\Moonglade.ImageStorage.csproj" />
+    <ProjectReference Include="..\Moonglade.Email.Client\Moonglade.Email.Client.csproj" />
+    <ProjectReference Include="..\Moonglade.Pingback\Moonglade.Pingback.csproj" />
+    <ProjectReference Include="..\Moonglade.Syndication\Moonglade.Syndication.csproj" />
+    <ProjectReference Include="..\Moonglade.Theme\Moonglade.Theme.csproj" />
+  </ItemGroup>
 </Project>

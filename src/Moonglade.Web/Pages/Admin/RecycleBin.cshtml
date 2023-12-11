@@ -11,22 +11,22 @@
     <script type="module">
         import * as utils from '/js/app/utils.module.js'
 
-        $('.btn-delete').click(function() {
+        $('.btn-delete').click(function () {
             var cfm = confirm('Delete Confirmation?');
             if (cfm) {
                 deletePost($(this).data('postid'));
             }
         });
 
-        $('.btn-restore').click(function() {
+        $('.btn-restore').click(function () {
             restorePost($(this).data("postid"));
         });
 
-        $('.btn-empty-recbin').click(function() {
+        $('.btn-empty-recbin').click(function () {
             callApi(`/api/post/recyclebin`, 'DELETE', {},
                 (resp) => {
                     blogToast.success('Cleared');
-                    setTimeout(function() {
+                    setTimeout(function () {
                         window.location.reload();
                     }, 800);
                 });
@@ -52,18 +52,17 @@
     </script>
 }
 @Html.AntiForgeryToken()
-<partial name="_PostManageHeader" />
 
-<div class="ps-4 pe-4">
-    <a href="#" class="btn btn-sm btn-outline-danger btn-empty-recbin mb-4">
-            <i class="bi-trash"></i>
-            @SharedLocalizer["Empty Recycle Bin"]
-    </a>
+@section admintoolbar{
+    <partial name="_PostManageHeader" />
+}
+
+<div class="admin-main-entry-container">
     @if (posts.Any())
     {
         foreach (var post in posts.OrderByDescending(p => p.CreateTimeUtc))
         {
-            <div id="post-@post.Id">
+            <div id="post-@post.Id" class="p-3 mb-2 rounded-3 shadow-sm border bg-white">
                 <div class="d-flex">
                     <div class="flex-grow-1">
                         <h6>
@@ -83,7 +82,6 @@
                         </a>
                     </div>
                 </div>
-                <hr />
             </div>
         }
     }
@@ -91,4 +89,11 @@
     {
         <partial name="_NoPosts" />
     }
+</div>
+
+<div class="admin-settings-action-container border-top pt-2 mt-2">
+    <a href="#" class="btn btn-outline-danger btn-empty-recbin mb-3">
+        <i class="bi-trash"></i>
+        @SharedLocalizer["Empty Recycle Bin"]
+    </a>
 </div>

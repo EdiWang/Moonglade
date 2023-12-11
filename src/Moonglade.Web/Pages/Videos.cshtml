@@ -1,0 +1,46 @@
+@page "/videos"
+@using LanguageEnum = Moonglade.Data.Enum.LanguageEnum
+@using Moonglade.Data.Entities
+@using Moonglade.Data.Enum
+@using Helper = Moonglade.Data.DataHelper
+@inject Moonglade.Data.Services.VideoService _videos
+@{
+    LanguageEnum culture = Helper.GetLanguage();
+}
+<div class="row">
+    <h1>@SharedLocalizer["Videos"]</h1>
+    <div class="control_wrapper accordion-control-section">
+        <ejs-accordion id="defaultAccordion">
+            <e-content-template>
+                @foreach (var t in _videos.GetVideoEntity())
+                {
+                    <div tabindex="0" class="e-card" id="@t.Id">
+                        <div class="card-header">
+                            <div class="e-card-header-caption">
+                                <div class="e-card-header-title font-gray"><h4 class="font-gray">@t.Title</h4></div>
+                            </div>
+                        </div>
+                        <div class="e-card-content">
+                            <div class="card-text font-gray"><small>@SharedLocalizer["held"]: @t.DatePublished.ToString()</small></div>
+                            <p class="card-text font-gray">@t.Description</p>
+                            <div class="" id="video-@t.Id">
+                                @if (t.VideoType == VideoTypeEnum.YouTube)
+                                {
+                                    <iframe src="https://www.youtube.com/embed/@(t.VideoCode)?rel=0" width="745" height="635" title="@t.Title" frameborder="0" allowfullscreen></iframe>
+                                }
+                                else if (t.VideoType == VideoTypeEnum.Vimeo)
+                                {
+                                    <iframe src="https://player.vimeo.com/video/@(t.VideoCode)" width="745" height="635" frameborder="0" webkitallowfullscreen mozallowfullscreen allowfullscreen></iframe>
+                                }
+                                else if (t.VideoType == VideoTypeEnum.Channel9)
+                                {
+                                    <iframe src="https://channel9.msdn.com/@(t.VideoCode)/player" width="745" height="635" allowFullScreen frameBorder="0"></iframe>
+                                }
+                            </div>
+                        </div>
+                    </div>
+                }
+            </e-content-template>
+        </ejs-accordion>
+    </div>
+</div>

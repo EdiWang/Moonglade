@@ -23,8 +23,7 @@ public class ConfigureEndpoints
             Helper.AppVersion,
             DotNetVersion = Environment.Version.ToString(),
             EnvironmentTags = Helper.GetEnvironmentTags(),
-            GeoMatch = context.Request.Headers["geo-match"],
-            RequestIpAddress = context.Connection.RemoteIpAddress?.ToString()
+            GeoMatch = context.Request.Headers["x-afd-geo-match"]
         };
 
         return context.Response.WriteAsJsonAsync(obj);

@@ -1,4 +1,4 @@
-﻿@page "/admin/about"
+@page "/admin/about"
 @using System.Diagnostics
 @using Moonglade.Utils
 @inject IWebHostEnvironment WebHostEnvironment
@@ -8,100 +8,130 @@
     var process = Process.GetCurrentProcess();
 }
 
-<partial name="_DiagnosisHeader" />
+<div class="pb-3">
+    <h4 class="admin-subtitle fw-bold mb-2">
+        @SharedLocalizer["Moonglade Configuration"]
+    </h4>
 
-<div class="ps-4 pe-4">
-    <div class="row">
-        <table class="table table-borderless">
-            <thead class="table-light">
-                <tr>
-                    <th colspan="2">
-                        <i class="bi-moon-stars"></i>
-                        @SharedLocalizer["Moonglade Configuration"]
-                    </th>
-                </tr>
-            </thead>
+    <div class="mb-4 rounded-3 shadow-sm border bg-white p-2">
+        <table class="table table-borderless table-sm mb-0">
             <tbody>
                 <tr>
                     <td class="w-25">@SharedLocalizer["Version"]</td>
-                    <td>@Helper.AppVersion</td>
+                    <td class="text-muted">@Helper.AppVersion</td>
                 </tr>
                 <tr>
                     <td>@SharedLocalizer["Environment"]</td>
-                    <td>@WebHostEnvironment.EnvironmentName</td>
+                    <td class="text-muted">@WebHostEnvironment.EnvironmentName</td>
                 </tr>
                 <tr>
                     <td>@SharedLocalizer["Editor"]</td>
-                    <td>@(Configuration.GetSection("Editor").Get<EditorChoice>())</td>
+                    <td class="text-muted">@(Configuration.GetSection("Editor").Get<EditorChoice>())</td>
                 </tr>
 
                 <tr>
-                    <td>UseForwardedHeaders</td>
-                    <td>@Configuration["ForwardedHeaders:Enabled"]</td>
+                    <td>Forwarded Headers</td>
+                    <td class="text-muted">@Configuration["ForwardedHeaders:Enabled"]: @Configuration["ForwardedHeaders:HeaderName"]</td>
                 </tr>
 
                 <tr>
-                    <td>ForwardedForHeaderName</td>
-                    <td>@Configuration["ForwardedHeaders:ForwardedForHeaderName"]</td>
+                    <td>Client IP Address</td>
+                    <td class="text-muted">@HttpContext.Connection.RemoteIpAddress?.ToString()</td>
                 </tr>
             </tbody>
         </table>
     </div>
 
-    <div class="row">
-        <table class="table table-borderless">
-            <thead class="table-light">
-                <tr>
-                    <th colspan="2">
-                        <i class="bi-tools"></i>
-                        @SharedLocalizer["Server Information"]
-                    </th>
-                </tr>
-            </thead>
+    <h4 class="admin-subtitle fw-bold mb-2">
+        @SharedLocalizer["Server Information"]
+    </h4>
+
+    <div class="mb-4 rounded-3 shadow-sm border bg-white p-2">
+        <table class="table table-borderless table-sm mb-0">
             <tbody>
                 <tr>
                     <td class="w-25">@SharedLocalizer["System"]</td>
-                    <td>@Helper.TryGetFullOSVersion() @(Environment.Is64BitOperatingSystem ? "(64-bit)" : "(32-bit)")</td>
+                    <td class="text-muted">@Helper.TryGetFullOSVersion() @(Environment.Is64BitOperatingSystem ? "(64-bit)" : "(32-bit)")</td>
                 </tr>
                 <tr>
                     <td>@SharedLocalizer["Directory"]</td>
-                    <td>@Environment.CurrentDirectory</td>
+                    <td class="text-muted">@Environment.CurrentDirectory</td>
                 </tr>
                 <tr>
                     <td>@SharedLocalizer["Machine Name"]</td>
-                    <td>@Environment.MachineName</td>
+                    <td class="text-muted">@Environment.MachineName</td>
                 </tr>
                 <tr>
                     <td>@SharedLocalizer["User Name"]</td>
-                    <td>@Environment.UserDomainName\@Environment.UserName</td>
+                    <td class="text-muted">@Environment.UserDomainName\@Environment.UserName</td>
                 </tr>
                 <tr>
                     <td>@SharedLocalizer[".NET Version"]</td>
-                    <td>@Environment.Version</td>
+                    <td class="text-muted">@Environment.Version</td>
+                </tr>
+                <tr>
+                    <td>@SharedLocalizer["ASP.NET Core Environment"]</td>
+                    <td class="text-muted">@(Environment.GetEnvironmentVariable("aspnetcore_environment"))</td>
                 </tr>
                 <tr>
                     <td>@SharedLocalizer["Worker Process"]</td>
-                    <td>[@process.Id] @process.ProcessName @(Environment.Is64BitProcess ? "(64-bit)" : "(32-bit)")</td>
+                    <td class="text-muted">[@process.Id] @process.ProcessName @(Environment.Is64BitProcess ? "(64-bit)" : "(32-bit)")</td>
                 </tr>
                 <tr>
                     <td>@SharedLocalizer["Start Time"]</td>
-                    <td>@process.StartTime.ToUniversalTime() (UTC)</td>
+                    <td class="text-muted">@process.StartTime.ToUniversalTime() (UTC)</td>
                 </tr>
                 <tr>
                     <td>@SharedLocalizer["Memory"]</td>
-                    <td>@(process.WorkingSet64 / 1024 / 1024) MB</td>
+                    <td class="text-muted">@(process.WorkingSet64 / 1024 / 1024) MB</td>
                 </tr>
                 <tr>
                     <td>@SharedLocalizer["Docker Container"]</td>
-                    <td>@(Environment.GetEnvironmentVariable("DOTNET_RUNNING_IN_CONTAINER") == "true")</td>
+                    <td class="text-muted">@(Environment.GetEnvironmentVariable("DOTNET_RUNNING_IN_CONTAINER") == "true")</td>
                 </tr>
             </tbody>
         </table>
-
-        <a class="mt-2 d-inline-block" href="https://github.com/EdiWang/Moonglade/issues" target="_blank">
-            <i class="bi-bug"></i>
-            Report an issue
-        </a>
     </div>
 
+    <h4 class="admin-subtitle fw-bold mb-2">
+        @SharedLocalizer["Legal Infomation"]
+    </h4>
+
+    <div class="mb-4 rounded-3 shadow-sm border bg-white p-3">
+        <h5>Disclaimer</h5>
+        <p>
+            The following disclaimer applies to the software named "Moonglade" developed by Edi Wang and other <a href="https://github.com/EdiWang/Moonglade/graphs/contributors" target="_blank">contributors</a> (hereinafter referred to as "the software developer"):
+        </p>
+        <p>
+            This project is not affiliated with Microsoft Corporation. All product names, logos, and brands are property of their respective owners. All company, product and service names used in this website are for identification purposes only. Use of these names, logos, and brands does not imply endorsement.
+        </p>
+        <p>
+            The software developer does not provide any warranties or guarantees regarding the functionality, performance, or suitability of Moonglade for any specific purpose. The software is provided "as is," and the software developer shall not be held liable for any direct or indirect damages arising from the use or inability to use Moonglade.
+        </p>
+
+        <h6>Data Privacy</h6>
+        <p>
+            Moonglade does not send any user data or information to any government, <strong>including the Chinese government</strong>. The software is designed to prioritize and respect user privacy.
+        </p>
+
+        <h6>Data Collection</h6>
+        <p>
+            While using Moonglade, please note that the platform on which you deploy the software may collect data and usage information. This data collection is solely the responsibility of the platform and not the software developer. We encourage you to review thier privacy policy and terms of service of the platform to understand how your data is handled.
+        </p>
+
+        <h6>User Responsibility</h6>
+        <p>
+            As a user of Moonglade, it is your responsibility to ensure compliance with applicable laws and regulations regarding data privacy and usage. The software developer shall not be held liable for any misuse, unauthorized access, or mishandling of data by the user or the platform on which Moonglade is deployed.
+        </p>
+
+        <h6>Updates and Modifications</h6>
+        <p>
+            The software developer may release updates or modifications to Moonglade from time to time. It is recommended that users stay informed about these updates and apply them to ensure optimal performance and security.
+        </p>
+    </div>
+
+    <a class="mb-2" href="https://github.com/EdiWang/Moonglade/issues" target="_blank">
+        <i class="bi-bug"></i>
+        Report an issue
+    </a>
 </div>

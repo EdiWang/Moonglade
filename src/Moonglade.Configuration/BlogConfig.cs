@@ -1,4 +1,3 @@
-﻿
 namespace Moonglade.Configuration;
 
 public interface IBlogSettings
@@ -15,7 +14,7 @@ public interface IBlogConfig
     AdvancedSettings AdvancedSettings { get; set; }
     CustomStyleSheetSettings CustomStyleSheetSettings { get; set; }
     CustomMenuSettings CustomMenuSettings { get; set; }
-
+    SocialProfileSettings SocialProfileSettings { get; set; }
     IEnumerable<int> LoadFromConfig(IDictionary<string, string> config);
     KeyValuePair<string, string> UpdateAsync<T>(T blogSettings) where T : IBlogSettings;
 }
@@ -36,6 +35,8 @@ public class BlogConfig : IBlogConfig
 
     public CustomStyleSheetSettings CustomStyleSheetSettings { get; set; }
 
+    public SocialProfileSettings SocialProfileSettings { get; set; }
+
     public CustomMenuSettings CustomMenuSettings { get; set; }
 
     public IEnumerable<int> LoadFromConfig(IDictionary<string, string> config)
@@ -48,6 +49,7 @@ public class BlogConfig : IBlogConfig
         AdvancedSettings = AssignValueForConfigItem(6, AdvancedSettings.DefaultValue, config);
         CustomStyleSheetSettings = AssignValueForConfigItem(7, CustomStyleSheetSettings.DefaultValue, config);
         CustomMenuSettings = AssignValueForConfigItem(10, CustomMenuSettings.DefaultValue, config);
+        SocialProfileSettings = AssignValueForConfigItem(11, SocialProfileSettings, config);
 
         return _keysToInit.AsEnumerable();
     }
@@ -55,15 +57,15 @@ public class BlogConfig : IBlogConfig
     private readonly List<int> _keysToInit = new();
     private T AssignValueForConfigItem<T>(int index, T defaultValue, IDictionary<string, string> config) where T : IBlogSettings
     {
-        var name = typeof(T).Name;
+	    var name = typeof(T).Name;
 
-        if (config.TryGetValue(name, out var value))
-        {
-            return value.FromJson<T>();
-        }
+	    if (config.TryGetValue(name, out var value))
+	    {
+		    return value.FromJson<T>();
+	    }
 
-        _keysToInit.Add(index);
-        return defaultValue;
+	    _keysToInit.Add(index);
+	    return defaultValue;
     }
 
     public KeyValuePair<string, string> UpdateAsync<T>(T blogSettings) where T : IBlogSettings

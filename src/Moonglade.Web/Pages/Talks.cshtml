@@ -1,0 +1,35 @@
+@page "/talks"
+@using Moonglade.Data.Entities
+@using Moonglade.Data.Enum
+@using LanguageEnum = Moonglade.Data.Enum.LanguageEnum
+@inject Moonglade.Data.Services.TalksService _talks
+@{
+    LanguageEnum culture = DataHelper.GetLanguage();
+}
+<div class="row">
+    <h1>@SharedLocalizer["talks"]</h1>
+    <h2>@SharedLocalizer["slides"]:</h2>
+    <div class="control_wrapper accordion-control-section">
+        <ejs-accordion id="defaultAccordion">
+            <e-content-template>
+                @foreach (var t in _talks.GetTalkEntity())
+                {
+                    <div tabindex="0" class="e-card" id="@t.Id">
+                        <div class="card-header">
+                            <div class="e-card-header-caption">
+                                <div class="e-card-header-title font-gray"><h4 class="font-gray">@t.Title</h4></div>
+                            </div>
+                        </div>
+                        <div class="e-card-content">
+                            <div class="card-text font-gray"><small>@SharedLocalizer["held"]: @t.Date.ToString("D") on @t.Where</small></div>
+                            <p class="card-text font-gray">@t.Summary</p>
+                            <div class="" id="talk-@t.Id">
+                                <iframe src="@t.Link" width="595" height="485" title="@t.Title" style="border:1px solid #CCC; border-width:1px; margin-bottom:5px; max-width: 100%;" allowfullscreen> </iframe><div style="margin-bottom:5px"> <strong> <a href="@t.Link" title="@t.Title" target="_blank">@t.Title</a> </strong> von <strong><a href="https://www.slideshare.net/saigkill" target="_blank" rel="noopener">Sascha Manns</a></strong> </div>
+                            </div>
+                        </div>
+                    </div>
+                }
+            </e-content-template>
+        </ejs-accordion>
+    </div>
+</div>

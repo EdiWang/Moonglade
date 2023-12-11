@@ -1,16 +1,12 @@
-﻿using Microsoft.Extensions.Options;
 using System.Text.Json;
+using Microsoft.Extensions.Options;
 using System.Text.Json.Serialization;
 
 namespace Moonglade.Web.Middleware;
 
-public class WebManifestMiddleware
+public class WebManifestMiddleware(RequestDelegate next)
 {
-    private readonly RequestDelegate _next;
-
     public static WebManifestMiddlewareOptions Options { get; set; } = new();
-
-    public WebManifestMiddleware(RequestDelegate next) => _next = next;
 
     public async Task Invoke(
         HttpContext context, IBlogConfig blogConfig, IOptions<List<ManifestIcon>> manifestIcons)
@@ -39,7 +35,7 @@ public class WebManifestMiddleware
         }
         else
         {
-            await _next(context);
+            await next(context);
         }
     }
 }
@@ -93,7 +89,5 @@ public static partial class ApplicationBuilderExtensions
 
 public class WebManifestMiddlewareOptions
 {
-    public string ThemeColor { get; set; }
-
-    public WebManifestMiddlewareOptions() => ThemeColor = "#333333";
+    public string ThemeColor { get; set; } = "#333333";
 }

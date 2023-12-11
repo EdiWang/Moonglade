@@ -1,0 +1,12 @@
+﻿POST api.indexnow.org/indexnow
+Content-type: application/json
+Host: saschamanns.de
+
+{
+	"host": "saschamanns.de",
+	"key": "15c2afd6dbd8409fa3e803eef0fb2f5f",
+	"keyLocation": "https://saschamanns.de/15c2afd6dbd8409fa3e803eef0fb2f5f.txt",
+	"urlList": [
+		"https://saschamanns.de/post/2023/3/29/paketaktualisierung-schlagt-bei-postinst-scripten-fehl"
+	]
+}

@@ -4,14 +4,9 @@ using System.Text;
 
 namespace Moonglade.Pingback;
 
-public class PingbackResult : IActionResult
+public class PingbackResult(PingbackResponse pingbackResponse) : IActionResult
 {
-    public PingbackResponse PingbackResponse { get; }
-
-    public PingbackResult(PingbackResponse pingbackResponse)
-    {
-        PingbackResponse = pingbackResponse;
-    }
+    public PingbackResponse PingbackResponse { get; } = pingbackResponse;
 
     public Task ExecuteResultAsync(ActionContext context)
     {

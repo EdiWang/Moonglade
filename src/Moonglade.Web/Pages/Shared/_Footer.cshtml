@@ -1,4 +1,4 @@
-﻿@using Microsoft.AspNetCore.Builder
+@using Microsoft.AspNetCore.Builder
 @using Moonglade.Utils
 
 @inject IOptions<RequestLocalizationOptions> LocOptions
@@ -16,7 +16,11 @@
                     @Html.Raw(Helper.FormatCopyright2Html(BlogConfig.GeneralSettings.Copyright))
                 </div>
                 <small>
-                    Powered by <a href="https://moonglade.blog" target="_blank">Moonglade</a> @Helper.AppVersion
+                    Powered by <a href="https://github.com/EdiWang/Moonglade" target="_blank">Moonglade</a> @Helper.AppVersion
+                    <ul>
+                        <li><a href="/imprint">Imprint</a></li>
+                        <li><a href="/privacy">Data Privacy</a></li>
+                    </ul>
                 </small>
             </section>
 
@@ -31,9 +35,10 @@
                         </li>
                     }
                 </ul>
+                <div align='' style="margin-top: 20px;"><a href='https://www.last.fm/user/illuminatus1979'><img src='https://badges.lastfm.workers.dev/last-played?user=illuminatus1979' alt='Last.fm Last played badge'></a></div>
             </section>
 
-            <section id="footer-language-mobile" class="col-3 d-block d-md-none text-end font-125rem">
+            <section id="footer-language-mobile" class="col d-block d-md-none text-end font-125rem">
                 <a href="#" data-bs-toggle="modal" data-bs-target="#langselectormodal" aria-label="Choose display language"><i class="bi-globe"></i></a>
             </section>
         </div>

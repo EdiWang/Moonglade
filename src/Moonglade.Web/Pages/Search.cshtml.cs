@@ -3,12 +3,8 @@ using Moonglade.Core.PostFeature;
 
 namespace Moonglade.Web.Pages;
 
-public class SearchModel : PageModel
+public class SearchModel(IMediator mediator) : PageModel
 {
-    private readonly IMediator _mediator;
-
-    public SearchModel(IMediator mediator) => _mediator = mediator;
-
     public IReadOnlyList<PostDigest> Posts { get; set; }
 
     public async Task<IActionResult> OnGetAsync(string term)
@@ -17,7 +13,7 @@ public class SearchModel : PageModel
 
         ViewData["TitlePrefix"] = term;
 
-        var posts = await _mediator.Send(new SearchPostQuery(term));
+        var posts = await mediator.Send(new SearchPostQuery(term));
         Posts = posts;
 
         return Page();

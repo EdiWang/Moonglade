@@ -2,11 +2,10 @@
 
 namespace Moonglade.Data.Infrastructure;
 
-public abstract class DbContextRepository<T> : IRepository<T> where T : class
+public abstract class DbContextRepository<T>(DbContext ctx) : IRepository<T>
+    where T : class
 {
-    protected readonly DbContext DbContext;
-
-    protected DbContextRepository(DbContext ctx) => DbContext = ctx;
+    protected readonly DbContext DbContext = ctx;
 
     public Task Clear(CancellationToken ct = default)
     {
@@ -66,8 +65,8 @@ public abstract class DbContextRepository<T> : IRepository<T> where T : class
         await DbContext.Set<T>().AsNoTracking().Select(selector).ToListAsync(cancellationToken: ct);
 
     public async Task<IReadOnlyList<TResult>> SelectAsync<TResult>(
-        ISpecification<T> spec, Expression<Func<T, TResult>> selector) =>
-        await ApplySpecification(spec).AsNoTracking().Select(selector).ToListAsync();
+        ISpecification<T> spec, Expression<Func<T, TResult>> selector, CancellationToken ct = default) =>
+        await ApplySpecification(spec).AsNoTracking().Select(selector).ToListAsync(ct);
 
     public Task<TResult> FirstOrDefaultAsync<TResult>(
         ISpecification<T> spec, Expression<Func<T, TResult>> selector) =>

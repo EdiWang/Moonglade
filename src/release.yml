@@ -1,0 +1,22 @@
+﻿changelog:
+  exclude:
+    labels:
+     - duplicate
+     - good first issue
+     - help wanted
+     - invalid
+     - question
+     - wontfix
+  categories:    
+    - title: Breaking Changes 🛠
+      labels:
+        - breaking-change
+    - title: Bug fixes 🐛
+      labels:
+        - bug
+    - title: Exciting New Features 🎉
+      labels:
+        - enhancement
+    - title: Other Changes
+      labels:
+        - "*"

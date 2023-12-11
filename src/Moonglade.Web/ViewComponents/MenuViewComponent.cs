@@ -1,24 +1,18 @@
-﻿namespace Moonglade.Web.ViewComponents;
+namespace Moonglade.Web.ViewComponents;
 
-public class MenuViewComponent : ViewComponent
+public class MenuViewComponent(IBlogConfig blogConfig, ILogger<MenuViewComponent> logger) : ViewComponent
 {
-    private readonly IBlogConfig _blogConfig;
-
-    public MenuViewComponent(IBlogConfig blogConfig)
-    {
-        _blogConfig = blogConfig;
-    }
-
     public IViewComponentResult Invoke()
     {
         try
         {
-            var settings = _blogConfig.CustomMenuSettings;
+            var settings = blogConfig.CustomMenuSettings;
             return View(settings);
         }
         catch (Exception e)
         {
-            return Content(e.Message);
+            logger.LogError(e, e.Message);
+            return Content("ERROR");
         }
     }
 }

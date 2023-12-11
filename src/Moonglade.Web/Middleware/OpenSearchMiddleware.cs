@@ -2,12 +2,9 @@
 
 namespace Moonglade.Web.Middleware;
 
-public class OpenSearchMiddleware
+public class OpenSearchMiddleware(RequestDelegate next)
 {
-    private readonly RequestDelegate _next;
     public static OpenSearchMiddlewareOptions Options { get; set; } = new();
-
-    public OpenSearchMiddleware(RequestDelegate next) => _next = next;
 
     public async Task Invoke(HttpContext httpContext, IBlogConfig blogConfig)
     {
@@ -21,7 +18,7 @@ public class OpenSearchMiddleware
         }
         else
         {
-            await _next(httpContext);
+            await next(httpContext);
         }
     }
 

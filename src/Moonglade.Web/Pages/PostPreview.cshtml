@@ -1,7 +1,6 @@
 ﻿@page "/post/preview/{postId:guid}"
 @model Moonglade.Web.Pages.PostPreviewModel
 @using Moonglade.Utils
-@using NUglify
 
 @{
     ViewBag.BodyClass = "body-post-slug";
@@ -13,17 +12,6 @@
     <meta name="author" content="@(string.IsNullOrWhiteSpace(Model.Post.Author) ? BlogConfig.GeneralSettings.OwnerName : Model.Post.Author) " />
     <link href="~/css/post-slug.css" rel="stylesheet" asp-append-version="true" />
     <link href="~/css/highlighter-custom.css" rel="stylesheet" asp-append-version="true" />
-
-    @if (!string.IsNullOrWhiteSpace(Model.Post.InlineCss))
-    {
-        var uglifiedCss = Uglify.Css(Model.Post.InlineCss);
-        if (!uglifiedCss.HasErrors)
-        {
-            <style>
-                @uglifiedCss.Code
-            </style>
-        }
-    }
 }
 
 @section scripts {
@@ -52,7 +40,7 @@
     @SharedLocalizer["This is a preview for draft content."]
 </div>
 
-<article class="article-post-slug box border position-relative mb-4" data-postid="@Model.Post.Id" lang="@Model.Post.ContentLanguageCode">
+<article class="article-post-slug position-relative p-4 rounded-3 shadow-sm border bg-white mb-4" data-postid="@Model.Post.Id" lang="@Model.Post.ContentLanguageCode">
     @if (Model.Post.Featured)
     {
         <partial name="_FeaturedTag" />
