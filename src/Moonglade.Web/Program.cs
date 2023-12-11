@@ -208,6 +208,8 @@ void DealWithChina(string detectChina)
     switch (detectChina.ToLower())
     {
         case "block":
+            app.Logger.LogError("Positive China detection, application stopped.");
+
             app.MapGet("/", () => Results.Text(
                 "Due to legal and regulation concerns, we regret to inform you that deploying Moonglade on servers located in Mainland China is currently not possible",
                 statusCode: 251
