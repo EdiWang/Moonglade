@@ -192,6 +192,8 @@ async Task DetectChina()
         }
         else
         {
+            app.Logger.LogInformation("Offline China detection result negative, trying online detection");
+
             // Try online detection
             var onlineService = new OnlineChinaDetectService(new());
             var onlineResult = await onlineService.Detect(DetectionMethod.IPAddress | DetectionMethod.GFWTest);
