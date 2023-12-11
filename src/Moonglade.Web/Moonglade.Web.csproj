@@ -36,7 +36,7 @@
     <ItemGroup>
         <PackageReference Include="AspNetCoreRateLimit" Version="5.0.0" />
         <PackageReference Include="Edi.ChinaDetector" Version="0.2.251-preview.1" />
-        <PackageReference Include="Edi.ImageWatermark" Version="2.11.1" />
+        <PackageReference Include="Edi.ImageWatermark" Version="2.11.2" />
         <PackageReference Include="Edi.PasswordGenerator" Version="1.1.0" />
         <PackageReference Include="UAParser" Version="3.1.47" />
         <PackageReference Include="WilderMinds.MetaWeblog" Version="5.1.1" />
