@@ -7,6 +7,7 @@
     ViewBag.TitlePrefix = null;
     ViewBag.BodyClass = "body-home-index bg-gray-1";
     ViewBag.ActionName = "Index";
+
 }
 
 <h3 class="d-flex align-items-center mb-4">
@@ -20,6 +21,7 @@
         <select class="form-select form-select-sm" asp-for="SortBy" id="sort-selection" title="Selection box for sort post list by recent or featured">
             <option value="Recent">Recent</option>
             <option value="Featured">Featured</option>
+            <option value="Popular">Most popular</option>
         </select>
     </span>
     

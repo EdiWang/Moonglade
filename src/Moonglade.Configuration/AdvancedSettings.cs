@@ -5,6 +5,7 @@ namespace Moonglade.Configuration;
 
 public class AdvancedSettings : IBlogSettings
 {
+
 	[Display(Name = "robots.txt")]
 	[DataType(DataType.MultilineText)]
 	[MaxLength(1024)]

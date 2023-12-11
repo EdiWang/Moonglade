@@ -2,45 +2,66 @@ AZUREPAT=$AZUREPAT
 AZUSERNAME=$AZUSERNAME
 AZUSER_EMAIL=$AZUSER_EMAIL
 AZORG=$AZORG
+<<<<<<< HEAD
+git clone https://github.com/saigkill/Moonglade ./Moonglade-gh-master
+git clone https://github.com/saigkill/Moonglade ./Moonglade-gh-develop
+
+cd Moonglade-gh-master
+rm -rf .git
+
+cd Moonglade-gh-develop
+git checkout develop
+rm -rf .git
+
+cd ..
+
+GIT_CMD_REPOSITORY="https://$AZUSERNAME:$AZUREPAT@dev.azure.com/$AZORG/Moonglade/_git/Moonglade"
+git clone $GIT_CMD_REPOSITORY ./Moonglade-az
+cp -r Moonglade-gh-master/* Moonglade-az/
+
+pushd Moonglade-az
+=======
 GHUSER=$GHUSER
 GHPAT=$GHPAT
+>>>>>>> develop
 
 git config --global user.email "$AZUSER_EMAIL"
 git config --global user.name "$AZUSERNAME"
 
-git clone https://$GHUSER:$GHPAT@github.com/$GHUSER/Moonglade ./Moonglade-gh
+<<<<<<< HEAD
+git add .
+git commit -m "sync prod from git to azure"
+git push
+
+git checkout develop
+
+popd
+
+cp -r Moonglade-gh-develop/* Moonglade-az/
+
+pushd Moonglade-az
+
+git add .
+git commit -m "sync dev from git to azure"
+git push
+
+popd
+=======
+git clone https://$GHUSER:$GHPAT@github.com/saigkill/Moonglade ./Moonglade-gh
 GIT_CMD_REPOSITORY="https://$AZUSERNAME:$AZUREPAT@dev.azure.com/$AZORG/Moonglade/_git/Moonglade"
-git clone $GIT_CMD_REPOSITORY ./Moonglade-az-develop
-git clone $GIT_CMD_REPOSITORY ./Moonglade-az-master
+git clone $GIT_CMD_REPOSITORY ./Moonglade-az
 
-echo "Checking out develop"
-pushd Moonglade-az-develop
-git checkout develop
+cd Moonglade-az
 rm -rf .git
-popd
+cd ..
 
-echo "Checking out master"
-pushd Moonglade-az-master
-git checkout master
-rm -rf .git
-popd
-
-echo "Copying new stuff from Azure dev to Github"
-cp -r Moonglade-az-develop/* Moonglade-gh/
-
-echo "Checking out master and add new stuff"
-pushd Moonglade-gh
-git checkout develop
-git add .
-git commit -m "sync dev from azure to github"
-git push
-popd
+cp -r Moonglade-az/* Moonglade-gh/
 
 pushd Moonglade-gh
-git checkout master
-echo "Copying new stuff from Azure dev to Github"
-cp -r Moonglade-az-master/* .
+
 git add .
-git commit -m "sync master from azure to github"
+git commit -m "sync prod from azure to github"
 git push
+
 popd
+>>>>>>> develop

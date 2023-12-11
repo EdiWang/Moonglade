@@ -148,6 +148,7 @@ void ConfigureServices(IServiceCollection services)
 	services.AddLocalization(options => options.ResourcesPath = "Resources");
 	services.AddControllers(options => options.Filters.Add(new AutoValidateAntiforgeryTokenAttribute()))
 			.AddJsonOptions(options => options.JsonSerializerOptions.Converters.Add(new JsonStringEnumConverter()))
+            .AddViewLocalization(LanguageViewLocationExpanderFormat.Suffix)
 			.ConfigureApiBehaviorOptions(ConfigureApiBehavior.BlogApiBehavior);
 	services.AddRazorPages()
 			.AddViewLocalization(LanguageViewLocationExpanderFormat.Suffix)

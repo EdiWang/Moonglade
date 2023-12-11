@@ -1,4 +1,4 @@
-﻿using MediatR;
+using MediatR;
 using Moonglade.Data.Generated.Entities;
 using Moonglade.Data.Infrastructure;
 using Moonglade.Data.Spec;
@@ -14,6 +14,6 @@ public class GetCommentsQueryHandler(IRepository<CommentEntity> repo) : IRequest
         var spec = new CommentSpec(request.PageSize, request.PageIndex);
         var comments = repo.SelectAsync(spec, CommentDetailedItem.EntitySelector, ct);
 
-        return comments;
-    }
+		return comments;
+	}
 }

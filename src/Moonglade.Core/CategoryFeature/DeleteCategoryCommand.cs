@@ -1,4 +1,5 @@
-﻿using Edi.CacheAside.InMemory;
+using Edi.CacheAside.InMemory;
+
 using Moonglade.Data;
 using Moonglade.Data.Generated.Entities;
 
@@ -22,6 +23,6 @@ public class DeleteCategoryCommandHandler(
         await catRepo.DeleteAsync(request.Id, ct);
         cache.Remove(BlogCachePartition.General.ToString(), "allcats");
 
-        return OperationCode.Done;
-    }
+		return OperationCode.Done;
+	}
 }

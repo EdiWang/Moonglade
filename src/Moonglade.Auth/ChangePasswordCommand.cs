@@ -1,4 +1,4 @@
-﻿using Moonglade.Data.Generated.Entities;
+using Moonglade.Data.Generated.Entities;
 using Moonglade.Data.Infrastructure;
 using Moonglade.Utils;
 
@@ -16,9 +16,9 @@ public class ChangePasswordCommandHandler(IRepository<LocalAccountEntity> repo) 
             throw new InvalidOperationException($"LocalAccountEntity with Id '{request.Id}' not found.");
         }
 
-        var newSalt = Helper.GenerateSalt();
-        account.PasswordSalt = newSalt;
-        account.PasswordHash = Helper.HashPassword2(request.ClearPassword, newSalt);
+		var newSalt = Helper.GenerateSalt();
+		account.PasswordSalt = newSalt;
+		account.PasswordHash = Helper.HashPassword2(request.ClearPassword, newSalt);
 
         await repo.UpdateAsync(account, ct);
     }

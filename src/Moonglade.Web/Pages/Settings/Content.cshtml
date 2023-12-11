@@ -1,7 +1,7 @@
 @page "/admin/settings/content"
 @inject IConfiguration Configuration
 
-@section scripts {
+@section scripts{
     <script type="module">
         import * as settings from '/js/app/admin.settings.module.js';
 
@@ -25,7 +25,7 @@
     var settings = BlogConfig.ContentSettings;
 }
 
-@section admintoolbar {
+@section admintoolbar{
     <partial name="_SettingsHeader" />
 }
 
@@ -61,20 +61,20 @@
                         <div class="col-md-5 text-end">
                             <div class="form-check form-check-inline">
                                 @Html.RadioButtonFor(model => settings.CommentProvider, CommentProvider.BuiltIn, new
-                                    {
-                                        id = CommentProvider.BuiltIn.ToString(),
-                                        @class = "form-check-input comment-provider-checkbox",
-                                        onchange = "window.toggleCommentSettingsUI()"
-                                    })
+                                {
+                                id = CommentProvider.BuiltIn.ToString(),
+                                @class = "form-check-input comment-provider-checkbox",
+                                onchange = "window.toggleCommentSettingsUI()"
+                                })
                                 <label class="form-check-label" for="@CommentProvider.BuiltIn">@SharedLocalizer["Built in"]</label>
                             </div>
                             <div class="form-check form-check-inline">
                                 @Html.RadioButtonFor(model => settings.CommentProvider, CommentProvider.ThirdParty, new
-                                    {
-                                        id = CommentProvider.ThirdParty.ToString(),
-                                        @class = "form-check-input comment-provider-checkbox",
-                                        onchange = "window.toggleCommentSettingsUI()"
-                                    })
+                                {
+                                id = CommentProvider.ThirdParty.ToString(),
+                                @class = "form-check-input comment-provider-checkbox",
+                                onchange = "window.toggleCommentSettingsUI()"
+                                })
                                 <label class="form-check-label" for="@CommentProvider.ThirdParty">@SharedLocalizer["Third party"]</label>
                             </div>
                         </div>
@@ -356,48 +356,6 @@
                                           class="form-control form-control-sm h-100px"
                                           spellcheck="false"></textarea>
                                 <label class="form-label" asp-for="@settings.CalloutSectionHtmlPitch"></label>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <div>
-                    <h4 class="admin-subtitle fw-bold mb-2">@SharedLocalizer["content-additional"]</h4>
-                    <div class="settings-entry2 row align-items-center py-3 px-2 rounded-3 shadow-sm border bg-white mb-2">
-                        <div class="col-auto">
-                            <i class="bi-coin settings-entry-icon"></i>
-                        </div>
-                        <div class="col">
-                            <label asp-for="@settings.EnableDonationService" class="form-check-label"></label>
-                        </div>
-                        <div class="col-md-5 text-end">
-                            <div class="form-check form-switch form-control-lg">
-                                <input type="checkbox" name="EnableDonationService" value="true" class="form-check-input" @(settings.EnableDonationService ? "checked" : null)>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="settings-entry2 row align-items-center py-3 px-2 rounded-3 shadow-sm border bg-white mb-2">
-                        <div class="col-auto">
-                            <i class="bi-share settings-entry-icon"></i>
-                        </div>
-                        <div class="col">
-                            <label asp-for="@settings.EnableSharingButtons" class="form-check-label"></label>
-                        </div>
-                        <div class="col-md-5 text-end">
-                            <div class="form-check form-switch form-control-lg">
-                                <input type="checkbox" name="EnableSharingButtons" value="true" class="form-check-input" @(settings.EnableSharingButtons ? "checked" : null)>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="settings-entry2 row align-items-center py-3 px-2 rounded-3 shadow-sm border bg-white mb-2">
-                        <div class="col-auto">
-                            <i class="bi-share settings-entry-icon"></i>
-                        </div>
-                        <div class="col">
-                            <label asp-for="@settings.ShareThisPropertyId" class="form-check-label"></label>
-                        </div>
-                        <div class="col-md-5 text-end">
-                            <div class="form-check form-switch form-control-lg">
-                                <input asp-for="@settings.ShareThisPropertyId" class="form-control" />
                             </div>
                         </div>
                     </div>

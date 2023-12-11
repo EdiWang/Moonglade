@@ -15,7 +15,9 @@
 
   <ItemGroup>
     <ProjectReference Include="..\Moonglade.Configuration\Moonglade.Configuration.csproj" />
+
     <ProjectReference Include="..\Moonglade.Data.ExternalAPI\Moonglade.Data.ExternalAPI.csproj" />
+
     <ProjectReference Include="..\Moonglade.Utils\Moonglade.Utils.csproj" />
   </ItemGroup>
 

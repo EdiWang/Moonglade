@@ -6,77 +6,71 @@ public interface IBlogSettings
 
 public interface IBlogConfig
 {
-    GeneralSettings GeneralSettings { get; set; }
-    ContentSettings ContentSettings { get; set; }
-    NotificationSettings NotificationSettings { get; set; }
-    FeedSettings FeedSettings { get; set; }
-    ImageSettings ImageSettings { get; set; }
-    AdvancedSettings AdvancedSettings { get; set; }
-    CustomStyleSheetSettings CustomStyleSheetSettings { get; set; }
-    CustomMenuSettings CustomMenuSettings { get; set; }
-    SocialProfileSettings SocialProfileSettings { get; set; }
-    IEnumerable<int> LoadFromConfig(IDictionary<string, string> config);
-    KeyValuePair<string, string> UpdateAsync<T>(T blogSettings) where T : IBlogSettings;
+	GeneralSettings GeneralSettings { get; set; }
+	ContentSettings ContentSettings { get; set; }
+	NotificationSettings NotificationSettings { get; set; }
+	FeedSettings FeedSettings { get; set; }
+	ImageSettings ImageSettings { get; set; }
+	AdvancedSettings AdvancedSettings { get; set; }
+	CustomStyleSheetSettings CustomStyleSheetSettings { get; set; }
+	SocialProfileSettings SocialProfileSettings { get; set; }
+	CustomMenuSettings CustomMenuSettings { get; set; }
+	IEnumerable<int> LoadFromConfig(IDictionary<string, string> config);
+	KeyValuePair<string, string> UpdateAsync<T>(T blogSettings) where T : IBlogSettings;
 }
 
 public class BlogConfig : IBlogConfig
 {
-    public GeneralSettings GeneralSettings { get; set; }
+	public GeneralSettings GeneralSettings { get; set; }
 
-    public ContentSettings ContentSettings { get; set; }
+	public ContentSettings ContentSettings { get; set; }
 
-    public NotificationSettings NotificationSettings { get; set; }
+	public NotificationSettings NotificationSettings { get; set; }
 
-    public FeedSettings FeedSettings { get; set; }
+	public FeedSettings FeedSettings { get; set; }
 
-    public ImageSettings ImageSettings { get; set; }
+	public ImageSettings ImageSettings { get; set; }
 
-    public AdvancedSettings AdvancedSettings { get; set; }
+	public AdvancedSettings AdvancedSettings { get; set; }
 
-    public CustomStyleSheetSettings CustomStyleSheetSettings { get; set; }
+	public CustomStyleSheetSettings CustomStyleSheetSettings { get; set; }
 
-    public SocialProfileSettings SocialProfileSettings { get; set; }
+	public SocialProfileSettings SocialProfileSettings { get; set; }
 
-    public CustomMenuSettings CustomMenuSettings { get; set; }
+	public CustomMenuSettings CustomMenuSettings { get; set; }
 
-    public IEnumerable<int> LoadFromConfig(IDictionary<string, string> config)
-    {
-        ContentSettings = AssignValueForConfigItem(1, ContentSettings.DefaultValue, config);
-        NotificationSettings = AssignValueForConfigItem(2, NotificationSettings.DefaultValue, config);
-        FeedSettings = AssignValueForConfigItem(3, FeedSettings.DefaultValue, config);
-        GeneralSettings = AssignValueForConfigItem(4, GeneralSettings.DefaultValue, config);
-        ImageSettings = AssignValueForConfigItem(5, ImageSettings.DefaultValue, config);
-        AdvancedSettings = AssignValueForConfigItem(6, AdvancedSettings.DefaultValue, config);
-        CustomStyleSheetSettings = AssignValueForConfigItem(7, CustomStyleSheetSettings.DefaultValue, config);
-        CustomMenuSettings = AssignValueForConfigItem(10, CustomMenuSettings.DefaultValue, config);
-        SocialProfileSettings = AssignValueForConfigItem(11, SocialProfileSettings, config);
+	public IEnumerable<int> LoadFromConfig(IDictionary<string, string> config)
+	{
+		GeneralSettings = config[nameof(GeneralSettings)].FromJson<GeneralSettings>();
+		ContentSettings = config[nameof(ContentSettings)].FromJson<ContentSettings>();
+		NotificationSettings = config[nameof(NotificationSettings)].FromJson<NotificationSettings>();
+		FeedSettings = config[nameof(FeedSettings)].FromJson<FeedSettings>();
+		ImageSettings = config[nameof(ImageSettings)].FromJson<ImageSettings>();
+		AdvancedSettings = config[nameof(AdvancedSettings)].FromJson<AdvancedSettings>();
+		CustomStyleSheetSettings = config[nameof(CustomStyleSheetSettings)].FromJson<CustomStyleSheetSettings>();
+		SocialProfileSettings = config[nameof(SocialProfileSettings)].FromJson<SocialProfileSettings>();
 
-        return _keysToInit.AsEnumerable();
-    }
+		// Curry code: only migrate new keys added after version 12.9.x
+		if (config.ContainsKey(nameof(CustomMenuSettings)))
+		{
+			CustomMenuSettings = config[nameof(CustomMenuSettings)].FromJson<CustomMenuSettings>();
+		}
+		else
+		{
+			CustomMenuSettings = new();
+			yield return 10;
+		}
+	}
 
-    private readonly List<int> _keysToInit = new();
-    private T AssignValueForConfigItem<T>(int index, T defaultValue, IDictionary<string, string> config) where T : IBlogSettings
-    {
-	    var name = typeof(T).Name;
+	public KeyValuePair<string, string> UpdateAsync<T>(T blogSettings) where T : IBlogSettings
+	{
+		var name = typeof(T).Name;
+		var json = blogSettings.ToJson();
 
-	    if (config.TryGetValue(name, out var value))
-	    {
-		    return value.FromJson<T>();
-	    }
+		// update singleton itself
+		var prop = GetType().GetProperty(name);
+		prop?.SetValue(this, blogSettings);
 
-	    _keysToInit.Add(index);
-	    return defaultValue;
-    }
-
-    public KeyValuePair<string, string> UpdateAsync<T>(T blogSettings) where T : IBlogSettings
-    {
-        var name = typeof(T).Name;
-        var json = blogSettings.ToJson();
-
-        // update singleton itself
-        var prop = GetType().GetProperty(name);
-        prop?.SetValue(this, blogSettings);
-
-        return new(name, json);
-    }
+		return new(name, json);
+	}
 }

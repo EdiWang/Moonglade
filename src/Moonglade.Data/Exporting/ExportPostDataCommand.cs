@@ -1,4 +1,4 @@
-﻿using MediatR;
+using MediatR;
 using Moonglade.Data.Exporting.Exporters;
 using Moonglade.Data.Generated.Entities;
 using Moonglade.Data.Infrastructure;
@@ -29,6 +29,6 @@ public class ExportPostDataCommandHandler(IRepository<PostEntity> repo) : IReque
             Tags = p.Tags.Select(pt => pt.DisplayName)
         }, ct);
 
-        return poExportData;
-    }
+		return poExportData;
+	}
 }

@@ -1,0 +1,640 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <!--
+    Microsoft ResX Schema
+
+    Version 2.0
+
+    The primary goals of this format is to allow a simple XML format
+    that is mostly human readable. The generation and parsing of the
+    various data types are done through the TypeConverter classes
+    associated with the data types.
+
+    Example:
+
+    ... ado.net/XML headers & schema ...
+    <resheader name="resmimetype">text/microsoft-resx</resheader>
+    <resheader name="version">2.0</resheader>
+    <resheader name="reader">System.Resources.ResXResourceReader, System.Windows.Forms, ...</resheader>
+    <resheader name="writer">System.Resources.ResXResourceWriter, System.Windows.Forms, ...</resheader>
+    <data name="Name1"><value>this is my long string</value><comment>this is a comment</comment></data>
+    <data name="Color1" type="System.Drawing.Color, System.Drawing">Blue</data>
+    <data name="Bitmap1" mimetype="application/x-microsoft.net.object.binary.base64">
+        <value>[base64 mime encoded serialized .NET Framework object]</value>
+    </data>
+    <data name="Icon1" type="System.Drawing.Icon, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
+        <value>[base64 mime encoded string representing a byte array form of the .NET Framework object]</value>
+        <comment>This is a comment</comment>
+    </data>
+
+    There are any number of "resheader" rows that contain simple
+    name/value pairs.
+
+    Each data row contains a name, and value. The row also contains a
+    type or mimetype. Type corresponds to a .NET class that support
+    text/value conversion through the TypeConverter architecture.
+    Classes that don't support this are serialized and stored with the
+    mimetype set.
+
+    The mimetype is used for serialized objects, and tells the
+    ResXResourceReader how to depersist the object. This is currently not
+    extensible. For a given mimetype the value must be set accordingly:
+
+    Note - application/x-microsoft.net.object.binary.base64 is the format
+    that the ResXResourceWriter will generate, however the reader can
+    read any of the formats listed below.
+
+    mimetype: application/x-microsoft.net.object.binary.base64
+    value   : The object must be serialized with
+            : System.Runtime.Serialization.Formatters.Binary.BinaryFormatter
+            : and then encoded with base64 encoding.
+
+    mimetype: application/x-microsoft.net.object.soap.base64
+    value   : The object must be serialized with
+            : System.Runtime.Serialization.Formatters.Soap.SoapFormatter
+            : and then encoded with base64 encoding.
+
+    mimetype: application/x-microsoft.net.object.bytearray.base64
+    value   : The object must be serialized into a byte array
+            : using a System.ComponentModel.TypeConverter
+            : and then encoded with base64 encoding.
+    -->
+  <xsd:schema id="root" xmlns="" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
+    <xsd:import namespace="http://www.w3.org/XML/1998/namespace" />
+    <xsd:element name="root" msdata:IsDataSet="true">
+      <xsd:complexType>
+        <xsd:choice maxOccurs="unbounded">
+          <xsd:element name="metadata">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" />
+              </xsd:sequence>
+              <xsd:attribute name="name" use="required" type="xsd:string" />
+              <xsd:attribute name="type" type="xsd:string" />
+              <xsd:attribute name="mimetype" type="xsd:string" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="assembly">
+            <xsd:complexType>
+              <xsd:attribute name="alias" type="xsd:string" />
+              <xsd:attribute name="name" type="xsd:string" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="data">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+                <xsd:element name="comment" type="xsd:string" minOccurs="0" msdata:Ordinal="2" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" msdata:Ordinal="1" />
+              <xsd:attribute name="type" type="xsd:string" msdata:Ordinal="3" />
+              <xsd:attribute name="mimetype" type="xsd:string" msdata:Ordinal="4" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="resheader">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" />
+            </xsd:complexType>
+          </xsd:element>
+        </xsd:choice>
+      </xsd:complexType>
+    </xsd:element>
+  </xsd:schema>
+  <resheader name="resmimetype">
+    <value>text/microsoft-resx</value>
+  </resheader>
+  <resheader name="version">
+    <value>2.0</value>
+  </resheader>
+  <resheader name="reader">
+    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <resheader name="writer">
+    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <data name="analytics-blurp" xml:space="preserve">
+    <value>The web analysis (also known as "range measurement") is used to evaluate the flow of visitors to our online offer and can measure behavior, interests or demographic information about visitors, such as include age or gender, as pseudonymous values. With the help of the range analysis we can e.g. recognize at which time our online offer or its functions or content are used most often or invite you to reuse. We can also understand which areas need optimization.</value>
+  </data>
+  <data name="analytics-data" xml:space="preserve">
+    <value>&lt;strong&gt; Types of data processed: &lt;/strong&gt; Usage data (e.g. websites visited, interest in content, access times), meta / communication data (e.g. device information, IP addresses).</value>
+  </data>
+  <data name="analytics-google" xml:space="preserve">
+    <value>&lt;strong&gt;Google Analytics:&lt;/strong&gt; Reach measurement and web analysis; Serviceprovider: Google Ireland Limited, Gordon House, Barrow Street, Dublin 4, Irland, Parent company: Google LLC, 1600 Amphitheatre Parkway, Mountain View, CA 94043, USA; Website: &lt;a href="https://marketingplatform.google.com/intl/de/about/analytics/" target="_blank"&gt;https://marketingplatform.google.com/intl/de/about/analytics/&lt;/a&gt;; Data protection: &lt;a href="https://policies.google.com/privacy" target="_blank"&gt;https://policies.google.com/privacy&lt;/a&gt;.</value>
+  </data>
+  <data name="analytics-ip" xml:space="preserve">
+    <value>The IP addresses of the users are also saved. However, we use an IP masking process (i.e. pseudonymisation by shortening the IP address) to protect users. In general, no clear user data (such as e-mail addresses or names) are stored in the context of web analysis, A / B testing and optimization, but pseudonyms. This means that we and the providers of the software used do not know the actual identity of the users, but only the information stored in their profiles for the purposes of the respective procedures.</value>
+  </data>
+  <data name="analytics-legal" xml:space="preserve">
+    <value>&lt;strong&gt; Security measures: &lt;/strong&gt; IP masking (pseudonymization of the IP address).</value>
+  </data>
+  <data name="analytics-legal-bases" xml:space="preserve">
+    <value>&lt;strong&gt; Notes on legal bases: &lt;/strong&gt; If we ask users for their consent to the use of third-party providers, the legal basis for processing data is consent. Otherwise, user data will be processed on the basis of our legitimate interests (i.e. interest in efficient, economical and recipient-friendly services). In this context, we would like to draw your attention to the information on the use of cookies in this data protection declaration.</value>
+  </data>
+  <data name="analytics-purpose" xml:space="preserve">
+    <value>&lt;strong&gt; Purposes of processing: &lt;/strong&gt; Range measurement (e.g. access statistics, recognition of returning visitors), tracking (e.g. interest / behavioral profiling, use of cookies), conversion measurement (measurement of the effectiveness of marketing measures), profiling (creation of user profiles) .</value>
+  </data>
+  <data name="analytics-security" xml:space="preserve">
+    <value>&lt;strong&gt; Security measures: &lt;/strong&gt; IP masking (pseudonymization of the IP address).</value>
+  </data>
+  <data name="analytics-services" xml:space="preserve">
+    <value>&lt;strong&gt; Services and service providers used: &lt;/strong&gt;</value>
+  </data>
+  <data name="analytics-tests" xml:space="preserve">
+    <value>In addition to web analysis, we can also use test procedures to e.g. to test and optimize different versions of our online offer or its components.</value>
+  </data>
+  <data name="analytics-userprofile" xml:space="preserve">
+    <value>For these purposes, so-called user profiles can be created and stored in a file (so-called "cookie") or similar processes can be used for the same purpose. This information can e.g. content viewed, websites visited and elements and technical information used there, such as the browser used, the computer system used and information on usage times. If users have consented to their location data being collected, this can also be processed, depending on the provider.</value>
+  </data>
+  <data name="blogs-affected-person" xml:space="preserve">
+    <value>&lt;strong&gt; Affected persons: &lt;/strong&gt; Users (e.g. website visitors, users of online services).</value>
+  </data>
+  <data name="blogs-blurp" xml:space="preserve">
+    <value>We use blogs or comparable means of online communication and publication (hereinafter "publication medium"). The reader's data are only processed for the purposes of the publication medium to the extent that it is necessary for its presentation and communication between authors and readers or for security reasons. We also refer to the information on the processing of visitors to our publication medium in the context of this data protection notice.</value>
+  </data>
+  <data name="blogs-comments" xml:space="preserve">
+    <value>&lt;strong&gt; Comments and posts &lt;/strong&gt;: If users leave comments or other posts, their IP addresses can be saved on the basis of our legitimate interests. This is done for our safety if someone leaves illegal content in comments and posts (insults, prohibited political propaganda, etc.). In this case we can be prosecuted for the comment or contribution ourselves and are therefore interested in the identity of the author.</value>
+  </data>
+  <data name="blogs-comments-data" xml:space="preserve">
+    <value>The personal information communicated in the context of the comments and contributions, any contact and website information as well as the content will be stored permanently by us until the user objects.</value>
+  </data>
+  <data name="blogs-legal" xml:space="preserve">
+    <value>&lt;strong&gt; Legal basis: &lt;/strong&gt; Contract fulfillment and pre-contractual inquiries (Art. 6 Para. 1 S. 1 lit. b. GDPR), legitimate interests (Art. 6 Par. 1 S. 1 lit. f. GDPR).</value>
+  </data>
+  <data name="blogs-processed-data" xml:space="preserve">
+    <value>&lt;strong&gt; Processed data types: &lt;/strong&gt; Inventory data (e.g. names, addresses), contact data (e.g. e-mail, telephone numbers), content data (e.g. entries in online forms), usage data (e.g. websites visited, interest in content, access times), meta - / communication data (e.g. device information, IP addresses).</value>
+  </data>
+  <data name="blogs-purpose" xml:space="preserve">
+    <value>&lt;strong&gt; Purposes of processing: &lt;/strong&gt; Provision of contractual services and customer service, feedback (e.g. collecting feedback via online form), security measures, administration and answering inquiries.</value>
+  </data>
+  <data name="blogs-spam" xml:space="preserve">
+    <value>Furthermore, we reserve the right to process user information for the purpose of spam detection on the basis of our legitimate interests.</value>
+  </data>
+  <data name="blogs-survey" xml:space="preserve">
+    <value>On the same legal basis, we reserve the right to save the users' IP addresses for the duration of surveys and to use cookies in order to avoid multiple votes.</value>
+  </data>
+  <data name="contact-affected" xml:space="preserve">
+    <value>&lt;strong&gt; Affected persons: &lt;/strong&gt; Communication partner.</value>
+  </data>
+  <data name="contact-answering" xml:space="preserve">
+    <value>The answering of contact inquiries in the context of contractual or pre-contractual relationships takes place in order to fulfill our contractual obligations or to answer (pre) contractual inquiries and otherwise on the basis of the legitimate interests in answering the inquiries.</value>
+  </data>
+  <data name="contact-data-types" xml:space="preserve">
+    <value>&lt;strong&gt; Processed data types: &lt;/strong&gt; Inventory data (e.g. names, addresses), contact details (e.g. e-mail, telephone numbers), content data (e.g. entries in online forms).</value>
+  </data>
+  <data name="contact-legal" xml:space="preserve">
+    <value>&lt;strong&gt; Legal basis: &lt;/strong&gt; Contract fulfillment and pre-contractual inquiries (Art. 6 Para. 1 S. 1 lit. b. GDPR), legitimate interests (Art. 6 Par. 1 S. 1 lit. f. GDPR).</value>
+  </data>
+  <data name="contact-purposes" xml:space="preserve">
+    <value>&lt;strong&gt; Purposes of processing: &lt;/strong&gt; Contact inquiries and communication.</value>
+  </data>
+  <data name="contact-us" xml:space="preserve">
+    <value>When you contact us (e.g. via the contact form, email, telephone or via social media), the details of the inquiring person are processed, insofar as this is necessary to answer the contact inquiries and any requested measures.</value>
+  </data>
+  <data name="cookies-blurp" xml:space="preserve">
+    <value>Cookies are text files that contain data from websites or domains that have been visited and are stored on the user's computer by a browser. A cookie is primarily used to store information about a user during or after their visit to an online offer. In addition to the information stored, e.g. the language settings on a website, the login status, a shopping cart or the place where a video was viewed. The term cookies also includes other technologies that perform the same functions as cookies (e.g. if user information is stored using pseudonymous online identifiers, also known as "user IDs")</value>
+  </data>
+  <data name="cookies-legal-basis" xml:space="preserve">
+    <value>&lt;strong&gt; Legal basis: &lt;/strong&gt; Consent (Art. 6 Para. 1 S. 1 lit. a. GDPR), legitimate interests (Art. 6 Para. 1 S. 1 lit. f. GDPR).</value>
+  </data>
+  <data name="cookies-type-affected" xml:space="preserve">
+    <value>&lt;strong&gt; Affected persons: &lt;/strong&gt; Users (e.g. website visitors, users of online services).</value>
+  </data>
+  <data name="cookies-type-data" xml:space="preserve">
+    <value>&lt;strong&gt; Types of data processed: &lt;/strong&gt; Usage data (e.g. websites visited, interest in content, access times), meta / communication data (e.g. device information, IP addresses).</value>
+  </data>
+  <data name="cookies-type-essential" xml:space="preserve">
+    <value>&lt;strong&gt; Necessary (also: essential or absolutely necessary) cookies: &lt;/strong&gt; Cookies can be absolutely necessary for the operation of a website (e.g. to save logins or other user input or for reasons of
+         Security).</value>
+  </data>
+  <data name="cookies-type-first" xml:space="preserve">
+    <value>&lt;strong&gt;First party cookies: &lt;/strong&gt;&amp;nbsp; First party cookies are set by us.</value>
+  </data>
+  <data name="cookies-type-permanent" xml:space="preserve">
+    <value>&lt;strong&gt; Permanent cookies: &lt;/strong&gt;&amp;nbsp;Permanent cookies are saved even after the browser is closed. For example, the login status can be saved or preferred content can be displayed directly when the user visits a website
+         revisited. The interests of users who are used to measure reach or for marketing purposes can also be stored in such a cookie.</value>
+  </data>
+  <data name="cookies-type-processing" xml:space="preserve">
+    <value>&lt;strong&gt; Processing of cookie data on the basis of consent &lt;/strong&gt;: Before we process or have data processed in the context of the use of cookies, we ask the user for consent that can be revoked at any time. Before the consent has not been given, cookies may be used, which are absolutely necessary for the operation of our online offer.</value>
+  </data>
+  <data name="cookies-type-revocation" xml:space="preserve">
+    <value>&lt;strong&gt; General information on revocation and objection (opt-out): &lt;/strong&gt; Depending on whether the processing takes place on the basis of consent or legal permission, you have the option at any time to revoke your consent or to process your data to object through cookie technologies (collectively referred to as "opt-out"). You can first explain your objection using the settings of your browser, e.g. by deactivating the use of cookies (which can also limit the functionality of our online offer). An objection to the use of cookies for online marketing purposes can also be made using a variety of services, especially in the case of tracking, via the websites &lt;a href="https://optout.aboutads.info" target="_blank"&gt; https://optout.aboutads.info &lt;/a&gt; and &lt;a href="https://www.youronlinechoices.com/" target="_blank"&gt; https://www.youronlinechoices.com/ &lt;/a&gt; be explained. In addition, you can receive further objection notices in the context of the information on the service providers and cookies used.</value>
+  </data>
+  <data name="cookies-type-rights" xml:space="preserve">
+    <value>&lt;strong&gt; Notes on legal bases: &lt;/strong&gt; The legal basis on which we process your personal data with the help of cookies depends on whether we ask for your consent. If this is the case and you consent to the use of cookies, the legal basis for processing your data is the declared consent. Otherwise, the data processed with the help of cookies will be processed on the basis of our legitimate interests (e.g. in the business operation of our online offer and its improvement) or, if the use of cookies is necessary, to fulfill our contractual obligations.</value>
+  </data>
+  <data name="cookies-type-save" xml:space="preserve">
+    <value>&lt;strong&gt; Storage duration: &lt;/strong&gt; If we do not provide you with any explicit information on the storage duration of permanent cookies (e.g. in the context of a so-called cookie opt-in), please assume that the storage duration will be up to two Years.</value>
+  </data>
+  <data name="cookies-type-statistic" xml:space="preserve">
+    <value>&lt;strong&gt; Statistics, marketing and personalization cookies &lt;/strong&gt;: Furthermore, cookies are usually also used in the context of range measurement and when the interests of a user or his behavior (e.g. viewing certain content, using functions, etc. ) are saved on individual websites in a user profile. Such profiles are used to provide users with e.g. Display content that matches their potential interests. This process is also known as "tracking", i.e. following up the potential interests of users. Insofar as we use cookies or "tracking" technologies, we will inform you separately in our data protection declaration or in the context of obtaining consent.</value>
+  </data>
+  <data name="cookies-type-third" xml:space="preserve">
+    <value>&lt;strong&gt; Third-party cookies (also: third-party cookies) &lt;/strong&gt;: Third-party cookies are mainly used by advertisers (so-called third parties) to process user information.</value>
+  </data>
+  <data name="cookies-types" xml:space="preserve">
+    <value>&lt;strong&gt; A distinction is made between the following cookie types and functions: &lt;/strong&gt;</value>
+  </data>
+  <data name="cookies-types-temp" xml:space="preserve">
+    <value>&lt;strong&gt; Temporary cookies (also: session or session cookies): &lt;/strong&gt;&amp;nbsp;Temporary cookies are deleted at the latest after a user has left an online offer and closed his browser.</value>
+  </data>
+  <data name="delete" xml:space="preserve">
+    <value>Deletion of data</value>
+  </data>
+  <data name="glossary-blurp" xml:space="preserve">
+    <value>This section gives you an overview of the terms used in this data protection declaration. Many of the terms are taken from the law and primarily defined in Art. 4 GDPR. The legal definitions are binding.
+     The following explanations, however, are primarily intended to aid understanding. The terms are sorted alphabetically.</value>
+  </data>
+  <data name="glossary-conversion-measurement" xml:space="preserve">
+    <value>&lt;strong&gt; Conversion measurement: &lt;/strong&gt; The conversion measurement (also known as "visit action evaluation") is a procedure with which the effectiveness of marketing measures can be determined. For this purpose, a cookie is usually stored on the users' devices within the websites on which the marketing measures take place and then retrieved again on the target website. For example, we can see whether the advertisements we placed on other websites were successful.</value>
+  </data>
+  <data name="glossary-ip-mask" xml:space="preserve">
+    <value>&lt;strong&gt; IP masking: &lt;/strong&gt; "IP masking" is a method in which the last octet, ie the last two numbers of an IP address, is deleted so that the IP address is no longer the This is why IP masking is a means of pseudonymising processing methods, especially in online marketing.</value>
+  </data>
+  <data name="glossary-marketing" xml:space="preserve">
+    <value>&lt;strong&gt; Interest-based and behavior-related marketing: &lt;/strong&gt; One speaks of interest-based and / or behavior-related marketing when potential interests of users in advertisements and other content are predetermined as precisely as possible.
+         This is done on the basis of information about their previous behavior (e.g. visiting certain websites and lingering on them, buying behavior or interaction with other users), which are stored in a so-called profile. Cookies are usually used for these purposes.</value>
+  </data>
+  <data name="glossary-personal-data" xml:space="preserve">
+    <value>&lt;strong&gt; Personal data: &lt;/strong&gt; "Personal data" are all information that relates to an identified or identifiable natural person (hereinafter "data subject"); A natural person is regarded as identifiable who can be identified directly or indirectly, in particular by means of assignment to an identifier such as a name, an identification number, location data, an online identifier (e.g. cookie) or one or more special features, which express the physical, physiological, genetic, psychological, economic, cultural or social identity of this natural person.</value>
+  </data>
+  <data name="glossary-processing" xml:space="preserve">
+    <value>&lt;strong&gt; Processing: &lt;/strong&gt; "Processing" is any process carried out with or without the help of automated processes or any such series of processes in connection with personal data. The term goes far and includes practically every handling of data, be it the collection, the evaluation, the storage, the transmission or the deletion.</value>
+  </data>
+  <data name="glossary-profiling" xml:space="preserve">
+    <value>&lt;strong&gt; Profiling: &lt;/strong&gt; "Profiling" is any type of automated processing of personal data that consists of using this personal data to identify certain personal aspects that relate to a natural person (depending on Art Profiling includes analyzing, evaluating or predicting information regarding age, gender, location data and movement data, interaction with websites and their content, shopping behavior, social interactions with other people (e.g. interests in certain content or products , the click behavior on a website or the whereabouts) Cookies and web beacons are often used for purposes of profiling.</value>
+  </data>
+  <data name="glossary-range-measurement" xml:space="preserve">
+    <value>&lt;strong&gt; Range measurement: &lt;/strong&gt; The range measurement (also known as web analytics) is used to evaluate the flow of visitors to an online offer and can determine the behavior or interests of visitors in certain information, such as Content from web pages. With the help of the reach analysis, website owners can e.g. recognize at what time visitors visit your website and what content they are interested in. This enables them to e.g. better adapt the content of the website to the needs of its visitors. For the purpose of range analysis, pseudonymous cookies and web beacons are often used in order to recognize returning visitors and thus to obtain more precise analyzes of the use of an online offer.</value>
+  </data>
+  <data name="glossary-remarketing" xml:space="preserve">
+    <value>&lt;strong&gt; Remarketing: &lt;/strong&gt; One speaks of "remarketing" or "retargeting" when e.g. For advertising purposes, it is noted which products a user was interested in on a website in order to inform the user of these products on other websites, e.g. in advertisements, to remember.</value>
+  </data>
+  <data name="glossary-responsible" xml:space="preserve">
+    <value>&lt;strong&gt; Responsible: &lt;/strong&gt; "Responsible" is the natural or legal person, authority, institution or other body that decides alone or jointly with others on the purposes and means of processing personal data.</value>
+  </data>
+  <data name="glossary-title" xml:space="preserve">
+    <value>Glossary</value>
+  </data>
+  <data name="glossary-tracking" xml:space="preserve">
+    <value>&lt;strong&gt; Tracking: &lt;/strong&gt; One speaks of "tracking" when the behavior of users can be traced across several online offers. As a rule, behavior and interest information with regard to the online offers used is stored in cookies or on servers of the providers of Tracking technologies are stored (so-called profiling). This information can then be used, for example, to show users advertisements that are likely to correspond to their interests.</value>
+  </data>
+  <data name="introduction" xml:space="preserve">
+    <value>Introduction</value>
+  </data>
+  <data name="introduction-blurp" xml:space="preserve">
+    <value>With the following data protection declaration we would like to explain to you which types of your personal data (hereinafter also referred to as "data") we process, for what purposes and to what extent. The data protection declaration applies to all processing of personal data carried out by us, both within the framework the provision of our services and in particular on our websites, in mobile applications and within external online presences, such as our social media profiles (hereinafter collectively referred to as "online offer")</value>
+  </data>
+  <data name="introduction-gender" xml:space="preserve">
+    <value>The terms used are not gender specific.</value>
+  </data>
+  <data name="introduction-status" xml:space="preserve">
+    <value>Status:</value>
+  </data>
+  <data name="leer" xml:space="preserve">
+    <value>ew</value>
+  </data>
+  <data name="legal-bases-additionals" xml:space="preserve">
+    <value>&lt;strong&gt; National data protection regulations in Germany &lt;/strong&gt;: In addition to the data protection regulations of the General Data Protection Regulation, national data protection regulations apply in Germany. This includes in particular the law on the protection against misuse of personal data during data processing (Federal Data Protection Act - BDSG). The BDSG contains in particular special regulations on the right to information, the right to deletion, the right of objection, the processing of special categories of personal data, processing for other purposes and transmission as well as automated decision-making in individual cases, including profiling. It also regulates data processing for the purpose of employment (Section 26 BDSG), in particular with regard to the establishment, implementation or termination of employment relationships and the consent of employees. Furthermore, state data protection laws of the individual federal states can be applied.</value>
+  </data>
+  <data name="legal-bases-blurp" xml:space="preserve">
+    <value>In the following we share the legal basis of the General Data Protection Regulation (GDPR) on the basis of which we process the personal data. Please note that in addition to the provisions of the GDPR, the national data protection requirements in your or our country of residence and domicile may apply. If more specific legal bases are relevant in individual cases, we will inform you of this in the data protection declaration.</value>
+  </data>
+  <data name="legal-bases-consent" xml:space="preserve">
+    <value>&lt;strong&gt;Consent (Art. 6 Para. 1 S. 1 lit. a. GDPR) &lt;/strong&gt; - The data subject has given their consent to the processing of their personal data for a specific purpose or for several specific purposes.</value>
+  </data>
+  <data name="legal-bases-contract" xml:space="preserve">
+    <value>&lt;strong&gt; Contract fulfillment and pre-contractual inquiries (Art. 6 Para. 1 S. 1 lit. b. GDPR) &lt;/strong&gt; - The processing is necessary for the fulfillment of a contract to which the data subject is a party or for the implementation of pre-contractual measures required, which take place at the request of the data subject.</value>
+  </data>
+  <data name="legal-bases-control" xml:space="preserve">
+    <value>The measures include, in particular, securing the confidentiality, integrity and availability of data by controlling physical and electronic access to the data as well as the access, input, transfer, ensuring availability and their separation. Furthermore, we have set up procedures that ensure the exercise of data subject rights, the deletion of data and reactions to the threat to the data. Furthermore, we take the protection of personal data into account when developing or selecting hardware, software and procedures in accordance with the principle of data protection, through technology design and data protection-friendly default settings.</value>
+  </data>
+  <data name="legal-bases-interests" xml:space="preserve">
+    <value>&lt;strong&gt; Legitimate interests (Art. 6 Para. 1 S. 1 lit. f. GDPR) &lt;/strong&gt; - Processing is necessary to safeguard the legitimate interests of the person responsible or a third party, unless the interests or fundamental rights and freedoms of data subjects who require the protection of personal data prevail.</value>
+  </data>
+  <data name="legal-bases-measures" xml:space="preserve">
+    <value>We take appropriate technical and organizational measures in accordance with the legal requirements, taking into account the state of the art, the implementation costs and the type, scope, circumstances and purposes of processing as well as the different probabilities of occurrence and the extent of the threat to the rights and freedoms of natural persons to ensure a level of protection appropriate to the risk.</value>
+  </data>
+  <data name="legal-bases-ssl" xml:space="preserve">
+    <value>&lt;strong&gt; SSL encryption (https) &lt;/strong&gt;: We use SSL encryption to protect your data transmitted via our online offer. You can recognize such encrypted connections by the prefix https: // in the address line of your browser.</value>
+  </data>
+  <data name="onlinemarketing-affected" xml:space="preserve">
+    <value>&lt;strong&gt; Affected persons: &lt;/strong&gt; Users (e.g. website visitors, users of online services), interested parties.</value>
+  </data>
+  <data name="onlinemarketing-blurp" xml:space="preserve">
+    <value>We process personal data for online marketing purposes, which can include, in particular, the marketing of advertising space or the presentation of advertising and other content (collectively referred to as "content") based on the potential interests of users and the measurement of their effectiveness.</value>
+  </data>
+  <data name="onlinemarketing-cookies" xml:space="preserve">
+    <value>Unless otherwise stated, we ask you to assume that the cookies used will be stored for a period of two years.</value>
+  </data>
+  <data name="onlinemarketing-datatypes" xml:space="preserve">
+    <value>&lt;strong&gt; Types of data processed: &lt;/strong&gt; Usage data (e.g. websites visited, interest in content, access times), meta / communication data (e.g. device information, IP addresses).</value>
+  </data>
+  <data name="onlinemarketing-google" xml:space="preserve">
+    <value>&lt;strong&gt;Google Analytics:&lt;/strong&gt; Onlinemarketing and Web analysis; Service provider: Google Ireland Limited, Gordon House, Barrow Street, Dublin 4, Irland, Parent company: Google LLC, 1600 Amphitheatre Parkway, Mountain View, CA 94043, USA; Website: &lt;a href="https://marketingplatform.google.com/intl/de/about/analytics/" target="_blank"&gt;https://marketingplatform.google.com/intl/de/about/analytics/&lt;/a&gt;; Data privacy: &lt;a href="https://policies.google.com/privacy" target="_blank"&gt;https://policies.google.com/privacy&lt;/a&gt;;
+        Possibility of objection (Opt-Out): Opt-Out-Plugin: &lt;a href="https://tools.google.com/dlpage/gaoptout?hl=de" target="_blank"&gt;https://tools.google.com/dlpage/gaoptout?hl=de&lt;/a&gt;, Settings for the display of advertisements: &lt;a href="https://adssettings.google.com/authenticated" target="_blank"&gt;https://adssettings.google.com/authenticated&lt;/a&gt;.</value>
+  </data>
+  <data name="onlinemarketing-ip" xml:space="preserve">
+    <value>The IP addresses of the users are also saved. However, we use available IP masking procedures (i.e. pseudonymization by shortening the IP address) to protect users. In general, no clear user data (such as e-mail addresses or names) is saved as part of the online marketing process, but pseudonyms. This means that we and the providers of online marketing processes do not know the actual identity of the users, but only the information stored in their profiles.</value>
+  </data>
+  <data name="onlinemarketing-legal" xml:space="preserve">
+    <value>&lt;strong&gt; Notes on legal bases: &lt;/strong&gt; If we ask users for their consent to the use of third-party providers, the legal basis for processing data is consent. Otherwise, user data will be processed on the basis of our legitimate interests (i.e. interest in efficient, economical and recipient-friendly services). In this context, we would like to draw your attention to the information on the use of cookies in this data protection declaration.</value>
+  </data>
+  <data name="onlinemarketing-legalbase" xml:space="preserve">
+    <value>&lt;strong&gt; Legal basis: &lt;/strong&gt; Consent (Art. 6 Para. 1 S. 1 lit. a. GDPR), legitimate interests (Art. 6 Para. 1 S. 1 lit. f. GDPR).</value>
+  </data>
+  <data name="onlinemarketing-marketing" xml:space="preserve">
+    <value>In principle, we only get access to summarized information about the success of our advertisements. However, we can use so-called conversion measurements to check which of our online marketing processes have led to a so-called conversion, i.e. e.g. to conclude a contract with us. The conversion measurement is used solely to analyze the success of our marketing measures.</value>
+  </data>
+  <data name="onlinemarketing-optout" xml:space="preserve">
+    <value>&lt;strong&gt; Opposition option (opt-out): &lt;/strong&gt; We refer to the data protection information of the respective provider and the opposition options specified for the provider (so-called "opt-out"). If no explicit opt-out option has been specified, you have the option of switching off cookies in your browser settings. However, this can restrict the functions of our online offer. We therefore also recommend the following opt-out options, which are offered in summary for the respective areas:: a) Europe: &lt;a href="https://www.youronlinechoices.eu" target="_blank"&gt;https://www.youronlinechoices.eu&lt;/a&gt;. b) Canada: &lt;a href="https://www.youradchoices.ca/choices" target="_blank"&gt;https://www.youradchoices.ca/choices&lt;/a&gt;. c) USA: &lt;a href="https://www.aboutads.info/choices" target="_blank"&gt;https://www.aboutads.info/choices&lt;/a&gt;. d) Cross-territorial: &lt;a href="https://optout.aboutads.info" target="_blank"&gt;https://optout.aboutads.info&lt;/a&gt;.</value>
+  </data>
+  <data name="onlinemarketing-profile" xml:space="preserve">
+    <value>The information in the profiles is usually stored in the cookies or by means of similar processes. These cookies can later generally also be read out on other websites that use the same online marketing process, analyzed for the purpose of displaying content and supplemented with additional data and stored on the server of the online marketing process provider.</value>
+  </data>
+  <data name="onlinemarketing-profile1" xml:space="preserve">
+    <value>As an exception, clear data can be assigned to the profiles. This is the case when the users e.g. Are members of a social network whose online marketing process we use and the network connects the profiles of the users with the aforementioned information. We ask you to note that users have additional agreements with the providers, e.g. through consent during registration.</value>
+  </data>
+  <data name="onlinemarketing-purpose" xml:space="preserve">
+    <value>&lt;strong&gt; Purposes of processing: &lt;/strong&gt; Tracking (e.g. interest / behavioral profiling, use of cookies), remarketing, conversion measurement (measurement of the effectiveness of marketing measures), interest-based and behavioral marketing, profiling (creation of user profiles), range measurement ( e.g. access statistics, recognition of returning visitors).</value>
+  </data>
+  <data name="onlinemarketing-security" xml:space="preserve">
+    <value>&lt;strong&gt; Security measures: &lt;/strong&gt; IP masking (pseudonymization of the IP address).</value>
+  </data>
+  <data name="onlinemarketing-services" xml:space="preserve">
+    <value>Used services and service providers</value>
+  </data>
+  <data name="onlinemarketing-userprofile" xml:space="preserve">
+    <value>For these purposes, so-called user profiles are created and stored in a file (so-called "cookie") or similar processes are used, by means of which the user information relevant to the presentation of the aforementioned content is saved.
+     This information can e.g. content viewed, websites visited, online networks used, but also communication partners and technical information such as the browser used, the computer system used and information on usage times.
+     If users have consented to their location data being collected, this can also be processed.</value>
+  </data>
+  <data name="onlinemedia-affected" xml:space="preserve">
+    <value>&lt;strong&gt; Affected persons: &lt;/strong&gt; Users (e.g. website visitors, users of online services).</value>
+  </data>
+  <data name="onlinemedia-blurp" xml:space="preserve">
+    <value>We maintain an online presence within social networks and process user data in this context in order to communicate with the users active there or to offer information about us.</value>
+  </data>
+  <data name="onlinemedia-blurp1" xml:space="preserve">
+    <value>We would like to point out that user data can be processed outside of the European Union. This can result in risks for the user, because e.g. the enforcement of user rights could be made more difficult.</value>
+  </data>
+  <data name="onlinemedia-blurp2" xml:space="preserve">
+    <value>Ferner werden die Daten der Nutzer innerhalb sozialer Netzwerke im Regelfall für Marktforschungs- und Werbezwecke verarbeitet. So können z.B. anhand des Nutzungsverhaltens und sich daraus ergebender Interessen der Nutzer Nutzungsprofile erstellt werden.
+    Die Nutzungsprofile können wiederum verwendet werden, um z.B. Werbeanzeigen innerhalb und außerhalb der Netzwerke zu schalten, die mutmaßlich den Interessen der Nutzer entsprechen. Zu diesen Zwecken werden im Regelfall Cookies auf den Rechnern der Nutzer gespeichert, in denen das Nutzungsverhalten und die Interessen der Nutzer gespeichert werden. Ferner können in den Nutzungsprofilen auch Daten unabhängig der von den Nutzern verwendeten Geräte gespeichert werden (insbesondere, wenn die Nutzer Mitglieder der jeweiligen Plattformen sind und bei diesen eingeloggt sind).</value>
+  </data>
+  <data name="onlinemedia-blurp3" xml:space="preserve">
+    <value>For a detailed description of the respective forms of processing and the possibilities of objection (opt-out), we refer to the data protection declarations and information provided by the operators of the respective networks.</value>
+  </data>
+  <data name="onlinemedia-blurp4" xml:space="preserve">
+    <value>In the case of requests for information and the assertion of rights of data subjects, we point out that these can be most effectively asserted with the providers. Only the providers have access to the data of the users and can take appropriate measures and provide information. If you still need help, you can contact us.</value>
+  </data>
+  <data name="onlinemedia-facebook" xml:space="preserve">
+    <value>&lt;strong&gt; Facebook &lt;/strong&gt;: We are together with Facebook Ireland Ltd. responsible for the collection (but not the further processing) of data from visitors to our Facebook page (so-called "fan page"). This data includes information about the types of content users view or interact with, or the actions they take (see “Things You and Others Do and Provide” in the Facebook Data Policy: &lt;a href = "https://www.facebook.com/policy" target = "_blank"&gt; https://www.facebook.com/policy &lt;/a&gt;), as well as information about the devices used by the users (e.g. IP addresses, operating system, browser type, language settings, cookie data; see under "Device information" in the Facebook data policy declaration:
+    &lt;a href="https://www.facebook.com/policy" target="_blank"&gt; https://www.facebook.com/policy &lt;/a&gt;). As explained in the Facebook data policy under "How do we use this information?", Facebook also collects and uses information to provide analysis services, so-called "Page Insights", for website operators so that they can obtain information about how people use their pages and interact with the content associated with them. We have concluded a special agreement with Facebook ("Information on Page Insights", &lt;a href="https://www.facebook.com/legal/terms/page_controller_addendum" target="_blank"&gt; https: // www. facebook.com/legal/terms/page_controller_addendum &lt;/a&gt;), which regulates in particular which security measures Facebook must observe and in which Facebook has agreed to fulfill the rights of the data subject (i.e. users can, for example, provide information or deletion requests directly to Facebook). The rights of users (in particular to information, deletion, objection and complaint to the responsible supervisory authority) are not restricted by the agreements with Facebook. Further information can be found in the "Information on Page Insights" (&lt;a href="https://www.facebook.com/legal/terms/information_about_page_insights_data" target="_blank"&gt; https://www.facebook.com / legal / terms / information_about_page_insights_data &lt;/a&gt;).</value>
+  </data>
+  <data name="onlinemedia-facebook1" xml:space="preserve">
+    <value>&lt;strong&gt;Facebook:&lt;/strong&gt; Social network; Service provider: Facebook Ireland Ltd., 4 Grand Canal Square, Grand Canal Harbour, Dublin 2, Irland, Parent company: Facebook, 1 Hacker Way, Menlo Park, CA 94025, USA; Website: &lt;a href="https://www.facebook.com" target="_blank"&gt;https://www.facebook.com&lt;/a&gt;; Data protection: &lt;a href="https://www.facebook.com/about/privacy" target="_blank"&gt;https://www.facebook.com/about/privacy&lt;/a&gt;; Possibility of objection (Opt-Out): Settings for advertisements:
+        &lt;a href="https://www.facebook.com/settings?tab=ads" target="_blank"&gt;https://www.facebook.com/settings?tab=ads&lt;/a&gt;.</value>
+  </data>
+  <data name="onlinemedia-instagram" xml:space="preserve">
+    <value>&lt;strong&gt;Instagram:&lt;/strong&gt; Social network; Service provider: Instagram Inc., 1601 Willow Road, Menlo Park, CA, 94025, USA, Parent company: Facebook, 1 Hacker Way, Menlo Park, CA 94025, USA; Website: &lt;a href="https://www.instagram.com" target="_blank"&gt;https://www.instagram.com&lt;/a&gt;; Data protection: &lt;a href="https://instagram.com/about/legal/privacy" target="_blank"&gt;https://instagram.com/about/legal/privacy&lt;/a&gt;.</value>
+  </data>
+  <data name="onlinemedia-law" xml:space="preserve">
+    <value>&lt;strong&gt; Legal basis: &lt;/strong&gt; Legitimate interests (Art. 6 Para. 1 S. 1 lit. f. GDPR).</value>
+  </data>
+  <data name="onlinemedia-linkedin" xml:space="preserve">
+    <value>&lt;strong&gt;LinkedIn:&lt;/strong&gt; Social network; Service provider: LinkedIn Ireland Unlimited Company, Wilton Place, Dublin 2, Irland; Website: &lt;a href="https://www.linkedin.com" target="_blank"&gt;https://www.linkedin.com&lt;/a&gt;; Data protection: &lt;a href="https://www.linkedin.com/legal/privacy-policy" target="_blank"&gt;https://www.linkedin.com/legal/privacy-policy&lt;/a&gt;; Possibility of objection (Opt-Out): &lt;a href="https://www.linkedin.com/psettings/guest-controls/retargeting-opt-out" target="_blank"&gt;https://www.linkedin.com/psettings/guest-controls/retargeting-opt-out&lt;/a&gt;.</value>
+  </data>
+  <data name="onlinemedia-processed" xml:space="preserve">
+    <value>&lt;strong&gt; Processed data types: &lt;/strong&gt; Inventory data (e.g. names, addresses), contact data (e.g. e-mail, telephone numbers), content data (e.g. entries in online forms), usage data (e.g. websites visited, interest in content, access times),
+         Meta / communication data (e.g. device information, IP addresses).</value>
+  </data>
+  <data name="onlinemedia-purpose" xml:space="preserve">
+    <value>&lt;strong&gt; Purposes of processing: &lt;/strong&gt; Contact inquiries and communication, tracking (e.g. interest / behavior-based profiling, use of cookies), remarketing, range measurement (e.g. access statistics, recognition of returning visitors).</value>
+  </data>
+  <data name="onlinemedia-twitter" xml:space="preserve">
+    <value>&lt;strong&gt;Twitter:&lt;/strong&gt; Social network; Service provider: Twitter International Company, One Cumberland Place, Fenian Street, Dublin 2 D02 AX07, Irland, Parent company: Twitter Inc., 1355 Market Street, Suite 900, San Francisco, CA 94103, USA; Data protection: &lt;a href="https://twitter.com/de/privacy" target="_blank"&gt;https://twitter.com/de/privacy&lt;/a&gt;, (Settings) &lt;a href="https://twitter.com/personalization" target="_blank"&gt;https://twitter.com/personalization&lt;/a&gt;.</value>
+  </data>
+  <data name="onlinemedia-xing" xml:space="preserve">
+    <value>&lt;strong&gt;Xing:&lt;/strong&gt; Social network; Service provider: XING AG, Dammtorstraße 29-32, 20354 Hamburg, Germany; Website: &lt;a href="https://www.xing.de" target="_blank"&gt;https://www.xing.de&lt;/a&gt;; Data protection: &lt;a href="https://privacy.xing.com/de/datenschutzerklaerung" target="_blank"&gt;https://privacy.xing.com/de/datenschutzerklaerung&lt;/a&gt;.</value>
+  </data>
+  <data name="plugins-affected" xml:space="preserve">
+    <value>&lt;strong&gt; Affected persons: &lt;/strong&gt; Users (e.g. website visitors, users of online services), communication partners.</value>
+  </data>
+  <data name="plugins-blurp" xml:space="preserve">
+    <value>We incorporate functional and content elements into our online offering that are obtained from the servers of their respective providers (hereinafter referred to as "third-party providers"), for example graphics, videos or social media buttons
+     as well as articles (hereinafter uniformly referred to as "content").</value>
+  </data>
+  <data name="plugins-blurp2" xml:space="preserve">
+    <value>The integration always presupposes that the third-party providers of this content process the IP address of the user, since without the IP address they would not be able to send the content to their browser. The IP address is therefore required for the display of this content or functions. We strive to only use content whose respective providers only use the IP address to deliver the content. Third-party providers can also use so-called pixel tags (invisible graphics, also known as "web beacons") for statistical or marketing purposes. The "pixel tags" can be used to evaluate information such as visitor traffic on the pages of this website. The pseudonymous information can also be stored in cookies on the user's device and contain, among other things, technical information on the browser and operating system, the websites to be referred to, the time of visit and other information on the use of our online offer, as well as being linked to such information from other sources.</value>
+  </data>
+  <data name="plugins-changes" xml:space="preserve">
+    <value>Change and update of the data protection declaration</value>
+  </data>
+  <data name="plugins-changes-blurp" xml:space="preserve">
+    <value>We ask you to inform yourself regularly about the content of our data protection declaration. We will adapt the data protection declaration as soon as the changes to the data processing carried out by us make this necessary. We will inform you as soon as the changes require your participation (e.g. consent) or other individual notification.</value>
+  </data>
+  <data name="plugins-changes-blurp1" xml:space="preserve">
+    <value>If we provide addresses and contact information of companies and organizations in this data protection declaration, please note that the addresses may change over time and ask you to check the information before contacting us.</value>
+  </data>
+  <data name="plugins-changes-rights" xml:space="preserve">
+    <value>Rights of data subjects</value>
+  </data>
+  <data name="plugins-changes-rights1" xml:space="preserve">
+    <value>As the data subject, you have various rights under the GDPR, which arise in particular from Art. 15 to 21 GDPR:</value>
+  </data>
+  <data name="plugins-changes-rights2" xml:space="preserve">
+    <value>&lt;strong&gt; Right of objection&lt;/strong&gt;: You have the right, for reasons that arise from your particular situation, to object at any time to the processing of your personal data, which is based on Art. 6 Para. 1 lit. e or f DSGVO takes place to object; this also applies to profiling based on these provisions. If the personal data concerning you are processed in order to operate direct mail, you have the right to object at any time to the processing of the personal data concerning you for the purpose of such advertising; this also applies to profiling insofar as it is related to such direct mail.</value>
+  </data>
+  <data name="plugins-changes-rights3" xml:space="preserve">
+    <value>&lt;strong&gt; Right to withdraw consent: &lt;/strong&gt; You have the right to withdraw your consent at any time.</value>
+  </data>
+  <data name="plugins-changes-rights4" xml:space="preserve">
+    <value>&lt;strong&gt; Right to information: &lt;/strong&gt; You have the right to request confirmation as to whether the data in question is being processed and to request information about this data as well as further information and a copy of the data in accordance with the legal requirements.</value>
+  </data>
+  <data name="plugins-changes-rights5" xml:space="preserve">
+    <value>&lt;strong&gt; Right to correction: &lt;/strong&gt; According to the legal requirements, you have the right to request the completion of the data concerning you or the correction of incorrect data concerning you.</value>
+  </data>
+  <data name="plugins-changes-rights6" xml:space="preserve">
+    <value>&lt;strong&gt; Right to deletion and restriction of processing: &lt;/strong&gt; In accordance with the legal requirements, you have the right to request that the data relating to you be deleted immediately, or alternatively, in accordance with the legal requirements, a restriction on the processing of the data to demand.</value>
+  </data>
+  <data name="plugins-changes-rights7" xml:space="preserve">
+    <value>&lt;strong&gt; Right to data portability: &lt;/strong&gt; You have the right to receive data concerning you that you have provided to us in accordance with the legal requirements in a structured, common and machine-readable format or to request that it be transmitted to another person responsible .</value>
+  </data>
+  <data name="plugins-changes-rights8" xml:space="preserve">
+    <value>&lt;strong&gt; Complaint to the supervisory authority: &lt;/strong&gt; You also have the right, in accordance with the legal requirements, to lodge a complaint with a supervisory authority, in particular in the member state of your habitual residence, your place of work or the place of the alleged violation, if you are of the opinion that the processing of your personal data violates the GDPR.</value>
+  </data>
+  <data name="plugins-changes-rights9" xml:space="preserve">
+    <value>&lt;p&gt;This website uses an external counter to record the number of web page views. For this purpose, a Java script is loaded from an external website. The server of &lt;a href="https://www.besucherzaehler-kostenlos.de"&gt;besucherzaehler-kostenlos.de&lt;/a&gt; stores the IP address of the access anonymously and temporarily in a LOG file. This is regularly deleted irrevocably.&lt;/p&gt;.
+
+&lt;p&gt;To ensure the correct functioning of the counter, the visitor counter also stores a so-called session cookie on the visitor's computer. This is usually deleted by the browser as soon as it is closed. No personal information is stored in this cookie. It only contains the information of the called domain, as well as a boolean tag (true/false) to mark the visitor as already counted.&lt;/p&gt;.
+
+&lt;p&gt;No personal or personal data is collected from the visitor counter beyond that. Tracking or attribution of access is not possible at any time. A special thanks goes to &lt;a href="https://www.putzfrau-agentur.de"&gt;www.putzfrau-agentur.de&lt;/a&gt;, through whose support this free service is made possible.&lt;/p&gt;
+
+Translated with www.DeepL.com/Translator (free version)</value>
+  </data>
+  <data name="plugins-deletion-blurp" xml:space="preserve">
+    <value>The data processed by us will be deleted in accordance with the legal requirements as soon as the consent permitted for processing is revoked or other permissions are no longer applicable (e.g. if the purpose of processing this data is no longer applicable or is not required for the purpose).</value>
+  </data>
+  <data name="plugins-deletion-blurp1" xml:space="preserve">
+    <value>If the data are not deleted because they are required for other and legally permissible purposes, their processing will be limited to these purposes. This means that the data is blocked and not processed for other purposes. This applies e.g. for data that must be kept for commercial or tax law reasons or whose storage is necessary for the establishment, exercise or defense of legal claims or to protect the rights of another natural or legal person.</value>
+  </data>
+  <data name="plugins-deletion-blurp2" xml:space="preserve">
+    <value>Further information on the deletion of personal data can also be found in the individual data protection information of this data protection declaration.</value>
+  </data>
+  <data name="plugins-fontawesome" xml:space="preserve">
+    <value>&lt;strong&gt;Font Awesome:&lt;/strong&gt; Representation of fonts and symbols; Service provider: Fonticons, Inc. ,6 Porter Road Apartment 3R, Cambridge, MA 02140, USA; Website: &lt;a href="https://fontawesome.com/" target="_blank"&gt;https://fontawesome.com/&lt;/a&gt;; Data privacy: &lt;a href="https://fontawesome.com/privacy" target="_blank"&gt;https://fontawesome.com/privacy&lt;/a&gt;.</value>
+  </data>
+  <data name="plugins-googlefonts" xml:space="preserve">
+    <value>&lt;strong&gt;Google Fonts:&lt;/strong&gt; We integrate the fonts ("Google Fonts") from the provider Google, whereby the user data is used solely for the purpose of displaying the fonts in the user's browser. The integration is based on our legitimate interests in a technically secure, maintenance-free and efficient use of fonts, their uniform representation and taking into account possible licensing restrictions for their integration. Service provider: Google Ireland Limited, Gordon House, Barrow Street, Dublin 4, Irland, Mutterunternehmen: Google LLC, 1600 Amphitheatre Parkway, Mountain View, CA 94043, USA; Website: &lt;a href="https://fonts.google.com/" target="_blank"&gt;https://fonts.google.com/&lt;/a&gt;; Data privacy: &lt;a href="https://policies.google.com/privacy" target="_blank"&gt;https://policies.google.com/privacy&lt;/a&gt;.</value>
+  </data>
+  <data name="plugins-law" xml:space="preserve">
+    <value>&lt;strong&gt; Notes on legal bases: &lt;/strong&gt; If we ask users for their consent to the use of third-party providers, the legal basis for processing data is consent. Otherwise, user data will be processed on the basis of our legitimate interests (i.e. interest in efficient, economical and recipient-friendly services). In this context, we would like to draw your attention to the information on the use of cookies in this data protection declaration.</value>
+  </data>
+  <data name="plugins-law1" xml:space="preserve">
+    <value>&lt;strong&gt; Legal basis: &lt;/strong&gt; Legitimate interests (Art. 6 Para. 1 S. 1 lit. f. GDPR), consent (Art. 6 Par. 1 S. 1 lit. a. GDPR).</value>
+  </data>
+  <data name="plugins-processed" xml:space="preserve">
+    <value>&lt;strong&gt; Processed data types: &lt;/strong&gt; Usage data (e.g. websites visited, interest in content, access times), meta / communication data (e.g. device information, IP addresses), contact data (e.g. email, telephone numbers), content data ( e.g. entries in online forms).</value>
+  </data>
+  <data name="plugins-purpose" xml:space="preserve">
+    <value>&lt;strong&gt; Purpose of processing: &lt;/strong&gt; Provision of our online offer and user-friendliness, provision of contractual services and customer service, contact inquiries and communication, direct marketing (e.g. by e-mail or post), tracking (e.g. interest / behavioral profiling, use of cookies ), Interest-based and behavior-based marketing, profiling (creation of user profiles).</value>
+  </data>
+  <data name="plugins-recaptcha" xml:space="preserve">
+    <value>&lt;strong&gt;ReCaptcha:&lt;/strong&gt; We bind the function "ReCaptcha" for the detection of bots, e.g. for entries in online forms. The behavioral information provided by users (e.g. mouse movements or queries) is evaluated in order to distinguish people from bots to be able to. Service provider: Google Ireland Limited, Gordon House, Barrow Street, Dublin 4, Irland, Parent company: Google LLC, 1600 Amphitheatre Parkway, Mountain View, CA 94043, USA; Website: &lt;a href="https://www.google.com/recaptcha/" target="_blank"&gt;https://www.google.com/recaptcha/&lt;/a&gt;; Data privacy: &lt;a href="https://policies.google.com/privacy" target="_blank"&gt;https://policies.google.com/privacy&lt;/a&gt;; Possibility of objection (Opt-Out): Opt-Out-Plugin: &lt;a href="https://tools.google.com/dlpage/gaoptout?hl=de" target="_blank"&gt;https://tools.google.com/dlpage/gaoptout?hl=de&lt;/a&gt;, Settings for the display of advertisements: &lt;a href="https://adssettings.google.com/authenticated" target="_blank"&gt;https://adssettings.google.com/authenticated&lt;/a&gt;.</value>
+  </data>
+  <data name="plugins-slideshare" xml:space="preserve">
+    <value>&lt;strong&gt;SlideShare presentations:&lt;/strong&gt; Integration of SlideShare presentations; Service provider: LinkedIn Ireland Unlimited Company, Wilton Place, Dublin 2, Irland; Website: &lt;a href="https://www.linkedin.com" target="_blank"&gt;https://www.linkedin.com&lt;/a&gt;;
+        Data privacy: &lt;a href="https://www.linkedin.com/legal/privacy-policy" target="_blank"&gt;https://www.linkedin.com/legal/privacy-policy&lt;/a&gt;.</value>
+  </data>
+  <data name="processing-communicationpartner" xml:space="preserve">
+    <value>Communication partner</value>
+  </data>
+  <data name="processing-contactdetails" xml:space="preserve">
+    <value>Contact details (e.g. e-mail, telephone numbers)</value>
+  </data>
+  <data name="processing-contentdata" xml:space="preserve">
+    <value>Content data (e.g. entries in online forms)</value>
+  </data>
+  <data name="processing-interests" xml:space="preserve">
+    <value>interested persons</value>
+  </data>
+  <data name="processing-meta" xml:space="preserve">
+    <value>Meta / communication data (e.g. device information, IP addresses)</value>
+  </data>
+  <data name="processing-personcategory" xml:space="preserve">
+    <value>Categories of data subjects</value>
+  </data>
+  <data name="processing-purposes" xml:space="preserve">
+    <value>The following overview summarizes the types of data processed and the purposes of their processing and refers to the data subjects.</value>
+  </data>
+  <data name="processing-toc-access" xml:space="preserve">
+    <value>Range measurement (e.g. access statistics, recognition of returning visitors)</value>
+  </data>
+  <data name="processing-toc-contact" xml:space="preserve">
+    <value>Contact requests and communication</value>
+  </data>
+  <data name="processing-toc-feedback" xml:space="preserve">
+    <value>Feedback (e.g. collecting feedback via an online form)</value>
+  </data>
+  <data name="processing-toc-managing" xml:space="preserve">
+    <value>Management and answering of inquiries</value>
+  </data>
+  <data name="processing-toc-provision" xml:space="preserve">
+    <value>Provision of our online offer and usability</value>
+  </data>
+  <data name="processing-toc-purpose" xml:space="preserve">
+    <value>Purposes of processing</value>
+  </data>
+  <data name="processing-toc-security" xml:space="preserve">
+    <value>Safety measures</value>
+  </data>
+  <data name="processing-toc-tracking" xml:space="preserve">
+    <value>Tracking (e.g. interest / behavioral profiling, use of cookies)</value>
+  </data>
+  <data name="processing-types" xml:space="preserve">
+    <value>Types of data processed</value>
+  </data>
+  <data name="processing-usage" xml:space="preserve">
+    <value>Usage data (e.g. websites visited, interest in content, access times)</value>
+  </data>
+  <data name="processing-user" xml:space="preserve">
+    <value>Users (e.g. website visitors, users of online services)</value>
+  </data>
+  <data name="responsible-email" xml:space="preserve">
+    <value>E-mail address</value>
+  </data>
+  <data name="responsible-imprint" xml:space="preserve">
+    <value>Imprint</value>
+  </data>
+  <data name="responsible-person" xml:space="preserve">
+    <value>Authorized representatives</value>
+  </data>
+  <data name="responsible-phone" xml:space="preserve">
+    <value>Phone</value>
+  </data>
+  <data name="seal" xml:space="preserve">
+    <value>Legal text by Dr. Schwenke - please click for more information</value>
+  </data>
+  <data name="seal1" xml:space="preserve">
+    <value>Created with free Datenschutz-Generator.de by Dr. Thomas Schwenke</value>
+  </data>
+  <data name="toc-analytics" xml:space="preserve">
+    <value>Web analysis, monitoring and optimization</value>
+  </data>
+  <data name="toc-blogs" xml:space="preserve">
+    <value>Blogs and publication media</value>
+  </data>
+  <data name="toc-contact" xml:space="preserve">
+    <value>Contact</value>
+  </data>
+  <data name="toc-cookies" xml:space="preserve">
+    <value>Use of cookies</value>
+  </data>
+  <data name="toc-definitions" xml:space="preserve">
+    <value>Definitions of terms</value>
+  </data>
+  <data name="toc-deletedata" xml:space="preserve">
+    <value>Deletion of data</value>
+  </data>
+  <data name="toc-legal-bases" xml:space="preserve">
+    <value>Relevant legal bases</value>
+  </data>
+  <data name="toc-onlinemarketing" xml:space="preserve">
+    <value>Online marketing</value>
+  </data>
+  <data name="toc-onlinemedia" xml:space="preserve">
+    <value>Presence in social networks (social media)</value>
+  </data>
+  <data name="toc-overview" xml:space="preserve">
+    <value>Contents overview</value>
+  </data>
+  <data name="toc-plugins" xml:space="preserve">
+    <value>Plugins and embedded functions and content</value>
+  </data>
+  <data name="toc-processing" xml:space="preserve">
+    <value>Overview of the processing</value>
+  </data>
+  <data name="toc-responsible" xml:space="preserve">
+    <value>Responsible</value>
+  </data>
+  <data name="toc-rights" xml:space="preserve">
+    <value>Rights of data subjects</value>
+  </data>
+  <data name="toc-safety" xml:space="preserve">
+    <value>Safety measures</value>
+  </data>
+  <data name="toc-update" xml:space="preserve">
+    <value>Change and update of the data protection declaration</value>
+  </data>
+  <data name="viewbag-pagename" xml:space="preserve">
+    <value>Data Privacy</value>
+  </data>
+  <data name="viewbag-title" xml:space="preserve">
+    <value>Data Privacy - Sascha Manns's Twilight Zone</value>
+  </data>
+</root>

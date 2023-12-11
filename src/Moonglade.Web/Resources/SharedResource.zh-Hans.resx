@@ -1,0 +1,906 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <!-- 
+    Microsoft ResX Schema 
+    
+    Version 2.0
+    
+    The primary goals of this format is to allow a simple XML format 
+    that is mostly human readable. The generation and parsing of the 
+    various data types are done through the TypeConverter classes 
+    associated with the data types.
+    
+    Example:
+    
+    ... ado.net/XML headers & schema ...
+    <resheader name="resmimetype">text/microsoft-resx</resheader>
+    <resheader name="version">2.0</resheader>
+    <resheader name="reader">System.Resources.ResXResourceReader, System.Windows.Forms, ...</resheader>
+    <resheader name="writer">System.Resources.ResXResourceWriter, System.Windows.Forms, ...</resheader>
+    <data name="Name1"><value>this is my long string</value><comment>this is a comment</comment></data>
+    <data name="Color1" type="System.Drawing.Color, System.Drawing">Blue</data>
+    <data name="Bitmap1" mimetype="application/x-microsoft.net.object.binary.base64">
+        <value>[base64 mime encoded serialized .NET Framework object]</value>
+    </data>
+    <data name="Icon1" type="System.Drawing.Icon, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
+        <value>[base64 mime encoded string representing a byte array form of the .NET Framework object]</value>
+        <comment>This is a comment</comment>
+    </data>
+                
+    There are any number of "resheader" rows that contain simple 
+    name/value pairs.
+    
+    Each data row contains a name, and value. The row also contains a 
+    type or mimetype. Type corresponds to a .NET class that support 
+    text/value conversion through the TypeConverter architecture. 
+    Classes that don't support this are serialized and stored with the 
+    mimetype set.
+    
+    The mimetype is used for serialized objects, and tells the 
+    ResXResourceReader how to depersist the object. This is currently not 
+    extensible. For a given mimetype the value must be set accordingly:
+    
+    Note - application/x-microsoft.net.object.binary.base64 is the format 
+    that the ResXResourceWriter will generate, however the reader can 
+    read any of the formats listed below.
+    
+    mimetype: application/x-microsoft.net.object.binary.base64
+    value   : The object must be serialized with 
+            : System.Runtime.Serialization.Formatters.Binary.BinaryFormatter
+            : and then encoded with base64 encoding.
+    
+    mimetype: application/x-microsoft.net.object.soap.base64
+    value   : The object must be serialized with 
+            : System.Runtime.Serialization.Formatters.Soap.SoapFormatter
+            : and then encoded with base64 encoding.
+
+    mimetype: application/x-microsoft.net.object.bytearray.base64
+    value   : The object must be serialized into a byte array 
+            : using a System.ComponentModel.TypeConverter
+            : and then encoded with base64 encoding.
+    -->
+  <xsd:schema id="root" xmlns="" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
+    <xsd:import namespace="http://www.w3.org/XML/1998/namespace" />
+    <xsd:element name="root" msdata:IsDataSet="true">
+      <xsd:complexType>
+        <xsd:choice maxOccurs="unbounded">
+          <xsd:element name="metadata">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" />
+              </xsd:sequence>
+              <xsd:attribute name="name" use="required" type="xsd:string" />
+              <xsd:attribute name="type" type="xsd:string" />
+              <xsd:attribute name="mimetype" type="xsd:string" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="assembly">
+            <xsd:complexType>
+              <xsd:attribute name="alias" type="xsd:string" />
+              <xsd:attribute name="name" type="xsd:string" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="data">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+                <xsd:element name="comment" type="xsd:string" minOccurs="0" msdata:Ordinal="2" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" msdata:Ordinal="1" />
+              <xsd:attribute name="type" type="xsd:string" msdata:Ordinal="3" />
+              <xsd:attribute name="mimetype" type="xsd:string" msdata:Ordinal="4" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="resheader">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" />
+            </xsd:complexType>
+          </xsd:element>
+        </xsd:choice>
+      </xsd:complexType>
+    </xsd:element>
+  </xsd:schema>
+  <resheader name="resmimetype">
+    <value>text/microsoft-resx</value>
+  </resheader>
+  <resheader name="version">
+    <value>2.0</value>
+  </resheader>
+  <resheader name="reader">
+    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <resheader name="writer">
+    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <data name="* Image width and height must be equal" xml:space="preserve">
+    <value>* 图片宽度和高度必须相同</value>
+  </data>
+  <data name="* Requires restarting application" xml:space="preserve">
+    <value>* 需要重启应用程序生效</value>
+  </data>
+  <data name="* Username: moonglade" xml:space="preserve">
+    <value>* 用户名: moonglade</value>
+  </data>
+  <data name=".NET Version" xml:space="preserve">
+    <value>.NET 版本</value>
+  </data>
+  <data name=".png file" xml:space="preserve">
+    <value>.png 文件</value>
+  </data>
+  <data name=".png or .jpg file" xml:space="preserve">
+    <value>.png 或 .jpg 文件</value>
+  </data>
+  <data name="About" xml:space="preserve">
+    <value>关于</value>
+  </data>
+  <data name="Abstract" xml:space="preserve">
+    <value>摘要</value>
+  </data>
+  <data name="Account Information" xml:space="preserve">
+    <value>账号信息</value>
+  </data>
+  <data name="Accounts" xml:space="preserve">
+    <value>账户</value>
+  </data>
+  <data name="Action" xml:space="preserve">
+    <value>操作</value>
+  </data>
+  <data name="Admin" xml:space="preserve">
+    <value>管理</value>
+  </data>
+  <data name="Admin Login" xml:space="preserve">
+    <value>管理员登录</value>
+  </data>
+  <data name="Admin Sign In" xml:space="preserve">
+    <value>管理员登录</value>
+  </data>
+  <data name="Advanced" xml:space="preserve">
+    <value>高级</value>
+  </data>
+  <data name="Advanced Settings" xml:space="preserve">
+    <value>高级设置</value>
+  </data>
+  <data name="All Posts" xml:space="preserve">
+    <value>全部文章</value>
+  </data>
+  <data name="All Tags" xml:space="preserve">
+    <value>全部标签</value>
+  </data>
+  <data name="Allow javascript in pages" xml:space="preserve">
+    <value>允许页面中执JavaScript代码</value>
+  </data>
+  <data name="Archive" xml:space="preserve">
+    <value>归档</value>
+  </data>
+  <data name="Are you ABSOLUTELY sure? ALL data and configuration will be erased!" xml:space="preserve">
+    <value>你真的确定吗？所有数据和配置都将灰飞烟灭！</value>
+  </data>
+  <data name="Are you sure to restart website? All current requests will be terminated." xml:space="preserve">
+    <value>你确定要重启网站吗？所有当前请求都会被终止。</value>
+  </data>
+  <data name="Are you sure?" xml:space="preserve">
+    <value>确定吗？</value>
+  </data>
+  <data name="Author" xml:space="preserve">
+    <value>作者</value>
+  </data>
+  <data name="Author Name" xml:space="preserve">
+    <value>作者名字</value>
+  </data>
+  <data name="Auto Light / Dark theme regarding client system settings" xml:space="preserve">
+    <value>在客户端自动适配明亮/黑暗主题</value>
+  </data>
+  <data name="Admin Email" xml:space="preserve">
+    <value>博主 Email</value>
+  </data>
+  <data name="Block Comment" xml:space="preserve">
+    <value>阻止评论</value>
+  </data>
+  <data name="Blocked words" xml:space="preserve">
+    <value>违禁词</value>
+  </data>
+  <data name="Blocked words will be masked as *** in comment content." xml:space="preserve">
+    <value>评论内容中的违禁词将被替换为***</value>
+  </data>
+  <data name="Blog Identity" xml:space="preserve">
+    <value>博客身份</value>
+  </data>
+  <data name="Blog posts" xml:space="preserve">
+    <value>博客文章</value>
+  </data>
+  <data name="Blog posts will use this time zone as date and time display." xml:space="preserve">
+    <value>博客会使用该时区显示文章日期及时间</value>
+  </data>
+  <data name="Blog posts will use this time zone as date display." xml:space="preserve">
+    <value>博客文章会使用该时区作为时间及日期显示</value>
+  </data>
+  <data name="Blog title" xml:space="preserve">
+    <value>博客标题</value>
+  </data>
+  <data name="Call-out" xml:space="preserve">
+    <value>条幅</value>
+  </data>
+  <data name="Call-out section HTML code" xml:space="preserve">
+    <value>横幅HTML内容</value>
+  </data>
+  <data name="Can't read? Click to change another image." xml:space="preserve">
+    <value>看不清？点击图片更换验证码</value>
+  </data>
+  <data name="Cancel" xml:space="preserve">
+    <value>取消</value>
+  </data>
+  <data name="Canonical URL prefix" xml:space="preserve">
+    <value>网址 (Canonical URL)</value>
+  </data>
+  <data name="Categories" xml:space="preserve">
+    <value>分类</value>
+  </data>
+  <data name="Category Information" xml:space="preserve">
+    <value>分类信息</value>
+  </data>
+  <data name="Change" xml:space="preserve">
+    <value>修改</value>
+  </data>
+  <data name="Change Avatar" xml:space="preserve">
+    <value>更换头像</value>
+  </data>
+  <data name="Change Publish Date" xml:space="preserve">
+    <value>修改发布日期</value>
+  </data>
+  <data name="Change Site Icon" xml:space="preserve">
+    <value>更换网站图标</value>
+  </data>
+  <data name="Changing publish date will modify the URL of the post, and may cause unexpected results like breaking links on third parties that were pointing to this post. Please check the checkbox below if you confirm." xml:space="preserve">
+    <value>更改发布日期会影响文章URL，可能破坏其他地方指向文章的链接。仍要更改，请勾选下面的复选框。</value>
+  </data>
+  <data name="Check now" xml:space="preserve">
+    <value>立即检查更新</value>
+  </data>
+  <data name="Check online for new Moonglade release." xml:space="preserve">
+    <value>在线检查新版本的 Moonglade</value>
+  </data>
+  <data name="Clear all" xml:space="preserve">
+    <value>清空全部</value>
+  </data>
+  <data name="Clear Now" xml:space="preserve">
+    <value>立即清空</value>
+  </data>
+  <data name="Clear Pingback Logs" xml:space="preserve">
+    <value>清空Pingback日志</value>
+  </data>
+  <data name="Close" xml:space="preserve">
+    <value>关闭</value>
+  </data>
+  <data name="Comment is disabled by blog administrator." xml:space="preserve">
+    <value>博主已关闭博客评论功能</value>
+  </data>
+  <data name="Comment of this post is disabled." xml:space="preserve">
+    <value>本文评论已被关闭</value>
+  </data>
+  <data name="Comments" xml:space="preserve">
+    <value>评论</value>
+  </data>
+  <data name="Comments require review and approval" xml:space="preserve">
+    <value>评论需要管理员审核</value>
+  </data>
+  <data name="Content" xml:space="preserve">
+    <value>内容</value>
+  </data>
+  <data name="Continue" xml:space="preserve">
+    <value>继续</value>
+  </data>
+  <data name="Copyright" xml:space="preserve">
+    <value>版权信息</value>
+  </data>
+  <data name="Create" xml:space="preserve">
+    <value>新建</value>
+  </data>
+  <data name="Create Tag" xml:space="preserve">
+    <value>创建标签</value>
+  </data>
+  <data name="Create Time (UTC)" xml:space="preserve">
+    <value>创建时间 (UTC)</value>
+  </data>
+  <data name="Current Endpoint:" xml:space="preserve">
+    <value>当前终端：</value>
+  </data>
+  <data name="Custom CSS" xml:space="preserve">
+    <value>自定义 CSS</value>
+  </data>
+  <data name="Custom Theme" xml:space="preserve">
+    <value>自定义主题</value>
+  </data>
+  <data name="Data Directory" xml:space="preserve">
+    <value>数据目录</value>
+  </data>
+  <data name="Delete" xml:space="preserve">
+    <value>彻底删除</value>
+  </data>
+  <data name="Delete cached objects both in memory and on disk" xml:space="preserve">
+    <value>删除内存及磁盘上的数据对象</value>
+  </data>
+  <data name="Delete selected" xml:space="preserve">
+    <value>删除勾选的评论</value>
+  </data>
+  <data name="Description" xml:space="preserve">
+    <value>描述</value>
+  </data>
+  <data name="Directory" xml:space="preserve">
+    <value>目录</value>
+  </data>
+  <data name="Disabled" xml:space="preserve">
+    <value>不显示</value>
+  </data>
+  <data name="Display Name" xml:space="preserve">
+    <value>显示名称</value>
+  </data>
+  <data name="Display Order" xml:space="preserve">
+    <value>显示序位</value>
+  </data>
+  <data name="Docker Container" xml:space="preserve">
+    <value>运行在 Docker 容器中</value>
+  </data>
+  <data name="Drafts" xml:space="preserve">
+    <value>草稿</value>
+  </data>
+  <data name="Drag and drop image file here" xml:space="preserve">
+    <value>拖拽图片文件到此处</value>
+  </data>
+  <data name="e.g. https://blog.ediwangcdn.com/ediwang-images" xml:space="preserve">
+    <value>示例 https://blog.ediwangcdn.com/ediwang-images</value>
+  </data>
+  <data name="e.g. Your blog post license information." xml:space="preserve">
+    <value>例如：博客文章的许可协议</value>
+  </data>
+  <data name="Edit on" xml:space="preserve">
+    <value>编辑于</value>
+  </data>
+  <data name="Editor" xml:space="preserve">
+    <value>编辑器</value>
+  </data>
+  <data name="Email address to receive notifications from this blog." xml:space="preserve">
+    <value>用于接收博客系统通知的邮箱</value>
+  </data>
+  <data name="Email Options" xml:space="preserve">
+    <value>Email 选项</value>
+  </data>
+  <data name="Empty Recycle Bin" xml:space="preserve">
+    <value>清空回收站</value>
+  </data>
+  <data name="Enable CDN for images" xml:space="preserve">
+    <value>启用图片 CDN</value>
+  </data>
+  <data name="Enable Comment" xml:space="preserve">
+    <value>允许评论</value>
+  </data>
+  <data name="Enable comments" xml:space="preserve">
+    <value>开启评论</value>
+  </data>
+  <data name="Enable Custom CSS" xml:space="preserve">
+    <value>使用自定义 CSS</value>
+  </data>
+  <data name="Enable email sending" xml:space="preserve">
+    <value>启用Email发送</value>
+  </data>
+  <data name="Enable Gravatar in comment list" xml:space="preserve">
+    <value>在评论列表中开启Gravatar头像</value>
+  </data>
+  <data name="Enable MetaWeblog API" xml:space="preserve">
+    <value>启用 MetaWeblog API</value>
+  </data>
+  <data name="Enable OpenSearch" xml:space="preserve">
+    <value>启用 OpenSearch</value>
+  </data>
+  <data name="Enable FOAF" xml:space="preserve">
+    <value>启用 FOAF</value>
+  </data>
+  <data name="Enable Pingback receive" xml:space="preserve">
+    <value>启用 Pingback 接受</value>
+  </data>
+  <data name="Enable Pingback send" xml:space="preserve">
+    <value>启用 Pingback 发送</value>
+  </data>
+  <data name="Enable Site Map" xml:space="preserve">
+    <value>启用网站地图</value>
+  </data>
+  <data name="Enable word filter" xml:space="preserve">
+    <value>启用违禁词过滤</value>
+  </data>
+  <data name="Enabled watermark" xml:space="preserve">
+    <value>启用水印</value>
+  </data>
+  <data name="Endpoint" xml:space="preserve">
+    <value>CDN 终端</value>
+  </data>
+  <data name="Environment" xml:space="preserve">
+    <value>环境</value>
+  </data>
+  <data name="Erase all data and configuration." xml:space="preserve">
+    <value>抹除所有数据及配置</value>
+  </data>
+  <data name="Export Data" xml:space="preserve">
+    <value>导出数据</value>
+  </data>
+  <data name="Featured" xml:space="preserve">
+    <value>精选</value>
+  </data>
+  <data name="Featured Posts" xml:space="preserve">
+    <value>精选文章</value>
+  </data>
+  <data name="Feed Subscription" xml:space="preserve">
+    <value>加入订阅</value>
+  </data>
+  <data name="Fit image to device pixel ratio" xml:space="preserve">
+    <value>图片自动适配设备DPI</value>
+  </data>
+  <data name="Font size" xml:space="preserve">
+    <value>字号</value>
+  </data>
+  <data name="Footer" xml:space="preserve">
+    <value>页脚</value>
+  </data>
+  <data name="Footer HTML code" xml:space="preserve">
+    <value>页脚HTML区域</value>
+  </data>
+  <data name="Friend Link Information" xml:space="preserve">
+    <value>友情链接信息</value>
+  </data>
+  <data name="Friend Link Options" xml:space="preserve">
+    <value>友情链接选项</value>
+  </data>
+  <data name="Friend Links" xml:space="preserve">
+    <value>友情链接</value>
+  </data>
+  <data name="General" xml:space="preserve">
+    <value>常规</value>
+  </data>
+  <data name="Generate password" xml:space="preserve">
+    <value>生成密码</value>
+  </data>
+  <data name="Get update" xml:space="preserve">
+    <value>获取更新</value>
+  </data>
+  <data name="Hide Sidebar" xml:space="preserve">
+    <value>隐藏侧边栏</value>
+  </data>
+  <data name="Home" xml:space="preserve">
+    <value>主页</value>
+  </data>
+  <data name="How many tags show on sidebar" xml:space="preserve">
+    <value>侧边栏显示标签数量</value>
+  </data>
+  <data name="HTML Pitch" xml:space="preserve">
+    <value>HTML区域</value>
+  </data>
+  <data name="Icon" xml:space="preserve">
+    <value>图标</value>
+  </data>
+  <data name="Icon CSS Class" xml:space="preserve">
+    <value>图标CSS类名</value>
+  </data>
+  <data name="Image" xml:space="preserve">
+    <value>图片</value>
+  </data>
+  <data name="Inline CSS" xml:space="preserve">
+    <value>内联CSS</value>
+  </data>
+  <data name="Insights" xml:space="preserve">
+    <value>洞察</value>
+  </data>
+  <data name="Invalid Icon CSS Class" xml:space="preserve">
+    <value>无效的图标CSS类名</value>
+  </data>
+  <data name="It will show up once blog administrator approved your comment." xml:space="preserve">
+    <value>博主审核通过后，您的评论会在此显示</value>
+  </data>
+  <data name="Keep origin image" xml:space="preserve">
+    <value>保留原图</value>
+  </data>
+  <data name="Language" xml:space="preserve">
+    <value>语言</value>
+  </data>
+  <data name="Last Login IP" xml:space="preserve">
+    <value>最后登录 IP</value>
+  </data>
+  <data name="Last Login Time (UTC)" xml:space="preserve">
+    <value>最后登录时间 (UTC)</value>
+  </data>
+  <data name="Latest Posts" xml:space="preserve">
+    <value>最新文章</value>
+  </data>
+  <data name="Left" xml:space="preserve">
+    <value>左侧</value>
+  </data>
+  <data name="Link" xml:space="preserve">
+    <value>链接</value>
+  </data>
+  <data name="Logo text" xml:space="preserve">
+    <value>Logo 文字</value>
+  </data>
+  <data name="Machine Name" xml:space="preserve">
+    <value>主机名</value>
+  </data>
+  <data name="Mask Word" xml:space="preserve">
+    <value>打码违禁词</value>
+  </data>
+  <data name="Memory" xml:space="preserve">
+    <value>内存</value>
+  </data>
+  <data name="Menu Editor" xml:space="preserve">
+    <value>菜单编辑器</value>
+  </data>
+  <data name="Menus" xml:space="preserve">
+    <value>菜单</value>
+  </data>
+  <data name="Meta keyword" xml:space="preserve">
+    <value>网站关键词</value>
+  </data>
+  <data name="MetaWeblog password" xml:space="preserve">
+    <value>MetaWeblog 密码</value>
+  </data>
+  <data name="Moonglade Configuration" xml:space="preserve">
+    <value>Moonglade 配置</value>
+  </data>
+  <data name="Moonglade Update" xml:space="preserve">
+    <value>Moonglade 更新</value>
+  </data>
+  <data name="Name" xml:space="preserve">
+    <value>名称</value>
+  </data>
+  <data name="New" xml:space="preserve">
+    <value>新建</value>
+  </data>
+  <data name="No Archive" xml:space="preserve">
+    <value>暂无归档</value>
+  </data>
+  <data name="No Comments" xml:space="preserve">
+    <value>没有评论</value>
+  </data>
+  <data name="No Customized Menus" xml:space="preserve">
+    <value>无自定义菜单</value>
+  </data>
+  <data name="no items to show" xml:space="preserve">
+    <value>无条目需要显示</value>
+  </data>
+  <data name="No Matching Result" xml:space="preserve">
+    <value>找不到相关结果</value>
+  </data>
+  <data name="No Pages" xml:space="preserve">
+    <value>暂无页面</value>
+  </data>
+  <data name="No Posts" xml:space="preserve">
+    <value>暂无文章</value>
+  </data>
+  <data name="No Posts Found" xml:space="preserve">
+    <value>暂无文章</value>
+  </data>
+  <data name="No Tags" xml:space="preserve">
+    <value>暂无标签</value>
+  </data>
+  <data name="Notification" xml:space="preserve">
+    <value>通知</value>
+  </data>
+  <data name="Notification Options" xml:space="preserve">
+    <value>通知选项</value>
+  </data>
+  <data name="Only letters, numbers, - and [] are allowed." xml:space="preserve">
+    <value>仅允许字母、数字、-及[]</value>
+  </data>
+  <data name="Only lower case letters and hyphens are allowed." xml:space="preserve">
+    <value>必须为小写英文字符或中划线</value>
+  </data>
+  <data name="Open in New Tab" xml:space="preserve">
+    <value>在新标签页中打开</value>
+  </data>
+  <data name="Options" xml:space="preserve">
+    <value>选项</value>
+  </data>
+  <data name="or override with environment variables." xml:space="preserve">
+    <value>或使用变量覆盖</value>
+  </data>
+  <data name="Order" xml:space="preserve">
+    <value>序号</value>
+  </data>
+  <data name="Origin Link" xml:space="preserve">
+    <value>原文链接</value>
+  </data>
+  <data name="Original" xml:space="preserve">
+    <value>原创</value>
+  </data>
+  <data name="Owner email" xml:space="preserve">
+    <value>博主邮箱</value>
+  </data>
+  <data name="Pages" xml:space="preserve">
+    <value>页面</value>
+  </data>
+  <data name="Password" xml:space="preserve">
+    <value>密码</value>
+  </data>
+  <data name="Pingbacks" xml:space="preserve">
+    <value>引用</value>
+  </data>
+  <data name="Post footer HTML code" xml:space="preserve">
+    <value>文章页脚HTML内容</value>
+  </data>
+  <data name="Post list page size" xml:space="preserve">
+    <value>文章分页数量</value>
+  </data>
+  <data name="Posts" xml:space="preserve">
+    <value>文章</value>
+  </data>
+  <data name="Preview" xml:space="preserve">
+    <value>预览</value>
+  </data>
+  <data name="Processing..." xml:space="preserve">
+    <value>处理中……</value>
+  </data>
+  <data name="Providing your email address can enable blog admin to send notifications for replying your comment. Your email address will also be used to show Gravatar if it has one." xml:space="preserve">
+    <value>提供Email地址以让博主回复您评论时发送通知。您的Email地址也会被用来显示Gravatar头像（如果有）。</value>
+  </data>
+  <data name="Publish" xml:space="preserve">
+    <value>发布</value>
+  </data>
+  <data name="Publish Date" xml:space="preserve">
+    <value>发布日期</value>
+  </data>
+  <data name="Publish Now" xml:space="preserve">
+    <value>立即发布</value>
+  </data>
+  <data name="Published" xml:space="preserve">
+    <value>已发布</value>
+  </data>
+  <data name="Read origin article" xml:space="preserve">
+    <value>阅读原文</value>
+  </data>
+  <data name="Reads" xml:space="preserve">
+    <value>次阅读</value>
+  </data>
+  <data name="Recycle Bin" xml:space="preserve">
+    <value>回收站</value>
+  </data>
+  <data name="Refresh the page to see your comment." xml:space="preserve">
+    <value>刷新页面以查看您的评论</value>
+  </data>
+  <data name="Release time" xml:space="preserve">
+    <value>发布时间</value>
+  </data>
+  <data name="Replied at" xml:space="preserve">
+    <value>回复于</value>
+  </data>
+  <data name="Reply" xml:space="preserve">
+    <value>回复</value>
+  </data>
+  <data name="Reset" xml:space="preserve">
+    <value>重置</value>
+  </data>
+  <data name="Reset Password" xml:space="preserve">
+    <value>重置密码</value>
+  </data>
+  <data name="Restart" xml:space="preserve">
+    <value>重启</value>
+  </data>
+  <data name="Restart Website" xml:space="preserve">
+    <value>重启网站</value>
+  </data>
+  <data name="Restore" xml:space="preserve">
+    <value>恢复</value>
+  </data>
+  <data name="Right" xml:space="preserve">
+    <value>右侧</value>
+  </data>
+  <data name="Route Name" xml:space="preserve">
+    <value>路由名称</value>
+  </data>
+  <data name="RSS Items" xml:space="preserve">
+    <value>RSS条目数量</value>
+  </data>
+  <data name="Save" xml:space="preserve">
+    <value>保存</value>
+  </data>
+  <data name="Scan QR Code on your phone" xml:space="preserve">
+    <value>在手机上扫描二维码</value>
+  </data>
+  <data name="Search" xml:space="preserve">
+    <value>搜索</value>
+  </data>
+  <data name="Search Result" xml:space="preserve">
+    <value>搜索结果</value>
+  </data>
+  <data name="Security Settings" xml:space="preserve">
+    <value>安全设置</value>
+  </data>
+  <data name="Send email on comment reply" xml:space="preserve">
+    <value>评论被回复时发送Email通知用户</value>
+  </data>
+  <data name="Send email on new comment" xml:space="preserve">
+    <value>有新评论时发送Email通知管理员</value>
+  </data>
+  <data name="Send Test Email" xml:space="preserve">
+    <value>发送测试邮件</value>
+  </data>
+  <data name="Server Information" xml:space="preserve">
+    <value>服务器信息</value>
+  </data>
+  <data name="Set a primary domain if your website binds to multiple domian names." xml:space="preserve">
+    <value>若您的网站绑定了多个域名，请填写主域名</value>
+  </data>
+  <data name="Short description" xml:space="preserve">
+    <value>博主简介(短)</value>
+  </data>
+  <data name="Short description is for display only on Phone screen." xml:space="preserve">
+    <value>仅用于在手机版视图显示</value>
+  </data>
+  <data name="Show Admin login button under sidebar" xml:space="preserve">
+    <value>在侧边栏下显示管理员登录按钮</value>
+  </data>
+  <data name="Show call-out section" xml:space="preserve">
+    <value>显示横幅区</value>
+  </data>
+  <data name="Show customize footer on each post" xml:space="preserve">
+    <value>在每篇文章底下显示自定义页脚</value>
+  </data>
+  <data name="Show warning when clicking external links" xml:space="preserve">
+    <value>点击外部链接时弹出警告</value>
+  </data>
+  <data name="Side Bar" xml:space="preserve">
+    <value>侧边栏</value>
+  </data>
+  <data name="Side bar display" xml:space="preserve">
+    <value>侧边栏位置</value>
+  </data>
+  <data name="Side bar HTML code" xml:space="preserve">
+    <value>侧边栏HTML区域</value>
+  </data>
+  <data name="Sign In" xml:space="preserve">
+    <value>登录</value>
+  </data>
+  <data name="Site Icon Files" xml:space="preserve">
+    <value>网站图标文件</value>
+  </data>
+  <data name="Start Time" xml:space="preserve">
+    <value>启动时间</value>
+  </data>
+  <data name="Sub Menu" xml:space="preserve">
+    <value>子菜单</value>
+  </data>
+  <data name="Sub Menu Properties" xml:space="preserve">
+    <value>子菜单属性</value>
+  </data>
+  <data name="Submit" xml:space="preserve">
+    <value>提交</value>
+  </data>
+  <data name="Subscribe Recent 20 Posts" xml:space="preserve">
+    <value>订阅最近20篇文章</value>
+  </data>
+  <data name="Subscription" xml:space="preserve">
+    <value>订阅</value>
+  </data>
+  <data name="System" xml:space="preserve">
+    <value>系统</value>
+  </data>
+  <data name="System Reset" xml:space="preserve">
+    <value>系统重置</value>
+  </data>
+  <data name="Tag name" xml:space="preserve">
+    <value>标签名</value>
+  </data>
+  <data name="Tags" xml:space="preserve">
+    <value>标签</value>
+  </data>
+  <data name="Thanks for your comment." xml:space="preserve">
+    <value>感谢您的评论</value>
+  </data>
+  <data name="Thanks, your comment is pending approval now." xml:space="preserve">
+    <value>谢谢，您的评论已提交审核</value>
+  </data>
+  <data name="The call-out section will display on top of every page in the website." xml:space="preserve">
+    <value>公告区将在网站中每个页面顶部显示</value>
+  </data>
+  <data name="The first {0} character(s) will be used as abstract if you leave this field blank." xml:space="preserve">
+    <value>留空自动选取文章前 {0} 字符作为摘要</value>
+  </data>
+  <data name="The number of entries to include in RSS feed." xml:space="preserve">
+    <value>RSS中包含的条目数量</value>
+  </data>
+  <data name="Theme" xml:space="preserve">
+    <value>主题</value>
+  </data>
+  <data name="This field is required." xml:space="preserve">
+    <value>必填</value>
+  </data>
+  <data name="This is a preview for draft content." xml:space="preserve">
+    <value>本文为草稿预览</value>
+  </data>
+  <data name="Time Zone" xml:space="preserve">
+    <value>时区</value>
+  </data>
+  <data name="Title" xml:space="preserve">
+    <value>标题</value>
+  </data>
+  <data name="To turn on / off system navigation items (Categories / Tags / Archive), edit" xml:space="preserve">
+    <value>打开或关闭系统导航菜单（分类/标签/归档），编辑</value>
+  </data>
+  <data name="Top 10 Commented Posts / Past Year" xml:space="preserve">
+    <value>过去一年中评论最多的10篇文章</value>
+  </data>
+  <data name="Top 10 Read Posts / Past Year" xml:space="preserve">
+    <value>过去一年中阅读最多的10篇文章</value>
+  </data>
+  <data name="Top Level" xml:space="preserve">
+    <value>顶级菜单</value>
+  </data>
+  <data name="Top Menu Properties" xml:space="preserve">
+    <value>顶级菜单属性</value>
+  </data>
+  <data name="Try to shutdown and restart the website, this will terminate all current requests." xml:space="preserve">
+    <value>尝试关闭并重新启动网站，该操作会终止所有当前请求</value>
+  </data>
+  <data name="Update" xml:space="preserve">
+    <value>更新</value>
+  </data>
+  <data name="Upload" xml:space="preserve">
+    <value>上传</value>
+  </data>
+  <data name="Upload Image" xml:space="preserve">
+    <value>上传头图</value>
+  </data>
+  <data name="URL" xml:space="preserve">
+    <value>链接</value>
+  </data>
+  <data name="Url (Relative or Absolute)" xml:space="preserve">
+    <value>链接 (相对或绝对)</value>
+  </data>
+  <data name="Use friendly 404 image" xml:space="preserve">
+    <value>启用友好404图片</value>
+  </data>
+  <data name="Use full blog post content instead of abstract" xml:space="preserve">
+    <value>使用文章全文作为内容而非摘要</value>
+  </data>
+  <data name="Use [c] for copyright mark: &amp;copy;, [year] for current year." xml:space="preserve">
+    <value>使用 [c] 表示版权符号 &amp;copy; ，[year] 表示当前年份</value>
+  </data>
+  <data name="User Account" xml:space="preserve">
+    <value>用户账户</value>
+  </data>
+  <data name="User Name" xml:space="preserve">
+    <value>用户名</value>
+  </data>
+  <data name="Username" xml:space="preserve">
+    <value>用户名</value>
+  </data>
+  <data name="Version" xml:space="preserve">
+    <value>版本</value>
+  </data>
+  <data name="Watermark" xml:space="preserve">
+    <value>水印</value>
+  </data>
+  <data name="Watermark text" xml:space="preserve">
+    <value>水印文字</value>
+  </data>
+  <data name="Word filter mode" xml:space="preserve">
+    <value>违禁词屏蔽模式</value>
+  </data>
+  <data name="Worker Process" xml:space="preserve">
+    <value>工作进程</value>
+  </data>
+  <data name="Your comments (Markdown supported)" xml:space="preserve">
+    <value>您的评论（支持Markdown）</value>
+  </data>
+  <data name="Your description" xml:space="preserve">
+    <value>博主简介</value>
+  </data>
+  <data name="Your name" xml:space="preserve">
+    <value>博主名字</value>
+  </data>
+  <data name="Center" xml:space="preserve">
+    <value>剧中</value>
+  </data>
+  <data name="Export" xml:space="preserve">
+    <value>导出</value>
+  </data>
+</root>

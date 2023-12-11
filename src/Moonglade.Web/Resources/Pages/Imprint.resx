@@ -1,0 +1,160 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <!-- 
+		Microsoft ResX Schema
+
+		Version 1.3
+
+		The primary goals of this format is to allow a simple XML format 
+		that is mostly human readable. The generation and parsing of the 
+		various data types are done through the TypeConverter classes 
+		associated with the data types.
+
+		Example:
+
+		... ado.net/XML headers & schema ...
+		<resheader name="resmimetype">text/microsoft-resx</resheader>
+		<resheader name="version">1.3</resheader>
+		<resheader name="reader">System.Resources.ResXResourceReader, System.Windows.Forms, ...</resheader>
+		<resheader name="writer">System.Resources.ResXResourceWriter, System.Windows.Forms, ...</resheader>
+		<data name="Name1">this is my long string</data>
+		<data name="Color1" type="System.Drawing.Color, System.Drawing">Blue</data>
+		<data name="Bitmap1" mimetype="application/x-microsoft.net.object.binary.base64">
+			[base64 mime encoded serialized .NET Framework object]
+		</data>
+		<data name="Icon1" type="System.Drawing.Icon, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
+			[base64 mime encoded string representing a byte array form of the .NET Framework object]
+		</data>
+
+		There are any number of "resheader" rows that contain simple 
+		name/value pairs.
+
+		Each data row contains a name, and value. The row also contains a 
+		type or mimetype. Type corresponds to a .NET class that support 
+		text/value conversion through the TypeConverter architecture. 
+		Classes that don't support this are serialized and stored with the 
+		mimetype set.
+
+		The mimetype is used for serialized objects, and tells the 
+		ResXResourceReader how to depersist the object. This is currently not 
+		extensible. For a given mimetype the value must be set accordingly:
+
+		Note - application/x-microsoft.net.object.binary.base64 is the format 
+		that the ResXResourceWriter will generate, however the reader can 
+		read any of the formats listed below.
+
+		mimetype: application/x-microsoft.net.object.binary.base64
+		value   : The object must be serialized with 
+			: System.Serialization.Formatters.Binary.BinaryFormatter
+			: and then encoded with base64 encoding.
+
+		mimetype: application/x-microsoft.net.object.soap.base64
+		value   : The object must be serialized with 
+			: System.Runtime.Serialization.Formatters.Soap.SoapFormatter
+			: and then encoded with base64 encoding.
+
+		mimetype: application/x-microsoft.net.object.bytearray.base64
+		value   : The object must be serialized into a byte array 
+			: using a System.ComponentModel.TypeConverter
+			: and then encoded with base64 encoding.
+	-->
+  <xsd:schema id="root" xmlns="" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
+    <xsd:element name="root" msdata:IsDataSet="true">
+      <xsd:complexType>
+        <xsd:choice maxOccurs="unbounded">
+          <xsd:element name="data">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+                <xsd:element name="comment" type="xsd:string" minOccurs="0" msdata:Ordinal="2" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" msdata:Ordinal="1" />
+              <xsd:attribute name="type" type="xsd:string" msdata:Ordinal="3" />
+              <xsd:attribute name="mimetype" type="xsd:string" msdata:Ordinal="4" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="resheader">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" />
+            </xsd:complexType>
+          </xsd:element>
+        </xsd:choice>
+      </xsd:complexType>
+    </xsd:element>
+  </xsd:schema>
+  <resheader name="resmimetype">
+    <value>text/microsoft-resx</value>
+  </resheader>
+  <resheader name="version">
+    <value>1.3</value>
+  </resheader>
+  <resheader name="reader">
+    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=2.0.3500.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <resheader name="writer">
+    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=2.0.3500.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <data name="adress" xml:space="preserve">
+    <value>adress as above</value>
+  </data>
+  <data name="contact" xml:space="preserve">
+    <value>Contact options</value>
+  </data>
+  <data name="contact-form" xml:space="preserve">
+    <value>contact form</value>
+  </data>
+  <data name="disclaimer" xml:space="preserve">
+    <value>Disclaimer of liability</value>
+  </data>
+  <data name="disclaimer1" xml:space="preserve">
+    <value>The content of this online offer was created carefully and according to our current state of knowledge, but is only for information purposes and does not have any legally binding effect, unless it is legally binding information (e.g. the imprint, the data protection declaration, terms and conditions or mandatory instructions for consumers). We reserve the right to change or delete the content in full or in part, provided that contractual obligations remain unaffected. All offers are non-binding.</value>
+  </data>
+  <data name="disclaimer2" xml:space="preserve">
+    <value>&lt;strong&gt; Links to other websites &lt;/strong&gt;: Contents of external websites to which we refer directly or indirectly are outside our area of responsibility and we do not adopt them as our own. The provider of the linked websites is solely liable for all content and in particular for damage resulting from the use of the information that can be accessed on the linked websites.</value>
+  </data>
+  <data name="disclaimer3" xml:space="preserve">
+    <value>&lt;strong&gt; Copyrights and trademark rights &lt;/strong&gt;: All content presented on this website, such as texts, photographs, graphics, brands and trademarks are protected by the respective property rights (copyrights, trademark rights). The use, reproduction, etc. are subject to our rights or the rights of the respective authors or rights administrators.</value>
+  </data>
+  <data name="disclaimer4" xml:space="preserve">
+    <value>&lt;strong&gt; Notes on legal violations &lt;/strong&gt;: If you notice legal violations on our website, we ask you to inform us about them. We will remove illegal content and links immediately after taking notice.</value>
+  </data>
+  <data name="email" xml:space="preserve">
+    <value>E-mail address</value>
+  </data>
+  <data name="imprint-header" xml:space="preserve">
+    <value>Imprint</value>
+  </data>
+  <data name="imprint-service" xml:space="preserve">
+    <value>Service provider</value>
+  </data>
+  <data name="journalistic" xml:space="preserve">
+    <value>Journalistic and editorial offers</value>
+  </data>
+  <data name="liability" xml:space="preserve">
+    <value>Liability and property rights notices</value>
+  </data>
+  <data name="other" xml:space="preserve">
+    <value>This imprint also applies to the following social media presences and online profiles</value>
+  </data>
+  <data name="responsibility" xml:space="preserve">
+    <value>Content responsibility</value>
+  </data>
+  <data name="seal" xml:space="preserve">
+    <value>Created with free Datenschutz-Generator.de by Dr. Thomas Schwenke</value>
+  </data>
+  <data name="socialmedia" xml:space="preserve">
+    <value>Social media and other online presences</value>
+  </data>
+  <data name="telefon" xml:space="preserve">
+    <value>Phone</value>
+  </data>
+  <data name="viewbag-pagename" xml:space="preserve">
+    <value>Imprint</value>
+  </data>
+  <data name="viewbag-title" xml:space="preserve">
+    <value>Imprint - Sascha Manns's Twilight Zone</value>
+  </data>
+</root>

@@ -1,4 +1,4 @@
-﻿@{
+@{
     var currentPage = ViewContext.RouteData.Values["Page"]?.ToString();
 }
 
@@ -21,7 +21,7 @@
             <i class="bi-plus-lg"></i>
             @SharedLocalizer["New"]
         </a>
-        
+
         <a asp-action="ExportDownload" asp-controller="DataPorting" asp-route-type="Posts" class="btn btn-outline-accent" target="_blank">
             <i class="bi-upload"></i>
             @SharedLocalizer["Export"]

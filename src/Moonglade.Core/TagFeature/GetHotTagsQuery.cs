@@ -1,4 +1,4 @@
-﻿using Moonglade.Data.Generated.Entities;
+using Moonglade.Data.Generated.Entities;
 using Moonglade.Data.Spec;
 
 namespace Moonglade.Core.TagFeature;
@@ -20,6 +20,6 @@ public class GetHotTagsQueryHandler(IRepository<TagEntity> repo) : IRequestHandl
                 NormalizedName = t.NormalizedName
             }, t.Posts.Count), ct);
 
-        return tags;
-    }
+		return tags;
+	}
 }

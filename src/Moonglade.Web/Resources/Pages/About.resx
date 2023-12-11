@@ -1,0 +1,149 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <!-- 
+		Microsoft ResX Schema
+
+		Version 1.3
+
+		The primary goals of this format is to allow a simple XML format 
+		that is mostly human readable. The generation and parsing of the 
+		various data types are done through the TypeConverter classes 
+		associated with the data types.
+
+		Example:
+
+		... ado.net/XML headers & schema ...
+		<resheader name="resmimetype">text/microsoft-resx</resheader>
+		<resheader name="version">1.3</resheader>
+		<resheader name="reader">System.Resources.ResXResourceReader, System.Windows.Forms, ...</resheader>
+		<resheader name="writer">System.Resources.ResXResourceWriter, System.Windows.Forms, ...</resheader>
+		<data name="Name1">this is my long string</data>
+		<data name="Color1" type="System.Drawing.Color, System.Drawing">Blue</data>
+		<data name="Bitmap1" mimetype="application/x-microsoft.net.object.binary.base64">
+			[base64 mime encoded serialized .NET Framework object]
+		</data>
+		<data name="Icon1" type="System.Drawing.Icon, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
+			[base64 mime encoded string representing a byte array form of the .NET Framework object]
+		</data>
+
+		There are any number of "resheader" rows that contain simple 
+		name/value pairs.
+
+		Each data row contains a name, and value. The row also contains a 
+		type or mimetype. Type corresponds to a .NET class that support 
+		text/value conversion through the TypeConverter architecture. 
+		Classes that don't support this are serialized and stored with the 
+		mimetype set.
+
+		The mimetype is used for serialized objects, and tells the 
+		ResXResourceReader how to depersist the object. This is currently not 
+		extensible. For a given mimetype the value must be set accordingly:
+
+		Note - application/x-microsoft.net.object.binary.base64 is the format 
+		that the ResXResourceWriter will generate, however the reader can 
+		read any of the formats listed below.
+
+		mimetype: application/x-microsoft.net.object.binary.base64
+		value   : The object must be serialized with 
+			: System.Serialization.Formatters.Binary.BinaryFormatter
+			: and then encoded with base64 encoding.
+
+		mimetype: application/x-microsoft.net.object.soap.base64
+		value   : The object must be serialized with 
+			: System.Runtime.Serialization.Formatters.Soap.SoapFormatter
+			: and then encoded with base64 encoding.
+
+		mimetype: application/x-microsoft.net.object.bytearray.base64
+		value   : The object must be serialized into a byte array 
+			: using a System.ComponentModel.TypeConverter
+			: and then encoded with base64 encoding.
+	-->
+  <xsd:schema id="root" xmlns="" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
+    <xsd:element name="root" msdata:IsDataSet="true">
+      <xsd:complexType>
+        <xsd:choice maxOccurs="unbounded">
+          <xsd:element name="data">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+                <xsd:element name="comment" type="xsd:string" minOccurs="0" msdata:Ordinal="2" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" msdata:Ordinal="1" />
+              <xsd:attribute name="type" type="xsd:string" msdata:Ordinal="3" />
+              <xsd:attribute name="mimetype" type="xsd:string" msdata:Ordinal="4" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="resheader">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" />
+            </xsd:complexType>
+          </xsd:element>
+        </xsd:choice>
+      </xsd:complexType>
+    </xsd:element>
+  </xsd:schema>
+  <resheader name="resmimetype">
+    <value>text/microsoft-resx</value>
+  </resheader>
+  <resheader name="version">
+    <value>1.3</value>
+  </resheader>
+  <resheader name="reader">
+    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=2.0.3500.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <resheader name="writer">
+    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=2.0.3500.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <data name="Me and the blog" xml:space="preserve">
+    <value>Me and the blog</value>
+  </data>
+  <data name="intro" xml:space="preserve">
+    <value>Sascha Manns is a German software developer (C#, Linux) and book author. He has worked in the openSUSE community
+as a packager, editor of the weekly newsletter and within the Membership Application Team. He was temporarily involved in the "Balsam Professional" distribution, an openSUSE derivative, in manual writing and product support. After finishing his studies as an IT specialist in application development, he entered C# development, and dealt with various topics such as: Windows Presentation Foundation, Entity Framework, WinUI3, Web API, Web App, and others.</value>
+  </data>
+  <data name="timeline-1991-1" xml:space="preserve">
+    <value>I was 12 years old and I was so interested in computer technologies. In school we learned programming robots on a i286 with with b/w monitors. The first cv i built on that pc with Works for DOS :-)</value>
+  </data>
+  <data name="timeline-1991-2" xml:space="preserve">
+    <value>Privatly i used a Commodore 64. Besides the games popular with young people, I was engaged in programming in BASIC. So i learned programming with it and build a small launcher application what supports some of my daily tasks. Later i moved to GEOS, a graphical User Interface what also contains Apps for writing documents, building Sheets and so on. Later i moved to a i386 with Windows 3.11.</value>
+  </data>
+  <data name="timeline-1995" xml:space="preserve">
+    <value>I started my training to a merchant by a Opel car dealership. There we worked with a UNIX based BASIC enterprise resource planning system. With the UNIX client server structure it was possible to use small thin clients.</value>
+  </data>
+  <data name="timeline-2000" xml:space="preserve">
+    <value>I did alternative military service in a monastery. Here, among other things, I worked as a beta tester for the monastery's own Bible software.</value>
+  </data>
+  <data name="timeline-2008" xml:space="preserve">
+    <value>Here I worked in the openSUSE Linux project. I created packages, edited the Weekly News and participated in the Membership Application team. Specifically for the boxed software, I wrote and expanded manuals, provided installation support, and worked in product management.</value>
+  </data>
+  <data name="timeline-2014" xml:space="preserve">
+    <value>I entered the healthcare sector and worked in rights management.</value>
+  </data>
+  <data name="timeline-2015" xml:space="preserve">
+    <value>Change to the banking sector. Collaboration on the accounting core and documentation of the same. Preparation of documentation on the SEPA procedure and the booking software at trainee level.</value>
+  </data>
+  <data name="timeline-2018" xml:space="preserve">
+    <value>Here I developed mobile applications, for car dealerships that do trade-ins. First experiences with DAT and Schwacke API.</value>
+  </data>
+  <data name="timeline-2020" xml:space="preserve">
+    <value>Development of software for companies that rent construction machinery. The development was done with Visual Basic and Winforms, as well as Cachè database.</value>
+  </data>
+  <data name="timeline-2021" xml:space="preserve">
+    <value>Writing individual software and hotfixes for our e-commerce middleware for using online marketplaces. Programmed and implemented different APIs.</value>
+  </data>
+  <data name="publications" xml:space="preserve">
+    <value>Publications</value>
+  </data>
+  <data name="publisher-published" xml:space="preserve">
+    <value>Published</value>
+  </data>
+  <data name="opensource" xml:space="preserve">
+    <value>Some of my open source contributions</value>
+  </data>
+  <data name="connect-header" xml:space="preserve">
+    <value>Let's connect</value>
+  </data>
+</root>

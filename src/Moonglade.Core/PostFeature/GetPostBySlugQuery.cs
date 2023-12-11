@@ -1,4 +1,5 @@
-﻿using Edi.CacheAside.InMemory;
+using Edi.CacheAside.InMemory;
+
 using Microsoft.Extensions.Configuration;
 using Moonglade.Data.Generated.Entities;
 using Moonglade.Data.Spec;
@@ -15,9 +16,9 @@ public class GetPostBySlugQueryHandler(IRepository<PostEntity> repo, ICacheAside
     {
         var date = new DateTime(request.Slug.Year, request.Slug.Month, request.Slug.Day);
 
-        // Try to find by checksum
-        var slugCheckSum = Helper.ComputeCheckSum($"{request.Slug.Slug}#{date:yyyyMMdd}");
-        ISpecification<PostEntity> spec = new PostSpec(slugCheckSum);
+		// Try to find by checksum
+		var slugCheckSum = Helper.ComputeCheckSum($"{request.Slug.Slug}#{date:yyyyMMdd}");
+		ISpecification<PostEntity> spec = new PostSpec(slugCheckSum);
 
         var pid = await repo.FirstOrDefaultAsync(spec, p => p.Id);
         if (pid == Guid.Empty)
@@ -26,7 +27,7 @@ public class GetPostBySlugQueryHandler(IRepository<PostEntity> repo, ICacheAside
             spec = new PostSpec(date, request.Slug.Slug);
             pid = await repo.FirstOrDefaultAsync(spec, x => x.Id);
 
-            if (pid == Guid.Empty) return null;
+			if (pid == Guid.Empty) return null;
 
             // Post is found, fill it's checksum so that next time the query can be run against checksum
             var p = await repo.GetAsync(pid, ct);
@@ -43,6 +44,6 @@ public class GetPostBySlugQueryHandler(IRepository<PostEntity> repo, ICacheAside
             return post;
         });
 
-        return psm;
-    }
+		return psm;
+	}
 }

@@ -9,6 +9,7 @@ namespace Moonglade.Syndication;
 
 public class FeedGenerator : IFeedGenerator, IRssGenerator, IAtomGenerator
 {
+
 	public FeedGenerator()
 	{
 		FeedItemCollection = new List<FeedEntry>();

@@ -1,20 +1,20 @@
-﻿export let simplemde = null;
+export let simplemde = null;
 
 function slugify(text) {
-    var isValidTitle = /^[A-Za-z][A-Za-z0-9 \(\)#,\.\?]*$/.test(text);
-    if (isValidTitle) {
-        return text
-            .toLowerCase()
-            .replace('(', '')
-            .replace(')', '')
-            .replace('#', '')
-            .replace(',', '')
-            .replace('.', '')
-            .replace('?', '')
-            .replace(/[^\w ]+/g, '')
-            .replace(/ +/g, '-');
-    }
-    return '';
+	var isValidTitle = /^[A-Za-z][A-Za-z0-9 \(\)#,\.\?]*$/.test(text);
+	if (isValidTitle) {
+		return text
+			.toLowerCase()
+			.replace('(', '')
+			.replace(')', '')
+			.replace('#', '')
+			.replace(',', '')
+			.replace('.', '')
+			.replace('?', '')
+			.replace(/[^\w ]+/g, '')
+			.replace(/ +/g, '-');
+	}
+	return '';
 }
 
 export function initEvents(slugifyTitle) {
@@ -27,77 +27,77 @@ export function initEvents(slugifyTitle) {
         });
     }
 
-    $('#btn-preview').click(function (e) {
-        submitForm(e);
-    });
+	$('#btn-preview').click(function (e) {
+		submitForm(e);
+	});
 
-    $('#btn-save').click(function (e) {
-        submitForm(e);
-    });
+	$('#btn-save').click(function (e) {
+		submitForm(e);
+	});
 
-    $('#btn-publish').click(function (e) {
-        $('input[name="ViewModel.IsPublished"]').val('True');
-        submitForm(e);
-    });
+	$('#btn-publish').click(function (e) {
+		$('input[name="ViewModel.IsPublished"]').val('True');
+		submitForm(e);
+	});
 
-    $('.btn-modify-slug').click(function () {
-        var message = 'This post was published for more than 7 days, changing slug will result in breaking SEO, would you like to continue?';
+	$('.btn-modify-slug').click(function () {
+		var message = 'This post was published for more than 7 days, changing slug will result in breaking SEO, would you like to continue?';
 
-        if (confirm(message)) {
-            $('#ViewModel_Slug').removeAttr('readonly');
-            $('#ViewModel_Slug').focus();
-            $('.btn-modify-slug').hide();
-        }
-    })
+		if (confirm(message)) {
+			$('#ViewModel_Slug').removeAttr('readonly');
+			$('#ViewModel_Slug').focus();
+			$('.btn-modify-slug').hide();
+		}
+	})
 
-    function submitForm(e) {
-        if (window.tinyMCE) {
-            window.tinyMCE.triggerSave();
-        }
+	function submitForm(e) {
+		if (window.tinyMCE) {
+			window.tinyMCE.triggerSave();
+		}
 
-        if (window.SimpleMDE) {
-            var newVal = simplemde.value();
-            $(".post-content-textarea").val(newVal);
-        }
+		if (window.SimpleMDE) {
+			var newVal = simplemde.value();
+			$(".post-content-textarea").val(newVal);
+		}
 
-        if ($('input[name="ViewModel.IsPublished"]').val() === 'True') {
-            if (document.querySelector('#btn-publish')) {
-                document.querySelector('#btn-publish').style.display = 'none';
-            };
+		if ($('input[name="ViewModel.IsPublished"]').val() === 'True') {
+			if (document.querySelector('#btn-publish')) {
+				document.querySelector('#btn-publish').style.display = 'none';
+			};
 
-            if (document.querySelector('#btn-preview')) {
-                document.querySelector('#btn-preview').style.display = 'none';
-            }
-        }
-    }
+			if (document.querySelector('#btn-preview')) {
+				document.querySelector('#btn-preview').style.display = 'none';
+			}
+		}
+	}
 
-    $('.post-edit-form').areYouSure({
-        message: 'You have unsaved changes, are you sure to leave this page?'
-    });
+	$('.post-edit-form').areYouSure({
+		message: 'You have unsaved changes, are you sure to leave this page?'
+	});
 
-    callApi('/api/tags/names',
-        'GET',
-        {},
-        async (resp) => {
-            var data = await resp.json();
+	callApi('/api/tags/names',
+		'GET',
+		{},
+		async (resp) => {
+			var data = await resp.json();
 
-            var input = document.querySelector('#ViewModel_Tags'),
-                tagify = new Tagify(input,
-                    {
-                        pattern: /^[a-zA-Z 0-9\.\-\+\#\s]*$/i,
-                        whitelist: data,
-                        originalInputValueFormat: valuesArr => valuesArr.map(item => item.value).join(','),
-                        maxTags: 10,
-                        dropdown: {
-                            maxItems: 30,
-                            classname: 'tags-dropdown',
-                            enabled: 0,
-                            closeOnSelect: false
-                        }
-                    });
-        });
+			var input = document.querySelector('#ViewModel_Tags'),
+				tagify = new Tagify(input,
+					{
+						pattern: /^[a-zA-Z 0-9\.\-\+\#\s]*$/i,
+						whitelist: data,
+						originalInputValueFormat: valuesArr => valuesArr.map(item => item.value).join(','),
+						maxTags: 10,
+						dropdown: {
+							maxItems: 30,
+							classname: 'tags-dropdown',
+							enabled: 0,
+							closeOnSelect: false
+						}
+					});
+		});
 
-    document.querySelector('#ViewModel_Title').focus();
+	document.querySelector('#ViewModel_Title').focus();
 }
 
 export function loadTinyMCE(textareaSelector) {
@@ -163,35 +163,35 @@ export function loadTinyMCE(textareaSelector) {
 }
 
 export function loadMdEditor(textareaSelector) {
-    if (window.SimpleMDE) {
-        simplemde = new SimpleMDE({
-            element: $(textareaSelector)[0],
-            spellChecker: false,
-            status: false
-        });
+	if (window.SimpleMDE) {
+		simplemde = new SimpleMDE({
+			element: $(textareaSelector)[0],
+			spellChecker: false,
+			status: false
+		});
 
-        inlineAttachment.editors.codemirror4.attach(simplemde.codemirror, {
-            uploadUrl: '/image',
-            urlText: '![file]({filename})',
-            onFileUploadResponse: function (xhr) {
-                var result = JSON.parse(xhr.responseText),
-                    filename = result[this.settings.jsonFieldName];
+		inlineAttachment.editors.codemirror4.attach(simplemde.codemirror, {
+			uploadUrl: '/image',
+			urlText: '![file]({filename})',
+			onFileUploadResponse: function (xhr) {
+				var result = JSON.parse(xhr.responseText),
+					filename = result[this.settings.jsonFieldName];
 
-                if (result && filename) {
-                    var newValue;
-                    if (typeof this.settings.urlText === 'function') {
-                        newValue = this.settings.urlText.call(this, filename, result);
-                    } else {
-                        newValue = this.settings.urlText.replace(this.filenameTag, filename);
-                    }
-                    var text = this.editor.getValue().replace(this.lastValue, newValue);
-                    this.editor.setValue(text);
-                    this.settings.onFileUploaded.call(this, filename);
-                }
-                return false;
-            }
-        });
-    }
+				if (result && filename) {
+					var newValue;
+					if (typeof this.settings.urlText === 'function') {
+						newValue = this.settings.urlText.call(this, filename, result);
+					} else {
+						newValue = this.settings.urlText.replace(this.filenameTag, filename);
+					}
+					var text = this.editor.getValue().replace(this.lastValue, newValue);
+					this.editor.setValue(text);
+					this.settings.onFileUploaded.call(this, filename);
+				}
+				return false;
+			}
+		});
+	}
 }
 
 export function keepAlive() {

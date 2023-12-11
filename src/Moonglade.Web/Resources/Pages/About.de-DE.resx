@@ -1,0 +1,169 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <!-- 
+    Microsoft ResX Schema 
+    
+    Version 2.0
+    
+    The primary goals of this format is to allow a simple XML format 
+    that is mostly human readable. The generation and parsing of the 
+    various data types are done through the TypeConverter classes 
+    associated with the data types.
+    
+    Example:
+    
+    ... ado.net/XML headers & schema ...
+    <resheader name="resmimetype">text/microsoft-resx</resheader>
+    <resheader name="version">2.0</resheader>
+    <resheader name="reader">System.Resources.ResXResourceReader, System.Windows.Forms, ...</resheader>
+    <resheader name="writer">System.Resources.ResXResourceWriter, System.Windows.Forms, ...</resheader>
+    <data name="Name1"><value>this is my long string</value><comment>this is a comment</comment></data>
+    <data name="Color1" type="System.Drawing.Color, System.Drawing">Blue</data>
+    <data name="Bitmap1" mimetype="application/x-microsoft.net.object.binary.base64">
+        <value>[base64 mime encoded serialized .NET Framework object]</value>
+    </data>
+    <data name="Icon1" type="System.Drawing.Icon, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
+        <value>[base64 mime encoded string representing a byte array form of the .NET Framework object]</value>
+        <comment>This is a comment</comment>
+    </data>
+                
+    There are any number of "resheader" rows that contain simple 
+    name/value pairs.
+    
+    Each data row contains a name, and value. The row also contains a 
+    type or mimetype. Type corresponds to a .NET class that support 
+    text/value conversion through the TypeConverter architecture. 
+    Classes that don't support this are serialized and stored with the 
+    mimetype set.
+    
+    The mimetype is used for serialized objects, and tells the 
+    ResXResourceReader how to depersist the object. This is currently not 
+    extensible. For a given mimetype the value must be set accordingly:
+    
+    Note - application/x-microsoft.net.object.binary.base64 is the format 
+    that the ResXResourceWriter will generate, however the reader can 
+    read any of the formats listed below.
+    
+    mimetype: application/x-microsoft.net.object.binary.base64
+    value   : The object must be serialized with 
+            : System.Runtime.Serialization.Formatters.Binary.BinaryFormatter
+            : and then encoded with base64 encoding.
+    
+    mimetype: application/x-microsoft.net.object.soap.base64
+    value   : The object must be serialized with 
+            : System.Runtime.Serialization.Formatters.Soap.SoapFormatter
+            : and then encoded with base64 encoding.
+
+    mimetype: application/x-microsoft.net.object.bytearray.base64
+    value   : The object must be serialized into a byte array 
+            : using a System.ComponentModel.TypeConverter
+            : and then encoded with base64 encoding.
+    -->
+  <xsd:schema id="root" xmlns="" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
+    <xsd:import namespace="http://www.w3.org/XML/1998/namespace" />
+    <xsd:element name="root" msdata:IsDataSet="true">
+      <xsd:complexType>
+        <xsd:choice maxOccurs="unbounded">
+          <xsd:element name="metadata">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" />
+              </xsd:sequence>
+              <xsd:attribute name="name" use="required" type="xsd:string" />
+              <xsd:attribute name="type" type="xsd:string" />
+              <xsd:attribute name="mimetype" type="xsd:string" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="assembly">
+            <xsd:complexType>
+              <xsd:attribute name="alias" type="xsd:string" />
+              <xsd:attribute name="name" type="xsd:string" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="data">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+                <xsd:element name="comment" type="xsd:string" minOccurs="0" msdata:Ordinal="2" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" msdata:Ordinal="1" />
+              <xsd:attribute name="type" type="xsd:string" msdata:Ordinal="3" />
+              <xsd:attribute name="mimetype" type="xsd:string" msdata:Ordinal="4" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="resheader">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" />
+            </xsd:complexType>
+          </xsd:element>
+        </xsd:choice>
+      </xsd:complexType>
+    </xsd:element>
+  </xsd:schema>
+  <resheader name="resmimetype">
+    <value>text/microsoft-resx</value>
+  </resheader>
+  <resheader name="version">
+    <value>2.0</value>
+  </resheader>
+  <resheader name="reader">
+    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <resheader name="writer">
+    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <data name="Me and the blog" xml:space="preserve">
+    <value>Ich und mein Blog</value>
+  </data>
+  <data name="intro" xml:space="preserve">
+    <value>Sascha Manns ist ein deutscher Softwareentwickler (C#, Linux) und Buchautor. Er arbeitete in der openSUSE-Community
+als Packager, Redakteur des wöchentlichen Newsletters und innerhalb des Membership Application Teams. Er durfte zeitweise and der "Balsam Professional" Distribution, einem openSUSE Derivat, in der Handbucherstellung und dem Produktsupport mit. Nach der Beendigung eines Studiums zum Fachinformatiker in der Anwendungsentwicklung stieg er in die C#-Entwicklung ein, und beschäftigte sich mit verschiedenen Themen, wie: Windows Presentation Foundation, Entity Framework, WinUI3, Web API, Web App, und anderem.</value>
+  </data>
+  <data name="timeline-1991-1" xml:space="preserve">
+    <value>Ich war 12 Jahre alt und interessierte mich sehr für Computertechnologien. In der Schule lernten wir das Programmieren von Robotern auf einem i286 mit S/W-Monitoren. Den ersten Lebenslauf habe ich auf diesem PC mit Works for DOS gebaut :-)</value>
+  </data>
+  <data name="timeline-1991-2" xml:space="preserve">
+    <value>Privat benutzte ich einen Commodore 64. Neben den bei Jugendlichen beliebten Spielen habe ich mich mit der Programmierung in BASIC beschäftigt. So lernte ich das Programmieren damit und baute eine kleine Launcher-Anwendung, die mich bei einigen meiner täglichen Aufgaben unterstützt. Später wechselte ich zu GEOS, einer grafischen Benutzeroberfläche, die auch Apps zum Schreiben von Dokumenten, Erstellen von Sheets und so weiter. Später wechselte ich auf einen i386 mit Windows 3.11.</value>
+  </data>
+  <data name="timeline-1995" xml:space="preserve">
+    <value>Ich begann meine Ausbildung zum Kaufmann bei einem Opel-Autohaus. Dort arbeiteten wir mit einem UNIX-basierten BASIC-Warenwirtschaftssystem. Durch die UNIX-Client-Server-Struktur war es möglich, kleine Thin-Clients zu verwenden.</value>
+  </data>
+  <data name="timeline-2000" xml:space="preserve">
+    <value>Ich habe meinen Zivildienst in einem Kloster abgeleistet. Dort arbeitete ich unter anderem als Beta-Tester für die klostereigene Bibelsoftware.</value>
+  </data>
+  <data name="timeline-2008" xml:space="preserve">
+    <value>Hier habe ich im openSUSE Linux-Projekt gearbeitet. Ich erstellte Pakete, redigierte die Weekly News und arbeitete im Membership Application Team mit. Speziell für die Boxsoftware habe ich Handbücher geschrieben und erweitert, Installationsunterstützung geleistet und im Produktmanagement gearbeitet.</value>
+  </data>
+  <data name="timeline-2014" xml:space="preserve">
+    <value>Ich ging in den Gesundheitssektor und arbeitete im Rechtemanagement.</value>
+  </data>
+  <data name="timeline-2015" xml:space="preserve">
+    <value>Wechsel in den Bankensektor. Mitarbeit am Buchungskern und Dokumentation desselben. Erstellung von Unterlagen zum SEPA-Verfahren und zur Buchungssoftware auf Azubi-Ebene.</value>
+  </data>
+  <data name="timeline-2018" xml:space="preserve">
+    <value>Hier habe ich mobile Anwendungen entwickelt, für Autohäuser, die Inzahlungnahmen durchführen. Erste Erfahrungen mit DAT und Schwacke API.</value>
+  </data>
+  <data name="timeline-2020" xml:space="preserve">
+    <value>Entwicklung einer Software für Unternehmen, die Baumaschinen vermieten. Die Entwicklung erfolgte mit Visual Basic und Winforms sowie der Datenbank Cachè.</value>
+  </data>
+  <data name="timeline-2021" xml:space="preserve">
+    <value>Schreiben von Individualsoftware und Hotfixes für unsere E-Commerce-Middleware zur Nutzung von Online-Marktplätzen. Programmiert und implementiert verschiedene APIs.</value>
+  </data>
+  <data name="publications" xml:space="preserve">
+    <value>Publikationen</value>
+  </data>
+  <data name="publisher-published" xml:space="preserve">
+    <value>Veröffentlicht</value>
+  </data>
+  <data name="opensource" xml:space="preserve">
+    <value>Eine Auswahl meiner Open Source Projekte</value>
+  </data>
+  <data name="connect-header" xml:space="preserve">
+    <value>Lasst uns verbinden</value>
+  </data>
+</root>

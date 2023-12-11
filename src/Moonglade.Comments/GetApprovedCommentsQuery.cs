@@ -1,4 +1,4 @@
-﻿using MediatR;
+using MediatR;
 using Moonglade.Data.Generated.Entities;
 using Moonglade.Data.Infrastructure;
 using Moonglade.Data.Spec;

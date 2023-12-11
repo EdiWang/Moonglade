@@ -1,4 +1,4 @@
-﻿using Moonglade.Data.Generated.Entities;
+using Moonglade.Data.Generated.Entities;
 using Moonglade.Email.Client;
 using Moonglade.Pingback;
 using Moonglade.Web.Attributes;
@@ -20,13 +20,13 @@ public class PingbackController(
     {
         if (!blogConfig.AdvancedSettings.EnablePingback) return Forbid();
 
-        var ip = Helper.GetClientIP(HttpContext);
-        var requestBody = await new StreamReader(HttpContext.Request.Body, Encoding.Default).ReadToEndAsync();
+		var ip = Helper.GetClientIP(HttpContext);
+		var requestBody = await new StreamReader(HttpContext.Request.Body, Encoding.Default).ReadToEndAsync();
 
         var response = await mediator.Send(new ReceivePingCommand(requestBody, ip, SendPingbackEmailAction));
 
-        return new PingbackResult(response);
-    }
+		return new PingbackResult(response);
+	}
 
     private async void SendPingbackEmailAction(PingbackEntity history)
     {
