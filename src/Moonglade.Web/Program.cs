@@ -132,8 +132,8 @@ void ConfigureServices(IServiceCollection services)
 
 void ConfigureMiddleware()
 {
-    bool useXFFHeaders = builder.Configuration.GetSection("ForwardedHeaders:Enabled").Get<bool>();
-    if (useXFFHeaders) UseSmartXFFHeader(builder, app);
+    bool useXFFHeaders = app.Configuration.GetSection("ForwardedHeaders:Enabled").Get<bool>();
+    if (useXFFHeaders) UseSmartXFFHeader(app);
 
     if (!app.Environment.IsProduction())
     {
@@ -208,7 +208,7 @@ void ConfigureMiddleware()
     app.UseEndpoints(ConfigureEndpoints.BlogEndpoints);
 }
 
-void UseSmartXFFHeader(WebApplicationBuilder webApplicationBuilder, WebApplication webApplication)
+void UseSmartXFFHeader(WebApplication webApplication)
 {
     var fho = new ForwardedHeadersOptions
     {
@@ -218,13 +218,13 @@ void UseSmartXFFHeader(WebApplicationBuilder webApplicationBuilder, WebApplicati
     // ASP.NET Core always use the last value in XFF header, which is AFD's IP address
     // Need to set as `X-Azure-ClientIP` as workaround
     // https://learn.microsoft.com/en-us/azure/frontdoor/front-door-http-headers-protocol
-    var headerName = webApplicationBuilder.Configuration["ForwardedHeaders:HeaderName"];
+    var headerName = webApplication.Configuration["ForwardedHeaders:HeaderName"];
     if (!string.IsNullOrWhiteSpace(headerName))
     {
         fho.ForwardedForHeaderName = headerName;
     }
 
-    var knownProxies = webApplicationBuilder.Configuration.GetSection("ForwardedHeaders:KnownProxies").Get<string[]>();
+    var knownProxies = webApplication.Configuration.GetSection("ForwardedHeaders:KnownProxies").Get<string[]>();
     if (knownProxies is { Length: > 0 })
     {
         // Fix docker deployments on Azure App Service blows up with Azure AD authentication
