@@ -11,32 +11,25 @@ public class WebManifestMiddleware(RequestDelegate next)
     public async Task Invoke(
         HttpContext context, IBlogConfig blogConfig, IOptions<List<ManifestIcon>> manifestIcons)
     {
-        if (context.Request.Path == "/manifest.webmanifest")
+        var model = new ManifestModel
         {
-            var model = new ManifestModel
-            {
-                ShortName = blogConfig.GeneralSettings.SiteTitle,
-                Name = blogConfig.GeneralSettings.SiteTitle,
-                Description = blogConfig.GeneralSettings.SiteTitle,
-                StartUrl = "/",
-                Icons = manifestIcons?.Value,
-                BackgroundColor = Options.ThemeColor,
-                ThemeColor = Options.ThemeColor,
-                Display = "standalone",
-                Orientation = "portrait"
-            };
+            ShortName = blogConfig.GeneralSettings.SiteTitle,
+            Name = blogConfig.GeneralSettings.SiteTitle,
+            Description = blogConfig.GeneralSettings.SiteTitle,
+            StartUrl = "/",
+            Icons = manifestIcons?.Value,
+            BackgroundColor = Options.ThemeColor,
+            ThemeColor = Options.ThemeColor,
+            Display = "standalone",
+            Orientation = "portrait"
+        };
 
-            context.Response.StatusCode = StatusCodes.Status200OK;
-            context.Response.ContentType = "application/manifest+json";
-            context.Response.Headers.TryAdd("cache-control", "public,max-age=3600");
+        context.Response.StatusCode = StatusCodes.Status200OK;
+        context.Response.ContentType = "application/manifest+json";
+        context.Response.Headers.TryAdd("cache-control", "public,max-age=3600");
 
-            // Do not use `WriteAsJsonAsync` because it will override ContentType header
-            await context.Response.WriteAsync(JsonSerializer.Serialize(model), context.RequestAborted);
-        }
-        else
-        {
-            await next(context);
-        }
+        // Do not use `WriteAsJsonAsync` because it will override ContentType header
+        await context.Response.WriteAsync(JsonSerializer.Serialize(model), context.RequestAborted);
     }
 }
 
@@ -83,7 +76,13 @@ public static partial class ApplicationBuilderExtensions
     public static IApplicationBuilder UseManifest(this IApplicationBuilder app, Action<WebManifestMiddlewareOptions> options)
     {
         options(WebManifestMiddleware.Options);
-        return app.UseMiddleware<WebManifestMiddleware>();
+
+        app.UseWhen(
+            ctx => ctx.Request.Path == "/manifest.webmanifest",
+            appBuilder => appBuilder.UseMiddleware<WebManifestMiddleware>()
+        );
+
+        return app;
     }
 }
 

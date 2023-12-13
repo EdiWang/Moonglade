@@ -3,10 +3,8 @@ using Edi.Captcha;
 using Edi.PasswordGenerator;
 using Microsoft.ApplicationInsights.Extensibility;
 using Microsoft.ApplicationInsights.Extensibility.Implementation;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.HttpOverrides;
 using Moonglade.Comments.Moderator;
-using Moonglade.Configuration;
 using Moonglade.Data.MySql;
 using Moonglade.Data.PostgreSql;
 using Moonglade.Data.SqlServer;
@@ -217,12 +215,12 @@ void ConfigureMiddleware()
     var bc = app.Services.GetRequiredService<IBlogConfig>();
 
     app.UseWhen(
-        ctx => bc.AdvancedSettings.EnableFoaf,
+        _ => bc.AdvancedSettings.EnableFoaf,
         appBuilder => appBuilder.UseMiddleware<FoafMiddleware>()
     );
 
     app.UseWhen(
-        ctx => bc.AdvancedSettings.EnableMetaWeblog,
+        _ => bc.AdvancedSettings.EnableMetaWeblog,
         appBuilder => appBuilder.UseMiddleware<RSDMiddleware>().UseMetaWeblog("/metaweblog")
     );
 
