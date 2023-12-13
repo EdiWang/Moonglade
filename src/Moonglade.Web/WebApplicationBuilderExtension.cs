@@ -7,6 +7,8 @@ public static class WebApplicationBuilderExtension
 {
     public static void WriteParameterTable(this WebApplicationBuilder builder)
     {
+        Console.OutputEncoding = Encoding.UTF8;
+
         var appVersion = Helper.AppVersion;
         var table = new Table
         {

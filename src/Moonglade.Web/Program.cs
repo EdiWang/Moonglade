@@ -20,13 +20,9 @@ using WilderMinds.MetaWeblog;
 using Encoder = Moonglade.Web.Configuration.Encoder;
 using IPNetwork = Microsoft.AspNetCore.HttpOverrides.IPNetwork;
 
-Console.OutputEncoding = Encoding.UTF8;
 Encoding.RegisterProvider(CodePagesEncodingProvider.Instance);
 
 var builder = WebApplication.CreateBuilder(args);
-
-string dbType = builder.Configuration.GetConnectionString("DatabaseType");
-string connStr = builder.Configuration.GetConnectionString("MoongladeDatabase");
 
 var cultures = new[] { "en-US", "zh-Hans" }.Select(p => new CultureInfo(p)).ToList();
 
@@ -39,7 +35,7 @@ ConfigureServices(builder.Services);
 var app = builder.Build();
 
 await app.DetectChina();
-await FirstRun();
+await app.InitStartUp();
 
 ConfigureMiddleware();
 
@@ -125,6 +121,8 @@ void ConfigureServices(IServiceCollection services)
             .AddImageStorage(builder.Configuration, options => options.ContentRootPath = builder.Environment.ContentRootPath)
             .Configure<List<ManifestIcon>>(builder.Configuration.GetSection("ManifestIcons"));
 
+    string dbType = builder.Configuration.GetConnectionString("DatabaseType");
+    string connStr = builder.Configuration.GetConnectionString("MoongladeDatabase");
     switch (dbType!.ToLower())
     {
         case "mysql":
@@ -137,37 +135,6 @@ void ConfigureServices(IServiceCollection services)
         default:
             services.AddSqlServerStorage(connStr!);
             break;
-    }
-}
-
-async Task FirstRun()
-{
-    try
-    {
-        var startUpResut = await app.InitStartUp(dbType);
-
-        // Change `switch-case` to `if-else` for workaround https://github.com/dotnet/aspnetcore/issues/51285
-        if (startUpResut == StartupInitResult.DatabaseConnectionFail)
-        {
-            app.MapGet("/", () => Results.Problem(
-                detail: "Database connection test failed, please check your connection string and firewall settings, then RESTART Moonglade manually.",
-                statusCode: 500
-                ));
-            app.Run();
-        }
-        else if (startUpResut == StartupInitResult.DatabaseSetupFail)
-        {
-            app.MapGet("/", () => Results.Problem(
-                detail: "Database setup failed, please check error log, then RESTART Moonglade manually.",
-                statusCode: 500
-            ));
-            app.Run();
-        }
-    }
-    catch (Exception e)
-    {
-        app.MapGet("/", _ => throw new("Start up failed: " + e.Message));
-        app.Run();
     }
 }
 
