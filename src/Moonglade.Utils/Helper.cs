@@ -412,8 +412,9 @@ public static class Helper
 
     public static Dictionary<string, string> TagNormalizationDictionary => new()
     {
-        { ".", "dot" },
-        { "#", "sharp" },
-        { " ", "-" }
+        { ".", "-" },
+        { "#", "-sharp" },
+        { " ", "-" },
+        { "+", "-plus" }
     };
 }
