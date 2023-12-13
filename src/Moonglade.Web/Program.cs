@@ -18,7 +18,6 @@ using System.Net;
 using System.Text.Json.Serialization;
 using WilderMinds.MetaWeblog;
 using Encoder = Moonglade.Web.Configuration.Encoder;
-using IPNetwork = Microsoft.AspNetCore.HttpOverrides.IPNetwork;
 
 Encoding.RegisterProvider(CodePagesEncodingProvider.Instance);
 var cultures = new[] { "en-US", "zh-Hans" }.Select(p => new CultureInfo(p)).ToList();
@@ -185,8 +184,8 @@ void ConfigureMiddleware()
             // Add this can make ASP.NET Core read forward headers from any network with a potential security issue
             // Attackers can hide their IP by sending a fake header
             // This is OK because Moonglade is just a blog, nothing to hack, let it be
-            fho.KnownNetworks.Add(new IPNetwork(IPAddress.Any, 0));
-            fho.KnownNetworks.Add(new IPNetwork(IPAddress.IPv6Any, 0));
+            fho.KnownNetworks.Add(new(IPAddress.Any, 0));
+            fho.KnownNetworks.Add(new(IPAddress.IPv6Any, 0));
         }
 
         app.UseForwardedHeaders(fho);
