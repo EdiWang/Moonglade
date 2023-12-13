@@ -216,19 +216,19 @@ void ConfigureMiddleware()
 
     var bc = app.Services.GetRequiredService<IBlogConfig>();
 
-    if (bc.AdvancedSettings.EnableFoaf)
-    {
-        app.UseMiddleware<FoafMiddleware>();
-    }
+    app.UseWhen(
+        ctx => bc.AdvancedSettings.EnableFoaf,
+        appBuilder => appBuilder.UseMiddleware<FoafMiddleware>()
+    );
 
-    if (bc.AdvancedSettings.EnableMetaWeblog)
-    {
-        app.UseMiddleware<RSDMiddleware>().UseMetaWeblog("/metaweblog");
-    }
+    app.UseWhen(
+        ctx => bc.AdvancedSettings.EnableMetaWeblog,
+        appBuilder => appBuilder.UseMiddleware<RSDMiddleware>().UseMetaWeblog("/metaweblog")
+    );
 
     app.UseWhen(
         ctx => bc.AdvancedSettings.EnableSiteMap && ctx.Request.Path == "/sitemap.xml",
-        config => config.UseMiddleware<SiteMapMiddleware>()
+        appBuilder => appBuilder.UseMiddleware<SiteMapMiddleware>()
     );
 
     app.UseMiddleware<PoweredByMiddleware>();
