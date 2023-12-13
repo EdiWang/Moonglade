@@ -15,22 +15,15 @@ public class SiteMapMiddleware(RequestDelegate next)
         IRepository<PostEntity> postRepo,
         IRepository<PageEntity> pageRepo)
     {
-        if (blogConfig.AdvancedSettings.EnableSiteMap && httpContext.Request.Path == "/sitemap.xml")
+        var xml = await cache.GetOrCreateAsync(BlogCachePartition.General.ToString(), "sitemap", async _ =>
         {
-            var xml = await cache.GetOrCreateAsync(BlogCachePartition.General.ToString(), "sitemap", async _ =>
-            {
-                var url = Helper.ResolveRootUrl(httpContext, blogConfig.GeneralSettings.CanonicalPrefix, true, true);
-                var data = await GetSiteMapData(url, postRepo, pageRepo, httpContext.RequestAborted);
-                return data;
-            });
+            var url = Helper.ResolveRootUrl(httpContext, blogConfig.GeneralSettings.CanonicalPrefix, true, true);
+            var data = await GetSiteMapData(url, postRepo, pageRepo, httpContext.RequestAborted);
+            return data;
+        });
 
-            httpContext.Response.ContentType = "text/xml";
-            await httpContext.Response.WriteAsync(xml, httpContext.RequestAborted);
-        }
-        else
-        {
-            await next(httpContext);
-        }
+        httpContext.Response.ContentType = "text/xml";
+        await httpContext.Response.WriteAsync(xml, httpContext.RequestAborted);
     }
 
     private static async Task<string> GetSiteMapData(

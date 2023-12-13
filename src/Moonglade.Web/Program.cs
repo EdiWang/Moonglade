@@ -3,8 +3,10 @@ using Edi.Captcha;
 using Edi.PasswordGenerator;
 using Microsoft.ApplicationInsights.Extensibility;
 using Microsoft.ApplicationInsights.Extensibility.Implementation;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.HttpOverrides;
 using Moonglade.Comments.Moderator;
+using Moonglade.Configuration;
 using Moonglade.Data.MySql;
 using Moonglade.Data.PostgreSql;
 using Moonglade.Data.SqlServer;
@@ -224,7 +226,11 @@ void ConfigureMiddleware()
         app.UseMiddleware<RSDMiddleware>().UseMetaWeblog("/metaweblog");
     }
 
-    app.UseMiddleware<SiteMapMiddleware>();
+    app.UseWhen(
+        ctx => bc.AdvancedSettings.EnableSiteMap && ctx.Request.Path == "/sitemap.xml",
+        config => config.UseMiddleware<SiteMapMiddleware>()
+    );
+
     app.UseMiddleware<PoweredByMiddleware>();
     app.UseMiddleware<DNTMiddleware>();
 
