@@ -103,7 +103,7 @@ public static class WebApplicationExtensions
         var keysToAdd = bc.LoadFromConfig(config);
 
         var toAdd = keysToAdd as int[] ?? keysToAdd.ToArray();
-        if (toAdd.Any())
+        if (toAdd.Length != 0)
         {
             foreach (var key in toAdd)
             {
