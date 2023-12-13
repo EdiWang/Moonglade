@@ -41,6 +41,12 @@ public class Tag
         var isEnglishName = Regex.IsMatch(orgTagName, @"^[a-zA-Z 0-9\.\-\+\#\s]*$");
         if (isEnglishName)
         {
+            // special case
+            if (orgTagName.Equals(".net", StringComparison.OrdinalIgnoreCase))
+            {
+                return "dot-net";
+            }
+
             var result = new StringBuilder(orgTagName);
             foreach (var (key, value) in normalizations)
             {
