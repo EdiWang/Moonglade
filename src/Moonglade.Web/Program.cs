@@ -1,6 +1,5 @@
 ﻿using AspNetCoreRateLimit;
 using Edi.Captcha;
-using Edi.ChinaDetector;
 using Edi.PasswordGenerator;
 using Microsoft.ApplicationInsights.Extensibility;
 using Microsoft.ApplicationInsights.Extensibility.Implementation;
@@ -39,7 +38,7 @@ ConfigureServices(builder.Services);
 
 var app = builder.Build();
 
-await DetectChina();
+await app.DetectChina();
 await FirstRun();
 
 ConfigureMiddleware();
@@ -137,56 +136,6 @@ void ConfigureServices(IServiceCollection services)
         case "sqlserver":
         default:
             services.AddSqlServerStorage(connStr!);
-            break;
-    }
-}
-
-async Task DetectChina()
-{
-    // Read config `Experimental:DetectChina` to decide how to deal with China
-    // Refer: https://go.edi.wang/aka/os251
-    var detectChina = builder.Configuration["Experimental:DetectChina"];
-    if (!string.IsNullOrWhiteSpace(detectChina))
-    {
-        var service = new OfflineChinaDetectService();
-        var result = await service.Detect(DetectionMethod.TimeZone | DetectionMethod.Culture);
-        if (result.Rank >= 1)
-        {
-            DealWithChina(detectChina);
-        }
-        else
-        {
-            app.Logger.LogInformation("Offline China detection result negative, trying online detection");
-
-            // Try online detection
-            var onlineService = new OnlineChinaDetectService(new());
-            var onlineResult = await onlineService.Detect(DetectionMethod.IPAddress | DetectionMethod.GFWTest);
-            if (onlineResult.Rank >= 1)
-            {
-                DealWithChina(detectChina);
-            }
-        }
-    }
-}
-
-void DealWithChina(string detectChina)
-{
-    switch (detectChina.ToLower())
-    {
-        case "block":
-            app.Logger.LogError("Positive China detection, application stopped.");
-
-            app.MapGet("/", () => Results.Text(
-                "Due to legal and regulation concerns, we regret to inform you that deploying Moonglade on servers located in Mainland China is currently not possible",
-                statusCode: 251
-            ));
-            app.Run();
-
-            break;
-        case "allow":
-        default:
-            app.Logger.LogInformation("Current server is suspected to be located in Mainland China, Moonglade will still run on full functionality.");
-
             break;
     }
 }

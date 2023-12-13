@@ -1,4 +1,5 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using Edi.ChinaDetector;
+using Microsoft.EntityFrameworkCore;
 using Moonglade.Data.MySql;
 using Moonglade.Data.PostgreSql;
 using Moonglade.Data.SqlServer;
@@ -105,6 +106,56 @@ public static class WebApplicationExtensions
         }
 
         return StartupInitResult.None;
+    }
+
+    public static async Task DetectChina(this WebApplication app)
+    {
+        // Read config `Experimental:DetectChina` to decide how to deal with China
+        // Refer: https://go.edi.wang/aka/os251
+        var detectChina = app.Configuration["Experimental:DetectChina"];
+        if (!string.IsNullOrWhiteSpace(detectChina))
+        {
+            var service = new OfflineChinaDetectService();
+            var result = await service.Detect(DetectionMethod.TimeZone | DetectionMethod.Culture);
+            if (result.Rank >= 1)
+            {
+                DealWithChina(app, detectChina);
+            }
+            else
+            {
+                app.Logger.LogInformation("Offline China detection result negative, trying online detection");
+
+                // Try online detection
+                var onlineService = new OnlineChinaDetectService(new());
+                var onlineResult = await onlineService.Detect(DetectionMethod.IPAddress | DetectionMethod.GFWTest);
+                if (onlineResult.Rank >= 1)
+                {
+                    DealWithChina(app, detectChina);
+                }
+            }
+        }
+    }
+
+    private static void DealWithChina(WebApplication app, string detectChina)
+    {
+        switch (detectChina.ToLower())
+        {
+            case "block":
+                app.Logger.LogError("Positive China detection, application stopped.");
+
+                app.MapGet("/", () => Results.Text(
+                    "Due to legal and regulation concerns, we regret to inform you that deploying Moonglade on servers located in Mainland China is currently not possible",
+                    statusCode: 251
+                ));
+                app.Run();
+
+                break;
+            case "allow":
+            default:
+                app.Logger.LogInformation("Current server is suspected to be located in Mainland China, Moonglade will still run on full functionality.");
+
+                break;
+        }
     }
 }
 
