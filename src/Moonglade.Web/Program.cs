@@ -21,15 +21,14 @@ using Encoder = Moonglade.Web.Configuration.Encoder;
 using IPNetwork = Microsoft.AspNetCore.HttpOverrides.IPNetwork;
 
 Encoding.RegisterProvider(CodePagesEncodingProvider.Instance);
-
-var builder = WebApplication.CreateBuilder(args);
-
 var cultures = new[] { "en-US", "zh-Hans" }.Select(p => new CultureInfo(p)).ToList();
 
+var builder = WebApplication.CreateBuilder(args);
 builder.WriteParameterTable();
-AnsiConsole.MarkupLine("[link=https://github.com/EdiWang/Moonglade]GitHub: EdiWang/Moonglade[/]");
 
-ConfigureConfiguration();
+builder.Logging.AddAzureWebAppDiagnostics();
+builder.Configuration.AddJsonFile("manifesticons.json", false, true);
+
 ConfigureServices(builder.Services);
 
 var app = builder.Build();
@@ -40,12 +39,6 @@ await app.InitStartUp();
 ConfigureMiddleware();
 
 app.Run();
-
-void ConfigureConfiguration()
-{
-    builder.Logging.AddAzureWebAppDiagnostics();
-    builder.Configuration.AddJsonFile("manifesticons.json", false, true);
-}
 
 void ConfigureServices(IServiceCollection services)
 {

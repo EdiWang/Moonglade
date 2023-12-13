@@ -41,5 +41,6 @@ public static class WebApplicationBuilderExtension
         table.AddRow(new Markup("[blue]ASPNETCORE_ENVIRONMENT[/]"), new Text(envName ?? "N/A"));
 
         AnsiConsole.Write(table);
+        AnsiConsole.MarkupLine("[link=https://github.com/EdiWang/Moonglade]GitHub: EdiWang/Moonglade[/]");
     }
 }
