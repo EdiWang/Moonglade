@@ -71,7 +71,7 @@ public static class MemoryStreamIconGenerator
     public static byte[] GetIcon(string fileName)
     {
         if (string.IsNullOrWhiteSpace(fileName)) return null;
-        return SiteIconDictionary.ContainsKey(fileName) ? SiteIconDictionary[fileName] : null;
+        return SiteIconDictionary.GetValueOrDefault(fileName);
     }
 
     private static byte[] ResizeImage(Image image, int toWidth, int toHeight)
