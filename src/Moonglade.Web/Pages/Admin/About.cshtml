@@ -89,6 +89,19 @@
                     <td>@SharedLocalizer["Docker Container"]</td>
                     <td class="text-muted">@(Environment.GetEnvironmentVariable("DOTNET_RUNNING_IN_CONTAINER") == "true")</td>
                 </tr>
+
+                @if (!string.IsNullOrWhiteSpace(Environment.GetEnvironmentVariable("WEBSITE_SITE_NAME")))
+                {
+                    <tr>
+                        <td>@SharedLocalizer["Azure App Service"]</td>
+                        <td class="text-muted">
+                            WEBSITE_SKU : @Environment.GetEnvironmentVariable("WEBSITE_SKU ") <br />
+                            WEBSITE_SITE_NAME: @Environment.GetEnvironmentVariable("WEBSITE_SITE_NAME") <br />
+                            WEBSITE_HOSTNAME : @Environment.GetEnvironmentVariable("WEBSITE_HOSTNAME") <br />
+                            REGION_NAME  : @Environment.GetEnvironmentVariable("REGION_NAME") <br />
+                        </td>
+                    </tr>
+                }
             </tbody>
         </table>
     </div>
