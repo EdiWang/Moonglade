@@ -1,5 +1,4 @@
-﻿using Spectre.Console;
-using System.Net;
+﻿using System.Net;
 
 namespace Moonglade.Web;
 
@@ -7,13 +6,9 @@ public static class WebApplicationBuilderExtension
 {
     public static void WriteParameterTable(this WebApplicationBuilder builder)
     {
-        Console.OutputEncoding = Encoding.UTF8;
-
         var appVersion = Helper.AppVersion;
-        var table = new Table
-        {
-            Title = new($"Moonglade.Web {appVersion} | .NET {Environment.Version}")
-        };
+        Console.WriteLine($"Moonglade {appVersion} | .NET {Environment.Version}");
+        Console.WriteLine("----------------------------------------------------------");
 
         var strHostName = Dns.GetHostName();
         var ipEntry = Dns.GetHostEntry(strHostName);
@@ -21,26 +16,31 @@ public static class WebApplicationBuilderExtension
 
         var envName = Environment.GetEnvironmentVariable("ASPNETCORE_ENVIRONMENT");
 
-        table.AddColumn("Parameter");
-        table.AddColumn("Value");
-        table.AddRow(new Markup("[blue]Path[/]"), new Text(Environment.CurrentDirectory));
-        table.AddRow(new Markup("[blue]System[/]"), new Text(Helper.TryGetFullOSVersion()));
-        table.AddRow(new Markup("[blue]User[/]"), new Text(Environment.UserName));
-        table.AddRow(new Markup("[blue]Host[/]"), new Text(Environment.MachineName));
-        table.AddRow(new Markup("[blue]IP addresses[/]"), new Rows(ips.Select(p => new Text(p.ToString()))));
-        table.AddRow(new Markup("[blue]Database type[/]"), new Text(builder.Configuration.GetConnectionString("DatabaseType")!));
+        var dic = new Dictionary<string, string>
+        {
+            { "Path", Environment.CurrentDirectory },
+            { "System", Helper.TryGetFullOSVersion() },
+            { "User", Environment.UserName },
+            { "Host", Environment.MachineName },
+            { "IP", string.Join(", ", ips.Select(p => p.ToString())) },
+            { "Database", builder.Configuration.GetConnectionString("DatabaseType")! },
+            { "Image storage", builder.Configuration["ImageStorage:Provider"]! },
+            { "Authentication", builder.Configuration["Authentication:Provider"]! },
+            { "Editor", builder.Configuration["Editor"]! },
+            { "Environment", envName ?? "N/A" }
+        };
 
         if (!string.IsNullOrWhiteSpace(envName) && envName.ToLower() == "development")
         {
-            table.AddRow(new Markup("[blue]Connection String[/]"), new Text(builder.Configuration.GetConnectionString("MoongladeDatabase")!));
+            dic.Add("Connection String", builder.Configuration.GetConnectionString("MoongladeDatabase")!);
         }
 
-        table.AddRow(new Markup("[blue]Image storage[/]"), new Text(builder.Configuration["ImageStorage:Provider"]!));
-        table.AddRow(new Markup("[blue]Authentication provider[/]"), new Text(builder.Configuration["Authentication:Provider"]!));
-        table.AddRow(new Markup("[blue]Editor[/]"), new Text(builder.Configuration["Editor"]!));
-        table.AddRow(new Markup("[blue]ASPNETCORE_ENVIRONMENT[/]"), new Text(envName ?? "N/A"));
+        foreach (var item in dic)
+        {
+            Console.WriteLine($"{item.Key,-20} | {item.Value,-35}");
+        }
 
-        AnsiConsole.Write(table);
-        AnsiConsole.MarkupLine("[link=https://github.com/EdiWang/Moonglade]GitHub: EdiWang/Moonglade[/]");
+        Console.WriteLine("----------------------------------------------------------");
+        Console.WriteLine("https://github.com/EdiWang/Moonglade");
     }
 }

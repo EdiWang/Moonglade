@@ -12,7 +12,6 @@ using Moonglade.Email.Client;
 using Moonglade.Pingback;
 using Moonglade.Syndication;
 using SixLabors.Fonts;
-using Spectre.Console;
 using System.Globalization;
 using System.Net;
 using System.Text.Json.Serialization;
@@ -249,7 +248,7 @@ void UseSmartXFFHeader(WebApplication webApplication)
 
             webApplication.Logger.LogInformation("Added known proxies ({0}): {1}",
                 knownProxies.Length,
-                System.Text.Json.JsonSerializer.Serialize(knownProxies).EscapeMarkup());
+                System.Text.Json.JsonSerializer.Serialize(knownProxies));
         }
     }
     else
