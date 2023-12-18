@@ -1,0 +1,10 @@
+-- v14.1.0
+
+ALTER TABLE FriendLink ADD [Rank] INT
+GO
+
+UPDATE FriendLink SET [Rank] = 0
+GO
+
+ALTER TABLE FriendLink ALTER COLUMN [Rank] INT NOT NULL
+GO
