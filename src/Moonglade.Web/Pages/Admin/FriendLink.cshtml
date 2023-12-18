@@ -4,7 +4,7 @@
     ViewBag.Title = "Friend Links";
 }
 
-@section scripts{
+@section scripts {
     <script src="~/js/app/dataexport.js"></script>
     <script>
         var editCanvas = new bootstrap.Offcanvas(document.getElementById('editLinkCanvas'));
@@ -32,6 +32,7 @@
                     fid = id;
                     document.querySelector('#EditLinkRequest_Title').value = data.title;
                     document.querySelector('#EditLinkRequest_LinkUrl').value = data.linkUrl;
+                    document.querySelector('#EditLinkRequest_Rank').value = data.rank;
                     editCanvas.show();
                 });
         }
@@ -55,7 +56,8 @@
                 {
                     id: fid,
                     title: value["EditLinkRequest.Title"],
-                    linkUrl: value["EditLinkRequest.LinkUrl"]
+                    linkUrl: value["EditLinkRequest.LinkUrl"],
+                    rank: value["EditLinkRequest.Rank"]
                 },
                 (resp) => {
                     document.querySelector('#edit-form').reset();
@@ -69,7 +71,7 @@
     </script>
 }
 
-@section admintoolbar{
+@section admintoolbar {
     <div class="admin-toolbar pb-2 border-bottom mb-3">
         <a class="btn btn-outline-accent" href="javascript:initCreateFriendLink();">
             <i class="bi-plus-lg"></i>
@@ -84,13 +86,13 @@
 }
 
 <div>
-    @foreach (var item in Model.Links.OrderBy(m => m.Title))
+    @foreach (var item in Model.Links.OrderBy(m => m.Rank).ThenBy(m => m.Title))
     {
         <div class="p-3 mb-2 rounded-3 shadow-sm border bg-white">
             <div id="tr-@item.Id" class="row">
                 <div class="col">
                     <h6>
-                        @item.Title
+                        <span class="badge bg-accent1 me-1">@item.Rank</span> @item.Title
                     </h6>
                     <div>
                         <a href="@item.LinkUrl" target="_blank">@item.LinkUrl</a>
@@ -123,6 +125,10 @@
             <div class="mb-3">
                 <label class="form-label" asp-for="EditLinkRequest.LinkUrl"></label>
                 <input asp-for="EditLinkRequest.LinkUrl" class="form-control" required />
+            </div>
+            <div class="mb-3">
+                <label class="form-label" asp-for="EditLinkRequest.Rank"></label>
+                <input asp-for="EditLinkRequest.Rank" class="form-control" required />
             </div>
             <div class="mt-3">
                 <button type="submit" class="btn btn-accent">@SharedLocalizer["Submit"]</button>

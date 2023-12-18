@@ -19,6 +19,9 @@ public class AddLinkCommand : IRequest, IValidatableObject
     [MaxLength(256)]
     public string LinkUrl { get; set; }
 
+    [Display(Name = "Rank")]
+    public int Rank { get; set; }
+
     public IEnumerable<ValidationResult> Validate(ValidationContext validationContext)
     {
         if (!Uri.IsWellFormedUriString(LinkUrl, UriKind.Absolute))
@@ -36,7 +39,8 @@ public class AddLinkCommandHandler(IRepository<FriendLinkEntity> repo) : IReques
         {
             Id = Guid.NewGuid(),
             LinkUrl = Helper.SterilizeLink(request.LinkUrl),
-            Title = request.Title
+            Title = request.Title,
+            Rank = request.Rank
         };
 
         await repo.AddAsync(link, ct);
