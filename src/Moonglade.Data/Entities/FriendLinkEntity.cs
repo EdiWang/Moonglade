@@ -9,6 +9,8 @@ public class FriendLinkEntity
     public string Title { get; set; }
 
     public string LinkUrl { get; set; }
+
+    public int Rank { get; set; }
 }
 
 internal class FriendLinkConfiguration : IEntityTypeConfiguration<FriendLinkEntity>
