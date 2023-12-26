@@ -154,7 +154,7 @@ public static class WebApplicationExtensions
         if (!string.IsNullOrWhiteSpace(detectChina))
         {
             var service = new OfflineChinaDetectService();
-            var result = await service.Detect(DetectionMethod.TimeZone | DetectionMethod.Culture);
+            var result = await service.Detect(DetectionMethod.TimeZone | DetectionMethod.Culture | DetectionMethod.Behavior);
             if (result.Rank >= 1)
             {
                 DealWithChina(app, detectChina);
