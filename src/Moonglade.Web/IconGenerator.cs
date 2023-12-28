@@ -63,9 +63,6 @@ public static class MemoryStreamIconGenerator
 
         var icon1Bytes = ResizeImage(image, 192, 192);
         SiteIconDictionary.TryAdd("apple-icon.png", icon1Bytes);
-
-        var icon2Bytes = ResizeImage(image, 192, 192);
-        SiteIconDictionary.TryAdd("apple-icon-precomposed.png", icon2Bytes);
     }
 
     public static byte[] GetIcon(string fileName)
