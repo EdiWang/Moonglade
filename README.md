@@ -11,7 +11,7 @@ A personal blog system that optimized for [**Microsoft Azure**](https://azure.mi
 
 - HTTPS is required, and it is recommended to enable HTTP/2 support on your web server.
 
-### ☁ Full Deploy on Azure
+### Full Deploy on Azure
 
 This is the way https://edi.wang is deployed, by taking advantage of as many Azure services as possible, the blog can run very fast and secure. 
 
@@ -19,11 +19,11 @@ There is no automated script to deploy it, you need to manually create all the r
 
 ![image](https://cdn-blog.edi.wang/web-assets/ediwang-azure-arch-visio-nov2022.png)
 
-### 🐋 Quick Deploy on Azure (App Service on Linux)
+### Quick Deploy on Azure (App Service on Linux)
 
 Use automated deployment script to get your Moonglade up and running in 10 minutes with minimal Azure components, follow instructions [here](https://github.com/EdiWang/Moonglade/wiki/Quick-Deploy-on-Azure)
 
-### 🐋 Quick Deploy with Docker-Compose
+### Quick Deploy with Docker-Compose
 
 Simply go the the root folder of this repo and run:
 
@@ -34,7 +34,7 @@ docker-compose up
 
 That's it! Now open: [Browser: http://localhost:8080](http://localhost:8080)
 
-### 🐧 Quick Deploy on Linux without Docker
+### Quick Deploy on Linux without Docker
 
 To quickly get it running on a new Linux machine without Docker, follow instructions [here](https://github.com/EdiWang/Moonglade/wiki/Quick-Install-on-Linux-Machine). You can watch video tutorial [here](https://anduins-site.player.aiur.site/moonglade-install.mp4).
 
@@ -45,37 +45,18 @@ Tools | Alternative
 [Visual Studio 2022](https://visualstudio.microsoft.com/) | [Visual Studio Code](https://code.visualstudio.com/) with [.NET 8.0 SDK](http://dot.net)
 [SQL Server 2022](https://www.microsoft.com/en-us/sql-server/sql-server-2022) | [SQL Server LocalDB](https://learn.microsoft.com/en-us/sql/database-engine/configure-windows/sql-server-express-localdb?view=sql-server-ver16&WT.mc_id=AZ-MVP-5002809), PostgreSQL or MySQL 
 
-### 💾 Setup Database
+### Setup Database
 
-You can choose from SQL Server, PostgreSQL or MySQL. Update your database connection string in `appsettings.*.json`
+You can choose from SQL Server, PostgreSQL or MySQL. Update your database connection string in `appsettings.json`, `ConnectionStrings` section.
 
-#### SQL Server (LocalDb)
 
-```json
-"ConnectionStrings": {
-  "MoongladeDatabase": "Server=(localdb)\\MSSQLLocalDB;Database=Moonglade;Trusted_Connection=True;",
-  "DatabaseType": "SqlServer"
-}
-```
-#### MySQL
+Database | `DatabaseType` | `MoongladeDatabase` Example
+--- | --- | ---
+Microsoft SQL Server | `SqlServer` | `Server=(localdb)\\MSSQLLocalDB;Database=moonglade;Trusted_Connection=True;`
+MySQL | `MySql` | `Server=localhost;Port=3306;Database=moonglade;Uid=root;Pwd=***;`
+PostgreSQL | `PostgreSql` | `User ID=***;Password=***;Host=localhost;Port=5432;Database=moonglade;Pooling=true;`
 
-```json
-"ConnectionStrings": {
-  "MoongladeDatabase": "Server=localhost;Port=3306;Database=moonglade;Uid=root;Pwd=******;",
-  "DatabaseType": "MySql"
-}
-```
-
-#### PostgreSql
-
-```json
-"ConnectionStrings": {
-  "MoongladeDatabase": "User ID=****;Password=****;Host=localhost;Port=5432;Database=****;Pooling=true;",
-  "DatabaseType": "PostgreSql"
-}
-```
-
-### 🔨 Build Source
+### Build Source
 
 Build and run `./src/Moonglade.sln`
 - Admin: `https://localhost:1055/admin`
@@ -86,7 +67,7 @@ Build and run `./src/Moonglade.sln`
 
 > This section discuss environment settings in **appsettings.json**. For blog settings, please use "/admin/settings" UI.
 
-### 🛡 Authentication
+### Authentication
 
 > You can choose one authentication provider from below.
 
@@ -98,7 +79,7 @@ See [Wiki document](https://github.com/EdiWang/Moonglade/wiki/Use-Microsoft-Entr
 
 Set `Authentication:Provider` to `"Local"`. You can manage accounts in `/admin/settings/account`
 
-### 🖼 Image Storage
+### Image Storage
 `ImageStorage` controls how blog post images are stored.
 
 #### [Azure Blob Storage](https://azure.microsoft.com/en-us/services/storage/blobs/) (Preferred)
@@ -143,15 +124,15 @@ You can also choose File System for image storage if you don't have a cloud opti
 }
 ```
 
-### 🤬 Comment Moderator
+### Comment Moderator
 
 See https://github.com/EdiWang/Moonglade.ContentSecurity
 
-### 📧 Email Notification
+### Email Notification
 
 If you need email notification for new comments, new replies and pingbacks, you have to setup the [Moonglade.Email Azure Function](https://github.com/EdiWang/Moonglade.Email) first, and then enable notification in admin portal.
 
-### 🔩 Others
+### Others
 
 - [System Settings](https://github.com/EdiWang/Moonglade/wiki/System-Settings)
 - [Security Headers (CSP, XSS, etc.)](https://github.com/EdiWang/Moonglade/wiki/Security-Headers-(CSP,-XSS,-etc.))
