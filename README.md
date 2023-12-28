@@ -7,7 +7,7 @@ A personal blog system that optimized for [**Microsoft Azure**](https://azure.mi
 
 ## 📦 Deployment
 
-- Please use stable code from [Release](https://github.com/EdiWang/Moonglade/releases) branch rather than master branch.
+- Ue stable code from [Release](https://github.com/EdiWang/Moonglade/releases) branch rather than master branch.
 
 - HTTPS is required, and it is recommended to enable HTTP/2 support on your web server.
 
@@ -42,16 +42,14 @@ To quickly get it running on a new Linux machine without Docker, follow instruct
 
 Tools | Alternative
 --- | ---
-[Visual Studio 2022 v17.8+](https://visualstudio.microsoft.com/) | [Visual Studio Code](https://code.visualstudio.com/) with [.NET 8.0 SDK](http://dot.net)
+[Visual Studio 2022](https://visualstudio.microsoft.com/) | [Visual Studio Code](https://code.visualstudio.com/) with [.NET 8.0 SDK](http://dot.net)
 [SQL Server 2022](https://www.microsoft.com/en-us/sql-server/sql-server-2022) | [SQL Server LocalDB](https://learn.microsoft.com/en-us/sql/database-engine/configure-windows/sql-server-express-localdb?view=sql-server-ver16&WT.mc_id=AZ-MVP-5002809), PostgreSQL or MySQL 
 
 ### 💾 Setup Database
 
-Moonglade supports three types of database. You can choose from SQL Server, PostgreSQL or MySQL.
+You can choose from SQL Server, PostgreSQL or MySQL. Update your database connection string in `appsettings.*.json`
 
-Update your database connection string in `appsettings.*.json`
-
-#### SQL Server
+#### SQL Server (LocalDb)
 
 ```json
 "ConnectionStrings": {
@@ -160,19 +158,21 @@ If you need email notification for new comments, new replies and pingbacks, you 
 
 ## 🎉 Blog Protocols or Standards
 
-- [X] RSS
-- [X] Atom
-- [X] OPML
-- [X] Open Search
-- [X] Pingback
-- [X] Reader View
-- [X] FOAF
-- [X] RSD
-- [X] MetaWeblog (Basic Support)
-- [X] Dublin Core Metadata (Basic Support)
-- [ ] BlogML - Not planned
-- [ ] APML - Not planned
-- [ ] Trackback - Not planned
+Name | Feature | Status
+--- | --- | ---
+RSS | Subscription | Supported
+Atom | Subscription | Supported
+OPML | Subscription | Supported
+Open Search | Search | Supported
+Pingback | Social | Supported
+Reader View | Reader mode | Supported
+FOAF | Social | Supported
+RSD | Service Discovery | Supported
+MetaWeblog | Blogging | Basic Support
+Dublin Core Metadata | SEO | Basic Support
+BlogML | Blogging | Not planned
+APML | Social | Not planned
+Trackback | Social | Not planned
 
 ## 免责申明
 
