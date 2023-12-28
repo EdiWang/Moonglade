@@ -14,7 +14,7 @@ public class WebManifestMiddleware(RequestDelegate next)
         {
             ShortName = blogConfig.GeneralSettings.SiteTitle,
             Name = blogConfig.GeneralSettings.SiteTitle,
-            Description = blogConfig.GeneralSettings.SiteTitle,
+            Description = blogConfig.GeneralSettings.Description,
             StartUrl = "/",
             Icons = manifestIcons?.Value,
             BackgroundColor = Options.ThemeColor,
