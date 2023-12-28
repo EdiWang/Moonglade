@@ -66,6 +66,10 @@
                     <td class="text-muted">@Environment.UserDomainName\@Environment.UserName</td>
                 </tr>
                 <tr>
+                    <td>@SharedLocalizer["Server Time Zone"]</td>
+                    <td class="text-muted">@TimeZoneInfo.Local.Id</td>
+                </tr>
+                <tr>
                     <td>@SharedLocalizer[".NET Version"]</td>
                     <td class="text-muted">@Environment.Version</td>
                 </tr>
@@ -155,7 +159,7 @@
                     The software developer may release updates or modifications to Moonglade from time to time. It is recommended that users stay informed about these updates and apply them to ensure optimal performance and security.
                 </p>
             </div>
-            
+
             <div class="modal-footer">
                 <button type="button" class="btn btn-outline-accent" data-bs-dismiss="modal">Close</button>
             </div>
