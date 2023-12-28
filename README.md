@@ -34,10 +34,6 @@ docker-compose up
 
 That's it! Now open: [Browser: http://localhost:8080](http://localhost:8080)
 
-### Quick Deploy on Linux without Docker
-
-To quickly get it running on a new Linux machine without Docker, follow instructions [here](https://github.com/EdiWang/Moonglade/wiki/Quick-Install-on-Linux-Machine). You can watch video tutorial [here](https://anduins-site.player.aiur.site/moonglade-install.mp4).
-
 ## 🐵 Development
 
 Tools | Alternative
