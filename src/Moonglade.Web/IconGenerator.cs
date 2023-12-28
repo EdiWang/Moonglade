@@ -45,9 +45,9 @@ public static class MemoryStreamIconGenerator
 
         var dic = new Dictionary<string, int[]>
         {
-            { "android-icon-", new[] { 36, 48, 72, 96, 144, 192 } },
+            { "android-icon-", new[] { 144, 192 } },
             { "favicon-", new[] { 16, 32, 96 } },
-            { "apple-icon-", new[] { 57, 60, 72, 76, 114, 120, 144, 152, 180 } }
+            { "apple-icon-", new[] { 180 } }
         };
 
         foreach (var (key, value) in dic)
@@ -61,7 +61,7 @@ public static class MemoryStreamIconGenerator
             }
         }
 
-        var icon1Bytes = ResizeImage(image, 192, 192);
+        var icon1Bytes = ResizeImage(image, 180, 180);
         SiteIconDictionary.TryAdd("apple-icon.png", icon1Bytes);
     }
 
