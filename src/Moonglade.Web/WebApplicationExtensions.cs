@@ -148,9 +148,9 @@ public static class WebApplicationExtensions
 
     public static async Task DetectChina(this WebApplication app)
     {
-        // Read config `Experimental:DetectChina` to decide how to deal with China
+        // Read config `DetectChina` to decide how to deal with China
         // Refer: https://go.edi.wang/aka/os251
-        var detectChina = app.Configuration["Experimental:DetectChina"];
+        var detectChina = app.Configuration["DetectChina"];
         if (!string.IsNullOrWhiteSpace(detectChina))
         {
             var service = new OfflineChinaDetectService();
@@ -158,18 +158,6 @@ public static class WebApplicationExtensions
             if (result.Rank >= 1)
             {
                 DealWithChina(app, detectChina);
-            }
-            else
-            {
-                app.Logger.LogInformation("Offline China detection result negative, trying online detection");
-
-                // Try online detection
-                var onlineService = new OnlineChinaDetectService(new());
-                var onlineResult = await onlineService.Detect(DetectionMethod.IPAddress | DetectionMethod.GFWTest);
-                if (onlineResult.Rank >= 1)
-                {
-                    DealWithChina(app, detectChina);
-                }
             }
         }
     }
