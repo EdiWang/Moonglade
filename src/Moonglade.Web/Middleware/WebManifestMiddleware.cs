@@ -1,5 +1,4 @@
 ﻿using Microsoft.Extensions.Options;
-using System.Text.Json;
 using System.Text.Json.Serialization;
 
 namespace Moonglade.Web.Middleware;
@@ -29,7 +28,7 @@ public class WebManifestMiddleware(RequestDelegate next)
         context.Response.Headers.TryAdd("cache-control", "public,max-age=3600");
 
         // Do not use `WriteAsJsonAsync` because it will override ContentType header
-        await context.Response.WriteAsync(JsonSerializer.Serialize(model), context.RequestAborted);
+        await context.Response.WriteAsync(model.ToJson(true), context.RequestAborted);
     }
 }
 
