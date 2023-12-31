@@ -8,6 +8,7 @@ on:
 jobs:
 
   build:
+    if: github.repository == 'EdiWang/Moonglade'
     runs-on: ubuntu-latest
 
     steps:

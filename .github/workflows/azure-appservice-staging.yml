@@ -16,6 +16,7 @@ permissions:
 
 jobs:
   build:
+    if: github.repository == 'EdiWang/Moonglade'
     runs-on: ubuntu-latest
 
     steps:
@@ -51,6 +52,7 @@ jobs:
           path: ${{env.DOTNET_ROOT}}/moonglade
 
   deploy:
+    if: github.repository == 'EdiWang/Moonglade'
     permissions:
       contents: none
     runs-on: ubuntu-latest
