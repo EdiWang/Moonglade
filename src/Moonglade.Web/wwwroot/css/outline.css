@@ -60,7 +60,7 @@
     list-style-type: none;
 }
 
-.outline-nav li {
+.outline-nav li span {
     cursor: pointer;
 }
 

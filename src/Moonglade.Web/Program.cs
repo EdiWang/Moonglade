@@ -12,79 +12,31 @@ using Moonglade.Email.Client;
 using Moonglade.Pingback;
 using Moonglade.Syndication;
 using SixLabors.Fonts;
-using Spectre.Console;
 using System.Globalization;
 using System.Net;
 using System.Text.Json.Serialization;
 using WilderMinds.MetaWeblog;
 using Encoder = Moonglade.Web.Configuration.Encoder;
-using IPNetwork = Microsoft.AspNetCore.HttpOverrides.IPNetwork;
 
-Console.OutputEncoding = Encoding.UTF8;
 Encoding.RegisterProvider(CodePagesEncodingProvider.Instance);
-
-var builder = WebApplication.CreateBuilder(args);
-
-string dbType = builder.Configuration.GetConnectionString("DatabaseType");
-string connStr = builder.Configuration.GetConnectionString("MoongladeDatabase");
-
 var cultures = new[] { "en-US", "zh-Hans" }.Select(p => new CultureInfo(p)).ToList();
 
-WriteParameterTable();
-AnsiConsole.MarkupLine("[link=https://github.com/EdiWang/Moonglade]GitHub: EdiWang/Moonglade[/]");
+var builder = WebApplication.CreateBuilder(args);
+builder.WriteParameterTable();
 
-ConfigureConfiguration();
+builder.Logging.AddAzureWebAppDiagnostics();
+builder.Configuration.AddJsonFile("manifesticons.json", false, true);
+
 ConfigureServices(builder.Services);
 
 var app = builder.Build();
 
-await FirstRun();
+await app.DetectChina();
+await app.InitStartUp();
 
 ConfigureMiddleware();
 
 app.Run();
-
-void WriteParameterTable()
-{
-    var appVersion = Helper.AppVersion;
-    var table = new Table
-    {
-        Title = new($"Moonglade.Web {appVersion} | .NET {Environment.Version}")
-    };
-
-    var strHostName = Dns.GetHostName();
-    var ipEntry = Dns.GetHostEntry(strHostName);
-    var ips = ipEntry.AddressList;
-
-    var envName = Environment.GetEnvironmentVariable("ASPNETCORE_ENVIRONMENT");
-
-    table.AddColumn("Parameter");
-    table.AddColumn("Value");
-    table.AddRow(new Markup("[blue]Path[/]"), new Text(Environment.CurrentDirectory));
-    table.AddRow(new Markup("[blue]System[/]"), new Text(Helper.TryGetFullOSVersion()));
-    table.AddRow(new Markup("[blue]User[/]"), new Text(Environment.UserName));
-    table.AddRow(new Markup("[blue]Host[/]"), new Text(Environment.MachineName));
-    table.AddRow(new Markup("[blue]IP addresses[/]"), new Rows(ips.Select(p => new Text(p.ToString()))));
-    table.AddRow(new Markup("[blue]Database type[/]"), new Text(dbType!));
-
-    if (!string.IsNullOrWhiteSpace(envName) && envName.ToLower() == "development")
-    {
-        table.AddRow(new Markup("[blue]Connection String[/]"), new Text(builder.Configuration.GetConnectionString("MoongladeDatabase")));
-    }
-
-    table.AddRow(new Markup("[blue]Image storage[/]"), new Text(builder.Configuration["ImageStorage:Provider"]!));
-    table.AddRow(new Markup("[blue]Authentication provider[/]"), new Text(builder.Configuration["Authentication:Provider"]!));
-    table.AddRow(new Markup("[blue]Editor[/]"), new Text(builder.Configuration["Editor"]!));
-    table.AddRow(new Markup("[blue]ASPNETCORE_ENVIRONMENT[/]"), new Text(envName ?? "N/A"));
-
-    AnsiConsole.Write(table);
-}
-
-void ConfigureConfiguration()
-{
-    builder.Logging.AddAzureWebAppDiagnostics();
-    builder.Configuration.AddJsonFile("manifesticons.json", false, true);
-}
 
 void ConfigureServices(IServiceCollection services)
 {
@@ -160,6 +112,8 @@ void ConfigureServices(IServiceCollection services)
             .AddImageStorage(builder.Configuration, options => options.ContentRootPath = builder.Environment.ContentRootPath)
             .Configure<List<ManifestIcon>>(builder.Configuration.GetSection("ManifestIcons"));
 
+    string dbType = builder.Configuration.GetConnectionString("DatabaseType");
+    string connStr = builder.Configuration.GetConnectionString("MoongladeDatabase");
     switch (dbType!.ToLower())
     {
         case "mysql":
@@ -175,97 +129,10 @@ void ConfigureServices(IServiceCollection services)
     }
 }
 
-async Task FirstRun()
-{
-    try
-    {
-        var startUpResut = await app.InitStartUp(dbType);
-
-        // Change `switch-case` to `if-else` for workaround https://github.com/dotnet/aspnetcore/issues/51285
-        if (startUpResut == StartupInitResult.DatabaseConnectionFail)
-        {
-            app.MapGet("/", () => Results.Problem(
-                detail: "Database connection test failed, please check your connection string and firewall settings, then RESTART Moonglade manually.",
-                statusCode: 500
-                ));
-            app.Run();
-        }
-        else if (startUpResut == StartupInitResult.DatabaseSetupFail)
-        {
-            app.MapGet("/", () => Results.Problem(
-                detail: "Database setup failed, please check error log, then RESTART Moonglade manually.",
-                statusCode: 500
-            ));
-            app.Run();
-        }
-    }
-    catch (Exception e)
-    {
-        app.MapGet("/", _ => throw new("Start up failed: " + e.Message));
-        app.Run();
-    }
-}
-
 void ConfigureMiddleware()
 {
-    bool useFWHeaders = builder.Configuration.GetSection("ForwardedHeaders:Enabled").Get<bool>();
-
-    if (useFWHeaders)
-    {
-        var fho = new ForwardedHeadersOptions
-        {
-            ForwardedHeaders = ForwardedHeaders.XForwardedFor | ForwardedHeaders.XForwardedProto
-        };
-
-        // ASP.NET Core always use the last value in XFF header, which is AFD's IP address
-        // Need to set as `X-Azure-ClientIP` as workaround
-        // https://learn.microsoft.com/en-us/azure/frontdoor/front-door-http-headers-protocol
-        var headerName = builder.Configuration["ForwardedHeaders:HeaderName"];
-        if (!string.IsNullOrWhiteSpace(headerName))
-        {
-            fho.ForwardedForHeaderName = headerName;
-        }
-
-        var knownProxies = builder.Configuration.GetSection("ForwardedHeaders:KnownProxies").Get<string[]>();
-        if (knownProxies is { Length: > 0 })
-        {
-            // Fix docker deployments on Azure App Service blows up with Azure AD authentication
-            // https://docs.microsoft.com/en-us/aspnet/core/host-and-deploy/proxy-load-balancer?view=aspnetcore-6.0
-            // "Outside of using IIS Integration when hosting out-of-process, Forwarded Headers Middleware isn't enabled by default."
-            if (Environment.GetEnvironmentVariable("DOTNET_RUNNING_IN_CONTAINER") == "true")
-            {
-                // Fix #712
-                // Adding KnownProxies will make Azure App Service boom boom with Azure AD redirect URL
-                // Result in `https` incorrectly written into `http` and make `/signin-oidc` url invalid.
-                app.Logger.LogWarning("Running in Docker, skip adding 'KnownProxies'.");
-            }
-            else
-            {
-                fho.ForwardLimit = null;
-                fho.KnownProxies.Clear();
-
-                foreach (var ip in knownProxies)
-                {
-                    fho.KnownProxies.Add(IPAddress.Parse(ip));
-                }
-
-                app.Logger.LogInformation("Added known proxies ({0}): {1}",
-                    knownProxies.Length,
-                    System.Text.Json.JsonSerializer.Serialize(knownProxies).EscapeMarkup());
-            }
-        }
-        else
-        {
-            // Fix deployment on AFD would not get the correct client IP address because it doesn't trust network other than localhost by default
-            // Add this can make ASP.NET Core read forward headers from any network with a potential security issue
-            // Attackers can hide their IP by sending a fake header
-            // This is OK because Moonglade is just a blog, nothing to hack, let it be
-            fho.KnownNetworks.Add(new IPNetwork(IPAddress.Any, 0));
-            fho.KnownNetworks.Add(new IPNetwork(IPAddress.IPv6Any, 0));
-        }
-
-        app.UseForwardedHeaders(fho);
-    }
+    bool useXFFHeaders = app.Configuration.GetSection("ForwardedHeaders:Enabled").Get<bool>();
+    if (useXFFHeaders) UseSmartXFFHeader(app);
 
     if (!app.Environment.IsProduction())
     {
@@ -289,17 +156,21 @@ void ConfigureMiddleware()
 
     var bc = app.Services.GetRequiredService<IBlogConfig>();
 
-    if (bc.AdvancedSettings.EnableFoaf)
-    {
-        app.UseMiddleware<FoafMiddleware>();
-    }
+    app.UseWhen(
+        _ => bc.AdvancedSettings.EnableFoaf,
+        appBuilder => appBuilder.UseMiddleware<FoafMiddleware>()
+    );
 
-    if (bc.AdvancedSettings.EnableMetaWeblog)
-    {
-        app.UseMiddleware<RSDMiddleware>().UseMetaWeblog("/metaweblog");
-    }
+    app.UseWhen(
+        _ => bc.AdvancedSettings.EnableMetaWeblog,
+        appBuilder => appBuilder.UseMiddleware<RSDMiddleware>().UseMetaWeblog("/metaweblog")
+    );
 
-    app.UseMiddleware<SiteMapMiddleware>();
+    app.UseWhen(
+        ctx => bc.AdvancedSettings.EnableSiteMap && ctx.Request.Path == "/sitemap.xml",
+        appBuilder => appBuilder.UseMiddleware<SiteMapMiddleware>()
+    );
+
     app.UseMiddleware<PoweredByMiddleware>();
     app.UseMiddleware<DNTMiddleware>();
 
@@ -334,4 +205,61 @@ void ConfigureMiddleware()
     app.UseAuthentication().UseAuthorization();
 
     app.UseEndpoints(ConfigureEndpoints.BlogEndpoints);
+}
+
+void UseSmartXFFHeader(WebApplication webApplication)
+{
+    var fho = new ForwardedHeadersOptions
+    {
+        ForwardedHeaders = ForwardedHeaders.XForwardedFor | ForwardedHeaders.XForwardedProto
+    };
+
+    // ASP.NET Core always use the last value in XFF header, which is AFD's IP address
+    // Need to set as `X-Azure-ClientIP` as workaround
+    // https://learn.microsoft.com/en-us/azure/frontdoor/front-door-http-headers-protocol
+    var headerName = webApplication.Configuration["ForwardedHeaders:HeaderName"];
+    if (!string.IsNullOrWhiteSpace(headerName))
+    {
+        fho.ForwardedForHeaderName = headerName;
+    }
+
+    var knownProxies = webApplication.Configuration.GetSection("ForwardedHeaders:KnownProxies").Get<string[]>();
+    if (knownProxies is { Length: > 0 })
+    {
+        // Fix docker deployments on Azure App Service blows up with Azure AD authentication
+        // https://docs.microsoft.com/en-us/aspnet/core/host-and-deploy/proxy-load-balancer?view=aspnetcore-6.0
+        // "Outside of using IIS Integration when hosting out-of-process, Forwarded Headers Middleware isn't enabled by default."
+        if (Environment.GetEnvironmentVariable("DOTNET_RUNNING_IN_CONTAINER") == "true")
+        {
+            // Fix #712
+            // Adding KnownProxies will make Azure App Service boom boom with Azure AD redirect URL
+            // Result in `https` incorrectly written into `http` and make `/signin-oidc` url invalid.
+            webApplication.Logger.LogWarning("Running in Docker, skip adding 'KnownProxies'.");
+        }
+        else
+        {
+            fho.ForwardLimit = null;
+            fho.KnownProxies.Clear();
+
+            foreach (var ip in knownProxies)
+            {
+                fho.KnownProxies.Add(IPAddress.Parse(ip));
+            }
+
+            webApplication.Logger.LogInformation("Added known proxies ({0}): {1}",
+                knownProxies.Length,
+                System.Text.Json.JsonSerializer.Serialize(knownProxies));
+        }
+    }
+    else
+    {
+        // Fix deployment on AFD would not get the correct client IP address because it doesn't trust network other than localhost by default
+        // Add this can make ASP.NET Core read forward headers from any network with a potential security issue
+        // Attackers can hide their IP by sending a fake header
+        // This is OK because Moonglade is just a blog, nothing to hack, let it be
+        fho.KnownNetworks.Add(new(IPAddress.Any, 0));
+        fho.KnownNetworks.Add(new(IPAddress.IPv6Any, 0));
+    }
+
+    webApplication.UseForwardedHeaders(fho);
 }

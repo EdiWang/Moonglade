@@ -348,9 +348,6 @@
   <data name="Drag and drop image file here" xml:space="preserve">
     <value>拖拽图片文件到此处</value>
   </data>
-  <data name="e.g. https://blog.ediwangcdn.com/ediwang-images" xml:space="preserve">
-    <value>示例 https://blog.ediwangcdn.com/ediwang-images</value>
-  </data>
   <data name="e.g. Your blog post license information." xml:space="preserve">
     <value>例如：博客文章的许可协议</value>
   </data>
@@ -792,21 +789,6 @@
   <data name="Title" xml:space="preserve">
     <value>标题</value>
   </data>
-  <data name="To turn on / off system navigation items (Categories / Tags / Archive), edit" xml:space="preserve">
-    <value>打开或关闭系统导航菜单（分类/标签/归档），编辑</value>
-  </data>
-  <data name="Top 10 Commented Posts / Past Year" xml:space="preserve">
-    <value>过去一年中评论最多的10篇文章</value>
-  </data>
-  <data name="Top 10 Read Posts / Past Year" xml:space="preserve">
-    <value>过去一年中阅读最多的10篇文章</value>
-  </data>
-  <data name="Top Level" xml:space="preserve">
-    <value>顶级菜单</value>
-  </data>
-  <data name="Top Menu Properties" xml:space="preserve">
-    <value>顶级菜单属性</value>
-  </data>
   <data name="Try to shutdown and restart the website, this will terminate all current requests." xml:space="preserve">
     <value>尝试关闭并重新启动网站，该操作会终止所有当前请求</value>
   </data>
@@ -824,9 +806,6 @@
   </data>
   <data name="Url (Relative or Absolute)" xml:space="preserve">
     <value>链接 (相对或绝对)</value>
-  </data>
-  <data name="Use friendly 404 image" xml:space="preserve">
-    <value>启用友好404图片</value>
   </data>
   <data name="Use full blog post content instead of abstract" xml:space="preserve">
     <value>使用文章全文作为内容而非摘要</value>

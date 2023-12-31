@@ -10,6 +10,11 @@ public class AdvancedSettings : IBlogSettings
     [MaxLength(1024)]
     public string RobotsTxtContent { get; set; }
 
+    [Display(Name = "Foot JavaScript")]
+    [DataType(DataType.MultilineText)]
+    [MaxLength(256)]
+    public string FootScripts { get; set; }
+
     [Display(Name = "Enable Pingback")]
     public bool EnablePingback { get; set; } = true;
 

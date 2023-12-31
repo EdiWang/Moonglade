@@ -20,7 +20,8 @@ public static class JsonExtensions
             UnicodeRanges.CjkUnifiedIdeographsExtensionA,
             UnicodeRanges.CjkSymbolsandPunctuation,
             UnicodeRanges.HalfwidthandFullwidthForms),
-        PropertyNameCaseInsensitive = true
+        PropertyNameCaseInsensitive = true,
+        PropertyNamingPolicy = JsonNamingPolicy.CamelCase
     };
 
     // Workaround stupid:
@@ -39,6 +40,7 @@ public static class JsonExtensions
             UnicodeRanges.CjkSymbolsandPunctuation,
             UnicodeRanges.HalfwidthandFullwidthForms),
         PropertyNameCaseInsensitive = true,
+        PropertyNamingPolicy = JsonNamingPolicy.CamelCase,
         WriteIndented = true
     };
 

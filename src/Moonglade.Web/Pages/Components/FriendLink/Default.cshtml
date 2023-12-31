@@ -5,9 +5,9 @@
 {
     <div class="aside-widget p-3 rounded-3 shadow-sm border bg-white">
         <h6 class="card-subtitle mb-3 text-muted">@SharedLocalizer["Links"]</h6>
-        
+
         <div>
-            @foreach (var item in Model.OrderBy(c => c.Title))
+            @foreach (var item in Model.OrderBy(c => c.Rank).ThenBy(c => c.Title))
             {
                 <a href="@Helper.SterilizeLink(item.LinkUrl)" target="_blank" class="d-block mb-3 mt-2">
                     <i class="bi-link-45deg me-1"></i>

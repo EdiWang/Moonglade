@@ -24,6 +24,7 @@ public class UpdateLinkCommandHandler(IRepository<FriendLinkEntity> repo) : IReq
         {
             link.Title = request.Title;
             link.LinkUrl = Helper.SterilizeLink(request.LinkUrl);
+            link.Rank = request.Rank;
 
             await repo.UpdateAsync(link, ct);
         }
