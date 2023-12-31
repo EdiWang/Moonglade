@@ -7,7 +7,7 @@ public class GeneralSettings : IBlogSettings
 {
     [Required]
     [Display(Name = "Meta keyword")]
-    [MaxLength(1024)]
+    [MaxLength(256)]
     public string MetaKeyword { get; set; }
 
     [Display(Name = "Canonical URL prefix")]
