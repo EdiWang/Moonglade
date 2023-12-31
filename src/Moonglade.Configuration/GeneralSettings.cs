@@ -77,6 +77,11 @@ public class GeneralSettings : IBlogSettings
     [Display(Name = "Tags")]
     public bool WidgetsTags { get; set; } = true;
 
+    [Required]
+    [Display(Name = "How many tags to show on sidebar")]
+    [Range(5, 20)]
+    public int HotTagAmount { get; set; } = 10;
+
     [Display(Name = "Categories")]
     public bool WidgetsCategoryList { get; set; } = true;
 
@@ -117,7 +122,8 @@ public class GeneralSettings : IBlogSettings
         Copyright = $"[c] {DateTime.UtcNow.Year}",
         TimeZoneId = "China Standard Time",
         TimeZoneUtcOffset = TimeSpan.FromHours(8),
-        ThemeId = 1
+        ThemeId = 1,
+        HotTagAmount = 10
     };
 }
 

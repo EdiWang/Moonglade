@@ -462,7 +462,7 @@
   <data name="Home" xml:space="preserve">
     <value>主页</value>
   </data>
-  <data name="How many tags show on sidebar" xml:space="preserve">
+  <data name="How many tags to show on sidebar" xml:space="preserve">
     <value>侧边栏显示标签数量</value>
   </data>
   <data name="HTML Pitch" xml:space="preserve">

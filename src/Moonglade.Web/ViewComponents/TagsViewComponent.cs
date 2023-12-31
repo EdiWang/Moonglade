@@ -8,7 +8,7 @@ public class TagsViewComponent(IBlogConfig blogConfig, IMediator mediator, ILogg
     {
         try
         {
-            var tags = await mediator.Send(new GetHotTagsQuery(blogConfig.ContentSettings.HotTagAmount));
+            var tags = await mediator.Send(new GetHotTagsQuery(blogConfig.GeneralSettings.HotTagAmount));
             return View(tags);
         }
         catch (Exception e)
