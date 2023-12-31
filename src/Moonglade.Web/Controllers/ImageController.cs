@@ -2,6 +2,7 @@
 using Microsoft.Extensions.Caching.Memory;
 using Microsoft.Extensions.Options;
 using SixLabors.ImageSharp;
+using System.ComponentModel.DataAnnotations;
 
 namespace Moonglade.Web.Controllers;
 
@@ -23,7 +24,7 @@ public class ImageController(IBlogImageStorage imageStorage,
     [ProducesResponseType(StatusCodes.Status302Found)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
-    public async Task<IActionResult> Image(string filename)
+    public async Task<IActionResult> Image([MaxLength(256)] string filename)
     {
         var invalidChars = Path.GetInvalidFileNameChars();
         if (filename.IndexOfAny(invalidChars) >= 0)
@@ -35,7 +36,7 @@ public class ImageController(IBlogImageStorage imageStorage,
         if (blogConfig.ImageSettings.EnableCDNRedirect)
         {
             var imageUrl = blogConfig.ImageSettings.CDNEndpoint.CombineUrl(filename);
-            return Redirect(imageUrl);
+            return RedirectPermanent(imageUrl);
         }
 
         var image = await cache.GetOrCreateAsync(filename, async entry =>
