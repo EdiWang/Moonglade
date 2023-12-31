@@ -68,7 +68,7 @@ public class ImageController(IBlogImageStorage imageStorage,
         var ext = Path.GetExtension(name).ToLower();
         var allowedExts = _imageStorageSettings.AllowedExtensions;
 
-        if (null == allowedExts || !allowedExts.Any())
+        if (null == allowedExts || allowedExts.Length == 0)
         {
             throw new InvalidDataException($"{nameof(ImageStorageSettings.AllowedExtensions)} is empty.");
         }
