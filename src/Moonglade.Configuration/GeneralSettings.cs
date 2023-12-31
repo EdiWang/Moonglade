@@ -91,9 +91,6 @@ public class GeneralSettings : IBlogSettings
     [Display(Name = "Subscription buttons")]
     public bool WidgetsSubscriptionButtons { get; set; } = true;
 
-    [Display(Name = "Admin login button")]
-    public bool ShowAdminLoginButton { get; set; }
-
     [MaxLength(64)]
     public string AvatarUrl { get; set; }
 
