@@ -30,20 +30,27 @@
             });
 
             eventArea.addEventListener('drop', function (e) {
+                eventArea.classList.remove('drag-over');
+
                 e.stopPropagation();
                 e.preventDefault();
                 inlineattach.onDrop(e);
             }, false);
 
-            eventArea.addEventListener('dragenter', function (e) {
+            eventArea.addEventListener('dragleave', function (e) {
+                eventArea.classList.remove('drag-over');
                 e.stopPropagation();
                 e.preventDefault();
             }, false);
 
-            eventArea.addEventListener('dragover', function (e) {
-                e.stopPropagation();
-                e.preventDefault();
-            }, false);
+            ['dragenter', 'dragover'].forEach(eventName => {
+                eventArea.addEventListener(eventName, function (e) {
+                    eventArea.classList.add('drag-over');
+
+                    e.stopPropagation();
+                    e.preventDefault();
+                }, false);
+            });
         }
     };
 

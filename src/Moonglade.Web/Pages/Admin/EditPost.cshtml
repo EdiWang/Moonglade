@@ -194,6 +194,19 @@
                 width: 100%;
                 min-height: calc(100vh - 370px);
             }
+
+            .md-editor-image-upload-area {
+                border-width: 2px;
+                border-style: dashed;
+            }
+
+            .md-editor-image-upload-area:focus,
+            .md-editor-image-upload-area:hover,
+            .md-editor-image-upload-area.drag-over {
+                color: var(--bs-warning-text-emphasis) !important;
+                background-color: var(--bs-warning-bg-subtle) !important;
+                border-color: var(--bs-warning-border-subtle) !important;
+            }
             </text>
         }
     </style>
@@ -246,7 +259,7 @@
                     <div id="markdown-content-editor" class="monaco-target overflow-y-hidden">
                     </div>
                     <textarea asp-for="ViewModel.EditorContent" class="post-content-textarea d-none"></textarea>
-                    <div class="md-editor-image-upload-area alert alert-info mt-1">
+                    <div class="md-editor-image-upload-area text-center border-secondary-subtle bg-light p-3 mt-1">
                         Drag &amp; Drop / Paste image here to upload.
                     </div>
                 }
