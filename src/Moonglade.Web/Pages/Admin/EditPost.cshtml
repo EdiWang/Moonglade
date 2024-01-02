@@ -33,8 +33,11 @@
             case EditorChoice.Markdown:
                 <partial name="_MonacoLoaderScript" />
                 <script src="~/js/3rd/inline-attachment.js"></script>
+                <script src="~/js/3rd/monaco.inline-attachment.js"></script>
                 <script>
                     var needLoadInitValues = @((!string.IsNullOrWhiteSpace(Model.ViewModel.EditorContent)).ToString().ToLower());
+
+                    
                 </script>
                 break;
         }
@@ -58,6 +61,28 @@
             if (editorMode == '@nameof(EditorChoice.Markdown)') {
                 require(['vs/editor/editor.main'], function () {
                     window.mdContentEditor = initEditor('markdown-content-editor', ".post-content-textarea", 'markdown', needLoadInitValues);
+                    
+                    inlineAttachment.editors.monaco.attach(window.mdContentEditor, {
+                        uploadUrl: '/image',
+                        urlText: '![file]({filename})',
+                        onFileUploadResponse: function (xhr) {
+                            var result = JSON.parse(xhr.responseText),
+                                filename = result[this.settings.jsonFieldName];
+
+                            if (result && filename) {
+                                var newValue;
+                                if (typeof this.settings.urlText === 'function') {
+                                    newValue = this.settings.urlText.call(this, filename, result);
+                                } else {
+                                    newValue = this.settings.urlText.replace(this.filenameTag, filename);
+                                }
+                                var text = this.editor.getValue().replace(this.lastValue, newValue);
+                                this.editor.setValue(text);
+                                this.settings.onFileUploaded.call(this, filename);
+                            }
+                            return false;
+                        }
+                    });
                 });
             }
 
