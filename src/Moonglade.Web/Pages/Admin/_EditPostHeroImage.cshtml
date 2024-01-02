@@ -1,0 +1,22 @@
+﻿<form id="form-hero-image" action="/image?skipWatermark=true"
+      enctype="multipart/form-data" onsubmit="ajaxImageUpload(this);return false;"
+      method="post">
+    <div class="modal fade" id="heroImageModal" tabindex="-1" role="dialog" aria-labelledby="heroImageModalLabel" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="heroImageModalLabel">@SharedLocalizer["Upload Image"]</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close">
+                    </button>
+                </div>
+                <div class="modal-body text-center">
+                    <input type="file" accept="image/png, image/jpeg" class="form-control" id="heroImageFile" name="file">
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">@SharedLocalizer["Cancel"]</button>
+                    <button type="submit" class="btn btn-accent"><i class="bi-upload"></i> @SharedLocalizer["Upload"]</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</form>
