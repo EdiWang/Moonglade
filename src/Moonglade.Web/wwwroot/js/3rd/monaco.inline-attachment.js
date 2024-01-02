@@ -19,37 +19,32 @@
                 }
             };
         },
-        attach: function (input, options) {
+        attach: function (input, eventArea, options) {
             options = options || {};
 
             var editor = new inlineAttachment.editors.monaco.Editor(input),
                 inlineattach = new inlineAttachment(options, editor);
 
-            const editorContentNode = input.getDomNode();
+            eventArea.addEventListener('paste', function (e) {
+                inlineattach.onPaste(e);
+            });
 
-            if (editorContentNode) {
-                editorContentNode.addEventListener('paste', function (e) {
-                    inlineattach.onPaste(e);
-                });
-
-                //input.addEventListener('paste', function (e) {
-                //    inlineattach.onPaste(e);
-                //}, false);
-                //input.addEventListener('drop', function (e) {
-                //    e.stopPropagation();
-                //    e.preventDefault();
-                //    inlineattach.onDrop(e);
-                //}, false);
-                //input.addEventListener('dragenter', function (e) {
-                //    e.stopPropagation();
-                //    e.preventDefault();
-                //}, false);
-                //input.addEventListener('dragover', function (e) {
-                //    e.stopPropagation();
-                //    e.preventDefault();
-                //}, false);
-
-            }
+            //input.addEventListener('paste', function (e) {
+            //    inlineattach.onPaste(e);
+            //}, false);
+            //input.addEventListener('drop', function (e) {
+            //    e.stopPropagation();
+            //    e.preventDefault();
+            //    inlineattach.onDrop(e);
+            //}, false);
+            //input.addEventListener('dragenter', function (e) {
+            //    e.stopPropagation();
+            //    e.preventDefault();
+            //}, false);
+            //input.addEventListener('dragover', function (e) {
+            //    e.stopPropagation();
+            //    e.preventDefault();
+            //}, false);
         }
     };
 

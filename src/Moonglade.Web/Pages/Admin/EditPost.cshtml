@@ -62,7 +62,8 @@
                 require(['vs/editor/editor.main'], function () {
                     window.mdContentEditor = initEditor('markdown-content-editor', ".post-content-textarea", 'markdown', needLoadInitValues);
                     
-                    inlineAttachment.editors.monaco.attach(window.mdContentEditor, {
+                    inlineAttachment.editors.monaco.attach(
+                        window.mdContentEditor, document.getElementsByClassName('md-editor-image-upload-area')[0] ,{
                         uploadUrl: '/image',
                         urlText: '![file]({filename})',
                         onFileUploadResponse: function (xhr) {
@@ -245,6 +246,9 @@
                     <div id="markdown-content-editor" class="monaco-target overflow-y-hidden">
                     </div>
                     <textarea asp-for="ViewModel.EditorContent" class="post-content-textarea d-none"></textarea>
+                    <div class="md-editor-image-upload-area alert alert-info mt-1">
+                        Drag &amp; Drop / Paste image here to upload.
+                    </div>
                 }
 
                 <div class="mt-1 bg-white">
