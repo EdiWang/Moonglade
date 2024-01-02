@@ -29,22 +29,21 @@
                 inlineattach.onPaste(e);
             });
 
-            //input.addEventListener('paste', function (e) {
-            //    inlineattach.onPaste(e);
-            //}, false);
-            //input.addEventListener('drop', function (e) {
-            //    e.stopPropagation();
-            //    e.preventDefault();
-            //    inlineattach.onDrop(e);
-            //}, false);
-            //input.addEventListener('dragenter', function (e) {
-            //    e.stopPropagation();
-            //    e.preventDefault();
-            //}, false);
-            //input.addEventListener('dragover', function (e) {
-            //    e.stopPropagation();
-            //    e.preventDefault();
-            //}, false);
+            eventArea.addEventListener('drop', function (e) {
+                e.stopPropagation();
+                e.preventDefault();
+                inlineattach.onDrop(e);
+            }, false);
+
+            eventArea.addEventListener('dragenter', function (e) {
+                e.stopPropagation();
+                e.preventDefault();
+            }, false);
+
+            eventArea.addEventListener('dragover', function (e) {
+                e.stopPropagation();
+                e.preventDefault();
+            }, false);
         }
     };
 
