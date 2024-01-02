@@ -1,6 +1,4 @@
-﻿export let simplemde = null;
-
-function slugify(text) {
+﻿function slugify(text) {
     var isValidTitle = /^[A-Za-z][A-Za-z0-9 \(\)#,\.\?]*$/.test(text);
     if (isValidTitle) {
         return text
@@ -162,31 +160,6 @@ export function loadTinyMCE(textareaSelector) {
             }
         });
     }
-}
-
-export function loadMdEditor(textareaSelector) {
-
-    inlineAttachment.editors.codemirror4.attach(simplemde.codemirror, {
-        uploadUrl: '/image',
-        urlText: '![file]({filename})',
-        onFileUploadResponse: function (xhr) {
-            var result = JSON.parse(xhr.responseText),
-                filename = result[this.settings.jsonFieldName];
-
-            if (result && filename) {
-                var newValue;
-                if (typeof this.settings.urlText === 'function') {
-                    newValue = this.settings.urlText.call(this, filename, result);
-                } else {
-                    newValue = this.settings.urlText.replace(this.filenameTag, filename);
-                }
-                var text = this.editor.getValue().replace(this.lastValue, newValue);
-                this.editor.setValue(text);
-                this.settings.onFileUploaded.call(this, filename);
-            }
-            return false;
-        }
-    });
 }
 
 export function keepAlive() {

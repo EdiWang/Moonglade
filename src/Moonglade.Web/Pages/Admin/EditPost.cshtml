@@ -6,6 +6,8 @@
 
 @{
     ViewBag.Title = "Edit Post";
+    var ec = Configuration.GetSection("Editor").Get<EditorChoice>();
+
     var wsm = Model.ViewModel.WarnSlugModification;
 
     var cultureItems = LocOptions.Value.SupportedUICultures
@@ -23,14 +25,16 @@
     <script src="~/lib/tagify/tagify.min.js"></script>
     <script src="~/js/3rd/bs-custom-file-input.min.js"></script>
     @{
-        var ec = Configuration.GetSection("Editor").Get<EditorChoice>();
         switch (ec)
         {
             case EditorChoice.Html:
                 <script src="https://cdnjs.cloudflare.com/ajax/libs/tinymce/6.7.2/tinymce.min.js" integrity="sha512-AHsE0IVoihNpGako20z2Tsgg77r5h9VS20XIKa+ZZ8WzzXxdbiUszgVUmXqpUE8GVUEQ88BKQqtlB/xKIY3tUg==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
                 break;
             case EditorChoice.Markdown:
-                <!--TODO-->
+                <partial name="_MonacoLoaderScript" />
+                <script>
+                    var needLoadInitValues = @((!string.IsNullOrWhiteSpace(Model.ViewModel.EditorContent)).ToString().ToLower());
+                </script>
                 break;
         }
     }
@@ -41,15 +45,20 @@
 
         var btnSubmitPost = '#btn-save';
         var isPreviewRequired = false;
+        
+        var editorMode = '@ec';
+        var mdContentEditor = null;
 
         $(function () {
             editor.initEvents(@((!wsm).ToString().ToLower()));
-            var editorMode = '@ec';
+            
             if (editorMode == '@nameof(EditorChoice.Html)') {
                 editor.loadTinyMCE(".post-content-textarea");
             }
             if (editorMode == '@nameof(EditorChoice.Markdown)') {
-                editor.loadMdEditor(".post-content-textarea");
+                require(['vs/editor/editor.main'], function () {
+                    mdContentEditor = initEditor('markdown-content-editor', ".post-content-textarea", 'markdown', needLoadInitValues);
+                });
             }
 
             editor.keepAlive();
@@ -97,6 +106,11 @@
             event.preventDefault();
 
             isPreviewRequired = event.submitter.id == 'btn-preview';
+            
+            if (editorMode == '@nameof(EditorChoice.Markdown)') {
+                console.log(mdContentEditor);
+                assignEditorValues(mdContentEditor, ".post-content-textarea");
+            }
 
             const data = new FormData(event.target);
             const value = Object.fromEntries(data.entries());
@@ -146,6 +160,17 @@
         .tagify {
             width: 100% !important;
         }
+
+        @if (ec == EditorChoice.Markdown)
+        {
+            <text>
+            .monaco-target {
+                border: 1px solid #dee2e6;
+                width: 100%;
+                min-height: calc(100vh - 370px);
+            }
+            </text>
+        }
     </style>
 }
 
@@ -187,7 +212,16 @@
                     </div>
                 </div>
 
-                <textarea asp-for="ViewModel.EditorContent" class="post-content-textarea"></textarea>
+                @if (ec == EditorChoice.Html)
+                {
+                    <textarea asp-for="ViewModel.EditorContent" class="post-content-textarea"></textarea>
+                }
+                else
+                {
+                    <div id="markdown-content-editor" class="monaco-target overflow-y-hidden">
+                    </div>
+                    <textarea asp-for="ViewModel.EditorContent" class="post-content-textarea d-none"></textarea>
+                }
 
                 <div class="mt-1 bg-white">
                     <input type="text" asp-for="ViewModel.Tags" placeholder="@SharedLocalizer["Tags"]" />
