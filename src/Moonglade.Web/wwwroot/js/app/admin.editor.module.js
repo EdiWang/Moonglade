@@ -53,9 +53,8 @@ export function initEvents(slugifyTitle) {
             window.tinyMCE.triggerSave();
         }
 
-        if (window.SimpleMDE) {
-            var newVal = simplemde.value();
-            $(".post-content-textarea").val(newVal);
+        if (window.mdContentEditor) {
+            assignEditorValues(window.mdContentEditor, ".post-content-textarea");
         }
 
         if ($('input[name="ViewModel.IsPublished"]').val() === 'True') {

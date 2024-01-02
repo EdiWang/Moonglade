@@ -130,10 +130,6 @@
             event.preventDefault();
 
             isPreviewRequired = event.submitter.id == 'btn-preview';
-            
-            if (editorMode == '@nameof(EditorChoice.Markdown)') {
-                assignEditorValues(window.mdContentEditor, ".post-content-textarea");
-            }
 
             const data = new FormData(event.target);
             const value = Object.fromEntries(data.entries());
