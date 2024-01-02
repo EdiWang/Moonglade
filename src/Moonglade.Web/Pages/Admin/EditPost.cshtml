@@ -32,6 +32,7 @@
                 break;
             case EditorChoice.Markdown:
                 <partial name="_MonacoLoaderScript" />
+                <script src="~/js/3rd/inline-attachment.js"></script>
                 <script>
                     var needLoadInitValues = @((!string.IsNullOrWhiteSpace(Model.ViewModel.EditorContent)).ToString().ToLower());
                 </script>
