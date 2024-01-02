@@ -48,7 +48,6 @@
         var isPreviewRequired = false;
         
         var editorMode = '@ec';
-        var mdContentEditor = null;
 
         $(function () {
             editor.initEvents(@((!wsm).ToString().ToLower()));
@@ -58,7 +57,7 @@
             }
             if (editorMode == '@nameof(EditorChoice.Markdown)') {
                 require(['vs/editor/editor.main'], function () {
-                    mdContentEditor = initEditor('markdown-content-editor', ".post-content-textarea", 'markdown', needLoadInitValues);
+                    window.mdContentEditor = initEditor('markdown-content-editor', ".post-content-textarea", 'markdown', needLoadInitValues);
                 });
             }
 
@@ -109,8 +108,7 @@
             isPreviewRequired = event.submitter.id == 'btn-preview';
             
             if (editorMode == '@nameof(EditorChoice.Markdown)') {
-                console.log(mdContentEditor);
-                assignEditorValues(mdContentEditor, ".post-content-textarea");
+                assignEditorValues(window.mdContentEditor, ".post-content-textarea");
             }
 
             const data = new FormData(event.target);
