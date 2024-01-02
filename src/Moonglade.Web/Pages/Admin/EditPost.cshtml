@@ -6,6 +6,8 @@
 
 @{
     ViewBag.Title = "Edit Post";
+    var ec = Configuration.GetSection("Editor").Get<EditorChoice>();
+
     var wsm = Model.ViewModel.WarnSlugModification;
 
     var cultureItems = LocOptions.Value.SupportedUICultures
@@ -19,21 +21,22 @@
             });
 }
 
-@section scripts{
+@section scripts {
     <script src="~/lib/tagify/tagify.min.js"></script>
     <script src="~/js/3rd/bs-custom-file-input.min.js"></script>
     @{
-        var ec = Configuration.GetSection("Editor").Get<EditorChoice>();
         switch (ec)
         {
             case EditorChoice.Html:
                 <script src="https://cdnjs.cloudflare.com/ajax/libs/tinymce/6.7.2/tinymce.min.js" integrity="sha512-AHsE0IVoihNpGako20z2Tsgg77r5h9VS20XIKa+ZZ8WzzXxdbiUszgVUmXqpUE8GVUEQ88BKQqtlB/xKIY3tUg==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
                 break;
             case EditorChoice.Markdown:
-                <script src="https://cdnjs.cloudflare.com/ajax/libs/simplemde/1.11.2/simplemde.min.js" integrity="sha512-ksSfTk6JIdsze75yZ8c+yDVLu09SNefa9IicxEE+HZvWo9kLPY1vrRlmucEMHQReWmEdKqusQWaDMpkTb3M2ug==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+                <partial name="_MonacoLoaderScript" />
                 <script src="~/js/3rd/inline-attachment.js"></script>
-                <script src="~/js/3rd/codemirror-4.inline-attachment.js"></script>
-                <link id="css-simplemde" rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/simplemde/1.11.2/simplemde.min.css" integrity="sha512-lB03MbtC3LxImQ+BKnZIyvVHTQ8SSmQ15AhVh5U/+CCp4wKtZMvgLGXbZIjIBBbnKsmk3/6n2vcF8a9CtVVSfA==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+                <script src="~/js/3rd/monaco.inline-attachment.js"></script>
+                <script>
+                    var needLoadInitValues = @((!string.IsNullOrWhiteSpace(Model.ViewModel.EditorContent)).ToString().ToLower());
+                </script>
                 break;
         }
     }
@@ -44,15 +47,42 @@
 
         var btnSubmitPost = '#btn-save';
         var isPreviewRequired = false;
+        
+        var editorMode = '@ec';
 
         $(function () {
             editor.initEvents(@((!wsm).ToString().ToLower()));
-            var editorMode = '@ec';
+            
             if (editorMode == '@nameof(EditorChoice.Html)') {
                 editor.loadTinyMCE(".post-content-textarea");
             }
             if (editorMode == '@nameof(EditorChoice.Markdown)') {
-                editor.loadMdEditor(".post-content-textarea");
+                require(['vs/editor/editor.main'], function () {
+                    window.mdContentEditor = initEditor('markdown-content-editor', ".post-content-textarea", 'markdown', needLoadInitValues);
+                    
+                    inlineAttachment.editors.monaco.attach(
+                        window.mdContentEditor, document.getElementsByClassName('md-editor-image-upload-area')[0] ,{
+                        uploadUrl: '/image',
+                        urlText: '![file]({filename})',
+                        onFileUploadResponse: function (xhr) {
+                            var result = JSON.parse(xhr.responseText),
+                                filename = result[this.settings.jsonFieldName];
+
+                            if (result && filename) {
+                                var newValue;
+                                if (typeof this.settings.urlText === 'function') {
+                                    newValue = this.settings.urlText.call(this, filename, result);
+                                } else {
+                                    newValue = this.settings.urlText.replace(this.filenameTag, filename);
+                                }
+                                var text = this.editor.getValue().replace(this.lastValue, newValue);
+                                this.editor.setValue(text);
+                                this.settings.onFileUploaded.call(this, filename);
+                            }
+                            return false;
+                        }
+                    });
+                });
             }
 
             editor.keepAlive();
@@ -143,11 +173,35 @@
     </script>
 }
 
-@section head{
+@section head {
     <link href="~/lib/tagify/tagify.css" rel="stylesheet" />
     <style>
         .tagify {
             width: 100% !important;
+        }
+
+        @if (ec == EditorChoice.Markdown)
+        {
+            <text>
+            .monaco-target {
+                border: 1px solid #dee2e6;
+                width: 100%;
+                min-height: calc(100vh - 370px);
+            }
+
+            .md-editor-image-upload-area {
+                border-width: 2px;
+                border-style: dashed;
+            }
+
+            .md-editor-image-upload-area:focus,
+            .md-editor-image-upload-area:hover,
+            .md-editor-image-upload-area.drag-over {
+                color: var(--bs-warning-text-emphasis) !important;
+                background-color: var(--bs-warning-bg-subtle) !important;
+                border-color: var(--bs-warning-border-subtle) !important;
+            }
+            </text>
         }
     </style>
 }
@@ -190,7 +244,19 @@
                     </div>
                 </div>
 
-                <textarea asp-for="ViewModel.EditorContent" class="post-content-textarea"></textarea>
+                @if (ec == EditorChoice.Html)
+                {
+                    <textarea asp-for="ViewModel.EditorContent" class="post-content-textarea"></textarea>
+                }
+                else
+                {
+                    <div id="markdown-content-editor" class="monaco-target overflow-y-hidden">
+                    </div>
+                    <textarea asp-for="ViewModel.EditorContent" class="post-content-textarea d-none"></textarea>
+                    <div class="md-editor-image-upload-area text-center border-secondary-subtle bg-light p-3 mt-1">
+                        Drag &amp; Drop / Paste image here to upload.
+                    </div>
+                }
 
                 <div class="mt-1 bg-white">
                     <input type="text" asp-for="ViewModel.Tags" placeholder="@SharedLocalizer["Tags"]" />
