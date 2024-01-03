@@ -17,6 +17,7 @@ public static class MemoryStreamIconGenerator
         {
             logger.LogWarning("SiteIconBase64 is empty or not valid, fall back to default image.");
 
+            // Credit: Vector Market (siteicon-default.png)
             var defaultIconImage = Path.Join($"{webRootPath}", "images", "siteicon-default.png");
             if (!File.Exists(defaultIconImage))
             {
