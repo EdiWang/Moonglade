@@ -34,9 +34,6 @@
                 <partial name="_MonacoLoaderScript" />
                 <script src="~/js/3rd/inline-attachment.js"></script>
                 <script src="~/js/3rd/monaco.inline-attachment.js"></script>
-                <script>
-                    var needLoadInitValues = @((!string.IsNullOrWhiteSpace(Model.ViewModel.EditorContent)).ToString().ToLower());
-                </script>
                 break;
         }
     }
@@ -58,7 +55,7 @@
             }
             if (editorMode == '@nameof(EditorChoice.Markdown)') {
                 require(['vs/editor/editor.main'], function () {
-                    window.mdContentEditor = initEditor('markdown-content-editor', ".post-content-textarea", 'markdown', needLoadInitValues);
+                    window.mdContentEditor = initEditor('markdown-content-editor', ".post-content-textarea", 'markdown', true);
                     
                     inlineAttachment.editors.monaco.attach(
                         window.mdContentEditor, document.getElementsByClassName('md-editor-image-upload-area')[0] ,{
