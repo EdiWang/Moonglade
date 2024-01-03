@@ -2,10 +2,6 @@
 @Html.AntiForgeryToken()
 @{
     var settings = BlogConfig.CustomStyleSheetSettings;
-
-    <script>
-        var needLoadInitValues = @((!string.IsNullOrWhiteSpace(settings.CssCode)).ToString().ToLower());
-    </script>
 }
 
 @section scripts{
@@ -14,7 +10,7 @@
         var cssContentEditor = null;
 
         require(['vs/editor/editor.main'], function () {
-            cssContentEditor = initEditor('CssContentEditor', "#settings_CssCode", 'css', needLoadInitValues);
+            cssContentEditor = initEditor('CssContentEditor', "#settings_CssCode", 'css', true);
         });
     </script>
     <script type="module">
