@@ -33,8 +33,8 @@ public class PagedListRenderOptions
         ClassToApplyToLastListItemInPager = null;
         ContainerDivClasses = new[] { "pagination-container" };
         UlElementClasses = new[] { "pagination" };
-        LiElementClasses = Enumerable.Empty<string>();
-        PageClasses = Enumerable.Empty<string>();
+        LiElementClasses = new[] { "page-item" };
+        PageClasses = new[] { "page-link" };
         UlElementattributes = null;
         ActiveLiElementClass = "active";
         EllipsesElementClass = "PagedList-ellipses";

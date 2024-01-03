@@ -17,8 +17,6 @@ else
 
     @Html.PagedListPager(Model, page => ViewData["sortBy"] == null ? $"?p={page}" : $"?p={page}&sortBy={ViewData["sortBy"]}", new()
     {
-        LiElementClasses = new[] { "page-item" },
-        PageClasses = new[] { "page-link" },
         UlElementClasses = new[] { "pagination justify-content-end" },
         MaximumPageNumbersToDisplay = 5,
         DisplayEllipsesWhenNotShowingAllPageNumbers = false
