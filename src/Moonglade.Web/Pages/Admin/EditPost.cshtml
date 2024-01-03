@@ -55,7 +55,7 @@
             }
             if (editorMode == '@nameof(EditorChoice.Markdown)') {
                 require(['vs/editor/editor.main'], function () {
-                    window.mdContentEditor = initEditor('markdown-content-editor', ".post-content-textarea", 'markdown', true);
+                    window.mdContentEditor = initEditor('markdown-content-editor', ".post-content-textarea", 'markdown');
                     
                     inlineAttachment.editors.monaco.attach(
                         window.mdContentEditor, document.getElementsByClassName('md-editor-image-upload-area')[0] ,{

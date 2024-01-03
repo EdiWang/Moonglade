@@ -1,21 +1,19 @@
-﻿<script src="https://cdnjs.cloudflare.com/ajax/libs/monaco-editor/0.45.0/min/vs/loader.min.js" 
-        integrity="sha512-ZG31AN9z/CQD1YDDAK4RUAvogwbJHv6bHrumrnMLzdCrVu4HeAqrUX7Jsal/cbUwXGfaMUNmQU04tQ8XXl5Znw==" 
-        crossorigin="anonymous" 
+﻿<script src="https://cdnjs.cloudflare.com/ajax/libs/monaco-editor/0.45.0/min/vs/loader.min.js"
+        integrity="sha512-ZG31AN9z/CQD1YDDAK4RUAvogwbJHv6bHrumrnMLzdCrVu4HeAqrUX7Jsal/cbUwXGfaMUNmQU04tQ8XXl5Znw=="
+        crossorigin="anonymous"
         referrerpolicy="no-referrer"></script>
 <script>
     require.config({ paths: { 'vs': 'https://cdnjs.cloudflare.com/ajax/libs/monaco-editor/0.45.0/min/vs' } });
 
-    function initEditor(containerId, textAreaQuerySelector, lang, needLoadInitValues) {
+    function initEditor(containerId, textAreaQuerySelector, lang) {
         var editorDiv = document.getElementById(containerId);
         var editorInstance = monaco.editor.create(editorDiv, {
             language: lang
         });
         editorInstance.layout();
 
-        if (needLoadInitValues) {
-            var editorValue = document.querySelector(textAreaQuerySelector).value;
-            editorInstance.setValue(editorValue);
-        }
+        var editorValue = document.querySelector(textAreaQuerySelector).value;
+        editorInstance.setValue(editorValue);
 
         return editorInstance;
     }
