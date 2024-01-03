@@ -6,8 +6,6 @@
 
 @{
     <script>
-        var needLoadInitValues = @((!string.IsNullOrWhiteSpace(Model.EditPageRequest.RawHtmlContent) || !string.IsNullOrWhiteSpace(Model.EditPageRequest.CssContent)).ToString().ToLower());
-
         var isPreviewRequired = false;
     </script>
 }
@@ -24,7 +22,7 @@
         var hasCssEditorInitialized = false;
 
         require(['vs/editor/editor.main'], function () {
-            htmlContentEditor = initEditor('RawHtmlContentEditor', "#EditPageRequest_RawHtmlContent", 'html', needLoadInitValues);
+            htmlContentEditor = initEditor('RawHtmlContentEditor', "#EditPageRequest_RawHtmlContent", 'html', true);
         });
 
         var assignEditorValues2 = function () {
@@ -100,7 +98,7 @@
             function (e) {
                 var isCssTab = e.target.id === "csscontent-tab";
                 if (isCssTab && !hasCssEditorInitialized) {
-                    cssContentEditor = initEditor('CssContentEditor', "#EditPageRequest_CssContent", 'css', needLoadInitValues);
+                    cssContentEditor = initEditor('CssContentEditor', "#EditPageRequest_CssContent", 'css', true);
                     hasCssEditorInitialized = true;
                 }
             });
