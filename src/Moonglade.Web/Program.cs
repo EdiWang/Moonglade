@@ -224,7 +224,15 @@ void UseSmartXFFHeader(WebApplication webApplication)
     var headerName = webApplication.Configuration["ForwardedHeaders:HeaderName"];
     if (!string.IsNullOrWhiteSpace(headerName))
     {
-        fho.ForwardedForHeaderName = headerName;
+        // RFC 7230
+        if (headerName.Length > 40 || !Helper.IsValidHeaderName(headerName))
+        {
+            app.Logger.LogWarning($"XFF header name '{headerName}' is invalid, it will not be applied");
+        }
+        else
+        {
+            fho.ForwardedForHeaderName = headerName;
+        }
     }
 
     var knownProxies = webApplication.Configuration.GetSection("ForwardedHeaders:KnownProxies").Get<string[]>();
