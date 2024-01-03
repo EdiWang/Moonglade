@@ -15,6 +15,7 @@ using SixLabors.Fonts;
 using System.Globalization;
 using System.Net;
 using System.Text.Json.Serialization;
+using Microsoft.AspNetCore.Rewrite;
 using WilderMinds.MetaWeblog;
 using Encoder = Moonglade.Web.Configuration.Encoder;
 
@@ -191,6 +192,9 @@ void ConfigureMiddleware()
         SupportedCultures = cultures,
         SupportedUICultures = cultures
     });
+
+    var options = new RewriteOptions().AddRedirect("(.*)/$", "$1", 301);
+    app.UseRewriter(options);
 
     app.UseStaticFiles();
     app.UseSession().UseCaptchaImage(options =>
