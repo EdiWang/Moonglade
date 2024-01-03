@@ -14,7 +14,7 @@ public class PostModel(IMediator mediator) : PageModel
     [MaxLength(32)]
     public string SearchTerm { get; set; }
 
-    public StaticPagedList<PostSegment> PostSegments { get; set; }
+    public BasePagedList<PostSegment> PostSegments { get; set; }
 
     public async Task OnPost() => await GetPosts(1);
 
