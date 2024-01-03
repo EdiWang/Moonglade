@@ -410,14 +410,6 @@ public class HtmlHelper(TagBuilderFactory tagBuilderFactory)
             ul.AddCssClass(c);
         }
 
-        if (options.UlElementattributes != null)
-        {
-            foreach (var c in options.UlElementattributes)
-            {
-                ul.MergeAttribute(c.Key, c.Value);
-            }
-        }
-
         var outerDiv = tagBuilderFactory
             .Create("div");
 

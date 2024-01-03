@@ -35,7 +35,6 @@ public class PagedListRenderOptions
         UlElementClasses = new[] { "pagination" };
         LiElementClasses = new[] { "page-item" };
         PageClasses = new[] { "page-link" };
-        UlElementattributes = null;
         ActiveLiElementClass = "active";
         EllipsesElementClass = "PagedList-ellipses";
         PreviousElementClass = "PagedList-skipToPrevious";
@@ -56,11 +55,6 @@ public class PagedListRenderOptions
     /// CSSClasses to append to the &lt;ul&gt; element in the paging control.
     ///</summary>
     public IEnumerable<string> UlElementClasses { get; set; }
-
-    /// <summary>
-    /// Attrinutes to appendto the &lt;ul&gt; element in the paging control
-    /// </summary>
-    public IDictionary<string, string> UlElementattributes { get; set; }
 
     ///<summary>
     /// CSS Classes to append to every &lt;li&gt; element in the paging control.
