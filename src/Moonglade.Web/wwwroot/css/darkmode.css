@@ -2,6 +2,15 @@
     border-top: 1px solid var(--transparent-light-15) !important;
 }
 
+.bg-moca-dark {
+    background-color: var(--moca-dark);
+}
+
+    .bg-moca-dark .list-group-item-action:focus,
+    .bg-moca-dark .list-group-item-action:hover {
+        background-color: var(--moca-dark-1) !important;
+    }
+
 .darkmode .form-select {
     background: transparent;
     color: var(--bs-gray-100);

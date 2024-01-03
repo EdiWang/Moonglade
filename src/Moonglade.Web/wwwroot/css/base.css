@@ -269,15 +269,6 @@ h3 small {
     background-color: var(--accent-color2);
 }
 
-.bg-moca-dark {
-    background-color: var(--moca-dark);
-}
-
-    .bg-moca-dark .list-group-item-action:focus,
-    .bg-moca-dark .list-group-item-action:hover {
-        background-color: var(--moca-dark-1) !important;
-    }
-
 .page-link {
     color: var(--accent-color1);
 }
