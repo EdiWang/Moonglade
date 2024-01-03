@@ -262,7 +262,7 @@ public class HtmlHelper(TagBuilderFactory tagBuilderFactory)
     {
         var list = pagedList ?? new BasePagedList<int>(ImmutableList<int>.Empty, 1, 10, 0);
 
-        if (options.Display == PagedListDisplayMode.Never || (options.Display == PagedListDisplayMode.IfNeeded && list.PageCount <= 1))
+        if (options.Display == PagedListDisplayMode.IfNeeded && list.PageCount <= 1)
         {
             return null;
         }
