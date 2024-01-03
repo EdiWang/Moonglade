@@ -372,18 +372,6 @@ public class HtmlHelper(TagBuilderFactory tagBuilderFactory)
 
         if (listItemLinks.Any())
         {
-            //append class to first item in list?
-            if (!string.IsNullOrWhiteSpace(options.ClassToApplyToFirstListItemInPager))
-            {
-                listItemLinks.First().AddCssClass(options.ClassToApplyToFirstListItemInPager);
-            }
-
-            //append class to last item in list?
-            if (!string.IsNullOrWhiteSpace(options.ClassToApplyToLastListItemInPager))
-            {
-                listItemLinks.Last().AddCssClass(options.ClassToApplyToLastListItemInPager);
-            }
-
             //append classes to all list item links
             foreach (var li in listItemLinks)
             {

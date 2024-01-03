@@ -29,8 +29,6 @@ public class PagedListRenderOptions
         ItemSliceAndTotalFormat = "Showing items {0} through {1} of {2}.";
         ItemSliceAndTotalPosition = ItemSliceAndTotalPosition.Start;
         FunctionToDisplayEachPageNumber = null;
-        ClassToApplyToFirstListItemInPager = null;
-        ClassToApplyToLastListItemInPager = null;
         ContainerDivClasses = new[] { "pagination-container" };
         UlElementClasses = new[] { "pagination" };
         LiElementClasses = new[] { "page-item" };
@@ -85,16 +83,6 @@ public class PagedListRenderOptions
     /// CSS Classes to append to Ellipses element in the paging control.
     ///</summary>
     public string EllipsesElementClass { get; set; }
-
-    ///<summary>
-    /// Specifies a CSS class to append to the first list item in the pager. If null or whitespace is defined, no additional class is added to first list item in list.
-    ///</summary>
-    public string ClassToApplyToFirstListItemInPager { get; set; }
-
-    ///<summary>
-    /// Specifies a CSS class to append to the last list item in the pager. If null or whitespace is defined, no additional class is added to last list item in list.
-    ///</summary>
-    public string ClassToApplyToLastListItemInPager { get; set; }
 
     /// <summary>
     /// If set to Always, always renders the paging control. If set to IfNeeded, render the paging control when there is more than one page.
