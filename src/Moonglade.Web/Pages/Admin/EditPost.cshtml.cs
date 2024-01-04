@@ -4,7 +4,7 @@ using Moonglade.Core.PostFeature;
 
 namespace Moonglade.Web.Pages.Admin;
 
-public class EditPostModel(IMediator mediator, ITimeZoneResolver timeZoneResolver) : PageModel
+public class EditPostModel(IMediator mediator, ITimeZoneResolver timeZoneResolver, IBlogConfig blogConfig) : PageModel
 {
     public PostEditModel ViewModel { get; set; } = new()
     {
@@ -34,6 +34,8 @@ public class EditPostModel(IMediator mediator, ITimeZoneResolver timeZoneResolve
 
                 CategoryList = cbCatList.ToList();
             }
+
+            ViewModel.Author = blogConfig.GeneralSettings.OwnerName;
 
             return Page();
         }
