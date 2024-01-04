@@ -1,7 +1,7 @@
 ﻿@using Moonglade.Utils
 @using Microsoft.AspNetCore.Localization
 @using System.Globalization
-@inject Microsoft.ApplicationInsights.AspNetCore.JavaScriptSnippet JavaScriptSnippet
+
 @{
     if (string.IsNullOrEmpty(BlogConfig.GeneralSettings.AvatarUrl))
     {
@@ -109,9 +109,9 @@
     <script src="~/js/3rd/jquery.slim.min.js"></script>
 
     <environment include="Production">
-        @if (!(bool)Context.Items["DNT"])
+        @if (!(bool)Context.Items["DNT"]!)
         {
-            @Html.Raw(JavaScriptSnippet.FullScript)
+            <partial name="_ApplicationInsightsJs" />
         }
     </environment>
 </head>
