@@ -34,9 +34,9 @@ public class PagedListRenderOptions
         LiElementClasses = new[] { "page-item" };
         PageClasses = new[] { "page-link" };
         ActiveLiElementClass = "active";
-        EllipsesElementClass = "PagedList-ellipses";
-        PreviousElementClass = "PagedList-skipToPrevious";
-        NextElementClass = "PagedList-skipToNext";
+        EllipsesElementClass = "paged-list-ellipses";
+        PreviousElementClass = "PagedList-skip-to-previous";
+        NextElementClass = "paged-list-skip-to-next";
     }
 
     /// <summary>

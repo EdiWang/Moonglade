@@ -73,12 +73,12 @@ public class HtmlHelper(TagBuilderFactory tagBuilderFactory)
 
         if (list.IsFirstPage)
         {
-            return WrapInListItem(first, options, "PagedList-skipToFirst", "disabled");
+            return WrapInListItem(first, options, "paged-list-skip-to-first", "disabled");
         }
 
         first.Attributes.Add("href", generatePageUrl(targetPageNumber));
 
-        return WrapInListItem(first, options, "PagedList-skipToFirst");
+        return WrapInListItem(first, options, "paged-list-skip-to-first");
     }
 
     private TagBuilder Previous(IPagedList list, Func<int, string> generatePageUrl, PagedListRenderOptions options)
@@ -174,12 +174,12 @@ public class HtmlHelper(TagBuilderFactory tagBuilderFactory)
 
         if (list.IsLastPage)
         {
-            return WrapInListItem(last, options, "PagedList-skipToLast", "disabled");
+            return WrapInListItem(last, options, "paged-list-skip-to-last", "disabled");
         }
 
         last.Attributes.Add("href", generatePageUrl(targetPageNumber));
 
-        return WrapInListItem(last, options, "PagedList-skipToLast");
+        return WrapInListItem(last, options, "paged-list-skip-to-last");
     }
 
     private TagBuilder PageCountAndLocationText(IPagedList list, PagedListRenderOptions options)
@@ -210,7 +210,7 @@ public class HtmlHelper(TagBuilderFactory tagBuilderFactory)
         AppendHtml(previous, options.EllipsesFormat);
 
         previous.Attributes.Add("rel", "prev");
-        previous.AddCssClass("PagedList-skipToPrevious");
+        previous.AddCssClass("paged-list-skip-to-previous");
 
         foreach (var c in options.PageClasses ?? Enumerable.Empty<string>())
         {
@@ -237,7 +237,7 @@ public class HtmlHelper(TagBuilderFactory tagBuilderFactory)
         AppendHtml(next, options.EllipsesFormat);
 
         next.Attributes.Add("rel", "next");
-        next.AddCssClass("PagedList-skipToNext");
+        next.AddCssClass("paged-list-skip-to-next");
 
         foreach (var c in options.PageClasses ?? Enumerable.Empty<string>())
         {
