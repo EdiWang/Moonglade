@@ -116,6 +116,8 @@
     </environment>
 </head>
 <body class="@ViewBag.BodyClass">
+    <partial name="_EnvInfo" />
+
     @if (BlogConfig.ContentSettings.ShowCalloutSection)
     {
         <section class="call-out">
@@ -227,7 +229,6 @@
     </div>
     <div class="clearfix"></div>
     <partial name="_Footer" />
-    <partial name="_EnvInfo" />
     <partial name="_Toast" />
 
     <script src="~/lib/twitter-bootstrap/js/bootstrap.bundle.min.js" asp-append-version="true"></script>
