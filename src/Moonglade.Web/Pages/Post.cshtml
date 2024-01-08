@@ -191,7 +191,10 @@
 
     if (BlogConfig.ContentSettings.CloseCommentAfterDays > 0 && days > BlogConfig.ContentSettings.CloseCommentAfterDays)
     {
-        <div class="alert alert-warning">@SharedLocalizer["Comment is closed."]</div>
+        <div class="text-muted text-center">
+            <span class="bi-dash-circle"></span> 
+            @SharedLocalizer["Comment is closed."]
+        </div>
     }
     else
     {
