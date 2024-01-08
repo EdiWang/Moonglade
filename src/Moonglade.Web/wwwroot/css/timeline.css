@@ -91,17 +91,18 @@
             border-bottom-right-radius: 50%;
             border-top-left-radius: 50%;
             border-top-right-radius: 50%;
-            color: var(--bs-white);
             font-size: 1.4em;
-            height: 50px;
+            height: 35px;
             left: 50%;
-            line-height: 50px;
-            margin-left: -25px;
+            margin-left: -17px;
             position: absolute;
             text-align: center;
-            top: 16px;
-            width: 50px;
+            top: 24px;
+            width: 35px;
             z-index: 100;
+            border: 3px solid var(--accent-color3);
+            background-color: var(--bs-white);
+            color: var(--accent-color1);
         }
 
         .timeline > li.timeline-inverted > .timeline-panel {
@@ -121,26 +122,6 @@
                 left: -14px;
                 right: auto;
             }
-
-.timeline-badge.primary {
-    background-color: var(--bs-blue) !important;
-}
-
-.timeline-badge.success {
-    background-color: var(--bs-green) !important;
-}
-
-.timeline-badge.warning {
-    background-color: var(--bs-yellow) !important;
-}
-
-.timeline-badge.danger {
-    background-color: var(--bs-red) !important;
-}
-
-.timeline-badge.info {
-    background-color: var(--bs-info) !important;
-}
 
 .timeline-body > p,
 .timeline-body > ul {

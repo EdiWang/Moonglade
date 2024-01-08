@@ -80,6 +80,11 @@
     color: var(--bs-white);
 }
 
+.darkmode .timeline > li > .timeline-badge {
+    background-color: var(--gray-7);
+    border: 3px solid var(--gray-5);
+}
+
 .darkmode .article-post-summary {
     background-color: transparent !important;
     border-color: var(--gray-7) !important;
