@@ -19,7 +19,7 @@
     {
         return number is > 12 or < 1 ? 
             string.Empty : 
-            CultureInfo.GetCultureInfo("en-US").DateTimeFormat.GetMonthName(number);
+            CultureInfo.CurrentUICulture.DateTimeFormat.GetMonthName(number);
     }
 }
 
