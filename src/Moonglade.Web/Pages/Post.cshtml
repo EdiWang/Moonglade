@@ -208,25 +208,28 @@
                             </h6>
                             <partial name="_CommentForm" />
                         </section>
+
+                        <div id="thx-for-comment" class="alert alert-warning" style="display: none;">
+                            @SharedLocalizer["Thanks, your comment is pending approval now."] <br />
+                            @SharedLocalizer["It will show up once blog administrator approved your comment."]
+                        </div>
+
+                        <div id="thx-for-comment-non-review" class="alert alert-success" style="display: none;">
+                            @SharedLocalizer["Thanks for your comment."] <br />
+                            @SharedLocalizer["Refresh the page to see your comment."]
+                        </div>
+
+                        <section id="comments-list">
+                            @await Component.InvokeAsync("CommentList", new {postId = Model.Post.Id})
+                        </section>
                     }
                     else
                     {
-                        <div class="alert alert-warning">@SharedLocalizer["Comment of this post is disabled."]</div>
+                        <div class="text-muted text-center">
+                            <span class="bi-ban"></span> 
+                            @SharedLocalizer["Comment of this post is disabled."]
+                        </div>
                     }
-
-                    <div id="thx-for-comment" class="alert alert-warning" style="display: none;">
-                        @SharedLocalizer["Thanks, your comment is pending approval now."] <br />
-                        @SharedLocalizer["It will show up once blog administrator approved your comment."]
-                    </div>
-
-                    <div id="thx-for-comment-non-review" class="alert alert-success" style="display: none;">
-                        @SharedLocalizer["Thanks for your comment."] <br />
-                        @SharedLocalizer["Refresh the page to see your comment."]
-                    </div>
-
-                    <section id="comments-list">
-                        @await Component.InvokeAsync("CommentList", new {postId = Model.Post.Id})
-                    </section>
                 </div>
                 break;
             case CommentProvider.ThirdParty:
@@ -234,10 +237,6 @@
                 break;
         }
     }
-}
-else
-{
-    <div class="alert alert-warning">@SharedLocalizer["Comment is disabled by blog administrator."]</div>
 }
 
 <partial name="_LightSwitch" />
