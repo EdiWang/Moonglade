@@ -1,7 +1,7 @@
 name: Azure App Service (Staging)
 
 env:
-  AZURE_WEBAPP_NAME: moonglade-ediwang-ea
+  AZURE_WEBAPP_NAME: moonglade-ediwang-us
   SLOT_NAME: staging
   AZURE_WEBAPP_PACKAGE_PATH: '.'
   DOTNET_VERSION: '8.0.x'
