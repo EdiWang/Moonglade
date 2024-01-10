@@ -12,6 +12,6 @@
         <Using Include="Microsoft.EntityFrameworkCore" />
         <PackageReference Include="MediatR" Version="12.2.0" />
         <FrameworkReference Include="Microsoft.AspNetCore.App" />
-        <PackageReference Include="Microsoft.EntityFrameworkCore.Proxies" Version="8.0.0" />
+        <PackageReference Include="Microsoft.EntityFrameworkCore.Proxies" Version="8.0.1" />
     </ItemGroup>
 </Project>
