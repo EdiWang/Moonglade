@@ -13,12 +13,10 @@
 
     ViewBag.PostLangCode = Model.Post.ContentLanguageCode;
     ViewBag.MetaDescription = Model.Post.ContentAbstract;
-}
 
-@section keywords {
     @if (Model.Post.Tags.Length > 0)
     {
-        <meta name="keywords" content="@string.Join(", ", Model.Post.Tags.Select(t => t.NormalizedName))" />
+        ViewBag.Keywords = string.Join(", ", Model.Post.Tags.Select(t => t.NormalizedName));
     }
 }
 
