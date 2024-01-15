@@ -12,6 +12,7 @@
     }
 
     ViewBag.PostLangCode = Model.Post.ContentLanguageCode;
+    ViewBag.MetaDescription = Model.Post.ContentAbstract;
 }
 
 @section keywords {
@@ -52,10 +53,6 @@
     {
         <meta property="og:url" content="@(Helper.ResolveCanonicalUrl(BlogConfig.GeneralSettings.CanonicalPrefix, HttpContext.Request.Path))" />
     }
-}
-
-@section metadescription{
-    <metadesc description="@Model.Post.ContentAbstract" />
 }
 
 @section scripts {

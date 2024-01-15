@@ -54,14 +54,7 @@
         <partial name="_OpenGraph" />
     }
 
-    @if (IsSectionDefined("metadescription"))
-    {
-        @await RenderSectionAsync("metadescription", false)
-    }
-    else
-    {
-        <metadesc description="@BlogConfig.GeneralSettings.Description" />
-    }
+    <metadesc description="@(ViewBag.MetaDescription ?? BlogConfig.GeneralSettings.Description)" />
 
     <title>
         @(ViewBag.TitlePrefix)@(null == ViewBag.TitlePrefix ? string.Empty : " - ")@BlogConfig.GeneralSettings.SiteTitle
