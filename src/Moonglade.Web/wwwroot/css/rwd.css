@@ -17,7 +17,7 @@
 @media (max-width: 767px) {
 
     .article-post-slug {
-        padding: 0 !important;
+        padding: 8px !important;
         box-shadow: none !important;
         border: none !important;
     }

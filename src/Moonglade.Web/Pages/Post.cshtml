@@ -111,7 +111,7 @@
         <partial name="_FeaturedTag" />
     }
 
-    <header class="post-header @(BlogConfig.ContentSettings.PostTitleAlignment == PostTitleAlignment.Center ? "text-center" : null)">
+    <header class="post-header mb-4 @(BlogConfig.ContentSettings.PostTitleAlignment == PostTitleAlignment.Center ? "text-center" : null)">
         <h1 class="post-title">
             @Model.Post.Title
         </h1>
@@ -142,8 +142,6 @@
                 }
             </span>
         </div>
-
-        <hr class="d-none d-md-block" />
     </header>
 
     @if (Model.Post.IsOutdated)
