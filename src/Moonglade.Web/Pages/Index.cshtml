@@ -14,13 +14,6 @@
     
     <span class="flex-spacer"></span>
     
-    <span class="me-1">
-        <select class="form-select form-select-sm" asp-for="SortBy" id="sort-selection" title="Selection box for sort post list by recent or featured">
-            <option value="Recent">Recent</option>
-            <option value="Featured">Featured</option>
-        </select>
-    </span>
-    
     <a class="d-none d-md-block" asp-controller="Subscription" asp-action="Rss" target="_blank" title="@SharedLocalizer["Subscribe recent posts"]">
         <i class="bi-rss font-125rem"></i>
     </a>
@@ -38,15 +31,3 @@ else
 }
 
 <partial name="_LightSwitch" />
-
-@section scripts{
-    <script>
-        var sortSelect = document.getElementById("sort-selection");
-        sortSelect.addEventListener("change", function () {
-            var value = sortSelect.value;
-            var searchParams = new URLSearchParams(window.location.search);
-            searchParams.set("sortBy", value);
-            window.location.search = searchParams.toString();
-        });
-    </script>
-}

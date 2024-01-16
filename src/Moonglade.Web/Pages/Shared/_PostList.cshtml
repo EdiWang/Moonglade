@@ -6,7 +6,7 @@
     <partial name="_PostListEntry" model="item" />
 }
 
-@Html.PagedListPager(Model, page => ViewData["sortBy"] == null ? $"?p={page}" : $"?p={page}&sortBy={ViewData["sortBy"]}", new()
+@Html.PagedListPager(Model, page => $"?p={page}", new()
 {
     UlElementClasses = new[] { "pagination justify-content-end" },
     MaximumPageNumbersToDisplay = 5,
