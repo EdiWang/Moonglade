@@ -22,14 +22,6 @@
     --moca-dark-2: #343A40;
 }
 
-::-webkit-scrollbar {
-    width: 5px;
-}
-
-::-webkit-scrollbar-thumb {
-    background: var(--gray-3);
-}
-
 ::selection {
     background-color: var(--accent-color1);
     color: var(--bs-white);
@@ -39,7 +31,6 @@
 body {
     font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Microsoft YaHei";
     font-size: 0.9rem;
-    background-color: var(--bs-white);
 }
 
 hr {
@@ -277,15 +268,6 @@ h3 small {
 .bg-accent2 {
     background-color: var(--accent-color2);
 }
-
-.bg-moca-dark {
-    background-color: var(--moca-dark);
-}
-
-    .bg-moca-dark .list-group-item-action:focus,
-    .bg-moca-dark .list-group-item-action:hover {
-        background-color: var(--moca-dark-1) !important;
-    }
 
 .page-link {
     color: var(--accent-color1);

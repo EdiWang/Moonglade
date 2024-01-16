@@ -1,7 +1,7 @@
 ﻿@using Moonglade.Utils
 @using Microsoft.AspNetCore.Localization
 @using System.Globalization
-@inject Microsoft.ApplicationInsights.AspNetCore.JavaScriptSnippet JavaScriptSnippet
+
 @{
     if (string.IsNullOrEmpty(BlogConfig.GeneralSettings.AvatarUrl))
     {
@@ -35,14 +35,8 @@
         <link rel="schema.DC" href="http://purl.org/dc/elements/1.1/" />
         <link rel="schema.DCTERMS" href="http://purl.org/dc/terms/" />
     }
-    @if (IsSectionDefined("keywords"))
-    {
-        @await RenderSectionAsync("keywords", false)
-    }
-    else
-    {
-        <meta name="keywords" content="@Html.Raw(BlogConfig.GeneralSettings.MetaKeyword)" />
-    }
+
+    <meta name="keywords" content="@(ViewBag.Keywords ?? Html.Raw(BlogConfig.GeneralSettings.MetaKeyword))" />
 
     @await RenderSectionAsync("meta", false)
     @if (IsSectionDefined("opengraph"))
@@ -54,14 +48,7 @@
         <partial name="_OpenGraph" />
     }
 
-    @if (IsSectionDefined("metadescription"))
-    {
-        @await RenderSectionAsync("metadescription", false)
-    }
-    else
-    {
-        <metadesc description="@BlogConfig.GeneralSettings.Description" />
-    }
+    <metadesc description="@(ViewBag.MetaDescription ?? BlogConfig.GeneralSettings.Description)" />
 
     <title>
         @(ViewBag.TitlePrefix)@(null == ViewBag.TitlePrefix ? string.Empty : " - ")@BlogConfig.GeneralSettings.SiteTitle
@@ -104,18 +91,20 @@
     <link href="~/theme.css" rel="stylesheet" asp-append-version="true" />
     @if (BlogConfig.CustomStyleSheetSettings.EnableCustomCss)
     {
-        <link href="~/custom.css" rel="stylesheet" asp-append-version="true" />
+        <link href="~/custom.css" rel="stylesheet" />
     }
     <script src="~/js/3rd/jquery.slim.min.js"></script>
 
     <environment include="Production">
-        @if (!(bool)Context.Items["DNT"])
+        @if (!(bool)Context.Items["DNT"]!)
         {
-            @Html.Raw(JavaScriptSnippet.FullScript)
+            <partial name="_ApplicationInsightsJs" />
         }
     </environment>
 </head>
 <body class="@ViewBag.BodyClass">
+    <partial name="_EnvInfo" />
+
     @if (BlogConfig.ContentSettings.ShowCalloutSection)
     {
         <section class="call-out">
@@ -227,7 +216,6 @@
     </div>
     <div class="clearfix"></div>
     <partial name="_Footer" />
-    <partial name="_EnvInfo" />
     <partial name="_Toast" />
 
     <script src="~/lib/twitter-bootstrap/js/bootstrap.bundle.min.js" asp-append-version="true"></script>

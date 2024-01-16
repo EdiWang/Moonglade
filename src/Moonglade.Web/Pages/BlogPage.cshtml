@@ -5,26 +5,15 @@
     ViewBag.TitlePrefix = Model.BlogPage.Title;
     ViewBag.HideSideBar = Model.BlogPage.HideSidebar;
     ViewBag.DisableLightSwitch = true;
+
+    ViewBag.MetaDescription = Model.BlogPage.MetaDescription;
 }
 
-@section head{
+@section head {
     @if (!string.IsNullOrWhiteSpace(Model.BlogPage.CssId))
     {
         <link href="~/content.css?id=@Model.BlogPage.CssId" rel="stylesheet" asp-append-version="true" />
     }
-}
-
-@section metadescription{
-    <metadesc description="@Model.BlogPage.MetaDescription" />
-}
-
-@if (null != ViewBag.IsDraftPreview)
-{
-    <div class="container mt-3 mb-4">
-        <div class="alert alert-info">
-            @SharedLocalizer["This is a preview for draft content."]
-        </div>
-    </div>
 }
 
 <div class="page-content">

@@ -1,6 +1,5 @@
 ﻿@page "/auth/signin"
 @model Moonglade.Web.Pages.SignInModel
-@inject Microsoft.ApplicationInsights.AspNetCore.JavaScriptSnippet JavaScriptSnippet
 @using Moonglade.Utils
 @{
     Layout = null;
@@ -17,9 +16,6 @@
     <partial name="_Favicons" />
     <link href="~/lib/twitter-bootstrap/css/bootstrap.min.css" rel="stylesheet" asp-append-version="true" />
     <link href="~/css/base.css" rel="stylesheet" asp-append-version="true" />
-    <environment exclude="Development">
-        @Html.Raw(JavaScriptSnippet.FullScript)
-    </environment>
     <link href="~/theme.css" rel="stylesheet" asp-append-version="true" />
     @if (BlogConfig.CustomStyleSheetSettings.EnableCustomCss)
     {

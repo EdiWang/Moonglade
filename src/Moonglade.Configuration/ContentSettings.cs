@@ -39,11 +39,6 @@ public class ContentSettings : IBlogSettings
     [Range(5, 30)]
     public int PostListPageSize { get; set; } = 10;
 
-    [Required]
-    [Display(Name = "How many tags show on sidebar")]
-    [Range(5, 20)]
-    public int HotTagAmount { get; set; } = 10;
-
     [Display(Name = "Enable Gravatar in comment list")]
     public bool EnableGravatar { get; set; }
 
@@ -78,7 +73,6 @@ public class ContentSettings : IBlogSettings
         EnableGravatar = true,
         EnableWordFilter = false,
         PostListPageSize = 10,
-        HotTagAmount = 10,
         CalloutSectionHtmlPitch = string.Empty
     };
 }

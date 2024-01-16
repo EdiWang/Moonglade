@@ -12,7 +12,7 @@ public class AdvancedSettings : IBlogSettings
 
     [Display(Name = "Foot JavaScript")]
     [DataType(DataType.MultilineText)]
-    [MaxLength(256)]
+    [MaxLength(1024)]
     public string FootScripts { get; set; }
 
     [Display(Name = "Enable Pingback")]

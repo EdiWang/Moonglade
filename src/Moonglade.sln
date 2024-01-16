@@ -21,12 +21,9 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Moonglade.Configuration", "
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = ".Solution Items", ".Solution Items", "{BE685106-CE96-4A43-A161-3425565C6A9D}"
 	ProjectSection(SolutionItems) = preProject
-		..\.gitattributes = ..\.gitattributes
 		..\.gitignore = ..\.gitignore
-		..\azure-pipelines.yml = ..\azure-pipelines.yml
 		Directory.Build.props = Directory.Build.props
 		..\Dockerfile = ..\Dockerfile
-		..\LICENSE = ..\LICENSE
 		..\README.md = ..\README.md
 	EndProjectSection
 EndProject
@@ -50,13 +47,6 @@ EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Moonglade.Email.Client", "Moonglade.Email.Client\Moonglade.Email.Client.csproj", "{DF0D2D74-B9B7-4EB8-956D-E9CBDDF3390E}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Moonglade.Auth", "Moonglade.Auth\Moonglade.Auth.csproj", "{5B888FFB-8BF0-4AED-9D1E-91396290BC05}"
-EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = ".vscode", ".vscode", "{FE0F6EA1-5520-4DD9-9CD4-7A2365A03C8C}"
-	ProjectSection(SolutionItems) = preProject
-		..\.vscode\launch.json = ..\.vscode\launch.json
-		..\.vscode\settings.json = ..\.vscode\settings.json
-		..\.vscode\tasks.json = ..\.vscode\tasks.json
-	EndProjectSection
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Moonglade.Theme", "Moonglade.Theme\Moonglade.Theme.csproj", "{59770DF9-9CC5-4912-8677-5E99DA9C96CA}"
 EndProject
@@ -154,7 +144,6 @@ Global
 		{C2691740-A964-43C8-8024-DA64FB5DB624} = {97439361-03B4-46C9-BC06-49F76BA57879}
 		{DF0D2D74-B9B7-4EB8-956D-E9CBDDF3390E} = {97439361-03B4-46C9-BC06-49F76BA57879}
 		{5B888FFB-8BF0-4AED-9D1E-91396290BC05} = {97439361-03B4-46C9-BC06-49F76BA57879}
-		{FE0F6EA1-5520-4DD9-9CD4-7A2365A03C8C} = {BE685106-CE96-4A43-A161-3425565C6A9D}
 		{59770DF9-9CC5-4912-8677-5E99DA9C96CA} = {97439361-03B4-46C9-BC06-49F76BA57879}
 		{1ED1FD2A-703E-471D-AEDA-9885748194FF} = {41072B8B-1052-4CC6-930F-83A5F8EA7482}
 		{0267C513-2DB9-4697-A6FA-39BB83E1CA9B} = {41072B8B-1052-4CC6-930F-83A5F8EA7482}

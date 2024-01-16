@@ -12,8 +12,8 @@
 <div>
     @if (!Model.Posts.Any())
     {
-        <div class="alert alert-warning">
-            @SharedLocalizer["No Posts"]
+        <div class="text-muted text-center">
+            - @SharedLocalizer["No Posts"] -
         </div>
     }
     else

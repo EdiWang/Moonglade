@@ -9,7 +9,7 @@ public class IndexModel(IBlogConfig blogConfig, ICacheAside cache, IMediator med
 {
     public string SortBy { get; set; }
 
-    public StaticPagedList<PostDigest> Posts { get; set; }
+    public BasePagedList<PostDigest> Posts { get; set; }
 
     public async Task OnGet(int p = 1, string sortBy = "Recent")
     {
@@ -21,7 +21,7 @@ public class IndexModel(IBlogConfig blogConfig, ICacheAside cache, IMediator med
             var posts = await mediator.Send(new ListPostsQuery(pagesize, p, sortBy: sortByEnum));
             var totalPostsCount = await cache.GetOrCreateAsync(BlogCachePartition.General.ToString(), "postcount", _ => mediator.Send(new CountPostQuery(CountType.Public)));
 
-            var list = new StaticPagedList<PostDigest>(posts, p, pagesize, totalPostsCount);
+            var list = new BasePagedList<PostDigest>(posts, p, pagesize, totalPostsCount);
 
             Posts = list;
         }

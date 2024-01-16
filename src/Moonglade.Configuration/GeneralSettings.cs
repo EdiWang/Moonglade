@@ -7,7 +7,7 @@ public class GeneralSettings : IBlogSettings
 {
     [Required]
     [Display(Name = "Meta keyword")]
-    [MaxLength(1024)]
+    [MaxLength(256)]
     public string MetaKeyword { get; set; }
 
     [Display(Name = "Canonical URL prefix")]
@@ -77,6 +77,11 @@ public class GeneralSettings : IBlogSettings
     [Display(Name = "Tags")]
     public bool WidgetsTags { get; set; } = true;
 
+    [Required]
+    [Display(Name = "How many tags to show on sidebar")]
+    [Range(5, 20)]
+    public int HotTagAmount { get; set; } = 10;
+
     [Display(Name = "Categories")]
     public bool WidgetsCategoryList { get; set; } = true;
 
@@ -85,9 +90,6 @@ public class GeneralSettings : IBlogSettings
 
     [Display(Name = "Subscription buttons")]
     public bool WidgetsSubscriptionButtons { get; set; } = true;
-
-    [Display(Name = "Admin login button")]
-    public bool ShowAdminLoginButton { get; set; }
 
     [MaxLength(64)]
     public string AvatarUrl { get; set; }
@@ -117,7 +119,8 @@ public class GeneralSettings : IBlogSettings
         Copyright = $"[c] {DateTime.UtcNow.Year}",
         TimeZoneId = "China Standard Time",
         TimeZoneUtcOffset = TimeSpan.FromHours(8),
-        ThemeId = 1
+        ThemeId = 1,
+        HotTagAmount = 10
     };
 }
 

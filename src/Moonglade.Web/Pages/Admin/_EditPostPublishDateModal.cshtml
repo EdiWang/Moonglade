@@ -1,0 +1,29 @@
+﻿@model Moonglade.Web.Pages.Admin.EditPostModel
+
+<div class="modal fade" id="changePublishDateModal" tabindex="-1" role="dialog" aria-labelledby="changePublishDateModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="changePublishDateModalLabel">@SharedLocalizer["Change Publish Date"]</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close">
+                </button>
+            </div>
+            <div class="modal-body">
+                <div class="alert alert-warning">@SharedLocalizer["Changing publish date will modify the URL of the post, and may cause unexpected results like breaking links on third parties that were pointing to this post. Please check the checkbox below if you confirm."]</div>
+                <div class="mb-2">
+                    <input type="checkbox" name="ChangePublishDate" value="true" class="form-check-input" @(Model.ViewModel.ChangePublishDate ? "checked" : null)>
+                    <label asp-for="ViewModel.ChangePublishDate"></label>
+                </div>
+
+                <div class="mb-2">
+                    <label asp-for="ViewModel.PublishDate"></label>
+                    <input asp-for="ViewModel.PublishDate" class="form-control" />
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">@SharedLocalizer["Cancel"]</button>
+                <button type="button" class="btn btn-danger" data-bs-dismiss="modal">@SharedLocalizer["Continue"]</button>
+            </div>
+        </div>
+    </div>
+</div>

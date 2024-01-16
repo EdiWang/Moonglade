@@ -41,7 +41,7 @@
         <PackageReference Include="UAParser" Version="3.1.47" />
         <PackageReference Include="WilderMinds.MetaWeblog" Version="5.1.1" />
         <PackageReference Include="Microsoft.ApplicationInsights.AspNetCore" Version="2.22.0" />
-        <PackageReference Include="Microsoft.Extensions.Logging.AzureAppServices" Version="8.0.0" />
+        <PackageReference Include="Microsoft.Extensions.Logging.AzureAppServices" Version="8.0.1" />
     </ItemGroup>
     <ItemGroup>
         <ProjectReference Include="..\Moonglade.Auth\Moonglade.Auth.csproj" />

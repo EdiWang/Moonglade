@@ -4,6 +4,7 @@ using Edi.PasswordGenerator;
 using Microsoft.ApplicationInsights.Extensibility;
 using Microsoft.ApplicationInsights.Extensibility.Implementation;
 using Microsoft.AspNetCore.HttpOverrides;
+using Microsoft.AspNetCore.Rewrite;
 using Moonglade.Comments.Moderator;
 using Moonglade.Data.MySql;
 using Moonglade.Data.PostgreSql;
@@ -192,6 +193,9 @@ void ConfigureMiddleware()
         SupportedUICultures = cultures
     });
 
+    var options = new RewriteOptions().AddRedirect("(.*)/$", "$1", 301);
+    app.UseRewriter(options);
+
     app.UseStaticFiles();
     app.UseSession().UseCaptchaImage(options =>
     {
@@ -220,7 +224,15 @@ void UseSmartXFFHeader(WebApplication webApplication)
     var headerName = webApplication.Configuration["ForwardedHeaders:HeaderName"];
     if (!string.IsNullOrWhiteSpace(headerName))
     {
-        fho.ForwardedForHeaderName = headerName;
+        // RFC 7230
+        if (headerName.Length > 40 || !Helper.IsValidHeaderName(headerName))
+        {
+            app.Logger.LogWarning($"XFF header name '{headerName}' is invalid, it will not be applied");
+        }
+        else
+        {
+            fho.ForwardedForHeaderName = headerName;
+        }
     }
 
     var knownProxies = webApplication.Configuration.GetSection("ForwardedHeaders:KnownProxies").Get<string[]>();

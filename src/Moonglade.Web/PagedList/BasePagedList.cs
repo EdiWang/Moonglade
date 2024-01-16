@@ -13,7 +13,7 @@ namespace Moonglade.Web.PagedList;
 /// <typeparam name = "T">The type of object the collection should contain.</typeparam>
 /// <seealso cref = "IPagedList{T}" />
 /// <seealso cref = "List{T}" />
-public abstract class BasePagedList<T> : PagedListMetaData, IPagedList<T>
+public class BasePagedList<T> : PagedListMetaData, IPagedList<T>
 {
     protected readonly List<T> Subset = new();
 
@@ -28,10 +28,11 @@ public abstract class BasePagedList<T> : PagedListMetaData, IPagedList<T>
     /// Initializes a new instance of a type deriving from <see cref = "BasePagedList{T}" /> and sets properties
     /// needed to calculate position and size data on the subset and superset.
     /// </summary>
+    /// <param name="subset">The single subset this collection should represent.</param>
     /// <param name = "pageNumber">The one-based index of the subset of objects contained by this instance.</param>
     /// <param name = "pageSize">The maximum size of any individual subset.</param>
     /// <param name = "totalItemCount">The size of the superset.</param>
-    protected internal BasePagedList(int pageNumber, int pageSize, int totalItemCount)
+    public BasePagedList(IEnumerable<T> subset, int pageNumber, int pageSize, int totalItemCount)
     {
         if (pageNumber < 1)
         {
@@ -75,6 +76,8 @@ public abstract class BasePagedList<T> : PagedListMetaData, IPagedList<T>
                 ? TotalItemCount
                 : numberOfLastItemOnPage
             : 0;
+
+        Subset.AddRange(subset);
     }
 
     #region IPagedList<T> Members

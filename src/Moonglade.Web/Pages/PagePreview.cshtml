@@ -5,16 +5,15 @@
     ViewBag.TitlePrefix = Model.BlogPage.Title;
     ViewBag.HideSideBar = Model.BlogPage.HideSidebar;
     ViewBag.DisableLightSwitch = true;
+
+    ViewBag.MetaDescription = Model.BlogPage.MetaDescription;
 }
 
-@section head{
+@section head {
     @if (!string.IsNullOrWhiteSpace(Model.BlogPage.CssId))
     {
         <link href="~/content.css?id=@Model.BlogPage.CssId" rel="stylesheet" asp-append-version="true" />
     }
-}
-@section metadescription{
-    <metadesc description="@Model.BlogPage.MetaDescription" />
 }
 
 <div class="container mt-3 mb-4">

@@ -5,7 +5,7 @@ namespace Moonglade.Web.Pages.Admin;
 
 public class CommentsModel(IMediator mediator) : PageModel
 {
-    public StaticPagedList<CommentDetailedItem> CommentDetailedItems { get; set; }
+    public BasePagedList<CommentDetailedItem> CommentDetailedItems { get; set; }
 
     public async Task OnGet(int pageIndex = 1)
     {

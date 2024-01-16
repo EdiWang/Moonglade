@@ -9,7 +9,7 @@ public class TagListModel(IMediator mediator, IBlogConfig blogConfig, ICacheAsid
 {
     [BindProperty(SupportsGet = true)]
     public int P { get; set; } = 1;
-    public StaticPagedList<PostDigest> Posts { get; set; }
+    public BasePagedList<PostDigest> Posts { get; set; }
 
     public async Task<IActionResult> OnGet(string normalizedName)
     {
@@ -22,7 +22,7 @@ public class TagListModel(IMediator mediator, IBlogConfig blogConfig, ICacheAsid
 
         ViewData["TitlePrefix"] = tagResponse.DisplayName;
 
-        var list = new StaticPagedList<PostDigest>(posts, P, pagesize, count);
+        var list = new BasePagedList<PostDigest>(posts, P, pagesize, count);
         Posts = list;
 
         return Page();

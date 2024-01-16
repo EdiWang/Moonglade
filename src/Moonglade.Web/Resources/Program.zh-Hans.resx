@@ -153,9 +153,6 @@
   <data name="Admin" xml:space="preserve">
     <value>管理</value>
   </data>
-  <data name="Admin Login" xml:space="preserve">
-    <value>管理员登录</value>
-  </data>
   <data name="Admin Sign In" xml:space="preserve">
     <value>管理员登录</value>
   </data>
@@ -272,9 +269,6 @@
   </data>
   <data name="Close" xml:space="preserve">
     <value>关闭</value>
-  </data>
-  <data name="Comment is disabled by blog administrator." xml:space="preserve">
-    <value>博主已关闭博客评论功能</value>
   </data>
   <data name="Comment of this post is disabled." xml:space="preserve">
     <value>本文评论已被关闭</value>
@@ -462,7 +456,7 @@
   <data name="Home" xml:space="preserve">
     <value>主页</value>
   </data>
-  <data name="How many tags show on sidebar" xml:space="preserve">
+  <data name="How many tags to show on sidebar" xml:space="preserve">
     <value>侧边栏显示标签数量</value>
   </data>
   <data name="HTML Pitch" xml:space="preserve">
@@ -707,9 +701,6 @@
   </data>
   <data name="Set a primary domain if your website binds to multiple domian names." xml:space="preserve">
     <value>若您的网站绑定了多个域名，请填写主域名</value>
-  </data>
-  <data name="Admin login button" xml:space="preserve">
-    <value>管理员登录按钮</value>
   </data>
   <data name="Show call-out section" xml:space="preserve">
     <value>显示横幅区</value>

@@ -19,7 +19,7 @@
     {
         return number is > 12 or < 1 ? 
             string.Empty : 
-            CultureInfo.GetCultureInfo("en-US").DateTimeFormat.GetMonthName(number);
+            CultureInfo.CurrentUICulture.DateTimeFormat.GetMonthName(number);
     }
 }
 
@@ -38,18 +38,9 @@
         {
             var queryMonth = archives.Where(obj => obj.Year == item);
             var yearEndChar = item % 10;
-            var badgeClass = (yearEndChar % 5) switch
-            {
-                0 => "primary",
-                1 => "success",
-                2 => "info",
-                3 => "warning",
-                4 => "danger",
-                _ => string.Empty
-            };
 
             <li class="@(item % 2 == 0 ? "timeline-inverted" : null)">
-                <div class="timeline-badge @badgeClass"><i class="bi-calendar2-week"></i></div>
+                <div class="timeline-badge"></div>
                 <div class="timeline-panel shadow-sm bg-white">
                     <div class="timeline-heading">
                         <h3 class="timeline-title">
@@ -78,7 +69,9 @@
 }
 else
 {
-    <div class="alert alert-info">@SharedLocalizer["No Archive"]</div>
+    <div class="text-muted text-center">
+        - @SharedLocalizer["No Archive"] -
+    </div>
 }
 
 <partial name="_LightSwitch" />

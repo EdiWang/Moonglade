@@ -12,12 +12,11 @@
     }
 
     ViewBag.PostLangCode = Model.Post.ContentLanguageCode;
-}
+    ViewBag.MetaDescription = Model.Post.ContentAbstract;
 
-@section keywords {
     @if (Model.Post.Tags.Length > 0)
     {
-        <meta name="keywords" content="@string.Join(", ", Model.Post.Tags.Select(t => t.NormalizedName))" />
+        ViewBag.Keywords = string.Join(", ", Model.Post.Tags.Select(t => t.NormalizedName));
     }
 }
 
@@ -35,7 +34,7 @@
     {
         <partial name="_DublinCoreMetaData" model="Model" />
     }
-    <link href="~/css/post-slug.css" rel="stylesheet" asp-append-version="true" />
+    <link href="~/css/post.css" rel="stylesheet" asp-append-version="true" />
     <link href="~/css/highlighter-custom.css" rel="stylesheet" asp-append-version="true" />
     @if (BlogConfig.ContentSettings.DocumentOutline)
     {
@@ -52,10 +51,6 @@
     {
         <meta property="og:url" content="@(Helper.ResolveCanonicalUrl(BlogConfig.GeneralSettings.CanonicalPrefix, HttpContext.Request.Path))" />
     }
-}
-
-@section metadescription{
-    <metadesc description="@Model.Post.ContentAbstract" />
 }
 
 @section scripts {
@@ -116,7 +111,7 @@
         <partial name="_FeaturedTag" />
     }
 
-    <header class="post-header @(BlogConfig.ContentSettings.PostTitleAlignment == PostTitleAlignment.Center ? "text-center" : null)">
+    <header class="post-header mb-4 @(BlogConfig.ContentSettings.PostTitleAlignment == PostTitleAlignment.Center ? "text-center" : null)">
         <h1 class="post-title">
             @Model.Post.Title
         </h1>
@@ -147,8 +142,6 @@
                 }
             </span>
         </div>
-
-        <hr class="d-none d-md-block" />
     </header>
 
     @if (Model.Post.IsOutdated)
@@ -191,7 +184,10 @@
 
     if (BlogConfig.ContentSettings.CloseCommentAfterDays > 0 && days > BlogConfig.ContentSettings.CloseCommentAfterDays)
     {
-        <div class="alert alert-warning">@SharedLocalizer["Comment is closed."]</div>
+        <div class="text-muted text-center">
+            <span class="bi-dash-circle"></span> 
+            @SharedLocalizer["Comment is closed."]
+        </div>
     }
     else
     {
@@ -208,25 +204,28 @@
                             </h6>
                             <partial name="_CommentForm" />
                         </section>
+
+                        <div id="thx-for-comment" class="alert alert-warning" style="display: none;">
+                            @SharedLocalizer["Thanks, your comment is pending approval now."] <br />
+                            @SharedLocalizer["It will show up once blog administrator approved your comment."]
+                        </div>
+
+                        <div id="thx-for-comment-non-review" class="alert alert-success" style="display: none;">
+                            @SharedLocalizer["Thanks for your comment."] <br />
+                            @SharedLocalizer["Refresh the page to see your comment."]
+                        </div>
+
+                        <section id="comments-list">
+                            @await Component.InvokeAsync("CommentList", new {postId = Model.Post.Id})
+                        </section>
                     }
                     else
                     {
-                        <div class="alert alert-warning">@SharedLocalizer["Comment of this post is disabled."]</div>
+                        <div class="text-muted text-center">
+                            <span class="bi-ban"></span> 
+                            @SharedLocalizer["Comment of this post is disabled."]
+                        </div>
                     }
-
-                    <div id="thx-for-comment" class="alert alert-warning" style="display: none;">
-                        @SharedLocalizer["Thanks, your comment is pending approval now."] <br />
-                        @SharedLocalizer["It will show up once blog administrator approved your comment."]
-                    </div>
-
-                    <div id="thx-for-comment-non-review" class="alert alert-success" style="display: none;">
-                        @SharedLocalizer["Thanks for your comment."] <br />
-                        @SharedLocalizer["Refresh the page to see your comment."]
-                    </div>
-
-                    <section id="comments-list">
-                        @await Component.InvokeAsync("CommentList", new {postId = Model.Post.Id})
-                    </section>
                 </div>
                 break;
             case CommentProvider.ThirdParty:
@@ -234,10 +233,6 @@
                 break;
         }
     }
-}
-else
-{
-    <div class="alert alert-warning">@SharedLocalizer["Comment is disabled by blog administrator."]</div>
 }
 
 <partial name="_LightSwitch" />

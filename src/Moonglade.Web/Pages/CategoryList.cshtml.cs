@@ -12,7 +12,7 @@ public class CategoryListModel(
 {
     [BindProperty(SupportsGet = true)]
     public int P { get; set; } = 1;
-    public StaticPagedList<PostDigest> Posts { get; set; }
+    public BasePagedList<PostDigest> Posts { get; set; }
     public Category Cat { get; set; }
 
     public async Task<IActionResult> OnGetAsync(string routeName)

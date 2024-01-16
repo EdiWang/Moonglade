@@ -1,7 +1,7 @@
 name: Azure App Service (Staging)
 
 env:
-  AZURE_WEBAPP_NAME: moonglade-ediwang-ea
+  AZURE_WEBAPP_NAME: moonglade-ediwang-us
   SLOT_NAME: staging
   AZURE_WEBAPP_PACKAGE_PATH: '.'
   DOTNET_VERSION: '8.0.x'
@@ -16,6 +16,7 @@ permissions:
 
 jobs:
   build:
+    if: github.repository == 'EdiWang/Moonglade'
     runs-on: ubuntu-latest
 
     steps:
@@ -51,6 +52,7 @@ jobs:
           path: ${{env.DOTNET_ROOT}}/moonglade
 
   deploy:
+    if: github.repository == 'EdiWang/Moonglade'
     permissions:
       contents: none
     runs-on: ubuntu-latest

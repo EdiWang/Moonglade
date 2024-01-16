@@ -19,7 +19,7 @@ public class ArchiveListModel(IMediator mediator) : PageModel
         if (month is not null)
         {
             // {year}/{month}
-            ArchiveInfo = $"{year}.{month}";
+            ArchiveInfo = new DateTime(year, month.Value, 1).ToString("MMMM yyyy");
             model = await mediator.Send(new ListArchiveQuery(year, month));
         }
         else
