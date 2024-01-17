@@ -6,7 +6,7 @@ public static class ServiceCollectionExtension
 {
     public static IServiceCollection AddNotification(this IServiceCollection services)
     {
-        services.AddScoped<IMoongladeEmailClient, AzureStorageQueueNotification>();
+        services.AddScoped<IMoongladeEmailClient, MoongladeEmailClient>();
         return services;
     }
 }

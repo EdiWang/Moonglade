@@ -12,8 +12,7 @@ public interface IMoongladeEmailClient
     Task Enqueue<T>(MailMesageTypes type, string[] receipts, T payload) where T : class;
 }
 
-public class AzureStorageQueueNotification(ILogger<AzureStorageQueueNotification> logger,
-        IBlogConfig blogConfig)
+public class MoongladeEmailClient(ILogger<MoongladeEmailClient> logger, IBlogConfig blogConfig, HttpClient httpClient)
     : IMoongladeEmailClient
 {
     private readonly NotificationSettings _notificationSettings = blogConfig.NotificationSettings;
