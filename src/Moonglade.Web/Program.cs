@@ -1,5 +1,4 @@
-﻿using AspNetCoreRateLimit;
-using Edi.Captcha;
+﻿using Edi.Captcha;
 using Edi.PasswordGenerator;
 using Microsoft.ApplicationInsights.Extensibility;
 using Microsoft.ApplicationInsights.Extensibility.Implementation;
@@ -49,8 +48,7 @@ void ConfigureServices(IServiceCollection services)
 
     services.AddMediatR(config => config.RegisterServicesFromAssemblies(AppDomain.CurrentDomain.GetAssemblies()));
     services.AddOptions()
-            .AddHttpContextAccessor()
-            .AddRateLimit(builder.Configuration.GetSection("IpRateLimiting"));
+            .AddHttpContextAccessor();
     services.AddApplicationInsightsTelemetry();
 
     services.AddSession(options =>
@@ -204,7 +202,6 @@ void ConfigureMiddleware()
         options.ImageWidth = 100;
     });
 
-    app.UseIpRateLimiting();
     app.UseRouting();
     app.UseAuthentication().UseAuthorization();
 
