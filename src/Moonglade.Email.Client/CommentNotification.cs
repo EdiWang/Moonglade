@@ -18,7 +18,7 @@ internal record CommentPayload(
     string PostTitle,
     string CommentContent);
 
-public class CommentNotificationHandler(IBlogNotification blogNotification, IBlogConfig blogConfig) : INotificationHandler<CommentNotification>
+public class CommentNotificationHandler(IMoongladeEmailClient moongladeEmailClient, IBlogConfig blogConfig) : INotificationHandler<CommentNotification>
 {
     public async Task Handle(CommentNotification notification, CancellationToken ct)
     {
@@ -31,6 +31,6 @@ public class CommentNotificationHandler(IBlogNotification blogNotification, IBlo
         );
 
         var dl = new[] { blogConfig.GeneralSettings.OwnerEmail };
-        await blogNotification.Enqueue(MailMesageTypes.NewCommentNotification, dl, payload);
+        await moongladeEmailClient.Enqueue(MailMesageTypes.NewCommentNotification, dl, payload);
     }
 }

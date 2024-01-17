@@ -7,14 +7,14 @@ using System.Text.Json;
 
 namespace Moonglade.Email.Client;
 
-public interface IBlogNotification
+public interface IMoongladeEmailClient
 {
     Task Enqueue<T>(MailMesageTypes type, string[] receipts, T payload) where T : class;
 }
 
 public class AzureStorageQueueNotification(ILogger<AzureStorageQueueNotification> logger,
         IBlogConfig blogConfig)
-    : IBlogNotification
+    : IMoongladeEmailClient
 {
     private readonly NotificationSettings _notificationSettings = blogConfig.NotificationSettings;
 

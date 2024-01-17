@@ -15,7 +15,7 @@ internal record CommentReplyPayload(
     string ReplyContentHtml,
     string PostLink);
 
-public class CommentReplyNotificationHandler(IBlogNotification blogNotification) : INotificationHandler<CommentReplyNotification>
+public class CommentReplyNotificationHandler(IMoongladeEmailClient moongladeEmailClient) : INotificationHandler<CommentReplyNotification>
 {
     public async Task Handle(CommentReplyNotification notification, CancellationToken ct)
     {
@@ -26,6 +26,6 @@ public class CommentReplyNotificationHandler(IBlogNotification blogNotification)
             notification.PostLink);
 
         var dl = new[] { notification.Email };
-        await blogNotification.Enqueue(MailMesageTypes.AdminReplyNotification, dl, payload);
+        await moongladeEmailClient.Enqueue(MailMesageTypes.AdminReplyNotification, dl, payload);
     }
 }

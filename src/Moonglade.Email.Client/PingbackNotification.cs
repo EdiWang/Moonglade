@@ -10,11 +10,11 @@ public record PingbackNotification(
     string SourceUrl,
     string SourceTitle) : INotification;
 
-public class PingbackNotificationHandler(IBlogNotification blogNotification, IBlogConfig blogConfig) : INotificationHandler<PingbackNotification>
+public class PingbackNotificationHandler(IMoongladeEmailClient moongladeEmailClient, IBlogConfig blogConfig) : INotificationHandler<PingbackNotification>
 {
     public async Task Handle(PingbackNotification notification, CancellationToken ct)
     {
         var dl = new[] { blogConfig.GeneralSettings.OwnerEmail };
-        await blogNotification.Enqueue(MailMesageTypes.BeingPinged, dl, notification);
+        await moongladeEmailClient.Enqueue(MailMesageTypes.BeingPinged, dl, notification);
     }
 }
