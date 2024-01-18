@@ -17,7 +17,7 @@ This is the way https://edi.wang is deployed, by taking advantage of as many Azu
 
 There is no automated script to deploy it, you need to manually create all the resources.
 
-![image](https://cdn-blog.edi.wang/web-assets/ediwang-azure-arch-visio-nov2022.png)
+![image](https://cdn.edi.wang/web-assets/ediwang-azure-arch-visio-nov2022.png)
 
 ### Quick Deploy on Azure (App Service on Linux)
 
