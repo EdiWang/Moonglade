@@ -26,6 +26,6 @@ public class CommentReplyNotificationHandler(IMoongladeEmailClient moongladeEmai
             notification.PostLink);
 
         var dl = new[] { notification.Email };
-        await moongladeEmailClient.Enqueue(MailMesageTypes.AdminReplyNotification, dl, payload);
+        await moongladeEmailClient.SendEmail(MailMesageTypes.AdminReplyNotification, dl, payload);
     }
 }

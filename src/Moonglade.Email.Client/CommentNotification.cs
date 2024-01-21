@@ -31,6 +31,6 @@ public class CommentNotificationHandler(IMoongladeEmailClient moongladeEmailClie
         );
 
         var dl = new[] { blogConfig.GeneralSettings.OwnerEmail };
-        await moongladeEmailClient.Enqueue(MailMesageTypes.NewCommentNotification, dl, payload);
+        await moongladeEmailClient.SendEmail(MailMesageTypes.NewCommentNotification, dl, payload);
     }
 }

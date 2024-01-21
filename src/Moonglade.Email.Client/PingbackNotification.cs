@@ -15,6 +15,6 @@ public class PingbackNotificationHandler(IMoongladeEmailClient moongladeEmailCli
     public async Task Handle(PingbackNotification notification, CancellationToken ct)
     {
         var dl = new[] { blogConfig.GeneralSettings.OwnerEmail };
-        await moongladeEmailClient.Enqueue(MailMesageTypes.BeingPinged, dl, notification);
+        await moongladeEmailClient.SendEmail(MailMesageTypes.BeingPinged, dl, notification);
     }
 }

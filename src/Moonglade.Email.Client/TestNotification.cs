@@ -10,6 +10,6 @@ public class TestNotificationHandler(IMoongladeEmailClient moongladeEmailClient,
     public async Task Handle(TestNotification notification, CancellationToken ct)
     {
         var dl = new[] { blogConfig.GeneralSettings.OwnerEmail };
-        await moongladeEmailClient.Enqueue(MailMesageTypes.TestMail, dl, EmptyPayload.Default);
+        await moongladeEmailClient.SendEmail(MailMesageTypes.TestMail, dl, EmptyPayload.Default);
     }
 }
