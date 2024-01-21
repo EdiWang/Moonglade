@@ -65,15 +65,7 @@ Build and run `./src/Moonglade.sln`
 
 ### Authentication
 
-> You can choose one authentication provider from below.
-
-#### [Microsoft Entra ID](https://azure.microsoft.com/en-us/services/active-directory/)
-
-See [Wiki document](https://github.com/EdiWang/Moonglade/wiki/Use-Microsoft-Entra-ID-Authentication)
-
-#### Local Account
-
-Set `Authentication:Provider` to `"Local"`. You can manage accounts in `/admin/settings/account`
+Moonglade is using local account by default, you can manage accounts in `/admin/settings/account`. You can also use  [Microsoft Entra ID](https://azure.microsoft.com/en-us/services/active-directory/) to login. See [Wiki document](https://github.com/EdiWang/Moonglade/wiki/Use-Microsoft-Entra-ID-Authentication) for setup Microsoft Entra ID.
 
 ### Image Storage
 `ImageStorage` controls how blog post images are stored.
@@ -146,7 +138,7 @@ If you need email notification for new comments, new replies and pingbacks, setu
 ### Others
 
 - [System Settings](https://github.com/EdiWang/Moonglade/wiki/System-Settings)
-- [Security Headers (CSP, XSS, etc.)](https://github.com/EdiWang/Moonglade/wiki/Security-Headers-(CSP,-XSS,-etc.))
+- [Security Headers](https://github.com/EdiWang/Moonglade/wiki/Security-Headers)
 
 ## 🎉 Blog Protocols or Standards
 
