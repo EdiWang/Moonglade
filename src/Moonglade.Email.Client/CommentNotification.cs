@@ -11,26 +11,17 @@ public record CommentNotification(
     string PostTitle,
     string CommentContent) : INotification;
 
-internal record CommentPayload(
-    string Username,
-    string Email,
-    string IpAddress,
-    string PostTitle,
-    string CommentContent);
-
 public class CommentNotificationHandler(IMoongladeEmailClient moongladeEmailClient, IBlogConfig blogConfig) : INotificationHandler<CommentNotification>
 {
     public async Task Handle(CommentNotification notification, CancellationToken ct)
     {
-        var payload = new CommentPayload(
-            notification.Username,
-            notification.Email,
-            notification.IPAddress,
-            notification.PostTitle,
-            ContentProcessor.MarkdownToContent(notification.CommentContent, ContentProcessor.MarkdownConvertType.Html)
-        );
+        notification = notification with
+        {
+            CommentContent = ContentProcessor.MarkdownToContent(notification.CommentContent,
+                ContentProcessor.MarkdownConvertType.Html)
+        };
 
         var dl = new[] { blogConfig.GeneralSettings.OwnerEmail };
-        await moongladeEmailClient.SendEmail(MailMesageTypes.NewCommentNotification, dl, payload);
+        await moongladeEmailClient.SendEmail(MailMesageTypes.NewCommentNotification, dl, notification);
     }
 }
