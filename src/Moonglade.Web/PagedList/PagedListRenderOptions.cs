@@ -11,10 +11,6 @@ public class PagedListRenderOptions
     public PagedListRenderOptions()
     {
         HtmlEncoder = HtmlEncoder.Default;
-        DisplayLinkToFirstPage = PagedListDisplayMode.IfNeeded;
-        DisplayLinkToLastPage = PagedListDisplayMode.IfNeeded;
-        DisplayLinkToPreviousPage = PagedListDisplayMode.IfNeeded;
-        DisplayLinkToNextPage = PagedListDisplayMode.IfNeeded;
         DisplayLinkToIndividualPages = true;
         DisplayPageCountAndCurrentLocation = false;
         MaximumPageNumbersToDisplay = 10;
@@ -83,31 +79,6 @@ public class PagedListRenderOptions
     /// CSS Classes to append to Ellipses element in the paging control.
     ///</summary>
     public string EllipsesElementClass { get; set; }
-
-    /// <summary>
-    /// If set to Always, always renders the paging control. If set to IfNeeded, render the paging control when there is more than one page.
-    /// </summary>
-    public PagedListDisplayMode Display { get; set; }
-
-    ///<summary>
-    /// If set to Always, render a hyperlink to the first page in the list. If set to IfNeeded, render the hyperlink only when the first page isn't visible in the paging control.
-    ///</summary>
-    public PagedListDisplayMode DisplayLinkToFirstPage { get; set; }
-
-    ///<summary>
-    /// If set to Always, render a hyperlink to the last page in the list. If set to IfNeeded, render the hyperlink only when the last page isn't visible in the paging control.
-    ///</summary>
-    public PagedListDisplayMode DisplayLinkToLastPage { get; set; }
-
-    ///<summary>
-    /// If set to Always, render a hyperlink to the previous page of the list. If set to IfNeeded, render the hyperlink only when there is a previous page in the list.
-    ///</summary>
-    public PagedListDisplayMode DisplayLinkToPreviousPage { get; set; }
-
-    ///<summary>
-    /// If set to Always, render a hyperlink to the next page of the list. If set to IfNeeded, render the hyperlink only when there is a next page in the list.
-    ///</summary>
-    public PagedListDisplayMode DisplayLinkToNextPage { get; set; }
 
     ///<summary>
     /// When true, includes hyperlinks for each page in the list.

@@ -2,7 +2,6 @@
 using Edi.PasswordGenerator;
 using Microsoft.ApplicationInsights.Extensibility;
 using Microsoft.ApplicationInsights.Extensibility.Implementation;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.HttpOverrides;
 using Microsoft.AspNetCore.Rewrite;
 using Moonglade.Comments.Moderator;
