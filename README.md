@@ -150,21 +150,21 @@ If you need email notification for new comments, new replies and pingbacks, setu
 
 ## 🎉 Blog Protocols or Standards
 
-Name | Feature | Status
---- | --- | ---
-RSS | Subscription | Supported
-Atom | Subscription | Supported
-OPML | Subscription | Supported
-Open Search | Search | Supported
-Pingback | Social | Supported
-Reader View | Reader mode | Supported
-FOAF | Social | Supported
-RSD | Service Discovery | Supported
-MetaWeblog | Blogging | Basic Support
-Dublin Core Metadata | SEO | Basic Support
-BlogML | Blogging | Not planned
-APML | Social | Not planned
-Trackback | Social | Not planned
+Name | Feature | Status | Service Endpoint
+--- | --- | --- | ---
+RSS | Subscription | Supported | `/rss`
+Atom | Subscription | Supported | `/atom`
+OPML | Subscription | Supported | `/opml`
+Open Search | Search | Supported | `/opensearch`
+Pingback | Social | Supported | `/pingback`
+Reader View | Reader mode | Supported | N/A
+FOAF | Social | Supported | `/foaf.xml`
+RSD | Service Discovery | Supported | `/rsd` *If MetaWeblog is enabled*
+MetaWeblog | Blogging | Basic Support | `/metaweblog`
+Dublin Core Metadata | SEO | Basic Support | N/A
+BlogML | Blogging | Not planned | 
+APML | Social | Not planned | 
+Trackback | Social | Not planned |
 
 ## 免责申明
 
