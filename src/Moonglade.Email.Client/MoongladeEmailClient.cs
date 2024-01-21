@@ -45,6 +45,9 @@ public class MoongladeEmailClient : IMoongladeEmailClient
         }
     }
 
+    /// <summary>
+    /// Send email to `/api/enqueue` endpoint
+    /// </summary>
     public async Task SendEmail<T>(MailMesageTypes type, string[] receipts, T payload) where T : class
     {
         if (!_blogConfig.NotificationSettings.EnableEmailSending || !_enabled) return;

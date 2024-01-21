@@ -2,6 +2,7 @@
 using Edi.PasswordGenerator;
 using Microsoft.ApplicationInsights.Extensibility;
 using Microsoft.ApplicationInsights.Extensibility.Implementation;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.HttpOverrides;
 using Microsoft.AspNetCore.Rewrite;
 using Moonglade.Comments.Moderator;
@@ -100,16 +101,17 @@ void ConfigureServices(IServiceCollection services)
     services.AddHealthChecks();
     services.AddPingback()
             .AddSyndication()
-            .AddNotification()
             .AddInMemoryCacheAside()
             .AddMetaWeblog<Moonglade.Web.MetaWeblogService>()
             .AddScoped<ValidateCaptcha>()
             .AddScoped<ITimeZoneResolver, BlogTimeZoneResolver>()
             .AddBlogConfig()
             .AddBlogAuthenticaton(builder.Configuration)
-            .AddContentModerator(builder.Configuration)
             .AddImageStorage(builder.Configuration, options => options.ContentRootPath = builder.Environment.ContentRootPath)
             .Configure<List<ManifestIcon>>(builder.Configuration.GetSection("ManifestIcons"));
+
+    services.AddEmailSending();
+    services.AddContentModerator(builder.Configuration);
 
     string dbType = builder.Configuration.GetConnectionString("DatabaseType");
     string connStr = builder.Configuration.GetConnectionString("MoongladeDatabase");
@@ -195,17 +197,22 @@ void ConfigureMiddleware()
     app.UseRewriter(options);
 
     app.UseStaticFiles();
-    app.UseSession().UseCaptchaImage(options =>
+    app.UseSession().UseCaptchaImage(p =>
     {
-        options.RequestPath = "/captcha-image";
-        options.ImageHeight = 36;
-        options.ImageWidth = 100;
+        p.RequestPath = "/captcha-image";
+        p.ImageHeight = 36;
+        p.ImageWidth = 100;
     });
 
     app.UseRouting();
     app.UseAuthentication().UseAuthorization();
 
-    app.UseEndpoints(ConfigureEndpoints.BlogEndpoints);
+    app.MapHealthChecks("/ping", new()
+    {
+        ResponseWriter = ConfigureEndpoints.WriteResponse
+    });
+    app.MapControllers();
+    app.MapRazorPages();
 }
 
 void UseSmartXFFHeader(WebApplication webApplication)
