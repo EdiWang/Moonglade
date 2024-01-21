@@ -122,11 +122,26 @@ You can also choose File System for image storage if you don't have a cloud opti
 
 ### Comment Moderator
 
-See https://github.com/EdiWang/Moonglade.ContentSecurity
+Setup [Moonglade.ContentSecurity Azure Function](https://github.com/EdiWang/Moonglade.ContentSecurity) to enable comment moderation.
+
+```json
+"ContentModerator": {
+  "Provider": "",
+  "ApiEndpoint": "",
+  "ApiKey": ""
+}
+```
 
 ### Email Notification
 
-If you need email notification for new comments, new replies and pingbacks, you have to setup the [Moonglade.Email Azure Function](https://github.com/EdiWang/Moonglade.Email) first, and then enable notification in admin portal.
+If you need email notification for new comments, new replies and pingbacks, setup the [Moonglade.Email Azure Function](https://github.com/EdiWang/Moonglade.Email) first, and then enable notification in admin portal.
+
+```json
+"Email": {
+  "ApiEndpoint": "",
+  "ApiKey": ""
+}
+```
 
 ### Others
 
