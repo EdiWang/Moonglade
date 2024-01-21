@@ -2,7 +2,8 @@
 
 internal record EmailNotification
 {
-    public string DistributionList { get; set; }
-    public string MessageType { get; set; }
-    public string MessageBody { get; set; }
+    public string Type { get; set; }
+    public string[] Receipts { get; set; }
+    public object Payload { get; set; }
+    public string OriginAspNetRequestId { get; set; } = Guid.Empty.ToString();
 }

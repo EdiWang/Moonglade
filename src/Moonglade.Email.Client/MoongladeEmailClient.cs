@@ -1,57 +1,76 @@
-﻿using Azure.Storage.Queues;
+﻿using System.Text;
 using Microsoft.Extensions.Logging;
 using Moonglade.Configuration;
-using Moonglade.Data.Exporting.Exporters;
-using System.Text;
 using System.Text.Json;
+using Microsoft.Extensions.Configuration;
+using Microsoft.AspNetCore.Http;
 
 namespace Moonglade.Email.Client;
 
 public interface IMoongladeEmailClient
 {
-    Task Enqueue<T>(MailMesageTypes type, string[] receipts, T payload) where T : class;
+    Task SendEmail<T>(MailMesageTypes type, string[] receipts, T payload) where T : class;
 }
 
-public class MoongladeEmailClient(ILogger<MoongladeEmailClient> logger, IBlogConfig blogConfig, HttpClient httpClient)
-    : IMoongladeEmailClient
+public class MoongladeEmailClient : IMoongladeEmailClient
 {
-    private readonly NotificationSettings _notificationSettings = blogConfig.NotificationSettings;
+    private readonly IHttpContextAccessor _httpContextAccessor;
+    private readonly ILogger<MoongladeEmailClient> _logger;
+    private readonly HttpClient _httpClient;
+    private readonly IBlogConfig _blogConfig;
 
-    public async Task Enqueue<T>(MailMesageTypes type, string[] receipts, T payload) where T : class
+    private readonly bool _enabled;
+
+    public MoongladeEmailClient(IHttpContextAccessor httpContextAccessor,
+        IConfiguration configuration,
+        ILogger<MoongladeEmailClient> logger,
+        HttpClient httpClient,
+        IBlogConfig blogConfig)
     {
-        if (!_notificationSettings.EnableEmailSending) return;
+        _httpContextAccessor = httpContextAccessor;
+        _logger = logger;
+        _httpClient = httpClient;
+        _blogConfig = blogConfig;
 
-        try
+        if (!string.IsNullOrWhiteSpace(configuration["Email:ApiEndpoint"]))
         {
-            var queue = new QueueClient(_notificationSettings.AzureStorageQueueConnection, "moongladeemailqueue");
-
-            var en = new EmailNotification
-            {
-                DistributionList = string.Join(';', receipts),
-                MessageType = type.ToString(),
-                MessageBody = JsonSerializer.Serialize(payload, MoongladeJsonSerializerOptions.Default),
-            };
-
-            await InsertMessageAsync(queue, en);
+            _httpClient.BaseAddress = new(configuration["Email:ApiEndpoint"]);
+            _httpClient.DefaultRequestHeaders.Add("x-functions-key", configuration["Email:ApiKey"]);
+            _enabled = true;
         }
-        catch (Exception e)
+        else
         {
-            logger.LogError(e, e.Message);
-            throw;
+            _logger.LogError("Email:ApiEndpoint is empty");
+            _enabled = false;
         }
     }
 
-    private async Task InsertMessageAsync(QueueClient queue, EmailNotification emailNotification)
+    public async Task SendEmail<T>(MailMesageTypes type, string[] receipts, T payload) where T : class
     {
-        if (null != await queue.CreateIfNotExistsAsync())
+        if (!_blogConfig.NotificationSettings.EnableEmailSending || !_enabled) return;
+
+        try
         {
-            logger.LogInformation($"Azure Storage Queue '{queue.Name}' was created.");
+            var en = new EmailNotification
+            {
+                Type = type.ToString(),
+                Receipts = receipts,
+                Payload = payload,
+                OriginAspNetRequestId = _httpContextAccessor.HttpContext?.TraceIdentifier
+            };
+
+            // Note: Do not use `PostAsJsonAsync` here, Azure Function will blow up on encoded http request
+            var json = JsonSerializer.Serialize(en);
+            var content = new StringContent(json, Encoding.UTF8, "application/json");
+            var response = await _httpClient.PostAsync("/api/enqueue", content);
+            response.EnsureSuccessStatusCode();
+
+            _logger.LogInformation($"Email sent: {json}");
         }
-
-        var json = JsonSerializer.Serialize(emailNotification);
-        var bytes = Encoding.UTF8.GetBytes(json);
-        var base64Json = Convert.ToBase64String(bytes);
-
-        await queue.SendMessageAsync(base64Json);
+        catch (Exception e)
+        {
+            _logger.LogError(e, e.Message);
+            throw;
+        }
     }
 }
