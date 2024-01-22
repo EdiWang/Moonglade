@@ -55,9 +55,10 @@ PostgreSQL | `PostgreSql` | `User ID=***;Password=***;Host=localhost;Port=5432;D
 ### Build Source
 
 Build and run `./src/Moonglade.sln`
+- Home page: `https://localhost:1055`
 - Admin: `https://localhost:1055/admin`
-- Default username: `admin`
-- Default password: `admin123`
+  - Default username: `admin`
+  - Default password: `admin123`
 
 ## ⚙ Configuration
 
@@ -114,7 +115,7 @@ You can also choose File System for image storage if you don't have a cloud opti
 
 ### Comment Moderator
 
-Setup [Moonglade.ContentSecurity Azure Function](https://github.com/EdiWang/Moonglade.ContentSecurity) to enable comment moderation.
+Setup [Moonglade.ContentSecurity](https://github.com/EdiWang/Moonglade.ContentSecurity)  Azure Function to enable comment moderation.
 
 ```json
 "ContentModerator": {
@@ -126,7 +127,7 @@ Setup [Moonglade.ContentSecurity Azure Function](https://github.com/EdiWang/Moon
 
 ### Email Notification
 
-If you need email notification for new comments, new replies and pingbacks, setup the [Moonglade.Email Azure Function](https://github.com/EdiWang/Moonglade.Email) first, and then enable notification in admin portal.
+Setup [Moonglade.Email](https://github.com/EdiWang/Moonglade.Email) Azure Function to enable email notification for new comments, new replies and pingbacks. Then enable notification in admin portal.
 
 ```json
 "Email": {
