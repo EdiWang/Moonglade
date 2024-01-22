@@ -1,4 +1,5 @@
-﻿namespace Moonglade.MetaWeblog;
+﻿// ReSharper disable InconsistentNaming
+namespace Moonglade.MetaWeblog;
 
 public class BlogInfo
 {

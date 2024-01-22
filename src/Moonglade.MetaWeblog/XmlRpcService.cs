@@ -30,17 +30,23 @@ public class XmlRpcService(ILogger logger)
                 foreach (var typeMethod in theType.GetMethods())
                 {
                     var attr = typeMethod.GetCustomAttribute<XmlRpcMethodAttribute>();
-                    if (attr != null && _method.ToLower() == attr.MethodName.ToLower())
+                    if (attr != null && _method.Equals(attr.MethodName, StringComparison.CurrentCultureIgnoreCase))
                     {
                         var parameters = GetParameters(doc);
-                        Task resultTask = (Task)typeMethod.Invoke(this, parameters);
-                        await resultTask;
+                        var resultTask = (Task)typeMethod.Invoke(this, parameters);
+                        if (resultTask != null)
+                        {
+                            await resultTask;
 
-                        // get result via reflection
-                        PropertyInfo resultProperty = resultTask.GetType().GetProperty("Result");
-                        object result = resultProperty.GetValue(resultTask);
+                            // get result via reflection
+                            var resultProperty = resultTask.GetType().GetProperty("Result");
+                            if (resultProperty != null)
+                            {
+                                var result = resultProperty.GetValue(resultTask);
 
-                        return SerializeResponse(result);
+                                return SerializeResponse(result);
+                            }
+                        }
                     }
                 }
             }
@@ -64,9 +70,9 @@ public class XmlRpcService(ILogger logger)
         var response = new XElement("methodResponse");
         doc.Add(response);
 
-        if (result is MetaWeblogException)
+        if (result is MetaWeblogException exception)
         {
-            response.Add(SerializeFaultResponse((MetaWeblogException)result));
+            response.Add(SerializeFaultResponse(exception));
         }
         else
         {
@@ -82,7 +88,7 @@ public class XmlRpcService(ILogger logger)
     private XElement SerializeValue(object result)
     {
         var theType = result.GetType();
-        XElement newElement = new XElement("value");
+        var newElement = new XElement("value");
 
         if (theType == typeof(int))
         {
@@ -110,10 +116,10 @@ public class XmlRpcService(ILogger logger)
             newElement.Add(new XElement("dateTime.iso8601", date.ToString("yyyyMMdd'T'HH':'mm':'ss",
                 DateTimeFormatInfo.InvariantInfo)));
         }
-        else if (result is IEnumerable)
+        else if (result is IEnumerable enumerable)
         {
             var data = new XElement("data");
-            foreach (var item in ((IEnumerable)result))
+            foreach (var item in enumerable)
             {
                 data.Add(SerializeValue(item));
             }
@@ -169,12 +175,6 @@ public class XmlRpcService(ILogger logger)
         var parameters = new List<object>();
         var paramsEle = doc.Descendants("params");
 
-        // Handle no parameters
-        if (paramsEle == null)
-        {
-            return parameters.ToArray();
-        }
-
         foreach (var p in paramsEle.Descendants("param"))
         {
             parameters.AddRange(ParseValue(p.Element("value")));
@@ -219,44 +219,42 @@ public class XmlRpcService(ILogger logger)
 
     private List<object> ParseBase64(XElement type)
     {
-        return new() { type.Value };
+        return [type.Value];
     }
 
     private List<object> ParseLong(XElement type)
     {
-        return new() { long.Parse(type.Value) };
+        return [long.Parse(type.Value)];
     }
 
     private List<object> ParseDateTime(XElement type)
     {
-        DateTime parsed;
-
-        if (DateTime8601.TryParseDateTime8601(type.Value, out parsed))
+        if (DateTime8601.TryParseDateTime8601(type.Value, out var parsed))
         {
-            return new() { parsed };
+            return [parsed];
         }
 
         throw new MetaWeblogException("Failed to parse date");
     }
 
-    private List<object> ParseBoolean(XElement type)
+    private static List<object> ParseBoolean(XElement type)
     {
-        return new() { type.Value == "1" };
+        return [type.Value == "1"];
     }
 
-    private List<object> ParseString(XElement type)
+    private static List<object> ParseString(XElement type)
     {
-        return new() { type.Value };
+        return [type.Value];
     }
 
     private List<object> ParseDouble(XElement type)
     {
-        return new() { double.Parse(type.Value) };
+        return [double.Parse(type.Value)];
     }
 
     private List<object> ParseInt(XElement type)
     {
-        return new() { int.Parse(type.Value) };
+        return [int.Parse(type.Value)];
     }
 
     private List<object> ParseStruct(XElement type)
@@ -270,28 +268,20 @@ public class XmlRpcService(ILogger logger)
             dict[name] = value;
         }
 
-        switch (_method)
+        return _method switch
         {
-            case "metaWeblog.newMediaObject":
-                return ConvertToType<MediaObject>(dict);
-            case "metaWeblog.newPost":
-            case "metaWeblog.editPost":
-                return ConvertToType<Post>(dict);
-            case "wp.newCategory":
-                return ConvertToType<NewCategory>(dict);
-            case "wp.newPage":
-            case "wp.editPage":
-                return ConvertToType<Page>(dict);
-            default:
-                throw new InvalidOperationException("Unknown type of struct discovered.");
-        }
-
+            "metaWeblog.newMediaObject" => ConvertToType<MediaObject>(dict),
+            "metaWeblog.newPost" or "metaWeblog.editPost" => ConvertToType<Post>(dict),
+            "wp.newCategory" => ConvertToType<NewCategory>(dict),
+            "wp.newPage" or "wp.editPage" => ConvertToType<Page>(dict),
+            _ => throw new InvalidOperationException("Unknown type of struct discovered."),
+        };
     }
 
     private List<object> ConvertToType<T>(Dictionary<string, object> dict) where T : new()
     {
         var info = typeof(T).GetTypeInfo();
-    
+
         // Convert it
         var result = new T();
         foreach (var key in dict.Keys)
@@ -300,7 +290,7 @@ public class XmlRpcService(ILogger logger)
             if (field != null)
             {
                 var container = (List<object>)dict[key];
-                object value = container.Count() == 1 ? container.First() : container.ToArray();
+                var value = container.Count == 1 ? container.First() : container.ToArray();
                 if (field.FieldType != value.GetType())
                 {
                     if (field.FieldType.IsArray && value.GetType().IsArray)
@@ -330,7 +320,7 @@ public class XmlRpcService(ILogger logger)
 
         Debug.WriteLine(result);
 
-        return new() { result };
+        return [result];
     }
 
     private List<object> ParseArray(XElement type)
@@ -339,16 +329,20 @@ public class XmlRpcService(ILogger logger)
         {
             var result = new List<object>();
             var data = type.Element("data");
-            foreach (var ele in data.Elements())
+            if (data != null)
             {
-                result.AddRange(ParseValue(ele));
+                foreach (var ele in data.Elements())
+                {
+                    result.AddRange(ParseValue(ele));
+                }
             }
-            return new() { result.ToArray() }; // make an array;
+
+            return [result.ToArray()]; // make an array;
         }
-        catch (Exception ex)
+        catch (Exception)
         {
             logger.LogCritical($"Failed to Parse Array: {type}");
-            throw ex;
+            throw;
         }
     }
 }
