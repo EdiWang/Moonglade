@@ -7,7 +7,7 @@ A personal blog system that optimized for [**Microsoft Azure**](https://azure.mi
 
 ## 📦 Deployment
 
-- Ue stable code from [Release](https://github.com/EdiWang/Moonglade/releases) branch rather than master branch.
+- Use stable code from [Release](https://github.com/EdiWang/Moonglade/releases) branch rather than master branch.
 
 - HTTPS is required, and it is recommended to enable HTTP/2 support on your web server.
 
