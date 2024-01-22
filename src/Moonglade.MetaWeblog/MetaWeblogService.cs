@@ -1,7 +1,6 @@
-﻿using System.Threading.Tasks;
-using Microsoft.Extensions.Logging;
+﻿using Microsoft.Extensions.Logging;
 
-namespace WilderMinds.MetaWeblog;
+namespace Moonglade.MetaWeblog;
 
 public class MetaWeblogService : XmlRpcService
 {

@@ -1,12 +1,7 @@
-﻿using System;
-using System.IO;
-using System.Text;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.Builder;
-using Microsoft.AspNetCore.Http;
+﻿using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Logging;
 
-namespace WilderMinds.MetaWeblog;
+namespace Moonglade.MetaWeblog;
 
 public class MetaWeblogMiddleware
 {

@@ -1,8 +1,7 @@
-﻿using System;
-using System.Globalization;
+﻿using System.Globalization;
 using System.Text.RegularExpressions;
 
-namespace WilderMinds.MetaWeblog;
+namespace Moonglade.MetaWeblog;
 // Borrowed from: https://github.com/snielsson/XmlRpcLight/blob/master/XmlRpcLight/DataTypes/DateTime8601.cs
 
 internal static class DateTime8601

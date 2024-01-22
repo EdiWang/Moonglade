@@ -1,16 +1,11 @@
-﻿using System;
-using System.Reflection;
-using System.Linq;
-using System.Xml.Linq;
-using System.Collections.Generic;
-using System.IO;
-using System.Globalization;
-using System.Collections;
+﻿using System.Collections;
 using System.Diagnostics;
+using System.Globalization;
+using System.Reflection;
+using System.Xml.Linq;
 using Microsoft.Extensions.Logging;
-using System.Threading.Tasks;
 
-namespace WilderMinds.MetaWeblog;
+namespace Moonglade.MetaWeblog;
 
 public class XmlRpcService
 {

@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-
-namespace WilderMinds.MetaWeblog;
+﻿namespace Moonglade.MetaWeblog;
 
 public class MetaWeblogException : Exception
 {

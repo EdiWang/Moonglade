@@ -1,6 +1,4 @@
-﻿using System;
-
-namespace WilderMinds.MetaWeblog;
+﻿namespace Moonglade.MetaWeblog;
 
 public class BlogInfo
 {

@@ -1,6 +1,4 @@
-﻿using System.Threading.Tasks;
-
-namespace WilderMinds.MetaWeblog;
+﻿namespace Moonglade.MetaWeblog;
 
 public interface IMetaWeblogProvider
 {

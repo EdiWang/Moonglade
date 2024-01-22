@@ -1,8 +1,7 @@
-﻿using System;
-using Microsoft.AspNetCore.Builder;
+﻿using Microsoft.AspNetCore.Builder;
 using Microsoft.Extensions.DependencyInjection;
 
-namespace WilderMinds.MetaWeblog;
+namespace Moonglade.MetaWeblog;
 
 public static class MetaWeblogExtensions
 {
