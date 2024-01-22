@@ -7,15 +7,9 @@ using Microsoft.Extensions.Logging;
 
 namespace Moonglade.MetaWeblog;
 
-public class XmlRpcService
+public class XmlRpcService(ILogger logger)
 {
-    public XmlRpcService(ILogger logger)
-    {
-        _logger = logger;
-    }
-
     private string _method;
-    private ILogger _logger;
 
     public async Task<string> InvokeAsync(string xml)
     {
@@ -29,7 +23,7 @@ public class XmlRpcService
             {
                 _method = methodNameElement.Value;
 
-                _logger.LogDebug($"Invoking {_method} on XMLRPC Service");
+                logger.LogDebug($"Invoking {_method} on XMLRPC Service");
 
                 var theType = GetType();
 
@@ -57,7 +51,7 @@ public class XmlRpcService
         }
         catch (Exception ex)
         {
-            _logger.LogError($"Exception thrown during serialization: Exception: {ex}");
+            logger.LogError($"Exception thrown during serialization: Exception: {ex}");
             return SerializeResponse(new MetaWeblogException($"Exception during XmlRpcService call: {ex.Message}"));
         }
 
@@ -153,12 +147,12 @@ public class XmlRpcService
 
     private XElement CreateStringValue(string typeName, string value)
     {
-        return new XElement("value", new XElement(typeName, value));
+        return new("value", new XElement(typeName, value));
     }
 
     private XElement SerializeFaultResponse(MetaWeblogException result)
     {
-        return new XElement("fault",
+        return new("fault",
             new XElement("value",
                 new XElement("struct",
                     new XElement("member",
@@ -225,12 +219,12 @@ public class XmlRpcService
 
     private List<object> ParseBase64(XElement type)
     {
-        return new List<object> { type.Value };
+        return new() { type.Value };
     }
 
     private List<object> ParseLong(XElement type)
     {
-        return new List<object> { long.Parse(type.Value) };
+        return new() { long.Parse(type.Value) };
     }
 
     private List<object> ParseDateTime(XElement type)
@@ -239,7 +233,7 @@ public class XmlRpcService
 
         if (DateTime8601.TryParseDateTime8601(type.Value, out parsed))
         {
-            return new List<object>() { parsed };
+            return new() { parsed };
         }
 
         throw new MetaWeblogException("Failed to parse date");
@@ -247,22 +241,22 @@ public class XmlRpcService
 
     private List<object> ParseBoolean(XElement type)
     {
-        return new List<object> { type.Value == "1" };
+        return new() { type.Value == "1" };
     }
 
     private List<object> ParseString(XElement type)
     {
-        return new List<object> { type.Value };
+        return new() { type.Value };
     }
 
     private List<object> ParseDouble(XElement type)
     {
-        return new List<object> { double.Parse(type.Value) };
+        return new() { double.Parse(type.Value) };
     }
 
     private List<object> ParseInt(XElement type)
     {
-        return new List<object> { int.Parse(type.Value) };
+        return new() { int.Parse(type.Value) };
     }
 
     private List<object> ParseStruct(XElement type)
@@ -322,7 +316,7 @@ public class XmlRpcService
                     }
                     else
                     {
-                        _logger.LogWarning($"Skipping conversion to type as not supported: {field.FieldType.Name}");
+                        logger.LogWarning($"Skipping conversion to type as not supported: {field.FieldType.Name}");
                         continue;
                     }
                 }
@@ -330,13 +324,13 @@ public class XmlRpcService
             }
             else
             {
-                _logger.LogWarning($"Skipping field {key} when converting to {typeof(T).Name}");
+                logger.LogWarning($"Skipping field {key} when converting to {typeof(T).Name}");
             }
         }
 
         Debug.WriteLine(result);
 
-        return new List<object>() { result };
+        return new() { result };
     }
 
     private List<object> ParseArray(XElement type)
@@ -349,11 +343,11 @@ public class XmlRpcService
             {
                 result.AddRange(ParseValue(ele));
             }
-            return new List<object>() { result.ToArray() }; // make an array;
+            return new() { result.ToArray() }; // make an array;
         }
         catch (Exception ex)
         {
-            _logger.LogCritical($"Failed to Parse Array: {type}");
+            logger.LogCritical($"Failed to Parse Array: {type}");
             throw ex;
         }
     }

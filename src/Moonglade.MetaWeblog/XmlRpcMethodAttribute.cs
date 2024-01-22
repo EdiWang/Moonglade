@@ -1,12 +1,6 @@
 ﻿namespace Moonglade.MetaWeblog;
 
-public class XmlRpcMethodAttribute : Attribute
+public class XmlRpcMethodAttribute(string methodName) : Attribute
 {
-
-    public XmlRpcMethodAttribute(string methodName)
-    {
-        MethodName = methodName;
-    }
-
-    public string MethodName { get; set; }
+    public string MethodName { get; set; } = methodName;
 }

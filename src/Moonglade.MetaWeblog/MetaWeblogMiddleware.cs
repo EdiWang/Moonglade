@@ -3,24 +3,14 @@ using Microsoft.Extensions.Logging;
 
 namespace Moonglade.MetaWeblog;
 
-public class MetaWeblogMiddleware
+public class MetaWeblogMiddleware(RequestDelegate next, ILoggerFactory loggerFactory, string urlEndpoint)
 {
-    private ILogger _logger;
-    private readonly RequestDelegate _next;
-    private string _urlEndpoint;
-
-    public MetaWeblogMiddleware(RequestDelegate next, ILoggerFactory loggerFactory, string urlEndpoint)
-    {
-        _next = next;
-        _logger = loggerFactory.CreateLogger<MetaWeblogMiddleware>();
-        _urlEndpoint = urlEndpoint;
-    }
+    private readonly ILogger _logger = loggerFactory.CreateLogger<MetaWeblogMiddleware>();
 
     public async Task Invoke(HttpContext context, MetaWeblogService service)
     {
         if (context.Request.Method == "POST" &&
-            context.Request.Path.StartsWithSegments(_urlEndpoint) && 
-            context.Request != null && 
+            context.Request.Path.StartsWithSegments(urlEndpoint) && 
             context.Request.ContentType.ToLower().Contains("text/xml"))
         {
             try
@@ -41,6 +31,6 @@ public class MetaWeblogMiddleware
         }
 
         // Continue On
-        await _next.Invoke(context);
+        await next.Invoke(context);
     }
 }
