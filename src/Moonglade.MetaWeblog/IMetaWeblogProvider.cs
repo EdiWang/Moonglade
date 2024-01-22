@@ -1,9 +1,9 @@
 ﻿using System.Threading.Tasks;
 
-namespace WilderMinds.MetaWeblog
+namespace WilderMinds.MetaWeblog;
+
+public interface IMetaWeblogProvider
 {
-  public interface IMetaWeblogProvider
-  {
     Task<UserInfo> GetUserInfoAsync(string key, string username, string password);
 
     Task<BlogInfo[]> GetUsersBlogsAsync(string key, string username, string password);
@@ -33,5 +33,4 @@ namespace WilderMinds.MetaWeblog
     Task<string> AddPageAsync(string blogid, string username, string password, Page page, bool publish);
     Task<bool> EditPageAsync(string blogid, string pageid, string username, string password, Page page, bool publish);
     Task<bool> DeletePageAsync(string blogid, string username, string password, string pageid);
-  }
 }
