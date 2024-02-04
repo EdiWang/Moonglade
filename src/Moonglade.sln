@@ -56,7 +56,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Moonglade.Data.MySql", "Moo
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Moonglade.Data.PostgreSql", "Moonglade.Data.PostgreSql\Moonglade.Data.PostgreSql.csproj", "{5750F136-DD4B-42F8-BA64-2371C2527505}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Moonglade.MetaWeblog", "Moonglade.MetaWeblog\Moonglade.MetaWeblog.csproj", "{AB1667E7-70CE-40FA-A729-F4513E39AF50}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Moonglade.MetaWeblog", "Moonglade.MetaWeblog\Moonglade.MetaWeblog.csproj", "{AB1667E7-70CE-40FA-A729-F4513E39AF50}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -157,6 +157,7 @@ Global
 		{AB1667E7-70CE-40FA-A729-F4513E39AF50} = {97439361-03B4-46C9-BC06-49F76BA57879}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
+		RESX_CultureCountyOverrides = zh=zh-Hant
 		SolutionGuid = {EBD14882-9899-4C4B-B9BC-22C0B93BD559}
 	EndGlobalSection
 EndGlobal
