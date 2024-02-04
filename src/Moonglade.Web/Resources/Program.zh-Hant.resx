@@ -1,0 +1,277 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <!-- 
+		Microsoft ResX Schema
+
+		Version 1.3
+
+		The primary goals of this format is to allow a simple XML format 
+		that is mostly human readable. The generation and parsing of the 
+		various data types are done through the TypeConverter classes 
+		associated with the data types.
+
+		Example:
+
+		... ado.net/XML headers & schema ...
+		<resheader name="resmimetype">text/microsoft-resx</resheader>
+		<resheader name="version">1.3</resheader>
+		<resheader name="reader">System.Resources.ResXResourceReader, System.Windows.Forms, ...</resheader>
+		<resheader name="writer">System.Resources.ResXResourceWriter, System.Windows.Forms, ...</resheader>
+		<data name="Name1">this is my long string</data>
+		<data name="Color1" type="System.Drawing.Color, System.Drawing">Blue</data>
+		<data name="Bitmap1" mimetype="application/x-microsoft.net.object.binary.base64">
+			[base64 mime encoded serialized .NET Framework object]
+		</data>
+		<data name="Icon1" type="System.Drawing.Icon, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
+			[base64 mime encoded string representing a byte array form of the .NET Framework object]
+		</data>
+
+		There are any number of "resheader" rows that contain simple 
+		name/value pairs.
+
+		Each data row contains a name, and value. The row also contains a 
+		type or mimetype. Type corresponds to a .NET class that support 
+		text/value conversion through the TypeConverter architecture. 
+		Classes that don't support this are serialized and stored with the 
+		mimetype set.
+
+		The mimetype is used for serialized objects, and tells the 
+		ResXResourceReader how to depersist the object. This is currently not 
+		extensible. For a given mimetype the value must be set accordingly:
+
+		Note - application/x-microsoft.net.object.binary.base64 is the format 
+		that the ResXResourceWriter will generate, however the reader can 
+		read any of the formats listed below.
+
+		mimetype: application/x-microsoft.net.object.binary.base64
+		value   : The object must be serialized with 
+			: System.Serialization.Formatters.Binary.BinaryFormatter
+			: and then encoded with base64 encoding.
+
+		mimetype: application/x-microsoft.net.object.soap.base64
+		value   : The object must be serialized with 
+			: System.Runtime.Serialization.Formatters.Soap.SoapFormatter
+			: and then encoded with base64 encoding.
+
+		mimetype: application/x-microsoft.net.object.bytearray.base64
+		value   : The object must be serialized into a byte array 
+			: using a System.ComponentModel.TypeConverter
+			: and then encoded with base64 encoding.
+	-->
+  <xsd:schema id="root" xmlns="" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
+    <xsd:element name="root" msdata:IsDataSet="true">
+      <xsd:complexType>
+        <xsd:choice maxOccurs="unbounded">
+          <xsd:element name="data">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+                <xsd:element name="comment" type="xsd:string" minOccurs="0" msdata:Ordinal="2" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" msdata:Ordinal="1" />
+              <xsd:attribute name="type" type="xsd:string" msdata:Ordinal="3" />
+              <xsd:attribute name="mimetype" type="xsd:string" msdata:Ordinal="4" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="resheader">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" />
+            </xsd:complexType>
+          </xsd:element>
+        </xsd:choice>
+      </xsd:complexType>
+    </xsd:element>
+  </xsd:schema>
+  <resheader name="resmimetype">
+    <value>text/microsoft-resx</value>
+  </resheader>
+  <resheader name="version">
+    <value>1.3</value>
+  </resheader>
+  <resheader name="reader">
+    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=2.0.3500.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <resheader name="writer">
+    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=2.0.3500.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <data name="* Image width and height must be equal" xml:space="preserve">
+    <value>* 圖片寬度和高度必須相同</value>
+  </data>
+  <data name="* Requires restarting application" xml:space="preserve">
+    <value>* 需要重新啟動應用程式生效</value>
+  </data>
+  <data name="* Username: moonglade" xml:space="preserve">
+    <value>* 使用者名稱: moonglade</value>
+  </data>
+  <data name=".NET Version" xml:space="preserve">
+    <value>.NET 版本</value>
+  </data>
+  <data name=".png file" xml:space="preserve">
+    <value>.png 文件</value>
+  </data>
+  <data name=".png or .jpg file" xml:space="preserve">
+    <value>.png 或 .jpg 文件</value>
+  </data>
+  <data name="About" xml:space="preserve">
+    <value>關於</value>
+  </data>
+  <data name="Abstract" xml:space="preserve">
+    <value>摘要</value>
+  </data>
+  <data name="Account Information" xml:space="preserve">
+    <value>帳號資訊</value>
+  </data>
+  <data name="Accounts" xml:space="preserve">
+    <value>帳號</value>
+  </data>
+  <data name="Action" xml:space="preserve">
+    <value>操作</value>
+  </data>
+  <data name="Admin" xml:space="preserve">
+    <value>管理</value>
+  </data>
+  <data name="Admin Sign In" xml:space="preserve">
+    <value>管理員登入</value>
+  </data>
+  <data name="Advanced" xml:space="preserve">
+    <value>高級</value>
+  </data>
+  <data name="Advanced Settings" xml:space="preserve">
+    <value>進階設定</value>
+  </data>
+  <data name="All Posts" xml:space="preserve">
+    <value>全部文章</value>
+  </data>
+  <data name="All Tags" xml:space="preserve">
+    <value>全部標籤</value>
+  </data>
+  <data name="Archive" xml:space="preserve">
+    <value>歸檔時間軸</value>
+  </data>
+  <data name="Are you ABSOLUTELY sure? ALL data and configuration will be erased!" xml:space="preserve">
+    <value>你真的確定嗎？所有數據和配置都將灰飛煙滅！</value>
+  </data>
+  <data name="Are you sure to restart website? All current requests will be terminated." xml:space="preserve">
+    <value>你確定要重啟網站嗎？所有當前請求都會被終止。</value>
+  </data>
+  <data name="Are you sure?" xml:space="preserve">
+    <value>確定嗎？ </value>
+  </data>
+  <data name="Author" xml:space="preserve">
+    <value>作者</value>
+  </data>
+  <data name="Author Name" xml:space="preserve">
+    <value>作者名字</value>
+  </data>
+  <data name="Auto Light / Dark theme regarding client system settings" xml:space="preserve">
+    <value>在客戶端自動適配明亮/黑暗主題</value>
+  </data>
+  <data name="Admin Email" xml:space="preserve">
+    <value>Email</value>
+  </data>
+  <data name="Block Comment" xml:space="preserve">
+    <value>阻止評論</value>
+  </data>
+  <data name="Blocked words" xml:space="preserve">
+    <value>違禁詞</value>
+  </data>
+  <data name="Blocked words will be masked as *** in comment content." xml:space="preserve">
+    <value>評論內容中的違禁詞將被替換為***</value>
+  </data>
+  <data name="Blog Identity" xml:space="preserve">
+    <value>部落格身份</value>
+  </data>
+  <data name="Blog posts" xml:space="preserve">
+    <value>部落格文章</value>
+  </data>
+  <data name="Blog posts will use this time zone as date and time display." xml:space="preserve">
+    <value>部落格會使用該時區顯示文章日期及時間</value>
+  </data>
+  <data name="Blog posts will use this time zone as date display." xml:space="preserve">
+    <value>部落格文章會使用該時區作為時間及日期顯示</value>
+  </data>
+  <data name="Blog title" xml:space="preserve">
+    <value>博客標題</value>
+  </data>
+  <data name="Call-out" xml:space="preserve">
+    <value>條幅</value>
+  </data>
+  <data name="Call-out section HTML code" xml:space="preserve">
+    <value>橫幅HTML內容</value>
+  </data>
+  <data name="Can't read? Click to change another image." xml:space="preserve">
+    <value>看不清？點圖更換驗證碼</value>
+  </data>
+  <data name="Cancel" xml:space="preserve">
+    <value>取消</value>
+  </data>
+  <data name="Canonical URL prefix" xml:space="preserve">
+    <value>網址(Canonical URL)</value>
+  </data>
+  <data name="Categories" xml:space="preserve">
+    <value>分類</value>
+  </data>
+  <data name="Category Information" xml:space="preserve">
+    <value>分類資訊</value>
+  </data>
+  <data name="Change" xml:space="preserve">
+    <value>更改</value>
+  </data>
+  <data name="Change Avatar" xml:space="preserve">
+    <value>更換頭像</value>
+  </data>
+  <data name="Change Publish Date" xml:space="preserve">
+    <value>修改發布日期</value>
+  </data>
+  <data name="Change Site Icon" xml:space="preserve">
+    <value>更換網站圖示</value>
+  </data>
+  <data name="Changing publish date will modify the URL of the post, and may cause unexpected results like breaking links on third parties that were pointing to this post. Please check the checkbox below if you confirm." xml:space="preserve">
+    <value>更改發布日期會影響文章URL，可能會破壞其他地方指向文章的連結。仍要更改，請勾選下面的複選框。</value>
+  </data>
+  <data name="Check now" xml:space="preserve">
+    <value>立即檢查更新</value>
+  </data>
+  <data name="Check online for new Moonglade release." xml:space="preserve">
+    <value>在線檢查新版本的Moonglade</value>
+  </data>
+  <data name="Clear all" xml:space="preserve">
+    <value>清空全部</value>
+  </data>
+  <data name="Clear Now" xml:space="preserve">
+    <value>立即清空</value>
+  </data>
+  <data name="Clear Pingback Logs" xml:space="preserve">
+    <value>清空Pingback日誌</value>
+  </data>
+  <data name="Close" xml:space="preserve">
+    <value>關閉</value>
+  </data>
+  <data name="Comment of this post is disabled." xml:space="preserve">
+    <value>本文評論已關閉</value>
+  </data>
+  <data name="Comments" xml:space="preserve">
+    <value>評論</value>
+  </data>
+  <data name="Comments require review and approval" xml:space="preserve">
+    <value>評論需要管理員審核</value>
+  </data>
+  <data name="Content" xml:space="preserve">
+    <value>內容</value>
+  </data>
+  <data name="Continue" xml:space="preserve">
+    <value>繼續</value>
+  </data>
+  <data name="Copyright" xml:space="preserve">
+    <value>版權信息</value>
+  </data>
+  <data name="Create" xml:space="preserve">
+    <value>新建</value>
+  </data>
+  <data name="Create Tag" xml:space="preserve">
+    <value>建立標籤</value>
+  </data>
+</root>
