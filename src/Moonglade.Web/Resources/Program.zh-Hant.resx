@@ -274,4 +274,325 @@
   <data name="Create Tag" xml:space="preserve">
     <value>建立標籤</value>
   </data>
+  <data name="Create Time (UTC)" xml:space="preserve">
+    <value>創建時間(UTC)</value>
+  </data>
+  <data name="Current Endpoint:" xml:space="preserve">
+    <value>目前終端機：</value>
+  </data>
+  <data name="Custom CSS" xml:space="preserve">
+    <value>自訂</value>
+  </data>
+  <data name="Custom Theme" xml:space="preserve">
+    <value>自訂主題</value>
+  </data>
+  <data name="Data Directory" xml:space="preserve">
+    <value>數據目錄</value>
+  </data>
+  <data name="Delete" xml:space="preserve">
+    <value>徹底刪除</value>
+  </data>
+  <data name="Delete cached objects both in memory and on disk" xml:space="preserve">
+    <value>刪除記憶體及磁碟上的資料物件</value>
+  </data>
+  <data name="Delete selected" xml:space="preserve">
+    <value>刪除勾選的評論</value>
+  </data>
+  <data name="Description" xml:space="preserve">
+    <value>描述</value>
+  </data>
+  <data name="Directory" xml:space="preserve">
+    <value>目錄</value>
+  </data>
+  <data name="Disabled" xml:space="preserve">
+    <value>不顯示</value>
+  </data>
+  <data name="Display Name" xml:space="preserve">
+    <value>顯示名稱</value>
+  </data>
+  <data name="Display Order" xml:space="preserve">
+    <value>顯示序位</value>
+  </data>
+  <data name="Docker Container" xml:space="preserve">
+    <value>運行在Docker 容器中</value>
+  </data>
+  <data name="Drafts" xml:space="preserve">
+    <value>草稿</value>
+  </data>
+  <data name="Drag and drop image file here" xml:space="preserve">
+    <value>拖曳圖片檔到此處</value>
+  </data>
+  <data name="e.g. Your blog post license information." xml:space="preserve">
+    <value>例如：部落格文章的授權協議</value>
+  </data>
+  <data name="Edit on" xml:space="preserve">
+    <value>編輯於</value>
+  </data>
+  <data name="Editor" xml:space="preserve">
+    <value>編輯器</value>
+  </data>
+  <data name="Email address to receive notifications from this blog." xml:space="preserve">
+    <value>用於接收部落格系統通知的郵箱</value>
+  </data>
+  <data name="Email Options" xml:space="preserve">
+    <value>Email</value>
+  </data>
+  <data name="Empty Recycle Bin" xml:space="preserve">
+    <value>清空回收站</value>
+  </data>
+  <data name="Enable CDN for images" xml:space="preserve">
+    <value>啟用圖片CDN</value>
+  </data>
+  <data name="Enable Comment" xml:space="preserve">
+    <value>是否允許留言者再次編輯留言</value>
+  </data>
+  <data name="Enable comments" xml:space="preserve">
+    <value>開啟評論</value>
+  </data>
+  <data name="Enable Custom CSS" xml:space="preserve">
+    <value>使用自訂CSS</value>
+  </data>
+  <data name="Enable email sending" xml:space="preserve">
+    <value>啟用Email發送</value>
+  </data>
+  <data name="Enable Gravatar in comment list" xml:space="preserve">
+    <value>在評論清單中開啟Gravatar頭像</value>
+  </data>
+  <data name="Enable MetaWeblog API" xml:space="preserve">
+    <value>啟用MetaWeblog API</value>
+  </data>
+  <data name="Enable OpenSearch" xml:space="preserve">
+    <value>啟用OpenSearch</value>
+  </data>
+  <data name="Enable FOAF" xml:space="preserve">
+    <value>啟用</value>
+  </data>
+  <data name="Enable Pingback" xml:space="preserve">
+    <value>啟用Pingback</value>
+  </data>
+  <data name="Enable Site Map" xml:space="preserve">
+    <value>啟用網站地圖</value>
+  </data>
+  <data name="Enable word filter" xml:space="preserve">
+    <value>啟用違禁詞過濾</value>
+  </data>
+  <data name="Enabled watermark" xml:space="preserve">
+    <value>啟用浮水印</value>
+  </data>
+  <data name="Endpoint" xml:space="preserve">
+    <value>CDN 終端</value>
+  </data>
+  <data name="Environment" xml:space="preserve">
+    <value>環境</value>
+  </data>
+  <data name="Erase all data and configuration." xml:space="preserve">
+    <value>抹除所有資料及配置</value>
+  </data>
+  <data name="Export Data" xml:space="preserve">
+    <value>導出數據</value>
+  </data>
+  <data name="Featured" xml:space="preserve">
+    <value>精選</value>
+  </data>
+  <data name="Featured Posts" xml:space="preserve">
+    <value>精選文章</value>
+  </data>
+  <data name="Feed Subscription" xml:space="preserve">
+    <value>加入訂閱</value>
+  </data>
+  <data name="Fit image to device pixel ratio" xml:space="preserve">
+    <value>圖片自動適配設備DPI</value>
+  </data>
+  <data name="Font size" xml:space="preserve">
+    <value>字號</value>
+  </data>
+  <data name="Footer" xml:space="preserve">
+    <value>頁尾</value>
+  </data>
+  <data name="Footer HTML code" xml:space="preserve">
+    <value>頁腳HTML區域</value>
+  </data>
+  <data name="Friend Link Information" xml:space="preserve">
+    <value>友情連結資訊</value>
+  </data>
+  <data name="Friend Link Options" xml:space="preserve">
+    <value>友情連結選項</value>
+  </data>
+  <data name="Friend links" xml:space="preserve">
+    <value>友情鏈結</value>
+  </data>
+  <data name="General" xml:space="preserve">
+    <value>一般</value>
+  </data>
+  <data name="Generate password" xml:space="preserve">
+    <value>產生密碼</value>
+  </data>
+  <data name="Get update" xml:space="preserve">
+    <value>取得更新</value>
+  </data>
+  <data name="Hide Sidebar" xml:space="preserve">
+    <value>隱藏側邊欄</value>
+  </data>
+  <data name="Home" xml:space="preserve">
+    <value>主頁</value>
+  </data>
+  <data name="How many tags to show on sidebar" xml:space="preserve">
+    <value>側邊欄顯示標籤數量</value>
+  </data>
+  <data name="HTML Pitch" xml:space="preserve">
+    <value>HTML區域</value>
+  </data>
+  <data name="Icon" xml:space="preserve">
+    <value>圖標</value>
+  </data>
+  <data name="Icon CSS Class" xml:space="preserve">
+    <value>圖示CSS類別名稱</value>
+  </data>
+  <data name="Image" xml:space="preserve">
+    <value>圖片</value>
+  </data>
+  <data name="Invalid Icon CSS Class" xml:space="preserve">
+    <value>無效的圖示CSS類別名稱</value>
+  </data>
+  <data name="It will show up once blog administrator approved your comment." xml:space="preserve">
+    <value>部落客審核通過後，您的評論會在此顯示</value>
+  </data>
+  <data name="Keep origin image" xml:space="preserve">
+    <value>保留原圖</value>
+  </data>
+  <data name="Language" xml:space="preserve">
+    <value>語言</value>
+  </data>
+  <data name="Last Login IP" xml:space="preserve">
+    <value>最後登入</value>
+  </data>
+  <data name="Last Login Time (UTC)" xml:space="preserve">
+    <value>最後登錄時間</value>
+  </data>
+  <data name="Latest Posts" xml:space="preserve">
+    <value>最新文章</value>
+  </data>
+  <data name="Left" xml:space="preserve">
+    <value>左側</value>
+  </data>
+  <data name="Link" xml:space="preserve">
+    <value>鏈接</value>
+  </data>
+  <data name="Logo text" xml:space="preserve">
+    <value>文字</value>
+  </data>
+  <data name="Machine Name" xml:space="preserve">
+    <value>主機名稱</value>
+  </data>
+  <data name="Mask Word" xml:space="preserve">
+    <value>打碼違禁詞</value>
+  </data>
+  <data name="Memory" xml:space="preserve">
+    <value>記憶體</value>
+  </data>
+  <data name="Menu Editor" xml:space="preserve">
+    <value>選單編輯器</value>
+  </data>
+  <data name="Menus" xml:space="preserve">
+    <value>功能表</value>
+  </data>
+  <data name="Meta keyword" xml:space="preserve">
+    <value>網站關鍵字</value>
+  </data>
+  <data name="MetaWeblog password" xml:space="preserve">
+    <value>MetaWeblog 密碼</value>
+  </data>
+  <data name="Moonglade Configuration" xml:space="preserve">
+    <value>Moonglade 設定</value>
+  </data>
+  <data name="Moonglade Update" xml:space="preserve">
+    <value>Moonglade 更新</value>
+  </data>
+  <data name="Name" xml:space="preserve">
+    <value>名稱</value>
+  </data>
+  <data name="New" xml:space="preserve">
+    <value>新建</value>
+  </data>
+  <data name="No Archive" xml:space="preserve">
+    <value>暫無歸檔</value>
+  </data>
+  <data name="No comments yet" xml:space="preserve">
+    <value>暫無評論</value>
+  </data>
+  <data name="no items to show" xml:space="preserve">
+    <value>無條目需要顯示</value>
+  </data>
+  <data name="No Matching Result" xml:space="preserve">
+    <value>找不到相關結果</value>
+  </data>
+  <data name="No Pages" xml:space="preserve">
+    <value>暫無頁面</value>
+  </data>
+  <data name="No Posts" xml:space="preserve">
+    <value>暫無文章</value>
+  </data>
+  <data name="No Posts Found" xml:space="preserve">
+    <value>暫無文章</value>
+  </data>
+  <data name="No Tags" xml:space="preserve">
+    <value>暫無標籤</value>
+  </data>
+  <data name="Notification" xml:space="preserve">
+    <value>通知</value>
+  </data>
+  <data name="Notification Options" xml:space="preserve">
+    <value>通知選項</value>
+  </data>
+  <data name="Only letters, numbers, - and [] are allowed." xml:space="preserve">
+    <value>僅允許字母、數字、-及[]</value>
+  </data>
+  <data name="Only lower case letters and hyphens are allowed." xml:space="preserve">
+    <value>必須為小寫英文字元或中劃線</value>
+  </data>
+  <data name="Open in New Tab" xml:space="preserve">
+    <value>在新分頁中開啟</value>
+  </data>
+  <data name="Options" xml:space="preserve">
+    <value>選項</value>
+  </data>
+  <data name="or override with environment variables." xml:space="preserve">
+    <value>或使用變數覆蓋</value>
+  </data>
+  <data name="Order" xml:space="preserve">
+    <value>序號</value>
+  </data>
+  <data name="Origin Link" xml:space="preserve">
+    <value>原文網址</value>
+  </data>
+  <data name="Original" xml:space="preserve">
+    <value>原創</value>
+  </data>
+  <data name="Owner email" xml:space="preserve">
+    <value>博主信箱</value>
+  </data>
+  <data name="Pages" xml:space="preserve">
+    <value>頁面</value>
+  </data>
+  <data name="Password" xml:space="preserve">
+    <value>密碼</value>
+  </data>
+  <data name="Pingbacks" xml:space="preserve">
+    <value>引用</value>
+  </data>
+  <data name="Post footer HTML code" xml:space="preserve">
+    <value>文章頁腳HTML內容</value>
+  </data>
+  <data name="Post list page size" xml:space="preserve">
+    <value>文章分頁數量</value>
+  </data>
+  <data name="Posts" xml:space="preserve">
+    <value>文章</value>
+  </data>
+  <data name="Preview" xml:space="preserve">
+    <value>預覽</value>
+  </data>
+  <data name="Processing..." xml:space="preserve">
+    <value>處理中…</value>
+  </data>
 </root>
