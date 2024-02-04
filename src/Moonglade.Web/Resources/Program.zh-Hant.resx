@@ -158,7 +158,7 @@
     <value>你確定要重啟網站嗎？所有當前請求都會被終止。</value>
   </data>
   <data name="Are you sure?" xml:space="preserve">
-    <value>確定嗎？ </value>
+    <value>確定嗎？</value>
   </data>
   <data name="Author" xml:space="preserve">
     <value>作者</value>
@@ -593,6 +593,246 @@
     <value>預覽</value>
   </data>
   <data name="Processing..." xml:space="preserve">
-    <value>處理中…</value>
+    <value>處理中……</value>
+  </data>
+  <data name="Providing your email address can enable blog admin to send notifications for replying your comment. Your email address will also be used to show Gravatar if it has one." xml:space="preserve">
+    <value>提供Email位址以讓博主回復您評論時發送通知。 您的Email位址也會被用來顯示Gravatar頭像（如果有）。</value>
+  </data>
+  <data name="Publish" xml:space="preserve">
+    <value>發佈</value>
+  </data>
+  <data name="Publish Date" xml:space="preserve">
+    <value>發佈日期</value>
+  </data>
+  <data name="Publish Now" xml:space="preserve">
+    <value>立即發佈</value>
+  </data>
+  <data name="Published" xml:space="preserve">
+    <value>已發佈</value>
+  </data>
+  <data name="Read origin article" xml:space="preserve">
+    <value>閱讀原文</value>
+  </data>
+  <data name="Recycle Bin" xml:space="preserve">
+    <value>回收站</value>
+  </data>
+  <data name="Refresh the page to see your comment." xml:space="preserve">
+    <value>刷新頁面以查看您的評論</value>
+  </data>
+  <data name="Release time" xml:space="preserve">
+    <value>發佈時間</value>
+  </data>
+  <data name="Replied at" xml:space="preserve">
+    <value>回復於</value>
+  </data>
+  <data name="Reply" xml:space="preserve">
+    <value>回復</value>
+  </data>
+  <data name="Reset" xml:space="preserve">
+    <value>重置</value>
+  </data>
+  <data name="Reset Password" xml:space="preserve">
+    <value>重置密碼</value>
+  </data>
+  <data name="Restart" xml:space="preserve">
+    <value>重啟</value>
+  </data>
+  <data name="Restart Website" xml:space="preserve">
+    <value>重啟網站</value>
+  </data>
+  <data name="Restore" xml:space="preserve">
+    <value>恢復</value>
+  </data>
+  <data name="Right" xml:space="preserve">
+    <value>右側</value>
+  </data>
+  <data name="Route Name" xml:space="preserve">
+    <value>路由名稱</value>
+  </data>
+  <data name="RSS Items" xml:space="preserve">
+    <value>RSS條目數量</value>
+  </data>
+  <data name="Save" xml:space="preserve">
+    <value>保存</value>
+  </data>
+  <data name="Scan QR Code on your phone" xml:space="preserve">
+    <value>在手機上掃描二維碼</value>
+  </data>
+  <data name="Search" xml:space="preserve">
+    <value>搜索</value>
+  </data>
+  <data name="Search Result" xml:space="preserve">
+    <value>搜尋結果</value>
+  </data>
+  <data name="Security Settings" xml:space="preserve">
+    <value>安全設置</value>
+  </data>
+  <data name="Send email on comment reply" xml:space="preserve">
+    <value>評論被回復時發送Email通知使用者</value>
+  </data>
+  <data name="Send email on new comment" xml:space="preserve">
+    <value>有新評論時發送Email通知管理員</value>
+  </data>
+  <data name="Send Test Email" xml:space="preserve">
+    <value>發送測試郵件</value>
+  </data>
+  <data name="Server Information" xml:space="preserve">
+    <value>伺服器資訊</value>
+  </data>
+  <data name="Set a primary domain if your website binds to multiple domian names." xml:space="preserve">
+    <value>若您的網站綁定了多個功能變數名稱，請填寫主功能變數名稱</value>
+  </data>
+  <data name="Show call-out section" xml:space="preserve">
+    <value>顯示橫幅區</value>
+  </data>
+  <data name="Show customize footer on each post" xml:space="preserve">
+    <value>在每篇文章底下顯示自定義頁腳</value>
+  </data>
+  <data name="Show warning when clicking external links" xml:space="preserve">
+    <value>點擊外部連結時彈出警告</value>
+  </data>
+  <data name="Side Bar" xml:space="preserve">
+    <value>側邊欄</value>
+  </data>
+  <data name="Side bar display" xml:space="preserve">
+    <value>側邊欄位置</value>
+  </data>
+  <data name="Side bar HTML code" xml:space="preserve">
+    <value>側邊欄HTML區域</value>
+  </data>
+  <data name="Sign In" xml:space="preserve">
+    <value>登錄</value>
+  </data>
+  <data name="Start Time" xml:space="preserve">
+    <value>啟動時間</value>
+  </data>
+  <data name="Sub Menu" xml:space="preserve">
+    <value>子功能表</value>
+  </data>
+  <data name="Sub Menu Properties" xml:space="preserve">
+    <value>子功能表屬性</value>
+  </data>
+  <data name="Submit" xml:space="preserve">
+    <value>提交</value>
+  </data>
+  <data name="Subscription" xml:space="preserve">
+    <value>訂閱</value>
+  </data>
+  <data name="System" xml:space="preserve">
+    <value>系統</value>
+  </data>
+  <data name="System Reset" xml:space="preserve">
+    <value>系統重置</value>
+  </data>
+  <data name="Tag name" xml:space="preserve">
+    <value>標籤名</value>
+  </data>
+  <data name="Tags" xml:space="preserve">
+    <value>標籤</value>
+  </data>
+  <data name="Thanks for your comment." xml:space="preserve">
+    <value>感謝您的評論</value>
+  </data>
+  <data name="Thanks, your comment is pending approval now." xml:space="preserve">
+    <value>謝謝，您的評論已提交審核</value>
+  </data>
+  <data name="The call-out section will display on top of every page in the website." xml:space="preserve">
+    <value>公告區將在網站中每個頁面頂部顯示</value>
+  </data>
+  <data name="The first {0} character(s) will be used as abstract if you leave this field blank." xml:space="preserve">
+    <value>留空自動選取文章前 {0} 字元作為摘要</value>
+  </data>
+  <data name="The number of entries to include in RSS feed." xml:space="preserve">
+    <value>RSS中包含的條目數量</value>
+  </data>
+  <data name="Theme" xml:space="preserve">
+    <value>主題</value>
+  </data>
+  <data name="This field is required." xml:space="preserve">
+    <value>必填</value>
+  </data>
+  <data name="This is a preview for draft content." xml:space="preserve">
+    <value>該頁面為草稿預覽</value>
+  </data>
+  <data name="Time Zone" xml:space="preserve">
+    <value>時區</value>
+  </data>
+  <data name="Title" xml:space="preserve">
+    <value>標題</value>
+  </data>
+  <data name="Try to shutdown and restart the website, this will terminate all current requests." xml:space="preserve">
+    <value>嘗試關閉並重新啟動網站，該操作會終止所有當前請求</value>
+  </data>
+  <data name="Update" xml:space="preserve">
+    <value>更新</value>
+  </data>
+  <data name="Upload" xml:space="preserve">
+    <value>上傳</value>
+  </data>
+  <data name="Upload Image" xml:space="preserve">
+    <value>上傳頭圖</value>
+  </data>
+  <data name="URL" xml:space="preserve">
+    <value>鏈接</value>
+  </data>
+  <data name="Url (Relative or Absolute)" xml:space="preserve">
+    <value>連結 （相對或絕對）</value>
+  </data>
+  <data name="Use full blog post content instead of abstract" xml:space="preserve">
+    <value>使用文章全文作為內容而非摘要</value>
+  </data>
+  <data name="Use [c] for copyright mark: &amp;copy;, [year] for current year." xml:space="preserve">
+    <value>使用 [c] 表示版權符號 copy; ，[year] 表示當前年份</value>
+  </data>
+  <data name="User Account" xml:space="preserve">
+    <value>用戶帳戶</value>
+  </data>
+  <data name="User Name" xml:space="preserve">
+    <value>使用者名</value>
+  </data>
+  <data name="Username" xml:space="preserve">
+    <value>使用者名</value>
+  </data>
+  <data name="Version" xml:space="preserve">
+    <value>版本</value>
+  </data>
+  <data name="Watermark" xml:space="preserve">
+    <value>浮浮水印</value>
+  </data>
+  <data name="Watermark text" xml:space="preserve">
+    <value>浮浮水印文字</value>
+  </data>
+  <data name="Word filter mode" xml:space="preserve">
+    <value>違禁詞遮罩模式</value>
+  </data>
+  <data name="Worker Process" xml:space="preserve">
+    <value>工作進程</value>
+  </data>
+  <data name="Your comments (Markdown supported)" xml:space="preserve">
+    <value>您的評論（支援Markdown）</value>
+  </data>
+  <data name="Your description" xml:space="preserve">
+    <value>博主簡介</value>
+  </data>
+  <data name="Your name" xml:space="preserve">
+    <value>博主名字</value>
+  </data>
+  <data name="Center" xml:space="preserve">
+    <value>居中</value>
+  </data>
+  <data name="Export" xml:space="preserve">
+    <value>匯出</value>
+  </data>
+  <data name="lower case English letters (a-z) and numbers (0-9) with/out hyphen (-) in middle." xml:space="preserve">
+    <value>小寫英文字母（a-z）和數位（0-9），可以帶或不帶連符（-）</value>
+  </data>
+  <data name="RSS / Atom Feed" xml:space="preserve">
+    <value>RSS / Atom 訂閱</value>
+  </data>
+  <data name="ASP.NET Core Environment" xml:space="preserve">
+    <value>ASP.NET Core 環境</value>
+  </data>
+  <data name="Warning: This blog post is marked as outdated by it's author. Consider finding more recent information on this topic to ensure that you are utilizing the most up-to-date and effective strategies." xml:space="preserve">
+    <value>警告：此博客文章已被作者標記為過時。 請考慮尋找關於該主題的更近期的資訊，以確保您使用的是最新和最有效的策略。</value>
   </data>
 </root>
