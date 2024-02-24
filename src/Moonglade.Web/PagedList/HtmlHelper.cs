@@ -262,7 +262,7 @@ public class HtmlHelper(TagBuilderFactory tagBuilderFactory)
     {
         var list = pagedList ?? new BasePagedList<int>(ImmutableList<int>.Empty, 1, 10, 0);
 
-        if (options.Display == PagedListDisplayMode.IfNeeded && list.PageCount <= 1)
+        if (list.PageCount <= 1)
         {
             return null;
         }
@@ -296,15 +296,13 @@ public class HtmlHelper(TagBuilderFactory tagBuilderFactory)
         }
 
         //first
-        if (options.DisplayLinkToFirstPage == PagedListDisplayMode.Always ||
-            (options.DisplayLinkToFirstPage == PagedListDisplayMode.IfNeeded && firstPageToDisplay > 1))
+        if (firstPageToDisplay > 1)
         {
             listItemLinks.Add(First(list, generatePageUrl, options));
         }
 
         //previous
-        if (options.DisplayLinkToPreviousPage == PagedListDisplayMode.Always ||
-            (options.DisplayLinkToPreviousPage == PagedListDisplayMode.IfNeeded && !list.IsFirstPage))
+        if (!list.IsFirstPage)
         {
             listItemLinks.Add(Previous(list, generatePageUrl, options));
         }
@@ -351,15 +349,13 @@ public class HtmlHelper(TagBuilderFactory tagBuilderFactory)
         }
 
         //next
-        if (options.DisplayLinkToNextPage == PagedListDisplayMode.Always ||
-            (options.DisplayLinkToNextPage == PagedListDisplayMode.IfNeeded && !list.IsLastPage))
+        if (!list.IsLastPage)
         {
             listItemLinks.Add(Next(list, generatePageUrl, options));
         }
 
         //last
-        if (options.DisplayLinkToLastPage == PagedListDisplayMode.Always ||
-            (options.DisplayLinkToLastPage == PagedListDisplayMode.IfNeeded && lastPageToDisplay < list.PageCount))
+        if (lastPageToDisplay < list.PageCount)
         {
             listItemLinks.Add(Last(list, generatePageUrl, options));
         }

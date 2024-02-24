@@ -19,17 +19,12 @@ public class NotificationSettings : IBlogSettings
     [MaxLength(64)]
     public string EmailDisplayName { get; set; }
 
-    [MaxLength(512)]
-    [Display(Name = "Azure Storage Queue Connection String")]
-    public string AzureStorageQueueConnection { get; set; }
-
     [JsonIgnore]
     public static NotificationSettings DefaultValue => new()
     {
         EnableEmailSending = false,
         SendEmailOnCommentReply = false,
         SendEmailOnNewComment = false,
-        EmailDisplayName = "Moonglade",
-        AzureStorageQueueConnection = string.Empty
+        EmailDisplayName = "Moonglade"
     };
 }

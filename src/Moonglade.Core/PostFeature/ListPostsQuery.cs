@@ -3,7 +3,7 @@ using Moonglade.Utils;
 
 namespace Moonglade.Core.PostFeature;
 
-public class ListPostsQuery(int pageSize, int pageIndex, Guid? catId = null, PostsSortBy sortBy = PostsSortBy.Recent)
+public class ListPostsQuery(int pageSize, int pageIndex, Guid? catId = null)
     : IRequest<IReadOnlyList<PostDigest>>
 {
     public int PageSize { get; set; } = pageSize;
@@ -11,8 +11,6 @@ public class ListPostsQuery(int pageSize, int pageIndex, Guid? catId = null, Pos
     public int PageIndex { get; set; } = pageIndex;
 
     public Guid? CatId { get; set; } = catId;
-
-    public PostsSortBy SortBy { get; set; } = sortBy;
 }
 
 public class ListPostsQueryHandler(IRepository<PostEntity> repo) : IRequestHandler<ListPostsQuery, IReadOnlyList<PostDigest>>
@@ -21,7 +19,7 @@ public class ListPostsQueryHandler(IRepository<PostEntity> repo) : IRequestHandl
     {
         Helper.ValidatePagingParameters(request.PageSize, request.PageIndex);
 
-        var spec = new PostPagingSpec(request.PageSize, request.PageIndex, request.CatId, request.SortBy);
+        var spec = new PostPagingSpec(request.PageSize, request.PageIndex, request.CatId);
         return repo.SelectAsync(spec, PostDigest.EntitySelector, ct);
     }
 }

@@ -7,7 +7,7 @@ A personal blog system that optimized for [**Microsoft Azure**](https://azure.mi
 
 ## 📦 Deployment
 
-- Ue stable code from [Release](https://github.com/EdiWang/Moonglade/releases) branch rather than master branch.
+- Use stable code from [Release](https://github.com/EdiWang/Moonglade/releases) branch rather than master branch.
 
 - HTTPS is required, and it is recommended to enable HTTP/2 support on your web server.
 
@@ -17,7 +17,7 @@ This is the way https://edi.wang is deployed, by taking advantage of as many Azu
 
 There is no automated script to deploy it, you need to manually create all the resources.
 
-![image](https://cdn-blog.edi.wang/web-assets/ediwang-azure-arch-visio-nov2022.png)
+![image](https://cdn.edi.wang/web-assets/ediwang-azure-arch-visio-nov2022.png)
 
 ### Quick Deploy on Azure (App Service on Linux)
 
@@ -55,9 +55,10 @@ PostgreSQL | `PostgreSql` | `User ID=***;Password=***;Host=localhost;Port=5432;D
 ### Build Source
 
 Build and run `./src/Moonglade.sln`
+- Home page: `https://localhost:1055`
 - Admin: `https://localhost:1055/admin`
-- Default username: `admin`
-- Default password: `admin123`
+  - Default username: `admin`
+  - Default password: `admin123`
 
 ## ⚙ Configuration
 
@@ -65,15 +66,7 @@ Build and run `./src/Moonglade.sln`
 
 ### Authentication
 
-> You can choose one authentication provider from below.
-
-#### [Microsoft Entra ID](https://azure.microsoft.com/en-us/services/active-directory/)
-
-See [Wiki document](https://github.com/EdiWang/Moonglade/wiki/Use-Microsoft-Entra-ID-Authentication)
-
-#### Local Account
-
-Set `Authentication:Provider` to `"Local"`. You can manage accounts in `/admin/settings/account`
+Moonglade is using local account by default, you can manage accounts in `/admin/settings/account`. You can also use  [Microsoft Entra ID](https://azure.microsoft.com/en-us/services/active-directory/) to login. See [Wiki document](https://github.com/EdiWang/Moonglade/wiki/Use-Microsoft-Entra-ID-Authentication) for setup Microsoft Entra ID.
 
 ### Image Storage
 `ImageStorage` controls how blog post images are stored.
@@ -122,34 +115,49 @@ You can also choose File System for image storage if you don't have a cloud opti
 
 ### Comment Moderator
 
-See https://github.com/EdiWang/Moonglade.ContentSecurity
+Setup [Moonglade.ContentSecurity](https://github.com/EdiWang/Moonglade.ContentSecurity)  Azure Function to enable comment moderation.
+
+```json
+"ContentModerator": {
+  "Provider": "",
+  "ApiEndpoint": "",
+  "ApiKey": ""
+}
+```
 
 ### Email Notification
 
-If you need email notification for new comments, new replies and pingbacks, you have to setup the [Moonglade.Email Azure Function](https://github.com/EdiWang/Moonglade.Email) first, and then enable notification in admin portal.
+Setup [Moonglade.Email](https://github.com/EdiWang/Moonglade.Email) Azure Function to enable email notification for new comments, new replies and pingbacks. Then enable notification in admin portal.
+
+```json
+"Email": {
+  "ApiEndpoint": "",
+  "ApiKey": ""
+}
+```
 
 ### Others
 
 - [System Settings](https://github.com/EdiWang/Moonglade/wiki/System-Settings)
-- [Security Headers (CSP, XSS, etc.)](https://github.com/EdiWang/Moonglade/wiki/Security-Headers-(CSP,-XSS,-etc.))
+- [Security Headers](https://github.com/EdiWang/Moonglade/wiki/Security-Headers)
 
 ## 🎉 Blog Protocols or Standards
 
-Name | Feature | Status
---- | --- | ---
-RSS | Subscription | Supported
-Atom | Subscription | Supported
-OPML | Subscription | Supported
-Open Search | Search | Supported
-Pingback | Social | Supported
-Reader View | Reader mode | Supported
-FOAF | Social | Supported
-RSD | Service Discovery | Supported
-MetaWeblog | Blogging | Basic Support
-Dublin Core Metadata | SEO | Basic Support
-BlogML | Blogging | Not planned
-APML | Social | Not planned
-Trackback | Social | Not planned
+Name | Feature | Status | Service Endpoint
+--- | --- | --- | ---
+RSS | Subscription | Supported | `/rss`
+Atom | Subscription | Supported | `/atom`
+OPML | Subscription | Supported | `/opml`
+Open Search | Search | Supported | `/opensearch`
+Pingback | Social | Supported | `/pingback`
+Reader View | Reader mode | Supported | N/A
+FOAF | Social | Supported | `/foaf.xml`
+RSD | Service Discovery | Supported | `/rsd` *If MetaWeblog is enabled*
+MetaWeblog | Blogging | Basic Support | `/metaweblog`
+Dublin Core Metadata | SEO | Basic Support | N/A
+BlogML | Blogging | Not planned | 
+APML | Social | Not planned | 
+Trackback | Social | Not planned |
 
 ## 免责申明
 

@@ -4,9 +4,9 @@ namespace Moonglade.Email.Client;
 
 public static class ServiceCollectionExtension
 {
-    public static IServiceCollection AddNotification(this IServiceCollection services)
+    public static IServiceCollection AddEmailSending(this IServiceCollection services)
     {
-        services.AddScoped<IBlogNotification, AzureStorageQueueNotification>();
+        services.AddHttpClient<IMoongladeEmailClient, MoongladeEmailClient>();
         return services;
     }
 }

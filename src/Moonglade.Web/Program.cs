@@ -1,5 +1,4 @@
-﻿using AspNetCoreRateLimit;
-using Edi.Captcha;
+﻿using Edi.Captcha;
 using Edi.PasswordGenerator;
 using Microsoft.ApplicationInsights.Extensibility;
 using Microsoft.ApplicationInsights.Extensibility.Implementation;
@@ -16,11 +15,11 @@ using SixLabors.Fonts;
 using System.Globalization;
 using System.Net;
 using System.Text.Json.Serialization;
-using WilderMinds.MetaWeblog;
+using Moonglade.MetaWeblog;
 using Encoder = Moonglade.Web.Configuration.Encoder;
 
 Encoding.RegisterProvider(CodePagesEncodingProvider.Instance);
-var cultures = new[] { "en-US", "zh-Hans" }.Select(p => new CultureInfo(p)).ToList();
+var cultures = new[] { "en-US", "zh-Hans", "zh-Hant" }.Select(p => new CultureInfo(p)).ToList();
 
 var builder = WebApplication.CreateBuilder(args);
 builder.WriteParameterTable();
@@ -49,8 +48,7 @@ void ConfigureServices(IServiceCollection services)
 
     services.AddMediatR(config => config.RegisterServicesFromAssemblies(AppDomain.CurrentDomain.GetAssemblies()));
     services.AddOptions()
-            .AddHttpContextAccessor()
-            .AddRateLimit(builder.Configuration.GetSection("IpRateLimiting"));
+            .AddHttpContextAccessor();
     services.AddApplicationInsightsTelemetry();
 
     services.AddSession(options =>
@@ -102,16 +100,17 @@ void ConfigureServices(IServiceCollection services)
     services.AddHealthChecks();
     services.AddPingback()
             .AddSyndication()
-            .AddNotification()
             .AddInMemoryCacheAside()
             .AddMetaWeblog<Moonglade.Web.MetaWeblogService>()
             .AddScoped<ValidateCaptcha>()
             .AddScoped<ITimeZoneResolver, BlogTimeZoneResolver>()
             .AddBlogConfig()
             .AddBlogAuthenticaton(builder.Configuration)
-            .AddContentModerator(builder.Configuration)
             .AddImageStorage(builder.Configuration, options => options.ContentRootPath = builder.Environment.ContentRootPath)
             .Configure<List<ManifestIcon>>(builder.Configuration.GetSection("ManifestIcons"));
+
+    services.AddEmailSending();
+    services.AddContentModerator(builder.Configuration);
 
     string dbType = builder.Configuration.GetConnectionString("DatabaseType");
     string connStr = builder.Configuration.GetConnectionString("MoongladeDatabase");
@@ -197,18 +196,22 @@ void ConfigureMiddleware()
     app.UseRewriter(options);
 
     app.UseStaticFiles();
-    app.UseSession().UseCaptchaImage(options =>
+    app.UseSession().UseCaptchaImage(p =>
     {
-        options.RequestPath = "/captcha-image";
-        options.ImageHeight = 36;
-        options.ImageWidth = 100;
+        p.RequestPath = "/captcha-image";
+        p.ImageHeight = 36;
+        p.ImageWidth = 100;
     });
 
-    app.UseIpRateLimiting();
     app.UseRouting();
     app.UseAuthentication().UseAuthorization();
 
-    app.UseEndpoints(ConfigureEndpoints.BlogEndpoints);
+    app.MapHealthChecks("/ping", new()
+    {
+        ResponseWriter = ConfigureEndpoints.WriteResponse
+    });
+    app.MapControllers();
+    app.MapRazorPages();
 }
 
 void UseSmartXFFHeader(WebApplication webApplication)
