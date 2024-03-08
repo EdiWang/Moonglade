@@ -1,18 +1,18 @@
 <Project Sdk="Microsoft.NET.Sdk">
-    <PropertyGroup>
-        <OutputType>Library</OutputType>
-        <TargetFramework>net8.0</TargetFramework>
-        <AssemblyName>Moonglade.Data.MySql</AssemblyName>
-        <RootNamespace>Moonglade.Data.MySql</RootNamespace>
-        <IsTestProject>false</IsTestProject>
-        <IsPackable>false</IsPackable>
-        <ImplicitUsings>enable</ImplicitUsings>
-        <Nullable>enable</Nullable>
-    </PropertyGroup>
-    <ItemGroup>
-        <PackageReference Include="Pomelo.EntityFrameworkCore.MySql" Version="8.0.0" />
-    </ItemGroup>
-    <ItemGroup>
-        <ProjectReference Include="..\Moonglade.Data\Moonglade.Data.csproj" />
-    </ItemGroup>
+  <PropertyGroup>
+    <OutputType>Library</OutputType>
+    <TargetFramework>net8.0</TargetFramework>
+    <AssemblyName>Moonglade.Data.MySql</AssemblyName>
+    <RootNamespace>Moonglade.Data.MySql</RootNamespace>
+    <IsTestProject>false</IsTestProject>
+    <IsPackable>false</IsPackable>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+  </PropertyGroup>
+  <ItemGroup>
+    <PackageReference Include="Pomelo.EntityFrameworkCore.MySql" Version="8.0.1" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\Moonglade.Data\Moonglade.Data.csproj" />
+  </ItemGroup>
 </Project>

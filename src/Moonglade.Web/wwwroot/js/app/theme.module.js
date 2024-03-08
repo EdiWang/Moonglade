@@ -14,6 +14,8 @@ export function useDarkMode() {
     $('.card').addClass('text-white bg-dark');
     $('.list-group-item, .card-body').addClass('bg-moca-dark text-light');
 
+    $('.post-publish-info').removeClass('text-muted').addClass('text-secondary');
+
     $('.post-content img.img-thumbnail').addClass('bg-dark border-secondary');
     $('.post-content table.table').addClass('table-dark');
 
@@ -23,7 +25,7 @@ export function useDarkMode() {
     $('.post-summary-tags .btn-accent').removeClass('btn-accent').addClass('btn-dark');
 
     $('.aside-widget').removeClass('bg-white').addClass('border-dark');
-    $('.aside-widget .card-subtitle').removeClass('text-muted').addClass('text-light-emphasis');
+    $('.card-subtitle').removeClass('text-muted');
 
     isDarkMode = true;
     $('.lightswitch').addClass('bg-dark text-light border-secondary');
@@ -45,6 +47,8 @@ export function useLightMode() {
     $('.card').removeClass('text-white bg-dark');
     $('.list-group-item, .card-body').removeClass('bg-moca-dark text-light');
 
+    $('.post-publish-info').removeClass('text-secondary').addClass('text-muted');
+
     $('.post-content img.img-thumbnail').removeClass('bg-dark border-secondary');
     $('.post-content table.table').removeClass('table-dark');
 
@@ -54,7 +58,7 @@ export function useLightMode() {
     $('.post-summary-tags .btn-dark').removeClass('btn-dark').addClass('btn-accent');
 
     $('.aside-widget').addClass('bg-white').removeClass('border-dark');
-    $('.aside-widget .card-subtitle').addClass('text-muted').removeClass('text-light-emphasis');
+    $('.card-subtitle').addClass('text-muted');
 
     isDarkMode = false;
     $('.lightswitch').removeClass('bg-dark text-light border-secondary');
