@@ -65,6 +65,13 @@ public class SignInModel(IOptions<AuthenticationSettings> authSettings,
                 ModelState.AddModelError(nameof(CaptchaCode), "Wrong Captcha Code");
             }
 
+            // Check User-Agent
+            var ua = Request.Headers["User-Agent"].ToString();
+            if (string.IsNullOrWhiteSpace(ua))
+            {
+                return Unauthorized();
+            }
+
             if (ModelState.IsValid)
             {
                 var uid = await mediator.Send(new ValidateLoginCommand(Username, Password));
@@ -80,7 +87,7 @@ public class SignInModel(IOptions<AuthenticationSettings> authSettings,
                     var p = new ClaimsPrincipal(ci);
 
                     await HttpContext.SignInAsync(CookieAuthenticationDefaults.AuthenticationScheme, p);
-                    await mediator.Send(new LogSuccessLoginCommand(Helper.GetClientIP(HttpContext)));
+                    await mediator.Send(new LogSuccessLoginCommand(Helper.GetClientIP(HttpContext), ua, "TODO"));
 
                     var successMessage = $@"Authentication success for local account ""{Username}""";
 
