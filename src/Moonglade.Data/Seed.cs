@@ -11,7 +11,6 @@ public class Seed
 
         try
         {
-            await dbContext.LocalAccount.AddRangeAsync(GetLocalAccounts());
             await dbContext.BlogTheme.AddRangeAsync(GetThemes());
             await dbContext.Category.AddRangeAsync(GetCategories());
             await dbContext.Tag.AddRangeAsync(GetTags());
@@ -58,18 +57,6 @@ public class Seed
             throw;
         }
     }
-
-    private static IEnumerable<LocalAccountEntity> GetLocalAccounts() =>
-        new List<LocalAccountEntity>
-        {
-            new()
-            {
-                Id = Guid.Parse("ab78493d-7569-42d2-ae78-c2b610ada1aa"),
-                Username = "admin",
-                PasswordHash = "JAvlGPq9JyTdtvBO6x2llnRI1+gxwIyPqCKAn3THIKk=",
-                CreateTimeUtc = DateTime.UtcNow
-            }
-        };
 
     private static IEnumerable<BlogThemeEntity> GetThemes() =>
         new List<BlogThemeEntity>

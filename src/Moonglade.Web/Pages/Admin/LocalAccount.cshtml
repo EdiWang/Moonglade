@@ -1,8 +1,8 @@
 ﻿@page "/admin/account"
+@using System.Globalization
 @model Moonglade.Web.Pages.Admin.LocalAccountModel
 @{
     ViewBag.Title = "Accounts";
-    var currentUidClaim = User.Claims.FirstOrDefault(c => c.Type == "uid");
 }
 
 @section scripts {
@@ -10,12 +10,10 @@
         import * as utils from '/js/app/utils.module.js'
 
         var resetPasswordHashModal = new bootstrap.Modal('#resetPasswordHashModal');
-        var cid = '';
 
-        window.resetPasswordHash = function (accountId) {
+        window.resetPasswordHash = function () {
             document.querySelector('#resetpassword-form').reset();
             resetPasswordHashModal.show();
-            cid = accountId;
         }
 
         window.handleResetPasswordHashFormSubmit = function (event) {
@@ -43,31 +41,28 @@
 
 @section admintoolbar {
     <div class="admin-toolbar pb-2 border-bottom mb-3">
-        <a class="btn btn-outline-accent" href="javascript:resetPasswordHash('@currentUidClaim');">
+        <a class="btn btn-outline-accent" href="javascript:resetPasswordHash();">
             <i class="bi-key"></i>
             @SharedLocalizer["Change PasswordHash"]
         </a>
     </div>
 }
 
-
-@if (null != Model.Accounts && Model.Accounts.Any())
+@if (null != Model.LoginHistoryList && Model.LoginHistoryList.Any())
 {
     <table class="table table-bordered mt-3">
         <thead>
             <tr>
-                <th>@SharedLocalizer["Username"]</th>
-                @* <th>@SharedLocalizer["Last Login IP"]</th>
-                <th>@SharedLocalizer["Last Login Time (UTC)"]</th> *@
+                <th>@SharedLocalizer["Login IP"]</th>
+                <th>@SharedLocalizer["Login Time (UTC)"]</th>
             </tr>
         </thead>
         <tbody>
-            @foreach (var item in Model.Accounts.OrderBy(p => p.Username))
+            @foreach (var item in Model.LoginHistoryList.OrderByDescending(p => p.LoginTimeUtc))
             {
-                <tr id="tr-@item.Id">
-                    <td>@item.Username</td>
-                    @* <td>@(item.LastLoginIp ?? "N/A")</td>
-                    <td>@(null != item.LastLoginTimeUtc ? item.LastLoginTimeUtc.ToString() : "N/A")</td> *@
+                <tr>
+                    <td>@item.LoginIp</td>
+                    <td>@item.LoginTimeUtc.ToString(CultureInfo.CurrentCulture)</td>
                 </tr>
             }
         </tbody>

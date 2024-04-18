@@ -22,7 +22,6 @@ public class BlogDbContext : DbContext
     public virtual DbSet<TagEntity> Tag { get; set; }
     public virtual DbSet<FriendLinkEntity> FriendLink { get; set; }
     public virtual DbSet<PageEntity> CustomPage { get; set; }
-    public virtual DbSet<LocalAccountEntity> LocalAccount { get; set; }
     public virtual DbSet<LoginHistoryEntity> LoginHistory { get; set; }
     public virtual DbSet<PingbackEntity> Pingback { get; set; }
     public virtual DbSet<BlogThemeEntity> BlogTheme { get; set; }
@@ -70,7 +69,8 @@ public static class BlogDbContextExtension
         context.BlogConfiguration.RemoveRange();
         context.BlogAsset.RemoveRange();
         context.BlogTheme.RemoveRange();
-        context.LocalAccount.RemoveRange();
+        context.StyleSheet.RemoveRange();
+        context.LoginHistory.RemoveRange();
 
         await context.SaveChangesAsync();
     }
