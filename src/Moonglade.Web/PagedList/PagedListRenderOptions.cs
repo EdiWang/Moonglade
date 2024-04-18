@@ -25,10 +25,10 @@ public class PagedListRenderOptions
         ItemSliceAndTotalFormat = "Showing items {0} through {1} of {2}.";
         ItemSliceAndTotalPosition = ItemSliceAndTotalPosition.Start;
         FunctionToDisplayEachPageNumber = null;
-        ContainerDivClasses = new[] { "pagination-container" };
-        UlElementClasses = new[] { "pagination" };
-        LiElementClasses = new[] { "page-item" };
-        PageClasses = new[] { "page-link" };
+        ContainerDivClasses = ["pagination-container"];
+        UlElementClasses = ["pagination"];
+        LiElementClasses = ["page-item"];
+        PageClasses = ["page-link"];
         ActiveLiElementClass = "active";
         EllipsesElementClass = "paged-list-ellipses";
         PreviousElementClass = "PagedList-skip-to-previous";
