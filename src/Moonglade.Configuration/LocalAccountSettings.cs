@@ -1,11 +1,17 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace Moonglade.Configuration;
+﻿namespace Moonglade.Configuration;
 
 public class LocalAccountSettings : IBlogSettings
 {
+    public string Username { get; set; }
+
+    public string PasswordHash { get; set; }
+    public string PasswordSalt { get; set; }
+
+    public static LocalAccountSettings DefaultValue =>
+        new()
+        {
+            Username = "admin",
+            PasswordHash = "JAvlGPq9JyTdtvBO6x2llnRI1+gxwIyPqCKAn3THIKk=",
+            PasswordSalt = "" // TODO
+        };
 }

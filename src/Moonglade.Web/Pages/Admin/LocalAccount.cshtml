@@ -9,16 +9,16 @@
     <script type="module">
         import * as utils from '/js/app/utils.module.js'
 
-        var resetPasswordModal = new bootstrap.Modal('#resetPasswordModal');
+        var resetPasswordHashModal = new bootstrap.Modal('#resetPasswordHashModal');
         var cid = '';
 
-        window.resetPassword = function (accountId) {
+        window.resetPasswordHash = function (accountId) {
             document.querySelector('#resetpassword-form').reset();
-            resetPasswordModal.show();
+            resetPasswordHashModal.show();
             cid = accountId;
         }
 
-        window.handleResetPasswordFormSubmit = function (event) {
+        window.handleResetPasswordHashFormSubmit = function (event) {
             event.preventDefault();
 
             const data = new FormData(event.target);
@@ -26,26 +26,26 @@
 
             callApi(`/api/localaccount/${cid}/password`,
                 'PUT',
-                value["NewPassword"],
+                value["NewPasswordHash"],
                 (resp) => {
                     document.querySelector('#resetpassword-form').reset();
-                    resetPasswordModal.hide();
-                    blogToast.success('Password updated.');
+                    resetPasswordHashModal.hide();
+                    blogToast.success('PasswordHash updated.');
                     cid = '';
                 });
         }
 
-        const resetPasswordForm = document.querySelector('#resetpassword-form');
-        resetPasswordForm.addEventListener('submit', handleResetPasswordFormSubmit);
+        const resetPasswordHashForm = document.querySelector('#resetpassword-form');
+        resetPasswordHashForm.addEventListener('submit', handleResetPasswordHashFormSubmit);
     </script>
 }
 
 
 @section admintoolbar {
     <div class="admin-toolbar pb-2 border-bottom mb-3">
-        <a class="btn btn-outline-accent" href="javascript:resetPassword('@currentUidClaim');">
+        <a class="btn btn-outline-accent" href="javascript:resetPasswordHash('@currentUidClaim');">
             <i class="bi-key"></i>
-            @SharedLocalizer["Change Password"]
+            @SharedLocalizer["Change PasswordHash"]
         </a>
     </div>
 }
@@ -76,11 +76,11 @@
 
 <p class="text-muted">Check out <a href="https://learn.microsoft.com/en-us/azure/active-directory/fundamentals/whatis?WT.mc_id=AZ-MVP-5002809">Microsoft Entra ID</a> and empower your blog to achieve more!</p>
 
-<div class="modal fade" id="resetPasswordModal" tabindex="-1" role="dialog" aria-labelledby="resetPasswordModalLabel" aria-hidden="true">
+<div class="modal fade" id="resetPasswordModal" tabindex="-1" role="dialog" aria-labelledby="resetPasswordHashModalLabel" aria-hidden="true">
     <div class="modal-dialog" role="document">
         <div class="modal-content">
             <div class="modal-header">
-                <h5 class="modal-title" id="resetPasswordModalLabel">@SharedLocalizer["Reset Password"]</h5>
+                <h5 class="modal-title" id="resetPasswordModalLabel">@SharedLocalizer["Reset PasswordHash"]</h5>
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close">
                 </button>
             </div>
@@ -88,12 +88,12 @@
             <form id="resetpassword-form" method="post">
                 <div class="modal-body">
                     <div class="mb-2">
-                        <label for="NewPassword">New Password</label>
+                        <label for="NewPassword">New PasswordHash</label>
                         <input class="form-control" type="password"
                                id="NewPassword"
                                minlength="8"
                                maxlength="32"
-                               name="NewPassword"
+                               name="NewPasswordHash"
                                pattern="^(?=.*[a-zA-Z])(?=.*[0-9])[A-Za-z0-9._~!@@#$^&*]{8,}$"
                                required>
                         <span class="text-danger field-validation-valid"></span>

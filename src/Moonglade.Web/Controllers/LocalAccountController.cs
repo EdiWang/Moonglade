@@ -16,7 +16,7 @@ public class LocalAccountController(IMediator mediator) : ControllerBase
     {
         if (!Regex.IsMatch(newPassword, @"^(?=.*[A-Za-z])(?=.*\d)[!@#$%^&*A-Za-z\d]{8,}$"))
         {
-            return Conflict("Password must be minimum eight characters, at least one letter and one number");
+            return Conflict("PasswordHash must be minimum eight characters, at least one letter and one number");
         }
 
         await mediator.Send(new ChangePasswordCommand(id, newPassword));

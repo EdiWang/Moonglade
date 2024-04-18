@@ -92,10 +92,10 @@
             });
         });
 
-        window.generateMetaWeblogPassword = function () {
+        window.generateMetaWeblogPasswordHash = function () {
             callApi('/api/settings/password/generate', 'GET', {}, async (resp) => {
                 var data = await resp.json();
-                $('#settings_MetaWeblogPassword').val(data.password);
+                $('#settings_MetaWeblogPasswordHash').val(data.password);
             });
         }
 
@@ -243,7 +243,7 @@
                     <div class="col-md-4">
                         <input asp-for="@settings.MetaWeblogPassword" class="form-control" minlength="8" maxlength="16" />
 
-                        <a href="javascript:;" class="btn btn-sm btn-outline-accent mt-2" onclick="generateMetaWeblogPassword()">@SharedLocalizer["Generate password"]</a>
+                        <a href="javascript:;" class="btn btn-sm btn-outline-accent mt-2" onclick="generateMetaWeblogPasswordHash()">@SharedLocalizer["Generate password"]</a>
                     </div>
                 </div>
             </div>
