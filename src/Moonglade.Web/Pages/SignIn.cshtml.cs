@@ -74,14 +74,13 @@ public class SignInModel(IOptions<AuthenticationSettings> authSettings,
 
             if (ModelState.IsValid)
             {
-                var uid = await mediator.Send(new ValidateLoginCommand(Username, Password));
-                if (uid != Guid.Empty)
+                var isValid = await mediator.Send(new ValidateLoginCommand(Username, Password));
+                if (isValid)
                 {
                     var claims = new List<Claim>
                     {
                         new (ClaimTypes.Name, Username),
-                        new (ClaimTypes.Role, "Administrator"),
-                        new ("uid", uid.ToString())
+                        new (ClaimTypes.Role, "Administrator")
                     };
                     var ci = new ClaimsIdentity(claims, CookieAuthenticationDefaults.AuthenticationScheme);
                     var p = new ClaimsPrincipal(ci);
