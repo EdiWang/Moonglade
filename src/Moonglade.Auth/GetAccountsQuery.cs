@@ -13,8 +13,6 @@ public class GetAccountsQueryHandler(IRepository<LocalAccountEntity> repo) : IRe
         {
             Id = p.Id,
             CreateTimeUtc = p.CreateTimeUtc,
-            LastLoginIp = p.LastLoginIp,
-            LastLoginTimeUtc = p.LastLoginTimeUtc,
             Username = p.Username
         }, ct);
     }

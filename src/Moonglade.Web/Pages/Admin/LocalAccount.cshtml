@@ -57,8 +57,8 @@
         <thead>
             <tr>
                 <th>@SharedLocalizer["Username"]</th>
-                <th>@SharedLocalizer["Last Login IP"]</th>
-                <th>@SharedLocalizer["Last Login Time (UTC)"]</th>
+                @* <th>@SharedLocalizer["Last Login IP"]</th>
+                <th>@SharedLocalizer["Last Login Time (UTC)"]</th> *@
             </tr>
         </thead>
         <tbody>
@@ -66,8 +66,8 @@
             {
                 <tr id="tr-@item.Id">
                     <td>@item.Username</td>
-                    <td>@(item.LastLoginIp ?? "N/A")</td>
-                    <td>@(null != item.LastLoginTimeUtc ? item.LastLoginTimeUtc.ToString() : "N/A")</td>
+                    @* <td>@(item.LastLoginIp ?? "N/A")</td>
+                    <td>@(null != item.LastLoginTimeUtc ? item.LastLoginTimeUtc.ToString() : "N/A")</td> *@
                 </tr>
             }
         </tbody>
