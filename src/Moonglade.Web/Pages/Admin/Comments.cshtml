@@ -7,7 +7,7 @@
 }
 @Html.AntiForgeryToken()
 
-@section scripts{
+@section scripts {
     <script type="module">
         import * as utils from '/js/app/utils.module.js'
 
@@ -65,7 +65,7 @@
     </script>
 }
 
-@section head{
+@section head {
     <style>
         .mdrendered-comment-content img {
             max-width: 720px;
@@ -77,7 +77,7 @@
         }
     </style>
 }
-@section admintoolbar{
+@section admintoolbar {
     <div class="admin-toolbar pb-2 border-bottom mb-3">
         <a href="javascript:window.deleteSelectedComments();" class="btn btn-outline-danger btn-delete-selected">
             <i class="bi-trash"></i> @SharedLocalizer["Delete selected"]
@@ -171,7 +171,7 @@
         }
     }
 
-    @Html.PagedListPager(Model.CommentDetailedItems, page => $"?pageIndex={page}", new PagedListRenderOptions
+    @Html.PagedListPager(Model.CommentDetailedItems, page => $"?pageIndex={page}", new()
     {
         UlElementClasses = new[] { "pagination mt-3" },
         DisplayEllipsesWhenNotShowingAllPageNumbers = false

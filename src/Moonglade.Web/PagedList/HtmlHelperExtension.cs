@@ -11,11 +11,11 @@ public static class HtmlHelperExtension
         Func<int, string> generatePageUrl,
         PagedListRenderOptions options)
     {
-        var htmlHelper = new HtmlHelper(new TagBuilderFactory());
+        var htmlHelper = new HtmlHelper(new());
         var htmlString = htmlHelper.PagedListPager(list, generatePageUrl, options);
 
         htmlString = HttpUtility.HtmlDecode(htmlString);
 
-        return new HtmlString(htmlString);
+        return new(htmlString);
     }
 }
