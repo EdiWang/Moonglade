@@ -245,16 +245,12 @@ public class SettingsController(
     [HttpPut("password/local")]
     [ProducesResponseType(StatusCodes.Status204NoContent)]
     [ProducesResponseType(StatusCodes.Status409Conflict)]
-    public async Task<IActionResult> UpdateLocalAccountPassword([NotEmpty] Guid id, [FromBody][Required] string newPassword)
+    public async Task<IActionResult> UpdateLocalAccountPassword(UpdateLocalAccountPasswordRequest request)
     {
-        if (!Regex.IsMatch(newPassword, "^(?=.*[a-zA-Z])(?=.*[0-9])[A-Za-z0-9._~!@#$^&*]{8,}$"))
-        {
-            return Conflict("Password must be minimum eight characters, at least one letter and one number");
-        }
-
         var newSalt = Helper.GenerateSalt();
+        blogConfig.LocalAccountSettings.Username = request.NewUsername.Trim();
         blogConfig.LocalAccountSettings.PasswordSalt = newSalt;
-        blogConfig.LocalAccountSettings.PasswordHash = Helper.HashPassword2(newPassword, newSalt);
+        blogConfig.LocalAccountSettings.PasswordHash = Helper.HashPassword2(request.NewPassword, newSalt);
 
         await SaveConfigAsync(blogConfig.LocalAccountSettings);
         return NoContent();

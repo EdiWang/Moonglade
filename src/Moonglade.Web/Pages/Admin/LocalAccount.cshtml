@@ -24,7 +24,7 @@
 
             callApi(`/api/settings/password/local`,
                 'PUT',
-                value["NewPassword"],
+                value,
                 (resp) => {
                     document.querySelector('#resetpassword-form').reset();
                     resetPasswordModal.hide();
@@ -97,7 +97,19 @@
             <form id="resetpassword-form" method="post">
                 <div class="modal-body">
                     <div class="mb-2">
-                        <label for="NewPassword">New Password</label>
+                        <label for="NewPassword">New username</label>
+                        <input class="form-control" type="text"
+                               id="NewUsername"
+                               minlength="3"
+                               maxlength="16"
+                               name="NewUsername"
+                               value="@User.Identity?.Name?.Trim()"
+                               pattern="^[A-Za-z0-9]{3,16}$"
+                               required>
+                        <div class="text-muted">English letters and numbers only.</div>
+                    </div>
+                    <div class="mb-2">
+                        <label for="NewPassword">New password</label>
                         <input class="form-control" type="password"
                                id="NewPassword"
                                minlength="8"
@@ -105,7 +117,6 @@
                                name="NewPassword"
                                pattern="^(?=.*[a-zA-Z])(?=.*[0-9])[A-Za-z0-9._~!@@#$^&*]{8,}$"
                                required>
-                        <span class="text-danger field-validation-valid"></span>
                     </div>
                     <div class="text-muted">
                         Your password must be:
