@@ -1,10 +1,7 @@
 ﻿using Edi.PasswordGenerator;
 using Microsoft.AspNetCore.Localization;
 using Moonglade.Email.Client;
-using Moonglade.Web.Attributes;
 using NUglify;
-using System.ComponentModel.DataAnnotations;
-using System.Text.RegularExpressions;
 
 namespace Moonglade.Web.Controllers;
 
