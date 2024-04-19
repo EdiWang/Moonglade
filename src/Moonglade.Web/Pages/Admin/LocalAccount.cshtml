@@ -9,14 +9,14 @@
     <script type="module">
         import * as utils from '/js/app/utils.module.js'
 
-        var resetPasswordHashModal = new bootstrap.Modal('#resetPasswordHashModal');
+        var resetPasswordModal = new bootstrap.Modal('#resetPasswordModal');
 
-        window.resetPasswordHash = function () {
+        window.resetPassword = function () {
             document.querySelector('#resetpassword-form').reset();
-            resetPasswordHashModal.show();
+            resetPasswordModal.show();
         }
 
-        window.handleResetPasswordHashFormSubmit = function (event) {
+        window.handleResetPasswordFormSubmit = function (event) {
             event.preventDefault();
 
             const data = new FormData(event.target);
@@ -24,26 +24,26 @@
 
             callApi(`/api/localaccount/${cid}/password`,
                 'PUT',
-                value["NewPasswordHash"],
+                value["NewPassword"],
                 (resp) => {
                     document.querySelector('#resetpassword-form').reset();
-                    resetPasswordHashModal.hide();
-                    blogToast.success('PasswordHash updated.');
+                    resetPasswordModal.hide();
+                    blogToast.success('Password updated.');
                     cid = '';
                 });
         }
 
-        const resetPasswordHashForm = document.querySelector('#resetpassword-form');
-        resetPasswordHashForm.addEventListener('submit', handleResetPasswordHashFormSubmit);
+        const resetPasswordForm = document.querySelector('#resetpassword-form');
+        resetPasswordForm.addEventListener('submit', handleResetPasswordFormSubmit);
     </script>
 }
 
 
 @section admintoolbar {
     <div class="admin-toolbar pb-2 border-bottom mb-3">
-        <a class="btn btn-outline-accent" href="javascript:resetPasswordHash();">
+        <a class="btn btn-outline-accent" href="javascript:resetPassword();">
             <i class="bi-key"></i>
-            @SharedLocalizer["Change PasswordHash"]
+            @SharedLocalizer["Change Password"]
         </a>
     </div>
 }
@@ -55,6 +55,7 @@
             <tr>
                 <th>@SharedLocalizer["Login IP"]</th>
                 <th>@SharedLocalizer["Login Time (UTC)"]</th>
+                <th>@SharedLocalizer["User Agent"]</th>
             </tr>
         </thead>
         <tbody>
@@ -63,6 +64,7 @@
                 <tr>
                     <td>@item.LoginIp</td>
                     <td>@item.LoginTimeUtc.ToString(CultureInfo.CurrentCulture)</td>
+                    <td>@item.LoginUserAgent</td>
                 </tr>
             }
         </tbody>
@@ -71,11 +73,11 @@
 
 <p class="text-muted">Check out <a href="https://learn.microsoft.com/en-us/azure/active-directory/fundamentals/whatis?WT.mc_id=AZ-MVP-5002809">Microsoft Entra ID</a> and empower your blog to achieve more!</p>
 
-<div class="modal fade" id="resetPasswordModal" tabindex="-1" role="dialog" aria-labelledby="resetPasswordHashModalLabel" aria-hidden="true">
+<div class="modal fade" id="resetPasswordModal" tabindex="-1" role="dialog" aria-labelledby="resetPasswordModalLabel" aria-hidden="true">
     <div class="modal-dialog" role="document">
         <div class="modal-content">
             <div class="modal-header">
-                <h5 class="modal-title" id="resetPasswordModalLabel">@SharedLocalizer["Reset PasswordHash"]</h5>
+                <h5 class="modal-title" id="resetPasswordModalLabel">@SharedLocalizer["Reset Password"]</h5>
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close">
                 </button>
             </div>
@@ -83,12 +85,12 @@
             <form id="resetpassword-form" method="post">
                 <div class="modal-body">
                     <div class="mb-2">
-                        <label for="NewPassword">New PasswordHash</label>
+                        <label for="NewPassword">New Password</label>
                         <input class="form-control" type="password"
                                id="NewPassword"
                                minlength="8"
                                maxlength="32"
-                               name="NewPasswordHash"
+                               name="NewPassword"
                                pattern="^(?=.*[a-zA-Z])(?=.*[0-9])[A-Za-z0-9._~!@@#$^&*]{8,}$"
                                required>
                         <span class="text-danger field-validation-valid"></span>
