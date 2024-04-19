@@ -239,6 +239,20 @@ public class SettingsController(
         });
     }
 
+    [HttpPut("password/local")]
+    [ProducesResponseType(StatusCodes.Status204NoContent)]
+    [ProducesResponseType(StatusCodes.Status409Conflict)]
+    public async Task<IActionResult> UpdateLocalAccountPassword(UpdateLocalAccountPasswordRequest request)
+    {
+        var newSalt = Helper.GenerateSalt();
+        blogConfig.LocalAccountSettings.Username = request.NewUsername.Trim();
+        blogConfig.LocalAccountSettings.PasswordSalt = newSalt;
+        blogConfig.LocalAccountSettings.PasswordHash = Helper.HashPassword2(request.NewPassword, newSalt);
+
+        await SaveConfigAsync(blogConfig.LocalAccountSettings);
+        return NoContent();
+    }
+
     private async Task SaveConfigAsync<T>(T blogSettings) where T : IBlogSettings
     {
         var kvp = blogConfig.UpdateAsync(blogSettings);

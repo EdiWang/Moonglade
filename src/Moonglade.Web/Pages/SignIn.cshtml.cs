@@ -65,22 +65,28 @@ public class SignInModel(IOptions<AuthenticationSettings> authSettings,
                 ModelState.AddModelError(nameof(CaptchaCode), "Wrong Captcha Code");
             }
 
+            // Check User-Agent
+            var ua = Request.Headers["User-Agent"].ToString();
+            if (string.IsNullOrWhiteSpace(ua))
+            {
+                return Unauthorized();
+            }
+
             if (ModelState.IsValid)
             {
-                var uid = await mediator.Send(new ValidateLoginCommand(Username, Password));
-                if (uid != Guid.Empty)
+                var isValid = await mediator.Send(new ValidateLoginCommand(Username, Password));
+                if (isValid)
                 {
                     var claims = new List<Claim>
                     {
                         new (ClaimTypes.Name, Username),
-                        new (ClaimTypes.Role, "Administrator"),
-                        new ("uid", uid.ToString())
+                        new (ClaimTypes.Role, "Administrator")
                     };
                     var ci = new ClaimsIdentity(claims, CookieAuthenticationDefaults.AuthenticationScheme);
                     var p = new ClaimsPrincipal(ci);
 
                     await HttpContext.SignInAsync(CookieAuthenticationDefaults.AuthenticationScheme, p);
-                    await mediator.Send(new LogSuccessLoginCommand(uid, Helper.GetClientIP(HttpContext)));
+                    await mediator.Send(new LogSuccessLoginCommand(Helper.GetClientIP(HttpContext), ua, "TODO"));
 
                     var successMessage = $@"Authentication success for local account ""{Username}""";
 

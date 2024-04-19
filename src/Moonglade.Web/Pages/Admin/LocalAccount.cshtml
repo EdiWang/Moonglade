@@ -1,8 +1,8 @@
 ﻿@page "/admin/account"
+@using System.Globalization
 @model Moonglade.Web.Pages.Admin.LocalAccountModel
 @{
     ViewBag.Title = "Accounts";
-    var currentUidClaim = User.Claims.FirstOrDefault(c => c.Type == "uid");
 }
 
 @section scripts {
@@ -10,12 +10,10 @@
         import * as utils from '/js/app/utils.module.js'
 
         var resetPasswordModal = new bootstrap.Modal('#resetPasswordModal');
-        var cid = '';
 
-        window.resetPassword = function (accountId) {
+        window.resetPassword = function () {
             document.querySelector('#resetpassword-form').reset();
             resetPasswordModal.show();
-            cid = accountId;
         }
 
         window.handleResetPasswordFormSubmit = function (event) {
@@ -24,14 +22,13 @@
             const data = new FormData(event.target);
             const value = Object.fromEntries(data.entries());
 
-            callApi(`/api/localaccount/${cid}/password`,
+            callApi(`/api/settings/password/local`,
                 'PUT',
-                value["NewPassword"],
+                value,
                 (resp) => {
                     document.querySelector('#resetpassword-form').reset();
                     resetPasswordModal.hide();
                     blogToast.success('Password updated.');
-                    cid = '';
                 });
         }
 
@@ -43,38 +40,50 @@
 
 @section admintoolbar {
     <div class="admin-toolbar pb-2 border-bottom mb-3">
-        <a class="btn btn-outline-accent" href="javascript:resetPassword('@currentUidClaim');">
+        <a class="btn btn-outline-accent" href="javascript:resetPassword();">
             <i class="bi-key"></i>
             @SharedLocalizer["Change Password"]
+        </a>
+
+        <a class="btn btn-outline-accent" href="javascript:alert('coming soon');">
+            <i class="bi-pass"></i>
+            @SharedLocalizer["Configure MFA"]
         </a>
     </div>
 }
 
+<div class="alert alert-warning">
+    Local account is not secure. It's recommended to use <a href="https://learn.microsoft.com/en-us/azure/active-directory/fundamentals/whatis?WT.mc_id=AZ-MVP-5002809">Microsoft Entra ID</a> for authentication. Click <a href="https://github.com/EdiWang/Moonglade/wiki/Use-Microsoft-Entra-ID-Authentication" target="_blank">here</a> to configure.
+</div>
 
-@if (null != Model.Accounts && Model.Accounts.Any())
+<h4 class="admin-subtitle fw-bold mb-2">
+    Last 10 sign in activities
+</h4>
+
+@if (null != Model.LoginHistoryList && Model.LoginHistoryList.Any())
 {
-    <table class="table table-bordered mt-3">
-        <thead>
-            <tr>
-                <th>@SharedLocalizer["Username"]</th>
-                <th>@SharedLocalizer["Last Login IP"]</th>
-                <th>@SharedLocalizer["Last Login Time (UTC)"]</th>
-            </tr>
-        </thead>
-        <tbody>
-            @foreach (var item in Model.Accounts.OrderBy(p => p.Username))
-            {
-                <tr id="tr-@item.Id">
-                    <td>@item.Username</td>
-                    <td>@(item.LastLoginIp ?? "N/A")</td>
-                    <td>@(null != item.LastLoginTimeUtc ? item.LastLoginTimeUtc.ToString() : "N/A")</td>
+    <div class="mb-4 rounded-3 shadow-sm border bg-white p-2">
+        <table class="table table-borderless table-sm mb-0">
+            <thead>
+                <tr>
+                    <th>@SharedLocalizer["Login IP"]</th>
+                    <th>@SharedLocalizer["Login Time (UTC)"]</th>
+                    <th>@SharedLocalizer["User Agent"]</th>
                 </tr>
-            }
-        </tbody>
-    </table>
+            </thead>
+            <tbody>
+                @foreach (var item in Model.LoginHistoryList.OrderByDescending(p => p.LoginTimeUtc))
+                {
+                    <tr>
+                        <td>@item.LoginIp</td>
+                        <td>@item.LoginTimeUtc.ToString(CultureInfo.CurrentCulture)</td>
+                        <td>@item.LoginUserAgent</td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
 }
-
-<p class="text-muted">Check out <a href="https://learn.microsoft.com/en-us/azure/active-directory/fundamentals/whatis?WT.mc_id=AZ-MVP-5002809">Microsoft Entra ID</a> and empower your blog to achieve more!</p>
 
 <div class="modal fade" id="resetPasswordModal" tabindex="-1" role="dialog" aria-labelledby="resetPasswordModalLabel" aria-hidden="true">
     <div class="modal-dialog" role="document">
@@ -88,7 +97,19 @@
             <form id="resetpassword-form" method="post">
                 <div class="modal-body">
                     <div class="mb-2">
-                        <label for="NewPassword">New Password</label>
+                        <label for="NewPassword">New username</label>
+                        <input class="form-control" type="text"
+                               id="NewUsername"
+                               minlength="3"
+                               maxlength="16"
+                               name="NewUsername"
+                               value="@User.Identity?.Name?.Trim()"
+                               pattern="^[A-Za-z0-9]{3,16}$"
+                               required>
+                        <div class="text-muted">English letters and numbers only.</div>
+                    </div>
+                    <div class="mb-2">
+                        <label for="NewPassword">New password</label>
                         <input class="form-control" type="password"
                                id="NewPassword"
                                minlength="8"
@@ -96,7 +117,15 @@
                                name="NewPassword"
                                pattern="^(?=.*[a-zA-Z])(?=.*[0-9])[A-Za-z0-9._~!@@#$^&*]{8,}$"
                                required>
-                        <span class="text-danger field-validation-valid"></span>
+                    </div>
+                    <div class="text-muted">
+                        Your password must be:
+                        <ul>
+                            <li>Contain at least one letter (can be either lowercase or uppercase).</li>
+                            <li>Contain at least one digit.</li>
+                            <li>Be at least 8 characters long.</li>
+                            <li>Only contain characters from the set: uppercase letters, lowercase letters, digits, and the special characters <code>._~!@@#$^&*`</code>.</li>
+                        </ul>
                     </div>
                 </div>
                 <div class="modal-footer">

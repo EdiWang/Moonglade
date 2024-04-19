@@ -1,12 +1,11 @@
 using Microsoft.AspNetCore.Mvc.RazorPages;
+using Moonglade.Data.Entities;
 
 namespace Moonglade.Web.Pages.Admin;
 
 public class LocalAccountModel(IMediator mediator) : PageModel
 {
-    public CreateAccountCommand ViewModel { get; set; } = new();
+    public IReadOnlyList<LoginHistoryEntity> LoginHistoryList { get; set; }
 
-    public IReadOnlyList<Account> Accounts { get; set; }
-
-    public async Task OnGet() => Accounts = await mediator.Send(new GetAccountsQuery());
+    public async Task OnGet() => LoginHistoryList = await mediator.Send(new GetLoginHistoryQuery());
 }

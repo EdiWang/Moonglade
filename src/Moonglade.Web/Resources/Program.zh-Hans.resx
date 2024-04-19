@@ -483,11 +483,11 @@
   <data name="Language" xml:space="preserve">
     <value>语言</value>
   </data>
-  <data name="Last Login IP" xml:space="preserve">
-    <value>最后登录 IP</value>
+  <data name="Login IP" xml:space="preserve">
+    <value>登录 IP</value>
   </data>
-  <data name="Last Login Time (UTC)" xml:space="preserve">
-    <value>最后登录时间 (UTC)</value>
+  <data name="Login Time (UTC)" xml:space="preserve">
+    <value>登录时间 (UTC)</value>
   </data>
   <data name="Latest Posts" xml:space="preserve">
     <value>最新文章</value>
