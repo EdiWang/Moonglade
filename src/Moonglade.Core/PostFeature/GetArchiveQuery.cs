@@ -15,7 +15,7 @@ public class GetArchiveQueryHandler(IRepository<PostEntity> repo) : IRequestHand
     {
         if (!await repo.AnyAsync(p => p.IsPublished && !p.IsDeleted, ct))
         {
-            return new List<Archive>();
+            return new();
         }
 
         var spec = new PostSpec(PostStatus.Published);

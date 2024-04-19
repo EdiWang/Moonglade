@@ -17,8 +17,7 @@ public class CommentController(
     [HttpPost("{postId:guid}")]
     [AllowAnonymous]
     [ServiceFilter(typeof(ValidateCaptcha))]
-    [ProducesResponseType(StatusCodes.Status200OK)]
-    [ProducesResponseType(StatusCodes.Status201Created)]
+    [ProducesResponseType(StatusCodes.Status204NoContent)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
     [ProducesResponseType(StatusCodes.Status403Forbidden)]
     [ProducesResponseType<ModelStateDictionary>(StatusCodes.Status409Conflict)]
@@ -62,12 +61,7 @@ public class CommentController(
             }
         }
 
-        if (blogConfig.ContentSettings.RequireCommentReview)
-        {
-            return Created("moonglade://empty", item);
-        }
-
-        return Ok();
+        return NoContent();
     }
 
     [HttpPut("{commentId:guid}/approval/toggle")]
