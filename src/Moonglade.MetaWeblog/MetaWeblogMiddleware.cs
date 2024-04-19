@@ -10,7 +10,7 @@ public class MetaWeblogMiddleware(RequestDelegate next, ILoggerFactory loggerFac
     public async Task Invoke(HttpContext context, MetaWeblogService service)
     {
         if (context.Request.Method == "POST" &&
-            context.Request.Path.StartsWithSegments(urlEndpoint) && 
+            context.Request.Path.StartsWithSegments(urlEndpoint) &&
             context.Request.ContentType.ToLower().Contains("text/xml"))
         {
             try
