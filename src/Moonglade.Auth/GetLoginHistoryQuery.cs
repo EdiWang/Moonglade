@@ -1,5 +1,6 @@
 ﻿using Moonglade.Data.Entities;
 using Moonglade.Data.Infrastructure;
+using Moonglade.Data.Spec;
 
 namespace Moonglade.Auth;
 
@@ -9,7 +10,7 @@ public class GetLoginHistoryQueryHandler(IRepository<LoginHistoryEntity> repo) :
 {
     public async Task<IReadOnlyList<LoginHistoryEntity>> Handle(GetLoginHistoryQuery request, CancellationToken ct)
     {
-        var history = await repo.ListAsync(ct);
+        var history = await repo.ListAsync(new LoginHistorySpec(10));
         return history;
     }
 }
