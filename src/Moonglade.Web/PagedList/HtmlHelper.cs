@@ -29,16 +29,6 @@ public class HtmlHelper(TagBuilderFactory tagBuilderFactory)
         return writer.ToString();
     }
 
-    private TagBuilder WrapInListItem(string text)
-    {
-        var li = tagBuilderFactory
-            .Create("li");
-
-        SetInnerText(li, text);
-
-        return li;
-    }
-
     private TagBuilder WrapInListItem(TagBuilder inner, PagedListRenderOptions options, params string[] classes)
     {
         var li = tagBuilderFactory.Create("li");
@@ -333,7 +323,10 @@ public class HtmlHelper(TagBuilderFactory tagBuilderFactory)
                 //show delimiter between page numbers
                 if (i > firstPageToDisplay && !string.IsNullOrWhiteSpace(options.DelimiterBetweenPageNumbers))
                 {
-                    listItemLinks.Add(WrapInListItem(options.DelimiterBetweenPageNumbers));
+                    var li = tagBuilderFactory.Create("li");
+
+                    SetInnerText(li, options.DelimiterBetweenPageNumbers);
+                    listItemLinks.Add(li);
                 }
 
                 //show page number link
