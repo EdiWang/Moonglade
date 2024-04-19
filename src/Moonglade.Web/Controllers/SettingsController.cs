@@ -1,7 +1,10 @@
 ﻿using Edi.PasswordGenerator;
 using Microsoft.AspNetCore.Localization;
 using Moonglade.Email.Client;
+using Moonglade.Web.Attributes;
 using NUglify;
+using System.ComponentModel.DataAnnotations;
+using System.Text.RegularExpressions;
 
 namespace Moonglade.Web.Controllers;
 
@@ -237,6 +240,24 @@ public class SettingsController(
             ServerTimeUtc = DateTime.UtcNow,
             Password = password
         });
+    }
+
+    [HttpPut("password/local")]
+    [ProducesResponseType(StatusCodes.Status204NoContent)]
+    [ProducesResponseType(StatusCodes.Status409Conflict)]
+    public async Task<IActionResult> UpdateLocalAccountPassword([NotEmpty] Guid id, [FromBody][Required] string newPassword)
+    {
+        if (!Regex.IsMatch(newPassword, "^(?=.*[a-zA-Z])(?=.*[0-9])[A-Za-z0-9._~!@#$^&*]{8,}$"))
+        {
+            return Conflict("Password must be minimum eight characters, at least one letter and one number");
+        }
+
+        var newSalt = Helper.GenerateSalt();
+        blogConfig.LocalAccountSettings.PasswordSalt = newSalt;
+        blogConfig.LocalAccountSettings.PasswordHash = Helper.HashPassword2(newPassword, newSalt);
+
+        await SaveConfigAsync(blogConfig.LocalAccountSettings);
+        return NoContent();
     }
 
     private async Task SaveConfigAsync<T>(T blogSettings) where T : IBlogSettings

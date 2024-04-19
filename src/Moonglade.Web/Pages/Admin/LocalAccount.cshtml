@@ -22,14 +22,13 @@
             const data = new FormData(event.target);
             const value = Object.fromEntries(data.entries());
 
-            callApi(`/api/localaccount/${cid}/password`,
+            callApi(`/api/settings/password/local`,
                 'PUT',
                 value["NewPassword"],
                 (resp) => {
                     document.querySelector('#resetpassword-form').reset();
                     resetPasswordModal.hide();
                     blogToast.success('Password updated.');
-                    cid = '';
                 });
         }
 
@@ -48,27 +47,33 @@
     </div>
 }
 
+<h4 class="admin-subtitle fw-bold mb-2">
+    Last 10 sign in activities
+</h4>
+
 @if (null != Model.LoginHistoryList && Model.LoginHistoryList.Any())
 {
-    <table class="table table-bordered mt-3">
-        <thead>
-            <tr>
-                <th>@SharedLocalizer["Login IP"]</th>
-                <th>@SharedLocalizer["Login Time (UTC)"]</th>
-                <th>@SharedLocalizer["User Agent"]</th>
-            </tr>
-        </thead>
-        <tbody>
-            @foreach (var item in Model.LoginHistoryList.OrderByDescending(p => p.LoginTimeUtc))
-            {
+    <div class="mb-4 rounded-3 shadow-sm border bg-white p-2">
+        <table class="table table-borderless table-sm mb-0">
+            <thead>
                 <tr>
-                    <td>@item.LoginIp</td>
-                    <td>@item.LoginTimeUtc.ToString(CultureInfo.CurrentCulture)</td>
-                    <td>@item.LoginUserAgent</td>
+                    <th>@SharedLocalizer["Login IP"]</th>
+                    <th>@SharedLocalizer["Login Time (UTC)"]</th>
+                    <th>@SharedLocalizer["User Agent"]</th>
                 </tr>
-            }
-        </tbody>
-    </table>
+            </thead>
+            <tbody>
+                @foreach (var item in Model.LoginHistoryList.OrderByDescending(p => p.LoginTimeUtc))
+                {
+                    <tr>
+                        <td>@item.LoginIp</td>
+                        <td>@item.LoginTimeUtc.ToString(CultureInfo.CurrentCulture)</td>
+                        <td>@item.LoginUserAgent</td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
 }
 
 <p class="text-muted">Check out <a href="https://learn.microsoft.com/en-us/azure/active-directory/fundamentals/whatis?WT.mc_id=AZ-MVP-5002809">Microsoft Entra ID</a> and empower your blog to achieve more!</p>
@@ -94,6 +99,15 @@
                                pattern="^(?=.*[a-zA-Z])(?=.*[0-9])[A-Za-z0-9._~!@@#$^&*]{8,}$"
                                required>
                         <span class="text-danger field-validation-valid"></span>
+                    </div>
+                    <div class="text-muted">
+                        Your password must be:
+                        <ul>
+                            <li>Contain at least one letter (can be either lowercase or uppercase).</li>
+                            <li>Contain at least one digit.</li>
+                            <li>Be at least 8 characters long.</li>
+                            <li>Only contain characters from the set: uppercase letters, lowercase letters, digits, and the special characters <code>._~!@@#$^&*`</code>.</li>
+                        </ul>
                     </div>
                 </div>
                 <div class="modal-footer">
