@@ -1,4 +1,5 @@
-﻿using Microsoft.EntityFrameworkCore.Metadata.Builders;
+﻿using System.Text.Json.Serialization;
+using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
 namespace Moonglade.Data.Entities;
 
@@ -14,6 +15,7 @@ public class CategoryEntity
     public string DisplayName { get; set; }
     public string Note { get; set; }
 
+    [JsonIgnore]
     public virtual ICollection<PostCategoryEntity> PostCategory { get; set; }
 }
 
