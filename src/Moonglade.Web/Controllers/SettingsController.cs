@@ -40,7 +40,7 @@ public class SettingsController(
 
     [HttpPost("general")]
     [ProducesResponseType(StatusCodes.Status204NoContent)]
-    [TypeFilter(typeof(ClearBlogCache), Arguments = new object[] { BlogCachePartition.General, "theme" })]
+    [TypeFilter(typeof(ClearBlogCache), Arguments = [BlogCachePartition.General, "theme"])]
     public async Task<IActionResult> General(GeneralSettings model, ITimeZoneResolver timeZoneResolver)
     {
         model.AvatarUrl = blogConfig.GeneralSettings.AvatarUrl;
@@ -244,6 +244,10 @@ public class SettingsController(
     [ProducesResponseType(StatusCodes.Status409Conflict)]
     public async Task<IActionResult> UpdateLocalAccountPassword(UpdateLocalAccountPasswordRequest request)
     {
+        var oldPasswordValid = blogConfig.LocalAccountSettings.PasswordHash == Helper.HashPassword2(request.OldPassword.Trim(), blogConfig.LocalAccountSettings.PasswordSalt);
+
+        if (!oldPasswordValid) return Conflict("Old password is incorrect.");
+
         var newSalt = Helper.GenerateSalt();
         blogConfig.LocalAccountSettings.Username = request.NewUsername.Trim();
         blogConfig.LocalAccountSettings.PasswordSalt = newSalt;

@@ -1,8 +1,9 @@
 ﻿@page "/admin/account"
 @using System.Globalization
-@model Moonglade.Web.Pages.Admin.LocalAccountModel
+@inject IMediator Mediator
 @{
-    ViewBag.Title = "Accounts";
+    ViewBag.Title = "Account";
+    var loginHistoryList = await Mediator.Send(new GetLoginHistoryQuery());
 }
 
 @section scripts {
@@ -37,7 +38,6 @@
     </script>
 }
 
-
 @section admintoolbar {
     <div class="admin-toolbar pb-2 border-bottom mb-3">
         <a class="btn btn-outline-accent" href="javascript:resetPassword();">
@@ -60,10 +60,10 @@
     Last 10 sign in activities
 </h4>
 
-@if (null != Model.LoginHistoryList && Model.LoginHistoryList.Any())
+@if (null != loginHistoryList && loginHistoryList.Any())
 {
     <div class="mb-4 rounded-3 shadow-sm border bg-white p-2">
-        <table class="table table-borderless table-sm mb-0">
+        <table class="table table-borderless mb-0">
             <thead>
                 <tr>
                     <th>@SharedLocalizer["Login IP"]</th>
@@ -72,7 +72,7 @@
                 </tr>
             </thead>
             <tbody>
-                @foreach (var item in Model.LoginHistoryList.OrderByDescending(p => p.LoginTimeUtc))
+                @foreach (var item in loginHistoryList.OrderByDescending(p => p.LoginTimeUtc))
                 {
                     <tr>
                         <td>@item.LoginIp</td>
@@ -107,6 +107,16 @@
                                pattern="^[A-Za-z0-9]{3,16}$"
                                required>
                         <div class="text-muted">English letters and numbers only.</div>
+                    </div>
+                    <div class="mb-2">
+                        <label for="NewPassword">Old password</label>
+                        <input class="form-control" type="password"
+                               id="OldPassword"
+                               minlength="8"
+                               maxlength="32"
+                               name="OldPassword"
+                               pattern="^(?=.*[a-zA-Z])(?=.*[0-9])[A-Za-z0-9._~!@@#$^&*]{8,}$"
+                               required>
                     </div>
                     <div class="mb-2">
                         <label for="NewPassword">New password</label>

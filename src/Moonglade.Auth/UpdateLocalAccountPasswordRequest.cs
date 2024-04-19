@@ -10,5 +10,9 @@ public class UpdateLocalAccountPasswordRequest
 
     [Required]
     [RegularExpression("^(?=.*[a-zA-Z])(?=.*[0-9])[A-Za-z0-9._~!@#$^&*]{8,}$")]
+    public string OldPassword { get; set; }
+
+    [Required]
+    [RegularExpression("^(?=.*[a-zA-Z])(?=.*[0-9])[A-Za-z0-9._~!@#$^&*]{8,}$")]
     public string NewPassword { get; set; }
 }
