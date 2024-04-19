@@ -11,10 +11,10 @@ public class FriendLinkController(IMediator mediator) : ControllerBase
 {
     [HttpPost]
     [ProducesResponseType(StatusCodes.Status201Created)]
-    public async Task<IActionResult> Create(AddLinkCommand command)
+    public async Task<IActionResult> Create(EditLinkRequest request)
     {
-        await mediator.Send(command);
-        return Created(new Uri(command.LinkUrl), command);
+        await mediator.Send(new AddLinkCommand(request));
+        return Created(new Uri(request.LinkUrl), request);
     }
 
     [HttpGet("{id:guid}")]
@@ -38,10 +38,9 @@ public class FriendLinkController(IMediator mediator) : ControllerBase
 
     [HttpPut("{id:guid}")]
     [ProducesResponseType(StatusCodes.Status204NoContent)]
-    public async Task<IActionResult> Update([NotEmpty] Guid id, UpdateLinkCommand command)
+    public async Task<IActionResult> Update([NotEmpty] Guid id, EditLinkRequest request)
     {
-        command.Id = id;
-        await mediator.Send(command);
+        await mediator.Send(new UpdateLinkCommand(id, request));
         return NoContent();
     }
 

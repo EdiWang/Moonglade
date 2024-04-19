@@ -6,7 +6,7 @@ namespace Moonglade.Web.Pages.Admin;
 
 public class FriendLinkModel(IMediator mediator) : PageModel
 {
-    public UpdateLinkCommand EditLinkRequest { get; set; } = new();
+    public EditLinkRequest EditLinkRequest { get; set; } = new();
 
     public List<FriendLinkEntity> Links { get; set; }
 
