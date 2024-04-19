@@ -1,4 +1,5 @@
 ﻿using Moonglade.Core.CategoryFeature;
+using Moonglade.Data.Entities;
 using Moonglade.Web.Attributes;
 
 namespace Moonglade.Web.Controllers;
@@ -20,7 +21,7 @@ public class CategoryController(IMediator mediator) : ControllerBase
     }
 
     [HttpGet("list")]
-    [ProducesResponseType<List<Category>>(StatusCodes.Status200OK)]
+    [ProducesResponseType<List<CategoryEntity>>(StatusCodes.Status200OK)]
     public async Task<IActionResult> List()
     {
         var list = await mediator.Send(new GetCategoriesQuery());
