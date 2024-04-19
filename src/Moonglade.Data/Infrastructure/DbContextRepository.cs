@@ -19,10 +19,10 @@ public abstract class DbContextRepository<T>(DbContext ctx) : IRepository<T>
     public virtual ValueTask<T> GetAsync(object key, CancellationToken ct = default) =>
         DbContext.Set<T>().FindAsync(keyValues: new[] { key }, cancellationToken: ct);
 
-    public async Task<IReadOnlyList<T>> ListAsync(CancellationToken ct = default) =>
+    public async Task<List<T>> ListAsync(CancellationToken ct = default) =>
         await DbContext.Set<T>().AsNoTracking().ToListAsync(cancellationToken: ct);
 
-    public async Task<IReadOnlyList<T>> ListAsync(ISpecification<T> spec) =>
+    public async Task<List<T>> ListAsync(ISpecification<T> spec) =>
         await ApplySpecification(spec).AsNoTracking().ToListAsync();
 
     public IQueryable<T> AsQueryable() => DbContext.Set<T>();
@@ -61,10 +61,10 @@ public abstract class DbContextRepository<T>(DbContext ctx) : IRepository<T>
             DbContext.Set<T>().AnyAsync(condition, cancellationToken: ct) :
             DbContext.Set<T>().AnyAsync(cancellationToken: ct);
 
-    public async Task<IReadOnlyList<TResult>> SelectAsync<TResult>(Expression<Func<T, TResult>> selector, CancellationToken ct = default) =>
+    public async Task<List<TResult>> SelectAsync<TResult>(Expression<Func<T, TResult>> selector, CancellationToken ct = default) =>
         await DbContext.Set<T>().AsNoTracking().Select(selector).ToListAsync(cancellationToken: ct);
 
-    public async Task<IReadOnlyList<TResult>> SelectAsync<TResult>(
+    public async Task<List<TResult>> SelectAsync<TResult>(
         ISpecification<T> spec, Expression<Func<T, TResult>> selector, CancellationToken ct = default) =>
         await ApplySpecification(spec).AsNoTracking().Select(selector).ToListAsync(ct);
 
@@ -72,7 +72,7 @@ public abstract class DbContextRepository<T>(DbContext ctx) : IRepository<T>
         ISpecification<T> spec, Expression<Func<T, TResult>> selector) =>
         ApplySpecification(spec).AsNoTracking().Select(selector).FirstOrDefaultAsync();
 
-    public async Task<IReadOnlyList<TResult>> SelectAsync<TGroup, TResult>(
+    public async Task<List<TResult>> SelectAsync<TGroup, TResult>(
         Expression<Func<T, TGroup>> groupExpression,
         Expression<Func<IGrouping<TGroup, T>, TResult>> selector,
         ISpecification<T> spec = null) =>

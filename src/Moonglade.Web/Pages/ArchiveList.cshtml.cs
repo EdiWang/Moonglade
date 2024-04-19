@@ -5,7 +5,7 @@ namespace Moonglade.Web.Pages;
 
 public class ArchiveListModel(IMediator mediator) : PageModel
 {
-    public IReadOnlyList<PostDigest> Posts { get; set; }
+    public List<PostDigest> Posts { get; set; }
 
     public string ArchiveInfo { get; set; }
 
@@ -14,7 +14,7 @@ public class ArchiveListModel(IMediator mediator) : PageModel
         if (year < DateTime.MinValue.Year || year > DateTime.UtcNow.Year) return BadRequest();
         if (month is > 12 or < 0) return BadRequest();
 
-        IReadOnlyList<PostDigest> model;
+        List<PostDigest> model;
 
         if (month is not null)
         {

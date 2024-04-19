@@ -3,11 +3,11 @@ using System.Text.RegularExpressions;
 
 namespace Moonglade.Core.PostFeature;
 
-public record SearchPostQuery(string Keyword) : IRequest<IReadOnlyList<PostDigest>>;
+public record SearchPostQuery(string Keyword) : IRequest<List<PostDigest>>;
 
-public class SearchPostQueryHandler(IRepository<PostEntity> repo) : IRequestHandler<SearchPostQuery, IReadOnlyList<PostDigest>>
+public class SearchPostQueryHandler(IRepository<PostEntity> repo) : IRequestHandler<SearchPostQuery, List<PostDigest>>
 {
-    public async Task<IReadOnlyList<PostDigest>> Handle(SearchPostQuery request, CancellationToken ct)
+    public async Task<List<PostDigest>> Handle(SearchPostQuery request, CancellationToken ct)
     {
         if (null == request || string.IsNullOrWhiteSpace(request.Keyword))
         {

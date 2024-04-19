@@ -4,9 +4,9 @@ using Moonglade.Data.Infrastructure;
 
 namespace Moonglade.Pingback;
 
-public record GetPingbacksQuery : IRequest<IReadOnlyList<PingbackEntity>>;
+public record GetPingbacksQuery : IRequest<List<PingbackEntity>>;
 
-public class GetPingbacksQueryHandler(IRepository<PingbackEntity> repo) : IRequestHandler<GetPingbacksQuery, IReadOnlyList<PingbackEntity>>
+public class GetPingbacksQueryHandler(IRepository<PingbackEntity> repo) : IRequestHandler<GetPingbacksQuery, List<PingbackEntity>>
 {
-    public Task<IReadOnlyList<PingbackEntity>> Handle(GetPingbacksQuery request, CancellationToken ct) => repo.ListAsync(ct);
+    public Task<List<PingbackEntity>> Handle(GetPingbacksQuery request, CancellationToken ct) => repo.ListAsync(ct);
 }

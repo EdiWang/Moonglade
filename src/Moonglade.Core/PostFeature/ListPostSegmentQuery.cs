@@ -4,7 +4,7 @@ using System.Linq.Expressions;
 namespace Moonglade.Core.PostFeature;
 
 public class ListPostSegmentQuery(PostStatus postStatus, int offset, int pageSize, string keyword = null)
-    : IRequest<(IReadOnlyList<PostSegment> Posts, int TotalRows)>
+    : IRequest<(List<PostSegment> Posts, int TotalRows)>
 {
     public PostStatus PostStatus { get; set; } = postStatus;
 
@@ -15,9 +15,9 @@ public class ListPostSegmentQuery(PostStatus postStatus, int offset, int pageSiz
     public string Keyword { get; set; } = keyword;
 }
 
-public class ListPostSegmentQueryHandler(IRepository<PostEntity> repo) : IRequestHandler<ListPostSegmentQuery, (IReadOnlyList<PostSegment> Posts, int TotalRows)>
+public class ListPostSegmentQueryHandler(IRepository<PostEntity> repo) : IRequestHandler<ListPostSegmentQuery, (List<PostSegment> Posts, int TotalRows)>
 {
-    public async Task<(IReadOnlyList<PostSegment> Posts, int TotalRows)> Handle(ListPostSegmentQuery request, CancellationToken ct)
+    public async Task<(List<PostSegment> Posts, int TotalRows)> Handle(ListPostSegmentQuery request, CancellationToken ct)
     {
         if (request.PageSize < 1)
         {

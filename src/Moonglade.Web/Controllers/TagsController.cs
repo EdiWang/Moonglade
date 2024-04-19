@@ -9,7 +9,7 @@ namespace Moonglade.Web.Controllers;
 public class TagsController(IMediator mediator) : ControllerBase
 {
     [HttpGet("names")]
-    [ProducesResponseType<IReadOnlyList<string>>(StatusCodes.Status200OK)]
+    [ProducesResponseType<List<string>>(StatusCodes.Status200OK)]
     public async Task<IActionResult> Names()
     {
         var names = await mediator.Send(new GetTagNamesQuery());
@@ -17,7 +17,7 @@ public class TagsController(IMediator mediator) : ControllerBase
     }
 
     [HttpGet("list")]
-    [ProducesResponseType<IReadOnlyList<Tag>>(StatusCodes.Status200OK)]
+    [ProducesResponseType<List<Tag>>(StatusCodes.Status200OK)]
     public async Task<IActionResult> List()
     {
         var list = await mediator.Send(new GetTagsQuery());

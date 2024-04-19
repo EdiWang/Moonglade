@@ -20,7 +20,7 @@ public class CategoryController(IMediator mediator) : ControllerBase
     }
 
     [HttpGet("list")]
-    [ProducesResponseType<IReadOnlyList<Category>>(StatusCodes.Status200OK)]
+    [ProducesResponseType<List<Category>>(StatusCodes.Status200OK)]
     public async Task<IActionResult> List()
     {
         var list = await mediator.Send(new GetCategoriesQuery());

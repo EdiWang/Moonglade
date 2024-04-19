@@ -2,11 +2,11 @@
 
 namespace Moonglade.Core.CategoryFeature;
 
-public record GetCategoriesQuery : IRequest<IReadOnlyList<Category>>;
+public record GetCategoriesQuery : IRequest<List<Category>>;
 
-public class GetCategoriesQueryHandler(IRepository<CategoryEntity> repo, ICacheAside cache) : IRequestHandler<GetCategoriesQuery, IReadOnlyList<Category>>
+public class GetCategoriesQueryHandler(IRepository<CategoryEntity> repo, ICacheAside cache) : IRequestHandler<GetCategoriesQuery, List<Category>>
 {
-    public Task<IReadOnlyList<Category>> Handle(GetCategoriesQuery request, CancellationToken ct)
+    public Task<List<Category>> Handle(GetCategoriesQuery request, CancellationToken ct)
     {
         return cache.GetOrCreateAsync(BlogCachePartition.General.ToString(), "allcats", async entry =>
         {

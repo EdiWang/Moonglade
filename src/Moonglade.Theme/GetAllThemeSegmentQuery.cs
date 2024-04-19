@@ -4,11 +4,11 @@ using Moonglade.Data.Infrastructure;
 
 namespace Moonglade.Theme;
 
-public record GetAllThemeSegmentQuery : IRequest<IReadOnlyList<ThemeSegment>>;
+public record GetAllThemeSegmentQuery : IRequest<List<ThemeSegment>>;
 
-public class GetAllThemeSegmentQueryHandler(IRepository<BlogThemeEntity> repo) : IRequestHandler<GetAllThemeSegmentQuery, IReadOnlyList<ThemeSegment>>
+public class GetAllThemeSegmentQueryHandler(IRepository<BlogThemeEntity> repo) : IRequestHandler<GetAllThemeSegmentQuery, List<ThemeSegment>>
 {
-    public Task<IReadOnlyList<ThemeSegment>> Handle(GetAllThemeSegmentQuery request, CancellationToken ct)
+    public Task<List<ThemeSegment>> Handle(GetAllThemeSegmentQuery request, CancellationToken ct)
     {
         return repo.SelectAsync(p => new ThemeSegment
         {

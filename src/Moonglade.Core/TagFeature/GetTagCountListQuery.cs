@@ -1,10 +1,10 @@
 ﻿namespace Moonglade.Core.TagFeature;
 
-public record GetTagCountListQuery : IRequest<IReadOnlyList<KeyValuePair<Tag, int>>>;
+public record GetTagCountListQuery : IRequest<List<KeyValuePair<Tag, int>>>;
 
-public class GetTagCountListQueryHandler(IRepository<TagEntity> repo) : IRequestHandler<GetTagCountListQuery, IReadOnlyList<KeyValuePair<Tag, int>>>
+public class GetTagCountListQueryHandler(IRepository<TagEntity> repo) : IRequestHandler<GetTagCountListQuery, List<KeyValuePair<Tag, int>>>
 {
-    public Task<IReadOnlyList<KeyValuePair<Tag, int>>> Handle(GetTagCountListQuery request, CancellationToken ct) =>
+    public Task<List<KeyValuePair<Tag, int>>> Handle(GetTagCountListQuery request, CancellationToken ct) =>
         repo.SelectAsync(t =>
             new KeyValuePair<Tag, int>(new()
             {

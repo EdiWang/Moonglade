@@ -5,7 +5,7 @@ namespace Moonglade.Web.Pages;
 
 public class SearchModel(IMediator mediator) : PageModel
 {
-    public IReadOnlyList<PostDigest> Posts { get; set; }
+    public List<PostDigest> Posts { get; set; }
 
     public async Task<IActionResult> OnGetAsync(string term)
     {

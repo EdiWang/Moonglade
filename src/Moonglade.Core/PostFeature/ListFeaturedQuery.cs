@@ -3,11 +3,11 @@ using Moonglade.Utils;
 
 namespace Moonglade.Core.PostFeature;
 
-public record ListFeaturedQuery(int PageSize, int PageIndex) : IRequest<IReadOnlyList<PostDigest>>;
+public record ListFeaturedQuery(int PageSize, int PageIndex) : IRequest<List<PostDigest>>;
 
-public class ListFeaturedQueryHandler(IRepository<PostEntity> repo) : IRequestHandler<ListFeaturedQuery, IReadOnlyList<PostDigest>>
+public class ListFeaturedQueryHandler(IRepository<PostEntity> repo) : IRequestHandler<ListFeaturedQuery, List<PostDigest>>
 {
-    public Task<IReadOnlyList<PostDigest>> Handle(ListFeaturedQuery request, CancellationToken ct)
+    public Task<List<PostDigest>> Handle(ListFeaturedQuery request, CancellationToken ct)
     {
         var (pageSize, pageIndex) = request;
         Helper.ValidatePagingParameters(pageSize, pageIndex);

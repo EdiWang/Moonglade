@@ -10,7 +10,7 @@ namespace Moonglade.Syndication;
 
 public interface ISyndicationDataSource
 {
-    Task<IReadOnlyList<FeedEntry>> GetFeedDataAsync(string catRoute = null);
+    Task<List<FeedEntry>> GetFeedDataAsync(string catRoute = null);
 }
 
 public class SyndicationDataSource : ISyndicationDataSource
@@ -37,9 +37,9 @@ public class SyndicationDataSource : ISyndicationDataSource
         _baseUrl = $"{acc.HttpContext.Request.Scheme}://{acc.HttpContext.Request.Host}";
     }
 
-    public async Task<IReadOnlyList<FeedEntry>> GetFeedDataAsync(string catRoute = null)
+    public async Task<List<FeedEntry>> GetFeedDataAsync(string catRoute = null)
     {
-        IReadOnlyList<FeedEntry> itemCollection;
+        List<FeedEntry> itemCollection;
         if (!string.IsNullOrWhiteSpace(catRoute))
         {
             var cat = await _catRepo.GetAsync(c => c.RouteName == catRoute);
@@ -55,7 +55,7 @@ public class SyndicationDataSource : ISyndicationDataSource
         return itemCollection;
     }
 
-    private async Task<IReadOnlyList<FeedEntry>> GetFeedEntriesAsync(Guid? catId = null)
+    private async Task<List<FeedEntry>> GetFeedEntriesAsync(Guid? catId = null)
     {
         int? top = null;
         if (_blogConfig.FeedSettings.RssItemCount != 0)

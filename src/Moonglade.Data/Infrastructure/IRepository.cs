@@ -10,9 +10,9 @@ public interface IRepository<T> where T : class
 
     Task<T> GetAsync(Expression<Func<T, bool>> condition);
 
-    Task<IReadOnlyList<T>> ListAsync(CancellationToken ct = default);
+    Task<List<T>> ListAsync(CancellationToken ct = default);
 
-    Task<IReadOnlyList<T>> ListAsync(ISpecification<T> spec);
+    Task<List<T>> ListAsync(ISpecification<T> spec);
 
     IQueryable<T> AsQueryable();
 
@@ -30,13 +30,13 @@ public interface IRepository<T> where T : class
 
     Task<bool> AnyAsync(Expression<Func<T, bool>> condition = null, CancellationToken ct = default);
 
-    Task<IReadOnlyList<TResult>> SelectAsync<TResult>(Expression<Func<T, TResult>> selector, CancellationToken ct = default);
+    Task<List<TResult>> SelectAsync<TResult>(Expression<Func<T, TResult>> selector, CancellationToken ct = default);
 
-    Task<IReadOnlyList<TResult>> SelectAsync<TResult>(ISpecification<T> spec, Expression<Func<T, TResult>> selector, CancellationToken ct = default);
+    Task<List<TResult>> SelectAsync<TResult>(ISpecification<T> spec, Expression<Func<T, TResult>> selector, CancellationToken ct = default);
 
     Task<TResult> FirstOrDefaultAsync<TResult>(ISpecification<T> spec, Expression<Func<T, TResult>> selector);
 
-    Task<IReadOnlyList<TResult>> SelectAsync<TGroup, TResult>(
+    Task<List<TResult>> SelectAsync<TGroup, TResult>(
         Expression<Func<T, TGroup>> groupExpression,
         Expression<Func<IGrouping<TGroup, T>, TResult>> selector,
         ISpecification<T> spec = null);

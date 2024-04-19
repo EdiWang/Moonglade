@@ -5,11 +5,11 @@ using Moonglade.Data.Spec;
 
 namespace Moonglade.Comments;
 
-public record GetApprovedCommentsQuery(Guid PostId) : IRequest<IReadOnlyList<Comment>>;
+public record GetApprovedCommentsQuery(Guid PostId) : IRequest<List<Comment>>;
 
-public class GetApprovedCommentsQueryHandler(IRepository<CommentEntity> repo) : IRequestHandler<GetApprovedCommentsQuery, IReadOnlyList<Comment>>
+public class GetApprovedCommentsQueryHandler(IRepository<CommentEntity> repo) : IRequestHandler<GetApprovedCommentsQuery, List<Comment>>
 {
-    public Task<IReadOnlyList<Comment>> Handle(GetApprovedCommentsQuery request, CancellationToken ct)
+    public Task<List<Comment>> Handle(GetApprovedCommentsQuery request, CancellationToken ct)
     {
         return repo.SelectAsync(new CommentSpec(request.PostId), c => new Comment
         {

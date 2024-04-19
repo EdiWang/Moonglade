@@ -4,7 +4,7 @@ using Moonglade.Utils;
 namespace Moonglade.Core.PostFeature;
 
 public class ListPostsQuery(int pageSize, int pageIndex, Guid? catId = null)
-    : IRequest<IReadOnlyList<PostDigest>>
+    : IRequest<List<PostDigest>>
 {
     public int PageSize { get; set; } = pageSize;
 
@@ -13,9 +13,9 @@ public class ListPostsQuery(int pageSize, int pageIndex, Guid? catId = null)
     public Guid? CatId { get; set; } = catId;
 }
 
-public class ListPostsQueryHandler(IRepository<PostEntity> repo) : IRequestHandler<ListPostsQuery, IReadOnlyList<PostDigest>>
+public class ListPostsQueryHandler(IRepository<PostEntity> repo) : IRequestHandler<ListPostsQuery, List<PostDigest>>
 {
-    public Task<IReadOnlyList<PostDigest>> Handle(ListPostsQuery request, CancellationToken ct)
+    public Task<List<PostDigest>> Handle(ListPostsQuery request, CancellationToken ct)
     {
         Helper.ValidatePagingParameters(request.PageSize, request.PageIndex);
 
