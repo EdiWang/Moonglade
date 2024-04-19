@@ -21,6 +21,7 @@ public static class MoongladeJsonSerializerOptions
             UnicodeRanges.CjkSymbolsandPunctuation,
             UnicodeRanges.HalfwidthandFullwidthForms),
         PropertyNameCaseInsensitive = true,
+        PropertyNamingPolicy = JsonNamingPolicy.CamelCase,
         WriteIndented = true
     };
 }

@@ -1,5 +1,4 @@
-﻿using Moonglade.Core.CategoryFeature;
-using Moonglade.Core.TagFeature;
+﻿using Moonglade.Core.TagFeature;
 using System.Linq.Expressions;
 
 namespace Moonglade.Core.PostFeature;
@@ -23,7 +22,7 @@ public class Post
     public string HeroImageUrl { get; set; }
     public bool IsOutdated { get; set; }
     public Tag[] Tags { get; set; }
-    public Category[] Categories { get; set; }
+    public CategoryEntity[] Categories { get; set; }
     public DateTime? PubDateUtc { get; set; }
     public DateTime? LastModifiedUtc { get; set; }
 
@@ -53,12 +52,6 @@ public class Post
             NormalizedName = pt.NormalizedName,
             DisplayName = pt.DisplayName
         }).ToArray(),
-        Categories = p.PostCategory.Select(pc => new Category
-        {
-            Id = pc.CategoryId,
-            DisplayName = pc.Category.DisplayName,
-            RouteName = pc.Category.RouteName,
-            Note = pc.Category.Note
-        }).ToArray()
+        Categories = p.PostCategory.Select(pc => pc.Category).ToArray()
     };
 }
