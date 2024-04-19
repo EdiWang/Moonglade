@@ -1,4 +1,5 @@
-﻿@{
+﻿@inject IOptions<AuthenticationSettings> AuthOptions
+@{
     if (string.IsNullOrEmpty(BlogConfig.GeneralSettings.AvatarUrl))
     {
         BlogConfig.GeneralSettings.AvatarUrl = Url.Action("Avatar", "Assets");
@@ -56,9 +57,20 @@
             </ul>
 
             <span class="navbar-text me-2">
-                <img src="@BlogConfig.GeneralSettings.AvatarUrl" alt="@BlogConfig.GeneralSettings.OwnerName"
-                     class="rounded-circle admin-nav-head-pic me-1" />
-                <userinfo user="User"></userinfo>
+                @if (AuthOptions.Value.Provider == AuthenticationProvider.Local)
+                {
+                    <a asp-page="/Admin/LocalAccount">
+                        <img src="@BlogConfig.GeneralSettings.AvatarUrl" alt="@BlogConfig.GeneralSettings.OwnerName"
+                             class="rounded-circle admin-nav-head-pic me-1" />
+                        <userinfo user="User"></userinfo>
+                    </a>
+                }
+                else
+                {
+                    <img src="@BlogConfig.GeneralSettings.AvatarUrl" alt="@BlogConfig.GeneralSettings.OwnerName"
+                         class="rounded-circle admin-nav-head-pic me-1" />
+                    <userinfo user="User"></userinfo>
+                }
             </span>
 
             <a class="navbar-text d-inline-block" asp-controller="Auth" asp-action="SignOut" title="Sign Out">

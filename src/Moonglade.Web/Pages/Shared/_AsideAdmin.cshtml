@@ -1,5 +1,4 @@
-﻿@inject IOptions<AuthenticationSettings> AuthOptions
-@{
+﻿@{
     var currentPage = ViewContext.RouteData.Values["Page"]?.ToString();
 }
 
@@ -49,14 +48,6 @@
                 <i class="bi-arrow-left-right admin-nav-icon" title="Manage Pingback link"></i>
                 @SharedLocalizer["Pingbacks"]
             </a>
-            @if (AuthOptions.Value.Provider == AuthenticationProvider.Local)
-            {
-                <a asp-page="/Admin/LocalAccount"
-                   class="list-group-item list-group-item-action @(currentPage is "/Admin/LocalAccount" ? "active" : null)">
-                    <i class="bi-people admin-nav-icon" title="Manage local account link"></i>
-                    @SharedLocalizer["Account"]
-                </a>
-            }
         </div>
     </section>
 </aside>
