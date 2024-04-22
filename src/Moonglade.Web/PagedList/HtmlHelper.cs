@@ -38,11 +38,6 @@ public class HtmlHelper(TagBuilderFactory tagBuilderFactory)
             li.AddCssClass(@class);
         }
 
-        if (options?.FunctionToTransformEachPageLink != null)
-        {
-            return options.FunctionToTransformEachPageLink(li, inner);
-        }
-
         AppendHtml(li, TagBuilderToString(inner));
 
         return li;

@@ -188,9 +188,4 @@ public class PagedListRenderOptions
     /// Text that will appear between each page number. If null or whitespace is specified, no delimiter will be shown.
     /// </summary>
     public string DelimiterBetweenPageNumbers { get; set; }
-
-    /// <summary>
-    /// An extension point which allows you to fully customize the anchor tags used for clickable pages, as well as navigation features such as Next, Last, etc.
-    /// </summary>
-    public Func<TagBuilder, TagBuilder, TagBuilder> FunctionToTransformEachPageLink { get; set; }
 }
