@@ -1,6 +1,7 @@
 ﻿@using Moonglade.Utils
 @using Microsoft.AspNetCore.Localization
 @using System.Globalization
+@inject IConfiguration Configuration
 
 @{
     if (string.IsNullOrEmpty(BlogConfig.GeneralSettings.AvatarUrl))
@@ -96,7 +97,7 @@
     <script src="~/js/3rd/jquery.slim.min.js"></script>
 
     <environment include="Production">
-        @if (!(bool)Context.Items["DNT"]!)
+        @if (bool.Parse(Configuration["RenderApplicationInsightsJs"]!) && !(bool)Context.Items["DNT"]!)
         {
             <partial name="_ApplicationInsightsJs" />
         }
