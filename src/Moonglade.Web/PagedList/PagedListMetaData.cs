@@ -1,5 +1,4 @@
-﻿
-namespace Moonglade.Web.PagedList;
+﻿namespace Moonglade.Web.PagedList;
 
 ///<summary>
 /// Non-enumerable version of the PagedList class.
@@ -30,8 +29,6 @@ public class PagedListMetaData : IPagedList
         FirstItemOnPage = pagedList.FirstItemOnPage;
         LastItemOnPage = pagedList.LastItemOnPage;
     }
-
-    #region IPagedList Members
 
     /// <summary>
     /// 	Total number of subsets within the superset.
@@ -122,6 +119,4 @@ public class PagedListMetaData : IPagedList
     /// is greater than PageCount.
     /// </value>
     public int LastItemOnPage { get; protected set; }
-
-    #endregion
 }

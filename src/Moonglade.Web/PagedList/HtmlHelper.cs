@@ -116,7 +116,7 @@ public class HtmlHelper(TagBuilderFactory tagBuilderFactory)
 
         if (i == list.PageNumber)
         {
-            return WrapInListItem(page, options, options.ActiveLiElementClass);
+            return WrapInListItem(page, options, "active");
         }
 
         page.Attributes.Add("href", generatePageUrl(targetPageNumber));
