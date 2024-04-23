@@ -21,7 +21,7 @@ public class CategoryListModel(
         if (string.IsNullOrWhiteSpace(slug)) return NotFound();
 
         var pageSize = blogConfig.ContentSettings.PostListPageSize;
-        Cat = await mediator.Send(new GetCategoryByRouteQuery(slug));
+        Cat = await mediator.Send(new GetCategoryBySlugQuery(slug));
 
         if (Cat is null) return NotFound();
 
