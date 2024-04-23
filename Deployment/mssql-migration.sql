@@ -20,3 +20,14 @@ EXEC sys.sp_rename
     @newname = 'Slug', 
     @objtype = 'COLUMN'
 GO
+
+IF EXISTS (
+    SELECT 1
+    FROM sys.columns c
+    JOIN sys.objects o ON c.object_id = o.object_id
+    WHERE o.name = 'Post' AND c.name = 'InlineCss'
+)
+BEGIN
+    ALTER TABLE Post DROP COLUMN InlineCss;
+END;
+GO
