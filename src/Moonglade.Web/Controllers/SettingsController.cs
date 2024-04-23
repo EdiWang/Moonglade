@@ -148,10 +148,6 @@ public class SettingsController(
     [ProducesResponseType(StatusCodes.Status204NoContent)]
     public async Task<IActionResult> Advanced(AdvancedSettings model)
     {
-        model.MetaWeblogPasswordHash = !string.IsNullOrWhiteSpace(model.MetaWeblogPassword) ?
-            Helper.HashPassword(model.MetaWeblogPassword) :
-            blogConfig.AdvancedSettings.MetaWeblogPasswordHash;
-
         blogConfig.AdvancedSettings = model;
 
         await SaveConfigAsync(blogConfig.AdvancedSettings);

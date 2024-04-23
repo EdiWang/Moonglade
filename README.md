@@ -152,8 +152,8 @@ Open Search | Search | Supported | `/opensearch`
 Pingback | Social | Supported | `/pingback`
 Reader View | Reader mode | Supported | N/A
 FOAF | Social | Supported | `/foaf.xml`
-RSD | Service Discovery | Supported | `/rsd` *If MetaWeblog is enabled*
-MetaWeblog | Blogging | Basic Support | `/metaweblog`
+RSD | Service Discovery | Deprecated | N/A
+MetaWeblog | Blogging | Deprecated | N/A
 Dublin Core Metadata | SEO | Basic Support | N/A
 BlogML | Blogging | Not planned | 
 APML | Social | Not planned | 

@@ -9,7 +9,6 @@ using Moonglade.Data.MySql;
 using Moonglade.Data.PostgreSql;
 using Moonglade.Data.SqlServer;
 using Moonglade.Email.Client;
-using Moonglade.MetaWeblog;
 using Moonglade.Pingback;
 using Moonglade.Syndication;
 using SixLabors.Fonts;
@@ -101,7 +100,6 @@ void ConfigureServices(IServiceCollection services)
     services.AddPingback()
             .AddSyndication()
             .AddInMemoryCacheAside()
-            .AddMetaWeblog<Moonglade.Web.MetaWeblogService>()
             .AddScoped<ValidateCaptcha>()
             .AddScoped<ITimeZoneResolver, BlogTimeZoneResolver>()
             .AddBlogConfig()
@@ -159,11 +157,6 @@ void ConfigureMiddleware()
     app.UseWhen(
         _ => bc.AdvancedSettings.EnableFoaf,
         appBuilder => appBuilder.UseMiddleware<FoafMiddleware>()
-    );
-
-    app.UseWhen(
-        _ => bc.AdvancedSettings.EnableMetaWeblog,
-        appBuilder => appBuilder.UseMiddleware<RSDMiddleware>().UseMetaWeblog("/metaweblog")
     );
 
     app.UseWhen(

@@ -92,13 +92,6 @@
             });
         });
 
-        window.generateMetaWeblogPasswordHash = function () {
-            callApi('/api/settings/password/generate', 'GET', {}, async (resp) => {
-                var data = await resp.json();
-                $('#settings_MetaWeblogPasswordHash').val(data.password);
-            });
-        }
-
         const form = document.querySelector('#form-settings');
         form.addEventListener('submit', settings.handleSettingsSubmit);
     </script>
@@ -204,46 +197,6 @@
                                 <input type="checkbox" name="WarnExternalLink" value="true" class="form-check-input" @(settings.WarnExternalLink ? "checked" : null)>
                             </div>
                         </div>
-                    </div>
-                </div>
-
-                <h4 class="admin-subtitle fw-bold mb-2">
-                    MetaWeblog
-                </h4>
-
-                <div class="settings-entry2 row align-items-center py-3 px-2 rounded-3 shadow-sm border bg-white mb-2">
-                    <div class="col-auto">
-                        <i class="bi-puzzle settings-entry-icon"></i>
-                    </div>
-                    <div class="col">
-                        <label asp-for="@settings.EnableMetaWeblog" class="form-check-label"></label>
-                        <div class="form-text">
-                            @SharedLocalizer["* Requires restarting application"]
-                        </div>
-                    </div>
-                    <div class="col-md-4 text-end">
-                        <div class="form-check form-switch form-control-lg">
-                            <input type="hidden" name="EnableMetaWeblog" value="false">
-                            <input type="checkbox" name="EnableMetaWeblog" value="true" class="form-check-input" @(settings.EnableMetaWeblog ? "checked" : null)>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="settings-entry2 row align-items-center py-3 px-2 rounded-3 shadow-sm border bg-white">
-                    <div class="col-auto">
-                        <i class="bi-key settings-entry-icon"></i>
-                    </div>
-                    <div class="col">
-                        @SharedLocalizer["Password"]
-                        <div class="form-text">
-                            @SharedLocalizer["Leave blank if you don't need to change password."]
-                            @SharedLocalizer["* Username: moonglade"]
-                        </div>
-                    </div>
-                    <div class="col-md-4">
-                        <input asp-for="@settings.MetaWeblogPassword" class="form-control" minlength="8" maxlength="16" />
-
-                        <a href="javascript:;" class="btn btn-sm btn-outline-accent mt-2" onclick="generateMetaWeblogPasswordHash()">@SharedLocalizer["Generate password"]</a>
                     </div>
                 </div>
             </div>
