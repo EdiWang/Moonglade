@@ -610,7 +610,7 @@
     <value>处理中……</value>
   </data>
   <data name="Providing your email address can enable blog admin to send notifications for replying your comment. Your email address will also be used to show Gravatar if it has one." xml:space="preserve">
-    <value>提供Email地址以让博主回复您评论时发送通知。您的Email地址也会被用来显示Gravatar头像（如果有）。</value>
+    <value>输入您的电子邮件以接收回复通知并显示您的Gravatar头像。</value>
   </data>
   <data name="Publish" xml:space="preserve">
     <value>发布</value>

@@ -1,22 +1,23 @@
 ﻿<form id="comment-form">
     <div>
-        <div class="row g-1 mb-2">
-            <div class="col-md-4">
+        <div class="row mb-2">
+            <div class="col-md-6">
                 <input type="text"
                        class="form-control"
                        placeholder="Your name"
                        id="input-comment-name"
                        required />
             </div>
-            <div class="col-md-8">
-                <input type="email"
-                       class="form-control"
-                       placeholder="Email (Optional)"
-                       id="input-comment-email"
-                       data-bs-toggle="tooltip"
-                       data-placement="top"
-                       title="@SharedLocalizer["Providing your email address can enable blog admin to send notifications for replying your comment. Your email address will also be used to show Gravatar if it has one."]" />
-            </div>
+        </div>
+        <div class="mb-3">
+            <input type="email"
+                   class="form-control"
+                   placeholder="Email (Optional)"
+                   id="input-comment-email" />
+            
+            <span class="text-muted">
+                * @SharedLocalizer["Enter your email to receive reply notifications and display your Gravatar"]
+            </span>
         </div>
         <div class="comment-md-content mb-2">
             <textarea id="input-comment-content"
