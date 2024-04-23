@@ -154,15 +154,6 @@ public class SettingsController(
         return NoContent();
     }
 
-    [HttpPost("shutdown")]
-    [ProducesResponseType(StatusCodes.Status202Accepted)]
-    public IActionResult Shutdown(IHostApplicationLifetime applicationLifetime)
-    {
-        logger.LogWarning($"Shutdown is requested by '{User.Identity?.Name}'.");
-        applicationLifetime.StopApplication();
-        return Accepted();
-    }
-
     [HttpPost("reset")]
     [ProducesResponseType(StatusCodes.Status202Accepted)]
     public async Task<IActionResult> Reset(BlogDbContext context, IHostApplicationLifetime applicationLifetime)
