@@ -6,7 +6,7 @@
         @foreach (var item in Model.OrderBy(c => c.DisplayName))
         {
             <li>
-                <a class="dropdown-item" asp-page="/CategoryList" asp-route-routeName="@item.RouteName.ToLower()" title="@item.Note">
+                <a class="dropdown-item" asp-page="/CategoryList" asp-route-slug="@item.Slug.ToLower()" title="@item.Note">
                     <i class="bi-folder2 me-1"></i>
                     @item.DisplayName
                 </a>

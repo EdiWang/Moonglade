@@ -177,8 +177,8 @@ public class MetaWeblogService(IBlogConfig blogConfig,
                 title = p.DisplayName,
                 categoryid = p.Id.ToString(),
                 description = p.Note,
-                htmlUrl = $"/category/{p.RouteName}",
-                rssUrl = $"/rss/{p.RouteName}"
+                htmlUrl = $"/category/{p.Slug}",
+                rssUrl = $"/rss/{p.Slug}"
             }).ToArray();
 
             return catInfos;
@@ -194,7 +194,7 @@ public class MetaWeblogService(IBlogConfig blogConfig,
             await mediator.Send(new CreateCategoryCommand
             {
                 DisplayName = category.name.Trim(),
-                RouteName = category.slug.ToLower(),
+                Slug = category.slug.ToLower(),
                 Note = category.description.Trim()
             });
 

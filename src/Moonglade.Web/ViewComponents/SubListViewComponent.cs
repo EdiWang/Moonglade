@@ -9,7 +9,7 @@ public class SubListViewComponent(ILogger<SubListViewComponent> logger, IMediato
         try
         {
             var cats = await mediator.Send(new GetCategoriesQuery());
-            var items = cats.Select(c => new KeyValuePair<string, string>(c.DisplayName, c.RouteName));
+            var items = cats.Select(c => new KeyValuePair<string, string>(c.DisplayName, c.Slug));
 
             return View(items);
         }

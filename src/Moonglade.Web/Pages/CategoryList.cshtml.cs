@@ -16,12 +16,12 @@ public class CategoryListModel(
     public BasePagedList<PostDigest> Posts { get; set; }
     public CategoryEntity Cat { get; set; }
 
-    public async Task<IActionResult> OnGetAsync(string routeName)
+    public async Task<IActionResult> OnGetAsync(string slug)
     {
-        if (string.IsNullOrWhiteSpace(routeName)) return NotFound();
+        if (string.IsNullOrWhiteSpace(slug)) return NotFound();
 
         var pageSize = blogConfig.ContentSettings.PostListPageSize;
-        Cat = await mediator.Send(new GetCategoryByRouteQuery(routeName));
+        Cat = await mediator.Send(new GetCategoryByRouteQuery(slug));
 
         if (Cat is null) return NotFound();
 

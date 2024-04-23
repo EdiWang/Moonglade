@@ -1,4 +1,4 @@
-﻿@page "/category/{routeName:regex(^(?!-)([a-zA-Z0-9-]){{1,64}}$)}"
+﻿@page "/category/{slug:regex(^(?!-)([a-zA-Z0-9-]){{1,64}}$)}"
 @model Moonglade.Web.Pages.CategoryListModel
 @{
     ViewBag.TitlePrefix = Model.Cat.DisplayName;
@@ -10,7 +10,7 @@
     <a class="float-end d-none d-md-block"
        asp-controller="Subscription"
        asp-action="Rss"
-       asp-route-routeName="@Model.Cat.RouteName.ToLower()" target="_blank"
+       asp-route-slug="@Model.Cat.Slug.ToLower()" target="_blank"
        title="Subscribe @(Model.Cat.DisplayName)">
         <i class="bi-rss font-125rem"></i>
     </a>

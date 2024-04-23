@@ -16,7 +16,7 @@ public class SubscriptionController(
         if (!blogConfig.AdvancedSettings.EnableOpml) return NotFound();
 
         var cats = await mediator.Send(new GetCategoriesQuery());
-        var catInfos = cats.Select(c => new KeyValuePair<string, string>(c.DisplayName, c.RouteName));
+        var catInfos = cats.Select(c => new KeyValuePair<string, string>(c.DisplayName, c.Slug));
         var rootUrl = Helper.ResolveRootUrl(HttpContext, blogConfig.GeneralSettings.CanonicalPrefix);
 
         var oi = new OpmlDoc
@@ -33,18 +33,18 @@ public class SubscriptionController(
         return Content(xml, "text/xml");
     }
 
-    [HttpGet("rss/{routeName?}")]
-    public async Task<IActionResult> Rss([MaxLength(64)] string routeName = null)
+    [HttpGet("rss/{slug?}")]
+    public async Task<IActionResult> Rss([MaxLength(64)] string slug = null)
     {
-        bool hasRoute = !string.IsNullOrWhiteSpace(routeName);
-        var route = hasRoute ? routeName.ToLower().Trim() : null;
+        bool hasRoute = !string.IsNullOrWhiteSpace(slug);
+        var route = hasRoute ? slug.ToLower().Trim() : null;
 
         return await cache.GetOrCreateAsync(
             hasRoute ? BlogCachePartition.RssCategory.ToString() : BlogCachePartition.General.ToString(), route ?? "rss", async entry =>
             {
                 entry.SlidingExpiration = TimeSpan.FromHours(1);
 
-                var xml = await mediator.Send(new GetRssStringQuery(routeName));
+                var xml = await mediator.Send(new GetRssStringQuery(slug));
                 if (string.IsNullOrWhiteSpace(xml))
                 {
                     return (IActionResult)NotFound();
@@ -54,18 +54,18 @@ public class SubscriptionController(
             });
     }
 
-    [HttpGet("atom/{routeName?}")]
-    public async Task<IActionResult> Atom([MaxLength(64)] string routeName = null)
+    [HttpGet("atom/{slug?}")]
+    public async Task<IActionResult> Atom([MaxLength(64)] string slug = null)
     {
-        bool hasRoute = !string.IsNullOrWhiteSpace(routeName);
-        var route = hasRoute ? routeName.ToLower().Trim() : null;
+        bool hasRoute = !string.IsNullOrWhiteSpace(slug);
+        var route = hasRoute ? slug.ToLower().Trim() : null;
 
         return await cache.GetOrCreateAsync(
             hasRoute ? BlogCachePartition.AtomCategory.ToString() : BlogCachePartition.General.ToString(), route ?? "atom", async entry =>
         {
             entry.SlidingExpiration = TimeSpan.FromHours(1);
 
-            var xml = await mediator.Send(new GetAtomStringQuery(routeName));
+            var xml = await mediator.Send(new GetAtomStringQuery(slug));
             return Content(xml, "text/xml");
         });
     }

@@ -14,3 +14,9 @@ GO
 
 DROP TABLE [LocalAccount]
 GO
+
+EXEC sys.sp_rename 
+    @objname = N'Category.RouteName', 
+    @newname = 'Slug', 
+    @objtype = 'COLUMN'
+GO

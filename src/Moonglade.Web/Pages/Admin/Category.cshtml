@@ -21,7 +21,7 @@
                 async (resp) => {
                     var data = await resp.json();
                     catId = data.id;
-                    document.querySelector('#EditCategoryRequest_RouteName').value = data.routeName;
+                    document.querySelector('#EditCategoryRequest_Slug').value = data.slug;
                     document.querySelector('#EditCategoryRequest_DisplayName').value = data.displayName;
                     document.querySelector('#EditCategoryRequest_Note').value = data.note;
                     editCanvas.show();
@@ -61,7 +61,7 @@
 
             callApi(apiAddress, verb,
                 {
-                    routeName: value["EditCategoryRequest.RouteName"],
+                    slug: value["EditCategoryRequest.Slug"],
                     displayName: value["EditCategoryRequest.DisplayName"],
                     note: value["EditCategoryRequest.Note"]
                 },
@@ -100,7 +100,7 @@
             <div class="card shadow-sm" id="card-@cat.Id">
                 <div class="card-body">
                     <h6 class="card-title">
-                        <a asp-page="/CategoryList" asp-route-routeName="@cat.RouteName" target="_blank">
+                        <a asp-page="/CategoryList" asp-route-slug="@cat.Slug" target="_blank">
                             @cat.DisplayName
                         </a>
                     </h6>
@@ -109,7 +109,7 @@
                         @cat.Note
                     </p>
 
-                    <small class="text-muted">@cat.RouteName</small>
+                    <small class="text-muted">@cat.Slug</small>
                 </div>
                 <div class="card-footer">
                     <a href="javascript:editCat('@cat.Id');" class="btn btn-sm btn-outline-accent btn-edit"><i class="bi-pen"></i></a>
@@ -132,8 +132,8 @@
                 <input asp-for="EditCategoryRequest.DisplayName" class="form-control" required />
             </div>
             <div class="mb-3">
-                <label class="form-label" asp-for="EditCategoryRequest.RouteName"></label>
-                <input asp-for="EditCategoryRequest.RouteName" class="form-control" required pattern="(?!-)([a-z0-9-]+)" />
+                <label class="form-label" asp-for="EditCategoryRequest.Slug"></label>
+                <input asp-for="EditCategoryRequest.Slug" class="form-control" required pattern="(?!-)([a-z0-9-]+)" />
                 <small class="text-muted">
                     @SharedLocalizer["lower case English letters (a-z) and numbers (0-9) with/out hyphen (-) in middle."]
                 </small>

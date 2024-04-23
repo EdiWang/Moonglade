@@ -15,7 +15,7 @@ public class UpdateCategoryCommandHandler(IRepository<CategoryEntity> repo, ICac
         var cat = await repo.GetAsync(request.Id, ct);
         if (cat is null) return OperationCode.ObjectNotFound;
 
-        cat.RouteName = request.RouteName.Trim();
+        cat.Slug = request.Slug.Trim();
         cat.DisplayName = request.DisplayName.Trim();
         cat.Note = request.Note?.Trim();
 

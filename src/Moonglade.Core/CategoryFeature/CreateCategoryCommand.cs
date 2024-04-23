@@ -11,10 +11,10 @@ public class CreateCategoryCommand : IRequest
     public string DisplayName { get; set; }
 
     [Required]
-    [Display(Name = "Route Name")]
+    [Display(Name = "Slug")]
     [RegularExpression("(?!-)([a-z0-9-]+)")]
     [MaxLength(64)]
-    public string RouteName { get; set; }
+    public string Slug { get; set; }
 
     [Required]
     [Display(Name = "Description")]
@@ -26,13 +26,13 @@ public class CreateCategoryCommandHandler(IRepository<CategoryEntity> catRepo, I
 {
     public async Task Handle(CreateCategoryCommand request, CancellationToken ct)
     {
-        var exists = await catRepo.AnyAsync(c => c.RouteName == request.RouteName, ct);
+        var exists = await catRepo.AnyAsync(c => c.Slug == request.Slug, ct);
         if (exists) return;
 
         var category = new CategoryEntity
         {
             Id = Guid.NewGuid(),
-            RouteName = request.RouteName.Trim(),
+            Slug = request.Slug.Trim(),
             Note = request.Note?.Trim(),
             DisplayName = request.DisplayName.Trim()
         };

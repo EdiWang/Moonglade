@@ -11,7 +11,7 @@
                     <li>
                         <a class="btn btn-sm btn-outline-secondary mb-1"
                            asp-page="/CategoryList"
-                           asp-route-routeName="@item.RouteName.ToLower()">
+                           asp-route-slug="@item.Slug.ToLower()">
                             <i class="bi-folder2" aria-hidden="true"></i>
                             @item.DisplayName
                         </a>
