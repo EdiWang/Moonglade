@@ -122,16 +122,6 @@ public static class Helper
         return sBuilder.ToString();
     }
 
-    public static string HashPassword(string plainMessage)
-    {
-        if (string.IsNullOrWhiteSpace(plainMessage)) return string.Empty;
-
-        var data = Encoding.UTF8.GetBytes(plainMessage);
-        using var sha = SHA256.Create();
-        sha.TransformFinalBlock(data, 0, data.Length);
-        return Convert.ToBase64String(sha.Hash ?? throw new InvalidOperationException());
-    }
-
     // https://docs.microsoft.com/en-us/aspnet/core/security/data-protection/consumer-apis/password-hashing?view=aspnetcore-6.0
     // This is not secure, but better than nothing.
     public static string HashPassword2(string clearPassword, string saltBase64)

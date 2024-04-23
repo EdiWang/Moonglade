@@ -358,9 +358,6 @@
   <data name="Enable Gravatar in comment list" xml:space="preserve">
     <value>在評論清單中開啟Gravatar頭像</value>
   </data>
-  <data name="Enable MetaWeblog API" xml:space="preserve">
-    <value>啟用MetaWeblog API</value>
-  </data>
   <data name="Enable OpenSearch" xml:space="preserve">
     <value>啟用OpenSearch</value>
   </data>
@@ -498,9 +495,6 @@
   </data>
   <data name="Meta keyword" xml:space="preserve">
     <value>網站關鍵字</value>
-  </data>
-  <data name="MetaWeblog password" xml:space="preserve">
-    <value>MetaWeblog 密碼</value>
   </data>
   <data name="Moonglade Configuration" xml:space="preserve">
     <value>Moonglade 設定</value>
