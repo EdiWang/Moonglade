@@ -20,13 +20,6 @@ public abstract class BaseSpecification<T> : ISpecification<T>
     public int Skip { get; private set; }
     public bool IsPagingEnabled { get; private set; }
 
-    public void AddCriteria(Expression<Func<T, bool>> criteria)
-    {
-        Criteria = Criteria is not null ? Criteria.AndAlso(criteria) : criteria;
-    }
-
-    protected virtual void AddInclude(Func<IQueryable<T>, IIncludableQueryable<T, object>> expression) => Include = expression;
-
     protected virtual void ApplyPaging(int skip, int take)
     {
         Skip = skip;
