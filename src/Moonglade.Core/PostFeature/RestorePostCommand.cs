@@ -1,14 +1,15 @@
 ﻿using Edi.CacheAside.InMemory;
+using Moonglade.Data;
 
 namespace Moonglade.Core.PostFeature;
 
 public record RestorePostCommand(Guid Id) : IRequest;
 
-public class RestorePostCommandHandler(IRepository<PostEntity> repo, ICacheAside cache) : IRequestHandler<RestorePostCommand>
+public class RestorePostCommandHandler(MoongladeRepository<PostEntity> repo, ICacheAside cache) : IRequestHandler<RestorePostCommand>
 {
     public async Task Handle(RestorePostCommand request, CancellationToken ct)
     {
-        var pp = await repo.GetAsync(request.Id, ct);
+        var pp = await repo.GetByIdAsync(request.Id, ct);
         if (null == pp) return;
 
         pp.IsDeleted = false;

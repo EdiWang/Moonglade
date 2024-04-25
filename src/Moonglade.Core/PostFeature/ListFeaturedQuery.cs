@@ -1,11 +1,12 @@
-﻿using Moonglade.Data.Spec;
+﻿using Moonglade.Data;
+using Moonglade.Data.Spec;
 using Moonglade.Utils;
 
 namespace Moonglade.Core.PostFeature;
 
 public record ListFeaturedQuery(int PageSize, int PageIndex) : IRequest<List<PostDigest>>;
 
-public class ListFeaturedQueryHandler(IRepository<PostEntity> repo) : IRequestHandler<ListFeaturedQuery, List<PostDigest>>
+public class ListFeaturedQueryHandler(MoongladeRepository<PostEntity> repo) : IRequestHandler<ListFeaturedQuery, List<PostDigest>>
 {
     public Task<List<PostDigest>> Handle(ListFeaturedQuery request, CancellationToken ct)
     {

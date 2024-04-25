@@ -1,29 +1,34 @@
 ﻿using Moonglade.Data.Entities;
-using Moonglade.Data.Infrastructure;
 
 namespace Moonglade.Data.Spec;
 
-public sealed class CommentSpec : BaseSpecification<CommentEntity>
+public sealed class CommentPagingSepc : Specification<CommentEntity>
 {
-    public CommentSpec(int pageSize, int pageIndex) : base(c => true)
+    public CommentPagingSepc(int pageSize, int pageIndex)
     {
         var startRow = (pageIndex - 1) * pageSize;
 
-        AddInclude(comment => comment
-            .Include(c => c.Post)
-            .Include(c => c.Replies));
-        ApplyOrderByDescending(p => p.CreateTimeUtc);
-        ApplyPaging(startRow, pageSize);
+        Query.Include(c => c.Post);
+        Query.Include(c => c.Replies);
+
+        Query.OrderByDescending(p => p.CreateTimeUtc);
+        Query.Take(pageSize).Skip(startRow);
     }
+}
 
-    public CommentSpec(Guid[] ids) : base(c => ids.Contains(c.Id))
+public sealed class CommentByIdsSepc : Specification<CommentEntity>
+{
+    public CommentByIdsSepc(Guid[] ids)
     {
-
+        Query.Where(c => ids.Contains(c.Id));
     }
+}
 
-    public CommentSpec(Guid postId) : base(c => c.PostId == postId &&
-                                                c.IsApproved)
+public sealed class CommentWithRepliesSpec : Specification<CommentEntity>
+{
+    public CommentWithRepliesSpec(Guid postId)
     {
-        AddInclude(comments => comments.Include(c => c.Replies));
+        Query.Where(c => c.PostId == postId && c.IsApproved);
+        Query.Include(p => p.Replies);
     }
 }

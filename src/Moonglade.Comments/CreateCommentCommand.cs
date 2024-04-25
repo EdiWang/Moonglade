@@ -1,7 +1,7 @@
 ﻿using MediatR;
 using Moonglade.Configuration;
+using Moonglade.Data;
 using Moonglade.Data.Entities;
-using Moonglade.Data.Infrastructure;
 using Moonglade.Data.Spec;
 
 namespace Moonglade.Comments;
@@ -17,8 +17,8 @@ public class CreateCommentCommand(Guid postId, CommentRequest payload, string ip
 
 public class CreateCommentCommandHandler(
     IBlogConfig blogConfig,
-    IRepository<PostEntity> postRepo,
-    IRepository<CommentEntity> commentRepo) : IRequestHandler<CreateCommentCommand, CommentDetailedItem>
+    MoongladeRepository<PostEntity> postRepo,
+    MoongladeRepository<CommentEntity> commentRepo) : IRequestHandler<CreateCommentCommand, CommentDetailedItem>
 {
     public async Task<CommentDetailedItem> Handle(CreateCommentCommand request, CancellationToken ct)
     {

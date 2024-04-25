@@ -1,4 +1,5 @@
 ﻿using Edi.CacheAside.InMemory;
+using Moonglade.Data;
 using System.ComponentModel.DataAnnotations;
 
 namespace Moonglade.Core.CategoryFeature;
@@ -22,7 +23,7 @@ public class CreateCategoryCommand : IRequest
     public string Note { get; set; }
 }
 
-public class CreateCategoryCommandHandler(IRepository<CategoryEntity> catRepo, ICacheAside cache) : IRequestHandler<CreateCategoryCommand>
+public class CreateCategoryCommandHandler(MoongladeRepository<CategoryEntity> catRepo, ICacheAside cache) : IRequestHandler<CreateCategoryCommand>
 {
     public async Task Handle(CreateCategoryCommand request, CancellationToken ct)
     {

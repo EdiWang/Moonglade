@@ -1,17 +1,19 @@
 ﻿using MediatR;
+using Moonglade.Data;
 using Moonglade.Data.Entities;
-using Moonglade.Data.Infrastructure;
 using Moonglade.Utils;
 
 namespace Moonglade.Comments;
 
 public record ReplyCommentCommand(Guid CommentId, string ReplyContent) : IRequest<CommentReply>;
 
-public class ReplyCommentCommandHandler(IRepository<CommentEntity> commentRepo, IRepository<CommentReplyEntity> commentReplyRepo) : IRequestHandler<ReplyCommentCommand, CommentReply>
+public class ReplyCommentCommandHandler(
+    MoongladeRepository<CommentEntity> commentRepo,
+    MoongladeRepository<CommentReplyEntity> commentReplyRepo) : IRequestHandler<ReplyCommentCommand, CommentReply>
 {
     public async Task<CommentReply> Handle(ReplyCommentCommand request, CancellationToken ct)
     {
-        var cmt = await commentRepo.GetAsync(request.CommentId, ct);
+        var cmt = await commentRepo.GetByIdAsync(request.CommentId, ct);
         if (cmt is null) throw new InvalidOperationException($"Comment {request.CommentId} is not found.");
 
         var id = Guid.NewGuid();

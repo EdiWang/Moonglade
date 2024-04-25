@@ -1,5 +1,4 @@
 ﻿using Moonglade.Data.Entities;
-using Moonglade.Data.Infrastructure;
 using Moonglade.Data.Spec;
 using System.Globalization;
 using System.Xml;
@@ -12,8 +11,8 @@ public class SiteMapMiddleware(RequestDelegate next)
         HttpContext httpContext,
         IBlogConfig blogConfig,
         ICacheAside cache,
-        IRepository<PostEntity> postRepo,
-        IRepository<PageEntity> pageRepo)
+        MoongladeRepository<PostEntity> postRepo,
+        MoongladeRepository<PageEntity> pageRepo)
     {
         var xml = await cache.GetOrCreateAsync(BlogCachePartition.General.ToString(), "sitemap", async _ =>
         {
@@ -28,8 +27,8 @@ public class SiteMapMiddleware(RequestDelegate next)
 
     private static async Task<string> GetSiteMapData(
         string siteRootUrl,
-        IRepository<PostEntity> postRepo,
-        IRepository<PageEntity> pageRepo,
+        MoongladeRepository<PostEntity> postRepo,
+        MoongladeRepository<PageEntity> pageRepo,
         CancellationToken ct)
     {
         var sb = new StringBuilder();

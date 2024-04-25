@@ -1,17 +1,17 @@
 ﻿using MediatR;
+using Moonglade.Data;
 using Moonglade.Data.Entities;
-using Moonglade.Data.Infrastructure;
 using System.Text;
 using System.Text.Json;
 
 namespace Moonglade.Theme;
 
 public record GetSiteThemeStyleSheetQuery(int Id) : IRequest<string>;
-public class GetStyleSheetQueryHandler(IRepository<BlogThemeEntity> repo) : IRequestHandler<GetSiteThemeStyleSheetQuery, string>
+public class GetStyleSheetQueryHandler(MoongladeRepository<BlogThemeEntity> repo) : IRequestHandler<GetSiteThemeStyleSheetQuery, string>
 {
     public async Task<string> Handle(GetSiteThemeStyleSheetQuery request, CancellationToken ct)
     {
-        var theme = await repo.GetAsync(request.Id, ct);
+        var theme = await repo.GetByIdAsync(request.Id, ct);
         if (null == theme) return null;
 
         if (string.IsNullOrWhiteSpace(theme.CssRules))

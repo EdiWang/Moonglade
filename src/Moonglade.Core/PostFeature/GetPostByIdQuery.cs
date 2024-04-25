@@ -1,10 +1,11 @@
-﻿using Moonglade.Data.Spec;
+﻿using Moonglade.Data;
+using Moonglade.Data.Spec;
 
 namespace Moonglade.Core.PostFeature;
 
 public record GetPostByIdQuery(Guid Id) : IRequest<Post>;
 
-public class GetPostByIdQueryHandler(IRepository<PostEntity> repo) : IRequestHandler<GetPostByIdQuery, Post>
+public class GetPostByIdQueryHandler(MoongladeRepository<PostEntity> repo) : IRequestHandler<GetPostByIdQuery, Post>
 {
     public Task<Post> Handle(GetPostByIdQuery request, CancellationToken ct)
     {

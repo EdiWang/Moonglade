@@ -1,7 +1,5 @@
-﻿using Moonglade.Data.Infrastructure;
-
-namespace Moonglade.Data.MySql.Infrastructure;
+﻿namespace Moonglade.Data.MySql.Infrastructure;
 
 
-public class MySqlDbContextRepository<T>(MySqlBlogDbContext dbContext) : DbContextRepository<T>(dbContext)
+public class MySqlDbContextRepository<T>(MySqlBlogDbContext dbContext) : MoongladeRepository<T>(dbContext)
     where T : class;

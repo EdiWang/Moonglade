@@ -5,7 +5,9 @@ namespace Moonglade.Core.TagFeature;
 
 public record DeleteTagCommand(int Id) : IRequest<OperationCode>;
 
-public class DeleteTagCommandHandler(IRepository<TagEntity> tagRepo, IRepository<PostTagEntity> postTagRepo)
+public class DeleteTagCommandHandler(
+    MoongladeRepository<TagEntity> tagRepo,
+    MoongladeRepository<PostTagEntity> postTagRepo)
     : IRequestHandler<DeleteTagCommand, OperationCode>
 {
     public async Task<OperationCode> Handle(DeleteTagCommand request, CancellationToken ct)
@@ -14,11 +16,11 @@ public class DeleteTagCommandHandler(IRepository<TagEntity> tagRepo, IRepository
         if (!exists) return OperationCode.ObjectNotFound;
 
         // 1. Delete Post-Tag Association
-        var postTags = await postTagRepo.ListAsync(new PostTagSpec(request.Id));
-        await postTagRepo.DeleteAsync(postTags, ct);
+        var postTags = await postTagRepo.ListAsync(new PostTagByTagIdSpec(request.Id), ct);
+        await postTagRepo.DeleteRangeAsync(postTags, ct);
 
         // 2. Delte Tag itslef
-        await tagRepo.DeleteAsync(request.Id, ct);
+        await tagRepo.DeleteByIdAsync(request.Id, ct);
 
         return OperationCode.Done;
     }

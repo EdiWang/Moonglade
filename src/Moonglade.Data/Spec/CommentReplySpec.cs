@@ -1,6 +1,11 @@
 ﻿using Moonglade.Data.Entities;
-using Moonglade.Data.Infrastructure;
 
 namespace Moonglade.Data.Spec;
 
-public class CommentReplySpec(Guid commentId) : BaseSpecification<CommentReplyEntity>(cr => cr.CommentId == commentId);
+public class CommentReplySpec : Specification<CommentReplyEntity>
+{
+    public CommentReplySpec(Guid commentId)
+    {
+        Query.Where(cr => cr.CommentId == commentId);
+    }
+}

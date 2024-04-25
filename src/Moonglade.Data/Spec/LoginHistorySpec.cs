@@ -1,13 +1,12 @@
 ﻿using Moonglade.Data.Entities;
-using Moonglade.Data.Infrastructure;
 
 namespace Moonglade.Data.Spec;
 
-public sealed class LoginHistorySpec : BaseSpecification<LoginHistoryEntity>
+public sealed class LoginHistorySpec : Specification<LoginHistoryEntity>
 {
-    public LoginHistorySpec(int top) : base(t => true)
+    public LoginHistorySpec(int top)
     {
-        ApplyPaging(0, top);
-        ApplyOrderByDescending(p => p.LoginTimeUtc);
+        Query.Skip(0).Take(top);
+        Query.OrderByDescending(p => p.LoginTimeUtc);
     }
 }

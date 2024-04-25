@@ -1,10 +1,11 @@
-﻿using Moonglade.Data.Spec;
+﻿using Moonglade.Data;
+using Moonglade.Data.Spec;
 
 namespace Moonglade.Core.TagFeature;
 
 public record GetHotTagsQuery(int Top) : IRequest<List<KeyValuePair<Tag, int>>>;
 
-public class GetHotTagsQueryHandler(IRepository<TagEntity> repo) : IRequestHandler<GetHotTagsQuery, List<KeyValuePair<Tag, int>>>
+public class GetHotTagsQueryHandler(MoongladeRepository<TagEntity> repo) : IRequestHandler<GetHotTagsQuery, List<KeyValuePair<Tag, int>>>
 {
     public async Task<List<KeyValuePair<Tag, int>>> Handle(GetHotTagsQuery request, CancellationToken ct)
     {

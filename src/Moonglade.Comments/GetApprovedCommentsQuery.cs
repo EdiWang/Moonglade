@@ -1,17 +1,17 @@
 ﻿using MediatR;
+using Moonglade.Data;
 using Moonglade.Data.Entities;
-using Moonglade.Data.Infrastructure;
 using Moonglade.Data.Spec;
 
 namespace Moonglade.Comments;
 
 public record GetApprovedCommentsQuery(Guid PostId) : IRequest<List<Comment>>;
 
-public class GetApprovedCommentsQueryHandler(IRepository<CommentEntity> repo) : IRequestHandler<GetApprovedCommentsQuery, List<Comment>>
+public class GetApprovedCommentsQueryHandler(MoongladeRepository<CommentEntity> repo) : IRequestHandler<GetApprovedCommentsQuery, List<Comment>>
 {
     public Task<List<Comment>> Handle(GetApprovedCommentsQuery request, CancellationToken ct)
     {
-        return repo.SelectAsync(new CommentSpec(request.PostId), c => new Comment
+        return repo.SelectAsync(new CommentWithRepliesSpec(request.PostId), c => new Comment
         {
             CommentContent = c.CommentContent,
             CreateTimeUtc = c.CreateTimeUtc,

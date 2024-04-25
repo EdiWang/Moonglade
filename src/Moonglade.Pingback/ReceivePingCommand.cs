@@ -1,7 +1,7 @@
 ﻿using MediatR;
 using Microsoft.Extensions.Logging;
+using Moonglade.Data;
 using Moonglade.Data.Entities;
-using Moonglade.Data.Infrastructure;
 using Moonglade.Data.Spec;
 using System.Text.RegularExpressions;
 using System.Xml;
@@ -21,8 +21,8 @@ public class ReceivePingCommand(string requestBody, string ip, Action<PingbackEn
 public class ReceivePingCommandHandler(
         ILogger<ReceivePingCommandHandler> logger,
         IPingSourceInspector pingSourceInspector,
-        IRepository<PingbackEntity> pingbackRepo,
-        IRepository<PostEntity> postRepo) : IRequestHandler<ReceivePingCommand, PingbackResponse>
+        MoongladeRepository<PingbackEntity> pingbackRepo,
+        MoongladeRepository<PostEntity> postRepo) : IRequestHandler<ReceivePingCommand, PingbackResponse>
 {
     private string _sourceUrl;
     private string _targetUrl;
@@ -56,7 +56,7 @@ public class ReceivePingCommandHandler(
             }
 
             var (slug, pubDate) = GetSlugInfoFromUrl(pingRequest.TargetUrl);
-            var spec = new PostSpec(pubDate, slug);
+            var spec = new PostByDateAndSlugSpec(pubDate, slug);
             var (id, title) = await postRepo.FirstOrDefaultAsync(spec, p => new Tuple<Guid, string>(p.Id, p.Title));
             if (id == Guid.Empty)
             {

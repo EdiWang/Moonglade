@@ -1,4 +1,5 @@
-﻿using Moonglade.Data.Spec;
+﻿using Moonglade.Data;
+using Moonglade.Data.Spec;
 using System.Linq.Expressions;
 
 namespace Moonglade.Core.PostFeature;
@@ -6,7 +7,7 @@ namespace Moonglade.Core.PostFeature;
 public record struct Archive(int Year, int Month, int Count);
 public record GetArchiveQuery : IRequest<List<Archive>>;
 
-public class GetArchiveQueryHandler(IRepository<PostEntity> repo) : IRequestHandler<GetArchiveQuery, List<Archive>>
+public class GetArchiveQueryHandler(MoongladeRepository<PostEntity> repo) : IRequestHandler<GetArchiveQuery, List<Archive>>
 {
     private readonly Expression<Func<IGrouping<(int Year, int Month), PostEntity>, Archive>> _archiveSelector =
         p => new(p.Key.Year, p.Key.Month, p.Count());
@@ -18,7 +19,7 @@ public class GetArchiveQueryHandler(IRepository<PostEntity> repo) : IRequestHand
             return new();
         }
 
-        var spec = new PostSpec(PostStatus.Published);
+        var spec = new PostByStatusSpec(PostStatus.Published);
         var list = await repo.SelectAsync(
             post => new(post.PubDateUtc.Value.Year, post.PubDateUtc.Value.Month),
             _archiveSelector, spec);
