@@ -4,8 +4,6 @@ namespace Moonglade.Data.Infrastructure;
 
 public interface IRepository<T> where T : class
 {
-    Task<T> GetAsync(Expression<Func<T, bool>> condition);
-
     Task<List<T>> ListAsync(ISpecification<T> spec);
 
     Task<bool> AnyAsync(Expression<Func<T, bool>> condition = null, CancellationToken ct = default);

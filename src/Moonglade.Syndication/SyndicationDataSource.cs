@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Configuration;
 using Moonglade.Configuration;
+using Moonglade.Data;
 using Moonglade.Data.Entities;
 using Moonglade.Data.Infrastructure;
 using Moonglade.Data.Spec;
@@ -17,15 +18,15 @@ public class SyndicationDataSource : ISyndicationDataSource
 {
     private readonly string _baseUrl;
     private readonly IBlogConfig _blogConfig;
-    private readonly IRepository<CategoryEntity> _catRepo;
-    private readonly IRepository<PostEntity> _postRepo;
+    private readonly MoongladeRepository<CategoryEntity> _catRepo;
+    private readonly MoongladeRepository<PostEntity> _postRepo;
     private readonly IConfiguration _configuration;
 
     public SyndicationDataSource(
         IBlogConfig blogConfig,
         IHttpContextAccessor httpContextAccessor,
-        IRepository<CategoryEntity> catRepo,
-        IRepository<PostEntity> postRepo,
+        MoongladeRepository<CategoryEntity> catRepo,
+        MoongladeRepository<PostEntity> postRepo,
         IConfiguration configuration)
     {
         _blogConfig = blogConfig;
@@ -63,7 +64,7 @@ public class SyndicationDataSource : ISyndicationDataSource
             top = _blogConfig.FeedSettings.RssItemCount;
         }
 
-        var postSpec = new PostSpec(catId, top);
+        var postSpec = new PostByCatSpec(catId, top);
         var list = await _postRepo.SelectAsync(postSpec, p => p.PubDateUtc != null ? new FeedEntry
         {
             Id = p.Id.ToString(),

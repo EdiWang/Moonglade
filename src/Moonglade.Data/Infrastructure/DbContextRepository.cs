@@ -7,9 +7,6 @@ public abstract class DbContextRepository<T>(DbContext ctx) : IRepository<T>
 {
     protected readonly DbContext DbContext = ctx;
 
-    public Task<T> GetAsync(Expression<Func<T, bool>> condition) =>
-        DbContext.Set<T>().FirstOrDefaultAsync(condition);
-
     public async Task<List<T>> ListAsync(ISpecification<T> spec) =>
         await ApplySpecification(spec).AsNoTracking().ToListAsync();
 

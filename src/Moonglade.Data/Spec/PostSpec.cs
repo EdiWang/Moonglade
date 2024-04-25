@@ -74,6 +74,24 @@ public sealed class PostSpec : BaseSpecification<PostEntity>
     }
 }
 
+public class PostByCatSpec : Specification<PostEntity>
+{
+    public PostByCatSpec(Guid? categoryId, int? top = null)
+    {
+        Query.Where(p => !p.IsDeleted &&
+                         p.IsPublished &&
+                         p.IsFeedIncluded &&
+                         (categoryId == null || p.PostCategory.Any(c => c.CategoryId == categoryId.Value)));
+
+        Query.OrderByDescending(p => p.PubDateUtc);
+
+        if (top.HasValue)
+        {
+            Query.Skip(0).Take(top.Value);
+        }
+    }
+}
+
 public class PostByDeletionFlagSpec : Specification<PostEntity>
 {
     public PostByDeletionFlagSpec(bool isDeleted)
