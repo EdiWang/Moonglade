@@ -8,8 +8,6 @@ public interface IRepository<T> where T : class
 
     Task<T> GetAsync(Expression<Func<T, bool>> condition);
 
-    Task<List<T>> ListAsync(CancellationToken ct = default);
-
     Task<List<T>> ListAsync(ISpecification<T> spec);
 
     IQueryable<T> AsQueryable();
@@ -17,8 +15,6 @@ public interface IRepository<T> where T : class
     Task DeleteAsync(T entity, CancellationToken ct = default);
 
     Task DeleteAsync(IEnumerable<T> entities, CancellationToken ct = default);
-
-    Task DeleteAsync(object key, CancellationToken ct = default);
 
     Task<int> CountAsync(Expression<Func<T, bool>> condition, CancellationToken ct = default);
 

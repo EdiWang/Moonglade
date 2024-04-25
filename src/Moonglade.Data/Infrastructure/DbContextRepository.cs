@@ -13,9 +13,6 @@ public abstract class DbContextRepository<T>(DbContext ctx) : IRepository<T>
     public virtual ValueTask<T> GetAsync(object key, CancellationToken ct = default) =>
         DbContext.Set<T>().FindAsync(keyValues: new[] { key }, cancellationToken: ct);
 
-    public async Task<List<T>> ListAsync(CancellationToken ct = default) =>
-        await DbContext.Set<T>().AsNoTracking().ToListAsync(cancellationToken: ct);
-
     public async Task<List<T>> ListAsync(ISpecification<T> spec) =>
         await ApplySpecification(spec).AsNoTracking().ToListAsync();
 
@@ -31,12 +28,6 @@ public abstract class DbContextRepository<T>(DbContext ctx) : IRepository<T>
     {
         DbContext.Set<T>().RemoveRange(entities);
         return DbContext.SaveChangesAsync(ct);
-    }
-
-    public async Task DeleteAsync(object key, CancellationToken ct = default)
-    {
-        var entity = await GetAsync(key, ct);
-        if (entity is not null) await DeleteAsync(entity, ct);
     }
 
     public Task<int> CountAsync(Expression<Func<T, bool>> condition, CancellationToken ct = default) =>
