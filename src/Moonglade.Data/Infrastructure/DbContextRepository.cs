@@ -48,12 +48,6 @@ public abstract class DbContextRepository<T>(DbContext ctx) : IRepository<T>
         return entity;
     }
 
-    public async Task UpdateAsync(T entity, CancellationToken ct = default)
-    {
-        DbContext.Entry(entity).State = EntityState.Modified;
-        await DbContext.SaveChangesAsync(ct);
-    }
-
     private IQueryable<T> ApplySpecification(ISpecification<T> spec) =>
         SpecificationEvaluator<T>.GetQuery(DbContext.Set<T>().AsQueryable(), spec);
 }

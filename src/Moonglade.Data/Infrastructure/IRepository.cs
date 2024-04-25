@@ -24,6 +24,4 @@ public interface IRepository<T> where T : class
         ISpecification<T> spec = null);
 
     Task<T> AddAsync(T entity, CancellationToken ct = default);
-
-    Task UpdateAsync(T entity, CancellationToken ct = default);
 }
