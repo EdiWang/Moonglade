@@ -14,7 +14,7 @@ public class UpdatePostCommandHandler : IRequestHandler<UpdatePostCommand, PostE
     private readonly MoongladeRepository<PostCategoryEntity> _pcRepository;
     private readonly MoongladeRepository<PostTagEntity> _ptRepository;
     private readonly MoongladeRepository<TagEntity> _tagRepo;
-    private readonly IRepository<PostEntity> _postRepo;
+    private readonly MoongladeRepository<PostEntity> _postRepo;
     private readonly ICacheAside _cache;
     private readonly IBlogConfig _blogConfig;
     private readonly IConfiguration _configuration;
@@ -24,7 +24,7 @@ public class UpdatePostCommandHandler : IRequestHandler<UpdatePostCommand, PostE
         MoongladeRepository<PostCategoryEntity> pcRepository,
         MoongladeRepository<PostTagEntity> ptRepository,
         MoongladeRepository<TagEntity> tagRepo,
-        IRepository<PostEntity> postRepo,
+        MoongladeRepository<PostEntity> postRepo,
         ICacheAside cache,
         IBlogConfig blogConfig, IConfiguration configuration)
     {
@@ -43,7 +43,7 @@ public class UpdatePostCommandHandler : IRequestHandler<UpdatePostCommand, PostE
     public async Task<PostEntity> Handle(UpdatePostCommand request, CancellationToken ct)
     {
         var (guid, postEditModel) = request;
-        var post = await _postRepo.GetAsync(guid, ct);
+        var post = await _postRepo.GetByIdAsync(guid, ct);
         if (null == post)
         {
             throw new InvalidOperationException($"Post {guid} is not found.");
