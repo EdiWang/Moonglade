@@ -34,8 +34,6 @@ public abstract class BaseSpecification<T> : ISpecification<T>
         IsPagingEnabled = true;
     }
 
-    protected virtual void ApplyOrderBy(Expression<Func<T, object>> expression) => OrderBy = expression;
-
     protected virtual void ApplyOrderByDescending(Expression<Func<T, object>> expression) => OrderByDescending = expression;
 }
 
