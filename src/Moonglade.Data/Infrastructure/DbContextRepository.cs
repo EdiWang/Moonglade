@@ -17,10 +17,6 @@ public abstract class DbContextRepository<T>(DbContext ctx) : IRepository<T>
         ISpecification<T> spec, Expression<Func<T, TResult>> selector, CancellationToken ct = default) =>
         await ApplySpecification(spec).AsNoTracking().Select(selector).ToListAsync(ct);
 
-    public Task<TResult> FirstOrDefaultAsync<TResult>(
-        ISpecification<T> spec, Expression<Func<T, TResult>> selector) =>
-        ApplySpecification(spec).AsNoTracking().Select(selector).FirstOrDefaultAsync();
-
     private IQueryable<T> ApplySpecification(ISpecification<T> spec) =>
         SpecificationEvaluator<T>.GetQuery(DbContext.Set<T>().AsQueryable(), spec);
 }

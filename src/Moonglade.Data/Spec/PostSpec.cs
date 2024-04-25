@@ -1,18 +1,18 @@
 ﻿using Moonglade.Data.Entities;
-using Moonglade.Data.Infrastructure;
 
 namespace Moonglade.Data.Spec;
 
-public sealed class PostSpec : BaseSpecification<PostEntity>
+public sealed class PostSpec : Specification<PostEntity>
 {
-    public PostSpec(Guid id, bool includeRelatedData = true) : base(p => p.Id == id)
+    public PostSpec(Guid id, bool includeRelatedData = true)
     {
+        Query.Where(p => p.Id == id);
+
         if (includeRelatedData)
         {
-            AddInclude(post => post
-                .Include(p => p.Tags)
-                .Include(p => p.PostCategory)
-                .ThenInclude(pc => pc.Category));
+            Query.Include(p => p.Tags)
+                 .Include(p => p.PostCategory)
+                 .ThenInclude(pc => pc.Category);
         }
     }
 }
