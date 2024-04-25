@@ -11,7 +11,7 @@ namespace Moonglade.Core.PostFeature;
 public record CreatePostCommand(PostEditModel Payload) : IRequest<PostEntity>;
 
 public class CreatePostCommandHandler(
-        IRepository<PostEntity> postRepo,
+        MoongladeRepository<PostEntity> postRepo,
         MoongladeRepository<TagEntity> tagRepo,
         ILogger<CreatePostCommandHandler> logger,
         IConfiguration configuration,
@@ -50,7 +50,7 @@ public class CreatePostCommandHandler(
 
         // check if exist same slug under the same day
         var todayUtc = DateTime.UtcNow.Date;
-        if (await postRepo.AnyAsync(new PostSpec(post.Slug, todayUtc), ct))
+        if (await postRepo.AnyAsync(new PostBySlugAndPubDateSpec(post.Slug, todayUtc), ct))
         {
             var uid = Guid.NewGuid();
             post.Slug += $"-{uid.ToString().ToLower()[..8]}";

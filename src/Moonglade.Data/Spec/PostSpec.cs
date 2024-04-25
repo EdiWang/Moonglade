@@ -29,17 +29,6 @@ public sealed class PostSpec : BaseSpecification<PostEntity>
         ApplyOrderByDescending(p => p.PubDateUtc);
     }
 
-    public PostSpec(string slug, DateTime pubDateUtc) :
-        base(p =>
-        p.Slug == slug &&
-        p.PubDateUtc != null
-        && p.PubDateUtc.Value.Year == pubDateUtc.Year
-        && p.PubDateUtc.Value.Month == pubDateUtc.Month
-        && p.PubDateUtc.Value.Day == pubDateUtc.Day)
-    {
-
-    }
-
     public PostSpec(DateTime date, string slug)
         : base(p => p.Slug == slug &&
                     p.IsPublished &&
@@ -117,5 +106,18 @@ public class PostByDateAndSlugSpec : Specification<PostEntity>
         Query.Include(p => p.Comments)
              .Include(pt => pt.Tags)
              .Include(p => p.PostCategory).ThenInclude(pc => pc.Category);
+    }
+}
+
+public class PostBySlugAndPubDateSpec : Specification<PostEntity>
+{
+    public PostBySlugAndPubDateSpec(string slug, DateTime pubDateUtc)
+    {
+        Query.Where(p =>
+            p.Slug == slug &&
+            p.PubDateUtc != null
+            && p.PubDateUtc.Value.Year == pubDateUtc.Year
+            && p.PubDateUtc.Value.Month == pubDateUtc.Month
+            && p.PubDateUtc.Value.Day == pubDateUtc.Day);
     }
 }

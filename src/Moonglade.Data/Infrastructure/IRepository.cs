@@ -8,8 +8,6 @@ public interface IRepository<T> where T : class
 
     Task<List<T>> ListAsync(ISpecification<T> spec);
 
-    Task<bool> AnyAsync(ISpecification<T> spec, CancellationToken ct = default);
-
     Task<bool> AnyAsync(Expression<Func<T, bool>> condition = null, CancellationToken ct = default);
 
     Task<List<TResult>> SelectAsync<TResult>(Expression<Func<T, TResult>> selector, CancellationToken ct = default);
@@ -22,6 +20,4 @@ public interface IRepository<T> where T : class
         Expression<Func<T, TGroup>> groupExpression,
         Expression<Func<IGrouping<TGroup, T>, TResult>> selector,
         ISpecification<T> spec = null);
-
-    Task<T> AddAsync(T entity, CancellationToken ct = default);
 }

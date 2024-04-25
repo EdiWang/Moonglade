@@ -13,9 +13,6 @@ public abstract class DbContextRepository<T>(DbContext ctx) : IRepository<T>
     public async Task<List<T>> ListAsync(ISpecification<T> spec) =>
         await ApplySpecification(spec).AsNoTracking().ToListAsync();
 
-    public Task<bool> AnyAsync(ISpecification<T> spec, CancellationToken ct = default) =>
-        ApplySpecification(spec).AnyAsync(cancellationToken: ct);
-
     public Task<bool> AnyAsync(Expression<Func<T, bool>> condition = null, CancellationToken ct = default) =>
         null != condition ?
             DbContext.Set<T>().AnyAsync(condition, cancellationToken: ct) :
@@ -39,14 +36,6 @@ public abstract class DbContextRepository<T>(DbContext ctx) : IRepository<T>
         null != spec ?
             await ApplySpecification(spec).AsNoTracking().GroupBy(groupExpression).Select(selector).ToListAsync() :
             await DbContext.Set<T>().AsNoTracking().GroupBy(groupExpression).Select(selector).ToListAsync();
-
-    public async Task<T> AddAsync(T entity, CancellationToken ct = default)
-    {
-        await DbContext.Set<T>().AddAsync(entity, ct);
-        await DbContext.SaveChangesAsync(ct);
-
-        return entity;
-    }
 
     private IQueryable<T> ApplySpecification(ISpecification<T> spec) =>
         SpecificationEvaluator<T>.GetQuery(DbContext.Set<T>().AsQueryable(), spec);
