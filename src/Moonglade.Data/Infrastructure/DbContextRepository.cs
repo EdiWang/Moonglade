@@ -10,9 +10,6 @@ public abstract class DbContextRepository<T>(DbContext ctx) : IRepository<T>
     public Task<T> GetAsync(Expression<Func<T, bool>> condition) =>
         DbContext.Set<T>().FirstOrDefaultAsync(condition);
 
-    public virtual ValueTask<T> GetAsync(object key, CancellationToken ct = default) =>
-        DbContext.Set<T>().FindAsync(keyValues: new[] { key }, cancellationToken: ct);
-
     public async Task<List<T>> ListAsync(ISpecification<T> spec) =>
         await ApplySpecification(spec).AsNoTracking().ToListAsync();
 
