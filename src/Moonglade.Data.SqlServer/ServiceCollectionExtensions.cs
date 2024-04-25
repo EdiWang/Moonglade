@@ -10,6 +10,7 @@ public static class ServiceCollectionExtensions
 {
     public static IServiceCollection AddSqlServerStorage(this IServiceCollection services, string connectionString)
     {
+        services.AddScoped(typeof(MoongladeRepository<>));
         services.AddScoped(typeof(IRepository<>), typeof(SqlServerDbContextRepository<>));
 
         services.AddDbContext<SqlServerBlogDbContext>(options =>

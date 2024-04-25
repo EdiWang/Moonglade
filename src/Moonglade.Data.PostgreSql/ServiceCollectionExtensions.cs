@@ -9,6 +9,7 @@ public static class ServiceCollectionExtensions
 {
     public static IServiceCollection AddPostgreSqlStorage(this IServiceCollection services, string connectionString)
     {
+        services.AddScoped(typeof(MoongladeRepository<>));
         services.AddScoped(typeof(IRepository<>), typeof(PostgreSqlDbContextRepository<>));
 
         AppContext.SetSwitch("Npgsql.EnableLegacyTimestampBehavior", true);

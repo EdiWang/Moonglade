@@ -10,6 +10,7 @@ public static class ServiceCollectionExtensions
 {
     public static IServiceCollection AddMySqlStorage(this IServiceCollection services, string connectionString)
     {
+        services.AddScoped(typeof(MoongladeRepository<>));
         services.AddScoped(typeof(IRepository<>), typeof(MySqlDbContextRepository<>));
 
         services.AddDbContext<MySqlBlogDbContext>(optionsAction => optionsAction.UseLazyLoadingProxies()
