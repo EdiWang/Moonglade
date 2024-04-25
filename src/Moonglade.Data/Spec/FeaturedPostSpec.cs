@@ -3,20 +3,17 @@ using Moonglade.Data.Infrastructure;
 
 namespace Moonglade.Data.Spec;
 
-public sealed class FeaturedPostSpec : BaseSpecification<PostEntity>
+public sealed class FeaturedPostSpec : Specification<PostEntity>
 {
-    public FeaturedPostSpec() : base(p => p.IsFeatured)
-    {
-    }
-
     public FeaturedPostSpec(int pageSize, int pageIndex)
-        : base(p =>
+    {
+        Query.Where(p =>
             p.IsFeatured
             && !p.IsDeleted
-            && p.IsPublished)
-    {
+            && p.IsPublished);
+
         var startRow = (pageIndex - 1) * pageSize;
-        ApplyPaging(startRow, pageSize);
-        ApplyOrderByDescending(p => p.PubDateUtc);
+        Query.Skip(startRow).Take(pageSize);
+        Query.OrderByDescending(p => p.PubDateUtc);
     }
 }
