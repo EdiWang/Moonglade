@@ -1,13 +1,13 @@
 ﻿using MediatR;
+using Moonglade.Data;
 using Moonglade.Data.Entities;
-using Moonglade.Data.Infrastructure;
 using Moonglade.Utils;
 
 namespace Moonglade.FriendLink;
 
 public record UpdateLinkCommand(Guid Id, EditLinkRequest Payload) : IRequest;
 
-public class UpdateLinkCommandHandler(IRepository<FriendLinkEntity> repo) : IRequestHandler<UpdateLinkCommand>
+public class UpdateLinkCommandHandler(MoongladeRepository<FriendLinkEntity> repo) : IRequestHandler<UpdateLinkCommand>
 {
     public async Task Handle(UpdateLinkCommand request, CancellationToken ct)
     {
@@ -16,7 +16,7 @@ public class UpdateLinkCommandHandler(IRepository<FriendLinkEntity> repo) : IReq
             throw new InvalidOperationException($"{nameof(request.Payload.LinkUrl)} is not a valid url.");
         }
 
-        var link = await repo.GetAsync(request.Id, ct);
+        var link = await repo.GetByIdAsync(request.Id, ct);
         if (link is not null)
         {
             link.Title = request.Payload.Title;

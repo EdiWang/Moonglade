@@ -1,6 +1,6 @@
 ﻿using MediatR;
+using Moonglade.Data;
 using Moonglade.Data.Entities;
-using Moonglade.Data.Infrastructure;
 using Moonglade.Utils;
 using System.ComponentModel.DataAnnotations;
 
@@ -33,7 +33,7 @@ public class EditLinkRequest : IValidatableObject
 
 public record AddLinkCommand(EditLinkRequest Payload) : IRequest;
 
-public class AddLinkCommandHandler(IRepository<FriendLinkEntity> repo) : IRequestHandler<AddLinkCommand>
+public class AddLinkCommandHandler(MoongladeRepository<FriendLinkEntity> repo) : IRequestHandler<AddLinkCommand>
 {
     public async Task Handle(AddLinkCommand request, CancellationToken ct)
     {
