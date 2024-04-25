@@ -16,14 +16,17 @@ public sealed class CommentSpec : BaseSpecification<CommentEntity>
         ApplyPaging(startRow, pageSize);
     }
 
-    public CommentSpec(Guid[] ids) : base(c => ids.Contains(c.Id))
-    {
-
-    }
-
     public CommentSpec(Guid postId) : base(c => c.PostId == postId &&
                                                 c.IsApproved)
     {
         AddInclude(comments => comments.Include(c => c.Replies));
+    }
+}
+
+public class CommentByIdsSepc : Specification<CommentEntity>
+{
+    public CommentByIdsSepc(Guid[] ids)
+    {
+        Query.Where(c => ids.Contains(c.Id));
     }
 }
