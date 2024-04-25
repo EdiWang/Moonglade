@@ -93,15 +93,17 @@ public sealed class PostSpec : BaseSpecification<PostEntity>
         }
     }
 
-    public PostSpec(bool isDeleted) :
-        base(p => p.IsDeleted == isDeleted)
-    {
-
-    }
-
     public PostSpec() :
         base(p => p.IsDeleted)
     {
 
+    }
+}
+
+public class PostByDeletionFlagSpec : Specification<PostEntity>
+{
+    public PostByDeletionFlagSpec(bool isDeleted)
+    {
+        Query.Where(p => p.IsDeleted == isDeleted);
     }
 }
