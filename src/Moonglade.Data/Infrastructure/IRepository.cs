@@ -10,8 +10,6 @@ public interface IRepository<T> where T : class
 
     Task<List<T>> ListAsync(ISpecification<T> spec);
 
-    Task<int> CountAsync(Expression<Func<T, bool>> condition, CancellationToken ct = default);
-
     Task<bool> AnyAsync(ISpecification<T> spec, CancellationToken ct = default);
 
     Task<bool> AnyAsync(Expression<Func<T, bool>> condition = null, CancellationToken ct = default);

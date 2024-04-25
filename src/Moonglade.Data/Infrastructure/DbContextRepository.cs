@@ -16,9 +16,6 @@ public abstract class DbContextRepository<T>(DbContext ctx) : IRepository<T>
     public async Task<List<T>> ListAsync(ISpecification<T> spec) =>
         await ApplySpecification(spec).AsNoTracking().ToListAsync();
 
-    public Task<int> CountAsync(Expression<Func<T, bool>> condition, CancellationToken ct = default) =>
-        DbContext.Set<T>().CountAsync(condition, ct);
-
     public Task<bool> AnyAsync(ISpecification<T> spec, CancellationToken ct = default) =>
         ApplySpecification(spec).AnyAsync(cancellationToken: ct);
 
