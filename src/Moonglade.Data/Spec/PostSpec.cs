@@ -15,27 +15,6 @@ public sealed class PostSpec : BaseSpecification<PostEntity>
                 .ThenInclude(pc => pc.Category));
         }
     }
-
-    public PostSpec(PostStatus status)
-    {
-        switch (status)
-        {
-            case PostStatus.Draft:
-                AddCriteria(p => !p.IsPublished && !p.IsDeleted);
-                break;
-            case PostStatus.Published:
-                AddCriteria(p => p.IsPublished && !p.IsDeleted);
-                break;
-            case PostStatus.Deleted:
-                AddCriteria(p => p.IsDeleted);
-                break;
-            case PostStatus.Default:
-                AddCriteria(p => true);
-                break;
-            default:
-                throw new ArgumentOutOfRangeException(nameof(status), status, null);
-        }
-    }
 }
 
 public class PostByStatusSpec : Specification<PostEntity>
