@@ -1,8 +1,10 @@
-﻿namespace Moonglade.Core.PageFeature;
+﻿using Moonglade.Data;
+
+namespace Moonglade.Core.PageFeature;
 
 public record CreatePageCommand(EditPageRequest Payload) : IRequest<Guid>;
 
-public class CreatePageCommandHandler(IRepository<PageEntity> repo, IMediator mediator) : IRequestHandler<CreatePageCommand, Guid>
+public class CreatePageCommandHandler(MoongladeRepository<PageEntity> repo, IMediator mediator) : IRequestHandler<CreatePageCommand, Guid>
 {
     public async Task<Guid> Handle(CreatePageCommand request, CancellationToken ct)
     {

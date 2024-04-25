@@ -1,8 +1,10 @@
-﻿namespace Moonglade.Core.PageFeature;
+﻿using Moonglade.Data;
+
+namespace Moonglade.Core.PageFeature;
 
 public record GetPageBySlugQuery(string Slug) : IRequest<BlogPage>;
 
-public class GetPageBySlugQueryHandler(IRepository<PageEntity> repo) : IRequestHandler<GetPageBySlugQuery, BlogPage>
+public class GetPageBySlugQueryHandler(MoongladeRepository<PageEntity> repo) : IRequestHandler<GetPageBySlugQuery, BlogPage>
 {
     public async Task<BlogPage> Handle(GetPageBySlugQuery request, CancellationToken ct)
     {
