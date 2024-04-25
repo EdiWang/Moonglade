@@ -5,30 +5,6 @@ namespace Moonglade.Data.Spec;
 
 public sealed class PostSpec : BaseSpecification<PostEntity>
 {
-    public PostSpec(Guid? categoryId, int? top = null) :
-        base(p => !p.IsDeleted &&
-                  p.IsPublished &&
-                  p.IsFeedIncluded &&
-                  (categoryId == null || p.PostCategory.Any(c => c.CategoryId == categoryId.Value)))
-    {
-        ApplyOrderByDescending(p => p.PubDateUtc);
-
-        if (top.HasValue)
-        {
-            ApplyPaging(0, top.Value);
-        }
-    }
-
-    public PostSpec(int year, int month = 0) :
-        base(p => p.PubDateUtc.Value.Year == year &&
-                  (month == 0 || p.PubDateUtc.Value.Month == month))
-    {
-        // Fix #313: Filter out unpublished posts
-        AddCriteria(p => p.IsPublished && !p.IsDeleted);
-
-        ApplyOrderByDescending(p => p.PubDateUtc);
-    }
-
     public PostSpec(DateTime date, string slug)
         : base(p => p.Slug == slug &&
                     p.IsPublished &&
@@ -89,6 +65,20 @@ public class PostByCatSpec : Specification<PostEntity>
         {
             Query.Skip(0).Take(top.Value);
         }
+    }
+}
+
+public class PostByYearMonthSpec : Specification<PostEntity>
+{
+    public PostByYearMonthSpec(int year, int month = 0)
+    {
+        Query.Where(p => p.PubDateUtc.Value.Year == year &&
+                         (month == 0 || p.PubDateUtc.Value.Month == month));
+
+        // Fix #313: Filter out unpublished posts
+        Query.Where(p => p.IsPublished && !p.IsDeleted);
+
+        Query.OrderByDescending(p => p.PubDateUtc);
     }
 }
 
