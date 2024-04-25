@@ -19,6 +19,6 @@ public class DeletePageCommandHandler(MoongladeRepository<PageEntity> repo, IMed
             await mediator.Send(new DeleteStyleSheetCommand(new(page.CssId)), ct);
         }
 
-        await repo.DeleteAsync(request.Id, ct);
+        await repo.DeleteByIdAsync(request.Id, ct);
     }
 }

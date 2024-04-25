@@ -17,7 +17,7 @@ public class MoongladeRepository<T>(BlogDbContext dbContext) : RepositoryBase<T>
         return dbContext.SaveChangesAsync(ct);
     }
 
-    public async Task DeleteAsync(object key, CancellationToken ct = default)
+    public async Task DeleteByIdAsync(object key, CancellationToken ct = default)
     {
         var entity = await GetByIdAsync(key, ct);
         if (entity is not null) await DeleteAsync(entity, ct);

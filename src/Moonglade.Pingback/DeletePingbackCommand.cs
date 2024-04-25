@@ -8,5 +8,5 @@ public record DeletePingbackCommand(Guid Id) : IRequest;
 
 public class DeletePingbackCommandHandler(MoongladeRepository<PingbackEntity> repo) : IRequestHandler<DeletePingbackCommand>
 {
-    public Task Handle(DeletePingbackCommand request, CancellationToken ct) => repo.DeleteAsync(request.Id, ct);
+    public Task Handle(DeletePingbackCommand request, CancellationToken ct) => repo.DeleteByIdAsync(request.Id, ct);
 }

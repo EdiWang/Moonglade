@@ -19,7 +19,7 @@ public class DeleteCommentsCommandHandler(MoongladeRepository<CommentEntity> com
             var cReplies = await commentReplyRepo.ListAsync(new CommentReplySpec(cmt.Id), ct);
             if (cReplies.Any())
             {
-                await commentReplyRepo.DeleteAsync(cReplies, ct);
+                await commentReplyRepo.DeleteRangeAsync(cReplies, ct);
             }
 
             // 2. Delete comment itself

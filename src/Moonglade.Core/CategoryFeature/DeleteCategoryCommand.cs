@@ -18,7 +18,7 @@ public class DeleteCategoryCommandHandler(
         var pcs = await postCatRepo.GetAsync(pc => pc.CategoryId == request.Id);
         if (pcs is not null) await postCatRepo.DeleteAsync(pcs, ct);
 
-        await catRepo.DeleteAsync(request.Id, ct);
+        await catRepo.DeleteByIdAsync(request.Id, ct);
         cache.Remove(BlogCachePartition.General.ToString(), "allcats");
 
         return OperationCode.Done;

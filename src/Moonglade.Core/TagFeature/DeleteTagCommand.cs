@@ -17,10 +17,10 @@ public class DeleteTagCommandHandler(
 
         // 1. Delete Post-Tag Association
         var postTags = await postTagRepo.ListAsync(new PostTagByTagIdSpec(request.Id), ct);
-        await postTagRepo.DeleteAsync(postTags, ct);
+        await postTagRepo.DeleteRangeAsync(postTags, ct);
 
         // 2. Delte Tag itslef
-        await tagRepo.DeleteAsync(request.Id, ct);
+        await tagRepo.DeleteByIdAsync(request.Id, ct);
 
         return OperationCode.Done;
     }

@@ -108,7 +108,7 @@ public class UpdatePostCommandHandler : IRequestHandler<UpdatePostCommand, PostE
         if (_useMySqlWorkaround)
         {
             var oldTags = await _ptRepository.AsQueryable().Where(pc => pc.PostId == post.Id).ToListAsync(cancellationToken: ct);
-            await _ptRepository.DeleteAsync(oldTags, ct);
+            await _ptRepository.DeleteRangeAsync(oldTags, ct);
         }
 
         post.Tags.Clear();
@@ -131,7 +131,7 @@ public class UpdatePostCommandHandler : IRequestHandler<UpdatePostCommand, PostE
         {
             var oldpcs = await _pcRepository.AsQueryable().Where(pc => pc.PostId == post.Id)
                 .ToListAsync(cancellationToken: ct);
-            await _pcRepository.DeleteAsync(oldpcs, ct);
+            await _pcRepository.DeleteRangeAsync(oldpcs, ct);
         }
 
         post.PostCategory.Clear();

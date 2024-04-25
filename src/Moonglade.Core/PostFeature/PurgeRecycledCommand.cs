@@ -12,7 +12,7 @@ public class PurgeRecycledCommandHandler(ICacheAside cache, MoongladeRepository<
     {
         var spec = new PostByDeletionFlagSpec(true);
         var posts = await repo.ListAsync(spec, ct);
-        await repo.DeleteAsync(posts, ct);
+        await repo.DeleteRangeAsync(posts, ct);
 
         foreach (var guid in posts.Select(p => p.Id))
         {
