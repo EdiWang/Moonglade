@@ -1,12 +1,11 @@
-﻿using Moonglade.Data.Infrastructure;
-using System.IO.Compression;
+﻿using System.IO.Compression;
 using System.Linq.Expressions;
 using System.Text;
 using System.Text.Json;
 
 namespace Moonglade.Data.Exporting.Exporters;
 
-public class ZippedJsonExporter<T>(IRepository<T> repository, string fileNamePrefix, string directory)
+public class ZippedJsonExporter<T>(MoongladeRepository<T> repository, string fileNamePrefix, string directory)
     : IExporter<T>
     where T : class
 {

@@ -7,9 +7,6 @@ public abstract class DbContextRepository<T>(DbContext ctx) : IRepository<T>
 {
     protected readonly DbContext DbContext = ctx;
 
-    public async Task<List<TResult>> SelectAsync<TResult>(Expression<Func<T, TResult>> selector, CancellationToken ct = default) =>
-        await DbContext.Set<T>().AsNoTracking().Select(selector).ToListAsync(cancellationToken: ct);
-
     public async Task<List<TResult>> SelectAsync<TResult>(
         ISpecification<T> spec, Expression<Func<T, TResult>> selector, CancellationToken ct = default) =>
         await ApplySpecification(spec).AsNoTracking().Select(selector).ToListAsync(ct);
