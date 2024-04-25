@@ -4,8 +4,6 @@ namespace Moonglade.Data.Infrastructure;
 
 public interface IRepository<T> where T : class
 {
-    Task Clear(CancellationToken ct = default);
-
     ValueTask<T> GetAsync(object key, CancellationToken ct = default);
 
     Task<T> GetAsync(Expression<Func<T, bool>> condition);

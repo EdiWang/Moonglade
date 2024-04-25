@@ -7,12 +7,6 @@ public abstract class DbContextRepository<T>(DbContext ctx) : IRepository<T>
 {
     protected readonly DbContext DbContext = ctx;
 
-    public Task Clear(CancellationToken ct = default)
-    {
-        DbContext.RemoveRange(DbContext.Set<T>());
-        return DbContext.SaveChangesAsync(ct);
-    }
-
     public Task<T> GetAsync(Expression<Func<T, bool>> condition) =>
         DbContext.Set<T>().FirstOrDefaultAsync(condition);
 

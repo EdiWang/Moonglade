@@ -1,13 +1,13 @@
 ﻿using MediatR;
 using Moonglade.Data.Entities;
-using Moonglade.Data.Infrastructure;
 using System.Text.Json;
+using Moonglade.Data;
 
 namespace Moonglade.Theme;
 
 public record CreateThemeCommand(string Name, IDictionary<string, string> Rules) : IRequest<int>;
 
-public class CreateThemeCommandHandler(IRepository<BlogThemeEntity> repo) : IRequestHandler<CreateThemeCommand, int>
+public class CreateThemeCommandHandler(MoongladeRepository<BlogThemeEntity> repo) : IRequestHandler<CreateThemeCommand, int>
 {
     public async Task<int> Handle(CreateThemeCommand request, CancellationToken ct)
     {

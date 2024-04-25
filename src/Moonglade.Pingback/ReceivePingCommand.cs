@@ -1,5 +1,6 @@
 ﻿using MediatR;
 using Microsoft.Extensions.Logging;
+using Moonglade.Data;
 using Moonglade.Data.Entities;
 using Moonglade.Data.Infrastructure;
 using Moonglade.Data.Spec;
@@ -21,7 +22,7 @@ public class ReceivePingCommand(string requestBody, string ip, Action<PingbackEn
 public class ReceivePingCommandHandler(
         ILogger<ReceivePingCommandHandler> logger,
         IPingSourceInspector pingSourceInspector,
-        IRepository<PingbackEntity> pingbackRepo,
+        MoongladeRepository<PingbackEntity> pingbackRepo,
         IRepository<PostEntity> postRepo) : IRequestHandler<ReceivePingCommand, PingbackResponse>
 {
     private string _sourceUrl;
