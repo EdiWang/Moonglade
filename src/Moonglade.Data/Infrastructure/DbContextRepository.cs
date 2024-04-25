@@ -27,11 +27,6 @@ public abstract class DbContextRepository<T>(DbContext ctx) : IRepository<T>
     public Task<int> CountAsync(Expression<Func<T, bool>> condition, CancellationToken ct = default) =>
         DbContext.Set<T>().CountAsync(condition, ct);
 
-    public Task<int> CountAsync(ISpecification<T> spec = null, CancellationToken ct = default) =>
-        null != spec ?
-            ApplySpecification(spec).CountAsync(cancellationToken: ct) :
-            DbContext.Set<T>().CountAsync(cancellationToken: ct);
-
     public Task<bool> AnyAsync(ISpecification<T> spec, CancellationToken ct = default) =>
         ApplySpecification(spec).AnyAsync(cancellationToken: ct);
 
