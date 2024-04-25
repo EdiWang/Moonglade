@@ -5,18 +5,6 @@ namespace Moonglade.Data.Spec;
 
 public sealed class PostSpec : BaseSpecification<PostEntity>
 {
-    public PostSpec(DateTime date, string slug)
-        : base(p => p.Slug == slug &&
-                    p.IsPublished &&
-                    p.PubDateUtc.Value.Date == date &&
-                    !p.IsDeleted)
-    {
-        AddInclude(post => post
-            .Include(p => p.Comments)
-            .Include(pt => pt.Tags)
-            .Include(p => p.PostCategory).ThenInclude(pc => pc.Category));
-    }
-
     public PostSpec(Guid id, bool includeRelatedData = true) : base(p => p.Id == id)
     {
         if (includeRelatedData)

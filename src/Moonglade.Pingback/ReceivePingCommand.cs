@@ -23,7 +23,7 @@ public class ReceivePingCommandHandler(
         ILogger<ReceivePingCommandHandler> logger,
         IPingSourceInspector pingSourceInspector,
         MoongladeRepository<PingbackEntity> pingbackRepo,
-        IRepository<PostEntity> postRepo) : IRequestHandler<ReceivePingCommand, PingbackResponse>
+        MoongladeRepository<PostEntity> postRepo) : IRequestHandler<ReceivePingCommand, PingbackResponse>
 {
     private string _sourceUrl;
     private string _targetUrl;
@@ -57,7 +57,7 @@ public class ReceivePingCommandHandler(
             }
 
             var (slug, pubDate) = GetSlugInfoFromUrl(pingRequest.TargetUrl);
-            var spec = new PostSpec(pubDate, slug);
+            var spec = new PostByDateAndSlugSpec(pubDate, slug);
             var (id, title) = await postRepo.FirstOrDefaultAsync(spec, p => new Tuple<Guid, string>(p.Id, p.Title));
             if (id == Guid.Empty)
             {
