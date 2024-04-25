@@ -2,6 +2,7 @@
 using Microsoft.Extensions.Logging;
 using Moonglade.Configuration;
 using Moonglade.Core.TagFeature;
+using Moonglade.Data;
 using Moonglade.Data.Spec;
 using Moonglade.Utils;
 
@@ -9,9 +10,10 @@ namespace Moonglade.Core.PostFeature;
 
 public record CreatePostCommand(PostEditModel Payload) : IRequest<PostEntity>;
 
-public class CreatePostCommandHandler(IRepository<PostEntity> postRepo,
+public class CreatePostCommandHandler(
+        IRepository<PostEntity> postRepo,
+        MoongladeRepository<TagEntity> tagRepo,
         ILogger<CreatePostCommandHandler> logger,
-        IRepository<TagEntity> tagRepo,
         IConfiguration configuration,
         IBlogConfig blogConfig)
     : IRequestHandler<CreatePostCommand, PostEntity>
