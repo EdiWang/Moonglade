@@ -10,9 +10,12 @@ public sealed class TagSpec : BaseSpecification<TagEntity>
         ApplyPaging(0, top);
         ApplyOrderByDescending(p => p.Posts.Count);
     }
+}
 
-    public TagSpec(string normalizedName) : base(t => t.NormalizedName == normalizedName)
+public sealed class TagByNormalizedNameSpec : Specification<TagEntity>
+{
+    public TagByNormalizedNameSpec(string normalizedName)
     {
-
+        Query.Where(t => t.NormalizedName == normalizedName);
     }
 }
