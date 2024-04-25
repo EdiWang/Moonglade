@@ -38,6 +38,30 @@ public sealed class PostSpec : BaseSpecification<PostEntity>
     }
 }
 
+public class PostByStatusSpec : Specification<PostEntity>
+{
+    public PostByStatusSpec(PostStatus status)
+    {
+        switch (status)
+        {
+            case PostStatus.Draft:
+                Query.Where(p => !p.IsPublished && !p.IsDeleted);
+                break;
+            case PostStatus.Published:
+                Query.Where(p => p.IsPublished && !p.IsDeleted);
+                break;
+            case PostStatus.Deleted:
+                Query.Where(p => p.IsDeleted);
+                break;
+            case PostStatus.Default:
+                Query.Where(p => true);
+                break;
+            default:
+                throw new ArgumentOutOfRangeException(nameof(status), status, null);
+        }
+    }
+}
+
 public class PostByCatSpec : Specification<PostEntity>
 {
     public PostByCatSpec(Guid? categoryId, int? top = null)
