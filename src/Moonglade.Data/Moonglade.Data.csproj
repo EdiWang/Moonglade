@@ -10,8 +10,13 @@
     </PropertyGroup>
     <ItemGroup>
         <Using Include="Microsoft.EntityFrameworkCore" />
-        <PackageReference Include="MediatR" Version="12.2.0" />
+        <Using Include="Ardalis.Specification" />
+    </ItemGroup>
+    <ItemGroup>
         <FrameworkReference Include="Microsoft.AspNetCore.App" />
+        <PackageReference Include="Ardalis.Specification" Version="8.0.0" />
+        <PackageReference Include="Ardalis.Specification.EntityFrameworkCore" Version="8.0.0" />
+        <PackageReference Include="MediatR" Version="12.2.0" />
         <PackageReference Include="Microsoft.EntityFrameworkCore.Proxies" Version="8.0.4" />
     </ItemGroup>
 </Project>
