@@ -18,6 +18,9 @@ public class MoongladeRepository<T>(BlogDbContext dbContext) : RepositoryBase<T>
         if (entity is not null) await DeleteAsync(entity, ct);
     }
 
+    public Task<T> GetAsync(Expression<Func<T, bool>> condition) =>
+        dbContext.Set<T>().FirstOrDefaultAsync(condition);
+
     public async Task<List<T>> ListNoTrackingAsync(CancellationToken ct = default) =>
         await dbContext.Set<T>().AsNoTracking().ToListAsync(cancellationToken: ct);
 
