@@ -12,8 +12,6 @@ public interface IRepository<T> where T : class
 
     IQueryable<T> AsQueryable();
 
-    Task DeleteAsync(T entity, CancellationToken ct = default);
-
     Task DeleteAsync(IEnumerable<T> entities, CancellationToken ct = default);
 
     Task<int> CountAsync(Expression<Func<T, bool>> condition, CancellationToken ct = default);

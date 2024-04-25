@@ -18,12 +18,6 @@ public abstract class DbContextRepository<T>(DbContext ctx) : IRepository<T>
 
     public IQueryable<T> AsQueryable() => DbContext.Set<T>();
 
-    public async Task DeleteAsync(T entity, CancellationToken ct = default)
-    {
-        DbContext.Set<T>().Remove(entity);
-        await DbContext.SaveChangesAsync(ct);
-    }
-
     public Task DeleteAsync(IEnumerable<T> entities, CancellationToken ct = default)
     {
         DbContext.Set<T>().RemoveRange(entities);
