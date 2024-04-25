@@ -1,18 +1,18 @@
 ﻿using Moonglade.Data.Entities;
-using Moonglade.Data.Infrastructure;
 
 namespace Moonglade.Data.Spec;
 
-public sealed class PostPagingSpec : BaseSpecification<PostEntity>
+public sealed class PostPagingSpec : Specification<PostEntity>
 {
     public PostPagingSpec(int pageSize, int pageIndex, Guid? categoryId = null)
-        : base(p => !p.IsDeleted && p.IsPublished &&
-                    (categoryId == null || p.PostCategory.Select(c => c.CategoryId).Contains(categoryId.Value)))
     {
+        Query.Where(p => !p.IsDeleted && p.IsPublished &&
+                         (categoryId == null || p.PostCategory.Select(c => c.CategoryId).Contains(categoryId.Value)));
+
         var startRow = (pageIndex - 1) * pageSize;
 
-        ApplyOrderByDescending(p => p.PubDateUtc);
-        ApplyPaging(startRow, pageSize);
+        Query.OrderByDescending(p => p.PubDateUtc);
+        Query.Skip(startRow).Take(pageSize);
     }
 }
 

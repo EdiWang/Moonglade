@@ -1,34 +1,11 @@
-﻿using Microsoft.EntityFrameworkCore.Query;
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
 using System.Linq.Expressions;
+using System.Text;
+using System.Threading.Tasks;
 
-namespace Moonglade.Data.Infrastructure;
-
-public abstract class BaseSpecification<T> : ISpecification<T>
-{
-    protected BaseSpecification()
-    {
-    }
-
-    protected BaseSpecification(Expression<Func<T, bool>> criteria) => Criteria = criteria;
-
-    public Expression<Func<T, bool>> Criteria { get; private set; }
-    public Func<IQueryable<T>, IIncludableQueryable<T, object>> Include { get; private set; }
-    public Expression<Func<T, object>> OrderBy { get; private set; }
-    public Expression<Func<T, object>> OrderByDescending { get; private set; }
-
-    public int Take { get; private set; }
-    public int Skip { get; private set; }
-    public bool IsPagingEnabled { get; private set; }
-
-    protected virtual void ApplyPaging(int skip, int take)
-    {
-        Skip = skip;
-        Take = take;
-        IsPagingEnabled = true;
-    }
-
-    protected virtual void ApplyOrderByDescending(Expression<Func<T, object>> expression) => OrderByDescending = expression;
-}
+namespace Moonglade.Data;
 
 // https://stackoverflow.com/questions/457316/combining-two-expressions-expressionfunct-bool
 public static class ExpressionExtentions

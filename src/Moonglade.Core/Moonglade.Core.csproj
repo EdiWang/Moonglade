@@ -17,7 +17,6 @@
         <Using Include="Microsoft.AspNetCore.Authorization" />
         <Using Include="MediatR" />
         <Using Include="Moonglade.Data.Entities" />
-        <Using Include="Moonglade.Data.Infrastructure" />
     </ItemGroup>
     <ItemGroup>
         <ProjectReference Include="..\Moonglade.Configuration\Moonglade.Configuration.csproj" />

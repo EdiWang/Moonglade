@@ -1,7 +1,5 @@
-﻿using Moonglade.Data.Infrastructure;
-
-namespace Moonglade.Data.SqlServer.Infrastructure;
+﻿namespace Moonglade.Data.SqlServer.Infrastructure;
 
 
-public class SqlServerDbContextRepository<T>(SqlServerBlogDbContext dbContext) : DbContextRepository<T>(dbContext)
+public class SqlServerDbContextRepository<T>(SqlServerBlogDbContext dbContext) : MoongladeRepository<T>(dbContext)
     where T : class;

@@ -1,6 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
-using Moonglade.Data.Infrastructure;
 using Moonglade.Data.SqlServer.Infrastructure;
 
 namespace Moonglade.Data.SqlServer;
@@ -10,8 +9,7 @@ public static class ServiceCollectionExtensions
 {
     public static IServiceCollection AddSqlServerStorage(this IServiceCollection services, string connectionString)
     {
-        services.AddScoped(typeof(MoongladeRepository<>));
-        services.AddScoped(typeof(IRepository<>), typeof(SqlServerDbContextRepository<>));
+        services.AddScoped(typeof(MoongladeRepository<>), typeof(SqlServerDbContextRepository<>));
 
         services.AddDbContext<SqlServerBlogDbContext>(options =>
             options.UseLazyLoadingProxies()

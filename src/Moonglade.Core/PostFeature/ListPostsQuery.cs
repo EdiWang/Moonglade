@@ -1,4 +1,5 @@
-﻿using Moonglade.Data.Spec;
+﻿using Moonglade.Data;
+using Moonglade.Data.Spec;
 using Moonglade.Utils;
 
 namespace Moonglade.Core.PostFeature;
@@ -13,7 +14,7 @@ public class ListPostsQuery(int pageSize, int pageIndex, Guid? catId = null)
     public Guid? CatId { get; set; } = catId;
 }
 
-public class ListPostsQueryHandler(IRepository<PostEntity> repo) : IRequestHandler<ListPostsQuery, List<PostDigest>>
+public class ListPostsQueryHandler(MoongladeRepository<PostEntity> repo) : IRequestHandler<ListPostsQuery, List<PostDigest>>
 {
     public Task<List<PostDigest>> Handle(ListPostsQuery request, CancellationToken ct)
     {
