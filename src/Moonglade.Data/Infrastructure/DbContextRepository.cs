@@ -16,14 +16,6 @@ public abstract class DbContextRepository<T>(DbContext ctx) : IRepository<T>
     public async Task<List<T>> ListAsync(ISpecification<T> spec) =>
         await ApplySpecification(spec).AsNoTracking().ToListAsync();
 
-    public IQueryable<T> AsQueryable() => DbContext.Set<T>();
-
-    public Task DeleteAsync(IEnumerable<T> entities, CancellationToken ct = default)
-    {
-        DbContext.Set<T>().RemoveRange(entities);
-        return DbContext.SaveChangesAsync(ct);
-    }
-
     public Task<int> CountAsync(Expression<Func<T, bool>> condition, CancellationToken ct = default) =>
         DbContext.Set<T>().CountAsync(condition, ct);
 

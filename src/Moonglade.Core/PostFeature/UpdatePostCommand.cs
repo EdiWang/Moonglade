@@ -3,6 +3,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Moonglade.Configuration;
 using Moonglade.Core.TagFeature;
+using Moonglade.Data;
 using Moonglade.Utils;
 
 namespace Moonglade.Core.PostFeature;
@@ -10,9 +11,9 @@ namespace Moonglade.Core.PostFeature;
 public record UpdatePostCommand(Guid Id, PostEditModel Payload) : IRequest<PostEntity>;
 public class UpdatePostCommandHandler : IRequestHandler<UpdatePostCommand, PostEntity>
 {
-    private readonly IRepository<PostCategoryEntity> _pcRepository;
-    private readonly IRepository<PostTagEntity> _ptRepository;
-    private readonly IRepository<TagEntity> _tagRepo;
+    private readonly MoongladeRepository<PostCategoryEntity> _pcRepository;
+    private readonly MoongladeRepository<PostTagEntity> _ptRepository;
+    private readonly MoongladeRepository<TagEntity> _tagRepo;
     private readonly IRepository<PostEntity> _postRepo;
     private readonly ICacheAside _cache;
     private readonly IBlogConfig _blogConfig;
@@ -20,9 +21,9 @@ public class UpdatePostCommandHandler : IRequestHandler<UpdatePostCommand, PostE
     private readonly bool _useMySqlWorkaround;
 
     public UpdatePostCommandHandler(
-        IRepository<PostCategoryEntity> pcRepository,
-        IRepository<PostTagEntity> ptRepository,
-        IRepository<TagEntity> tagRepo,
+        MoongladeRepository<PostCategoryEntity> pcRepository,
+        MoongladeRepository<PostTagEntity> ptRepository,
+        MoongladeRepository<TagEntity> tagRepo,
         IRepository<PostEntity> postRepo,
         ICacheAside cache,
         IBlogConfig blogConfig, IConfiguration configuration)
