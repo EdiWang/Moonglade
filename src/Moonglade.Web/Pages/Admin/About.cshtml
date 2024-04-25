@@ -106,6 +106,16 @@
                         </td>
                     </tr>
                 }
+
+                @if (Request.Headers.ContainsKey("X-Azure-FDID"))
+                {
+                    <tr>
+                        <td>@SharedLocalizer["Azure Front Door"]</td>
+                        <td class="text-muted">
+                            X-Azure-FDID: @Request.Headers["X-Azure-FDID"]
+                        </td>
+                    </tr>
+                }
             </tbody>
         </table>
     </div>
