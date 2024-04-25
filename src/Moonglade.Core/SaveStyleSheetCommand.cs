@@ -1,10 +1,11 @@
-﻿using System.Security.Cryptography;
+﻿using Moonglade.Data;
+using System.Security.Cryptography;
 
 namespace Moonglade.Core;
 
 public record SaveStyleSheetCommand(Guid Id, string Slug, string CssContent) : IRequest<Guid>;
 
-public class SaveStyleSheetCommandHandler(IRepository<StyleSheetEntity> repo) : IRequestHandler<SaveStyleSheetCommand, Guid>
+public class SaveStyleSheetCommandHandler(MoongladeRepository<StyleSheetEntity> repo) : IRequestHandler<SaveStyleSheetCommand, Guid>
 {
     public async Task<Guid> Handle(SaveStyleSheetCommand request, CancellationToken cancellationToken)
     {
@@ -12,7 +13,7 @@ public class SaveStyleSheetCommandHandler(IRepository<StyleSheetEntity> repo) : 
         var css = request.CssContent.Trim();
         var hash = CalculateHash($"{slug}_{css}");
 
-        var entity = await repo.GetAsync(request.Id, cancellationToken);
+        var entity = await repo.GetByIdAsync(request.Id, cancellationToken);
         if (entity is null)
         {
             entity = new()
