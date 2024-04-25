@@ -1,13 +1,14 @@
 ﻿using Moonglade.Data.Entities;
-using Moonglade.Data.Infrastructure;
 
 namespace Moonglade.Data.Spec;
 
-public sealed class PageSpec : BaseSpecification<PageEntity>
+public sealed class PageSpec : Specification<PageEntity>
 {
-    public PageSpec(int top) : base(p => p.IsPublished)
+    public PageSpec(int top)
     {
-        ApplyOrderByDescending(p => p.CreateTimeUtc);
-        ApplyPaging(0, top);
+        Query.Where(p => p.IsPublished);
+
+        Query.OrderByDescending(p => p.CreateTimeUtc);
+        Query.Skip(0).Take(top);
     }
 }
