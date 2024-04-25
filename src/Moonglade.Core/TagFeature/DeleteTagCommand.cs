@@ -5,7 +5,7 @@ namespace Moonglade.Core.TagFeature;
 
 public record DeleteTagCommand(int Id) : IRequest<OperationCode>;
 
-public class DeleteTagCommandHandler(IRepository<TagEntity> tagRepo, IRepository<PostTagEntity> postTagRepo)
+public class DeleteTagCommandHandler(MoongladeRepository<TagEntity> tagRepo, IRepository<PostTagEntity> postTagRepo)
     : IRequestHandler<DeleteTagCommand, OperationCode>
 {
     public async Task<OperationCode> Handle(DeleteTagCommand request, CancellationToken ct)
