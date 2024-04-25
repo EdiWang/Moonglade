@@ -1,5 +1,6 @@
 ﻿using Moonglade.Data.Spec;
 using System.Linq.Expressions;
+using Moonglade.Data;
 
 namespace Moonglade.Core.PostFeature;
 
@@ -15,7 +16,8 @@ public class ListPostSegmentQuery(PostStatus postStatus, int offset, int pageSiz
     public string Keyword { get; set; } = keyword;
 }
 
-public class ListPostSegmentQueryHandler(IRepository<PostEntity> repo) : IRequestHandler<ListPostSegmentQuery, (List<PostSegment> Posts, int TotalRows)>
+public class ListPostSegmentQueryHandler(MoongladeRepository<PostEntity> repo) :
+    IRequestHandler<ListPostSegmentQuery, (List<PostSegment> Posts, int TotalRows)>
 {
     public async Task<(List<PostSegment> Posts, int TotalRows)> Handle(ListPostSegmentQuery request, CancellationToken ct)
     {
@@ -30,7 +32,7 @@ public class ListPostSegmentQueryHandler(IRepository<PostEntity> repo) : IReques
                 $"{nameof(request.Offset)} can not be less than 0, current value: {request.Offset}.");
         }
 
-        var spec = new PostPagingSpec(request.PostStatus, request.Keyword, request.PageSize, request.Offset);
+        var spec = new PostPagingByStatusSpec(request.PostStatus, request.Keyword, request.PageSize, request.Offset);
         var posts = await repo.SelectAsync(spec, PostSegment.EntitySelector, ct);
 
         Expression<Func<PostEntity, bool>> countExp = p => null == request.Keyword || p.Title.Contains(request.Keyword);
