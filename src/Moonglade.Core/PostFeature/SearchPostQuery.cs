@@ -1,11 +1,12 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using System.Text.RegularExpressions;
+using Moonglade.Data;
 
 namespace Moonglade.Core.PostFeature;
 
 public record SearchPostQuery(string Keyword) : IRequest<List<PostDigest>>;
 
-public class SearchPostQueryHandler(IRepository<PostEntity> repo) : IRequestHandler<SearchPostQuery, List<PostDigest>>
+public class SearchPostQueryHandler(MoongladeRepository<PostEntity> repo) : IRequestHandler<SearchPostQuery, List<PostDigest>>
 {
     public async Task<List<PostDigest>> Handle(SearchPostQuery request, CancellationToken ct)
     {

@@ -6,6 +6,8 @@ namespace Moonglade.Data;
 public class MoongladeRepository<T>(BlogDbContext dbContext) : RepositoryBase<T>(dbContext)
     where T : class
 {
+    public IQueryable<T> AsQueryable() => dbContext.Set<T>();
+
     public Task Clear(CancellationToken ct = default)
     {
         dbContext.RemoveRange(dbContext.Set<T>());
