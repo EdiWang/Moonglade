@@ -8,6 +8,9 @@ public class MoongladeRepository<T>(BlogDbContext dbContext) : RepositoryBase<T>
 {
     public IQueryable<T> AsQueryable() => dbContext.Set<T>();
 
+    public Task<int> CountAsync(Expression<Func<T, bool>> condition, CancellationToken ct = default) =>
+        dbContext.Set<T>().CountAsync(condition, ct);
+
     public Task Clear(CancellationToken ct = default)
     {
         dbContext.RemoveRange(dbContext.Set<T>());

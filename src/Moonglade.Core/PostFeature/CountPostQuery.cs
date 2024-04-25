@@ -1,4 +1,6 @@
-﻿namespace Moonglade.Core.PostFeature;
+﻿using Moonglade.Data;
+
+namespace Moonglade.Core.PostFeature;
 
 public enum CountType
 {
@@ -10,9 +12,10 @@ public enum CountType
 
 public record CountPostQuery(CountType CountType, Guid? CatId = null, int? TagId = null) : IRequest<int>;
 
-public class CountPostQueryHandler(IRepository<PostEntity> postRepo,
-        IRepository<PostTagEntity> postTagRepo,
-        IRepository<PostCategoryEntity> postCatRepo)
+public class CountPostQueryHandler(
+    MoongladeRepository<PostEntity> postRepo,
+    MoongladeRepository<PostTagEntity> postTagRepo,
+    MoongladeRepository<PostCategoryEntity> postCatRepo)
     : IRequestHandler<CountPostQuery, int>
 {
     public async Task<int> Handle(CountPostQuery request, CancellationToken ct)
