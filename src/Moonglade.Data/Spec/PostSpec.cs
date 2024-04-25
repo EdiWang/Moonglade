@@ -92,12 +92,6 @@ public sealed class PostSpec : BaseSpecification<PostEntity>
                 throw new ArgumentOutOfRangeException(nameof(status), status, null);
         }
     }
-
-    public PostSpec() :
-        base(p => p.IsDeleted)
-    {
-
-    }
 }
 
 public class PostByDeletionFlagSpec : Specification<PostEntity>
