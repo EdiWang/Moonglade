@@ -3,5 +3,11 @@ using Moonglade.Data.Infrastructure;
 
 namespace Moonglade.Data.Spec;
 
-public class PostSitePageSpec() : BaseSpecification<PostEntity>(p =>
-    p.IsPublished && !p.IsDeleted);
+public class PostSitePageSpec : Specification<PostEntity>
+{
+    public PostSitePageSpec()
+    {
+        Query.Where(p =>
+            p.IsPublished && !p.IsDeleted);
+    }
+}
