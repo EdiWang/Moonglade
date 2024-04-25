@@ -38,4 +38,8 @@ public class MoongladeRepository<T>(BlogDbContext dbContext) : RepositoryBase<T>
 
     public async Task<List<TResult>> SelectAsync<TResult>(Expression<Func<T, TResult>> selector, CancellationToken ct = default) =>
         await dbContext.Set<T>().AsNoTracking().Select(selector).ToListAsync(cancellationToken: ct);
+
+    public async Task<List<TResult>> SelectAsync<TResult>(
+        ISpecification<T> spec, Expression<Func<T, TResult>> selector, CancellationToken ct = default) =>
+        await ApplySpecification(spec).AsNoTracking().Select(selector).ToListAsync(ct);
 }

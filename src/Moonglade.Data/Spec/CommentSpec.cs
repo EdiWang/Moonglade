@@ -15,12 +15,6 @@ public sealed class CommentSpec : BaseSpecification<CommentEntity>
         ApplyOrderByDescending(p => p.CreateTimeUtc);
         ApplyPaging(startRow, pageSize);
     }
-
-    public CommentSpec(Guid postId) : base(c => c.PostId == postId &&
-                                                c.IsApproved)
-    {
-        AddInclude(comments => comments.Include(c => c.Replies));
-    }
 }
 
 public class CommentByIdsSepc : Specification<CommentEntity>
@@ -28,5 +22,14 @@ public class CommentByIdsSepc : Specification<CommentEntity>
     public CommentByIdsSepc(Guid[] ids)
     {
         Query.Where(c => ids.Contains(c.Id));
+    }
+}
+
+public class CommentWithRepliesSpec : Specification<CommentEntity>
+{
+    public CommentWithRepliesSpec(Guid postId)
+    {
+        Query.Where(c => c.PostId == postId && c.IsApproved);
+        Query.Include(p => p.Replies);
     }
 }
