@@ -1,5 +1,5 @@
 ﻿using Moonglade.Data.Entities;
-using Moonglade.Data.Spec;
+using Moonglade.Data.Specifications;
 using System.Globalization;
 using System.Xml;
 

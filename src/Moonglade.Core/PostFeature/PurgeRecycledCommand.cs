@@ -1,6 +1,6 @@
 ﻿using Edi.CacheAside.InMemory;
 using Moonglade.Data;
-using Moonglade.Data.Spec;
+using Moonglade.Data.Specifications;
 
 namespace Moonglade.Core.PostFeature;
 

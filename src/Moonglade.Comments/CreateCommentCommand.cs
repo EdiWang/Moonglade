@@ -2,7 +2,7 @@
 using Moonglade.Configuration;
 using Moonglade.Data;
 using Moonglade.Data.Entities;
-using Moonglade.Data.Spec;
+using Moonglade.Data.Specifications;
 
 namespace Moonglade.Comments;
 

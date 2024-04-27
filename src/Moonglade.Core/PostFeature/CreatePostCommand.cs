@@ -3,7 +3,7 @@ using Microsoft.Extensions.Logging;
 using Moonglade.Configuration;
 using Moonglade.Core.TagFeature;
 using Moonglade.Data;
-using Moonglade.Data.Spec;
+using Moonglade.Data.Specifications;
 using Moonglade.Utils;
 
 namespace Moonglade.Core.PostFeature;

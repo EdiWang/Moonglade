@@ -1,6 +1,6 @@
 ﻿using Moonglade.Data.Entities;
 
-namespace Moonglade.Data.Spec;
+namespace Moonglade.Data.Specifications;
 
 public class PostSitePageSpec : Specification<PostEntity>
 {

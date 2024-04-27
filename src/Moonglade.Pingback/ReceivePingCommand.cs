@@ -2,7 +2,7 @@
 using Microsoft.Extensions.Logging;
 using Moonglade.Data;
 using Moonglade.Data.Entities;
-using Moonglade.Data.Spec;
+using Moonglade.Data.Specifications;
 using System.Text.RegularExpressions;
 using System.Xml;
 
