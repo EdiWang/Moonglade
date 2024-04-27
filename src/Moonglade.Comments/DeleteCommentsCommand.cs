@@ -15,14 +15,7 @@ public class DeleteCommentsCommandHandler(MoongladeRepository<CommentEntity> com
         var comments = await commentRepo.ListAsync(spec, ct);
         foreach (var cmt in comments)
         {
-            // 1. Delete all replies
-            var cReplies = await commentReplyRepo.ListAsync(new CommentReplySpec(cmt.Id), ct);
-            if (cReplies.Any())
-            {
-                await commentReplyRepo.DeleteRangeAsync(cReplies, ct);
-            }
-
-            // 2. Delete comment itself
+            cmt.Replies.Clear();
             await commentRepo.DeleteAsync(cmt, ct);
         }
     }
