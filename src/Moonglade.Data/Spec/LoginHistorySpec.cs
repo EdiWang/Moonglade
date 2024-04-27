@@ -8,5 +8,6 @@ public sealed class LoginHistorySpec : Specification<LoginHistoryEntity>
     {
         Query.Skip(0).Take(top);
         Query.OrderByDescending(p => p.LoginTimeUtc);
+        Query.AsNoTracking();
     }
 }
