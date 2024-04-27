@@ -8,5 +8,12 @@ public record DeleteLinkCommand(Guid Id) : IRequest;
 
 public class DeleteLinkCommandHandler(MoongladeRepository<FriendLinkEntity> repo) : IRequestHandler<DeleteLinkCommand>
 {
-    public Task Handle(DeleteLinkCommand request, CancellationToken ct) => repo.DeleteByIdAsync(request.Id, ct);
+    public async Task Handle(DeleteLinkCommand request, CancellationToken ct)
+    {
+        var link = await repo.GetByIdAsync(request.Id, ct);
+        if (null != link)
+        {
+            await repo.DeleteAsync(link, ct);
+        }
+    }
 }
