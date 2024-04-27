@@ -23,7 +23,7 @@ public class MoongladeRepository<T>(BlogDbContext dbContext) : RepositoryBase<T>
     public async Task<List<T>> ListNoTrackingAsync(CancellationToken ct = default) =>
         await dbContext.Set<T>().AsNoTracking().ToListAsync(cancellationToken: ct);
 
-    public Task<bool> AnyAsync(Expression<Func<T, bool>> condition = null, CancellationToken ct = default)
+    public Task<bool> AnyAsync(Expression<Func<T, bool>> condition, CancellationToken ct = default)
     {
         return null != condition ?
             dbContext.Set<T>().AnyAsync(condition, cancellationToken: ct) :
