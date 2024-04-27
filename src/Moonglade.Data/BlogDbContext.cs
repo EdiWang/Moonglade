@@ -35,7 +35,6 @@ public class BlogDbContext : DbContext
         modelBuilder.ApplyConfiguration(new CategoryConfiguration());
         modelBuilder.ApplyConfiguration(new TagConfiguration());
         modelBuilder.ApplyConfiguration(new FriendLinkConfiguration());
-        modelBuilder.ApplyConfiguration(new BlogConfigurationConfiguration());
 
         modelBuilder
             .Entity<PostEntity>()

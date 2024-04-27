@@ -12,15 +12,15 @@ public class DeleteTagCommandHandler(
 {
     public async Task<OperationCode> Handle(DeleteTagCommand request, CancellationToken ct)
     {
-        var exists = await tagRepo.AnyAsync(c => c.Id == request.Id, ct);
-        if (!exists) return OperationCode.ObjectNotFound;
+        var tag = await tagRepo.GetByIdAsync(request.Id, ct);
+        if (null == tag) return OperationCode.ObjectNotFound;
 
         // 1. Delete Post-Tag Association
         var postTags = await postTagRepo.ListAsync(new PostTagByTagIdSpec(request.Id), ct);
         await postTagRepo.DeleteRangeAsync(postTags, ct);
 
         // 2. Delte Tag itslef
-        await tagRepo.DeleteByIdAsync(request.Id, ct);
+        await tagRepo.DeleteAsync(tag, ct);
 
         return OperationCode.Done;
     }
