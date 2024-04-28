@@ -1,6 +1,7 @@
 ﻿using MediatR;
 using Moonglade.Data;
 using Moonglade.Data.Entities;
+using Moonglade.Data.Specifications;
 
 namespace Moonglade.Configuration;
 
@@ -11,7 +12,7 @@ public class UpdateConfigurationCommandHandler(MoongladeRepository<BlogConfigura
     public async Task<OperationCode> Handle(UpdateConfigurationCommand request, CancellationToken ct)
     {
         var (name, json) = request;
-        var entity = await repository.GetAsync(p => p.CfgKey == name);
+        var entity = await repository.FirstOrDefaultAsync(new BlogConfigurationSpec(name), ct);
         if (entity == null) return OperationCode.ObjectNotFound;
 
         entity.CfgValue = json;
