@@ -1,11 +1,14 @@
 ﻿using Microsoft.Extensions.Logging;
+using Moonglade.Utils;
 using System.Text.RegularExpressions;
+using Microsoft.Extensions.Configuration;
 
 namespace Moonglade.Pingback;
 
 public class PingbackSender(HttpClient httpClient,
         IPingbackWebRequest pingbackWebRequest,
-        ILogger<PingbackSender> logger = null)
+        IConfiguration configuration,
+        ILogger<PingbackSender> logger)
     : IPingbackSender
 {
     public async Task TrySendPingAsync(string postUrl, string postContent)
@@ -13,28 +16,41 @@ public class PingbackSender(HttpClient httpClient,
         try
         {
             var uri = new Uri(postUrl);
+
+            if (!bool.Parse(configuration["AllowPingbackFromLocalhost"]!) && uri.IsLocalhostUrl())
+            {
+                logger.LogWarning("Source URL is localhost, skipping.");
+                return;
+            }
+
             var content = postContent.ToUpperInvariant();
             if (content.Contains("HTTP://") || content.Contains("HTTPS://"))
             {
-                logger?.LogInformation("URL is detected in post content, trying to send ping requests.");
+                logger.LogInformation("URL is detected in post content, trying to send ping requests.");
 
                 foreach (var url in GetUrlsFromContent(postContent))
                 {
-                    logger?.LogInformation("Pinging URL: " + url);
+                    if (!bool.Parse(configuration["AllowPingbackToLocalhost"]!) && url.IsLocalhostUrl())
+                    {
+                        logger.LogWarning("Target URL is localhost, skipping.");
+                        continue;
+                    }
+
+                    logger.LogInformation("Pinging URL: " + url);
                     try
                     {
                         await SendAsync(uri, url);
                     }
                     catch (Exception e)
                     {
-                        logger?.LogError(e, "SendAsync Ping Error.");
+                        logger.LogError(e, "SendAsync Ping Error.");
                     }
                 }
             }
         }
         catch (Exception ex)
         {
-            logger?.LogError(ex, $"{nameof(TrySendPingAsync)}({postUrl})");
+            logger.LogError(ex, $"{nameof(TrySendPingAsync)}({postUrl})");
         }
     }
 
@@ -54,14 +70,14 @@ public class PingbackSender(HttpClient httpClient,
 
             if (key is null || value is null)
             {
-                logger?.LogInformation($"Pingback endpoint is not found for URL '{targetUrl}', ping request is terminated.");
+                logger.LogInformation($"Pingback endpoint is not found for URL '{targetUrl}', ping request is terminated.");
                 return;
             }
 
             var pingUrl = value.FirstOrDefault();
             if (pingUrl is not null)
             {
-                logger?.LogInformation($"Found Ping service URL '{pingUrl}' on target '{sourceUrl}'");
+                logger.LogInformation($"Found Ping service URL '{pingUrl}' on target '{sourceUrl}'");
 
                 bool successUrlCreation = Uri.TryCreate(pingUrl, UriKind.Absolute, out var url);
                 if (successUrlCreation)
@@ -70,13 +86,13 @@ public class PingbackSender(HttpClient httpClient,
                 }
                 else
                 {
-                    logger?.LogInformation($"Invliad Ping service URL '{pingUrl}'");
+                    logger.LogInformation($"Invliad Ping service URL '{pingUrl}'");
                 }
             }
         }
         catch (Exception e)
         {
-            logger?.LogError(e, $"{nameof(SendAsync)}({sourceUrl},{targetUrl})");
+            logger.LogError(e, $"{nameof(SendAsync)}({sourceUrl},{targetUrl})");
         }
     }
 
