@@ -10,13 +10,13 @@ namespace Moonglade.Web.Controllers;
 public class PageController(ICacheAside cache, IMediator mediator) : Controller
 {
     [HttpPost]
-    [TypeFilter(typeof(ClearBlogCache), Arguments = new object[] { BlogCacheType.SiteMap })]
+    [TypeFilter(typeof(ClearBlogCache), Arguments = [BlogCacheType.SiteMap])]
     [ProducesResponseType(StatusCodes.Status200OK)]
     public Task<IActionResult> Create(EditPageRequest model) =>
         CreateOrEdit(model, async request => await mediator.Send(new CreatePageCommand(request)));
 
     [HttpPut("{id:guid}")]
-    [TypeFilter(typeof(ClearBlogCache), Arguments = new object[] { BlogCacheType.SiteMap })]
+    [TypeFilter(typeof(ClearBlogCache), Arguments = [BlogCacheType.SiteMap])]
     [ProducesResponseType(StatusCodes.Status200OK)]
     public Task<IActionResult> Edit([NotEmpty] Guid id, EditPageRequest model) =>
         CreateOrEdit(model, async request => await mediator.Send(new UpdatePageCommand(id, request)));

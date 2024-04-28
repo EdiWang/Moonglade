@@ -9,7 +9,7 @@ public class GetHotTagsQueryHandler(MoongladeRepository<TagEntity> repo) : IRequ
 {
     public async Task<List<KeyValuePair<Tag, int>>> Handle(GetHotTagsQuery request, CancellationToken ct)
     {
-        if (!await repo.AnyAsync(ct)) return new();
+        if (!await repo.AnyAsync(ct)) return [];
 
         var spec = new TagSpec(request.Top);
         var tags = await repo.SelectAsync(spec, t =>

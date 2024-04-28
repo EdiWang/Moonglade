@@ -85,7 +85,7 @@ public class CommentController(
     [ProducesResponseType<Guid>(StatusCodes.Status200OK)]
     public async Task<IActionResult> Approval([NotEmpty] Guid commentId)
     {
-        await mediator.Send(new ToggleApprovalCommand(new[] { commentId }));
+        await mediator.Send(new ToggleApprovalCommand([commentId]));
         return Ok(commentId);
     }
 

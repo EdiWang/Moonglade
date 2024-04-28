@@ -48,7 +48,7 @@ public class ThemeController(IMediator mediator, ICacheAside cache, IBlogConfig 
     [HttpPost]
     [ProducesResponseType<string>(StatusCodes.Status409Conflict)]
     [ProducesResponseType<int>(StatusCodes.Status200OK)]
-    [TypeFilter(typeof(ClearBlogCache), Arguments = new object[] { BlogCachePartition.General, "theme" })]
+    [TypeFilter(typeof(ClearBlogCache), Arguments = [BlogCachePartition.General, "theme"])]
     public async Task<IActionResult> Create(CreateThemeRequest request)
     {
         var dic = new Dictionary<string, string>
@@ -67,7 +67,7 @@ public class ThemeController(IMediator mediator, ICacheAside cache, IBlogConfig 
     [Authorize]
     [HttpDelete("{id:int}")]
     [ApiConventionMethod(typeof(DefaultApiConventions), nameof(DefaultApiConventions.Delete))]
-    [TypeFilter(typeof(ClearBlogCache), Arguments = new object[] { BlogCachePartition.General, "theme" })]
+    [TypeFilter(typeof(ClearBlogCache), Arguments = [BlogCachePartition.General, "theme"])]
     public async Task<IActionResult> Delete([Range(1, int.MaxValue)] int id)
     {
         var oc = await mediator.Send(new DeleteThemeCommand(id));

@@ -16,12 +16,12 @@ public class PostController(
         ILogger<PostController> logger) : ControllerBase
 {
     [HttpPost("createoredit")]
-    [TypeFilter(typeof(ClearBlogCache), Arguments = new object[]
-    {
+    [TypeFilter(typeof(ClearBlogCache), Arguments =
+    [
         BlogCacheType.SiteMap |
         BlogCacheType.Subscription |
         BlogCacheType.PagingCount
-    })]
+    ])]
     [ProducesResponseType(StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status409Conflict)]
     public async Task<IActionResult> CreateOrEdit(PostEditModel model, LinkGenerator linkGenerator)
@@ -73,12 +73,12 @@ public class PostController(
         }
     }
 
-    [TypeFilter(typeof(ClearBlogCache), Arguments = new object[]
-    {
+    [TypeFilter(typeof(ClearBlogCache), Arguments =
+    [
         BlogCacheType.SiteMap |
         BlogCacheType.Subscription |
         BlogCacheType.PagingCount
-    })]
+    ])]
     [HttpPost("{postId:guid}/restore")]
     [ProducesResponseType(StatusCodes.Status204NoContent)]
     public async Task<IActionResult> Restore([NotEmpty] Guid postId)
@@ -87,12 +87,12 @@ public class PostController(
         return NoContent();
     }
 
-    [TypeFilter(typeof(ClearBlogCache), Arguments = new object[]
-    {
+    [TypeFilter(typeof(ClearBlogCache), Arguments =
+    [
         BlogCacheType.SiteMap |
         BlogCacheType.Subscription |
         BlogCacheType.PagingCount
-    })]
+    ])]
     [HttpDelete("{postId:guid}/recycle")]
     [ProducesResponseType(StatusCodes.Status204NoContent)]
     public async Task<IActionResult> Delete([NotEmpty] Guid postId)
@@ -101,7 +101,7 @@ public class PostController(
         return NoContent();
     }
 
-    [TypeFilter(typeof(ClearBlogCache), Arguments = new object[] { BlogCacheType.Subscription | BlogCacheType.SiteMap })]
+    [TypeFilter(typeof(ClearBlogCache), Arguments = [BlogCacheType.Subscription | BlogCacheType.SiteMap])]
     [HttpDelete("{postId:guid}/destroy")]
     [ProducesResponseType(StatusCodes.Status204NoContent)]
     public async Task<IActionResult> DeleteFromRecycleBin([NotEmpty] Guid postId)
@@ -110,7 +110,7 @@ public class PostController(
         return NoContent();
     }
 
-    [TypeFilter(typeof(ClearBlogCache), Arguments = new object[] { BlogCacheType.Subscription | BlogCacheType.SiteMap })]
+    [TypeFilter(typeof(ClearBlogCache), Arguments = [BlogCacheType.Subscription | BlogCacheType.SiteMap])]
     [HttpDelete("recyclebin")]
     [ProducesResponseType(StatusCodes.Status204NoContent)]
     public async Task<IActionResult> EmptyRecycleBin()

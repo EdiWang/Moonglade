@@ -35,7 +35,7 @@ public class AssetsController(
     [HttpPost("avatar")]
     [ProducesResponseType(StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status409Conflict)]
-    [TypeFilter(typeof(ClearBlogCache), Arguments = new object[] { BlogCachePartition.General, "avatar" })]
+    [TypeFilter(typeof(ClearBlogCache), Arguments = [BlogCachePartition.General, "avatar"])]
     public async Task<IActionResult> Avatar([FromBody] string base64Img)
     {
         base64Img = base64Img.Trim();

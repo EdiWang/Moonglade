@@ -27,8 +27,8 @@ public class CustomMenuSettings : IBlogSettings
             return new()
             {
                 IsEnabled = true,
-                Menus = new[]
-                {
+                Menus =
+                [
                     new Menu
                     {
                         Title = "About",
@@ -36,9 +36,9 @@ public class CustomMenuSettings : IBlogSettings
                         Icon = "bi-star",
                         DisplayOrder = 1,
                         IsOpenInNewTab = false,
-                        SubMenus = new()
+                        SubMenus = []
                     }
-                }
+                ]
             };
         }
     }

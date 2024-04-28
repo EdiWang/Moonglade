@@ -16,7 +16,7 @@ public class GetArchiveQueryHandler(MoongladeRepository<PostEntity> repo) : IReq
     {
         if (!await repo.AnyAsync(p => p.IsPublished && !p.IsDeleted, ct))
         {
-            return new();
+            return [];
         }
 
         var spec = new PostByStatusSpec(PostStatus.Published);

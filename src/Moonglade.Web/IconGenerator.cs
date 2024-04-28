@@ -46,9 +46,9 @@ public static class MemoryStreamIconGenerator
 
         var dic = new Dictionary<string, int[]>
         {
-            { "android-icon-", new[] { 144, 192 } },
-            { "favicon-", new[] { 16, 32, 96 } },
-            { "apple-icon-", new[] { 180 } }
+            { "android-icon-", [144, 192] },
+            { "favicon-", [16, 32, 96] },
+            { "apple-icon-", [180] }
         };
 
         foreach (var (key, value) in dic)

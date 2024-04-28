@@ -54,14 +54,14 @@ public class AzureFunctionModeratorService : IModeratorService
             var payload = new Payload
             {
                 OriginAspNetRequestId = _httpContextAccessor.HttpContext?.TraceIdentifier,
-                Contents = new[]
-                {
+                Contents =
+                [
                     new Content
                     {
                         Id = "0",
                         RawText = input
                     }
-                }
+                ]
             };
 
             var response = await _httpClient.PostAsync(

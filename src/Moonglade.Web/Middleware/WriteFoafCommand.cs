@@ -50,7 +50,7 @@ public class WriteFoafCommandHandler : IRequestHandler<WriteFoafCommand, string>
             Blog = request.Doc.BlogUrl,
             Email = request.Doc.Email,
             PhotoUrl = request.Doc.PhotoUrl,
-            Friends = new()
+            Friends = []
         };
 
         foreach (var friend in request.Links)

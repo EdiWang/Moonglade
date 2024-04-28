@@ -12,5 +12,5 @@ public class Menu
 
     public bool IsOpenInNewTab { get; set; }
 
-    public List<SubMenu> SubMenus { get; set; } = new();
+    public List<SubMenu> SubMenus { get; set; } = [];
 }

@@ -56,7 +56,7 @@ public class BlogConfig : IBlogConfig
         return _keysToInit.AsEnumerable();
     }
 
-    private readonly List<int> _keysToInit = new();
+    private readonly List<int> _keysToInit = [];
     private T AssignValueForConfigItem<T>(int index, T defaultValue, IDictionary<string, string> config) where T : IBlogSettings
     {
         var name = typeof(T).Name;

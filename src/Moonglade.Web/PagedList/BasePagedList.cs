@@ -15,7 +15,7 @@ namespace Moonglade.Web.PagedList;
 /// <seealso cref = "List{T}" />
 public class BasePagedList<T> : PagedListMetaData, IPagedList<T>
 {
-    protected readonly List<T> Subset = new();
+    protected readonly List<T> Subset = [];
 
     /// <summary>
     /// Parameterless constructor.
