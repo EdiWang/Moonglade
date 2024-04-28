@@ -87,7 +87,9 @@ public sealed class PostByChecksumSpec : SingleResultSpecification<PostEntity>
 
         Query.Include(p => p.Comments)
              .Include(pt => pt.Tags)
-             .Include(p => p.PostCategory).ThenInclude(pc => pc.Category);
+             .Include(p => p.PostCategory)
+                .ThenInclude(pc => pc.Category)
+             .AsSplitQuery();
     }
 }
 
