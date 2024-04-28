@@ -4,19 +4,16 @@ using Moonglade.Utils;
 
 namespace Moonglade.Core.TagFeature;
 
-public record CreateTagCommand(string Name) : IRequest<Tag>;
+public record CreateTagCommand(string Name) : IRequest;
 
-public class CreateTagCommandHandler(MoongladeRepository<TagEntity> repo) : IRequestHandler<CreateTagCommand, Tag>
+public class CreateTagCommandHandler(MoongladeRepository<TagEntity> repo) : IRequestHandler<CreateTagCommand>
 {
-    public async Task<Tag> Handle(CreateTagCommand request, CancellationToken ct)
+    public async Task Handle(CreateTagCommand request, CancellationToken ct)
     {
-        if (!Tag.ValidateName(request.Name)) return null;
-
         var normalizedName = Tag.NormalizeName(request.Name, Helper.TagNormalizationDictionary);
-        if (await repo.AnyAsync(t => t.NormalizedName == normalizedName, ct))
-        {
-            return await repo.FirstOrDefaultAsync(new TagByNormalizedNameSpec(normalizedName), Tag.EntitySelector);
-        }
+
+        var existingTag = await repo.FirstOrDefaultAsync(new TagByNormalizedNameSpec(normalizedName), ct);
+        if (null != existingTag) return;
 
         var newTag = new TagEntity
         {
@@ -24,12 +21,6 @@ public class CreateTagCommandHandler(MoongladeRepository<TagEntity> repo) : IReq
             NormalizedName = normalizedName
         };
 
-        var tag = await repo.AddAsync(newTag, ct);
-
-        return new()
-        {
-            DisplayName = tag.DisplayName,
-            NormalizedName = tag.NormalizedName
-        };
+        await repo.AddAsync(newTag, ct);
     }
 }

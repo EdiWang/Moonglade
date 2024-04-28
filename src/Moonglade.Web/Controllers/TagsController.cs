@@ -30,7 +30,6 @@ public class TagsController(IMediator mediator) : ControllerBase
     [ProducesResponseType(StatusCodes.Status409Conflict)]
     public async Task<IActionResult> Create([Required][FromBody] string name)
     {
-        if (string.IsNullOrWhiteSpace(name)) return BadRequest();
         if (!Tag.ValidateName(name)) return Conflict();
 
         await mediator.Send(new CreateTagCommand(name.Trim()));

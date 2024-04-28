@@ -95,7 +95,7 @@ public class UpdatePostCommandHandler : IRequestHandler<UpdatePostCommand, PostE
 
         foreach (var item in tags)
         {
-            if (!await _tagRepo.AnyAsync(p => p.DisplayName == item, ct))
+            if (!await _tagRepo.AnyAsync(new TagByDisplayNameSpec(item), ct))
             {
                 await _tagRepo.AddAsync(new()
                 {
