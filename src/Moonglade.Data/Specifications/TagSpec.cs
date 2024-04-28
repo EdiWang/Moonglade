@@ -26,3 +26,11 @@ public sealed class TagByDisplayNameSpec : SingleResultSpecification<TagEntity>
         Query.Where(t => t.DisplayName == displayName);
     }
 }
+
+public sealed class TagDisplayNameNameSpec : Specification<TagEntity, string>
+{
+    public TagDisplayNameNameSpec()
+    {
+        Query.Select(t => t.DisplayName);
+    }
+}

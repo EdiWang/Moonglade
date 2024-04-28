@@ -10,7 +10,7 @@ public class GetAllConfigurationsQueryHandler(MoongladeRepository<BlogConfigurat
 {
     public async Task<IDictionary<string, string>> Handle(GetAllConfigurationsQuery request, CancellationToken ct)
     {
-        var entities = await repo.SelectAsync(p => new { p.CfgKey, p.CfgValue }, ct);
+        var entities = await repo.ListAsync(ct);
         return entities.ToDictionary(k => k.CfgKey, v => v.CfgValue);
     }
 }
