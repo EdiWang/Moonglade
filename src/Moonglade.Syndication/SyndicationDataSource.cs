@@ -42,7 +42,7 @@ public class SyndicationDataSource : ISyndicationDataSource
         List<FeedEntry> itemCollection;
         if (!string.IsNullOrWhiteSpace(catSlug))
         {
-            var cat = await _catRepo.GetAsync(c => c.Slug == catSlug);
+            var cat = await _catRepo.FirstOrDefaultAsync(new CategoryBySlugSpec(catSlug));
             if (cat is null) return null;
 
             itemCollection = await GetFeedEntriesAsync(cat.Id);
