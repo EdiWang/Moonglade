@@ -86,7 +86,7 @@ public class CreatePostCommandHandler(
             {
                 if (!Tag.ValidateName(item)) continue;
 
-                var tag = await tagRepo.GetAsync(q => q.DisplayName == item) ?? await CreateTag(item);
+                var tag = await tagRepo.FirstOrDefaultAsync(new TagByDisplayNameSpec(item), ct) ?? await CreateTag(item);
                 post.Tags.Add(tag);
             }
         }
