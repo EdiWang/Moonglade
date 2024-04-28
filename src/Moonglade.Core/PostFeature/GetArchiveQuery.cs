@@ -14,7 +14,7 @@ public class GetArchiveQueryHandler(MoongladeRepository<PostEntity> repo) : IReq
 
     public async Task<List<Archive>> Handle(GetArchiveQuery request, CancellationToken ct)
     {
-        if (!await repo.AnyAsync(p => p.IsPublished && !p.IsDeleted, ct))
+        if (!await repo.AnyAsync(new PostByStatusSpec(PostStatus.Published), ct))
         {
             return [];
         }
