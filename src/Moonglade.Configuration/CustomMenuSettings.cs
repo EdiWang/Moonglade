@@ -20,26 +20,21 @@ public class CustomMenuSettings : IBlogSettings
     public Menu[] Menus { get; set; } = Array.Empty<Menu>();
 
     [JsonIgnore]
-    public static CustomMenuSettings DefaultValue
-    {
-        get
+    public static CustomMenuSettings DefaultValue =>
+        new()
         {
-            return new()
-            {
-                IsEnabled = true,
-                Menus =
-                [
-                    new Menu
-                    {
-                        Title = "About",
-                        Url = "/page/about",
-                        Icon = "bi-star",
-                        DisplayOrder = 1,
-                        IsOpenInNewTab = false,
-                        SubMenus = []
-                    }
-                ]
-            };
-        }
-    }
+            IsEnabled = true,
+            Menus =
+            [
+                new Menu
+                {
+                    Title = "About",
+                    Url = "/page/about",
+                    Icon = "bi-star",
+                    DisplayOrder = 1,
+                    IsOpenInNewTab = false,
+                    SubMenus = []
+                }
+            ]
+        };
 }
