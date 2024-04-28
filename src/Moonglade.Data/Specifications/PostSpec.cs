@@ -17,7 +17,7 @@ public sealed class PostSpec : Specification<PostEntity>
     }
 }
 
-public class PostByStatusSpec : Specification<PostEntity>
+public sealed class PostByStatusSpec : Specification<PostEntity>
 {
     public PostByStatusSpec(PostStatus status)
     {
@@ -41,14 +41,15 @@ public class PostByStatusSpec : Specification<PostEntity>
     }
 }
 
-public class PostByCatSpec : Specification<PostEntity>
+public sealed class PostByCatSpec : Specification<PostEntity>
 {
     public PostByCatSpec(Guid? categoryId, int? top = null)
     {
-        Query.Where(p => !p.IsDeleted &&
-                         p.IsPublished &&
-                         p.IsFeedIncluded &&
-                         (categoryId == null || p.PostCategory.Any(c => c.CategoryId == categoryId.Value)));
+        Query.Where(p =>
+                    !p.IsDeleted &&
+                    p.IsPublished &&
+                    p.IsFeedIncluded &&
+                    (categoryId == null || p.PostCategory.Any(c => c.CategoryId == categoryId.Value)));
 
         Query.OrderByDescending(p => p.PubDateUtc);
 
@@ -59,7 +60,7 @@ public class PostByCatSpec : Specification<PostEntity>
     }
 }
 
-public class PostByYearMonthSpec : Specification<PostEntity>
+public sealed class PostByYearMonthSpec : Specification<PostEntity>
 {
     public PostByYearMonthSpec(int year, int month = 0)
     {
@@ -73,15 +74,12 @@ public class PostByYearMonthSpec : Specification<PostEntity>
     }
 }
 
-public class PostByDeletionFlagSpec : Specification<PostEntity>
+public sealed class PostByDeletionFlagSpec : Specification<PostEntity>
 {
-    public PostByDeletionFlagSpec(bool isDeleted)
-    {
-        Query.Where(p => p.IsDeleted == isDeleted);
-    }
+    public PostByDeletionFlagSpec(bool isDeleted) => Query.Where(p => p.IsDeleted == isDeleted);
 }
 
-public class PostByChecksumSpec : SingleResultSpecification<PostEntity>
+public sealed class PostByChecksumSpec : SingleResultSpecification<PostEntity>
 {
     public PostByChecksumSpec(int hashCheckSum)
     {
