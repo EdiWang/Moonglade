@@ -4,6 +4,7 @@ using Microsoft.Extensions.Configuration;
 using Moonglade.Configuration;
 using Moonglade.Core.TagFeature;
 using Moonglade.Data;
+using Moonglade.Data.Specifications;
 using Moonglade.Utils;
 
 namespace Moonglade.Core.PostFeature;
@@ -121,7 +122,7 @@ public class UpdatePostCommandHandler : IRequestHandler<UpdatePostCommand, PostE
                     continue;
                 }
 
-                var tag = await _tagRepo.GetAsync(t => t.DisplayName == tagName);
+                var tag = await _tagRepo.FirstOrDefaultAsync(new TagByDisplayNameSpec(tagName), ct);
                 if (tag is not null) post.Tags.Add(tag);
             }
         }

@@ -18,3 +18,11 @@ public sealed class TagByNormalizedNameSpec : Specification<TagEntity>
         Query.Where(t => t.NormalizedName == normalizedName);
     }
 }
+
+public sealed class TagByDisplayNameSpec : Specification<TagEntity>
+{
+    public TagByDisplayNameSpec(string displayName)
+    {
+        Query.Where(t => t.DisplayName == displayName);
+    }
+}
