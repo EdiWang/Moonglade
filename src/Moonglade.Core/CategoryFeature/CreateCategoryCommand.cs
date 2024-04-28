@@ -1,6 +1,7 @@
 ﻿using Edi.CacheAside.InMemory;
 using Moonglade.Data;
 using System.ComponentModel.DataAnnotations;
+using Moonglade.Data.Specifications;
 
 namespace Moonglade.Core.CategoryFeature;
 
@@ -27,7 +28,7 @@ public class CreateCategoryCommandHandler(MoongladeRepository<CategoryEntity> ca
 {
     public async Task Handle(CreateCategoryCommand request, CancellationToken ct)
     {
-        var exists = await catRepo.AnyAsync(c => c.Slug == request.Slug, ct);
+        var exists = await catRepo.AnyAsync(new CategoryBySlugSpec(request.Slug), ct);
         if (exists) return;
 
         var category = new CategoryEntity
