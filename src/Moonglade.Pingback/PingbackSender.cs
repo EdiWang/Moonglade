@@ -1,11 +1,14 @@
 ﻿using Microsoft.Extensions.Logging;
+using Moonglade.Utils;
 using System.Text.RegularExpressions;
+using Microsoft.Extensions.Configuration;
 
 namespace Moonglade.Pingback;
 
 public class PingbackSender(HttpClient httpClient,
         IPingbackWebRequest pingbackWebRequest,
-        ILogger<PingbackSender> logger = null)
+        IConfiguration configuration,
+        ILogger<PingbackSender> logger)
     : IPingbackSender
 {
     public async Task TrySendPingAsync(string postUrl, string postContent)
@@ -20,6 +23,13 @@ public class PingbackSender(HttpClient httpClient,
 
                 foreach (var url in GetUrlsFromContent(postContent))
                 {
+                    // check if url is localhost
+                    if (bool.Parse(configuration["BlockPingbackToLocalhost"]!) && url.IsLocalhostUrl())
+                    {
+                        logger?.LogWarning("URL is localhost, skipping.");
+                        continue;
+                    }
+
                     logger?.LogInformation("Pinging URL: " + url);
                     try
                     {

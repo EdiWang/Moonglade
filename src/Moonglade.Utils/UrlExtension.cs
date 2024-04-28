@@ -1,4 +1,6 @@
-﻿namespace Moonglade.Utils;
+﻿using System.Net;
+
+namespace Moonglade.Utils;
 
 public static class UrlExtension
 {
@@ -35,5 +37,32 @@ public static class UrlExtension
         path = path.Trim();
 
         return url.TrimEnd('/') + "/" + path.TrimStart('/');
+    }
+
+    public static bool IsLocalhostUrl(this Uri uri)
+    {
+        try
+        {
+            if (uri.IsLoopback)
+            {
+                // localhost, 127.0.0.1, [::1]
+                return true;
+            }
+
+            // Get the local host name and compare it with the URL host
+            string localHostName = Dns.GetHostName();
+            if (uri.Host.Equals(localHostName, StringComparison.OrdinalIgnoreCase))
+            {
+                return true;
+            }
+
+            // Get local IP addresses and compare them with the URL host
+            IPAddress[] localIPs = Dns.GetHostAddresses(Dns.GetHostName());
+            return localIPs.Any(addr => uri.Host.Equals(addr.ToString()));
+        }
+        catch (UriFormatException)
+        {
+            return false;
+        }
     }
 }
