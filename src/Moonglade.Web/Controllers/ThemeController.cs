@@ -59,7 +59,7 @@ public class ThemeController(IMediator mediator, ICacheAside cache, IBlogConfig 
         };
 
         var id = await mediator.Send(new CreateThemeCommand(request.Name, dic));
-        if (id == 0) return Conflict("Theme with same name already exists");
+        if (id == -1) return Conflict("Theme with same name already exists");
 
         return Ok(id);
     }

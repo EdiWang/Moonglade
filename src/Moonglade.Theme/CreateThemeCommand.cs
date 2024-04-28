@@ -12,7 +12,7 @@ public class CreateThemeCommandHandler(MoongladeRepository<BlogThemeEntity> repo
     public async Task<int> Handle(CreateThemeCommand request, CancellationToken ct)
     {
         var (name, dictionary) = request;
-        if (await repo.AnyAsync(p => p.ThemeName == name.Trim(), ct)) return 0;
+        if (await repo.AnyAsync(p => p.ThemeName == name.Trim(), ct)) return -1;
 
         var rules = JsonSerializer.Serialize(dictionary);
         var entity = new BlogThemeEntity
