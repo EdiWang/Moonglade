@@ -81,7 +81,7 @@ public class PostByDeletionFlagSpec : Specification<PostEntity>
     }
 }
 
-public class PostByChecksumSpec : Specification<PostEntity>
+public class PostByChecksumSpec : SingleResultSpecification<PostEntity>
 {
     public PostByChecksumSpec(int hashCheckSum)
     {

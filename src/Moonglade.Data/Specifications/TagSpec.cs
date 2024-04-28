@@ -11,7 +11,7 @@ public sealed class TagSpec : Specification<TagEntity>
     }
 }
 
-public sealed class TagByNormalizedNameSpec : Specification<TagEntity>
+public sealed class TagByNormalizedNameSpec : SingleResultSpecification<TagEntity>
 {
     public TagByNormalizedNameSpec(string normalizedName)
     {
@@ -19,7 +19,7 @@ public sealed class TagByNormalizedNameSpec : Specification<TagEntity>
     }
 }
 
-public sealed class TagByDisplayNameSpec : Specification<TagEntity>
+public sealed class TagByDisplayNameSpec : SingleResultSpecification<TagEntity>
 {
     public TagByDisplayNameSpec(string displayName)
     {
