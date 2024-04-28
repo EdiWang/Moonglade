@@ -56,7 +56,7 @@ public class ReceivePingCommandHandler(
             }
 
             var (slug, pubDate) = GetSlugInfoFromUrl(pingRequest.TargetUrl);
-            var spec = new PostByDateAndSlugSpec(pubDate, slug);
+            var spec = new PostByDateAndSlugSpec(pubDate, slug, false);
             var (id, title) = await postRepo.FirstOrDefaultAsync(spec, p => new Tuple<Guid, string>(p.Id, p.Title));
             if (id == Guid.Empty)
             {

@@ -50,7 +50,7 @@ public class CreatePostCommandHandler(
 
         // check if exist same slug under the same day
         var todayUtc = DateTime.UtcNow.Date;
-        if (await postRepo.AnyAsync(new PostBySlugAndPubDateSpec(post.Slug, todayUtc), ct))
+        if (await postRepo.AnyAsync(new PostByDateAndSlugSpec(todayUtc, post.Slug, false), ct))
         {
             var uid = Guid.NewGuid();
             post.Slug += $"-{uid.ToString().ToLower()[..8]}";

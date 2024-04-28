@@ -93,30 +93,22 @@ public class PostByChecksumSpec : SingleResultSpecification<PostEntity>
     }
 }
 
-public class PostByDateAndSlugSpec : Specification<PostEntity>
+public sealed class PostByDateAndSlugSpec : Specification<PostEntity>
 {
-    public PostByDateAndSlugSpec(DateTime date, string slug)
-    {
-        Query.Where(p => p.Slug == slug &&
-                         p.IsPublished &&
-                         p.PubDateUtc.Value.Date == date &&
-                         !p.IsDeleted);
-
-        Query.Include(p => p.Comments)
-             .Include(pt => pt.Tags)
-             .Include(p => p.PostCategory).ThenInclude(pc => pc.Category);
-    }
-}
-
-public class PostBySlugAndPubDateSpec : Specification<PostEntity>
-{
-    public PostBySlugAndPubDateSpec(string slug, DateTime pubDateUtc)
+    public PostByDateAndSlugSpec(DateTime date, string slug, bool includeRelationData)
     {
         Query.Where(p =>
-            p.Slug == slug &&
-            p.PubDateUtc != null
-            && p.PubDateUtc.Value.Year == pubDateUtc.Year
-            && p.PubDateUtc.Value.Month == pubDateUtc.Month
-            && p.PubDateUtc.Value.Day == pubDateUtc.Day);
+                    p.Slug == slug &&
+                    p.IsPublished &&
+                    p.PubDateUtc.Value.Date == date &&
+                    !p.IsDeleted);
+
+        if (includeRelationData)
+        {
+            Query.Include(p => p.Comments)
+                 .Include(pt => pt.Tags)
+                 .Include(p => p.PostCategory)
+                    .ThenInclude(pc => pc.Category);
+        }
     }
 }

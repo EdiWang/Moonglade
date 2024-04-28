@@ -23,7 +23,7 @@ public class GetPostBySlugQueryHandler(MoongladeRepository<PostEntity> repo, ICa
         if (pid == Guid.Empty)
         {
             // Post does not have a checksum, fall back to old method
-            spec = new PostByDateAndSlugSpec(date, request.Slug.Slug);
+            spec = new PostByDateAndSlugSpec(date, request.Slug.Slug, true);
             pid = await repo.FirstOrDefaultAsync(spec, x => x.Id);
 
             if (pid == Guid.Empty) return null;
