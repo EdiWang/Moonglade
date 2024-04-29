@@ -1,6 +1,6 @@
 ﻿using Markdig;
-using NUglify;
 using System.Text.RegularExpressions;
+using System.Xml.Linq;
 
 namespace Moonglade.Utils;
 
@@ -37,11 +37,17 @@ public static class ContentProcessor
             return string.Empty;
         }
 
-        var result = Uglify.HtmlToText(html);
+        try
+        {
+            var doc = XDocument.Parse(html);
+            var result = doc.Root?.DescendantNodes().OfType<XText>().Aggregate("", (current, node) => current + node);
 
-        return !result.HasErrors && !string.IsNullOrWhiteSpace(result.Code)
-            ? result.Code.Trim()
-            : RemoveTagsBackup(html);
+            return result?.Trim();
+        }
+        catch (Exception)
+        {
+            return RemoveTagsBackup(html);
+        }
     }
 
     public static string Ellipsize(this string text, int characterCount)
