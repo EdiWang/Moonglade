@@ -49,21 +49,21 @@
 
 @if (tags.Any())
 {
-    var tagMax = tags.Select(p => p.Value).Max();
+    var tagMax = tags.Select(p => p.PostCount).Max();
 
     <input id="tagFilter" type="text" class="form-control mb-3" maxlength="32" placeholder="Filter..">
 
     <ul class="list-unstyled ul-tags">
-        @foreach (var tag in tags.OrderBy(t => t.Key.DisplayName))
+        @foreach (var tag in tags.OrderBy(t => t.Tag.DisplayName))
         {
-            var weightPercent = tag.Value * 1.0 / tagMax * 100;
+            var weightPercent = tag.PostCount * 1.0 / tagMax * 100;
             var weight = Weight(weightPercent);
 
             <li class="d-inline-block mb-2 me-2">
                 <a asp-page="/TagList"
-                   asp-route-normalizedName="@HttpUtility.UrlDecode(tag.Key.NormalizedName.ToLower())"
-                   class="btn btn-sm btn-@weight" title="@(tag.Value)">
-                    @tag.Key.DisplayName.Replace("-", " ")
+                   asp-route-normalizedName="@HttpUtility.UrlDecode(tag.Tag.NormalizedName.ToLower())"
+                   class="btn btn-sm btn-@weight" title="@(tag.PostCount)">
+                    @tag.Tag.DisplayName.Replace("-", " ")
                 </a>
             </li>
         }
