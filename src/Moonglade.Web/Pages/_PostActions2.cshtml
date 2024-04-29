@@ -1,11 +1,11 @@
-﻿@model Moonglade.Core.PostFeature.Post
+﻿@model Moonglade.Data.Entities.PostEntity
 
 <hr />
 <div class="row g-1 align-items-center post-slug-actions clearfix mb-2 d-print-none">
     <div class="col-md">
         <section class="post-cat-tag-info">
             <ul class="d-flex flex-row flex-wrap list-unstyled ul-cat-list-desktop mb-0">
-                @foreach (var item in Model.Categories)
+                @foreach (var item in Model.PostCategory.Select(p => p.Category))
                 {
                     <li>
                         <a class="btn btn-sm btn-outline-secondary mb-1"
@@ -17,18 +17,15 @@
                     </li>
                 }
 
-                @if (Model.Tags.Length > 0)
+                @foreach (var item in Model.Tags)
                 {
-                    @foreach (var item in Model.Tags)
-                    {
-                        <li>
-                            <a asp-page="/TagList"
-                               asp-route-normalizedName="@item.NormalizedName" class="btn btn-sm btn-outline-secondary mb-1">
-                                <i class="bi-tag" aria-hidden="true"></i>
-                                @item.DisplayName
-                            </a>
-                        </li>
-                    }
+                    <li>
+                        <a asp-page="/TagList"
+                           asp-route-normalizedName="@item.NormalizedName" class="btn btn-sm btn-outline-secondary mb-1">
+                            <i class="bi-tag" aria-hidden="true"></i>
+                            @item.DisplayName
+                        </a>
+                    </li>
                 }
             </ul>
         </section>

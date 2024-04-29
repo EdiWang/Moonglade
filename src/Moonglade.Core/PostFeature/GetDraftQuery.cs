@@ -3,14 +3,14 @@ using Moonglade.Data.Specifications;
 
 namespace Moonglade.Core.PostFeature;
 
-public record GetDraftQuery(Guid Id) : IRequest<Post>;
+public record GetDraftQuery(Guid Id) : IRequest<PostEntity>;
 
-public class GetDraftQueryHandler(MoongladeRepository<PostEntity> repo) : IRequestHandler<GetDraftQuery, Post>
+public class GetDraftQueryHandler(MoongladeRepository<PostEntity> repo) : IRequestHandler<GetDraftQuery, PostEntity>
 {
-    public Task<Post> Handle(GetDraftQuery request, CancellationToken ct)
+    public Task<PostEntity> Handle(GetDraftQuery request, CancellationToken ct)
     {
         var spec = new PostSpec(request.Id);
-        var post = repo.FirstOrDefaultAsync(spec, Post.EntitySelector);
+        var post = repo.FirstOrDefaultAsync(spec, ct);
         return post;
     }
 }
