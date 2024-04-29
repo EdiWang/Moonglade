@@ -1,4 +1,5 @@
 ﻿using Moonglade.Core.TagFeature;
+using Moonglade.Data.Entities;
 using System.ComponentModel.DataAnnotations;
 
 namespace Moonglade.Web.Controllers;
@@ -17,7 +18,7 @@ public class TagsController(IMediator mediator) : ControllerBase
     }
 
     [HttpGet("list")]
-    [ProducesResponseType<List<Tag>>(StatusCodes.Status200OK)]
+    [ProducesResponseType<List<TagEntity>>(StatusCodes.Status200OK)]
     public async Task<IActionResult> List()
     {
         var list = await mediator.Send(new GetTagsQuery());
