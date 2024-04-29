@@ -71,6 +71,7 @@ public sealed class PostByYearMonthSpec : Specification<PostEntity>
         Query.Where(p => p.IsPublished && !p.IsDeleted);
 
         Query.OrderByDescending(p => p.PubDateUtc);
+        Query.AsNoTracking();
     }
 }
 

@@ -40,7 +40,7 @@ public class SiteMapMiddleware(RequestDelegate next)
             writer.WriteStartElement("urlset", "http://www.sitemaps.org/schemas/sitemap/0.9");
 
             // Posts
-            var spec = new PostSitePageSpec();
+            var spec = new PostByStatusSpec(PostStatus.Published);
             var posts = await postRepo
                 .SelectAsync(spec, p => new Tuple<string, DateTime?, DateTime?>(p.Slug, p.PubDateUtc, p.LastModifiedUtc), ct);
 
