@@ -22,12 +22,8 @@ public class CreateCommentCommandHandler(
 {
     public async Task<CommentDetailedItem> Handle(CreateCommentCommand request, CancellationToken ct)
     {
-        var spec = new PostSpec(request.PostId, false);
-        var postInfo = await postRepo.FirstOrDefaultAsync(spec, p => new
-        {
-            p.Title,
-            p.PubDateUtc
-        });
+        var spec = new PostByIdForTitleDateSpec(request.PostId);
+        var postInfo = await postRepo.FirstOrDefaultAsync(spec, ct);
 
         if (blogConfig.ContentSettings.CloseCommentAfterDays > 0)
         {
