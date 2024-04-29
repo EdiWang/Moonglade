@@ -1,4 +1,5 @@
 ﻿using Moonglade.Data;
+using Moonglade.Data.Specifications;
 
 namespace Moonglade.Core.PostFeature;
 
@@ -25,7 +26,7 @@ public class CountPostQueryHandler(
         switch (request.CountType)
         {
             case CountType.Public:
-                count = await postRepo.CountAsync(p => p.IsPublished && !p.IsDeleted, ct);
+                count = await postRepo.CountAsync(new PostByStatusSpec(PostStatus.Published), ct);
                 break;
 
             case CountType.Category:
@@ -41,7 +42,7 @@ public class CountPostQueryHandler(
                 break;
 
             case CountType.Featured:
-                count = await postRepo.CountAsync(p => p.IsFeatured && p.IsPublished && !p.IsDeleted, ct);
+                count = await postRepo.CountAsync(new FeaturedPostSpec(), ct);
                 break;
         }
 

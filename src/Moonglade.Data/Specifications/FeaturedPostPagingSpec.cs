@@ -2,9 +2,9 @@
 
 namespace Moonglade.Data.Specifications;
 
-public sealed class FeaturedPostSpec : Specification<PostEntity>
+public sealed class FeaturedPostPagingSpec : Specification<PostEntity>
 {
-    public FeaturedPostSpec(int pageSize, int pageIndex)
+    public FeaturedPostPagingSpec(int pageSize, int pageIndex)
     {
         Query.Where(p =>
             p.IsFeatured

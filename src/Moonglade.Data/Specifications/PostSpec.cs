@@ -41,6 +41,14 @@ public sealed class PostByStatusSpec : Specification<PostEntity>
     }
 }
 
+public sealed class FeaturedPostSpec : Specification<PostEntity>
+{
+    public FeaturedPostSpec()
+    {
+        Query.Where(p => p.IsFeatured && p.IsPublished && !p.IsDeleted);
+    }
+}
+
 public sealed class PostByCatSpec : Specification<PostEntity>
 {
     public PostByCatSpec(Guid? categoryId, int? top = null)

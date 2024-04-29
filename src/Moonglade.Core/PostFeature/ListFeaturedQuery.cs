@@ -13,7 +13,7 @@ public class ListFeaturedQueryHandler(MoongladeRepository<PostEntity> repo) : IR
         var (pageSize, pageIndex) = request;
         Helper.ValidatePagingParameters(pageSize, pageIndex);
 
-        var posts = repo.SelectAsync(new FeaturedPostSpec(pageSize, pageIndex), PostDigest.EntitySelector, ct);
+        var posts = repo.SelectAsync(new FeaturedPostPagingSpec(pageSize, pageIndex), PostDigest.EntitySelector, ct);
         return posts;
     }
 }
