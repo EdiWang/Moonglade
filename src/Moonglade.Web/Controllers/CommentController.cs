@@ -19,6 +19,7 @@ public class CommentController(
     [HttpPost("{postId:guid}")]
     [AllowAnonymous]
     [ServiceFilter(typeof(ValidateCaptcha))]
+    [ProducesResponseType(StatusCodes.Status201Created)]
     [ProducesResponseType(StatusCodes.Status204NoContent)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
     [ProducesResponseType(StatusCodes.Status403Forbidden)]
@@ -76,6 +77,11 @@ public class CommentController(
             {
                 logger.LogError(e, e.Message);
             }
+        }
+
+        if (blogConfig.ContentSettings.RequireCommentReview)
+        {
+            return Created("moonglade://empty", item);
         }
 
         return NoContent();
