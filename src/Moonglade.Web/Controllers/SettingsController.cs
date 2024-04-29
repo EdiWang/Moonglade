@@ -177,16 +177,6 @@ public class SettingsController(
             return BadRequest(ModelState.CombineErrorMessages());
         }
 
-        var uglifyTest = Uglify.Css(model.CssCode);
-        if (uglifyTest.HasErrors)
-        {
-            foreach (var err in uglifyTest.Errors)
-            {
-                ModelState.AddModelError(model.CssCode, err.ToString());
-            }
-            return BadRequest(ModelState.CombineErrorMessages());
-        }
-
         blogConfig.CustomStyleSheetSettings = model;
 
         await SaveConfigAsync(blogConfig.CustomStyleSheetSettings);
