@@ -17,23 +17,10 @@ public class GetPostBySlugQueryHandler(MoongladeRepository<PostEntity> repo, ICa
 
         // Try to find by checksum
         var slugCheckSum = Helper.ComputeCheckSum($"{request.Slug.Slug}#{date:yyyyMMdd}");
-        Ardalis.Specification.ISpecification<PostEntity> spec = new PostByChecksumSpec(slugCheckSum);
+        var spec = new PostByChecksumSpec(slugCheckSum);
 
         var pid = await repo.FirstOrDefaultAsync(spec, p => p.Id);
-        if (pid == Guid.Empty)
-        {
-            // Post does not have a checksum, fall back to old method
-            spec = new PostByDateAndSlugSpec(date, request.Slug.Slug, true);
-            pid = await repo.FirstOrDefaultAsync(spec, x => x.Id);
-
-            if (pid == Guid.Empty) return null;
-
-            // Post is found, fill it's checksum so that next time the query can be run against checksum
-            var p = await repo.GetByIdAsync(pid, ct);
-            p.HashCheckSum = slugCheckSum;
-
-            await repo.UpdateAsync(p, ct);
-        }
+        if (pid == Guid.Empty) return null;
 
         var psm = await cache.GetOrCreateAsync(BlogCachePartition.Post.ToString(), $"{pid}", async entry =>
         {
