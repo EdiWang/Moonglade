@@ -117,7 +117,7 @@ public class UpdatePostCommandHandler : IRequestHandler<UpdatePostCommand, PostE
         {
             foreach (var tagName in tags)
             {
-                if (!Tag.ValidateName(tagName))
+                if (!Helper.IsValidTagName(tagName))
                 {
                     continue;
                 }

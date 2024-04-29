@@ -349,23 +349,22 @@ public static class Helper
         return new(pattern, options);
     }
 
-    public static string GenerateSlug(this string phrase)
+    public static bool IsValidTagName(string tagDisplayName)
     {
-        string str = phrase.RemoveAccent().ToLower();
-        // invalid chars           
-        str = Regex.Replace(str, @"[^a-z0-9\s-]", "");
-        // convert multiple spaces into one space   
-        str = Regex.Replace(str, @"\s+", " ").Trim();
-        // cut and trim 
-        str = str[..(str.Length <= 45 ? str.Length : 45)].Trim();
-        str = Regex.Replace(str, @"\s", "-"); // hyphens   
-        return str;
-    }
+        if (string.IsNullOrWhiteSpace(tagDisplayName)) return false;
 
-    public static string RemoveAccent(this string txt)
-    {
-        byte[] bytes = Encoding.GetEncoding("Cyrillic").GetBytes(txt);
-        return Encoding.ASCII.GetString(bytes);
+        // Regex performance best practice
+        // See https://docs.microsoft.com/en-us/dotnet/standard/base-types/best-practices
+
+        const string pattern = @"^[a-zA-Z 0-9\.\-\+\#\s]*$";
+        var isEng = Regex.IsMatch(tagDisplayName, pattern);
+        if (isEng) return true;
+
+        // https://docs.microsoft.com/en-us/dotnet/standard/base-types/character-classes-in-regular-expressions#supported-named-blocks
+        const string chsPattern = @"\p{IsCJKUnifiedIdeographs}";
+        var isChs = Regex.IsMatch(tagDisplayName, chsPattern);
+
+        return isChs;
     }
 
     public static string CombineErrorMessages(this ModelStateDictionary modelStateDictionary, string sep = ", ")

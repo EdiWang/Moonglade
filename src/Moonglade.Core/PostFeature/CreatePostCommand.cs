@@ -84,7 +84,7 @@ public class CreatePostCommandHandler(
         {
             foreach (var item in tags)
             {
-                if (!Tag.ValidateName(item)) continue;
+                if (!Helper.IsValidTagName(item)) continue;
 
                 var tag = await tagRepo.FirstOrDefaultAsync(new TagByDisplayNameSpec(item), ct) ?? await CreateTag(item);
                 post.Tags.Add(tag);

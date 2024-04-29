@@ -8,24 +8,6 @@ public class Tag
 
     public string NormalizedName { get; set; }
 
-    public static bool ValidateName(string tagDisplayName)
-    {
-        if (string.IsNullOrWhiteSpace(tagDisplayName)) return false;
-
-        // Regex performance best practice
-        // See https://docs.microsoft.com/en-us/dotnet/standard/base-types/best-practices
-
-        const string pattern = @"^[a-zA-Z 0-9\.\-\+\#\s]*$";
-        var isEng = Regex.IsMatch(tagDisplayName, pattern);
-        if (isEng) return true;
-
-        // https://docs.microsoft.com/en-us/dotnet/standard/base-types/character-classes-in-regular-expressions#supported-named-blocks
-        const string chsPattern = @"\p{IsCJKUnifiedIdeographs}";
-        var isChs = Regex.IsMatch(tagDisplayName, chsPattern);
-
-        return isChs;
-    }
-
     public static string NormalizeName(string orgTagName, IDictionary<string, string> normalizations)
     {
         var isEnglishName = Regex.IsMatch(orgTagName, @"^[a-zA-Z 0-9\.\-\+\#\s]*$");
