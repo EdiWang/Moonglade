@@ -1,12 +1,13 @@
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Moonglade.Core.PageFeature;
+using Moonglade.Data.Entities;
 
 namespace Moonglade.Web.Pages;
 
 [Authorize]
 public class PagePreviewModel(IMediator mediator) : PageModel
 {
-    public BlogPage BlogPage { get; set; }
+    public PageEntity BlogPage { get; set; }
 
     public async Task<IActionResult> OnGetAsync(Guid pageId)
     {

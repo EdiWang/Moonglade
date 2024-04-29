@@ -31,7 +31,7 @@ public class EditPageModel(IMediator mediator) : PageModel
             Slug = page.Slug,
             MetaDescription = page.MetaDescription,
             CssContent = css?.CssContent,
-            RawHtmlContent = page.RawHtmlContent,
+            RawHtmlContent = page.HtmlContent,
             HideSidebar = page.HideSidebar,
             IsPublished = page.IsPublished
         };
