@@ -1,4 +1,5 @@
-﻿using Microsoft.EntityFrameworkCore.Metadata.Builders;
+﻿using System.ComponentModel.DataAnnotations;
+using System.Text.Json.Serialization;
 
 namespace Moonglade.Data.Entities;
 
@@ -10,17 +11,13 @@ public class TagEntity
     }
 
     public int Id { get; set; }
+
+    [MaxLength(32)]
     public string DisplayName { get; set; }
+
+    [MaxLength(32)]
     public string NormalizedName { get; set; }
 
+    [JsonIgnore]
     public virtual ICollection<PostEntity> Posts { get; set; }
-}
-
-internal class TagConfiguration : IEntityTypeConfiguration<TagEntity>
-{
-    public void Configure(EntityTypeBuilder<TagEntity> builder)
-    {
-        builder.Property(e => e.DisplayName).HasMaxLength(32);
-        builder.Property(e => e.NormalizedName).HasMaxLength(32);
-    }
 }

@@ -33,7 +33,6 @@ public class BlogDbContext : DbContext
     {
         // base.OnModelCreating(modelBuilder);
         modelBuilder.ApplyConfiguration(new CategoryConfiguration());
-        modelBuilder.ApplyConfiguration(new TagConfiguration());
         modelBuilder.ApplyConfiguration(new FriendLinkConfiguration());
 
         modelBuilder
