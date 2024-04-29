@@ -100,7 +100,7 @@ public class UpdatePostCommandHandler : IRequestHandler<UpdatePostCommand, PostE
                 await _tagRepo.AddAsync(new()
                 {
                     DisplayName = item,
-                    NormalizedName = Tag.NormalizeName(item, Helper.TagNormalizationDictionary)
+                    NormalizedName = Helper.NormalizeName(item, Helper.TagNormalizationDictionary)
                 }, ct);
             }
         }

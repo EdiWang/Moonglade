@@ -10,7 +10,7 @@ public class CreateTagCommandHandler(MoongladeRepository<TagEntity> repo) : IReq
 {
     public async Task Handle(CreateTagCommand request, CancellationToken ct)
     {
-        var normalizedName = Tag.NormalizeName(request.Name, Helper.TagNormalizationDictionary);
+        var normalizedName = Helper.NormalizeName(request.Name, Helper.TagNormalizationDictionary);
 
         var existingTag = await repo.FirstOrDefaultAsync(new TagByNormalizedNameSpec(normalizedName), ct);
         if (null != existingTag) return;

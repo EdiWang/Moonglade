@@ -14,7 +14,7 @@ public class UpdateTagCommandHandler(MoongladeRepository<TagEntity> repo) : IReq
         if (null == tag) return OperationCode.ObjectNotFound;
 
         tag.DisplayName = name;
-        tag.NormalizedName = Tag.NormalizeName(name, Helper.TagNormalizationDictionary);
+        tag.NormalizedName = Helper.NormalizeName(name, Helper.TagNormalizationDictionary);
         await repo.UpdateAsync(tag, ct);
 
         return OperationCode.Done;

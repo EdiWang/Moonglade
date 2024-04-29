@@ -101,7 +101,7 @@ public class CreatePostCommandHandler(
         var newTag = new TagEntity
         {
             DisplayName = item,
-            NormalizedName = Tag.NormalizeName(item, Helper.TagNormalizationDictionary)
+            NormalizedName = Helper.NormalizeName(item, Helper.TagNormalizationDictionary)
         };
 
         var tag = await tagRepo.AddAsync(newTag);
