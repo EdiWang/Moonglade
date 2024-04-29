@@ -6,12 +6,12 @@ using Moonglade.Utils;
 
 namespace Moonglade.Core.PostFeature;
 
-public record GetPostBySlugQuery(PostSlug Slug) : IRequest<Post>;
+public record GetPostBySlugQuery(PostSlug Slug) : IRequest<PostEntity>;
 
 public class GetPostBySlugQueryHandler(MoongladeRepository<PostEntity> repo, ICacheAside cache, IConfiguration configuration)
-    : IRequestHandler<GetPostBySlugQuery, Post>
+    : IRequestHandler<GetPostBySlugQuery, PostEntity>
 {
-    public async Task<Post> Handle(GetPostBySlugQuery request, CancellationToken ct)
+    public async Task<PostEntity> Handle(GetPostBySlugQuery request, CancellationToken ct)
     {
         var date = new DateTime(request.Slug.Year, request.Slug.Month, request.Slug.Day);
 
@@ -26,7 +26,7 @@ public class GetPostBySlugQueryHandler(MoongladeRepository<PostEntity> repo, ICa
         {
             entry.SlidingExpiration = TimeSpan.FromMinutes(int.Parse(configuration["CacheSlidingExpirationMinutes:Post"]!));
 
-            var post = await repo.FirstOrDefaultAsync(spec, Post.EntitySelector);
+            var post = await repo.FirstOrDefaultAsync(spec, ct);
             return post;
         });
 

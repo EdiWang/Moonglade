@@ -1,5 +1,6 @@
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Moonglade.Core.PostFeature;
+using Moonglade.Data.Entities;
 using Moonglade.Pingback;
 
 namespace Moonglade.Web.Pages;
@@ -7,7 +8,7 @@ namespace Moonglade.Web.Pages;
 [AddPingbackHeader("pingback")]
 public class PostModel(IMediator mediator) : PageModel
 {
-    public Post Post { get; set; }
+    public PostEntity Post { get; set; }
 
     public async Task<IActionResult> OnGetAsync(int year, int month, int day, string slug)
     {
