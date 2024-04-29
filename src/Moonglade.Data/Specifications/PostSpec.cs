@@ -38,6 +38,8 @@ public sealed class PostByStatusSpec : Specification<PostEntity>
             default:
                 throw new ArgumentOutOfRangeException(nameof(status), status, null);
         }
+
+        Query.AsNoTracking();
     }
 }
 
