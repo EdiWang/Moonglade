@@ -132,3 +132,17 @@ public sealed class PostByDateAndSlugSpec : Specification<PostEntity>
         }
     }
 }
+
+public sealed class PostByDateAndSlugForIdTitleSpec : SingleResultSpecification<PostEntity, (Guid Id, string Title)>
+{
+    public PostByDateAndSlugForIdTitleSpec(DateTime date, string slug)
+    {
+        Query.Where(p =>
+            p.Slug == slug &&
+            p.IsPublished &&
+            p.PubDateUtc.Value.Date == date &&
+            !p.IsDeleted);
+
+        Query.Select(p => new ValueTuple<Guid, string>(p.Id, p.Title));
+    }
+}
