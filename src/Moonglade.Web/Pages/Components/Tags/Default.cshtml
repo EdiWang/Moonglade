@@ -1,14 +1,14 @@
-﻿@model List<KeyValuePair<Moonglade.Data.Entities.TagEntity, int>>
+﻿@model List<(Moonglade.Data.Entities.TagEntity Tag, int PostCount)>
 
 @if (Model.Any())
 {
-    foreach (var (key, value) in Model)
+    foreach (var (tag, count) in Model)
     {
         <a asp-page="/TagList"
-           asp-route-normalizedName="@key.NormalizedName"
-           rel="@value"
+           asp-route-normalizedName="@tag.NormalizedName"
+           rel="@count"
            class="d-inline-block btn btn-sm btn-accent mb-2 me-1">
-            @key.DisplayName
+            @tag.DisplayName
         </a>
     }
 }

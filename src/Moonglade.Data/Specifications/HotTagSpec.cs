@@ -2,12 +2,14 @@
 
 namespace Moonglade.Data.Specifications;
 
-public sealed class TagSpec : Specification<TagEntity>
+public sealed class HotTagSpec : Specification<TagEntity, (TagEntity Tag, int PostCount)>
 {
-    public TagSpec(int top)
+    public HotTagSpec(int top)
     {
         Query.Skip(0).Take(top);
         Query.OrderByDescending(p => p.Posts.Count);
+
+        Query.Select(t => new ValueTuple<TagEntity, int>(t, t.Posts.Count));
     }
 }
 
