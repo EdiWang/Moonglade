@@ -2,11 +2,11 @@
 @model Moonglade.Web.Pages.BlogPageModel
 
 @{
-    ViewBag.TitlePrefix = Model.BlogPage.Title;
+    ViewBag.TitlePrefix = Model.BlogPage.Title.Trim();
     ViewBag.HideSideBar = Model.BlogPage.HideSidebar;
     ViewBag.DisableLightSwitch = true;
 
-    ViewBag.MetaDescription = Model.BlogPage.MetaDescription;
+    ViewBag.MetaDescription = Model.BlogPage.MetaDescription?.Trim();
 }
 
 @section head {
@@ -17,7 +17,7 @@
 }
 
 <div class="page-content">
-    @Html.Raw(Model.BlogPage.RawHtmlContent)
+    @Html.Raw(Model.BlogPage.HtmlContent)
 </div>
 
 <partial name="_PageForestageAdmin" />
