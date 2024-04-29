@@ -1,5 +1,4 @@
-﻿using NUglify;
-using System.Web;
+﻿using System.Web;
 
 namespace Moonglade.Web.Middleware;
 
@@ -70,16 +69,9 @@ public class StyleSheetMiddleware(RequestDelegate next)
             return;
         }
 
-        var uglifiedCss = Uglify.Css(cssCode);
-        if (uglifiedCss.HasErrors)
-        {
-            context.Response.StatusCode = StatusCodes.Status409Conflict;
-            return;
-        }
-
         context.Response.StatusCode = StatusCodes.Status200OK;
         context.Response.ContentType = "text/css; charset=utf-8";
-        await context.Response.WriteAsync(uglifiedCss.Code, context.RequestAborted);
+        await context.Response.WriteAsync(cssCode, context.RequestAborted);
     }
 }
 
