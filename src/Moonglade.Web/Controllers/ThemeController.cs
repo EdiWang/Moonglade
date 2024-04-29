@@ -1,5 +1,4 @@
-﻿using NUglify;
-using System.ComponentModel.DataAnnotations;
+﻿using System.ComponentModel.DataAnnotations;
 
 namespace Moonglade.Web.Controllers;
 
@@ -10,7 +9,6 @@ public class ThemeController(IMediator mediator, ICacheAside cache, IBlogConfig 
     [HttpGet("/theme.css")]
     [ProducesResponseType(StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
-    [ProducesResponseType<List<UglifyError>>(StatusCodes.Status409Conflict)]
     public async Task<IActionResult> Css()
     {
         try
@@ -33,10 +31,7 @@ public class ThemeController(IMediator mediator, ICacheAside cache, IBlogConfig 
 
             if (css == null) return NotFound();
 
-            var uCss = Uglify.Css(css);
-            if (uCss.HasErrors) return Conflict(uCss.Errors);
-
-            return Content(uCss.Code, "text/css; charset=utf-8");
+            return Content(css, "text/css; charset=utf-8");
         }
         catch (InvalidDataException e)
         {
