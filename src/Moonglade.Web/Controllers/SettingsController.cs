@@ -1,7 +1,6 @@
 ﻿using Edi.PasswordGenerator;
 using Microsoft.AspNetCore.Localization;
 using Moonglade.Email.Client;
-using NUglify;
 
 namespace Moonglade.Web.Controllers;
 
