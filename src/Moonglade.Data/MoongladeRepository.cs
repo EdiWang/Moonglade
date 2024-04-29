@@ -17,13 +17,6 @@ public class MoongladeRepository<T>(BlogDbContext dbContext) : RepositoryBase<T>
         return dbContext.SaveChangesAsync(ct);
     }
 
-    public Task<bool> AnyAsync(Expression<Func<T, bool>> condition, CancellationToken ct = default)
-    {
-        return null != condition ?
-            dbContext.Set<T>().AnyAsync(condition, cancellationToken: ct) :
-            dbContext.Set<T>().AnyAsync(cancellationToken: ct);
-    }
-
     public Task<TResult> FirstOrDefaultAsync<TResult>(
         ISpecification<T> spec, Expression<Func<T, TResult>> selector) =>
         ApplySpecification(spec).AsNoTracking().Select(selector).FirstOrDefaultAsync();

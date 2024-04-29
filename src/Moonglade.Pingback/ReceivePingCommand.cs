@@ -66,11 +66,7 @@ public class ReceivePingCommandHandler(
 
             logger.LogInformation($"Post '{id}:{title}' is found for ping.");
 
-            var pinged = await pingbackRepo.AnyAsync(p =>
-                p.TargetPostId == id &&
-                p.SourceUrl == pingRequest.SourceUrl &&
-                p.SourceIp.Trim() == request.IP, ct);
-
+            var pinged = await pingbackRepo.AnyAsync(new PingbackSpec(id, pingRequest.SourceUrl, request.IP), ct);
             if (pinged) return PingbackResponse.Error48PingbackAlreadyRegistered;
 
             logger.LogInformation("Adding received pingback...");
