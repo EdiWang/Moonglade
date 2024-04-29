@@ -11,7 +11,7 @@ public class PostModel(IMediator mediator) : PageModel
 
     public async Task<IActionResult> OnGetAsync(int year, int month, int day, string slug)
     {
-        if (year > DateTime.UtcNow.Year || month is < 1 or > 12 || string.IsNullOrWhiteSpace(slug)) return NotFound();
+        if (year > DateTime.UtcNow.Year || string.IsNullOrWhiteSpace(slug)) return NotFound();
 
         var slugInfo = new PostSlug(year, month, day, slug);
         var post = await mediator.Send(new GetPostBySlugQuery(slugInfo));
