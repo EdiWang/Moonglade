@@ -1,4 +1,3 @@
-using Moonglade.Data.Entities;
 using Moonglade.FriendLink;
 
 namespace Moonglade.Web.ViewComponents;

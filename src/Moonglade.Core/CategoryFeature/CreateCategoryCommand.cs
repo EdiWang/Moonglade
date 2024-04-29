@@ -1,7 +1,7 @@
 ﻿using Edi.CacheAside.InMemory;
 using Moonglade.Data;
-using System.ComponentModel.DataAnnotations;
 using Moonglade.Data.Specifications;
+using System.ComponentModel.DataAnnotations;
 
 namespace Moonglade.Core.CategoryFeature;
 
