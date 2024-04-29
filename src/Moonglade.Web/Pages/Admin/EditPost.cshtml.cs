@@ -19,12 +19,13 @@ public class EditPostModel(IMediator mediator, ITimeZoneResolver timeZoneResolve
 
     public async Task<IActionResult> OnGetAsync(Guid? id)
     {
+        var cats = await mediator.Send(new GetCategoriesQuery());
+
         if (id is null)
         {
-            var cats1 = await mediator.Send(new GetCategoriesQuery());
-            if (cats1.Count > 0)
+            if (cats.Count > 0)
             {
-                var cbCatList = cats1.Select(p =>
+                var cbCatList = cats.Select(p =>
                     new CategoryCheckBox
                     {
                         Id = p.Id,
@@ -47,7 +48,7 @@ public class EditPostModel(IMediator mediator, ITimeZoneResolver timeZoneResolve
         {
             PostId = post.Id,
             IsPublished = post.IsPublished,
-            EditorContent = post.RawPostContent,
+            EditorContent = post.PostContent,
             Author = post.Author,
             Slug = post.Slug,
             Title = post.Title,
@@ -55,7 +56,7 @@ public class EditPostModel(IMediator mediator, ITimeZoneResolver timeZoneResolve
             FeedIncluded = post.IsFeedIncluded,
             LanguageCode = post.ContentLanguageCode,
             Abstract = post.ContentAbstract.Replace("\u00A0\u2026", string.Empty),
-            Featured = post.Featured,
+            Featured = post.IsFeatured,
             OriginLink = post.OriginLink,
             HeroImageUrl = post.HeroImageUrl,
             IsOutdated = post.IsOutdated
@@ -73,15 +74,14 @@ public class EditPostModel(IMediator mediator, ITimeZoneResolver timeZoneResolve
         tagStr = tagStr.TrimEnd(',');
         ViewModel.Tags = tagStr;
 
-        var cats2 = await mediator.Send(new GetCategoriesQuery());
-        if (cats2.Count > 0)
+        if (cats.Count > 0)
         {
-            var cbCatList = cats2.Select(p =>
+            var cbCatList = cats.Select(p =>
                 new CategoryCheckBox
                 {
                     Id = p.Id,
                     DisplayText = p.DisplayName,
-                    IsChecked = post.Categories.Any(q => q.Id == p.Id)
+                    IsChecked = post.PostCategory.Any(q => q.CategoryId == p.Id)
                 });
             CategoryList = cbCatList.ToList();
         }
