@@ -19,10 +19,7 @@ public class GetPostBySlugQueryHandler(MoongladeRepository<PostEntity> repo, ICa
         var slugCheckSum = Helper.ComputeCheckSum($"{request.Slug.Slug}#{date:yyyyMMdd}");
         var spec = new PostByChecksumSpec(slugCheckSum);
 
-        var pid = await repo.FirstOrDefaultAsync(spec, p => p.Id);
-        if (pid == Guid.Empty) return null;
-
-        var psm = await cache.GetOrCreateAsync(BlogCachePartition.Post.ToString(), $"{pid}", async entry =>
+        var psm = await cache.GetOrCreateAsync(BlogCachePartition.Post.ToString(), $"{slugCheckSum}", async entry =>
         {
             entry.SlidingExpiration = TimeSpan.FromMinutes(int.Parse(configuration["CacheSlidingExpirationMinutes:Post"]!));
 
