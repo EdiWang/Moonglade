@@ -1,4 +1,4 @@
-﻿namespace Moonglade.Core.PageFeature;
+﻿namespace Moonglade.Data;
 
 public record PageSegment
 {
