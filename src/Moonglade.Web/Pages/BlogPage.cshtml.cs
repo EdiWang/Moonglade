@@ -23,6 +23,21 @@ public class BlogPageModel(IMediator mediator, ICacheAside cache, IConfiguration
         if (page is null || !page.IsPublished) return NotFound();
 
         BlogPage = page;
+
+        if (page.UpdateTimeUtc.HasValue && bool.Parse(configuration["Experimental:SetLastModifiedHeaderForPages"]!))
+        {
+            Response.Headers.LastModified = page.UpdateTimeUtc.Value.ToString("R");
+
+            if (Request.Headers.TryGetValue("If-Modified-Since", out var ifModifiedSince))
+            {
+                if (DateTime.TryParse(ifModifiedSince, out var ifModifiedSinceDate) &&
+                    page.UpdateTimeUtc.Value <= ifModifiedSinceDate)
+                {
+                    return StatusCode(304);
+                }
+            }
+        }
+
         return Page();
     }
 }
