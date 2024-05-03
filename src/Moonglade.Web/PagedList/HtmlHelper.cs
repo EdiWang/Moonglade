@@ -305,14 +305,7 @@ public class HtmlHelper(TagBuilderFactory tagBuilderFactory)
         }
 
         //page
-        if (options.DisplayLinkToIndividualPages)
-        {
-            foreach (var i in Enumerable.Range(firstPageToDisplay, pageNumbersToDisplay))
-            {
-                //show page number link
-                listItemLinks.Add(Page(i, list, generatePageUrl, options));
-            }
-        }
+        listItemLinks.AddRange(Enumerable.Range(firstPageToDisplay, pageNumbersToDisplay).Select(i => Page(i, list, generatePageUrl, options)));
 
         //next
         if (!list.IsLastPage)

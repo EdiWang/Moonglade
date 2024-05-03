@@ -9,7 +9,6 @@ public class PagedListRenderOptions
     ///</summary>
     public PagedListRenderOptions()
     {
-        DisplayLinkToIndividualPages = true;
         DisplayPageCountAndCurrentLocation = false;
         MaximumPageNumbersToDisplay = 10;
         EllipsesFormat = "&#8230;";
@@ -65,11 +64,6 @@ public class PagedListRenderOptions
     /// CSS Classes to append to Ellipses element in the paging control.
     ///</summary>
     public string EllipsesElementClass { get; set; }
-
-    ///<summary>
-    /// When true, includes hyperlinks for each page in the list.
-    ///</summary>
-    public bool DisplayLinkToIndividualPages { get; set; }
 
     ///<summary>
     /// When true, shows the current page number and the total number of pages in the list.
