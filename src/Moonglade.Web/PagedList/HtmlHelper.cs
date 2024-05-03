@@ -29,7 +29,7 @@ public class HtmlHelper(TagBuilderFactory tagBuilderFactory)
         return writer.ToString();
     }
 
-    private TagBuilder WrapInListItem(TagBuilder inner, PagedListRenderOptions options, params string[] classes)
+    private TagBuilder WrapInListItem(TagBuilder inner, params string[] classes)
     {
         var li = tagBuilderFactory.Create("li");
 
@@ -58,12 +58,12 @@ public class HtmlHelper(TagBuilderFactory tagBuilderFactory)
 
         if (list.IsFirstPage)
         {
-            return WrapInListItem(first, options, "paged-list-skip-to-first", "disabled");
+            return WrapInListItem(first, "paged-list-skip-to-first", "disabled");
         }
 
         first.Attributes.Add("href", generatePageUrl(targetPageNumber));
 
-        return WrapInListItem(first, options, "paged-list-skip-to-first");
+        return WrapInListItem(first, "paged-list-skip-to-first");
     }
 
     private TagBuilder Previous(IPagedList list, Func<int, string> generatePageUrl, PagedListRenderOptions options)
@@ -83,12 +83,12 @@ public class HtmlHelper(TagBuilderFactory tagBuilderFactory)
 
         if (!list.HasPreviousPage)
         {
-            return WrapInListItem(previous, options, options.PreviousElementClass, "disabled");
+            return WrapInListItem(previous, options.PreviousElementClass, "disabled");
         }
 
         previous.Attributes.Add("href", generatePageUrl(targetPageNumber));
 
-        return WrapInListItem(previous, options, options.PreviousElementClass);
+        return WrapInListItem(previous, options.PreviousElementClass);
     }
 
     private TagBuilder Page(int i, IPagedList list, Func<int, string> generatePageUrl, PagedListRenderOptions options)
@@ -111,12 +111,12 @@ public class HtmlHelper(TagBuilderFactory tagBuilderFactory)
 
         if (i == list.PageNumber)
         {
-            return WrapInListItem(page, options, "active");
+            return WrapInListItem(page, "active");
         }
 
         page.Attributes.Add("href", generatePageUrl(targetPageNumber));
 
-        return WrapInListItem(page, options);
+        return WrapInListItem(page);
     }
 
     private TagBuilder Next(IPagedList list, Func<int, string> generatePageUrl, PagedListRenderOptions options)
@@ -136,12 +136,12 @@ public class HtmlHelper(TagBuilderFactory tagBuilderFactory)
 
         if (!list.HasNextPage)
         {
-            return WrapInListItem(next, options, options.NextElementClass, "disabled");
+            return WrapInListItem(next, options.NextElementClass, "disabled");
         }
 
         next.Attributes.Add("href", generatePageUrl(targetPageNumber));
 
-        return WrapInListItem(next, options, options.NextElementClass);
+        return WrapInListItem(next, options.NextElementClass);
     }
 
     private TagBuilder Last(IPagedList list, Func<int, string> generatePageUrl, PagedListRenderOptions options)
@@ -159,12 +159,12 @@ public class HtmlHelper(TagBuilderFactory tagBuilderFactory)
 
         if (list.IsLastPage)
         {
-            return WrapInListItem(last, options, "paged-list-skip-to-last", "disabled");
+            return WrapInListItem(last, "paged-list-skip-to-last", "disabled");
         }
 
         last.Attributes.Add("href", generatePageUrl(targetPageNumber));
 
-        return WrapInListItem(last, options, "paged-list-skip-to-last");
+        return WrapInListItem(last, "paged-list-skip-to-last");
     }
 
     private TagBuilder PageCountAndLocationText(IPagedList list, PagedListRenderOptions options)
@@ -174,7 +174,7 @@ public class HtmlHelper(TagBuilderFactory tagBuilderFactory)
 
         SetInnerText(text, string.Format(options.PageCountAndCurrentLocationFormat, list.PageNumber, list.PageCount));
 
-        return WrapInListItem(text, options, "PagedList-pageCountAndLocation", "disabled");
+        return WrapInListItem(text, "PagedList-pageCountAndLocation", "disabled");
     }
 
     private TagBuilder ItemSliceAndTotalText(IPagedList list, PagedListRenderOptions options)
@@ -184,7 +184,7 @@ public class HtmlHelper(TagBuilderFactory tagBuilderFactory)
 
         SetInnerText(text, string.Format(options.ItemSliceAndTotalFormat, list.FirstItemOnPage, list.LastItemOnPage, list.TotalItemCount));
 
-        return WrapInListItem(text, options, "PagedList-pageCountAndLocation", "disabled");
+        return WrapInListItem(text, "PagedList-pageCountAndLocation", "disabled");
     }
 
     #endregion Private methods
