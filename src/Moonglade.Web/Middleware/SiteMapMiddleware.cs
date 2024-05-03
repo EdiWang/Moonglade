@@ -56,18 +56,13 @@ public class SiteMapMiddleware(RequestDelegate next)
             }
 
             // Pages
-            var pages = await pageRepo.SelectAsync(page => new Tuple<DateTime, DateTime?, string, bool>(
-                page.CreateTimeUtc,
-                page.UpdateTimeUtc,
-                page.Slug,
-                page.IsPublished), ct);
-
-            foreach (var (createdTimeUtc, updateTimeUtc, slug, isPublished) in pages.Where(p => p.Item4))
+            var pages = await pageRepo.ListAsync(new PageSitemapSpec(), ct);
+            foreach (var page in pages)
             {
                 writer.WriteStartElement("url");
-                writer.WriteElementString("loc", $"{siteRootUrl}/page/{slug.ToLower()}");
-                writer.WriteElementString("lastmod", createdTimeUtc.ToString("yyyy-MM-dd", CultureInfo.InvariantCulture));
-                writer.WriteElementString("changefreq", GetChangeFreq(createdTimeUtc, updateTimeUtc));
+                writer.WriteElementString("loc", $"{siteRootUrl}/page/{page.Slug.ToLower()}");
+                writer.WriteElementString("lastmod", page.CreateTimeUtc.ToString("yyyy-MM-dd", CultureInfo.InvariantCulture));
+                writer.WriteElementString("changefreq", GetChangeFreq(page.CreateTimeUtc, page.UpdateTimeUtc));
                 await writer.WriteEndElementAsync();
             }
 
