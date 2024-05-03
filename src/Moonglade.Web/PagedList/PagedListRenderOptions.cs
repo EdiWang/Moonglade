@@ -1,6 +1,4 @@
-﻿using System.Text.Encodings.Web;
-
-namespace Moonglade.Web.PagedList;
+﻿namespace Moonglade.Web.PagedList;
 
 public class PagedListRenderOptions
 {

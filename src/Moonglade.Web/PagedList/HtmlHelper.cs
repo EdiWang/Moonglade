@@ -187,60 +187,6 @@ public class HtmlHelper(TagBuilderFactory tagBuilderFactory)
         return WrapInListItem(text, options, "PagedList-pageCountAndLocation", "disabled");
     }
 
-    private TagBuilder PreviousEllipsis(IPagedList list, Func<int, string> generatePageUrl, PagedListRenderOptions options, int firstPageToDisplay)
-    {
-        var previous = tagBuilderFactory
-            .Create("a");
-
-        AppendHtml(previous, options.EllipsesFormat);
-
-        previous.Attributes.Add("rel", "prev");
-        previous.AddCssClass("paged-list-skip-to-previous");
-
-        foreach (var c in options.PageClasses ?? Enumerable.Empty<string>())
-        {
-            previous.AddCssClass(c);
-        }
-
-        if (!list.HasPreviousPage)
-        {
-            return WrapInListItem(previous, options, options.EllipsesElementClass, "disabled");
-        }
-
-        var targetPageNumber = firstPageToDisplay - 1;
-
-        previous.Attributes.Add("href", generatePageUrl(targetPageNumber));
-
-        return WrapInListItem(previous, options, options.EllipsesElementClass);
-    }
-
-    private TagBuilder NextEllipsis(IPagedList list, Func<int, string> generatePageUrl, PagedListRenderOptions options, int lastPageToDisplay)
-    {
-        var next = tagBuilderFactory
-            .Create("a");
-
-        AppendHtml(next, options.EllipsesFormat);
-
-        next.Attributes.Add("rel", "next");
-        next.AddCssClass("paged-list-skip-to-next");
-
-        foreach (var c in options.PageClasses ?? Enumerable.Empty<string>())
-        {
-            next.AddCssClass(c);
-        }
-
-        if (!list.HasNextPage)
-        {
-            return WrapInListItem(next, options, options.EllipsesElementClass, "disabled");
-        }
-
-        var targetPageNumber = lastPageToDisplay + 1;
-
-        next.Attributes.Add("href", generatePageUrl(targetPageNumber));
-
-        return WrapInListItem(next, options, options.EllipsesElementClass);
-    }
-
     #endregion Private methods
 
     public string PagedListPager(IPagedList pagedList, Func<int, string> generatePageUrl, PagedListRenderOptions options)
