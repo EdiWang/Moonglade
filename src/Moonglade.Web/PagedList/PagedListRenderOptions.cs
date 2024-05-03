@@ -9,7 +9,6 @@ public class PagedListRenderOptions
     ///</summary>
     public PagedListRenderOptions()
     {
-        HtmlEncoder = HtmlEncoder.Default;
         DisplayLinkToIndividualPages = true;
         DisplayPageCountAndCurrentLocation = false;
         MaximumPageNumbersToDisplay = 10;
@@ -31,11 +30,6 @@ public class PagedListRenderOptions
         PreviousElementClass = "PagedList-skip-to-previous";
         NextElementClass = "paged-list-skip-to-next";
     }
-
-    /// <summary>
-    /// Gets or sets the HtmlEncoder to use encoding HTML render.
-    /// </summary>
-    public HtmlEncoder HtmlEncoder { get; set; }
 
     ///<summary>
     /// CSS Classes to append to the &lt;div&gt; element that wraps the paging control.
