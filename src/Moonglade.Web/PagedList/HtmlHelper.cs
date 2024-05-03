@@ -307,12 +307,6 @@ public class HtmlHelper(TagBuilderFactory tagBuilderFactory)
         //page
         if (options.DisplayLinkToIndividualPages)
         {
-            //if there are previous page numbers not displayed, show an ellipsis
-            if (options.DisplayEllipsesWhenNotShowingAllPageNumbers && firstPageToDisplay > 1)
-            {
-                listItemLinks.Add(PreviousEllipsis(list, generatePageUrl, options, firstPageToDisplay));
-            }
-
             foreach (var i in Enumerable.Range(firstPageToDisplay, pageNumbersToDisplay))
             {
                 //show delimiter between page numbers
@@ -326,13 +320,6 @@ public class HtmlHelper(TagBuilderFactory tagBuilderFactory)
 
                 //show page number link
                 listItemLinks.Add(Page(i, list, generatePageUrl, options));
-            }
-
-            //if there are subsequent page numbers not displayed, show an ellipsis
-            if (options.DisplayEllipsesWhenNotShowingAllPageNumbers &&
-                (firstPageToDisplay + pageNumbersToDisplay - 1) < list.PageCount)
-            {
-                listItemLinks.Add(NextEllipsis(list, generatePageUrl, options, lastPageToDisplay));
             }
         }
 

@@ -87,8 +87,7 @@
 
         @Html.PagedListPager(Model.PostSegments, page => $"?pageIndex={page}&searchTerm={Model.SearchTerm}", new ()
         {
-            UlElementClasses = new[] {"pagination mt-4"},
-            DisplayEllipsesWhenNotShowingAllPageNumbers = false
+            UlElementClasses = new[] {"pagination mt-4"}
         })
     }
 </div>

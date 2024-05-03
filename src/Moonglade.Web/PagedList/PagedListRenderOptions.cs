@@ -13,7 +13,6 @@ public class PagedListRenderOptions
         DisplayLinkToIndividualPages = true;
         DisplayPageCountAndCurrentLocation = false;
         MaximumPageNumbersToDisplay = 10;
-        DisplayEllipsesWhenNotShowingAllPageNumbers = true;
         EllipsesFormat = "&#8230;";
         LinkToFirstPageFormat = "<<";
         LinkToPreviousPageFormat = "<";
@@ -98,16 +97,6 @@ public class PagedListRenderOptions
     /// The maximum number of page numbers to display. Null displays all page numbers.
     ///</summary>
     public int? MaximumPageNumbersToDisplay { get; set; }
-
-    ///<summary>
-    /// If true, adds an ellipsis where not all page numbers are being displayed.
-    ///</summary>
-    ///<example>
-    /// "1 2 3 4 5 ...",
-    /// "... 6 7 8 9 10 ...",
-    /// "... 11 12 13 14 15"
-    ///</example>
-    public bool DisplayEllipsesWhenNotShowingAllPageNumbers { get; set; }
 
     ///<summary>
     /// The pre-formatted text to display when not all page numbers are displayed at once.

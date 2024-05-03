@@ -173,7 +173,6 @@
 
     @Html.PagedListPager(Model.CommentDetailedItems, page => $"?pageIndex={page}", new()
     {
-        UlElementClasses = new[] { "pagination mt-3" },
-        DisplayEllipsesWhenNotShowingAllPageNumbers = false
+        UlElementClasses = new[] { "pagination mt-3" }
     })
 </div>
