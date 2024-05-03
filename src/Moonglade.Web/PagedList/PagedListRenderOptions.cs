@@ -9,7 +9,6 @@ public class PagedListRenderOptions
     {
         DisplayPageCountAndCurrentLocation = false;
         MaximumPageNumbersToDisplay = 10;
-        EllipsesFormat = "&#8230;";
         LinkToFirstPageFormat = "<<";
         LinkToPreviousPageFormat = "<";
         LinkToIndividualPageFormat = "{0}";
@@ -77,14 +76,6 @@ public class PagedListRenderOptions
     /// The maximum number of page numbers to display. Null displays all page numbers.
     ///</summary>
     public int? MaximumPageNumbersToDisplay { get; set; }
-
-    ///<summary>
-    /// The pre-formatted text to display when not all page numbers are displayed at once.
-    ///</summary>
-    ///<example>
-    /// "..."
-    ///</example>
-    public string EllipsesFormat { get; set; }
 
     ///<summary>
     /// The pre-formatted text to display inside the hyperlink to the first page. The one-based index of the page (always 1 in this case) is passed into the formatting function - use {0} to reference it.
