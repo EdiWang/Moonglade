@@ -264,10 +264,7 @@ public class HtmlHelper(TagBuilderFactory tagBuilderFactory)
             //append classes to all list item links
             foreach (var li in listItemLinks)
             {
-                foreach (var c in options.LiElementClasses ?? Enumerable.Empty<string>())
-                {
-                    li.AddCssClass(c);
-                }
+                li.AddCssClass("page-item");
             }
         }
 

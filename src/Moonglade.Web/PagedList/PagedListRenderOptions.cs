@@ -18,7 +18,6 @@ public class PagedListRenderOptions
         ItemSliceAndTotalFormat = "Showing items {0} through {1} of {2}.";
         FunctionToDisplayEachPageNumber = null;
         UlElementClasses = ["pagination"];
-        LiElementClasses = ["page-item"];
         PageClasses = ["page-link"];
         PreviousElementClass = "PagedList-skip-to-previous";
         NextElementClass = "paged-list-skip-to-next";
@@ -28,11 +27,6 @@ public class PagedListRenderOptions
     /// CSSClasses to append to the &lt;ul&gt; element in the paging control.
     ///</summary>
     public IEnumerable<string> UlElementClasses { get; set; }
-
-    ///<summary>
-    /// CSS Classes to append to every &lt;li&gt; element in the paging control.
-    ///</summary>
-    public IEnumerable<string> LiElementClasses { get; set; }
 
     ///<summary>
     /// CSS Classes to append to every &lt;a&gt; or &lt;span&gt; element that represent each page in the paging control.
