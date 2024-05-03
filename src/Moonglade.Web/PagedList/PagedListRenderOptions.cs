@@ -23,7 +23,6 @@ public class PagedListRenderOptions
         UlElementClasses = ["pagination"];
         LiElementClasses = ["page-item"];
         PageClasses = ["page-link"];
-        EllipsesElementClass = "paged-list-ellipses";
         PreviousElementClass = "PagedList-skip-to-previous";
         NextElementClass = "paged-list-skip-to-next";
     }
@@ -57,11 +56,6 @@ public class PagedListRenderOptions
     /// CSS Classes to append to next element in the paging control.
     ///</summary>
     public string NextElementClass { get; set; }
-
-    ///<summary>
-    /// CSS Classes to append to Ellipses element in the paging control.
-    ///</summary>
-    public string EllipsesElementClass { get; set; }
 
     ///<summary>
     /// When true, shows the current page number and the total number of pages in the list.
