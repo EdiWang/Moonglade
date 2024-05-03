@@ -244,12 +244,6 @@ public class HtmlHelper(TagBuilderFactory tagBuilderFactory)
             listItemLinks.Add(PageCountAndLocationText(list, options));
         }
 
-        //text
-        if (options.DisplayItemSliceAndTotal)
-        {
-            listItemLinks.Add(ItemSliceAndTotalText(list, options));
-        }
-
         //page
         listItemLinks.AddRange(Enumerable.Range(firstPageToDisplay, pageNumbersToDisplay).Select(i => Page(i, list, generatePageUrl, options)));
 

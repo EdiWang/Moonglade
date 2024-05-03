@@ -64,14 +64,6 @@ public class PagedListRenderOptions
     public bool DisplayPageCountAndCurrentLocation { get; set; }
 
     ///<summary>
-    /// When true, shows the one-based index of the first and last items on the page, and the total number of items in the list.
-    ///</summary>
-    ///<example>
-    /// "Showing items 75 through 100 of 183."
-    ///</example>
-    public bool DisplayItemSliceAndTotal { get; set; }
-
-    ///<summary>
     /// The maximum number of page numbers to display. Null displays all page numbers.
     ///</summary>
     public int? MaximumPageNumbersToDisplay { get; set; }
