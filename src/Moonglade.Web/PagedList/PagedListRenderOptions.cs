@@ -16,7 +16,6 @@ public class PagedListRenderOptions
         LinkToLastPageFormat = ">>";
         PageCountAndCurrentLocationFormat = "Page {0} of {1}.";
         ItemSliceAndTotalFormat = "Showing items {0} through {1} of {2}.";
-        ItemSliceAndTotalPosition = ItemSliceAndTotalPosition.Start;
         FunctionToDisplayEachPageNumber = null;
         ContainerDivClasses = ["pagination-container"];
         UlElementClasses = ["pagination"];
@@ -132,11 +131,6 @@ public class PagedListRenderOptions
     /// "Showing items {0} through {1} of {2}."
     ///</example>
     public string ItemSliceAndTotalFormat { get; set; }
-
-    /// <summary>
-    /// If set to <see cref="ItemSliceAndTotalPosition.Start"/>, render an info at the beginning of the list. If set to <see cref="ItemSliceAndTotalPosition.End"/>, render the at the beginning of the list.
-    /// </summary>
-    public ItemSliceAndTotalPosition ItemSliceAndTotalPosition { get; set; }
 
     /// <summary>
     /// A function that will render each page number when specified (and DisplayLinkToIndividualPages is true). If no function is specified, the LinkToIndividualPageFormat value will be used instead.

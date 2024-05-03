@@ -245,7 +245,7 @@ public class HtmlHelper(TagBuilderFactory tagBuilderFactory)
         }
 
         //text
-        if (options.DisplayItemSliceAndTotal && options.ItemSliceAndTotalPosition == ItemSliceAndTotalPosition.Start)
+        if (options.DisplayItemSliceAndTotal)
         {
             listItemLinks.Add(ItemSliceAndTotalText(list, options));
         }
@@ -263,12 +263,6 @@ public class HtmlHelper(TagBuilderFactory tagBuilderFactory)
         if (lastPageToDisplay < list.PageCount)
         {
             listItemLinks.Add(Last(list, generatePageUrl, options));
-        }
-
-        //text
-        if (options.DisplayItemSliceAndTotal && options.ItemSliceAndTotalPosition == ItemSliceAndTotalPosition.End)
-        {
-            listItemLinks.Add(ItemSliceAndTotalText(list, options));
         }
 
         if (listItemLinks.Any())
