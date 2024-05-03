@@ -24,6 +24,7 @@ public class CreatePageCommandHandler(MoongladeRepository<PageEntity> repo, IMed
             Slug = slug,
             MetaDescription = request.Payload.MetaDescription,
             CreateTimeUtc = DateTime.UtcNow,
+            UpdateTimeUtc = DateTime.UtcNow,
             HtmlContent = request.Payload.RawHtmlContent,
             HideSidebar = request.Payload.HideSidebar,
             IsPublished = request.Payload.IsPublished,
