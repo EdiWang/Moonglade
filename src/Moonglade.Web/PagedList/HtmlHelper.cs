@@ -290,10 +290,7 @@ public class HtmlHelper(TagBuilderFactory tagBuilderFactory)
         var outerDiv = tagBuilderFactory
             .Create("div");
 
-        foreach (var c in options.ContainerDivClasses ?? Enumerable.Empty<string>())
-        {
-            outerDiv.AddCssClass(c);
-        }
+        outerDiv.AddCssClass("pagination-container");
 
         AppendHtml(outerDiv, TagBuilderToString(ul));
 

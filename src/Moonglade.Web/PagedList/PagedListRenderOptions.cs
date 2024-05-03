@@ -17,18 +17,12 @@ public class PagedListRenderOptions
         PageCountAndCurrentLocationFormat = "Page {0} of {1}.";
         ItemSliceAndTotalFormat = "Showing items {0} through {1} of {2}.";
         FunctionToDisplayEachPageNumber = null;
-        ContainerDivClasses = ["pagination-container"];
         UlElementClasses = ["pagination"];
         LiElementClasses = ["page-item"];
         PageClasses = ["page-link"];
         PreviousElementClass = "PagedList-skip-to-previous";
         NextElementClass = "paged-list-skip-to-next";
     }
-
-    ///<summary>
-    /// CSS Classes to append to the &lt;div&gt; element that wraps the paging control.
-    ///</summary>
-    public IEnumerable<string> ContainerDivClasses { get; set; }
 
     ///<summary>
     /// CSSClasses to append to the &lt;ul&gt; element in the paging control.
