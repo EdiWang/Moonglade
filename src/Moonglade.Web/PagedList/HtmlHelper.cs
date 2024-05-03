@@ -177,16 +177,6 @@ public class HtmlHelper(TagBuilderFactory tagBuilderFactory)
         return WrapInListItem(text, "PagedList-pageCountAndLocation", "disabled");
     }
 
-    private TagBuilder ItemSliceAndTotalText(IPagedList list, PagedListRenderOptions options)
-    {
-        var text = tagBuilderFactory
-            .Create("a");
-
-        SetInnerText(text, string.Format(options.ItemSliceAndTotalFormat, list.FirstItemOnPage, list.LastItemOnPage, list.TotalItemCount));
-
-        return WrapInListItem(text, "PagedList-pageCountAndLocation", "disabled");
-    }
-
     #endregion Private methods
 
     public string PagedListPager(IPagedList pagedList, Func<int, string> generatePageUrl, PagedListRenderOptions options)
