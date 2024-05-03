@@ -7,5 +7,6 @@ public class BlogThemeForIdNameSpec : Specification<BlogThemeEntity, ThemeSegmen
     public BlogThemeForIdNameSpec()
     {
         Query.Select(p => new(p.Id, p.ThemeName));
+        Query.AsNoTracking();
     }
 }
