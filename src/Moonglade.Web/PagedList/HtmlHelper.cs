@@ -309,15 +309,6 @@ public class HtmlHelper(TagBuilderFactory tagBuilderFactory)
         {
             foreach (var i in Enumerable.Range(firstPageToDisplay, pageNumbersToDisplay))
             {
-                //show delimiter between page numbers
-                if (i > firstPageToDisplay && !string.IsNullOrWhiteSpace(options.DelimiterBetweenPageNumbers))
-                {
-                    var li = tagBuilderFactory.Create("li");
-
-                    SetInnerText(li, options.DelimiterBetweenPageNumbers);
-                    listItemLinks.Add(li);
-                }
-
                 //show page number link
                 listItemLinks.Add(Page(i, list, generatePageUrl, options));
             }
