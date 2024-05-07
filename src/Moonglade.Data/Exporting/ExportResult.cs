@@ -1,6 +1,6 @@
 ﻿namespace Moonglade.Data.Exporting;
 
-public class ExportResult
+public record ExportResult
 {
     public string FilePath { get; set; }
 }
