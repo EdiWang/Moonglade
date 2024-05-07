@@ -663,8 +663,8 @@
   <data name="Route Name" xml:space="preserve">
     <value>路由名称</value>
   </data>
-  <data name="RSS Items" xml:space="preserve">
-    <value>RSS条目数量</value>
+  <data name="Feed Items" xml:space="preserve">
+    <value>订阅条目数量</value>
   </data>
   <data name="Save" xml:space="preserve">
     <value>保存</value>
@@ -756,8 +756,8 @@
   <data name="The first {0} character(s) will be used as abstract if you leave this field blank." xml:space="preserve">
     <value>留空自动选取文章前 {0} 字符作为摘要</value>
   </data>
-  <data name="The number of entries to include in RSS feed." xml:space="preserve">
-    <value>RSS中包含的条目数量</value>
+  <data name="The number of entries to include in RSS/ATOM feed." xml:space="preserve">
+    <value>RSS/ATOM 中包含的条目数量</value>
   </data>
   <data name="Theme" xml:space="preserve">
     <value>主题</value>

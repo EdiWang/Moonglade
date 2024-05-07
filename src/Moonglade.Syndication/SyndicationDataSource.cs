@@ -58,9 +58,9 @@ public class SyndicationDataSource : ISyndicationDataSource
     private async Task<List<FeedEntry>> GetFeedEntriesAsync(Guid? catId = null)
     {
         int? top = null;
-        if (_blogConfig.FeedSettings.RssItemCount != 0)
+        if (_blogConfig.FeedSettings.FeedItemCount != 0)
         {
-            top = _blogConfig.FeedSettings.RssItemCount;
+            top = _blogConfig.FeedSettings.FeedItemCount;
         }
 
         var postSpec = new PostByCatSpec(catId, top);

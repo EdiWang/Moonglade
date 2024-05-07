@@ -24,11 +24,11 @@
                         <i class="bi-list-ol settings-entry-icon"></i>
                     </div>
                     <div class="col">
-                        <label asp-for="@settings.RssItemCount"></label>
-                        <div class="form-text">@SharedLocalizer["The number of entries to include in RSS feed."]</div>
+                        <label asp-for="@settings.FeedItemCount"></label>
+                        <div class="form-text">@SharedLocalizer["The number of entries to include in RSS/ATOM feed."]</div>
                     </div>
                     <div class="col-md-5">
-                        <input asp-for="@settings.RssItemCount" class="form-control" required />
+                        <input asp-for="@settings.FeedItemCount" class="form-control" required />
                     </div>
                 </div>
 
