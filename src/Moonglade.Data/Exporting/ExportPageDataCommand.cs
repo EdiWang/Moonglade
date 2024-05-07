@@ -11,18 +11,6 @@ public class ExportPageDataCommandHandler(MoongladeRepository<PageEntity> repo) 
     public Task<ExportResult> Handle(ExportPageDataCommand request, CancellationToken ct)
     {
         var pgExp = new ZippedJsonExporter<PageEntity>(repo, "moonglade-pages", ExportManager.DataDir);
-        return pgExp.ExportData(p => new
-        {
-            p.Id,
-            p.Title,
-            p.Slug,
-            p.MetaDescription,
-            p.HtmlContent,
-            p.CssId,
-            p.HideSidebar,
-            p.IsPublished,
-            p.CreateTimeUtc,
-            p.UpdateTimeUtc
-        }, ct);
+        return pgExp.ExportData(p => p, ct);
     }
 }
