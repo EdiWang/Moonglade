@@ -40,18 +40,17 @@ public class SiteMapMiddleware(RequestDelegate next)
             writer.WriteStartElement("urlset", "http://www.sitemaps.org/schemas/sitemap/0.9");
 
             // Posts
-            var spec = new PostByStatusSpec(PostStatus.Published);
-            var posts = await postRepo
-                .SelectAsync(spec, p => new Tuple<string, DateTime?, DateTime?>(p.Slug, p.PubDateUtc, p.LastModifiedUtc), ct);
+            var spec = new PostSiteMapSpec();
+            var posts = await postRepo.ListAsync(spec, ct);
 
-            foreach (var (slug, pubDateUtc, lastModifyUtc) in posts.OrderByDescending(p => p.Item2))
+            foreach (var item in posts.OrderByDescending(p => p.UpdateTimeUtc))
             {
-                var pubDate = pubDateUtc.GetValueOrDefault();
+                var pubDate = item.CreateTimeUtc;
 
                 writer.WriteStartElement("url");
-                writer.WriteElementString("loc", $"{siteRootUrl}/post/{pubDate.Year}/{pubDate.Month}/{pubDate.Day}/{slug.ToLower()}");
+                writer.WriteElementString("loc", $"{siteRootUrl}/post/{pubDate.Year}/{pubDate.Month}/{pubDate.Day}/{item.Slug.ToLower()}");
                 writer.WriteElementString("lastmod", pubDate.ToString("yyyy-MM-dd", CultureInfo.InvariantCulture));
-                writer.WriteElementString("changefreq", GetChangeFreq(pubDateUtc.GetValueOrDefault(), lastModifyUtc));
+                writer.WriteElementString("changefreq", GetChangeFreq(pubDate, item.UpdateTimeUtc));
                 await writer.WriteEndElementAsync();
             }
 
