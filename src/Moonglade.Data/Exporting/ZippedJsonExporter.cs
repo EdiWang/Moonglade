@@ -3,7 +3,7 @@ using System.Linq.Expressions;
 using System.Text;
 using System.Text.Json;
 
-namespace Moonglade.Data.Exporting.Exporters;
+namespace Moonglade.Data.Exporting;
 
 public class ZippedJsonExporter<T>(MoongladeRepository<T> repository, string fileNamePrefix, string directory)
     where T : class
