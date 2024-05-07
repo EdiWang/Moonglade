@@ -18,7 +18,7 @@ public class ZippedJsonExporter<T>(MoongladeRepository<T> repository, string fil
     private async Task<ExportResult> ToZippedJsonResult<TE>(IEnumerable<TE> list, CancellationToken ct)
     {
         var tempId = Guid.NewGuid().ToString();
-        string exportDirectory = ExportManager.CreateExportDirectory(directory, tempId);
+        string exportDirectory = CreateExportDirectory(directory, tempId);
         foreach (var item in list)
         {
             var json = JsonSerializer.Serialize(item, MoongladeJsonSerializerOptions.Default);
@@ -38,5 +38,19 @@ public class ZippedJsonExporter<T>(MoongladeRepository<T> repository, string fil
     {
         var path = Path.Join(directory, filename);
         await File.WriteAllTextAsync(path, json, Encoding.UTF8, ct);
+    }
+
+    private static string CreateExportDirectory(string directory, string subDirName)
+    {
+        if (directory is null) return null;
+
+        var path = Path.Join(directory, "export", subDirName);
+        if (Directory.Exists(path))
+        {
+            Directory.Delete(path);
+        }
+
+        Directory.CreateDirectory(path);
+        return path;
     }
 }

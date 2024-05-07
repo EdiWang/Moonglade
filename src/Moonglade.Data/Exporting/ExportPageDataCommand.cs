@@ -9,7 +9,7 @@ public class ExportPageDataCommandHandler(MoongladeRepository<PageEntity> repo) 
 {
     public Task<ExportResult> Handle(ExportPageDataCommand request, CancellationToken ct)
     {
-        var pgExp = new ZippedJsonExporter<PageEntity>(repo, "moonglade-pages", ExportManager.DataDir);
+        var pgExp = new ZippedJsonExporter<PageEntity>(repo, "moonglade-pages", Path.GetTempPath());
         return pgExp.ExportData(p => p, ct);
     }
 }
