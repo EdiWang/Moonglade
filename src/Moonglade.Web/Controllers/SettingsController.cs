@@ -220,14 +220,14 @@ public class SettingsController(
     [ProducesResponseType(StatusCodes.Status409Conflict)]
     public async Task<IActionResult> UpdateLocalAccountPassword(UpdateLocalAccountPasswordRequest request)
     {
-        var oldPasswordValid = blogConfig.LocalAccountSettings.PasswordHash == Helper.HashPassword2(request.OldPassword.Trim(), blogConfig.LocalAccountSettings.PasswordSalt);
+        var oldPasswordValid = blogConfig.LocalAccountSettings.PasswordHash == Helper.HashPassword(request.OldPassword.Trim(), blogConfig.LocalAccountSettings.PasswordSalt);
 
         if (!oldPasswordValid) return Conflict("Old password is incorrect.");
 
         var newSalt = Helper.GenerateSalt();
         blogConfig.LocalAccountSettings.Username = request.NewUsername.Trim();
         blogConfig.LocalAccountSettings.PasswordSalt = newSalt;
-        blogConfig.LocalAccountSettings.PasswordHash = Helper.HashPassword2(request.NewPassword, newSalt);
+        blogConfig.LocalAccountSettings.PasswordHash = Helper.HashPassword(request.NewPassword, newSalt);
 
         await SaveConfigAsync(blogConfig.LocalAccountSettings);
         return NoContent();

@@ -14,7 +14,7 @@ public class ValidateLoginCommandHandler(IBlogConfig config) : IRequestHandler<V
         if (account is null) return Task.FromResult(false);
         if (account.Username != request.Username) return Task.FromResult(false);
 
-        var valid = account.PasswordHash == Helper.HashPassword2(request.InputPassword.Trim(), account.PasswordSalt);
+        var valid = account.PasswordHash == Helper.HashPassword(request.InputPassword.Trim(), account.PasswordSalt);
 
         return Task.FromResult(valid);
     }

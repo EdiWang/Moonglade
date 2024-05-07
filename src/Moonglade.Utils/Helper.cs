@@ -124,7 +124,7 @@ public static class Helper
 
     // https://docs.microsoft.com/en-us/aspnet/core/security/data-protection/consumer-apis/password-hashing?view=aspnetcore-6.0
     // This is not secure, but better than nothing.
-    public static string HashPassword2(string clearPassword, string saltBase64)
+    public static string HashPassword(string clearPassword, string saltBase64)
     {
         var salt = Convert.FromBase64String(saltBase64);
 
