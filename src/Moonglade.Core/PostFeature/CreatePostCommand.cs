@@ -92,6 +92,7 @@ public class CreatePostCommandHandler(
 
         await postRepo.AddAsync(post, ct);
 
+        logger.LogInformation($"Created post Id: {post.Id}, Title: '{post.Title}'");
         return post;
     }
 
@@ -104,6 +105,8 @@ public class CreatePostCommandHandler(
         };
 
         var tag = await tagRepo.AddAsync(newTag);
+
+        logger.LogInformation($"Created tag: {tag.DisplayName}");
         return tag;
     }
 }
