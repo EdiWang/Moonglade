@@ -3,6 +3,4 @@
 public class ExportResult
 {
     public string FilePath { get; set; }
-
-    public byte[] Content { get; set; }
 }
