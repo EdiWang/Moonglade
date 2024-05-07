@@ -18,11 +18,6 @@ public class DataPortingController(IMediator mediator) : ControllerBase
             _ => throw new ArgumentOutOfRangeException(nameof(type), type, null)
         };
 
-        return exportResult.ExportFormat switch
-        {
-            ExportFormat.ZippedJsonFiles => PhysicalFile(exportResult.FilePath, exportResult.ContentType,
-                Path.GetFileName(exportResult.FilePath)),
-            _ => BadRequest(ModelState.CombineErrorMessages())
-        };
+        return PhysicalFile(exportResult.FilePath, "application/zip", Path.GetFileName(exportResult.FilePath));
     }
 }

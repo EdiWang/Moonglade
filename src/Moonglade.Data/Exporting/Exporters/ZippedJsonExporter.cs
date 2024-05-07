@@ -30,7 +30,6 @@ public class ZippedJsonExporter<T>(MoongladeRepository<T> repository, string fil
 
         return new()
         {
-            ExportFormat = ExportFormat.ZippedJsonFiles,
             FilePath = distPath
         };
     }
