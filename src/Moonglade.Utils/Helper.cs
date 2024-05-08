@@ -41,6 +41,11 @@ public static class Helper
         }
     }
 
+    public static bool IsRunningOnAzureAppService()
+    {
+        return !string.IsNullOrWhiteSpace(Environment.GetEnvironmentVariable("WEBSITE_SITE_NAME"));
+    }
+
     public static string GetClientIP(HttpContext context) => context?.Connection.RemoteIpAddress?.ToString();
 
     public static int ComputeCheckSum(string input)

@@ -23,7 +23,7 @@ var cultures = new[] { "en-US", "zh-Hans", "zh-Hant" }.Select(p => new CultureIn
 var builder = WebApplication.CreateBuilder(args);
 builder.WriteParameterTable();
 
-if (!string.IsNullOrWhiteSpace(Environment.GetEnvironmentVariable("WEBSITE_SITE_NAME")))
+if (Helper.IsRunningOnAzureAppService())
 {
     builder.Logging.AddAzureWebAppDiagnostics();
 }
