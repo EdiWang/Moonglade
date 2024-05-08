@@ -46,6 +46,11 @@ public static class Helper
         return !string.IsNullOrWhiteSpace(Environment.GetEnvironmentVariable("WEBSITE_SITE_NAME"));
     }
 
+    public static bool IsRunningInDocker()
+    {
+        return Environment.GetEnvironmentVariable("DOTNET_RUNNING_IN_CONTAINER") == "true";
+    }
+
     public static string GetClientIP(HttpContext context) => context?.Connection.RemoteIpAddress?.ToString();
 
     public static int ComputeCheckSum(string input)

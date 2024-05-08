@@ -91,7 +91,7 @@
                 </tr>
                 <tr>
                     <td>@SharedLocalizer["Docker Container"]</td>
-                    <td class="text-muted">@(Environment.GetEnvironmentVariable("DOTNET_RUNNING_IN_CONTAINER") == "true")</td>
+                    <td class="text-muted">@Helper.IsRunningInDocker()</td>
                 </tr>
 
                 @if (Helper.IsRunningOnAzureAppService())

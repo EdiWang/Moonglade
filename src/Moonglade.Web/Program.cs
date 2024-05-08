@@ -241,7 +241,7 @@ void UseSmartXFFHeader(WebApplication webApplication)
         // Fix docker deployments on Azure App Service blows up with Azure AD authentication
         // https://docs.microsoft.com/en-us/aspnet/core/host-and-deploy/proxy-load-balancer?view=aspnetcore-6.0
         // "Outside of using IIS Integration when hosting out-of-process, Forwarded Headers Middleware isn't enabled by default."
-        if (Environment.GetEnvironmentVariable("DOTNET_RUNNING_IN_CONTAINER") == "true")
+        if (Helper.IsRunningInDocker())
         {
             // Fix #712
             // Adding KnownProxies will make Azure App Service boom boom with Azure AD redirect URL
