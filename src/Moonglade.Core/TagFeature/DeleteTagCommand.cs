@@ -1,4 +1,5 @@
-﻿using Moonglade.Data;
+﻿using Microsoft.Extensions.Logging;
+using Moonglade.Data;
 using Moonglade.Data.Specifications;
 
 namespace Moonglade.Core.TagFeature;
@@ -7,7 +8,8 @@ public record DeleteTagCommand(int Id) : IRequest<OperationCode>;
 
 public class DeleteTagCommandHandler(
     MoongladeRepository<TagEntity> tagRepo,
-    MoongladeRepository<PostTagEntity> postTagRepo)
+    MoongladeRepository<PostTagEntity> postTagRepo,
+    ILogger<DeleteTagCommandHandler> logger)
     : IRequestHandler<DeleteTagCommand, OperationCode>
 {
     public async Task<OperationCode> Handle(DeleteTagCommand request, CancellationToken ct)
@@ -22,6 +24,7 @@ public class DeleteTagCommandHandler(
         // 2. Delte Tag itslef
         await tagRepo.DeleteAsync(tag, ct);
 
+        logger.LogInformation("Deleted tag: {TagId}", request.Id);
         return OperationCode.Done;
     }
 }

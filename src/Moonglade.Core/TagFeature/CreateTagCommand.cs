@@ -1,4 +1,5 @@
-﻿using Moonglade.Data;
+﻿using Microsoft.Extensions.Logging;
+using Moonglade.Data;
 using Moonglade.Data.Specifications;
 using Moonglade.Utils;
 
@@ -6,7 +7,9 @@ namespace Moonglade.Core.TagFeature;
 
 public record CreateTagCommand(string Name) : IRequest;
 
-public class CreateTagCommandHandler(MoongladeRepository<TagEntity> repo) : IRequestHandler<CreateTagCommand>
+public class CreateTagCommandHandler(
+    MoongladeRepository<TagEntity> repo,
+    ILogger<CreateTagCommandHandler> logger) : IRequestHandler<CreateTagCommand>
 {
     public async Task Handle(CreateTagCommand request, CancellationToken ct)
     {
@@ -22,5 +25,6 @@ public class CreateTagCommandHandler(MoongladeRepository<TagEntity> repo) : IReq
         };
 
         await repo.AddAsync(newTag, ct);
+        logger.LogInformation("Tag created: {TagName}", request.Name);
     }
 }
