@@ -1,4 +1,5 @@
 ﻿using MediatR;
+using Microsoft.Extensions.Logging;
 using Moonglade.Data;
 using Moonglade.Data.Entities;
 using Moonglade.Utils;
@@ -8,6 +9,7 @@ namespace Moonglade.Comments;
 public record ReplyCommentCommand(Guid CommentId, string ReplyContent) : IRequest<CommentReply>;
 
 public class ReplyCommentCommandHandler(
+    ILogger<ReplyCommentCommandHandler> logger,
     MoongladeRepository<CommentEntity> commentRepo,
     MoongladeRepository<CommentReplyEntity> commentReplyRepo) : IRequestHandler<ReplyCommentCommand, CommentReply>
 {
@@ -42,6 +44,7 @@ public class ReplyCommentCommandHandler(
             Title = cmt.Post.Title
         };
 
+        logger.LogInformation("Replied comment '{CommentId}' with reply '{ReplyId}'", request.CommentId, id);
         return reply;
     }
 }

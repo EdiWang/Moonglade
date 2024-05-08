@@ -1,4 +1,5 @@
 ﻿using MediatR;
+using Microsoft.Extensions.Logging;
 using Moonglade.Configuration;
 using Moonglade.Data;
 using Moonglade.Data.Entities;
@@ -17,6 +18,7 @@ public class CreateCommentCommand(Guid postId, CommentRequest payload, string ip
 
 public class CreateCommentCommandHandler(
     IBlogConfig blogConfig,
+    ILogger<CreateCommentCommandHandler> logger,
     MoongladeRepository<PostEntity> postRepo,
     MoongladeRepository<CommentEntity> commentRepo) : IRequestHandler<CreateCommentCommand, CommentDetailedItem>
 {
@@ -57,6 +59,7 @@ public class CreateCommentCommandHandler(
             Username = model.Username
         };
 
+        logger.LogInformation("New comment created: {0}", item.Id);
         return item;
     }
 }
