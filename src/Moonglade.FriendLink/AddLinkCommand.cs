@@ -1,9 +1,9 @@
 ﻿using MediatR;
+using Microsoft.Extensions.Logging;
 using Moonglade.Data;
 using Moonglade.Data.Entities;
 using Moonglade.Utils;
 using System.ComponentModel.DataAnnotations;
-using Microsoft.Extensions.Logging;
 
 namespace Moonglade.FriendLink;
 
@@ -35,7 +35,7 @@ public class EditLinkRequest : IValidatableObject
 public record AddLinkCommand(EditLinkRequest Payload) : IRequest;
 
 public class AddLinkCommandHandler(
-    MoongladeRepository<FriendLinkEntity> repo, 
+    MoongladeRepository<FriendLinkEntity> repo,
     ILogger<AddLinkCommandHandler> logger) : IRequestHandler<AddLinkCommand>
 {
     public async Task Handle(AddLinkCommand request, CancellationToken ct)
@@ -49,7 +49,7 @@ public class AddLinkCommandHandler(
         };
 
         await repo.AddAsync(link, ct);
-        
+
         logger.LogInformation("Added a new friend link: {Title}", link.Title);
     }
 }

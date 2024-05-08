@@ -1,4 +1,5 @@
 ﻿using MediatR;
+using Microsoft.Extensions.Logging;
 using Moonglade.Data;
 using Moonglade.Data.Entities;
 using Moonglade.Utils;
@@ -7,7 +8,9 @@ namespace Moonglade.FriendLink;
 
 public record UpdateLinkCommand(Guid Id, EditLinkRequest Payload) : IRequest;
 
-public class UpdateLinkCommandHandler(MoongladeRepository<FriendLinkEntity> repo) : IRequestHandler<UpdateLinkCommand>
+public class UpdateLinkCommandHandler(
+    MoongladeRepository<FriendLinkEntity> repo,
+    ILogger<UpdateLinkCommandHandler> logger) : IRequestHandler<UpdateLinkCommand>
 {
     public async Task Handle(UpdateLinkCommand request, CancellationToken ct)
     {
@@ -25,5 +28,7 @@ public class UpdateLinkCommandHandler(MoongladeRepository<FriendLinkEntity> repo
 
             await repo.UpdateAsync(link, ct);
         }
+
+        logger.LogInformation("Updated link: {LinkId}", request.Id);
     }
 }

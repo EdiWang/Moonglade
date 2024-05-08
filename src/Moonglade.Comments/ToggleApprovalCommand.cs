@@ -9,7 +9,7 @@ namespace Moonglade.Comments;
 public record ToggleApprovalCommand(Guid[] CommentIds) : IRequest;
 
 public class ToggleApprovalCommandHandler(
-    MoongladeRepository<CommentEntity> repo, 
+    MoongladeRepository<CommentEntity> repo,
     ILogger<ToggleApprovalCommandHandler> logger) : IRequestHandler<ToggleApprovalCommand>
 {
     public async Task Handle(ToggleApprovalCommand request, CancellationToken ct)

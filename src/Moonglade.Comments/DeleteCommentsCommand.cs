@@ -9,7 +9,7 @@ namespace Moonglade.Comments;
 public record DeleteCommentsCommand(Guid[] Ids) : IRequest;
 
 public class DeleteCommentsCommandHandler(
-    MoongladeRepository<CommentEntity> commentRepo, 
+    MoongladeRepository<CommentEntity> commentRepo,
     ILogger<DeleteCommentsCommandHandler> logger) : IRequestHandler<DeleteCommentsCommand>
 {
     public async Task Handle(DeleteCommentsCommand request, CancellationToken ct)
