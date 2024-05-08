@@ -23,7 +23,11 @@ var cultures = new[] { "en-US", "zh-Hans", "zh-Hant" }.Select(p => new CultureIn
 var builder = WebApplication.CreateBuilder(args);
 builder.WriteParameterTable();
 
-builder.Logging.AddAzureWebAppDiagnostics();
+if (!string.IsNullOrWhiteSpace(Environment.GetEnvironmentVariable("WEBSITE_SITE_NAME")))
+{
+    builder.Logging.AddAzureWebAppDiagnostics();
+}
+
 builder.Configuration.AddJsonFile("manifesticons.json", false, true);
 
 ConfigureServices(builder.Services);
