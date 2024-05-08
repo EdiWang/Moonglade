@@ -111,7 +111,7 @@ void ConfigureServices(IServiceCollection services)
             .AddImageStorage(builder.Configuration, options => options.ContentRootPath = builder.Environment.ContentRootPath)
             .Configure<List<ManifestIcon>>(builder.Configuration.GetSection("ManifestIcons"));
 
-    services.AddEmailSending();
+    services.AddEmailClient();
     services.AddContentModerator(builder.Configuration);
 
     string dbType = builder.Configuration.GetConnectionString("DatabaseType");
