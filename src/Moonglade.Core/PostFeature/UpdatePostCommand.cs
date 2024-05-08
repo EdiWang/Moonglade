@@ -28,7 +28,7 @@ public class UpdatePostCommandHandler : IRequestHandler<UpdatePostCommand, PostE
         MoongladeRepository<TagEntity> tagRepo,
         MoongladeRepository<PostEntity> postRepo,
         ICacheAside cache,
-        IBlogConfig blogConfig, 
+        IBlogConfig blogConfig,
         IConfiguration configuration,
         ILogger<UpdatePostCommandHandler> logger)
     {

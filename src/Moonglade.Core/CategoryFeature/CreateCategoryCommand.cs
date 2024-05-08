@@ -1,4 +1,5 @@
 ﻿using Edi.CacheAside.InMemory;
+using Microsoft.Extensions.Logging;
 using Moonglade.Data;
 using Moonglade.Data.Specifications;
 using System.ComponentModel.DataAnnotations;
@@ -24,7 +25,10 @@ public class CreateCategoryCommand : IRequest
     public string Note { get; set; }
 }
 
-public class CreateCategoryCommandHandler(MoongladeRepository<CategoryEntity> catRepo, ICacheAside cache) : IRequestHandler<CreateCategoryCommand>
+public class CreateCategoryCommandHandler(
+    MoongladeRepository<CategoryEntity> catRepo,
+    ICacheAside cache,
+    ILogger<CreateCategoryCommandHandler> logger) : IRequestHandler<CreateCategoryCommand>
 {
     public async Task Handle(CreateCategoryCommand request, CancellationToken ct)
     {
@@ -41,5 +45,7 @@ public class CreateCategoryCommandHandler(MoongladeRepository<CategoryEntity> ca
 
         await catRepo.AddAsync(category, ct);
         cache.Remove(BlogCachePartition.General.ToString(), "allcats");
+
+        logger.LogInformation("Category created: {Category}", category.Id);
     }
 }

@@ -6,8 +6,8 @@ namespace Moonglade.Core.PageFeature;
 public record DeletePageCommand(Guid Id) : IRequest<OperationCode>;
 
 public class DeletePageCommandHandler(
-    MoongladeRepository<PageEntity> repo, 
-    IMediator mediator, 
+    MoongladeRepository<PageEntity> repo,
+    IMediator mediator,
     ILogger<DeletePageCommandHandler> logger) : IRequestHandler<DeletePageCommand, OperationCode>
 {
     public async Task<OperationCode> Handle(DeletePageCommand request, CancellationToken ct)

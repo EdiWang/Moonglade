@@ -1,4 +1,5 @@
 ﻿using Edi.CacheAside.InMemory;
+using Microsoft.Extensions.Logging;
 using Moonglade.Data;
 
 namespace Moonglade.Core.CategoryFeature;
@@ -8,7 +9,10 @@ public class UpdateCategoryCommand : CreateCategoryCommand, IRequest<OperationCo
     public Guid Id { get; set; }
 }
 
-public class UpdateCategoryCommandHandler(MoongladeRepository<CategoryEntity> repo, ICacheAside cache) : IRequestHandler<UpdateCategoryCommand, OperationCode>
+public class UpdateCategoryCommandHandler(
+    MoongladeRepository<CategoryEntity> repo,
+    ICacheAside cache,
+    ILogger<UpdateCategoryCommandHandler> logger) : IRequestHandler<UpdateCategoryCommand, OperationCode>
 {
     public async Task<OperationCode> Handle(UpdateCategoryCommand request, CancellationToken ct)
     {
@@ -22,6 +26,7 @@ public class UpdateCategoryCommandHandler(MoongladeRepository<CategoryEntity> re
         await repo.UpdateAsync(cat, ct);
         cache.Remove(BlogCachePartition.General.ToString(), "allcats");
 
+        logger.LogInformation("Category updated: {Category}", cat.Id);
         return OperationCode.Done;
     }
 }

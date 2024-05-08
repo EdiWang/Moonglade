@@ -6,8 +6,8 @@ namespace Moonglade.Core.PageFeature;
 public record UpdatePageCommand(Guid Id, EditPageRequest Payload) : IRequest<Guid>;
 
 public class UpdatePageCommandHandler(
-    MoongladeRepository<PageEntity> repo, 
-    IMediator mediator, 
+    MoongladeRepository<PageEntity> repo,
+    IMediator mediator,
     ILogger<UpdatePageCommandHandler> logger) : IRequestHandler<UpdatePageCommand, Guid>
 {
     public async Task<Guid> Handle(UpdatePageCommand request, CancellationToken ct)
