@@ -1,10 +1,14 @@
-﻿using Moonglade.Data;
+﻿using Microsoft.Extensions.Logging;
+using Moonglade.Data;
 
 namespace Moonglade.Core.PageFeature;
 
 public record DeletePageCommand(Guid Id) : IRequest<OperationCode>;
 
-public class DeletePageCommandHandler(MoongladeRepository<PageEntity> repo, IMediator mediator) : IRequestHandler<DeletePageCommand, OperationCode>
+public class DeletePageCommandHandler(
+    MoongladeRepository<PageEntity> repo, 
+    IMediator mediator, 
+    ILogger<DeletePageCommandHandler> logger) : IRequestHandler<DeletePageCommand, OperationCode>
 {
     public async Task<OperationCode> Handle(DeletePageCommand request, CancellationToken ct)
     {
@@ -17,6 +21,8 @@ public class DeletePageCommandHandler(MoongladeRepository<PageEntity> repo, IMed
         }
 
         await repo.DeleteAsync(page, ct);
+
+        logger.LogInformation("Deleted page: {PageId}", request.Id);
         return OperationCode.Done;
     }
 }

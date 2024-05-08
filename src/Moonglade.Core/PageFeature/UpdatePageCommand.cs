@@ -1,10 +1,14 @@
-﻿using Moonglade.Data;
+﻿using Microsoft.Extensions.Logging;
+using Moonglade.Data;
 
 namespace Moonglade.Core.PageFeature;
 
 public record UpdatePageCommand(Guid Id, EditPageRequest Payload) : IRequest<Guid>;
 
-public class UpdatePageCommandHandler(MoongladeRepository<PageEntity> repo, IMediator mediator) : IRequestHandler<UpdatePageCommand, Guid>
+public class UpdatePageCommandHandler(
+    MoongladeRepository<PageEntity> repo, 
+    IMediator mediator, 
+    ILogger<UpdatePageCommandHandler> logger) : IRequestHandler<UpdatePageCommand, Guid>
 {
     public async Task<Guid> Handle(UpdatePageCommand request, CancellationToken ct)
     {
@@ -34,6 +38,7 @@ public class UpdatePageCommandHandler(MoongladeRepository<PageEntity> repo, IMed
 
         await repo.UpdateAsync(page, ct);
 
+        logger.LogInformation("Page updated: {PageId}", page.Id);
         return page.Id;
     }
 }
