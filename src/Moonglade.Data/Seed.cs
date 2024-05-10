@@ -1,5 +1,6 @@
 ﻿using Microsoft.Extensions.Logging;
 using Moonglade.Data.Entities;
+using Moonglade.Utils;
 
 namespace Moonglade.Data;
 
@@ -46,11 +47,14 @@ public class Seed
                 LastModifiedUtc = DateTime.UtcNow,
                 PubDateUtc = DateTime.UtcNow,
                 ContentLanguageCode = "en-us",
-                HashCheckSum = -1688639577,
                 IsOriginal = true,
                 Tags = dbContext.Tag.ToList(),
                 PostCategory = dbContext.PostCategory.ToList()
             };
+
+            var input = $"{post.Slug}#{post.PubDateUtc.GetValueOrDefault():yyyyMMdd}";
+            var checkSum = Helper.ComputeCheckSum(input);
+            post.HashCheckSum = checkSum;
 
             await dbContext.Post.AddAsync(post);
 
