@@ -17,7 +17,7 @@ public sealed class PostTagSpec : Specification<PostTagEntity>
     }
 }
 
-public class PostTagByTagIdSpec : SingleResultSpecification<PostTagEntity>
+public sealed class PostTagByTagIdSpec : SingleResultSpecification<PostTagEntity>
 {
     public PostTagByTagIdSpec(int tagId)
     {

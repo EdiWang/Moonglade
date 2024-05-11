@@ -2,7 +2,7 @@
 
 namespace Moonglade.Data.Specifications;
 
-public class BlogThemeForIdNameSpec : Specification<BlogThemeEntity, ThemeSegment>
+public sealed class BlogThemeForIdNameSpec : Specification<BlogThemeEntity, ThemeSegment>
 {
     public BlogThemeForIdNameSpec()
     {

@@ -2,7 +2,7 @@
 
 namespace Moonglade.Data.Specifications;
 
-public class CategoryBySlugSpec : SingleResultSpecification<CategoryEntity>
+public sealed class CategoryBySlugSpec : SingleResultSpecification<CategoryEntity>
 {
     public CategoryBySlugSpec(string slug)
     {

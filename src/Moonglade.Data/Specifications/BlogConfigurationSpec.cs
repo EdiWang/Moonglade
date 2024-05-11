@@ -2,7 +2,7 @@
 
 namespace Moonglade.Data.Specifications;
 
-public class BlogConfigurationSpec : SingleResultSpecification<BlogConfigurationEntity>
+public sealed class BlogConfigurationSpec : SingleResultSpecification<BlogConfigurationEntity>
 {
     public BlogConfigurationSpec(string cfgKey)
     {

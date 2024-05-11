@@ -2,7 +2,7 @@
 
 namespace Moonglade.Data.Specifications;
 
-public class PageBySlugSpec : SingleResultSpecification<PageEntity>
+public sealed class PageBySlugSpec : SingleResultSpecification<PageEntity>
 {
     public PageBySlugSpec(string slug)
     {
