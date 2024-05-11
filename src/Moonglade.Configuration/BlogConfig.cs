@@ -1,9 +1,7 @@
 ﻿
 namespace Moonglade.Configuration;
 
-public interface IBlogSettings
-{
-}
+public interface IBlogSettings;
 
 public interface IBlogConfig
 {
