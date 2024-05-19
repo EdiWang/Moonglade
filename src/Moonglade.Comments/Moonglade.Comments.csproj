@@ -9,7 +9,7 @@
         <ImplicitUsings>enable</ImplicitUsings>
     </PropertyGroup>
     <ItemGroup>
-        <PackageReference Include="Edi.Captcha" Version="3.21.2" />
+        <PackageReference Include="Edi.Captcha" Version="3.22.0" />
     </ItemGroup>
     <ItemGroup>
         <ProjectReference Include="..\Moonglade.Configuration\Moonglade.Configuration.csproj" />
