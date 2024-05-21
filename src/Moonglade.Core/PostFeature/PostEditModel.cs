@@ -70,5 +70,5 @@ public class PostEditModel
     [Display(Name = "Mark as outdated")]
     public bool IsOutdated { get; set; }
 
-    public bool WarnSlugModification => PublishDate.HasValue && (DateTime.UtcNow - PublishDate.Value).Days > 7;
+    public bool WarnSlugModification => PublishDate.HasValue && (DateTime.UtcNow - PublishDate.Value).Days > 3;
 }
