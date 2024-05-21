@@ -38,7 +38,7 @@ public class PostEditModel
     [Display(Name = "Featured")]
     public bool Featured { get; set; }
 
-    [Display(Name = "Feed Subscription")]
+    [Display(Name = "Include in feed and sitemap")]
     public bool FeedIncluded { get; set; }
 
     [Display(Name = "Tags")]

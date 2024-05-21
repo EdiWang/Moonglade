@@ -394,8 +394,8 @@
   <data name="Featured Posts" xml:space="preserve">
     <value>精選文章</value>
   </data>
-  <data name="Feed Subscription" xml:space="preserve">
-    <value>加入訂閱</value>
+  <data name="Include in feed and sitemap" xml:space="preserve">
+    <value>加入訂閱及網站地圖</value>
   </data>
   <data name="Fit image to device pixel ratio" xml:space="preserve">
     <value>圖片自動適配設備DPI</value>
