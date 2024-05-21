@@ -7,7 +7,8 @@ public static class ServiceCollectionExtensions
 {
     public static IServiceCollection AddContentModerator(this IServiceCollection services, IConfiguration configuration)
     {
-        services.AddHttpClient<IModeratorService, AzureFunctionModeratorService>();
+        services.AddHttpClient<IModeratorService, AzureFunctionModeratorService>()
+                .AddStandardResilienceHandler();
         return services;
     }
 }
