@@ -598,9 +598,6 @@
   <data name="Publish Date" xml:space="preserve">
     <value>發佈日期</value>
   </data>
-  <data name="Publish Now" xml:space="preserve">
-    <value>立即發佈</value>
-  </data>
   <data name="Published" xml:space="preserve">
     <value>已發佈</value>
   </data>
