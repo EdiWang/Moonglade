@@ -112,26 +112,6 @@ public static class Helper
         return $"{uri.Scheme}://{uri.Host}/";
     }
 
-    public static string GetMd5Hash(string input)
-    {
-        // Convert the input string to a byte array and compute the hash.
-        var data = MD5.Create().ComputeHash(Encoding.UTF8.GetBytes(input));
-
-        // Create a new Stringbuilder to collect the bytes
-        // and create a string.
-        var sBuilder = new StringBuilder();
-
-        // Loop through each byte of the hashed data
-        // and format each one as a hexadecimal string.
-        foreach (var t in data)
-        {
-            sBuilder.Append(t.ToString("x2"));
-        }
-
-        // Return the hexadecimal string.
-        return sBuilder.ToString();
-    }
-
     // https://docs.microsoft.com/en-us/aspnet/core/security/data-protection/consumer-apis/password-hashing?view=aspnetcore-6.0
     // This is not secure, but better than nothing.
     public static string HashPassword(string clearPassword, string saltBase64)

@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Razor.TagHelpers;
+using System.Security.Cryptography;
 using System.Text.Encodings.Web;
 
 namespace Moonglade.Web.TagHelpers;
@@ -19,7 +20,7 @@ public class GravatarImgHelper : TagHelper
     public override void Process(TagHelperContext context, TagHelperOutput output)
     {
         var email = string.IsNullOrEmpty(Email) ? string.Empty : Email.Trim().ToLower();
-        var emailHash = Helper.GetMd5Hash(email);
+        var emailHash = GetMd5Hash(email);
 
         var src = string.Format("{0}://{1}.gravatar.com/avatar/{2}?s={3}{4}{5}{6}",
             PreferHttps ? "https" : "http",
@@ -35,5 +36,25 @@ public class GravatarImgHelper : TagHelper
         output.TagName = "img";
         output.Attributes.SetAttribute("src", src);
         output.Attributes.SetAttribute("alt", "Gravatar image");
+    }
+
+    private static string GetMd5Hash(string input)
+    {
+        // Convert the input string to a byte array and compute the hash.
+        var data = MD5.Create().ComputeHash(Encoding.UTF8.GetBytes(input));
+
+        // Create a new Stringbuilder to collect the bytes
+        // and create a string.
+        var sBuilder = new StringBuilder();
+
+        // Loop through each byte of the hashed data
+        // and format each one as a hexadecimal string.
+        foreach (var t in data)
+        {
+            sBuilder.Append(t.ToString("x2"));
+        }
+
+        // Return the hexadecimal string.
+        return sBuilder.ToString();
     }
 }
