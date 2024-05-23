@@ -42,7 +42,7 @@
     }
 }
 
-@section opengraph{
+@section opengraph {
     <meta property="og:site_name" content="@BlogConfig.GeneralSettings.SiteTitle">
     <meta property="og:title" content="@Model.Post.Title">
     <meta property="og:type" content="article" />
@@ -101,7 +101,7 @@
             viewpost.submitComment(pid);
         });
 
-        utils.formatUtcTime();
+        utils.formatUtcTime(false);
     </script>
 }
 
@@ -130,16 +130,9 @@
 
             <i class="bi-calendar-event"></i>
             <span class="me-2">
-                @if (BlogConfig.ContentSettings.DisplayTimeForPubDate)
-                {
-                    <time data-utc-label="@Model.Post.PubDateUtc.GetValueOrDefault().ToString("u")">@Model.Post.PubDateUtc</time>
-                }
-                else
-                {
-                    <time>
-                        @DateOnly.FromDateTime(Model.Post.PubDateUtc.GetValueOrDefault()) (UTC)
-                    </time>
-                }
+                <time data-utc-label="@Model.Post.PubDateUtc.GetValueOrDefault().ToString("u")">
+                    @DateOnly.FromDateTime(Model.Post.PubDateUtc.GetValueOrDefault()) (UTC)
+                </time>
             </span>
         </div>
     </header>
@@ -185,7 +178,7 @@
     if (BlogConfig.ContentSettings.CloseCommentAfterDays > 0 && days > BlogConfig.ContentSettings.CloseCommentAfterDays)
     {
         <div class="text-muted text-center">
-            <span class="bi-dash-circle"></span> 
+            <span class="bi-dash-circle"></span>
             @SharedLocalizer["Comment is closed."]
         </div>
     }
@@ -216,13 +209,13 @@
                         </div>
 
                         <section id="comments-list">
-                            @await Component.InvokeAsync("CommentList", new {postId = Model.Post.Id})
+                            @await Component.InvokeAsync("CommentList", new { postId = Model.Post.Id })
                         </section>
                     }
                     else
                     {
                         <div class="text-muted text-center">
-                            <span class="bi-ban"></span> 
+                            <span class="bi-ban"></span>
                             @SharedLocalizer["Comment of this post is disabled."]
                         </div>
                     }
