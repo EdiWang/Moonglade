@@ -56,10 +56,18 @@ public class UpdatePostCommandHandler : IRequestHandler<UpdatePostCommand, PostE
 
         post.CommentEnabled = postEditModel.EnableComment;
         post.PostContent = postEditModel.EditorContent;
-        post.ContentAbstract = ContentProcessor.GetPostAbstract(
-            string.IsNullOrEmpty(postEditModel.Abstract) ? postEditModel.EditorContent : postEditModel.Abstract.Trim(),
-            _blogConfig.ContentSettings.PostAbstractWords,
-            _configuration.GetSection("Editor").Get<EditorChoice>() == EditorChoice.Markdown);
+
+        if (string.IsNullOrEmpty(postEditModel.Abstract))
+        {
+            post.ContentAbstract = ContentProcessor.GetPostAbstract(
+                postEditModel.EditorContent,
+                _blogConfig.ContentSettings.PostAbstractWords,
+                _configuration.GetSection("Editor").Get<EditorChoice>() == EditorChoice.Markdown);
+        }
+        else
+        {
+            post.ContentAbstract = postEditModel.Abstract.Trim();
+        }
 
         if (postEditModel.IsPublished && !post.IsPublished)
         {
