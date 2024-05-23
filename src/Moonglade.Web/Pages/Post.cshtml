@@ -117,11 +117,6 @@
         </h1>
 
         <div class="post-publish-info text-muted mb-2">
-            @if (Model.Post.IsOriginal)
-            {
-                <span class="badge bg-secondary me-2 d-none d-sm-inline">@SharedLocalizer["Original"]</span>
-            }
-
             @if (!string.IsNullOrWhiteSpace(Model.Post.Author))
             {
                 <i class="bi-person d-none d-sm-inline"></i>
@@ -161,14 +156,6 @@
     }
 
     <partial name="_PostActions" model="Model.Post" />
-
-    @if (!string.IsNullOrWhiteSpace(Model.Post.OriginLink))
-    {
-        <a href="@Helper.SterilizeLink(Model.Post.OriginLink)" target="_blank">
-            <i class="bi-link"></i>
-            @SharedLocalizer["Read origin article"]
-        </a>
-    }
 </article>
 
 @if (BlogConfig.ContentSettings.EnableComments)

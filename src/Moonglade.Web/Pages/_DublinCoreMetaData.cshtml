@@ -8,10 +8,6 @@
 <meta name="DC.Format" content="text/html" />
 <meta name="DC.Format.MIME" content="text/html" />
 <meta name="DC.Format.SysReq" content="Internet browser" />
-@if (Model.Post.OriginLink != null)
-{
-    <meta name="DC.Source" content="@Model.Post.OriginLink">
-}
 <meta name="DC.Subject" content="@string.Join(", ", Model.Post.PostCategory.Select(p => p.Category.DisplayName))" />
 <meta name="DC.Subject.Keyword" content="@string.Join(", ", Model.Post.Tags.Select(t => t.NormalizedName))" />
 @if (BlogConfig.GeneralSettings.DcLicenseUrl != null)

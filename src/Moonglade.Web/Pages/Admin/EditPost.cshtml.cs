@@ -57,7 +57,6 @@ public class EditPostModel(IMediator mediator, ITimeZoneResolver timeZoneResolve
             LanguageCode = post.ContentLanguageCode,
             Abstract = post.ContentAbstract.Replace("\u00A0\u2026", string.Empty),
             Featured = post.IsFeatured,
-            OriginLink = post.OriginLink,
             HeroImageUrl = post.HeroImageUrl,
             IsOutdated = post.IsOutdated
         };

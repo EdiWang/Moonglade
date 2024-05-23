@@ -47,7 +47,6 @@ public class Seed
                 LastModifiedUtc = DateTime.UtcNow,
                 PubDateUtc = DateTime.UtcNow,
                 ContentLanguageCode = "en-us",
-                IsOriginal = true,
                 Tags = dbContext.Tag.ToList(),
                 PostCategory = dbContext.PostCategory.ToList()
             };
