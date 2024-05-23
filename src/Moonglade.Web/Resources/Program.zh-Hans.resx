@@ -576,12 +576,6 @@
   <data name="Order" xml:space="preserve">
     <value>序号</value>
   </data>
-  <data name="Origin Link" xml:space="preserve">
-    <value>原文链接</value>
-  </data>
-  <data name="Original" xml:space="preserve">
-    <value>原创</value>
-  </data>
   <data name="Owner email" xml:space="preserve">
     <value>博主邮箱</value>
   </data>
