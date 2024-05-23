@@ -101,7 +101,7 @@
             viewpost.submitComment(pid);
         });
 
-        utils.formatUtcTime();
+        utils.formatUtcTime(false);
     </script>
 }
 
@@ -130,7 +130,9 @@
 
             <i class="bi-calendar-event"></i>
             <span class="me-2">
-                <time data-utc-label="@Model.Post.PubDateUtc.GetValueOrDefault().ToString("u")">@Model.Post.PubDateUtc</time>
+                <time data-utc-label="@Model.Post.PubDateUtc.GetValueOrDefault().ToString("u")">
+                    @DateOnly.FromDateTime(Model.Post.PubDateUtc.GetValueOrDefault()) (UTC)
+                </time>
             </span>
         </div>
     </header>
