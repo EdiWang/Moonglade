@@ -23,9 +23,7 @@ public class PostEntity
     public DateTime? LastModifiedUtc { get; set; }
     public bool IsPublished { get; set; }
     public bool IsDeleted { get; set; }
-    public bool IsOriginal { get; set; }
     public bool IsOutdated { get; set; }
-    public string OriginLink { get; set; }
     public string HeroImageUrl { get; set; }
     public bool IsFeatured { get; set; }
     public int HashCheckSum { get; set; }

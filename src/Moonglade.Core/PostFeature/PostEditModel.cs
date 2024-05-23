@@ -59,10 +59,6 @@ public class PostEditModel
     [Display(Name = "Change Publish Date")]
     public bool ChangePublishDate { get; set; }
 
-    [Display(Name = "Origin Link")]
-    [DataType(DataType.Url)]
-    public string OriginLink { get; set; }
-
     [Display(Name = "Hero Image")]
     [DataType(DataType.Url)]
     public string HeroImageUrl { get; set; }
