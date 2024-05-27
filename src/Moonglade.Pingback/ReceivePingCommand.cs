@@ -22,7 +22,7 @@ public class ReceivePingCommand(string requestBody, string ip, Action<MentionEnt
 public class ReceivePingCommandHandler(
         ILogger<ReceivePingCommandHandler> logger,
         IMentionSourceInspector pingSourceInspector,
-        MoongladeRepository<MentionEntity> pingbackRepo,
+        MoongladeRepository<MentionEntity> mentionRepo,
         MoongladeRepository<PostEntity> postRepo) : IRequestHandler<ReceivePingCommand, PingbackResponse>
 {
     private string _sourceUrl;
@@ -67,7 +67,7 @@ public class ReceivePingCommandHandler(
 
             logger.LogInformation($"Post '{id}:{title}' is found for ping.");
 
-            var pinged = await pingbackRepo.AnyAsync(new PingbackSpec(id, pingRequest.SourceUrl, request.IP), ct);
+            var pinged = await mentionRepo.AnyAsync(new MentionSpec(id, pingRequest.SourceUrl, request.IP), ct);
             if (pinged) return PingbackResponse.Error48PingbackAlreadyRegistered;
 
             logger.LogInformation("Adding received pingback...");
@@ -86,7 +86,7 @@ public class ReceivePingCommandHandler(
                 Worker = "Pingback"
             };
 
-            await pingbackRepo.AddAsync(obj, ct);
+            await mentionRepo.AddAsync(obj, ct);
             request.Action?.Invoke(obj);
 
             return PingbackResponse.Success;

@@ -2,9 +2,9 @@
 
 namespace Moonglade.Data.Specifications;
 
-public sealed class PingbackSpec : Specification<MentionEntity>
+public sealed class MentionSpec : Specification<MentionEntity>
 {
-    public PingbackSpec(Guid postId, string sourceUrl, string sourceIp)
+    public MentionSpec(Guid postId, string sourceUrl, string sourceIp)
     {
         Query.Where(p =>
             p.TargetPostId == postId &&
