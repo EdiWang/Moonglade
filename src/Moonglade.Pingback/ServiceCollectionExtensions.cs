@@ -7,7 +7,7 @@ public static class ServiceCollectionExtensions
 {
     public static IServiceCollection AddPingback(this IServiceCollection services)
     {
-        services.AddHttpClient<IPingSourceInspector, PingSourceInspector>()
+        services.AddHttpClient<IMentionSourceInspector, MentionSourceInspector>()
                 .ConfigureHttpClient(p => p.Timeout = TimeSpan.FromSeconds(30))
                 .AddStandardResilienceHandler();
 

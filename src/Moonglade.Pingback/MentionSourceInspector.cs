@@ -4,12 +4,12 @@ using System.Text.RegularExpressions;
 
 namespace Moonglade.Pingback;
 
-public interface IPingSourceInspector
+public interface IMentionSourceInspector
 {
     Task<PingRequest> ExamineSourceAsync(string sourceUrl, string targetUrl);
 }
 
-public class PingSourceInspector(ILogger<PingSourceInspector> logger, HttpClient httpClient) : IPingSourceInspector
+public class MentionSourceInspector(ILogger<MentionSourceInspector> logger, HttpClient httpClient) : IMentionSourceInspector
 {
     public async Task<PingRequest> ExamineSourceAsync(string sourceUrl, string targetUrl)
     {

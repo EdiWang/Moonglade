@@ -20,7 +20,7 @@ public class ReceivePingCommand(string requestBody, string ip, Action<MentionEnt
 
 public class ReceivePingCommandHandler(
         ILogger<ReceivePingCommandHandler> logger,
-        IPingSourceInspector pingSourceInspector,
+        IMentionSourceInspector pingSourceInspector,
         MoongladeRepository<MentionEntity> pingbackRepo,
         MoongladeRepository<PostEntity> postRepo) : IRequestHandler<ReceivePingCommand, PingbackResponse>
 {
