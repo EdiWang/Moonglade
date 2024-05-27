@@ -5,3 +5,6 @@ GO
 
 ALTER TABLE Mention ADD Worker NVARCHAR(16)
 GO
+
+UPDATE Mention SET Worker = N'Pingback'
+GO
