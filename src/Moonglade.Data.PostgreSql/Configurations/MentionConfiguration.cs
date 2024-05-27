@@ -5,16 +5,11 @@ using Moonglade.Data.Entities;
 namespace Moonglade.Data.PostgreSql.Configurations;
 
 
-internal class PingbackConfiguration : IEntityTypeConfiguration<MentionEntity>
+internal class MentionConfiguration : IEntityTypeConfiguration<MentionEntity>
 {
     public void Configure(EntityTypeBuilder<MentionEntity> builder)
     {
         builder.Property(e => e.Id).ValueGeneratedNever();
         builder.Property(e => e.PingTimeUtc).HasColumnType("timestamp");
-        builder.Property(e => e.TargetPostTitle).HasMaxLength(128);
-        builder.Property(e => e.SourceIp).HasMaxLength(64);
-        builder.Property(e => e.SourceTitle).HasMaxLength(256);
-        builder.Property(e => e.SourceUrl).HasMaxLength(256);
-        builder.Property(e => e.Domain).HasMaxLength(256);
     }
 }

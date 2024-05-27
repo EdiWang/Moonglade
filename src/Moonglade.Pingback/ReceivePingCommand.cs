@@ -81,7 +81,8 @@ public class ReceivePingCommandHandler(
                 SourceTitle = pingRequest.Title,
                 TargetPostId = id,
                 TargetPostTitle = title,
-                SourceIp = request.IP
+                SourceIp = request.IP,
+                Worker = "Pingback"
             };
 
             await pingbackRepo.AddAsync(obj, ct);
