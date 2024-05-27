@@ -1,6 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations;
 
-namespace Moonglade.Web;
+namespace Moonglade.Web.Controllers;
 
 [ApiController]
 [Route("[controller]")]
@@ -14,6 +14,8 @@ public class WebmentionController(
         [FromForm][Required] string source,
         [FromForm][Required] string target)
     {
+        if (!blogConfig.AdvancedSettings.EnableWebmention) return Forbid();
+
         // Verify that the source URL links to the target URL
         // TODO
 
