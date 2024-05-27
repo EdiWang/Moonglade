@@ -1,17 +1,18 @@
 ﻿using Microsoft.Extensions.Logging;
 using System.Net;
 using System.Text.RegularExpressions;
+using Moonglade.Mention.Common;
 
 namespace Moonglade.Pingback;
 
 public interface IMentionSourceInspector
 {
-    Task<PingRequest> ExamineSourceAsync(string sourceUrl, string targetUrl);
+    Task<MentionRequest> ExamineSourceAsync(string sourceUrl, string targetUrl);
 }
 
 public class MentionSourceInspector(ILogger<MentionSourceInspector> logger, HttpClient httpClient) : IMentionSourceInspector
 {
-    public async Task<PingRequest> ExamineSourceAsync(string sourceUrl, string targetUrl)
+    public async Task<MentionRequest> ExamineSourceAsync(string sourceUrl, string targetUrl)
     {
         try
         {
@@ -27,7 +28,7 @@ public class MentionSourceInspector(ILogger<MentionSourceInspector> logger, Http
             var containsHtml = regexHtml.IsMatch(title);
             var sourceHasLink = html.ToUpperInvariant().Contains(targetUrl.ToUpperInvariant());
 
-            var pingRequest = new PingRequest
+            var pingRequest = new MentionRequest
             {
                 Title = title,
                 ContainsHtml = containsHtml,

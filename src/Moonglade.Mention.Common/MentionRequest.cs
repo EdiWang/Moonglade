@@ -1,6 +1,6 @@
-﻿namespace Moonglade.Pingback;
+﻿namespace Moonglade.Mention.Common;
 
-public record PingRequest
+public record MentionRequest
 {
     public string SourceUrl { get; set; }
 
