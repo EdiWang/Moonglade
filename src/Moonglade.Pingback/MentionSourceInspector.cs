@@ -28,7 +28,7 @@ public class MentionSourceInspector(ILogger<MentionSourceInspector> logger, Http
             var containsHtml = regexHtml.IsMatch(title);
             var sourceHasLink = html.ToUpperInvariant().Contains(targetUrl.ToUpperInvariant());
 
-            var pingRequest = new MentionRequest
+            var mentionRequest = new MentionRequest
             {
                 Title = title,
                 ContainsHtml = containsHtml,
@@ -37,7 +37,7 @@ public class MentionSourceInspector(ILogger<MentionSourceInspector> logger, Http
                 SourceUrl = sourceUrl
             };
 
-            return pingRequest;
+            return mentionRequest;
         }
         catch (WebException ex)
         {
