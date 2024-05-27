@@ -23,7 +23,7 @@ public class BlogDbContext : DbContext
     public virtual DbSet<FriendLinkEntity> FriendLink { get; set; }
     public virtual DbSet<PageEntity> CustomPage { get; set; }
     public virtual DbSet<LoginHistoryEntity> LoginHistory { get; set; }
-    public virtual DbSet<MentionEntity> Pingback { get; set; }
+    public virtual DbSet<MentionEntity> Mention { get; set; }
     public virtual DbSet<BlogThemeEntity> BlogTheme { get; set; }
     public virtual DbSet<StyleSheetEntity> StyleSheet { get; set; }
     public virtual DbSet<BlogAssetEntity> BlogAsset { get; set; }
@@ -62,7 +62,7 @@ public static class BlogDbContextExtension
         context.Tag.RemoveRange();
         context.Comment.RemoveRange();
         context.FriendLink.RemoveRange();
-        context.Pingback.RemoveRange();
+        context.Mention.RemoveRange();
         context.Post.RemoveRange();
         context.BlogConfiguration.RemoveRange();
         context.BlogAsset.RemoveRange();
