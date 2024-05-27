@@ -96,6 +96,21 @@
             <div class="col-md-6">
                 <div class="mb-4">
                     <h4 class="admin-subtitle fw-bold mb-2">@SharedLocalizer["Advanced Settings"]</h4>
+                    
+                    <div class="settings-entry2 row align-items-center py-3 px-2 rounded-3 shadow-sm border bg-white mb-2">
+                        <div class="col-auto">
+                            <i class="bi-arrow-right-circle settings-entry-icon"></i>
+                        </div>
+                        <div class="col">
+                            <label asp-for="@settings.EnableWebmention" class="form-check-label"></label>
+                        </div>
+                        <div class="col-md-4 text-end">
+                            <div class="form-check form-switch form-control-lg">
+                                <input type="hidden" name="EnableWebmention" value="false">
+                                <input type="checkbox" name="EnableWebmention" value="true" class="form-check-input" @(settings.EnableWebmention ? "checked" : null)>
+                            </div>
+                        </div>
+                    </div>
 
                     <div class="settings-entry2 row align-items-center py-3 px-2 rounded-3 shadow-sm border bg-white mb-2">
                         <div class="col-auto">
