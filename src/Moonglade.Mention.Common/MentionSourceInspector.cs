@@ -1,9 +1,8 @@
 ﻿using Microsoft.Extensions.Logging;
-using Moonglade.Mention.Common;
 using System.Net;
 using System.Text.RegularExpressions;
 
-namespace Moonglade.Pingback;
+namespace Moonglade.Mention.Common;
 
 public interface IMentionSourceInspector
 {

@@ -1,4 +1,5 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
+using Moonglade.Mention.Common;
 using System.Net;
 
 namespace Moonglade.Pingback;
