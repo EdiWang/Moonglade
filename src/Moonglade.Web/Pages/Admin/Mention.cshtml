@@ -42,7 +42,7 @@
         utils.formatUtcTime();
     </script>
     <script>
-        $("#pingFilter").on("keyup", function () {
+        $("#mentionFilter").on("keyup", function () {
             var value = $(this).val().toLowerCase();
             $(".mentions-container .pingback-item").filter(function () {
                 $(this).toggle($(this).text().toLowerCase().indexOf(value) > -1);
@@ -70,7 +70,7 @@
 }
 
 <div>
-    <input id="pingFilter" type="text" class="form-control mb-3" maxlength="32" placeholder="Filter..">
+    <input id="mentionFilter" type="text" class="form-control mb-3" maxlength="32" placeholder="Filter..">
 
     <div class="mentions-container">
         @foreach (var item in pingbackRecords.OrderByDescending(p => p.PingTimeUtc))
