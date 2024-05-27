@@ -1,7 +1,7 @@
 ﻿using Microsoft.Extensions.Logging;
+using Moonglade.Mention.Common;
 using System.Net;
 using System.Text.RegularExpressions;
-using Moonglade.Mention.Common;
 
 namespace Moonglade.Pingback;
 
