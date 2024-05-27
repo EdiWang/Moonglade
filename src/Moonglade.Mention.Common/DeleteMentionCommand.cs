@@ -2,7 +2,7 @@
 using Moonglade.Data;
 using Moonglade.Data.Entities;
 
-namespace Moonglade.Pingback;
+namespace Moonglade.Mention.Common;
 
 public record DeleteMentionCommand(Guid Id) : IRequest;
 

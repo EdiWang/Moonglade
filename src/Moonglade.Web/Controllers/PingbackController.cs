@@ -1,5 +1,6 @@
 ﻿using Moonglade.Data.Entities;
 using Moonglade.Email.Client;
+using Moonglade.Mention.Common;
 using Moonglade.Pingback;
 using Moonglade.Web.Attributes;
 

@@ -3,7 +3,7 @@ using Moonglade.Data;
 using Moonglade.Data.Entities;
 using Moonglade.Data.Specifications;
 
-namespace Moonglade.Pingback;
+namespace Moonglade.Mention.Common;
 
 public record GetMentionsQuery : IRequest<List<MentionEntity>>;
 

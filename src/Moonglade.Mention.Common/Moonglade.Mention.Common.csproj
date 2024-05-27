@@ -8,7 +8,6 @@
     </ItemGroup>
     <ItemGroup>
         <ProjectReference Include="..\Moonglade.Data\Moonglade.Data.csproj" />
-        <ProjectReference Include="..\Moonglade.Mention.Common\Moonglade.Mention.Common.csproj" />
         <ProjectReference Include="..\Moonglade.Utils\Moonglade.Utils.csproj" />
     </ItemGroup>
     <ItemGroup>
