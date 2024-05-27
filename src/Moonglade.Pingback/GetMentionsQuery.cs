@@ -11,5 +11,5 @@ public class GetMentionsQueryHandler(MoongladeRepository<MentionEntity> repo) :
     IRequestHandler<GetMentionsQuery, List<MentionEntity>>
 {
     public Task<List<MentionEntity>> Handle(GetMentionsQuery request, CancellationToken ct) =>
-        repo.ListAsync(new PingbackReadOnlySpec(), ct);
+        repo.ListAsync(new MentionReadOnlySpec(), ct);
 }

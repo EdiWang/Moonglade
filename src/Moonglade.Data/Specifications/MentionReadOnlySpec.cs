@@ -2,9 +2,9 @@
 
 namespace Moonglade.Data.Specifications;
 
-public sealed class PingbackReadOnlySpec : Specification<MentionEntity>
+public sealed class MentionReadOnlySpec : Specification<MentionEntity>
 {
-    public PingbackReadOnlySpec()
+    public MentionReadOnlySpec()
     {
         Query.AsNoTracking();
     }
