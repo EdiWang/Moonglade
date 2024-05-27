@@ -10,5 +10,5 @@ public record MentionRequest
 
     public bool ContainsHtml { get; set; }
 
-    public bool SourceHasLink { get; set; }
+    public bool SourceHasTarget { get; set; }
 }

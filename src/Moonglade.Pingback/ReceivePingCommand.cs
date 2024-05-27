@@ -45,7 +45,7 @@ public class ReceivePingCommandHandler(
 
             var pingRequest = await pingSourceInspector.ExamineSourceAsync(_sourceUrl, _targetUrl);
             if (null == pingRequest) return PingbackResponse.InvalidPingRequest;
-            if (!pingRequest.SourceHasLink)
+            if (!pingRequest.SourceHasTarget)
             {
                 logger.LogError("Pingback error: The source URI does not contain a link to the target URI.");
                 return PingbackResponse.Error17SourceNotContainTargetUri;

@@ -25,13 +25,13 @@ public class MentionSourceInspector(ILogger<MentionSourceInspector> logger, Http
             var html = await httpClient.GetStringAsync(sourceUrl);
             var title = regexTitle.Match(html).Value.Trim();
             var containsHtml = regexHtml.IsMatch(title);
-            var sourceHasLink = html.ToUpperInvariant().Contains(targetUrl.TrimEnd('/').ToUpperInvariant());
+            var sourceHasTarget = html.ToUpperInvariant().Contains(targetUrl.TrimEnd('/').ToUpperInvariant());
 
             var mentionRequest = new MentionRequest
             {
                 Title = title,
                 ContainsHtml = containsHtml,
-                SourceHasLink = sourceHasLink,
+                SourceHasTarget = sourceHasTarget,
                 TargetUrl = targetUrl,
                 SourceUrl = sourceUrl
             };
