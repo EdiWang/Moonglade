@@ -25,7 +25,7 @@ public class MentionSourceInspector(ILogger<MentionSourceInspector> logger, Http
             var html = await httpClient.GetStringAsync(sourceUrl);
             var title = regexTitle.Match(html).Value.Trim();
             var containsHtml = regexHtml.IsMatch(title);
-            var sourceHasLink = html.ToUpperInvariant().Contains(targetUrl.ToUpperInvariant());
+            var sourceHasLink = html.ToUpperInvariant().Contains(targetUrl.TrimEnd('/').ToUpperInvariant());
 
             var mentionRequest = new MentionRequest
             {
