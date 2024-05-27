@@ -2,7 +2,7 @@
 
 namespace Moonglade.Data.Specifications;
 
-public sealed class PingbackSpec : Specification<PingbackEntity>
+public sealed class PingbackSpec : Specification<MentionEntity>
 {
     public PingbackSpec(Guid postId, string sourceUrl, string sourceIp)
     {

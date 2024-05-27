@@ -1,6 +1,6 @@
 ﻿namespace Moonglade.Data.Entities;
 
-public class PingbackEntity
+public class MentionEntity
 {
     public Guid Id { get; set; }
     public string Domain { get; set; }

@@ -5,11 +5,11 @@ using Moonglade.Data.Specifications;
 
 namespace Moonglade.Pingback;
 
-public record GetPingbacksQuery : IRequest<List<PingbackEntity>>;
+public record GetPingbacksQuery : IRequest<List<MentionEntity>>;
 
-public class GetPingbacksQueryHandler(MoongladeRepository<PingbackEntity> repo) :
-    IRequestHandler<GetPingbacksQuery, List<PingbackEntity>>
+public class GetPingbacksQueryHandler(MoongladeRepository<MentionEntity> repo) :
+    IRequestHandler<GetPingbacksQuery, List<MentionEntity>>
 {
-    public Task<List<PingbackEntity>> Handle(GetPingbacksQuery request, CancellationToken ct) =>
+    public Task<List<MentionEntity>> Handle(GetPingbacksQuery request, CancellationToken ct) =>
         repo.ListAsync(new PingbackReadOnlySpec(), ct);
 }

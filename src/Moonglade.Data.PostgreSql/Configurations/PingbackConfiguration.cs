@@ -5,9 +5,9 @@ using Moonglade.Data.Entities;
 namespace Moonglade.Data.PostgreSql.Configurations;
 
 
-internal class PingbackConfiguration : IEntityTypeConfiguration<PingbackEntity>
+internal class PingbackConfiguration : IEntityTypeConfiguration<MentionEntity>
 {
-    public void Configure(EntityTypeBuilder<PingbackEntity> builder)
+    public void Configure(EntityTypeBuilder<MentionEntity> builder)
     {
         builder.Property(e => e.Id).ValueGeneratedNever();
         builder.Property(e => e.PingTimeUtc).HasColumnType("timestamp");

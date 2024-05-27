@@ -23,7 +23,7 @@ public class BlogDbContext : DbContext
     public virtual DbSet<FriendLinkEntity> FriendLink { get; set; }
     public virtual DbSet<PageEntity> CustomPage { get; set; }
     public virtual DbSet<LoginHistoryEntity> LoginHistory { get; set; }
-    public virtual DbSet<PingbackEntity> Pingback { get; set; }
+    public virtual DbSet<MentionEntity> Pingback { get; set; }
     public virtual DbSet<BlogThemeEntity> BlogTheme { get; set; }
     public virtual DbSet<StyleSheetEntity> StyleSheet { get; set; }
     public virtual DbSet<BlogAssetEntity> BlogAsset { get; set; }

@@ -28,7 +28,7 @@ public class PingbackController(
         return new PingbackResult(response);
     }
 
-    private async void SendPingbackEmailAction(PingbackEntity history)
+    private async void SendPingbackEmailAction(MentionEntity history)
     {
         try
         {

@@ -8,20 +8,20 @@ using System.Xml;
 
 namespace Moonglade.Pingback;
 
-public class ReceivePingCommand(string requestBody, string ip, Action<PingbackEntity> action)
+public class ReceivePingCommand(string requestBody, string ip, Action<MentionEntity> action)
     : IRequest<PingbackResponse>
 {
     public string RequestBody { get; set; } = requestBody;
 
     public string IP { get; set; } = ip;
 
-    public Action<PingbackEntity> Action { get; set; } = action;
+    public Action<MentionEntity> Action { get; set; } = action;
 }
 
 public class ReceivePingCommandHandler(
         ILogger<ReceivePingCommandHandler> logger,
         IPingSourceInspector pingSourceInspector,
-        MoongladeRepository<PingbackEntity> pingbackRepo,
+        MoongladeRepository<MentionEntity> pingbackRepo,
         MoongladeRepository<PostEntity> postRepo) : IRequestHandler<ReceivePingCommand, PingbackResponse>
 {
     private string _sourceUrl;
@@ -72,7 +72,7 @@ public class ReceivePingCommandHandler(
             logger.LogInformation("Adding received pingback...");
 
             var uri = new Uri(_sourceUrl);
-            var obj = new PingbackEntity
+            var obj = new MentionEntity
             {
                 Id = Guid.NewGuid(),
                 PingTimeUtc = DateTime.UtcNow,

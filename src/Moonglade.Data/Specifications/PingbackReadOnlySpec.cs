@@ -2,7 +2,7 @@
 
 namespace Moonglade.Data.Specifications;
 
-public sealed class PingbackReadOnlySpec : Specification<PingbackEntity>
+public sealed class PingbackReadOnlySpec : Specification<MentionEntity>
 {
     public PingbackReadOnlySpec()
     {
