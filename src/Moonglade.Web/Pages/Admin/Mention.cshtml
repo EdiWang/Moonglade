@@ -3,7 +3,7 @@
 @inject IMediator Mediator
 @{
     ViewBag.Title = "Mentions";
-    var pingbackRecords = await Mediator.Send(new GetPingbacksQuery());
+    var pingbackRecords = await Mediator.Send(new GetMentionsQuery());
 }
 
 @Html.AntiForgeryToken()
