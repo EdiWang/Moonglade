@@ -10,7 +10,7 @@
 
 @section head {
     <style>
-        .pingbacks-container {
+        .mentions-container {
             height: calc(100vh - 230px);
             overflow-y: scroll;
             overflow-x: hidden;
@@ -44,7 +44,7 @@
     <script>
         $("#pingFilter").on("keyup", function () {
             var value = $(this).val().toLowerCase();
-            $(".pingbacks-container .pingback-item").filter(function () {
+            $(".mentions-container .pingback-item").filter(function () {
                 $(this).toggle($(this).text().toLowerCase().indexOf(value) > -1);
             });
         });
@@ -72,7 +72,7 @@
 <div>
     <input id="pingFilter" type="text" class="form-control mb-3" maxlength="32" placeholder="Filter..">
 
-    <div class="pingbacks-container">
+    <div class="mentions-container">
         @foreach (var item in pingbackRecords.OrderByDescending(p => p.PingTimeUtc))
         {
             <div class="p-3 mb-2 rounded-3 shadow-sm border bg-white">
