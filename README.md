@@ -150,6 +150,7 @@ Atom | Subscription | Supported | `/atom`
 OPML | Subscription | Supported | `/opml`
 Open Search | Search | Supported | `/opensearch`
 Pingback | Social | Supported | `/pingback`
+Webmention | Social | Planned | `/webmention` (not live yet)
 Reader View | Reader mode | Supported | N/A
 FOAF | Social | Supported | `/foaf.xml`
 RSD | Service Discovery | Deprecated | N/A
