@@ -1,8 +1,8 @@
-﻿@page "/admin/pingback"
+﻿@page "/admin/mention"
 @using Moonglade.Pingback
 @inject IMediator Mediator
 @{
-    ViewBag.Title = "Pingback";
+    ViewBag.Title = "Mentions";
     var pingbackRecords = await Mediator.Send(new GetPingbacksQuery());
 }
 
