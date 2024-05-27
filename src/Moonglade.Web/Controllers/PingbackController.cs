@@ -45,7 +45,7 @@ public class PingbackController(
     [ProducesResponseType(StatusCodes.Status204NoContent)]
     public async Task<IActionResult> Delete([NotEmpty] Guid pingbackId)
     {
-        await mediator.Send(new DeletePingbackCommand(pingbackId));
+        await mediator.Send(new DeleteMentionCommand(pingbackId));
         return NoContent();
     }
 
@@ -54,7 +54,7 @@ public class PingbackController(
     [ProducesResponseType(StatusCodes.Status204NoContent)]
     public async Task<IActionResult> Clear()
     {
-        await mediator.Send(new ClearPingbackCommand());
+        await mediator.Send(new ClearMentionsCommand());
         return NoContent();
     }
 }
