@@ -3,21 +3,39 @@ using Moonglade.Email.Client;
 using Moonglade.Mention.Common;
 using Moonglade.Pingback;
 using Moonglade.Web.Attributes;
+using System.ComponentModel.DataAnnotations;
 
 namespace Moonglade.Web.Controllers;
 
 [ApiController]
-[Route("pingback")]
-public class PingbackController(
-        ILogger<PingbackController> logger,
-        IBlogConfig blogConfig,
-        IMediator mediator) : ControllerBase
+[Route("api/[controller]")]
+public class MentionController(
+    ILogger<MentionController> logger,
+    IBlogConfig blogConfig,
+    IMediator mediator) : ControllerBase
 {
-    [HttpPost]
+    [HttpPost("/webmention")]
+    public async Task<IActionResult> ReceiveWebmention(
+        [FromForm][Required] string source,
+        [FromForm][Required] string target)
+    {
+        if (!blogConfig.AdvancedSettings.EnableWebmention) return Forbid();
+
+        // Verify that the source URL links to the target URL
+        // TODO
+
+        // Process the Webmention
+        // TODO
+
+        // For demonstration purposes, we'll just return a success message.
+        return Ok("Webmention received and verified.");
+    }
+
+    [HttpPost("/pingback")]
     [IgnoreAntiforgeryToken]
     [ProducesResponseType(StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status403Forbidden)]
-    public async Task<IActionResult> Process()
+    public async Task<IActionResult> ReceivePingback()
     {
         if (!blogConfig.AdvancedSettings.EnablePingback) return Forbid();
 
