@@ -4,9 +4,9 @@ using System.Text;
 
 namespace Moonglade.Pingback;
 
-public class PingbackResult(PingbackResponse pingbackResponse) : IActionResult
+public class PingbackResult(PingbackStatus pingbackStatus) : IActionResult
 {
-    public PingbackResponse PingbackResponse { get; } = pingbackResponse;
+    public PingbackStatus PingbackStatus { get; } = pingbackStatus;
 
     public Task ExecuteResultAsync(ActionContext context)
     {
@@ -19,29 +19,29 @@ public class PingbackResult(PingbackResponse pingbackResponse) : IActionResult
         int statusCode = StatusCodes.Status201Created;
         IActionResult actionResult = null;
 
-        switch (PingbackResponse)
+        switch (PingbackStatus)
         {
-            case PingbackResponse.Success:
+            case PingbackStatus.Success:
                 content =
                     "<methodResponse><params><param><value><string>Thanks!</string></value></param></params></methodResponse>";
                 break;
-            case PingbackResponse.Error17SourceNotContainTargetUri:
+            case PingbackStatus.Error17SourceNotContainTargetUri:
                 content = BuildErrorResponseBody(17,
                     "The source URI does not contain a link to the target URI, and so cannot be used as a source.");
                 break;
-            case PingbackResponse.Error32TargetUriNotExist:
+            case PingbackStatus.Error32TargetUriNotExist:
                 content = BuildErrorResponseBody(32, "The specified target URI does not exist.");
                 break;
-            case PingbackResponse.Error48PingbackAlreadyRegistered:
+            case PingbackStatus.Error48PingbackAlreadyRegistered:
                 content = BuildErrorResponseBody(48, "The pingback has already been registered.");
                 break;
-            case PingbackResponse.SpamDetectedFakeNotFound:
+            case PingbackStatus.SpamDetectedFakeNotFound:
                 actionResult = new NotFoundResult();
                 break;
-            case PingbackResponse.GenericError:
+            case PingbackStatus.GenericError:
                 actionResult = new StatusCodeResult(StatusCodes.Status500InternalServerError);
                 break;
-            case PingbackResponse.InvalidPingRequest:
+            case PingbackStatus.InvalidPingRequest:
                 actionResult = new BadRequestResult();
                 break;
             default:

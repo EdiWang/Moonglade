@@ -24,9 +24,13 @@ public class PingbackController(
         var ip = Helper.GetClientIP(HttpContext);
         var requestBody = await new StreamReader(HttpContext.Request.Body, Encoding.Default).ReadToEndAsync();
 
-        var response = await mediator.Send(new ReceivePingCommand(requestBody, ip, SendPingbackEmailAction));
+        var response = await mediator.Send(new ReceivePingCommand(requestBody, ip));
+        if (response.Status == PingbackStatus.Success)
+        {
+            SendPingbackEmailAction(response.MentionEntity);
+        }
 
-        return new PingbackResult(response);
+        return new PingbackResult(response.Status);
     }
 
     private async void SendPingbackEmailAction(MentionEntity history)

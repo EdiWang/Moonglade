@@ -9,14 +9,11 @@ using System.Xml;
 
 namespace Moonglade.Pingback;
 
-public class ReceivePingCommand(string requestBody, string ip, Action<MentionEntity> action)
-    : IRequest<PingbackResponse>
+public class ReceivePingCommand(string requestBody, string ip) : IRequest<PingbackResponse>
 {
     public string RequestBody { get; set; } = requestBody;
 
     public string IP { get; set; } = ip;
-
-    public Action<MentionEntity> Action { get; set; } = action;
 }
 
 public class ReceivePingCommandHandler(
@@ -87,9 +84,11 @@ public class ReceivePingCommandHandler(
             };
 
             await mentionRepo.AddAsync(obj, ct);
-            request.Action?.Invoke(obj);
 
-            return PingbackResponse.Success;
+            return new(PingbackStatus.Success)
+            {
+                MentionEntity = obj
+            };
         }
         catch (Exception e)
         {
