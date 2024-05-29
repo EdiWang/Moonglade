@@ -21,6 +21,7 @@ public class MentionController(
     {
         if (!blogConfig.AdvancedSettings.EnableWebmention) return Forbid();
 
+        var ip = Helper.GetClientIP(HttpContext);
         // Verify that the source URL links to the target URL
         // TODO
 
