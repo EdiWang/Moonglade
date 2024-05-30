@@ -4,6 +4,7 @@ using Moonglade.Data;
 using Moonglade.Data.Entities;
 using Moonglade.Data.Specifications;
 using Moonglade.Mention.Common;
+using Moonglade.Utils;
 using System.Text.RegularExpressions;
 using System.Xml;
 
@@ -53,7 +54,7 @@ public class ReceivePingCommandHandler(
                 return PingbackResponse.SpamDetectedFakeNotFound;
             }
 
-            var (slug, pubDate) = GetSlugInfoFromUrl(pingRequest.TargetUrl);
+            var (slug, pubDate) = Helper.GetSlugInfoFromUrl(pingRequest.TargetUrl);
             var spec = new PostByDateAndSlugForIdTitleSpec(pubDate, slug);
             var (id, title) = await postRepo.FirstOrDefaultAsync(spec, ct);
             if (id == Guid.Empty)
@@ -95,24 +96,6 @@ public class ReceivePingCommandHandler(
             logger.LogError(e, nameof(ReceivePingCommandHandler));
             return PingbackResponse.GenericError;
         }
-    }
-
-    private static (string Slug, DateTime PubDate) GetSlugInfoFromUrl(string url)
-    {
-        var blogSlugRegex = new Regex(@"^https?:\/\/.*\/post\/(?<yyyy>\d{4})\/(?<MM>\d{1,12})\/(?<dd>\d{1,31})\/(?<slug>.*)$");
-        Match match = blogSlugRegex.Match(url);
-        if (!match.Success)
-        {
-            throw new FormatException("Invalid Slug Format");
-        }
-
-        int year = int.Parse(match.Groups["yyyy"].Value);
-        int month = int.Parse(match.Groups["MM"].Value);
-        int day = int.Parse(match.Groups["dd"].Value);
-        string slug = match.Groups["slug"].Value;
-        var date = new DateTime(year, month, day);
-
-        return (slug, date);
     }
 
     private bool ValidateRequest(string requestBody)
