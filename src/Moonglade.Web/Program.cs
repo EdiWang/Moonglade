@@ -9,6 +9,7 @@ using Moonglade.Data.MySql;
 using Moonglade.Data.PostgreSql;
 using Moonglade.Data.SqlServer;
 using Moonglade.Email.Client;
+using Moonglade.Mention.Common;
 using Moonglade.Pingback;
 using Moonglade.Syndication;
 using SixLabors.Fonts;
@@ -101,7 +102,8 @@ void ConfigureServices(IServiceCollection services)
     services.AddTransient<IPasswordGenerator, DefaultPasswordGenerator>();
 
     services.AddHealthChecks();
-    services.AddPingback()
+    services.AddMentionCommon()
+            .AddPingback()
             .AddSyndication()
             .AddInMemoryCacheAside()
             .AddScoped<ValidateCaptcha>()

@@ -18,6 +18,9 @@ public class AdvancedSettings : IBlogSettings
     [Display(Name = "Enable Pingback")]
     public bool EnablePingback { get; set; } = true;
 
+    [Display(Name = "Enable Webmention")]
+    public bool EnableWebmention { get; set; } = true;
+
     [Display(Name = "Enable OpenSearch")]
     public bool EnableOpenSearch { get; set; } = true;
 

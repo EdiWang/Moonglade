@@ -3,25 +3,23 @@ using Microsoft.Extensions.Logging;
 using Moonglade.Data;
 using Moonglade.Data.Entities;
 using Moonglade.Data.Specifications;
+using Moonglade.Mention.Common;
 using System.Text.RegularExpressions;
 using System.Xml;
 
 namespace Moonglade.Pingback;
 
-public class ReceivePingCommand(string requestBody, string ip, Action<PingbackEntity> action)
-    : IRequest<PingbackResponse>
+public class ReceivePingCommand(string requestBody, string ip) : IRequest<PingbackResponse>
 {
     public string RequestBody { get; set; } = requestBody;
 
     public string IP { get; set; } = ip;
-
-    public Action<PingbackEntity> Action { get; set; } = action;
 }
 
 public class ReceivePingCommandHandler(
         ILogger<ReceivePingCommandHandler> logger,
-        IPingSourceInspector pingSourceInspector,
-        MoongladeRepository<PingbackEntity> pingbackRepo,
+        IMentionSourceInspector pingSourceInspector,
+        MoongladeRepository<MentionEntity> mentionRepo,
         MoongladeRepository<PostEntity> postRepo) : IRequestHandler<ReceivePingCommand, PingbackResponse>
 {
     private string _sourceUrl;
@@ -44,7 +42,7 @@ public class ReceivePingCommandHandler(
 
             var pingRequest = await pingSourceInspector.ExamineSourceAsync(_sourceUrl, _targetUrl);
             if (null == pingRequest) return PingbackResponse.InvalidPingRequest;
-            if (!pingRequest.SourceHasLink)
+            if (!pingRequest.SourceHasTarget)
             {
                 logger.LogError("Pingback error: The source URI does not contain a link to the target URI.");
                 return PingbackResponse.Error17SourceNotContainTargetUri;
@@ -66,13 +64,13 @@ public class ReceivePingCommandHandler(
 
             logger.LogInformation($"Post '{id}:{title}' is found for ping.");
 
-            var pinged = await pingbackRepo.AnyAsync(new PingbackSpec(id, pingRequest.SourceUrl, request.IP), ct);
+            var pinged = await mentionRepo.AnyAsync(new MentionSpec(id, pingRequest.SourceUrl, request.IP), ct);
             if (pinged) return PingbackResponse.Error48PingbackAlreadyRegistered;
 
             logger.LogInformation("Adding received pingback...");
 
             var uri = new Uri(_sourceUrl);
-            var obj = new PingbackEntity
+            var obj = new MentionEntity
             {
                 Id = Guid.NewGuid(),
                 PingTimeUtc = DateTime.UtcNow,
@@ -81,13 +79,16 @@ public class ReceivePingCommandHandler(
                 SourceTitle = pingRequest.Title,
                 TargetPostId = id,
                 TargetPostTitle = title,
-                SourceIp = request.IP
+                SourceIp = request.IP,
+                Worker = "Pingback"
             };
 
-            await pingbackRepo.AddAsync(obj, ct);
-            request.Action?.Invoke(obj);
+            await mentionRepo.AddAsync(obj, ct);
 
-            return PingbackResponse.Success;
+            return new(PingbackStatus.Success)
+            {
+                MentionEntity = obj
+            };
         }
         catch (Exception e)
         {

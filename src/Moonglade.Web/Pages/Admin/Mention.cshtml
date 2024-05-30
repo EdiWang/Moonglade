@@ -1,16 +1,16 @@
-﻿@page "/admin/pingback"
-@using Moonglade.Pingback
+﻿@page "/admin/mention"
+@using Moonglade.Mention.Common
 @inject IMediator Mediator
 @{
-    ViewBag.Title = "Pingback";
-    var pingbackRecords = await Mediator.Send(new GetPingbacksQuery());
+    ViewBag.Title = "Mentions";
+    var mentionRecords = await Mediator.Send(new GetMentionsQuery());
 }
 
 @Html.AntiForgeryToken()
 
 @section head {
     <style>
-        .pingbacks-container {
+        .mentions-container {
             height: calc(100vh - 230px);
             overflow-y: scroll;
             overflow-x: hidden;
@@ -22,17 +22,17 @@
     <script type="module">
         import * as utils from '/js/app/utils.module.js'
 
-        window.deletePingback = function (pingbackId) {
-            callApi(`/pingback/${pingbackId}`, 'DELETE', {},
+        window.deleteMention = function (mentionId) {
+            callApi(`/api/mention/${mentionId}`, 'DELETE', {},
                 (resp) => {
-                    document.querySelector(`#pingback-box-${pingbackId}`).remove();
+                    document.querySelector(`#mention-box-${mentionId}`).remove();
                 });
         }
 
-        window.clearPingback = function () {
-            callApi(`/pingback/clear`, 'DELETE', {},
+        window.clearMention = function () {
+            callApi(`/api/mention/clear`, 'DELETE', {},
                 (resp) => {
-                    blogToast.success('Pingback logs are cleared');
+                    blogToast.success('Mention logs are cleared');
                     setTimeout(function () {
                         window.location.reload();
                     }, 800);
@@ -42,9 +42,9 @@
         utils.formatUtcTime();
     </script>
     <script>
-        $("#pingFilter").on("keyup", function () {
+        $("#mentionFilter").on("keyup", function () {
             var value = $(this).val().toLowerCase();
-            $(".pingbacks-container .pingback-item").filter(function () {
+            $(".mentions-container .mention-item").filter(function () {
                 $(this).toggle($(this).text().toLowerCase().indexOf(value) > -1);
             });
         });
@@ -55,14 +55,14 @@
     <div class="admin-toolbar pb-2 border-bottom mb-3">
         <div class="row">
             <div class="col">
-                <a class="btn btn-outline-danger" href="javascript:;" data-bs-toggle="modal" data-bs-target="#clearpingbackModal">
+                <a class="btn btn-outline-danger" href="javascript:;" data-bs-toggle="modal" data-bs-target="#clearmentionModal">
                     <i class="bi-trash"></i>
                     @SharedLocalizer["Clear all"]
                 </a>
             </div>
             <div class="col-auto">
                 <div class="text-muted admin-toolbar-text">
-                    <span id="pingback-count">@pingbackRecords.Count</span> item(s)
+                    <span id="mention-count">@mentionRecords.Count</span> item(s)
                 </div>
             </div>
         </div>
@@ -70,13 +70,13 @@
 }
 
 <div>
-    <input id="pingFilter" type="text" class="form-control mb-3" maxlength="32" placeholder="Filter..">
+    <input id="mentionFilter" type="text" class="form-control mb-3" maxlength="32" placeholder="Filter..">
 
-    <div class="pingbacks-container">
-        @foreach (var item in pingbackRecords.OrderByDescending(p => p.PingTimeUtc))
+    <div class="mentions-container">
+        @foreach (var item in mentionRecords.OrderByDescending(p => p.PingTimeUtc))
         {
             <div class="p-3 mb-2 rounded-3 shadow-sm border bg-white">
-                <div id="pingback-box-@item.Id" class="pingback-item row">
+                <div id="mention-box-@item.Id" class="mention-item row">
                     <div class="col">
                         <strong>
                             <a href="@item.SourceUrl" target="_blank">@item.SourceTitle</a>
@@ -95,7 +95,7 @@
                     </div>
 
                     <div class="col-auto">
-                        <a class="btn btn-sm btn-outline-danger btn-delete" href="javascript:window.deletePingback('@item.Id');">
+                        <a class="btn btn-sm btn-outline-danger btn-delete" href="javascript:window.deleteMention('@item.Id');">
                             <i class="bi-trash"></i>
                         </a>
                     </div>
@@ -105,11 +105,11 @@
     </div>
 </div>
 
-<div class="modal fade" id="clearpingbackModal" tabindex="-1" role="dialog" aria-labelledby="clearpingbackModalLabel" aria-hidden="true">
+<div class="modal fade" id="clearmentionModal" tabindex="-1" role="dialog" aria-labelledby="clearmentionModalLabel" aria-hidden="true">
     <div class="modal-dialog" role="document">
         <div class="modal-content">
             <div class="modal-header">
-                <h5 class="modal-title" id="clearpingbackModalLabel">@SharedLocalizer["Clear Pingback Logs"]</h5>
+                <h5 class="modal-title" id="clearmentionModalLabel">@SharedLocalizer["Clear Mention Logs"]</h5>
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close">
                 </button>
             </div>
@@ -117,7 +117,7 @@
                 @SharedLocalizer["Are you sure?"]
             </div>
             <div class="modal-footer">
-                <a href="javascript:clearPingback();" class="btn btn-outline-danger btn-clear">@SharedLocalizer["Clear Now"]</a>
+                <a href="javascript:clearMention();" class="btn btn-outline-danger btn-clear">@SharedLocalizer["Clear Now"]</a>
                 <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">@SharedLocalizer["Cancel"]</button>
             </div>
         </div>

@@ -2,16 +2,16 @@
 using System.Net;
 using System.Text.RegularExpressions;
 
-namespace Moonglade.Pingback;
+namespace Moonglade.Mention.Common;
 
-public interface IPingSourceInspector
+public interface IMentionSourceInspector
 {
-    Task<PingRequest> ExamineSourceAsync(string sourceUrl, string targetUrl);
+    Task<MentionRequest> ExamineSourceAsync(string sourceUrl, string targetUrl);
 }
 
-public class PingSourceInspector(ILogger<PingSourceInspector> logger, HttpClient httpClient) : IPingSourceInspector
+public class MentionSourceInspector(ILogger<MentionSourceInspector> logger, HttpClient httpClient) : IMentionSourceInspector
 {
-    public async Task<PingRequest> ExamineSourceAsync(string sourceUrl, string targetUrl)
+    public async Task<MentionRequest> ExamineSourceAsync(string sourceUrl, string targetUrl)
     {
         try
         {
@@ -25,18 +25,18 @@ public class PingSourceInspector(ILogger<PingSourceInspector> logger, HttpClient
             var html = await httpClient.GetStringAsync(sourceUrl);
             var title = regexTitle.Match(html).Value.Trim();
             var containsHtml = regexHtml.IsMatch(title);
-            var sourceHasLink = html.ToUpperInvariant().Contains(targetUrl.ToUpperInvariant());
+            var sourceHasTarget = html.ToUpperInvariant().Contains(targetUrl.TrimEnd('/').ToUpperInvariant());
 
-            var pingRequest = new PingRequest
+            var mentionRequest = new MentionRequest
             {
                 Title = title,
                 ContainsHtml = containsHtml,
-                SourceHasLink = sourceHasLink,
+                SourceHasTarget = sourceHasTarget,
                 TargetUrl = targetUrl,
                 SourceUrl = sourceUrl
             };
 
-            return pingRequest;
+            return mentionRequest;
         }
         catch (WebException ex)
         {
