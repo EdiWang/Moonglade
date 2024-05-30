@@ -34,6 +34,12 @@
     {
         <partial name="_DublinCoreMetaData" model="Model" />
     }
+
+    @if (BlogConfig.AdvancedSettings.EnableWebmention)
+    {
+        <link rel="webmention" href="@(Helper.ResolveCanonicalUrl(BlogConfig.GeneralSettings.CanonicalPrefix, "webmention"))">
+    }
+
     <link href="~/css/post.css" rel="stylesheet" asp-append-version="true" />
     <link href="~/css/highlighter-custom.css" rel="stylesheet" asp-append-version="true" />
     @if (BlogConfig.ContentSettings.DocumentOutline)
