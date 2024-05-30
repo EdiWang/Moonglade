@@ -18,7 +18,7 @@ public class ReceivePingCommand(string requestBody, string ip) : IRequest<Pingba
 
 public class ReceivePingCommandHandler(
         ILogger<ReceivePingCommandHandler> logger,
-        IMentionSourceInspector pingSourceInspector,
+        IMentionSourceInspector sourceInspector,
         MoongladeRepository<MentionEntity> mentionRepo,
         MoongladeRepository<PostEntity> postRepo) : IRequestHandler<ReceivePingCommand, PingbackResponse>
 {
@@ -40,7 +40,7 @@ public class ReceivePingCommandHandler(
 
             logger.LogInformation($"Processing Pingback from: {_sourceUrl} ({request.IP}) to {_targetUrl}");
 
-            var pingRequest = await pingSourceInspector.ExamineSourceAsync(_sourceUrl, _targetUrl);
+            var pingRequest = await sourceInspector.ExamineSourceAsync(_sourceUrl, _targetUrl);
             if (null == pingRequest) return PingbackResponse.InvalidPingRequest;
             if (!pingRequest.SourceHasTarget)
             {
