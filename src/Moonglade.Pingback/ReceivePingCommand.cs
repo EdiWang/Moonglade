@@ -93,7 +93,7 @@ public class ReceivePingCommandHandler(
         }
         catch (Exception e)
         {
-            logger.LogError(e, nameof(ReceivePingCommandHandler));
+            logger.LogError(e, e.Message);
             return PingbackResponse.GenericError;
         }
     }
