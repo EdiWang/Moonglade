@@ -30,8 +30,27 @@ public class MentionController(
             return Ok("Webmention received and verified.");
         }
 
-        // TODO
-        return BadRequest("Webmention verification failed.");
+        switch (response.Status)
+        {
+            case WebmentionStatus.InvalidWebmentionRequest:
+                return BadRequest("Invalid webmention request.");
+
+            case WebmentionStatus.ErrorSourceNotContainTargetUri:
+                return Conflict("The source URI does not contain a link to the target URI.");
+
+            case WebmentionStatus.SpamDetectedFakeNotFound:
+                return NotFound();
+
+            case WebmentionStatus.ErrorTargetUriNotExist:
+                return Conflict("Can not get post id and title for the target URL.");
+
+            case WebmentionStatus.ErrorWebmentionAlreadyRegistered:
+                return Conflict("Webmention already registered.");
+
+            case WebmentionStatus.GenericError:
+            default:
+                return StatusCode(StatusCodes.Status500InternalServerError);
+        }
     }
 
     [HttpPost("/pingback")]
