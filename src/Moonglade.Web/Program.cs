@@ -49,6 +49,7 @@ void ConfigureServices(IServiceCollection services)
     AppDomain.CurrentDomain.Load("Moonglade.Theme");
     AppDomain.CurrentDomain.Load("Moonglade.Configuration");
     AppDomain.CurrentDomain.Load("Moonglade.Data");
+    AppDomain.CurrentDomain.Load("Moonglade.Webmention");
 
     services.AddMediatR(config => config.RegisterServicesFromAssemblies(AppDomain.CurrentDomain.GetAssemblies()));
     services.AddOptions()
