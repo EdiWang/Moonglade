@@ -53,5 +53,6 @@
     <ProjectReference Include="..\Moonglade.Pingback\Moonglade.Pingback.csproj" />
     <ProjectReference Include="..\Moonglade.Syndication\Moonglade.Syndication.csproj" />
     <ProjectReference Include="..\Moonglade.Theme\Moonglade.Theme.csproj" />
+    <ProjectReference Include="..\Moonglade.Webmention\Moonglade.Webmention.csproj" />
   </ItemGroup>
 </Project>
