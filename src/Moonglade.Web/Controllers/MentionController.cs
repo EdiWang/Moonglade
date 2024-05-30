@@ -16,6 +16,12 @@ public class MentionController(
     IMediator mediator) : ControllerBase
 {
     [HttpPost("/webmention")]
+    [IgnoreAntiforgeryToken]
+    [ProducesResponseType(StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status400BadRequest)]
+    [ProducesResponseType(StatusCodes.Status409Conflict)]
+    [ProducesResponseType(StatusCodes.Status404NotFound)]
+    [ProducesResponseType(StatusCodes.Status500InternalServerError)]
     public async Task<IActionResult> ReceiveWebmention(
         [FromForm][Required] string source,
         [FromForm][Required] string target)
