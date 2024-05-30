@@ -4,6 +4,7 @@ using Moonglade.Mention.Common;
 using Moonglade.Pingback;
 using Moonglade.Web.Attributes;
 using System.ComponentModel.DataAnnotations;
+using Moonglade.Webmention;
 
 namespace Moonglade.Web.Controllers;
 
@@ -22,14 +23,15 @@ public class MentionController(
         if (!blogConfig.AdvancedSettings.EnableWebmention) return Forbid();
 
         var ip = Helper.GetClientIP(HttpContext);
-        // Verify that the source URL links to the target URL
-        // TODO
+        var response = await mediator.Send(new ReceiveWebmentionCommand(source, target, ip));
+        if (response.Status == WebmentionStatus.Success)
+        {
+            SendMentionEmailAction(response.MentionEntity);
+            return Ok("Webmention received and verified.");
+        }
 
-        // Process the Webmention
         // TODO
-
-        // For demonstration purposes, we'll just return a success message.
-        return Ok("Webmention received and verified.");
+        return BadRequest("Webmention verification failed.");
     }
 
     [HttpPost("/pingback")]
@@ -46,17 +48,17 @@ public class MentionController(
         var response = await mediator.Send(new ReceivePingCommand(requestBody, ip));
         if (response.Status == PingbackStatus.Success)
         {
-            SendPingbackEmailAction(response.MentionEntity);
+            SendMentionEmailAction(response.MentionEntity);
         }
 
         return new PingbackResult(response.Status);
     }
 
-    private async void SendPingbackEmailAction(MentionEntity history)
+    private async void SendMentionEmailAction(MentionEntity history)
     {
         try
         {
-            await mediator.Publish(new PingbackNotification(history.TargetPostTitle, history.Domain, history.SourceIp, history.SourceUrl, history.SourceTitle));
+            await mediator.Publish(new MentionNotification(history.TargetPostTitle, history.Domain, history.SourceIp, history.SourceUrl, history.SourceTitle));
         }
         catch (Exception e)
         {
