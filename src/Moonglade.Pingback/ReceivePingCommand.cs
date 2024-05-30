@@ -43,11 +43,13 @@ public class ReceivePingCommandHandler(
 
             var pingRequest = await sourceInspector.ExamineSourceAsync(_sourceUrl, _targetUrl);
             if (null == pingRequest) return PingbackResponse.InvalidPingRequest;
+
             if (!pingRequest.SourceHasTarget)
             {
                 logger.LogError("Pingback error: The source URI does not contain a link to the target URI.");
                 return PingbackResponse.Error17SourceNotContainTargetUri;
             }
+
             if (pingRequest.ContainsHtml)
             {
                 logger.LogWarning("Spam detected on current Pingback...");
