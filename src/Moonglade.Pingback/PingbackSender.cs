@@ -82,6 +82,11 @@ public class PingbackSender(HttpClient httpClient,
                 if (successUrlCreation)
                 {
                     var pResponse = await requestor.Send(sourceUrl, targetUrl, url);
+
+                    if (!pResponse.IsSuccessStatusCode)
+                    {
+                        logger.LogError($"Ping request failed: {pResponse.StatusCode}");
+                    }
                 }
                 else
                 {
