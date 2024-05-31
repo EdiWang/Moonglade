@@ -2,7 +2,7 @@
 
 public interface IWebmentionSender
 {
-    Task<WebmentionSendResult> SendWebmentionAsync(string sourceUrl, string targetUrl);
+    Task SendWebmentionAsync(string postUrl, string postContent);
 }
 
 public class WebmentionSendResult
