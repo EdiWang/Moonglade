@@ -2,6 +2,7 @@
 using Moonglade.Pingback;
 using Moonglade.Web.Attributes;
 using System.ComponentModel.DataAnnotations;
+using Moonglade.Webmention;
 
 namespace Moonglade.Web.Controllers;
 
@@ -61,6 +62,11 @@ public class PostController(
                 if (blogConfig.AdvancedSettings.EnablePingback)
                 {
                     cannonService.FireAsync<IPingbackSender>(async sender => await sender.TrySendPingAsync(link, postEntity.PostContent));
+                }
+
+                if (blogConfig.AdvancedSettings.EnableWebmention)
+                {
+                    cannonService.FireAsync<IWebmentionSender>(async sender => await sender.SendWebmentionAsync(link, postEntity.PostContent));
                 }
             }
 
