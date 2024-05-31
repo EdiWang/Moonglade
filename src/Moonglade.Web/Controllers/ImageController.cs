@@ -14,7 +14,8 @@ public class ImageController(IBlogImageStorage imageStorage,
         IMemoryCache cache,
         IFileNameGenerator fileNameGen,
         IConfiguration configuration,
-        IOptions<ImageStorageSettings> imageStorageSettings)
+        IOptions<ImageStorageSettings> imageStorageSettings,
+        CannonService cannonService)
     : ControllerBase
 {
     private readonly ImageStorageSettings _imageStorageSettings = imageStorageSettings.Value;
@@ -120,7 +121,7 @@ public class ImageController(IBlogImageStorage imageStorage,
         if (blogConfig.ImageSettings.IsWatermarkEnabled && blogConfig.ImageSettings.KeepOriginImage || !skipWatermark)
         {
             var arr = stream.ToArray();
-            _ = Task.Run(async () => await imageStorage.InsertAsync(secondaryFieName, arr));
+            cannonService.FireAsync<IBlogImageStorage>(async storage => await storage.InsertAsync(secondaryFieName, arr));
         }
 
         logger.LogInformation($"Image '{primaryFileName}' uploaded.");

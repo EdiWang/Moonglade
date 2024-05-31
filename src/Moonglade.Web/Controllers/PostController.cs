@@ -12,8 +12,8 @@ public class PostController(
         IMediator mediator,
         IBlogConfig blogConfig,
         ITimeZoneResolver timeZoneResolver,
-        IPingbackSender pingbackSender,
-        ILogger<PostController> logger) : ControllerBase
+        ILogger<PostController> logger,
+        CannonService cannonService) : ControllerBase
 {
     [HttpPost("createoredit")]
     [TypeFilter(typeof(ClearBlogCache), Arguments =
@@ -60,7 +60,7 @@ public class PostController(
 
                 if (blogConfig.AdvancedSettings.EnablePingback)
                 {
-                    _ = Task.Run(async () => { await pingbackSender.TrySendPingAsync(link, postEntity.PostContent); });
+                    cannonService.FireAsync<IPingbackSender>(async sender => await sender.TrySendPingAsync(link, postEntity.PostContent));
                 }
             }
 
