@@ -6,7 +6,7 @@ using System.Text.RegularExpressions;
 namespace Moonglade.Pingback;
 
 public class PingbackSender(HttpClient httpClient,
-        IPingbackWebRequest pingbackWebRequest,
+        IPingbackRequestor pingbackRequestor,
         IConfiguration configuration,
         ILogger<PingbackSender> logger)
     : IPingbackSender
@@ -82,7 +82,7 @@ public class PingbackSender(HttpClient httpClient,
                 bool successUrlCreation = Uri.TryCreate(pingUrl, UriKind.Absolute, out var url);
                 if (successUrlCreation)
                 {
-                    var pResponse = await pingbackWebRequest.Send(sourceUrl, targetUrl, url);
+                    var pResponse = await pingbackRequestor.Send(sourceUrl, targetUrl, url);
                 }
                 else
                 {

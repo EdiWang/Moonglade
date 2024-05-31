@@ -7,7 +7,7 @@ public static class ServiceCollectionExtensions
 {
     public static IServiceCollection AddPingback(this IServiceCollection services)
     {
-        services.AddHttpClient<IPingbackWebRequest, PingbackWebRequest>()
+        services.AddHttpClient<IPingbackRequestor, PingbackRequestor>()
                 .AddStandardResilienceHandler();
 
         services.AddHttpClient<IPingbackSender, PingbackSender>()

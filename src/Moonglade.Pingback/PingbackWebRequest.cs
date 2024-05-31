@@ -3,16 +3,16 @@ using System.Xml;
 
 namespace Moonglade.Pingback;
 
-public interface IPingbackWebRequest
+public interface IPingbackRequestor
 {
     Task<HttpResponseMessage> Send(Uri sourceUrl, Uri targetUrl, Uri url);
 }
 
-public class PingbackWebRequest : IPingbackWebRequest
+public class PingbackRequestor : IPingbackRequestor
 {
     private readonly HttpClient _httpClient;
 
-    public PingbackWebRequest(HttpClient httpClient)
+    public PingbackRequestor(HttpClient httpClient)
     {
         _httpClient = httpClient;
         _httpClient.Timeout = TimeSpan.FromSeconds(30);
