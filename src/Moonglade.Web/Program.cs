@@ -121,6 +121,8 @@ void ConfigureServices(IServiceCollection services)
     services.AddEmailClient();
     services.AddContentModerator(builder.Configuration);
 
+    services.AddSingleton<CannonService>();
+
     string dbType = builder.Configuration.GetConnectionString("DatabaseType");
     string connStr = builder.Configuration.GetConnectionString("MoongladeDatabase");
     switch (dbType!.ToLower())
