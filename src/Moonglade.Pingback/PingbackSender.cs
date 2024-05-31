@@ -87,6 +87,10 @@ public class PingbackSender(HttpClient httpClient,
                     {
                         logger.LogError($"Ping request failed: {pResponse.StatusCode}");
                     }
+                    else
+                    {
+                        logger.LogInformation($"Ping request successful: {pResponse.StatusCode}");
+                    }
                 }
                 else
                 {
