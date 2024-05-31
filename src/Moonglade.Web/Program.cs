@@ -16,6 +16,7 @@ using SixLabors.Fonts;
 using System.Globalization;
 using System.Net;
 using System.Text.Json.Serialization;
+using Moonglade.Webmention;
 using Encoder = Moonglade.Web.Configuration.Encoder;
 
 Encoding.RegisterProvider(CodePagesEncodingProvider.Instance);
@@ -103,9 +104,12 @@ void ConfigureServices(IServiceCollection services)
     services.AddTransient<IPasswordGenerator, DefaultPasswordGenerator>();
 
     services.AddHealthChecks();
+
     services.AddMentionCommon()
             .AddPingback()
-            .AddSyndication()
+            .AddWebmention();
+
+    services.AddSyndication()
             .AddInMemoryCacheAside()
             .AddScoped<ValidateCaptcha>()
             .AddScoped<ITimeZoneResolver, BlogTimeZoneResolver>()
