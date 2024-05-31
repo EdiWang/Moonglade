@@ -5,7 +5,7 @@ using Moonglade.Utils;
 namespace Moonglade.Pingback;
 
 public class PingbackSender(HttpClient httpClient,
-        IPingbackRequestor pingbackRequestor,
+        IPingbackRequestor requestor,
         IConfiguration configuration,
         ILogger<PingbackSender> logger)
     : IPingbackSender
@@ -73,19 +73,19 @@ public class PingbackSender(HttpClient httpClient,
                 return;
             }
 
-            var pingUrl = value.FirstOrDefault();
-            if (pingUrl is not null)
+            var endpoint = value.FirstOrDefault();
+            if (endpoint is not null)
             {
-                logger.LogInformation($"Found Ping service URL '{pingUrl}' on target '{sourceUrl}'");
+                logger.LogInformation($"Found Ping service URL '{endpoint}' on target '{sourceUrl}'");
 
-                bool successUrlCreation = Uri.TryCreate(pingUrl, UriKind.Absolute, out var url);
+                bool successUrlCreation = Uri.TryCreate(endpoint, UriKind.Absolute, out var url);
                 if (successUrlCreation)
                 {
-                    var pResponse = await pingbackRequestor.Send(sourceUrl, targetUrl, url);
+                    var pResponse = await requestor.Send(sourceUrl, targetUrl, url);
                 }
                 else
                 {
-                    logger.LogInformation($"Invliad Ping service URL '{pingUrl}'");
+                    logger.LogInformation($"Invliad Ping service URL '{endpoint}'");
                 }
             }
         }
