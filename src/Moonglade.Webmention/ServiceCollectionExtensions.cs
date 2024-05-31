@@ -1,5 +1,5 @@
-﻿using System.Net;
-using Microsoft.Extensions.DependencyInjection;
+﻿using Microsoft.Extensions.DependencyInjection;
+using System.Net;
 
 namespace Moonglade.Webmention;
 
@@ -9,7 +9,7 @@ public static class ServiceCollectionExtensions
     {
         services.AddHttpClient<IWebmentionSender, WebmentionSender>()
                 .AddStandardResilienceHandler();
-        
+
         services.AddHttpClient<IWebmentionRequestor, WebmentionRequestor>()
                 .ConfigurePrimaryHttpMessageHandler(() => new HttpClientHandler { Credentials = CredentialCache.DefaultNetworkCredentials })
                 .AddStandardResilienceHandler();

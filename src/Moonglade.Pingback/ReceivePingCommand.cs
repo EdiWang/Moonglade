@@ -5,7 +5,6 @@ using Moonglade.Data.Entities;
 using Moonglade.Data.Specifications;
 using Moonglade.Mention.Common;
 using Moonglade.Utils;
-using System.Text.RegularExpressions;
 using System.Xml;
 
 namespace Moonglade.Pingback;

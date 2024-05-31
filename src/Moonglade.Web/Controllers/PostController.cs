@@ -1,8 +1,8 @@
 ﻿using Moonglade.Core.PostFeature;
 using Moonglade.Pingback;
 using Moonglade.Web.Attributes;
-using System.ComponentModel.DataAnnotations;
 using Moonglade.Webmention;
+using System.ComponentModel.DataAnnotations;
 
 namespace Moonglade.Web.Controllers;
 
@@ -49,7 +49,6 @@ public class PostController(
                 logger.LogInformation($"Trying to Ping URL for post: {postEntity.Id}");
 
                 var pubDate = postEntity.PubDateUtc.GetValueOrDefault();
-
                 var link = linkGenerator.GetUriByPage(HttpContext, "/Post", null,
                     new
                     {
