@@ -76,7 +76,7 @@ public class PingbackSender(HttpClient httpClient,
             var endpoint = value.FirstOrDefault();
             if (endpoint is not null)
             {
-                logger.LogInformation($"Found Ping service URL '{endpoint}' on target '{sourceUrl}'");
+                logger.LogInformation($"Found Ping service URL '{endpoint}' on target '{targetUrl}'");
 
                 bool successUrlCreation = Uri.TryCreate(endpoint, UriKind.Absolute, out var url);
                 if (successUrlCreation)

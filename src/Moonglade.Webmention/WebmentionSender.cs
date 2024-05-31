@@ -70,7 +70,7 @@ public class WebmentionSender(
                 return;
             }
 
-            logger.LogInformation($"Found Webmention service URL '{endpoint}' on target '{sourceUrl}'");
+            logger.LogInformation($"Found Webmention service URL '{endpoint}' on target '{targetUrl}'");
 
             bool successUrlCreation = Uri.TryCreate(endpoint, UriKind.Absolute, out var url);
             if (successUrlCreation)
