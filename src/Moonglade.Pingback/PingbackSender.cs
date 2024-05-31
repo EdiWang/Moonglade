@@ -1,7 +1,6 @@
 ﻿using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
 using Moonglade.Utils;
-using System.Text.RegularExpressions;
 
 namespace Moonglade.Pingback;
 
@@ -28,7 +27,7 @@ public class PingbackSender(HttpClient httpClient,
             {
                 logger.LogInformation("URL is detected in post content, trying to send ping requests.");
 
-                foreach (var url in GetUrlsFromContent(postContent))
+                foreach (var url in Helper.GetUrlsFromContent(postContent))
                 {
                     if (!bool.Parse(configuration["AllowPingbackToLocalhost"]!) && url.IsLocalhostUrl())
                     {
@@ -94,28 +93,5 @@ public class PingbackSender(HttpClient httpClient,
         {
             logger.LogError(e, $"{nameof(SendAsync)}({sourceUrl},{targetUrl})");
         }
-    }
-
-    private static readonly Regex UrlsRegex = new(
-        @"<a.*?href=[""'](?<url>.*?)[""'].*?>(?<name>.*?)</a>", RegexOptions.IgnoreCase | RegexOptions.Compiled);
-
-    private static IEnumerable<Uri> GetUrlsFromContent(string content)
-    {
-        if (string.IsNullOrWhiteSpace(content))
-        {
-            throw new ArgumentNullException(content);
-        }
-
-        var urlsList = new List<Uri>();
-        foreach (var url in
-            UrlsRegex.Matches(content).Select(myMatch => myMatch.Groups["url"].ToString().Trim()))
-        {
-            if (Uri.TryCreate(url, UriKind.Absolute, out var uri))
-            {
-                urlsList.Add(uri);
-            }
-        }
-
-        return urlsList;
     }
 }

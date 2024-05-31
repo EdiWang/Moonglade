@@ -59,6 +59,29 @@ public static class Helper
         return (slug, date);
     }
 
+    private static readonly Regex UrlsRegex = new(
+        @"<a.*?href=[""'](?<url>.*?)[""'].*?>(?<name>.*?)</a>", RegexOptions.IgnoreCase | RegexOptions.Compiled);
+
+    public static IEnumerable<Uri> GetUrlsFromContent(string content)
+    {
+        if (string.IsNullOrWhiteSpace(content))
+        {
+            throw new ArgumentNullException(content);
+        }
+
+        var urlsList = new List<Uri>();
+        foreach (var url in
+                 UrlsRegex.Matches(content).Select(myMatch => myMatch.Groups["url"].ToString().Trim()))
+        {
+            if (Uri.TryCreate(url, UriKind.Absolute, out var uri))
+            {
+                urlsList.Add(uri);
+            }
+        }
+
+        return urlsList;
+    }
+
     public static bool IsRunningOnAzureAppService()
     {
         return !string.IsNullOrWhiteSpace(Environment.GetEnvironmentVariable("WEBSITE_SITE_NAME"));
