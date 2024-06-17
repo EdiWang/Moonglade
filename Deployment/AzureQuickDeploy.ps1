@@ -190,7 +190,7 @@ if (!$appExists) {
     Write-Host "Creating Web App"
     if ($useLinuxPlanWithDocker) {
         Write-Host "Using Linux Plan with Docker image from '$dockerImageName', this deployment will be ready to run."
-        $echo = az webapp create -g $rsgName -p $aspName -n $webAppName --deployment-container-image-name $dockerImageName
+        $echo = az webapp create -g $rsgName -p $aspName -n $webAppName --container-image-name $dockerImageName
     }
     else {
         Write-Host "Using Windows Plan with deployment from GitHub"
