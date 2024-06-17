@@ -42,9 +42,9 @@ else {
 
 # Get region name
 
-$regionName = Read-Host "Enter region name (default: East Asia)"
+$regionName = Read-Host "Enter region name (default: Japan East)"
 if ([string]::IsNullOrWhiteSpace($regionName)) {
-    $regionName = "East Asia"
+    $regionName = "Japan East"
 }
 else {
     $regionName = $regionName.Trim()
@@ -69,7 +69,7 @@ while ($true) {
 }
 
 # Start script
-$rndNumber = Get-Random -Minimum 100 -Maximum 999
+$rndNumber = Get-Random -Minimum 1000 -Maximum 9999
 $rsgName = "moongladersg$rndNumber"
 $dockerImageName = "ediwang/moonglade"
 $aspName = "moongladeplan$rndNumber"
