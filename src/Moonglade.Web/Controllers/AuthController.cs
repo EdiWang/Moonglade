@@ -12,7 +12,7 @@ public class AuthController(IOptions<AuthenticationSettings> authSettings) : Con
 
     [HttpGet("signout")]
     [ProducesResponseType(StatusCodes.Status302Found)]
-    public async Task<IActionResult> SignOut(int nounce = 1055)
+    public async Task<IActionResult> SignOut(int nounce = 996)
     {
         switch (_authenticationSettings.Provider)
         {
