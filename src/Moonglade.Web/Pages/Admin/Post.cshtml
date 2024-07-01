@@ -68,6 +68,11 @@
                                 {
                                     <i class="bi-star-fill text-warning"></i>
                                 }
+                                
+                                @if (item.IsOutdated)
+                                {
+                                    <span class="badge rounded-pill text-bg-secondary ms-2">Outdated</span>
+                                }
                             </h6>
                         </a>
                         <div class="mb-2">
