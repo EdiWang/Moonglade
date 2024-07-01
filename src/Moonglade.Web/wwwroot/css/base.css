@@ -282,8 +282,8 @@ h3 small {
     color: var(--accent-color1);
 }
 
-.comment-form-containter .badge {
-    font-size: 100% !important;
+.comment-form-containter {
+    padding: 20px 38px;
 }
 
 .dropdown-menu {

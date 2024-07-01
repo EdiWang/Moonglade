@@ -43,37 +43,36 @@
                 }
             </div>
             <div class="col-md-11 mb-3">
-                <div class="card shadow-sm comment-item">
-                    <div class="card-body">
-                        <div class="card-subtitle text-body-secondary float-end">
-                            <time data-utc-label="@item.CreateTimeUtc.ToString("u")">@item.CreateTimeUtc</time>
-                        </div>
-                        <h6 class="card-title">@item.Username</h6>
-                        
-                        <div>
-                            @Html.Raw(ContentProcessor.MarkdownToContent(item.CommentContent, ContentProcessor.MarkdownConvertType.Html))
-                        </div>
+                <div class="comment-item rounded-3 shadow-sm border bg-white mb-3 p-4">
+                    <div class="card-subtitle text-body-secondary float-end">
+                        <time data-utc-label="@item.CreateTimeUtc.ToString("u")">@item.CreateTimeUtc</time>
+                    </div>
 
-                        <div>
-                            @foreach (var reply in item.CommentReplies.OrderByDescending(t => t.ReplyTimeUtc))
-                            {
-                                <hr/>
-                                <div class="reply-container">
-                                    <div>
-                                        <strong>
-                                            @SharedLocalizer["Author"]
-                                        </strong>
-                                        <span class="float-end text-muted">
-                                            @SharedLocalizer["Replied at"]
-                                            <time data-utc-label="@reply.ReplyTimeUtc.ToString("u")">@reply.ReplyTimeUtc</time>
-                                        </span>
-                                    </div>
-                                    <p>
-                                        @Html.Raw(ContentProcessor.MarkdownToContent(reply.ReplyContent, ContentProcessor.MarkdownConvertType.Html))
-                                    </p>
+                    <h6 class="card-title mb-3">@item.Username</h6>
+
+                    <div>
+                        @Html.Raw(ContentProcessor.MarkdownToContent(item.CommentContent, ContentProcessor.MarkdownConvertType.Html))
+                    </div>
+
+                    <div>
+                        @foreach (var reply in item.CommentReplies.OrderByDescending(t => t.ReplyTimeUtc))
+                        {
+                            <hr />
+                            <div class="reply-container">
+                                <div>
+                                    <strong>
+                                        @SharedLocalizer["Author"]
+                                    </strong>
+                                    <span class="float-end text-muted">
+                                        @SharedLocalizer["Replied at"]
+                                        <time data-utc-label="@reply.ReplyTimeUtc.ToString("u")">@reply.ReplyTimeUtc</time>
+                                    </span>
                                 </div>
-                            }
-                        </div>
+                                <p>
+                                    @Html.Raw(ContentProcessor.MarkdownToContent(reply.ReplyContent, ContentProcessor.MarkdownConvertType.Html))
+                                </p>
+                            </div>
+                        }
                     </div>
                 </div>
             </div>
