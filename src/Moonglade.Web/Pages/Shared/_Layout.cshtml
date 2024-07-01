@@ -98,10 +98,14 @@
             <partial name="_ApplicationInsightsJs" />
         }
     </environment>
+    <environment exclude="Production">
+        @inject IWebHostEnvironment WebHostEnvironment
+        <script>
+            console.warn('Moonglade is running in @(WebHostEnvironment.EnvironmentName) environment');
+        </script>
+    </environment>
 </head>
 <body class="@ViewBag.BodyClass">
-    <partial name="_EnvInfo" />
-
     @if (BlogConfig.ContentSettings.ShowCalloutSection)
     {
         <section class="call-out">
