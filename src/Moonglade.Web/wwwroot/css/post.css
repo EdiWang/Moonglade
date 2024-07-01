@@ -111,6 +111,10 @@ h1.post-title,
     position: relative;
 }
 
+pre {
+    display: grid !important;
+}
+
 pre,
 code {
     font-family: "Cascadia Code", Consolas, SFMono-Regular, Menlo, Monaco, "Liberation Mono", "Courier New", monospace;

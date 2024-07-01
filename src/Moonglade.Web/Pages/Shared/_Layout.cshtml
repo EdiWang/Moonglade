@@ -111,7 +111,7 @@
 
     <header class="sticky-top d-print-none">
         <nav id="blog-nav" class="navbar navbar-expand-lg navbar-dark bg-accent1">
-            <div class="container">
+            <div class="container-xl">
                 <div class="animbrand">
                     <a class="moonglade-logo font-sairas navbar-brand animate" href="/">
                         @BlogConfig.GeneralSettings.LogoText
@@ -125,7 +125,7 @@
                         <!-- System Nav Menu -->
                         <li id="navbar-dropdown-post" class="nav-item dropdown">
                             <a href="#" class="nav-link dropdown-toggle" role="button" data-bs-toggle="dropdown">
-                                <i class="bi-folder2 nav-item-icon"></i>
+                                <i class="bi-folder2 nav-item-icon d-lg-none d-xl-inline-block"></i>
                                 <strong>@SharedLocalizer["Categories"]</strong>
                             </a>
                             @await Component.InvokeAsync("CategoryList", new { isMenu = true })
@@ -133,14 +133,14 @@
 
                         <li class="nav-item">
                             <a asp-page="/Tags" class="nav-link">
-                                <i class="bi-tag nav-item-icon"></i>
+                                <i class="bi-tag nav-item-icon d-lg-none d-xl-inline-block"></i>
                                 <strong>@SharedLocalizer["Tags"]</strong>
                             </a>
                         </li>
 
                         <li class="nav-item">
                             <a asp-page="/Archive" class="nav-link">
-                                <i class="bi-calendar3 nav-item-icon"></i>
+                                <i class="bi-calendar3 nav-item-icon d-lg-none d-xl-inline-block"></i>
                                 <strong>@SharedLocalizer["Archive"]</strong>
                             </a>
                         </li>
@@ -192,14 +192,14 @@
                     </div>
                 </div>
             </section>
-            <div class="container mt-4 mb-5">
+            <div class="container-xl mt-4 mb-5">
                 <div class="row">
                     @if (BlogConfig.GeneralSettings.SideBarOption == SideBarOption.Left)
                     {
                         <partial name="_Aside" />
                     }
 
-                    <main class="col-md-12 @(BlogConfig.GeneralSettings.SideBarOption == SideBarOption.Disabled ? null : "col-lg-9")">
+                    <main class="@(BlogConfig.GeneralSettings.SideBarOption == SideBarOption.Disabled ? null : "col")">
                         @RenderBody()
                     </main>
 
