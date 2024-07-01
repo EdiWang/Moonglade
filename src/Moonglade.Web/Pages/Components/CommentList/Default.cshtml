@@ -43,19 +43,21 @@
                 }
             </div>
             <div class="col-md-11 mb-3">
-                <div class="card comment-item">
-                    <div class="card-header">
-                        <strong>@item.Username</strong>
-                        <span class="text-muted float-end">
-                            <time data-utc-label="@item.CreateTimeUtc.ToString("u")">@item.CreateTimeUtc</time>
-                        </span>
-                    </div>
+                <div class="card shadow-sm comment-item">
                     <div class="card-body">
-                        @Html.Raw(ContentProcessor.MarkdownToContent(item.CommentContent, ContentProcessor.MarkdownConvertType.Html))
+                        <div class="card-subtitle text-body-secondary float-end">
+                            <time data-utc-label="@item.CreateTimeUtc.ToString("u")">@item.CreateTimeUtc</time>
+                        </div>
+                        <h6 class="card-title">@item.Username</h6>
+                        
+                        <div>
+                            @Html.Raw(ContentProcessor.MarkdownToContent(item.CommentContent, ContentProcessor.MarkdownConvertType.Html))
+                        </div>
+
                         <div>
                             @foreach (var reply in item.CommentReplies.OrderByDescending(t => t.ReplyTimeUtc))
                             {
-                                <hr />
+                                <hr/>
                                 <div class="reply-container">
                                     <div>
                                         <strong>
