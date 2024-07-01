@@ -30,8 +30,8 @@
     display: table;
 }
 
-.badge.post-hit-number {
-    font-size: 100%;
+.article-post-slug {
+    padding: 28px 38px;
 }
 
 h1.post-title,

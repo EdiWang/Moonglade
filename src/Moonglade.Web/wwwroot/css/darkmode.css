@@ -29,6 +29,7 @@
 
 .darkmode .article-post-slug {
     background-color: transparent !important;
+    padding: 0;
 }
 
 .darkmode .comment-form-containter {
