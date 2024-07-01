@@ -4,6 +4,12 @@
     }
 }
 
+@media (max-width: 1400px) {
+    .article-post-summary {
+        padding: 22px 30px;
+    }
+}
+
 @media (max-width: 767px) {
 
     .article-post-slug {

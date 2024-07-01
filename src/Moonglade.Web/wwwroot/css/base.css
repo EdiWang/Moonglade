@@ -196,6 +196,10 @@ h3 small {
     transition: all .3s ease-in-out;
 }
 
+.article-post-summary {
+    padding: 22px 40px;
+}
+
 .post-date-box {
     flex-basis: 90px;
 }
@@ -214,7 +218,7 @@ h3 small {
 }
 
 .post-summary-title {
-    font-size: 1.14rem;
+    font-size: 1.15rem;
     font-weight: 500;
 }
 
