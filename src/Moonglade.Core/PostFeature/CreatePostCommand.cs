@@ -19,10 +19,18 @@ public class CreatePostCommandHandler(
 {
     public async Task<PostEntity> Handle(CreatePostCommand request, CancellationToken ct)
     {
-        var abs = ContentProcessor.GetPostAbstract(
-            string.IsNullOrEmpty(request.Payload.Abstract) ? request.Payload.EditorContent : request.Payload.Abstract.Trim(),
-            blogConfig.ContentSettings.PostAbstractWords,
-            configuration.GetSection("Editor").Get<EditorChoice>() == EditorChoice.Markdown);
+        string abs;
+        if (string.IsNullOrEmpty(request.Payload.Abstract))
+        {
+            abs = ContentProcessor.GetPostAbstract(
+                request.Payload.EditorContent,
+                blogConfig.ContentSettings.PostAbstractWords,
+                configuration.GetSection("Editor").Get<EditorChoice>() == EditorChoice.Markdown);
+        }
+        else
+        {
+            abs = request.Payload.Abstract.Trim();
+        }
 
         var post = new PostEntity
         {
