@@ -198,10 +198,11 @@ h3 small {
 
 .article-post-summary {
     padding: 22px 40px;
+    gap: 30px;
 }
 
 .post-date-box {
-    flex-basis: 90px;
+    flex-basis: 100px;
 }
 
 .post-date-day {
