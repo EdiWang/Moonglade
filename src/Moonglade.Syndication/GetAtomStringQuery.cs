@@ -15,9 +15,7 @@ public class GetAtomStringQueryHandler : IRequestHandler<GetAtomStringQuery, str
     public GetAtomStringQueryHandler(IBlogConfig blogConfig, ISyndicationDataSource sdds, IHttpContextAccessor httpContextAccessor)
     {
         _sdds = sdds;
-
-        var acc = httpContextAccessor;
-        var baseUrl = $"{acc.HttpContext.Request.Scheme}://{acc.HttpContext.Request.Host}";
+        var baseUrl = $"{httpContextAccessor.HttpContext!.Request.Scheme}://{httpContextAccessor.HttpContext.Request.Host}";
 
         _feedGenerator = new(
             baseUrl,
