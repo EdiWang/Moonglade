@@ -131,10 +131,6 @@ h3 small {
     border-radius: 50px !important;
 }
 
-.label-success {
-    background-color: var(--bs-green);
-}
-
 .list-group-item.active,
 .page-item.active .page-link {
     background-color: var(--accent-color1);
