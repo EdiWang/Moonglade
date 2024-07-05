@@ -145,7 +145,11 @@ h3 small {
     text-shadow: 1px 1px 3px #4A4A4A;
 }
 
-.p-description {
+.profile-description {
+    text-shadow: 1px 1px 1px #333;
+}
+
+.profile-pronouns {
     text-shadow: 1px 1px 1px #333;
 }
 
@@ -232,7 +236,7 @@ h3 small {
 }
 
 .card-bkimg-container {
-    height: 310px;
+    height: 320px;
     overflow: hidden;
 }
 

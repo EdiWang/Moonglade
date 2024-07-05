@@ -48,6 +48,10 @@ public class GeneralSettings : IBlogSettings
     [MaxLength(256)]
     public string Description { get; set; }
 
+    [Display(Name = "Your pronouns")]
+    [MaxLength(32)]
+    public string Pronouns { get; set; }
+
     [Display(Name = "Side bar HTML code")]
     [DataType(DataType.MultilineText)]
     [MaxLength(2048)]
