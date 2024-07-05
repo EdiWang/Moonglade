@@ -29,9 +29,17 @@
                     Text = t.NativeName,
                     Value = t.Value.ToLower()
                 });
+
+    var pronounsList = new List<SelectListItem>
+    {
+        new("Don't specify", ""),
+        new("they/them","they/them"),
+        new("she/her","she/her"),
+        new("he/him","he/him")
+    };
 }
 
-@section scripts{
+@section scripts {
     <script src="~/js/app/imageuploader.js"></script>
     <script src="~/js/3rd/bs-custom-file-input.min.js"></script>
     <script type="module">
@@ -87,7 +95,7 @@
     </script>
 }
 
-@section admintoolbar{
+@section admintoolbar {
     <partial name="_SettingsHeader" />
 }
 
@@ -318,13 +326,25 @@
                                         </div>
                                     </div>
 
-                                    <div class="form-floating">
+                                    <div class="form-floating mb-2">
                                         <input asp-for="ViewModel.Description"
                                                placeholder="@Html.DisplayNameFor(m => m.ViewModel.Description)"
                                                class="form-control" required></input>
                                         <label class="form-label" asp-for="ViewModel.Description"></label>
                                     </div>
                                 </div>
+                            </div>
+                        </div>
+
+                        <div class="settings-entry2 row align-items-center py-3 px-2 border-top">
+                            <div class="col-auto">
+                                <i class="bi-person-heart settings-entry-icon"></i>
+                            </div>
+                            <div class="col">
+                                <label for="Pronouns">@SharedLocalizer["Pronouns"]</label>
+                            </div>
+                            <div class="col-md-5 text-end">
+                                <select class="form-select" asp-for="ViewModel.Pronouns" asp-items="@pronounsList"></select>
                             </div>
                         </div>
 
@@ -361,7 +381,7 @@
                                 </div>
                             </div>
                         </div>
-                        
+
                         <div class="border-top settings-entry2 row align-items-center py-3 px-2">
                             <div class="col-auto">
                                 <i class="bi-8-circle settings-entry-icon"></i>
