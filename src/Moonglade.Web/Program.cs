@@ -16,6 +16,7 @@ using Moonglade.Webmention;
 using SixLabors.Fonts;
 using System.Globalization;
 using System.Net;
+using System.Security.Cryptography;
 using System.Text.Json.Serialization;
 using Encoder = Moonglade.Web.Configuration.Encoder;
 
@@ -57,11 +58,22 @@ void ConfigureServices(IServiceCollection services)
             .AddHttpContextAccessor();
     services.AddApplicationInsightsTelemetry();
 
+    var magic0 = Encoding.UTF8.GetString(BitConverter.GetBytes('✔'.GetHashCode())
+                        .Zip(BitConverter.GetBytes(0x242F2E32)).Select(x => (byte)(x.First + x.Second)).ToArray());
+    var magic1 = Convert.ToBase64String(SHA256.Create().ComputeHash(BitConverter.GetBytes(0x6B441)))[11..15];
+    var magic2 = Convert.ToBase64String(SHA256.Create().ComputeHash(BitConverter.GetBytes(0x7DB14)))[21..25];
+    var magic3 = Convert.ToBase64String(SHA256.Create().ComputeHash(BitConverter.GetBytes(0x78E10)))[13..17];
+    var magic4 = Convert.ToBase64String(SHA256.Create().ComputeHash(BitConverter.GetBytes(0x873B3)))[27..32];
+
     services.AddSession(options =>
     {
         options.IdleTimeout = TimeSpan.FromMinutes(20);
         options.Cookie.HttpOnly = true;
-    }).AddSessionBasedCaptcha(options => options.FontStyle = FontStyle.Bold);
+    }).AddSessionBasedCaptcha(options =>
+    {
+        options.FontStyle = FontStyle.Bold;
+        options.BlockedCodes = [magic0, magic1, magic2, magic3, magic4];
+    });
 
     services.AddLocalization(options => options.ResourcesPath = "Resources");
     services.AddControllers(options => options.Filters.Add(new AutoValidateAntiforgeryTokenAttribute()))
