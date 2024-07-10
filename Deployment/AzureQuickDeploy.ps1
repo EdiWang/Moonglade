@@ -139,10 +139,10 @@ $planCheck = az appservice plan list --query "[?name=='$aspName']" | ConvertFrom
 $planExists = $planCheck.Length -gt 0
 if (!$planExists) {
     if ($useLinuxPlanWithDocker) {
-        $echo = az appservice plan create -n $aspName -g $rsgName --is-linux --sku S1 --location $regionName
+        $echo = az appservice plan create -n $aspName -g $rsgName --is-linux --sku P0V3 --location $regionName
     }
     else {
-        $echo = az appservice plan create -n $aspName -g $rsgName --sku S1 --location $regionName
+        $echo = az appservice plan create -n $aspName -g $rsgName --sku P0V3 --location $regionName
     }
 }
 
