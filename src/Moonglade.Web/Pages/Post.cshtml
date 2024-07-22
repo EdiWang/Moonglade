@@ -39,7 +39,9 @@
     {
         <link rel="webmention" href="@(Helper.ResolveCanonicalUrl(BlogConfig.GeneralSettings.CanonicalPrefix, "webmention"))">
     }
+}
 
+@section head {
     <link href="~/css/post.css" rel="stylesheet" asp-append-version="true" />
     <link href="~/css/highlighter-custom.css" rel="stylesheet" asp-append-version="true" />
     @if (BlogConfig.ContentSettings.DocumentOutline)
@@ -93,7 +95,7 @@
             </text>
         }
 
-        window.fitImageToDevicePixelRatio = @BlogConfig.ImageSettings.FitImageToDevicePixelRatio.ToString().ToLower();
+            window.fitImageToDevicePixelRatio = @BlogConfig.ImageSettings.FitImageToDevicePixelRatio.ToString().ToLower();
 
         var q = new QRious({
             element: document.querySelector('.post-qrcode'),
@@ -111,7 +113,7 @@
     </script>
 }
 
-<article class="article-post-slug position-relative p-4 rounded-3 shadow-sm border bg-white mb-4" data-postid="@Model.Post.Id" lang="@Model.Post.ContentLanguageCode">
+<article class="article-post-slug position-relative rounded-3 shadow-sm border bg-white mb-4" data-postid="@Model.Post.Id" lang="@Model.Post.ContentLanguageCode">
     @if (Model.Post.IsFeatured)
     {
         <partial name="_FeaturedTag" />
@@ -183,7 +185,7 @@
                 <div class="d-print-none">
                     @if (Model.Post.CommentEnabled)
                     {
-                        <section class="comment-form-containter p-3 rounded-3 shadow-sm border bg-white mb-4">
+                        <section class="comment-form-containter rounded-3 shadow-sm border bg-white mb-4">
                             <h6 class="card-subtitle mb-3 text-muted">
                                 <i class="bi-chat-left-text"></i>
                                 @SharedLocalizer["Comments"]

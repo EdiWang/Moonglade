@@ -39,7 +39,7 @@ export function initEvents(slugifyTitle) {
     });
 
     $('.btn-modify-slug').click(function () {
-        var message = 'This post was published for more than 7 days, changing slug will result in breaking SEO, would you like to continue?';
+        var message = 'This post was published for a period of time, changing slug will result in breaking SEO, would you like to continue?';
 
         if (confirm(message)) {
             $('#ViewModel_Slug').removeAttr('readonly');

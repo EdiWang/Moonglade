@@ -16,7 +16,7 @@ pre {
     border-left: 4px solid #ccc;
     border-right: 0;
     border-top: 0;
-    display: block;
+    display: block !important;
     font-size: 12px;
     line-height: 18.2px;
     margin: 18px 0 30px;

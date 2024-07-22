@@ -14,6 +14,7 @@ public struct PostSegment
     public bool IsPublished { get; set; }
     public bool IsFeatured { get; set; }
     public bool IsDeleted { get; set; }
+    public bool IsOutdated { get; set; }
 
     public static readonly Expression<Func<PostEntity, PostSegment>> EntitySelector = p => new()
     {
@@ -24,6 +25,7 @@ public struct PostSegment
         IsPublished = p.IsPublished,
         IsFeatured = p.IsFeatured,
         IsDeleted = p.IsDeleted,
+        IsOutdated = p.IsOutdated,
         CreateTimeUtc = p.CreateTimeUtc,
         LastModifiedUtc = p.LastModifiedUtc,
         ContentAbstract = p.ContentAbstract

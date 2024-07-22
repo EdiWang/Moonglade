@@ -9,12 +9,12 @@
         <ImplicitUsings>enable</ImplicitUsings>
     </PropertyGroup>
     <ItemGroup>
-        <PackageReference Include="Edi.Captcha" Version="3.22.0" />
+        <PackageReference Include="Edi.Captcha" Version="3.23.1" />
     </ItemGroup>
     <ItemGroup>
         <ProjectReference Include="..\Moonglade.Configuration\Moonglade.Configuration.csproj" />
     </ItemGroup>
     <ItemGroup>
-        <PackageReference Include="Microsoft.Extensions.Http.Resilience" Version="8.6.0" />
+        <PackageReference Include="Microsoft.Extensions.Http.Resilience" Version="8.7.0" />
     </ItemGroup>
 </Project>

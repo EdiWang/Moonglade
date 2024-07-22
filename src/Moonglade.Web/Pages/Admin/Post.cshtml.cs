@@ -8,7 +8,7 @@ namespace Moonglade.Web.Pages.Admin;
 
 public class PostModel(IMediator mediator) : PageModel
 {
-    private const int PageSize = 7;
+    private const int PageSize = 4;
 
     [BindProperty]
     [MaxLength(32)]

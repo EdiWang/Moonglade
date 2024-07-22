@@ -100,7 +100,7 @@ public class UpdatePostCommandHandler : IRequestHandler<UpdatePostCommand, PostE
 
         // 1. Add new tags to tag lib
         var tags = string.IsNullOrWhiteSpace(postEditModel.Tags) ?
-            Array.Empty<string>() :
+            [] :
             postEditModel.Tags.Split(',').ToArray();
 
         foreach (var item in tags)

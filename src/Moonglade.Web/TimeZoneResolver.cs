@@ -2,7 +2,7 @@
 
 public interface ITimeZoneResolver
 {
-    DateTime NowOfTimeZone { get; }
+    DateTime NowInTimeZone { get; }
 
     DateTime ToTimeZone(DateTime utcTime);
     DateTime ToUtc(DateTime userTime);
@@ -14,7 +14,7 @@ public class BlogTimeZoneResolver(IBlogConfig blogConfig) : ITimeZoneResolver
 {
     public TimeSpan UtcOffset { get; } = blogConfig.GeneralSettings.TimeZoneUtcOffset;
 
-    public DateTime NowOfTimeZone => UtcToZoneTime(DateTime.UtcNow, UtcOffset);
+    public DateTime NowInTimeZone => UtcToZoneTime(DateTime.UtcNow, UtcOffset);
 
     public DateTime ToTimeZone(DateTime utcTime) => UtcToZoneTime(utcTime, UtcOffset);
 

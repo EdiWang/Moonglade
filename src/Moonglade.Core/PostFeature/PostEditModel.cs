@@ -49,7 +49,7 @@ public class PostEditModel
     public string LanguageCode { get; set; }
 
     [DataType(DataType.MultilineText)]
-    [MaxLength(400)]
+    [MaxLength(1024)]
     public string Abstract { get; set; }
 
     [Display(Name = "Publish Date")]

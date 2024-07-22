@@ -31,7 +31,7 @@ public class PostController(
         {
             if (!ModelState.IsValid) return Conflict(ModelState.CombineErrorMessages());
 
-            var tzDate = timeZoneResolver.NowOfTimeZone;
+            var tzDate = timeZoneResolver.NowInTimeZone;
             if (model.ChangePublishDate &&
                 model.PublishDate.HasValue &&
                 model.PublishDate <= tzDate &&

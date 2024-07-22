@@ -1,16 +1,12 @@
-﻿@media (min-width: 1200px) {
-    .container {
-        max-width: 1170px;
+﻿@media (min-width: 576px) {
+    .card-columns.card-columns-categories {
+        column-count: 4;
     }
 }
 
-.card-body {
-    padding: 1rem;
-}
-
-@media (min-width: 576px) {
-    .card-columns.card-columns-categories {
-        column-count: 4;
+@media (max-width: 1400px) {
+    .article-post-summary {
+        padding: 22px 30px;
     }
 }
 
