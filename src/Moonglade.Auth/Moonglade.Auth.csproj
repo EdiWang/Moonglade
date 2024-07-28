@@ -16,7 +16,7 @@
   </ItemGroup>
   <ItemGroup>
     <FrameworkReference Include="Microsoft.AspNetCore.App" />
-    <PackageReference Include="Microsoft.Identity.Web" Version="3.0.0" />
+    <PackageReference Include="Microsoft.Identity.Web" Version="3.0.1" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Moonglade.Configuration\Moonglade.Configuration.csproj" />
