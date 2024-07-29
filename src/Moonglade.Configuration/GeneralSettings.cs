@@ -121,7 +121,7 @@ public class GeneralSettings : IBlogSettings
         LogoText = "moonglade",
         MetaKeyword = "moonglade",
         Copyright = $"[c] {DateTime.UtcNow.Year}",
-        TimeZoneId = "China Standard Time",
+        TimeZoneId = "Coordinated Universal Time",
         TimeZoneUtcOffset = TimeSpan.FromHours(8),
         ThemeId = 1,
         HotTagAmount = 10
