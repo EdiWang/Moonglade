@@ -122,7 +122,7 @@ public class GeneralSettings : IBlogSettings
         MetaKeyword = "moonglade",
         Copyright = $"[c] {DateTime.UtcNow.Year}",
         TimeZoneId = "Coordinated Universal Time",
-        TimeZoneUtcOffset = TimeSpan.FromHours(8),
+        TimeZoneUtcOffset = TimeSpan.FromHours(0),
         ThemeId = 1,
         HotTagAmount = 10
     };
