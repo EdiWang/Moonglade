@@ -176,18 +176,7 @@ public static class WebApplicationExtensions
 
         if (app.Environment.IsDevelopment())
         {
-            switch (app.Configuration["DetectChina"]!.ToLower())
-            {
-                case "block":
-                    Prevent();
-                    break;
-                case "allow":
-                default:
-                    app.Logger.LogInformation(
-                        "Current server is suspected to be located in Mainland China, Moonglade will still run on full functionality.");
-
-                    break;
-            }
+            app.Logger.LogInformation("Current server is suspected to be located in Mainland China, Moonglade will still run on full functionality in development environment.");
         }
         else
         {
