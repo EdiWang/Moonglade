@@ -1,7 +1,6 @@
-﻿using Edi.Captcha;
+﻿using Azure.Monitor.OpenTelemetry.AspNetCore;
+using Edi.Captcha;
 using Edi.PasswordGenerator;
-using Microsoft.ApplicationInsights.Extensibility;
-using Microsoft.ApplicationInsights.Extensibility.Implementation;
 using Microsoft.AspNetCore.HttpOverrides;
 using Microsoft.AspNetCore.Rewrite;
 using Moonglade.Comments.Moderator;
@@ -56,7 +55,11 @@ void ConfigureServices(IServiceCollection services)
     services.AddMediatR(config => config.RegisterServicesFromAssemblies(AppDomain.CurrentDomain.GetAssemblies()));
     services.AddOptions()
             .AddHttpContextAccessor();
-    services.AddApplicationInsightsTelemetry();
+
+    if (!string.IsNullOrWhiteSpace(builder.Configuration["AzureMonitor:ConnectionString"]))
+    {
+        services.AddOpenTelemetry().UseAzureMonitor();
+    }
 
     var magic0 = Encoding.UTF8.GetString(BitConverter.GetBytes('✔'.GetHashCode())
                         .Zip(BitConverter.GetBytes(0x242F2E32)).Select(x => (byte)(x.First + x.Second)).ToArray());
@@ -155,15 +158,6 @@ void ConfigureMiddleware()
 {
     bool useXFFHeaders = app.Configuration.GetSection("ForwardedHeaders:Enabled").Get<bool>();
     if (useXFFHeaders) UseSmartXFFHeader(app);
-
-    if (!app.Environment.IsProduction())
-    {
-        app.Logger.LogWarning($"Running in environment: {app.Environment.EnvironmentName}. Application Insights disabled.");
-
-        var tc = app.Services.GetRequiredService<TelemetryConfiguration>();
-        tc.DisableTelemetry = true;
-        TelemetryDebugWriter.IsTracingDisabled = true;
-    }
 
     app.UseCustomCss(options => options.MaxContentLength = 10240);
     app.UseManifest(options => options.ThemeColor = "#333333");

@@ -91,13 +91,6 @@
         <link href="~/custom.css" rel="stylesheet" />
     }
     <script src="~/js/3rd/jquery.slim.min.js"></script>
-
-    <environment include="Production">
-        @if (bool.Parse(Configuration["RenderApplicationInsightsJs"]!) && !(bool)Context.Items["DNT"]!)
-        {
-            <partial name="_ApplicationInsightsJs" />
-        }
-    </environment>
     <environment exclude="Production">
         @inject IWebHostEnvironment WebHostEnvironment
         <script>
