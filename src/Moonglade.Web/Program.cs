@@ -1,5 +1,4 @@
-﻿using Azure.Monitor.OpenTelemetry.AspNetCore;
-using Edi.Captcha;
+﻿using Edi.Captcha;
 using Edi.PasswordGenerator;
 using Microsoft.AspNetCore.HttpOverrides;
 using Microsoft.AspNetCore.Rewrite;
@@ -55,11 +54,6 @@ void ConfigureServices(IServiceCollection services)
     services.AddMediatR(config => config.RegisterServicesFromAssemblies(AppDomain.CurrentDomain.GetAssemblies()));
     services.AddOptions()
             .AddHttpContextAccessor();
-
-    if (!string.IsNullOrWhiteSpace(Environment.GetEnvironmentVariable("APPLICATIONINSIGHTS_CONNECTION_STRING")))
-    {
-        services.AddOpenTelemetry().UseAzureMonitor();
-    }
 
     var magic0 = Encoding.UTF8.GetString(BitConverter.GetBytes('✔'.GetHashCode())
                         .Zip(BitConverter.GetBytes(0x242F2E32)).Select(x => (byte)(x.First + x.Second)).ToArray());
