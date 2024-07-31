@@ -82,15 +82,9 @@ public static class Helper
         return urlsList;
     }
 
-    public static bool IsRunningOnAzureAppService()
-    {
-        return !string.IsNullOrWhiteSpace(Environment.GetEnvironmentVariable("WEBSITE_SITE_NAME"));
-    }
+    public static bool IsRunningOnAzureAppService() => !string.IsNullOrWhiteSpace(Environment.GetEnvironmentVariable("WEBSITE_SITE_NAME"));
 
-    public static bool IsRunningInDocker()
-    {
-        return Environment.GetEnvironmentVariable("DOTNET_RUNNING_IN_CONTAINER") == "true";
-    }
+    public static bool IsRunningInDocker() => Environment.GetEnvironmentVariable("DOTNET_RUNNING_IN_CONTAINER") == "true";
 
     public static string GetClientIP(HttpContext context) => context?.Connection.RemoteIpAddress?.ToString();
 
