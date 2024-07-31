@@ -56,7 +56,8 @@ void ConfigureServices(IServiceCollection services)
     services.AddOptions()
             .AddHttpContextAccessor();
 
-    if (!string.IsNullOrWhiteSpace(builder.Configuration["AzureMonitor:ConnectionString"]))
+    if (!string.IsNullOrWhiteSpace(builder.Configuration["AzureMonitor:ConnectionString"])
+        || !string.IsNullOrWhiteSpace(Environment.GetEnvironmentVariable("APPLICATIONINSIGHTS_CONNECTION_STRING")))
     {
         services.AddOpenTelemetry().UseAzureMonitor();
     }
