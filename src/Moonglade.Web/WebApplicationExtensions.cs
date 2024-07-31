@@ -168,7 +168,7 @@ public static class WebApplicationExtensions
             app.Logger.LogError("Positive China detection, application stopped.");
 
             app.MapGet("/", () => Results.Text(
-                "Due to legal and regulation concerns, we regret to inform you that deploying Moonglade on servers located in Mainland China is currently not possible",
+                "Due to legal and regulation concerns, we regret to inform you that deploying Moonglade on servers located in China (including Hong Kong) is currently not possible",
                 statusCode: 251
             ));
             app.Run();
@@ -176,7 +176,7 @@ public static class WebApplicationExtensions
 
         if (app.Environment.IsDevelopment())
         {
-            app.Logger.LogWarning("Current server is suspected to be located in Mainland China, Moonglade will still run on full functionality in development environment.");
+            app.Logger.LogWarning("Current deployment is suspected to be located in China, Moonglade will still run on full functionality in development environment.");
         }
         else
         {
