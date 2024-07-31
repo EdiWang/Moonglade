@@ -55,21 +55,19 @@ public static class BlogDbContextExtension
 {
     public static async Task ClearAllData(this BlogDbContext context)
     {
-        context.PostTag.RemoveRange();
-        context.PostCategory.RemoveRange();
-        context.CommentReply.RemoveRange();
-        context.Category.RemoveRange();
-        context.Tag.RemoveRange();
-        context.Comment.RemoveRange();
-        context.FriendLink.RemoveRange();
-        context.Mention.RemoveRange();
-        context.Post.RemoveRange();
-        context.BlogConfiguration.RemoveRange();
-        context.BlogAsset.RemoveRange();
-        context.BlogTheme.RemoveRange();
-        context.StyleSheet.RemoveRange();
-        context.LoginHistory.RemoveRange();
-
-        await context.SaveChangesAsync();
+        await context.PostTag.ExecuteDeleteAsync();
+        await context.PostCategory.ExecuteDeleteAsync();
+        await context.CommentReply.ExecuteDeleteAsync();
+        await context.Category.ExecuteDeleteAsync();
+        await context.Tag.ExecuteDeleteAsync();
+        await context.Comment.ExecuteDeleteAsync();
+        await context.FriendLink.ExecuteDeleteAsync();
+        await context.Mention.ExecuteDeleteAsync();
+        await context.Post.ExecuteDeleteAsync();
+        await context.BlogConfiguration.ExecuteDeleteAsync();
+        await context.BlogAsset.ExecuteDeleteAsync();
+        await context.BlogTheme.ExecuteDeleteAsync();
+        await context.StyleSheet.ExecuteDeleteAsync();
+        await context.LoginHistory.ExecuteDeleteAsync();
     }
 }
