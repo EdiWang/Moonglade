@@ -36,27 +36,17 @@ public class MentionController(
             return Ok("Webmention received and verified.");
         }
 
-        switch (response.Status)
+        return response.Status switch
         {
-            case WebmentionStatus.InvalidWebmentionRequest:
-                return BadRequest("Invalid webmention request.");
-
-            case WebmentionStatus.ErrorSourceNotContainTargetUri:
-                return Conflict("The source URI does not contain a link to the target URI.");
-
-            case WebmentionStatus.SpamDetectedFakeNotFound:
-                return NotFound();
-
-            case WebmentionStatus.ErrorTargetUriNotExist:
-                return Conflict("Can not get post id and title for the target URL.");
-
-            case WebmentionStatus.ErrorWebmentionAlreadyRegistered:
-                return Conflict("Webmention already registered.");
-
-            case WebmentionStatus.GenericError:
-            default:
-                return StatusCode(StatusCodes.Status500InternalServerError);
-        }
+            WebmentionStatus.InvalidWebmentionRequest => BadRequest("Invalid webmention request."),
+            WebmentionStatus.ErrorSourceNotContainTargetUri => Conflict(
+                "The source URI does not contain a link to the target URI."),
+            WebmentionStatus.SpamDetectedFakeNotFound => NotFound(),
+            WebmentionStatus.ErrorTargetUriNotExist => Conflict("Can not get post id and title for the target URL."),
+            WebmentionStatus.ErrorWebmentionAlreadyRegistered => Conflict("Webmention already registered."),
+            WebmentionStatus.GenericError => StatusCode(StatusCodes.Status500InternalServerError),
+            _ => StatusCode(StatusCodes.Status500InternalServerError)
+        };
     }
 
     [HttpPost("/pingback")]
