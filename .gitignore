@@ -263,3 +263,6 @@ paket-files/
 __pycache__/
 *.pyc
 *.txt
+
+# Build time files
+**/lib/tinymce
