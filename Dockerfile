@@ -8,7 +8,7 @@ USER app
 #RUN apk add --no-cache tzdata
 
 # Captcha font
-COPY ./build/OpenSans-Regular.ttf /usr/share/fonts/OpenSans-Regular.ttf
+COPY ./build/OpenSans-Bold.ttf /usr/share/fonts/OpenSans-Bold.ttf
 
 WORKDIR /app
 EXPOSE 8080
