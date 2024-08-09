@@ -1,6 +1,6 @@
 param(
     [bool] $useLinuxPlanWithDocker = $true,
-    [string] $defaultRegion = "Japan East"
+    [string] $defaultRegion = "West US"
 )
 
 function Get-UrlStatusCode([string] $Url) {
