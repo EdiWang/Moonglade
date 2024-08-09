@@ -134,16 +134,38 @@ hr.admin-nav-divider {
 }
 
 .admin-nav-section .list-group-item {
+    border-radius: 5px;
     background-color: transparent;
-    border-left: 2px solid transparent;
-    border-top: 0;
-    border-bottom: 0;
-    border-right: 0;
+    border: 0 none;
+    padding-left: 12px;
 }
 
-    .admin-nav-section .list-group-item.active,
-    .admin-nav-section .list-group-item:hover {
-        border-left: 2px solid var(--accent-color2);
+    .admin-nav-section .list-group-item .positioning-region {
+        display: flex;
+        width: 100%;
+        position: relative;
+        align-items: center;
+    }
+
+    .admin-nav-section .list-group-item .content-region {
+        display: flex;
+        align-items: center;
+        white-space: nowrap;
+        width: 100%;
+        margin-inline-start: 6px;
+    }
+
+    .admin-nav-section .list-group-item.active .positioning-region::before,
+    .admin-nav-section .list-group-item:hover .positioning-region::before {
+        content: "";
+        display: block;
+        position: absolute;
+        right: unset;
+        width: 3px;
+        height: 18px;
+        background: var(--accent-color2);
+        border-radius: 3px;
+        z-index: 5;
     }
 
     .admin-nav-section .list-group-item:hover {
@@ -271,10 +293,6 @@ div.mce-fullscreen {
 .icon-admin-title {
     font-size: 1.4rem;
     color: var(--accent-color2);
-}
-
-.admin-nav-section .list-group-item {
-    padding: .6rem 1rem;
 }
 
 table.dataTable {
