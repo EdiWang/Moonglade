@@ -42,9 +42,9 @@ else {
 
 # Get region name
 
-$regionName = Read-Host "Enter region name (default: Japan East)"
+$regionName = Read-Host "Enter region name (default: West US)"
 if ([string]::IsNullOrWhiteSpace($regionName)) {
-    $regionName = "Japan East"
+    $regionName = "West US"
 }
 else {
     $regionName = $regionName.Trim()
