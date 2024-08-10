@@ -216,4 +216,4 @@ $echo = az webapp restart --name $webAppName --resource-group $rsgName
 Write-Host "Warming up the container..."
 Start-Sleep -Seconds 20
 
-Read-Host -Prompt "Setup is done, you should be able to run Moonglade on '$webAppUrl' now, press [ENTER] to exit."
+Read-Host -Prompt "Setup is done, you should be able to run Moonglade on '$webAppUrl' now, if you get a 502 error, please try restart Moonglade from Azure App Service blade. Press [ENTER] to exit."
