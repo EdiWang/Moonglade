@@ -1,7 +1,6 @@
 # Moonglade Blog
 
 [![Docker Linux x64](https://github.com/EdiWang/Moonglade/actions/workflows/docker.yml/badge.svg)](https://github.com/EdiWang/Moonglade/actions/workflows/docker.yml)
-![Man hours](https://manhours.aiursoft.cn/r/github.com/ediwang/moonglade.svg)
 
 A personal blog system that optimized for [**Microsoft Azure**](https://azure.microsoft.com/en-us/). Designed for developers, enabling most common blogging features including posts, comments, categories, archive, tags and pages.
 
