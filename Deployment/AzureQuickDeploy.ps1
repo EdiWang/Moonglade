@@ -1,5 +1,6 @@
 param(
-    [string] $defaultRegion = "West US"
+    [string] $defaultRegion = "West US",
+    [switch] $preRelease = $false
 )
 
 function Get-UrlStatusCode([string] $Url) {
@@ -162,7 +163,6 @@ while ($true) {
 # Generate random names and passwords
 $rndNumber = Get-Random -Minimum 1000 -Maximum 9999
 $rsgName = "moongladersg$rndNumber"
-$dockerImageName = "ediwang/moonglade"
 $aspName = "moongladeplan$rndNumber"
 $storageAccountName = "moongladestorage$rndNumber"
 $storageContainerName = "moongladeimages$rndNumber"
@@ -177,9 +177,16 @@ $password += Get-RandomCharacters -length 1 -characters '!$%@#'
 $password = Scramble-String $password
 $sqlServerPassword = "m$password"
 
+# Set docker image name based on pre-release flag
+if ($preRelease) {
+    $dockerImageName = "ediwang/moonglade:preview"
+} else {
+    $dockerImageName = "ediwang/moonglade"
+}
+
 # Confirmation
 Clear-Host
-Write-Host "Your Moonglade will be deployed to [$rsgName] in [$regionName] under Azure subscription [$subscriptionName]. Please confirm before continue." -ForegroundColor Green
+Write-Host "Your Moonglade will be deployed to [$rsgName] in [$regionName] under Azure subscription [$subscriptionName]. Please confirm before continuing." -ForegroundColor Green
 Write-Host "+ Linux App Service Plan with Docker" -ForegroundColor Cyan
 Read-Host -Prompt "Press [ENTER] to continue, [CTRL + C] to cancel"
 
@@ -216,4 +223,4 @@ $echo = az webapp restart --name $webAppName --resource-group $rsgName
 Write-Host "Warming up the container..."
 Start-Sleep -Seconds 20
 
-Read-Host -Prompt "Setup is done, you should be able to run Moonglade on '$webAppUrl' now, if you get a 502 error, please try restart Moonglade from Azure App Service blade. Press [ENTER] to exit."
+Read-Host -Prompt "Setup is done, you should be able to run Moonglade on '$webAppUrl' now, if you get a 502 error, please try restarting Moonglade from Azure App Service blade. Press [ENTER] to exit."
