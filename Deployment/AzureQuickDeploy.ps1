@@ -1,5 +1,4 @@
 param(
-    [bool] $useLinuxPlanWithDocker = $true,
     [string] $defaultRegion = "West US"
 )
 
@@ -37,15 +36,11 @@ function Create-ResourceGroup($rsgName, $regionName) {
     }
 }
 
-function Create-AppServicePlan($aspName, $rsgName, $regionName, $useLinuxPlanWithDocker) {
+function Create-AppServicePlan($aspName, $rsgName, $regionName) {
     $planCheck = az appservice plan list --query "[?name=='$aspName']" | ConvertFrom-Json
     $planExists = $planCheck.Length -gt 0
     if (!$planExists) {
-        if ($useLinuxPlanWithDocker) {
-            $echo = az appservice plan create -n $aspName -g $rsgName --is-linux --sku P0V3 --location $regionName
-        } else {
-            $echo = az appservice plan create -n $aspName -g $rsgName --sku P0V3 --location $regionName
-        }
+        $echo = az appservice plan create -n $aspName -g $rsgName --is-linux --sku P0V3 --location $regionName
     }
 }
 
@@ -87,40 +82,31 @@ function Create-StorageContainer($storageContainerName, $storageConn) {
     }
 }
 
-function Create-WebApp($webAppName, $rsgName, $aspName, $useLinuxPlanWithDocker, $dockerImageName) {
+function Create-WebApp($webAppName, $rsgName, $aspName, $dockerImageName) {
     $appCheck = az webapp list --query "[?name=='$webAppName']" | ConvertFrom-Json
     $appExists = $appCheck.Length -gt 0
     if (!$appExists) {
         Write-Host "Creating Web App"
-        if ($useLinuxPlanWithDocker) {
-            Write-Host "Using Linux Plan with Docker image from '$dockerImageName', this deployment will be ready to run."
-            $echo = az webapp create -g $rsgName -p $aspName -n $webAppName --container-image-name $dockerImageName
-        } else {
-            Write-Host "Using Windows Plan with deployment from GitHub"
-            $echo = az webapp create -g $rsgName -p $aspName -n $webAppName --runtime "DOTNET|8.0"
-        }
+        Write-Host "Using Linux Plan with Docker image from '$dockerImageName', this deployment will be ready to run."
+        $echo = az webapp create -g $rsgName -p $aspName -n $webAppName --container-image-name $dockerImageName
+        
         $echo = az webapp config set -g $rsgName -n $webAppName --always-on true --use-32bit-worker-process false --http20-enabled true
     }
 }
 
-function Update-WebAppConfig($webAppName, $rsgName, $sqlConnStr, $storageConn, $storageContainerName, $useLinuxPlanWithDocker) {
+function Update-WebAppConfig($webAppName, $rsgName, $sqlConnStr, $storageConn, $storageContainerName) {
     Write-Host "Updating Configuration" -ForegroundColor Green
     Write-Host "Setting SQL Database Connection String"
     az webapp config connection-string set -g $rsgName -n $webAppName -t SQLAzure --settings MoongladeDatabase=$sqlConnStr
 
     Write-Host "Adding Blob Storage Connection String"
     $scon = $storageConn.connectionString
-    if ($useLinuxPlanWithDocker) {
-        $echo = az webapp config appsettings set -g $rsgName -n $webAppName --settings ImageStorage__Provider=azurestorage
-        $echo = az webapp config appsettings set -g $rsgName -n $webAppName --settings ImageStorage__AzureStorageSettings__ConnectionString=$scon
-        $echo = az webapp config appsettings set -g $rsgName -n $webAppName --settings ImageStorage__AzureStorageSettings__ContainerName=$storageContainerName
-        $echo = az webapp config appsettings set -g $rsgName -n $webAppName --settings ForwardedHeaders__UseForwardedHeaders=true
-        $echo = az webapp config appsettings set -g $rsgName -n $webAppName --settings ASPNETCORE_FORWARDEDHEADERS_ENABLED=true
-    } else {
-        $echo = az webapp config appsettings set -g $rsgName -n $webAppName --settings ImageStorage:Provider=azurestorage
-        $echo = az webapp config appsettings set -g $rsgName -n $webAppName --settings ImageStorage:AzureStorageSettings:ConnectionString=$scon
-        $echo = az webapp config appsettings set -g $rsgName -n $webAppName --settings ImageStorage:AzureStorageSettings:ContainerName=$storageContainerName
-    }
+
+    $echo = az webapp config appsettings set -g $rsgName -n $webAppName --settings ImageStorage__Provider=azurestorage
+    $echo = az webapp config appsettings set -g $rsgName -n $webAppName --settings ImageStorage__AzureStorageSettings__ConnectionString=$scon
+    $echo = az webapp config appsettings set -g $rsgName -n $webAppName --settings ImageStorage__AzureStorageSettings__ContainerName=$storageContainerName
+    $echo = az webapp config appsettings set -g $rsgName -n $webAppName --settings ForwardedHeaders__UseForwardedHeaders=true
+    $echo = az webapp config appsettings set -g $rsgName -n $webAppName --settings ASPNETCORE_FORWARDEDHEADERS_ENABLED=true
 }
 
 # Main script starts here
@@ -194,9 +180,7 @@ $sqlServerPassword = "m$password"
 # Confirmation
 Clear-Host
 Write-Host "Your Moonglade will be deployed to [$rsgName] in [$regionName] under Azure subscription [$subscriptionName]. Please confirm before continue." -ForegroundColor Green
-if ($useLinuxPlanWithDocker) {
-    Write-Host "+ Linux App Service Plan with Docker" -ForegroundColor Cyan
-}
+Write-Host "+ Linux App Service Plan with Docker" -ForegroundColor Cyan
 Read-Host -Prompt "Press [ENTER] to continue, [CTRL + C] to cancel"
 
 # Set subscription
@@ -205,7 +189,7 @@ Write-Host "Selected Azure Subscription: " $subscriptionName -ForegroundColor Cy
 
 # Create resources
 Create-ResourceGroup $rsgName $regionName
-Create-AppServicePlan $aspName $rsgName $regionName $useLinuxPlanWithDocker
+Create-AppServicePlan $aspName $rsgName $regionName
 Create-SqlServer $sqlServerName $rsgName $regionName $sqlServerUsername $sqlServerPassword
 Create-SqlDatabase $sqlDatabaseName $rsgName $sqlServerName
 Create-StorageAccount $storageAccountName $rsgName $regionName
@@ -213,7 +197,7 @@ Create-StorageAccount $storageAccountName $rsgName $regionName
 $storageConn = az storage account show-connection-string -g $rsgName -n $storageAccountName | ConvertFrom-Json
 Create-StorageContainer $storageContainerName $storageConn
 
-Create-WebApp $webAppName $rsgName $aspName $useLinuxPlanWithDocker $dockerImageName
+Create-WebApp $webAppName $rsgName $aspName $dockerImageName
 
 $createdApp = az webapp list --query "[?name=='$webAppName']" | ConvertFrom-Json
 $createdExists = $createdApp.Length -gt 0
@@ -225,18 +209,11 @@ if ($createdExists) {
 # Update configuration
 $sqlConnStrTemplate = az sql db show-connection-string -s $sqlServerName -n $sqlDatabaseName -c ado.net --auth-type SqlPassword
 $sqlConnStr = $sqlConnStrTemplate.Replace("<username>", $sqlServerUsername).Replace("<password>", $sqlServerPassword)
-Update-WebAppConfig $webAppName $rsgName $sqlConnStr $storageConn $storageContainerName $useLinuxPlanWithDocker
+Update-WebAppConfig $webAppName $rsgName $sqlConnStr $storageConn $storageContainerName
 
-if (!$useLinuxPlanWithDocker) {
-    Write-Host "Pulling source code and run build on Azure (this takes time, please wait)..."
-    az webapp deployment source config --branch release --manual-integration --name $webAppName --repo-url https://github.com/EdiWang/Moonglade --resource-group $rsgName
-}
+$echo = az webapp restart --name $webAppName --resource-group $rsgName
 
-az webapp restart --name $webAppName --resource-group $rsgName
-
-if ($useLinuxPlanWithDocker) {
-    Write-Host "Warming up the container..."
-    Start-Sleep -Seconds 20
-}
+Write-Host "Warming up the container..."
+Start-Sleep -Seconds 20
 
 Read-Host -Prompt "Setup is done, you should be able to run Moonglade on '$webAppUrl' now, press [ENTER] to exit."
