@@ -35,7 +35,7 @@
   </ItemGroup>
   <ItemGroup>
     <PackageReference Include="Edi.ChinaDetector" Version="1.2.251" />
-    <PackageReference Include="Edi.ImageWatermark" Version="2.12.0" />
+    <PackageReference Include="Edi.ImageWatermark" Version="2.13.0" />
     <PackageReference Include="Edi.PasswordGenerator" Version="1.2.0" />
     <PackageReference Include="Microsoft.Extensions.Logging.AzureAppServices" Version="8.0.7" />
     <PackageReference Include="TinyMCE" Version="7.3.0" />
