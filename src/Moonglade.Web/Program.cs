@@ -152,7 +152,7 @@ void ConfigureServices(IServiceCollection services)
 void ConfigureMiddleware()
 {
     bool useXFFHeaders = app.Configuration.GetSection("ForwardedHeaders:Enabled").Get<bool>();
-    if (useXFFHeaders) UseSmartXFFHeader(app);
+    if (useXFFHeaders) app.UseSmartXFFHeader();
 
     app.UseCustomCss(options => options.MaxContentLength = 10240);
     app.UseManifest(options => options.ThemeColor = "#333333");
@@ -217,69 +217,4 @@ void ConfigureMiddleware()
     });
     app.MapControllers();
     app.MapRazorPages();
-}
-
-void UseSmartXFFHeader(WebApplication webApplication)
-{
-    var fho = new ForwardedHeadersOptions
-    {
-        ForwardedHeaders = ForwardedHeaders.XForwardedFor | ForwardedHeaders.XForwardedProto
-    };
-
-    // ASP.NET Core always use the last value in XFF header, which is AFD's IP address
-    // Need to set as `X-Azure-ClientIP` as workaround
-    // https://learn.microsoft.com/en-us/azure/frontdoor/front-door-http-headers-protocol
-    var headerName = webApplication.Configuration["ForwardedHeaders:HeaderName"];
-    if (!string.IsNullOrWhiteSpace(headerName))
-    {
-        // RFC 7230
-        if (headerName.Length > 40 || !Helper.IsValidHeaderName(headerName))
-        {
-            app.Logger.LogWarning($"XFF header name '{headerName}' is invalid, it will not be applied");
-        }
-        else
-        {
-            fho.ForwardedForHeaderName = headerName;
-        }
-    }
-
-    var knownProxies = webApplication.Configuration.GetSection("ForwardedHeaders:KnownProxies").Get<string[]>();
-    if (knownProxies is { Length: > 0 })
-    {
-        // Fix docker deployments on Azure App Service blows up with Azure AD authentication
-        // https://docs.microsoft.com/en-us/aspnet/core/host-and-deploy/proxy-load-balancer?view=aspnetcore-6.0
-        // "Outside of using IIS Integration when hosting out-of-process, Forwarded Headers Middleware isn't enabled by default."
-        if (Helper.IsRunningInDocker())
-        {
-            // Fix #712
-            // Adding KnownProxies will make Azure App Service boom boom with Azure AD redirect URL
-            // Result in `https` incorrectly written into `http` and make `/signin-oidc` url invalid.
-            webApplication.Logger.LogWarning("Running in Docker, skip adding 'KnownProxies'.");
-        }
-        else
-        {
-            fho.ForwardLimit = null;
-            fho.KnownProxies.Clear();
-
-            foreach (var ip in knownProxies)
-            {
-                fho.KnownProxies.Add(IPAddress.Parse(ip));
-            }
-
-            webApplication.Logger.LogInformation("Added known proxies ({0}): {1}",
-                knownProxies.Length,
-                System.Text.Json.JsonSerializer.Serialize(knownProxies));
-        }
-    }
-    else
-    {
-        // Fix deployment on AFD would not get the correct client IP address because it doesn't trust network other than localhost by default
-        // Add this can make ASP.NET Core read forward headers from any network with a potential security issue
-        // Attackers can hide their IP by sending a fake header
-        // This is OK because Moonglade is just a blog, nothing to hack, let it be
-        fho.KnownNetworks.Add(new(IPAddress.Any, 0));
-        fho.KnownNetworks.Add(new(IPAddress.IPv6Any, 0));
-    }
-
-    webApplication.UseForwardedHeaders(fho);
 }
