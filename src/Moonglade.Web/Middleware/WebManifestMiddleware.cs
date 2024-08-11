@@ -10,6 +10,8 @@ public class WebManifestMiddleware(RequestDelegate next)
     public async Task Invoke(
         HttpContext context, IBlogConfig blogConfig, IOptions<List<ManifestIcon>> manifestIcons)
     {
+        await next(context);
+
         var model = new ManifestModel
         {
             ShortName = blogConfig.GeneralSettings.SiteTitle,
