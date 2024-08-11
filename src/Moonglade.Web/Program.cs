@@ -26,6 +26,7 @@ builder.WriteParameterTable();
 
 if (Helper.IsRunningOnAzureAppService())
 {
+    // https://learn.microsoft.com/en-us/aspnet/core/fundamentals/logging/?view=aspnetcore-8.0#azure-app-service
     builder.Logging.AddAzureWebAppDiagnostics();
 }
 
@@ -186,7 +187,6 @@ void ConfigureMiddleware()
     else
     {
         app.UseStatusCodePages(ConfigureStatusCodePages.Handler).UseExceptionHandler("/error");
-        // app.UseHsts();
     }
 
     app.UseHttpsRedirection();
