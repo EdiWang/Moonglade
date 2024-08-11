@@ -154,7 +154,6 @@ void ConfigureMiddleware()
     if (useXFFHeaders) app.UseSmartXFFHeader();
 
     app.UseCustomCss(options => options.MaxContentLength = 10240);
-    app.UseManifest(options => options.ThemeColor = "#333333");
 
     app.UseOpenSearch(options =>
     {
@@ -217,4 +216,5 @@ void ConfigureMiddleware()
     app.MapRazorPages();
 
     app.MapGet("/robots.txt", RobotsTxtMapHandler.Handler);
+    app.MapGet("/manifest.webmanifest", WebManifestMapHandler.Handler);
 }

@@ -1,17 +1,17 @@
 ﻿using Microsoft.Extensions.Options;
 using System.Text.Json.Serialization;
 
-namespace Moonglade.Web.Middleware;
+namespace Moonglade.Web.Handlers;
 
-public class WebManifestMiddleware(RequestDelegate next)
+public class WebManifestMapHandler
 {
-    public static WebManifestMiddlewareOptions Options { get; set; } = new();
-
-    public async Task Invoke(
-        HttpContext context, IBlogConfig blogConfig, IOptions<List<ManifestIcon>> manifestIcons)
+    public static Delegate Handler => async (HttpContext httpContext, IBlogConfig blogConfig, IOptions<List<ManifestIcon>> manifestIcons) =>
     {
-        await next(context);
+        await Handle(httpContext, blogConfig, manifestIcons);
+    };
 
+    public static async Task Handle(HttpContext httpContext, IBlogConfig blogConfig, IOptions<List<ManifestIcon>> manifestIcons)
+    {
         var model = new ManifestModel
         {
             ShortName = blogConfig.GeneralSettings.SiteTitle,
@@ -19,22 +19,21 @@ public class WebManifestMiddleware(RequestDelegate next)
             Description = blogConfig.GeneralSettings.Description,
             StartUrl = "/",
             Icons = manifestIcons?.Value,
-            BackgroundColor = Options.ThemeColor,
-            ThemeColor = Options.ThemeColor,
+            BackgroundColor = "#333333",
+            ThemeColor = "#333333",
             Display = "standalone",
             Orientation = "portrait"
         };
 
-        context.Response.StatusCode = StatusCodes.Status200OK;
-        context.Response.ContentType = "application/manifest+json";
-        context.Response.Headers.TryAdd("cache-control", "public,max-age=3600");
+        httpContext.Response.StatusCode = StatusCodes.Status200OK;
+        httpContext.Response.ContentType = "application/manifest+json";
+        httpContext.Response.Headers.TryAdd("cache-control", "public,max-age=3600");
 
         // Do not use `WriteAsJsonAsync` because it will override ContentType header
-        await context.Response.WriteAsync(model.ToJson(true), context.RequestAborted);
+        await httpContext.Response.WriteAsync(model.ToJson(true), httpContext.RequestAborted);
     }
 }
 
-// Credits: https://github.com/Anduin2017/Blog
 public class ManifestModel
 {
     [JsonPropertyName("short_name")]
@@ -70,24 +69,4 @@ public class ManifestIcon
 
     [JsonIgnore]
     public int Pixel { get; set; }
-}
-
-public static partial class ApplicationBuilderExtensions
-{
-    public static IApplicationBuilder UseManifest(this IApplicationBuilder app, Action<WebManifestMiddlewareOptions> options)
-    {
-        options(WebManifestMiddleware.Options);
-
-        app.UseWhen(
-            ctx => ctx.Request.Path == "/manifest.webmanifest",
-            appBuilder => appBuilder.UseMiddleware<WebManifestMiddleware>()
-        );
-
-        return app;
-    }
-}
-
-public class WebManifestMiddlewareOptions
-{
-    public string ThemeColor { get; set; } = "#333333";
 }
