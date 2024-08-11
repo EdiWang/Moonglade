@@ -14,6 +14,7 @@ using SixLabors.Fonts;
 using System.Globalization;
 using System.Security.Cryptography;
 using System.Text.Json.Serialization;
+using Moonglade.Web.Handlers;
 using Encoder = Moonglade.Web.Configuration.Encoder;
 
 Encoding.RegisterProvider(CodePagesEncodingProvider.Instance);
@@ -154,7 +155,6 @@ void ConfigureMiddleware()
 
     app.UseCustomCss(options => options.MaxContentLength = 10240);
     app.UseManifest(options => options.ThemeColor = "#333333");
-    app.UseRobotsTxt();
 
     app.UseOpenSearch(options =>
     {
@@ -215,4 +215,6 @@ void ConfigureMiddleware()
     });
     app.MapControllers();
     app.MapRazorPages();
+
+    app.MapGet("/robots.txt", RobotsTxtMapHandler.Handler);
 }
