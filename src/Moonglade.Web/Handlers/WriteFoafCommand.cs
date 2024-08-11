@@ -2,7 +2,7 @@
 using System.Security.Cryptography;
 using System.Xml;
 
-namespace Moonglade.Web.Middleware;
+namespace Moonglade.Web.Handlers;
 
 public class WriteFoafCommand(FoafDoc doc, string currentRequestUrl, List<FriendLinkEntity> links)
     : IRequest<string>

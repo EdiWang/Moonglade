@@ -165,11 +165,6 @@ void ConfigureMiddleware()
     var bc = app.Services.GetRequiredService<IBlogConfig>();
 
     app.UseWhen(
-        _ => bc.AdvancedSettings.EnableFoaf,
-        appBuilder => appBuilder.UseMiddleware<FoafMiddleware>()
-    );
-
-    app.UseWhen(
         ctx => bc.AdvancedSettings.EnableSiteMap && ctx.Request.Path == "/sitemap.xml",
         appBuilder => appBuilder.UseMiddleware<SiteMapMiddleware>()
     );
@@ -217,4 +212,9 @@ void ConfigureMiddleware()
 
     app.MapGet("/robots.txt", RobotsTxtMapHandler.Handler);
     app.MapGet("/manifest.webmanifest", WebManifestMapHandler.Handler);
+
+    if (bc.AdvancedSettings.EnableFoaf)
+    {
+        app.MapGet("/foaf.xml", FoafMapHandler.Handler);
+    }
 }
