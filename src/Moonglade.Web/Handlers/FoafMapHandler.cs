@@ -12,6 +12,23 @@ public class FoafMapHandler
     public static async Task Handle(
         HttpContext httpContext, IBlogConfig blogConfig, IMediator mediator, LinkGenerator linkGenerator)
     {
+        var friends = await mediator.Send(new GetAllLinksQuery());
+        var foafDoc = new FoafDoc
+        {
+            Name = blogConfig.GeneralSettings.OwnerName,
+            BlogUrl = Helper.ResolveRootUrl(httpContext, blogConfig.GeneralSettings.CanonicalPrefix, true),
+            Email = blogConfig.GeneralSettings.OwnerEmail,
+            PhotoUrl = linkGenerator.GetUriByAction(httpContext, "Avatar", "Assets")
+        };
+        var requestUrl = GetUri(httpContext.Request).ToString();
+        var xml = await mediator.Send(new WriteFoafCommand(foafDoc, requestUrl, friends));
+
+        httpContext.Response.Headers.Append("Cache-Control", "public, max-age=3600");
+        httpContext.Response.ContentType = WriteFoafCommand.ContentType;
+
+        await httpContext.Response.WriteAsync(xml, httpContext.RequestAborted);
+        return;
+
         static Uri GetUri(HttpRequest request)
         {
             return new(string.Concat(
@@ -25,21 +42,6 @@ public class FoafMapHandler
                 request.Path.HasValue ? request.Path.Value : string.Empty,
                 request.QueryString.HasValue ? request.QueryString.Value : string.Empty));
         }
-
-        var friends = await mediator.Send(new GetAllLinksQuery());
-        var foafDoc = new FoafDoc
-        {
-            Name = blogConfig.GeneralSettings.OwnerName,
-            BlogUrl = Helper.ResolveRootUrl(httpContext, blogConfig.GeneralSettings.CanonicalPrefix, true),
-            Email = blogConfig.GeneralSettings.OwnerEmail,
-            PhotoUrl = linkGenerator.GetUriByAction(httpContext, "Avatar", "Assets")
-        };
-        var requestUrl = GetUri(httpContext.Request).ToString();
-        var xml = await mediator.Send(new WriteFoafCommand(foafDoc, requestUrl, friends));
-
-        //[ResponseCache(Duration = 3600)]
-        httpContext.Response.ContentType = WriteFoafCommand.ContentType;
-        await httpContext.Response.WriteAsync(xml, httpContext.RequestAborted);
     }
 }
 
