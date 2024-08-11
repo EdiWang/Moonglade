@@ -1,6 +1,5 @@
 ﻿using Edi.Captcha;
 using Edi.PasswordGenerator;
-using Microsoft.AspNetCore.HttpOverrides;
 using Microsoft.AspNetCore.Rewrite;
 using Moonglade.Comments.Moderator;
 using Moonglade.Data.MySql;
@@ -13,7 +12,6 @@ using Moonglade.Syndication;
 using Moonglade.Webmention;
 using SixLabors.Fonts;
 using System.Globalization;
-using System.Net;
 using System.Security.Cryptography;
 using System.Text.Json.Serialization;
 using Encoder = Moonglade.Web.Configuration.Encoder;
