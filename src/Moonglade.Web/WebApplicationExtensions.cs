@@ -152,6 +152,8 @@ public static class WebApplicationExtensions
                 }
             }
         }
+
+        app.Logger.LogInformation($"Manifest VersionString: {bc.SystemManifestSettings.VersionString}, installed on {bc.SystemManifestSettings.InstallTimeUtc} UTC");
     }
 
     public static async Task DetectChina(this WebApplication app)
