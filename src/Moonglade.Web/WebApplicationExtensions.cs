@@ -145,6 +145,10 @@ public static class WebApplicationExtensions
                         await mediator.Send(new AddDefaultConfigurationCommand(key, nameof(LocalAccountSettings),
                             LocalAccountSettings.DefaultValue.ToJson()));
                         break;
+                    case 99:
+                        await mediator.Send(new AddDefaultConfigurationCommand(key, nameof(SystemManifestSettings),
+                            SystemManifestSettings.DefaultValue.ToJson()));
+                        break;
                 }
             }
         }

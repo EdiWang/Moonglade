@@ -14,6 +14,7 @@ public interface IBlogConfig
     CustomStyleSheetSettings CustomStyleSheetSettings { get; set; }
     CustomMenuSettings CustomMenuSettings { get; set; }
     LocalAccountSettings LocalAccountSettings { get; set; }
+    SystemManifestSettings SystemManifestSettings { get; set; }
 
     IEnumerable<int> LoadFromConfig(IDictionary<string, string> config);
     KeyValuePair<string, string> UpdateAsync<T>(T blogSettings) where T : IBlogSettings;
@@ -39,6 +40,8 @@ public class BlogConfig : IBlogConfig
 
     public LocalAccountSettings LocalAccountSettings { get; set; }
 
+    public SystemManifestSettings SystemManifestSettings { get; set; }
+
     public IEnumerable<int> LoadFromConfig(IDictionary<string, string> config)
     {
         ContentSettings = AssignValueForConfigItem(1, ContentSettings.DefaultValue, config);
@@ -50,6 +53,9 @@ public class BlogConfig : IBlogConfig
         CustomStyleSheetSettings = AssignValueForConfigItem(7, CustomStyleSheetSettings.DefaultValue, config);
         CustomMenuSettings = AssignValueForConfigItem(10, CustomMenuSettings.DefaultValue, config);
         LocalAccountSettings = AssignValueForConfigItem(11, LocalAccountSettings.DefaultValue, config);
+
+        // Special case
+        SystemManifestSettings = AssignValueForConfigItem(99, SystemManifestSettings.DefaultValue, config);
 
         return _keysToInit.AsEnumerable();
     }
