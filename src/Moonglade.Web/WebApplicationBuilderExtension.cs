@@ -39,11 +39,6 @@ public static class WebApplicationBuilderExtension
             { "Environment", envName ?? "N/A" }
         };
 
-        if (!string.IsNullOrWhiteSpace(envName) && envName.ToLower() == "development")
-        {
-            dic.Add("Connection String", builder.Configuration.GetConnectionString("MoongladeDatabase")!);
-        }
-
         foreach (var item in dic)
         {
             Console.WriteLine($"{item.Key,-20} | {item.Value,-35}");
