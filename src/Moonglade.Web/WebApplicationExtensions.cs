@@ -64,6 +64,7 @@ public static class WebApplicationExtensions
         try
         {
             await InitBlogConfig(app, mediator);
+            if (!isNew) await TryMigration(app);
         }
         catch (Exception e)
         {
@@ -219,8 +220,48 @@ public static class WebApplicationExtensions
                 }
             }
         }
+    }
 
-        app.Logger.LogInformation($"Manifest VersionString: {bc.SystemManifestSettings.VersionString}, installed on {bc.SystemManifestSettings.InstallTimeUtc} UTC");
+    private static async Task TryMigration(WebApplication app)
+    {
+        var bc = app.Services.GetRequiredService<IBlogConfig>();
+        app.Logger.LogInformation($"Found manifest, VersionString: {bc.SystemManifestSettings.VersionString}, installed on {bc.SystemManifestSettings.InstallTimeUtc} UTC");
+
+        var mfv = Version.Parse(bc.SystemManifestSettings.VersionString);
+        var cuv = Version.Parse(Helper.AppVersionBasic);
+
+        if (mfv < cuv)
+        {
+            app.Logger.LogInformation("Starting database migration...");
+
+            using var scope = app.Services.CreateScope();
+            var services = scope.ServiceProvider;
+
+            string dbType = app.Configuration.GetConnectionString("DatabaseType")!;
+            if (dbType != "sqlserver")
+            {
+                var message = $"Automatic database migration is not supported on `{dbType}`, ";
+                app.Logger.LogCritical(message);
+                throw new NotSupportedException(message);
+            }
+
+            var context = services.GetRequiredService<SqlServerBlogDbContext>();
+            ExecuteMSSQLMigrationScript(context, mfv.ToString(), cuv.ToString());
+
+            bc.SystemManifestSettings.VersionString = Helper.AppVersionBasic;
+            bc.SystemManifestSettings.InstallTimeUtc = DateTime.UtcNow;
+            var kvp = bc.UpdateAsync(bc.SystemManifestSettings);
+
+            var mediator = services.GetRequiredService<IMediator>();
+            await mediator.Send(new UpdateConfigurationCommand(kvp.Key, kvp.Value));
+
+            app.Logger.LogInformation("Database migration completed.");
+        }
+    }
+
+    private static void ExecuteMSSQLMigrationScript(SqlServerBlogDbContext context, string fromVersion, string toVersion)
+    {
+
     }
 
     public static async Task DetectChina(this WebApplication app)
