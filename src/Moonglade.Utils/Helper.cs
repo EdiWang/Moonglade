@@ -13,6 +13,18 @@ namespace Moonglade.Utils;
 
 public static class Helper
 {
+    public static string AppVersionBasic
+    {
+        get
+        {
+            var asm = Assembly.GetEntryAssembly();
+            if (null == asm) return "N/A";
+            
+            var fileVersion = asm.GetCustomAttribute<AssemblyFileVersionAttribute>()?.Version;
+            return fileVersion;
+        }
+    }
+
     public static string AppVersion
     {
         get
