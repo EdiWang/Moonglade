@@ -3,11 +3,21 @@ using Moonglade.Data.Specifications;
 using System.Globalization;
 using System.Xml;
 
-namespace Moonglade.Web.Middleware;
+namespace Moonglade.Web.Handlers;
 
-public class SiteMapMiddleware(RequestDelegate next)
+public class SiteMapMapHandler
 {
-    public async Task Invoke(
+    public static Delegate Handler => async (
+        HttpContext httpContext,
+        IBlogConfig blogConfig,
+        ICacheAside cache,
+        MoongladeRepository<PostEntity> postRepo,
+        MoongladeRepository<PageEntity> pageRepo) =>
+    {
+        await Handle(httpContext, blogConfig, cache, postRepo, pageRepo);
+    };
+
+    public static async Task Handle(
         HttpContext httpContext,
         IBlogConfig blogConfig,
         ICacheAside cache,

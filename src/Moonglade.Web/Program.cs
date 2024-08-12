@@ -162,13 +162,6 @@ void ConfigureMiddleware()
         options.IconFilePath = "/favicon-16x16.png";
     });
 
-    var bc = app.Services.GetRequiredService<IBlogConfig>();
-
-    app.UseWhen(
-        ctx => bc.AdvancedSettings.EnableSiteMap && ctx.Request.Path == "/sitemap.xml",
-        appBuilder => appBuilder.UseMiddleware<SiteMapMiddleware>()
-    );
-
     app.UseMiddleware<PoweredByMiddleware>();
     app.UseMiddleware<DNTMiddleware>();
 
@@ -213,8 +206,14 @@ void ConfigureMiddleware()
     app.MapGet("/robots.txt", RobotsTxtMapHandler.Handler);
     app.MapGet("/manifest.webmanifest", WebManifestMapHandler.Handler);
 
+    var bc = app.Services.GetRequiredService<IBlogConfig>();
     if (bc.AdvancedSettings.EnableFoaf)
     {
         app.MapGet("/foaf.xml", FoafMapHandler.Handler);
+    }
+
+    if (bc.AdvancedSettings.EnableSiteMap)
+    {
+        app.MapGet("/sitemap.xml", SiteMapMapHandler.Handler);
     }
 }
