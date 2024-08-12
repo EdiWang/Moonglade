@@ -42,7 +42,7 @@ public class ImageController(IBlogImageStorage imageStorage,
 
         var image = await cache.GetOrCreateAsync(filename, async entry =>
         {
-            entry.SlidingExpiration = TimeSpan.FromMinutes(int.Parse(configuration["CacheSlidingExpirationMinutes:Image"]));
+            entry.SlidingExpiration = TimeSpan.FromMinutes(int.Parse(configuration["CacheSlidingExpirationMinutes:Image"]!));
             var imageInfo = await imageStorage.GetAsync(filename);
             return imageInfo;
         });
@@ -56,14 +56,8 @@ public class ImageController(IBlogImageStorage imageStorage,
     [HttpPost, IgnoreAntiforgeryToken]
     [ProducesResponseType(StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
-    public async Task<IActionResult> Image(IFormFile file, [FromQuery] bool skipWatermark = false)
+    public async Task<IActionResult> Image([Required] IFormFile file, [FromQuery] bool skipWatermark = false)
     {
-        if (file is null or { Length: <= 0 })
-        {
-            logger.LogError("file is null.");
-            return BadRequest();
-        }
-
         var name = Path.GetFileName(file.FileName);
 
         var ext = Path.GetExtension(name).ToLower();
