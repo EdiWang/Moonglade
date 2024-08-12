@@ -240,7 +240,7 @@ public static class WebApplicationExtensions
             string dbType = app.Configuration.GetConnectionString("DatabaseType")!;
             if (dbType != "sqlserver")
             {
-                var message = $"Automatic database migration is not supported on `{dbType}`, ";
+                var message = $"Automatic database migration is not supported on `{dbType}`, please migrate your database manually.";
                 app.Logger.LogCritical(message);
                 throw new NotSupportedException(message);
             }
