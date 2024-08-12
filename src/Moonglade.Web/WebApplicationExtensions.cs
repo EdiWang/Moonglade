@@ -227,6 +227,11 @@ public static class WebApplicationExtensions
         var bc = app.Services.GetRequiredService<IBlogConfig>();
         app.Logger.LogInformation($"Found manifest, VersionString: {bc.SystemManifestSettings.VersionString}, installed on {bc.SystemManifestSettings.InstallTimeUtc} UTC");
 
+        if (!bool.Parse(app.Configuration["Experimental:AutoMSSQLDatabaseMigration"]!))
+        {
+            app.Logger.LogWarning("Automatic database migration is disabled, if you need, please enable the flag in `Experimental:AutoMSSQLDatabaseMigration`.");
+        }
+
         var mfv = Version.Parse(bc.SystemManifestSettings.VersionString);
         var cuv = Version.Parse(Helper.AppVersionBasic);
 
