@@ -246,7 +246,7 @@ public static class WebApplicationExtensions
             }
 
             var context = services.GetRequiredService<SqlServerBlogDbContext>();
-            ExecuteMSSQLMigrationScript(context, mfv.ToString(), cuv.ToString());
+            ExecuteMSSQLMigrationScript(context, $"{mfv.Major}.{mfv.Minor}", $"{cuv.Major}.{cuv.Minor}");
 
             bc.SystemManifestSettings.VersionString = Helper.AppVersionBasic;
             bc.SystemManifestSettings.InstallTimeUtc = DateTime.UtcNow;
