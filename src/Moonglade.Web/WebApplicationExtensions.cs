@@ -232,13 +232,20 @@ public static class WebApplicationExtensions
 
         if (mfv < cuv)
         {
+            // do not migrate revision
+            if (mfv.Major == cuv.Major && mfv.Minor == cuv.Minor)
+            {
+                app.Logger.LogInformation("No database migration required.");
+                return;
+            }
+
             app.Logger.LogInformation("Starting database migration...");
 
             using var scope = app.Services.CreateScope();
             var services = scope.ServiceProvider;
 
             string dbType = app.Configuration.GetConnectionString("DatabaseType")!;
-            if (dbType != "sqlserver")
+            if (dbType.ToLower() != "sqlserver")
             {
                 var message = $"Automatic database migration is not supported on `{dbType}`, please migrate your database manually.";
                 app.Logger.LogCritical(message);
@@ -246,7 +253,9 @@ public static class WebApplicationExtensions
             }
 
             var context = services.GetRequiredService<SqlServerBlogDbContext>();
-            ExecuteMSSQLMigrationScript(context, $"{mfv.Major}.{mfv.Minor}", $"{cuv.Major}.{cuv.Minor}");
+
+            app.Logger.LogInformation($"Migrating from {mfv.Major}.{mfv.Minor} to {cuv.Major}.{cuv.Minor}...");
+            await ExecuteMSSQLMigrationScript(context);
 
             bc.SystemManifestSettings.VersionString = Helper.AppVersionBasic;
             bc.SystemManifestSettings.InstallTimeUtc = DateTime.UtcNow;
@@ -259,9 +268,20 @@ public static class WebApplicationExtensions
         }
     }
 
-    private static void ExecuteMSSQLMigrationScript(SqlServerBlogDbContext context, string fromVersion, string toVersion)
+    private static async Task ExecuteMSSQLMigrationScript(SqlServerBlogDbContext context)
     {
+        string cumulativeMigrationScriptUrl = $"https://raw.githubusercontent.com/EdiWang/Moonglade/master/Deployment/mssql-migration.sql";
 
+        using var client = new HttpClient();
+        var response = await client.GetAsync(cumulativeMigrationScriptUrl);
+        response.EnsureSuccessStatusCode();
+
+        var script = await response.Content.ReadAsStringAsync();
+        if (!string.IsNullOrWhiteSpace(script))
+        {
+            // Execute migration script
+            await context.Database.ExecuteSqlRawAsync(script);
+        }
     }
 
     public static async Task DetectChina(this WebApplication app)
