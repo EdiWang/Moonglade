@@ -17,7 +17,15 @@ using System.Security.Cryptography;
 using System.Text.Json.Serialization;
 using Encoder = Moonglade.Web.Configuration.Encoder;
 
+AppDomain.CurrentDomain.Load("Moonglade.Core");
+AppDomain.CurrentDomain.Load("Moonglade.FriendLink");
+AppDomain.CurrentDomain.Load("Moonglade.Theme");
+AppDomain.CurrentDomain.Load("Moonglade.Configuration");
+AppDomain.CurrentDomain.Load("Moonglade.Data");
+AppDomain.CurrentDomain.Load("Moonglade.Webmention");
+
 Encoding.RegisterProvider(CodePagesEncodingProvider.Instance);
+
 var cultures = new[] { "en-US", "zh-Hans", "zh-Hant" }.Select(p => new CultureInfo(p)).ToList();
 
 var builder = WebApplication.CreateBuilder(args);
@@ -29,7 +37,7 @@ if (Helper.IsRunningOnAzureAppService())
     builder.Logging.AddAzureWebAppDiagnostics();
 }
 
-ConfigureServices(builder.Services);
+ConfigureServices();
 
 var app = builder.Build();
 
@@ -40,14 +48,9 @@ ConfigureMiddleware();
 
 app.Run();
 
-void ConfigureServices(IServiceCollection services)
+void ConfigureServices()
 {
-    AppDomain.CurrentDomain.Load("Moonglade.Core");
-    AppDomain.CurrentDomain.Load("Moonglade.FriendLink");
-    AppDomain.CurrentDomain.Load("Moonglade.Theme");
-    AppDomain.CurrentDomain.Load("Moonglade.Configuration");
-    AppDomain.CurrentDomain.Load("Moonglade.Data");
-    AppDomain.CurrentDomain.Load("Moonglade.Webmention");
+    var services = builder.Services;
 
     services.AddMediatR(config => config.RegisterServicesFromAssemblies(AppDomain.CurrentDomain.GetAssemblies()));
     services.AddOptions()
