@@ -32,6 +32,8 @@ public static class WebApplicationExtensions
                 break;
         }
 
+        return;
+
         async Task FailFast(string messsage)
         {
             app.MapGet("/", () => Results.Problem(
@@ -120,6 +122,17 @@ public static class WebApplicationExtensions
 
     private static void DealWithChina(WebApplication app)
     {
+        if (app.Environment.IsDevelopment())
+        {
+            app.Logger.LogWarning("Current deployment is suspected to be located in China, Moonglade will still run on full functionality in development environment.");
+        }
+        else
+        {
+            Prevent();
+        }
+
+        return;
+
         void Prevent()
         {
             app.Logger.LogError("Positive China detection, application stopped.");
@@ -129,15 +142,6 @@ public static class WebApplicationExtensions
                 statusCode: 251
             ));
             app.Run();
-        }
-
-        if (app.Environment.IsDevelopment())
-        {
-            app.Logger.LogWarning("Current deployment is suspected to be located in China, Moonglade will still run on full functionality in development environment.");
-        }
-        else
-        {
-            Prevent();
         }
     }
 }
