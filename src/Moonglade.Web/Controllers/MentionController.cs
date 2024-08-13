@@ -69,11 +69,11 @@ public class MentionController(
         return new PingbackResult(response.Status);
     }
 
-    private async void SendMentionEmailAction(MentionEntity history)
+    private async void SendMentionEmailAction(MentionEntity mention)
     {
         try
         {
-            await mediator.Publish(new MentionNotification(history.TargetPostTitle, history.Domain, history.SourceIp, history.SourceUrl, history.SourceTitle));
+            await mediator.Publish(new MentionNotification(mention.TargetPostTitle, mention.Domain, mention.SourceIp, mention.SourceUrl, mention.SourceTitle));
         }
         catch (Exception e)
         {
