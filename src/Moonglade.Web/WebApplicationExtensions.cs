@@ -80,6 +80,11 @@ public static class WebApplicationExtensions
             await app.RunAsync();
         }
 
+        await GenerateSiteIcons(app, mediator, env);
+    }
+
+    private static async Task GenerateSiteIcons(WebApplication app, IMediator mediator, IWebHostEnvironment env)
+    {
         try
         {
             var iconData = await mediator.Send(new GetAssetQuery(AssetId.SiteIconBase64));
