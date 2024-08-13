@@ -148,6 +148,7 @@ void ConfigureServices(IServiceCollection services)
     }
 
     services.AddScoped<IMigrationManager, MigrationManager>();
+    services.AddScoped<IBlogConfigInitializer, BlogConfigInitializer>();
 }
 
 void ConfigureMiddleware()
