@@ -1,5 +1,5 @@
-﻿using System.Text.Json.Serialization;
-using Moonglade.Utils;
+﻿using Moonglade.Utils;
+using System.Text.Json.Serialization;
 
 namespace Moonglade.Configuration;
 

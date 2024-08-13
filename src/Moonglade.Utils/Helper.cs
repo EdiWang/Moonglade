@@ -19,7 +19,7 @@ public static class Helper
         {
             var asm = Assembly.GetEntryAssembly();
             if (null == asm) return "N/A";
-            
+
             var fileVersion = asm.GetCustomAttribute<AssemblyFileVersionAttribute>()?.Version;
             return fileVersion;
         }
