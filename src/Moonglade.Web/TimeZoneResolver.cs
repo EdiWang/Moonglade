@@ -12,13 +12,13 @@ public interface ITimeZoneResolver
 
 public class BlogTimeZoneResolver(IBlogConfig blogConfig) : ITimeZoneResolver
 {
-    public TimeSpan UtcOffset { get; } = blogConfig.GeneralSettings.TimeZoneUtcOffset;
+    private readonly TimeSpan _utcOffset = blogConfig.GeneralSettings.TimeZoneUtcOffset;
 
-    public DateTime NowInTimeZone => UtcToZoneTime(DateTime.UtcNow, UtcOffset);
+    public DateTime NowInTimeZone => UtcToZoneTime(DateTime.UtcNow, _utcOffset);
 
-    public DateTime ToTimeZone(DateTime utcTime) => UtcToZoneTime(utcTime, UtcOffset);
+    public DateTime ToTimeZone(DateTime utcTime) => UtcToZoneTime(utcTime, _utcOffset);
 
-    public DateTime ToUtc(DateTime userTime) => ZoneTimeToUtc(userTime, UtcOffset);
+    public DateTime ToUtc(DateTime userTime) => ZoneTimeToUtc(userTime, _utcOffset);
 
     public IEnumerable<TimeZoneInfo> ListTimeZones() => TimeZoneInfo.GetSystemTimeZones();
 
@@ -29,8 +29,21 @@ public class BlogTimeZoneResolver(IBlogConfig blogConfig) : ITimeZoneResolver
             return TimeSpan.Zero;
         }
 
-        var tz = TimeZoneInfo.FindSystemTimeZoneById(timeZoneId);
-        return tz.BaseUtcOffset;
+        try
+        {
+            var tz = TimeZoneInfo.FindSystemTimeZoneById(timeZoneId);
+            return tz.BaseUtcOffset;
+        }
+        catch (TimeZoneNotFoundException)
+        {
+            // Handle the case where the time zone ID is not found
+            return TimeSpan.Zero;
+        }
+        catch (InvalidTimeZoneException)
+        {
+            // Handle the case where the time zone data is invalid
+            return TimeSpan.Zero;
+        }
     }
 
     #region Private
@@ -38,13 +51,13 @@ public class BlogTimeZoneResolver(IBlogConfig blogConfig) : ITimeZoneResolver
     private DateTime UtcToZoneTime(DateTime utcTime, TimeSpan timeSpan)
     {
         var span = ParseTimeZone(timeSpan, out var tz);
-        return tz is not null ? TimeZoneInfo.ConvertTimeFromUtc(utcTime, tz) : utcTime.AddTicks(span.Ticks);
+        return tz is not null ? TimeZoneInfo.ConvertTimeFromUtc(utcTime, tz) : utcTime.Add(span);
     }
 
     private DateTime ZoneTimeToUtc(DateTime zoneTime, TimeSpan timeSpan)
     {
         var span = ParseTimeZone(timeSpan, out var tz);
-        return tz is not null ? TimeZoneInfo.ConvertTimeToUtc(zoneTime, tz) : zoneTime.AddTicks(-1 * span.Ticks);
+        return tz is not null ? TimeZoneInfo.ConvertTimeToUtc(zoneTime, tz) : zoneTime.Add(-span);
     }
 
     private TimeSpan ParseTimeZone(TimeSpan timeSpan, out TimeZoneInfo tz)
