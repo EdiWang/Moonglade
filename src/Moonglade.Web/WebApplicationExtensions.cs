@@ -111,6 +111,8 @@ public static class WebApplicationExtensions
 
     public static async Task DetectChina(this WebApplication app)
     {
+        if (app.Environment.IsDevelopment()) return;
+
         // Learn more at https://go.edi.wang/aka/os251
         var service = new OfflineChinaDetectService();
         var result = await service.Detect(DetectionMethod.TimeZone | DetectionMethod.Culture | DetectionMethod.Behavior);
@@ -122,26 +124,12 @@ public static class WebApplicationExtensions
 
     private static void DealWithChina(WebApplication app)
     {
-        if (app.Environment.IsDevelopment())
-        {
-            app.Logger.LogWarning("Current deployment is suspected to be located in China, Moonglade will still run on full functionality in development environment.");
-        }
-        else
-        {
-            Prevent();
-        }
+        app.Logger.LogError("Positive China detection, application stopped.");
 
-        return;
-
-        void Prevent()
-        {
-            app.Logger.LogError("Positive China detection, application stopped.");
-
-            app.MapGet("/", () => Results.Text(
-                "Due to legal and regulation concerns, we regret to inform you that deploying Moonglade on servers located in China (including Hong Kong) is currently not possible",
-                statusCode: 251
-            ));
-            app.Run();
-        }
+        app.MapGet("/", () => Results.Text(
+            "Due to legal and regulation concerns, we regret to inform you that deploying Moonglade on servers located in China (including Hong Kong) is currently not possible",
+            statusCode: 251
+        ));
+        app.Run();
     }
 }
