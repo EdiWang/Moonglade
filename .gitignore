@@ -266,3 +266,4 @@ __pycache__/
 
 # Build time files
 **/lib/tinymce
+**/lib/moonglade-monaco
