@@ -29,8 +29,6 @@ if (Helper.IsRunningOnAzureAppService())
     builder.Logging.AddAzureWebAppDiagnostics();
 }
 
-builder.Configuration.AddJsonFile("manifesticons.json", false, true);
-
 ConfigureServices(builder.Services);
 
 var app = builder.Build();
@@ -123,8 +121,7 @@ void ConfigureServices(IServiceCollection services)
             .AddScoped<ITimeZoneResolver, BlogTimeZoneResolver>()
             .AddBlogConfig()
             .AddBlogAuthenticaton(builder.Configuration)
-            .AddImageStorage(builder.Configuration, options => options.ContentRootPath = builder.Environment.ContentRootPath)
-            .Configure<List<ManifestIcon>>(builder.Configuration.GetSection("ManifestIcons"));
+            .AddImageStorage(builder.Configuration, options => options.ContentRootPath = builder.Environment.ContentRootPath);
 
     services.AddEmailClient();
     services.AddContentModerator(builder.Configuration);

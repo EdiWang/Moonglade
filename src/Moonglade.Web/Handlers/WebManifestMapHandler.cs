@@ -1,16 +1,15 @@
-﻿using Microsoft.Extensions.Options;
-using System.Text.Json.Serialization;
+﻿using System.Text.Json.Serialization;
 
 namespace Moonglade.Web.Handlers;
 
 public class WebManifestMapHandler
 {
-    public static Delegate Handler => async (HttpContext httpContext, IBlogConfig blogConfig, IOptions<List<ManifestIcon>> manifestIcons) =>
+    public static Delegate Handler => async (HttpContext httpContext, IBlogConfig blogConfig) =>
     {
-        await Handle(httpContext, blogConfig, manifestIcons);
+        await Handle(httpContext, blogConfig);
     };
 
-    public static async Task Handle(HttpContext httpContext, IBlogConfig blogConfig, IOptions<List<ManifestIcon>> manifestIcons)
+    public static async Task Handle(HttpContext httpContext, IBlogConfig blogConfig)
     {
         var model = new ManifestModel
         {
@@ -18,7 +17,11 @@ public class WebManifestMapHandler
             Name = blogConfig.GeneralSettings.SiteTitle,
             Description = blogConfig.GeneralSettings.Description,
             StartUrl = "/",
-            Icons = manifestIcons?.Value,
+            Icons =
+            [
+                new() { Pixel = 144, SrcTemplate = "android-icon-{0}.png" },
+                new() { Pixel = 192, SrcTemplate = "android-icon-{0}.png" }
+            ],
             BackgroundColor = "#333333",
             ThemeColor = "#333333",
             Display = "standalone",
