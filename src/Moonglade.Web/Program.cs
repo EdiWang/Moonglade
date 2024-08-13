@@ -146,6 +146,8 @@ void ConfigureServices(IServiceCollection services)
             services.AddSqlServerStorage(connStr!);
             break;
     }
+
+    services.AddScoped<IMigrationManager, MigrationManager>();
 }
 
 void ConfigureMiddleware()

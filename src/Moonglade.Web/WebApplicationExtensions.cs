@@ -64,7 +64,11 @@ public static class WebApplicationExtensions
         try
         {
             await InitBlogConfig(app, mediator);
-            if (!isNew) await MigrationManager.TryMigration(app);
+            if (!isNew)
+            {
+                var migrationManager = services.GetRequiredService<IMigrationManager>();
+                await migrationManager.TryMigration(app);
+            }
         }
         catch (Exception e)
         {
