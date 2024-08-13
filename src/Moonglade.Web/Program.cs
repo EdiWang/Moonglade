@@ -150,6 +150,7 @@ void ConfigureServices(IServiceCollection services)
     services.AddTransient<ISiteIconInitializer, SiteIconInitializer>();
     services.AddScoped<IMigrationManager, MigrationManager>();
     services.AddScoped<IBlogConfigInitializer, BlogConfigInitializer>();
+    services.AddScoped<IStartUpInitializer, StartUpInitializer>();
 }
 
 void ConfigureMiddleware()

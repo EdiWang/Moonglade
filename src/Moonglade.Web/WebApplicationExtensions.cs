@@ -1,9 +1,5 @@
 ﻿using Edi.ChinaDetector;
 using Microsoft.AspNetCore.HttpOverrides;
-using Microsoft.EntityFrameworkCore;
-using Moonglade.Data.MySql;
-using Moonglade.Data.PostgreSql;
-using Moonglade.Data.SqlServer;
 using System.Net;
 
 namespace Moonglade.Web;
@@ -15,84 +11,42 @@ public static class WebApplicationExtensions
         using var scope = app.Services.CreateScope();
         var services = scope.ServiceProvider;
 
-        string dbType = app.Configuration.GetConnectionString("DatabaseType")!;
-        BlogDbContext context = dbType.ToLowerInvariant() switch
-        {
-            "mysql" => services.GetRequiredService<MySqlBlogDbContext>(),
-            "sqlserver" => services.GetRequiredService<SqlServerBlogDbContext>(),
-            "postgresql" => services.GetRequiredService<PostgreSqlBlogDbContext>(),
-            _ => throw new ArgumentOutOfRangeException(nameof(dbType))
-        };
+        var initializer = services.GetRequiredService<IStartUpInitializer>();
+        var result = await initializer.InitStartUp();
 
-        try
+        switch (result)
         {
-            await context.Database.EnsureCreatedAsync();
-        }
-        catch (Exception e)
-        {
-            app.Logger.LogCritical(e, e.Message);
-
-            app.MapGet("/", () => Results.Problem(
-                detail: "Database connection test failed, please check your connection string and firewall settings, then RESTART Moonglade manually.",
-                statusCode: 500
-            ));
-            await app.RunAsync();
-        }
-
-        bool isNew = !await context.BlogConfiguration.AnyAsync();
-        if (isNew)
-        {
-            try
-            {
-                await SeedDatabase(app, context);
-            }
-            catch (Exception e)
-            {
-                app.Logger.LogCritical(e, e.Message);
-
+            case InitStartUpResult.FailedCreateDatabase:
+                app.MapGet("/", () => Results.Problem(
+                    detail: "Database connection test failed, please check your connection string and firewall settings, then RESTART Moonglade manually.",
+                    statusCode: 500
+                ));
+                await app.RunAsync();
+                break;
+            case InitStartUpResult.FailedSeedingDatabase:
                 app.MapGet("/", () => Results.Problem(
                     detail: "Database setup failed, please check error log, then RESTART Moonglade manually.",
                     statusCode: 500
                 ));
                 await app.RunAsync();
-            }
-        }
-
-        try
-        {
-            var blogConfigInitializer = services.GetRequiredService<IBlogConfigInitializer>();
-            await blogConfigInitializer.Init();
-        }
-        catch (Exception e)
-        {
-            app.Logger.LogCritical(e, e.Message);
-            app.MapGet("/", () => Results.Problem(
-                detail: "Error initializing blog configuration, please check error log, then RESTART Moonglade manually.",
-                statusCode: 500
-            ));
-            await app.RunAsync();
-        }
-
-        if (!isNew)
-        {
-            try
-            {
-                var migrationManager = services.GetRequiredService<IMigrationManager>();
-                await migrationManager.TryMigration(context);
-            }
-            catch (Exception e)
-            {
-                app.Logger.LogCritical(e, e.Message);
+                break;
+            case InitStartUpResult.FailedInitBlogConfig:
+                app.MapGet("/", () => Results.Problem(
+                    detail: "Error initializing blog configuration, please check error log, then RESTART Moonglade manually.",
+                    statusCode: 500
+                ));
+                await app.RunAsync();
+                break;
+            case InitStartUpResult.FailedDatabaseMigration:
                 app.MapGet("/", () => Results.Problem(
                     detail: "Error migrating database, please check error log, then RESTART Moonglade manually.",
                     statusCode: 500
                 ));
                 await app.RunAsync();
-            }
+                break;
+            case InitStartUpResult.Success:
+                break;
         }
-
-        var siteIconInitializer = services.GetRequiredService<ISiteIconInitializer>();
-        await siteIconInitializer.GenerateSiteIcons();
     }
 
     public static void UseSmartXFFHeader(this WebApplication app)
@@ -158,16 +112,6 @@ public static class WebApplicationExtensions
         }
 
         app.UseForwardedHeaders(fho);
-    }
-
-    private static async Task SeedDatabase(WebApplication app, BlogDbContext context)
-    {
-        app.Logger.LogInformation("Seeding database...");
-
-        await context.ClearAllData();
-        await Seed.SeedAsync(context, app.Logger);
-
-        app.Logger.LogInformation("Database seeding successfully.");
     }
 
     public static async Task DetectChina(this WebApplication app)
