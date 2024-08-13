@@ -17,35 +17,28 @@ public static class WebApplicationExtensions
         switch (result)
         {
             case InitStartUpResult.FailedCreateDatabase:
-                app.MapGet("/", () => Results.Problem(
-                    detail: "Database connection test failed, please check your connection string and firewall settings, then RESTART Moonglade manually.",
-                    statusCode: 500
-                ));
-                await app.RunAsync();
+                await FailFast("Database connection test failed, please check your connection string and firewall settings, then RESTART Moonglade manually.");
                 break;
             case InitStartUpResult.FailedSeedingDatabase:
-                app.MapGet("/", () => Results.Problem(
-                    detail: "Database setup failed, please check error log, then RESTART Moonglade manually.",
-                    statusCode: 500
-                ));
-                await app.RunAsync();
+                await FailFast("Error seeding database, please check error log, then RESTART Moonglade manually.");
                 break;
             case InitStartUpResult.FailedInitBlogConfig:
-                app.MapGet("/", () => Results.Problem(
-                    detail: "Error initializing blog configuration, please check error log, then RESTART Moonglade manually.",
-                    statusCode: 500
-                ));
-                await app.RunAsync();
+                await FailFast("Error initializing blog configuration, please check error log, then RESTART Moonglade manually.");
                 break;
             case InitStartUpResult.FailedDatabaseMigration:
-                app.MapGet("/", () => Results.Problem(
-                    detail: "Error migrating database, please check error log, then RESTART Moonglade manually.",
-                    statusCode: 500
-                ));
-                await app.RunAsync();
+                await FailFast("Error migrating database, please check error log, then RESTART Moonglade manually.");
                 break;
             case InitStartUpResult.Success:
                 break;
+        }
+
+        async Task FailFast(string messsage)
+        {
+            app.MapGet("/", () => Results.Problem(
+                detail: messsage,
+                statusCode: 500
+            ));
+            await app.RunAsync();
         }
     }
 
