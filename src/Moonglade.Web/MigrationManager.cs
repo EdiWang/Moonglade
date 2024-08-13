@@ -1,19 +1,19 @@
 ﻿using Microsoft.EntityFrameworkCore;
-using Moonglade.Data.SqlServer;
 
 namespace Moonglade.Web;
 
 public interface IMigrationManager
 {
-    Task TryMigration(WebApplication app);
+    Task TryMigration(BlogDbContext context);
 }
 
 public class MigrationManager(
-    ILogger<MigrationManager> logger, 
-    IConfiguration configuration, 
+    ILogger<MigrationManager> logger,
+    IMediator mediator,
+    IConfiguration configuration,
     IBlogConfig blogConfig) : IMigrationManager
 {
-    public async Task TryMigration(WebApplication app)
+    public async Task TryMigration(BlogDbContext context)
     {
         logger.LogInformation($"Found manifest, VersionString: {blogConfig.SystemManifestSettings.VersionString}, installed on {blogConfig.SystemManifestSettings.InstallTimeUtc} UTC");
 
@@ -36,18 +36,13 @@ public class MigrationManager(
 
             logger.LogInformation("Starting database migration...");
 
-            using var scope = app.Services.CreateScope();
-            var services = scope.ServiceProvider;
-
-            string dbType = configuration.GetConnectionString("DatabaseType")!;
-            if (dbType.ToLower() != "sqlserver")
+            var dbProvider = context.Database.ProviderName;
+            if (dbProvider != "Microsoft.EntityFrameworkCore.SqlServer")
             {
-                var message = $"Automatic database migration is not supported on `{dbType}` at this time, please migrate your database manually.";
+                var message = $"Automatic database migration is not supported on `{dbProvider}` at this time, please migrate your database manually.";
                 logger.LogCritical(message);
                 throw new NotSupportedException(message);
             }
-
-            var context = services.GetRequiredService<SqlServerBlogDbContext>();
 
             logger.LogInformation($"Migrating from {mfv.Major}.{mfv.Minor} to {cuv.Major}.{cuv.Minor}...");
 
@@ -58,7 +53,6 @@ public class MigrationManager(
             blogConfig.SystemManifestSettings.InstallTimeUtc = DateTime.UtcNow;
             var kvp = blogConfig.UpdateAsync(blogConfig.SystemManifestSettings);
 
-            var mediator = services.GetRequiredService<IMediator>();
             await mediator.Send(new UpdateConfigurationCommand(kvp.Key, kvp.Value));
 
             logger.LogInformation("Database migration completed.");

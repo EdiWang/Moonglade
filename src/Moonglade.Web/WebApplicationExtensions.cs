@@ -67,7 +67,7 @@ public static class WebApplicationExtensions
             if (!isNew)
             {
                 var migrationManager = services.GetRequiredService<IMigrationManager>();
-                await migrationManager.TryMigration(app);
+                await migrationManager.TryMigration(context);
             }
         }
         catch (Exception e)
