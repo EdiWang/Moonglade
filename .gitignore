@@ -266,3 +266,7 @@ __pycache__/
 
 # Build time files
 **/lib/tinymce
+**/lib/moonglade-monaco
+
+# Special files need to be included
+!/package-src/Moonglade.MonacoEditor.*.nupkg
