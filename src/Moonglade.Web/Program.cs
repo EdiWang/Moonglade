@@ -147,6 +147,7 @@ void ConfigureServices(IServiceCollection services)
             break;
     }
 
+    services.AddTransient<ISiteIconInitializer, SiteIconInitializer>();
     services.AddScoped<IMigrationManager, MigrationManager>();
     services.AddScoped<IBlogConfigInitializer, BlogConfigInitializer>();
 }

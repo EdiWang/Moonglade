@@ -14,7 +14,6 @@ public static class WebApplicationExtensions
     {
         using var scope = app.Services.CreateScope();
         var services = scope.ServiceProvider;
-        var env = services.GetRequiredService<IWebHostEnvironment>();
 
         string dbType = app.Configuration.GetConnectionString("DatabaseType")!;
         BlogDbContext context = dbType.ToLowerInvariant() switch
@@ -59,8 +58,6 @@ public static class WebApplicationExtensions
             }
         }
 
-        var mediator = services.GetRequiredService<IMediator>();
-
         try
         {
             var blogConfigInitializer = services.GetRequiredService<IBlogConfigInitializer>();
@@ -94,21 +91,8 @@ public static class WebApplicationExtensions
             }
         }
 
-        await GenerateSiteIcons(app, mediator, env);
-    }
-
-    private static async Task GenerateSiteIcons(WebApplication app, IMediator mediator, IWebHostEnvironment env)
-    {
-        try
-        {
-            var iconData = await mediator.Send(new GetAssetQuery(AssetId.SiteIconBase64));
-            MemoryStreamIconGenerator.GenerateIcons(iconData, env.WebRootPath, app.Logger);
-        }
-        catch (Exception e)
-        {
-            // Non critical error, just log, do not block application start
-            app.Logger.LogError(e, e.Message);
-        }
+        var siteIconInitializer = services.GetRequiredService<ISiteIconInitializer>();
+        await siteIconInitializer.GenerateSiteIcons();
     }
 
     public static void UseSmartXFFHeader(this WebApplication app)

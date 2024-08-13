@@ -4,6 +4,28 @@ using System.Collections.Concurrent;
 
 namespace Moonglade.Web;
 
+public interface ISiteIconInitializer
+{
+    Task GenerateSiteIcons();
+}
+
+public class SiteIconInitializer(ILogger<SiteIconInitializer> logger, IMediator mediator, IWebHostEnvironment env) : ISiteIconInitializer
+{
+    public async Task GenerateSiteIcons()
+    {
+        try
+        {
+            var iconData = await mediator.Send(new GetAssetQuery(AssetId.SiteIconBase64));
+            MemoryStreamIconGenerator.GenerateIcons(iconData, env.WebRootPath, logger);
+        }
+        catch (Exception e)
+        {
+            // Non critical error, just log, do not block application start
+            logger.LogError(e, e.Message);
+        }
+    }
+}
+
 public static class MemoryStreamIconGenerator
 {
     public static ConcurrentDictionary<string, byte[]> SiteIconDictionary { get; set; } = new();
