@@ -88,7 +88,7 @@ function Create-WebApp($webAppName, $rsgName, $aspName, $dockerImageName) {
     $appExists = $appCheck.Length -gt 0
     if (!$appExists) {
         Write-Host "Creating Web App"
-        Write-Host "Using Linux Plan with Docker image from '$dockerImageName', this deployment will be ready to run."
+        Write-Host "Using Linux Plan with Docker image from '$dockerImageName'."
         $echo = az webapp create -g $rsgName -p $aspName -n $webAppName --container-image-name $dockerImageName
         
         $echo = az webapp config set -g $rsgName -n $webAppName --always-on true --use-32bit-worker-process false --http20-enabled true
