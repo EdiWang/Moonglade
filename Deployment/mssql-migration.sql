@@ -6,7 +6,7 @@ BEGIN
     UPDATE FriendLink SET [Rank] = 0
     ALTER TABLE FriendLink ALTER COLUMN [Rank] INT NOT NULL
 END
-GO
+
 
 -- v14.3
 IF NOT EXISTS (SELECT * FROM sys.objects 
@@ -24,23 +24,23 @@ BEGIN
     )WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
     ) ON [PRIMARY]
 END
-GO
+
 
 IF OBJECT_ID(N'[dbo].[LocalAccount]', 'U') IS NOT NULL
 BEGIN
     DROP TABLE [dbo].[LocalAccount]
 END
-GO
+
 
 IF EXISTS (SELECT * FROM sys.columns 
-           WHERE Name = N'RouteName' AND Object_ID = Object_ID(N'Category'))
+           WHERE Name = N'RouteName' AND Object_ID = Object_ID(N'Catery'))
 BEGIN
     EXEC sys.sp_rename 
-        @objname = N'Category.RouteName', 
+        @objname = N'Catery.RouteName', 
         @newname = 'Slug', 
         @objtype = 'COLUMN'
 END
-GO
+
 
 IF EXISTS (
     SELECT 1
@@ -51,7 +51,7 @@ IF EXISTS (
 BEGIN
     ALTER TABLE Post DROP COLUMN InlineCss;
 END;
-GO
+
 
 -- v14.5
 IF EXISTS (SELECT * FROM sys.columns 
@@ -59,20 +59,20 @@ IF EXISTS (SELECT * FROM sys.columns
 BEGIN
     ALTER TABLE Post DROP COLUMN IsOriginal
 END
-GO
+
 
 IF EXISTS (SELECT * FROM sys.columns 
            WHERE Name = N'OriginLink' AND Object_ID = Object_ID(N'Post'))
 BEGIN
     ALTER TABLE Post DROP COLUMN OriginLink
 END
-GO
+
 
 IF OBJECT_ID(N'Mention', 'U') IS NULL AND OBJECT_ID(N'Pingback', 'U') IS NOT NULL
 BEGIN
     EXEC sp_rename 'Pingback', 'Mention'
 END
-GO
+
 
 IF NOT EXISTS (SELECT * FROM sys.columns 
                WHERE Name = N'Worker' AND Object_ID = Object_ID(N'Mention'))
@@ -80,5 +80,5 @@ BEGIN
     ALTER TABLE Mention ADD Worker NVARCHAR(16)
     UPDATE Mention SET Worker = N'Pingback'
 END
-GO
+
 
