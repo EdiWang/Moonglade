@@ -1,6 +1,7 @@
 ﻿using MediatR;
+using Moonglade.Configuration;
 
-namespace Moonglade.Configuration;
+namespace Moonglade.Setup;
 
 public interface IBlogConfigInitializer
 {
@@ -60,8 +61,8 @@ public class BlogConfigInitializer(IMediator mediator, IBlogConfig blogConfig) :
                         break;
                     case 99:
                         await mediator.Send(new AddDefaultConfigurationCommand(key, nameof(SystemManifestSettings),
-                            isNew ? 
-                                SystemManifestSettings.DefaultValueNew.ToJson() : 
+                            isNew ?
+                                SystemManifestSettings.DefaultValueNew.ToJson() :
                                 SystemManifestSettings.DefaultValue.ToJson()));
                         break;
                 }

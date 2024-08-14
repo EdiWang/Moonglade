@@ -1,6 +1,8 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Logging;
+using Moonglade.Data;
 
-namespace Moonglade.Web;
+namespace Moonglade.Setup;
 
 public interface IStartUpInitializer
 {

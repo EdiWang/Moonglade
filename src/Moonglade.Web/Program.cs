@@ -8,6 +8,7 @@ using Moonglade.Data.SqlServer;
 using Moonglade.Email.Client;
 using Moonglade.Mention.Common;
 using Moonglade.Pingback;
+using Moonglade.Setup;
 using Moonglade.Syndication;
 using Moonglade.Web.Handlers;
 using Moonglade.Webmention;
@@ -17,6 +18,7 @@ using System.Security.Cryptography;
 using System.Text.Json.Serialization;
 using Encoder = Moonglade.Web.Configuration.Encoder;
 
+AppDomain.CurrentDomain.Load("Moonglade.Setup");
 AppDomain.CurrentDomain.Load("Moonglade.Core");
 AppDomain.CurrentDomain.Load("Moonglade.FriendLink");
 AppDomain.CurrentDomain.Load("Moonglade.Theme");

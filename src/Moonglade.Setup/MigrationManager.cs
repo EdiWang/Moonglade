@@ -1,6 +1,12 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using MediatR;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.Logging;
+using Moonglade.Configuration;
+using Moonglade.Data;
+using Moonglade.Utils;
 
-namespace Moonglade.Web;
+namespace Moonglade.Setup;
 
 public interface IMigrationManager
 {

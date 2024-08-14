@@ -1,0 +1,20 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+    <PropertyGroup>
+        <OutputType>Library</OutputType>
+        <TargetFramework>net8.0</TargetFramework>
+        <AssemblyName>Moonglade.Setup</AssemblyName>
+        <RootNamespace>Moonglade.Setup</RootNamespace>
+        <IsTestProject>false</IsTestProject>
+        <IsPackable>false</IsPackable>
+        <ImplicitUsings>enable</ImplicitUsings>
+    </PropertyGroup>
+    <ItemGroup>
+      <PackageReference Include="SixLabors.ImageSharp" Version="3.1.5" />
+    </ItemGroup>
+    <ItemGroup>
+        <ProjectReference Include="..\Moonglade.Configuration\Moonglade.Configuration.csproj" />
+        <ProjectReference Include="..\Moonglade.Core\Moonglade.Core.csproj" />
+        <ProjectReference Include="..\Moonglade.Data\Moonglade.Data.csproj" />
+        <ProjectReference Include="..\Moonglade.Utils\Moonglade.Utils.csproj" />
+    </ItemGroup>
+</Project>

@@ -1,4 +1,5 @@
-﻿using SixLabors.ImageSharp;
+﻿using Moonglade.Setup;
+using SixLabors.ImageSharp;
 
 namespace Moonglade.Web.Controllers;
 

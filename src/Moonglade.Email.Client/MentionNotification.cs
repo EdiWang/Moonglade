@@ -12,6 +12,6 @@ public record MentionNotification(
 
 public class MentionNotificationHandler(IMoongladeEmailClient moongladeEmailClient, IBlogConfig blogConfig) : INotificationHandler<MentionNotification>
 {
-    public async Task Handle(MentionNotification notification, CancellationToken ct) => 
+    public async Task Handle(MentionNotification notification, CancellationToken ct) =>
         await moongladeEmailClient.SendEmail(MailMesageTypes.BeingPinged, [blogConfig.GeneralSettings.OwnerEmail], notification);
 }

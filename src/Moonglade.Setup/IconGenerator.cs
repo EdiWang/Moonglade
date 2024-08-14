@@ -1,30 +1,9 @@
-﻿using SixLabors.ImageSharp;
+﻿using Microsoft.Extensions.Logging;
+using SixLabors.ImageSharp;
 using SixLabors.ImageSharp.Processing;
 using System.Collections.Concurrent;
 
-namespace Moonglade.Web;
-
-public interface ISiteIconInitializer
-{
-    Task GenerateSiteIcons();
-}
-
-public class SiteIconInitializer(ILogger<SiteIconInitializer> logger, IMediator mediator, IWebHostEnvironment env) : ISiteIconInitializer
-{
-    public async Task GenerateSiteIcons()
-    {
-        try
-        {
-            var iconData = await mediator.Send(new GetAssetQuery(AssetId.SiteIconBase64));
-            MemoryStreamIconGenerator.GenerateIcons(iconData, env.WebRootPath, logger);
-        }
-        catch (Exception e)
-        {
-            // Non critical error, just log, do not block application start
-            logger.LogError(e, e.Message);
-        }
-    }
-}
+namespace Moonglade.Setup;
 
 public static class MemoryStreamIconGenerator
 {
