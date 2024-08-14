@@ -46,7 +46,7 @@ public class MigrationManager(
 
             logger.LogInformation($"Migrating from {mfv.Major}.{mfv.Minor} to {cuv.Major}.{cuv.Minor}...");
 
-            string mssqlMigrationScriptUrl = $"https://raw.githubusercontent.com/EdiWang/Moonglade/master/Deployment/mssql-migration.sql";
+            string mssqlMigrationScriptUrl = $"https://raw.githubusercontent.com/EdiWang/Moonglade/master/Deployment/mssql-migration.sql?nonce={Guid.NewGuid()}";
             await ExecuteMigrationScript(context, mssqlMigrationScriptUrl);
 
             blogConfig.SystemManifestSettings.VersionString = Helper.AppVersionBasic;
@@ -68,6 +68,10 @@ public class MigrationManager(
         }
 
         using var client = new HttpClient();
+
+        // Set HTTP headers. Set user-agent as `Moonglade/version`
+        client.DefaultRequestHeaders.Add("User-Agent", $"Moonglade/{Helper.AppVersionBasic}");
+
         var response = await client.GetAsync(scriptUrl);
         response.EnsureSuccessStatusCode();
 

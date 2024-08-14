@@ -50,7 +50,7 @@ public class StartUpInitializer(
         // Initialize blog configuration
         try
         {
-            await blogConfigInitializer.Init();
+            await blogConfigInitializer.Initialize(isNew);
         }
         catch (Exception e)
         {
