@@ -4,12 +4,12 @@ namespace Moonglade.Configuration;
 
 public interface IBlogConfigInitializer
 {
-    Task Init();
+    Task Initialize(bool isNew);
 }
 
 public class BlogConfigInitializer(IMediator mediator, IBlogConfig blogConfig) : IBlogConfigInitializer
 {
-    public async Task Init()
+    public async Task Initialize(bool isNew)
     {
         // load configurations into singleton
         var config = await mediator.Send(new GetAllConfigurationsQuery());
@@ -60,7 +60,9 @@ public class BlogConfigInitializer(IMediator mediator, IBlogConfig blogConfig) :
                         break;
                     case 99:
                         await mediator.Send(new AddDefaultConfigurationCommand(key, nameof(SystemManifestSettings),
-                            SystemManifestSettings.DefaultValue.ToJson()));
+                            isNew ? 
+                                SystemManifestSettings.DefaultValueNew.ToJson() : 
+                                SystemManifestSettings.DefaultValue.ToJson()));
                         break;
                 }
             }
