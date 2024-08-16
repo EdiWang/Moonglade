@@ -14,6 +14,7 @@ using Moonglade.Web.Handlers;
 using Moonglade.Webmention;
 using SixLabors.Fonts;
 using System.Globalization;
+using System.Reflection.PortableExecutable;
 using System.Security.Cryptography;
 using System.Text.Json.Serialization;
 using Encoder = Moonglade.Web.Configuration.Encoder;
@@ -67,17 +68,22 @@ void ConfigureServices()
         List<string> magics = [
             Encoding.UTF8.GetString(BitConverter.GetBytes('✔'.GetHashCode())
                 .Zip(BitConverter.GetBytes(0x242F2E32)).Select(x => (byte)(x.First + x.Second)).ToArray()),
-            Convert.ToBase64String(SHA256.HashData(BitConverter.GetBytes(0x6B441)))[11..15]
+            Helper.GetMagic(0x6B441,11,15),
+            Helper.GetMagic(0x1499E, 10, 14)
         ];
 
         if (bool.Parse(builder.Configuration["Experimental:ChinaFriendly"]!))
         {
-            magics.Add(Convert.ToBase64String(SHA256.HashData(BitConverter.GetBytes(0x7DB14)))[21..25]);
-            magics.Add(Convert.ToBase64String(SHA256.HashData(BitConverter.GetBytes(0x78E10)))[13..17]);
+            magics.AddRange([
+                Helper.GetMagic(0x7DB14,21,25),
+                Helper.GetMagic(0x78E10,13,17),
+                Helper.GetMagic(0x17808,34,38),
+                Helper.GetMagic(0x1B5ED,4,8),
+                "NMSL", "CNMB"
+                ]);
         }
 
-        options.FontStyle = FontStyle.Bold;
-        options.BlockedCodes = magics.ToArray();
+        options.FontStyle = FontStyle.Bold; options.BlockedCodes = magics.ToArray();
     });
 
     services.AddLocalization(options => options.ResourcesPath = "Resources");

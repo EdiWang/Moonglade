@@ -489,4 +489,7 @@ public static class Helper
             c == '*' || c == '+' || c == '-' || c == '.' || c == '^' || c == '_' ||
             c == '`' || c == '|' || c == '~');
     }
+
+    public static string GetMagic(int value, int start, int end) =>
+        Convert.ToBase64String(SHA256.HashData(BitConverter.GetBytes(value)))[start..end];
 }
