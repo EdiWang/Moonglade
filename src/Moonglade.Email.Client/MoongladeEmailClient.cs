@@ -35,7 +35,7 @@ public class MoongladeEmailClient : IMoongladeEmailClient
         if (!string.IsNullOrWhiteSpace(configuration["Email:ApiEndpoint"]))
         {
             _httpClient.BaseAddress = new(configuration["Email:ApiEndpoint"]);
-            _httpClient.DefaultRequestHeaders.Add("x-functions-key", configuration["Email:ApiKey"]);
+            _httpClient.DefaultRequestHeaders.Add(configuration["Email:ApiKeyHeader"]!, configuration["Email:ApiKey"]);
             _enabled = true;
         }
         else
