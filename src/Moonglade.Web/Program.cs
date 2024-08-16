@@ -82,7 +82,8 @@ void ConfigureServices()
                 ]);
         }
 
-        options.FontStyle = FontStyle.Bold; options.BlockedCodes = magics.ToArray();
+        options.FontStyle = FontStyle.Bold;
+        options.BlockedCodes = magics.ToArray();
     });
 
     services.AddLocalization(options => options.ResourcesPath = "Resources");
