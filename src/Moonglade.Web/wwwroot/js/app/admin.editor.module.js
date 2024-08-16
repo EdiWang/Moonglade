@@ -135,11 +135,12 @@ export function loadTinyMCE(textareaSelector) {
                 { text: 'Kotlin', value: 'kotlin' },
                 { text: 'Lua', value: 'lua' },
                 { text: 'Markdown', value: 'markdown' },
+                { text: 'Nginx', value: 'nginx' },
                 { text: 'PowerShell', value: 'powershell' },
                 { text: 'Plain Text', value: 'plaintext' },
+                { text: 'Puppet', value: 'puppet' },
                 { text: 'Python', value: 'python' },
                 { text: 'R', value: 'r' },
-                { text: 'Ruby', value: 'ruby' },
                 { text: 'Rust', value: 'rust' },
                 { text: 'SCSS', value: 'scss' },
                 { text: 'Shell', value: 'shell' },
@@ -147,7 +148,6 @@ export function loadTinyMCE(textareaSelector) {
                 { text: 'Swift', value: 'swift' },
                 { text: 'TypeScript', value: 'typescript' },
                 { text: 'WASM', value: 'wasm' },
-                { text: 'Visual Basic (.NET)', value: 'vbnet' },
                 { text: 'YAML', value: 'yaml' }
             ],
             setup: function (editor) {
