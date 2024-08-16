@@ -118,6 +118,8 @@ pre {
 pre,
 code {
     font-family: "Cascadia Code", Consolas, SFMono-Regular, Menlo, Monaco, "Liberation Mono", "Courier New", monospace;
+    white-space: pre-wrap;
+    word-wrap: break-word;
 }
 
 .dynamic-heading-tag {
