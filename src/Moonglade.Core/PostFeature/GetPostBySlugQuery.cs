@@ -2,7 +2,6 @@
 using Microsoft.Extensions.Configuration;
 using Moonglade.Data;
 using Moonglade.Data.Specifications;
-using Moonglade.Utils;
 
 namespace Moonglade.Core.PostFeature;
 
@@ -13,13 +12,10 @@ public class GetPostBySlugQueryHandler(MoongladeRepository<PostEntity> repo, ICa
 {
     public async Task<PostEntity> Handle(GetPostBySlugQuery request, CancellationToken ct)
     {
-        var date = new DateTime(request.Slug.Year, request.Slug.Month, request.Slug.Day);
+        var routeLink = $"{request.Slug.Year}/{request.Slug.Month}/{request.Slug.Day}/{request.Slug.Slug}".ToLower();
+        var spec = new PostByRouteLinkSpec(routeLink);
 
-        // Try to find by checksum
-        var slugCheckSum = Helper.ComputeCheckSum($"{request.Slug.Slug}#{date:yyyyMMdd}");
-        var spec = new PostByChecksumSpec(slugCheckSum);
-
-        var psm = await cache.GetOrCreateAsync(BlogCachePartition.Post.ToString(), $"{slugCheckSum}", async entry =>
+        var psm = await cache.GetOrCreateAsync(BlogCachePartition.Post.ToString(), $"{routeLink}", async entry =>
         {
             entry.SlidingExpiration = TimeSpan.FromMinutes(int.Parse(configuration["CacheSlidingExpirationMinutes:Post"]!));
 
