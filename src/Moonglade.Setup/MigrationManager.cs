@@ -23,9 +23,9 @@ public class MigrationManager(
     {
         logger.LogInformation($"Found manifest, VersionString: {blogConfig.SystemManifestSettings.VersionString}, installed on {blogConfig.SystemManifestSettings.InstallTimeUtc} UTC");
 
-        if (!bool.Parse(configuration["Experimental:AutoMSSQLDatabaseMigration"]!))
+        if (!bool.Parse(configuration["Setup:AutoDatabaseMigration"]!))
         {
-            logger.LogWarning("Automatic database migration is disabled, if you need, please enable the flag in `Experimental:AutoMSSQLDatabaseMigration`.");
+            logger.LogWarning("Automatic database migration is disabled, if you need, please enable the flag in `Setup:AutoDatabaseMigration`.");
         }
 
         var mfv = Version.Parse(blogConfig.SystemManifestSettings.VersionString);
@@ -42,8 +42,28 @@ public class MigrationManager(
 
             logger.LogInformation("Starting database migration...");
 
+            string sqlMigrationScriptUrl = string.Empty;
             var dbProvider = context.Database.ProviderName;
-            if (dbProvider != "Microsoft.EntityFrameworkCore.SqlServer")
+            switch (dbProvider)
+            {
+                case "Microsoft.EntityFrameworkCore.SqlServer":
+                    logger.LogInformation("Database provider: Microsoft SQL Server");
+                    sqlMigrationScriptUrl = configuration["Setup:DatabaseMigrationScript:SqlServer"];
+
+                    break;
+                case "Pomelo.EntityFrameworkCore.MySql":
+                    logger.LogInformation("Database provider: MySQL");
+                    sqlMigrationScriptUrl = configuration["Setup:DatabaseMigrationScript:MySql"];
+
+                    break;
+                case "Npgsql.EntityFrameworkCore.PostgreSQL":
+                    logger.LogInformation("Database provider: PostgreSQL");
+                    sqlMigrationScriptUrl = configuration["Setup:DatabaseMigrationScript:PostgreSql"];
+
+                    break;
+            }
+
+            if (string.IsNullOrWhiteSpace(sqlMigrationScriptUrl))
             {
                 var message = $"Automatic database migration is not supported on `{dbProvider}` at this time, please migrate your database manually.";
                 logger.LogCritical(message);
@@ -52,8 +72,8 @@ public class MigrationManager(
 
             logger.LogInformation($"Migrating from {mfv.Major}.{mfv.Minor} to {cuv.Major}.{cuv.Minor}...");
 
-            string mssqlMigrationScriptUrl = $"{configuration["SQLMigrationScriptUrl"]}?nonce={Guid.NewGuid()}";
-            await ExecuteMigrationScript(context, mssqlMigrationScriptUrl);
+            sqlMigrationScriptUrl += $"?nonce={Guid.NewGuid()}";
+            await ExecuteMigrationScript(context, sqlMigrationScriptUrl);
 
             blogConfig.SystemManifestSettings.VersionString = Helper.AppVersionBasic;
             blogConfig.SystemManifestSettings.InstallTimeUtc = DateTime.UtcNow;
