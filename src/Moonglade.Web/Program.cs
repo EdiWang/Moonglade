@@ -77,7 +77,8 @@ void ConfigureServices()
                 Helper.GetMagic(0x78E10,13,17),
                 Helper.GetMagic(0x17808,34,38),
                 Helper.GetMagic(0x1B5ED,4,8),
-                "NMSL", "CNMB"
+                Helper.GetMagic(0x9CFB,25,29),
+                "NMSL", "CNMB", "MDZZ", "TNND"
                 ]);
         }
 
