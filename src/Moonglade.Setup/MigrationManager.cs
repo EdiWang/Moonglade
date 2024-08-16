@@ -52,7 +52,7 @@ public class MigrationManager(
 
             logger.LogInformation($"Migrating from {mfv.Major}.{mfv.Minor} to {cuv.Major}.{cuv.Minor}...");
 
-            string mssqlMigrationScriptUrl = $"https://raw.githubusercontent.com/EdiWang/Moonglade/master/Deployment/mssql-migration.sql?nonce={Guid.NewGuid()}";
+            string mssqlMigrationScriptUrl = $"{configuration["SQLMigrationScriptUrl"]}?nonce={Guid.NewGuid()}";
             await ExecuteMigrationScript(context, mssqlMigrationScriptUrl);
 
             blogConfig.SystemManifestSettings.VersionString = Helper.AppVersionBasic;
@@ -65,7 +65,7 @@ public class MigrationManager(
         }
     }
 
-    private static async Task ExecuteMigrationScript(DbContext context, string scriptUrl)
+    private async Task ExecuteMigrationScript(DbContext context, string scriptUrl)
     {
         // Validate the scriptUrl must not come from local file system
         if (scriptUrl.StartsWith("file://"))
@@ -73,7 +73,15 @@ public class MigrationManager(
             throw new NotSupportedException("Local file system migration script is not supported.");
         }
 
+        // Validate the scriptUrl is a valid URL
+        if (!Uri.TryCreate(scriptUrl, UriKind.Absolute, out var uriResult) ||
+            (uriResult.Scheme != Uri.UriSchemeHttp && uriResult.Scheme != Uri.UriSchemeHttps))
+        {
+            throw new ArgumentException("Invalid script URL.");
+        }
+
         using var client = new HttpClient();
+        client.Timeout = TimeSpan.FromSeconds(30);
 
         // Set HTTP headers. Set user-agent as `Moonglade/version`
         client.DefaultRequestHeaders.Add("User-Agent", $"Moonglade/{Helper.AppVersionBasic}");
@@ -85,7 +93,11 @@ public class MigrationManager(
         if (!string.IsNullOrWhiteSpace(script))
         {
             // Execute migration script
+            logger.LogInformation("Executing migration script...");
+
             await context.Database.ExecuteSqlRawAsync(script);
+
+            logger.LogInformation("Migration script executed successfully.");
         }
     }
 }
