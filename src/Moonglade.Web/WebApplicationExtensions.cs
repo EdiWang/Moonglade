@@ -6,6 +6,14 @@ namespace Moonglade.Web;
 
 public static class WebApplicationExtensions
 {
+    private const int MaxHeaderNameLength = 40;
+    private const string ForwardedHeadersSection = "ForwardedHeaders";
+    private const string HeaderNameKey = "HeaderName";
+    private const string KnownProxiesKey = "KnownProxies";
+
+    // ASP.NET Core always use the last value in XFF header, which is AFD's IP address
+    // Need to set as `X-Azure-ClientIP` as workaround
+    // https://learn.microsoft.com/en-us/azure/frontdoor/front-door-http-headers-protocol
     public static void UseSmartXFFHeader(this WebApplication app)
     {
         var fho = new ForwardedHeadersOptions
@@ -13,14 +21,18 @@ public static class WebApplicationExtensions
             ForwardedHeaders = ForwardedHeaders.XForwardedFor | ForwardedHeaders.XForwardedProto
         };
 
-        // ASP.NET Core always use the last value in XFF header, which is AFD's IP address
-        // Need to set as `X-Azure-ClientIP` as workaround
-        // https://learn.microsoft.com/en-us/azure/frontdoor/front-door-http-headers-protocol
-        var headerName = app.Configuration["ForwardedHeaders:HeaderName"];
+        ConfigureForwardedForHeaderName(app, fho);
+        ConfigureKnownProxies(app, fho);
+
+        app.UseForwardedHeaders(fho);
+    }
+
+    private static void ConfigureForwardedForHeaderName(WebApplication app, ForwardedHeadersOptions fho)
+    {
+        var headerName = app.Configuration[$"{ForwardedHeadersSection}:{HeaderNameKey}"];
         if (!string.IsNullOrWhiteSpace(headerName))
         {
-            // RFC 7230
-            if (headerName.Length > 40 || !Helper.IsValidHeaderName(headerName))
+            if (headerName.Length > MaxHeaderNameLength || !Helper.IsValidHeaderName(headerName))
             {
                 app.Logger.LogWarning($"XFF header name '{headerName}' is invalid, it will not be applied");
             }
@@ -29,8 +41,11 @@ public static class WebApplicationExtensions
                 fho.ForwardedForHeaderName = headerName;
             }
         }
+    }
 
-        var knownProxies = app.Configuration.GetSection("ForwardedHeaders:KnownProxies").Get<string[]>();
+    private static void ConfigureKnownProxies(WebApplication app, ForwardedHeadersOptions fho)
+    {
+        var knownProxies = app.Configuration.GetSection($"{ForwardedHeadersSection}:{KnownProxiesKey}").Get<string[]>();
         if (knownProxies is { Length: > 0 })
         {
             // Fix docker deployments on Azure App Service blows up with Azure AD authentication
@@ -50,7 +65,14 @@ public static class WebApplicationExtensions
 
                 foreach (var ip in knownProxies)
                 {
-                    fho.KnownProxies.Add(IPAddress.Parse(ip));
+                    if (IPAddress.TryParse(ip, out var ipAddress))
+                    {
+                        fho.KnownProxies.Add(ipAddress);
+                    }
+                    else
+                    {
+                        app.Logger.LogWarning($"Invalid IP address '{ip}' in KnownProxies configuration.");
+                    }
                 }
 
                 app.Logger.LogInformation("Added known proxies ({0}): {1}",
@@ -67,8 +89,6 @@ public static class WebApplicationExtensions
             fho.KnownNetworks.Add(new(IPAddress.Any, 0));
             fho.KnownNetworks.Add(new(IPAddress.IPv6Any, 0));
         }
-
-        app.UseForwardedHeaders(fho);
     }
 
     public static async Task DetectChina(this WebApplication app)
