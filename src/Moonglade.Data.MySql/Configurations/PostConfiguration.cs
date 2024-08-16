@@ -23,5 +23,6 @@ internal class PostConfiguration : IEntityTypeConfiguration<PostEntity>
         builder.Property(e => e.Slug).HasMaxLength(128);
         builder.Property(e => e.Title).HasMaxLength(128);
         builder.Property(e => e.HeroImageUrl).HasMaxLength(256);
+        builder.Property(e => e.RouteLink).HasMaxLength(256);
     }
 }
