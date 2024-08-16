@@ -14,8 +14,6 @@ using Moonglade.Web.Handlers;
 using Moonglade.Webmention;
 using SixLabors.Fonts;
 using System.Globalization;
-using System.Reflection.PortableExecutable;
-using System.Security.Cryptography;
 using System.Text.Json.Serialization;
 using Encoder = Moonglade.Web.Configuration.Encoder;
 
