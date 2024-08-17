@@ -109,15 +109,14 @@ public class CommentController(
     [ProducesResponseType(StatusCodes.Status403Forbidden)]
     public async Task<IActionResult> Reply(
         [NotEmpty] Guid commentId,
-        [Required][FromBody] string replyContent,
-        LinkGenerator linkGenerator)
+        [Required][FromBody] string replyContent)
     {
         if (!blogConfig.ContentSettings.EnableComments) return Forbid();
 
         var reply = await mediator.Send(new ReplyCommentCommand(commentId, replyContent));
         if (blogConfig.NotificationSettings.SendEmailOnCommentReply && !string.IsNullOrWhiteSpace(reply.Email))
         {
-            var postLink = GetPostUrl(linkGenerator, reply.PubDateUtc, reply.Slug);
+            var postLink = GetPostUrl(reply.RouteLink);
 
             try
             {
@@ -137,16 +136,10 @@ public class CommentController(
         return Ok(reply);
     }
 
-    private string GetPostUrl(LinkGenerator linkGenerator, DateTime pubDate, string slug)
+    private string GetPostUrl(string routeLink)
     {
-        var link = linkGenerator.GetUriByPage(HttpContext, "/Post", null,
-            new
-            {
-                year = pubDate.Year,
-                month = pubDate.Month,
-                day = pubDate.Day,
-                slug
-            });
-        return link;
+        var baseUri = new Uri(Helper.ResolveRootUrl(HttpContext, null, removeTailSlash: true));
+        var link = new Uri(baseUri, $"post/{routeLink.ToLower()}");
+        return link.ToString();
     }
 }

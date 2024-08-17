@@ -50,8 +50,10 @@ public class CreatePostCommandHandler(
             IsPublished = request.Payload.IsPublished,
             IsFeatured = request.Payload.Featured,
             HeroImageUrl = string.IsNullOrWhiteSpace(request.Payload.HeroImageUrl) ? null : Helper.SterilizeLink(request.Payload.HeroImageUrl),
-            IsOutdated = request.Payload.IsOutdated
+            IsOutdated = request.Payload.IsOutdated,
         };
+
+        post.RouteLink = $"{post.PubDateUtc.GetValueOrDefault():yyyy/M/d}/{request.Payload.Slug}";
 
         // check if exist same slug under the same day
         var todayUtc = DateTime.UtcNow.Date;
@@ -61,11 +63,6 @@ public class CreatePostCommandHandler(
             post.Slug += $"-{uid.ToString().ToLower()[..8]}";
             logger.LogInformation($"Found conflict for post slug, generated new slug: {post.Slug}");
         }
-
-        // compute hash
-        var input = $"{post.Slug}#{post.PubDateUtc.GetValueOrDefault():yyyyMMdd}";
-        var checkSum = Helper.ComputeCheckSum(input);
-        post.HashCheckSum = checkSum;
 
         // add categories
         if (request.Payload.SelectedCatIds is { Length: > 0 })

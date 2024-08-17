@@ -14,8 +14,7 @@ public class PostModel(IMediator mediator) : PageModel
     {
         if (year > DateTime.UtcNow.Year || string.IsNullOrWhiteSpace(slug)) return NotFound();
 
-        var slugInfo = new PostSlug(year, month, day, slug);
-        var post = await mediator.Send(new GetPostBySlugQuery(slugInfo));
+        var post = await mediator.Send(new GetPostBySlugQuery(year, month, day, slug));
 
         if (post is null) return NotFound();
 

@@ -15,6 +15,5 @@ public class CommentReply : CommentReplyDigest
     public string Email { get; set; }
     public string CommentContent { get; set; }
     public string Title { get; set; }
-    public string Slug { get; set; }
-    public DateTime PubDateUtc { get; set; }
+    public string RouteLink { get; set; }
 }

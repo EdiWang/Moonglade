@@ -80,5 +80,3 @@ BEGIN
     ALTER TABLE Mention ADD Worker NVARCHAR(16)
     UPDATE Mention SET Worker = N'Pingback'
 END
-
-

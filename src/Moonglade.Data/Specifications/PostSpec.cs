@@ -99,11 +99,11 @@ public sealed class PostByDeletionFlagSpec : Specification<PostEntity>
     public PostByDeletionFlagSpec(bool isDeleted) => Query.Where(p => p.IsDeleted == isDeleted);
 }
 
-public sealed class PostByChecksumSpec : SingleResultSpecification<PostEntity>
+public sealed class PostByRouteLinkSpec : SingleResultSpecification<PostEntity>
 {
-    public PostByChecksumSpec(int hashCheckSum)
+    public PostByRouteLinkSpec(string routeLink)
     {
-        Query.Where(p => p.HashCheckSum == hashCheckSum && p.IsPublished && !p.IsDeleted);
+        Query.Where(p => p.RouteLink == routeLink && p.IsPublished && !p.IsDeleted);
 
         Query.Include(p => p.Comments)
              .Include(pt => pt.Tags)

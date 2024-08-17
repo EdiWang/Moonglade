@@ -35,6 +35,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Deployment", "Deployment", 
 	ProjectSection(SolutionItems) = preProject
 		..\Deployment\AzureQuickDeploy.ps1 = ..\Deployment\AzureQuickDeploy.ps1
 		..\Deployment\mssql-migration.sql = ..\Deployment\mssql-migration.sql
+		..\Deployment\mssql-migration.vnext.sql = ..\Deployment\mssql-migration.vnext.sql
 	EndProjectSection
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Infrastructure", "Infrastructure", "{F9400B71-ADCD-4FBE-A88F-F85873FDC60B}"
@@ -63,7 +64,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Moonglade.Mention.Common", 
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Mention", "Mention", "{1AE9B003-34B0-4F5D-BF84-E1C714A7EE31}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Moonglade.Setup", "Moonglade.Setup\Moonglade.Setup.csproj", "{648FDD86-E047-49A4-9054-BF041FCD0447}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Moonglade.Setup", "Moonglade.Setup\Moonglade.Setup.csproj", "{648FDD86-E047-49A4-9054-BF041FCD0447}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -175,7 +176,7 @@ Global
 		{648FDD86-E047-49A4-9054-BF041FCD0447} = {97439361-03B4-46C9-BC06-49F76BA57879}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
-		SolutionGuid = {EBD14882-9899-4C4B-B9BC-22C0B93BD559}
 		RESX_CultureCountyOverrides = zh=zh-Hant
+		SolutionGuid = {EBD14882-9899-4C4B-B9BC-22C0B93BD559}
 	EndGlobalSection
 EndGlobal

@@ -1,6 +1,5 @@
 ﻿using Microsoft.Extensions.Logging;
 using Moonglade.Data.Entities;
-using Moonglade.Utils;
 
 namespace Moonglade.Data;
 
@@ -48,15 +47,11 @@ public class Seed
                 PubDateUtc = DateTime.UtcNow,
                 ContentLanguageCode = "en-us",
                 Tags = dbContext.Tag.ToList(),
-                PostCategory = dbContext.PostCategory.ToList()
+                PostCategory = dbContext.PostCategory.ToList(),
+                RouteLink = $"{DateTime.UtcNow:yyyy/M/d}/welcome-to-moonglade"
             };
 
-            var input = $"{post.Slug}#{post.PubDateUtc.GetValueOrDefault():yyyyMMdd}";
-            var checkSum = Helper.ComputeCheckSum(input);
-            post.HashCheckSum = checkSum;
-
             await dbContext.Post.AddAsync(post);
-
             await dbContext.SaveChangesAsync();
         }
         catch (Exception e)
