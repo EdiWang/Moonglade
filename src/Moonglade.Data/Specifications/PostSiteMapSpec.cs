@@ -9,7 +9,7 @@ public sealed class PostSiteMapSpec : Specification<PostEntity, PostSiteMapInfo>
         Query.Where(p => p.IsPublished && !p.IsDeleted);
         Query.Select(p => new PostSiteMapInfo
         {
-            Slug = p.Slug,
+            RouteLink = p.RouteLink,
             CreateTimeUtc = p.PubDateUtc.GetValueOrDefault(),
             UpdateTimeUtc = p.LastModifiedUtc
         });
@@ -19,7 +19,7 @@ public sealed class PostSiteMapSpec : Specification<PostEntity, PostSiteMapInfo>
 
 public class PostSiteMapInfo
 {
-    public string Slug { get; set; }
+    public string RouteLink { get; set; }
     public DateTime CreateTimeUtc { get; set; }
     public DateTime? UpdateTimeUtc { get; set; }
 }
