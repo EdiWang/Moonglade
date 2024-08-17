@@ -51,8 +51,9 @@ public class CreatePostCommandHandler(
             IsFeatured = request.Payload.Featured,
             HeroImageUrl = string.IsNullOrWhiteSpace(request.Payload.HeroImageUrl) ? null : Helper.SterilizeLink(request.Payload.HeroImageUrl),
             IsOutdated = request.Payload.IsOutdated,
-            RouteLink = $"{request.Payload.PublishDate.GetValueOrDefault():yyyy/M/d}/{request.Payload.Slug}"
         };
+
+        post.RouteLink = $"{post.PubDateUtc.GetValueOrDefault():yyyy/M/d}/{request.Payload.Slug}";
 
         // check if exist same slug under the same day
         var todayUtc = DateTime.UtcNow.Date;
