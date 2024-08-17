@@ -25,7 +25,7 @@ public class PostController(
     ])]
     [ProducesResponseType(StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status409Conflict)]
-    public async Task<IActionResult> CreateOrEdit(PostEditModel model, LinkGenerator linkGenerator)
+    public async Task<IActionResult> CreateOrEdit(PostEditModel model)
     {
         try
         {
@@ -48,24 +48,17 @@ public class PostController(
             {
                 logger.LogInformation($"Trying to Ping URL for post: {postEntity.Id}");
 
-                var pubDate = postEntity.PubDateUtc.GetValueOrDefault();
-                var link = linkGenerator.GetUriByPage(HttpContext, "/Post", null,
-                    new
-                    {
-                        year = pubDate.Year,
-                        month = pubDate.Month,
-                        day = pubDate.Day,
-                        postEntity.Slug
-                    });
+                var baseUri = new Uri(Helper.ResolveRootUrl(HttpContext, null, removeTailSlash: true));
+                var link = new Uri(baseUri, postEntity.RouteLink);
 
                 if (blogConfig.AdvancedSettings.EnablePingback)
                 {
-                    cannonService.FireAsync<IPingbackSender>(async sender => await sender.TrySendPingAsync(link, postEntity.PostContent));
+                    cannonService.FireAsync<IPingbackSender>(async sender => await sender.TrySendPingAsync(link.ToString(), postEntity.PostContent));
                 }
 
                 if (blogConfig.AdvancedSettings.EnableWebmention)
                 {
-                    cannonService.FireAsync<IWebmentionSender>(async sender => await sender.SendWebmentionAsync(link, postEntity.PostContent));
+                    cannonService.FireAsync<IWebmentionSender>(async sender => await sender.SendWebmentionAsync(link.ToString(), postEntity.PostContent));
                 }
             }
 
