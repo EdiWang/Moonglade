@@ -92,11 +92,7 @@ public class UpdatePostCommandHandler : IRequestHandler<UpdatePostCommand, PostE
         post.IsFeatured = postEditModel.Featured;
         post.HeroImageUrl = string.IsNullOrWhiteSpace(postEditModel.HeroImageUrl) ? null : Helper.SterilizeLink(postEditModel.HeroImageUrl);
         post.IsOutdated = postEditModel.IsOutdated;
-
-        // compute hash
-        var input = $"{post.Slug}#{post.PubDateUtc.GetValueOrDefault():yyyyMMdd}";
-        var checkSum = Helper.ComputeCheckSum(input);
-        post.HashCheckSum = checkSum;
+        post.RouteLink = $"{postEditModel.PublishDate.GetValueOrDefault():yyyy/M/d}/{postEditModel.Slug}";
 
         // 1. Add new tags to tag lib
         var tags = string.IsNullOrWhiteSpace(postEditModel.Tags) ?
@@ -160,7 +156,7 @@ public class UpdatePostCommandHandler : IRequestHandler<UpdatePostCommand, PostE
 
         await _postRepo.UpdateAsync(post, ct);
 
-        _cache.Remove(BlogCachePartition.Post.ToString(), checkSum.ToString());
+        _cache.Remove(BlogCachePartition.Post.ToString(), post.RouteLink);
 
         _logger.LogInformation($"Post updated: {post.Id}");
         return post;

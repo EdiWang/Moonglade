@@ -26,7 +26,6 @@ public class PostEntity
     public bool IsOutdated { get; set; }
     public string HeroImageUrl { get; set; }
     public bool IsFeatured { get; set; }
-    public int HashCheckSum { get; set; }
     public string RouteLink { get; set; }
 
     public virtual ICollection<CommentEntity> Comments { get; set; }
