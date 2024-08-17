@@ -5,14 +5,14 @@ using Moonglade.Data.Specifications;
 
 namespace Moonglade.Core.PostFeature;
 
-public record GetPostBySlugQuery(PostSlug Slug) : IRequest<PostEntity>;
+public record GetPostBySlugQuery(int Year, int Month, int Day, string Slug) : IRequest<PostEntity>;
 
 public class GetPostBySlugQueryHandler(MoongladeRepository<PostEntity> repo, ICacheAside cache, IConfiguration configuration)
     : IRequestHandler<GetPostBySlugQuery, PostEntity>
 {
     public async Task<PostEntity> Handle(GetPostBySlugQuery request, CancellationToken ct)
     {
-        var routeLink = $"{request.Slug.Year}/{request.Slug.Month}/{request.Slug.Day}/{request.Slug.Slug}".ToLower();
+        var routeLink = $"{request.Year}/{request.Month}/{request.Day}/{request.Slug}".ToLower();
         var spec = new PostByRouteLinkSpec(routeLink);
 
         var psm = await cache.GetOrCreateAsync(BlogCachePartition.Post.ToString(), $"{routeLink}", async entry =>
