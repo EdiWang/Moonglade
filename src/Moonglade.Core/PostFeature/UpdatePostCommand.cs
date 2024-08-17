@@ -92,7 +92,7 @@ public class UpdatePostCommandHandler : IRequestHandler<UpdatePostCommand, PostE
         post.IsFeatured = postEditModel.Featured;
         post.HeroImageUrl = string.IsNullOrWhiteSpace(postEditModel.HeroImageUrl) ? null : Helper.SterilizeLink(postEditModel.HeroImageUrl);
         post.IsOutdated = postEditModel.IsOutdated;
-        post.RouteLink = $"{postEditModel.PublishDate.GetValueOrDefault():yyyy/M/d}/{postEditModel.Slug}";
+        post.RouteLink = $"{post.PubDateUtc.GetValueOrDefault():yyyy/M/d}/{postEditModel.Slug}";
 
         // 1. Add new tags to tag lib
         var tags = string.IsNullOrWhiteSpace(postEditModel.Tags) ?
