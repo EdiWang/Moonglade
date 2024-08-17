@@ -1,7 +1,5 @@
-﻿using MediatR;
-using Microsoft.Extensions.Logging;
+﻿using Microsoft.Extensions.Logging;
 using Moonglade.Data.Entities;
-using Moonglade.Utils;
 
 namespace Moonglade.Data;
 

@@ -1,6 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc.ModelBinding;
 using Moonglade.Comments.Moderator;
-using Moonglade.Data.Entities;
 using Moonglade.Email.Client;
 using Moonglade.Web.Attributes;
 using System.ComponentModel.DataAnnotations;
