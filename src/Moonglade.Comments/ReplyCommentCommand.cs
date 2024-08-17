@@ -36,11 +36,10 @@ public class ReplyCommentCommandHandler(
             Email = cmt.Email,
             Id = model.Id,
             PostId = cmt.PostId,
-            PubDateUtc = cmt.Post.PubDateUtc.GetValueOrDefault(),
             ReplyContent = model.ReplyContent,
             ReplyContentHtml = ContentProcessor.MarkdownToContent(model.ReplyContent, ContentProcessor.MarkdownConvertType.Html),
             ReplyTimeUtc = model.CreateTimeUtc,
-            Slug = cmt.Post.Slug,
+            RouteLink = cmt.Post.RouteLink,
             Title = cmt.Post.Title
         };
 
