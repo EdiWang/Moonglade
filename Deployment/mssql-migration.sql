@@ -2,11 +2,10 @@
 IF NOT EXISTS (SELECT * FROM sys.columns 
                WHERE Name = N'Rank' AND Object_ID = Object_ID(N'FriendLink'))
 BEGIN
-    ALTER TABLE FriendLink ADD [Rank] INT
-    UPDATE FriendLink SET [Rank] = 0
-    ALTER TABLE FriendLink ALTER COLUMN [Rank] INT NOT NULL
+    EXEC sp_executesql N'ALTER TABLE FriendLink ADD [Rank] INT'
+    EXEC sp_executesql N'UPDATE FriendLink SET [Rank] = 0'
+    EXEC sp_executesql N'ALTER TABLE FriendLink ALTER COLUMN [Rank] INT NOT NULL'
 END
-
 
 -- v14.3
 IF NOT EXISTS (SELECT * FROM sys.objects 
@@ -77,6 +76,7 @@ END
 IF NOT EXISTS (SELECT * FROM sys.columns 
                WHERE Name = N'Worker' AND Object_ID = Object_ID(N'Mention'))
 BEGIN
-    ALTER TABLE Mention ADD Worker NVARCHAR(16)
-    UPDATE Mention SET Worker = N'Pingback'
+    EXEC sp_executesql N'ALTER TABLE Mention ADD Worker NVARCHAR(16)'
+    EXEC sp_executesql N'UPDATE Mention SET Worker = N''Pingback'''
 END
+
