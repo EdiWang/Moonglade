@@ -49,7 +49,7 @@ public class PostController(
                 logger.LogInformation($"Trying to Ping URL for post: {postEntity.Id}");
 
                 var baseUri = new Uri(Helper.ResolveRootUrl(HttpContext, null, removeTailSlash: true));
-                var link = new Uri(baseUri, postEntity.RouteLink);
+                var link = new Uri(baseUri, $"post/{postEntity.RouteLink.ToLower()}");
 
                 if (blogConfig.AdvancedSettings.EnablePingback)
                 {
