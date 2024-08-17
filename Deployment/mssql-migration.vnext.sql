@@ -2,8 +2,8 @@
 IF NOT EXISTS (SELECT * FROM sys.columns 
                WHERE Name = N'RouteLink' AND Object_ID = Object_ID(N'Post'))
 BEGIN
-    ALTER TABLE Post ADD RouteLink NVARCHAR(256)
-    UPDATE Post SET RouteLink = FORMAT(PubDateUtc, 'yyyy/M/d') + '/' + Slug
+    EXEC sp_executesql N'ALTER TABLE Post ADD RouteLink NVARCHAR(256)'
+    EXEC sp_executesql N'UPDATE Post SET RouteLink = FORMAT(PubDateUtc, ''yyyy/M/d'') + ''/'' + Slug'
 END
 
 IF EXISTS (
