@@ -413,6 +413,12 @@ h3 small {
     text-align: justify !important;
 }
 
+.moonglade-logo-heading {
+    margin: 0;
+    padding: 0;
+    font-size: 9.96px;
+}
+
 .nav-link {
     color: var(--accent-color1);
 }
