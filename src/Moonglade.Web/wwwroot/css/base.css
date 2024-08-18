@@ -123,6 +123,10 @@ h3 small {
     height: 200px !important;
 }
 
+.page-heading {
+    font-size: 1.75rem;
+}
+
 .page-content .card-header {
     padding: 0.5rem !important;
 }

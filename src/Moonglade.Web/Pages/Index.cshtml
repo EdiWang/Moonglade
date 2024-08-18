@@ -7,7 +7,7 @@
     ViewBag.ActionName = "Index";
 }
 
-<h3 class="d-flex align-items-center mb-4">
+<h2 class="page-heading d-flex align-items-center mb-4">
     <span>
         @SharedLocalizer["All Posts"]
     </span>
@@ -17,7 +17,7 @@
     <a class="d-none d-md-block" asp-controller="Subscription" asp-action="Rss" target="_blank" title="@SharedLocalizer["Subscribe recent posts"]">
         <i class="bi-rss font-125rem"></i>
     </a>
-</h3>
+</h2>
 
 @if (Model.Posts.Any())
 {
