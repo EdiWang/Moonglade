@@ -73,7 +73,7 @@ footer {
     }
 
     footer a {
-        color: var(--transparent-light-70);
+        color: var(--bs-gray-200);
     }
 
         footer a:hover {
