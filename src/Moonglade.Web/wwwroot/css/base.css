@@ -98,7 +98,7 @@ footer {
     color: var(--transparent-light-50);
 }
 
-h3 small {
+.page-heading small {
     font-size: 60%;
 }
 
