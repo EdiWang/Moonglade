@@ -15,7 +15,7 @@
             @Model.PubDateUtc
         </time>
 
-        <h4 class="post-summary-title mb-3">
+        <h3 class="post-summary-title mb-3">
             <a asp-page="/Post"
                asp-route-year="@Model.PubDateUtc.Year"
                asp-route-month="@Model.PubDateUtc.Month"
@@ -28,7 +28,7 @@
             {
                 <i class="bi-star-fill text-warning"></i>
             }
-        </h4>
+        </h3>
 
         <abbr class="post-summary-text d-block mb-3">@(Model.ContentAbstract)</abbr>
 
