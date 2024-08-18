@@ -28,6 +28,7 @@ export function useDarkMode() {
     $('.card-subtitle').removeClass('text-muted');
 
     $('.comment-item').removeClass('bg-white border').addClass('bg-dark border-dark');
+    $('.comment-item .card-subtitle').removeClass('text-body-secondary').addClass('text-body-dark');
 
     isDarkMode = true;
     $('.lightswitch').addClass('bg-dark text-light border-secondary');
@@ -63,6 +64,8 @@ export function useLightMode() {
     $('.card-subtitle').addClass('text-muted');
 
     $('.comment-item').removeClass('bg-dark border-dark').addClass('bg-white border');
+    $('.comment-item .card-subtitle').removeClass('text-body-dark').addClass('text-body-secondary');
+
 
     isDarkMode = false;
     $('.lightswitch').removeClass('bg-dark text-light border-secondary');
