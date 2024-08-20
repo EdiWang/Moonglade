@@ -37,7 +37,6 @@
         @foreach (var item in yearList)
         {
             var queryMonth = archives.Where(obj => obj.Year == item);
-            var yearEndChar = item % 10;
 
             <li class="@(item % 2 == 0 ? "timeline-inverted" : null)">
                 <div class="timeline-badge"></div>
