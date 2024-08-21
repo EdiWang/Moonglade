@@ -51,7 +51,7 @@
 {
     var tagMax = tags.Select(p => p.PostCount).Max();
 
-    <input id="tagFilter" type="text" class="form-control mb-3" maxlength="32" placeholder="Filter..">
+    <input id="tagFilter" type="text" class="form-control mb-3" maxlength="32" placeholder="Filter.." role="search" aria-label="Filter tags">
 
     <ul class="list-unstyled ul-tags">
         @foreach (var tag in tags.OrderBy(t => t.Tag.DisplayName))
