@@ -1,4 +1,5 @@
 ﻿using Edi.Captcha;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Filters;
 
 namespace Moonglade.Web.Filters;
@@ -7,27 +8,30 @@ public class ValidateCaptcha(ISessionBasedCaptcha captcha) : ActionFilterAttribu
 {
     public override void OnActionExecuting(ActionExecutingContext context)
     {
-        var captchaedModel =
-            context.ActionArguments.Where(p => p.Value is ICaptchable)
-                .Select(x => x.Value as ICaptchable)
-                .FirstOrDefault();
+        var captchableModel = context.ActionArguments
+            .Values
+            .OfType<ICaptchable>()
+            .FirstOrDefault();
 
-        if (null == captchaedModel)
+        if (captchableModel == null)
         {
-            context.ModelState.AddModelError(nameof(captchaedModel.CaptchaCode), "Captcha Code is required");
+            AddModelError(context, "Captcha Code is required");
             context.Result = new BadRequestObjectResult(context.ModelState);
+            return;
         }
-        else
+
+        if (!captcha.Validate(captchableModel.CaptchaCode, context.HttpContext.Session))
         {
-            if (!captcha.Validate(captchaedModel.CaptchaCode, context.HttpContext.Session))
-            {
-                context.ModelState.AddModelError(nameof(captchaedModel.CaptchaCode), "Wrong Captcha Code");
-                context.Result = new ConflictObjectResult(context.ModelState);
-            }
-            else
-            {
-                base.OnActionExecuting(context);
-            }
+            AddModelError(context, "Wrong Captcha Code");
+            context.Result = new ConflictObjectResult(context.ModelState);
+            return;
         }
+
+        base.OnActionExecuting(context);
+    }
+
+    private void AddModelError(ActionExecutingContext context, string errorMessage)
+    {
+        context.ModelState.AddModelError(nameof(ICaptchable.CaptchaCode), errorMessage);
     }
 }
