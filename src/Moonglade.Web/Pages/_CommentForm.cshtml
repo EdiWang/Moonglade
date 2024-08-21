@@ -4,6 +4,7 @@
             <div class="col-md-6">
                 <input type="text"
                        class="form-control"
+                       aria-label="Your name"
                        placeholder="Your name"
                        id="input-comment-name"
                        required />
@@ -12,6 +13,7 @@
         <div class="mb-3">
             <input type="email"
                    class="form-control"
+                   aria-label="Email (Optional)"
                    placeholder="Email (Optional)"
                    id="input-comment-email" />
             
@@ -24,6 +26,7 @@
                       class="form-control"
                       cols="60"
                       rows="4"
+                      aria-label="@SharedLocalizer["Your comments (Markdown supported)"]"
                       placeholder="@SharedLocalizer["Your comments (Markdown supported)"]"
                       maxlength="1024"
                       required></textarea>
@@ -33,6 +36,7 @@
                 <div class="input-group">
                     <img id="img-captcha" onclick="viewpost.resetCaptchaImage()" src="~/captcha-image" data-bs-toggle="tooltip" data-placement="top" title="@SharedLocalizer["Can't read? Click to change another image."]" alt="Captcha image" />
                     <input type="text"
+                           aria-label="Captcha code"
                            id="input-comment-captcha"
                            class="form-control input-captcha"
                            placeholder="Captcha Code"

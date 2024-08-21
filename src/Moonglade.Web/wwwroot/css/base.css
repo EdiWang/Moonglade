@@ -279,6 +279,10 @@ footer {
     padding: 20px 38px;
 }
 
+    .comment-form-containter .card-subtitle {
+        font-size: 1rem;
+    }
+
 .dropdown-menu {
     box-shadow: 0 6px 12px var(--transparent-dark-4);
 }
