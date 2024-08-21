@@ -30,23 +30,25 @@ public class ClearBlogCache(BlogCachePartition partition, string cacheKey, ICach
             cache.Remove(partition.ToString(), cacheKey);
         }
 
-        if (_type.HasFlag(BlogCacheType.Subscription))
-        {
-            cache.Remove(BlogCachePartition.General.ToString(), "rss");
-            cache.Remove(BlogCachePartition.General.ToString(), "atom");
-            cache.Remove(BlogCachePartition.RssCategory.ToString());
-        }
+        var generalPartition = BlogCachePartition.General.ToString();
 
-        if (_type.HasFlag(BlogCacheType.SiteMap))
+        switch (_type)
         {
-            cache.Remove(BlogCachePartition.General.ToString(), "sitemap");
-        }
+            case BlogCacheType.Subscription:
+                cache.Remove(generalPartition, "rss");
+                cache.Remove(generalPartition, "atom");
+                cache.Remove(BlogCachePartition.RssCategory.ToString());
+                break;
 
-        if (_type.HasFlag(BlogCacheType.PagingCount))
-        {
-            cache.Remove(BlogCachePartition.General.ToString(), "postcount");
-            cache.Remove(BlogCachePartition.PostCountCategory.ToString());
-            cache.Remove(BlogCachePartition.PostCountTag.ToString());
+            case BlogCacheType.SiteMap:
+                cache.Remove(generalPartition, "sitemap");
+                break;
+
+            case BlogCacheType.PagingCount:
+                cache.Remove(generalPartition, "postcount");
+                cache.Remove(BlogCachePartition.PostCountCategory.ToString());
+                cache.Remove(BlogCachePartition.PostCountTag.ToString());
+                break;
         }
     }
 }
