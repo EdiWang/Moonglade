@@ -30,14 +30,4 @@
             </ul>
         </section>
     </div>
-    @if (null == ViewBag.IsDraftPreview)
-    {
-        <div class="col-auto">
-            <a href="javascript:;" class="text-muted" data-bs-toggle="modal" data-bs-target="#qrcode-window" title="Link to show QR Code for this blog post">
-                <i class="bi-qr-code-scan"></i>
-            </a>
-        </div>
-    }
 </div>
-
-<partial name="_QRCodeWindow" />

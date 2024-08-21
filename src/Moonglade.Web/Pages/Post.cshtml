@@ -63,7 +63,6 @@
 
 @section scripts {
     <script src="~/js/3rd/highlight.min.js" asp-append-version="true"></script>
-    <script src="~/js/3rd/qrious.min.js"></script>
     @if (BlogConfig.ContentSettings.DocumentOutline)
     {
         <script src="~/js/app/documentoutline.js"></script>
@@ -95,13 +94,7 @@
             </text>
         }
 
-            window.fitImageToDevicePixelRatio = @BlogConfig.ImageSettings.FitImageToDevicePixelRatio.ToString().ToLower();
-
-        var q = new QRious({
-            element: document.querySelector('.post-qrcode'),
-            value: document.URL,
-            size: 200
-        });
+        window.fitImageToDevicePixelRatio = @BlogConfig.ImageSettings.FitImageToDevicePixelRatio.ToString().ToLower();
 
         $('#comment-form').on('submit', function (e) {
             e.preventDefault();
