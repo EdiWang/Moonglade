@@ -423,10 +423,6 @@ footer {
     font-size: 9.96px;
 }
 
-.nav-link {
-    color: var(--accent-color1);
-}
-
 .navbar {
     box-shadow: 0 4px 8px -2px var(--gray-5);
     padding: .4rem 1rem
@@ -516,7 +512,7 @@ div.animbrand a:hover {
 }
 
 .navbar-dark .navbar-nav .nav-link {
-    color: var(--transparent-light-70);
+    color: var(--gray-2);
 }
 
     .navbar-dark .navbar-nav .nav-link:focus,
