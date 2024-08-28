@@ -52,8 +52,8 @@ public class ReceiveWebmentionCommandHandler(
                 return WebmentionResponse.SpamDetectedFakeNotFound;
             }
 
-            var (slug, pubDate) = Helper.GetSlugInfoFromUrl(mentionRequest.TargetUrl);
-            var spec = new PostByDateAndSlugForIdTitleSpec(pubDate, slug);
+            var routeLink = Helper.GetRouteLinkFromUrl(mentionRequest.TargetUrl);
+            var spec = new PostByRouteLinkForIdTitleSpec(routeLink);
             var (id, title) = await postRepo.FirstOrDefaultAsync(spec, ct);
             if (id == Guid.Empty)
             {

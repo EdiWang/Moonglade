@@ -53,7 +53,7 @@ public static class Helper
         }
     }
 
-    public static (string Slug, DateTime PubDate) GetSlugInfoFromUrl(string url)
+    public static string GetRouteLinkFromUrl(string url)
     {
         var blogSlugRegex = new Regex(@"^https?:\/\/.*\/post\/(?<yyyy>\d{4})\/(?<MM>\d{1,12})\/(?<dd>\d{1,31})\/(?<slug>.*)$");
         Match match = blogSlugRegex.Match(url);
@@ -62,13 +62,12 @@ public static class Helper
             throw new FormatException("Invalid Slug Format");
         }
 
-        int year = int.Parse(match.Groups["yyyy"].Value);
-        int month = int.Parse(match.Groups["MM"].Value);
-        int day = int.Parse(match.Groups["dd"].Value);
+        string yyyy = match.Groups["yyyy"].Value;
+        string mm = match.Groups["MM"].Value;
+        string dd = match.Groups["dd"].Value;
         string slug = match.Groups["slug"].Value;
-        var date = new DateTime(year, month, day);
 
-        return (slug, date);
+        return $"{yyyy}/{mm}/{dd}/{slug}".ToLower();
     }
 
     private static readonly Regex UrlsRegex = new(
