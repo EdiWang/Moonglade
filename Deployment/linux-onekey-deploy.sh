@@ -18,6 +18,8 @@ RedBG="\033[41;37m"
 OK="${Green}[OK]${Font}"
 ERROR="${Red}[ERROR]${Font}"
 
+# Helper functions
+
 function print_ok() {
     echo -e "${OK} ${Blue} $1 ${Font}"
 }
@@ -31,6 +33,16 @@ function is_root() {
         print_ok "Running as root"
     else
         print_error "Current user is not root, please run as root"
+        exit 1
+    fi
+}
+
+judge() {
+    if [[ 0 -eq $? ]]; then
+        print_ok "$1 OK"
+        sleep 1
+    else
+        print_error "$1 BOOM BOOM"
         exit 1
     fi
 }
