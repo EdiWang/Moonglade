@@ -138,7 +138,7 @@ function install_sqlexpress() {
 
     judge "Run SQL Server Express Docker container"
 
-    sleep 2
+    sleep 5
 
     chmod 777 -R /var/opt/mssql
     judge "Change permissions to 777 for /var/opt/mssql"
@@ -146,9 +146,38 @@ function install_sqlexpress() {
     print_ok "SQL Server Express installed successfully"
 }
 
+function create_moonglade_db() {
+    docker network inspect moongladenetwork >/dev/null 2>&1 || docker network create --subnet=172.20.0.0/16 moongladenetwork
+
+    CONTAINER_NAME="sqlexpress"
+    NETWORK_NAME="moongladenetwork"
+
+    if docker network inspect "$NETWORK_NAME" | grep -q "\"Name\": \"$CONTAINER_NAME\""; then
+        print_ok "Container $CONTAINER_NAME is already connected to $NETWORK_NAME"
+    else
+        echo "Container $CONTAINER_NAME is not connected to $NETWORK_NAME, connecting..."
+        docker network connect "$NETWORK_NAME" "$CONTAINER_NAME"
+
+        judge "Connect container $CONTAINER_NAME to $NETWORK_NAME"
+    fi
+
+    echo "Creating database..."
+    container_id=$(docker run -d --network moongladenetwork mcr.microsoft.com/mssql-tools sleep infinity)
+    sleep 5
+
+    docker exec -it $container_id /opt/mssql-tools/bin/sqlcmd -S sqlexpress -U sa -P Work@996 -Q "IF NOT EXISTS (SELECT name FROM sys.databases WHERE name = 'moonglade') CREATE DATABASE [moonglade]"
+
+    docker stop $container_id
+    docker rm $container_id
+
+    judge "Create database"
+}
+
 function install_moonglade() {
     install_common
     install_sqlexpress
+    sleep 2
+    create_moonglade_db
 }
 
 function uninstall_moonglade() {
