@@ -66,3 +66,48 @@ function port_exist_check() {
     fi
 }
 
+# Logic
+
+function install_common() {
+    # curl
+    if ! command -v curl; then
+        apt install curl -y
+    fi
+
+    # Docker
+    if ! command -v docker; then
+        curl -fsSL https://get.docker.com | sh
+        judge "Install docker"
+    fi
+}
+
+function install_sqlexpress() {
+    mkdir /var/opt/mssql
+    judge "Create directory /var/opt/mssql"
+
+    docker run \
+        --restart unless-stopped \
+        -e "ACCEPT_EULA=Y" \
+        -e 'MSSQL_PID=Express' \
+        -e "SA_PASSWORD=Work@996" \
+        -p 1433:1433 \
+        --name sqlexpress \
+        -h sqlexpress \
+        -v /var/opt/mssql/data:/var/opt/mssql/data \
+        -v /var/opt/mssql/log:/var/opt/mssql/log \
+        -v /var/opt/mssql/secrets:/var/opt/mssql/secrets \
+        -d mcr.microsoft.com/mssql/server:2022-latest
+
+    judge "Run SQL Server Express Docker container"
+
+    sleep 2
+
+    chmod 777 -R /var/opt/mssql
+    judge "Change permissions to 777 for /var/opt/mssql"
+
+    print_ok "SQL Server Express installed successfully"
+}
+
+menu() {
+    
+}
