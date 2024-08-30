@@ -44,11 +44,13 @@
             </div>
             <div class="col-md-11 mb-3">
                 <div role="comment" class="comment-item rounded-3 shadow-sm border bg-white mb-3 p-4" data-author="@item.Username">
-                    <div class="card-subtitle text-body-secondary float-end">
-                        <time data-utc-label="@item.CreateTimeUtc.ToString("u")">@item.CreateTimeUtc</time>
+                    <div class="d-flex">
+                        <h6 class="card-title mb-3">@item.Username</h6>
+                        <span class="flex-spacer" aria-hidden="true" role="none"></span>
+                        <div class="card-subtitle text-body-secondary">
+                            <time data-utc-label="@item.CreateTimeUtc.ToString("u")">@item.CreateTimeUtc</time>
+                        </div>
                     </div>
-
-                    <h6 class="card-title mb-3">@item.Username</h6>
 
                     <div>
                         @Html.Raw(ContentProcessor.MarkdownToContent(item.CommentContent, ContentProcessor.MarkdownConvertType.Html))
@@ -57,7 +59,7 @@
                     <div>
                         @foreach (var reply in item.CommentReplies.OrderByDescending(t => t.ReplyTimeUtc))
                         {
-                            <hr />
+                            <hr/>
                             <div class="reply-container">
                                 <div>
                                     <strong>
