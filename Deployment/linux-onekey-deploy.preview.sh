@@ -181,9 +181,12 @@ function install_moonglade() {
 
     echo "Pulling Moonglade Docker image..."
     docker pull ediwang/moonglade
+
+    docker run -d -p 8080:8080 -e ConnectionStrings__MoongladeDatabase="Server=sqlexpress;Database=moonglade;User ID=sa;Password=Work@996;Trusted_Connection=False;Encrypt=True;TrustServerCertificate=True;Connection Timeout=30;MultipleActiveResultSets=True" -e ImageStorage__FileSystemPath="/app/images" --network moongladenetwork --name moonglade ediwang/moonglade
 }
 
 function uninstall_moonglade() {
+    rm /var/opt/mssql -rf
     exit 0
 }
 
