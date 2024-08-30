@@ -46,3 +46,23 @@ judge() {
         exit 1
     fi
 }
+
+function port_exist_check() {
+    if ! command -v lsof; then
+        apt install lsof
+    fi
+
+    if [[ 0 -eq $(lsof -i:"$1" | grep -i -c "listen") ]]; then
+        print_ok "$1 port is not used"
+        sleep 1
+    else
+        print_error "Shit! $1 port is used by $1"
+        lsof -i:"$1"
+        print_error "Killing the process in 5s"
+        sleep 5
+        lsof -i:"$1" | awk '{print $2}' | grep -v "PID" | xargs kill -9
+        print_ok "killed"
+        sleep 1
+    fi
+}
+
