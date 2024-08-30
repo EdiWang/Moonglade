@@ -121,11 +121,12 @@ function install_sqlexpress() {
 }
 
 function install_moonglade() {
-
+    install_common
+    install_sqlexpress
 }
 
 function uninstall_moonglade() {
-    
+
 }
 
 menu() {
