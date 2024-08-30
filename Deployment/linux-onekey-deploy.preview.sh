@@ -186,7 +186,8 @@ function install_moonglade() {
 }
 
 function uninstall_moonglade() {
-    rm /var/opt/mssql -rf
+    # Do not remove the database directory, user may have other databases in it
+    # rm /var/opt/mssql -rf
     exit 0
 }
 
