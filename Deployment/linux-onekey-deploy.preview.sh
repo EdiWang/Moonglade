@@ -18,7 +18,33 @@ RedBG="\033[41;37m"
 OK="${Green}[OK]${Font}"
 ERROR="${Red}[ERROR]${Font}"
 
+shell_version="0.0.1"
+script_url="https://raw.githubusercontent.com/EdiWang/Moonglade/master/Deployment/linux-onekey-deploy.preview.sh"
+
 # Helper functions
+
+function update_sh() {
+    if ! command -v curl; then
+        apt install curl -y
+    fi
+
+    ol_version=$(curl -L -s ${script_url} | grep "shell_version=" | head -1 | awk -F '=|"' '{print $3}')
+    if [[ "$shell_version" != "$(echo -e "$shell_version\n$ol_version" | sort -rV | head -1)" ]]; then
+        print_ok "New version found, update [Y/N]?"
+        read -r update_confirm
+        case $update_confirm in
+        [yY][eE][sS] | [yY])
+            wget -N --no-check-certificate ${script_url}
+            print_ok "Updated"
+            print_ok "Run this script by sudo $0"
+            exit 0
+            ;;
+        *) ;;
+        esac
+    else
+        print_ok "Already up to date"
+    fi
+}
 
 function print_ok() {
     echo -e "${OK} ${Blue} $1 ${Font}"
