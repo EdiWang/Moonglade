@@ -126,12 +126,12 @@ function install_moonglade() {
 }
 
 function uninstall_moonglade() {
-
+    exit 0
 }
 
 menu() {
     is_root
-    echo -e "  One key Moonglade Deployment Script for Linux VM"
+    echo -e "One key Moonglade Deployment Script for Linux VM"
     echo -e "—— ${Yellow}Setup${Font} ——-------------————————————-------------------------------"
     echo -e "${Green}0.${Font}  Check update for this script"
     echo -e "${Green}1.${Font}  Install Moonglade (ASP.NET Core + SQL Server Express on Docker)"
