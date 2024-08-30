@@ -178,6 +178,9 @@ function install_moonglade() {
     install_sqlexpress
     sleep 2
     create_moonglade_db
+
+    echo "Pulling Moonglade Docker image..."
+    docker pull ediwang/moonglade
 }
 
 function uninstall_moonglade() {
