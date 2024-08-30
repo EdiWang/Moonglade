@@ -82,6 +82,18 @@ function install_common() {
 }
 
 function install_sqlexpress() {
+    container_status=$(docker inspect -f '{{.State.Status}}' sqlexpress 2>/dev/null)
+
+    if [ "$container_status" == "running" ]; then
+        print_ok "SQL Server Express container is already running."
+        return
+    elif [ "$container_status" == "exited" ]; then
+        echo "SQL Server Express container exists but is stopped. Starting it..."
+        docker start sqlexpress
+        judge "Start existing SQL Server Express Docker container"
+        return
+    fi
+
     mkdir /var/opt/mssql
     judge "Create directory /var/opt/mssql"
 
@@ -108,6 +120,41 @@ function install_sqlexpress() {
     print_ok "SQL Server Express installed successfully"
 }
 
-menu() {
+function install_moonglade() {
+
+}
+
+function uninstall_moonglade() {
     
 }
+
+menu() {
+    is_root
+    echo -e "  One key Moonglade Deployment Script for Linux VM"
+    echo -e "—— ${Yellow}Setup${Font} ——-------------————————————-------------------------------"
+    echo -e "${Green}0.${Font}  Check update for this script"
+    echo -e "${Green}1.${Font}  Install Moonglade (ASP.NET Core + SQL Server Express on Docker)"
+    echo -e "${Green}2.${Font}  Remove Moonglade (Including all your data)"
+    echo -e "——-----------------------------------------------------------------"
+    echo -e "${Green}30.${Font} Exit"
+    read -rp "Enter menu id:" menu_num
+    case $menu_num in
+    0)
+        update_sh
+        ;;
+    1)
+        install_moonglade
+        ;;
+    2)
+        uninstall_moonglade
+        ;;
+    30)
+        exit 0
+        ;;
+    *)
+        print_error "Enter correct number"
+        ;;
+    esac
+}
+
+menu "$@"
