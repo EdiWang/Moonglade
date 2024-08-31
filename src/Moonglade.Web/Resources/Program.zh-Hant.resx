@@ -364,7 +364,7 @@
     <value>啟用圖片CDN</value>
   </data>
   <data name="Enable Comment" xml:space="preserve">
-    <value>是否允許留言者再次編輯留言</value>
+    <value>是否允許留言</value>
   </data>
   <data name="Enable comments" xml:space="preserve">
     <value>開啟評論</value>
