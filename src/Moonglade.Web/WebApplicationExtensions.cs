@@ -1,5 +1,4 @@
-﻿using Edi.ChinaDetector;
-using Microsoft.AspNetCore.HttpOverrides;
+﻿using Microsoft.AspNetCore.HttpOverrides;
 using System.Net;
 
 namespace Moonglade.Web;
@@ -89,29 +88,5 @@ public static class WebApplicationExtensions
             fho.KnownNetworks.Add(new(IPAddress.Any, 0));
             fho.KnownNetworks.Add(new(IPAddress.IPv6Any, 0));
         }
-    }
-
-    public static async Task DetectChina(this WebApplication app)
-    {
-        if (app.Environment.IsDevelopment()) return;
-
-        // Learn more at https://go.edi.wang/aka/os251
-        var service = new OfflineChinaDetectService();
-        var result = await service.Detect(DetectionMethod.TimeZone | DetectionMethod.Culture | DetectionMethod.Behavior);
-        if (result.Rank >= 1)
-        {
-            DealWithChina(app);
-        }
-    }
-
-    private static void DealWithChina(WebApplication app)
-    {
-        app.Logger.LogError("Positive China detection, application stopped.");
-
-        app.MapGet("/", () => Results.Text(
-            "Due to legal and regulation concerns, we regret to inform you that deploying Moonglade on servers located in China (including Hong Kong) is currently not possible",
-            statusCode: 251
-        ));
-        app.Run();
     }
 }

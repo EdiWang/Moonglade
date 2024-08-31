@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Cryptography.KeyDerivation;
+﻿using Edi.ChinaDetector;
+using Microsoft.AspNetCore.Cryptography.KeyDerivation;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc.ModelBinding;
 using Microsoft.Win32;
@@ -51,6 +52,14 @@ public static class Helper
 
             return version ?? fileVersion;
         }
+    }
+
+    public static async Task<bool> IsRunningInChina()
+    {
+        // Learn more at https://go.edi.wang/aka/os251
+        var service = new OfflineChinaDetectService();
+        var result = await service.Detect(DetectionMethod.TimeZone | DetectionMethod.Culture | DetectionMethod.Behavior);
+        return result.Rank >= 1;
     }
 
     public static string GetRouteLinkFromUrl(string url)

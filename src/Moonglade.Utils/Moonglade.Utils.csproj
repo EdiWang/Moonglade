@@ -11,5 +11,6 @@
   <ItemGroup>
     <FrameworkReference Include="Microsoft.AspNetCore.App" />
     <PackageReference Include="Markdig" Version="0.37.0" />
+    <PackageReference Include="Edi.ChinaDetector" Version="1.2.251" />
   </ItemGroup>
 </Project>
