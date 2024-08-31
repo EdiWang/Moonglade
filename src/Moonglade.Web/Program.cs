@@ -156,7 +156,7 @@ var app = builder.Build();
 
 if (!app.Environment.IsDevelopment() && await Helper.IsRunningInChina())
 {
-    app.Logger.LogError("Positive China detection, application stopped.");
+    app.Logger.LogCritical("Positive China detection, application stopped.");
     await app.StopAsync();
 
     return 251;
