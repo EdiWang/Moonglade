@@ -7,7 +7,7 @@ export function useDarkMode() {
     document.querySelector('#blog-footer').classList.remove('bg-accent2');
     $('').addClass('bg-dark');
 
-    $('body').addClass('bg-moca-dark text-light darkmode');
+    $('body').addClass('text-light');
     $('body').attr("data-bs-theme", "dark");
     $('body.body-post-slug').removeClass('bg-gray-1');
     $('.article-post-slug').removeClass('border');
@@ -43,7 +43,7 @@ export function useLightMode() {
 
     document.querySelector('#blog-footer').classList.add('bg-accent2');
 
-    $('body').removeClass('bg-moca-dark text-light darkmode');
+    $('body').removeClass('text-light');
     $('body').removeAttr("data-bs-theme");
     $('body.body-post-slug').addClass('bg-gray-1');
     $('.article-post-slug').addClass('border');
