@@ -59,6 +59,10 @@
         border-right: 0 solid var(--gray-5);
     }
 
+[data-bs-theme=dark] .timeline-body a {
+    color: var(--gray-3);
+}
+
 [data-bs-theme=dark] .timeline-title a {
     color: var(--bs-white);
 }
@@ -73,13 +77,9 @@
     border-color: var(--gray-7) !important;
 }
 
-.darkmode .article-post-summary .post-date-box {
-    border-color: var(--gray-7) !important;
-}
-
-.darkmode .timeline-body a {
-    color: var(--gray-3);
-}
+    .darkmode .article-post-summary .post-date-box {
+        border-color: var(--gray-7) !important;
+    }
 
 .darkmode .post-date-day {
     color: var(--gray-5);
@@ -94,17 +94,6 @@
 }
 
 .darkmode .post-summary-title a {
-    color: var(--bs-white);
-}
-
-.darkmode .page-link {
-    background-color: var(--gray-9);
-    border: 1px solid var(--gray-7);
-}
-
-.darkmode .page-link:hover {
-    background-color: var(--gray-7);
-    border: 1px solid var(--gray-7);
     color: var(--bs-white);
 }
 
@@ -137,7 +126,7 @@
     color: var(--gray-3);
 }
 
-.darkmode math {
+[data-bs-theme=dark] math {
     background-color: #2e2e2e;
     border: 1px solid #454545;
     color: #e3e3e3;
