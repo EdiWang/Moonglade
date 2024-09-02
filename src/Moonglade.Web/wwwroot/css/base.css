@@ -65,6 +65,10 @@ footer {
             color: var(--bs-white);
         }
 
+.moonglade-footer {
+    background-color: var(--accent-color2);
+}
+
 .bg-gray-1 {
     background-color: var(--gray-1);
 }

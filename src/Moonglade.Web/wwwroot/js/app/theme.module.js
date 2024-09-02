@@ -1,8 +1,6 @@
 ﻿let isDarkMode = false;
 
 export function useDarkMode() {
-    $('#blog-footer').removeClass('bg-accent2').addClass('bg-dark');
-
     $('body').attr("data-bs-theme", "dark");
     $('body.body-post-slug').removeClass('bg-gray-1');
     $('.article-post-slug').removeClass('border');
@@ -24,8 +22,6 @@ export function useDarkMode() {
 }
 
 export function useLightMode() {
-    $('#blog-footer').removeClass('bg-dark').addClass('bg-accent2');
-
     $('body').removeAttr("data-bs-theme");
     $('body.body-post-slug').addClass('bg-gray-1');
     $('.article-post-slug').addClass('border');

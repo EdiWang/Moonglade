@@ -7,6 +7,11 @@
     background-color: rgba(var(--bs-dark-rgb), var(--bs-bg-opacity)) !important;
 }
 
+[data-bs-theme=dark] .moonglade-footer {
+    --bs-bg-opacity: 1;
+    background-color: rgba(var(--bs-dark-rgb), var(--bs-bg-opacity)) !important;
+}
+
 [data-bs-theme=dark] a {
     color: var(--bs-secondary-color);
 }
