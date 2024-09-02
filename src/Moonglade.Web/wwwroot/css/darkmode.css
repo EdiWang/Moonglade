@@ -72,28 +72,20 @@
     border: 3px solid var(--gray-5);
 }
 
-.darkmode .article-post-summary {
+[data-bs-theme=dark] .article-post-summary {
     background-color: transparent !important;
-    border-color: var(--gray-7) !important;
 }
 
-    .darkmode .article-post-summary .post-date-box {
-        border-color: var(--gray-7) !important;
-    }
-
-.darkmode .post-date-day {
-    color: var(--gray-5);
+[data-bs-theme=dark] .post-date-day,
+[data-bs-theme=dark] .post-date-month {
+    color: var(--bs-secondary-color);
 }
 
-.darkmode .post-date-month {
-    color: var(--gray-5);
+[data-bs-theme=dark] .post-summary-text {
+    color: var(--bs-body-color);
 }
 
-.darkmode .post-summary-text {
-    color: var(--gray-3);
-}
-
-.darkmode .post-summary-title a {
+[data-bs-theme=dark] .post-summary-title a {
     color: var(--bs-white);
 }
 
