@@ -22,10 +22,6 @@
         background-color: var(--bs-white);
     }
 
-    body.darkmode.body-post-slug {
-        background-color: var(--moca-dark);
-    }
-
     .post-content img {
         cursor: inherit;
     }
