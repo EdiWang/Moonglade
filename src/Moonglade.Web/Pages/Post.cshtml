@@ -5,7 +5,7 @@
 @Html.AntiForgeryToken()
 
 @{
-    ViewBag.BodyClass = "body-post-slug";
+    ViewBag.BodyClass = "body-post-slug bg-gray-1";
     if (!Model.Post.IsFeedIncluded)
     {
         HttpContext.Response.Headers.Add("X-Robots-Tag", "noindex, nofollow");
