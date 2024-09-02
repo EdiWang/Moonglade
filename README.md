@@ -4,34 +4,23 @@
 
 A personal blog system that optimized for [**Microsoft Azure**](https://azure.microsoft.com/en-us/). Designed for developers, enabling most common blogging features including posts, comments, categories, archive, tags and pages.
 
-## 📦 Deployment
+## 📦 Deployment Notice
 
 - Use stable code from [Release](https://github.com/EdiWang/Moonglade/releases) branch rather than master branch.
 
-- HTTPS is required, and it is recommended to enable HTTP/2 support on your web server.
+- It is recommended to enable HTTPS and HTTP/2 support on your web server.
+
+- Azure is recommended for deployment, but you can also deploy it on any other cloud provider or pure on-premises without any cloud.
 
 ### Full Deploy on Azure
 
-This is the way https://edi.wang is deployed, by taking advantage of as many Azure services as possible, the blog can run very fast and secure. 
-
-There is no automated script to deploy it, you need to manually create all the resources.
+This is the way https://edi.wang is deployed, by taking advantage of as many Azure services as possible, the blog can run very fast and secure. There is no automated script to deploy it, you need to manually create all the resources.
 
 ![image](https://cdn.edi.wang/web-assets/ediwang-azure-arch-visio-nov2022.png)
 
 ### Quick Deploy on Azure (App Service on Linux)
 
 Use automated deployment script to get your Moonglade up and running in 10 minutes with minimal Azure components, follow instructions [here](https://github.com/EdiWang/Moonglade/wiki/Quick-Deploy-on-Azure)
-
-### Quick Deploy with Docker-Compose
-
-Simply go the the root folder of this repo and run:
-
-```bash
-docker-compose build
-docker-compose up
-```
-
-That's it! Now open: [Browser: http://localhost:8080](http://localhost:8080)
 
 ## 🐵 Development
 
@@ -42,12 +31,11 @@ Tools | Alternative
 
 ### Setup Database
 
-You can choose from SQL Server, PostgreSQL or MySQL. Update your database connection string in `appsettings.json`, `ConnectionStrings` section.
+> Free version of SQL Server Express would be sufficient for production use.
 
-
-Database | `DatabaseType` | `MoongladeDatabase` Example
+Database | `DatabaseType` | `appsettings.json/ConnectionStrings/MoongladeDatabase` Example
 --- | --- | ---
-Microsoft SQL Server | `SqlServer` | `Server=(localdb)\\MSSQLLocalDB;Database=moonglade;Trusted_Connection=True;`
+Microsoft SQL Server | `SqlServer` | `Server=(local);Database=moonglade;Trusted_Connection=True;`
 MySQL | `MySql` | `Server=localhost;Port=3306;Database=moonglade;Uid=root;Pwd=***;`
 PostgreSQL | `PostgreSql` | `User ID=***;Password=***;Host=localhost;Port=5432;Database=moonglade;Pooling=true;`
 
@@ -105,10 +93,21 @@ You need to hava an [**Minio Server**](https://docs.min.io/).
 
 You can also choose File System for image storage if you don't have a cloud option.
 
+Windows Deployment Example:
+
 ```json
 {
   "Provider": "filesystem",
   "FileSystemPath": "C:\\UploadedImages"
+}
+```
+
+Linux Deployment Example:
+
+```json
+{
+  "Provider": "filesystem",
+  "FileSystemPath": "/var/UploadedImages"
 }
 ```
 
@@ -138,7 +137,7 @@ Setup [Moonglade.Email](https://github.com/EdiWang/Moonglade.Email) Azure Functi
 ### Others
 
 - [System Settings](https://github.com/EdiWang/Moonglade/wiki/System-Settings)
-- [Security Headers](https://github.com/EdiWang/Moonglade/wiki/Security-Headers)
+- [Security HTTP Headers](https://github.com/EdiWang/Moonglade/wiki/Security-Headers)
 
 ## 🎉 Blog Protocols or Standards
 
