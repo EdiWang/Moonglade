@@ -1,9 +1,7 @@
 ﻿let isDarkMode = false;
 
 export function useDarkMode() {
-    document.querySelector('#blog-footer').classList.add('bg-dark');
-    document.querySelector('#blog-footer').classList.remove('bg-accent2');
-    $('').addClass('bg-dark');
+    $('#blog-footer').removeClass('bg-accent2').addClass('bg-dark');
 
     $('body').attr("data-bs-theme", "dark");
     $('body.body-post-slug').removeClass('bg-gray-1');
@@ -26,9 +24,7 @@ export function useDarkMode() {
 }
 
 export function useLightMode() {
-    $('#blog-footer').removeClass('bg-dark');
-
-    document.querySelector('#blog-footer').classList.add('bg-accent2');
+    $('#blog-footer').removeClass('bg-dark').addClass('bg-accent2');
 
     $('body').removeAttr("data-bs-theme");
     $('body.body-post-slug').addClass('bg-gray-1');
