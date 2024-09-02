@@ -21,9 +21,9 @@
     color: var(--gray-4);
 }
 
-.darkmode .page-item.active .page-link {
-    background-color: var(--gray-7);
-    border-color: var(--gray-7);
+[data-bs-theme=dark] .page-item.active .page-link {
+    background-color: var(--bs-pagination-border-color);
+    border-color: var(--bs-pagination-border-color);
 }
 
 [data-bs-theme=dark] .timeline-heading {
