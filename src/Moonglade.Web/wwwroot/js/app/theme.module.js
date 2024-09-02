@@ -1,13 +1,10 @@
 ﻿let isDarkMode = false;
 
 export function useDarkMode() {
-    document.querySelector('#blog-nav').classList.remove('bg-accent1');
-    document.querySelector('#blog-nav').classList.add('bg-dark');
     document.querySelector('#blog-footer').classList.add('bg-dark');
     document.querySelector('#blog-footer').classList.remove('bg-accent2');
     $('').addClass('bg-dark');
 
-    $('body').addClass('text-light');
     $('body').attr("data-bs-theme", "dark");
     $('body.body-post-slug').removeClass('bg-gray-1');
     $('.article-post-slug').removeClass('border');
@@ -37,12 +34,10 @@ export function useDarkMode() {
 }
 
 export function useLightMode() {
-    document.querySelector('#blog-nav').classList.add('bg-accent1');
-    $('#blog-nav, #blog-footer').removeClass('bg-dark');
+    $('#blog-footer').removeClass('bg-dark');
 
     document.querySelector('#blog-footer').classList.add('bg-accent2');
 
-    $('body').removeClass('text-light');
     $('body').removeAttr("data-bs-theme");
     $('body.body-post-slug').addClass('bg-gray-1');
     $('.article-post-slug').addClass('border');

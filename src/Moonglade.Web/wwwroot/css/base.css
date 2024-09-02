@@ -287,18 +287,6 @@ footer {
     box-shadow: 0 6px 12px var(--transparent-dark-4);
 }
 
-.qrcode-link a {
-    color: var(--transparent-light-50);
-    cursor: pointer;
-    display: inline-block;
-    font-size: 25px;
-    margin-right: 10px;
-}
-
-    .qrcode-link a:hover {
-        color: var(--bs-white);
-    }
-
 .moonglade-logo {
     font-size: 28px;
     line-height: 1px;
@@ -423,6 +411,10 @@ footer {
 .navbar {
     box-shadow: 0 4px 8px -2px var(--gray-5);
     padding: .4rem 1rem
+}
+
+.navbar-moonglade {
+    background-color: var(--accent-color1);
 }
 
 .nav-item {
