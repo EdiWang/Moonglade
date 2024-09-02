@@ -118,7 +118,7 @@
 }
 
 .darkmode .hljs-string .hljs-subst {
-    color: hsla(0, 0%, 9%, 1);
+    color: #ff8c00;
 }
 
 .darkmode .hljs-attribute,
