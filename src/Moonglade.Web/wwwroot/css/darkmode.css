@@ -17,13 +17,7 @@
     border-color: var(--bs-gray-dark);
 }
 
-.darkmode .box {
-    background-color: var(--moca-dark);
-    border: 1px solid var(--gray-2);
-    box-shadow: 0 1.6px 3.6px 0 var(--transparent-dark-3), 0 .3px .9px 0 var(--transparent-dark-1);
-}
-
-.darkmode a {
+[data-bs-theme=dark] a {
     color: var(--gray-3);
 }
 
@@ -32,9 +26,8 @@
     padding: 0;
 }
 
-.darkmode .comment-form-containter {
+[data-bs-theme=dark] .comment-form-containter {
     background-color: transparent !important;
-    border-color: var(--gray-5) !important;
 }
 
 .darkmode .post-content blockquote,
