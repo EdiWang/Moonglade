@@ -133,6 +133,7 @@ export function loadTinyMCE(textareaSelector) {
                 { text: 'JavaScript', value: 'javascript' },
                 { text: 'Json', value: 'json' },
                 { text: 'Kotlin', value: 'kotlin' },
+                { text: 'LaTeX', value: 'latex' },
                 { text: 'Lua', value: 'lua' },
                 { text: 'Markdown', value: 'markdown' },
                 { text: 'Nginx', value: 'nginx' },

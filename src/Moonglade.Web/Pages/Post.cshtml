@@ -63,6 +63,8 @@
 
 @section scripts {
     <script src="~/js/3rd/highlight.min.js" asp-append-version="true"></script>
+    <script src="~/js/3rd/katex.min.js"></script>
+
     @if (BlogConfig.ContentSettings.DocumentOutline)
     {
         <script src="~/js/app/documentoutline.js"></script>
@@ -87,6 +89,8 @@
         }
 
         viewpost.renderCodeHighlighter();
+        viewpost.RenderLaTeX();
+
         @if (BlogConfig.AdvancedSettings.WarnExternalLink)
         {
             <text>

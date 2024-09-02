@@ -22,6 +22,20 @@ export function renderCodeHighlighter() {
     });
 }
 
+export function RenderLaTeX() {
+    const codeBlocks = document.querySelectorAll('pre.language-latex code');
+    codeBlocks.forEach(block => {
+        const latex = block.textContent.trim();
+        const container = document.createElement('div');
+        try {
+            katex.render(latex, container, { output: 'mathml' });
+            block.parentNode.replaceWith(container);
+        } catch (error) {
+            console.error(error);
+        }
+    });
+}
+
 export function warnExtLink() {
     $.expr[':'].external = function (obj) {
         return !obj.href.match(/^mailto\\:/) && (obj.hostname != location.hostname);

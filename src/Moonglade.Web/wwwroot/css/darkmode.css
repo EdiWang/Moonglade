@@ -155,6 +155,12 @@
     color: var(--gray-3);
 }
 
+.darkmode math {
+    background-color: #2e2e2e;
+    border: 1px solid #454545;
+    color: #e3e3e3;
+}
+
 @media (max-width: 767px) {
     .darkmode .article-post-summary {
         border-bottom: 1px solid var(--gray-7);

@@ -19,12 +19,15 @@
 
 @section scripts {
     <script src="~/js/3rd/highlight.min.js" asp-append-version="true"></script>
+    <script src="~/js/3rd/katex.min.js"></script>
+
     <script type="module">
         import * as viewpost from '/js/app/viewpost.module.js'
 
         window.fitImageToDevicePixelRatio = @BlogConfig.ImageSettings.FitImageToDevicePixelRatio.ToString().ToLower();
         viewpost.resizeImages();
         viewpost.renderCodeHighlighter();
+        viewpost.RenderLaTeX();
 
         if (window.innerWidth >= 768) {
             viewpost.applyImageZooming();

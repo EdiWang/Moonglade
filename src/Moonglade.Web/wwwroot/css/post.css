@@ -122,6 +122,16 @@ code {
     word-wrap: break-word;
 }
 
+math {
+    background-color: #f9f9f9;
+    border: 1px solid #d3d6db;
+    display: inline-block;
+    overflow-x: auto;
+    padding: 1em;
+    border-radius: 5px;
+    font-size: 1rem;
+}
+
 .dynamic-heading-tag {
     display: block;
     position: relative;
