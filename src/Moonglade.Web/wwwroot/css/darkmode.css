@@ -106,11 +106,6 @@
     background-color: rgba(255, 255, 255, 0.1);
 }
 
-.darkmode .form-control {
-    border: 1px solid var(--gray-7);
-    color: var(--gray-3);
-}
-
 [data-bs-theme=dark] math {
     background-color: #2e2e2e;
     border: 1px solid #454545;
