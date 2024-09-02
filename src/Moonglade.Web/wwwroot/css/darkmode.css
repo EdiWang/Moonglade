@@ -97,32 +97,17 @@
     color: var(--bs-white);
 }
 
-.darkmode .navbar .dropdown-menu {
-    background-color: var(--moca-dark-2);
+[data-bs-theme=dark] .navbar .dropdown-menu {
+    background-color: var(--bs-body-bg);
 }
 
-.darkmode .navbar .dropdown-item.active,
-.darkmode .dropdown-item:hover {
-    background-color: var(--gray-7);
-    color: var(--bs-white);
-    text-decoration: none;
-}
-
-.darkmode .toptags-list a {
-    background-color: var(--gray-7);
+[data-bs-theme=dark] .navbar .dropdown-item.active,
+[data-bs-theme=dark] .dropdown-item:hover {
+    background-color: rgba(255, 255, 255, 0.1);
 }
 
 .darkmode .form-control {
     border: 1px solid var(--gray-7);
-    color: var(--gray-3);
-}
-
-.darkmode .modal-content {
-    color: var(--gray-3);
-    background-color: var(--moca-dark-1);
-}
-
-.darkmode .close {
     color: var(--gray-3);
 }
 
