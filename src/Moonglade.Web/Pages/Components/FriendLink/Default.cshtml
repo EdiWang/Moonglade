@@ -4,7 +4,7 @@
 @if (Model.Any())
 {
     <div class="aside-widget p-3 rounded-3 shadow-sm border bg-white">
-        <h6 class="card-subtitle mb-3 text-muted">@SharedLocalizer["Links"]</h6>
+        <h6 class="card-subtitle mb-3 text-secondary">@SharedLocalizer["Links"]</h6>
 
         <div role="list">
             @foreach (var item in Model.OrderBy(c => c.Rank).ThenBy(c => c.Title))

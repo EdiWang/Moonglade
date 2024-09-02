@@ -15,7 +15,7 @@
     {
         <section id="aside-tags" class="mt-4 mb-4">
             <div class="aside-widget p-3 rounded-3 shadow-sm border bg-white">
-                <h6 class="card-subtitle mb-3 text-muted">@SharedLocalizer["Tags"]</h6>
+                <h6 class="card-subtitle mb-3 text-secondary">@SharedLocalizer["Tags"]</h6>
                 <div>
                     <cache expires-after="@TimeSpan.FromMinutes(int.Parse(Configuration["CacheSlidingExpirationMinutes:Widget"]!))">
                         @await Component.InvokeAsync("Tags")
@@ -34,7 +34,7 @@
     {
         <section id="aside-cats" class="mb-4">
             <div class="aside-widget p-3 rounded-3 shadow-sm border bg-white">
-                <h6 class="card-subtitle mb-3 text-muted">@SharedLocalizer["Categories"]</h6>
+                <h6 class="card-subtitle mb-3 text-secondary">@SharedLocalizer["Categories"]</h6>
                 @await Component.InvokeAsync("CategoryList", new { isMenu = false })
             </div>
         </section>
