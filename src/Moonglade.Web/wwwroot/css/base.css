@@ -523,17 +523,8 @@ div.animbrand a:hover {
         color: var(--bs-white) !important;
     }
 
-    .form-control#term:-moz-placeholder {
-        /* Firefox 18- */
-        color: var(--bs-white) !important;
-    }
-
     .form-control#term::-moz-placeholder {
         /* Firefox 19+ */
-        color: var(--bs-white) !important;
-    }
-
-    .form-control#term:-ms-input-placeholder {
         color: var(--bs-white) !important;
     }
 
