@@ -17,9 +17,6 @@
     --gray-6: #555;
     --gray-7: #333;
     --moca-dark: #171717;
-    --gray-9: #111;
-    --moca-dark-1: #1D2124;
-    --moca-dark-2: #343A40;
 }
 
 ::selection {
@@ -35,10 +32,6 @@ body {
 
 .blog-sidebar {
     max-width: 300px;
-}
-
-hr {
-    background-color: var(--bs-secondary);
 }
 
 a {
