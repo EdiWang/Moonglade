@@ -302,6 +302,7 @@ footer {
 .moonglade-logo {
     font-size: 28px;
     line-height: 1px;
+    color: var(--bs-white) !important;
 }
 
 .input-captcha {
