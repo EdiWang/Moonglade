@@ -6,13 +6,8 @@
     background-color: var(--moca-dark);
 }
 
-    .bg-moca-dark .list-group-item-action:focus,
-    .bg-moca-dark .list-group-item-action:hover {
-        background-color: var(--moca-dark-1) !important;
-    }
-
 [data-bs-theme=dark] a {
-    color: var(--gray-3);
+    color: var(--bs-secondary-color);
 }
 
 [data-bs-theme=dark] .article-post-slug {
@@ -30,7 +25,6 @@
     color: var(--gray-4);
 }
 
-.darkmode .list-group-item.active,
 .darkmode .page-item.active .page-link {
     background-color: var(--gray-7);
     border-color: var(--gray-7);
