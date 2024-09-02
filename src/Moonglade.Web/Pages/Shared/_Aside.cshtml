@@ -52,14 +52,14 @@
     @if (BlogConfig.GeneralSettings.WidgetsSubscriptionButtons)
     {
         <section id="aside-subscription" class="text-center mb-4">
-            <a class="btn btn-sm btn-round btn-outline-secondary me-2" href="#" data-bs-toggle="modal" data-bs-target="#subscriptionmodal">
+            <a class="btn btn-sm rounded-pill btn-outline-secondary me-2" href="#" data-bs-toggle="modal" data-bs-target="#subscriptionmodal">
                 <i class="bi-rss"></i>
                 RSS / Atom
             </a>
 
             @if (BlogConfig.AdvancedSettings.EnableOpml)
             {
-                <a asp-controller="Subscription" asp-action="Opml" class="btn btn-sm btn-round btn-outline-secondary" target="_blank">
+                <a asp-controller="Subscription" asp-action="Opml" class="btn btn-sm rounded-pill btn-outline-secondary" target="_blank">
                     <i class="bi-code-slash"></i>
                     OPML
                 </a>

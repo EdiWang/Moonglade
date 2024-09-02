@@ -123,10 +123,6 @@ footer {
     padding: 0.5rem !important;
 }
 
-.btn-round {
-    border-radius: 50px !important;
-}
-
 .list-group-item.active,
 .page-item.active .page-link {
     background-color: var(--accent-color1);
