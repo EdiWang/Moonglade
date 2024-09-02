@@ -1,8 +1,4 @@
-﻿.hr-dark {
-    border-top: 1px solid var(--transparent-light-15) !important;
-}
-
-.bg-moca-dark {
+﻿body[data-bs-theme=dark] {
     background-color: var(--moca-dark);
 }
 

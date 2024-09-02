@@ -33,7 +33,6 @@ export function useDarkMode() {
 
     isDarkMode = true;
     $('.lightswitch').addClass('bg-dark text-light border-secondary');
-    document.querySelector('hr').classList.add('hr-dark');
     document.querySelector('#lighticon').classList.remove('bi-brightness-high');
     document.querySelector('#lighticon').classList.add('bi-moon');
 }
@@ -71,7 +70,6 @@ export function useLightMode() {
 
     isDarkMode = false;
     $('.lightswitch').removeClass('bg-dark text-light border-secondary');
-    $('hr').removeClass('hr-dark');
     document.querySelector('#lighticon').classList.add('bi-brightness-high');
     document.querySelector('#lighticon').classList.remove('bi-moon');
 }
