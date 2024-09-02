@@ -73,8 +73,8 @@
         color: var(--accent-color3);
     }
 
-.darkmode .outline-nav span:hover {
-    color: var(--gray-2);
+[data-bs-theme=dark] .outline-nav span:hover {
+    color: var(--bs-body-color);
 }
 
 .outline-nav li {
@@ -85,8 +85,8 @@
         border-bottom: none;
     }
 
-.darkmode .outline-nav li {
-    color: var(--gray-3);
+[data-bs-theme=dark] .outline-nav li {
+    color: var(--bs-secondary-color);
 }
 
 .outline-nav ul:first-child {
