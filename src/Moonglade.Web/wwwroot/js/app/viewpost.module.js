@@ -1,7 +1,10 @@
 ﻿export function resizeImages() {
-    $('.post-content img').removeAttr('height');
-    $('.post-content img').removeAttr('width');
-    $('.post-content img').addClass('img-fluid img-thumbnail');
+    const images = document.querySelectorAll('.post-content img');
+    images.forEach(img => {
+        img.removeAttribute('height');
+        img.removeAttribute('width');
+        img.classList.add('img-fluid', 'img-thumbnail');
+    });
 }
 
 export function renderCodeHighlighter() {
