@@ -145,3 +145,11 @@
     --bs-btn-disabled-border-color: #212529;
     --bs-gradient: none;
 }
+
+[data-bs-theme=dark] .lighticon-light {
+    display: none;
+}
+
+[data-bs-theme=dark] .lighticon-dark {
+    display: block;
+}

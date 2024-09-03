@@ -486,3 +486,7 @@ div.animbrand a:hover {
 .comment-item {
     background-color: var(--bs-white);
 }
+
+.lighticon-dark {
+    display: none;
+}
