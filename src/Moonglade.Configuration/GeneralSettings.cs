@@ -70,9 +70,6 @@ public class GeneralSettings : IBlogSettings
     [MaxLength(64)]
     public string TimeZoneId { get; set; }
 
-    [Display(Name = "Auto Light / Dark theme regarding client system settings")]
-    public bool AutoDarkLightTheme { get; set; }
-
     public int ThemeId { get; set; } = 1;
 
     [Display(Name = "Profile")]
@@ -117,7 +114,6 @@ public class GeneralSettings : IBlogSettings
         OwnerEmail = "admin@edi.wang",
         SiteTitle = "Moonglade",
         Description = "Moonglade Admin",
-        AutoDarkLightTheme = true,
         LogoText = "moonglade",
         MetaKeyword = "moonglade",
         Copyright = $"[c] {DateTime.UtcNow.Year}",

@@ -186,9 +186,6 @@
   <data name="Author Name" xml:space="preserve">
     <value>作者名字</value>
   </data>
-  <data name="Auto Light / Dark theme regarding client system settings" xml:space="preserve">
-    <value>在客户端自动适配明亮/黑暗主题</value>
-  </data>
   <data name="Admin Email" xml:space="preserve">
     <value>博主 Email</value>
   </data>

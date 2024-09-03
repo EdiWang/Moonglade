@@ -218,15 +218,12 @@
     <script type="module" src="~/js/app/base.js" asp-append-version="true"></script>
     <script src="~/js/app/httpService.js" asp-append-version="true"></script>
 
-    @if (BlogConfig.GeneralSettings.AutoDarkLightTheme)
-    {
-        <script type="module">
-            import * as theme from '/js/app/theme.module.js'
-            window.theme = theme;
+    <script type="module">
+        import * as theme from '/js/app/theme.module.js'
+        window.theme = theme;
 
-            theme.setTheme(theme.getPreferredTheme());
-        </script>
-    }
+        theme.setTheme(theme.getPreferredTheme());
+    </script>
 
     @await RenderSectionAsync("scripts", false)
 
