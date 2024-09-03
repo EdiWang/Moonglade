@@ -1,4 +1,4 @@
-﻿body[data-bs-theme=dark] {
+﻿[data-bs-theme=dark] body {
     background-color: var(--moca-dark);
 }
 

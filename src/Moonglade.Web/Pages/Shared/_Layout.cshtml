@@ -224,13 +224,7 @@
             import * as theme from '/js/app/theme.module.js'
             window.theme = theme;
 
-            if (window.matchMedia && window.theme) {
-                if (window.matchMedia('(prefers-color-scheme: dark)').matches) {
-                    theme.useDarkMode();
-                } else {
-                    theme.useLightMode();
-                }
-            }
+            theme.setTheme(theme.getPreferredTheme());
         </script>
     }
 
