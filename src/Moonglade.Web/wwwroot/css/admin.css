@@ -350,6 +350,10 @@ div.mce-fullscreen {
     overflow-x: hidden;
 }
 
+.h-30px {
+    height: 30px !important;
+}
+
 .h-100px {
     height: 100px !important;
 }

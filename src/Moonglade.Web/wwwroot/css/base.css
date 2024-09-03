@@ -79,14 +79,6 @@ footer {
     text-align: center;
 }
 
-.bg-lightgray-1 {
-    background-color: var(--gray-1);
-}
-
-.color-transparent-white-50 {
-    color: var(--transparent-light-50);
-}
-
 .page-heading small {
     font-size: 60%;
 }
@@ -98,10 +90,6 @@ footer {
 
 .flex-spacer {
     flex-grow: 1;
-}
-
-.h-30px {
-    height: 30px !important;
 }
 
 .page-heading {
