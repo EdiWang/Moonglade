@@ -104,14 +104,6 @@ footer {
     height: 30px !important;
 }
 
-.h-100px {
-    height: 100px !important;
-}
-
-.h-200px {
-    height: 200px !important;
-}
-
 .page-heading {
     font-size: 1.75rem;
 }
@@ -151,10 +143,6 @@ footer {
 .hottag-li a {
     height: 80px !important;
     width: 156px;
-}
-
-.arch-media-logo svg {
-    width: 60px;
 }
 
 .user-avatar-char {
@@ -199,6 +187,7 @@ footer {
 }
 
 .post-date-month {
+    color: var(--accent-color1);
     text-align: right;
     font-size: 17px;
 }
@@ -252,10 +241,6 @@ footer {
     z-index: 999;
 }
 
-.text-accent {
-    color: var(--accent-color1);
-}
-
 .bg-accent1 {
     background-color: var(--accent-color1);
 }
@@ -289,7 +274,6 @@ footer {
 .input-captcha {
     max-width: 160px;
 }
-
 
 .btn-accent {
     color: #fff;

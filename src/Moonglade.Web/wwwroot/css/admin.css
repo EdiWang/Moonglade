@@ -361,3 +361,11 @@ table.dataTable {
     overflow-y: scroll;
     overflow-x: hidden;
 }
+
+.h-100px {
+    height: 100px !important;
+}
+
+.h-200px {
+    height: 200px !important;
+}
