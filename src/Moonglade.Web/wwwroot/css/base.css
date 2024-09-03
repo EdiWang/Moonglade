@@ -487,6 +487,6 @@ div.animbrand a:hover {
     background-color: var(--bs-white);
 }
 
-.lighticon-dark {
-    display: none;
+.lightswitch {
+    background-color: var(--bs-white);
 }

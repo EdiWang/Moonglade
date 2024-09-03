@@ -147,10 +147,6 @@
     --bs-gradient: none;
 }
 
-[data-bs-theme=dark] .lighticon-light {
-    display: none;
-}
-
-[data-bs-theme=dark] .lighticon-dark {
-    display: block;
+[data-bs-theme=dark] .lightswitch {
+    background-color: transparent;
 }
