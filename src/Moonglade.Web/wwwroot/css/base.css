@@ -323,12 +323,9 @@ footer {
     font-size: 9.96px;
 }
 
-.navbar {
-    box-shadow: 0 4px 8px -2px var(--gray-5);
-    padding: .4rem 1rem
-}
-
 .navbar-moonglade {
+    box-shadow: 0 4px 8px -2px var(--gray-5);
+    padding: .4rem 1rem;
     background-color: var(--accent-color1);
 }
 

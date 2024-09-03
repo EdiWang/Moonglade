@@ -5,6 +5,7 @@
 [data-bs-theme=dark] .navbar-moonglade {
     --bs-bg-opacity: 1;
     background-color: rgba(var(--bs-dark-rgb), var(--bs-bg-opacity)) !important;
+    box-shadow: 0 4px 8px -2px #000;
 }
 
 [data-bs-theme=dark] .moonglade-footer {
@@ -134,7 +135,7 @@
     --bs-btn-color: var(--gray-3);
     --bs-btn-border-color: var(--gray-6);
     --bs-btn-hover-color: #fff;
-    --bs-btn-hover-bg: #212529;
+    --bs-btn-hover-bg: #343a40;
     --bs-btn-hover-border-color: #212529;
     --bs-btn-focus-shadow-rgb: 33, 37, 41;
     --bs-btn-active-color: #fff;
