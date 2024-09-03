@@ -523,6 +523,10 @@ div.animbrand a:hover {
     box-shadow: none;
 }
 
+.aside-widget {
+    background-color: var(--bs-white);
+}
+
 .admin-actions {
     position: fixed;
     bottom: 60px;

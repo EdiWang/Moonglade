@@ -103,3 +103,7 @@
     border: 1px solid #454545;
     color: #e3e3e3;
 }
+
+[data-bs-theme=dark] .aside-widget {
+    background-color: transparent;
+}
