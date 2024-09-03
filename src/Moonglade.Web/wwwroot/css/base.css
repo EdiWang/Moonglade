@@ -532,3 +532,7 @@ div.animbrand a:hover {
     bottom: 60px;
     right: 20px;
 }
+
+.comment-item {
+    background-color: var(--bs-white);
+}

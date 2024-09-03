@@ -107,3 +107,7 @@
 [data-bs-theme=dark] .aside-widget {
     background-color: transparent;
 }
+
+[data-bs-theme=dark] .comment-item {
+    background-color: var(--bs-body-bg);
+}
