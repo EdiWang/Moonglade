@@ -4,9 +4,6 @@ export function useDarkMode() {
     $('body').attr("data-bs-theme", "dark");
     $('.article-post-slug').removeClass('border');
 
-    $('#aside-tags .btn-accent').removeClass('btn-accent').addClass('btn-dark');
-    $('.post-summary-tags .btn-accent').removeClass('btn-accent').addClass('btn-dark');
-
     isDarkMode = true;
     $('.lightswitch').addClass('bg-dark text-light border-secondary');
     document.querySelector('#lighticon').classList.remove('bi-brightness-high');
@@ -16,9 +13,6 @@ export function useDarkMode() {
 export function useLightMode() {
     $('body').removeAttr("data-bs-theme");
     $('.article-post-slug').addClass('border');
-
-    $('#aside-tags .btn-dark').removeClass('btn-dark').addClass('btn-accent');
-    $('.post-summary-tags .btn-dark').removeClass('btn-dark').addClass('btn-accent');
 
     isDarkMode = false;
     $('.lightswitch').removeClass('bg-dark text-light border-secondary');
