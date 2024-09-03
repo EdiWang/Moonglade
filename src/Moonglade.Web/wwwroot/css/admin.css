@@ -74,17 +74,17 @@
     width: 190px;
     min-height: calc(100vh - 54px);
     border-right: 1px solid #ddd;
-}
 
-    .admin-nav .list-group-item span {
+    .list-group-item span {
         width: 22px;
         font-size: 16px;
         display: inline-block;
     }
 
-    .admin-nav .list-group-item.active {
+    .list-group-item.active {
         color: #000;
     }
+}
 
 .admin-main {
     min-width: 100vw;
@@ -92,11 +92,11 @@
 
 .admin-toolbar {
     margin-bottom: 25px !important;
-}
 
-    .admin-toolbar .nav-pills .nav-link.active, .nav-pills .show > .nav-link {
+    .nav-pills .nav-link.active, .nav-pills .show > .nav-link {
         background-color: var(--accent-color1);
     }
+}
 
 .admin-toolbar-text {
     line-height: 36px;
