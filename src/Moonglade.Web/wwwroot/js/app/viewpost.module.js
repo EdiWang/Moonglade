@@ -8,19 +8,25 @@
 }
 
 export function renderCodeHighlighter() {
-    $('pre').each(function (i, pre) {
+    const pres = document.querySelectorAll('pre');
+    pres.forEach(pre => {
         // Find <pre> that doesn't have a <code> inside it.
-        if ($(pre).find('code')[0] === undefined) {
-            $(pre).wrapInner('<code></code>');
+        if (!pre.querySelector('code')) {
+            const code = document.createElement('code');
+            while (pre.firstChild) {
+                code.appendChild(pre.firstChild);
+            }
+            pre.appendChild(code);
         }
 
         // For code that can't be automatically detected, fall back to use XML
-        if ($(pre).hasClass('language-markup')) {
-            $(pre).children('code').addClass('lang-xml');
+        if (pre.classList.contains('language-markup')) {
+            pre.querySelector('code').classList.add('lang-xml');
         }
     });
 
-    $('pre code').each(function (i, block) {
+    const codeBlocks = document.querySelectorAll('pre code');
+    codeBlocks.forEach(block => {
         hljs.highlightElement(block);
     });
 }
