@@ -5,7 +5,6 @@ export function useDarkMode() {
     $('.article-post-slug').removeClass('border');
 
     isDarkMode = true;
-    $('.lightswitch').addClass('bg-dark text-light border-secondary');
     document.querySelector('#lighticon').classList.remove('bi-brightness-high');
     document.querySelector('#lighticon').classList.add('bi-moon');
 }
@@ -15,7 +14,6 @@ export function useLightMode() {
     $('.article-post-slug').addClass('border');
 
     isDarkMode = false;
-    $('.lightswitch').removeClass('bg-dark text-light border-secondary');
     document.querySelector('#lighticon').classList.add('bi-brightness-high');
     document.querySelector('#lighticon').classList.remove('bi-moon');
 }

@@ -293,41 +293,21 @@ footer {
 }
 
 .btn-outline-accent {
-    background-color: var(--bs-white);
     --bs-btn-color: var(--accent-color1);
-    border-color: var(--accent-color1);
+    --bs-btn-border-color: var(--accent-color1);
+    --bs-btn-hover-color: #fff;
+    --bs-btn-hover-bg: var(--accent-color1);
+    --bs-btn-hover-border-color: var(--accent-color1);
+    --bs-btn-focus-shadow-rgb: 0 0 0 0.2rem rgba(0, 0, 0, 0.5);
+    --bs-btn-active-color: #fff;
+    --bs-btn-active-bg: var(--accent-color1);
+    --bs-btn-active-border-color: var(--accent-color1);
+    --bs-btn-active-shadow: 0 0 0 0.2rem rgba(0, 0, 0, 0.5);
+    --bs-btn-disabled-color: var(--accent-color3);
+    --bs-btn-disabled-bg: transparent;
+    --bs-btn-disabled-border-color: var(--accent-color1);
+    --bs-gradient: none;
 }
-
-    .btn-outline-accent:hover {
-        --bs-btn-color: #fff;
-        background-color: var(--accent-color1);
-        border-color: var(--accent-color1);
-    }
-
-    .btn-outline-accent:focus,
-    .btn-outline-accent.focus {
-        box-shadow: 0 0 0 0.2rem rgba(0, 0, 0, 0.5);
-    }
-
-    .btn-outline-accent.disabled,
-    .btn-outline-accent:disabled {
-        --bs-btn-color: var(--accent-color1);
-        background-color: transparent;
-    }
-
-    .btn-outline-accent:not(:disabled):not(.disabled):active,
-    .btn-outline-accent:not(:disabled):not(.disabled).active,
-    .show > .btn-outline-accent.dropdown-toggle {
-        --bs-btn-color: #fff;
-        background-color: var(--accent-color1);
-        border-color: var(--accent-color1);
-    }
-
-        .btn-outline-accent:not(:disabled):not(.disabled):active:focus,
-        .btn-outline-accent:not(:disabled):not(.disabled).active:focus,
-        .show > .btn-outline-accent.dropdown-toggle:focus {
-            box-shadow: 0 0 0 0.2rem rgba(0, 0, 0, 0.5);
-        }
 
 .form-check-input:checked {
     border-color: var(--accent-color1) !important;
@@ -335,16 +315,10 @@ footer {
 }
 
 .lightswitch {
-    background: var(--bs-white);
     bottom: 20px;
-    cursor: pointer;
-    height: 32px;
     position: fixed;
     right: 20px;
-    text-align: center;
-    width: 32px;
     z-index: 996;
-    opacity: 0.8;
 }
 
 .font-125rem {
