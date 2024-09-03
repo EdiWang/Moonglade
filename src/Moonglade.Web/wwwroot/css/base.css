@@ -457,17 +457,11 @@ div.animbrand a:hover {
     width: 238px;
 }
 
-    .form-control#term::-webkit-input-placeholder {
-        color: var(--bs-white) !important;
-    }
-
-    .form-control#term::-moz-placeholder {
-        /* Firefox 19+ */
+    .form-control#term::placeholder {
         color: var(--bs-white) !important;
     }
 
 .form-control#search:focus {
-    -ms-box-shadow: none;
     -webkit-box-shadow: none;
     border-color: var(--accent-color1);
     box-shadow: none;

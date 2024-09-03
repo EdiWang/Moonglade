@@ -143,8 +143,6 @@
 
     ul.timeline > li > .timeline-panel {
         width: calc(100% - 65px);
-        width: -moz-calc(100% - 65px);
-        width: -webkit-calc(100% - 65px);
     }
 
     ul.timeline > li > .timeline-badge {
