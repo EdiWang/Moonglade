@@ -1,13 +1,10 @@
 ﻿:root {
-    --transparent-light-15: rgba(255, 255, 255, 0.15);
     --transparent-light-20: rgba(255, 255, 255, 0.2);
     --transparent-light-30: rgba(255, 255, 255, 0.3);
     --transparent-light-50: rgba(255, 255, 255, 0.5);
     --transparent-light-60: rgba(255, 255, 255, 0.6);
     --transparent-light-70: rgba(255, 255, 255, 0.7);
-    --transparent-dark-1: rgba(0, 0, 0, 0.108);
     --transparent-dark-2: rgba(0, 0, 0, 0.125);
-    --transparent-dark-3: rgba(0, 0, 0, 0.132);
     --transparent-dark-4: rgba(0, 0, 0, 0.175);
     --gray-1: #FAFAFA;
     --gray-2: #EEE;
