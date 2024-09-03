@@ -846,4 +846,13 @@
   <data name="The number of entries to include in RSS/ATOM feed." xml:space="preserve">
     <value>RSS/ATOM 中包含的條目數量</value>
   </data>
+  <data name="Auto" xml:space="preserve">
+    <value>自動</value>
+  </data>
+  <data name="Dark" xml:space="preserve">
+    <value>黑暗</value>
+  </data>
+  <data name="Light" xml:space="preserve">
+    <value>明亮</value>
+  </data>
 </root>

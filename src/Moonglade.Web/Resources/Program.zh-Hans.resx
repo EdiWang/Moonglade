@@ -837,4 +837,13 @@
   <data name="No categories" xml:space="preserve">
     <value>没有分类</value>
   </data>
+  <data name="Auto" xml:space="preserve">
+    <value>自动</value>
+  </data>
+  <data name="Dark" xml:space="preserve">
+    <value>黑暗</value>
+  </data>
+  <data name="Light" xml:space="preserve">
+    <value>明亮</value>
+  </data>
 </root>
