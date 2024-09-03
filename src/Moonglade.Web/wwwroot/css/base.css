@@ -52,15 +52,15 @@ a {
 
 footer {
     color: var(--transparent-light-60);
-}
 
-    footer a {
+    a {
         color: var(--bs-gray-200);
     }
 
-        footer a:hover {
-            color: var(--bs-white);
-        }
+    a:hover {
+        color: var(--bs-white);
+    }
+}
 
 .moonglade-footer {
     background-color: var(--accent-color2);
