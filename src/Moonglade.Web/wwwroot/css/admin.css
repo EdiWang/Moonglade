@@ -172,8 +172,14 @@ hr.admin-nav-divider {
         background-color: #EBEBEB;
     }
 
-.admin-nav-link:active {
+.admin-toolbar .nav-link {
+    color: var(--accent-color1);
 }
+
+    .admin-toolbar .nav-link:hover,
+    .admin-toolbar .nav-link:focus {
+        background-color: var(--transparent-dark-2);
+    }
 
 .admin-main .validation-summary-errors ul {
     margin-bottom: 0;
@@ -278,26 +284,8 @@ div.mce-fullscreen {
     width: 80%;
 }
 
-.table .table-item-w85 {
-    width: 85%;
-}
-
-.table .table-item-w90 {
-    width: 90%;
-}
-
 .table .table-item-w100 {
     width: 100%;
-}
-
-.icon-admin-title {
-    font-size: 1.4rem;
-    color: var(--accent-color2);
-}
-
-table.dataTable {
-    border-collapse: inherit !important;
-    border-spacing: inherit !important;
 }
 
 .blogadmin-siteicon {
