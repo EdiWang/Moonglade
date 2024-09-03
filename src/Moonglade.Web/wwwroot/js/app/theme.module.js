@@ -1,6 +1,4 @@
-﻿let isDarkMode = false;
-
-const getStoredTheme = () => localStorage.getItem('theme')
+﻿const getStoredTheme = () => localStorage.getItem('theme')
 const setStoredTheme = theme => localStorage.setItem('theme', theme)
 
 export const getPreferredTheme = () => {
@@ -20,26 +18,12 @@ export const setTheme = theme => {
     }
 }
 
-export function useDarkMode() {
-    setTheme('dark');
-    setStoredTheme('dark');
-    $('.article-post-slug').removeClass('border');
-
-    isDarkMode = true;
-}
-
-export function useLightMode() {
-    setTheme('light');
-    setStoredTheme('light');
-    $('.article-post-slug').addClass('border');
-
-    isDarkMode = false;
-}
-
 export function toggleTheme() {
-    if (isDarkMode) {
-        useLightMode();
+    if (getPreferredTheme() == 'dark') {
+        setTheme('light');
+        setStoredTheme('light');
     } else {
-        useDarkMode();
+        setTheme('dark');
+        setStoredTheme('dark');
     }
 }

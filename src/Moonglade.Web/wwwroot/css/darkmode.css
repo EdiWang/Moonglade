@@ -19,6 +19,7 @@
 [data-bs-theme=dark] .article-post-slug {
     background-color: transparent !important;
     padding: 0;
+    border: 0 none !important;
 }
 
 [data-bs-theme=dark] .comment-form-containter {
