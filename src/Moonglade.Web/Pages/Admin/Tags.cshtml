@@ -39,10 +39,13 @@
             });
         });
 
-        $("#tagFilter").on("keyup", function () {
-            var value = $(this).val().toLowerCase();
-            $(".ul-tag-mgr li").filter(function () {
-                $(this).toggle($(this).text().toLowerCase().indexOf(value) > -1);
+        document.getElementById('tagFilter').addEventListener('keyup', function () {
+            var value = this.value.toLowerCase();
+            var items = document.querySelectorAll('.ul-tag-mgr li');
+
+            items.forEach(function (item) {
+                var show = item.textContent.toLowerCase().indexOf(value) > -1;
+                item.style.display = show ? 'inline-block' : 'none';
             });
         });
 
