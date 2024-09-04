@@ -46,23 +46,29 @@ export function RenderLaTeX() {
 }
 
 export function warnExtLink() {
-    $.expr[':'].external = function (obj) {
-        return !obj.href.match(/^mailto\\:/) && (obj.hostname != location.hostname);
-    };
+    function isExternalLink(link) {
+        return !link.href.match(/^mailto:/) && (link.hostname !== location.hostname);
+    }
 
-    var externalLinkModal = new bootstrap.Modal('#externalLinkModal');
-
-    $('.post-content a:external').addClass('external');
-
-    $('a.external').click(function (e) {
-        e.preventDefault();
-        var linkHref = $(this).attr('href');
-        $('#extlink-url').html(linkHref);
-        document.querySelector('#extlink-continue').href = linkHref;
-        externalLinkModal.show();
+    const links = document.querySelectorAll('.post-content a');
+    links.forEach(link => {
+        if (isExternalLink(link)) {
+            link.classList.add('external');
+        }
     });
 
-    $('#extlink-continue').click(function () {
+    const externalLinkModal = new bootstrap.Modal(document.getElementById('externalLinkModal'));
+
+    document.querySelectorAll('a.external').forEach(link => {
+        link.addEventListener('click', function (e) {
+            e.preventDefault();
+            const linkHref = this.getAttribute('href');
+            document.getElementById('extlink-url').innerHTML = linkHref;
+            document.getElementById('extlink-continue').href = linkHref;
+            externalLinkModal.show();
+        });
+    });
+    document.getElementById('extlink-continue').addEventListener('click', function () {
         externalLinkModal.hide();
     });
 }
