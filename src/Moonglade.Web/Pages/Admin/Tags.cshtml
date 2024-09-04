@@ -30,12 +30,14 @@
             }
         });
 
-        $(".span-tagcontent-editable").blur(function () {
-            var tagId = $(this).data("tagid");
-            var newTagName = $(this).text().trim();
-
-            callApi(`/api/tags/${tagId}`, 'PUT', newTagName, (resp) => {
-                blogToast.success('Tag updated');
+        document.querySelectorAll(".span-tagcontent-editable").forEach(function(element) {
+            element.addEventListener("blur", function() {
+                var tagId = this.getAttribute("data-tagid");
+                var newTagName = this.textContent.trim();
+        
+                callApi(`/api/tags/${tagId}`, 'PUT', newTagName, function(resp) {
+                    blogToast.success('Tag updated');
+                });
             });
         });
 
