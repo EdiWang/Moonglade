@@ -41,13 +41,16 @@
                 });
         });
 
-        $(".btn-approve").click(function () {
-            callApi(`/api/comment/${$(this).data("commentid")}/approval/toggle`, 'PUT', {},
-                async (resp) => {
+        document.querySelectorAll('.btn-approve').forEach(button => {
+            button.addEventListener('click', function () {
+                var cid = this.getAttribute('data-commentid');
+                callApi(`/api/comment/${cid}/approval/toggle`, 'PUT', {}, async (resp) => {
                     var data = await resp.json();
-                    $(`#panel-comment-${data} .btn-approve`).toggleClass('btn-outline-success');
-                    $(`#panel-comment-${data} .btn-approve`).toggleClass('btn-success');
+                    var approveButton = document.querySelector(`#panel-comment-${data} .btn-approve`);
+                    approveButton.classList.toggle('btn-outline-success');
+                    approveButton.classList.toggle('btn-success');
                 });
+            });
         });
 
         window.deleteSelectedComments = function () {
