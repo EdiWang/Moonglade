@@ -25,11 +25,11 @@ export function initEvents(slugifyTitle) {
         });
     }
 
-    $('#btn-preview').click(function (e) {
+    document.querySelector('#btn-preview')?.addEventListener('click', function (e) {
         submitForm(e);
     });
 
-    $('#btn-save').click(function (e) {
+    document.querySelector('#btn-save').addEventListener('click', function (e) {
         submitForm(e);
     });
 
