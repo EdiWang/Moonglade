@@ -27,18 +27,25 @@
             });
         });
 
-        $(".btn-reply-post").click(function () {
-            var cid = $(this).data("commentid");
-            var replyContent = $(`#replycontent-${cid}`).val();
+        document.querySelectorAll('.btn-reply-post').forEach(button => {
+            button.addEventListener('click', function () {
+                var cid = this.getAttribute('data-commentid');
+                var replyContent = document.querySelector(`#replycontent-${cid}`).value;
 
-            callApi(`/api/comment/${cid}/reply`, 'POST', replyContent,
-                async (resp) => {
+                callApi(`/api/comment/${cid}/reply`, 'POST', replyContent, async (resp) => {
                     var data = await resp.json();
-                    $(`#panel-comment-${data.commentId} .reply-ui`).hide();
-                    $(`#panel-comment-${data.commentId} .reply-list`).prepend(
-                        `<hr /><div class="reply-container"><div><strong>Reply</strong><span class="pull-right text-muted">${data.replyTimeUtc
-                        }</span></div><p>${data.replyContentHtml}</p></div>`);
+                    var replyUi = document.querySelector(`#panel-comment-${data.commentId} .reply-ui`);
+                    var replyList = document.querySelector(`#panel-comment-${data.commentId} .reply-list`);
+
+                    replyUi.style.display = 'none';
+                    replyList.insertAdjacentHTML('afterbegin',
+                        `<hr /><div class="reply-container">
+                            <div>
+                            <span class="pull-right text-muted">${data.replyTimeUtc}</span></div>
+                            <p>${data.replyContentHtml}</p>
+                        </div>`);
                 });
+            });
         });
 
         document.querySelectorAll('.btn-approve').forEach(button => {
