@@ -21,7 +21,10 @@
                 'DELETE',
                 {},
                 (resp) => {
-                    $(`#post-${postid}`).remove();
+                    const postElement = document.getElementById(`post-${postid}`);
+                    if (postElement) {
+                        postElement.remove();
+                    }
                 });
         }
 
