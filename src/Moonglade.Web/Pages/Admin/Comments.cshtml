@@ -11,12 +11,13 @@
     <script type="module">
         import * as utils from '/js/app/utils.module.js'
 
-        $(".btn-delete").click(function () {
-            var cid = $(this).data("commentid");
-            callApi('/api/comment', 'DELETE', [cid],
-                (success) => {
+        document.querySelectorAll('.btn-delete').forEach(button => {
+            button.addEventListener('click', function () {
+                var cid = this.getAttribute('data-commentid');
+                callApi('/api/comment', 'DELETE', [cid], (success) => {
                     document.querySelector(`#panel-comment-${cid}`).remove();
                 });
+            });
         });
 
         $(".btn-reply").click(function () {
