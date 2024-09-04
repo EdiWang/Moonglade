@@ -75,21 +75,22 @@ export function getImageWidthInDevicePixelRatio(width) {
 }
 
 export function applyImageZooming() {
-    $('.post-content img').click(function (e) {
-        var src = $(this).attr('src');
+    document.querySelectorAll('.post-content img').forEach(function (img) {
+        img.addEventListener('click', function (e) {
+            var src = img.getAttribute('src');
 
-        document.querySelector('#imgzoom').src = src;
+            document.querySelector('#imgzoom').src = src;
 
-        if (window.fitImageToDevicePixelRatio) {
-            setTimeout(function () {
-                var w = $('#imgzoom')[0].naturalWidth;
+            if (window.fitImageToDevicePixelRatio) {
+                setTimeout(function () {
+                    var w = document.querySelector('#imgzoom').naturalWidth;
+                    document.querySelector('#imgzoom').style.width = getImageWidthInDevicePixelRatio(w) + 'px';
+                }, 100);
+            }
 
-                $('#imgzoom').css('width', getImageWidthInDevicePixelRatio(w));
-            }, 100);
-        }
-
-        var imgzoomModal = new bootstrap.Modal('#imgzoomModal');
-        imgzoomModal.show();
+            var imgzoomModal = new bootstrap.Modal(document.querySelector('#imgzoomModal'));
+            imgzoomModal.show();
+        });
     });
 }
 
