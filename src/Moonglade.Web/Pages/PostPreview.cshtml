@@ -28,10 +28,7 @@
         viewpost.resizeImages();
         viewpost.renderCodeHighlighter();
         viewpost.RenderLaTeX();
-
-        if (window.innerWidth >= 768) {
-            viewpost.applyImageZooming();
-        }
+        viewpost.applyImageZooming();
 
         @if (BlogConfig.AdvancedSettings.WarnExternalLink)
         {
