@@ -33,7 +33,7 @@ export function initEvents(slugifyTitle) {
         submitForm(e);
     });
 
-    document.querySelector('#btn-publish').addEventListener('click', function (e) {
+    document.querySelector('#btn-publish')?.addEventListener('click', function (e) {
         document.querySelector('input[name="ViewModel.IsPublished"]').value = 'True';
         submitForm(e);
     });
