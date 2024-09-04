@@ -26,14 +26,15 @@
             });
         });
 
-        $('.btn-empty-recbin').click(function () {
-            callApi(`/api/post/recyclebin`, 'DELETE', {},
-                (resp) => {
+        document.querySelectorAll('.btn-empty-recbin').forEach(function (button) {
+            button.addEventListener('click', function () {
+                callApi('/api/post/recyclebin', 'DELETE', {}, function (resp) {
                     blogToast.success('Cleared');
                     setTimeout(function () {
                         window.location.reload();
                     }, 800);
                 });
+            });
         });
 
         function deletePost(postid) {
