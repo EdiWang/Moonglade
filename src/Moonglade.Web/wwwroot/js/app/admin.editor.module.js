@@ -17,8 +17,8 @@
 
 export function initEvents(slugifyTitle) {
     if (slugifyTitle) {
-        $('#ViewModel_Title').change(function () {
-            var newSlug = slugify($(this).val());
+        document.querySelector('#ViewModel_Title').addEventListener('change', function () {
+            var newSlug = slugify(this.value);
             if (newSlug) {
                 document.querySelector('#ViewModel_Slug').value = newSlug;
             }
