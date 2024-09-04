@@ -20,8 +20,10 @@
             });
         });
 
-        $('.btn-restore').click(function () {
-            restorePost($(this).data("postid"));
+        document.querySelectorAll('.btn-restore').forEach(function (button) {
+            button.addEventListener('click', function () {
+                restorePost(this.getAttribute('data-postid'));
+            });
         });
 
         $('.btn-empty-recbin').click(function () {
