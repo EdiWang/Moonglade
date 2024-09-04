@@ -92,14 +92,15 @@
             }
         });
 
-        $('a[data-bs-toggle="tab"]').on('shown.bs.tab',
-            function (e) {
+        document.querySelectorAll('a[data-bs-toggle="tab"]').forEach(function (element) {
+            element.addEventListener('shown.bs.tab', function (e) {
                 var isCssTab = e.target.id === "csscontent-tab";
                 if (isCssTab && !hasCssEditorInitialized) {
                     cssContentEditor = initEditor('CssContentEditor', "#EditPageRequest_CssContent", 'css');
                     hasCssEditorInitialized = true;
                 }
             });
+        });
 
         function handleSubmit(e) {
             e.preventDefault();
