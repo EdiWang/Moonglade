@@ -100,7 +100,7 @@
 
         window.fitImageToDevicePixelRatio = @BlogConfig.ImageSettings.FitImageToDevicePixelRatio.ToString().ToLower();
 
-        $('#comment-form').on('submit', function (e) {
+        document.getElementById('comment-form').addEventListener('submit', function (e) {
             e.preventDefault();
             let pid = document.querySelector('article').dataset.postid;
             viewpost.submitComment(pid);
