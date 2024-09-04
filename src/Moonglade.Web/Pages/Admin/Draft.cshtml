@@ -20,11 +20,13 @@
                 });
         }
 
-        $(".btn-delete").click(function () {
-            var cfm = confirm("Delete Confirmation?");
-            if (cfm) {
-                window.deletePost($(this).data("postid"));
-            }
+        document.querySelectorAll(".btn-delete").forEach(function (button) {
+            button.addEventListener("click", function () {
+                var cfm = confirm("Delete Confirmation?");
+                if (cfm) {
+                    window.deletePost(this.dataset.postid);
+                }
+            });
         });
         
         utils.formatUtcTime();
