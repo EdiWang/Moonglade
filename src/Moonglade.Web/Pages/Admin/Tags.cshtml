@@ -56,13 +56,11 @@
 
             const data = new FormData(event.target);
             const value = Object.fromEntries(data.entries());
-
-            callApi(`/api/tags`, 'POST', value.tagName,
-                (resp) => {
-                    document.querySelector('#edit-form').reset();
-                    $("#editTagModal").modal('hide');
-                    window.location.reload();
-                });
+        
+            callApi(`/api/tags`, 'POST', value.tagName, function(resp) {
+                document.querySelector('#edit-form').reset();
+                window.location.reload();
+            });
         }
 
         const form = document.querySelector('#edit-form');
@@ -113,8 +111,8 @@
                 <input type="text" name="tagName" id="input-tag-name" class="form-control" required />
             </div>
             <div class="mt-3">
-                <button type="submit" class="btn btn-success">@SharedLocalizer["Submit"]</button>
-                <button type="button" class="btn btn-secondary" data-bs-dismiss="offcanvas">@SharedLocalizer["Cancel"]</button>
+                <button type="submit" class="btn btn-outline-accent">@SharedLocalizer["Submit"]</button>
+                <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="offcanvas">@SharedLocalizer["Cancel"]</button>
             </div>
         </form>
     </div>
