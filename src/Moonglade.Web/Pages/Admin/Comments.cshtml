@@ -20,9 +20,11 @@
             });
         });
 
-        $(".btn-reply").click(function () {
-            var cid = $(this).data("commentid");
-            $(`#panel-comment-${cid} .reply-ui`).show();
+        document.querySelectorAll('.btn-reply').forEach(button => {
+            button.addEventListener('click', function () {
+                var cid = this.getAttribute('data-commentid');
+                document.querySelector(`#panel-comment-${cid} .reply-ui`).style.display = 'block';
+            });
         });
 
         $(".btn-reply-post").click(function () {
@@ -136,7 +138,7 @@
                                           placeholder="Content" type="text"></textarea>
                             </div>
 
-                            <a class="btn btn-outline-success btn-reply-post" href="#" data-commentid="@item.Id">
+                            <a class="btn btn-sm btn-outline-accent btn-reply-post" href="#" data-commentid="@item.Id">
                                 @SharedLocalizer["Reply"]
                             </a>
                         </form>
