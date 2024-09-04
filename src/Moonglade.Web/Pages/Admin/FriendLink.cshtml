@@ -61,7 +61,7 @@
                 },
                 (resp) => {
                     document.querySelector('#edit-form').reset();
-                    $("#editFriendlinkModal").modal('hide');
+                    document.getElementById("editFriendlinkModal").style.display = "none";
                     window.location.reload();
                 });
         }
