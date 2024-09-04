@@ -37,7 +37,7 @@
 
         var onPageCreateEditBegin = function () {
             document.querySelector(btnSubmitPage).classList.add('disabled');
-            $(btnSubmitPage).attr('disabled', 'disabled');
+            document.querySelector(btnSubmitPage).disabled = true;
         };
 
         var onPageCreateEditComplete = function () {
@@ -83,13 +83,11 @@
                 });
         }
 
-        $(window).bind('keydown', function (event) {
+        window.addEventListener('keydown', function (event) {
             if (event.ctrlKey || event.metaKey) {
-                switch (String.fromCharCode(event.which).toLowerCase()) {
-                    case 's':
-                        event.preventDefault();
-                        $("#btn-submit").trigger('click');
-                        break;
+                if (String.fromCharCode(event.which).toLowerCase() === 's') {
+                    event.preventDefault();
+                    document.querySelector('#btn-submit').click();
                 }
             }
         });
