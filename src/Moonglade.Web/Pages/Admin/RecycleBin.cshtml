@@ -11,11 +11,13 @@
     <script type="module">
         import * as utils from '/js/app/utils.module.js'
 
-        $('.btn-delete').click(function () {
-            var cfm = confirm('Delete Confirmation?');
-            if (cfm) {
-                deletePost($(this).data('postid'));
-            }
+        document.querySelectorAll('.btn-delete').forEach(function (button) {
+            button.addEventListener('click', function () {
+                var cfm = confirm('Delete Confirmation?');
+                if (cfm) {
+                    deletePost(this.getAttribute('data-postid'));
+                }
+            });
         });
 
         $('.btn-restore').click(function () {
