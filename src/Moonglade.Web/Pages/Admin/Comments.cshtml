@@ -62,16 +62,18 @@
 
         window.deleteSelectedComments = function () {
             var cids = [];
-            $('.chk-cid:checked').each(function () {
-                cids.push($(this).data('cid'));
+            document.querySelectorAll('.chk-cid:checked').forEach(function (checkbox) {
+                cids.push(checkbox.getAttribute('data-cid'));
             });
 
-            callApi('/api/comment', 'DELETE', cids,
-                (success) => {
-                    $.each(cids, function (index, value) {
-                        document.querySelector(`#panel-comment-${value}`).remove();
-                    });
+            callApi('/api/comment', 'DELETE', cids, function (success) {
+                cids.forEach(function (value) {
+                    var commentPanel = document.querySelector(`#panel-comment-${value}`);
+                    if (commentPanel) {
+                        commentPanel.remove();
+                    }
                 });
+            });
         }
 
         utils.formatUtcTime();
