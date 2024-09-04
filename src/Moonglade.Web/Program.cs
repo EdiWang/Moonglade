@@ -60,7 +60,7 @@ services.AddSession(options =>
     if (bool.Parse(builder.Configuration["Experimental:ChinaFriendly"]!))
     {
         magics.AddRange([
-            Helper.GetMagic(0x7DB14,21,25),
+                Helper.GetMagic(0x7DB14,21,25),
                 Helper.GetMagic(0x78E10,13,17),
                 Helper.GetMagic(0x17808,34,38),
                 Helper.GetMagic(0x1B5ED,4,8),
