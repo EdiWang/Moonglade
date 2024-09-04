@@ -6,7 +6,7 @@
         import * as settings from '/js/app/admin.settings.module.js';
 
         window.toggleCommentSettingsUI = function () {
-            if ($('#BuiltIn').is(":checked")) {
+            if (document.querySelector('#BuiltIn').checked) {
                 document.querySelector('.comment-settings-built-in').style.display = 'block';
                 document.querySelector('.comment-settings-3rd').style.display = 'none';
             } else {
