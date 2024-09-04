@@ -12,12 +12,9 @@
         import * as utils from '/js/app/utils.module.js'
         
         window.deletePost = function(postid) {
-            $(`#span-processing-${postid}`).show();
-
-            callApi(`/api/post/${postid}/recycle`, 'DELETE', {},
-                (resp) => {
-                    $(`#post-${postid}`).hide();
-                });
+            callApi(`/api/post/${postid}/recycle`, 'DELETE', {}, function(resp) {
+                document.querySelector(`#post-${postid}`).style.display = 'none';
+            });
         }
 
         document.querySelectorAll(".btn-delete").forEach(function (button) {
