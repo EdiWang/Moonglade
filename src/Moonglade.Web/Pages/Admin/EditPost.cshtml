@@ -87,17 +87,16 @@
             editor.keepAlive();
         });
 
-        $(window).bind('keydown',
-            function (event) {
-                if (event.ctrlKey || event.metaKey) {
-                    switch (String.fromCharCode(event.which).toLowerCase()) {
-                        case 's':
-                            event.preventDefault();
-                            $("#btn-save").trigger('click');
-                            break;
-                    }
+        window.addEventListener('keydown', function(event) {
+            if (event.ctrlKey || event.metaKey) {
+                switch (String.fromCharCode(event.which).toLowerCase()) {
+                    case 's':
+                        event.preventDefault();
+                        document.getElementById('btn-save').click();
+                        break;
                 }
-            });
+            }
+        });
 
         var heroImageModal = new bootstrap.Modal(document.getElementById('heroImageModal'));
 
