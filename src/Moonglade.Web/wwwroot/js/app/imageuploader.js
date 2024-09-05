@@ -3,24 +3,24 @@
 
     this.uploadImage = function (uploadUrl) {
         if (imgDataUrl) {
-            document.querySelector(`#btn-upload-${targetName}`).classList.add('disabled');
-            document.querySelector(`#btn-upload-${targetName}`).setAttribute('disabled', 'disabled');
+            var btnUpload = document.querySelector(`#btn-upload-${targetName}`);
+            btnUpload.classList.add('disabled');
+            btnUpload.setAttribute('disabled', 'disabled');
 
             var rawData = imgDataUrl.replace(/^data:image\/(png|jpeg|jpg);base64,/, '');
 
-            callApi(uploadUrl,
-                'POST',
-                rawData,
-                function(resp) {
-                    $(`#${targetName}modal`).modal('hide');
-                    blogToast.success('Updated');
-                    d = new Date();
-                    document.querySelector(`.blogadmin-${targetName}`).src = `/${targetName}?${d.getTime()}`;
-                },
-                function(always) {
-                    document.querySelector(`#btn-upload-${targetName}`).classList.remove('disabled');
-                    document.querySelector(`#btn-upload-${targetName}`).removeAttribute('disabled');
-                });
+            callApi(uploadUrl, 'POST', rawData, function (resp) {
+                var modal = document.getElementById(`${targetName}modal`);
+                if (modal) {
+                    modal.style.display = 'none'; // Assuming you want to hide the modal
+                }
+                blogToast.success('Updated');
+                var d = new Date();
+                document.querySelector(`.blogadmin-${targetName}`).src = `/${targetName}?${d.getTime()}`;
+            }, function (always) {
+                btnUpload.classList.remove('disabled');
+                btnUpload.removeAttribute('disabled');
+            });
 
         } else {
             blogToast.error('Please select an image');
@@ -35,7 +35,7 @@
             var file;
             if (evt.dataTransfer) {
                 file = evt.dataTransfer.files[0];
-                document.querySelector(`.custom-file-label-${targetName}`).innerText(file.name);
+                document.querySelector(`.custom-file-label-${targetName}`).innerText = file.name;
             } else {
                 file = evt.target.files[0];
             }
@@ -70,13 +70,14 @@
                     canvas.width = tempW;
                     canvas.height = tempH;
                     var ctx = canvas.getContext('2d');
-                    ctx.drawImage(this, 0, 0, tempW, tempH);
+                    ctx.drawImage(tempImg, 0, 0, tempW, tempH);
                     imgDataUrl = canvas.toDataURL(imgMimeType);
 
                     var div = document.querySelector(`#${targetName}DropTarget`);
                     div.innerHTML = `<img class="img-fluid" src="${imgDataUrl}" />`;
-                    document.querySelector(`#btn-upload-${targetName}`).classList.remove('disabled');
-                    document.querySelector(`#btn-upload-${targetName}`).removeAttribute('disabled');
+                    var btnUpload = document.querySelector(`#btn-upload-${targetName}`);
+                    btnUpload.classList.remove('disabled');
+                    btnUpload.removeAttribute('disabled');
                 }
             }
             reader.readAsDataURL(file);
@@ -101,4 +102,4 @@
     this.getDataUrl = function () {
         return imgDataUrl;
     };
-};
+}
