@@ -75,7 +75,11 @@
                     var id = await resp.json();
 
                     themeModal.hide();
-                    $("#ViewModel_SelectedThemeId").append(new Option(document.querySelector('#Name').value, id));
+
+                    var selectElement = document.getElementById('ViewModel_SelectedThemeId');
+                    var newOption = new Option(document.querySelector('#Name').value, id);
+                    selectElement.appendChild(newOption);
+
                     blogToast.success('Theme created, refresh to see.');
                 });
         }
@@ -86,7 +90,12 @@
                 'DELETE',
                 {},
                 (resp) => {
-                    $(`#ViewModel_SelectedThemeId option[value='${selectedThemeId}']`).remove();
+                    var selectElement = document.getElementById('ViewModel_SelectedThemeId');
+                    var optionToRemove = selectElement.querySelector(`option[value='${selectedThemeId}']`);
+                    if (optionToRemove) {
+                        selectElement.removeChild(optionToRemove);
+                    }
+
                     blogToast.success('Theme deleted.');
                 });
         }
