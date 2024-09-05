@@ -20,7 +20,7 @@
                 minutes = minutes < 10 ? '0' + minutes : minutes;
                 seconds = seconds < 10 ? '0' + seconds : seconds;
 
-                display.text(minutes + ':' + seconds);
+                display.textContent = minutes + ':' + seconds;
 
                 if (--timer < 0) {
                     timer = duration;
@@ -28,12 +28,16 @@
             }, 1000);
         }
 
-        $('.btn-reset').click(function () {
+        document.querySelector('.btn-reset').addEventListener('click', function () {
             callApi(`/api/settings/reset`, 'POST', {}, () => { });
-            $('.btn-reset').text('Wait...');
-            $('.btn-reset').addClass('disabled');
-            $('.btn-reset').attr('disabled', 'disabled');
-            startTimer(30, $('.btn-reset'));
+
+            var btnReset = document.querySelector('.btn-reset');
+            btnReset.textContent = 'Wait...';
+            btnReset.classList.add('disabled');
+            btnReset.setAttribute('disabled', 'disabled');
+
+            startTimer(30, btnReset);
+
             setTimeout(function () {
                 location.href = '/';
             }, 30000);
