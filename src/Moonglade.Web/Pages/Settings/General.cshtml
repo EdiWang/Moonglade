@@ -52,10 +52,11 @@
         siteiconUploader.bindEvents();
 
         bsCustomFileInput.init();
-        $("#btn-upload-avatar").click(function () {
+        document.getElementById('btn-upload-avatar').addEventListener('click', function () {
             avatarUploader.uploadImage('/avatar');
         });
-        $("#btn-upload-siteicon").click(function () {
+
+        document.getElementById('btn-upload-siteicon').addEventListener('click', function () {
             siteiconUploader.uploadImage('/siteicon');
         });
 
