@@ -1,31 +1,32 @@
-﻿var csrfFieldName = 'CSRF-TOKEN-MOONGLADE-FORM';
-function callApi(uri, method, request, funcSuccess, funcAlways) {
-    const csrfValue = document.querySelector(`input[name=${csrfFieldName}]`).value;
-    fetch(uri, {
-        method: method,
-        headers: {
-            'Accept': 'application/json',
-            'Content-Type': 'application/json',
-            'XSRF-TOKEN': csrfValue
-        },
-        credentials: 'include',
-        body: method === 'GET' ? null : JSON.stringify(request)
-    }).then(async (response) => {
+﻿const csrfFieldName = 'CSRF-TOKEN-MOONGLADE-FORM';
+
+async function callApi(uri, method, request, funcSuccess, funcAlways) {
+    try {
+        const csrfValue = document.querySelector(`input[name="${csrfFieldName}"]`).value;
+        const response = await fetch(uri, {
+            method,
+            headers: {
+                'Accept': 'application/json',
+                'Content-Type': 'application/json',
+                'XSRF-TOKEN': csrfValue
+            },
+            credentials: 'include',
+            body: method === 'GET' ? null : JSON.stringify(request)
+        });
+
         if (!response.ok) {
             await handleHttpError(response);
-        } else {
-            if (funcSuccess) {
-                funcSuccess(response);
-            }
+        } else if (funcSuccess) {
+            funcSuccess(response);
         }
-    }).then(response => {
+
         if (funcAlways) {
             funcAlways(response);
         }
-    }).catch(err => {
+    } catch (err) {
         blogToast.error(err);
         console.error(err);
-    });
+    }
 }
 
 async function handleHttpError(response) {
@@ -55,25 +56,18 @@ async function handleHttpError(response) {
 
 async function buildErrorMessage2(response) {
     const contentType = response.headers.get('content-type');
-    if (contentType && contentType.indexOf('application/json') !== -1) {
-        var data = await response.json();
-        var t = typeof (data);
-        
-        if (data.combinedErrorMessage) {
-            return data.combinedErrorMessage;
-        } else if (t == 'string') {
+    if (contentType && contentType.includes('application/json')) {
+        const data = await response.json();
+        if (typeof data === 'string') {
             return data;
+        } else if (data.combinedErrorMessage) {
+            return data.combinedErrorMessage;
         } else {
-            var errorMessage2 = 'Error(s):\n\r';
-
-            Object.keys(data).forEach(function (k) {
-                errorMessage2 += (k + ': ' + data[k]) + '\n\r';
-            });
-
-            return errorMessage2;
+            return Object.entries(data)
+                .map(([key, value]) => `${key}: ${value}`)
+                .join('\n\r');
         }
     } else {
-        var text = await response.text();
-        return text;
+        return await response.text();
     }
 }
