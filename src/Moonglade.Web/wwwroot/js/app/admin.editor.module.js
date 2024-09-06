@@ -16,6 +16,7 @@
 }
 
 export function initEvents(slugifyTitle) {
+
     if (slugifyTitle) {
         document.querySelector('#ViewModel_Title').addEventListener('change', function () {
             var newSlug = slugify(this.value);
@@ -38,7 +39,7 @@ export function initEvents(slugifyTitle) {
         submitForm(e);
     });
 
-    document.querySelector('.btn-modify-slug').addEventListener('click', function () {
+    document.querySelector('.btn-modify-slug')?.addEventListener('click', function () {
         var message = 'This post was published for a period of time, changing slug will result in breaking SEO, would you like to continue?';
 
         if (confirm(message)) {
@@ -69,10 +70,6 @@ export function initEvents(slugifyTitle) {
         }
     }
 
-    $('.post-edit-form').areYouSure({
-        message: 'You have unsaved changes, are you sure to leave this page?'
-    });
-
     callApi('/api/tags/names',
         'GET',
         {},
@@ -96,6 +93,27 @@ export function initEvents(slugifyTitle) {
         });
 
     document.querySelector('#ViewModel_Title').focus();
+}
+
+export function warnDirtyForm(selector) {
+    const form = document.querySelector(selector);
+    let isFormDirty = false;
+
+    form.addEventListener('input', function () {
+        isFormDirty = true;
+    });
+
+    window.addEventListener('beforeunload', function (event) {
+        if (isFormDirty) {
+            const message = 'You have unsaved changes, are you sure to leave this page?';
+            event.returnValue = message;
+            return message;
+        }
+    });
+
+    form.addEventListener('submit', function () {
+        isFormDirty = false;
+    });
 }
 
 export function loadTinyMCE(textareaSelector) {
