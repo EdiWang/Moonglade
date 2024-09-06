@@ -38,15 +38,16 @@ export function initEvents(slugifyTitle) {
         submitForm(e);
     });
 
-    $('.btn-modify-slug').click(function () {
+    document.querySelector('.btn-modify-slug').addEventListener('click', function () {
         var message = 'This post was published for a period of time, changing slug will result in breaking SEO, would you like to continue?';
 
         if (confirm(message)) {
-            $('#ViewModel_Slug').removeAttr('readonly');
-            $('#ViewModel_Slug').focus();
-            $('.btn-modify-slug').hide();
+            var slugInput = document.getElementById('ViewModel_Slug');
+            slugInput.removeAttribute('readonly');
+            slugInput.focus();
+            document.querySelector('.btn-modify-slug').style.display = 'none';
         }
-    })
+    });
 
     function submitForm(e) {
         if (window.tinyMCE) {
