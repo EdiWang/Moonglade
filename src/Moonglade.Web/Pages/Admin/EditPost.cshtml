@@ -49,18 +49,18 @@
         
         var editorMode = '@ec';
 
-        $(function () {
+        document.addEventListener('DOMContentLoaded', function () {
             editor.initEvents(@((!wsm).ToString().ToLower()));
-            
-            if (editorMode == '@nameof(EditorChoice.Html)') {
+
+            if (editorMode === '@nameof(EditorChoice.Html)') {
                 editor.loadTinyMCE(".post-content-textarea");
             }
-            if (editorMode == '@nameof(EditorChoice.Markdown)') {
+            if (editorMode === '@nameof(EditorChoice.Markdown)') {
                 require(['vs/editor/editor.main'], function () {
                     window.mdContentEditor = initEditor('markdown-content-editor', ".post-content-textarea", 'markdown');
                     
                     inlineAttachment.editors.monaco.attach(
-                        window.mdContentEditor, document.getElementsByClassName('md-editor-image-upload-area')[0] ,{
+                        window.mdContentEditor, document.getElementsByClassName('md-editor-image-upload-area')[0], {
                         uploadUrl: '/image',
                         urlText: '![file]({filename})',
                         onFileUploadResponse: function (xhr) {
