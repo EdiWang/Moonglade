@@ -1,18 +1,13 @@
 ﻿function slugify(text) {
-    var isValidTitle = /^[A-Za-z][A-Za-z0-9 \(\)#,\.\?]*$/.test(text);
-    if (isValidTitle) {
-        return text
-            .toLowerCase()
-            .replace('(', '')
-            .replace(')', '')
-            .replace('#', '')
-            .replace(',', '')
-            .replace('.', '')
-            .replace('?', '')
-            .replace(/[^\w ]+/g, '')
-            .replace(/ +/g, '-');
+    if (!/^[A-Za-z][A-Za-z0-9 \(\)#,\.\?]*$/.test(text)) {
+        return '';
     }
-    return '';
+
+    return text
+        .toLowerCase()
+        .replace(/[()#,.?]/g, '')
+        .replace(/[^\w ]+/g, '')
+        .replace(/ +/g, '-');
 }
 
 export function initEvents(slugifyTitle) {
