@@ -22,7 +22,6 @@
 }
 
 @section scripts {
-    <script src="~/js/3rd/jquery.slim.min.js" asp-append-version="true"></script>
     <script src="~/lib/tagify/tagify.min.js"></script>
     <script src="~/js/3rd/bs-custom-file-input.min.js"></script>
     @{
@@ -152,7 +151,7 @@
                 async (resp) => {
                     var respJson = await resp.json();
                     if (respJson.postId) {
-                        $('input[name="ViewModel.PostId"]').val(respJson.postId);
+                        document.querySelector('input[name="ViewModel.PostId"]').value = respJson.postId;
                         blogToast.success('Post saved successfully.');
 
                         if (isPreviewRequired) {

@@ -59,13 +59,15 @@ export function initEvents(slugifyTitle) {
             assignEditorValues(window.mdContentEditor, ".post-content-textarea");
         }
 
-        if ($('input[name="ViewModel.IsPublished"]').val() === 'True') {
-            if (document.querySelector('#btn-publish')) {
-                document.querySelector('#btn-publish').style.display = 'none';
-            };
+        if (document.querySelector('input[name="ViewModel.IsPublished"]').value === 'True') {
+            const btnPublish = document.querySelector('#btn-publish');
+            if (btnPublish) {
+                btnPublish.style.display = 'none';
+            }
 
-            if (document.querySelector('#btn-preview')) {
-                document.querySelector('#btn-preview').style.display = 'none';
+            const btnPreview = document.querySelector('#btn-preview');
+            if (btnPreview) {
+                btnPreview.style.display = 'none';
             }
         }
     }
@@ -131,7 +133,7 @@ export function loadTinyMCE(textareaSelector) {
             plugins: 'advlist autolink autosave link image lists charmap preview anchor pagebreak searchreplace wordcount visualblocks visualchars code fullscreen insertdatetime media nonbreaking save table directionality codesample emoticons',
             toolbar: 'undo redo | blocks | bold italic underline strikethrough | forecolor backcolor | paste pastetext removeformat | hr link image codesample | charmap emoticons table media | alignleft aligncenter alignright alignjustify | bullist numlist outdent indent | code | fullscreen',
             save_onsavecallback: function () {
-                $('#btn-save').trigger('click');
+                document.querySelector('#btn-save').click();
             },
             paste_data_images: true,
             images_upload_url: '/image',
