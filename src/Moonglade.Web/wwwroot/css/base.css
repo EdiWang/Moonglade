@@ -97,13 +97,10 @@ footer {
 }
 
 .heading-ownername {
-    text-shadow: 1px 1px 3px #4A4A4A;
+    text-shadow: 1px 1px 3px #333;
 }
 
-.profile-description {
-    text-shadow: 1px 1px 1px #333;
-}
-
+.profile-description,
 .profile-pronouns {
     text-shadow: 1px 1px 1px #333;
 }
@@ -187,7 +184,7 @@ footer {
     position: relative;
 }
 
-.card-bkimg-container {
+.card-background-container {
     height: 320px;
     overflow: hidden;
 }
