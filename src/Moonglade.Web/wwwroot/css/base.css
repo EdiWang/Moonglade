@@ -9,7 +9,6 @@
     --gray-2: #EEE;
     --gray-3: #CCC;
     --gray-4: #777;
-    --gray-5: #666;
     --gray-6: #555;
     --gray-7: #333;
 }
@@ -306,7 +305,7 @@ footer {
 }
 
 .navbar-moonglade {
-    box-shadow: 0 4px 8px -2px var(--gray-5);
+    box-shadow: 0 4px 8px -2px var(--bs-secondary-bg);
     padding: .4rem 1rem;
     background-color: var(--accent-color1);
 }
