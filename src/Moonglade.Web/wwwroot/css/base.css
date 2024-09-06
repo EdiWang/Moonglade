@@ -42,14 +42,6 @@ a {
         text-decoration: none;
     }
 
-    a.link-transparent {
-        color: var(--transparent-light-70);
-    }
-
-        a.link-transparent:hover {
-            color: var(--bs-white);
-        }
-
 footer {
     color: var(--transparent-light-60);
 
