@@ -1,21 +1,21 @@
-﻿const getStoredTheme = () => localStorage.getItem('theme')
-const setStoredTheme = theme => localStorage.setItem('theme', theme)
+﻿const getStoredTheme = () => localStorage.getItem('theme');
+const setStoredTheme = theme => localStorage.setItem('theme', theme);
+
+const getSystemTheme = () => window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
 
 export const getPreferredTheme = () => {
-    const storedTheme = getStoredTheme()
-    if (storedTheme) {
-        return storedTheme;
-    }
-
-    return window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
+    const storedTheme = getStoredTheme();
+    return storedTheme || getSystemTheme();
 }
 
 export const setTheme = theme => {
+    const rootElement = document.documentElement;
     if (theme === 'auto') {
-        document.documentElement.setAttribute('data-bs-theme', (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light'));
+        const systemTheme = getSystemTheme();
+        rootElement.setAttribute('data-bs-theme', systemTheme);
         localStorage.removeItem('theme');
     } else {
-        document.documentElement.setAttribute('data-bs-theme', theme);
+        rootElement.setAttribute('data-bs-theme', theme);
         setStoredTheme(theme);
     }
 }
