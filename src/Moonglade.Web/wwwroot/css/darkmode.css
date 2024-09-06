@@ -1,5 +1,5 @@
 ﻿[data-bs-theme=dark] body {
-    background-color: var(--moca-dark);
+    background-color: var(--bs-secondary-bg-subtle);
 }
 
 [data-bs-theme=dark] .navbar-moonglade {
