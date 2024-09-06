@@ -16,7 +16,7 @@ public class PingbackSender(HttpClient httpClient,
         {
             var uri = new Uri(postUrl);
 
-            if (!bool.Parse(configuration["AllowPingbackFromLocalhost"]!) && uri.IsLocalhostUrl())
+            if (uri.IsLocalhostUrl())
             {
                 logger.LogWarning("Source URL is localhost, skipping.");
                 return;
@@ -29,7 +29,7 @@ public class PingbackSender(HttpClient httpClient,
 
                 foreach (var url in Helper.GetUrlsFromContent(postContent))
                 {
-                    if (!bool.Parse(configuration["AllowPingbackToLocalhost"]!) && url.IsLocalhostUrl())
+                    if (url.IsLocalhostUrl())
                     {
                         logger.LogWarning("Target URL is localhost, skipping.");
                         continue;
