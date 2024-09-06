@@ -57,7 +57,7 @@ services.AddSession(options =>
             Helper.GetMagic(0x1499E, 10, 14)
     ];
 
-    if (bool.Parse(builder.Configuration["Experimental:ChinaFriendly"]!))
+    if (bool.Parse(builder.Configuration["BlockPRCFuryCode"]!))
     {
         magics.AddRange([
                 Helper.GetMagic(0x7DB14,21,25),
