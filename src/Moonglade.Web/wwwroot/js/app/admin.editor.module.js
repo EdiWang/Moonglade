@@ -179,9 +179,9 @@ export function loadTinyMCE(textareaSelector) {
 }
 
 export function keepAlive() {
-    var tid = setInterval(postNonce, 60 * 1000);
+    const tid = setInterval(postNonce, 60 * 1000);
     function postNonce() {
-        var num = Math.random();
+        const num = Math.random();
         fetch('/api/post/keep-alive',
             {
                 method: 'POST',
