@@ -33,17 +33,22 @@
                 var replyContent = document.querySelector(`#replycontent-${cid}`).value;
 
                 callApi(`/api/comment/${cid}/reply`, 'POST', replyContent, async (resp) => {
-                    var data = await resp.json();
-                    var replyUi = document.querySelector(`#panel-comment-${data.commentId} .reply-ui`);
-                    var replyList = document.querySelector(`#panel-comment-${data.commentId} .reply-list`);
+                    const data = await resp.json();
+                    const replyUi = document.querySelector(`#panel-comment-${data.commentId} .reply-ui`);
+                    const replyList = document.querySelector(`#panel-comment-${data.commentId} .reply-list`);
 
-                    replyUi.style.display = 'none';
-                    replyList.insertAdjacentHTML('afterbegin',
-                        `<hr /><div class="reply-container">
-                            <div>
-                            <span class="pull-right text-muted">${data.replyTimeUtc}</span></div>
-                            <p>${data.replyContentHtml}</p>
-                        </div>`);
+                    if (replyUi) replyUi.style.display = 'none';
+                    if (replyList) {
+                        replyList.insertAdjacentHTML('afterbegin', `
+                                <hr />
+                                <div class="reply-container">
+                                    <div>
+                                        <span class="pull-right text-muted">${data.replyTimeUtc}</span>
+                                    </div>
+                                    <p>${data.replyContentHtml}</p>
+                                </div>
+                            `);
+                    }
                 });
             });
         });
