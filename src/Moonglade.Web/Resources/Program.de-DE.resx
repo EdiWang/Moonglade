@@ -762,6 +762,9 @@
   <data name="Site Icon Files" xml:space="preserve">
     <value>Seiten Icondateien</value>
   </data>
+  <data name="Social Network Profiles" xml:space="preserve">
+    <value>Soziale Netzwerk Profile</value>
+  </data>
   <data name="Start Time" xml:space="preserve">
     <value>Startzeit</value>
   </data>

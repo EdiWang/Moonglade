@@ -8,11 +8,13 @@ using Moonglade.Data.MySql;
 using Moonglade.Data.PostgreSql;
 using Moonglade.Data.SqlServer;
 using Moonglade.Email.Client;
+using Moonglade.Github.Client;
 using Moonglade.Mention.Common;
 using Moonglade.Pingback;
 using Moonglade.Setup;
 using Moonglade.Syndication;
 using Moonglade.Web.Handlers;
+using Moonglade.Web.Services;
 using Moonglade.Webmention;
 
 using SixLabors.Fonts;
@@ -156,6 +158,8 @@ services.AddTransient<ISiteIconInitializer, SiteIconInitializer>();
 services.AddScoped<IMigrationManager, MigrationManager>();
 services.AddScoped<IBlogConfigInitializer, BlogConfigInitializer>();
 services.AddScoped<IStartUpInitializer, StartUpInitializer>();
+services.AddScoped<IGithubClient, GithubClient>();
+services.AddScoped<IGithubUserRepositoriesService, GithubUserRepositoriesService>();
 
 var app = builder.Build();
 

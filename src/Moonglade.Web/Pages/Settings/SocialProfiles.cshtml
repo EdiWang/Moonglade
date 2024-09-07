@@ -1,0 +1,412 @@
+@page "/admin/settings/socialprofiles"
+@{
+    var settings = BlogConfig.SocialProfileSettings;
+}
+@section scripts {
+    <script type="module">
+        import * as settings from '/js/app/admin.settings.module.js';
+
+        const form = document.querySelector('#form-settings');
+        form.addEventListener('submit', settings.handleSettingsSubmit);
+    </script>
+}
+
+<partial name="_SettingsHeader" />
+
+<div class="ps-4 pe-4">
+    <form id="form-settings" asp-controller="Settings" asp-action="Social" spellcheck="false">
+        <div class="row g-5">
+            <div class="col-md-6">
+                <div class="mb-3">
+                    <h6 class="card-subtitle mb-3 text-muted">@SharedLocalizer["Social Network Profiles"]</h6>
+                    <div class="row g-3 align-items-center settings-entry mt-1 mb-4">
+                        <div class="col-auto">
+                            <i class="bi bi-key settings-entry-icon"></i>
+                        </div>
+                        <div class="col">
+                            <label asp-for="@settings.GPGKeyUrl"></label>
+                        </div>
+                        <div class="col-md-5 text-end">
+                            <input asp-for="@settings.GPGKeyUrl" class="form-control" />
+                        </div>
+                    </div>
+                    <div class="row g-3 align-items-center settings-entry mt-1 mb-4">
+                        <div class="col-auto">
+                            <i class="bi bi-twitter-x settings-entry-icon"></i>
+                        </div>
+                        <div class="col">
+                            <label asp-for="@settings.Twitter"></label>
+                        </div>
+                        <div class="col-md-5 text-end">
+                            <input asp-for="@settings.Twitter" class="form-control" />
+                        </div>
+                    </div>
+                    <div class="row g-3 align-items-center settings-entry mt-1 mb-4">
+                        <div class="col-auto">
+                            <i class="bi bi-instagram settings-entry-icon"></i>
+                        </div>
+                        <div class="col">
+                            <label asp-for="@settings.Instagram"></label>
+                        </div>
+                        <div class="col-md-5 text-end">
+                            <input asp-for="@settings.Instagram" class="form-control" />
+                        </div>
+                    </div>
+                    <div class="row g-3 align-items-center settings-entry mt-1 mb-4">
+                        <div class="col-auto">
+                            <i class="bi bi-youtube settings-entry-icon"></i>
+                        </div>
+                        <div class="col">
+                            <label asp-for="@settings.YouTube"></label>
+                        </div>
+                        <div class="col-md-5 text-end">
+                            <input asp-for="@settings.YouTube" class="form-control" />
+                        </div>
+                    </div>
+                    <div class="row g-3 align-items-center settings-entry mt-1 mb-4">
+                        <div class="col-auto">
+                            <i class="bi bi-x-lg settings-entry-icon"></i>
+                        </div>
+                        <div class="col">
+                            <label asp-for="@settings.Xing"></label>
+                        </div>
+                        <div class="col-md-5 text-end">
+                            <input asp-for="@settings.Xing" class="form-control" />
+                        </div>
+                    </div>
+                    <div class="row g-3 align-items-center settings-entry mt-1 mb-4">
+                        <div class="col-auto">
+                            <i class="bi bi-reddit settings-entry-icon"></i>
+                        </div>
+                        <div class="col">
+                            <label asp-for="@settings.Reddit"></label>
+                        </div>
+                        <div class="col-md-5 text-end">
+                            <input asp-for="@settings.Reddit" class="form-control" />
+                        </div>
+                    </div>
+                    <div class="row g-3 align-items-center settings-entry mt-1 mb-4">
+                        <div class="col-auto">
+                            <i class="bi bi-behance settings-entry-icon"></i>
+                        </div>
+                        <div class="col">
+                            <label asp-for="@settings.Behance"></label>
+                        </div>
+                        <div class="col-md-5 text-end">
+                            <input asp-for="@settings.Behance" class="form-control" />
+                        </div>
+                    </div>
+                    <div class="row g-3 align-items-center settings-entry mt-1 mb-4">
+                        <div class="col-auto">
+                            <i class="bi bi-twitch settings-entry-icon"></i>
+                        </div>
+                        <div class="col">
+                            <label asp-for="@settings.Twitch"></label>
+                        </div>
+                        <div class="col-md-5 text-end">
+                            <input asp-for="@settings.Twitch" class="form-control" />
+                        </div>
+                    </div>
+                    <div class="row g-3 align-items-center settings-entry mt-1 mb-4">
+                        <div class="col-auto">
+                            <i class="bi bi-skype settings-entry-icon"></i>
+                        </div>
+                        <div class="col">
+                            <label asp-for="@settings.Skype"></label>
+                        </div>
+                        <div class="col-md-5 text-end">
+                            <input asp-for="@settings.Skype" class="form-control" />
+                        </div>
+                    </div>
+                    <div class="row g-3 align-items-center settings-entry mt-1 mb-4">
+                        <div class="col-auto">
+                            <i class="bi bi-steam settings-entry-icon"></i>
+                        </div>
+                        <div class="col">
+                            <label asp-for="@settings.Steam"></label>
+                        </div>
+                        <div class="col-md-5 text-end">
+                            <input asp-for="@settings.Steam" class="form-control" />
+                        </div>
+                    </div>
+                    <div class="row g-3 align-items-center settings-entry mt-1 mb-4">
+                        <div class="col-auto settings-entry-icon">
+                            <i class="bi bi-code"></i>
+                        </div>
+                        <div class="col">
+                            <label asp-for="@settings.DevTo"></label>
+                        </div>
+                        <div class="col-md-5 text-end">
+                            <input asp-for="@settings.DevTo" class="form-control" />
+                        </div>
+                    </div>
+                    <div class="row g-3 align-items-center settings-entry mt-1 mb-4">
+                        <div class="col-auto">
+                            <i class="bi bi-amazon settings-entry-icon"></i>
+                        </div>
+                        <div class="col">
+                            <label asp-for="@settings.AmazonAuthorPage"></label>
+                        </div>
+                        <div class="col-md-5 text-end">
+                            <input asp-for="@settings.AmazonAuthorPage" class="form-control" />
+                        </div>
+                    </div>
+                    <div class="row g-3 align-items-center settings-entry mt-1 mb-4">
+                        <div class="col-auto">
+                            <i class="bi bi-code-slash settings-entry-icon"></i>
+                        </div>
+                        <div class="col">
+                            <label asp-for="@settings.CodeProject"></label>
+                        </div>
+                        <div class="col-md-5 text-end">
+                            <input asp-for="@settings.CodeProject" class="form-control" />
+                        </div>
+                    </div>
+                    <div class="row g-3 align-items-center settings-entry mt-1 mb-4">
+                        <div class="col-auto">
+                            <i class="bi bi-h-circle settings-entry-icon"></i>
+                        </div>
+                        <div class="col">
+                            <label asp-for="@settings.OpenHub"></label>
+                        </div>
+                        <div class="col-md-5 text-end">
+                            <input asp-for="@settings.OpenHub" class="form-control" />
+                        </div>
+                    </div>
+                    <div class="row g-3 align-items-center settings-entry mt-1 mb-4">
+                        <div class="col-auto">
+                            <i class="bi bi-key-fill settings-entry-icon"></i>
+                        </div>
+                        <div class="col">
+                            <label asp-for="@settings.KeyBase"></label>
+                        </div>
+                        <div class="col-md-5 text-end">
+                            <input asp-for="@settings.KeyBase" class="form-control" />
+                        </div>
+                    </div>
+                </div>
+                <div class="mb-3">
+                    <h6 class="card-subtitle mb-3 text-muted">@SharedLocalizer["Donations"]</h6>
+                    <div class="row g-3 align-items-center settings-entry mt-1 mb-4">
+                        <div class="col-auto">
+                            <i class="bi bi-cup-fill settings-entry-icon"></i>
+                        </div>
+                        <div class="col">
+                            <label asp-for="@settings.BuyMeACoffee"></label>
+                        </div>
+                        <div class="col-md-5 text-end">
+                            <input asp-for="@settings.BuyMeACoffee" class="form-control" />
+                        </div>
+                    </div>
+                    <div class="row g-3 align-items-center settings-entry mt-1 mb-4">
+                        <div class="col-auto">
+                            <i class="bi bi-wallet settings-entry-icon"></i>
+                        </div>
+                        <div class="col">
+                            <label asp-for="@settings.Liberapay"></label>
+                        </div>
+                        <div class="col-md-5 text-end">
+                            <input asp-for="@settings.Liberapay" class="form-control" />
+                        </div>
+                    </div>
+                    <div class="row g-3 align-items-center settings-entry mt-1 mb-4">
+                        <div class="col-auto">
+                            <i class="bi bi-wallet-fill settings-entry-icon"></i>
+                        </div>
+                        <div class="col">
+                            <label asp-for="@settings.Patreon"></label>
+                        </div>
+                        <div class="col-md-5 text-end">
+                            <input asp-for="@settings.Patreon" class="form-control" />
+                        </div>
+                    </div>
+                    <div class="row g-3 align-items-center settings-entry mt-1 mb-4">
+                        <div class="col-auto">
+                            <i class="bi bi-amazon settings-entry-icon"></i>
+                        </div>
+                        <div class="col">
+                            <label asp-for="@settings.AmazonWishlist"></label>
+                        </div>
+                        <div class="col-md-5 text-end">
+                            <input asp-for="@settings.AmazonWishlist" class="form-control" />
+                        </div>
+                    </div>
+                    <div class="row g-3 align-items-center settings-entry mt-1 mb-4">
+                        <div class="col-auto">
+                            <i class="bi bi-paypal settings-entry-icon"></i>
+                        </div>
+                        <div class="col">
+                            <label asp-for="@settings.Paypal"></label>
+                        </div>
+                        <div class="col-md-5 text-end">
+                            <input asp-for="@settings.Paypal" class="form-control" />
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-6">
+                <div class="mb-3">
+                    <h6 class="card-subtitle mb-3 text-muted">@SharedLocalizer["Social Profiles"]</h6>
+                    <div class="row g-3 align-items-center settings-entry mt-1 mb-4">
+                        <div class="col-auto">
+                            <i class="bi bi-mastodon settings-entry-icon"></i>
+                        </div>
+                        <div class="col">
+                            <label asp-for="@settings.Mastodon"></label>
+                        </div>
+                        <div class="col-md-5 text-end">
+                            <input asp-for="@settings.Mastodon" class="form-control" />
+                        </div>
+                    </div>
+                    <div class="row g-3 align-items-center settings-entry mt-1 mb-4">
+                        <div class="col-auto">
+                            <i class="bi bi-facebook settings-entry-icon"></i>
+                        </div>
+                        <div class="col">
+                            <label asp-for="@settings.Facebook"></label>
+                        </div>
+                        <div class="col-md-5 text-end">
+                            <input asp-for="@settings.Facebook" class="form-control" />
+                        </div>
+                    </div>
+                    <div class="row g-3 align-items-center settings-entry mt-1 mb-4">
+                        <div class="col-auto">
+                            <i class="bi bi-linkedin settings-entry-icon"></i>
+                        </div>
+                        <div class="col">
+                            <label asp-for="@settings.LinkedIn"></label>
+                        </div>
+                        <div class="col-md-5 text-end">
+                            <input asp-for="@settings.LinkedIn" class="form-control" />
+                        </div>
+                    </div>
+                    <div class="row g-3 align-items-center settings-entry mt-1 mb-4">
+                        <div class="col-auto">
+                            <i class="bi bi-github settings-entry-icon"></i>
+                        </div>
+                        <div class="col">
+                            <label asp-for="@settings.GitHub"></label>
+                        </div>
+                        <div class="col-md-5 text-end">
+                            <input asp-for="@settings.GitHub" class="form-control" />
+                        </div>
+                    </div>
+                    <div class="row g-3 align-items-center settings-entry mt-1 mb-4">
+                        <div class="col-auto">
+                            <i class="bi bi-pinterest settings-entry-icon"></i>
+                        </div>
+                        <div class="col">
+                            <label asp-for="@settings.Pinterest"></label>
+                        </div>
+                        <div class="col-md-5 text-end">
+                            <input asp-for="@settings.Pinterest" class="form-control" />
+                        </div>
+                    </div>
+                    <div class="row g-3 align-items-center settings-entry mt-1 mb-4">
+                        <div class="col-auto">
+                            <i class="bi bi-vimeo settings-entry-icon"></i>
+                        </div>
+                        <div class="col">
+                            <label asp-for="@settings.Vimeo"></label>
+                        </div>
+                        <div class="col-md-5 text-end">
+                            <input asp-for="@settings.Vimeo" class="form-control" />
+                        </div>
+                    </div>
+                    <div class="row g-3 align-items-center settings-entry mt-1 mb-4">
+                        <div class="col-auto">
+                            <i class="bi bi-spotify settings-entry-icon"></i>
+                        </div>
+                        <div class="col">
+                            <label asp-for="@settings.Spotify"></label>
+                        </div>
+                        <div class="col-md-5 text-end">
+                            <input asp-for="@settings.Spotify" class="form-control" />
+                        </div>
+                    </div>
+                    <div class="row g-3 align-items-center settings-entry mt-1 mb-4">
+                        <div class="col-auto">
+                            <i class="bi bi-whatsapp settings-entry-icon"></i>
+                        </div>
+                        <div class="col">
+                            <label asp-for="@settings.WhatsApp"></label>
+                        </div>
+                        <div class="col-md-5 text-end">
+                            <input asp-for="@settings.WhatsApp" class="form-control" />
+                        </div>
+                    </div>
+                    <div class="row g-3 align-items-center settings-entry mt-1 mb-4">
+                        <div class="col-auto">
+                            <i class="bi bi-discord settings-entry-icon"></i>
+                        </div>
+                        <div class="col">
+                            <label asp-for="@settings.Discord"></label>
+                        </div>
+                        <div class="col-md-5 text-end">
+                            <input asp-for="@settings.Discord" class="form-control" />
+                        </div>
+                    </div>
+                    <div class="row g-3 align-items-center settings-entry mt-1 mb-4">
+                        <div class="col-auto">
+                            <i class="bi bi-stack-overflow settings-entry-icon"></i>
+                        </div>
+                        <div class="col">
+                            <label asp-for="@settings.Stackoverflow"></label>
+                        </div>
+                        <div class="col-md-5 text-end">
+                            <input asp-for="@settings.Stackoverflow" class="form-control" />
+                        </div>
+                    </div>
+                    <div class="row g-3 align-items-center settings-entry mt-1 mb-4">
+                        <div class="col-auto">
+                            <i class="bi bi-code-slash settings-entry-icon"></i>
+                        </div>
+                        <div class="col">
+                            <label asp-for="@settings.Codersrank"></label>
+                        </div>
+                        <div class="col-md-5 text-end">
+                            <input asp-for="@settings.Codersrank" class="form-control" />
+                        </div>
+                    </div>
+                    <div class="row g-3 align-items-center settings-entry mt-1 mb-4">
+                        <div class="col-auto">
+                            <i class="bi bi-broadcast settings-entry-icon"></i>
+                        </div>
+                        <div class="col">
+                            <label asp-for="@settings.LastFm"></label>
+                        </div>
+                        <div class="col-md-5 text-end">
+                            <input asp-for="@settings.LastFm" class="form-control" />
+                        </div>
+                    </div>
+                    <div class="row g-3 align-items-center settings-entry mt-1 mb-4">
+                        <div class="col-auto">
+                            <i class="bi bi-file-code settings-entry-icon"></i>
+                        </div>
+                        <div class="col">
+                            <label asp-for="@settings.Matrix"></label>
+                        </div>
+                        <div class="col-md-5 text-end">
+                            <input asp-for="@settings.Matrix" class="form-control" />
+                        </div>
+                    </div>
+                    <div class="row g-3 align-items-center settings-entry mt-1 mb-4">
+                        <div class="col-auto">
+                            <i class="bi bi-file-code settings-entry-icon"></i>
+                        </div>
+                        <div class="col">
+                            <label asp-for="@settings.CodeStats"></label>
+                        </div>
+                        <div class="col-md-5 text-end">
+                            <input asp-for="@settings.CodeStats" class="form-control" />
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="mb-4">
+            <input id="btn-save-settings" type="submit" value="@SharedLocalizer["Save"]" class="btn btn-outline-accent" />
+        </div>
+    </form>
+</div>
+

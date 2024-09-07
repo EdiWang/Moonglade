@@ -12,6 +12,12 @@
     <RepositoryUrl>https://github.com/EdiWang/Moonglade</RepositoryUrl>
   </PropertyGroup>
   <ItemGroup>
+    <Compile Remove="wwwroot\lib\fortawesome\**" />
+    <Content Remove="wwwroot\lib\fortawesome\**" />
+    <EmbeddedResource Remove="wwwroot\lib\fortawesome\**" />
+    <None Remove="wwwroot\lib\fortawesome\**" />
+  </ItemGroup>
+  <ItemGroup>
     <Using Include="System.Text" />
     <Using Include="Microsoft.AspNetCore.Mvc" />
     <Using Include="Microsoft.AspNetCore.Authorization" />
@@ -37,6 +43,7 @@
     <PackageReference Include="Edi.ImageWatermark" Version="2.14.0" />
     <PackageReference Include="Edi.PasswordGenerator" Version="2.0.0" />
     <PackageReference Include="Microsoft.Extensions.Logging.AzureAppServices" Version="8.0.8" />
+    <PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
     
     <PackageReference Include="TinyMCE" Version="7.3.0" />
     <PackageReference Include="Moonglade.MonacoEditor" Version="0.50.0.1002" />
@@ -49,6 +56,7 @@
     <ProjectReference Include="..\Moonglade.Data.PostgreSql\Moonglade.Data.PostgreSql.csproj" />
     <ProjectReference Include="..\Moonglade.Data.SqlServer\Moonglade.Data.SqlServer.csproj" />
     <ProjectReference Include="..\Moonglade.FriendLink\Moonglade.FriendLink.csproj" />
+    <ProjectReference Include="..\Moonglade.Github.Client\Moonglade.Github.Client.csproj" />
     <ProjectReference Include="..\Moonglade.ImageStorage\Moonglade.ImageStorage.csproj" />
     <ProjectReference Include="..\Moonglade.Email.Client\Moonglade.Email.Client.csproj" />
     <ProjectReference Include="..\Moonglade.Pingback\Moonglade.Pingback.csproj" />
