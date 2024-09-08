@@ -945,59 +945,14 @@
   <data name="Now playing" xml:space="preserve">
     <value>Jetzt höre ich</value>
   </data>
-  <data name="coat-of-arms-title" xml:space="preserve">
-    <value />
-  </data>
-  <data name="connect-header" xml:space="preserve">
-    <value />
-  </data>
   <data name="intro" xml:space="preserve">
     <value>Letzte Aktivitäten</value>
-  </data>
-  <data name="opensource" xml:space="preserve">
-    <value />
   </data>
   <data name="Me and the blog" xml:space="preserve">
     <value>Mein Blog und ich</value>
   </data>
   <data name="publications" xml:space="preserve">
     <value />
-  </data>
-  <data name="contact-enter-name" xml:space="preserve">
-    <value>* Tragen Sie ihren Namen ein</value>
-  </data>
-  <data name="contact-enter-subject" xml:space="preserve">
-    <value>* Tragen Sie den Betreff ein</value>
-  </data>
-  <data name="contact-subject" xml:space="preserve">
-    <value>Betreff</value>
-  </data>
-  <data name="contact-enter-email" xml:space="preserve">
-    <value>* Tragen Sie eine valide Email ein</value>
-  </data>
-  <data name="contact-email" xml:space="preserve">
-    <value>Email</value>
-  </data>
-  <data name="contact-enter-body" xml:space="preserve">
-    <value>* Tragen Sie Ihre Nachricht ein</value>
-  </data>
-  <data name="contact-message" xml:space="preserve">
-    <value>Nachricht</value>
-  </data>
-  <data name="contact-submit" xml:space="preserve">
-    <value>Übermitteln</value>
-  </data>
-  <data name="cv-about-experience" xml:space="preserve">
-    <value>Erfahrung</value>
-  </data>
-  <data name="activity-title" xml:space="preserve">
-    <value>Meine Programmieraktivitäten (Nur öffentliche Github Repos, letztes Jahr)</value>
-  </data>
-  <data name="activity-last30" xml:space="preserve">
-    <value>Benutzte Programmiersprachen der letzten 30 Tage</value>
-  </data>
-  <data name="activity-all" xml:space="preserve">
-    <value>Meine gesamten Programmieraktivitäten (letztes Jahr)</value>
   </data>
   <data name="education-title" xml:space="preserve">
     <value>Aus- &amp; Weiterbildung</value>
@@ -1020,98 +975,17 @@
   <data name="experience-header1" xml:space="preserve">
     <value>Aus &amp;amp; Weiterbildungen</value>
   </data>
-  <data name="jobs-title" xml:space="preserve">
-    <value>Bisherige berufliche Stationen</value>
-  </data>
-  <data name="last" xml:space="preserve">
-    <value>Letzte</value>
-  </data>
-  <data name="masterhead-lead" xml:space="preserve">
-    <value>Willkommen zu meinem Lebenslauf</value>
-  </data>
   <data name="projects" xml:space="preserve">
     <value>Projekte</value>
-  </data>
-  <data name="services-app" xml:space="preserve">
-    <value>App-Entwicklung</value>
-  </data>
-  <data name="services-app-blurp" xml:space="preserve">
-    <value>Mittels moderner Frameworks, wie .NET, Angular und anderen, setze ich Ihre Workflows in plattformunabhängige Apps um.</value>
-  </data>
-  <data name="services-architect" xml:space="preserve">
-    <value>Softwarearchitektur</value>
-  </data>
-  <data name="services-architect-blurp" xml:space="preserve">
-    <value>Als Softwarearchitekt sorge ich dafür, das vorhandener Code wartbar und portierbar bleibt und somit fit für Ihre Firmenzukunft.</value>
-  </data>
-  <data name="services-my" xml:space="preserve">
-    <value>Meine</value>
-  </data>
-  <data name="services-specialization" xml:space="preserve">
-    <value>Spezialisierungen</value>
-  </data>
-  <data name="services-web" xml:space="preserve">
-    <value>Web-Entwicklung</value>
-  </data>
-  <data name="services-web-blurp" xml:space="preserve">
-    <value>Ihre Webseiten erstelle ich mittels Technologien, wie ASP .NET, PHP, Angular oder Vue.js.</value>
   </data>
   <data name="skills-title" xml:space="preserve">
     <value>Erfahrungen</value>
   </data>
-  <data name="testimonials" xml:space="preserve">
-    <value>Letzte</value>
-  </data>
-  <data name="testimonial-testimonials" xml:space="preserve">
-    <value>Empfehlungen</value>
-  </data>
-  <data name="viewbag-pageblurp" xml:space="preserve">
-    <value>Eine Sammlung meiner gehaltenen Vorträge</value>
-  </data>
-  <data name="viewbag-pagename" xml:space="preserve">
-    <value>Meine Vorträge</value>
-  </data>
-  <data name="viewbag-title" xml:space="preserve">
-    <value>Meine Vorträge - Sascha Manns's Twilight Zone</value>
-  </data>
-  <data name="write-me" xml:space="preserve">
-    <value>Schreiben Sie mir</value>
-  </data>
-  <data name="disclaimer3" xml:space="preserve">
-    <value>&lt;strong&gt;Urheberrechte und Markenrechte&lt;/strong&gt;: Alle auf dieser Website dargestellten Inhalte, wie Texte, Fotografien, Grafiken, Marken und Warenzeichen sind durch die jeweiligen Schutzrechte (Urheberrechte, Markenrechte) geschützt. Die Verwendung, Vervielfältigung usw. unterliegen unseren Rechten oder den Rechten der jeweiligen Urheber bzw. Rechteverwalter.</value>
-  </data>
-  <data name="adress" xml:space="preserve">
-    <value>adresse wie oben</value>
-  </data>
-  <data name="contact" xml:space="preserve">
-    <value>Kontaktmöglichkeiten</value>
-  </data>
-  <data name="contact-form" xml:space="preserve">
-    <value>Kontaktformular</value>
-  </data>
-  <data name="disclaimer" xml:space="preserve">
-    <value>Haftungsausschluss</value>
-  </data>
-  <data name="disclaimer1" xml:space="preserve">
-    <value>Die Inhalte dieses Onlineangebotes wurden sorgfältig und nach unserem aktuellen Kenntnisstand erstellt, dienen jedoch nur der Information und entfalten keine rechtlich bindende Wirkung, sofern es sich nicht um gesetzlich verpflichtende Informationen (z.B. das Impressum, die Datenschutzerklärung, AGB oder verpflichtende Belehrungen von Verbrauchern) handelt. Wir behalten uns vor, die Inhalte vollständig oder teilweise zu ändern oder zu löschen, soweit vertragliche Verpflichtungen unberührt bleiben. Alle Angebote sind freibleibend und unverbindlich.</value>
-  </data>
-  <data name="disclaimer2" xml:space="preserve">
-    <value>&lt;strong&gt;Links auf fremde Webseiten&lt;/strong&gt;: Inhalte fremder Webseiten, auf die wir direkt oder indirekt verweisen, liegen außerhalb unseres Verantwortungsbereiches und machen wir uns nicht zu Eigen. Für alle Inhalte und insbesondere für Schäden, die aus der Nutzung der in den verlinkten Webseiten aufrufbaren Informationen entstehen, haftet allein der Anbieter der verlinkten Webseiten.</value>
-  </data>
-  <data name="disclaimer4" xml:space="preserve">
-    <value>&lt;strong&gt;Hinweise auf Rechtsverstöße&lt;/strong&gt;: Sollten Sie innerhalb unseres Internetauftritts Rechtsverstöße bemerken, bitten wir Sie uns auf diese hinzuweisen. Wir werden rechtswidrige Inhalte und Links nach Kenntnisnahme unverzüglich entfernen.</value>
-  </data>
   <data name="email" xml:space="preserve">
     <value>E-Mail-Adresse</value>
   </data>
-  <data name="journalistic" xml:space="preserve">
-    <value>Journalistisch-redaktionelle Angebote</value>
-  </data>
   <data name="other" xml:space="preserve">
     <value>Dieses Impressum gilt auch für die folgenden Social-Media-Präsenzen und Onlineprofile</value>
-  </data>
-  <data name="seal" xml:space="preserve">
-    <value>Rechtstext von Dr. Schwenke - für weitere Informationen bitte anklicken</value>
   </data>
   <data name="socialmedia" xml:space="preserve">
     <value>Social Media und andere Onlinepräsenzen</value>
@@ -1128,83 +1002,11 @@
   <data name="introduction-status" xml:space="preserve">
     <value>Stand:</value>
   </data>
-  <data name="responsible-email" xml:space="preserve">
-    <value>E-Mail-Adresse</value>
-  </data>
-  <data name="responsible-imprint" xml:space="preserve">
-    <value>Impressum</value>
-  </data>
-  <data name="responsible-person" xml:space="preserve">
-    <value>Vertretungsberechtigte Personen</value>
-  </data>
-  <data name="responsible-phone" xml:space="preserve">
-    <value>Telefon</value>
-  </data>
-  <data name="seal1" xml:space="preserve">
-    <value>Erstellt mit kostenlosem Datenschutz-Generator.de von Dr. Thomas Schwenke</value>
-  </data>
-  <data name="toc-analytics" xml:space="preserve">
-    <value>Webanalyse, Monitoring und Optimierung</value>
-  </data>
-  <data name="toc-blogs" xml:space="preserve">
-    <value>Blogs und Publikationsmedien</value>
-  </data>
-  <data name="toc-contact" xml:space="preserve">
-    <value>Kontaktaufnahme</value>
-  </data>
-  <data name="toc-cookies" xml:space="preserve">
-    <value>Einsatz von Cookies</value>
-  </data>
-  <data name="toc-definitions" xml:space="preserve">
-    <value>Begriffsdefinitionen</value>
-  </data>
-  <data name="toc-deletedata" xml:space="preserve">
-    <value>Löschung von Daten</value>
-  </data>
-  <data name="toc-legal-bases" xml:space="preserve">
-    <value>Maßgebliche Rechtsgrundlagen</value>
-  </data>
-  <data name="toc-onlinemarketing" xml:space="preserve">
-    <value>Onlinemarketing</value>
-  </data>
-  <data name="toc-onlinemedia" xml:space="preserve">
-    <value>Präsenzen in sozialen Netzwerken (Social Media)</value>
-  </data>
-  <data name="toc-overview" xml:space="preserve">
-    <value>Inhaltsübersicht</value>
-  </data>
-  <data name="toc-plugins" xml:space="preserve">
-    <value>Plugins und eingebettete Funktionen sowie Inhalte</value>
-  </data>
-  <data name="toc-processing" xml:space="preserve">
-    <value>Übersicht der Verarbeitungen</value>
-  </data>
-  <data name="toc-responsible" xml:space="preserve">
-    <value>Verantwortlicher</value>
-  </data>
-  <data name="toc-rights" xml:space="preserve">
-    <value>Rechte der betroffenen Personen</value>
-  </data>
-  <data name="toc-safety" xml:space="preserve">
-    <value>Sicherheitsmaßnahmen</value>
-  </data>
-  <data name="toc-update" xml:space="preserve">
-    <value>Änderung und Aktualisierung der Datenschutzerklärung</value>
-  </data>
   <data name="slides" xml:space="preserve">
     <value>In den letzten Jahren hielt ich einige Vorträge auf Veranstaltungen. Hier einige meiner Folien</value>
   </data>
   <data name="held" xml:space="preserve">
     <value>Gehalten</value>
-  </data>
-  <data name="show-talk" xml:space="preserve">
-    <value>Vortrag ansehen</value>
-  </data>
-  <data name="tests" xml:space="preserve">
-    <value>Diese Empfehlungen stammen von ehemaligen Kollegen, der letzten Jahre.</value>
-  </data>
-  <data name="cookie-string" xml:space="preserve">
-    <value>Bitte lesen Sie die Datenschutzvereinbarung, indem Sie auf "Lesen Sie mehr" und anschließend auf "Akzeptieren" klicken.</value>
   </data>
   <data name="button1" xml:space="preserve">
     <value>Akzeptieren</value>
@@ -1218,9 +1020,6 @@
   <data name="privacy-title" xml:space="preserve">
     <value>Datenschutz</value>
   </data>
-  <data name="talks" xml:space="preserve">
-    <value>Vorträge</value>
-  </data>
   <data name="Syndication" xml:space="preserve">
     <value>Syndizierung</value>
   </data>
@@ -1232,5 +1031,8 @@
   </data>
   <data name="content-additional" xml:space="preserve">
     <value>Zusätzlich</value>
+  </data>
+  <data name="last" xml:space="preserve">
+    <value>Letzte</value>
   </data>
 </root>
