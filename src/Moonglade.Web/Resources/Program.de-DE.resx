@@ -1311,9 +1311,6 @@ als Packager, Redakteur des wöchentlichen Newsletters und innerhalb des Members
   <data name="cookies-type-third" xml:space="preserve">
     <value>&lt;strong&gt;Third-Party-Cookies (auch: Drittanbieter-Cookies)&lt;/strong&gt;: Drittanbieter-Cookies werden hauptsächlich von Werbetreibenden (sog. Dritten) verwendet, um Benutzerinformationen zu verarbeiten.</value>
   </data>
-  <data name="delete" xml:space="preserve">
-    <value>Löschung von Daten</value>
-  </data>
   <data name="glossary-blurp" xml:space="preserve">
     <value>In diesem Abschnitt erhalten Sie eine Übersicht über die in dieser Datenschutzerklärung verwendeten Begrifflichkeiten. Viele der Begriffe sind dem Gesetz entnommen und vor allem im Art. 4 DSGVO definiert. Die gesetzlichen Definitionen sind verbindlich.
     Die nachfolgenden Erläuterungen sollen dagegen vor allem dem Verständnis dienen. Die Begriffe sind alphabetisch sortiert.</value>
