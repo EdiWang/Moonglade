@@ -921,12 +921,6 @@
   <data name="Seconds" xml:space="preserve">
     <value>Sekunden</value>
   </data>
-  <data name="Syncfusion License" xml:space="preserve">
-    <value>Syncfusion Lizenz</value>
-  </data>
-  <data name="Syncfusion Version" xml:space="preserve">
-    <value>Syncfusion Version</value>
-  </data>
   <data name="Github PAT" xml:space="preserve">
     <value>Github PAT</value>
   </data>
@@ -945,74 +939,20 @@
   <data name="Now playing" xml:space="preserve">
     <value>Jetzt höre ich</value>
   </data>
-  <data name="intro" xml:space="preserve">
-    <value>Letzte Aktivitäten</value>
-  </data>
   <data name="Me and the blog" xml:space="preserve">
     <value>Mein Blog und ich</value>
   </data>
   <data name="publications" xml:space="preserve">
     <value />
   </data>
-  <data name="education-title" xml:space="preserve">
-    <value>Aus- &amp; Weiterbildung</value>
-  </data>
-  <data name="experience-cert-employment" xml:space="preserve">
-    <value>Arbeitszeugnis</value>
-  </data>
-  <data name="experience-certs" xml:space="preserve">
-    <value>Zertifikate</value>
-  </data>
-  <data name="experience-content" xml:space="preserve">
-    <value>Inhalte</value>
-  </data>
-  <data name="experience-downloadcv" xml:space="preserve">
-    <value>Download CV</value>
-  </data>
-  <data name="experience-header" xml:space="preserve">
-    <value>Berufserfahrung</value>
-  </data>
-  <data name="experience-header1" xml:space="preserve">
-    <value>Aus &amp;amp; Weiterbildungen</value>
-  </data>
   <data name="projects" xml:space="preserve">
     <value>Projekte</value>
-  </data>
-  <data name="skills-title" xml:space="preserve">
-    <value>Erfahrungen</value>
   </data>
   <data name="email" xml:space="preserve">
     <value>E-Mail-Adresse</value>
   </data>
-  <data name="other" xml:space="preserve">
-    <value>Dieses Impressum gilt auch für die folgenden Social-Media-Präsenzen und Onlineprofile</value>
-  </data>
-  <data name="socialmedia" xml:space="preserve">
-    <value>Social Media und andere Onlinepräsenzen</value>
-  </data>
-  <data name="introduction" xml:space="preserve">
-    <value>Einleitung</value>
-  </data>
-  <data name="introduction-blurp" xml:space="preserve">
-    <value>Mit der folgenden Datenschutzerklärung möchten wir Sie darüber aufklären, welche Arten Ihrer personenbezogenen Daten (nachfolgend auch kurz als "Daten“ bezeichnet) wir zu welchen Zwecken und in welchem Umfang verarbeiten. Die Datenschutzerklärung gilt für alle von uns durchgeführten Verarbeitungen personenbezogener Daten, sowohl im Rahmen der Erbringung unserer Leistungen als auch insbesondere auf unseren Webseiten, in mobilen Applikationen sowie innerhalb externer Onlinepräsenzen, wie z.B. unserer Social-Media-Profile (nachfolgend zusammenfassend bezeichnet als "Onlineangebot“)</value>
-  </data>
-  <data name="introduction-gender" xml:space="preserve">
-    <value>Die verwendeten Begriffe sind nicht geschlechtsspezifisch.</value>
-  </data>
-  <data name="introduction-status" xml:space="preserve">
-    <value>Stand:</value>
-  </data>
-  <data name="slides" xml:space="preserve">
-    <value>In den letzten Jahren hielt ich einige Vorträge auf Veranstaltungen. Hier einige meiner Folien</value>
-  </data>
   <data name="held" xml:space="preserve">
     <value>Gehalten</value>
-  </data>
-  <data name="button1" xml:space="preserve">
-    <value>Akzeptieren</value>
-  </data>
-  <data name="button" xml:space="preserve">
-    <value>Lesen Sie mehr</value>
   </data>
   <data name="last-updated" xml:space="preserve">
     <value>Zuletzt aktualisiert</value>
@@ -1028,9 +968,6 @@
   </data>
   <data name="Videos" xml:space="preserve">
     <value>Videos</value>
-  </data>
-  <data name="content-additional" xml:space="preserve">
-    <value>Zusätzlich</value>
   </data>
   <data name="last" xml:space="preserve">
     <value>Letzte</value>
