@@ -4,5 +4,5 @@ namespace Moonglade.Web.Services;
 
 public interface IGithubUserRepositoriesService
 {
-	Task<List<UserRepository>> GetUserRepositories();
+    Task<List<UserRepository>> GetUserRepositories();
 }
