@@ -1,6 +1,8 @@
-﻿@page "/post/{year:int:min(1900):length(4)}/{month:int:range(1,12)}/{day:int:range(1,31)}/{slug:regex(^(?!-)([a-zA-Z0-9-]){{1,128}}$)}"
+@page "/post/{year:int:min(1900):length(4)}/{month:int:range(1,12)}/{day:int:range(1,31)}/{slug:regex(^(?!-)([a-zA-Z0-9-]){{1,128}}$)}"
 @model Moonglade.Web.Pages.PostModel
+@inject DonationViewService _donationService
 @using Moonglade.Utils
+@using Moonglade.Web.Services
 
 @Html.AntiForgeryToken()
 
@@ -153,6 +155,16 @@
         <partial name="_PostContentRender" model="Model.Post.PostContent" />
     </section>
 
+    @if (BlogConfig.ContentSettings.EnableSharingButtons)
+    {
+	    <hr />
+	    <div class="sharethis-inline-reaction-buttons"></div>
+	    <hr />
+	    <div class="sharethis-inline-share-buttons"></div>
+    }
+	
+    <hr />
+
     @if (BlogConfig.ContentSettings.ShowPostFooter)
     {
         <section class="post-footer clearfix">
@@ -218,6 +230,13 @@
                 break;
         }
     }
+}
+
+@if (BlogConfig.ContentSettings.EnableDonationService)
+{
+	<div class="ad-container" style="margin-top: 30px; text-align: center;">
+		@_donationService.InlineAdd()
+	</div>
 }
 
 <partial name="_LightSwitch" />

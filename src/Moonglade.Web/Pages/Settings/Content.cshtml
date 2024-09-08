@@ -1,4 +1,4 @@
-﻿@page "/admin/settings/content"
+@page "/admin/settings/content"
 @inject IConfiguration Configuration
 
 @section scripts{
@@ -303,35 +303,77 @@
 
                 </div>
                 <div>
-                    <h4 class="admin-subtitle fw-bold mb-2">@SharedLocalizer["Call-out"]</h4>
+	                <h4 class="admin-subtitle fw-bold mb-2">@SharedLocalizer["Call-out"]</h4>
 
-                    <div class="rounded-3 shadow-sm border bg-white mb-2">
-                        <div class="settings-entry2 row align-items-center py-3 px-2">
-                            <div class="col-auto">
-                                <i class="bi-menu-button-wide-fill settings-entry-icon"></i>
-                            </div>
-                            <div class="col">
-                                <label asp-for="@settings.ShowCalloutSection" class="form-check-label"></label>
-                                <div class="form-text">@SharedLocalizer["The call-out section will display on top of every page in the website."]</div>
-                            </div>
-                            <div class="col-md-5 text-end">
-                                <div class="form-check form-switch form-control-lg">
-                                    <input type="hidden" name="ShowCalloutSection" value="false">
-                                    <input type="checkbox" name="ShowCalloutSection" value="true" class="form-check-input" @(settings.ShowCalloutSection ? "checked" : null)>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="border-top py-3 px-2">
-                            <div class="form-floating">
-                                <textarea asp-for="@settings.CalloutSectionHtmlPitch"
+	                <div class="rounded-3 shadow-sm border bg-white mb-2">
+		                <div class="settings-entry2 row align-items-center py-3 px-2">
+			                <div class="col-auto">
+				                <i class="bi-menu-button-wide-fill settings-entry-icon"></i>
+			                </div>
+			                <div class="col">
+				                <label asp-for="@settings.ShowCalloutSection" class="form-check-label"></label>
+				                <div class="form-text">@SharedLocalizer["The call-out section will display on top of every page in the website."]</div>
+			                </div>
+			                <div class="col-md-5 text-end">
+				                <div class="form-check form-switch form-control-lg">
+					                <input type="hidden" name="ShowCalloutSection" value="false">
+					                <input type="checkbox" name="ShowCalloutSection" value="true" class="form-check-input" @(settings.ShowCalloutSection ? "checked" : null)>
+				                </div>
+			                </div>
+		                </div>
+		                <div class="border-top py-3 px-2">
+			                <div class="form-floating">
+				                <textarea asp-for="@settings.CalloutSectionHtmlPitch"
                                           placeholder="@Html.DisplayNameFor(m => settings.CalloutSectionHtmlPitch)"
                                           class="form-control form-control-sm h-100px"
                                           spellcheck="false"></textarea>
-                                <label class="form-label" asp-for="@settings.CalloutSectionHtmlPitch"></label>
-                            </div>
-                        </div>
-                    </div>
+				                <label class="form-label" asp-for="@settings.CalloutSectionHtmlPitch"></label>
+			                </div>
+		                </div>
+	                </div>
                 </div>
+                <div>
+	                <h4 class="admin-subtitle fw-bold mb-2">@SharedLocalizer["content-additional"]</h4>
+	                <div class="settings-entry2 row align-items-center py-3 px-2 rounded-3 shadow-sm border bg-white mb-2">
+		                <div class="col-auto">
+			                <i class="bi-coin settings-entry-icon"></i>
+		                </div>
+		                <div class="col">
+			                <label asp-for="@settings.EnableDonationService" class="form-check-label"></label>
+		                </div>
+		                <div class="col-md-5 text-end">
+			                <div class="form-check form-switch form-control-lg">
+				                <input type="checkbox" name="EnableDonationService" value="true" class="form-check-input" @(settings.EnableDonationService ? "checked" : null)>
+			                </div>
+		                </div>
+	                </div>
+                </div>
+                <div class="settings-entry2 row align-items-center py-3 px-2 rounded-3 shadow-sm border bg-white mb-2">
+	                <div class="col-auto">
+		                <i class="bi-share settings-entry-icon"></i>
+	                </div>
+	                <div class="col">
+		                <label asp-for="@settings.EnableSharingButtons" class="form-check-label"></label>
+	                </div>
+	                <div class="col-md-5 text-end">
+		                <div class="form-check form-switch form-control-lg">
+			                <input type="checkbox" name="EnableSharingButtons" value="true" class="form-check-input" @(settings.EnableSharingButtons ? "checked" : null)>
+		                </div>
+	                </div>
+                </div>
+                <div class="settings-entry2 row align-items-center py-3 px-2 rounded-3 shadow-sm border bg-white mb-2">
+	                <div class="col-auto">
+		                <i class="bi-share settings-entry-icon"></i>
+	                </div>
+	                <div class="col">
+		                <label asp-for="@settings.ShareThisPropertyId" class="form-check-label"></label>
+	                </div>
+	                <div class="col-md-5 text-end">
+		                <div class="form-check form-switch form-control-lg">
+			                <input asp-for="@settings.ShareThisPropertyId" class="form-control" />
+		                </div>
+	                </div>
+	            </div>
             </div>
         </div>
     </div>

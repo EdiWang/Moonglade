@@ -57,4 +57,7 @@
     <ProjectReference Include="..\Moonglade.Theme\Moonglade.Theme.csproj" />
     <ProjectReference Include="..\Moonglade.Webmention\Moonglade.Webmention.csproj" />
   </ItemGroup>
+  <ItemGroup>
+    <Folder Include="Services\" />
+  </ItemGroup>
 </Project>
