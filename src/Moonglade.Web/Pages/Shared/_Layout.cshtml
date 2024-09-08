@@ -1,4 +1,4 @@
-﻿@using Moonglade.Utils
+@using Moonglade.Utils
 @using Microsoft.AspNetCore.Localization
 @using System.Globalization
 @inject IConfiguration Configuration
@@ -25,6 +25,9 @@
             langCode = CultureInfo.CurrentUICulture.ToString().ToLower();
         }
     }
+
+    string shareThisPropertyID = BlogConfig.ContentSettings.ShareThisPropertyId;
+    string shareThis = "https://platform-api.sharethis.com/js/sharethis.js#property=" + shareThisPropertyID + "&product=inline-share-buttons&source=platform";
 }
 <!DOCTYPE html>
 <html lang="@langCode">
@@ -91,11 +94,16 @@
         <link href="~/custom.css" rel="stylesheet" />
     }
     <environment exclude="Production">
-        @inject IWebHostEnvironment WebHostEnvironment
-        <script>
+	    @inject IWebHostEnvironment WebHostEnvironment
+	    <script>
             console.warn('Moonglade is running in @(WebHostEnvironment.EnvironmentName) environment');
         </script>
     </environment>
+	
+    @if (BlogConfig.ContentSettings.EnableSharingButtons)
+    {
+	    <script type="text/javascript" src="@shareThis" async="async"></script>
+    }
 </head>
 <body class="@ViewBag.BodyClass">
     @if (BlogConfig.ContentSettings.ShowCalloutSection)
