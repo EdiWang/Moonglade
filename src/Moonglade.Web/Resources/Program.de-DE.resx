@@ -1,0 +1,1747 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <!-- 
+    Microsoft ResX Schema 
+    
+    Version 2.0
+    
+    The primary goals of this format is to allow a simple XML format 
+    that is mostly human readable. The generation and parsing of the 
+    various data types are done through the TypeConverter classes 
+    associated with the data types.
+    
+    Example:
+    
+    ... ado.net/XML headers & schema ...
+    <resheader name="resmimetype">text/microsoft-resx</resheader>
+    <resheader name="version">2.0</resheader>
+    <resheader name="reader">System.Resources.ResXResourceReader, System.Windows.Forms, ...</resheader>
+    <resheader name="writer">System.Resources.ResXResourceWriter, System.Windows.Forms, ...</resheader>
+    <data name="Name1"><value>this is my long string</value><comment>this is a comment</comment></data>
+    <data name="Color1" type="System.Drawing.Color, System.Drawing">Blue</data>
+    <data name="Bitmap1" mimetype="application/x-microsoft.net.object.binary.base64">
+        <value>[base64 mime encoded serialized .NET Framework object]</value>
+    </data>
+    <data name="Icon1" type="System.Drawing.Icon, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
+        <value>[base64 mime encoded string representing a byte array form of the .NET Framework object]</value>
+        <comment>This is a comment</comment>
+    </data>
+                
+    There are any number of "resheader" rows that contain simple 
+    name/value pairs.
+    
+    Each data row contains a name, and value. The row also contains a 
+    type or mimetype. Type corresponds to a .NET class that support 
+    text/value conversion through the TypeConverter architecture. 
+    Classes that don't support this are serialized and stored with the 
+    mimetype set.
+    
+    The mimetype is used for serialized objects, and tells the 
+    ResXResourceReader how to depersist the object. This is currently not 
+    extensible. For a given mimetype the value must be set accordingly:
+    
+    Note - application/x-microsoft.net.object.binary.base64 is the format 
+    that the ResXResourceWriter will generate, however the reader can 
+    read any of the formats listed below.
+    
+    mimetype: application/x-microsoft.net.object.binary.base64
+    value   : The object must be serialized with 
+            : System.Runtime.Serialization.Formatters.Binary.BinaryFormatter
+            : and then encoded with base64 encoding.
+    
+    mimetype: application/x-microsoft.net.object.soap.base64
+    value   : The object must be serialized with 
+            : System.Runtime.Serialization.Formatters.Soap.SoapFormatter
+            : and then encoded with base64 encoding.
+
+    mimetype: application/x-microsoft.net.object.bytearray.base64
+    value   : The object must be serialized into a byte array 
+            : using a System.ComponentModel.TypeConverter
+            : and then encoded with base64 encoding.
+    -->
+  <xsd:schema id="root" xmlns="" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
+    <xsd:import namespace="http://www.w3.org/XML/1998/namespace" />
+    <xsd:element name="root" msdata:IsDataSet="true">
+      <xsd:complexType>
+        <xsd:choice maxOccurs="unbounded">
+          <xsd:element name="metadata">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" />
+              </xsd:sequence>
+              <xsd:attribute name="name" use="required" type="xsd:string" />
+              <xsd:attribute name="type" type="xsd:string" />
+              <xsd:attribute name="mimetype" type="xsd:string" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="assembly">
+            <xsd:complexType>
+              <xsd:attribute name="alias" type="xsd:string" />
+              <xsd:attribute name="name" type="xsd:string" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="data">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+                <xsd:element name="comment" type="xsd:string" minOccurs="0" msdata:Ordinal="2" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" msdata:Ordinal="1" />
+              <xsd:attribute name="type" type="xsd:string" msdata:Ordinal="3" />
+              <xsd:attribute name="mimetype" type="xsd:string" msdata:Ordinal="4" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="resheader">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" />
+            </xsd:complexType>
+          </xsd:element>
+        </xsd:choice>
+      </xsd:complexType>
+    </xsd:element>
+  </xsd:schema>
+  <resheader name="resmimetype">
+    <value>text/microsoft-resx</value>
+  </resheader>
+  <resheader name="version">
+    <value>2.0</value>
+  </resheader>
+  <resheader name="reader">
+    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <resheader name="writer">
+    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <data name="* Image width and height must be equal" xml:space="preserve">
+    <value>* Bildhöhe und -breite müssen gleich sein</value>
+  </data>
+  <data name="* Requires restarting application" xml:space="preserve">
+    <value>* Erfordert Neustart der Anwendung</value>
+  </data>
+  <data name="* Username: moonglade" xml:space="preserve">
+    <value>* Benutzername: moonglade</value>
+  </data>
+  <data name=".NET Version" xml:space="preserve">
+    <value>.NET Version</value>
+  </data>
+  <data name=".png file" xml:space="preserve">
+    <value>.png Datei</value>
+  </data>
+  <data name=".png or .jpg file" xml:space="preserve">
+    <value>.png oder .jpg Datei</value>
+  </data>
+  <data name="About" xml:space="preserve">
+    <value>Über mich</value>
+  </data>
+  <data name="Abstract" xml:space="preserve">
+    <value>Zusammenfassung</value>
+  </data>
+  <data name="Account Information" xml:space="preserve">
+    <value>Kontoinformationen</value>
+  </data>
+  <data name="Accounts" xml:space="preserve">
+    <value>Konten</value>
+  </data>
+  <data name="Action" xml:space="preserve">
+    <value>Aktion</value>
+  </data>
+  <data name="Admin" xml:space="preserve">
+    <value>Admin</value>
+  </data>
+  <data name="Admin Login" xml:space="preserve">
+    <value>Admin Login</value>
+  </data>
+  <data name="Admin Sign In" xml:space="preserve">
+    <value>Admin einloggen</value>
+  </data>
+  <data name="Advanced" xml:space="preserve">
+    <value>Erweitert</value>
+  </data>
+  <data name="Advanced Settings" xml:space="preserve">
+    <value>Erweiterte Einstellungen</value>
+  </data>
+  <data name="All Posts" xml:space="preserve">
+    <value>Alle Artikel</value>
+  </data>
+  <data name="All Tags" xml:space="preserve">
+    <value>Alle Tags</value>
+  </data>
+  <data name="Allow javascript in pages" xml:space="preserve">
+    <value>JavaScript in Seiten aktivieren</value>
+  </data>
+  <data name="Archive" xml:space="preserve">
+    <value>Archiv</value>
+  </data>
+  <data name="Are you ABSOLUTELY sure? ALL data and configuration will be erased!" xml:space="preserve">
+    <value>Sind sie WIRKLICH sicher? Alle Daten und Konfigurationen werden gelöscht!</value>
+  </data>
+  <data name="Are you sure to restart website? All current requests will be terminated." xml:space="preserve">
+    <value>Möchten Sie die Webseite wirklich neu starten? Alle aktuellen Anfragen werden verworfen.</value>
+  </data>
+  <data name="Are you sure?" xml:space="preserve">
+    <value>Sind Sie sicher?</value>
+  </data>
+  <data name="Author" xml:space="preserve">
+    <value>Autor</value>
+  </data>
+  <data name="Author Name" xml:space="preserve">
+    <value>Autorenname</value>
+  </data>
+  <data name="Auto Light / Dark theme regarding client system settings" xml:space="preserve">
+    <value>Automatisch hell/dunkel schalten, abhängig von den Systemeinstellungen des Benutzers</value>
+  </data>
+  <data name="Admin Email" xml:space="preserve">
+    <value>Admin Email</value>
+  </data>
+  <data name="Block Comment" xml:space="preserve">
+    <value>Blockkommentar</value>
+  </data>
+  <data name="Blocked words" xml:space="preserve">
+    <value>Blockierte Wörter</value>
+  </data>
+  <data name="Blocked words will be masked as *** in comment content." xml:space="preserve">
+    <value>Blockierte Wörter werden im Inhalt mit *** maskiert.</value>
+  </data>
+  <data name="Blog Identity" xml:space="preserve">
+    <value>Blog Identität</value>
+  </data>
+  <data name="Blog posts" xml:space="preserve">
+    <value>Blogartikel</value>
+  </data>
+  <data name="Blog posts will use this time zone as date and time display." xml:space="preserve">
+    <value>Blogartikel nutzen diese Zeitzone als Datum und Zeitangabe.</value>
+  </data>
+  <data name="Blog posts will use this time zone as date display." xml:space="preserve">
+    <value>Blogartikel nutzen diese Zeitzone als Datumsangabe.</value>
+  </data>
+  <data name="Blog title" xml:space="preserve">
+    <value>Blogtitel</value>
+  </data>
+  <data name="Call-out" xml:space="preserve">
+    <value>Call-out</value>
+  </data>
+  <data name="Call-out section HTML code" xml:space="preserve">
+    <value>Call-out HTML Code Sektion</value>
+  </data>
+  <data name="Can't read? Click to change another image." xml:space="preserve">
+    <value>Können Sie es nicht lesen? Probieren Sie eine andere Sprache.</value>
+  </data>
+  <data name="Cancel" xml:space="preserve">
+    <value>Abbrechen</value>
+  </data>
+  <data name="Canonical URL prefix" xml:space="preserve">
+    <value>Canonical URL prefix</value>
+  </data>
+  <data name="Categories" xml:space="preserve">
+    <value>Kategorien</value>
+  </data>
+  <data name="Category Information" xml:space="preserve">
+    <value>Kategorieinformation</value>
+  </data>
+  <data name="Change" xml:space="preserve">
+    <value>Ändern</value>
+  </data>
+  <data name="Change Avatar" xml:space="preserve">
+    <value>Avatar ändern</value>
+  </data>
+  <data name="Change Publish Date" xml:space="preserve">
+    <value>Veröffentlichungsdatum änden</value>
+  </data>
+  <data name="Change Site Icon" xml:space="preserve">
+    <value>Seiten Favicon ändern</value>
+  </data>
+  <data name="Changing publish date will modify the URL of the post, and may cause unexpected results like breaking links on third parties that were pointing to this post. Please check the checkbox below if you confirm." xml:space="preserve">
+    <value>Das Veröffentlichungsdatum zu ändern wird die URL, unter der der Artkel verfügbar ist, ändern. Ausserdem kann es zu unerwarteten Problemen, wie nicht funktionierende Links an dritter Stelle. Bitte betätigen Sie die Checkbox um zu bestätigen.</value>
+  </data>
+  <data name="Check now" xml:space="preserve">
+    <value>Jetzt prüfen</value>
+  </data>
+  <data name="Check online for new Moonglade release." xml:space="preserve">
+    <value>Prüfen auf neu Moonglade-Releases</value>
+  </data>
+  <data name="Clear all" xml:space="preserve">
+    <value>Alles löschen</value>
+  </data>
+  <data name="Clear Now" xml:space="preserve">
+    <value>Jetzt löschen</value>
+  </data>
+  <data name="Clear Pingback Logs" xml:space="preserve">
+    <value>Pingback-Logs löschen</value>
+  </data>
+  <data name="Close" xml:space="preserve">
+    <value>Schliessen</value>
+  </data>
+  <data name="Comment is disabled by blog administrator." xml:space="preserve">
+    <value>Kommentarfunktion wurde vom Blog Administrator ausgeschaltet.</value>
+  </data>
+  <data name="Comment of this post is disabled." xml:space="preserve">
+    <value>Kommentare für diesen Artikel ausgeschaltet.</value>
+  </data>
+  <data name="Comments" xml:space="preserve">
+    <value>Kommentare</value>
+  </data>
+  <data name="Comments require review and approval" xml:space="preserve">
+    <value>Kommentare bedürfen Kontrolle und Annahme durch den Admin.</value>
+  </data>
+  <data name="Content" xml:space="preserve">
+    <value>Inhalt</value>
+  </data>
+  <data name="Continue" xml:space="preserve">
+    <value>Fortfahren</value>
+  </data>
+  <data name="Copyright" xml:space="preserve">
+    <value>Copyright</value>
+  </data>
+  <data name="Create" xml:space="preserve">
+    <value>Erstellen</value>
+  </data>
+  <data name="Create Tag" xml:space="preserve">
+    <value>Tag erstellen</value>
+  </data>
+  <data name="Create Time (UTC)" xml:space="preserve">
+    <value>Erstelle Zeit (UTC)</value>
+  </data>
+  <data name="Current Endpoint:" xml:space="preserve">
+    <value>Aktueller Endpunkt：</value>
+  </data>
+  <data name="Custom CSS" xml:space="preserve">
+    <value>Benutzerdefiniertes CSS</value>
+  </data>
+  <data name="Custom Theme" xml:space="preserve">
+    <value>Benutzerdefiniertes Theme</value>
+  </data>
+  <data name="Data Directory" xml:space="preserve">
+    <value>Datenverzeichnis</value>
+  </data>
+  <data name="Delete" xml:space="preserve">
+    <value>Löschen</value>
+  </data>
+  <data name="Delete cached objects both in memory and on disk" xml:space="preserve">
+    <value>Löschen von Objekten (cached) im Speicher und auf der Festplatte</value>
+  </data>
+  <data name="Delete selected" xml:space="preserve">
+    <value>Ausgewählte löschen</value>
+  </data>
+  <data name="Description" xml:space="preserve">
+    <value>Beschreibung</value>
+  </data>
+  <data name="Directory" xml:space="preserve">
+    <value>Verzeichnis</value>
+  </data>
+  <data name="Disabled" xml:space="preserve">
+    <value>Ausgeschaltet</value>
+  </data>
+  <data name="Display Name" xml:space="preserve">
+    <value>Anzeige Name</value>
+  </data>
+  <data name="Display Order" xml:space="preserve">
+    <value>Anzeige Reihenfolge</value>
+  </data>
+  <data name="Docker Container" xml:space="preserve">
+    <value>Docker Container</value>
+  </data>
+  <data name="Drafts" xml:space="preserve">
+    <value>Entwürfe</value>
+  </data>
+  <data name="Drag and drop image file here" xml:space="preserve">
+    <value>Ziehen Sie eine Bilddatei hierhin</value>
+  </data>
+  <data name="e.g. https://blog.ediwangcdn.com/ediwang-images" xml:space="preserve">
+    <value>z.B. https://blog.ediwangcdn.com/ediwang-images</value>
+  </data>
+  <data name="e.g. Your blog post license information." xml:space="preserve">
+    <value>z.B. Ihre Artikel Lizenzinformation.</value>
+  </data>
+  <data name="Edit on" xml:space="preserve">
+    <value>Bearbeitet am</value>
+  </data>
+  <data name="Editor" xml:space="preserve">
+    <value>Bearbietet</value>
+  </data>
+  <data name="Email address to receive notifications from this blog." xml:space="preserve">
+    <value>Emailadresse zum Empfang von Benachrichtigungen von diesem Blog.</value>
+  </data>
+  <data name="Email Options" xml:space="preserve">
+    <value>Emailoptionen</value>
+  </data>
+  <data name="Empty Recycle Bin" xml:space="preserve">
+    <value>Papierkorb leeren.</value>
+  </data>
+  <data name="Enable CDN for images" xml:space="preserve">
+    <value>CDN für Bilder aktivieren</value>
+  </data>
+  <data name="Enable Comment" xml:space="preserve">
+    <value>Kommentar einschalten</value>
+  </data>
+  <data name="Enable comments" xml:space="preserve">
+    <value>Kommentare einschalten</value>
+  </data>
+  <data name="Enable Custom CSS" xml:space="preserve">
+    <value>Benutzerdefiniertes CSS einschalten</value>
+  </data>
+  <data name="Enable email sending" xml:space="preserve">
+    <value>Emailversand einschalten</value>
+  </data>
+  <data name="Enable Gravatar in comment list" xml:space="preserve">
+    <value>Gravatar für Kommentarliste einschalten</value>
+  </data>
+  <data name="Enable MetaWeblog API" xml:space="preserve">
+    <value>MetaWeblog API einschalten</value>
+  </data>
+  <data name="Enable OpenSearch" xml:space="preserve">
+    <value>OpenSearch einschalten</value>
+  </data>
+  <data name="Enable FOAF" xml:space="preserve">
+    <value>FOAF einschalten</value>
+  </data>
+  <data name="Enable Pingback receive" xml:space="preserve">
+    <value>Pingback-Empfang einschalten</value>
+  </data>
+  <data name="Enable Pingback send" xml:space="preserve">
+    <value>Pingback-Versand einschalten</value>
+  </data>
+  <data name="Enable Site Map" xml:space="preserve">
+    <value>SiteMap einschalten</value>
+  </data>
+  <data name="Enable word filter" xml:space="preserve">
+    <value>Wortfilter aktivieren</value>
+  </data>
+  <data name="Enabled watermark" xml:space="preserve">
+    <value>Wasserzeichen aktivieren</value>
+  </data>
+  <data name="Endpoint" xml:space="preserve">
+    <value>CDN Endpunkt</value>
+  </data>
+  <data name="Environment" xml:space="preserve">
+    <value>Umgebung</value>
+  </data>
+  <data name="Erase all data and configuration." xml:space="preserve">
+    <value>Alle Daten und Konfigurationen löschen.</value>
+  </data>
+  <data name="Export Data" xml:space="preserve">
+    <value>Daten exportieren</value>
+  </data>
+  <data name="Featured" xml:space="preserve">
+    <value>Vorgestellt</value>
+  </data>
+  <data name="Featured Posts" xml:space="preserve">
+    <value>Vorgestellte Artikel</value>
+  </data>
+  <data name="Feed Subscription" xml:space="preserve">
+    <value>Feed Abonnement</value>
+  </data>
+  <data name="Fit image to device pixel ratio" xml:space="preserve">
+    <value>Bild an das Pixelverhältnis des Geräts anpassen</value>
+  </data>
+  <data name="Font size" xml:space="preserve">
+    <value>Schriftgröße</value>
+  </data>
+  <data name="Footer" xml:space="preserve">
+    <value>Fussbereich</value>
+  </data>
+  <data name="Footer HTML code" xml:space="preserve">
+    <value>Fussbereich HTML Code</value>
+  </data>
+  <data name="Friend Link Information" xml:space="preserve">
+    <value>FriendLink Information</value>
+  </data>
+  <data name="Friend Link Options" xml:space="preserve">
+    <value>FriendLink Optionen</value>
+  </data>
+  <data name="Friend Links" xml:space="preserve">
+    <value>Friend Links</value>
+  </data>
+  <data name="General" xml:space="preserve">
+    <value>Allgemein</value>
+  </data>
+  <data name="Generate password" xml:space="preserve">
+    <value>Passwort erstellen</value>
+  </data>
+  <data name="Get update" xml:space="preserve">
+    <value>Aktualisieren</value>
+  </data>
+  <data name="Hide Sidebar" xml:space="preserve">
+    <value>Seitenleiste verstecken</value>
+  </data>
+  <data name="Home" xml:space="preserve">
+    <value>Start</value>
+  </data>
+  <data name="How many tags show on sidebar" xml:space="preserve">
+    <value>Wieviele Tags auf Seitenleiste anzeigen</value>
+  </data>
+  <data name="HTML Pitch" xml:space="preserve">
+    <value>HTML Platz</value>
+  </data>
+  <data name="Icon" xml:space="preserve">
+    <value>Icon</value>
+  </data>
+  <data name="Icon CSS Class" xml:space="preserve">
+    <value>CSS Klasse des Icons</value>
+  </data>
+  <data name="Image" xml:space="preserve">
+    <value>Bild</value>
+  </data>
+  <data name="Inline CSS" xml:space="preserve">
+    <value>Eingebettetes CSS</value>
+  </data>
+  <data name="Insights" xml:space="preserve">
+    <value>Einsichten</value>
+  </data>
+  <data name="Invalid Icon CSS Class" xml:space="preserve">
+    <value>Falsche Icon CSS-Klasse</value>
+  </data>
+  <data name="It will show up once blog administrator approved your comment." xml:space="preserve">
+    <value>Es wird nach der Bestätigung des Administrators veröffentlicht.</value>
+  </data>
+  <data name="Keep origin image" xml:space="preserve">
+    <value>Behalte Herkunftsbild</value>
+  </data>
+  <data name="Language" xml:space="preserve">
+    <value>Sprache</value>
+  </data>
+  <data name="Last Login IP" xml:space="preserve">
+    <value>Letzte Login IP</value>
+  </data>
+  <data name="Last Login Time (UTC)" xml:space="preserve">
+    <value>Letzte Loginzeit (UTC)</value>
+  </data>
+  <data name="Latest Posts" xml:space="preserve">
+    <value>Letzte Artikel</value>
+  </data>
+  <data name="Left" xml:space="preserve">
+    <value>Links</value>
+  </data>
+  <data name="Link" xml:space="preserve">
+    <value>Link</value>
+  </data>
+  <data name="Logo text" xml:space="preserve">
+    <value>Logo Text</value>
+  </data>
+  <data name="Machine Name" xml:space="preserve">
+    <value>Maschinenname</value>
+  </data>
+  <data name="Mask Word" xml:space="preserve">
+    <value>Wort maskieren</value>
+  </data>
+  <data name="Memory" xml:space="preserve">
+    <value>Speicher</value>
+  </data>
+  <data name="Menu Editor" xml:space="preserve">
+    <value>Menü Editor</value>
+  </data>
+  <data name="Menus" xml:space="preserve">
+    <value>Menüs</value>
+  </data>
+  <data name="Meta keyword" xml:space="preserve">
+    <value>Meta keyword</value>
+  </data>
+  <data name="MetaWeblog password" xml:space="preserve">
+    <value>MetaWeblog Passwort</value>
+  </data>
+  <data name="Moonglade Configuration" xml:space="preserve">
+    <value>Moonglade Konfiguration</value>
+  </data>
+  <data name="Moonglade Update" xml:space="preserve">
+    <value>Moonglade Update</value>
+  </data>
+  <data name="Name" xml:space="preserve">
+    <value>Name</value>
+  </data>
+  <data name="New" xml:space="preserve">
+    <value>Neu</value>
+  </data>
+  <data name="No Archive" xml:space="preserve">
+    <value>Kein Archiv</value>
+  </data>
+  <data name="No Comments" xml:space="preserve">
+    <value>Keine Kommentare</value>
+  </data>
+  <data name="No Customized Menus" xml:space="preserve">
+    <value>Keine benutzerdefinierten Menüs</value>
+  </data>
+  <data name="no items to show" xml:space="preserve">
+    <value>keine Artikel</value>
+  </data>
+  <data name="No Matching Result" xml:space="preserve">
+    <value>Kein passendes Ergebnis</value>
+  </data>
+  <data name="No Pages" xml:space="preserve">
+    <value>Keine Seiten</value>
+  </data>
+  <data name="No Posts" xml:space="preserve">
+    <value>Keine Artikel</value>
+  </data>
+  <data name="No Posts Found" xml:space="preserve">
+    <value>Keine Artikel gefunden</value>
+  </data>
+  <data name="No Tags" xml:space="preserve">
+    <value>Keine Tags</value>
+  </data>
+  <data name="Notification" xml:space="preserve">
+    <value>Benachrichtigung</value>
+  </data>
+  <data name="Notification Options" xml:space="preserve">
+    <value>Benachrichtigungsoptionen</value>
+  </data>
+  <data name="Only letters, numbers, - and [] are allowed." xml:space="preserve">
+    <value>Nur Buchstaben, Zahlen und [] erlaubt.</value>
+  </data>
+  <data name="Only lower case letters and hyphens are allowed." xml:space="preserve">
+    <value>Nur kleingeschriebene Buchstaben und Bindestriche erlaubt.</value>
+  </data>
+  <data name="Open in New Tab" xml:space="preserve">
+    <value>In neuem Tab öffnen</value>
+  </data>
+  <data name="Options" xml:space="preserve">
+    <value>Optionen</value>
+  </data>
+  <data name="or override with environment variables." xml:space="preserve">
+    <value>oder mit Umgebungsvariablen überschreiben.</value>
+  </data>
+  <data name="Order" xml:space="preserve">
+    <value>Sortieren</value>
+  </data>
+  <data name="Origin Link" xml:space="preserve">
+    <value>Original-Link</value>
+  </data>
+  <data name="Original" xml:space="preserve">
+    <value>Original</value>
+  </data>
+  <data name="Owner email" xml:space="preserve">
+    <value>Benutzeremail</value>
+  </data>
+  <data name="Pages" xml:space="preserve">
+    <value>Seiten</value>
+  </data>
+  <data name="Password" xml:space="preserve">
+    <value>Passwort</value>
+  </data>
+  <data name="Pingbacks" xml:space="preserve">
+    <value>Pingbacks</value>
+  </data>
+  <data name="Post footer HTML code" xml:space="preserve">
+    <value>Artikelfußzeilen-HTML</value>
+  </data>
+  <data name="Post list page size" xml:space="preserve">
+    <value>Artikellisten Seitengröße</value>
+  </data>
+  <data name="Posts" xml:space="preserve">
+    <value>Artkel</value>
+  </data>
+  <data name="Preview" xml:space="preserve">
+    <value>Vorschau</value>
+  </data>
+  <data name="Processing..." xml:space="preserve">
+    <value>Verarbeiten……</value>
+  </data>
+  <data name="Providing your email address can enable blog admin to send notifications for replying your comment. Your email address will also be used to show Gravatar if it has one." xml:space="preserve">
+    <value>Die Angabe Ihrer E-Mail-Adresse ermöglicht es dem Blog-Administrator, Benachrichtigungen für die Beantwortung Ihres Kommentars zu senden. Ihre E-Mail-Adresse wird auch verwendet, um Gravatar anzuzeigen, wenn Sie einen haben.</value>
+  </data>
+  <data name="Publish" xml:space="preserve">
+    <value>Veröffentlichen</value>
+  </data>
+  <data name="Publish Date" xml:space="preserve">
+    <value>Veröffentlichungsdatum</value>
+  </data>
+  <data name="Publish Now" xml:space="preserve">
+    <value>Jetzt Veröffentlichen</value>
+  </data>
+  <data name="Published" xml:space="preserve">
+    <value>Veröffentlicht</value>
+  </data>
+  <data name="Read origin article" xml:space="preserve">
+    <value>Dieser Artikel ist eine Bearbeitung eines anderen Artikels. Lies den Originalartikel hier.</value>
+  </data>
+  <data name="Reads" xml:space="preserve">
+    <value>Gelesen</value>
+  </data>
+  <data name="Recycle Bin" xml:space="preserve">
+    <value>Papierkorb</value>
+  </data>
+  <data name="Refresh the page to see your comment." xml:space="preserve">
+    <value>Aktualisieren Sie die Seite um Ihren Kommentar anzuzeigen.</value>
+  </data>
+  <data name="Release time" xml:space="preserve">
+    <value>Release-Zeit</value>
+  </data>
+  <data name="Replied at" xml:space="preserve">
+    <value>Gantwortet am</value>
+  </data>
+  <data name="Reply" xml:space="preserve">
+    <value>Antworten</value>
+  </data>
+  <data name="Reset" xml:space="preserve">
+    <value>Zurücksetzen</value>
+  </data>
+  <data name="Reset Password" xml:space="preserve">
+    <value>Passwort zurücksetzen</value>
+  </data>
+  <data name="Restart" xml:space="preserve">
+    <value>Neustart</value>
+  </data>
+  <data name="Restart Website" xml:space="preserve">
+    <value>Webseite neu starten</value>
+  </data>
+  <data name="Restore" xml:space="preserve">
+    <value>Wiederherstellen</value>
+  </data>
+  <data name="Right" xml:space="preserve">
+    <value>Rechts</value>
+  </data>
+  <data name="Route Name" xml:space="preserve">
+    <value>Routenname</value>
+  </data>
+  <data name="RSS Items" xml:space="preserve">
+    <value>RSS Artikel</value>
+  </data>
+  <data name="Save" xml:space="preserve">
+    <value>Speichern</value>
+  </data>
+  <data name="Scan QR Code on your phone" xml:space="preserve">
+    <value>Scanne den QR Code auf ihrem Telefon</value>
+  </data>
+  <data name="Search" xml:space="preserve">
+    <value>Suchen</value>
+  </data>
+  <data name="Search Result" xml:space="preserve">
+    <value>Suchergebnis</value>
+  </data>
+  <data name="Security Settings" xml:space="preserve">
+    <value>Sicherheitseinstellungen</value>
+  </data>
+  <data name="Send email on comment reply" xml:space="preserve">
+    <value>Sende Email nach Kommentarantwort</value>
+  </data>
+  <data name="Send email on new comment" xml:space="preserve">
+    <value>Sende Email nach neuem Kommentar</value>
+  </data>
+  <data name="Send Test Email" xml:space="preserve">
+    <value>Sende Testmail</value>
+  </data>
+  <data name="Server Information" xml:space="preserve">
+    <value>Serverinformation</value>
+  </data>
+  <data name="Set a primary domain if your website binds to multiple domian names." xml:space="preserve">
+    <value>Legen Sie eine primäre Domäne fest, wenn Ihre Website an mehrere Domänennamen gebunden ist.</value>
+  </data>
+  <data name="Short description" xml:space="preserve">
+    <value>Kurzbeschreibung</value>
+  </data>
+  <data name="Short description is for display only on Phone screen." xml:space="preserve">
+    <value>Kurzbeschreibung wird nur auf dem Telefonbildschirm angezeigt.</value>
+  </data>
+  <data name="Show Admin login button under sidebar" xml:space="preserve">
+    <value>Admin Login-Button unter der Seitenleiste anzeigen</value>
+  </data>
+  <data name="Show call-out section" xml:space="preserve">
+    <value>Call-Out section anzeigen</value>
+  </data>
+  <data name="Show customize footer on each post" xml:space="preserve">
+    <value>Die benutzerdefinierte Fusszeile nach jedem Artikel anzeigen</value>
+  </data>
+  <data name="Show warning when clicking external links" xml:space="preserve">
+    <value>Warnung bei Benutzung externer Links anzeigen</value>
+  </data>
+  <data name="Side Bar" xml:space="preserve">
+    <value>Seitenleiste</value>
+  </data>
+  <data name="Side bar display" xml:space="preserve">
+    <value>Seitenleiste anzeigen</value>
+  </data>
+  <data name="Side bar HTML code" xml:space="preserve">
+    <value>HTML Code für Seitenleiste</value>
+  </data>
+  <data name="Sign In" xml:space="preserve">
+    <value>Einloggen</value>
+  </data>
+  <data name="Site Icon Files" xml:space="preserve">
+    <value>Seiten Icondateien</value>
+  </data>
+  <data name="Start Time" xml:space="preserve">
+    <value>Startzeit</value>
+  </data>
+  <data name="Sub Menu" xml:space="preserve">
+    <value>Untermenü</value>
+  </data>
+  <data name="Sub Menu Properties" xml:space="preserve">
+    <value>Untermenüeigenschaften</value>
+  </data>
+  <data name="Submit" xml:space="preserve">
+    <value>Übermitteln</value>
+  </data>
+  <data name="Subscribe Recent 20 Posts" xml:space="preserve">
+    <value>Abonniere letzte 20 Artikel</value>
+  </data>
+  <data name="Subscription" xml:space="preserve">
+    <value>Abonnements</value>
+  </data>
+  <data name="System" xml:space="preserve">
+    <value>System</value>
+  </data>
+  <data name="System Reset" xml:space="preserve">
+    <value>System zurücksetzen</value>
+  </data>
+  <data name="Tag name" xml:space="preserve">
+    <value>Tagname</value>
+  </data>
+  <data name="Tags" xml:space="preserve">
+    <value>Tags</value>
+  </data>
+  <data name="Thanks for your comment." xml:space="preserve">
+    <value>Danke für deinen Kommentar.</value>
+  </data>
+  <data name="Thanks, your comment is pending approval now." xml:space="preserve">
+    <value>Danke, dein Kommentar wartet auf Freigabe.</value>
+  </data>
+  <data name="The call-out section will display on top of every page in the website." xml:space="preserve">
+    <value>Die Call-Out Sektion wird oben auf jeder Seite angezeigt.</value>
+  </data>
+  <data name="The first {0} character(s) will be used as abstract if you leave this field blank." xml:space="preserve">
+    <value>Die ersten {0} Zeichen werden benutzt, wenn Sie dieses Feld leer lassen.</value>
+  </data>
+  <data name="The number of entries to include in RSS feed." xml:space="preserve">
+    <value>Anzahl RSS Artikel in diesem feed.</value>
+  </data>
+  <data name="Theme" xml:space="preserve">
+    <value>Theme</value>
+  </data>
+  <data name="This field is required." xml:space="preserve">
+    <value>Dieses Feld ist erforderlich.</value>
+  </data>
+  <data name="This is a preview for draft content." xml:space="preserve">
+    <value>DIes ist eine Vorschau für Inhalte im Entwurfsmodus.</value>
+  </data>
+  <data name="Time Zone" xml:space="preserve">
+    <value>Zeitzone</value>
+  </data>
+  <data name="Title" xml:space="preserve">
+    <value>Titel</value>
+  </data>
+  <data name="To turn on / off system navigation items (Categories / Tags / Archive), edit" xml:space="preserve">
+    <value>Bearbeiten um Systemnavigationspunkte (Kategorien / Tags / Archiv) ein- oder auszuschalten</value>
+  </data>
+  <data name="Top 10 Commented Posts / Past Year" xml:space="preserve">
+    <value>Top 10 kommentierte Artikel / Letztes Jahr</value>
+  </data>
+  <data name="Top 10 Read Posts / Past Year" xml:space="preserve">
+    <value>Top 10 gelesene Artikel / Letztes Jahr</value>
+  </data>
+  <data name="Top Level" xml:space="preserve">
+    <value>Toplevel</value>
+  </data>
+  <data name="Top Menu Properties" xml:space="preserve">
+    <value>Top Menüeigenschaften</value>
+  </data>
+  <data name="Try to shutdown and restart the website, this will terminate all current requests." xml:space="preserve">
+    <value>Versuchen Sie, die Website herunterzufahren und neu zu starten; dadurch werden alle laufenden Anfragen beendet.</value>
+  </data>
+  <data name="Update" xml:space="preserve">
+    <value>Aktualisieren</value>
+  </data>
+  <data name="Upload" xml:space="preserve">
+    <value>Hochladen</value>
+  </data>
+  <data name="Upload Image" xml:space="preserve">
+    <value>Bild hochladen</value>
+  </data>
+  <data name="URL" xml:space="preserve">
+    <value>URL</value>
+  </data>
+  <data name="Url (Relative or Absolute)" xml:space="preserve">
+    <value>Url (relativ oder absolut)</value>
+  </data>
+  <data name="Use friendly 404 image" xml:space="preserve">
+    <value>Benutzen Sie ein nettes 404 Bild.</value>
+  </data>
+  <data name="Use full blog post content instead of abstract" xml:space="preserve">
+    <value>Benutze den vollständigen Artikel, statt einer Zusammenfassung</value>
+  </data>
+  <data name="Use [c] for copyright mark: &amp;copy;, [year] for current year." xml:space="preserve">
+    <value>Benutzen Sie [c] für das Copyrightzeichen &amp;copy; und [year] für das aktuelle Jahr.</value>
+  </data>
+  <data name="User Account" xml:space="preserve">
+    <value>Benutzerkonto</value>
+  </data>
+  <data name="User Name" xml:space="preserve">
+    <value>Benutzername</value>
+  </data>
+  <data name="Username" xml:space="preserve">
+    <value>Benutzername</value>
+  </data>
+  <data name="Version" xml:space="preserve">
+    <value>Version</value>
+  </data>
+  <data name="Watermark" xml:space="preserve">
+    <value>Wasserzeichen</value>
+  </data>
+  <data name="Watermark text" xml:space="preserve">
+    <value>Wasserzeichentext</value>
+  </data>
+  <data name="Word filter mode" xml:space="preserve">
+    <value>Wortfiltermodus</value>
+  </data>
+  <data name="Worker Process" xml:space="preserve">
+    <value>Worker-Prozess</value>
+  </data>
+  <data name="Your comments (Markdown supported)" xml:space="preserve">
+    <value>Ihre Kommentare (Markdown wird unterstützt)</value>
+  </data>
+  <data name="Your description" xml:space="preserve">
+    <value>Ihre Beschreibung</value>
+  </data>
+  <data name="Your name" xml:space="preserve">
+    <value>Ihr Name</value>
+  </data>
+  <data name="Center" xml:space="preserve">
+    <value>Zentrieren</value>
+  </data>
+  <data name="Export" xml:space="preserve">
+    <value>Exportieren</value>
+  </data>
+  <data name="Site Verification" xml:space="preserve">
+    <value>Seitenverifizierung</value>
+  </data>
+  <data name="Social Profiles" xml:space="preserve">
+    <value>Soziale Profile</value>
+  </data>
+  <data name="Minute" xml:space="preserve">
+    <value>Minute</value>
+  </data>
+  <data name="Minutes" xml:space="preserve">
+    <value>Minuten</value>
+  </data>
+  <data name="Second" xml:space="preserve">
+    <value>Sekunde</value>
+  </data>
+  <data name="Seconds" xml:space="preserve">
+    <value>Sekunden</value>
+  </data>
+  <data name="Syncfusion License" xml:space="preserve">
+    <value>Syncfusion Lizenz</value>
+  </data>
+  <data name="Syncfusion Version" xml:space="preserve">
+    <value>Syncfusion Version</value>
+  </data>
+  <data name="Github PAT" xml:space="preserve">
+    <value>Github PAT</value>
+  </data>
+  <data name="Donations" xml:space="preserve">
+    <value>Spenden</value>
+  </data>
+  <data name="Donation Service" xml:space="preserve">
+    <value>Spendendienst</value>
+  </data>
+  <data name="This service adds the available donation services on the end of a blog post." xml:space="preserve">
+    <value>Dieser Dienst fügt deine angegebenen Spendenmöglichkeiten einem Blogpost hinzu.</value>
+  </data>
+  <data name="Enable Sharing buttons" xml:space="preserve">
+    <value>Sharing Knöpfe hinzufügen</value>
+  </data>
+  <data name="Now playing" xml:space="preserve">
+    <value>Jetzt höre ich</value>
+  </data>
+  <data name="coat-of-arms-title" xml:space="preserve">
+    <value></value>
+  </data>
+  <data name="connect-header" xml:space="preserve">
+    <value></value>
+  </data>
+  <data name="intro" xml:space="preserve">
+    <value>Letzte Aktivitäten</value>
+  </data>
+  <data name="opensource" xml:space="preserve">
+    <value></value>
+  </data>
+  <data name="Me and the blog" xml:space="preserve">
+    <value>Mein Blog und ich</value>
+  </data>
+  <data name="publications" xml:space="preserve">
+    <value></value>
+  </data>
+  <data name="about-intro" xml:space="preserve">
+    <value>Sascha Manns ist ein deutscher Softwareentwickler (C#, Linux) und Buchautor. Er arbeitete in der openSUSE-Community
+als Packager, Redakteur des wöchentlichen Newsletters und innerhalb des Membership Application Teams. Er durfte zeitweise and der "Balsam Professional" Distribution, einem openSUSE Derivat, in der Handbucherstellung und dem Produktsupport mit. Nach der Beendigung eines Studiums zum Fachinformatiker in der Anwendungsentwicklung stieg er in die C#-Entwicklung ein, und beschäftigte sich mit verschiedenen Themen, wie: Windows Presentation Foundation, Entity Framework, WinUI3, Web API, Web App, und anderem.</value>
+  </data>
+  <data name="about-publications" xml:space="preserve">
+    <value>Publikationen</value>
+  </data>
+  <data name="about-opensource" xml:space="preserve">
+    <value>Einige meiner Open Source Projekte</value>
+  </data>
+  <data name="about-connect" xml:space="preserve">
+    <value>Lassen Sie uns verbinden</value>
+  </data>
+  <data name="about-coat-of-arms" xml:space="preserve">
+    <value>Gräfliches Haus Manns-Potocki</value>
+  </data>
+  <data name="about-last-updated" xml:space="preserve">
+    <value>Zuletzt aktualisiert</value>
+  </data>
+  <data name="about-publisher-published" xml:space="preserve">
+    <value>Veröffentlicht</value>
+  </data>
+  <data name="contact-enter-name" xml:space="preserve">
+    <value>* Tragen Sie ihren Namen ein</value>
+  </data>
+  <data name="contact-enter-subject" xml:space="preserve">
+    <value>* Tragen Sie den Betreff ein</value>
+  </data>
+  <data name="contact-subject" xml:space="preserve">
+    <value>Betreff</value>
+  </data>
+  <data name="contact-enter-email" xml:space="preserve">
+    <value>* Tragen Sie eine valide Email ein</value>
+  </data>
+  <data name="contact-email" xml:space="preserve">
+    <value>Email</value>
+  </data>
+  <data name="contact-enter-body" xml:space="preserve">
+    <value>* Tragen Sie Ihre Nachricht ein</value>
+  </data>
+  <data name="contact-message" xml:space="preserve">
+    <value>Nachricht</value>
+  </data>
+  <data name="contact-submit" xml:space="preserve">
+    <value>Übermitteln</value>
+  </data>
+  <data name="cv-about-experience" xml:space="preserve">
+    <value>Erfahrung</value>
+  </data>
+  <data name="activity-title" xml:space="preserve">
+    <value>Meine Programmieraktivitäten (Nur öffentliche Github Repos, letztes Jahr)</value>
+  </data>
+  <data name="activity-last30" xml:space="preserve">
+    <value>Benutzte Programmiersprachen der letzten 30 Tage</value>
+  </data>
+  <data name="activity-all" xml:space="preserve">
+    <value>Meine gesamten Programmieraktivitäten (letztes Jahr)</value>
+  </data>
+  <data name="about-year1" xml:space="preserve">
+    <value>Jahre</value>
+  </data>
+  <data name="about-year" xml:space="preserve">
+    <value>jähriger</value>
+  </data>
+  <data name="about-program" xml:space="preserve">
+    <value>Ich liebe es zu Programmieren oder Workflows in Lösungen umzusetzen.</value>
+  </data>
+  <data name="about-other-skills" xml:space="preserve">
+    <value>Andere Fähigkeiten:</value>
+  </data>
+  <data name="about-name" xml:space="preserve">
+    <value>Mein Name ist</value>
+  </data>
+  <data name="about-jobs" xml:space="preserve">
+    <value>Ich bin ein </value>
+  </data>
+  <data name="portfolio-title" xml:space="preserve">
+    <value>Mein Portfolio</value>
+  </data>
+  <data name="about-experience" xml:space="preserve">
+    <value>Erfahrung</value>
+  </data>
+  <data name="education-title" xml:space="preserve">
+    <value>Aus- &amp; Weiterbildung</value>
+  </data>
+  <data name="experience-cert-employment" xml:space="preserve">
+    <value>Arbeitszeugnis</value>
+  </data>
+  <data name="experience-certs" xml:space="preserve">
+    <value>Zertifikate</value>
+  </data>
+  <data name="experience-content" xml:space="preserve">
+    <value>Inhalte</value>
+  </data>
+  <data name="experience-downloadcv" xml:space="preserve">
+    <value>Download CV</value>
+  </data>
+  <data name="experience-header" xml:space="preserve">
+    <value>Berufserfahrung</value>
+  </data>
+  <data name="experience-header1" xml:space="preserve">
+    <value>Aus &amp;amp; Weiterbildungen</value>
+  </data>
+  <data name="jobs-title" xml:space="preserve">
+    <value>Bisherige berufliche Stationen</value>
+  </data>
+  <data name="last" xml:space="preserve">
+    <value>Letzte</value>
+  </data>
+  <data name="masterhead-lead" xml:space="preserve">
+    <value>Willkommen zu meinem Lebenslauf</value>
+  </data>
+  <data name="project-2-blurp" xml:space="preserve">
+    <value>Ein Hilfsprogramm um mittels LaTEX eine Bewerbung zu schreiben und den Status aller gesendeten zu verwalten.</value>
+  </data>
+  <data name="projects" xml:space="preserve">
+    <value>Projekte</value>
+  </data>
+  <data name="projects-1-blurp" xml:space="preserve">
+    <value>Diese Webseite</value>
+  </data>
+  <data name="services-app" xml:space="preserve">
+    <value>App-Entwicklung</value>
+  </data>
+  <data name="services-app-blurp" xml:space="preserve">
+    <value>Mittels moderner Frameworks, wie .NET, Angular und anderen, setze ich Ihre Workflows in plattformunabhängige Apps um.</value>
+  </data>
+  <data name="services-architect" xml:space="preserve">
+    <value>Softwarearchitektur</value>
+  </data>
+  <data name="services-architect-blurp" xml:space="preserve">
+    <value>Als Softwarearchitekt sorge ich dafür, das vorhandener Code wartbar und portierbar bleibt und somit fit für Ihre Firmenzukunft.</value>
+  </data>
+  <data name="services-my" xml:space="preserve">
+    <value>Meine</value>
+  </data>
+  <data name="services-specialization" xml:space="preserve">
+    <value>Spezialisierungen</value>
+  </data>
+  <data name="services-web" xml:space="preserve">
+    <value>Web-Entwicklung</value>
+  </data>
+  <data name="services-web-blurp" xml:space="preserve">
+    <value>Ihre Webseiten erstelle ich mittels Technologien, wie ASP .NET, PHP, Angular oder Vue.js.</value>
+  </data>
+  <data name="skills-title" xml:space="preserve">
+    <value>Erfahrungen</value>
+  </data>
+  <data name="testimonials" xml:space="preserve">
+    <value>Letzte</value>
+  </data>
+  <data name="testimonial-testimonials" xml:space="preserve">
+    <value>Empfehlungen</value>
+  </data>
+  <data name="viewbag-pageblurp" xml:space="preserve">
+    <value>Eine Sammlung meiner gehaltenen Vorträge</value>
+  </data>
+  <data name="viewbag-pagename" xml:space="preserve">
+    <value>Meine Vorträge</value>
+  </data>
+  <data name="viewbag-title" xml:space="preserve">
+    <value>Meine Vorträge - Sascha Manns's Twilight Zone</value>
+  </data>
+  <data name="write-me" xml:space="preserve">
+    <value>Schreiben Sie mir</value>
+  </data>
+  <data name="disclaimer3" xml:space="preserve">
+    <value>&lt;strong&gt;Urheberrechte und Markenrechte&lt;/strong&gt;: Alle auf dieser Website dargestellten Inhalte, wie Texte, Fotografien, Grafiken, Marken und Warenzeichen sind durch die jeweiligen Schutzrechte (Urheberrechte, Markenrechte) geschützt. Die Verwendung, Vervielfältigung usw. unterliegen unseren Rechten oder den Rechten der jeweiligen Urheber bzw. Rechteverwalter.</value>
+  </data>
+  <data name="adress" xml:space="preserve">
+    <value>adresse wie oben</value>
+  </data>
+  <data name="contact" xml:space="preserve">
+    <value>Kontaktmöglichkeiten</value>
+  </data>
+  <data name="contact-form" xml:space="preserve">
+    <value>Kontaktformular</value>
+  </data>
+  <data name="disclaimer" xml:space="preserve">
+    <value>Haftungsausschluss</value>
+  </data>
+  <data name="disclaimer1" xml:space="preserve">
+    <value>Die Inhalte dieses Onlineangebotes wurden sorgfältig und nach unserem aktuellen Kenntnisstand erstellt, dienen jedoch nur der Information und entfalten keine rechtlich bindende Wirkung, sofern es sich nicht um gesetzlich verpflichtende Informationen (z.B. das Impressum, die Datenschutzerklärung, AGB oder verpflichtende Belehrungen von Verbrauchern) handelt. Wir behalten uns vor, die Inhalte vollständig oder teilweise zu ändern oder zu löschen, soweit vertragliche Verpflichtungen unberührt bleiben. Alle Angebote sind freibleibend und unverbindlich.</value>
+  </data>
+  <data name="disclaimer2" xml:space="preserve">
+    <value>&lt;strong&gt;Links auf fremde Webseiten&lt;/strong&gt;: Inhalte fremder Webseiten, auf die wir direkt oder indirekt verweisen, liegen außerhalb unseres Verantwortungsbereiches und machen wir uns nicht zu Eigen. Für alle Inhalte und insbesondere für Schäden, die aus der Nutzung der in den verlinkten Webseiten aufrufbaren Informationen entstehen, haftet allein der Anbieter der verlinkten Webseiten.</value>
+  </data>
+  <data name="disclaimer4" xml:space="preserve">
+    <value>&lt;strong&gt;Hinweise auf Rechtsverstöße&lt;/strong&gt;: Sollten Sie innerhalb unseres Internetauftritts Rechtsverstöße bemerken, bitten wir Sie uns auf diese hinzuweisen. Wir werden rechtswidrige Inhalte und Links nach Kenntnisnahme unverzüglich entfernen.</value>
+  </data>
+  <data name="email" xml:space="preserve">
+    <value>E-Mail-Adresse</value>
+  </data>
+  <data name="imprint-header" xml:space="preserve">
+    <value>Impressum</value>
+  </data>
+  <data name="imprint-service" xml:space="preserve">
+    <value>Diensteanbieter</value>
+  </data>
+  <data name="journalistic" xml:space="preserve">
+    <value>Journalistisch-redaktionelle Angebote</value>
+  </data>
+  <data name="liability" xml:space="preserve">
+    <value>Haftungs- und Schutzrechtshinweise</value>
+  </data>
+  <data name="other" xml:space="preserve">
+    <value>Dieses Impressum gilt auch für die folgenden Social-Media-Präsenzen und Onlineprofile</value>
+  </data>
+  <data name="responsibility" xml:space="preserve">
+    <value>Inhaltlich verantwortlich</value>
+  </data>
+  <data name="seal" xml:space="preserve">
+    <value>Rechtstext von Dr. Schwenke - für weitere Informationen bitte anklicken</value>
+  </data>
+  <data name="socialmedia" xml:space="preserve">
+    <value>Social Media und andere Onlinepräsenzen</value>
+  </data>
+  <data name="telefon" xml:space="preserve">
+    <value>Telefon</value>
+  </data>
+  <data name="onlinemarketing-security" xml:space="preserve">
+    <value>&lt;strong&gt;Sicherheitsmaßnahmen:&lt;/strong&gt; IP-Masking (Pseudonymisierung der IP-Adresse).</value>
+  </data>
+  <data name="analytics-blurp" xml:space="preserve">
+    <value>Die Webanalyse (auch als "Reichweitenmessung" bezeichnet) dient der Auswertung der Besucherströme unseres Onlineangebotes und kann Verhalten, Interessen oder demographische Informationen zu den Besuchern, wie z.B. das Alter oder das Geschlecht, als pseudonyme Werte umfassen. Mit Hilfe der Reichweitenanalyse können wir z.B. erkennen, zu welcher Zeit unser Onlineangebot oder dessen Funktionen oder Inhalte am häufigsten genutzt werden oder zur Wiederverwendung einladen. Ebenso können wir nachvollziehen, welche Bereiche der Optimierung bedürfen.</value>
+  </data>
+  <data name="analytics-data" xml:space="preserve">
+    <value>&lt;strong&gt;Verarbeitete Datenarten:&lt;/strong&gt; Nutzungsdaten (z.B. besuchte Webseiten, Interesse an Inhalten, Zugriffszeiten), Meta-/Kommunikationsdaten (z.B. Geräte-Informationen, IP-Adressen).</value>
+  </data>
+  <data name="analytics-google" xml:space="preserve">
+    <value>&lt;strong&gt;Google Analytics:&lt;/strong&gt; Reichweitenmessung und Webanalyse; Dienstanbieter: Google Ireland Limited, Gordon House, Barrow Street, Dublin 4, Irland, Mutterunternehmen: Google LLC, 1600 Amphitheatre Parkway, Mountain View, CA 94043, USA; Website:&lt;a href="https://marketingplatform.google.com/intl/de/about/analytics/" target="_blank"&gt;https://marketingplatform.google.com/intl/de/about/analytics/&lt;/a&gt;; Datenschutzerklärung: &lt;a href="https://policies.google.com/privacy" target="_blank"&gt;https://policies.google.com/privacy&lt;/a&gt;.</value>
+  </data>
+  <data name="analytics-ip" xml:space="preserve">
+    <value>Es werden ebenfalls die IP-Adressen der Nutzer gespeichert. Jedoch nutzen wir ein IP-Masking-Verfahren (d.h., Pseudonymisierung durch Kürzung der IP-Adresse) zum Schutz der Nutzer. Generell werden die im Rahmen von Webanalyse, A/B-Testings und Optimierung keine Klardaten der Nutzer (wie z.B. E-Mail-Adressen oder Namen) gespeichert, sondern Pseudonyme. D.h., wir als auch die Anbieter der eingesetzten Software kennen nicht die tatsächliche Identität der Nutzer, sondern nur den für Zwecke der jeweiligen Verfahren in deren Profilen gespeicherten Angaben.</value>
+  </data>
+  <data name="analytics-legal" xml:space="preserve">
+    <value>&lt;strong&gt;Rechtsgrundlagen:&lt;/strong&gt; Einwilligung (Art. 6 Abs. 1 S. 1 lit. a. DSGVO), Berechtigte Interessen (Art. 6 Abs. 1 S. 1 lit. f. DSGVO).</value>
+  </data>
+  <data name="analytics-legal-bases" xml:space="preserve">
+    <value>&lt;strong&gt;Hinweise zu Rechtsgrundlagen:&lt;/strong&gt; Sofern wir die Nutzer um deren Einwilligung in den Einsatz der Drittanbieter bitten, ist die Rechtsgrundlage der Verarbeitung von Daten die Einwilligung. Ansonsten werden die Daten der Nutzer auf Grundlage unserer berechtigten Interessen (d.h. Interesse an effizienten, wirtschaftlichen und empfängerfreundlichen Leistungen) verarbeitet. In diesem Zusammenhang möchten wir Sie auch auf die Informationen zur Verwendung von Cookies in dieser Datenschutzerklärung hinweisen.</value>
+  </data>
+  <data name="analytics-purpose" xml:space="preserve">
+    <value>&lt;strong&gt;Zwecke der Verarbeitung:&lt;/strong&gt; Reichweitenmessung (z.B. Zugriffsstatistiken, Erkennung wiederkehrender Besucher), Tracking (z.B. interessens-/verhaltensbezogenes Profiling, Nutzung von Cookies), Konversionsmessung (Messung der Effektivität von Marketingmaßnahmen), Profiling (Erstellen von Nutzerprofilen).</value>
+  </data>
+  <data name="analytics-security" xml:space="preserve">
+    <value>&lt;strong&gt;Sicherheitsmaßnahmen:&lt;/strong&gt; IP-Masking (Pseudonymisierung der IP-Adresse).</value>
+  </data>
+  <data name="analytics-services" xml:space="preserve">
+    <value>&lt;strong&gt;Eingesetzte Dienste und Diensteanbieter:&lt;/strong&gt;</value>
+  </data>
+  <data name="analytics-tests" xml:space="preserve">
+    <value>Neben der Webanalyse können wir auch Testverfahren einsetzen, um z.B. unterschiedliche Versionen unseres Onlineangebotes oder seiner Bestandteile zu testen und optimieren.</value>
+  </data>
+  <data name="analytics-userprofile" xml:space="preserve">
+    <value>Zu diesen Zwecken können sogenannte Nutzerprofile angelegt und in einer Datei (sogenannte "Cookie") gespeichert oder ähnliche Verfahren mit dem gleichen Zweck genutzt werden. Zu diesen Angaben können z.B. betrachtete Inhalte, besuchte Webseiten und dort genutzte Elemente und technische Angaben, wie der verwendete Browser, das verwendete Computersystem sowie Angaben zu Nutzungszeiten gehören. Sofern Nutzer in die Erhebung ihrer Standortdaten eingewilligt haben, können je nach Anbieter auch diese verarbeitet werden.</value>
+  </data>
+  <data name="blogs-affected-person" xml:space="preserve">
+    <value>&lt;strong&gt;Betroffene Personen:&lt;/strong&gt; Nutzer (z.B. Webseitenbesucher, Nutzer von Onlinediensten).</value>
+  </data>
+  <data name="blogs-blurp" xml:space="preserve">
+    <value>Wir nutzen Blogs oder vergleichbare Mittel der Onlinekommunikation und Publikation (nachfolgend "Publikationsmedium"). Die Daten der Leser werden für die Zwecke des Publikationsmediums nur insoweit verarbeitet, als es für dessen Darstellung und die Kommunikation zwischen Autoren und Lesern oder aus Gründen der Sicherheit erforderlich ist. Im Übrigen verweisen wir auf die Informationen zur Verarbeitung der Besucher unseres Publikationsmediums im Rahmen dieser Datenschutzhinweise.</value>
+  </data>
+  <data name="blogs-comments" xml:space="preserve">
+    <value>&lt;strong&gt;Kommentare und Beiträge&lt;/strong&gt;: Wenn Nutzer Kommentare oder sonstige Beiträge hinterlassen, können ihre IP-Adressen auf Grundlage unserer berechtigten Interessen gespeichert werden. Das erfolgt zu unserer Sicherheit, falls jemand in Kommentaren und Beiträgen widerrechtliche Inhalte hinterlässt (Beleidigungen, verbotene politische Propaganda etc.). In diesem Fall können wir selbst für den Kommentar oder Beitrag belangt werden und sind daher an der Identität des Verfassers interessiert.</value>
+  </data>
+  <data name="blogs-comments-data" xml:space="preserve">
+    <value>Die im Rahmen der Kommentare und Beiträge mitgeteilten Informationen zur Person, etwaige Kontakt- sowie Webseiteninformationen als auch die inhaltlichen Angaben werden von uns bis zum Widerspruch der Nutzer dauerhaft gespeichert.</value>
+  </data>
+  <data name="blogs-legal" xml:space="preserve">
+    <value>&lt;strong&gt;Rechtsgrundlagen:&lt;/strong&gt; Vertragserfüllung und vorvertragliche Anfragen (Art. 6 Abs. 1 S. 1 lit. b. DSGVO), Berechtigte Interessen (Art. 6 Abs. 1 S. 1 lit. f. DSGVO).</value>
+  </data>
+  <data name="blogs-processed-data" xml:space="preserve">
+    <value>&lt;strong&gt;Verarbeitete Datenarten:&lt;/strong&gt; Bestandsdaten (z.B. Namen, Adressen), Kontaktdaten (z.B. E-Mail, Telefonnummern), Inhaltsdaten (z.B. Eingaben in Onlineformularen), Nutzungsdaten (z.B. besuchte Webseiten, Interesse an Inhalten, Zugriffszeiten), Meta-/Kommunikationsdaten (z.B. Geräte-Informationen, IP-Adressen).</value>
+  </data>
+  <data name="blogs-purpose" xml:space="preserve">
+    <value>&lt;strong&gt;Zwecke der Verarbeitung:&lt;/strong&gt; Erbringung vertragliche Leistungen und Kundenservice, Feedback (z.B. Sammeln von Feedback via Online-Formular), Sicherheitsmaßnahmen, Verwaltung und Beantwortung von Anfragen.</value>
+  </data>
+  <data name="blogs-spam" xml:space="preserve">
+    <value>Des Weiteren behalten wir uns vor, auf Grundlage unserer berechtigten Interessen die Angaben der Nutzer zwecks Spamerkennung zu verarbeiten.</value>
+  </data>
+  <data name="blogs-survey" xml:space="preserve">
+    <value>Auf derselben Rechtsgrundlage behalten wir uns vor, im Fall von Umfragen die IP-Adressen der Nutzer für deren Dauer zu speichern und Cookies zu verwenden, um Mehrfachabstimmungen zu vermeiden.</value>
+  </data>
+  <data name="contact-affected" xml:space="preserve">
+    <value>&lt;strong&gt;Betroffene Personen:&lt;/strong&gt; Kommunikationspartner.</value>
+  </data>
+  <data name="contact-answering" xml:space="preserve">
+    <value>Die Beantwortung der Kontaktanfragen im Rahmen von vertraglichen oder vorvertraglichen Beziehungen erfolgt zur Erfüllung unserer vertraglichen Pflichten oder zur Beantwortung von (vor)vertraglichen Anfragen und im Übrigen auf Grundlage der berechtigten Interessen an der Beantwortung der Anfragen.</value>
+  </data>
+  <data name="contact-data-types" xml:space="preserve">
+    <value>&lt;strong&gt;Verarbeitete Datenarten:&lt;/strong&gt; Bestandsdaten (z.B. Namen, Adressen), Kontaktdaten (z.B. E-Mail, Telefonnummern), Inhaltsdaten (z.B. Eingaben in Onlineformularen).</value>
+  </data>
+  <data name="contact-legal" xml:space="preserve">
+    <value>&lt;strong&gt;Rechtsgrundlagen:&lt;/strong&gt; Vertragserfüllung und vorvertragliche Anfragen (Art. 6 Abs. 1 S. 1 lit. b. DSGVO), Berechtigte Interessen (Art. 6 Abs. 1 S. 1 lit. f. DSGVO).</value>
+  </data>
+  <data name="contact-purposes" xml:space="preserve">
+    <value>&lt;strong&gt;Zwecke der Verarbeitung:&lt;/strong&gt; Kontaktanfragen und Kommunikation.</value>
+  </data>
+  <data name="contact-us" xml:space="preserve">
+    <value>Bei der Kontaktaufnahme mit uns (z.B. per Kontaktformular, E-Mail, Telefon oder via soziale Medien) werden die Angaben der anfragenden Personen verarbeitet, soweit dies zur Beantwortung der Kontaktanfragen und etwaiger angefragter Maßnahmen erforderlich ist.</value>
+  </data>
+  <data name="cookies-blurp" xml:space="preserve">
+    <value>Cookies sind Textdateien, die Daten von besuchten Websites oder Domains enthalten und von einem Browser auf dem Computer des Benutzers gespeichert werden. Ein Cookie dient in erster Linie dazu, die Informationen über einen Benutzer während oder nach seinem Besuch innerhalb eines Onlineangebotes zu speichern. Zu den gespeicherten Angaben können z.B. die Spracheinstellungen auf einer Webseite, der Loginstatus, ein Warenkorb oder die Stelle, an der ein Video geschaut wurde, gehören. Zu dem Begriff der Cookies zählen wir ferner andere Technologien, die die gleichen Funktionen wie Cookies erfüllen (z.B., wenn Angaben der Nutzer anhand pseudonymer Onlinekennzeichnungen gespeichert werden, auch als "Nutzer-IDs" bezeichnet)</value>
+  </data>
+  <data name="cookies-legal-basis" xml:space="preserve">
+    <value>&lt;strong&gt;Rechtsgrundlagen:&lt;/strong&gt; Einwilligung (Art. 6 Abs. 1 S. 1 lit. a. DSGVO), Berechtigte Interessen (Art. 6 Abs. 1 S. 1 lit. f. DSGVO).</value>
+  </data>
+  <data name="cookies-type-affected" xml:space="preserve">
+    <value>&lt;strong&gt;Betroffene Personen:&lt;/strong&gt; Nutzer (z.B. Webseitenbesucher, Nutzer von Onlinediensten).</value>
+  </data>
+  <data name="cookies-type-data" xml:space="preserve">
+    <value>&lt;strong&gt;Verarbeitete Datenarten:&lt;/strong&gt; Nutzungsdaten (z.B. besuchte Webseiten, Interesse an Inhalten, Zugriffszeiten), Meta-/Kommunikationsdaten (z.B. Geräte-Informationen, IP-Adressen).</value>
+  </data>
+  <data name="cookies-type-essential" xml:space="preserve">
+    <value>&lt;strong&gt;Notwendige (auch: essentielle oder unbedingt erforderliche) Cookies:&lt;/strong&gt; Cookies können zum einen für den Betrieb einer Webseite unbedingt erforderlich sein (z.B. um Logins oder andere Nutzereingaben zu speichern oder aus Gründen der
+        Sicherheit).</value>
+  </data>
+  <data name="cookies-type-first" xml:space="preserve">
+    <value>&lt;strong&gt;First-Party-Cookies:&lt;/strong&gt;&amp;nbsp;First-Party-Cookies werden von uns selbst gesetzt.</value>
+  </data>
+  <data name="cookies-type-permanent" xml:space="preserve">
+    <value>&lt;strong&gt;Permanente Cookies:&lt;/strong&gt;&amp;nbsp;Permanente Cookies bleiben auch nach dem Schließen des Browsers gespeichert. So kann beispielsweise der Login-Status gespeichert oder bevorzugte Inhalte direkt angezeigt werden, wenn der Nutzer eine Website
+        erneut besucht. Ebenso können die Interessen von Nutzern, die zur Reichweitenmessung oder zu Marketingzwecken verwendet werden, in einem solchen Cookie gespeichert werden.</value>
+  </data>
+  <data name="cookies-type-processing" xml:space="preserve">
+    <value>&lt;strong&gt;Verarbeitung von Cookie-Daten auf Grundlage einer Einwilligung&lt;/strong&gt;: Bevor wir Daten im Rahmen der Nutzung von Cookies verarbeiten oder verarbeiten lassen, bitten wir die Nutzer um eine jederzeit widerrufbare Einwilligung. Bevor die Einwilligung nicht ausgesprochen wurde, werden allenfalls Cookies eingesetzt, die für den Betrieb unseres Onlineangebotes unbedingt erforderlich sind.</value>
+  </data>
+  <data name="cookies-type-revocation" xml:space="preserve">
+    <value>&lt;strong&gt;Allgemeine Hinweise zum Widerruf und Widerspruch (Opt-Out): &lt;/strong&gt; Abhängig davon, ob die Verarbeitung auf Grundlage einer Einwilligung oder gesetzlichen Erlaubnis erfolgt, haben Sie jederzeit die Möglichkeit, eine erteilte Einwilligung zu widerrufen oder der Verarbeitung Ihrer Daten durch Cookie-Technologien zu widersprechen (zusammenfassend als "Opt-Out" bezeichnet). Sie können Ihren Widerspruch zunächst mittels der Einstellungen Ihres Browsers erklären, z.B., indem Sie die Nutzung von Cookies deaktivieren (wobei hierdurch auch die Funktionsfähigkeit unseres Onlineangebotes eingeschränkt werden kann). Ein Widerspruch gegen den Einsatz von Cookies zu Zwecken des Onlinemarketings kann auch mittels einer Vielzahl von Diensten, vor allem im Fall des Trackings, über die Webseiten &lt;a href="https://optout.aboutads.info" target="_blank"&gt;https://optout.aboutads.info&lt;/a&gt; und &lt;a href="https://www.youronlinechoices.com/" target="_blank"&gt;https://www.youronlinechoices.com/&lt;/a&gt; erklärt werden. Daneben können Sie weitere Widerspruchshinweise im Rahmen der Angaben zu den eingesetzten Dienstleistern und Cookies erhalten.</value>
+  </data>
+  <data name="cookies-type-rights" xml:space="preserve">
+    <value>&lt;strong&gt;Hinweise zu Rechtsgrundlagen: &lt;/strong&gt; Auf welcher Rechtsgrundlage wir Ihre personenbezogenen Daten mit Hilfe von Cookies verarbeiten, hängt davon ab, ob wir Sie um eine Einwilligung bitten. Falls dies zutrifft und Sie in die Nutzung von Cookies einwilligen, ist die Rechtsgrundlage der Verarbeitung Ihrer Daten die erklärte Einwilligung. Andernfalls werden die mithilfe von Cookies verarbeiteten Daten auf Grundlage unserer berechtigten Interessen (z.B. an einem betriebswirtschaftlichen Betrieb unseres Onlineangebotes und dessen Verbesserung) verarbeitet oder, wenn der Einsatz von Cookies erforderlich ist, um unsere vertraglichen Verpflichtungen zu erfüllen.</value>
+  </data>
+  <data name="cookies-types" xml:space="preserve">
+    <value>&lt;strong&gt;Die folgenden Cookie-Typen und Funktionen werden unterschieden:&lt;/strong&gt;</value>
+  </data>
+  <data name="cookies-type-save" xml:space="preserve">
+    <value>&lt;strong&gt;Speicherdauer: &lt;/strong&gt;Sofern wir Ihnen keine expliziten Angaben zur Speicherdauer von permanenten Cookies mitteilen (z. B. im Rahmen eines sog. Cookie-Opt-Ins), gehen Sie bitte davon aus, dass die Speicherdauer bis zu zwei Jahre betragen kann.</value>
+  </data>
+  <data name="cookies-type-statistic" xml:space="preserve">
+    <value>&lt;strong&gt;Statistik-, Marketing- und Personalisierungs-Cookies&lt;/strong&gt;: Ferner werden Cookies im Regelfall auch im Rahmen der Reichweitenmessung eingesetzt sowie dann, wenn die Interessen eines Nutzers oder sein Verhalten (z.B. Betrachten bestimmter Inhalte, Nutzen von Funktionen etc.) auf einzelnen Webseiten in einem Nutzerprofil gespeichert werden. Solche Profile dienen dazu, den Nutzern z.B. Inhalte anzuzeigen, die ihren potentiellen Interessen entsprechen. Dieses Verfahren wird auch als "Tracking", d.h., Nachverfolgung der potentiellen Interessen der Nutzer bezeichnet. Soweit wir Cookies oder "Tracking"-Technologien einsetzen, informieren wir Sie gesondert in unserer Datenschutzerklärung oder im Rahmen der Einholung einer Einwilligung.</value>
+  </data>
+  <data name="cookies-types-temp" xml:space="preserve">
+    <value>&lt;strong&gt;Temporäre Cookies (auch: Session- oder Sitzungs-Cookies):&lt;/strong&gt;&amp;nbsp;Temporäre Cookies werden spätestens gelöscht, nachdem ein Nutzer ein Online-Angebot verlassen und seinen Browser geschlossen hat.</value>
+  </data>
+  <data name="cookies-type-third" xml:space="preserve">
+    <value>&lt;strong&gt;Third-Party-Cookies (auch: Drittanbieter-Cookies)&lt;/strong&gt;: Drittanbieter-Cookies werden hauptsächlich von Werbetreibenden (sog. Dritten) verwendet, um Benutzerinformationen zu verarbeiten.</value>
+  </data>
+  <data name="delete" xml:space="preserve">
+    <value>Löschung von Daten</value>
+  </data>
+  <data name="glossary-blurp" xml:space="preserve">
+    <value>In diesem Abschnitt erhalten Sie eine Übersicht über die in dieser Datenschutzerklärung verwendeten Begrifflichkeiten. Viele der Begriffe sind dem Gesetz entnommen und vor allem im Art. 4 DSGVO definiert. Die gesetzlichen Definitionen sind verbindlich.
+    Die nachfolgenden Erläuterungen sollen dagegen vor allem dem Verständnis dienen. Die Begriffe sind alphabetisch sortiert.</value>
+  </data>
+  <data name="glossary-conversion-measurement" xml:space="preserve">
+    <value>&lt;strong&gt;Konversionsmessung:&lt;/strong&gt; Die Konversionsmessung (auch als "Besuchsaktionsauswertung" bezeichnet) ist ein Verfahren, mit dem die Wirksamkeit von Marketingmaßnahmen festgestellt werden kann. Dazu wird im Regelfall ein Cookie auf den Geräten der Nutzer innerhalb der Webseiten, auf denen die Marketingmaßnahmen erfolgen, gespeichert und dann erneut auf der Zielwebseite abgerufen. Beispielsweise können wir so nachvollziehen, ob die von uns auf anderen Webseiten geschalteten Anzeigen erfolgreich waren.</value>
+  </data>
+  <data name="glossary-ip-mask" xml:space="preserve">
+    <value>&lt;strong&gt;IP-Masking:&lt;/strong&gt; Als "IP-Masking” wird eine Methode bezeichnet, bei der das letzte Oktett, d.h., die letzten beiden Zahlen einer IP-Adresse, gelöscht wird, damit die IP-Adresse nicht mehr der eindeutigen Identifizierung einer Person dienen kann. Daher ist das IP-Masking ein Mittel zur Pseudonymisierung von Verarbeitungsverfahren, insbesondere im Onlinemarketing.</value>
+  </data>
+  <data name="glossary-marketing" xml:space="preserve">
+    <value>&lt;strong&gt;Interessenbasiertes und verhaltensbezogenes Marketing:&lt;/strong&gt; Von interessens- und/oder verhaltensbezogenem Marketing spricht man, wenn potentielle Interessen von Nutzern an Anzeigen und sonstigen Inhalten möglichst genau vorbestimmt werden.
+        Dies geschieht anhand von Angaben zu deren Vorverhalten (z.B. Aufsuchen von bestimmten Webseiten und Verweilen auf diesen, Kaufverhaltens oder Interaktion mit anderen Nutzern), die in einem sogenannten Profil gespeichert werden. Zu diesen Zwecken werden im Regelfall Cookies eingesetzt.</value>
+  </data>
+  <data name="glossary-personal-data" xml:space="preserve">
+    <value>&lt;strong&gt;Personenbezogene Daten:&lt;/strong&gt; "Personenbezogene Daten“ sind alle Informationen, die sich auf eine identifizierte oder identifizierbare natürliche Person (im Folgenden "betroffene Person“) beziehen; als identifizierbar wird eine natürliche Person angesehen, die direkt oder indirekt, insbesondere mittels Zuordnung zu einer Kennung wie einem Namen, zu einer Kennnummer, zu Standortdaten, zu einer Online-Kennung (z.B. Cookie) oder zu einem oder mehreren besonderen Merkmalen identifiziert werden kann, die Ausdruck der physischen, physiologischen, genetischen, psychischen, wirtschaftlichen, kulturellen oder sozialen Identität dieser natürlichen Person sind.</value>
+  </data>
+  <data name="glossary-processing" xml:space="preserve">
+    <value>&lt;strong&gt;Verarbeitung:&lt;/strong&gt; "Verarbeitung" ist jeder mit oder ohne Hilfe automatisierter Verfahren ausgeführte Vorgang oder jede solche Vorgangsreihe im Zusammenhang mit personenbezogenen Daten. Der Begriff reicht weit und umfasst praktisch jeden Umgang mit Daten, sei es das Erheben, das Auswerten, das Speichern, das Übermitteln oder das Löschen.</value>
+  </data>
+  <data name="glossary-profiling" xml:space="preserve">
+    <value>&lt;strong&gt;Profiling:&lt;/strong&gt; Als "Profiling“ wird jede Art der automatisierten Verarbeitung personenbezogener Daten bezeichnet, die darin besteht, dass diese personenbezogenen Daten verwendet werden, um bestimmte persönliche Aspekte, die sich auf eine natürliche Person beziehen (je nach Art des Profilings gehören dazu Informationen betreffend das Alter, das Geschlecht, Standortdaten und Bewegungsdaten, Interaktion mit Webseiten und deren Inhalten, Einkaufsverhalten, soziale Interaktionen mit anderen Menschen) zu analysieren, zu bewerten oder, um sie vorherzusagen (z.B. die Interessen an bestimmten Inhalten oder Produkten, das Klickverhalten auf einer Webseite oder den Aufenthaltsort). Zu Zwecken des Profilings werden häufig Cookies und Web-Beacons eingesetzt.</value>
+  </data>
+  <data name="glossary-range-measurement" xml:space="preserve">
+    <value>&lt;strong&gt;Reichweitenmessung:&lt;/strong&gt; Die Reichweitenmessung (auch als Web Analytics bezeichnet) dient der Auswertung der Besucherströme eines Onlineangebotes und kann das Verhalten oder Interessen der Besucher an bestimmten Informationen, wie z.B. Inhalten von Webseiten, umfassen. Mit Hilfe der Reichweitenanalyse können Webseiteninhaber z.B. erkennen, zu welcher Zeit Besucher ihre Webseite besuchen und für welche Inhalte sie sich interessieren. Dadurch können sie z.B. die Inhalte der Webseite besser an die Bedürfnisse ihrer Besucher anpassen. Zu Zwecken der Reichweitenanalyse werden häufig pseudonyme Cookies und Web-Beacons eingesetzt, um wiederkehrende Besucher zu erkennen und so genauere Analysen zur Nutzung eines Onlineangebotes zu erhalten.</value>
+  </data>
+  <data name="glossary-remarketing" xml:space="preserve">
+    <value>&lt;strong&gt;Remarketing:&lt;/strong&gt; Vom "Remarketing“ bzw. "Retargeting“ spricht man, wenn z.B. zu Werbezwecken vermerkt wird, für welche Produkte sich ein Nutzer auf einer Webseite interessiert hat, um den Nutzer auf anderen Webseiten an diese Produkte, z.B. in Werbeanzeigen, zu erinnern.</value>
+  </data>
+  <data name="glossary-responsible" xml:space="preserve">
+    <value>&lt;strong&gt;Verantwortlicher:&lt;/strong&gt; Als "Verantwortlicher“ wird die natürliche oder juristische Person, Behörde, Einrichtung oder andere Stelle, die allein oder gemeinsam mit anderen über die Zwecke und Mittel der Verarbeitung von personenbezogenen Daten entscheidet, bezeichnet.</value>
+  </data>
+  <data name="glossary-title" xml:space="preserve">
+    <value>Begriffsdefinitionen</value>
+  </data>
+  <data name="glossary-tracking" xml:space="preserve">
+    <value>&lt;strong&gt;Tracking:&lt;/strong&gt; Vom "Tracking“ spricht man, wenn das Verhalten von Nutzern über mehrere Onlineangebote hinweg nachvollzogen werden kann. Im Regelfall werden im Hinblick auf die genutzten Onlineangebote Verhaltens- und Interessensinformationen in Cookies oder auf Servern der Anbieter der Trackingtechnologien gespeichert (sogenanntes Profiling). Diese Informationen können anschließend z.B. eingesetzt werden, um den Nutzern Werbeanzeigen anzuzeigen, die voraussichtlich deren Interessen entsprechen.</value>
+  </data>
+  <data name="introduction" xml:space="preserve">
+    <value>Einleitung</value>
+  </data>
+  <data name="introduction-blurp" xml:space="preserve">
+    <value>Mit der folgenden Datenschutzerklärung möchten wir Sie darüber aufklären, welche Arten Ihrer personenbezogenen Daten (nachfolgend auch kurz als "Daten“ bezeichnet) wir zu welchen Zwecken und in welchem Umfang verarbeiten. Die Datenschutzerklärung gilt für alle von uns durchgeführten Verarbeitungen personenbezogener Daten, sowohl im Rahmen der Erbringung unserer Leistungen als auch insbesondere auf unseren Webseiten, in mobilen Applikationen sowie innerhalb externer Onlinepräsenzen, wie z.B. unserer Social-Media-Profile (nachfolgend zusammenfassend bezeichnet als "Onlineangebot“)</value>
+  </data>
+  <data name="introduction-gender" xml:space="preserve">
+    <value>Die verwendeten Begriffe sind nicht geschlechtsspezifisch.</value>
+  </data>
+  <data name="introduction-status" xml:space="preserve">
+    <value>Stand:</value>
+  </data>
+  <data name="leer" xml:space="preserve">
+    <value></value>
+  </data>
+  <data name="legal-bases-additionals" xml:space="preserve">
+    <value>&lt;strong&gt;Nationale Datenschutzregelungen in Deutschland&lt;/strong&gt;: Zusätzlich zu den Datenschutzregelungen der Datenschutz-Grundverordnung gelten nationale Regelungen zum Datenschutz in Deutschland. Hierzu gehört insbesondere das Gesetz zum Schutz vor Missbrauch personenbezogener Daten bei der Datenverarbeitung (Bundesdatenschutzgesetz – BDSG). Das BDSG enthält insbesondere Spezialregelungen zum Recht auf Auskunft, zum Recht auf Löschung, zum Widerspruchsrecht, zur Verarbeitung besonderer Kategorien personenbezogener Daten, zur Verarbeitung für andere Zwecke und zur Übermittlung sowie automatisierten Entscheidungsfindung im Einzelfall einschließlich Profiling. Des Weiteren regelt es die Datenverarbeitung für Zwecke des Beschäftigungsverhältnisses (§ 26 BDSG), insbesondere im Hinblick auf die Begründung, Durchführung oder Beendigung von Beschäftigungsverhältnissen sowie die Einwilligung von Beschäftigten. Ferner können Landesdatenschutzgesetze der einzelnen Bundesländer zur Anwendung gelangen.</value>
+  </data>
+  <data name="legal-bases-blurp" xml:space="preserve">
+    <value>Im Folgenden teilen wir die Rechtsgrundlagen der Datenschutzgrundverordnung (DSGVO), auf deren Basis wir die personenbezogenen Daten verarbeiten, mit. Bitte beachten Sie, dass zusätzlich zu den Regelungen der DSGVO die nationalen Datenschutzvorgaben in Ihrem bzw. unserem Wohn- und Sitzland gelten können. Sollten ferner im Einzelfall speziellere Rechtsgrundlagen maßgeblich sein, teilen wir Ihnen diese in der Datenschutzerklärung mit.</value>
+  </data>
+  <data name="legal-bases-consent" xml:space="preserve">
+    <value>&lt;strong&gt;Einwilligung (Art. 6 Abs. 1 S. 1 lit. a. DSGVO)&lt;/strong&gt; - Die betroffene Person hat ihre Einwilligung in die Verarbeitung der sie betreffenden personenbezogenen Daten für einen spezifischen Zweck oder mehrere bestimmte Zwecke gegeben.</value>
+  </data>
+  <data name="legal-bases-contract" xml:space="preserve">
+    <value>&lt;strong&gt;Vertragserfüllung und vorvertragliche Anfragen (Art. 6 Abs. 1 S. 1 lit. b. DSGVO)&lt;/strong&gt; - Die Verarbeitung ist für die Erfüllung eines Vertrags, dessen Vertragspartei die betroffene Person ist, oder zur Durchführung vorvertraglicher Maßnahmen erforderlich, die auf Anfrage der betroffenen Person erfolgen.</value>
+  </data>
+  <data name="legal-bases-control" xml:space="preserve">
+    <value>Zu den Maßnahmen gehören insbesondere die Sicherung der Vertraulichkeit, Integrität und Verfügbarkeit von Daten durch Kontrolle des physischen und elektronischen Zugangs zu den Daten als auch des sie betreffenden Zugriffs, der Eingabe, der Weitergabe, der Sicherung der Verfügbarkeit und ihrer Trennung. Des Weiteren haben wir Verfahren eingerichtet, die eine Wahrnehmung von Betroffenenrechten, die Löschung von Daten und Reaktionen auf die Gefährdung der Daten gewährleisten. Ferner berücksichtigen wir den Schutz personenbezogener Daten bereits bei der Entwicklung bzw. Auswahl von Hardware, Software sowie Verfahren entsprechend dem Prinzip des Datenschutzes, durch Technikgestaltung und durch datenschutzfreundliche Voreinstellungen.</value>
+  </data>
+  <data name="legal-bases-interests" xml:space="preserve">
+    <value>&lt;strong&gt;Berechtigte Interessen (Art. 6 Abs. 1 S. 1 lit. f. DSGVO)&lt;/strong&gt; - Die Verarbeitung ist zur Wahrung der berechtigten Interessen des Verantwortlichen oder eines Dritten erforderlich, sofern nicht die Interessen oder Grundrechte und Grundfreiheiten der betroffenen Person, die den Schutz personenbezogener Daten erfordern, überwiegen.</value>
+  </data>
+  <data name="legal-bases-measures" xml:space="preserve">
+    <value>Wir treffen nach Maßgabe der gesetzlichen Vorgaben unter Berücksichtigung des Stands der Technik, der Implementierungskosten und der Art, des Umfangs, der Umstände und der Zwecke der Verarbeitung sowie der unterschiedlichen Eintrittswahrscheinlichkeiten und des Ausmaßes der Bedrohung der Rechte und Freiheiten natürlicher Personen geeignete technische und organisatorische Maßnahmen, um ein dem Risiko angemessenes Schutzniveau zu gewährleisten.</value>
+  </data>
+  <data name="legal-bases-ssl" xml:space="preserve">
+    <value>&lt;strong&gt;SSL-Verschlüsselung (https)&lt;/strong&gt;: Um Ihre via unser Online-Angebot übermittelten Daten zu schützen, nutzen wir eine SSL-Verschlüsselung. Sie erkennen derart verschlüsselte Verbindungen an dem Präfix https:// in der Adresszeile Ihres Browsers.</value>
+  </data>
+  <data name="onlinemarketing-affected" xml:space="preserve">
+    <value>&lt;strong&gt;Betroffene Personen:&lt;/strong&gt; Nutzer (z.B. Webseitenbesucher, Nutzer von Onlinediensten), Interessenten.</value>
+  </data>
+  <data name="onlinemarketing-blurp" xml:space="preserve">
+    <value>Wir verarbeiten personenbezogene Daten zu Zwecken des Onlinemarketings, worunter insbesondere die Vermarktung von Werbeflächen oder Darstellung von werbenden und sonstigen Inhalten (zusammenfassend als "Inhalte" bezeichnet) anhand potentieller Interessen der Nutzer sowie die Messung ihrer Effektivität fallen kann.</value>
+  </data>
+  <data name="onlinemarketing-cookies" xml:space="preserve">
+    <value>Solange nicht anders angegeben, bitten wir Sie davon auszugehen, dass verwendete Cookies für einen Zeitraum von zwei Jahren gespeichert werden.</value>
+  </data>
+  <data name="onlinemarketing-datatypes" xml:space="preserve">
+    <value>&lt;strong&gt;Verarbeitete Datenarten:&lt;/strong&gt; Nutzungsdaten (z.B. besuchte Webseiten, Interesse an Inhalten, Zugriffszeiten), Meta-/Kommunikationsdaten (z.B. Geräte-Informationen, IP-Adressen).</value>
+  </data>
+  <data name="onlinemarketing-google" xml:space="preserve">
+    <value>&lt;strong&gt;Google Analytics:&lt;/strong&gt; Onlinemarketing und Webanalyse; Dienstanbieter: Google Ireland Limited, Gordon House, Barrow Street, Dublin 4, Irland, Mutterunternehmen: Google LLC, 1600 Amphitheatre Parkway, Mountain View, CA 94043, USA; Website: &lt;a href="https://marketingplatform.google.com/intl/de/about/analytics/" target="_blank"&gt;https://marketingplatform.google.com/intl/de/about/analytics/&lt;/a&gt;; Datenschutzerklärung: &lt;a href="https://policies.google.com/privacy" target="_blank"&gt;https://policies.google.com/privacy&lt;/a&gt;;
+        Widerspruchsmöglichkeit (Opt-Out): Opt-Out-Plugin: &lt;a href="https://tools.google.com/dlpage/gaoptout?hl=de" target="_blank"&gt;https://tools.google.com/dlpage/gaoptout?hl=de&lt;/a&gt;, Einstellungen für die Darstellung von Werbeeinblendungen: &lt;a href="https://adssettings.google.com/authenticated" target="_blank"&gt;https://adssettings.google.com/authenticated&lt;/a&gt;.</value>
+  </data>
+  <data name="onlinemarketing-ip" xml:space="preserve">
+    <value>Es werden ebenfalls die IP-Adressen der Nutzer gespeichert. Jedoch nutzen wir zur Verfügung stehende IP-Masking-Verfahren (d.h., Pseudonymisierung durch Kürzung der IP-Adresse) zum Schutz der Nutzer. Generell werden im Rahmen des Onlinemarketingverfahren keine Klardaten der Nutzer (wie z.B. E-Mail-Adressen oder Namen) gespeichert, sondern Pseudonyme. D.h., wir als auch die Anbieter der Onlinemarketingverfahren kennen nicht die tatsächlich Identität der Nutzer, sondern nur die in deren Profilen gespeicherten Angaben.</value>
+  </data>
+  <data name="onlinemarketing-legal" xml:space="preserve">
+    <value>&lt;strong&gt;Hinweise zu Rechtsgrundlagen:&lt;/strong&gt; Sofern wir die Nutzer um deren Einwilligung in den Einsatz der Drittanbieter bitten, ist die Rechtsgrundlage der Verarbeitung von Daten die Einwilligung. Ansonsten werden die Daten der Nutzer auf Grundlage unserer berechtigten Interessen (d.h. Interesse an effizienten, wirtschaftlichen und empfängerfreundlichen Leistungen) verarbeitet. In diesem Zusammenhang möchten wir Sie auch auf die Informationen zur Verwendung von Cookies in dieser Datenschutzerklärung hinweisen.</value>
+  </data>
+  <data name="onlinemarketing-legalbase" xml:space="preserve">
+    <value>&lt;strong&gt;Rechtsgrundlagen:&lt;/strong&gt; Einwilligung (Art. 6 Abs. 1 S. 1 lit. a. DSGVO), Berechtigte Interessen (Art. 6 Abs. 1 S. 1 lit. f. DSGVO).</value>
+  </data>
+  <data name="onlinemarketing-marketing" xml:space="preserve">
+    <value>Wir erhalten grundsätzlich nur Zugang zu zusammengefassten Informationen über den Erfolg unserer Werbeanzeigen. Jedoch können wir im Rahmen sogenannter Konversionsmessungen prüfen, welche unserer Onlinemarketingverfahren zu einer sogenannten Konversion geführt haben, d.h. z.B., zu einem Vertragsschluss mit uns. Die Konversionsmessung wird alleine zur Analyse des Erfolgs unserer Marketingmaßnahmen verwendet.</value>
+  </data>
+  <data name="onlinemarketing-optout" xml:space="preserve">
+    <value>&lt;strong&gt;Widerspruchsmöglichkeit (Opt-Out):&lt;/strong&gt; Wir verweisen auf die Datenschutzhinweise der jeweiligen Anbieter und die zu den Anbietern angegebenen Widerspruchsmöglichkeiten (sog. "Opt-Out"). Sofern keine explizite Opt-Out-Möglichkeit angegeben wurde, besteht zum einen die Möglichkeit, dass Sie Cookies in den Einstellungen Ihres Browsers abschalten. Hierdurch können jedoch Funktionen unseres Onlineangebotes eingeschränkt werden. Wir empfehlen daher zusätzlich die folgenden Opt-Out-Möglichkeiten, die zusammenfassend auf jeweilige Gebiete gerichtet angeboten werden: a) Europa: &lt;a href="https://www.youronlinechoices.eu" target="_blank"&gt;https://www.youronlinechoices.eu&lt;/a&gt;. b) Kanada: &lt;a href="https://www.youradchoices.ca/choices" target="_blank"&gt;https://www.youradchoices.ca/choices&lt;/a&gt;. c) USA: &lt;a href="https://www.aboutads.info/choices" target="_blank"&gt;https://www.aboutads.info/choices&lt;/a&gt;. d) Gebietsübergreifend: &lt;a href="https://optout.aboutads.info" target="_blank"&gt;https://optout.aboutads.info&lt;/a&gt;.</value>
+  </data>
+  <data name="onlinemarketing-profile" xml:space="preserve">
+    <value>Die Angaben in den Profilen werden im Regelfall in den Cookies oder mittels ähnlicher Verfahren gespeichert. Diese Cookies können später generell auch auf anderen Webseiten die dasselbe Onlinemarketingverfahren einsetzen, ausgelesen und zu Zwecken der Darstellung von Inhalten analysiert als auch mit weiteren Daten ergänzt und auf dem Server des Onlinemarketingverfahrensanbieters gespeichert werden.</value>
+  </data>
+  <data name="onlinemarketing-profile1" xml:space="preserve">
+    <value>Ausnahmsweise können Klardaten den Profilen zugeordnet werden. Das ist der Fall, wenn die Nutzer z.B. Mitglieder eines sozialen Netzwerks sind, dessen Onlinemarketingverfahren wir einsetzen und das Netzwerk die Profile der Nutzer mit den vorgenannten Angaben verbindet. Wir bitten darum, zu beachten, dass Nutzer mit den Anbietern zusätzliche Abreden, z.B. durch Einwilligung im Rahmen der Registrierung, treffen können.</value>
+  </data>
+  <data name="onlinemarketing-purpose" xml:space="preserve">
+    <value>&lt;strong&gt;Zwecke der Verarbeitung:&lt;/strong&gt; Tracking (z.B. interessens-/verhaltensbezogenes Profiling, Nutzung von Cookies), Remarketing, Konversionsmessung (Messung der Effektivität von Marketingmaßnahmen), Interessenbasiertes und verhaltensbezogenes Marketing, Profiling (Erstellen von Nutzerprofilen), Reichweitenmessung (z.B. Zugriffsstatistiken, Erkennung wiederkehrender Besucher).</value>
+  </data>
+  <data name="onlinemarketing-services" xml:space="preserve">
+    <value>Eingesetzte Dienste und Diensteanbieter</value>
+  </data>
+  <data name="onlinemarketing-userprofile" xml:space="preserve">
+    <value>Zu diesen Zwecken werden sogenannte Nutzerprofile angelegt und in einer Datei (sogenannte "Cookie") gespeichert oder ähnliche Verfahren genutzt, mittels derer die für die Darstellung der vorgenannten Inhalte relevante Angaben zum Nutzer gespeichert werden.
+    Zu diesen Angaben können z.B. betrachtete Inhalte, besuchte Webseiten, genutzte Onlinenetzwerke, aber auch Kommunikationspartner und technische Angaben, wie der verwendete Browser, das verwendete Computersystem sowie Angaben zu Nutzungszeiten gehören.
+    Sofern Nutzer in die Erhebung ihrer Standortdaten eingewilligt haben, können auch diese verarbeitet werden.</value>
+  </data>
+  <data name="onlinemedia-affected" xml:space="preserve">
+    <value>&lt;strong&gt;Betroffene Personen:&lt;/strong&gt; Nutzer (z.B. Webseitenbesucher, Nutzer von Onlinediensten).</value>
+  </data>
+  <data name="onlinemedia-blurp" xml:space="preserve">
+    <value>Wir unterhalten Onlinepräsenzen innerhalb sozialer Netzwerke und verarbeiten in diesem Rahmen Daten der Nutzer, um mit den dort aktiven Nutzern zu kommunizieren oder um Informationen über uns anzubieten.</value>
+  </data>
+  <data name="onlinemedia-blurp1" xml:space="preserve">
+    <value>Wir weisen darauf hin, dass dabei Daten der Nutzer außerhalb des Raumes der Europäischen Union verarbeitet werden können. Hierdurch können sich für die Nutzer Risiken ergeben, weil so z.B. die Durchsetzung der Rechte der Nutzer erschwert werden könnte.</value>
+  </data>
+  <data name="onlinemedia-blurp2" xml:space="preserve">
+    <value>Ferner werden die Daten der Nutzer innerhalb sozialer Netzwerke im Regelfall für Marktforschungs- und Werbezwecke verarbeitet. So können z.B. anhand des Nutzungsverhaltens und sich daraus ergebender Interessen der Nutzer Nutzungsprofile erstellt werden.
+    Die Nutzungsprofile können wiederum verwendet werden, um z.B. Werbeanzeigen innerhalb und außerhalb der Netzwerke zu schalten, die mutmaßlich den Interessen der Nutzer entsprechen. Zu diesen Zwecken werden im Regelfall Cookies auf den Rechnern der Nutzer gespeichert, in denen das Nutzungsverhalten und die Interessen der Nutzer gespeichert werden. Ferner können in den Nutzungsprofilen auch Daten unabhängig der von den Nutzern verwendeten Geräte gespeichert werden (insbesondere, wenn die Nutzer Mitglieder der jeweiligen Plattformen sind und bei diesen eingeloggt sind).</value>
+  </data>
+  <data name="onlinemedia-blurp3" xml:space="preserve">
+    <value>Für eine detaillierte Darstellung der jeweiligen Verarbeitungsformen und der Widerspruchsmöglichkeiten (Opt-Out) verweisen wir auf die Datenschutzerklärungen und Angaben der Betreiber der jeweiligen Netzwerke.</value>
+  </data>
+  <data name="onlinemedia-blurp4" xml:space="preserve">
+    <value>Auch im Fall von Auskunftsanfragen und der Geltendmachung von Betroffenenrechten weisen wir darauf hin, dass diese am effektivsten bei den Anbietern geltend gemacht werden können. Nur die Anbieter haben jeweils Zugriff auf die Daten der Nutzer und können direkt entsprechende Maßnahmen ergreifen und Auskünfte geben. Sollten Sie dennoch Hilfe benötigen, dann können Sie sich an uns wenden.</value>
+  </data>
+  <data name="onlinemedia-facebook" xml:space="preserve">
+    <value>&lt;strong&gt;Facebook&lt;/strong&gt;: Wir sind gemeinsam mit Facebook Irland Ltd. für die Erhebung (jedoch nicht die weitere Verarbeitung) von Daten der Besucher unserer Facebook-Seite (sog. "Fanpage") verantwortlich. Zu diesen Daten gehören Informationen zu den Arten von Inhalten, die Nutzer sich ansehen oder mit denen sie interagieren, oder die von ihnen vorgenommenen Handlungen (siehe unter „Von dir und anderen getätigte und bereitgestellte Dinge“ in der Facebook-Datenrichtlinie: &lt;a href="https://www.facebook.com/policy" target="_blank"&gt;https://www.facebook.com/policy&lt;/a&gt;), sowie Informationen über die von den Nutzern genutzten Geräte (z. B. IP-Adressen, Betriebssystem, Browsertyp, Spracheinstellungen, Cookie-Daten; siehe unter „Geräteinformationen“ in der Facebook-Datenrichtlinie-erklärung:
+    &lt;a href="https://www.facebook.com/policy" target="_blank"&gt;https://www.facebook.com/policy&lt;/a&gt;). Wie in der Facebook-Datenrichtlinie unter „Wie verwenden wir diese Informationen?“ erläutert, erhebt und verwendet Facebook Informationen auch, um Analysedienste, so genannte "Seiten-Insights", für Seitenbetreiber bereitzustellen, damit diese Erkenntnisse darüber erhalten, wie Personen mit ihren Seiten und mit den mit ihnen verbundenen Inhalten interagieren. Wir haben mit Facebook eine spezielle Vereinbarung abgeschlossen ("Informationen zu Seiten-Insights", &lt;a href="https://www.facebook.com/legal/terms/page_controller_addendum" target="_blank"&gt;https://www.facebook.com/legal/terms/page_controller_addendum&lt;/a&gt;), in der insbesondere geregelt wird, welche Sicherheitsmaßnahmen Facebook beachten muss und in der Facebook sich bereit erklärt hat die Betroffenenrechte zu erfüllen (d. h. Nutzer können z. B. Auskünfte oder Löschungsanfragen direkt an Facebook richten). Die Rechte der Nutzer (insbesondere auf Auskunft, Löschung, Widerspruch und Beschwerde bei zuständiger Aufsichtsbehörde), werden durch die Vereinbarungen mit Facebook nicht eingeschränkt. Weitere Hinweise finden sich in den "Informationen zu Seiten-Insights" (&lt;a href="https://www.facebook.com/legal/terms/information_about_page_insights_data" target="_blank"&gt;https://www.facebook.com/legal/terms/information_about_page_insights_data&lt;/a&gt;).</value>
+  </data>
+  <data name="onlinemedia-facebook1" xml:space="preserve">
+    <value>&lt;strong&gt;Facebook:&lt;/strong&gt; Soziales Netzwerk; Dienstanbieter: Facebook Ireland Ltd., 4 Grand Canal Square, Grand Canal Harbour, Dublin 2, Irland, Mutterunternehmen: Facebook, 1 Hacker Way, Menlo Park, CA 94025, USA; Website: &lt;a href="https://www.facebook.com" target="_blank"&gt;https://www.facebook.com&lt;/a&gt;; Datenschutzerklärung: &lt;a href="https://www.facebook.com/about/privacy" target="_blank"&gt;https://www.facebook.com/about/privacy&lt;/a&gt;; Widerspruchsmöglichkeit (Opt-Out): Einstellungen für Werbeanzeigen:
+        &lt;a href="https://www.facebook.com/settings?tab=ads" target="_blank"&gt;https://www.facebook.com/settings?tab=ads&lt;/a&gt;.</value>
+  </data>
+  <data name="onlinemedia-instagram" xml:space="preserve">
+    <value>&lt;strong&gt;Instagram:&lt;/strong&gt; Soziales Netzwerk; Dienstanbieter: Instagram Inc., 1601 Willow Road, Menlo Park, CA, 94025, USA, Mutterunternehmen: Facebook, 1 Hacker Way, Menlo Park, CA 94025, USA; Website: &lt;a href="https://www.instagram.com" target="_blank"&gt;https://www.instagram.com&lt;/a&gt;; Datenschutzerklärung: &lt;a href="https://instagram.com/about/legal/privacy" target="_blank"&gt;https://instagram.com/about/legal/privacy&lt;/a&gt;.</value>
+  </data>
+  <data name="onlinemedia-law" xml:space="preserve">
+    <value>&lt;strong&gt;Rechtsgrundlagen:&lt;/strong&gt; Berechtigte Interessen (Art. 6 Abs. 1 S. 1 lit. f. DSGVO).</value>
+  </data>
+  <data name="onlinemedia-linkedin" xml:space="preserve">
+    <value>&lt;strong&gt;LinkedIn:&lt;/strong&gt; Soziales Netzwerk; Dienstanbieter: LinkedIn Ireland Unlimited Company, Wilton Place, Dublin 2, Irland; Website: &lt;a href="https://www.linkedin.com" target="_blank"&gt;https://www.linkedin.com&lt;/a&gt;; Datenschutzerklärung: &lt;a href="https://www.linkedin.com/legal/privacy-policy" target="_blank"&gt;https://www.linkedin.com/legal/privacy-policy&lt;/a&gt;; Widerspruchsmöglichkeit (Opt-Out): &lt;a href="https://www.linkedin.com/psettings/guest-controls/retargeting-opt-out" target="_blank"&gt;https://www.linkedin.com/psettings/guest-controls/retargeting-opt-out&lt;/a&gt;.</value>
+  </data>
+  <data name="onlinemedia-processed" xml:space="preserve">
+    <value>&lt;strong&gt;Verarbeitete Datenarten:&lt;/strong&gt; Bestandsdaten (z.B. Namen, Adressen), Kontaktdaten (z.B. E-Mail, Telefonnummern), Inhaltsdaten (z.B. Eingaben in Onlineformularen), Nutzungsdaten (z.B. besuchte Webseiten, Interesse an Inhalten, Zugriffszeiten),
+        Meta-/Kommunikationsdaten (z.B. Geräte-Informationen, IP-Adressen).</value>
+  </data>
+  <data name="onlinemedia-purpose" xml:space="preserve">
+    <value>&lt;strong&gt;Zwecke der Verarbeitung:&lt;/strong&gt; Kontaktanfragen und Kommunikation, Tracking (z.B. interessens-/verhaltensbezogenes Profiling, Nutzung von Cookies), Remarketing, Reichweitenmessung (z.B. Zugriffsstatistiken, Erkennung wiederkehrender Besucher).</value>
+  </data>
+  <data name="onlinemedia-twitter" xml:space="preserve">
+    <value>&lt;strong&gt;Twitter:&lt;/strong&gt; Soziales Netzwerk; Dienstanbieter: Twitter International Company, One Cumberland Place, Fenian Street, Dublin 2 D02 AX07, Irland, Mutterunternehmen: Twitter Inc., 1355 Market Street, Suite 900, San Francisco, CA 94103, USA;
+        Datenschutzerklärung: &lt;a href="https://twitter.com/de/privacy" target="_blank"&gt;https://twitter.com/de/privacy&lt;/a&gt;, (Einstellungen) &lt;a href="https://twitter.com/personalization" target="_blank"&gt;https://twitter.com/personalization&lt;/a&gt;.</value>
+  </data>
+  <data name="onlinemedia-xing" xml:space="preserve">
+    <value>&lt;strong&gt;Xing:&lt;/strong&gt; Soziales Netzwerk; Dienstanbieter: XING AG, Dammtorstraße 29-32, 20354 Hamburg, Deutschland; Website: &lt;a href="https://www.xing.de" target="_blank"&gt;https://www.xing.de&lt;/a&gt;; Datenschutzerklärung: &lt;a href="https://privacy.xing.com/de/datenschutzerklaerung" target="_blank"&gt;https://privacy.xing.com/de/datenschutzerklaerung&lt;/a&gt;.</value>
+  </data>
+  <data name="plugins-affected" xml:space="preserve">
+    <value>&lt;strong&gt;Betroffene Personen:&lt;/strong&gt; Nutzer (z.B. Webseitenbesucher, Nutzer von Onlinediensten), Kommunikationspartner.</value>
+  </data>
+  <data name="plugins-blurp" xml:space="preserve">
+    <value>Wir binden in unser Onlineangebot Funktions- und Inhaltselemente ein, die von den Servern ihrer jeweiligen Anbieter (nachfolgend bezeichnet als "Drittanbieter”) bezogen werden. Dabei kann es sich zum Beispiel um Grafiken, Videos oder Social-Media-Schaltflächen
+    sowie Beiträge handeln (nachfolgend einheitlich bezeichnet als "Inhalte”).</value>
+  </data>
+  <data name="plugins-blurp2" xml:space="preserve">
+    <value>Die Einbindung setzt immer voraus, dass die Drittanbieter dieser Inhalte die IP-Adresse der Nutzer verarbeiten, da sie ohne die IP-Adresse die Inhalte nicht an deren Browser senden könnten. Die IP-Adresse ist damit für die Darstellung dieser Inhalte oder Funktionen erforderlich. Wir bemühen uns, nur solche Inhalte zu verwenden, deren jeweilige Anbieter die IP-Adresse lediglich zur Auslieferung der Inhalte verwenden. Drittanbieter können ferner sogenannte Pixel-Tags (unsichtbare Grafiken, auch als "Web Beacons" bezeichnet) für statistische oder Marketingzwecke verwenden. Durch die "Pixel-Tags" können Informationen, wie der Besucherverkehr auf den Seiten dieser Webseite, ausgewertet werden. Die pseudonymen Informationen können ferner in Cookies auf dem Gerät der Nutzer gespeichert werden und unter anderem technische Informationen zum Browser und zum Betriebssystem, zu verweisenden Webseiten, zur Besuchszeit sowie weitere Angaben zur Nutzung unseres Onlineangebotes enthalten als auch mit solchen Informationen aus anderen Quellen verbunden werden.</value>
+  </data>
+  <data name="plugins-changes" xml:space="preserve">
+    <value>Änderung und Aktualisierung der Datenschutzerklärung</value>
+  </data>
+  <data name="plugins-changes-blurp" xml:space="preserve">
+    <value>Wir bitten Sie, sich regelmäßig über den Inhalt unserer Datenschutzerklärung zu informieren. Wir passen die Datenschutzerklärung an, sobald die Änderungen der von uns durchgeführten Datenverarbeitungen dies erforderlich machen. Wir informieren Sie, sobald durch die Änderungen eine Mitwirkungshandlung Ihrerseits (z.B. Einwilligung) oder eine sonstige individuelle Benachrichtigung erforderlich wird.</value>
+  </data>
+  <data name="plugins-changes-blurp1" xml:space="preserve">
+    <value>Sofern wir in dieser Datenschutzerklärung Adressen und Kontaktinformationen von Unternehmen und Organisationen angeben, bitten wir zu beachten, dass die Adressen sich über die Zeit ändern können und bitten die Angaben vor Kontaktaufnahme zu prüfen.</value>
+  </data>
+  <data name="plugins-changes-rights" xml:space="preserve">
+    <value>Rechte der betroffenen Personen</value>
+  </data>
+  <data name="plugins-changes-rights1" xml:space="preserve">
+    <value>Ihnen stehen als Betroffene nach der DSGVO verschiedene Rechte zu, die sich insbesondere aus Art. 15 bis 21 DSGVO ergeben:</value>
+  </data>
+  <data name="plugins-changes-rights2" xml:space="preserve">
+    <value>&lt;strong&gt;Widerspruchsrecht&lt;/strong&gt;: Sie haben das Recht, aus Gründen, die sich aus Ihrer besonderen Situation ergeben, jederzeit gegen die Verarbeitung der Sie betreffenden personenbezogenen Daten, die aufgrund von Art. 6 Abs. 1 lit. e oder f DSGVO erfolgt, Widerspruch einzulegen; dies gilt auch für ein auf diese Bestimmungen gestütztes Profiling. Werden die Sie betreffenden personenbezogenen Daten verarbeitet, um Direktwerbung zu betreiben, haben Sie das Recht, jederzeit Widerspruch gegen die Verarbeitung der Sie betreffenden personenbezogenen Daten zum Zwecke derartiger Werbung einzulegen; dies gilt auch für das Profiling, soweit es mit solcher Direktwerbung in Verbindung steht.</value>
+  </data>
+  <data name="plugins-changes-rights3" xml:space="preserve">
+    <value>&lt;strong&gt;Widerrufsrecht bei Einwilligungen:&lt;/strong&gt; Sie haben das Recht, erteilte Einwilligungen jederzeit zu widerrufen.</value>
+  </data>
+  <data name="plugins-changes-rights4" xml:space="preserve">
+    <value>&lt;strong&gt;Auskunftsrecht:&lt;/strong&gt; Sie haben das Recht, eine Bestätigung darüber zu verlangen, ob betreffende Daten verarbeitet werden und auf Auskunft über diese Daten sowie auf weitere Informationen und Kopie der Daten entsprechend den gesetzlichen Vorgaben.</value>
+  </data>
+  <data name="plugins-changes-rights5" xml:space="preserve">
+    <value>&lt;strong&gt;Recht auf Berichtigung:&lt;/strong&gt; Sie haben entsprechend den gesetzlichen Vorgaben das Recht, die Vervollständigung der Sie betreffenden Daten oder die Berichtigung der Sie betreffenden unrichtigen Daten zu verlangen.</value>
+  </data>
+  <data name="plugins-changes-rights6" xml:space="preserve">
+    <value>&lt;strong&gt;Recht auf Löschung und Einschränkung der Verarbeitung:&lt;/strong&gt; Sie haben nach Maßgabe der gesetzlichen Vorgaben das Recht, zu verlangen, dass Sie betreffende Daten unverzüglich gelöscht werden, bzw. alternativ nach Maßgabe der gesetzlichen Vorgaben eine Einschränkung der Verarbeitung der Daten zu verlangen.</value>
+  </data>
+  <data name="plugins-changes-rights7" xml:space="preserve">
+    <value>&lt;strong&gt;Recht auf Datenübertragbarkeit:&lt;/strong&gt; Sie haben das Recht, Sie betreffende Daten, die Sie uns bereitgestellt haben, nach Maßgabe der gesetzlichen Vorgaben in einem strukturierten, gängigen und maschinenlesbaren Format zu erhalten oder deren Übermittlung an einen anderen Verantwortlichen zu fordern.</value>
+  </data>
+  <data name="plugins-changes-rights8" xml:space="preserve">
+    <value>&lt;strong&gt;Beschwerde bei Aufsichtsbehörde:&lt;/strong&gt; Sie haben ferner nach Maßgabe der gesetzlichen Vorgaben das Recht, bei einer Aufsichtsbehörde, insbesondere in dem Mitgliedstaat Ihres gewöhnlichen Aufenthaltsorts, Ihres Arbeitsplatzes oder des Orts des mutmaßlichen Verstoßes Beschwerde einzulegen, wenn Sie der Ansicht sind, dass die Verarbeitung der Sie betreffenden personenbezogenen Daten gegen die DSGVO verstößt.</value>
+  </data>
+  <data name="plugins-changes-rights9" xml:space="preserve">
+    <value>&lt;p&gt;Diese Webseite verwendet einen externen Zähler, um die Anzahl der Webseitenaufrufe zu erfassen. Dafür wird ein Java-Script von einer externe Webseite geladen. Der Server von &lt;a href="https://www.besucherzaehler-kostenlos.de"&gt;besucherzaehler-kostenlos.de&lt;/a&gt; speichert die IP-Adresse des Zugriffs anonymisiert und zeitlich begrenzt in einer LOG-Datei ab. Diese wird regelmäßig unwiderruflich gelöscht.&lt;/p&gt;
+
+&lt;p&gt;Um die korrekte Funktionsweise des Zählers zu gewährleisten, speichert der Besucherzähler zudem einen sogenannten Session-Cookie auf dem Computer des Besuchers ab. Dieser wird in der Regel vom Browser gelöscht, sobald er geschlossen wird. In diesem Cookie werden keine persönlichen Informationen gespeichert. Er enthält lediglich die Information der aufgerufenen Domain, sowie einen boolschen Tag (true/false), um den Besucher als bereits gezählt zu markieren.&lt;/p&gt;
+
+&lt;p&gt;Es werden auch darüberhinaus keine persönlichen oder personenbezogenen Daten vom Besucherzähler erhoben. Eine Nachverfolgung oder Zuordnung der Zugriffe ist zu keiner Zeit möglich. Ein besonderer Dank geht an &lt;a href="https://www.putzfrau-agentur.de"&gt;www.putzfrau-agentur.de&lt;/a&gt;, durch dessen Unterstützung dieser kostenlose Service erst möglich gemacht wird.&lt;/p&gt;</value>
+  </data>
+  <data name="plugins-deletion-blurp" xml:space="preserve">
+    <value>Die von uns verarbeiteten Daten werden nach Maßgabe der gesetzlichen Vorgaben gelöscht, sobald deren zur Verarbeitung erlaubten Einwilligungen widerrufen werden oder sonstige Erlaubnisse entfallen (z.B., wenn der Zweck der Verarbeitung dieser Daten entfallen ist oder sie für den Zweck nicht erforderlich sind).</value>
+  </data>
+  <data name="plugins-deletion-blurp1" xml:space="preserve">
+    <value>Sofern die Daten nicht gelöscht werden, weil sie für andere und gesetzlich zulässige Zwecke erforderlich sind, wird deren Verarbeitung auf diese Zwecke beschränkt. D.h., die Daten werden gesperrt und nicht für andere Zwecke verarbeitet. Das gilt z.B. für Daten, die aus handels- oder steuerrechtlichen Gründen aufbewahrt werden müssen oder deren Speicherung zur Geltendmachung, Ausübung oder Verteidigung von Rechtsansprüchen oder zum Schutz der Rechte einer anderen natürlichen oder juristischen Person erforderlich ist.</value>
+  </data>
+  <data name="plugins-deletion-blurp2" xml:space="preserve">
+    <value>Weitere Hinweise zu der Löschung von personenbezogenen Daten können ferner im Rahmen der einzelnen Datenschutzhinweise dieser Datenschutzerklärung erfolgen.</value>
+  </data>
+  <data name="plugins-fontawesome" xml:space="preserve">
+    <value>&lt;strong&gt;Font Awesome:&lt;/strong&gt; Darstellung von Schriftarten und Symbolen; Dienstanbieter: Fonticons, Inc. ,6 Porter Road Apartment 3R, Cambridge, MA 02140, USA; Website: &lt;a href="https://fontawesome.com/" target="_blank"&gt;https://fontawesome.com/&lt;/a&gt;; Datenschutzerklärung: &lt;a href="https://fontawesome.com/privacy" target="_blank"&gt;https://fontawesome.com/privacy&lt;/a&gt;.</value>
+  </data>
+  <data name="plugins-googlefonts" xml:space="preserve">
+    <value>&lt;strong&gt;Google Fonts:&lt;/strong&gt; Wir binden die Schriftarten ("Google Fonts") des Anbieters Google ein, wobei die Daten der Nutzer allein zu Zwecken der Darstellung der Schriftarten im Browser der Nutzer verwendet werden. Die Einbindung erfolgt auf Grundlage unserer berechtigten Interessen an einer technisch sicheren, wartungsfreien und effizienten Nutzung von Schriftarten, deren einheitlicher Darstellung sowie unter Berücksichtigung möglicher lizenzrechtlicher Restriktionen für deren Einbindung. Dienstanbieter: Google Ireland Limited, Gordon House, Barrow Street, Dublin 4, Irland, Mutterunternehmen: Google LLC, 1600 Amphitheatre Parkway, Mountain View, CA 94043, USA; Website: &lt;a href="https://fonts.google.com/" target="_blank"&gt;https://fonts.google.com/&lt;/a&gt;; Datenschutzerklärung: &lt;a href="https://policies.google.com/privacy" target="_blank"&gt;https://policies.google.com/privacy&lt;/a&gt;.</value>
+  </data>
+  <data name="plugins-law" xml:space="preserve">
+    <value>&lt;strong&gt;Hinweise zu Rechtsgrundlagen:&lt;/strong&gt; Sofern wir die Nutzer um deren Einwilligung in den Einsatz der Drittanbieter bitten, ist die Rechtsgrundlage der Verarbeitung von Daten die Einwilligung. Ansonsten werden die Daten der Nutzer auf Grundlage unserer berechtigten Interessen (d.h. Interesse an effizienten, wirtschaftlichen und empfängerfreundlichen Leistungen) verarbeitet. In diesem Zusammenhang möchten wir Sie auch auf die Informationen zur Verwendung von Cookies in dieser Datenschutzerklärung hinweisen.</value>
+  </data>
+  <data name="plugins-law1" xml:space="preserve">
+    <value>&lt;strong&gt;Rechtsgrundlagen:&lt;/strong&gt; Berechtigte Interessen (Art. 6 Abs. 1 S. 1 lit. f. DSGVO), Einwilligung (Art. 6 Abs. 1 S. 1 lit. a. DSGVO).</value>
+  </data>
+  <data name="plugins-processed" xml:space="preserve">
+    <value>&lt;strong&gt;Verarbeitete Datenarten:&lt;/strong&gt; Nutzungsdaten (z.B. besuchte Webseiten, Interesse an Inhalten, Zugriffszeiten), Meta-/Kommunikationsdaten (z.B. Geräte-Informationen, IP-Adressen), Kontaktdaten (z.B. E-Mail, Telefonnummern), Inhaltsdaten (z.B. Eingaben in Onlineformularen).</value>
+  </data>
+  <data name="plugins-purpose" xml:space="preserve">
+    <value>&lt;strong&gt;Zwecke der Verarbeitung:&lt;/strong&gt; Bereitstellung unseres Onlineangebotes und Nutzerfreundlichkeit, Erbringung vertragliche Leistungen und Kundenservice, Kontaktanfragen und Kommunikation, Direktmarketing (z.B. per E-Mail oder postalisch), Tracking (z.B. interessens-/verhaltensbezogenes Profiling, Nutzung von Cookies), Interessenbasiertes und verhaltensbezogenes Marketing, Profiling (Erstellen von Nutzerprofilen).</value>
+  </data>
+  <data name="plugins-recaptcha" xml:space="preserve">
+    <value>&lt;strong&gt;ReCaptcha:&lt;/strong&gt; Wir binden die Funktion "ReCaptcha" zur Erkennung von Bots, z.B. bei Eingaben in Onlineformularen, ein. Die Verhaltensangaben der Nutzer (z.B. Mausbewegungen oder Abfragen) werden ausgewertet, um Menschen von Bots unterscheiden zu können. Dienstanbieter: Google Ireland Limited, Gordon House, Barrow Street, Dublin 4, Irland, Mutterunternehmen: Google LLC, 1600 Amphitheatre Parkway, Mountain View, CA 94043, USA; Website: &lt;a href="https://www.google.com/recaptcha/" target="_blank"&gt;https://www.google.com/recaptcha/&lt;/a&gt;; Datenschutzerklärung: &lt;a href="https://policies.google.com/privacy" target="_blank"&gt;https://policies.google.com/privacy&lt;/a&gt;; Widerspruchsmöglichkeit (Opt-Out): Opt-Out-Plugin: &lt;a href="https://tools.google.com/dlpage/gaoptout?hl=de" target="_blank"&gt;https://tools.google.com/dlpage/gaoptout?hl=de&lt;/a&gt;, Einstellungen für die Darstellung von Werbeeinblendungen: &lt;a href="https://adssettings.google.com/authenticated" target="_blank"&gt;https://adssettings.google.com/authenticated&lt;/a&gt;.</value>
+  </data>
+  <data name="plugins-slideshare" xml:space="preserve">
+    <value>&lt;strong&gt;SlideShare Präsentationen:&lt;/strong&gt; Einbindung von SlideShare-Präsentationen; Dienstanbieter: LinkedIn Ireland Unlimited Company, Wilton Place, Dublin 2, Irland; Website: &lt;a href="https://www.linkedin.com" target="_blank"&gt;https://www.linkedin.com&lt;/a&gt;;
+        Datenschutzerklärung: &lt;a href="https://www.linkedin.com/legal/privacy-policy" target="_blank"&gt;https://www.linkedin.com/legal/privacy-policy&lt;/a&gt;.</value>
+  </data>
+  <data name="processing-communicationpartner" xml:space="preserve">
+    <value>Kommunikationspartner</value>
+  </data>
+  <data name="processing-contactdetails" xml:space="preserve">
+    <value>Kontaktdaten (z.B. E-Mail, Telefonnummern)</value>
+  </data>
+  <data name="processing-contentdata" xml:space="preserve">
+    <value>Inhaltsdaten (z.B. Eingaben in Onlineformularen)</value>
+  </data>
+  <data name="processing-interests" xml:space="preserve">
+    <value>Interessenten</value>
+  </data>
+  <data name="processing-meta" xml:space="preserve">
+    <value>Meta-/Kommunikationsdaten (z.B. Geräte-Informationen, IP-Adressen)</value>
+  </data>
+  <data name="processing-personcategory" xml:space="preserve">
+    <value>Kategorien betroffener Personen</value>
+  </data>
+  <data name="processing-purposes" xml:space="preserve">
+    <value>Die nachfolgende Übersicht fasst die Arten der verarbeiteten Daten und die Zwecke ihrer Verarbeitung zusammen und verweist auf die betroffenen Personen.</value>
+  </data>
+  <data name="processing-toc-access" xml:space="preserve">
+    <value>Reichweitenmessung (z.B. Zugriffsstatistiken, Erkennung wiederkehrender Besucher)</value>
+  </data>
+  <data name="processing-toc-contact" xml:space="preserve">
+    <value>Kontaktanfragen und Kommunikation</value>
+  </data>
+  <data name="processing-toc-feedback" xml:space="preserve">
+    <value>Feedback (z.B. Sammeln von Feedback via Online-Formular)</value>
+  </data>
+  <data name="processing-toc-managing" xml:space="preserve">
+    <value>Verwaltung und Beantwortung von Anfragen</value>
+  </data>
+  <data name="processing-toc-provision" xml:space="preserve">
+    <value>Bereitstellung unseres Onlineangebotes und Nutzerfreundlichkeit</value>
+  </data>
+  <data name="processing-toc-purpose" xml:space="preserve">
+    <value>Zwecke der Verarbeitung</value>
+  </data>
+  <data name="processing-toc-security" xml:space="preserve">
+    <value>Sicherheitsmaßnahmen</value>
+  </data>
+  <data name="processing-toc-tracking" xml:space="preserve">
+    <value>Tracking (z.B. interessens-/verhaltensbezogenes Profiling, Nutzung von Cookies)</value>
+  </data>
+  <data name="processing-types" xml:space="preserve">
+    <value>Arten der verarbeiteten Daten</value>
+  </data>
+  <data name="processing-usage" xml:space="preserve">
+    <value>Nutzungsdaten (z.B. besuchte Webseiten, Interesse an Inhalten, Zugriffszeiten)</value>
+  </data>
+  <data name="processing-user" xml:space="preserve">
+    <value>Nutzer (z.B. Webseitenbesucher, Nutzer von Onlinediensten)</value>
+  </data>
+  <data name="responsible-email" xml:space="preserve">
+    <value>E-Mail-Adresse</value>
+  </data>
+  <data name="responsible-imprint" xml:space="preserve">
+    <value>Impressum</value>
+  </data>
+  <data name="responsible-person" xml:space="preserve">
+    <value>Vertretungsberechtigte Personen</value>
+  </data>
+  <data name="responsible-phone" xml:space="preserve">
+    <value>Telefon</value>
+  </data>
+  <data name="seal1" xml:space="preserve">
+    <value>Erstellt mit kostenlosem Datenschutz-Generator.de von Dr. Thomas Schwenke</value>
+  </data>
+  <data name="toc-analytics" xml:space="preserve">
+    <value>Webanalyse, Monitoring und Optimierung</value>
+  </data>
+  <data name="toc-blogs" xml:space="preserve">
+    <value>Blogs und Publikationsmedien</value>
+  </data>
+  <data name="toc-contact" xml:space="preserve">
+    <value>Kontaktaufnahme</value>
+  </data>
+  <data name="toc-cookies" xml:space="preserve">
+    <value>Einsatz von Cookies</value>
+  </data>
+  <data name="toc-definitions" xml:space="preserve">
+    <value>Begriffsdefinitionen</value>
+  </data>
+  <data name="toc-deletedata" xml:space="preserve">
+    <value>Löschung von Daten</value>
+  </data>
+  <data name="toc-legal-bases" xml:space="preserve">
+    <value>Maßgebliche Rechtsgrundlagen</value>
+  </data>
+  <data name="toc-onlinemarketing" xml:space="preserve">
+    <value>Onlinemarketing</value>
+  </data>
+  <data name="toc-onlinemedia" xml:space="preserve">
+    <value>Präsenzen in sozialen Netzwerken (Social Media)</value>
+  </data>
+  <data name="toc-overview" xml:space="preserve">
+    <value>Inhaltsübersicht</value>
+  </data>
+  <data name="toc-plugins" xml:space="preserve">
+    <value>Plugins und eingebettete Funktionen sowie Inhalte</value>
+  </data>
+  <data name="toc-processing" xml:space="preserve">
+    <value>Übersicht der Verarbeitungen</value>
+  </data>
+  <data name="toc-responsible" xml:space="preserve">
+    <value>Verantwortlicher</value>
+  </data>
+  <data name="toc-rights" xml:space="preserve">
+    <value>Rechte der betroffenen Personen</value>
+  </data>
+  <data name="toc-safety" xml:space="preserve">
+    <value>Sicherheitsmaßnahmen</value>
+  </data>
+  <data name="toc-update" xml:space="preserve">
+    <value>Änderung und Aktualisierung der Datenschutzerklärung</value>
+  </data>
+  <data name="slides" xml:space="preserve">
+    <value>In den letzten Jahren hielt ich einige Vorträge auf Veranstaltungen. Hier einige meiner Folien</value>
+  </data>
+  <data name="held" xml:space="preserve">
+    <value>Gehalten</value>
+  </data>
+  <data name="show-talk" xml:space="preserve">
+    <value>Vortrag ansehen</value>
+  </data>
+  <data name="tests" xml:space="preserve">
+    <value>Diese Empfehlungen stammen von ehemaligen Kollegen, der letzten Jahre.</value>
+  </data>
+  <data name="cookie-string" xml:space="preserve">
+    <value>Bitte lesen Sie die Datenschutzvereinbarung, indem Sie auf "Lesen Sie mehr" und anschließend auf "Akzeptieren" klicken.</value>
+  </data>
+  <data name="button1" xml:space="preserve">
+    <value>Akzeptieren</value>
+  </data>
+  <data name="button" xml:space="preserve">
+    <value>Lesen Sie mehr</value>
+  </data>
+  <data name="last-updated" xml:space="preserve">
+    <value>Zuletzt aktualisiert</value>
+  </data>
+  <data name="privacy-title" xml:space="preserve">
+    <value>Datenschutz</value>
+  </data>
+  <data name="talks" xml:space="preserve">
+    <value>Vorträge</value>
+  </data>
+  <data name="about-memberships" xml:space="preserve">
+    <value>Mitgliedschaften</value>
+  </data>
+  <data name="about-hpos" xml:space="preserve">
+    <value>Ehrenämter</value>
+  </data>
+  <data name="about-mandates" xml:space="preserve">
+    <value>Mandate</value>
+  </data>
+  <data name="Syndication" xml:space="preserve">
+    <value>Syndizierung</value>
+  </data>
+  <data name="APIKeys" xml:space="preserve">
+    <value>API Schlüssel</value>
+  </data>
+  <data name="Videos" xml:space="preserve">
+    <value>Videos</value>
+  </data>
+  <data name="content-additional" xml:space="preserve">
+    <value>Zusätzlich</value>
+  </data>
+</root>
