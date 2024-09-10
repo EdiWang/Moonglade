@@ -1,8 +1,9 @@
-﻿using Moonglade.Core.PostFeature;
+using Moonglade.Core.PostFeature;
 using Moonglade.Pingback;
 using Moonglade.Web.Attributes;
 using Moonglade.Webmention;
 using System.ComponentModel.DataAnnotations;
+using Moonglade.IndexNow.Client;
 
 namespace Moonglade.Web.Controllers;
 
@@ -46,20 +47,28 @@ public class PostController(
 
             if (model.IsPublished)
             {
-                logger.LogInformation($"Trying to Ping URL for post: {postEntity.Id}");
+	            logger.LogInformation($"Trying to Ping URL for post: {postEntity.Id}");
 
-                var baseUri = new Uri(Helper.ResolveRootUrl(HttpContext, null, removeTailSlash: true));
-                var link = new Uri(baseUri, $"post/{postEntity.RouteLink.ToLower()}");
+	            var baseUri = new Uri(Helper.ResolveRootUrl(HttpContext, null, removeTailSlash: true));
+	            var link = new Uri(baseUri, $"post/{postEntity.RouteLink.ToLower()}");
 
-                if (blogConfig.AdvancedSettings.EnablePingback)
-                {
-                    cannonService.FireAsync<IPingbackSender>(async sender => await sender.TrySendPingAsync(link.ToString(), postEntity.PostContent));
-                }
+	            if (blogConfig.AdvancedSettings.EnablePingback)
+	            {
+		            cannonService.FireAsync<IPingbackSender>(async sender =>
+			            await sender.TrySendPingAsync(link.ToString(), postEntity.PostContent));
+	            }
 
-                if (blogConfig.AdvancedSettings.EnableWebmention)
-                {
-                    cannonService.FireAsync<IWebmentionSender>(async sender => await sender.SendWebmentionAsync(link.ToString(), postEntity.PostContent));
-                }
+	            if (blogConfig.AdvancedSettings.EnableWebmention)
+	            {
+		            cannonService.FireAsync<IWebmentionSender>(async sender =>
+			            await sender.SendWebmentionAsync(link.ToString(), postEntity.PostContent));
+	            }
+
+	            if (blogConfig.GeneralSettings.IndexNowApiKey is not null)
+	            {
+		            var indexNowCLient = new IndexNowClient(blogConfig);
+		            await indexNowCLient.SendRequestAsync(link.ToString());
+	            }
             }
 
             return Ok(new { PostId = postEntity.Id });

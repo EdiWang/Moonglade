@@ -1,4 +1,4 @@
-﻿using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations;
 using System.Text.Json.Serialization;
 
 namespace Moonglade.Configuration;
@@ -92,7 +92,10 @@ public class GeneralSettings : IBlogSettings
     [Display(Name = "Subscription buttons")]
     public bool WidgetsSubscriptionButtons { get; set; } = true;
 
-    [MaxLength(64)]
+		[Display(Name = "IndexNow API Key")]
+		public string IndexNowApiKey { get; set; }
+
+		[MaxLength(64)]
     public string AvatarUrl { get; set; }
 
     public TimeSpan TimeZoneUtcOffset { get; set; }

@@ -1,4 +1,4 @@
-﻿@page "/admin/settings/general"
+@page "/admin/settings/general"
 @model Moonglade.Web.Pages.Settings.GeneralModel
 @inject ITimeZoneResolver ZoneResolver
 @inject IOptions<RequestLocalizationOptions> LocOptions
@@ -455,15 +455,29 @@
                     </div>
 
                     <div class="settings-entry2 row align-items-center py-3 px-2 rounded-3 shadow-sm border bg-white mb-2">
-                        <div class="col-auto">
-                            <i class="bi-link settings-entry-icon"></i>
-                        </div>
-                        <div class="col">
-                            <label asp-for="@BlogConfig.GeneralSettings.DcLicenseUrl"></label>
-                        </div>
-                        <div class="col-md-5 text-end">
-                            <input asp-for="@BlogConfig.GeneralSettings.DcLicenseUrl" class="form-control" />
-                        </div>
+	                    <div class="col-auto">
+		                    <i class="bi-link settings-entry-icon"></i>
+	                    </div>
+	                    <div class="col">
+		                    <label asp-for="@BlogConfig.GeneralSettings.DcLicenseUrl"></label>
+	                    </div>
+	                    <div class="col-md-5 text-end">
+		                    <input asp-for="@BlogConfig.GeneralSettings.DcLicenseUrl" class="form-control" />
+	                    </div>
+                    </div>
+                    <h4 class="admin-subtitle fw-bold mb-2">
+	                    @SharedLocalizer["APIKeys"]
+                    </h4>
+                    <div class="settings-entry2 row align-items-center py-3 px-2 rounded-3 shadow-sm border bg-white mb-2">
+	                    <div class="col-auto">
+		                    <i class="bi-globe"></i>
+	                    </div>
+	                    <div class="col">
+		                    <label asp-for="ViewModel.IndexNowApiKey"></label>
+	                    </div>
+	                    <div class="col-md-5 text-end">
+		                    <input asp-for="ViewModel.IndexNowApiKey" class="form-control" />
+	                    </div>
                     </div>
                 </div>
             </div>
