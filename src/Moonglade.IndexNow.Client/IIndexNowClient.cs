@@ -4,6 +4,6 @@ namespace Moonglade.IndexNow.Client
 {
 	public interface IIndexNowClient
 	{
-		Task<HttpStatusCode> SendRequestAsync(string urlToSubmit);
+		Task<HttpStatusCode> SendRequestAsync(Uri urlToSubmit);
 	}
 }

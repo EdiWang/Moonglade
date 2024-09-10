@@ -10,17 +10,17 @@ namespace Moonglade.IndexNow.Client;
 /// </summary>
 public class IndexNowClient : IIndexNowClient
 {
-	private IBlogConfig _config;
+	private readonly IBlogConfig _config;
 
 	public IndexNowClient(IBlogConfig config)
 	{
 		_config = config;
 	}
 
-	public async Task<HttpStatusCode> SendRequestAsync(string urlToSubmit)
+	public async Task<HttpStatusCode> SendRequestAsync(Uri urlToSubmit)
 	{
 		string[] toPing = new[] { "api.indexnow.org", "www.bing.com", "search.seznam.cz", "yandex.com" };
-		var host = new Uri(urlToSubmit).Host;
+		var host = urlToSubmit.Host;
 		var apiKey = _config.GeneralSettings.IndexNowApiKey;
 
 		foreach (var ping in toPing)
@@ -38,7 +38,7 @@ public class IndexNowClient : IIndexNowClient
 				keyLocation = $"https://{host}/{apiKey}.txt",
 				urlList = new List<string>
 				{
-					urlToSubmit
+					urlToSubmit.ToString()
 				}
 			};
 

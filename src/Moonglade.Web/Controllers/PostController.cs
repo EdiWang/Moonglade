@@ -67,7 +67,7 @@ public class PostController(
 	            if (blogConfig.GeneralSettings.IndexNowApiKey is not null)
 	            {
 		            var indexNowCLient = new IndexNowClient(blogConfig);
-		            await indexNowCLient.SendRequestAsync(link.ToString());
+		            await indexNowCLient.SendRequestAsync(link);
 	            }
             }
 
