@@ -1,6 +1,8 @@
-﻿@page "/post/{year:int:min(1900):length(4)}/{month:int:range(1,12)}/{day:int:range(1,31)}/{slug:regex(^(?!-)([a-zA-Z0-9-]){{1,128}}$)}"
+@page "/post/{year:int:min(1900):length(4)}/{month:int:range(1,12)}/{day:int:range(1,31)}/{slug:regex(^(?!-)([a-zA-Z0-9-]){{1,128}}$)}"
 @model Moonglade.Web.Pages.PostModel
+@using Microsoft.AspNetCore.Mvc.TagHelpers
 @using Moonglade.Utils
+@using Moonglade.Web.Models
 
 @Html.AntiForgeryToken()
 
@@ -18,6 +20,8 @@
     {
         ViewBag.Keywords = string.Join(", ", Model.Post.Tags.Select(t => t.NormalizedName));
     }
+
+    TimeToRead timeToRead = Model.Post.GetTimeToRead();
 }
 
 @section meta {
@@ -122,19 +126,23 @@
         </h1>
 
         <div class="post-publish-info text-secondary mb-2">
-            @if (!string.IsNullOrWhiteSpace(Model.Post.Author))
-            {
-                <i class="bi-person d-none d-sm-inline"></i>
-                <span class="me-2 d-none d-sm-inline">@Model.Post.Author</span>
-            }
+	        @if (!string.IsNullOrWhiteSpace(Model.Post.Author))
+	        {
+		        <i class="bi-person d-none d-sm-inline"></i>
+		        <span class="me-2 d-none d-sm-inline">@Model.Post.Author</span>
+	        }
 
-            <i class="bi-calendar-event"></i>
-            <span class="me-2">
-                <time data-utc-label="@Model.Post.PubDateUtc.GetValueOrDefault().ToString("u")">
-                    @DateOnly.FromDateTime(Model.Post.PubDateUtc.GetValueOrDefault()) (UTC)
-                </time>
-            </span>
+	        <i class="bi-calendar-event"></i>
+	        <span class="me-2">
+		        <time data-utc-label="@Model.Post.PubDateUtc.GetValueOrDefault().ToString("u")">
+			        @DateOnly.FromDateTime(Model.Post.PubDateUtc.GetValueOrDefault()) (UTC)
+		        </time>
+	        </span>
         </div>
+				
+        <span>&nbsp;</span>
+        <i class="bi-clock d-none d-sm-inline"></i>
+        <span class="d-none d-sm-inline">@timeToRead.Minutes @timeToRead.StrMinutes @timeToRead.Seconds @timeToRead.StrSeconds</span>
     </header>
 
     @if (Model.Post.IsOutdated)
