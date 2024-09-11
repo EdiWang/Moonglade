@@ -7,7 +7,7 @@
     var settings = new CustomLinkSettingsJsonModel()
             {
                 IsEnabled = bc.IsEnabled,
-                MenuJson = bc.Links.ToJson(true)
+                LinkJson = bc.Links.ToJson(true)
             };
 }
 
@@ -85,7 +85,7 @@
         </div>
     </div>
 
-    <textarea asp-for="@settings.MenuJson" class="settings-jsoncontent-textarea d-none"></textarea>
+    <textarea asp-for="@settings.LinkJson" class="settings-jsoncontent-textarea d-none"></textarea>
 
     <div class="admin-settings-action-container border-top pt-2 mt-2">
         <button type="submit" class="btn btn-outline-accent" id="btn-save-settings">

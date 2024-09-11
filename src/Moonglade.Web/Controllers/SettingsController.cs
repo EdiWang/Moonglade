@@ -208,7 +208,7 @@ public class SettingsController(
 	[ProducesResponseType(StatusCodes.Status400BadRequest)]
 	public async Task<IActionResult> CustomLinks(CustomLinkSettingsJsonModel model)
 	{
-		if (model.IsEnabled && string.IsNullOrWhiteSpace(model.MenuJson))
+		if (model.IsEnabled && string.IsNullOrWhiteSpace(model.LinkJson))
 		{
 			ModelState.AddModelError(nameof(CustomMenuSettingsJsonModel.MenuJson), "Link is required");
 			return BadRequest(ModelState.CombineErrorMessages());
@@ -217,7 +217,7 @@ public class SettingsController(
 		blogConfig.CustomLinkSettings = new()
 		{
 			IsEnabled = model.IsEnabled,
-			Links = model.MenuJson.FromJson<Link[]>()
+			Links = model.LinkJson.FromJson<Link[]>()
 		};
 
 		await SaveConfigAsync(blogConfig.CustomLinkSettings);

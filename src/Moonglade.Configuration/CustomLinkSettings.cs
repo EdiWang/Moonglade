@@ -9,7 +9,7 @@ public class CustomLinkSettingsJsonModel
 	public bool IsEnabled { get; set; }
 
 	[MaxLength(1024)]
-	public string MenuJson { get; set; }
+	public string LinkJson { get; set; }
 }
 
 public class CustomLinkSettings : IBlogSettings
