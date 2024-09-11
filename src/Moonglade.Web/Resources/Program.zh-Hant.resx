@@ -477,12 +477,6 @@
   <data name="Language" xml:space="preserve">
     <value>語言</value>
   </data>
-  <data name="Last Login IP" xml:space="preserve">
-    <value>最後登入</value>
-  </data>
-  <data name="Last Login Time (UTC)" xml:space="preserve">
-    <value>最後登錄時間</value>
-  </data>
   <data name="Latest Posts" xml:space="preserve">
     <value>最新文章</value>
   </data>

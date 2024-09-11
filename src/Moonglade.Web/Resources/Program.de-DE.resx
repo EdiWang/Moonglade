@@ -150,9 +150,6 @@
   <data name="Admin" xml:space="preserve">
     <value>Admin</value>
   </data>
-  <data name="Admin Login" xml:space="preserve">
-    <value>Admin Login</value>
-  </data>
   <data name="Admin Sign In" xml:space="preserve">
     <value>Admin einloggen</value>
   </data>
@@ -167,9 +164,6 @@
   </data>
   <data name="All Tags" xml:space="preserve">
     <value>Alle Tags</value>
-  </data>
-  <data name="Allow javascript in pages" xml:space="preserve">
-    <value>JavaScript in Seiten aktivieren</value>
   </data>
   <data name="Archive" xml:space="preserve">
     <value>Archiv</value>
@@ -273,9 +267,6 @@
   <data name="Close" xml:space="preserve">
     <value>Schliessen</value>
   </data>
-  <data name="Comment is disabled by blog administrator." xml:space="preserve">
-    <value>Kommentarfunktion wurde vom Blog Administrator ausgeschaltet.</value>
-  </data>
   <data name="Comment of this post is disabled." xml:space="preserve">
     <value>Kommentare für diesen Artikel ausgeschaltet.</value>
   </data>
@@ -348,9 +339,6 @@
   <data name="Drag and drop image file here" xml:space="preserve">
     <value>Ziehen Sie eine Bilddatei hierhin</value>
   </data>
-  <data name="e.g. https://blog.ediwangcdn.com/ediwang-images" xml:space="preserve">
-    <value>z.B. https://blog.ediwangcdn.com/ediwang-images</value>
-  </data>
   <data name="e.g. Your blog post license information." xml:space="preserve">
     <value>z.B. Ihre Artikel Lizenzinformation.</value>
   </data>
@@ -387,20 +375,11 @@
   <data name="Enable Gravatar in comment list" xml:space="preserve">
     <value>Gravatar für Kommentarliste einschalten</value>
   </data>
-  <data name="Enable MetaWeblog API" xml:space="preserve">
-    <value>MetaWeblog API einschalten</value>
-  </data>
   <data name="Enable OpenSearch" xml:space="preserve">
     <value>OpenSearch einschalten</value>
   </data>
   <data name="Enable FOAF" xml:space="preserve">
     <value>FOAF einschalten</value>
-  </data>
-  <data name="Enable Pingback receive" xml:space="preserve">
-    <value>Pingback-Empfang einschalten</value>
-  </data>
-  <data name="Enable Pingback send" xml:space="preserve">
-    <value>Pingback-Versand einschalten</value>
   </data>
   <data name="Enable Site Map" xml:space="preserve">
     <value>SiteMap einschalten</value>
@@ -429,9 +408,6 @@
   <data name="Featured Posts" xml:space="preserve">
     <value>Vorgestellte Artikel</value>
   </data>
-  <data name="Feed Subscription" xml:space="preserve">
-    <value>Feed Abonnement</value>
-  </data>
   <data name="Fit image to device pixel ratio" xml:space="preserve">
     <value>Bild an das Pixelverhältnis des Geräts anpassen</value>
   </data>
@@ -450,9 +426,6 @@
   <data name="Friend Link Options" xml:space="preserve">
     <value>FriendLink Optionen</value>
   </data>
-  <data name="Friend Links" xml:space="preserve">
-    <value>Friend Links</value>
-  </data>
   <data name="General" xml:space="preserve">
     <value>Allgemein</value>
   </data>
@@ -468,9 +441,6 @@
   <data name="Home" xml:space="preserve">
     <value>Start</value>
   </data>
-  <data name="How many tags show on sidebar" xml:space="preserve">
-    <value>Wieviele Tags auf Seitenleiste anzeigen</value>
-  </data>
   <data name="HTML Pitch" xml:space="preserve">
     <value>HTML Platz</value>
   </data>
@@ -483,12 +453,6 @@
   <data name="Image" xml:space="preserve">
     <value>Bild</value>
   </data>
-  <data name="Inline CSS" xml:space="preserve">
-    <value>Eingebettetes CSS</value>
-  </data>
-  <data name="Insights" xml:space="preserve">
-    <value>Einsichten</value>
-  </data>
   <data name="Invalid Icon CSS Class" xml:space="preserve">
     <value>Falsche Icon CSS-Klasse</value>
   </data>
@@ -500,12 +464,6 @@
   </data>
   <data name="Language" xml:space="preserve">
     <value>Sprache</value>
-  </data>
-  <data name="Last Login IP" xml:space="preserve">
-    <value>Letzte Login IP</value>
-  </data>
-  <data name="Last Login Time (UTC)" xml:space="preserve">
-    <value>Letzte Loginzeit (UTC)</value>
   </data>
   <data name="Latest Posts" xml:space="preserve">
     <value>Letzte Artikel</value>
@@ -537,9 +495,6 @@
   <data name="Meta keyword" xml:space="preserve">
     <value>Meta keyword</value>
   </data>
-  <data name="MetaWeblog password" xml:space="preserve">
-    <value>MetaWeblog Passwort</value>
-  </data>
   <data name="Moonglade Configuration" xml:space="preserve">
     <value>Moonglade Konfiguration</value>
   </data>
@@ -554,12 +509,6 @@
   </data>
   <data name="No Archive" xml:space="preserve">
     <value>Kein Archiv</value>
-  </data>
-  <data name="No Comments" xml:space="preserve">
-    <value>Keine Kommentare</value>
-  </data>
-  <data name="No Customized Menus" xml:space="preserve">
-    <value>Keine benutzerdefinierten Menüs</value>
   </data>
   <data name="no items to show" xml:space="preserve">
     <value>keine Artikel</value>
@@ -603,12 +552,6 @@
   <data name="Order" xml:space="preserve">
     <value>Sortieren</value>
   </data>
-  <data name="Origin Link" xml:space="preserve">
-    <value>Original-Link</value>
-  </data>
-  <data name="Original" xml:space="preserve">
-    <value>Original</value>
-  </data>
   <data name="Owner email" xml:space="preserve">
     <value>Benutzeremail</value>
   </data>
@@ -645,17 +588,11 @@
   <data name="Publish Date" xml:space="preserve">
     <value>Veröffentlichungsdatum</value>
   </data>
-  <data name="Publish Now" xml:space="preserve">
-    <value>Jetzt Veröffentlichen</value>
-  </data>
   <data name="Published" xml:space="preserve">
     <value>Veröffentlicht</value>
   </data>
   <data name="Read origin article" xml:space="preserve">
     <value>Dieser Artikel ist eine Bearbeitung eines anderen Artikels. Lies den Originalartikel hier.</value>
-  </data>
-  <data name="Reads" xml:space="preserve">
-    <value>Gelesen</value>
   </data>
   <data name="Recycle Bin" xml:space="preserve">
     <value>Papierkorb</value>
@@ -693,9 +630,6 @@
   <data name="Route Name" xml:space="preserve">
     <value>Routenname</value>
   </data>
-  <data name="RSS Items" xml:space="preserve">
-    <value>RSS Artikel</value>
-  </data>
   <data name="Save" xml:space="preserve">
     <value>Speichern</value>
   </data>
@@ -726,15 +660,6 @@
   <data name="Set a primary domain if your website binds to multiple domian names." xml:space="preserve">
     <value>Legen Sie eine primäre Domäne fest, wenn Ihre Website an mehrere Domänennamen gebunden ist.</value>
   </data>
-  <data name="Short description" xml:space="preserve">
-    <value>Kurzbeschreibung</value>
-  </data>
-  <data name="Short description is for display only on Phone screen." xml:space="preserve">
-    <value>Kurzbeschreibung wird nur auf dem Telefonbildschirm angezeigt.</value>
-  </data>
-  <data name="Show Admin login button under sidebar" xml:space="preserve">
-    <value>Admin Login-Button unter der Seitenleiste anzeigen</value>
-  </data>
   <data name="Show call-out section" xml:space="preserve">
     <value>Call-Out section anzeigen</value>
   </data>
@@ -756,9 +681,6 @@
   <data name="Sign In" xml:space="preserve">
     <value>Einloggen</value>
   </data>
-  <data name="Site Icon Files" xml:space="preserve">
-    <value>Seiten Icondateien</value>
-  </data>
   <data name="Start Time" xml:space="preserve">
     <value>Startzeit</value>
   </data>
@@ -770,9 +692,6 @@
   </data>
   <data name="Submit" xml:space="preserve">
     <value>Übermitteln</value>
-  </data>
-  <data name="Subscribe Recent 20 Posts" xml:space="preserve">
-    <value>Abonniere letzte 20 Artikel</value>
   </data>
   <data name="Subscription" xml:space="preserve">
     <value>Abonnements</value>
@@ -818,24 +737,6 @@
   </data>
   <data name="Title" xml:space="preserve">
     <value>Titel</value>
-  </data>
-  <data name="To turn on / off system navigation items (Categories / Tags / Archive), edit" xml:space="preserve">
-    <value>Bearbeiten um Systemnavigationspunkte (Kategorien / Tags / Archiv) ein- oder auszuschalten</value>
-  </data>
-  <data name="Top 10 Commented Posts / Past Year" xml:space="preserve">
-    <value>Top 10 kommentierte Artikel / Letztes Jahr</value>
-  </data>
-  <data name="Top 10 Read Posts / Past Year" xml:space="preserve">
-    <value>Top 10 gelesene Artikel / Letztes Jahr</value>
-  </data>
-  <data name="Top Level" xml:space="preserve">
-    <value>Toplevel</value>
-  </data>
-  <data name="Top Menu Properties" xml:space="preserve">
-    <value>Top Menüeigenschaften</value>
-  </data>
-  <data name="Try to shutdown and restart the website, this will terminate all current requests." xml:space="preserve">
-    <value>Versuchen Sie, die Website herunterzufahren und neu zu starten; dadurch werden alle laufenden Anfragen beendet.</value>
   </data>
   <data name="Update" xml:space="preserve">
     <value>Aktualisieren</value>
@@ -896,62 +797,5 @@
   </data>
   <data name="Export" xml:space="preserve">
     <value>Exportieren</value>
-  </data>
-  <data name="Site Verification" xml:space="preserve">
-    <value>Seitenverifizierung</value>
-  </data>
-  <data name="Social Profiles" xml:space="preserve">
-    <value>Soziale Profile</value>
-  </data>
-  <data name="Minute" xml:space="preserve">
-    <value>Minute</value>
-  </data>
-  <data name="Minutes" xml:space="preserve">
-    <value>Minuten</value>
-  </data>
-  <data name="Second" xml:space="preserve">
-    <value>Sekunde</value>
-  </data>
-  <data name="Seconds" xml:space="preserve">
-    <value>Sekunden</value>
-  </data>
-  <data name="Github PAT" xml:space="preserve">
-    <value>Github PAT</value>
-  </data>
-  <data name="Donations" xml:space="preserve">
-    <value>Spenden</value>
-  </data>
-  <data name="Donation Service" xml:space="preserve">
-    <value>Spendendienst</value>
-  </data>
-  <data name="This service adds the available donation services on the end of a blog post." xml:space="preserve">
-    <value>Dieser Dienst fügt deine angegebenen Spendenmöglichkeiten einem Blogpost hinzu.</value>
-  </data>
-  <data name="Enable Sharing buttons" xml:space="preserve">
-    <value>Sharing Knöpfe hinzufügen</value>
-  </data>
-  <data name="Me and the blog" xml:space="preserve">
-    <value>Mein Blog und ich</value>
-  </data>
-  <data name="projects" xml:space="preserve">
-    <value>Projekte</value>
-  </data>
-  <data name="email" xml:space="preserve">
-    <value>E-Mail-Adresse</value>
-  </data>
-  <data name="held" xml:space="preserve">
-    <value>Gehalten</value>
-  </data>
-  <data name="Syndication" xml:space="preserve">
-    <value>Syndizierung</value>
-  </data>
-  <data name="APIKeys" xml:space="preserve">
-    <value>API Schlüssel</value>
-  </data>
-  <data name="Videos" xml:space="preserve">
-    <value>Videos</value>
-  </data>
-  <data name="last" xml:space="preserve">
-    <value>Letzte</value>
   </data>
 </root>
