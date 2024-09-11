@@ -1,0 +1,128 @@
+@page "/admin/links"
+@Html.AntiForgeryToken()
+@{
+    ViewBag.Title = "Menu";
+
+    var bc = BlogConfig.CustomLinkSettings;
+    var settings = new CustomLinkSettingsJsonModel()
+            {
+                IsEnabled = bc.IsEnabled,
+                MenuJson = bc.Links.ToJson(true)
+            };
+}
+
+@section scripts {
+    <partial name="_MonacoLoaderScript" />
+    <script>
+        var jsonContentEditor = null;
+
+        require(['vs/editor/editor.main'], function () {
+            jsonContentEditor = initEditor('JsonContentEditor', "#settings_LinksJson", 'json');
+        });
+
+        var clearMenus = function () {
+            jsonContentEditor.setValue("[]");
+            document.querySelector("#settings_MenuJson").value = "[]";
+        }
+    </script>
+    <script type="module">
+        import * as settings from '/js/app/admin.settings.module.js';
+
+        function handleSubmit(event) {
+            assignEditorValues(jsonContentEditor, "#settings_MenuJson");
+            settings.handleSettingsSubmit(event);
+        }
+
+        const form = document.querySelector('#form-settings');
+        form.addEventListener('submit', handleSubmit);
+    </script>
+}
+
+@section head {
+    <style>
+        .monaco-target {
+            border: 1px solid #dee2e6;
+            width: 100%;
+            min-height: calc(100vh - 370px);
+        }
+    </style>
+}
+
+@section admintoolbar {
+    <div class="admin-toolbar pb-2 border-bottom mb-3">
+        <a href="javascript:window.clearMenus();" class="btn btn-outline-danger btn-delete-selected">
+            <i class="bi-trash"></i> @SharedLocalizer["Clear menus"]
+        </a>
+
+        <a class="btn btn-outline-accent" href="#" data-bs-toggle="modal" data-bs-target="#examplecodemodal">
+            <i class="bi-code"></i>
+            Example code
+        </a>
+    </div>
+}
+
+<form id="form-settings" asp-controller="Settings" asp-action="CustomLinks">
+    <div class="admin-settings-entry-container">
+        <div class="settings-entry2 row align-items-center py-3 px-2 rounded-3 shadow-sm border bg-white mb-2">
+            <div class="col-auto">
+                <i class="bi-menu-app settings-entry-icon"></i>
+            </div>
+            <div class="col">
+                <label asp-for="@settings.IsEnabled" class="form-check-label"></label>
+            </div>
+            <div class="col-md-5 text-end">
+                <div class="form-check form-switch form-control-lg">
+                    <input type="hidden" name="IsEnabled" value="false">
+                    <input type="checkbox" name="IsEnabled" value="true" class="form-check-input" @(@settings.IsEnabled
+                           ? "checked" : null) />
+                </div>
+            </div>
+        </div>
+
+        <div class="py-3 rounded-3 shadow-sm border bg-white">
+            <div id="JsonContentEditor" class="monaco-target overflow-y-hidden">
+            </div>
+        </div>
+    </div>
+
+    <textarea asp-for="@settings.MenuJson" class="settings-jsoncontent-textarea d-none"></textarea>
+
+    <div class="admin-settings-action-container border-top pt-2 mt-2">
+        <button type="submit" class="btn btn-outline-accent" id="btn-save-settings">
+            @SharedLocalizer["Save"]
+        </button>
+    </div>
+</form>
+
+<div class="modal fade" id="examplecodemodal" tabindex="-1" role="dialog" aria-labelledby="exampleLabel"
+     aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleLabel">@SharedLocalizer["Example"]</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close">
+                </button>
+            </div>
+
+            <div class="modal-body">
+                <pre>
+<code>
+[
+  {
+    "Title": "Linkedin",
+    "Url": "https://linkedin.com/in/yourName",
+    "Icon": "bi-linkedin",
+    "IsOpenInNewTab": false
+  {
+    "Title": "Facebook",
+    "Url": "https://facebook.com/yourUserName",
+    "Icon": "bi-facebook",
+    "IsOpenInNewTab": false
+  }
+]
+</code>
+</pre>
+            </div>
+        </div>
+    </div>
+</div>

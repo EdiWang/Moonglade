@@ -12,10 +12,10 @@ public interface IBlogConfig
 	ImageSettings ImageSettings { get; set; }
 	AdvancedSettings AdvancedSettings { get; set; }
 	CustomStyleSheetSettings CustomStyleSheetSettings { get; set; }
+	CustomLinkSettings CustomLinkSettings { get; set; }
 	CustomMenuSettings CustomMenuSettings { get; set; }
 	LocalAccountSettings LocalAccountSettings { get; set; }
 	SystemManifestSettings SystemManifestSettings { get; set; }
-	SocialProfileSettings SocialProfileSettings { get; set; }
 	IEnumerable<int> LoadFromConfig(IDictionary<string, string> config);
 	KeyValuePair<string, string> UpdateAsync<T>(T blogSettings) where T : IBlogSettings;
 }
@@ -35,14 +35,13 @@ public class BlogConfig : IBlogConfig
 	public AdvancedSettings AdvancedSettings { get; set; }
 
 	public CustomStyleSheetSettings CustomStyleSheetSettings { get; set; }
+	public CustomLinkSettings CustomLinkSettings { get; set; }
 
 	public CustomMenuSettings CustomMenuSettings { get; set; }
 
 	public LocalAccountSettings LocalAccountSettings { get; set; }
 
 	public SystemManifestSettings SystemManifestSettings { get; set; }
-
-	public SocialProfileSettings SocialProfileSettings { get; set; }
 
 	public IEnumerable<int> LoadFromConfig(IDictionary<string, string> config)
 	{

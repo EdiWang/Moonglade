@@ -1,4 +1,4 @@
-﻿using Edi.PasswordGenerator;
+using Edi.PasswordGenerator;
 using Microsoft.AspNetCore.Localization;
 using Moonglade.Email.Client;
 
@@ -203,7 +203,28 @@ public class SettingsController(
         return NoContent();
     }
 
-    [HttpGet("password/generate")]
+	[HttpPost("custom-links")]
+	[ProducesResponseType(StatusCodes.Status204NoContent)]
+	[ProducesResponseType(StatusCodes.Status400BadRequest)]
+	public async Task<IActionResult> CustomLinks(CustomLinkSettingsJsonModel model)
+	{
+		if (model.IsEnabled && string.IsNullOrWhiteSpace(model.MenuJson))
+		{
+			ModelState.AddModelError(nameof(CustomMenuSettingsJsonModel.MenuJson), "Link is required");
+			return BadRequest(ModelState.CombineErrorMessages());
+		}
+
+		blogConfig.CustomLinkSettings = new()
+		{
+			IsEnabled = model.IsEnabled,
+			Links = model.MenuJson.FromJson<Link[]>()
+		};
+
+		await SaveConfigAsync(blogConfig.CustomLinkSettings);
+		return NoContent();
+	}
+
+	[HttpGet("password/generate")]
     [ProducesResponseType(StatusCodes.Status200OK)]
     public IActionResult GeneratePassword([FromServices] IPasswordGenerator passwordGenerator)
     {

@@ -2,37 +2,52 @@ using Microsoft.AspNetCore.Html;
 
 namespace Moonglade.Web.Services;
 
-public class DonationViewService(IBlogConfig config)
+public class DonationViewService
 {
+	private readonly Link _buyMeACoffee;
+	private readonly Link _liberapay;
+	private readonly Link _patreon;
+	private readonly Link _amazonWishlist;
+	private readonly Link _paypal;
+
+	public DonationViewService(IBlogConfig config)
+	{
+		_buyMeACoffee = config.CustomLinkSettings.Links.Where(b => b.Url.Contains("https://buymeacoffee.com")).FirstOrDefault();
+		_liberapay = config.CustomLinkSettings.Links.Where(b => b.Url.Contains("https://liberapay.com")).FirstOrDefault();
+		_patreon = config.CustomLinkSettings.Links.Where(b => b.Url.Contains("https://patreon.com")).FirstOrDefault();
+		_amazonWishlist = config.CustomLinkSettings.Links.Where(b => b.Url.Contains("amazon") && b.Url.Contains("wishlist")).FirstOrDefault();
+		_paypal = config.CustomLinkSettings.Links.Where(b => b.Url.Contains("https://paypal.com")).FirstOrDefault();
+	}
+	
 	private string BuildDonationString()
 	{
 		StringBuilder sb = new StringBuilder();
 		sb.Append(@"<table class=""tg""><tbody><tr>");
-		if (config.SocialProfileSettings.BuyMeACoffee != null)
+		if (_buyMeACoffee != null)
 		{
-			sb.Append($@"<td class=""tg-01ax""><a href=""{config.SocialProfileSettings.BuyMeACoffee}"" target=""_blank"" rel=""me""><img alt=""Donate on Buymeacoffee"" id=""buymeacoffee"" class=""ad"" src=""/images/buymeacoffee.png""</a></td>");
+			sb.Append($@"<td class=""tg-01ax""><i class=""bi {_buyMeACoffee.Icon}""></i><a href=""{_buyMeACoffee.Url}"" target=""_blank"" rel=""me""></a></td>");
 		}
 
-		if (config.SocialProfileSettings.Liberapay != null)
+		if (_liberapay != null)
 		{
-			sb.Append($@"<td class=""tg-01ax""><a href=""{config.SocialProfileSettings.Liberapay}"" target=""_blank"" rel=""me""><img alt=""Donate using Liberapay"" id=""liberapay"" class=""ad"" src=""https://liberapay.com/assets/widgets/donate.svg""></a></td>");
+			sb.Append($@"<td class=""tg-01ax""><i class=""bi {_liberapay.Icon}""></i><a href=""{_liberapay.Url}"" target=""_blank"" rel=""me""></a></td>");
 		}
 
-		if (config.SocialProfileSettings.Patreon != null)
+		if (_patreon != null)
 		{
-			sb.Append($@"<td class=""tg-01ax""><div class=""""><a href=""{config.SocialProfileSettings.Patreon}"" rel=""me""></a><img src=""/images/patreon.svg"" id=""patreon"" class=""ad"" alt=""Donate on Patreon"" /><div></td>");
+			sb.Append($@"<td class=""tg-01ax""><i class=""bi {_patreon.Icon}""></i><a href=""{_patreon.Url}"" rel=""me"" target=""_blank""></a></td>");
 		}
 
-		if (config.SocialProfileSettings.AmazonWishlist != null)
+		if (_amazonWishlist != null)
 		{
 			sb.Append(
-				$@"<td class=""tg-01ax""><a href=""{config.SocialProfileSettings.AmazonWishlist}"" target=""_blank"" rel=""me""><img src=""/images/amazon.svg"" id=""amazon"" class=""ad"" alt=""Show my Amazon Wishlist""/></a></td>");
+				$@"<td class=""tg-01ax""><i class=""bi {_amazonWishlist.Icon}""></i><a href=""{_amazonWishlist.Url}"" target=""_blank"" rel=""me""></a></td>");
 		}
 
-		if (config.SocialProfileSettings.Paypal != null)
+		if (_paypal != null)
 		{
 			sb.Append(
-				$@"<td class=""tg-01ax""><a href=""{config.SocialProfileSettings.Paypal}"" target=""_blank"" rel=""me""><img src=""/images/paypal_donate.svg"" class=""ad"" id=""paypal"" alt=""Donate on Paypal""/></a></td>");
+				$@"<td class=""tg-01ax""><i class=""bi {_paypal.Icon}""></i><a href=""{_paypal.Url}"" target=""_blank"" rel=""me""></a></td>");
 		}
 
 		sb.Append(@"</tr></tbody></table>");
