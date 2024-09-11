@@ -144,9 +144,6 @@
   <data name="Account Information" xml:space="preserve">
     <value>Kontoinformationen</value>
   </data>
-  <data name="Accounts" xml:space="preserve">
-    <value>Konten</value>
-  </data>
   <data name="Action" xml:space="preserve">
     <value>Aktion</value>
   </data>
@@ -855,9 +852,6 @@
   <data name="Url (Relative or Absolute)" xml:space="preserve">
     <value>Url (relativ oder absolut)</value>
   </data>
-  <data name="Use friendly 404 image" xml:space="preserve">
-    <value>Benutzen Sie ein nettes 404 Bild.</value>
-  </data>
   <data name="Use full blog post content instead of abstract" xml:space="preserve">
     <value>Benutze den vollständigen Artikel, statt einer Zusammenfassung</value>
   </data>
@@ -936,14 +930,8 @@
   <data name="Enable Sharing buttons" xml:space="preserve">
     <value>Sharing Knöpfe hinzufügen</value>
   </data>
-  <data name="Now playing" xml:space="preserve">
-    <value>Jetzt höre ich</value>
-  </data>
   <data name="Me and the blog" xml:space="preserve">
     <value>Mein Blog und ich</value>
-  </data>
-  <data name="publications" xml:space="preserve">
-    <value />
   </data>
   <data name="projects" xml:space="preserve">
     <value>Projekte</value>
@@ -953,12 +941,6 @@
   </data>
   <data name="held" xml:space="preserve">
     <value>Gehalten</value>
-  </data>
-  <data name="last-updated" xml:space="preserve">
-    <value>Zuletzt aktualisiert</value>
-  </data>
-  <data name="privacy-title" xml:space="preserve">
-    <value>Datenschutz</value>
   </data>
   <data name="Syndication" xml:space="preserve">
     <value>Syndizierung</value>
