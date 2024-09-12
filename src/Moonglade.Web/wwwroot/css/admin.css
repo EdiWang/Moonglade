@@ -297,17 +297,17 @@ div.mce-fullscreen {
     font-size: 24px;
 }
 
-.settings-entry2 .form-switch {
+.settings-entry .form-switch {
     display: inline-block;
     min-height: inherit;
     margin-bottom: 0;
 }
 
-    .settings-entry2 .form-switch.form-control-lg {
+    .settings-entry .form-switch.form-control-lg {
         padding: 0 !important;
     }
 
-.settings-entry2 {
+.settings-entry {
     margin-left: 0;
     margin-right: 0;
 }
