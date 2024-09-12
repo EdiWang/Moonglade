@@ -6,10 +6,7 @@ using Moonglade.Web.PagedList;
 
 namespace Moonglade.Web.Pages;
 
-public class CategoryListModel(
-        IBlogConfig blogConfig,
-        IMediator mediator,
-        ICacheAside cache) : PageModel
+public class CategoryListModel(IBlogConfig blogConfig, IMediator mediator) : PageModel
 {
     [BindProperty(SupportsGet = true)]
     public int P { get; set; } = 1;
@@ -25,9 +22,7 @@ public class CategoryListModel(
 
         if (Cat is null) return NotFound();
 
-        var postCount = await cache.GetOrCreateAsync(BlogCachePartition.PostCountCategory.ToString(), Cat.Id.ToString(),
-            _ => mediator.Send(new CountPostQuery(CountType.Category, Cat.Id)));
-
+        var postCount = await mediator.Send(new CountPostQuery(CountType.Category, Cat.Id));
         var postList = await mediator.Send(new ListPostsQuery(pageSize, P, Cat.Id));
 
         Posts = new(postList, P, pageSize, postCount);

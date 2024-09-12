@@ -2,7 +2,7 @@
 
 namespace Moonglade.Web.ViewComponents;
 
-public class TagsViewComponent(IBlogConfig blogConfig, IMediator mediator, ILogger<SubListViewComponent> logger) : ViewComponent
+public class TagsViewComponent(IBlogConfig blogConfig, IMediator mediator, ILogger<TagsViewComponent> logger) : ViewComponent
 {
     public async Task<IViewComponentResult> InvokeAsync()
     {

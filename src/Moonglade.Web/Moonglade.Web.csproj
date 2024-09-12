@@ -34,6 +34,7 @@
     <Content Update="appsettings.Development.json" CopyToPublishDirectory="Never" />
   </ItemGroup>
   <ItemGroup>
+    <PackageReference Include="Edi.Gravatar" Version="1.0.0" />
     <PackageReference Include="Edi.ImageWatermark" Version="2.14.0" />
     <PackageReference Include="Edi.PasswordGenerator" Version="2.0.0" />
     <PackageReference Include="Microsoft.Extensions.Logging.AzureAppServices" Version="8.0.8" />

@@ -20,8 +20,7 @@ public class PostController(
     [TypeFilter(typeof(ClearBlogCache), Arguments =
     [
         BlogCacheType.SiteMap |
-        BlogCacheType.Subscription |
-        BlogCacheType.PagingCount
+        BlogCacheType.Subscription
     ])]
     [ProducesResponseType(StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status409Conflict)]
@@ -74,8 +73,7 @@ public class PostController(
     [TypeFilter(typeof(ClearBlogCache), Arguments =
     [
         BlogCacheType.SiteMap |
-        BlogCacheType.Subscription |
-        BlogCacheType.PagingCount
+        BlogCacheType.Subscription
     ])]
     [HttpPost("{postId:guid}/restore")]
     [ProducesResponseType(StatusCodes.Status204NoContent)]
@@ -88,8 +86,7 @@ public class PostController(
     [TypeFilter(typeof(ClearBlogCache), Arguments =
     [
         BlogCacheType.SiteMap |
-        BlogCacheType.Subscription |
-        BlogCacheType.PagingCount
+        BlogCacheType.Subscription
     ])]
     [HttpDelete("{postId:guid}/recycle")]
     [ProducesResponseType(StatusCodes.Status204NoContent)]
