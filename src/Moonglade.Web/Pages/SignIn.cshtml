@@ -22,16 +22,24 @@
         <link href="~/custom.css" rel="stylesheet" asp-append-version="true" />
     }
     <style>
+        main {
+            height: 100vh;
+        }
+
+        .login-card {
+            min-width: 365px;
+        }
+
         #img-captcha {
             border-radius: 0 3px 3px 0;
         }
     </style>
 </head>
-<body class="pt-5 bg-gray-1">
+<body class="bg-gray-1">
     <div class="container">
-        <div class="row justify-content-md-center">
-            <div class="col-md-4">
-                <div class="card shadow">
+        <main class="position-relative">
+            <div class="position-absolute top-50 start-50 translate-middle">
+                <div class="login-card card shadow">
                     <div class="card-body">
                         <h5 class="card-title text-center mb-4">@SharedLocalizer["Sign In"]</h5>
 
@@ -66,7 +74,7 @@
                     Moonglade @Helper.AppVersion
                 </p>
             </div>
-        </div>
+        </main>
     </div>
 
     <script src="~/lib/twitter-bootstrap/js/bootstrap.bundle.min.js" asp-append-version="true"></script>
