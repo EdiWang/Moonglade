@@ -23,18 +23,29 @@
             @Html.Raw(BlogConfig.GeneralSettings.FooterCustomizedHtmlPitch)
 
             <section id="footer-language" class="col d-none d-sm-block text-end">
-                <ul class="list-unstyled">
-                    @foreach (var item in cultureItems)
-                    {
-                        <li>
-                            <a asp-controller="Settings" asp-action="SetLanguage" asp-route-returnUrl="@returnUrl" asp-route-culture="@item.Value">@item.NativeName</a>
-                        </li>
-                    }
-                </ul>
+                <div class="language-selection d-print-none btn-group dropup">
+                    <button type="button" class="btn btn-sm dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">
+                        <i class="bi-translate"></i> @SharedLocalizer["Languages"]
+                    </button>
+                    <ul class="dropdown-menu">
+                        @foreach (var item in cultureItems)
+                        {
+                            <li>
+                                <a class="dropdown-item"
+                                   asp-controller="Settings"
+                                   asp-action="SetLanguage"
+                                   asp-route-returnUrl="@returnUrl"
+                                   asp-route-culture="@item.Value">
+                                    @item.NativeName
+                                </a>
+                            </li>
+                        }
+                    </ul>
+                </div>
             </section>
 
             <section id="footer-language-mobile" class="col d-block d-md-none text-end font-125rem">
-                <a href="#" data-bs-toggle="modal" data-bs-target="#langselectormodal" aria-label="Choose display language"><i class="bi-globe"></i></a>
+                <a href="#" data-bs-toggle="modal" data-bs-target="#langselectormodal" aria-label="Choose display language"><i class="bi-translate"></i></a>
             </section>
         </div>
     </div>

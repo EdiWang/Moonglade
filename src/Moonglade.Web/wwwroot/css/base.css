@@ -49,6 +49,10 @@ footer {
     a:hover {
         color: var(--bs-white);
     }
+
+    .language-selection button {
+        color: var(--transparent-light-60);
+    }
 }
 
 .moonglade-footer {

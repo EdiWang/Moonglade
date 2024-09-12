@@ -8,7 +8,6 @@ public class CannonService(
 {
     public void FireAsync<T>(Func<T, Task> bullet, Action<Exception> handler = null)
     {
-        logger.LogInformation("Fired a new async action.");
         Task.Run(async () =>
         {
             using var scope = scopeFactory.CreateScope();

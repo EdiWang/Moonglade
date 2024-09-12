@@ -7,8 +7,7 @@ public enum BlogCacheType
 {
     None = 1,
     Subscription = 2,
-    SiteMap = 4,
-    PagingCount = 8
+    SiteMap = 4
 }
 
 public class ClearBlogCache(BlogCachePartition partition, string cacheKey, ICacheAside cache)
@@ -42,12 +41,6 @@ public class ClearBlogCache(BlogCachePartition partition, string cacheKey, ICach
 
             case BlogCacheType.SiteMap:
                 cache.Remove(generalPartition, "sitemap");
-                break;
-
-            case BlogCacheType.PagingCount:
-                cache.Remove(generalPartition, "postcount");
-                cache.Remove(BlogCachePartition.PostCountCategory.ToString());
-                cache.Remove(BlogCachePartition.PostCountTag.ToString());
                 break;
         }
     }
