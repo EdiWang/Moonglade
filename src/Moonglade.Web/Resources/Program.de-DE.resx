@@ -183,9 +183,6 @@
   <data name="Author Name" xml:space="preserve">
     <value>Autorenname</value>
   </data>
-  <data name="Auto Light / Dark theme regarding client system settings" xml:space="preserve">
-    <value>Automatisch hell/dunkel schalten, abhängig von den Systemeinstellungen des Benutzers</value>
-  </data>
   <data name="Admin Email" xml:space="preserve">
     <value>Admin Email</value>
   </data>
