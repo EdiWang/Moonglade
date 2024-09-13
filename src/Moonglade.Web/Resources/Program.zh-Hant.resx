@@ -864,4 +864,16 @@
   <data name="This link could lead to websites with malicious content, phishing attempts, or other security threats. It is important to exercise caution when clicking on any external link." xml:space="preserve">
     <value>此連結可能會導致網站包含惡意內容、網路釣魚嘗試或其他安全威脅。 點擊任何外部連結時務必謹慎。</value>
   </data>
+  <data name="By continuing to browse this website and accessing any external links, you acknowledge and accept the following:" xml:space="preserve">
+    <value>繼續瀏覽本網站並訪問任何外部連結，即表示您承認並接受以下內容：</value>
+  </data>
+  <data name="The website owner and administrators are not responsible for the content or security of external websites." xml:space="preserve">
+    <value>網站擁有者和管理員不對外部網站的內容或安全負責。</value>
+  </data>
+  <data name="Your personal information and computer system may be at risk when visiting external websites." xml:space="preserve">
+    <value>當訪問外部網站時，您的個人資訊和計算機系統可能會面臨風險。</value>
+  </data>
+  <data name="It is your responsibility to ensure the safety and security of your own browsing experience." xml:space="preserve">
+    <value>您有責任確保自己的瀏覽體驗安全。</value>
+  </data>
 </root>

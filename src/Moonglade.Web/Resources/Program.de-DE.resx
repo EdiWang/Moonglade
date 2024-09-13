@@ -864,4 +864,16 @@
   <data name="This link could lead to websites with malicious content, phishing attempts, or other security threats. It is important to exercise caution when clicking on any external link." xml:space="preserve">
     <value>Dieser Link kann zu bösartigen Inhalten, Phishing-Versuchen oder anderen Sicherheitsbedrohungen führen. Seien Sie immer vorsichtig, wenn Sie auf externe Links klicken.</value>
   </data>
+  <data name="By continuing to browse this website and accessing any external links, you acknowledge and accept the following:" xml:space="preserve">
+    <value>Durch die weitere Nutzung dieser Website und den Zugriff auf externe Links erkennen Sie Folgendes an und akzeptieren dies:</value>
+  </data>
+  <data name="The website owner and administrators are not responsible for the content or security of external websites." xml:space="preserve">
+    <value>Die Eigentümer und Administratoren der Website sind nicht verantwortlich für den Inhalt oder die Sicherheit externer Websites.</value>
+  </data>
+  <data name="Your personal information and computer system may be at risk when visiting external websites." xml:space="preserve">
+    <value>Beim Besuch externer Websites können Ihre persönlichen Daten und Computersysteme gefährdet sein.</value>
+  </data>
+  <data name="It is your responsibility to ensure the safety and security of your own browsing experience." xml:space="preserve">
+    <value>Es liegt in Ihrer Verantwortung, Ihr Surferlebnis sicher zu halten.</value>
+  </data>
 </root>

@@ -852,13 +852,25 @@
   <data name="By clicking &quot;Continue&quot;, you agree that you are aware of the risks and will proceed at your own discretion." xml:space="preserve">
     <value>点击“继续”，即表示您同意您了解风险并将自行决定继续。</value>
   </data>
+  <data name="By continuing to browse this website and accessing any external links, you acknowledge and accept the following:" xml:space="preserve">
+    <value>继续浏览本网站并访问任何外部链接，即表示您承认并接受以下内容：</value>
+  </data>
+  <data name="It is your responsibility to ensure the safety and security of your own browsing experience." xml:space="preserve">
+    <value>您有责任确保自己的浏览体验安全。</value>
+  </data>
   <data name="Link URL:" xml:space="preserve">
     <value>链接URL：</value>
+  </data>
+  <data name="The website owner and administrators are not responsible for the content or security of external websites." xml:space="preserve">
+    <value>网站所有者和管理员不对外部网站的内容或安全负责。</value>
   </data>
   <data name="This link could lead to websites with malicious content, phishing attempts, or other security threats. It is important to exercise caution when clicking on any external link." xml:space="preserve">
     <value>此链接可能会导致网站包含恶意内容、网络钓鱼尝试或其他安全威胁。点击任何外部链接时务必谨慎。</value>
   </data>
   <data name="You are about to leave this website and go to an external link." xml:space="preserve">
     <value>您即将离开本网站并转到外部链接。</value>
+  </data>
+  <data name="Your personal information and computer system may be at risk when visiting external websites." xml:space="preserve">
+    <value>当访问外部网站时，您的个人信息和计算机系统可能会面临风险。</value>
   </data>
 </root>
