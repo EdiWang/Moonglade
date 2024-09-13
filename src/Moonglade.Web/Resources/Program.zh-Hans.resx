@@ -849,4 +849,10 @@
   <data name="External Links May Pose a Security Risk" xml:space="preserve">
     <value>外部链接可能会带来安全风险</value>
   </data>
+  <data name="By clicking &quot;Continue&quot;, you agree that you are aware of the risks and will proceed at your own discretion." xml:space="preserve">
+    <value>点击“继续”，即表示您同意您了解风险并将自行决定继续。</value>
+  </data>
+  <data name="Link URL:" xml:space="preserve">
+    <value>链接URL：</value>
+  </data>
 </root>
