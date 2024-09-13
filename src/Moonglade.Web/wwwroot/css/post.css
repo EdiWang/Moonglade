@@ -82,8 +82,8 @@ h1.post-title,
 
 .post-content blockquote,
 .post-content .blockquote {
-    border-left: 5px solid var(--gray-2);
-    color: var(--gray-6);
+    border-left: 5px solid var(--bs-gray-300);
+    color: var(--bs-secondary);
     margin: 0 0 20px;
     padding: 10px 20px;
 }
