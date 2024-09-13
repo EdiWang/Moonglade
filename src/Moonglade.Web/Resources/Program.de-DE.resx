@@ -795,4 +795,58 @@
   <data name="Export" xml:space="preserve">
     <value>Exportieren</value>
   </data>
+  <data name="Account" xml:space="preserve">
+    <value>Konto</value>
+  </data>
+  <data name="Enable Pingback" xml:space="preserve">
+    <value>Pingback aktivieren</value>
+  </data>
+  <data name="Include in feed and sitemap" xml:space="preserve">
+    <value>Hinzufügen von Abonnements und Sitemaps</value>
+  </data>
+  <data name="Friend links" xml:space="preserve">
+    <value>Verknüpfungen</value>
+  </data>
+  <data name="How many tags to show on sidebar" xml:space="preserve">
+    <value>In der Seitenleiste wird die Anzahl der Beschriftungen angezeigt</value>
+  </data>
+  <data name="Login IP" xml:space="preserve">
+    <value>Login IP</value>
+  </data>
+  <data name="Login Time (UTC)" xml:space="preserve">
+    <value>Anmeldezeit (UTC)</value>
+  </data>
+  <data name="No comments yet" xml:space="preserve">
+    <value>Es gibt noch keine Bewertungen</value>
+  </data>
+  <data name="Feed Items" xml:space="preserve">
+    <value>Anzahl der Abonnementeinträge</value>
+  </data>
+  <data name="The number of entries to include in RSS/ATOM feed." xml:space="preserve">
+    <value>Die Anzahl der Einträge, die im RSS/ATOM enthalten sind</value>
+  </data>
+  <data name="lower case English letters (a-z) and numbers (0-9) with/out hyphen (-) in middle." xml:space="preserve">
+    <value>Kleinbuchstaben (a-z) und Ziffern (0-9), mit oder ohne Bindestriche (-)</value>
+  </data>
+  <data name="RSS / Atom Feed" xml:space="preserve">
+    <value>RSS / Atom-Feeds</value>
+  </data>
+  <data name="ASP.NET Core Environment" xml:space="preserve">
+    <value>ASP.NET Kernumgebung</value>
+  </data>
+  <data name="Warning: This blog post is marked as outdated by it's author. Consider finding more recent information on this topic to ensure that you are utilizing the most up-to-date and effective strategies." xml:space="preserve">
+    <value>Warnung: Dieser Blogbeitrag wurde vom Autor als veraltet gekennzeichnet. Erwägen Sie, nach aktuelleren Informationen zu diesem Thema zu suchen, um sicherzustellen, dass Sie die aktuellste und effektivste Strategie verwenden.</value>
+  </data>
+  <data name="No categories" xml:space="preserve">
+    <value>Es gibt keine Klassifizierung</value>
+  </data>
+  <data name="Auto" xml:space="preserve">
+    <value>Automatisch</value>
+  </data>
+  <data name="Dark" xml:space="preserve">
+    <value>dunkel</value>
+  </data>
+  <data name="Light" xml:space="preserve">
+    <value>hell</value>
+  </data>
 </root>
