@@ -70,7 +70,7 @@
 }
 
 [data-bs-theme=dark] .timeline > li > .timeline-badge {
-    background-color: var(--gray-7);
+    background-color: var(--bs-secondary-bg-subtle);
     border: 3px solid var(--bs-border-color);
 }
 
