@@ -855,4 +855,7 @@
   <data name="Link URL:" xml:space="preserve">
     <value>Link-URL:</value>
   </data>
+  <data name="By clicking &quot;Continue&quot;, you agree that you are aware of the risks and will proceed at your own discretion." xml:space="preserve">
+    <value>Indem Sie auf "Weiter" klicken, erklären Sie sich damit einverstanden, dass Sie die Risiken verstehen und nach eigenem Ermessen fortfahren werden.</value>
+  </data>
 </root>
