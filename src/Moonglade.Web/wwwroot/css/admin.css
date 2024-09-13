@@ -1,12 +1,4 @@
-﻿.field-validation-error {
-    color: var(--bs-danger);
-}
-
-.field-validation-valid {
-    display: none;
-}
-
-.input-validation-error {
+﻿.input-validation-error {
     border: 1px solid var(--bs-danger);
 }
 
@@ -19,18 +11,10 @@
     font-weight: bold;
 }
 
-.icon-diag-large {
-    font-size: 64px;
-}
-
 .admin-nav-icon {
     font-size: 16px;
     display: block;
     width: 24px;
-}
-
-.admin-body {
-    padding-top: 0 !important;
 }
 
 .admin-body-wrapper {
