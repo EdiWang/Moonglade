@@ -858,4 +858,10 @@
   <data name="By clicking &quot;Continue&quot;, you agree that you are aware of the risks and will proceed at your own discretion." xml:space="preserve">
     <value>Indem Sie auf "Weiter" klicken, erklären Sie sich damit einverstanden, dass Sie die Risiken verstehen und nach eigenem Ermessen fortfahren werden.</value>
   </data>
+  <data name="You are about to leave this website and go to an external link." xml:space="preserve">
+    <value>Sie sind im Begriff, diese Website zu verlassen und auf einen externen Link zu gelangen.</value>
+  </data>
+  <data name="This link could lead to websites with malicious content, phishing attempts, or other security threats. It is important to exercise caution when clicking on any external link." xml:space="preserve">
+    <value>Dieser Link kann zu bösartigen Inhalten, Phishing-Versuchen oder anderen Sicherheitsbedrohungen führen. Seien Sie immer vorsichtig, wenn Sie auf externe Links klicken.</value>
+  </data>
 </root>

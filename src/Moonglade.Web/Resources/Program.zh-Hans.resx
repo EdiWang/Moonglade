@@ -855,4 +855,10 @@
   <data name="Link URL:" xml:space="preserve">
     <value>链接URL：</value>
   </data>
+  <data name="This link could lead to websites with malicious content, phishing attempts, or other security threats. It is important to exercise caution when clicking on any external link." xml:space="preserve">
+    <value>此链接可能会导致网站包含恶意内容、网络钓鱼尝试或其他安全威胁。点击任何外部链接时务必谨慎。</value>
+  </data>
+  <data name="You are about to leave this website and go to an external link." xml:space="preserve">
+    <value>您即将离开本网站并转到外部链接。</value>
+  </data>
 </root>
