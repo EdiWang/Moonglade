@@ -849,4 +849,7 @@
   <data name="Light" xml:space="preserve">
     <value>hell</value>
   </data>
+  <data name="External Links May Pose a Security Risk" xml:space="preserve">
+    <value>Externe Links können ein Sicherheitsrisiko darstellen</value>
+  </data>
 </root>
