@@ -1,11 +1,34 @@
-﻿<section class="blog-info-desktop-lg text-light d-none d-lg-block">
+﻿@inject IConfiguration Configuration
+@{
+    var useOwnerEmailAsAvatar = bool.Parse(Configuration["Experimental:UseOwnerEmailAsAvatar"]!);
+}
+
+<section class="blog-info-desktop-lg text-light d-none d-lg-block">
     <div class="card-background-container">
-        <img class="card-bkimg" alt="" src="@BlogConfig.GeneralSettings.AvatarUrl" />
+        @if(useOwnerEmailAsAvatar)
+        {
+            <gravatar class="card-bkimg" email="@BlogConfig.GeneralSettings.OwnerEmail" size="256" />
+        }
+        else
+        {
+            <img class="card-bkimg" alt="" aria-hidden="true" src="@BlogConfig.GeneralSettings.AvatarUrl"/>
+        }
     </div>
     <div class="blog-info-photo-text text-center">
-        <img src="@BlogConfig.GeneralSettings.AvatarUrl"
-             alt="@BlogConfig.GeneralSettings.OwnerName"
-             class="rounded-circle blogger-head-pic" />
+        @if (useOwnerEmailAsAvatar)
+        {
+            <gravatar class="rounded-circle blogger-head-pic"
+                      size="256"
+                      alt="@BlogConfig.GeneralSettings.OwnerName" 
+                      email="@BlogConfig.GeneralSettings.OwnerEmail" />
+        }
+        else
+        {
+            <img src="@BlogConfig.GeneralSettings.AvatarUrl"
+                 alt="@BlogConfig.GeneralSettings.OwnerName"
+                 class="rounded-circle blogger-head-pic"/>
+        }
+
         <div>
             @if (!string.IsNullOrWhiteSpace(BlogConfig.GeneralSettings.Pronouns))
             {
