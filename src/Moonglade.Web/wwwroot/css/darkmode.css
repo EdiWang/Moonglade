@@ -132,7 +132,7 @@
 }
 
 [data-bs-theme=dark] .btn-outline-accent {
-    --bs-btn-color: var(--gray-3);
+    --bs-btn-color: var(--bs-body-color);
     --bs-btn-border-color: var(--bs-border-color);
     --bs-btn-hover-color: #fff;
     --bs-btn-hover-bg: #343a40;

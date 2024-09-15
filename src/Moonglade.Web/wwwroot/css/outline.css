@@ -12,7 +12,7 @@
     line-height: 1.5em;
     transition: width .35s;
     border-radius: 8px;
-    border: 1px solid var(--gray-3);
+    border: 1px solid var(--bs-border-color);
     max-height: calc(100vh - 100px);
 }
 
