@@ -97,10 +97,7 @@ h1.post-title,
     .post-content blockquote footer,
     .post-content blockquote small,
     .post-content blockquote .small {
-        color: var(--gray-4);
-        display: block;
         font-size: 80%;
-        line-height: 1.42857143;
     }
 
 .comment-list .thumbnail {

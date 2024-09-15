@@ -222,8 +222,8 @@ div.mce-fullscreen {
         }
 
         .ul-tag-mgr li a {
-            background-color: var(--gray-2);
-            color: var(--gray-4);
+            background-color: var(--bs-gray-200);
+            color: var(--bs-gray-dark);
             cursor: pointer;
             display: inline-block;
             font-size: 16px;
