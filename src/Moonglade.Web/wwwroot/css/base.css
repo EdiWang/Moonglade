@@ -6,7 +6,6 @@
     --transparent-dark-2: rgba(0, 0, 0, 0.125);
     --transparent-dark-4: rgba(0, 0, 0, 0.175);
     --gray-1: #FAFAFA;
-    --gray-2: #EEE;
 }
 
 ::selection {
@@ -393,7 +392,7 @@ div.animbrand a:hover {
 }
 
 .navbar-moonglade .navbar-nav .nav-link {
-    color: var(--gray-2);
+    color: var(--bs-light-text-emphasis);
 }
 
     .navbar-moonglade .navbar-nav .nav-link:focus,
