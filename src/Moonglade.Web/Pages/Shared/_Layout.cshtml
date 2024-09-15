@@ -2,6 +2,9 @@
 @using Microsoft.AspNetCore.Localization
 @using System.Globalization
 @inject IConfiguration Configuration
+@{
+    var useOwnerEmailAsAvatar = bool.Parse(Configuration["Experimental:UseOwnerEmailAsAvatar"]!);
+}
 
 @{
     if (string.IsNullOrEmpty(BlogConfig.GeneralSettings.AvatarUrl))
@@ -173,14 +176,31 @@
         {
             <section class="profile-mobile d-block d-sm-none d-print-none">
                 <div class="card-background-container">
-                    <img class="card-bkimg" alt="" src="@BlogConfig.GeneralSettings.AvatarUrl" />
+                    @if(useOwnerEmailAsAvatar)
+                    {
+                        <gravatar class="card-bkimg" email="@BlogConfig.GeneralSettings.OwnerEmail" size="256" />
+                    }
+                    else
+                    {
+                        <img class="card-bkimg" alt="" aria-hidden="true" src="@BlogConfig.GeneralSettings.AvatarUrl"/>
+                    }
                 </div>
                 <div class="blogger-intro-content">
                     <div class="row">
                         <div class="col-3">
-                            <img src="@BlogConfig.GeneralSettings.AvatarUrl"
-                                 alt="@BlogConfig.GeneralSettings.OwnerName"
-                                 class="rounded-circle blogger-head-pic" />
+                            @if (useOwnerEmailAsAvatar)
+                            {
+                                <gravatar class="rounded-circle blogger-head-pic"
+                                          size="256"
+                                          alt="@BlogConfig.GeneralSettings.OwnerName" 
+                                          email="@BlogConfig.GeneralSettings.OwnerEmail" />
+                            }
+                            else
+                            {
+                                <img src="@BlogConfig.GeneralSettings.AvatarUrl"
+                                     alt="@BlogConfig.GeneralSettings.OwnerName"
+                                     class="rounded-circle blogger-head-pic"/>
+                            }
                         </div>
                         <div class="col-9 position-relative">
                             <h4 class="text-center w-100 position-absolute top-50 start-50 translate-middle">
