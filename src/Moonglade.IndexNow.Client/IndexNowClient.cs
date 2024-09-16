@@ -17,7 +17,7 @@ public class IndexNowClient(ILogger<IndexNowClient> logger, IConfiguration confi
             return;
         }
 
-        if (pingTargets == null || !pingTargets.Any())
+        if (pingTargets == null || pingTargets.Length == 0)
         {
             throw new InvalidOperationException("IndexNow:PingTargets is not configured.");
         }
