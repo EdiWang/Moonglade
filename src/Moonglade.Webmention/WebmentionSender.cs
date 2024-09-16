@@ -17,7 +17,7 @@ public class WebmentionSender(
         {
             var uri = new Uri(postUrl);
 
-            if (!bool.Parse(configuration["AllowWebmentionFromLocalhost"]!) && uri.IsLocalhostUrl())
+            if (uri.IsLocalhostUrl())
             {
                 logger.LogWarning("Source URL is localhost, skipping.");
                 return;
@@ -30,7 +30,7 @@ public class WebmentionSender(
 
                 foreach (var url in Helper.GetUrlsFromContent(postContent))
                 {
-                    if (!bool.Parse(configuration["AllowWebmentionToLocalhost"]!) && url.IsLocalhostUrl())
+                    if (url.IsLocalhostUrl())
                     {
                         logger.LogWarning("Target URL is localhost, skipping.");
                         continue;

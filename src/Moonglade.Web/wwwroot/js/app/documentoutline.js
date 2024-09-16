@@ -2,7 +2,7 @@ let DocumentOutline;
 
 (function () {
     const menuIcon = '<i class="bi bi-list-ul"></i>';
-    const closeIcon = '<i class="bi bi-arrow-left-circle"></i>';
+    const closeIcon = '<i class="bi bi-arrow-left-circle" role="button" aria-label="Hide outline navigation menu"></i>';
 
     DocumentOutline = class DocumentOutline {
 
@@ -72,6 +72,7 @@ let DocumentOutline;
 
                 // build dom
                 div.setAttribute('class', `li-content li-title-${level}`);
+                div.setAttribute('role', `link`);
                 div.appendChild(span);
                 li.appendChild(div);
 
@@ -121,6 +122,8 @@ let DocumentOutline;
             // outline
             this._nav.appendChild(this._navHeader);
             this._nav.classList = 'outline-nav';
+            this._nav.setAttribute('aria-label', 'Document outline');
+
             if (!this._open)
                 this.hideOutline();
 

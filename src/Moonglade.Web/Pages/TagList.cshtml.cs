@@ -5,7 +5,7 @@ using Moonglade.Web.PagedList;
 
 namespace Moonglade.Web.Pages;
 
-public class TagListModel(IMediator mediator, IBlogConfig blogConfig, ICacheAside cache) : PageModel
+public class TagListModel(IMediator mediator, IBlogConfig blogConfig) : PageModel
 {
     [BindProperty(SupportsGet = true)]
     public int P { get; set; } = 1;
@@ -18,7 +18,7 @@ public class TagListModel(IMediator mediator, IBlogConfig blogConfig, ICacheAsid
 
         var pagesize = blogConfig.ContentSettings.PostListPageSize;
         var posts = await mediator.Send(new ListByTagQuery(tagResponse.Id, pagesize, P));
-        var count = await cache.GetOrCreateAsync(BlogCachePartition.PostCountTag.ToString(), tagResponse.Id.ToString(), _ => mediator.Send(new CountPostQuery(CountType.Tag, TagId: tagResponse.Id)));
+        var count = await mediator.Send(new CountPostQuery(CountType.Tag, TagId: tagResponse.Id));
 
         ViewData["TitlePrefix"] = tagResponse.DisplayName;
 

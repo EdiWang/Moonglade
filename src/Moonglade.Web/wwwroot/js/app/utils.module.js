@@ -25,15 +25,14 @@
 }
 
 export function formatUtcTime(includeTime = true) {
-    $('time').each(function (i, e) {
-        var utclabel = $(e).data('utc-label');
+    const timeElements = document.querySelectorAll('time');
+
+    timeElements.forEach(e => {
+        const utclabel = e.getAttribute('data-utc-label');
         if (utclabel) {
-            var localTime = new Date(utclabel.replace(/-/g, "/"));
-            if (includeTime) {
-                $(e).html(localTime.toLocaleString());
-            } else {
-                $(e).html(localTime.toLocaleDateString());
-            }
+            const localTime = new Date(utclabel.replace(/-/g, "/"));
+            const formattedTime = includeTime ? localTime.toLocaleString() : localTime.toLocaleDateString();
+            e.innerHTML = formattedTime;
         }
     });
 }

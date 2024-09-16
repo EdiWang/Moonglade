@@ -2,6 +2,9 @@
 @using Microsoft.AspNetCore.Localization
 @using System.Globalization
 @inject IConfiguration Configuration
+@{
+    var useOwnerEmailAsAvatar = bool.Parse(Configuration["Experimental:UseOwnerEmailAsAvatar"]!);
+}
 
 @{
     if (string.IsNullOrEmpty(BlogConfig.GeneralSettings.AvatarUrl))
@@ -90,7 +93,6 @@
     {
         <link href="~/custom.css" rel="stylesheet" />
     }
-    <script src="~/js/3rd/jquery.slim.min.js"></script>
     <environment exclude="Production">
         @inject IWebHostEnvironment WebHostEnvironment
         <script>
@@ -107,7 +109,7 @@
     }
 
     <header class="sticky-top d-print-none">
-        <nav id="blog-nav" class="navbar navbar-expand-lg navbar-dark bg-accent1" data-bs-theme="dark">
+        <nav id="blog-nav" class="navbar navbar-expand-lg navbar-moonglade" data-bs-theme="dark">
             <div class="container-xl">
                 <div class="animbrand">
                     <h1 role="heading" class="moonglade-logo-heading">
@@ -173,15 +175,32 @@
         else
         {
             <section class="profile-mobile d-block d-sm-none d-print-none">
-                <div class="card-bkimg-container">
-                    <img class="card-bkimg" alt="" src="@BlogConfig.GeneralSettings.AvatarUrl" />
+                <div class="card-background-container">
+                    @if(useOwnerEmailAsAvatar)
+                    {
+                        <gravatar class="card-bkimg" email="@BlogConfig.GeneralSettings.OwnerEmail" size="256" />
+                    }
+                    else
+                    {
+                        <img class="card-bkimg" alt="" aria-hidden="true" src="@BlogConfig.GeneralSettings.AvatarUrl"/>
+                    }
                 </div>
                 <div class="blogger-intro-content">
                     <div class="row">
                         <div class="col-3">
-                            <img src="@BlogConfig.GeneralSettings.AvatarUrl"
-                                 alt="@BlogConfig.GeneralSettings.OwnerName"
-                                 class="rounded-circle blogger-head-pic" />
+                            @if (useOwnerEmailAsAvatar)
+                            {
+                                <gravatar class="rounded-circle blogger-head-pic"
+                                          size="256"
+                                          alt="@BlogConfig.GeneralSettings.OwnerName" 
+                                          email="@BlogConfig.GeneralSettings.OwnerEmail" />
+                            }
+                            else
+                            {
+                                <img src="@BlogConfig.GeneralSettings.AvatarUrl"
+                                     alt="@BlogConfig.GeneralSettings.OwnerName"
+                                     class="rounded-circle blogger-head-pic"/>
+                            }
                         </div>
                         <div class="col-9 position-relative">
                             <h4 class="text-center w-100 position-absolute top-50 start-50 translate-middle">
@@ -218,21 +237,12 @@
     <script type="module" src="~/js/app/base.js" asp-append-version="true"></script>
     <script src="~/js/app/httpService.js" asp-append-version="true"></script>
 
-    @if (BlogConfig.GeneralSettings.AutoDarkLightTheme)
-    {
-        <script type="module">
-            import * as theme from '/js/app/theme.module.js'
-            window.theme = theme;
+    <script type="module">
+        import * as theme from '/js/app/theme.module.js'
+        window.theme = theme;
 
-            if (window.matchMedia && window.theme) {
-                if (window.matchMedia('(prefers-color-scheme: dark)').matches) {
-                    theme.useDarkMode();
-                } else {
-                    theme.useLightMode();
-                }
-            }
-        </script>
-    }
+        theme.setTheme(theme.getPreferredTheme());
+    </script>
 
     @await RenderSectionAsync("scripts", false)
 

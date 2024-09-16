@@ -11,25 +11,30 @@
     <script type="module">
         import * as utils from '/js/app/utils.module.js'
 
-        $('.btn-delete').click(function () {
-            var cfm = confirm('Delete Confirmation?');
-            if (cfm) {
-                deletePost($(this).data('postid'));
-            }
+        document.querySelectorAll('.btn-delete').forEach(function (button) {
+            button.addEventListener('click', function () {
+                var cfm = confirm('Delete Confirmation?');
+                if (cfm) {
+                    deletePost(this.getAttribute('data-postid'));
+                }
+            });
         });
 
-        $('.btn-restore').click(function () {
-            restorePost($(this).data("postid"));
+        document.querySelectorAll('.btn-restore').forEach(function (button) {
+            button.addEventListener('click', function () {
+                restorePost(this.getAttribute('data-postid'));
+            });
         });
 
-        $('.btn-empty-recbin').click(function () {
-            callApi(`/api/post/recyclebin`, 'DELETE', {},
-                (resp) => {
+        document.querySelectorAll('.btn-empty-recbin').forEach(function (button) {
+            button.addEventListener('click', function () {
+                callApi('/api/post/recyclebin', 'DELETE', {}, function (resp) {
                     blogToast.success('Cleared');
                     setTimeout(function () {
                         window.location.reload();
                     }, 800);
                 });
+            });
         });
 
         function deletePost(postid) {

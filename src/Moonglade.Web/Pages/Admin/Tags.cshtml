@@ -18,31 +18,37 @@
             editCanvas.show();
         }
 
-        $(".btn-delete").click(function () {
-            var tagid = $(this).data("tagid");
-            var cfm = confirm(`Confirm to delete tag: ${$(this).text().trim()}`);
-            if (cfm) {
-                callApi(`/api/tags/${tagid}`, 'DELETE', {},
-                    (resp) => {
-                        $(`#li-tag-${tagid}`).hide();
+        document.querySelectorAll(".btn-delete").forEach(function(element) {
+            element.addEventListener("click", function() {
+                var tagid = this.getAttribute("data-tagid");
+                var cfm = confirm(`Confirm to delete tag: ${this.textContent.trim()}`);
+                if (cfm) {
+                    callApi(`/api/tags/${tagid}`, 'DELETE', {}, function(resp) {
+                        document.querySelector(`#li-tag-${tagid}`).style.display = 'none';
                         blogToast.success('Tag deleted');
                     });
-            }
-        });
-
-        $(".span-tagcontent-editable").blur(function () {
-            var tagId = $(this).data("tagid");
-            var newTagName = $(this).text().trim();
-
-            callApi(`/api/tags/${tagId}`, 'PUT', newTagName, (resp) => {
-                blogToast.success('Tag updated');
+                }
             });
         });
 
-        $("#tagFilter").on("keyup", function () {
-            var value = $(this).val().toLowerCase();
-            $(".ul-tag-mgr li").filter(function () {
-                $(this).toggle($(this).text().toLowerCase().indexOf(value) > -1);
+        document.querySelectorAll(".span-tagcontent-editable").forEach(function(element) {
+            element.addEventListener("blur", function() {
+                var tagId = this.getAttribute("data-tagid");
+                var newTagName = this.textContent.trim();
+        
+                callApi(`/api/tags/${tagId}`, 'PUT', newTagName, function(resp) {
+                    blogToast.success('Tag updated');
+                });
+            });
+        });
+
+        document.getElementById('tagFilter').addEventListener('keyup', function () {
+            var value = this.value.toLowerCase();
+            var items = document.querySelectorAll('.ul-tag-mgr li');
+
+            items.forEach(function (item) {
+                var show = item.textContent.toLowerCase().indexOf(value) > -1;
+                item.style.display = show ? 'inline-block' : 'none';
             });
         });
 
@@ -51,13 +57,11 @@
 
             const data = new FormData(event.target);
             const value = Object.fromEntries(data.entries());
-
-            callApi(`/api/tags`, 'POST', value.tagName,
-                (resp) => {
-                    document.querySelector('#edit-form').reset();
-                    $("#editTagModal").modal('hide');
-                    window.location.reload();
-                });
+        
+            callApi(`/api/tags`, 'POST', value.tagName, function(resp) {
+                document.querySelector('#edit-form').reset();
+                window.location.reload();
+            });
         }
 
         const form = document.querySelector('#edit-form');
@@ -108,8 +112,8 @@
                 <input type="text" name="tagName" id="input-tag-name" class="form-control" required />
             </div>
             <div class="mt-3">
-                <button type="submit" class="btn btn-success">@SharedLocalizer["Submit"]</button>
-                <button type="button" class="btn btn-secondary" data-bs-dismiss="offcanvas">@SharedLocalizer["Cancel"]</button>
+                <button type="submit" class="btn btn-outline-accent">@SharedLocalizer["Submit"]</button>
+                <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="offcanvas">@SharedLocalizer["Cancel"]</button>
             </div>
         </form>
     </div>

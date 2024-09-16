@@ -8,7 +8,7 @@
                 {},
                 (resp) => {
                     blogToast.success('Page deleted');
-                    $('.page-content').html('Deleted');
+                    document.querySelector('.page-content').innerHTML = 'Deleted';
                 });
         }
 

@@ -20,7 +20,7 @@
                 minutes = minutes < 10 ? '0' + minutes : minutes;
                 seconds = seconds < 10 ? '0' + seconds : seconds;
 
-                display.text(minutes + ':' + seconds);
+                display.textContent = minutes + ':' + seconds;
 
                 if (--timer < 0) {
                     timer = duration;
@@ -28,23 +28,27 @@
             }, 1000);
         }
 
-        $('.btn-reset').click(function () {
+        document.querySelector('.btn-reset').addEventListener('click', function () {
             callApi(`/api/settings/reset`, 'POST', {}, () => { });
-            $('.btn-reset').text('Wait...');
-            $('.btn-reset').addClass('disabled');
-            $('.btn-reset').attr('disabled', 'disabled');
-            startTimer(30, $('.btn-reset'));
+
+            var btnReset = document.querySelector('.btn-reset');
+            btnReset.textContent = 'Wait...';
+            btnReset.classList.add('disabled');
+            btnReset.setAttribute('disabled', 'disabled');
+
+            startTimer(30, btnReset);
+
             setTimeout(function () {
                 location.href = '/';
             }, 30000);
         });
 
-        $('.btn-check-update').click(function () {
-            $('.spinner-border').show();
-            $('.alert-has-new-release').hide();
-            $('.alert-no-new-release').hide();
-            $('.btn-get-update').addClass('disabled');
-            $('.btn-get-update').attr('href', '#');
+        document.querySelector('.btn-check-update').addEventListener('click', function () {
+            document.querySelector('.spinner-border').style.display = 'block';
+            document.querySelector('.alert-has-new-release').style.display = 'none';
+            document.querySelector('.alert-no-new-release').style.display = 'none';
+            document.querySelector('.btn-get-update').classList.add('disabled');
+            document.querySelector('.btn-get-update').setAttribute('href', '#');
 
             var updateCheckCanvas = new bootstrap.Offcanvas(document.getElementById('updateCheckCanvas'));
             updateCheckCanvas.show();
@@ -57,23 +61,22 @@
                 }
             }).then(async (resp) => {
                 var data = await resp.json();
-                $('.spinner-border').hide();
+                document.querySelector('.spinner-border').style.display = 'none';
 
-                $('#currentAssemblyFileVersion').val('@currentVersion');
-                $('#releaseName').val(data.name);
-                $('#releaseTagName').val(data.tag_name);
-                $('#releaseCreatedAt').val(new Date(data.created_at));
+                document.getElementById('releaseName').value = data.name;
+                document.getElementById('releaseTagName').value = data.tag_name;
+                document.getElementById('releaseCreatedAt').value = new Date(data.created_at);
 
                 var c = settings.compareVersionNumbers(data.tag_name.replace('v', ''), '@currentVersion');
                 var hasNewVersion = c == 1 && !data.prerelease;
 
                 if (hasNewVersion) {
-                    $('.alert-has-new-release').show();
-                    $('.btn-get-update').removeClass('disabled');
-                    $('.btn-get-update').attr('href', data.html_url);
-                }
-                else {
-                    $('.alert-no-new-release').show();
+                    document.querySelector('.alert-has-new-release').style.display = 'block';
+                    var btnGetUpdate = document.querySelector('.btn-get-update');
+                    btnGetUpdate.classList.remove('disabled');
+                    btnGetUpdate.setAttribute('href', data.html_url);
+                } else {
+                    document.querySelector('.alert-no-new-release').style.display = 'block';
                 }
             }).catch(err => {
                 blogToast.error(err);
@@ -97,7 +100,7 @@
                 <div class="mb-4">
                     <h4 class="admin-subtitle fw-bold mb-2">@SharedLocalizer["Advanced Settings"]</h4>
                     
-                    <div class="settings-entry2 row align-items-center py-3 px-2 rounded-3 shadow-sm border bg-white mb-2">
+                    <div class="settings-entry row align-items-center py-3 px-2 rounded-3 shadow-sm border bg-white mb-2">
                         <div class="col-auto">
                             <i class="bi-arrow-right-circle settings-entry-icon"></i>
                         </div>
@@ -112,7 +115,7 @@
                         </div>
                     </div>
 
-                    <div class="settings-entry2 row align-items-center py-3 px-2 rounded-3 shadow-sm border bg-white mb-2">
+                    <div class="settings-entry row align-items-center py-3 px-2 rounded-3 shadow-sm border bg-white mb-2">
                         <div class="col-auto">
                             <i class="bi-arrow-right-circle settings-entry-icon"></i>
                         </div>
@@ -127,7 +130,7 @@
                         </div>
                     </div>
 
-                    <div class="settings-entry2 row align-items-center py-3 px-2 rounded-3 shadow-sm border bg-white mb-2">
+                    <div class="settings-entry row align-items-center py-3 px-2 rounded-3 shadow-sm border bg-white mb-2">
                         <div class="col-auto">
                             <i class="bi-map settings-entry-icon"></i>
                         </div>
@@ -142,7 +145,7 @@
                         </div>
                     </div>
 
-                    <div class="settings-entry2 row align-items-center py-3 px-2 rounded-3 shadow-sm border bg-white mb-2">
+                    <div class="settings-entry row align-items-center py-3 px-2 rounded-3 shadow-sm border bg-white mb-2">
                         <div class="col-auto">
                             <i class="bi-search settings-entry-icon"></i>
                         </div>
@@ -157,7 +160,7 @@
                         </div>
                     </div>
 
-                    <div class="settings-entry2 row align-items-center py-3 px-2 rounded-3 shadow-sm border bg-white mb-2">
+                    <div class="settings-entry row align-items-center py-3 px-2 rounded-3 shadow-sm border bg-white mb-2">
                         <div class="col-auto">
                             <i class="bi-diagram-2 settings-entry-icon"></i>
                         </div>
@@ -173,7 +176,7 @@
                         </div>
                     </div>
 
-                    <div class="settings-entry2 row align-items-center py-3 px-2 rounded-3 shadow-sm border bg-white mb-2">
+                    <div class="settings-entry row align-items-center py-3 px-2 rounded-3 shadow-sm border bg-white mb-2">
                         <div class="col-auto">
                             <i class="bi-filetype-xml settings-entry-icon"></i>
                         </div>
@@ -188,7 +191,7 @@
                         </div>
                     </div>
 
-                    <div class="settings-entry2 row align-items-center py-3 px-2 rounded-3 shadow-sm border bg-white">
+                    <div class="settings-entry row align-items-center py-3 px-2 rounded-3 shadow-sm border bg-white">
                         <div class="col-auto">
                             <i class="bi-exclamation-triangle settings-entry-icon"></i>
                         </div>
@@ -231,7 +234,7 @@
                         @SharedLocalizer["Options"]
                     </h4>
 
-                    <div class="settings-entry2 row align-items-center py-3 px-2 rounded-3 shadow-sm border bg-white mb-2">
+                    <div class="settings-entry row align-items-center py-3 px-2 rounded-3 shadow-sm border bg-white mb-2">
                         <div class="col-auto">
                             <i class="bi-moon-stars settings-entry-icon"></i>
                         </div>
@@ -248,7 +251,7 @@
                         </div>
                     </div>
 
-                    <div class="settings-entry2 row align-items-center py-3 px-2 rounded-3 shadow-sm border bg-white">
+                    <div class="settings-entry row align-items-center py-3 px-2 rounded-3 shadow-sm border bg-white">
                         <div class="col-auto">
                             <i class="bi-eraser settings-entry-icon"></i>
                         </div>

@@ -25,18 +25,18 @@
 
 @section scripts {
     <script>
-        $("#tagFilter").on("keyup", function () {
-            var value = $(this).val().toLowerCase();
+        document.getElementById('tagFilter').addEventListener('keyup', function () {
+            var value = this.value.toLowerCase();
+            var items = document.querySelectorAll('.ul-tags li');
 
-            $(".ul-tags li").filter(function () {
-                var show = $(this).text().toLowerCase().indexOf(value) > -1;
+            items.forEach(function (item) {
+                var show = item.textContent.toLowerCase().indexOf(value) > -1;
                 if (show) {
-                    $(this).addClass('d-inline-block');
-                    $(this).removeClass('d-none');
-                }
-                else {
-                    $(this).removeClass('d-inline-block');
-                    $(this).addClass('d-none');
+                    item.classList.add('d-inline-block');
+                    item.classList.remove('d-none');
+                } else {
+                    item.classList.remove('d-inline-block');
+                    item.classList.add('d-none');
                 }
             });
         });

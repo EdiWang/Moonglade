@@ -1,52 +1,49 @@
 ﻿function slugify(text) {
-    var isValidTitle = /^[A-Za-z][A-Za-z0-9 \(\)#,\.\?]*$/.test(text);
-    if (isValidTitle) {
-        return text
-            .toLowerCase()
-            .replace('(', '')
-            .replace(')', '')
-            .replace('#', '')
-            .replace(',', '')
-            .replace('.', '')
-            .replace('?', '')
-            .replace(/[^\w ]+/g, '')
-            .replace(/ +/g, '-');
+    if (!/^[A-Za-z][A-Za-z0-9 \(\)#,\.\?]*$/.test(text)) {
+        return '';
     }
-    return '';
+
+    return text
+        .toLowerCase()
+        .replace(/[()#,.?]/g, '')
+        .replace(/[^\w ]+/g, '')
+        .replace(/ +/g, '-');
 }
 
 export function initEvents(slugifyTitle) {
+
     if (slugifyTitle) {
-        $('#ViewModel_Title').change(function () {
-            var newSlug = slugify($(this).val());
+        document.querySelector('#ViewModel_Title').addEventListener('change', function () {
+            var newSlug = slugify(this.value);
             if (newSlug) {
                 document.querySelector('#ViewModel_Slug').value = newSlug;
             }
         });
     }
 
-    $('#btn-preview').click(function (e) {
+    document.querySelector('#btn-preview')?.addEventListener('click', function (e) {
         submitForm(e);
     });
 
-    $('#btn-save').click(function (e) {
+    document.querySelector('#btn-save').addEventListener('click', function (e) {
         submitForm(e);
     });
 
-    $('#btn-publish').click(function (e) {
-        $('input[name="ViewModel.IsPublished"]').val('True');
+    document.querySelector('#btn-publish')?.addEventListener('click', function (e) {
+        document.querySelector('input[name="ViewModel.IsPublished"]').value = 'True';
         submitForm(e);
     });
 
-    $('.btn-modify-slug').click(function () {
+    document.querySelector('.btn-modify-slug')?.addEventListener('click', function () {
         var message = 'This post was published for a period of time, changing slug will result in breaking SEO, would you like to continue?';
 
         if (confirm(message)) {
-            $('#ViewModel_Slug').removeAttr('readonly');
-            $('#ViewModel_Slug').focus();
-            $('.btn-modify-slug').hide();
+            var slugInput = document.getElementById('ViewModel_Slug');
+            slugInput.removeAttribute('readonly');
+            slugInput.focus();
+            document.querySelector('.btn-modify-slug').style.display = 'none';
         }
-    })
+    });
 
     function submitForm(e) {
         if (window.tinyMCE) {
@@ -57,20 +54,18 @@ export function initEvents(slugifyTitle) {
             assignEditorValues(window.mdContentEditor, ".post-content-textarea");
         }
 
-        if ($('input[name="ViewModel.IsPublished"]').val() === 'True') {
-            if (document.querySelector('#btn-publish')) {
-                document.querySelector('#btn-publish').style.display = 'none';
-            };
+        if (document.querySelector('input[name="ViewModel.IsPublished"]').value === 'True') {
+            const btnPublish = document.querySelector('#btn-publish');
+            if (btnPublish) {
+                btnPublish.style.display = 'none';
+            }
 
-            if (document.querySelector('#btn-preview')) {
-                document.querySelector('#btn-preview').style.display = 'none';
+            const btnPreview = document.querySelector('#btn-preview');
+            if (btnPreview) {
+                btnPreview.style.display = 'none';
             }
         }
     }
-
-    $('.post-edit-form').areYouSure({
-        message: 'You have unsaved changes, are you sure to leave this page?'
-    });
 
     callApi('/api/tags/names',
         'GET',
@@ -97,6 +92,27 @@ export function initEvents(slugifyTitle) {
     document.querySelector('#ViewModel_Title').focus();
 }
 
+export function warnDirtyForm(selector) {
+    const form = document.querySelector(selector);
+    let isFormDirty = false;
+
+    form.addEventListener('input', function () {
+        isFormDirty = true;
+    });
+
+    window.addEventListener('beforeunload', function (event) {
+        if (isFormDirty) {
+            const message = 'You have unsaved changes, are you sure to leave this page?';
+            event.returnValue = message;
+            return message;
+        }
+    });
+
+    form.addEventListener('submit', function () {
+        isFormDirty = false;
+    });
+}
+
 export function loadTinyMCE(textareaSelector) {
     if (window.tinyMCE !== undefined) {
         window.tinyMCE.init({
@@ -112,7 +128,7 @@ export function loadTinyMCE(textareaSelector) {
             plugins: 'advlist autolink autosave link image lists charmap preview anchor pagebreak searchreplace wordcount visualblocks visualchars code fullscreen insertdatetime media nonbreaking save table directionality codesample emoticons',
             toolbar: 'undo redo | blocks | bold italic underline strikethrough | forecolor backcolor | paste pastetext removeformat | hr link image codesample | charmap emoticons table media | alignleft aligncenter alignright alignjustify | bullist numlist outdent indent | code | fullscreen',
             save_onsavecallback: function () {
-                $('#btn-save').trigger('click');
+                document.querySelector('#btn-save').click();
             },
             paste_data_images: true,
             images_upload_url: '/image',
@@ -133,6 +149,7 @@ export function loadTinyMCE(textareaSelector) {
                 { text: 'JavaScript', value: 'javascript' },
                 { text: 'Json', value: 'json' },
                 { text: 'Kotlin', value: 'kotlin' },
+                { text: 'LaTeX', value: 'latex' },
                 { text: 'Lua', value: 'lua' },
                 { text: 'Markdown', value: 'markdown' },
                 { text: 'Nginx', value: 'nginx' },
@@ -162,9 +179,9 @@ export function loadTinyMCE(textareaSelector) {
 }
 
 export function keepAlive() {
-    var tid = setInterval(postNonce, 60 * 1000);
+    const tid = setInterval(postNonce, 60 * 1000);
     function postNonce() {
-        var num = Math.random();
+        const num = Math.random();
         fetch('/api/post/keep-alive',
             {
                 method: 'POST',

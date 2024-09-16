@@ -12,13 +12,13 @@
     line-height: 1.5em;
     transition: width .35s;
     border-radius: 8px;
-    border: 1px solid var(--gray-3);
+    border: 1px solid var(--bs-border-color);
     max-height: calc(100vh - 100px);
 }
 
-.darkmode .outline-nav {
-    background-color: var(--gray-7);
-    border: 1px solid var(--gray-6);
+[data-bs-theme=dark] .outline-nav {
+    background-color: var(--bs-body-bg);
+    border: 1px solid var(--bs-light-border-subtle);
 }
 
 .outline-nav-collapsed {
@@ -73,8 +73,8 @@
         color: var(--accent-color3);
     }
 
-.darkmode .outline-nav span:hover {
-    color: var(--gray-2);
+[data-bs-theme=dark] .outline-nav span:hover {
+    color: var(--bs-body-color);
 }
 
 .outline-nav li {
@@ -85,8 +85,8 @@
         border-bottom: none;
     }
 
-.darkmode .outline-nav li {
-    color: var(--gray-3);
+[data-bs-theme=dark] .outline-nav li {
+    color: var(--bs-secondary-color);
 }
 
 .outline-nav ul:first-child {

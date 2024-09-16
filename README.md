@@ -42,8 +42,8 @@ PostgreSQL | `PostgreSql` | `User ID=***;Password=***;Host=localhost;Port=5432;D
 ### Build Source
 
 Build and run `./src/Moonglade.sln`
-- Home page: `https://localhost:1055`
-- Admin: `https://localhost:1055/admin`
+- Home page: `https://localhost:35996`
+- Admin: `https://localhost:35996/admin`
   - Default username: `admin`
   - Default password: `admin123`
 

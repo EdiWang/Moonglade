@@ -1,6 +1,8 @@
-﻿using Edi.Captcha;
+using Edi.Captcha;
 using Edi.PasswordGenerator;
+
 using Microsoft.AspNetCore.Rewrite;
+
 using Moonglade.Comments.Moderator;
 using Moonglade.Data.MySql;
 using Moonglade.Data.PostgreSql;
@@ -12,9 +14,12 @@ using Moonglade.Setup;
 using Moonglade.Syndication;
 using Moonglade.Web.Handlers;
 using Moonglade.Webmention;
+
 using SixLabors.Fonts;
+
 using System.Globalization;
 using System.Text.Json.Serialization;
+
 using Encoder = Moonglade.Web.Configuration.Encoder;
 
 AppDomain.CurrentDomain.Load("Moonglade.Setup");
@@ -27,7 +32,7 @@ AppDomain.CurrentDomain.Load("Moonglade.Webmention");
 
 Encoding.RegisterProvider(CodePagesEncodingProvider.Instance);
 
-var cultures = new[] { "en-US", "zh-Hans", "zh-Hant" }.Select(p => new CultureInfo(p)).ToList();
+var cultures = new[] { "en-US", "zh-Hans", "zh-Hant", "de-DE" }.Select(p => new CultureInfo(p)).ToList();
 
 var builder = WebApplication.CreateBuilder(args);
 builder.WriteParameterTable();
@@ -57,10 +62,10 @@ services.AddSession(options =>
             Helper.GetMagic(0x1499E, 10, 14)
     ];
 
-    if (bool.Parse(builder.Configuration["Experimental:ChinaFriendly"]!))
+    if (bool.Parse(builder.Configuration["BlockPRCFuryCode"]!))
     {
         magics.AddRange([
-            Helper.GetMagic(0x7DB14,21,25),
+                Helper.GetMagic(0x7DB14,21,25),
                 Helper.GetMagic(0x78E10,13,17),
                 Helper.GetMagic(0x17808,34,38),
                 Helper.GetMagic(0x1B5ED,4,8),

@@ -14,8 +14,8 @@
     @if (BlogConfig.GeneralSettings.WidgetsTags)
     {
         <section id="aside-tags" class="mt-4 mb-4">
-            <div class="aside-widget p-3 rounded-3 shadow-sm border bg-white">
-                <h6 class="card-subtitle mb-3 text-muted">@SharedLocalizer["Tags"]</h6>
+            <div class="aside-widget p-3 rounded-3 shadow-sm border">
+                <h6 class="card-subtitle mb-3 text-secondary">@SharedLocalizer["Tags"]</h6>
                 <div>
                     <cache expires-after="@TimeSpan.FromMinutes(int.Parse(Configuration["CacheSlidingExpirationMinutes:Widget"]!))">
                         @await Component.InvokeAsync("Tags")
@@ -33,8 +33,8 @@
     @if (BlogConfig.GeneralSettings.WidgetsCategoryList)
     {
         <section id="aside-cats" class="mb-4">
-            <div class="aside-widget p-3 rounded-3 shadow-sm border bg-white">
-                <h6 class="card-subtitle mb-3 text-muted">@SharedLocalizer["Categories"]</h6>
+            <div class="aside-widget p-3 rounded-3 shadow-sm border">
+                <h6 class="card-subtitle mb-3 text-secondary">@SharedLocalizer["Categories"]</h6>
                 @await Component.InvokeAsync("CategoryList", new { isMenu = false })
             </div>
         </section>
@@ -52,14 +52,14 @@
     @if (BlogConfig.GeneralSettings.WidgetsSubscriptionButtons)
     {
         <section id="aside-subscription" class="text-center mb-4">
-            <a class="btn btn-sm btn-round btn-outline-secondary me-2" href="#" data-bs-toggle="modal" data-bs-target="#subscriptionmodal">
+            <a class="btn btn-sm rounded-pill btn-outline-secondary me-2" href="#" data-bs-toggle="modal" data-bs-target="#subscriptionmodal">
                 <i class="bi-rss"></i>
                 RSS / Atom
             </a>
 
             @if (BlogConfig.AdvancedSettings.EnableOpml)
             {
-                <a asp-controller="Subscription" asp-action="Opml" class="btn btn-sm btn-round btn-outline-secondary" target="_blank">
+                <a asp-controller="Subscription" asp-action="Opml" class="btn btn-sm rounded-pill btn-outline-secondary" target="_blank">
                     <i class="bi-code-slash"></i>
                     OPML
                 </a>

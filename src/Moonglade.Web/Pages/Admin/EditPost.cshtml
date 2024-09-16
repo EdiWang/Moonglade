@@ -47,18 +47,18 @@
         
         var editorMode = '@ec';
 
-        $(function () {
+        document.addEventListener('DOMContentLoaded', function () {
             editor.initEvents(@((!wsm).ToString().ToLower()));
-            
-            if (editorMode == '@nameof(EditorChoice.Html)') {
+
+            if (editorMode === '@nameof(EditorChoice.Html)') {
                 editor.loadTinyMCE(".post-content-textarea");
             }
-            if (editorMode == '@nameof(EditorChoice.Markdown)') {
+            if (editorMode === '@nameof(EditorChoice.Markdown)') {
                 require(['vs/editor/editor.main'], function () {
                     window.mdContentEditor = initEditor('markdown-content-editor', ".post-content-textarea", 'markdown');
                     
                     inlineAttachment.editors.monaco.attach(
-                        window.mdContentEditor, document.getElementsByClassName('md-editor-image-upload-area')[0] ,{
+                        window.mdContentEditor, document.getElementsByClassName('md-editor-image-upload-area')[0], {
                         uploadUrl: '/image',
                         urlText: '![file]({filename})',
                         onFileUploadResponse: function (xhr) {
@@ -83,19 +83,19 @@
             }
 
             editor.keepAlive();
+            editor.warnDirtyForm('.post-edit-form');
         });
-
-        $(window).bind('keydown',
-            function (event) {
-                if (event.ctrlKey || event.metaKey) {
-                    switch (String.fromCharCode(event.which).toLowerCase()) {
-                        case 's':
-                            event.preventDefault();
-                            $("#btn-save").trigger('click');
-                            break;
-                    }
+        
+        window.addEventListener('keydown', function(event) {
+            if (event.ctrlKey || event.metaKey) {
+                switch (String.fromCharCode(event.which).toLowerCase()) {
+                    case 's':
+                        event.preventDefault();
+                        document.getElementById('btn-save').click();
+                        break;
                 }
-            });
+            }
+        });
 
         var heroImageModal = new bootstrap.Modal(document.getElementById('heroImageModal'));
 
@@ -151,7 +151,7 @@
                 async (resp) => {
                     var respJson = await resp.json();
                     if (respJson.postId) {
-                        $('input[name="ViewModel.PostId"]').val(respJson.postId);
+                        document.querySelector('input[name="ViewModel.PostId"]').value = respJson.postId;
                         blogToast.success('Post saved successfully.');
 
                         if (isPreviewRequired) {

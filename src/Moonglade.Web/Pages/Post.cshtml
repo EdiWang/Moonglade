@@ -5,7 +5,7 @@
 @Html.AntiForgeryToken()
 
 @{
-    ViewBag.BodyClass = "body-post-slug";
+    ViewBag.BodyClass = "body-post-slug bg-gray-1";
     if (!Model.Post.IsFeedIncluded)
     {
         HttpContext.Response.Headers.Add("X-Robots-Tag", "noindex, nofollow");
@@ -63,6 +63,8 @@
 
 @section scripts {
     <script src="~/js/3rd/highlight.min.js" asp-append-version="true"></script>
+    <script src="~/js/3rd/katex.min.js"></script>
+
     @if (BlogConfig.ContentSettings.DocumentOutline)
     {
         <script src="~/js/app/documentoutline.js"></script>
@@ -87,6 +89,8 @@
         }
 
         viewpost.renderCodeHighlighter();
+        viewpost.RenderLaTeX();
+
         @if (BlogConfig.AdvancedSettings.WarnExternalLink)
         {
             <text>
@@ -96,7 +100,7 @@
 
         window.fitImageToDevicePixelRatio = @BlogConfig.ImageSettings.FitImageToDevicePixelRatio.ToString().ToLower();
 
-        $('#comment-form').on('submit', function (e) {
+        document.getElementById('comment-form').addEventListener('submit', function (e) {
             e.preventDefault();
             let pid = document.querySelector('article').dataset.postid;
             viewpost.submitComment(pid);
@@ -117,7 +121,7 @@
             @Model.Post.Title
         </h1>
 
-        <div class="post-publish-info text-muted mb-2">
+        <div class="post-publish-info text-secondary mb-2">
             @if (!string.IsNullOrWhiteSpace(Model.Post.Author))
             {
                 <i class="bi-person d-none d-sm-inline"></i>
