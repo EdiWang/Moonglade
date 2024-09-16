@@ -132,7 +132,7 @@ services.AddSyndication()
         .AddImageStorage(builder.Configuration, options => options.ContentRootPath = builder.Environment.ContentRootPath);
 
 services.AddEmailClient();
-services.AddIndexNowClient();
+services.AddIndexNowClient(builder.Configuration.GetSection("IndexNow"));
 services.AddContentModerator(builder.Configuration);
 
 services.AddSingleton<CannonService>();
