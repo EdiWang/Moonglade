@@ -16,7 +16,7 @@ public static class ServiceCollectionExtension
                     {
                         o.BaseAddress = new Uri(pingTarget);
                         o.DefaultRequestHeaders.Add("User-Agent", $"Moonglade/{Helper.AppVersionBasic}");
-                        o.DefaultRequestHeaders.Add("ContentType", "application/json");
+                        o.DefaultRequestHeaders.Add("Content-Type", "application/json");
                         o.DefaultRequestHeaders.Host = pingTarget;
                     })
                     .AddStandardResilienceHandler();
