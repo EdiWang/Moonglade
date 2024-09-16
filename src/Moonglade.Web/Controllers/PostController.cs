@@ -3,6 +3,7 @@ using Moonglade.Pingback;
 using Moonglade.Web.Attributes;
 using Moonglade.Webmention;
 using System.ComponentModel.DataAnnotations;
+using Moonglade.IndexNow.Client;
 
 namespace Moonglade.Web.Controllers;
 
@@ -59,6 +60,8 @@ public class PostController(
                 {
                     cannonService.FireAsync<IWebmentionSender>(async sender => await sender.SendWebmentionAsync(link.ToString(), postEntity.PostContent));
                 }
+
+                cannonService.FireAsync<IIndexNowClient>(async sender => await sender.SendRequestAsync(link));
             }
 
             return Ok(new { PostId = postEntity.Id });
