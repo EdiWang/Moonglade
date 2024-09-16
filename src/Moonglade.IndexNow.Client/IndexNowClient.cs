@@ -8,7 +8,7 @@ using Microsoft.Extensions.Logging;
 
 namespace Moonglade.IndexNow.Client;
 
-public class IndexNowClient(ILogger<IndexNowClient> logger, IConfiguration configuration) : IIndexNowClient
+public class IndexNowClient(ILogger<IndexNowClient> logger, IConfiguration configuration, IHttpClientFactory httpClientFactory) : IIndexNowClient
 {
     public Task SendRequestAsync(Uri uri)
     {
@@ -24,6 +24,19 @@ public class IndexNowClient(ILogger<IndexNowClient> logger, IConfiguration confi
         if (pingTargets == null || !pingTargets.Any())
         {
             throw new InvalidOperationException("IndexNow:PingTargets is not configured.");
+        }
+
+        foreach (var pingTarget in pingTargets)
+        {
+            var client = httpClientFactory.CreateClient(pingTarget);
+
+            var requestBody = new IndexNowRequest
+            {
+                Host = uri.Host,
+                Key = apiKey,
+                KeyLocation = $"https://{uri.Host}/indexnowkey.txt",
+                UrlList = [uri.ToString()]
+            };
         }
 
         throw new NotImplementedException();

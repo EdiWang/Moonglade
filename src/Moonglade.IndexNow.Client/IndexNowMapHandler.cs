@@ -1,4 +1,8 @@
-﻿namespace Moonglade.Web.Handlers;
+﻿using System.Text;
+using Microsoft.AspNetCore.Http;
+using Microsoft.Extensions.Configuration;
+
+namespace Moonglade.IndexNow.Client;
 
 public class IndexNowMapHandler
 {
