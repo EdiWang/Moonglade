@@ -19,7 +19,7 @@ using SixLabors.Fonts;
 
 using System.Globalization;
 using System.Text.Json.Serialization;
-
+using Moonglade.IndexNow.Client;
 using Encoder = Moonglade.Web.Configuration.Encoder;
 
 AppDomain.CurrentDomain.Load("Moonglade.Setup");
@@ -132,6 +132,7 @@ services.AddSyndication()
         .AddImageStorage(builder.Configuration, options => options.ContentRootPath = builder.Environment.ContentRootPath);
 
 services.AddEmailClient();
+services.AddIndexNowClient();
 services.AddContentModerator(builder.Configuration);
 
 services.AddSingleton<CannonService>();
