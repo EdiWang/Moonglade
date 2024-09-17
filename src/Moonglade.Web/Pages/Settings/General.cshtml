@@ -362,6 +362,22 @@
                                 </div>
                             </div>
                         </div>
+                        
+                        <div class="settings-entry row align-items-center py-3 px-2 border-top">
+                            <div class="col-auto">
+                                <i class="bi-person-circle settings-entry-icon"></i>
+                            </div>
+                            <div class="col">
+                                <label asp-for="ViewModel.UseGravatarAsProfilePicture" class="form-check-label"></label>
+                                <div class="form-text">@SharedLocalizer["Please make sure you have setup Gravatar with your email address"]</div>
+                            </div>
+                            <div class="col-md-5 text-end">
+                                <div class="form-check form-switch form-control-lg">
+                                    <input type="hidden" name="UseGravatarAsProfilePicture" value="false">
+                                    <input type="checkbox" name="UseGravatarAsProfilePicture" value="true" class="form-check-input" @(Model.ViewModel.UseGravatarAsProfilePicture ? "checked" : null)>
+                                </div>
+                            </div>
+                        </div>
 
                         <div class="settings-entry row align-items-center py-3 px-2 border-top">
                             <div class="col-auto">
