@@ -879,4 +879,7 @@
   <data name="Use my Gravatar as profile picture" xml:space="preserve">
     <value>Verwende meinen Gravatar als deinen Avatar</value>
   </data>
+  <data name="Please make sure you have setup Gravatar with your email address" xml:space="preserve">
+    <value>Bitte stellen Sie sicher, dass Sie sich mit Ihrer E-Mail-Adresse für Gravatar angemeldet haben</value>
+  </data>
 </root>

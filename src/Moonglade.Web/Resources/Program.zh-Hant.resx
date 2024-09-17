@@ -879,4 +879,7 @@
   <data name="Use my Gravatar as profile picture" xml:space="preserve">
     <value>使用我的 Gravatar 作為頭像</value>
   </data>
+  <data name="Please make sure you have setup Gravatar with your email address" xml:space="preserve">
+    <value>請確保你已經使用你的 Email 註冊了 Gravatar</value>
+  </data>
 </root>
