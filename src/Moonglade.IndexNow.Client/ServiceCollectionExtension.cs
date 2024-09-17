@@ -1,6 +1,7 @@
 ﻿using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Moonglade.Utils;
+using System.Net.Http.Headers;
 
 namespace Moonglade.IndexNow.Client;
 
@@ -14,13 +15,15 @@ public static class ServiceCollectionExtension
         {
             services.AddHttpClient(pingTarget, o =>
                     {
-                        o.BaseAddress = new Uri(pingTarget);
-                        o.DefaultRequestHeaders.Add("User-Agent", $"Moonglade/{Helper.AppVersionBasic}");
-                        o.DefaultRequestHeaders.Add("Content-Type", "application/json");
+                        o.BaseAddress = new Uri($"https://{pingTarget}");
+                        o.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
+                        o.DefaultRequestHeaders.UserAgent.Add(new ProductInfoHeaderValue("Moonglade", Helper.AppVersionBasic));
                         o.DefaultRequestHeaders.Host = pingTarget;
                     })
                     .AddStandardResilienceHandler();
         }
+
+        services.AddScoped<IIndexNowClient, IndexNowClient>();
 
         return services;
     }
