@@ -1,25 +1,21 @@
 using Edi.Captcha;
 using Edi.PasswordGenerator;
-
 using Microsoft.AspNetCore.Rewrite;
-
 using Moonglade.Comments.Moderator;
 using Moonglade.Data.MySql;
 using Moonglade.Data.PostgreSql;
 using Moonglade.Data.SqlServer;
 using Moonglade.Email.Client;
+using Moonglade.IndexNow.Client;
 using Moonglade.Mention.Common;
 using Moonglade.Pingback;
 using Moonglade.Setup;
 using Moonglade.Syndication;
 using Moonglade.Web.Handlers;
 using Moonglade.Webmention;
-
 using SixLabors.Fonts;
-
 using System.Globalization;
 using System.Text.Json.Serialization;
-using Moonglade.IndexNow.Client;
 using Encoder = Moonglade.Web.Configuration.Encoder;
 
 AppDomain.CurrentDomain.Load("Moonglade.Setup");

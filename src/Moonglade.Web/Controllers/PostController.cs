@@ -1,9 +1,9 @@
 ﻿using Moonglade.Core.PostFeature;
+using Moonglade.IndexNow.Client;
 using Moonglade.Pingback;
 using Moonglade.Web.Attributes;
 using Moonglade.Webmention;
 using System.ComponentModel.DataAnnotations;
-using Moonglade.IndexNow.Client;
 
 namespace Moonglade.Web.Controllers;
 

@@ -1,6 +1,6 @@
-﻿using System.Text;
-using Microsoft.AspNetCore.Http;
+﻿using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Configuration;
+using System.Text;
 
 namespace Moonglade.IndexNow.Client;
 
