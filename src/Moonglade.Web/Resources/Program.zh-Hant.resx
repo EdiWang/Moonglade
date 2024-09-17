@@ -876,4 +876,7 @@
   <data name="It is your responsibility to ensure the safety and security of your own browsing experience." xml:space="preserve">
     <value>您有責任確保自己的瀏覽體驗安全。</value>
   </data>
+  <data name="Use my Gravatar as profile picture" xml:space="preserve">
+    <value>使用我的 Gravatar 作為頭像</value>
+  </data>
 </root>

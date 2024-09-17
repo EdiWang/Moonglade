@@ -873,4 +873,7 @@
   <data name="Your personal information and computer system may be at risk when visiting external websites." xml:space="preserve">
     <value>当访问外部网站时，您的个人信息和计算机系统可能会面临风险。</value>
   </data>
+  <data name="Use my Gravatar as profile picture" xml:space="preserve">
+    <value>使用我的 Gravatar 作为头像</value>
+  </data>
 </root>
