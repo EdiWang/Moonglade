@@ -139,7 +139,7 @@ Setup [Moonglade.Email](https://github.com/EdiWang/Moonglade.Email) Azure Functi
 - [System Settings](https://github.com/EdiWang/Moonglade/wiki/System-Settings)
 - [Security HTTP Headers](https://github.com/EdiWang/Moonglade/wiki/Security-Headers)
 
-## 🎉 Blog Protocols or Standards
+## 🎉 Protocols or Standards
 
 Name | Feature | Status | Service Endpoint
 --- | --- | --- | ---
