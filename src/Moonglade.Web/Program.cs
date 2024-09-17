@@ -1,25 +1,21 @@
 using Edi.Captcha;
 using Edi.PasswordGenerator;
-
 using Microsoft.AspNetCore.Rewrite;
-
 using Moonglade.Comments.Moderator;
 using Moonglade.Data.MySql;
 using Moonglade.Data.PostgreSql;
 using Moonglade.Data.SqlServer;
 using Moonglade.Email.Client;
+using Moonglade.IndexNow.Client;
 using Moonglade.Mention.Common;
 using Moonglade.Pingback;
 using Moonglade.Setup;
 using Moonglade.Syndication;
 using Moonglade.Web.Handlers;
 using Moonglade.Webmention;
-
 using SixLabors.Fonts;
-
 using System.Globalization;
 using System.Text.Json.Serialization;
-
 using Encoder = Moonglade.Web.Configuration.Encoder;
 
 AppDomain.CurrentDomain.Load("Moonglade.Setup");
@@ -132,6 +128,7 @@ services.AddSyndication()
         .AddImageStorage(builder.Configuration, options => options.ContentRootPath = builder.Environment.ContentRootPath);
 
 services.AddEmailClient();
+services.AddIndexNowClient(builder.Configuration.GetSection("IndexNow"));
 services.AddContentModerator(builder.Configuration);
 
 services.AddSingleton<CannonService>();
@@ -223,6 +220,7 @@ app.MapControllers();
 app.MapRazorPages();
 
 app.MapGet("/robots.txt", RobotsTxtMapHandler.Handler);
+app.MapGet("/indexnowkey.txt", IndexNowMapHandler.Handler);
 app.MapGet("/manifest.webmanifest", WebManifestMapHandler.Handler);
 
 var bc = app.Services.GetRequiredService<IBlogConfig>();
