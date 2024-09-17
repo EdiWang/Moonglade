@@ -151,6 +151,7 @@ Pingback | Social | Supported | `/pingback`
 Webmention | Social | Supported | `/webmention`
 Reader View | Reader mode | Supported | N/A
 FOAF | Social | Supported | `/foaf.xml`
+IndexNow | SEO | Supported | N/A
 RSD | Service Discovery | Deprecated | N/A
 MetaWeblog | Blogging | Deprecated | N/A
 Dublin Core Metadata | SEO | Basic Support | N/A
