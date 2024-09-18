@@ -140,3 +140,27 @@ export function submitComment(pid) {
             document.querySelector(btnSubmitComment).removeAttribute('disabled');
         });
 }
+
+function calculateReadingTime() {
+    const englishWordsPerMinute = 225; // Average reading speed for English
+    const chineseCharactersPerMinute = 450; // Average reading speed for Chinese
+    const germanWordsPerMinute = 225; // Average reading speed for German
+
+    // Get the content of the blog post
+    const blogContent = document.querySelector('.post-content').innerText;
+
+    const englishAndGermanWords = blogContent.match(/\b\w+\b/g) || [];
+    const chineseCharacters = blogContent.match(/[\u4e00-\u9fa5]/g) || [];
+
+    // Calculate reading time for English and German (combined) and Chinese
+    const englishAndGermanReadingTime = englishAndGermanWords.length / englishWordsPerMinute;
+    const chineseReadingTime = chineseCharacters.length / chineseCharactersPerMinute;
+
+    // Total reading time in minutes
+    const totalReadingTime = englishAndGermanReadingTime + chineseReadingTime;
+
+    // Round to nearest minute
+    const roundedReadingTime = Math.ceil(totalReadingTime);
+
+    document.getElementById('reading-time').innerText = `Estimated Reading Time: ${roundedReadingTime} minute(s)`;
+}
