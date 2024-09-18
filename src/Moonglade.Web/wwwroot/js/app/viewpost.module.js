@@ -141,7 +141,7 @@ export function submitComment(pid) {
         });
 }
 
-function calculateReadingTime() {
+export function calculateReadingTime() {
     const englishWordsPerMinute = 225; // Average reading speed for English
     const chineseCharactersPerMinute = 450; // Average reading speed for Chinese
     const germanWordsPerMinute = 225; // Average reading speed for German

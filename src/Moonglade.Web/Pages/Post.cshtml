@@ -90,6 +90,7 @@
 
         viewpost.renderCodeHighlighter();
         viewpost.RenderLaTeX();
+        viewpost.calculateReadingTime();
 
         @if (BlogConfig.AdvancedSettings.WarnExternalLink)
         {
@@ -134,6 +135,9 @@
                     @DateOnly.FromDateTime(Model.Post.PubDateUtc.GetValueOrDefault()) (UTC)
                 </time>
             </span>
+            
+            <i class="bi-clock"></i>
+            <span id="reading-time"></span>
         </div>
     </header>
 
