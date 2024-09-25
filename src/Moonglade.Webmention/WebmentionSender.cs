@@ -64,7 +64,7 @@ public class WebmentionSender(
             string endpoint = await DiscoverWebmentionEndpoint(targetUrl.ToString());
             if (endpoint is null)
             {
-                logger.LogWarning("Webmention endpoint not found.");
+                logger.LogWarning($"Webmention endpoint not found for '{targetUrl}'.");
                 return;
             }
 
