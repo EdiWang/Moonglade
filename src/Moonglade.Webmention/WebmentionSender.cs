@@ -1,5 +1,4 @@
-﻿using Microsoft.Extensions.Configuration;
-using Microsoft.Extensions.Logging;
+﻿using Microsoft.Extensions.Logging;
 using Moonglade.Utils;
 using System.Text.RegularExpressions;
 
@@ -8,7 +7,6 @@ namespace Moonglade.Webmention;
 public class WebmentionSender(
     HttpClient httpClient,
     IWebmentionRequestor requestor,
-    IConfiguration configuration,
     ILogger<WebmentionSender> logger) : IWebmentionSender
 {
     public async Task SendWebmentionAsync(string postUrl, string postContent)
