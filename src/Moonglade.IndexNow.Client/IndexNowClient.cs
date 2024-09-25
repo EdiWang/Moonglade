@@ -45,12 +45,14 @@ public class IndexNowClient(ILogger<IndexNowClient> logger, IConfiguration confi
     private IndexNowRequest CreateRequestBody(Uri uri)
     {
         // https://www.indexnow.org/documentation
-        return new IndexNowRequest
+        // "In this option 2, the location of a key file determines the set of URLs that can be included with this key. A key file located at http://example.com/catalog/key12457EDd.txt can include any URLs starting with http://example.com/catalog/ but cannot include URLs starting with http://example.com/help/."
+        // "URLs that are not considered valid in option 2 may not be considered for indexing. It is strongly recommended that you use Option 1 and place your file key at the root directory of your web server."
+        return new()
         {
             Host = uri.Host,
             Key = _apiKey,
-            KeyLocation = $"https://{uri.Host}/indexnowkey.txt",
-            UrlList = new[] { uri.ToString() }
+            // KeyLocation = $"https://{uri.Host}/indexnowkey.txt",
+            UrlList = [uri.ToString()]
         };
     }
 

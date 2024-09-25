@@ -220,7 +220,12 @@ app.MapControllers();
 app.MapRazorPages();
 
 app.MapGet("/robots.txt", RobotsTxtMapHandler.Handler);
-app.MapGet("/indexnowkey.txt", IndexNowMapHandler.Handler);
+
+if (!string.IsNullOrWhiteSpace(app.Configuration["IndexNow:ApiKey"]))
+{
+    app.MapGet($"/{app.Configuration["IndexNow:ApiKey"]}.txt", IndexNowMapHandler.Handler);
+}
+
 app.MapGet("/manifest.webmanifest", WebManifestMapHandler.Handler);
 
 var bc = app.Services.GetRequiredService<IBlogConfig>();

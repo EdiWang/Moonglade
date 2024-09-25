@@ -17,7 +17,7 @@ public class IndexNowMapHandler
         if (string.IsNullOrWhiteSpace(apiKey))
         {
             httpContext.Response.StatusCode = StatusCodes.Status404NotFound;
-            await httpContext.Response.WriteAsync("No indexnowkey.txt is present.", httpContext.RequestAborted);
+            await httpContext.Response.WriteAsync("No IndexNow API Key is present.", httpContext.RequestAborted);
         }
         else
         {
