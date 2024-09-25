@@ -32,6 +32,9 @@ public class IndexNowClient(ILogger<IndexNowClient> logger, IConfiguration confi
 
             try
             {
+                // TODO: Fix error 
+                // 1. search.seznam.cz, 422 UnprocessableEntity: The host parameter is missing in the request.
+                // 2. yandex.com, 422 UnprocessableEntity: { "success":false, "message":"No key provided" }
                 var response = await client.PostAsync("/indexnow", content);
                 await HandleResponseAsync(pingTarget, response);
             }
