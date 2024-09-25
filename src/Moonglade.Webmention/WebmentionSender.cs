@@ -99,7 +99,10 @@ public class WebmentionSender(
 
     private async Task<string> DiscoverWebmentionEndpoint(string targetUrl)
     {
-        string html = await httpClient.GetStringAsync(targetUrl);
+        var response = await httpClient.GetAsync(targetUrl);
+        if (!response.IsSuccessStatusCode) return null;
+
+        var html = await response.Content.ReadAsStringAsync();
 
         // Regex to find the Webmention endpoint in the HTML
         Regex regex = new Regex("<link rel=\"webmention\" href=\"([^\"]+)\"");
@@ -109,6 +112,7 @@ public class WebmentionSender(
         {
             return match.Groups[1].Value;
         }
+
         return null;
     }
 }
