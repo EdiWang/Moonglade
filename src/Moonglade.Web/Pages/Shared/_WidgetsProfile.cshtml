@@ -1,11 +1,6 @@
-﻿@inject IConfiguration Configuration
-@{
-    var useOwnerEmailAsAvatar = bool.Parse(Configuration["Experimental:UseOwnerEmailAsAvatar"]!);
-}
-
-<section class="blog-info-desktop-lg text-light d-none d-lg-block">
+﻿<section class="blog-info-desktop-lg text-light d-none d-lg-block">
     <div class="card-background-container">
-        @if(useOwnerEmailAsAvatar)
+        @if (BlogConfig.GeneralSettings.UseGravatarAsProfilePicture)
         {
             <gravatar class="card-bkimg" email="@BlogConfig.GeneralSettings.OwnerEmail" size="256" />
         }
@@ -15,7 +10,7 @@
         }
     </div>
     <div class="blog-info-photo-text text-center">
-        @if (useOwnerEmailAsAvatar)
+        @if (BlogConfig.GeneralSettings.UseGravatarAsProfilePicture)
         {
             <gravatar class="rounded-circle blogger-head-pic"
                       size="256"

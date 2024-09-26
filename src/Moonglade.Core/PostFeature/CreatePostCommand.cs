@@ -4,6 +4,7 @@ using Moonglade.Configuration;
 using Moonglade.Data;
 using Moonglade.Data.Specifications;
 using Moonglade.Utils;
+using System.Globalization;
 
 namespace Moonglade.Core.PostFeature;
 
@@ -53,7 +54,7 @@ public class CreatePostCommandHandler(
             IsOutdated = request.Payload.IsOutdated,
         };
 
-        post.RouteLink = $"{post.PubDateUtc.GetValueOrDefault():yyyy/M/d}/{request.Payload.Slug}";
+        post.RouteLink = $"{post.PubDateUtc.GetValueOrDefault().ToString("yyyy/M/d", CultureInfo.InvariantCulture)}/{request.Payload.Slug}";
 
         // check if exist same slug under the same day
         var todayUtc = DateTime.UtcNow.Date;

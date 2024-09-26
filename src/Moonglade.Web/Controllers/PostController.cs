@@ -1,4 +1,5 @@
 ﻿using Moonglade.Core.PostFeature;
+using Moonglade.IndexNow.Client;
 using Moonglade.Pingback;
 using Moonglade.Web.Attributes;
 using Moonglade.Webmention;
@@ -59,6 +60,8 @@ public class PostController(
                 {
                     cannonService.FireAsync<IWebmentionSender>(async sender => await sender.SendWebmentionAsync(link.ToString(), postEntity.PostContent));
                 }
+
+                cannonService.FireAsync<IIndexNowClient>(async sender => await sender.SendRequestAsync(link));
             }
 
             return Ok(new { PostId = postEntity.Id });

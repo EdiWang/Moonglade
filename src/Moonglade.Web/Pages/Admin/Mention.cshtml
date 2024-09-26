@@ -93,7 +93,8 @@
 
                         <div class="text-muted">
                             @item.Domain, @item.SourceIp,
-                            <time data-utc-label="@item.PingTimeUtc.ToString("u")">@item.PingTimeUtc</time>
+                            <time data-utc-label="@item.PingTimeUtc.ToString("u")">@item.PingTimeUtc</time>, 
+                            @item.Worker
                         </div>
                     </div>
 

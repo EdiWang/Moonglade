@@ -1,5 +1,6 @@
 ﻿using Microsoft.Extensions.Logging;
 using Moonglade.Data.Entities;
+using System.Globalization;
 
 namespace Moonglade.Data;
 
@@ -48,7 +49,7 @@ public class Seed
                 ContentLanguageCode = "en-us",
                 Tags = dbContext.Tag.ToList(),
                 PostCategory = dbContext.PostCategory.ToList(),
-                RouteLink = $"{DateTime.UtcNow:yyyy/M/d}/welcome-to-moonglade"
+                RouteLink = $"{DateTime.UtcNow.ToString("yyyy/M/d", CultureInfo.InvariantCulture)}/welcome-to-moonglade"
             };
 
             await dbContext.Post.AddAsync(post);

@@ -1,5 +1,4 @@
-﻿using Microsoft.Extensions.Configuration;
-using Microsoft.Extensions.Logging;
+﻿using Microsoft.Extensions.Logging;
 using Moonglade.Utils;
 using System.Text.RegularExpressions;
 
@@ -8,7 +7,6 @@ namespace Moonglade.Webmention;
 public class WebmentionSender(
     HttpClient httpClient,
     IWebmentionRequestor requestor,
-    IConfiguration configuration,
     ILogger<WebmentionSender> logger) : IWebmentionSender
 {
     public async Task SendWebmentionAsync(string postUrl, string postContent)
@@ -66,7 +64,7 @@ public class WebmentionSender(
             string endpoint = await DiscoverWebmentionEndpoint(targetUrl.ToString());
             if (endpoint is null)
             {
-                logger.LogWarning("Webmention endpoint not found.");
+                logger.LogWarning($"Webmention endpoint not found for '{targetUrl}'.");
                 return;
             }
 
@@ -99,7 +97,10 @@ public class WebmentionSender(
 
     private async Task<string> DiscoverWebmentionEndpoint(string targetUrl)
     {
-        string html = await httpClient.GetStringAsync(targetUrl);
+        var response = await httpClient.GetAsync(targetUrl);
+        if (!response.IsSuccessStatusCode) return null;
+
+        var html = await response.Content.ReadAsStringAsync();
 
         // Regex to find the Webmention endpoint in the HTML
         Regex regex = new Regex("<link rel=\"webmention\" href=\"([^\"]+)\"");
@@ -109,6 +110,7 @@ public class WebmentionSender(
         {
             return match.Groups[1].Value;
         }
+
         return null;
     }
 }
