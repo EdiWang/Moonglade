@@ -912,4 +912,13 @@
   <data name="Pronouns" xml:space="preserve">
     <value>性別認同代詞</value>
   </data>
+  <data name="Subscription buttons" xml:space="preserve">
+    <value>訂閱按鈕</value>
+  </data>
+  <data name="Side bar items" xml:space="preserve">
+    <value>側邊欄專案</value>
+  </data>
+  <data name="Show or hide widgets that display on the side bar" xml:space="preserve">
+    <value>顯示或隱藏顯示在側邊欄上的小組件</value>
+  </data>
 </root>

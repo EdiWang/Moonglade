@@ -909,4 +909,13 @@
   <data name="Pronouns" xml:space="preserve">
     <value>Pronomen der Geschlechtsidentität</value>
   </data>
+  <data name="Subscription buttons" xml:space="preserve">
+    <value>Schaltfläche "Abonnieren"</value>
+  </data>
+  <data name="Side bar items" xml:space="preserve">
+    <value>Elemente in der Seitenleiste</value>
+  </data>
+  <data name="Show or hide widgets that display on the side bar" xml:space="preserve">
+    <value>Ein- oder Ausblenden der Widgets, die in der Seitenleiste angezeigt werden</value>
+  </data>
 </root>

@@ -909,4 +909,13 @@
   <data name="Pronouns" xml:space="preserve">
     <value>性别认同代词</value>
   </data>
+  <data name="Subscription buttons" xml:space="preserve">
+    <value>订阅按钮</value>
+  </data>
+  <data name="Show or hide widgets that display on the side bar" xml:space="preserve">
+    <value>显示或隐藏显示在侧边栏上的小组件</value>
+  </data>
+  <data name="Side bar items" xml:space="preserve">
+    <value>侧边栏项目</value>
+  </data>
 </root>

@@ -909,4 +909,13 @@
   <data name="Pronouns" xml:space="preserve">
     <value>性自認の代名詞</value>
   </data>
+  <data name="Subscription buttons" xml:space="preserve">
+    <value>[購読] ボタン</value>
+  </data>
+  <data name="Side bar items" xml:space="preserve">
+    <value>サイドバーアイテム</value>
+  </data>
+  <data name="Show or hide widgets that display on the side bar" xml:space="preserve">
+    <value>サイドバーに表示されるウィジェットを表示または非表示にする</value>
+  </data>
 </root>
