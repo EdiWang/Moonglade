@@ -60,7 +60,7 @@
                                     <input asp-for="CaptchaCode"
                                            minlength="4"
                                            maxlength="4"
-                                           placeholder="Captcha Code"
+                                           placeholder="@SharedLocalizer["Captcha code"]"
                                            autocomplete="off"
                                            class="form-control" required />
                                     <img id="img-captcha" onclick="getNewCaptcha()" src="~/captcha-image" data-bs-toggle="tooltip" data-placement="top" title="@SharedLocalizer["Can't read? Click to change another image."]" />
