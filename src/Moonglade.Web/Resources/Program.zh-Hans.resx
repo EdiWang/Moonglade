@@ -906,4 +906,7 @@
   <data name="Use Dublin Core Metadata" xml:space="preserve">
     <value>使用都柏林核心元数据</value>
   </data>
+  <data name="Pronouns" xml:space="preserve">
+    <value>性别认同代词</value>
+  </data>
 </root>

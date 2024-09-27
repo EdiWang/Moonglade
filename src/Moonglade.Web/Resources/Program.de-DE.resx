@@ -906,4 +906,7 @@
   <data name="Use Dublin Core Metadata" xml:space="preserve">
     <value>Dublin Core-Metadaten verwenden</value>
   </data>
+  <data name="Pronouns" xml:space="preserve">
+    <value>Pronomen der Geschlechtsidentität</value>
+  </data>
 </root>
