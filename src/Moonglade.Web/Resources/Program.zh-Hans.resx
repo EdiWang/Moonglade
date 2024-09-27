@@ -888,4 +888,13 @@
   <data name="Email (Optional)" xml:space="preserve">
     <value>Email (可选)</value>
   </data>
+  <data name="Default language" xml:space="preserve">
+    <value>默认语言</value>
+  </data>
+  <data name="Blog will use this language for SEO by default unless specified in blog post." xml:space="preserve">
+    <value>博客系统将默认使用此语言进行搜索引擎优化，除非在博客文章中指定语言。</value>
+  </data>
+  <data name="Profile" xml:space="preserve">
+    <value>个人资料</value>
+  </data>
 </root>

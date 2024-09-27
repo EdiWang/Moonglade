@@ -888,4 +888,13 @@
   <data name="Email (Optional)" xml:space="preserve">
     <value>E-Mail (optional)</value>
   </data>
+  <data name="Default language" xml:space="preserve">
+    <value>Standardsprache</value>
+  </data>
+  <data name="Blog will use this language for SEO by default unless specified in blog post." xml:space="preserve">
+    <value>Das Blogging-System verwendet diese Sprache standardmäßig für die Suchmaschinenoptimierung, es sei denn, die Sprache ist im Blogbeitrag angegeben.</value>
+  </data>
+  <data name="Profile" xml:space="preserve">
+    <value>Personenbezogene Daten</value>
+  </data>
 </root>

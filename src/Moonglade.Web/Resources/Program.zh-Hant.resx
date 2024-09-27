@@ -891,4 +891,13 @@
   <data name="Email (Optional)" xml:space="preserve">
     <value>Email （可選）</value>
   </data>
+  <data name="Default language" xml:space="preserve">
+    <value>默認語言</value>
+  </data>
+  <data name="Blog will use this language for SEO by default unless specified in blog post." xml:space="preserve">
+    <value>博客系統將預設使用此語言進行搜尋引擎優化，除非在博客文章中指定語言。</value>
+  </data>
+  <data name="Profile" xml:space="preserve">
+    <value>個人資料</value>
+  </data>
 </root>

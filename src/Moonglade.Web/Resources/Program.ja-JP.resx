@@ -888,4 +888,13 @@
   <data name="Email (Optional)" xml:space="preserve">
     <value>メール (オプション)</value>
   </data>
+  <data name="Default language" xml:space="preserve">
+    <value>デフォルトの言語</value>
+  </data>
+  <data name="Blog will use this language for SEO by default unless specified in blog post." xml:space="preserve">
+    <value>ブログ システムは、ブログ投稿で言語が指定されていない限り、検索エンジン最適化にデフォルトでこの言語を使用します。</value>
+  </data>
+  <data name="Profile" xml:space="preserve">
+    <value>個人データ</value>
+  </data>
 </root>
