@@ -28,7 +28,7 @@ AppDomain.CurrentDomain.Load("Moonglade.Webmention");
 
 Encoding.RegisterProvider(CodePagesEncodingProvider.Instance);
 
-var cultures = new[] { "en-US", "zh-Hans", "zh-Hant", "de-DE" }.Select(p => new CultureInfo(p)).ToList();
+var cultures = new[] { "en-US", "zh-Hans", "zh-Hant", "de-DE", "ja-JP" }.Select(p => new CultureInfo(p)).ToList();
 
 var builder = WebApplication.CreateBuilder(args);
 builder.WriteParameterTable();
