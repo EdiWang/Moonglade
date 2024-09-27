@@ -900,4 +900,13 @@
   <data name="Profile" xml:space="preserve">
     <value>個人資料</value>
   </data>
+  <data name="Dublin Core Metadata" xml:space="preserve">
+    <value>都柏林核心元數據</value>
+  </data>
+  <data name="Dublin Core License URL" xml:space="preserve">
+    <value>都柏林核心許可證URL</value>
+  </data>
+  <data name="Use Dublin Core Metadata" xml:space="preserve">
+    <value>使用都柏林核心元數據</value>
+  </data>
 </root>

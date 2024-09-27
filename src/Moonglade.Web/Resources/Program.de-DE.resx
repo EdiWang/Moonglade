@@ -897,4 +897,13 @@
   <data name="Profile" xml:space="preserve">
     <value>Personenbezogene Daten</value>
   </data>
+  <data name="Dublin Core Metadata" xml:space="preserve">
+    <value>Dublin Core Metadaten</value>
+  </data>
+  <data name="Dublin Core License URL" xml:space="preserve">
+    <value>URL der Dublin Core-Lizenz</value>
+  </data>
+  <data name="Use Dublin Core Metadata" xml:space="preserve">
+    <value>Dublin Core-Metadaten verwenden</value>
+  </data>
 </root>
