@@ -885,4 +885,7 @@
   <data name="Captcha code" xml:space="preserve">
     <value>Das Kaptcha</value>
   </data>
+  <data name="Email (Optional)" xml:space="preserve">
+    <value>E-Mail (optional)</value>
+  </data>
 </root>

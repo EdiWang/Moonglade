@@ -885,4 +885,7 @@
   <data name="Captcha code" xml:space="preserve">
     <value>验证码</value>
   </data>
+  <data name="Email (Optional)" xml:space="preserve">
+    <value>Email (可选)</value>
+  </data>
 </root>
