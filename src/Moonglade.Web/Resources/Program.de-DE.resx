@@ -717,9 +717,6 @@
   <data name="The first {0} character(s) will be used as abstract if you leave this field blank." xml:space="preserve">
     <value>Die ersten {0} Zeichen werden benutzt, wenn Sie dieses Feld leer lassen.</value>
   </data>
-  <data name="The number of entries to include in RSS feed." xml:space="preserve">
-    <value>Anzahl RSS Artikel in diesem feed.</value>
-  </data>
   <data name="Theme" xml:space="preserve">
     <value>Theme</value>
   </data>
