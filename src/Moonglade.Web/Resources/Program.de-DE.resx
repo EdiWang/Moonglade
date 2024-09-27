@@ -879,4 +879,10 @@
   <data name="Please make sure you have setup Gravatar with your email address" xml:space="preserve">
     <value>Bitte stellen Sie sicher, dass Sie sich mit Ihrer E-Mail-Adresse für Gravatar angemeldet haben</value>
   </data>
+  <data name="Enter your email to receive reply notifications and display your Gravatar. Your email will not be displayed publicly." xml:space="preserve">
+    <value>Geben Sie Ihre E-Mail-Adresse ein, um eine Antwortbenachrichtigung zu erhalten und Ihren Gravatar anzuzeigen. Ihre E-Mail ist dann nicht für die Öffentlichkeit sichtbar.</value>
+  </data>
+  <data name="Captcha code" xml:space="preserve">
+    <value>Das Kaptcha</value>
+  </data>
 </root>

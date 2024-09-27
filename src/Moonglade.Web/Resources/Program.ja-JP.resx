@@ -879,4 +879,10 @@
   <data name="Please make sure you have setup Gravatar with your email address" xml:space="preserve">
     <value>Gravatarにメールアドレスでサインアップしたことを確認してください</value>
   </data>
+  <data name="Enter your email to receive reply notifications and display your Gravatar. Your email will not be displayed publicly." xml:space="preserve">
+    <value>返信通知を受け取り、Gravatarを表示するためにメールを入力します。 メールは公開されません。</value>
+  </data>
+  <data name="Captcha code" xml:space="preserve">
+    <value>キャプチャ</value>
+  </data>
 </root>

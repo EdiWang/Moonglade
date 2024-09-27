@@ -879,4 +879,10 @@
   <data name="Please make sure you have setup Gravatar with your email address" xml:space="preserve">
     <value>请确保你已经使用你的 Email 注册了 Gravatar</value>
   </data>
+  <data name="Enter your email to receive reply notifications and display your Gravatar. Your email will not be displayed publicly." xml:space="preserve">
+    <value>输入您的电子邮件以接收回复通知并显示您的 Gravatar。您的电子邮件不会公开显示。</value>
+  </data>
+  <data name="Captcha code" xml:space="preserve">
+    <value>验证码</value>
+  </data>
 </root>

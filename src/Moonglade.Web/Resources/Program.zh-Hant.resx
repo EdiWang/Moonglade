@@ -882,4 +882,10 @@
   <data name="Please make sure you have setup Gravatar with your email address" xml:space="preserve">
     <value>請確保你已經使用你的 Email 註冊了 Gravatar</value>
   </data>
+  <data name="Enter your email to receive reply notifications and display your Gravatar. Your email will not be displayed publicly." xml:space="preserve">
+    <value>輸入您的電子郵件以接收回復通知並顯示您的 Gravatar。 您的電子郵件不會公開顯示。</value>
+  </data>
+  <data name="Captcha code" xml:space="preserve">
+    <value>驗證碼</value>
+  </data>
 </root>
