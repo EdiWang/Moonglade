@@ -324,7 +324,7 @@
   <data name="Disabled" xml:space="preserve">
     <value>不顯示</value>
   </data>
-  <data name="Display Name" xml:space="preserve">
+  <data name="Display name" xml:space="preserve">
     <value>顯示名稱</value>
   </data>
   <data name="Display Order" xml:space="preserve">
@@ -645,7 +645,7 @@
   <data name="Route Name" xml:space="preserve">
     <value>路由名稱</value>
   </data>
-  <data name="Feed Items" xml:space="preserve">
+  <data name="Feed items" xml:space="preserve">
     <value>訂閱條目數量</value>
   </data>
   <data name="Save" xml:space="preserve">

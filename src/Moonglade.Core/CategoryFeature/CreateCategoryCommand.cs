@@ -9,7 +9,7 @@ namespace Moonglade.Core.CategoryFeature;
 public class CreateCategoryCommand : IRequest
 {
     [Required]
-    [Display(Name = "Display Name")]
+    [Display(Name = "Display name")]
     [MaxLength(64)]
     public string DisplayName { get; set; }
 

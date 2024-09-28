@@ -321,7 +321,7 @@
   <data name="Disabled" xml:space="preserve">
     <value>Ausgeschaltet</value>
   </data>
-  <data name="Display Name" xml:space="preserve">
+  <data name="Display name" xml:space="preserve">
     <value>Anzeige Name</value>
   </data>
   <data name="Display Order" xml:space="preserve">
@@ -816,7 +816,7 @@
   <data name="No comments yet" xml:space="preserve">
     <value>Es gibt noch keine Bewertungen</value>
   </data>
-  <data name="Feed Items" xml:space="preserve">
+  <data name="Feed items" xml:space="preserve">
     <value>Anzahl der Abonnementeinträge</value>
   </data>
   <data name="The number of entries to include in RSS/ATOM feed." xml:space="preserve">
