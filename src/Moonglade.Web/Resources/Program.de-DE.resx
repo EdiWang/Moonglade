@@ -1008,4 +1008,7 @@
   <data name="Client IP Address" xml:space="preserve">
     <value>Client-IP-Adresse</value>
   </data>
+  <data name="Filter" xml:space="preserve">
+    <value>sieben</value>
+  </data>
 </root>

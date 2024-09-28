@@ -5,7 +5,7 @@
     ViewBag.Title = "Posts";
 }
 
-@section scripts{
+@section scripts {
     <script type="module">
         import * as utils from '/js/app/utils.module.js'
 
@@ -32,7 +32,7 @@
     </script>
 }
 
-@section admintoolbar{
+@section admintoolbar {
     <partial name="_PostManageHeader" />
 }
 
@@ -41,7 +41,7 @@
 <div>
     <form method="post">
         <div class="d-flex search-box mb-3">
-            <input type="search" aria-label="Search" asp-for="SearchTerm" class="form-control" placeholder="Search" />
+            <input type="search" aria-label="Search" asp-for="SearchTerm" class="form-control" placeholder="@SharedLocalizer["Search"]" />
             <button class="btn btn-light btn-search my-sm-0" type="submit"><i class="bi-search text-dark"></i></button>
         </div>
     </form>
@@ -71,7 +71,7 @@
                                 {
                                     <i class="bi-star-fill text-warning"></i>
                                 }
-                                
+
                                 @if (item.IsOutdated)
                                 {
                                     <span class="badge rounded-pill text-bg-secondary ms-2">Outdated</span>
@@ -97,9 +97,9 @@
             </div>
         }
 
-        @Html.PagedListPager(Model.PostSegments, page => $"?pageIndex={page}&searchTerm={Model.SearchTerm}", new ()
-        {
-            UlElementClasses = new[] {"pagination mt-4"}
-        })
+        @Html.PagedListPager(Model.PostSegments, page => $"?pageIndex={page}&searchTerm={Model.SearchTerm}", new()
+{
+    UlElementClasses = new[] { "pagination mt-4" }
+})
     }
 </div>

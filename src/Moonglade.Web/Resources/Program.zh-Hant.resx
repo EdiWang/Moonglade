@@ -1011,4 +1011,7 @@
   <data name="Client IP Address" xml:space="preserve">
     <value>用戶端IP位址</value>
   </data>
+  <data name="Filter" xml:space="preserve">
+    <value>篩選</value>
+  </data>
 </root>

@@ -990,6 +990,9 @@
   <data name="Enable Webmention" xml:space="preserve">
     <value>启用 Webmention</value>
   </data>
+  <data name="Filter" xml:space="preserve">
+    <value>筛选</value>
+  </data>
   <data name="Foot JavaScript" xml:space="preserve">
     <value>尾部 JavaScript</value>
   </data>
