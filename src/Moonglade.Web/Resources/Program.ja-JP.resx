@@ -918,4 +918,34 @@
   <data name="Show or hide widgets that display on the side bar" xml:space="preserve">
     <value>サイドバーに表示されるウィジェットを表示または非表示にする</value>
   </data>
+  <data name="Comment provider" xml:space="preserve">
+    <value>コメント モジュール プロバイダー</value>
+  </data>
+  <data name="Built in" xml:space="preserve">
+    <value>構築</value>
+  </data>
+  <data name="Third party" xml:space="preserve">
+    <value>三者</value>
+  </data>
+  <data name="Set to 0 to never close comments after any days" xml:space="preserve">
+    <value>0 に設定すると、コメントはどの日付でも閉じられません</value>
+  </data>
+  <data name="Old to new" xml:space="preserve">
+    <value>古いものから新しいものへ</value>
+  </data>
+  <data name="New to old" xml:space="preserve">
+    <value>新しいものから古いものへ</value>
+  </data>
+  <data name="Blocked words will be masked as * in content." xml:space="preserve">
+    <value>ブロックされた単語は、コンテンツ内の「*」に置き換えられます</value>
+  </data>
+  <data name="How many words to use for generating abstract when it's absent, change this value will only affect new posts" xml:space="preserve">
+    <value>抄録が存在しない場合、抄録の生成に使用された単語数、この値を変更しても新しい記事にのみ影響します</value>
+  </data>
+  <data name="Automatically close comments on posts older than x days" xml:space="preserve">
+    <value>x日以上経過した記事のコメントを自動的に閉じる</value>
+  </data>
+  <data name="Comments display order" xml:space="preserve">
+    <value>コメントが表示される順序</value>
+  </data>
 </root>

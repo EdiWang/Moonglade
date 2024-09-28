@@ -918,4 +918,34 @@
   <data name="Side bar items" xml:space="preserve">
     <value>侧边栏项目</value>
   </data>
+  <data name="Comment provider" xml:space="preserve">
+    <value>评论模块提供程序</value>
+  </data>
+  <data name="Automatically close comments on posts older than x days" xml:space="preserve">
+    <value>自动关闭超过 x 天的文章的评论</value>
+  </data>
+  <data name="Blocked words will be masked as * in content." xml:space="preserve">
+    <value>被屏蔽的单词将在内容中被替换为"*"</value>
+  </data>
+  <data name="Built in" xml:space="preserve">
+    <value>内置</value>
+  </data>
+  <data name="Comments display order" xml:space="preserve">
+    <value>评论显示顺序</value>
+  </data>
+  <data name="How many words to use for generating abstract when it's absent, change this value will only affect new posts" xml:space="preserve">
+    <value>当摘要不存在时，使用多少个单词来生成摘要，更改此值只会影响新文章</value>
+  </data>
+  <data name="New to old" xml:space="preserve">
+    <value>从新到旧</value>
+  </data>
+  <data name="Old to new" xml:space="preserve">
+    <value>从旧到新</value>
+  </data>
+  <data name="Set to 0 to never close comments after any days" xml:space="preserve">
+    <value>设置为 0 表示在任何日期后从不关闭评论</value>
+  </data>
+  <data name="Third party" xml:space="preserve">
+    <value>三方</value>
+  </data>
 </root>

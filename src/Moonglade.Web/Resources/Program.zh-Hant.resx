@@ -921,4 +921,34 @@
   <data name="Show or hide widgets that display on the side bar" xml:space="preserve">
     <value>顯示或隱藏顯示在側邊欄上的小組件</value>
   </data>
+  <data name="Comment provider" xml:space="preserve">
+    <value>評論模組提供程式</value>
+  </data>
+  <data name="Built in" xml:space="preserve">
+    <value>內置</value>
+  </data>
+  <data name="Third party" xml:space="preserve">
+    <value>三方</value>
+  </data>
+  <data name="Set to 0 to never close comments after any days" xml:space="preserve">
+    <value>設置為 0 表示在任何日期後從不關閉評論</value>
+  </data>
+  <data name="Old to new" xml:space="preserve">
+    <value>從舊到新</value>
+  </data>
+  <data name="New to old" xml:space="preserve">
+    <value>從新到舊</value>
+  </data>
+  <data name="Blocked words will be masked as * in content." xml:space="preserve">
+    <value>被遮罩的單詞將在內容中被替換為“*”</value>
+  </data>
+  <data name="How many words to use for generating abstract when it's absent, change this value will only affect new posts" xml:space="preserve">
+    <value>當摘要不存在時，使用多少個單詞來生成摘要，更改此值只會影響新文章</value>
+  </data>
+  <data name="Automatically close comments on posts older than x days" xml:space="preserve">
+    <value>自動關閉超過 x 天的文章的評論</value>
+  </data>
+  <data name="Comments display order" xml:space="preserve">
+    <value>評論顯示順序</value>
+  </data>
 </root>

@@ -918,4 +918,34 @@
   <data name="Show or hide widgets that display on the side bar" xml:space="preserve">
     <value>Ein- oder Ausblenden der Widgets, die in der Seitenleiste angezeigt werden</value>
   </data>
+  <data name="Comment provider" xml:space="preserve">
+    <value>Anbieter des Kommentarmoduls</value>
+  </data>
+  <data name="Built in" xml:space="preserve">
+    <value>Aufgebaut</value>
+  </data>
+  <data name="Third party" xml:space="preserve">
+    <value>Dreiseitig</value>
+  </data>
+  <data name="Set to 0 to never close comments after any days" xml:space="preserve">
+    <value>Eine Einstellung von 0 bedeutet, dass Kommentare nach einem Datum nie geschlossen werden</value>
+  </data>
+  <data name="Old to new" xml:space="preserve">
+    <value>Aus Alt mach Neu</value>
+  </data>
+  <data name="New to old" xml:space="preserve">
+    <value>Aus alt mach neu</value>
+  </data>
+  <data name="Blocked words will be masked as * in content." xml:space="preserve">
+    <value>Blockierte Wörter werden durch "*" im Inhalt ersetzt</value>
+  </data>
+  <data name="How many words to use for generating abstract when it's absent, change this value will only affect new posts" xml:space="preserve">
+    <value>Wenn die Zusammenfassung nicht vorhanden ist und wie viele Wörter zum Generieren der Zusammenfassung verwendet werden, wirkt sich die Änderung dieses Werts nur auf den neuen Artikel aus</value>
+  </data>
+  <data name="Automatically close comments on posts older than x days" xml:space="preserve">
+    <value>Kommentare zu Artikeln, die älter als x Tage sind, automatisch schließen</value>
+  </data>
+  <data name="Comments display order" xml:space="preserve">
+    <value>Die Reihenfolge, in der Kommentare angezeigt werden</value>
+  </data>
 </root>
