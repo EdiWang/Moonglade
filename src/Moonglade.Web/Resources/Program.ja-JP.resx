@@ -957,4 +957,22 @@
   <data name="Show post outline as side navigation" xml:space="preserve">
     <value>記事の概要は、サイドナビゲーションバーに表示されます</value>
   </data>
+  <data name="Watermark will be placed at the right bottom corner of the image" xml:space="preserve">
+    <value>透かしは画像の右下隅に配置されます</value>
+  </data>
+  <data name="Save the origin image as a backup while adding watermark" xml:space="preserve">
+    <value>透かしを追加するときは、元の画像をバックアップとして保存します</value>
+  </data>
+  <data name="CDN endpoint" xml:space="preserve">
+    <value>CDN端末</value>
+  </data>
+  <data name="Add watermark only when image pixcel (HxW) is greater than this value." xml:space="preserve">
+    <value>ウォーターマークは、画像のピクセル (HxW) がこの値より大きい場合にのみ追加されます。</value>
+  </data>
+  <data name="Transparency value (0-255)." xml:space="preserve">
+    <value>透明度の値 (0-255)</value>
+  </data>
+  <data name="Watermark skip pixel threshold" xml:space="preserve">
+    <value>ウォーターマークのピクセルしきい値をスキップする</value>
+  </data>
 </root>

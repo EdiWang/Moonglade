@@ -957,4 +957,22 @@
   <data name="Show post outline as side navigation" xml:space="preserve">
     <value>Die Artikelgliederung wird in der seitlichen Navigationsleiste angezeigt</value>
   </data>
+  <data name="Watermark will be placed at the right bottom corner of the image" xml:space="preserve">
+    <value>Das Wasserzeichen wird in der unteren rechten Ecke des Bildes platziert</value>
+  </data>
+  <data name="Save the origin image as a backup while adding watermark" xml:space="preserve">
+    <value>Speichern Sie das Originalbild als Backup, wenn Sie ein Wasserzeichen hinzufügen</value>
+  </data>
+  <data name="CDN endpoint" xml:space="preserve">
+    <value>CDN Endpunkt</value>
+  </data>
+  <data name="Add watermark only when image pixcel (HxW) is greater than this value." xml:space="preserve">
+    <value>Wasserzeichen werden nur hinzugefügt, wenn die Bildpixel (HxB) größer als dieser Wert sind.</value>
+  </data>
+  <data name="Transparency value (0-255)." xml:space="preserve">
+    <value>Transparenzwert (0-255)</value>
+  </data>
+  <data name="Watermark skip pixel threshold" xml:space="preserve">
+    <value>Überspringen des Schwellenwerts für Wasserzeichenpixel</value>
+  </data>
 </root>

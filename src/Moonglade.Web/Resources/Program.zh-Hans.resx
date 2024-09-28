@@ -948,11 +948,29 @@
   <data name="Third party" xml:space="preserve">
     <value>三方</value>
   </data>
+  <data name="Add watermark only when image pixcel (HxW) is greater than this value." xml:space="preserve">
+    <value>仅当图像像素 （HxW） 大于此值时添加水印</value>
+  </data>
+  <data name="CDN endpoint" xml:space="preserve">
+    <value>CDN 终端</value>
+  </data>
   <data name="Post title alignment" xml:space="preserve">
     <value>文章标题对齐方式</value>
   </data>
+  <data name="Save the origin image as a backup while adding watermark" xml:space="preserve">
+    <value>添加水印时将原始图像保存为备份</value>
+  </data>
   <data name="Show post outline as side navigation" xml:space="preserve">
     <value>在侧边导航栏显示文章大纲</value>
+  </data>
+  <data name="Transparency value (0-255)." xml:space="preserve">
+    <value>透明度值 （0-255）</value>
+  </data>
+  <data name="Watermark skip pixel threshold" xml:space="preserve">
+    <value>跳过水印像素阈值</value>
+  </data>
+  <data name="Watermark will be placed at the right bottom corner of the image" xml:space="preserve">
+    <value>水印将放置在图像的右下角</value>
   </data>
   <data name="Word count in abstract" xml:space="preserve">
     <value>摘要字数</value>

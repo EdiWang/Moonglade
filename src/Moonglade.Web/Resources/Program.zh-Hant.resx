@@ -960,4 +960,22 @@
   <data name="Show post outline as side navigation" xml:space="preserve">
     <value>在側邊導航欄顯示文章大綱</value>
   </data>
+  <data name="Watermark will be placed at the right bottom corner of the image" xml:space="preserve">
+    <value>浮浮水印將放置在圖像的右下角</value>
+  </data>
+  <data name="Save the origin image as a backup while adding watermark" xml:space="preserve">
+    <value>添加浮浮浮水印時將原始影像保存為備份</value>
+  </data>
+  <data name="CDN endpoint" xml:space="preserve">
+    <value>CDN 終端</value>
+  </data>
+  <data name="Add watermark only when image pixcel (HxW) is greater than this value." xml:space="preserve">
+    <value>僅當圖像圖元 （HxW） 大於此值時添加浮浮水印。</value>
+  </data>
+  <data name="Transparency value (0-255)." xml:space="preserve">
+    <value>透明度值 （0-255）</value>
+  </data>
+  <data name="Watermark skip pixel threshold" xml:space="preserve">
+    <value>跳過浮浮浮水印圖元閾值</value>
+  </data>
 </root>

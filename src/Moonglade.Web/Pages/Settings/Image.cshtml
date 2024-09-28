@@ -11,7 +11,7 @@
     var settings = BlogConfig.ImageSettings;
 }
 
-@section admintoolbar{
+@section admintoolbar {
     <partial name="_SettingsHeader" />
 }
 
@@ -88,7 +88,7 @@
                         <div class="col">
                             <label asp-for="@settings.IsWatermarkEnabled" class="form-check-label"></label>
                             <div class="form-text">
-                                Watermark will be placed at the right bottom corner of the image
+                                @SharedLocalizer["Watermark will be placed at the right bottom corner of the image"]
                             </div>
                         </div>
                         <div class="col-md-5 text-end">
@@ -106,7 +106,7 @@
                         <div class="col">
                             <label asp-for="@settings.KeepOriginImage" class="form-check-label"></label>
                             <div class="form-text">
-                                Also save the origin image as a backup while adding watermark
+                                @SharedLocalizer["Save the origin image as a backup while adding watermark"]
                             </div>
                         </div>
                         <div class="col-5 text-end">
@@ -136,7 +136,7 @@
                         <div class="col">
                             <label asp-for="@settings.WatermarkSkipPixel"></label>
                             <div class="form-text">
-                                Add watermark only when image pixcel (HxW) is greater than this value.
+                                @SharedLocalizer["Add watermark only when image pixcel (HxW) is greater than this value."]
                             </div>
                         </div>
                         <div class="col-5">
@@ -151,7 +151,7 @@
                         <div class="col">
                             <label>Alpha</label>
                             <div class="form-text">
-                                Transparency value (0-255).
+                                @SharedLocalizer["Transparency value (0-255)."]
                             </div>
                         </div>
                         <div class="col-5">
