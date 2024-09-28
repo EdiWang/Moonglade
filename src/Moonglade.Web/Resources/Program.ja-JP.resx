@@ -975,4 +975,16 @@
   <data name="Watermark skip pixel threshold" xml:space="preserve">
     <value>ウォーターマークのピクセルしきい値をスキップする</value>
   </data>
+  <data name="Enable Webmention" xml:space="preserve">
+    <value>Webメンションを有効にする</value>
+  </data>
+  <data name="Enable OPML" xml:space="preserve">
+    <value>OPML を有効にする</value>
+  </data>
+  <data name="Foot JavaScript" xml:space="preserve">
+    <value>テイルJavaScript</value>
+  </data>
+  <data name="Using a third party script may cause your website to be blocked by some browsers or ad blockers, it can have security risks too. Please use with caution." xml:space="preserve">
+    <value>サードパーティのスクリプトを使用すると、特定のブラウザや広告ブロッカーによってサイトがブロックされる可能性があり、セキュリティ上のリスクにもなる可能性もあります。 注意して使用してください。</value>
+  </data>
 </root>

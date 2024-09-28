@@ -217,7 +217,7 @@
                     <h4 class="admin-subtitle fw-bold mb-2">@Html.DisplayNameFor(m => settings.FootScripts)</h4>
                     <div class="p-3 rounded-3 shadow-sm border bg-white mb-3">
                         <div class="alert alert-warning">
-                            Using a third party script may cause your website to be blocked by some browsers or ad blockers, it can have security risks too. Please use with caution.
+                            @SharedLocalizer["Using a third party script may cause your website to be blocked by some browsers or ad blockers, it can have security risks too. Please use with caution."]
                         </div>
 
                         <textarea asp-for="@settings.FootScripts" class="form-control textarea-code" cols="60" rows="10" spellcheck="false"></textarea>

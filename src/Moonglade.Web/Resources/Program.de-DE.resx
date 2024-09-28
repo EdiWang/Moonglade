@@ -975,4 +975,16 @@
   <data name="Watermark skip pixel threshold" xml:space="preserve">
     <value>Überspringen des Schwellenwerts für Wasserzeichenpixel</value>
   </data>
+  <data name="Enable Webmention" xml:space="preserve">
+    <value>Webmention aktivieren</value>
+  </data>
+  <data name="Enable OPML" xml:space="preserve">
+    <value>Aktivieren von OPML</value>
+  </data>
+  <data name="Foot JavaScript" xml:space="preserve">
+    <value>Schwanz JavaScript</value>
+  </data>
+  <data name="Using a third party script may cause your website to be blocked by some browsers or ad blockers, it can have security risks too. Please use with caution." xml:space="preserve">
+    <value>Die Verwendung von Skripten von Drittanbietern kann dazu führen, dass Ihre Website von bestimmten Browsern oder Werbeblockern blockiert wird, und dies kann auch ein Sicherheitsrisiko darstellen. Mit Vorsicht verwenden.</value>
+  </data>
 </root>

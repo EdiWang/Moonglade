@@ -978,4 +978,16 @@
   <data name="Watermark skip pixel threshold" xml:space="preserve">
     <value>跳過浮浮浮水印圖元閾值</value>
   </data>
+  <data name="Enable Webmention" xml:space="preserve">
+    <value>啟用 Webmention</value>
+  </data>
+  <data name="Enable OPML" xml:space="preserve">
+    <value>啟用OPML</value>
+  </data>
+  <data name="Foot JavaScript" xml:space="preserve">
+    <value>尾部 JavaScript</value>
+  </data>
+  <data name="Using a third party script may cause your website to be blocked by some browsers or ad blockers, it can have security risks too. Please use with caution." xml:space="preserve">
+    <value>使用第三方腳本可能會導致您的網站被某些瀏覽器或廣告攔截器阻止，也可能存在安全風險。 請謹慎使用。</value>
+  </data>
 </root>
