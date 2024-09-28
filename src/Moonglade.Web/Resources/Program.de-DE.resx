@@ -1011,4 +1011,16 @@
   <data name="Filter" xml:space="preserve">
     <value>sieben</value>
   </data>
+  <data name="Clear menus" xml:space="preserve">
+    <value>Löschen Sie das Menü</value>
+  </data>
+  <data name="Example code" xml:space="preserve">
+    <value>Beispielcode</value>
+  </data>
+  <data name="Example" xml:space="preserve">
+    <value>Beispiel</value>
+  </data>
+  <data name="Enable custom menus" xml:space="preserve">
+    <value>Benutzerdefinierte Menüs aktivieren</value>
+  </data>
 </root>

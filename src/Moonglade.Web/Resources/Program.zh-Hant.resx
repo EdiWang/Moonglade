@@ -1014,4 +1014,16 @@
   <data name="Filter" xml:space="preserve">
     <value>篩選</value>
   </data>
+  <data name="Clear menus" xml:space="preserve">
+    <value>清空功能表</value>
+  </data>
+  <data name="Example code" xml:space="preserve">
+    <value>樣例代碼</value>
+  </data>
+  <data name="Example" xml:space="preserve">
+    <value>樣例</value>
+  </data>
+  <data name="Enable custom menus" xml:space="preserve">
+    <value>啟用自定義功能表</value>
+  </data>
 </root>
