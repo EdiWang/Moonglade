@@ -990,4 +990,25 @@
   <data name="Using a third party script may cause your website to be blocked by some browsers or ad blockers, it can have security risks too. Please use with caution." xml:space="preserve">
     <value>使用第三方腳本可能會導致您的網站被某些瀏覽器或廣告攔截器阻止，也可能存在安全風險。 請謹慎使用。</value>
   </data>
+  <data name="Server Time Zone" xml:space="preserve">
+    <value>伺服器時區</value>
+  </data>
+  <data name="Azure App Service" xml:space="preserve">
+    <value>Azure 應用服務</value>
+  </data>
+  <data name="Azure Front Door" xml:space="preserve">
+    <value>Azure Front Door  </value>
+  </data>
+  <data name="Legal Infomation" xml:space="preserve">
+    <value>法律資訊</value>
+  </data>
+  <data name="Report an issue" xml:space="preserve">
+    <value>報告問題</value>
+  </data>
+  <data name="Forwarded Headers" xml:space="preserve">
+    <value>轉發頭</value>
+  </data>
+  <data name="Client IP Address" xml:space="preserve">
+    <value>用戶端IP位址</value>
+  </data>
 </root>

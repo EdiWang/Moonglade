@@ -987,4 +987,25 @@
   <data name="Using a third party script may cause your website to be blocked by some browsers or ad blockers, it can have security risks too. Please use with caution." xml:space="preserve">
     <value>サードパーティのスクリプトを使用すると、特定のブラウザや広告ブロッカーによってサイトがブロックされる可能性があり、セキュリティ上のリスクにもなる可能性もあります。 注意して使用してください。</value>
   </data>
+  <data name="Server Time Zone" xml:space="preserve">
+    <value>サーバーのタイムゾーン</value>
+  </data>
+  <data name="Azure App Service" xml:space="preserve">
+    <value>Azure App Service</value>
+  </data>
+  <data name="Azure Front Door" xml:space="preserve">
+    <value>Azure Front Door  </value>
+  </data>
+  <data name="Legal Infomation" xml:space="preserve">
+    <value>法律情報</value>
+  </data>
+  <data name="Report an issue" xml:space="preserve">
+    <value>問題を報告する</value>
+  </data>
+  <data name="Forwarded Headers" xml:space="preserve">
+    <value>フォワードヘッダー</value>
+  </data>
+  <data name="Client IP Address" xml:space="preserve">
+    <value>クライアント IP アドレス</value>
+  </data>
 </root>
