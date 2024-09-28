@@ -948,4 +948,13 @@
   <data name="Comments display order" xml:space="preserve">
     <value>コメントが表示される順序</value>
   </data>
+  <data name="Post title alignment" xml:space="preserve">
+    <value>記事タイトルの配置</value>
+  </data>
+  <data name="Word count in abstract" xml:space="preserve">
+    <value>抄録の単語数</value>
+  </data>
+  <data name="Show post outline as side navigation" xml:space="preserve">
+    <value>記事の概要は、サイドナビゲーションバーに表示されます</value>
+  </data>
 </root>

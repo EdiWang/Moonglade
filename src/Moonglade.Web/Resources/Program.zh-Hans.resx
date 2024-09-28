@@ -948,4 +948,13 @@
   <data name="Third party" xml:space="preserve">
     <value>三方</value>
   </data>
+  <data name="Post title alignment" xml:space="preserve">
+    <value>文章标题对齐方式</value>
+  </data>
+  <data name="Show post outline as side navigation" xml:space="preserve">
+    <value>在侧边导航栏显示文章大纲</value>
+  </data>
+  <data name="Word count in abstract" xml:space="preserve">
+    <value>摘要字数</value>
+  </data>
 </root>

@@ -951,4 +951,13 @@
   <data name="Comments display order" xml:space="preserve">
     <value>評論顯示順序</value>
   </data>
+  <data name="Post title alignment" xml:space="preserve">
+    <value>文章標題對齊方式</value>
+  </data>
+  <data name="Word count in abstract" xml:space="preserve">
+    <value>摘要字數</value>
+  </data>
+  <data name="Show post outline as side navigation" xml:space="preserve">
+    <value>在側邊導航欄顯示文章大綱</value>
+  </data>
 </root>

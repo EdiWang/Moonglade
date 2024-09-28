@@ -948,4 +948,13 @@
   <data name="Comments display order" xml:space="preserve">
     <value>Die Reihenfolge, in der Kommentare angezeigt werden</value>
   </data>
+  <data name="Post title alignment" xml:space="preserve">
+    <value>Ausrichtung der Artikeltitel</value>
+  </data>
+  <data name="Word count in abstract" xml:space="preserve">
+    <value>Die Anzahl der Wörter in der Zusammenfassung</value>
+  </data>
+  <data name="Show post outline as side navigation" xml:space="preserve">
+    <value>Die Artikelgliederung wird in der seitlichen Navigationsleiste angezeigt</value>
+  </data>
 </root>
