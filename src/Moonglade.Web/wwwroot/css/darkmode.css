@@ -38,42 +38,6 @@
     border-color: var(--bs-pagination-border-color);
 }
 
-[data-bs-theme=dark] .timeline-heading {
-    border-bottom: 1px solid var(--bs-border-color);
-}
-
-[data-bs-theme=dark] .timeline:before {
-    background-color: var(--bs-border-color);
-}
-
-[data-bs-theme=dark] .timeline > li > .timeline-panel {
-    border: 1px solid var(--bs-border-color);
-    background-color: transparent !important;
-}
-
-    [data-bs-theme=dark] .timeline > li > .timeline-panel:before {
-        border-left: 15px solid var(--bs-border-color);
-        border-right: 0 solid var(--bs-border-color);
-    }
-
-    [data-bs-theme=dark] .timeline > li > .timeline-panel:after {
-        border-left: 14px solid var(--bs-border-color);
-        border-right: 0 solid var(--bs-border-color);
-    }
-
-[data-bs-theme=dark] .timeline-body a {
-    color: var(--bs-secondary-color);
-}
-
-[data-bs-theme=dark] .timeline-title a {
-    color: var(--bs-white);
-}
-
-[data-bs-theme=dark] .timeline > li > .timeline-badge {
-    background-color: var(--bs-secondary-bg-subtle);
-    border: 3px solid var(--bs-border-color);
-}
-
 [data-bs-theme=dark] .article-post-summary {
     background-color: transparent !important;
 }
