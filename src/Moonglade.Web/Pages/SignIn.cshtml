@@ -36,7 +36,7 @@
         }
     </style>
 </head>
-<body class="bg-gray-1">
+<body>
     <div class="container">
         <main class="position-relative">
             <div class="position-absolute top-50 start-50 translate-middle">
@@ -77,6 +77,12 @@
             </div>
         </main>
     </div>
+    <script type="module">
+        import * as theme from '/js/app/theme.module.js'
+        window.theme = theme;
+
+        theme.setTheme(theme.getPreferredTheme());
+    </script>
     <script>
         function getNewCaptcha() {
             d = new Date();

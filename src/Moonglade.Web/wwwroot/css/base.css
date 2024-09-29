@@ -441,10 +441,6 @@ div.animbrand a:hover {
     right: 20px;
 }
 
-.comment-item {
-    background-color: var(--bs-white);
-}
-
 .lightswitch {
     background-color: var(--bs-white);
 }

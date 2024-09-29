@@ -136,6 +136,10 @@ math {
     visibility: hidden;
 }
 
+.comment-item {
+    background-color: var(--bs-white);
+}
+
 @media (max-width: 767px) {
     h1.post-title, .post-content h1 {
         font-size: 1.4rem;
