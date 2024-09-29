@@ -12,10 +12,6 @@
         border: none !important;
     }
 
-    body.body-post-slug {
-        background-color: var(--bs-white);
-    }
-
     .post-content img {
         cursor: inherit;
     }
