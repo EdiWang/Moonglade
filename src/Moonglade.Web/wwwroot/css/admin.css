@@ -353,3 +353,7 @@ div.mce-fullscreen {
 [data-bs-theme="dark"] .admin-table-container {
     background-color: var(--bs-body-bg);
 }
+
+[data-bs-theme="dark"] .admin-nav {
+    border-right: 1px solid var(--bs-border-color);
+}
