@@ -5,6 +5,7 @@
 @inject IConfiguration Configuration
 
 @{
+    ViewBag.ThemeSwitchReady = true;
     var process = Process.GetCurrentProcess();
 }
 
@@ -13,7 +14,7 @@
         @SharedLocalizer["Moonglade Configuration"]
     </h4>
 
-    <div class="mb-4 rounded-3 shadow-sm border bg-white p-2">
+    <div class="admin-table-container mb-4 rounded-3 shadow-sm border p-2">
         <table class="table table-borderless table-sm mb-0">
             <tbody>
                 <tr>
@@ -46,7 +47,7 @@
         @SharedLocalizer["Server Information"]
     </h4>
 
-    <div class="mb-4 rounded-3 shadow-sm border bg-white p-2">
+    <div class="admin-table-container mb-4 rounded-3 shadow-sm border p-2">
         <table class="table table-borderless table-sm mb-0">
             <tbody>
                 <tr>
