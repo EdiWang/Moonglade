@@ -100,6 +100,14 @@ h1.post-title,
         font-size: 80%;
     }
 
+.comment-form-containter {
+    padding: 20px 38px;
+}
+
+    .comment-form-containter .card-subtitle {
+        font-size: 1rem;
+    }
+
 .comment-list .thumbnail {
     padding: 0;
 }
@@ -150,6 +158,12 @@ math {
     }
 }
 
+[data-bs-theme=dark] .article-post-slug {
+    background-color: transparent !important;
+    padding: 0;
+    border: 0 none !important;
+}
+
 [data-bs-theme=dark] math {
     background-color: #2e2e2e;
     border: 1px solid #454545;
@@ -158,4 +172,14 @@ math {
 
 [data-bs-theme=dark] .comment-item {
     background-color: var(--bs-body-bg);
+}
+
+[data-bs-theme=dark] .post-content blockquote,
+[data-bs-theme=dark] .post-content .blockquote {
+    border-left: 5px solid var(--bs-border-color);
+    color: var(--bs-secondary-color);
+}
+
+[data-bs-theme=dark] .comment-form-containter {
+    background-color: transparent !important;
 }

@@ -1,20 +1,4 @@
-﻿[data-bs-theme=dark] .article-post-slug {
-    background-color: transparent !important;
-    padding: 0;
-    border: 0 none !important;
-}
-
-[data-bs-theme=dark] .comment-form-containter {
-    background-color: transparent !important;
-}
-
-[data-bs-theme=dark] .post-content blockquote,
-[data-bs-theme=dark] .post-content .blockquote {
-    border-left: 5px solid var(--bs-border-color);
-    color: var(--bs-secondary-color);
-}
-
-[data-bs-theme=dark] .page-item.active .page-link {
+﻿[data-bs-theme=dark] .page-item.active .page-link {
     background-color: var(--bs-pagination-border-color);
     border-color: var(--bs-pagination-border-color);
 }
