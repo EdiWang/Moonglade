@@ -293,6 +293,7 @@ div.mce-fullscreen {
 .settings-entry {
     margin-left: 0;
     margin-right: 0;
+    background-color: var(--bs-white);
 }
 
 .tags-dropdown .tagify__dropdown__item {
@@ -358,5 +359,9 @@ div.mce-fullscreen {
 }
 
 [data-bs-theme="dark"] .admin-nav-section .list-group-item:hover {
+    background-color: var(--bs-body-bg);
+}
+
+[data-bs-theme="dark"] .settings-entry {
     background-color: var(--bs-body-bg);
 }
