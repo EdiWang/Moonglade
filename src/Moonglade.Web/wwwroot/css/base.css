@@ -437,6 +437,17 @@ div.animbrand a:hover {
     background-color: var(--bs-white);
 }
 
+/* iPad Pro 1024*1366 */
+@media (width: 1024px) {
+    .search-form {
+        max-width: 212px !important;
+    }
+
+    .form-control#term {
+        width: 173px !important;
+    }
+}
+
 [data-bs-theme=dark] body {
     background-color: var(--bs-secondary-bg-subtle);
 }
