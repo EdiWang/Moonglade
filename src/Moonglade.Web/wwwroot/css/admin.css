@@ -21,6 +21,10 @@
     overflow-x: hidden;
 }
 
+.navbar-brand {
+    color: var(--bs-white);
+}
+
 .aspnet-tag-moonglade-userinfo,
 .aspnet-tag-moonglade-userinfo-name,
 .aspnet-tag-moonglade-userinfo-email {
@@ -148,7 +152,7 @@
     }
 
     .admin-nav-section .list-group-item:hover {
-        background-color: #EBEBEB;
+        background-color: var(--bs-gray-200);
     }
 
 .admin-toolbar .nav-link {
@@ -345,6 +349,14 @@ div.mce-fullscreen {
     background-color: var(--bs-white);
 }
 
+[data-bs-theme="dark"] .navbar-brand {
+    color: var(--bs-white);
+}
+
 [data-bs-theme="dark"] .admin-table-container {
+    background-color: var(--bs-body-bg);
+}
+
+[data-bs-theme="dark"] .admin-nav-section .list-group-item:hover {
     background-color: var(--bs-body-bg);
 }
