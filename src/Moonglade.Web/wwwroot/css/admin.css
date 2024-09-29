@@ -57,7 +57,7 @@
 .admin-nav {
     width: 190px;
     min-height: calc(100vh - 54px);
-    border-right: 1px solid #ddd;
+    border-right: 1px solid var(--bs-border-color);
 
     .list-group-item span {
         width: 22px;
@@ -102,11 +102,6 @@
 .textarea-code {
     font-family: 'Consolas';
     font-size: 12px;
-}
-
-hr.admin-nav-divider {
-    border-top: 1px solid var(--transparent-light-30);
-    margin: 0 20px;
 }
 
 .post-content-textarea {
@@ -352,8 +347,4 @@ div.mce-fullscreen {
 
 [data-bs-theme="dark"] .admin-table-container {
     background-color: var(--bs-body-bg);
-}
-
-[data-bs-theme="dark"] .admin-nav {
-    border-right: 1px solid var(--bs-border-color);
 }
