@@ -42,7 +42,7 @@ public class ImageController(IBlogImageStorage imageStorage,
 
         var image = await cache.GetOrCreateAsync(filename, async entry =>
         {
-            entry.SlidingExpiration = TimeSpan.FromMinutes(int.Parse(configuration["CacheSlidingExpirationMinutes:Image"]!));
+            entry.SlidingExpiration = TimeSpan.FromMinutes(_imageStorageSettings.CacheMinutes);
             var imageInfo = await imageStorage.GetAsync(filename);
             return imageInfo;
         });
