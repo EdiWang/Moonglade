@@ -5,6 +5,8 @@
 @inject IMediator Mediator
 
 @{
+    ViewBag.ThemeSwitchReady = true;
+
     var tzList = ZoneResolver.ListTimeZones().Select(t => new SelectListItem
             {
                 Text = t.DisplayName,
@@ -116,7 +118,7 @@
                 <div class="mb-3">
                     <h4 class="admin-subtitle fw-bold mb-2">@SharedLocalizer["Blog Identity"]</h4>
 
-                    <div class="settings-entry row align-items-center py-3 px-2 rounded-3 shadow-sm border bg-white mb-2">
+                    <div class="settings-entry row align-items-center py-3 px-2 rounded-3 shadow-sm border mb-2">
                         <div class="col-auto">
                             <i class="bi-card-heading settings-entry-icon"></i>
                         </div>
@@ -128,7 +130,7 @@
                         </div>
                     </div>
 
-                    <div class="settings-entry row align-items-center py-3 px-2 rounded-3 shadow-sm border bg-white mb-2">
+                    <div class="settings-entry row align-items-center py-3 px-2 rounded-3 shadow-sm border mb-2">
                         <div class="col-auto">
                             <i class="bi-input-cursor settings-entry-icon"></i>
                         </div>
@@ -140,7 +142,7 @@
                         </div>
                     </div>
 
-                    <div class="settings-entry row align-items-center py-3 px-2 rounded-3 shadow-sm border bg-white mb-2">
+                    <div class="settings-entry row align-items-center py-3 px-2 rounded-3 shadow-sm border mb-2">
                         <div class="col-auto">
                             <i class="bi-file-word settings-entry-icon"></i>
                         </div>
@@ -152,7 +154,7 @@
                         </div>
                     </div>
 
-                    <div class="settings-entry row align-items-center py-3 px-2 rounded-3 shadow-sm border bg-white mb-2">
+                    <div class="settings-entry row align-items-center py-3 px-2 rounded-3 shadow-sm border mb-2">
                         <div class="col-auto">
                             <i class="bi-app-indicator settings-entry-icon"></i>
                         </div>
@@ -167,7 +169,7 @@
                         </div>
                     </div>
 
-                    <div class="settings-entry row align-items-center py-3 px-2 rounded-3 shadow-sm border bg-white mb-2">
+                    <div class="settings-entry row align-items-center py-3 px-2 rounded-3 shadow-sm border mb-2">
                         <div class="col-auto">
                             <i class="bi-link settings-entry-icon"></i>
                         </div>
@@ -180,7 +182,7 @@
                         </div>
                     </div>
 
-                    <div class="settings-entry row align-items-center py-3 px-2 rounded-3 shadow-sm border bg-white mb-2">
+                    <div class="settings-entry row align-items-center py-3 px-2 rounded-3 shadow-sm border mb-2">
                         <div class="col-auto">
                             <i class="bi-clock settings-entry-icon"></i>
                         </div>
@@ -193,7 +195,7 @@
                         </div>
                     </div>
 
-                    <div class="settings-entry row align-items-center py-3 px-2 rounded-3 shadow-sm border bg-white mb-2">
+                    <div class="settings-entry row align-items-center py-3 px-2 rounded-3 shadow-sm border mb-2">
                         <div class="col-auto">
                             <i class="bi-globe settings-entry-icon"></i>
                         </div>
@@ -234,7 +236,7 @@
                         @SharedLocalizer["Footer"]
                     </h4>
 
-                    <div class="settings-entry row align-items-center py-3 px-2 rounded-3 shadow-sm border bg-white mb-2">
+                    <div class="settings-entry row align-items-center py-3 px-2 rounded-3 shadow-sm border mb-2">
                         <div class="col-auto">
                             <i class="bi-check2-square settings-entry-icon"></i>
                         </div>
@@ -260,7 +262,7 @@
                     <h4 class="admin-subtitle fw-bold mb-2">
                         @SharedLocalizer["Dublin Core Metadata"]
                     </h4>
-                    <div class="settings-entry row align-items-center py-3 px-2 rounded-3 shadow-sm border bg-white mb-2">
+                    <div class="settings-entry row align-items-center py-3 px-2 rounded-3 shadow-sm border mb-2">
                         <div class="col-auto">
                             <i class="bi bi-globe settings-entry-icon"></i>
                         </div>
@@ -275,7 +277,7 @@
                         </div>
                     </div>
 
-                    <div class="settings-entry row align-items-center py-3 px-2 rounded-3 shadow-sm border bg-white mb-2">
+                    <div class="settings-entry row align-items-center py-3 px-2 rounded-3 shadow-sm border mb-2">
                         <div class="col-auto">
                             <i class="bi-link settings-entry-icon"></i>
                         </div>
@@ -293,7 +295,7 @@
                     <h4 class="admin-subtitle fw-bold mb-2">
                         @SharedLocalizer["Side Bar"]
                     </h4>
-                    <div class="settings-entry row align-items-center py-3 px-2 rounded-3 shadow-sm border bg-white mb-2">
+                    <div class="settings-entry row align-items-center py-3 px-2 rounded-3 shadow-sm border mb-2">
                         <div class="col-auto">
                             <i class="bi-layout-sidebar-inset settings-entry-icon"></i>
                         </div>
@@ -317,7 +319,7 @@
                         </div>
                     </div>
 
-                    <div class="rounded-3 shadow-sm border bg-white mb-2">
+                    <div class="rounded-3 shadow-sm border mb-2">
                         <div class="settings-entry row align-items-center py-3 px-2">
                             <div class="col-auto">
                                 <i class="bi-file-person settings-entry-icon"></i>
@@ -404,7 +406,7 @@
                         </div>
                     </div>
 
-                    <div class="rounded-3 shadow-sm border bg-white mb-2">
+                    <div class="rounded-3 shadow-sm border mb-2">
                         <div class="settings-entry row align-items-center py-3 px-2">
                             <label>@SharedLocalizer["Side bar items"]</label>
                             <div class="text-muted">@SharedLocalizer["Show or hide widgets that display on the side bar"]</div>
