@@ -22,6 +22,7 @@
     </script>
 }
 @{
+    ViewBag.ThemeSwitchReady = true;
     var settings = BlogConfig.ContentSettings;
 }
 
@@ -36,7 +37,7 @@
                 <div>
                     <h4 class="admin-subtitle fw-bold mb-2">@SharedLocalizer["Comments"]</h4>
 
-                    <div class="settings-entry row align-items-center py-3 px-2 rounded-3 shadow-sm border bg-white mb-2">
+                    <div class="settings-entry row align-items-center py-3 px-2 rounded-3 shadow-sm border mb-2">
                         <div class="col-auto">
                             <i class="bi-chat-left-dots settings-entry-icon"></i>
                         </div>
@@ -51,7 +52,7 @@
                         </div>
                     </div>
 
-                    <div class="settings-entry row align-items-center py-3 px-2 rounded-3 shadow-sm border bg-white mb-2">
+                    <div class="settings-entry row align-items-center py-3 px-2 rounded-3 shadow-sm border mb-2">
                         <div class="col-auto">
                             <i class="bi-diagram-2 settings-entry-icon"></i>
                         </div>
@@ -80,7 +81,7 @@
                         </div>
                     </div>
 
-                    <div class="settings-entry row align-items-center py-3 px-2 rounded-3 shadow-sm border bg-white mb-2">
+                    <div class="settings-entry row align-items-center py-3 px-2 rounded-3 shadow-sm border mb-2">
                         <div class="col-auto">
                             <i class="settings-entry-icon bi-hourglass-split"></i>
                         </div>
@@ -95,7 +96,7 @@
 
                     <div class="comment-settings-built-in">
 
-                        <div class="settings-entry row align-items-center py-3 px-2 rounded-3 shadow-sm border bg-white mb-2">
+                        <div class="settings-entry row align-items-center py-3 px-2 rounded-3 shadow-sm border mb-2">
                             <div class="col-auto">
                                 <i class="bi-sort-numeric-down settings-entry-icon"></i>
                             </div>
@@ -114,7 +115,7 @@
                             </div>
                         </div>
 
-                        <div class="settings-entry row align-items-center py-3 px-2 rounded-3 shadow-sm border bg-white mb-2">
+                        <div class="settings-entry row align-items-center py-3 px-2 rounded-3 shadow-sm border mb-2">
                             <div class="col-auto">
                                 <i class="bi-person-check settings-entry-icon"></i>
                             </div>
@@ -129,7 +130,7 @@
                             </div>
                         </div>
 
-                        <div class="settings-entry row align-items-center py-3 px-2 rounded-3 shadow-sm border bg-white mb-2">
+                        <div class="settings-entry row align-items-center py-3 px-2 rounded-3 shadow-sm border mb-2">
                             <div class="col-auto">
                                 <i class="bi-person-square settings-entry-icon"></i>
                             </div>
@@ -146,7 +147,7 @@
 
                         @if (!string.IsNullOrWhiteSpace(Configuration["ContentModerator:ApiEndpoint"]))
                         {
-                            <div class="settings-entry row align-items-center py-3 px-2 rounded-3 shadow-sm border bg-white mb-2">
+                            <div class="settings-entry row align-items-center py-3 px-2 rounded-3 shadow-sm border mb-2">
                                 <div class="col-auto">
                                     <i class="bi-translate settings-entry-icon"></i>
                                 </div>
@@ -161,7 +162,7 @@
                                 </div>
                             </div>
 
-                            <div class="settings-entry row align-items-center py-3 px-2 rounded-3 shadow-sm border bg-white mb-2">
+                            <div class="settings-entry row align-items-center py-3 px-2 rounded-3 shadow-sm border mb-2">
                                 <div class="col-auto">
                                     <i class="bi-check2-circle settings-entry-icon"></i>
                                 </div>
@@ -183,7 +184,7 @@
                         }
                         else
                         {
-                            <div class="settings-entry row align-items-center py-3 px-2 rounded-3 shadow-sm border bg-white mb-2">
+                            <div class="settings-entry row align-items-center py-3 px-2 rounded-3 shadow-sm border mb-2">
                                 <div class="col-auto">
                                     <i class="bi-translate settings-entry-icon"></i>
                                 </div>
@@ -215,7 +216,7 @@
                 <div class="mb-3">
                     <h4 class="admin-subtitle fw-bold mb-2">@SharedLocalizer["Blog posts"]</h4>
 
-                    <div class="settings-entry row align-items-center py-3 px-2 rounded-3 shadow-sm border bg-white mb-2">
+                    <div class="settings-entry row align-items-center py-3 px-2 rounded-3 shadow-sm border mb-2">
                         <div class="col-auto">
                             <i class="bi-check2-circle settings-entry-icon"></i>
                         </div>
@@ -234,7 +235,7 @@
                         </div>
                     </div>
 
-                    <div class="settings-entry row align-items-center py-3 px-2 rounded-3 shadow-sm border bg-white mb-2">
+                    <div class="settings-entry row align-items-center py-3 px-2 rounded-3 shadow-sm border mb-2">
                         <div class="col-auto">
                             <i class="bi-sort-numeric-down settings-entry-icon"></i>
                         </div>
@@ -246,7 +247,7 @@
                         </div>
                     </div>
 
-                    <div class="settings-entry row align-items-center py-3 px-2 rounded-3 shadow-sm border bg-white mb-2">
+                    <div class="settings-entry row align-items-center py-3 px-2 rounded-3 shadow-sm border mb-2">
                         <div class="col-auto">
                             <i class="settings-entry-icon bi-file-word"></i>
                         </div>
@@ -259,7 +260,7 @@
                         </div>
                     </div>
 
-                    <div class="settings-entry row align-items-center py-3 px-2 rounded-3 shadow-sm border bg-white mb-2">
+                    <div class="settings-entry row align-items-center py-3 px-2 rounded-3 shadow-sm border mb-2">
                         <div class="col-auto">
                             <i class="bi-list-nested settings-entry-icon"></i>
                         </div>
@@ -274,7 +275,7 @@
                         </div>
                     </div>
 
-                    <div class="rounded-3 shadow-sm border bg-white">
+                    <div class="rounded-3 shadow-sm border">
                         <div class="settings-entry row align-items-center py-3 px-2">
                             <div class="col-auto">
                                 <i class="bi-card-text settings-entry-icon"></i>
@@ -305,7 +306,7 @@
                 <div>
                     <h4 class="admin-subtitle fw-bold mb-2">@SharedLocalizer["Call-out"]</h4>
 
-                    <div class="rounded-3 shadow-sm border bg-white mb-2">
+                    <div class="rounded-3 shadow-sm border mb-2">
                         <div class="settings-entry row align-items-center py-3 px-2">
                             <div class="col-auto">
                                 <i class="bi-menu-button-wide-fill settings-entry-icon"></i>
