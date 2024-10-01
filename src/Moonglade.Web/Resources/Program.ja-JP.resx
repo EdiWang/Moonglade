@@ -1023,4 +1023,7 @@
   <data name="Enable custom menus" xml:space="preserve">
     <value>カスタムメニューを有効にする</value>
   </data>
+  <data name="Change Password" xml:space="preserve">
+    <value>パスワードを変更する</value>
+  </data>
 </root>

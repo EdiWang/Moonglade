@@ -1026,4 +1026,7 @@
   <data name="Enable custom menus" xml:space="preserve">
     <value>啟用自定義功能表</value>
   </data>
+  <data name="Change Password" xml:space="preserve">
+    <value>修改密碼</value>
+  </data>
 </root>

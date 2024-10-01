@@ -1023,4 +1023,7 @@
   <data name="Enable custom menus" xml:space="preserve">
     <value>Benutzerdefinierte Menüs aktivieren</value>
   </data>
+  <data name="Change Password" xml:space="preserve">
+    <value>Ändern Sie Ihr Passwort</value>
+  </data>
 </root>

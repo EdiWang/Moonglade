@@ -1023,4 +1023,7 @@
   <data name="Using a third party script may cause your website to be blocked by some browsers or ad blockers, it can have security risks too. Please use with caution." xml:space="preserve">
     <value>使用第三方脚本可能会导致您的网站被某些浏览器或广告拦截器阻止，也可能存在安全风险。请谨慎使用。</value>
   </data>
+  <data name="Change Password" xml:space="preserve">
+    <value>修改密码</value>
+  </data>
 </root>
