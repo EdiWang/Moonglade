@@ -62,16 +62,18 @@
     width: 190px;
     min-height: calc(100vh - 54px);
     border-right: 1px solid var(--bs-border-color);
+    .list-group-item span
 
-    .list-group-item span {
-        width: 22px;
-        font-size: 16px;
-        display: inline-block;
-    }
+{
+    width: 22px;
+    font-size: 16px;
+    display: inline-block;
+}
 
-    .list-group-item.active {
-        color: #000;
-    }
+.list-group-item.active {
+    color: #000;
+}
+
 }
 
 .admin-main {
@@ -80,10 +82,12 @@
 
 .admin-toolbar {
     margin-bottom: 25px !important;
+    .nav-pills .nav-link.active, .nav-pills .show > .nav-link
 
-    .nav-pills .nav-link.active, .nav-pills .show > .nav-link {
-        background-color: var(--accent-color1);
-    }
+{
+    background-color: var(--accent-color1);
+}
+
 }
 
 .admin-toolbar-text {
@@ -200,18 +204,20 @@ div.mce-fullscreen {
 .ul-tag-mgr {
     line-height: 28px;
     text-align: justify;
+    li
 
-    li {
-        display: inline-block;
-        height: 33px;
-        line-height: 33px;
-        margin-bottom: 10px;
-        vertical-align: top;
-    }
+{
+    display: inline-block;
+    height: 33px;
+    line-height: 33px;
+    margin-bottom: 10px;
+    vertical-align: top;
+}
 
-    li.updated {
-        border: 1px solid var(--bs-green);
-    }
+li.updated {
+    border: 1px solid var(--bs-green);
+}
+
 }
 
 .ul-tag-mgr li span {
@@ -363,6 +369,10 @@ div.mce-fullscreen {
     align-items: center;
 }
 
+.admin-side-options-container {
+    background-color: var(--bs-white);
+}
+
 [data-bs-theme="dark"] .navbar-brand {
     color: var(--bs-white);
 }
@@ -390,4 +400,8 @@ div.mce-fullscreen {
 
 [data-bs-theme="dark"] .admin-nav .list-group-item.active {
     color: var(--bs-white)
+}
+
+[data-bs-theme="dark"] .admin-side-options-container {
+    background-color: var(--bs-body-bg);
 }

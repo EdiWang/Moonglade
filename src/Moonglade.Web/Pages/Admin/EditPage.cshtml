@@ -1,6 +1,7 @@
 ﻿@page "/admin/page/edit/{id:guid?}"
 @model Moonglade.Web.Pages.Admin.EditPageModel
 @{
+    ViewBag.ThemeSwitchReady = true;
     ViewBag.Title = "Edit Page";
 }
 
@@ -174,7 +175,7 @@
                 </div>
             </div>
             <div class="col-md-3 col-xl-2">
-                <div class="p-3 rounded-3 shadow-sm border bg-white mb-4">
+                <div class="admin-side-options-container p-3 rounded-3 shadow-sm border mb-4">
                     <div class="mb-3">
                         <div class="form-check form-switch mb-2">
                             <input type="checkbox" asp-for="EditPageRequest.HideSidebar" class="form-check-input">
