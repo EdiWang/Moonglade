@@ -387,3 +387,7 @@ div.mce-fullscreen {
     background-color: var(--bs-secondary-bg-subtle);
     border: 2px dashed #4F4F4F;
 }
+
+[data-bs-theme="dark"] .admin-nav .list-group-item.active {
+    color: var(--bs-white)
+}
