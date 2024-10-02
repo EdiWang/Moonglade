@@ -375,6 +375,10 @@ div.mce-fullscreen {
     background-color: var(--bs-white);
 }
 
+.admin-tag-item {
+    background-color: var(--bs-white);
+}
+
 [data-bs-theme="dark"] .navbar-brand {
     color: var(--bs-white);
 }
@@ -415,3 +419,17 @@ div.mce-fullscreen {
 [data-bs-theme="dark"] .mention-item-container {
     background-color: var(--bs-body-bg);
 }
+
+[data-bs-theme="dark"] .admin-tag-item {
+    background-color: var(--bs-body-bg);
+}
+
+[data-bs-theme="dark"] .ul-tag-mgr li a {
+    background-color: var(--bs-secondary-bg);
+    color: var(--bs-white);
+}
+
+    [data-bs-theme="dark"] .ul-tag-mgr li a:hover {
+        background-color: var(--bs-red);
+        color: var(--bs-white);
+    }

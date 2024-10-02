@@ -2,6 +2,7 @@
 @using Moonglade.Core.TagFeature
 @inject IMediator Mediator
 @{
+    ViewBag.ThemeSwitchReady = true;
     ViewBag.Title = "Tags";
     var tags = await Mediator.Send(new GetTagsQuery());
 }
@@ -89,7 +90,7 @@
     <ul class="list-unstyled ul-tag-mgr">
         @foreach (var tag in tags.OrderBy(model => model.DisplayName))
         {
-            <li id="li-tag-@tag.Id" class="border rounded bg-white shadow-sm">
+            <li id="li-tag-@tag.Id" class="admin-tag-item border rounded shadow-sm">
                 <span class="span-tagcontent-editable" contenteditable="true" spellcheck="false" data-tagid="@tag.Id">@tag.DisplayName</span>
                 <a class="btn-delete" data-tagid="@tag.Id">
                     <i class="bi-trash"></i>
