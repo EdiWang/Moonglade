@@ -1,6 +1,7 @@
 ﻿@page "/admin/friendlink"
 @model Moonglade.Web.Pages.Admin.FriendLinkModel
 @{
+    ViewBag.ThemeSwitchReady = true;
     ViewBag.Title = "Friend Links";
 }
 
@@ -88,7 +89,7 @@
 <div>
     @foreach (var item in Model.Links.OrderBy(m => m.Rank).ThenBy(m => m.Title))
     {
-        <div class="p-3 mb-2 rounded-3 shadow-sm border bg-white">
+        <div class="friendlink-entry p-3 mb-2 rounded-3 shadow-sm border">
             <div id="tr-@item.Id" class="row">
                 <div class="col">
                     <h6>

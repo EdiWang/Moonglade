@@ -373,6 +373,10 @@ li.updated {
     background-color: var(--bs-white);
 }
 
+.friendlink-entry {
+    background-color: var(--bs-white);
+}
+
 [data-bs-theme="dark"] .navbar-brand {
     color: var(--bs-white);
 }
@@ -403,5 +407,9 @@ li.updated {
 }
 
 [data-bs-theme="dark"] .admin-side-options-container {
+    background-color: var(--bs-body-bg);
+}
+
+[data-bs-theme="dark"] .friendlink-entry {
     background-color: var(--bs-body-bg);
 }
