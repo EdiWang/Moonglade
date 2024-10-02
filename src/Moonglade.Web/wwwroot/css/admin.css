@@ -62,18 +62,16 @@
     width: 190px;
     min-height: calc(100vh - 54px);
     border-right: 1px solid var(--bs-border-color);
-    .list-group-item span
 
-{
-    width: 22px;
-    font-size: 16px;
-    display: inline-block;
-}
+    .list-group-item span {
+        width: 22px;
+        font-size: 16px;
+        display: inline-block;
+    }
 
-.list-group-item.active {
-    color: #000;
-}
-
+    .list-group-item.active {
+        color: #000;
+    }
 }
 
 .admin-main {
@@ -82,12 +80,10 @@
 
 .admin-toolbar {
     margin-bottom: 25px !important;
-    .nav-pills .nav-link.active, .nav-pills .show > .nav-link
 
-{
-    background-color: var(--accent-color1);
-}
-
+    .nav-pills .nav-link.active, .nav-pills .show > .nav-link {
+        background-color: var(--accent-color1);
+    }
 }
 
 .admin-toolbar-text {
@@ -204,20 +200,18 @@ div.mce-fullscreen {
 .ul-tag-mgr {
     line-height: 28px;
     text-align: justify;
-    li
 
-{
-    display: inline-block;
-    height: 33px;
-    line-height: 33px;
-    margin-bottom: 10px;
-    vertical-align: top;
-}
+    li {
+        display: inline-block;
+        height: 33px;
+        line-height: 33px;
+        margin-bottom: 10px;
+        vertical-align: top;
+    }
 
-li.updated {
-    border: 1px solid var(--bs-green);
-}
-
+    li.updated {
+        border: 1px solid var(--bs-green);
+    }
 }
 
 .ul-tag-mgr li span {
@@ -377,6 +371,10 @@ li.updated {
     background-color: var(--bs-white);
 }
 
+.mention-item-container {
+    background-color: var(--bs-white);
+}
+
 [data-bs-theme="dark"] .navbar-brand {
     color: var(--bs-white);
 }
@@ -411,5 +409,9 @@ li.updated {
 }
 
 [data-bs-theme="dark"] .friendlink-entry {
+    background-color: var(--bs-body-bg);
+}
+
+[data-bs-theme="dark"] .mention-item-container {
     background-color: var(--bs-body-bg);
 }
