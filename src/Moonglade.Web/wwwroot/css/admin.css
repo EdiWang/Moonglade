@@ -379,6 +379,10 @@ div.mce-fullscreen {
     background-color: var(--bs-white);
 }
 
+.admin-post-entry {
+    background-color: var(--bs-white);
+}
+
 [data-bs-theme="dark"] .navbar-brand {
     color: var(--bs-white);
 }
@@ -433,3 +437,7 @@ div.mce-fullscreen {
         background-color: var(--bs-red);
         color: var(--bs-white);
     }
+
+[data-bs-theme="dark"] .admin-post-entry {
+    background-color: var(--bs-body-bg);
+}

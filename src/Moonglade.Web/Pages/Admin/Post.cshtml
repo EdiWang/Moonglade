@@ -2,6 +2,7 @@
 @using Moonglade.Web.PagedList
 @model Moonglade.Web.Pages.Admin.PostModel
 @{
+    ViewBag.ThemeSwitchReady = true;
     ViewBag.Title = "Posts";
 }
 
@@ -54,7 +55,7 @@
     {
         foreach (var item in Model.PostSegments)
         {
-            <div id="post-@item.Id" class="p-3 mb-2 rounded-3 shadow-sm border bg-white">
+            <div id="post-@item.Id" class="admin-post-entry p-3 mb-2 rounded-3 shadow-sm border">
                 <div class="row">
                     <div class="col">
                         <a asp-page="/Post"
