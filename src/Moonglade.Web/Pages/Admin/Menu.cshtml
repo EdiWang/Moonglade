@@ -1,6 +1,7 @@
 ﻿@page "/admin/menu"
 @Html.AntiForgeryToken()
 @{
+    ViewBag.ThemeSwitchReady = true;
     ViewBag.Title = "Menu";
 
     var bc = BlogConfig.CustomMenuSettings;
@@ -41,7 +42,7 @@
 @section head {
     <style>
         .monaco-target {
-            border: 1px solid #dee2e6;
+            border: 1px solid var(--bs-border-color);
             width: 100%;
             min-height: calc(100vh - 370px);
         }
@@ -63,7 +64,7 @@
 
 <form id="form-settings" asp-controller="Settings" asp-action="CustomMenu">
     <div class="admin-settings-entry-container">
-        <div class="settings-entry row align-items-center py-3 px-2 rounded-3 shadow-sm border bg-white mb-2">
+        <div class="settings-entry row align-items-center py-3 px-2 rounded-3 shadow-sm border mb-2">
             <div class="col-auto">
                 <i class="bi-menu-app settings-entry-icon"></i>
             </div>
@@ -74,14 +75,12 @@
                 <div class="form-check form-switch form-control-lg">
                     <input type="hidden" name="IsEnabled" value="false">
                     <input type="checkbox" name="IsEnabled" value="true" class="form-check-input" @(@settings.IsEnabled
-                        ? "checked" : null) />
+                           ? "checked" : null) />
                 </div>
             </div>
         </div>
 
-        <div class="py-3 rounded-3 shadow-sm border bg-white">
-            <div id="JsonContentEditor" class="monaco-target overflow-y-hidden">
-            </div>
+        <div id="JsonContentEditor" class="monaco-target p-3 rounded-3 shadow-sm border">
         </div>
     </div>
 
@@ -95,7 +94,7 @@
 </form>
 
 <div class="modal fade" id="examplecodemodal" tabindex="-1" role="dialog" aria-labelledby="exampleLabel"
-    aria-hidden="true">
+     aria-hidden="true">
     <div class="modal-dialog" role="document">
         <div class="modal-content">
             <div class="modal-header">
