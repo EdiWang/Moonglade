@@ -3,6 +3,7 @@
 @using Moonglade.Data.Specifications
 @inject IMediator Mediator
 @{
+    ViewBag.ThemeSwitchReady = true;
     ViewBag.Title = "Drafts";
     var posts = await Mediator.Send(new ListPostSegmentByStatusQuery(PostStatus.Draft));
 }
@@ -41,7 +42,7 @@
 
         @foreach (var post in posts.OrderByDescending(p => p.LastModifiedUtc))
         {
-            <div id="post-@post.Id" class="p-3 mb-2 rounded-3 shadow-sm border bg-white">
+            <div id="post-@post.Id" class="admin-post-entry p-3 mb-2 rounded-3 shadow-sm border">
                 <div class="d-flex">
                     <div class="flex-grow-1">
                         <a asp-page="./EditPost" asp-route-id="@post.Id">
