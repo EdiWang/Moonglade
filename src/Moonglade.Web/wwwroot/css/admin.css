@@ -367,14 +367,11 @@ div.mce-fullscreen {
     background-color: var(--bs-white);
 }
 
-.mention-item-container {
-    background-color: var(--bs-white);
-}
-
 .admin-tag-item {
     background-color: var(--bs-white);
 }
 
+.mention-item-entry,
 .friendlink-entry,
 .admin-comment-entry,
 .admin-post-entry {
@@ -414,7 +411,7 @@ div.mce-fullscreen {
     background-color: var(--bs-body-bg);
 }
 
-[data-bs-theme="dark"] .mention-item-container {
+[data-bs-theme="dark"] .mention-item-entry {
     background-color: var(--bs-body-bg);
 }
 
@@ -432,6 +429,7 @@ div.mce-fullscreen {
         color: var(--bs-white);
     }
 
+[data-bs-theme="dark"] .mention-item-entry,
 [data-bs-theme="dark"] .friendlink-entry,
 [data-bs-theme="dark"] .admin-comment-entry,
 [data-bs-theme="dark"] .admin-post-entry {
