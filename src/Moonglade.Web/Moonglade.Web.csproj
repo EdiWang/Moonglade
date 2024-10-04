@@ -32,6 +32,10 @@
   </ItemGroup>
   <ItemGroup>
     <Content Update="appsettings.Development.json" CopyToPublishDirectory="Never" />
+    <Content Update="wwwroot\css\tinymce-custom-dark.css">
+      <ExcludeFromSingleFile>true</ExcludeFromSingleFile>
+      <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
+    </Content>
   </ItemGroup>
   <ItemGroup>
     <PackageReference Include="Edi.Gravatar" Version="1.1.0" />

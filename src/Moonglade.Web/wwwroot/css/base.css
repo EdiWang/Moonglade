@@ -540,3 +540,7 @@ div.animbrand a:hover {
 [data-bs-theme=dark] .lightswitch {
     background-color: transparent;
 }
+
+[data-bs-theme=dark] .tox .tox-edit-area::before {
+    border: 2px solid transparent !important;
+}

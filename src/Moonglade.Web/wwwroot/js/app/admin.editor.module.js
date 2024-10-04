@@ -118,7 +118,7 @@ export function loadTinyMCE(textareaSelector) {
         window.tinyMCE.init({
             selector: textareaSelector,
             themes: 'silver',
-            skin: 'tinymce-5',
+            skin: (window.theme.getPreferredTheme() == 'dark' ? 'oxide-dark' : 'tinymce-5'),
             height: 'calc(100vh - 400px)',
             relative_urls: false, // avoid image upload fuck up
             browser_spellcheck: true,
@@ -135,7 +135,7 @@ export function loadTinyMCE(textareaSelector) {
             images_upload_credentials: true,
             extended_valid_elements: 'img[class|src|border=0|alt|title|hspace|vspace|width|height|align|onmouseover|onmouseout|name|loading=lazy]',
             body_class: 'post-content',
-            content_css: '/css/tinymce-custom.css',
+            content_css: (window.theme.getPreferredTheme() == 'dark' ? "/css/tinymce-custom-dark.css" : '/css/tinymce-custom.css'),
             codesample_languages: [
                 { text: 'Bash', value: 'bash' },
                 { text: 'C#', value: 'csharp' },
@@ -168,6 +168,16 @@ export function loadTinyMCE(textareaSelector) {
                 { text: 'YAML', value: 'yaml' }
             ],
             setup: function (editor) {
+                editor.on('init', () => {
+                    if (window.theme.getPreferredTheme() == 'dark') {
+                        const container = editor.getContainer();
+                        const iframe = container.querySelector('iframe');
+                        const innerDoc = iframe.contentDocument || iframe.contentWindow.document;
+
+                        innerDoc.documentElement.setAttribute('data-bs-theme', 'dark');
+                    }
+                });
+
                 editor.on('NodeChange', function (e) {
                     if (e.element.tagName === 'IMG') {
                         e.element.setAttribute('loading', 'lazy');

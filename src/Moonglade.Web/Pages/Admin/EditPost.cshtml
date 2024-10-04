@@ -5,6 +5,7 @@
 @inject IConfiguration Configuration
 
 @{
+    ViewBag.ThemeSwitchReady = true;
     ViewBag.Title = "Edit Post";
     var ec = Configuration.GetSection("Editor").Get<EditorChoice>();
 
