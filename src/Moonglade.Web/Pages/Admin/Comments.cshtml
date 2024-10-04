@@ -3,6 +3,7 @@
 @using Moonglade.Web.PagedList
 @model Moonglade.Web.Pages.Admin.CommentsModel
 @{
+    ViewBag.ThemeSwitchReady = true;
     ViewBag.Title = "Comments";
 }
 @Html.AntiForgeryToken()
@@ -116,7 +117,7 @@
     {
         foreach (var item in Model.CommentDetailedItems)
         {
-            <div id="panel-comment-@item.Id" class="p-3 mb-3 rounded-3 shadow-sm border bg-white row g-1">
+            <div id="panel-comment-@item.Id" class="admin-comment-entry p-3 mb-3 rounded-3 shadow-sm border row g-1">
                 <div class="form-check col-auto">
                     <input type="checkbox" class="form-check-input chk-cid" id="comment-item-chk-@item.Id" data-cid="@item.Id" />
                     <label class="form-check-label" for="comment-item-chk-@item.Id"></label>

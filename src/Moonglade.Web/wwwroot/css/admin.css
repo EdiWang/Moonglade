@@ -367,10 +367,6 @@ div.mce-fullscreen {
     background-color: var(--bs-white);
 }
 
-.friendlink-entry {
-    background-color: var(--bs-white);
-}
-
 .mention-item-container {
     background-color: var(--bs-white);
 }
@@ -379,6 +375,8 @@ div.mce-fullscreen {
     background-color: var(--bs-white);
 }
 
+.friendlink-entry,
+.admin-comment-entry,
 .admin-post-entry {
     background-color: var(--bs-white);
 }
@@ -416,10 +414,6 @@ div.mce-fullscreen {
     background-color: var(--bs-body-bg);
 }
 
-[data-bs-theme="dark"] .friendlink-entry {
-    background-color: var(--bs-body-bg);
-}
-
 [data-bs-theme="dark"] .mention-item-container {
     background-color: var(--bs-body-bg);
 }
@@ -438,6 +432,8 @@ div.mce-fullscreen {
         color: var(--bs-white);
     }
 
+[data-bs-theme="dark"] .friendlink-entry,
+[data-bs-theme="dark"] .admin-comment-entry,
 [data-bs-theme="dark"] .admin-post-entry {
     background-color: var(--bs-body-bg);
 }
