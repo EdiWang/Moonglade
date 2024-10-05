@@ -378,6 +378,20 @@ div.mce-fullscreen {
     background-color: var(--bs-white);
 }
 
+.md-editor-image-upload-area {
+    border-width: 2px;
+    border-style: dashed;
+    background-color: var(--bs-secondary-bg);
+}
+
+    .md-editor-image-upload-area:focus,
+    .md-editor-image-upload-area:hover,
+    .md-editor-image-upload-area.drag-over {
+        color: var(--bs-warning-text-emphasis) !important;
+        background-color: var(--bs-warning-bg-subtle) !important;
+        border-color: var(--bs-warning-border-subtle) !important;
+    }
+
 [data-bs-theme="dark"] .navbar-brand {
     color: var(--bs-white);
 }
