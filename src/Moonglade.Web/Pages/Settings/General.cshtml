@@ -5,8 +5,6 @@
 @inject IMediator Mediator
 
 @{
-    ViewBag.ThemeSwitchReady = true;
-
     var tzList = ZoneResolver.ListTimeZones().Select(t => new SelectListItem
             {
                 Text = t.DisplayName,

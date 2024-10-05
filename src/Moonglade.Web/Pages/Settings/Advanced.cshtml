@@ -2,7 +2,6 @@
 @using System.Reflection
 @Html.AntiForgeryToken()
 @{
-    ViewBag.ThemeSwitchReady = true;
     var settings = BlogConfig.AdvancedSettings;
 
     var asm = Assembly.GetEntryAssembly();

@@ -2,7 +2,6 @@
 @using Moonglade.Mention.Common
 @inject IMediator Mediator
 @{
-    ViewBag.ThemeSwitchReady = true;
     ViewBag.Title = "Mentions";
     var mentionRecords = await Mediator.Send(new GetMentionsQuery());
 }

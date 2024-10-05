@@ -3,7 +3,6 @@
 @using Moonglade.Data.Specifications
 @inject IMediator Mediator
 @{
-    ViewBag.ThemeSwitchReady = true;
     ViewBag.Title = "Recycle Bin";
     var posts = await Mediator.Send(new ListPostSegmentByStatusQuery(PostStatus.Deleted));
 }
