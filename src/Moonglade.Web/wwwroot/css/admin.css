@@ -363,7 +363,8 @@ div.mce-fullscreen {
     align-items: center;
 }
 
-.admin-side-options-container {
+.admin-side-options-container,
+.admin-taginput-container {
     background-color: var(--bs-white);
 }
 
@@ -421,7 +422,8 @@ div.mce-fullscreen {
     color: var(--bs-white)
 }
 
-[data-bs-theme="dark"] .admin-side-options-container {
+[data-bs-theme="dark"] .admin-side-options-container,
+[data-bs-theme="dark"] .admin-taginput-container {
     background-color: var(--bs-body-bg);
 }
 
@@ -449,3 +451,5 @@ div.mce-fullscreen {
 [data-bs-theme="dark"] .admin-post-entry {
     background-color: var(--bs-body-bg);
 }
+
+/* tagify override */
