@@ -453,3 +453,35 @@ div.mce-fullscreen {
 }
 
 /* tagify override */
+[data-bs-theme="dark"] .tagify {
+    --tags-border-color: var(--bs-border-color);
+    --tags-hover-border-color: var(--bs-light-border-subtle);
+    --tag-bg: var(--bs-gray-600);
+    --tag-text-color: var(--bs-white);
+    --tagify-dd-bg-color: var(--bs-border-color);
+    --tagify-dd-text-color: var(--bs-white);
+}
+
+[data-bs-theme="dark"] .tagify__tag__removeBtn {
+    color: var(--bs-white);
+}
+
+[data-bs-theme="dark"] .tagify__dropdown__wrapper {
+    background: var(--bs-body-bg);
+}
+
+[data-bs-theme="dark"] .tags-dropdown .tagify__dropdown__item {
+    border: 1px solid var(--bs-border-color);
+    background: var(--bs-gray-700);
+    color: var(--bs-white);
+}
+
+[data-bs-theme="dark"] .tags-dropdown .tagify__dropdown__item--active {
+    color: var(--bs-white);
+}
+
+[data-bs-theme="dark"] .tags-dropdown .tagify__dropdown__item:hover {
+    background: var(--accent-color1);
+    border-color: var(--accent-color1);
+    color: #fff;
+}
