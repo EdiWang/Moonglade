@@ -189,6 +189,7 @@
             .md-editor-image-upload-area {
                 border-width: 2px;
                 border-style: dashed;
+                background-color: var(--bs-secondary-bg);
             }
 
             .md-editor-image-upload-area:focus,
@@ -250,7 +251,7 @@
                     <div id="markdown-content-editor" class="monaco-target overflow-y-hidden">
                     </div>
                     <textarea asp-for="ViewModel.EditorContent" class="post-content-textarea d-none"></textarea>
-                    <div class="md-editor-image-upload-area text-center border-secondary-subtle bg-light p-3 mt-1">
+                    <div class="md-editor-image-upload-area text-center border-secondary-subtle p-3 mt-1">
                         Drag &amp; Drop / Paste image here to upload.
                     </div>
                 }
