@@ -13,7 +13,6 @@ public class ImageController(IBlogImageStorage imageStorage,
         IBlogConfig blogConfig,
         IMemoryCache cache,
         IFileNameGenerator fileNameGen,
-        IConfiguration configuration,
         IOptions<ImageStorageSettings> imageStorageSettings,
         CannonService cannonService)
     : ControllerBase
