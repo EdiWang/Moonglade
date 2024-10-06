@@ -51,7 +51,6 @@ public class Program
     {
         var assemblies = new[]
         {
-            "Moonglade.Setup",
             "Moonglade.Core",
             "Moonglade.FriendLink",
             "Moonglade.Theme",
