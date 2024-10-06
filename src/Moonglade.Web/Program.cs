@@ -51,12 +51,18 @@ public class Program
     {
         var assemblies = new[]
         {
+            "Moonglade.Auth",
+            "Moonglade.Comments",
             "Moonglade.Core",
+            "Moonglade.Email.Client",
             "Moonglade.FriendLink",
+            "Moonglade.Syndication",
             "Moonglade.Theme",
-            "Moonglade.Configuration",
             "Moonglade.Data",
-            "Moonglade.Webmention"
+            "Moonglade.Webmention",
+            "Moonglade.Pingback",
+            "Moonglade.Mention.Common",
+            "Moonglade.Configuration"
         };
 
         foreach (var assembly in assemblies)
