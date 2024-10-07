@@ -51,6 +51,11 @@ public class Program
     {
         var assemblies = new[]
         {
+            // Core/Mention
+            "Moonglade.Mention.Common",
+            "Moonglade.Pingback",
+            "Moonglade.Webmention",
+            // Core
             "Moonglade.Auth",
             "Moonglade.Comments",
             "Moonglade.Core",
@@ -58,10 +63,9 @@ public class Program
             "Moonglade.FriendLink",
             "Moonglade.Syndication",
             "Moonglade.Theme",
+            // Data
             "Moonglade.Data",
-            "Moonglade.Webmention",
-            "Moonglade.Pingback",
-            "Moonglade.Mention.Common",
+            // Infrastructure
             "Moonglade.Configuration"
         };
 
@@ -87,7 +91,10 @@ public class Program
 
     private static void ConfigureServices(IServiceCollection services, IConfiguration configuration, IWebHostEnvironment environment, List<CultureInfo> cultures)
     {
-        services.AddMediatR(config => config.RegisterServicesFromAssemblies(AppDomain.CurrentDomain.GetAssemblies()));
+        var assemblies = AppDomain.CurrentDomain.GetAssemblies();
+        assemblies = assemblies.Where(x => x.FullName!.StartsWith("Moonglade")).ToArray();
+
+        services.AddMediatR(config => config.RegisterServicesFromAssemblies(assemblies));
         services.AddOptions().AddHttpContextAccessor();
         ConfigureSession(services);
         ConfigureCaptcha(services, configuration);
