@@ -32,7 +32,7 @@ public class Program
         builder.WriteParameterTable();
 
         ConfigureLogging(builder);
-        ConfigureServices(builder.Services, builder.Configuration, builder.Environment, cultures);
+        ConfigureServices(builder.Services, builder.Configuration, cultures);
 
         var app = builder.Build();
         if (!app.Environment.IsDevelopment() && await Helper.IsRunningInChina())
@@ -44,7 +44,7 @@ public class Program
         await app.InitStartUp();
         ConfigureMiddleware(app, cultures);
 
-        app.Run();
+        await app.RunAsync();
     }
 
     private static void LoadAssemblies()
@@ -89,7 +89,7 @@ public class Program
         }
     }
 
-    private static void ConfigureServices(IServiceCollection services, IConfiguration configuration, IWebHostEnvironment environment, List<CultureInfo> cultures)
+    private static void ConfigureServices(IServiceCollection services, IConfiguration configuration, List<CultureInfo> cultures)
     {
         var assemblies = AppDomain.CurrentDomain.GetAssemblies();
         assemblies = assemblies.Where(x => x.FullName!.StartsWith("Moonglade")).ToArray();
@@ -107,7 +107,7 @@ public class Program
         ConfigureRouteOptions(services);
         services.AddTransient<IPasswordGenerator, DefaultPasswordGenerator>();
         services.AddHealthChecks();
-        ConfigureMoongladeServices(services, configuration, environment);
+        ConfigureMoongladeServices(services, configuration);
         ConfigureDatabase(services, configuration);
         ConfigureInitializers(services);
     }
@@ -206,7 +206,7 @@ public class Program
         });
     }
 
-    private static void ConfigureMoongladeServices(IServiceCollection services, IConfiguration configuration, IWebHostEnvironment environment)
+    private static void ConfigureMoongladeServices(IServiceCollection services, IConfiguration configuration)
     {
         services.AddMentionCommon()
             .AddPingback()
@@ -217,7 +217,7 @@ public class Program
             .AddScoped<ITimeZoneResolver, BlogTimeZoneResolver>()
             .AddBlogConfig()
             .AddBlogAuthenticaton(configuration)
-            .AddImageStorage(configuration, options => options.ContentRootPath = environment.ContentRootPath);
+            .AddImageStorage(configuration);
 
         services.AddEmailClient();
         services.AddIndexNowClient(configuration.GetSection("IndexNow"));

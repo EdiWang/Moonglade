@@ -4,20 +4,10 @@ using Moonglade.ImageStorage.Providers;
 
 namespace Moonglade.ImageStorage;
 
-public class ImageStorageOptions
-{
-    public string ContentRootPath { get; set; } = Directory.GetCurrentDirectory();
-}
-
 public static class ServiceCollectionExtensions
 {
-    private static readonly ImageStorageOptions Options = new();
-
-    public static IServiceCollection AddImageStorage(
-        this IServiceCollection services, IConfiguration configuration, Action<ImageStorageOptions> options)
+    public static IServiceCollection AddImageStorage(this IServiceCollection services, IConfiguration configuration)
     {
-        options(Options);
-
         var section = configuration.GetSection(nameof(ImageStorage));
         var settings = section.Get<ImageStorageSettings>();
         services.Configure<ImageStorageSettings>(section);
