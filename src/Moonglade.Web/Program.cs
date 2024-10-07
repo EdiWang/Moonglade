@@ -1,4 +1,5 @@
 using System.Globalization;
+using System.Net;
 using System.Text.Json.Serialization;
 using Edi.Captcha;
 using Edi.PasswordGenerator;
@@ -286,7 +287,7 @@ public class Program
             SupportedUICultures = cultures
         });
 
-        var options = new RewriteOptions().AddRedirect(@"(.*)/$", @"\$1", 301);
+        var options = new RewriteOptions().AddRedirect(@"(.*)/$", @"\$1", (int)HttpStatusCode.MovedPermanently);
         app.UseRewriter(options);
         app.UseStaticFiles();
         app.UseSession().UseCaptchaImage(p =>
