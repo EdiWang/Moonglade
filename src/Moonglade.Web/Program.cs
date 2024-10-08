@@ -267,6 +267,11 @@ public class Program
             options.IconFilePath = "/favicon-16x16.png";
         });
 
+        // In v14.11.0, just send the header to the client in order to observe browser behaviour
+        // We will read client's preference in future versions
+        bool usePrefersColorSchemeHeader = app.Configuration.GetSection("Experimental:UsePrefersColorSchemeHeader").Get<bool>();
+        if (usePrefersColorSchemeHeader) app.UseMiddleware<PrefersColorSchemeMiddleware>();
+
         app.UseMiddleware<PoweredByMiddleware>();
         app.UseMiddleware<DNTMiddleware>();
 
