@@ -36,7 +36,7 @@
         }
     </style>
 </head>
-<body class="bg-gray-1">
+<body>
     <div class="container">
         <main class="position-relative">
             <div class="position-absolute top-50 start-50 translate-middle">
@@ -60,7 +60,7 @@
                                     <input asp-for="CaptchaCode"
                                            minlength="4"
                                            maxlength="4"
-                                           placeholder="Captcha Code"
+                                           placeholder="@SharedLocalizer["Captcha code"]"
                                            autocomplete="off"
                                            class="form-control" required />
                                     <img id="img-captcha" onclick="getNewCaptcha()" src="~/captcha-image" data-bs-toggle="tooltip" data-placement="top" title="@SharedLocalizer["Can't read? Click to change another image."]" />
@@ -77,6 +77,12 @@
             </div>
         </main>
     </div>
+    <script type="module">
+        import * as theme from '/js/app/theme.module.js'
+        window.theme = theme;
+
+        theme.setTheme(theme.getPreferredTheme());
+    </script>
     <script>
         function getNewCaptcha() {
             d = new Date();

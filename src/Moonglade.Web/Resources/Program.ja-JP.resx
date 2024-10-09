@@ -118,912 +118,912 @@
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
   <data name="* Image width and height must be equal" xml:space="preserve">
-    <value>* 图片宽度和高度必须相同</value>
+    <value>※画像は幅と高さが同じであること</value>
   </data>
   <data name="* Requires restarting application" xml:space="preserve">
-    <value>* 需要重启应用程序生效</value>
+    <value>*有効にするには、アプリの再起動が必要です</value>
   </data>
   <data name="* Username: moonglade" xml:space="preserve">
-    <value>* 用户名: moonglade</value>
+    <value>*ユーザー名:moonglade</value>
   </data>
   <data name=".NET Version" xml:space="preserve">
-    <value>.NET 版本</value>
+    <value>.NET バージョン</value>
   </data>
   <data name=".png file" xml:space="preserve">
-    <value>.png 文件</value>
+    <value>.pngファイル</value>
   </data>
   <data name=".png or .jpg file" xml:space="preserve">
-    <value>.png 或 .jpg 文件</value>
+    <value>.pngまたは.jpgファイル</value>
   </data>
   <data name="About" xml:space="preserve">
-    <value>关于</value>
+    <value>について</value>
   </data>
   <data name="Abstract" xml:space="preserve">
-    <value>摘要</value>
+    <value>概要</value>
   </data>
   <data name="Account Information" xml:space="preserve">
-    <value>账号信息</value>
-  </data>
-  <data name="Account" xml:space="preserve">
-    <value>账号</value>
+    <value>アカウント情報</value>
   </data>
   <data name="Action" xml:space="preserve">
-    <value>操作</value>
+    <value>動く</value>
   </data>
   <data name="Admin" xml:space="preserve">
-    <value>管理</value>
+    <value>取り締まる</value>
   </data>
   <data name="Admin Sign In" xml:space="preserve">
-    <value>管理员登录</value>
+    <value>管理者ログイン</value>
   </data>
   <data name="Advanced" xml:space="preserve">
-    <value>高级</value>
+    <value>年上</value>
   </data>
   <data name="Advanced Settings" xml:space="preserve">
-    <value>高级设置</value>
+    <value>詳細設定</value>
   </data>
   <data name="All Posts" xml:space="preserve">
-    <value>全部文章</value>
+    <value>すべての記事</value>
   </data>
   <data name="All Tags" xml:space="preserve">
-    <value>全部标签</value>
+    <value>すべてのタブ</value>
   </data>
   <data name="Archive" xml:space="preserve">
-    <value>归档</value>
+    <value>鳩</value>
   </data>
   <data name="Are you ABSOLUTELY sure? ALL data and configuration will be erased!" xml:space="preserve">
-    <value>你真的确定吗？所有数据和配置都将灰飞烟灭！</value>
+    <value>本当に本当ですか? すべてのデータと設定が消去されます。</value>
   </data>
   <data name="Are you sure to restart website? All current requests will be terminated." xml:space="preserve">
-    <value>你确定要重启网站吗？所有当前请求都会被终止。</value>
+    <value>あなたはあなたのウェブサイトを再起動してもよろしいですか? 現在のすべての要求が終了します。</value>
   </data>
   <data name="Are you sure?" xml:space="preserve">
-    <value>确定吗？</value>
+    <value>確かですか。</value>
   </data>
   <data name="Author" xml:space="preserve">
-    <value>作者</value>
+    <value>著者</value>
   </data>
   <data name="Author Name" xml:space="preserve">
-    <value>作者名字</value>
+    <value>著者氏名</value>
   </data>
   <data name="Admin Email" xml:space="preserve">
-    <value>博主 Email</value>
+    <value>ブロガーのメール</value>
   </data>
   <data name="Block Comment" xml:space="preserve">
-    <value>阻止评论</value>
+    <value>コメントをブロックする</value>
   </data>
   <data name="Blocked words" xml:space="preserve">
-    <value>违禁词</value>
+    <value>禁断の言葉</value>
   </data>
   <data name="Blocked words will be masked as *** in comment content." xml:space="preserve">
-    <value>评论内容中的违禁词将被替换为***</value>
+    <value>コメント内容の禁止されている単語は***に置き換えられます</value>
   </data>
   <data name="Blog Identity" xml:space="preserve">
-    <value>博客身份</value>
+    <value>ブロガーのアイデンティティ</value>
   </data>
   <data name="Blog posts" xml:space="preserve">
-    <value>博客文章</value>
+    <value>ブログ記事</value>
   </data>
   <data name="Blog posts will use this time zone as date and time display." xml:space="preserve">
-    <value>博客会使用该时区显示文章日期及时间</value>
+    <value>ブログでは、そのタイムゾーンを使用して投稿の日時が表示されます</value>
   </data>
   <data name="Blog posts will use this time zone as date display." xml:space="preserve">
-    <value>博客文章会使用该时区作为时间及日期显示</value>
+    <value>ブログ投稿では、そのタイム ゾーンを日時として使用します</value>
   </data>
   <data name="Blog title" xml:space="preserve">
-    <value>博客标题</value>
+    <value>ブログタイトル</value>
   </data>
   <data name="Call-out" xml:space="preserve">
-    <value>条幅</value>
+    <value>スクロール</value>
   </data>
   <data name="Call-out section HTML code" xml:space="preserve">
-    <value>横幅HTML内容</value>
+    <value>バナー HTML コンテンツ</value>
   </data>
   <data name="Can't read? Click to change another image." xml:space="preserve">
-    <value>看不清？点击图片更换验证码</value>
+    <value>はっきりと見えませんか? 画像をクリックして確認コードを変更します</value>
   </data>
   <data name="Cancel" xml:space="preserve">
-    <value>取消</value>
+    <value>キャンセル</value>
   </data>
   <data name="Canonical URL prefix" xml:space="preserve">
-    <value>网址 (Canonical URL)</value>
+    <value>正規URL</value>
   </data>
   <data name="Categories" xml:space="preserve">
-    <value>分类</value>
+    <value>分類する</value>
   </data>
   <data name="Category Information" xml:space="preserve">
-    <value>分类信息</value>
+    <value>機密情報</value>
   </data>
   <data name="Change" xml:space="preserve">
-    <value>更改</value>
+    <value>変える</value>
   </data>
   <data name="Change Avatar" xml:space="preserve">
-    <value>更换头像</value>
+    <value>プロフィール写真を変更する</value>
   </data>
   <data name="Change Publish Date" xml:space="preserve">
-    <value>修改发布日期</value>
+    <value>リリース日を変更する</value>
   </data>
   <data name="Change Site Icon" xml:space="preserve">
-    <value>更换网站图标</value>
+    <value>ファビコンを交換してください</value>
   </data>
   <data name="Changing publish date will modify the URL of the post, and may cause unexpected results like breaking links on third parties that were pointing to this post. Please check the checkbox below if you confirm." xml:space="preserve">
-    <value>更改发布日期会影响文章URL，可能破坏其他地方指向文章的链接。仍要更改，请勾选下面的复选框。</value>
+    <value>公開日を変更すると、記事の URL に影響が及ぶ可能性があり、他の場所での記事へのリンクが壊れる可能性があります。 それでも変更するには、下のチェックボックスにチェックを入れます。</value>
   </data>
   <data name="Check now" xml:space="preserve">
-    <value>立即检查更新</value>
+    <value>今すぐアップデートを確認</value>
   </data>
   <data name="Check online for new Moonglade release." xml:space="preserve">
-    <value>在线检查新版本的 Moonglade</value>
+    <value>Moongladeの新しいバージョンをオンラインで確認してください</value>
   </data>
   <data name="Clear all" xml:space="preserve">
-    <value>清空全部</value>
+    <value>それらをすべてクリアする</value>
   </data>
   <data name="Clear Now" xml:space="preserve">
-    <value>立即清空</value>
+    <value>すぐに空にする</value>
   </data>
   <data name="Clear Pingback Logs" xml:space="preserve">
-    <value>清空Pingback日志</value>
+    <value>ピンバックのログをクリアする</value>
   </data>
   <data name="Close" xml:space="preserve">
-    <value>关闭</value>
+    <value>シャットダウン</value>
   </data>
   <data name="Comment of this post is disabled." xml:space="preserve">
-    <value>本文评论已被关闭</value>
+    <value>この記事へのコメントは締め切りました</value>
   </data>
   <data name="Comments" xml:space="preserve">
-    <value>评论</value>
+    <value>コメント</value>
   </data>
   <data name="Comments require review and approval" xml:space="preserve">
-    <value>评论需要管理员审核</value>
+    <value>コメントは管理者が管理する必要があります</value>
   </data>
   <data name="Content" xml:space="preserve">
-    <value>内容</value>
+    <value>コンテンツ</value>
   </data>
   <data name="Continue" xml:space="preserve">
-    <value>继续</value>
+    <value>続けます</value>
   </data>
   <data name="Copyright" xml:space="preserve">
-    <value>版权信息</value>
+    <value>著作権情報</value>
   </data>
   <data name="Create" xml:space="preserve">
-    <value>新建</value>
+    <value>新築</value>
   </data>
   <data name="Create Tag" xml:space="preserve">
-    <value>创建标签</value>
+    <value>ラベルの作成</value>
   </data>
   <data name="Create Time (UTC)" xml:space="preserve">
-    <value>创建时间 (UTC)</value>
+    <value>作成日時 (UTC)</value>
   </data>
   <data name="Current Endpoint:" xml:space="preserve">
-    <value>当前终端：</value>
+    <value>現在のターミナル:</value>
   </data>
   <data name="Custom CSS" xml:space="preserve">
-    <value>自定义 CSS</value>
+    <value>カスタムCSS</value>
   </data>
   <data name="Custom Theme" xml:space="preserve">
-    <value>自定义主题</value>
+    <value>テーマをカスタマイズする</value>
   </data>
   <data name="Data Directory" xml:space="preserve">
-    <value>数据目录</value>
+    <value>データカタログ</value>
   </data>
   <data name="Delete" xml:space="preserve">
-    <value>彻底删除</value>
+    <value>完全に削除</value>
   </data>
   <data name="Delete cached objects both in memory and on disk" xml:space="preserve">
-    <value>删除内存及磁盘上的数据对象</value>
+    <value>メモリとディスクからデータ・オブジェクトを削除</value>
   </data>
   <data name="Delete selected" xml:space="preserve">
-    <value>删除勾选的评论</value>
+    <value>チェックしたコメントを削除する</value>
   </data>
   <data name="Description" xml:space="preserve">
-    <value>描述</value>
+    <value>形容</value>
   </data>
   <data name="Directory" xml:space="preserve">
-    <value>目录</value>
+    <value>ディレクトリ</value>
   </data>
   <data name="Disabled" xml:space="preserve">
-    <value>不显示</value>
+    <value>表示されていません</value>
   </data>
   <data name="Display name" xml:space="preserve">
-    <value>显示名称</value>
+    <value>表示名</value>
   </data>
   <data name="Display Order" xml:space="preserve">
-    <value>显示序位</value>
+    <value>序数ビットを表示します</value>
   </data>
   <data name="Docker Container" xml:space="preserve">
-    <value>运行在 Docker 容器中</value>
+    <value>Docker コンテナで実行</value>
   </data>
   <data name="Drafts" xml:space="preserve">
-    <value>草稿</value>
+    <value>ドラフト</value>
   </data>
   <data name="Drag and drop image file here" xml:space="preserve">
-    <value>拖拽图片文件到此处</value>
+    <value>ここに画像ファイルをドラッグアンドドロップします</value>
   </data>
   <data name="e.g. Your blog post license information." xml:space="preserve">
-    <value>例如：博客文章的许可协议</value>
+    <value>例: ブログ記事のライセンス契約</value>
   </data>
   <data name="Edit on" xml:space="preserve">
-    <value>编辑于</value>
+    <value>で編集</value>
   </data>
   <data name="Editor" xml:space="preserve">
-    <value>编辑器</value>
+    <value>編集者</value>
   </data>
   <data name="Email address to receive notifications from this blog." xml:space="preserve">
-    <value>用于接收博客系统通知的邮箱</value>
+    <value>ブログシステムからの通知の受信に使用したメールアドレス</value>
   </data>
   <data name="Email Options" xml:space="preserve">
-    <value>Email 选项</value>
+    <value>メールオプション</value>
   </data>
   <data name="Empty Recycle Bin" xml:space="preserve">
-    <value>清空回收站</value>
+    <value>ごみ箱を空にします</value>
   </data>
   <data name="Enable CDN for images" xml:space="preserve">
-    <value>启用图片 CDN</value>
+    <value>画像 CDN を有効にする</value>
   </data>
   <data name="Enable Comment" xml:space="preserve">
-    <value>允许评论</value>
+    <value>コメントは許可されています</value>
   </data>
   <data name="Enable comments" xml:space="preserve">
-    <value>开启评论</value>
+    <value>コメントをオンにする</value>
   </data>
   <data name="Enable Custom CSS" xml:space="preserve">
-    <value>使用自定义 CSS</value>
+    <value>カスタムCSSを使用する</value>
   </data>
   <data name="Enable email sending" xml:space="preserve">
-    <value>启用Email发送</value>
+    <value>メール送信を有効にする</value>
   </data>
   <data name="Enable Gravatar in comment list" xml:space="preserve">
-    <value>在评论列表中开启Gravatar头像</value>
+    <value>コメントリストでGravatarアバターをオンにします</value>
   </data>
   <data name="Enable OpenSearch" xml:space="preserve">
-    <value>启用 OpenSearch</value>
+    <value>OpenSearchを有効にする</value>
   </data>
   <data name="Enable FOAF" xml:space="preserve">
-    <value>启用 FOAF</value>
-  </data>
-  <data name="Enable Pingback" xml:space="preserve">
-    <value>启用 Pingback</value>
+    <value>FOAFを有効にする</value>
   </data>
   <data name="Enable Site Map" xml:space="preserve">
-    <value>启用网站地图</value>
+    <value>サイトマップを有効にする</value>
   </data>
   <data name="Enable word filter" xml:space="preserve">
-    <value>启用违禁词过滤</value>
+    <value>禁止単語のフィルタリングを有効にする</value>
   </data>
   <data name="Enabled watermark" xml:space="preserve">
-    <value>启用水印</value>
+    <value>ウォーターマークを有効にする</value>
   </data>
   <data name="Endpoint" xml:space="preserve">
-    <value>CDN 终端</value>
+    <value>CDN端末</value>
   </data>
   <data name="Environment" xml:space="preserve">
-    <value>环境</value>
+    <value>環境</value>
   </data>
   <data name="Erase all data and configuration." xml:space="preserve">
-    <value>抹除所有数据及配置</value>
+    <value>すべてのデータと設定を消去</value>
   </data>
   <data name="Export Data" xml:space="preserve">
-    <value>导出数据</value>
+    <value>データのエクスポート</value>
   </data>
   <data name="Featured" xml:space="preserve">
-    <value>精选</value>
+    <value>入選</value>
   </data>
   <data name="Featured Posts" xml:space="preserve">
-    <value>精选文章</value>
-  </data>
-  <data name="Include in feed and sitemap" xml:space="preserve">
-    <value>加入订阅及网站地图</value>
+    <value>注目の記事</value>
   </data>
   <data name="Fit image to device pixel ratio" xml:space="preserve">
-    <value>图片自动适配设备DPI</value>
+    <value>画像はデバイスのDPIに自動的に適合します</value>
   </data>
   <data name="Font size" xml:space="preserve">
-    <value>字号</value>
+    <value>大きさ</value>
   </data>
   <data name="Footer" xml:space="preserve">
-    <value>页脚</value>
+    <value>ページフッター</value>
   </data>
   <data name="Footer HTML code" xml:space="preserve">
-    <value>页脚HTML区域</value>
+    <value>フッター HTML エリア</value>
   </data>
   <data name="Friend Link Information" xml:space="preserve">
-    <value>友情链接信息</value>
+    <value>友情リンク情報</value>
   </data>
   <data name="Friend Link Options" xml:space="preserve">
-    <value>友情链接选项</value>
-  </data>
-  <data name="Friend links" xml:space="preserve">
-    <value>友情链接</value>
+    <value>アフィリエイトリンクオプション</value>
   </data>
   <data name="General" xml:space="preserve">
-    <value>常规</value>
+    <value>ルーチン</value>
   </data>
   <data name="Generate password" xml:space="preserve">
-    <value>生成密码</value>
+    <value>パスワードの生成</value>
   </data>
   <data name="Get update" xml:space="preserve">
-    <value>获取更新</value>
+    <value>最新情報を入手する</value>
   </data>
   <data name="Hide Sidebar" xml:space="preserve">
-    <value>隐藏侧边栏</value>
+    <value>サイドバーを非表示にする</value>
   </data>
   <data name="Home" xml:space="preserve">
-    <value>主页</value>
-  </data>
-  <data name="How many tags to show on sidebar" xml:space="preserve">
-    <value>侧边栏显示标签数量</value>
+    <value>ホームページ</value>
   </data>
   <data name="HTML Pitch" xml:space="preserve">
-    <value>HTML区域</value>
+    <value>HTML エリア</value>
   </data>
   <data name="Icon" xml:space="preserve">
-    <value>图标</value>
+    <value>アイコン</value>
   </data>
   <data name="Icon CSS Class" xml:space="preserve">
-    <value>图标CSS类名</value>
+    <value>アイコン CSS クラス名</value>
   </data>
   <data name="Image" xml:space="preserve">
-    <value>图片</value>
+    <value>画像</value>
   </data>
   <data name="Invalid Icon CSS Class" xml:space="preserve">
-    <value>无效的图标CSS类名</value>
+    <value>無効なアイコン CSS クラス名</value>
   </data>
   <data name="It will show up once blog administrator approved your comment." xml:space="preserve">
-    <value>博主审核通过后，您的评论会在此显示</value>
+    <value>ブロガーが承認されると、コメントがここに表示されます</value>
   </data>
   <data name="Keep origin image" xml:space="preserve">
-    <value>保留原图</value>
+    <value>元の画像を保持する</value>
   </data>
   <data name="Language" xml:space="preserve">
-    <value>语言</value>
-  </data>
-  <data name="Login IP" xml:space="preserve">
-    <value>登录 IP</value>
-  </data>
-  <data name="Login Time (UTC)" xml:space="preserve">
-    <value>登录时间 (UTC)</value>
+    <value>言語</value>
   </data>
   <data name="Latest Posts" xml:space="preserve">
-    <value>最新文章</value>
+    <value>最新記事</value>
   </data>
   <data name="Left" xml:space="preserve">
-    <value>左侧</value>
+    <value>左</value>
   </data>
   <data name="Link" xml:space="preserve">
-    <value>链接</value>
+    <value>リンク</value>
   </data>
   <data name="Logo text" xml:space="preserve">
-    <value>Logo 文字</value>
+    <value>ロゴテキスト</value>
   </data>
   <data name="Machine Name" xml:space="preserve">
-    <value>主机名</value>
+    <value>ホスト名</value>
   </data>
   <data name="Mask Word" xml:space="preserve">
-    <value>打码违禁词</value>
+    <value>禁止単語のコード</value>
   </data>
   <data name="Memory" xml:space="preserve">
-    <value>内存</value>
+    <value>記憶</value>
   </data>
   <data name="Menu Editor" xml:space="preserve">
-    <value>菜单编辑器</value>
+    <value>メニューエディタ</value>
   </data>
   <data name="Menus" xml:space="preserve">
-    <value>菜单</value>
+    <value>メニュー</value>
   </data>
   <data name="Meta keyword" xml:space="preserve">
-    <value>网站关键词</value>
+    <value>ウェブサイトのキーワード</value>
   </data>
   <data name="Moonglade Configuration" xml:space="preserve">
-    <value>Moonglade 配置</value>
+    <value>Moonglade の構成</value>
   </data>
   <data name="Moonglade Update" xml:space="preserve">
-    <value>Moonglade 更新</value>
+    <value>Moongladeのアップデート</value>
   </data>
   <data name="Name" xml:space="preserve">
-    <value>名称</value>
+    <value>名前</value>
   </data>
   <data name="New" xml:space="preserve">
-    <value>新建</value>
+    <value>新築</value>
   </data>
   <data name="No Archive" xml:space="preserve">
-    <value>暂无归档</value>
-  </data>
-  <data name="No comments yet" xml:space="preserve">
-    <value>暂无评论</value>
+    <value>アーカイブはまだありません</value>
   </data>
   <data name="no items to show" xml:space="preserve">
-    <value>无条目需要显示</value>
+    <value>エントリを表示する必要はありません</value>
   </data>
   <data name="No Matching Result" xml:space="preserve">
-    <value>找不到相关结果</value>
+    <value>結果が見つかりませんでした</value>
   </data>
   <data name="No Pages" xml:space="preserve">
-    <value>暂无页面</value>
+    <value>まだページがありません</value>
   </data>
   <data name="No Posts" xml:space="preserve">
-    <value>暂无文章</value>
+    <value>記事の投稿がまだありません</value>
   </data>
   <data name="No Posts Found" xml:space="preserve">
-    <value>暂无文章</value>
+    <value>記事の投稿がまだありません</value>
   </data>
   <data name="No Tags" xml:space="preserve">
-    <value>暂无标签</value>
+    <value>ラベルはまだありません</value>
   </data>
   <data name="Notification" xml:space="preserve">
-    <value>通知</value>
+    <value>告知</value>
   </data>
   <data name="Notification Options" xml:space="preserve">
-    <value>通知选项</value>
+    <value>通知オプション</value>
   </data>
   <data name="Only letters, numbers, - and [] are allowed." xml:space="preserve">
-    <value>仅允许字母、数字、-及[]</value>
+    <value>文字、数字、-、および [] のみ使用できます。</value>
   </data>
   <data name="Only lower case letters and hyphens are allowed." xml:space="preserve">
-    <value>必须为小写英文字符或中划线</value>
+    <value>英小文字またはハイフンにする必要があります</value>
   </data>
   <data name="Open in New Tab" xml:space="preserve">
-    <value>在新标签页中打开</value>
+    <value>新しいタブで開く</value>
   </data>
   <data name="Options" xml:space="preserve">
-    <value>选项</value>
+    <value>オプション</value>
   </data>
   <data name="or override with environment variables." xml:space="preserve">
-    <value>或使用变量覆盖</value>
+    <value>または、変数のオーバーライドを使用します</value>
   </data>
   <data name="Order" xml:space="preserve">
-    <value>序号</value>
+    <value>シリアル番号</value>
   </data>
   <data name="Owner email" xml:space="preserve">
-    <value>博主邮箱</value>
+    <value>Blogger のメールボックス</value>
   </data>
   <data name="Pages" xml:space="preserve">
-    <value>页面</value>
+    <value>ページ</value>
   </data>
   <data name="Password" xml:space="preserve">
-    <value>密码</value>
+    <value>パスワード</value>
   </data>
   <data name="Pingbacks" xml:space="preserve">
     <value>引用</value>
   </data>
   <data name="Post footer HTML code" xml:space="preserve">
-    <value>文章页脚HTML内容</value>
+    <value>記事フッターHTMLコンテンツ</value>
   </data>
   <data name="Post list page size" xml:space="preserve">
-    <value>文章分页数量</value>
+    <value>記事のページネーションの数</value>
   </data>
   <data name="Posts" xml:space="preserve">
-    <value>文章</value>
+    <value>エッセイ</value>
   </data>
   <data name="Preview" xml:space="preserve">
-    <value>预览</value>
+    <value>プレビュー</value>
   </data>
   <data name="Processing..." xml:space="preserve">
-    <value>处理中……</value>
+    <value>加工。。。。。。</value>
   </data>
   <data name="Providing your email address can enable blog admin to send notifications for replying your comment. Your email address will also be used to show Gravatar if it has one." xml:space="preserve">
-    <value>输入您的电子邮件以接收回复通知并显示您的Gravatar头像。</value>
+    <value>返信通知を受け取り、Gravatarアバターを表示するためにメールアドレスを入力します。</value>
   </data>
   <data name="Publish" xml:space="preserve">
-    <value>发布</value>
+    <value>著す</value>
   </data>
   <data name="Publish Date" xml:space="preserve">
-    <value>发布日期</value>
+    <value>リリース日</value>
   </data>
   <data name="Published" xml:space="preserve">
-    <value>已发布</value>
+    <value>公開</value>
   </data>
   <data name="Read origin article" xml:space="preserve">
-    <value>阅读原文</value>
+    <value>元の記事を読む</value>
   </data>
   <data name="Recycle Bin" xml:space="preserve">
-    <value>回收站</value>
+    <value>ごみ箱</value>
   </data>
   <data name="Refresh the page to see your comment." xml:space="preserve">
-    <value>刷新页面以查看您的评论</value>
+    <value>ページを更新してコメントを表示します</value>
   </data>
   <data name="Release time" xml:space="preserve">
-    <value>发布时间</value>
+    <value>リリース</value>
   </data>
   <data name="Replied at" xml:space="preserve">
-    <value>回复于</value>
+    <value>返信先</value>
   </data>
   <data name="Reply" xml:space="preserve">
-    <value>回复</value>
+    <value>答える</value>
   </data>
   <data name="Reset" xml:space="preserve">
-    <value>重置</value>
+    <value>リセット</value>
   </data>
   <data name="Reset Password" xml:space="preserve">
-    <value>重置密码</value>
+    <value>パスワードを再設定する</value>
   </data>
   <data name="Restart" xml:space="preserve">
-    <value>重启</value>
+    <value>リブート</value>
   </data>
   <data name="Restart Website" xml:space="preserve">
-    <value>重启网站</value>
+    <value>ウェブサイトを再起動します</value>
   </data>
   <data name="Restore" xml:space="preserve">
-    <value>恢复</value>
+    <value>回復する</value>
   </data>
   <data name="Right" xml:space="preserve">
-    <value>右侧</value>
+    <value>右</value>
   </data>
   <data name="Route Name" xml:space="preserve">
-    <value>路由名称</value>
-  </data>
-  <data name="Feed items" xml:space="preserve">
-    <value>订阅条目数量</value>
+    <value>ルート名</value>
   </data>
   <data name="Save" xml:space="preserve">
-    <value>保存</value>
+    <value>セーブ</value>
   </data>
   <data name="Scan QR Code on your phone" xml:space="preserve">
-    <value>在手机上扫描二维码</value>
+    <value>携帯電話でQRコードをスキャンします</value>
   </data>
   <data name="Search" xml:space="preserve">
-    <value>搜索</value>
+    <value>捜索</value>
   </data>
   <data name="Search Result" xml:space="preserve">
-    <value>搜索结果</value>
+    <value>検索結果</value>
   </data>
   <data name="Security Settings" xml:space="preserve">
-    <value>安全设置</value>
+    <value>セキュリティ設定</value>
   </data>
   <data name="Send email on comment reply" xml:space="preserve">
-    <value>评论被回复时发送Email通知用户</value>
+    <value>コメントに返信すると、ユーザーに通知するメールが送信されます</value>
   </data>
   <data name="Send email on new comment" xml:space="preserve">
-    <value>有新评论时发送Email通知管理员</value>
+    <value>新しいコメントがあったときに管理者に通知するメールを送信する</value>
   </data>
   <data name="Send Test Email" xml:space="preserve">
-    <value>发送测试邮件</value>
+    <value>テストメールを送信する</value>
   </data>
   <data name="Server Information" xml:space="preserve">
-    <value>服务器信息</value>
+    <value>サーバー情報</value>
   </data>
   <data name="Set a primary domain if your website binds to multiple domian names." xml:space="preserve">
-    <value>若您的网站绑定了多个域名，请填写主域名</value>
+    <value>ウェブサイトが複数のドメイン名に関連付けられている場合は、プライマリドメイン名を入力してください</value>
   </data>
   <data name="Show call-out section" xml:space="preserve">
-    <value>显示横幅区</value>
+    <value>バナーエリアを表示する</value>
   </data>
   <data name="Show customize footer on each post" xml:space="preserve">
-    <value>在每篇文章底下显示自定义页脚</value>
+    <value>各記事の下部にカスタムフッターを表示する</value>
   </data>
   <data name="Show warning when clicking external links" xml:space="preserve">
-    <value>点击外部链接时弹出警告</value>
+    <value>外部リンクをクリックすると警告が表示されます</value>
   </data>
   <data name="Side Bar" xml:space="preserve">
-    <value>侧边栏</value>
+    <value>サイドバー</value>
   </data>
   <data name="Side bar display" xml:space="preserve">
-    <value>侧边栏位置</value>
+    <value>サイドバーの位置</value>
   </data>
   <data name="Side bar HTML code" xml:space="preserve">
-    <value>侧边栏HTML区域</value>
+    <value>サイドバーHTMLエリア</value>
   </data>
   <data name="Sign In" xml:space="preserve">
-    <value>登录</value>
+    <value>ログイン</value>
   </data>
   <data name="Start Time" xml:space="preserve">
-    <value>启动时间</value>
+    <value>起動時間</value>
   </data>
   <data name="Sub Menu" xml:space="preserve">
-    <value>子菜单</value>
+    <value>サブメニュー</value>
   </data>
   <data name="Sub Menu Properties" xml:space="preserve">
-    <value>子菜单属性</value>
+    <value>サブメニューのプロパティ</value>
   </data>
   <data name="Submit" xml:space="preserve">
-    <value>提交</value>
+    <value>送信</value>
   </data>
   <data name="Subscription" xml:space="preserve">
-    <value>订阅</value>
+    <value>購読する</value>
   </data>
   <data name="System" xml:space="preserve">
-    <value>系统</value>
+    <value>制</value>
   </data>
   <data name="System Reset" xml:space="preserve">
-    <value>系统重置</value>
+    <value>システムリセット</value>
   </data>
   <data name="Tag name" xml:space="preserve">
-    <value>标签名</value>
+    <value>タグ名</value>
   </data>
   <data name="Tags" xml:space="preserve">
-    <value>标签</value>
+    <value>ラベル</value>
   </data>
   <data name="Thanks for your comment." xml:space="preserve">
-    <value>感谢您的评论</value>
+    <value>コメントありがとうございます</value>
   </data>
   <data name="Thanks, your comment is pending approval now." xml:space="preserve">
-    <value>谢谢，您的评论已提交审核</value>
+    <value>ありがとうございます、あなたのコメントはレビューのために提出されました</value>
   </data>
   <data name="The call-out section will display on top of every page in the website." xml:space="preserve">
-    <value>公告区将在网站中每个页面顶部显示</value>
+    <value>アナウンスエリアは、ウェブサイトの各ページの上部に表示されます</value>
   </data>
   <data name="The first {0} character(s) will be used as abstract if you leave this field blank." xml:space="preserve">
-    <value>留空自动选取文章前 {0} 字符作为摘要</value>
-  </data>
-  <data name="The number of entries to include in RSS/ATOM feed." xml:space="preserve">
-    <value>RSS/ATOM 中包含的条目数量</value>
+    <value>空白のままにすると、記事の最初の {0} 文字が概要として自動的に選択されます</value>
   </data>
   <data name="Theme" xml:space="preserve">
-    <value>主题</value>
+    <value>話題</value>
   </data>
   <data name="This field is required." xml:space="preserve">
-    <value>必填</value>
+    <value>必須</value>
   </data>
   <data name="This is a preview for draft content." xml:space="preserve">
-    <value>该页面为草稿预览</value>
+    <value>このページはドラフトプレビューです</value>
   </data>
   <data name="Time Zone" xml:space="preserve">
-    <value>时区</value>
+    <value>時間帯</value>
   </data>
   <data name="Title" xml:space="preserve">
-    <value>标题</value>
+    <value>タイトル</value>
   </data>
   <data name="Update" xml:space="preserve">
     <value>更新</value>
   </data>
   <data name="Upload" xml:space="preserve">
-    <value>上传</value>
+    <value>アップロード</value>
   </data>
   <data name="Upload Image" xml:space="preserve">
-    <value>上传头图</value>
+    <value>ヘッダー画像をアップロードする</value>
   </data>
   <data name="URL" xml:space="preserve">
-    <value>链接</value>
+    <value>リンク</value>
   </data>
   <data name="Url (Relative or Absolute)" xml:space="preserve">
-    <value>链接 (相对或绝对)</value>
+    <value>リンク (相対または絶対)</value>
   </data>
   <data name="Use full blog post content instead of abstract" xml:space="preserve">
-    <value>使用文章全文作为内容而非摘要</value>
+    <value>記事の全文を要約ではなくコンテンツとして使用する</value>
   </data>
   <data name="Use [c] for copyright mark: &amp;copy;, [year] for current year." xml:space="preserve">
-    <value>使用 [c] 表示版权符号 &amp;copy; ，[year] 表示当前年份</value>
+    <value>[c]を使用して、著作権記号のコピーを示します。 , [year] 現在の年</value>
   </data>
   <data name="User Account" xml:space="preserve">
-    <value>用户账户</value>
+    <value>ユーザーアカウント</value>
   </data>
   <data name="User Name" xml:space="preserve">
-    <value>用户名</value>
+    <value>ユーザー名</value>
   </data>
   <data name="Username" xml:space="preserve">
-    <value>用户名</value>
+    <value>ユーザー名</value>
   </data>
   <data name="Version" xml:space="preserve">
-    <value>版本</value>
+    <value>バージョン</value>
   </data>
   <data name="Watermark" xml:space="preserve">
-    <value>水印</value>
+    <value>透かし</value>
   </data>
   <data name="Watermark text" xml:space="preserve">
-    <value>水印文字</value>
+    <value>透かしテキスト</value>
   </data>
   <data name="Word filter mode" xml:space="preserve">
-    <value>违禁词屏蔽模式</value>
+    <value>禁止単語ブロックモード</value>
   </data>
   <data name="Worker Process" xml:space="preserve">
-    <value>工作进程</value>
+    <value>作業プロセス</value>
   </data>
   <data name="Your comments (Markdown supported)" xml:space="preserve">
-    <value>您的评论（支持Markdown）</value>
+    <value>あなたのコメント(Markdown対応)</value>
   </data>
   <data name="Your description" xml:space="preserve">
-    <value>博主简介</value>
+    <value>ブロガーのプロフィール</value>
   </data>
   <data name="Your name" xml:space="preserve">
-    <value>博主名字</value>
+    <value>ブロガーの名前</value>
   </data>
   <data name="Center" xml:space="preserve">
-    <value>居中</value>
+    <value>センター</value>
   </data>
   <data name="Export" xml:space="preserve">
-    <value>导出</value>
+    <value>輸出</value>
+  </data>
+  <data name="Account" xml:space="preserve">
+    <value>アカウント</value>
+  </data>
+  <data name="Enable Pingback" xml:space="preserve">
+    <value>ピンバックを有効にする</value>
+  </data>
+  <data name="Include in feed and sitemap" xml:space="preserve">
+    <value>サブスクリプションとサイトマップを追加する</value>
+  </data>
+  <data name="Friend links" xml:space="preserve">
+    <value>リンクス</value>
+  </data>
+  <data name="How many tags to show on sidebar" xml:space="preserve">
+    <value>サイドバーにはラベルの数が表示されます</value>
+  </data>
+  <data name="Login IP" xml:space="preserve">
+    <value>ログインIP</value>
+  </data>
+  <data name="Login Time (UTC)" xml:space="preserve">
+    <value>ログイン時間(UTC)</value>
+  </data>
+  <data name="No comments yet" xml:space="preserve">
+    <value>レビューはまだありません</value>
+  </data>
+  <data name="Feed items" xml:space="preserve">
+    <value>サブスクリプションエントリの数</value>
+  </data>
+  <data name="The number of entries to include in RSS/ATOM feed." xml:space="preserve">
+    <value>RSS/ATOM に含まれるエントリの数</value>
   </data>
   <data name="lower case English letters (a-z) and numbers (0-9) with/out hyphen (-) in middle." xml:space="preserve">
-    <value>小写英文字母（a-z）和数字（0-9），可以带或不带连符（-）</value>
+    <value>小文字 (a から z) と数字 (0 から 9) (ハイフン (-) の有無にかかわらず)</value>
   </data>
   <data name="RSS / Atom Feed" xml:space="preserve">
-    <value>RSS / Atom 订阅</value>
+    <value>RSS / Atomフィード</value>
   </data>
   <data name="ASP.NET Core Environment" xml:space="preserve">
-    <value>ASP.NET Core 环境</value>
+    <value>ASP.NET コア環境</value>
   </data>
   <data name="Warning: This blog post is marked as outdated by it's author. Consider finding more recent information on this topic to ensure that you are utilizing the most up-to-date and effective strategies." xml:space="preserve">
-    <value>警告：此博客文章已被作者标记为过时。请考虑寻找关于该主题的更近期的信息，以确保您使用的是最新和最有效的策略。</value>
+    <value>警告:このブログ投稿は、著者によって古いとフラグが付けられています。 トピックに関する最新情報を探して、最新かつ効果的な戦略を使用していることを確認することを検討してください。</value>
   </data>
   <data name="No categories" xml:space="preserve">
-    <value>没有分类</value>
+    <value>分類はありません</value>
   </data>
   <data name="Auto" xml:space="preserve">
-    <value>自动</value>
+    <value>自動</value>
   </data>
   <data name="Dark" xml:space="preserve">
-    <value>黑暗</value>
+    <value>暗い</value>
   </data>
   <data name="Light" xml:space="preserve">
-    <value>明亮</value>
+    <value>明るい</value>
   </data>
   <data name="External Links May Pose a Security Risk" xml:space="preserve">
-    <value>外部链接可能会带来安全风险</value>
-  </data>
-  <data name="By clicking &quot;Continue&quot;, you agree that you are aware of the risks and will proceed at your own discretion." xml:space="preserve">
-    <value>点击“继续”，即表示您同意您了解风险并将自行决定继续。</value>
-  </data>
-  <data name="By continuing to browse this website and accessing any external links, you acknowledge and accept the following:" xml:space="preserve">
-    <value>继续浏览本网站并访问任何外部链接，即表示您承认并接受以下内容：</value>
-  </data>
-  <data name="It is your responsibility to ensure the safety and security of your own browsing experience." xml:space="preserve">
-    <value>您有责任确保自己的浏览体验安全。</value>
+    <value>外部リンクはセキュリティリスクをもたらす可能性があります</value>
   </data>
   <data name="Link URL:" xml:space="preserve">
-    <value>链接URL：</value>
+    <value>リンクURL:</value>
   </data>
-  <data name="The website owner and administrators are not responsible for the content or security of external websites." xml:space="preserve">
-    <value>网站所有者和管理员不对外部网站的内容或安全负责。</value>
-  </data>
-  <data name="This link could lead to websites with malicious content, phishing attempts, or other security threats. It is important to exercise caution when clicking on any external link." xml:space="preserve">
-    <value>此链接可能会导致网站包含恶意内容、网络钓鱼尝试或其他安全威胁。点击任何外部链接时务必谨慎。</value>
+  <data name="By clicking &quot;Continue&quot;, you agree that you are aware of the risks and will proceed at your own discretion." xml:space="preserve">
+    <value>「続行」をクリックすることにより、リスクを理解し、ご自身の裁量で続行することに同意したことになります。</value>
   </data>
   <data name="You are about to leave this website and go to an external link." xml:space="preserve">
-    <value>您即将离开本网站并转到外部链接。</value>
+    <value>あなたはこのウェブサイトを離れて、外部リンクに行こうとしています。</value>
+  </data>
+  <data name="This link could lead to websites with malicious content, phishing attempts, or other security threats. It is important to exercise caution when clicking on any external link." xml:space="preserve">
+    <value>このリンクは、悪意のあるコンテンツ、フィッシングの試み、またはその他のセキュリティ上の脅威につながる可能性があります。 外部リンクをクリックするときは、常に注意してください。</value>
+  </data>
+  <data name="By continuing to browse this website and accessing any external links, you acknowledge and accept the following:" xml:space="preserve">
+    <value>このWebサイトを閲覧し、外部リンクにアクセスし続けることにより、次のことを認め、同意したことになります。</value>
+  </data>
+  <data name="The website owner and administrators are not responsible for the content or security of external websites." xml:space="preserve">
+    <value>ウェブサイトの所有者および管理者は、外部ウェブサイトのコンテンツまたはセキュリティについて責任を負いません。</value>
   </data>
   <data name="Your personal information and computer system may be at risk when visiting external websites." xml:space="preserve">
-    <value>当访问外部网站时，您的个人信息和计算机系统可能会面临风险。</value>
+    <value>外部のウェブサイトにアクセスすると、お客様の個人情報やコンピュータシステムが危険にさらされる可能性があります。</value>
+  </data>
+  <data name="It is your responsibility to ensure the safety and security of your own browsing experience." xml:space="preserve">
+    <value>ブラウジング体験を安全に保つことはあなたの責任です。</value>
   </data>
   <data name="Use my Gravatar as profile picture" xml:space="preserve">
-    <value>使用我的 Gravatar 作为头像</value>
+    <value>私のGravatarをアバターとして使用する</value>
   </data>
   <data name="Please make sure you have setup Gravatar with your email address" xml:space="preserve">
-    <value>请确保你已经使用你的 Email 注册了 Gravatar</value>
+    <value>Gravatarにメールアドレスでサインアップしたことを確認してください</value>
   </data>
   <data name="Enter your email to receive reply notifications and display your Gravatar. Your email will not be displayed publicly." xml:space="preserve">
-    <value>输入您的电子邮件以接收回复通知并显示您的 Gravatar。您的电子邮件不会公开显示。</value>
+    <value>返信通知を受け取り、Gravatarを表示するためにメールを入力します。 メールは公開されません。</value>
   </data>
   <data name="Captcha code" xml:space="preserve">
-    <value>验证码</value>
+    <value>キャプチャ</value>
   </data>
   <data name="Email (Optional)" xml:space="preserve">
-    <value>Email (可选)</value>
+    <value>メール (オプション)</value>
   </data>
   <data name="Default language" xml:space="preserve">
-    <value>默认语言</value>
+    <value>デフォルトの言語</value>
   </data>
   <data name="Blog will use this language for SEO by default unless specified in blog post." xml:space="preserve">
-    <value>博客系统将默认使用此语言进行搜索引擎优化，除非在博客文章中指定语言。</value>
+    <value>ブログ システムは、ブログ投稿で言語が指定されていない限り、検索エンジン最適化にデフォルトでこの言語を使用します。</value>
   </data>
   <data name="Profile" xml:space="preserve">
-    <value>个人资料</value>
-  </data>
-  <data name="Dublin Core License URL" xml:space="preserve">
-    <value>都柏林核心许可证URL</value>
+    <value>個人データ</value>
   </data>
   <data name="Dublin Core Metadata" xml:space="preserve">
-    <value>都柏林核心元数据</value>
+    <value>ダブリンコアメタデータ</value>
+  </data>
+  <data name="Dublin Core License URL" xml:space="preserve">
+    <value>ダブリン コア ライセンス URL</value>
   </data>
   <data name="Use Dublin Core Metadata" xml:space="preserve">
-    <value>使用都柏林核心元数据</value>
+    <value>Dublin Core メタデータの使用</value>
   </data>
   <data name="Pronouns" xml:space="preserve">
-    <value>性别认同代词</value>
+    <value>性自認の代名詞</value>
   </data>
   <data name="Subscription buttons" xml:space="preserve">
-    <value>订阅按钮</value>
-  </data>
-  <data name="Show or hide widgets that display on the side bar" xml:space="preserve">
-    <value>显示或隐藏显示在侧边栏上的小组件</value>
+    <value>[購読] ボタン</value>
   </data>
   <data name="Side bar items" xml:space="preserve">
-    <value>侧边栏项目</value>
+    <value>サイドバーアイテム</value>
+  </data>
+  <data name="Show or hide widgets that display on the side bar" xml:space="preserve">
+    <value>サイドバーに表示されるウィジェットを表示または非表示にする</value>
   </data>
   <data name="Comment provider" xml:space="preserve">
-    <value>评论模块提供程序</value>
-  </data>
-  <data name="Automatically close comments on posts older than x days" xml:space="preserve">
-    <value>自动关闭超过 x 天的文章的评论</value>
-  </data>
-  <data name="Blocked words will be masked as * in content." xml:space="preserve">
-    <value>被屏蔽的单词将在内容中被替换为"*"</value>
+    <value>コメント モジュール プロバイダー</value>
   </data>
   <data name="Built in" xml:space="preserve">
-    <value>内置</value>
-  </data>
-  <data name="Comments display order" xml:space="preserve">
-    <value>评论显示顺序</value>
-  </data>
-  <data name="How many words to use for generating abstract when it's absent, change this value will only affect new posts" xml:space="preserve">
-    <value>当摘要不存在时，使用多少个单词来生成摘要，更改此值只会影响新文章</value>
-  </data>
-  <data name="New to old" xml:space="preserve">
-    <value>从新到旧</value>
-  </data>
-  <data name="Old to new" xml:space="preserve">
-    <value>从旧到新</value>
-  </data>
-  <data name="Set to 0 to never close comments after any days" xml:space="preserve">
-    <value>设置为 0 表示在任何日期后从不关闭评论</value>
+    <value>構築</value>
   </data>
   <data name="Third party" xml:space="preserve">
-    <value>三方</value>
+    <value>三者</value>
   </data>
-  <data name="Add watermark only when image pixcel (HxW) is greater than this value." xml:space="preserve">
-    <value>仅当图像像素 （HxW） 大于此值时添加水印</value>
+  <data name="Set to 0 to never close comments after any days" xml:space="preserve">
+    <value>0 に設定すると、コメントはどの日付でも閉じられません</value>
   </data>
-  <data name="CDN endpoint" xml:space="preserve">
-    <value>CDN 终端</value>
+  <data name="Old to new" xml:space="preserve">
+    <value>古いものから新しいものへ</value>
+  </data>
+  <data name="New to old" xml:space="preserve">
+    <value>新しいものから古いものへ</value>
+  </data>
+  <data name="Blocked words will be masked as * in content." xml:space="preserve">
+    <value>ブロックされた単語は、コンテンツ内の「*」に置き換えられます</value>
+  </data>
+  <data name="How many words to use for generating abstract when it's absent, change this value will only affect new posts" xml:space="preserve">
+    <value>抄録が存在しない場合、抄録の生成に使用された単語数、この値を変更しても新しい記事にのみ影響します</value>
+  </data>
+  <data name="Automatically close comments on posts older than x days" xml:space="preserve">
+    <value>x日以上経過した記事のコメントを自動的に閉じる</value>
+  </data>
+  <data name="Comments display order" xml:space="preserve">
+    <value>コメントが表示される順序</value>
   </data>
   <data name="Post title alignment" xml:space="preserve">
-    <value>文章标题对齐方式</value>
-  </data>
-  <data name="Save the origin image as a backup while adding watermark" xml:space="preserve">
-    <value>添加水印时将原始图像保存为备份</value>
-  </data>
-  <data name="Show post outline as side navigation" xml:space="preserve">
-    <value>在侧边导航栏显示文章大纲</value>
-  </data>
-  <data name="Transparency value (0-255)." xml:space="preserve">
-    <value>透明度值 （0-255）</value>
-  </data>
-  <data name="Watermark skip pixel threshold" xml:space="preserve">
-    <value>跳过水印像素阈值</value>
-  </data>
-  <data name="Watermark will be placed at the right bottom corner of the image" xml:space="preserve">
-    <value>水印将放置在图像的右下角</value>
+    <value>記事タイトルの配置</value>
   </data>
   <data name="Word count in abstract" xml:space="preserve">
-    <value>摘要字数</value>
+    <value>抄録の単語数</value>
   </data>
-  <data name="Azure App Service" xml:space="preserve">
-    <value>Azure 应用服务</value>
+  <data name="Show post outline as side navigation" xml:space="preserve">
+    <value>記事の概要は、サイドナビゲーションバーに表示されます</value>
   </data>
-  <data name="Azure Front Door" xml:space="preserve">
-    <value>Azure Front Door</value>
+  <data name="Watermark will be placed at the right bottom corner of the image" xml:space="preserve">
+    <value>透かしは画像の右下隅に配置されます</value>
   </data>
-  <data name="Clear menus" xml:space="preserve">
-    <value>清空菜单</value>
+  <data name="Save the origin image as a backup while adding watermark" xml:space="preserve">
+    <value>透かしを追加するときは、元の画像をバックアップとして保存します</value>
   </data>
-  <data name="Client IP Address" xml:space="preserve">
-    <value>客户端 IP 地址</value>
+  <data name="CDN endpoint" xml:space="preserve">
+    <value>CDN端末</value>
   </data>
-  <data name="Enable custom menus" xml:space="preserve">
-    <value>启用自定义菜单</value>
+  <data name="Add watermark only when image pixcel (HxW) is greater than this value." xml:space="preserve">
+    <value>ウォーターマークは、画像のピクセル (HxW) がこの値より大きい場合にのみ追加されます。</value>
   </data>
-  <data name="Enable OPML" xml:space="preserve">
-    <value>启用 OPML</value>
+  <data name="Transparency value (0-255)." xml:space="preserve">
+    <value>透明度の値 (0-255)</value>
+  </data>
+  <data name="Watermark skip pixel threshold" xml:space="preserve">
+    <value>ウォーターマークのピクセルしきい値をスキップする</value>
   </data>
   <data name="Enable Webmention" xml:space="preserve">
-    <value>启用 Webmention</value>
+    <value>Webメンションを有効にする</value>
   </data>
-  <data name="Example" xml:space="preserve">
-    <value>样例</value>
-  </data>
-  <data name="Example code" xml:space="preserve">
-    <value>样例代码</value>
-  </data>
-  <data name="Filter" xml:space="preserve">
-    <value>筛选</value>
+  <data name="Enable OPML" xml:space="preserve">
+    <value>OPML を有効にする</value>
   </data>
   <data name="Foot JavaScript" xml:space="preserve">
-    <value>尾部 JavaScript</value>
-  </data>
-  <data name="Forwarded Headers" xml:space="preserve">
-    <value>转发头</value>
-  </data>
-  <data name="Legal Infomation" xml:space="preserve">
-    <value>法律信息</value>
-  </data>
-  <data name="Report an issue" xml:space="preserve">
-    <value>报告问题</value>
-  </data>
-  <data name="Server Time Zone" xml:space="preserve">
-    <value>服务器时区</value>
+    <value>テイルJavaScript</value>
   </data>
   <data name="Using a third party script may cause your website to be blocked by some browsers or ad blockers, it can have security risks too. Please use with caution." xml:space="preserve">
-    <value>使用第三方脚本可能会导致您的网站被某些浏览器或广告拦截器阻止，也可能存在安全风险。请谨慎使用。</value>
+    <value>サードパーティのスクリプトを使用すると、特定のブラウザや広告ブロッカーによってサイトがブロックされる可能性があり、セキュリティ上のリスクにもなる可能性もあります。 注意して使用してください。</value>
+  </data>
+  <data name="Server Time Zone" xml:space="preserve">
+    <value>サーバーのタイムゾーン</value>
+  </data>
+  <data name="Azure App Service" xml:space="preserve">
+    <value>Azure App Service</value>
+  </data>
+  <data name="Azure Front Door" xml:space="preserve">
+    <value>Azure Front Door  </value>
+  </data>
+  <data name="Legal Infomation" xml:space="preserve">
+    <value>法律情報</value>
+  </data>
+  <data name="Report an issue" xml:space="preserve">
+    <value>問題を報告する</value>
+  </data>
+  <data name="Forwarded Headers" xml:space="preserve">
+    <value>フォワードヘッダー</value>
+  </data>
+  <data name="Client IP Address" xml:space="preserve">
+    <value>クライアント IP アドレス</value>
+  </data>
+  <data name="Filter" xml:space="preserve">
+    <value>篩に掛ける</value>
+  </data>
+  <data name="Clear menus" xml:space="preserve">
+    <value>メニューをクリアする</value>
+  </data>
+  <data name="Example code" xml:space="preserve">
+    <value>サンプルコード</value>
+  </data>
+  <data name="Example" xml:space="preserve">
+    <value>例</value>
+  </data>
+  <data name="Enable custom menus" xml:space="preserve">
+    <value>カスタムメニューを有効にする</value>
   </data>
   <data name="Change Password" xml:space="preserve">
-    <value>修改密码</value>
+    <value>パスワードを変更する</value>
   </data>
 </root>

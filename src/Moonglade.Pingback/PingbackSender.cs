@@ -1,12 +1,10 @@
-﻿using Microsoft.Extensions.Configuration;
-using Microsoft.Extensions.Logging;
+﻿using Microsoft.Extensions.Logging;
 using Moonglade.Utils;
 
 namespace Moonglade.Pingback;
 
 public class PingbackSender(HttpClient httpClient,
         IPingbackRequestor requestor,
-        IConfiguration configuration,
         ILogger<PingbackSender> logger)
     : IPingbackSender
 {

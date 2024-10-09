@@ -13,7 +13,7 @@
         @SharedLocalizer["Moonglade Configuration"]
     </h4>
 
-    <div class="mb-4 rounded-3 shadow-sm border bg-white p-2">
+    <div class="admin-table-container mb-4 rounded-3 shadow-sm border p-2">
         <table class="table table-borderless table-sm mb-0">
             <tbody>
                 <tr>
@@ -30,12 +30,12 @@
                 </tr>
 
                 <tr>
-                    <td>Forwarded Headers</td>
+                    <td>@SharedLocalizer["Forwarded Headers"]</td>
                     <td class="text-muted">@Configuration["ForwardedHeaders:Enabled"]: @Configuration["ForwardedHeaders:HeaderName"]</td>
                 </tr>
 
                 <tr>
-                    <td>Client IP Address</td>
+                    <td>@SharedLocalizer["Client IP Address"]</td>
                     <td class="text-muted">@HttpContext.Connection.RemoteIpAddress?.ToString()</td>
                 </tr>
             </tbody>
@@ -46,7 +46,7 @@
         @SharedLocalizer["Server Information"]
     </h4>
 
-    <div class="mb-4 rounded-3 shadow-sm border bg-white p-2">
+    <div class="admin-table-container mb-4 rounded-3 shadow-sm border p-2">
         <table class="table table-borderless table-sm mb-0">
             <tbody>
                 <tr>
@@ -124,7 +124,7 @@
 
     <a class="btn btn-sm btn-outline-accent" href="https://github.com/EdiWang/Moonglade/issues" target="_blank">
         <i class="bi-bug"></i>
-        Report an issue
+        @SharedLocalizer["Report an issue"]
     </a>
 </div>
 

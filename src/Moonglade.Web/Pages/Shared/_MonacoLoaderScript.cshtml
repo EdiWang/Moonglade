@@ -4,6 +4,11 @@
 
     function initEditor(containerId, textAreaQuerySelector, lang) {
         var editorDiv = document.getElementById(containerId);
+
+        if (window.theme.getPreferredTheme() == 'dark') {
+            monaco.editor.setTheme("vs-dark");
+        }
+        
         var editorInstance = monaco.editor.create(editorDiv, {
             language: lang
         });

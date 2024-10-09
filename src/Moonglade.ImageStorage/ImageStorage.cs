@@ -6,6 +6,8 @@ public class ImageStorageSettings
 {
     public string[] AllowedExtensions { get; set; }
 
+    public int CacheMinutes { get; set; }
+
     public string Provider { get; set; }
 
     public string FileSystemPath { get; set; }

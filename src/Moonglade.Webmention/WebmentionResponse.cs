@@ -2,9 +2,9 @@
 
 namespace Moonglade.Webmention;
 
-public class WebmentionResponse(WebmentionStatus Status)
+public class WebmentionResponse(WebmentionStatus status)
 {
-    public WebmentionStatus Status { get; set; }
+    public WebmentionStatus Status { get; set; } = status;
     public MentionEntity MentionEntity { get; set; }
 
     public static WebmentionResponse GenericError => new(WebmentionStatus.GenericError);

@@ -324,7 +324,7 @@
   <data name="Disabled" xml:space="preserve">
     <value>不顯示</value>
   </data>
-  <data name="Display Name" xml:space="preserve">
+  <data name="Display name" xml:space="preserve">
     <value>顯示名稱</value>
   </data>
   <data name="Display Order" xml:space="preserve">
@@ -645,7 +645,7 @@
   <data name="Route Name" xml:space="preserve">
     <value>路由名稱</value>
   </data>
-  <data name="Feed Items" xml:space="preserve">
+  <data name="Feed items" xml:space="preserve">
     <value>訂閱條目數量</value>
   </data>
   <data name="Save" xml:space="preserve">
@@ -881,5 +881,152 @@
   </data>
   <data name="Please make sure you have setup Gravatar with your email address" xml:space="preserve">
     <value>請確保你已經使用你的 Email 註冊了 Gravatar</value>
+  </data>
+  <data name="Enter your email to receive reply notifications and display your Gravatar. Your email will not be displayed publicly." xml:space="preserve">
+    <value>輸入您的電子郵件以接收回復通知並顯示您的 Gravatar。 您的電子郵件不會公開顯示。</value>
+  </data>
+  <data name="Captcha code" xml:space="preserve">
+    <value>驗證碼</value>
+  </data>
+  <data name="Email (Optional)" xml:space="preserve">
+    <value>Email （可選）</value>
+  </data>
+  <data name="Default language" xml:space="preserve">
+    <value>默認語言</value>
+  </data>
+  <data name="Blog will use this language for SEO by default unless specified in blog post." xml:space="preserve">
+    <value>博客系統將預設使用此語言進行搜尋引擎優化，除非在博客文章中指定語言。</value>
+  </data>
+  <data name="Profile" xml:space="preserve">
+    <value>個人資料</value>
+  </data>
+  <data name="Dublin Core Metadata" xml:space="preserve">
+    <value>都柏林核心元數據</value>
+  </data>
+  <data name="Dublin Core License URL" xml:space="preserve">
+    <value>都柏林核心許可證URL</value>
+  </data>
+  <data name="Use Dublin Core Metadata" xml:space="preserve">
+    <value>使用都柏林核心元數據</value>
+  </data>
+  <data name="Pronouns" xml:space="preserve">
+    <value>性別認同代詞</value>
+  </data>
+  <data name="Subscription buttons" xml:space="preserve">
+    <value>訂閱按鈕</value>
+  </data>
+  <data name="Side bar items" xml:space="preserve">
+    <value>側邊欄專案</value>
+  </data>
+  <data name="Show or hide widgets that display on the side bar" xml:space="preserve">
+    <value>顯示或隱藏顯示在側邊欄上的小組件</value>
+  </data>
+  <data name="Comment provider" xml:space="preserve">
+    <value>評論模組提供程式</value>
+  </data>
+  <data name="Built in" xml:space="preserve">
+    <value>內置</value>
+  </data>
+  <data name="Third party" xml:space="preserve">
+    <value>三方</value>
+  </data>
+  <data name="Set to 0 to never close comments after any days" xml:space="preserve">
+    <value>設置為 0 表示在任何日期後從不關閉評論</value>
+  </data>
+  <data name="Old to new" xml:space="preserve">
+    <value>從舊到新</value>
+  </data>
+  <data name="New to old" xml:space="preserve">
+    <value>從新到舊</value>
+  </data>
+  <data name="Blocked words will be masked as * in content." xml:space="preserve">
+    <value>被遮罩的單詞將在內容中被替換為“*”</value>
+  </data>
+  <data name="How many words to use for generating abstract when it's absent, change this value will only affect new posts" xml:space="preserve">
+    <value>當摘要不存在時，使用多少個單詞來生成摘要，更改此值只會影響新文章</value>
+  </data>
+  <data name="Automatically close comments on posts older than x days" xml:space="preserve">
+    <value>自動關閉超過 x 天的文章的評論</value>
+  </data>
+  <data name="Comments display order" xml:space="preserve">
+    <value>評論顯示順序</value>
+  </data>
+  <data name="Post title alignment" xml:space="preserve">
+    <value>文章標題對齊方式</value>
+  </data>
+  <data name="Word count in abstract" xml:space="preserve">
+    <value>摘要字數</value>
+  </data>
+  <data name="Show post outline as side navigation" xml:space="preserve">
+    <value>在側邊導航欄顯示文章大綱</value>
+  </data>
+  <data name="Watermark will be placed at the right bottom corner of the image" xml:space="preserve">
+    <value>浮浮水印將放置在圖像的右下角</value>
+  </data>
+  <data name="Save the origin image as a backup while adding watermark" xml:space="preserve">
+    <value>添加浮浮浮水印時將原始影像保存為備份</value>
+  </data>
+  <data name="CDN endpoint" xml:space="preserve">
+    <value>CDN 終端</value>
+  </data>
+  <data name="Add watermark only when image pixcel (HxW) is greater than this value." xml:space="preserve">
+    <value>僅當圖像圖元 （HxW） 大於此值時添加浮浮水印。</value>
+  </data>
+  <data name="Transparency value (0-255)." xml:space="preserve">
+    <value>透明度值 （0-255）</value>
+  </data>
+  <data name="Watermark skip pixel threshold" xml:space="preserve">
+    <value>跳過浮浮浮水印圖元閾值</value>
+  </data>
+  <data name="Enable Webmention" xml:space="preserve">
+    <value>啟用 Webmention</value>
+  </data>
+  <data name="Enable OPML" xml:space="preserve">
+    <value>啟用OPML</value>
+  </data>
+  <data name="Foot JavaScript" xml:space="preserve">
+    <value>尾部 JavaScript</value>
+  </data>
+  <data name="Using a third party script may cause your website to be blocked by some browsers or ad blockers, it can have security risks too. Please use with caution." xml:space="preserve">
+    <value>使用第三方腳本可能會導致您的網站被某些瀏覽器或廣告攔截器阻止，也可能存在安全風險。 請謹慎使用。</value>
+  </data>
+  <data name="Server Time Zone" xml:space="preserve">
+    <value>伺服器時區</value>
+  </data>
+  <data name="Azure App Service" xml:space="preserve">
+    <value>Azure 應用服務</value>
+  </data>
+  <data name="Azure Front Door" xml:space="preserve">
+    <value>Azure Front Door  </value>
+  </data>
+  <data name="Legal Infomation" xml:space="preserve">
+    <value>法律資訊</value>
+  </data>
+  <data name="Report an issue" xml:space="preserve">
+    <value>報告問題</value>
+  </data>
+  <data name="Forwarded Headers" xml:space="preserve">
+    <value>轉發頭</value>
+  </data>
+  <data name="Client IP Address" xml:space="preserve">
+    <value>用戶端IP位址</value>
+  </data>
+  <data name="Filter" xml:space="preserve">
+    <value>篩選</value>
+  </data>
+  <data name="Clear menus" xml:space="preserve">
+    <value>清空功能表</value>
+  </data>
+  <data name="Example code" xml:space="preserve">
+    <value>樣例代碼</value>
+  </data>
+  <data name="Example" xml:space="preserve">
+    <value>樣例</value>
+  </data>
+  <data name="Enable custom menus" xml:space="preserve">
+    <value>啟用自定義功能表</value>
+  </data>
+  <data name="Change Password" xml:space="preserve">
+    <value>修改密碼</value>
   </data>
 </root>
