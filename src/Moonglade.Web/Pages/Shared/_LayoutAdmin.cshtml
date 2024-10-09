@@ -11,7 +11,7 @@
     // This is to enhance user experience by stopping the screen from blinking when switching pages
     bool useServerSideDarkMode = false;
     bool usePrefersColorSchemeHeader = Configuration.GetSection("PrefersColorSchemeHeader:Enabled").Get<bool>();
-    var prefersColorScheme = Context.Request.Headers[Configuration["PrefersColorScheme:HeaderName"]!];
+    var prefersColorScheme = Context.Request.Headers[Configuration["PrefersColorSchemeHeader:HeaderName"]!];
     if (usePrefersColorSchemeHeader && prefersColorScheme == "dark")
     {
         useServerSideDarkMode = true;

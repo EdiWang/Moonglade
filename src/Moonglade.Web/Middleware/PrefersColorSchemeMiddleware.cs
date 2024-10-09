@@ -4,7 +4,7 @@ public class PrefersColorSchemeMiddleware(RequestDelegate next)
 {
     public async Task InvokeAsync(HttpContext context, IConfiguration configuration)
     {
-        var headerName = configuration["PrefersColorScheme:HeaderName"];
+        var headerName = configuration["PrefersColorSchemeHeader:HeaderName"];
         if (string.IsNullOrWhiteSpace(headerName))
         {
             await next(context);
