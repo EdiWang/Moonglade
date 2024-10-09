@@ -267,7 +267,7 @@ public class Program
             options.IconFilePath = "/favicon-16x16.png";
         });
 
-        bool usePrefersColorSchemeHeader = app.Configuration.GetSection("Experimental:UsePrefersColorSchemeHeader").Get<bool>();
+        bool usePrefersColorSchemeHeader = app.Configuration.GetSection("PrefersColorSchemeHeader:Enabled").Get<bool>();
         if (usePrefersColorSchemeHeader) app.UseMiddleware<PrefersColorSchemeMiddleware>();
 
         app.UseMiddleware<PoweredByMiddleware>();

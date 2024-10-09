@@ -29,8 +29,8 @@
     // Get `sec-ch-prefers-color-scheme` header value
     // This is to enhance user experience by stopping the screen from blinking when switching pages
     bool useServerSideDarkMode = false;
-    bool usePrefersColorSchemeHeader = Configuration.GetSection("Experimental:UsePrefersColorSchemeHeader").Get<bool>();
-    var prefersColorScheme = Context.Request.Headers["sec-ch-prefers-color-scheme"];
+    bool usePrefersColorSchemeHeader = Configuration.GetSection("PrefersColorSchemeHeader:Enabled").Get<bool>();
+    var prefersColorScheme = Context.Request.Headers[Configuration["PrefersColorScheme:HeaderName"]!];
     if (usePrefersColorSchemeHeader && prefersColorScheme == "dark")
     {
         useServerSideDarkMode = true;

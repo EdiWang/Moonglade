@@ -2,13 +2,19 @@
 
 public class PrefersColorSchemeMiddleware(RequestDelegate next)
 {
-    public async Task InvokeAsync(HttpContext context)
+    public async Task InvokeAsync(HttpContext context, IConfiguration configuration)
     {
+        var headerName = configuration["PrefersColorScheme:HeaderName"];
+        if (string.IsNullOrWhiteSpace(headerName))
+        {
+            await next(context);
+        }
+
         context.Response.OnStarting(() =>
         {
-            context.Response.Headers["Accept-CH"] = "Sec-CH-Prefers-Color-Scheme";
-            context.Response.Headers["Vary"] = "Sec-CH-Prefers-Color-Scheme";
-            context.Response.Headers["Critical-CH"] = "Sec-CH-Prefers-Color-Scheme";
+            context.Response.Headers["Accept-CH"] = headerName;
+            context.Response.Headers["Vary"] = headerName;
+            context.Response.Headers["Critical-CH"] = headerName;
             return Task.CompletedTask;
         });
 
