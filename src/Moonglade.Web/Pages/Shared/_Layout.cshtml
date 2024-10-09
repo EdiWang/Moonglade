@@ -24,9 +24,18 @@
             langCode = CultureInfo.CurrentUICulture.ToString().ToLower();
         }
     }
+
+    // Get `sec-ch-prefers-color-scheme` header value
+    // This is to enhance user experience by stopping the screen from blinking when switching pages
+    bool useServerSideDarkMode = false;
+    var prefersColorScheme = Context.Request.Headers["sec-ch-prefers-color-scheme"];
+    if (prefersColorScheme == "dark")
+    {
+        useServerSideDarkMode = true;
+    }
 }
 <!DOCTYPE html>
-<html lang="@langCode">
+<html lang="@langCode" data-bs-theme="@(useServerSideDarkMode ? "dark" : null)">
 <head profile=@(BlogConfig.GeneralSettings.UseDublinCoreMetaData ? "http://dublincore.org/documents/dcq-html/" : null)>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />

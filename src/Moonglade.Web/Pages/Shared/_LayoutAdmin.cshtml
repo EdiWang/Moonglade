@@ -4,9 +4,18 @@
     {
         BlogConfig.GeneralSettings.AvatarUrl = Url.Action("Avatar", "Assets");
     }
+
+    // Get `sec-ch-prefers-color-scheme` header value
+    // This is to enhance user experience by stopping the screen from blinking when switching pages
+    bool useServerSideDarkMode = false;
+    var prefersColorScheme = Context.Request.Headers["sec-ch-prefers-color-scheme"];
+    if (prefersColorScheme == "dark")
+    {
+        useServerSideDarkMode = true;
+    }
 }
 <!DOCTYPE html>
-<html lang="@BlogConfig.GeneralSettings.DefaultLanguageCode">
+<html lang="@BlogConfig.GeneralSettings.DefaultLanguageCode" data-bs-theme="@(useServerSideDarkMode ? "dark" : null)">
 
 <head>
     <title>
