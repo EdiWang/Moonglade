@@ -1,4 +1,6 @@
 ﻿@inject IOptions<AuthenticationSettings> AuthOptions
+@inject IConfiguration Configuration
+
 @{
     if (string.IsNullOrEmpty(BlogConfig.GeneralSettings.AvatarUrl))
     {
@@ -8,8 +10,9 @@
     // Get `sec-ch-prefers-color-scheme` header value
     // This is to enhance user experience by stopping the screen from blinking when switching pages
     bool useServerSideDarkMode = false;
+    bool usePrefersColorSchemeHeader = Configuration.GetSection("Experimental:UsePrefersColorSchemeHeader").Get<bool>();
     var prefersColorScheme = Context.Request.Headers["sec-ch-prefers-color-scheme"];
-    if (prefersColorScheme == "dark")
+    if (usePrefersColorSchemeHeader && prefersColorScheme == "dark")
     {
         useServerSideDarkMode = true;
     }

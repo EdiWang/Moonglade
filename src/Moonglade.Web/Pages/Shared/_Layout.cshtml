@@ -1,6 +1,7 @@
 ﻿@using Moonglade.Utils
 @using Microsoft.AspNetCore.Localization
 @using System.Globalization
+@inject IConfiguration Configuration
 
 @{
     if (string.IsNullOrEmpty(BlogConfig.GeneralSettings.AvatarUrl))
@@ -28,8 +29,9 @@
     // Get `sec-ch-prefers-color-scheme` header value
     // This is to enhance user experience by stopping the screen from blinking when switching pages
     bool useServerSideDarkMode = false;
+    bool usePrefersColorSchemeHeader = Configuration.GetSection("Experimental:UsePrefersColorSchemeHeader").Get<bool>();
     var prefersColorScheme = Context.Request.Headers["sec-ch-prefers-color-scheme"];
-    if (prefersColorScheme == "dark")
+    if (usePrefersColorSchemeHeader && prefersColorScheme == "dark")
     {
         useServerSideDarkMode = true;
     }
@@ -180,13 +182,13 @@
         {
             <section class="profile-mobile d-block d-sm-none d-print-none">
                 <div class="card-background-container">
-                    @if(BlogConfig.GeneralSettings.UseGravatarAsProfilePicture)
+                    @if (BlogConfig.GeneralSettings.UseGravatarAsProfilePicture)
                     {
                         <gravatar class="card-bkimg" email="@BlogConfig.GeneralSettings.OwnerEmail" size="256" />
                     }
                     else
                     {
-                        <img class="card-bkimg" alt="" aria-hidden="true" src="@BlogConfig.GeneralSettings.AvatarUrl"/>
+                        <img class="card-bkimg" alt="" aria-hidden="true" src="@BlogConfig.GeneralSettings.AvatarUrl" />
                     }
                 </div>
                 <div class="blogger-intro-content">
@@ -196,14 +198,14 @@
                             {
                                 <gravatar class="rounded-circle blogger-head-pic"
                                           size="256"
-                                          alt="@BlogConfig.GeneralSettings.OwnerName" 
+                                          alt="@BlogConfig.GeneralSettings.OwnerName"
                                           email="@BlogConfig.GeneralSettings.OwnerEmail" />
                             }
                             else
                             {
                                 <img src="@BlogConfig.GeneralSettings.AvatarUrl"
                                      alt="@BlogConfig.GeneralSettings.OwnerName"
-                                     class="rounded-circle blogger-head-pic"/>
+                                     class="rounded-circle blogger-head-pic" />
                             }
                         </div>
                         <div class="col-9 position-relative">
