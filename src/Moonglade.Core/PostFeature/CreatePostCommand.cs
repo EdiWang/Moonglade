@@ -33,20 +33,21 @@ public class CreatePostCommandHandler(
             abs = request.Payload.Abstract.Trim();
         }
 
+        var utcNow = DateTime.UtcNow;
         var post = new PostEntity
         {
             CommentEnabled = request.Payload.EnableComment,
             Id = Guid.NewGuid(),
             PostContent = request.Payload.EditorContent,
             ContentAbstract = abs,
-            CreateTimeUtc = DateTime.UtcNow,
-            LastModifiedUtc = DateTime.UtcNow, // Fix draft orders
+            CreateTimeUtc = utcNow,
+            LastModifiedUtc = utcNow, // Fix draft orders
             Slug = request.Payload.Slug.ToLower().Trim(),
             Author = request.Payload.Author?.Trim(),
             Title = request.Payload.Title.Trim(),
             ContentLanguageCode = request.Payload.LanguageCode,
             IsFeedIncluded = request.Payload.FeedIncluded,
-            PubDateUtc = request.Payload.IsPublished ? DateTime.UtcNow : null,
+            PubDateUtc = request.Payload.IsPublished ? utcNow : null,
             IsDeleted = false,
             IsPublished = request.Payload.IsPublished,
             IsFeatured = request.Payload.Featured,
