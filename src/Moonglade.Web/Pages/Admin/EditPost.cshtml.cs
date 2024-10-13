@@ -58,7 +58,8 @@ public class EditPostModel(IMediator mediator, ITimeZoneResolver timeZoneResolve
             Abstract = post.ContentAbstract.Replace("\u00A0\u2026", string.Empty),
             Featured = post.IsFeatured,
             HeroImageUrl = post.HeroImageUrl,
-            IsOutdated = post.IsOutdated
+            IsOutdated = post.IsOutdated,
+            LastModifiedUtc = post.LastModifiedUtc?.ToString("u")
         };
 
         if (post.PubDateUtc is not null)
