@@ -11,6 +11,7 @@ namespace Moonglade.Web.Controllers;
 [ApiController]
 [Route("api/[controller]")]
 public class PostController(
+        IConfiguration configuration,
         IMediator mediator,
         IBlogConfig blogConfig,
         ITimeZoneResolver timeZoneResolver,
@@ -61,7 +62,20 @@ public class PostController(
                     cannonService.FireAsync<IWebmentionSender>(async sender => await sender.SendWebmentionAsync(link.ToString(), postEntity.PostContent));
                 }
 
-                cannonService.FireAsync<IIndexNowClient>(async sender => await sender.SendRequestAsync(link));
+                var isNewPublish = postEntity.LastModifiedUtc == postEntity.PubDateUtc;
+
+                bool indexCoolDown = true;
+                var minimalIntervalMinutes = int.Parse(configuration["IndexNow:MinimalIntervalMinutes"]!);
+                if (!string.IsNullOrWhiteSpace(model.LastModifiedUtc))
+                {
+                    var lastSavedInterval = DateTime.Parse(model.LastModifiedUtc) - DateTime.UtcNow;
+                    indexCoolDown = lastSavedInterval.TotalMinutes > minimalIntervalMinutes;
+                }
+
+                if (isNewPublish || indexCoolDown)
+                {
+                    cannonService.FireAsync<IIndexNowClient>(async sender => await sender.SendRequestAsync(link));
+                }
             }
 
             return Ok(new { PostId = postEntity.Id });

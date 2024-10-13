@@ -194,6 +194,7 @@
     <form class="post-edit-form" asp-controller="Post" asp-action="CreateOrEdit">
         <input type="hidden" asp-for="ViewModel.PostId" />
         <input type="hidden" asp-for="ViewModel.IsPublished" />
+        <input type="hidden" asp-for="ViewModel.LastModifiedUtc" />
         <div class="row g-2">
             <div class="col-md-9 col-xl-10">
                 <input type="text" asp-for="ViewModel.Title" class="form-control form-control-lg" placeholder="@SharedLocalizer["Title"]" required maxlength="128" />

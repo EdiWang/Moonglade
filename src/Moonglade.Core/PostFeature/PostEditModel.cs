@@ -67,4 +67,7 @@ public class PostEditModel
     public bool IsOutdated { get; set; }
 
     public bool WarnSlugModification => PublishDate.HasValue && (DateTime.UtcNow - PublishDate.Value).Days > 3;
+
+    [HiddenInput]
+    public string LastModifiedUtc { get; set; }
 }
