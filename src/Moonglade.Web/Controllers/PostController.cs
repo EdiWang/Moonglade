@@ -131,6 +131,15 @@ public class PostController(
         return NoContent();
     }
 
+    [TypeFilter(typeof(ClearBlogCache), Arguments = [BlogCacheType.Subscription | BlogCacheType.SiteMap])]
+    [HttpPut("{postId:guid}/unpublish")]
+    [ProducesResponseType(StatusCodes.Status204NoContent)]
+    public async Task<IActionResult> Unpublish([NotEmpty] Guid postId)
+    {
+        await mediator.Send(new UnpublishPostCommand(postId));
+        return NoContent();
+    }
+
     [IgnoreAntiforgeryToken]
     [HttpPost("keep-alive")]
     [ProducesResponseType(StatusCodes.Status200OK)]

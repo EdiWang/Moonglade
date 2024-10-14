@@ -1029,4 +1029,16 @@
   <data name="Change Password" xml:space="preserve">
     <value>修改密碼</value>
   </data>
+  <data name="Unpublish this post" xml:space="preserve">
+    <value>取消發佈這篇文章</value>
+  </data>
+  <data name="Unpublish Post" xml:space="preserve">
+    <value>取消發佈文章</value>
+  </data>
+  <data name="Unpublishing this post will remove it from the public site and turn it into a draft. This will have impact on SEO. Please confirm." xml:space="preserve">
+    <value>取消發佈此文章會將其從公共網站中刪除，並將其轉換為草稿。 這將對 SEO 產生影響。 請確認。</value>
+  </data>
+  <data name="Confirm" xml:space="preserve">
+    <value>確認</value>
+  </data>
 </root>

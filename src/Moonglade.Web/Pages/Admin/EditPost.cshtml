@@ -327,7 +327,7 @@
                                                        name="SelectedCatIds"
                                                        value="@cat.Id"
                                                        class="form-check-input"
-                                                @(cat.IsChecked ? "checked" : null)>
+                                                       @(cat.IsChecked ? "checked" : null)>
 
                                                 <label for="category-@cat.Id" class="form-check-label">
                                                     @cat.DisplayText
@@ -340,6 +340,13 @@
                         }
                     </div>
                 </div>
+                
+                @if (Model.ViewModel.IsPublished)
+                {
+                    <div class="text-center">
+                        <a class="unpublish-link btn btn-sm btn-outline-secondary" data-bs-toggle="modal" data-bs-target="#unpublishPostModal">@SharedLocalizer["Unpublish this post"]</a>
+                    </div>
+                }
             </div>
         </div>
 
@@ -363,4 +370,5 @@
     </form>
 
     <partial name="_EditPostHeroImage" />
+    <partial name="_UnpublishPostModal" />
 </div>
