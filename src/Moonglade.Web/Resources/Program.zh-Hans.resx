@@ -1026,4 +1026,7 @@
   <data name="Change Password" xml:space="preserve">
     <value>修改密码</value>
   </data>
+  <data name="Unpublish this post" xml:space="preserve">
+    <value>取消发布这篇文章</value>
+  </data>
 </root>

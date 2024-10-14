@@ -1026,4 +1026,7 @@
   <data name="Change Password" xml:space="preserve">
     <value>Ändern Sie Ihr Passwort</value>
   </data>
+  <data name="Unpublish this post" xml:space="preserve">
+    <value>Veröffentlichung dieses Artikels aufheben</value>
+  </data>
 </root>

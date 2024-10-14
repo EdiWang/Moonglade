@@ -1029,4 +1029,7 @@
   <data name="Change Password" xml:space="preserve">
     <value>修改密碼</value>
   </data>
+  <data name="Unpublish this post" xml:space="preserve">
+    <value>取消發佈這篇文章</value>
+  </data>
 </root>
