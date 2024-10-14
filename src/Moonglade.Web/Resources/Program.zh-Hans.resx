@@ -1029,4 +1029,13 @@
   <data name="Unpublish this post" xml:space="preserve">
     <value>取消发布这篇文章</value>
   </data>
+  <data name="Unpublish Post" xml:space="preserve">
+    <value>取消发布文章</value>
+  </data>
+  <data name="Unpublishing this post will remove it from the public site and turn it into a draft. This will have impact on SEO. Please confirm." xml:space="preserve">
+    <value>取消发布此文章会将其从公共站点中删除，并将其转换为草稿。这将对 SEO 产生影响。请确认。</value>
+  </data>
+  <data name="Confirm" xml:space="preserve">
+    <value>确认</value>
+  </data>
 </root>

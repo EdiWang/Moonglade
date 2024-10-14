@@ -1029,4 +1029,13 @@
   <data name="Unpublish this post" xml:space="preserve">
     <value>Veröffentlichung dieses Artikels aufheben</value>
   </data>
+  <data name="Unpublish Post" xml:space="preserve">
+    <value>Veröffentlichung des Artikels aufheben</value>
+  </data>
+  <data name="Unpublishing this post will remove it from the public site and turn it into a draft. This will have impact on SEO. Please confirm." xml:space="preserve">
+    <value>Wenn Sie die Veröffentlichung dieses Artikels aufheben, wird er von der öffentlichen Website entfernt und in einen Entwurf umgewandelt. Dies wird sich auf die Suchmaschinenoptimierung auswirken. Bitte bestätigen Sie.</value>
+  </data>
+  <data name="Confirm" xml:space="preserve">
+    <value>Bestätigen</value>
+  </data>
 </root>
