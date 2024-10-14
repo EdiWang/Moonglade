@@ -10,15 +10,27 @@
             </div>
             <div class="modal-body">
                 <div class="alert alert-warning">@SharedLocalizer["Unpublishing this post will remove it from the public site and turn it into a draft. This will have impact on SEO. Please confirm."]</div>
-                
                 <p>
                     @Model.ViewModel.Title
                 </p>
             </div>
             <div class="modal-footer">
                 <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">@SharedLocalizer["Cancel"]</button>
-                <a class="btn btn-danger" href="#">@SharedLocalizer["Confirm"]</a>
+                <a class="unpublish-post-confirm btn btn-danger" href="javascript:UnpublishPost('@Model.ViewModel.PostId');">@SharedLocalizer["Confirm"]</a>
             </div>
         </div>
     </div>
 </div>
+
+<script>
+    function UnpublishPost(postId) {
+        callApi(
+            `/api/post/${postId}/unpublish`,
+            'PUT',
+            {},
+            (resp) => {
+                blogToast.success('Post unpublished');
+                location.reload();
+            });
+    }
+</script>
