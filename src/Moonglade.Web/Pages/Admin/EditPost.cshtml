@@ -344,7 +344,7 @@
                 @if (Model.ViewModel.IsPublished)
                 {
                     <div class="text-center">
-                        <a class="unpublish-link btn btn-sm btn-outline-secondary" href="#">@SharedLocalizer["Unpublish this post"]</a>
+                        <a class="unpublish-link btn btn-sm btn-outline-secondary" data-bs-toggle="modal" data-bs-target="#unpublishPostModal">@SharedLocalizer["Unpublish this post"]</a>
                     </div>
                 }
             </div>
@@ -370,4 +370,5 @@
     </form>
 
     <partial name="_EditPostHeroImage" />
+    <partial name="_UnpublishPostModal" />
 </div>
