@@ -145,19 +145,22 @@ export function calculateReadingTime() {
     const englishWordsPerMinute = 225; // Average reading speed for English
     const chineseCharactersPerMinute = 450; // Average reading speed for Chinese
     const germanWordsPerMinute = 225; // Average reading speed for German
+    const japaneseCharactersPerMinute = 400; // Average reading speed for Japanese
 
     // Get the content of the blog post
     const blogContent = document.querySelector('.post-content').innerText;
 
     const englishAndGermanWords = blogContent.match(/\b\w+\b/g) || [];
     const chineseCharacters = blogContent.match(/[\u4e00-\u9fa5]/g) || [];
+    const japaneseCharacters = blogContent.match(/[\u3040-\u30FF\u31F0-\u31FF\uFF66-\uFF9F\u4E00-\u9FAF]/g) || [];
 
-    // Calculate reading time for English and German (combined) and Chinese
+    // Calculate reading time for English and German (combined), Chinese, and Japanese
     const englishAndGermanReadingTime = englishAndGermanWords.length / englishWordsPerMinute;
     const chineseReadingTime = chineseCharacters.length / chineseCharactersPerMinute;
+    const japaneseReadingTime = japaneseCharacters.length / japaneseCharactersPerMinute;
 
     // Total reading time in minutes
-    const totalReadingTime = englishAndGermanReadingTime + chineseReadingTime;
+    const totalReadingTime = englishAndGermanReadingTime + chineseReadingTime + japaneseReadingTime;
 
     // Round to nearest minute
     const roundedReadingTime = Math.ceil(totalReadingTime);
