@@ -51,11 +51,11 @@
                                 <label asp-for="Username"></label>
                             </div>
                             <div class="form-floating mb-3">
-                                <input asp-for="Password" class="form-control" required pattern="^(?=.*[a-zA-Z])(?=.*[0-9])[A-Za-z0-9._~!@@#$^&*]{8,}$" placeholder="@Html.DisplayNameFor(m => m.Password)" minlength="8" maxlength="32" />
+                                <input asp-for="Password" class="form-control" required pattern="^(?=.*[a-zA-Z])(?=.*[0-9])[A-Za-z0-9._~!@@#$^&*]{8,}$" placeholder="@Html.DisplayNameFor(m => m.Password)" minlength="8" maxlength="32" onfocus="showCaptcha()" />
                                 <label asp-for="Password"></label>
                             </div>
 
-                            <div class="mb-3">
+                            <div class="mb-3" id="captcha-container" style="display: none;">
                                 <div class="input-group">
                                     <input asp-for="CaptchaCode"
                                            minlength="4"
@@ -63,7 +63,7 @@
                                            placeholder="@SharedLocalizer["Captcha code"]"
                                            autocomplete="off"
                                            class="form-control" required />
-                                    <img id="img-captcha" onclick="getNewCaptcha()" src="~/captcha-image" data-bs-toggle="tooltip" data-placement="top" title="@SharedLocalizer["Can't read? Click to change another image."]" />
+                                    <img id="img-captcha" onclick="getNewCaptcha()" data-bs-toggle="tooltip" data-placement="top" title="@SharedLocalizer["Can't read? Click to change another image."]" />
                                 </div>
                             </div>
 
@@ -88,6 +88,14 @@
             d = new Date();
             document.querySelector('#img-captcha').src = `/captcha-image?${d.getTime()}`;
         };
+
+        function showCaptcha() {
+            var captchaContainer = document.getElementById('captcha-container');
+            if (captchaContainer.style.display === 'none') {
+                captchaContainer.style.display = 'block';
+                getNewCaptcha();
+            }
+        }
     </script>
 </body>
 </html>
