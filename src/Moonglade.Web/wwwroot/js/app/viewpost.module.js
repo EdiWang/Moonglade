@@ -105,6 +105,14 @@ export function resetCaptchaImage() {
     document.querySelector('#img-captcha').src = `/captcha-image?${d.getTime()}`;
 }
 
+export function showCaptcha() {
+    var captchaContainer = document.getElementById('captcha-container');
+    if (captchaContainer.style.display === 'none') {
+        captchaContainer.style.display = 'flex';
+        resetCaptchaImage();
+    }
+}
+
 var btnSubmitComment = '#btn-submit-comment';
 
 export function submitComment(pid) {
