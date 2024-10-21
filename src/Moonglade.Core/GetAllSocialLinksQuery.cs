@@ -7,7 +7,7 @@ public record GetAllSocialLinksQuery : IRequest<List<SocialLink>>;
 
 public class GetAllSocialLinksQueryHandler(IConfiguration configuration) : IRequestHandler<GetAllSocialLinksQuery, List<SocialLink>>
 {
-    public Task<List<SocialLink>> Handle(GetAllSocialLinksQuery request, CancellationToken cancellationToken)
+    public Task<List<SocialLink>> Handle(GetAllSocialLinksQuery request, CancellationToken ct)
     {
         var section = configuration.GetSection("Experimental:SocialLinks");
 
