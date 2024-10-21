@@ -1,5 +1,6 @@
 ﻿using Markdig;
 using System.Text.RegularExpressions;
+using System.Web;
 using System.Xml.Linq;
 
 namespace Moonglade.Utils;
@@ -26,9 +27,13 @@ public static class ContentProcessor
             MarkdownToContent(content, MarkdownConvertType.Text) :
             RemoveTags(content);
 
-        var result = plainText.Ellipsize(wordCount);
+        var decodedText = HtmlDecode(plainText);
+        var result = decodedText.Ellipsize(wordCount);
         return result;
     }
+
+    // Fix #833 - umlauts like (ä,ö,ü). are not displayed correctly in the abstract
+    public static string HtmlDecode(string content) => HttpUtility.HtmlDecode(content);
 
     public static string RemoveTags(string html)
     {

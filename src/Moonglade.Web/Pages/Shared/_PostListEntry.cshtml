@@ -30,7 +30,7 @@
             }
         </h3>
 
-        <abbr class="post-summary-text d-block mb-3">@(Model.ContentAbstract)</abbr>
+        <abbr class="post-summary-text d-block mb-3">@(ContentProcessor.HtmlDecode(Model.ContentAbstract))</abbr>
 
         @if (null != Model.Tags)
         {
