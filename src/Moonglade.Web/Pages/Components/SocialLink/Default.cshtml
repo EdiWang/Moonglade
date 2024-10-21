@@ -1,0 +1,19 @@
+﻿@using Moonglade.Utils
+@model List<SocialLink>
+
+@if (Model.Any())
+{
+    <div class="aside-widget p-3 rounded-3 shadow-sm border">
+        <h6 class="card-subtitle mb-3 text-secondary">@SharedLocalizer["Social Links"]</h6>
+
+        <div role="list">
+            @foreach (var item in Model.OrderBy(c => c.Name))
+            {
+                <a href="@Helper.SterilizeLink(item.Url)" target="_blank" class="d-block mb-3 mt-2" role="listitem">
+                    <i class="@item.Icon me-1"></i>
+                    @item.Name
+                </a>
+            }
+        </div>
+    </div>
+}

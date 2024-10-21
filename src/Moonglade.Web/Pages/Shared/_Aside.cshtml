@@ -40,6 +40,13 @@
         </section>
     }
 
+    @if (Configuration.GetSection("Experimental:SocialLinks").Exists())
+    {
+        <section id="aside-sociallink" class="mb-4">
+            @await Component.InvokeAsync("SocialLink")
+        </section>
+    }
+
     @if (BlogConfig.GeneralSettings.WidgetsFriendLink)
     {
         <section id="aside-friendlink" class="mb-4">
