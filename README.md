@@ -16,7 +16,7 @@ A personal blog system that optimized for [**Microsoft Azure**](https://azure.mi
 
 This is the way https://edi.wang is deployed, by taking advantage of as many Azure services as possible, the blog can run very fast and secure. There is no automated script to deploy it, you need to manually create all the resources.
 
-![image](https://cdn.edi.wang/web-assets/ediwang-azure-arch-visio-oct2024.png)
+![image](https://cdn.edi.wang/web-assets/ediwang-azure-arch-visio-oct2024.svg)
 
 ### Quick Deploy on Azure (App Service on Linux)
 
