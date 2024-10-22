@@ -1041,4 +1041,10 @@
   <data name="Confirm" xml:space="preserve">
     <value>確認</value>
   </data>
+  <data name="Enable Social Links" xml:space="preserve">
+    <value>啟用社交連結</value>
+  </data>
+  <data name="Social Links" xml:space="preserve">
+    <value>社交連結</value>
+  </data>
 </root>

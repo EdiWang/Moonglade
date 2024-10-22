@@ -27,6 +27,7 @@ public class SocialLink
 
 public class SocialLinkSettingsJsonModel
 {
+    [Display(Name = "Enable Social Links")]
     public bool IsEnabled { get; set; }
 
     [MaxLength(1024)]
