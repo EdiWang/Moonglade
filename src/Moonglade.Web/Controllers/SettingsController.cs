@@ -153,6 +153,16 @@ public class SettingsController(
         return NoContent();
     }
 
+    [HttpPost("social-link")]
+    [ProducesResponseType(StatusCodes.Status204NoContent)]
+    public async Task<IActionResult> SocialLink(SocialLinkSettings model)
+    {
+        blogConfig.SocialLinkSettings = model;
+
+        await SaveConfigAsync(blogConfig.SocialLinkSettings);
+        return NoContent();
+    }
+
     [HttpPost("reset")]
     [ProducesResponseType(StatusCodes.Status202Accepted)]
     public async Task<IActionResult> Reset(BlogDbContext context, IHostApplicationLifetime applicationLifetime)
