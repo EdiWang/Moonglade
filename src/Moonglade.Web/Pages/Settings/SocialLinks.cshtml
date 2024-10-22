@@ -1,0 +1,77 @@
+﻿@page "/admin/settings/social-links"
+@Html.AntiForgeryToken()
+@{
+    var bc = BlogConfig.SocialLinkSettings;
+    var settings = new SocialLinkSettingsJsonModel
+            {
+                IsEnabled = bc.IsEnabled,
+                JsonData = bc.Links.ToJson(true)
+            };
+}
+
+@section scripts {
+    <partial name="_MonacoLoaderScript" />
+    <script>
+        var jsonContentEditor = null;
+
+        require(['vs/editor/editor.main'], function () {
+            jsonContentEditor = initEditor('JsonContentEditor', "#settings_JsonData", 'json');
+        });
+    </script>
+    <script type="module">
+        import * as settings from '/js/app/admin.settings.module.js';
+
+        function handleSubmit(event) {
+            assignEditorValues(jsonContentEditor, "#settings_JsonData");
+            settings.handleSettingsSubmit(event);
+        }
+
+        const form = document.querySelector('#form-settings');
+        form.addEventListener('submit', handleSubmit);
+    </script>
+}
+
+@section head {
+    <style>
+        .monaco-target {
+            border: 1px solid var(--bs-border-color);
+            width: 100%;
+            min-height: calc(100vh - 370px);
+        }
+    </style>
+}
+
+<div class="alert alert-warning">
+    <i class="bi-exclamation-triangle"></i> This feature is under development. It is currently in preview. A GUI editor will be available in the future.
+</div>
+
+<form id="form-settings" asp-controller="Settings" asp-action="SocialLink">
+    <div class="admin-settings-entry-container">
+        <div class="settings-entry row align-items-center py-3 px-2 rounded-3 shadow-sm border mb-2">
+            <div class="col-auto">
+                <i class="bi-menu-app settings-entry-icon"></i>
+            </div>
+            <div class="col">
+                <label asp-for="@settings.IsEnabled" class="form-check-label"></label>
+            </div>
+            <div class="col-md-5 text-end">
+                <div class="form-check form-switch form-control-lg">
+                    <input type="hidden" name="IsEnabled" value="false">
+                    <input type="checkbox" name="IsEnabled" value="true" class="form-check-input" @(@settings.IsEnabled
+                                                                                                      ? "checked" : null) />
+                </div>
+            </div>
+        </div>
+
+        <div id="JsonContentEditor" class="monaco-target p-3 rounded-3 shadow-sm border">
+        </div>
+    </div>
+
+    <textarea asp-for="@settings.JsonData" class="settings-jsoncontent-textarea d-none"></textarea>
+
+    <div class="admin-settings-action-container border-top pt-2 mt-2">
+        <button type="submit" class="btn btn-outline-accent" id="btn-save-settings">
+            @SharedLocalizer["Save"]
+        </button>
+    </div>
+</form>
