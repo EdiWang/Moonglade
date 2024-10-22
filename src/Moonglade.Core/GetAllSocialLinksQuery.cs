@@ -2,20 +2,20 @@
 
 namespace Moonglade.Core;
 
-public record GetAllSocialLinksQuery : IRequest<List<SocialLink>>;
+public record GetAllSocialLinksQuery : IRequest<SocialLink[]>;
 
-public class GetAllSocialLinksQueryHandler(IBlogConfig blogConfig) : IRequestHandler<GetAllSocialLinksQuery, List<SocialLink>>
+public class GetAllSocialLinksQueryHandler(IBlogConfig blogConfig) : IRequestHandler<GetAllSocialLinksQuery, SocialLink[]>
 {
-    public Task<List<SocialLink>> Handle(GetAllSocialLinksQuery request, CancellationToken ct)
+    public Task<SocialLink[]> Handle(GetAllSocialLinksQuery request, CancellationToken ct)
     {
         var section = blogConfig.SocialLinkSettings;
 
         if (!section.IsEnabled)
         {
-            return Task.FromResult(new List<SocialLink>());
+            return Task.FromResult(Array.Empty<SocialLink>());
         }
 
         var links = blogConfig.SocialLinkSettings.Links;
-        return Task.FromResult(links ?? new List<SocialLink>());
+        return Task.FromResult(links);
     }
 }

@@ -6,13 +6,13 @@ public class SocialLinkSettings : IBlogSettings
 {
     public bool IsEnabled { get; set; }
 
-    public List<SocialLink> Links { get; set; }
+    public SocialLink[] Links { get; set; } = [];
 
     public static SocialLinkSettings DefaultValue =>
         new()
         {
             IsEnabled = false,
-            Links = new()
+            Links = []
         };
 }
 
