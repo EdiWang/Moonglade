@@ -40,7 +40,7 @@
         </section>
     }
 
-    @if (Configuration.GetSection("Experimental:SocialLinks").Exists())
+    @if (BlogConfig.SocialLinkSettings.IsEnabled)
     {
         <section id="aside-sociallink" class="mb-4">
             @await Component.InvokeAsync("SocialLink")

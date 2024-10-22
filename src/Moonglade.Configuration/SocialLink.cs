@@ -1,4 +1,20 @@
-﻿namespace Moonglade.Configuration;
+﻿using System.ComponentModel.DataAnnotations;
+
+namespace Moonglade.Configuration;
+
+public class SocialLinkSettings : IBlogSettings
+{
+    public bool IsEnabled { get; set; }
+
+    public SocialLink[] Links { get; set; } = [];
+
+    public static SocialLinkSettings DefaultValue =>
+        new()
+        {
+            IsEnabled = false,
+            Links = []
+        };
+}
 
 public class SocialLink
 {
@@ -7,4 +23,13 @@ public class SocialLink
     public string Icon { get; set; }
 
     public string Url { get; set; }
+}
+
+public class SocialLinkSettingsJsonModel
+{
+    [Display(Name = "Enable Social Links")]
+    public bool IsEnabled { get; set; }
+
+    [MaxLength(1024)]
+    public string JsonData { get; set; }
 }
