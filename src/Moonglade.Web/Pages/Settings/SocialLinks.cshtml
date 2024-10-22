@@ -36,17 +36,22 @@
         .monaco-target {
             border: 1px solid var(--bs-border-color);
             width: 100%;
-            min-height: calc(100vh - 370px);
+            min-height: calc(100vh - 440px);
         }
     </style>
 }
 
-<div class="alert alert-warning">
-    <i class="bi-exclamation-triangle"></i> This feature is under development. It is currently in preview. A GUI editor will be available in the future.
-</div>
+@section admintoolbar {
+    <partial name="_SettingsHeader" />
+}
 
 <form id="form-settings" asp-controller="Settings" asp-action="SocialLink">
     <div class="admin-settings-entry-container">
+        
+        <div class="alert alert-warning">
+            <i class="bi-exclamation-triangle"></i> This feature is under development. It is currently in preview. A GUI editor will be available in the future.
+        </div>
+
         <div class="settings-entry row align-items-center py-3 px-2 rounded-3 shadow-sm border mb-2">
             <div class="col-auto">
                 <i class="bi-menu-app settings-entry-icon"></i>
@@ -58,7 +63,8 @@
                 <div class="form-check form-switch form-control-lg">
                     <input type="hidden" name="IsEnabled" value="false">
                     <input type="checkbox" name="IsEnabled" value="true" class="form-check-input" @(@settings.IsEnabled
-                                                                                                      ? "checked" : null) />
+                                                                                                      ? "checked"
+                                                                                                      : null)/>
                 </div>
             </div>
         </div>
