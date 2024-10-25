@@ -1,6 +1,3 @@
-using System.Globalization;
-using System.Net;
-using System.Text.Json.Serialization;
 using Edi.Captcha;
 using Edi.PasswordGenerator;
 using Microsoft.AspNetCore.Rewrite;
@@ -17,6 +14,9 @@ using Moonglade.Syndication;
 using Moonglade.Web.Handlers;
 using Moonglade.Webmention;
 using SixLabors.Fonts;
+using System.Globalization;
+using System.Net;
+using System.Text.Json.Serialization;
 using Encoder = Moonglade.Web.Configuration.Encoder;
 
 namespace Moonglade.Web;
@@ -267,9 +267,7 @@ public class Program
             options.IconFilePath = "/favicon-16x16.png";
         });
 
-        // In v14.11.0, just send the header to the client in order to observe browser behaviour
-        // We will read client's preference in future versions
-        bool usePrefersColorSchemeHeader = app.Configuration.GetSection("Experimental:UsePrefersColorSchemeHeader").Get<bool>();
+        bool usePrefersColorSchemeHeader = app.Configuration.GetSection("PrefersColorSchemeHeader:Enabled").Get<bool>();
         if (usePrefersColorSchemeHeader) app.UseMiddleware<PrefersColorSchemeMiddleware>();
 
         app.UseMiddleware<PoweredByMiddleware>();

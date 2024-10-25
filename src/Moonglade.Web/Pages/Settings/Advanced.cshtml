@@ -1,5 +1,7 @@
 ﻿@page "/admin/settings/advanced"
 @using System.Reflection
+@inject IConfiguration Configuration
+
 @Html.AntiForgeryToken()
 @{
     var settings = BlogConfig.AdvancedSettings;
@@ -102,7 +104,7 @@
                     
                     <div class="settings-entry row align-items-center py-3 px-2 rounded-3 shadow-sm border mb-2">
                         <div class="col-auto">
-                            <i class="bi-arrow-right-circle settings-entry-icon"></i>
+                            <i class="bi-bell settings-entry-icon"></i>
                         </div>
                         <div class="col">
                             <label asp-for="@settings.EnableWebmention" class="form-check-label"></label>
@@ -117,7 +119,7 @@
 
                     <div class="settings-entry row align-items-center py-3 px-2 rounded-3 shadow-sm border mb-2">
                         <div class="col-auto">
-                            <i class="bi-arrow-right-circle settings-entry-icon"></i>
+                            <i class="bi-signpost settings-entry-icon"></i>
                         </div>
                         <div class="col">
                             <label asp-for="@settings.EnablePingback" class="form-check-label"></label>
@@ -142,6 +144,25 @@
                                 <input type="hidden" name="EnableSiteMap" value="false">
                                 <input type="checkbox" name="EnableSiteMap" value="true" class="form-check-input" @(settings.EnableSiteMap ? "checked" : null)>
                             </div>
+                        </div>
+                    </div>
+                    
+                    <div class="settings-entry row align-items-center py-3 px-2 rounded-3 shadow-sm border mb-2">
+                        <div class="col-auto">
+                            <i class="bi-file-earmark-check settings-entry-icon"></i>
+                        </div>
+                        <div class="col">
+                            <label class="form-check-label">Index Now</label>
+                        </div>
+                        <div class="col-md-4 text-end">
+                            @if (string.IsNullOrWhiteSpace(Configuration["IndexNow:ApiKey"]))
+                            {
+                                <text>Not configured</text>
+                            }
+                            else
+                            {
+                                <code>@Configuration["IndexNow:ApiKey"]</code>
+                            }
                         </div>
                     </div>
 

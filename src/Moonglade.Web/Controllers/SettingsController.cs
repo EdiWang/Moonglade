@@ -153,6 +153,26 @@ public class SettingsController(
         return NoContent();
     }
 
+    [HttpPost("social-link")]
+    [ProducesResponseType(StatusCodes.Status204NoContent)]
+    public async Task<IActionResult> SocialLink(SocialLinkSettingsJsonModel model)
+    {
+        if (model.IsEnabled && string.IsNullOrWhiteSpace(model.JsonData))
+        {
+            ModelState.AddModelError(nameof(SocialLinkSettingsJsonModel.JsonData), "JsonData is required");
+            return BadRequest(ModelState.CombineErrorMessages());
+        }
+
+        blogConfig.SocialLinkSettings = new()
+        {
+            IsEnabled = model.IsEnabled,
+            Links = model.JsonData.FromJson<SocialLink[]>()
+        };
+
+        await SaveConfigAsync(blogConfig.SocialLinkSettings);
+        return NoContent();
+    }
+
     [HttpPost("reset")]
     [ProducesResponseType(StatusCodes.Status202Accepted)]
     public async Task<IActionResult> Reset(BlogDbContext context, IHostApplicationLifetime applicationLifetime)

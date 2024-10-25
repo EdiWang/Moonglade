@@ -194,6 +194,7 @@
     <form class="post-edit-form" asp-controller="Post" asp-action="CreateOrEdit">
         <input type="hidden" asp-for="ViewModel.PostId" />
         <input type="hidden" asp-for="ViewModel.IsPublished" />
+        <input type="hidden" asp-for="ViewModel.LastModifiedUtc" />
         <div class="row g-2">
             <div class="col-md-9 col-xl-10">
                 <input type="text" asp-for="ViewModel.Title" class="form-control form-control-lg" placeholder="@SharedLocalizer["Title"]" required maxlength="128" />
@@ -326,7 +327,7 @@
                                                        name="SelectedCatIds"
                                                        value="@cat.Id"
                                                        class="form-check-input"
-                                                @(cat.IsChecked ? "checked" : null)>
+                                                       @(cat.IsChecked ? "checked" : null)>
 
                                                 <label for="category-@cat.Id" class="form-check-label">
                                                     @cat.DisplayText
@@ -339,6 +340,13 @@
                         }
                     </div>
                 </div>
+                
+                @if (Model.ViewModel.IsPublished)
+                {
+                    <div class="text-center">
+                        <a class="unpublish-link btn btn-sm btn-outline-secondary" data-bs-toggle="modal" data-bs-target="#unpublishPostModal">@SharedLocalizer["Unpublish this post"]</a>
+                    </div>
+                }
             </div>
         </div>
 
@@ -362,4 +370,5 @@
     </form>
 
     <partial name="_EditPostHeroImage" />
+    <partial name="_UnpublishPostModal" />
 </div>

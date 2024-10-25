@@ -59,6 +59,10 @@ public class BlogConfigInitializer(IMediator mediator, IBlogConfig blogConfig) :
                         await mediator.Send(new AddDefaultConfigurationCommand(key, nameof(LocalAccountSettings),
                             LocalAccountSettings.DefaultValue.ToJson()));
                         break;
+                    case 12:
+                        await mediator.Send(new AddDefaultConfigurationCommand(key, nameof(SocialLinkSettings),
+                            SocialLinkSettings.DefaultValue.ToJson()));
+                        break;
                     case 99:
                         await mediator.Send(new AddDefaultConfigurationCommand(key, nameof(SystemManifestSettings),
                             isNew ?

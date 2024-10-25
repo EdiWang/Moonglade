@@ -48,6 +48,7 @@ public class UpdatePostCommandHandler : IRequestHandler<UpdatePostCommand, PostE
 
     public async Task<PostEntity> Handle(UpdatePostCommand request, CancellationToken ct)
     {
+        var utcNow = DateTime.UtcNow;
         var (guid, postEditModel) = request;
         var post = await _postRepo.GetByIdAsync(guid, ct);
         if (null == post)
@@ -73,7 +74,7 @@ public class UpdatePostCommandHandler : IRequestHandler<UpdatePostCommand, PostE
         if (postEditModel.IsPublished && !post.IsPublished)
         {
             post.IsPublished = true;
-            post.PubDateUtc = DateTime.UtcNow;
+            post.PubDateUtc = utcNow;
         }
 
         // #325: Allow changing publish date for published posts
@@ -87,7 +88,7 @@ public class UpdatePostCommandHandler : IRequestHandler<UpdatePostCommand, PostE
         post.Author = postEditModel.Author?.Trim();
         post.Slug = postEditModel.Slug.ToLower().Trim();
         post.Title = postEditModel.Title.Trim();
-        post.LastModifiedUtc = DateTime.UtcNow;
+        post.LastModifiedUtc = utcNow;
         post.IsFeedIncluded = postEditModel.FeedIncluded;
         post.ContentLanguageCode = postEditModel.LanguageCode;
         post.IsFeatured = postEditModel.Featured;

@@ -1,7 +1,7 @@
 name: Azure Web App (PROD)
 
 env:
-  AZURE_WEBAPP_NAME: moonglade-ediwang-us
+  AZURE_WEBAPP_NAME: ediwang
   AZURE_WEBAPP_PACKAGE_PATH: '.'
   DOTNET_VERSION: '8'
 
@@ -66,5 +66,5 @@ jobs:
         with:
           app-name: ${{ env.AZURE_WEBAPP_NAME }}
           clean: true
-          publish-profile: ${{ secrets.AZURE_WEBAPP_PUBLISH_PROFILE }}
+          publish-profile: ${{ secrets.AZURE_WEBAPP_PUBLISH_PROFILE2 }}
           package: ${{ env.AZURE_WEBAPP_PACKAGE_PATH }}

@@ -9,7 +9,6 @@ public class ConfigureEndpoints
         var obj = new
         {
             Helper.AppVersion,
-            DotNetVersion = Environment.Version.ToString(),
             EnvironmentTags = Helper.GetEnvironmentTags(),
             GeoMatch = context.Request.Headers["x-geo-match"]
         };
