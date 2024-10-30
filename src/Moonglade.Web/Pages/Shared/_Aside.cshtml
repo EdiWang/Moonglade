@@ -17,7 +17,7 @@
             <div class="aside-widget p-3 rounded-3 shadow-sm border">
                 <h6 class="card-subtitle mb-3 text-secondary">@SharedLocalizer["Tags"]</h6>
                 <div>
-                    <cache expires-after="@TimeSpan.FromMinutes(int.Parse(Configuration["CacheSlidingExpirationMinutes:Widget"]!))">
+                    <cache expires-after="@TimeSpan.FromMinutes(int.Parse(Configuration["Widget:TagsCacheMinutes"]!))">
                         @await Component.InvokeAsync("Tags")
                     </cache>
                     <hr />
@@ -50,7 +50,7 @@
     @if (BlogConfig.GeneralSettings.WidgetsFriendLink)
     {
         <section id="aside-friendlink" class="mb-4">
-            <cache expires-after="@TimeSpan.FromMinutes(int.Parse(Configuration["CacheSlidingExpirationMinutes:Widget"]!))">
+            <cache expires-after="@TimeSpan.FromMinutes(int.Parse(Configuration["Widget:FriendLinkCacheMinutes"]!))">
                 @await Component.InvokeAsync("FriendLink")
             </cache>
         </section>
