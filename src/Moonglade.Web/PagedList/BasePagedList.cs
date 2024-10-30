@@ -65,18 +65,6 @@ public class BasePagedList<T> : PagedListMetaData, IPagedList<T>
         IsFirstPage = pageNumberIsGood && PageNumber == 1;
         IsLastPage = pageNumberIsGood && PageNumber == PageCount;
 
-        var numberOfFirstItemOnPage = (PageNumber - 1) * PageSize + 1;
-
-        FirstItemOnPage = pageNumberIsGood ? numberOfFirstItemOnPage : 0;
-
-        var numberOfLastItemOnPage = numberOfFirstItemOnPage + PageSize - 1;
-
-        LastItemOnPage = pageNumberIsGood
-            ? numberOfLastItemOnPage > TotalItemCount
-                ? TotalItemCount
-                : numberOfLastItemOnPage
-            : 0;
-
         Subset.AddRange(subset);
     }
 

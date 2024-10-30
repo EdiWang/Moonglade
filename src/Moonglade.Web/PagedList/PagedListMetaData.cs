@@ -23,8 +23,6 @@ public class PagedListMetaData : IPagedList
         HasNextPage = pagedList.HasNextPage;
         IsFirstPage = pagedList.IsFirstPage;
         IsLastPage = pagedList.IsLastPage;
-        FirstItemOnPage = pagedList.FirstItemOnPage;
-        LastItemOnPage = pagedList.LastItemOnPage;
     }
 
     public int PageCount { get; protected set; }
@@ -42,24 +40,4 @@ public class PagedListMetaData : IPagedList
     public bool IsFirstPage { get; protected set; }
 
     public bool IsLastPage { get; protected set; }
-
-    /// <summary>
-    /// One-based index of the first item in the paged subset, zero if the superset is empty or PageNumber
-    /// is greater than PageCount.
-    /// </summary>
-    /// <value>
-    /// One-based index of the first item in the paged subset, zero if the superset is empty or PageNumber
-    /// is greater than PageCount.
-    /// </value>
-    public int FirstItemOnPage { get; protected set; }
-
-    /// <summary>
-    /// One-based index of the last item in the paged subset, zero if the superset is empty or PageNumber
-    /// is greater than PageCount.
-    /// </summary>
-    /// <value>
-    /// One-based index of the last item in the paged subset, zero if the superset is empty or PageNumber
-    /// is greater than PageCount.
-    /// </value>
-    public int LastItemOnPage { get; protected set; }
 }
