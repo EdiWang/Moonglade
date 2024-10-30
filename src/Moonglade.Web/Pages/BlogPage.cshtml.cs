@@ -24,7 +24,7 @@ public class BlogPageModel(IMediator mediator, ICacheAside cache, IConfiguration
 
         BlogPage = page;
 
-        if (page.UpdateTimeUtc.HasValue && bool.Parse(configuration["Page:SetLastModifiedHeader"]!))
+        if (page.UpdateTimeUtc.HasValue && bool.Parse(configuration["Page:LastModifiedHeader"]!))
         {
             Response.Headers.LastModified = page.UpdateTimeUtc.Value.ToString("R");
 
