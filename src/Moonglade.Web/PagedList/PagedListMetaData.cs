@@ -9,22 +9,6 @@ public class PagedListMetaData : IPagedList
     {
     }
 
-    ///<summary>
-    /// Non-enumerable version of the PagedList class.
-    ///</summary>
-    ///<param name="pagedList">A PagedList (likely enumerable) to copy metadata from.</param>
-    public PagedListMetaData(IPagedList pagedList)
-    {
-        PageCount = pagedList.PageCount;
-        TotalItemCount = pagedList.TotalItemCount;
-        PageNumber = pagedList.PageNumber;
-        PageSize = pagedList.PageSize;
-        HasPreviousPage = pagedList.HasPreviousPage;
-        HasNextPage = pagedList.HasNextPage;
-        IsFirstPage = pagedList.IsFirstPage;
-        IsLastPage = pagedList.IsLastPage;
-    }
-
     public int PageCount { get; protected set; }
 
     public int TotalItemCount { get; protected set; }
