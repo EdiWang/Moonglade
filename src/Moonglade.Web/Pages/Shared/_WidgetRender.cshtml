@@ -1,0 +1,15 @@
+﻿@model string
+@inject ILogger<Program> Logger
+
+@try
+{
+    @await Component.InvokeAsync(Model)
+}
+catch (Exception e)
+{
+    Logger.LogError(e, e.Message);
+
+    <div class="alert alert-danger">
+        ERROR
+    </div>
+}

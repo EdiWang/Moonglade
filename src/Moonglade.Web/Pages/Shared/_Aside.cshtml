@@ -18,7 +18,7 @@
                 <h6 class="card-subtitle mb-3 text-secondary">@SharedLocalizer["Tags"]</h6>
                 <div>
                     <cache expires-after="@TimeSpan.FromMinutes(int.Parse(Configuration["Widget:TagsCacheMinutes"]!))">
-                        @await Component.InvokeAsync("Tags")
+                        <partial name="_WidgetRender" model="@("Tags")" />
                     </cache>
                     <hr />
                     <a asp-page="/Tags" class="card-link">
@@ -43,7 +43,7 @@
     @if (BlogConfig.SocialLinkSettings.IsEnabled)
     {
         <section id="aside-sociallink" class="mb-4">
-            @await Component.InvokeAsync("SocialLink")
+            <partial name="_WidgetRender" model="@("SocialLink")" />
         </section>
     }
 
@@ -51,7 +51,7 @@
     {
         <section id="aside-friendlink" class="mb-4">
             <cache expires-after="@TimeSpan.FromMinutes(int.Parse(Configuration["Widget:FriendLinkCacheMinutes"]!))">
-                @await Component.InvokeAsync("FriendLink")
+                <partial name="_WidgetRender" model="@("FriendLink")" />
             </cache>
         </section>
     }

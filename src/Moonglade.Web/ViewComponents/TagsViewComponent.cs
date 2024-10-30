@@ -2,19 +2,11 @@
 
 namespace Moonglade.Web.ViewComponents;
 
-public class TagsViewComponent(IBlogConfig blogConfig, IMediator mediator, ILogger<TagsViewComponent> logger) : ViewComponent
+public class TagsViewComponent(IBlogConfig blogConfig, IMediator mediator) : ViewComponent
 {
     public async Task<IViewComponentResult> InvokeAsync()
     {
-        try
-        {
-            var tags = await mediator.Send(new GetHotTagsQuery(blogConfig.GeneralSettings.HotTagAmount));
-            return View(tags);
-        }
-        catch (Exception e)
-        {
-            logger.LogError(e, e.Message);
-            return Content("ERROR");
-        }
+        var tags = await mediator.Send(new GetHotTagsQuery(blogConfig.GeneralSettings.HotTagAmount));
+        return View(tags);
     }
 }
