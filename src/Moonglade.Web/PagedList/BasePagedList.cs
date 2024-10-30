@@ -18,13 +18,6 @@ public class BasePagedList<T> : PagedListMetaData, IPagedList<T>
     protected readonly List<T> Subset = [];
 
     /// <summary>
-    /// Parameterless constructor.
-    /// </summary>
-    protected internal BasePagedList()
-    {
-    }
-
-    /// <summary>
     /// Initializes a new instance of a type deriving from <see cref = "BasePagedList{T}" /> and sets properties
     /// needed to calculate position and size data on the subset and superset.
     /// </summary>
