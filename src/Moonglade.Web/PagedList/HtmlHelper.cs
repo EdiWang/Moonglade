@@ -50,7 +50,7 @@ public class HtmlHelper
 
         AppendHtml(first, string.Format(options.LinkToFirstPageFormat, targetPageNumber));
 
-        foreach (var c in options.PageClasses ?? Enumerable.Empty<string>())
+        foreach (var c in options.PageClasses ?? [])
         {
             first.AddCssClass(c);
         }
@@ -74,7 +74,7 @@ public class HtmlHelper
 
         previous.Attributes.Add("rel", "prev");
 
-        foreach (var c in options.PageClasses ?? Enumerable.Empty<string>())
+        foreach (var c in options.PageClasses ?? [])
         {
             previous.AddCssClass(c);
         }
@@ -100,7 +100,7 @@ public class HtmlHelper
 
         SetInnerText(page, format(targetPageNumber));
 
-        foreach (var c in options.PageClasses ?? Enumerable.Empty<string>())
+        foreach (var c in options.PageClasses ?? [])
         {
             page.AddCssClass(c);
         }
@@ -124,7 +124,7 @@ public class HtmlHelper
 
         next.Attributes.Add("rel", "next");
 
-        foreach (var c in options.PageClasses ?? Enumerable.Empty<string>())
+        foreach (var c in options.PageClasses ?? [])
         {
             next.AddCssClass(c);
         }
@@ -146,7 +146,7 @@ public class HtmlHelper
 
         AppendHtml(last, string.Format(options.LinkToLastPageFormat, targetPageNumber));
 
-        foreach (var c in options.PageClasses ?? Enumerable.Empty<string>())
+        foreach (var c in options.PageClasses ?? [])
         {
             last.AddCssClass(c);
         }
@@ -261,7 +261,7 @@ public class HtmlHelper
 
         AppendHtml(ul, listItemLinksString);
 
-        foreach (var c in options.UlElementClasses ?? Enumerable.Empty<string>())
+        foreach (var c in options.UlElementClasses ?? [])
         {
             ul.AddCssClass(c);
         }

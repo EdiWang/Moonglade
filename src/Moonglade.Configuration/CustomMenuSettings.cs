@@ -17,7 +17,7 @@ public class CustomMenuSettings : IBlogSettings
     public bool IsEnabled { get; set; }
 
     [MaxLength(5)]
-    public Menu[] Menus { get; set; } = Array.Empty<Menu>();
+    public Menu[] Menus { get; set; } = [];
 
     [JsonIgnore]
     public static CustomMenuSettings DefaultValue =>
