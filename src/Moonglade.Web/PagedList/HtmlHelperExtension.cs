@@ -11,7 +11,7 @@ public static class HtmlHelperExtension
         Func<int, string> generatePageUrl,
         PagedListRenderOptions options)
     {
-        var htmlHelper = new HtmlHelper(new());
+        var htmlHelper = new HtmlHelper();
         var htmlString = htmlHelper.PagedListPager(list, generatePageUrl, options);
 
         htmlString = HttpUtility.HtmlDecode(htmlString);
