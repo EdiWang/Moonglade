@@ -36,23 +36,32 @@ public class OpenSearchMiddleware(RequestDelegate next)
             writer.WriteElementString("ShortName", shortName);
             writer.WriteElementString("Description", description);
 
-            writer.WriteStartElement("Image");
-            writer.WriteAttributeString("height", "16");
-            writer.WriteAttributeString("width", "16");
-            writer.WriteAttributeString("type", Options.IconFileType);
-            writer.WriteValue($"{siteRootUrl.TrimEnd('/')}{Options.IconFilePath}");
-            await writer.WriteEndElementAsync();
-
-            writer.WriteStartElement("Url");
-            writer.WriteAttributeString("type", "text/html");
-            writer.WriteAttributeString("template", $"{siteRootUrl.TrimEnd('/')}/search?term={{searchTerms}}");
-            await writer.WriteEndElementAsync();
+            WriteImageElement(writer, siteRootUrl);
+            WriteUrlElement(writer, siteRootUrl);
 
             await writer.WriteEndElementAsync();
         }
 
         var xml = sb.ToString();
         return xml;
+    }
+
+    private static void WriteImageElement(XmlWriter writer, string siteRootUrl)
+    {
+        writer.WriteStartElement("Image");
+        writer.WriteAttributeString("height", "16");
+        writer.WriteAttributeString("width", "16");
+        writer.WriteAttributeString("type", Options.IconFileType);
+        writer.WriteValue($"{siteRootUrl.TrimEnd('/')}{Options.IconFilePath}");
+        writer.WriteEndElement();
+    }
+
+    private static void WriteUrlElement(XmlWriter writer, string siteRootUrl)
+    {
+        writer.WriteStartElement("Url");
+        writer.WriteAttributeString("type", "text/html");
+        writer.WriteAttributeString("template", $"{siteRootUrl.TrimEnd('/')}/search?term={{searchTerms}}");
+        writer.WriteEndElement();
     }
 }
 
