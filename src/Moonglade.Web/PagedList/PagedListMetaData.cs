@@ -5,10 +5,6 @@
 ///</summary>    
 public class PagedListMetaData : IPagedList
 {
-    protected PagedListMetaData()
-    {
-    }
-
     public int PageCount { get; protected set; }
 
     public int TotalItemCount { get; protected set; }
