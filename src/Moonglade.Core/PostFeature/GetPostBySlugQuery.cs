@@ -17,7 +17,7 @@ public class GetPostBySlugQueryHandler(MoongladeRepository<PostEntity> repo, ICa
 
         var psm = await cache.GetOrCreateAsync(BlogCachePartition.Post.ToString(), $"{routeLink}", async entry =>
         {
-            entry.SlidingExpiration = TimeSpan.FromMinutes(int.Parse(configuration["CacheSlidingExpirationMinutes:Post"]!));
+            entry.SlidingExpiration = TimeSpan.FromMinutes(int.Parse(configuration["Post:CacheMinutes"]!));
 
             var post = await repo.FirstOrDefaultAsync(spec, ct);
             return post;

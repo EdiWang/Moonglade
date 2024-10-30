@@ -35,7 +35,7 @@ public static class WebApplicationBuilderExtension
             { "Database", builder.Configuration.GetConnectionString("DatabaseType")! },
             { "Image storage", builder.Configuration["ImageStorage:Provider"]! },
             { "Authentication", builder.Configuration["Authentication:Provider"]! },
-            { "Editor", builder.Configuration["Editor"]! },
+            { "Editor", builder.Configuration["Post:Editor"]! },
             { "Environment", envName ?? "N/A" }
         };
 

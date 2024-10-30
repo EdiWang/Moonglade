@@ -6,7 +6,7 @@
 
 @{
     ViewBag.Title = "Edit Post";
-    var ec = Configuration.GetSection("Editor").Get<EditorChoice>();
+    var ec = Configuration.GetSection("Post:Editor").Get<EditorChoice>();
 
     var wsm = Model.ViewModel.WarnSlugModification;
 

@@ -26,7 +26,7 @@ public class CreatePostCommandHandler(
             abs = ContentProcessor.GetPostAbstract(
                 request.Payload.EditorContent,
                 blogConfig.ContentSettings.PostAbstractWords,
-                configuration.GetSection("Editor").Get<EditorChoice>() == EditorChoice.Markdown);
+                configuration.GetSection("Post:Editor").Get<EditorChoice>() == EditorChoice.Markdown);
         }
         else
         {

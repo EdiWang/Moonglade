@@ -64,7 +64,7 @@ public class UpdatePostCommandHandler : IRequestHandler<UpdatePostCommand, PostE
             post.ContentAbstract = ContentProcessor.GetPostAbstract(
                 postEditModel.EditorContent,
                 _blogConfig.ContentSettings.PostAbstractWords,
-                _configuration.GetSection("Editor").Get<EditorChoice>() == EditorChoice.Markdown);
+                _configuration.GetSection("Post:Editor").Get<EditorChoice>() == EditorChoice.Markdown);
         }
         else
         {
