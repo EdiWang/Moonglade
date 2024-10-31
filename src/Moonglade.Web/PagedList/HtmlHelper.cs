@@ -91,14 +91,13 @@ public class HtmlHelper
 
     private TagBuilder Page(int i, IPagedList list, Func<int, string> generatePageUrl, PagedListRenderOptions options)
     {
-        var format = options.FunctionToDisplayEachPageNumber
-                     ?? (pageNumber => string.Format(options.LinkToIndividualPageFormat, pageNumber));
+        string Format(int pageNumber) => string.Format(options.LinkToIndividualPageFormat, pageNumber);
         var targetPageNumber = i;
         var page = i == list.PageNumber
             ? new TagBuilder("span")
             : new TagBuilder("a");
 
-        SetInnerText(page, format(targetPageNumber));
+        SetInnerText(page, Format(targetPageNumber));
 
         foreach (var c in options.PageClasses ?? [])
         {

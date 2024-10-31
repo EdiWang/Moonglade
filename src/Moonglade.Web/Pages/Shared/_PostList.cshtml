@@ -6,8 +6,9 @@
     <partial name="_PostListEntry" model="item" />
 }
 
+
 @Html.PagedListPager(Model, page => $"?p={page}", new()
 {
-    UlElementClasses = new[] { "pagination justify-content-end" },
+    UlElementClasses = ["pagination justify-content-end"],
     MaximumPageNumbersToDisplay = 5
 })

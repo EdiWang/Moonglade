@@ -16,7 +16,6 @@ public class PagedListRenderOptions
         LinkToLastPageFormat = ">>";
         PageCountAndCurrentLocationFormat = "Page {0} of {1}.";
         ItemSliceAndTotalFormat = "Showing items {0} through {1} of {2}.";
-        FunctionToDisplayEachPageNumber = null;
         UlElementClasses = ["pagination"];
         PageClasses = ["page-link"];
         PreviousElementClass = "PagedList-skip-to-previous";
@@ -111,9 +110,4 @@ public class PagedListRenderOptions
     /// "Showing items {0} through {1} of {2}."
     ///</example>
     public string ItemSliceAndTotalFormat { get; set; }
-
-    /// <summary>
-    /// A function that will render each page number when specified (and DisplayLinkToIndividualPages is true). If no function is specified, the LinkToIndividualPageFormat value will be used instead.
-    /// </summary>
-    public Func<int, string> FunctionToDisplayEachPageNumber { get; set; }
 }
