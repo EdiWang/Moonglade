@@ -18,7 +18,7 @@
     <small class="d-none d-md-inline text-muted">@Model.Cat.Note</small>
 </h2>
 
-@if (Model.Posts.Any())
+@if (Model.Posts.Count > 0)
 {
     <partial name="_PostList" model="Model.Posts" />
 }

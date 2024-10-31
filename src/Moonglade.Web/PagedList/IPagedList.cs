@@ -10,10 +10,7 @@
 /// </remarks>
 /// <typeparam name="T">The type of object the collection should contain.</typeparam>
 /// <seealso cref="IEnumerable{T}"/>
-public interface IPagedList<out T> : IPagedList, IReadOnlyList<T>
-{
-
-}
+public interface IPagedList<out T> : IPagedList;
 
 /// <summary>
 /// Represents a subset of a collection of objects that can be individually accessed by index and containing
@@ -34,28 +31,12 @@ public interface IPagedList
     int PageCount { get; }
 
     /// <summary>
-    /// Total number of objects contained within the superset.
-    /// </summary>
-    /// <value>
-    /// Total number of objects contained within the superset.
-    /// </value>
-    int TotalItemCount { get; }
-
-    /// <summary>
     /// One-based index of this subset within the superset, zero if the superset is empty.
     /// </summary>
     /// <value>
     /// One-based index of this subset within the superset, zero if the superset is empty.
     /// </value>
     int PageNumber { get; }
-
-    /// <summary>
-    /// Maximum size any individual subset.
-    /// </summary>
-    /// <value>
-    /// Maximum size any individual subset.
-    /// </value>
-    int PageSize { get; }
 
     /// <summary>
     /// Returns true if the superset is not empty and PageNumber is less than or equal to PageCount and this

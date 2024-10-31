@@ -10,7 +10,7 @@
     @SharedLocalizer["Featured Posts"]
 </h3>
 
-@if (Model.Posts.Any())
+@if (Model.Posts.Count > 0)
 {
     <partial name="_PostList" model="Model.Posts" />
 }

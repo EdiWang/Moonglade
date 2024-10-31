@@ -1,6 +1,4 @@
-﻿using System.Collections;
-
-namespace Moonglade.Web.PagedList;
+﻿namespace Moonglade.Web.PagedList;
 
 /// <summary>
 /// Represents a subset of a collection of objects that can be individually accessed by index and containing
@@ -70,15 +68,6 @@ public class BasePagedList<T> : PagedListMetaData, IPagedList<T>
     public IEnumerator<T> GetEnumerator()
     {
         return Subset.GetEnumerator();
-    }
-
-    /// <summary>
-    /// 	Returns an enumerator that iterates through the BasePagedList&lt;T&gt;.
-    /// </summary>
-    /// <returns>A BasePagedList&lt;T&gt;.Enumerator for the BasePagedList&lt;T&gt;.</returns>
-    IEnumerator IEnumerable.GetEnumerator()
-    {
-        return GetEnumerator();
     }
 
     ///<summary>
