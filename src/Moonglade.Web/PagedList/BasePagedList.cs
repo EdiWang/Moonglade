@@ -11,8 +11,24 @@
 /// <typeparam name = "T">The type of object the collection should contain.</typeparam>
 /// <seealso cref = "IPagedList{T}" />
 /// <seealso cref = "List{T}" />
-public class BasePagedList<T> : PagedListMetaData, IPagedList<T>
+public class BasePagedList<T> : IPagedList<T>
 {
+    public int PageCount { get; protected set; }
+
+    public int TotalItemCount { get; protected set; }
+
+    public int PageNumber { get; protected set; }
+
+    public int PageSize { get; protected set; }
+
+    public bool HasPreviousPage { get; protected set; }
+
+    public bool HasNextPage { get; protected set; }
+
+    public bool IsFirstPage { get; protected set; }
+
+    public bool IsLastPage { get; protected set; }
+
     protected readonly List<T> Subset = [];
 
     /// <summary>
