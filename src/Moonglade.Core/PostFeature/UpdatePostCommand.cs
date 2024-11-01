@@ -54,10 +54,23 @@ public class UpdatePostCommandHandler : IRequestHandler<UpdatePostCommand, PostE
 
         UpdatePostDetails(post, postEditModel, utcNow);
 
+        await UpdateTags(post, postEditModel.Tags, ct);
+        await UpdateCats(post, postEditModel.SelectedCatIds, ct);
+
+        await _postRepo.UpdateAsync(post, ct);
+
+        _cache.Remove(BlogCachePartition.Post.ToString(), post.RouteLink);
+
+        _logger.LogInformation($"Post updated: {post.Id}");
+        return post;
+    }
+
+    private async Task UpdateTags(PostEntity post, string tagString, CancellationToken ct)
+    {
         // 1. Add new tags to tag lib
-        var tags = string.IsNullOrWhiteSpace(postEditModel.Tags) ?
+        var tags = string.IsNullOrWhiteSpace(tagString) ?
             [] :
-            postEditModel.Tags.Split(',').ToArray();
+            tagString.Split(',').ToArray();
 
         foreach (var item in tags)
         {
@@ -92,15 +105,6 @@ public class UpdatePostCommandHandler : IRequestHandler<UpdatePostCommand, PostE
                 if (tag is not null) post.Tags.Add(tag);
             }
         }
-
-        await UpdateCats(post, postEditModel.SelectedCatIds, ct);
-
-        await _postRepo.UpdateAsync(post, ct);
-
-        _cache.Remove(BlogCachePartition.Post.ToString(), post.RouteLink);
-
-        _logger.LogInformation($"Post updated: {post.Id}");
-        return post;
     }
 
     private void UpdatePostDetails(PostEntity post, PostEditModel postEditModel, DateTime utcNow)
