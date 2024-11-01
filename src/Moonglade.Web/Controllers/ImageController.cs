@@ -58,11 +58,10 @@ public class ImageController(IBlogImageStorage imageStorage,
     public async Task<IActionResult> Image([Required] IFormFile file, [FromQuery] bool skipWatermark = false)
     {
         var name = Path.GetFileName(file.FileName);
-
         var ext = Path.GetExtension(name).ToLower();
         var allowedExts = _imageStorageSettings.AllowedExtensions;
 
-        if (null == allowedExts || allowedExts.Length == 0)
+        if (allowedExts == null || allowedExts.Length == 0)
         {
             throw new InvalidDataException($"{nameof(ImageStorageSettings.AllowedExtensions)} is empty.");
         }
@@ -74,57 +73,60 @@ public class ImageController(IBlogImageStorage imageStorage,
         }
 
         var primaryFileName = fileNameGen.GetFileName(name);
-        var secondaryFieName = fileNameGen.GetFileName(name, "origin");
+        var secondaryFileName = fileNameGen.GetFileName(name, "origin");
 
         await using var stream = new MemoryStream();
         await file.CopyToAsync(stream);
-
         stream.Position = 0;
 
-        // Add watermark
-        MemoryStream watermarkedStream = null;
-        if (blogConfig.ImageSettings.IsWatermarkEnabled && !skipWatermark)
+        var watermarkedStream = AddWatermarkIfNeeded(stream, ext, skipWatermark);
+        var finalName = await imageStorage.InsertAsync(primaryFileName, watermarkedStream ?? stream.ToArray());
+
+        if (ShouldKeepOriginal(skipWatermark))
         {
-            if (string.Compare(".gif", ext, StringComparison.OrdinalIgnoreCase) != 0)
-            {
-                using var watermarker = new ImageWatermarker(stream, ext, blogConfig.ImageSettings.WatermarkSkipPixel);
-
-                watermarkedStream = watermarker.AddWatermark(
-                    blogConfig.ImageSettings.WatermarkText,
-                    Color.FromRgba(
-                        128,
-                        128,
-                        128,
-                        (byte)blogConfig.ImageSettings.WatermarkColorA),
-                    WatermarkPosition.BottomRight,
-                    15,
-                    blogConfig.ImageSettings.WatermarkFontSize);
-            }
-            else
-            {
-                logger.LogInformation($"Skipped watermark for extension name: {ext}");
-            }
-        }
-
-        var finalName = await imageStorage.InsertAsync(primaryFileName,
-            watermarkedStream is not null ?
-                watermarkedStream.ToArray() :
-                stream.ToArray());
-
-        if (blogConfig.ImageSettings.IsWatermarkEnabled && blogConfig.ImageSettings.KeepOriginImage || !skipWatermark)
-        {
-            var arr = stream.ToArray();
-            cannonService.FireAsync<IBlogImageStorage>(async storage => await storage.InsertAsync(secondaryFieName, arr));
+            StoreOriginalImageAsync(secondaryFileName, stream);
         }
 
         logger.LogInformation($"Image '{primaryFileName}' uploaded.");
-        var location = $"/image/{finalName}";
-        var filename = location;
 
         return Ok(new
         {
-            location,
-            filename
+            location = $"/image/{finalName}",
+            filename = $"/image/{finalName}"
         });
+    }
+
+    private byte[] AddWatermarkIfNeeded(MemoryStream stream, string ext, bool skipWatermark)
+    {
+        if (blogConfig.ImageSettings.IsWatermarkEnabled && !skipWatermark && !ext.Equals(".gif", StringComparison.OrdinalIgnoreCase))
+        {
+            using var watermarker = new ImageWatermarker(stream, ext, blogConfig.ImageSettings.WatermarkSkipPixel);
+            return watermarker.AddWatermark(
+                blogConfig.ImageSettings.WatermarkText,
+                Color.FromRgba(128, 128, 128, (byte)blogConfig.ImageSettings.WatermarkColorA),
+                WatermarkPosition.BottomRight,
+                15,
+                blogConfig.ImageSettings.WatermarkFontSize)?.ToArray();
+        }
+
+        if (ext.Equals(".gif", StringComparison.OrdinalIgnoreCase))
+        {
+            logger.LogInformation($"Skipped watermark for extension name: {ext}");
+        }
+
+        return null;
+    }
+
+    private bool ShouldKeepOriginal(bool skipWatermark)
+    {
+        return blogConfig.ImageSettings.IsWatermarkEnabled &&
+               (blogConfig.ImageSettings.KeepOriginImage || !skipWatermark);
+    }
+
+    private void StoreOriginalImageAsync(string fileName, MemoryStream stream)
+    {
+        var originalImageData = stream.ToArray();
+        cannonService.FireAsync<IBlogImageStorage>(async storage =>
+            await storage.InsertAsync(fileName, originalImageData));
     }
 }
