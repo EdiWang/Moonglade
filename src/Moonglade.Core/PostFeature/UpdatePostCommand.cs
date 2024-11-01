@@ -93,26 +93,7 @@ public class UpdatePostCommandHandler : IRequestHandler<UpdatePostCommand, PostE
             }
         }
 
-        // 3. update categories
-        if (_useMySqlWorkaround)
-        {
-            var oldpcs = await _pcRepository.AsQueryable().Where(pc => pc.PostId == post.Id)
-                .ToListAsync(cancellationToken: ct);
-            await _pcRepository.DeleteRangeAsync(oldpcs, ct);
-        }
-
-        post.PostCategory.Clear();
-        if (postEditModel.SelectedCatIds.Any())
-        {
-            foreach (var cid in postEditModel.SelectedCatIds)
-            {
-                post.PostCategory.Add(new()
-                {
-                    PostId = post.Id,
-                    CategoryId = cid
-                });
-            }
-        }
+        await UpdateCats(post, postEditModel.SelectedCatIds, ct);
 
         await _postRepo.UpdateAsync(post, ct);
 
@@ -157,5 +138,29 @@ public class UpdatePostCommandHandler : IRequestHandler<UpdatePostCommand, PostE
         post.HeroImageUrl = string.IsNullOrWhiteSpace(postEditModel.HeroImageUrl) ? null : Helper.SterilizeLink(postEditModel.HeroImageUrl);
         post.IsOutdated = postEditModel.IsOutdated;
         post.RouteLink = $"{post.PubDateUtc.GetValueOrDefault().ToString("yyyy/M/d", CultureInfo.InvariantCulture)}/{postEditModel.Slug}";
+    }
+
+    private async Task UpdateCats(PostEntity post, Guid[] catIds, CancellationToken ct)
+    {
+        // 3. update categories
+        if (_useMySqlWorkaround)
+        {
+            var oldpcs = await _pcRepository.AsQueryable().Where(pc => pc.PostId == post.Id)
+                .ToListAsync(cancellationToken: ct);
+            await _pcRepository.DeleteRangeAsync(oldpcs, ct);
+        }
+
+        post.PostCategory.Clear();
+        if (catIds.Any())
+        {
+            foreach (var cid in catIds)
+            {
+                post.PostCategory.Add(new()
+                {
+                    PostId = post.Id,
+                    CategoryId = cid
+                });
+            }
+        }
     }
 }
