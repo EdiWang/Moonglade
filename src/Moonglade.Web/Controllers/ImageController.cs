@@ -98,23 +98,21 @@ public class ImageController(IBlogImageStorage imageStorage,
 
     private byte[] AddWatermarkIfNeeded(MemoryStream stream, string ext, bool skipWatermark)
     {
-        if (blogConfig.ImageSettings.IsWatermarkEnabled && !skipWatermark && !ext.Equals(".gif", StringComparison.OrdinalIgnoreCase))
-        {
-            using var watermarker = new ImageWatermarker(stream, ext, blogConfig.ImageSettings.WatermarkSkipPixel);
-            return watermarker.AddWatermark(
-                blogConfig.ImageSettings.WatermarkText,
-                Color.FromRgba(128, 128, 128, (byte)blogConfig.ImageSettings.WatermarkColorA),
-                WatermarkPosition.BottomRight,
-                15,
-                blogConfig.ImageSettings.WatermarkFontSize)?.ToArray();
-        }
+        if (!blogConfig.ImageSettings.IsWatermarkEnabled || skipWatermark) return null;
 
         if (ext.Equals(".gif", StringComparison.OrdinalIgnoreCase))
         {
             logger.LogInformation($"Skipped watermark for extension name: {ext}");
+            return null;
         }
 
-        return null;
+        using var watermarker = new ImageWatermarker(stream, ext, blogConfig.ImageSettings.WatermarkSkipPixel);
+        return watermarker.AddWatermark(
+            blogConfig.ImageSettings.WatermarkText,
+            Color.FromRgba(128, 128, 128, (byte)blogConfig.ImageSettings.WatermarkColorA),
+            WatermarkPosition.BottomRight,
+            15,
+            blogConfig.ImageSettings.WatermarkFontSize)?.ToArray();
     }
 
     private bool ShouldKeepOriginal(bool skipWatermark)
