@@ -50,51 +50,9 @@ public class UpdatePostCommandHandler : IRequestHandler<UpdatePostCommand, PostE
     {
         var utcNow = DateTime.UtcNow;
         var (guid, postEditModel) = request;
-        var post = await _postRepo.GetByIdAsync(guid, ct);
-        if (null == post)
-        {
-            throw new InvalidOperationException($"Post {guid} is not found.");
-        }
+        var post = await _postRepo.GetByIdAsync(guid, ct) ?? throw new InvalidOperationException($"Post {guid} is not found.");
 
-        post.CommentEnabled = postEditModel.EnableComment;
-        post.PostContent = postEditModel.EditorContent;
-
-        if (string.IsNullOrEmpty(postEditModel.Abstract))
-        {
-            post.ContentAbstract = ContentProcessor.GetPostAbstract(
-                postEditModel.EditorContent,
-                _blogConfig.ContentSettings.PostAbstractWords,
-                _configuration.GetSection("Post:Editor").Get<EditorChoice>() == EditorChoice.Markdown);
-        }
-        else
-        {
-            post.ContentAbstract = postEditModel.Abstract.Trim();
-        }
-
-        if (postEditModel.IsPublished && !post.IsPublished)
-        {
-            post.IsPublished = true;
-            post.PubDateUtc = utcNow;
-        }
-
-        // #325: Allow changing publish date for published posts
-        if (postEditModel.ChangePublishDate && postEditModel.PublishDate is not null && post.PubDateUtc.HasValue)
-        {
-            var tod = post.PubDateUtc.Value.TimeOfDay;
-            var adjustedDate = postEditModel.PublishDate.Value;
-            post.PubDateUtc = adjustedDate.AddTicks(tod.Ticks);
-        }
-
-        post.Author = postEditModel.Author?.Trim();
-        post.Slug = postEditModel.Slug.ToLower().Trim();
-        post.Title = postEditModel.Title.Trim();
-        post.LastModifiedUtc = utcNow;
-        post.IsFeedIncluded = postEditModel.FeedIncluded;
-        post.ContentLanguageCode = postEditModel.LanguageCode;
-        post.IsFeatured = postEditModel.Featured;
-        post.HeroImageUrl = string.IsNullOrWhiteSpace(postEditModel.HeroImageUrl) ? null : Helper.SterilizeLink(postEditModel.HeroImageUrl);
-        post.IsOutdated = postEditModel.IsOutdated;
-        post.RouteLink = $"{post.PubDateUtc.GetValueOrDefault().ToString("yyyy/M/d", CultureInfo.InvariantCulture)}/{postEditModel.Slug}";
+        UpdatePostDetails(post, postEditModel, utcNow);
 
         // 1. Add new tags to tag lib
         var tags = string.IsNullOrWhiteSpace(postEditModel.Tags) ?
@@ -162,5 +120,42 @@ public class UpdatePostCommandHandler : IRequestHandler<UpdatePostCommand, PostE
 
         _logger.LogInformation($"Post updated: {post.Id}");
         return post;
+    }
+
+    private void UpdatePostDetails(PostEntity post, PostEditModel postEditModel, DateTime utcNow)
+    {
+        post.CommentEnabled = postEditModel.EnableComment;
+        post.PostContent = postEditModel.EditorContent;
+        post.ContentAbstract = string.IsNullOrEmpty(postEditModel.Abstract)
+            ? ContentProcessor.GetPostAbstract(
+                postEditModel.EditorContent,
+                _blogConfig.ContentSettings.PostAbstractWords,
+                _configuration.GetSection("Post:Editor").Get<EditorChoice>() == EditorChoice.Markdown)
+            : postEditModel.Abstract.Trim();
+
+        if (postEditModel.IsPublished && !post.IsPublished)
+        {
+            post.IsPublished = true;
+            post.PubDateUtc = utcNow;
+        }
+
+        // #325: Allow changing publish date for published posts
+        if (postEditModel.ChangePublishDate && postEditModel.PublishDate is not null && post.PubDateUtc.HasValue)
+        {
+            var tod = post.PubDateUtc.Value.TimeOfDay;
+            var adjustedDate = postEditModel.PublishDate.Value;
+            post.PubDateUtc = adjustedDate.AddTicks(tod.Ticks);
+        }
+
+        post.Author = postEditModel.Author?.Trim();
+        post.Slug = postEditModel.Slug.ToLower().Trim();
+        post.Title = postEditModel.Title.Trim();
+        post.LastModifiedUtc = utcNow;
+        post.IsFeedIncluded = postEditModel.FeedIncluded;
+        post.ContentLanguageCode = postEditModel.LanguageCode;
+        post.IsFeatured = postEditModel.Featured;
+        post.HeroImageUrl = string.IsNullOrWhiteSpace(postEditModel.HeroImageUrl) ? null : Helper.SterilizeLink(postEditModel.HeroImageUrl);
+        post.IsOutdated = postEditModel.IsOutdated;
+        post.RouteLink = $"{post.PubDateUtc.GetValueOrDefault().ToString("yyyy/M/d", CultureInfo.InvariantCulture)}/{postEditModel.Slug}";
     }
 }
