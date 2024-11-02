@@ -10,13 +10,72 @@
 }
 
 @section scripts {
-    <partial name="_MonacoLoaderScript" />
     <script>
-        var jsonContentEditor = null;
+        let links = @Html.Raw(settings.JsonData);
+        let editIndex = null;
 
-        require(['vs/editor/editor.main'], function () {
-            jsonContentEditor = initEditor('JsonContentEditor', "#settings_JsonData", 'json');
-        });
+        function renderTable() {
+            const tbody = document.getElementById('linksTable').getElementsByTagName('tbody')[0];
+            tbody.innerHTML = '';
+            links.forEach((link, index) => {
+                const row = tbody.insertRow();
+                row.insertCell(0).textContent = link.Name;
+                row.insertCell(1).textContent = link.Icon;
+                row.insertCell(2).textContent = link.Url;
+                const actions = row.insertCell(3);
+                actions.innerHTML = `<button onclick="editLink(${index})">Edit</button>
+                                         <button onclick="deleteLink(${index})">Delete</button>`;
+            });
+        }
+
+        function addOrUpdateLink() {
+            const name = document.getElementById('name').value.trim();
+            const icon = document.getElementById('icon').value.trim();
+            const url = document.getElementById('url').value.trim();
+            const error = document.getElementById('error');
+
+            if (!name || !icon || !url) {
+                error.textContent = 'All fields are required!';
+                return;
+            }
+
+            if (links.some((link, index) => link.Name === name && index !== editIndex)) {
+                error.textContent = 'Name must be unique!';
+                return;
+            }
+
+            if (editIndex !== null) {
+                links[editIndex] = { Name: name, Icon: icon, Url: url };
+                editIndex = null;
+            } else {
+                links.push({ Name: name, Icon: icon, Url: url });
+            }
+
+            clearForm();
+            renderTable();
+        }
+
+        function editLink(index) {
+            const link = links[index];
+            document.getElementById('name').value = link.Name;
+            document.getElementById('icon').value = link.Icon;
+            document.getElementById('url').value = link.Url;
+            editIndex = index;
+        }
+
+        function deleteLink(index) {
+            links.splice(index, 1);
+            renderTable();
+        }
+
+        function clearForm() {
+            document.getElementById('name').value = '';
+            document.getElementById('icon').value = '';
+            document.getElementById('url').value = '';
+            document.getElementById('error').textContent = '';
+        }
+
+        renderTable();
     </script>
     <script type="module">
         import * as settings from '/js/app/admin.settings.module.js';
@@ -33,11 +92,7 @@
 
 @section head {
     <style>
-        .monaco-target {
-            border: 1px solid var(--bs-border-color);
-            width: 100%;
-            min-height: calc(100vh - 440px);
-        }
+        
     </style>
 }
 
@@ -47,11 +102,6 @@
 
 <form id="form-settings" asp-controller="Settings" asp-action="SocialLink">
     <div class="admin-settings-entry-container">
-        
-        <div class="alert alert-warning">
-            <i class="bi-exclamation-triangle"></i> This feature is under development. It is currently in preview. A GUI editor will be available in the future.
-        </div>
-
         <div class="settings-entry row align-items-center py-3 px-2 rounded-3 shadow-sm border mb-2">
             <div class="col-auto">
                 <i class="bi-menu-app settings-entry-icon"></i>
@@ -68,8 +118,31 @@
                 </div>
             </div>
         </div>
+        
+        <table id="linksTable" class="table table-bordered p-3 rounded-3 shadow-sm">
+            <thead>
+            <tr>
+                <th>Name</th>
+                <th>Icon</th>
+                <th>URL</th>
+                <th>Actions</th>
+            </tr>
+            </thead>
+            <tbody>
+            </tbody>
+        </table>
+        
+        <div id="form">
+            <label for="name">Name:</label>
+            <input type="text" id="name" required>
+            <label for="icon">Icon:</label>
+            <input type="text" id="icon" required>
+            <label for="url">URL:</label>
+            <input type="text" id="url" required>
 
-        <div id="JsonContentEditor" class="monaco-target p-3 rounded-3 shadow-sm border">
+            <button class="btn btn-sm btn-accent-outline" onclick="addOrUpdateLink()">Add / Update</button>
+            
+            <span id="error" class="error"></span>
         </div>
     </div>
 
