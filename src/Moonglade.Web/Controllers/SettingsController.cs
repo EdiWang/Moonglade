@@ -173,18 +173,6 @@ public class SettingsController(
         return NoContent();
     }
 
-    [HttpPost("reset")]
-    [ProducesResponseType(StatusCodes.Status202Accepted)]
-    public async Task<IActionResult> Reset(BlogDbContext context, IHostApplicationLifetime applicationLifetime)
-    {
-        logger.LogWarning($"System reset is requested by '{User.Identity?.Name}', IP: {Helper.GetClientIP(HttpContext)}.");
-
-        await context.ClearAllData();
-
-        applicationLifetime.StopApplication();
-        return Accepted();
-    }
-
     [HttpPost("custom-css")]
     [ProducesResponseType(StatusCodes.Status204NoContent)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
