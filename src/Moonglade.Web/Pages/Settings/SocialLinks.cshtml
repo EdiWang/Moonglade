@@ -11,7 +11,8 @@
 
 @section scripts {
     <script>
-        let links = @Html.Raw(settings.JsonData);
+        const jsonValue = document.getElementById('settings_JsonData').value;
+        let links = jsonValue ? JSON.parse(jsonValue) : [];
         let editIndex = null;
 
         function renderTable() {
@@ -19,12 +20,12 @@
             tbody.innerHTML = '';
             links.forEach((link, index) => {
                 const row = tbody.insertRow();
-                row.insertCell(0).textContent = link.Name;
-                row.insertCell(1).textContent = link.Icon;
-                row.insertCell(2).textContent = link.Url;
+                row.insertCell(0).textContent = link.name;
+                row.insertCell(1).textContent = link.icon;
+                row.insertCell(2).textContent = link.url;
                 const actions = row.insertCell(3);
-                actions.innerHTML = `<button onclick="editLink(${index})">Edit</button>
-                                         <button onclick="deleteLink(${index})">Delete</button>`;
+                actions.innerHTML = `<button class="btn btn-sm btn-outline-accent" onclick="editLink(${index})">Edit</button>
+                                     <button class="btn btn-sm btn-outline-danger" onclick="deleteLink(${index})">Delete</button>`;
             });
         }
 
@@ -39,16 +40,16 @@
                 return;
             }
 
-            if (links.some((link, index) => link.Name === name && index !== editIndex)) {
+            if (links.some((link, index) => link.name === name && index !== editIndex)) {
                 error.textContent = 'Name must be unique!';
                 return;
             }
 
             if (editIndex !== null) {
-                links[editIndex] = { Name: name, Icon: icon, Url: url };
+                links[editIndex] = { name: name, icon: icon, url: url };
                 editIndex = null;
             } else {
-                links.push({ Name: name, Icon: icon, Url: url });
+                links.push({ name: name, icon: icon, url: url });
             }
 
             clearForm();
@@ -57,9 +58,9 @@
 
         function editLink(index) {
             const link = links[index];
-            document.getElementById('name').value = link.Name;
-            document.getElementById('icon').value = link.Icon;
-            document.getElementById('url').value = link.Url;
+            document.getElementById('name').value = link.name;
+            document.getElementById('icon').value = link.icon;
+            document.getElementById('url').value = link.url;
             editIndex = index;
         }
 
@@ -140,7 +141,7 @@
             <label for="url">URL:</label>
             <input type="text" id="url" required>
 
-            <button class="btn btn-sm btn-accent-outline" onclick="addOrUpdateLink()">Add / Update</button>
+            <button class="btn btn-sm btn-outline-accent" onclick="addOrUpdateLink()">Add / Update</button>
             
             <span id="error" class="error"></span>
         </div>
