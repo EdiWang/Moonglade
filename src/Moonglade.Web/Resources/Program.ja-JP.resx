@@ -168,9 +168,6 @@
   <data name="Archive" xml:space="preserve">
     <value>鳩</value>
   </data>
-  <data name="Are you ABSOLUTELY sure? ALL data and configuration will be erased!" xml:space="preserve">
-    <value>本当に本当ですか? すべてのデータと設定が消去されます。</value>
-  </data>
   <data name="Are you sure to restart website? All current requests will be terminated." xml:space="preserve">
     <value>あなたはあなたのウェブサイトを再起動してもよろしいですか? 現在のすべての要求が終了します。</value>
   </data>
@@ -393,9 +390,6 @@
   <data name="Environment" xml:space="preserve">
     <value>環境</value>
   </data>
-  <data name="Erase all data and configuration." xml:space="preserve">
-    <value>すべてのデータと設定を消去</value>
-  </data>
   <data name="Export Data" xml:space="preserve">
     <value>データのエクスポート</value>
   </data>
@@ -606,9 +600,6 @@
   <data name="Reply" xml:space="preserve">
     <value>答える</value>
   </data>
-  <data name="Reset" xml:space="preserve">
-    <value>リセット</value>
-  </data>
   <data name="Reset Password" xml:space="preserve">
     <value>パスワードを再設定する</value>
   </data>
@@ -695,9 +686,6 @@
   </data>
   <data name="System" xml:space="preserve">
     <value>制</value>
-  </data>
-  <data name="System Reset" xml:space="preserve">
-    <value>システムリセット</value>
   </data>
   <data name="Tag name" xml:space="preserve">
     <value>タグ名</value>

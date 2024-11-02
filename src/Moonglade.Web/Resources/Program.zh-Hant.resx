@@ -171,9 +171,6 @@
   <data name="Archive" xml:space="preserve">
     <value>歸檔時間軸</value>
   </data>
-  <data name="Are you ABSOLUTELY sure? ALL data and configuration will be erased!" xml:space="preserve">
-    <value>你真的確定嗎？所有數據和配置都將灰飛煙滅！</value>
-  </data>
   <data name="Are you sure to restart website? All current requests will be terminated." xml:space="preserve">
     <value>你確定要重啟網站嗎？所有當前請求都會被終止。</value>
   </data>
@@ -624,9 +621,6 @@
   <data name="Reply" xml:space="preserve">
     <value>回復</value>
   </data>
-  <data name="Reset" xml:space="preserve">
-    <value>重置</value>
-  </data>
   <data name="Reset Password" xml:space="preserve">
     <value>重置密碼</value>
   </data>
@@ -716,9 +710,6 @@
   </data>
   <data name="System" xml:space="preserve">
     <value>系統</value>
-  </data>
-  <data name="System Reset" xml:space="preserve">
-    <value>系統重置</value>
   </data>
   <data name="Tag name" xml:space="preserve">
     <value>標籤名</value>

@@ -30,21 +30,6 @@
             }, 1000);
         }
 
-        document.querySelector('.btn-reset').addEventListener('click', function () {
-            callApi(`/api/settings/reset`, 'POST', {}, () => { });
-
-            var btnReset = document.querySelector('.btn-reset');
-            btnReset.textContent = 'Wait...';
-            btnReset.classList.add('disabled');
-            btnReset.setAttribute('disabled', 'disabled');
-
-            startTimer(30, btnReset);
-
-            setTimeout(function () {
-                location.href = '/';
-            }, 30000);
-        });
-
         document.querySelector('.btn-check-update').addEventListener('click', function () {
             document.querySelector('.spinner-border').style.display = 'block';
             document.querySelector('.alert-has-new-release').style.display = 'none';
@@ -271,23 +256,6 @@
                             </a>
                         </div>
                     </div>
-
-                    <div class="settings-entry row align-items-center py-3 px-2 rounded-3 shadow-sm border">
-                        <div class="col-auto">
-                            <i class="bi-eraser settings-entry-icon"></i>
-                        </div>
-                        <div class="col">
-                            @SharedLocalizer["System Reset"]
-                            <div class="form-text">
-                                @SharedLocalizer["Erase all data and configuration."]
-                            </div>
-                        </div>
-                        <div class="col-md-3 text-end">
-                            <a href="javascript:;" class="btn btn-sm btn-danger" data-bs-toggle="modal" data-bs-target="#resetModal">
-                                @SharedLocalizer["Reset"]
-                            </a>
-                        </div>
-                    </div>
                 </div>
             </div>
         </div>
@@ -298,5 +266,4 @@
 </form>
 
 <partial name="_RestartModal" />
-<partial name="_ResetModal" />
 <partial name="_UpdateCheckCanvas" />
