@@ -1,0 +1,69 @@
+﻿const jsonValue = document.getElementById('settings_JsonData').value;
+let links = jsonValue ? JSON.parse(jsonValue) : [];
+let editIndex = null;
+
+function renderTable() {
+    const tbody = document.getElementById('linksTable').getElementsByTagName('tbody')[0];
+    tbody.innerHTML = '';
+    links.forEach((link, index) => {
+        const row = tbody.insertRow();
+        row.insertCell(0).textContent = link.name;
+        row.insertCell(1).textContent = link.icon;
+        row.insertCell(2).textContent = link.url;
+        const actions = row.insertCell(3);
+        actions.innerHTML = `<button type="button" class="btn btn-sm btn-outline-accent me-1" onclick="editLink(${index})"><i class="bi-pen"></i></button><button type="button" class="btn btn-sm btn-outline-danger" onclick="deleteLink(${index})"><i class="bi-trash"></i></button>`;
+    });
+
+    updateTextareaValue();
+}
+
+function updateTextareaValue() {
+    document.getElementById('settings_JsonData').value = JSON.stringify(links);
+}
+
+function addOrUpdateLink() {
+    const name = document.getElementById('name').value.trim();
+    const icon = document.getElementById('icon').value.trim();
+    const url = document.getElementById('url').value.trim();
+    const error = document.getElementById('error');
+
+    if (!name || !icon || !url) {
+        error.textContent = 'All fields are required!';
+        return;
+    }
+
+    if (links.some((link, index) => link.name === name && index !== editIndex)) {
+        error.textContent = 'Name must be unique!';
+        return;
+    }
+
+    if (editIndex !== null) {
+        links[editIndex] = { name: name, icon: icon, url: url };
+        editIndex = null;
+    } else {
+        links.push({ name: name, icon: icon, url: url });
+    }
+
+    clearForm();
+    renderTable();
+}
+
+function editLink(index) {
+    const link = links[index];
+    document.getElementById('name').value = link.name;
+    document.getElementById('icon').value = link.icon;
+    document.getElementById('url').value = link.url;
+    editIndex = index;
+}
+
+function deleteLink(index) {
+    links.splice(index, 1);
+    renderTable();
+}
+
+function clearForm() {
+    document.getElementById('name').value = '';
+    document.getElementById('icon').value = '';
+    document.getElementById('url').value = '';
+    document.getElementById('error').textContent = '';
+}
