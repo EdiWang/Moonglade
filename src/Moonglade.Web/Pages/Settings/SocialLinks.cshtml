@@ -25,7 +25,7 @@
                 row.insertCell(2).textContent = link.url;
                 const actions = row.insertCell(3);
                 actions.innerHTML = `<button type="button" class="btn btn-sm btn-outline-accent" onclick="editLink(${index})"><i class="bi-pen"></i></button>
-                                     <button type="button" class="btn btn-sm btn-outline-danger" onclick="deleteLink(${index})"><i class="bi-trash"></i></button>`;
+                                                                     <button type="button" class="btn btn-sm btn-outline-danger" onclick="deleteLink(${index})"><i class="bi-trash"></i></button>`;
             });
         }
 
@@ -93,7 +93,7 @@
 
 @section head {
     <style>
-        
+
     </style>
 }
 
@@ -114,35 +114,48 @@
                 <div class="form-check form-switch form-control-lg">
                     <input type="hidden" name="IsEnabled" value="false">
                     <input type="checkbox" name="IsEnabled" value="true" class="form-check-input" @(@settings.IsEnabled
-                                                                                                      ? "checked"
-                                                                                                      : null)/>
+                           ? "checked"
+                           : null) />
                 </div>
             </div>
         </div>
-        
+
         <table id="linksTable" class="table table-bordered p-3 rounded-3 shadow-sm">
             <thead>
-            <tr>
-                <th>Name</th>
-                <th>Icon</th>
-                <th>URL</th>
-                <th>Actions</th>
-            </tr>
+                <tr>
+                    <th>Name</th>
+                    <th>Icon</th>
+                    <th>URL</th>
+                    <th>Actions</th>
+                </tr>
             </thead>
             <tbody>
             </tbody>
         </table>
-        
-        <div id="form">
-            <label for="name">Name:</label>
-            <input type="text" id="name" required>
-            <label for="icon">Icon:</label>
-            <input type="text" id="icon" required>
-            <label for="url">URL:</label>
-            <input type="text" id="url" required>
 
-            <button class="btn btn-sm btn-outline-accent" onclick="addOrUpdateLink()">Add / Update</button>
-            
+        <div id="form" class="row g-2 align-items-center">
+            <div class="col-auto">
+                <label for="name">Name</label>
+            </div>
+            <div class="col-auto">
+                <input type="text" id="name" class="form-control form-control-sm" required>
+            </div>
+            <div class="col-auto">
+                <label for="icon">Icon Class</label>
+            </div>
+            <div class="col-auto">
+                <input type="text" id="icon" class="form-control form-control-sm" required>
+            </div>
+            <div class="col-auto">
+                <label for="url">URL</label>
+            </div>
+            <div class="col-auto">
+                <input type="text" id="url" class="form-control form-control-sm" required>
+            </div>
+            <div class="col-auto">
+                <button class="btn btn-sm btn-outline-accent" onclick="addOrUpdateLink()">Add / Update</button>
+            </div>
+
             <span id="error" class="error"></span>
         </div>
     </div>
