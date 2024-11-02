@@ -86,13 +86,8 @@
     <script type="module">
         import * as settings from '/js/app/admin.settings.module.js';
 
-        function handleSubmit(event) {
-            assignEditorValues(jsonContentEditor, "#settings_JsonData");
-            settings.handleSettingsSubmit(event);
-        }
-
         const form = document.querySelector('#form-settings');
-        form.addEventListener('submit', handleSubmit);
+        form.addEventListener('submit', settings.handleSettingsSubmit);
     </script>
 }
 
@@ -149,25 +144,25 @@
                 <label for="name">Name</label>
             </div>
             <div class="col-auto">
-                <input type="text" id="name" class="form-control form-control-sm" required>
+                <input type="text" id="name" class="form-control form-control-sm">
             </div>
             <div class="col-auto">
                 <label for="icon">Icon Class</label>
             </div>
             <div class="col-auto">
-                <input type="text" id="icon" class="form-control form-control-sm" required>
+                <input type="text" id="icon" class="form-control form-control-sm">
             </div>
             <div class="col-auto">
                 <label for="url">URL</label>
             </div>
             <div class="col-auto">
-                <input type="text" id="url" class="form-control form-control-sm form-control-url" required>
+                <input type="text" id="url" class="form-control form-control-sm form-control-url">
             </div>
             <div class="col-auto">
-                <button class="btn btn-sm btn-outline-accent" onclick="addOrUpdateLink()">Add / Update</button>
+                <button type="button" class="btn btn-sm btn-outline-accent" onclick="addOrUpdateLink()">Add / Update</button>
             </div>
 
-            <span id="error" class="error"></span>
+            <span id="error" class="text-danger"></span>
         </div>
     </div>
 
