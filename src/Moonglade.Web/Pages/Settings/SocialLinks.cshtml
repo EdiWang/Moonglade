@@ -109,6 +109,11 @@
 
 <form id="form-settings" asp-controller="Settings" asp-action="SocialLink">
     <div class="admin-settings-entry-container">
+        
+        <div class="alert alert-warning">
+            <i class="bi-exclamation-triangle"></i> This GUI editor is under development, it could blow up sky high, please be patient.
+        </div>
+
         <div class="settings-entry row align-items-center py-3 px-2 rounded-3 shadow-sm border mb-2">
             <div class="col-auto">
                 <i class="bi-menu-app settings-entry-icon"></i>
@@ -120,20 +125,20 @@
                 <div class="form-check form-switch form-control-lg">
                     <input type="hidden" name="IsEnabled" value="false">
                     <input type="checkbox" name="IsEnabled" value="true" class="form-check-input" @(@settings.IsEnabled
-                           ? "checked"
-                           : null) />
+                                                                                                      ? "checked"
+                                                                                                      : null)/>
                 </div>
             </div>
         </div>
 
         <table id="linksTable" class="table table-bordered p-3 rounded-3 shadow-sm">
             <thead>
-                <tr>
-                    <th>Name</th>
-                    <th>Icon</th>
-                    <th class="th-url">URL</th>
-                    <th class="th-actions">Actions</th>
-                </tr>
+            <tr>
+                <th>Name</th>
+                <th>Icon</th>
+                <th class="th-url">URL</th>
+                <th class="th-actions">Actions</th>
+            </tr>
             </thead>
             <tbody>
             </tbody>
