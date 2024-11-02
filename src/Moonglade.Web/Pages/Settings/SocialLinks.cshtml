@@ -10,33 +10,95 @@
 }
 
 @section scripts {
-    <partial name="_MonacoLoaderScript" />
     <script>
-        var jsonContentEditor = null;
+        const jsonValue = document.getElementById('settings_JsonData').value;
+        let links = jsonValue ? JSON.parse(jsonValue) : [];
+        let editIndex = null;
 
-        require(['vs/editor/editor.main'], function () {
-            jsonContentEditor = initEditor('JsonContentEditor', "#settings_JsonData", 'json');
-        });
+        function renderTable() {
+            const tbody = document.getElementById('linksTable').getElementsByTagName('tbody')[0];
+            tbody.innerHTML = '';
+            links.forEach((link, index) => {
+                const row = tbody.insertRow();
+                row.insertCell(0).textContent = link.name;
+                row.insertCell(1).textContent = link.icon;
+                row.insertCell(2).textContent = link.url;
+                const actions = row.insertCell(3);
+                actions.innerHTML = `<button type="button" class="btn btn-sm btn-outline-accent me-1" onclick="editLink(${index})"><i class="bi-pen"></i></button><button type="button" class="btn btn-sm btn-outline-danger" onclick="deleteLink(${index})"><i class="bi-trash"></i></button>`;
+            });
+
+            updateTextareaValue();
+        }
+
+        function updateTextareaValue() {
+            document.getElementById('settings_JsonData').value = JSON.stringify(links);
+        }
+
+        function addOrUpdateLink() {
+            const name = document.getElementById('name').value.trim();
+            const icon = document.getElementById('icon').value.trim();
+            const url = document.getElementById('url').value.trim();
+            const error = document.getElementById('error');
+
+            if (!name || !icon || !url) {
+                error.textContent = 'All fields are required!';
+                return;
+            }
+
+            if (links.some((link, index) => link.name === name && index !== editIndex)) {
+                error.textContent = 'Name must be unique!';
+                return;
+            }
+
+            if (editIndex !== null) {
+                links[editIndex] = { name: name, icon: icon, url: url };
+                editIndex = null;
+            } else {
+                links.push({ name: name, icon: icon, url: url });
+            }
+
+            clearForm();
+            renderTable();
+        }
+
+        function editLink(index) {
+            const link = links[index];
+            document.getElementById('name').value = link.name;
+            document.getElementById('icon').value = link.icon;
+            document.getElementById('url').value = link.url;
+            editIndex = index;
+        }
+
+        function deleteLink(index) {
+            links.splice(index, 1);
+            renderTable();
+        }
+
+        function clearForm() {
+            document.getElementById('name').value = '';
+            document.getElementById('icon').value = '';
+            document.getElementById('url').value = '';
+            document.getElementById('error').textContent = '';
+        }
+
+        renderTable();
     </script>
     <script type="module">
         import * as settings from '/js/app/admin.settings.module.js';
 
-        function handleSubmit(event) {
-            assignEditorValues(jsonContentEditor, "#settings_JsonData");
-            settings.handleSettingsSubmit(event);
-        }
-
         const form = document.querySelector('#form-settings');
-        form.addEventListener('submit', handleSubmit);
+        form.addEventListener('submit', settings.handleSettingsSubmit);
     </script>
 }
 
 @section head {
     <style>
-        .monaco-target {
-            border: 1px solid var(--bs-border-color);
-            width: 100%;
-            min-height: calc(100vh - 440px);
+        .th-actions {
+            width: 120px;
+        }
+
+        .form-control-url {
+            width: 300px;
         }
     </style>
 }
@@ -47,9 +109,9 @@
 
 <form id="form-settings" asp-controller="Settings" asp-action="SocialLink">
     <div class="admin-settings-entry-container">
-        
+
         <div class="alert alert-warning">
-            <i class="bi-exclamation-triangle"></i> This feature is under development. It is currently in preview. A GUI editor will be available in the future.
+            <i class="bi-exclamation-triangle"></i> This GUI editor is under development, it could blow up sky high, please be patient.
         </div>
 
         <div class="settings-entry row align-items-center py-3 px-2 rounded-3 shadow-sm border mb-2">
@@ -62,14 +124,48 @@
             <div class="col-md-5 text-end">
                 <div class="form-check form-switch form-control-lg">
                     <input type="hidden" name="IsEnabled" value="false">
-                    <input type="checkbox" name="IsEnabled" value="true" class="form-check-input" @(@settings.IsEnabled
-                                                                                                      ? "checked"
-                                                                                                      : null)/>
+                    <input type="checkbox" name="IsEnabled" value="true" class="form-check-input" @(@settings.IsEnabled ? "checked" : null) />
                 </div>
             </div>
         </div>
 
-        <div id="JsonContentEditor" class="monaco-target p-3 rounded-3 shadow-sm border">
+        <table id="linksTable" class="table table-bordered p-3 rounded-3 shadow-sm">
+            <thead>
+                <tr>
+                    <th>Name</th>
+                    <th>Icon</th>
+                    <th class="th-url">URL</th>
+                    <th class="th-actions">Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+            </tbody>
+        </table>
+
+        <div id="form" class="row g-2 align-items-center">
+            <div class="col-auto">
+                <label for="name">Name</label>
+            </div>
+            <div class="col-auto">
+                <input type="text" id="name" class="form-control form-control-sm">
+            </div>
+            <div class="col-auto">
+                <label for="icon">Icon Class</label>
+            </div>
+            <div class="col-auto">
+                <input type="text" id="icon" class="form-control form-control-sm">
+            </div>
+            <div class="col-auto">
+                <label for="url">URL</label>
+            </div>
+            <div class="col-auto">
+                <input type="text" id="url" class="form-control form-control-sm form-control-url">
+            </div>
+            <div class="col-auto">
+                <button type="button" class="btn btn-sm btn-outline-accent" onclick="addOrUpdateLink()">Add / Update</button>
+            </div>
+
+            <span id="error" class="text-danger"></span>
         </div>
     </div>
 
