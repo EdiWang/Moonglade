@@ -24,9 +24,14 @@
                 row.insertCell(1).textContent = link.icon;
                 row.insertCell(2).textContent = link.url;
                 const actions = row.insertCell(3);
-                actions.innerHTML = `<button type="button" class="btn btn-sm btn-outline-accent" onclick="editLink(${index})"><i class="bi-pen"></i></button>
-                                                                     <button type="button" class="btn btn-sm btn-outline-danger" onclick="deleteLink(${index})"><i class="bi-trash"></i></button>`;
+                actions.innerHTML = `<button type="button" class="btn btn-sm btn-outline-accent" onclick="editLink(${index})"><i class="bi-pen"></i></button><button type="button" class="btn btn-sm btn-outline-danger" onclick="deleteLink(${index})"><i class="bi-trash"></i></button>`;
             });
+
+            updateTextareaValue();
+        }
+
+        function updateTextareaValue() {
+            document.getElementById('settings_JsonData').value = JSON.stringify(links);
         }
 
         function addOrUpdateLink() {
