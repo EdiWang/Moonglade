@@ -93,7 +93,13 @@
 
 @section head {
     <style>
+        .th-actions {
+            width: 120px;
+        }
 
+        .form-control-url {
+            width: 300px;
+        }
     </style>
 }
 
@@ -125,8 +131,8 @@
                 <tr>
                     <th>Name</th>
                     <th>Icon</th>
-                    <th>URL</th>
-                    <th>Actions</th>
+                    <th class="th-url">URL</th>
+                    <th class="th-actions">Actions</th>
                 </tr>
             </thead>
             <tbody>
@@ -150,7 +156,7 @@
                 <label for="url">URL</label>
             </div>
             <div class="col-auto">
-                <input type="text" id="url" class="form-control form-control-sm" required>
+                <input type="text" id="url" class="form-control form-control-sm form-control-url" required>
             </div>
             <div class="col-auto">
                 <button class="btn btn-sm btn-outline-accent" onclick="addOrUpdateLink()">Add / Update</button>
