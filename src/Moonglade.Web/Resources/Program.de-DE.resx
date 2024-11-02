@@ -168,9 +168,6 @@
   <data name="Archive" xml:space="preserve">
     <value>Archiv</value>
   </data>
-  <data name="Are you ABSOLUTELY sure? ALL data and configuration will be erased!" xml:space="preserve">
-    <value>Sind sie WIRKLICH sicher? Alle Daten und Konfigurationen werden gelöscht!</value>
-  </data>
   <data name="Are you sure to restart website? All current requests will be terminated." xml:space="preserve">
     <value>Möchten Sie die Webseite wirklich neu starten? Alle aktuellen Anfragen werden verworfen.</value>
   </data>
@@ -393,9 +390,6 @@
   <data name="Environment" xml:space="preserve">
     <value>Umgebung</value>
   </data>
-  <data name="Erase all data and configuration." xml:space="preserve">
-    <value>Alle Daten und Konfigurationen löschen.</value>
-  </data>
   <data name="Export Data" xml:space="preserve">
     <value>Daten exportieren</value>
   </data>
@@ -606,9 +600,6 @@
   <data name="Reply" xml:space="preserve">
     <value>Antworten</value>
   </data>
-  <data name="Reset" xml:space="preserve">
-    <value>Zurücksetzen</value>
-  </data>
   <data name="Reset Password" xml:space="preserve">
     <value>Passwort zurücksetzen</value>
   </data>
@@ -695,9 +686,6 @@
   </data>
   <data name="System" xml:space="preserve">
     <value>System</value>
-  </data>
-  <data name="System Reset" xml:space="preserve">
-    <value>System zurücksetzen</value>
   </data>
   <data name="Tag name" xml:space="preserve">
     <value>Tagname</value>
