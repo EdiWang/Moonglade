@@ -57,7 +57,21 @@ public class CreatePostCommandHandler(
 
         post.RouteLink = $"{post.PubDateUtc.GetValueOrDefault().ToString("yyyy/M/d", CultureInfo.InvariantCulture)}/{request.Payload.Slug}";
 
-        // check if exist same slug under the same day
+        await CheckSlugConflict(post, ct);
+
+        AddCategories(request.Payload.SelectedCatIds, post);
+
+        await AddTags(request.Payload.Tags, post, ct);
+
+        await postRepo.AddAsync(post, ct);
+
+        logger.LogInformation($"Created post Id: {post.Id}, Title: '{post.Title}'");
+        return post;
+    }
+
+    // check if exist same slug under the same day
+    private async Task CheckSlugConflict(PostEntity post, CancellationToken ct)
+    {
         var todayUtc = DateTime.UtcNow.Date;
         if (await postRepo.AnyAsync(new PostByDateAndSlugSpec(todayUtc, post.Slug, false), ct))
         {
@@ -65,14 +79,6 @@ public class CreatePostCommandHandler(
             post.Slug += $"-{uid.ToString().ToLower()[..8]}";
             logger.LogInformation($"Found conflict for post slug, generated new slug: {post.Slug}");
         }
-
-        AddCategories(request.Payload.SelectedCatIds, post);
-        await AddTags(request.Payload.Tags, post, ct);
-
-        await postRepo.AddAsync(post, ct);
-
-        logger.LogInformation($"Created post Id: {post.Id}, Title: '{post.Title}'");
-        return post;
     }
 
     private static void AddCategories(Guid[] selectedCatIds, PostEntity post)
