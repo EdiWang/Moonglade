@@ -21,14 +21,16 @@ public class CreatePageCommandHandler(
         }
 
         var uid = Guid.NewGuid();
+        var utcNow = DateTime.UtcNow;
+
         var page = new PageEntity
         {
             Id = uid,
             Title = request.Payload.Title.Trim(),
             Slug = slug,
             MetaDescription = request.Payload.MetaDescription,
-            CreateTimeUtc = DateTime.UtcNow,
-            UpdateTimeUtc = DateTime.UtcNow,
+            CreateTimeUtc = utcNow,
+            UpdateTimeUtc = utcNow,
             HtmlContent = request.Payload.RawHtmlContent,
             HideSidebar = request.Payload.HideSidebar,
             IsPublished = request.Payload.IsPublished,
