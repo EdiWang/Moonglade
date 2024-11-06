@@ -13,10 +13,11 @@ public class GetStyleSheetQueryHandler(MoongladeRepository<BlogThemeEntity> repo
     {
         BlogThemeEntity theme;
 
-        if (request.Id > 10)
+        if (request.Id < 100)
         {
             // Custom theme
-            theme = await repo.GetByIdAsync(request.Id, ct);
+            // if not found, fall back to system theme Id 100
+            theme = await repo.GetByIdAsync(request.Id, ct) ?? ThemeFactory.GetSystemThemes().FirstOrDefault(t => t.Id == 100);
         }
         else
         {
