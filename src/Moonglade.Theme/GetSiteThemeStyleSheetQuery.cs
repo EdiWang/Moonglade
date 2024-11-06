@@ -13,7 +13,7 @@ public class GetStyleSheetQueryHandler(MoongladeRepository<BlogThemeEntity> repo
     {
         BlogThemeEntity theme;
 
-        if (request.Id < 100)
+        if (request.Id is < 100 or > 110)
         {
             // Custom theme
             // if not found, fall back to system theme Id 100
