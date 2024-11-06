@@ -10,3 +10,11 @@ public sealed class BlogThemeForIdNameSpec : Specification<BlogThemeEntity, Them
         Query.AsNoTracking();
     }
 }
+
+public sealed class ThemeByTypeSpec : Specification<BlogThemeEntity>
+{
+    public ThemeByTypeSpec(ThemeType type)
+    {
+        Query.Where(p => p.ThemeType == type);
+    }
+}

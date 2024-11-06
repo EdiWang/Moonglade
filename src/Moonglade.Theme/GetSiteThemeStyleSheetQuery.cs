@@ -11,7 +11,20 @@ public class GetStyleSheetQueryHandler(MoongladeRepository<BlogThemeEntity> repo
 {
     public async Task<string> Handle(GetSiteThemeStyleSheetQuery request, CancellationToken ct)
     {
-        var theme = await repo.GetByIdAsync(request.Id, ct);
+        BlogThemeEntity theme;
+
+        if (request.Id is < 100 or > 110)
+        {
+            // Custom theme
+            // if not found, fall back to system theme Id 100
+            theme = await repo.GetByIdAsync(request.Id, ct) ?? ThemeFactory.GetSystemThemes().FirstOrDefault(t => t.Id == 100);
+        }
+        else
+        {
+            // System theme
+            theme = ThemeFactory.GetSystemThemes().FirstOrDefault(t => t.Id == request.Id);
+        }
+
         if (null == theme) return null;
 
         if (string.IsNullOrWhiteSpace(theme.CssRules))
