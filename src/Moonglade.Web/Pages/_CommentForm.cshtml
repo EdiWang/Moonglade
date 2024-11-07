@@ -1,7 +1,7 @@
 ﻿<form id="comment-form">
     <div>
-        <div class="row mb-2">
-            <div class="col-md-6">
+        <div class="row g-2 mb-2">
+            <div class="col-md-5">
                 <input type="text"
                        class="form-control"
                        aria-label="Your name"
@@ -9,14 +9,15 @@
                        id="input-comment-name"
                        required />
             </div>
+            <div class="col-md-7">
+                <input type="email"
+                       class="form-control"
+                       aria-label="@SharedLocalizer["Email (Optional)"]"
+                       placeholder="@SharedLocalizer["Email (Optional)"]"
+                       id="input-comment-email" />
+            </div>
         </div>
         <div class="mb-3">
-            <input type="email"
-                   class="form-control"
-                   aria-label="@SharedLocalizer["Email (Optional)"]"
-                   placeholder="@SharedLocalizer["Email (Optional)"]"
-                   id="input-comment-email" />
-            
             <span class="text-muted">
                 * @SharedLocalizer["Enter your email to receive reply notifications and display your Gravatar. Your email will not be displayed publicly."]
             </span>
