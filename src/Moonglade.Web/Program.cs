@@ -62,6 +62,7 @@ public class Program
             "Moonglade.Core",
             "Moonglade.Email.Client",
             "Moonglade.FriendLink",
+            "Moonglade.IndexNow.Client",
             "Moonglade.Syndication",
             "Moonglade.Theme",
             // Data
