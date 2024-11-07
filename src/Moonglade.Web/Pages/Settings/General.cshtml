@@ -76,7 +76,7 @@
 
                     themeModal.hide();
 
-                    var selectElement = document.getElementById('ViewModel_SelectedThemeId');
+                    var selectElement = document.getElementById('ViewModel_ThemeId');
                     var newOption = new Option(document.querySelector('#Name').value, id);
                     selectElement.appendChild(newOption);
 
@@ -90,7 +90,7 @@
                 'DELETE',
                 {},
                 (resp) => {
-                    var selectElement = document.getElementById('ViewModel_SelectedThemeId');
+                    var selectElement = document.getElementById('ViewModel_ThemeId');
                     var optionToRemove = selectElement.querySelector(`option[value='${selectedThemeId}']`);
                     if (optionToRemove) {
                         selectElement.removeChild(optionToRemove);
