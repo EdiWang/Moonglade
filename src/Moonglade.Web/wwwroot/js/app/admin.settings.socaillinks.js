@@ -8,8 +8,8 @@ function renderTable() {
     links.forEach((link, index) => {
         const row = tbody.insertRow();
         row.insertCell(0).textContent = link.name;
-        row.insertCell(1).textContent = link.icon;
-        row.insertCell(2).textContent = link.url;
+        row.insertCell(1).innerHTML = `<i class="${link.icon}"></i> <span class="text-muted">${link.icon}</span>`;
+        row.insertCell(2).innerHTML = `<a href="${link.url}" target="_blank">${link.url}</a>`;
         const actions = row.insertCell(3);
         actions.innerHTML = `<button type="button" class="btn btn-sm btn-outline-accent me-1" onclick="editLink(${index})"><i class="bi-pen"></i></button><button type="button" class="btn btn-sm btn-outline-danger" onclick="deleteLink(${index})"><i class="bi-trash"></i></button>`;
     });
