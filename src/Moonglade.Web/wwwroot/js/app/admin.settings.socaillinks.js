@@ -66,4 +66,6 @@ function clearForm() {
     document.getElementById('icon').value = '';
     document.getElementById('url').value = '';
     document.getElementById('error').textContent = '';
+
+    editIndex = null;
 }
