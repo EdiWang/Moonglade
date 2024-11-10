@@ -37,6 +37,11 @@ function addOrUpdateLink() {
         return;
     }
 
+    if (!isValidUrl(url)) {
+        error.textContent = 'Invalid URL!';
+        return;
+    }
+
     if (editIndex !== null) {
         links[editIndex] = { name: name, icon: icon, url: url };
         editIndex = null;
@@ -68,4 +73,13 @@ function clearForm() {
     document.getElementById('error').textContent = '';
 
     editIndex = null;
+}
+
+function isValidUrl(url) {
+    try {
+        new URL(url);
+        return true;
+    } catch {
+        return false;
+    }
 }
