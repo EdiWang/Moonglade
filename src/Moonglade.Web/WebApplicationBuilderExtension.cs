@@ -32,7 +32,7 @@ public static class WebApplicationBuilderExtension
             { "IPv4", string.Join(", ", ipv4s.Select(p => p.ToString())) },
             { "IPv6", string.Join(", ", ipv6s.Select(p => p.ToString())) },
             { "URLs", builder.Configuration["Urls"]! },
-            { "Database", builder.Configuration.GetConnectionString("DatabaseType")! },
+            { "Database", DatabaseTypeHelper.DetermineDatabaseType(builder.Configuration.GetConnectionString("MoongladeDatabase")!).ToString() },
             { "Image storage", builder.Configuration["ImageStorage:Provider"]! },
             { "Authentication", builder.Configuration["Authentication:Provider"]! },
             { "Editor", builder.Configuration["Post:Editor"]! },
