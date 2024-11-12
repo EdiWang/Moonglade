@@ -42,8 +42,9 @@ public class UpdatePostCommandHandler : IRequestHandler<UpdatePostCommand, PostE
         _configuration = configuration;
         _logger = logger;
 
-        string dbType = configuration.GetConnectionString("DatabaseType");
-        _useMySqlWorkaround = dbType!.ToLower().Trim() == "mysql";
+        var connStr = configuration.GetConnectionString("MoongladeDatabase");
+        var dbType = DatabaseTypeHelper.DetermineDatabaseType(connStr!);
+        _useMySqlWorkaround = dbType == DatabaseType.MySQL;
     }
 
     public async Task<PostEntity> Handle(UpdatePostCommand request, CancellationToken ct)
