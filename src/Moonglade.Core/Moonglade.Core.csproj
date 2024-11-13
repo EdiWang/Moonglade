@@ -9,7 +9,7 @@
         <ImplicitUsings>enable</ImplicitUsings>
     </PropertyGroup>
     <ItemGroup>
-        <PackageReference Include="Edi.CacheAside.InMemory" Version="1.2.0" />
+        <PackageReference Include="Edi.CacheAside.InMemory" Version="1.3.0" />
     </ItemGroup>
     <ItemGroup>
         <Using Include="System.Text" />
