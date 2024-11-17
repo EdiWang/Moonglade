@@ -3,8 +3,8 @@
     <Authors>Edi Wang</Authors>
     <Company>edi.wang</Company>
     <Copyright>(C) 2024 edi.wang@outlook.com</Copyright>
-    <AssemblyVersion>14.13.0</AssemblyVersion>
-    <FileVersion>14.13.0</FileVersion>
-    <Version>14.13.0</Version>
+    <AssemblyVersion>14.14.0</AssemblyVersion>
+    <FileVersion>14.14.0</FileVersion>
+    <Version>14.14.0-preview.1</Version>
   </PropertyGroup>
 </Project>
