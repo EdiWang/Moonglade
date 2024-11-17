@@ -12,65 +12,35 @@ public class BlogConfigInitializer(IMediator mediator, IBlogConfig blogConfig) :
 {
     public async Task Initialize(bool isNew)
     {
-        // load configurations into singleton
+        // Load configurations into singleton
         var config = await mediator.Send(new GetAllConfigurationsQuery());
         var keysToAdd = blogConfig.LoadFromConfig(config);
 
         var toAdd = keysToAdd as int[] ?? keysToAdd.ToArray();
-        if (toAdd.Length != 0)
+        if (toAdd.Length == 0) return;
+
+        var settingsMap = new Dictionary<int, (string Name, Func<string> DefaultValue)>
         {
-            foreach (var key in toAdd)
+            { 1, (nameof(ContentSettings), () => ContentSettings.DefaultValue.ToJson()) },
+            { 2, (nameof(NotificationSettings), () => NotificationSettings.DefaultValue.ToJson()) },
+            { 3, (nameof(FeedSettings), () => FeedSettings.DefaultValue.ToJson()) },
+            { 4, (nameof(GeneralSettings), () => GeneralSettings.DefaultValue.ToJson()) },
+            { 5, (nameof(ImageSettings), () => ImageSettings.DefaultValue.ToJson()) },
+            { 6, (nameof(AdvancedSettings), () => AdvancedSettings.DefaultValue.ToJson()) },
+            { 7, (nameof(CustomStyleSheetSettings), () => CustomStyleSheetSettings.DefaultValue.ToJson()) },
+            { 10, (nameof(CustomMenuSettings), () => CustomMenuSettings.DefaultValue.ToJson()) },
+            { 11, (nameof(LocalAccountSettings), () => LocalAccountSettings.DefaultValue.ToJson()) },
+            { 12, (nameof(SocialLinkSettings), () => SocialLinkSettings.DefaultValue.ToJson()) },
+            { 99, (nameof(SystemManifestSettings), () => isNew ? SystemManifestSettings.DefaultValueNew.ToJson() : SystemManifestSettings.DefaultValue.ToJson()) }
+        };
+
+        foreach (var key in toAdd)
+        {
+            if (settingsMap.TryGetValue(key, out var setting))
             {
-                switch (key)
-                {
-                    case 1:
-                        await mediator.Send(new AddDefaultConfigurationCommand(key, nameof(ContentSettings),
-                            ContentSettings.DefaultValue.ToJson()));
-                        break;
-                    case 2:
-                        await mediator.Send(new AddDefaultConfigurationCommand(key, nameof(NotificationSettings),
-                            NotificationSettings.DefaultValue.ToJson()));
-                        break;
-                    case 3:
-                        await mediator.Send(new AddDefaultConfigurationCommand(key, nameof(FeedSettings),
-                            FeedSettings.DefaultValue.ToJson()));
-                        break;
-                    case 4:
-                        await mediator.Send(new AddDefaultConfigurationCommand(key, nameof(GeneralSettings),
-                            GeneralSettings.DefaultValue.ToJson()));
-                        break;
-                    case 5:
-                        await mediator.Send(new AddDefaultConfigurationCommand(key, nameof(ImageSettings),
-                            ImageSettings.DefaultValue.ToJson()));
-                        break;
-                    case 6:
-                        await mediator.Send(new AddDefaultConfigurationCommand(key, nameof(AdvancedSettings),
-                            AdvancedSettings.DefaultValue.ToJson()));
-                        break;
-                    case 7:
-                        await mediator.Send(new AddDefaultConfigurationCommand(key, nameof(CustomStyleSheetSettings),
-                            CustomStyleSheetSettings.DefaultValue.ToJson()));
-                        break;
-                    case 10:
-                        await mediator.Send(new AddDefaultConfigurationCommand(key, nameof(CustomMenuSettings),
-                            CustomMenuSettings.DefaultValue.ToJson()));
-                        break;
-                    case 11:
-                        await mediator.Send(new AddDefaultConfigurationCommand(key, nameof(LocalAccountSettings),
-                            LocalAccountSettings.DefaultValue.ToJson()));
-                        break;
-                    case 12:
-                        await mediator.Send(new AddDefaultConfigurationCommand(key, nameof(SocialLinkSettings),
-                            SocialLinkSettings.DefaultValue.ToJson()));
-                        break;
-                    case 99:
-                        await mediator.Send(new AddDefaultConfigurationCommand(key, nameof(SystemManifestSettings),
-                            isNew ?
-                                SystemManifestSettings.DefaultValueNew.ToJson() :
-                                SystemManifestSettings.DefaultValue.ToJson()));
-                        break;
-                }
+                await mediator.Send(new AddDefaultConfigurationCommand(key, setting.Name, setting.DefaultValue()));
             }
         }
     }
+
 }
