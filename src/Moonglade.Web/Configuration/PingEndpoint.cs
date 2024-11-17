@@ -2,7 +2,7 @@
 
 namespace Moonglade.Web.Configuration;
 
-public class ConfigureEndpoints
+public class PingEndpoint
 {
     public static Task WriteResponse(HttpContext context, HealthReport result)
     {

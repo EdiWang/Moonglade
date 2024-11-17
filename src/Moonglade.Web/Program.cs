@@ -308,7 +308,7 @@ public class Program
 
         app.MapHealthChecks("/ping", new()
         {
-            ResponseWriter = ConfigureEndpoints.WriteResponse
+            ResponseWriter = PingEndpoint.WriteResponse
         });
         app.MapControllers();
         app.MapRazorPages();
