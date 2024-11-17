@@ -113,40 +113,49 @@ export function showCaptcha() {
     }
 }
 
-var btnSubmitComment = '#btn-submit-comment';
-
 export function submitComment(pid) {
-    document.querySelector('#thx-for-comment').style.display = 'none';
-    document.querySelector('#thx-for-comment-non-review').style.display = 'none';
+    const thxForComment = document.querySelector('#thx-for-comment');
+    const thxForCommentNonReview = document.querySelector('#thx-for-comment-non-review');
+    const loadingIndicator = document.querySelector('#loadingIndicator');
+    const btnSubmitComment = document.querySelector('#btn-submit-comment');
+    const commentForm = document.querySelector('#comment-form');
 
-    document.querySelector('#loadingIndicator').style.display = 'block';
-    document.querySelector(btnSubmitComment).classList.add('disabled');
-    document.querySelector(btnSubmitComment).setAttribute('disabled', 'disabled');
+    const username = document.querySelector('#input-comment-name').value;
+    const content = document.querySelector('#input-comment-content').value;
+    const email = document.querySelector('#input-comment-email').value;
+    const captchaCode = document.querySelector('#input-comment-captcha').value;
 
-    callApi(`/api/comment/${pid}`, 'POST',
-        {
-            username: document.querySelector('#input-comment-name').value,
-            content: document.querySelector('#input-comment-content').value,
-            email: document.querySelector('#input-comment-email').value,
-            captchaCode: document.querySelector('#input-comment-captcha').value
-        },
+    thxForComment.style.display = 'none';
+    thxForCommentNonReview.style.display = 'none';
+    loadingIndicator.style.display = 'block';
+    btnSubmitComment.classList.add('disabled');
+    btnSubmitComment.setAttribute('disabled', 'disabled');
+
+    callApi(
+        `/api/comment/${pid}`,
+        'POST',
+        { username, content, email, captchaCode },
         (success) => {
-            document.querySelector('#comment-form').reset();
+            commentForm.reset();
             resetCaptchaImage();
 
-            var httpCode = success.status;
+            const { status: httpCode } = success;
             if (httpCode === 201) {
-                document.querySelector('#thx-for-comment').style.display = 'block';
-            }
-            if (httpCode === 200) {
-                document.querySelector('#thx-for-comment-non-review').style.display = 'block';
+                thxForComment.style.display = 'block';
+            } else if (httpCode === 200) {
+                thxForCommentNonReview.style.display = 'block';
             }
         },
         (always) => {
-            document.querySelector('#loadingIndicator').style.display = 'none';
-            document.querySelector(btnSubmitComment).classList.remove('disabled');
-            document.querySelector(btnSubmitComment).removeAttribute('disabled');
-        });
+            loadingIndicator.style.display = 'none';
+            btnSubmitComment.classList.remove('disabled');
+            btnSubmitComment.removeAttribute('disabled');
+        },
+        //(error) => {
+        //    console.error('Error submitting comment:', error);
+        //    // Optionally handle specific error cases
+        //}
+    );
 }
 
 export function calculateReadingTime() {
