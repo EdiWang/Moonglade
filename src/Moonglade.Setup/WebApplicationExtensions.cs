@@ -14,30 +14,23 @@ public static class WebApplicationExtensions
         var initializer = services.GetRequiredService<IStartUpInitializer>();
         var result = await initializer.InitStartUp();
 
-        switch (result)
+        var errorMessages = new Dictionary<InitStartUpResult, string>
         {
-            case InitStartUpResult.FailedCreateDatabase:
-                await FailFast("Database connection test failed, please check your connection string and firewall settings, then RESTART Moonglade manually.");
-                break;
-            case InitStartUpResult.FailedSeedingDatabase:
-                await FailFast("Error seeding database, please check error log, then RESTART Moonglade manually.");
-                break;
-            case InitStartUpResult.FailedInitBlogConfig:
-                await FailFast("Error initializing blog configuration, please check error log, then RESTART Moonglade manually.");
-                break;
-            case InitStartUpResult.FailedDatabaseMigration:
-                await FailFast("Error migrating database, please check error log, then RESTART Moonglade manually.");
-                break;
-            case InitStartUpResult.Success:
-                break;
+            { InitStartUpResult.FailedCreateDatabase, "Database connection test failed, please check your connection string and firewall settings, then RESTART Moonglade manually." },
+            { InitStartUpResult.FailedSeedingDatabase, "Error seeding database, please check error log, then RESTART Moonglade manually." },
+            { InitStartUpResult.FailedInitBlogConfig, "Error initializing blog configuration, please check error log, then RESTART Moonglade manually." },
+            { InitStartUpResult.FailedDatabaseMigration, "Error migrating database, please check error log, then RESTART Moonglade manually." }
+        };
+
+        if (errorMessages.TryGetValue(result, out var message))
+        {
+            await FailFast(message);
         }
 
-        return;
-
-        async Task FailFast(string messsage)
+        async Task FailFast(string detail)
         {
             app.MapGet("/", () => Results.Problem(
-                detail: messsage,
+                detail: detail,
                 statusCode: 500
             ));
             await app.RunAsync();
