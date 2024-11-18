@@ -2,21 +2,30 @@
 
 export function handleSettingsSubmit(event) {
     event.preventDefault();
-    var btnSaveSettings = '#btn-save-settings';
 
-    document.querySelector(btnSaveSettings).classList.add('disabled');
-    document.querySelector(btnSaveSettings).setAttribute('disabled', 'disabled');
+    const btnSaveSettingsSelector = '#btn-save-settings';
+    const btnSaveSettings = document.querySelector(btnSaveSettingsSelector);
 
-    const data = new FormData(event.target);
-    const value = Object.fromEntries(data.entries());
-    const newValue = utils.toMagicJson(value);
+    const disableButton = () => {
+        btnSaveSettings.classList.add('disabled');
+        btnSaveSettings.setAttribute('disabled', 'disabled');
+    };
 
-    callApi(event.currentTarget.action, 'POST', newValue,
+    const enableButton = () => {
+        btnSaveSettings.classList.remove('disabled');
+        btnSaveSettings.removeAttribute('disabled');
+    };
+
+    disableButton();
+
+    const formData = new FormData(event.target);
+    const formValues = Object.fromEntries(formData.entries());
+    const formattedValues = utils.toMagicJson(formValues);
+
+    callApi(event.currentTarget.action, 'POST', formattedValues,
         (resp) => {
             blogToast.success('Settings Updated');
-
-            document.querySelector(btnSaveSettings).classList.remove('disabled');
-            document.querySelector(btnSaveSettings).removeAttribute('disabled');
+            enableButton();
         });
 }
 
