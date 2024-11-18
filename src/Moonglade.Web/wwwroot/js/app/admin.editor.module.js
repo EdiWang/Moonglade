@@ -114,78 +114,83 @@ export function warnDirtyForm(selector) {
 }
 
 export function loadTinyMCE(textareaSelector) {
-    if (window.tinyMCE !== undefined) {
-        window.tinyMCE.init({
-            selector: textareaSelector,
-            themes: 'silver',
-            skin: (window.theme.getPreferredTheme() == 'dark' ? 'oxide-dark' : 'tinymce-5'),
-            height: 'calc(100vh - 400px)',
-            relative_urls: false, // avoid image upload fuck up
-            browser_spellcheck: true,
-            branding: false,
-            promotion: false,
-            block_formats: 'Paragraph=p; Header 2=h2; Header 3=h3; Header 4=h4; Preformatted=pre',
-            plugins: 'advlist autolink autosave link image lists charmap preview anchor pagebreak searchreplace wordcount visualblocks visualchars code fullscreen insertdatetime media nonbreaking save table directionality codesample emoticons',
-            toolbar: 'undo redo | blocks | bold italic underline strikethrough | forecolor backcolor | paste pastetext removeformat | hr link image codesample | charmap emoticons table media | alignleft aligncenter alignright alignjustify | bullist numlist outdent indent | code | fullscreen',
-            save_onsavecallback: function () {
-                document.querySelector('#btn-save').click();
-            },
-            paste_data_images: true,
-            images_upload_url: '/image',
-            images_upload_credentials: true,
-            extended_valid_elements: 'img[class|src|border=0|alt|title|hspace|vspace|width|height|align|onmouseover|onmouseout|name|loading=lazy]',
-            body_class: 'post-content',
-            content_css: (window.theme.getPreferredTheme() == 'dark' ? "/css/tinymce-custom-dark.css" : '/css/tinymce-custom.css'),
-            codesample_languages: [
-                { text: 'Bash', value: 'bash' },
-                { text: 'C#', value: 'csharp' },
-                { text: 'C', value: 'c' },
-                { text: 'C++', value: 'cpp' },
-                { text: 'CSS', value: 'css' },
-                { text: 'Dockerfile', value: 'dockerfile' },
-                { text: 'F#', value: 'fsharp' },
-                { text: 'Go', value: 'go' },
-                { text: 'HTML/XML', value: 'xml' },
-                { text: 'JavaScript', value: 'javascript' },
-                { text: 'Json', value: 'json' },
-                { text: 'Kotlin', value: 'kotlin' },
-                { text: 'LaTeX', value: 'latex' },
-                { text: 'Lua', value: 'lua' },
-                { text: 'Markdown', value: 'markdown' },
-                { text: 'Nginx', value: 'nginx' },
-                { text: 'PowerShell', value: 'powershell' },
-                { text: 'Plain Text', value: 'plaintext' },
-                { text: 'Puppet', value: 'puppet' },
-                { text: 'Python', value: 'python' },
-                { text: 'R', value: 'r' },
-                { text: 'Rust', value: 'rust' },
-                { text: 'SCSS', value: 'scss' },
-                { text: 'Shell', value: 'shell' },
-                { text: 'SQL', value: 'sql' },
-                { text: 'Swift', value: 'swift' },
-                { text: 'TypeScript', value: 'typescript' },
-                { text: 'WASM', value: 'wasm' },
-                { text: 'YAML', value: 'yaml' }
-            ],
-            setup: function (editor) {
-                editor.on('init', () => {
-                    if (window.theme.getPreferredTheme() == 'dark') {
-                        const container = editor.getContainer();
-                        const iframe = container.querySelector('iframe');
-                        const innerDoc = iframe.contentDocument || iframe.contentWindow.document;
-
-                        innerDoc.documentElement.setAttribute('data-bs-theme', 'dark');
-                    }
-                });
-
-                editor.on('NodeChange', function (e) {
-                    if (e.element.tagName === 'IMG') {
-                        e.element.setAttribute('loading', 'lazy');
-                    }
-                });
-            }
-        });
+    if (typeof window.tinyMCE === 'undefined') {
+        console.error('TinyMCE is not loaded.');
+        return;
     }
+
+    const preferredTheme = window.theme.getPreferredTheme();
+    const isDarkTheme = preferredTheme === 'dark';
+
+    window.tinyMCE.init({
+        selector: textareaSelector,
+        themes: 'silver',
+        skin: isDarkTheme ? 'oxide-dark' : 'tinymce-5',
+        height: 'calc(100vh - 400px)',
+        relative_urls: false,
+        browser_spellcheck: true,
+        branding: false,
+        promotion: false,
+        block_formats: 'Paragraph=p; Header 2=h2; Header 3=h3; Header 4=h4; Preformatted=pre',
+        plugins: 'advlist autolink autosave link image lists charmap preview anchor pagebreak searchreplace wordcount visualblocks visualchars code fullscreen insertdatetime media nonbreaking save table directionality codesample emoticons',
+        toolbar: 'undo redo | blocks | bold italic underline strikethrough | forecolor backcolor | paste pastetext removeformat | hr link image codesample | charmap emoticons table media | alignleft aligncenter alignright alignjustify | bullist numlist outdent indent | code | fullscreen',
+        save_onsavecallback: () => {
+            document.querySelector('#btn-save').click();
+        },
+        paste_data_images: true,
+        images_upload_url: '/image',
+        images_upload_credentials: true,
+        extended_valid_elements: 'img[class|src|border=0|alt|title|hspace|vspace|width|height|align|onmouseover|onmouseout|name|loading=lazy]',
+        body_class: 'post-content',
+        content_css: isDarkTheme ? '/css/tinymce-custom-dark.css' : '/css/tinymce-custom.css',
+        codesample_languages: [
+            { text: 'Bash', value: 'bash' },
+            { text: 'C#', value: 'csharp' },
+            { text: 'C', value: 'c' },
+            { text: 'C++', value: 'cpp' },
+            { text: 'CSS', value: 'css' },
+            { text: 'Dockerfile', value: 'dockerfile' },
+            { text: 'F#', value: 'fsharp' },
+            { text: 'Go', value: 'go' },
+            { text: 'HTML/XML', value: 'xml' },
+            { text: 'JavaScript', value: 'javascript' },
+            { text: 'Json', value: 'json' },
+            { text: 'Kotlin', value: 'kotlin' },
+            { text: 'LaTeX', value: 'latex' },
+            { text: 'Lua', value: 'lua' },
+            { text: 'Markdown', value: 'markdown' },
+            { text: 'Nginx', value: 'nginx' },
+            { text: 'PowerShell', value: 'powershell' },
+            { text: 'Plain Text', value: 'plaintext' },
+            { text: 'Puppet', value: 'puppet' },
+            { text: 'Python', value: 'python' },
+            { text: 'R', value: 'r' },
+            { text: 'Rust', value: 'rust' },
+            { text: 'SCSS', value: 'scss' },
+            { text: 'Shell', value: 'shell' },
+            { text: 'SQL', value: 'sql' },
+            { text: 'Swift', value: 'swift' },
+            { text: 'TypeScript', value: 'typescript' },
+            { text: 'WASM', value: 'wasm' },
+            { text: 'YAML', value: 'yaml' }
+        ],
+        setup: (editor) => {
+            editor.on('init', () => {
+                if (isDarkTheme) {
+                    const container = editor.getContainer();
+                    const iframe = container.querySelector('iframe');
+                    const innerDoc = iframe.contentDocument || iframe.contentWindow.document;
+                    innerDoc.documentElement.setAttribute('data-bs-theme', 'dark');
+                }
+            });
+
+            editor.on('NodeChange', (e) => {
+                if (e.element.tagName === 'IMG') {
+                    e.element.setAttribute('loading', 'lazy');
+                }
+            });
+        }
+    });
 }
 
 export function keepAlive() {
