@@ -12,6 +12,11 @@ public static class ServiceCollectionExtensions
         var settings = section.Get<ImageStorageSettings>();
         services.Configure<ImageStorageSettings>(section);
 
+        if (settings == null)
+        {
+            throw new ArgumentNullException(nameof(settings), "ImageStorage settings cannot be null.");
+        }
+        
         var provider = settings.Provider?.ToLower();
         if (string.IsNullOrWhiteSpace(provider))
         {
