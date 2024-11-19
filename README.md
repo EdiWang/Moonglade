@@ -49,7 +49,7 @@ Build and run `./src/Moonglade.sln`
 
 ## ⚙ Configuration
 
-> This section discuss environment settings in **appsettings.json**. For blog settings, please use "/admin/settings" UI.
+> This section is for **appsettings.json**. For other blog settings, please use "/admin/settings" UI.
 
 ### Authentication
 
