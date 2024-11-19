@@ -42,6 +42,7 @@ public class AzureBlobImageStorage : IBlogImageStorage
             ".jpeg" => "image/jpeg",
             ".png" => "image/png",
             ".gif" => "image/gif",
+            ".webp" => "image/webp",
             _ => blobHttpHeader.ContentType
         };
 
