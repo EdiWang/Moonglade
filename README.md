@@ -34,7 +34,7 @@ Tools | Alternative
 > Free version of SQL Server Express would be sufficient for production use.
 
 Database | `appsettings.json/ConnectionStrings/MoongladeDatabase` Example
---- | --- | ---
+--- | ---
 Microsoft SQL Server | `Server=(local);Database=moonglade;Trusted_Connection=True;`
 MySQL | `Server=localhost;Port=3306;Database=moonglade;Uid=root;Pwd=***;`
 PostgreSQL | `User ID=***;Password=***;Host=localhost;Port=5432;Database=moonglade;Pooling=true;`
