@@ -125,7 +125,7 @@ export function loadTinyMCE(textareaSelector) {
     window.tinyMCE.init({
         selector: textareaSelector,
         themes: 'silver',
-        skin: isDarkTheme ? 'oxide-dark' : 'tinymce-5',
+        skin: isDarkTheme ? 'oxide-dark' : 'oxide',
         height: 'calc(100vh - 400px)',
         relative_urls: false,
         browser_spellcheck: true,
