@@ -187,8 +187,6 @@ export function loadTinyMCE(textareaSelector) {
 
             editor.on('NodeChange', (e) => {
                 if (e.element.tagName === 'IMG') {
-                    console.info(e.element);
-
                     e.element.setAttribute('loading', 'lazy');
                 }
             });
