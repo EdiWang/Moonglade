@@ -138,6 +138,7 @@ export function loadTinyMCE(textareaSelector) {
             document.querySelector('#btn-save').click();
         },
         paste_data_images: true,
+        images_file_types: 'png,jpg,jpeg,gif,webp,svg',
         images_upload_url: '/image',
         images_upload_credentials: true,
         extended_valid_elements: 'img[class|src|border=0|alt|title|hspace|vspace|width|height|align|onmouseover|onmouseout|name|loading=lazy]',
@@ -186,6 +187,8 @@ export function loadTinyMCE(textareaSelector) {
 
             editor.on('NodeChange', (e) => {
                 if (e.element.tagName === 'IMG') {
+                    console.info(e.element);
+
                     e.element.setAttribute('loading', 'lazy');
                 }
             });
