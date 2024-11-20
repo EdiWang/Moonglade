@@ -6,5 +6,8 @@ public class ImageInfo
 
     public string ImageExtensionName { get; set; }
 
-    public string ImageContentType => $"image/{ImageExtensionName}";
+    public string ImageContentType => 
+        ImageExtensionName.ToLowerInvariant() == "svg" ? 
+            "image/svg+xml" : 
+            $"image/{ImageExtensionName}";
 }

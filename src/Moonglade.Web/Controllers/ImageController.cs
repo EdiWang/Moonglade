@@ -19,7 +19,7 @@ public class ImageController(IBlogImageStorage imageStorage,
 {
     private readonly ImageStorageSettings _imageStorageSettings = imageStorageSettings.Value;
 
-    [HttpGet(@"{filename:regex((?!-)([[a-z0-9-]]+)\.(png|jpg|jpeg|gif|bmp|webp))}")]
+    [HttpGet(@"{filename:regex((?!-)([[a-z0-9-]]+)\.(png|jpg|jpeg|gif|bmp|webp|svg))}")]
     [ProducesResponseType(StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status302Found)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
@@ -100,7 +100,8 @@ public class ImageController(IBlogImageStorage imageStorage,
     {
         if (!blogConfig.ImageSettings.IsWatermarkEnabled || skipWatermark) return null;
 
-        if (ext.Equals(".gif", StringComparison.OrdinalIgnoreCase))
+        if (ext.Equals(".gif", StringComparison.OrdinalIgnoreCase) ||
+            ext.Equals(".svg", StringComparison.OrdinalIgnoreCase))
         {
             logger.LogInformation($"Skipped watermark for extension name: {ext}");
             return null;
