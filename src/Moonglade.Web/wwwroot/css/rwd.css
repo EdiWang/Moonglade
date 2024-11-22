@@ -45,9 +45,8 @@
         position: absolute;
         top: 0;
         width: 100%;
-    }
 
-        .blogger-intro-content h4 {
+        h4 {
             background-color: var(--transparent-light-20);
             border-radius: 5px;
             color: var(--bs-white);
@@ -55,6 +54,7 @@
             padding: 5px;
             text-shadow: 2px 0 2px #000;
         }
+    }
 
     .navbar .nav-item {
         margin: 0 !important;
