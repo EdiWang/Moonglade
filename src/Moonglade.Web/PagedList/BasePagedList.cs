@@ -75,8 +75,6 @@ public class BasePagedList<T> : IPagedList<T>
         Subset.AddRange(subset);
     }
 
-    #region IPagedList<T> Members
-
     /// <summary>
     /// 	Returns an enumerator that iterates through the BasePagedList&lt;T&gt;.
     /// </summary>
@@ -86,16 +84,8 @@ public class BasePagedList<T> : IPagedList<T>
         return Subset.GetEnumerator();
     }
 
-    ///<summary>
-    ///	Gets the element at the specified index.
-    ///</summary>
-    ///<param name = "index">The zero-based index of the element to get.</param>
-    public T this[int index] => Subset[index];
-
     /// <summary>
     /// 	Gets the number of elements contained on this page.
     /// </summary>
     public virtual int Count => Subset.Count;
-
-    #endregion
 }
