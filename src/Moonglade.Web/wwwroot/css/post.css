@@ -102,11 +102,11 @@ h1.post-title,
 
 .comment-form-containter {
     padding: 20px 38px;
-}
 
-    .comment-form-containter .card-subtitle {
+    .card-subtitle {
         font-size: 1rem;
     }
+}
 
 .comment-list .thumbnail {
     padding: 0;
