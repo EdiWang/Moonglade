@@ -22,24 +22,9 @@ public class PagedListRenderOptions
         NextElementClass = "paged-list-skip-to-next";
     }
 
-    ///<summary>
-    /// CSSClasses to append to the &lt;ul&gt; element in the paging control.
-    ///</summary>
     public IEnumerable<string> UlElementClasses { get; set; }
-
-    ///<summary>
-    /// CSS Classes to append to every &lt;a&gt; or &lt;span&gt; element that represent each page in the paging control.
-    ///</summary>
     public IEnumerable<string> PageClasses { get; set; }
-
-    ///<summary>
-    /// CSS Classes to append to previous element in the paging control.
-    ///</summary>
     public string PreviousElementClass { get; set; }
-
-    ///<summary>
-    /// CSS Classes to append to next element in the paging control.
-    ///</summary>
     public string NextElementClass { get; set; }
 
     ///<summary>
