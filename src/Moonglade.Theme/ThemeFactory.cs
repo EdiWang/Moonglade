@@ -14,7 +14,8 @@ public static class ThemeFactory
             CreateTheme(103, "OneNote Purple", "#663276", "#52285E", "#7719AA"),
             CreateTheme(104, "Outlook Blue", "#035AA6", "#032B51", "#006CBF"),
             CreateTheme(105, "Metal Blue", "#4E5967", "#333942", "#6e7c8e"),
-            CreateTheme(106, "Prussian Blue", "#003153", "#002036", "#0061a5")
+            CreateTheme(106, "Mars Green", "#008C8C", "#005e5e", "#17b5b5"),
+            CreateTheme(107, "Prussian Blue", "#003153", "#002036", "#0061a5")
         };
     }
 
