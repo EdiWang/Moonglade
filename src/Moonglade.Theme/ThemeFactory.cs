@@ -13,7 +13,8 @@ public static class ThemeFactory
             CreateTheme(102, "PowerPoint Orange", "#983B22", "#622616", "#C43E1C"),
             CreateTheme(103, "OneNote Purple", "#663276", "#52285E", "#7719AA"),
             CreateTheme(104, "Outlook Blue", "#035AA6", "#032B51", "#006CBF"),
-            CreateTheme(105, "Metal Blue", "#4E5967", "#333942", "#6e7c8e")
+            CreateTheme(105, "Metal Blue", "#4E5967", "#333942", "#6e7c8e"),
+            CreateTheme(106, "Prussian Blue", "#003153", "#002036", "#0061a5")
         };
     }
 
