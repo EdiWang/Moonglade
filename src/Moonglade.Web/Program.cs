@@ -137,15 +137,14 @@ public class Program
 
             if (bool.Parse(configuration["BlockPRCFuryCode"]!))
             {
-                magics.AddRange(new[]
-                {
+                magics.AddRange([
                     Helper.GetMagic(0x7DB14, 21, 25),
                     Helper.GetMagic(0x78E10, 13, 17),
                     Helper.GetMagic(0x17808, 34, 38),
                     Helper.GetMagic(0x1B5ED, 4, 8),
                     Helper.GetMagic(0x9CFB, 25, 29),
                     "NMSL", "CNMB", "MDZZ", "TNND"
-                });
+                ]);
             }
 
             options.FontStyle = FontStyle.Bold;

@@ -191,8 +191,9 @@
         }
     }
 
+
     @Html.PagedListPager(Model.CommentDetailedItems, page => $"?pageIndex={page}", new()
     {
-        UlElementClasses = new[] { "pagination mt-3" }
+        UlElementClasses = ["pagination mt-3"]
     })
 </div>
