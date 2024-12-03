@@ -96,4 +96,7 @@ IF EXISTS (
 )
 BEGIN
     ALTER TABLE Post DROP COLUMN HashCheckSum;
-END;
+END
+
+-- v14.15
+UPDATE [BlogConfiguration] SET CfgKey = 'AppearanceSettings' WHERE CfgKey = 'CustomStyleSheetSettings';
