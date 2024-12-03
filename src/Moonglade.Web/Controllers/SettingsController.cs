@@ -39,7 +39,6 @@ public class SettingsController(
 
     [HttpPost("general")]
     [ProducesResponseType(StatusCodes.Status204NoContent)]
-    [TypeFilter(typeof(ClearBlogCache), Arguments = [BlogCachePartition.General, "theme"])]
     public async Task<IActionResult> General(GeneralSettings model, ITimeZoneResolver timeZoneResolver)
     {
         model.AvatarUrl = blogConfig.GeneralSettings.AvatarUrl;
@@ -209,6 +208,7 @@ public class SettingsController(
     [HttpPost("appearance")]
     [ProducesResponseType(StatusCodes.Status204NoContent)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
+    [TypeFilter(typeof(ClearBlogCache), Arguments = [BlogCachePartition.General, "theme"])]
     public async Task<IActionResult> Appearance(AppearanceSettings model)
     {
         if (model.EnableCustomCss && string.IsNullOrWhiteSpace(model.CssCode))
