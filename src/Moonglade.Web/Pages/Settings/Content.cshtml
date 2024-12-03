@@ -19,123 +19,120 @@
     <div class="admin-settings-entry-container">
         <div class="row">
             <div class="col-md-6">
-                <div class="mb-3">
-                    <h4 class="admin-subtitle fw-bold mb-2">@SharedLocalizer["Blog posts"]</h4>
+                <h4 class="admin-subtitle fw-bold mb-2">@SharedLocalizer["Blog posts"]</h4>
 
-                    <div class="settings-entry row align-items-center py-3 px-2 rounded-3 shadow-sm border mb-2">
-                        <div class="col-auto">
-                            <i class="bi-check2-circle settings-entry-icon"></i>
+                <div class="settings-entry row align-items-center py-3 px-2 rounded-3 shadow-sm border mb-2">
+                    <div class="col-auto">
+                        <i class="bi-check2-circle settings-entry-icon"></i>
+                    </div>
+                    <div class="col">
+                        <label asp-for="@settings.PostTitleAlignment" class="me-4"></label>
+                    </div>
+                    <div class="col-md-5 text-end">
+                        <div class="form-check form-check-inline">
+                            @Html.RadioButtonFor(model => settings.PostTitleAlignment, PostTitleAlignment.Left, new { id = PostTitleAlignment.Left.ToString(), @class = "form-check-input" })
+                            <label class="form-check-label" for="@PostTitleAlignment.Left">@SharedLocalizer["Left"]</label>
                         </div>
-                        <div class="col">
-                            <label asp-for="@settings.PostTitleAlignment" class="me-4"></label>
-                        </div>
-                        <div class="col-md-5 text-end">
-                            <div class="form-check form-check-inline">
-                                @Html.RadioButtonFor(model => settings.PostTitleAlignment, PostTitleAlignment.Left, new { id = PostTitleAlignment.Left.ToString(), @class = "form-check-input" })
-                                <label class="form-check-label" for="@PostTitleAlignment.Left">@SharedLocalizer["Left"]</label>
-                            </div>
-                            <div class="form-check form-check-inline">
-                                @Html.RadioButtonFor(model => settings.PostTitleAlignment, PostTitleAlignment.Center, new { id = PostTitleAlignment.Center.ToString(), @class = "form-check-input" })
-                                <label class="form-check-label" for="@PostTitleAlignment.Center">@SharedLocalizer["Center"]</label>
-                            </div>
+                        <div class="form-check form-check-inline">
+                            @Html.RadioButtonFor(model => settings.PostTitleAlignment, PostTitleAlignment.Center, new { id = PostTitleAlignment.Center.ToString(), @class = "form-check-input" })
+                            <label class="form-check-label" for="@PostTitleAlignment.Center">@SharedLocalizer["Center"]</label>
                         </div>
                     </div>
+                </div>
 
-                    <div class="settings-entry row align-items-center py-3 px-2 rounded-3 shadow-sm border mb-2">
-                        <div class="col-auto">
-                            <i class="bi-sort-numeric-down settings-entry-icon"></i>
-                        </div>
-                        <div class="col">
-                            <label asp-for="@settings.PostListPageSize"></label>
-                        </div>
-                        <div class="col-4">
-                            <input asp-for="@settings.PostListPageSize" class="form-control" min="1" max="30" required />
+                <div class="settings-entry row align-items-center py-3 px-2 rounded-3 shadow-sm border mb-2">
+                    <div class="col-auto">
+                        <i class="bi-sort-numeric-down settings-entry-icon"></i>
+                    </div>
+                    <div class="col">
+                        <label asp-for="@settings.PostListPageSize"></label>
+                    </div>
+                    <div class="col-4">
+                        <input asp-for="@settings.PostListPageSize" class="form-control" min="1" max="30" required />
+                    </div>
+                </div>
+
+                <div class="settings-entry row align-items-center py-3 px-2 rounded-3 shadow-sm border mb-2">
+                    <div class="col-auto">
+                        <i class="settings-entry-icon bi-file-word"></i>
+                    </div>
+                    <div class="col">
+                        <label asp-for="@settings.PostAbstractWords"></label>
+                        <div class="form-text">@SharedLocalizer["How many words to use for generating abstract when it's absent, change this value will only affect new posts"]</div>
+                    </div>
+                    <div class="col-4">
+                        <input asp-for="@settings.PostAbstractWords" class="form-control" max="65536" required />
+                    </div>
+                </div>
+
+                <div class="settings-entry row align-items-center py-3 px-2 rounded-3 shadow-sm border mb-2">
+                    <div class="col-auto">
+                        <i class="bi-list-nested settings-entry-icon"></i>
+                    </div>
+                    <div class="col">
+                        <label asp-for="@settings.DocumentOutline" class="form-check-label"></label>
+                    </div>
+                    <div class="col-md-5 text-end">
+                        <div class="form-check form-switch form-control-lg">
+                            <input type="hidden" name="DocumentOutline" value="false">
+                            <input type="checkbox" name="DocumentOutline" value="true" class="form-check-input" @(settings.DocumentOutline ? "checked" : null)>
                         </div>
                     </div>
+                </div>
 
-                    <div class="settings-entry row align-items-center py-3 px-2 rounded-3 shadow-sm border mb-2">
+                <div class="rounded-3 shadow-sm border">
+                    <div class="settings-entry row align-items-center py-3 px-2">
                         <div class="col-auto">
-                            <i class="settings-entry-icon bi-file-word"></i>
+                            <i class="bi-card-text settings-entry-icon"></i>
                         </div>
                         <div class="col">
-                            <label asp-for="@settings.PostAbstractWords"></label>
-                            <div class="form-text">@SharedLocalizer["How many words to use for generating abstract when it's absent, change this value will only affect new posts"]</div>
-                        </div>
-                        <div class="col-4">
-                            <input asp-for="@settings.PostAbstractWords" class="form-control" max="65536" required />
-                        </div>
-                    </div>
-
-                    <div class="settings-entry row align-items-center py-3 px-2 rounded-3 shadow-sm border mb-2">
-                        <div class="col-auto">
-                            <i class="bi-list-nested settings-entry-icon"></i>
-                        </div>
-                        <div class="col">
-                            <label asp-for="@settings.DocumentOutline" class="form-check-label"></label>
+                            <label asp-for="@settings.ShowPostFooter" class="form-check-label"></label>
+                            <div class="form-text">@SharedLocalizer["e.g. Your blog post license information."]</div>
                         </div>
                         <div class="col-md-5 text-end">
                             <div class="form-check form-switch form-control-lg">
-                                <input type="hidden" name="DocumentOutline" value="false">
-                                <input type="checkbox" name="DocumentOutline" value="true" class="form-check-input" @(settings.DocumentOutline ? "checked" : null)>
+                                <input type="hidden" name="ShowPostFooter" value="false">
+                                <input type="checkbox" name="ShowPostFooter" value="true" class="form-check-input" @(settings.ShowPostFooter ? "checked" : null)>
                             </div>
                         </div>
                     </div>
-
-                    <div class="rounded-3 shadow-sm border">
-                        <div class="settings-entry row align-items-center py-3 px-2">
-                            <div class="col-auto">
-                                <i class="bi-card-text settings-entry-icon"></i>
-                            </div>
-                            <div class="col">
-                                <label asp-for="@settings.ShowPostFooter" class="form-check-label"></label>
-                                <div class="form-text">@SharedLocalizer["e.g. Your blog post license information."]</div>
-                            </div>
-                            <div class="col-md-5 text-end">
-                                <div class="form-check form-switch form-control-lg">
-                                    <input type="hidden" name="ShowPostFooter" value="false">
-                                    <input type="checkbox" name="ShowPostFooter" value="true" class="form-check-input" @(settings.ShowPostFooter ? "checked" : null)>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="border-top py-3 px-2">
-                            <div class="form-floating">
-                                <textarea asp-for="@settings.PostFooterHtmlPitch"
-                                          placeholder="@Html.DisplayNameFor(m => settings.PostFooterHtmlPitch)"
-                                          class="form-control form-control-sm h-100px"
-                                          spellcheck="false"></textarea>
-                                <label class="form-label" asp-for="@settings.PostFooterHtmlPitch"></label>
-                            </div>
+                    <div class="border-top py-3 px-2">
+                        <div class="form-floating">
+                            <textarea asp-for="@settings.PostFooterHtmlPitch"
+                                      placeholder="@Html.DisplayNameFor(m => settings.PostFooterHtmlPitch)"
+                                      class="form-control form-control-sm h-100px"
+                                      spellcheck="false"></textarea>
+                            <label class="form-label" asp-for="@settings.PostFooterHtmlPitch"></label>
                         </div>
                     </div>
-
                 </div>
-                <div>
-                    <h4 class="admin-subtitle fw-bold mb-2">@SharedLocalizer["Call-out"]</h4>
+            </div>
+            <div class="col-md-6">
+                <h4 class="admin-subtitle fw-bold mb-2">@SharedLocalizer["Call-out"]</h4>
 
-                    <div class="rounded-3 shadow-sm border mb-2">
-                        <div class="settings-entry row align-items-center py-3 px-2">
-                            <div class="col-auto">
-                                <i class="bi-menu-button-wide-fill settings-entry-icon"></i>
-                            </div>
-                            <div class="col">
-                                <label asp-for="@settings.ShowCalloutSection" class="form-check-label"></label>
-                                <div class="form-text">@SharedLocalizer["The call-out section will display on top of every page in the website."]</div>
-                            </div>
-                            <div class="col-md-5 text-end">
-                                <div class="form-check form-switch form-control-lg">
-                                    <input type="hidden" name="ShowCalloutSection" value="false">
-                                    <input type="checkbox" name="ShowCalloutSection" value="true" class="form-check-input" @(settings.ShowCalloutSection ? "checked" : null)>
-                                </div>
+                <div class="rounded-3 shadow-sm border mb-2">
+                    <div class="settings-entry row align-items-center py-3 px-2">
+                        <div class="col-auto">
+                            <i class="bi-menu-button-wide-fill settings-entry-icon"></i>
+                        </div>
+                        <div class="col">
+                            <label asp-for="@settings.ShowCalloutSection" class="form-check-label"></label>
+                            <div class="form-text">@SharedLocalizer["The call-out section will display on top of every page in the website."]</div>
+                        </div>
+                        <div class="col-md-5 text-end">
+                            <div class="form-check form-switch form-control-lg">
+                                <input type="hidden" name="ShowCalloutSection" value="false">
+                                <input type="checkbox" name="ShowCalloutSection" value="true" class="form-check-input" @(settings.ShowCalloutSection ? "checked" : null)>
                             </div>
                         </div>
-                        <div class="border-top py-3 px-2">
-                            <div class="form-floating">
-                                <textarea asp-for="@settings.CalloutSectionHtmlPitch"
-                                          placeholder="@Html.DisplayNameFor(m => settings.CalloutSectionHtmlPitch)"
-                                          class="form-control form-control-sm h-100px"
-                                          spellcheck="false"></textarea>
-                                <label class="form-label" asp-for="@settings.CalloutSectionHtmlPitch"></label>
-                            </div>
+                    </div>
+                    <div class="border-top py-3 px-2">
+                        <div class="form-floating">
+                            <textarea asp-for="@settings.CalloutSectionHtmlPitch"
+                                      placeholder="@Html.DisplayNameFor(m => settings.CalloutSectionHtmlPitch)"
+                                      class="form-control form-control-sm h-100px"
+                                      spellcheck="false"></textarea>
+                            <label class="form-label" asp-for="@settings.CalloutSectionHtmlPitch"></label>
                         </div>
                     </div>
                 </div>
