@@ -1,6 +1,5 @@
 ﻿@page "/admin/page"
 @using Moonglade.Core.PageFeature
-@inject IMediator Mediator
 @{
     ViewBag.Title = "Pages";
     var pageSegments = await Mediator.Send(new ListPageSegmentQuery());

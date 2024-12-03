@@ -1,7 +1,6 @@
 ﻿@page "/post/{year:int:length(4)}/{month:int:range(1,12)?}"
 @using Microsoft.AspNetCore.Mvc.TagHelpers
 @using Moonglade.Core.PostFeature
-@inject IMediator Mediator
 @{
     ViewBag.TitlePrefix = $"Posts in {ArchiveInfo}";
     ViewBag.BodyClass = "body-archive-list bg-gray-1";

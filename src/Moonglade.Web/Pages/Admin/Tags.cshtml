@@ -1,6 +1,5 @@
 ﻿@page "/admin/tags"
 @using Moonglade.Core.TagFeature
-@inject IMediator Mediator
 @{
     ViewBag.Title = "Tags";
     var tags = await Mediator.Send(new GetTagsQuery());

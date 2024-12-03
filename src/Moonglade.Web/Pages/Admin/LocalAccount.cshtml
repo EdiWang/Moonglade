@@ -1,6 +1,5 @@
 ﻿@page "/admin/account"
 @using System.Globalization
-@inject IMediator Mediator
 @{
     ViewBag.Title = "Account";
     var loginHistoryList = await Mediator.Send(new GetLoginHistoryQuery());
