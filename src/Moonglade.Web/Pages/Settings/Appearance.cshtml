@@ -1,5 +1,4 @@
 ﻿@page "/admin/settings/appearance"
-@model Moonglade.Web.Pages.Settings.AppearanceModel
 
 @Html.AntiForgeryToken()
 @{
@@ -96,7 +95,7 @@
             <div>
                 <div class="row g-1 mb-2">
                     <div class="col">
-                        <select class="form-select" asp-for="ViewModel.ThemeId" asp-items="@tmList"></select>
+                        <select class="form-select" asp-for="@ViewModel.ThemeId" asp-items="@tmList"></select>
                     </div>
                     <div class="col-auto">
                         <a class="btn btn-outline-accent" href="#" data-bs-toggle="modal" data-bs-target="#thememodal">
@@ -116,19 +115,19 @@
                 <i class="bi-palette settings-entry-icon"></i>
             </div>
             <div class="col">
-                <label asp-for="ViewModel.EnableCustomCss" class="form-check-label"></label>
+                <label asp-for="@ViewModel.EnableCustomCss" class="form-check-label"></label>
             </div>
             <div class="col-md-5 text-end">
                 <div class="form-check form-switch form-control-lg">
                     <input type="hidden" name="EnableCustomCss" value="false">
-                    <input type="checkbox" name="EnableCustomCss" value="true" class="form-check-input" @(@Model.ViewModel.EnableCustomCss ? "checked" : null)/>
+                    <input type="checkbox" name="EnableCustomCss" value="true" class="form-check-input" @(@ViewModel.EnableCustomCss ? "checked" : null) />
                 </div>
             </div>
         </div>
 
         <div id="CssContentEditor" class="monaco-target p-3 rounded-3 shadow-sm border">
         </div>
-        <textarea asp-for="ViewModel.CssCode" class="settings-csscontent-textarea d-none"></textarea>
+        <textarea asp-for="@ViewModel.CssCode" class="settings-csscontent-textarea d-none"></textarea>
     </div>
 
     <div class="admin-settings-action-container border-top pt-2 mt-2">
@@ -138,4 +137,16 @@
     </div>
 </form>
 
-<partial name="_ThemeModal" model="Model.ThemeRequest" />
+<partial name="_ThemeModal" model="ThemeRequest" />
+
+@functions
+{
+    public AppearanceSettings ViewModel { get; set; }
+
+    public CreateThemeRequest ThemeRequest { get; set; }
+
+    public void OnGet()
+    {
+        ViewModel = BlogConfig.AppearanceSettings;
+    }
+}
