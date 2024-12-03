@@ -1,14 +1,15 @@
 # Moonglade Blog
 
-A personal blog system that optimized for [**Microsoft Azure**](https://azure.microsoft.com/en-us/). Designed for developers, enabling common blogging features including posts, comments, categories, archive, tags and pages.
+Moonglade is a personal blogging platform optimized for deployment on [**Microsoft Azure**](https://azure.microsoft.com/en-us/). It is designed with developers in mind, offering essential blogging features such as posts, comments, categories, archives, tags, and pages.
 
 ## 📦 Deployment Notice
 
-- Use stable code from [Release](https://github.com/EdiWang/Moonglade/releases) branch rather than master branch.
+- **Stable Code:** Always use the stable code from the [Release](https://github.com/EdiWang/Moonglade/releases) branch instead of the master branch.
 
-- It is recommended to enable HTTPS and HTTP/2 support on your web server.
+- **Security:** Enable HTTPS and HTTP/2 on your web server for enhanced security and performance.
 
-- Azure is recommended for deployment, but you can also deploy it on any other cloud provider or pure on-premises without any cloud.
+- **Deployment Options:** While Azure is recommended, Moonglade Blog can also be deployed on other cloud providers or on-premises environments.
+
 
 ### Full Deploy on Azure
 
@@ -159,4 +160,4 @@ Trackback | Social | Not planned |
 
 ## 免责申明
 
-对于中国访客，我们有一份特定的免责申明。请确保你已经阅读并理解其内容：[免责申明（仅限中国访客）](./DISCLAIMER_CN.md)
+对于中国访客，我们有一份特供的免责申明。请确保你已经阅读并理解其内容：[免责申明（仅限中国访客）](./DISCLAIMER_CN.md)
