@@ -100,3 +100,20 @@ END
 
 -- v14.15
 UPDATE [BlogConfiguration] SET CfgKey = 'AppearanceSettings' WHERE CfgKey = 'CustomStyleSheetSettings';
+
+-- Reset configuration keys
+UPDATE BlogConfiguration SET Id = Id + 100 WHERE Id <> 99
+
+UPDATE BlogConfiguration SET Id = 1 WHERE CfgKey = 'ContentSettings'
+UPDATE BlogConfiguration SET Id = 2 WHERE CfgKey = 'NotificationSettings'
+UPDATE BlogConfiguration SET Id = 3 WHERE CfgKey = 'FeedSettings'
+UPDATE BlogConfiguration SET Id = 4 WHERE CfgKey = 'GeneralSettings'
+UPDATE BlogConfiguration SET Id = 5 WHERE CfgKey = 'ImageSettings'
+UPDATE BlogConfiguration SET Id = 6 WHERE CfgKey = 'AdvancedSettings'
+UPDATE BlogConfiguration SET Id = 7 WHERE CfgKey = 'AppearanceSettings'
+UPDATE BlogConfiguration SET Id = 8 WHERE CfgKey = 'CommentSettings'
+UPDATE BlogConfiguration SET Id = 10 WHERE CfgKey = 'CustomMenuSettings'
+UPDATE BlogConfiguration SET Id = 11 WHERE CfgKey = 'LocalAccountSettings'
+UPDATE BlogConfiguration SET Id = 12 WHERE CfgKey = 'SocialLinkSettings'
+
+DELETE FROM BlogConfiguration WHERE Id > 100
