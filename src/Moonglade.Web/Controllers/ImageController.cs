@@ -32,6 +32,13 @@ public class ImageController(IBlogImageStorage imageStorage,
             return BadRequest("invalid filename");
         }
 
+        // Prevent access to origin images
+        if (filename.Contains("-origin.", StringComparison.OrdinalIgnoreCase))
+        {
+            logger.LogWarning($"Attempt to access origin image: `{filename}` is blocked. Client IP: {HttpContext.Connection.RemoteIpAddress}");
+            return Forbid();
+        }
+
         // Fallback method for legacy "/image/..." references (e.g. from third party websites)
         if (blogConfig.ImageSettings.EnableCDNRedirect)
         {
