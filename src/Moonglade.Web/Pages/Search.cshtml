@@ -1,5 +1,8 @@
 ﻿@page "/search"
-@model Moonglade.Web.Pages.SearchModel
+@using Microsoft.AspNetCore.Mvc.TagHelpers
+@using Moonglade.Core.PostFeature
+@inject IMediator Mediator
+
 @section meta
 {
     <meta name="robots" content="noindex, nofollow" />
@@ -13,7 +16,7 @@
     @SharedLocalizer["Search Result"]
 </h3>
 
-@if (!Model.Posts.Any())
+@if (!Posts.Any())
 {
     <div class="alert alert-info">
         @SharedLocalizer["No Matching Result"]
@@ -21,8 +24,24 @@
 }
 else
 {
-    foreach (var item in Model.Posts.OrderByDescending(s => s.PubDateUtc))
+    foreach (var item in Posts.OrderByDescending(s => s.PubDateUtc))
     {
         <partial name="_PostListEntry" model="item" />
+    }
+}
+
+@functions {
+    public List<PostDigest> Posts { get; set; } = new();
+
+    public async Task<IActionResult> OnGetAsync(string term)
+    {
+        if (string.IsNullOrWhiteSpace(term)) return RedirectToPage("Index");
+
+        ViewData["TitlePrefix"] = term;
+
+        var posts = await Mediator.Send(new SearchPostQuery(term));
+        Posts = posts;
+
+        return Page();
     }
 }
