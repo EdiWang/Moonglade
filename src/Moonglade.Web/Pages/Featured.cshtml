@@ -1,5 +1,8 @@
 ﻿@page "/archive/featured"
-@model Moonglade.Web.Pages.FeaturedModel
+@using Microsoft.AspNetCore.Mvc.TagHelpers
+@using Moonglade.Core.PostFeature
+@using Moonglade.Web.PagedList
+@inject IMediator Mediator
 
 @{
     ViewBag.TitlePrefix = "Featured Posts";
@@ -10,13 +13,28 @@
     @SharedLocalizer["Featured Posts"]
 </h3>
 
-@if (Model.Posts.Count > 0)
+@if (Posts.Count > 0)
 {
-    <partial name="_PostList" model="Model.Posts" />
+    <partial name="_PostList" model="Posts" />
 }
 else
 {
     <div class="alert alert-info">
         @SharedLocalizer["No Posts"]
     </div>
+}
+
+@functions
+{
+    public BasePagedList<PostDigest> Posts { get; set; }
+
+    public async Task OnGet(int p = 1)
+    {
+        var pagesize = BlogConfig.ContentSettings.PostListPageSize;
+        var posts = await Mediator.Send(new ListFeaturedQuery(pagesize, p));
+        var count = await Mediator.Send(new CountPostQuery(CountType.Featured));
+
+        var list = new BasePagedList<PostDigest>(posts, p, pagesize, count);
+        Posts = list;
+    }
 }
