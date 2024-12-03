@@ -1,7 +1,9 @@
 ﻿@page "/post/{year:int:length(4)}/{month:int:range(1,12)?}"
-@model Moonglade.Web.Pages.ArchiveListModel
+@using Microsoft.AspNetCore.Mvc.TagHelpers
+@using Moonglade.Core.PostFeature
+@inject IMediator Mediator
 @{
-    ViewBag.TitlePrefix = $"Posts in {Model.ArchiveInfo}";
+    ViewBag.TitlePrefix = $"Posts in {ArchiveInfo}";
     ViewBag.BodyClass = "body-archive-list bg-gray-1";
 }
 
@@ -10,7 +12,7 @@
 </h2>
 
 <div>
-    @if (!Model.Posts.Any())
+    @if (!Posts.Any())
     {
         <div class="text-muted text-center">
             - @SharedLocalizer["No Posts"] -
@@ -18,9 +20,40 @@
     }
     else
     {
-        foreach (var item in Model.Posts.OrderByDescending(s => s.PubDateUtc))
+        foreach (var item in Posts.OrderByDescending(s => s.PubDateUtc))
         {
             <partial name="_PostListEntry" model="item" />
         }
     }
 </div>
+
+@functions
+{
+    public List<PostDigest> Posts { get; set; }
+
+    public string ArchiveInfo { get; set; }
+
+    public async Task<IActionResult> OnGetAsync(int year, int? month)
+    {
+        if (year < DateTime.MinValue.Year || year > DateTime.UtcNow.Year) return BadRequest();
+        if (month is > 12 or < 0) return BadRequest();
+
+        List<PostDigest> model;
+
+        if (month is not null)
+        {
+            // {year}/{month}
+            ArchiveInfo = new DateTime(year, month.Value, 1).ToString("MMMM yyyy");
+            model = await Mediator.Send(new ListArchiveQuery(year, month));
+        }
+        else
+        {
+            // {year}
+            ArchiveInfo = $"{year}";
+            model = await Mediator.Send(new ListArchiveQuery(year));
+        }
+
+        Posts = model;
+        return Page();
+    }
+}
