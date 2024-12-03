@@ -126,7 +126,7 @@ public class PostController(
     [ProducesResponseType(StatusCodes.Status204NoContent)]
     public async Task<IActionResult> EmptyRecycleBin()
     {
-        await mediator.Send(new PurgeRecycledCommand());
+        await mediator.Send(new EmptyRecycleBinCommand());
         return NoContent();
     }
 

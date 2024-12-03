@@ -4,11 +4,11 @@ using Moonglade.Data.Specifications;
 
 namespace Moonglade.Core.PostFeature;
 
-public record PurgeRecycledCommand : IRequest;
+public record EmptyRecycleBinCommand : IRequest;
 
-public class PurgeRecycledCommandHandler(ICacheAside cache, MoongladeRepository<PostEntity> repo) : IRequestHandler<PurgeRecycledCommand>
+public class EmptyRecycleBinCommandHandler(ICacheAside cache, MoongladeRepository<PostEntity> repo) : IRequestHandler<EmptyRecycleBinCommand>
 {
-    public async Task Handle(PurgeRecycledCommand request, CancellationToken ct)
+    public async Task Handle(EmptyRecycleBinCommand request, CancellationToken ct)
     {
         var spec = new PostByDeletionFlagSpec(true);
         var posts = await repo.ListAsync(spec, ct);
