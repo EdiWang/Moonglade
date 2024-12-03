@@ -7,6 +7,7 @@ public interface IBlogConfig
 {
     GeneralSettings GeneralSettings { get; set; }
     ContentSettings ContentSettings { get; set; }
+    CommentSettings CommentSettings { get; set; }
     NotificationSettings NotificationSettings { get; set; }
     FeedSettings FeedSettings { get; set; }
     ImageSettings ImageSettings { get; set; }
@@ -26,6 +27,8 @@ public class BlogConfig : IBlogConfig
     public GeneralSettings GeneralSettings { get; set; }
 
     public ContentSettings ContentSettings { get; set; }
+
+    public CommentSettings CommentSettings { get; set; }
 
     public NotificationSettings NotificationSettings { get; set; }
 
@@ -54,6 +57,7 @@ public class BlogConfig : IBlogConfig
         ImageSettings = AssignValueForConfigItem(5, ImageSettings.DefaultValue, config);
         AdvancedSettings = AssignValueForConfigItem(6, AdvancedSettings.DefaultValue, config);
         AppearanceSettings = AssignValueForConfigItem(7, AppearanceSettings.DefaultValue, config);
+        CommentSettings = AssignValueForConfigItem(8, CommentSettings.DefaultValue, config);
         CustomMenuSettings = AssignValueForConfigItem(10, CustomMenuSettings.DefaultValue, config);
         LocalAccountSettings = AssignValueForConfigItem(11, LocalAccountSettings.DefaultValue, config);
         SocialLinkSettings = AssignValueForConfigItem(12, SocialLinkSettings.DefaultValue, config);

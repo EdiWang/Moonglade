@@ -63,6 +63,16 @@ public class SettingsController(
         return NoContent();
     }
 
+    [HttpPost("comment")]
+    [ProducesResponseType(StatusCodes.Status204NoContent)]
+    public async Task<IActionResult> Comment(CommentSettings model)
+    {
+        blogConfig.CommentSettings = model;
+
+        await SaveConfigAsync(blogConfig.CommentSettings);
+        return NoContent();
+    }
+
     [HttpPost("notification")]
     [ProducesResponseType(StatusCodes.Status204NoContent)]
     public async Task<IActionResult> Notification(NotificationSettings model)

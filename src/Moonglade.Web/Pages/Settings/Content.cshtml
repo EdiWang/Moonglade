@@ -1,216 +1,23 @@
 ﻿@page "/admin/settings/content"
-@inject IConfiguration Configuration
-
-@section scripts{
+@section scripts {
     <script type="module">
         import * as settings from '/js/app/admin.settings.module.js';
 
-        window.toggleCommentSettingsUI = function () {
-            if (document.querySelector('#BuiltIn').checked) {
-                document.querySelector('.comment-settings-built-in').style.display = 'block';
-                document.querySelector('.comment-settings-3rd').style.display = 'none';
-            } else {
-                document.querySelector('.comment-settings-built-in').style.display = 'none';
-                document.querySelector('.comment-settings-3rd').style.display = 'block';
-            }
-        }
-
         const form = document.querySelector('#form-settings');
         form.addEventListener('submit', settings.handleSettingsSubmit);
-
-        toggleCommentSettingsUI();
     </script>
 }
 @{
     var settings = BlogConfig.ContentSettings;
 }
 
-@section admintoolbar{
+@section admintoolbar {
     <partial name="_SettingsHeader" />
 }
 
 <form id="form-settings" asp-controller="Settings" asp-action="Content">
     <div class="admin-settings-entry-container">
         <div class="row">
-            <div class="col-md-6">
-                <div>
-                    <h4 class="admin-subtitle fw-bold mb-2">@SharedLocalizer["Comments"]</h4>
-
-                    <div class="settings-entry row align-items-center py-3 px-2 rounded-3 shadow-sm border mb-2">
-                        <div class="col-auto">
-                            <i class="bi-chat-left-dots settings-entry-icon"></i>
-                        </div>
-                        <div class="col">
-                            <label asp-for="@settings.EnableComments" class="form-check-label"></label>
-                        </div>
-                        <div class="col-md-5 text-end">
-                            <div class="form-check form-switch form-control-lg">
-                                <input type="hidden" name="EnableComments" value="false">
-                                <input type="checkbox" name="EnableComments" value="true" class="form-check-input" @(settings.EnableComments ? "checked" : null)>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="settings-entry row align-items-center py-3 px-2 rounded-3 shadow-sm border mb-2">
-                        <div class="col-auto">
-                            <i class="bi-diagram-2 settings-entry-icon"></i>
-                        </div>
-                        <div class="col">
-                            <label asp-for="@settings.CommentProvider" class="me-4"></label>
-                        </div>
-                        <div class="col-md-5 text-end">
-                            <div class="form-check form-check-inline">
-                                @Html.RadioButtonFor(model => settings.CommentProvider, CommentProvider.BuiltIn, new
-                                {
-                                id = CommentProvider.BuiltIn.ToString(),
-                                @class = "form-check-input comment-provider-checkbox",
-                                onchange = "window.toggleCommentSettingsUI()"
-                                })
-                                <label class="form-check-label" for="@CommentProvider.BuiltIn">@SharedLocalizer["Built in"]</label>
-                            </div>
-                            <div class="form-check form-check-inline">
-                                @Html.RadioButtonFor(model => settings.CommentProvider, CommentProvider.ThirdParty, new
-                                {
-                                id = CommentProvider.ThirdParty.ToString(),
-                                @class = "form-check-input comment-provider-checkbox",
-                                onchange = "window.toggleCommentSettingsUI()"
-                                })
-                                <label class="form-check-label" for="@CommentProvider.ThirdParty">@SharedLocalizer["Third party"]</label>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="settings-entry row align-items-center py-3 px-2 rounded-3 shadow-sm border mb-2">
-                        <div class="col-auto">
-                            <i class="settings-entry-icon bi-hourglass-split"></i>
-                        </div>
-                        <div class="col">
-                            <label asp-for="@settings.CloseCommentAfterDays"></label>
-                            <div class="form-text">@SharedLocalizer["Set to 0 to never close comments after any days"]</div>
-                        </div>
-                        <div class="col-4">
-                            <input asp-for="@settings.CloseCommentAfterDays" class="form-control" min="0" max="65536" required />
-                        </div>
-                    </div>
-
-                    <div class="comment-settings-built-in">
-
-                        <div class="settings-entry row align-items-center py-3 px-2 rounded-3 shadow-sm border mb-2">
-                            <div class="col-auto">
-                                <i class="bi-sort-numeric-down settings-entry-icon"></i>
-                            </div>
-                            <div class="col">
-                                <label asp-for="@settings.CommentOrder" class="me-4"></label>
-                            </div>
-                            <div class="col-md-5 text-end">
-                                <div class="form-check form-check-inline">
-                                    @Html.RadioButtonFor(model => settings.CommentOrder, CommentOrder.OldToNew, new { id = CommentOrder.OldToNew.ToString(), @class = "form-check-input" })
-                                    <label class="form-check-label" for="@CommentOrder.OldToNew">@SharedLocalizer["Old to new"]</label>
-                                </div>
-                                <div class="form-check form-check-inline">
-                                    @Html.RadioButtonFor(model => settings.CommentOrder, CommentOrder.NewToOld, new { id = CommentOrder.NewToOld.ToString(), @class = "form-check-input" })
-                                    <label class="form-check-label" for="@CommentOrder.NewToOld">@SharedLocalizer["New to old"]</label>
-                                </div>
-                            </div>
-                        </div>
-
-                        <div class="settings-entry row align-items-center py-3 px-2 rounded-3 shadow-sm border mb-2">
-                            <div class="col-auto">
-                                <i class="bi-person-check settings-entry-icon"></i>
-                            </div>
-                            <div class="col">
-                                <label asp-for="@settings.RequireCommentReview" class="form-check-label"></label>
-                            </div>
-                            <div class="col-md-5 text-end">
-                                <div class="form-check form-switch form-control-lg">
-                                    <input type="hidden" name="RequireCommentReview" value="false">
-                                    <input type="checkbox" name="RequireCommentReview" value="true" class="form-check-input" @(settings.RequireCommentReview ? "checked" : null)>
-                                </div>
-                            </div>
-                        </div>
-
-                        <div class="settings-entry row align-items-center py-3 px-2 rounded-3 shadow-sm border mb-2">
-                            <div class="col-auto">
-                                <i class="bi-person-square settings-entry-icon"></i>
-                            </div>
-                            <div class="col">
-                                <label asp-for="@settings.EnableGravatar" class="form-check-label"></label>
-                            </div>
-                            <div class="col-md-5 text-end">
-                                <div class="form-check form-switch form-control-lg">
-                                    <input type="hidden" name="EnableGravatar" value="false">
-                                    <input type="checkbox" name="EnableGravatar" value="true" class="form-check-input" @(settings.EnableGravatar ? "checked" : null)>
-                                </div>
-                            </div>
-                        </div>
-
-                        @if (!string.IsNullOrWhiteSpace(Configuration["ContentModerator:ApiEndpoint"]))
-                        {
-                            <div class="settings-entry row align-items-center py-3 px-2 rounded-3 shadow-sm border mb-2">
-                                <div class="col-auto">
-                                    <i class="bi-translate settings-entry-icon"></i>
-                                </div>
-                                <div class="col">
-                                    <label asp-for="@settings.EnableWordFilter" class="form-check-label"></label>
-                                </div>
-                                <div class="col-md-5 text-end">
-                                    <div class="form-check form-switch form-control-lg">
-                                        <input type="hidden" name="EnableWordFilter" value="false">
-                                        <input type="checkbox" name="EnableWordFilter" value="true" class="form-check-input" @(settings.EnableWordFilter ? "checked" : null)>
-                                    </div>
-                                </div>
-                            </div>
-
-                            <div class="settings-entry row align-items-center py-3 px-2 rounded-3 shadow-sm border mb-2">
-                                <div class="col-auto">
-                                    <i class="bi-check2-circle settings-entry-icon"></i>
-                                </div>
-                                <div class="col">
-                                    <label asp-for="@settings.WordFilterMode" class="me-4"></label>
-                                    <div class="form-text">@SharedLocalizer["Blocked words will be masked as * in content."]</div>
-                                </div>
-                                <div class="col-md-5 text-end">
-                                    <div class="form-check form-check-inline">
-                                        @Html.RadioButtonFor(model => settings.WordFilterMode, WordFilterMode.Mask, new { id = WordFilterMode.Mask.ToString(), @class = "form-check-input" })
-                                        <label class="form-check-label" for="@WordFilterMode.Mask">@SharedLocalizer["Mask Word"]</label>
-                                    </div>
-                                    <div class="form-check form-check-inline">
-                                        @Html.RadioButtonFor(model => settings.WordFilterMode, WordFilterMode.Block, new { id = WordFilterMode.Block.ToString(), @class = "form-check-input" })
-                                        <label class="form-check-label" for="@WordFilterMode.Block">@SharedLocalizer["Block Comment"]</label>
-                                    </div>
-                                </div>
-                            </div>
-                        }
-                        else
-                        {
-                            <div class="settings-entry row align-items-center py-3 px-2 rounded-3 shadow-sm border mb-2">
-                                <div class="col-auto">
-                                    <i class="bi-translate settings-entry-icon"></i>
-                                </div>
-                                <div class="col">
-                                    <label asp-for="@settings.EnableWordFilter" class="form-check-label"></label>
-                                    <div class="form-text">Please follow <a href="https://github.com/EdiWang/Moonglade.ContentSecurity" target="_blank">instruction</a> to setup content security API</div>
-                                </div>
-                                <div class="col-md-5 text-end">
-                                    <a class="btn btn-sm btn-outline-accent" href="https://github.com/EdiWang/Moonglade.ContentSecurity" target="_blank">Setup</a>
-                                </div>
-                            </div>
-                        }
-                    </div>
-
-                    <div class="comment-settings-3rd">
-                        <div>
-                            <div class="form-floating">
-                                <textarea asp-for="@settings.ThirdPartyCommentHtmlPitch"
-                                          placeholder="@Html.DisplayNameFor(m => settings.ThirdPartyCommentHtmlPitch)"
-                                          class="form-control form-control-sm h-100px"
-                                          spellcheck="false"></textarea>
-                                <label class="form-label" asp-for="@settings.ThirdPartyCommentHtmlPitch"></label>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
             <div class="col-md-6">
                 <div class="mb-3">
                     <h4 class="admin-subtitle fw-bold mb-2">@SharedLocalizer["Blog posts"]</h4>

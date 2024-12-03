@@ -21,7 +21,7 @@
 @if (null != Model && Model.Any())
 {
     var orderedList =
-        BlogConfig.ContentSettings.CommentOrder == CommentOrder.NewToOld ?
+        BlogConfig.CommentSettings.CommentOrder == CommentOrder.NewToOld ?
             Model.OrderByDescending(m => m.CreateTimeUtc) :
             Model.OrderBy(m => m.CreateTimeUtc);
 
@@ -29,7 +29,7 @@
         @foreach (var item in orderedList)
         {
             <div class="col-md-1 mb-3 d-none d-sm-block">
-                @if (BlogConfig.ContentSettings.EnableGravatar && !string.IsNullOrWhiteSpace(item.Email))
+                @if (BlogConfig.CommentSettings.EnableGravatar && !string.IsNullOrWhiteSpace(item.Email))
                 {
                     <div class="user-avatar">
                         <gravatar email="@item.Email" />
