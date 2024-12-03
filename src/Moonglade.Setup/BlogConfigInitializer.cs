@@ -27,7 +27,7 @@ public class BlogConfigInitializer(IMediator mediator, IBlogConfig blogConfig) :
             { 4, (nameof(GeneralSettings), () => GeneralSettings.DefaultValue.ToJson()) },
             { 5, (nameof(ImageSettings), () => ImageSettings.DefaultValue.ToJson()) },
             { 6, (nameof(AdvancedSettings), () => AdvancedSettings.DefaultValue.ToJson()) },
-            { 7, (nameof(CustomStyleSheetSettings), () => CustomStyleSheetSettings.DefaultValue.ToJson()) },
+            { 7, (nameof(AppearanceSettings), () => AppearanceSettings.DefaultValue.ToJson()) },
             { 10, (nameof(CustomMenuSettings), () => CustomMenuSettings.DefaultValue.ToJson()) },
             { 11, (nameof(LocalAccountSettings), () => LocalAccountSettings.DefaultValue.ToJson()) },
             { 12, (nameof(SocialLinkSettings), () => SocialLinkSettings.DefaultValue.ToJson()) },

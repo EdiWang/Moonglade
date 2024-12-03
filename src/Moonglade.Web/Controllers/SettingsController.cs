@@ -209,17 +209,17 @@ public class SettingsController(
     [HttpPost("custom-css")]
     [ProducesResponseType(StatusCodes.Status204NoContent)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
-    public async Task<IActionResult> CustomStyleSheet(CustomStyleSheetSettings model)
+    public async Task<IActionResult> CustomStyleSheet(AppearanceSettings model)
     {
         if (model.EnableCustomCss && string.IsNullOrWhiteSpace(model.CssCode))
         {
-            ModelState.AddModelError(nameof(CustomStyleSheetSettings.CssCode), "CSS Code is required");
+            ModelState.AddModelError(nameof(AppearanceSettings.CssCode), "CSS Code is required");
             return BadRequest(ModelState.CombineErrorMessages());
         }
 
-        blogConfig.CustomStyleSheetSettings = model;
+        blogConfig.AppearanceSettings = model;
 
-        await SaveConfigAsync(blogConfig.CustomStyleSheetSettings);
+        await SaveConfigAsync(blogConfig.AppearanceSettings);
         return NoContent();
     }
 

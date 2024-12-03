@@ -11,7 +11,7 @@ public interface IBlogConfig
     FeedSettings FeedSettings { get; set; }
     ImageSettings ImageSettings { get; set; }
     AdvancedSettings AdvancedSettings { get; set; }
-    CustomStyleSheetSettings CustomStyleSheetSettings { get; set; }
+    AppearanceSettings AppearanceSettings { get; set; }
     CustomMenuSettings CustomMenuSettings { get; set; }
     LocalAccountSettings LocalAccountSettings { get; set; }
     SocialLinkSettings SocialLinkSettings { get; set; }
@@ -35,7 +35,7 @@ public class BlogConfig : IBlogConfig
 
     public AdvancedSettings AdvancedSettings { get; set; }
 
-    public CustomStyleSheetSettings CustomStyleSheetSettings { get; set; }
+    public AppearanceSettings AppearanceSettings { get; set; }
 
     public CustomMenuSettings CustomMenuSettings { get; set; }
 
@@ -53,7 +53,7 @@ public class BlogConfig : IBlogConfig
         GeneralSettings = AssignValueForConfigItem(4, GeneralSettings.DefaultValue, config);
         ImageSettings = AssignValueForConfigItem(5, ImageSettings.DefaultValue, config);
         AdvancedSettings = AssignValueForConfigItem(6, AdvancedSettings.DefaultValue, config);
-        CustomStyleSheetSettings = AssignValueForConfigItem(7, CustomStyleSheetSettings.DefaultValue, config);
+        AppearanceSettings = AssignValueForConfigItem(7, AppearanceSettings.DefaultValue, config);
         CustomMenuSettings = AssignValueForConfigItem(10, CustomMenuSettings.DefaultValue, config);
         LocalAccountSettings = AssignValueForConfigItem(11, LocalAccountSettings.DefaultValue, config);
         SocialLinkSettings = AssignValueForConfigItem(12, SocialLinkSettings.DefaultValue, config);
