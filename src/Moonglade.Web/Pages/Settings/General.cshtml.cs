@@ -6,8 +6,6 @@ public class GeneralModel(IBlogConfig blogConfig, ITimeZoneResolver timeZoneReso
 {
     public GeneralSettings ViewModel { get; set; }
 
-    public CreateThemeRequest ThemeRequest { get; set; }
-
     public void OnGet()
     {
         ViewModel = blogConfig.GeneralSettings;

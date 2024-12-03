@@ -2,7 +2,6 @@
 @model Moonglade.Web.Pages.Settings.GeneralModel
 @inject ITimeZoneResolver ZoneResolver
 @inject IOptions<RequestLocalizationOptions> LocOptions
-@inject IMediator Mediator
 
 @{
     var tzList = ZoneResolver.ListTimeZones().Select(t => new SelectListItem
@@ -10,15 +9,6 @@
                 Text = t.DisplayName,
                 Value = t.Id
             });
-
-    var themes = await Mediator.Send(new GetAllThemeSegmentQuery());
-    var tmList = themes
-        .Select(t => new SelectListItem
-                {
-                    Text = t.Name,
-                    Value = t.Id.ToString()
-                });
-
 
     var cultureItems = LocOptions.Value.SupportedUICultures
         .Select(c => new { Value = c.Name, c.NativeName });
@@ -59,46 +49,6 @@
         document.getElementById('btn-upload-siteicon').addEventListener('click', function () {
             siteiconUploader.uploadImage('/siteicon');
         });
-
-        var themeModal = new bootstrap.Modal(document.getElementById('thememodal'));
-
-        window.createTheme = function (oFormElement) {
-            callApi(oFormElement.action,
-                'POST',
-                {
-                    name: document.querySelector('#Name').value,
-                    accentColor1: document.querySelector('#AccentColor1').value,
-                    accentColor2: document.querySelector('#AccentColor2').value,
-                    accentColor3: document.querySelector('#AccentColor3').value
-                },
-                async (resp) => {
-                    var id = await resp.json();
-
-                    themeModal.hide();
-
-                    var selectElement = document.getElementById('ViewModel_ThemeId');
-                    var newOption = new Option(document.querySelector('#Name').value, id);
-                    selectElement.appendChild(newOption);
-
-                    blogToast.success('Theme created, refresh to see.');
-                });
-        }
-
-        window.deleteTheme = function () {
-            var selectedThemeId = document.querySelector('#ViewModel_ThemeId').value;
-            callApi(`/api/theme/${selectedThemeId}`,
-                'DELETE',
-                {},
-                (resp) => {
-                    var selectElement = document.getElementById('ViewModel_ThemeId');
-                    var optionToRemove = selectElement.querySelector(`option[value='${selectedThemeId}']`);
-                    if (optionToRemove) {
-                        selectElement.removeChild(optionToRemove);
-                    }
-
-                    blogToast.success('Theme deleted.');
-                });
-        }
 
         const form = document.querySelector('#form-settings');
         form.addEventListener('submit', settings.handleSettingsSubmit);
@@ -203,28 +153,6 @@
                         </div>
                         <div class="col-md-5 text-end">
                             <select class="form-select" asp-for="ViewModel.DefaultLanguageCode" asp-items="@langList"></select>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="mb-3">
-                    <h4 class="admin-subtitle fw-bold mb-2">
-                        @SharedLocalizer["Theme"]
-                    </h4>
-                    <div>
-                        <div class="row g-1 mb-2">
-                            <div class="col">
-                                <select class="form-select" asp-for="ViewModel.ThemeId" asp-items="@tmList"></select>
-                            </div>
-                            <div class="col-auto">
-                                <a class="btn btn-outline-accent" href="#" data-bs-toggle="modal" data-bs-target="#thememodal">
-                                    <i class="bi-palette"></i>
-                                    New
-                                </a>
-                                <a class="btn btn-outline-danger btn-delete-theme" href="javascript:deleteTheme();">
-                                    <i class="bi-trash"></i>
-                                </a>
-                            </div>
                         </div>
                     </div>
                 </div>
@@ -493,4 +421,3 @@
 
 <partial name="_AvatarModal" />
 <partial name="_FaviconModal" />
-<partial name="_ThemeModal" model="Model.ThemeRequest" />

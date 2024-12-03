@@ -1,0 +1,142 @@
+﻿@page "/admin/settings/appearance"
+@model Moonglade.Web.Pages.Settings.AppearanceModel
+@inject IMediator Mediator
+
+@Html.AntiForgeryToken()
+@{
+    var themes = await Mediator.Send(new GetAllThemeSegmentQuery());
+    var tmList = themes
+        .Select(t => new SelectListItem
+                {
+                    Text = t.Name,
+                    Value = t.Id.ToString()
+                });
+}
+
+@section scripts {
+    <partial name="_MonacoLoaderScript" />
+    <script>
+        var cssContentEditor = null;
+
+        require(['vs/editor/editor.main'], function () {
+            cssContentEditor = initEditor('CssContentEditor', "#ViewModel_CssCode", 'css');
+        });
+    </script>
+    <script type="module">
+        import * as settings from '/js/app/admin.settings.module.js';
+
+        function handleSubmit(event) {
+            assignEditorValues(cssContentEditor, "#ViewModel_CssCode");
+            settings.handleSettingsSubmit(event);
+        }
+
+        var themeModal = new bootstrap.Modal(document.getElementById('thememodal'));
+        window.createTheme = function (oFormElement) {
+            callApi(oFormElement.action,
+                'POST',
+                {
+                    name: document.querySelector('#Name').value,
+                    accentColor1: document.querySelector('#AccentColor1').value,
+                    accentColor2: document.querySelector('#AccentColor2').value,
+                    accentColor3: document.querySelector('#AccentColor3').value
+                },
+                async (resp) => {
+                    var id = await resp.json();
+
+                    themeModal.hide();
+
+                    var selectElement = document.getElementById('ViewModel_ThemeId');
+                    var newOption = new Option(document.querySelector('#Name').value, id);
+                    selectElement.appendChild(newOption);
+
+                    blogToast.success('Theme created, refresh to see.');
+                });
+        }
+
+        window.deleteTheme = function () {
+            var selectedThemeId = document.querySelector('#ViewModel_ThemeId').value;
+            callApi(`/api/theme/${selectedThemeId}`,
+                'DELETE',
+                {},
+                (resp) => {
+                    var selectElement = document.getElementById('ViewModel_ThemeId');
+                    var optionToRemove = selectElement.querySelector(`option[value='${selectedThemeId}']`);
+                    if (optionToRemove) {
+                        selectElement.removeChild(optionToRemove);
+                    }
+
+                    blogToast.success('Theme deleted.');
+                });
+        }
+
+        const form = document.querySelector('#form-settings');
+        form.addEventListener('submit', handleSubmit);
+    </script>
+}
+
+@section head {
+    <style>
+        .monaco-target {
+            border: 1px solid var(--bs-border-color);
+            width: 100%;
+            min-height: calc(100vh - 450px);
+        }
+    </style>
+}
+
+@section admintoolbar {
+    <partial name="_SettingsHeader" />
+}
+
+<form id="form-settings" asp-controller="Settings" asp-action="Appearance">
+    <div class="admin-settings-entry-container">
+        <div class="mb-3">
+            <h4 class="admin-subtitle fw-bold mb-2">
+                @SharedLocalizer["Theme"]
+            </h4>
+            <div>
+                <div class="row g-1 mb-2">
+                    <div class="col">
+                        <select class="form-select" asp-for="ViewModel.ThemeId" asp-items="@tmList"></select>
+                    </div>
+                    <div class="col-auto">
+                        <a class="btn btn-outline-accent" href="#" data-bs-toggle="modal" data-bs-target="#thememodal">
+                            <i class="bi-palette"></i>
+                            New
+                        </a>
+                        <a class="btn btn-outline-danger btn-delete-theme" href="javascript:deleteTheme();">
+                            <i class="bi-trash"></i>
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="settings-entry row align-items-center py-3 px-2 rounded-3 shadow-sm border mb-2">
+            <div class="col-auto">
+                <i class="bi-palette settings-entry-icon"></i>
+            </div>
+            <div class="col">
+                <label asp-for="ViewModel.EnableCustomCss" class="form-check-label"></label>
+            </div>
+            <div class="col-md-5 text-end">
+                <div class="form-check form-switch form-control-lg">
+                    <input type="hidden" name="EnableCustomCss" value="false">
+                    <input type="checkbox" name="EnableCustomCss" value="true" class="form-check-input" @(@Model.ViewModel.EnableCustomCss ? "checked" : null)/>
+                </div>
+            </div>
+        </div>
+
+        <div id="CssContentEditor" class="monaco-target p-3 rounded-3 shadow-sm border">
+        </div>
+        <textarea asp-for="ViewModel.CssCode" class="settings-csscontent-textarea d-none"></textarea>
+    </div>
+
+    <div class="admin-settings-action-container border-top pt-2 mt-2">
+        <button type="submit" class="btn btn-outline-accent" id="btn-save-settings">
+            @SharedLocalizer["Save"]
+        </button>
+    </div>
+</form>
+
+<partial name="_ThemeModal" model="Model.ThemeRequest" />

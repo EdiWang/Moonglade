@@ -18,14 +18,14 @@ public class ThemeController(IMediator mediator, ICacheAside cache, IBlogConfig 
                 entry.SlidingExpiration = TimeSpan.FromMinutes(20);
 
                 // Fall back to default theme for migration
-                if (blogConfig.GeneralSettings.ThemeId == 0)
+                if (blogConfig.AppearanceSettings.ThemeId is 0 or 1)
                 {
-                    blogConfig.GeneralSettings.ThemeId = 1;
+                    blogConfig.AppearanceSettings.ThemeId = 100;
                     var kvp = blogConfig.UpdateAsync(blogConfig.GeneralSettings);
                     await mediator.Send(new UpdateConfigurationCommand(kvp.Key, kvp.Value));
                 }
 
-                var data = await mediator.Send(new GetSiteThemeStyleSheetQuery(blogConfig.GeneralSettings.ThemeId));
+                var data = await mediator.Send(new GetSiteThemeStyleSheetQuery(blogConfig.AppearanceSettings.ThemeId));
                 return data;
             });
 

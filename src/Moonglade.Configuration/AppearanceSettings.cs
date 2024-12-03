@@ -5,6 +5,8 @@ namespace Moonglade.Configuration;
 
 public class AppearanceSettings : IBlogSettings
 {
+    public int ThemeId { get; set; } = 1;
+
     [Display(Name = "Enable Custom CSS")]
     public bool EnableCustomCss { get; set; }
 
@@ -15,6 +17,7 @@ public class AppearanceSettings : IBlogSettings
     public static AppearanceSettings DefaultValue =>
         new()
         {
+            ThemeId = 100,
             EnableCustomCss = false,
             CssCode = string.Empty
         };

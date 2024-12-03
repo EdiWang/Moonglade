@@ -206,10 +206,10 @@ public class SettingsController(
         return NoContent();
     }
 
-    [HttpPost("custom-css")]
+    [HttpPost("appearance")]
     [ProducesResponseType(StatusCodes.Status204NoContent)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
-    public async Task<IActionResult> CustomStyleSheet(AppearanceSettings model)
+    public async Task<IActionResult> Appearance(AppearanceSettings model)
     {
         if (model.EnableCustomCss && string.IsNullOrWhiteSpace(model.CssCode))
         {
