@@ -46,7 +46,7 @@ public class PagedListRenderOptions
     ///<example>
     /// "&lt;&lt; First"
     ///</example>
-    public string LinkToFirstPageFormat { get; set; }
+    public string LinkToFirstPageFormat { get; }
 
     ///<summary>
     /// The pre-formatted text to display inside the hyperlink to the previous page. The one-based index of the page is passed into the formatting function - use {0} to reference it.
@@ -54,7 +54,7 @@ public class PagedListRenderOptions
     ///<example>
     /// "&lt; Previous"
     ///</example>
-    public string LinkToPreviousPageFormat { get; set; }
+    public string LinkToPreviousPageFormat { get; }
 
     ///<summary>
     /// The pre-formatted text to display inside the hyperlink to each individual page. The one-based index of the page is passed into the formatting function - use {0} to reference it.
@@ -62,7 +62,7 @@ public class PagedListRenderOptions
     ///<example>
     /// "{0}"
     ///</example>
-    public string LinkToIndividualPageFormat { get; set; }
+    public string LinkToIndividualPageFormat { get; }
 
     ///<summary>
     /// The pre-formatted text to display inside the hyperlink to the next page. The one-based index of the page is passed into the formatting function - use {0} to reference it.
@@ -70,7 +70,7 @@ public class PagedListRenderOptions
     ///<example>
     /// "Next &gt;"
     ///</example>
-    public string LinkToNextPageFormat { get; set; }
+    public string LinkToNextPageFormat { get; }
 
     ///<summary>
     /// The pre-formatted text to display inside the hyperlink to the last page. The one-based index of the page is passed into the formatting function - use {0} to reference it.
@@ -78,7 +78,7 @@ public class PagedListRenderOptions
     ///<example>
     /// "Last &gt;&gt;"
     ///</example>
-    public string LinkToLastPageFormat { get; set; }
+    public string LinkToLastPageFormat { get; }
 
     ///<summary>
     /// The pre-formatted text to display when DisplayPageCountAndCurrentLocation is true. Use {0} to reference the current page and {1} to reference the total number of pages.
