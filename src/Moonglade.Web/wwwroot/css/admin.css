@@ -352,6 +352,8 @@ div.mce-fullscreen {
 
 .monaco-target {
     background-color: var(--bs-white);
+    border: 1px solid var(--bs-border-color);
+    width: 100%;
 }
 
 .image-drop-target {
