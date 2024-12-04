@@ -1,16 +1,6 @@
 ﻿@page "/admin/settings/appearance"
 
 @Html.AntiForgeryToken()
-@{
-    var themes = await Mediator.Send(new GetAllThemeSegmentQuery());
-    var tmList = themes
-        .Select(t => new SelectListItem
-                {
-                    Text = t.Name,
-                    Value = t.Id.ToString()
-                });
-}
-
 @section scripts {
     <partial name="_MonacoLoaderScript" />
     <script>
@@ -95,7 +85,7 @@
             <div>
                 <div class="row g-1 mb-2">
                     <div class="col">
-                        <select class="form-select" asp-for="@ViewModel.ThemeId" asp-items="@tmList"></select>
+                        <select class="form-select" asp-for="@ViewModel.ThemeId" asp-items="@ThemeList"></select>
                     </div>
                     <div class="col-auto">
                         <a class="btn btn-outline-accent" href="#" data-bs-toggle="modal" data-bs-target="#thememodal">
@@ -145,8 +135,18 @@
 
     public CreateThemeRequest ThemeRequest { get; set; }
 
-    public void OnGet()
+    public List<SelectListItem> ThemeList { get; set; }
+
+    public async Task OnGetAsync()
     {
         ViewModel = BlogConfig.AppearanceSettings;
+
+        var themes = await Mediator.Send(new GetAllThemeSegmentQuery());
+        ThemeList = themes
+            .Select(t => new SelectListItem
+                {
+                    Text = t.Name,
+                    Value = t.Id.ToString()
+                }).ToList();
     }
 }
