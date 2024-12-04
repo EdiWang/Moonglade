@@ -9,16 +9,6 @@ public class HtmlHelper
 {
     #region Private methods
 
-    private static void SetInnerText(TagBuilder tagBuilder, string innerText)
-    {
-        tagBuilder.InnerHtml.SetContent(innerText);
-    }
-
-    private static void AppendHtml(TagBuilder tagBuilder, string innerHtml)
-    {
-        tagBuilder.InnerHtml.AppendHtml(innerHtml);
-    }
-
     private static string TagBuilderToString(TagBuilder tagBuilder)
     {
         var encoder = HtmlEncoder.Create(new TextEncoderSettings());
@@ -38,7 +28,7 @@ public class HtmlHelper
             li.AddCssClass(@class);
         }
 
-        AppendHtml(li, TagBuilderToString(inner));
+        li.InnerHtml.AppendHtml(TagBuilderToString(inner));
 
         return li;
     }
@@ -48,7 +38,7 @@ public class HtmlHelper
         const int targetPageNumber = 1;
         var first = new TagBuilder("a");
 
-        AppendHtml(first, string.Format(options.LinkToFirstPageFormat, targetPageNumber));
+        first.InnerHtml.AppendHtml(string.Format(options.LinkToFirstPageFormat, targetPageNumber));
 
         foreach (var c in options.PageClasses ?? [])
         {
@@ -70,7 +60,7 @@ public class HtmlHelper
         var targetPageNumber = list.PageNumber - 1;
         var previous = new TagBuilder("a");
 
-        AppendHtml(previous, string.Format(options.LinkToPreviousPageFormat, targetPageNumber));
+        previous.InnerHtml.AppendHtml(string.Format(options.LinkToPreviousPageFormat, targetPageNumber));
 
         previous.Attributes.Add("rel", "prev");
 
@@ -97,7 +87,7 @@ public class HtmlHelper
             ? new TagBuilder("span")
             : new TagBuilder("a");
 
-        SetInnerText(page, Format(targetPageNumber));
+        page.InnerHtml.SetContent(Format(targetPageNumber));
 
         foreach (var c in options.PageClasses ?? [])
         {
@@ -119,7 +109,7 @@ public class HtmlHelper
         var targetPageNumber = list.PageNumber + 1;
         var next = new TagBuilder("a");
 
-        AppendHtml(next, string.Format(options.LinkToNextPageFormat, targetPageNumber));
+        next.InnerHtml.AppendHtml(string.Format(options.LinkToNextPageFormat, targetPageNumber));
 
         next.Attributes.Add("rel", "next");
 
@@ -143,7 +133,7 @@ public class HtmlHelper
         var targetPageNumber = list.PageCount;
         var last = new TagBuilder("a");
 
-        AppendHtml(last, string.Format(options.LinkToLastPageFormat, targetPageNumber));
+        last.InnerHtml.AppendHtml(string.Format(options.LinkToLastPageFormat, targetPageNumber));
 
         foreach (var c in options.PageClasses ?? [])
         {
@@ -164,7 +154,7 @@ public class HtmlHelper
     {
         var text = new TagBuilder("a");
 
-        SetInnerText(text, string.Format(options.PageCountAndCurrentLocationFormat, list.PageNumber, list.PageCount));
+        text.InnerHtml.SetContent(string.Format(options.PageCountAndCurrentLocationFormat, list.PageNumber, list.PageCount));
 
         return WrapInListItem(text, "PagedList-pageCountAndLocation", "disabled");
     }
@@ -258,7 +248,7 @@ public class HtmlHelper
 
         var ul = new TagBuilder("ul");
 
-        AppendHtml(ul, listItemLinksString);
+        ul.InnerHtml.AppendHtml(listItemLinksString);
 
         foreach (var c in options.UlElementClasses ?? [])
         {
@@ -269,7 +259,7 @@ public class HtmlHelper
 
         outerDiv.AddCssClass("pagination-container");
 
-        AppendHtml(outerDiv, TagBuilderToString(ul));
+        outerDiv.InnerHtml.AppendHtml(TagBuilderToString(ul));
 
         return TagBuilderToString(outerDiv);
     }
