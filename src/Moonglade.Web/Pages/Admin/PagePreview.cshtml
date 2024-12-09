@@ -1,7 +1,8 @@
-﻿@page "/page/preview/{pageId:guid}"
-@model Moonglade.Web.Pages.PagePreviewModel
+﻿@page "/admin/page/preview/{pageId:guid}"
+@model PagePreviewModel
 
 @{
+    Layout = "_Layout";
     ViewBag.TitlePrefix = Model.BlogPage.Title;
     ViewBag.HideSideBar = Model.BlogPage.HideSidebar;
     ViewBag.MetaDescription = Model.BlogPage.MetaDescription;

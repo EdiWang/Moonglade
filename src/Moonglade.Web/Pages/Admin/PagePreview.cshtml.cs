@@ -2,9 +2,8 @@ using Microsoft.AspNetCore.Mvc.RazorPages;
 using Moonglade.Core.PageFeature;
 using Moonglade.Data.Entities;
 
-namespace Moonglade.Web.Pages;
+namespace Moonglade.Web.Pages.Admin;
 
-[Authorize]
 public class PagePreviewModel(IMediator mediator) : PageModel
 {
     public PageEntity BlogPage { get; set; }
