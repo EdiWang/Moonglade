@@ -1,17 +1,19 @@
 ﻿@page "/admin/page/preview/{pageId:guid}"
-@model PagePreviewModel
+@using Microsoft.AspNetCore.Mvc.TagHelpers
+@using Moonglade.Core.PageFeature
+@using Moonglade.Data.Entities
 
 @{
     Layout = "_Layout";
-    ViewBag.TitlePrefix = Model.BlogPage.Title;
-    ViewBag.HideSideBar = Model.BlogPage.HideSidebar;
-    ViewBag.MetaDescription = Model.BlogPage.MetaDescription;
+    ViewBag.TitlePrefix = BlogPage.Title;
+    ViewBag.HideSideBar = BlogPage.HideSidebar;
+    ViewBag.MetaDescription = BlogPage.MetaDescription;
 }
 
 @section head {
-    @if (!string.IsNullOrWhiteSpace(Model.BlogPage.CssId))
+    @if (!string.IsNullOrWhiteSpace(BlogPage.CssId))
     {
-        <link href="~/content.css?id=@Model.BlogPage.CssId" rel="stylesheet" asp-append-version="true" />
+        <link href="~/content.css?id=@BlogPage.CssId" rel="stylesheet" asp-append-version="true" />
     }
 }
 
@@ -22,7 +24,21 @@
 </div>
 
 <div class="page-content">
-    @Html.Raw(Model.BlogPage.HtmlContent)
+    @Html.Raw(BlogPage.HtmlContent)
 </div>
 
 <partial name="_PageForestageAdmin" />
+
+@functions
+{
+    public PageEntity BlogPage { get; set; }
+
+    public async Task<IActionResult> OnGetAsync(Guid pageId)
+    {
+        var page = await Mediator.Send(new GetPageByIdQuery(pageId));
+        if (page is null) return NotFound();
+
+        BlogPage = page;
+        return Page();
+    }
+}
