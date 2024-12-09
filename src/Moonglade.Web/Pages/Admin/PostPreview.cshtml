@@ -1,5 +1,7 @@
 ﻿@page "/admin/post/preview/{postId:guid}"
-@model PostPreviewModel
+@using Microsoft.AspNetCore.Mvc.TagHelpers
+@using Moonglade.Core.PostFeature
+@using Moonglade.Data.Entities
 @using Moonglade.Utils
 
 @{
@@ -9,8 +11,8 @@
 
 @section meta {
     <meta name="robots" content="noindex, nofollow" />
-    <meta name="title" content="@Model.Post.Title" />
-    <meta name="author" content="@(string.IsNullOrWhiteSpace(Model.Post.Author) ? BlogConfig.GeneralSettings.OwnerName : Model.Post.Author) " />
+    <meta name="title" content="@Post.Title" />
+    <meta name="author" content="@(string.IsNullOrWhiteSpace(Post.Author) ? BlogConfig.GeneralSettings.OwnerName : Post.Author) " />
 }
 
 @section head {
@@ -34,7 +36,7 @@
         @if (BlogConfig.AdvancedSettings.WarnExternalLink)
         {
             <text>
-                postSlug.warnExtLink();
+                        postSlug.warnExtLink();
             </text>
         }
     </script>
@@ -44,29 +46,29 @@
     @SharedLocalizer["This is a preview for draft content."]
 </div>
 
-<article class="article-post-slug position-relative rounded-3 shadow-sm border bg-white mb-4" data-postid="@Model.Post.Id" lang="@Model.Post.ContentLanguageCode">
-    @if (Model.Post.IsFeatured)
+<article class="article-post-slug position-relative rounded-3 shadow-sm border bg-white mb-4" data-postid="@Post.Id" lang="@Post.ContentLanguageCode">
+    @if (Post.IsFeatured)
     {
         <partial name="_FeaturedTag" />
     }
 
     <header class="post-header @(BlogConfig.ContentSettings.PostTitleAlignment == PostTitleAlignment.Center ? "text-center" : null)">
         <h1 class="post-title">
-            @Model.Post.Title
+            @Post.Title
         </h1>
 
         <hr class="d-none d-md-block" />
     </header>
 
-    @if (!string.IsNullOrWhiteSpace(Model.Post.HeroImageUrl))
+    @if (!string.IsNullOrWhiteSpace(Post.HeroImageUrl))
     {
         <div class="post-hero-image-container text-center mb-3">
-            <img src="@Helper.SterilizeLink(Model.Post.HeroImageUrl)" class="post-hero-image img-fluid rounded-3 shadow-sm" />
+            <img src="@Helper.SterilizeLink(Post.HeroImageUrl)" class="post-hero-image img-fluid rounded-3 shadow-sm" />
         </div>
     }
 
     <section class="post-content clearfix">
-        <partial name="_PostContentRender" model="Model.Post.PostContent" />
+        <partial name="_PostContentRender" model="Post.PostContent" />
     </section>
     @if (BlogConfig.ContentSettings.ShowPostFooter)
     {
@@ -75,7 +77,7 @@
         </section>
     }
 
-    <partial name="_PostActions" model="Model.Post" />
+    <partial name="_PostActions" model="Post" />
 </article>
 
 <div class="modal fade" id="imgzoomModal" tabindex="-1" role="dialog" aria-labelledby="imgzoomModalLabel" aria-hidden="true">
@@ -92,3 +94,19 @@
 }
 
 <partial name="_PostForestageAdmin" />
+
+@functions
+{
+    public PostEntity Post { get; set; }
+
+    public async Task<IActionResult> OnGetAsync(Guid postId)
+    {
+        var post = await Mediator.Send(new GetDraftQuery(postId));
+        if (post is null) return NotFound();
+
+        ViewData["TitlePrefix"] = $"{post.Title}";
+
+        Post = post;
+        return Page();
+    }
+}
