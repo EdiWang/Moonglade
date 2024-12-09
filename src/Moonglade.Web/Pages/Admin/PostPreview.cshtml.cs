@@ -2,9 +2,8 @@ using Microsoft.AspNetCore.Mvc.RazorPages;
 using Moonglade.Core.PostFeature;
 using Moonglade.Data.Entities;
 
-namespace Moonglade.Web.Pages;
+namespace Moonglade.Web.Pages.Admin;
 
-[Authorize]
 public class PostPreviewModel(IMediator mediator) : PageModel
 {
     public PostEntity Post { get; set; }

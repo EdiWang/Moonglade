@@ -1,8 +1,9 @@
-﻿@page "/post/preview/{postId:guid}"
-@model Moonglade.Web.Pages.PostPreviewModel
+﻿@page "/admin/post/preview/{postId:guid}"
+@model PostPreviewModel
 @using Moonglade.Utils
 
 @{
+    Layout = "_Layout";
     ViewBag.BodyClass = "body-post-slug";
 }
 
