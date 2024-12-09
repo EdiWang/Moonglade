@@ -66,12 +66,7 @@ public class ImageController(IBlogImageStorage imageStorage,
     {
         var name = Path.GetFileName(file.FileName);
         var ext = Path.GetExtension(name).ToLower();
-        var allowedExts = _imageStorageSettings.AllowedExtensions;
-
-        if (allowedExts == null || allowedExts.Length == 0)
-        {
-            throw new InvalidDataException($"{nameof(ImageStorageSettings.AllowedExtensions)} is empty.");
-        }
+        string[] allowedExts = [".png", ".jpg", ".jpeg", ".gif", ".webp", ".svg"];
 
         if (!allowedExts.Contains(ext))
         {
