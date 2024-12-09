@@ -1,7 +1,6 @@
 ﻿@page "/admin/comments"
 @using Moonglade.Utils
 @using Moonglade.Web.PagedList
-@model Moonglade.Web.Pages.Admin.CommentsModel
 @{
     ViewBag.Title = "Comments";
 }
@@ -106,7 +105,7 @@
 }
 
 <div>
-    @if (Model.CommentDetailedItems.Count == 0)
+    @if (CommentDetailedItems.Count == 0)
     {
         <div class="alert alert-info">
             @SharedLocalizer["No Comments"]
@@ -114,7 +113,7 @@
     }
     else
     {
-        foreach (var item in Model.CommentDetailedItems)
+        foreach (var item in CommentDetailedItems)
         {
             <div id="panel-comment-@item.Id" class="admin-comment-entry p-3 mb-3 rounded-3 shadow-sm border row g-1">
                 <div class="form-check col-auto">
@@ -192,8 +191,21 @@
     }
 
 
-    @Html.PagedListPager(Model.CommentDetailedItems, page => $"?pageIndex={page}", new()
+    @Html.PagedListPager(CommentDetailedItems, page => $"?pageIndex={page}", new()
     {
         UlElementClasses = ["pagination mt-3"]
     })
 </div>
+
+@functions
+{
+    public BasePagedList<CommentDetailedItem> CommentDetailedItems { get; set; }
+
+    public async Task OnGet(int pageIndex = 1)
+    {
+        const int pageSize = 5;
+        var comments = await Mediator.Send(new GetCommentsQuery(pageSize, pageIndex));
+        var count = await Mediator.Send(new CountCommentsQuery());
+        CommentDetailedItems = new(comments, pageIndex, pageSize, count);
+    }
+}
