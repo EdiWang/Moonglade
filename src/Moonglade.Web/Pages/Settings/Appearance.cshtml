@@ -1,4 +1,5 @@
 ﻿@page "/admin/settings/appearance"
+@using System.Text.Json
 @using Moonglade.Data.Entities
 
 @Html.AntiForgeryToken()
@@ -73,9 +74,13 @@
             border: 1px solid var(--accent-color1);
         }
 
-        .theme-selector-footer.active {
-            font-weight: bold;
+        .theme-selector-footer {
+            color: white;
         }
+
+            .theme-selector-footer.active {
+                font-weight: bold;
+            }
     </style>
 }
 
@@ -105,7 +110,7 @@
                                     </div>
                                 </div>
 
-                                <div class="card-footer theme-selector-footer @(ViewModel.ThemeId == theme.Id ? "active" : null)">
+                                <div class="card-footer theme-selector-footer @(ViewModel.ThemeId == theme.Id ? "active" : null)" style="background-color: @theme.CssRulesDictionary["--accent-color3"]">
                                     @theme.ThemeName
                                 </div>
                             </div>
