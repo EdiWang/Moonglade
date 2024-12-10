@@ -82,6 +82,28 @@
                 @SharedLocalizer["Theme"]
             </h4>
             <div>
+                <h5>@SharedLocalizer["System Themes"]</h5>
+                
+                <div class="row g-1">
+                    @foreach (var theme in Themes.Where(p => p.ThemeType == ThemeType.System))
+                    {
+                        <div class="col-md-3">
+                            <div class="theme-selector-container card" id="theme-selector-container-@theme.Id" data-theme-id="@theme.Id">
+                                <div class="card-body">
+                                    <div>
+                                        @theme.CssRules
+                                    </div>
+                                </div>
+
+                                <div class="card-footer text-body-secondary">
+                                    @theme.ThemeName
+                                </div>
+                            </div>
+                        </div>
+                    }
+                </div>
+            </div>
+            <div>
                 <div class="row g-1 mb-2">
                     <div class="col">
                         @* <select class="form-select" asp-for="@ViewModel.ThemeId" asp-items="@ThemeList"></select> *@
