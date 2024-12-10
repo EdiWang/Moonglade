@@ -102,15 +102,19 @@
                     {
                         <div class="col-md-3">
                             <div class="theme-selector-container card @(ViewModel.ThemeId == theme.Id ? "active" : null)"
+                                 style="border-color: @theme.CssRulesDictionary["--accent-color3"]"
                                  id="theme-selector-container-@theme.Id"
                                  data-theme-id="@theme.Id">
                                 <div class="card-body">
                                     <div>
-                                        @theme.CssRules
+                                        Accent Color 1: @theme.CssRulesDictionary["--accent-color1"] <br />
+                                        Accent Color 2: @theme.CssRulesDictionary["--accent-color2"] <br />
+                                        Accent Color 3: @theme.CssRulesDictionary["--accent-color3"]
                                     </div>
                                 </div>
 
-                                <div class="card-footer theme-selector-footer @(ViewModel.ThemeId == theme.Id ? "active" : null)" style="background-color: @theme.CssRulesDictionary["--accent-color3"]">
+                                <div class="card-footer theme-selector-footer @(ViewModel.ThemeId == theme.Id ? "active" : null)" 
+                                     style="background-color: @theme.CssRulesDictionary["--accent-color3"]">
                                     @theme.ThemeName
                                 </div>
                             </div>
