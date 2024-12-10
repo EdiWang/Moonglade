@@ -68,6 +68,14 @@
         .monaco-target {
             min-height: calc(100vh - 450px);
         }
+
+        .theme-selector-container.active {
+            border: 1px solid var(--accent-color1);
+        }
+
+        .theme-selector-footer.active {
+            font-weight: bold;
+        }
     </style>
 }
 
@@ -83,19 +91,21 @@
             </h4>
             <div>
                 <h5>@SharedLocalizer["System Themes"]</h5>
-                
+
                 <div class="row g-1">
                     @foreach (var theme in Themes.Where(p => p.ThemeType == ThemeType.System))
                     {
                         <div class="col-md-3">
-                            <div class="theme-selector-container card" id="theme-selector-container-@theme.Id" data-theme-id="@theme.Id">
+                            <div class="theme-selector-container card @(ViewModel.ThemeId == theme.Id ? "active" : null)"
+                                 id="theme-selector-container-@theme.Id"
+                                 data-theme-id="@theme.Id">
                                 <div class="card-body">
                                     <div>
                                         @theme.CssRules
                                     </div>
                                 </div>
 
-                                <div class="card-footer text-body-secondary">
+                                <div class="card-footer theme-selector-footer @(ViewModel.ThemeId == theme.Id ? "active" : null)">
                                     @theme.ThemeName
                                 </div>
                             </div>
