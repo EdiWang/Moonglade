@@ -1,4 +1,5 @@
 ﻿@page "/admin/settings/appearance"
+@using Moonglade.Data.Entities
 
 @Html.AntiForgeryToken()
 @section scripts {
@@ -83,7 +84,7 @@
             <div>
                 <div class="row g-1 mb-2">
                     <div class="col">
-                        <select class="form-select" asp-for="@ViewModel.ThemeId" asp-items="@ThemeList"></select>
+                        @* <select class="form-select" asp-for="@ViewModel.ThemeId" asp-items="@ThemeList"></select> *@
                     </div>
                     <div class="col-auto">
                         <a class="btn btn-outline-accent" href="#" data-bs-toggle="modal" data-bs-target="#thememodal">
@@ -133,18 +134,12 @@
 
     public CreateThemeRequest ThemeRequest { get; set; }
 
-    public List<SelectListItem> ThemeList { get; set; }
+    public List<BlogThemeEntity> Themes { get; set; }
 
     public async Task OnGetAsync()
     {
         ViewModel = BlogConfig.AppearanceSettings;
 
-        var themes = await Mediator.Send(new GetAllThemeSegmentQuery());
-        ThemeList = themes
-            .Select(t => new SelectListItem
-                {
-                    Text = t.Name,
-                    Value = t.Id.ToString()
-                }).ToList();
+        Themes = await Mediator.Send(new GetAllThemeSegmentQuery());
     }
 }
