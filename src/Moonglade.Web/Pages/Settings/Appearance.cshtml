@@ -70,7 +70,11 @@
         }
 
         .theme-selector-container.active {
-            border: 1px solid var(--accent-color1);
+            border: 2px solid var(--accent-color1);
+        }
+
+        .theme-color-indicator {
+            color: white;
         }
 
         .theme-selector-footer {
@@ -106,9 +110,13 @@
                                      id="theme-selector-container-@theme.Id"
                                      data-theme-id="@theme.Id">
                                     <div class="card-body">
-                                        <div>
-                                            Color 1: @theme.CssRulesDictionary["--accent-color1"] <br />
-                                            Color 2: @theme.CssRulesDictionary["--accent-color2"] <br />
+                                        <div class="theme-color-indicator px-1 text-light" style="background-color: @theme.CssRulesDictionary["--accent-color1"]">
+                                            Color 1: @theme.CssRulesDictionary["--accent-color1"]
+                                        </div>
+                                        <div class="theme-color-indicator px-1 text-light" style="background-color: @theme.CssRulesDictionary["--accent-color2"]">
+                                            Color 2: @theme.CssRulesDictionary["--accent-color2"]
+                                        </div>
+                                        <div class="theme-color-indicator px-1 text-light" style="background-color: @theme.CssRulesDictionary["--accent-color3"]">
                                             Color 3: @theme.CssRulesDictionary["--accent-color3"]
                                         </div>
                                     </div>
