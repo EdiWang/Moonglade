@@ -75,7 +75,6 @@
 
         .theme-color-indicator {
             height: 24px;
-            width: 100%;
         }
 
         .theme-selector-footer.active {
@@ -109,11 +108,11 @@
                                     <div class="theme-preview-body d-flex p-1">
                                         @foreach (var dic in theme.CssRulesDictionary)
                                         {
-                                            <div class="theme-color-indicator px-1 text-light" style="background-color: @dic.Value">
+                                            <div class="theme-color-indicator w-100 px-1 text-light" style="background-color: @dic.Value">
                                             </div>
                                         }
 
-                                        <div class="theme-color-indicator px-1 text-light" style="background-color: white">
+                                        <div class="theme-color-indicator w-100 px-1 text-light" style="background-color: white">
                                         </div>
                                     </div>
 
