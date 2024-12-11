@@ -1032,4 +1032,10 @@
   <data name="Social Links" xml:space="preserve">
     <value>Soziale Verknüpfungen</value>
   </data>
+  <data name="System Themes" xml:space="preserve">
+    <value>System-Theme</value>
+  </data>
+  <data name="User Themes" xml:space="preserve">
+    <value>Benutzer-Theme</value>
+  </data>
 </root>

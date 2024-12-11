@@ -1038,4 +1038,10 @@
   <data name="Social Links" xml:space="preserve">
     <value>社交連結</value>
   </data>
+  <data name="System Themes" xml:space="preserve">
+    <value>系統主題</value>
+  </data>
+  <data name="User Themes" xml:space="preserve">
+    <value>用戶主題</value>
+  </data>
 </root>
