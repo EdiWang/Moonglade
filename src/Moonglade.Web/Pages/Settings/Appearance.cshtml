@@ -30,15 +30,8 @@
                     accentColor3: document.querySelector('#AccentColor3').value
                 },
                 async (resp) => {
-                    var id = await resp.json();
-
                     themeModal.hide();
-
-                    var selectElement = document.getElementById('ViewModel_ThemeId');
-                    var newOption = new Option(document.querySelector('#Name').value, id);
-                    selectElement.appendChild(newOption);
-
-                    blogToast.success('Theme created, refresh to see.');
+                    window.location.reload();
                 });
         }
 
