@@ -107,12 +107,12 @@
                                      id="theme-selector-container-@theme.Id"
                                      data-theme-id="@theme.Id">
                                     <div class="theme-preview-body d-flex p-1">
-                                        <div class="theme-color-indicator px-1 text-light" style="background-color: @theme.CssRulesDictionary["--accent-color1"]">
-                                        </div>
-                                        <div class="theme-color-indicator px-1 text-light" style="background-color: @theme.CssRulesDictionary["--accent-color3"]">
-                                        </div>
-                                        <div class="theme-color-indicator px-1 text-light" style="background-color: @theme.CssRulesDictionary["--accent-color2"]">
-                                        </div>
+                                        @foreach (var dic in theme.CssRulesDictionary)
+                                        {
+                                            <div class="theme-color-indicator px-1 text-light" style="background-color: @dic.Value">
+                                            </div>
+                                        }
+
                                         <div class="theme-color-indicator px-1 text-light" style="background-color: white">
                                         </div>
                                     </div>
