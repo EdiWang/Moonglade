@@ -1,5 +1,4 @@
 ﻿@page "/admin/settings/appearance"
-@using System.Text.Json
 @using Moonglade.Data.Entities
 
 @Html.AntiForgeryToken()
@@ -96,7 +95,7 @@
                     @SharedLocalizer["Theme"]
                 </h4>
                 <div>
-                    <h5>@SharedLocalizer["System Themes"]</h5>
+                    <div class="text-muted">@SharedLocalizer["System Themes"]</div>
 
                     <div class="row g-1">
                         @foreach (var theme in Themes.Where(p => p.ThemeType == ThemeType.System))
@@ -108,15 +107,16 @@
                                      data-theme-id="@theme.Id">
                                     <div class="card-body">
                                         <div>
-                                            Accent Color 1: @theme.CssRulesDictionary["--accent-color1"] <br />
-                                            Accent Color 2: @theme.CssRulesDictionary["--accent-color2"] <br />
-                                            Accent Color 3: @theme.CssRulesDictionary["--accent-color3"]
+                                            Color 1: @theme.CssRulesDictionary["--accent-color1"] <br />
+                                            Color 2: @theme.CssRulesDictionary["--accent-color2"] <br />
+                                            Color 3: @theme.CssRulesDictionary["--accent-color3"]
                                         </div>
                                     </div>
 
                                     <div class="card-footer theme-selector-footer @(ViewModel.ThemeId == theme.Id ? "active" : null)"
                                          style="background-color: @theme.CssRulesDictionary["--accent-color3"]">
-                                        @theme.ThemeName
+                                        <input class="form-check-input" type="radio" asp-for="@ViewModel.ThemeId" id="ThemeId_@theme.Id" value="@theme.Id" />
+                                        <label class="form-check-label" for="ThemeId_@theme.Id">@theme.ThemeName</label>
                                     </div>
                                 </div>
                             </div>
@@ -155,7 +155,7 @@
                     <div class="col-md-5 text-end">
                         <div class="form-check form-switch form-control-lg">
                             <input type="hidden" name="EnableCustomCss" value="false">
-                            <input type="checkbox" name="EnableCustomCss" value="true" class="form-check-input" @(@ViewModel.EnableCustomCss ? "checked" : null)/>
+                            <input type="checkbox" name="EnableCustomCss" value="true" class="form-check-input" @(@ViewModel.EnableCustomCss ? "checked" : null) />
                         </div>
                     </div>
                 </div>
