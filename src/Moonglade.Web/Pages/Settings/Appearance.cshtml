@@ -62,6 +62,10 @@
             border: 2px solid black !important;
         }
 
+        .theme-selector-footer {
+            justify-content: space-between;
+        }
+
         .theme-color-indicator {
             height: 24px;
         }
@@ -138,12 +142,15 @@
                                         </div>
                                     </div>
 
-                                    <div class="card-footer text-light theme-selector-footer @(ViewModel.ThemeId == theme.Id ? "active" : null)"
+                                    <div class="card-footer text-light d-flex theme-selector-footer @(ViewModel.ThemeId == theme.Id ? "active" : null)"
                                          style="background-color: @theme.CssRulesDictionary["--accent-color1"]">
-                                        <input class="form-check-input" type="radio" asp-for="@ViewModel.ThemeId" id="ThemeId_@theme.Id" value="@theme.Id" />
-                                        <label class="form-check-label" for="ThemeId_@theme.Id">@theme.ThemeName</label>
 
-                                        <a class="text-danger btn-delete-theme" href="javascript:deleteTheme(@theme.Id);">
+                                        <div>
+                                            <input class="form-check-input" type="radio" asp-for="@ViewModel.ThemeId" id="ThemeId_@theme.Id" value="@theme.Id" />
+                                            <label class="form-check-label" for="ThemeId_@theme.Id">@theme.ThemeName</label>
+                                        </div>
+
+                                        <a class="text-light btn-delete-theme" href="javascript:deleteTheme(@theme.Id);">
                                             <i class="bi-trash"></i>
                                         </a>
                                     </div>
