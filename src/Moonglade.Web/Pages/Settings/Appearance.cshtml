@@ -150,7 +150,7 @@
                                         <input class="form-check-input" type="radio" asp-for="@ViewModel.ThemeId" id="ThemeId_@theme.Id" value="@theme.Id" />
                                         <label class="form-check-label" for="ThemeId_@theme.Id">@theme.ThemeName</label>
 
-                                        <a class="btn btn-sm btn-outline-danger btn-delete-theme" href="javascript:deleteTheme(@theme.Id);">
+                                        <a class="text-danger btn-delete-theme" href="javascript:deleteTheme(@theme.Id);">
                                             <i class="bi-trash"></i>
                                         </a>
                                     </div>
