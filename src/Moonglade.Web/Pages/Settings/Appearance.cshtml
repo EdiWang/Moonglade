@@ -47,11 +47,8 @@
                 'DELETE',
                 {},
                 (resp) => {
-                    var selectElement = document.getElementById('ViewModel_ThemeId');
-                    var optionToRemove = selectElement.querySelector(`option[value='${selectedThemeId}']`);
-                    if (optionToRemove) {
-                        selectElement.removeChild(optionToRemove);
-                    }
+                    var col = document.getElementById(`user-theme-col-${id}`);
+                    col.remove();
 
                     blogToast.success('Theme deleted.');
                 });
@@ -132,7 +129,7 @@
                     <div class="row g-3 mb-2">
                         @foreach (var theme in Themes.Where(p => p.ThemeType == ThemeType.User))
                         {
-                            <div class="col-md-4">
+                            <div class="col-md-4" id="user-theme-col-@theme.Id">
                                 <div class="theme-selector-container card @(ViewModel.ThemeId == theme.Id ? "active" : null)"
                                      style="border-color: @theme.CssRulesDictionary["--accent-color3"]"
                                      id="theme-selector-container-@theme.Id"
@@ -161,7 +158,7 @@
                             </div>
                         }
                     </div>
-                    
+
                     <div>
                         <a class="btn btn-outline-accent" href="#" data-bs-toggle="modal" data-bs-target="#thememodal">
                             <i class="bi-palette"></i>
