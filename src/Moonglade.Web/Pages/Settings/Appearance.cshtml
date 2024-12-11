@@ -42,9 +42,8 @@
                 });
         }
 
-        window.deleteTheme = function () {
-            var selectedThemeId = document.querySelector('#ViewModel_ThemeId').value;
-            callApi(`/api/theme/${selectedThemeId}`,
+        window.deleteTheme = function (id) {
+            callApi(`/api/theme/${id}`,
                 'DELETE',
                 {},
                 (resp) => {
@@ -129,21 +128,45 @@
 
                 <section id="section-user-themes" class="mt-4">
                     <div class="text-muted mb-1">@SharedLocalizer["User Themes"]</div>
-                    <div class="row g-1">
-                        <div class="col">
-                            <select class="form-select" asp-for="@ViewModel.ThemeId"
-                                    asp-items="Themes.Where(p => p.ThemeType == ThemeType.User).Select(p => new SelectListItem(p.ThemeName, p.Id.ToString()))">
-                            </select>
-                        </div>
-                        <div class="col-auto">
-                            <a class="btn btn-outline-accent" href="#" data-bs-toggle="modal" data-bs-target="#thememodal">
-                                <i class="bi-palette"></i>
-                                New
-                            </a>
-                            <a class="btn btn-outline-danger btn-delete-theme" href="javascript:deleteTheme();">
-                                <i class="bi-trash"></i>
-                            </a>
-                        </div>
+
+                    <div class="row g-3 mb-2">
+                        @foreach (var theme in Themes.Where(p => p.ThemeType == ThemeType.User))
+                        {
+                            <div class="col-md-4">
+                                <div class="theme-selector-container card @(ViewModel.ThemeId == theme.Id ? "active" : null)"
+                                     style="border-color: @theme.CssRulesDictionary["--accent-color3"]"
+                                     id="theme-selector-container-@theme.Id"
+                                     data-theme-id="@theme.Id">
+                                    <div class="theme-preview-body d-flex p-1">
+                                        @foreach (var dic in theme.CssRulesDictionary)
+                                        {
+                                            <div class="theme-color-indicator w-100 px-1 text-light" style="background-color: @dic.Value">
+                                            </div>
+                                        }
+
+                                        <div class="theme-color-indicator w-100 px-1 text-light" style="background-color: white">
+                                        </div>
+                                    </div>
+
+                                    <div class="card-footer text-light theme-selector-footer @(ViewModel.ThemeId == theme.Id ? "active" : null)"
+                                         style="background-color: @theme.CssRulesDictionary["--accent-color1"]">
+                                        <input class="form-check-input" type="radio" asp-for="@ViewModel.ThemeId" id="ThemeId_@theme.Id" value="@theme.Id" />
+                                        <label class="form-check-label" for="ThemeId_@theme.Id">@theme.ThemeName</label>
+
+                                        <a class="btn btn-sm btn-outline-danger btn-delete-theme" href="javascript:deleteTheme(@theme.Id);">
+                                            <i class="bi-trash"></i>
+                                        </a>
+                                    </div>
+                                </div>
+                            </div>
+                        }
+                    </div>
+                    
+                    <div>
+                        <a class="btn btn-outline-accent" href="#" data-bs-toggle="modal" data-bs-target="#thememodal">
+                            <i class="bi-palette"></i>
+                            New
+                        </a>
                     </div>
                 </section>
             </div>
