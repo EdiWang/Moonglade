@@ -1,4 +1,5 @@
 ﻿@page "/admin/settings/appearance"
+@using Moonglade.Data.Entities
 
 @Html.AntiForgeryToken()
 @section scripts {
@@ -67,6 +68,19 @@
         .monaco-target {
             min-height: calc(100vh - 450px);
         }
+
+        .theme-selector-container.active {
+            border: 2px solid black !important;
+        }
+
+        .theme-color-indicator {
+            height: 24px;
+            width: 100%;
+        }
+
+        .theme-selector-footer.active {
+            font-weight: bold;
+        }
     </style>
 }
 
@@ -76,46 +90,89 @@
 
 <form id="form-settings" asp-controller="Settings" asp-action="Appearance">
     <div class="admin-settings-entry-container">
-        <div class="mb-3">
-            <h4 class="admin-subtitle fw-bold mb-2">
-                @SharedLocalizer["Theme"]
-            </h4>
-            <div>
-                <div class="row g-1 mb-2">
-                    <div class="col">
-                        <select class="form-select" asp-for="@ViewModel.ThemeId" asp-items="@ThemeList"></select>
+        <div class="row">
+            <div class="col-md-6">
+                <h4 class="admin-subtitle fw-bold mb-2">
+                    @SharedLocalizer["Theme"]
+                </h4>
+
+                <section id="section-system-themes">
+                    <div class="text-muted mb-1">@SharedLocalizer["System Themes"]</div>
+                    <div class="row g-3">
+                        @foreach (var theme in Themes.Where(p => p.ThemeType == ThemeType.System))
+                        {
+                            <div class="col-md-4">
+                                <div class="theme-selector-container card @(ViewModel.ThemeId == theme.Id ? "active" : null)"
+                                     style="border-color: @theme.CssRulesDictionary["--accent-color3"]"
+                                     id="theme-selector-container-@theme.Id"
+                                     data-theme-id="@theme.Id">
+                                    <div class="theme-preview-body d-flex p-1">
+                                        @foreach (var dic in theme.CssRulesDictionary)
+                                        {
+                                            <div class="theme-color-indicator px-1 text-light" style="background-color: @dic.Value">
+                                            </div>
+                                        }
+
+                                        <div class="theme-color-indicator px-1 text-light" style="background-color: white">
+                                        </div>
+                                    </div>
+
+                                    <div class="card-footer text-light theme-selector-footer @(ViewModel.ThemeId == theme.Id ? "active" : null)"
+                                         style="background-color: @theme.CssRulesDictionary["--accent-color1"]">
+                                        <input class="form-check-input" type="radio" asp-for="@ViewModel.ThemeId" id="ThemeId_@theme.Id" value="@theme.Id" />
+                                        <label class="form-check-label" for="ThemeId_@theme.Id">@theme.ThemeName</label>
+                                    </div>
+                                </div>
+                            </div>
+                        }
                     </div>
+                </section>
+
+                <section id="section-user-themes" class="mt-4">
+                    <div class="text-muted mb-1">@SharedLocalizer["User Themes"]</div>
+                    <div class="row g-1">
+                        <div class="col">
+                            <select class="form-select" asp-for="@ViewModel.ThemeId"
+                                    asp-items="Themes.Where(p => p.ThemeType == ThemeType.User).Select(p => new SelectListItem(p.ThemeName, p.Id.ToString()))">
+                            </select>
+                        </div>
+                        <div class="col-auto">
+                            <a class="btn btn-outline-accent" href="#" data-bs-toggle="modal" data-bs-target="#thememodal">
+                                <i class="bi-palette"></i>
+                                New
+                            </a>
+                            <a class="btn btn-outline-danger btn-delete-theme" href="javascript:deleteTheme();">
+                                <i class="bi-trash"></i>
+                            </a>
+                        </div>
+                    </div>
+                </section>
+            </div>
+            <div class="col-md-6">
+                <h4 class="admin-subtitle fw-bold mb-2">
+                    @SharedLocalizer["Custom CSS"]
+                </h4>
+
+                <div class="settings-entry row align-items-center py-3 px-2 rounded-3 shadow-sm border mb-2">
                     <div class="col-auto">
-                        <a class="btn btn-outline-accent" href="#" data-bs-toggle="modal" data-bs-target="#thememodal">
-                            <i class="bi-palette"></i>
-                            New
-                        </a>
-                        <a class="btn btn-outline-danger btn-delete-theme" href="javascript:deleteTheme();">
-                            <i class="bi-trash"></i>
-                        </a>
+                        <i class="bi-palette settings-entry-icon"></i>
+                    </div>
+                    <div class="col">
+                        <label asp-for="@ViewModel.EnableCustomCss" class="form-check-label"></label>
+                    </div>
+                    <div class="col-md-5 text-end">
+                        <div class="form-check form-switch form-control-lg">
+                            <input type="hidden" name="EnableCustomCss" value="false">
+                            <input type="checkbox" name="EnableCustomCss" value="true" class="form-check-input" @(@ViewModel.EnableCustomCss ? "checked" : null) />
+                        </div>
                     </div>
                 </div>
-            </div>
-        </div>
 
-        <div class="settings-entry row align-items-center py-3 px-2 rounded-3 shadow-sm border mb-2">
-            <div class="col-auto">
-                <i class="bi-palette settings-entry-icon"></i>
-            </div>
-            <div class="col">
-                <label asp-for="@ViewModel.EnableCustomCss" class="form-check-label"></label>
-            </div>
-            <div class="col-md-5 text-end">
-                <div class="form-check form-switch form-control-lg">
-                    <input type="hidden" name="EnableCustomCss" value="false">
-                    <input type="checkbox" name="EnableCustomCss" value="true" class="form-check-input" @(@ViewModel.EnableCustomCss ? "checked" : null) />
+                <div id="CssContentEditor" class="monaco-target p-3 rounded-3 shadow-sm border">
                 </div>
+                <textarea asp-for="@ViewModel.CssCode" class="settings-csscontent-textarea d-none"></textarea>
             </div>
         </div>
-
-        <div id="CssContentEditor" class="monaco-target p-3 rounded-3 shadow-sm border">
-        </div>
-        <textarea asp-for="@ViewModel.CssCode" class="settings-csscontent-textarea d-none"></textarea>
     </div>
 
     <div class="admin-settings-action-container border-top pt-2 mt-2">
@@ -133,18 +190,12 @@
 
     public CreateThemeRequest ThemeRequest { get; set; }
 
-    public List<SelectListItem> ThemeList { get; set; }
+    public List<BlogThemeEntity> Themes { get; set; }
 
     public async Task OnGetAsync()
     {
         ViewModel = BlogConfig.AppearanceSettings;
 
-        var themes = await Mediator.Send(new GetAllThemeSegmentQuery());
-        ThemeList = themes
-            .Select(t => new SelectListItem
-                {
-                    Text = t.Name,
-                    Value = t.Id.ToString()
-                }).ToList();
+        Themes = await Mediator.Send(new GetAllThemeSegmentQuery());
     }
 }
