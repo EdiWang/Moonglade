@@ -133,7 +133,7 @@
                     <div class="row g-1">
                         <div class="col">
                             <select class="form-select" asp-for="@ViewModel.ThemeId"
-                                    asp-items="Themes.Where(p => p.ThemeType == ThemeType.User).Select(p => new SelectListItem())">
+                                    asp-items="Themes.Where(p => p.ThemeType == ThemeType.User).Select(p => new SelectListItem(p.ThemeName, p.Id.ToString()))">
                             </select>
                         </div>
                         <div class="col-auto">
