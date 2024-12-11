@@ -78,13 +78,9 @@
             width: 100%;
         }
 
-        .theme-selector-footer {
-            color: white;
+        .theme-selector-footer.active {
+            font-weight: bold;
         }
-
-            .theme-selector-footer.active {
-                font-weight: bold;
-            }
     </style>
 }
 
@@ -99,9 +95,9 @@
                 <h4 class="admin-subtitle fw-bold mb-2">
                     @SharedLocalizer["Theme"]
                 </h4>
-                <div>
-                    <div class="text-muted">@SharedLocalizer["System Themes"]</div>
 
+                <section id="section-system-themes">
+                    <div class="text-muted mb-1">@SharedLocalizer["System Themes"]</div>
                     <div class="row g-3">
                         @foreach (var theme in Themes.Where(p => p.ThemeType == ThemeType.System))
                         {
@@ -121,7 +117,7 @@
                                         </div>
                                     </div>
 
-                                    <div class="card-footer theme-selector-footer @(ViewModel.ThemeId == theme.Id ? "active" : null)"
+                                    <div class="card-footer text-light theme-selector-footer @(ViewModel.ThemeId == theme.Id ? "active" : null)"
                                          style="background-color: @theme.CssRulesDictionary["--accent-color1"]">
                                         <input class="form-check-input" type="radio" asp-for="@ViewModel.ThemeId" id="ThemeId_@theme.Id" value="@theme.Id" />
                                         <label class="form-check-label" for="ThemeId_@theme.Id">@theme.ThemeName</label>
@@ -130,11 +126,15 @@
                             </div>
                         }
                     </div>
-                </div>
-                <div>
-                    <div class="row g-1 mb-2">
+                </section>
+
+                <section id="section-user-themes" class="mt-4">
+                    <div class="text-muted mb-1">@SharedLocalizer["User Themes"]</div>
+                    <div class="row g-1">
                         <div class="col">
-                            @* <select class="form-select" asp-for="@ViewModel.ThemeId" asp-items="@ThemeList"></select> *@
+                            <select class="form-select" asp-for="@ViewModel.ThemeId"
+                                    asp-items="Themes.Where(p => p.ThemeType == ThemeType.User).Select(p => new SelectListItem())">
+                            </select>
                         </div>
                         <div class="col-auto">
                             <a class="btn btn-outline-accent" href="#" data-bs-toggle="modal" data-bs-target="#thememodal">
@@ -146,7 +146,7 @@
                             </a>
                         </div>
                     </div>
-                </div>
+                </section>
             </div>
             <div class="col-md-6">
                 <h4 class="admin-subtitle fw-bold mb-2">
