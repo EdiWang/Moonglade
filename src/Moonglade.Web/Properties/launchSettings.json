@@ -7,7 +7,7 @@
         "ASPNETCORE_ENVIRONMENT": "Development",
         "MOONGLADE_TAGS": "local, dev"
       },
-      "applicationUrl": "https://localhost:35996"
+      "applicationUrl": "https://localhost:17251"
     }
   }
 }
