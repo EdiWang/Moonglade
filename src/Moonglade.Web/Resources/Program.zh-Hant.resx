@@ -1044,4 +1044,10 @@
   <data name="User Themes" xml:space="preserve">
     <value>用戶主題</value>
   </data>
+  <data name="No user themes found, create one to get started." xml:space="preserve">
+    <value>未找到使用者主題，請創建一個以開始使用。</value>
+  </data>
+  <data name="You have reached the maximum number of user themes." xml:space="preserve">
+    <value>您已達到使用者主題的最大數量。</value>
+  </data>
 </root>

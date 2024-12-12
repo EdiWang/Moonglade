@@ -1038,4 +1038,10 @@
   <data name="User Themes" xml:space="preserve">
     <value>Benutzer-Theme</value>
   </data>
+  <data name="No user themes found, create one to get started." xml:space="preserve">
+    <value>Kein Benutzerthema gefunden, erstellen Sie eines, um loszulegen.</value>
+  </data>
+  <data name="You have reached the maximum number of user themes." xml:space="preserve">
+    <value>Sie haben die maximale Anzahl an Benutzerthemen erreicht.</value>
+  </data>
 </root>

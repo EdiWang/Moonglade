@@ -1038,4 +1038,10 @@
   <data name="User Themes" xml:space="preserve">
     <value>ユーザーテーマ</value>
   </data>
+  <data name="No user themes found, create one to get started." xml:space="preserve">
+    <value>ユーザーテーマが見つかりません。開始するには、ユーザーテーマを作成してください。</value>
+  </data>
+  <data name="You have reached the maximum number of user themes." xml:space="preserve">
+    <value>ユーザートピックの最大数に達しました。</value>
+  </data>
 </root>
