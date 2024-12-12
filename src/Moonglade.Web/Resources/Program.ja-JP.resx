@@ -1044,4 +1044,7 @@
   <data name="You have reached the maximum number of user themes." xml:space="preserve">
     <value>ユーザートピックの最大数に達しました。</value>
   </data>
+  <data name="Appearance" xml:space="preserve">
+    <value>様子</value>
+  </data>
 </root>

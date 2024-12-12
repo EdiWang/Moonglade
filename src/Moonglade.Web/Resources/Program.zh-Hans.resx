@@ -1044,4 +1044,7 @@
   <data name="You have reached the maximum number of user themes." xml:space="preserve">
     <value>您已达到用户主题的最大数量。</value>
   </data>
+  <data name="Appearance" xml:space="preserve">
+    <value>外观</value>
+  </data>
 </root>
