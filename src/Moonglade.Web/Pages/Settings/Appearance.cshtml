@@ -8,43 +8,43 @@
         var cssContentEditor = null;
 
         require(['vs/editor/editor.main'], function () {
-            cssContentEditor = initEditor('CssContentEditor', "#ViewModel_CssCode", 'css');
+        cssContentEditor = initEditor('CssContentEditor', "#ViewModel_CssCode", 'css');
         });
     </script>
     <script type="module">
         import * as settings from '/js/app/admin.settings.module.js';
 
         function handleSubmit(event) {
-            assignEditorValues(cssContentEditor, "#ViewModel_CssCode");
-            settings.handleSettingsSubmit(event);
+        assignEditorValues(cssContentEditor, "#ViewModel_CssCode");
+        settings.handleSettingsSubmit(event);
         }
 
         var themeModal = new bootstrap.Modal(document.getElementById('thememodal'));
         window.createTheme = function (oFormElement) {
-            callApi(oFormElement.action,
-                'POST',
-                {
-                    name: document.querySelector('#Name').value,
-                    accentColor1: document.querySelector('#AccentColor1').value,
-                    accentColor2: document.querySelector('#AccentColor2').value,
-                    accentColor3: document.querySelector('#AccentColor3').value
-                },
-                async (resp) => {
-                    themeModal.hide();
-                    window.location.reload();
-                });
+        callApi(oFormElement.action,
+        'POST',
+        {
+        name: document.querySelector('#Name').value,
+        accentColor1: document.querySelector('#AccentColor1').value,
+        accentColor2: document.querySelector('#AccentColor2').value,
+        accentColor3: document.querySelector('#AccentColor3').value
+        },
+        async (resp) => {
+        themeModal.hide();
+        window.location.reload();
+        });
         }
 
         window.deleteTheme = function (id) {
-            callApi(`/api/theme/${id}`,
-                'DELETE',
-                {},
-                (resp) => {
-                    var col = document.getElementById(`user-theme-col-${id}`);
-                    col.remove();
+        callApi(`/api/theme/${id}`,
+        'DELETE',
+        {},
+        (resp) => {
+        var col = document.getElementById(`user-theme-col-${id}`);
+        col.remove();
 
-                    blogToast.success('Theme deleted.');
-                });
+        blogToast.success('Theme deleted.');
+        });
         }
 
         const form = document.querySelector('#form-settings');
@@ -123,8 +123,15 @@
                 <section id="section-user-themes" class="mt-4">
                     <div class="text-muted mb-1">@SharedLocalizer["User Themes"]</div>
 
+                    @if (UserThemes.Count == 0)
+                    {
+                        <div class="alert alert-info mt-2" role="alert">
+                            @SharedLocalizer["No user themes found, create one to get started."]
+                        </div>
+                    }
+
                     <div class="row g-3 mb-2">
-                        @foreach (var theme in Themes.Where(p => p.ThemeType == ThemeType.User))
+                        @foreach (var theme in UserThemes)
                         {
                             <div class="col-md-4" id="user-theme-col-@theme.Id">
                                 <div class="theme-selector-container card @(ViewModel.ThemeId == theme.Id ? "active" : null)"
@@ -210,6 +217,9 @@
     public CreateThemeRequest ThemeRequest { get; set; }
 
     public List<BlogThemeEntity> Themes { get; set; }
+
+    public List<BlogThemeEntity> UserThemes => Themes.Where(p => p.ThemeType == ThemeType.User).ToList();
+
 
     public async Task OnGetAsync()
     {
