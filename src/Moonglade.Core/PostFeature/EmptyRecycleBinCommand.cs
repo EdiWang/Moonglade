@@ -8,7 +8,7 @@ namespace Moonglade.Core.PostFeature;
 public record EmptyRecycleBinCommand : IRequest;
 
 public class EmptyRecycleBinCommandHandler(
-    ICacheAside cache, 
+    ICacheAside cache,
     MoongladeRepository<PostEntity> repo,
     ILogger<EmptyRecycleBinCommandHandler> logger
     ) : IRequestHandler<EmptyRecycleBinCommand>

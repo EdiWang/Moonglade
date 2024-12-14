@@ -7,7 +7,7 @@ namespace Moonglade.Core.PostFeature;
 public record UnpublishPostCommand(Guid Id) : IRequest;
 
 public class UnpublishPostCommandHandler(
-    MoongladeRepository<PostEntity> repo, 
+    MoongladeRepository<PostEntity> repo,
     ICacheAside cache,
     ILogger<UnpublishPostCommandHandler> logger
     ) : IRequestHandler<UnpublishPostCommand>

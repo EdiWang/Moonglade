@@ -7,7 +7,7 @@ namespace Moonglade.Core.PostFeature;
 public record DeletePostCommand(Guid Id, bool SoftDelete = false) : IRequest;
 
 public class DeletePostCommandHandler(
-    MoongladeRepository<PostEntity> repo, 
+    MoongladeRepository<PostEntity> repo,
     ICacheAside cache,
     ILogger<DeletePostCommandHandler> logger
     ) : IRequestHandler<DeletePostCommand>
