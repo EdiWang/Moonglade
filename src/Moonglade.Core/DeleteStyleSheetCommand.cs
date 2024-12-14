@@ -1,10 +1,14 @@
-﻿using Moonglade.Data;
+﻿using Microsoft.Extensions.Logging;
+using Moonglade.Data;
 
 namespace Moonglade.Core;
 
 public record DeleteStyleSheetCommand(Guid Id) : IRequest;
 
-public class DeleteStyleSheetCommandHandler(MoongladeRepository<StyleSheetEntity> repo) : IRequestHandler<DeleteStyleSheetCommand>
+public class DeleteStyleSheetCommandHandler(
+    MoongladeRepository<StyleSheetEntity> repo,
+    ILogger<DeleteStyleSheetCommandHandler> logger
+    ) : IRequestHandler<DeleteStyleSheetCommand>
 {
     public async Task Handle(DeleteStyleSheetCommand request, CancellationToken ct)
     {
@@ -15,5 +19,7 @@ public class DeleteStyleSheetCommandHandler(MoongladeRepository<StyleSheetEntity
         }
 
         await repo.DeleteAsync(styleSheet, ct);
+
+        logger.LogInformation("Deleted StyleSheetEntity with Id '{Id}'", request.Id);
     }
 }

@@ -1,11 +1,15 @@
 ﻿using Moonglade.Data;
 using System.Security.Cryptography;
+using Microsoft.Extensions.Logging;
 
 namespace Moonglade.Core;
 
 public record SaveStyleSheetCommand(Guid Id, string Slug, string CssContent) : IRequest<Guid>;
 
-public class SaveStyleSheetCommandHandler(MoongladeRepository<StyleSheetEntity> repo) : IRequestHandler<SaveStyleSheetCommand, Guid>
+public class SaveStyleSheetCommandHandler(
+    MoongladeRepository<StyleSheetEntity> repo,
+    ILogger<SaveStyleSheetCommandHandler> logger
+    ) : IRequestHandler<SaveStyleSheetCommand, Guid>
 {
     public async Task<Guid> Handle(SaveStyleSheetCommand request, CancellationToken cancellationToken)
     {
@@ -26,6 +30,8 @@ public class SaveStyleSheetCommandHandler(MoongladeRepository<StyleSheetEntity> 
             };
 
             await repo.AddAsync(entity, cancellationToken);
+
+            logger.LogInformation("New style sheet added: {slug}", slug);
         }
         else
         {
@@ -35,6 +41,8 @@ public class SaveStyleSheetCommandHandler(MoongladeRepository<StyleSheetEntity> 
             entity.LastModifiedTimeUtc = DateTime.UtcNow;
 
             await repo.UpdateAsync(entity, cancellationToken);
+
+            logger.LogInformation("Style sheet updated: {slug}", slug);
         }
 
         return entity.Id;
