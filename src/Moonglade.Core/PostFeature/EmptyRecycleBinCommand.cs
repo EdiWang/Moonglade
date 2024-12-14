@@ -1,4 +1,5 @@
 ﻿using Edi.CacheAside.InMemory;
+using Microsoft.Extensions.Logging;
 using Moonglade.Data;
 using Moonglade.Data.Specifications;
 
@@ -6,7 +7,11 @@ namespace Moonglade.Core.PostFeature;
 
 public record EmptyRecycleBinCommand : IRequest;
 
-public class EmptyRecycleBinCommandHandler(ICacheAside cache, MoongladeRepository<PostEntity> repo) : IRequestHandler<EmptyRecycleBinCommand>
+public class EmptyRecycleBinCommandHandler(
+    ICacheAside cache, 
+    MoongladeRepository<PostEntity> repo,
+    ILogger<EmptyRecycleBinCommandHandler> logger
+    ) : IRequestHandler<EmptyRecycleBinCommand>
 {
     public async Task Handle(EmptyRecycleBinCommand request, CancellationToken ct)
     {
@@ -18,5 +23,7 @@ public class EmptyRecycleBinCommandHandler(ICacheAside cache, MoongladeRepositor
         {
             cache.Remove(BlogCachePartition.Post.ToString(), guid.ToString());
         }
+
+        logger.LogInformation("Recycle bin emptied.");
     }
 }

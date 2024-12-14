@@ -1,11 +1,16 @@
 ﻿using Edi.CacheAside.InMemory;
+using Microsoft.Extensions.Logging;
 using Moonglade.Data;
 
 namespace Moonglade.Core.PostFeature;
 
 public record DeletePostCommand(Guid Id, bool SoftDelete = false) : IRequest;
 
-public class DeletePostCommandHandler(MoongladeRepository<PostEntity> repo, ICacheAside cache) : IRequestHandler<DeletePostCommand>
+public class DeletePostCommandHandler(
+    MoongladeRepository<PostEntity> repo, 
+    ICacheAside cache,
+    ILogger<DeletePostCommandHandler> logger
+    ) : IRequestHandler<DeletePostCommand>
 {
     public async Task Handle(DeletePostCommand request, CancellationToken ct)
     {
@@ -24,5 +29,7 @@ public class DeletePostCommandHandler(MoongladeRepository<PostEntity> repo, ICac
         }
 
         cache.Remove(BlogCachePartition.Post.ToString(), guid.ToString());
+
+        logger.LogInformation("Post {PostId} deleted", guid);
     }
 }

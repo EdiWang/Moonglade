@@ -1,11 +1,16 @@
 ﻿using Edi.CacheAside.InMemory;
+using Microsoft.Extensions.Logging;
 using Moonglade.Data;
 
 namespace Moonglade.Core.PostFeature;
 
 public record UnpublishPostCommand(Guid Id) : IRequest;
 
-public class UnpublishPostCommandHandler(MoongladeRepository<PostEntity> repo, ICacheAside cache) : IRequestHandler<UnpublishPostCommand>
+public class UnpublishPostCommandHandler(
+    MoongladeRepository<PostEntity> repo, 
+    ICacheAside cache,
+    ILogger<UnpublishPostCommandHandler> logger
+    ) : IRequestHandler<UnpublishPostCommand>
 {
     public async Task Handle(UnpublishPostCommand request, CancellationToken ct)
     {
@@ -20,5 +25,7 @@ public class UnpublishPostCommandHandler(MoongladeRepository<PostEntity> repo, I
         await repo.UpdateAsync(post, ct);
 
         cache.Remove(BlogCachePartition.Post.ToString(), request.Id.ToString());
+
+        logger.LogInformation("Post [{PostId}] unpublished", request.Id);
     }
 }
