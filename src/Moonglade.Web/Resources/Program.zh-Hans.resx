@@ -1032,4 +1032,19 @@
   <data name="Social Links" xml:space="preserve">
     <value>社交链接</value>
   </data>
+  <data name="System Themes" xml:space="preserve">
+    <value>系统主题</value>
+  </data>
+  <data name="User Themes" xml:space="preserve">
+    <value>用户主题</value>
+  </data>
+  <data name="No user themes found, create one to get started." xml:space="preserve">
+    <value>未找到用户主题，请创建一个以开始使用。</value>
+  </data>
+  <data name="You have reached the maximum number of user themes." xml:space="preserve">
+    <value>您已达到用户主题的最大数量。</value>
+  </data>
+  <data name="Appearance" xml:space="preserve">
+    <value>外观</value>
+  </data>
 </root>

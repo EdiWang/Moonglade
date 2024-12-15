@@ -156,7 +156,7 @@
 
                         if (isPreviewRequired) {
                             isPreviewRequired = false;
-                            window.open(`/post/preview/${respJson.postId}`);
+                            window.open(`/admin/post/preview/${respJson.postId}`);
                         }
                     }
                 }, function (resp) {
@@ -181,8 +181,6 @@
         {
             <text>
             .monaco-target {
-                border: 1px solid var(--bs-border-color);
-                width: 100%;
                 min-height: calc(100vh - 370px);
             }
             </text>

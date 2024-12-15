@@ -32,13 +32,13 @@ public class StyleSheetMiddleware(RequestDelegate next)
 
     private async Task HandleDefaultPath(HttpContext context, IBlogConfig blogConfig)
     {
-        if (!blogConfig.CustomStyleSheetSettings.EnableCustomCss)
+        if (!blogConfig.AppearanceSettings.EnableCustomCss)
         {
             context.Response.StatusCode = StatusCodes.Status404NotFound;
             return;
         }
 
-        var cssCode = blogConfig.CustomStyleSheetSettings.CssCode;
+        var cssCode = blogConfig.AppearanceSettings.CssCode;
         await WriteStyleSheet(context, cssCode);
     }
 

@@ -1,22 +1,21 @@
 ﻿using MediatR;
 using Moonglade.Data;
 using Moonglade.Data.Entities;
-using Moonglade.Data.Specifications;
 
 namespace Moonglade.Theme;
 
-public record GetAllThemeSegmentQuery : IRequest<List<ThemeSegment>>;
+public record GetAllThemeSegmentQuery : IRequest<List<BlogThemeEntity>>;
 
-public class GetAllThemeSegmentQueryHandler(MoongladeRepository<BlogThemeEntity> repo) : IRequestHandler<GetAllThemeSegmentQuery, List<ThemeSegment>>
+public class GetAllThemeSegmentQueryHandler(MoongladeRepository<BlogThemeEntity> repo) : IRequestHandler<GetAllThemeSegmentQuery, List<BlogThemeEntity>>
 {
-    public async Task<List<ThemeSegment>> Handle(GetAllThemeSegmentQuery request, CancellationToken ct)
+    public async Task<List<BlogThemeEntity>> Handle(GetAllThemeSegmentQuery request, CancellationToken ct)
     {
         var systemThemes = ThemeFactory.GetSystemThemes();
-        var customThemes = await repo.ListAsync(new BlogThemeForIdNameSpec(), ct);
+        var customThemes = await repo.ListAsync(ct);
 
-        var result = new List<ThemeSegment>();
+        var result = new List<BlogThemeEntity>();
 
-        result.AddRange(systemThemes.Select(t => new ThemeSegment(t.Id, t.ThemeName)));
+        result.AddRange(systemThemes);
         result.AddRange(customThemes);
 
         return result;

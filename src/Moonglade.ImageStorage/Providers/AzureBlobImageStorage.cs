@@ -66,6 +66,7 @@ public class AzureBlobImageStorage : IBlogImageStorage
         var extension = Path.GetExtension(fileName);
         if (string.IsNullOrWhiteSpace(extension))
         {
+            _logger.LogError("File extension is empty");
             throw new ArgumentException("File extension is empty");
         }
 

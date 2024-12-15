@@ -87,7 +87,7 @@
     <link href="~/css/rwd.css" rel="stylesheet" asp-append-version="true" />
     @await RenderSectionAsync("head", false)
     <link href="~/theme.css" rel="stylesheet" asp-append-version="true" />
-    @if (BlogConfig.CustomStyleSheetSettings.EnableCustomCss)
+    @if (BlogConfig.AppearanceSettings.EnableCustomCss)
     {
         <link href="~/custom.css" rel="stylesheet" />
     }

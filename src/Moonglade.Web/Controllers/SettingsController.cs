@@ -39,7 +39,6 @@ public class SettingsController(
 
     [HttpPost("general")]
     [ProducesResponseType(StatusCodes.Status204NoContent)]
-    [TypeFilter(typeof(ClearBlogCache), Arguments = [BlogCachePartition.General, "theme"])]
     public async Task<IActionResult> General(GeneralSettings model, ITimeZoneResolver timeZoneResolver)
     {
         model.AvatarUrl = blogConfig.GeneralSettings.AvatarUrl;
@@ -61,6 +60,16 @@ public class SettingsController(
         blogConfig.ContentSettings = model;
 
         await SaveConfigAsync(blogConfig.ContentSettings);
+        return NoContent();
+    }
+
+    [HttpPost("comment")]
+    [ProducesResponseType(StatusCodes.Status204NoContent)]
+    public async Task<IActionResult> Comment(CommentSettings model)
+    {
+        blogConfig.CommentSettings = model;
+
+        await SaveConfigAsync(blogConfig.CommentSettings);
         return NoContent();
     }
 
@@ -206,20 +215,21 @@ public class SettingsController(
         return NoContent();
     }
 
-    [HttpPost("custom-css")]
+    [HttpPost("appearance")]
     [ProducesResponseType(StatusCodes.Status204NoContent)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
-    public async Task<IActionResult> CustomStyleSheet(CustomStyleSheetSettings model)
+    [TypeFilter(typeof(ClearBlogCache), Arguments = [BlogCachePartition.General, "theme"])]
+    public async Task<IActionResult> Appearance(AppearanceSettings model)
     {
         if (model.EnableCustomCss && string.IsNullOrWhiteSpace(model.CssCode))
         {
-            ModelState.AddModelError(nameof(CustomStyleSheetSettings.CssCode), "CSS Code is required");
+            ModelState.AddModelError(nameof(AppearanceSettings.CssCode), "CSS Code is required");
             return BadRequest(ModelState.CombineErrorMessages());
         }
 
-        blogConfig.CustomStyleSheetSettings = model;
+        blogConfig.AppearanceSettings = model;
 
-        await SaveConfigAsync(blogConfig.CustomStyleSheetSettings);
+        await SaveConfigAsync(blogConfig.AppearanceSettings);
         return NoContent();
     }
 

@@ -4,8 +4,7 @@ namespace Moonglade.Data.Entities;
 
 public class BlogConfigurationEntity
 {
-    public int Id { get; set; }
-
+    [Key]
     [MaxLength(64)]
     public string CfgKey { get; set; }
 

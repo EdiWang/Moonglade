@@ -3,8 +3,10 @@ using System.Text.Json.Serialization;
 
 namespace Moonglade.Configuration;
 
-public class CustomStyleSheetSettings : IBlogSettings
+public class AppearanceSettings : IBlogSettings
 {
+    public int ThemeId { get; set; } = 100;
+
     [Display(Name = "Enable Custom CSS")]
     public bool EnableCustomCss { get; set; }
 
@@ -12,9 +14,10 @@ public class CustomStyleSheetSettings : IBlogSettings
     public string CssCode { get; set; }
 
     [JsonIgnore]
-    public static CustomStyleSheetSettings DefaultValue =>
+    public static AppearanceSettings DefaultValue =>
         new()
         {
+            ThemeId = 100,
             EnableCustomCss = false,
             CssCode = string.Empty
         };

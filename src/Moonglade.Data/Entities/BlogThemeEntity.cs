@@ -1,4 +1,7 @@
-﻿namespace Moonglade.Data.Entities;
+﻿using System.ComponentModel.DataAnnotations.Schema;
+using System.Text.Json;
+
+namespace Moonglade.Data.Entities;
 
 public class BlogThemeEntity
 {
@@ -7,6 +10,16 @@ public class BlogThemeEntity
     public string CssRules { get; set; }
     public string AdditionalProps { get; set; }
     public ThemeType ThemeType { get; set; }
+
+    [NotMapped]
+    public Dictionary<string, string> CssRulesDictionary
+    {
+        get
+        {
+            if (string.IsNullOrWhiteSpace(CssRules)) return new();
+            return JsonSerializer.Deserialize<Dictionary<string, string>>(CssRules);
+        }
+    }
 }
 
 public enum ThemeType

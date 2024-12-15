@@ -96,4 +96,13 @@ IF EXISTS (
 )
 BEGIN
     ALTER TABLE Post DROP COLUMN HashCheckSum;
-END;
+END
+
+-- v14.15
+UPDATE [BlogConfiguration] SET CfgKey = 'AppearanceSettings' WHERE CfgKey = 'CustomStyleSheetSettings';
+
+ALTER TABLE [dbo].[BlogConfiguration] ALTER COLUMN [CfgKey] VARCHAR(64) NOT NULL;
+ALTER TABLE [dbo].[BlogConfiguration] DROP CONSTRAINT [PK_BlogConfiguration];
+ALTER TABLE [dbo].[BlogConfiguration] ADD CONSTRAINT [PK_BlogConfiguration_CfgKey] PRIMARY KEY CLUSTERED ([CfgKey] ASC);
+ALTER TABLE [dbo].[BlogConfiguration] DROP COLUMN Id;
+

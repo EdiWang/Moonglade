@@ -32,7 +32,7 @@
                     </div>
                 </div>
             </a>
-            @if (BlogConfig.ContentSettings.CommentProvider == CommentProvider.BuiltIn)
+            @if (BlogConfig.CommentSettings.CommentProvider == CommentProvider.BuiltIn)
             {
                 <a asp-page="/Admin/Comments"
                    class="list-group-item list-group-item-action @(currentPage is "/Admin/Comments" ? "active" : null)">

@@ -27,10 +27,10 @@ public class CreateCommentCommandHandler(
         var spec = new PostByIdForTitleDateSpec(request.PostId);
         var postInfo = await postRepo.FirstOrDefaultAsync(spec, ct);
 
-        if (blogConfig.ContentSettings.CloseCommentAfterDays > 0)
+        if (blogConfig.CommentSettings.CloseCommentAfterDays > 0)
         {
             var days = DateTime.UtcNow.Date.Subtract(postInfo.PubDateUtc.GetValueOrDefault()).Days;
-            if (days > blogConfig.ContentSettings.CloseCommentAfterDays) return null;
+            if (days > blogConfig.CommentSettings.CloseCommentAfterDays) return null;
         }
 
         var model = new CommentEntity
@@ -42,7 +42,7 @@ public class CreateCommentCommandHandler(
             CreateTimeUtc = DateTime.UtcNow,
             Email = request.Payload.Email,
             IPAddress = request.IpAddress,
-            IsApproved = !blogConfig.ContentSettings.RequireCommentReview
+            IsApproved = !blogConfig.CommentSettings.RequireCommentReview
         };
 
         await commentRepo.AddAsync(model, ct);

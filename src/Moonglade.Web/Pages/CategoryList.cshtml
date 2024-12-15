@@ -1,7 +1,11 @@
 ﻿@page "/category/{slug:regex(^(?!-)([a-zA-Z0-9-]){{1,64}}$)}"
-@model Moonglade.Web.Pages.CategoryListModel
+@using Microsoft.AspNetCore.Mvc.TagHelpers
+@using Moonglade.Core.CategoryFeature
+@using Moonglade.Core.PostFeature
+@using Moonglade.Data.Entities
+@using Moonglade.Web.PagedList
 @{
-    ViewBag.TitlePrefix = Model.Cat.DisplayName;
+    ViewBag.TitlePrefix = Cat.DisplayName;
     ViewBag.BodyClass = "body-cat-list bg-gray-1";
     ViewBag.ActionName = "list";
 }
@@ -10,21 +14,44 @@
     <a class="float-end d-none d-md-block"
        asp-controller="Subscription"
        asp-action="Rss"
-       asp-route-slug="@Model.Cat.Slug.ToLower()" target="_blank"
-       title="Subscribe @(Model.Cat.DisplayName)">
+       asp-route-slug="@Cat.Slug.ToLower()" target="_blank"
+       title="Subscribe @(Cat.DisplayName)">
         <i class="bi-rss font-125rem"></i>
     </a>
-    <span>@Model.Cat.DisplayName</span>
-    <small class="d-none d-md-inline text-muted">@Model.Cat.Note</small>
+    <span>@Cat.DisplayName</span>
+    <small class="d-none d-md-inline text-muted">@Cat.Note</small>
 </h2>
 
-@if (Model.Posts.Count > 0)
+@if (Posts.Count > 0)
 {
-    <partial name="_PostList" model="Model.Posts" />
+    <partial name="_PostList" model="Posts" />
 }
 else
 {
     <div class="text-muted text-center">
         - @SharedLocalizer["No Posts"] -
     </div>
+}
+
+@functions{
+    [BindProperty(SupportsGet = true)]
+    public int P { get; set; } = 1;
+    public BasePagedList<PostDigest> Posts { get; set; }
+    public CategoryEntity Cat { get; set; }
+
+    public async Task<IActionResult> OnGetAsync(string slug)
+    {
+        if (string.IsNullOrWhiteSpace(slug)) return NotFound();
+
+        var pageSize = BlogConfig.ContentSettings.PostListPageSize;
+        Cat = await Mediator.Send(new GetCategoryBySlugQuery(slug));
+
+        if (Cat is null) return NotFound();
+
+        var postCount = await Mediator.Send(new CountPostQuery(CountType.Category, Cat.Id));
+        var postList = await Mediator.Send(new ListPostsQuery(pageSize, P, Cat.Id));
+
+        Posts = new(postList, P, pageSize, postCount);
+        return Page();
+    }
 }

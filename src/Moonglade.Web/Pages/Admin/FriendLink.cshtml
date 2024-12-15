@@ -1,5 +1,8 @@
 ﻿@page "/admin/friendlink"
-@model Moonglade.Web.Pages.Admin.FriendLinkModel
+@using Microsoft.AspNetCore.Mvc.TagHelpers
+@using Moonglade.Data.Entities
+@using Moonglade.FriendLink
+
 @{
     ViewBag.Title = "Friend Links";
 }
@@ -86,7 +89,7 @@
 }
 
 <div>
-    @foreach (var item in Model.Links.OrderBy(m => m.Rank).ThenBy(m => m.Title))
+    @foreach (var item in Links.OrderBy(m => m.Rank).ThenBy(m => m.Title))
     {
         <div class="friendlink-entry p-3 mb-2 rounded-3 shadow-sm border">
             <div id="tr-@item.Id" class="row">
@@ -119,16 +122,16 @@
     <div class="offcanvas-body">
         <form id="edit-form" method="post">
             <div class="mb-3">
-                <label class="form-label" asp-for="EditLinkRequest.Title"></label>
-                <input asp-for="EditLinkRequest.Title" class="form-control" required />
+                <label class="form-label" asp-for="@EditLinkRequest.Title"></label>
+                <input asp-for="@EditLinkRequest.Title" class="form-control" required />
             </div>
             <div class="mb-3">
-                <label class="form-label" asp-for="EditLinkRequest.LinkUrl"></label>
-                <input asp-for="EditLinkRequest.LinkUrl" class="form-control" required />
+                <label class="form-label" asp-for="@EditLinkRequest.LinkUrl"></label>
+                <input asp-for="@EditLinkRequest.LinkUrl" class="form-control" required />
             </div>
             <div class="mb-3">
-                <label class="form-label" asp-for="EditLinkRequest.Rank"></label>
-                <input asp-for="EditLinkRequest.Rank" class="form-control" required />
+                <label class="form-label" asp-for="@EditLinkRequest.Rank"></label>
+                <input asp-for="@EditLinkRequest.Rank" class="form-control" required />
             </div>
             <div class="mt-3">
                 <button type="submit" class="btn btn-accent">@SharedLocalizer["Submit"]</button>
@@ -137,3 +140,12 @@
         </form>
     </div>
 </div>
+
+@functions
+{
+    public EditLinkRequest EditLinkRequest { get; set; } = new();
+
+    public List<FriendLinkEntity> Links { get; set; }
+
+    public async Task OnGet() => Links = await Mediator.Send(new GetAllLinksQuery());
+}

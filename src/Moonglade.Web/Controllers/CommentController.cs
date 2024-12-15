@@ -32,11 +32,11 @@ public class CommentController(
             return BadRequest(ModelState.CombineErrorMessages());
         }
 
-        if (!blogConfig.ContentSettings.EnableComments) return Forbid();
+        if (!blogConfig.CommentSettings.EnableComments) return Forbid();
 
-        if (blogConfig.ContentSettings.EnableWordFilter)
+        if (blogConfig.CommentSettings.EnableWordFilter)
         {
-            switch (blogConfig.ContentSettings.WordFilterMode)
+            switch (blogConfig.CommentSettings.WordFilterMode)
             {
                 case WordFilterMode.Mask:
                     request.Username = await moderator.Mask(request.Username);
@@ -79,7 +79,7 @@ public class CommentController(
             }
         }
 
-        if (blogConfig.ContentSettings.RequireCommentReview)
+        if (blogConfig.CommentSettings.RequireCommentReview)
         {
             return Created("moonglade://empty", item);
         }
@@ -111,7 +111,7 @@ public class CommentController(
         [NotEmpty] Guid commentId,
         [Required][FromBody] string replyContent)
     {
-        if (!blogConfig.ContentSettings.EnableComments) return Forbid();
+        if (!blogConfig.CommentSettings.EnableComments) return Forbid();
 
         var reply = await mediator.Send(new ReplyCommentCommand(commentId, replyContent));
         if (blogConfig.NotificationSettings.SendEmailOnCommentReply && !string.IsNullOrWhiteSpace(reply.Email))

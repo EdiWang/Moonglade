@@ -5,42 +5,13 @@ namespace Moonglade.Configuration;
 
 public class ContentSettings : IBlogSettings
 {
-    [Display(Name = "Comment provider")]
-    public CommentProvider CommentProvider { get; set; }
-
-    [Display(Name = "Comments display order")]
-    public CommentOrder CommentOrder { get; set; }
-
-    [Display(Name = "Post title alignment")]
-    public PostTitleAlignment PostTitleAlignment { get; set; } = PostTitleAlignment.Left;
-
-    [Display(Name = "Third party comment html pitch")]
-    [MaxLength(1024)]
-    public string ThirdPartyCommentHtmlPitch { get; set; }
-
-    [Display(Name = "Enable comments")]
-    public bool EnableComments { get; set; } = true;
-
-    [Display(Name = "Comments require review and approval")]
-    public bool RequireCommentReview { get; set; }
-
-    [Display(Name = "Automatically close comments on posts older than x days")]
-    [Range(0, 65536)]
-    public int CloseCommentAfterDays { get; set; }
-
-    [Display(Name = "Enable word filter")]
-    public bool EnableWordFilter { get; set; }
-
-    [Display(Name = "Word filter mode")]
-    public WordFilterMode WordFilterMode { get; set; }
-
     [Required]
     [Display(Name = "Post list page size")]
     [Range(5, 30)]
     public int PostListPageSize { get; set; } = 10;
 
-    [Display(Name = "Enable Gravatar in comment list")]
-    public bool EnableGravatar { get; set; }
+    [Display(Name = "Post title alignment")]
+    public PostTitleAlignment PostTitleAlignment { get; set; } = PostTitleAlignment.Left;
 
     [Display(Name = "Call-out section HTML code")]
     [DataType(DataType.MultilineText)]
@@ -65,31 +36,9 @@ public class ContentSettings : IBlogSettings
     [JsonIgnore]
     public static ContentSettings DefaultValue => new()
     {
-        EnableComments = true,
-        RequireCommentReview = true,
-        EnableGravatar = true,
-        EnableWordFilter = false,
         PostListPageSize = 10,
         CalloutSectionHtmlPitch = string.Empty
     };
-}
-
-public enum WordFilterMode
-{
-    Mask = 0,
-    Block = 1
-}
-
-public enum CommentProvider
-{
-    BuiltIn = 0,
-    ThirdParty = 1
-}
-
-public enum CommentOrder
-{
-    OldToNew = 0,
-    NewToOld = 1
 }
 
 public enum PostTitleAlignment

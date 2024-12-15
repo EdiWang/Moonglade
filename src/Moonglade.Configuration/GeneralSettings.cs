@@ -70,8 +70,6 @@ public class GeneralSettings : IBlogSettings
     [MaxLength(64)]
     public string TimeZoneId { get; set; }
 
-    public int ThemeId { get; set; } = 1;
-
     [Display(Name = "Profile")]
     public bool WidgetsProfile { get; set; } = true;
 
@@ -122,7 +120,6 @@ public class GeneralSettings : IBlogSettings
         Copyright = $"[c] {DateTime.UtcNow.Year}",
         TimeZoneId = "Coordinated Universal Time",
         TimeZoneUtcOffset = TimeSpan.FromHours(0),
-        ThemeId = 1,
         HotTagAmount = 10
     };
 }

@@ -167,11 +167,11 @@
     <partial name="_PostActions" model="Model.Post" />
 </article>
 
-@if (BlogConfig.ContentSettings.EnableComments)
+@if (BlogConfig.CommentSettings.EnableComments)
 {
     var days = DateTime.UtcNow.Date.Subtract(Model.Post.PubDateUtc.GetValueOrDefault()).Days;
 
-    if (BlogConfig.ContentSettings.CloseCommentAfterDays > 0 && days > BlogConfig.ContentSettings.CloseCommentAfterDays)
+    if (BlogConfig.CommentSettings.CloseCommentAfterDays > 0 && days > BlogConfig.CommentSettings.CloseCommentAfterDays)
     {
         <div class="text-muted text-center">
             <span class="bi-dash-circle"></span>
@@ -180,7 +180,7 @@
     }
     else
     {
-        switch (BlogConfig.ContentSettings.CommentProvider)
+        switch (BlogConfig.CommentSettings.CommentProvider)
         {
             case CommentProvider.BuiltIn:
                 <div class="d-print-none">
@@ -218,7 +218,7 @@
                 </div>
                 break;
             case CommentProvider.ThirdParty:
-                @Html.Raw(BlogConfig.ContentSettings.ThirdPartyCommentHtmlPitch)
+                @Html.Raw(BlogConfig.CommentSettings.ThirdPartyCommentHtmlPitch)
                 break;
         }
     }

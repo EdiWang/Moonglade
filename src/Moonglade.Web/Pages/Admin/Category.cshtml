@@ -1,10 +1,12 @@
 ﻿@page "/admin/category"
-@model Moonglade.Web.Pages.Admin.CategoryModel
+@using Microsoft.AspNetCore.Mvc.TagHelpers
+@using Moonglade.Core.CategoryFeature
+@using Moonglade.Data.Entities
 @{
     ViewBag.Title = "Categories";
 }
 
-@section scripts{
+@section scripts {
     <script src="~/js/app/json2csv.js" asp-append-version="true"></script>
     <script>
         var editCanvas = new bootstrap.Offcanvas(document.getElementById('editCatCanvas'));
@@ -77,7 +79,7 @@
     </script>
 }
 
-@section admintoolbar{
+@section admintoolbar {
     <div class="admin-toolbar pb-2 border-bottom mb-3">
         <a class="btn btn-outline-accent" href="javascript:initCreateCategory();">
             <i class="bi-plus-lg"></i>
@@ -94,7 +96,7 @@
 @Html.AntiForgeryToken()
 
 <div class="row row-cols-1 row-cols-sm-2 row-cols-md-3 row-cols-lg-4 g-4">
-    @foreach (var cat in Model.Categories.OrderBy(m => m.DisplayName))
+    @foreach (var cat in Categories.OrderBy(m => m.DisplayName))
     {
         <div class="col">
             <div class="card shadow-sm" id="card-@cat.Id">
@@ -128,19 +130,19 @@
     <div class="offcanvas-body">
         <form id="edit-form" method="post">
             <div class="mb-3">
-                <label class="form-label" asp-for="EditCategoryRequest.DisplayName"></label>
-                <input asp-for="EditCategoryRequest.DisplayName" class="form-control" required />
+                <label class="form-label" asp-for="@EditCategoryRequest.DisplayName"></label>
+                <input asp-for="@EditCategoryRequest.DisplayName" class="form-control" required />
             </div>
             <div class="mb-3">
-                <label class="form-label" asp-for="EditCategoryRequest.Slug"></label>
-                <input asp-for="EditCategoryRequest.Slug" class="form-control" required pattern="(?!-)([a-z0-9-]+)" />
+                <label class="form-label" asp-for="@EditCategoryRequest.Slug"></label>
+                <input asp-for="@EditCategoryRequest.Slug" class="form-control" required pattern="(?!-)([a-z0-9-]+)" />
                 <small class="text-muted">
                     @SharedLocalizer["lower case English letters (a-z) and numbers (0-9) with/out hyphen (-) in middle."]
                 </small>
             </div>
             <div class="mb-3">
-                <label class="form-label" asp-for="EditCategoryRequest.Note"></label>
-                <input asp-for="EditCategoryRequest.Note" class="form-control" required />
+                <label class="form-label" asp-for="@EditCategoryRequest.Note"></label>
+                <input asp-for="@EditCategoryRequest.Note" class="form-control" required />
             </div>
             <div class="mt-3">
                 <button type="submit" class="btn btn-accent">@SharedLocalizer["Submit"]</button>
@@ -149,3 +151,12 @@
         </form>
     </div>
 </div>
+
+@functions
+{
+    public CreateCategoryCommand EditCategoryRequest { get; set; } = new();
+
+    public List<CategoryEntity> Categories { get; set; }
+
+    public async Task OnGet() => Categories = await Mediator.Send(new GetCategoriesQuery());
+}

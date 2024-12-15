@@ -16,7 +16,7 @@ public static class ServiceCollectionExtensions
         {
             throw new ArgumentNullException(nameof(settings), "ImageStorage settings cannot be null.");
         }
-        
+
         var provider = settings.Provider?.ToLower();
         if (string.IsNullOrWhiteSpace(provider))
         {
