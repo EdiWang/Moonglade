@@ -5,7 +5,7 @@ using Moonglade.Data.Entities;
 
 namespace Moonglade.Configuration;
 
-public record AddDefaultConfigurationCommand(int Id, string CfgKey, string DefaultJson) : IRequest<OperationCode>;
+public record AddDefaultConfigurationCommand(string CfgKey, string DefaultJson) : IRequest<OperationCode>;
 
 public class AddDefaultConfigurationCommandHandler(
     MoongladeRepository<BlogConfigurationEntity> repository,
@@ -16,7 +16,6 @@ public class AddDefaultConfigurationCommandHandler(
     {
         var entity = new BlogConfigurationEntity
         {
-            Id = request.Id,
             CfgKey = request.CfgKey,
             CfgValue = request.DefaultJson,
             LastModifiedTimeUtc = DateTime.UtcNow

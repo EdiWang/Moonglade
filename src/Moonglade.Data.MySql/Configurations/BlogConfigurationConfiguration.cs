@@ -8,6 +8,7 @@ internal class BlogConfigurationConfiguration : IEntityTypeConfiguration<BlogCon
 {
     public void Configure(EntityTypeBuilder<BlogConfigurationEntity> builder)
     {
+        builder.HasKey(e => e.CfgKey);
         builder.Property(e => e.LastModifiedTimeUtc).HasColumnType("datetime");
     }
 }

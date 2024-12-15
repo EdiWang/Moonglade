@@ -18,7 +18,7 @@ public interface IBlogConfig
     SocialLinkSettings SocialLinkSettings { get; set; }
     SystemManifestSettings SystemManifestSettings { get; set; }
 
-    IEnumerable<int> LoadFromConfig(IDictionary<string, string> config);
+    IEnumerable<string> LoadFromConfig(IDictionary<string, string> config);
     KeyValuePair<string, string> UpdateAsync<T>(T blogSettings) where T : IBlogSettings;
 }
 
@@ -48,28 +48,28 @@ public class BlogConfig : IBlogConfig
 
     public SystemManifestSettings SystemManifestSettings { get; set; }
 
-    public IEnumerable<int> LoadFromConfig(IDictionary<string, string> config)
+    public IEnumerable<string> LoadFromConfig(IDictionary<string, string> config)
     {
-        ContentSettings = AssignValueForConfigItem(1, ContentSettings.DefaultValue, config);
-        NotificationSettings = AssignValueForConfigItem(2, NotificationSettings.DefaultValue, config);
-        FeedSettings = AssignValueForConfigItem(3, FeedSettings.DefaultValue, config);
-        GeneralSettings = AssignValueForConfigItem(4, GeneralSettings.DefaultValue, config);
-        ImageSettings = AssignValueForConfigItem(5, ImageSettings.DefaultValue, config);
-        AdvancedSettings = AssignValueForConfigItem(6, AdvancedSettings.DefaultValue, config);
-        AppearanceSettings = AssignValueForConfigItem(7, AppearanceSettings.DefaultValue, config);
-        CommentSettings = AssignValueForConfigItem(8, CommentSettings.DefaultValue, config);
-        CustomMenuSettings = AssignValueForConfigItem(10, CustomMenuSettings.DefaultValue, config);
-        LocalAccountSettings = AssignValueForConfigItem(11, LocalAccountSettings.DefaultValue, config);
-        SocialLinkSettings = AssignValueForConfigItem(12, SocialLinkSettings.DefaultValue, config);
+        ContentSettings = AssignValueForConfigItem(ContentSettings.DefaultValue, config);
+        NotificationSettings = AssignValueForConfigItem(NotificationSettings.DefaultValue, config);
+        FeedSettings = AssignValueForConfigItem(FeedSettings.DefaultValue, config);
+        GeneralSettings = AssignValueForConfigItem(GeneralSettings.DefaultValue, config);
+        ImageSettings = AssignValueForConfigItem(ImageSettings.DefaultValue, config);
+        AdvancedSettings = AssignValueForConfigItem(AdvancedSettings.DefaultValue, config);
+        AppearanceSettings = AssignValueForConfigItem(AppearanceSettings.DefaultValue, config);
+        CommentSettings = AssignValueForConfigItem(CommentSettings.DefaultValue, config);
+        CustomMenuSettings = AssignValueForConfigItem(CustomMenuSettings.DefaultValue, config);
+        LocalAccountSettings = AssignValueForConfigItem(LocalAccountSettings.DefaultValue, config);
+        SocialLinkSettings = AssignValueForConfigItem(SocialLinkSettings.DefaultValue, config);
 
         // Special case
-        SystemManifestSettings = AssignValueForConfigItem(99, SystemManifestSettings.DefaultValue, config);
+        SystemManifestSettings = AssignValueForConfigItem(SystemManifestSettings.DefaultValue, config);
 
         return _keysToInit.AsEnumerable();
     }
 
-    private readonly List<int> _keysToInit = [];
-    private T AssignValueForConfigItem<T>(int index, T defaultValue, IDictionary<string, string> config) where T : IBlogSettings
+    private readonly List<string> _keysToInit = [];
+    private T AssignValueForConfigItem<T>(T defaultValue, IDictionary<string, string> config) where T : IBlogSettings
     {
         var name = typeof(T).Name;
 
@@ -78,7 +78,7 @@ public class BlogConfig : IBlogConfig
             return value.FromJson<T>();
         }
 
-        _keysToInit.Add(index);
+        _keysToInit.Add(name);
         return defaultValue;
     }
 
