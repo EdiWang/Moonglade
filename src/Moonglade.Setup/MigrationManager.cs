@@ -26,6 +26,7 @@ public class MigrationManager(
         if (!bool.Parse(configuration["Setup:AutoDatabaseMigration"]!))
         {
             logger.LogWarning("Automatic database migration is disabled, if you need, please enable the flag in `Setup:AutoDatabaseMigration`.");
+            return;
         }
 
         var mfv = Version.Parse(blogConfig.SystemManifestSettings.VersionString);
