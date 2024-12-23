@@ -114,5 +114,13 @@ BEGIN
 END
 
 ALTER TABLE [dbo].[BlogConfiguration] ADD CONSTRAINT [PK_BlogConfiguration_CfgKey] PRIMARY KEY CLUSTERED ([CfgKey] ASC);
-ALTER TABLE [dbo].[BlogConfiguration] DROP COLUMN Id;
 
+IF EXISTS (
+    SELECT 1
+    FROM INFORMATION_SCHEMA.COLUMNS
+    WHERE TABLE_NAME = 'BlogConfiguration'
+      AND COLUMN_NAME = 'Id'
+)
+BEGIN
+    ALTER TABLE [dbo].[BlogConfiguration] DROP COLUMN Id;
+END
