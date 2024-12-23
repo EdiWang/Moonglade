@@ -78,7 +78,7 @@
 }
 
 .outline-nav li {
-    color: var(--accent-color2);
+    color: var(--accent-color1);
 }
 
     .outline-nav li:not(.list-head) div {

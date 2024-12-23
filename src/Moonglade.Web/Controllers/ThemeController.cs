@@ -41,7 +41,6 @@ public class ThemeController(IMediator mediator, ICacheAside cache, IBlogConfig 
         var dic = new Dictionary<string, string>
         {
             { "--accent-color1", request.AccentColor1 },
-            { "--accent-color2", request.AccentColor2 },
             { "--accent-color3", request.AccentColor3 }
         };
 

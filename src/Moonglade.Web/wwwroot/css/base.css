@@ -51,7 +51,7 @@ footer {
 }
 
 .moonglade-footer {
-    background-color: var(--accent-color2);
+    background: linear-gradient(rgba(0, 0, 0, 0.4), rgba(0, 0, 0, 0.4)), var(--accent-color1);
 }
 
 .bg-gray-1 {
@@ -210,10 +210,6 @@ footer {
 
 .bg-accent1 {
     background-color: var(--accent-color1);
-}
-
-.bg-accent2 {
-    background-color: var(--accent-color2);
 }
 
 .page-link {
