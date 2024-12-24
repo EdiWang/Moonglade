@@ -26,7 +26,7 @@
         {
         name: document.querySelector('#Name').value,
         accentColor1: document.querySelector('#AccentColor1').value,
-        accentColor3: document.querySelector('#AccentColor3').value
+        accentColor2: document.querySelector('#AccentColor2').value
         },
         async (resp) => {
         themeModal.hide();
@@ -94,7 +94,7 @@
                         {
                             <div class="col-md-4">
                                 <div class="theme-selector-container card @(ViewModel.ThemeId == theme.Id ? "active" : null)"
-                                     style="border-color: @theme.CssRulesDictionary["--accent-color3"]"
+                                     style="border-color: @theme.CssRulesDictionary["--accent-color2"]"
                                      id="theme-selector-container-@theme.Id"
                                      data-theme-id="@theme.Id">
                                     <div class="theme-preview-body d-flex p-1">
@@ -134,7 +134,7 @@
                         {
                             <div class="col-md-4" id="user-theme-col-@theme.Id">
                                 <div class="theme-selector-container card @(ViewModel.ThemeId == theme.Id ? "active" : null)"
-                                     style="border-color: @theme.CssRulesDictionary["--accent-color3"]"
+                                     style="border-color: @theme.CssRulesDictionary["--accent-color2"]"
                                      id="theme-selector-container-@theme.Id"
                                      data-theme-id="@theme.Id">
                                     <div class="theme-preview-body d-flex p-1">

@@ -19,13 +19,13 @@ public static class ThemeFactory
         };
     }
 
-    private static BlogThemeEntity CreateTheme(int id, string themeName, string color1, string color3)
+    private static BlogThemeEntity CreateTheme(int id, string themeName, string color1, string color2)
     {
         return new()
         {
             Id = id,
             ThemeName = themeName,
-            CssRules = $"{{\"--accent-color1\": \"{color1}\",\"--accent-color3\": \"{color3}\"}}",
+            CssRules = $"{{\"--accent-color1\": \"{color1}\",\"--accent-color2\": \"{color2}\"}}",
             ThemeType = 0
         };
     }

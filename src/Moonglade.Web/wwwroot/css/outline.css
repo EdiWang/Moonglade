@@ -70,7 +70,7 @@
 }
 
     .outline-nav span:hover {
-        color: var(--accent-color3);
+        color: var(--accent-color2);
     }
 
 [data-bs-theme=dark] .outline-nav span:hover {

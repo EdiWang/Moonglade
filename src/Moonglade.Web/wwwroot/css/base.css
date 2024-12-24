@@ -235,12 +235,12 @@ footer {
     --bs-btn-bg: var(--accent-color1);
     --bs-btn-border-color: var(--accent-color1);
     --bs-btn-hover-color: #fff;
-    --bs-btn-hover-bg: var(--accent-color3);
-    --bs-btn-hover-border-color: var(--accent-color3);
+    --bs-btn-hover-bg: var(--accent-color2);
+    --bs-btn-hover-border-color: var(--accent-color2);
     --bs-btn-focus-shadow-rgb: 0 0 0 0.2rem rgba(0, 0, 0, 0.5);
     --bs-btn-active-color: #fff;
-    --bs-btn-active-bg: var(--accent-color3);
-    --bs-btn-active-border-color: var(--accent-color3);
+    --bs-btn-active-bg: var(--accent-color2);
+    --bs-btn-active-border-color: var(--accent-color2);
     --bs-btn-active-shadow: 0 0 0 0.2rem rgba(0, 0, 0, 0.5);
     --bs-btn-disabled-color: #fff;
     --bs-btn-disabled-bg: var(--accent-color1);
@@ -258,7 +258,7 @@ footer {
     --bs-btn-active-bg: var(--accent-color1);
     --bs-btn-active-border-color: var(--accent-color1);
     --bs-btn-active-shadow: 0 0 0 0.2rem rgba(0, 0, 0, 0.5);
-    --bs-btn-disabled-color: var(--accent-color3);
+    --bs-btn-disabled-color: var(--accent-color2);
     --bs-btn-disabled-bg: transparent;
     --bs-btn-disabled-border-color: var(--accent-color1);
     --bs-gradient: none;
@@ -374,7 +374,7 @@ div.animbrand a:hover {
 .navbar .dropdown-item.active,
 .navbar .dropdown-item:hover,
 .navbar .dropdown-item:focus {
-    background-color: var(--accent-color3);
+    background-color: var(--accent-color2);
     color: var(--bs-white);
     text-decoration: none;
 }
