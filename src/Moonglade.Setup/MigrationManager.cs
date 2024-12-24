@@ -32,6 +32,12 @@ public class MigrationManager(
         var mfv = Version.Parse(blogConfig.SystemManifestSettings.VersionString);
         var cuv = Version.Parse(Helper.AppVersionBasic);
 
+        if (Helper.IsNonStableVersion())
+        {
+            logger.LogWarning("Database migration is not supported on non-stable version. Skipped.");
+            return;
+        }
+
         if (mfv < cuv)
         {
             // do not migrate revision
