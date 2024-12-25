@@ -40,7 +40,7 @@ public class ThemeController(IMediator mediator, ICacheAside cache, IBlogConfig 
     {
         // AccentColor2 = AccentColor Lighten by 20%
         double percentage = 0.2;
-        string accentColor2 = LightenColor(request.AccentColor, percentage);
+        string accentColor2 = ThemeFactory.LightenColor(request.AccentColor, percentage);
 
         var dic = new Dictionary<string, string>
         {
@@ -69,31 +69,5 @@ public class ThemeController(IMediator mediator, ICacheAside cache, IBlogConfig 
         };
     }
 
-    static string LightenColor(string hexColor, double percentage)
-    {
-        // Remove '#' and parse the color into RGB components
-        hexColor = hexColor.TrimStart('#');
-        int r = Convert.ToInt32(hexColor.Substring(0, 2), 16);
-        int g = Convert.ToInt32(hexColor.Substring(2, 2), 16);
-        int b = Convert.ToInt32(hexColor.Substring(4, 2), 16);
 
-        // Calculate the new RGB values
-        // - Use the formula:
-        //   \[
-        //   C_{\text{ new} } = C_{\text{ original} }
-        //      +(255 - C_{\text{ original} }) \times \text{ percentage}
-        //   \]
-        // - This moves each color channel closer to 255(white) by the specified percentage.
-        int rNew = (int)(r + (255 - r) * percentage);
-        int gNew = (int)(g + (255 - g) * percentage);
-        int bNew = (int)(b + (255 - b) * percentage);
-
-        // Ensure the values are within the valid range (0-255)
-        rNew = Math.Clamp(rNew, 0, 255);
-        gNew = Math.Clamp(gNew, 0, 255);
-        bNew = Math.Clamp(bNew, 0, 255);
-
-        // Convert back to HEX format and return
-        return $"#{rNew:X2}{gNew:X2}{bNew:X2}";
-    }
 }
