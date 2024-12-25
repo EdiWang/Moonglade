@@ -1047,4 +1047,7 @@
   <data name="Appearance" xml:space="preserve">
     <value>Aussehen</value>
   </data>
+  <data name="Accent Color" xml:space="preserve">
+    <value>Farbe der Akzente</value>
+  </data>
 </root>

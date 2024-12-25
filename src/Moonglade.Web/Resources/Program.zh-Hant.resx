@@ -1053,4 +1053,7 @@
   <data name="Appearance" xml:space="preserve">
     <value>外觀</value>
   </data>
+  <data name="Accent Color" xml:space="preserve">
+    <value>主題色</value>
+  </data>
 </root>
