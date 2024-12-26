@@ -36,7 +36,7 @@
         @for (var index = 0; index < yearList.Length; index++)
         {
             var item = yearList[index];
-            var queryMonth = archives.Where(obj => obj.Year == item);
+            var queryMonth = archives.Where(obj => obj.Year == item).ToList();
             var totalPosts = queryMonth.Sum(m => m.Count);
 
             <li class="@(index % 2 == 0 ? null: "timeline-inverted")">
