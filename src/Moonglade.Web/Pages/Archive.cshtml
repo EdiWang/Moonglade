@@ -23,7 +23,7 @@
 }
 
 @section head {
-        <link href="~/css/timeline.css" rel="stylesheet" asp-append-version="true" />
+    <link href="~/css/timeline.css" rel="stylesheet" asp-append-version="true" />
 }
 
 <h2 class="page-heading mb-4">
@@ -33,36 +33,42 @@
 @if (null != Model && archives.Any() && null != yearList)
 {
     <ul class="timeline" id="monthList">
-    @for (var index = 0; index < yearList.Length; index++)
-    {
-        var item = yearList[index];
-        var queryMonth = archives.Where(obj => obj.Year == item);
+        @for (var index = 0; index < yearList.Length; index++)
+        {
+            var item = yearList[index];
+            var queryMonth = archives.Where(obj => obj.Year == item);
+            var totalPosts = queryMonth.Sum(m => m.Count);
 
-        <li class="@(index % 2 == 0 ? null: "timeline-inverted")">
-            <div class="timeline-badge"></div>
-            <div class="timeline-panel shadow-sm bg-white">
-                <div class="timeline-heading">
-                    <h3 class="timeline-title">
-                        <a asp-page="./ArchiveList" asp-route-year="@item">@item</a>
-                    </h3>
-                </div>
-                <div class="timeline-body">
-                    <div class="row g-2">
-                        @foreach (var month in queryMonth)
-                        {
-                            <div class="col-6">
-                                <span class="badge bg-secondary float-end">@month.Count</span>
-                                <a asp-page="./ArchiveList"
-                                   asp-route-year="@month.Year"
-                                   asp-route-month="@month.Month">
-                                    @GetMonthNameByNumber(month.Month)</a>
-                            </div>
-                        }
+            <li class="@(index % 2 == 0 ? null: "timeline-inverted")">
+                <div class="timeline-badge"></div>
+                <div class="timeline-panel shadow-sm bg-white">
+                    <div class="timeline-heading mb-3">
+                        <h3 class="timeline-title">
+                            <a asp-page="./ArchiveList" asp-route-year="@item">@item</a>
+                        </h3>
+                    </div>
+                    <div class="timeline-body">
+                        <div class="row g-3">
+                            @foreach (var month in queryMonth)
+                            {
+                                <div class="col-6">
+                                    <span class="badge bg-secondary float-end">@month.Count</span>
+                                    <a asp-page="./ArchiveList"
+                                       asp-route-year="@month.Year"
+                                       asp-route-month="@month.Month"
+                                       class="archive-link-item">
+                                        @GetMonthNameByNumber(month.Month)
+                                    </a>
+                                </div>
+                            }
+                        </div>
+                    </div>
+                    <div class="timeline-footer text-muted border-top mt-3 pt-2">
+                        @totalPosts Post@(totalPosts > 1 ? "s" : null)
                     </div>
                 </div>
-            </div>
-        </li>
-    }
+            </li>
+        }
     </ul>
 }
 else
