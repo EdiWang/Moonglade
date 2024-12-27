@@ -102,7 +102,25 @@ END
 UPDATE [BlogConfiguration] SET CfgKey = 'AppearanceSettings' WHERE CfgKey = 'CustomStyleSheetSettings';
 
 ALTER TABLE [dbo].[BlogConfiguration] ALTER COLUMN [CfgKey] VARCHAR(64) NOT NULL;
-ALTER TABLE [dbo].[BlogConfiguration] DROP CONSTRAINT [PK_BlogConfiguration];
-ALTER TABLE [dbo].[BlogConfiguration] ADD CONSTRAINT [PK_BlogConfiguration_CfgKey] PRIMARY KEY CLUSTERED ([CfgKey] ASC);
-ALTER TABLE [dbo].[BlogConfiguration] DROP COLUMN Id;
 
+IF EXISTS (
+    SELECT 1
+    FROM sys.objects
+    WHERE object_id = OBJECT_ID(N'[PK_BlogConfiguration]')
+          AND type = 'PK'
+)
+BEGIN
+    ALTER TABLE [dbo].[BlogConfiguration] DROP CONSTRAINT [PK_BlogConfiguration];
+END
+
+ALTER TABLE [dbo].[BlogConfiguration] ADD CONSTRAINT [PK_BlogConfiguration_CfgKey] PRIMARY KEY CLUSTERED ([CfgKey] ASC);
+
+IF EXISTS (
+    SELECT 1
+    FROM INFORMATION_SCHEMA.COLUMNS
+    WHERE TABLE_NAME = 'BlogConfiguration'
+      AND COLUMN_NAME = 'Id'
+)
+BEGIN
+    ALTER TABLE [dbo].[BlogConfiguration] DROP COLUMN Id;
+END

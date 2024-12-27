@@ -38,11 +38,14 @@ public class ThemeController(IMediator mediator, ICacheAside cache, IBlogConfig 
     [TypeFilter(typeof(ClearBlogCache), Arguments = [BlogCachePartition.General, "theme"])]
     public async Task<IActionResult> Create(CreateThemeRequest request)
     {
+        // AccentColor2 = AccentColor Lighten by 20%
+        double percentage = 0.2;
+        string accentColor2 = ThemeFactory.LightenColor(request.AccentColor, percentage);
+
         var dic = new Dictionary<string, string>
         {
-            { "--accent-color1", request.AccentColor1 },
-            { "--accent-color2", request.AccentColor2 },
-            { "--accent-color3", request.AccentColor3 }
+            { "--accent-color1", request.AccentColor },
+            { "--accent-color2", accentColor2 }
         };
 
         var id = await mediator.Send(new CreateThemeCommand(request.Name, dic));
@@ -65,4 +68,6 @@ public class ThemeController(IMediator mediator, ICacheAside cache, IBlogConfig 
             _ => NoContent()
         };
     }
+
+
 }

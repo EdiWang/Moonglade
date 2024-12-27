@@ -146,7 +146,7 @@
         right: unset;
         width: 3px;
         height: 18px;
-        background: var(--accent-color2);
+        background: linear-gradient(rgba(0, 0, 0, 0.4), rgba(0, 0, 0, 0.4)), var(--accent-color1);
         border-radius: 3px;
         z-index: 5;
     }

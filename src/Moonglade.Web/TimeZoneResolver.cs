@@ -10,7 +10,7 @@ public interface ITimeZoneResolver
     TimeSpan GetTimeSpanByZoneId(string timeZoneId);
 }
 
-public class BlogTimeZoneResolver(IBlogConfig blogConfig) : ITimeZoneResolver
+public class BlogTimeZoneResolver(IBlogConfig blogConfig, ILogger<BlogTimeZoneResolver> logger) : ITimeZoneResolver
 {
     private readonly TimeSpan _utcOffset = blogConfig.GeneralSettings.TimeZoneUtcOffset;
 
@@ -34,13 +34,17 @@ public class BlogTimeZoneResolver(IBlogConfig blogConfig) : ITimeZoneResolver
             var tz = TimeZoneInfo.FindSystemTimeZoneById(timeZoneId);
             return tz.BaseUtcOffset;
         }
-        catch (TimeZoneNotFoundException)
+        catch (TimeZoneNotFoundException e)
         {
+            logger.LogError(e, "Time zone not found: {TimeZoneId}", timeZoneId);
+
             // Handle the case where the time zone ID is not found
             return TimeSpan.Zero;
         }
-        catch (InvalidTimeZoneException)
+        catch (InvalidTimeZoneException e)
         {
+            logger.LogError(e, "Invalid time zone: {TimeZoneId}", timeZoneId);
+
             // Handle the case where the time zone data is invalid
             return TimeSpan.Zero;
         }

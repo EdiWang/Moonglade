@@ -26,10 +26,17 @@ public class MigrationManager(
         if (!bool.Parse(configuration["Setup:AutoDatabaseMigration"]!))
         {
             logger.LogWarning("Automatic database migration is disabled, if you need, please enable the flag in `Setup:AutoDatabaseMigration`.");
+            return;
         }
 
         var mfv = Version.Parse(blogConfig.SystemManifestSettings.VersionString);
         var cuv = Version.Parse(Helper.AppVersionBasic);
+
+        if (Helper.IsNonStableVersion())
+        {
+            logger.LogWarning("Database migration is not supported on non-stable version. Skipped.");
+            return;
+        }
 
         if (mfv < cuv)
         {

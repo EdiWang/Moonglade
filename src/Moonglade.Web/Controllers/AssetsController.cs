@@ -11,8 +11,6 @@ public class AssetsController(
     [ResponseCache(Duration = 300)]
     public async Task<IActionResult> Avatar(ICacheAside cache)
     {
-        var fallbackImageFile = Path.Join($"{env.WebRootPath}", "images", "default-avatar.png");
-
         var bytes = await cache.GetOrCreateAsync(BlogCachePartition.General.ToString(), "avatar", async _ =>
         {
             logger.LogTrace("Avatar not on cache, getting new avatar image...");
@@ -24,12 +22,10 @@ public class AssetsController(
             return avatarBytes;
         });
 
-        if (null == bytes)
-        {
-            return PhysicalFile(fallbackImageFile, "image/png");
-        }
+        if (null != bytes) return File(bytes, "image/png");
 
-        return File(bytes, "image/png");
+        var fallbackImageFile = Path.Join($"{env.WebRootPath}", "images", "default-avatar.png");
+        return PhysicalFile(fallbackImageFile, "image/png");
     }
 
     [Authorize]

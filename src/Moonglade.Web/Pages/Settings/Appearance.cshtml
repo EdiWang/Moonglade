@@ -25,9 +25,7 @@
         'POST',
         {
         name: document.querySelector('#Name').value,
-        accentColor1: document.querySelector('#AccentColor1').value,
-        accentColor2: document.querySelector('#AccentColor2').value,
-        accentColor3: document.querySelector('#AccentColor3').value
+        accentColor: document.querySelector('#AccentColor').value
         },
         async (resp) => {
         themeModal.hide();
@@ -95,17 +93,17 @@
                         {
                             <div class="col-md-4">
                                 <div class="theme-selector-container card @(ViewModel.ThemeId == theme.Id ? "active" : null)"
-                                     style="border-color: @theme.CssRulesDictionary["--accent-color3"]"
+                                     style="border-color: @theme.CssRulesDictionary["--accent-color1"]"
                                      id="theme-selector-container-@theme.Id"
                                      data-theme-id="@theme.Id">
                                     <div class="theme-preview-body d-flex p-1">
                                         @foreach (var dic in theme.CssRulesDictionary)
                                         {
-                                            <div class="theme-color-indicator w-100 px-1 text-light" style="background-color: @dic.Value">
+                                            <div class="theme-color-indicator w-100 px-1" style="background-color: @dic.Value">
                                             </div>
                                         }
 
-                                        <div class="theme-color-indicator w-100 px-1 text-light" style="background-color: white">
+                                        <div class="theme-color-indicator w-100 px-1" style="background: linear-gradient(rgba(0, 0, 0, 0.4), rgba(0, 0, 0, 0.4)), @theme.CssRulesDictionary["--accent-color1"]">
                                         </div>
                                     </div>
 
@@ -135,17 +133,17 @@
                         {
                             <div class="col-md-4" id="user-theme-col-@theme.Id">
                                 <div class="theme-selector-container card @(ViewModel.ThemeId == theme.Id ? "active" : null)"
-                                     style="border-color: @theme.CssRulesDictionary["--accent-color3"]"
+                                     style="border-color: @theme.CssRulesDictionary["--accent-color1"]"
                                      id="theme-selector-container-@theme.Id"
                                      data-theme-id="@theme.Id">
                                     <div class="theme-preview-body d-flex p-1">
                                         @foreach (var dic in theme.CssRulesDictionary)
                                         {
-                                            <div class="theme-color-indicator w-100 px-1 text-light" style="background-color: @dic.Value">
+                                            <div class="theme-color-indicator w-100 px-1" style="background-color: @dic.Value">
                                             </div>
                                         }
 
-                                        <div class="theme-color-indicator w-100 px-1 text-light" style="background-color: white">
+                                        <div class="theme-color-indicator w-100 px-1" style="background: linear-gradient(rgba(0, 0, 0, 0.4), rgba(0, 0, 0, 0.4)), @theme.CssRulesDictionary["--accent-color1"]">
                                         </div>
                                     </div>
 
@@ -170,8 +168,8 @@
                     {
                         <div>
                             <a class="btn btn-outline-accent" href="#" data-bs-toggle="modal" data-bs-target="#thememodal">
-                                <i class="bi-palette"></i>
-                                New
+                                <i class="bi-plus-lg"></i>
+                                @SharedLocalizer["New"]
                             </a>
                         </div>
                     }

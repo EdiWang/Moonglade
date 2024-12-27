@@ -162,25 +162,29 @@
                         @SharedLocalizer["Footer"]
                     </h4>
 
-                    <div class="settings-entry row align-items-center py-3 px-2 rounded-3 shadow-sm border mb-2">
-                        <div class="col-auto">
-                            <i class="bi-check2-square settings-entry-icon"></i>
+                    <div class="shadow-sm mb-2 border rounded-3">
+                        <div class="settings-entry row align-items-center py-3 px-2 rounded-3">
+                            <div class="col-auto">
+                                <i class="bi-check2-square settings-entry-icon"></i>
+                            </div>
+                            <div class="col">
+                                <label asp-for="@ViewModel.Copyright"></label>
+                                <div class="form-text">@Html.Raw(@SharedLocalizer["Use [c] for copyright mark: &copy;, [year] for current year."])</div>
+                            </div>
+                            <div class="col-md-5 text-end">
+                                <input asp-for="@ViewModel.Copyright" class="form-control" required />
+                            </div>
                         </div>
-                        <div class="col">
-                            <label asp-for="@ViewModel.Copyright"></label>
-                            <div class="form-text">@Html.Raw(@SharedLocalizer["Use [c] for copyright mark: &copy;, [year] for current year."])</div>
-                        </div>
-                        <div class="col-md-5 text-end">
-                            <input asp-for="@ViewModel.Copyright" class="form-control" required />
-                        </div>
-                    </div>
 
-                    <div class="form-floating">
-                        <textarea asp-for="@ViewModel.FooterCustomizedHtmlPitch"
-                                  placeholder="@Html.DisplayName(ViewModel.FooterCustomizedHtmlPitch)"
-                                  class="form-control form-control-sm h-100px textarea-code"
-                                  spellcheck="false" rows="10" cols="10"></textarea>
-                        <label class="form-label" asp-for="@ViewModel.FooterCustomizedHtmlPitch"></label>
+                        <div class="border-top p-2">
+                            <div class="form-floating">
+                                <textarea asp-for="@ViewModel.FooterCustomizedHtmlPitch"
+                                          placeholder="@Html.DisplayName(ViewModel.FooterCustomizedHtmlPitch)"
+                                          class="form-control form-control-sm h-100px textarea-code"
+                                          spellcheck="false" rows="10" cols="10"></textarea>
+                                <label class="form-label" asp-for="@ViewModel.FooterCustomizedHtmlPitch"></label>
+                            </div>
+                        </div>
                     </div>
                 </div>
 
@@ -261,7 +265,7 @@
                     </div>
 
                     <div class="rounded-3 shadow-sm border mb-2">
-                        <div class="settings-entry row align-items-center py-3 px-2">
+                        <div class="settings-entry row align-items-center rounded-3 py-3 px-2">
                             <div class="col-auto">
                                 <i class="bi-file-person settings-entry-icon"></i>
                             </div>
@@ -334,7 +338,7 @@
                             </div>
                         </div>
 
-                        <div class="border-top py-3 px-2">
+                        <div class="border-top p-2">
                             <div class="form-floating">
                                 <textarea asp-for="@ViewModel.SideBarCustomizedHtmlPitch"
                                           placeholder="@Html.DisplayName(ViewModel.SideBarCustomizedHtmlPitch)"
@@ -348,7 +352,7 @@
                     </div>
 
                     <div class="rounded-3 shadow-sm border mb-2">
-                        <div class="settings-entry row align-items-center py-3 px-2">
+                        <div class="settings-entry row align-items-center rounded-3 py-3 px-2">
                             <label>@SharedLocalizer["Side bar items"]</label>
                             <div class="text-muted">@SharedLocalizer["Show or hide widgets that display on the side bar"]</div>
                         </div>
@@ -410,7 +414,7 @@
                             </div>
                         </div>
 
-                        <div class="border-top settings-entry row align-items-center py-3 px-2">
+                        <div class="border-top settings-entry row align-items-center rounded-3 py-3 px-2">
                             <div class="col-auto">
                                 <i class="bi-menu-button settings-entry-icon"></i>
                             </div>

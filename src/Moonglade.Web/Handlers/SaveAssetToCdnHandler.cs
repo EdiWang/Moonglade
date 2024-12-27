@@ -1,6 +1,10 @@
 ﻿namespace Moonglade.Web.Handlers;
 
-public class SaveAssetToCdnHandler(IBlogImageStorage imageStorage, IBlogConfig blogConfig, IMediator mediator) : INotificationHandler<SaveAssetCommand>
+public class SaveAssetToCdnHandler(
+    ILogger<SaveAssetToCdnHandler> logger,
+    IBlogImageStorage imageStorage,
+    IBlogConfig blogConfig,
+    IMediator mediator) : INotificationHandler<SaveAssetCommand>
 {
     public async Task Handle(SaveAssetCommand request, CancellationToken ct)
     {
@@ -21,6 +25,8 @@ public class SaveAssetToCdnHandler(IBlogImageStorage imageStorage, IBlogConfig b
 
             var kvp = blogConfig.UpdateAsync(blogConfig.GeneralSettings);
             await mediator.Send(new UpdateConfigurationCommand(kvp.Key, kvp.Value), ct);
+
+            logger.LogInformation("Avatar updated and saved to CDN. URL: {0}", blogConfig.GeneralSettings.AvatarUrl);
         }
     }
 }

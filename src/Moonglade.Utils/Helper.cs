@@ -55,6 +55,14 @@ public static class Helper
         }
     }
 
+    public static bool IsNonStableVersion()
+    {
+        string pattern = @"\b(preview|beta|rc|debug|alpha|test|canary|nightly)\b";
+        Regex regex = new Regex(pattern, RegexOptions.IgnoreCase);
+
+        return regex.IsMatch(AppVersion);
+    }
+
     // Get `sec-ch-prefers-color-scheme` header value
     // This is to enhance user experience by stopping the screen from blinking when switching pages
     public static bool UseServerSideDarkMode(IConfiguration configuration, HttpContext context)
