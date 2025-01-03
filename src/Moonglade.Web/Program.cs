@@ -217,6 +217,7 @@ public class Program
             .AddScoped<ValidateCaptcha>()
             .AddScoped<ITimeZoneResolver, BlogTimeZoneResolver>()
             .AddBlogConfig()
+            .AddAnalytics(configuration)
             .AddBlogAuthenticaton(configuration)
             .AddImageStorage(configuration);
 

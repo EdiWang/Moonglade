@@ -2,6 +2,7 @@
 @using Microsoft.AspNetCore.Localization
 @using System.Globalization
 @inject IConfiguration Configuration
+@inject IOptions<AnalyticsSettings> AnalyticsSettings
 
 @{
     if (string.IsNullOrEmpty(BlogConfig.GeneralSettings.AvatarUrl))
@@ -244,6 +245,11 @@
     </script>
 
     @await RenderSectionAsync("scripts", false)
+
+    @if (AnalyticsSettings.Value.MicrosoftClarity.Enabled)
+    {
+        <partial name="_MicrosoftClarity" model="AnalyticsSettings.Value.MicrosoftClarity.ProjectId" />
+    }
 
     @if (!string.IsNullOrWhiteSpace(BlogConfig.AdvancedSettings.FootScripts))
     {
