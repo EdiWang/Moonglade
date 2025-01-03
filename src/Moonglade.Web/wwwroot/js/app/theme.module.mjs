@@ -19,3 +19,7 @@ export const setTheme = theme => {
         setStoredTheme(theme);
     }
 }
+
+window.getPreferredTheme = getPreferredTheme;
+window.setTheme = setTheme;
+setTheme(getPreferredTheme());

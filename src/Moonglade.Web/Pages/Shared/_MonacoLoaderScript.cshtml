@@ -5,7 +5,7 @@
     function initEditor(containerId, textAreaQuerySelector, lang) {
         var editorDiv = document.getElementById(containerId);
 
-        if (window.theme.getPreferredTheme() == 'dark') {
+        if (window.getPreferredTheme() == 'dark') {
             monaco.editor.setTheme("vs-dark");
         }
         

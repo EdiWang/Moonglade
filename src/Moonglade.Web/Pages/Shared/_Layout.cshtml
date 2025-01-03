@@ -236,13 +236,7 @@
     <script src="~/lib/twitter-bootstrap/js/bootstrap.bundle.min.js" asp-append-version="true"></script>
     <script type="module" src="~/js/app/base.js" asp-append-version="true"></script>
     <script src="~/js/app/httpService.js" asp-append-version="true"></script>
-
-    <script type="module">
-        import * as theme from '/js/app/theme.module.js'
-        window.theme = theme;
-
-        theme.setTheme(theme.getPreferredTheme());
-    </script>
+    <script type="module" src="~/js/app/theme.module.mjs" asp-append-version="true"></script>
 
     @await RenderSectionAsync("scripts", false)
 

@@ -119,7 +119,7 @@ export function loadTinyMCE(textareaSelector) {
         return;
     }
 
-    const preferredTheme = window.theme.getPreferredTheme();
+    const preferredTheme = window.getPreferredTheme();
     const isDarkTheme = preferredTheme === 'dark';
 
     window.tinyMCE.init({

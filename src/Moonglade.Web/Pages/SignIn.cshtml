@@ -77,12 +77,7 @@
             </div>
         </main>
     </div>
-    <script type="module">
-        import * as theme from '/js/app/theme.module.js'
-        window.theme = theme;
-
-        theme.setTheme(theme.getPreferredTheme());
-    </script>
+    <script type="module" src="~/js/app/theme.module.mjs" asp-append-version="true"></script>
     <script>
         function getNewCaptcha() {
             d = new Date();
