@@ -98,6 +98,11 @@
             console.warn('Moonglade is running in @(WebHostEnvironment.EnvironmentName) environment');
         </script>
     </environment>
+
+    @if (AnalyticsSettings.Value.GoogleAnalytics.Enabled)
+    {
+        <partial name="_GoogleAnalytics" model="AnalyticsSettings.Value.GoogleAnalytics.GTagId" />
+    }
 </head>
 <body class="@ViewBag.BodyClass">
     @if (BlogConfig.ContentSettings.ShowCalloutSection)
