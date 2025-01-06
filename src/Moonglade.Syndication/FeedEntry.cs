@@ -9,5 +9,6 @@ public record FeedEntry
     public string Description { get; set; }
     public string Author { get; set; }
     public string AuthorEmail { get; set; }
+    public string LangCode { get; set; }
     public string[] Categories { get; set; }
 }
