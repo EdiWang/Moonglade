@@ -80,8 +80,6 @@
     <script type="module">
         import * as viewpost from '/js/app/viewpost.module.js'
 
-        window.viewpost = viewpost;
-
         viewpost.resizeImages();
         if (window.innerWidth >= 768) {
             viewpost.applyImageZooming();
@@ -100,7 +98,7 @@
 
         window.fitImageToDevicePixelRatio = @BlogConfig.ImageSettings.FitImageToDevicePixelRatio.ToString().ToLower();
 
-        document.getElementById('comment-form').addEventListener('submit', function (e) {
+        document.getElementById('comment-form')?.addEventListener('submit', function (e) {
             e.preventDefault();
             let pid = document.querySelector('article').dataset.postid;
             viewpost.submitComment(pid);
