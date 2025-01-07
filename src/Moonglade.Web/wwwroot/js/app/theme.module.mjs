@@ -8,7 +8,9 @@ export const getPreferredTheme = () => {
     return storedTheme || getSystemTheme();
 }
 
-export const setTheme = theme => {
+window.getPreferredTheme = getPreferredTheme;
+
+function setTheme(theme) {
     const rootElement = document.documentElement;
     if (theme === 'auto') {
         const systemTheme = getSystemTheme();
@@ -20,7 +22,6 @@ export const setTheme = theme => {
     }
 }
 
-window.getPreferredTheme = getPreferredTheme;
 setTheme(getPreferredTheme());
 
 document.addEventListener('DOMContentLoaded', () => {
