@@ -21,5 +21,14 @@ export const setTheme = theme => {
 }
 
 window.getPreferredTheme = getPreferredTheme;
-window.setTheme = setTheme;
 setTheme(getPreferredTheme());
+
+document.addEventListener('DOMContentLoaded', () => {
+    const themeLinks = document.querySelectorAll('.dropdown-item[data-theme]');
+    themeLinks.forEach(link => {
+        link.addEventListener('click', () => {
+            const theme = link.getAttribute('data-theme');
+            setTheme(theme);
+        });
+    });
+});
