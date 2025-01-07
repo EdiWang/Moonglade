@@ -1,4 +1,4 @@
-﻿import * as utils from './utils.module.js'
+﻿import * as utils from './utils.module.mjs'
 
 export function handleSettingsSubmit(event) {
     event.preventDefault();
