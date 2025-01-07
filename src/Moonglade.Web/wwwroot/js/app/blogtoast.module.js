@@ -1,8 +1,4 @@
-﻿const bsToast = new bootstrap.Toast(document.getElementById('liveToast'));
-const blogtoastMessage = document.querySelector('#blogtoast-message');
-const lt = document.querySelector('#liveToast');
-
-const bgClasses = [
+﻿const bgClasses = [
     'bg-success',
     'bg-warning',
     'bg-danger',
@@ -11,14 +7,24 @@ const bgClasses = [
     'bg-secondary'
 ];
 
-function removeToastBgColor() {
-    bgClasses.forEach(bgClass => lt.classList.remove(bgClass));
+function getToastElements() {
+    return {
+        bsToast: new bootstrap.Toast(document.getElementById('liveToast')),
+        blogtoastMessage: document.querySelector('#blogtoast-message'),
+        liveToast: document.querySelector('#liveToast')
+    };
+}
+
+function removeToastBgColor(toastElement) {
+    bgClasses.forEach(bgClass => toastElement.classList.remove(bgClass));
 }
 
 function showToast(message, bgClass) {
-    removeToastBgColor();
-    lt.classList.add(bgClass);
-    blogtoastMessage.innerHTML = message;
+    const { bsToast, blogtoastMessage, liveToast } = getToastElements();
+
+    removeToastBgColor(liveToast);
+    liveToast.classList.add(bgClass);
+    blogtoastMessage.textContent = message;
     bsToast.show();
 }
 
