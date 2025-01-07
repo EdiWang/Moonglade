@@ -11,7 +11,6 @@ public class PagedListRenderOptions
         MaximumPageNumbersToDisplay = 10;
         LinkToFirstPageFormat = "<<";
         LinkToPreviousPageFormat = "<";
-        LinkToIndividualPageFormat = "{0}";
         LinkToNextPageFormat = ">";
         LinkToLastPageFormat = ">>";
         PageCountAndCurrentLocationFormat = "Page {0} of {1}.";
@@ -55,14 +54,6 @@ public class PagedListRenderOptions
     /// "&lt; Previous"
     ///</example>
     public string LinkToPreviousPageFormat { get; }
-
-    ///<summary>
-    /// The pre-formatted text to display inside the hyperlink to each individual page. The one-based index of the page is passed into the formatting function - use {0} to reference it.
-    ///</summary>
-    ///<example>
-    /// "{0}"
-    ///</example>
-    public string LinkToIndividualPageFormat { get; }
 
     ///<summary>
     /// The pre-formatted text to display inside the hyperlink to the next page. The one-based index of the page is passed into the formatting function - use {0} to reference it.

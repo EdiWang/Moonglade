@@ -81,7 +81,7 @@ public class HtmlHelper
 
     private TagBuilder Page(int i, IPagedList list, Func<int, string> generatePageUrl, PagedListRenderOptions options)
     {
-        string Format(int pageNumber) => string.Format(options.LinkToIndividualPageFormat, pageNumber);
+        string Format(int pageNumber) => string.Format("{0}", pageNumber);
         var targetPageNumber = i;
         var page = i == list.PageNumber
             ? new TagBuilder("span")
