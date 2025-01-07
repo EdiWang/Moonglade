@@ -1,7 +1,6 @@
-﻿export let bsToast = new bootstrap.Toast(document.getElementById('liveToast'));
-export let blogtoastMessage = document.querySelector('#blogtoast-message');
-
-let lt = document.querySelector('#liveToast');
+﻿const bsToast = new bootstrap.Toast(document.getElementById('liveToast'));
+const blogtoastMessage = document.querySelector('#blogtoast-message');
+const lt = document.querySelector('#liveToast');
 
 const bgClasses = [
     'bg-success',
