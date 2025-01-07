@@ -17,7 +17,7 @@ public class PagedListRenderOptions
         ItemSliceAndTotalFormat = "Showing items {0} through {1} of {2}.";
         UlElementClasses = ["pagination"];
         PageClasses = ["page-link"];
-        PreviousElementClass = "PagedList-skip-to-previous";
+        PreviousElementClass = "paged-list-skip-to-previous";
         NextElementClass = "paged-list-skip-to-next";
     }
 
