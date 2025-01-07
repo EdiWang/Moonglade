@@ -79,7 +79,6 @@
     }
     <script type="module">
         import * as viewpost from '/js/app/viewpost.module.js'
-        import * as utils from '/js/app/utils.module.js'
 
         window.viewpost = viewpost;
 
@@ -107,7 +106,7 @@
             viewpost.submitComment(pid);
         });
 
-        utils.formatUtcTime(false);
+        formatUtcTime(false);
     </script>
 }
 

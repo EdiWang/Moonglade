@@ -7,8 +7,6 @@
 
 @section scripts {
     <script type="module">
-        import * as utils from '/js/app/utils.module.js'
-
         window.deleteConfirm = function (postid) {
             var cfm = confirm("Delete Confirmation?");
             if (cfm) {
@@ -28,7 +26,7 @@
                 });
         }
 
-        utils.formatUtcTime();
+        formatUtcTime();
     </script>
 }
 
