@@ -37,7 +37,7 @@ public class PagedListRenderOptions
     ///<summary>
     /// The maximum number of page numbers to display. Null displays all page numbers.
     ///</summary>
-    public int? MaximumPageNumbersToDisplay { get; set; }
+    public int MaximumPageNumbersToDisplay { get; set; }
 
     ///<summary>
     /// The pre-formatted text to display inside the hyperlink to the first page. The one-based index of the page (always 1 in this case) is passed into the formatting function - use {0} to reference it.

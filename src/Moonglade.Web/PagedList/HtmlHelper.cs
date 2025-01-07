@@ -177,10 +177,10 @@ public class HtmlHelper
         var lastPageToDisplay = list.PageCount;
         var pageNumbersToDisplay = lastPageToDisplay;
 
-        if (options.MaximumPageNumbersToDisplay.HasValue && list.PageCount > options.MaximumPageNumbersToDisplay)
+        if (list.PageCount > options.MaximumPageNumbersToDisplay)
         {
             // cannot fit all pages into pager
-            var maxPageNumbersToDisplay = options.MaximumPageNumbersToDisplay.Value;
+            var maxPageNumbersToDisplay = options.MaximumPageNumbersToDisplay;
 
             firstPageToDisplay = list.PageNumber - maxPageNumbersToDisplay / 2;
 
