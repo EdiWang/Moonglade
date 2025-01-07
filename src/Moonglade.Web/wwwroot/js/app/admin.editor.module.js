@@ -213,7 +213,4 @@ export function keepAlive() {
                 console.info('live');
             });
     }
-    function abortTimer() {
-        clearInterval(tid);
-    }
 }
