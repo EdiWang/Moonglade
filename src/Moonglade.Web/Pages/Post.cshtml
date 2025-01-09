@@ -82,14 +82,13 @@
 
         viewpost.resizeImages();
         if (window.innerWidth >= 768) {
+            window.fitImageToDevicePixelRatio = @BlogConfig.ImageSettings.FitImageToDevicePixelRatio.ToString().ToLower();
             viewpost.applyImageZooming();
         }
 
         viewpost.renderCodeHighlighter();
         viewpost.RenderLaTeX();
         viewpost.calculateReadingTime();
-
-        window.fitImageToDevicePixelRatio = @BlogConfig.ImageSettings.FitImageToDevicePixelRatio.ToString().ToLower();
 
         document.getElementById('comment-form')?.addEventListener('submit', function (e) {
             e.preventDefault();
