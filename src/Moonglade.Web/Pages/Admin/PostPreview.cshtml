@@ -32,13 +32,6 @@
         viewpost.renderCodeHighlighter();
         viewpost.RenderLaTeX();
         viewpost.applyImageZooming();
-
-        @if (BlogConfig.AdvancedSettings.WarnExternalLink)
-        {
-            <text>
-                        postSlug.warnExtLink();
-            </text>
-        }
     </script>
 }
 

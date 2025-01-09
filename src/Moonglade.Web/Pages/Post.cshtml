@@ -89,13 +89,6 @@
         viewpost.RenderLaTeX();
         viewpost.calculateReadingTime();
 
-        @if (BlogConfig.AdvancedSettings.WarnExternalLink)
-        {
-            <text>
-                viewpost.warnExtLink();
-            </text>
-        }
-
         window.fitImageToDevicePixelRatio = @BlogConfig.ImageSettings.FitImageToDevicePixelRatio.ToString().ToLower();
 
         document.getElementById('comment-form')?.addEventListener('submit', function (e) {
@@ -106,6 +99,11 @@
 
         formatUtcTime(false);
     </script>
+
+    @if (BlogConfig.AdvancedSettings.WarnExternalLink)
+    {
+        <script type="module" src="~/js/app/externalLinkWarning.mjs" asp-append-version="true"></script>
+    }
 }
 
 <article class="article-post-slug position-relative rounded-3 shadow-sm border bg-white mb-4" data-postid="@Model.Post.Id" lang="@Model.Post.ContentLanguageCode">
@@ -132,7 +130,7 @@
                     @DateOnly.FromDateTime(Model.Post.PubDateUtc.GetValueOrDefault()) (UTC)
                 </time>
             </span>
-            
+
             <i class="bi-clock"></i>
             <span id="reading-time"></span>
         </div>
