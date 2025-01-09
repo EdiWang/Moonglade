@@ -1,29 +1,44 @@
-export function warnExtLink() {
-    function isExternalLink(link) {
-        return !link.href.match(/^mailto:/) && (link.hostname !== location.hostname);
-    }
+const externalLinkModal = new bootstrap.Modal(document.getElementById('externalLinkModal'));
+const modalUrlElement = document.getElementById('extlink-url');
+const modalContinueButton = document.getElementById('extlink-continue');
 
+function isExternalLink(link) {
+    return !link.href.startsWith('mailto:') && link.hostname !== location.hostname;
+}
+
+function markExternalLinks() {
     const links = document.querySelectorAll('.post-content a');
     links.forEach(link => {
         if (isExternalLink(link)) {
             link.classList.add('external');
         }
     });
+}
 
-    const externalLinkModal = new bootstrap.Modal(document.getElementById('externalLinkModal'));
-
+function bindExternalLinkEvents() {
     document.querySelectorAll('a.external').forEach(link => {
-        link.addEventListener('click', function (e) {
-            e.preventDefault();
-            const linkHref = this.getAttribute('href');
-            document.getElementById('extlink-url').innerHTML = linkHref;
-            document.getElementById('extlink-continue').href = linkHref;
-            externalLinkModal.show();
-        });
+        link.addEventListener('click', handleExternalLinkClick);
     });
-    document.getElementById('extlink-continue').addEventListener('click', function () {
+}
+
+function handleExternalLinkClick(event) {
+    event.preventDefault();
+    const linkHref = event.currentTarget.getAttribute('href');
+    modalUrlElement.textContent = linkHref;
+    modalContinueButton.href = linkHref;
+    externalLinkModal.show();
+}
+
+function bindModalContinueEvent() {
+    modalContinueButton.addEventListener('click', () => {
         externalLinkModal.hide();
     });
 }
 
-warnExtLink();
+function init() {
+    markExternalLinks();
+    bindExternalLinkEvents();
+    bindModalContinueEvent();
+}
+
+init();
