@@ -78,13 +78,11 @@
         </script>
     }
     <script type="module">
-        import * as viewpost from '/js/app/viewpost.module.js'
-        import * as utils from '/js/app/utils.module.js'
-
-        window.viewpost = viewpost;
+        import * as viewpost from '/js/app/viewpost.module.mjs'
 
         viewpost.resizeImages();
         if (window.innerWidth >= 768) {
+            window.fitImageToDevicePixelRatio = @BlogConfig.ImageSettings.FitImageToDevicePixelRatio.ToString().ToLower();
             viewpost.applyImageZooming();
         }
 
@@ -92,23 +90,19 @@
         viewpost.RenderLaTeX();
         viewpost.calculateReadingTime();
 
-        @if (BlogConfig.AdvancedSettings.WarnExternalLink)
-        {
-            <text>
-                viewpost.warnExtLink();
-            </text>
-        }
-
-        window.fitImageToDevicePixelRatio = @BlogConfig.ImageSettings.FitImageToDevicePixelRatio.ToString().ToLower();
-
-        document.getElementById('comment-form').addEventListener('submit', function (e) {
+        document.getElementById('comment-form')?.addEventListener('submit', function (e) {
             e.preventDefault();
             let pid = document.querySelector('article').dataset.postid;
             viewpost.submitComment(pid);
         });
 
-        utils.formatUtcTime(false);
+        formatUtcTime(false);
     </script>
+
+    @if (BlogConfig.AdvancedSettings.WarnExternalLink)
+    {
+        <script type="module" src="~/js/app/externalLinkWarning.mjs" asp-append-version="true"></script>
+    }
 }
 
 <article class="article-post-slug position-relative rounded-3 shadow-sm border bg-white mb-4" data-postid="@Model.Post.Id" lang="@Model.Post.ContentLanguageCode">
@@ -135,7 +129,7 @@
                     @DateOnly.FromDateTime(Model.Post.PubDateUtc.GetValueOrDefault()) (UTC)
                 </time>
             </span>
-            
+
             <i class="bi-clock"></i>
             <span id="reading-time"></span>
         </div>

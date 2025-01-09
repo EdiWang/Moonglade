@@ -11,14 +11,13 @@ public class PagedListRenderOptions
         MaximumPageNumbersToDisplay = 10;
         LinkToFirstPageFormat = "<<";
         LinkToPreviousPageFormat = "<";
-        LinkToIndividualPageFormat = "{0}";
         LinkToNextPageFormat = ">";
         LinkToLastPageFormat = ">>";
         PageCountAndCurrentLocationFormat = "Page {0} of {1}.";
         ItemSliceAndTotalFormat = "Showing items {0} through {1} of {2}.";
         UlElementClasses = ["pagination"];
         PageClasses = ["page-link"];
-        PreviousElementClass = "PagedList-skip-to-previous";
+        PreviousElementClass = "paged-list-skip-to-previous";
         NextElementClass = "paged-list-skip-to-next";
     }
 
@@ -38,7 +37,7 @@ public class PagedListRenderOptions
     ///<summary>
     /// The maximum number of page numbers to display. Null displays all page numbers.
     ///</summary>
-    public int? MaximumPageNumbersToDisplay { get; set; }
+    public int MaximumPageNumbersToDisplay { get; set; }
 
     ///<summary>
     /// The pre-formatted text to display inside the hyperlink to the first page. The one-based index of the page (always 1 in this case) is passed into the formatting function - use {0} to reference it.
@@ -55,14 +54,6 @@ public class PagedListRenderOptions
     /// "&lt; Previous"
     ///</example>
     public string LinkToPreviousPageFormat { get; }
-
-    ///<summary>
-    /// The pre-formatted text to display inside the hyperlink to each individual page. The one-based index of the page is passed into the formatting function - use {0} to reference it.
-    ///</summary>
-    ///<example>
-    /// "{0}"
-    ///</example>
-    public string LinkToIndividualPageFormat { get; }
 
     ///<summary>
     /// The pre-formatted text to display inside the hyperlink to the next page. The one-based index of the page is passed into the formatting function - use {0} to reference it.

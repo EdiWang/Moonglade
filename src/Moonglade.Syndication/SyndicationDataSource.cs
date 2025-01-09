@@ -59,6 +59,7 @@ public class SyndicationDataSource(
             Link = $"{_baseUrl}/post/{p.PubDateUtc.Value.Year}/{p.PubDateUtc.Value.Month}/{p.PubDateUtc.Value.Day}/{p.Slug}",
             Author = blogConfig.GeneralSettings.OwnerName,
             AuthorEmail = blogConfig.GeneralSettings.OwnerEmail,
+            LangCode = p.ContentLanguageCode,
             Categories = p.PostCategory.Select(pc => pc.Category.DisplayName).ToArray()
         } : null);
 

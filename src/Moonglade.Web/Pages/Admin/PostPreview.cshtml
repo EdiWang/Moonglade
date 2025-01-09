@@ -25,20 +25,13 @@
     <script src="~/js/3rd/katex.min.js"></script>
 
     <script type="module">
-        import * as viewpost from '/js/app/viewpost.module.js'
+        import * as viewpost from '/js/app/viewpost.module.mjs'
 
         window.fitImageToDevicePixelRatio = @BlogConfig.ImageSettings.FitImageToDevicePixelRatio.ToString().ToLower();
         viewpost.resizeImages();
         viewpost.renderCodeHighlighter();
         viewpost.RenderLaTeX();
         viewpost.applyImageZooming();
-
-        @if (BlogConfig.AdvancedSettings.WarnExternalLink)
-        {
-            <text>
-                        postSlug.warnExtLink();
-            </text>
-        }
     </script>
 }
 

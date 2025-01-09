@@ -19,8 +19,6 @@
 
 @section scripts{
     <script type="module">
-        import * as utils from '/js/app/utils.module.js'
-
         window.deleteMention = function (mentionId) {
             callApi(`/api/mention/${mentionId}`, 'DELETE', {},
                 (resp) => {
@@ -38,7 +36,7 @@
                 });
         }
 
-        utils.formatUtcTime();
+        formatUtcTime();
     </script>
     <script>
         document.getElementById("mentionFilter").addEventListener("keyup", function () {

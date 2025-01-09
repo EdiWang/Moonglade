@@ -115,7 +115,10 @@ public class FeedGenerator : IFeedGenerator, IRssGenerator, IAtomGenerator
                 Published = item.PubDateUtc.ToUniversalTime()
             };
 
-            sItem.AddLink(new SyndicationLink(new(item.Link)));
+            sItem.AddLink(new SyndicationLink(new(item.Link))
+            {
+                Hreflang = item.LangCode?.ToLowerInvariant()
+            });
 
             // add author
             if (!string.IsNullOrWhiteSpace(item.Author) && !string.IsNullOrWhiteSpace(item.AuthorEmail))

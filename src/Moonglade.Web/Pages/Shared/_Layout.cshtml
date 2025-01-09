@@ -2,6 +2,7 @@
 @using Microsoft.AspNetCore.Localization
 @using System.Globalization
 @inject IConfiguration Configuration
+@inject IOptions<AnalyticsSettings> AnalyticsSettings
 
 @{
     if (string.IsNullOrEmpty(BlogConfig.GeneralSettings.AvatarUrl))
@@ -97,6 +98,11 @@
             console.warn('Moonglade is running in @(WebHostEnvironment.EnvironmentName) environment');
         </script>
     </environment>
+
+    @if (AnalyticsSettings.Value.GoogleAnalytics.Enabled)
+    {
+        <partial name="_GoogleAnalytics" model="AnalyticsSettings.Value.GoogleAnalytics.GTagId" />
+    }
 </head>
 <body class="@ViewBag.BodyClass">
     @if (BlogConfig.ContentSettings.ShowCalloutSection)
@@ -235,15 +241,14 @@
     <script src="~/lib/twitter-bootstrap/js/bootstrap.bundle.min.js" asp-append-version="true"></script>
     <script type="module" src="~/js/app/base.js" asp-append-version="true"></script>
     <script src="~/js/app/httpService.js" asp-append-version="true"></script>
-
-    <script type="module">
-        import * as theme from '/js/app/theme.module.js'
-        window.theme = theme;
-
-        theme.setTheme(theme.getPreferredTheme());
-    </script>
+    <script type="module" src="~/js/app/theme.module.mjs" asp-append-version="true"></script>
 
     @await RenderSectionAsync("scripts", false)
+
+    @if (AnalyticsSettings.Value.MicrosoftClarity.Enabled)
+    {
+        <partial name="_MicrosoftClarity" model="AnalyticsSettings.Value.MicrosoftClarity.ProjectId" />
+    }
 
     @if (!string.IsNullOrWhiteSpace(BlogConfig.AdvancedSettings.FootScripts))
     {

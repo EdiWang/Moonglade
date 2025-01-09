@@ -8,7 +8,9 @@ export const getPreferredTheme = () => {
     return storedTheme || getSystemTheme();
 }
 
-export const setTheme = theme => {
+window.getPreferredTheme = getPreferredTheme;
+
+function setTheme(theme) {
     const rootElement = document.documentElement;
     if (theme === 'auto') {
         const systemTheme = getSystemTheme();
@@ -19,3 +21,15 @@ export const setTheme = theme => {
         setStoredTheme(theme);
     }
 }
+
+setTheme(getPreferredTheme());
+
+document.addEventListener('DOMContentLoaded', () => {
+    const themeLinks = document.querySelectorAll('.dropdown-item[data-theme]');
+    themeLinks.forEach(link => {
+        link.addEventListener('click', () => {
+            const theme = link.getAttribute('data-theme');
+            setTheme(theme);
+        });
+    });
+});

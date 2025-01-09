@@ -26,7 +26,6 @@
     return newValue;
 }
 
-
 export function formatUtcTime(includeTime = true) {
     const timeElements = document.querySelectorAll('time');
 

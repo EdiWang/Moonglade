@@ -1,4 +1,6 @@
-﻿function slugify(text) {
+﻿import * as theme from './theme.module.mjs';
+
+function slugify(text) {
     if (!/^[A-Za-z][A-Za-z0-9 \(\)#,\.\?]*$/.test(text)) {
         return '';
     }
@@ -119,7 +121,7 @@ export function loadTinyMCE(textareaSelector) {
         return;
     }
 
-    const preferredTheme = window.theme.getPreferredTheme();
+    const preferredTheme = theme.getPreferredTheme();
     const isDarkTheme = preferredTheme === 'dark';
 
     window.tinyMCE.init({
@@ -210,8 +212,5 @@ export function keepAlive() {
             }).then(async (response) => {
                 console.info('live');
             });
-    }
-    function abortTimer() {
-        clearInterval(tid);
     }
 }
