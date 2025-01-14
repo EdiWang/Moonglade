@@ -8,6 +8,8 @@
 
 @section scripts{
     <script type="module">
+        import { formatUtcTime } from '/js/app/utils.module.mjs'
+
         window.deletePost = function(postid) {
             callApi(`/api/post/${postid}/recycle`, 'DELETE', {}, function(resp) {
                 document.querySelector(`#post-${postid}`).style.display = 'none';

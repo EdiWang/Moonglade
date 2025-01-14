@@ -7,6 +7,8 @@
 
 @section scripts {
     <script type="module">
+        import { formatUtcTime } from '/js/app/utils.module.mjs'
+
         window.deleteConfirm = function (postid) {
             var cfm = confirm("Delete Confirmation?");
             if (cfm) {

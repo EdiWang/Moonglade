@@ -8,6 +8,8 @@
 
 @section scripts {
     <script type="module">
+        import { formatUtcTime } from '/js/app/utils.module.mjs'
+
         document.querySelectorAll('.btn-delete').forEach(button => {
             button.addEventListener('click', function () {
                 var cid = this.getAttribute('data-commentid');
