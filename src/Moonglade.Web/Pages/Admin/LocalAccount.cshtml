@@ -6,38 +6,12 @@
 }
 
 @section scripts {
-    <script type="module">
-        var resetPasswordModal = new bootstrap.Modal('#resetPasswordModal');
-
-        window.resetPassword = function () {
-            document.querySelector('#resetpassword-form').reset();
-            resetPasswordModal.show();
-        }
-
-        window.handleResetPasswordFormSubmit = function (event) {
-            event.preventDefault();
-
-            const data = new FormData(event.target);
-            const value = Object.fromEntries(data.entries());
-
-            callApi(`/api/settings/password/local`,
-                'PUT',
-                value,
-                (resp) => {
-                    document.querySelector('#resetpassword-form').reset();
-                    resetPasswordModal.hide();
-                    blogToast.success('Password updated.');
-                });
-        }
-
-        const resetPasswordForm = document.querySelector('#resetpassword-form');
-        resetPasswordForm.addEventListener('submit', handleResetPasswordFormSubmit);
-    </script>
+    <script type="module" src="~/js/app/admin.localaccount.mjs" asp-append-version="true"></script>
 }
 
 @section admintoolbar {
     <div class="admin-toolbar pb-2 border-bottom mb-3">
-        <a class="btn btn-outline-accent" href="javascript:resetPassword();">
+        <a id="btn-reset-password" class="btn btn-outline-accent">
             <i class="bi-key"></i>
             @SharedLocalizer["Change Password"]
         </a>
