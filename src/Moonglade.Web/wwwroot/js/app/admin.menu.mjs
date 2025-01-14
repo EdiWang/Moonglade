@@ -1,6 +1,6 @@
 import { handleSettingsSubmit } from '/js/app/admin.settings.module.js';
 
-const jsonContentEditor = null;
+let jsonContentEditor = null;
 
 require(['vs/editor/editor.main'], function () {
     jsonContentEditor = initEditor('JsonContentEditor', "#settings_MenuJson", 'json');
