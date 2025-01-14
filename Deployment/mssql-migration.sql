@@ -113,7 +113,16 @@ BEGIN
     ALTER TABLE [dbo].[BlogConfiguration] DROP CONSTRAINT [PK_BlogConfiguration];
 END
 
-ALTER TABLE [dbo].[BlogConfiguration] ADD CONSTRAINT [PK_BlogConfiguration_CfgKey] PRIMARY KEY CLUSTERED ([CfgKey] ASC);
+IF NOT EXISTS (
+    SELECT 1
+    FROM sys.key_constraints kc
+    INNER JOIN sys.tables t ON kc.parent_object_id = t.object_id
+    WHERE kc.type = 'PK'
+      AND t.name = 'BlogConfiguration'
+)
+BEGIN
+    ALTER TABLE [dbo].[BlogConfiguration] ADD CONSTRAINT [PK_BlogConfiguration_CfgKey] PRIMARY KEY CLUSTERED ([CfgKey] ASC);
+END
 
 IF EXISTS (
     SELECT 1
