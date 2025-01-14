@@ -1,6 +1,5 @@
 ﻿const getStoredTheme = () => localStorage.getItem('theme');
 const setStoredTheme = theme => localStorage.setItem('theme', theme);
-
 const getSystemTheme = () => window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
 
 export const getPreferredTheme = () => {
@@ -8,9 +7,7 @@ export const getPreferredTheme = () => {
     return storedTheme || getSystemTheme();
 }
 
-window.getPreferredTheme = getPreferredTheme;
-
-function setTheme(theme) {
+export function setTheme(theme) {
     const rootElement = document.documentElement;
     if (theme === 'auto') {
         const systemTheme = getSystemTheme();
@@ -21,8 +18,6 @@ function setTheme(theme) {
         setStoredTheme(theme);
     }
 }
-
-setTheme(getPreferredTheme());
 
 document.addEventListener('DOMContentLoaded', () => {
     const themeLinks = document.querySelectorAll('.dropdown-item[data-theme]');
