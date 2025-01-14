@@ -1,4 +1,5 @@
 import { formatUtcTime } from '/js/app/utils.module.mjs'
+import { success } from '/js/app/blogtoast.module.mjs'
 
 function deleteConfirm(postid) {
     var cfm = confirm("Delete Confirmation?");
@@ -14,6 +15,7 @@ function deletePost(postid) {
         (resp) => {
             const postElement = document.getElementById(`post-${postid}`);
             if (postElement) {
+                success('Post deleted');
                 postElement.remove();
             }
         });
