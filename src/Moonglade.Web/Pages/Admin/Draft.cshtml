@@ -7,26 +7,7 @@
 }
 
 @section scripts{
-    <script type="module">
-        import { formatUtcTime } from '/js/app/utils.module.mjs'
-
-        window.deletePost = function(postid) {
-            callApi(`/api/post/${postid}/recycle`, 'DELETE', {}, function(resp) {
-                document.querySelector(`#post-${postid}`).style.display = 'none';
-            });
-        }
-
-        document.querySelectorAll(".btn-delete").forEach(function (button) {
-            button.addEventListener("click", function () {
-                var cfm = confirm("Delete Confirmation?");
-                if (cfm) {
-                    window.deletePost(this.dataset.postid);
-                }
-            });
-        });
-        
-        formatUtcTime();
-    </script>
+    <script type="module" src="~/js/app/admin.draft.mjs" asp-append-version="true"></script>
 }
 
 @section admintoolbar{
