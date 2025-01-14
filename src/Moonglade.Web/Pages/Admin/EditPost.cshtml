@@ -24,18 +24,16 @@
 @section scripts {
     <script src="~/lib/tagify/tagify.js"></script>
     <script src="~/js/3rd/bs-custom-file-input.min.js"></script>
-    @{
-        switch (ec)
-        {
-            case EditorChoice.Html:
-                <script src="~/lib/tinymce/tinymce.min.js" asp-append-version="true"></script>
-                break;
-            case EditorChoice.Markdown:
-                <partial name="_MonacoLoaderScript" />
-                <script src="~/js/3rd/inline-attachment.js"></script>
-                <script src="~/js/3rd/monaco.inline-attachment.js"></script>
-                break;
-        }
+    @switch (ec)
+    {
+        case EditorChoice.Html:
+            <script src="~/lib/tinymce/tinymce.min.js" asp-append-version="true"></script>
+            break;
+        case EditorChoice.Markdown:
+            <partial name="_MonacoLoaderScript" />
+            <script src="~/js/3rd/inline-attachment.js"></script>
+            <script src="~/js/3rd/monaco.inline-attachment.js"></script>
+            break;
     }
 
     <script type="module">
