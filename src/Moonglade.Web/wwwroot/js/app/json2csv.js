@@ -57,3 +57,15 @@ function exportCSV(api, filename) {
             console.error('Error:', error);
         });
 }
+
+document.addEventListener('DOMContentLoaded', () => {
+    const exportButtons = document.querySelectorAll('.btn-export');
+
+    exportButtons.forEach(button => {
+        button.addEventListener('click', () => {
+            const api = button.getAttribute('data-api');
+            const filename = button.getAttribute('data-filename');
+            exportCSV(api, filename);
+        });
+    });
+});

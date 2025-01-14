@@ -7,7 +7,7 @@
 }
 
 @section scripts {
-    <script src="~/js/app/json2csv.js" asp-append-version="true"></script>
+    <script type="module" src="~/js/app/json2csv.js" asp-append-version="true"></script>
     <script>
         var editCanvas = new bootstrap.Offcanvas(document.getElementById('editCatCanvas'));
         var catId = window.emptyGuid;
@@ -86,7 +86,7 @@
             @SharedLocalizer["New"]
         </a>
 
-        <a class="btn btn-outline-accent" href="javascript:exportCSV('/api/category/list','moonglade-categories.csv');">
+        <a class="btn btn-outline-accent btn-export" data-api="/api/category/list" data-filename="moonglade-categories.csv">
             <i class="bi-filetype-csv"></i>
             @SharedLocalizer["Export"]
         </a>
