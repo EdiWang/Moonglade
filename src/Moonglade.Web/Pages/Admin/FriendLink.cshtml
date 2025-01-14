@@ -8,7 +8,7 @@
 }
 
 @section scripts {
-    <script src="~/js/app/json2csv.js" asp-append-version="true"></script>
+    <script type="module" src="~/js/app/json2csv.mjs" asp-append-version="true"></script>
     <script>
         var editCanvas = new bootstrap.Offcanvas(document.getElementById('editLinkCanvas'));
         var fid = window.emptyGuid;
@@ -81,7 +81,7 @@
             @SharedLocalizer["New"]
         </a>
 
-        <a class="btn btn-outline-accent" href="javascript:exportCSV('/api/friendlink/list','moonglade-friendlink.csv');">
+        <a class="btn btn-outline-accent btn-export" data-api="/api/friendlink/list" data-filename="moonglade-friendlink.csv">
             <i class="bi-filetype-csv"></i>
             @SharedLocalizer["Export"]
         </a>
