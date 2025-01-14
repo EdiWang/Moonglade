@@ -28,7 +28,7 @@
         switch (ec)
         {
             case EditorChoice.Html:
-                <script src="~/lib/tinymce/tinymce.min.js"></script>
+                <script src="~/lib/tinymce/tinymce.min.js" asp-append-version="true"></script>
                 break;
             case EditorChoice.Markdown:
                 <partial name="_MonacoLoaderScript" />
