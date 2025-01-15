@@ -1,4 +1,5 @@
 import { toMagicJson } from '/js/app/utils.module.mjs'
+import { success, error } from '/js/app/blogtoast.module.mjs'
 
 var btnSubmitPost = '#btn-save';
 var isPreviewRequired = false;
@@ -25,7 +26,7 @@ window.ajaxImageUpload = function (oFormElement) {
             body: formData
         }).then(async (response) => {
             if (!response.ok) {
-                blogToast.error('API Boom');
+                error('API Boom');
                 console.error(err);
             } else {
                 var data = await response.json();
@@ -35,7 +36,7 @@ window.ajaxImageUpload = function (oFormElement) {
             document.querySelector('#form-hero-image').reset();
             heroImageModal.hide();
         }).catch(err => {
-            blogToast.error(err);
+            error(err);
             console.error(err);
         });
 }
@@ -50,7 +51,7 @@ function handlePostSubmit(event) {
 
     const content = value["ViewModel.EditorContent"];
     if (!content) {
-        blogToast.error('Please enter content.');
+        error('Please enter content.');
         return;
     }
 
@@ -69,7 +70,7 @@ function handlePostSubmit(event) {
             var respJson = await resp.json();
             if (respJson.postId) {
                 document.querySelector('input[name="ViewModel.PostId"]').value = respJson.postId;
-                blogToast.success('Post saved successfully.');
+                success('Post saved successfully.');
 
                 if (isPreviewRequired) {
                     isPreviewRequired = false;
