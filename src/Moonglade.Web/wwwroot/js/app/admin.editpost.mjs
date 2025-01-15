@@ -1,71 +1,78 @@
 import { toMagicJson } from '/js/app/utils.module.mjs'
 import { success, error } from '/js/app/blogtoast.module.mjs'
 
-var btnSubmitPost = '#btn-save';
-var isPreviewRequired = false;
+const btnSubmitPostSelector = '#btn-save';
+const heroImageInputSelector = '#ViewModel_HeroImageUrl';
+const heroImageFormSelector = '#form-hero-image';
+const postEditFormSelector = '.post-edit-form';
+const heroImageModalElement = document.getElementById('heroImageModal');
 
-window.addEventListener('keydown', function (event) {
-    if (event.ctrlKey || event.metaKey) {
-        switch (String.fromCharCode(event.which).toLowerCase()) {
-            case 's':
-                event.preventDefault();
-                document.getElementById('btn-save').click();
-                break;
-        }
+let isPreviewRequired = false;
+const heroImageModal = new bootstrap.Modal(heroImageModalElement);
+
+const handleKeyboardShortcuts = (event) => {
+    if ((event.ctrlKey || event.metaKey) && event.key.toLowerCase() === 's') {
+        event.preventDefault();
+        document.querySelector(btnSubmitPostSelector).click();
     }
-});
+};
 
-var heroImageModal = new bootstrap.Modal(document.getElementById('heroImageModal'));
+window.addEventListener('keydown', handleKeyboardShortcuts);
 
-window.ajaxImageUpload = function (oFormElement) {
-    const formData = new FormData(oFormElement);
+window.ajaxImageUpload = async (formElement) => {
+    const formData = new FormData(formElement);
 
-    fetch(oFormElement.action,
-        {
+    try {
+        const response = await fetch(formElement.action, {
             method: 'POST',
-            body: formData
-        }).then(async (response) => {
-            if (!response.ok) {
-                error('API Boom');
-                console.error(err);
-            } else {
-                var data = await response.json();
-                document.querySelector('#ViewModel_HeroImageUrl').value = data.location;
-            }
-        }).then(response => {
-            document.querySelector('#form-hero-image').reset();
-            heroImageModal.hide();
-        }).catch(err => {
-            error(err);
-            console.error(err);
+            body: formData,
         });
-}
 
-function handlePostSubmit(event) {
+        if (!response.ok) {
+            throw new Error('Failed to upload image');
+        }
+
+        const data = await response.json();
+        document.querySelector(heroImageInputSelector).value = data.location;
+
+        // Reset form and hide modal
+        document.querySelector(heroImageFormSelector).reset();
+        heroImageModal.hide();
+    } catch (err) {
+        error('Image upload failed.');
+        console.error(err);
+    }
+};
+
+const handlePostSubmit = async (event) => {
     event.preventDefault();
 
-    isPreviewRequired = event.submitter.id == 'btn-preview';
+    isPreviewRequired = event.submitter.id === 'btn-preview';
 
-    const data = new FormData(event.target);
-    const value = Object.fromEntries(data.entries());
+    const formData = new FormData(event.target);
+    const formValues = Object.fromEntries(formData.entries());
 
-    const content = value["ViewModel.EditorContent"];
+    // Validate content
+    const content = formValues['ViewModel.EditorContent'];
     if (!content) {
         error('Please enter content.');
         return;
     }
 
-    var selectedCatIds = data.getAll('SelectedCatIds');
+    // Collect selected category IDs
+    const selectedCatIds = formData.getAll('SelectedCatIds');
+    formValues['SelectedCatIds'] = selectedCatIds;
 
-    value["SelectedCatIds"] = selectedCatIds;
-    const newValue = toMagicJson(value);
+    // Convert form data to the required JSON format
+    const requestData = toMagicJson(formValues);
 
-    document.querySelector(btnSubmitPost).classList.add('disabled');
-    document.querySelector(btnSubmitPost).setAttribute('disabled', 'disabled');
+    const btnSubmitPost = document.querySelector(btnSubmitPostSelector);
+    btnSubmitPost.classList.add('disabled');
+    btnSubmitPost.setAttribute('disabled', 'disabled');
 
     callApi(event.currentTarget.action,
         'POST',
-        newValue,
+        requestData,
         async (resp) => {
             var respJson = await resp.json();
             if (respJson.postId) {
@@ -78,10 +85,10 @@ function handlePostSubmit(event) {
                 }
             }
         }, function (resp) {
-            document.querySelector(btnSubmitPost).classList.remove('disabled');
-            document.querySelector(btnSubmitPost).removeAttribute('disabled');
+            btnSubmitPost.classList.remove('disabled');
+            btnSubmitPost.removeAttribute('disabled');
         });
-}
+};
 
-const form = document.querySelector('.post-edit-form');
-form.addEventListener('submit', handlePostSubmit);
+const postEditForm = document.querySelector(postEditFormSelector);
+postEditForm.addEventListener('submit', handlePostSubmit);
