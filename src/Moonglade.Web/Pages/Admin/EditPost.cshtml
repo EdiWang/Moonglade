@@ -51,7 +51,7 @@
             if (editorMode === '@nameof(EditorChoice.Markdown)') {
                 require(['vs/editor/editor.main'], function () {
                     window.mdContentEditor = initEditor('markdown-content-editor', ".post-content-textarea", 'markdown');
-                    
+
                     inlineAttachment.editors.monaco.attach(
                         window.mdContentEditor, document.getElementsByClassName('md-editor-image-upload-area')[0], {
                         uploadUrl: '/image',
@@ -90,13 +90,8 @@
             width: 100% !important;
         }
 
-        @if (ec == EditorChoice.Markdown)
-        {
-            <text>
-            .monaco-target {
-                min-height: calc(100vh - 370px);
-            }
-            </text>
+        .monaco-target {
+            min-height: calc(100vh - 370px);
         }
     </style>
 }
@@ -236,7 +231,7 @@
                                                        name="SelectedCatIds"
                                                        value="@cat.Id"
                                                        class="form-check-input"
-                                                       @(cat.IsChecked ? "checked" : null)>
+                                                @(cat.IsChecked ? "checked" : null)>
 
                                                 <label for="category-@cat.Id" class="form-check-label">
                                                     @cat.DisplayText
@@ -249,7 +244,7 @@
                         }
                     </div>
                 </div>
-                
+
                 @if (Model.ViewModel.IsPublished)
                 {
                     <div class="text-center">
