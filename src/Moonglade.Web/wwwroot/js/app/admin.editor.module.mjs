@@ -1,4 +1,4 @@
-﻿import * as theme from './theme.module.mjs';
+﻿import * as theme from './themeService.mjs';
 
 function slugify(text) {
     if (!/^[A-Za-z][A-Za-z0-9 \(\)#,\.\?]*$/.test(text)) {
