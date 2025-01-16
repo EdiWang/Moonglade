@@ -1,4 +1,6 @@
-﻿export function resizeImages() {
+﻿import { parseMetaContent } from './utils.module.mjs';
+
+export function resizeImages() {
     const images = document.querySelectorAll('.post-content img');
     images.forEach(img => {
         img.removeAttribute('height');
@@ -53,13 +55,13 @@ export function getImageWidthInDevicePixelRatio(width) {
 }
 
 export function applyImageZooming() {
+    const fitImageToDevicePixelRatio = parseMetaContent("image-device-dpi");
+
     document.querySelectorAll('.post-content img').forEach(function (img) {
         img.addEventListener('click', function (e) {
             var src = img.getAttribute('src');
-
             document.querySelector('#imgzoom').src = src;
-
-            const fitImageToDevicePixelRatio = document.querySelector('meta[name="image-device-dpi"]')?.content === "true";
+            
             if (fitImageToDevicePixelRatio) {
                 setTimeout(function () {
                     var w = document.querySelector('#imgzoom').naturalWidth;
