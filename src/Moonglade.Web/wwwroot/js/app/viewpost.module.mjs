@@ -59,7 +59,8 @@ export function applyImageZooming() {
 
             document.querySelector('#imgzoom').src = src;
 
-            if (window.fitImageToDevicePixelRatio) {
+            const fitImageToDevicePixelRatio = document.querySelector('meta[name="image-device-dpi"]')?.content === "true";
+            if (fitImageToDevicePixelRatio) {
                 setTimeout(function () {
                     var w = document.querySelector('#imgzoom').naturalWidth;
                     document.querySelector('#imgzoom').style.width = getImageWidthInDevicePixelRatio(w) + 'px';

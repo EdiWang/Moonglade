@@ -13,6 +13,7 @@
     <meta name="robots" content="noindex, nofollow" />
     <meta name="title" content="@Post.Title" />
     <meta name="author" content="@(string.IsNullOrWhiteSpace(Post.Author) ? BlogConfig.GeneralSettings.OwnerName : Post.Author) " />
+    <meta name="image-device-dpi" content="@BlogConfig.ImageSettings.FitImageToDevicePixelRatio.ToString().ToLower()" />
 }
 
 @section head {
@@ -27,7 +28,6 @@
     <script type="module">
         import * as viewpost from '/js/app/viewpost.module.mjs'
 
-        window.fitImageToDevicePixelRatio = @BlogConfig.ImageSettings.FitImageToDevicePixelRatio.ToString().ToLower();
         viewpost.resizeImages();
         viewpost.renderCodeHighlighter();
         viewpost.RenderLaTeX();
