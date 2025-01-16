@@ -10,16 +10,7 @@
 }
 
 @section scripts {
-    <script src="~/js/app/admin.settings.socaillinks.mjs" asp-append-version="true"></script>
-    <script>
-        renderTable();
-    </script>
-    <script type="module">
-        import * as settings from '/js/app/admin.settings.js';
-
-        const form = document.querySelector('#form-settings');
-        form.addEventListener('submit', settings.handleSettingsSubmit);
-    </script>
+    <script type="module" src="~/js/app/admin.settings.socaillinks.mjs" asp-append-version="true"></script>
 }
 
 @section head {

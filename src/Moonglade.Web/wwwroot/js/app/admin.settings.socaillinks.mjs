@@ -1,4 +1,6 @@
-﻿const jsonValue = document.getElementById('settings_JsonData').value;
+﻿import { handleSettingsSubmit } from './admin.settings.js';
+
+const jsonValue = document.getElementById('settings_JsonData').value;
 let links = jsonValue ? JSON.parse(jsonValue) : [];
 let editIndex = null;
 
@@ -83,3 +85,8 @@ function isValidUrl(url) {
         return false;
     }
 }
+
+const form = document.querySelector('#form-settings');
+form.addEventListener('submit', handleSettingsSubmit);
+
+renderTable();
