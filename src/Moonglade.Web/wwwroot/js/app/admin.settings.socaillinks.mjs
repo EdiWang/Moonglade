@@ -55,7 +55,7 @@ function addOrUpdateLink() {
     renderTable();
 }
 
-function editLink(index) {
+window.editLink = function (index) {
     const link = links[index];
     document.getElementById('name').value = link.name;
     document.getElementById('icon').value = link.icon;
@@ -63,7 +63,7 @@ function editLink(index) {
     editIndex = index;
 }
 
-function deleteLink(index) {
+window.deleteLink = function (index) {
     links.splice(index, 1);
     renderTable();
 }
