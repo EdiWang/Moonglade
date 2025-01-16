@@ -1,4 +1,4 @@
-import { handleSettingsSubmit } from '/js/app/admin.settings.module.js';
+import { handleSettingsSubmit } from '/js/app/admin.settings.js';
 
 let jsonContentEditor = null;
 

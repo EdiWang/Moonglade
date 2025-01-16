@@ -2,7 +2,7 @@
 @inject IConfiguration Configuration
 @section scripts {
     <script type="module">
-        import * as settings from '/js/app/admin.settings.module.js';
+        import * as settings from '/js/app/admin.settings.js';
 
         window.sendTestEmail = function () {
             document.querySelector('#a-send-test-mail').classList.add('disabled');
