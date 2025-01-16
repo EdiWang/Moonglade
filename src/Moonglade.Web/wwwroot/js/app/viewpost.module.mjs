@@ -9,7 +9,7 @@ function resizeImages() {
     });
 }
 
-export function renderCodeHighlighter() {
+function renderCodeHighlighter() {
     const pres = document.querySelectorAll('pre');
     pres.forEach(pre => {
         // Find <pre> that doesn't have a <code> inside it.
@@ -165,4 +165,6 @@ document.addEventListener('DOMContentLoaded', () => {
     if (window.innerWidth >= 768) {
         applyImageZooming();
     }
+
+    renderCodeHighlighter();
 });
