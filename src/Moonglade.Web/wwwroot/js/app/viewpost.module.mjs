@@ -1,6 +1,6 @@
 ﻿import { parseMetaContent } from './utils.module.mjs';
 
-export function resizeImages() {
+function resizeImages() {
     const images = document.querySelectorAll('.post-content img');
     images.forEach(img => {
         img.removeAttribute('height');
@@ -54,7 +54,7 @@ export function getImageWidthInDevicePixelRatio(width) {
     return width / dpr;
 }
 
-export function applyImageZooming() {
+function applyImageZooming() {
     const fitImageToDevicePixelRatio = parseMetaContent("image-device-dpi");
 
     document.querySelectorAll('.post-content img').forEach(function (img) {
@@ -159,3 +159,10 @@ export function calculateReadingTime() {
 
     document.getElementById('reading-time').innerText = `Estimated Reading Time: ${roundedReadingTime} minute(s)`;
 }
+
+document.addEventListener('DOMContentLoaded', () => {
+    resizeImages();
+    if (window.innerWidth >= 768) {
+        applyImageZooming();
+    }
+});
