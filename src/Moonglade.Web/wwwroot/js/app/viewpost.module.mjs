@@ -1,4 +1,5 @@
 ﻿import { formatUtcTime, parseMetaContent } from './utils.module.mjs';
+import { resetCaptchaImage, showCaptcha } from './captchaService.mjs';
 
 function resizeImages() {
     const images = document.querySelectorAll('.post-content img');
@@ -73,19 +74,6 @@ function applyImageZooming() {
             imgzoomModal.show();
         });
     });
-}
-
-function resetCaptchaImage() {
-    const d = new Date();
-    document.querySelector('#img-captcha').src = `/captcha-image?${d.getTime()}`;
-}
-
-function showCaptcha() {
-    var captchaContainer = document.getElementById('captcha-container');
-    if (captchaContainer.style.display === 'none') {
-        captchaContainer.style.display = 'flex';
-        resetCaptchaImage();
-    }
 }
 
 function submitComment(pid) {
