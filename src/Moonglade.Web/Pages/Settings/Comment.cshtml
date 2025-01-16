@@ -2,24 +2,7 @@
 @inject IConfiguration Configuration
 
 @section scripts {
-    <script type="module">
-        import * as settings from '/js/app/admin.settings.js';
-
-        window.toggleCommentSettingsUI = function () {
-            if (document.querySelector('#BuiltIn').checked) {
-                document.querySelector('.comment-settings-built-in').style.display = 'block';
-                document.querySelector('.comment-settings-3rd').style.display = 'none';
-            } else {
-                document.querySelector('.comment-settings-built-in').style.display = 'none';
-                document.querySelector('.comment-settings-3rd').style.display = 'block';
-            }
-        }
-
-        const form = document.querySelector('#form-settings');
-        form.addEventListener('submit', settings.handleSettingsSubmit);
-
-        toggleCommentSettingsUI();
-    </script>
+    <script type="module" src="~/js/app/admin.settings.comment.mjs" asp-append-version="true"></script>
 }
 @{
     var settings = BlogConfig.CommentSettings;
@@ -63,8 +46,7 @@
                                 @Html.RadioButtonFor(model => settings.CommentProvider, CommentProvider.BuiltIn, new
                                     {
                                         id = CommentProvider.BuiltIn.ToString(),
-                                        @class = "form-check-input comment-provider-checkbox",
-                                        onchange = "window.toggleCommentSettingsUI()"
+                                        @class = "form-check-input comment-provider-checkbox"
                                     })
                                 <label class="form-check-label" for="@CommentProvider.BuiltIn">@SharedLocalizer["Built in"]</label>
                             </div>
@@ -72,8 +54,7 @@
                                 @Html.RadioButtonFor(model => settings.CommentProvider, CommentProvider.ThirdParty, new
                                     {
                                         id = CommentProvider.ThirdParty.ToString(),
-                                        @class = "form-check-input comment-provider-checkbox",
-                                        onchange = "window.toggleCommentSettingsUI()"
+                                        @class = "form-check-input comment-provider-checkbox"
                                     })
                                 <label class="form-check-label" for="@CommentProvider.ThirdParty">@SharedLocalizer["Third party"]</label>
                             </div>
