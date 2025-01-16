@@ -1,4 +1,4 @@
-﻿import { parseMetaContent } from './utils.module.mjs';
+﻿import { formatUtcTime, parseMetaContent } from './utils.module.mjs';
 
 function resizeImages() {
     const images = document.querySelectorAll('.post-content img');
@@ -47,7 +47,7 @@ function renderLaTeX() {
     });
 }
 
-export function getImageWidthInDevicePixelRatio(width) {
+function getImageWidthInDevicePixelRatio(width) {
     if (width <= 0) return 0;
     var dpr = window.devicePixelRatio;
     if (dpr === 1) return width;
@@ -61,7 +61,7 @@ function applyImageZooming() {
         img.addEventListener('click', function (e) {
             var src = img.getAttribute('src');
             document.querySelector('#imgzoom').src = src;
-            
+
             if (fitImageToDevicePixelRatio) {
                 setTimeout(function () {
                     var w = document.querySelector('#imgzoom').naturalWidth;
@@ -75,12 +75,12 @@ function applyImageZooming() {
     });
 }
 
-export function resetCaptchaImage() {
+function resetCaptchaImage() {
     const d = new Date();
     document.querySelector('#img-captcha').src = `/captcha-image?${d.getTime()}`;
 }
 
-export function showCaptcha() {
+function showCaptcha() {
     var captchaContainer = document.getElementById('captcha-container');
     if (captchaContainer.style.display === 'none') {
         captchaContainer.style.display = 'flex';
@@ -88,7 +88,7 @@ export function showCaptcha() {
     }
 }
 
-export function submitComment(pid) {
+function submitComment(pid) {
     const thxForComment = document.querySelector('#thx-for-comment');
     const thxForCommentNonReview = document.querySelector('#thx-for-comment-non-review');
     const loadingIndicator = document.querySelector('#loadingIndicator');
@@ -133,7 +133,7 @@ export function submitComment(pid) {
     );
 }
 
-export function calculateReadingTime() {
+function calculateReadingTime() {
     const englishWordsPerMinute = 225; // Average reading speed for English
     const chineseCharactersPerMinute = 450; // Average reading speed for Chinese
     const germanWordsPerMinute = 225; // Average reading speed for German
@@ -168,4 +168,23 @@ document.addEventListener('DOMContentLoaded', () => {
 
     renderCodeHighlighter();
     renderLaTeX();
+    calculateReadingTime();
+
+    if (parseMetaContent('post-is-published')) {
+        document.getElementById('comment-form')?.addEventListener('submit', function (e) {
+            e.preventDefault();
+            let pid = document.querySelector('article').dataset.postid;
+            submitComment(pid);
+        });
+
+        document.getElementById('input-comment-content')?.addEventListener('focus', function () {
+            showCaptcha();
+        });
+
+        document.getElementById('img-captcha')?.addEventListener('click', function () {
+            resetCaptchaImage();
+        });
+
+        formatUtcTime();
+    }
 });

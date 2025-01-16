@@ -31,6 +31,7 @@
     <meta name="copyright" content="(C) @DateTime.UtcNow.Year @BlogConfig.GeneralSettings.SiteTitle">
     <meta name="author" content="@(string.IsNullOrWhiteSpace(Model.Post.Author) ? BlogConfig.GeneralSettings.OwnerName : Model.Post.Author) " />
     <meta name="image-device-dpi" content="@BlogConfig.ImageSettings.FitImageToDevicePixelRatio.ToString().ToLower()" />
+    <meta name="post-is-published" content="@Model.Post.IsPublished.ToString().ToLower()" />
     @if (BlogConfig.GeneralSettings.UseDublinCoreMetaData)
     {
         <partial name="_DublinCoreMetaData" model="Model" />
@@ -78,21 +79,8 @@
                 '.post-content h5');
         </script>
     }
-    <script type="module">
-        import * as viewpost from '/js/app/viewpost.module.mjs'
-        import { formatUtcTime } from '/js/app/utils.module.mjs'
 
-        viewpost.calculateReadingTime();
-
-        document.getElementById('comment-form')?.addEventListener('submit', function (e) {
-            e.preventDefault();
-            let pid = document.querySelector('article').dataset.postid;
-            viewpost.submitComment(pid);
-        });
-
-        formatUtcTime(false);
-    </script>
-
+    <script type="module" src="~/js/app/viewpost.module.mjs" asp-append-version="true"></script>
     @if (BlogConfig.AdvancedSettings.WarnExternalLink)
     {
         <script type="module" src="~/js/app/externalLinkWarning.mjs" asp-append-version="true"></script>
