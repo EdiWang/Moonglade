@@ -1,5 +1,5 @@
 import { formatUtcTime } from '/js/app/utils.module.mjs'
-import { success } from '/js/app/blogtoast.module.mjs'
+import { success } from '/js/app/toastService.mjs'
 
 function deleteConfirm(postid) {
     var cfm = confirm("Delete Confirmation?");

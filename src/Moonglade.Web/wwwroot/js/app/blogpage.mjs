@@ -1,4 +1,4 @@
-import { success } from './blogtoast.module.mjs';
+import { success } from './toastService.mjs';
 
 function deletePage(pageid) {
     callApi(`/api/page/${pageid}`,

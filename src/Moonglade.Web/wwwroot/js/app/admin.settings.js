@@ -1,5 +1,5 @@
 ﻿import * as utils from './utils.module.mjs'
-import { success } from './blogtoast.module.mjs'
+import { success } from './toastService.mjs'
 
 export function handleSettingsSubmit(event) {
     event.preventDefault();

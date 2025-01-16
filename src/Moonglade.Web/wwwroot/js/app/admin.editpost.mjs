@@ -1,5 +1,5 @@
 import { toMagicJson } from '/js/app/utils.module.mjs'
-import { success, error } from '/js/app/blogtoast.module.mjs'
+import { success, error } from '/js/app/toastService.mjs'
 
 const btnSubmitPostSelector = '#btn-save';
 const heroImageInputSelector = '#ViewModel_HeroImageUrl';
