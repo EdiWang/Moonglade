@@ -33,7 +33,7 @@ function renderCodeHighlighter() {
     });
 }
 
-export function RenderLaTeX() {
+function renderLaTeX() {
     const codeBlocks = document.querySelectorAll('pre.language-latex code');
     codeBlocks.forEach(block => {
         const latex = block.textContent.trim();
@@ -167,4 +167,5 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     renderCodeHighlighter();
+    renderLaTeX();
 });

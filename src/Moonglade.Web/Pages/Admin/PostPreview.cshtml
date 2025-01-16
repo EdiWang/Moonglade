@@ -24,12 +24,7 @@
 @section scripts {
     <script src="~/js/3rd/highlight.min.js" asp-append-version="true"></script>
     <script src="~/js/3rd/katex.min.js"></script>
-
-    <script type="module">
-        import * as viewpost from '/js/app/viewpost.module.mjs'
-
-        viewpost.RenderLaTeX();
-    </script>
+    <script type="module" src="~/js/app/viewpost.module.mjs" asp-append-version="true"></script>
 }
 
 <div class="alert alert-info">
