@@ -86,6 +86,9 @@ function isValidUrl(url) {
     }
 }
 
+document.getElementById('btn-update').addEventListener('click', addOrUpdateLink);
+document.getElementById('btn-cancel').addEventListener('click', clearForm);
+
 const form = document.querySelector('#form-settings');
 form.addEventListener('submit', handleSettingsSubmit);
 
