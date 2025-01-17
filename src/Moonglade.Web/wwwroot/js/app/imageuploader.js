@@ -2,7 +2,7 @@
     constructor(targetName, hw, imgMimeType) {
         var imgDataUrl = '';
 
-        this.uploadImage = function(uploadUrl) {
+        this.uploadImage = function (uploadUrl) {
             if (imgDataUrl) {
                 var btnUpload = document.querySelector(`#btn-upload-${targetName}`);
                 btnUpload.classList.add('disabled');
@@ -10,15 +10,15 @@
 
                 var rawData = imgDataUrl.replace(/^data:image\/(png|jpeg|jpg);base64,/, '');
 
-                callApi(uploadUrl, 'POST', rawData, function(resp) {
-                    var modal = document.getElementById(`${targetName}modal`);
-                    if (modal) {
-                        modal.style.display = 'none'; // Assuming you want to hide the modal
-                    }
+                callApi(uploadUrl, 'POST', rawData, function (resp) {
+                    var modalElement = document.getElementById(`${targetName}modal`);
+                    var modal = bootstrap.Modal.getInstance(modalElement);
+                    if (modal) modal.hide();
+
                     blogToast.success('Updated');
                     var d = new Date();
                     document.querySelector(`.blogadmin-${targetName}`).src = `/${targetName}?${d.getTime()}`;
-                }, function(always) {
+                }, function (always) {
                     btnUpload.classList.remove('disabled');
                     btnUpload.removeAttribute('disabled');
                 });
@@ -28,7 +28,7 @@
             }
         };
 
-        this.fileSelect = function(evt) {
+        this.fileSelect = function (evt) {
             evt.stopPropagation();
             evt.preventDefault();
 
@@ -47,10 +47,10 @@
                 }
 
                 var reader = new FileReader();
-                reader.onloadend = function() {
+                reader.onloadend = function () {
                     var tempImg = new Image();
                     tempImg.src = reader.result;
-                    tempImg.onload = function() {
+                    tempImg.onload = function () {
                         var maxWidth = hw;
                         var maxHeight = hw;
                         var tempW = tempImg.width;
@@ -87,20 +87,20 @@
             }
         };
 
-        this.dragOver = function(evt) {
+        this.dragOver = function (evt) {
             evt.stopPropagation();
             evt.preventDefault();
             evt.dataTransfer.dropEffect = 'copy';
         };
 
-        this.bindEvents = function() {
+        this.bindEvents = function () {
             document.getElementById(`${targetName}ImageFile`).addEventListener('change', this.fileSelect, false);
             var dropTarget = document.getElementById(`${targetName}DropTarget`);
             dropTarget.addEventListener('dragover', this.dragOver, false);
             dropTarget.addEventListener('drop', this.fileSelect, false);
         };
 
-        this.getDataUrl = function() {
+        this.getDataUrl = function () {
             return imgDataUrl;
         };
     }
