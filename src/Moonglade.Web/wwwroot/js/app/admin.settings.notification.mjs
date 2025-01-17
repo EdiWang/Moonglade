@@ -1,4 +1,5 @@
-import * as settings from '/js/app/admin.settings.js';
+import { handleSettingsSubmit } from './admin.settings.js';
+import { success, error } from './toastService.mjs';
 
 function toggleButtonState(button, isDisabled) {
     if (isDisabled) {
@@ -16,10 +17,10 @@ async function sendTestEmail() {
 
     try {
         await callApi('/api/settings/email/test', 'POST', {});
-        blogToast.success('Email is sent.');
+        success('Email is sent.');
     } catch (error) {
         console.error('Failed to send test email:', error);
-        blogToast.error('Failed to send test email.');
+        error('Failed to send test email.');
     } finally {
         toggleButtonState(testEmailButton, false);
     }
@@ -28,4 +29,4 @@ async function sendTestEmail() {
 document.getElementById('a-send-test-mail').addEventListener('click', sendTestEmail);
 
 const form = document.querySelector('#form-settings');
-form.addEventListener('submit', settings.handleSettingsSubmit);
+form.addEventListener('submit', handleSettingsSubmit);
