@@ -18,8 +18,8 @@ async function sendTestEmail() {
     try {
         await callApi('/api/settings/email/test', 'POST', {});
         success('Email is sent.');
-    } catch (error) {
-        console.error('Failed to send test email:', error);
+    } catch (err) {
+        console.error('Failed to send test email:', err);
         error('Failed to send test email.');
     } finally {
         toggleButtonState(testEmailButton, false);
