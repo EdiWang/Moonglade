@@ -1,5 +1,5 @@
-import { formatUtcTime } from '/js/app/utils.module.mjs'
-import { success } from '/js/app/toastService.mjs'
+import { formatUtcTime } from './utils.module.mjs'
+import { success } from './toastService.mjs'
 
 function deletePost(postid) {
     callApi(`/api/post/${postid}/recycle`, 'DELETE', {}, function (resp) {

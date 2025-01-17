@@ -1,5 +1,5 @@
-﻿import * as blogToast from '/js/app/toastService.mjs'
-import { getPreferredTheme, setTheme } from '/js/app/themeService.mjs'
+﻿import * as blogToast from './toastService.mjs'
+import { getPreferredTheme, setTheme } from './themeService.mjs'
 
 window.emptyGuid = '00000000-0000-0000-0000-000000000000';
 

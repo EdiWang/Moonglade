@@ -1,4 +1,4 @@
-import { success } from '/js/app/toastService.mjs'
+import { success } from './toastService.mjs'
 
 const resetPasswordModal = new bootstrap.Modal('#resetPasswordModal');
 
