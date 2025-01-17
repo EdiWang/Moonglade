@@ -1,28 +1,7 @@
 ﻿@page "/admin/settings/notification"
 @inject IConfiguration Configuration
 @section scripts {
-    <script type="module">
-        import * as settings from '/js/app/admin.settings.js';
-
-        window.sendTestEmail = function () {
-            document.querySelector('#a-send-test-mail').classList.add('disabled');
-            document.querySelector('#a-send-test-mail').setAttribute('disabled', 'disabled');
-
-            callApi('/api/settings/email/test',
-                'POST',
-                {},
-                async function (success) {
-                    blogToast.success('Email is sent.');
-                },
-                function (always) {
-                    document.querySelector('#a-send-test-mail').classList.remove('disabled');
-                    document.querySelector('#a-send-test-mail').removeAttribute('disabled');
-                });
-        };
-
-        const form = document.querySelector('#form-settings');
-        form.addEventListener('submit', settings.handleSettingsSubmit);
-    </script>
+    <script type="module" src="~/js/app/admin.settings.notification.mjs" asp-append-version="true"></script>
 }
 @{
     var settings = BlogConfig.NotificationSettings;
@@ -81,7 +60,7 @@
                             @SharedLocalizer["Send Test Email"]
                         </div>
                         <div class="col-md-5 text-end">
-                            <a href="javascript:sendTestEmail();" id="a-send-test-mail" class="btn btn-sm btn-outline-accent">
+                            <a id="a-send-test-mail" class="btn btn-sm btn-outline-accent">
                                 Send
                             </a>
                         </div>
