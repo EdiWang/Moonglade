@@ -4,50 +4,7 @@
 @Html.AntiForgeryToken()
 @section scripts {
     <partial name="_MonacoLoaderScript" />
-    <script>
-        var cssContentEditor = null;
-
-        require(['vs/editor/editor.main'], function () {
-        cssContentEditor = initEditor('CssContentEditor', "#ViewModel_CssCode", 'css');
-        });
-    </script>
-    <script type="module">
-        import * as settings from '/js/app/admin.settings.js';
-
-        function handleSubmit(event) {
-        assignEditorValues(cssContentEditor, "#ViewModel_CssCode");
-        settings.handleSettingsSubmit(event);
-        }
-
-        var themeModal = new bootstrap.Modal(document.getElementById('thememodal'));
-        window.createTheme = function (oFormElement) {
-        callApi(oFormElement.action,
-        'POST',
-        {
-        name: document.querySelector('#Name').value,
-        accentColor: document.querySelector('#AccentColor').value
-        },
-        async (resp) => {
-        themeModal.hide();
-        window.location.reload();
-        });
-        }
-
-        window.deleteTheme = function (id) {
-        callApi(`/api/theme/${id}`,
-        'DELETE',
-        {},
-        (resp) => {
-        var col = document.getElementById(`user-theme-col-${id}`);
-        col.remove();
-
-        blogToast.success('Theme deleted.');
-        });
-        }
-
-        const form = document.querySelector('#form-settings');
-        form.addEventListener('submit', handleSubmit);
-    </script>
+    <script type="module" src="~/js/app/admin.settings.appearance.mjs" asp-append-version="true"></script>
 }
 
 @section head {
