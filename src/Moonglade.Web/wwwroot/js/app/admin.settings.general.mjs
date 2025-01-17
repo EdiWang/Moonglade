@@ -1,4 +1,4 @@
-import * as settings from '/js/app/admin.settings.js';
+import { handleSettingsSubmit } from './admin.settings.js';
 
 var avatarUploader = new ImageUploader('avatar', 300, 'image/jpeg');
 avatarUploader.bindEvents();
@@ -16,4 +16,4 @@ document.getElementById('btn-upload-siteicon').addEventListener('click', functio
 });
 
 const form = document.querySelector('#form-settings');
-form.addEventListener('submit', settings.handleSettingsSubmit);
+form.addEventListener('submit', handleSettingsSubmit);
