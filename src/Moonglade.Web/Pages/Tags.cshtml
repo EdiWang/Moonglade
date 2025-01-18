@@ -23,23 +23,7 @@
 }
 
 @section scripts {
-    <script>
-        document.getElementById('tagFilter').addEventListener('keyup', function () {
-            var value = this.value.toLowerCase();
-            var items = document.querySelectorAll('.ul-tags li');
-
-            items.forEach(function (item) {
-                var show = item.textContent.toLowerCase().indexOf(value) > -1;
-                if (show) {
-                    item.classList.add('d-inline-block');
-                    item.classList.remove('d-none');
-                } else {
-                    item.classList.remove('d-inline-block');
-                    item.classList.add('d-none');
-                }
-            });
-        });
-    </script>
+    <script type="module" src="~/js/app/tags.mjs" asp-append-version="true"></script>
 }
 
 <h2 class="page-heading mb-4">
