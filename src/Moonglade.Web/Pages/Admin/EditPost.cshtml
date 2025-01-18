@@ -7,7 +7,6 @@
 @{
     ViewBag.Title = "Edit Post";
     var ec = Configuration.GetSection("Post:Editor").Get<EditorChoice>();
-
     var wsm = Model.ViewModel.WarnSlugModification;
 
     var cultureItems = LocOptions.Value.SupportedUICultures
@@ -19,6 +18,11 @@
                 Text = t.NativeName,
                 Value = t.Value.ToLower()
             });
+}
+
+@section meta {
+    <meta name="editor-choice" content="@(Configuration.GetSection("Post:Editor").Get<EditorChoice>().ToString().ToLower())" />
+    <meta name="warn-slug-modification" content="@Model.ViewModel.WarnSlugModification.ToString().ToLower()" />
 }
 
 @section scripts {
@@ -37,50 +41,6 @@
     }
 
     <script type="module" src="~/js/app/admin.editpost.mjs" asp-append-version="true"></script>
-    <script type="module">
-        import * as editor from '/js/app/admin.editor.module.mjs'
-
-        var editorMode = '@ec';
-
-        document.addEventListener('DOMContentLoaded', function () {
-            editor.initEvents(@((!wsm).ToString().ToLower()));
-
-            if (editorMode === '@nameof(EditorChoice.Html)') {
-                editor.loadTinyMCE(".post-content-textarea");
-            }
-            if (editorMode === '@nameof(EditorChoice.Markdown)') {
-                require(['vs/editor/editor.main'], function () {
-                    window.mdContentEditor = initEditor('markdown-content-editor', ".post-content-textarea", 'markdown');
-
-                    inlineAttachment.editors.monaco.attach(
-                        window.mdContentEditor, document.getElementsByClassName('md-editor-image-upload-area')[0], {
-                        uploadUrl: '/image',
-                        urlText: '![file]({filename})',
-                        onFileUploadResponse: function (xhr) {
-                            var result = JSON.parse(xhr.responseText),
-                                filename = result[this.settings.jsonFieldName];
-
-                            if (result && filename) {
-                                var newValue;
-                                if (typeof this.settings.urlText === 'function') {
-                                    newValue = this.settings.urlText.call(this, filename, result);
-                                } else {
-                                    newValue = this.settings.urlText.replace(this.filenameTag, filename);
-                                }
-                                var text = this.editor.getValue().replace(this.lastValue, newValue);
-                                this.editor.setValue(text);
-                                this.settings.onFileUploaded.call(this, filename);
-                            }
-                            return false;
-                        }
-                    });
-                });
-            }
-
-            editor.keepAlive();
-            editor.warnDirtyForm('.post-edit-form');
-        });
-    </script>
 }
 
 @section head {
