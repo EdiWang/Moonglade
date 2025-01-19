@@ -9,21 +9,11 @@
 @section scripts {
     <script type="module" src="~/js/app/json2csv.mjs" asp-append-version="true"></script>
     <script type="module" src="~/js/app/admin.category.mjs" asp-append-version="true"></script>
-    <script>
-        var editCanvas = new bootstrap.Offcanvas(document.getElementById('editCatCanvas'));
-        var catId = window.emptyGuid;
-
-        function initCreateCategory() {
-            catId = window.emptyGuid;
-            document.querySelector('#edit-form').reset();
-            editCanvas.show();
-        }
-    </script>
 }
 
 @section admintoolbar {
     <div class="admin-toolbar pb-2 border-bottom mb-3">
-        <a class="btn btn-outline-accent" href="javascript:initCreateCategory();">
+        <a id="btn-new-cat" class="btn btn-outline-accent">
             <i class="bi-plus-lg"></i>
             @SharedLocalizer["New"]
         </a>

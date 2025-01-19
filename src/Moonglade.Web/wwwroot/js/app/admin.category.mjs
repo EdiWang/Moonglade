@@ -1,5 +1,14 @@
 import { success } from './toastService.mjs'
 
+const editCanvas = new bootstrap.Offcanvas(document.getElementById('editCatCanvas'));
+let catId = window.emptyGuid;
+
+function initCreateCategory() {
+    catId = window.emptyGuid;
+    document.querySelector('#edit-form').reset();
+    editCanvas.show();
+}
+
 function editCat(id) {
     callApi(`/api/category/${id}`, 'GET', {},
         async (resp) => {
@@ -55,6 +64,8 @@ function handleSubmit(event) {
             window.location.reload();
         });
 }
+
+document.querySelector('#btn-new-cat').addEventListener('click', initCreateCategory);
 
 document.querySelectorAll('.btn-edit').forEach(button => {
     button.addEventListener('click', function () {
