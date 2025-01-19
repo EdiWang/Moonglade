@@ -1,5 +1,17 @@
 import { success } from './toastService.mjs'
 
+function editCat(id) {
+    callApi(`/api/category/${id}`, 'GET', {},
+        async (resp) => {
+            var data = await resp.json();
+            catId = data.id;
+            document.querySelector('#EditCategoryRequest_Slug').value = data.slug;
+            document.querySelector('#EditCategoryRequest_DisplayName').value = data.displayName;
+            document.querySelector('#EditCategoryRequest_Note').value = data.note;
+            editCanvas.show();
+        });
+}
+
 function deleteCat(catid) {
     callApi(`/api/category/${catid}`, 'DELETE', {},
         (resp) => {
@@ -43,6 +55,13 @@ function handleSubmit(event) {
             window.location.reload();
         });
 }
+
+document.querySelectorAll('.btn-edit').forEach(button => {
+    button.addEventListener('click', function () {
+        const lid = this.getAttribute('data-catid');
+        editCat(lid);
+    });
+});
 
 document.querySelectorAll('.btn-delete').forEach(button => {
     button.addEventListener('click', function () {

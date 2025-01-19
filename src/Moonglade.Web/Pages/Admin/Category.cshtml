@@ -18,18 +18,6 @@
             document.querySelector('#edit-form').reset();
             editCanvas.show();
         }
-
-        function editCat(id) {
-            callApi(`/api/category/${id}`, 'GET', {},
-                async (resp) => {
-                    var data = await resp.json();
-                    catId = data.id;
-                    document.querySelector('#EditCategoryRequest_Slug').value = data.slug;
-                    document.querySelector('#EditCategoryRequest_DisplayName').value = data.displayName;
-                    document.querySelector('#EditCategoryRequest_Note').value = data.note;
-                    editCanvas.show();
-                });
-        }
     </script>
 }
 
@@ -68,7 +56,7 @@
                     <small class="text-muted">@cat.Slug</small>
                 </div>
                 <div class="card-footer">
-                    <a href="javascript:editCat('@cat.Id');" class="btn btn-sm btn-outline-accent btn-edit"><i class="bi-pen"></i></a>
+                    <a class="btn btn-sm btn-outline-accent btn-edit" data-catid="@cat.Id"><i class="bi-pen"></i></a>
                     <a class="btn btn-sm btn-outline-danger btn-delete" data-catid="@cat.Id"><i class="bi-trash"></i></a>
                 </div>
             </div>
