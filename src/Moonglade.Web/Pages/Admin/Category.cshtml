@@ -30,19 +30,6 @@
                     editCanvas.show();
                 });
         }
-
-        function deleteCat(catid) {
-            callApi(`/api/category/${catid}`, 'DELETE', {},
-                (resp) => {
-                    document.querySelector(`#card-${catid}`).remove();
-                    blogToast.success('Category deleted');
-                });
-        }
-
-        function confirmDelete(catid) {
-            var cfm = confirm("Delete?");
-            if (cfm) deleteCat(catid);
-        }
     </script>
 }
 
@@ -82,7 +69,7 @@
                 </div>
                 <div class="card-footer">
                     <a href="javascript:editCat('@cat.Id');" class="btn btn-sm btn-outline-accent btn-edit"><i class="bi-pen"></i></a>
-                    <a href="javascript:confirmDelete('@cat.Id');" class="btn btn-sm btn-outline-danger btn-delete"><i class="bi-trash"></i></a>
+                    <a class="btn btn-sm btn-outline-danger btn-delete" data-catid="@cat.Id"><i class="bi-trash"></i></a>
                 </div>
             </div>
         </div>

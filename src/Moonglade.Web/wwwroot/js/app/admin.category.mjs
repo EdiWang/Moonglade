@@ -1,3 +1,18 @@
+import { success } from './toastService.mjs'
+
+function deleteCat(catid) {
+    callApi(`/api/category/${catid}`, 'DELETE', {},
+        (resp) => {
+            document.querySelector(`#card-${catid}`).remove();
+            success('Category deleted');
+        });
+}
+
+function confirmDelete(catid) {
+    var cfm = confirm("Delete?");
+    if (cfm) deleteCat(catid);
+}
+
 function handleSubmit(event) {
     event.preventDefault();
 
@@ -28,6 +43,13 @@ function handleSubmit(event) {
             window.location.reload();
         });
 }
+
+document.querySelectorAll('.btn-delete').forEach(button => {
+    button.addEventListener('click', function () {
+        const lid = this.getAttribute('data-catid');
+        confirmDelete(lid);
+    });
+});
 
 const form = document.querySelector('#edit-form');
 form.addEventListener('submit', handleSubmit);
