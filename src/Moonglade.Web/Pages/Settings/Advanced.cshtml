@@ -10,53 +10,7 @@
     var currentVersion = (new Version(asm!.GetCustomAttribute<AssemblyFileVersionAttribute>()?.Version)).ToString();
 }
 @section scripts {
-    <script type="module">
-        import * as settings from '/js/app/admin.settings.mjs';
-
-        document.querySelector('.btn-check-update').addEventListener('click', function () {
-            document.querySelector('.spinner-border').style.display = 'block';
-            document.querySelector('.alert-has-new-release').style.display = 'none';
-            document.querySelector('.alert-no-new-release').style.display = 'none';
-            document.querySelector('.btn-get-update').classList.add('disabled');
-            document.querySelector('.btn-get-update').setAttribute('href', '#');
-
-            var updateCheckCanvas = new bootstrap.Offcanvas(document.getElementById('updateCheckCanvas'));
-            updateCheckCanvas.show();
-
-            fetch('https://api.github.com/repos/EdiWang/Moonglade/releases/latest', {
-                method: 'GET',
-                headers: {
-                    'Accept': 'application/json',
-                    'Content-Type': 'application/json'
-                }
-            }).then(async (resp) => {
-                var data = await resp.json();
-                document.querySelector('.spinner-border').style.display = 'none';
-
-                document.getElementById('releaseName').value = data.name;
-                document.getElementById('releaseTagName').value = data.tag_name;
-                document.getElementById('releaseCreatedAt').value = new Date(data.created_at);
-
-                var c = settings.compareVersionNumbers(data.tag_name.replace('v', ''), '@currentVersion');
-                var hasNewVersion = c == 1 && !data.prerelease;
-
-                if (hasNewVersion) {
-                    document.querySelector('.alert-has-new-release').style.display = 'block';
-                    var btnGetUpdate = document.querySelector('.btn-get-update');
-                    btnGetUpdate.classList.remove('disabled');
-                    btnGetUpdate.setAttribute('href', data.html_url);
-                } else {
-                    document.querySelector('.alert-no-new-release').style.display = 'block';
-                }
-            }).catch(err => {
-                blogToast.error(err);
-                console.error(err);
-            });
-        });
-
-        const form = document.querySelector('#form-settings');
-        form.addEventListener('submit', settings.handleSettingsSubmit);
-    </script>
+    <script type="module" src="~/js/app/admin.settings.advanced.mjs" asp-append-version="true"></script>
 }
 
 @section admintoolbar {
@@ -69,7 +23,7 @@
             <div class="col-md-6">
                 <div class="mb-4">
                     <h4 class="admin-subtitle fw-bold mb-2">@SharedLocalizer["Advanced Settings"]</h4>
-                    
+
                     <div class="settings-entry row align-items-center py-3 px-2 rounded-3 shadow-sm border mb-2">
                         <div class="col-auto">
                             <i class="bi-bell settings-entry-icon"></i>
@@ -114,7 +68,7 @@
                             </div>
                         </div>
                     </div>
-                    
+
                     <div class="settings-entry row align-items-center py-3 px-2 rounded-3 shadow-sm border mb-2">
                         <div class="col-auto">
                             <i class="bi-file-earmark-check settings-entry-icon"></i>
@@ -212,7 +166,7 @@
                         <textarea asp-for="@settings.FootScripts" class="form-control textarea-code" cols="60" rows="10" spellcheck="false"></textarea>
 
                         <div class="form-text">
-                            * Global script that will be injected into every page's footer, before the ending of <code>body</code> tag. Typically used for third party analytics services. <br/>
+                            * Global script that will be injected into every page's footer, before the ending of <code>body</code> tag. Typically used for third party analytics services. <br />
 
                             * Please use valid <code>&lt;script&gt;...&lt;/script&gt;</code> code.
                         </div>
