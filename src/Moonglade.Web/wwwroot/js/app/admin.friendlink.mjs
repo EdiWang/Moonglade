@@ -1,5 +1,26 @@
 import { success } from './toastService.mjs'
 
+const editCanvas = new bootstrap.Offcanvas(document.getElementById('editLinkCanvas'));
+let fid = window.emptyGuid;
+
+function initCreateFriendLink() {
+    fid = window.emptyGuid;
+    document.querySelector('#edit-form').reset();
+    editCanvas.show();
+}
+
+function editFriendLink(id) {
+    callApi(`/api/friendlink/${id}`, 'GET', {},
+        async (resp) => {
+            var data = await resp.json();
+            fid = id;
+            document.querySelector('#EditLinkRequest_Title').value = data.title;
+            document.querySelector('#EditLinkRequest_LinkUrl').value = data.linkUrl;
+            document.querySelector('#EditLinkRequest_Rank').value = data.rank;
+            editCanvas.show();
+        });
+}
+
 function deleteFriendLink(friendlinkid) {
     callApi(`/api/friendlink/${friendlinkid}`,
         'DELETE',
@@ -42,6 +63,15 @@ function handleSubmit(event) {
             window.location.reload();
         });
 }
+
+document.querySelector('#btn-new-friendlink').addEventListener('click', initCreateFriendLink);
+
+document.querySelectorAll('.btn-edit').forEach(button => {
+    button.addEventListener('click', function () {
+        const lid = this.getAttribute('data-linkid');
+        editFriendLink(lid);
+    });
+});
 
 document.querySelectorAll('.btn-delete').forEach(button => {
     button.addEventListener('click', function () {

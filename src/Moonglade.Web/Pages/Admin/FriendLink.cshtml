@@ -10,33 +10,11 @@
 @section scripts {
     <script type="module" src="~/js/app/json2csv.mjs" asp-append-version="true"></script>
     <script type="module" src="~/js/app/admin.friendlink.mjs" asp-append-version="true"></script>
-    <script>
-        var editCanvas = new bootstrap.Offcanvas(document.getElementById('editLinkCanvas'));
-        var fid = window.emptyGuid;
-
-        function initCreateFriendLink() {
-            fid = window.emptyGuid;
-            document.querySelector('#edit-form').reset();
-            editCanvas.show();
-        }
-
-        function editFriendLink(id) {
-            callApi(`/api/friendlink/${id}`, 'GET', {},
-                async (resp) => {
-                    var data = await resp.json();
-                    fid = id;
-                    document.querySelector('#EditLinkRequest_Title').value = data.title;
-                    document.querySelector('#EditLinkRequest_LinkUrl').value = data.linkUrl;
-                    document.querySelector('#EditLinkRequest_Rank').value = data.rank;
-                    editCanvas.show();
-                });
-        }
-    </script>
 }
 
 @section admintoolbar {
     <div class="admin-toolbar pb-2 border-bottom mb-3">
-        <a class="btn btn-outline-accent" href="javascript:initCreateFriendLink();">
+        <a id="btn-new-friendlink" class="btn btn-outline-accent">
             <i class="bi-plus-lg"></i>
             @SharedLocalizer["New"]
         </a>
@@ -62,7 +40,7 @@
                     </div>
                 </div>
                 <div class="col-auto">
-                    <a href="javascript:editFriendLink('@item.Id');" class="btn btn-sm btn-outline-accent btn-edit"><i class="bi-pen"></i></a>
+                    <a class="btn btn-sm btn-outline-accent btn-edit" data-linkid="@item.Id"><i class="bi-pen"></i></a>
                     <a class="btn btn-sm btn-outline-danger btn-delete" data-linkid="@item.Id"><i class="bi-trash"></i></a>
                 </div>
             </div>
