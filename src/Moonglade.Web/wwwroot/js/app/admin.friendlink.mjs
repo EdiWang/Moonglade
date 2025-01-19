@@ -1,3 +1,20 @@
+import { success } from './toastService.mjs'
+
+function deleteFriendLink(friendlinkid) {
+    callApi(`/api/friendlink/${friendlinkid}`,
+        'DELETE',
+        {},
+        (resp) => {
+            document.querySelector(`#tr-${friendlinkid}`).remove();
+            success('Friend link deleted');
+        });
+}
+
+function deleteFriendLinkConfirm(id) {
+    var cfm = confirm("Delete Confirmation?");
+    if (cfm) deleteFriendLink(id);
+}
+
 function handleSubmit(event) {
     event.preventDefault();
 
@@ -25,6 +42,13 @@ function handleSubmit(event) {
             window.location.reload();
         });
 }
+
+document.querySelectorAll('.btn-delete').forEach(button => {
+    button.addEventListener('click', function () {
+        const lid = this.getAttribute('data-linkid');
+        deleteFriendLinkConfirm(lid);
+    });
+});
 
 const form = document.querySelector('#edit-form');
 form.addEventListener('submit', handleSubmit);

@@ -14,15 +14,6 @@
         var editCanvas = new bootstrap.Offcanvas(document.getElementById('editLinkCanvas'));
         var fid = window.emptyGuid;
 
-        function deleteFriendLink(friendlinkid) {
-            callApi(`/api/friendlink/${friendlinkid}`,
-                'DELETE',
-                {},
-                (resp) => {
-                    document.querySelector(`#tr-${friendlinkid}`).remove();
-                });
-        }
-
         function initCreateFriendLink() {
             fid = window.emptyGuid;
             document.querySelector('#edit-form').reset();
@@ -39,11 +30,6 @@
                     document.querySelector('#EditLinkRequest_Rank').value = data.rank;
                     editCanvas.show();
                 });
-        }
-
-        function deleteFriendLinkConfirm(id) {
-            var cfm = confirm("Delete Confirmation?");
-            if (cfm) deleteFriendLink(id);
         }
     </script>
 }
@@ -77,7 +63,7 @@
                 </div>
                 <div class="col-auto">
                     <a href="javascript:editFriendLink('@item.Id');" class="btn btn-sm btn-outline-accent btn-edit"><i class="bi-pen"></i></a>
-                    <a href="javascript:deleteFriendLinkConfirm('@item.Id');" class="btn btn-sm btn-outline-danger btn-delete"><i class="bi-trash"></i></a>
+                    <a class="btn btn-sm btn-outline-danger btn-delete" data-linkid="@item.Id"><i class="bi-trash"></i></a>
                 </div>
             </div>
         </div>
