@@ -1,4 +1,4 @@
-﻿import { handleSettingsSubmit } from './admin.settings.js';
+﻿import { handleSettingsSubmit } from './admin.settings.mjs';
 
 const jsonValue = document.getElementById('settings_JsonData').value;
 let links = jsonValue ? JSON.parse(jsonValue) : [];

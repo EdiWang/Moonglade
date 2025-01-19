@@ -1,4 +1,4 @@
-import { handleSettingsSubmit } from './admin.settings.js';
+import { handleSettingsSubmit } from './admin.settings.mjs';
 import { success, error } from './toastService.mjs';
 
 function toggleButtonState(button, isDisabled) {

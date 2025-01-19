@@ -1,4 +1,4 @@
-import { handleSettingsSubmit } from './admin.settings.js';
+import { handleSettingsSubmit } from './admin.settings.mjs';
 function toggleCommentSettingsUI() {
     if (document.querySelector('#BuiltIn').checked) {
         document.querySelector('.comment-settings-built-in').style.display = 'block';

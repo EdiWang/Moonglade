@@ -1,4 +1,4 @@
-import { handleSettingsSubmit } from './admin.settings.js';
+import { handleSettingsSubmit } from './admin.settings.mjs';
 import { success } from './toastService.mjs';
 
 function handleSubmit(event) {

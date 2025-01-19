@@ -1,7 +1,7 @@
 ﻿@page "/admin/settings/subscription"
 @section scripts{
     <script type="module">
-        import * as settings from '/js/app/admin.settings.js';
+        import * as settings from '/js/app/admin.settings.mjs';
 
         const form = document.querySelector('#form-settings');
         form.addEventListener('submit', settings.handleSettingsSubmit);
