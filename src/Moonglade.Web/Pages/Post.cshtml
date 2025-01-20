@@ -143,7 +143,7 @@
     <partial name="_PostActions" model="Model.Post" />
 </article>
 
-@if (BlogConfig.CommentSettings.EnableComments)
+@if (!Helper.GetAppDomainData<bool>("IsReadonlyMode") && BlogConfig.CommentSettings.EnableComments)
 {
     var days = DateTime.UtcNow.Date.Subtract(Model.Post.PubDateUtc.GetValueOrDefault()).Days;
 

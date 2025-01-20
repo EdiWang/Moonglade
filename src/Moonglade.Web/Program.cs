@@ -38,8 +38,8 @@ public class Program
         var app = builder.Build();
         if (!app.Environment.IsDevelopment() && await Helper.IsRunningInChina())
         {
-            app.Logger.LogCritical("Positive China detection, application stopped. (https://github.com/EdiWang/Moonglade/issues/767)");
-            await app.StopAsync();
+            Helper.SetAppDomainData("IsReadonlyMode", true);
+            app.Logger.LogWarning("Positive China detection, Moonglade is now in readonly mode.");
         }
 
         await app.InitStartUp();

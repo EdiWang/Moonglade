@@ -55,6 +55,16 @@ public static class Helper
         }
     }
 
+    public static void SetAppDomainData(string key, object value)
+    {
+        AppDomain.CurrentDomain.SetData(key, value);
+    }
+
+    public static T GetAppDomainData<T>(string key)
+    {
+        return (T)AppDomain.CurrentDomain.GetData(key);
+    }
+
     public static bool IsNonStableVersion()
     {
         string pattern = @"\b(preview|beta|rc|debug|alpha|test|canary|nightly)\b";
