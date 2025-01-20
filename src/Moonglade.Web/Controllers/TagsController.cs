@@ -26,6 +26,7 @@ public class TagsController(IMediator mediator) : ControllerBase
     }
 
     [HttpPost]
+    [ReadonlyMode]
     [ProducesResponseType(StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
     [ProducesResponseType(StatusCodes.Status409Conflict)]
@@ -38,6 +39,7 @@ public class TagsController(IMediator mediator) : ControllerBase
     }
 
     [HttpPut("{id:int}")]
+    [ReadonlyMode]
     [ApiConventionMethod(typeof(DefaultApiConventions), nameof(DefaultApiConventions.Put))]
     public async Task<IActionResult> Update([Range(1, int.MaxValue)] int id, [Required][FromBody] string name)
     {
@@ -48,6 +50,7 @@ public class TagsController(IMediator mediator) : ControllerBase
     }
 
     [HttpDelete("{id:int}")]
+    [ReadonlyMode]
     [ApiConventionMethod(typeof(DefaultApiConventions), nameof(DefaultApiConventions.Delete))]
     public async Task<IActionResult> Delete([Range(0, int.MaxValue)] int id)
     {

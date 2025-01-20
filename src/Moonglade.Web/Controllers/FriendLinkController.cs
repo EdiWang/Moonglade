@@ -10,6 +10,7 @@ namespace Moonglade.Web.Controllers;
 public class FriendLinkController(IMediator mediator) : ControllerBase
 {
     [HttpPost]
+    [ReadonlyMode]
     [ProducesResponseType(StatusCodes.Status201Created)]
     public async Task<IActionResult> Create(EditLinkRequest request)
     {
@@ -37,6 +38,7 @@ public class FriendLinkController(IMediator mediator) : ControllerBase
     }
 
     [HttpPut("{id:guid}")]
+    [ReadonlyMode]
     [ProducesResponseType(StatusCodes.Status204NoContent)]
     public async Task<IActionResult> Update([NotEmpty] Guid id, EditLinkRequest request)
     {
@@ -45,6 +47,7 @@ public class FriendLinkController(IMediator mediator) : ControllerBase
     }
 
     [HttpDelete("{id:guid}")]
+    [ReadonlyMode]
     [ProducesResponseType(StatusCodes.Status204NoContent)]
     public async Task<IActionResult> Delete([NotEmpty] Guid id)
     {

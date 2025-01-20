@@ -9,6 +9,7 @@ namespace Moonglade.Web.Controllers;
 public class PageController(ICacheAside cache, IMediator mediator) : Controller
 {
     [HttpPost]
+    [ReadonlyMode]
     [TypeFilter(typeof(ClearBlogCache), Arguments = [BlogCacheType.SiteMap])]
     [ProducesResponseType(StatusCodes.Status200OK)]
     public async Task<IActionResult> Create(EditPageRequest model)
@@ -20,6 +21,7 @@ public class PageController(ICacheAside cache, IMediator mediator) : Controller
     }
 
     [HttpPut("{id:guid}")]
+    [ReadonlyMode]
     [TypeFilter(typeof(ClearBlogCache), Arguments = [BlogCacheType.SiteMap])]
     [ProducesResponseType(StatusCodes.Status200OK)]
     public async Task<IActionResult> Edit([NotEmpty] Guid id, EditPageRequest model)
@@ -31,6 +33,7 @@ public class PageController(ICacheAside cache, IMediator mediator) : Controller
     }
 
     [HttpDelete("{id:guid}")]
+    [ReadonlyMode]
     [ApiConventionMethod(typeof(DefaultApiConventions), nameof(DefaultApiConventions.Delete))]
     public async Task<IActionResult> Delete([NotEmpty] Guid id)
     {

@@ -33,6 +33,7 @@ public class ThemeController(IMediator mediator, ICacheAside cache, IBlogConfig 
 
     [Authorize]
     [HttpPost]
+    [ReadonlyMode]
     [ProducesResponseType<string>(StatusCodes.Status409Conflict)]
     [ProducesResponseType<int>(StatusCodes.Status200OK)]
     [TypeFilter(typeof(ClearBlogCache), Arguments = [BlogCachePartition.General, "theme"])]
@@ -56,6 +57,7 @@ public class ThemeController(IMediator mediator, ICacheAside cache, IBlogConfig 
 
     [Authorize]
     [HttpDelete("{id:int}")]
+    [ReadonlyMode]
     [ApiConventionMethod(typeof(DefaultApiConventions), nameof(DefaultApiConventions.Delete))]
     [TypeFilter(typeof(ClearBlogCache), Arguments = [BlogCachePartition.General, "theme"])]
     public async Task<IActionResult> Delete([Range(1, int.MaxValue)] int id)
@@ -68,6 +70,4 @@ public class ThemeController(IMediator mediator, ICacheAside cache, IBlogConfig 
             _ => NoContent()
         };
     }
-
-
 }
