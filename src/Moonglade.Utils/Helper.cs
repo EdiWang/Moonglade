@@ -60,9 +60,15 @@ public static class Helper
         AppDomain.CurrentDomain.SetData(key, value);
     }
 
-    public static T GetAppDomainData<T>(string key)
+    public static T GetAppDomainData<T>(string key, T defaultValue = default(T))
     {
-        return (T)AppDomain.CurrentDomain.GetData(key);
+        object data = AppDomain.CurrentDomain.GetData(key);
+        if (data == null)
+        {
+            return defaultValue;
+        }
+
+        return (T)data;
     }
 
     public static bool IsNonStableVersion()
