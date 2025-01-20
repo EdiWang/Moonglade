@@ -58,6 +58,12 @@ public class SignInModel(IOptions<AuthenticationSettings> authSettings,
 
     public async Task<IActionResult> OnPostAsync()
     {
+        if (Helper.GetAppDomainData<bool>("IsReadonlyMode"))
+        {
+            ModelState.AddModelError(string.Empty, "System is in readonly mode, please try again later.");
+            return Page();
+        }
+
         try
         {
             if (!captcha.Validate(CaptchaCode, HttpContext.Session))
