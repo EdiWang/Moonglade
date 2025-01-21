@@ -1,14 +1,10 @@
 ﻿@page "/admin/settings/image"
-@section scripts {
-    <script type="module">
-        import * as settings from '/js/app/admin.settings.mjs';
-
-        const form = document.querySelector('#form-settings');
-        form.addEventListener('submit', settings.handleSettingsSubmit);
-    </script>
-}
 @{
     var settings = BlogConfig.ImageSettings;
+}
+
+@section scripts {
+    <script type="module" src="~/js/app/admin.settings.content.mjs" asp-append-version="true"></script>
 }
 
 @section admintoolbar {
