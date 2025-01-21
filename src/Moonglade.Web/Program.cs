@@ -138,6 +138,8 @@ public class Program
             options.FontStyle = FontStyle.Bold;
             options.BlockedCodes = magics.ToArray();
         });
+
+        services.AddScoped<ValidateCaptcha>();
     }
 
     private static void ConfigureLocalization(IServiceCollection services)
@@ -198,16 +200,16 @@ public class Program
     private static void ConfigureMoongladeServices(IServiceCollection services, IConfiguration configuration)
     {
         services.AddMentionCommon()
-            .AddPingback()
-            .AddWebmention()
-            .AddSyndication()
-            .AddInMemoryCacheAside()
-            .AddScoped<ValidateCaptcha>()
-            .AddScoped<ITimeZoneResolver, BlogTimeZoneResolver>()
-            .AddBlogConfig()
-            .AddAnalytics(configuration)
-            .AddBlogAuthenticaton(configuration)
-            .AddImageStorage(configuration);
+                .AddPingback()
+                .AddWebmention();
+
+        services.AddSyndication()
+                .AddInMemoryCacheAside()
+                .AddScoped<ITimeZoneResolver, BlogTimeZoneResolver>()
+                .AddBlogConfig()
+                .AddAnalytics(configuration)
+                .AddBlogAuthenticaton(configuration)
+                .AddImageStorage(configuration);
 
         services.AddEmailClient();
         services.AddIndexNowClient(configuration.GetSection("IndexNow"));
