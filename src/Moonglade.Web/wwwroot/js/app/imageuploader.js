@@ -1,4 +1,6 @@
-﻿class ImageUploader {
+﻿import { success, error } from './toastService.mjs'
+
+export class ImageUploader {
     constructor(targetName, hw, imgMimeType) {
         var imgDataUrl = '';
 
@@ -15,7 +17,7 @@
                     var modal = bootstrap.Modal.getInstance(modalElement);
                     if (modal) modal.hide();
 
-                    blogToast.success('Updated');
+                    success('Updated');
                     var d = new Date();
                     document.querySelector(`.blogadmin-${targetName}`).src = `/${targetName}?${d.getTime()}`;
                 }, function (always) {
@@ -24,7 +26,7 @@
                 });
 
             } else {
-                blogToast.error('Please select an image');
+                error('Please select an image');
             }
         };
 
@@ -42,7 +44,7 @@
                 }
 
                 if (!file.type.match('image.*')) {
-                    blogToast.error('Please select an image file.');
+                    error('Please select an image file.');
                     return;
                 }
 
@@ -83,7 +85,7 @@
                 };
                 reader.readAsDataURL(file);
             } else {
-                blogToast.error('The File APIs are not fully supported in this browser.');
+                error('The File APIs are not fully supported in this browser.');
             }
         };
 
