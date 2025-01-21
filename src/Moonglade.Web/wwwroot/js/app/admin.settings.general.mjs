@@ -1,5 +1,5 @@
 import { handleSettingsSubmit } from './admin.settings.mjs';
-import { ImageUploader } from './imageuploader.js';
+import { ImageUploader } from './imageuploader.mjs';
 
 var avatarUploader = new ImageUploader('avatar', 300, 'image/jpeg');
 avatarUploader.bindEvents();
