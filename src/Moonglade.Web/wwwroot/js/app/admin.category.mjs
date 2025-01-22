@@ -1,3 +1,4 @@
+import { callApi } from './httpService.mjs'
 import { success } from './toastService.mjs'
 
 const editCanvas = new bootstrap.Offcanvas(document.getElementById('editCatCanvas'));

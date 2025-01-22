@@ -1,4 +1,5 @@
-﻿import { formatUtcTime, parseMetaContent } from './utils.module.mjs';
+﻿import { callApi } from './httpService.mjs'
+import { formatUtcTime, parseMetaContent } from './utils.module.mjs';
 import { resetCaptchaImage, showCaptcha } from './captchaService.mjs';
 
 function resizeImages() {

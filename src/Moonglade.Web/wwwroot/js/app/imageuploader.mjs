@@ -1,4 +1,5 @@
-﻿import { success, error } from './toastService.mjs'
+﻿import { callApi } from './httpService.mjs'
+import { success, error } from './toastService.mjs'
 
 export class ImageUploader {
     constructor(targetName, hw, imgMimeType) {

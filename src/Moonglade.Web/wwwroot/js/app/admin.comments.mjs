@@ -1,3 +1,4 @@
+import { callApi } from './httpService.mjs'
 import { formatUtcTime } from '/js/app/utils.module.mjs'
 
 document.querySelectorAll('.btn-delete').forEach(button => {

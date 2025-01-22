@@ -1,6 +1,8 @@
-﻿const csrfFieldName = 'CSRF-TOKEN-MOONGLADE-FORM';
+﻿import { error } from './toastService.mjs'
 
-async function callApi(uri, method, request, funcSuccess, funcAlways) {
+const csrfFieldName = 'CSRF-TOKEN-MOONGLADE-FORM';
+
+export async function callApi(uri, method, request, funcSuccess, funcAlways) {
     try {
         const csrfValue = document.querySelector(`input[name="${csrfFieldName}"]`).value;
         const response = await fetch(uri, {
@@ -24,7 +26,7 @@ async function callApi(uri, method, request, funcSuccess, funcAlways) {
             funcAlways(response);
         }
     } catch (err) {
-        blogToast.error(err);
+        error(err);
         console.error(err);
     }
 }
@@ -33,23 +35,23 @@ async function handleHttpError(response) {
     switch (response.status) {
         case 400:
         case 409:
-            blogToast.error(await buildErrorMessage(response));
+            error(await buildErrorMessage(response));
             break;
         case 401:
-            blogToast.error('Unauthorized');
+            error('Unauthorized');
             break;
         case 404:
-            blogToast.error('Endpoint not found');
+            error('Endpoint not found');
             break;
         case 429:
-            blogToast.error('Too many requests');
+            error('Too many requests');
             break;
         case 500:
         case 503:
-            blogToast.error('Server went boom');
+            error('Server went boom');
             break;
         default:
-            blogToast.error(`Error ${response.status}`);
+            error(`Error ${response.status}`);
             break;
     }
 }
