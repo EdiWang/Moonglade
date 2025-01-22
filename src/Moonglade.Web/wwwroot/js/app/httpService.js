@@ -33,7 +33,7 @@ async function handleHttpError(response) {
     switch (response.status) {
         case 400:
         case 409:
-            blogToast.error(await buildErrorMessage2(response));
+            blogToast.error(await buildErrorMessage(response));
             break;
         case 401:
             blogToast.error('Unauthorized');
@@ -54,7 +54,7 @@ async function handleHttpError(response) {
     }
 }
 
-async function buildErrorMessage2(response) {
+async function buildErrorMessage(response) {
     const contentType = response.headers.get('content-type');
     if (contentType && contentType.includes('application/json')) {
         const data = await response.json();
