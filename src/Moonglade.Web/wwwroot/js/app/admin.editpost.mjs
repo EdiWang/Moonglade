@@ -92,6 +92,17 @@ const handlePostSubmit = async (event) => {
         });
 };
 
+function UnpublishPost(postId) {
+    callApi(
+        `/api/post/${postId}/unpublish`,
+        'PUT',
+        {},
+        (resp) => {
+            success('Post unpublished');
+            location.reload();
+        });
+}
+
 document.addEventListener('DOMContentLoaded', function () {
     const warnSlugModification = parseMetaContent('warn-slug-modification');
     initEvents(!warnSlugModification);
@@ -130,6 +141,11 @@ document.addEventListener('DOMContentLoaded', function () {
 
     keepAlive();
     warnDirtyForm('.post-edit-form');
+});
+
+document.getElementById('btn-unpublish-post').addEventListener('click', function () {
+    const postId = document.querySelector('input[name="ViewModel.PostId"]').value;
+    UnpublishPost(postId);
 });
 
 const postEditForm = document.querySelector(postEditFormSelector);
