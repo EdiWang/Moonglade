@@ -4,116 +4,13 @@
     ViewBag.Title = "Edit Page";
 }
 
-@{
-    <script>
-        var isPreviewRequired = false;
-    </script>
+@section meta {
+    <meta name="page-id" content="@Model.PageId" />
 }
 
 @section scripts {
     <partial name="_MonacoLoaderScript" />
-    <script>
-        var pageId = '@Model.PageId.ToString()';
-
-        var btnSubmitPage = '#btn-submit';
-
-        var htmlContentEditor = null;
-        var cssContentEditor = null;
-        var hasCssEditorInitialized = false;
-
-        require(['vs/editor/editor.main'], function () {
-            htmlContentEditor = initEditor('RawHtmlContentEditor', "#EditPageRequest_RawHtmlContent", 'html');
-        });
-
-        var assignEditorValues2 = function () {
-            assignEditorValues(htmlContentEditor, "#EditPageRequest_RawHtmlContent")
-
-            // Edit Mode, preserve old value when user has not clicked on CSS tab
-            var oldCssValue = document.querySelector("#EditPageRequest_CssContent").value;
-            var cssValue = hasCssEditorInitialized ? window.cssContentEditor.getValue() : oldCssValue;
-
-            document.querySelector("#EditPageRequest_CssContent").value = cssValue;
-        }
-
-        var onPageCreateEditBegin = function () {
-            document.querySelector(btnSubmitPage).classList.add('disabled');
-            document.querySelector(btnSubmitPage).disabled = true;
-        };
-
-        var onPageCreateEditComplete = function () {
-            document.querySelector(btnSubmitPage).classList.remove('disabled');
-            document.querySelector(btnSubmitPage).removeAttribute('disabled');
-        };
-
-        function postCreateOrEdit() {
-            onPageCreateEditBegin();
-
-            var apiAddress = pageId == window.emptyGuid ? `/api/page` : `/api/page/${pageId}`;
-            var verb = pageId == window.emptyGuid ? 'POST' : 'PUT';
-
-            callApi(apiAddress, verb,
-                {
-                    title: document.querySelector("#EditPageRequest_Title").value,
-                    slug: document.querySelector("#EditPageRequest_Slug").value,
-                    metaDescription: document.querySelector("#EditPageRequest_MetaDescription").value,
-                    rawHtmlContent: document.querySelector("#EditPageRequest_RawHtmlContent").value,
-                    cssContent: document.querySelector("#EditPageRequest_CssContent").value,
-                    hideSidebar: document.querySelector('#EditPageRequest_HideSidebar').checked,
-                    isPublished: document.querySelector('#EditPageRequest_IsPublished').checked
-                },
-                async (resp) => {
-                    onPageCreateEditComplete();
-                    var data = await resp.json();
-
-                    if (data.pageId) {
-                        pageId = data.pageId;
-                        blogToast.success('Page saved successfully.');
-
-                        if (document.querySelector('#EditPageRequest_IsPublished').checked) {
-                            if (document.querySelector('#btn-preview')) {
-                                document.querySelector('#btn-preview').style.display = 'none';
-                            }
-                        }
-
-                        if (isPreviewRequired) {
-                            isPreviewRequired = false;
-                            window.open(`/admin/page/preview/${data.pageId}`);
-                        }
-                    }
-                });
-        }
-
-        window.addEventListener('keydown', function (event) {
-            if (event.ctrlKey || event.metaKey) {
-                if (String.fromCharCode(event.which).toLowerCase() === 's') {
-                    event.preventDefault();
-                    document.querySelector('#btn-submit').click();
-                }
-            }
-        });
-
-        document.querySelectorAll('a[data-bs-toggle="tab"]').forEach(function (element) {
-            element.addEventListener('shown.bs.tab', function (e) {
-                var isCssTab = e.target.id === "csscontent-tab";
-                if (isCssTab && !hasCssEditorInitialized) {
-                    cssContentEditor = initEditor('CssContentEditor', "#EditPageRequest_CssContent", 'css');
-                    hasCssEditorInitialized = true;
-                }
-            });
-        });
-
-        function handleSubmit(e) {
-            e.preventDefault();
-
-            isPreviewRequired = e.submitter.id == 'btn-preview';
-            assignEditorValues2();
-
-            postCreateOrEdit();
-        }
-
-        const form = document.querySelector('#page-edit-form');
-        form.addEventListener('submit', handleSubmit);
-    </script>
+    <script type="module" src="~/js/app/admin.editpage.mjs" asp-append-version="true"></script>
 }
 
 @section head {
@@ -128,12 +25,11 @@
 }
 
 <div>
-
     <form id="page-edit-form" method="post">
         <div class="row g-2">
             <div class="col-md-9 col-xl-10">
                 <input type="text" asp-for="EditPageRequest.Title" class="form-control form-control-lg mb-1"
-                    placeholder="Title" required />
+                       placeholder="Title" required />
 
                 <div class="input-group input-group-sm">
                     <label class="input-group-text" asp-for="EditPageRequest.Slug">
@@ -141,34 +37,34 @@
                         </i>
                     </label>
                     <input type="text" asp-for="EditPageRequest.Slug" class="form-control form-control-sm"
-                        placeholder="Slug" required />
+                           placeholder="Slug" required />
                 </div>
 
                 <ul class="nav nav-tabs mt-3" id="editor-box-tabs" role="tablist">
                     <li class="nav-item">
                         <a class="nav-link active" id="profile-tab" data-bs-toggle="tab"
-                            href="#rawhtmlcontent-editor-box" role="tab" aria-controls="html"
-                            aria-selected="false">HTML</a>
+                           href="#rawhtmlcontent-editor-box" role="tab" aria-controls="html"
+                           aria-selected="false">HTML</a>
                     </li>
                     <li class="nav-item">
                         <a class="nav-link" id="csscontent-tab" data-bs-toggle="tab" href="#csscontent-editor-box"
-                            role="tab" aria-controls="css" aria-selected="true">CSS</a>
+                           role="tab" aria-controls="css" aria-selected="true">CSS</a>
                     </li>
                 </ul>
 
                 <div class="tab-content">
                     <div class="tab-pane active" id="rawhtmlcontent-editor-box" role="tabpanel"
-                        aria-labelledby="html-tab">
+                         aria-labelledby="html-tab">
                         <div id="RawHtmlContentEditor" class="monaco-target">
                         </div>
                         <textarea asp-for="EditPageRequest.RawHtmlContent"
-                            class="page-rawhtmlcontent-textarea d-none"></textarea>
+                                  class="page-rawhtmlcontent-textarea d-none"></textarea>
                     </div>
                     <div class="tab-pane" id="csscontent-editor-box" role="tabpanel" aria-labelledby="css-tab">
                         <div id="CssContentEditor" class="monaco-target">
                         </div>
                         <textarea asp-for="EditPageRequest.CssContent"
-                            class="page-csscontent-textarea d-none"></textarea>
+                                  class="page-csscontent-textarea d-none"></textarea>
                     </div>
                 </div>
             </div>
@@ -187,8 +83,8 @@
                     <div class="border-top pt-3">
                         <div class="form-floating">
                             <textarea asp-for="EditPageRequest.MetaDescription"
-                                placeholder="@Html.DisplayNameFor(m => m.EditPageRequest.MetaDescription)"
-                                class="form-control form-control-sm h-200px" spellcheck="false" required></textarea>
+                                      placeholder="@Html.DisplayNameFor(m => m.EditPageRequest.MetaDescription)"
+                                      class="form-control form-control-sm h-200px" spellcheck="false" required></textarea>
                             <label class="form-label" asp-for="EditPageRequest.MetaDescription"></label>
                         </div>
                     </div>

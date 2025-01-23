@@ -19,6 +19,7 @@ public class PostController(
         CannonService cannonService) : ControllerBase
 {
     [HttpPost("createoredit")]
+    [ReadonlyMode]
     [TypeFilter(typeof(ClearBlogCache), Arguments =
     [
         BlogCacheType.SiteMap |
@@ -92,6 +93,7 @@ public class PostController(
         BlogCacheType.Subscription
     ])]
     [HttpPost("{postId:guid}/restore")]
+    [ReadonlyMode]
     [ProducesResponseType(StatusCodes.Status204NoContent)]
     public async Task<IActionResult> Restore([NotEmpty] Guid postId)
     {
@@ -105,6 +107,7 @@ public class PostController(
         BlogCacheType.Subscription
     ])]
     [HttpDelete("{postId:guid}/recycle")]
+    [ReadonlyMode]
     [ProducesResponseType(StatusCodes.Status204NoContent)]
     public async Task<IActionResult> Delete([NotEmpty] Guid postId)
     {
@@ -114,6 +117,7 @@ public class PostController(
 
     [TypeFilter(typeof(ClearBlogCache), Arguments = [BlogCacheType.Subscription | BlogCacheType.SiteMap])]
     [HttpDelete("{postId:guid}/destroy")]
+    [ReadonlyMode]
     [ProducesResponseType(StatusCodes.Status204NoContent)]
     public async Task<IActionResult> DeleteFromRecycleBin([NotEmpty] Guid postId)
     {
@@ -123,6 +127,7 @@ public class PostController(
 
     [TypeFilter(typeof(ClearBlogCache), Arguments = [BlogCacheType.Subscription | BlogCacheType.SiteMap])]
     [HttpDelete("recyclebin")]
+    [ReadonlyMode]
     [ProducesResponseType(StatusCodes.Status204NoContent)]
     public async Task<IActionResult> EmptyRecycleBin()
     {
@@ -132,6 +137,7 @@ public class PostController(
 
     [TypeFilter(typeof(ClearBlogCache), Arguments = [BlogCacheType.Subscription | BlogCacheType.SiteMap])]
     [HttpPut("{postId:guid}/unpublish")]
+    [ReadonlyMode]
     [ProducesResponseType(StatusCodes.Status204NoContent)]
     public async Task<IActionResult> Unpublish([NotEmpty] Guid postId)
     {

@@ -1,4 +1,6 @@
-﻿import * as utils from './utils.module.mjs'
+﻿import { callApi } from './httpService.mjs'
+import * as utils from './utils.module.mjs'
+import { success } from './toastService.mjs'
 
 export function handleSettingsSubmit(event) {
     event.preventDefault();
@@ -24,7 +26,7 @@ export function handleSettingsSubmit(event) {
 
     callApi(event.currentTarget.action, 'POST', formattedValues,
         (resp) => {
-            blogToast.success('Settings Updated');
+            success('Settings Updated');
             enableButton();
         });
 }

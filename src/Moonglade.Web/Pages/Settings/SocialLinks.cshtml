@@ -10,16 +10,7 @@
 }
 
 @section scripts {
-    <script src="~/js/app/admin.settings.socaillinks.js" asp-append-version="true"></script>
-    <script>
-        renderTable();
-    </script>
-    <script type="module">
-        import * as settings from '/js/app/admin.settings.module.js';
-
-        const form = document.querySelector('#form-settings');
-        form.addEventListener('submit', settings.handleSettingsSubmit);
-    </script>
+    <script type="module" src="~/js/app/admin.settings.socaillinks.mjs" asp-append-version="true"></script>
 }
 
 @section head {
@@ -88,10 +79,10 @@
                 <input type="text" id="url" class="form-control form-control-sm form-control-url">
             </div>
             <div class="col-auto">
-                <button type="button" class="btn btn-sm btn-outline-accent" onclick="addOrUpdateLink()">Add / Update</button>
+                <button type="button" id="btn-update" class="btn btn-sm btn-outline-accent">Add / Update</button>
             </div>
             <div class="col-auto">
-                <button type="button" class="btn btn-sm btn-outline-secondary" onclick="clearForm()">Cancel</button>
+                <button type="button" id="btn-cancel" class="btn btn-sm btn-outline-secondary">Cancel</button>
             </div>
 
             <span id="error" class="text-danger"></span>

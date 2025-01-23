@@ -13,6 +13,8 @@
     <meta name="robots" content="noindex, nofollow" />
     <meta name="title" content="@Post.Title" />
     <meta name="author" content="@(string.IsNullOrWhiteSpace(Post.Author) ? BlogConfig.GeneralSettings.OwnerName : Post.Author) " />
+    <meta name="image-device-dpi" content="@BlogConfig.ImageSettings.FitImageToDevicePixelRatio.ToString().ToLower()" />
+    <meta name="post-is-published" content="@Model.Post.IsPublished.ToString().ToLower()" />
 }
 
 @section head {
@@ -23,16 +25,7 @@
 @section scripts {
     <script src="~/js/3rd/highlight.min.js" asp-append-version="true"></script>
     <script src="~/js/3rd/katex.min.js"></script>
-
-    <script type="module">
-        import * as viewpost from '/js/app/viewpost.module.mjs'
-
-        window.fitImageToDevicePixelRatio = @BlogConfig.ImageSettings.FitImageToDevicePixelRatio.ToString().ToLower();
-        viewpost.resizeImages();
-        viewpost.renderCodeHighlighter();
-        viewpost.RenderLaTeX();
-        viewpost.applyImageZooming();
-    </script>
+    <script type="module" src="~/js/app/post.mjs" asp-append-version="true"></script>
 }
 
 <div class="alert alert-info">

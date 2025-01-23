@@ -1,4 +1,6 @@
-﻿const jsonValue = document.getElementById('settings_JsonData').value;
+﻿import { handleSettingsSubmit } from './admin.settings.mjs';
+
+const jsonValue = document.getElementById('settings_JsonData').value;
 let links = jsonValue ? JSON.parse(jsonValue) : [];
 let editIndex = null;
 
@@ -53,7 +55,7 @@ function addOrUpdateLink() {
     renderTable();
 }
 
-function editLink(index) {
+window.editLink = function (index) {
     const link = links[index];
     document.getElementById('name').value = link.name;
     document.getElementById('icon').value = link.icon;
@@ -61,7 +63,7 @@ function editLink(index) {
     editIndex = index;
 }
 
-function deleteLink(index) {
+window.deleteLink = function (index) {
     links.splice(index, 1);
     renderTable();
 }
@@ -83,3 +85,11 @@ function isValidUrl(url) {
         return false;
     }
 }
+
+document.getElementById('btn-update').addEventListener('click', addOrUpdateLink);
+document.getElementById('btn-cancel').addEventListener('click', clearForm);
+
+const form = document.querySelector('#form-settings');
+form.addEventListener('submit', handleSettingsSubmit);
+
+renderTable();

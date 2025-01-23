@@ -8,80 +8,18 @@
 }
 
 @section scripts {
-    <script src="~/js/app/json2csv.js" asp-append-version="true"></script>
-    <script>
-        var editCanvas = new bootstrap.Offcanvas(document.getElementById('editLinkCanvas'));
-        var fid = window.emptyGuid;
-
-        function deleteFriendLink(friendlinkid) {
-            callApi(`/api/friendlink/${friendlinkid}`,
-                'DELETE',
-                {},
-                (resp) => {
-                    document.querySelector(`#tr-${friendlinkid}`).remove();
-                });
-        }
-
-        function initCreateFriendLink() {
-            fid = window.emptyGuid;
-            document.querySelector('#edit-form').reset();
-            editCanvas.show();
-        }
-
-        function editFriendLink(id) {
-            callApi(`/api/friendlink/${id}`, 'GET', {},
-                async (resp) => {
-                    var data = await resp.json();
-                    fid = id;
-                    document.querySelector('#EditLinkRequest_Title').value = data.title;
-                    document.querySelector('#EditLinkRequest_LinkUrl').value = data.linkUrl;
-                    document.querySelector('#EditLinkRequest_Rank').value = data.rank;
-                    editCanvas.show();
-                });
-        }
-
-        function deleteFriendLinkConfirm(id) {
-            var cfm = confirm("Delete Confirmation?");
-            if (cfm) deleteFriendLink(id);
-        }
-
-        function handleSubmit(event) {
-            event.preventDefault();
-
-            var httpVerb = fid == window.emptyGuid ? 'POST' : 'PUT';
-            var apiAddress = fid == window.emptyGuid ? `/api/friendlink` : `/api/friendlink/${fid}`;
-
-            const data = new FormData(event.target);
-            const value = Object.fromEntries(data.entries());
-
-            callApi(apiAddress,
-                httpVerb,
-                {
-                    id: fid,
-                    title: value["EditLinkRequest.Title"],
-                    linkUrl: value["EditLinkRequest.LinkUrl"],
-                    rank: value["EditLinkRequest.Rank"]
-                },
-                (resp) => {
-                    document.querySelector('#edit-form').reset();
-                    document.getElementById("editFriendlinkModal").style.display = "none";
-                    window.location.reload();
-                });
-        }
-
-        const form = document.querySelector('#edit-form');
-        form.addEventListener('submit', handleSubmit);
-    </script>
+    <script type="module" src="~/js/app/json2csv.mjs" asp-append-version="true"></script>
+    <script type="module" src="~/js/app/admin.friendlink.mjs" asp-append-version="true"></script>
 }
 
 @section admintoolbar {
     <div class="admin-toolbar pb-2 border-bottom mb-3">
-        <a class="btn btn-outline-accent" href="javascript:initCreateFriendLink();">
+        <a id="btn-new-friendlink" class="btn btn-outline-accent">
             <i class="bi-plus-lg"></i>
             @SharedLocalizer["New"]
         </a>
 
-        <a class="btn btn-outline-accent" href="javascript:exportCSV('/api/friendlink/list','moonglade-friendlink.csv');">
+        <a class="btn btn-outline-accent btn-export" data-api="/api/friendlink/list" data-filename="moonglade-friendlink.csv">
             <i class="bi-filetype-csv"></i>
             @SharedLocalizer["Export"]
         </a>
@@ -102,8 +40,8 @@
                     </div>
                 </div>
                 <div class="col-auto">
-                    <a href="javascript:editFriendLink('@item.Id');" class="btn btn-sm btn-outline-accent btn-edit"><i class="bi-pen"></i></a>
-                    <a href="javascript:deleteFriendLinkConfirm('@item.Id');" class="btn btn-sm btn-outline-danger btn-delete"><i class="bi-trash"></i></a>
+                    <a class="btn btn-sm btn-outline-accent btn-edit" data-linkid="@item.Id"><i class="bi-pen"></i></a>
+                    <a class="btn btn-sm btn-outline-danger btn-delete" data-linkid="@item.Id"><i class="bi-trash"></i></a>
                 </div>
             </div>
         </div>

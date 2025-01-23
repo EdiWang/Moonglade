@@ -15,7 +15,7 @@ public class DeletePageCommandHandler(
         var page = await repo.GetByIdAsync(request.Id, ct);
         if (page == null) return OperationCode.ObjectNotFound;
 
-        if (page.CssId != null)
+        if (!string.IsNullOrWhiteSpace(page.CssId))
         {
             await mediator.Send(new DeleteStyleSheetCommand(new(page.CssId)), ct);
         }

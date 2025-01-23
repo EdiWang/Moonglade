@@ -13,29 +13,7 @@
 
 @section scripts {
     <partial name="_MonacoLoaderScript" />
-    <script>
-        var jsonContentEditor = null;
-
-        require(['vs/editor/editor.main'], function () {
-            jsonContentEditor = initEditor('JsonContentEditor', "#settings_MenuJson", 'json');
-        });
-
-        var clearMenus = function () {
-            jsonContentEditor.setValue("[]");
-            document.querySelector("#settings_MenuJson").value = "[]";
-        }
-    </script>
-    <script type="module">
-        import * as settings from '/js/app/admin.settings.module.js';
-
-        function handleSubmit(event) {
-            assignEditorValues(jsonContentEditor, "#settings_MenuJson");
-            settings.handleSettingsSubmit(event);
-        }
-
-        const form = document.querySelector('#form-settings');
-        form.addEventListener('submit', handleSubmit);
-    </script>
+    <script type="module" src="~/js/app/admin.menu.mjs" asp-append-version="true"></script>
 }
 
 @section head {
@@ -48,7 +26,7 @@
 
 @section admintoolbar {
     <div class="admin-toolbar pb-2 border-bottom mb-3">
-        <a href="javascript:window.clearMenus();" class="btn btn-outline-danger btn-delete-selected">
+        <a id="btn-clear-menus" class="btn btn-outline-danger btn-delete-selected">
             <i class="bi-trash"></i> @SharedLocalizer["Clear menus"]
         </a>
 
@@ -113,12 +91,12 @@
     "SubMenus": [
         {
             "Title": "CIDR Calculator",
-            "Url": "https://cidrcalc.blazor.edi.wang/",
+            "Url": "https://cidr.edi.wang/",
             "IsOpenInNewTab": true
         },
         {
-            "Title": "大写人民币转换",
-            "Url": "https://rmbcap.blazor.edi.wang/",
+            "Title": "PDF to PNG Converter",
+            "Url": "https://pdf2png.edi.wang/",
             "IsOpenInNewTab": true
         }
     ]

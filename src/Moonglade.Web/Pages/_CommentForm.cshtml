@@ -30,13 +30,12 @@
                       aria-label="@SharedLocalizer["Your comments (Markdown supported)"]"
                       placeholder="@SharedLocalizer["Your comments (Markdown supported)"]"
                       maxlength="1024"
-                      required
-                      onfocus="viewpost.showCaptcha()"></textarea>
+                      required></textarea>
         </div>
         <div class="row">
             <div class="col-9">
                 <div class="input-group" id="captcha-container" style="display: none;">
-                    <img id="img-captcha" onclick="viewpost.resetCaptchaImage()" title="@SharedLocalizer["Can't read? Click to change another image."]" alt="@SharedLocalizer["Captcha code"]" />
+                    <img id="img-captcha" title="@SharedLocalizer["Can't read? Click to change another image."]" alt="@SharedLocalizer["Captcha code"]" />
                     <input type="text"
                            aria-label="@SharedLocalizer["Captcha code"]"
                            id="input-comment-captcha"

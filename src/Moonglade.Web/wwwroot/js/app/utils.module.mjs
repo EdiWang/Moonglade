@@ -38,3 +38,18 @@ export function formatUtcTime(includeTime = true) {
         }
     });
 }
+
+export function parseMetaContent(metaName) {
+    const metaTag = document.querySelector(`meta[name="${metaName}"]`);
+    if (!metaTag) return null;
+
+    const contentValue = metaTag.content.trim();
+
+    if (contentValue.toLowerCase() === "true") return true;
+    if (contentValue.toLowerCase() === "false") return false;
+
+    const numberValue = Number(contentValue);
+    if (!isNaN(numberValue)) return numberValue;
+
+    return contentValue;
+}

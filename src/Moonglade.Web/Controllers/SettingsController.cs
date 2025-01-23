@@ -38,6 +38,7 @@ public class SettingsController(
     }
 
     [HttpPost("general")]
+    [ReadonlyMode]
     [ProducesResponseType(StatusCodes.Status204NoContent)]
     public async Task<IActionResult> General(GeneralSettings model, ITimeZoneResolver timeZoneResolver)
     {
@@ -54,6 +55,7 @@ public class SettingsController(
     }
 
     [HttpPost("content")]
+    [ReadonlyMode]
     [ProducesResponseType(StatusCodes.Status204NoContent)]
     public async Task<IActionResult> Content(ContentSettings model)
     {
@@ -64,6 +66,7 @@ public class SettingsController(
     }
 
     [HttpPost("comment")]
+    [ReadonlyMode]
     [ProducesResponseType(StatusCodes.Status204NoContent)]
     public async Task<IActionResult> Comment(CommentSettings model)
     {
@@ -74,6 +77,7 @@ public class SettingsController(
     }
 
     [HttpPost("notification")]
+    [ReadonlyMode]
     [ProducesResponseType(StatusCodes.Status204NoContent)]
     public async Task<IActionResult> Notification(NotificationSettings model)
     {
@@ -100,6 +104,7 @@ public class SettingsController(
     }
 
     [HttpPost("subscription")]
+    [ReadonlyMode]
     [ProducesResponseType(StatusCodes.Status204NoContent)]
     public async Task<IActionResult> Subscription(FeedSettings model)
     {
@@ -110,6 +115,7 @@ public class SettingsController(
     }
 
     [HttpPost("watermark")]
+    [ReadonlyMode]
     [ProducesResponseType(StatusCodes.Status204NoContent)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
     public async Task<IActionResult> Image(ImageSettings model, IBlogImageStorage imageStorage)
@@ -153,6 +159,7 @@ public class SettingsController(
     }
 
     [HttpPost("advanced")]
+    [ReadonlyMode]
     [ProducesResponseType(StatusCodes.Status204NoContent)]
     public async Task<IActionResult> Advanced(AdvancedSettings model)
     {
@@ -163,6 +170,7 @@ public class SettingsController(
     }
 
     [HttpPost("social-link")]
+    [ReadonlyMode]
     [ProducesResponseType(StatusCodes.Status204NoContent)]
     public async Task<IActionResult> SocialLink(SocialLinkSettingsJsonModel model)
     {
@@ -216,6 +224,7 @@ public class SettingsController(
     }
 
     [HttpPost("appearance")]
+    [ReadonlyMode]
     [ProducesResponseType(StatusCodes.Status204NoContent)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
     [TypeFilter(typeof(ClearBlogCache), Arguments = [BlogCachePartition.General, "theme"])]
@@ -234,6 +243,7 @@ public class SettingsController(
     }
 
     [HttpPost("custom-menu")]
+    [ReadonlyMode]
     [ProducesResponseType(StatusCodes.Status204NoContent)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
     public async Task<IActionResult> CustomMenu(CustomMenuSettingsJsonModel model)
@@ -267,6 +277,7 @@ public class SettingsController(
     }
 
     [HttpPut("password/local")]
+    [ReadonlyMode]
     [ProducesResponseType(StatusCodes.Status204NoContent)]
     [ProducesResponseType(StatusCodes.Status409Conflict)]
     public async Task<IActionResult> UpdateLocalAccountPassword(UpdateLocalAccountPasswordRequest request)

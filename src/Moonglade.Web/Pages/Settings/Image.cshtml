@@ -1,14 +1,10 @@
 ﻿@page "/admin/settings/image"
-@section scripts {
-    <script type="module">
-        import * as settings from '/js/app/admin.settings.module.js';
-
-        const form = document.querySelector('#form-settings');
-        form.addEventListener('submit', settings.handleSettingsSubmit);
-    </script>
-}
 @{
     var settings = BlogConfig.ImageSettings;
+}
+
+@section scripts {
+    <script type="module" src="~/js/app/admin.settings.content.mjs" asp-append-version="true"></script>
 }
 
 @section admintoolbar {
@@ -157,7 +153,7 @@
                         <div class="col-5">
                             <div class="row g-1">
                                 <div class="col">
-                                    <input asp-for="@settings.WatermarkColorA" required min="0" max="255" class="form-control" />
+                                    <input asp-for="@settings.WatermarkColorA" type="range" required min="0" max="255" class="form-range" />
                                 </div>
                             </div>
                         </div>

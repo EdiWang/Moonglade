@@ -16,7 +16,8 @@ public static class ThemeFactory
             CreateTheme(105, "Metal Blue", "#4E5967"),
             CreateTheme(106, "Mars Green", "#008C8C"),
             CreateTheme(107, "Prussian Blue", "#003153"),
-            CreateTheme(108, "Hermes Orange", "#E85827")
+            CreateTheme(108, "Hermes Orange", "#E85827"),
+            CreateTheme(109, "Burgundy Red", "#800020"),
         };
     }
 

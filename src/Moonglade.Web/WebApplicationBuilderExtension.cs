@@ -11,40 +11,58 @@ public static class WebApplicationBuilderExtension
         Console.WriteLine($"Moonglade {appVersion} | .NET {Environment.Version}");
         Console.WriteLine("----------------------------------------------------------");
 
-        var strHostName = Dns.GetHostName();
-        var ipEntry = Dns.GetHostEntry(strHostName);
-        var ips = ipEntry.AddressList;
+        var (ipv4Addresses, ipv6Addresses) = GetIpAddresses();
 
-        // get all IPv4 addresses
-        var ipv4s = ips.Where(p => p.AddressFamily == AddressFamily.InterNetwork).ToArray();
+        var envName = Environment.GetEnvironmentVariable("ASPNETCORE_ENVIRONMENT") ?? "N/A";
+        var configuration = builder.Configuration;
 
-        // get all IPv6 addresses
-        var ipv6s = ips.Where(p => p.AddressFamily == AddressFamily.InterNetworkV6).ToArray();
-
-        var envName = Environment.GetEnvironmentVariable("ASPNETCORE_ENVIRONMENT");
-
-        var dic = new Dictionary<string, string>
+        var parameters = new Dictionary<string, string>
         {
             { "Path", Environment.CurrentDirectory },
             { "System", Helper.TryGetFullOSVersion() },
             { "User", Environment.UserName },
             { "Host", Environment.MachineName },
-            { "IPv4", string.Join(", ", ipv4s.Select(p => p.ToString())) },
-            { "IPv6", string.Join(", ", ipv6s.Select(p => p.ToString())) },
-            { "URLs", builder.Configuration["Urls"]! },
-            { "Database", DatabaseTypeHelper.DetermineDatabaseType(builder.Configuration.GetConnectionString("MoongladeDatabase")!).ToString() },
-            { "Image storage", builder.Configuration["ImageStorage:Provider"]! },
-            { "Authentication", builder.Configuration["Authentication:Provider"]! },
-            { "Editor", builder.Configuration["Post:Editor"]! },
-            { "Environment", envName ?? "N/A" }
+            { "IPv4", string.Join(", ", ipv4Addresses) },
+            { "IPv6", string.Join(", ", ipv6Addresses) },
+            { "URLs", configuration["Urls"] ?? "N/A" },
+            { "Database", DatabaseTypeHelper.DetermineDatabaseType(configuration.GetConnectionString("MoongladeDatabase") ?? string.Empty).ToString() },
+            { "Image storage", configuration["ImageStorage:Provider"] ?? "N/A" },
+            { "Authentication", configuration["Authentication:Provider"] ?? "N/A" },
+            { "Editor", configuration["Post:Editor"] ?? "N/A" },
+            { "Environment", envName }
         };
 
-        foreach (var item in dic)
+        foreach (var (key, value) in parameters)
         {
-            Console.WriteLine($"{item.Key,-20} | {item.Value,-35}");
+            Console.WriteLine($"{key,-20} | {value,-35}");
         }
 
         Console.WriteLine("----------------------------------------------------------");
         Console.WriteLine("https://github.com/EdiWang/Moonglade");
+    }
+
+    private static (string[] ipv4Addresses, string[] ipv6Addresses) GetIpAddresses()
+    {
+        try
+        {
+            var hostName = Dns.GetHostName();
+            var ipAddresses = Dns.GetHostEntry(hostName).AddressList;
+
+            var ipv4Addresses = ipAddresses
+                .Where(ip => ip.AddressFamily == AddressFamily.InterNetwork)
+                .Select(ip => ip.ToString())
+                .ToArray();
+
+            var ipv6Addresses = ipAddresses
+                .Where(ip => ip.AddressFamily == AddressFamily.InterNetworkV6)
+                .Select(ip => ip.ToString())
+                .ToArray();
+
+            return (ipv4Addresses, ipv6Addresses);
+        }
+        catch
+        {
+            return (Array.Empty<string>(), Array.Empty<string>());
+        }
     }
 }

@@ -1,4 +1,8 @@
-﻿export function resizeImages() {
+﻿import { callApi } from './httpService.mjs'
+import { formatUtcTime, parseMetaContent } from './utils.module.mjs';
+import { resetCaptchaImage, showCaptcha } from './captchaService.mjs';
+
+function resizeImages() {
     const images = document.querySelectorAll('.post-content img');
     images.forEach(img => {
         img.removeAttribute('height');
@@ -7,7 +11,7 @@
     });
 }
 
-export function renderCodeHighlighter() {
+function renderCodeHighlighter() {
     const pres = document.querySelectorAll('pre');
     pres.forEach(pre => {
         // Find <pre> that doesn't have a <code> inside it.
@@ -31,7 +35,7 @@ export function renderCodeHighlighter() {
     });
 }
 
-export function RenderLaTeX() {
+function renderLaTeX() {
     const codeBlocks = document.querySelectorAll('pre.language-latex code');
     codeBlocks.forEach(block => {
         const latex = block.textContent.trim();
@@ -45,21 +49,22 @@ export function RenderLaTeX() {
     });
 }
 
-export function getImageWidthInDevicePixelRatio(width) {
+function getImageWidthInDevicePixelRatio(width) {
     if (width <= 0) return 0;
     var dpr = window.devicePixelRatio;
     if (dpr === 1) return width;
     return width / dpr;
 }
 
-export function applyImageZooming() {
+function applyImageZooming() {
+    const fitImageToDevicePixelRatio = parseMetaContent("image-device-dpi");
+
     document.querySelectorAll('.post-content img').forEach(function (img) {
         img.addEventListener('click', function (e) {
             var src = img.getAttribute('src');
-
             document.querySelector('#imgzoom').src = src;
 
-            if (window.fitImageToDevicePixelRatio) {
+            if (fitImageToDevicePixelRatio) {
                 setTimeout(function () {
                     var w = document.querySelector('#imgzoom').naturalWidth;
                     document.querySelector('#imgzoom').style.width = getImageWidthInDevicePixelRatio(w) + 'px';
@@ -72,20 +77,7 @@ export function applyImageZooming() {
     });
 }
 
-export function resetCaptchaImage() {
-    const d = new Date();
-    document.querySelector('#img-captcha').src = `/captcha-image?${d.getTime()}`;
-}
-
-export function showCaptcha() {
-    var captchaContainer = document.getElementById('captcha-container');
-    if (captchaContainer.style.display === 'none') {
-        captchaContainer.style.display = 'flex';
-        resetCaptchaImage();
-    }
-}
-
-export function submitComment(pid) {
+function submitComment(pid) {
     const thxForComment = document.querySelector('#thx-for-comment');
     const thxForCommentNonReview = document.querySelector('#thx-for-comment-non-review');
     const loadingIndicator = document.querySelector('#loadingIndicator');
@@ -130,7 +122,7 @@ export function submitComment(pid) {
     );
 }
 
-export function calculateReadingTime() {
+function calculateReadingTime() {
     const englishWordsPerMinute = 225; // Average reading speed for English
     const chineseCharactersPerMinute = 450; // Average reading speed for Chinese
     const germanWordsPerMinute = 225; // Average reading speed for German
@@ -156,3 +148,32 @@ export function calculateReadingTime() {
 
     document.getElementById('reading-time').innerText = `Estimated Reading Time: ${roundedReadingTime} minute(s)`;
 }
+
+document.addEventListener('DOMContentLoaded', () => {
+    resizeImages();
+    if (window.innerWidth >= 768) {
+        applyImageZooming();
+    }
+
+    renderCodeHighlighter();
+    renderLaTeX();
+    calculateReadingTime();
+
+    if (parseMetaContent('post-is-published')) {
+        document.getElementById('comment-form')?.addEventListener('submit', function (e) {
+            e.preventDefault();
+            let pid = document.querySelector('article').dataset.postid;
+            submitComment(pid);
+        });
+
+        document.getElementById('input-comment-content')?.addEventListener('focus', function () {
+            showCaptcha();
+        });
+
+        document.getElementById('img-captcha')?.addEventListener('click', function () {
+            resetCaptchaImage();
+        });
+
+        formatUtcTime();
+    }
+});
