@@ -29,3 +29,9 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     });
 });
+
+window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', (event) => {
+    if (getPreferredTheme() == 'auto') {
+        setTheme('auto');
+    }
+});
