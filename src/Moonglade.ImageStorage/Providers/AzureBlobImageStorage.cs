@@ -16,7 +16,11 @@ public class AzureBlobImageStorage : IBlogImageStorage
     {
         _logger = logger;
         _container = InitializeContainer(blobConfiguration.ConnectionString, blobConfiguration.ContainerName);
-        _secondaryContainer = InitializeContainer(blobConfiguration.ConnectionString, blobConfiguration.SecondaryContainerName);
+
+        if (!string.IsNullOrWhiteSpace(blobConfiguration.SecondaryContainerName))
+        {
+            _secondaryContainer = InitializeContainer(blobConfiguration.ConnectionString, blobConfiguration.SecondaryContainerName);
+        }
     }
 
     private BlobContainerClient InitializeContainer(string connectionString, string containerName)
@@ -33,6 +37,12 @@ public class AzureBlobImageStorage : IBlogImageStorage
 
     public async Task<string> InsertSecondaryAsync(string fileName, byte[] imageBytes)
     {
+        if (_secondaryContainer is null)
+        {
+            _logger.LogError("Secondary container is not configured.");
+            return null;
+        }
+
         return await InsertInternalAsync(_secondaryContainer, fileName, imageBytes).ConfigureAwait(false);
     }
 
