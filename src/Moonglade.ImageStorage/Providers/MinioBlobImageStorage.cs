@@ -44,7 +44,23 @@ public class MinioBlobImageStorage : IBlogImageStorage
         }
     }
 
-    public async Task<string> InsertAsync(string fileName, byte[] imageBytes)
+    public Task<string> InsertAsync(string fileName, byte[] imageBytes)
+    {
+        return InsertInternalAsync(fileName, imageBytes, _bucketName);
+    }
+
+    public async Task<string> InsertSecondaryAsync(string fileName, byte[] imageBytes)
+    {
+        if (string.IsNullOrWhiteSpace(_secondaryBucketName))
+        {
+            _logger.LogError("Secondary bucket is not configured.");
+            return null;
+        }
+
+        return await InsertInternalAsync(fileName, imageBytes, _secondaryBucketName);
+    }
+
+    public async Task<string> InsertInternalAsync(string fileName, byte[] imageBytes, string bucketName)
     {
         if (string.IsNullOrWhiteSpace(fileName))
         {
@@ -58,7 +74,7 @@ public class MinioBlobImageStorage : IBlogImageStorage
         await using var fileStream = new MemoryStream(imageBytes);
 
         var putObjectArg = new PutObjectArgs()
-            .WithBucket(_bucketName)
+            .WithBucket(bucketName)
             .WithFileName(fileName)
             .WithStreamData(fileStream)
             .WithObjectSize(fileStream.Length);
@@ -68,11 +84,6 @@ public class MinioBlobImageStorage : IBlogImageStorage
         _logger.LogInformation($"Uploaded image file '{fileName}' to Minio Blob Storage.");
 
         return fileName;
-    }
-
-    public Task<string> InsertSecondaryAsync(string fileName, byte[] imageBytes)
-    {
-        throw new NotImplementedException();
     }
 
     public async Task DeleteAsync(string fileName)
