@@ -8,84 +8,100 @@ public class AzureBlobImageStorage : IBlogImageStorage
 {
     public string Name => nameof(AzureBlobImageStorage);
 
-    private BlobContainerClient _container;
-
+    private readonly BlobContainerClient _container;
+    private readonly BlobContainerClient _secondaryContainer;
     private readonly ILogger<AzureBlobImageStorage> _logger;
 
     public AzureBlobImageStorage(ILogger<AzureBlobImageStorage> logger, AzureBlobConfiguration blobConfiguration)
     {
         _logger = logger;
-
-        CreateContainer(logger, blobConfiguration);
+        _container = InitializeContainer(blobConfiguration.ConnectionString, blobConfiguration.ContainerName);
+        _secondaryContainer = InitializeContainer(blobConfiguration.ConnectionString, blobConfiguration.SecondaryContainerName);
     }
 
-    private void CreateContainer(ILogger<AzureBlobImageStorage> logger, AzureBlobConfiguration blobConfiguration)
+    private BlobContainerClient InitializeContainer(string connectionString, string containerName)
     {
-        _container = new(blobConfiguration.ConnectionString, blobConfiguration.ContainerName);
-        logger.LogInformation($"Created {nameof(AzureBlobImageStorage)} for account {_container.AccountName} on container {_container.Name}");
+        var container = new BlobContainerClient(connectionString, containerName);
+        _logger.LogInformation($"Initialized container '{containerName}' for account '{container.AccountName}'.");
+        return container;
     }
 
     public async Task<string> InsertAsync(string fileName, byte[] imageBytes)
+    {
+        return await InsertInternalAsync(_container, fileName, imageBytes).ConfigureAwait(false);
+    }
+
+    public async Task<string> InsertSecondaryAsync(string fileName, byte[] imageBytes)
+    {
+        return await InsertInternalAsync(_secondaryContainer, fileName, imageBytes).ConfigureAwait(false);
+    }
+
+    private async Task<string> InsertInternalAsync(BlobContainerClient container, string fileName, byte[] imageBytes)
     {
         if (string.IsNullOrWhiteSpace(fileName))
         {
             throw new ArgumentNullException(nameof(fileName));
         }
 
-        _logger.LogInformation($"Uploading {fileName} to Azure Blob Storage.");
+        _logger.LogInformation($"Uploading '{fileName}' to Azure Blob Storage.");
 
+        var blob = container.GetBlobClient(fileName);
+        var blobHttpHeader = new BlobHttpHeaders
+        {
+            ContentType = GetContentType(Path.GetExtension(blob.Uri.AbsoluteUri))
+        };
 
-        var blob = _container.GetBlobClient(fileName);
+        await using var fileStream = new MemoryStream(imageBytes);
+        var uploadedBlob = await blob.UploadAsync(fileStream, blobHttpHeader).ConfigureAwait(false);
 
-        // Why .NET doesn't have MimeMapping.GetMimeMapping()
-        var blobHttpHeader = new BlobHttpHeaders();
-        var extension = Path.GetExtension(blob.Uri.AbsoluteUri);
-        blobHttpHeader.ContentType = extension.ToLower() switch
+        _logger.LogInformation($"Uploaded '{fileName}' to Azure Blob Storage. ETag: '{uploadedBlob.Value.ETag}'.");
+
+        return fileName;
+    }
+
+    private string GetContentType(string extension)
+    {
+        return extension.ToLower() switch
         {
             ".jpg" => "image/jpeg",
             ".jpeg" => "image/jpeg",
             ".png" => "image/png",
             ".gif" => "image/gif",
             ".webp" => "image/webp",
-            _ => blobHttpHeader.ContentType
+            _ => "application/octet-stream"
         };
-
-        await using var fileStream = new MemoryStream(imageBytes);
-        var uploadedBlob = await blob.UploadAsync(fileStream, blobHttpHeader);
-
-        _logger.LogInformation($"Uploaded image file '{fileName}' to Azure Blob Storage, ETag '{uploadedBlob.Value.ETag}'. Yeah, the best cloud!");
-
-        return fileName;
-    }
-
-    public Task<string> InsertSecondaryAsync(string fileName, byte[] imageBytes)
-    {
-        throw new NotImplementedException();
     }
 
     public async Task DeleteAsync(string fileName)
     {
-        await _container.DeleteBlobIfExistsAsync(fileName);
+        if (string.IsNullOrWhiteSpace(fileName))
+        {
+            throw new ArgumentNullException(nameof(fileName));
+        }
+
+        _logger.LogInformation($"Deleting blob '{fileName}' from Azure Blob Storage.");
+        await _container.DeleteBlobIfExistsAsync(fileName).ConfigureAwait(false);
     }
 
     public async Task<ImageInfo> GetAsync(string fileName)
     {
-        var blobClient = _container.GetBlobClient(fileName);
-        await using var memoryStream = new MemoryStream();
-        var extension = Path.GetExtension(fileName);
-        if (string.IsNullOrWhiteSpace(extension))
+        if (string.IsNullOrWhiteSpace(fileName))
         {
-            _logger.LogError("File extension is empty");
-            throw new ArgumentException("File extension is empty");
+            throw new ArgumentNullException(nameof(fileName));
         }
 
-        var existsTask = blobClient.ExistsAsync();
-        var downloadTask = blobClient.DownloadToAsync(memoryStream);
+        var blobClient = _container.GetBlobClient(fileName);
+        var extension = Path.GetExtension(fileName);
 
-        var exists = await existsTask;
-        if (!exists)
+        if (string.IsNullOrWhiteSpace(extension))
         {
-            _logger.LogWarning($"Blob {fileName} not exist.");
+            _logger.LogError("File extension is empty.");
+            throw new ArgumentException("File extension is empty.");
+        }
+
+        if (!await blobClient.ExistsAsync().ConfigureAwait(false))
+        {
+            _logger.LogWarning($"Blob '{fileName}' does not exist.");
 
             // Can not throw FileNotFoundException,
             // because hackers may request a large number of 404 images
@@ -93,16 +109,14 @@ public class AzureBlobImageStorage : IBlogImageStorage
             return null;
         }
 
-        await downloadTask;
-        var arr = memoryStream.ToArray();
+        _logger.LogInformation($"Fetching blob '{fileName}' from Azure Blob Storage.");
+        await using var memoryStream = new MemoryStream();
+        await blobClient.DownloadToAsync(memoryStream).ConfigureAwait(false);
 
-        var fileType = extension.Replace(".", string.Empty);
-        var imageInfo = new ImageInfo
+        return new ImageInfo
         {
-            ImageBytes = arr,
-            ImageExtensionName = fileType
+            ImageBytes = memoryStream.ToArray(),
+            ImageExtensionName = extension.TrimStart('.')
         };
-
-        return imageInfo;
     }
 }
