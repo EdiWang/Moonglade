@@ -1,5 +1,5 @@
 ﻿import { callApi } from './httpService.mjs'
-import * as utils from './utils.module.mjs'
+import { toMagicJson } from './utils.module.mjs'
 import { success } from './toastService.mjs'
 
 export function handleSettingsSubmit(event) {
@@ -22,7 +22,7 @@ export function handleSettingsSubmit(event) {
 
     const formData = new FormData(event.target);
     const formValues = Object.fromEntries(formData.entries());
-    const formattedValues = utils.toMagicJson(formValues);
+    const formattedValues = toMagicJson(formValues);
 
     callApi(event.currentTarget.action, 'POST', formattedValues,
         (resp) => {
