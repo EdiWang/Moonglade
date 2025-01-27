@@ -2,6 +2,22 @@ import { callApi } from './httpService.mjs'
 import { formatUtcTime } from './utils.module.mjs'
 import { success } from './toastService.mjs'
 
+function deletePost(postid) {
+    callApi(`/api/post/${postid}/destroy`, 'DELETE', {},
+        (resp) => {
+            document.querySelector(`#post-${postid}`).remove();
+            success('Post deleted');
+        });
+}
+
+function restorePost(postid) {
+    callApi(`/api/post/${postid}/restore`, 'POST', {},
+        (resp) => {
+            document.querySelector(`#post-${postid}`).remove();
+            success('Post restored');
+        });
+}
+
 document.querySelectorAll('.btn-delete').forEach(function (button) {
     button.addEventListener('click', function () {
         var cfm = confirm('Delete Confirmation?');
@@ -27,21 +43,5 @@ document.querySelectorAll('.btn-empty-recbin').forEach(function (button) {
         });
     });
 });
-
-function deletePost(postid) {
-    callApi(`/api/post/${postid}/destroy`, 'DELETE', {},
-        (resp) => {
-            document.querySelector(`#post-${postid}`).remove();
-            success('Post deleted');
-        });
-}
-
-function restorePost(postid) {
-    callApi(`/api/post/${postid}/restore`, 'POST', {},
-        (resp) => {
-            document.querySelector(`#post-${postid}`).remove();
-            success('Post restored');
-        });
-}
 
 formatUtcTime();
