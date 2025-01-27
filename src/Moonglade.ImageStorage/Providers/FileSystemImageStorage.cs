@@ -67,10 +67,7 @@ public class FileSystemImageStorage(FileSystemImageConfiguration imgConfig, ILog
         return fileName;
     }
 
-    public Task<string> InsertSecondaryAsync(string fileName, byte[] imageBytes)
-    {
-        throw new NotImplementedException();
-    }
+    public Task<string> InsertSecondaryAsync(string fileName, byte[] imageBytes) => InsertAsync(fileName, imageBytes);
 
     public static string ResolveImageStoragePath(string path)
     {
