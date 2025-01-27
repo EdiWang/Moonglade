@@ -1,5 +1,5 @@
 ﻿import { callApi } from './httpService.mjs'
-import * as theme from './themeService.mjs';
+import { getPreferredTheme } from './themeService.mjs';
 
 function slugify(text) {
     if (!/^[A-Za-z][A-Za-z0-9 \(\)#,\.\?]*$/.test(text)) {
@@ -122,7 +122,7 @@ export function loadTinyMCE(textareaSelector) {
         return;
     }
 
-    const preferredTheme = theme.getPreferredTheme();
+    const preferredTheme = getPreferredTheme();
     const isDarkTheme = preferredTheme === 'dark';
 
     window.tinyMCE.init({
