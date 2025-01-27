@@ -8,7 +8,7 @@ public class AzureBlobImageStorage : IBlogImageStorage
 {
     public string Name => nameof(AzureBlobImageStorage);
 
-    private readonly BlobContainerClient _container;
+    private BlobContainerClient _container;
 
     private readonly ILogger<AzureBlobImageStorage> _logger;
 
@@ -16,8 +16,12 @@ public class AzureBlobImageStorage : IBlogImageStorage
     {
         _logger = logger;
 
-        _container = new(blobConfiguration.ConnectionString, blobConfiguration.ContainerName);
+        CreateContainer(logger, blobConfiguration);
+    }
 
+    private void CreateContainer(ILogger<AzureBlobImageStorage> logger, AzureBlobConfiguration blobConfiguration)
+    {
+        _container = new(blobConfiguration.ConnectionString, blobConfiguration.ContainerName);
         logger.LogInformation($"Created {nameof(AzureBlobImageStorage)} for account {_container.AccountName} on container {_container.Name}");
     }
 
@@ -52,6 +56,11 @@ public class AzureBlobImageStorage : IBlogImageStorage
         _logger.LogInformation($"Uploaded image file '{fileName}' to Azure Blob Storage, ETag '{uploadedBlob.Value.ETag}'. Yeah, the best cloud!");
 
         return fileName;
+    }
+
+    public Task<string> InsertSecondaryAsync(string fileName, byte[] imageBytes)
+    {
+        throw new NotImplementedException();
     }
 
     public async Task DeleteAsync(string fileName)

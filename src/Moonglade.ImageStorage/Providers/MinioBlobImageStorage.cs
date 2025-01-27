@@ -68,6 +68,11 @@ public class MinioBlobImageStorage : IBlogImageStorage
         return fileName;
     }
 
+    public Task<string> InsertSecondaryAsync(string fileName, byte[] imageBytes)
+    {
+        throw new NotImplementedException();
+    }
+
     public async Task DeleteAsync(string fileName)
     {
         if (await BlobExistsAsync(fileName))
