@@ -6,5 +6,6 @@ public record MinioStorageSettings
     public string AccessKey { get; set; }
     public string SecretKey { get; set; }
     public string BucketName { get; set; }
+    public string SecondaryBucketName { get; set; }
     public bool WithSSL { get; set; }
 }

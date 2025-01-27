@@ -81,6 +81,7 @@ public static class ServiceCollectionExtensions
                     settings.AccessKey,
                     settings.SecretKey,
                     settings.BucketName,
+                    settings.SecondaryBucketName,
                     settings.WithSSL));
     }
 }
