@@ -11,6 +11,7 @@ public class MinioBlobImageStorage : IBlogImageStorage
 
     private readonly IMinioClient _client;
     private readonly string _bucketName;
+    private readonly string _secondaryBucketName;
 
     private readonly ILogger<MinioBlobImageStorage> _logger;
 
@@ -28,6 +29,7 @@ public class MinioBlobImageStorage : IBlogImageStorage
         _client.Build();
 
         _bucketName = blobConfiguration.BucketName;
+        _secondaryBucketName = blobConfiguration.SecondaryBucketName;
 
         logger.LogInformation($"Created {nameof(MinioBlobImageStorage)} at {blobConfiguration.EndPoint}");
     }
