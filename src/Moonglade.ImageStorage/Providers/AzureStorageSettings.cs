@@ -5,4 +5,6 @@ public record AzureStorageSettings
     public string ConnectionString { get; set; }
 
     public string ContainerName { get; set; }
+
+    public string SecondaryContainerName { get; set; }
 }

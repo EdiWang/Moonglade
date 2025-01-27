@@ -58,7 +58,8 @@ public static class ServiceCollectionExtensions
     {
         var conn = settings.ConnectionString;
         var container = settings.ContainerName;
-        services.AddSingleton(_ => new AzureBlobConfiguration(conn, container))
+        var secondaryContainer = settings.SecondaryContainerName;
+        services.AddSingleton(_ => new AzureBlobConfiguration(conn, container, secondaryContainer))
                 .AddSingleton<IBlogImageStorage, AzureBlobImageStorage>()
                 .AddScoped<IFileNameGenerator>(_ => new GuidFileNameGenerator(Guid.NewGuid()));
     }
