@@ -10,6 +10,7 @@ Moonglade is a personal blogging platform optimized for deployment on [**Microso
 
 - **Deployment Options:** While Azure is recommended, Moonglade Blog can also be deployed on other cloud providers or on-premises environments.
 
+- **Regulation:** Due to regulation concerns in China, Moonglade will run in read-only mode when deployed in China. If you are in China, please consider another blogging platform.
 
 ### Full Deploy on Azure
 
