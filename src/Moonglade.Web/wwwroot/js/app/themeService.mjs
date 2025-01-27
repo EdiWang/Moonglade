@@ -9,14 +9,15 @@ export const getPreferredTheme = () => {
 
 export function setTheme(theme) {
     const rootElement = document.documentElement;
+
     if (theme === 'auto') {
         const systemTheme = getSystemTheme();
         rootElement.setAttribute('data-bs-theme', systemTheme);
-        localStorage.removeItem('theme');
     } else {
         rootElement.setAttribute('data-bs-theme', theme);
-        setStoredTheme(theme);
     }
+
+    setStoredTheme(theme);
 }
 
 document.addEventListener('DOMContentLoaded', () => {
