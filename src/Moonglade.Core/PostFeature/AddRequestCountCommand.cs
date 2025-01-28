@@ -11,7 +11,7 @@ public class AddRequestCountCommandHandler(
 {
     public async Task<int> Handle(AddRequestCountCommand request, CancellationToken cancellationToken)
     {
-        var entity = await postViewRepo.GetByIdAsync(request.PostId);
+        var entity = await postViewRepo.GetByIdAsync(request.PostId, cancellationToken);
         if (entity is null)
         {
             entity = new PostViewEntity
