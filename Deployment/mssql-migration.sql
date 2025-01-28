@@ -133,3 +133,14 @@ IF EXISTS (
 BEGIN
     ALTER TABLE [dbo].[BlogConfiguration] DROP COLUMN Id;
 END
+
+-- v14.19
+IF EXISTS (
+    SELECT 1
+    FROM INFORMATION_SCHEMA.COLUMNS
+    WHERE TABLE_NAME = 'Post'
+      AND COLUMN_NAME = 'Revision'
+)
+BEGIN
+    ALTER TABLE [dbo].[Post] DROP COLUMN Revision;
+END
