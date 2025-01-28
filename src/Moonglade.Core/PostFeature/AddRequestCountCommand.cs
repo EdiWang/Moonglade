@@ -37,7 +37,7 @@ public class AddRequestCountCommandHandler(
             }
 
             entity.RequestCount++;
-            await postViewRepo.UpdateAsync(entity);
+            await postViewRepo.UpdateAsync(entity, cancellationToken);
 
             logger.LogInformation("Request count updated for {PostId}, {RequestCount}", request.PostId, entity.RequestCount);
 
