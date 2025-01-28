@@ -152,6 +152,7 @@ BEGIN
 		[PostId] [uniqueidentifier] NOT NULL,
 		[RequestCount] [int] NOT NULL,
 		[ViewCount] [int] NOT NULL,
+        [BeginTimeUtc] [datetime] NOT NULL,
 	 CONSTRAINT [PK_PostView] PRIMARY KEY CLUSTERED 
 	(
 		[PostId] ASC

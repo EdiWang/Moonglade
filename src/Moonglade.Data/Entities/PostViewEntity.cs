@@ -10,4 +10,6 @@ public class PostViewEntity
     public int RequestCount { get; set; }
 
     public int ViewCount { get; set; }
+
+    public DateTime BeginTimeUtc { get; set; }
 }

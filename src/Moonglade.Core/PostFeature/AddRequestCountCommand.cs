@@ -17,7 +17,8 @@ public class AddRequestCountCommandHandler(
             entity = new PostViewEntity
             {
                 PostId = request.PostId,
-                RequestCount = 1
+                RequestCount = 1,
+                BeginTimeUtc = DateTime.UtcNow
             };
 
             await postViewRepo.AddAsync(entity);
