@@ -21,7 +21,7 @@ public class AddRequestCountCommandHandler(
                 BeginTimeUtc = DateTime.UtcNow
             };
 
-            await postViewRepo.AddAsync(entity);
+            await postViewRepo.AddAsync(entity, cancellationToken);
 
             logger.LogInformation("New request added for {PostId}", request.PostId);
             return 1;
