@@ -4,7 +4,7 @@ using System.Collections.Concurrent;
 
 namespace Moonglade.Core.PostFeature;
 
-public record AddViewCountCommand(Guid PostId) : IRequest<int>;
+public record AddViewCountCommand(Guid PostId, string Ip) : IRequest<int>;
 
 public class AddViewCountCommandHandler(
     MoongladeRepository<PostViewEntity> postViewRepo,
