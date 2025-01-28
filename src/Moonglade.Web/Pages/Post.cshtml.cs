@@ -18,9 +18,11 @@ public class PostModel(IMediator mediator) : PageModel
 
         if (post is null) return NotFound();
 
-        ViewData["TitlePrefix"] = $"{post.Title}";
+        await mediator.Send(new AddRequestCountCommand(post.Id));
 
         Post = post;
+        ViewData["TitlePrefix"] = $"{Post.Title}";
+
         return Page();
     }
 }
