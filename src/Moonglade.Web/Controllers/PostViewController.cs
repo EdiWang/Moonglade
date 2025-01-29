@@ -23,6 +23,12 @@ public class PostViewController(IBlogConfig blogConfig, IMediator mediator) : Co
             return Forbid();
         }
 
+        var now = DateTime.UtcNow;
+        if (Math.Abs((now - request.ClientTimeStamp).TotalMinutes) > 5)
+        {
+            return BadRequest();
+        }
+
         await SaveViewRecord(request.PostId, HttpContext.Connection.RemoteIpAddress?.ToString());
 
         return NoContent();
@@ -86,5 +92,5 @@ public class ViewRequest
     public Guid PostId { get; set; }
 
     [Required]
-    public string ClientTimeStamp { get; set; }
+    public DateTime ClientTimeStamp { get; set; }
 }
