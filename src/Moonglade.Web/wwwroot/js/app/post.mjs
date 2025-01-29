@@ -159,10 +159,11 @@ document.addEventListener('DOMContentLoaded', () => {
     renderLaTeX();
     calculateReadingTime();
 
+    let pid = document.querySelector('article').dataset.postid;
+
     if (parseMetaContent('post-is-published')) {
         document.getElementById('comment-form')?.addEventListener('submit', function (e) {
             e.preventDefault();
-            let pid = document.querySelector('article').dataset.postid;
             submitComment(pid);
         });
 
@@ -176,4 +177,33 @@ document.addEventListener('DOMContentLoaded', () => {
 
         formatUtcTime();
     }
+
+    // Record post view count
+    const localStorageKey = `post_viewed_${pid}`;
+    let hasInteracted = false;
+
+    if (localStorage.getItem(localStorageKey)) return;
+
+    window.addEventListener("scroll", () => {
+        hasInteracted = true;
+    });
+
+    window.addEventListener("click", () => {
+        hasInteracted = true;
+    });
+
+    window.addEventListener("keydown", () => {
+        hasInteracted = true;
+    });
+
+    setTimeout(() => {
+        if (hasInteracted) {
+            callApi(`/api/postview`, 'POST', {
+                postId: pid,
+                clientTimeStamp: new Date().toISOString()
+            }, () => {
+                localStorage.setItem(localStorageKey, "true");
+            });
+        }
+    }, 5000);
 });
