@@ -1,6 +1,7 @@
 ﻿import { callApi } from './httpService.mjs'
 import { formatUtcTime, parseMetaContent } from './utils.module.mjs';
 import { resetCaptchaImage, showCaptcha } from './captchaService.mjs';
+import { cleanupLocalStorage, recordPostView } from './postview.mjs';
 
 function resizeImages() {
     const images = document.querySelectorAll('.post-content img');
@@ -178,32 +179,6 @@ document.addEventListener('DOMContentLoaded', () => {
         formatUtcTime();
     }
 
-    // Record post view count
-    const localStorageKey = `post_viewed_${pid}`;
-    let hasInteracted = false;
-
-    if (localStorage.getItem(localStorageKey)) return;
-
-    window.addEventListener("scroll", () => {
-        hasInteracted = true;
-    });
-
-    window.addEventListener("click", () => {
-        hasInteracted = true;
-    });
-
-    window.addEventListener("keydown", () => {
-        hasInteracted = true;
-    });
-
-    setTimeout(() => {
-        if (hasInteracted) {
-            callApi(`/api/postview`, 'POST', {
-                postId: pid,
-                clientTimeStamp: new Date().toISOString()
-            }, () => {
-                localStorage.setItem(localStorageKey, "true");
-            });
-        }
-    }, 8000);
+    cleanupLocalStorage();
+    recordPostView(pid);
 });
