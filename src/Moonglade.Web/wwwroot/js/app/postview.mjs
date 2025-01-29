@@ -1,17 +1,24 @@
-import { callApi } from './httpService.mjs'
+import { callApi } from './httpService.mjs';
+
+const EXPIRATION_DAYS = 30;
+const MILLISECONDS_IN_A_DAY = 24 * 60 * 60 * 1000;
 
 export const cleanupLocalStorage = () => {
-    const expirationDays = 30;
-    const now = new Date().getTime();
+    const now = Date.now();
 
-    Object.keys(localStorage).forEach(key => {
+    Object.keys(localStorage).forEach((key) => {
         if (key.startsWith("post_viewed_")) {
-            const record = JSON.parse(localStorage.getItem(key));
-            if (record && record.timestamp) {
-                const recordTime = new Date(record.timestamp).getTime();
-                if ((now - recordTime) > expirationDays * 24 * 60 * 60 * 1000) {
-                    localStorage.removeItem(key);
+            try {
+                const record = JSON.parse(localStorage.getItem(key));
+                if (record?.timestamp) {
+                    const recordTime = new Date(record.timestamp).getTime();
+                    if (now - recordTime > EXPIRATION_DAYS * MILLISECONDS_IN_A_DAY) {
+                        localStorage.removeItem(key);
+                    }
                 }
+            } catch (error) {
+                console.error(`Error parsing localStorage key "${key}":`, error);
+                localStorage.removeItem(key); // Remove invalid or corrupted data
             }
         }
     });
@@ -19,30 +26,45 @@ export const cleanupLocalStorage = () => {
 
 export const recordPostView = (postId) => {
     const localStorageKey = `post_viewed_${postId}`;
+    const INTERACTION_TIMEOUT = 8000;
     let hasInteracted = false;
 
     if (localStorage.getItem(localStorageKey)) return;
 
-    window.addEventListener("scroll", () => {
+    const handleInteraction = () => {
         hasInteracted = true;
-    });
+        removeInteractionListeners();
+    };
 
-    window.addEventListener("click", () => {
-        hasInteracted = true;
-    });
+    const addInteractionListeners = () => {
+        window.addEventListener("scroll", handleInteraction, { once: true });
+        window.addEventListener("click", handleInteraction, { once: true });
+        window.addEventListener("keydown", handleInteraction, { once: true });
+    };
 
-    window.addEventListener("keydown", () => {
-        hasInteracted = true;
-    });
+    const removeInteractionListeners = () => {
+        window.removeEventListener("scroll", handleInteraction);
+        window.removeEventListener("click", handleInteraction);
+        window.removeEventListener("keydown", handleInteraction);
+    };
+
+    addInteractionListeners();
 
     setTimeout(() => {
         if (hasInteracted) {
-            callApi(`/api/postview`, 'POST', {
-                postId: postId,
-                clientTimeStamp: new Date().toISOString()
-            }, () => {
-                localStorage.setItem(localStorageKey, "true");
-            });
+            callApi(
+                `/api/postview`,
+                'POST',
+                {
+                    postId,
+                    clientTimeStamp: new Date().toISOString(),
+                },
+                () => {
+                    localStorage.setItem(localStorageKey, JSON.stringify({ timestamp: new Date().toISOString() }));
+                }
+            );
+        } else {
+            removeInteractionListeners();
         }
-    }, 8000);
+    }, INTERACTION_TIMEOUT);
 };
