@@ -205,5 +205,5 @@ document.addEventListener('DOMContentLoaded', () => {
                 localStorage.setItem(localStorageKey, "true");
             });
         }
-    }, 5000);
+    }, 8000);
 });
