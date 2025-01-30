@@ -2,33 +2,9 @@
 import { formatUtcTime, parseMetaContent } from './utils.module.mjs';
 import { resetCaptchaImage, showCaptcha } from './captchaService.mjs';
 import { resizeImages, applyImageZooming } from './post.imageutils.mjs';
-import { renderLaTeX } from './post.highlight.mjs';
+import { renderCodeHighlighter, renderLaTeX } from './post.highlight.mjs';
 import { calculateReadingTime } from './post.readingtime.mjs';
 import { cleanupLocalStorage, recordPostView } from './postview.mjs';
-
-function renderCodeHighlighter() {
-    const pres = document.querySelectorAll('pre');
-    pres.forEach(pre => {
-        // Find <pre> that doesn't have a <code> inside it.
-        if (!pre.querySelector('code')) {
-            const code = document.createElement('code');
-            while (pre.firstChild) {
-                code.appendChild(pre.firstChild);
-            }
-            pre.appendChild(code);
-        }
-
-        // For code that can't be automatically detected, fall back to use XML
-        if (pre.classList.contains('language-markup')) {
-            pre.querySelector('code').classList.add('lang-xml');
-        }
-    });
-
-    const codeBlocks = document.querySelectorAll('pre code');
-    codeBlocks.forEach(block => {
-        hljs.highlightElement(block);
-    });
-}
 
 function submitComment(pid) {
     const thxForComment = document.querySelector('#thx-for-comment');

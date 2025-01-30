@@ -1,3 +1,27 @@
+export function renderCodeHighlighter() {
+    const pres = document.querySelectorAll('pre');
+    pres.forEach(pre => {
+        // Find <pre> that doesn't have a <code> inside it.
+        if (!pre.querySelector('code')) {
+            const code = document.createElement('code');
+            while (pre.firstChild) {
+                code.appendChild(pre.firstChild);
+            }
+            pre.appendChild(code);
+        }
+
+        // For code that can't be automatically detected, fall back to use XML
+        if (pre.classList.contains('language-markup')) {
+            pre.querySelector('code').classList.add('lang-xml');
+        }
+    });
+
+    const codeBlocks = document.querySelectorAll('pre code');
+    codeBlocks.forEach(block => {
+        hljs.highlightElement(block);
+    });
+}
+
 export function renderLaTeX(selector) {
     const codeBlocks = document.querySelectorAll(selector);
     codeBlocks.forEach(block => {
