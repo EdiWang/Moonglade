@@ -2,6 +2,7 @@
 import { formatUtcTime, parseMetaContent } from './utils.module.mjs';
 import { resetCaptchaImage, showCaptcha } from './captchaService.mjs';
 import { resizeImages, applyImageZooming } from './post.imageutils.mjs';
+import { renderLaTeX } from './post.highlight.mjs';
 import { calculateReadingTime } from './post.readingtime.mjs';
 import { cleanupLocalStorage, recordPostView } from './postview.mjs';
 
@@ -26,20 +27,6 @@ function renderCodeHighlighter() {
     const codeBlocks = document.querySelectorAll('pre code');
     codeBlocks.forEach(block => {
         hljs.highlightElement(block);
-    });
-}
-
-function renderLaTeX() {
-    const codeBlocks = document.querySelectorAll('pre.language-latex code');
-    codeBlocks.forEach(block => {
-        const latex = block.textContent.trim();
-        const container = document.createElement('div');
-        try {
-            katex.render(latex, container, { output: 'mathml' });
-            block.parentNode.replaceWith(container);
-        } catch (error) {
-            console.error(error);
-        }
     });
 }
 
@@ -95,7 +82,7 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     renderCodeHighlighter();
-    renderLaTeX();
+    renderLaTeX('pre.language-latex code');
 
     const blogContent = document.querySelector('.post-content').innerText;
     let roundedReadingTime = calculateReadingTime(blogContent);
