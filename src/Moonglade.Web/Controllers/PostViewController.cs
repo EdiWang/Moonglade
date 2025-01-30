@@ -70,16 +70,14 @@ public class PostViewController(IBlogConfig blogConfig, IMediator mediator) : Co
             "SkypeUriPreview",
             "nuzzel",
             "Discordbot",
-            "Google Page Speed",
             "Qwantify",
             "pinterestbot",
             "bitlybot",
             "TelegramBot",
             "Chrome-Lighthouse",
-            "DuckDuckGo-Favicons-Bot",
+            "DuckDuckGo",
             "DuckDuckBot",
-            "Slack-ImgProxy",
-            "Slackbot"
+            "Slack"
         };
 
         return bots.Any(b => userAgent.Contains(b, StringComparison.OrdinalIgnoreCase));
