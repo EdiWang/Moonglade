@@ -6,11 +6,15 @@ namespace Moonglade.Web.Controllers;
 
 [Route("api/[controller]")]
 [ApiController]
-public class PostViewController(IBlogConfig blogConfig, IMediator mediator) : ControllerBase
+public class PostViewController(IConfiguration configuration, IBlogConfig blogConfig, IMediator mediator) : ControllerBase
 {
+    private readonly bool _isEnabled = configuration.GetValue<bool>("Post:EnableViewCount");
+
     [HttpPost]
     public async Task<IActionResult> AddViewCount([FromBody] ViewRequest request)
     {
+        if (!_isEnabled) return NotFound();
+
         var referer = Request.Headers.Referer.ToString();
         if (string.IsNullOrEmpty(referer) || !referer.Contains(blogConfig.GeneralSettings.CanonicalPrefix))
         {
