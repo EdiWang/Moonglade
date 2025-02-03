@@ -10,6 +10,8 @@ public class PostModel(IMediator mediator) : PageModel
 {
     public PostEntity Post { get; set; }
 
+    public PostViewEntity PostView { get; set; }
+
     public async Task<IActionResult> OnGetAsync(int year, int month, int day, string slug)
     {
         if (year > DateTime.UtcNow.Year || string.IsNullOrWhiteSpace(slug)) return NotFound();
@@ -22,6 +24,8 @@ public class PostModel(IMediator mediator) : PageModel
 
         Post = post;
         ViewData["TitlePrefix"] = $"{Post.Title}";
+
+        PostView = await mediator.Send(new GetPostViewQuery(post.Id));
 
         return Page();
     }
