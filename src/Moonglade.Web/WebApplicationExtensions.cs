@@ -44,7 +44,7 @@ public static class WebApplicationExtensions
 
     private static void ConfigureKnownProxies(WebApplication app, ForwardedHeadersOptions fho)
     {
-        var knownProxies = app.Configuration.GetSection($"{ForwardedHeadersSection}:{KnownProxiesKey}").Get<string[]>();
+        var knownProxies = app.Configuration.GetValue<string[]>($"{ForwardedHeadersSection}:{KnownProxiesKey}");
         if (knownProxies is { Length: > 0 })
         {
             // Fix docker deployments on Azure App Service blows up with Azure AD authentication

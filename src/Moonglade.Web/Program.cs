@@ -249,7 +249,7 @@ public class Program
 
     private static void ConfigureMiddleware(WebApplication app, List<CultureInfo> cultures)
     {
-        bool useXFFHeaders = app.Configuration.GetSection("ForwardedHeaders:Enabled").Get<bool>();
+        bool useXFFHeaders = app.Configuration.GetValue<bool>("ForwardedHeaders:Enabled");
         if (useXFFHeaders) app.UseSmartXFFHeader();
 
         app.UseCustomCss(options => options.MaxContentLength = 10240);
@@ -260,7 +260,7 @@ public class Program
             options.IconFilePath = "/favicon-16x16.png";
         });
 
-        bool usePrefersColorSchemeHeader = app.Configuration.GetSection("PrefersColorSchemeHeader:Enabled").Get<bool>();
+        bool usePrefersColorSchemeHeader = app.Configuration.GetValue<bool>("PrefersColorSchemeHeader:Enabled");
         if (usePrefersColorSchemeHeader) app.UseMiddleware<PrefersColorSchemeMiddleware>();
 
         app.UseMiddleware<PoweredByMiddleware>();
