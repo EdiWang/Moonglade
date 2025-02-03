@@ -8,7 +8,7 @@ namespace Moonglade.IndexNow.Client;
 
 public class IndexNowClient(ILogger<IndexNowClient> logger, IConfiguration configuration, IHttpClientFactory httpClientFactory) : IIndexNowClient
 {
-    private readonly string[] _pingTargets = configuration.GetSection("IndexNow:PingTargets").Get<string[]>();
+    private readonly string[] _pingTargets = configuration.GetValue<string[]>("IndexNow:PingTargets");
     private readonly string _apiKey = configuration["IndexNow:ApiKey"] ?? throw new InvalidOperationException("IndexNow:ApiKey is not configured.");
 
     public async Task SendRequestAsync(Uri uri)
