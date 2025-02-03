@@ -21,7 +21,7 @@
 }
 
 @section meta {
-    <meta name="editor-choice" content="@(Configuration.GetSection("Post:Editor").Get<EditorChoice>().ToString().ToLower())" />
+    <meta name="editor-choice" content="@(Configuration.GetValue<EditorChoice>("Post:Editor").ToString().ToLower())" />
     <meta name="warn-slug-modification" content="@Model.ViewModel.WarnSlugModification.ToString().ToLower()" />
 }
 
