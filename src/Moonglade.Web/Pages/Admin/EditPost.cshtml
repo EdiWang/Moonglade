@@ -6,7 +6,7 @@
 
 @{
     ViewBag.Title = "Edit Post";
-    var ec = Configuration.GetSection("Post:Editor").Get<EditorChoice>();
+    var ec = Configuration.GetValue<EditorChoice>("Post:Editor");
     var wsm = Model.ViewModel.WarnSlugModification;
 
     var cultureItems = LocOptions.Value.SupportedUICultures
