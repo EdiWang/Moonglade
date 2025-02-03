@@ -114,6 +114,14 @@
 
             <i class="bi-clock"></i>
             <span id="reading-time"></span>
+
+            @if (Model.PostView != null)
+            {
+                <span id="view-count" class="ms-2">
+                    <i class="bi-eye"></i>
+                    <span>@(Model.PostView.ViewCount + 1)</span>
+                </span>
+            }
         </div>
     </header>
 
