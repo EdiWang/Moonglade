@@ -54,16 +54,7 @@ public class PostController(
             var baseUri = new Uri(Helper.ResolveRootUrl(HttpContext, null, removeTailSlash: true));
             var link = new Uri(baseUri, $"post/{postEntity.RouteLink.ToLower()}");
 
-            if (blogConfig.AdvancedSettings.EnablePingback)
-            {
-                cannonService.FireAsync<IPingbackSender>(async sender => await sender.TrySendPingAsync(link.ToString(), postEntity.PostContent));
-            }
-
-            if (blogConfig.AdvancedSettings.EnableWebmention)
-            {
-                cannonService.FireAsync<IWebmentionSender>(async sender => await sender.SendWebmentionAsync(link.ToString(), postEntity.PostContent));
-            }
-
+            NotifyExternalServices(postEntity.PostContent, link);
             ProcessIndexing(model.LastModifiedUtc, postEntity.LastModifiedUtc == postEntity.PubDateUtc, link);
 
             return Ok(new { PostId = postEntity.Id });
@@ -72,6 +63,19 @@ public class PostController(
         {
             logger.LogError(ex, "Error Creating New Post.");
             return Conflict(ex.Message);
+        }
+    }
+
+    private void NotifyExternalServices(string postContent, Uri link)
+    {
+        if (blogConfig.AdvancedSettings.EnablePingback)
+        {
+            cannonService.FireAsync<IPingbackSender>(async sender => await sender.TrySendPingAsync(link.ToString(), postContent));
+        }
+
+        if (blogConfig.AdvancedSettings.EnableWebmention)
+        {
+            cannonService.FireAsync<IWebmentionSender>(async sender => await sender.SendWebmentionAsync(link.ToString(), postContent));
         }
     }
 
