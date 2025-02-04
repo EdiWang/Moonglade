@@ -1,4 +1,5 @@
 ﻿using Moonglade.Core.PostFeature;
+using Moonglade.Data.Entities;
 using Moonglade.IndexNow.Client;
 using Moonglade.Pingback;
 using Moonglade.Web.Attributes;
@@ -63,20 +64,7 @@ public class PostController(
                 cannonService.FireAsync<IWebmentionSender>(async sender => await sender.SendWebmentionAsync(link.ToString(), postEntity.PostContent));
             }
 
-            var isNewPublish = postEntity.LastModifiedUtc == postEntity.PubDateUtc;
-
-            bool indexCoolDown = true;
-            var minimalIntervalMinutes = int.Parse(configuration["IndexNow:MinimalIntervalMinutes"]!);
-            if (!string.IsNullOrWhiteSpace(model.LastModifiedUtc))
-            {
-                var lastSavedInterval = DateTime.Parse(model.LastModifiedUtc) - DateTime.UtcNow;
-                indexCoolDown = lastSavedInterval.TotalMinutes > minimalIntervalMinutes;
-            }
-
-            if (isNewPublish || indexCoolDown)
-            {
-                cannonService.FireAsync<IIndexNowClient>(async sender => await sender.SendRequestAsync(link));
-            }
+            ProcessIndexing(model.LastModifiedUtc, postEntity, link);
 
             return Ok(new { PostId = postEntity.Id });
         }
@@ -84,6 +72,24 @@ public class PostController(
         {
             logger.LogError(ex, "Error Creating New Post.");
             return Conflict(ex.Message);
+        }
+    }
+
+    private void ProcessIndexing(string lastModifiedUtc, PostEntity postEntity, Uri link)
+    {
+        var isNewPublish = postEntity.LastModifiedUtc == postEntity.PubDateUtc;
+
+        bool indexCoolDown = true;
+        var minimalIntervalMinutes = int.Parse(configuration["IndexNow:MinimalIntervalMinutes"]!);
+        if (!string.IsNullOrWhiteSpace(lastModifiedUtc))
+        {
+            var lastSavedInterval = DateTime.Parse(lastModifiedUtc) - DateTime.UtcNow;
+            indexCoolDown = lastSavedInterval.TotalMinutes > minimalIntervalMinutes;
+        }
+
+        if (isNewPublish || indexCoolDown)
+        {
+            cannonService.FireAsync<IIndexNowClient>(async sender => await sender.SendRequestAsync(link));
         }
     }
 
