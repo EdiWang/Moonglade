@@ -64,7 +64,7 @@ public class PostController(
                 cannonService.FireAsync<IWebmentionSender>(async sender => await sender.SendWebmentionAsync(link.ToString(), postEntity.PostContent));
             }
 
-            ProcessIndexing(model.LastModifiedUtc, postEntity, link);
+            ProcessIndexing(model.LastModifiedUtc, postEntity.LastModifiedUtc == postEntity.PubDateUtc, link);
 
             return Ok(new { PostId = postEntity.Id });
         }
@@ -75,10 +75,8 @@ public class PostController(
         }
     }
 
-    private void ProcessIndexing(string lastModifiedUtc, PostEntity postEntity, Uri link)
+    private void ProcessIndexing(string lastModifiedUtc, bool isNewPublish, Uri link)
     {
-        var isNewPublish = postEntity.LastModifiedUtc == postEntity.PubDateUtc;
-
         bool indexCoolDown = true;
         var minimalIntervalMinutes = int.Parse(configuration["IndexNow:MinimalIntervalMinutes"]!);
         if (!string.IsNullOrWhiteSpace(lastModifiedUtc))
