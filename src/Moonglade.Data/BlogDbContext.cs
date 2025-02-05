@@ -19,6 +19,7 @@ public class BlogDbContext : DbContext
     public virtual DbSet<PostEntity> Post { get; set; }
     public virtual DbSet<PostCategoryEntity> PostCategory { get; set; }
     public virtual DbSet<PostTagEntity> PostTag { get; set; }
+    public virtual DbSet<PostViewEntity> PostView { get; set; }
     public virtual DbSet<TagEntity> Tag { get; set; }
     public virtual DbSet<FriendLinkEntity> FriendLink { get; set; }
     public virtual DbSet<PageEntity> CustomPage { get; set; }
@@ -55,6 +56,7 @@ public static class BlogDbContextExtension
 {
     public static async Task ClearAllData(this BlogDbContext context)
     {
+        await context.PostView.ExecuteDeleteAsync();
         await context.PostTag.ExecuteDeleteAsync();
         await context.PostCategory.ExecuteDeleteAsync();
         await context.CommentReply.ExecuteDeleteAsync();

@@ -10,6 +10,7 @@ public static class ServiceCollectionExtension
     public static IServiceCollection AddIndexNowClient(this IServiceCollection services, IConfigurationSection configurationSection)
     {
         var pingTargets = configurationSection.GetSection("PingTargets").Get<string[]>();
+        if (null == pingTargets) return services;
 
         foreach (var pingTarget in pingTargets)
         {

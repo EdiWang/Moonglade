@@ -11,6 +11,7 @@ public class MinioBlobImageStorage : IBlogImageStorage
 
     private readonly IMinioClient _client;
     private readonly string _bucketName;
+    private readonly string _secondaryBucketName;
 
     private readonly ILogger<MinioBlobImageStorage> _logger;
 
@@ -28,6 +29,7 @@ public class MinioBlobImageStorage : IBlogImageStorage
         _client.Build();
 
         _bucketName = blobConfiguration.BucketName;
+        _secondaryBucketName = blobConfiguration.SecondaryBucketName;
 
         logger.LogInformation($"Created {nameof(MinioBlobImageStorage)} at {blobConfiguration.EndPoint}");
     }
@@ -42,7 +44,23 @@ public class MinioBlobImageStorage : IBlogImageStorage
         }
     }
 
-    public async Task<string> InsertAsync(string fileName, byte[] imageBytes)
+    public Task<string> InsertAsync(string fileName, byte[] imageBytes)
+    {
+        return InsertInternalAsync(fileName, imageBytes, _bucketName);
+    }
+
+    public async Task<string> InsertSecondaryAsync(string fileName, byte[] imageBytes)
+    {
+        if (string.IsNullOrWhiteSpace(_secondaryBucketName))
+        {
+            _logger.LogError("Secondary bucket is not configured.");
+            return null;
+        }
+
+        return await InsertInternalAsync(fileName, imageBytes, _secondaryBucketName);
+    }
+
+    public async Task<string> InsertInternalAsync(string fileName, byte[] imageBytes, string bucketName)
     {
         if (string.IsNullOrWhiteSpace(fileName))
         {
@@ -56,7 +74,7 @@ public class MinioBlobImageStorage : IBlogImageStorage
         await using var fileStream = new MemoryStream(imageBytes);
 
         var putObjectArg = new PutObjectArgs()
-            .WithBucket(_bucketName)
+            .WithBucket(bucketName)
             .WithFileName(fileName)
             .WithStreamData(fileStream)
             .WithObjectSize(fileStream.Length);

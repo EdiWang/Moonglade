@@ -1,81 +1,10 @@
 ﻿import { callApi } from './httpService.mjs'
 import { formatUtcTime, parseMetaContent } from './utils.module.mjs';
 import { resetCaptchaImage, showCaptcha } from './captchaService.mjs';
-
-function resizeImages() {
-    const images = document.querySelectorAll('.post-content img');
-    images.forEach(img => {
-        img.removeAttribute('height');
-        img.removeAttribute('width');
-        img.classList.add('img-fluid', 'img-thumbnail');
-    });
-}
-
-function renderCodeHighlighter() {
-    const pres = document.querySelectorAll('pre');
-    pres.forEach(pre => {
-        // Find <pre> that doesn't have a <code> inside it.
-        if (!pre.querySelector('code')) {
-            const code = document.createElement('code');
-            while (pre.firstChild) {
-                code.appendChild(pre.firstChild);
-            }
-            pre.appendChild(code);
-        }
-
-        // For code that can't be automatically detected, fall back to use XML
-        if (pre.classList.contains('language-markup')) {
-            pre.querySelector('code').classList.add('lang-xml');
-        }
-    });
-
-    const codeBlocks = document.querySelectorAll('pre code');
-    codeBlocks.forEach(block => {
-        hljs.highlightElement(block);
-    });
-}
-
-function renderLaTeX() {
-    const codeBlocks = document.querySelectorAll('pre.language-latex code');
-    codeBlocks.forEach(block => {
-        const latex = block.textContent.trim();
-        const container = document.createElement('div');
-        try {
-            katex.render(latex, container, { output: 'mathml' });
-            block.parentNode.replaceWith(container);
-        } catch (error) {
-            console.error(error);
-        }
-    });
-}
-
-function getImageWidthInDevicePixelRatio(width) {
-    if (width <= 0) return 0;
-    var dpr = window.devicePixelRatio;
-    if (dpr === 1) return width;
-    return width / dpr;
-}
-
-function applyImageZooming() {
-    const fitImageToDevicePixelRatio = parseMetaContent("image-device-dpi");
-
-    document.querySelectorAll('.post-content img').forEach(function (img) {
-        img.addEventListener('click', function (e) {
-            var src = img.getAttribute('src');
-            document.querySelector('#imgzoom').src = src;
-
-            if (fitImageToDevicePixelRatio) {
-                setTimeout(function () {
-                    var w = document.querySelector('#imgzoom').naturalWidth;
-                    document.querySelector('#imgzoom').style.width = getImageWidthInDevicePixelRatio(w) + 'px';
-                }, 100);
-            }
-
-            var imgzoomModal = new bootstrap.Modal(document.querySelector('#imgzoomModal'));
-            imgzoomModal.show();
-        });
-    });
-}
+import { resizeImages, applyImageZooming } from './post.imageutils.mjs';
+import { renderCodeHighlighter, renderLaTeX } from './post.highlight.mjs';
+import { calculateReadingTime } from './post.readingtime.mjs';
+import { cleanupLocalStorage, recordPostView } from './postview.mjs';
 
 function submitComment(pid) {
     const thxForComment = document.querySelector('#thx-for-comment');
@@ -122,47 +51,24 @@ function submitComment(pid) {
     );
 }
 
-function calculateReadingTime() {
-    const englishWordsPerMinute = 225; // Average reading speed for English
-    const chineseCharactersPerMinute = 450; // Average reading speed for Chinese
-    const germanWordsPerMinute = 225; // Average reading speed for German
-    const japaneseCharactersPerMinute = 400; // Average reading speed for Japanese
-
-    // Get the content of the blog post
-    const blogContent = document.querySelector('.post-content').innerText;
-
-    const englishAndGermanWords = blogContent.match(/\b\w+\b/g) || [];
-    const chineseCharacters = blogContent.match(/[\u4e00-\u9fa5]/g) || [];
-    const japaneseCharacters = blogContent.match(/[\u3040-\u30FF\u31F0-\u31FF\uFF66-\uFF9F\u4E00-\u9FAF]/g) || [];
-
-    // Calculate reading time for English and German (combined), Chinese, and Japanese
-    const englishAndGermanReadingTime = englishAndGermanWords.length / englishWordsPerMinute;
-    const chineseReadingTime = chineseCharacters.length / chineseCharactersPerMinute;
-    const japaneseReadingTime = japaneseCharacters.length / japaneseCharactersPerMinute;
-
-    // Total reading time in minutes
-    const totalReadingTime = englishAndGermanReadingTime + chineseReadingTime + japaneseReadingTime;
-
-    // Round to nearest minute
-    const roundedReadingTime = Math.ceil(totalReadingTime);
-
-    document.getElementById('reading-time').innerText = `Estimated Reading Time: ${roundedReadingTime} minute(s)`;
-}
-
 document.addEventListener('DOMContentLoaded', () => {
-    resizeImages();
+    resizeImages('.post-content img');
     if (window.innerWidth >= 768) {
-        applyImageZooming();
+        applyImageZooming('.post-content img');
     }
 
     renderCodeHighlighter();
-    renderLaTeX();
-    calculateReadingTime();
+    renderLaTeX('pre.language-latex code');
+
+    const blogContent = document.querySelector('.post-content').innerText;
+    let roundedReadingTime = calculateReadingTime(blogContent);
+    document.getElementById('reading-time').innerText = `Estimated Reading Time: ${roundedReadingTime} minute(s)`;
+
+    let pid = document.querySelector('article').dataset.postid;
 
     if (parseMetaContent('post-is-published')) {
         document.getElementById('comment-form')?.addEventListener('submit', function (e) {
             e.preventDefault();
-            let pid = document.querySelector('article').dataset.postid;
             submitComment(pid);
         });
 
@@ -176,4 +82,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
         formatUtcTime();
     }
+
+    cleanupLocalStorage();
+    recordPostView(pid);
 });

@@ -116,7 +116,7 @@ public class UpdatePostCommandHandler : IRequestHandler<UpdatePostCommand, PostE
             ? ContentProcessor.GetPostAbstract(
                 postEditModel.EditorContent,
                 _blogConfig.ContentSettings.PostAbstractWords,
-                _configuration.GetSection("Post:Editor").Get<EditorChoice>() == EditorChoice.Markdown)
+                _configuration.GetValue<EditorChoice>("Post:Editor") == EditorChoice.Markdown)
             : postEditModel.Abstract.Trim();
 
         if (postEditModel.IsPublished && !post.IsPublished)

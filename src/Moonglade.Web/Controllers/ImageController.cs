@@ -129,6 +129,6 @@ public class ImageController(IBlogImageStorage imageStorage,
     {
         var originalImageData = stream.ToArray();
         cannonService.FireAsync<IBlogImageStorage>(async storage =>
-            await storage.InsertAsync(fileName, originalImageData));
+            await storage.InsertSecondaryAsync(fileName, originalImageData));
     }
 }
