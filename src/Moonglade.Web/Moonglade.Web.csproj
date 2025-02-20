@@ -41,7 +41,7 @@
     <PackageReference Include="Edi.Gravatar" Version="1.2.0" />
     <PackageReference Include="Edi.ImageWatermark" Version="2.18.0" />
     <PackageReference Include="Edi.PasswordGenerator" Version="2.1.0" />
-    <PackageReference Include="Microsoft.Extensions.Logging.AzureAppServices" Version="8.0.12" />
+    <PackageReference Include="Microsoft.Extensions.Logging.AzureAppServices" Version="8.0.13" />
     
     <PackageReference Include="TinyMCE" Version="7.7.0" />
     <PackageReference Include="Moonglade.MonacoEditor" Version="0.50.0.1002" />
