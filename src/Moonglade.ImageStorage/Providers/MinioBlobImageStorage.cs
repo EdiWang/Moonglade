@@ -75,7 +75,7 @@ public class MinioBlobImageStorage : IBlogImageStorage
 
         var putObjectArg = new PutObjectArgs()
             .WithBucket(bucketName)
-            .WithFileName(fileName)
+            .WithObject(fileName)
             .WithStreamData(fileStream)
             .WithObjectSize(fileStream.Length);
 
@@ -139,7 +139,7 @@ public class MinioBlobImageStorage : IBlogImageStorage
 
         var arg = new GetObjectArgs()
             .WithBucket(_bucketName)
-            .WithFile(fileName)
+            .WithObject(fileName)
             .WithCallbackStream(stream =>
         {
             stream?.CopyTo(memoryStream);

@@ -32,10 +32,10 @@ END
 
 
 IF EXISTS (SELECT * FROM sys.columns 
-           WHERE Name = N'RouteName' AND Object_ID = Object_ID(N'Catery'))
+           WHERE Name = N'RouteName' AND Object_ID = Object_ID(N'Category'))
 BEGIN
     EXEC sys.sp_rename 
-        @objname = N'Catery.RouteName', 
+        @objname = N'Category.RouteName', 
         @newname = 'Slug', 
         @objtype = 'COLUMN'
 END

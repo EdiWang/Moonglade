@@ -136,7 +136,7 @@ public class Program
             };
 
             options.FontStyle = FontStyle.Bold;
-            options.BlockedCodes = magics.ToArray();
+            options.BlockedCodes = [.. magics];
         });
 
         services.AddScoped<ValidateCaptcha>();
