@@ -43,7 +43,7 @@
     <PackageReference Include="Edi.PasswordGenerator" Version="2.1.0" />
     <PackageReference Include="Microsoft.Extensions.Logging.AzureAppServices" Version="8.0.15" />
     
-    <PackageReference Include="TinyMCE" Version="7.7.2" />
+    <PackageReference Include="TinyMCE" Version="7.8.0" />
     <PackageReference Include="Moonglade.MonacoEditor" Version="0.50.0.1002" />
   </ItemGroup>
   <ItemGroup>
