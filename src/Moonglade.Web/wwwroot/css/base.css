@@ -437,6 +437,15 @@ div.animbrand a:hover {
     background-color: var(--bs-white);
 }
 
+.archive-post-count-badge {
+    color: var(--accent-color1);
+    border: 1px solid var(--accent-color1);
+    height: 23px;
+    width: 23px;
+    text-align: center;
+    vertical-align: middle;
+}
+
 /* iPad Pro 1024*1366 */
 @media (width: 1024px) {
     .search-form {
