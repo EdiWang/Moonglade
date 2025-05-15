@@ -1050,4 +1050,10 @@
   <data name="Accent Color" xml:space="preserve">
     <value>アクセントカラー</value>
   </data>
+  <data name="Posts list" xml:space="preserve">
+    <value>記事一覧</value>
+  </data>
+  <data name="Reading posts" xml:space="preserve">
+    <value>記事を読む</value>
+  </data>
 </root>

@@ -1050,4 +1050,10 @@
   <data name="Accent Color" xml:space="preserve">
     <value>主题色</value>
   </data>
+  <data name="Posts list" xml:space="preserve">
+    <value>文章列表</value>
+  </data>
+  <data name="Reading posts" xml:space="preserve">
+    <value>阅读文章</value>
+  </data>
 </root>

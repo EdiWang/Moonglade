@@ -1,5 +1,6 @@
 ﻿@using Moonglade.Web.PagedList
 @model BasePagedList<Moonglade.Core.PostFeature.PostDigest>
+@inject IConfiguration Configuration
 
 @foreach (var item in Model)
 {
@@ -10,5 +11,5 @@
 @Html.PagedListPager(Model, page => $"?p={page}", new()
 {
     UlElementClasses = ["pagination justify-content-end"],
-    MaximumPageNumbersToDisplay = 5
+    MaximumPageNumbersToDisplay = int.Parse(Configuration["Post:MaximumPageNumbersToDisplay"])
 })
