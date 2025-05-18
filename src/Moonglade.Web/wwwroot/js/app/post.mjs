@@ -62,7 +62,11 @@ document.addEventListener('DOMContentLoaded', () => {
 
     const blogContent = document.querySelector('.post-content').innerText;
     let roundedReadingTime = calculateReadingTime(blogContent);
-    document.getElementById('reading-time').innerText = `Estimated Reading Time: ${roundedReadingTime} minute(s)`;
+
+    const elem = document.getElementById('reading-time');
+    if (elem) {
+        elem.innerText = `Estimated Reading Time: ${roundedReadingTime} minute(s)`;
+    }
 
     let pid = document.querySelector('article').dataset.postid;
 
