@@ -149,6 +149,7 @@ export function loadTinyMCE(textareaSelector) {
         content_css: isDarkTheme ? '/css/tinymce-custom-dark.css' : '/css/tinymce-custom.css',
         codesample_languages: [
             { text: 'Bash', value: 'bash' },
+            { text: 'Bicep', value: 'bicep' },
             { text: 'C#', value: 'csharp' },
             { text: 'C', value: 'c' },
             { text: 'C++', value: 'cpp' },
