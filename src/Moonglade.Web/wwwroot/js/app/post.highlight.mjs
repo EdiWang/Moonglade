@@ -1,3 +1,5 @@
+import bicep from '../3rd/highlight.bicep.js'
+
 export function renderCodeHighlighter() {
     const pres = document.querySelectorAll('pre');
     pres.forEach(pre => {
@@ -15,6 +17,8 @@ export function renderCodeHighlighter() {
             pre.querySelector('code').classList.add('lang-xml');
         }
     });
+
+    hljs.registerLanguage('bicep', bicep);
 
     const codeBlocks = document.querySelectorAll('pre code');
     codeBlocks.forEach(block => {
