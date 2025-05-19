@@ -49,7 +49,7 @@ public class CreatePostCommandHandler(
             IsFeedIncluded = request.Payload.FeedIncluded,
             PubDateUtc = request.Payload.IsPublished ? utcNow : null,
             IsDeleted = false,
-            IsPublished = request.Payload.IsPublished,
+            PostStatus = request.Payload.IsPublished ? PostStatusConstants.Published : PostStatusConstants.Draft,
             IsFeatured = request.Payload.Featured,
             HeroImageUrl = string.IsNullOrWhiteSpace(request.Payload.HeroImageUrl) ? null : Helper.SterilizeLink(request.Payload.HeroImageUrl),
             IsOutdated = request.Payload.IsOutdated,

@@ -24,7 +24,7 @@ public class SearchPostQueryHandler(MoongladeRepository<PostEntity> repo) : IReq
     private IQueryable<PostEntity> SearchByKeyword(string keyword)
     {
         var query = repo.AsQueryable()
-            .Where(p => !p.IsDeleted && p.IsPublished).AsNoTracking();
+            .Where(p => !p.IsDeleted && p.PostStatus == PostStatusConstants.Published).AsNoTracking();
 
         var str = Regex.Replace(keyword, @"\s+", " ");
         var rst = str.Split(' ');

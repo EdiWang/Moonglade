@@ -1,5 +1,6 @@
 ﻿using Microsoft.Extensions.Logging;
 using Moonglade.Data.Entities;
+using Moonglade.Data.Specifications;
 using System.Globalization;
 
 namespace Moonglade.Data;
@@ -38,7 +39,7 @@ public class Seed
                 CommentEnabled = true,
                 CreateTimeUtc = DateTime.UtcNow,
                 ContentAbstract = content,
-                IsPublished = true,
+                PostStatus = PostStatusConstants.Published,
                 IsFeatured = true,
                 IsFeedIncluded = true,
                 LastModifiedUtc = DateTime.UtcNow,

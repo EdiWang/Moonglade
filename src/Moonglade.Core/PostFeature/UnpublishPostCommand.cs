@@ -1,6 +1,7 @@
 ﻿using Edi.CacheAside.InMemory;
 using Microsoft.Extensions.Logging;
 using Moonglade.Data;
+using Moonglade.Data.Specifications;
 
 namespace Moonglade.Core.PostFeature;
 
@@ -17,7 +18,7 @@ public class UnpublishPostCommandHandler(
         var post = await repo.GetByIdAsync(request.Id, ct);
         if (null == post) return;
 
-        post.IsPublished = false;
+        post.PostStatus = PostStatusConstants.Draft;
         post.PubDateUtc = null;
         post.RouteLink = null;
         post.LastModifiedUtc = DateTime.UtcNow;

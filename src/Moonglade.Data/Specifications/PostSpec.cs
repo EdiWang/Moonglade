@@ -33,10 +33,10 @@ public sealed class PostByStatusSpec : Specification<PostEntity>
         switch (status)
         {
             case PostStatus.Draft:
-                Query.Where(p => !p.IsPublished && !p.IsDeleted);
+                Query.Where(p => p.PostStatus == PostStatusConstants.Draft && !p.IsDeleted);
                 break;
             case PostStatus.Published:
-                Query.Where(p => p.IsPublished && !p.IsDeleted);
+                Query.Where(p => p.PostStatus == PostStatusConstants.Published && !p.IsDeleted);
                 break;
             case PostStatus.Deleted:
                 Query.Where(p => p.IsDeleted);
@@ -56,7 +56,7 @@ public sealed class FeaturedPostSpec : Specification<PostEntity>
 {
     public FeaturedPostSpec()
     {
-        Query.Where(p => p.IsFeatured && p.IsPublished && !p.IsDeleted);
+        Query.Where(p => p.IsFeatured && p.PostStatus == PostStatusConstants.Published && !p.IsDeleted);
     }
 }
 
@@ -66,7 +66,7 @@ public sealed class PostByCatSpec : Specification<PostEntity>
     {
         Query.Where(p =>
                     !p.IsDeleted &&
-                    p.IsPublished &&
+                    p.PostStatus == PostStatusConstants.Published &&
                     p.IsFeedIncluded &&
                     (categoryId == null || p.PostCategory.Any(c => c.CategoryId == categoryId.Value)));
 
@@ -87,7 +87,7 @@ public sealed class PostByYearMonthSpec : Specification<PostEntity>
                          (month == 0 || p.PubDateUtc.Value.Month == month));
 
         // Fix #313: Filter out unpublished posts
-        Query.Where(p => p.IsPublished && !p.IsDeleted);
+        Query.Where(p => p.PostStatus == PostStatusConstants.Published && !p.IsDeleted);
 
         Query.OrderByDescending(p => p.PubDateUtc);
         Query.AsNoTracking();
@@ -103,7 +103,7 @@ public sealed class PostByRouteLinkSpec : SingleResultSpecification<PostEntity>
 {
     public PostByRouteLinkSpec(string routeLink)
     {
-        Query.Where(p => p.RouteLink == routeLink && p.IsPublished && !p.IsDeleted);
+        Query.Where(p => p.RouteLink == routeLink && p.PostStatus == PostStatusConstants.Published && !p.IsDeleted);
 
         Query.Include(p => p.Comments)
              .Include(pt => pt.Tags)
@@ -119,7 +119,7 @@ public sealed class PostByDateAndSlugSpec : Specification<PostEntity>
     {
         Query.Where(p =>
                     p.Slug == slug &&
-                    p.IsPublished &&
+                    p.PostStatus == PostStatusConstants.Published &&
                     p.PubDateUtc.Value.Date == date &&
                     !p.IsDeleted);
 
@@ -139,7 +139,7 @@ public sealed class PostByRouteLinkForIdTitleSpec : SingleResultSpecification<Po
     {
         Query.Where(p =>
             p.RouteLink == routeLink &&
-            p.IsPublished &&
+            p.PostStatus == PostStatusConstants.Published &&
             !p.IsDeleted);
 
         Query.Select(p => new ValueTuple<Guid, string>(p.Id, p.Title));
