@@ -14,10 +14,10 @@
 
     var langList = cultureItems
     .Select(t => new SelectListItem
-            {
-                Text = t.NativeName,
-                Value = t.Value.ToLower()
-            });
+    {
+        Text = t.NativeName,
+        Value = t.Value.ToLower()
+    });
 }
 
 @section meta {
@@ -60,6 +60,7 @@
     <form class="post-edit-form" asp-controller="Post" asp-action="CreateOrEdit">
         <input type="hidden" asp-for="ViewModel.PostId" />
         <input type="hidden" asp-for="ViewModel.IsPublished" />
+        <input type="hidden" asp-for="ViewModel.PostStatus" />
         <input type="hidden" asp-for="ViewModel.LastModifiedUtc" />
         <div class="row g-2">
             <div class="col-md-9 col-xl-10">
@@ -191,7 +192,7 @@
                                                        name="SelectedCatIds"
                                                        value="@cat.Id"
                                                        class="form-check-input"
-                                                @(cat.IsChecked ? "checked" : null)>
+                                                       @(cat.IsChecked ? "checked" : null)>
 
                                                 <label for="category-@cat.Id" class="form-check-label">
                                                     @cat.DisplayText
@@ -205,7 +206,7 @@
                     </div>
                 </div>
 
-                @if (Model.ViewModel.IsPublished)
+                @if (Model.ViewModel.IsPublished || Model.ViewModel.PostStatus == PostStatusConstants.Published)
                 {
                     <div class="text-center">
                         <a class="unpublish-link btn btn-sm btn-outline-secondary" data-bs-toggle="modal" data-bs-target="#unpublishPostModal">@SharedLocalizer["Unpublish this post"]</a>
@@ -218,7 +219,7 @@
             <button type="submit" class="btn btn-accent ediblogeditor-save" id="btn-save">
                 @SharedLocalizer["Save"]
             </button>
-            @if (!Model.ViewModel.IsPublished)
+            @if (!Model.ViewModel.IsPublished || Model.ViewModel.PostStatus != PostStatusConstants.Published)
             {
                 <button type="submit" class="btn btn-outline-accent ediblogeditor-publish" id="btn-publish">
                     @SharedLocalizer["Publish"]

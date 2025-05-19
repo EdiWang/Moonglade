@@ -10,6 +10,7 @@ public class EditPostModel(IMediator mediator, ITimeZoneResolver timeZoneResolve
     {
         IsOutdated = false,
         IsPublished = false,
+        PostStatus = PostStatusConstants.Draft,
         Featured = false,
         EnableComment = true,
         FeedIncluded = true
@@ -48,6 +49,7 @@ public class EditPostModel(IMediator mediator, ITimeZoneResolver timeZoneResolve
         {
             PostId = post.Id,
             IsPublished = post.PostStatus == PostStatusConstants.Published,
+            PostStatus = post.PostStatus.ToLower().Trim(),
             EditorContent = post.PostContent,
             Author = post.Author,
             Slug = post.Slug,
