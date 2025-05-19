@@ -40,10 +40,10 @@ public class ListPostSegmentQueryHandler(MoongladeRepository<PostEntity> repo) :
         switch (request.PostStatus)
         {
             case PostStatus.Draft:
-                countExp.AndAlso(p => !p.IsPublished && !p.IsDeleted);
+                countExp.AndAlso(p => p.PostStatus == PostStatusConstants.Draft && !p.IsDeleted);
                 break;
             case PostStatus.Published:
-                countExp.AndAlso(p => p.IsPublished && !p.IsDeleted);
+                countExp.AndAlso(p => p.PostStatus == PostStatusConstants.Published && !p.IsDeleted);
                 break;
             case PostStatus.Deleted:
                 countExp.AndAlso(p => p.IsDeleted);

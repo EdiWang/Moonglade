@@ -47,7 +47,7 @@ public class EditPostModel(IMediator mediator, ITimeZoneResolver timeZoneResolve
         ViewModel = new()
         {
             PostId = post.Id,
-            IsPublished = post.IsPublished,
+            IsPublished = post.PostStatus == PostStatusConstants.Published,
             EditorContent = post.PostContent,
             Author = post.Author,
             Slug = post.Slug,
