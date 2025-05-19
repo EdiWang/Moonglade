@@ -1,5 +1,4 @@
 ﻿using Moonglade.Core.PostFeature;
-using Moonglade.Data.Entities;
 using Moonglade.IndexNow.Client;
 using Moonglade.Pingback;
 using Moonglade.Web.Attributes;
