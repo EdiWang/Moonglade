@@ -46,7 +46,10 @@ public class PostController(
                 await mediator.Send(new CreatePostCommand(model)) :
                 await mediator.Send(new UpdatePostCommand(model.PostId, model));
 
-            if (!model.IsPublished) return Ok(new { PostId = postEntity.Id });
+            if (!model.IsPublished || model.PostStatus != PostStatusConstants.Published)
+            {
+                return Ok(new { PostId = postEntity.Id });
+            }
 
             logger.LogInformation($"Trying to Ping URL for post: {postEntity.Id}");
 
