@@ -206,7 +206,7 @@
                     </div>
                 </div>
 
-                @if (Model.ViewModel.IsPublished)
+                @if (Model.ViewModel.IsPublished || Model.ViewModel.PostStatus == PostStatusConstants.Published)
                 {
                     <div class="text-center">
                         <a class="unpublish-link btn btn-sm btn-outline-secondary" data-bs-toggle="modal" data-bs-target="#unpublishPostModal">@SharedLocalizer["Unpublish this post"]</a>
@@ -219,7 +219,7 @@
             <button type="submit" class="btn btn-accent ediblogeditor-save" id="btn-save">
                 @SharedLocalizer["Save"]
             </button>
-            @if (!Model.ViewModel.IsPublished)
+            @if (!Model.ViewModel.IsPublished || Model.ViewModel.PostStatus != PostStatusConstants.Published)
             {
                 <button type="submit" class="btn btn-outline-accent ediblogeditor-publish" id="btn-publish">
                     @SharedLocalizer["Publish"]
