@@ -34,6 +34,9 @@ public class PostEditModel
     public bool IsPublished { get; set; }
 
     [Required]
+    public string PostStatus { get; set; }
+
+    [Required]
     [Display(Name = "Featured")]
     public bool Featured { get; set; }
 
