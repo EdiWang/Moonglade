@@ -48,7 +48,11 @@ public class PostController(
 
                 if (model.ScheduledPublishTime < tzDate)
                 {
-                    return Conflict("Scheduled publish time must be in the future.");
+                    // return Conflict("Scheduled publish time must be in the future.");
+
+                    // Instead of throwing error, just publish the post right away!
+                    model.PostStatus = PostStatusConstants.Published;
+                    model.ScheduledPublishTime = null;
                 }
             }
 
