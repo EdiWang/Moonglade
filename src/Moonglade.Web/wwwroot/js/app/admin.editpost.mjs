@@ -150,13 +150,12 @@ document.getElementById('btn-unpublish-post').addEventListener('click', function
 });
 
 document.getElementById('btn-cancel-schedule').addEventListener('click', function () {
-    document.querySelector('input[name="ScheduledPublishTime"]').value = '';
+    document.querySelector('input[name="ViewModel.ScheduledPublishTime"]').value = '';
+    document.querySelector('input[name="ViewModel.PostStatus"]').value = 'draft';
+});
 
-    //const scheduleModal = document.getElementById('schedulePublishModal');
-    //const scheduleModalInstance = bootstrap.Modal.getInstance(scheduleModal);
-    //if (scheduleModalInstance) {
-    //    scheduleModalInstance.hide();
-    //}
+document.getElementById('btn-schedule-publish').addEventListener('click', function () {
+    document.querySelector('input[name="ViewModel.PostStatus"]').value = 'scheduled';
 });
 
 const postEditForm = document.querySelector(postEditFormSelector);
