@@ -9,7 +9,6 @@ public class EditPostModel(IMediator mediator, ITimeZoneResolver timeZoneResolve
     public PostEditModel ViewModel { get; set; } = new()
     {
         IsOutdated = false,
-        IsPublished = false,
         PostStatus = PostStatusConstants.Draft,
         Featured = false,
         EnableComment = true,
@@ -48,7 +47,6 @@ public class EditPostModel(IMediator mediator, ITimeZoneResolver timeZoneResolve
         ViewModel = new()
         {
             PostId = post.Id,
-            IsPublished = post.PostStatus == PostStatusConstants.Published,
             PostStatus = post.PostStatus.ToLower().Trim(),
             EditorContent = post.PostContent,
             Author = post.Author,

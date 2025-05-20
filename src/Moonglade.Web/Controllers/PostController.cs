@@ -46,7 +46,7 @@ public class PostController(
                 await mediator.Send(new CreatePostCommand(model)) :
                 await mediator.Send(new UpdatePostCommand(model.PostId, model));
 
-            if (!model.IsPublished || model.PostStatus != PostStatusConstants.Published)
+            if (model.PostStatus != PostStatusConstants.Published)
             {
                 return Ok(new { PostId = postEntity.Id });
             }

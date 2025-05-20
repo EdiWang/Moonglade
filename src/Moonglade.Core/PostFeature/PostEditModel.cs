@@ -31,9 +31,6 @@ public class PostEditModel
     public string EditorContent { get; set; }
 
     [Required]
-    public bool IsPublished { get; set; }
-
-    [Required]
     public string PostStatus { get; set; }
 
     [Required]
