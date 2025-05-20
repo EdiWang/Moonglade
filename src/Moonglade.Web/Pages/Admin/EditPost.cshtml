@@ -215,17 +215,33 @@
         </div>
 
         <div class="mt-3">
-            <button type="submit" class="btn btn-accent ediblogeditor-save" id="btn-save">
+            <button type="submit" class="btn btn-outline-accent ediblogeditor-save" id="btn-save">
                 @SharedLocalizer["Save"]
             </button>
             @if (Model.ViewModel.PostStatus != PostStatusConstants.Published)
             {
-                <button type="submit" class="btn btn-outline-accent ediblogeditor-publish" id="btn-publish">
-                    @SharedLocalizer["Publish"]
-                </button>
-                <button class="btn btn-outline-success ediblogeditor-preview" id="btn-preview">
-                    @SharedLocalizer["Preview"]
-                </button>
+                <div class="btn-group">
+                    <button type="submit" class="btn btn-outline-accent ediblogeditor-publish" id="btn-publish">
+                        @SharedLocalizer["Publish"]
+                    </button>
+                    <button type="button" class="btn btn-outline-accent dropdown-toggle dropdown-toggle-split" data-bs-toggle="dropdown" aria-expanded="false">
+                        <span class="visually-hidden">Toggle Dropdown</span>
+                    </button>
+                    <ul class="dropdown-menu">
+                        <li>
+                            <a class="dropdown-item" href="#">
+                                <i class="bi-clock"></i>
+                                Schedule Publish Time
+                            </a>
+                        </li>
+                        <li>
+                            <button class="btn btn-link dropdown-item ediblogeditor-preview" id="btn-preview">
+                                <i class="bi-eye"></i>
+                                @SharedLocalizer["Preview"]
+                            </button>
+                        </li>
+                    </ul>
+                </div>
             }
             <a asp-page="./Post" class="btn btn-outline-secondary">@SharedLocalizer["Cancel"]</a>
         </div>
