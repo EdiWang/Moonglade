@@ -67,6 +67,11 @@ public class EditPostModel(IMediator mediator, ITimeZoneResolver timeZoneResolve
             ViewModel.PublishDate = timeZoneResolver.ToTimeZone(post.PubDateUtc.GetValueOrDefault());
         }
 
+        if (post.ScheduledPublishTimeUtc != null)
+        {
+            ViewModel.ScheduledPublishTime = timeZoneResolver.ToTimeZone(post.ScheduledPublishTimeUtc.Value);
+        }
+
         var tagStr = post.Tags
             .Select(p => p.DisplayName)
             .Aggregate(string.Empty, (current, item) => current + item + ",");

@@ -19,6 +19,7 @@ public class UnpublishPostCommandHandler(
 
         post.PostStatus = PostStatusConstants.Draft;
         post.PubDateUtc = null;
+        post.ScheduledPublishTimeUtc = null;
         post.RouteLink = null;
         post.LastModifiedUtc = DateTime.UtcNow;
 

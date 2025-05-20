@@ -48,6 +48,10 @@ public class CreatePostCommandHandler(
             ContentLanguageCode = request.Payload.LanguageCode,
             IsFeedIncluded = request.Payload.FeedIncluded,
             PubDateUtc = request.Payload.PostStatus == PostStatusConstants.Published ? utcNow : null,
+            ScheduledPublishTimeUtc =
+                request.Payload.PostStatus == PostStatusConstants.Scheduled ?
+                request.Payload.ScheduledPublishTime :
+                null,
             IsDeleted = false,
             PostStatus = request.Payload.PostStatus ?? PostStatusConstants.Draft,
             IsFeatured = request.Payload.Featured,

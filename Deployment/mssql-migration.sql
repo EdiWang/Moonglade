@@ -188,3 +188,13 @@ BEGIN
 
     ALTER TABLE dbo.Post DROP COLUMN IsPublished;
 END
+
+IF NOT EXISTS (
+    SELECT 1 
+    FROM sys.columns 
+    WHERE object_id = OBJECT_ID('dbo.Post') 
+      AND name = 'ScheduledPublishTimeUtc'
+)
+BEGIN
+    ALTER TABLE dbo.Post ADD ScheduledPublishTimeUtc DATETIME NULL;
+END
