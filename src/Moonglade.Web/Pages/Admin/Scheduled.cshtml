@@ -19,7 +19,7 @@
     {
         @Html.AntiForgeryToken()
 
-        @foreach (var post in posts.OrderByDescending(p => p.LastModifiedUtc))
+        @foreach (var post in posts.OrderByDescending(p => p.ScheduledPublishTimeUtc))
         {
             <div id="post-@post.Id" class="admin-post-entry p-3 mb-2 rounded-3 shadow-sm border">
                 <div class="row">

@@ -131,6 +131,15 @@ public class UpdatePostCommandHandler : IRequestHandler<UpdatePostCommand, PostE
             post.ScheduledPublishTimeUtc = postEditModel.ScheduledPublishTime;
         }
 
+        // Back to draft for unscheduled posts
+        if (postEditModel.PostStatus == PostStatusConstants.Draft)
+        {
+            post.PostStatus = PostStatusConstants.Draft;
+            post.PubDateUtc = null;
+            post.ScheduledPublishTimeUtc = null;
+            post.RouteLink = null;
+        }
+
         // #325: Allow changing publish date for published posts
         if (postEditModel.ChangePublishDate && postEditModel.PublishDate is not null && post.PubDateUtc.HasValue)
         {
