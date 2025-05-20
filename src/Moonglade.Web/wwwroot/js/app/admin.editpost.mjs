@@ -149,5 +149,14 @@ document.getElementById('btn-unpublish-post').addEventListener('click', function
     UnpublishPost(postId);
 });
 
+document.getElementById('btn-cancel-schedule').addEventListener('click', function () {
+    document.querySelector('input[name="ViewModel.ScheduledPublishTime"]').value = '';
+    document.querySelector('input[name="ViewModel.PostStatus"]').value = 'draft';
+});
+
+document.getElementById('btn-schedule-publish').addEventListener('click', function () {
+    document.querySelector('input[name="ViewModel.PostStatus"]').value = 'scheduled';
+});
+
 const postEditForm = document.querySelector(postEditFormSelector);
 postEditForm.addEventListener('submit', handlePostSubmit);

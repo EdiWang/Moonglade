@@ -9,11 +9,16 @@
                 </button>
             </div>
             <div class="modal-body">
-                TODO
+                <div class="mb-2">
+                    @SharedLocalizer["Set a time in your local time zone to schedule the post to be automatically published."]
+                </div>
+                <div class="mb-2">
+                    <input type="datetime-local" asp-for="ViewModel.ScheduledPublishTime" class="form-control" />
+                </div>
             </div>
             <div class="modal-footer">
-                <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">@SharedLocalizer["Cancel"]</button>
-                <a id="btn-schedule-publish" class="schedule-post-confirm btn btn-accent">@SharedLocalizer["Confirm"]</a>
+                <button id="btn-cancel-schedule" type="button" class="btn btn-outline-danger" data-bs-dismiss="modal">@SharedLocalizer["Cancel Schedule"]</button>
+                <button id="btn-schedule-publish" class="schedule-post-confirm btn btn-accent" data-bs-dismiss="modal">@SharedLocalizer["Confirm"]</button>
             </div>
         </div>
     </div>
