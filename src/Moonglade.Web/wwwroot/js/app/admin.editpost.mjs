@@ -104,6 +104,12 @@ function UnpublishPost(postId) {
         });
 }
 
+function setMinScheduleDate() {
+    const now = new Date();
+    const minDate = now.toISOString().slice(0, 16); // Format: YYYY-MM-DDTHH:MM
+    document.querySelector('input[name="ViewModel.ScheduledPublishTime"]').setAttribute('min', minDate);
+}
+
 function updateScheduleInfo() {
     const postStatus = document.querySelector('input[name="ViewModel.PostStatus"]').value;
 
@@ -175,6 +181,7 @@ document.getElementById('btn-schedule-publish').addEventListener('click', functi
     updateScheduleInfo();
 });
 
+setMinScheduleDate();
 updateScheduleInfo();
 
 const postEditForm = document.querySelector(postEditFormSelector);
