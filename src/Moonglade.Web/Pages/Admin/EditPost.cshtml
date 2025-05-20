@@ -216,8 +216,18 @@
 
         <div class="mt-3">
             <button type="submit" class="btn btn-outline-accent ediblogeditor-save" id="btn-save">
-                @SharedLocalizer["Save"]
+                @if (Model.ViewModel.PostStatus == PostStatusConstants.Draft)
+                {
+                    @SharedLocalizer["Save"]
+                }
+
+                @if (Model.ViewModel.PostStatus == PostStatusConstants.Published ||
+                     Model.ViewModel.PostStatus == PostStatusConstants.Scheduled)
+                {
+                    @SharedLocalizer["Update"]
+                }
             </button>
+
             @if (Model.ViewModel.PostStatus != PostStatusConstants.Published)
             {
                 <div class="btn-group">
@@ -243,6 +253,7 @@
                     </ul>
                 </div>
             }
+
             <a asp-page="./Post" class="btn btn-outline-secondary">@SharedLocalizer["Cancel"]</a>
         </div>
 
