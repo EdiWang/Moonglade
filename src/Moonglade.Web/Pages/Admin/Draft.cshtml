@@ -6,11 +6,11 @@
     var posts = await Mediator.Send(new ListPostSegmentByStatusQuery(PostStatus.Draft));
 }
 
-@section scripts{
+@section scripts {
     <script type="module" src="~/js/app/admin.draft.mjs" asp-append-version="true"></script>
 }
 
-@section admintoolbar{
+@section admintoolbar {
     <partial name="_PostManageHeader" />
 }
 
