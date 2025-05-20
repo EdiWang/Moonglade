@@ -133,6 +133,11 @@ public class UpdatePostCommandHandler : IRequestHandler<UpdatePostCommand, PostE
             post.PubDateUtc = adjustedDate.AddTicks(tod.Ticks);
         }
 
+        if (postEditModel.PostStatus == PostStatusConstants.Scheduled)
+        {
+            post.ScheduledPublishTimeUtc = postEditModel.ScheduledPublishTime;
+        }
+
         post.Author = postEditModel.Author?.Trim();
         post.Slug = postEditModel.Slug.ToLower().Trim();
         post.Title = postEditModel.Title.Trim();

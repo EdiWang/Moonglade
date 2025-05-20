@@ -42,6 +42,11 @@ public class PostController(
                 model.PublishDate = timeZoneResolver.ToUtc(model.PublishDate.Value);
             }
 
+            if (model.PostStatus == PostStatusConstants.Scheduled && model.ScheduledPublishTime.HasValue)
+            {
+                model.ScheduledPublishTime = timeZoneResolver.ToUtc(model.ScheduledPublishTime.Value);
+            }
+
             var postEntity = model.PostId == Guid.Empty ?
                 await mediator.Send(new CreatePostCommand(model)) :
                 await mediator.Send(new UpdatePostCommand(model.PostId, model));
