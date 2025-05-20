@@ -45,6 +45,15 @@ public class PostController(
             if (model.PostStatus == PostStatusConstants.Scheduled && model.ScheduledPublishTime.HasValue)
             {
                 model.ScheduledPublishTime = timeZoneResolver.ToUtc(model.ScheduledPublishTime.Value);
+
+                if (model.ScheduledPublishTime < tzDate)
+                {
+                    // return Conflict("Scheduled publish time must be in the future.");
+
+                    // Instead of throwing error, just publish the post right away!
+                    model.PostStatus = PostStatusConstants.Published;
+                    model.ScheduledPublishTime = null;
+                }
             }
 
             var postEntity = model.PostId == Guid.Empty ?
