@@ -149,5 +149,15 @@ document.getElementById('btn-unpublish-post').addEventListener('click', function
     UnpublishPost(postId);
 });
 
+document.getElementById('btn-cancel-schedule').addEventListener('click', function () {
+    document.querySelector('input[name="ScheduledPublishTime"]').value = '';
+
+    //const scheduleModal = document.getElementById('schedulePublishModal');
+    //const scheduleModalInstance = bootstrap.Modal.getInstance(scheduleModal);
+    //if (scheduleModalInstance) {
+    //    scheduleModalInstance.hide();
+    //}
+});
+
 const postEditForm = document.querySelector(postEditFormSelector);
 postEditForm.addEventListener('submit', handlePostSubmit);
