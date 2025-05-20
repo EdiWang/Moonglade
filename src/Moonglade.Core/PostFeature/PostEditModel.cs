@@ -56,6 +56,10 @@ public class PostEditModel
     [DataType(DataType.Date)]
     public DateTime? PublishDate { get; set; }
 
+    [Display(Name = "Scheduled Publish Time")]
+    [DataType(DataType.Date)]
+    public DateTime? ScheduledPublishTime { get; set; }
+
     [Display(Name = "Change Publish Date")]
     public bool ChangePublishDate { get; set; }
 
