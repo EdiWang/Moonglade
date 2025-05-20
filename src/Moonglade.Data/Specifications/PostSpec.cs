@@ -35,6 +35,9 @@ public sealed class PostByStatusSpec : Specification<PostEntity>
             case PostStatus.Draft:
                 Query.Where(p => p.PostStatus == PostStatusConstants.Draft && !p.IsDeleted);
                 break;
+            case PostStatus.Scheduled:
+                Query.Where(p => p.PostStatus == PostStatusConstants.Scheduled && !p.IsDeleted);
+                break;
             case PostStatus.Published:
                 Query.Where(p => p.PostStatus == PostStatusConstants.Published && !p.IsDeleted);
                 break;
