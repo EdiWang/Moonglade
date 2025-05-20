@@ -1,13 +1,13 @@
-﻿@page "/admin/post/draft"
+﻿@page "/admin/post/scheduled"
 @using Moonglade.Core.PostFeature
 @using Moonglade.Data.Specifications
 @{
-    ViewBag.Title = "Drafts";
-    var posts = await Mediator.Send(new ListPostSegmentByStatusQuery(PostStatus.Draft));
+    ViewBag.Title = "Scheduled";
+    var posts = await Mediator.Send(new ListPostSegmentByStatusQuery(PostStatus.Scheduled));
 }
 
 @section scripts {
-    <script type="module" src="~/js/app/admin.draft.mjs" asp-append-version="true"></script>
+    <script type="module" src="~/js/app/admin.scheduled.mjs" asp-append-version="true"></script>
 }
 
 @section admintoolbar {
@@ -22,22 +22,30 @@
         @foreach (var post in posts.OrderByDescending(p => p.LastModifiedUtc))
         {
             <div id="post-@post.Id" class="admin-post-entry p-3 mb-2 rounded-3 shadow-sm border">
-                <div class="d-flex">
-                    <div class="flex-grow-1">
+                <div class="row">
+                    <div class="col">
                         <a asp-page="./EditPost" asp-route-id="@post.Id">
                             <h6>
                                 @post.Title
                             </h6>
                         </a>
+                        <div class="mb-2">
+                            @post.ContentAbstract
+                        </div>
                         <div>
-                            <i class="bi-calendar-event"></i>
+                            <i class="bi-clock"></i>
+
                             <span class="text-muted me-2">
-                                <time data-utc-label="@post.CreateTimeUtc.ToString("u")">@post.CreateTimeUtc</time>
+                                @SharedLocalizer["Scheduled for"]
+
+                                <time data-utc-label="@post.ScheduledPublishTimeUtc.Value.ToString("u")">
+                                    @post.ScheduledPublishTimeUtc
+                                </time>
                             </span>
                         </div>
                     </div>
 
-                    <div>
+                    <div class="col-auto">
                         <a class="btn btn-outline-accent btn-sm btn-edit" asp-page="./EditPost" asp-route-id="@post.Id"><i class="bi-pen"></i></a>
                         <a class="btn btn-outline-danger btn-sm btn-delete" data-postid="@post.Id" href="javascript:;">
                             <i class="bi-trash"></i>

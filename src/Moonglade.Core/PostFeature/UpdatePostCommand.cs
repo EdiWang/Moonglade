@@ -125,17 +125,18 @@ public class UpdatePostCommandHandler : IRequestHandler<UpdatePostCommand, PostE
             post.PubDateUtc = utcNow;
         }
 
+        if (postEditModel.PostStatus == PostStatusConstants.Scheduled)
+        {
+            post.PostStatus = PostStatusConstants.Scheduled;
+            post.ScheduledPublishTimeUtc = postEditModel.ScheduledPublishTime;
+        }
+
         // #325: Allow changing publish date for published posts
         if (postEditModel.ChangePublishDate && postEditModel.PublishDate is not null && post.PubDateUtc.HasValue)
         {
             var tod = post.PubDateUtc.Value.TimeOfDay;
             var adjustedDate = postEditModel.PublishDate.Value;
             post.PubDateUtc = adjustedDate.AddTicks(tod.Ticks);
-        }
-
-        if (postEditModel.PostStatus == PostStatusConstants.Scheduled)
-        {
-            post.ScheduledPublishTimeUtc = postEditModel.ScheduledPublishTime;
         }
 
         post.Author = postEditModel.Author?.Trim();
