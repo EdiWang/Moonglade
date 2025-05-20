@@ -119,7 +119,7 @@ public class UpdatePostCommandHandler : IRequestHandler<UpdatePostCommand, PostE
                 _configuration.GetValue<EditorChoice>("Post:Editor") == EditorChoice.Markdown)
             : postEditModel.Abstract.Trim();
 
-        if (postEditModel.IsPublished && post.PostStatus == PostStatusConstants.Draft)
+        if (postEditModel.PostStatus == PostStatusConstants.Published)
         {
             post.PostStatus = PostStatusConstants.Published;
             post.PubDateUtc = utcNow;
