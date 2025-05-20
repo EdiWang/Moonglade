@@ -104,6 +104,19 @@ function UnpublishPost(postId) {
         });
 }
 
+function updateScheduleInfo() {
+    const postStatus = document.querySelector('input[name="ViewModel.PostStatus"]').value;
+
+    const scheduleInfoDiv = document.querySelector('.schedule-info');
+    const scheduledTime = document.querySelector('input[name="ViewModel.ScheduledPublishTime"]').value;
+
+    if (postStatus === 'scheduled') {
+        scheduleInfoDiv.innerHTML = `<i class="bi-clock"></i> <span>Scheduled for: ${new Date(scheduledTime).toLocaleString()}</span>`;
+    } else {
+        scheduleInfoDiv.innerHTML = '';
+    }
+}
+
 document.addEventListener('DOMContentLoaded', function () {
     const warnSlugModification = parseMetaContent('warn-slug-modification');
     initEvents(!warnSlugModification);
@@ -152,11 +165,17 @@ document.getElementById('btn-unpublish-post').addEventListener('click', function
 document.getElementById('btn-cancel-schedule').addEventListener('click', function () {
     document.querySelector('input[name="ViewModel.ScheduledPublishTime"]').value = '';
     document.querySelector('input[name="ViewModel.PostStatus"]').value = 'draft';
+
+    updateScheduleInfo();
 });
 
 document.getElementById('btn-schedule-publish').addEventListener('click', function () {
     document.querySelector('input[name="ViewModel.PostStatus"]').value = 'scheduled';
+
+    updateScheduleInfo();
 });
+
+updateScheduleInfo();
 
 const postEditForm = document.querySelector(postEditFormSelector);
 postEditForm.addEventListener('submit', handlePostSubmit);
