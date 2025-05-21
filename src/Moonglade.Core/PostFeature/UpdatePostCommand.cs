@@ -6,7 +6,6 @@ using Moonglade.Configuration;
 using Moonglade.Data;
 using Moonglade.Data.Specifications;
 using Moonglade.Utils;
-using System.Globalization;
 
 namespace Moonglade.Core.PostFeature;
 
@@ -157,7 +156,7 @@ public class UpdatePostCommandHandler : IRequestHandler<UpdatePostCommand, PostE
         post.IsFeatured = postEditModel.Featured;
         post.HeroImageUrl = string.IsNullOrWhiteSpace(postEditModel.HeroImageUrl) ? null : Helper.SterilizeLink(postEditModel.HeroImageUrl);
         post.IsOutdated = postEditModel.IsOutdated;
-        post.RouteLink = $"{post.PubDateUtc.GetValueOrDefault().ToString("yyyy/M/d", CultureInfo.InvariantCulture)}/{postEditModel.Slug}";
+        post.RouteLink = Helper.GenerateRouteLink(post.PubDateUtc.GetValueOrDefault(), postEditModel.Slug);
     }
 
     private async Task UpdateCats(PostEntity post, Guid[] catIds, CancellationToken ct)

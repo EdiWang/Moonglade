@@ -11,6 +11,7 @@ using Moonglade.Mention.Common;
 using Moonglade.Pingback;
 using Moonglade.Setup;
 using Moonglade.Syndication;
+using Moonglade.Web.BackgroundServices;
 using Moonglade.Web.Handlers;
 using Moonglade.Webmention;
 using SixLabors.Fonts;
@@ -214,6 +215,7 @@ public class Program
         services.AddEmailClient();
         services.AddIndexNowClient(configuration.GetSection("IndexNow"));
         services.AddContentModerator(configuration);
+        services.AddHostedService<ScheduledPublishService>();
         services.AddSingleton<CannonService>();
     }
 
