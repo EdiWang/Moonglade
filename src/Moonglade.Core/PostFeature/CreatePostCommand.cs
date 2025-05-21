@@ -59,7 +59,7 @@ public class CreatePostCommandHandler(
             IsOutdated = request.Payload.IsOutdated,
         };
 
-        post.RouteLink = $"{post.PubDateUtc.GetValueOrDefault().ToString("yyyy/M/d", CultureInfo.InvariantCulture)}/{request.Payload.Slug}";
+        post.RouteLink = Helper.GenerateRouteLink(post.PubDateUtc.GetValueOrDefault(), request.Payload.Slug);
 
         await CheckSlugConflict(post, ct);
 

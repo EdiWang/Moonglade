@@ -3,7 +3,9 @@ using Microsoft.AspNetCore.Cryptography.KeyDerivation;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc.ModelBinding;
 using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.Hosting;
 using Microsoft.Win32;
+using System.Globalization;
 using System.Net;
 using System.Reflection;
 using System.Runtime.InteropServices;
@@ -515,4 +517,14 @@ public static class Helper
 
     public static string GetMagic(int value, int start, int end) =>
         Convert.ToBase64String(SHA256.HashData(BitConverter.GetBytes(value)))[start..end];
+
+    public static string GenerateRouteLink(DateTime publishDate, string slug)
+    {
+        if (string.IsNullOrWhiteSpace(slug))
+        {
+            throw new ArgumentNullException(nameof(slug), "Slug must not be null or empty.");
+        }
+
+        return $"{publishDate.ToString("yyyy/M/d", CultureInfo.InvariantCulture)}/{slug.ToLower()}";
+    }
 }
