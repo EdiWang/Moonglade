@@ -1,5 +1,4 @@
-﻿using Microsoft.Extensions.Logging;
-using Moonglade.Data;
+﻿using Moonglade.Data;
 using Moonglade.Data.Specifications;
 using Moonglade.Utils;
 
