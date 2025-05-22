@@ -6,6 +6,7 @@ BEGIN
     EXEC sp_executesql N'UPDATE FriendLink SET [Rank] = 0'
     EXEC sp_executesql N'ALTER TABLE FriendLink ALTER COLUMN [Rank] INT NOT NULL'
 END
+GO
 
 -- v14.3
 IF NOT EXISTS (SELECT * FROM sys.objects 
@@ -23,13 +24,13 @@ BEGIN
     )WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
     ) ON [PRIMARY]
 END
-
+GO
 
 IF OBJECT_ID(N'[dbo].[LocalAccount]', 'U') IS NOT NULL
 BEGIN
     DROP TABLE [dbo].[LocalAccount]
 END
-
+GO
 
 IF EXISTS (SELECT * FROM sys.columns 
            WHERE Name = N'RouteName' AND Object_ID = Object_ID(N'Category'))
@@ -39,7 +40,7 @@ BEGIN
         @newname = 'Slug', 
         @objtype = 'COLUMN'
 END
-
+GO
 
 IF EXISTS (
     SELECT 1
@@ -50,7 +51,7 @@ IF EXISTS (
 BEGIN
     ALTER TABLE Post DROP COLUMN InlineCss;
 END;
-
+GO
 
 -- v14.5
 IF EXISTS (SELECT * FROM sys.columns 
@@ -58,20 +59,20 @@ IF EXISTS (SELECT * FROM sys.columns
 BEGIN
     ALTER TABLE Post DROP COLUMN IsOriginal
 END
-
+GO
 
 IF EXISTS (SELECT * FROM sys.columns 
            WHERE Name = N'OriginLink' AND Object_ID = Object_ID(N'Post'))
 BEGIN
     ALTER TABLE Post DROP COLUMN OriginLink
 END
-
+GO
 
 IF OBJECT_ID(N'Mention', 'U') IS NULL AND OBJECT_ID(N'Pingback', 'U') IS NOT NULL
 BEGIN
     EXEC sp_rename 'Pingback', 'Mention'
 END
-
+GO
 
 IF NOT EXISTS (SELECT * FROM sys.columns 
                WHERE Name = N'Worker' AND Object_ID = Object_ID(N'Mention'))
@@ -79,6 +80,7 @@ BEGIN
     EXEC sp_executesql N'ALTER TABLE Mention ADD Worker NVARCHAR(16)'
     EXEC sp_executesql N'UPDATE Mention SET Worker = N''Pingback'''
 END
+GO
 
 -- v14.8
 IF NOT EXISTS (SELECT * FROM sys.columns 
@@ -87,6 +89,7 @@ BEGIN
     EXEC sp_executesql N'ALTER TABLE Post ADD RouteLink NVARCHAR(256)'
     EXEC sp_executesql N'UPDATE Post SET RouteLink = FORMAT(PubDateUtc, ''yyyy/M/d'') + ''/'' + Slug'
 END
+GO
 
 IF EXISTS (
     SELECT 1
@@ -97,11 +100,14 @@ IF EXISTS (
 BEGIN
     ALTER TABLE Post DROP COLUMN HashCheckSum;
 END
+GO
 
 -- v14.15
 UPDATE [BlogConfiguration] SET CfgKey = 'AppearanceSettings' WHERE CfgKey = 'CustomStyleSheetSettings';
+GO
 
 ALTER TABLE [dbo].[BlogConfiguration] ALTER COLUMN [CfgKey] VARCHAR(64) NOT NULL;
+GO
 
 IF EXISTS (
     SELECT 1
@@ -112,6 +118,7 @@ IF EXISTS (
 BEGIN
     ALTER TABLE [dbo].[BlogConfiguration] DROP CONSTRAINT [PK_BlogConfiguration];
 END
+GO
 
 IF NOT EXISTS (
     SELECT 1
@@ -123,6 +130,7 @@ IF NOT EXISTS (
 BEGIN
     ALTER TABLE [dbo].[BlogConfiguration] ADD CONSTRAINT [PK_BlogConfiguration_CfgKey] PRIMARY KEY CLUSTERED ([CfgKey] ASC);
 END
+GO
 
 IF EXISTS (
     SELECT 1
@@ -133,6 +141,7 @@ IF EXISTS (
 BEGIN
     ALTER TABLE [dbo].[BlogConfiguration] DROP COLUMN Id;
 END
+GO
 
 -- v14.19
 IF EXISTS (
@@ -144,6 +153,7 @@ IF EXISTS (
 BEGIN
     ALTER TABLE [dbo].[Post] DROP COLUMN Revision;
 END
+GO
 
 IF NOT EXISTS (SELECT * FROM sys.objects 
                WHERE object_id = OBJECT_ID(N'[dbo].[PostView]') AND type in (N'U'))
@@ -159,6 +169,7 @@ BEGIN
 	)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
 	) ON [PRIMARY]
 END
+GO
 
 -- v14.22
 IF NOT EXISTS (
@@ -170,6 +181,7 @@ IF NOT EXISTS (
 BEGIN
     ALTER TABLE dbo.Post ADD PostStatus VARCHAR(16) NULL;
 END
+GO
 
 IF EXISTS (
     SELECT 1 
@@ -188,6 +200,7 @@ BEGIN
 
     ALTER TABLE dbo.Post DROP COLUMN IsPublished;
 END
+GO
 
 IF NOT EXISTS (
     SELECT 1 
@@ -198,3 +211,4 @@ IF NOT EXISTS (
 BEGIN
     ALTER TABLE dbo.Post ADD ScheduledPublishTimeUtc DATETIME NULL;
 END
+GO
