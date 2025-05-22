@@ -65,11 +65,6 @@ public class GeneralSettings : IBlogSettings
     [MaxLength(4096)]
     public string FooterCustomizedHtmlPitch { get; set; }
 
-    public TimeSpan SelectedUtcOffset { get; set; }
-
-    [MaxLength(64)]
-    public string TimeZoneId { get; set; }
-
     [Display(Name = "Profile")]
     public bool WidgetsProfile { get; set; } = true;
 
@@ -96,8 +91,6 @@ public class GeneralSettings : IBlogSettings
     [Display(Name = "Use my Gravatar as profile picture")]
     public bool UseGravatarAsProfilePicture { get; set; }
 
-    public TimeSpan TimeZoneUtcOffset { get; set; }
-
     [Required]
     [RegularExpression("^[a-z]{2}-[a-zA-Z]{2,4}$")]
     public string DefaultLanguageCode { get; set; } = "en-us";
@@ -118,8 +111,6 @@ public class GeneralSettings : IBlogSettings
         LogoText = "moonglade",
         MetaKeyword = "moonglade",
         Copyright = $"[c] {DateTime.UtcNow.Year}",
-        TimeZoneId = "Coordinated Universal Time",
-        TimeZoneUtcOffset = TimeSpan.FromHours(0),
         HotTagAmount = 10
     };
 }

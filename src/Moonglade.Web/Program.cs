@@ -206,7 +206,6 @@ public class Program
 
         services.AddSyndication()
                 .AddInMemoryCacheAside()
-                .AddScoped<ITimeZoneResolver, BlogTimeZoneResolver>()
                 .AddBlogConfig()
                 .AddAnalytics(configuration)
                 .AddBlogAuthenticaton(configuration)

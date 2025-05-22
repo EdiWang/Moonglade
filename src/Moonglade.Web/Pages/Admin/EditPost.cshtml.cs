@@ -4,7 +4,7 @@ using Moonglade.Core.PostFeature;
 
 namespace Moonglade.Web.Pages.Admin;
 
-public class EditPostModel(IMediator mediator, ITimeZoneResolver timeZoneResolver, IBlogConfig blogConfig) : PageModel
+public class EditPostModel(IMediator mediator, IBlogConfig blogConfig) : PageModel
 {
     public PostEditModel ViewModel { get; set; } = new()
     {
@@ -64,12 +64,12 @@ public class EditPostModel(IMediator mediator, ITimeZoneResolver timeZoneResolve
 
         if (post.PubDateUtc is not null)
         {
-            ViewModel.PublishDate = timeZoneResolver.ToTimeZone(post.PubDateUtc.GetValueOrDefault());
+            ViewModel.PublishDate = post.PubDateUtc.GetValueOrDefault();
         }
 
         if (post.ScheduledPublishTimeUtc != null)
         {
-            ViewModel.ScheduledPublishTime = timeZoneResolver.ToTimeZone(post.ScheduledPublishTimeUtc.Value);
+            ViewModel.ScheduledPublishTime = post.ScheduledPublishTimeUtc.Value;
         }
 
         var tagStr = post.Tags

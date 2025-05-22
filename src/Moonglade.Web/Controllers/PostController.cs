@@ -14,7 +14,6 @@ public class PostController(
         IConfiguration configuration,
         IMediator mediator,
         IBlogConfig blogConfig,
-        ITimeZoneResolver timeZoneResolver,
         ILogger<PostController> logger,
         CannonService cannonService) : ControllerBase
 {
@@ -33,20 +32,27 @@ public class PostController(
         {
             if (!ModelState.IsValid) return Conflict(ModelState.CombineErrorMessages());
 
-            var tzDate = timeZoneResolver.NowInTimeZone;
             if (model.ChangePublishDate &&
                 model.PublishDate.HasValue &&
-                model.PublishDate <= tzDate &&
+                model.PublishDate <= DateTime.UtcNow &&
                 model.PublishDate.GetValueOrDefault().Year >= 1975)
             {
-                model.PublishDate = timeZoneResolver.ToUtc(model.PublishDate.Value);
+                model.PublishDate = model.PublishDate.Value;
             }
 
             if (model.PostStatus == PostStatusConstants.Scheduled && model.ScheduledPublishTime.HasValue)
             {
-                model.ScheduledPublishTime = timeZoneResolver.ToUtc(model.ScheduledPublishTime.Value);
+                if (string.IsNullOrWhiteSpace(model.ClientTimeZoneId))
+                {
+                    return Conflict("Client time zone ID is required for scheduled posts.");
+                }
 
-                if (model.ScheduledPublishTime < tzDate)
+                var clientTimeZone = TimeZoneInfo.FindSystemTimeZoneById(model.ClientTimeZoneId);
+                var clientLocalTime = model.ScheduledPublishTime.Value;
+                var clientUtcTime = TimeZoneInfo.ConvertTimeToUtc(clientLocalTime, clientTimeZone);
+
+                model.ScheduledPublishTime = clientUtcTime;
+                if (model.ScheduledPublishTime < DateTime.UtcNow)
                 {
                     // return Conflict("Scheduled publish time must be in the future.");
 

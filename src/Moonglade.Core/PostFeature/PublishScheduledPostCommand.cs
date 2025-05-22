@@ -1,5 +1,4 @@
-﻿using Microsoft.Extensions.Logging;
-using Moonglade.Data;
+﻿using Moonglade.Data;
 using Moonglade.Data.Specifications;
 using Moonglade.Utils;
 
@@ -7,15 +6,13 @@ namespace Moonglade.Core.PostFeature;
 
 public record PublishScheduledPostCommand : IRequest<int>;
 
-public class PublishScheduledPostCommandHandler(MoongladeRepository<PostEntity> postRepo, ILogger<PublishScheduledPostCommandHandler> logger) : IRequestHandler<PublishScheduledPostCommand, int>
+public class PublishScheduledPostCommandHandler(MoongladeRepository<PostEntity> postRepo) :
+    IRequestHandler<PublishScheduledPostCommand, int>
 {
-    private readonly MoongladeRepository<PostEntity> _postRepo = postRepo;
-    private readonly ILogger<PublishScheduledPostCommandHandler> _logger = logger;
-
     public async Task<int> Handle(PublishScheduledPostCommand request, CancellationToken ct)
     {
         var now = DateTime.UtcNow;
-        var scheduledPosts = await _postRepo.ListAsync(new ScheduledPostSpec(now), ct);
+        var scheduledPosts = await postRepo.ListAsync(new ScheduledPostSpec(now), ct);
         if (scheduledPosts.Count == 0)
         {
             return 0;
@@ -29,12 +26,11 @@ public class PublishScheduledPostCommandHandler(MoongladeRepository<PostEntity> 
             post.ScheduledPublishTimeUtc = null;
             post.RouteLink = Helper.GenerateRouteLink(post.PubDateUtc.GetValueOrDefault(), post.Slug);
 
-            await _postRepo.UpdateAsync(post, ct);
+            await postRepo.UpdateAsync(post, ct);
 
             affectedRows++;
         }
 
-        _logger.LogInformation("Published {Count} scheduled posts", affectedRows);
         return affectedRows;
     }
 }
