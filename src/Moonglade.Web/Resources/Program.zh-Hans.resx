@@ -198,12 +198,6 @@
   <data name="Blog posts" xml:space="preserve">
     <value>博客文章</value>
   </data>
-  <data name="Blog posts will use this time zone as date and time display." xml:space="preserve">
-    <value>博客会使用该时区显示文章日期及时间</value>
-  </data>
-  <data name="Blog posts will use this time zone as date display." xml:space="preserve">
-    <value>博客文章会使用该时区作为时间及日期显示</value>
-  </data>
   <data name="Blog title" xml:space="preserve">
     <value>博客标题</value>
   </data>
@@ -713,9 +707,6 @@
   </data>
   <data name="This is a preview for draft content." xml:space="preserve">
     <value>该页面为草稿预览</value>
-  </data>
-  <data name="Time Zone" xml:space="preserve">
-    <value>时区</value>
   </data>
   <data name="Title" xml:space="preserve">
     <value>标题</value>
