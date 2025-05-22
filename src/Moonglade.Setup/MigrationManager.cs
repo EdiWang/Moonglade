@@ -128,11 +128,16 @@ public partial class MigrationManager(
         }
     }
 
-    private static async Task ExecuteMigrationScript(string fullScript, DbContext context)
+    private async Task ExecuteMigrationScript(string fullScript, DbContext context)
     {
         string[] batches = SqlBatchSplitterRegex().Split(fullScript);
+
+        logger.LogInformation("Splitted migration script into {Count} batches.", batches.Length);
+
         foreach (var batch in batches)
         {
+            logger.LogInformation("Executing batch: '{Batch}", batch);
+
             if (string.IsNullOrWhiteSpace(batch)) continue;
             await context.Database.ExecuteSqlRawAsync(batch);
         }

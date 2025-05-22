@@ -190,15 +190,17 @@ IF EXISTS (
       AND name = 'IsPublished'
 )
 BEGIN
-	UPDATE dbo.Post
-	SET PostStatus = 'published'
-	WHERE IsPublished = 1;
+    EXEC('
+        UPDATE dbo.Post
+        SET PostStatus = ''published''
+        WHERE IsPublished = 1;
 
-	UPDATE dbo.Post
-	SET PostStatus = 'draft'
-	WHERE IsPublished = 0;
+        UPDATE dbo.Post
+        SET PostStatus = ''draft''
+        WHERE IsPublished = 0;
 
-    ALTER TABLE dbo.Post DROP COLUMN IsPublished;
+        ALTER TABLE dbo.Post DROP COLUMN IsPublished;
+    ')
 END
 GO
 
