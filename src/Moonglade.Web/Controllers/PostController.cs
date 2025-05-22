@@ -42,7 +42,16 @@ public class PostController(
 
             if (model.PostStatus == PostStatusConstants.Scheduled && model.ScheduledPublishTime.HasValue)
             {
-                model.ScheduledPublishTime = model.ScheduledPublishTime.Value;
+                if (string.IsNullOrWhiteSpace(model.ClientTimeZoneId))
+                {
+                    return Conflict("Client time zone ID is required for scheduled posts.");
+                }
+
+                var clientTimeZone = TimeZoneInfo.FindSystemTimeZoneById(model.ClientTimeZoneId);
+                var clientLocalTime = model.ScheduledPublishTime.Value;
+                var clientUtcTime = TimeZoneInfo.ConvertTimeToUtc(clientLocalTime, clientTimeZone);
+
+                model.ScheduledPublishTime = clientUtcTime;
                 if (model.ScheduledPublishTime < DateTime.UtcNow)
                 {
                     // return Conflict("Scheduled publish time must be in the future.");

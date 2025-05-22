@@ -60,6 +60,8 @@ public class PostEditModel
     [DataType(DataType.Date)]
     public DateTime? ScheduledPublishTime { get; set; }
 
+    public string ClientTimeZoneId { get; set; }
+
     [Display(Name = "Change Publish Date")]
     public bool ChangePublishDate { get; set; }
 

@@ -178,6 +178,9 @@ document.getElementById('btn-cancel-schedule').addEventListener('click', functio
 document.getElementById('btn-schedule-publish').addEventListener('click', function () {
     document.querySelector('input[name="ViewModel.PostStatus"]').value = 'scheduled';
 
+    const timeZone = Intl.DateTimeFormat().resolvedOptions().timeZone;
+    document.querySelector('input[name="ViewModel.ClientTimeZoneId"]').value = timeZone;
+
     updateScheduleInfo();
 });
 
