@@ -136,7 +136,7 @@ public partial class MigrationManager(
 
         foreach (var batch in batches)
         {
-            logger.LogInformation("Executing batch: '{Batch}", batch);
+            logger.LogInformation("Executing batch: `{Batch}`", batch);
 
             if (string.IsNullOrWhiteSpace(batch)) continue;
             await context.Database.ExecuteSqlRawAsync(batch);
