@@ -214,7 +214,12 @@ public class Program
         services.AddEmailClient();
         services.AddIndexNowClient(configuration.GetSection("IndexNow"));
         services.AddContentModerator(configuration);
-        services.AddHostedService<ScheduledPublishService>();
+
+        if (configuration.GetValue<bool>("PostScheduler:Enabled"))
+        {
+            services.AddHostedService<ScheduledPublishService>();
+        }
+
         services.AddSingleton<CannonService>();
     }
 

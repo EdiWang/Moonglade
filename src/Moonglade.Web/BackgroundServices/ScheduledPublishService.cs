@@ -2,8 +2,10 @@
 
 namespace Moonglade.Web.BackgroundServices;
 
-public class ScheduledPublishService(IServiceProvider serviceProvider, ILogger<ScheduledPublishService> logger) : BackgroundService
+public class ScheduledPublishService(IServiceProvider serviceProvider, IConfiguration configuration) : BackgroundService
 {
+    private readonly ILogger<ScheduledPublishService> logger = serviceProvider.GetRequiredService<ILogger<ScheduledPublishService>>();
+
     protected override async Task ExecuteAsync(CancellationToken stoppingToken)
     {
         while (!stoppingToken.IsCancellationRequested)
@@ -18,7 +20,8 @@ public class ScheduledPublishService(IServiceProvider serviceProvider, ILogger<S
             }
             finally
             {
-                await Task.Delay(TimeSpan.FromMinutes(1), stoppingToken);
+                int taskDelay = configuration.GetValue("PostScheduler:TaskIntervalMinutes", 1);
+                await Task.Delay(TimeSpan.FromMinutes(taskDelay), stoppingToken);
             }
         }
     }
