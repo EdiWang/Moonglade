@@ -2,10 +2,12 @@
 
 namespace Moonglade.Web.BackgroundServices;
 
-public class ScheduledPublishService(IServiceProvider serviceProvider, IConfiguration configuration) : BackgroundService
+public class ScheduledPublishService(
+    IServiceProvider serviceProvider,
+    IConfiguration configuration,
+    ILogger<ScheduledPublishService> logger
+    ) : BackgroundService
 {
-    private readonly ILogger<ScheduledPublishService> logger = serviceProvider.GetRequiredService<ILogger<ScheduledPublishService>>();
-
     protected override async Task ExecuteAsync(CancellationToken stoppingToken)
     {
         while (!stoppingToken.IsCancellationRequested)
