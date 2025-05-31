@@ -32,13 +32,13 @@ public class CountPostQueryHandler(
             case CountType.Category:
                 if (request.CatId == null) throw new ArgumentNullException(nameof(request.CatId));
                 count = await postCatRepo.CountAsync(c => c.CategoryId == request.CatId.Value
-                                                           && c.Post.IsPublished
+                                                           && c.Post.PostStatus == PostStatusConstants.Published
                                                            && !c.Post.IsDeleted, ct);
                 break;
 
             case CountType.Tag:
                 if (request.TagId == null) throw new ArgumentNullException(nameof(request.TagId));
-                count = await postTagRepo.CountAsync(p => p.TagId == request.TagId.Value && p.Post.IsPublished && !p.Post.IsDeleted, ct);
+                count = await postTagRepo.CountAsync(p => p.TagId == request.TagId.Value && p.Post.PostStatus == PostStatusConstants.Published && !p.Post.IsDeleted, ct);
                 break;
 
             case CountType.Featured:

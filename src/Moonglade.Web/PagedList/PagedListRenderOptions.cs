@@ -14,7 +14,6 @@ public class PagedListRenderOptions
         LinkToNextPageFormat = ">";
         LinkToLastPageFormat = ">>";
         PageCountAndCurrentLocationFormat = "Page {0} of {1}.";
-        ItemSliceAndTotalFormat = "Showing items {0} through {1} of {2}.";
         UlElementClasses = ["pagination"];
         PageClasses = ["page-link"];
         PreviousElementClass = "paged-list-skip-to-previous";
@@ -78,12 +77,4 @@ public class PagedListRenderOptions
     /// "Page {0} of {1}."
     ///</example>
     public string PageCountAndCurrentLocationFormat { get; set; }
-
-    ///<summary>
-    /// The pre-formatted text to display when DisplayItemSliceAndTotal is true. Use {0} to reference the first item on the page, {1} for the last item on the page, and {2} for the total number of items across all pages.
-    ///</summary>
-    ///<example>
-    /// "Showing items {0} through {1} of {2}."
-    ///</example>
-    public string ItemSliceAndTotalFormat { get; set; }
 }

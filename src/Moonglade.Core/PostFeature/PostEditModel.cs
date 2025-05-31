@@ -31,7 +31,7 @@ public class PostEditModel
     public string EditorContent { get; set; }
 
     [Required]
-    public bool IsPublished { get; set; }
+    public string PostStatus { get; set; }
 
     [Required]
     [Display(Name = "Featured")]
@@ -55,6 +55,12 @@ public class PostEditModel
     [Display(Name = "Publish Date")]
     [DataType(DataType.Date)]
     public DateTime? PublishDate { get; set; }
+
+    [Display(Name = "Scheduled Publish Time")]
+    [DataType(DataType.Date)]
+    public DateTime? ScheduledPublishTime { get; set; }
+
+    public string ClientTimeZoneId { get; set; }
 
     [Display(Name = "Change Publish Date")]
     public bool ChangePublishDate { get; set; }

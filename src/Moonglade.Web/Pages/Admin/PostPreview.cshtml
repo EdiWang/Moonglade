@@ -14,7 +14,7 @@
     <meta name="title" content="@Post.Title" />
     <meta name="author" content="@(string.IsNullOrWhiteSpace(Post.Author) ? BlogConfig.GeneralSettings.OwnerName : Post.Author) " />
     <meta name="image-device-dpi" content="@BlogConfig.ImageSettings.FitImageToDevicePixelRatio.ToString().ToLower()" />
-    <meta name="post-is-published" content="@Model.Post.IsPublished.ToString().ToLower()" />
+    <meta name="post-is-published" content="@((Model.Post.PostStatus == PostStatusConstants.Published).ToString().ToLower())" />
 }
 
 @section head {

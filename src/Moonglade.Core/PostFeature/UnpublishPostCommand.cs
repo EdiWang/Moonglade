@@ -17,8 +17,9 @@ public class UnpublishPostCommandHandler(
         var post = await repo.GetByIdAsync(request.Id, ct);
         if (null == post) return;
 
-        post.IsPublished = false;
+        post.PostStatus = PostStatusConstants.Draft;
         post.PubDateUtc = null;
+        post.ScheduledPublishTimeUtc = null;
         post.RouteLink = null;
         post.LastModifiedUtc = DateTime.UtcNow;
 

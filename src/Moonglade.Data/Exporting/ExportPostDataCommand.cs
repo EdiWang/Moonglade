@@ -22,7 +22,7 @@ public class ExportPostDataCommandHandler(MoongladeRepository<PostEntity> repo) 
             p.ContentLanguageCode,
             p.IsDeleted,
             p.IsFeedIncluded,
-            p.IsPublished,
+            p.PostStatus,
             Categories = p.PostCategory.Select(pc => pc.Category.DisplayName),
             Tags = p.Tags.Select(pt => pt.DisplayName)
         }, ct);

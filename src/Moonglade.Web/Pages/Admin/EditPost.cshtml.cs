@@ -4,12 +4,12 @@ using Moonglade.Core.PostFeature;
 
 namespace Moonglade.Web.Pages.Admin;
 
-public class EditPostModel(IMediator mediator, ITimeZoneResolver timeZoneResolver, IBlogConfig blogConfig) : PageModel
+public class EditPostModel(IMediator mediator, IBlogConfig blogConfig) : PageModel
 {
     public PostEditModel ViewModel { get; set; } = new()
     {
         IsOutdated = false,
-        IsPublished = false,
+        PostStatus = PostStatusConstants.Draft,
         Featured = false,
         EnableComment = true,
         FeedIncluded = true
@@ -47,7 +47,7 @@ public class EditPostModel(IMediator mediator, ITimeZoneResolver timeZoneResolve
         ViewModel = new()
         {
             PostId = post.Id,
-            IsPublished = post.IsPublished,
+            PostStatus = post.PostStatus.ToLower().Trim(),
             EditorContent = post.PostContent,
             Author = post.Author,
             Slug = post.Slug,
@@ -64,7 +64,12 @@ public class EditPostModel(IMediator mediator, ITimeZoneResolver timeZoneResolve
 
         if (post.PubDateUtc is not null)
         {
-            ViewModel.PublishDate = timeZoneResolver.ToTimeZone(post.PubDateUtc.GetValueOrDefault());
+            ViewModel.PublishDate = post.PubDateUtc.GetValueOrDefault();
+        }
+
+        if (post.ScheduledPublishTimeUtc != null)
+        {
+            ViewModel.ScheduledPublishTime = post.ScheduledPublishTimeUtc.Value;
         }
 
         var tagStr = post.Tags

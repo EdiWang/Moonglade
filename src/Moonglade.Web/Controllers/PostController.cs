@@ -1,5 +1,4 @@
 ﻿using Moonglade.Core.PostFeature;
-using Moonglade.Data.Entities;
 using Moonglade.IndexNow.Client;
 using Moonglade.Pingback;
 using Moonglade.Web.Attributes;
@@ -15,7 +14,6 @@ public class PostController(
         IConfiguration configuration,
         IMediator mediator,
         IBlogConfig blogConfig,
-        ITimeZoneResolver timeZoneResolver,
         ILogger<PostController> logger,
         CannonService cannonService) : ControllerBase
 {
@@ -34,20 +32,44 @@ public class PostController(
         {
             if (!ModelState.IsValid) return Conflict(ModelState.CombineErrorMessages());
 
-            var tzDate = timeZoneResolver.NowInTimeZone;
             if (model.ChangePublishDate &&
                 model.PublishDate.HasValue &&
-                model.PublishDate <= tzDate &&
+                model.PublishDate <= DateTime.UtcNow &&
                 model.PublishDate.GetValueOrDefault().Year >= 1975)
             {
-                model.PublishDate = timeZoneResolver.ToUtc(model.PublishDate.Value);
+                model.PublishDate = model.PublishDate.Value;
+            }
+
+            if (model.PostStatus == PostStatusConstants.Scheduled && model.ScheduledPublishTime.HasValue)
+            {
+                if (string.IsNullOrWhiteSpace(model.ClientTimeZoneId))
+                {
+                    return Conflict("Client time zone ID is required for scheduled posts.");
+                }
+
+                var clientTimeZone = TimeZoneInfo.FindSystemTimeZoneById(model.ClientTimeZoneId);
+                var clientLocalTime = model.ScheduledPublishTime.Value;
+                var clientUtcTime = TimeZoneInfo.ConvertTimeToUtc(clientLocalTime, clientTimeZone);
+
+                model.ScheduledPublishTime = clientUtcTime;
+                if (model.ScheduledPublishTime < DateTime.UtcNow)
+                {
+                    // return Conflict("Scheduled publish time must be in the future.");
+
+                    // Instead of throwing error, just publish the post right away!
+                    model.PostStatus = PostStatusConstants.Published;
+                    model.ScheduledPublishTime = null;
+                }
             }
 
             var postEntity = model.PostId == Guid.Empty ?
                 await mediator.Send(new CreatePostCommand(model)) :
                 await mediator.Send(new UpdatePostCommand(model.PostId, model));
 
-            if (!model.IsPublished) return Ok(new { PostId = postEntity.Id });
+            if (model.PostStatus != PostStatusConstants.Published)
+            {
+                return Ok(new { PostId = postEntity.Id });
+            }
 
             logger.LogInformation($"Trying to Ping URL for post: {postEntity.Id}");
 

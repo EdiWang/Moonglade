@@ -60,13 +60,18 @@ document.addEventListener('DOMContentLoaded', () => {
     renderCodeHighlighter();
     renderLaTeX('pre.language-latex code');
 
-    const blogContent = document.querySelector('.post-content').innerText;
-    let roundedReadingTime = calculateReadingTime(blogContent);
-    document.getElementById('reading-time').innerText = `Estimated Reading Time: ${roundedReadingTime} minute(s)`;
-
-    let pid = document.querySelector('article').dataset.postid;
-
     if (parseMetaContent('post-is-published')) {
+
+        let pid = document.querySelector('article').dataset.postid;
+
+        const blogContent = document.querySelector('.post-content').innerText;
+        let roundedReadingTime = calculateReadingTime(blogContent);
+
+        const elem = document.getElementById('reading-time');
+        if (elem) {
+            elem.innerText = `Estimated Reading Time: ${roundedReadingTime} minute(s)`;
+        }
+
         document.getElementById('comment-form')?.addEventListener('submit', function (e) {
             e.preventDefault();
             submitComment(pid);
@@ -81,8 +86,8 @@ document.addEventListener('DOMContentLoaded', () => {
         });
 
         formatUtcTime();
-    }
 
-    cleanupLocalStorage();
-    recordPostView(pid);
+        cleanupLocalStorage();
+        recordPostView(pid);
+    }
 });

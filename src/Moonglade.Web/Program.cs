@@ -11,6 +11,7 @@ using Moonglade.Mention.Common;
 using Moonglade.Pingback;
 using Moonglade.Setup;
 using Moonglade.Syndication;
+using Moonglade.Web.BackgroundServices;
 using Moonglade.Web.Handlers;
 using Moonglade.Webmention;
 using SixLabors.Fonts;
@@ -205,7 +206,6 @@ public class Program
 
         services.AddSyndication()
                 .AddInMemoryCacheAside()
-                .AddScoped<ITimeZoneResolver, BlogTimeZoneResolver>()
                 .AddBlogConfig()
                 .AddAnalytics(configuration)
                 .AddBlogAuthenticaton(configuration)
@@ -214,6 +214,12 @@ public class Program
         services.AddEmailClient();
         services.AddIndexNowClient(configuration.GetSection("IndexNow"));
         services.AddContentModerator(configuration);
+
+        if (configuration.GetValue<bool>("PostScheduler:Enabled"))
+        {
+            services.AddHostedService<ScheduledPublishService>();
+        }
+
         services.AddSingleton<CannonService>();
     }
 

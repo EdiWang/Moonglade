@@ -6,7 +6,7 @@ public sealed class PostPagingSpec : Specification<PostEntity>
 {
     public PostPagingSpec(int pageSize, int pageIndex, Guid? categoryId = null)
     {
-        Query.Where(p => !p.IsDeleted && p.IsPublished &&
+        Query.Where(p => !p.IsDeleted && p.PostStatus == PostStatusConstants.Published &&
                          (categoryId == null || p.PostCategory.Select(c => c.CategoryId).Contains(categoryId.Value)));
 
         var startRow = (pageIndex - 1) * pageSize;
@@ -25,10 +25,10 @@ public sealed class PostPagingByStatusSpec : Specification<PostEntity>
         switch (postStatus)
         {
             case PostStatus.Draft:
-                Query.Where(p => !p.IsPublished && !p.IsDeleted);
+                Query.Where(p => p.PostStatus == PostStatusConstants.Draft && !p.IsDeleted);
                 break;
             case PostStatus.Published:
-                Query.Where(p => p.IsPublished && !p.IsDeleted);
+                Query.Where(p => p.PostStatus == PostStatusConstants.Published && !p.IsDeleted);
                 break;
             case PostStatus.Deleted:
                 Query.Where(p => p.IsDeleted);

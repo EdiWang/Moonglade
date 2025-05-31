@@ -38,7 +38,7 @@ public class Seed
                 CommentEnabled = true,
                 CreateTimeUtc = DateTime.UtcNow,
                 ContentAbstract = content,
-                IsPublished = true,
+                PostStatus = PostStatusConstants.Published,
                 IsFeatured = true,
                 IsFeedIncluded = true,
                 LastModifiedUtc = DateTime.UtcNow,

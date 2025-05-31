@@ -9,7 +9,7 @@ public sealed class PostTagSpec : Specification<PostTagEntity>
         Query.Where(pt =>
             pt.TagId == tagId
             && !pt.Post.IsDeleted
-            && pt.Post.IsPublished);
+            && pt.Post.PostStatus == PostStatusConstants.Published);
 
         var startRow = (pageIndex - 1) * pageSize;
         Query.Skip(startRow).Take(pageSize);

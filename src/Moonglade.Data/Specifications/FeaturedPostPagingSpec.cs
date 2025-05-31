@@ -9,7 +9,7 @@ public sealed class FeaturedPostPagingSpec : Specification<PostEntity>
         Query.Where(p =>
             p.IsFeatured
             && !p.IsDeleted
-            && p.IsPublished);
+            && p.PostStatus == PostStatusConstants.Published);
 
         var startRow = (pageIndex - 1) * pageSize;
         Query.Skip(startRow).Take(pageSize);

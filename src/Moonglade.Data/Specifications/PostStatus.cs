@@ -4,6 +4,7 @@ public enum PostStatus
 {
     Default = 0,
     Draft = 1,
-    Published = 2,
-    Deleted = 3
+    Scheduled = 2,
+    Published = 3,
+    Deleted = 4
 }

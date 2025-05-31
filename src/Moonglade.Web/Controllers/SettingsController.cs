@@ -40,12 +40,10 @@ public class SettingsController(
     [HttpPost("general")]
     [ReadonlyMode]
     [ProducesResponseType(StatusCodes.Status204NoContent)]
-    public async Task<IActionResult> General(GeneralSettings model, ITimeZoneResolver timeZoneResolver)
+    public async Task<IActionResult> General(GeneralSettings model)
     {
         model.AvatarUrl = blogConfig.GeneralSettings.AvatarUrl;
-
         blogConfig.GeneralSettings = model;
-        blogConfig.GeneralSettings.TimeZoneUtcOffset = timeZoneResolver.GetTimeSpanByZoneId(model.TimeZoneId);
 
         await SaveConfigAsync(blogConfig.GeneralSettings);
 

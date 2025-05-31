@@ -5,6 +5,7 @@ using Microsoft.Extensions.Logging;
 using Moonglade.Configuration;
 using Moonglade.Data;
 using Moonglade.Utils;
+using System.Text.RegularExpressions;
 
 namespace Moonglade.Setup;
 
@@ -13,7 +14,7 @@ public interface IMigrationManager
     Task TryMigration(BlogDbContext context);
 }
 
-public class MigrationManager(
+public partial class MigrationManager(
     ILogger<MigrationManager> logger,
     IMediator mediator,
     IConfiguration configuration,
@@ -119,12 +120,29 @@ public class MigrationManager(
         var script = await response.Content.ReadAsStringAsync();
         if (!string.IsNullOrWhiteSpace(script))
         {
-            // Execute migration script
             logger.LogInformation("Executing migration script...");
 
-            await context.Database.ExecuteSqlRawAsync(script);
+            await ExecuteMigrationScript(script, context);
 
             logger.LogInformation("Migration script executed successfully.");
         }
     }
+
+    private async Task ExecuteMigrationScript(string fullScript, DbContext context)
+    {
+        string[] batches = SqlBatchSplitterRegex().Split(fullScript);
+
+        logger.LogInformation("Splitted migration script into {Count} batches.", batches.Length);
+
+        foreach (var batch in batches)
+        {
+            logger.LogInformation("Executing batch: `{Batch}`", batch);
+
+            if (string.IsNullOrWhiteSpace(batch)) continue;
+            await context.Database.ExecuteSqlRawAsync(batch);
+        }
+    }
+
+    [GeneratedRegex(@"^\s*GO\s*$", RegexOptions.IgnoreCase | RegexOptions.Multiline, "en-US")]
+    private static partial Regex SqlBatchSplitterRegex();
 }

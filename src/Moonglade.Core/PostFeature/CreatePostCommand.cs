@@ -4,7 +4,6 @@ using Moonglade.Configuration;
 using Moonglade.Data;
 using Moonglade.Data.Specifications;
 using Moonglade.Utils;
-using System.Globalization;
 
 namespace Moonglade.Core.PostFeature;
 
@@ -47,15 +46,19 @@ public class CreatePostCommandHandler(
             Title = request.Payload.Title.Trim(),
             ContentLanguageCode = request.Payload.LanguageCode,
             IsFeedIncluded = request.Payload.FeedIncluded,
-            PubDateUtc = request.Payload.IsPublished ? utcNow : null,
+            PubDateUtc = request.Payload.PostStatus == PostStatusConstants.Published ? utcNow : null,
+            ScheduledPublishTimeUtc =
+                request.Payload.PostStatus == PostStatusConstants.Scheduled ?
+                request.Payload.ScheduledPublishTime :
+                null,
             IsDeleted = false,
-            IsPublished = request.Payload.IsPublished,
+            PostStatus = request.Payload.PostStatus ?? PostStatusConstants.Draft,
             IsFeatured = request.Payload.Featured,
             HeroImageUrl = string.IsNullOrWhiteSpace(request.Payload.HeroImageUrl) ? null : Helper.SterilizeLink(request.Payload.HeroImageUrl),
             IsOutdated = request.Payload.IsOutdated,
         };
 
-        post.RouteLink = $"{post.PubDateUtc.GetValueOrDefault().ToString("yyyy/M/d", CultureInfo.InvariantCulture)}/{request.Payload.Slug}";
+        post.RouteLink = Helper.GenerateRouteLink(post.PubDateUtc.GetValueOrDefault(), request.Payload.Slug);
 
         await CheckSlugConflict(post, ct);
 

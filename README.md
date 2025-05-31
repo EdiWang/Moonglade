@@ -1,6 +1,6 @@
 # Moonglade Blog
 
-Moonglade is a personal blogging platform optimized for deployment on [**Microsoft Azure**](https://azure.microsoft.com/en-us/). It is designed with developers in mind, offering essential blogging features such as posts, comments, categories, archives, tags, and pages.
+Moonglade is a personal blogging platform optimized for deployment on [**Microsoft Azure**](https://azure.microsoft.com/en-us/). It is designed for developers, offering essential blogging features such as posts, comments, categories, archives, tags, and pages.
 
 ## 📦 Deployment Notice
 
@@ -155,9 +155,6 @@ IndexNow | SEO | Supported | N/A
 RSD | Service Discovery | Deprecated | N/A
 MetaWeblog | Blogging | Deprecated | N/A
 Dublin Core Metadata | SEO | Basic Support | N/A
-BlogML | Blogging | Not planned | 
-APML | Social | Not planned | 
-Trackback | Social | Not planned |
 
 ## 免责申明
 

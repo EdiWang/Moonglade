@@ -1,13 +1,12 @@
 ﻿@model Moonglade.Core.PostFeature.PostDigest
-@inject ITimeZoneResolver ZoneResolver
 
 <article class="article-post-summary d-flex rounded-3 shadow-sm border bg-white mb-4" lang="@Model.LangCode">
     <div class="post-date-box border-end d-none d-md-block font-sairas pe-4">
         <div class="post-date-day">
-            @ZoneResolver.ToTimeZone(Model.PubDateUtc).Day.ToString("00")
+            @Model.PubDateUtc.Day.ToString("00")
         </div>
         <div class="post-date-month">
-            @ZoneResolver.ToTimeZone(Model.PubDateUtc).ToString("MMM").ToUpper()
+            @Model.PubDateUtc.ToString("MMM").ToUpper()
         </div>
     </div>
     <div class="post-summary-box">

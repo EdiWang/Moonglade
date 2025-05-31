@@ -33,7 +33,7 @@ export function initEvents(slugifyTitle) {
     });
 
     document.querySelector('#btn-publish')?.addEventListener('click', function (e) {
-        document.querySelector('input[name="ViewModel.IsPublished"]').value = 'True';
+        document.querySelector('input[name="ViewModel.PostStatus"]').value = 'published';
         submitForm(e);
     });
 
@@ -57,7 +57,7 @@ export function initEvents(slugifyTitle) {
             assignEditorValues(window.mdContentEditor, ".post-content-textarea");
         }
 
-        if (document.querySelector('input[name="ViewModel.IsPublished"]').value === 'True') {
+        if (document.querySelector('input[name="ViewModel.PostStatus"]').value === 'published') {
             const btnPublish = document.querySelector('#btn-publish');
             if (btnPublish) {
                 btnPublish.style.display = 'none';
@@ -149,6 +149,7 @@ export function loadTinyMCE(textareaSelector) {
         content_css: isDarkTheme ? '/css/tinymce-custom-dark.css' : '/css/tinymce-custom.css',
         codesample_languages: [
             { text: 'Bash', value: 'bash' },
+            { text: 'Bicep', value: 'bicep' },
             { text: 'C#', value: 'csharp' },
             { text: 'C', value: 'c' },
             { text: 'C++', value: 'cpp' },

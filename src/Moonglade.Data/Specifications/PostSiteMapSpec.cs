@@ -6,7 +6,7 @@ public sealed class PostSiteMapSpec : Specification<PostEntity, PostSiteMapInfo>
 {
     public PostSiteMapSpec()
     {
-        Query.Where(p => p.IsPublished && !p.IsDeleted);
+        Query.Where(p => p.PostStatus == PostStatusConstants.Published && !p.IsDeleted);
         Query.Select(p => new PostSiteMapInfo
         {
             RouteLink = p.RouteLink,
