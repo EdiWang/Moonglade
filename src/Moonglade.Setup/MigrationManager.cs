@@ -22,7 +22,8 @@ public partial class MigrationManager(
 {
     public async Task TryMigration(BlogDbContext context)
     {
-        logger.LogInformation($"Found manifest, VersionString: {blogConfig.SystemManifestSettings.VersionString}, installed on {blogConfig.SystemManifestSettings.InstallTimeUtc} UTC");
+        logger.LogInformation("Found manifest, VersionString: {VersionString}, installed on {InstallTimeUtc} UTC",
+            blogConfig.SystemManifestSettings.VersionString, blogConfig.SystemManifestSettings.InstallTimeUtc);
 
         if (!bool.Parse(configuration["Setup:AutoDatabaseMigration"]!))
         {
