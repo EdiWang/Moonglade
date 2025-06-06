@@ -95,7 +95,7 @@ public class Program
     private static void ConfigureServices(IServiceCollection services, IConfiguration configuration, List<CultureInfo> cultures)
     {
         var assemblies = AppDomain.CurrentDomain.GetAssemblies();
-        assemblies = assemblies.Where(x => x.FullName!.StartsWith("Moonglade")).ToArray();
+        assemblies = [.. assemblies.Where(x => x.FullName!.StartsWith("Moonglade"))];
 
         services.AddHttpClient();
         services.AddMediatR(config => config.RegisterServicesFromAssemblies(assemblies));
