@@ -54,7 +54,7 @@ public class Seed
         }
         catch (Exception e)
         {
-            if (retryForAvailability >= 10) throw;
+            if (retryForAvailability >= 5) throw;
 
             retryForAvailability++;
 
@@ -65,8 +65,7 @@ public class Seed
     }
 
     private static IEnumerable<CategoryEntity> GetCategories() =>
-        new List<CategoryEntity>
-        {
+        [
             new()
             {
                 Id = Guid.Parse("b0c15707-dfc8-4b09-9aa0-5bfca744c50b"),
@@ -74,29 +73,26 @@ public class Seed
                 Note = "Default Category",
                 Slug = "default"
             }
-        };
+        ];
 
     private static IEnumerable<TagEntity> GetTags() =>
-        new List<TagEntity>
-        {
+        [
             new() { DisplayName = "Moonglade", NormalizedName = "moonglade" },
             new() { DisplayName = ".NET", NormalizedName = "dot-net" }
-        };
+        ];
 
     private static IEnumerable<FriendLinkEntity> GetFriendLinks() =>
-        new List<FriendLinkEntity>
-        {
+        [
             new()
             {
                 Id = Guid.NewGuid(),
                 Title = "Edi.Wang",
                 LinkUrl = "https://edi.wang"
             }
-        };
+        ];
 
     private static IEnumerable<PageEntity> GetPages() =>
-        new List<PageEntity>
-        {
+        [
             new()
             {
                 Id = Guid.NewGuid(),
@@ -109,5 +105,5 @@ public class Seed
                 CreateTimeUtc = DateTime.UtcNow,
                 UpdateTimeUtc = DateTime.UtcNow
             }
-        };
+        ];
 }
