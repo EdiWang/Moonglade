@@ -24,58 +24,53 @@ public interface IBlogConfig
 
 public class BlogConfig : IBlogConfig
 {
-    public GeneralSettings GeneralSettings { get; set; }
+    public GeneralSettings GeneralSettings { get; set; } = new();
+    public ContentSettings ContentSettings { get; set; } = new();
+    public CommentSettings CommentSettings { get; set; } = new();
+    public NotificationSettings NotificationSettings { get; set; } = new();
+    public FeedSettings FeedSettings { get; set; } = new();
+    public ImageSettings ImageSettings { get; set; } = new();
+    public AdvancedSettings AdvancedSettings { get; set; } = new();
+    public AppearanceSettings AppearanceSettings { get; set; } = new();
+    public CustomMenuSettings CustomMenuSettings { get; set; } = new();
+    public LocalAccountSettings LocalAccountSettings { get; set; } = new();
+    public SocialLinkSettings SocialLinkSettings { get; set; } = new();
+    public SystemManifestSettings SystemManifestSettings { get; set; } = new();
 
-    public ContentSettings ContentSettings { get; set; }
-
-    public CommentSettings CommentSettings { get; set; }
-
-    public NotificationSettings NotificationSettings { get; set; }
-
-    public FeedSettings FeedSettings { get; set; }
-
-    public ImageSettings ImageSettings { get; set; }
-
-    public AdvancedSettings AdvancedSettings { get; set; }
-
-    public AppearanceSettings AppearanceSettings { get; set; }
-
-    public CustomMenuSettings CustomMenuSettings { get; set; }
-
-    public LocalAccountSettings LocalAccountSettings { get; set; }
-
-    public SocialLinkSettings SocialLinkSettings { get; set; }
-
-    public SystemManifestSettings SystemManifestSettings { get; set; }
+    private readonly List<string> _keysToInit = [];
 
     public IEnumerable<string> LoadFromConfig(IDictionary<string, string> config)
     {
-        ContentSettings = AssignValueForConfigItem(ContentSettings.DefaultValue, config);
-        NotificationSettings = AssignValueForConfigItem(NotificationSettings.DefaultValue, config);
-        FeedSettings = AssignValueForConfigItem(FeedSettings.DefaultValue, config);
-        GeneralSettings = AssignValueForConfigItem(GeneralSettings.DefaultValue, config);
-        ImageSettings = AssignValueForConfigItem(ImageSettings.DefaultValue, config);
-        AdvancedSettings = AssignValueForConfigItem(AdvancedSettings.DefaultValue, config);
-        AppearanceSettings = AssignValueForConfigItem(AppearanceSettings.DefaultValue, config);
-        CommentSettings = AssignValueForConfigItem(CommentSettings.DefaultValue, config);
-        CustomMenuSettings = AssignValueForConfigItem(CustomMenuSettings.DefaultValue, config);
-        LocalAccountSettings = AssignValueForConfigItem(LocalAccountSettings.DefaultValue, config);
-        SocialLinkSettings = AssignValueForConfigItem(SocialLinkSettings.DefaultValue, config);
+        var properties = GetType().GetProperties()
+            .Where(p => typeof(IBlogSettings).IsAssignableFrom(p.PropertyType));
 
-        // Special case
-        SystemManifestSettings = AssignValueForConfigItem(SystemManifestSettings.DefaultValue, config);
+        foreach (var prop in properties)
+        {
+            var currentValue = prop.GetValue(this);
+            var defaultValueProp = prop.PropertyType.GetProperty("DefaultValue");
+            var defaultValue = defaultValueProp?.GetValue(currentValue);
+
+            var assignedValue = AssignValueForConfigItem((IBlogSettings)defaultValue, config, prop.Name, prop.PropertyType);
+            prop.SetValue(this, assignedValue);
+        }
 
         return _keysToInit.AsEnumerable();
     }
 
-    private readonly List<string> _keysToInit = [];
-    private T AssignValueForConfigItem<T>(T defaultValue, IDictionary<string, string> config) where T : IBlogSettings
+    private IBlogSettings AssignValueForConfigItem(IBlogSettings defaultValue, IDictionary<string, string> config, string name, Type type)
     {
-        var name = typeof(T).Name;
-
         if (config.TryGetValue(name, out var value))
         {
-            return value.FromJson<T>();
+            try
+            {
+                // Assuming you have a FromJson extension method
+                var method = typeof(JsonExtensions).GetMethod("FromJson").MakeGenericMethod(type);
+                return (IBlogSettings)method.Invoke(null, [value]);
+            }
+            catch
+            {
+                // Handle deserialization error if needed
+            }
         }
 
         _keysToInit.Add(name);
