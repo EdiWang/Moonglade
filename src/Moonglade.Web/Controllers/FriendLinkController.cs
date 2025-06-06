@@ -14,7 +14,7 @@ public class FriendLinkController(IMediator mediator) : ControllerBase
     [ProducesResponseType(StatusCodes.Status201Created)]
     public async Task<IActionResult> Create(EditLinkRequest request)
     {
-        await mediator.Send(new AddLinkCommand(request));
+        await mediator.Send(new CreateLinkCommand(request));
         return Created(new Uri(request.LinkUrl), request);
     }
 
