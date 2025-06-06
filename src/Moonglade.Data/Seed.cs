@@ -44,8 +44,8 @@ public class Seed
                 LastModifiedUtc = DateTime.UtcNow,
                 PubDateUtc = DateTime.UtcNow,
                 ContentLanguageCode = "en-us",
-                Tags = dbContext.Tag.ToList(),
-                PostCategory = dbContext.PostCategory.ToList(),
+                Tags = [.. dbContext.Tag],
+                PostCategory = [.. dbContext.PostCategory],
                 RouteLink = $"{DateTime.UtcNow.ToString("yyyy/M/d", CultureInfo.InvariantCulture)}/welcome-to-moonglade"
             };
 
