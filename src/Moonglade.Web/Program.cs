@@ -97,6 +97,7 @@ public class Program
         var assemblies = AppDomain.CurrentDomain.GetAssemblies();
         assemblies = assemblies.Where(x => x.FullName!.StartsWith("Moonglade")).ToArray();
 
+        services.AddHttpClient();
         services.AddMediatR(config => config.RegisterServicesFromAssemblies(assemblies));
         services.AddOptions().AddHttpContextAccessor();
         ConfigureSession(services);
