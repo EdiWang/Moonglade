@@ -72,24 +72,23 @@ public class IndexNowClient(ILogger<IndexNowClient> logger, IConfiguration confi
         {
             // Success cases
             case HttpStatusCode.OK:
-                logger.LogInformation($"Index request sent to '{pingTarget}', {response.StatusCode}: {responseBody}. URL submitted successfully.");
+                logger.LogInformation("Index request sent to '{PingTarget}', {StatusCode}: {ResponseBody}. URL submitted successfully.", pingTarget, response.StatusCode, responseBody);
                 break;
             case HttpStatusCode.Accepted:
-                logger.LogWarning($"Index request sent to '{pingTarget}', {response.StatusCode}. URL received. IndexNow key validation pending.");
+                logger.LogWarning("Index request sent to '{PingTarget}', {StatusCode}. URL received. IndexNow key validation pending.", pingTarget, response.StatusCode);
                 break;
-
             // Error cases
             case HttpStatusCode.BadRequest:
-                logger.LogError($"Index request sent to '{pingTarget}', {response.StatusCode}: {responseBody}. Invalid format.");
+                logger.LogError("Index request sent to '{PingTarget}', {StatusCode}: {ResponseBody}. Invalid format.", pingTarget, response.StatusCode, responseBody);
                 break;
             case HttpStatusCode.Forbidden:
-                logger.LogError($"Index request sent to '{pingTarget}', {response.StatusCode}: {responseBody}. Key not valid (e.g., key not found, file found but key not in the file).");
+                logger.LogError("Index request sent to '{PingTarget}', {StatusCode}: {ResponseBody}. Key not valid (e.g., key not found, file found but key not in the file).", pingTarget, response.StatusCode, responseBody);
                 break;
             case HttpStatusCode.UnprocessableEntity:
-                logger.LogError($"Index request sent to '{pingTarget}', {response.StatusCode}: {responseBody}. URLs which don’t belong to the host or the key is not matching the schema in the protocol.");
+                logger.LogError("Index request sent to '{PingTarget}', {StatusCode}: {ResponseBody}. URLs which don’t belong to the host or the key is not matching the schema in the protocol.", pingTarget, response.StatusCode, responseBody);
                 break;
             case HttpStatusCode.TooManyRequests:
-                logger.LogError($"Index request sent to '{pingTarget}', {response.StatusCode}: {responseBody}. Too many requests (potential spam).");
+                logger.LogError("Index request sent to '{PingTarget}', {StatusCode}: {ResponseBody}. Too many requests (potential spam).", pingTarget, response.StatusCode, responseBody);
                 break;
             default:
                 response.EnsureSuccessStatusCode();
