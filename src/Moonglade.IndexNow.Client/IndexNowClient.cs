@@ -11,6 +11,12 @@ public class IndexNowClient(ILogger<IndexNowClient> logger, IConfiguration confi
     private readonly string[] _pingTargets = configuration.GetSection("IndexNow:PingTargets").Get<string[]>();
     private readonly string _apiKey = configuration["IndexNow:ApiKey"] ?? throw new InvalidOperationException("IndexNow:ApiKey is not configured.");
 
+    public static JsonSerializerOptions JsonOptions => new()
+    {
+        // Fix 422 issue, some search engines is fracking case sensitive!
+        PropertyNamingPolicy = JsonNamingPolicy.CamelCase
+    };
+
     public async Task SendRequestAsync(Uri uri)
     {
         if (string.IsNullOrWhiteSpace(_apiKey))
@@ -29,14 +35,7 @@ public class IndexNowClient(ILogger<IndexNowClient> logger, IConfiguration confi
             var client = httpClientFactory.CreateClient(pingTarget);
 
             var requestBody = CreateRequestBody(uri);
-
-            var jso = new JsonSerializerOptions
-            {
-                // Fix 422 issue, some search engines is fracking case sensitive!
-                PropertyNamingPolicy = JsonNamingPolicy.CamelCase
-            };
-
-            var content = new StringContent(JsonSerializer.Serialize(requestBody, jso), Encoding.UTF8, "application/json");
+            var content = new StringContent(JsonSerializer.Serialize(requestBody, JsonOptions), Encoding.UTF8, "application/json");
 
             try
             {
