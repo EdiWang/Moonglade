@@ -38,11 +38,10 @@ public class SaveStyleSheetCommandHandler(
         return entity.Id;
     }
 
-    private string CalculateHash(string content)
+    private static string CalculateHash(string content)
     {
-        using var sha256 = SHA256.Create();
         byte[] inputBytes = Encoding.ASCII.GetBytes(content);
-        byte[] outputBytes = sha256.ComputeHash(inputBytes);
+        byte[] outputBytes = SHA256.HashData(inputBytes);
         return Convert.ToBase64String(outputBytes);
     }
 }
