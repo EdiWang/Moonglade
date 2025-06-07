@@ -113,7 +113,7 @@ public class PostController(
 
         if (isNewPublish || indexCoolDown)
         {
-            cannonService.FireAsync<IIndexNowClient>(async sender => await sender.SendRequestAsync(link, sender.GetJso()));
+            cannonService.FireAsync<IIndexNowClient>(async sender => await sender.SendRequestAsync(link));
         }
     }
 
