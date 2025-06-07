@@ -72,11 +72,7 @@
     <link rel="start" title="@BlogConfig.GeneralSettings.SiteTitle" href="~/" />
     <link type="application/rss+xml" rel="alternate" title="@BlogConfig.GeneralSettings.SiteTitle" href="@Url.Action("Rss", "Subscription")" />
     <opensearch href="/opensearch" title="@BlogConfig.GeneralSettings.SiteTitle" enabled="@BlogConfig.AdvancedSettings.EnableOpenSearch" />
-
-    @if (BlogConfig.AdvancedSettings.EnableFoaf)
-    {
-        <foaf href="/foaf.xml" />
-    }
+    <foaf href="/foaf.xml" enabled="@BlogConfig.AdvancedSettings.EnableFoaf" />
     <partial name="_Favicons" />
     <link href="~/lib/twitter-bootstrap/css/bootstrap.min.css" rel="stylesheet" asp-append-version="true" />
     <link href="~/lib/bootstrap-icons/bootstrap-icons.min.css" rel="stylesheet" asp-append-version="true" />

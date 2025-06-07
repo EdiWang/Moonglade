@@ -12,13 +12,16 @@ public class OpenSearchTagHelper : TagHelper
 
     public override void Process(TagHelperContext context, TagHelperOutput output)
     {
-        if (Enabled)
+        if (!Enabled || string.IsNullOrWhiteSpace(Href))
         {
-            output.TagName = "link";
-            output.Attributes.SetAttribute("type", new HtmlString("application/opensearchdescription+xml"));
-            output.Attributes.SetAttribute("rel", "search");
-            output.Attributes.SetAttribute("title", Title.Trim());
-            output.Attributes.SetAttribute("href", Href.Trim());
+            output.SuppressOutput();
+            return;
         }
+
+        output.TagName = "link";
+        output.Attributes.SetAttribute("type", new HtmlString("application/opensearchdescription+xml"));
+        output.Attributes.SetAttribute("rel", "search");
+        output.Attributes.SetAttribute("title", Title.Trim());
+        output.Attributes.SetAttribute("href", Href.Trim());
     }
 }
