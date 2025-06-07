@@ -7,33 +7,45 @@ using Moonglade.Data.Specifications;
 
 namespace Moonglade.Comments;
 
-public class CreateCommentCommand(Guid postId, CommentRequest payload, string ipAddress) : IRequest<CommentDetailedItem>
-{
-    public Guid PostId { get; set; } = postId;
-
-    public CommentRequest Payload { get; set; } = payload;
-
-    public string IpAddress { get; set; } = ipAddress;
-}
+public record CreateCommentCommand(
+    Guid PostId,
+    CommentRequest Payload,
+    string IpAddress
+) : IRequest<CommentDetailedItem>;
 
 public class CreateCommentCommandHandler(
     IBlogConfig blogConfig,
     ILogger<CreateCommentCommandHandler> logger,
-    MoongladeRepository<PostEntity> postRepo,
-    MoongladeRepository<CommentEntity> commentRepo) : IRequestHandler<CreateCommentCommand, CommentDetailedItem>
+    MoongladeRepository<PostEntity> postRepository,
+    MoongladeRepository<CommentEntity> commentRepository
+) : IRequestHandler<CreateCommentCommand, CommentDetailedItem>
 {
     public async Task<CommentDetailedItem> Handle(CreateCommentCommand request, CancellationToken ct)
     {
-        var spec = new PostByIdForTitleDateSpec(request.PostId);
-        var postInfo = await postRepo.FirstOrDefaultAsync(spec, ct);
-
-        if (blogConfig.CommentSettings.CloseCommentAfterDays > 0)
+        // Validate input
+        if (request.Payload == null)
         {
-            var days = DateTime.UtcNow.Date.Subtract(postInfo.PubDateUtc.GetValueOrDefault()).Days;
-            if (days > blogConfig.CommentSettings.CloseCommentAfterDays) return null;
+            logger.LogWarning("Comment payload is null.");
+            return null;
         }
 
-        var model = new CommentEntity
+        // Fetch post info
+        var spec = new PostByIdForTitleDateSpec(request.PostId);
+        var postInfo = await postRepository.FirstOrDefaultAsync(spec, ct);
+
+        // Check if comments are closed
+        if (blogConfig.CommentSettings.CloseCommentAfterDays > 0)
+        {
+            var daysSincePublished = (DateTime.UtcNow.Date - postInfo.PubDateUtc.GetValueOrDefault()).Days;
+            if (daysSincePublished > blogConfig.CommentSettings.CloseCommentAfterDays)
+            {
+                logger.LogInformation("Comments are closed for post {PostId} after {Days} days.", request.PostId, daysSincePublished);
+                return null;
+            }
+        }
+
+        // Create comment entity
+        var comment = new CommentEntity
         {
             Id = Guid.NewGuid(),
             Username = request.Payload.Username,
@@ -45,21 +57,21 @@ public class CreateCommentCommandHandler(
             IsApproved = !blogConfig.CommentSettings.RequireCommentReview
         };
 
-        await commentRepo.AddAsync(model, ct);
+        await commentRepository.AddAsync(comment, ct);
 
-        var item = new CommentDetailedItem
+        var result = new CommentDetailedItem
         {
-            Id = model.Id,
-            CommentContent = model.CommentContent,
-            CreateTimeUtc = model.CreateTimeUtc,
-            Email = model.Email,
-            IpAddress = model.IPAddress,
-            IsApproved = model.IsApproved,
+            Id = comment.Id,
+            CommentContent = comment.CommentContent,
+            CreateTimeUtc = comment.CreateTimeUtc,
+            Email = comment.Email,
+            IpAddress = comment.IPAddress,
+            IsApproved = comment.IsApproved,
             PostTitle = postInfo.Title,
-            Username = model.Username
+            Username = comment.Username
         };
 
-        logger.LogInformation("New comment created: {0}", item.Id);
-        return item;
+        logger.LogInformation("New comment created: {CommentId}", result.Id);
+        return result;
     }
 }
