@@ -59,7 +59,7 @@
     </title>
 
     @if (BlogConfig.ImageSettings.EnableCDNRedirect &&
-    !string.IsNullOrWhiteSpace(BlogConfig.ImageSettings.CDNEndpoint))
+        !string.IsNullOrWhiteSpace(BlogConfig.ImageSettings.CDNEndpoint))
     {
         <link rel="dns-prefetch" href="@Helper.GetDNSPrefetchUrl(BlogConfig.ImageSettings.CDNEndpoint)" />
     }
@@ -70,7 +70,7 @@
     }
 
     <link rel="start" title="@BlogConfig.GeneralSettings.SiteTitle" href="~/" />
-    <rss title="@BlogConfig.GeneralSettings.SiteTitle" href="@Url.Action("Rss", "Subscription")" />
+    <link type="application/rss+xml" rel="alternate" title="@BlogConfig.GeneralSettings.SiteTitle" href="@Url.Action("Rss", "Subscription")" />
     @if (BlogConfig.AdvancedSettings.EnableOpenSearch)
     {
         <opensearch href="/opensearch" title="@BlogConfig.GeneralSettings.SiteTitle" />
