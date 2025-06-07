@@ -10,10 +10,10 @@ public class SearchPostQueryHandler(MoongladeRepository<PostEntity> repo) : IReq
 {
     public async Task<List<PostDigest>> Handle(SearchPostQuery request, CancellationToken ct)
     {
-        if (request is null)
-            throw new ArgumentNullException(nameof(request));
         if (string.IsNullOrWhiteSpace(request.Keyword))
+        {
             throw new ArgumentException("Keyword must not be null or whitespace.", nameof(request.Keyword));
+        }
 
         var query = BuildSearchQuery(request.Keyword);
         var results = await query.Select(PostDigest.EntitySelector).ToListAsync(ct);
