@@ -6,14 +6,21 @@ using System.Text.Json;
 
 namespace Moonglade.IndexNow.Client;
 
-public class IndexNowClient(ILogger<IndexNowClient> logger, IConfiguration configuration, IHttpClientFactory httpClientFactory) : IIndexNowClient
+public class IndexNowClient(
+    ILogger<IndexNowClient> logger,
+    IConfiguration configuration,
+    IHttpClientFactory httpClientFactory) : IIndexNowClient
 {
-    private readonly string[] _pingTargets = configuration.GetSection("IndexNow:PingTargets").Get<string[]>();
-    private readonly string _apiKey = configuration["IndexNow:ApiKey"] ?? throw new InvalidOperationException("IndexNow:ApiKey is not configured.");
+    private readonly string[] _pingTargets = configuration
+        .GetSection("IndexNow:PingTargets")
+        .Get<string[]>() ?? [];
 
-    public static JsonSerializerOptions JsonOptions => new()
+    private readonly string _apiKey = configuration["IndexNow:ApiKey"]
+        ?? throw new InvalidOperationException("IndexNow:ApiKey is not configured.");
+
+    private static readonly JsonSerializerOptions JsonOptions = new()
     {
-        // Fix 422 issue, some search engines is fracking case sensitive!
+        // Fix 422 issue: some search engines are case sensitive!
         PropertyNamingPolicy = JsonNamingPolicy.CamelCase
     };
 
@@ -25,27 +32,35 @@ public class IndexNowClient(ILogger<IndexNowClient> logger, IConfiguration confi
             return;
         }
 
-        if (_pingTargets == null || _pingTargets.Length == 0)
+        if (_pingTargets.Length == 0)
         {
-            throw new InvalidOperationException("IndexNow:PingTargets is not configured.");
+            logger.LogWarning("IndexNow:PingTargets is not configured.");
+            return;
         }
 
-        foreach (var pingTarget in _pingTargets)
+        var requestBody = CreateRequestBody(uri);
+        var content = new StringContent(
+            JsonSerializer.Serialize(requestBody, JsonOptions),
+            Encoding.UTF8,
+            "application/json");
+
+        var tasks = _pingTargets.Select(pingTarget => SendToPingTargetAsync(pingTarget, content));
+        await Task.WhenAll(tasks);
+    }
+
+    private async Task SendToPingTargetAsync(string pingTarget, HttpContent content)
+    {
+        var client = httpClientFactory.CreateClient(pingTarget);
+
+        try
         {
-            var client = httpClientFactory.CreateClient(pingTarget);
-
-            var requestBody = CreateRequestBody(uri);
-            var content = new StringContent(JsonSerializer.Serialize(requestBody, JsonOptions), Encoding.UTF8, "application/json");
-
-            try
-            {
-                var response = await client.PostAsync("/indexnow", content);
-                await HandleResponseAsync(pingTarget, response);
-            }
-            catch (Exception e)
-            {
-                logger.LogError(e, $"Failed to send index request to '{pingTarget}'");
-            }
+            using var request = new HttpRequestMessage(HttpMethod.Post, "/indexnow") { Content = content };
+            var response = await client.SendAsync(request);
+            await HandleResponseAsync(pingTarget, response);
+        }
+        catch (Exception ex)
+        {
+            logger.LogError(ex, "Failed to send index request to '{PingTarget}'.", pingTarget);
         }
     }
 
@@ -56,7 +71,7 @@ public class IndexNowClient(ILogger<IndexNowClient> logger, IConfiguration confi
         // "URLs that are not considered valid in option 2 may not be considered for indexing. It is strongly recommended that you use Option 1 and place your file key at the root directory of your web server."
         // This is why we should not set KeyLocation = $"https://{uri.Host}/xxxx.txt",
 
-        return new()
+        return new IndexNowRequest
         {
             Host = uri.Host,
             Key = _apiKey,
@@ -70,28 +85,36 @@ public class IndexNowClient(ILogger<IndexNowClient> logger, IConfiguration confi
 
         switch (response.StatusCode)
         {
-            // Success cases
             case HttpStatusCode.OK:
-                logger.LogInformation("Index request sent to '{PingTarget}', {StatusCode}: {ResponseBody}. URL submitted successfully.", pingTarget, response.StatusCode, responseBody);
+                logger.LogInformation("Index request sent to '{PingTarget}', {StatusCode}: {ResponseBody}. URL submitted successfully.",
+                    pingTarget, response.StatusCode, responseBody);
                 break;
             case HttpStatusCode.Accepted:
-                logger.LogWarning("Index request sent to '{PingTarget}', {StatusCode}. URL received. IndexNow key validation pending.", pingTarget, response.StatusCode);
+                logger.LogWarning("Index request sent to '{PingTarget}', {StatusCode}. URL received. IndexNow key validation pending.",
+                    pingTarget, response.StatusCode);
                 break;
-            // Error cases
             case HttpStatusCode.BadRequest:
-                logger.LogError("Index request sent to '{PingTarget}', {StatusCode}: {ResponseBody}. Invalid format.", pingTarget, response.StatusCode, responseBody);
+                logger.LogError("Index request sent to '{PingTarget}', {StatusCode}: {ResponseBody}. Invalid format.",
+                    pingTarget, response.StatusCode, responseBody);
                 break;
             case HttpStatusCode.Forbidden:
-                logger.LogError("Index request sent to '{PingTarget}', {StatusCode}: {ResponseBody}. Key not valid (e.g., key not found, file found but key not in the file).", pingTarget, response.StatusCode, responseBody);
+                logger.LogError("Index request sent to '{PingTarget}', {StatusCode}: {ResponseBody}. Key not valid.",
+                    pingTarget, response.StatusCode, responseBody);
                 break;
             case HttpStatusCode.UnprocessableEntity:
-                logger.LogError("Index request sent to '{PingTarget}', {StatusCode}: {ResponseBody}. URLs which don’t belong to the host or the key is not matching the schema in the protocol.", pingTarget, response.StatusCode, responseBody);
+                logger.LogError("Index request sent to '{PingTarget}', {StatusCode}: {ResponseBody}. URL or key mismatch.",
+                    pingTarget, response.StatusCode, responseBody);
                 break;
             case HttpStatusCode.TooManyRequests:
-                logger.LogError("Index request sent to '{PingTarget}', {StatusCode}: {ResponseBody}. Too many requests (potential spam).", pingTarget, response.StatusCode, responseBody);
+                logger.LogError("Index request sent to '{PingTarget}', {StatusCode}: {ResponseBody}. Too many requests.",
+                    pingTarget, response.StatusCode, responseBody);
                 break;
             default:
-                response.EnsureSuccessStatusCode();
+                if (!response.IsSuccessStatusCode)
+                {
+                    logger.LogError("Index request sent to '{PingTarget}', {StatusCode}: {ResponseBody}. Unexpected error.",
+                        pingTarget, response.StatusCode, responseBody);
+                }
                 break;
         }
     }
