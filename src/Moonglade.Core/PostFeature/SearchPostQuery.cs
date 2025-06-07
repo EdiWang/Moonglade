@@ -10,38 +10,43 @@ public class SearchPostQueryHandler(MoongladeRepository<PostEntity> repo) : IReq
 {
     public async Task<List<PostDigest>> Handle(SearchPostQuery request, CancellationToken ct)
     {
-        if (null == request || string.IsNullOrWhiteSpace(request.Keyword))
-        {
-            throw new ArgumentNullException(request?.Keyword);
-        }
+        if (request is null)
+            throw new ArgumentNullException(nameof(request));
+        if (string.IsNullOrWhiteSpace(request.Keyword))
+            throw new ArgumentException("Keyword must not be null or whitespace.", nameof(request.Keyword));
 
-        var postList = SearchByKeyword(request.Keyword);
-        var resultList = await postList.Select(PostDigest.EntitySelector).ToListAsync(ct);
-
-        return resultList;
+        var query = BuildSearchQuery(request.Keyword);
+        var results = await query.Select(PostDigest.EntitySelector).ToListAsync(ct);
+        return results;
     }
 
-    private IQueryable<PostEntity> SearchByKeyword(string keyword)
+    private IQueryable<PostEntity> BuildSearchQuery(string keyword)
     {
-        var query = repo.AsQueryable()
-            .Where(p => !p.IsDeleted && p.PostStatus == PostStatusConstants.Published).AsNoTracking();
+        var normalized = Regex.Replace(keyword.Trim(), @"\s+", " ");
+        var words = normalized.Split(' ', StringSplitOptions.RemoveEmptyEntries);
 
-        var str = Regex.Replace(keyword, @"\s+", " ");
-        var rst = str.Split(' ');
-        if (rst.Length > 1)
+        var query = repo.AsQueryable()
+            .Where(p => !p.IsDeleted && p.PostStatus == PostStatusConstants.Published)
+            .AsNoTracking();
+
+        if (words.Length > 1)
         {
-            // keyword: "dot  net rocks"
-            // search for post where Title containing "dot && net && rocks"
-            var result = rst.Aggregate(query, (current, s) => current.Where(p => p.Title.Contains(s)));
-            return result;
+            // All words must appear in Title
+            foreach (var word in words)
+            {
+                var temp = word; // Required for EF
+                query = query.Where(p => p.Title.Contains(temp));
+            }
         }
         else
         {
-            // keyword: "dotnetrocks"
-            var k = rst.First();
-            var result = query.Where(p => p.Title.Contains(k) ||
-                                          p.Tags.Select(t => t.DisplayName).Contains(k));
-            return result;
+            var word = words[0];
+            query = query.Where(p =>
+                p.Title.Contains(word) ||
+                p.Tags.Any(t => t.DisplayName.Contains(word))
+            );
         }
+
+        return query;
     }
 }
