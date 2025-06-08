@@ -7,77 +7,97 @@ namespace Moonglade.Setup;
 
 public static class MemoryStreamIconGenerator
 {
-    public static ConcurrentDictionary<string, byte[]> SiteIconDictionary { get; set; } = new();
+    private static readonly ConcurrentDictionary<string, byte[]> _siteIconDictionary = new();
+
+    // Expose as read-only
+    public static IReadOnlyDictionary<string, byte[]> SiteIconDictionary => _siteIconDictionary;
+
+    private const string DefaultIconFileName = "siteicon-default.png";
+    private const string ImagesFolder = "images";
+    private const string PngExtension = ".png";
 
     public static void GenerateIcons(string base64Data, string webRootPath, ILogger logger)
     {
         byte[] buffer;
 
-        // Fall back to default image
+        // Fallback to default image if necessary
         if (string.IsNullOrWhiteSpace(base64Data))
         {
-            logger.LogWarning("SiteIconBase64 is empty or not valid, fall back to default image.");
+            logger.LogWarning("SiteIconBase64 is empty or not valid, falling back to default image.");
 
-            // Credit: Vector Market (siteicon-default.png)
-            var defaultIconImage = Path.Join($"{webRootPath}", "images", "siteicon-default.png");
-            if (!File.Exists(defaultIconImage))
+            var defaultIconPath = Path.Combine(webRootPath, ImagesFolder, DefaultIconFileName);
+            if (!File.Exists(defaultIconPath))
             {
-                throw new FileNotFoundException("Can not find source image for generating favicons.", defaultIconImage);
+                throw new FileNotFoundException("Cannot find source image for generating favicons.", defaultIconPath);
             }
 
-            var ext = Path.GetExtension(defaultIconImage);
-            if (ext is not null && ext.ToLower() is not ".png")
+            if (!string.Equals(Path.GetExtension(defaultIconPath), PngExtension, StringComparison.OrdinalIgnoreCase))
             {
-                throw new FormatException("Source file is not an PNG image.");
+                throw new FormatException("Source file is not a PNG image.");
             }
 
-            buffer = File.ReadAllBytes(defaultIconImage);
+            buffer = File.ReadAllBytes(defaultIconPath);
         }
         else
         {
-            buffer = Convert.FromBase64String(base64Data);
+            try
+            {
+                buffer = Convert.FromBase64String(base64Data);
+            }
+            catch (FormatException ex)
+            {
+                logger.LogError(ex, "Base64 string for site icon is invalid. Falling back to default image.");
+                var defaultIconPath = Path.Combine(webRootPath, ImagesFolder, DefaultIconFileName);
+                buffer = File.ReadAllBytes(defaultIconPath);
+            }
         }
 
         using var ms = new MemoryStream(buffer);
         using var image = Image.Load(ms);
+
         if (image.Height != image.Width)
         {
-            throw new InvalidOperationException("Invalid Site Icon Data");
+            throw new InvalidOperationException("Site icon must be a square image.");
         }
 
-        var dic = new Dictionary<string, int[]>
+        // Define desired icon sizes
+        var iconSizes = new Dictionary<string, int[]>
         {
             { "android-icon-", [144, 192] },
             { "favicon-", [16, 32, 96] },
             { "apple-icon-", [180] }
         };
 
-        foreach (var (key, value) in dic)
-        {
-            foreach (var size in value)
-            {
-                var fileName = $"{key}{size}x{size}.png";
-                var bytes = ResizeImage(image, size, size);
+        // Clear previous icons before generating new ones
+        _siteIconDictionary.Clear();
 
-                SiteIconDictionary.TryAdd(fileName, bytes);
+        foreach (var (prefix, sizes) in iconSizes)
+        {
+            foreach (var size in sizes)
+            {
+                var fileName = $"{prefix}{size}x{size}.png";
+                var resizedBytes = ResizeImage(image, size, size);
+                _siteIconDictionary[fileName] = resizedBytes;
             }
         }
 
-        var icon1Bytes = ResizeImage(image, 180, 180);
-        SiteIconDictionary.TryAdd("apple-icon.png", icon1Bytes);
+        // Add apple-icon.png (180x180)
+        var appleIconBytes = ResizeImage(image, 180, 180);
+        _siteIconDictionary["apple-icon.png"] = appleIconBytes;
     }
 
     public static byte[] GetIcon(string fileName)
     {
         if (string.IsNullOrWhiteSpace(fileName)) return null;
-        return SiteIconDictionary.GetValueOrDefault(fileName);
+        return _siteIconDictionary.TryGetValue(fileName, out var bytes) ? bytes : null;
     }
 
-    private static byte[] ResizeImage(Image image, int toWidth, int toHeight)
+    private static byte[] ResizeImage(Image image, int width, int height)
     {
-        image.Mutate(x => x.Resize(toWidth, toHeight));
+        // Clone to avoid mutating the original image
+        using var clone = image.Clone(ctx => ctx.Resize(width, height));
         using var ms = new MemoryStream();
-        image.SaveAsPng(ms);
+        clone.SaveAsPng(ms);
         return ms.ToArray();
     }
 }
