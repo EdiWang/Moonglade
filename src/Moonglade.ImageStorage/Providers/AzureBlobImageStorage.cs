@@ -26,7 +26,7 @@ public class AzureBlobImageStorage : IBlogImageStorage
     private BlobContainerClient InitializeContainer(string connectionString, string containerName)
     {
         var container = new BlobContainerClient(connectionString, containerName);
-        _logger.LogInformation($"Initialized container '{containerName}' for account '{container.AccountName}'.");
+        _logger.LogInformation("Initialized container '{ContainerName}' for account '{AccountName}'.", containerName, container.AccountName);
         return container;
     }
 
@@ -53,7 +53,7 @@ public class AzureBlobImageStorage : IBlogImageStorage
             throw new ArgumentNullException(nameof(fileName));
         }
 
-        _logger.LogInformation($"Uploading '{fileName}' to Azure Blob Storage.");
+        _logger.LogInformation("Uploading '{FileName}' to Azure Blob Storage.", fileName);
 
         var blob = container.GetBlobClient(fileName);
         var blobHttpHeader = new BlobHttpHeaders
@@ -64,7 +64,7 @@ public class AzureBlobImageStorage : IBlogImageStorage
         await using var fileStream = new MemoryStream(imageBytes);
         var uploadedBlob = await blob.UploadAsync(fileStream, blobHttpHeader).ConfigureAwait(false);
 
-        _logger.LogInformation($"Uploaded '{fileName}' to Azure Blob Storage. ETag: '{uploadedBlob.Value.ETag}'.");
+        _logger.LogInformation("Uploaded '{FileName}' to Azure Blob Storage. ETag: '{ETag}'.", fileName, uploadedBlob.Value.ETag);
 
         return fileName;
     }
@@ -89,7 +89,7 @@ public class AzureBlobImageStorage : IBlogImageStorage
             throw new ArgumentNullException(nameof(fileName));
         }
 
-        _logger.LogInformation($"Deleting blob '{fileName}' from Azure Blob Storage.");
+        _logger.LogInformation("Deleting blob '{FileName}' from Azure Blob Storage.", fileName);
         await _container.DeleteBlobIfExistsAsync(fileName).ConfigureAwait(false);
     }
 
@@ -105,13 +105,13 @@ public class AzureBlobImageStorage : IBlogImageStorage
 
         if (string.IsNullOrWhiteSpace(extension))
         {
-            _logger.LogError("File extension is empty.");
+            _logger.LogError("File extension is empty for '{FileName}'.", fileName);
             throw new ArgumentException("File extension is empty.");
         }
 
         if (!await blobClient.ExistsAsync().ConfigureAwait(false))
         {
-            _logger.LogWarning($"Blob '{fileName}' does not exist.");
+            _logger.LogWarning("Blob '{FileName}' does not exist.", fileName);
 
             // Can not throw FileNotFoundException,
             // because hackers may request a large number of 404 images
@@ -119,7 +119,7 @@ public class AzureBlobImageStorage : IBlogImageStorage
             return null;
         }
 
-        _logger.LogInformation($"Fetching blob '{fileName}' from Azure Blob Storage.");
+        _logger.LogInformation("Fetching blob '{FileName}' from Azure Blob Storage.", fileName);
         await using var memoryStream = new MemoryStream();
         await blobClient.DownloadToAsync(memoryStream).ConfigureAwait(false);
 
