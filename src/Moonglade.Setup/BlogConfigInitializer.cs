@@ -14,10 +14,8 @@ public class BlogConfigInitializer(IMediator mediator, IBlogConfig blogConfig) :
     {
         // Load configurations into singleton
         var config = await mediator.Send(new GetAllConfigurationsQuery());
-        var keysToAdd = blogConfig.LoadFromConfig(config);
-
-        var toAdd = keysToAdd as string[] ?? keysToAdd.ToArray();
-        if (toAdd.Length == 0) return;
+        var keysToAdd = blogConfig.LoadFromConfig(config)?.ToArray() ?? [];
+        if (keysToAdd.Length == 0) return;
 
         var settingsMap = new Dictionary<string, Func<string>>
         {
@@ -35,7 +33,7 @@ public class BlogConfigInitializer(IMediator mediator, IBlogConfig blogConfig) :
             { nameof(SystemManifestSettings), () => isNew ? SystemManifestSettings.DefaultValueNew.ToJson() : SystemManifestSettings.DefaultValue.ToJson() }
         };
 
-        foreach (var key in toAdd)
+        foreach (var key in keysToAdd)
         {
             if (settingsMap.TryGetValue(key, out var setting))
             {
