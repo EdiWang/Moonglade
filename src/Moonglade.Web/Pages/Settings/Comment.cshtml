@@ -16,10 +16,9 @@
     <div class="admin-settings-entry-container">
         <div class="row">
             <div class="col-md-6">
-                <div>
-                    <h4 class="admin-subtitle fw-bold mb-2">@SharedLocalizer["Comments"]</h4>
+                <h4 class="admin-subtitle fw-bold mb-2">@SharedLocalizer["Comments"]</h4>
 
-                    <div class="settings-entry row align-items-center py-3 px-2 rounded-3 shadow-sm border mb-2">
+                <div class="settings-entry row align-items-center py-3 px-2 rounded-3 shadow-sm border mb-2">
                         <div class="col-auto">
                             <i class="bi-chat-left-dots settings-entry-icon"></i>
                         </div>
@@ -34,7 +33,7 @@
                         </div>
                     </div>
 
-                    <div class="settings-entry row align-items-center py-3 px-2 rounded-3 shadow-sm border mb-2">
+                <div class="settings-entry row align-items-center py-3 px-2 rounded-3 shadow-sm border mb-2">
                         <div class="col-auto">
                             <i class="bi-diagram-2 settings-entry-icon"></i>
                         </div>
@@ -61,7 +60,7 @@
                         </div>
                     </div>
 
-                    <div class="settings-entry row align-items-center py-3 px-2 rounded-3 shadow-sm border mb-2">
+                <div class="settings-entry row align-items-center py-3 px-2 rounded-3 shadow-sm border mb-2">
                         <div class="col-auto">
                             <i class="settings-entry-icon bi-hourglass-split"></i>
                         </div>
@@ -74,7 +73,7 @@
                         </div>
                     </div>
 
-                    <div class="comment-settings-built-in">
+                <div class="comment-settings-built-in">
 
                         <div class="settings-entry row align-items-center py-3 px-2 rounded-3 shadow-sm border mb-2">
                             <div class="col-auto">
@@ -124,8 +123,24 @@
                                 </div>
                             </div>
                         </div>
+                    </div>
 
-                        @if (!string.IsNullOrWhiteSpace(Configuration["ContentModerator:ApiEndpoint"]))
+                <div class="comment-settings-3rd">
+                    <div>
+                        <div class="form-floating">
+                            <textarea asp-for="@settings.ThirdPartyCommentHtmlPitch"
+                                      placeholder="@Html.DisplayNameFor(m => settings.ThirdPartyCommentHtmlPitch)"
+                                      class="form-control form-control-sm h-100px"
+                                      spellcheck="false"></textarea>
+                            <label class="form-label" asp-for="@settings.ThirdPartyCommentHtmlPitch"></label>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-6">
+                <h4 class="admin-subtitle fw-bold mb-2">@SharedLocalizer["Moderation"]</h4>
+
+                @if (!string.IsNullOrWhiteSpace(Configuration["ContentModerator:ApiEndpoint"]))
                         {
                             <div class="settings-entry row align-items-center py-3 px-2 rounded-3 shadow-sm border mb-2">
                                 <div class="col-auto">
@@ -177,20 +192,6 @@
                                 </div>
                             </div>
                         }
-                    </div>
-
-                    <div class="comment-settings-3rd">
-                        <div>
-                            <div class="form-floating">
-                                <textarea asp-for="@settings.ThirdPartyCommentHtmlPitch"
-                                          placeholder="@Html.DisplayNameFor(m => settings.ThirdPartyCommentHtmlPitch)"
-                                          class="form-control form-control-sm h-100px"
-                                          spellcheck="false"></textarea>
-                                <label class="form-label" asp-for="@settings.ThirdPartyCommentHtmlPitch"></label>
-                            </div>
-                        </div>
-                    </div>
-                </div>
             </div>
         </div>
     </div>
