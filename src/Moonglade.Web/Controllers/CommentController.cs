@@ -53,7 +53,7 @@ public class CommentController(
             }
         }
 
-        var ip = (bool)HttpContext.Items["DNT"]! ? "N/A" : Helper.GetClientIP(HttpContext);
+        var ip = Helper.GetClientIP(HttpContext);
         var item = await mediator.Send(new CreateCommentCommand(postId, request, ip));
 
         if (null == item)

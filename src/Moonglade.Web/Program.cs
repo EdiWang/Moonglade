@@ -271,7 +271,6 @@ public class Program
         if (usePrefersColorSchemeHeader) app.UseMiddleware<PrefersColorSchemeMiddleware>();
 
         app.UseMiddleware<PoweredByMiddleware>();
-        app.UseMiddleware<DNTMiddleware>();
 
         if (app.Environment.IsDevelopment())
         {
