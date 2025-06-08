@@ -1,16 +1,16 @@
-import { callApi } from './httpService.mjs'
+import { moongladeFetch } from './httpService.mjs'
 import { formatUtcTime } from './utils.module.mjs';
 import { success } from './toastService.mjs';
 
 function deleteMention(mentionId) {
-    callApi(`/api/mention/${mentionId}`, 'DELETE', {},
+    moongladeFetch(`/api/mention/${mentionId}`, 'DELETE', {},
         (resp) => {
             document.querySelector(`#mention-box-${mentionId}`).remove();
         });
 }
 
 function clearMention() {
-    callApi(`/api/mention/clear`, 'DELETE', {},
+    moongladeFetch(`/api/mention/clear`, 'DELETE', {},
         (resp) => {
             success('Mention logs are cleared');
             setTimeout(function () {

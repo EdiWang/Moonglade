@@ -1,4 +1,4 @@
-import { callApi } from './httpService.mjs'
+import { moongladeFetch } from './httpService.mjs'
 import { success } from './toastService.mjs'
 
 const editCanvas = new bootstrap.Offcanvas(document.getElementById('editLinkCanvas'));
@@ -11,7 +11,7 @@ function initCreateFriendLink() {
 }
 
 function editFriendLink(id) {
-    callApi(`/api/friendlink/${id}`, 'GET', {},
+    moongladeFetch(`/api/friendlink/${id}`, 'GET', {},
         async (resp) => {
             var data = await resp.json();
             fid = id;
@@ -23,7 +23,7 @@ function editFriendLink(id) {
 }
 
 function deleteFriendLink(friendlinkid) {
-    callApi(`/api/friendlink/${friendlinkid}`,
+    moongladeFetch(`/api/friendlink/${friendlinkid}`,
         'DELETE',
         {},
         (resp) => {
@@ -46,7 +46,7 @@ function handleSubmit(event) {
     const data = new FormData(event.target);
     const value = Object.fromEntries(data.entries());
 
-    callApi(apiAddress,
+    moongladeFetch(apiAddress,
         httpVerb,
         {
             id: fid,

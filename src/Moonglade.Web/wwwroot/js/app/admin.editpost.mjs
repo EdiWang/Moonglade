@@ -1,4 +1,4 @@
-import { callApi } from './httpService.mjs'
+import { moongladeFetch } from './httpService.mjs'
 import { parseMetaContent, toMagicJson } from './utils.module.mjs'
 import { success, error } from './toastService.mjs'
 import { initEvents, loadTinyMCE, keepAlive, warnDirtyForm } from './admin.editor.module.mjs'
@@ -73,7 +73,7 @@ const handlePostSubmit = async (event) => {
     btnSubmitPost.classList.add('disabled');
     btnSubmitPost.setAttribute('disabled', 'disabled');
 
-    callApi(event.currentTarget.action,
+    moongladeFetch(event.currentTarget.action,
         'POST',
         requestData,
         async (resp) => {
@@ -94,7 +94,7 @@ const handlePostSubmit = async (event) => {
 };
 
 function UnpublishPost(postId) {
-    callApi(
+    moongladeFetch(
         `/api/post/${postId}/unpublish`,
         'PUT',
         {},

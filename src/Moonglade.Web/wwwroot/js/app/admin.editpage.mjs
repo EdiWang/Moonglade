@@ -1,4 +1,4 @@
-import { callApi } from './httpService.mjs'
+import { moongladeFetch } from './httpService.mjs'
 import { parseMetaContent } from './utils.module.mjs'
 import { success } from './toastService.mjs'
 
@@ -40,7 +40,7 @@ function postCreateOrEdit() {
     const apiAddress = pageId == window.emptyGuid ? `/api/page` : `/api/page/${pageId}`;
     const verb = pageId == window.emptyGuid ? 'POST' : 'PUT';
 
-    callApi(apiAddress, verb,
+    moongladeFetch(apiAddress, verb,
         {
             title: document.querySelector("#EditPageRequest_Title").value,
             slug: document.querySelector("#EditPageRequest_Slug").value,

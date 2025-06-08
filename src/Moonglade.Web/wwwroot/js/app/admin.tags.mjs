@@ -1,4 +1,4 @@
-import { callApi } from './httpService.mjs'
+import { moongladeFetch } from './httpService.mjs'
 import { success } from './toastService.mjs';
 
 var editCanvas = new bootstrap.Offcanvas(document.getElementById('editTagCanvas'));
@@ -13,7 +13,7 @@ document.querySelectorAll(".btn-delete").forEach(function (element) {
         var tagid = this.getAttribute("data-tagid");
         var cfm = confirm(`Confirm to delete tag: ${this.textContent.trim()}`);
         if (cfm) {
-            callApi(`/api/tags/${tagid}`, 'DELETE', {}, function (resp) {
+            moongladeFetch(`/api/tags/${tagid}`, 'DELETE', {}, function (resp) {
                 document.querySelector(`#li-tag-${tagid}`).style.display = 'none';
                 success('Tag deleted');
             });
@@ -26,7 +26,7 @@ document.querySelectorAll(".span-tagcontent-editable").forEach(function (element
         var tagId = this.getAttribute("data-tagid");
         var newTagName = this.textContent.trim();
 
-        callApi(`/api/tags/${tagId}`, 'PUT', newTagName, function (resp) {
+        moongladeFetch(`/api/tags/${tagId}`, 'PUT', newTagName, function (resp) {
             success('Tag updated');
         });
     });
@@ -48,7 +48,7 @@ function handleSubmit(event) {
     const data = new FormData(event.target);
     const value = Object.fromEntries(data.entries());
 
-    callApi(`/api/tags`, 'POST', value.tagName, function (resp) {
+    moongladeFetch(`/api/tags`, 'POST', value.tagName, function (resp) {
         document.querySelector('#edit-form').reset();
         window.location.reload();
     });

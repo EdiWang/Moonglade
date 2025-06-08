@@ -1,8 +1,8 @@
-import { callApi } from './httpService.mjs'
+import { moongladeFetch } from './httpService.mjs'
 import { success } from './toastService.mjs';
 
 function deletePage(pageid) {
-    callApi(`/api/page/${pageid}`,
+    moongladeFetch(`/api/page/${pageid}`,
         'DELETE',
         {},
         (resp) => {
