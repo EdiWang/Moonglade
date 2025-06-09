@@ -13,11 +13,11 @@ public class RestorePostCommandHandler(
 {
     public async Task Handle(RestorePostCommand request, CancellationToken ct)
     {
-        var pp = await repo.GetByIdAsync(request.Id, ct);
-        if (null == pp) return;
+        var post = await repo.GetByIdAsync(request.Id, ct);
+        if (null == post) return;
 
-        pp.IsDeleted = false;
-        await repo.UpdateAsync(pp, ct);
+        post.IsDeleted = false;
+        await repo.UpdateAsync(post, ct);
 
         cache.Remove(BlogCachePartition.Post.ToString(), request.Id.ToString());
 
