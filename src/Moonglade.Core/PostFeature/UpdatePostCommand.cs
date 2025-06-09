@@ -1,5 +1,4 @@
 using Edi.CacheAside.InMemory;
-using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
 using Moonglade.Configuration;
@@ -10,58 +9,30 @@ using Moonglade.Utils;
 namespace Moonglade.Core.PostFeature;
 
 public record UpdatePostCommand(Guid Id, PostEditModel Payload) : IRequest<PostEntity>;
-public class UpdatePostCommandHandler : IRequestHandler<UpdatePostCommand, PostEntity>
+public class UpdatePostCommandHandler(
+    MoongladeRepository<TagEntity> tagRepo,
+    MoongladeRepository<PostEntity> postRepo,
+    ICacheAside cache,
+    IBlogConfig blogConfig,
+    IConfiguration configuration,
+    ILogger<UpdatePostCommandHandler> logger) : IRequestHandler<UpdatePostCommand, PostEntity>
 {
-    private readonly MoongladeRepository<PostCategoryEntity> _pcRepository;
-    private readonly MoongladeRepository<PostTagEntity> _ptRepository;
-    private readonly MoongladeRepository<TagEntity> _tagRepo;
-    private readonly MoongladeRepository<PostEntity> _postRepo;
-    private readonly ICacheAside _cache;
-    private readonly IBlogConfig _blogConfig;
-    private readonly IConfiguration _configuration;
-    private readonly ILogger<UpdatePostCommandHandler> _logger;
-    private readonly bool _useMySqlWorkaround;
-
-    public UpdatePostCommandHandler(
-        MoongladeRepository<PostCategoryEntity> pcRepository,
-        MoongladeRepository<PostTagEntity> ptRepository,
-        MoongladeRepository<TagEntity> tagRepo,
-        MoongladeRepository<PostEntity> postRepo,
-        ICacheAside cache,
-        IBlogConfig blogConfig,
-        IConfiguration configuration,
-        ILogger<UpdatePostCommandHandler> logger)
-    {
-        _ptRepository = ptRepository;
-        _pcRepository = pcRepository;
-        _tagRepo = tagRepo;
-        _postRepo = postRepo;
-        _cache = cache;
-        _blogConfig = blogConfig;
-        _configuration = configuration;
-        _logger = logger;
-
-        var connStr = configuration.GetConnectionString("MoongladeDatabase");
-        var dbType = DatabaseTypeHelper.DetermineDatabaseType(connStr!);
-        _useMySqlWorkaround = dbType == DatabaseType.MySQL;
-    }
-
     public async Task<PostEntity> Handle(UpdatePostCommand request, CancellationToken ct)
     {
         var utcNow = DateTime.UtcNow;
         var (guid, postEditModel) = request;
-        var post = await _postRepo.GetByIdAsync(guid, ct) ?? throw new InvalidOperationException($"Post {guid} is not found.");
+        var post = await postRepo.GetByIdAsync(guid, ct) ?? throw new InvalidOperationException($"Post {guid} is not found.");
 
         UpdatePostDetails(post, postEditModel, utcNow);
 
         await UpdateTags(post, postEditModel.Tags, ct);
-        await UpdateCats(post, postEditModel.SelectedCatIds, ct);
+        UpdateCats(post, postEditModel.SelectedCatIds, ct);
 
-        await _postRepo.UpdateAsync(post, ct);
+        await postRepo.UpdateAsync(post, ct);
 
-        _cache.Remove(BlogCachePartition.Post.ToString(), post.RouteLink);
+        cache.Remove(BlogCachePartition.Post.ToString(), post.RouteLink);
 
-        _logger.LogInformation("Post updated with ID: {PostId}", post.Id);
+        logger.LogInformation("Post updated with ID: {PostId}", post.Id);
         return post;
     }
 
@@ -74,21 +45,14 @@ public class UpdatePostCommandHandler : IRequestHandler<UpdatePostCommand, PostE
 
         foreach (var item in tags)
         {
-            if (!await _tagRepo.AnyAsync(new TagByDisplayNameSpec(item), ct))
+            if (!await tagRepo.AnyAsync(new TagByDisplayNameSpec(item), ct))
             {
-                await _tagRepo.AddAsync(new()
+                await tagRepo.AddAsync(new()
                 {
                     DisplayName = item,
                     NormalizedName = Helper.NormalizeName(item, Helper.TagNormalizationDictionary)
                 }, ct);
             }
-        }
-
-        // 2. update tags
-        if (_useMySqlWorkaround)
-        {
-            var oldTags = await _ptRepository.AsQueryable().Where(pc => pc.PostId == post.Id).ToListAsync(cancellationToken: ct);
-            await _ptRepository.DeleteRangeAsync(oldTags, ct);
         }
 
         post.Tags.Clear();
@@ -101,7 +65,7 @@ public class UpdatePostCommandHandler : IRequestHandler<UpdatePostCommand, PostE
                     continue;
                 }
 
-                var tag = await _tagRepo.FirstOrDefaultAsync(new TagByDisplayNameSpec(tagName), ct);
+                var tag = await tagRepo.FirstOrDefaultAsync(new TagByDisplayNameSpec(tagName), ct);
                 if (tag is not null) post.Tags.Add(tag);
             }
         }
@@ -114,8 +78,8 @@ public class UpdatePostCommandHandler : IRequestHandler<UpdatePostCommand, PostE
         post.ContentAbstract = string.IsNullOrEmpty(postEditModel.Abstract)
             ? ContentProcessor.GetPostAbstract(
                 postEditModel.EditorContent,
-                _blogConfig.ContentSettings.PostAbstractWords,
-                _configuration.GetValue<EditorChoice>("Post:Editor") == EditorChoice.Markdown)
+                blogConfig.ContentSettings.PostAbstractWords,
+                configuration.GetValue<EditorChoice>("Post:Editor") == EditorChoice.Markdown)
             : postEditModel.Abstract.Trim();
 
         if (postEditModel.PostStatus == PostStatusConstants.Published)
@@ -159,16 +123,8 @@ public class UpdatePostCommandHandler : IRequestHandler<UpdatePostCommand, PostE
         post.RouteLink = Helper.GenerateRouteLink(post.PubDateUtc.GetValueOrDefault(), postEditModel.Slug);
     }
 
-    private async Task UpdateCats(PostEntity post, Guid[] catIds, CancellationToken ct)
+    private static void UpdateCats(PostEntity post, Guid[] catIds, CancellationToken ct)
     {
-        // 3. update categories
-        if (_useMySqlWorkaround)
-        {
-            var oldpcs = await _pcRepository.AsQueryable().Where(pc => pc.PostId == post.Id)
-                .ToListAsync(cancellationToken: ct);
-            await _pcRepository.DeleteRangeAsync(oldpcs, ct);
-        }
-
         post.PostCategory.Clear();
         if (catIds.Length != 0)
         {
