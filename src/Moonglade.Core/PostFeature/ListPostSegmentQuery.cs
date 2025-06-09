@@ -23,12 +23,13 @@ public class ListPostSegmentQueryHandler(MoongladeRepository<PostEntity> repo) :
     {
         if (request.PageSize < 1)
         {
-            throw new ArgumentOutOfRangeException(nameof(request.PageSize),
+            throw new ArgumentOutOfRangeException(nameof(request),
                 $"{nameof(request.PageSize)} can not be less than 1, current value: {request.PageSize}.");
         }
+
         if (request.Offset < 0)
         {
-            throw new ArgumentOutOfRangeException(nameof(request.Offset),
+            throw new ArgumentOutOfRangeException(nameof(request),
                 $"{nameof(request.Offset)} can not be less than 0, current value: {request.Offset}.");
         }
 
