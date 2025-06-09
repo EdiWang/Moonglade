@@ -31,12 +31,12 @@ public class CreateCommentCommandHandler(
 
         // Fetch post info
         var spec = new PostByIdForTitleDateSpec(request.PostId);
-        var postInfo = await postRepository.FirstOrDefaultAsync(spec, ct);
+        var (Title, PubDateUtc) = await postRepository.FirstOrDefaultAsync(spec, ct);
 
         // Check if comments are closed
         if (blogConfig.CommentSettings.CloseCommentAfterDays > 0)
         {
-            var daysSincePublished = (DateTime.UtcNow.Date - postInfo.PubDateUtc.GetValueOrDefault()).Days;
+            var daysSincePublished = (DateTime.UtcNow.Date - PubDateUtc.GetValueOrDefault()).Days;
             if (daysSincePublished > blogConfig.CommentSettings.CloseCommentAfterDays)
             {
                 logger.LogInformation("Comments are closed for post {PostId} after {Days} days.", request.PostId, daysSincePublished);
@@ -67,7 +67,7 @@ public class CreateCommentCommandHandler(
             Email = comment.Email,
             IpAddress = comment.IPAddress,
             IsApproved = comment.IsApproved,
-            PostTitle = postInfo.Title,
+            PostTitle = Title,
             Username = comment.Username
         };
 
