@@ -48,6 +48,12 @@ public class BlogConfig : IBlogConfig
         {
             var currentValue = prop.GetValue(this);
             var defaultValueProp = prop.PropertyType.GetProperty("DefaultValue");
+
+            if (defaultValueProp == null || !defaultValueProp.CanRead)
+            {
+                throw new InvalidOperationException($"Property {prop.Name} does not have a DefaultValue property or it is not readable.");
+            }
+
             var defaultValue = defaultValueProp?.GetValue(currentValue);
 
             var assignedValue = AssignValueForConfigItem((IBlogSettings)defaultValue, config, prop.Name, prop.PropertyType);
