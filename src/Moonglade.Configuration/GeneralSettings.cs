@@ -102,7 +102,7 @@ public class GeneralSettings : IBlogSettings
     public string DcLicenseUrl { get; set; }
 
     [JsonIgnore]
-    public static GeneralSettings DefaultValue = new()
+    public static GeneralSettings DefaultValue => new()
     {
         OwnerName = "Admin",
         OwnerEmail = "admin@edi.wang",
