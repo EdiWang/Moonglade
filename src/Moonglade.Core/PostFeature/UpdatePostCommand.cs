@@ -61,7 +61,7 @@ public class UpdatePostCommandHandler : IRequestHandler<UpdatePostCommand, PostE
 
         _cache.Remove(BlogCachePartition.Post.ToString(), post.RouteLink);
 
-        _logger.LogInformation($"Post updated: {post.Id}");
+        _logger.LogInformation("Post updated with ID: {PostId}", post.Id);
         return post;
     }
 
@@ -92,7 +92,7 @@ public class UpdatePostCommandHandler : IRequestHandler<UpdatePostCommand, PostE
         }
 
         post.Tags.Clear();
-        if (tags.Any())
+        if (tags.Length != 0)
         {
             foreach (var tagName in tags)
             {
@@ -170,7 +170,7 @@ public class UpdatePostCommandHandler : IRequestHandler<UpdatePostCommand, PostE
         }
 
         post.PostCategory.Clear();
-        if (catIds.Any())
+        if (catIds.Length != 0)
         {
             foreach (var cid in catIds)
             {
