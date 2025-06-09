@@ -1,35 +1,32 @@
-﻿namespace Moonglade.Utils;
-
-public class DatabaseTypeHelper
+﻿public class DatabaseTypeHelper
 {
     public static DatabaseType DetermineDatabaseType(string connectionString)
     {
-        var connStr = connectionString.ToLower();
+        if (string.IsNullOrWhiteSpace(connectionString))
+            return DatabaseType.Unknown;
 
-        if (connStr.Contains("server=") && connStr.Contains("uid="))
+        var connStr = connectionString.ToLowerInvariant();
+
+        if (connStr.Contains("server=") && (connStr.Contains("uid=") || connStr.Contains("user id=")) && !connStr.Contains("trusted_connection="))
             return DatabaseType.MySQL;
-        if (connStr.Contains("server=") && connStr.Contains("user id="))
-            return DatabaseType.MySQL;
-        if (connStr.Contains("port=") && connStr.Contains("database=") && connStr.Contains("uid="))
+        if (connStr.Contains("port=") && connStr.Contains("database=") && (connStr.Contains("uid=") || connStr.Contains("user id=")))
             return DatabaseType.MySQL;
 
-        if (connStr.Contains("host=") && connStr.Contains("username="))
-            return DatabaseType.PostgreSQL;
-        if (connStr.Contains("host=") && connStr.Contains("user id="))
+        if (connStr.Contains("host=") && (connStr.Contains("username=") || connStr.Contains("user id=")))
             return DatabaseType.PostgreSQL;
         if (connStr.Contains("host=") && connStr.Contains("port=") && connStr.Contains("database="))
             return DatabaseType.PostgreSQL;
 
         if (connStr.Contains("data source=") || connStr.Contains("initial catalog="))
             return DatabaseType.SQLServer;
-        if (connStr.Contains("server=") && connStr.Contains("database=") && connStr.Contains("user id="))
+        if (connStr.Contains("server=") && connStr.Contains("database=") &&
+            (connStr.Contains("user id=") || connStr.Contains("trusted_connection=") || connStr.Contains("integrated security=")))
             return DatabaseType.SQLServer;
-        if (connStr.Contains("integrated security="))
+        if (connStr.Contains("trusted_connection=") || connStr.Contains("integrated security="))
             return DatabaseType.SQLServer;
 
         return DatabaseType.Unknown;
     }
-
 }
 
 public enum DatabaseType
