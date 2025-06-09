@@ -38,7 +38,7 @@ Get started in 10 minutes with minimal Azure resources using our [automated depl
 
 ### Build & Run
 
-1. Open and build `./src/Moonglade.sln`
+1. Build and run `./src/Moonglade.sln`
 2. Access your blog:
     - **Home:** `https://localhost:17251`
     - **Admin:** `https://localhost:17251/admin`
@@ -138,7 +138,7 @@ Enable notifications in the admin portal.
 
 ## 📡 Protocols & Standards
 
-| Name         | Feature        | Status      | Endpoint        |
+| Name         | Feature       | Status      | Endpoint        |
 |--------------|---------------|-------------|-----------------|
 | RSS          | Subscription  | Supported   | `/rss`          |
 | Atom         | Subscription  | Supported   | `/atom`         |
