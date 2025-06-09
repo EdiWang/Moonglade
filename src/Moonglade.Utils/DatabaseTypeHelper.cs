@@ -4,24 +4,32 @@ public class DatabaseTypeHelper
 {
     public static DatabaseType DetermineDatabaseType(string connectionString)
     {
-        if (connectionString.Contains("Server=") && connectionString.Contains("Database=") && !connectionString.Contains("Uid=") ||
-            connectionString.Contains("Initial Catalog") || connectionString.Contains("Data Source"))
-        {
-            return DatabaseType.SQLServer;
-        }
+        var connStr = connectionString.ToLower();
 
-        if (connectionString.Contains("Host=") && connectionString.Contains("Port="))
-        {
-            return DatabaseType.PostgreSQL;
-        }
-
-        if (connectionString.Contains("Server=") && connectionString.Contains("Uid="))
-        {
+        if (connStr.Contains("server=") && connStr.Contains("uid="))
             return DatabaseType.MySQL;
-        }
+        if (connStr.Contains("server=") && connStr.Contains("user id="))
+            return DatabaseType.MySQL;
+        if (connStr.Contains("port=") && connStr.Contains("database=") && connStr.Contains("uid="))
+            return DatabaseType.MySQL;
+
+        if (connStr.Contains("host=") && connStr.Contains("username="))
+            return DatabaseType.PostgreSQL;
+        if (connStr.Contains("host=") && connStr.Contains("user id="))
+            return DatabaseType.PostgreSQL;
+        if (connStr.Contains("host=") && connStr.Contains("port=") && connStr.Contains("database="))
+            return DatabaseType.PostgreSQL;
+
+        if (connStr.Contains("data source=") || connStr.Contains("initial catalog="))
+            return DatabaseType.SQLServer;
+        if (connStr.Contains("server=") && connStr.Contains("database=") && connStr.Contains("user id="))
+            return DatabaseType.SQLServer;
+        if (connStr.Contains("integrated security="))
+            return DatabaseType.SQLServer;
 
         return DatabaseType.Unknown;
     }
+
 }
 
 public enum DatabaseType
