@@ -31,7 +31,7 @@ public class MinioBlobImageStorage : IBlogImageStorage
         _bucketName = blobConfiguration.BucketName;
         _secondaryBucketName = blobConfiguration.SecondaryBucketName;
 
-        logger.LogInformation($"Created {nameof(MinioBlobImageStorage)} at {blobConfiguration.EndPoint}");
+        logger.LogInformation("Created {StorageName} at {EndPoint}", nameof(MinioBlobImageStorage), blobConfiguration.EndPoint);
     }
 
     protected virtual async Task CreateBucketIfNotExists()
@@ -67,7 +67,7 @@ public class MinioBlobImageStorage : IBlogImageStorage
             throw new ArgumentNullException(nameof(fileName));
         }
 
-        _logger.LogInformation($"Uploading {fileName} to Minio Blob Storage.");
+        _logger.LogInformation("Uploading {FileName} to Minio Blob Storage.", fileName);
 
         await CreateBucketIfNotExists();
 
@@ -81,7 +81,7 @@ public class MinioBlobImageStorage : IBlogImageStorage
 
         await _client.PutObjectAsync(putObjectArg);
 
-        _logger.LogInformation($"Uploaded image file '{fileName}' to Minio Blob Storage.");
+        _logger.LogInformation("Uploaded image file '{FileName}' to Minio Blob Storage.", fileName);
 
         return fileName;
     }
@@ -133,7 +133,7 @@ public class MinioBlobImageStorage : IBlogImageStorage
         var exists = await BlobExistsAsync(fileName);
         if (!exists)
         {
-            _logger.LogWarning($"Blob {fileName} not exist.");
+            _logger.LogWarning("Blob {FileName} does not exist.", fileName);
             return null;
         }
 

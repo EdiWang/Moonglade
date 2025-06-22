@@ -1,10 +1,10 @@
-import { callApi } from './httpService.mjs'
+import { moongladeFetch } from './httpService.mjs'
 import { formatUtcTime } from '/js/app/utils.module.mjs'
 
 document.querySelectorAll('.btn-delete').forEach(button => {
     button.addEventListener('click', function () {
         var cid = this.getAttribute('data-commentid');
-        callApi('/api/comment', 'DELETE', [cid], (success) => {
+        moongladeFetch('/api/comment', 'DELETE', [cid], (success) => {
             document.querySelector(`#panel-comment-${cid}`).remove();
         });
     });
@@ -22,7 +22,7 @@ document.querySelectorAll('.btn-reply-post').forEach(button => {
         var cid = this.getAttribute('data-commentid');
         var replyContent = document.querySelector(`#replycontent-${cid}`).value;
 
-        callApi(`/api/comment/${cid}/reply`, 'POST', replyContent, async (resp) => {
+        moongladeFetch(`/api/comment/${cid}/reply`, 'POST', replyContent, async (resp) => {
             const data = await resp.json();
             const replyUi = document.querySelector(`#panel-comment-${data.commentId} .reply-ui`);
             const replyList = document.querySelector(`#panel-comment-${data.commentId} .reply-list`);
@@ -46,7 +46,7 @@ document.querySelectorAll('.btn-reply-post').forEach(button => {
 document.querySelectorAll('.btn-approve').forEach(button => {
     button.addEventListener('click', function () {
         var cid = this.getAttribute('data-commentid');
-        callApi(`/api/comment/${cid}/approval/toggle`, 'PUT', {}, async (resp) => {
+        moongladeFetch(`/api/comment/${cid}/approval/toggle`, 'PUT', {}, async (resp) => {
             var data = await resp.json();
             var approveButton = document.querySelector(`#panel-comment-${data} .btn-approve`);
             approveButton.classList.toggle('btn-outline-success');
@@ -61,7 +61,7 @@ window.deleteSelectedComments = function () {
         cids.push(checkbox.getAttribute('data-cid'));
     });
 
-    callApi('/api/comment', 'DELETE', cids, function (success) {
+    moongladeFetch('/api/comment', 'DELETE', cids, function (success) {
         cids.forEach(function (value) {
             var commentPanel = document.querySelector(`#panel-comment-${value}`);
             if (commentPanel) {

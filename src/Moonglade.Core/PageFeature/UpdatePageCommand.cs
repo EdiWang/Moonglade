@@ -13,12 +13,7 @@ public class UpdatePageCommandHandler(
     public async Task<Guid> Handle(UpdatePageCommand request, CancellationToken ct)
     {
         var (guid, payload) = request;
-        var page = await repo.GetByIdAsync(guid, ct);
-        if (page is null)
-        {
-            throw new InvalidOperationException($"PageEntity with Id '{guid}' not found.");
-        }
-
+        var page = await repo.GetByIdAsync(guid, ct) ?? throw new InvalidOperationException($"PageEntity with Id '{guid}' not found.");
         var slug = request.Payload.Slug.ToLower().Trim();
 
         Guid? cssId = null;

@@ -21,31 +21,27 @@ public class CountPostQueryHandler(
 {
     public async Task<int> Handle(CountPostQuery request, CancellationToken ct)
     {
-        int count = 0;
-
-        switch (request.CountType)
+        return request.CountType switch
         {
-            case CountType.Public:
-                count = await postRepo.CountAsync(new PostByStatusSpec(PostStatus.Published), ct);
-                break;
+            CountType.Public => await postRepo.CountAsync(new PostByStatusSpec(PostStatus.Published), ct),
 
-            case CountType.Category:
-                if (request.CatId == null) throw new ArgumentNullException(nameof(request.CatId));
-                count = await postCatRepo.CountAsync(c => c.CategoryId == request.CatId.Value
-                                                           && c.Post.PostStatus == PostStatusConstants.Published
-                                                           && !c.Post.IsDeleted, ct);
-                break;
+            CountType.Category => request.CatId is Guid catId
+                ? await postCatRepo.CountAsync(
+                    c => c.CategoryId == catId &&
+                         c.Post.PostStatus == PostStatusConstants.Published &&
+                         !c.Post.IsDeleted, ct)
+                : throw new InvalidOperationException("CatId must be provided for Category count."),
 
-            case CountType.Tag:
-                if (request.TagId == null) throw new ArgumentNullException(nameof(request.TagId));
-                count = await postTagRepo.CountAsync(p => p.TagId == request.TagId.Value && p.Post.PostStatus == PostStatusConstants.Published && !p.Post.IsDeleted, ct);
-                break;
+            CountType.Tag => request.TagId is int tagId
+                ? await postTagRepo.CountAsync(
+                    p => p.TagId == tagId &&
+                         p.Post.PostStatus == PostStatusConstants.Published &&
+                         !p.Post.IsDeleted, ct)
+                : throw new InvalidOperationException("TagId must be provided for Tag count."),
 
-            case CountType.Featured:
-                count = await postRepo.CountAsync(new FeaturedPostSpec(), ct);
-                break;
-        }
+            CountType.Featured => await postRepo.CountAsync(new FeaturedPostSpec(), ct),
 
-        return count;
+            _ => throw new ArgumentOutOfRangeException(nameof(request.CountType), "Unknown CountType.")
+        };
     }
 }

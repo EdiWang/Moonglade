@@ -1,4 +1,4 @@
-import { callApi } from './httpService.mjs'
+import { moongladeFetch } from './httpService.mjs'
 import { success } from './toastService.mjs'
 
 const resetPasswordModal = new bootstrap.Modal('#resetPasswordModal');
@@ -14,7 +14,7 @@ function handleResetPasswordFormSubmit(event) {
     const data = new FormData(event.target);
     const value = Object.fromEntries(data.entries());
 
-    callApi(`/api/settings/password/local`,
+    moongladeFetch(`/api/settings/password/local`,
         'PUT',
         value,
         (resp) => {

@@ -10,7 +10,7 @@ public class FeedGenerator : IFeedGenerator, IRssGenerator, IAtomGenerator
 {
     public FeedGenerator()
     {
-        FeedItemCollection = new List<FeedEntry>();
+        FeedItemCollection = [];
     }
 
     public FeedGenerator(string hostUrl, string headTitle, string headDescription, string copyright, string generator, string trackBackUrl, string language)
@@ -23,7 +23,7 @@ public class FeedGenerator : IFeedGenerator, IRssGenerator, IAtomGenerator
         TrackBackUrl = trackBackUrl;
         Language = language;
 
-        FeedItemCollection = new List<FeedEntry>();
+        FeedItemCollection = [];
     }
 
     #region Properties

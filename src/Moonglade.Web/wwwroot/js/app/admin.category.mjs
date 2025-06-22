@@ -1,4 +1,4 @@
-import { callApi } from './httpService.mjs'
+import { moongladeFetch } from './httpService.mjs'
 import { success } from './toastService.mjs'
 
 const editCanvas = new bootstrap.Offcanvas(document.getElementById('editCatCanvas'));
@@ -11,7 +11,7 @@ function initCreateCategory() {
 }
 
 function editCat(id) {
-    callApi(`/api/category/${id}`, 'GET', {},
+    moongladeFetch(`/api/category/${id}`, 'GET', {},
         async (resp) => {
             var data = await resp.json();
             catId = data.id;
@@ -23,7 +23,7 @@ function editCat(id) {
 }
 
 function deleteCat(catid) {
-    callApi(`/api/category/${catid}`, 'DELETE', {},
+    moongladeFetch(`/api/category/${catid}`, 'DELETE', {},
         (resp) => {
             document.querySelector(`#card-${catid}`).remove();
             success('Category deleted');
@@ -53,7 +53,7 @@ function handleSubmit(event) {
     const data = new FormData(event.target);
     const value = Object.fromEntries(data.entries());
 
-    callApi(apiAddress, verb,
+    moongladeFetch(apiAddress, verb,
         {
             slug: value["EditCategoryRequest.Slug"],
             displayName: value["EditCategoryRequest.DisplayName"],

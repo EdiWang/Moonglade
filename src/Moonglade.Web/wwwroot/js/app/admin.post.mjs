@@ -1,4 +1,4 @@
-import { callApi } from './httpService.mjs'
+import { moongladeFetch } from './httpService.mjs'
 import { formatUtcTime } from './utils.module.mjs'
 import { success } from './toastService.mjs'
 
@@ -10,7 +10,7 @@ function deleteConfirm(postid) {
 }
 
 function deletePost(postid) {
-    callApi(`/api/post/${postid}/recycle`,
+    moongladeFetch(`/api/post/${postid}/recycle`,
         'DELETE',
         {},
         (resp) => {

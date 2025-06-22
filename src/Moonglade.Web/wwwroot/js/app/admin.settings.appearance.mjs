@@ -1,4 +1,4 @@
-import { callApi } from './httpService.mjs'
+import { moongladeFetch } from './httpService.mjs'
 import { handleSettingsSubmit } from './admin.settings.mjs';
 import { success } from './toastService.mjs';
 
@@ -10,7 +10,7 @@ function handleSubmit(event) {
 var themeModal = new bootstrap.Modal(document.getElementById('thememodal'));
 
 window.createTheme = function (oFormElement) {
-    callApi(oFormElement.action,
+    moongladeFetch(oFormElement.action,
         'POST',
         {
             name: document.querySelector('#Name').value,
@@ -23,7 +23,7 @@ window.createTheme = function (oFormElement) {
 }
 
 window.deleteTheme = function (id) {
-    callApi(`/api/theme/${id}`,
+    moongladeFetch(`/api/theme/${id}`,
         'DELETE',
         {},
         (resp) => {

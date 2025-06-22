@@ -1,4 +1,4 @@
-﻿import { callApi } from './httpService.mjs'
+﻿import { moongladeFetch } from './httpService.mjs'
 import { getPreferredTheme } from './themeService.mjs';
 
 function slugify(text) {
@@ -70,7 +70,7 @@ export function initEvents(slugifyTitle) {
         }
     }
 
-    callApi('/api/tags/names',
+    moongladeFetch('/api/tags/names',
         'GET',
         {},
         async (resp) => {

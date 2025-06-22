@@ -1,4 +1,4 @@
-﻿import { callApi } from './httpService.mjs'
+﻿import { moongladeFetch } from './httpService.mjs'
 import { toMagicJson } from './utils.module.mjs'
 import { success } from './toastService.mjs'
 
@@ -24,7 +24,7 @@ export function handleSettingsSubmit(event) {
     const formValues = Object.fromEntries(formData.entries());
     const formattedValues = toMagicJson(formValues);
 
-    callApi(event.currentTarget.action, 'POST', formattedValues,
+    moongladeFetch(event.currentTarget.action, 'POST', formattedValues,
         (resp) => {
             success('Settings Updated');
             enableButton();

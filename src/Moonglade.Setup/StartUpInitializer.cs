@@ -6,7 +6,7 @@ namespace Moonglade.Setup;
 
 public interface IStartUpInitializer
 {
-    Task<InitStartUpResult> InitStartUp();
+    Task<InitStartUpResult> InitStartUp(CancellationToken cancellationToken = default);
 }
 
 public class StartUpInitializer(
@@ -16,67 +16,76 @@ public class StartUpInitializer(
     IMigrationManager migrationManager,
     ISiteIconInitializer siteIconInitializer) : IStartUpInitializer
 {
-    public async Task<InitStartUpResult> InitStartUp()
+    public async Task<InitStartUpResult> InitStartUp(CancellationToken cancellationToken = default)
     {
-        // Create database
-        try
+        // Step 1: Ensure database is created
+        if (!await TryAsync(
+                () => context.Database.EnsureCreatedAsync(cancellationToken),
+                "Failed to create database."))
         {
-            await context.Database.EnsureCreatedAsync();
-        }
-        catch (Exception e)
-        {
-            logger.LogCritical(e, e.Message);
             return InitStartUpResult.FailedCreateDatabase;
         }
 
-        // Seed database
-        bool isNew = !await context.BlogConfiguration.AnyAsync();
+        // Step 2: Seed database if new
+        bool isNew = !await context.BlogConfiguration.AnyAsync(cancellationToken);
         if (isNew)
         {
-            try
+            if (!await TryAsync(
+                    async () =>
+                    {
+                        logger.LogInformation("Seeding database...");
+                        await context.ClearAllData();
+                        await Seed.SeedAsync(context, logger);
+                        logger.LogInformation("Database seeded successfully.");
+                    },
+                    "Failed to seed database."))
             {
-                logger.LogInformation("Seeding database...");
-
-                await context.ClearAllData();
-                await Seed.SeedAsync(context, logger);
-
-                logger.LogInformation("Database seeding successfully.");
-            }
-            catch (Exception e)
-            {
-                logger.LogCritical(e, e.Message);
                 return InitStartUpResult.FailedSeedingDatabase;
             }
         }
 
-        // Initialize blog configuration
-        try
+        // Step 3: Initialize blog configuration
+        if (!await TryAsync(
+                () => blogConfigInitializer.Initialize(isNew),
+                "Failed to initialize blog configuration."))
         {
-            await blogConfigInitializer.Initialize(isNew);
-        }
-        catch (Exception e)
-        {
-            logger.LogCritical(e, e.Message);
             return InitStartUpResult.FailedInitBlogConfig;
         }
 
-        // Database migration for upgrade scenario
+        // Step 4: Migrate database if not new
         if (!isNew)
         {
-            try
+            if (!await TryAsync(
+                    () => migrationManager.TryMigration(context),
+                    "Failed to migrate database."))
             {
-                await migrationManager.TryMigration(context);
-            }
-            catch (Exception e)
-            {
-                logger.LogCritical(e, e.Message);
                 return InitStartUpResult.FailedDatabaseMigration;
             }
         }
 
+        // Step 5: Generate site icons (failures here do not block startup)
         await siteIconInitializer.GenerateSiteIcons();
 
         return InitStartUpResult.Success;
+    }
+
+    /// <summary>
+    /// Helper to run an async action with error logging and result.
+    /// </summary>
+    private async Task<bool> TryAsync(
+        Func<Task> action,
+        string errorMessage)
+    {
+        try
+        {
+            await action();
+            return true;
+        }
+        catch (Exception ex)
+        {
+            logger.LogCritical(ex, errorMessage);
+            return false;
+        }
     }
 }
 

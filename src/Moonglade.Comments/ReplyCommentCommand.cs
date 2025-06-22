@@ -15,8 +15,7 @@ public class ReplyCommentCommandHandler(
 {
     public async Task<CommentReply> Handle(ReplyCommentCommand request, CancellationToken ct)
     {
-        var cmt = await commentRepo.GetByIdAsync(request.CommentId, ct);
-        if (cmt is null) throw new InvalidOperationException($"Comment {request.CommentId} is not found.");
+        var cmt = await commentRepo.GetByIdAsync(request.CommentId, ct) ?? throw new InvalidOperationException($"Comment {request.CommentId} is not found.");
 
         var id = Guid.NewGuid();
         var model = new CommentReplyEntity

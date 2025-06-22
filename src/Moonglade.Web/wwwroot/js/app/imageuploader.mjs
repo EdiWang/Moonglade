@@ -1,4 +1,4 @@
-﻿import { callApi } from './httpService.mjs'
+﻿import { moongladeFetch } from './httpService.mjs'
 import { success, error } from './toastService.mjs'
 
 export class ImageUploader {
@@ -13,7 +13,7 @@ export class ImageUploader {
 
                 var rawData = imgDataUrl.replace(/^data:image\/(png|jpeg|jpg);base64,/, '');
 
-                callApi(uploadUrl, 'POST', rawData, function (resp) {
+                moongladeFetch(uploadUrl, 'POST', rawData, function (resp) {
                     var modalElement = document.getElementById(`${targetName}modal`);
                     var modal = bootstrap.Modal.getInstance(modalElement);
                     if (modal) modal.hide();

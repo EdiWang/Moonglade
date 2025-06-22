@@ -95,8 +95,9 @@ public class Program
     private static void ConfigureServices(IServiceCollection services, IConfiguration configuration, List<CultureInfo> cultures)
     {
         var assemblies = AppDomain.CurrentDomain.GetAssemblies();
-        assemblies = assemblies.Where(x => x.FullName!.StartsWith("Moonglade")).ToArray();
+        assemblies = [.. assemblies.Where(x => x.FullName!.StartsWith("Moonglade"))];
 
+        services.AddHttpClient();
         services.AddMediatR(config => config.RegisterServicesFromAssemblies(assemblies));
         services.AddOptions().AddHttpContextAccessor();
         ConfigureSession(services);
@@ -270,7 +271,6 @@ public class Program
         if (usePrefersColorSchemeHeader) app.UseMiddleware<PrefersColorSchemeMiddleware>();
 
         app.UseMiddleware<PoweredByMiddleware>();
-        app.UseMiddleware<DNTMiddleware>();
 
         if (app.Environment.IsDevelopment())
         {

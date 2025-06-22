@@ -32,13 +32,13 @@ public class EditLinkRequest : IValidatableObject
     }
 }
 
-public record AddLinkCommand(EditLinkRequest Payload) : IRequest;
+public record CreateLinkCommand(EditLinkRequest Payload) : IRequest;
 
-public class AddLinkCommandHandler(
+public class CreateLinkCommandHandler(
     MoongladeRepository<FriendLinkEntity> repo,
-    ILogger<AddLinkCommandHandler> logger) : IRequestHandler<AddLinkCommand>
+    ILogger<CreateLinkCommandHandler> logger) : IRequestHandler<CreateLinkCommand>
 {
-    public async Task Handle(AddLinkCommand request, CancellationToken ct)
+    public async Task Handle(CreateLinkCommand request, CancellationToken ct)
     {
         var link = new FriendLinkEntity
         {
@@ -50,6 +50,6 @@ public class AddLinkCommandHandler(
 
         await repo.AddAsync(link, ct);
 
-        logger.LogInformation("Added a new friend link: {Title}", link.Title);
+        logger.LogInformation("Created a new friend link: {Title}", link.Title);
     }
 }

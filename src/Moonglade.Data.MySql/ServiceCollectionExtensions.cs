@@ -12,7 +12,7 @@ public static class ServiceCollectionExtensions
         services.AddScoped(typeof(MoongladeRepository<>), typeof(MySqlDbContextRepository<>));
 
         services.AddDbContext<BlogDbContext, MySqlBlogDbContext>(optionsAction => optionsAction.UseLazyLoadingProxies()
-            .UseMySql(connectionString, ServerVersion.AutoDetect(connectionString), builder =>
+            .UseMySQL(connectionString, builder =>
             {
                 builder.EnableRetryOnFailure(3, TimeSpan.FromSeconds(30), null);
             })

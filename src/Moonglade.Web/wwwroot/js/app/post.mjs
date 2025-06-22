@@ -1,4 +1,4 @@
-﻿import { callApi } from './httpService.mjs'
+﻿import { moongladeFetch } from './httpService.mjs'
 import { formatUtcTime, parseMetaContent } from './utils.module.mjs';
 import { resetCaptchaImage, showCaptcha } from './captchaService.mjs';
 import { resizeImages, applyImageZooming } from './post.imageutils.mjs';
@@ -24,7 +24,7 @@ function submitComment(pid) {
     btnSubmitComment.classList.add('disabled');
     btnSubmitComment.setAttribute('disabled', 'disabled');
 
-    callApi(
+    moongladeFetch(
         `/api/comment/${pid}`,
         'POST',
         { username, content, email, captchaCode },
