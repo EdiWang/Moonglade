@@ -6,13 +6,9 @@ namespace Moonglade.Web.Controllers;
 [Authorize]
 [Route("api/post")]
 [ApiController]
+[TypeFilter(typeof(ClearBlogCache), Arguments = [BlogCacheType.Subscription | BlogCacheType.SiteMap])]
 public class RecycleBinController(IMediator mediator) : ControllerBase
 {
-    [TypeFilter(typeof(ClearBlogCache), Arguments =
-    [
-        BlogCacheType.SiteMap |
-        BlogCacheType.Subscription
-    ])]
     [HttpPost("{postId:guid}/restore")]
     [ReadonlyMode]
     [ProducesResponseType(StatusCodes.Status204NoContent)]
@@ -22,7 +18,6 @@ public class RecycleBinController(IMediator mediator) : ControllerBase
         return NoContent();
     }
 
-    [TypeFilter(typeof(ClearBlogCache), Arguments = [BlogCacheType.Subscription | BlogCacheType.SiteMap])]
     [HttpDelete("{postId:guid}/destroy")]
     [ReadonlyMode]
     [ProducesResponseType(StatusCodes.Status204NoContent)]
@@ -32,7 +27,6 @@ public class RecycleBinController(IMediator mediator) : ControllerBase
         return NoContent();
     }
 
-    [TypeFilter(typeof(ClearBlogCache), Arguments = [BlogCacheType.Subscription | BlogCacheType.SiteMap])]
     [HttpDelete("recyclebin")]
     [ReadonlyMode]
     [ProducesResponseType(StatusCodes.Status204NoContent)]
