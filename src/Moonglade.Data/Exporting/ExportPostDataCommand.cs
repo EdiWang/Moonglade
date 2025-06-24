@@ -9,8 +9,8 @@ public class ExportPostDataCommandHandler(MoongladeRepository<PostEntity> repo) 
 {
     public Task<ExportResult> Handle(ExportPostDataCommand request, CancellationToken ct)
     {
-        var poExp = new ZippedJsonExporter<PostEntity>(repo, "moonglade-posts", Path.GetTempPath());
-        var poExportData = poExp.ExportData(p => new
+        var exporter = new ZippedJsonExporter<PostEntity>(repo, "moonglade-posts", Path.GetTempPath());
+        var data = exporter.ExportData(p => new
         {
             p.Title,
             p.Slug,
@@ -27,6 +27,6 @@ public class ExportPostDataCommandHandler(MoongladeRepository<PostEntity> repo) 
             Tags = p.Tags.Select(pt => pt.DisplayName)
         }, ct);
 
-        return poExportData;
+        return data;
     }
 }
