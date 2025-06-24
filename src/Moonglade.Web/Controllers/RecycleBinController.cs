@@ -26,7 +26,7 @@ public class RecycleBinController(IMediator mediator) : ControllerBase
     [HttpDelete("{postId:guid}/destroy")]
     [ReadonlyMode]
     [ProducesResponseType(StatusCodes.Status204NoContent)]
-    public async Task<IActionResult> DeleteFromRecycleBin([NotEmpty] Guid postId)
+    public async Task<IActionResult> Delete([NotEmpty] Guid postId)
     {
         await mediator.Send(new DeletePostCommand(postId));
         return NoContent();
@@ -36,7 +36,7 @@ public class RecycleBinController(IMediator mediator) : ControllerBase
     [HttpDelete("recyclebin")]
     [ReadonlyMode]
     [ProducesResponseType(StatusCodes.Status204NoContent)]
-    public async Task<IActionResult> EmptyRecycleBin()
+    public async Task<IActionResult> Clear()
     {
         await mediator.Send(new EmptyRecycleBinCommand());
         return NoContent();
