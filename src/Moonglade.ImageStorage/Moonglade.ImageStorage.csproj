@@ -11,6 +11,6 @@
   <ItemGroup>
     <FrameworkReference Include="Microsoft.AspNetCore.App" />
     <PackageReference Include="Azure.Storage.Blobs" Version="12.24.1" />
-    <PackageReference Include="Minio" Version="6.0.4" />
+    <PackageReference Include="Minio" Version="6.0.5" />
   </ItemGroup>
 </Project>
