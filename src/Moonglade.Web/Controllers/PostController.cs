@@ -132,6 +132,16 @@ public class PostController(
     }
 
     [TypeFilter(typeof(ClearBlogCache), Arguments = [BlogCacheType.Subscription | BlogCacheType.SiteMap])]
+    [HttpPut("{postId:guid}/publish")]
+    [ReadonlyMode]
+    [ProducesResponseType(StatusCodes.Status204NoContent)]
+    public async Task<IActionResult> Publish([NotEmpty] Guid postId)
+    {
+        await mediator.Send(new PublishPostCommand(postId));
+        return NoContent();
+    }
+
+    [TypeFilter(typeof(ClearBlogCache), Arguments = [BlogCacheType.Subscription | BlogCacheType.SiteMap])]
     [HttpPut("{postId:guid}/unpublish")]
     [ReadonlyMode]
     [ProducesResponseType(StatusCodes.Status204NoContent)]
