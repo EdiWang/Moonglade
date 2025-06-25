@@ -12,11 +12,18 @@ public class PostponePostCommandHandler(
     public async Task Handle(PostponePostCommand request, CancellationToken ct)
     {
         var post = await postRepo.GetByIdAsync(request.PostId, ct);
-        if (post == null) return;
+        if (post == null)
+        {
+            logger.LogWarning("Post with ID {PostId} not found", request.PostId);
+            return;
+        }
 
-        post.ScheduledPublishTimeUtc = DateTime.UtcNow.AddHours(request.Hours);
-        await postRepo.UpdateAsync(post, ct);
+        if (post.PostStatus == PostStatusConstants.Scheduled && post.ScheduledPublishTimeUtc.HasValue)
+        {
+            post.ScheduledPublishTimeUtc = DateTime.UtcNow.AddHours(request.Hours);
+            await postRepo.UpdateAsync(post, ct);
 
-        logger.LogInformation("Post {PostId} postponed by {Hours} hours", request.PostId, request.Hours);
+            logger.LogInformation("Post {PostId} postponed by {Hours} hours", request.PostId, request.Hours);
+        }
     }
 }
