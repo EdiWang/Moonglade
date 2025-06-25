@@ -1047,4 +1047,7 @@
   <data name="Reading posts" xml:space="preserve">
     <value>閱讀文章</value>
   </data>
+  <data name="This post is scheduled to be published. Are you sure you want to publish it now?" xml:space="preserve">
+    <value>此帖子已安排定時發佈。 您確定要現在發佈嗎？</value>
+  </data>
 </root>

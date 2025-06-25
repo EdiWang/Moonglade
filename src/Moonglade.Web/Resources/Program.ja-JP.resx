@@ -1047,4 +1047,7 @@
   <data name="Reading posts" xml:space="preserve">
     <value>記事を読む</value>
   </data>
+  <data name="This post is scheduled to be published. Are you sure you want to publish it now?" xml:space="preserve">
+    <value>この投稿は公開される予定です。 今すぐ公開してもよろしいですか?</value>
+  </data>
 </root>
