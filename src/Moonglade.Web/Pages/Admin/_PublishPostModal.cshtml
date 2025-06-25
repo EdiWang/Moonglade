@@ -1,0 +1,20 @@
+﻿<div class="modal fade" id="publishPostModal" tabindex="-1" role="dialog" aria-labelledby="publishPostModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="publishPostModalLabel">@SharedLocalizer["Publish Post"]</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close">
+                </button>
+            </div>
+            <div class="modal-body">
+                <p>
+                    @SharedLocalizer["This post is scheduled to be published. Are you sure you want to publish it now?"]
+                </p>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">@SharedLocalizer["No"]</button>
+                <a id="btn-publish-post" class="publish-post-confirm btn btn-danger">@SharedLocalizer["Yes"]</a>
+            </div>
+        </div>
+    </div>
+</div>
