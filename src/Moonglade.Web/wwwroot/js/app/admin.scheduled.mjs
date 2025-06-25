@@ -9,6 +9,17 @@ function deletePost(postid) {
     });
 }
 
+function publishPost(postId) {
+    moongladeFetch(
+        `/api/post/${postId}/publish`,
+        'PUT',
+        {},
+        (resp) => {
+            success('Post published');
+            location.reload();
+        });
+}
+
 document.querySelectorAll(".btn-delete").forEach(function (button) {
     button.addEventListener("click", function () {
         var cfm = confirm("Delete Confirmation?");
@@ -16,6 +27,18 @@ document.querySelectorAll(".btn-delete").forEach(function (button) {
             deletePost(this.dataset.postid);
         }
     });
+});
+
+document.querySelectorAll(".btn-publish").forEach(function (button) {
+    button.addEventListener("click", function () {
+        const postId = this.dataset.postid;
+        document.getElementById('btn-publish-post').dataset.postid = postId;
+    });
+});
+
+document.getElementById('btn-publish-post').addEventListener('click', function () {
+    const postId = this.dataset.postid;
+    publishPost(postId);
 });
 
 formatUtcTime();
