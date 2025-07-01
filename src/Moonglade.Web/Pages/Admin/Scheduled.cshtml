@@ -55,7 +55,14 @@
                     </div>
 
                     <div class="col-auto">
-                        <a class="btn btn-outline-accent btn-sm btn-publish" data-postid="@post.Id" data-bs-toggle="modal" data-bs-target="#publishPostModal"><i class="bi-send"></i></a>
+                        <a class="btn btn-outline-accent btn-sm btn-publish" data-postid="@post.Id" data-bs-toggle="modal" data-bs-target="#publishPostModal">
+                            <i class="bi-send"></i>
+                            @SharedLocalizer["Publish Now"]
+                        </a>
+                        <a class="btn btn-outline-accent btn-sm btn-postpone" data-postid="@post.Id">
+                            <i class="bi-clock"></i>
+                            @SharedLocalizer["Postpone"]
+                        </a>
                         <a class="btn btn-outline-accent btn-sm btn-edit" asp-page="./EditPost" asp-route-id="@post.Id"><i class="bi-pen"></i></a>
                         <a class="btn btn-outline-danger btn-sm btn-delete" data-postid="@post.Id" href="javascript:;">
                             <i class="bi-trash"></i>
