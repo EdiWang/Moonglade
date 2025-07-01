@@ -20,7 +20,7 @@ public class PostponePostCommandHandler(
 
         if (post.PostStatus == PostStatusConstants.Scheduled && post.ScheduledPublishTimeUtc.HasValue)
         {
-            post.ScheduledPublishTimeUtc = DateTime.UtcNow.AddHours(request.Hours);
+            post.ScheduledPublishTimeUtc = post.ScheduledPublishTimeUtc.Value.AddHours(request.Hours);
             await postRepo.UpdateAsync(post, ct);
 
             logger.LogInformation("Post {PostId} postponed by {Hours} hours", request.PostId, request.Hours);
