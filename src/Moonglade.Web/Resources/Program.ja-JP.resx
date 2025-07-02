@@ -1059,4 +1059,7 @@
   <data name="Publish Now" xml:space="preserve">
     <value>今すぐ公開</value>
   </data>
+  <data name="Scheduled for" xml:space="preserve">
+    <value>予定日</value>
+  </data>
 </root>

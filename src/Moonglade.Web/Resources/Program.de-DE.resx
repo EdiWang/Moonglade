@@ -1059,4 +1059,7 @@
   <data name="Publish Now" xml:space="preserve">
     <value>Jetzt veröffentlichen</value>
   </data>
+  <data name="Scheduled for" xml:space="preserve">
+    <value>Geplant am</value>
+  </data>
 </root>
