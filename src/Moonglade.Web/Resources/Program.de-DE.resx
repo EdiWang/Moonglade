@@ -1056,4 +1056,7 @@
   <data name="Postpone" xml:space="preserve">
     <value>verschieben</value>
   </data>
+  <data name="Publish Now" xml:space="preserve">
+    <value>Jetzt veröffentlichen</value>
+  </data>
 </root>

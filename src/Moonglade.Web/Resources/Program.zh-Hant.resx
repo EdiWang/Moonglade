@@ -1056,4 +1056,7 @@
   <data name="Postpone" xml:space="preserve">
     <value>推遲</value>
   </data>
+  <data name="Publish Now" xml:space="preserve">
+    <value>現在發佈</value>
+  </data>
 </root>
