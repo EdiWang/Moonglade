@@ -1053,4 +1053,7 @@
   <data name="Scheduled" xml:space="preserve">
     <value>Plan</value>
   </data>
+  <data name="Postpone" xml:space="preserve">
+    <value>verschieben</value>
+  </data>
 </root>
