@@ -1062,4 +1062,13 @@
   <data name="Scheduled for" xml:space="preserve">
     <value>计划于</value>
   </data>
+  <data name="Publish Post" xml:space="preserve">
+    <value>发布文章</value>
+  </data>
+  <data name="No" xml:space="preserve">
+    <value>否</value>
+  </data>
+  <data name="Yes" xml:space="preserve">
+    <value>是</value>
+  </data>
 </root>

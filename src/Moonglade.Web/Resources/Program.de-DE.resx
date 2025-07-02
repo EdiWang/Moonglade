@@ -1062,4 +1062,13 @@
   <data name="Scheduled for" xml:space="preserve">
     <value>Geplant am</value>
   </data>
+  <data name="Publish Post" xml:space="preserve">
+    <value>Veröffentlichen eines Beitrags</value>
+  </data>
+  <data name="No" xml:space="preserve">
+    <value>nicht</value>
+  </data>
+  <data name="Yes" xml:space="preserve">
+    <value>sein</value>
+  </data>
 </root>

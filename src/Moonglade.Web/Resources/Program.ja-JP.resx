@@ -1062,4 +1062,13 @@
   <data name="Scheduled for" xml:space="preserve">
     <value>予定日</value>
   </data>
+  <data name="Publish Post" xml:space="preserve">
+    <value>記事を公開する</value>
+  </data>
+  <data name="No" xml:space="preserve">
+    <value>じゃない</value>
+  </data>
+  <data name="Yes" xml:space="preserve">
+    <value>いる</value>
+  </data>
 </root>
