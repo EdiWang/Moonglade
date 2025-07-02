@@ -1050,4 +1050,7 @@
   <data name="This post is scheduled to be published. Are you sure you want to publish it now?" xml:space="preserve">
     <value>Die Veröffentlichung dieses Beitrags ist geplant. Sind Sie sicher, dass Sie es jetzt veröffentlichen möchten?</value>
   </data>
+  <data name="Scheduled" xml:space="preserve">
+    <value>Plan</value>
+  </data>
 </root>
