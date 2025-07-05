@@ -1047,4 +1047,28 @@
   <data name="Reading posts" xml:space="preserve">
     <value>閱讀文章</value>
   </data>
+  <data name="This post is scheduled to be published. Are you sure you want to publish it now?" xml:space="preserve">
+    <value>此帖子已安排定時發佈。 您確定要現在發佈嗎？</value>
+  </data>
+  <data name="Scheduled" xml:space="preserve">
+    <value>計劃</value>
+  </data>
+  <data name="Postpone" xml:space="preserve">
+    <value>推遲</value>
+  </data>
+  <data name="Publish Now" xml:space="preserve">
+    <value>現在發佈</value>
+  </data>
+  <data name="Scheduled for" xml:space="preserve">
+    <value>計劃於</value>
+  </data>
+  <data name="Publish Post" xml:space="preserve">
+    <value>發佈文章</value>
+  </data>
+  <data name="No" xml:space="preserve">
+    <value>否</value>
+  </data>
+  <data name="Yes" xml:space="preserve">
+    <value>是</value>
+  </data>
 </root>

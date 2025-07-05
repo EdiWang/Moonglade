@@ -1047,4 +1047,28 @@
   <data name="Reading posts" xml:space="preserve">
     <value>記事を読む</value>
   </data>
+  <data name="This post is scheduled to be published. Are you sure you want to publish it now?" xml:space="preserve">
+    <value>この投稿は公開される予定です。 今すぐ公開してもよろしいですか?</value>
+  </data>
+  <data name="Scheduled" xml:space="preserve">
+    <value>計画</value>
+  </data>
+  <data name="Postpone" xml:space="preserve">
+    <value>延期する</value>
+  </data>
+  <data name="Publish Now" xml:space="preserve">
+    <value>今すぐ公開</value>
+  </data>
+  <data name="Scheduled for" xml:space="preserve">
+    <value>予定日</value>
+  </data>
+  <data name="Publish Post" xml:space="preserve">
+    <value>記事を公開する</value>
+  </data>
+  <data name="No" xml:space="preserve">
+    <value>じゃない</value>
+  </data>
+  <data name="Yes" xml:space="preserve">
+    <value>いる</value>
+  </data>
 </root>

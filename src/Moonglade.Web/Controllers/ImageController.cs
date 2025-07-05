@@ -35,7 +35,7 @@ public class ImageController(IBlogImageStorage imageStorage,
         // Prevent access to origin images
         if (filename.Contains("-origin.", StringComparison.OrdinalIgnoreCase))
         {
-            logger.LogWarning($"Attempt to access origin image: `{filename}` is blocked. Client IP: {HttpContext.Connection.RemoteIpAddress}");
+            logger.LogWarning("Attempt to access origin image: `{Filename}` is blocked. Client IP: {ClientIP}", filename, HttpContext.Connection.RemoteIpAddress);
             return Forbid();
         }
 

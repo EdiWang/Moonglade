@@ -122,20 +122,6 @@ public class PostController(
         BlogCacheType.SiteMap |
         BlogCacheType.Subscription
     ])]
-    [HttpPost("{postId:guid}/restore")]
-    [ReadonlyMode]
-    [ProducesResponseType(StatusCodes.Status204NoContent)]
-    public async Task<IActionResult> Restore([NotEmpty] Guid postId)
-    {
-        await mediator.Send(new RestorePostCommand(postId));
-        return NoContent();
-    }
-
-    [TypeFilter(typeof(ClearBlogCache), Arguments =
-    [
-        BlogCacheType.SiteMap |
-        BlogCacheType.Subscription
-    ])]
     [HttpDelete("{postId:guid}/recycle")]
     [ReadonlyMode]
     [ProducesResponseType(StatusCodes.Status204NoContent)]
@@ -146,22 +132,12 @@ public class PostController(
     }
 
     [TypeFilter(typeof(ClearBlogCache), Arguments = [BlogCacheType.Subscription | BlogCacheType.SiteMap])]
-    [HttpDelete("{postId:guid}/destroy")]
+    [HttpPut("{postId:guid}/publish")]
     [ReadonlyMode]
     [ProducesResponseType(StatusCodes.Status204NoContent)]
-    public async Task<IActionResult> DeleteFromRecycleBin([NotEmpty] Guid postId)
+    public async Task<IActionResult> Publish([NotEmpty] Guid postId)
     {
-        await mediator.Send(new DeletePostCommand(postId));
-        return NoContent();
-    }
-
-    [TypeFilter(typeof(ClearBlogCache), Arguments = [BlogCacheType.Subscription | BlogCacheType.SiteMap])]
-    [HttpDelete("recyclebin")]
-    [ReadonlyMode]
-    [ProducesResponseType(StatusCodes.Status204NoContent)]
-    public async Task<IActionResult> EmptyRecycleBin()
-    {
-        await mediator.Send(new EmptyRecycleBinCommand());
+        await mediator.Send(new PublishPostCommand(postId));
         return NoContent();
     }
 
@@ -172,6 +148,15 @@ public class PostController(
     public async Task<IActionResult> Unpublish([NotEmpty] Guid postId)
     {
         await mediator.Send(new UnpublishPostCommand(postId));
+        return NoContent();
+    }
+
+    [HttpPut("{postId:guid}/postpone")]
+    [ReadonlyMode]
+    [ProducesResponseType(StatusCodes.Status204NoContent)]
+    public async Task<IActionResult> Postpone([NotEmpty] Guid postId, [FromQuery][Range(1, 24)] int hours = 24)
+    {
+        await mediator.Send(new PostponePostCommand(postId, hours));
         return NoContent();
     }
 

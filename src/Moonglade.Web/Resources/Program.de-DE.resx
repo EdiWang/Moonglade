@@ -1047,4 +1047,28 @@
   <data name="Reading posts" xml:space="preserve">
     <value>Artikel lesen</value>
   </data>
+  <data name="This post is scheduled to be published. Are you sure you want to publish it now?" xml:space="preserve">
+    <value>Die Veröffentlichung dieses Beitrags ist geplant. Sind Sie sicher, dass Sie es jetzt veröffentlichen möchten?</value>
+  </data>
+  <data name="Scheduled" xml:space="preserve">
+    <value>Plan</value>
+  </data>
+  <data name="Postpone" xml:space="preserve">
+    <value>verschieben</value>
+  </data>
+  <data name="Publish Now" xml:space="preserve">
+    <value>Jetzt veröffentlichen</value>
+  </data>
+  <data name="Scheduled for" xml:space="preserve">
+    <value>Geplant am</value>
+  </data>
+  <data name="Publish Post" xml:space="preserve">
+    <value>Veröffentlichen eines Beitrags</value>
+  </data>
+  <data name="No" xml:space="preserve">
+    <value>nicht</value>
+  </data>
+  <data name="Yes" xml:space="preserve">
+    <value>sein</value>
+  </data>
 </root>
