@@ -17,7 +17,7 @@
         <PackageReference Include="Ardalis.Specification" Version="9.2.0" />
         <PackageReference Include="Ardalis.Specification.EntityFrameworkCore" Version="9.2.0" />
         <PackageReference Include="MediatR" Version="13.0.0" />
-        <PackageReference Include="Microsoft.EntityFrameworkCore.Proxies" Version="8.0.17" />
+        <PackageReference Include="Microsoft.EntityFrameworkCore.Proxies" Version="8.0.18" />
     </ItemGroup>
     <ItemGroup>
       <ProjectReference Include="..\Moonglade.Utils\Moonglade.Utils.csproj" />
