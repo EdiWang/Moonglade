@@ -49,7 +49,7 @@ public class GetStyleSheetQueryHandler(MoongladeRepository<BlogThemeEntity> repo
         return css;
     }
 
-    private async Task<BlogThemeEntity?> GetThemeAsync(int id, CancellationToken ct)
+    private async Task<BlogThemeEntity> GetThemeAsync(int id, CancellationToken ct)
     {
         if (id < SystemThemeStartId || id > SystemThemeEndId)
         {
