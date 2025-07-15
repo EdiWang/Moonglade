@@ -1,4 +1,5 @@
 ﻿using Edi.CacheAside.InMemory;
+using LiteBus.Commands.Abstractions;
 using Microsoft.Extensions.Logging;
 using Moonglade.Data;
 using Moonglade.Data.Specifications;
@@ -6,7 +7,7 @@ using System.ComponentModel.DataAnnotations;
 
 namespace Moonglade.Core.CategoryFeature;
 
-public class CreateCategoryCommand : IRequest
+public class CreateCategoryCommand : ICommand
 {
     [Required]
     [Display(Name = "Display name")]
@@ -28,9 +29,9 @@ public class CreateCategoryCommand : IRequest
 public class CreateCategoryCommandHandler(
     MoongladeRepository<CategoryEntity> catRepo,
     ICacheAside cache,
-    ILogger<CreateCategoryCommandHandler> logger) : IRequestHandler<CreateCategoryCommand>
+    ILogger<CreateCategoryCommandHandler> logger) : ICommandHandler<CreateCategoryCommand>
 {
-    public async Task Handle(CreateCategoryCommand request, CancellationToken ct)
+    public async Task HandleAsync(CreateCategoryCommand request, CancellationToken ct)
     {
         var exists = await catRepo.AnyAsync(new CategoryBySlugSpec(request.Slug), ct);
         if (exists) return;
