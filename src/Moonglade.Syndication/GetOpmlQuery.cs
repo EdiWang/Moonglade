@@ -1,14 +1,15 @@
-﻿using MediatR;
+﻿using LiteBus.Queries.Abstractions;
+using MediatR;
 using System.Text;
 using System.Xml;
 
 namespace Moonglade.Syndication;
 
-public record GetOpmlQuery(OpmlDoc OpmlDoc) : IRequest<string>;
+public record GetOpmlQuery(OpmlDoc OpmlDoc) : IQuery<string>;
 
-public class GetOpmlQueryHandler : IRequestHandler<GetOpmlQuery, string>
+public class GetOpmlQueryHandler : IQueryHandler<GetOpmlQuery, string>
 {
-    public async Task<string> Handle(GetOpmlQuery request, CancellationToken ct)
+    public async Task<string> HandleAsync(GetOpmlQuery request, CancellationToken ct)
     {
         var sb = new StringBuilder();
 

@@ -30,7 +30,7 @@ public class SubscriptionController(
             HtmlUrlTemplate = $"{rootUrl}/category/[catTitle]"
         };
 
-        var xml = await mediator.Send(new GetOpmlQuery(oi));
+        var xml = await queryMediator.QueryAsync(new GetOpmlQuery(oi));
         return Content(xml, "text/xml");
     }
 
