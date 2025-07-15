@@ -1,20 +1,22 @@
-﻿using MediatR;
+﻿using LiteBus.Commands.Abstractions;
+using LiteBus.Queries.Abstractions;
+using MediatR;
 using Moonglade.Data;
 using Moonglade.Data.Entities;
 using System.Text.Json;
 
 namespace Moonglade.Theme;
 
-public record GetSiteThemeStyleSheetQuery(int Id) : IRequest<string>;
+public record GetSiteThemeStyleSheetQuery(int Id) : IQuery<string>;
 
 public class GetStyleSheetQueryHandler(MoongladeRepository<BlogThemeEntity> repo)
-    : IRequestHandler<GetSiteThemeStyleSheetQuery, string>
+    : IQueryHandler<GetSiteThemeStyleSheetQuery, string>
 {
     private const int SystemThemeStartId = 100;
     private const int SystemThemeEndId = 110;
     private const int DefaultSystemThemeId = 100;
 
-    public async Task<string> Handle(GetSiteThemeStyleSheetQuery request, CancellationToken ct)
+    public async Task<string> HandleAsync(GetSiteThemeStyleSheetQuery request, CancellationToken ct)
     {
         BlogThemeEntity theme = await GetThemeAsync(request.Id, ct);
 

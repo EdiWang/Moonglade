@@ -1,10 +1,16 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using LiteBus.Commands.Abstractions;
+using LiteBus.Queries.Abstractions;
+using System.ComponentModel.DataAnnotations;
 
 namespace Moonglade.Web.Controllers;
 
 [ApiController]
 [Route("api/[controller]")]
-public class ThemeController(IMediator mediator, ICacheAside cache, IBlogConfig blogConfig) : ControllerBase
+public class ThemeController(
+    IQueryMediator queryMediator,
+    ICommandMediator commandMediator,
+    ICacheAside cache,
+    IBlogConfig blogConfig) : ControllerBase
 {
     [HttpGet("/theme.css")]
     [ProducesResponseType(StatusCodes.Status200OK)]
@@ -17,7 +23,7 @@ public class ThemeController(IMediator mediator, ICacheAside cache, IBlogConfig 
             {
                 entry.SlidingExpiration = TimeSpan.FromMinutes(20);
 
-                var data = await mediator.Send(new GetSiteThemeStyleSheetQuery(blogConfig.AppearanceSettings.ThemeId));
+                var data = await queryMediator.QueryAsync(new GetSiteThemeStyleSheetQuery(blogConfig.AppearanceSettings.ThemeId));
                 return data;
             });
 
@@ -49,7 +55,7 @@ public class ThemeController(IMediator mediator, ICacheAside cache, IBlogConfig 
             { "--accent-color2", accentColor2 }
         };
 
-        var id = await mediator.Send(new CreateThemeCommand(request.Name, dic));
+        var id = await commandMediator.SendAsync(new CreateThemeCommand(request.Name, dic));
         if (id == -1) return Conflict("Theme with same name already exists");
 
         return Ok(id);
@@ -62,7 +68,7 @@ public class ThemeController(IMediator mediator, ICacheAside cache, IBlogConfig 
     [TypeFilter(typeof(ClearBlogCache), Arguments = [BlogCachePartition.General, "theme"])]
     public async Task<IActionResult> Delete([Range(1, int.MaxValue)] int id)
     {
-        var oc = await mediator.Send(new DeleteThemeCommand(id));
+        var oc = await commandMediator.SendAsync(new DeleteThemeCommand(id));
         return oc switch
         {
             OperationCode.ObjectNotFound => NotFound(),
