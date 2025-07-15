@@ -1,12 +1,13 @@
+using LiteBus.Queries.Abstractions;
 using Moonglade.FriendLink;
 
 namespace Moonglade.Web.ViewComponents;
 
-public class FriendLinkViewComponent(IMediator mediator) : ViewComponent
+public class FriendLinkViewComponent(IQueryMediator queryMediator) : ViewComponent
 {
     public async Task<IViewComponentResult> InvokeAsync()
     {
-        var links = await mediator.Send(new GetAllLinksQuery());
+        var links = await queryMediator.QueryAsync(new GetAllLinksQuery());
         return View(links ?? []);
     }
 }

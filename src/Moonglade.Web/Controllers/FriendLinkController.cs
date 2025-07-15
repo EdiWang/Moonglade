@@ -1,3 +1,4 @@
+using LiteBus.Queries.Abstractions;
 using Moonglade.Data.Entities;
 using Moonglade.FriendLink;
 using Moonglade.Web.Attributes;
@@ -7,7 +8,7 @@ namespace Moonglade.Web.Controllers;
 [Authorize]
 [ApiController]
 [Route("api/[controller]")]
-public class FriendLinkController(IMediator mediator) : ControllerBase
+public class FriendLinkController(IMediator mediator, IQueryMediator queryMediator) : ControllerBase
 {
     [HttpPost]
     [ReadonlyMode]
@@ -23,7 +24,7 @@ public class FriendLinkController(IMediator mediator) : ControllerBase
     [ProducesResponseType(StatusCodes.Status404NotFound)]
     public async Task<IActionResult> Get([NotEmpty] Guid id)
     {
-        var link = await mediator.Send(new GetLinkQuery(id));
+        var link = await queryMediator.QueryAsync(new GetLinkQuery(id));
         if (null == link) return NotFound();
 
         return Ok(link);
@@ -33,7 +34,7 @@ public class FriendLinkController(IMediator mediator) : ControllerBase
     [ProducesResponseType<List<FriendLinkEntity>>(StatusCodes.Status200OK)]
     public async Task<IActionResult> List()
     {
-        var list = await mediator.Send(new GetAllLinksQuery());
+        var list = await queryMediator.QueryAsync(new GetAllLinksQuery());
         return Ok(list);
     }
 
