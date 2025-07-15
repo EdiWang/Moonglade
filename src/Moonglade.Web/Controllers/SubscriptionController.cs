@@ -9,14 +9,14 @@ namespace Moonglade.Web.Controllers;
 public class SubscriptionController(
         IBlogConfig blogConfig,
         ICacheAside cache,
-        IMediator mediator, IQueryMediator queryMediator) : ControllerBase
+        IQueryMediator queryMediator) : ControllerBase
 {
     [HttpGet("opml")]
     public async Task<IActionResult> Opml()
     {
         if (!blogConfig.AdvancedSettings.EnableOpml) return NotFound();
 
-        var cats = await mediator.Send(new GetCategoriesQuery());
+        var cats = await queryMediator.QueryAsync(new GetCategoriesQuery());
         var catInfos = cats.Select(c => new KeyValuePair<string, string>(c.DisplayName, c.Slug));
         var rootUrl = Helper.ResolveRootUrl(HttpContext, blogConfig.GeneralSettings.CanonicalPrefix);
 

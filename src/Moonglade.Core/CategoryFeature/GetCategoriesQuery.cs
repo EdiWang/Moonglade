@@ -1,13 +1,14 @@
 ﻿using Edi.CacheAside.InMemory;
+using LiteBus.Queries.Abstractions;
 using Moonglade.Data;
 
 namespace Moonglade.Core.CategoryFeature;
 
-public record GetCategoriesQuery : IRequest<List<CategoryEntity>>;
+public record GetCategoriesQuery : IQuery<List<CategoryEntity>>;
 
-public class GetCategoriesQueryHandler(MoongladeRepository<CategoryEntity> repo, ICacheAside cache) : IRequestHandler<GetCategoriesQuery, List<CategoryEntity>>
+public class GetCategoriesQueryHandler(MoongladeRepository<CategoryEntity> repo, ICacheAside cache) : IQueryHandler<GetCategoriesQuery, List<CategoryEntity>>
 {
-    public Task<List<CategoryEntity>> Handle(GetCategoriesQuery request, CancellationToken ct)
+    public Task<List<CategoryEntity>> HandleAsync(GetCategoriesQuery request, CancellationToken ct)
     {
         return cache.GetOrCreateAsync(BlogCachePartition.General.ToString(), "allcats", async entry =>
         {

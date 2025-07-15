@@ -33,7 +33,7 @@ public class CategoryController(IMediator mediator, IQueryMediator queryMediator
     [ProducesResponseType<List<CategoryEntity>>(StatusCodes.Status200OK)]
     public async Task<IActionResult> List()
     {
-        var list = await mediator.Send(new GetCategoriesQuery());
+        var list = await queryMediator.QueryAsync(new GetCategoriesQuery());
         return Ok(list);
     }
 

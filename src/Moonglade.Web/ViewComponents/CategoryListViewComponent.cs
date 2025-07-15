@@ -1,12 +1,13 @@
-﻿using Moonglade.Core.CategoryFeature;
+﻿using LiteBus.Queries.Abstractions;
+using Moonglade.Core.CategoryFeature;
 
 namespace Moonglade.Web.ViewComponents;
 
-public class CategoryListViewComponent(IMediator mediator) : ViewComponent
+public class CategoryListViewComponent(IQueryMediator queryMediator) : ViewComponent
 {
     public async Task<IViewComponentResult> InvokeAsync(bool isMenu)
     {
-        var cats = await mediator.Send(new GetCategoriesQuery());
+        var cats = await queryMediator.QueryAsync(new GetCategoriesQuery());
         return isMenu ? View("Menu", cats) : View(cats);
     }
 }

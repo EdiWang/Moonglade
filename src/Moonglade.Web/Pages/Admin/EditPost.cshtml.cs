@@ -1,10 +1,11 @@
+using LiteBus.Queries.Abstractions;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Moonglade.Core.CategoryFeature;
 using Moonglade.Core.PostFeature;
 
 namespace Moonglade.Web.Pages.Admin;
 
-public class EditPostModel(IMediator mediator, IBlogConfig blogConfig) : PageModel
+public class EditPostModel(IMediator mediator, IQueryMediator queryMediator, IBlogConfig blogConfig) : PageModel
 {
     public PostEditModel ViewModel { get; set; } = new()
     {
@@ -19,7 +20,7 @@ public class EditPostModel(IMediator mediator, IBlogConfig blogConfig) : PageMod
 
     public async Task<IActionResult> OnGetAsync(Guid? id)
     {
-        var cats = await mediator.Send(new GetCategoriesQuery());
+        var cats = await queryMediator.QueryAsync(new GetCategoriesQuery());
 
         if (id is null)
         {
@@ -33,7 +34,7 @@ public class EditPostModel(IMediator mediator, IBlogConfig blogConfig) : PageMod
                         IsChecked = false
                     });
 
-                CategoryList = cbCatList.ToList();
+                CategoryList = [.. cbCatList];
             }
 
             ViewModel.Author = blogConfig.GeneralSettings.OwnerName;
@@ -88,7 +89,7 @@ public class EditPostModel(IMediator mediator, IBlogConfig blogConfig) : PageMod
                     DisplayText = p.DisplayName,
                     IsChecked = post.PostCategory.Any(q => q.CategoryId == p.Id)
                 });
-            CategoryList = cbCatList.ToList();
+            CategoryList = [.. cbCatList];
         }
 
         return Page();
