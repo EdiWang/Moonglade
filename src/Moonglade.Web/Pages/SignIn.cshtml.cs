@@ -11,7 +11,6 @@ using System.Security.Claims;
 namespace Moonglade.Web.Pages;
 
 public class SignInModel(IOptions<AuthenticationSettings> authSettings,
-        IMediator mediator,
         ICommandMediator commandMediator,
         ILogger<SignInModel> logger,
         ISessionBasedCaptcha captcha)
@@ -82,7 +81,7 @@ public class SignInModel(IOptions<AuthenticationSettings> authSettings,
 
             if (ModelState.IsValid)
             {
-                var isValid = await mediator.Send(new ValidateLoginCommand(Username, Password));
+                var isValid = await commandMediator.SendAsync(new ValidateLoginCommand(Username, Password));
                 if (isValid)
                 {
                     var claims = new List<Claim>
