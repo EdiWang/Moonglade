@@ -1,4 +1,5 @@
-﻿using Moonglade.FriendLink;
+﻿using LiteBus.Queries.Abstractions;
+using Moonglade.FriendLink;
 
 namespace Moonglade.Web.Handlers;
 
@@ -7,11 +8,11 @@ public class FoafMapHandler
     public static Delegate Handler => Handle;
 
     public static async Task Handle(
-        HttpContext httpContext, IBlogConfig blogConfig, IMediator mediator, LinkGenerator linkGenerator)
+        HttpContext httpContext, IBlogConfig blogConfig, IMediator mediator, IQueryMediator queryMediator, LinkGenerator linkGenerator)
     {
         var general = blogConfig.GeneralSettings ?? throw new InvalidOperationException("GeneralSettings is null.");
 
-        var friends = await mediator.Send(new GetAllLinksQuery());
+        var friends = await queryMediator.QueryAsync(new GetAllLinksQuery());
         var foafDoc = new FoafDoc
         (
             Name: general.OwnerName,

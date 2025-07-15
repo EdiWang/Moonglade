@@ -1,5 +1,8 @@
 using Edi.Captcha;
 using Edi.PasswordGenerator;
+using LiteBus.Commands.Extensions.MicrosoftDependencyInjection;
+using LiteBus.Messaging.Extensions.MicrosoftDependencyInjection;
+using LiteBus.Queries.Extensions.MicrosoftDependencyInjection;
 using Microsoft.AspNetCore.Rewrite;
 using Moonglade.Comments.Moderator;
 using Moonglade.Data.MySql;
@@ -97,8 +100,28 @@ public class Program
         var assemblies = AppDomain.CurrentDomain.GetAssemblies();
         assemblies = [.. assemblies.Where(x => x.FullName!.StartsWith("Moonglade"))];
 
-        services.AddHttpClient();
         services.AddMediatR(config => config.RegisterServicesFromAssemblies(assemblies));
+
+        services.AddLiteBus(liteBus =>
+        {
+            liteBus.AddCommandModule(module =>
+            {
+                foreach (var assembly in assemblies)
+                {
+                    module.RegisterFromAssembly(assembly);
+                }
+            });
+
+            liteBus.AddQueryModule(module =>
+            {
+                foreach (var assembly in assemblies)
+                {
+                    module.RegisterFromAssembly(assembly);
+                }
+            });
+        });
+
+        services.AddHttpClient();
         services.AddOptions().AddHttpContextAccessor();
         ConfigureSession(services);
         ConfigureCaptcha(services, configuration);
