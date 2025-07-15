@@ -1,11 +1,12 @@
-﻿using Moonglade.Data;
+﻿using LiteBus.Queries.Abstractions;
+using Moonglade.Data;
 
 namespace Moonglade.Core.CategoryFeature;
 
-public record GetCategoryQuery(Guid Id) : IRequest<CategoryEntity>;
+public record GetCategoryQuery(Guid Id) : IQuery<CategoryEntity>;
 
-public class GetCategoryByIdQueryHandler(MoongladeRepository<CategoryEntity> repo) : IRequestHandler<GetCategoryQuery, CategoryEntity>
+public class GetCategoryByIdQueryHandler(MoongladeRepository<CategoryEntity> repo) : IQueryHandler<GetCategoryQuery, CategoryEntity>
 {
-    public async Task<CategoryEntity> Handle(GetCategoryQuery request, CancellationToken ct) =>
+    public async Task<CategoryEntity> HandleAsync(GetCategoryQuery request, CancellationToken ct) =>
         await repo.GetByIdAsync(request.Id, ct);
 }

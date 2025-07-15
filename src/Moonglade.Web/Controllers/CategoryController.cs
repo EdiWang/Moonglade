@@ -11,14 +11,14 @@ namespace Moonglade.Web.Controllers;
 [Authorize]
 [ApiController]
 [Route("api/[controller]")]
-public class CategoryController(IMediator mediator, IQueryMediator queryMediator, ICommandMediator commandMediator) : ControllerBase
+public class CategoryController(IQueryMediator queryMediator, ICommandMediator commandMediator) : ControllerBase
 {
     [HttpGet("{id:guid}")]
     [ProducesResponseType<CategoryEntity>(StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
     public async Task<IActionResult> Get([NotEmpty] Guid id)
     {
-        var cat = await mediator.Send(new GetCategoryQuery(id));
+        var cat = await queryMediator.QueryAsync(new GetCategoryQuery(id));
         if (null == cat) return NotFound();
 
         // return Ok(cat); 

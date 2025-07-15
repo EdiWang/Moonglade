@@ -44,7 +44,7 @@ else
         if (string.IsNullOrWhiteSpace(slug)) return NotFound();
 
         var pageSize = BlogConfig.ContentSettings.PostListPageSize;
-        Cat = await Mediator.Send(new GetCategoryBySlugQuery(slug));
+        Cat = await QueryMediator.QueryAsync(new GetCategoryBySlugQuery(slug));
 
         if (Cat is null) return NotFound();
 
