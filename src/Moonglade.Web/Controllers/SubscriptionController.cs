@@ -45,7 +45,7 @@ public class SubscriptionController(
             {
                 entry.SlidingExpiration = TimeSpan.FromHours(1);
 
-                var xml = await mediator.Send(new GetRssStringQuery(slug));
+                var xml = await queryMediator.QueryAsync(new GetRssStringQuery(slug));
                 if (string.IsNullOrWhiteSpace(xml))
                 {
                     return (IActionResult)NotFound();

@@ -1,13 +1,14 @@
-﻿using MediatR;
+﻿using LiteBus.Queries.Abstractions;
+using MediatR;
 using Microsoft.AspNetCore.Http;
 using Moonglade.Configuration;
 using Moonglade.Utils;
 
 namespace Moonglade.Syndication;
 
-public record GetRssStringQuery(string CategoryName = null) : IRequest<string>;
+public record GetRssStringQuery(string CategoryName = null) : IQuery<string>;
 
-public class GetRssStringQueryHandler : IRequestHandler<GetRssStringQuery, string>
+public class GetRssStringQueryHandler : IQueryHandler<GetRssStringQuery, string>
 {
     private readonly ISyndicationDataSource _sdds;
     private readonly FeedGenerator _feedGenerator;
@@ -28,7 +29,7 @@ public class GetRssStringQueryHandler : IRequestHandler<GetRssStringQuery, strin
             blogConfig.GeneralSettings.DefaultLanguageCode);
     }
 
-    public async Task<string> Handle(GetRssStringQuery request, CancellationToken ct)
+    public async Task<string> HandleAsync(GetRssStringQuery request, CancellationToken ct)
     {
         var data = await _sdds.GetFeedDataAsync(request.CategoryName);
         if (data is null) return null;
