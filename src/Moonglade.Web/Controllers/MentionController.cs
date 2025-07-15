@@ -32,7 +32,7 @@ public class MentionController(
         if (!blogConfig.AdvancedSettings.EnableWebmention) return Forbid();
 
         var ip = Helper.GetClientIP(HttpContext);
-        var response = await mediator.Send(new ReceiveWebmentionCommand(source, target, ip));
+        var response = await commandMediator.SendAsync(new ReceiveWebmentionCommand(source, target, ip));
 
         if (response.Status == WebmentionStatus.Success)
         {
