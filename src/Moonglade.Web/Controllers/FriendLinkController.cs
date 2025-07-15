@@ -9,7 +9,9 @@ namespace Moonglade.Web.Controllers;
 [Authorize]
 [ApiController]
 [Route("api/[controller]")]
-public class FriendLinkController(IMediator mediator, IQueryMediator queryMediator, ICommandMediator commandMediator) : ControllerBase
+public class FriendLinkController(
+    IQueryMediator queryMediator, ICommandMediator commandMediator
+    ) : ControllerBase
 {
     [HttpPost]
     [ReadonlyMode]
@@ -44,7 +46,7 @@ public class FriendLinkController(IMediator mediator, IQueryMediator queryMediat
     [ProducesResponseType(StatusCodes.Status204NoContent)]
     public async Task<IActionResult> Update([NotEmpty] Guid id, EditLinkRequest request)
     {
-        await mediator.Send(new UpdateLinkCommand(id, request));
+        await commandMediator.SendAsync(new UpdateLinkCommand(id, request));
         return NoContent();
     }
 
