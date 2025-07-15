@@ -1,4 +1,5 @@
 using Edi.Captcha;
+using LiteBus.Commands.Abstractions;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Authentication.OpenIdConnect;
@@ -11,6 +12,7 @@ namespace Moonglade.Web.Pages;
 
 public class SignInModel(IOptions<AuthenticationSettings> authSettings,
         IMediator mediator,
+        ICommandMediator commandMediator,
         ILogger<SignInModel> logger,
         ISessionBasedCaptcha captcha)
     : PageModel
@@ -92,7 +94,7 @@ public class SignInModel(IOptions<AuthenticationSettings> authSettings,
                     var p = new ClaimsPrincipal(ci);
 
                     await HttpContext.SignInAsync(CookieAuthenticationDefaults.AuthenticationScheme, p);
-                    await mediator.Send(new LogSuccessLoginCommand(Helper.GetClientIP(HttpContext), ua, "TODO"));
+                    await commandMediator.SendAsync(new LogSuccessLoginCommand(Helper.GetClientIP(HttpContext), ua, "TODO"));
 
                     var successMessage = $@"Authentication success for local account ""{Username}""";
 
