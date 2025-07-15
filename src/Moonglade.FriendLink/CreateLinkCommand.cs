@@ -1,4 +1,5 @@
-﻿using MediatR;
+﻿using LiteBus.Commands.Abstractions;
+using MediatR;
 using Microsoft.Extensions.Logging;
 using Moonglade.Data;
 using Moonglade.Data.Entities;
@@ -32,13 +33,13 @@ public class EditLinkRequest : IValidatableObject
     }
 }
 
-public record CreateLinkCommand(EditLinkRequest Payload) : IRequest;
+public record CreateLinkCommand(EditLinkRequest Payload) : ICommand;
 
 public class CreateLinkCommandHandler(
     MoongladeRepository<FriendLinkEntity> repo,
-    ILogger<CreateLinkCommandHandler> logger) : IRequestHandler<CreateLinkCommand>
+    ILogger<CreateLinkCommandHandler> logger) : ICommandHandler<CreateLinkCommand>
 {
-    public async Task Handle(CreateLinkCommand request, CancellationToken ct)
+    public async Task HandleAsync(CreateLinkCommand request, CancellationToken ct)
     {
         var link = new FriendLinkEntity
         {

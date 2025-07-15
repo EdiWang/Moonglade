@@ -1,17 +1,18 @@
-﻿using MediatR;
+﻿using LiteBus.Commands.Abstractions;
+using MediatR;
 using Microsoft.Extensions.Logging;
 using Moonglade.Data;
 using Moonglade.Data.Entities;
 
 namespace Moonglade.FriendLink;
 
-public record DeleteLinkCommand(Guid Id) : IRequest;
+public record DeleteLinkCommand(Guid Id) : ICommand;
 
 public class DeleteLinkCommandHandler(
     MoongladeRepository<FriendLinkEntity> repo,
-    ILogger<DeleteLinkCommandHandler> logger) : IRequestHandler<DeleteLinkCommand>
+    ILogger<DeleteLinkCommandHandler> logger) : ICommandHandler<DeleteLinkCommand>
 {
-    public async Task Handle(DeleteLinkCommand request, CancellationToken ct)
+    public async Task HandleAsync(DeleteLinkCommand request, CancellationToken ct)
     {
         var link = await repo.GetByIdAsync(request.Id, ct);
         if (null != link)

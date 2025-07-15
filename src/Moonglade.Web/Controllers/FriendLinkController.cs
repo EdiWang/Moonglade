@@ -1,3 +1,4 @@
+using LiteBus.Commands.Abstractions;
 using LiteBus.Queries.Abstractions;
 using Moonglade.Data.Entities;
 using Moonglade.FriendLink;
@@ -8,14 +9,14 @@ namespace Moonglade.Web.Controllers;
 [Authorize]
 [ApiController]
 [Route("api/[controller]")]
-public class FriendLinkController(IMediator mediator, IQueryMediator queryMediator) : ControllerBase
+public class FriendLinkController(IMediator mediator, IQueryMediator queryMediator, ICommandMediator commandMediator) : ControllerBase
 {
     [HttpPost]
     [ReadonlyMode]
     [ProducesResponseType(StatusCodes.Status201Created)]
     public async Task<IActionResult> Create(EditLinkRequest request)
     {
-        await mediator.Send(new CreateLinkCommand(request));
+        await commandMediator.SendAsync(new CreateLinkCommand(request));
         return Created(new Uri(request.LinkUrl), request);
     }
 
@@ -52,7 +53,7 @@ public class FriendLinkController(IMediator mediator, IQueryMediator queryMediat
     [ProducesResponseType(StatusCodes.Status204NoContent)]
     public async Task<IActionResult> Delete([NotEmpty] Guid id)
     {
-        await mediator.Send(new DeleteLinkCommand(id));
+        await commandMediator.SendAsync(new DeleteLinkCommand(id));
         return NoContent();
     }
 }
