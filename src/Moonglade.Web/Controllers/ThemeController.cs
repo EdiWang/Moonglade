@@ -1,10 +1,12 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using LiteBus.Commands.Abstractions;
+using LiteBus.Queries.Abstractions;
+using System.ComponentModel.DataAnnotations;
 
 namespace Moonglade.Web.Controllers;
 
 [ApiController]
 [Route("api/[controller]")]
-public class ThemeController(IMediator mediator, ICacheAside cache, IBlogConfig blogConfig) : ControllerBase
+public class ThemeController(IMediator mediator, IQueryMediator queryMediator, ICommandMediator commandMediator, ICacheAside cache, IBlogConfig blogConfig) : ControllerBase
 {
     [HttpGet("/theme.css")]
     [ProducesResponseType(StatusCodes.Status200OK)]
@@ -49,7 +51,7 @@ public class ThemeController(IMediator mediator, ICacheAside cache, IBlogConfig 
             { "--accent-color2", accentColor2 }
         };
 
-        var id = await mediator.Send(new CreateThemeCommand(request.Name, dic));
+        var id = await commandMediator.SendAsync(new CreateThemeCommand(request.Name, dic));
         if (id == -1) return Conflict("Theme with same name already exists");
 
         return Ok(id);

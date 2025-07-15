@@ -1,4 +1,5 @@
-﻿using MediatR;
+﻿using LiteBus.Commands.Abstractions;
+using MediatR;
 using Moonglade.Data;
 using Moonglade.Data.Entities;
 using Moonglade.Data.Specifications;
@@ -6,11 +7,11 @@ using System.Text.Json;
 
 namespace Moonglade.Theme;
 
-public record CreateThemeCommand(string Name, IDictionary<string, string> Rules) : IRequest<int>;
+public record CreateThemeCommand(string Name, IDictionary<string, string> Rules) : ICommand<int>;
 
-public class CreateThemeCommandHandler(MoongladeRepository<BlogThemeEntity> repo) : IRequestHandler<CreateThemeCommand, int>
+public class CreateThemeCommandHandler(MoongladeRepository<BlogThemeEntity> repo) : ICommandHandler<CreateThemeCommand, int>
 {
-    public async Task<int> Handle(CreateThemeCommand request, CancellationToken ct)
+    public async Task<int> HandleAsync(CreateThemeCommand request, CancellationToken ct)
     {
         var (name, dictionary) = request;
         if (await repo.AnyAsync(new ThemeByNameSpec(name.Trim()), ct)) return -1;
