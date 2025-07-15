@@ -16,6 +16,8 @@
         <FrameworkReference Include="Microsoft.AspNetCore.App" />
         <PackageReference Include="Ardalis.Specification" Version="9.2.0" />
         <PackageReference Include="Ardalis.Specification.EntityFrameworkCore" Version="9.2.0" />
+        <PackageReference Include="LiteBus" Version="2.2.1" />
+        <PackageReference Include="LiteBus.Extensions.MicrosoftDependencyInjection" Version="2.2.1" />
         <PackageReference Include="MediatR" Version="12.5.0" />
         <PackageReference Include="Microsoft.EntityFrameworkCore.Proxies" Version="8.0.18" />
     </ItemGroup>
