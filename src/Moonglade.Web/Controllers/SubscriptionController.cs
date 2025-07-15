@@ -1,4 +1,5 @@
-﻿using Moonglade.Core.CategoryFeature;
+﻿using LiteBus.Queries.Abstractions;
+using Moonglade.Core.CategoryFeature;
 using Moonglade.Syndication;
 using System.ComponentModel.DataAnnotations;
 
@@ -8,7 +9,7 @@ namespace Moonglade.Web.Controllers;
 public class SubscriptionController(
         IBlogConfig blogConfig,
         ICacheAside cache,
-        IMediator mediator) : ControllerBase
+        IMediator mediator, IQueryMediator queryMediator) : ControllerBase
 {
     [HttpGet("opml")]
     public async Task<IActionResult> Opml()
@@ -65,7 +66,7 @@ public class SubscriptionController(
         {
             entry.SlidingExpiration = TimeSpan.FromHours(1);
 
-            var xml = await mediator.Send(new GetAtomStringQuery(slug));
+            var xml = await queryMediator.QueryAsync(new GetAtomStringQuery(slug));
             return Content(xml, "text/xml");
         });
     }

@@ -1,13 +1,14 @@
-﻿using MediatR;
+﻿using LiteBus.Queries.Abstractions;
+using MediatR;
 using Microsoft.AspNetCore.Http;
 using Moonglade.Configuration;
 using Moonglade.Utils;
 
 namespace Moonglade.Syndication;
 
-public record GetAtomStringQuery(string Slug = null) : IRequest<string>;
+public record GetAtomStringQuery(string Slug = null) : IQuery<string>;
 
-public class GetAtomStringQueryHandler : IRequestHandler<GetAtomStringQuery, string>
+public class GetAtomStringQueryHandler : IQueryHandler<GetAtomStringQuery, string>
 {
     private readonly ISyndicationDataSource _sdds;
     private readonly FeedGenerator _feedGenerator;
@@ -27,7 +28,7 @@ public class GetAtomStringQueryHandler : IRequestHandler<GetAtomStringQuery, str
             blogConfig.GeneralSettings.DefaultLanguageCode);
     }
 
-    public async Task<string> Handle(GetAtomStringQuery request, CancellationToken ct)
+    public async Task<string> HandleAsync(GetAtomStringQuery request, CancellationToken ct)
     {
         var data = await _sdds.GetFeedDataAsync(request.Slug);
         if (data is null) return null;
