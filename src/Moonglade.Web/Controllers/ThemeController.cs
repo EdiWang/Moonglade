@@ -6,7 +6,11 @@ namespace Moonglade.Web.Controllers;
 
 [ApiController]
 [Route("api/[controller]")]
-public class ThemeController(IMediator mediator, IQueryMediator queryMediator, ICommandMediator commandMediator, ICacheAside cache, IBlogConfig blogConfig) : ControllerBase
+public class ThemeController(
+    IQueryMediator queryMediator,
+    ICommandMediator commandMediator,
+    ICacheAside cache,
+    IBlogConfig blogConfig) : ControllerBase
 {
     [HttpGet("/theme.css")]
     [ProducesResponseType(StatusCodes.Status200OK)]
@@ -19,7 +23,7 @@ public class ThemeController(IMediator mediator, IQueryMediator queryMediator, I
             {
                 entry.SlidingExpiration = TimeSpan.FromMinutes(20);
 
-                var data = await mediator.Send(new GetSiteThemeStyleSheetQuery(blogConfig.AppearanceSettings.ThemeId));
+                var data = await queryMediator.QueryAsync(new GetSiteThemeStyleSheetQuery(blogConfig.AppearanceSettings.ThemeId));
                 return data;
             });
 
