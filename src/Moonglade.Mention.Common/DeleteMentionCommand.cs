@@ -1,14 +1,14 @@
-﻿using MediatR;
+﻿using LiteBus.Commands.Abstractions;
 using Moonglade.Data;
 using Moonglade.Data.Entities;
 
 namespace Moonglade.Mention.Common;
 
-public record DeleteMentionCommand(Guid Id) : IRequest;
+public record DeleteMentionCommand(Guid Id) : ICommand;
 
-public class DeletePingbackCommandHandler(MoongladeRepository<MentionEntity> repo) : IRequestHandler<DeleteMentionCommand>
+public class DeletePingbackCommandHandler(MoongladeRepository<MentionEntity> repo) : ICommandHandler<DeleteMentionCommand>
 {
-    public async Task Handle(DeleteMentionCommand request, CancellationToken ct)
+    public async Task HandleAsync(DeleteMentionCommand request, CancellationToken ct)
     {
         var entity = await repo.GetByIdAsync(request.Id, ct);
         if (entity != null)

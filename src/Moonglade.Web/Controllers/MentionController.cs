@@ -1,4 +1,5 @@
-﻿using Moonglade.Data.Entities;
+﻿using LiteBus.Commands.Abstractions;
+using Moonglade.Data.Entities;
 using Moonglade.Email.Client;
 using Moonglade.Mention.Common;
 using Moonglade.Pingback;
@@ -13,6 +14,7 @@ namespace Moonglade.Web.Controllers;
 public class MentionController(
     ILogger<MentionController> logger,
     IBlogConfig blogConfig,
+    ICommandMediator commandMediator,
     IMediator mediator) : ControllerBase
 {
     [HttpPost("/webmention")]
@@ -67,7 +69,7 @@ public class MentionController(
         var ip = Helper.GetClientIP(HttpContext);
         var requestBody = await new StreamReader(HttpContext.Request.Body, Encoding.Default).ReadToEndAsync();
 
-        var response = await mediator.Send(new ReceivePingCommand(requestBody, ip));
+        var response = await commandMediator.SendAsync(new ReceivePingCommand(requestBody, ip));
         if (response.Status == PingbackStatus.Success)
         {
             SendMentionEmailAction(response.MentionEntity);
@@ -94,7 +96,7 @@ public class MentionController(
     [ProducesResponseType(StatusCodes.Status204NoContent)]
     public async Task<IActionResult> Delete([NotEmpty] Guid pingbackId)
     {
-        await mediator.Send(new DeleteMentionCommand(pingbackId));
+        await commandMediator.SendAsync(new DeleteMentionCommand(pingbackId));
         return NoContent();
     }
 
@@ -104,7 +106,7 @@ public class MentionController(
     [ProducesResponseType(StatusCodes.Status204NoContent)]
     public async Task<IActionResult> Clear()
     {
-        await mediator.Send(new ClearMentionsCommand());
+        await commandMediator.SendAsync(new ClearMentionsCommand());
         return NoContent();
     }
 }
