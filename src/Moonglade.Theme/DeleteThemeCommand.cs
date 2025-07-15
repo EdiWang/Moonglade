@@ -1,5 +1,4 @@
 ﻿using LiteBus.Commands.Abstractions;
-using MediatR;
 using Moonglade.Data;
 using Moonglade.Data.Entities;
 

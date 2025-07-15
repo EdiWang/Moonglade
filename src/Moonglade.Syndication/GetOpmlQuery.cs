@@ -1,5 +1,4 @@
 ﻿using LiteBus.Queries.Abstractions;
-using MediatR;
 using System.Text;
 using System.Xml;
 
