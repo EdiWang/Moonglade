@@ -64,7 +64,7 @@ public class ThemeController(IMediator mediator, IQueryMediator queryMediator, I
     [TypeFilter(typeof(ClearBlogCache), Arguments = [BlogCachePartition.General, "theme"])]
     public async Task<IActionResult> Delete([Range(1, int.MaxValue)] int id)
     {
-        var oc = await mediator.Send(new DeleteThemeCommand(id));
+        var oc = await commandMediator.SendAsync(new DeleteThemeCommand(id));
         return oc switch
         {
             OperationCode.ObjectNotFound => NotFound(),
