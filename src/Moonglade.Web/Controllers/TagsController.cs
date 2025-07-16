@@ -9,7 +9,7 @@ namespace Moonglade.Web.Controllers;
 [Authorize]
 [ApiController]
 [Route("api/[controller]")]
-public class TagsController(IMediator mediator, IQueryMediator queryMediator, ICommandMediator commandMediator) : ControllerBase
+public class TagsController(IQueryMediator queryMediator, ICommandMediator commandMediator) : ControllerBase
 {
     [HttpGet("names")]
     [ProducesResponseType<List<string>>(StatusCodes.Status200OK)]
@@ -45,7 +45,7 @@ public class TagsController(IMediator mediator, IQueryMediator queryMediator, IC
     [ApiConventionMethod(typeof(DefaultApiConventions), nameof(DefaultApiConventions.Put))]
     public async Task<IActionResult> Update([Range(1, int.MaxValue)] int id, [Required][FromBody] string name)
     {
-        var oc = await mediator.Send(new UpdateTagCommand(id, name));
+        var oc = await commandMediator.SendAsync(new UpdateTagCommand(id, name));
         if (oc == OperationCode.ObjectNotFound) return NotFound();
 
         return NoContent();
