@@ -1,10 +1,13 @@
-﻿namespace Moonglade.Web.Handlers;
+﻿using LiteBus.Commands.Abstractions;
+
+namespace Moonglade.Web.Handlers;
 
 public class SaveAssetToCdnHandler(
     ILogger<SaveAssetToCdnHandler> logger,
     IBlogImageStorage imageStorage,
     IBlogConfig blogConfig,
-    IMediator mediator) : INotificationHandler<SaveAssetCommand>
+    IMediator mediator,
+    ICommandMediator commandMediator) : INotificationHandler<SaveAssetCommand>
 {
     public async Task Handle(SaveAssetCommand request, CancellationToken ct)
     {
@@ -38,7 +41,7 @@ public class SaveAssetToCdnHandler(
 
         // Persist the new configuration
         var (key, value) = blogConfig.UpdateAsync(blogConfig.GeneralSettings);
-        await mediator.Send(new UpdateConfigurationCommand(key, value), ct);
+        await commandMediator.SendAsync(new UpdateConfigurationCommand(key, value), ct);
 
         logger.LogInformation("Avatar updated and saved to CDN. URL: {AvatarUrl}", cdnUrl);
     }

@@ -1,4 +1,5 @@
 ﻿using Edi.PasswordGenerator;
+using LiteBus.Commands.Abstractions;
 using Microsoft.AspNetCore.Localization;
 using Moonglade.Email.Client;
 
@@ -10,7 +11,8 @@ namespace Moonglade.Web.Controllers;
 public class SettingsController(
         IBlogConfig blogConfig,
         ILogger<SettingsController> logger,
-        IMediator mediator) : ControllerBase
+        IMediator mediator,
+        ICommandMediator commandMediator) : ControllerBase
 {
     [AllowAnonymous]
     [HttpGet("set-lang")]
@@ -296,6 +298,6 @@ public class SettingsController(
     private async Task SaveConfigAsync<T>(T blogSettings) where T : IBlogSettings
     {
         var kvp = blogConfig.UpdateAsync(blogSettings);
-        await mediator.Send(new UpdateConfigurationCommand(kvp.Key, kvp.Value));
+        await commandMediator.SendAsync(new UpdateConfigurationCommand(kvp.Key, kvp.Value));
     }
 }
