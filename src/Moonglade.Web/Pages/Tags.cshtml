@@ -4,7 +4,7 @@
 @{
     ViewBag.TitlePrefix = "Tags";
     ViewBag.BodyClass = "body-tags-index bg-gray-1";
-    var tags = await Mediator.Send(new GetTagCountListQuery());
+    var tags = await QueryMediator.QueryAsync(new GetTagCountListQuery());
 }
 
 @functions {

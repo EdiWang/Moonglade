@@ -1,12 +1,13 @@
-﻿using Moonglade.Data;
+﻿using LiteBus.Queries.Abstractions;
+using Moonglade.Data;
 using Moonglade.Data.Specifications;
 
 namespace Moonglade.Core.TagFeature;
 
-public record GetTagCountListQuery : IRequest<List<(TagEntity Tag, int PostCount)>>;
+public record GetTagCountListQuery : IQuery<List<(TagEntity Tag, int PostCount)>>;
 
-public class GetTagCountListQueryHandler(MoongladeRepository<TagEntity> repo) : IRequestHandler<GetTagCountListQuery, List<(TagEntity Tag, int PostCount)>>
+public class GetTagCountListQueryHandler(MoongladeRepository<TagEntity> repo) : IQueryHandler<GetTagCountListQuery, List<(TagEntity Tag, int PostCount)>>
 {
-    public Task<List<(TagEntity Tag, int PostCount)>> Handle(GetTagCountListQuery request, CancellationToken ct) =>
+    public Task<List<(TagEntity Tag, int PostCount)>> HandleAsync(GetTagCountListQuery request, CancellationToken ct) =>
         repo.ListAsync(new TagCloudSpec(), ct);
 }

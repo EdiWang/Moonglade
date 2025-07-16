@@ -1,4 +1,5 @@
 ﻿using LiteBus.Commands.Abstractions;
+using LiteBus.Queries.Abstractions;
 using Moonglade.Core.TagFeature;
 using Moonglade.Data.Entities;
 using System.ComponentModel.DataAnnotations;
@@ -8,13 +9,13 @@ namespace Moonglade.Web.Controllers;
 [Authorize]
 [ApiController]
 [Route("api/[controller]")]
-public class TagsController(IMediator mediator, ICommandMediator commandMediator) : ControllerBase
+public class TagsController(IMediator mediator, IQueryMediator queryMediator, ICommandMediator commandMediator) : ControllerBase
 {
     [HttpGet("names")]
     [ProducesResponseType<List<string>>(StatusCodes.Status200OK)]
     public async Task<IActionResult> Names()
     {
-        var names = await mediator.Send(new GetTagNamesQuery());
+        var names = await queryMediator.QueryAsync(new GetTagNamesQuery());
         return Ok(names);
     }
 
