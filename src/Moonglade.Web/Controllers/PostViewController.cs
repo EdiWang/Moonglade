@@ -7,7 +7,7 @@ namespace Moonglade.Web.Controllers;
 
 [Route("api/[controller]")]
 [ApiController]
-public class PostViewController(IConfiguration configuration, IBlogConfig blogConfig, IMediator mediator, ICommandMediator commandMediator) : ControllerBase
+public class PostViewController(IConfiguration configuration, IBlogConfig blogConfig, ICommandMediator commandMediator) : ControllerBase
 {
     private readonly bool _isEnabled = configuration.GetValue<bool>("Post:EnableViewCount");
 
