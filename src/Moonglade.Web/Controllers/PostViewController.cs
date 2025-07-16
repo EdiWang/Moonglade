@@ -1,4 +1,5 @@
-﻿using Moonglade.Core.PostFeature;
+﻿using LiteBus.Commands.Abstractions;
+using Moonglade.Core.PostFeature;
 using Moonglade.Web.Attributes;
 using System.ComponentModel.DataAnnotations;
 
@@ -6,7 +7,7 @@ namespace Moonglade.Web.Controllers;
 
 [Route("api/[controller]")]
 [ApiController]
-public class PostViewController(IConfiguration configuration, IBlogConfig blogConfig, IMediator mediator) : ControllerBase
+public class PostViewController(IConfiguration configuration, IBlogConfig blogConfig, IMediator mediator, ICommandMediator commandMediator) : ControllerBase
 {
     private readonly bool _isEnabled = configuration.GetValue<bool>("Post:EnableViewCount");
 
@@ -40,7 +41,7 @@ public class PostViewController(IConfiguration configuration, IBlogConfig blogCo
 
     private async Task SaveViewRecord(Guid postId, string ip)
     {
-        await mediator.Send(new AddViewCountCommand(postId, ip));
+        await commandMediator.SendAsync(new AddViewCountCommand(postId, ip));
     }
 
     private bool IsKnownBot(string userAgent)

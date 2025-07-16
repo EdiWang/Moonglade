@@ -1,3 +1,4 @@
+using LiteBus.Commands.Abstractions;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Moonglade.Core.PostFeature;
 using Moonglade.Data.Entities;
@@ -6,7 +7,7 @@ using Moonglade.Pingback;
 namespace Moonglade.Web.Pages;
 
 [AddPingbackHeader("pingback")]
-public class PostModel(IConfiguration configuration, IMediator mediator) : PageModel
+public class PostModel(IConfiguration configuration, IMediator mediator, ICommandMediator commandMediator) : PageModel
 {
     public PostEntity Post { get; set; }
 
@@ -27,7 +28,7 @@ public class PostModel(IConfiguration configuration, IMediator mediator) : PageM
 
         if (IsViewCountEnabled)
         {
-            await mediator.Send(new AddRequestCountCommand(post.Id));
+            await commandMediator.SendAsync(new AddRequestCountCommand(post.Id));
             PostView = await mediator.Send(new GetPostViewQuery(post.Id));
         }
 
