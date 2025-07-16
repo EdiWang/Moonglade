@@ -1,16 +1,17 @@
-﻿using Microsoft.Extensions.Logging;
+﻿using LiteBus.Commands.Abstractions;
+using Microsoft.Extensions.Logging;
 using Moonglade.Data;
 
 namespace Moonglade.Core.PageFeature;
 
-public record UpdatePageCommand(Guid Id, EditPageRequest Payload) : IRequest<Guid>;
+public record UpdatePageCommand(Guid Id, EditPageRequest Payload) : ICommand<Guid>;
 
 public class UpdatePageCommandHandler(
     MoongladeRepository<PageEntity> repo,
     IMediator mediator,
-    ILogger<UpdatePageCommandHandler> logger) : IRequestHandler<UpdatePageCommand, Guid>
+    ILogger<UpdatePageCommandHandler> logger) : ICommandHandler<UpdatePageCommand, Guid>
 {
-    public async Task<Guid> Handle(UpdatePageCommand request, CancellationToken ct)
+    public async Task<Guid> HandleAsync(UpdatePageCommand request, CancellationToken ct)
     {
         var (guid, payload) = request;
         var page = await repo.GetByIdAsync(guid, ct) ?? throw new InvalidOperationException($"PageEntity with Id '{guid}' not found.");
