@@ -2,7 +2,7 @@
 @using Moonglade.Core.PageFeature
 @{
     ViewBag.Title = "Pages";
-    var pageSegments = await Mediator.Send(new ListPageSegmentQuery());
+    var pageSegments = await QueryMediator.QueryAsync(new ListPageSegmentQuery());
 }
 
 @section scripts {
