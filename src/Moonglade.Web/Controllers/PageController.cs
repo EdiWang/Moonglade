@@ -1,4 +1,5 @@
 ﻿using LiteBus.Commands.Abstractions;
+using LiteBus.Queries.Abstractions;
 using Moonglade.Core.PageFeature;
 using Moonglade.Web.Attributes;
 
@@ -7,7 +8,7 @@ namespace Moonglade.Web.Controllers;
 [Authorize]
 [ApiController]
 [Route("api/[controller]")]
-public class PageController(ICacheAside cache, IMediator mediator, ICommandMediator commandMediator) : Controller
+public class PageController(ICacheAside cache, IMediator mediator, IQueryMediator queryMediator, ICommandMediator commandMediator) : Controller
 {
     [HttpPost]
     [ReadonlyMode]
@@ -38,7 +39,7 @@ public class PageController(ICacheAside cache, IMediator mediator, ICommandMedia
     [ApiConventionMethod(typeof(DefaultApiConventions), nameof(DefaultApiConventions.Delete))]
     public async Task<IActionResult> Delete([NotEmpty] Guid id)
     {
-        var page = await mediator.Send(new GetPageByIdQuery(id));
+        var page = await queryMediator.QueryAsync(new GetPageByIdQuery(id));
         if (page == null) return NotFound();
 
         await mediator.Send(new DeletePageCommand(id));
