@@ -6,7 +6,6 @@ public class SaveAssetToCdnHandler(
     ILogger<SaveAssetToCdnHandler> logger,
     IBlogImageStorage imageStorage,
     IBlogConfig blogConfig,
-    IMediator mediator,
     ICommandMediator commandMediator) : INotificationHandler<SaveAssetCommand>
 {
     public async Task Handle(SaveAssetCommand request, CancellationToken ct)

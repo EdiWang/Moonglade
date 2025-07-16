@@ -1,4 +1,5 @@
-﻿using MediatR;
+﻿using LiteBus.Commands.Abstractions;
+using MediatR;
 using Moonglade.Configuration;
 
 namespace Moonglade.Setup;
@@ -8,7 +9,7 @@ public interface IBlogConfigInitializer
     Task Initialize(bool isNew);
 }
 
-public class BlogConfigInitializer(IMediator mediator, IBlogConfig blogConfig) : IBlogConfigInitializer
+public class BlogConfigInitializer(IMediator mediator, ICommandMediator commandMediator, IBlogConfig blogConfig) : IBlogConfigInitializer
 {
     public async Task Initialize(bool isNew)
     {
@@ -37,7 +38,7 @@ public class BlogConfigInitializer(IMediator mediator, IBlogConfig blogConfig) :
         {
             if (settingsMap.TryGetValue(key, out var setting))
             {
-                await mediator.Send(new AddDefaultConfigurationCommand(key, setting()));
+                await commandMediator.SendAsync(new AddDefaultConfigurationCommand(key, setting()));
             }
         }
     }

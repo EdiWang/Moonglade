@@ -1,18 +1,18 @@
-﻿using MediatR;
+﻿using LiteBus.Commands.Abstractions;
 using Microsoft.Extensions.Logging;
 using Moonglade.Data;
 using Moonglade.Data.Entities;
 
 namespace Moonglade.Configuration;
 
-public record AddDefaultConfigurationCommand(string CfgKey, string DefaultJson) : IRequest<OperationCode>;
+public record AddDefaultConfigurationCommand(string CfgKey, string DefaultJson) : ICommand<OperationCode>;
 
 public class AddDefaultConfigurationCommandHandler(
     MoongladeRepository<BlogConfigurationEntity> repository,
     ILogger<AddDefaultConfigurationCommandHandler> logger
-    ) : IRequestHandler<AddDefaultConfigurationCommand, OperationCode>
+    ) : ICommandHandler<AddDefaultConfigurationCommand, OperationCode>
 {
-    public async Task<OperationCode> Handle(AddDefaultConfigurationCommand request, CancellationToken ct)
+    public async Task<OperationCode> HandleAsync(AddDefaultConfigurationCommand request, CancellationToken ct)
     {
         var entity = new BlogConfigurationEntity
         {

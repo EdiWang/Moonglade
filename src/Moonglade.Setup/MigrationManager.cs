@@ -1,5 +1,4 @@
 ﻿using LiteBus.Commands.Abstractions;
-using MediatR;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
@@ -17,7 +16,6 @@ public interface IMigrationManager
 
 public partial class MigrationManager(
     ILogger<MigrationManager> logger,
-    IMediator mediator,
     ICommandMediator commandMediator,
     IConfiguration configuration,
     IBlogConfig blogConfig,
