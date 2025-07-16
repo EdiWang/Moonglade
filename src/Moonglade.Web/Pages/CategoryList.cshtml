@@ -48,7 +48,7 @@ else
 
         if (Cat is null) return NotFound();
 
-        var postCount = await Mediator.Send(new CountPostQuery(CountType.Category, Cat.Id));
+        var postCount = await QueryMediator.QueryAsync(new CountPostQuery(CountType.Category, Cat.Id));
         var postList = await Mediator.Send(new ListPostsQuery(pageSize, P, Cat.Id));
 
         Posts = new(postList, P, pageSize, postCount);

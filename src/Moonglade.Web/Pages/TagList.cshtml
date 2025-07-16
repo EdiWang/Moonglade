@@ -36,7 +36,7 @@ else
 
         var pagesize = BlogConfig.ContentSettings.PostListPageSize;
         var posts = await Mediator.Send(new ListByTagQuery(tagResponse.Id, pagesize, P));
-        var count = await Mediator.Send(new CountPostQuery(CountType.Tag, TagId: tagResponse.Id));
+        var count = await QueryMediator.QueryAsync(new CountPostQuery(CountType.Tag, TagId: tagResponse.Id));
 
         ViewData["TitlePrefix"] = tagResponse.DisplayName;
 

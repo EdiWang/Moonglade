@@ -41,7 +41,7 @@ else
         var pagesize = BlogConfig.ContentSettings.PostListPageSize;
 
         var posts = await Mediator.Send(new ListPostsQuery(pagesize, p));
-        var totalPostsCount = await Mediator.Send(new CountPostQuery(CountType.Public));
+        var totalPostsCount = await QueryMediator.QueryAsync(new CountPostQuery(CountType.Public));
 
         var list = new BasePagedList<PostDigest>(posts, p, pagesize, totalPostsCount);
 
