@@ -1,4 +1,5 @@
-﻿using Moonglade.Core.PageFeature;
+﻿using LiteBus.Commands.Abstractions;
+using Moonglade.Core.PageFeature;
 using Moonglade.Web.Attributes;
 
 namespace Moonglade.Web.Controllers;
@@ -6,7 +7,7 @@ namespace Moonglade.Web.Controllers;
 [Authorize]
 [ApiController]
 [Route("api/[controller]")]
-public class PageController(ICacheAside cache, IMediator mediator) : Controller
+public class PageController(ICacheAside cache, IMediator mediator, ICommandMediator commandMediator) : Controller
 {
     [HttpPost]
     [ReadonlyMode]
@@ -14,7 +15,7 @@ public class PageController(ICacheAside cache, IMediator mediator) : Controller
     [ProducesResponseType(StatusCodes.Status200OK)]
     public async Task<IActionResult> Create(EditPageRequest model)
     {
-        var uid = await mediator.Send(new CreatePageCommand(model));
+        var uid = await commandMediator.SendAsync(new CreatePageCommand(model));
 
         cache.Remove(BlogCachePartition.Page.ToString(), model.Slug.ToLower());
         return Ok(new { PageId = uid });
