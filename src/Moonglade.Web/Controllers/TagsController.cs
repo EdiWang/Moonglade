@@ -1,4 +1,5 @@
-﻿using Moonglade.Core.TagFeature;
+﻿using LiteBus.Commands.Abstractions;
+using Moonglade.Core.TagFeature;
 using Moonglade.Data.Entities;
 using System.ComponentModel.DataAnnotations;
 
@@ -7,7 +8,7 @@ namespace Moonglade.Web.Controllers;
 [Authorize]
 [ApiController]
 [Route("api/[controller]")]
-public class TagsController(IMediator mediator) : ControllerBase
+public class TagsController(IMediator mediator, ICommandMediator commandMediator) : ControllerBase
 {
     [HttpGet("names")]
     [ProducesResponseType<List<string>>(StatusCodes.Status200OK)]
@@ -34,7 +35,7 @@ public class TagsController(IMediator mediator) : ControllerBase
     {
         if (!Helper.IsValidTagName(name)) return Conflict();
 
-        await mediator.Send(new CreateTagCommand(name.Trim()));
+        await commandMediator.SendAsync(new CreateTagCommand(name.Trim()));
         return Ok();
     }
 
@@ -54,7 +55,7 @@ public class TagsController(IMediator mediator) : ControllerBase
     [ApiConventionMethod(typeof(DefaultApiConventions), nameof(DefaultApiConventions.Delete))]
     public async Task<IActionResult> Delete([Range(0, int.MaxValue)] int id)
     {
-        var oc = await mediator.Send(new DeleteTagCommand(id));
+        var oc = await commandMediator.SendAsync(new DeleteTagCommand(id));
         if (oc == OperationCode.ObjectNotFound) return NotFound();
 
         return NoContent();
