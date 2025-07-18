@@ -3,7 +3,7 @@
 @using Moonglade.Data.Specifications
 @{
     ViewBag.Title = "Drafts";
-    var posts = await Mediator.Send(new ListPostSegmentByStatusQuery(PostStatus.Draft));
+    var posts = await QueryMediator.QueryAsync(new ListPostSegmentByStatusQuery(PostStatus.Draft));
 }
 
 @section scripts {
