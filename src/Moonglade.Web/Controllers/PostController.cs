@@ -13,7 +13,6 @@ namespace Moonglade.Web.Controllers;
 [Route("api/[controller]")]
 public class PostController(
         IConfiguration configuration,
-        IMediator mediator,
         ICommandMediator commandMediator,
         IBlogConfig blogConfig,
         ILogger<PostController> logger,

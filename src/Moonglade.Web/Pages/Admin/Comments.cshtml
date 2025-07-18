@@ -75,9 +75,9 @@
                         <form>
                             <div class="mb-2">
                                 <textarea class="form-control"
-                                          id="replycontent-@item.Id"
-                                          name="ReplyContent"
-                                          placeholder="Content" type="text"></textarea>
+                                  id="replycontent-@item.Id"
+                                  name="ReplyContent"
+                                  placeholder="Content" type="text"></textarea>
                             </div>
 
                             <a class="btn btn-sm btn-outline-accent btn-reply-post" href="#" data-commentid="@item.Id">
@@ -118,9 +118,9 @@
 
 
     @Html.PagedListPager(CommentDetailedItems, page => $"?pageIndex={page}", new()
-{
-    UlElementClasses = ["pagination mt-3"]
-})
+    {
+        UlElementClasses = ["pagination mt-3"]
+    })
 </div>
 
 @functions
@@ -130,8 +130,8 @@
     public async Task OnGet(int pageIndex = 1)
     {
         const int pageSize = 5;
-        var comments = await Mediator.Send(new GetCommentsQuery(pageSize, pageIndex));
-        var count = await Mediator.Send(new CountCommentsQuery());
+        var comments = await QueryMediator.QueryAsync(new GetCommentsQuery(pageSize, pageIndex));
+        var count = await QueryMediator.QueryAsync(new CountCommentsQuery());
         CommentDetailedItems = new(comments, pageIndex, pageSize, count);
     }
 }
