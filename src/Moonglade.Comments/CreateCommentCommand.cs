@@ -1,5 +1,4 @@
 ﻿using LiteBus.Commands.Abstractions;
-using MediatR;
 using Microsoft.Extensions.Logging;
 using Moonglade.Configuration;
 using Moonglade.Data;
