@@ -8,7 +8,7 @@ using Moonglade.Pingback;
 namespace Moonglade.Web.Pages;
 
 [AddPingbackHeader("pingback")]
-public class PostModel(IConfiguration configuration, IMediator mediator, IQueryMediator queryMediator, ICommandMediator commandMediator) : PageModel
+public class PostModel(IConfiguration configuration, IQueryMediator queryMediator, ICommandMediator commandMediator) : PageModel
 {
     public PostEntity Post { get; set; }
 
@@ -30,7 +30,7 @@ public class PostModel(IConfiguration configuration, IMediator mediator, IQueryM
         if (IsViewCountEnabled)
         {
             await commandMediator.SendAsync(new AddRequestCountCommand(post.Id));
-            PostView = await mediator.Send(new GetPostViewQuery(post.Id));
+            PostView = await queryMediator.QueryAsync(new GetPostViewQuery(post.Id));
         }
 
         return Page();
