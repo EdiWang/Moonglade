@@ -129,7 +129,7 @@ public class PostController(
     [ProducesResponseType(StatusCodes.Status204NoContent)]
     public async Task<IActionResult> Delete([NotEmpty] Guid postId)
     {
-        await mediator.Send(new DeletePostCommand(postId, true));
+        await commandMediator.SendAsync(new DeletePostCommand(postId, true));
         return NoContent();
     }
 
