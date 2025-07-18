@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc.ModelBinding;
+﻿using LiteBus.Commands.Abstractions;
+using Microsoft.AspNetCore.Mvc.ModelBinding;
 using Moonglade.Comments.Moderator;
 using Moonglade.Email.Client;
 using Moonglade.Web.Attributes;
@@ -12,6 +13,7 @@ namespace Moonglade.Web.Controllers;
 [CommentProviderGate]
 public class CommentController(
         IMediator mediator,
+        ICommandMediator commandMediator,
         IModeratorService moderator,
         IBlogConfig blogConfig,
         ILogger<CommentController> logger) : ControllerBase
@@ -91,7 +93,7 @@ public class CommentController(
     [ProducesResponseType<Guid>(StatusCodes.Status200OK)]
     public async Task<IActionResult> Approval([NotEmpty] Guid commentId)
     {
-        await mediator.Send(new ToggleApprovalCommand([commentId]));
+        await commandMediator.SendAsync(new ToggleApprovalCommand([commentId]));
         return Ok(commentId);
     }
 
@@ -113,7 +115,7 @@ public class CommentController(
     {
         if (!blogConfig.CommentSettings.EnableComments) return Forbid();
 
-        var reply = await mediator.Send(new ReplyCommentCommand(commentId, replyContent));
+        var reply = await commandMediator.SendAsync(new ReplyCommentCommand(commentId, replyContent));
         if (blogConfig.NotificationSettings.SendEmailOnCommentReply && !string.IsNullOrWhiteSpace(reply.Email))
         {
             var postLink = GetPostUrl(reply.RouteLink);

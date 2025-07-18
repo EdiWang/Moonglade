@@ -1,4 +1,5 @@
-﻿using MediatR;
+﻿using LiteBus.Commands.Abstractions;
+using MediatR;
 using Microsoft.Extensions.Logging;
 using Moonglade.Data;
 using Moonglade.Data.Entities;
@@ -6,14 +7,14 @@ using Moonglade.Utils;
 
 namespace Moonglade.Comments;
 
-public record ReplyCommentCommand(Guid CommentId, string ReplyContent) : IRequest<CommentReply>;
+public record ReplyCommentCommand(Guid CommentId, string ReplyContent) : ICommand<CommentReply>;
 
 public class ReplyCommentCommandHandler(
     ILogger<ReplyCommentCommandHandler> logger,
     MoongladeRepository<CommentEntity> commentRepo,
-    MoongladeRepository<CommentReplyEntity> commentReplyRepo) : IRequestHandler<ReplyCommentCommand, CommentReply>
+    MoongladeRepository<CommentReplyEntity> commentReplyRepo) : ICommandHandler<ReplyCommentCommand, CommentReply>
 {
-    public async Task<CommentReply> Handle(ReplyCommentCommand request, CancellationToken ct)
+    public async Task<CommentReply> HandleAsync(ReplyCommentCommand request, CancellationToken ct)
     {
         var cmt = await commentRepo.GetByIdAsync(request.CommentId, ct) ?? throw new InvalidOperationException($"Comment {request.CommentId} is not found.");
 
