@@ -1,18 +1,19 @@
-﻿using Moonglade.Data;
+﻿using LiteBus.Queries.Abstractions;
+using Moonglade.Data;
 using Moonglade.Data.Specifications;
 using System.Linq.Expressions;
 
 namespace Moonglade.Core.PostFeature;
 
 public record struct Archive(int Year, int Month, int Count);
-public record GetArchiveQuery : IRequest<List<Archive>>;
+public record GetArchiveQuery : IQuery<List<Archive>>;
 
-public class GetArchiveQueryHandler(MoongladeRepository<PostEntity> repo) : IRequestHandler<GetArchiveQuery, List<Archive>>
+public class GetArchiveQueryHandler(MoongladeRepository<PostEntity> repo) : IQueryHandler<GetArchiveQuery, List<Archive>>
 {
     private readonly Expression<Func<IGrouping<(int Year, int Month), PostEntity>, Archive>> _archiveSelector =
         p => new(p.Key.Year, p.Key.Month, p.Count());
 
-    public async Task<List<Archive>> Handle(GetArchiveQuery request, CancellationToken ct)
+    public async Task<List<Archive>> HandleAsync(GetArchiveQuery request, CancellationToken ct)
     {
         if (!await repo.AnyAsync(new PostByStatusSpec(PostStatus.Published), ct))
         {

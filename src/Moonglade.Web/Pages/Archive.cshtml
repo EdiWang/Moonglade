@@ -5,7 +5,7 @@
     ViewBag.TitlePrefix = "Archive ";
     ViewBag.BodyClass = "body-archive-index bg-gray-1";
 
-    var archives = await Mediator.Send(new GetArchiveQuery());
+    var archives = await QueryMediator.QueryAsync(new GetArchiveQuery());
     int[] yearList = null;
     if (null != Model && archives.Any())
     {
@@ -39,7 +39,7 @@
             var queryMonth = archives.Where(obj => obj.Year == item).ToList();
             var totalPosts = queryMonth.Sum(m => m.Count);
 
-            <li class="@(index % 2 == 0 ? null: "timeline-inverted")">
+            <li class="@(index % 2 == 0 ? null : "timeline-inverted")">
                 <div class="timeline-badge"></div>
                 <div class="timeline-panel shadow-sm bg-white">
                     <div class="timeline-heading mb-3">
