@@ -35,7 +35,7 @@ else
         if (tagResponse is null) return NotFound();
 
         var pagesize = BlogConfig.ContentSettings.PostListPageSize;
-        var posts = await Mediator.Send(new ListByTagQuery(tagResponse.Id, pagesize, P));
+        var posts = await QueryMediator.QueryAsync(new ListByTagQuery(tagResponse.Id, pagesize, P));
         var count = await QueryMediator.QueryAsync(new CountPostQuery(CountType.Tag, TagId: tagResponse.Id));
 
         ViewData["TitlePrefix"] = tagResponse.DisplayName;
