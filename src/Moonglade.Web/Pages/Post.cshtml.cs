@@ -1,4 +1,5 @@
 using LiteBus.Commands.Abstractions;
+using LiteBus.Queries.Abstractions;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Moonglade.Core.PostFeature;
 using Moonglade.Data.Entities;
@@ -7,7 +8,7 @@ using Moonglade.Pingback;
 namespace Moonglade.Web.Pages;
 
 [AddPingbackHeader("pingback")]
-public class PostModel(IConfiguration configuration, IMediator mediator, ICommandMediator commandMediator) : PageModel
+public class PostModel(IConfiguration configuration, IMediator mediator, IQueryMediator queryMediator, ICommandMediator commandMediator) : PageModel
 {
     public PostEntity Post { get; set; }
 
@@ -19,7 +20,7 @@ public class PostModel(IConfiguration configuration, IMediator mediator, IComman
     {
         if (year > DateTime.UtcNow.Year || string.IsNullOrWhiteSpace(slug)) return NotFound();
 
-        var post = await mediator.Send(new GetPostBySlugQuery(year, month, day, slug));
+        var post = await queryMediator.QueryAsync(new GetPostBySlugQuery(year, month, day, slug));
 
         if (post is null) return NotFound();
 
