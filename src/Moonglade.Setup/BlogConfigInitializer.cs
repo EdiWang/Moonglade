@@ -1,5 +1,5 @@
 ﻿using LiteBus.Commands.Abstractions;
-using MediatR;
+using LiteBus.Queries.Abstractions;
 using Moonglade.Configuration;
 
 namespace Moonglade.Setup;
@@ -9,12 +9,12 @@ public interface IBlogConfigInitializer
     Task Initialize(bool isNew);
 }
 
-public class BlogConfigInitializer(IMediator mediator, ICommandMediator commandMediator, IBlogConfig blogConfig) : IBlogConfigInitializer
+public class BlogConfigInitializer(IQueryMediator queryMediator, ICommandMediator commandMediator, IBlogConfig blogConfig) : IBlogConfigInitializer
 {
     public async Task Initialize(bool isNew)
     {
         // Load configurations into singleton
-        var config = await mediator.Send(new GetAllConfigurationsQuery());
+        var config = await queryMediator.QueryAsync(new GetAllConfigurationsQuery());
         var keysToAdd = blogConfig.LoadFromConfig(config)?.ToArray() ?? [];
         if (keysToAdd.Length == 0) return;
 
