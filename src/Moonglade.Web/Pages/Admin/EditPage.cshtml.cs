@@ -5,7 +5,7 @@ using Moonglade.Data.Entities;
 
 namespace Moonglade.Web.Pages.Admin;
 
-public class EditPageModel(IMediator mediator, IQueryMediator queryMediator) : PageModel
+public class EditPageModel(IQueryMediator queryMediator) : PageModel
 {
     public Guid PageId { get; set; }
 
@@ -21,7 +21,7 @@ public class EditPageModel(IMediator mediator, IQueryMediator queryMediator) : P
         StyleSheetEntity css = null;
         if (!string.IsNullOrWhiteSpace(page.CssId))
         {
-            css = await mediator.Send(new GetStyleSheetQuery(Guid.Parse(page.CssId)));
+            css = await queryMediator.QueryAsync(new GetStyleSheetQuery(Guid.Parse(page.CssId)));
         }
 
         PageId = page.Id;

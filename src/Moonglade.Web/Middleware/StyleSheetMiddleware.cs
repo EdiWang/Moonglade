@@ -1,4 +1,5 @@
-﻿using System.Web;
+﻿using LiteBus.Queries.Abstractions;
+using System.Web;
 
 namespace Moonglade.Web.Middleware;
 
@@ -6,7 +7,7 @@ public class StyleSheetMiddleware(RequestDelegate next)
 {
     public static CustomCssMiddlewareOptions Options { get; set; } = new();
 
-    public async Task Invoke(HttpContext context, IBlogConfig blogConfig, IMediator mediator)
+    public async Task Invoke(HttpContext context, IBlogConfig blogConfig, IQueryMediator queryMediator)
     {
         var requestPath = context.Request.Path.ToString().ToLowerInvariant();
 
@@ -22,7 +23,7 @@ public class StyleSheetMiddleware(RequestDelegate next)
         }
         else if (string.Equals(requestPath, "/content.css", StringComparison.OrdinalIgnoreCase) && context.Request.QueryString.HasValue)
         {
-            await HandleContentCss(context, mediator);
+            await HandleContentCss(context, queryMediator);
         }
         else
         {
@@ -42,7 +43,7 @@ public class StyleSheetMiddleware(RequestDelegate next)
         await WriteStyleSheet(context, cssCode);
     }
 
-    private async Task HandleContentCss(HttpContext context, IMediator mediator)
+    private async Task HandleContentCss(HttpContext context, IQueryMediator queryMediator)
     {
         var qs = HttpUtility.ParseQueryString(context.Request.QueryString.Value!);
         var id = qs["id"];
@@ -53,7 +54,7 @@ public class StyleSheetMiddleware(RequestDelegate next)
             return;
         }
 
-        var css = await mediator.Send(new GetStyleSheetQuery(guid));
+        var css = await queryMediator.QueryAsync(new GetStyleSheetQuery(guid));
         if (css == null)
         {
             context.Response.StatusCode = StatusCodes.Status404NotFound;
