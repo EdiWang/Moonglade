@@ -33,7 +33,7 @@ public class RecycleBinController(IMediator mediator, ICommandMediator commandMe
     [ProducesResponseType(StatusCodes.Status204NoContent)]
     public async Task<IActionResult> Clear()
     {
-        await mediator.Send(new EmptyRecycleBinCommand());
+        await commandMediator.SendAsync(new EmptyRecycleBinCommand());
         return NoContent();
     }
 }
