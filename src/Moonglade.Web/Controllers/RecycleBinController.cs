@@ -8,14 +8,14 @@ namespace Moonglade.Web.Controllers;
 [Route("api/post")]
 [ApiController]
 [TypeFilter(typeof(ClearBlogCache), Arguments = [BlogCacheType.Subscription | BlogCacheType.SiteMap])]
-public class RecycleBinController(IMediator mediator, ICommandMediator commandMediator) : ControllerBase
+public class RecycleBinController(ICommandMediator commandMediator) : ControllerBase
 {
     [HttpPost("{postId:guid}/restore")]
     [ReadonlyMode]
     [ProducesResponseType(StatusCodes.Status204NoContent)]
     public async Task<IActionResult> Restore([NotEmpty] Guid postId)
     {
-        await mediator.Send(new RestorePostCommand(postId));
+        await commandMediator.SendAsync(new RestorePostCommand(postId));
         return NoContent();
     }
 
