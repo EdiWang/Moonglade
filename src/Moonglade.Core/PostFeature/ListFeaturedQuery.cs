@@ -1,14 +1,15 @@
-﻿using Moonglade.Data;
+﻿using LiteBus.Queries.Abstractions;
+using Moonglade.Data;
 using Moonglade.Data.Specifications;
 using Moonglade.Utils;
 
 namespace Moonglade.Core.PostFeature;
 
-public record ListFeaturedQuery(int PageSize, int PageIndex) : IRequest<List<PostDigest>>;
+public record ListFeaturedQuery(int PageSize, int PageIndex) : IQuery<List<PostDigest>>;
 
-public class ListFeaturedQueryHandler(MoongladeRepository<PostEntity> repo) : IRequestHandler<ListFeaturedQuery, List<PostDigest>>
+public class ListFeaturedQueryHandler(MoongladeRepository<PostEntity> repo) : IQueryHandler<ListFeaturedQuery, List<PostDigest>>
 {
-    public Task<List<PostDigest>> Handle(ListFeaturedQuery request, CancellationToken ct)
+    public Task<List<PostDigest>> HandleAsync(ListFeaturedQuery request, CancellationToken ct)
     {
         var (pageSize, pageIndex) = request;
         Helper.ValidatePagingParameters(pageSize, pageIndex);
