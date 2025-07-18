@@ -1,4 +1,5 @@
-﻿using Moonglade.Core.PostFeature;
+﻿using LiteBus.Commands.Abstractions;
+using Moonglade.Core.PostFeature;
 using Moonglade.IndexNow.Client;
 using Moonglade.Pingback;
 using Moonglade.Web.Attributes;
@@ -13,6 +14,7 @@ namespace Moonglade.Web.Controllers;
 public class PostController(
         IConfiguration configuration,
         IMediator mediator,
+        ICommandMediator commandMediator,
         IBlogConfig blogConfig,
         ILogger<PostController> logger,
         CannonService cannonService) : ControllerBase
@@ -63,8 +65,8 @@ public class PostController(
             }
 
             var postEntity = model.PostId == Guid.Empty ?
-                await mediator.Send(new CreatePostCommand(model)) :
-                await mediator.Send(new UpdatePostCommand(model.PostId, model));
+                await commandMediator.SendAsync(new CreatePostCommand(model)) :
+                await commandMediator.SendAsync(new UpdatePostCommand(model.PostId, model));
 
             if (model.PostStatus != PostStatusConstants.Published)
             {
