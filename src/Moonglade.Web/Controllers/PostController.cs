@@ -158,7 +158,7 @@ public class PostController(
     [ProducesResponseType(StatusCodes.Status204NoContent)]
     public async Task<IActionResult> Postpone([NotEmpty] Guid postId, [FromQuery][Range(1, 24)] int hours = 24)
     {
-        await mediator.Send(new PostponePostCommand(postId, hours));
+        await commandMediator.SendAsync(new PostponePostCommand(postId, hours));
         return NoContent();
     }
 
