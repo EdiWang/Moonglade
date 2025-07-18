@@ -1,15 +1,16 @@
-﻿using Moonglade.Data;
+﻿using LiteBus.Commands.Abstractions;
+using Moonglade.Data;
 using Moonglade.Data.Specifications;
 using Moonglade.Utils;
 
 namespace Moonglade.Core.PostFeature;
 
-public record PublishScheduledPostCommand : IRequest<int>;
+public record PublishScheduledPostCommand : ICommand<int>;
 
 public class PublishScheduledPostCommandHandler(MoongladeRepository<PostEntity> postRepo) :
-    IRequestHandler<PublishScheduledPostCommand, int>
+    ICommandHandler<PublishScheduledPostCommand, int>
 {
-    public async Task<int> Handle(PublishScheduledPostCommand request, CancellationToken ct)
+    public async Task<int> HandleAsync(PublishScheduledPostCommand request, CancellationToken ct)
     {
         var now = DateTime.UtcNow;
         var scheduledPosts = await postRepo.ListAsync(new ScheduledPostSpec(now), ct);

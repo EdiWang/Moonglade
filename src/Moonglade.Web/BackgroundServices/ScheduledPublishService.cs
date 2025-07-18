@@ -1,4 +1,5 @@
-﻿using Moonglade.Core.PostFeature;
+﻿using LiteBus.Commands.Abstractions;
+using Moonglade.Core.PostFeature;
 
 namespace Moonglade.Web.BackgroundServices;
 
@@ -44,9 +45,9 @@ public class ScheduledPublishService(
     {
         // Use 'await using' if your scope implements IAsyncDisposable
         using var scope = serviceProvider.CreateScope();
-        var mediator = scope.ServiceProvider.GetRequiredService<IMediator>();
+        var commandMediator = scope.ServiceProvider.GetRequiredService<ICommandMediator>();
 
-        int rows = await mediator.Send(new PublishScheduledPostCommand(), cancellationToken);
+        int rows = await commandMediator.SendAsync(new PublishScheduledPostCommand(), cancellationToken);
 
         if (rows > 0)
         {
