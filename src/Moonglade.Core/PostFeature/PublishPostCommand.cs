@@ -1,19 +1,20 @@
 ﻿using Edi.CacheAside.InMemory;
+using LiteBus.Commands.Abstractions;
 using Microsoft.Extensions.Logging;
 using Moonglade.Data;
 using Moonglade.Utils;
 
 namespace Moonglade.Core.PostFeature;
 
-public record PublishPostCommand(Guid Id) : IRequest;
+public record PublishPostCommand(Guid Id) : ICommand;
 
 public class PublishPostCommandHandler(
     MoongladeRepository<PostEntity> repo,
     ICacheAside cache,
     ILogger<PublishPostCommandHandler> logger
-    ) : IRequestHandler<PublishPostCommand>
+    ) : ICommandHandler<PublishPostCommand>
 {
-    public async Task Handle(PublishPostCommand request, CancellationToken ct)
+    public async Task HandleAsync(PublishPostCommand request, CancellationToken ct)
     {
         var post = await repo.GetByIdAsync(request.Id, ct);
         if (null == post) return;

@@ -139,7 +139,7 @@ public class PostController(
     [ProducesResponseType(StatusCodes.Status204NoContent)]
     public async Task<IActionResult> Publish([NotEmpty] Guid postId)
     {
-        await mediator.Send(new PublishPostCommand(postId));
+        await commandMediator.SendAsync(new PublishPostCommand(postId));
         return NoContent();
     }
 
@@ -149,7 +149,7 @@ public class PostController(
     [ProducesResponseType(StatusCodes.Status204NoContent)]
     public async Task<IActionResult> Unpublish([NotEmpty] Guid postId)
     {
-        await mediator.Send(new UnpublishPostCommand(postId));
+        await commandMediator.SendAsync(new UnpublishPostCommand(postId));
         return NoContent();
     }
 
