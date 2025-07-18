@@ -56,7 +56,7 @@ public class CommentController(
         }
 
         var ip = Helper.GetClientIP(HttpContext);
-        var item = await mediator.Send(new CreateCommentCommand(postId, request, ip));
+        var item = await commandMediator.SendAsync(new CreateCommentCommand(postId, request, ip));
 
         if (null == item)
         {
@@ -102,7 +102,7 @@ public class CommentController(
     [ProducesResponseType<string>(StatusCodes.Status400BadRequest)]
     public async Task<IActionResult> Delete([FromBody][MinLength(1)] Guid[] commentIds)
     {
-        await mediator.Send(new DeleteCommentsCommand(commentIds));
+        await commandMediator.SendAsync(new DeleteCommentsCommand(commentIds));
         return Ok(commentIds);
     }
 

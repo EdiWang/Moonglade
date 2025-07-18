@@ -1,4 +1,5 @@
-﻿using MediatR;
+﻿using LiteBus.Commands.Abstractions;
+using MediatR;
 using Microsoft.Extensions.Logging;
 using Moonglade.Data;
 using Moonglade.Data.Entities;
@@ -6,13 +7,13 @@ using Moonglade.Data.Specifications;
 
 namespace Moonglade.Comments;
 
-public record DeleteCommentsCommand(Guid[] Ids) : IRequest;
+public record DeleteCommentsCommand(Guid[] Ids) : ICommand;
 
 public class DeleteCommentsCommandHandler(
     MoongladeRepository<CommentEntity> commentRepo,
-    ILogger<DeleteCommentsCommandHandler> logger) : IRequestHandler<DeleteCommentsCommand>
+    ILogger<DeleteCommentsCommandHandler> logger) : ICommandHandler<DeleteCommentsCommand>
 {
-    public async Task Handle(DeleteCommentsCommand request, CancellationToken ct)
+    public async Task HandleAsync(DeleteCommentsCommand request, CancellationToken ct)
     {
         var spec = new CommentByIdsSepc(request.Ids);
         var comments = await commentRepo.ListAsync(spec, ct);

@@ -1,4 +1,5 @@
-﻿using MediatR;
+﻿using LiteBus.Commands.Abstractions;
+using MediatR;
 using Microsoft.Extensions.Logging;
 using Moonglade.Configuration;
 using Moonglade.Data;
@@ -11,16 +12,16 @@ public record CreateCommentCommand(
     Guid PostId,
     CommentRequest Payload,
     string IpAddress
-) : IRequest<CommentDetailedItem>;
+) : ICommand<CommentDetailedItem>;
 
 public class CreateCommentCommandHandler(
     IBlogConfig blogConfig,
     ILogger<CreateCommentCommandHandler> logger,
     MoongladeRepository<PostEntity> postRepository,
     MoongladeRepository<CommentEntity> commentRepository
-) : IRequestHandler<CreateCommentCommand, CommentDetailedItem>
+) : ICommandHandler<CreateCommentCommand, CommentDetailedItem>
 {
-    public async Task<CommentDetailedItem> Handle(CreateCommentCommand request, CancellationToken ct)
+    public async Task<CommentDetailedItem> HandleAsync(CreateCommentCommand request, CancellationToken ct)
     {
         // Validate input
         if (request.Payload == null)
