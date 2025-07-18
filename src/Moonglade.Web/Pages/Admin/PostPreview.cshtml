@@ -87,7 +87,7 @@
 
     public async Task<IActionResult> OnGetAsync(Guid postId)
     {
-        var post = await Mediator.Send(new GetDraftQuery(postId));
+        var post = await QueryMediator.QueryAsync(new GetDraftQuery(postId));
         if (post is null) return NotFound();
 
         ViewData["TitlePrefix"] = $"{post.Title}";
