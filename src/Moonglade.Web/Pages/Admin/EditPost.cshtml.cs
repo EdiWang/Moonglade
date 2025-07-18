@@ -5,7 +5,7 @@ using Moonglade.Core.PostFeature;
 
 namespace Moonglade.Web.Pages.Admin;
 
-public class EditPostModel(IMediator mediator, IQueryMediator queryMediator, IBlogConfig blogConfig) : PageModel
+public class EditPostModel(IQueryMediator queryMediator, IBlogConfig blogConfig) : PageModel
 {
     public PostEditModel ViewModel { get; set; } = new()
     {
@@ -42,7 +42,7 @@ public class EditPostModel(IMediator mediator, IQueryMediator queryMediator, IBl
             return Page();
         }
 
-        var post = await mediator.Send(new GetPostByIdQuery(id.Value));
+        var post = await queryMediator.QueryAsync(new GetPostByIdQuery(id.Value));
         if (null == post) return NotFound();
 
         ViewModel = new()
