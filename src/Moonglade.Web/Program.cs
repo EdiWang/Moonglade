@@ -1,6 +1,7 @@
 using Edi.Captcha;
 using Edi.PasswordGenerator;
 using LiteBus.Commands.Extensions.MicrosoftDependencyInjection;
+using LiteBus.Events.Extensions.MicrosoftDependencyInjection;
 using LiteBus.Messaging.Extensions.MicrosoftDependencyInjection;
 using LiteBus.Queries.Extensions.MicrosoftDependencyInjection;
 using Microsoft.AspNetCore.Rewrite;
@@ -100,8 +101,6 @@ public class Program
         var assemblies = AppDomain.CurrentDomain.GetAssemblies();
         assemblies = [.. assemblies.Where(x => x.FullName!.StartsWith("Moonglade"))];
 
-        services.AddMediatR(config => config.RegisterServicesFromAssemblies(assemblies));
-
         services.AddLiteBus(liteBus =>
         {
             liteBus.AddCommandModule(module =>
@@ -113,6 +112,14 @@ public class Program
             });
 
             liteBus.AddQueryModule(module =>
+            {
+                foreach (var assembly in assemblies)
+                {
+                    module.RegisterFromAssembly(assembly);
+                }
+            });
+
+            liteBus.AddEventModule(module =>
             {
                 foreach (var assembly in assemblies)
                 {
