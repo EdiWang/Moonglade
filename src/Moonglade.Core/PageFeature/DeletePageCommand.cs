@@ -8,7 +8,7 @@ public record DeletePageCommand(Guid Id) : ICommand<OperationCode>;
 
 public class DeletePageCommandHandler(
     MoongladeRepository<PageEntity> repo,
-    IMediator mediator,
+    ICommandMediator commandMediator,
     ILogger<DeletePageCommandHandler> logger) : ICommandHandler<DeletePageCommand, OperationCode>
 {
     public async Task<OperationCode> HandleAsync(DeletePageCommand request, CancellationToken ct)
@@ -18,7 +18,7 @@ public class DeletePageCommandHandler(
 
         if (!string.IsNullOrWhiteSpace(page.CssId))
         {
-            await mediator.Send(new DeleteStyleSheetCommand(new(page.CssId)), ct);
+            await commandMediator.SendAsync(new DeleteStyleSheetCommand(new(page.CssId)), ct);
         }
 
         await repo.DeleteAsync(page, ct);
