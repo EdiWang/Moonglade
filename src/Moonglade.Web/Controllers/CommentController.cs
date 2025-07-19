@@ -1,4 +1,5 @@
 ﻿using LiteBus.Commands.Abstractions;
+using LiteBus.Events.Abstractions;
 using Microsoft.AspNetCore.Mvc.ModelBinding;
 using Moonglade.Comments.Moderator;
 using Moonglade.Email.Client;
@@ -13,6 +14,7 @@ namespace Moonglade.Web.Controllers;
 [CommentProviderGate]
 public class CommentController(
         IMediator mediator,
+        IEventMediator eventMediator,
         ICommandMediator commandMediator,
         IModeratorService moderator,
         IBlogConfig blogConfig,
@@ -68,7 +70,7 @@ public class CommentController(
         {
             try
             {
-                await mediator.Publish(new CommentNotification(
+                await eventMediator.PublishAsync(new CommentNotificationEvent(
                     item.Username,
                     item.Email,
                     item.IpAddress,
