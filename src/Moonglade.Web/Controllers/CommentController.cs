@@ -13,7 +13,6 @@ namespace Moonglade.Web.Controllers;
 [Route("api/[controller]")]
 [CommentProviderGate]
 public class CommentController(
-        IMediator mediator,
         IEventMediator eventMediator,
         ICommandMediator commandMediator,
         IModeratorService moderator,
