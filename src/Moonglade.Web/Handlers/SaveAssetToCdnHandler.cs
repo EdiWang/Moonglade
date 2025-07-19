@@ -1,4 +1,5 @@
 ﻿using LiteBus.Commands.Abstractions;
+using LiteBus.Events.Abstractions;
 
 namespace Moonglade.Web.Handlers;
 
@@ -6,9 +7,9 @@ public class SaveAssetToCdnHandler(
     ILogger<SaveAssetToCdnHandler> logger,
     IBlogImageStorage imageStorage,
     IBlogConfig blogConfig,
-    ICommandMediator commandMediator) : INotificationHandler<SaveAssetCommand>
+    ICommandMediator commandMediator) : IEventHandler<SaveAssetEvent>
 {
-    public async Task Handle(SaveAssetCommand request, CancellationToken ct)
+    public async Task HandleAsync(SaveAssetEvent request, CancellationToken ct)
     {
         // Only process avatar asset
         if (request.AssetId != AssetId.AvatarBase64)

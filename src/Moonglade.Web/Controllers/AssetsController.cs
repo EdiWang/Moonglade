@@ -1,4 +1,5 @@
-﻿using LiteBus.Queries.Abstractions;
+﻿using LiteBus.Events.Abstractions;
+using LiteBus.Queries.Abstractions;
 using Moonglade.Setup;
 using SixLabors.ImageSharp;
 
@@ -6,7 +7,10 @@ namespace Moonglade.Web.Controllers;
 
 [ApiController]
 public class AssetsController(
-    IMediator mediator, IQueryMediator queryMediator, IWebHostEnvironment env, ILogger<AssetsController> logger) : ControllerBase
+    IEventMediator eventMediator,
+    IQueryMediator queryMediator,
+    IWebHostEnvironment env,
+    ILogger<AssetsController> logger) : ControllerBase
 {
     [HttpGet("avatar")]
     [ResponseCache(Duration = 300)]
@@ -58,7 +62,7 @@ public class AssetsController(
             return Conflict(e.Message);
         }
 
-        await mediator.Publish(new SaveAssetCommand(AssetId.AvatarBase64, base64Img));
+        await eventMediator.PublishAsync(new SaveAssetEvent(AssetId.AvatarBase64, base64Img));
 
         return Ok();
     }
@@ -125,7 +129,7 @@ public class AssetsController(
 
         using var bmp = await Image.LoadAsync(new MemoryStream(base64Chars));
         if (bmp.Height != bmp.Width) return Conflict("image height must be equal to width");
-        await mediator.Publish(new SaveAssetCommand(AssetId.SiteIconBase64, base64Img));
+        await eventMediator.PublishAsync(new SaveAssetEvent(AssetId.SiteIconBase64, base64Img));
 
         return NoContent();
     }
