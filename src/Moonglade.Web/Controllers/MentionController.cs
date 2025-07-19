@@ -1,4 +1,5 @@
 ﻿using LiteBus.Commands.Abstractions;
+using LiteBus.Events.Abstractions;
 using Moonglade.Data.Entities;
 using Moonglade.Email.Client;
 using Moonglade.Mention.Common;
@@ -14,8 +15,8 @@ namespace Moonglade.Web.Controllers;
 public class MentionController(
     ILogger<MentionController> logger,
     IBlogConfig blogConfig,
-    ICommandMediator commandMediator,
-    IMediator mediator) : ControllerBase
+    IEventMediator eventMediator,
+    ICommandMediator commandMediator) : ControllerBase
 {
     [HttpPost("/webmention")]
     [ReadonlyMode]
@@ -82,7 +83,7 @@ public class MentionController(
     {
         try
         {
-            await mediator.Publish(new MentionNotification(mention.TargetPostTitle, mention.Domain, mention.SourceIp, mention.SourceUrl, mention.SourceTitle));
+            await eventMediator.PublishAsync(new MentionEvent(mention.TargetPostTitle, mention.Domain, mention.SourceIp, mention.SourceUrl, mention.SourceTitle));
         }
         catch (Exception e)
         {
