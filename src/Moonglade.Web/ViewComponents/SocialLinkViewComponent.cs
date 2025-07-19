@@ -1,10 +1,12 @@
-﻿namespace Moonglade.Web.ViewComponents;
+﻿using LiteBus.Queries.Abstractions;
 
-public class SocialLinkViewComponent(IMediator mediator) : ViewComponent
+namespace Moonglade.Web.ViewComponents;
+
+public class SocialLinkViewComponent(IQueryMediator queryMediator) : ViewComponent
 {
     public async Task<IViewComponentResult> InvokeAsync()
     {
-        var links = await mediator.Send(new GetAllSocialLinksQuery());
+        var links = await queryMediator.QueryAsync(new GetAllSocialLinksQuery());
         return View(links ?? []);
     }
 }
