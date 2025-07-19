@@ -8,7 +8,7 @@ public record CreatePageCommand(EditPageRequest Payload) : ICommand<Guid>;
 
 public class CreatePageCommandHandler(
     MoongladeRepository<PageEntity> repo,
-    IMediator mediator,
+    ICommandMediator commandMediator,
     ILogger<CreatePageCommandHandler> logger) : ICommandHandler<CreatePageCommand, Guid>
 {
     public async Task<Guid> HandleAsync(CreatePageCommand request, CancellationToken ct)
@@ -18,7 +18,7 @@ public class CreatePageCommandHandler(
         Guid? cssId = null;
         if (!string.IsNullOrWhiteSpace(request.Payload.CssContent))
         {
-            cssId = await mediator.Send(new SaveStyleSheetCommand(Guid.NewGuid(), slug, request.Payload.CssContent), ct);
+            cssId = await commandMediator.SendAsync(new SaveStyleSheetCommand(Guid.NewGuid(), slug, request.Payload.CssContent), ct);
         }
 
         var uid = Guid.NewGuid();

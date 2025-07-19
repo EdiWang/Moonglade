@@ -8,7 +8,7 @@ public record UpdatePageCommand(Guid Id, EditPageRequest Payload) : ICommand<Gui
 
 public class UpdatePageCommandHandler(
     MoongladeRepository<PageEntity> repo,
-    IMediator mediator,
+    ICommandMediator commandMediator,
     ILogger<UpdatePageCommandHandler> logger) : ICommandHandler<UpdatePageCommand, Guid>
 {
     public async Task<Guid> HandleAsync(UpdatePageCommand request, CancellationToken ct)
@@ -20,7 +20,7 @@ public class UpdatePageCommandHandler(
         Guid? cssId = null;
         if (!string.IsNullOrWhiteSpace(request.Payload.CssContent))
         {
-            cssId = await mediator.Send(new SaveStyleSheetCommand(page.Id, slug, request.Payload.CssContent), ct);
+            cssId = await commandMediator.SendAsync(new SaveStyleSheetCommand(page.Id, slug, request.Payload.CssContent), ct);
         }
 
         page.Title = payload.Title.Trim();

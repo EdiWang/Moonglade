@@ -1,17 +1,18 @@
-﻿using Microsoft.Extensions.Logging;
+﻿using LiteBus.Commands.Abstractions;
+using Microsoft.Extensions.Logging;
 using Moonglade.Data;
 using System.Security.Cryptography;
 
 namespace Moonglade.Core;
 
-public record SaveStyleSheetCommand(Guid Id, string Slug, string CssContent) : IRequest<Guid>;
+public record SaveStyleSheetCommand(Guid Id, string Slug, string CssContent) : ICommand<Guid>;
 
 public class SaveStyleSheetCommandHandler(
     MoongladeRepository<StyleSheetEntity> repo,
     ILogger<SaveStyleSheetCommandHandler> logger
-) : IRequestHandler<SaveStyleSheetCommand, Guid>
+) : ICommandHandler<SaveStyleSheetCommand, Guid>
 {
-    public async Task<Guid> Handle(SaveStyleSheetCommand request, CancellationToken cancellationToken)
+    public async Task<Guid> HandleAsync(SaveStyleSheetCommand request, CancellationToken cancellationToken)
     {
         var slug = request.Slug.ToLower().Trim();
         var css = request.CssContent.Trim();
