@@ -1,4 +1,5 @@
-﻿using LiteBus.Queries.Abstractions;
+﻿using LiteBus.Commands.Abstractions;
+using LiteBus.Queries.Abstractions;
 using Moonglade.FriendLink;
 
 namespace Moonglade.Web.Handlers;
@@ -8,7 +9,7 @@ public class FoafMapHandler
     public static Delegate Handler => Handle;
 
     public static async Task Handle(
-        HttpContext httpContext, IBlogConfig blogConfig, IMediator mediator, IQueryMediator queryMediator, LinkGenerator linkGenerator)
+        HttpContext httpContext, IBlogConfig blogConfig, ICommandMediator commandMediator, IQueryMediator queryMediator, LinkGenerator linkGenerator)
     {
         var general = blogConfig.GeneralSettings ?? throw new InvalidOperationException("GeneralSettings is null.");
 
@@ -22,7 +23,7 @@ public class FoafMapHandler
         );
 
         var requestUrl = GetUri(httpContext.Request).ToString();
-        var xml = await mediator.Send(new WriteFoafCommand(foafDoc, requestUrl, friends));
+        var xml = await commandMediator.SendAsync(new WriteFoafCommand(foafDoc, requestUrl, friends));
 
         httpContext.Response.Headers.Append("Cache-Control", "public, max-age=3600");
         httpContext.Response.ContentType = WriteFoafCommand.ContentType;
