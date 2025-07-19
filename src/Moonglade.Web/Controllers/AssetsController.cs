@@ -1,11 +1,12 @@
-﻿using Moonglade.Setup;
+﻿using LiteBus.Queries.Abstractions;
+using Moonglade.Setup;
 using SixLabors.ImageSharp;
 
 namespace Moonglade.Web.Controllers;
 
 [ApiController]
 public class AssetsController(
-    IMediator mediator, IWebHostEnvironment env, ILogger<AssetsController> logger) : ControllerBase
+    IMediator mediator, IQueryMediator queryMediator, IWebHostEnvironment env, ILogger<AssetsController> logger) : ControllerBase
 {
     [HttpGet("avatar")]
     [ResponseCache(Duration = 300)]
@@ -15,7 +16,7 @@ public class AssetsController(
         {
             logger.LogTrace("Avatar not on cache, getting new avatar image...");
 
-            var data = await mediator.Send(new GetAssetQuery(AssetId.AvatarBase64));
+            var data = await queryMediator.QueryAsync(new GetAssetQuery(AssetId.AvatarBase64));
             if (string.IsNullOrWhiteSpace(data)) return null;
 
             var avatarBytes = Convert.FromBase64String(data);
@@ -89,7 +90,7 @@ public class AssetsController(
     [HttpGet("siteicon")]
     public async Task<IActionResult> SiteIconOrigin()
     {
-        var data = await mediator.Send(new GetAssetQuery(AssetId.SiteIconBase64));
+        var data = await queryMediator.QueryAsync(new GetAssetQuery(AssetId.SiteIconBase64));
         var fallbackImageFile = Path.Join($"{env.WebRootPath}", "images", "siteicon-default.png");
         if (string.IsNullOrWhiteSpace(data))
         {

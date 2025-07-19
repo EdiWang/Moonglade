@@ -1,5 +1,6 @@
 ﻿using Edi.PasswordGenerator;
 using LiteBus.Commands.Abstractions;
+using LiteBus.Queries.Abstractions;
 using Microsoft.AspNetCore.Localization;
 using Moonglade.Email.Client;
 
@@ -12,6 +13,7 @@ public class SettingsController(
         IBlogConfig blogConfig,
         ILogger<SettingsController> logger,
         IMediator mediator,
+        IQueryMediator queryMediator,
         ICommandMediator commandMediator) : ControllerBase
 {
     [AllowAnonymous]
@@ -129,7 +131,7 @@ public class SettingsController(
             {
                 try
                 {
-                    var avatarData = await mediator.Send(new GetAssetQuery(AssetId.AvatarBase64));
+                    var avatarData = await queryMediator.QueryAsync(new GetAssetQuery(AssetId.AvatarBase64));
 
                     if (!string.IsNullOrWhiteSpace(avatarData))
                     {
