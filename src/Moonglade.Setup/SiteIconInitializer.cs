@@ -1,5 +1,4 @@
 ﻿using LiteBus.Queries.Abstractions;
-using MediatR;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Logging;
 using Moonglade.Core;
