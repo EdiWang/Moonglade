@@ -5,16 +5,16 @@ using Moonglade.Utils;
 
 namespace Moonglade.Email.Client;
 
-public record CommentNotificationEvent(
+public record CommentEvent(
     string Username,
     string Email,
     string IPAddress,
     string PostTitle,
     string CommentContent) : IEvent;
 
-public class CommentNotificationEventHandler(IMoongladeEmailClient moongladeEmailClient, IBlogConfig blogConfig) : IEventHandler<CommentNotificationEvent>
+public class CommentNotificationEventHandler(IMoongladeEmailClient moongladeEmailClient, IBlogConfig blogConfig) : IEventHandler<CommentEvent>
 {
-    public async Task HandleAsync(CommentNotificationEvent notification, CancellationToken ct)
+    public async Task HandleAsync(CommentEvent notification, CancellationToken ct)
     {
         notification = notification with
         {

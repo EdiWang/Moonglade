@@ -70,7 +70,7 @@ public class CommentController(
         {
             try
             {
-                await eventMediator.PublishAsync(new CommentNotificationEvent(
+                await eventMediator.PublishAsync(new CommentEvent(
                     item.Username,
                     item.Email,
                     item.IpAddress,
@@ -124,7 +124,7 @@ public class CommentController(
 
             try
             {
-                await mediator.Publish(new CommentReplyNotification(
+                await eventMediator.PublishAsync(new CommentReplyEvent(
                     reply.Email,
                     reply.CommentContent,
                     reply.Title,
