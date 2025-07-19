@@ -1,5 +1,4 @@
 ﻿using LiteBus.Events.Abstractions;
-using MediatR;
 using Moonglade.Configuration;
 
 namespace Moonglade.Email.Client;

@@ -1,5 +1,6 @@
 ﻿using Edi.PasswordGenerator;
 using LiteBus.Commands.Abstractions;
+using LiteBus.Events.Abstractions;
 using LiteBus.Queries.Abstractions;
 using Microsoft.AspNetCore.Localization;
 using Moonglade.Email.Client;
@@ -12,7 +13,7 @@ namespace Moonglade.Web.Controllers;
 public class SettingsController(
         IBlogConfig blogConfig,
         ILogger<SettingsController> logger,
-        IMediator mediator,
+        IEventMediator eventMediator,
         IQueryMediator queryMediator,
         ICommandMediator commandMediator) : ControllerBase
 {
@@ -96,7 +97,7 @@ public class SettingsController(
     {
         try
         {
-            await mediator.Publish(new TestNotification());
+            await eventMediator.PublishAsync(new TestEmailEvent());
             return Ok(true);
         }
         catch (Exception e)
