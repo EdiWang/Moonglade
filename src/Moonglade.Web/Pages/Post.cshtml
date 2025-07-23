@@ -1,6 +1,7 @@
 ﻿@page "/post/{year:int:min(1900):length(4)}/{month:int:range(1,12)}/{day:int:range(1,31)}/{slug:regex(^(?!-)([a-zA-Z0-9-]){{1,128}}$)}"
 @model Moonglade.Web.Pages.PostModel
 @using Moonglade.Utils
+@inject IConfiguration Configuration
 
 @Html.AntiForgeryToken()
 
@@ -152,6 +153,8 @@
     <partial name="_PostActions" model="Model.Post" />
 </article>
 
+<div class="@(bool.Parse(Configuration["Post:EnableCommentSectionOnMobile"]) ? null : "d-none d-md-block")">
+
 @if (!Helper.GetAppDomainData<bool>("IsReadonlyMode") && BlogConfig.CommentSettings.EnableComments)
 {
     var days = DateTime.UtcNow.Date.Subtract(Model.Post.PubDateUtc.GetValueOrDefault()).Days;
@@ -208,6 +211,8 @@
         }
     }
 }
+
+</div>
 
 <div class="modal fade" id="imgzoomModal" tabindex="-1" role="dialog" aria-labelledby="imgzoomModalLabel" aria-hidden="true">
     <div class="modal-dialog modal-imgzoom" role="document" style="max-width: 100%">
