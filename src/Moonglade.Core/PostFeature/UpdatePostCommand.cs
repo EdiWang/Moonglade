@@ -83,7 +83,10 @@ public class UpdatePostCommandHandler(
                 configuration.GetValue<EditorChoice>("Post:Editor") == EditorChoice.Markdown)
             : postEditModel.Abstract.Trim();
 
-        if (postEditModel.PostStatus == PostStatusConstants.Published)
+        // Only publish the post if it was not yet published
+        // Otherwise, updating existing post will result in changing publish date and break the slug URL
+        if (post.PostStatus != PostStatusConstants.Published &&
+            postEditModel.PostStatus == PostStatusConstants.Published)
         {
             post.PostStatus = PostStatusConstants.Published;
             post.PubDateUtc = utcNow;
