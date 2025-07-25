@@ -57,8 +57,12 @@ public class PostEditModel
     public DateTime? PublishDate { get; set; }
 
     [Display(Name = "Scheduled Publish Time")]
-    [DataType(DataType.Date)]
+    [DataType(DataType.DateTime)]
     public DateTime? ScheduledPublishTime { get; set; }
+
+    // Only used in editing mode
+    [DataType(DataType.DateTime)]
+    public DateTime? ScheduledPublishTimeUtc { get; set; }
 
     public string ClientTimeZoneId { get; set; }
 

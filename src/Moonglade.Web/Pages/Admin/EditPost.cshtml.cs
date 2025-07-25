@@ -70,7 +70,7 @@ public class EditPostModel(IQueryMediator queryMediator, IBlogConfig blogConfig)
 
         if (post.ScheduledPublishTimeUtc != null)
         {
-            ViewModel.ScheduledPublishTime = post.ScheduledPublishTimeUtc.Value;
+            ViewModel.ScheduledPublishTimeUtc = post.ScheduledPublishTimeUtc.Value;
         }
 
         var tagStr = post.Tags

@@ -104,6 +104,20 @@ function UnpublishPost(postId) {
         });
 }
 
+function setInputDateTime(dateObj, inputElement) {
+    const pad = n => n < 10 ? '0' + n : n;
+
+    const year = dateObj.getFullYear();
+    const month = pad(dateObj.getMonth() + 1); // Months are zero-based!
+    const day = pad(dateObj.getDate());
+    const hours = pad(dateObj.getHours());
+    const minutes = pad(dateObj.getMinutes());
+
+    // No seconds in datetime-local value attribute
+    const localDatetime = `${year}-${month}-${day}T${hours}:${minutes}`;
+    inputElement.value = localDatetime;
+}
+
 function setMinScheduleDate() {
     const now = new Date();
     const minDate = now.toISOString().slice(0, 16); // Format: YYYY-MM-DDTHH:MM
@@ -115,9 +129,23 @@ function updateScheduleInfo() {
 
     const scheduleInfoDiv = document.querySelector('.schedule-info');
     const scheduledTime = document.querySelector('input[name="ViewModel.ScheduledPublishTime"]').value;
+    const scheduledTimeUtc = document.querySelector('input[name="ViewModel.ScheduledPublishTimeUtc"]').value;
 
     if (postStatus === 'scheduled') {
-        scheduleInfoDiv.innerHTML = `<i class="bi-clock"></i> <span>Scheduled for: ${new Date(scheduledTime).toLocaleString()}</span>`;
+        let displayTime;
+
+        if (scheduledTime) {
+            displayTime = new Date(scheduledTime).toLocaleString();
+        }
+        else if (scheduledTimeUtc) {
+            const utcDate = new Date(scheduledTimeUtc);
+            const localDate = new Date(utcDate.getTime() - utcDate.getTimezoneOffset() * 60000);
+            displayTime = localDate.toLocaleString();
+
+            setInputDateTime(localDate, document.querySelector('input[name="ViewModel.ScheduledPublishTime"]'));
+        }
+
+        scheduleInfoDiv.innerHTML = `<i class="bi-clock"></i> <span>Scheduled for: ${displayTime}</span>`;
     } else {
         scheduleInfoDiv.innerHTML = '';
     }

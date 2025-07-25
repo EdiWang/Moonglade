@@ -4,6 +4,7 @@ using LiteBus.Commands.Extensions.MicrosoftDependencyInjection;
 using LiteBus.Events.Extensions.MicrosoftDependencyInjection;
 using LiteBus.Messaging.Extensions.MicrosoftDependencyInjection;
 using LiteBus.Queries.Extensions.MicrosoftDependencyInjection;
+using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.AspNetCore.Rewrite;
 using Moonglade.Comments.Moderator;
 using Moonglade.Data.MySql;
@@ -196,6 +197,11 @@ public class Program
                 options.Conventions.AddPageRoute("/Admin/Post", "admin");
                 options.Conventions.AuthorizeFolder("/Admin");
                 options.Conventions.AuthorizeFolder("/Settings");
+            })
+            .AddViewOptions(options =>
+            {
+                // Fix '__Invariant' form input rendering issue
+                options.HtmlHelperOptions.FormInputRenderMode = FormInputRenderMode.AlwaysUseCurrentCulture;
             });
     }
 

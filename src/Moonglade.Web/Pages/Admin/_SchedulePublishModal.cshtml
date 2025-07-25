@@ -14,7 +14,8 @@
                 </div>
                 <div class="mb-2">
                     <input type="datetime-local" asp-for="ViewModel.ScheduledPublishTime" class="form-control" />
-                    <input type="hidden" asp-for="ViewModel.ClientTimeZoneId" class="form-control" />
+                    <input type="hidden" asp-for="ViewModel.ClientTimeZoneId" />
+                    <input asp-for="ViewModel.ScheduledPublishTimeUtc" class="d-none" />
                 </div>
             </div>
             <div class="modal-footer">
