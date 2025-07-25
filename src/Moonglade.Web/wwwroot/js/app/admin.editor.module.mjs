@@ -126,6 +126,7 @@ export function loadTinyMCE(textareaSelector) {
     const isDarkTheme = preferredTheme === 'dark';
 
     window.tinyMCE.init({
+        license_key: 'gpl', // https://www.tiny.cloud/docs/tinymce/latest/license-key/
         selector: textareaSelector,
         themes: 'silver',
         skin: isDarkTheme ? 'oxide-dark' : 'oxide',
