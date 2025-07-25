@@ -1,4 +1,7 @@
 ﻿using Edi.PasswordGenerator;
+using LiteBus.Commands.Abstractions;
+using LiteBus.Events.Abstractions;
+using LiteBus.Queries.Abstractions;
 using Microsoft.AspNetCore.Localization;
 using Moonglade.Email.Client;
 
@@ -10,7 +13,9 @@ namespace Moonglade.Web.Controllers;
 public class SettingsController(
         IBlogConfig blogConfig,
         ILogger<SettingsController> logger,
-        IMediator mediator) : ControllerBase
+        IEventMediator eventMediator,
+        IQueryMediator queryMediator,
+        ICommandMediator commandMediator) : ControllerBase
 {
     [AllowAnonymous]
     [HttpGet("set-lang")]
@@ -92,7 +97,7 @@ public class SettingsController(
     {
         try
         {
-            await mediator.Publish(new TestNotification());
+            await eventMediator.PublishAsync(new TestEmailEvent());
             return Ok(true);
         }
         catch (Exception e)
@@ -127,7 +132,7 @@ public class SettingsController(
             {
                 try
                 {
-                    var avatarData = await mediator.Send(new GetAssetQuery(AssetId.AvatarBase64));
+                    var avatarData = await queryMediator.QueryAsync(new GetAssetQuery(AssetId.AvatarBase64));
 
                     if (!string.IsNullOrWhiteSpace(avatarData))
                     {
@@ -296,6 +301,6 @@ public class SettingsController(
     private async Task SaveConfigAsync<T>(T blogSettings) where T : IBlogSettings
     {
         var kvp = blogConfig.UpdateAsync(blogSettings);
-        await mediator.Send(new UpdateConfigurationCommand(kvp.Key, kvp.Value));
+        await commandMediator.SendAsync(new UpdateConfigurationCommand(kvp.Key, kvp.Value));
     }
 }

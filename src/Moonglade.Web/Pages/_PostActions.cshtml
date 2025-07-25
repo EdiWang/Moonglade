@@ -4,7 +4,7 @@
 <div class="row g-1 align-items-center post-slug-actions clearfix mb-2 d-print-none">
     <div class="col-md">
         <section class="post-cat-tag-info">
-            <ul class="d-flex flex-row flex-wrap list-unstyled ul-cat-list-desktop mb-0">
+            <ul class="d-flex flex-row flex-wrap list-unstyled ul-cat-list-desktop mb-1">
                 @foreach (var item in Model.PostCategory.Select(p => p.Category))
                 {
                     <li>
@@ -16,7 +16,8 @@
                         </a>
                     </li>
                 }
-
+            </ul>
+            <ul class="d-flex flex-row flex-wrap list-unstyled ul-tag-list-desktop mb-0">
                 @foreach (var item in Model.Tags)
                 {
                     <li>

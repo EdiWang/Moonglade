@@ -1,10 +1,11 @@
+using LiteBus.Queries.Abstractions;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Moonglade.Core.PageFeature;
 using Moonglade.Data.Entities;
 
 namespace Moonglade.Web.Pages;
 
-public class BlogPageModel(IMediator mediator, ICacheAside cache, IConfiguration configuration) : PageModel
+public class BlogPageModel(IQueryMediator queryMediator, ICacheAside cache, IConfiguration configuration) : PageModel
 {
     public PageEntity BlogPage { get; set; }
 
@@ -16,7 +17,7 @@ public class BlogPageModel(IMediator mediator, ICacheAside cache, IConfiguration
         {
             entry.SlidingExpiration = TimeSpan.FromMinutes(int.Parse(configuration["Page:CacheMinutes"]!));
 
-            var p = await mediator.Send(new GetPageBySlugQuery(slug));
+            var p = await queryMediator.QueryAsync(new GetPageBySlugQuery(slug));
             return p;
         });
 

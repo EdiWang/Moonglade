@@ -1,4 +1,4 @@
-﻿using MediatR;
+﻿using LiteBus.Commands.Abstractions;
 using Microsoft.Extensions.Logging;
 using Moonglade.Data;
 using Moonglade.Data.Entities;
@@ -6,13 +6,13 @@ using Moonglade.Data.Specifications;
 
 namespace Moonglade.Comments;
 
-public record ToggleApprovalCommand(Guid[] CommentIds) : IRequest;
+public record ToggleApprovalCommand(Guid[] CommentIds) : ICommand;
 
 public class ToggleApprovalCommandHandler(
     MoongladeRepository<CommentEntity> repo,
-    ILogger<ToggleApprovalCommandHandler> logger) : IRequestHandler<ToggleApprovalCommand>
+    ILogger<ToggleApprovalCommandHandler> logger) : ICommandHandler<ToggleApprovalCommand>
 {
-    public async Task Handle(ToggleApprovalCommand request, CancellationToken ct)
+    public async Task HandleAsync(ToggleApprovalCommand request, CancellationToken ct)
     {
         var spec = new CommentByIdsSepc(request.CommentIds);
         var comments = await repo.ListAsync(spec, ct);

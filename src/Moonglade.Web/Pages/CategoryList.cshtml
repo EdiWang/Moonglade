@@ -44,12 +44,12 @@ else
         if (string.IsNullOrWhiteSpace(slug)) return NotFound();
 
         var pageSize = BlogConfig.ContentSettings.PostListPageSize;
-        Cat = await Mediator.Send(new GetCategoryBySlugQuery(slug));
+        Cat = await QueryMediator.QueryAsync(new GetCategoryBySlugQuery(slug));
 
         if (Cat is null) return NotFound();
 
-        var postCount = await Mediator.Send(new CountPostQuery(CountType.Category, Cat.Id));
-        var postList = await Mediator.Send(new ListPostsQuery(pageSize, P, Cat.Id));
+        var postCount = await QueryMediator.QueryAsync(new CountPostQuery(CountType.Category, Cat.Id));
+        var postList = await QueryMediator.QueryAsync(new ListPostsQuery(pageSize, P, Cat.Id));
 
         Posts = new(postList, P, pageSize, postCount);
         return Page();

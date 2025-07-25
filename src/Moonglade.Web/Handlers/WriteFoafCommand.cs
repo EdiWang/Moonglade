@@ -1,11 +1,12 @@
-﻿using Moonglade.Data.Entities;
+﻿using LiteBus.Commands.Abstractions;
+using Moonglade.Data.Entities;
 using System.Security.Cryptography;
 using System.Xml;
 
 namespace Moonglade.Web.Handlers;
 
 public class WriteFoafCommand(FoafDoc doc, string currentRequestUrl, List<FriendLinkEntity> links)
-    : IRequest<string>
+    : ICommand<string>
 {
     public FoafDoc Doc { get; set; } = doc;
 
@@ -19,7 +20,7 @@ public class WriteFoafCommand(FoafDoc doc, string currentRequestUrl, List<Friend
 /// <summary>
 /// http://xmlns.com/foaf/spec/20140114.html
 /// </summary>
-public class WriteFoafCommandHandler : IRequestHandler<WriteFoafCommand, string>
+public class WriteFoafCommandHandler : ICommandHandler<WriteFoafCommand, string>
 {
     private static Dictionary<string, string> _xmlNamespaces;
     private static Dictionary<string, string> SupportedNamespaces =>
@@ -29,7 +30,7 @@ public class WriteFoafCommandHandler : IRequestHandler<WriteFoafCommand, string>
             { "rdfs", "http://www.w3.org/2000/01/rdf-schema#" }
         };
 
-    public async Task<string> Handle(WriteFoafCommand request, CancellationToken ct)
+    public async Task<string> HandleAsync(WriteFoafCommand request, CancellationToken ct)
     {
         var sw = new StringWriter();
         var writer = await GetWriter(sw);

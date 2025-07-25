@@ -1,14 +1,15 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using LiteBus.Queries.Abstractions;
+using Microsoft.EntityFrameworkCore;
 using Moonglade.Data;
 using System.Text.RegularExpressions;
 
 namespace Moonglade.Core.PostFeature;
 
-public record SearchPostQuery(string Keyword) : IRequest<List<PostDigest>>;
+public record SearchPostQuery(string Keyword) : IQuery<List<PostDigest>>;
 
-public class SearchPostQueryHandler(MoongladeRepository<PostEntity> repo) : IRequestHandler<SearchPostQuery, List<PostDigest>>
+public class SearchPostQueryHandler(MoongladeRepository<PostEntity> repo) : IQueryHandler<SearchPostQuery, List<PostDigest>>
 {
-    public async Task<List<PostDigest>> Handle(SearchPostQuery request, CancellationToken ct)
+    public async Task<List<PostDigest>> HandleAsync(SearchPostQuery request, CancellationToken ct)
     {
         if (string.IsNullOrWhiteSpace(request.Keyword))
         {

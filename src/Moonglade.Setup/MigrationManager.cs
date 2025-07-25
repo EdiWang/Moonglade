@@ -1,4 +1,4 @@
-﻿using MediatR;
+﻿using LiteBus.Commands.Abstractions;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
@@ -16,7 +16,7 @@ public interface IMigrationManager
 
 public partial class MigrationManager(
     ILogger<MigrationManager> logger,
-    IMediator mediator,
+    ICommandMediator commandMediator,
     IConfiguration configuration,
     IBlogConfig blogConfig,
     IHttpClientFactory httpClientFactory) : IMigrationManager
@@ -74,7 +74,7 @@ public partial class MigrationManager(
             blogConfig.SystemManifestSettings.InstallTimeUtc = DateTime.UtcNow;
             var kvp = blogConfig.UpdateAsync(blogConfig.SystemManifestSettings);
 
-            await mediator.Send(new UpdateConfigurationCommand(kvp.Key, kvp.Value));
+            await commandMediator.SendAsync(new UpdateConfigurationCommand(kvp.Key, kvp.Value));
             logger.LogInformation("Database migration completed successfully.");
         }
         catch (Exception ex)

@@ -1,11 +1,12 @@
-﻿using Moonglade.Data.Exporting;
+﻿using LiteBus.Commands.Abstractions;
+using Moonglade.Data.Exporting;
 
 namespace Moonglade.Web.Controllers;
 
 [Authorize]
 [ApiController]
 [Route("api/[controller]")]
-public class DataPortingController(IMediator mediator) : ControllerBase
+public class DataPortingController(ICommandMediator commandMediator) : ControllerBase
 {
     [HttpGet("export/{type}")]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
@@ -13,8 +14,8 @@ public class DataPortingController(IMediator mediator) : ControllerBase
     {
         var exportResult = type switch
         {
-            ExportType.Pages => await mediator.Send(new ExportPageDataCommand(), ct),
-            ExportType.Posts => await mediator.Send(new ExportPostDataCommand(), ct),
+            ExportType.Pages => await commandMediator.SendAsync(new ExportPageDataCommand(), ct),
+            ExportType.Posts => await commandMediator.SendAsync(new ExportPostDataCommand(), ct),
             _ => throw new ArgumentOutOfRangeException(nameof(type), type, null)
         };
 

@@ -1,4 +1,5 @@
-﻿using Moonglade.Data;
+﻿using LiteBus.Queries.Abstractions;
+using Moonglade.Data;
 using Moonglade.Data.Specifications;
 
 namespace Moonglade.Core.PostFeature;
@@ -11,15 +12,15 @@ public enum CountType
     Featured
 }
 
-public record CountPostQuery(CountType CountType, Guid? CatId = null, int? TagId = null) : IRequest<int>;
+public record CountPostQuery(CountType CountType, Guid? CatId = null, int? TagId = null) : IQuery<int>;
 
 public class CountPostQueryHandler(
     MoongladeRepository<PostEntity> postRepo,
     MoongladeRepository<PostTagEntity> postTagRepo,
     MoongladeRepository<PostCategoryEntity> postCatRepo)
-    : IRequestHandler<CountPostQuery, int>
+    : IQueryHandler<CountPostQuery, int>
 {
-    public async Task<int> Handle(CountPostQuery request, CancellationToken ct)
+    public async Task<int> HandleAsync(CountPostQuery request, CancellationToken ct)
     {
         return request.CountType switch
         {

@@ -1,18 +1,19 @@
-﻿using Microsoft.Extensions.Logging;
+﻿using LiteBus.Commands.Abstractions;
+using Microsoft.Extensions.Logging;
 using Moonglade.Data;
 using Moonglade.Data.Specifications;
 
 namespace Moonglade.Core.TagFeature;
 
-public record DeleteTagCommand(int Id) : IRequest<OperationCode>;
+public record DeleteTagCommand(int Id) : ICommand<OperationCode>;
 
 public class DeleteTagCommandHandler(
     MoongladeRepository<TagEntity> tagRepo,
     MoongladeRepository<PostTagEntity> postTagRepo,
     ILogger<DeleteTagCommandHandler> logger)
-    : IRequestHandler<DeleteTagCommand, OperationCode>
+    : ICommandHandler<DeleteTagCommand, OperationCode>
 {
-    public async Task<OperationCode> Handle(DeleteTagCommand request, CancellationToken ct)
+    public async Task<OperationCode> HandleAsync(DeleteTagCommand request, CancellationToken ct)
     {
         var tag = await tagRepo.GetByIdAsync(request.Id, ct);
         if (null == tag) return OperationCode.ObjectNotFound;

@@ -15,7 +15,6 @@
         <Using Include="System.Text" />
         <Using Include="Microsoft.AspNetCore.Mvc" />
         <Using Include="Microsoft.AspNetCore.Authorization" />
-        <Using Include="MediatR" />
         <Using Include="Moonglade.Data.Entities" />
     </ItemGroup>
     <ItemGroup>

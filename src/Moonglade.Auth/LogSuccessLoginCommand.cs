@@ -1,13 +1,14 @@
-﻿using Moonglade.Data;
+﻿using LiteBus.Commands.Abstractions;
+using Moonglade.Data;
 using Moonglade.Data.Entities;
 
 namespace Moonglade.Auth;
 
-public record LogSuccessLoginCommand(string IpAddress, string UserAgent, string DeviceFingerprint) : IRequest;
+public record LogSuccessLoginCommand(string IpAddress, string UserAgent, string DeviceFingerprint) : ICommand;
 
-public class LogSuccessLoginCommandHandler(MoongladeRepository<LoginHistoryEntity> repo) : IRequestHandler<LogSuccessLoginCommand>
+public class LogSuccessLoginCommandHandler(MoongladeRepository<LoginHistoryEntity> repo) : ICommandHandler<LogSuccessLoginCommand>
 {
-    public async Task Handle(LogSuccessLoginCommand request, CancellationToken ct)
+    public async Task HandleAsync(LogSuccessLoginCommand request, CancellationToken ct)
     {
         var entity = new LoginHistoryEntity
         {

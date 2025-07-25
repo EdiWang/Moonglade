@@ -5,7 +5,7 @@
 
 @{
     ViewBag.Title = "Scheduled";
-    var posts = await Mediator.Send(new ListPostSegmentByStatusQuery(PostStatus.Scheduled));
+    var posts = await QueryMediator.QueryAsync(new ListPostSegmentByStatusQuery(PostStatus.Scheduled));
 }
 
 @section scripts {

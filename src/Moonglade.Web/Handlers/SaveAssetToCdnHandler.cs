@@ -1,12 +1,15 @@
-﻿namespace Moonglade.Web.Handlers;
+﻿using LiteBus.Commands.Abstractions;
+using LiteBus.Events.Abstractions;
+
+namespace Moonglade.Web.Handlers;
 
 public class SaveAssetToCdnHandler(
     ILogger<SaveAssetToCdnHandler> logger,
     IBlogImageStorage imageStorage,
     IBlogConfig blogConfig,
-    IMediator mediator) : INotificationHandler<SaveAssetCommand>
+    ICommandMediator commandMediator) : IEventHandler<SaveAssetEvent>
 {
-    public async Task Handle(SaveAssetCommand request, CancellationToken ct)
+    public async Task HandleAsync(SaveAssetEvent request, CancellationToken ct)
     {
         // Only process avatar asset
         if (request.AssetId != AssetId.AvatarBase64)
@@ -38,7 +41,7 @@ public class SaveAssetToCdnHandler(
 
         // Persist the new configuration
         var (key, value) = blogConfig.UpdateAsync(blogConfig.GeneralSettings);
-        await mediator.Send(new UpdateConfigurationCommand(key, value), ct);
+        await commandMediator.SendAsync(new UpdateConfigurationCommand(key, value), ct);
 
         logger.LogInformation("Avatar updated and saved to CDN. URL: {AvatarUrl}", cdnUrl);
     }

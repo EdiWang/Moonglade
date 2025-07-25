@@ -1,19 +1,20 @@
-﻿using Microsoft.Extensions.Logging;
+﻿using LiteBus.Commands.Abstractions;
+using Microsoft.Extensions.Logging;
 using Moonglade.Data;
 using System.Collections.Concurrent;
 
 namespace Moonglade.Core.PostFeature;
 
-public record AddViewCountCommand(Guid PostId, string Ip) : IRequest<int>;
+public record AddViewCountCommand(Guid PostId, string Ip) : ICommand<int>;
 
 public class AddViewCountCommandHandler(
     MoongladeRepository<PostViewEntity> postViewRepo,
-    ILogger<AddViewCountCommandHandler> logger) : IRequestHandler<AddViewCountCommand, int>
+    ILogger<AddViewCountCommandHandler> logger) : ICommandHandler<AddViewCountCommand, int>
 {
     // Ugly code to prevent race condition, which will make Moonglade a single instance application, shit
     private static readonly ConcurrentDictionary<Guid, SemaphoreSlim> _locks = new();
 
-    public async Task<int> Handle(AddViewCountCommand request, CancellationToken cancellationToken)
+    public async Task<int> HandleAsync(AddViewCountCommand request, CancellationToken cancellationToken)
     {
         var postLock = _locks.GetOrAdd(request.PostId, _ => new SemaphoreSlim(1, 1));
         await postLock.WaitAsync(cancellationToken);

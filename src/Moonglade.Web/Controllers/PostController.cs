@@ -1,4 +1,5 @@
-﻿using Moonglade.Core.PostFeature;
+﻿using LiteBus.Commands.Abstractions;
+using Moonglade.Core.PostFeature;
 using Moonglade.IndexNow.Client;
 using Moonglade.Pingback;
 using Moonglade.Web.Attributes;
@@ -12,7 +13,7 @@ namespace Moonglade.Web.Controllers;
 [Route("api/[controller]")]
 public class PostController(
         IConfiguration configuration,
-        IMediator mediator,
+        ICommandMediator commandMediator,
         IBlogConfig blogConfig,
         ILogger<PostController> logger,
         CannonService cannonService) : ControllerBase
@@ -63,8 +64,8 @@ public class PostController(
             }
 
             var postEntity = model.PostId == Guid.Empty ?
-                await mediator.Send(new CreatePostCommand(model)) :
-                await mediator.Send(new UpdatePostCommand(model.PostId, model));
+                await commandMediator.SendAsync(new CreatePostCommand(model)) :
+                await commandMediator.SendAsync(new UpdatePostCommand(model.PostId, model));
 
             if (model.PostStatus != PostStatusConstants.Published)
             {
@@ -127,7 +128,7 @@ public class PostController(
     [ProducesResponseType(StatusCodes.Status204NoContent)]
     public async Task<IActionResult> Delete([NotEmpty] Guid postId)
     {
-        await mediator.Send(new DeletePostCommand(postId, true));
+        await commandMediator.SendAsync(new DeletePostCommand(postId, true));
         return NoContent();
     }
 
@@ -137,7 +138,7 @@ public class PostController(
     [ProducesResponseType(StatusCodes.Status204NoContent)]
     public async Task<IActionResult> Publish([NotEmpty] Guid postId)
     {
-        await mediator.Send(new PublishPostCommand(postId));
+        await commandMediator.SendAsync(new PublishPostCommand(postId));
         return NoContent();
     }
 
@@ -147,7 +148,7 @@ public class PostController(
     [ProducesResponseType(StatusCodes.Status204NoContent)]
     public async Task<IActionResult> Unpublish([NotEmpty] Guid postId)
     {
-        await mediator.Send(new UnpublishPostCommand(postId));
+        await commandMediator.SendAsync(new UnpublishPostCommand(postId));
         return NoContent();
     }
 
@@ -156,7 +157,7 @@ public class PostController(
     [ProducesResponseType(StatusCodes.Status204NoContent)]
     public async Task<IActionResult> Postpone([NotEmpty] Guid postId, [FromQuery][Range(1, 24)] int hours = 24)
     {
-        await mediator.Send(new PostponePostCommand(postId, hours));
+        await commandMediator.SendAsync(new PostponePostCommand(postId, hours));
         return NoContent();
     }
 

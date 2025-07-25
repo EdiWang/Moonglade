@@ -1,4 +1,5 @@
-﻿using Moonglade.Core.CategoryFeature;
+﻿using LiteBus.Queries.Abstractions;
+using Moonglade.Core.CategoryFeature;
 using Moonglade.Syndication;
 using System.ComponentModel.DataAnnotations;
 
@@ -8,14 +9,14 @@ namespace Moonglade.Web.Controllers;
 public class SubscriptionController(
         IBlogConfig blogConfig,
         ICacheAside cache,
-        IMediator mediator) : ControllerBase
+        IQueryMediator queryMediator) : ControllerBase
 {
     [HttpGet("opml")]
     public async Task<IActionResult> Opml()
     {
         if (!blogConfig.AdvancedSettings.EnableOpml) return NotFound();
 
-        var cats = await mediator.Send(new GetCategoriesQuery());
+        var cats = await queryMediator.QueryAsync(new GetCategoriesQuery());
         var catInfos = cats.Select(c => new KeyValuePair<string, string>(c.DisplayName, c.Slug));
         var rootUrl = Helper.ResolveRootUrl(HttpContext, blogConfig.GeneralSettings.CanonicalPrefix);
 
@@ -29,7 +30,7 @@ public class SubscriptionController(
             HtmlUrlTemplate = $"{rootUrl}/category/[catTitle]"
         };
 
-        var xml = await mediator.Send(new GetOpmlQuery(oi));
+        var xml = await queryMediator.QueryAsync(new GetOpmlQuery(oi));
         return Content(xml, "text/xml");
     }
 
@@ -44,7 +45,7 @@ public class SubscriptionController(
             {
                 entry.SlidingExpiration = TimeSpan.FromHours(1);
 
-                var xml = await mediator.Send(new GetRssStringQuery(slug));
+                var xml = await queryMediator.QueryAsync(new GetRssStringQuery(slug));
                 if (string.IsNullOrWhiteSpace(xml))
                 {
                     return (IActionResult)NotFound();
@@ -65,7 +66,7 @@ public class SubscriptionController(
         {
             entry.SlidingExpiration = TimeSpan.FromHours(1);
 
-            var xml = await mediator.Send(new GetAtomStringQuery(slug));
+            var xml = await queryMediator.QueryAsync(new GetAtomStringQuery(slug));
             return Content(xml, "text/xml");
         });
     }

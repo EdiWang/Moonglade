@@ -1,4 +1,4 @@
-﻿using MediatR;
+﻿using LiteBus.Commands.Abstractions;
 using Microsoft.Extensions.Logging;
 using Moonglade.Data;
 using Moonglade.Data.Entities;
@@ -9,7 +9,7 @@ using System.Xml;
 
 namespace Moonglade.Pingback;
 
-public class ReceivePingCommand(string requestBody, string ip) : IRequest<PingbackResponse>
+public class ReceivePingCommand(string requestBody, string ip) : ICommand<PingbackResponse>
 {
     public string RequestBody { get; set; } = requestBody;
 
@@ -20,12 +20,12 @@ public class ReceivePingCommandHandler(
         ILogger<ReceivePingCommandHandler> logger,
         IMentionSourceInspector sourceInspector,
         MoongladeRepository<MentionEntity> mentionRepo,
-        MoongladeRepository<PostEntity> postRepo) : IRequestHandler<ReceivePingCommand, PingbackResponse>
+        MoongladeRepository<PostEntity> postRepo) : ICommandHandler<ReceivePingCommand, PingbackResponse>
 {
     private string _sourceUrl;
     private string _targetUrl;
 
-    public async Task<PingbackResponse> Handle(ReceivePingCommand request, CancellationToken ct)
+    public async Task<PingbackResponse> HandleAsync(ReceivePingCommand request, CancellationToken ct)
     {
         try
         {

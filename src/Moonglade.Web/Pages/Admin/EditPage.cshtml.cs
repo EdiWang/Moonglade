@@ -1,10 +1,11 @@
+using LiteBus.Queries.Abstractions;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Moonglade.Core.PageFeature;
 using Moonglade.Data.Entities;
 
 namespace Moonglade.Web.Pages.Admin;
 
-public class EditPageModel(IMediator mediator) : PageModel
+public class EditPageModel(IQueryMediator queryMediator) : PageModel
 {
     public Guid PageId { get; set; }
 
@@ -14,13 +15,13 @@ public class EditPageModel(IMediator mediator) : PageModel
     {
         if (id is null) return Page();
 
-        var page = await mediator.Send(new GetPageByIdQuery(id.Value));
+        var page = await queryMediator.QueryAsync(new GetPageByIdQuery(id.Value));
         if (page is null) return NotFound();
 
         StyleSheetEntity css = null;
         if (!string.IsNullOrWhiteSpace(page.CssId))
         {
-            css = await mediator.Send(new GetStyleSheetQuery(Guid.Parse(page.CssId)));
+            css = await queryMediator.QueryAsync(new GetStyleSheetQuery(Guid.Parse(page.CssId)));
         }
 
         PageId = page.Id;

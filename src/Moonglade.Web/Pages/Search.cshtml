@@ -38,7 +38,7 @@ else
 
         ViewData["TitlePrefix"] = term;
 
-        var posts = await Mediator.Send(new SearchPostQuery(term));
+        var posts = await QueryMediator.QueryAsync(new SearchPostQuery(term));
         Posts = posts;
 
         return Page();

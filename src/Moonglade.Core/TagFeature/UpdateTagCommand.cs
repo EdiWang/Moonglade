@@ -1,16 +1,17 @@
-﻿using Microsoft.Extensions.Logging;
+﻿using LiteBus.Commands.Abstractions;
+using Microsoft.Extensions.Logging;
 using Moonglade.Data;
 using Moonglade.Utils;
 
 namespace Moonglade.Core.TagFeature;
 
-public record UpdateTagCommand(int Id, string Name) : IRequest<OperationCode>;
+public record UpdateTagCommand(int Id, string Name) : ICommand<OperationCode>;
 
 public class UpdateTagCommandHandler(
     MoongladeRepository<TagEntity> repo,
-    ILogger<UpdateTagCommandHandler> logger) : IRequestHandler<UpdateTagCommand, OperationCode>
+    ILogger<UpdateTagCommandHandler> logger) : ICommandHandler<UpdateTagCommand, OperationCode>
 {
-    public async Task<OperationCode> Handle(UpdateTagCommand request, CancellationToken ct)
+    public async Task<OperationCode> HandleAsync(UpdateTagCommand request, CancellationToken ct)
     {
         var (id, name) = request;
         var tag = await repo.GetByIdAsync(id, ct);

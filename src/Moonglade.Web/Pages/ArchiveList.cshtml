@@ -43,13 +43,13 @@
         {
             // {year}/{month}
             ArchiveInfo = new DateTime(year, month.Value, 1).ToString("MMMM yyyy");
-            model = await Mediator.Send(new ListArchiveQuery(year, month));
+            model = await QueryMediator.QueryAsync(new ListArchiveQuery(year, month));
         }
         else
         {
             // {year}
             ArchiveInfo = $"{year}";
-            model = await Mediator.Send(new ListArchiveQuery(year));
+            model = await QueryMediator.QueryAsync(new ListArchiveQuery(year));
         }
 
         Posts = model;

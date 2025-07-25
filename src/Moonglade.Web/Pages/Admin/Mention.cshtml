@@ -2,7 +2,7 @@
 @using Moonglade.Mention.Common
 @{
     ViewBag.Title = "Mentions";
-    var mentionRecords = await Mediator.Send(new GetMentionsQuery());
+    var mentionRecords = await QueryMediator.QueryAsync(new GetMentionsQuery());
 }
 
 @Html.AntiForgeryToken()

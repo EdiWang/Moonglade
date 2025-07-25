@@ -1,4 +1,4 @@
-﻿using MediatR;
+﻿using LiteBus.Commands.Abstractions;
 using Microsoft.Extensions.Logging;
 using Moonglade.Data;
 using Moonglade.Data.Entities;
@@ -6,13 +6,13 @@ using Moonglade.Utils;
 
 namespace Moonglade.FriendLink;
 
-public record UpdateLinkCommand(Guid Id, EditLinkRequest Payload) : IRequest;
+public record UpdateLinkCommand(Guid Id, EditLinkRequest Payload) : ICommand;
 
 public class UpdateLinkCommandHandler(
     MoongladeRepository<FriendLinkEntity> repo,
-    ILogger<UpdateLinkCommandHandler> logger) : IRequestHandler<UpdateLinkCommand>
+    ILogger<UpdateLinkCommandHandler> logger) : ICommandHandler<UpdateLinkCommand>
 {
-    public async Task Handle(UpdateLinkCommand request, CancellationToken ct)
+    public async Task HandleAsync(UpdateLinkCommand request, CancellationToken ct)
     {
         if (!Uri.IsWellFormedUriString(request.Payload.LinkUrl, UriKind.Absolute))
         {

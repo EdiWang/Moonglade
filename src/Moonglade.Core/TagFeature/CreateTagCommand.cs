@@ -1,17 +1,18 @@
-﻿using Microsoft.Extensions.Logging;
+﻿using LiteBus.Commands.Abstractions;
+using Microsoft.Extensions.Logging;
 using Moonglade.Data;
 using Moonglade.Data.Specifications;
 using Moonglade.Utils;
 
 namespace Moonglade.Core.TagFeature;
 
-public record CreateTagCommand(string Name) : IRequest;
+public record CreateTagCommand(string Name) : ICommand;
 
 public class CreateTagCommandHandler(
     MoongladeRepository<TagEntity> repo,
-    ILogger<CreateTagCommandHandler> logger) : IRequestHandler<CreateTagCommand>
+    ILogger<CreateTagCommandHandler> logger) : ICommandHandler<CreateTagCommand>
 {
-    public async Task Handle(CreateTagCommand request, CancellationToken ct)
+    public async Task HandleAsync(CreateTagCommand request, CancellationToken ct)
     {
         var normalizedName = Helper.NormalizeName(request.Name, Helper.TagNormalizationDictionary);
 

@@ -1,4 +1,6 @@
-﻿using Moonglade.Core.PageFeature;
+﻿using LiteBus.Commands.Abstractions;
+using LiteBus.Queries.Abstractions;
+using Moonglade.Core.PageFeature;
 using Moonglade.Web.Attributes;
 
 namespace Moonglade.Web.Controllers;
@@ -6,7 +8,7 @@ namespace Moonglade.Web.Controllers;
 [Authorize]
 [ApiController]
 [Route("api/[controller]")]
-public class PageController(ICacheAside cache, IMediator mediator) : Controller
+public class PageController(ICacheAside cache, IQueryMediator queryMediator, ICommandMediator commandMediator) : Controller
 {
     [HttpPost]
     [ReadonlyMode]
@@ -14,7 +16,7 @@ public class PageController(ICacheAside cache, IMediator mediator) : Controller
     [ProducesResponseType(StatusCodes.Status200OK)]
     public async Task<IActionResult> Create(EditPageRequest model)
     {
-        var uid = await mediator.Send(new CreatePageCommand(model));
+        var uid = await commandMediator.SendAsync(new CreatePageCommand(model));
 
         cache.Remove(BlogCachePartition.Page.ToString(), model.Slug.ToLower());
         return Ok(new { PageId = uid });
@@ -26,7 +28,7 @@ public class PageController(ICacheAside cache, IMediator mediator) : Controller
     [ProducesResponseType(StatusCodes.Status200OK)]
     public async Task<IActionResult> Edit([NotEmpty] Guid id, EditPageRequest model)
     {
-        var uid = await mediator.Send(new UpdatePageCommand(id, model));
+        var uid = await commandMediator.SendAsync(new UpdatePageCommand(id, model));
 
         cache.Remove(BlogCachePartition.Page.ToString(), model.Slug.ToLower());
         return Ok(new { PageId = uid });
@@ -37,10 +39,10 @@ public class PageController(ICacheAside cache, IMediator mediator) : Controller
     [ApiConventionMethod(typeof(DefaultApiConventions), nameof(DefaultApiConventions.Delete))]
     public async Task<IActionResult> Delete([NotEmpty] Guid id)
     {
-        var page = await mediator.Send(new GetPageByIdQuery(id));
+        var page = await queryMediator.QueryAsync(new GetPageByIdQuery(id));
         if (page == null) return NotFound();
 
-        await mediator.Send(new DeletePageCommand(id));
+        await commandMediator.SendAsync(new DeletePageCommand(id));
 
         cache.Remove(BlogCachePartition.Page.ToString(), page.Slug);
         return NoContent();

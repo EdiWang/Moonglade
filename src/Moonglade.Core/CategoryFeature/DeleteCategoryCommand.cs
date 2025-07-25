@@ -1,18 +1,19 @@
 ﻿using Edi.CacheAside.InMemory;
+using LiteBus.Commands.Abstractions;
 using Microsoft.Extensions.Logging;
 using Moonglade.Data;
 
 namespace Moonglade.Core.CategoryFeature;
 
-public record DeleteCategoryCommand(Guid Id) : IRequest<OperationCode>;
+public record DeleteCategoryCommand(Guid Id) : ICommand<OperationCode>;
 
 public class DeleteCategoryCommandHandler(
     MoongladeRepository<CategoryEntity> catRepo,
     ICacheAside cache,
     ILogger<DeleteCategoryCommandHandler> logger)
-    : IRequestHandler<DeleteCategoryCommand, OperationCode>
+    : ICommandHandler<DeleteCategoryCommand, OperationCode>
 {
-    public async Task<OperationCode> Handle(DeleteCategoryCommand request, CancellationToken ct)
+    public async Task<OperationCode> HandleAsync(DeleteCategoryCommand request, CancellationToken ct)
     {
         var cat = await catRepo.GetByIdAsync(request.Id, ct);
         if (null == cat) return OperationCode.ObjectNotFound;

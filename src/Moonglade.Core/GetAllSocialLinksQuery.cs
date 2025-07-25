@@ -1,12 +1,13 @@
-﻿using Moonglade.Configuration;
+﻿using LiteBus.Queries.Abstractions;
+using Moonglade.Configuration;
 
 namespace Moonglade.Core;
 
-public record GetAllSocialLinksQuery : IRequest<SocialLink[]>;
+public record GetAllSocialLinksQuery : IQuery<SocialLink[]>;
 
-public class GetAllSocialLinksQueryHandler(IBlogConfig blogConfig) : IRequestHandler<GetAllSocialLinksQuery, SocialLink[]>
+public class GetAllSocialLinksQueryHandler(IBlogConfig blogConfig) : IQueryHandler<GetAllSocialLinksQuery, SocialLink[]>
 {
-    public Task<SocialLink[]> Handle(GetAllSocialLinksQuery request, CancellationToken ct)
+    public Task<SocialLink[]> HandleAsync(GetAllSocialLinksQuery request, CancellationToken ct)
     {
         var section = blogConfig.SocialLinkSettings;
 

@@ -1,12 +1,13 @@
-﻿using Moonglade.Data;
+﻿using LiteBus.Events.Abstractions;
+using Moonglade.Data;
 
 namespace Moonglade.Core;
 
-public record SaveAssetCommand(Guid AssetId, string AssetBase64) : INotification;
+public record SaveAssetEvent(Guid AssetId, string AssetBase64) : IEvent;
 
-public class SaveAssetCommandHandler(MoongladeRepository<BlogAssetEntity> repo) : INotificationHandler<SaveAssetCommand>
+public class SaveAssetEventHandler(MoongladeRepository<BlogAssetEntity> repo) : IEventHandler<SaveAssetEvent>
 {
-    public async Task Handle(SaveAssetCommand request, CancellationToken ct)
+    public async Task HandleAsync(SaveAssetEvent request, CancellationToken ct)
     {
         if (request.AssetId == Guid.Empty) throw new ArgumentOutOfRangeException(nameof(request.AssetId));
         if (string.IsNullOrWhiteSpace(request.AssetBase64)) throw new ArgumentNullException(nameof(request.AssetBase64));

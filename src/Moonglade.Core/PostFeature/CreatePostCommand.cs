@@ -1,4 +1,5 @@
-﻿using Microsoft.Extensions.Configuration;
+﻿using LiteBus.Commands.Abstractions;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
 using Moonglade.Configuration;
 using Moonglade.Data;
@@ -7,7 +8,7 @@ using Moonglade.Utils;
 
 namespace Moonglade.Core.PostFeature;
 
-public record CreatePostCommand(PostEditModel Payload) : IRequest<PostEntity>;
+public record CreatePostCommand(PostEditModel Payload) : ICommand<PostEntity>;
 
 public class CreatePostCommandHandler(
         MoongladeRepository<PostEntity> postRepo,
@@ -15,9 +16,9 @@ public class CreatePostCommandHandler(
         ILogger<CreatePostCommandHandler> logger,
         IConfiguration configuration,
         IBlogConfig blogConfig)
-    : IRequestHandler<CreatePostCommand, PostEntity>
+    : ICommandHandler<CreatePostCommand, PostEntity>
 {
-    public async Task<PostEntity> Handle(CreatePostCommand request, CancellationToken ct)
+    public async Task<PostEntity> HandleAsync(CreatePostCommand request, CancellationToken ct)
     {
         string abs;
         if (string.IsNullOrEmpty(request.Payload.Abstract))

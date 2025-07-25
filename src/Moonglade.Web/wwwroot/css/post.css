@@ -22,7 +22,8 @@
     width: max-content;
 }
 
-.ul-cat-list-desktop a.btn {
+.ul-cat-list-desktop a.btn,
+.ul-tag-list-desktop a.btn {
     margin-right: 10px;
 }
 

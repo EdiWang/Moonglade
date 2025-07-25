@@ -35,7 +35,7 @@
 
     public async Task<IActionResult> OnGetAsync(Guid pageId)
     {
-        var page = await Mediator.Send(new GetPageByIdQuery(pageId));
+        var page = await QueryMediator.QueryAsync(new GetPageByIdQuery(pageId));
         if (page is null) return NotFound();
 
         BlogPage = page;

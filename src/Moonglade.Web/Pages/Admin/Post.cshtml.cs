@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc.RazorPages;
+﻿using LiteBus.Queries.Abstractions;
+using Microsoft.AspNetCore.Mvc.RazorPages;
 using Moonglade.Core.PostFeature;
 using Moonglade.Data.Specifications;
 using Moonglade.Web.PagedList;
@@ -6,7 +7,7 @@ using System.ComponentModel.DataAnnotations;
 
 namespace Moonglade.Web.Pages.Admin;
 
-public class PostModel(IMediator mediator) : PageModel
+public class PostModel(IQueryMediator queryMediator) : PageModel
 {
     private const int PageSize = 4;
 
@@ -27,7 +28,7 @@ public class PostModel(IMediator mediator) : PageModel
 
     private async Task GetPosts(int pageIndex)
     {
-        var (posts, totalRows) = await mediator.Send(new ListPostSegmentQuery(PostStatus.Published, (pageIndex - 1) * PageSize, PageSize, SearchTerm));
+        var (posts, totalRows) = await queryMediator.QueryAsync(new ListPostSegmentQuery(PostStatus.Published, (pageIndex - 1) * PageSize, PageSize, SearchTerm));
         PostSegments = new(posts, pageIndex, PageSize, totalRows);
     }
 }

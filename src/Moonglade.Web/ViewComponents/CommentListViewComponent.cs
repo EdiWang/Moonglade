@@ -1,6 +1,8 @@
-﻿namespace Moonglade.Web.ViewComponents;
+﻿using LiteBus.Queries.Abstractions;
 
-public class CommentListViewComponent(ILogger<CommentListViewComponent> logger, IMediator mediator) : ViewComponent
+namespace Moonglade.Web.ViewComponents;
+
+public class CommentListViewComponent(ILogger<CommentListViewComponent> logger, IQueryMediator queryMediator) : ViewComponent
 {
     public async Task<IViewComponentResult> InvokeAsync(Guid postId)
     {
@@ -12,7 +14,7 @@ public class CommentListViewComponent(ILogger<CommentListViewComponent> logger, 
                 throw new ArgumentOutOfRangeException(nameof(postId));
             }
 
-            var comments = await mediator.Send(new GetApprovedCommentsQuery(postId));
+            var comments = await queryMediator.QueryAsync(new GetApprovedCommentsQuery(postId));
             return View(comments);
         }
         catch (Exception e)

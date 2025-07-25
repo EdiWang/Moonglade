@@ -1,12 +1,13 @@
-﻿using Moonglade.Data;
+﻿using LiteBus.Queries.Abstractions;
+using Moonglade.Data;
 
 namespace Moonglade.Core;
 
-public record GetAssetQuery(Guid AssetId) : IRequest<string>;
+public record GetAssetQuery(Guid AssetId) : IQuery<string>;
 
-public class GetAssetQueryHandler(MoongladeRepository<BlogAssetEntity> repo) : IRequestHandler<GetAssetQuery, string>
+public class GetAssetQueryHandler(MoongladeRepository<BlogAssetEntity> repo) : IQueryHandler<GetAssetQuery, string>
 {
-    public async Task<string> Handle(GetAssetQuery request, CancellationToken ct)
+    public async Task<string> HandleAsync(GetAssetQuery request, CancellationToken ct)
     {
         var asset = await repo.GetByIdAsync(request.AssetId, ct);
         return asset?.Base64Data;

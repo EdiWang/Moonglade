@@ -1,16 +1,17 @@
-﻿using Microsoft.Extensions.Logging;
+﻿using LiteBus.Commands.Abstractions;
+using Microsoft.Extensions.Logging;
 using Moonglade.Data;
 
 namespace Moonglade.Core;
 
-public record DeleteStyleSheetCommand(Guid Id) : IRequest;
+public record DeleteStyleSheetCommand(Guid Id) : ICommand;
 
 public class DeleteStyleSheetCommandHandler(
     MoongladeRepository<StyleSheetEntity> repo,
     ILogger<DeleteStyleSheetCommandHandler> logger
-    ) : IRequestHandler<DeleteStyleSheetCommand>
+    ) : ICommandHandler<DeleteStyleSheetCommand>
 {
-    public async Task Handle(DeleteStyleSheetCommand request, CancellationToken ct)
+    public async Task HandleAsync(DeleteStyleSheetCommand request, CancellationToken ct)
     {
         var styleSheet = await repo.GetByIdAsync(request.Id, ct);
         if (styleSheet is null)

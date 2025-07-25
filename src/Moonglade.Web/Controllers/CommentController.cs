@@ -1,4 +1,6 @@
-﻿using Microsoft.AspNetCore.Mvc.ModelBinding;
+﻿using LiteBus.Commands.Abstractions;
+using LiteBus.Events.Abstractions;
+using Microsoft.AspNetCore.Mvc.ModelBinding;
 using Moonglade.Comments.Moderator;
 using Moonglade.Email.Client;
 using Moonglade.Web.Attributes;
@@ -11,7 +13,8 @@ namespace Moonglade.Web.Controllers;
 [Route("api/[controller]")]
 [CommentProviderGate]
 public class CommentController(
-        IMediator mediator,
+        IEventMediator eventMediator,
+        ICommandMediator commandMediator,
         IModeratorService moderator,
         IBlogConfig blogConfig,
         ILogger<CommentController> logger) : ControllerBase
@@ -54,7 +57,7 @@ public class CommentController(
         }
 
         var ip = Helper.GetClientIP(HttpContext);
-        var item = await mediator.Send(new CreateCommentCommand(postId, request, ip));
+        var item = await commandMediator.SendAsync(new CreateCommentCommand(postId, request, ip));
 
         if (null == item)
         {
@@ -66,7 +69,7 @@ public class CommentController(
         {
             try
             {
-                await mediator.Publish(new CommentNotification(
+                await eventMediator.PublishAsync(new CommentEvent(
                     item.Username,
                     item.Email,
                     item.IpAddress,
@@ -91,7 +94,7 @@ public class CommentController(
     [ProducesResponseType<Guid>(StatusCodes.Status200OK)]
     public async Task<IActionResult> Approval([NotEmpty] Guid commentId)
     {
-        await mediator.Send(new ToggleApprovalCommand([commentId]));
+        await commandMediator.SendAsync(new ToggleApprovalCommand([commentId]));
         return Ok(commentId);
     }
 
@@ -100,7 +103,7 @@ public class CommentController(
     [ProducesResponseType<string>(StatusCodes.Status400BadRequest)]
     public async Task<IActionResult> Delete([FromBody][MinLength(1)] Guid[] commentIds)
     {
-        await mediator.Send(new DeleteCommentsCommand(commentIds));
+        await commandMediator.SendAsync(new DeleteCommentsCommand(commentIds));
         return Ok(commentIds);
     }
 
@@ -113,14 +116,14 @@ public class CommentController(
     {
         if (!blogConfig.CommentSettings.EnableComments) return Forbid();
 
-        var reply = await mediator.Send(new ReplyCommentCommand(commentId, replyContent));
+        var reply = await commandMediator.SendAsync(new ReplyCommentCommand(commentId, replyContent));
         if (blogConfig.NotificationSettings.SendEmailOnCommentReply && !string.IsNullOrWhiteSpace(reply.Email))
         {
             var postLink = GetPostUrl(reply.RouteLink);
 
             try
             {
-                await mediator.Publish(new CommentReplyNotification(
+                await eventMediator.PublishAsync(new CommentReplyEvent(
                     reply.Email,
                     reply.CommentContent,
                     reply.Title,

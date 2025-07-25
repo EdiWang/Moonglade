@@ -1,23 +1,24 @@
-﻿using Microsoft.Extensions.Logging;
+﻿using LiteBus.Commands.Abstractions;
+using Microsoft.Extensions.Logging;
 using Moonglade.Data;
 
 namespace Moonglade.Core.PageFeature;
 
-public record CreatePageCommand(EditPageRequest Payload) : IRequest<Guid>;
+public record CreatePageCommand(EditPageRequest Payload) : ICommand<Guid>;
 
 public class CreatePageCommandHandler(
     MoongladeRepository<PageEntity> repo,
-    IMediator mediator,
-    ILogger<CreatePageCommandHandler> logger) : IRequestHandler<CreatePageCommand, Guid>
+    ICommandMediator commandMediator,
+    ILogger<CreatePageCommandHandler> logger) : ICommandHandler<CreatePageCommand, Guid>
 {
-    public async Task<Guid> Handle(CreatePageCommand request, CancellationToken ct)
+    public async Task<Guid> HandleAsync(CreatePageCommand request, CancellationToken ct)
     {
         var slug = request.Payload.Slug.ToLower().Trim();
 
         Guid? cssId = null;
         if (!string.IsNullOrWhiteSpace(request.Payload.CssContent))
         {
-            cssId = await mediator.Send(new SaveStyleSheetCommand(Guid.NewGuid(), slug, request.Payload.CssContent), ct);
+            cssId = await commandMediator.SendAsync(new SaveStyleSheetCommand(Guid.NewGuid(), slug, request.Payload.CssContent), ct);
         }
 
         var uid = Guid.NewGuid();

@@ -1,4 +1,5 @@
 using Edi.CacheAside.InMemory;
+using LiteBus.Commands.Abstractions;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
 using Moonglade.Configuration;
@@ -8,16 +9,16 @@ using Moonglade.Utils;
 
 namespace Moonglade.Core.PostFeature;
 
-public record UpdatePostCommand(Guid Id, PostEditModel Payload) : IRequest<PostEntity>;
+public record UpdatePostCommand(Guid Id, PostEditModel Payload) : ICommand<PostEntity>;
 public class UpdatePostCommandHandler(
     MoongladeRepository<TagEntity> tagRepo,
     MoongladeRepository<PostEntity> postRepo,
     ICacheAside cache,
     IBlogConfig blogConfig,
     IConfiguration configuration,
-    ILogger<UpdatePostCommandHandler> logger) : IRequestHandler<UpdatePostCommand, PostEntity>
+    ILogger<UpdatePostCommandHandler> logger) : ICommandHandler<UpdatePostCommand, PostEntity>
 {
-    public async Task<PostEntity> Handle(UpdatePostCommand request, CancellationToken ct)
+    public async Task<PostEntity> HandleAsync(UpdatePostCommand request, CancellationToken ct)
     {
         var utcNow = DateTime.UtcNow;
         var (guid, postEditModel) = request;
@@ -82,7 +83,10 @@ public class UpdatePostCommandHandler(
                 configuration.GetValue<EditorChoice>("Post:Editor") == EditorChoice.Markdown)
             : postEditModel.Abstract.Trim();
 
-        if (postEditModel.PostStatus == PostStatusConstants.Published)
+        // Only publish the post if it was not yet published
+        // Otherwise, updating existing post will result in changing publish date and break the slug URL
+        if (post.PostStatus != PostStatusConstants.Published &&
+            postEditModel.PostStatus == PostStatusConstants.Published)
         {
             post.PostStatus = PostStatusConstants.Published;
             post.PubDateUtc = utcNow;

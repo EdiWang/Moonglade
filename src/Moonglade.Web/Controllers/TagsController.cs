@@ -1,4 +1,6 @@
-﻿using Moonglade.Core.TagFeature;
+﻿using LiteBus.Commands.Abstractions;
+using LiteBus.Queries.Abstractions;
+using Moonglade.Core.TagFeature;
 using Moonglade.Data.Entities;
 using System.ComponentModel.DataAnnotations;
 
@@ -7,13 +9,13 @@ namespace Moonglade.Web.Controllers;
 [Authorize]
 [ApiController]
 [Route("api/[controller]")]
-public class TagsController(IMediator mediator) : ControllerBase
+public class TagsController(IQueryMediator queryMediator, ICommandMediator commandMediator) : ControllerBase
 {
     [HttpGet("names")]
     [ProducesResponseType<List<string>>(StatusCodes.Status200OK)]
     public async Task<IActionResult> Names()
     {
-        var names = await mediator.Send(new GetTagNamesQuery());
+        var names = await queryMediator.QueryAsync(new GetTagNamesQuery());
         return Ok(names);
     }
 
@@ -21,7 +23,7 @@ public class TagsController(IMediator mediator) : ControllerBase
     [ProducesResponseType<List<TagEntity>>(StatusCodes.Status200OK)]
     public async Task<IActionResult> List()
     {
-        var list = await mediator.Send(new GetTagsQuery());
+        var list = await queryMediator.QueryAsync(new GetTagsQuery());
         return Ok(list);
     }
 
@@ -34,7 +36,7 @@ public class TagsController(IMediator mediator) : ControllerBase
     {
         if (!Helper.IsValidTagName(name)) return Conflict();
 
-        await mediator.Send(new CreateTagCommand(name.Trim()));
+        await commandMediator.SendAsync(new CreateTagCommand(name.Trim()));
         return Ok();
     }
 
@@ -43,7 +45,7 @@ public class TagsController(IMediator mediator) : ControllerBase
     [ApiConventionMethod(typeof(DefaultApiConventions), nameof(DefaultApiConventions.Put))]
     public async Task<IActionResult> Update([Range(1, int.MaxValue)] int id, [Required][FromBody] string name)
     {
-        var oc = await mediator.Send(new UpdateTagCommand(id, name));
+        var oc = await commandMediator.SendAsync(new UpdateTagCommand(id, name));
         if (oc == OperationCode.ObjectNotFound) return NotFound();
 
         return NoContent();
@@ -54,7 +56,7 @@ public class TagsController(IMediator mediator) : ControllerBase
     [ApiConventionMethod(typeof(DefaultApiConventions), nameof(DefaultApiConventions.Delete))]
     public async Task<IActionResult> Delete([Range(0, int.MaxValue)] int id)
     {
-        var oc = await mediator.Send(new DeleteTagCommand(id));
+        var oc = await commandMediator.SendAsync(new DeleteTagCommand(id));
         if (oc == OperationCode.ObjectNotFound) return NotFound();
 
         return NoContent();

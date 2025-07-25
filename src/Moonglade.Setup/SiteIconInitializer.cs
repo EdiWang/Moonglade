@@ -1,4 +1,4 @@
-﻿using MediatR;
+﻿using LiteBus.Queries.Abstractions;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Logging;
 using Moonglade.Core;
@@ -10,13 +10,13 @@ public interface ISiteIconInitializer
     Task GenerateSiteIcons();
 }
 
-public class SiteIconInitializer(ILogger<SiteIconInitializer> logger, IMediator mediator, IWebHostEnvironment env) : ISiteIconInitializer
+public class SiteIconInitializer(ILogger<SiteIconInitializer> logger, IQueryMediator queryMediator, IWebHostEnvironment env) : ISiteIconInitializer
 {
     public async Task GenerateSiteIcons()
     {
         try
         {
-            var iconData = await mediator.Send(new GetAssetQuery(AssetId.SiteIconBase64));
+            var iconData = await queryMediator.QueryAsync(new GetAssetQuery(AssetId.SiteIconBase64));
             MemoryStreamIconGenerator.GenerateIcons(iconData, env.WebRootPath, logger);
         }
         catch (Exception e)

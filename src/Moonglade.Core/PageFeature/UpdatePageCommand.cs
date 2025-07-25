@@ -1,16 +1,17 @@
-﻿using Microsoft.Extensions.Logging;
+﻿using LiteBus.Commands.Abstractions;
+using Microsoft.Extensions.Logging;
 using Moonglade.Data;
 
 namespace Moonglade.Core.PageFeature;
 
-public record UpdatePageCommand(Guid Id, EditPageRequest Payload) : IRequest<Guid>;
+public record UpdatePageCommand(Guid Id, EditPageRequest Payload) : ICommand<Guid>;
 
 public class UpdatePageCommandHandler(
     MoongladeRepository<PageEntity> repo,
-    IMediator mediator,
-    ILogger<UpdatePageCommandHandler> logger) : IRequestHandler<UpdatePageCommand, Guid>
+    ICommandMediator commandMediator,
+    ILogger<UpdatePageCommandHandler> logger) : ICommandHandler<UpdatePageCommand, Guid>
 {
-    public async Task<Guid> Handle(UpdatePageCommand request, CancellationToken ct)
+    public async Task<Guid> HandleAsync(UpdatePageCommand request, CancellationToken ct)
     {
         var (guid, payload) = request;
         var page = await repo.GetByIdAsync(guid, ct) ?? throw new InvalidOperationException($"PageEntity with Id '{guid}' not found.");
@@ -19,7 +20,7 @@ public class UpdatePageCommandHandler(
         Guid? cssId = null;
         if (!string.IsNullOrWhiteSpace(request.Payload.CssContent))
         {
-            cssId = await mediator.Send(new SaveStyleSheetCommand(page.Id, slug, request.Payload.CssContent), ct);
+            cssId = await commandMediator.SendAsync(new SaveStyleSheetCommand(page.Id, slug, request.Payload.CssContent), ct);
         }
 
         page.Title = payload.Title.Trim();
