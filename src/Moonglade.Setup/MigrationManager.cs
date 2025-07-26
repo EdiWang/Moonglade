@@ -108,7 +108,7 @@ public partial class MigrationManager(
             throw new ArgumentException("Invalid migration script URL.");
 
         var client = httpClientFactory.CreateClient("MigrationManager");
-        client.Timeout = TimeSpan.FromSeconds(30);
+        client.Timeout = TimeSpan.FromSeconds(20);
         client.DefaultRequestHeaders.UserAgent.ParseAdd($"Moonglade/{Helper.AppVersionBasic}");
 
         logger.LogInformation("Downloading migration script from {Url}...", scriptUrl);
