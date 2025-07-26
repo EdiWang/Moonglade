@@ -9,6 +9,7 @@ const heroImageFormSelector = '#form-hero-image';
 const postEditFormSelector = '.post-edit-form';
 const heroImageModalElement = document.getElementById('heroImageModal');
 const editorChoice = parseMetaContent('editor-choice');
+const scheduledPublishTimeElement = document.querySelector('input[name="ViewModel.ScheduledPublishTime"]');
 
 let isPreviewRequired = false;
 const heroImageModal = new bootstrap.Modal(heroImageModalElement);
@@ -121,14 +122,14 @@ function setInputDateTime(dateObj, inputElement) {
 function setMinScheduleDate() {
     const now = new Date();
     const minDate = now.toISOString().slice(0, 16); // Format: YYYY-MM-DDTHH:MM
-    document.querySelector('input[name="ViewModel.ScheduledPublishTime"]').setAttribute('min', minDate);
+    scheduledPublishTimeElement.setAttribute('min', minDate);
 }
 
 function updateScheduleInfo() {
     const postStatus = document.querySelector('input[name="ViewModel.PostStatus"]').value;
 
     const scheduleInfoDiv = document.querySelector('.schedule-info');
-    const scheduledTime = document.querySelector('input[name="ViewModel.ScheduledPublishTime"]').value;
+    const scheduledTime = scheduledPublishTimeElement.value;
     const scheduledTimeUtc = document.querySelector('input[name="ViewModel.ScheduledPublishTimeUtc"]').value;
 
     if (postStatus === 'scheduled') {
@@ -142,7 +143,7 @@ function updateScheduleInfo() {
             const localDate = new Date(utcDate.getTime() - utcDate.getTimezoneOffset() * 60000);
             displayTime = localDate.toLocaleString();
 
-            setInputDateTime(localDate, document.querySelector('input[name="ViewModel.ScheduledPublishTime"]'));
+            setInputDateTime(localDate, scheduledPublishTimeElement);
         }
 
         scheduleInfoDiv.innerHTML = `<i class="bi-clock"></i> <span>Scheduled for: ${displayTime}</span>`;
@@ -197,7 +198,7 @@ document.getElementById('btn-unpublish-post').addEventListener('click', function
 });
 
 document.getElementById('btn-cancel-schedule').addEventListener('click', function () {
-    document.querySelector('input[name="ViewModel.ScheduledPublishTime"]').value = '';
+    scheduledPublishTimeElement.value = '';
     document.querySelector('input[name="ViewModel.PostStatus"]').value = 'draft';
 
     updateScheduleInfo();
