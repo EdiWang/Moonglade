@@ -1,4 +1,5 @@
 ﻿using LiteBus.Commands.Abstractions;
+using LiteBus.Queries.Abstractions;
 using Moonglade.Core.PostFeature;
 
 namespace Moonglade.Web.BackgroundServices;
@@ -39,6 +40,15 @@ public class ScheduledPublishService(
         {
             logger.LogInformation("ScheduledPublishService stopped.");
         }
+    }
+
+    private async Task<DateTime?> GetNextScheduledTimeAsync(CancellationToken cancellationToken)
+    {
+        using var scope = serviceProvider.CreateScope();
+        var queryMediator = scope.ServiceProvider.GetRequiredService<IQueryMediator>();
+
+        var nextScheduledTime = await queryMediator.QueryAsync(new GetNextScheduledPostTimeQuery(), cancellationToken);
+        return nextScheduledTime;
     }
 
     private async Task CheckAndPublishPostsAsync(CancellationToken cancellationToken)
