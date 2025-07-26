@@ -5,12 +5,18 @@ using Moonglade.Data.Specifications;
 
 namespace Moonglade.Comments;
 
-public record ListCommentsQuery(int PageSize, int PageIndex) : IQuery<List<CommentDetailedItem>>;
+public record ListCommentsQuery(int PageSize, int PageIndex, string SearchTerm = null) : IQuery<List<CommentDetailedItem>>;
 
 public class ListCommentsQueryHandler(MoongladeRepository<CommentEntity> repo) : IQueryHandler<ListCommentsQuery, List<CommentDetailedItem>>
 {
     public Task<List<CommentDetailedItem>> HandleAsync(ListCommentsQuery request, CancellationToken ct)
     {
+        if (request.PageSize < 1)
+        {
+            throw new ArgumentOutOfRangeException(nameof(request),
+                $"{nameof(request.PageSize)} can not be less than 1, current value: {request.PageSize}.");
+        }
+
         var spec = new CommentPagingSepc(request.PageSize, request.PageIndex);
         var comments = repo.SelectAsync(spec, CommentDetailedItem.EntitySelector, ct);
 
