@@ -1,6 +1,7 @@
 ﻿@page "/admin/comments"
 @using Moonglade.Utils
 @using Moonglade.Web.PagedList
+@using System.ComponentModel.DataAnnotations
 @{
     ViewBag.Title = "Comments";
 }
@@ -31,6 +32,13 @@
 }
 
 <div>
+    <form method="post">
+        <div class="d-flex search-box mb-3">
+            <input type="search" aria-label="Search" asp-for="SearchTerm" class="form-control" placeholder="Search user name or email" />
+            <button class="btn btn-light btn-search my-sm-0" type="submit"><i class="bi-search text-dark"></i></button>
+        </div>
+    </form>
+
     @if (CommentDetailedItems.Count == 0)
     {
         <div class="alert alert-info">
@@ -117,7 +125,7 @@
     }
 
 
-    @Html.PagedListPager(CommentDetailedItems, page => $"?pageIndex={page}", new()
+    @Html.PagedListPager(CommentDetailedItems, page => $"?pageIndex={page}&searchTerm={SearchTerm}", new()
     {
         UlElementClasses = ["pagination mt-3"]
     })
@@ -127,11 +135,25 @@
 {
     public BasePagedList<CommentDetailedItem> CommentDetailedItems { get; set; }
 
-    public async Task OnGet(int pageIndex = 1)
+    private const int PageSize = 5;
+
+    [BindProperty]
+    [MaxLength(32)]
+    public string SearchTerm { get; set; }
+
+    public async Task OnPost() => await GetComments(1);
+
+    public async Task OnGet(int pageIndex = 1, string searchTerm = null)
     {
-        const int pageSize = 5;
-        var comments = await QueryMediator.QueryAsync(new ListCommentsQuery(pageSize, pageIndex));
+        if (!string.IsNullOrWhiteSpace(searchTerm)) SearchTerm = searchTerm;
+
+        await GetComments(pageIndex);
+    }
+
+    public async Task GetComments(int pageIndex)
+    {
+        var comments = await QueryMediator.QueryAsync(new ListCommentsQuery(PageSize, pageIndex, SearchTerm));
         var count = await QueryMediator.QueryAsync(new CountCommentsQuery());
-        CommentDetailedItems = new(comments, pageIndex, pageSize, count);
+        CommentDetailedItems = new(comments, pageIndex, PageSize, count);
     }
 }
