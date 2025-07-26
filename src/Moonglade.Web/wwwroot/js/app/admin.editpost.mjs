@@ -10,6 +10,7 @@ const postEditFormSelector = '.post-edit-form';
 const heroImageModalElement = document.getElementById('heroImageModal');
 const editorChoice = parseMetaContent('editor-choice');
 const scheduledPublishTimeElement = document.querySelector('input[name="ViewModel.ScheduledPublishTime"]');
+const postIdElement = document.querySelector('input[name="ViewModel.PostId"]');
 
 let isPreviewRequired = false;
 const heroImageModal = new bootstrap.Modal(heroImageModalElement);
@@ -80,7 +81,7 @@ const handlePostSubmit = async (event) => {
         async (resp) => {
             var respJson = await resp.json();
             if (respJson.postId) {
-                document.querySelector('input[name="ViewModel.PostId"]').value = respJson.postId;
+                postIdElement.value = respJson.postId;
                 success('Post saved successfully.');
 
                 if (isPreviewRequired) {
@@ -193,7 +194,7 @@ document.addEventListener('DOMContentLoaded', function () {
 });
 
 document.getElementById('btn-unpublish-post').addEventListener('click', function () {
-    const postId = document.querySelector('input[name="ViewModel.PostId"]').value;
+    const postId = postIdElement.value;
     UnpublishPost(postId);
 });
 
