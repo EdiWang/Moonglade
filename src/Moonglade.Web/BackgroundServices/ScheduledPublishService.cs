@@ -6,40 +6,57 @@ namespace Moonglade.Web.BackgroundServices;
 
 public class ScheduledPublishService(
     IServiceProvider serviceProvider,
-    IConfiguration configuration,
     ILogger<ScheduledPublishService> logger
     ) : BackgroundService
 {
+    private static readonly TimeSpan MaxWaitInterval = TimeSpan.FromMinutes(5);
+
     protected override async Task ExecuteAsync(CancellationToken stoppingToken)
     {
         logger.LogInformation("ScheduledPublishService started.");
 
-        int taskDelay = configuration.GetValue("PostScheduler:TaskIntervalMinutes", 1);
-        if (taskDelay <= 0)
+        while (!stoppingToken.IsCancellationRequested)
         {
-            logger.LogWarning("Invalid TaskIntervalMinutes: {Value}. Using default of 1 minute.", taskDelay);
-            taskDelay = 1;
-        }
-
-        using var timer = new PeriodicTimer(TimeSpan.FromMinutes(taskDelay));
-        try
-        {
-            while (await timer.WaitForNextTickAsync(stoppingToken))
+            try
             {
-                try
+                DateTime? nextScheduleTime = await GetNextScheduledTimeAsync(stoppingToken);
+                TimeSpan delay;
+
+                if (nextScheduleTime.HasValue)
                 {
-                    await CheckAndPublishPostsAsync(stoppingToken);
+                    var utcNow = DateTime.UtcNow;
+                    // Hit publish time or already past
+                    delay = nextScheduleTime.Value > utcNow
+                        ? nextScheduleTime.Value - utcNow
+                        : TimeSpan.Zero;
                 }
-                catch (Exception ex) when (ex is not OperationCanceledException)
+                else
                 {
-                    logger.LogError(ex, "Error in ScheduledPublishService: {Message}", ex.Message);
+                    // no scheduled posts found, set a default delay
+                    delay = MaxWaitInterval;
                 }
+
+                if (delay > TimeSpan.Zero)
+                {
+                    logger.LogDebug("Next scheduled publish in {Delay} seconds.", delay.TotalSeconds);
+                    await Task.Delay(delay, stoppingToken);
+                }
+
+                await CheckAndPublishPostsAsync(stoppingToken);
+            }
+            catch (OperationCanceledException)
+            {
+                break;
+            }
+            catch (Exception ex)
+            {
+                logger.LogError(ex, "Error in ScheduledPublishService: {Message}", ex.Message);
+                // Pause for a while before retrying to avoid tight loop on errors
+                await Task.Delay(TimeSpan.FromSeconds(10), stoppingToken);
             }
         }
-        finally
-        {
-            logger.LogInformation("ScheduledPublishService stopped.");
-        }
+
+        logger.LogInformation("ScheduledPublishService stopped.");
     }
 
     private async Task<DateTime?> GetNextScheduledTimeAsync(CancellationToken cancellationToken)
