@@ -17,7 +17,7 @@ public class ListCommentsQueryHandler(MoongladeRepository<CommentEntity> repo) :
                 $"{nameof(request.PageSize)} can not be less than 1, current value: {request.PageSize}.");
         }
 
-        var spec = new CommentPagingSepc(request.PageSize, request.PageIndex);
+        var spec = new CommentPagingSepc(request.PageSize, request.PageIndex, request.SearchTerm);
         var comments = repo.SelectAsync(spec, CommentDetailedItem.EntitySelector, ct);
 
         return comments;

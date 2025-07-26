@@ -4,9 +4,11 @@ namespace Moonglade.Data.Specifications;
 
 public sealed class CommentPagingSepc : Specification<CommentEntity>
 {
-    public CommentPagingSepc(int pageSize, int pageIndex)
+    public CommentPagingSepc(int pageSize, int pageIndex, string keyword)
     {
         var startRow = (pageIndex - 1) * pageSize;
+
+        Query.Where(p => null == keyword || p.Username.Contains(keyword) || p.Email.Contains(keyword));
 
         Query.Include(c => c.Post);
         Query.Include(c => c.Replies);
