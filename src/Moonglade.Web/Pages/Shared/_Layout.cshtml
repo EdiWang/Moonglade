@@ -28,6 +28,8 @@
     }
 
     bool useServerSideDarkMode = Helper.UseServerSideDarkMode(Configuration, Context);
+
+    var headScripts = Configuration.GetSection("HeadScripts").Get<List<HeadScript>>();
 }
 <!DOCTYPE html>
 <html lang="@langCode" data-bs-theme="@(useServerSideDarkMode ? "dark" : null)">
@@ -95,6 +97,14 @@
     @if (AnalyticsSettings.Value.GoogleAnalytics.Enabled)
     {
         <partial name="_GoogleAnalytics" model="AnalyticsSettings.Value.GoogleAnalytics.GTagId" />
+    }
+
+    @foreach (var script in headScripts)
+    {
+        @if (!string.IsNullOrWhiteSpace(script.Url))
+        {
+            <head-script src="@script.Url" integrity="@script.Integrity" crossorigin="@script.CrossOrigin" async="@script.IsAsync"></head-script>
+        }
     }
 </head>
 <body class="@ViewBag.BodyClass">
