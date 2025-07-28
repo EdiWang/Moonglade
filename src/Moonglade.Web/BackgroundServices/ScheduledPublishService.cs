@@ -24,6 +24,8 @@ public class ScheduledPublishService(
 
                 if (nextScheduleTime.HasValue)
                 {
+                    logger.LogInformation("Next scheduled publish time: {NextScheduleTime}", nextScheduleTime.Value);
+
                     var utcNow = DateTime.UtcNow;
                     // Hit publish time or already past
                     delay = nextScheduleTime.Value > utcNow
@@ -34,11 +36,13 @@ public class ScheduledPublishService(
                 {
                     // no scheduled posts found, set a default delay
                     delay = MaxWaitInterval;
+
+                    logger.LogInformation("No scheduled posts found, waiting for {MaxWaitInterval} before checking again.", MaxWaitInterval.TotalSeconds);
                 }
 
                 if (delay > TimeSpan.Zero)
                 {
-                    logger.LogDebug("Next scheduled publish in {Delay} seconds.", delay.TotalSeconds);
+                    logger.LogInformation("Next scheduled publish in {Delay} seconds.", delay.TotalSeconds);
                     await Task.Delay(delay, stoppingToken);
                 }
 
