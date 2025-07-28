@@ -6,7 +6,8 @@ namespace Moonglade.Web.BackgroundServices;
 
 public class ScheduledPublishService(
     IServiceProvider serviceProvider,
-    ILogger<ScheduledPublishService> logger
+    ILogger<ScheduledPublishService> logger,
+    ScheduledPublishWakeUp wakeUp
     ) : BackgroundService
 {
     private static readonly TimeSpan MaxWaitInterval = TimeSpan.FromMinutes(5);
@@ -40,10 +41,20 @@ public class ScheduledPublishService(
                     logger.LogInformation("No scheduled posts found, waiting for {MaxWaitInterval} before checking again.", MaxWaitInterval.TotalSeconds);
                 }
 
+                var wakeToken = wakeUp.GetWakeToken();
+                using var linkedCts = CancellationTokenSource.CreateLinkedTokenSource(stoppingToken, wakeToken);
+
                 if (delay > TimeSpan.Zero)
                 {
                     logger.LogInformation("Next scheduled publish in {Delay} seconds.", delay.TotalSeconds);
-                    await Task.Delay(delay, stoppingToken);
+                    try
+                    {
+                        await Task.Delay(delay, linkedCts.Token);
+                    }
+                    catch (OperationCanceledException)
+                    {
+                        logger.LogWarning("Task.Delay was canceled, checking for wake-up or cancellation.");
+                    }
                 }
 
                 await CheckAndPublishPostsAsync(stoppingToken);
