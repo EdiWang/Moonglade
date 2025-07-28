@@ -254,6 +254,7 @@ public class Program
 
         if (configuration.GetValue<bool>("PostScheduler:Enabled"))
         {
+            services.AddSingleton<ScheduledPublishWakeUp>();
             services.AddHostedService<ScheduledPublishService>();
         }
 
