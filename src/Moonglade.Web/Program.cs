@@ -86,7 +86,7 @@ public class Program
     private static List<CultureInfo> GetSupportedCultures()
     {
         var cultureCodes = new[] { "en-US", "zh-Hans", "zh-Hant", "de-DE", "ja-JP" };
-        return cultureCodes.Select(code => new CultureInfo(code)).ToList();
+        return [.. cultureCodes.Select(code => new CultureInfo(code))];
     }
 
     private static void ConfigureLogging(WebApplicationBuilder builder)
@@ -162,8 +162,8 @@ public class Program
         {
             var magics = new List<string>
             {
-                Encoding.UTF8.GetString(BitConverter.GetBytes('✔'.GetHashCode())
-                    .Zip(BitConverter.GetBytes(0x242F2E32)).Select(x => (byte)(x.First + x.Second)).ToArray()),
+                Encoding.UTF8.GetString([.. BitConverter.GetBytes('✔'.GetHashCode())
+                    .Zip(BitConverter.GetBytes(0x242F2E32)).Select(x => (byte)(x.First + x.Second))]),
                 Helper.GetMagic(0x6B441, 11, 15),
                 Helper.GetMagic(0x1499E, 10, 14)
             };

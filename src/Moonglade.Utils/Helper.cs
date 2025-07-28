@@ -431,7 +431,7 @@ public static class Helper
     public static string CombineErrorMessages(this ModelStateDictionary modelStateDictionary, string sep = ", ")
     {
         var messages = GetErrorMessagesFromModelState(modelStateDictionary);
-        var enumerable = messages as string[] ?? messages.ToArray();
+        var enumerable = messages as string[] ?? [.. messages];
         return enumerable.Any() ? string.Join(sep, enumerable) : string.Empty;
     }
 

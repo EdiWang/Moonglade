@@ -97,7 +97,7 @@ public class AzureFunctionModeratorService : IModeratorService
             var payload = new Payload
             {
                 OriginAspNetRequestId = _httpContextAccessor.HttpContext?.TraceIdentifier,
-                Contents = contents.ToArray()
+                Contents = [.. contents]
             };
 
             var response = await _httpClient.PostAsync(
