@@ -99,11 +99,14 @@
         <partial name="_GoogleAnalytics" model="AnalyticsSettings.Value.GoogleAnalytics.GTagId" />
     }
 
-    @foreach (var script in headScripts)
+    @if (null != headScripts)
     {
-        @if (!string.IsNullOrWhiteSpace(script.Url))
+        foreach (var script in headScripts)
         {
-            <head-script src="@script.Url" integrity="@script.Integrity" crossorigin="@script.CrossOrigin" async="@script.IsAsync"></head-script>
+            @if (!string.IsNullOrWhiteSpace(script.Url))
+            {
+                <head-script src="@script.Url" integrity="@script.Integrity" crossorigin="@script.CrossOrigin" async="@script.IsAsync"></head-script>
+            }
         }
     }
 </head>
