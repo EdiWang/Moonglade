@@ -326,7 +326,7 @@ public class Program
             SupportedUICultures = cultures
         });
 
-        var options = new RewriteOptions().AddRedirect(@"(.*)/$", @"\$1", (int)HttpStatusCode.MovedPermanently);
+        var options = new RewriteOptions().AddRedirect(@"(.*)/$", @"$1", (int)HttpStatusCode.MovedPermanently);
         app.UseRewriter(options);
         app.UseStaticFiles();
         app.UseSession().UseCaptchaImage(p =>
