@@ -3,6 +3,7 @@ using Moonglade.Core.PostFeature;
 using Moonglade.IndexNow.Client;
 using Moonglade.Pingback;
 using Moonglade.Web.Attributes;
+using Moonglade.Web.BackgroundServices;
 using Moonglade.Webmention;
 using System.ComponentModel.DataAnnotations;
 
@@ -15,6 +16,7 @@ public class PostController(
         IConfiguration configuration,
         ICommandMediator commandMediator,
         IBlogConfig blogConfig,
+        ScheduledPublishWakeUp wakeUp,
         ILogger<PostController> logger,
         CannonService cannonService) : ControllerBase
 {
@@ -60,6 +62,14 @@ public class PostController(
                     // Instead of throwing error, just publish the post right away!
                     model.PostStatus = PostStatusConstants.Published;
                     model.ScheduledPublishTime = null;
+                }
+                else
+                {
+                    logger.LogInformation($"Post scheduled for publish at {clientUtcTime} UTC.");
+
+                    wakeUp.WakeUp();
+
+                    logger.LogInformation($"Scheduled publish wake-up triggered for post: {model.PostId}");
                 }
             }
 
