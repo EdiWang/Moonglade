@@ -8,6 +8,14 @@
     var process = Process.GetCurrentProcess();
 }
 
+@section head {
+    <style>
+        .about-label {
+            width: 250px;
+        }
+    </style>
+}
+
 <div class="pb-3">
     <h4 class="admin-subtitle fw-bold mb-2">
         @SharedLocalizer["Moonglade Configuration"]
@@ -17,7 +25,7 @@
         <table class="table table-borderless table-sm mb-0">
             <tbody>
                 <tr>
-                    <td class="w-25">@SharedLocalizer["Version"]</td>
+                    <td class="about-label">@SharedLocalizer["Version"]</td>
                     <td class="text-muted">@Helper.AppVersion</td>
                 </tr>
                 <tr>
@@ -50,7 +58,7 @@
         <table class="table table-borderless table-sm mb-0">
             <tbody>
                 <tr>
-                    <td class="w-25">@SharedLocalizer["System"]</td>
+                    <td class="about-label">@SharedLocalizer["System"]</td>
                     <td class="text-muted">@Helper.TryGetFullOSVersion() @(Environment.Is64BitOperatingSystem ? "(64-bit)" : "(32-bit)")</td>
                 </tr>
                 <tr>
