@@ -43,7 +43,7 @@
 		<PackageReference Include="LiteBus.Extensions.MicrosoftDependencyInjection" Version="3.0.0" />
 		<PackageReference Include="Microsoft.Extensions.Logging.AzureAppServices" Version="9.0.7" />
 
-		<PackageReference Include="TinyMCE" Version="8.0.0" />
+		<PackageReference Include="TinyMCE" Version="8.0.1" />
 		<PackageReference Include="Moonglade.MonacoEditor" Version="0.50.0.1002" />
 	</ItemGroup>
 	<ItemGroup>
