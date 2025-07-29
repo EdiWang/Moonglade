@@ -32,7 +32,7 @@
     <ul class="list-unstyled ul-tag-mgr">
         @foreach (var tag in tags.OrderBy(model => model.DisplayName))
         {
-            <li id="li-tag-@tag.Id" class="admin-tag-item border rounded shadow-sm">
+            <li id="li-tag-@tag.Id" class="admin-tag-item border rounded">
                 <span class="span-tagcontent-editable" contenteditable="true" spellcheck="false" data-tagid="@tag.Id">@tag.DisplayName</span>
                 <a class="btn-delete" data-tagid="@tag.Id">
                     <i class="bi-trash"></i>
