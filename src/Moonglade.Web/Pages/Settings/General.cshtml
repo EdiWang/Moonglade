@@ -320,22 +320,8 @@
                                 <i class="bi-tags settings-entry-icon"></i>
                             </div>
                             <div class="col">
-                                <label asp-for="@ViewModel.WidgetsTags" class="form-check-label"></label>
-                            </div>
-                            <div class="col-md-5 text-end">
-                                <div class="form-check form-switch form-control-lg">
-                                    <input type="hidden" name="WidgetsTags" value="false">
-                                    <input type="checkbox" name="WidgetsTags" value="true" class="form-check-input" @(ViewModel.WidgetsTags ? "checked" : null)>
-                                </div>
-                            </div>
-                        </div>
-
-                        <div class="border-top settings-entry row align-items-center py-3 px-2">
-                            <div class="col-auto">
-                                <i class="bi-8-circle settings-entry-icon"></i>
-                            </div>
-                            <div class="col">
                                 <label asp-for="@ViewModel.HotTagAmount"></label>
+                                <div class="text-muted">@SharedLocalizer["Set to 0 to hide tags widget"]</div>
                             </div>
                             <div class="col-4">
                                 <input asp-for="@ViewModel.HotTagAmount" class="form-control" min="1" max="32" />
