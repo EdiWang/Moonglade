@@ -103,7 +103,7 @@ Linux:
 ```json
 {
   "Provider": "filesystem",
-  "FileSystemPath": "/var/UploadedImages"
+  "FileSystemPath": "/app/images"
 }
 ```
 
