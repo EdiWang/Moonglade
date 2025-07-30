@@ -58,27 +58,31 @@ editForm.addEventListener('submit', async function (event) {
     event.preventDefault();
     const formData = new FormData(editForm);
     const tagName = formData.get('tagName').trim();
-    
-    try {
-        const resp = await moongladeFetch(`/api/tags`, 'POST', tagName);
-        editForm.reset();
-        //insertNewTagElement(resp.id, tagName);
-        success('Tag added');
-        editCanvas.hide();
 
-        window.location.reload();
+    try {
+        await moongladeFetch(`/api/tags`, 'POST', tagName, async (resp) => {
+            var tag = await resp.json();
+            editForm.reset();
+            insertNewTagElement(tag.id, tag.displayName);
+            success('Tag added');
+            editCanvas.hide();
+        });
     } catch (err) {
         console.error(err);
         error('Tag creation failed.');
     }
 });
 
-//function insertNewTagElement(id, name) {
-//    const li = document.createElement('li');
-//    li.id = `li-tag-${id}`;
-//    li.innerHTML = `
-//        <span class="span-tagcontent-editable" contenteditable="true" data-tagid="${id}" data-original="${name}">${name}</span>
-//        <button class="btn btn-danger btn-delete" data-tagid="${id}">Delete</button>
-//    `;
-//    tagList.appendChild(li);
-//}
+function insertNewTagElement(id, name) {
+    const li = document.createElement('li');
+    li.id = `li-tag-${id}`;
+    li.innerHTML = `
+    <li id="li-tag-${id}" class="admin-tag-item border rounded">
+        <span class="span-tagcontent-editable" contenteditable="true" spellcheck="false" data-tagid="${id}">${name}</span>
+        <a class="btn-delete" data-tagid="${id}">
+            <i class="bi-trash"></i>
+        </a>
+    </li>
+    `;
+    tagList.appendChild(li);
+}
