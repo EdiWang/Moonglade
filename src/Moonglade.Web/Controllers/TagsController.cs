@@ -36,8 +36,8 @@ public class TagsController(IQueryMediator queryMediator, ICommandMediator comma
     {
         if (!Helper.IsValidTagName(name)) return Conflict();
 
-        await commandMediator.SendAsync(new CreateTagCommand(name.Trim()));
-        return Ok();
+        var tag = await commandMediator.SendAsync(new CreateTagCommand(name.Trim()));
+        return Ok(tag);
     }
 
     [HttpPut("{id:int}")]
