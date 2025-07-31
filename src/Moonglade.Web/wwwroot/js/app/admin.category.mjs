@@ -1,4 +1,4 @@
-import { moongladeFetch, moongladeFetch2 } from './httpService.mjs'
+import { moongladeFetch2 } from './httpService.mjs'
 import { success } from './toastService.mjs'
 
 const editCanvas = new bootstrap.Offcanvas(document.getElementById('editCatCanvas'));
@@ -19,12 +19,10 @@ async function editCat(id) {
     editCanvas.show();
 }
 
-function deleteCat(catid) {
-    moongladeFetch(`/api/category/${catid}`, 'DELETE', {},
-        (resp) => {
-            document.querySelector(`#card-${catid}`).remove();
-            success('Category deleted');
-        });
+async function deleteCat(catid) {
+    await moongladeFetch2(`/api/category/${catid}`, 'DELETE', {});
+    document.querySelector(`#card-${catid}`).remove();
+    success('Category deleted');
 }
 
 function confirmDelete(catid) {
@@ -32,7 +30,7 @@ function confirmDelete(catid) {
     if (cfm) deleteCat(catid);
 }
 
-function handleSubmit(event) {
+async function handleSubmit(event) {
     event.preventDefault();
 
     var apiAddress = '';
@@ -50,17 +48,16 @@ function handleSubmit(event) {
     const data = new FormData(event.target);
     const value = Object.fromEntries(data.entries());
 
-    moongladeFetch(apiAddress, verb,
+    await moongladeFetch2(apiAddress, verb,
         {
             slug: value["EditCategoryRequest.Slug"],
             displayName: value["EditCategoryRequest.DisplayName"],
             note: value["EditCategoryRequest.Note"]
-        },
-        (resp) => {
-            document.querySelector('#edit-form').reset();
-            editCanvas.hide();
-            window.location.reload();
         });
+
+    document.querySelector('#edit-form').reset();
+    editCanvas.hide();
+    window.location.reload();
 }
 
 document.querySelector('#btn-new-cat').addEventListener('click', initCreateCategory);
