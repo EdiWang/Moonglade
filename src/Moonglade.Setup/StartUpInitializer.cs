@@ -56,7 +56,14 @@ public class StartUpInitializer(
         if (!isNew)
         {
             if (!await TryAsync(
-                    () => migrationManager.TryMigration(context),
+                    async () =>
+                    {
+                        var result = await migrationManager.TryMigrationAsync(context);
+                        if (!result.Success)
+                        {
+                            logger.LogError(result.ErrorMessage);
+                        }
+                    },
                     "Failed to migrate database."))
             {
                 return InitStartUpResult.FailedDatabaseMigration;
