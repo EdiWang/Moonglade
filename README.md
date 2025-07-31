@@ -36,6 +36,12 @@ Get started in 10 minutes with minimal Azure resources using our [automated depl
 | MySQL            | `Server=localhost;Port=3306;Database=moonglade;Uid=root;Pwd=***;`                             |
 | PostgreSQL       | `User ID=***;Password=***;Host=localhost;Port=5432;Database=moonglade;Pooling=true;`          |
 
+Change `ConnectionStrings:DatabaseProvider` in `appsettings.json` to match your database type.` 
+
+- SQL Server: `SqlServer`
+- MySQL: `MySql`
+- PostgreSQL: `PostgreSql`
+
 ### Build & Run
 
 1. Build and run `./src/Moonglade.sln`
