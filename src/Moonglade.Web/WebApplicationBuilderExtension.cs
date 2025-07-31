@@ -25,7 +25,7 @@ public static class WebApplicationBuilderExtension
             { "IPv4", string.Join(", ", ipv4Addresses) },
             { "IPv6", string.Join(", ", ipv6Addresses) },
             { "URLs", configuration["Urls"] ?? "N/A" },
-            { "Database", DatabaseTypeHelper.DetermineDatabaseType(configuration.GetConnectionString("MoongladeDatabase") ?? string.Empty).ToString() },
+            { "Database", configuration.GetConnectionString("DatabaseProvider") },
             { "Image storage", configuration["ImageStorage:Provider"] ?? "N/A" },
             { "Authentication", configuration["Authentication:Provider"] ?? "N/A" },
             { "Editor", configuration["Post:Editor"] ?? "N/A" },

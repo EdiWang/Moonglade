@@ -264,20 +264,19 @@ public class Program
     private static void ConfigureDatabase(IServiceCollection services, IConfiguration configuration)
     {
         var connStr = configuration.GetConnectionString("MoongladeDatabase");
-        var dbType = DatabaseTypeHelper.DetermineDatabaseType(connStr!);
+        var dbType = configuration.GetConnectionString("DatabaseProvider");
 
-        switch (dbType)
+        switch (dbType.ToLower())
         {
-            case DatabaseType.MySQL:
+            case "mysql":
                 services.AddMySqlStorage(connStr!);
                 break;
-            case DatabaseType.PostgreSQL:
+            case "postgresql":
                 services.AddPostgreSqlStorage(connStr!);
                 break;
-            case DatabaseType.SQLServer:
+            case "sqlserver":
                 services.AddSqlServerStorage(connStr!);
                 break;
-            case DatabaseType.Unknown:
             default:
                 throw new NotSupportedException("Unknown database type, please check connection string.");
         }
