@@ -25,9 +25,9 @@ async function deleteCat(catid) {
     success('Category deleted');
 }
 
-function confirmDelete(catid) {
+async function confirmDelete(catid) {
     var cfm = confirm("Delete?");
-    if (cfm) deleteCat(catid);
+    if (cfm) await deleteCat(catid);
 }
 
 async function handleSubmit(event) {
@@ -70,9 +70,9 @@ document.querySelectorAll('.btn-edit').forEach(button => {
 });
 
 document.querySelectorAll('.btn-delete').forEach(button => {
-    button.addEventListener('click', function () {
+    button.addEventListener('click', async function () {
         const lid = this.getAttribute('data-catid');
-        confirmDelete(lid);
+        await confirmDelete(lid);
     });
 });
 
