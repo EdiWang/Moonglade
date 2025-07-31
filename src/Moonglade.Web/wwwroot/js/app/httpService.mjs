@@ -31,6 +31,37 @@ export async function moongladeFetch(uri, method, request, funcSuccess, funcAlwa
     }
 }
 
+export async function moongladeFetch2(uri, method, request) {
+    try {
+        const csrfValue = document.querySelector(`input[name="${csrfFieldName}"]`).value;
+        const response = await fetch(uri, {
+            method,
+            headers: {
+                'Accept': 'application/json',
+                'Content-Type': 'application/json',
+                'XSRF-TOKEN': csrfValue
+            },
+            credentials: 'include',
+            body: method === 'GET' ? null : JSON.stringify(request)
+        });
+
+        if (!response.ok) {
+            await handleHttpError(response);
+        } else {
+            if (response.status === 204) {
+                // No content, no need to parse
+                return;
+            }
+
+            const data = await response.json();
+            return data;
+        }
+    } catch (err) {
+        error(err);
+        console.error(err);
+    }
+}
+
 async function handleHttpError(response) {
     switch (response.status) {
         case 400:

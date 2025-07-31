@@ -1,4 +1,4 @@
-import { moongladeFetch } from './httpService.mjs'
+import { moongladeFetch, moongladeFetch2 } from './httpService.mjs'
 import { success } from './toastService.mjs'
 
 const editCanvas = new bootstrap.Offcanvas(document.getElementById('editCatCanvas'));
@@ -10,16 +10,13 @@ function initCreateCategory() {
     editCanvas.show();
 }
 
-function editCat(id) {
-    moongladeFetch(`/api/category/${id}`, 'GET', {},
-        async (resp) => {
-            var data = await resp.json();
-            catId = data.id;
-            document.querySelector('#EditCategoryRequest_Slug').value = data.slug;
-            document.querySelector('#EditCategoryRequest_DisplayName').value = data.displayName;
-            document.querySelector('#EditCategoryRequest_Note').value = data.note;
-            editCanvas.show();
-        });
+async function editCat(id) {
+    var data = await moongladeFetch2(`/api/category/${id}`, 'GET');
+    catId = data.id;
+    document.querySelector('#EditCategoryRequest_Slug').value = data.slug;
+    document.querySelector('#EditCategoryRequest_DisplayName').value = data.displayName;
+    document.querySelector('#EditCategoryRequest_Note').value = data.note;
+    editCanvas.show();
 }
 
 function deleteCat(catid) {
@@ -69,9 +66,9 @@ function handleSubmit(event) {
 document.querySelector('#btn-new-cat').addEventListener('click', initCreateCategory);
 
 document.querySelectorAll('.btn-edit').forEach(button => {
-    button.addEventListener('click', function () {
+    button.addEventListener('click', async function () {
         const lid = this.getAttribute('data-catid');
-        editCat(lid);
+        await editCat(lid);
     });
 });
 
