@@ -1,7 +1,6 @@
 ﻿using System.Net;
 using System.Net.NetworkInformation;
 using System.Net.Sockets;
-using System.Text;
 
 namespace Moonglade.Web;
 
@@ -10,14 +9,14 @@ public static class WebApplicationBuilderExtension
     private const int MaxValueLength = 35;
     private const int KeyColumnWidth = 20;
     private const string Separator = "----------------------------------------------------------";
-    
+
     public static void WriteParameterTable(this WebApplicationBuilder builder)
     {
         ArgumentNullException.ThrowIfNull(builder);
-        
+
         var appVersion = Helper.AppVersion;
         var output = new StringBuilder();
-        
+
         output.AppendLine($"Moonglade {appVersion} | .NET {Environment.Version}");
         output.AppendLine(Separator);
 
@@ -32,17 +31,17 @@ public static class WebApplicationBuilderExtension
 
         output.AppendLine(Separator);
         output.AppendLine("https://github.com/EdiWang/Moonglade");
-        
+
         Console.Write(output.ToString());
     }
 
     private static Dictionary<string, string> BuildParameterDictionary(
-        IConfiguration configuration, 
-        string[] ipv4Addresses, 
+        IConfiguration configuration,
+        string[] ipv4Addresses,
         string[] ipv6Addresses)
     {
         var envName = Environment.GetEnvironmentVariable("ASPNETCORE_ENVIRONMENT") ?? "N/A";
-        
+
         return new Dictionary<string, string>
         {
             { "Path", Environment.CurrentDirectory },
@@ -81,7 +80,7 @@ public static class WebApplicationBuilderExtension
     {
         if (string.IsNullOrEmpty(value) || value.Length <= maxLength)
             return value ?? "N/A";
-            
+
         return value[..(maxLength - 3)] + "...";
     }
 
@@ -91,7 +90,7 @@ public static class WebApplicationBuilderExtension
         {
             // Use NetworkInterface for better performance and more accurate results
             var networkInterfaces = NetworkInterface.GetAllNetworkInterfaces()
-                .Where(ni => ni.OperationalStatus == OperationalStatus.Up && 
+                .Where(ni => ni.OperationalStatus == OperationalStatus.Up &&
                             ni.NetworkInterfaceType != NetworkInterfaceType.Loopback);
 
             var ipv4List = new List<string>();
@@ -106,8 +105,8 @@ public static class WebApplicationBuilderExtension
                     {
                         ipv4List.Add(address.Address.ToString());
                     }
-                    else if (address.Address.AddressFamily == AddressFamily.InterNetworkV6 && 
-                            !address.Address.IsIPv6LinkLocal && 
+                    else if (address.Address.AddressFamily == AddressFamily.InterNetworkV6 &&
+                            !address.Address.IsIPv6LinkLocal &&
                             !address.Address.IsIPv6SiteLocal)
                     {
                         ipv6List.Add(address.Address.ToString());
@@ -127,7 +126,7 @@ public static class WebApplicationBuilderExtension
         {
             // Log the exception if logging is available
             Console.WriteLine($"Warning: Failed to get IP addresses via NetworkInterface: {ex.Message}");
-            
+
             // Fallback to DNS method
             return await GetIpAddressesViaDnsAsync();
         }
