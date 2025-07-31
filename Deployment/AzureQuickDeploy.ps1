@@ -33,7 +33,7 @@ function Create-ResourceGroup($rsgName, $regionName) {
     $rsgExists = az group exists -n $rsgName
     if ($rsgExists -eq 'false') {
         Write-Host "Creating Resource Group"
-        $echo = az group create -l $regionName -n $rsgName
+        az group create -l $regionName -n $rsgName | Out-Null
     }
 }
 
@@ -41,7 +41,7 @@ function Create-AppServicePlan($aspName, $rsgName, $regionName) {
     $planCheck = az appservice plan list --query "[?name=='$aspName']" | ConvertFrom-Json
     $planExists = $planCheck.Length -gt 0
     if (!$planExists) {
-        $echo = az appservice plan create -n $aspName -g $rsgName --is-linux --sku P0V3 --location $regionName
+        az appservice plan create -n $aspName -g $rsgName --is-linux --sku P0V3 --location $regionName | Out-Null
     }
 }
 
@@ -50,10 +50,10 @@ function Create-SqlServer($sqlServerName, $rsgName, $regionName, $sqlServerUsern
     $sqlServerExists = $sqlServerCheck.Length -gt 0
     if (!$sqlServerExists) {
         Write-Host "Creating SQL Server"
-        $echo = az sql server create --name $sqlServerName --resource-group $rsgName --location $regionName --admin-user $sqlServerUsername --admin-password $sqlServerPassword
+        az sql server create --name $sqlServerName --resource-group $rsgName --location $regionName --admin-user $sqlServerUsername --admin-password $sqlServerPassword | Out-Null
         Write-Host "SQL Server Password: $sqlServerPassword" -ForegroundColor Yellow
         Write-Host "Setting Firewall to Allow Azure Connection"
-        $echo = az sql server firewall-rule create --resource-group $rsgName --server $sqlServerName --name AllowAllIps --start-ip-address 0.0.0.0 --end-ip-address 0.0.0.0
+        az sql server firewall-rule create --resource-group $rsgName --server $sqlServerName --name AllowAllIps --start-ip-address 0.0.0.0 --end-ip-address 0.0.0.0 | Out-Null
     }
 }
 
@@ -62,7 +62,7 @@ function Create-SqlDatabase($sqlDatabaseName, $rsgName, $sqlServerName) {
     $sqlDbExists = $sqlDbCheck.Length -gt 0
     if (!$sqlDbExists) {
         Write-Host "Creating SQL Database"
-        $echo = az sql db create --resource-group $rsgName --server $sqlServerName --name $sqlDatabaseName --service-objective S0 --backup-storage-redundancy Local
+        az sql db create --resource-group $rsgName --server $sqlServerName --name $sqlDatabaseName --service-objective S0 --backup-storage-redundancy Local | Out-Null
     }
 }
 
@@ -71,7 +71,7 @@ function Create-StorageAccount($storageAccountName, $rsgName, $regionName) {
     $storageAccountExists = $storageAccountCheck.Length -gt 0
     if (!$storageAccountExists) {
         Write-Host "Creating Storage Account"
-        $echo = az storage account create --name $storageAccountName --resource-group $rsgName --location $regionName --sku Standard_LRS --kind StorageV2 --allow-blob-public-access true
+        az storage account create --name $storageAccountName --resource-group $rsgName --location $regionName --sku Standard_LRS --kind StorageV2 --allow-blob-public-access true | Out-Null
     }
 }
 
@@ -79,7 +79,7 @@ function Create-StorageContainer($storageContainerName, $storageConn) {
     $storageContainerExists = az storage container exists --name $storageContainerName --connection-string $storageConn.connectionString | ConvertFrom-Json
     if (!$storageContainerExists.exists) {
         Write-Host "Creating storage container"
-        $echo = az storage container create --name $storageContainerName --connection-string $storageConn.connectionString --public-access container
+        az storage container create --name $storageContainerName --connection-string $storageConn.connectionString --public-access container | Out-Null
     }
 }
 
@@ -89,9 +89,8 @@ function Create-WebApp($webAppName, $rsgName, $aspName, $dockerImageName) {
     if (!$appExists) {
         Write-Host "Creating Web App"
         Write-Host "Using Linux Plan with Docker image from '$dockerImageName'."
-        $echo = az webapp create -g $rsgName -p $aspName -n $webAppName --container-image-name $dockerImageName
-        
-        $echo = az webapp config set -g $rsgName -n $webAppName --always-on true --use-32bit-worker-process false --http20-enabled true
+        az webapp create -g $rsgName -p $aspName -n $webAppName --container-image-name $dockerImageName | Out-Null
+        az webapp config set -g $rsgName -n $webAppName --always-on true --use-32bit-worker-process false --http20-enabled true | Out-Null
     }
 }
 
@@ -103,11 +102,11 @@ function Update-WebAppConfig($webAppName, $rsgName, $sqlConnStr, $storageConn, $
     Write-Host "Adding Blob Storage Connection String"
     $scon = $storageConn.connectionString
 
-    $echo = az webapp config appsettings set -g $rsgName -n $webAppName --settings ImageStorage__Provider=azurestorage
-    $echo = az webapp config appsettings set -g $rsgName -n $webAppName --settings ImageStorage__AzureStorageSettings__ConnectionString=$scon
-    $echo = az webapp config appsettings set -g $rsgName -n $webAppName --settings ImageStorage__AzureStorageSettings__ContainerName=$storageContainerName
-    $echo = az webapp config appsettings set -g $rsgName -n $webAppName --settings ForwardedHeaders__UseForwardedHeaders=true
-    $echo = az webapp config appsettings set -g $rsgName -n $webAppName --settings ASPNETCORE_FORWARDEDHEADERS_ENABLED=true
+    az webapp config appsettings set -g $rsgName -n $webAppName --settings ImageStorage__Provider=azurestorage  | Out-Null
+    az webapp config appsettings set -g $rsgName -n $webAppName --settings ImageStorage__AzureStorageSettings__ConnectionString=$scon | Out-Null
+    az webapp config appsettings set -g $rsgName -n $webAppName --settings ImageStorage__AzureStorageSettings__ContainerName=$storageContainerName | Out-Null
+    az webapp config appsettings set -g $rsgName -n $webAppName --settings ForwardedHeaders__UseForwardedHeaders=true | Out-Null
+    az webapp config appsettings set -g $rsgName -n $webAppName --settings ASPNETCORE_FORWARDEDHEADERS_ENABLED=true | Out-Null
 }
 
 # Main script starts here
@@ -131,7 +130,8 @@ $subscriptionName = Read-Host "Enter subscription Id ("$output.id")"
 $subscriptionName = $subscriptionName.Trim()
 if ([string]::IsNullOrWhiteSpace($subscriptionName)) {
     $subscriptionName = $output.id
-} else {
+}
+else {
     Write-Host "Changed to subscription ("$subscriptionName")"
 }
 
@@ -139,7 +139,8 @@ if ([string]::IsNullOrWhiteSpace($subscriptionName)) {
 $regionName = Read-Host "Enter region name (default: $defaultRegion)"
 if ([string]::IsNullOrWhiteSpace($regionName)) {
     $regionName = $defaultRegion
-} else {
+}
+else {
     $regionName = $regionName.Trim()
 }
 
@@ -155,7 +156,8 @@ while ($true) {
     $HTTP_Status = Get-UrlStatusCode('https://' + $webAppName + '.azurewebsites.net')
     if ($HTTP_Status -eq 0) {
         break
-    } else {
+    }
+    else {
         Write-Host "Webapp name taken"
     }
 }
@@ -180,7 +182,8 @@ $sqlServerPassword = "m$password"
 # Set docker image name based on pre-release flag
 if ($preRelease) {
     $dockerImageName = "ediwang/moonglade:preview"
-} else {
+}
+else {
     $dockerImageName = "ediwang/moonglade"
 }
 
@@ -218,7 +221,7 @@ $sqlConnStrTemplate = az sql db show-connection-string -s $sqlServerName -n $sql
 $sqlConnStr = $sqlConnStrTemplate.Replace("<username>", $sqlServerUsername).Replace("<password>", $sqlServerPassword)
 Update-WebAppConfig $webAppName $rsgName $sqlConnStr $storageConn $storageContainerName
 
-$echo = az webapp restart --name $webAppName --resource-group $rsgName
+az webapp restart --name $webAppName --resource-group $rsgName | Out-Null
 
 Write-Host "Warming up the container..."
 Start-Sleep -Seconds 20
