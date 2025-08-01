@@ -8,12 +8,12 @@ var siteiconUploader = new ImageUploader('siteicon', 512, 'image/png');
 siteiconUploader.bindEvents();
 
 bsCustomFileInput.init();
-document.getElementById('btn-upload-avatar').addEventListener('click', function () {
-    avatarUploader.uploadImage('/avatar');
+document.getElementById('btn-upload-avatar').addEventListener('click', async function () {
+    await avatarUploader.uploadImage('/avatar');
 });
 
-document.getElementById('btn-upload-siteicon').addEventListener('click', function () {
-    siteiconUploader.uploadImage('/siteicon');
+document.getElementById('btn-upload-siteicon').addEventListener('click', async function () {
+    await siteiconUploader.uploadImage('/siteicon');
 });
 
 const form = document.querySelector('#form-settings');

@@ -53,7 +53,13 @@ export async function moongladeFetch2(uri, method, request) {
                 return;
             }
 
-            const data = await response.json();
+            // Check if response has content before parsing JSON
+            const text = await response.text();
+            if (!text) {
+                return;
+            }
+
+            const data = JSON.parse(text);
             return data;
         }
     } catch (err) {

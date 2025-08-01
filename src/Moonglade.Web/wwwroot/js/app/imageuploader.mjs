@@ -1,11 +1,11 @@
-﻿import { moongladeFetch } from './httpService.mjs'
+﻿import { moongladeFetch2 } from './httpService.mjs'
 import { success, error } from './toastService.mjs'
 
 export class ImageUploader {
     constructor(targetName, hw, imgMimeType) {
         var imgDataUrl = '';
 
-        this.uploadImage = function (uploadUrl) {
+        this.uploadImage = async function (uploadUrl) {
             if (imgDataUrl) {
                 var btnUpload = document.querySelector(`#btn-upload-${targetName}`);
                 btnUpload.classList.add('disabled');
@@ -13,19 +13,18 @@ export class ImageUploader {
 
                 var rawData = imgDataUrl.replace(/^data:image\/(png|jpeg|jpg);base64,/, '');
 
-                moongladeFetch(uploadUrl, 'POST', rawData, function (resp) {
-                    var modalElement = document.getElementById(`${targetName}modal`);
-                    var modal = bootstrap.Modal.getInstance(modalElement);
-                    if (modal) modal.hide();
+                await moongladeFetch2(uploadUrl, 'POST', rawData);
 
-                    success('Updated');
-                    var d = new Date();
-                    document.querySelector(`.blogadmin-${targetName}`).src = `/${targetName}?${d.getTime()}`;
-                }, function (always) {
-                    btnUpload.classList.remove('disabled');
-                    btnUpload.removeAttribute('disabled');
-                });
+                var modalElement = document.getElementById(`${targetName}modal`);
+                var modal = bootstrap.Modal.getInstance(modalElement);
+                if (modal) modal.hide();
 
+                success('Updated');
+                var d = new Date();
+                document.querySelector(`.blogadmin-${targetName}`).src = `/${targetName}?${d.getTime()}`;
+
+                btnUpload.classList.remove('disabled');
+                btnUpload.removeAttribute('disabled');
             } else {
                 error('Please select an image');
             }
