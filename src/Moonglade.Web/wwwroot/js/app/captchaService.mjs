@@ -4,9 +4,13 @@ export function resetCaptchaImage() {
 }
 
 export function showCaptcha() {
-    var captchaContainer = document.getElementById('captcha-container');
+    const captchaContainer = document.getElementById('captcha-container');
+    if (!captchaContainer) return false;
+
     if (captchaContainer.style.display === 'none') {
         captchaContainer.style.display = 'flex';
         resetCaptchaImage();
+        return true;
     }
+    return false;
 }
