@@ -1,4 +1,4 @@
-import { moongladeFetch } from './httpService.mjs'
+import { moongladeFetch2 } from './httpService.mjs'
 import { success } from './toastService.mjs'
 
 const resetPasswordModal = new bootstrap.Modal('#resetPasswordModal');
@@ -8,20 +8,17 @@ function resetPassword() {
     resetPasswordModal.show();
 }
 
-function handleResetPasswordFormSubmit(event) {
+async function handleResetPasswordFormSubmit(event) {
     event.preventDefault();
 
     const data = new FormData(event.target);
     const value = Object.fromEntries(data.entries());
 
-    moongladeFetch(`/api/settings/password/local`,
-        'PUT',
-        value,
-        (resp) => {
-            document.querySelector('#resetpassword-form').reset();
-            resetPasswordModal.hide();
-            success('Password updated.');
-        });
+    await moongladeFetch2(`/api/settings/password/local`, 'PUT', value);
+
+    document.querySelector('#resetpassword-form').reset();
+    resetPasswordModal.hide();
+    success('Password updated.');
 }
 
 document.getElementById('btn-reset-password').addEventListener('click', resetPassword);
