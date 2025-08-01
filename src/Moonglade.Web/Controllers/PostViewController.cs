@@ -22,8 +22,9 @@ public class PostViewController(IConfiguration configuration, IBlogConfig blogCo
             return BadRequest();
         }
 
+        var uri = new Uri(referer);
         var canonicalPrefix = blogConfig.GeneralSettings.CanonicalPrefix;
-        if (!string.IsNullOrWhiteSpace(canonicalPrefix) && !referer.Contains(canonicalPrefix))
+        if (!uri.IsLocalhostUrl() && !string.IsNullOrWhiteSpace(canonicalPrefix) && !referer.Contains(canonicalPrefix))
         {
             return BadRequest();
         }
