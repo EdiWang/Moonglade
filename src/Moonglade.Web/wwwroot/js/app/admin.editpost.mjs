@@ -1,4 +1,4 @@
-import { moongladeFetch } from './httpService.mjs'
+import { moongladeFetch2 } from './httpService.mjs'
 import { parseMetaContent, toMagicJson } from './utils.module.mjs'
 import { success, error } from './toastService.mjs'
 import { initEvents, loadTinyMCE, keepAlive, warnDirtyForm } from './admin.editor.module.mjs'
@@ -75,35 +75,27 @@ const handlePostSubmit = async (event) => {
     btnSubmitPost.classList.add('disabled');
     btnSubmitPost.setAttribute('disabled', 'disabled');
 
-    moongladeFetch(event.currentTarget.action,
-        'POST',
-        requestData,
-        async (resp) => {
-            var respJson = await resp.json();
-            if (respJson.postId) {
-                postIdElement.value = respJson.postId;
-                success('Post saved successfully.');
+    var respJson = await moongladeFetch2(event.currentTarget.action, 'POST', requestData);
 
-                if (isPreviewRequired) {
-                    isPreviewRequired = false;
-                    window.open(`/admin/post/preview/${respJson.postId}`);
-                }
-            }
-        }, function (resp) {
-            btnSubmitPost.classList.remove('disabled');
-            btnSubmitPost.removeAttribute('disabled');
-        });
+    if (respJson.postId) {
+        postIdElement.value = respJson.postId;
+        success('Post saved successfully.');
+
+        if (isPreviewRequired) {
+            isPreviewRequired = false;
+            window.open(`/admin/post/preview/${respJson.postId}`);
+        }
+    }
+
+    btnSubmitPost.classList.remove('disabled');
+    btnSubmitPost.removeAttribute('disabled');
 };
 
-function UnpublishPost(postId) {
-    moongladeFetch(
-        `/api/post/${postId}/unpublish`,
-        'PUT',
-        {},
-        (resp) => {
-            success('Post unpublished');
-            location.reload();
-        });
+async function UnpublishPost(postId) {
+    await moongladeFetch2(`/api/post/${postId}/unpublish`, 'PUT', {});
+
+    success('Post unpublished');
+    location.reload();
 }
 
 function setInputDateTime(dateObj, inputElement) {
@@ -193,9 +185,9 @@ document.addEventListener('DOMContentLoaded', function () {
     warnDirtyForm('.post-edit-form');
 });
 
-document.getElementById('btn-unpublish-post').addEventListener('click', function () {
+document.getElementById('btn-unpublish-post').addEventListener('click', async function () {
     const postId = postIdElement.value;
-    UnpublishPost(postId);
+    await UnpublishPost(postId);
 });
 
 document.getElementById('btn-cancel-schedule').addEventListener('click', function () {

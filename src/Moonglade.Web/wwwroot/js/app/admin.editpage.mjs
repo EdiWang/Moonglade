@@ -1,4 +1,4 @@
-import { moongladeFetch } from './httpService.mjs'
+import { moongladeFetch2 } from './httpService.mjs'
 import { parseMetaContent } from './utils.module.mjs'
 import { success } from './toastService.mjs'
 
@@ -34,13 +34,13 @@ function onPageCreateEditComplete() {
     document.querySelector(btnSubmitPage).removeAttribute('disabled');
 };
 
-function postCreateOrEdit() {
+async function postCreateOrEdit() {
     onPageCreateEditBegin();
 
     const apiAddress = pageId == window.emptyGuid ? `/api/page` : `/api/page/${pageId}`;
     const verb = pageId == window.emptyGuid ? 'POST' : 'PUT';
 
-    moongladeFetch(apiAddress, verb,
+    const data = await moongladeFetch2(apiAddress, verb,
         {
             title: document.querySelector("#EditPageRequest_Title").value,
             slug: document.querySelector("#EditPageRequest_Slug").value,
@@ -49,27 +49,25 @@ function postCreateOrEdit() {
             cssContent: document.querySelector("#EditPageRequest_CssContent").value,
             hideSidebar: document.querySelector('#EditPageRequest_HideSidebar').checked,
             isPublished: document.querySelector('#EditPageRequest_IsPublished').checked
-        },
-        async (resp) => {
-            onPageCreateEditComplete();
-            const data = await resp.json();
-
-            if (data.pageId) {
-                pageId = data.pageId;
-                success('Page saved successfully.');
-
-                if (document.querySelector('#EditPageRequest_IsPublished').checked) {
-                    if (document.querySelector('#btn-preview')) {
-                        document.querySelector('#btn-preview').style.display = 'none';
-                    }
-                }
-
-                if (isPreviewRequired) {
-                    isPreviewRequired = false;
-                    window.open(`/admin/page/preview/${data.pageId}`);
-                }
-            }
         });
+
+    onPageCreateEditComplete();
+
+    if (data.pageId) {
+        pageId = data.pageId;
+        success('Page saved successfully.');
+
+        if (document.querySelector('#EditPageRequest_IsPublished').checked) {
+            if (document.querySelector('#btn-preview')) {
+                document.querySelector('#btn-preview').style.display = 'none';
+            }
+        }
+
+        if (isPreviewRequired) {
+            isPreviewRequired = false;
+            window.open(`/admin/page/preview/${data.pageId}`);
+        }
+    }
 }
 
 document.querySelectorAll('a[data-bs-toggle="tab"]').forEach(function (element) {
@@ -91,13 +89,13 @@ const handleKeyboardShortcuts = (event) => {
 
 window.addEventListener('keydown', handleKeyboardShortcuts);
 
-function handleSubmit(e) {
+async function handleSubmit(e) {
     e.preventDefault();
 
     isPreviewRequired = e.submitter.id == 'btn-preview';
     assignEditorValues2();
 
-    postCreateOrEdit();
+    await postCreateOrEdit();
 }
 
 const form = document.querySelector('#page-edit-form');
