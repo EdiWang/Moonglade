@@ -1,43 +1,35 @@
-import { moongladeFetch } from './httpService.mjs'
+import { moongladeFetch2 } from './httpService.mjs'
 import { formatUtcTime } from './utils.module.mjs'
 import { success } from './toastService.mjs'
 
-function deletePost(postid) {
-    moongladeFetch(`/api/post/${postid}/recycle`, 'DELETE', {}, function (resp) {
-        success('Post deleted.');
-        document.querySelector(`#post-${postid}`).style.display = 'none';
-    });
+async function deletePost(postid) {
+    await moongladeFetch2(`/api/post/${postid}/recycle`, 'DELETE', {});
+
+    success('Post deleted.');
+    document.querySelector(`#post-${postid}`).style.display = 'none';
 }
 
-function publishPost(postId) {
-    moongladeFetch(
-        `/api/post/${postId}/publish`,
-        'PUT',
-        {},
-        (resp) => {
-            success('Post published');
-            location.reload();
-        });
+async function publishPost(postId) {
+    await moongladeFetch2(`/api/post/${postId}/publish`, 'PUT', {});
+
+    success('Post published');
+    location.reload();
 }
 
-function postponePost(postId, hours) {
-    moongladeFetch(
-        `/api/post/${postId}/postpone?hours=${hours}`,
-        'PUT',
-        {},
-        (resp) => {
-            success(`Post postponed for ${hours} hour(s)`);
-            setTimeout(() => {
-                location.reload();
-            }, 3000);
-        });
+async function postponePost(postId, hours) {
+    await moongladeFetch2(`/api/post/${postId}/postpone?hours=${hours}`, 'PUT', {});
+
+    success(`Post postponed for ${hours} hour(s)`);
+    setTimeout(() => {
+        location.reload();
+    }, 3000);
 }
 
 document.querySelectorAll(".btn-delete").forEach(function (button) {
-    button.addEventListener("click", function () {
+    button.addEventListener("click", async function () {
         var cfm = confirm("Delete Confirmation?");
         if (cfm) {
-            deletePost(this.dataset.postid);
+            await deletePost(this.dataset.postid);
         }
     });
 });
@@ -49,16 +41,16 @@ document.querySelectorAll(".btn-publish").forEach(function (button) {
     });
 });
 
-document.getElementById('btn-publish-post').addEventListener('click', function () {
+document.getElementById('btn-publish-post').addEventListener('click', async function () {
     const postId = this.dataset.postid;
-    publishPost(postId);
+    await publishPost(postId);
 });
 
 document.querySelectorAll(".btn-postpone").forEach(function (button) {
-    button.addEventListener("click", function () {
+    button.addEventListener("click", async function () {
         const postId = this.dataset.postid;
         const hours = 24; // parseInt(this.dataset.hours);
-        postponePost(postId, hours);
+        await postponePost(postId, hours);
     });
 });
 
