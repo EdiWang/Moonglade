@@ -1,22 +1,19 @@
-import { moongladeFetch } from './httpService.mjs'
+import { moongladeFetch2 } from './httpService.mjs'
 import { formatUtcTime } from './utils.module.mjs';
 import { success } from './toastService.mjs';
 
-function deleteMention(mentionId) {
-    moongladeFetch(`/api/mention/${mentionId}`, 'DELETE', {},
-        (resp) => {
-            document.querySelector(`#mention-box-${mentionId}`).remove();
-        });
+async function deleteMention(mentionId) {
+    await moongladeFetch2(`/api/mention/${mentionId}`, 'DELETE', {});
+    document.querySelector(`#mention-box-${mentionId}`).remove();
 }
 
-function clearMention() {
-    moongladeFetch(`/api/mention/clear`, 'DELETE', {},
-        (resp) => {
-            success('Mention logs are cleared');
-            setTimeout(function () {
-                window.location.reload();
-            }, 800);
-        });
+async function clearMention() {
+    await moongladeFetch2(`/api/mention/clear`, 'DELETE', {});
+
+    success('Mention logs are cleared');
+    setTimeout(function () {
+        window.location.reload();
+    }, 800);
 }
 
 formatUtcTime();
@@ -35,13 +32,13 @@ document.addEventListener('DOMContentLoaded', () => {
     const exportButtons = document.querySelectorAll('.btn-delete');
 
     exportButtons.forEach(button => {
-        button.addEventListener('click', () => {
+        button.addEventListener('click', async () => {
             const mentionId = button.getAttribute('data-mentionId');
-            deleteMention(mentionId);
+            await deleteMention(mentionId);
         });
     });
 });
 
-document.getElementById('btn-clear-all').addEventListener('click', () => {
-    clearMention();
+document.getElementById('btn-clear-all').addEventListener('click', async () => {
+    await clearMention();
 });
