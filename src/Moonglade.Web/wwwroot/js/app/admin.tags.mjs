@@ -1,4 +1,4 @@
-import { moongladeFetch } from './httpService.mjs';
+import { moongladeFetch2 } from './httpService.mjs';
 import { success, error } from './toastService.mjs';
 
 const editCanvas = new bootstrap.Offcanvas(document.getElementById('editTagCanvas'));
@@ -15,11 +15,15 @@ function showEditCanvas() {
 tagList.addEventListener('click', async (e) => {
     const btn = e.target.closest('.btn-delete');
     if (!btn) return;
+
     const tagid = btn.getAttribute('data-tagid');
     const tagName = btn.textContent.trim();
+
     if (!window.confirm(`Confirm to delete tag: ${tagName}`)) return;
+
     try {
-        await moongladeFetch(`/api/tags/${tagid}`, 'DELETE');
+        await moongladeFetch2(`/api/tags/${tagid}`, 'DELETE');
+
         const li = document.querySelector(`#li-tag-${tagid}`);
         if (li) li.style.display = 'none';
         success('Tag deleted');
@@ -31,12 +35,16 @@ tagList.addEventListener('click', async (e) => {
 tagList.addEventListener('blur', async (e) => {
     const span = e.target.closest('.span-tagcontent-editable');
     if (!span) return;
+
     const tagId = span.getAttribute('data-tagid');
     const newTagName = span.textContent.trim();
     const originalTagName = span.getAttribute('data-original') || '';
+
     if (newTagName === originalTagName || !newTagName) return;
+
     try {
-        await moongladeFetch(`/api/tags/${tagId}`, 'PUT', newTagName);
+        await moongladeFetch2(`/api/tags/${tagId}`, 'PUT', newTagName);
+
         span.setAttribute('data-original', newTagName);
         success('Tag updated');
     } catch (err) {
@@ -60,13 +68,12 @@ editForm.addEventListener('submit', async function (event) {
     const tagName = formData.get('tagName').trim();
 
     try {
-        await moongladeFetch(`/api/tags`, 'POST', tagName, async (resp) => {
-            var tag = await resp.json();
-            editForm.reset();
-            insertNewTagElement(tag.id, tag.displayName);
-            success('Tag added');
-            editCanvas.hide();
-        });
+        const tag = await moongladeFetch2(`/api/tags`, 'POST', tagName);
+
+        editForm.reset();
+        insertNewTagElement(tag.id, tag.displayName);
+        success('Tag added');
+        editCanvas.hide();
     } catch (err) {
         console.error(err);
         error('Tag creation failed.');

@@ -1,4 +1,4 @@
-import { moongladeFetch } from './httpService.mjs'
+import { moongladeFetch2 } from './httpService.mjs'
 import { handleSettingsSubmit } from './admin.settings.mjs';
 import { success, error } from './toastService.mjs';
 
@@ -17,7 +17,7 @@ async function sendTestEmail() {
     toggleButtonState(testEmailButton, true);
 
     try {
-        await moongladeFetch('/api/settings/email/test', 'POST', {});
+        await moongladeFetch2('/api/settings/email/test', 'POST', {});
         success('Email is sent.');
     } catch (err) {
         console.error('Failed to send test email:', err);
