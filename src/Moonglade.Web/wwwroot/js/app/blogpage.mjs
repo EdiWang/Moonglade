@@ -1,8 +1,8 @@
-import { moongladeFetch } from './httpService.mjs'
+import { moongladeFetch2 } from './httpService.mjs'
 import { success } from './toastService.mjs';
 
-function deletePage(pageid) {
-    moongladeFetch(`/api/page/${pageid}`,
+async function deletePage(pageid) {
+    await moongladeFetch2(`/api/page/${pageid}`,
         'DELETE',
         {},
         (resp) => {
@@ -11,18 +11,18 @@ function deletePage(pageid) {
         });
 }
 
-function deleteConfirm(pageid) {
+async function deleteConfirm(pageid) {
     var cfm = confirm("Delete Confirmation?");
-    if (cfm) deletePage(pageid);
+    if (cfm) await deletePage(pageid);
 }
 
 document.addEventListener('DOMContentLoaded', () => {
     const exportButtons = document.querySelectorAll('.btn-delete');
 
     exportButtons.forEach(button => {
-        button.addEventListener('click', () => {
+        button.addEventListener('click', async () => {
             const pageId = button.getAttribute('data-pageId');
-            deleteConfirm(pageId);
+            await deleteConfirm(pageId);
         });
     });
 });
