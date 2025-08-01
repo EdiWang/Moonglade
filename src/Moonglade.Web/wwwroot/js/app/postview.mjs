@@ -1,4 +1,4 @@
-import { moongladeFetch } from './httpService.mjs';
+import { moongladeFetch2 } from './httpService.mjs';
 
 const EXPIRATION_DAYS = 30;
 const MILLISECONDS_IN_A_DAY = 24 * 60 * 60 * 1000;
@@ -50,19 +50,15 @@ export const recordPostView = (postId) => {
 
     addInteractionListeners();
 
-    setTimeout(() => {
+    setTimeout(async () => {
         if (hasInteracted) {
-            moongladeFetch(
-                `/api/postview`,
-                'POST',
+            await moongladeFetch2(`/api/postview`, 'POST',
                 {
                     postId,
                     clientTimeStamp: new Date().toISOString(),
-                },
-                () => {
-                    localStorage.setItem(localStorageKey, JSON.stringify({ timestamp: new Date().toISOString() }));
-                }
-            );
+                });
+
+            localStorage.setItem(localStorageKey, JSON.stringify({ timestamp: new Date().toISOString() }));
         } else {
             removeInteractionListeners();
         }
