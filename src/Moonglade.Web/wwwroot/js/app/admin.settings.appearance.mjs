@@ -1,4 +1,4 @@
-import { moongladeFetch } from './httpService.mjs'
+import { moongladeFetch2 } from './httpService.mjs'
 import { handleSettingsSubmit } from './admin.settings.mjs';
 import { success } from './toastService.mjs';
 
@@ -9,29 +9,24 @@ function handleSubmit(event) {
 
 var themeModal = new bootstrap.Modal(document.getElementById('thememodal'));
 
-window.createTheme = function (oFormElement) {
-    moongladeFetch(oFormElement.action,
-        'POST',
+window.createTheme = async function (oFormElement) {
+    await moongladeFetch2(oFormElement.action, 'POST',
         {
             name: document.querySelector('#Name').value,
             accentColor: document.querySelector('#AccentColor').value
-        },
-        async (resp) => {
-            themeModal.hide();
-            window.location.reload();
         });
+
+    themeModal.hide();
+    window.location.reload();
 }
 
-window.deleteTheme = function (id) {
-    moongladeFetch(`/api/theme/${id}`,
-        'DELETE',
-        {},
-        (resp) => {
-            var col = document.getElementById(`user-theme-col-${id}`);
-            col.remove();
+window.deleteTheme = async function (id) {
+    await moongladeFetch2(`/api/theme/${id}`, 'DELETE', {});
 
-            success('Theme deleted.');
-        });
+    var col = document.getElementById(`user-theme-col-${id}`);
+    col.remove();
+
+    success('Theme deleted.');
 }
 
 let cssContentEditor = null;
