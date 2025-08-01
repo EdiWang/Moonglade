@@ -2,9 +2,9 @@ import { moongladeFetch2 } from './httpService.mjs'
 import { handleSettingsSubmit } from './admin.settings.mjs';
 import { success } from './toastService.mjs';
 
-function handleSubmit(event) {
+async function handleSubmit(event) {
     assignEditorValues(cssContentEditor, "#ViewModel_CssCode");
-    handleSettingsSubmit(event);
+    await handleSettingsSubmit(event);
 }
 
 var themeModal = new bootstrap.Modal(document.getElementById('thememodal'));

@@ -11,9 +11,9 @@ function clearMenus() {
     document.querySelector("#settings_MenuJson").value = "[]";
 }
 
-function handleSubmit(event) {
+async function handleSubmit(event) {
     assignEditorValues(jsonContentEditor, "#settings_MenuJson");
-    handleSettingsSubmit(event);
+    await handleSettingsSubmit(event);
 }
 
 document.getElementById('btn-clear-menus').addEventListener('click', clearMenus);

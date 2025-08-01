@@ -1,8 +1,8 @@
-﻿import { moongladeFetch } from './httpService.mjs'
+﻿import { moongladeFetch2 } from './httpService.mjs'
 import { toMagicJson } from './utils.module.mjs'
 import { success } from './toastService.mjs'
 
-export function handleSettingsSubmit(event) {
+export async function handleSettingsSubmit(event) {
     event.preventDefault();
 
     const btnSaveSettingsSelector = '#btn-save-settings';
@@ -24,11 +24,10 @@ export function handleSettingsSubmit(event) {
     const formValues = Object.fromEntries(formData.entries());
     const formattedValues = toMagicJson(formValues);
 
-    moongladeFetch(event.currentTarget.action, 'POST', formattedValues,
-        (resp) => {
-            success('Settings Updated');
-            enableButton();
-        });
+    await moongladeFetch2(event.currentTarget.action, 'POST', formattedValues);
+
+    success('Settings Updated');
+    enableButton();
 }
 
 export function compareVersionNumbers(v1, v2) {
