@@ -1,4 +1,4 @@
-import { moongladeFetch2 } from './httpService.mjs'
+import { moongladeFetch2 } from './httpService.mjs?v=1426b2'
 import { formatUtcTime } from './utils.module.mjs'
 import { success } from './toastService.mjs'
 

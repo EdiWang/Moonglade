@@ -1,4 +1,4 @@
-import { moongladeFetch2 } from './httpService.mjs'
+import { moongladeFetch2 } from './httpService.mjs?v=1426b2'
 import { success } from './toastService.mjs'
 
 const editCanvas = new bootstrap.Offcanvas(document.getElementById('editCatCanvas'));
