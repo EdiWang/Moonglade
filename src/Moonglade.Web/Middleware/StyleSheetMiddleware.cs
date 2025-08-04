@@ -31,7 +31,7 @@ public class StyleSheetMiddleware(RequestDelegate next)
         }
     }
 
-    private async Task HandleDefaultPath(HttpContext context, IBlogConfig blogConfig)
+    private static async Task HandleDefaultPath(HttpContext context, IBlogConfig blogConfig)
     {
         if (!blogConfig.AppearanceSettings.EnableCustomCss)
         {
@@ -43,7 +43,7 @@ public class StyleSheetMiddleware(RequestDelegate next)
         await WriteStyleSheet(context, cssCode);
     }
 
-    private async Task HandleContentCss(HttpContext context, IQueryMediator queryMediator)
+    private static async Task HandleContentCss(HttpContext context, IQueryMediator queryMediator)
     {
         var qs = HttpUtility.ParseQueryString(context.Request.QueryString.Value!);
         var id = qs["id"];
