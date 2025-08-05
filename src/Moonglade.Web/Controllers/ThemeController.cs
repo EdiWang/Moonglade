@@ -17,24 +17,17 @@ public class ThemeController(
     [ProducesResponseType(StatusCodes.Status404NotFound)]
     public async Task<IActionResult> Css()
     {
-        try
+        var css = await cache.GetOrCreateAsync(BlogCachePartition.General.ToString(), "theme", async entry =>
         {
-            var css = await cache.GetOrCreateAsync(BlogCachePartition.General.ToString(), "theme", async entry =>
-            {
-                entry.SlidingExpiration = TimeSpan.FromMinutes(20);
+            entry.SlidingExpiration = TimeSpan.FromMinutes(20);
 
-                var data = await queryMediator.QueryAsync(new GetSiteThemeStyleSheetQuery(blogConfig.AppearanceSettings.ThemeId));
-                return data;
-            });
+            var data = await queryMediator.QueryAsync(new GetSiteThemeStyleSheetQuery(blogConfig.AppearanceSettings.ThemeId));
+            return data;
+        });
 
-            if (css == null) return NotFound();
+        if (css == null) return NotFound();
 
-            return Content(css, "text/css; charset=utf-8");
-        }
-        catch (InvalidDataException e)
-        {
-            return Conflict(e.Message);
-        }
+        return Content(css, "text/css; charset=utf-8");
     }
 
     [Authorize]
