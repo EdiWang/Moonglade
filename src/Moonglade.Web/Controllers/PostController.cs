@@ -65,11 +65,11 @@ public class PostController(
                 }
                 else
                 {
-                    logger.LogInformation($"Post scheduled for publish at {clientUtcTime} UTC.");
+                    logger.LogInformation("Post scheduled for publish at {clientUtcTime} UTC.", clientUtcTime);
 
                     wakeUp.WakeUp();
 
-                    logger.LogInformation($"Scheduled publish wake-up triggered for post: {model.PostId}");
+                    logger.LogInformation("Scheduled publish wake-up triggered for post: {PostId}", model.PostId);
                 }
             }
 
@@ -82,7 +82,7 @@ public class PostController(
                 return Ok(new { PostId = postEntity.Id });
             }
 
-            logger.LogInformation($"Trying to Ping URL for post: {postEntity.Id}");
+            logger.LogInformation("Trying to Ping URL for post: {Id}", postEntity.Id);
 
             var baseUri = new Uri(Helper.ResolveRootUrl(HttpContext, null, removeTailSlash: true));
             var link = new Uri(baseUri, $"post/{postEntity.RouteLink.ToLower()}");
@@ -94,7 +94,7 @@ public class PostController(
         }
         catch (Exception ex)
         {
-            logger.LogError(ex, "Error Creating New Post.");
+            logger.LogError(ex, "Error updating post.");
             return Conflict(ex.Message);
         }
     }
