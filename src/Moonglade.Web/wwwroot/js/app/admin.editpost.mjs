@@ -1,4 +1,4 @@
-import { moongladeFetch2 } from './httpService.mjs?v=1426b2'
+import { moongladeFetch2 } from './httpService.mjs?v=1426'
 import { parseMetaContent, toMagicJson } from './utils.module.mjs'
 import { success, error } from './toastService.mjs'
 import { initEvents, loadTinyMCE, keepAlive, warnDirtyForm } from './admin.editor.module.mjs'

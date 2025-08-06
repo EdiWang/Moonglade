@@ -1,4 +1,4 @@
-import { moongladeFetch2 } from './httpService.mjs?v=1426b2'
+import { moongladeFetch2 } from './httpService.mjs?v=1426'
 import { handleSettingsSubmit } from './admin.settings.mjs';
 import { success } from './toastService.mjs';
 

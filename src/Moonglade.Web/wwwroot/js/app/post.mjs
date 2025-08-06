@@ -1,4 +1,4 @@
-﻿import { moongladeFetch2 } from './httpService.mjs?v=1426b2'
+﻿import { moongladeFetch2 } from './httpService.mjs?v=1426'
 import { formatUtcTime, parseMetaContent } from './utils.module.mjs';
 import { resetCaptchaImage, showCaptcha } from './captchaService.mjs';
 import { resizeImages, applyImageZooming } from './post.imageutils.mjs';

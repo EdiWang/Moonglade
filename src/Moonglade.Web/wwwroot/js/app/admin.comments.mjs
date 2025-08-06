@@ -1,4 +1,4 @@
-import { moongladeFetch2 } from './httpService.mjs?v=1426b2'
+import { moongladeFetch2 } from './httpService.mjs?v=1426'
 import { formatUtcTime } from '/js/app/utils.module.mjs'
 
 document.querySelectorAll('.btn-delete').forEach(button => {
