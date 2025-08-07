@@ -1,4 +1,4 @@
-import { moongladeFetch } from './httpService.mjs'
+import { moongladeFetch2 } from './httpService.mjs?v=1426'
 import { success } from './toastService.mjs'
 
 const editCanvas = new bootstrap.Offcanvas(document.getElementById('editCatCanvas'));
@@ -10,32 +10,27 @@ function initCreateCategory() {
     editCanvas.show();
 }
 
-function editCat(id) {
-    moongladeFetch(`/api/category/${id}`, 'GET', {},
-        async (resp) => {
-            var data = await resp.json();
-            catId = data.id;
-            document.querySelector('#EditCategoryRequest_Slug').value = data.slug;
-            document.querySelector('#EditCategoryRequest_DisplayName').value = data.displayName;
-            document.querySelector('#EditCategoryRequest_Note').value = data.note;
-            editCanvas.show();
-        });
+async function editCat(id) {
+    var data = await moongladeFetch2(`/api/category/${id}`, 'GET');
+    catId = data.id;
+    document.querySelector('#EditCategoryRequest_Slug').value = data.slug;
+    document.querySelector('#EditCategoryRequest_DisplayName').value = data.displayName;
+    document.querySelector('#EditCategoryRequest_Note').value = data.note;
+    editCanvas.show();
 }
 
-function deleteCat(catid) {
-    moongladeFetch(`/api/category/${catid}`, 'DELETE', {},
-        (resp) => {
-            document.querySelector(`#card-${catid}`).remove();
-            success('Category deleted');
-        });
+async function deleteCat(catid) {
+    await moongladeFetch2(`/api/category/${catid}`, 'DELETE', {});
+    document.querySelector(`#card-${catid}`).remove();
+    success('Category deleted');
 }
 
-function confirmDelete(catid) {
+async function confirmDelete(catid) {
     var cfm = confirm("Delete?");
-    if (cfm) deleteCat(catid);
+    if (cfm) await deleteCat(catid);
 }
 
-function handleSubmit(event) {
+async function handleSubmit(event) {
     event.preventDefault();
 
     var apiAddress = '';
@@ -53,32 +48,31 @@ function handleSubmit(event) {
     const data = new FormData(event.target);
     const value = Object.fromEntries(data.entries());
 
-    moongladeFetch(apiAddress, verb,
+    await moongladeFetch2(apiAddress, verb,
         {
             slug: value["EditCategoryRequest.Slug"],
             displayName: value["EditCategoryRequest.DisplayName"],
             note: value["EditCategoryRequest.Note"]
-        },
-        (resp) => {
-            document.querySelector('#edit-form').reset();
-            editCanvas.hide();
-            window.location.reload();
         });
+
+    document.querySelector('#edit-form').reset();
+    editCanvas.hide();
+    window.location.reload();
 }
 
 document.querySelector('#btn-new-cat').addEventListener('click', initCreateCategory);
 
 document.querySelectorAll('.btn-edit').forEach(button => {
-    button.addEventListener('click', function () {
+    button.addEventListener('click', async function () {
         const lid = this.getAttribute('data-catid');
-        editCat(lid);
+        await editCat(lid);
     });
 });
 
 document.querySelectorAll('.btn-delete').forEach(button => {
-    button.addEventListener('click', function () {
+    button.addEventListener('click', async function () {
         const lid = this.getAttribute('data-catid');
-        confirmDelete(lid);
+        await confirmDelete(lid);
     });
 });
 

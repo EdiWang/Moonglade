@@ -45,7 +45,7 @@
     <div class="mentions-container">
         @foreach (var item in mentionRecords.OrderByDescending(p => p.PingTimeUtc))
         {
-            <div class="mention-item-entry p-3 mb-2 rounded-3 shadow-sm border">
+            <div class="mention-item-entry p-3 rounded-3 border mb-1">
                 <div id="mention-box-@item.Id" class="mention-item row">
                     <div class="col">
                         <strong>

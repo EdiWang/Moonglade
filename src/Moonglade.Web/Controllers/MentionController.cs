@@ -44,19 +44,16 @@ public class MentionController(
         return HandleWebmentionFailure(response.Status);
     }
 
-    private IActionResult HandleWebmentionFailure(WebmentionStatus status)
+    private ObjectResult HandleWebmentionFailure(WebmentionStatus status) => status switch
     {
-        return status switch
-        {
-            WebmentionStatus.InvalidWebmentionRequest => BadRequest("Invalid webmention request."),
-            WebmentionStatus.ErrorSourceNotContainTargetUri => Conflict("The source URI does not contain a link to the target URI."),
-            WebmentionStatus.SpamDetectedFakeNotFound => NotFound("The requested resource was not found."),
-            WebmentionStatus.ErrorTargetUriNotExist => Conflict("Cannot retrieve post ID and title for the target URL."),
-            WebmentionStatus.ErrorWebmentionAlreadyRegistered => Conflict("Webmention already registered."),
-            WebmentionStatus.GenericError => StatusCode(StatusCodes.Status500InternalServerError, "An internal server error occurred."),
-            _ => StatusCode(StatusCodes.Status500InternalServerError, "An unknown error occurred.")
-        };
-    }
+        WebmentionStatus.InvalidWebmentionRequest => BadRequest("Invalid webmention request."),
+        WebmentionStatus.ErrorSourceNotContainTargetUri => Conflict("The source URI does not contain a link to the target URI."),
+        WebmentionStatus.SpamDetectedFakeNotFound => NotFound("The requested resource was not found."),
+        WebmentionStatus.ErrorTargetUriNotExist => Conflict("Cannot retrieve post ID and title for the target URL."),
+        WebmentionStatus.ErrorWebmentionAlreadyRegistered => Conflict("Webmention already registered."),
+        WebmentionStatus.GenericError => StatusCode(StatusCodes.Status500InternalServerError, "An internal server error occurred."),
+        _ => StatusCode(StatusCodes.Status500InternalServerError, "An unknown error occurred.")
+    };
 
     [HttpPost("/pingback")]
     [ReadonlyMode]

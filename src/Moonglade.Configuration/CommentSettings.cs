@@ -34,6 +34,9 @@ public class CommentSettings : IBlogSettings
     [Display(Name = "Word filter mode")]
     public WordFilterMode WordFilterMode { get; set; }
 
+    [Display(Name = "Show comment section on mobile screens")]
+    public bool EnableCommentSectionOnMobile { get; set; }
+
     [JsonIgnore]
     public static CommentSettings DefaultValue => new()
     {

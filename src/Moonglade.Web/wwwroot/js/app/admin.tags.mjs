@@ -1,60 +1,95 @@
-import { moongladeFetch } from './httpService.mjs'
-import { success } from './toastService.mjs';
+import { moongladeFetch2 } from './httpService.mjs?v=1426';
+import { success, error } from './toastService.mjs';
 
-var editCanvas = new bootstrap.Offcanvas(document.getElementById('editTagCanvas'));
+const editCanvas = new bootstrap.Offcanvas(document.getElementById('editTagCanvas'));
+const tagList = document.querySelector('.ul-tag-mgr');
+const editForm = document.querySelector('#edit-form');
+const tagFilter = document.getElementById('tagFilter');
+const btnNewTag = document.getElementById('btn-new-tag');
 
-function initCreateTag() {
-    document.querySelector('#edit-form').reset();
+function showEditCanvas() {
+    editForm.reset();
     editCanvas.show();
 }
 
-document.querySelectorAll(".btn-delete").forEach(function (element) {
-    element.addEventListener("click", function () {
-        var tagid = this.getAttribute("data-tagid");
-        var cfm = confirm(`Confirm to delete tag: ${this.textContent.trim()}`);
-        if (cfm) {
-            moongladeFetch(`/api/tags/${tagid}`, 'DELETE', {}, function (resp) {
-                document.querySelector(`#li-tag-${tagid}`).style.display = 'none';
-                success('Tag deleted');
-            });
-        }
-    });
+tagList.addEventListener('click', async (e) => {
+    const btn = e.target.closest('.btn-delete');
+    if (!btn) return;
+
+    const tagid = btn.getAttribute('data-tagid');
+    const tagName = btn.textContent.trim();
+
+    if (!window.confirm(`Confirm to delete tag: ${tagName}`)) return;
+
+    try {
+        await moongladeFetch2(`/api/tags/${tagid}`, 'DELETE');
+
+        const li = document.querySelector(`#li-tag-${tagid}`);
+        if (li) li.style.display = 'none';
+        success('Tag deleted');
+    } catch (err) {
+        error('Tag deletion failed.');
+    }
 });
 
-document.querySelectorAll(".span-tagcontent-editable").forEach(function (element) {
-    element.addEventListener("blur", function () {
-        var tagId = this.getAttribute("data-tagid");
-        var newTagName = this.textContent.trim();
+tagList.addEventListener('blur', async (e) => {
+    const span = e.target.closest('.span-tagcontent-editable');
+    if (!span) return;
 
-        moongladeFetch(`/api/tags/${tagId}`, 'PUT', newTagName, function (resp) {
-            success('Tag updated');
-        });
-    });
-});
+    const tagId = span.getAttribute('data-tagid');
+    const newTagName = span.textContent.trim();
+    const originalTagName = span.getAttribute('data-original') || '';
 
-document.getElementById('tagFilter').addEventListener('keyup', function () {
-    var value = this.value.toLowerCase();
-    var items = document.querySelectorAll('.ul-tag-mgr li');
+    if (newTagName === originalTagName || !newTagName) return;
 
-    items.forEach(function (item) {
-        var show = item.textContent.toLowerCase().indexOf(value) > -1;
+    try {
+        await moongladeFetch2(`/api/tags/${tagId}`, 'PUT', newTagName);
+
+        span.setAttribute('data-original', newTagName);
+        success('Tag updated');
+    } catch (err) {
+        error('Tag update failed.');
+    }
+}, true); // useCapture: true, to catch blur
+
+tagFilter.addEventListener('keyup', function () {
+    const value = this.value.toLowerCase();
+    tagList.querySelectorAll('li').forEach((item) => {
+        const show = item.textContent.toLowerCase().includes(value);
         item.style.display = show ? 'inline-block' : 'none';
     });
 });
 
-function handleSubmit(event) {
+btnNewTag.addEventListener('click', showEditCanvas);
+
+editForm.addEventListener('submit', async function (event) {
     event.preventDefault();
+    const formData = new FormData(editForm);
+    const tagName = formData.get('tagName').trim();
 
-    const data = new FormData(event.target);
-    const value = Object.fromEntries(data.entries());
+    try {
+        const tag = await moongladeFetch2(`/api/tags`, 'POST', tagName);
 
-    moongladeFetch(`/api/tags`, 'POST', value.tagName, function (resp) {
-        document.querySelector('#edit-form').reset();
-        window.location.reload();
-    });
+        editForm.reset();
+        insertNewTagElement(tag.id, tag.displayName);
+        success('Tag added');
+        editCanvas.hide();
+    } catch (err) {
+        console.error(err);
+        error('Tag creation failed.');
+    }
+});
+
+function insertNewTagElement(id, name) {
+    const li = document.createElement('li');
+    li.id = `li-tag-${id}`;
+    li.innerHTML = `
+    <li id="li-tag-${id}" class="admin-tag-item border rounded">
+        <span class="span-tagcontent-editable" contenteditable="true" spellcheck="false" data-tagid="${id}">${name}</span>
+        <a class="btn-delete" data-tagid="${id}">
+            <i class="bi-trash"></i>
+        </a>
+    </li>
+    `;
+    tagList.appendChild(li);
 }
-
-document.getElementById('btn-new-tag').addEventListener('click', initCreateTag);
-
-const form = document.querySelector('#edit-form');
-form.addEventListener('submit', handleSubmit);

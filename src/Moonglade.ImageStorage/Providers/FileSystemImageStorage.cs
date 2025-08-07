@@ -9,6 +9,14 @@ public class FileSystemImageStorage(FileSystemImageConfiguration imgConfig, ILog
 
     private readonly string _path = imgConfig.Path;
 
+    public static string DefaultPath
+    {
+        get
+        {
+            return Path.Join(Environment.GetFolderPath(Environment.SpecialFolder.UserProfile), "moonglade", "images");
+        }
+    }
+
     public async Task<ImageInfo> GetAsync(string fileName)
     {
         var imagePath = Path.Join(_path, fileName);

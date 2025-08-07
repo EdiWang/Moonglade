@@ -11,13 +11,30 @@ public class PostViewController(IConfiguration configuration, IBlogConfig blogCo
 {
     private readonly bool _isEnabled = configuration.GetValue<bool>("Post:EnableViewCount");
 
+    private static readonly HashSet<string> KnownBots = new(StringComparer.OrdinalIgnoreCase)
+    {
+        "Google", "Bingbot", "Baidu", "YandexBot", "Sogou", "Exabot", "ia_archiver",
+        "facebookexternalhit", "Twitterbot", "rogerbot", "linkedinbot", "embedly",
+        "showyoubot", "outbrain", "pinterest", "slackbot", "vkShare", "W3C_Validator",
+        "redditbot", "Applebot", "WhatsApp", "flipboard", "tumblr", "bitlybot",
+        "SkypeUriPreview", "nuzzel", "Discordbot", "Qwantify", "pinterestbot",
+        "TelegramBot", "Chrome-Lighthouse", "DuckDuckGo", "DuckDuckBot", "Slack"
+    };
+
     [HttpPost]
     public async Task<IActionResult> AddViewCount([FromBody] ViewRequest request)
     {
         if (!_isEnabled) return NotFound();
 
         var referer = Request.Headers.Referer.ToString();
-        if (string.IsNullOrEmpty(referer) || !referer.Contains(blogConfig.GeneralSettings.CanonicalPrefix))
+        if (string.IsNullOrEmpty(referer))
+        {
+            return BadRequest();
+        }
+
+        var uri = new Uri(referer);
+        var canonicalPrefix = blogConfig.GeneralSettings.CanonicalPrefix;
+        if (!uri.IsLocalhostUrl() && !string.IsNullOrWhiteSpace(canonicalPrefix) && !referer.Contains(canonicalPrefix))
         {
             return BadRequest();
         }
@@ -44,48 +61,14 @@ public class PostViewController(IConfiguration configuration, IBlogConfig blogCo
         await commandMediator.SendAsync(new AddViewCountCommand(postId, ip));
     }
 
-    private bool IsKnownBot(string userAgent)
+    private static bool IsKnownBot(string userAgent)
     {
-        var bots = new[]
+        if (string.IsNullOrEmpty(userAgent))
         {
-            "Google",
-            "Bingbot",
-            "Baidu",
-            "YandexBot",
-            "Sogou",
-            "Exabot",
-            "ia_archiver",
-            "facebookexternalhit",
-            "Twitterbot",
-            "rogerbot",
-            "linkedinbot",
-            "embedly",
-            "showyoubot",
-            "outbrain",
-            "pinterest",
-            "slackbot",
-            "vkShare",
-            "W3C_Validator",
-            "redditbot",
-            "Applebot",
-            "WhatsApp",
-            "flipboard",
-            "tumblr",
-            "bitlybot",
-            "SkypeUriPreview",
-            "nuzzel",
-            "Discordbot",
-            "Qwantify",
-            "pinterestbot",
-            "bitlybot",
-            "TelegramBot",
-            "Chrome-Lighthouse",
-            "DuckDuckGo",
-            "DuckDuckBot",
-            "Slack"
-        };
+            return false;
+        }
 
-        return bots.Any(b => userAgent.Contains(b, StringComparison.OrdinalIgnoreCase));
+        return KnownBots.Any(bot => userAgent.Contains(bot, StringComparison.OrdinalIgnoreCase));
     }
 }
 

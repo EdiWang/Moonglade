@@ -8,8 +8,5 @@ public record GetAllLinksQuery : IQuery<List<FriendLinkEntity>>;
 
 public class GetAllLinksQueryHandler(MoongladeRepository<FriendLinkEntity> repo) : IQueryHandler<GetAllLinksQuery, List<FriendLinkEntity>>
 {
-    public Task<List<FriendLinkEntity>> HandleAsync(GetAllLinksQuery request, CancellationToken ct)
-    {
-        return repo.ListAsync(ct);
-    }
+    public Task<List<FriendLinkEntity>> HandleAsync(GetAllLinksQuery request, CancellationToken ct) => repo.ListAsync(ct);
 }

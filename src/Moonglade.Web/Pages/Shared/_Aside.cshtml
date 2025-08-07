@@ -11,7 +11,7 @@
         @Html.Raw(BlogConfig.GeneralSettings.SideBarCustomizedHtmlPitch)
     }
 
-    @if (BlogConfig.GeneralSettings.WidgetsTags)
+    @if (BlogConfig.GeneralSettings.HotTagAmount > 0)
     {
         <section id="aside-tags" class="mt-4 mb-4">
             <div class="aside-widget p-3 rounded-3 shadow-sm border">

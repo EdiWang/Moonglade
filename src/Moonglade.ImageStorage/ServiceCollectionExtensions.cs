@@ -33,11 +33,13 @@ public static class ServiceCollectionExtensions
                 services.AddAzureStorage(settings.AzureStorageSettings);
                 break;
             case "filesystem":
-                if (string.IsNullOrWhiteSpace(settings.FileSystemPath))
+                string path = settings.FileSystemPath;
+                if (string.IsNullOrWhiteSpace(path))
                 {
-                    throw new ArgumentNullException(nameof(settings.FileSystemPath), "FileSystemPath can not be null or empty.");
+                    path = FileSystemImageStorage.DefaultPath;
+                    Console.WriteLine($"FileSystemPath is not set, using default path: {path}");
                 }
-                services.AddFileSystemStorage(settings.FileSystemPath);
+                services.AddFileSystemStorage(path);
                 break;
             case "miniostorage":
                 if (settings.MinioStorageSettings == null)

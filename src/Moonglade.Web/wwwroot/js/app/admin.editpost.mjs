@@ -1,4 +1,4 @@
-import { moongladeFetch } from './httpService.mjs'
+import { moongladeFetch2 } from './httpService.mjs?v=1426'
 import { parseMetaContent, toMagicJson } from './utils.module.mjs'
 import { success, error } from './toastService.mjs'
 import { initEvents, loadTinyMCE, keepAlive, warnDirtyForm } from './admin.editor.module.mjs'
@@ -9,6 +9,8 @@ const heroImageFormSelector = '#form-hero-image';
 const postEditFormSelector = '.post-edit-form';
 const heroImageModalElement = document.getElementById('heroImageModal');
 const editorChoice = parseMetaContent('editor-choice');
+const scheduledPublishTimeElement = document.querySelector('input[name="ViewModel.ScheduledPublishTime"]');
+const postIdElement = document.querySelector('input[name="ViewModel.PostId"]');
 
 let isPreviewRequired = false;
 const heroImageModal = new bootstrap.Modal(heroImageModalElement);
@@ -73,35 +75,27 @@ const handlePostSubmit = async (event) => {
     btnSubmitPost.classList.add('disabled');
     btnSubmitPost.setAttribute('disabled', 'disabled');
 
-    moongladeFetch(event.currentTarget.action,
-        'POST',
-        requestData,
-        async (resp) => {
-            var respJson = await resp.json();
-            if (respJson.postId) {
-                document.querySelector('input[name="ViewModel.PostId"]').value = respJson.postId;
-                success('Post saved successfully.');
+    var respJson = await moongladeFetch2(event.currentTarget.action, 'POST', requestData);
 
-                if (isPreviewRequired) {
-                    isPreviewRequired = false;
-                    window.open(`/admin/post/preview/${respJson.postId}`);
-                }
-            }
-        }, function (resp) {
-            btnSubmitPost.classList.remove('disabled');
-            btnSubmitPost.removeAttribute('disabled');
-        });
+    if (respJson.postId) {
+        postIdElement.value = respJson.postId;
+        success('Post saved successfully.');
+
+        if (isPreviewRequired) {
+            isPreviewRequired = false;
+            window.open(`/admin/post/preview/${respJson.postId}`);
+        }
+    }
+
+    btnSubmitPost.classList.remove('disabled');
+    btnSubmitPost.removeAttribute('disabled');
 };
 
-function UnpublishPost(postId) {
-    moongladeFetch(
-        `/api/post/${postId}/unpublish`,
-        'PUT',
-        {},
-        (resp) => {
-            success('Post unpublished');
-            location.reload();
-        });
+async function UnpublishPost(postId) {
+    await moongladeFetch2(`/api/post/${postId}/unpublish`, 'PUT', {});
+
+    success('Post unpublished');
+    location.reload();
 }
 
 function setInputDateTime(dateObj, inputElement) {
@@ -121,14 +115,14 @@ function setInputDateTime(dateObj, inputElement) {
 function setMinScheduleDate() {
     const now = new Date();
     const minDate = now.toISOString().slice(0, 16); // Format: YYYY-MM-DDTHH:MM
-    document.querySelector('input[name="ViewModel.ScheduledPublishTime"]').setAttribute('min', minDate);
+    scheduledPublishTimeElement.setAttribute('min', minDate);
 }
 
 function updateScheduleInfo() {
     const postStatus = document.querySelector('input[name="ViewModel.PostStatus"]').value;
 
     const scheduleInfoDiv = document.querySelector('.schedule-info');
-    const scheduledTime = document.querySelector('input[name="ViewModel.ScheduledPublishTime"]').value;
+    const scheduledTime = scheduledPublishTimeElement.value;
     const scheduledTimeUtc = document.querySelector('input[name="ViewModel.ScheduledPublishTimeUtc"]').value;
 
     if (postStatus === 'scheduled') {
@@ -142,7 +136,7 @@ function updateScheduleInfo() {
             const localDate = new Date(utcDate.getTime() - utcDate.getTimezoneOffset() * 60000);
             displayTime = localDate.toLocaleString();
 
-            setInputDateTime(localDate, document.querySelector('input[name="ViewModel.ScheduledPublishTime"]'));
+            setInputDateTime(localDate, scheduledPublishTimeElement);
         }
 
         scheduleInfoDiv.innerHTML = `<i class="bi-clock"></i> <span>Scheduled for: ${displayTime}</span>`;
@@ -191,13 +185,13 @@ document.addEventListener('DOMContentLoaded', function () {
     warnDirtyForm('.post-edit-form');
 });
 
-document.getElementById('btn-unpublish-post').addEventListener('click', function () {
-    const postId = document.querySelector('input[name="ViewModel.PostId"]').value;
-    UnpublishPost(postId);
+document.getElementById('btn-unpublish-post').addEventListener('click', async function () {
+    const postId = postIdElement.value;
+    await UnpublishPost(postId);
 });
 
 document.getElementById('btn-cancel-schedule').addEventListener('click', function () {
-    document.querySelector('input[name="ViewModel.ScheduledPublishTime"]').value = '';
+    scheduledPublishTimeElement.value = '';
     document.querySelector('input[name="ViewModel.PostStatus"]').value = 'draft';
 
     updateScheduleInfo();

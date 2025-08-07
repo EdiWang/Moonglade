@@ -36,6 +36,12 @@ Get started in 10 minutes with minimal Azure resources using our [automated depl
 | MySQL            | `Server=localhost;Port=3306;Database=moonglade;Uid=root;Pwd=***;`                             |
 | PostgreSQL       | `User ID=***;Password=***;Host=localhost;Port=5432;Database=moonglade;Pooling=true;`          |
 
+Change `ConnectionStrings:DatabaseProvider` in `appsettings.json` to match your database type.` 
+
+- SQL Server: `SqlServer`
+- MySQL: `MySql`
+- PostgreSQL: `PostgreSql`
+
 ### Build & Run
 
 1. Build and run `./src/Moonglade.sln`
@@ -103,9 +109,13 @@ Linux:
 ```json
 {
   "Provider": "filesystem",
-  "FileSystemPath": "/var/UploadedImages"
+  "FileSystemPath": "/app/images"
 }
 ```
+
+When using the file system, ensure the path exists and has appropriate permissions. If the path does not exist, Moonglade will attempt to create it. 
+
+Leave the `FileSystemPath` empty to use the default path (`~/home/moonglade/images` on Linux or `%UserProfile%\moonglade\images` on Windows).
 
 ### Comment Moderation
 
@@ -152,6 +162,20 @@ Enable notifications in the admin portal.
 | RSD          | Discovery     | Deprecated  | N/A             |
 | MetaWeblog   | Blogging      | Deprecated  | N/A             |
 | Dublin Core  | SEO           | Basic       | N/A             |
+
+## Health Check
+
+To ensure your Moonglade instance is running, you can use the health check endpoint:
+
+```
+GET /ping
+```
+
+This endpoint returns a simple JSON response indicating the status of your Moonglade instance. e.g.
+
+```json
+{"appVersion":"14.26.0-beta.1 (49011f)","environmentTags":["azure-west-us"],"geoMatch":[]}
+```
 
 ## 🇨🇳 免责申明
 

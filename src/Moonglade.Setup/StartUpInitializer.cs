@@ -55,9 +55,7 @@ public class StartUpInitializer(
         // Step 4: Migrate database if not new
         if (!isNew)
         {
-            if (!await TryAsync(
-                    () => migrationManager.TryMigration(context),
-                    "Failed to migrate database."))
+            if (!await TryAsync(() => migrationManager.TryMigrationAsync(context), "Failed to migrate database."))
             {
                 return InitStartUpResult.FailedDatabaseMigration;
             }

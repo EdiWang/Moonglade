@@ -86,7 +86,7 @@ public class Program
     private static List<CultureInfo> GetSupportedCultures()
     {
         var cultureCodes = new[] { "en-US", "zh-Hans", "zh-Hant", "de-DE", "ja-JP" };
-        return cultureCodes.Select(code => new CultureInfo(code)).ToList();
+        return [.. cultureCodes.Select(code => new CultureInfo(code))];
     }
 
     private static void ConfigureLogging(WebApplicationBuilder builder)
@@ -162,8 +162,8 @@ public class Program
         {
             var magics = new List<string>
             {
-                Encoding.UTF8.GetString(BitConverter.GetBytes('✔'.GetHashCode())
-                    .Zip(BitConverter.GetBytes(0x242F2E32)).Select(x => (byte)(x.First + x.Second)).ToArray()),
+                Encoding.UTF8.GetString([.. BitConverter.GetBytes('✔'.GetHashCode())
+                    .Zip(BitConverter.GetBytes(0x242F2E32)).Select(x => (byte)(x.First + x.Second))]),
                 Helper.GetMagic(0x6B441, 11, 15),
                 Helper.GetMagic(0x1499E, 10, 14)
             };
@@ -254,6 +254,7 @@ public class Program
 
         if (configuration.GetValue<bool>("PostScheduler:Enabled"))
         {
+            services.AddSingleton<ScheduledPublishWakeUp>();
             services.AddHostedService<ScheduledPublishService>();
         }
 
@@ -263,20 +264,19 @@ public class Program
     private static void ConfigureDatabase(IServiceCollection services, IConfiguration configuration)
     {
         var connStr = configuration.GetConnectionString("MoongladeDatabase");
-        var dbType = DatabaseTypeHelper.DetermineDatabaseType(connStr!);
+        var dbType = configuration.GetConnectionString("DatabaseProvider");
 
-        switch (dbType)
+        switch (dbType.ToLower())
         {
-            case DatabaseType.MySQL:
+            case "mysql":
                 services.AddMySqlStorage(connStr!);
                 break;
-            case DatabaseType.PostgreSQL:
+            case "postgresql":
                 services.AddPostgreSqlStorage(connStr!);
                 break;
-            case DatabaseType.SQLServer:
+            case "sqlserver":
                 services.AddSqlServerStorage(connStr!);
                 break;
-            case DatabaseType.Unknown:
             default:
                 throw new NotSupportedException("Unknown database type, please check connection string.");
         }
@@ -325,7 +325,7 @@ public class Program
             SupportedUICultures = cultures
         });
 
-        var options = new RewriteOptions().AddRedirect(@"(.*)/$", @"\$1", (int)HttpStatusCode.MovedPermanently);
+        var options = new RewriteOptions().AddRedirect(@"(.*)/$", @"$1", (int)HttpStatusCode.MovedPermanently);
         app.UseRewriter(options);
         app.UseStaticFiles();
         app.UseSession().UseCaptchaImage(p =>

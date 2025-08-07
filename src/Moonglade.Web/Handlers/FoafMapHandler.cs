@@ -9,34 +9,74 @@ public class FoafMapHandler
     public static Delegate Handler => Handle;
 
     public static async Task Handle(
-        HttpContext httpContext, IBlogConfig blogConfig, ICommandMediator commandMediator, IQueryMediator queryMediator, LinkGenerator linkGenerator)
+        ILogger<FoafMapHandler> logger,
+        HttpContext httpContext,
+        IBlogConfig blogConfig,
+        ICommandMediator commandMediator,
+        IQueryMediator queryMediator,
+        LinkGenerator linkGenerator)
     {
         var general = blogConfig.GeneralSettings ?? throw new InvalidOperationException("GeneralSettings is null.");
 
-        var friends = await queryMediator.QueryAsync(new GetAllLinksQuery());
-        var foafDoc = new FoafDoc
-        (
-            Name: general.OwnerName,
-            BlogUrl: Helper.ResolveRootUrl(httpContext, general.CanonicalPrefix, true),
-            Email: general.OwnerEmail,
-            PhotoUrl: linkGenerator.GetUriByAction(httpContext, "Avatar", "Assets")
-        );
-
-        var requestUrl = GetUri(httpContext.Request).ToString();
-        var xml = await commandMediator.SendAsync(new WriteFoafCommand(foafDoc, requestUrl, friends));
-
-        httpContext.Response.Headers.Append("Cache-Control", "public, max-age=3600");
-        httpContext.Response.ContentType = WriteFoafCommand.ContentType;
-
-        await httpContext.Response.WriteAsync(xml, httpContext.RequestAborted);
-
-        static Uri GetUri(HttpRequest request)
+        try
         {
-            var host = request.Host.HasValue
-                ? (request.Host.Value.Contains(',') ? "MULTIPLE-HOST" : request.Host.Value)
-                : "UNKNOWN-HOST";
-            return new Uri($"{request.Scheme}://{host}{request.Path}{request.QueryString}");
+            var friends = await queryMediator.QueryAsync(new GetAllLinksQuery());
+
+            var foafDoc = new FoafDoc(
+                Name: general.OwnerName,
+                BlogUrl: Helper.ResolveRootUrl(httpContext, general.CanonicalPrefix, preferCanonical: true),
+                Email: general.OwnerEmail,
+                PhotoUrl: linkGenerator.GetUriByAction(httpContext, "Avatar", "Assets") ?? string.Empty
+            );
+
+            var requestUrl = GetRequestUri(httpContext.Request).ToString();
+            var xml = await commandMediator.SendAsync(new WriteFoafCommand(foafDoc, requestUrl, friends));
+
+            SetResponseHeaders(httpContext.Response);
+            await httpContext.Response.WriteAsync(xml, httpContext.RequestAborted);
         }
+        catch (Exception ex) when (ex is not OperationCanceledException)
+        {
+            logger.LogError(ex, "An error occurred while generating FOAF document.");
+
+            httpContext.Response.StatusCode = StatusCodes.Status500InternalServerError;
+            await httpContext.Response.WriteAsync("An error occurred while generating FOAF document.", httpContext.RequestAborted);
+        }
+    }
+
+    private static void SetResponseHeaders(HttpResponse response)
+    {
+        response.Headers.CacheControl = "public, max-age=3600";
+        response.ContentType = WriteFoafCommand.ContentType;
+    }
+
+    private static Uri GetRequestUri(HttpRequest request)
+    {
+        var host = GetSafeHost(request);
+        var scheme = request.Scheme;
+        var path = request.Path.Value ?? string.Empty;
+        var queryString = request.QueryString.Value ?? string.Empty;
+
+        return new Uri($"{scheme}://{host}{path}{queryString}");
+    }
+
+    private static string GetSafeHost(HttpRequest request)
+    {
+        if (!request.Host.HasValue)
+        {
+            return "localhost"; // Fallback to localhost instead of "UNKNOWN-HOST"
+        }
+
+        var hostValue = request.Host.Value;
+
+        // Handle multiple hosts by taking the first one
+        if (hostValue.Contains(','))
+        {
+            var firstHost = hostValue.Split(',')[0].Trim();
+            return string.IsNullOrWhiteSpace(firstHost) ? "localhost" : firstHost;
+        }
+
+        return hostValue;
     }
 }
 

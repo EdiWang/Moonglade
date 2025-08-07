@@ -2,7 +2,7 @@
 
 const csrfFieldName = 'CSRF-TOKEN-MOONGLADE-FORM';
 
-export async function moongladeFetch(uri, method, request, funcSuccess, funcAlways) {
+export async function moongladeFetch2(uri, method, request) {
     try {
         const csrfValue = document.querySelector(`input[name="${csrfFieldName}"]`).value;
         const response = await fetch(uri, {
@@ -18,12 +18,20 @@ export async function moongladeFetch(uri, method, request, funcSuccess, funcAlwa
 
         if (!response.ok) {
             await handleHttpError(response);
-        } else if (funcSuccess) {
-            funcSuccess(response);
-        }
+        } else {
+            if (response.status === 204) {
+                // No content, no need to parse
+                return;
+            }
 
-        if (funcAlways) {
-            funcAlways(response);
+            // Check if response has content before parsing JSON
+            const text = await response.text();
+            if (!text) {
+                return;
+            }
+
+            const data = JSON.parse(text);
+            return data;
         }
     } catch (err) {
         error(err);

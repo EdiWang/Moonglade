@@ -82,12 +82,10 @@ public class CommentController(
             }
         }
 
-        if (blogConfig.CommentSettings.RequireCommentReview)
+        return Ok(new
         {
-            return Created("moonglade://empty", item);
-        }
-
-        return NoContent();
+            blogConfig.CommentSettings.RequireCommentReview
+        });
     }
 
     [HttpPut("{commentId:guid}/approval/toggle")]
