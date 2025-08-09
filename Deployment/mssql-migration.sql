@@ -1,13 +1,3 @@
--- v14.1
-IF NOT EXISTS (SELECT * FROM sys.columns 
-               WHERE Name = N'Rank' AND Object_ID = Object_ID(N'FriendLink'))
-BEGIN
-    EXEC sp_executesql N'ALTER TABLE FriendLink ADD [Rank] INT'
-    EXEC sp_executesql N'UPDATE FriendLink SET [Rank] = 0'
-    EXEC sp_executesql N'ALTER TABLE FriendLink ALTER COLUMN [Rank] INT NOT NULL'
-END
-GO
-
 -- v14.3
 IF NOT EXISTS (SELECT * FROM sys.objects 
                WHERE object_id = OBJECT_ID(N'[dbo].[LoginHistory]') AND type in (N'U'))
