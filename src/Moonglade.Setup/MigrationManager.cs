@@ -90,7 +90,7 @@ public partial class MigrationManager(
         }
     }
 
-    private bool TryParseVersions(out Version manifestVersion, out Version currentVersion, out string? error)
+    private bool TryParseVersions(out Version manifestVersion, out Version currentVersion, out string error)
     {
         manifestVersion = null!;
         currentVersion = null!;
@@ -213,7 +213,7 @@ public partial class MigrationManager(
     private bool GetAutoMigrationEnabled()
         => configuration.GetValue<bool>("Setup:AutoDatabaseMigration");
 
-    private string GetMigrationScriptUrl(string? provider)
+    private string GetMigrationScriptUrl(string provider)
     {
         return provider switch
         {
