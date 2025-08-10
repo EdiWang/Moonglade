@@ -56,7 +56,7 @@ public class SyndicationDataSource(
             Title = p.Title,
             PubDateUtc = p.PubDateUtc.Value,
             Description = blogConfig.FeedSettings.UseFullContent ? p.PostContent : p.ContentAbstract,
-            Link = $"{_baseUrl}/post/{p.PubDateUtc.Value.Year}/{p.PubDateUtc.Value.Month}/{p.PubDateUtc.Value.Day}/{p.Slug}",
+            Link = $"{_baseUrl}/post/{p.RouteLink}",
             Author = blogConfig.GeneralSettings.OwnerName,
             AuthorEmail = blogConfig.GeneralSettings.OwnerEmail,
             LangCode = p.ContentLanguageCode,
