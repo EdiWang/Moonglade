@@ -65,7 +65,7 @@ public class SyndicationDataSource(
 
         // Workaround EF limitation
         // Man, this is super ugly
-        if (blogConfig.FeedSettings.UseFullContent && list.Any())
+        if (blogConfig.FeedSettings.UseFullContent && list.Count != 0)
         {
             foreach (var simpleFeedItem in list)
             {
@@ -78,8 +78,15 @@ public class SyndicationDataSource(
 
     private string FormatPostContent(string rawContent)
     {
-        return configuration.GetValue<EditorChoice>("Post:Editor") == EditorChoice.Markdown ?
+        var htmlContent = configuration.GetValue<EditorChoice>("Post:Editor") == EditorChoice.Markdown ?
             ContentProcessor.MarkdownToContent(rawContent, ContentProcessor.MarkdownConvertType.Html, false) :
             rawContent;
+
+        if (blogConfig.ImageSettings.EnableCDNRedirect)
+        {
+            htmlContent = htmlContent.ReplaceCDNEndpointToImgTags(blogConfig.ImageSettings.CDNEndpoint);
+        }
+
+        return htmlContent;
     }
 }
