@@ -176,7 +176,3 @@ This endpoint returns a simple JSON response indicating the status of your Moong
 ```json
 {"appVersion":"14.26.0-beta.1 (49011f)","environmentTags":["azure-west-us"],"geoMatch":[]}
 ```
-
-## 🇨🇳 免责申明
-
-对于中国访客，我们有一份特供的免责申明。请确保你已经阅读并理解其内容：[免责申明（仅限中国访客）](./DISCLAIMER_CN.md)
