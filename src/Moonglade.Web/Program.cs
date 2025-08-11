@@ -4,8 +4,10 @@ using LiteBus.Commands.Extensions.MicrosoftDependencyInjection;
 using LiteBus.Events.Extensions.MicrosoftDependencyInjection;
 using LiteBus.Messaging.Extensions.MicrosoftDependencyInjection;
 using LiteBus.Queries.Extensions.MicrosoftDependencyInjection;
+using Microsoft.AspNetCore.Diagnostics.HealthChecks;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.AspNetCore.Rewrite;
+using Microsoft.Extensions.Diagnostics.HealthChecks;
 using Moonglade.Comments.Moderator;
 using Moonglade.Data.MySql;
 using Moonglade.Data.PostgreSql;
@@ -18,6 +20,7 @@ using Moonglade.Setup;
 using Moonglade.Syndication;
 using Moonglade.Web.BackgroundServices;
 using Moonglade.Web.Handlers;
+using Moonglade.Web.HealthChecks;
 using Moonglade.Webmention;
 using SixLabors.Fonts;
 using System.Globalization;
@@ -141,7 +144,10 @@ public class Program
         ConfigureRequestLocalization(services, cultures);
         ConfigureRouteOptions(services);
         services.AddTransient<IPasswordGenerator, DefaultPasswordGenerator>();
-        services.AddHealthChecks();
+        services.AddHealthChecks()
+            .AddCheck("self", () => HealthCheckResult.Healthy("Application is running"))
+            .AddDbContextCheck<BlogDbContext>("database", tags: ["db", "ready"])
+            .AddCheck<DatabaseConnectivityHealthCheck>("database_connectivity", tags: ["db"]);
         ConfigureMoongladeServices(services, configuration);
         ConfigureDatabase(services, configuration);
         ConfigureInitializers(services);
@@ -342,6 +348,13 @@ public class Program
         {
             ResponseWriter = PingEndpoint.WriteResponse
         });
+
+        app.MapHealthChecks("/health", new HealthCheckOptions
+        {
+            ResponseWriter = PingEndpoint.WriteResponse,
+            AllowCachingResponses = false
+        });
+
         app.MapControllers();
         app.MapRazorPages();
         app.MapGet("/robots.txt", RobotsTxtMapHandler.Handler);
