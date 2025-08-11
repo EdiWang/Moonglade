@@ -432,7 +432,7 @@ public static class Helper
     {
         var messages = GetErrorMessagesFromModelState(modelStateDictionary);
         var enumerable = messages as string[] ?? [.. messages];
-        return enumerable.Any() ? string.Join(sep, enumerable) : string.Empty;
+        return enumerable.Length != 0 ? string.Join(sep, enumerable) : string.Empty;
     }
 
     public static IEnumerable<string> GetErrorMessagesFromModelState(ModelStateDictionary modelStateDictionary)
