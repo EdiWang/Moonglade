@@ -33,7 +33,7 @@ public class PostController(
     {
         try
         {
-            if (!ModelState.IsValid) return Conflict(ModelState.CombineErrorMessages());
+            if (!ModelState.IsValid) return Conflict(ModelState.GetCombinedErrorMessage());
 
             if (model.ChangePublishDate &&
                 model.PublishDate.HasValue &&

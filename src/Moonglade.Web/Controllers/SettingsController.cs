@@ -180,7 +180,7 @@ public class SettingsController(
         if (model.IsEnabled && string.IsNullOrWhiteSpace(model.JsonData))
         {
             ModelState.AddModelError(nameof(SocialLinkSettingsJsonModel.JsonData), "JsonData is required");
-            return BadRequest(ModelState.CombineErrorMessages());
+            return BadRequest(ModelState.GetCombinedErrorMessage());
         }
 
         var links = model.JsonData.FromJson<SocialLink[]>();
@@ -191,25 +191,25 @@ public class SettingsController(
             if (string.IsNullOrWhiteSpace(link.Name))
             {
                 ModelState.AddModelError($"{nameof(Moonglade.Configuration.SocialLink)}.{nameof(Moonglade.Configuration.SocialLink.Name)}", "Name is required");
-                return BadRequest(ModelState.CombineErrorMessages());
+                return BadRequest(ModelState.GetCombinedErrorMessage());
             }
 
             if (string.IsNullOrWhiteSpace(link.Icon))
             {
                 ModelState.AddModelError($"{nameof(Moonglade.Configuration.SocialLink)}.{nameof(Moonglade.Configuration.SocialLink.Icon)}", "Icon is required");
-                return BadRequest(ModelState.CombineErrorMessages());
+                return BadRequest(ModelState.GetCombinedErrorMessage());
             }
 
             if (string.IsNullOrWhiteSpace(link.Url))
             {
                 ModelState.AddModelError($"{nameof(Moonglade.Configuration.SocialLink)}.{nameof(Moonglade.Configuration.SocialLink.Url)}", "Url is required");
-                return BadRequest(ModelState.CombineErrorMessages());
+                return BadRequest(ModelState.GetCombinedErrorMessage());
             }
 
             if (!Uri.TryCreate(link.Url, UriKind.Absolute, out _))
             {
                 ModelState.AddModelError($"{nameof(Moonglade.Configuration.SocialLink)}.{nameof(Moonglade.Configuration.SocialLink.Url)}", "Url is invalid");
-                return BadRequest(ModelState.CombineErrorMessages());
+                return BadRequest(ModelState.GetCombinedErrorMessage());
             }
 
             // Sterilize
@@ -236,7 +236,7 @@ public class SettingsController(
         if (model.EnableCustomCss && string.IsNullOrWhiteSpace(model.CssCode))
         {
             ModelState.AddModelError(nameof(AppearanceSettings.CssCode), "CSS Code is required");
-            return BadRequest(ModelState.CombineErrorMessages());
+            return BadRequest(ModelState.GetCombinedErrorMessage());
         }
 
         blogConfig.AppearanceSettings = model;
@@ -254,7 +254,7 @@ public class SettingsController(
         if (model.IsEnabled && string.IsNullOrWhiteSpace(model.MenuJson))
         {
             ModelState.AddModelError(nameof(CustomMenuSettingsJsonModel.MenuJson), "Menus is required");
-            return BadRequest(ModelState.CombineErrorMessages());
+            return BadRequest(ModelState.GetCombinedErrorMessage());
         }
 
         blogConfig.CustomMenuSettings = new()

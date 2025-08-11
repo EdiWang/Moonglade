@@ -428,14 +428,14 @@ public static class Helper
         return isChs;
     }
 
-    public static string CombineErrorMessages(this ModelStateDictionary modelStateDictionary, string sep = ", ")
+    public static string GetCombinedErrorMessage(this ModelStateDictionary modelStateDictionary, string sep = ", ")
     {
-        var messages = GetErrorMessagesFromModelState(modelStateDictionary);
+        var messages = modelStateDictionary.GetErrorMessages();
         var enumerable = messages as string[] ?? [.. messages];
         return enumerable.Length != 0 ? string.Join(sep, enumerable) : string.Empty;
     }
 
-    public static IEnumerable<string> GetErrorMessagesFromModelState(ModelStateDictionary modelStateDictionary)
+    public static IEnumerable<string> GetErrorMessages(this ModelStateDictionary modelStateDictionary)
     {
         if (modelStateDictionary is null) return null;
         if (modelStateDictionary.ErrorCount == 0) return null;

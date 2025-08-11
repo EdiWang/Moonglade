@@ -32,7 +32,7 @@ public class CommentController(
         if (!string.IsNullOrWhiteSpace(request.Email) && !Helper.IsValidEmailAddress(request.Email))
         {
             ModelState.AddModelError(nameof(request.Email), "Invalid Email address.");
-            return BadRequest(ModelState.CombineErrorMessages());
+            return BadRequest(ModelState.GetCombinedErrorMessage());
         }
 
         if (!blogConfig.CommentSettings.EnableComments) return Forbid();
