@@ -11,12 +11,12 @@ public static class ServiceCollectionExtensions
     {
         services.AddScoped(typeof(MoongladeRepository<>), typeof(MySqlDbContextRepository<>));
 
-        services.AddDbContext<BlogDbContext, MySqlBlogDbContext>(optionsAction => optionsAction.UseLazyLoadingProxies()
-            .UseMySQL(connectionString, builder =>
-            {
-                builder.EnableRetryOnFailure(3, TimeSpan.FromSeconds(30), null);
-            })
-            .EnableDetailedErrors());
+        services.AddDbContext<BlogDbContext, MySqlBlogDbContext>(options => options
+                .UseMySQL(connectionString, builder =>
+                {
+                    builder.EnableRetryOnFailure(3, TimeSpan.FromSeconds(30), null);
+                })
+                .EnableDetailedErrors());
 
         return services;
     }
