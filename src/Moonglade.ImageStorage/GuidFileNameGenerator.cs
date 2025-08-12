@@ -8,19 +8,22 @@ public class GuidFileNameGenerator(Guid id) : IFileNameGenerator
 
     public string GetFileName(string fileName, string appendixName = "")
     {
-        if (string.IsNullOrWhiteSpace(fileName))
-        {
-            throw new ArgumentNullException(nameof(fileName));
-        }
+        ArgumentException.ThrowIfNullOrWhiteSpace(fileName);
 
         var ext = Path.GetExtension(fileName);
-        if (string.IsNullOrEmpty(ext) ||
-            string.IsNullOrWhiteSpace(Path.GetFileNameWithoutExtension(fileName)))
+        var fileNameWithoutExtension = Path.GetFileNameWithoutExtension(fileName);
+        
+        if (string.IsNullOrEmpty(ext))
         {
-            throw new ArgumentException("Invalid File Name", nameof(fileName));
+            throw new ArgumentException("File must have an extension.", nameof(fileName));
         }
 
-        var newFileName = $"img-{UniqueId}{(string.IsNullOrWhiteSpace(appendixName) ? string.Empty : "-" + appendixName)}{ext}".ToLower();
-        return newFileName;
+        if (string.IsNullOrWhiteSpace(fileNameWithoutExtension))
+        {
+            throw new ArgumentException("File must have a valid name.", nameof(fileName));
+        }
+
+        var appendix = string.IsNullOrWhiteSpace(appendixName) ? string.Empty : $"-{appendixName}";
+        return $"img-{UniqueId:N}{appendix}{ext}".ToLowerInvariant();
     }
 }
