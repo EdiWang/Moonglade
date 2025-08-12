@@ -14,7 +14,7 @@ public static class ContentProcessor
         endpoint = endpoint.TrimEnd('/');
         var imgSrcRegex = new Regex("<img.+?(src)=[\"'](.+?)[\"'].+?>");
         var newStr = imgSrcRegex.Replace(html,
-            match => match.Value.Contains("src=\"/image/")
+            match => match.Value.Contains("src=\"/image/") || match.Value.Contains("src='/image/")
                 ? match.Value.Replace("/image/", $"{endpoint}/")
                 : match.Value);
 
@@ -139,10 +139,18 @@ public static class ContentProcessor
             characterCount--;
         }
 
-        // search previous word
+        // search previous word, but preserve at least one space
+        var spaceCount = 0;
         while (characterCount > 0 && text[characterCount - 1].IsSpace())
         {
             characterCount--;
+            spaceCount++;
+        }
+
+        // if we found spaces, add one back to preserve word separation
+        if (spaceCount > 0 && characterCount < backup)
+        {
+            characterCount++;
         }
 
         // if it was the last word, recover it, unless boundary is requested
