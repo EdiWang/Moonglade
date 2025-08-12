@@ -14,7 +14,7 @@ public static class ContentProcessor
         endpoint = endpoint.TrimEnd('/');
         var imgSrcRegex = new Regex("<img.+?(src)=[\"'](.+?)[\"'].+?>");
         var newStr = imgSrcRegex.Replace(html,
-            match => match.Value.Contains("src=\"/image/")
+            match => match.Value.Contains("src=\"/image/") || match.Value.Contains("src='/image/")
                 ? match.Value.Replace("/image/", $"{endpoint}/")
                 : match.Value);
 
