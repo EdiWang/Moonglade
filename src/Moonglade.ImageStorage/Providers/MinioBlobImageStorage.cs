@@ -5,6 +5,14 @@ using Minio.Exceptions;
 
 namespace Moonglade.ImageStorage.Providers;
 
+public record MinioBlobConfiguration(
+    string EndPoint,
+    string AccessKey,
+    string SecretKey,
+    string BucketName,
+    string SecondaryBucketName = null,
+    bool WithSSL = false);
+
 public class MinioBlobImageStorage : IBlogImageStorage
 {
     public string Name => nameof(MinioBlobImageStorage);
