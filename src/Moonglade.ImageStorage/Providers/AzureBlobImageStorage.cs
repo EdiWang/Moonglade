@@ -4,6 +4,12 @@ using Microsoft.Extensions.Logging;
 
 namespace Moonglade.ImageStorage.Providers;
 
+public record AzureBlobConfiguration(
+    string ConnectionString,
+    string ContainerName,
+    string SecondaryContainerName = null
+);
+
 public class AzureBlobImageStorage : IBlogImageStorage
 {
     public string Name => nameof(AzureBlobImageStorage);
@@ -69,7 +75,7 @@ public class AzureBlobImageStorage : IBlogImageStorage
         return fileName;
     }
 
-    private string GetContentType(string extension)
+    private static string GetContentType(string extension)
     {
         return extension.ToLower() switch
         {
