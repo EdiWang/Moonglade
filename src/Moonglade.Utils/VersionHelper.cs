@@ -3,53 +3,38 @@ using System.Text.RegularExpressions;
 
 namespace Moonglade.Utils;
 
-public static class VersionHelper
+public static partial class VersionHelper
 {
-    public static string AppVersionBasic
-    {
-        get
-        {
-            var asm = Assembly.GetEntryAssembly();
-            if (null == asm) return "N/A";
+    private static readonly Assembly _entryAssembly = Assembly.GetEntryAssembly();
+    private static readonly string _fileVersion = _entryAssembly?.GetCustomAttribute<AssemblyFileVersionAttribute>()?.Version;
+    private static readonly string _informationalVersion = _entryAssembly?.GetCustomAttribute<AssemblyInformationalVersionAttribute>()?.InformationalVersion;
 
-            var fileVersion = asm.GetCustomAttribute<AssemblyFileVersionAttribute>()?.Version;
-            return fileVersion;
-        }
-    }
+    [GeneratedRegex(@"\b(preview|beta|rc|debug|alpha|test|canary|nightly)\b", RegexOptions.IgnoreCase)]
+    private static partial Regex NonStableVersionRegex();
+
+    public static string AppVersionBasic => _fileVersion ?? "N/A";
 
     public static string AppVersion
     {
         get
         {
-            var asm = Assembly.GetEntryAssembly();
-            if (null == asm) return "N/A";
+            if (_informationalVersion is null)
+                return AppVersionBasic;
 
-            // e.g. 11.2.0.0
-            var fileVersion = asm.GetCustomAttribute<AssemblyFileVersionAttribute>()?.Version;
+            var plusIndex = _informationalVersion.IndexOf('+');
+            if (plusIndex <= 0)
+                return _informationalVersion;
 
-            // e.g. 11.2-preview+e57ab0321ae44bd778c117646273a77123b6983f
-            var version = asm.GetCustomAttribute<AssemblyInformationalVersionAttribute>()?.InformationalVersion;
-            if (!string.IsNullOrWhiteSpace(version) && version.IndexOf('+') > 0)
-            {
-                var gitHash = version[(version.IndexOf('+') + 1)..]; // e57ab0321ae44bd778c117646273a77123b6983f
-                var prefix = version[..version.IndexOf('+')]; // 11.2-preview
+            var gitHash = _informationalVersion.AsSpan()[(plusIndex + 1)..];
+            var prefix = _informationalVersion.AsSpan()[..plusIndex];
 
-                if (gitHash.Length <= 6) return version;
+            if (gitHash.Length <= 6)
+                return _informationalVersion;
 
-                // consider valid hash
-                var gitHashShort = gitHash[..6];
-                return !string.IsNullOrWhiteSpace(gitHashShort) ? $"{prefix} ({gitHashShort})" : fileVersion;
-            }
-
-            return version ?? fileVersion;
+            var gitHashShort = gitHash[..6];
+            return gitHashShort.IsEmpty ? AppVersionBasic : $"{prefix} ({gitHashShort})";
         }
     }
 
-    public static bool IsNonStableVersion()
-    {
-        string pattern = @"\b(preview|beta|rc|debug|alpha|test|canary|nightly)\b";
-        Regex regex = new Regex(pattern, RegexOptions.IgnoreCase);
-
-        return regex.IsMatch(AppVersion);
-    }
+    public static bool IsNonStableVersion() => NonStableVersionRegex().IsMatch(AppVersion);
 }
