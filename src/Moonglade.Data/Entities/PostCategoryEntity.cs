@@ -8,8 +8,8 @@ public class PostCategoryEntity
     public Guid CategoryId { get; set; }
 
     [JsonIgnore]
-    public virtual CategoryEntity Category { get; set; }
+    public CategoryEntity Category { get; set; }
 
     [JsonIgnore]
-    public virtual PostEntity Post { get; set; }
+    public PostEntity Post { get; set; }
 }
