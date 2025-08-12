@@ -110,7 +110,7 @@ public class CreatePostCommandHandler(
         {
             foreach (var item in tags)
             {
-                if (!Helper.IsValidTagName(item)) continue;
+                if (!BlogTagHelper.IsValidTagName(item)) continue;
 
                 var tag = await tagRepo.FirstOrDefaultAsync(new TagByDisplayNameSpec(item), ct) ?? await CreateTag(item);
                 post.Tags.Add(tag);
@@ -123,7 +123,7 @@ public class CreatePostCommandHandler(
         var newTag = new TagEntity
         {
             DisplayName = item,
-            NormalizedName = Helper.NormalizeName(item, Helper.TagNormalizationDictionary)
+            NormalizedName = BlogTagHelper.NormalizeName(item, BlogTagHelper.TagNormalizationDictionary)
         };
 
         var tag = await tagRepo.AddAsync(newTag);

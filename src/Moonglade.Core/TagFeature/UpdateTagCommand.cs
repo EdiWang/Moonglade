@@ -18,7 +18,7 @@ public class UpdateTagCommandHandler(
         if (null == tag) return OperationCode.ObjectNotFound;
 
         tag.DisplayName = name;
-        tag.NormalizedName = Helper.NormalizeName(name, Helper.TagNormalizationDictionary);
+        tag.NormalizedName = BlogTagHelper.NormalizeName(name, BlogTagHelper.TagNormalizationDictionary);
         await repo.UpdateAsync(tag, ct);
 
         logger.LogInformation("Updated tag: {TagId}", request.Id);

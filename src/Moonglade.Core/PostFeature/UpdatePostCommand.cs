@@ -51,7 +51,7 @@ public class UpdatePostCommandHandler(
                 await tagRepo.AddAsync(new()
                 {
                     DisplayName = item,
-                    NormalizedName = Helper.NormalizeName(item, Helper.TagNormalizationDictionary)
+                    NormalizedName = BlogTagHelper.NormalizeName(item, BlogTagHelper.TagNormalizationDictionary)
                 }, ct);
             }
         }
@@ -61,7 +61,7 @@ public class UpdatePostCommandHandler(
         {
             foreach (var tagName in tags)
             {
-                if (!Helper.IsValidTagName(tagName))
+                if (!BlogTagHelper.IsValidTagName(tagName))
                 {
                     continue;
                 }

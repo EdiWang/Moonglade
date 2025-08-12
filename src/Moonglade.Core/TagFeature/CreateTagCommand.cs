@@ -14,7 +14,7 @@ public class CreateTagCommandHandler(
 {
     public async Task<TagEntity> HandleAsync(CreateTagCommand request, CancellationToken ct)
     {
-        var normalizedName = Helper.NormalizeName(request.Name, Helper.TagNormalizationDictionary);
+        var normalizedName = BlogTagHelper.NormalizeName(request.Name, BlogTagHelper.TagNormalizationDictionary);
 
         var existingTag = await repo.FirstOrDefaultAsync(new TagByNormalizedNameSpec(normalizedName), ct);
         if (null != existingTag) return existingTag;

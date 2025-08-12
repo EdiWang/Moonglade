@@ -34,7 +34,7 @@ public class TagsController(IQueryMediator queryMediator, ICommandMediator comma
     [ProducesResponseType(StatusCodes.Status409Conflict)]
     public async Task<IActionResult> Create([Required][FromBody] string name)
     {
-        if (!Helper.IsValidTagName(name)) return Conflict();
+        if (!BlogTagHelper.IsValidTagName(name)) return Conflict();
 
         var tag = await commandMediator.SendAsync(new CreateTagCommand(name.Trim()));
         return Ok(tag);
