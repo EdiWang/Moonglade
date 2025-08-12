@@ -3,6 +3,8 @@ using System.Runtime.InteropServices;
 
 namespace Moonglade.ImageStorage.Providers;
 
+public record FileSystemImageConfiguration(string Path);
+
 public class FileSystemImageStorage(FileSystemImageConfiguration imgConfig, ILogger<FileSystemImageStorage> logger) : IBlogImageStorage
 {
     public string Name => nameof(FileSystemImageStorage);
