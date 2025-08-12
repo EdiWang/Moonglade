@@ -2,9 +2,7 @@
 using LiteBus.Queries.Abstractions;
 using Moonglade.Core.CategoryFeature;
 using Moonglade.Data.Entities;
-using Moonglade.Data.Exporting;
 using Moonglade.Web.Attributes;
-using System.Text.Json;
 
 namespace Moonglade.Web.Controllers;
 
@@ -21,12 +19,7 @@ public class CategoryController(IQueryMediator queryMediator, ICommandMediator c
         var cat = await queryMediator.QueryAsync(new GetCategoryQuery(id));
         if (null == cat) return NotFound();
 
-        // return Ok(cat); 
-
-        // Workaround .NET by design bug: https://stackoverflow.com/questions/60184661/net-core-3-jsonignore-not-working-when-requesting-single-resource
-        // https://github.com/dotnet/aspnetcore/issues/31396
-        // https://github.com/dotnet/efcore/issues/33223
-        return Content(JsonSerializer.Serialize(cat, MoongladeJsonSerializerOptions.Default), "application/json");
+        return Ok(cat);
     }
 
     [HttpGet("list")]
