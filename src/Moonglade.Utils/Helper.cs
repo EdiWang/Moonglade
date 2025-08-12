@@ -1,5 +1,4 @@
-﻿using Edi.ChinaDetector;
-using Microsoft.AspNetCore.Cryptography.KeyDerivation;
+﻿using Microsoft.AspNetCore.Cryptography.KeyDerivation;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc.ModelBinding;
 using Microsoft.Extensions.Configuration;
@@ -46,14 +45,6 @@ public static class Helper
         return useServerSideDarkMode;
     }
 
-    public static async Task<bool> IsRunningInChina()
-    {
-        // Learn more at https://go.edi.wang/aka/os251
-        var service = new OfflineChinaDetectService();
-        var result = await service.Detect(DetectionMethod.TimeZone | DetectionMethod.Culture | DetectionMethod.Behavior);
-        return result.Rank >= 1;
-    }
-
     public static string GetRouteLinkFromUrl(string url)
     {
         var blogSlugRegex = new Regex(@"^https?:\/\/.*\/post\/(?<yyyy>\d{4})\/(?<MM>\d{1,12})\/(?<dd>\d{1,31})\/(?<slug>.*)$");
@@ -93,10 +84,6 @@ public static class Helper
 
         return urlsList;
     }
-
-    public static bool IsRunningOnAzureAppService() => !string.IsNullOrWhiteSpace(Environment.GetEnvironmentVariable("WEBSITE_SITE_NAME"));
-
-    public static bool IsRunningInDocker() => Environment.GetEnvironmentVariable("DOTNET_RUNNING_IN_CONTAINER") == "true";
 
     public static string GetClientIP(HttpContext context) => context?.Connection.RemoteIpAddress?.ToString();
 
@@ -291,31 +278,6 @@ public static class Helper
         catch (FormatException)
         {
             return false;
-        }
-    }
-
-    /// <summary>
-    /// Get values from `MOONGLADE_TAGS` Environment Variable
-    /// </summary>
-    /// <returns>string values</returns>
-    public static IEnumerable<string> GetEnvironmentTags()
-    {
-        var tagsEnv = Environment.GetEnvironmentVariable("MOONGLADE_TAGS");
-        if (string.IsNullOrWhiteSpace(tagsEnv))
-        {
-            yield return string.Empty;
-            yield break;
-        }
-
-        var tagRegex = new Regex(@"^[a-zA-Z0-9-#@$()\[\]/]+$");
-        var tags = tagsEnv.Split(',');
-        foreach (string tag in tags)
-        {
-            var t = tag.Trim();
-            if (tagRegex.IsMatch(t))
-            {
-                yield return t;
-            }
         }
     }
 

@@ -99,10 +99,10 @@
                 </tr>
                 <tr>
                     <td>@SharedLocalizer["Docker Container"]</td>
-                    <td class="text-muted">@Helper.IsRunningInDocker()</td>
+                    <td class="text-muted">@EnvironmentHelper.IsRunningInDocker()</td>
                 </tr>
 
-                @if (Helper.IsRunningOnAzureAppService())
+                @if (EnvironmentHelper.IsRunningOnAzureAppService())
                 {
                     <tr>
                         <td>@SharedLocalizer["Azure App Service"]</td>

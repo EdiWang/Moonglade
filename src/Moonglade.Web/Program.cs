@@ -45,7 +45,7 @@ public class Program
         ConfigureServices(builder.Services, builder.Configuration, cultures);
 
         var app = builder.Build();
-        if (!app.Environment.IsDevelopment() && await Helper.IsRunningInChina())
+        if (!app.Environment.IsDevelopment() && await EnvironmentHelper.IsRunningInChina())
         {
             Helper.SetAppDomainData("IsReadonlyMode", true);
             app.Logger.LogWarning("Positive China detection, Moonglade is now in readonly mode.");
@@ -94,7 +94,7 @@ public class Program
 
     private static void ConfigureLogging(WebApplicationBuilder builder)
     {
-        if (Helper.IsRunningOnAzureAppService())
+        if (EnvironmentHelper.IsRunningOnAzureAppService())
         {
             builder.Logging.AddAzureWebAppDiagnostics();
         }
