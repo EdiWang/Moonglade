@@ -1,7 +1,7 @@
 ﻿using LiteBus.Commands.Abstractions;
 using LiteBus.Queries.Abstractions;
-using Moonglade.Configuration;
 using Microsoft.Extensions.Logging;
+using Moonglade.Configuration;
 
 namespace Moonglade.Setup;
 
@@ -11,8 +11,8 @@ public interface IBlogConfigInitializer
 }
 
 public class BlogConfigInitializer(
-    IQueryMediator queryMediator, 
-    ICommandMediator commandMediator, 
+    IQueryMediator queryMediator,
+    ICommandMediator commandMediator,
     IBlogConfig blogConfig,
     ILogger<BlogConfigInitializer> logger) : IBlogConfigInitializer
 {
@@ -41,7 +41,7 @@ public class BlogConfigInitializer(
             // Load configurations into singleton
             var config = await queryMediator.QueryAsync(new GetAllConfigurationsQuery());
             var keysToAdd = blogConfig.LoadFromConfig(config)?.ToArray() ?? [];
-            
+
             if (keysToAdd.Length == 0)
             {
                 logger.LogInformation("No configuration keys to initialize");
