@@ -14,7 +14,7 @@ public static class WebApplicationBuilderExtension
     {
         ArgumentNullException.ThrowIfNull(builder);
 
-        var appVersion = Helper.AppVersion;
+        var appVersion = VersionHelper.AppVersion;
         var output = new StringBuilder();
 
         output.AppendLine($"Moonglade {appVersion} | .NET {Environment.Version}");

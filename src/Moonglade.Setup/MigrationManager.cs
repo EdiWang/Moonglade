@@ -42,7 +42,7 @@ public partial class MigrationManager(
             return new MigrationResult(false, message);
         }
 
-        if (Helper.IsNonStableVersion())
+        if (VersionHelper.IsNonStableVersion())
         {
             const string message = "Database migration is not supported on non-stable version. Skipped.";
             logger.LogWarning(message);
@@ -101,9 +101,9 @@ public partial class MigrationManager(
             return false;
         }
 
-        if (!Version.TryParse(Helper.AppVersionBasic, out currentVersion))
+        if (!Version.TryParse(VersionHelper.AppVersionBasic, out currentVersion))
         {
-            error = $"Invalid current version string: {Helper.AppVersionBasic}";
+            error = $"Invalid current version string: {VersionHelper.AppVersionBasic}";
             return false;
         }
 
@@ -156,14 +156,14 @@ public partial class MigrationManager(
         var timeoutSeconds = configuration.GetValue("Setup:MigrationTimeoutSeconds", DefaultHttpTimeoutSeconds);
         client.Timeout = TimeSpan.FromSeconds(timeoutSeconds);
 
-        client.DefaultRequestHeaders.UserAgent.ParseAdd($"Moonglade/{Helper.AppVersionBasic}");
+        client.DefaultRequestHeaders.UserAgent.ParseAdd($"Moonglade/{VersionHelper.AppVersionBasic}");
 
         return client;
     }
 
     private async Task UpdateManifestAsync(CancellationToken cancellationToken)
     {
-        blogConfig.SystemManifestSettings.VersionString = Helper.AppVersionBasic;
+        blogConfig.SystemManifestSettings.VersionString = VersionHelper.AppVersionBasic;
         blogConfig.SystemManifestSettings.InstallTimeUtc = DateTime.UtcNow;
         var kvp = blogConfig.UpdateAsync(blogConfig.SystemManifestSettings);
 

@@ -31,7 +31,7 @@ public class PingEndpoint
             Status = result.Status.ToString().ToLowerInvariant(),
             Duration = result.TotalDuration.TotalMilliseconds,
             Timestamp = DateTimeOffset.UtcNow,
-            Version = Helper.AppVersion,
+            Version = VersionHelper.AppVersion,
             Environment = Helper.GetEnvironmentTags(),
             GeoMatch = context.Request.Headers["x-geo-match"].ToString(),
             Checks = result.Entries.ToDictionary(
