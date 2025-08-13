@@ -39,7 +39,10 @@ public static class UrlHelper
         {
             if (Uri.TryCreate(url, UriKind.Absolute, out var uri))
             {
-                urlsList.Add(uri);
+                if (uri.Scheme == Uri.UriSchemeHttp || uri.Scheme == Uri.UriSchemeHttps)
+                {
+                    urlsList.Add(uri);
+                }
             }
         }
 
@@ -61,6 +64,18 @@ public static class UrlHelper
         if (string.IsNullOrWhiteSpace(cdnEndpoint)) return string.Empty;
 
         var uri = new Uri(cdnEndpoint);
+
+        if (!uri.IsAbsoluteUri || (uri.Scheme != Uri.UriSchemeHttp && uri.Scheme != Uri.UriSchemeHttps))
+        {
+            return string.Empty;
+        }
+
+        if (uri.Scheme == Uri.UriSchemeHttp && uri.Port != 80 ||
+            uri.Scheme == Uri.UriSchemeHttps && uri.Port != 443)
+        {
+            return $"{uri.Scheme}://{uri.Host}:{uri.Port}/";
+        }
+
         return $"{uri.Scheme}://{uri.Host}/";
     }
 
