@@ -114,6 +114,12 @@ public static class UrlHelper
         if (string.IsNullOrWhiteSpace(prefix)) return string.Empty;
         path ??= string.Empty;
 
+        // Check if path contains space or invalid characters
+        if (path.IndexOfAny([' ', '\t', '\n', '\r']) >= 0 || path.IndexOfAny(Path.GetInvalidPathChars()) >= 0)
+        {
+            return string.Empty;
+        }
+
         if (!prefix.IsValidUrl())
         {
             throw new UriFormatException($"Prefix '{prefix}' is not a valid URL.");
