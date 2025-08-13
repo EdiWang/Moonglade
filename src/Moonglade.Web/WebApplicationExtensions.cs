@@ -31,7 +31,7 @@ public static class WebApplicationExtensions
         var headerName = app.Configuration[$"{ForwardedHeadersSection}:{HeaderNameKey}"];
         if (!string.IsNullOrWhiteSpace(headerName))
         {
-            if (headerName.Length > MaxHeaderNameLength || !Helper.IsValidHeaderName(headerName))
+            if (headerName.Length > MaxHeaderNameLength || !IsValidHeaderName(headerName))
             {
                 app.Logger.LogWarning($"XFF header name '{headerName}' is invalid, it will not be applied");
             }
@@ -88,5 +88,25 @@ public static class WebApplicationExtensions
             fho.KnownNetworks.Add(new(IPAddress.Any, 0));
             fho.KnownNetworks.Add(new(IPAddress.IPv6Any, 0));
         }
+    }
+
+    private static bool IsValidHeaderName(string headerName)
+    {
+        if (string.IsNullOrEmpty(headerName))
+        {
+            return false;
+        }
+
+        // Check if header name conforms to the standard which allows:
+        // - Any ASCII character from 'a' to 'z' and 'A' to 'Z'
+        // - Digits from '0' to '9'
+        // - Special characters: '!', '#', '$', '%', '&', ''', '*', '+', '-', '.', '^', '_', '`', '|', '~'
+        return headerName.All(c =>
+            c is >= 'a' and <= 'z' ||
+            c is >= 'A' and <= 'Z' ||
+            c is >= '0' and <= '9' ||
+            c == '!' || c == '#' || c == '$' || c == '%' || c == '&' || c == '\'' ||
+            c == '*' || c == '+' || c == '-' || c == '.' || c == '^' || c == '_' ||
+            c == '`' || c == '|' || c == '~');
     }
 }

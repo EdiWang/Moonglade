@@ -177,26 +177,6 @@ public static class Helper
         }
     }
 
-    public static bool IsValidHeaderName(string headerName)
-    {
-        if (string.IsNullOrEmpty(headerName))
-        {
-            return false;
-        }
-
-        // Check if header name conforms to the standard which allows:
-        // - Any ASCII character from 'a' to 'z' and 'A' to 'Z'
-        // - Digits from '0' to '9'
-        // - Special characters: '!', '#', '$', '%', '&', ''', '*', '+', '-', '.', '^', '_', '`', '|', '~'
-        return headerName.All(c =>
-            c is >= 'a' and <= 'z' ||
-            c is >= 'A' and <= 'Z' ||
-            c is >= '0' and <= '9' ||
-            c == '!' || c == '#' || c == '$' || c == '%' || c == '&' || c == '\'' ||
-            c == '*' || c == '+' || c == '-' || c == '.' || c == '^' || c == '_' ||
-            c == '`' || c == '|' || c == '~');
-    }
-
     public static string GetMagic(int value, int start, int end) =>
         Convert.ToBase64String(SHA256.HashData(BitConverter.GetBytes(value)))[start..end];
 }
