@@ -71,7 +71,7 @@ public class VersionHelperTests
 
         // Assert
         Assert.NotNull(result);
-        
+
         // If the version contains a git hash (indicated by parentheses), 
         // it should be properly formatted
         if (result.Contains('(') && result.Contains(')'))
@@ -128,7 +128,7 @@ public class VersionHelperTests
         // This tests the regex pattern logic directly
 
         // Arrange
-        var regexMethod = typeof(VersionHelper).GetMethod("NonStableVersionRegex", 
+        var regexMethod = typeof(VersionHelper).GetMethod("NonStableVersionRegex",
             BindingFlags.NonPublic | BindingFlags.Static);
         var regex = regexMethod?.Invoke(null, null) as System.Text.RegularExpressions.Regex;
 
@@ -161,10 +161,10 @@ public class VersionHelperTests
         // Assert
         Assert.NotEmpty(appVersion);
         Assert.NotEmpty(appVersionBasic);
-        
+
         // AppVersion should either be the same as AppVersionBasic (when no informational version)
         // or contain additional formatting (git hash in parentheses)
-        Assert.True(appVersion == appVersionBasic || 
+        Assert.True(appVersion == appVersionBasic ||
                    appVersion.StartsWith(appVersionBasic.Split('.')[0]) ||
                    appVersion.Contains('('));
     }
@@ -181,10 +181,10 @@ public class VersionHelperTests
             var startIndex = appVersion.IndexOf('(') + 1;
             var endIndex = appVersion.IndexOf(')', startIndex);
             var gitHash = appVersion.Substring(startIndex, endIndex - startIndex);
-            
+
             // Git hash should be exactly 6 characters when shortened
             Assert.Equal(6, gitHash.Length);
-            
+
             // Should be hexadecimal characters
             Assert.Matches("^[a-f0-9]{6}$", gitHash.ToLowerInvariant());
         }
@@ -206,7 +206,7 @@ public class VersionHelperTests
     public void NonStableVersionRegex_WithSingleKeywords_MatchesCorrectly(string keyword)
     {
         // Arrange
-        var regexMethod = typeof(VersionHelper).GetMethod("NonStableVersionRegex", 
+        var regexMethod = typeof(VersionHelper).GetMethod("NonStableVersionRegex",
             BindingFlags.NonPublic | BindingFlags.Static);
         var regex = regexMethod?.Invoke(null, null) as System.Text.RegularExpressions.Regex;
 
@@ -227,7 +227,7 @@ public class VersionHelperTests
     public void NonStableVersionRegex_WithStableKeywords_DoesNotMatch(string stableVersion)
     {
         // Arrange
-        var regexMethod = typeof(VersionHelper).GetMethod("NonStableVersionRegex", 
+        var regexMethod = typeof(VersionHelper).GetMethod("NonStableVersionRegex",
             BindingFlags.NonPublic | BindingFlags.Static);
         var regex = regexMethod?.Invoke(null, null) as System.Text.RegularExpressions.Regex;
 

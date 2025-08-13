@@ -110,7 +110,7 @@ public class AzureBlobImageStorage : IBlogImageStorage
         {
             _logger.LogInformation("Deleting blob '{FileName}' from Azure Blob Storage.", fileName);
             var response = await _container.DeleteBlobIfExistsAsync(fileName).ConfigureAwait(false);
-            
+
             if (response.Value)
             {
                 _logger.LogInformation("Successfully deleted blob '{FileName}' from Azure Blob Storage.", fileName);

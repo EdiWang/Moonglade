@@ -12,7 +12,7 @@ public class GuidFileNameGenerator(Guid id) : IFileNameGenerator
 
         var ext = Path.GetExtension(fileName);
         var fileNameWithoutExtension = Path.GetFileNameWithoutExtension(fileName);
-        
+
         if (string.IsNullOrEmpty(ext))
         {
             throw new ArgumentException("File must have an extension.", nameof(fileName));
