@@ -24,7 +24,7 @@ public class FoafMapHandler
 
             var foafDoc = new FoafDoc(
                 Name: general.OwnerName,
-                BlogUrl: Helper.ResolveRootUrl(httpContext, general.CanonicalPrefix, preferCanonical: true),
+                BlogUrl: UrlHelper.ResolveRootUrl(httpContext, general.CanonicalPrefix, preferCanonical: true),
                 Email: general.OwnerEmail,
                 PhotoUrl: linkGenerator.GetUriByAction(httpContext, "Avatar", "Assets") ?? string.Empty
             );

@@ -84,7 +84,7 @@ public class PostController(
 
             logger.LogInformation("Trying to Ping URL for post: {Id}", postEntity.Id);
 
-            var baseUri = new Uri(Helper.ResolveRootUrl(HttpContext, null, removeTailSlash: true));
+            var baseUri = new Uri(UrlHelper.ResolveRootUrl(HttpContext, null, removeTailSlash: true));
             var link = new Uri(baseUri, $"post/{postEntity.RouteLink.ToLower()}");
 
             NotifyExternalServices(postEntity.PostContent, link);

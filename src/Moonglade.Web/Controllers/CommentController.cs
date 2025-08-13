@@ -139,7 +139,7 @@ public class CommentController(
 
     private string GetPostUrl(string routeLink)
     {
-        var baseUri = new Uri(Helper.ResolveRootUrl(HttpContext, null, removeTailSlash: true));
+        var baseUri = new Uri(UrlHelper.ResolveRootUrl(HttpContext, null, removeTailSlash: true));
         var link = new Uri(baseUri, $"post/{routeLink.ToLower()}");
         return link.ToString();
     }

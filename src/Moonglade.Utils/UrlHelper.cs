@@ -1,0 +1,101 @@
+﻿using Microsoft.AspNetCore.Http;
+using System.Globalization;
+using System.Text.RegularExpressions;
+
+namespace Moonglade.Utils;
+
+public static class UrlHelper
+{
+    public static string GetRouteLinkFromUrl(string url)
+    {
+        var blogSlugRegex = new Regex(@"^https?:\/\/.*\/post\/(?<yyyy>\d{4})\/(?<MM>\d{1,12})\/(?<dd>\d{1,31})\/(?<slug>.*)$");
+        Match match = blogSlugRegex.Match(url);
+        if (!match.Success)
+        {
+            throw new FormatException("Invalid Slug Format");
+        }
+
+        string yyyy = match.Groups["yyyy"].Value;
+        string mm = match.Groups["MM"].Value;
+        string dd = match.Groups["dd"].Value;
+        string slug = match.Groups["slug"].Value;
+
+        return $"{yyyy}/{mm}/{dd}/{slug}".ToLower();
+    }
+
+    private static readonly Regex UrlsRegex = new(
+        @"<a.*?href=[""'](?<url>.*?)[""'].*?>(?<name>.*?)</a>", RegexOptions.IgnoreCase | RegexOptions.Compiled);
+
+    public static IEnumerable<Uri> GetUrlsFromContent(string content)
+    {
+        if (string.IsNullOrWhiteSpace(content))
+        {
+            throw new ArgumentNullException(content);
+        }
+
+        var urlsList = new List<Uri>();
+        foreach (var url in
+                 UrlsRegex.Matches(content).Select(myMatch => myMatch.Groups["url"].ToString().Trim()))
+        {
+            if (Uri.TryCreate(url, UriKind.Absolute, out var uri))
+            {
+                urlsList.Add(uri);
+            }
+        }
+
+        return urlsList;
+    }
+
+    public static string GenerateRouteLink(DateTime publishDate, string slug)
+    {
+        if (string.IsNullOrWhiteSpace(slug))
+        {
+            throw new ArgumentNullException(nameof(slug), "Slug must not be null or empty.");
+        }
+
+        return $"{publishDate.ToString("yyyy/M/d", CultureInfo.InvariantCulture)}/{slug.ToLower()}";
+    }
+
+    public static string GetDNSPrefetchUrl(string cdnEndpoint)
+    {
+        if (string.IsNullOrWhiteSpace(cdnEndpoint)) return string.Empty;
+
+        var uri = new Uri(cdnEndpoint);
+        return $"{uri.Scheme}://{uri.Host}/";
+    }
+
+    public static string ResolveRootUrl(HttpContext ctx, string canonicalPrefix, bool preferCanonical = false, bool removeTailSlash = false)
+    {
+        if (ctx is null && !preferCanonical)
+        {
+            throw new ArgumentNullException(nameof(ctx), "HttpContext must not be null when preferCanonical is 'false'");
+        }
+
+        var url = preferCanonical ?
+            ResolveCanonicalUrl(canonicalPrefix, string.Empty) :
+            $"{ctx.Request.Scheme}://{ctx.Request.Host}";
+
+        if (removeTailSlash && url.EndsWith('/'))
+        {
+            return url.TrimEnd('/');
+        }
+
+        return url;
+    }
+
+    public static string ResolveCanonicalUrl(string prefix, string path)
+    {
+        if (string.IsNullOrWhiteSpace(prefix)) return string.Empty;
+        path ??= string.Empty;
+
+        if (!prefix.IsValidUrl())
+        {
+            throw new UriFormatException($"Prefix '{prefix}' is not a valid URL.");
+        }
+
+        var prefixUri = new Uri(prefix);
+        return Uri.TryCreate(baseUri: prefixUri, relativeUri: path, out var newUri) ?
+            newUri.ToString() :
+            string.Empty;
+    }
+}

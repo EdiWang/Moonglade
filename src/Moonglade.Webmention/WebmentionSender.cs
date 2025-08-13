@@ -26,7 +26,7 @@ public class WebmentionSender(
             {
                 logger.LogInformation("URL is detected in post content, trying to send webmention requests.");
 
-                foreach (var url in Helper.GetUrlsFromContent(postContent))
+                foreach (var url in UrlHelper.GetUrlsFromContent(postContent))
                 {
                     if (url.IsLocalhostUrl())
                     {
