@@ -20,6 +20,17 @@ public static class UrlHelper
         string dd = match.Groups["dd"].Value;
         string slug = match.Groups["slug"].Value;
 
+        // validate month and day
+        if (!int.TryParse(mm, out int month) || month < 1 || month > 12)
+        {
+            throw new FormatException("Invalid Slug Format");
+        }
+
+        if (!int.TryParse(dd, out int day) || day < 1 || day > DateTime.DaysInMonth(int.Parse(yyyy), month))
+        {
+            throw new FormatException("Invalid Slug Format");
+        }
+
         return $"{yyyy}/{mm}/{dd}/{slug}".ToLower();
     }
 
