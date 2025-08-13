@@ -19,9 +19,9 @@ public static class BlogTagHelper
         if (isEnglishName)
         {
             // special case
-            if (orgTagName.Equals(".net", StringComparison.OrdinalIgnoreCase))
+            if (orgTagName.StartsWith(".net", StringComparison.OrdinalIgnoreCase))
             {
-                return "dot-net";
+                orgTagName = orgTagName.ToLowerInvariant().Replace(".net", "dot-net");
             }
 
             var result = new StringBuilder(orgTagName);
@@ -51,7 +51,7 @@ public static class BlogTagHelper
         if (isEng) return true;
 
         // https://docs.microsoft.com/en-us/dotnet/standard/base-types/character-classes-in-regular-expressions#supported-named-blocks
-        const string chsPattern = @"\p{IsCJKUnifiedIdeographs}";
+        const string chsPattern = @"^[\p{IsCJKUnifiedIdeographs}]*$";
         var isChs = Regex.IsMatch(tagDisplayName, chsPattern);
 
         return isChs;
