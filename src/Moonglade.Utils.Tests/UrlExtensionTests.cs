@@ -42,7 +42,7 @@ public class UrlExtensionTests
     public void IsValidUrl_WithNullUrl_ReturnsFalse()
     {
         // Arrange
-        string? url = null;
+        string url = null;
 
         // Act
         var result = url.IsValidUrl();
@@ -105,7 +105,7 @@ public class UrlExtensionTests
     [InlineData("https://example.com", "")]
     [InlineData("   ", "path")]
     [InlineData("https://example.com", "   ")]
-    public void CombineUrl_WithNullOrEmptyInputs_ThrowsArgumentNullException(string? baseUrl, string? path)
+    public void CombineUrl_WithNullOrEmptyInputs_ThrowsArgumentNullException(string baseUrl, string path)
     {
         // Act & Assert
         Assert.Throws<ArgumentNullException>(() => baseUrl!.CombineUrl(path!));

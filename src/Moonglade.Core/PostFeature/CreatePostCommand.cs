@@ -55,11 +55,11 @@ public class CreatePostCommandHandler(
             IsDeleted = false,
             PostStatus = request.Payload.PostStatus ?? PostStatusConstants.Draft,
             IsFeatured = request.Payload.Featured,
-            HeroImageUrl = string.IsNullOrWhiteSpace(request.Payload.HeroImageUrl) ? null : Helper.SterilizeLink(request.Payload.HeroImageUrl),
+            HeroImageUrl = string.IsNullOrWhiteSpace(request.Payload.HeroImageUrl) ? null : SecurityHelper.SterilizeLink(request.Payload.HeroImageUrl),
             IsOutdated = request.Payload.IsOutdated,
         };
 
-        post.RouteLink = Helper.GenerateRouteLink(post.PubDateUtc.GetValueOrDefault(), request.Payload.Slug);
+        post.RouteLink = UrlHelper.GenerateRouteLink(post.PubDateUtc.GetValueOrDefault(), request.Payload.Slug);
 
         await CheckSlugConflict(post, ct);
 

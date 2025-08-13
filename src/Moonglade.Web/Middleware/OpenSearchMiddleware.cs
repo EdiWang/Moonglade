@@ -10,7 +10,7 @@ public class OpenSearchMiddleware(RequestDelegate next)
     {
         if (httpContext.Request.Path == Options.RequestPath && blogConfig.AdvancedSettings.EnableOpenSearch)
         {
-            var siteRootUrl = Helper.ResolveRootUrl(httpContext, blogConfig.GeneralSettings.CanonicalPrefix, true);
+            var siteRootUrl = UrlHelper.ResolveRootUrl(httpContext, blogConfig.GeneralSettings.CanonicalPrefix, true);
             var xml = await GetOpenSearchData(siteRootUrl, blogConfig.GeneralSettings.SiteTitle, blogConfig.GeneralSettings.Description);
 
             httpContext.Response.ContentType = "text/xml";

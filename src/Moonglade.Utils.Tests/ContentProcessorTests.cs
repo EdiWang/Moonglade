@@ -483,7 +483,7 @@ public class ContentProcessorTests
         const ContentProcessor.MarkdownConvertType invalidType = (ContentProcessor.MarkdownConvertType)999;
 
         // Act & Assert
-        Assert.Throws<ArgumentOutOfRangeException>(() => 
+        Assert.Throws<ArgumentOutOfRangeException>(() =>
             ContentProcessor.MarkdownToContent(markdown, invalidType));
     }
 

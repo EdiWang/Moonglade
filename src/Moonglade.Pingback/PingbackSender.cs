@@ -25,7 +25,7 @@ public class PingbackSender(HttpClient httpClient,
             {
                 logger.LogInformation("URL is detected in post content, trying to send ping requests.");
 
-                foreach (var url in Helper.GetUrlsFromContent(postContent))
+                foreach (var url in UrlHelper.GetUrlsFromContent(postContent))
                 {
                     if (url.IsLocalhostUrl())
                     {

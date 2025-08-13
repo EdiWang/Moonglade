@@ -122,9 +122,9 @@ public class UpdatePostCommandHandler(
         post.IsFeedIncluded = postEditModel.FeedIncluded;
         post.ContentLanguageCode = postEditModel.LanguageCode;
         post.IsFeatured = postEditModel.Featured;
-        post.HeroImageUrl = string.IsNullOrWhiteSpace(postEditModel.HeroImageUrl) ? null : Helper.SterilizeLink(postEditModel.HeroImageUrl);
+        post.HeroImageUrl = string.IsNullOrWhiteSpace(postEditModel.HeroImageUrl) ? null : SecurityHelper.SterilizeLink(postEditModel.HeroImageUrl);
         post.IsOutdated = postEditModel.IsOutdated;
-        post.RouteLink = Helper.GenerateRouteLink(post.PubDateUtc.GetValueOrDefault(), postEditModel.Slug);
+        post.RouteLink = UrlHelper.GenerateRouteLink(post.PubDateUtc.GetValueOrDefault(), postEditModel.Slug);
     }
 
     private static void UpdateCats(PostEntity post, Guid[] catIds, CancellationToken ct)

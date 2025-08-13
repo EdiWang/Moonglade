@@ -25,7 +25,7 @@ public class PublishScheduledPostCommandHandler(MoongladeRepository<PostEntity> 
             post.PostStatus = PostStatusConstants.Published;
             post.PubDateUtc = now;
             post.ScheduledPublishTimeUtc = null;
-            post.RouteLink = Helper.GenerateRouteLink(post.PubDateUtc.GetValueOrDefault(), post.Slug);
+            post.RouteLink = UrlHelper.GenerateRouteLink(post.PubDateUtc.GetValueOrDefault(), post.Slug);
 
             await postRepo.UpdateAsync(post, ct);
 
