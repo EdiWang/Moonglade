@@ -45,7 +45,7 @@ public static class WebApplicationBuilderExtension
         return new Dictionary<string, string>
         {
             { "Path", Environment.CurrentDirectory },
-            { "System", Helper.TryGetFullOSVersion() },
+            { "System", VersionHelper.TryGetFullOSVersion() },
             { "User", Environment.UserName },
             { "Host", Environment.MachineName },
             { "IPv4", FormatAddresses(ipv4Addresses) },

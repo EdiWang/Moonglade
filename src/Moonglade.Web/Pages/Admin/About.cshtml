@@ -59,7 +59,7 @@
             <tbody>
                 <tr>
                     <td class="about-label">@SharedLocalizer["System"]</td>
-                    <td class="text-muted">@Helper.TryGetFullOSVersion() @(Environment.Is64BitOperatingSystem ? "(64-bit)" : "(32-bit)")</td>
+                    <td class="text-muted">@VersionHelper.TryGetFullOSVersion() @(Environment.Is64BitOperatingSystem ? "(64-bit)" : "(32-bit)")</td>
                 </tr>
                 <tr>
                     <td>@SharedLocalizer["Directory"]</td>
