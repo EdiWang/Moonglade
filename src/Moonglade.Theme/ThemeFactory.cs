@@ -4,22 +4,18 @@ namespace Moonglade.Theme;
 
 public static class ThemeFactory
 {
-    public static IEnumerable<BlogThemeEntity> GetSystemThemes()
-    {
-        return new List<BlogThemeEntity>
-        {
-            CreateTheme(100, "Word Blue (Default)", "#2A579A"),
-            CreateTheme(101, "Excel Green", "#165331"),
-            CreateTheme(102, "PowerPoint Orange", "#983B22"),
-            CreateTheme(103, "OneNote Purple", "#663276"),
-            CreateTheme(104, "Outlook Blue", "#035AA6"),
-            CreateTheme(105, "Metal Blue", "#4E5967"),
-            CreateTheme(106, "Mars Green", "#008C8C"),
-            CreateTheme(107, "Prussian Blue", "#003153"),
-            CreateTheme(108, "Hermes Orange", "#E85827"),
-            CreateTheme(109, "Burgundy Red", "#800020"),
-        };
-    }
+    public static IEnumerable<BlogThemeEntity> GetSystemThemes() => [
+        CreateTheme(100, "Word Blue (Default)", "#2A579A"),
+        CreateTheme(101, "Excel Green", "#165331"),
+        CreateTheme(102, "PowerPoint Orange", "#983B22"),
+        CreateTheme(103, "OneNote Purple", "#663276"),
+        CreateTheme(104, "Outlook Blue", "#035AA6"),
+        CreateTheme(105, "Metal Blue", "#4E5967"),
+        CreateTheme(106, "Mars Green", "#008C8C"),
+        CreateTheme(107, "Prussian Blue", "#003153"),
+        CreateTheme(108, "Hermes Orange", "#E85827"),
+        CreateTheme(109, "Burgundy Red", "#800020"),
+    ];
 
     private static BlogThemeEntity CreateTheme(int id, string themeName, string color1)
     {
