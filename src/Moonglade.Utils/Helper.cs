@@ -39,8 +39,6 @@ public static class Helper
         return useServerSideDarkMode;
     }
 
-    public static string GetClientIP(HttpContext context) => context?.Connection.RemoteIpAddress?.ToString();
-
     public static string FormatCopyright2Html(string copyrightCode)
     {
         if (string.IsNullOrWhiteSpace(copyrightCode))

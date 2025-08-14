@@ -32,7 +32,7 @@ public class MentionController(
     {
         if (!blogConfig.AdvancedSettings.EnableWebmention) return Forbid();
 
-        var ip = Helper.GetClientIP(HttpContext);
+        var ip = ClientIPHelper.GetClientIP(HttpContext);
         var response = await commandMediator.SendAsync(new ReceiveWebmentionCommand(source, target, ip));
 
         if (response.Status == WebmentionStatus.Success)
@@ -64,7 +64,7 @@ public class MentionController(
     {
         if (!blogConfig.AdvancedSettings.EnablePingback) return Forbid();
 
-        var ip = Helper.GetClientIP(HttpContext);
+        var ip = ClientIPHelper.GetClientIP(HttpContext);
         var requestBody = await new StreamReader(HttpContext.Request.Body, Encoding.Default).ReadToEndAsync();
 
         var response = await commandMediator.SendAsync(new ReceivePingCommand(requestBody, ip));

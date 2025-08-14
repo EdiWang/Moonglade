@@ -56,7 +56,7 @@ public class CommentController(
             }
         }
 
-        var ip = Helper.GetClientIP(HttpContext);
+        var ip = ClientIPHelper.GetClientIP(HttpContext);
         var item = await commandMediator.SendAsync(new CreateCommentCommand(postId, request, ip));
 
         if (null == item)

@@ -29,8 +29,7 @@ public class PingEndpoint
         var response = new
         {
             Status = result.Status.ToString().ToLowerInvariant(),
-            ClientIP = Helper.GetClientIP(context),
-            ClientIPExperimental = ClientIPHelper.GetClientIP(context),
+            ClientIP = ClientIPHelper.GetClientIP(context),
             Duration = result.TotalDuration.TotalMilliseconds,
             Timestamp = DateTimeOffset.UtcNow,
             Version = VersionHelper.AppVersion,
