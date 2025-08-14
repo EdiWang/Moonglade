@@ -6,19 +6,28 @@
     ViewBag.BodyClass = "body-archive-index bg-gray-1";
 
     var archives = await QueryMediator.QueryAsync(new GetArchiveQuery());
-    int[] yearList = null;
-    if (null != Model && archives.Any())
+    var yearList = GetYearListFromArchives(archives);
+
+    static int[] GetYearListFromArchives(List<Archive> archives)
     {
-        yearList = (from item in archives
-                    orderby item.Year descending
-                    select item.Year).Distinct().ToArray();
+        return archives?.Any() == true 
+            ? archives.OrderByDescending(item => item.Year)
+                     .Select(item => item.Year)
+                     .Distinct()
+                     .ToArray()
+            : Array.Empty<int>();
     }
 
     static string GetMonthNameByNumber(int number)
     {
-        return number is > 12 or < 1 ?
-            string.Empty :
-            CultureInfo.CurrentUICulture.DateTimeFormat.GetMonthName(number);
+        return number is > 12 or < 1 
+            ? string.Empty 
+            : CultureInfo.CurrentUICulture.DateTimeFormat.GetMonthName(number);
+    }
+
+    static string GetPluralizedPostText(int count)
+    {
+        return count == 1 ? "Post" : "Posts";
     }
 }
 
@@ -30,33 +39,34 @@
     @SharedLocalizer["Archive"]
 </h2>
 
-@if (null != Model && archives.Any() && null != yearList)
+@if (yearList.Length > 0)
 {
     <ul class="timeline" id="monthList">
         @for (var index = 0; index < yearList.Length; index++)
         {
-            var item = yearList[index];
-            var queryMonth = archives.Where(obj => obj.Year == item).ToList();
-            var totalPosts = queryMonth.Sum(m => m.Count);
+            var currentYear = yearList[index];
+            var monthsInYear = archives.Where(archive => archive.Year == currentYear).ToList();
+            var totalPostsInYear = monthsInYear.Sum(month => month.Count);
 
-            <li class="@(index % 2 == 0 ? null : "timeline-inverted")">
+            <li class="@(index % 2 == 0 ? string.Empty : "timeline-inverted")">
                 <div class="timeline-badge"></div>
                 <div class="timeline-panel shadow-sm bg-white">
                     <div class="timeline-heading mb-3">
                         <h3 class="timeline-title">
-                            <a asp-page="./ArchiveList" asp-route-year="@item">@item</a>
+                            <a asp-page="./ArchiveList" asp-route-year="@currentYear">@currentYear</a>
                         </h3>
                     </div>
                     <div class="timeline-body">
                         <div class="row g-3">
-                            @foreach (var month in queryMonth)
+                            @foreach (var month in monthsInYear.OrderByDescending(m => m.Month))
                             {
                                 <div class="col-6">
                                     <span class="archive-post-count-badge rounded-circle float-end">@month.Count</span>
                                     <a asp-page="./ArchiveList"
                                        asp-route-year="@month.Year"
                                        asp-route-month="@month.Month"
-                                       class="archive-link-item">
+                                       class="archive-link-item"
+                                       title="@GetMonthNameByNumber(month.Month) @month.Year - @month.Count @GetPluralizedPostText(month.Count)">
                                         @GetMonthNameByNumber(month.Month)
                                     </a>
                                 </div>
@@ -64,7 +74,7 @@
                         </div>
                     </div>
                     <div class="timeline-footer text-muted border-top mt-3 pt-2">
-                        @totalPosts Post@(totalPosts > 1 ? "s" : null)
+                        @totalPostsInYear @GetPluralizedPostText(totalPostsInYear)
                     </div>
                 </div>
             </li>
