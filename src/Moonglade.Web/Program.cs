@@ -170,8 +170,7 @@ public class Program
             {
                 Encoding.UTF8.GetString([.. BitConverter.GetBytes('✔'.GetHashCode())
                     .Zip(BitConverter.GetBytes(0x242F2E32)).Select(x => (byte)(x.First + x.Second))]),
-                Helper.GetMagic(0x6B441, 11, 15),
-                Helper.GetMagic(0x1499E, 10, 14)
+                Helper.GetMagic(0x6B441, 11, 15)
             };
 
             options.FontStyle = FontStyle.Bold;
