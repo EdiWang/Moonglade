@@ -38,6 +38,7 @@ public static class WebApplicationExtensions
             else
             {
                 fho.ForwardedForHeaderName = headerName;
+                Helper.SetAppDomainData("ForwardedHeaders_HeaderName", headerName);
             }
         }
     }

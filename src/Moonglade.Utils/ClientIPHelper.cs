@@ -9,6 +9,12 @@ public static class ClientIPHelper
         if (context?.Connection?.RemoteIpAddress == null)
             return null;
 
+        var existingHeaderName = Helper.GetAppDomainData<string>("ForwardedHeaders_HeaderName");
+        if (existingHeaderName != null)
+        {
+            return context?.Connection?.RemoteIpAddress.ToString();
+        }
+
         // Check for forwarded headers in order of preference
         var forwardedHeaders = new[]
         {
