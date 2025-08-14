@@ -39,7 +39,7 @@ public class BlogConfigInitializer(
             logger.LogInformation("Starting blog configuration initialization. IsNew: {IsNew}", isNew);
 
             // Load configurations into singleton
-            var config = await queryMediator.QueryAsync(new GetAllConfigurationsQuery());
+            var config = await queryMediator.QueryAsync(new ListConfigurationsQuery());
             var keysToAdd = blogConfig.LoadFromConfig(config)?.ToArray() ?? [];
 
             if (keysToAdd.Length == 0)
