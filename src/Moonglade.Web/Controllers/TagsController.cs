@@ -15,7 +15,7 @@ public class TagsController(IQueryMediator queryMediator, ICommandMediator comma
     [ProducesResponseType<List<string>>(StatusCodes.Status200OK)]
     public async Task<IActionResult> Names()
     {
-        var names = await queryMediator.QueryAsync(new GetTagNamesQuery());
+        var names = await queryMediator.QueryAsync(new ListTagNamesQuery());
         return Ok(names);
     }
 
