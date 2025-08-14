@@ -4,11 +4,11 @@ using Moonglade.Data.Entities;
 
 namespace Moonglade.Theme;
 
-public record GetAllThemeSegmentQuery : IQuery<List<BlogThemeEntity>>;
+public record ListThemeSegmentsQuery : IQuery<List<BlogThemeEntity>>;
 
-public class GetAllThemeSegmentQueryHandler(MoongladeRepository<BlogThemeEntity> repo) : IQueryHandler<GetAllThemeSegmentQuery, List<BlogThemeEntity>>
+public class ListThemeSegmentsQueryHandler(MoongladeRepository<BlogThemeEntity> repo) : IQueryHandler<ListThemeSegmentsQuery, List<BlogThemeEntity>>
 {
-    public async Task<List<BlogThemeEntity>> HandleAsync(GetAllThemeSegmentQuery request, CancellationToken ct)
+    public async Task<List<BlogThemeEntity>> HandleAsync(ListThemeSegmentsQuery request, CancellationToken ct)
     {
         var systemThemes = ThemeFactory.GetSystemThemes();
         var customThemes = await repo.ListAsync(ct);
