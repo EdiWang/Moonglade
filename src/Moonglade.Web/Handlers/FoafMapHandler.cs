@@ -20,7 +20,7 @@ public class FoafMapHandler
 
         try
         {
-            var friends = await queryMediator.QueryAsync(new GetAllLinksQuery());
+            var friends = await queryMediator.QueryAsync(new ListLinksQuery());
 
             var foafDoc = new FoafDoc(
                 Name: general.OwnerName,

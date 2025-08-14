@@ -287,7 +287,7 @@ public class UrlHelperTests
     public void ResolveRootUrl_WithNullContextAndPreferCanonicalFalse_ThrowsArgumentNullException()
     {
         // Act & Assert
-        var exception = Assert.Throws<ArgumentNullException>(() => 
+        var exception = Assert.Throws<ArgumentNullException>(() =>
             UrlHelper.ResolveRootUrl(null!, "https://canonical.com", false));
         Assert.Equal("ctx", exception.ParamName);
         Assert.Contains("HttpContext must not be null when preferCanonical is 'false'", exception.Message);
@@ -450,7 +450,7 @@ public class UrlHelperTests
     public void UrlHelper_RegexPerformance_HandlesLargeContent()
     {
         // Arrange - Create large content with many links
-        var largeContent = string.Join("\n", 
+        var largeContent = string.Join("\n",
             Enumerable.Range(1, 1000)
                 .Select(i => $"<a href=\"https://example{i}.com\">Link {i}</a>"));
 
