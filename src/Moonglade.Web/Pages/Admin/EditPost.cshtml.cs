@@ -20,7 +20,7 @@ public class EditPostModel(IQueryMediator queryMediator, IBlogConfig blogConfig)
 
     public async Task<IActionResult> OnGetAsync(Guid? id)
     {
-        var cats = await queryMediator.QueryAsync(new GetCategoriesQuery());
+        var cats = await queryMediator.QueryAsync(new ListCategoriesQuery());
 
         if (id is null)
         {

@@ -90,5 +90,5 @@
 
     public List<CategoryEntity> Categories { get; set; }
 
-    public async Task OnGet() => Categories = await QueryMediator.QueryAsync(new GetCategoriesQuery());
+    public async Task OnGet() => Categories = await QueryMediator.QueryAsync(new ListCategoriesQuery());
 }

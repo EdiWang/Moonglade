@@ -9,7 +9,7 @@ public class SubListViewComponent(ILogger<SubListViewComponent> logger, IQueryMe
     {
         try
         {
-            var cats = await queryMediator.QueryAsync(new GetCategoriesQuery());
+            var cats = await queryMediator.QueryAsync(new ListCategoriesQuery());
             var items = cats.Select(c => new KeyValuePair<string, string>(c.DisplayName, c.Slug));
 
             return View(items);

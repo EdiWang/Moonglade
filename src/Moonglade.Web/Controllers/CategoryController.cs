@@ -26,7 +26,7 @@ public class CategoryController(IQueryMediator queryMediator, ICommandMediator c
     [ProducesResponseType<List<CategoryEntity>>(StatusCodes.Status200OK)]
     public async Task<IActionResult> List()
     {
-        var list = await queryMediator.QueryAsync(new GetCategoriesQuery());
+        var list = await queryMediator.QueryAsync(new ListCategoriesQuery());
         return Ok(list);
     }
 

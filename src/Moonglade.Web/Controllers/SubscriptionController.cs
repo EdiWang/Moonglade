@@ -16,7 +16,7 @@ public class SubscriptionController(
     {
         if (!blogConfig.AdvancedSettings.EnableOpml) return NotFound();
 
-        var cats = await queryMediator.QueryAsync(new GetCategoriesQuery());
+        var cats = await queryMediator.QueryAsync(new ListCategoriesQuery());
         var catInfos = cats.Select(c => new KeyValuePair<string, string>(c.DisplayName, c.Slug));
         var rootUrl = UrlHelper.ResolveRootUrl(HttpContext, blogConfig.GeneralSettings.CanonicalPrefix);
 
