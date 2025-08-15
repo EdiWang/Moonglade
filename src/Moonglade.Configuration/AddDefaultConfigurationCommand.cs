@@ -2,10 +2,13 @@
 using Microsoft.Extensions.Logging;
 using Moonglade.Data;
 using Moonglade.Data.Entities;
+using System.ComponentModel.DataAnnotations;
 
 namespace Moonglade.Configuration;
 
-public record AddDefaultConfigurationCommand(string CfgKey, string DefaultJson) : ICommand<OperationCode>;
+public record AddDefaultConfigurationCommand(
+    [Required, MaxLength(64)] string CfgKey,
+    [Required] string DefaultJson) : ICommand<OperationCode>;
 
 public class AddDefaultConfigurationCommandHandler(
     MoongladeRepository<BlogConfigurationEntity> repository,
@@ -14,16 +17,24 @@ public class AddDefaultConfigurationCommandHandler(
 {
     public async Task<OperationCode> HandleAsync(AddDefaultConfigurationCommand request, CancellationToken ct)
     {
-        var entity = new BlogConfigurationEntity
+        try
         {
-            CfgKey = request.CfgKey,
-            CfgValue = request.DefaultJson,
-            LastModifiedTimeUtc = DateTime.UtcNow
-        };
+            var entity = new BlogConfigurationEntity
+            {
+                CfgKey = request.CfgKey,
+                CfgValue = request.DefaultJson,
+                LastModifiedTimeUtc = DateTime.UtcNow
+            };
 
-        await repository.AddAsync(entity, ct);
+            await repository.AddAsync(entity, ct);
 
-        logger.LogInformation("Added default configuration: {CfgKey}", request.CfgKey);
-        return OperationCode.Done;
+            logger.LogInformation("Successfully added default configuration: {CfgKey}", request.CfgKey);
+            return OperationCode.Done;
+        }
+        catch (Exception ex)
+        {
+            logger.LogError(ex, "Failed to add default configuration: {CfgKey}", request.CfgKey);
+            throw;
+        }
     }
 }
