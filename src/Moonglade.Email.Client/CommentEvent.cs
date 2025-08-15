@@ -22,6 +22,6 @@ public class CommentNotificationEventHandler(IMoongladeEmailClient moongladeEmai
         };
 
         var dl = new[] { blogConfig.GeneralSettings.OwnerEmail };
-        await moongladeEmailClient.SendEmail(MailMesageTypes.NewCommentNotification, dl, notification);
+        await moongladeEmailClient.SendEmailAsync(MailMesageTypes.NewCommentNotification, dl, notification, ct);
     }
 }

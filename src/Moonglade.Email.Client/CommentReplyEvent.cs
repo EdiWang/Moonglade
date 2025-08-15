@@ -14,6 +14,6 @@ public class CommentReplyNotificationHandler(IMoongladeEmailClient moongladeEmai
     public async Task HandleAsync(CommentReplyEvent notification, CancellationToken ct)
     {
         var dl = new[] { notification.Email };
-        await moongladeEmailClient.SendEmail(MailMesageTypes.AdminReplyNotification, dl, notification);
+        await moongladeEmailClient.SendEmailAsync(MailMesageTypes.AdminReplyNotification, dl, notification, ct);
     }
 }
