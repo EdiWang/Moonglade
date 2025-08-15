@@ -25,7 +25,8 @@ public class DatedGuidFileNameGenerator(Guid id) : IFileNameGenerator
 
         var appendix = string.IsNullOrWhiteSpace(appendixName) ? string.Empty : $"-{appendixName}";
         var dateStr = DateTime.UtcNow.ToString("yyyyMMdd");
+        var shortGuid = UniqueId.ToString("N")[..8]; // Use first 8 characters of GUID
 
-        return $"img-{dateStr}-{UniqueId:N}{appendix}{ext}".ToLowerInvariant();
+        return $"{dateStr}-{shortGuid}{appendix}{ext}".ToLowerInvariant();
     }
 }
