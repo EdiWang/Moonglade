@@ -4,20 +4,38 @@ using Microsoft.Extensions.Logging;
 
 namespace Moonglade.ImageStorage.Providers;
 
+/// <summary>
+/// Configuration record for Azure Blob Storage settings.
+/// </summary>
+/// <param name="ConnectionString">The connection string for the Azure Storage account.</param>
+/// <param name="ContainerName">The name of the primary blob container.</param>
+/// <param name="SecondaryContainerName">The optional name of the secondary blob container.</param>
 public record AzureBlobConfiguration(
     string ConnectionString,
     string ContainerName,
     string SecondaryContainerName = null
 );
 
+/// <summary>
+/// Azure Blob Storage implementation of the blog image storage interface.
+/// Provides functionality to store, retrieve, and delete images in Azure Blob Storage containers.
+/// </summary>
 public class AzureBlobImageStorage : IBlogImageStorage
 {
+    /// <summary>
+    /// Gets the name of this storage provider.
+    /// </summary>
     public string Name => nameof(AzureBlobImageStorage);
 
     private readonly BlobContainerClient _container;
     private readonly BlobContainerClient _secondaryContainer;
     private readonly ILogger<AzureBlobImageStorage> _logger;
 
+    /// <summary>
+    /// Initializes a new instance of the <see cref="AzureBlobImageStorage"/> class.
+    /// </summary>
+    /// <param name="logger">The logger instance for logging operations.</param>
+    /// <param name="blobConfiguration">The Azure Blob Storage configuration containing connection details.</param>
     public AzureBlobImageStorage(ILogger<AzureBlobImageStorage> logger, AzureBlobConfiguration blobConfiguration)
     {
         _logger = logger;
@@ -29,6 +47,12 @@ public class AzureBlobImageStorage : IBlogImageStorage
         }
     }
 
+    /// <summary>
+    /// Initializes a blob container client with the specified connection string and container name.
+    /// </summary>
+    /// <param name="connectionString">The Azure Storage account connection string.</param>
+    /// <param name="containerName">The name of the blob container to initialize.</param>
+    /// <returns>A configured <see cref="BlobContainerClient"/> instance.</returns>
     private BlobContainerClient InitializeContainer(string connectionString, string containerName)
     {
         var container = new BlobContainerClient(connectionString, containerName);
@@ -36,11 +60,28 @@ public class AzureBlobImageStorage : IBlogImageStorage
         return container;
     }
 
+    /// <summary>
+    /// Inserts an image into the primary blob container.
+    /// </summary>
+    /// <param name="fileName">The name of the file to be stored.</param>
+    /// <param name="imageBytes">The image data as a byte array.</param>
+    /// <returns>A task that represents the asynchronous insert operation. The task result contains the file name of the uploaded image.</returns>
+    /// <exception cref="ArgumentException">Thrown when the file name is null, empty, or whitespace, or when image bytes are empty.</exception>
+    /// <exception cref="ArgumentNullException">Thrown when image bytes are null.</exception>
     public async Task<string> InsertAsync(string fileName, byte[] imageBytes)
     {
         return await InsertInternalAsync(_container, fileName, imageBytes).ConfigureAwait(false);
     }
 
+    /// <summary>
+    /// Inserts an image into the secondary blob container.
+    /// </summary>
+    /// <param name="fileName">The name of the file to be stored.</param>
+    /// <param name="imageBytes">The image data as a byte array.</param>
+    /// <returns>A task that represents the asynchronous insert operation. The task result contains the file name of the uploaded image.</returns>
+    /// <exception cref="ArgumentException">Thrown when the file name is null, empty, or whitespace, or when image bytes are empty.</exception>
+    /// <exception cref="ArgumentNullException">Thrown when image bytes are null.</exception>
+    /// <exception cref="InvalidOperationException">Thrown when the secondary container is not configured.</exception>
     public async Task<string> InsertSecondaryAsync(string fileName, byte[] imageBytes)
     {
         if (_secondaryContainer is null)
@@ -52,6 +93,15 @@ public class AzureBlobImageStorage : IBlogImageStorage
         return await InsertInternalAsync(_secondaryContainer, fileName, imageBytes).ConfigureAwait(false);
     }
 
+    /// <summary>
+    /// Internal method to insert an image into the specified blob container.
+    /// </summary>
+    /// <param name="container">The blob container client to upload to.</param>
+    /// <param name="fileName">The name of the file to be stored.</param>
+    /// <param name="imageBytes">The image data as a byte array.</param>
+    /// <returns>A task that represents the asynchronous insert operation. The task result contains the file name of the uploaded image.</returns>
+    /// <exception cref="ArgumentException">Thrown when the file name is null, empty, or whitespace, or when image bytes are empty.</exception>
+    /// <exception cref="ArgumentNullException">Thrown when image bytes are null.</exception>
     private async Task<string> InsertInternalAsync(BlobContainerClient container, string fileName, byte[] imageBytes)
     {
         ArgumentException.ThrowIfNullOrWhiteSpace(fileName);
@@ -86,6 +136,11 @@ public class AzureBlobImageStorage : IBlogImageStorage
         }
     }
 
+    /// <summary>
+    /// Determines the appropriate MIME content type based on the file extension.
+    /// </summary>
+    /// <param name="extension">The file extension including the leading dot.</param>
+    /// <returns>The MIME content type string for the specified file extension.</returns>
     private static string GetContentType(string extension)
     {
         return extension.ToLowerInvariant() switch
@@ -102,6 +157,12 @@ public class AzureBlobImageStorage : IBlogImageStorage
         };
     }
 
+    /// <summary>
+    /// Deletes an image from the primary blob container.
+    /// </summary>
+    /// <param name="fileName">The name of the file to be deleted.</param>
+    /// <returns>A task that represents the asynchronous delete operation.</returns>
+    /// <exception cref="ArgumentException">Thrown when the file name is null, empty, or whitespace.</exception>
     public async Task DeleteAsync(string fileName)
     {
         ArgumentException.ThrowIfNullOrWhiteSpace(fileName);
@@ -127,6 +188,12 @@ public class AzureBlobImageStorage : IBlogImageStorage
         }
     }
 
+    /// <summary>
+    /// Retrieves an image from the primary blob container.
+    /// </summary>
+    /// <param name="fileName">The name of the file to retrieve.</param>
+    /// <returns>A task that represents the asynchronous get operation. The task result contains the image information, or null if the image does not exist.</returns>
+    /// <exception cref="ArgumentException">Thrown when the file name is null, empty, whitespace, or has no file extension.</exception>
     public async Task<ImageInfo> GetAsync(string fileName)
     {
         ArgumentException.ThrowIfNullOrWhiteSpace(fileName);

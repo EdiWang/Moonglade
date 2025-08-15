@@ -3,14 +3,31 @@ using System.Runtime.InteropServices;
 
 namespace Moonglade.ImageStorage.Providers;
 
+/// <summary>
+/// Configuration record for file system image storage settings.
+/// </summary>
+/// <param name="Path">The file system path where images will be stored.</param>
 public record FileSystemImageConfiguration(string Path);
 
+/// <summary>
+/// Provides file system-based image storage implementation for blog images.
+/// Stores images as files in a specified directory on the local file system.
+/// </summary>
+/// <param name="imgConfig">Configuration containing the storage path.</param>
+/// <param name="logger">Logger instance for tracking operations.</param>
 public class FileSystemImageStorage(FileSystemImageConfiguration imgConfig, ILogger<FileSystemImageStorage> logger) : IBlogImageStorage
 {
+    /// <summary>
+    /// Gets the name of this image storage provider.
+    /// </summary>
     public string Name => nameof(FileSystemImageStorage);
 
     private readonly string _path = imgConfig.Path;
 
+    /// <summary>
+    /// Gets the default storage path for images when no custom path is specified.
+    /// Returns a path in the user's profile directory under "moonglade/images".
+    /// </summary>
     public static string DefaultPath
     {
         get
@@ -19,6 +36,18 @@ public class FileSystemImageStorage(FileSystemImageConfiguration imgConfig, ILog
         }
     }
 
+    /// <summary>
+    /// Retrieves an image from the file system storage.
+    /// </summary>
+    /// <param name="fileName">The name of the image file to retrieve.</param>
+    /// <returns>
+    /// An <see cref="ImageInfo"/> object containing the image data and metadata,
+    /// or null if the file does not exist.
+    /// </returns>
+    /// <remarks>
+    /// Returns null instead of throwing FileNotFoundException to prevent
+    /// potential denial of service attacks from repeated 404 image requests.
+    /// </remarks>
     public async Task<ImageInfo> GetAsync(string fileName)
     {
         var imagePath = Path.Join(_path, fileName);
@@ -45,6 +74,14 @@ public class FileSystemImageStorage(FileSystemImageConfiguration imgConfig, ILog
         return imageInfo;
     }
 
+    /// <summary>
+    /// Deletes an image file from the file system storage.
+    /// </summary>
+    /// <param name="fileName">The name of the image file to delete.</param>
+    /// <returns>A completed task.</returns>
+    /// <remarks>
+    /// If the file does not exist, the operation completes silently without error.
+    /// </remarks>
     public async Task DeleteAsync(string fileName)
     {
         await Task.CompletedTask;
@@ -56,6 +93,11 @@ public class FileSystemImageStorage(FileSystemImageConfiguration imgConfig, ILog
         }
     }
 
+    /// <summary>
+    /// Asynchronously reads the entire contents of a file into a byte array.
+    /// </summary>
+    /// <param name="filename">The path to the file to read.</param>
+    /// <returns>A byte array containing the file contents.</returns>
     private static async Task<byte[]> ReadFileAsync(string filename)
     {
         await using var file = new FileStream(filename, FileMode.Open, FileAccess.Read, FileShare.Read, 4096, true);
@@ -64,6 +106,15 @@ public class FileSystemImageStorage(FileSystemImageConfiguration imgConfig, ILog
         return buff;
     }
 
+    /// <summary>
+    /// Saves an image to the file system storage.
+    /// </summary>
+    /// <param name="fileName">The name to use for the saved image file.</param>
+    /// <param name="imageBytes">The image data as a byte array.</param>
+    /// <returns>The filename of the saved image.</returns>
+    /// <remarks>
+    /// Creates or overwrites the file if it already exists.
+    /// </remarks>
     public async Task<string> InsertAsync(string fileName, byte[] imageBytes)
     {
         var fullPath = Path.Join(_path, fileName);
@@ -77,8 +128,31 @@ public class FileSystemImageStorage(FileSystemImageConfiguration imgConfig, ILog
         return fileName;
     }
 
+    /// <summary>
+    /// Saves a secondary copy of an image to the file system storage.
+    /// </summary>
+    /// <param name="fileName">The name to use for the saved image file.</param>
+    /// <param name="imageBytes">The image data as a byte array.</param>
+    /// <returns>The filename of the saved image.</returns>
+    /// <remarks>
+    /// This implementation delegates to <see cref="InsertAsync"/> as file system
+    /// storage doesn't distinguish between primary and secondary storage.
+    /// </remarks>
     public Task<string> InsertSecondaryAsync(string fileName, byte[] imageBytes) => InsertAsync(fileName, imageBytes);
 
+    /// <summary>
+    /// Resolves and validates an image storage path, ensuring it's properly formatted
+    /// for the current operating system and creating the directory if it doesn't exist.
+    /// </summary>
+    /// <param name="path">The path to resolve and validate.</param>
+    /// <returns>The fully qualified, validated path.</returns>
+    /// <exception cref="ArgumentNullException">Thrown when path is null or whitespace.</exception>
+    /// <exception cref="InvalidOperationException">
+    /// Thrown when the path contains invalid characters or is not fully qualified.
+    /// </exception>
+    /// <remarks>
+    /// Handles cross-platform path formatting and creates the directory structure if needed.
+    /// </remarks>
     public static string ResolveImageStoragePath(string path)
     {
         if (string.IsNullOrWhiteSpace(path))
