@@ -1,4 +1,21 @@
-﻿@model Moonglade.Core.PostFeature.PostDigest
+﻿@using System.Text.RegularExpressions
+@model Moonglade.Core.PostFeature.PostDigest
+
+@{
+    string searchTerm = ViewData["SearchTerm"] as string ?? string.Empty;
+}
+
+@functions {
+    private static string HighlightKeywords(string text, string searchTerm)
+    {
+        if (string.IsNullOrWhiteSpace(text) || string.IsNullOrWhiteSpace(searchTerm))
+            return text;
+
+        var pattern = Regex.Escape(searchTerm);
+        var regex = new Regex(pattern, RegexOptions.IgnoreCase);
+        return regex.Replace(text, match => $"<span style=\"color: red;\">{match.Value}</span>");
+    }
+}
 
 <article class="article-post-summary d-flex rounded-3 shadow-sm border bg-white mb-4" lang="@Model.LangCode">
     <div class="post-date-box border-end d-none d-md-block font-sairas pe-4">
@@ -20,7 +37,7 @@
                asp-route-month="@Model.PubDateUtc.Month"
                asp-route-day="@Model.PubDateUtc.Day"
                asp-route-slug="@Model.Slug">
-                @Model.Title
+                @Html.Raw(HighlightKeywords(Model.Title, searchTerm))
             </a>
 
             @if (Model.IsFeatured)
@@ -29,7 +46,9 @@
             }
         </h3>
 
-        <abbr class="post-summary-text d-block mb-3">@(ContentProcessor.HtmlDecode(Model.ContentAbstract))</abbr>
+        <abbr class="post-summary-text d-block mb-3">
+            @Html.Raw(HighlightKeywords(ContentProcessor.HtmlDecode(Model.ContentAbstract), searchTerm))
+        </abbr>
 
         @if (null != Model.Tags)
         {
