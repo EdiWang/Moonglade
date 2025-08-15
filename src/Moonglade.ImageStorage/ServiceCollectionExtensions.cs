@@ -63,7 +63,7 @@ public static class ServiceCollectionExtensions
         var secondaryContainer = settings.SecondaryContainerName;
         services.AddSingleton(_ => new AzureBlobConfiguration(conn, container, secondaryContainer))
                 .AddSingleton<IBlogImageStorage, AzureBlobImageStorage>()
-                .AddScoped<IFileNameGenerator>(_ => new GuidFileNameGenerator(Guid.NewGuid()));
+                .AddScoped<IFileNameGenerator>(_ => new DatedGuidFileNameGenerator(Guid.NewGuid()));
     }
 
     private static void AddFileSystemStorage(this IServiceCollection services, string fileSystemPath)
@@ -71,13 +71,13 @@ public static class ServiceCollectionExtensions
         var fullPath = FileSystemImageStorage.ResolveImageStoragePath(fileSystemPath);
         services.AddSingleton(_ => new FileSystemImageConfiguration(fullPath))
                 .AddSingleton<IBlogImageStorage, FileSystemImageStorage>()
-                .AddScoped<IFileNameGenerator>(_ => new GuidFileNameGenerator(Guid.NewGuid()));
+                .AddScoped<IFileNameGenerator>(_ => new DatedGuidFileNameGenerator(Guid.NewGuid()));
     }
 
     private static void AddMinioStorage(this IServiceCollection services, MinioStorageSettings settings)
     {
         services.AddSingleton<IBlogImageStorage, MinioBlobImageStorage>()
-                .AddScoped<IFileNameGenerator>(_ => new GuidFileNameGenerator(Guid.NewGuid()))
+                .AddScoped<IFileNameGenerator>(_ => new DatedGuidFileNameGenerator(Guid.NewGuid()))
                 .AddSingleton(_ => new MinioBlobConfiguration(
                     settings.EndPoint,
                     settings.AccessKey,
