@@ -375,10 +375,10 @@ public class ClientIPHelperTests
         // Arrange
         var context = new DefaultHttpContext();
         context.Connection.RemoteIpAddress = IPAddress.Parse("203.0.113.1");
-        
+
         // Add empty headers
-        foreach (var header in new[] { "X-Azure-ClientIP", "CF-Connecting-IP", "X-Forwarded-For", 
-                                     "X-Real-IP", "X-Client-IP", "True-Client-IP", 
+        foreach (var header in new[] { "X-Azure-ClientIP", "CF-Connecting-IP", "X-Forwarded-For",
+                                     "X-Real-IP", "X-Client-IP", "True-Client-IP",
                                      "HTTP_X_FORWARDED_FOR", "HTTP_CLIENT_IP" })
         {
             context.Request.Headers[header] = "";
@@ -415,9 +415,9 @@ public class ClientIPHelperTests
     /// </summary>
     private static bool CallIsValidPublicIPMethod(string ipAddress)
     {
-        var method = typeof(ClientIPHelper).GetMethod("IsValidPublicIP", 
+        var method = typeof(ClientIPHelper).GetMethod("IsValidPublicIP",
             System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Static);
-        
+
         return (bool)method!.Invoke(null, new object[] { ipAddress! })!;
     }
 
