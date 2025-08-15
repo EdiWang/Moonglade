@@ -106,13 +106,13 @@ public class CommentController(
             return BadRequest("Reply content cannot be empty.");
         }
 
-        if (!blogConfig.CommentSettings.EnableComments) 
+        if (!blogConfig.CommentSettings.EnableComments)
             return Forbid();
 
         try
         {
             var reply = await commandMediator.SendAsync(new ReplyCommentCommand(commentId, replyContent));
-            
+
             // Send email notification (fire-and-forget)
             _ = Task.Run(async () => await SendReplyNotificationAsync(reply));
 
@@ -150,7 +150,7 @@ public class CommentController(
                 request.Username = await moderator.Mask(request.Username);
                 request.Content = await moderator.Mask(request.Content);
                 break;
-            
+
             case WordFilterMode.Block:
                 if (await moderator.Detect(request.Username, request.Content))
                 {

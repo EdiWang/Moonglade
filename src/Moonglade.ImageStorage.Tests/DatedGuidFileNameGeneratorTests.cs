@@ -1,7 +1,3 @@
-using System;
-using System.IO;
-using Xunit;
-
 namespace Moonglade.ImageStorage.Tests;
 
 public class DatedGuidFileNameGeneratorTests
@@ -233,7 +229,7 @@ public class DatedGuidFileNameGeneratorTests
         var dateStr = DateTime.UtcNow.ToString("yyyyMMdd");
         var shortGuid = _testGuid.ToString("N")[..8];
         var expected = $"{dateStr}-{shortGuid}.jpg";
-        
+
         Assert.Equal(expected, result);
     }
 
@@ -252,11 +248,11 @@ public class DatedGuidFileNameGeneratorTests
 
         // Assert
         Assert.Contains($"-{appendixName}", result);
-        
+
         var dateStr = DateTime.UtcNow.ToString("yyyyMMdd");
         var shortGuid = _testGuid.ToString("N")[..8];
         var expected = $"{dateStr}-{shortGuid}-{appendixName}.jpg";
-        
+
         Assert.Equal(expected, result);
     }
 
@@ -272,11 +268,11 @@ public class DatedGuidFileNameGeneratorTests
 
         // Assert
         Assert.Contains($"-{appendixName}", result);
-        
+
         var dateStr = DateTime.UtcNow.ToString("yyyyMMdd");
         var shortGuid = _testGuid.ToString("N")[..8];
         var expected = $"{dateStr}-{shortGuid}-{appendixName}.jpg";
-        
+
         Assert.Equal(expected, result);
     }
 
@@ -349,7 +345,7 @@ public class DatedGuidFileNameGeneratorTests
 
         // Assert
         Assert.EndsWith(".gz", result);
-        
+
         var dateStr = DateTime.UtcNow.ToString("yyyyMMdd");
         var shortGuid = _testGuid.ToString("N")[..8];
         var expected = $"{dateStr}-{shortGuid}.gz";
