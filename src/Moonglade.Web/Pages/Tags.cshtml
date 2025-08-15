@@ -8,53 +8,73 @@
 }
 
 @functions {
-    private static string Weight(double weightPercent)
-    {
-        var weight = weightPercent switch
+    private static string GetWeightClass(double weightPercent) =>
+        weightPercent switch
         {
             >= 99 => "danger",
-            >= 70 => "success",
+            >= 70 => "success", 
             >= 40 => "accent",
             >= 20 => "secondary",
             _ => "outline-secondary"
         };
-        return weight;
-    }
+
+    private static string FormatDisplayName(string displayName) =>
+        displayName?.Replace("-", " ") ?? string.Empty;
 }
 
 @section scripts {
     <script type="module" src="~/js/app/tags.mjs" asp-append-version="true"></script>
 }
 
-<h2 class="page-heading mb-4">
-    @SharedLocalizer["Tags"]
-</h2>
+<div class="tags-page">
+    <h2 class="page-heading mb-4">
+        @SharedLocalizer["Tags"]
+    </h2>
 
-@if (tags.Any())
-{
-    var tagMax = tags.Select(p => p.PostCount).Max();
+    @if (tags?.Any() == true)
+    {
+        var tagMax = tags.Max(p => p.PostCount);
+        var sortedTags = tags.OrderBy(t => t.Tag.DisplayName).ToList();
 
-    <input id="tagFilter" type="text" class="form-control mb-3" maxlength="32" placeholder="Filter.." role="search" aria-label="Filter tags">
+        <div class="mb-3">
+            <input id="tagFilter" 
+                   type="text" 
+                   class="form-control" 
+                   maxlength="32" 
+                   placeholder="@SharedLocalizer["Filter tags..."]" 
+                   role="search" 
+                   aria-label="@SharedLocalizer["Filter tags"]">
+        </div>
 
-    <ul class="list-unstyled ul-tags">
-        @foreach (var tag in tags.OrderBy(t => t.Tag.DisplayName))
-        {
-            var weightPercent = tag.PostCount * 1.0 / tagMax * 100;
-            var weight = Weight(weightPercent);
+        <ul class="list-unstyled ul-tags" role="list">
+            @foreach (var tagItem in sortedTags)
+            {
+                var weightPercent = (double)tagItem.PostCount / tagMax * 100;
+                var weightClass = GetWeightClass(weightPercent);
+                var displayName = FormatDisplayName(tagItem.Tag.DisplayName);
+                var normalizedName = tagItem.Tag.NormalizedName?.ToLowerInvariant();
 
-            <li class="d-inline-block mb-2 me-2">
-                <a asp-page="/TagList"
-                   asp-route-normalizedName="@HttpUtility.UrlDecode(tag.Tag.NormalizedName.ToLower())"
-                   class="btn btn-sm btn-@weight" title="@(tag.PostCount)">
-                    @tag.Tag.DisplayName.Replace("-", " ")
-                </a>
-            </li>
-        }
-    </ul>
-}
-else
-{
-    <div class="alert alert-info">
-        @SharedLocalizer["No Tags"]
-    </div>
-}
+                <li class="d-inline-block mb-2 me-2">
+                    <a asp-page="/TagList"
+                       asp-route-normalizedName="@normalizedName"
+                       class="btn btn-sm btn-@weightClass" 
+                       title="@string.Format(SharedLocalizer["{0} posts"], tagItem.PostCount)"
+                       aria-label="@string.Format(SharedLocalizer["View posts tagged with {0}"], displayName)">
+                        @displayName
+                    </a>
+                </li>
+            }
+        </ul>
+
+        <div class="mt-3 text-muted small">
+            @string.Format(SharedLocalizer["Showing {0} tags"], sortedTags.Count)
+        </div>
+    }
+    else
+    {
+        <div class="alert alert-info" role="alert">
+            <i class="bi bi-info-circle me-2" aria-hidden="true"></i>
+            @SharedLocalizer["No Tags"]
+        </div>
+    }
+</div>
