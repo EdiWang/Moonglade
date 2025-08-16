@@ -50,8 +50,7 @@ public class CommentController(
             return Conflict(ModelState);
         }
 
-        // Send email notification (fire-and-forget)
-        _ = Task.Run(async () => await SendNewCommentNotificationAsync(item));
+        await SendNewCommentNotificationAsync(item);
 
         return Ok(new
         {
