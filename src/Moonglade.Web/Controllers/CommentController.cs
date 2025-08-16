@@ -50,7 +50,15 @@ public class CommentController(
             return Conflict(ModelState);
         }
 
-        await SendNewCommentNotificationAsync(item);
+        try
+        {
+            await SendNewCommentNotificationAsync(item);
+        }
+        catch (Exception ex)
+        {
+            // Log the error but don't block the response
+            logger.LogError(ex, "Failed to send new comment notification for post {PostId}", postId);
+        }
 
         return Ok(new
         {
