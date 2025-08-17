@@ -64,7 +64,7 @@ public class AzureBlobImageStorageTests
     public void Constructor_WithNullLogger_ThrowsArgumentNullException()
     {
         // Act & Assert
-        Assert.Throws<ArgumentNullException>(() => 
+        Assert.Throws<ArgumentNullException>(() =>
             new AzureBlobImageStorage(null!, _configuration));
     }
 
@@ -72,7 +72,7 @@ public class AzureBlobImageStorageTests
     public void Constructor_WithNullConfiguration_ThrowsNullReferenceException()
     {
         // Act & Assert
-        Assert.Throws<NullReferenceException>(() => 
+        Assert.Throws<NullReferenceException>(() =>
             new AzureBlobImageStorage(_mockLogger.Object, null!));
     }
 
@@ -106,7 +106,7 @@ public class AzureBlobImageStorageTests
         var imageBytes = Encoding.UTF8.GetBytes("fake image data");
 
         // Act & Assert
-        await Assert.ThrowsAsync<ArgumentException>(() => 
+        await Assert.ThrowsAsync<ArgumentException>(() =>
             storage.InsertAsync(fileName!, imageBytes));
     }
 
@@ -118,7 +118,7 @@ public class AzureBlobImageStorageTests
         const string fileName = "test.jpg";
 
         // Act & Assert
-        await Assert.ThrowsAsync<ArgumentNullException>(() => 
+        await Assert.ThrowsAsync<ArgumentNullException>(() =>
             storage.InsertAsync(fileName, null!));
     }
 
@@ -131,7 +131,7 @@ public class AzureBlobImageStorageTests
         var emptyImageBytes = Array.Empty<byte>();
 
         // Act & Assert
-        var exception = await Assert.ThrowsAsync<ArgumentException>(() => 
+        var exception = await Assert.ThrowsAsync<ArgumentException>(() =>
             storage.InsertAsync(fileName, emptyImageBytes));
         Assert.Equal("imageBytes", exception.ParamName);
         Assert.Contains("Image bytes cannot be empty", exception.Message);
@@ -150,7 +150,7 @@ public class AzureBlobImageStorageTests
         var imageBytes = Encoding.UTF8.GetBytes("fake image data");
 
         // Act & Assert
-        var exception = await Assert.ThrowsAsync<InvalidOperationException>(() => 
+        var exception = await Assert.ThrowsAsync<InvalidOperationException>(() =>
             storage.InsertSecondaryAsync(fileName, imageBytes));
         Assert.Contains("Secondary container is not configured", exception.Message);
 
@@ -190,7 +190,7 @@ public class AzureBlobImageStorageTests
         var storage = new AzureBlobImageStorage(_mockLogger.Object, _configuration);
 
         // Act & Assert
-        await Assert.ThrowsAsync<ArgumentException>(() => 
+        await Assert.ThrowsAsync<ArgumentException>(() =>
             storage.GetAsync(fileName!));
     }
 
@@ -204,7 +204,7 @@ public class AzureBlobImageStorageTests
         var storage = new AzureBlobImageStorage(_mockLogger.Object, _configuration);
 
         // Act & Assert
-        var exception = await Assert.ThrowsAsync<ArgumentException>(() => 
+        var exception = await Assert.ThrowsAsync<ArgumentException>(() =>
             storage.GetAsync(fileName));
         Assert.Equal("fileName", exception.ParamName);
         Assert.Contains("File extension is empty", exception.Message);
@@ -261,7 +261,7 @@ public class AzureBlobImageStorageTests
         var storage = new AzureBlobImageStorage(_mockLogger.Object, _configuration);
 
         // Act & Assert
-        await Assert.ThrowsAsync<ArgumentException>(() => 
+        await Assert.ThrowsAsync<ArgumentException>(() =>
             storage.DeleteAsync(fileName!));
     }
 
@@ -277,7 +277,7 @@ public class AzureBlobImageStorageTests
                      .ThrowsAsync(expectedException);
 
         // Act & Assert
-        var exception = await Assert.ThrowsAsync<RequestFailedException>(() => 
+        var exception = await Assert.ThrowsAsync<RequestFailedException>(() =>
             storage.DeleteAsync(fileName));
         Assert.Equal(expectedException, exception);
 
@@ -319,9 +319,9 @@ public class AzureBlobImageStorageTests
 
         // Use reflection to create storage with mocked container
         var storage = new AzureBlobImageStorage(_mockLogger.Object, _configuration);
-        
+
         // Replace the private _container field with our mock
-        var containerField = typeof(AzureBlobImageStorage).GetField("_container", 
+        var containerField = typeof(AzureBlobImageStorage).GetField("_container",
             System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance);
         containerField?.SetValue(storage, _mockContainer.Object);
 
@@ -336,13 +336,13 @@ public class AzureBlobImageStorageTests
                               .Returns(_mockBlobClient.Object);
 
         var storage = new AzureBlobImageStorage(_mockLogger.Object, _configurationWithSecondary);
-        
+
         // Replace the private fields with our mocks
-        var containerField = typeof(AzureBlobImageStorage).GetField("_container", 
+        var containerField = typeof(AzureBlobImageStorage).GetField("_container",
             System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance);
-        var secondaryContainerField = typeof(AzureBlobImageStorage).GetField("_secondaryContainer", 
+        var secondaryContainerField = typeof(AzureBlobImageStorage).GetField("_secondaryContainer",
             System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance);
-        
+
         containerField?.SetValue(storage, _mockContainer.Object);
         secondaryContainerField?.SetValue(storage, _mockSecondaryContainer.Object);
 
@@ -353,9 +353,9 @@ public class AzureBlobImageStorageTests
     {
         _mockBlobClient.Setup(x => x.ExistsAsync(default))
                       .ReturnsAsync(Response.FromValue(true, Mock.Of<Response>()));
-        
+
         _mockBlobClient.Setup(x => x.DownloadToAsync(It.IsAny<MemoryStream>(), default))
-                      .Callback<Stream, CancellationToken>((stream, _) => 
+                      .Callback<Stream, CancellationToken>((stream, _) =>
                       {
                           stream.Write(imageBytes, 0, imageBytes.Length);
                       })
