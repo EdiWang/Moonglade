@@ -21,8 +21,8 @@ public class UpdatePostCommandHandler(
     public async Task<PostEntity> HandleAsync(UpdatePostCommand request, CancellationToken ct)
     {
         var utcNow = DateTime.UtcNow;
-        var (guid, postEditModel) = request;
-        var post = await postRepo.GetByIdAsync(guid, ct) ?? throw new InvalidOperationException($"Post {guid} is not found.");
+        var (postId, postEditModel) = request;
+        var post = await postRepo.FirstOrDefaultAsync(new PostSpec(postId), ct) ?? throw new InvalidOperationException($"Post {postId} is not found.");
 
         UpdatePostDetails(post, postEditModel, utcNow);
 
