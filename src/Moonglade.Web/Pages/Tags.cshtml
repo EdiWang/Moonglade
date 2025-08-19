@@ -12,7 +12,7 @@
         weightPercent switch
         {
             >= 99 => "danger",
-            >= 70 => "success", 
+            >= 70 => "success",
             >= 40 => "accent",
             >= 20 => "secondary",
             _ => "outline-secondary"
@@ -34,15 +34,15 @@
     @if (tags?.Any() == true)
     {
         var tagMax = tags.Max(p => p.PostCount);
-        var sortedTags = tags.OrderBy(t => t.Tag.DisplayName).ToList();
+        var sortedTags = tags.Where(t => t.PostCount > 0).OrderBy(t => t.Tag.DisplayName).ToList();
 
         <div class="mb-3">
-            <input id="tagFilter" 
-                   type="text" 
-                   class="form-control" 
-                   maxlength="32" 
-                   placeholder="@SharedLocalizer["Filter tags..."]" 
-                   role="search" 
+            <input id="tagFilter"
+                   type="text"
+                   class="form-control"
+                   maxlength="32"
+                   placeholder="@SharedLocalizer["Filter tags..."]"
+                   role="search"
                    aria-label="@SharedLocalizer["Filter tags"]">
         </div>
 
@@ -57,7 +57,7 @@
                 <li class="d-inline-block mb-2 me-2">
                     <a asp-page="/TagList"
                        asp-route-normalizedName="@normalizedName"
-                       class="btn btn-sm btn-@weightClass" 
+                       class="btn btn-sm btn-@weightClass"
                        title="@string.Format(SharedLocalizer["{0} posts"], tagItem.PostCount)"
                        aria-label="@string.Format(SharedLocalizer["View posts tagged with {0}"], displayName)">
                         @displayName
