@@ -61,7 +61,7 @@ public static class ContentProcessor
         // Add remaining content
         if (lastIndex < span.Length)
         {
-            result.Append(span.Slice(lastIndex));
+            result.Append(span[lastIndex..]);
         }
 
         return result.ToString();
