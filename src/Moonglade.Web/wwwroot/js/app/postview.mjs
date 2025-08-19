@@ -1,4 +1,4 @@
-import { moongladeFetch2 } from './httpService.mjs?v=1426';
+import { fetch2 } from './httpService.mjs?v=1426';
 
 const EXPIRATION_DAYS = 30;
 const MILLISECONDS_IN_A_DAY = 24 * 60 * 60 * 1000;
@@ -116,7 +116,7 @@ export const recordPostView = (postId) => {
         try {
             const timestamp = new Date().toISOString();
             
-            await moongladeFetch2('/api/postview', 'POST', {
+            await fetch2('/api/postview', 'POST', {
                 postId: String(postId), // Ensure postId is a string
                 clientTimeStamp: timestamp,
             });

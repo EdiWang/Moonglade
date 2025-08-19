@@ -1,4 +1,4 @@
-import { moongladeFetch2 } from './httpService.mjs?v=1426'
+import { fetch2 } from './httpService.mjs?v=1426'
 import { success } from './toastService.mjs'
 
 const editCanvas = new bootstrap.Offcanvas(document.getElementById('editCatCanvas'));
@@ -11,7 +11,7 @@ function initCreateCategory() {
 }
 
 async function editCat(id) {
-    var data = await moongladeFetch2(`/api/category/${id}`, 'GET');
+    var data = await fetch2(`/api/category/${id}`, 'GET');
     catId = data.id;
     document.querySelector('#EditCategoryRequest_Slug').value = data.slug;
     document.querySelector('#EditCategoryRequest_DisplayName').value = data.displayName;
@@ -20,7 +20,7 @@ async function editCat(id) {
 }
 
 async function deleteCat(catid) {
-    await moongladeFetch2(`/api/category/${catid}`, 'DELETE', {});
+    await fetch2(`/api/category/${catid}`, 'DELETE', {});
     document.querySelector(`#card-${catid}`).remove();
     success('Category deleted');
 }
@@ -48,7 +48,7 @@ async function handleSubmit(event) {
     const data = new FormData(event.target);
     const value = Object.fromEntries(data.entries());
 
-    await moongladeFetch2(apiAddress, verb,
+    await fetch2(apiAddress, verb,
         {
             slug: value["EditCategoryRequest.Slug"],
             displayName: value["EditCategoryRequest.DisplayName"],

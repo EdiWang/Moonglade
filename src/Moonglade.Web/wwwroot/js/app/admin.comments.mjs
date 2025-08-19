@@ -1,10 +1,10 @@
-import { moongladeFetch2 } from './httpService.mjs?v=1426'
+import { fetch2 } from './httpService.mjs?v=1426'
 import { formatUtcTime } from '/js/app/utils.module.mjs'
 
 document.querySelectorAll('.btn-delete').forEach(button => {
     button.addEventListener('click', async function () {
         var cid = this.getAttribute('data-commentid');
-        await moongladeFetch2('/api/comment', 'DELETE', [cid]);
+        await fetch2('/api/comment', 'DELETE', [cid]);
 
         document.querySelector(`#panel-comment-${cid}`).remove();
     });
@@ -22,7 +22,7 @@ document.querySelectorAll('.btn-reply-post').forEach(button => {
         var cid = this.getAttribute('data-commentid');
         var replyContent = document.querySelector(`#replycontent-${cid}`).value;
 
-        const data = await moongladeFetch2(`/api/comment/${cid}/reply`, 'POST', replyContent);
+        const data = await fetch2(`/api/comment/${cid}/reply`, 'POST', replyContent);
 
         const replyUi = document.querySelector(`#panel-comment-${data.commentId} .reply-ui`);
         const replyList = document.querySelector(`#panel-comment-${data.commentId} .reply-list`);
@@ -45,7 +45,7 @@ document.querySelectorAll('.btn-reply-post').forEach(button => {
 document.querySelectorAll('.btn-approve').forEach(button => {
     button.addEventListener('click', async function () {
         var cid = this.getAttribute('data-commentid');
-        const data = await moongladeFetch2(`/api/comment/${cid}/approval/toggle`, 'PUT', {});
+        const data = await fetch2(`/api/comment/${cid}/approval/toggle`, 'PUT', {});
 
         var approveButton = document.querySelector(`#panel-comment-${data} .btn-approve`);
         approveButton.classList.toggle('btn-outline-success');
@@ -59,7 +59,7 @@ window.deleteSelectedComments = async function () {
         cids.push(checkbox.getAttribute('data-cid'));
     });
 
-    await moongladeFetch2('/api/comment', 'DELETE', cids);
+    await fetch2('/api/comment', 'DELETE', cids);
 
     cids.forEach(function (value) {
         var commentPanel = document.querySelector(`#panel-comment-${value}`);

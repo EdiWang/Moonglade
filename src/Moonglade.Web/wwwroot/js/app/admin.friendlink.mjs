@@ -1,4 +1,4 @@
-import { moongladeFetch2 } from './httpService.mjs?v=1426'
+import { fetch2 } from './httpService.mjs?v=1426'
 import { success } from './toastService.mjs'
 
 const editCanvas = new bootstrap.Offcanvas(document.getElementById('editLinkCanvas'));
@@ -11,7 +11,7 @@ function initCreateFriendLink() {
 }
 
 async function editFriendLink(id) {
-    const data = await moongladeFetch2(`/api/friendlink/${id}`, 'GET', {});
+    const data = await fetch2(`/api/friendlink/${id}`, 'GET', {});
 
     fid = id;
     document.querySelector('#EditLinkRequest_Title').value = data.title;
@@ -21,7 +21,7 @@ async function editFriendLink(id) {
 }
 
 async function deleteFriendLink(friendlinkid) {
-    await moongladeFetch2(`/api/friendlink/${friendlinkid}`, 'DELETE', {});
+    await fetch2(`/api/friendlink/${friendlinkid}`, 'DELETE', {});
 
     document.querySelector(`#tr-${friendlinkid}`).remove();
     success('Friend link deleted');
@@ -41,7 +41,7 @@ async function handleSubmit(event) {
     const data = new FormData(event.target);
     const value = Object.fromEntries(data.entries());
 
-    await moongladeFetch2(apiAddress, httpVerb,
+    await fetch2(apiAddress, httpVerb,
         {
             id: fid,
             title: value["EditLinkRequest.Title"],

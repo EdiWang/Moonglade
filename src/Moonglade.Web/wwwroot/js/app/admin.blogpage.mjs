@@ -1,8 +1,8 @@
-import { moongladeFetch2 } from './httpService.mjs?v=1426'
+import { fetch2 } from './httpService.mjs?v=1426'
 import { success } from './toastService.mjs';
 
 async function deletePage(pageid) {
-    await moongladeFetch2(`/api/page/${pageid}`, 'DELETE', {});
+    await fetch2(`/api/page/${pageid}`, 'DELETE', {});
 
     document.querySelector(`#card-${pageid}`).remove();
     success('Page deleted');

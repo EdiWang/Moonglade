@@ -1,4 +1,4 @@
-import { moongladeFetch2 } from './httpService.mjs?v=1426'
+import { fetch2 } from './httpService.mjs?v=1426'
 import { handleSettingsSubmit } from './admin.settings.mjs';
 import { success } from './toastService.mjs';
 
@@ -10,7 +10,7 @@ async function handleSubmit(event) {
 var themeModal = new bootstrap.Modal(document.getElementById('thememodal'));
 
 window.createTheme = async function (oFormElement) {
-    await moongladeFetch2(oFormElement.action, 'POST',
+    await fetch2(oFormElement.action, 'POST',
         {
             name: document.querySelector('#Name').value,
             accentColor: document.querySelector('#AccentColor').value
@@ -21,7 +21,7 @@ window.createTheme = async function (oFormElement) {
 }
 
 window.deleteTheme = async function (id) {
-    await moongladeFetch2(`/api/theme/${id}`, 'DELETE', {});
+    await fetch2(`/api/theme/${id}`, 'DELETE', {});
 
     var col = document.getElementById(`user-theme-col-${id}`);
     col.remove();

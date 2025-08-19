@@ -1,4 +1,4 @@
-﻿import { moongladeFetch2 } from './httpService.mjs?v=1426'
+﻿import { fetch2 } from './httpService.mjs?v=1426'
 import { toMagicJson } from './utils.module.mjs'
 import { success } from './toastService.mjs'
 
@@ -24,7 +24,7 @@ export async function handleSettingsSubmit(event) {
     const formValues = Object.fromEntries(formData.entries());
     const formattedValues = toMagicJson(formValues);
 
-    await moongladeFetch2(event.currentTarget.action, 'POST', formattedValues);
+    await fetch2(event.currentTarget.action, 'POST', formattedValues);
 
     success('Settings Updated');
     enableButton();

@@ -1,4 +1,4 @@
-﻿import { moongladeFetch2 } from './httpService.mjs?v=1426'
+﻿import { fetch2 } from './httpService.mjs?v=1426'
 import { getPreferredTheme } from './themeService.mjs';
 
 function slugify(text) {
@@ -70,7 +70,7 @@ export async function initEvents(slugifyTitle) {
         }
     }
 
-    const data = await moongladeFetch2('/api/tags/names', 'GET', {});
+    const data = await fetch2('/api/tags/names', 'GET', {});
     const input = document.querySelector('#ViewModel_Tags');
     const tagify = new Tagify(input,
         {

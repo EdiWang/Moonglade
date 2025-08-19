@@ -1,4 +1,4 @@
-﻿import { moongladeFetch2 } from './httpService.mjs?v=1426'
+﻿import { fetch2 } from './httpService.mjs?v=1426'
 import { formatUtcTime, parseMetaContent } from './utils.module.mjs';
 import { resetCaptchaImage, showCaptcha } from './captchaService.mjs';
 import { resizeImages, applyImageZooming } from './post.imageutils.mjs';
@@ -24,7 +24,7 @@ async function submitComment(pid) {
     btnSubmitComment.classList.add('disabled');
     btnSubmitComment.setAttribute('disabled', 'disabled');
 
-    const data = await moongladeFetch2(`/api/comment/${pid}`, 'POST', { username, content, email, captchaCode });
+    const data = await fetch2(`/api/comment/${pid}`, 'POST', { username, content, email, captchaCode });
     commentForm.reset();
     resetCaptchaImage();
 

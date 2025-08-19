@@ -1,4 +1,4 @@
-import { moongladeFetch2 } from './httpService.mjs?v=1426';
+import { fetch2 } from './httpService.mjs?v=1426';
 import { success, error } from './toastService.mjs';
 
 const editCanvas = new bootstrap.Offcanvas(document.getElementById('editTagCanvas'));
@@ -22,7 +22,7 @@ tagList.addEventListener('click', async (e) => {
     if (!window.confirm(`Confirm to delete tag: ${tagName}`)) return;
 
     try {
-        await moongladeFetch2(`/api/tags/${tagid}`, 'DELETE');
+        await fetch2(`/api/tags/${tagid}`, 'DELETE');
 
         const li = document.querySelector(`#li-tag-${tagid}`);
         if (li) li.style.display = 'none';
@@ -43,7 +43,7 @@ tagList.addEventListener('blur', async (e) => {
     if (newTagName === originalTagName || !newTagName) return;
 
     try {
-        await moongladeFetch2(`/api/tags/${tagId}`, 'PUT', newTagName);
+        await fetch2(`/api/tags/${tagId}`, 'PUT', newTagName);
 
         span.setAttribute('data-original', newTagName);
         success('Tag updated');
@@ -68,7 +68,7 @@ editForm.addEventListener('submit', async function (event) {
     const tagName = formData.get('tagName').trim();
 
     try {
-        const tag = await moongladeFetch2(`/api/tags`, 'POST', tagName);
+        const tag = await fetch2(`/api/tags`, 'POST', tagName);
 
         editForm.reset();
         insertNewTagElement(tag.id, tag.displayName);

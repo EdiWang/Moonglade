@@ -1,14 +1,14 @@
-import { moongladeFetch2 } from './httpService.mjs?v=1426'
+import { fetch2 } from './httpService.mjs?v=1426'
 import { formatUtcTime } from './utils.module.mjs';
 import { success } from './toastService.mjs';
 
 async function deleteMention(mentionId) {
-    await moongladeFetch2(`/api/mention/${mentionId}`, 'DELETE', {});
+    await fetch2(`/api/mention/${mentionId}`, 'DELETE', {});
     document.querySelector(`#mention-box-${mentionId}`).remove();
 }
 
 async function clearMention() {
-    await moongladeFetch2(`/api/mention/clear`, 'DELETE', {});
+    await fetch2(`/api/mention/clear`, 'DELETE', {});
 
     success('Mention logs are cleared');
     setTimeout(function () {

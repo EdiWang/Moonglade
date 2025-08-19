@@ -1,4 +1,4 @@
-﻿import { moongladeFetch2 } from './httpService.mjs?v=1426'
+﻿import { fetch2 } from './httpService.mjs?v=1426'
 import { success, error } from './toastService.mjs'
 
 export class ImageUploader {
@@ -13,7 +13,7 @@ export class ImageUploader {
 
                 var rawData = imgDataUrl.replace(/^data:image\/(png|jpeg|jpg);base64,/, '');
 
-                await moongladeFetch2(uploadUrl, 'POST', rawData);
+                await fetch2(uploadUrl, 'POST', rawData);
 
                 var modalElement = document.getElementById(`${targetName}modal`);
                 var modal = bootstrap.Modal.getInstance(modalElement);

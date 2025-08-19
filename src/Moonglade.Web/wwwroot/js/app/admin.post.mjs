@@ -1,4 +1,4 @@
-import { moongladeFetch2 } from './httpService.mjs?v=1426'
+import { fetch2 } from './httpService.mjs?v=1426'
 import { formatUtcTime } from './utils.module.mjs'
 import { success } from './toastService.mjs'
 
@@ -10,7 +10,7 @@ async function deleteConfirm(postid) {
 }
 
 async function deletePost(postid) {
-    await moongladeFetch2(`/api/post/${postid}/recycle`, 'DELETE', {});
+    await fetch2(`/api/post/${postid}/recycle`, 'DELETE', {});
 
     const postElement = document.getElementById(`post-${postid}`);
     if (postElement) {

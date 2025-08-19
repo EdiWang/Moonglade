@@ -1,23 +1,23 @@
-import { moongladeFetch2 } from './httpService.mjs?v=1426'
+import { fetch2 } from './httpService.mjs?v=1426'
 import { formatUtcTime } from './utils.module.mjs'
 import { success } from './toastService.mjs'
 
 async function deletePost(postid) {
-    await moongladeFetch2(`/api/post/${postid}/recycle`, 'DELETE', {});
+    await fetch2(`/api/post/${postid}/recycle`, 'DELETE', {});
 
     success('Post deleted.');
     document.querySelector(`#post-${postid}`).style.display = 'none';
 }
 
 async function publishPost(postId) {
-    await moongladeFetch2(`/api/post/${postId}/publish`, 'PUT', {});
+    await fetch2(`/api/post/${postId}/publish`, 'PUT', {});
 
     success('Post published');
     location.reload();
 }
 
 async function postponePost(postId, hours) {
-    await moongladeFetch2(`/api/post/${postId}/postpone?hours=${hours}`, 'PUT', {});
+    await fetch2(`/api/post/${postId}/postpone?hours=${hours}`, 'PUT', {});
 
     success(`Post postponed for ${hours} hour(s)`);
     setTimeout(() => {

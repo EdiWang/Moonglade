@@ -1,4 +1,4 @@
-import { moongladeFetch2 } from './httpService.mjs?v=1426'
+import { fetch2 } from './httpService.mjs?v=1426'
 import { parseMetaContent } from './utils.module.mjs'
 import { success } from './toastService.mjs'
 
@@ -40,7 +40,7 @@ async function postCreateOrEdit() {
     const apiAddress = pageId == window.emptyGuid ? `/api/page` : `/api/page/${pageId}`;
     const verb = pageId == window.emptyGuid ? 'POST' : 'PUT';
 
-    const data = await moongladeFetch2(apiAddress, verb,
+    const data = await fetch2(apiAddress, verb,
         {
             title: document.querySelector("#EditPageRequest_Title").value,
             slug: document.querySelector("#EditPageRequest_Slug").value,

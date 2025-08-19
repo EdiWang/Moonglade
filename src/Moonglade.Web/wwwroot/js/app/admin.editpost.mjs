@@ -1,4 +1,4 @@
-import { moongladeFetch2 } from './httpService.mjs?v=1426'
+import { fetch2 } from './httpService.mjs?v=1426'
 import { parseMetaContent, toMagicJson } from './utils.module.mjs'
 import { success, error } from './toastService.mjs'
 import { initEvents, loadTinyMCE, keepAlive, warnDirtyForm } from './admin.editor.module.mjs'
@@ -75,7 +75,7 @@ const handlePostSubmit = async (event) => {
     btnSubmitPost.classList.add('disabled');
     btnSubmitPost.setAttribute('disabled', 'disabled');
 
-    var respJson = await moongladeFetch2(event.currentTarget.action, 'POST', requestData);
+    var respJson = await fetch2(event.currentTarget.action, 'POST', requestData);
 
     if (respJson.postId) {
         postIdElement.value = respJson.postId;
@@ -92,7 +92,7 @@ const handlePostSubmit = async (event) => {
 };
 
 async function UnpublishPost(postId) {
-    await moongladeFetch2(`/api/post/${postId}/unpublish`, 'PUT', {});
+    await fetch2(`/api/post/${postId}/unpublish`, 'PUT', {});
 
     success('Post unpublished');
     location.reload();
