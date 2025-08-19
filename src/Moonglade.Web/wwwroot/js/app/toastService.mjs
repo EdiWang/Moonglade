@@ -7,20 +7,20 @@
     'bg-secondary'
 ];
 
-function getToastElements() {
-    return {
-        bsToast: new bootstrap.Toast(document.getElementById('liveToast')),
-        blogtoastMessage: document.querySelector('#blogtoast-message'),
-        liveToast: document.querySelector('#liveToast')
-    };
-}
+// Cache DOM elements
+const liveToast = document.getElementById('liveToast');
+const blogtoastMessage = document.getElementById('blogtoast-message');
+const bsToast = liveToast ? new bootstrap.Toast(liveToast) : null;
 
 function removeToastBgColor(toastElement) {
     bgClasses.forEach(bgClass => toastElement.classList.remove(bgClass));
 }
 
 function showToast(message, bgClass) {
-    const { bsToast, blogtoastMessage, liveToast } = getToastElements();
+    if (!liveToast || !blogtoastMessage || !bsToast) return;
+
+    // Validate bgClass
+    if (!bgClasses.includes(bgClass)) bgClass = 'bg-info';
 
     removeToastBgColor(liveToast);
     liveToast.classList.add(bgClass);
