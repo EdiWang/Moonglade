@@ -1,4 +1,4 @@
-﻿import { fetch2 } from './httpService.mjs?v=1426'
+﻿import { fetch2 } from './httpService.mjs?v=1427'
 import { getPreferredTheme } from './themeService.mjs';
 
 function slugify(text) {

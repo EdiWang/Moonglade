@@ -1,4 +1,4 @@
-import { fetch2 } from './httpService.mjs?v=1426'
+import { fetch2 } from './httpService.mjs?v=1427'
 import { formatUtcTime } from './utils.module.mjs';
 import { success } from './toastService.mjs';
 

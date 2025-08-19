@@ -1,4 +1,4 @@
-import { fetch2 } from './httpService.mjs?v=1426'
+import { fetch2 } from './httpService.mjs?v=1427'
 import { success } from './toastService.mjs'
 
 const resetPasswordModal = new bootstrap.Modal('#resetPasswordModal');

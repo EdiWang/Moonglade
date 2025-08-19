@@ -1,4 +1,4 @@
-import { fetch2 } from './httpService.mjs?v=1426';
+import { fetch2 } from './httpService.mjs?v=1427';
 
 const EXPIRATION_DAYS = 30;
 const MILLISECONDS_IN_A_DAY = 24 * 60 * 60 * 1000;
