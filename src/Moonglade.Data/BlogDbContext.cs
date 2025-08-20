@@ -57,19 +57,20 @@ public static class BlogDbContextExtension
     public static async Task ClearAllData(this BlogDbContext context)
     {
         await context.PostView.ExecuteDeleteAsync();
+        await context.CommentReply.ExecuteDeleteAsync();
+        await context.Comment.ExecuteDeleteAsync();
         await context.PostTag.ExecuteDeleteAsync();
         await context.PostCategory.ExecuteDeleteAsync();
-        await context.CommentReply.ExecuteDeleteAsync();
+        await context.Post.ExecuteDeleteAsync();
         await context.Category.ExecuteDeleteAsync();
         await context.Tag.ExecuteDeleteAsync();
-        await context.Comment.ExecuteDeleteAsync();
         await context.FriendLink.ExecuteDeleteAsync();
         await context.Mention.ExecuteDeleteAsync();
-        await context.Post.ExecuteDeleteAsync();
         await context.BlogConfiguration.ExecuteDeleteAsync();
         await context.BlogAsset.ExecuteDeleteAsync();
         await context.BlogTheme.ExecuteDeleteAsync();
         await context.StyleSheet.ExecuteDeleteAsync();
         await context.LoginHistory.ExecuteDeleteAsync();
+        await context.CustomPage.ExecuteDeleteAsync();
     }
 }

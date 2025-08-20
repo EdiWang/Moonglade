@@ -9,7 +9,7 @@
         <div role="list">
             @foreach (var item in Model.OrderBy(c => c.Rank).ThenBy(c => c.Title))
             {
-                <a href="@Helper.SterilizeLink(item.LinkUrl)" target="_blank" class="d-block mb-3 mt-2" role="listitem">
+                <a href="@SecurityHelper.SterilizeLink(item.LinkUrl)" target="_blank" class="d-block mb-3 mt-2" role="listitem">
                     <i class="bi-link-45deg me-1"></i>
                     @item.Title
                 </a>

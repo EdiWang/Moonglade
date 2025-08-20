@@ -25,7 +25,7 @@ public class PublishPostCommandHandler(
         post.PubDateUtc = utcNow;
         post.ScheduledPublishTimeUtc = null;
         post.LastModifiedUtc = utcNow;
-        post.RouteLink = Helper.GenerateRouteLink(post.PubDateUtc.GetValueOrDefault(), post.Slug);
+        post.RouteLink = UrlHelper.GenerateRouteLink(post.PubDateUtc.GetValueOrDefault(), post.Slug);
 
         await repo.UpdateAsync(post, ct);
 

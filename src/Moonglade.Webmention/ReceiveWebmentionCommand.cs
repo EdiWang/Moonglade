@@ -52,7 +52,7 @@ public class ReceiveWebmentionCommandHandler(
                 return WebmentionResponse.SpamDetectedFakeNotFound;
             }
 
-            var routeLink = Helper.GetRouteLinkFromUrl(mentionRequest.TargetUrl);
+            var routeLink = UrlHelper.GetRouteLinkFromUrl(mentionRequest.TargetUrl);
             var spec = new PostByRouteLinkForIdTitleSpec(routeLink);
             var (id, title) = await postRepo.FirstOrDefaultAsync(spec, ct);
             if (id == Guid.Empty)

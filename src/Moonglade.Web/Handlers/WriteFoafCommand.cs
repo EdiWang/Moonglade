@@ -169,8 +169,7 @@ public class WriteFoafCommandHandler : ICommandHandler<WriteFoafCommand, string>
     private static string CalculateSha1(string text, Encoding enc)
     {
         var buffer = enc.GetBytes(text);
-        var cryptoTransformSha1 = SHA1.Create();
-        var hash = BitConverter.ToString(cryptoTransformSha1.ComputeHash(buffer)).Replace("-", string.Empty);
+        var hash = BitConverter.ToString(SHA1.HashData(buffer)).Replace("-", string.Empty);
 
         return hash.ToLower();
     }

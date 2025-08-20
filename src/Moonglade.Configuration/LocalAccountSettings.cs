@@ -11,7 +11,7 @@ public class LocalAccountSettings : IBlogSettings
         new()
         {
             Username = "admin",
-            PasswordHash = "bXHAa7tEsZmCh1pYcHPotNlP0gaYfzIkxKuHoJnHMt0=",
+            PasswordHash = "bXHAa7tEsZmCh1pYcHPotNlP0gaYfzIkxKuHoJnHMt0=", // admin123
             PasswordSalt = "Hq8jxngFtTEtl3UI294K7w=="
         };
 }

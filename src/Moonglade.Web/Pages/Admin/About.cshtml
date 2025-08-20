@@ -26,7 +26,7 @@
             <tbody>
                 <tr>
                     <td class="about-label">@SharedLocalizer["Version"]</td>
-                    <td class="text-muted">@Helper.AppVersion</td>
+                    <td class="text-muted">@VersionHelper.AppVersion</td>
                 </tr>
                 <tr>
                     <td>@SharedLocalizer["Environment"]</td>
@@ -59,7 +59,7 @@
             <tbody>
                 <tr>
                     <td class="about-label">@SharedLocalizer["System"]</td>
-                    <td class="text-muted">@Helper.TryGetFullOSVersion() @(Environment.Is64BitOperatingSystem ? "(64-bit)" : "(32-bit)")</td>
+                    <td class="text-muted">@VersionHelper.TryGetFullOSVersion() @(Environment.Is64BitOperatingSystem ? "(64-bit)" : "(32-bit)")</td>
                 </tr>
                 <tr>
                     <td>@SharedLocalizer["Directory"]</td>
@@ -99,10 +99,10 @@
                 </tr>
                 <tr>
                     <td>@SharedLocalizer["Docker Container"]</td>
-                    <td class="text-muted">@Helper.IsRunningInDocker()</td>
+                    <td class="text-muted">@EnvironmentHelper.IsRunningInDocker()</td>
                 </tr>
 
-                @if (Helper.IsRunningOnAzureAppService())
+                @if (EnvironmentHelper.IsRunningOnAzureAppService())
                 {
                     <tr>
                         <td>@SharedLocalizer["Azure App Service"]</td>

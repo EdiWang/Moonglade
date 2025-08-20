@@ -21,8 +21,8 @@ public class UpdatePostCommandHandler(
     public async Task<PostEntity> HandleAsync(UpdatePostCommand request, CancellationToken ct)
     {
         var utcNow = DateTime.UtcNow;
-        var (guid, postEditModel) = request;
-        var post = await postRepo.GetByIdAsync(guid, ct) ?? throw new InvalidOperationException($"Post {guid} is not found.");
+        var (postId, postEditModel) = request;
+        var post = await postRepo.FirstOrDefaultAsync(new PostSpec(postId), ct) ?? throw new InvalidOperationException($"Post {postId} is not found.");
 
         UpdatePostDetails(post, postEditModel, utcNow);
 
@@ -51,7 +51,7 @@ public class UpdatePostCommandHandler(
                 await tagRepo.AddAsync(new()
                 {
                     DisplayName = item,
-                    NormalizedName = Helper.NormalizeName(item, Helper.TagNormalizationDictionary)
+                    NormalizedName = BlogTagHelper.NormalizeName(item, BlogTagHelper.TagNormalizationDictionary)
                 }, ct);
             }
         }
@@ -61,7 +61,7 @@ public class UpdatePostCommandHandler(
         {
             foreach (var tagName in tags)
             {
-                if (!Helper.IsValidTagName(tagName))
+                if (!BlogTagHelper.IsValidTagName(tagName))
                 {
                     continue;
                 }
@@ -122,9 +122,9 @@ public class UpdatePostCommandHandler(
         post.IsFeedIncluded = postEditModel.FeedIncluded;
         post.ContentLanguageCode = postEditModel.LanguageCode;
         post.IsFeatured = postEditModel.Featured;
-        post.HeroImageUrl = string.IsNullOrWhiteSpace(postEditModel.HeroImageUrl) ? null : Helper.SterilizeLink(postEditModel.HeroImageUrl);
+        post.HeroImageUrl = string.IsNullOrWhiteSpace(postEditModel.HeroImageUrl) ? null : SecurityHelper.SterilizeLink(postEditModel.HeroImageUrl);
         post.IsOutdated = postEditModel.IsOutdated;
-        post.RouteLink = Helper.GenerateRouteLink(post.PubDateUtc.GetValueOrDefault(), postEditModel.Slug);
+        post.RouteLink = UrlHelper.GenerateRouteLink(post.PubDateUtc.GetValueOrDefault(), postEditModel.Slug);
     }
 
     private static void UpdateCats(PostEntity post, Guid[] catIds, CancellationToken ct)

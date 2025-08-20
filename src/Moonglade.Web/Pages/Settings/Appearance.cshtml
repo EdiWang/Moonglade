@@ -189,6 +189,6 @@
     {
         ViewModel = BlogConfig.AppearanceSettings;
 
-        Themes = await QueryMediator.QueryAsync(new GetAllThemeSegmentQuery());
+        Themes = await QueryMediator.QueryAsync(new ListThemeSegmentsQuery());
     }
 }

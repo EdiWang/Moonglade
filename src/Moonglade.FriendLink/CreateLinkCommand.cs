@@ -43,7 +43,7 @@ public class CreateLinkCommandHandler(
         var link = new FriendLinkEntity
         {
             Id = Guid.NewGuid(),
-            LinkUrl = Helper.SterilizeLink(request.Payload.LinkUrl),
+            LinkUrl = SecurityHelper.SterilizeLink(request.Payload.LinkUrl),
             Title = request.Payload.Title,
             Rank = request.Payload.Rank
         };

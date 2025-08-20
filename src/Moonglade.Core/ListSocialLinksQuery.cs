@@ -3,11 +3,11 @@ using Moonglade.Configuration;
 
 namespace Moonglade.Core;
 
-public record GetAllSocialLinksQuery : IQuery<SocialLink[]>;
+public record ListSocialLinksQuery : IQuery<SocialLink[]>;
 
-public class GetAllSocialLinksQueryHandler(IBlogConfig blogConfig) : IQueryHandler<GetAllSocialLinksQuery, SocialLink[]>
+public class ListSocialLinksQueryHandler(IBlogConfig blogConfig) : IQueryHandler<ListSocialLinksQuery, SocialLink[]>
 {
-    public Task<SocialLink[]> HandleAsync(GetAllSocialLinksQuery request, CancellationToken ct)
+    public Task<SocialLink[]> HandleAsync(ListSocialLinksQuery request, CancellationToken ct)
     {
         var section = blogConfig.SocialLinkSettings;
 

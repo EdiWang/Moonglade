@@ -14,7 +14,22 @@ public interface IMigrationManager
     Task<MigrationResult> TryMigrationAsync(BlogDbContext context, CancellationToken cancellationToken = default);
 }
 
-public record MigrationResult(bool Success, string ErrorMessage = null, Version FromVersion = null, Version ToVersion = null);
+public enum MigrationStatus
+{
+    Success = 0,
+    NotRequired,
+    Disabled,
+    UnsupportedVersion,
+    VersionParsingError,
+    UnsupportedProvider,
+    Failed
+}
+
+public record MigrationResult(MigrationStatus Status, string ErrorMessage = null, Version FromVersion = null, Version ToVersion = null)
+{
+    public bool IsSuccess => Status == MigrationStatus.Success || Status == MigrationStatus.NotRequired;
+    public bool IsFailed => Status == MigrationStatus.Failed || Status == MigrationStatus.VersionParsingError;
+}
 
 public partial class MigrationManager(
     ILogger<MigrationManager> logger,
@@ -39,27 +54,27 @@ public partial class MigrationManager(
         {
             const string message = "Automatic database migration is disabled. Enable `Setup:AutoDatabaseMigration` to allow automatic migrations.";
             logger.LogWarning(message);
-            return new MigrationResult(false, message);
+            return new MigrationResult(MigrationStatus.Disabled, message);
         }
 
-        if (Helper.IsNonStableVersion())
+        if (VersionHelper.IsNonStableVersion())
         {
             const string message = "Database migration is not supported on non-stable version. Skipped.";
             logger.LogWarning(message);
-            return new MigrationResult(false, message);
+            return new MigrationResult(MigrationStatus.UnsupportedVersion, message);
         }
 
         if (!TryParseVersions(out var manifestVersion, out var currentVersion, out var versionError))
         {
             logger.LogError("Version parsing failed: {Error}", versionError);
-            return new MigrationResult(false, versionError);
+            return new MigrationResult(MigrationStatus.VersionParsingError, versionError);
         }
 
         // Only migrate if major or minor version changed
         if (!ShouldMigrate(manifestVersion, currentVersion))
         {
             logger.LogInformation("No database migration required.");
-            return new MigrationResult(true, "No migration required", manifestVersion, currentVersion);
+            return new MigrationResult(MigrationStatus.NotRequired, "No migration required", manifestVersion, currentVersion);
         }
 
         var provider = context.Database.ProviderName;
@@ -69,7 +84,7 @@ public partial class MigrationManager(
         {
             var message = $"Automatic database migration is not supported for provider `{provider}`. Please migrate manually.";
             logger.LogCritical(message);
-            return new MigrationResult(false, message, manifestVersion, currentVersion);
+            return new MigrationResult(MigrationStatus.UnsupportedProvider, message, manifestVersion, currentVersion);
         }
 
         logger.LogInformation("Migrating database from {FromVersion} to {ToVersion} using provider {Provider}.",
@@ -81,16 +96,16 @@ public partial class MigrationManager(
             await UpdateManifestAsync(cancellationToken);
 
             logger.LogInformation("Database migration completed successfully.");
-            return new MigrationResult(true, null, manifestVersion, currentVersion);
+            return new MigrationResult(MigrationStatus.Success, null, manifestVersion, currentVersion);
         }
         catch (Exception ex)
         {
             logger.LogCritical(ex, "Database migration failed.");
-            return new MigrationResult(false, ex.Message, manifestVersion, currentVersion);
+            return new MigrationResult(MigrationStatus.Failed, ex.Message, manifestVersion, currentVersion);
         }
     }
 
-    private bool TryParseVersions(out Version manifestVersion, out Version currentVersion, out string? error)
+    private bool TryParseVersions(out Version manifestVersion, out Version currentVersion, out string error)
     {
         manifestVersion = null!;
         currentVersion = null!;
@@ -101,9 +116,9 @@ public partial class MigrationManager(
             return false;
         }
 
-        if (!Version.TryParse(Helper.AppVersionBasic, out currentVersion))
+        if (!Version.TryParse(VersionHelper.AppVersionBasic, out currentVersion))
         {
-            error = $"Invalid current version string: {Helper.AppVersionBasic}";
+            error = $"Invalid current version string: {VersionHelper.AppVersionBasic}";
             return false;
         }
 
@@ -156,14 +171,14 @@ public partial class MigrationManager(
         var timeoutSeconds = configuration.GetValue("Setup:MigrationTimeoutSeconds", DefaultHttpTimeoutSeconds);
         client.Timeout = TimeSpan.FromSeconds(timeoutSeconds);
 
-        client.DefaultRequestHeaders.UserAgent.ParseAdd($"Moonglade/{Helper.AppVersionBasic}");
+        client.DefaultRequestHeaders.UserAgent.ParseAdd($"Moonglade/{VersionHelper.AppVersionBasic}");
 
         return client;
     }
 
     private async Task UpdateManifestAsync(CancellationToken cancellationToken)
     {
-        blogConfig.SystemManifestSettings.VersionString = Helper.AppVersionBasic;
+        blogConfig.SystemManifestSettings.VersionString = VersionHelper.AppVersionBasic;
         blogConfig.SystemManifestSettings.InstallTimeUtc = DateTime.UtcNow;
         var kvp = blogConfig.UpdateAsync(blogConfig.SystemManifestSettings);
 
@@ -213,7 +228,7 @@ public partial class MigrationManager(
     private bool GetAutoMigrationEnabled()
         => configuration.GetValue<bool>("Setup:AutoDatabaseMigration");
 
-    private string GetMigrationScriptUrl(string? provider)
+    private string GetMigrationScriptUrl(string provider)
     {
         return provider switch
         {

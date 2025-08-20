@@ -49,7 +49,7 @@
     @if (!string.IsNullOrWhiteSpace(Post.HeroImageUrl))
     {
         <div class="post-hero-image-container text-center mb-3">
-            <img src="@Helper.SterilizeLink(Post.HeroImageUrl)" class="post-hero-image img-fluid rounded-3 shadow-sm" />
+            <img src="@SecurityHelper.SterilizeLink(Post.HeroImageUrl)" class="post-hero-image img-fluid rounded-3 shadow-sm" />
         </div>
     }
 

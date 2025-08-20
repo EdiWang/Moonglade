@@ -63,12 +63,12 @@
     @if (BlogConfig.ImageSettings.EnableCDNRedirect &&
         !string.IsNullOrWhiteSpace(BlogConfig.ImageSettings.CDNEndpoint))
     {
-        <link rel="dns-prefetch" href="@Helper.GetDNSPrefetchUrl(BlogConfig.ImageSettings.CDNEndpoint)" />
+        <link rel="dns-prefetch" href="@UrlHelper.GetDNSPrefetchUrl(BlogConfig.ImageSettings.CDNEndpoint)" />
     }
 
     @if (!string.IsNullOrWhiteSpace(BlogConfig.GeneralSettings.CanonicalPrefix))
     {
-        <link rel="canonical" href="@(Helper.ResolveCanonicalUrl(BlogConfig.GeneralSettings.CanonicalPrefix, Context.Request.Path))" />
+        <link rel="canonical" href="@(UrlHelper.ResolveCanonicalUrl(BlogConfig.GeneralSettings.CanonicalPrefix, Context.Request.Path))" />
     }
 
     <link rel="start" title="@BlogConfig.GeneralSettings.SiteTitle" href="~/" />

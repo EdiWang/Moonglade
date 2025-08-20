@@ -22,7 +22,7 @@ public class GetAtomStringQueryHandler : IQueryHandler<GetAtomStringQuery, strin
             blogConfig.GeneralSettings.SiteTitle,
             blogConfig.GeneralSettings.Description,
             Helper.FormatCopyright2Html(blogConfig.GeneralSettings.Copyright).Replace("&copy;", "©"),
-            $"Moonglade v{Helper.AppVersion}",
+            $"Moonglade v{VersionHelper.AppVersion}",
             baseUrl,
             blogConfig.GeneralSettings.DefaultLanguageCode);
     }

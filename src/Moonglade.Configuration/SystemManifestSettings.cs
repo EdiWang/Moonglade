@@ -18,7 +18,7 @@ public class SystemManifestSettings : IBlogSettings
     [JsonIgnore]
     public static SystemManifestSettings DefaultValueNew => new()
     {
-        VersionString = Helper.AppVersionBasic,
+        VersionString = VersionHelper.AppVersionBasic,
         InstallTimeUtc = DateTime.UtcNow
     };
 }

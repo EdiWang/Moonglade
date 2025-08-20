@@ -11,8 +11,7 @@ public static class ServiceCollectionExtensions
     {
         services.AddScoped(typeof(MoongladeRepository<>), typeof(SqlServerDbContextRepository<>));
 
-        services.AddDbContext<BlogDbContext, SqlServerBlogDbContext>(options =>
-            options.UseLazyLoadingProxies()
+        services.AddDbContext<BlogDbContext, SqlServerBlogDbContext>(options => options
                 .UseSqlServer(connectionString, builder =>
                 {
                     builder.EnableRetryOnFailure(3, TimeSpan.FromSeconds(30), null);

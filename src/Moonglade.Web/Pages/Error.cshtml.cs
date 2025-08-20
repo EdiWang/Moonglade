@@ -24,7 +24,7 @@ public class ErrorModel(ILogger<ErrorModel> logger) : PageModel
             // Get the exception that occurred
             var exceptionThatOccurred = exceptionFeature.Error;
             logger.LogError($"Error: {routeWhereExceptionOccurred}, " +
-                             $"client IP: {Helper.GetClientIP(HttpContext)}, " +
+                             $"client IP: {ClientIPHelper.GetClientIP(HttpContext)}, " +
                              $"request id: {requestId}", exceptionThatOccurred);
         }
 

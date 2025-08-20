@@ -55,7 +55,7 @@ public class ReceivePingCommandHandler(
                 return PingbackResponse.SpamDetectedFakeNotFound;
             }
 
-            var routeLink = Helper.GetRouteLinkFromUrl(pingRequest.TargetUrl);
+            var routeLink = UrlHelper.GetRouteLinkFromUrl(pingRequest.TargetUrl);
             var spec = new PostByRouteLinkForIdTitleSpec(routeLink);
             var (id, title) = await postRepo.FirstOrDefaultAsync(spec, ct);
             if (id == Guid.Empty)

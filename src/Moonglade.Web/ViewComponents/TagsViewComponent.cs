@@ -7,7 +7,7 @@ public class TagsViewComponent(IBlogConfig blogConfig, IQueryMediator queryMedia
 {
     public async Task<IViewComponentResult> InvokeAsync()
     {
-        var tags = await queryMediator.QueryAsync(new GetHotTagsQuery(blogConfig.GeneralSettings.HotTagAmount));
+        var tags = await queryMediator.QueryAsync(new ListTopTagsQuery(blogConfig.GeneralSettings.HotTagAmount));
         return View(tags);
     }
 }

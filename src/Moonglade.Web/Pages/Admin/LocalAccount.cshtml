@@ -2,7 +2,7 @@
 @using System.Globalization
 @{
     ViewBag.Title = "Account";
-    var loginHistoryList = await QueryMediator.QueryAsync(new GetLoginHistoryQuery());
+    var loginHistoryList = await QueryMediator.QueryAsync(new ListLoginHistoryQuery());
 }
 
 @section scripts {

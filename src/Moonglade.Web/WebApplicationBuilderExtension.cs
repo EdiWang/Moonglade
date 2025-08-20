@@ -14,7 +14,7 @@ public static class WebApplicationBuilderExtension
     {
         ArgumentNullException.ThrowIfNull(builder);
 
-        var appVersion = Helper.AppVersion;
+        var appVersion = VersionHelper.AppVersion;
         var output = new StringBuilder();
 
         output.AppendLine($"Moonglade {appVersion} | .NET {Environment.Version}");
@@ -45,7 +45,7 @@ public static class WebApplicationBuilderExtension
         return new Dictionary<string, string>
         {
             { "Path", Environment.CurrentDirectory },
-            { "System", Helper.TryGetFullOSVersion() },
+            { "System", VersionHelper.TryGetFullOSVersion() },
             { "User", Environment.UserName },
             { "Host", Environment.MachineName },
             { "IPv4", FormatAddresses(ipv4Addresses) },

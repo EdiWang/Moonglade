@@ -19,5 +19,5 @@ public class TagEntity
     public string NormalizedName { get; set; }
 
     [JsonIgnore]
-    public virtual ICollection<PostEntity> Posts { get; set; }
+    public ICollection<PostEntity> Posts { get; set; }
 }

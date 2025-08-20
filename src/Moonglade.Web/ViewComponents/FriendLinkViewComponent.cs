@@ -7,7 +7,7 @@ public class FriendLinkViewComponent(IQueryMediator queryMediator) : ViewCompone
 {
     public async Task<IViewComponentResult> InvokeAsync()
     {
-        var links = await queryMediator.QueryAsync(new GetAllLinksQuery());
+        var links = await queryMediator.QueryAsync(new ListLinksQuery());
         return View(links ?? []);
     }
 }

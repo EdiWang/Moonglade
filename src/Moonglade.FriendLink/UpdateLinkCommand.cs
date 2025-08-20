@@ -23,7 +23,7 @@ public class UpdateLinkCommandHandler(
         if (link is not null)
         {
             link.Title = request.Payload.Title;
-            link.LinkUrl = Helper.SterilizeLink(request.Payload.LinkUrl);
+            link.LinkUrl = SecurityHelper.SterilizeLink(request.Payload.LinkUrl);
             link.Rank = request.Payload.Rank;
 
             await repo.UpdateAsync(link, ct);

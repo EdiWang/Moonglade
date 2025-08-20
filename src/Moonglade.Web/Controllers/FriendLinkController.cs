@@ -37,7 +37,7 @@ public class FriendLinkController(
     [ProducesResponseType<List<FriendLinkEntity>>(StatusCodes.Status200OK)]
     public async Task<IActionResult> List()
     {
-        var list = await queryMediator.QueryAsync(new GetAllLinksQuery());
+        var list = await queryMediator.QueryAsync(new ListLinksQuery());
         return Ok(list);
     }
 

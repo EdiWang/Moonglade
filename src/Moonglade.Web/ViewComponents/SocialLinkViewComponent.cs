@@ -6,7 +6,7 @@ public class SocialLinkViewComponent(IQueryMediator queryMediator) : ViewCompone
 {
     public async Task<IViewComponentResult> InvokeAsync()
     {
-        var links = await queryMediator.QueryAsync(new GetAllSocialLinksQuery());
+        var links = await queryMediator.QueryAsync(new ListSocialLinksQuery());
         return View(links ?? []);
     }
 }

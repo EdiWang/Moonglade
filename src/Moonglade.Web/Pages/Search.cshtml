@@ -25,18 +25,20 @@ else
 {
     foreach (var item in Posts.OrderByDescending(s => s.PubDateUtc))
     {
-        <partial name="_PostListEntry" model="item" />
+        <partial name="_PostListEntry" model="item" view-data="@(new ViewDataDictionary(ViewData) { { "SearchTerm", SearchTerm } })" />
     }
 }
 
 @functions {
     public List<PostDigest> Posts { get; set; } = new();
+    public string SearchTerm { get; set; } = string.Empty;
 
     public async Task<IActionResult> OnGetAsync(string term)
     {
         if (string.IsNullOrWhiteSpace(term)) return RedirectToPage("Index");
 
         ViewData["TitlePrefix"] = term;
+        SearchTerm = term;
 
         var posts = await QueryMediator.QueryAsync(new SearchPostQuery(term));
         Posts = posts;

@@ -7,5 +7,5 @@ public class CommentReplyEntity
     public DateTime CreateTimeUtc { get; set; }
     public Guid? CommentId { get; set; }
 
-    public virtual CommentEntity Comment { get; set; }
+    public CommentEntity Comment { get; set; }
 }

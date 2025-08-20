@@ -26,7 +26,7 @@ public static class WebApplicationExtensions
     {
         using var scope = app.Services.CreateScope();
         var initializer = scope.ServiceProvider.GetRequiredService<IStartUpInitializer>();
-        var result = await initializer.InitStartUp();
+        var result = await initializer.InitStartUpAsync();
 
         if (result != InitStartUpResult.Success)
         {

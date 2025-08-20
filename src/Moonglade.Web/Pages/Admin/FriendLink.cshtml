@@ -85,5 +85,5 @@
 
     public List<FriendLinkEntity> Links { get; set; }
 
-    public async Task OnGet() => Links = await QueryMediator.QueryAsync(new GetAllLinksQuery());
+    public async Task OnGet() => Links = await QueryMediator.QueryAsync(new ListLinksQuery());
 }

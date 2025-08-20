@@ -16,7 +16,7 @@ public class CategoryEntity
     public string Note { get; set; }
 
     [JsonIgnore]
-    public virtual ICollection<PostCategoryEntity> PostCategory { get; set; }
+    public ICollection<PostCategoryEntity> PostCategory { get; set; }
 }
 
 internal class CategoryConfiguration : IEntityTypeConfiguration<CategoryEntity>

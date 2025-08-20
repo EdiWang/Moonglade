@@ -4,11 +4,11 @@ using Moonglade.Data;
 
 namespace Moonglade.Core.CategoryFeature;
 
-public record GetCategoriesQuery : IQuery<List<CategoryEntity>>;
+public record ListCategoriesQuery : IQuery<List<CategoryEntity>>;
 
-public class GetCategoriesQueryHandler(MoongladeRepository<CategoryEntity> repo, ICacheAside cache) : IQueryHandler<GetCategoriesQuery, List<CategoryEntity>>
+public class ListCategoriesQueryHandler(MoongladeRepository<CategoryEntity> repo, ICacheAside cache) : IQueryHandler<ListCategoriesQuery, List<CategoryEntity>>
 {
-    public Task<List<CategoryEntity>> HandleAsync(GetCategoriesQuery request, CancellationToken ct)
+    public Task<List<CategoryEntity>> HandleAsync(ListCategoriesQuery request, CancellationToken ct)
     {
         return cache.GetOrCreateAsync(BlogCachePartition.General.ToString(), "allcats", async entry =>
         {

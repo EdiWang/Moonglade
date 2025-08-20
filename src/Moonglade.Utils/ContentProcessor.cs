@@ -1,5 +1,5 @@
 ﻿using Markdig;
-using System.Text.RegularExpressions;
+using System.Text;
 using System.Web;
 using System.Xml.Linq;
 
@@ -12,13 +12,59 @@ public static class ContentProcessor
         if (string.IsNullOrWhiteSpace(html)) return html;
 
         endpoint = endpoint.TrimEnd('/');
-        var imgSrcRegex = new Regex("<img.+?(src)=[\"'](.+?)[\"'].+?>");
-        var newStr = imgSrcRegex.Replace(html,
-            match => match.Value.Contains("src=\"/image/")
-                ? match.Value.Replace("/image/", $"{endpoint}/")
-                : match.Value);
+        
+        // Fast path: check if there are any potential matches
+        if (!html.Contains("src=\"/image/", StringComparison.OrdinalIgnoreCase) && 
+            !html.Contains("src='/image/", StringComparison.OrdinalIgnoreCase))
+        {
+            return html;
+        }
 
-        return newStr;
+        var span = html.AsSpan();
+        var result = new StringBuilder(html.Length);
+        var lastIndex = 0;
+
+        // Process both double and single quotes
+        var patterns = new[] { "src=\"/image/", "src='/image/" };
+        var quotes = new[] { '"', '\'' };
+
+        for (int i = 0; i < span.Length; i++)
+        {
+            for (int patternIndex = 0; patternIndex < patterns.Length; patternIndex++)
+            {
+                var pattern = patterns[patternIndex];
+                var quote = quotes[patternIndex];
+                
+                if (i + pattern.Length <= span.Length && 
+                    span.Slice(i, pattern.Length).SequenceEqual(pattern))
+                {
+                    var imgStart = span[..i].ToString().LastIndexOf("<img", StringComparison.OrdinalIgnoreCase);
+                    if (imgStart == -1) continue;
+
+                    var tagEnd = span[imgStart..].IndexOf('>');
+                    if (tagEnd == -1 || imgStart + tagEnd <= i) continue;
+
+                    // Add content up to this point
+                    result.Append(span[lastIndex..i]);
+                    
+                    // Add the CDN replacement
+                    result.Append($"src={quote}{endpoint}/");
+                    
+                    // Skip the original pattern
+                    i += pattern.Length;
+                    lastIndex = i;
+                    break;
+                }
+            }
+        }
+
+        // Add remaining content
+        if (lastIndex < span.Length)
+        {
+            result.Append(span[lastIndex..]);
+        }
+
+        return result.ToString();
     }
 
     public static string GetPostAbstract(string content, int wordCount, bool useMarkdown = false)
@@ -139,10 +185,18 @@ public static class ContentProcessor
             characterCount--;
         }
 
-        // search previous word
+        // search previous word, but preserve at least one space
+        var spaceCount = 0;
         while (characterCount > 0 && text[characterCount - 1].IsSpace())
         {
             characterCount--;
+            spaceCount++;
+        }
+
+        // if we found spaces, add one back to preserve word separation
+        if (spaceCount > 0 && characterCount < backup)
+        {
+            characterCount++;
         }
 
         // if it was the last word, recover it, unless boundary is requested

@@ -2,7 +2,6 @@
 using LiteBus.Commands.Abstractions;
 using LiteBus.Events.Abstractions;
 using LiteBus.Queries.Abstractions;
-using Microsoft.AspNetCore.Localization;
 using Moonglade.Email.Client;
 
 namespace Moonglade.Web.Controllers;
@@ -17,31 +16,6 @@ public class SettingsController(
         IQueryMediator queryMediator,
         ICommandMediator commandMediator) : ControllerBase
 {
-    [AllowAnonymous]
-    [HttpGet("set-lang")]
-    public IActionResult SetLanguage(string culture, string returnUrl)
-    {
-        try
-        {
-            if (string.IsNullOrWhiteSpace(culture)) return BadRequest();
-
-            Response.Cookies.Append(
-                CookieRequestCultureProvider.DefaultCookieName,
-                CookieRequestCultureProvider.MakeCookieValue(new(culture)),
-                new() { Expires = DateTimeOffset.UtcNow.AddYears(1) }
-            );
-
-            return LocalRedirect(string.IsNullOrWhiteSpace(returnUrl) ? "~/" : returnUrl);
-        }
-        catch (Exception e)
-        {
-            logger.LogError(e, e.Message, culture, returnUrl);
-
-            // We shall not respect the return URL now, because the returnUrl might be hacking.
-            return NoContent();
-        }
-    }
-
     [HttpPost("general")]
     [ReadonlyMode]
     [ProducesResponseType(StatusCodes.Status204NoContent)]
@@ -180,7 +154,7 @@ public class SettingsController(
         if (model.IsEnabled && string.IsNullOrWhiteSpace(model.JsonData))
         {
             ModelState.AddModelError(nameof(SocialLinkSettingsJsonModel.JsonData), "JsonData is required");
-            return BadRequest(ModelState.CombineErrorMessages());
+            return BadRequest(ModelState.GetCombinedErrorMessage());
         }
 
         var links = model.JsonData.FromJson<SocialLink[]>();
@@ -191,29 +165,29 @@ public class SettingsController(
             if (string.IsNullOrWhiteSpace(link.Name))
             {
                 ModelState.AddModelError($"{nameof(Moonglade.Configuration.SocialLink)}.{nameof(Moonglade.Configuration.SocialLink.Name)}", "Name is required");
-                return BadRequest(ModelState.CombineErrorMessages());
+                return BadRequest(ModelState.GetCombinedErrorMessage());
             }
 
             if (string.IsNullOrWhiteSpace(link.Icon))
             {
                 ModelState.AddModelError($"{nameof(Moonglade.Configuration.SocialLink)}.{nameof(Moonglade.Configuration.SocialLink.Icon)}", "Icon is required");
-                return BadRequest(ModelState.CombineErrorMessages());
+                return BadRequest(ModelState.GetCombinedErrorMessage());
             }
 
             if (string.IsNullOrWhiteSpace(link.Url))
             {
                 ModelState.AddModelError($"{nameof(Moonglade.Configuration.SocialLink)}.{nameof(Moonglade.Configuration.SocialLink.Url)}", "Url is required");
-                return BadRequest(ModelState.CombineErrorMessages());
+                return BadRequest(ModelState.GetCombinedErrorMessage());
             }
 
             if (!Uri.TryCreate(link.Url, UriKind.Absolute, out _))
             {
                 ModelState.AddModelError($"{nameof(Moonglade.Configuration.SocialLink)}.{nameof(Moonglade.Configuration.SocialLink.Url)}", "Url is invalid");
-                return BadRequest(ModelState.CombineErrorMessages());
+                return BadRequest(ModelState.GetCombinedErrorMessage());
             }
 
             // Sterilize
-            link.Url = Helper.SterilizeLink(link.Url);
+            link.Url = SecurityHelper.SterilizeLink(link.Url);
         }
 
         blogConfig.SocialLinkSettings = new()
@@ -236,7 +210,7 @@ public class SettingsController(
         if (model.EnableCustomCss && string.IsNullOrWhiteSpace(model.CssCode))
         {
             ModelState.AddModelError(nameof(AppearanceSettings.CssCode), "CSS Code is required");
-            return BadRequest(ModelState.CombineErrorMessages());
+            return BadRequest(ModelState.GetCombinedErrorMessage());
         }
 
         blogConfig.AppearanceSettings = model;
@@ -254,7 +228,7 @@ public class SettingsController(
         if (model.IsEnabled && string.IsNullOrWhiteSpace(model.MenuJson))
         {
             ModelState.AddModelError(nameof(CustomMenuSettingsJsonModel.MenuJson), "Menus is required");
-            return BadRequest(ModelState.CombineErrorMessages());
+            return BadRequest(ModelState.GetCombinedErrorMessage());
         }
 
         blogConfig.CustomMenuSettings = new()
@@ -285,14 +259,14 @@ public class SettingsController(
     [ProducesResponseType(StatusCodes.Status409Conflict)]
     public async Task<IActionResult> UpdateLocalAccountPassword(UpdateLocalAccountPasswordRequest request)
     {
-        var oldPasswordValid = blogConfig.LocalAccountSettings.PasswordHash == Helper.HashPassword(request.OldPassword.Trim(), blogConfig.LocalAccountSettings.PasswordSalt);
+        var oldPasswordValid = blogConfig.LocalAccountSettings.PasswordHash == SecurityHelper.HashPassword(request.OldPassword.Trim(), blogConfig.LocalAccountSettings.PasswordSalt);
 
         if (!oldPasswordValid) return Conflict("Old password is incorrect.");
 
-        var newSalt = Helper.GenerateSalt();
+        var newSalt = SecurityHelper.GenerateSalt();
         blogConfig.LocalAccountSettings.Username = request.NewUsername.Trim();
         blogConfig.LocalAccountSettings.PasswordSalt = newSalt;
-        blogConfig.LocalAccountSettings.PasswordHash = Helper.HashPassword(request.NewPassword, newSalt);
+        blogConfig.LocalAccountSettings.PasswordHash = SecurityHelper.HashPassword(request.NewPassword, newSalt);
 
         await SaveConfigAsync(blogConfig.LocalAccountSettings);
         return NoContent();

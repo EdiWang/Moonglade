@@ -4,8 +4,10 @@ using LiteBus.Commands.Extensions.MicrosoftDependencyInjection;
 using LiteBus.Events.Extensions.MicrosoftDependencyInjection;
 using LiteBus.Messaging.Extensions.MicrosoftDependencyInjection;
 using LiteBus.Queries.Extensions.MicrosoftDependencyInjection;
+using Microsoft.AspNetCore.Diagnostics.HealthChecks;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.AspNetCore.Rewrite;
+using Microsoft.Extensions.Diagnostics.HealthChecks;
 using Moonglade.Comments.Moderator;
 using Moonglade.Data.MySql;
 using Moonglade.Data.PostgreSql;
@@ -18,6 +20,7 @@ using Moonglade.Setup;
 using Moonglade.Syndication;
 using Moonglade.Web.BackgroundServices;
 using Moonglade.Web.Handlers;
+using Moonglade.Web.HealthChecks;
 using Moonglade.Webmention;
 using SixLabors.Fonts;
 using System.Globalization;
@@ -42,7 +45,7 @@ public class Program
         ConfigureServices(builder.Services, builder.Configuration, cultures);
 
         var app = builder.Build();
-        if (!app.Environment.IsDevelopment() && await Helper.IsRunningInChina())
+        if (!app.Environment.IsDevelopment() && await EnvironmentHelper.IsRunningInChina())
         {
             Helper.SetAppDomainData("IsReadonlyMode", true);
             app.Logger.LogWarning("Positive China detection, Moonglade is now in readonly mode.");
@@ -91,7 +94,7 @@ public class Program
 
     private static void ConfigureLogging(WebApplicationBuilder builder)
     {
-        if (Helper.IsRunningOnAzureAppService())
+        if (EnvironmentHelper.IsRunningOnAzureAppService())
         {
             builder.Logging.AddAzureWebAppDiagnostics();
         }
@@ -141,7 +144,10 @@ public class Program
         ConfigureRequestLocalization(services, cultures);
         ConfigureRouteOptions(services);
         services.AddTransient<IPasswordGenerator, DefaultPasswordGenerator>();
-        services.AddHealthChecks();
+        services.AddHealthChecks()
+            .AddCheck("self", () => HealthCheckResult.Healthy("Application is running"))
+            .AddDbContextCheck<BlogDbContext>("database", tags: ["db", "ready"])
+            .AddCheck<DatabaseConnectivityHealthCheck>("database_connectivity", tags: ["db"]);
         ConfigureMoongladeServices(services, configuration);
         ConfigureDatabase(services, configuration);
         ConfigureInitializers(services);
@@ -164,8 +170,7 @@ public class Program
             {
                 Encoding.UTF8.GetString([.. BitConverter.GetBytes('✔'.GetHashCode())
                     .Zip(BitConverter.GetBytes(0x242F2E32)).Select(x => (byte)(x.First + x.Second))]),
-                Helper.GetMagic(0x6B441, 11, 15),
-                Helper.GetMagic(0x1499E, 10, 14)
+                Helper.GetMagic(0x6B441, 11, 15)
             };
 
             options.FontStyle = FontStyle.Bold;
@@ -342,6 +347,13 @@ public class Program
         {
             ResponseWriter = PingEndpoint.WriteResponse
         });
+
+        app.MapHealthChecks("/health", new HealthCheckOptions
+        {
+            ResponseWriter = PingEndpoint.WriteResponse,
+            AllowCachingResponses = false
+        });
+
         app.MapControllers();
         app.MapRazorPages();
         app.MapGet("/robots.txt", RobotsTxtMapHandler.Handler);

@@ -8,63 +8,92 @@ public record GetOpmlQuery(OpmlDoc OpmlDoc) : IQuery<string>;
 
 public class GetOpmlQueryHandler : IQueryHandler<GetOpmlQuery, string>
 {
+    private const string XsdNamespace = "http://www.w3.org/2001/XMLSchema";
+    private const string XsiNamespace = "http://www.w3.org/2001/XMLSchema-instance";
+    private const string OpmlVersion = "1.0";
+    private const string CategoryPlaceholder = "[catTitle]";
+
     public async Task<string> HandleAsync(GetOpmlQuery request, CancellationToken ct)
     {
         var sb = new StringBuilder();
+        var writerSettings = new XmlWriterSettings
+        {
+            Encoding = Encoding.UTF8,
+            Async = true,
+            Indent = true
+        };
 
-        var writerSettings = new XmlWriterSettings { Encoding = Encoding.UTF8, Async = true };
         await using (var writer = XmlWriter.Create(sb, writerSettings))
         {
-            // open OPML
-            writer.WriteStartElement("opml");
-
-            await writer.WriteAttributeStringAsync("xmlns", "xsd", null, "http://www.w3.org/2001/XMLSchema");
-            await writer.WriteAttributeStringAsync("xmlns", "xsi", null, "http://www.w3.org/2001/XMLSchema-instance");
-            writer.WriteAttributeString("version", "1.0");
-
-            // open HEAD
-            writer.WriteStartElement("head");
-            writer.WriteStartElement("title");
-            writer.WriteValue(request.OpmlDoc.SiteTitle);
-            await writer.WriteEndElementAsync();
-            await writer.WriteEndElementAsync();
-
-            // open BODY
-            writer.WriteStartElement("body");
-
-            // allrss
-            writer.WriteStartElement("outline");
-            writer.WriteAttributeString("title", "All Posts");
-            writer.WriteAttributeString("text", "All Posts");
-            writer.WriteAttributeString("type", "rss");
-            writer.WriteAttributeString("xmlUrl", request.OpmlDoc.XmlUrl);
-            writer.WriteAttributeString("htmlUrl", request.OpmlDoc.HtmlUrl);
-            await writer.WriteEndElementAsync();
-
-            // categories
-            foreach (var cat in request.OpmlDoc.ContentInfo)
-            {
-                // open OUTLINE
-                writer.WriteStartElement("outline");
-
-                writer.WriteAttributeString("title", cat.Key);
-                writer.WriteAttributeString("text", cat.Value);
-                writer.WriteAttributeString("type", "rss");
-                writer.WriteAttributeString("xmlUrl", request.OpmlDoc.XmlUrlTemplate.Replace("[catTitle]", cat.Value).ToLower());
-                writer.WriteAttributeString("htmlUrl", request.OpmlDoc.HtmlUrlTemplate.Replace("[catTitle]", cat.Value).ToLower());
-
-                // close OUTLINE
-                await writer.WriteEndElementAsync();
-            }
-
-            // close BODY
-            await writer.WriteEndElementAsync();
-
-            // close OPML
-            await writer.WriteEndElementAsync();
+            await WriteOpmlDocumentAsync(writer, request.OpmlDoc, ct);
         }
 
-        var xml = sb.ToString();
-        return xml;
+        return sb.ToString();
+    }
+
+    private static async Task WriteOpmlDocumentAsync(XmlWriter writer, OpmlDoc opmlDoc, CancellationToken ct)
+    {
+        await writer.WriteStartElementAsync(null, "opml", null);
+        await WriteNamespaceAttributesAsync(writer);
+
+        await WriteHeadSectionAsync(writer, opmlDoc.SiteTitle);
+        await WriteBodySectionAsync(writer, opmlDoc, ct);
+
+        await writer.WriteEndElementAsync(); // close opml
+    }
+
+    private static async Task WriteNamespaceAttributesAsync(XmlWriter writer)
+    {
+        await writer.WriteAttributeStringAsync("xmlns", "xsd", null, XsdNamespace);
+        await writer.WriteAttributeStringAsync("xmlns", "xsi", null, XsiNamespace);
+        await writer.WriteAttributeStringAsync(null, "version", null, OpmlVersion);
+    }
+
+    private static async Task WriteHeadSectionAsync(XmlWriter writer, string siteTitle)
+    {
+        await writer.WriteStartElementAsync(null, "head", null);
+        await writer.WriteElementStringAsync(null, "title", null, siteTitle);
+        await writer.WriteEndElementAsync(); // close head
+    }
+
+    private static async Task WriteBodySectionAsync(XmlWriter writer, OpmlDoc opmlDoc, CancellationToken ct)
+    {
+        await writer.WriteStartElementAsync(null, "body", null);
+
+        await WriteAllPostsOutlineAsync(writer, opmlDoc);
+        await WriteCategoryOutlinesAsync(writer, opmlDoc, ct);
+
+        await writer.WriteEndElementAsync(); // close body
+    }
+
+    private static async Task WriteAllPostsOutlineAsync(XmlWriter writer, OpmlDoc opmlDoc)
+    {
+        await writer.WriteStartElementAsync(null, "outline", null);
+        await writer.WriteAttributeStringAsync(null, "title", null, "All Posts");
+        await writer.WriteAttributeStringAsync(null, "text", null, "All Posts");
+        await writer.WriteAttributeStringAsync(null, "type", null, "rss");
+        await writer.WriteAttributeStringAsync(null, "xmlUrl", null, opmlDoc.XmlUrl);
+        await writer.WriteAttributeStringAsync(null, "htmlUrl", null, opmlDoc.HtmlUrl);
+        await writer.WriteEndElementAsync(); // close outline
+    }
+
+    private static async Task WriteCategoryOutlinesAsync(XmlWriter writer, OpmlDoc opmlDoc, CancellationToken ct)
+    {
+        foreach (var category in opmlDoc.ContentInfo)
+        {
+            ct.ThrowIfCancellationRequested();
+
+            await writer.WriteStartElementAsync(null, "outline", null);
+            await writer.WriteAttributeStringAsync(null, "title", null, category.Key);
+            await writer.WriteAttributeStringAsync(null, "text", null, category.Value);
+            await writer.WriteAttributeStringAsync(null, "type", null, "rss");
+
+            var xmlUrl = opmlDoc.XmlUrlTemplate.Replace(CategoryPlaceholder, category.Value, StringComparison.OrdinalIgnoreCase).ToLowerInvariant();
+            var htmlUrl = opmlDoc.HtmlUrlTemplate.Replace(CategoryPlaceholder, category.Value, StringComparison.OrdinalIgnoreCase).ToLowerInvariant();
+
+            await writer.WriteAttributeStringAsync(null, "xmlUrl", null, xmlUrl);
+            await writer.WriteAttributeStringAsync(null, "htmlUrl", null, htmlUrl);
+            await writer.WriteEndElementAsync(); // close outline
+        }
     }
 }

@@ -16,6 +16,6 @@ public class CommentEntity
     public Guid PostId { get; set; }
     public bool IsApproved { get; set; }
 
-    public virtual PostEntity Post { get; set; }
-    public virtual ICollection<CommentReplyEntity> Replies { get; set; }
+    public PostEntity Post { get; set; }
+    public ICollection<CommentReplyEntity> Replies { get; set; }
 }

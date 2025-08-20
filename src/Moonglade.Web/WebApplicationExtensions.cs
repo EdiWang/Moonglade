@@ -31,13 +31,14 @@ public static class WebApplicationExtensions
         var headerName = app.Configuration[$"{ForwardedHeadersSection}:{HeaderNameKey}"];
         if (!string.IsNullOrWhiteSpace(headerName))
         {
-            if (headerName.Length > MaxHeaderNameLength || !Helper.IsValidHeaderName(headerName))
+            if (headerName.Length > MaxHeaderNameLength || !IsValidHeaderName(headerName))
             {
                 app.Logger.LogWarning($"XFF header name '{headerName}' is invalid, it will not be applied");
             }
             else
             {
                 fho.ForwardedForHeaderName = headerName;
+                Helper.SetAppDomainData("ForwardedHeaders_HeaderName", headerName);
             }
         }
     }
@@ -50,7 +51,7 @@ public static class WebApplicationExtensions
             // Fix docker deployments on Azure App Service blows up with Entra ID authentication
             // https://docs.microsoft.com/en-us/aspnet/core/host-and-deploy/proxy-load-balancer?view=aspnetcore-6.0
             // "Outside of using IIS Integration when hosting out-of-process, Forwarded Headers Middleware isn't enabled by default."
-            if (Helper.IsRunningInDocker())
+            if (EnvironmentHelper.IsRunningInDocker())
             {
                 // Fix #712
                 // Adding KnownProxies will make Azure App Service boom boom with Entra ID redirect URL
@@ -88,5 +89,25 @@ public static class WebApplicationExtensions
             fho.KnownNetworks.Add(new(IPAddress.Any, 0));
             fho.KnownNetworks.Add(new(IPAddress.IPv6Any, 0));
         }
+    }
+
+    private static bool IsValidHeaderName(string headerName)
+    {
+        if (string.IsNullOrEmpty(headerName))
+        {
+            return false;
+        }
+
+        // Check if header name conforms to the standard which allows:
+        // - Any ASCII character from 'a' to 'z' and 'A' to 'Z'
+        // - Digits from '0' to '9'
+        // - Special characters: '!', '#', '$', '%', '&', ''', '*', '+', '-', '.', '^', '_', '`', '|', '~'
+        return headerName.All(c =>
+            c is >= 'a' and <= 'z' ||
+            c is >= 'A' and <= 'Z' ||
+            c is >= '0' and <= '9' ||
+            c == '!' || c == '#' || c == '$' || c == '%' || c == '&' || c == '\'' ||
+            c == '*' || c == '+' || c == '-' || c == '.' || c == '^' || c == '_' ||
+            c == '`' || c == '|' || c == '~');
     }
 }
