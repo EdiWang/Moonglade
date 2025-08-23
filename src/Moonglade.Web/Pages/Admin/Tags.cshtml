@@ -2,17 +2,18 @@
 @using Moonglade.Core.TagFeature
 @{
     ViewBag.Title = "Tags";
-    var tags = await QueryMediator.QueryAsync(new GetTagsQuery());
+    var tags = await QueryMediator.QueryAsync(new GetTagCountListQuery());
+    var sortedTags = tags.OrderBy(t => t.Tag.DisplayName).ToList();
 }
 
 @Html.AntiForgeryToken()
 
-@section scripts{
+@section scripts {
     <script type="module" src="~/js/app/json2csv.mjs" asp-append-version="true"></script>
     <script type="module" src="~/js/app/admin.tags.mjs" asp-append-version="true"></script>
 }
 
-@section admintoolbar{
+@section admintoolbar {
     <div class="admin-toolbar pb-2 border-bottom mb-3">
         <a id="btn-new-tag" class="btn btn-outline-accent">
             <i class="bi-plus-lg"></i>
@@ -30,11 +31,11 @@
     <input id="tagFilter" type="text" class="form-control mb-3" maxlength="32" placeholder="@SharedLocalizer["Filter"]">
 
     <ul class="list-unstyled ul-tag-mgr">
-        @foreach (var tag in tags.OrderBy(model => model.DisplayName))
+        @foreach (var tagItem in sortedTags)
         {
-            <li id="li-tag-@tag.Id" class="admin-tag-item border rounded">
-                <span class="span-tagcontent-editable" contenteditable="true" spellcheck="false" data-tagid="@tag.Id">@tag.DisplayName</span>
-                <a class="btn-delete" data-tagid="@tag.Id">
+            <li id="li-tag-@tagItem.Tag.Id" class="admin-tag-item border rounded">
+                <span class="span-tagcontent-editable" contenteditable="true" spellcheck="false" data-tagid="@tagItem.Tag.Id">@tagItem.Tag.DisplayName</span>
+                <a class="btn-delete" data-tagid="@tagItem.Tag.Id">
                     <i class="bi-trash"></i>
                 </a>
             </li>
