@@ -30,8 +30,24 @@
 <div>
     <input id="tagFilter" type="text" class="form-control mb-3" maxlength="32" placeholder="@SharedLocalizer["Filter"]">
 
+    <h4>Active tags</h4>
+    <hr />
     <ul class="list-unstyled ul-tag-mgr">
-        @foreach (var tagItem in sortedTags)
+        @foreach (var tagItem in sortedTags.Where(p => p.PostCount > 0))
+        {
+            <li id="li-tag-@tagItem.Tag.Id" class="admin-tag-item border rounded">
+                <span class="span-tagcontent-editable" contenteditable="true" spellcheck="false" data-tagid="@tagItem.Tag.Id">@tagItem.Tag.DisplayName</span>
+                <a class="btn-delete" data-tagid="@tagItem.Tag.Id">
+                    <i class="bi-trash"></i>
+                </a>
+            </li>
+        }
+    </ul>
+
+    <h4>Tags with zero posts</h4>
+    <hr />
+    <ul class="list-unstyled ul-tag-mgr">
+        @foreach (var tagItem in sortedTags.Where(p => p.PostCount == 0))
         {
             <li id="li-tag-@tagItem.Tag.Id" class="admin-tag-item border rounded">
                 <span class="span-tagcontent-editable" contenteditable="true" spellcheck="false" data-tagid="@tagItem.Tag.Id">@tagItem.Tag.DisplayName</span>
