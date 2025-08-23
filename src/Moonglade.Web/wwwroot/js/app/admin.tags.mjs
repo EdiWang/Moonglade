@@ -2,7 +2,7 @@ import { fetch2 } from './httpService.mjs?v=1427';
 import { success, error } from './toastService.mjs';
 
 const editCanvas = new bootstrap.Offcanvas(document.getElementById('editTagCanvas'));
-const tagList = document.querySelector('.ul-tag-mgr');
+const tagLists = document.querySelectorAll('.ul-tag-mgr');
 const editForm = document.querySelector('#edit-form');
 const tagFilter = document.getElementById('tagFilter');
 const btnNewTag = document.getElementById('btn-new-tag');
@@ -12,51 +12,55 @@ function showEditCanvas() {
     editCanvas.show();
 }
 
-tagList.addEventListener('click', async (e) => {
-    const btn = e.target.closest('.btn-delete');
-    if (!btn) return;
+tagLists.forEach(tagList => {
+    tagList.addEventListener('click', async (e) => {
+        const btn = e.target.closest('.btn-delete');
+        if (!btn) return;
 
-    const tagid = btn.getAttribute('data-tagid');
-    const tagName = btn.textContent.trim();
+        const tagid = btn.getAttribute('data-tagid');
+        const tagName = btn.closest('.admin-tag-item').querySelector('.span-tagcontent-editable').textContent.trim();
 
-    if (!window.confirm(`Confirm to delete tag: ${tagName}`)) return;
+        if (!window.confirm(`Confirm to delete tag: ${tagName}`)) return;
 
-    try {
-        await fetch2(`/api/tags/${tagid}`, 'DELETE');
+        try {
+            await fetch2(`/api/tags/${tagid}`, 'DELETE');
 
-        const li = document.querySelector(`#li-tag-${tagid}`);
-        if (li) li.style.display = 'none';
-        success('Tag deleted');
-    } catch (err) {
-        error('Tag deletion failed.');
-    }
+            const li = document.querySelector(`#li-tag-${tagid}`);
+            if (li) li.style.display = 'none';
+            success('Tag deleted');
+        } catch (err) {
+            error('Tag deletion failed.');
+        }
+    });
+
+    tagList.addEventListener('blur', async (e) => {
+        const span = e.target.closest('.span-tagcontent-editable');
+        if (!span) return;
+
+        const tagId = span.getAttribute('data-tagid');
+        const newTagName = span.textContent.trim();
+        const originalTagName = span.getAttribute('data-original') || '';
+
+        if (newTagName === originalTagName || !newTagName) return;
+
+        try {
+            await fetch2(`/api/tags/${tagId}`, 'PUT', newTagName);
+
+            span.setAttribute('data-original', newTagName);
+            success('Tag updated');
+        } catch (err) {
+            error('Tag update failed.');
+        }
+    }, true); // useCapture: true, to catch blur
 });
-
-tagList.addEventListener('blur', async (e) => {
-    const span = e.target.closest('.span-tagcontent-editable');
-    if (!span) return;
-
-    const tagId = span.getAttribute('data-tagid');
-    const newTagName = span.textContent.trim();
-    const originalTagName = span.getAttribute('data-original') || '';
-
-    if (newTagName === originalTagName || !newTagName) return;
-
-    try {
-        await fetch2(`/api/tags/${tagId}`, 'PUT', newTagName);
-
-        span.setAttribute('data-original', newTagName);
-        success('Tag updated');
-    } catch (err) {
-        error('Tag update failed.');
-    }
-}, true); // useCapture: true, to catch blur
 
 tagFilter.addEventListener('keyup', function () {
     const value = this.value.toLowerCase();
-    tagList.querySelectorAll('li').forEach((item) => {
-        const show = item.textContent.toLowerCase().includes(value);
-        item.style.display = show ? 'inline-block' : 'none';
+    tagLists.forEach(tagList => {
+        tagList.querySelectorAll('li').forEach((item) => {
+            const show = item.textContent.toLowerCase().includes(value);
+            item.style.display = show ? 'inline-block' : 'none';
+        });
     });
 });
 
@@ -91,5 +95,6 @@ function insertNewTagElement(id, name) {
         </a>
     </li>
     `;
-    tagList.appendChild(li);
+    // Add to the first tag list (active tags)
+    tagLists[0].appendChild(li);
 }
