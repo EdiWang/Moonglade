@@ -127,7 +127,7 @@
             <div class="col-md-3 col-xl-2">
                 <div class="card mb-3">
                     <div class="card-body">
-                        <div class="form-check form-switch mb-2">
+                        <div class="form-check form-switch">
                             <input type="checkbox" name="EnableComment" value="true" class="form-check-input" @(Model.ViewModel.EnableComment ? "checked" : null)>
                             <label asp-for="ViewModel.EnableComment" class="form-check-label"></label>
                         </div>
@@ -135,7 +135,7 @@
                             <input type="checkbox" name="FeedIncluded" value="true" class="form-check-input" @(Model.ViewModel.FeedIncluded ? "checked" : null)>
                             <label asp-for="ViewModel.FeedIncluded" class="form-check-label"></label>
                         </div>
-                        <div class="form-check form-switch mb-2">
+                        <div class="form-check form-switch">
                             <input type="checkbox" name="Featured" value="true" class="form-check-input" @(Model.ViewModel.Featured ? "checked" : null)>
                             <label asp-for="ViewModel.Featured" class="form-check-label"></label>
                         </div>
