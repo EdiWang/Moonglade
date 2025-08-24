@@ -159,6 +159,14 @@
                         </div>
                     </div>
                     <div class="card-body border-top">
+                        <div class="form-floating">
+                            <textarea asp-for="ViewModel.Keywords"
+                                      class="form-control form-control-sm"
+                                      placeholder="@Html.DisplayNameFor(m => m.ViewModel.Keywords)"></textarea>
+                            <label class="form-label" asp-for="ViewModel.Keywords"></label>
+                        </div>
+                    </div>
+                    <div class="card-body border-top">
                         <h6 class="card-subtitle mb-3 text-muted">
                             <i class="bi-folder2 me-1"></i>
                             @SharedLocalizer["Categories"]
@@ -204,13 +212,6 @@
                         </a>
                     </div>
                 }
-
-                @if (Model.ViewModel.PostStatus == PostStatusConstants.Published)
-                {
-                    <div class="text-center">
-                        <a class="unpublish-link btn btn-sm btn-outline-secondary" data-bs-toggle="modal" data-bs-target="#unpublishPostModal">@SharedLocalizer["Unpublish this post"]</a>
-                    </div>
-                }
             </div>
         </div>
 
@@ -227,6 +228,11 @@
                     @SharedLocalizer["Update"]
                 }
             </button>
+
+            @if (Model.ViewModel.PostStatus == PostStatusConstants.Published)
+            {
+                <a class="unpublish-link btn btn-outline-secondary" data-bs-toggle="modal" data-bs-target="#unpublishPostModal">@SharedLocalizer["Unpublish this post"]</a>
+            }
 
             @if (Model.ViewModel.PostStatus != PostStatusConstants.Published)
             {
