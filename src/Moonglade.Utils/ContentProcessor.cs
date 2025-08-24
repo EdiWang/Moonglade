@@ -139,6 +139,21 @@ public static class ContentProcessor
         Text = 2
     }
 
+    public static string GetKeywords(string rawKeywords)
+    {
+        if (string.IsNullOrWhiteSpace(rawKeywords)) return null;
+
+        var keywords = rawKeywords.Split(',')
+            .Select(k => k.Trim())
+            .Where(k => !string.IsNullOrWhiteSpace(k))
+            .Distinct()
+            .ToArray();
+
+        if (keywords.Length == 0) return null;
+
+        return string.Join(',', keywords);
+    }
+
     #region Private Methods
 
     private static string RemoveTagsBackup(string html)
