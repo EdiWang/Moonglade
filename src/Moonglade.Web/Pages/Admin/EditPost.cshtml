@@ -157,16 +157,6 @@
                                 @SharedLocalizer["Upload Image"]
                             </a>
                         </div>
-
-                        @if (Model.ViewModel.PostId != Guid.Empty)
-                        {
-                            <div class="mt-2">
-                                <a class="btn btn-sm btn-outline-secondary w-100" data-bs-toggle="modal" data-bs-target="#changePublishDateModal">
-                                    <i class="bi-clock-history"></i>
-                                    @SharedLocalizer["Change Publish Date"]
-                                </a>
-                            </div>
-                        }
                     </div>
                     <div class="card-body border-top">
                         <h6 class="card-subtitle mb-3 text-muted">
@@ -204,6 +194,16 @@
                         }
                     </div>
                 </div>
+
+                @if (Model.ViewModel.PostId != Guid.Empty)
+                {
+                    <div class="text-center mb-2">
+                        <a class="btn btn-sm btn-outline-secondary" data-bs-toggle="modal" data-bs-target="#changePublishDateModal">
+                            <i class="bi-clock-history"></i>
+                            @SharedLocalizer["Change Publish Date"]
+                        </a>
+                    </div>
+                }
 
                 @if (Model.ViewModel.PostStatus == PostStatusConstants.Published)
                 {
