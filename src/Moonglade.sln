@@ -73,6 +73,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Moonglade.Utils.Tests", "Mo
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Moonglade.ImageStorage.Tests", "Moonglade.ImageStorage.Tests\Moonglade.ImageStorage.Tests.csproj", "{73D4A58E-168F-4E44-992A-BE0B34F44CB7}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Moonglade.Theme.Tests", "Moonglade.Theme.Tests\Moonglade.Theme.Tests.csproj", "{EE19B05A-2B89-4E74-8CFE-936A4A641FBD}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -167,6 +169,10 @@ Global
 		{73D4A58E-168F-4E44-992A-BE0B34F44CB7}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{73D4A58E-168F-4E44-992A-BE0B34F44CB7}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{73D4A58E-168F-4E44-992A-BE0B34F44CB7}.Release|Any CPU.Build.0 = Release|Any CPU
+		{EE19B05A-2B89-4E74-8CFE-936A4A641FBD}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{EE19B05A-2B89-4E74-8CFE-936A4A641FBD}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{EE19B05A-2B89-4E74-8CFE-936A4A641FBD}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{EE19B05A-2B89-4E74-8CFE-936A4A641FBD}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -196,9 +202,10 @@ Global
 		{F06B2391-938E-44FB-8281-6764DC2BC024} = {97439361-03B4-46C9-BC06-49F76BA57879}
 		{FE981421-C384-413F-AE74-57C55F47ACEF} = {02EA681E-C7D8-13C7-8484-4AC65E1B71E8}
 		{73D4A58E-168F-4E44-992A-BE0B34F44CB7} = {02EA681E-C7D8-13C7-8484-4AC65E1B71E8}
+		{EE19B05A-2B89-4E74-8CFE-936A4A641FBD} = {02EA681E-C7D8-13C7-8484-4AC65E1B71E8}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
-		SolutionGuid = {EBD14882-9899-4C4B-B9BC-22C0B93BD559}
 		RESX_CultureCountyOverrides = zh=zh-Hant
+		SolutionGuid = {EBD14882-9899-4C4B-B9BC-22C0B93BD559}
 	EndGlobalSection
 EndGlobal
