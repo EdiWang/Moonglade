@@ -32,11 +32,31 @@ public static class ThemeFactory
 
     public static string LightenColor(string hexColor, double percentage)
     {
-        // Remove '#' and parse the color into RGB components
-        hexColor = hexColor.TrimStart('#');
-        int r = Convert.ToInt32(hexColor.Substring(0, 2), 16);
-        int g = Convert.ToInt32(hexColor.Substring(2, 2), 16);
-        int b = Convert.ToInt32(hexColor.Substring(4, 2), 16);
+        // Validate input hex color
+        if (string.IsNullOrWhiteSpace(hexColor))
+        {
+            throw new ArgumentException("Hex color cannot be null, empty, or whitespace.", nameof(hexColor));
+        }
+
+        // Remove '#' and validate the remaining string
+        var cleanHexColor = hexColor.TrimStart('#');
+        
+        // Check if the hex color has exactly 6 characters
+        if (cleanHexColor.Length != 6)
+        {
+            throw new ArgumentException("Hex color must be exactly 6 characters long (excluding the optional '#' prefix).", nameof(hexColor));
+        }
+
+        // Check if all characters are valid hexadecimal characters
+        if (!IsValidHexString(cleanHexColor))
+        {
+            throw new ArgumentException("Hex color contains invalid characters. Only 0-9, A-F, and a-f are allowed.", nameof(hexColor));
+        }
+
+        // Parse the color into RGB components
+        int r = Convert.ToInt32(cleanHexColor.Substring(0, 2), 16);
+        int g = Convert.ToInt32(cleanHexColor.Substring(2, 2), 16);
+        int b = Convert.ToInt32(cleanHexColor.Substring(4, 2), 16);
 
         // Calculate the new RGB values
         // - Use the formula:
@@ -56,5 +76,17 @@ public static class ThemeFactory
 
         // Convert back to HEX format and return
         return $"#{rNew:X2}{gNew:X2}{bNew:X2}";
+    }
+
+    private static bool IsValidHexString(string hex)
+    {
+        foreach (char c in hex)
+        {
+            if (!((c >= '0' && c <= '9') || (c >= 'A' && c <= 'F') || (c >= 'a' && c <= 'f')))
+            {
+                return false;
+            }
+        }
+        return true;
     }
 }
