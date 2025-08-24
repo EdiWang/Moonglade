@@ -65,9 +65,9 @@ public static class ThemeFactory
         //      +(255 - C_{\text{ original} }) \times \text{ percentage}
         //   \]
         // - This moves each color channel closer to 255(white) by the specified percentage.
-        int rNew = (int)(r + (255 - r) * percentage);
-        int gNew = (int)(g + (255 - g) * percentage);
-        int bNew = (int)(b + (255 - b) * percentage);
+        int rNew = (int)Math.Round(r + (255 - r) * percentage);
+        int gNew = (int)Math.Round(g + (255 - g) * percentage);
+        int bNew = (int)Math.Round(b + (255 - b) * percentage);
 
         // Ensure the values are within the valid range (0-255)
         rNew = Math.Clamp(rNew, 0, 255);
