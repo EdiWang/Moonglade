@@ -127,7 +127,7 @@
             <div class="col-md-3 col-xl-2">
                 <div class="card mb-3">
                     <div class="card-body">
-                        <div class="form-check form-switch mb-2">
+                        <div class="form-check form-switch">
                             <input type="checkbox" name="EnableComment" value="true" class="form-check-input" @(Model.ViewModel.EnableComment ? "checked" : null)>
                             <label asp-for="ViewModel.EnableComment" class="form-check-label"></label>
                         </div>
@@ -135,7 +135,7 @@
                             <input type="checkbox" name="FeedIncluded" value="true" class="form-check-input" @(Model.ViewModel.FeedIncluded ? "checked" : null)>
                             <label asp-for="ViewModel.FeedIncluded" class="form-check-label"></label>
                         </div>
-                        <div class="form-check form-switch mb-2">
+                        <div class="form-check form-switch">
                             <input type="checkbox" name="Featured" value="true" class="form-check-input" @(Model.ViewModel.Featured ? "checked" : null)>
                             <label asp-for="ViewModel.Featured" class="form-check-label"></label>
                         </div>
@@ -157,16 +157,14 @@
                                 @SharedLocalizer["Upload Image"]
                             </a>
                         </div>
-
-                        @if (Model.ViewModel.PostId != Guid.Empty)
-                        {
-                            <div class="mt-2">
-                                <a class="btn btn-sm btn-outline-secondary w-100" data-bs-toggle="modal" data-bs-target="#changePublishDateModal">
-                                    <i class="bi-clock-history"></i>
-                                    @SharedLocalizer["Change Publish Date"]
-                                </a>
-                            </div>
-                        }
+                    </div>
+                    <div class="card-body border-top">
+                        <div class="form-floating">
+                            <textarea asp-for="ViewModel.Keywords"
+                                      class="form-control form-control-sm"
+                                      placeholder="@Html.DisplayNameFor(m => m.ViewModel.Keywords)"></textarea>
+                            <label class="form-label" asp-for="ViewModel.Keywords"></label>
+                        </div>
                     </div>
                     <div class="card-body border-top">
                         <h6 class="card-subtitle mb-3 text-muted">
@@ -205,10 +203,13 @@
                     </div>
                 </div>
 
-                @if (Model.ViewModel.PostStatus == PostStatusConstants.Published)
+                @if (Model.ViewModel.PostId != Guid.Empty)
                 {
-                    <div class="text-center">
-                        <a class="unpublish-link btn btn-sm btn-outline-secondary" data-bs-toggle="modal" data-bs-target="#unpublishPostModal">@SharedLocalizer["Unpublish this post"]</a>
+                    <div class="text-center mb-2">
+                        <a class="btn btn-sm btn-outline-secondary" data-bs-toggle="modal" data-bs-target="#changePublishDateModal">
+                            <i class="bi-clock-history"></i>
+                            @SharedLocalizer["Change Publish Date"]
+                        </a>
                     </div>
                 }
             </div>
@@ -227,6 +228,11 @@
                     @SharedLocalizer["Update"]
                 }
             </button>
+
+            @if (Model.ViewModel.PostStatus == PostStatusConstants.Published)
+            {
+                <a class="unpublish-link btn btn-outline-secondary" data-bs-toggle="modal" data-bs-target="#unpublishPostModal">@SharedLocalizer["Unpublish this post"]</a>
+            }
 
             @if (Model.ViewModel.PostStatus != PostStatusConstants.Published)
             {

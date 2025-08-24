@@ -60,6 +60,7 @@ public class CreatePostCommandHandler(
         };
 
         post.RouteLink = UrlHelper.GenerateRouteLink(post.PubDateUtc.GetValueOrDefault(), request.Payload.Slug);
+        post.Keywords = ContentProcessor.GetKeywords(request.Payload.Keywords);
 
         await CheckSlugConflict(post, ct);
 
