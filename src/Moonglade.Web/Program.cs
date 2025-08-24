@@ -289,7 +289,7 @@ public class Program
 
     private static void ConfigureInitializers(IServiceCollection services)
     {
-        services.AddTransient<ISiteIconInitializer, SiteIconInitializer>();
+        services.AddTransient<ISiteIconBuilder, SiteIconBuilder>();
         services.AddScoped<IMigrationManager, MigrationManager>();
         services.AddScoped<IBlogConfigInitializer, BlogConfigInitializer>();
         services.AddScoped<IStartUpInitializer, StartUpInitializer>();
