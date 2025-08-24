@@ -1005,8 +1005,8 @@
   <data name="Change Password" xml:space="preserve">
     <value>修改密碼</value>
   </data>
-  <data name="Unpublish this post" xml:space="preserve">
-    <value>取消發佈這篇文章</value>
+  <data name="Unpublish" xml:space="preserve">
+    <value>取消發佈</value>
   </data>
   <data name="Unpublish Post" xml:space="preserve">
     <value>取消發佈文章</value>

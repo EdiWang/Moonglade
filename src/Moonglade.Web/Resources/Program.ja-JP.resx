@@ -1005,9 +1005,6 @@
   <data name="Change Password" xml:space="preserve">
     <value>パスワードを変更する</value>
   </data>
-  <data name="Unpublish this post" xml:space="preserve">
-    <value>この記事を非公開にする</value>
-  </data>
   <data name="Unpublish Post" xml:space="preserve">
     <value>記事を非公開にする</value>
   </data>
@@ -1070,5 +1067,8 @@
   </data>
   <data name="Yes" xml:space="preserve">
     <value>いる</value>
+  </data>
+  <data name="Unpublish" xml:space="preserve">
+    <value>非公開</value>
   </data>
 </root>
