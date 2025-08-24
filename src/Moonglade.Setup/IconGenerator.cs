@@ -5,7 +5,7 @@ using System.Collections.Concurrent;
 
 namespace Moonglade.Setup;
 
-public static class MemoryStreamIconGenerator
+public static class InMemoryIconGenerator
 {
     private static readonly ConcurrentDictionary<string, byte[]> _siteIconDictionary = new();
 

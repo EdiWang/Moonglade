@@ -17,7 +17,7 @@ public class SiteIconBuilder(ILogger<SiteIconBuilder> logger, IQueryMediator que
         try
         {
             var iconData = await queryMediator.QueryAsync(new GetAssetQuery(AssetId.SiteIconBase64));
-            MemoryStreamIconGenerator.GenerateIcons(iconData, env.WebRootPath, logger);
+            InMemoryIconGenerator.GenerateIcons(iconData, env.WebRootPath, logger);
         }
         catch (Exception e)
         {

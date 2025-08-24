@@ -77,7 +77,7 @@ public class AssetsController(
     [ProducesResponseType(StatusCodes.Status404NotFound)]
     public IActionResult SiteIcon(string filename)
     {
-        var iconBytes = MemoryStreamIconGenerator.GetIcon(filename);
+        var iconBytes = InMemoryIconGenerator.GetIcon(filename);
         if (iconBytes is null) return NotFound();
 
         var contentType = "image/png";
