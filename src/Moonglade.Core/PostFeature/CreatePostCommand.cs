@@ -60,6 +60,7 @@ public class CreatePostCommandHandler(
         };
 
         post.RouteLink = UrlHelper.GenerateRouteLink(post.PubDateUtc.GetValueOrDefault(), request.Payload.Slug);
+        post.Keywords = GetKeywords(request.Payload.Keywords);
 
         await CheckSlugConflict(post, ct);
 
@@ -130,5 +131,20 @@ public class CreatePostCommandHandler(
 
         logger.LogInformation($"Created tag: {tag.DisplayName}");
         return tag;
+    }
+
+    private static string GetKeywords(string rawKeywords)
+    {
+        if (string.IsNullOrWhiteSpace(rawKeywords)) return null;
+
+        var keywords = rawKeywords.Split(',')
+            .Select(k => k.Trim())
+            .Where(k => !string.IsNullOrWhiteSpace(k))
+            .Distinct()
+            .ToArray();
+
+        if (keywords.Length == 0) return null;
+
+        return string.Join(',', keywords);
     }
 }
