@@ -19,6 +19,7 @@ public class MoongladeModeratorService : IModeratorService
     private readonly IHttpContextAccessor _httpContextAccessor;
     private readonly ILogger<MoongladeModeratorService> _logger;
     private readonly string _provider;
+    private readonly string _localKeywords;
     private readonly HttpClient _httpClient;
     private readonly bool _enabled;
 
@@ -28,6 +29,7 @@ public class MoongladeModeratorService : IModeratorService
         _httpContextAccessor = httpContextAccessor;
         _logger = logger;
         _provider = configuration["ContentModerator:Provider"]!.ToLower();
+        _localKeywords = configuration["ContentModerator:LocalKeywords"];
         _httpClient = httpClient;
 
         var apiEndpoint = configuration["ContentModerator:ApiEndpoint"];
@@ -51,6 +53,12 @@ public class MoongladeModeratorService : IModeratorService
 
         try
         {
+            if (_provider == "local")
+            {
+                var localWordFilter = new LocalWordFilter(_localKeywords);
+                return localWordFilter.ModerateContent(input);
+            }
+
             var payload = new Payload
             {
                 OriginAspNetRequestId = _httpContextAccessor.HttpContext?.TraceIdentifier,
@@ -88,6 +96,12 @@ public class MoongladeModeratorService : IModeratorService
 
         try
         {
+            if (_provider == "local")
+            {
+                var localWordFilter = new LocalWordFilter(_localKeywords);
+                return localWordFilter.HasBadWord(input);
+            }
+
             var contents = input.Select(p => new Content()
             {
                 Id = Guid.NewGuid().ToString(),
