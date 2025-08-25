@@ -14,16 +14,16 @@ public interface IModeratorService
     public Task<bool> Detect(params string[] input);
 }
 
-public class AzureFunctionModeratorService : IModeratorService
+public class MoongladeModeratorService : IModeratorService
 {
     private readonly IHttpContextAccessor _httpContextAccessor;
-    private readonly ILogger<AzureFunctionModeratorService> _logger;
+    private readonly ILogger<MoongladeModeratorService> _logger;
     private readonly string _provider;
     private readonly HttpClient _httpClient;
     private readonly bool _enabled;
 
-    public AzureFunctionModeratorService(
-        IHttpContextAccessor httpContextAccessor, ILogger<AzureFunctionModeratorService> logger, HttpClient httpClient, IConfiguration configuration)
+    public MoongladeModeratorService(
+        IHttpContextAccessor httpContextAccessor, ILogger<MoongladeModeratorService> logger, HttpClient httpClient, IConfiguration configuration)
     {
         _httpContextAccessor = httpContextAccessor;
         _logger = logger;
