@@ -73,7 +73,7 @@ public class MoongladeModeratorService : IModeratorService
             };
 
             var response = await _httpClient.PostAsync(
-                $"/api/{_provider}/mask",
+                $"/api/mask",
                 new StringContent(JsonSerializer.Serialize(payload),
                     Encoding.UTF8,
                     "application/json"));
@@ -115,7 +115,7 @@ public class MoongladeModeratorService : IModeratorService
             };
 
             var response = await _httpClient.PostAsync(
-                $"/api/{_provider}/detect",
+                $"/api/detect",
                 new StringContent(JsonSerializer.Serialize(payload),
                     Encoding.UTF8,
                     "application/json"));
