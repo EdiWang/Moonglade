@@ -10,6 +10,7 @@
 	</ItemGroup>
 
 	<ItemGroup>
+		<PackageReference Include="Edi.WordFilter" Version="3.1.0" />
 		<PackageReference Include="Microsoft.Extensions.Http.Resilience" Version="9.8.0" />
 	</ItemGroup>
 
