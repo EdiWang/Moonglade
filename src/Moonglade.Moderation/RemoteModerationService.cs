@@ -27,7 +27,7 @@ public class RemoteModerationService(HttpClient httpClient, ILogger<RemoteModera
             response.EnsureSuccessStatusCode();
 
             var moderatorResponse = await response.Content.ReadFromJsonAsync<ModeratorResponse>();
-            return moderatorResponse?.ProcessedContents?[0]?.ProcessedText ?? input;
+            return moderatorResponse?.ProcessedContents?.Length > 0 ? moderatorResponse.ProcessedContents[0]?.ProcessedText ?? input : input;
         }
         catch (HttpRequestException ex)
         {
