@@ -40,7 +40,7 @@ public static class ThemeFactory
 
         // Remove '#' and validate the remaining string
         var cleanHexColor = hexColor.TrimStart('#');
-        
+
         // Check if the hex color has exactly 6 characters
         if (cleanHexColor.Length != 6)
         {

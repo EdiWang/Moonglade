@@ -119,13 +119,28 @@ Leave the `FileSystemPath` empty to use the default path (`~/home/moonglade/imag
 
 ### Comment Moderation
 
-Enable comment moderation via the [Moonglade.ContentSecurity Azure Function](https://github.com/EdiWang/Moonglade.ContentSecurity):
+#### Local Moderation Provider
+
+For basic keyword filtering, use the built-in local provider:
 
 ```json
 "ContentModerator": {
-  "Provider": "",
+  "Provider": "Local",
+  "LocalKeywords": "fuck|shit",
   "ApiEndpoint": "",
   "ApiKey": ""
+}
+```
+
+#### Azure Content Moderator
+
+Setup [Moonglade.ContentSecurity Azure Function](https://github.com/EdiWang/Moonglade.ContentSecurity):
+
+```json
+"ContentModerator": {
+  "Provider": "Azure",
+  "ApiEndpoint": "<Your Azure Function Endpoint>",
+  "ApiKey": "<Your Azure Function Key>"
 }
 ```
 

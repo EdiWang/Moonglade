@@ -12,9 +12,9 @@ public static class ContentProcessor
         if (string.IsNullOrWhiteSpace(html)) return html;
 
         endpoint = endpoint.TrimEnd('/');
-        
+
         // Fast path: check if there are any potential matches
-        if (!html.Contains("src=\"/image/", StringComparison.OrdinalIgnoreCase) && 
+        if (!html.Contains("src=\"/image/", StringComparison.OrdinalIgnoreCase) &&
             !html.Contains("src='/image/", StringComparison.OrdinalIgnoreCase))
         {
             return html;
@@ -34,8 +34,8 @@ public static class ContentProcessor
             {
                 var pattern = patterns[patternIndex];
                 var quote = quotes[patternIndex];
-                
-                if (i + pattern.Length <= span.Length && 
+
+                if (i + pattern.Length <= span.Length &&
                     span.Slice(i, pattern.Length).SequenceEqual(pattern))
                 {
                     var imgStart = span[..i].ToString().LastIndexOf("<img", StringComparison.OrdinalIgnoreCase);
@@ -46,10 +46,10 @@ public static class ContentProcessor
 
                     // Add content up to this point
                     result.Append(span[lastIndex..i]);
-                    
+
                     // Add the CDN replacement
                     result.Append($"src={quote}{endpoint}/");
-                    
+
                     // Skip the original pattern
                     i += pattern.Length;
                     lastIndex = i;
