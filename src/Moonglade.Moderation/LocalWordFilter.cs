@@ -16,5 +16,5 @@ public class LocalWordFilter
 
     public string ModerateContent(string input) => _filter.FilterContent(input);
 
-    public bool HasBadWord(params string[] input) => input.Any(s => _filter.ContainsAnyWord(s));
+    public bool HasBadWord(params string[] input) => input?.Any(s => _filter.ContainsAnyWord(s)) == true;
 }

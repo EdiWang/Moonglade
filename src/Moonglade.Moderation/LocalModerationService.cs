@@ -8,7 +8,7 @@ public interface ILocalModerationService
 
 public class LocalModerationService(string keywords) : ILocalModerationService
 {
-    private readonly LocalWordFilter _wordFilter = new(keywords);
+    private readonly LocalWordFilter _wordFilter = new(keywords ?? throw new ArgumentNullException(nameof(keywords)));
 
     public string ModerateContent(string input) => _wordFilter.ModerateContent(input);
 
