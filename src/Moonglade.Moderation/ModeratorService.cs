@@ -30,19 +30,19 @@ public class MoongladeModeratorService : IModeratorService
         _provider = configuration["ContentModerator:Provider"]!.ToLower();
         _httpClient = httpClient;
 
-        _httpClient.Timeout = TimeSpan.FromSeconds(30);
+        var apiEndpoint = configuration["ContentModerator:ApiEndpoint"];
+        var apiKey = configuration["ContentModerator:ApiKey"];
 
-        if (!string.IsNullOrWhiteSpace(configuration["ContentModerator:ApiEndpoint"]))
+        if (_provider != "local" && string.IsNullOrWhiteSpace(apiEndpoint) && string.IsNullOrWhiteSpace(apiKey))
         {
-            _httpClient.BaseAddress = new(configuration["ContentModerator:ApiEndpoint"]);
-            _httpClient.DefaultRequestHeaders.Add("x-functions-key", configuration["ContentModerator:ApiKey"]);
-            _enabled = true;
-        }
-        else
-        {
-            _logger.LogError("ContentModerator:ApiEndpoint is empty");
+            _logger.LogError("ContentModerator API configuration is empty");
             _enabled = false;
         }
+
+        _httpClient.Timeout = TimeSpan.FromSeconds(30);
+        _httpClient.BaseAddress = new(apiEndpoint);
+        _httpClient.DefaultRequestHeaders.Add("x-functions-key", apiKey);
+        _enabled = true;
     }
 
     public async Task<string> Mask(string input)
