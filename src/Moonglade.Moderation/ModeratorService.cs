@@ -5,7 +5,7 @@ using System.Net.Http.Json;
 using System.Text;
 using System.Text.Json;
 
-namespace Moonglade.Comments.Moderator;
+namespace Moonglade.Moderation;
 
 public interface IModeratorService
 {

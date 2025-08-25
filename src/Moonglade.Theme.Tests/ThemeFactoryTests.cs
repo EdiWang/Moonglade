@@ -275,7 +275,7 @@ public class ThemeFactoryTests
 
         // Assert
         Assert.Equal(themes1.Count, themes2.Count);
-        
+
         for (int i = 0; i < themes1.Count; i++)
         {
             Assert.Equal(themes1[i].Id, themes2[i].Id);
