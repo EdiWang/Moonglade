@@ -1,7 +1,6 @@
 using Microsoft.AspNetCore.Http;
 using Moonglade.Configuration;
 using Moq;
-using System.Text;
 using System.Xml;
 
 namespace Moonglade.Web.Middleware.Tests;
@@ -58,16 +57,16 @@ public class OpenSearchMiddlewareTests
 
         // Assert
         Assert.Equal("text/xml", context.Response.ContentType);
-        
+
         responseBodyStream.Seek(0, SeekOrigin.Begin);
         var responseBody = await new StreamReader(responseBodyStream).ReadToEndAsync();
-        
+
         Assert.Contains("OpenSearchDescription", responseBody);
         Assert.Contains("Test Blog", responseBody);
         Assert.Contains("Test Description", responseBody);
         Assert.Contains("https://example.com/favicon-16x16.png", responseBody);
         Assert.Contains("https://example.com/search?term={searchTerms}", responseBody);
-        
+
         _mockNext.Verify(x => x.Invoke(It.IsAny<HttpContext>()), Times.Never);
     }
 
@@ -126,7 +125,7 @@ public class OpenSearchMiddlewareTests
         // Assert
         responseBodyStream.Seek(0, SeekOrigin.Begin);
         var responseBody = await new StreamReader(responseBodyStream).ReadToEndAsync();
-        
+
         Assert.Contains("https://custom.domain.com/favicon-16x16.png", responseBody);
         Assert.Contains("https://custom.domain.com/search?term={searchTerms}", responseBody);
     }
@@ -154,7 +153,7 @@ public class OpenSearchMiddlewareTests
         // Assert
         responseBodyStream.Seek(0, SeekOrigin.Begin);
         var responseBody = await new StreamReader(responseBodyStream).ReadToEndAsync();
-        
+
         Assert.Contains("https://example.com/favicon-16x16.png", responseBody);
         Assert.Contains("https://example.com/search?term={searchTerms}", responseBody);
     }
@@ -186,30 +185,30 @@ public class OpenSearchMiddlewareTests
         // Verify XML is valid by parsing it
         var xmlDoc = new XmlDocument();
         Assert.True(TryParseXml(responseBody, out xmlDoc));
-        
+
         // Verify XML structure
         Assert.NotNull(xmlDoc.DocumentElement);
         Assert.Equal("OpenSearchDescription", xmlDoc.DocumentElement.Name);
         Assert.Equal("http://a9.com/-/spec/opensearch/1.1/", xmlDoc.DocumentElement.NamespaceURI);
-        
+
         // Create namespace manager for XPath queries
         var namespaceManager = new XmlNamespaceManager(xmlDoc.NameTable);
         namespaceManager.AddNamespace("os", "http://a9.com/-/spec/opensearch/1.1/");
-        
+
         var shortNameNode = xmlDoc.SelectSingleNode("//os:ShortName", namespaceManager);
         Assert.NotNull(shortNameNode);
         Assert.Equal("Test Blog", shortNameNode.InnerText);
-        
+
         var descriptionNode = xmlDoc.SelectSingleNode("//os:Description", namespaceManager);
         Assert.NotNull(descriptionNode);
         Assert.Equal("Test Description", descriptionNode.InnerText);
-        
+
         var imageNode = xmlDoc.SelectSingleNode("//os:Image", namespaceManager);
         Assert.NotNull(imageNode);
         Assert.Equal("16", imageNode.Attributes["height"]?.Value);
         Assert.Equal("16", imageNode.Attributes["width"]?.Value);
         Assert.Equal("image/png", imageNode.Attributes["type"]?.Value);
-        
+
         var urlNode = xmlDoc.SelectSingleNode("//os:Url", namespaceManager);
         Assert.NotNull(urlNode);
         Assert.Equal("text/html", urlNode.Attributes["type"]?.Value);
@@ -243,14 +242,14 @@ public class OpenSearchMiddlewareTests
         // Verify XML is still valid with special characters
         var xmlDoc = new XmlDocument();
         Assert.True(TryParseXml(responseBody, out xmlDoc));
-        
+
         // Create namespace manager for XPath queries
         var namespaceManager = new XmlNamespaceManager(xmlDoc.NameTable);
         namespaceManager.AddNamespace("os", "http://a9.com/-/spec/opensearch/1.1/");
-        
+
         var shortNameNode = xmlDoc.SelectSingleNode("//os:ShortName", namespaceManager);
         Assert.Equal("Test & Blog <Special>", shortNameNode.InnerText);
-        
+
         var descriptionNode = xmlDoc.SelectSingleNode("//os:Description", namespaceManager);
         Assert.Equal("Description with \"quotes\" & ampersands", descriptionNode.InnerText);
     }
@@ -289,7 +288,7 @@ public class OpenSearchMiddlewareTests
 
         Assert.Contains("https://example.com/custom-icon.ico", responseBody);
         Assert.Contains("image/x-icon", responseBody);
-        
+
         var xmlDoc = new XmlDocument();
         Assert.True(TryParseXml(responseBody, out xmlDoc));
         Assert.Equal("http://custom.namespace.com/", xmlDoc.DocumentElement.NamespaceURI);
@@ -317,9 +316,9 @@ public class OpenSearchMiddlewareTests
 
         // Act
         cts.Cancel();
-        
+
         // Assert - Should throw TaskCanceledException when cancellation token is cancelled
-        await Assert.ThrowsAsync<TaskCanceledException>(() => 
+        await Assert.ThrowsAsync<TaskCanceledException>(() =>
             _middleware.Invoke(context, _mockBlogConfig.Object));
     }
 

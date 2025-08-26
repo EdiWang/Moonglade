@@ -99,7 +99,7 @@ public class PoweredByMiddlewareTests
         // Act & Assert
         var thrownException = await Assert.ThrowsAsync<InvalidOperationException>(() => _middleware.Invoke(context));
         Assert.Equal(expectedException.Message, thrownException.Message);
-        
+
         // Verify header was still added before exception
         Assert.True(context.Response.Headers.ContainsKey("X-Powered-By"));
     }
