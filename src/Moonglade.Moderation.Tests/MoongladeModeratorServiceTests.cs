@@ -168,7 +168,7 @@ public class MoongladeModeratorServiceTests
         // Arrange
         var options = CreateValidLocalOptions();
         _mockOptions.Setup(x => x.Value).Returns(options);
-        
+
         const string input = "test input with badword";
         const string maskedOutput = "test input with ****";
         _mockLocalService.Setup(x => x.ModerateContent(input)).Returns(maskedOutput);

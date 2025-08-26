@@ -159,7 +159,7 @@
 
 <div class="@(BlogConfig.CommentSettings.EnableCommentSectionOnMobile ? null : "d-none d-md-block")">
 
-    @if (!Helper.GetAppDomainData<bool>("IsReadonlyMode") && BlogConfig.CommentSettings.EnableComments)
+    @if (BlogConfig.CommentSettings.EnableComments)
     {
         var days = DateTime.UtcNow.Date.Subtract(Model.Post.PubDateUtc.GetValueOrDefault()).Days;
 

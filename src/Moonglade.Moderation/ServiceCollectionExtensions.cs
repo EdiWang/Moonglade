@@ -22,12 +22,12 @@ public static class ServiceCollectionExtensions
         services.AddHttpClient<IRemoteModerationService, RemoteModerationService>((serviceProvider, client) =>
         {
             var options = serviceProvider.GetRequiredService<IOptions<ContentModeratorOptions>>().Value;
-            
+
             if (!string.IsNullOrWhiteSpace(options.ApiEndpoint))
             {
                 client.BaseAddress = new Uri(options.ApiEndpoint);
                 client.Timeout = TimeSpan.FromSeconds(options.TimeoutSeconds);
-                
+
                 if (!string.IsNullOrWhiteSpace(options.ApiKey))
                 {
                     client.DefaultRequestHeaders.Add("x-functions-key", options.ApiKey);

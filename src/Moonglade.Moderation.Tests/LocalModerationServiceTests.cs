@@ -305,7 +305,7 @@ public class LocalModerationServiceTests
 
         // Assert
         Assert.Equal(expectedHasBadWords, hasWords);
-        
+
         if (expectedHasBadWords)
         {
             Assert.NotEqual(input, moderated);
