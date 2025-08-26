@@ -313,7 +313,7 @@ public class RemoteModerationServiceTests
 
         var requestBody = await capturedRequest.Content.ReadAsStringAsync();
         var payload = JsonSerializer.Deserialize<Payload>(requestBody);
-        
+
         Assert.NotNull(payload);
         Assert.Equal(requestId, payload.OriginAspNetRequestId);
         Assert.Single(payload.Contents);
@@ -569,11 +569,11 @@ public class RemoteModerationServiceTests
 
         var requestBody = await capturedRequest.Content.ReadAsStringAsync();
         var payload = JsonSerializer.Deserialize<Payload>(requestBody);
-        
+
         Assert.NotNull(payload);
         Assert.Equal(requestId, payload.OriginAspNetRequestId);
         Assert.Equal(3, payload.Contents.Length);
-        
+
         for (int i = 0; i < input.Length; i++)
         {
             Assert.Equal(i.ToString(), payload.Contents[i].Id);
@@ -618,7 +618,7 @@ public class RemoteModerationServiceTests
 
         var requestBody = await capturedRequest.Content.ReadAsStringAsync();
         var payload = JsonSerializer.Deserialize<Payload>(requestBody);
-        
+
         Assert.NotNull(payload);
         Assert.Equal(requestId, payload.OriginAspNetRequestId);
         Assert.Empty(payload.Contents);
