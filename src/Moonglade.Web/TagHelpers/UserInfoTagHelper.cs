@@ -24,67 +24,78 @@ public class UserInfoTagHelper : TagHelper
         if (User?.Identity is null || !User.Identity.IsAuthenticated)
         {
             base.Process(context, output);
+            return;
         }
-        else
+
+        var name = GetName();
+        var email = GetEmail();
+
+        output.TagName = "div";
+        output.Attributes.SetAttribute("class", TagClassBase);
+
+        switch (UserInfoDisplay)
         {
-            var name = GetName();
-            var email = GetEmail();
-
-            output.TagName = "div";
-            output.Attributes.SetAttribute("class", TagClassBase);
-
-            switch (UserInfoDisplay)
-            {
-                case UserInfoDisplay.PreferName:
-                    output.Content.SetContent(name ?? email);
-                    break;
-                case UserInfoDisplay.PreferEmail:
-                    output.Content.SetContent(email ?? name);
-                    break;
-                case UserInfoDisplay.Both:
-                    output.Content.SetHtmlContent(
-                        $"<div class='{TagClassBase}-name'>{name}</div><email class='{TagClassBase}-email'>{email}</email>");
-                    break;
-                default:
-                    throw new ArgumentOutOfRangeException();
-            }
+            case UserInfoDisplay.PreferName:
+                output.Content.SetContent(name ?? email ?? string.Empty);
+                break;
+            case UserInfoDisplay.PreferEmail:
+                output.Content.SetContent(email ?? name ?? string.Empty);
+                break;
+            case UserInfoDisplay.Both:
+                SetBothDisplayContent(output, name, email);
+                break;
+            default:
+                throw new ArgumentOutOfRangeException(nameof(UserInfoDisplay), UserInfoDisplay, null);
         }
+    }
+
+    private void SetBothDisplayContent(TagHelperOutput output, string name, string email)
+    {
+        if (string.IsNullOrWhiteSpace(name) && string.IsNullOrWhiteSpace(email))
+        {
+            output.Content.SetContent(string.Empty);
+            return;
+        }
+
+        var nameHtml = !string.IsNullOrWhiteSpace(name)
+            ? $"<div class='{TagClassBase}-name'>{name}</div>"
+            : string.Empty;
+
+        var emailHtml = !string.IsNullOrWhiteSpace(email)
+            ? $"<div class='{TagClassBase}-email'>{email}</div>"
+            : string.Empty;
+
+        output.Content.SetHtmlContent($"{nameHtml}{emailHtml}");
     }
 
     private string GetName()
     {
-        string name = null;
-
-        // try non-standard name
-        if (User.HasClaim(c => c.Type.ToLower() == "name"))
+        // First try standard Identity.Name
+        if (!string.IsNullOrWhiteSpace(User.Identity?.Name))
         {
-            name = User.Claims.FirstOrDefault(c => c.Type.ToLower() == "name")?.Value;
+            return User.Identity.Name;
         }
 
-        if (!string.IsNullOrWhiteSpace(name)) return name;
-        if (User.Identity != null) name = User.Identity.Name;
-        // if (string.IsNullOrWhiteSpace(name)) name = "N/A";
+        // Then try custom "name" claim (case-insensitive)
+        var nameClaim = User.Claims.FirstOrDefault(c =>
+            string.Equals(c.Type, "name", StringComparison.OrdinalIgnoreCase));
 
-        return name;
+        return nameClaim?.Value;
     }
 
     private string GetEmail()
     {
-        string email = null;
-        if (User.HasClaim(c => c.Type == ClaimTypes.Email))
+        // First try standard email claim
+        var emailClaim = User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.Email);
+        if (!string.IsNullOrWhiteSpace(emailClaim?.Value))
         {
-            email = User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.Email)?.Value;
+            return emailClaim.Value;
         }
 
-        if (string.IsNullOrWhiteSpace(email))
-        {
-            // non-standard name
-            if (User.HasClaim(c => c.Type.ToLower() == "email"))
-            {
-                email = User.Claims.FirstOrDefault(c => c.Type.ToLower() == "email")?.Value;
-            }
-        }
+        // Then try custom "email" claim (case-insensitive)
+        var customEmailClaim = User.Claims.FirstOrDefault(c =>
+            string.Equals(c.Type, "email", StringComparison.OrdinalIgnoreCase));
 
-        return email;
+        return customEmailClaim?.Value;
     }
 }
