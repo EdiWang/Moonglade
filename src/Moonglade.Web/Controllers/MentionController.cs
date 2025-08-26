@@ -19,7 +19,6 @@ public class MentionController(
     ICommandMediator commandMediator) : ControllerBase
 {
     [HttpPost("/webmention")]
-    [ReadonlyMode]
     [IgnoreAntiforgeryToken]
     [ProducesResponseType(StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
@@ -56,7 +55,6 @@ public class MentionController(
     };
 
     [HttpPost("/pingback")]
-    [ReadonlyMode]
     [IgnoreAntiforgeryToken]
     [ProducesResponseType(StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status403Forbidden)]
@@ -89,7 +87,6 @@ public class MentionController(
     }
 
     [Authorize]
-    [ReadonlyMode]
     [HttpDelete("{pingbackId:guid}")]
     [ProducesResponseType(StatusCodes.Status204NoContent)]
     public async Task<IActionResult> Delete([NotEmpty] Guid pingbackId)
@@ -99,7 +96,6 @@ public class MentionController(
     }
 
     [Authorize]
-    [ReadonlyMode]
     [HttpDelete("clear")]
     [ProducesResponseType(StatusCodes.Status204NoContent)]
     public async Task<IActionResult> Clear()

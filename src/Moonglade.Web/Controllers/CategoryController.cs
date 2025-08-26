@@ -31,7 +31,6 @@ public class CategoryController(IQueryMediator queryMediator, ICommandMediator c
     }
 
     [HttpPost]
-    [ReadonlyMode]
     [ProducesResponseType(StatusCodes.Status201Created)]
     public async Task<IActionResult> Create(CreateCategoryCommand command)
     {
@@ -40,7 +39,6 @@ public class CategoryController(IQueryMediator queryMediator, ICommandMediator c
     }
 
     [HttpPut("{id:guid}")]
-    [ReadonlyMode]
     [ApiConventionMethod(typeof(DefaultApiConventions), nameof(DefaultApiConventions.Put))]
     public async Task<IActionResult> Update([NotEmpty] Guid id, UpdateCategoryCommand command)
     {
@@ -52,7 +50,6 @@ public class CategoryController(IQueryMediator queryMediator, ICommandMediator c
     }
 
     [HttpDelete("{id:guid}")]
-    [ReadonlyMode]
     [ApiConventionMethod(typeof(DefaultApiConventions), nameof(DefaultApiConventions.Delete))]
     public async Task<IActionResult> Delete([NotEmpty] Guid id)
     {
