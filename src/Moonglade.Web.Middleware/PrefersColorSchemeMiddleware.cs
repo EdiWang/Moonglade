@@ -1,4 +1,7 @@
-﻿namespace Moonglade.Web.Middleware;
+﻿using Microsoft.AspNetCore.Http;
+using Microsoft.Extensions.Configuration;
+
+namespace Moonglade.Web.Middleware;
 
 public class PrefersColorSchemeMiddleware(RequestDelegate next)
 {
