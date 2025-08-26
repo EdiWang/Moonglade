@@ -45,11 +45,6 @@ public class Program
         ConfigureServices(builder.Services, builder.Configuration, cultures);
 
         var app = builder.Build();
-        if (!app.Environment.IsDevelopment() && await EnvironmentHelper.IsRunningInChina())
-        {
-            Helper.SetAppDomainData("IsReadonlyMode", true);
-            app.Logger.LogWarning("Positive China detection, Moonglade is now in readonly mode.");
-        }
 
         await app.InitStartUp();
         ConfigureMiddleware(app, cultures);
