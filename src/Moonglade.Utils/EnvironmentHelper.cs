@@ -1,5 +1,4 @@
-﻿using Edi.ChinaDetector;
-using System.Text.RegularExpressions;
+﻿using System.Text.RegularExpressions;
 
 namespace Moonglade.Utils;
 
