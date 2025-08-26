@@ -2,6 +2,7 @@
 using Microsoft.Extensions.Logging;
 using Moonglade.Data;
 using Moonglade.Data.Entities;
+using Moonglade.Data.Specifications;
 using Moonglade.Utils;
 
 namespace Moonglade.Comments;
@@ -15,7 +16,8 @@ public class ReplyCommentCommandHandler(
 {
     public async Task<CommentReply> HandleAsync(ReplyCommentCommand request, CancellationToken ct)
     {
-        var cmt = await commentRepo.GetByIdAsync(request.CommentId, ct) ?? throw new InvalidOperationException($"Comment {request.CommentId} is not found.");
+        var cmt = await commentRepo.FirstOrDefaultAsync(new CommentWithPostByIdSpec(request.CommentId), ct)
+            ?? throw new InvalidOperationException($"Comment {request.CommentId} is not found.");
 
         var id = Guid.NewGuid();
         var model = new CommentReplyEntity
