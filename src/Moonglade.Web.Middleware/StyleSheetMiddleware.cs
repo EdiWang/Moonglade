@@ -9,7 +9,7 @@ namespace Moonglade.Web.Middleware;
 
 public class StyleSheetMiddleware(RequestDelegate next)
 {
-    public static CustomCssMiddlewareOptions Options { get; set; } = new();
+    public static StyleSheetMiddlewareOptions Options { get; set; } = new();
 
     public async Task Invoke(HttpContext context, IBlogConfig blogConfig, IQueryMediator queryMediator)
     {
@@ -84,14 +84,14 @@ public class StyleSheetMiddleware(RequestDelegate next)
 
 public static partial class ApplicationBuilderExtensions
 {
-    public static IApplicationBuilder UseCustomCss(this IApplicationBuilder app, Action<CustomCssMiddlewareOptions> options)
+    public static IApplicationBuilder UseCustomCss(this IApplicationBuilder app, Action<StyleSheetMiddlewareOptions> options)
     {
         options(StyleSheetMiddleware.Options);
         return app.UseMiddleware<StyleSheetMiddleware>();
     }
 }
 
-public class CustomCssMiddlewareOptions
+public class StyleSheetMiddlewareOptions
 {
     public int MaxContentLength { get; set; } = 65536;
     public PathString DefaultPath { get; set; } = "/custom.css";
