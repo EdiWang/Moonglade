@@ -41,7 +41,7 @@ public class StyleSheetMiddleware(RequestDelegate next, ILogger<StyleSheetMiddle
             {
                 await HandleDefaultPath(context, blogConfig);
             }
-            else if (string.Equals(normalizedPath, "/content.css", StringComparison.Ordinal) && context.Request.QueryString.HasValue)
+            else if (string.Equals(normalizedPath, "/content.css", StringComparison.Ordinal))
             {
                 await HandleContentCss(context, queryMediator);
             }
@@ -53,7 +53,7 @@ public class StyleSheetMiddleware(RequestDelegate next, ILogger<StyleSheetMiddle
         catch (Exception ex)
         {
             logger.LogError(ex, "Error processing CSS request for path: {RequestPath}", context.Request.Path);
-            
+
             if (!context.Response.HasStarted)
             {
                 context.Response.StatusCode = StatusCodes.Status500InternalServerError;
@@ -70,8 +70,10 @@ public class StyleSheetMiddleware(RequestDelegate next, ILogger<StyleSheetMiddle
     {
         // Check for path traversal attempts and other suspicious patterns
         return path.Contains("..", StringComparison.Ordinal) ||
-               path.Contains("~", StringComparison.Ordinal) ||
+               path.Contains('~', StringComparison.Ordinal) ||
                path.Contains('\0') ||
+               path.Contains("%00") ||
+               path.Contains("%5C") || // Encoded backslash
                path.Contains('\\', StringComparison.Ordinal); // Only check for backslashes, forward slashes are normal
     }
 
@@ -85,7 +87,7 @@ public class StyleSheetMiddleware(RequestDelegate next, ILogger<StyleSheetMiddle
         }
 
         var cssCode = blogConfig.AppearanceSettings.CssCode;
-        
+
         if (string.IsNullOrWhiteSpace(cssCode))
         {
             logger.LogDebug("Custom CSS code is empty");
@@ -99,7 +101,7 @@ public class StyleSheetMiddleware(RequestDelegate next, ILogger<StyleSheetMiddle
     private async Task HandleContentCss(HttpContext context, IQueryMediator queryMediator)
     {
         var queryString = context.Request.QueryString.Value;
-        
+
         if (string.IsNullOrWhiteSpace(queryString))
         {
             await WriteNotFoundResponse(context);
@@ -119,7 +121,7 @@ public class StyleSheetMiddleware(RequestDelegate next, ILogger<StyleSheetMiddle
         try
         {
             var css = await queryMediator.QueryAsync(new GetStyleSheetQuery(guid), context.RequestAborted);
-            
+
             if (css?.CssContent == null)
             {
                 logger.LogDebug("Stylesheet not found for ID: {Id}", guid);
@@ -137,7 +139,7 @@ public class StyleSheetMiddleware(RequestDelegate next, ILogger<StyleSheetMiddle
         catch (Exception ex)
         {
             logger.LogError(ex, "Error retrieving stylesheet for ID: {Id}", guid);
-            
+
             if (!context.Response.HasStarted)
             {
                 context.Response.StatusCode = StatusCodes.Status500InternalServerError;
@@ -164,7 +166,7 @@ public class StyleSheetMiddleware(RequestDelegate next, ILogger<StyleSheetMiddle
         }
 
         var cssLength = Encoding.UTF8.GetByteCount(cssCode);
-        
+
         if (cssLength > Options.MaxContentLength)
         {
             context.Response.StatusCode = StatusCodes.Status413PayloadTooLarge;
@@ -186,22 +188,22 @@ public class StyleSheetMiddleware(RequestDelegate next, ILogger<StyleSheetMiddle
         context.Response.StatusCode = StatusCodes.Status200OK;
         context.Response.ContentType = "text/css; charset=utf-8";
         context.Response.ContentLength = cssLength;
-        
+
         await context.Response.WriteAsync(cssCode, context.RequestAborted);
     }
 
     private static void SetCachingHeaders(HttpContext context, string cssCode, DateTime? lastModified)
     {
         var response = context.Response;
-        
+
         // Generate ETag based on content hash
         var etag = GenerateETag(cssCode);
         response.Headers.ETag = etag;
-        
+
         // Set Last-Modified header
         var lastModifiedDate = lastModified ?? DateTime.UtcNow;
         response.Headers.LastModified = lastModifiedDate.ToString("R");
-        
+
         // Set cache control headers
         response.Headers.CacheControl = $"public, max-age={Options.CacheMaxAge}";
         response.Headers.Expires = DateTime.UtcNow.AddSeconds(Options.CacheMaxAge).ToString("R");
@@ -217,14 +219,14 @@ public class StyleSheetMiddleware(RequestDelegate next, ILogger<StyleSheetMiddle
     {
         var request = context.Request;
         var etag = GenerateETag(cssCode);
-        
+
         // Check If-None-Match header
         if (request.Headers.IfNoneMatch.Count > 0)
         {
-            return request.Headers.IfNoneMatch.Any(value => 
+            return request.Headers.IfNoneMatch.Any(value =>
                 string.Equals(value, etag, StringComparison.Ordinal));
         }
-        
+
         return false;
     }
 }
