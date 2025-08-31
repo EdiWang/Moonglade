@@ -31,6 +31,8 @@ else
 
     public async Task<IActionResult> OnGet(string normalizedName)
     {
+        if (P == 0) return BadRequest();
+
         var tagResponse = await QueryMediator.QueryAsync(new GetTagQuery(normalizedName));
         if (tagResponse is null) return NotFound();
 
