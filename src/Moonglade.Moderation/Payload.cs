@@ -1,4 +1,4 @@
-﻿namespace Moonglade.Comments.Moderator;
+﻿namespace Moonglade.Moderation;
 
 public class Payload
 {

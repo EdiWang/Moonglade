@@ -1,4 +1,7 @@
-﻿namespace Moonglade.Web.Middleware;
+﻿using Microsoft.AspNetCore.Http;
+using Moonglade.Utils;
+
+namespace Moonglade.Web.Middleware;
 
 public class PoweredByMiddleware(RequestDelegate next)
 {

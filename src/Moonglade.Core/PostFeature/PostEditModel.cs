@@ -52,6 +52,10 @@ public class PostEditModel
     [MaxLength(1024)]
     public string Abstract { get; set; }
 
+    [MaxLength(256)]
+    [Display(Name = "Keywords (split by comma ',')")]
+    public string Keywords { get; set; }
+
     [Display(Name = "Publish Date")]
     [DataType(DataType.Date)]
     public DateTime? PublishDate { get; set; }

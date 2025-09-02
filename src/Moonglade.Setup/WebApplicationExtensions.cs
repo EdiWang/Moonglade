@@ -34,7 +34,7 @@ public static class WebApplicationExtensions
                 ? msg
                 : $"Unknown startup failure: {result}";
 
-            app.Logger.LogCritical(message);
+            app.Logger.LogCritical("{ErrorMessage}", message);
 
             await FailFast(app, message);
         }

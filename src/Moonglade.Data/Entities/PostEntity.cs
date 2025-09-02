@@ -28,6 +28,7 @@ public class PostEntity
     public bool IsFeatured { get; set; }
     public string RouteLink { get; set; }
     public string PostStatus { get; set; }
+    public string Keywords { get; set; }
 
     public ICollection<CommentEntity> Comments { get; set; }
     public ICollection<PostCategoryEntity> PostCategory { get; set; }

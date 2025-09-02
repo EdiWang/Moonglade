@@ -5,24 +5,24 @@ using Moonglade.Core;
 
 namespace Moonglade.Setup;
 
-public interface ISiteIconInitializer
+public interface ISiteIconBuilder
 {
     Task GenerateSiteIcons();
 }
 
-public class SiteIconInitializer(ILogger<SiteIconInitializer> logger, IQueryMediator queryMediator, IWebHostEnvironment env) : ISiteIconInitializer
+public class SiteIconBuilder(ILogger<SiteIconBuilder> logger, IQueryMediator queryMediator, IWebHostEnvironment env) : ISiteIconBuilder
 {
     public async Task GenerateSiteIcons()
     {
         try
         {
             var iconData = await queryMediator.QueryAsync(new GetAssetQuery(AssetId.SiteIconBase64));
-            MemoryStreamIconGenerator.GenerateIcons(iconData, env.WebRootPath, logger);
+            InMemoryIconGenerator.GenerateIcons(iconData, env.WebRootPath, logger);
         }
         catch (Exception e)
         {
             // Non critical error, just log, do not block application start
-            logger.LogError(e, e.Message);
+            logger.LogError(e, "Error generating site icons: {Message}", e.Message);
         }
     }
 }

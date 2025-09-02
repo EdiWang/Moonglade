@@ -35,7 +35,6 @@ public class AssetsController(
 
     [Authorize]
     [HttpPost("avatar")]
-    [ReadonlyMode]
     [ProducesResponseType(StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status409Conflict)]
     [TypeFilter(typeof(ClearBlogCache), Arguments = [BlogCachePartition.General, "avatar"])]
@@ -77,7 +76,7 @@ public class AssetsController(
     [ProducesResponseType(StatusCodes.Status404NotFound)]
     public IActionResult SiteIcon(string filename)
     {
-        var iconBytes = MemoryStreamIconGenerator.GetIcon(filename);
+        var iconBytes = InMemoryIconGenerator.GetIcon(filename);
         if (iconBytes is null) return NotFound();
 
         var contentType = "image/png";
@@ -116,7 +115,6 @@ public class AssetsController(
 
     [Authorize]
     [HttpPost("siteicon")]
-    [ReadonlyMode]
     [ProducesResponseType(StatusCodes.Status204NoContent)]
     [ProducesResponseType(StatusCodes.Status409Conflict)]
     public async Task<IActionResult> UpdateSiteIcon([FromBody] string base64Img)

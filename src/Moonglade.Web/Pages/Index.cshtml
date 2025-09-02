@@ -41,11 +41,7 @@ else
 
     public async Task<IActionResult> OnGetAsync(int p = 1)
     {
-        // Validate page parameter
-        if (p < 1)
-        {
-            return RedirectToPage("Index", new { p = 1 });
-        }
+        if (P == 0) return BadRequest();
 
         P = p;
         var pageSize = BlogConfig.ContentSettings.PostListPageSize;

@@ -4,10 +4,11 @@
 
 ## 🚀 Deployment
 
+> This blogging system must not be used to serve users in mainland China or to publish content prohibited by Chinese law or any applicable regulations.
+
 - **Stable Code:** Always use the [Release](https://github.com/EdiWang/Moonglade/releases) branch. Avoid deploying from `master`.
 - **Security:** Enable **HTTPS** and **HTTP/2** on your web server for optimal security and performance.
 - **Deployment Options:** While Azure is recommended, Moonglade can run on any cloud provider or on-premises.
-- **China Regulation:** In China, Moonglade runs in **read-only** mode due to local regulations. If you are in China, please consider alternative platforms.
 
 ### Full Azure Deployment
 
@@ -119,13 +120,28 @@ Leave the `FileSystemPath` empty to use the default path (`~/home/moonglade/imag
 
 ### Comment Moderation
 
-Enable comment moderation via the [Moonglade.ContentSecurity Azure Function](https://github.com/EdiWang/Moonglade.ContentSecurity):
+#### Local Moderation Provider
+
+For basic keyword filtering, use the built-in local provider:
 
 ```json
 "ContentModerator": {
-  "Provider": "",
+  "Provider": "Local",
+  "LocalKeywords": "fuck|shit",
   "ApiEndpoint": "",
   "ApiKey": ""
+}
+```
+
+#### Azure Content Moderator
+
+Setup [Moonglade.ContentSecurity Azure Function](https://github.com/EdiWang/Moonglade.ContentSecurity):
+
+```json
+"ContentModerator": {
+  "Provider": "Azure",
+  "ApiEndpoint": "<Your Azure Function Endpoint>",
+  "ApiKey": "<Your Azure Function Key>"
 }
 ```
 

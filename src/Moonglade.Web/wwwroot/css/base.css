@@ -20,7 +20,7 @@ body {
 }
 
 .blog-sidebar {
-    max-width: 300px;
+    width: 300px;
 }
 
 a {

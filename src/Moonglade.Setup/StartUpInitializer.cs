@@ -14,7 +14,7 @@ public class StartUpInitializer(
     BlogDbContext context,
     IBlogConfigInitializer blogConfigInitializer,
     IMigrationManager migrationManager,
-    ISiteIconInitializer siteIconInitializer) : IStartUpInitializer
+    ISiteIconBuilder siteIconInitializer) : IStartUpInitializer
 {
     public async Task<InitStartUpResult> InitStartUpAsync(CancellationToken cancellationToken = default)
     {

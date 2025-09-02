@@ -34,3 +34,12 @@ public sealed class CommentWithRepliesSpec : Specification<CommentEntity>
         Query.Include(p => p.Replies);
     }
 }
+
+public sealed class CommentWithPostByIdSpec : Specification<CommentEntity>
+{
+    public CommentWithPostByIdSpec(Guid commentId)
+    {
+        Query.Where(c => c.Id == commentId);
+        Query.Include(c => c.Post);
+    }
+}

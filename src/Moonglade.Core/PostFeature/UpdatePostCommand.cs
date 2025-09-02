@@ -27,7 +27,7 @@ public class UpdatePostCommandHandler(
         UpdatePostDetails(post, postEditModel, utcNow);
 
         await UpdateTags(post, postEditModel.Tags, ct);
-        UpdateCats(post, postEditModel.SelectedCatIds, ct);
+        UpdateCats(post, postEditModel.SelectedCatIds);
 
         await postRepo.UpdateAsync(post, ct);
 
@@ -125,9 +125,10 @@ public class UpdatePostCommandHandler(
         post.HeroImageUrl = string.IsNullOrWhiteSpace(postEditModel.HeroImageUrl) ? null : SecurityHelper.SterilizeLink(postEditModel.HeroImageUrl);
         post.IsOutdated = postEditModel.IsOutdated;
         post.RouteLink = UrlHelper.GenerateRouteLink(post.PubDateUtc.GetValueOrDefault(), postEditModel.Slug);
+        post.Keywords = ContentProcessor.GetKeywords(postEditModel.Keywords);
     }
 
-    private static void UpdateCats(PostEntity post, Guid[] catIds, CancellationToken ct)
+    private static void UpdateCats(PostEntity post, Guid[] catIds)
     {
         post.PostCategory.Clear();
         if (catIds.Length != 0)

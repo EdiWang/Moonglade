@@ -1,5 +1,4 @@
-﻿using Edi.ChinaDetector;
-using System.Text.RegularExpressions;
+﻿using System.Text.RegularExpressions;
 
 namespace Moonglade.Utils;
 
@@ -8,14 +7,6 @@ public static class EnvironmentHelper
     public static bool IsRunningOnAzureAppService() => !string.IsNullOrWhiteSpace(Environment.GetEnvironmentVariable("WEBSITE_SITE_NAME"));
 
     public static bool IsRunningInDocker() => Environment.GetEnvironmentVariable("DOTNET_RUNNING_IN_CONTAINER") == "true";
-
-    public static async Task<bool> IsRunningInChina()
-    {
-        // Learn more at https://go.edi.wang/aka/os251
-        var service = new OfflineChinaDetectService();
-        var result = await service.Detect(DetectionMethod.TimeZone | DetectionMethod.Culture | DetectionMethod.Behavior);
-        return result.Rank >= 1;
-    }
 
     /// <summary>
     /// Get values from `MOONGLADE_TAGS` Environment Variable

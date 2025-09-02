@@ -33,7 +33,7 @@ else
     </div>
 }
 
-@functions{
+@functions {
     [BindProperty(SupportsGet = true)]
     public int P { get; set; } = 1;
     public BasePagedList<PostDigest> Posts { get; set; }
@@ -42,6 +42,7 @@ else
     public async Task<IActionResult> OnGetAsync(string slug)
     {
         if (string.IsNullOrWhiteSpace(slug)) return NotFound();
+        if (P == 0) return BadRequest();
 
         var pageSize = BlogConfig.ContentSettings.PostListPageSize;
         Cat = await QueryMediator.QueryAsync(new GetCategoryBySlugQuery(slug));

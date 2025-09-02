@@ -11,7 +11,6 @@ namespace Moonglade.Web.Controllers;
 public class RecycleBinController(ICommandMediator commandMediator) : ControllerBase
 {
     [HttpPost("{postId:guid}/restore")]
-    [ReadonlyMode]
     [ProducesResponseType(StatusCodes.Status204NoContent)]
     public async Task<IActionResult> Restore([NotEmpty] Guid postId)
     {
@@ -20,7 +19,6 @@ public class RecycleBinController(ICommandMediator commandMediator) : Controller
     }
 
     [HttpDelete("{postId:guid}/destroy")]
-    [ReadonlyMode]
     [ProducesResponseType(StatusCodes.Status204NoContent)]
     public async Task<IActionResult> Delete([NotEmpty] Guid postId)
     {
@@ -29,7 +27,6 @@ public class RecycleBinController(ICommandMediator commandMediator) : Controller
     }
 
     [HttpDelete("recyclebin")]
-    [ReadonlyMode]
     [ProducesResponseType(StatusCodes.Status204NoContent)]
     public async Task<IActionResult> Clear()
     {

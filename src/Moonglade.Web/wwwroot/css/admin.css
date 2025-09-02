@@ -214,7 +214,7 @@ div.mce-fullscreen {
     }
 }
 
-.ul-tag-mgr li span {
+.ul-tag-mgr li span.span-tagcontent-editable {
     display: inline-block;
     padding: 0 10px;
     vertical-align: top;
@@ -234,6 +234,13 @@ div.mce-fullscreen {
         background-color: var(--bs-red);
         color: var(--bs-white);
     }
+
+.ul-tag-mgr .tag-postcount {
+    border-left: 1px solid var(--bs-gray-400);
+    padding: 0 5px;
+    text-align: center;
+    color: var(--bs-secondary);
+}
 
 .table .table-item-w10 {
     width: 10%;

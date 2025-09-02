@@ -1,8 +1,8 @@
 ﻿using LiteBus.Commands.Abstractions;
 using LiteBus.Events.Abstractions;
 using Microsoft.AspNetCore.Mvc.ModelBinding;
-using Moonglade.Comments.Moderator;
 using Moonglade.Email.Client;
+using Moonglade.Moderation;
 using Moonglade.Web.Attributes;
 using System.ComponentModel.DataAnnotations;
 

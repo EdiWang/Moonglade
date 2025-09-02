@@ -34,7 +34,7 @@ public class WebmentionSender(
                         continue;
                     }
 
-                    logger.LogInformation("Sending webmention to URL: " + url);
+                    logger.LogInformation("Sending webmention to URL: {TargetUrl}", url);
                     try
                     {
                         await SendAsync(uri, url);
@@ -48,7 +48,7 @@ public class WebmentionSender(
         }
         catch (Exception e)
         {
-            logger.LogError(e, $"{nameof(SendWebmentionAsync)}({postUrl})");
+            logger.LogError(e, "{MethodName}({PostUrl})", nameof(SendWebmentionAsync), postUrl);
         }
     }
 
@@ -64,11 +64,11 @@ public class WebmentionSender(
             string endpoint = await DiscoverWebmentionEndpoint(targetUrl.ToString());
             if (endpoint is null)
             {
-                logger.LogWarning($"Webmention endpoint not found for '{targetUrl}'.");
+                logger.LogWarning("Webmention endpoint not found for '{TargetUrl}'.", targetUrl);
                 return;
             }
 
-            logger.LogInformation($"Found Webmention service URL '{endpoint}' on target '{targetUrl}'");
+            logger.LogInformation("Found Webmention service URL '{Endpoint}' on target '{TargetUrl}'", endpoint, targetUrl);
 
             bool successUrlCreation = Uri.TryCreate(endpoint, UriKind.Absolute, out var url);
             if (successUrlCreation)
@@ -77,21 +77,21 @@ public class WebmentionSender(
 
                 if (!wmResponse.IsSuccessStatusCode)
                 {
-                    logger.LogError($"Webmention request failed: {wmResponse.StatusCode}");
+                    logger.LogError("Webmention request failed: {StatusCode}", wmResponse.StatusCode);
                 }
                 else
                 {
-                    logger.LogInformation($"Webmention request successful: {wmResponse.StatusCode}");
+                    logger.LogInformation("Webmention request successful: {StatusCode}", wmResponse.StatusCode);
                 }
             }
             else
             {
-                logger.LogInformation($"Invliad Webmention service URL '{endpoint}'");
+                logger.LogInformation("Invliad Webmention service URL '{Endpoint}'", endpoint);
             }
         }
         catch (Exception e)
         {
-            logger.LogError(e, $"{nameof(SendAsync)}({sourceUrl}, {targetUrl})");
+            logger.LogError(e, "{MethodName}({SourceUrl}, {TargetUrl})", nameof(SendAsync), sourceUrl, targetUrl);
         }
     }
 

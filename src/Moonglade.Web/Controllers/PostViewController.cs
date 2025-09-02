@@ -10,16 +10,9 @@ namespace Moonglade.Web.Controllers;
 public class PostViewController(IConfiguration configuration, IBlogConfig blogConfig, ICommandMediator commandMediator) : ControllerBase
 {
     private readonly bool _isEnabled = configuration.GetValue<bool>("Post:EnableViewCount");
-
-    private static readonly HashSet<string> KnownBots = new(StringComparer.OrdinalIgnoreCase)
-    {
-        "Google", "Bingbot", "Baidu", "YandexBot", "Sogou", "Exabot", "ia_archiver",
-        "facebookexternalhit", "Twitterbot", "rogerbot", "linkedinbot", "embedly",
-        "showyoubot", "outbrain", "pinterest", "slackbot", "vkShare", "W3C_Validator",
-        "redditbot", "Applebot", "WhatsApp", "flipboard", "tumblr", "bitlybot",
-        "SkypeUriPreview", "nuzzel", "Discordbot", "Qwantify", "pinterestbot",
-        "TelegramBot", "Chrome-Lighthouse", "DuckDuckGo", "DuckDuckBot", "Slack"
-    };
+    private readonly HashSet<string> _knownBots = new(
+        configuration.GetSection("Post:KnownBots").Get<string[]>() ?? [],
+        StringComparer.OrdinalIgnoreCase);
 
     [HttpPost]
     public async Task<IActionResult> AddViewCount([FromBody] ViewRequest request)
@@ -61,14 +54,14 @@ public class PostViewController(IConfiguration configuration, IBlogConfig blogCo
         await commandMediator.SendAsync(new AddViewCountCommand(postId, ip));
     }
 
-    private static bool IsKnownBot(string userAgent)
+    private bool IsKnownBot(string userAgent)
     {
         if (string.IsNullOrEmpty(userAgent))
         {
             return false;
         }
 
-        return KnownBots.Any(bot => userAgent.Contains(bot, StringComparison.OrdinalIgnoreCase));
+        return _knownBots.Any(bot => userAgent.Contains(bot, StringComparison.OrdinalIgnoreCase));
     }
 }
 

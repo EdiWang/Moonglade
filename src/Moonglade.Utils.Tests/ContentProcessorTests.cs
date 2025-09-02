@@ -503,6 +503,162 @@ public class ContentProcessorTests
 
     #endregion
 
+    #region GetKeywords Tests
+
+    [Theory]
+    [InlineData(null, null)]
+    [InlineData("", null)]
+    [InlineData("   ", null)]
+    [InlineData("  \t  \n  ", null)]
+    public void GetKeywords_WithNullOrWhitespace_ReturnsNull(string rawKeywords, string expected)
+    {
+        // Act
+        var result = ContentProcessor.GetKeywords(rawKeywords);
+
+        // Assert
+        Assert.Equal(expected, result);
+    }
+
+    [Fact]
+    public void GetKeywords_WithSingleKeyword_ReturnsTrimmedKeyword()
+    {
+        // Arrange
+        const string rawKeywords = "  technology  ";
+        const string expected = "technology";
+
+        // Act
+        var result = ContentProcessor.GetKeywords(rawKeywords);
+
+        // Assert
+        Assert.Equal(expected, result);
+    }
+
+    [Fact]
+    public void GetKeywords_WithMultipleKeywords_ReturnsCommaSeparatedTrimmedKeywords()
+    {
+        // Arrange
+        const string rawKeywords = "technology, programming, csharp";
+        const string expected = "technology,programming,csharp";
+
+        // Act
+        var result = ContentProcessor.GetKeywords(rawKeywords);
+
+        // Assert
+        Assert.Equal(expected, result);
+    }
+
+    [Fact]
+    public void GetKeywords_WithKeywordsContainingWhitespace_TrimsEachKeyword()
+    {
+        // Arrange
+        const string rawKeywords = "  technology  ,   programming   ,  csharp  ";
+        const string expected = "technology,programming,csharp";
+
+        // Act
+        var result = ContentProcessor.GetKeywords(rawKeywords);
+
+        // Assert
+        Assert.Equal(expected, result);
+    }
+
+    [Fact]
+    public void GetKeywords_WithDuplicateKeywords_RemovesDuplicates()
+    {
+        // Arrange
+        const string rawKeywords = "technology,programming,technology,csharp,programming";
+        const string expected = "technology,programming,csharp";
+
+        // Act
+        var result = ContentProcessor.GetKeywords(rawKeywords);
+
+        // Assert
+        Assert.Equal(expected, result);
+    }
+
+    [Fact]
+    public void GetKeywords_WithDuplicateKeywordsDifferentCasing_TreatsAsDistinct()
+    {
+        // Arrange
+        const string rawKeywords = "Technology,technology,TECHNOLOGY,Programming";
+        const string expected = "Technology,technology,TECHNOLOGY,Programming";
+
+        // Act
+        var result = ContentProcessor.GetKeywords(rawKeywords);
+
+        // Assert
+        Assert.Equal(expected, result);
+    }
+
+    [Fact]
+    public void GetKeywords_WithEmptyKeywordsBetweenCommas_FiltersOutEmptyKeywords()
+    {
+        // Arrange
+        const string rawKeywords = "technology,,programming,   ,csharp,";
+        const string expected = "technology,programming,csharp";
+
+        // Act
+        var result = ContentProcessor.GetKeywords(rawKeywords);
+
+        // Assert
+        Assert.Equal(expected, result);
+    }
+
+    [Fact]
+    public void GetKeywords_WithOnlyEmptyKeywords_ReturnsNull()
+    {
+        // Arrange
+        const string rawKeywords = " , ,   ,  , ";
+
+        // Act
+        var result = ContentProcessor.GetKeywords(rawKeywords);
+
+        // Assert
+        Assert.Null(result);
+    }
+
+    [Fact]
+    public void GetKeywords_WithComplexMixedInput_HandlesCorrectly()
+    {
+        // Arrange
+        const string rawKeywords = "  ASP.NET Core  , ,   Entity Framework   , ASP.NET Core ,  Blazor  ,   ,  C# Programming  ,";
+        const string expected = "ASP.NET Core,Entity Framework,Blazor,C# Programming";
+
+        // Act
+        var result = ContentProcessor.GetKeywords(rawKeywords);
+
+        // Assert
+        Assert.Equal(expected, result);
+    }
+
+    [Theory]
+    [InlineData("keyword1", "keyword1")]
+    [InlineData("keyword1,keyword2", "keyword1,keyword2")]
+    [InlineData("a,b,c,d,e", "a,b,c,d,e")]
+    public void GetKeywords_WithValidKeywords_PreservesOrder(string rawKeywords, string expected)
+    {
+        // Act
+        var result = ContentProcessor.GetKeywords(rawKeywords);
+
+        // Assert
+        Assert.Equal(expected, result);
+    }
+
+    [Fact]
+    public void GetKeywords_WithSpecialCharactersInKeywords_PreservesSpecialCharacters()
+    {
+        // Arrange
+        const string rawKeywords = "C#, .NET 8, ASP.NET Core, Entity Framework 7.0, Visual Studio 2022";
+        const string expected = "C#,.NET 8,ASP.NET Core,Entity Framework 7.0,Visual Studio 2022";
+
+        // Act
+        var result = ContentProcessor.GetKeywords(rawKeywords);
+
+        // Assert
+        Assert.Equal(expected, result);
+    }
+
+    #endregion
+
     #region Integration Tests
 
     //[Fact]

@@ -8,13 +8,13 @@ using Microsoft.AspNetCore.Diagnostics.HealthChecks;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.AspNetCore.Rewrite;
 using Microsoft.Extensions.Diagnostics.HealthChecks;
-using Moonglade.Comments.Moderator;
 using Moonglade.Data.MySql;
 using Moonglade.Data.PostgreSql;
 using Moonglade.Data.SqlServer;
 using Moonglade.Email.Client;
 using Moonglade.IndexNow.Client;
 using Moonglade.Mention.Common;
+using Moonglade.Moderation;
 using Moonglade.Pingback;
 using Moonglade.Setup;
 using Moonglade.Syndication;
@@ -45,11 +45,6 @@ public class Program
         ConfigureServices(builder.Services, builder.Configuration, cultures);
 
         var app = builder.Build();
-        if (!app.Environment.IsDevelopment() && await EnvironmentHelper.IsRunningInChina())
-        {
-            Helper.SetAppDomainData("IsReadonlyMode", true);
-            app.Logger.LogWarning("Positive China detection, Moonglade is now in readonly mode.");
-        }
 
         await app.InitStartUp();
         ConfigureMiddleware(app, cultures);
@@ -289,7 +284,7 @@ public class Program
 
     private static void ConfigureInitializers(IServiceCollection services)
     {
-        services.AddTransient<ISiteIconInitializer, SiteIconInitializer>();
+        services.AddTransient<ISiteIconBuilder, SiteIconBuilder>();
         services.AddScoped<IMigrationManager, MigrationManager>();
         services.AddScoped<IBlogConfigInitializer, BlogConfigInitializer>();
         services.AddScoped<IStartUpInitializer, StartUpInitializer>();

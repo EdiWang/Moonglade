@@ -21,7 +21,6 @@ public class PostController(
         CannonService cannonService) : ControllerBase
 {
     [HttpPost("createoredit")]
-    [ReadonlyMode]
     [TypeFilter(typeof(ClearBlogCache), Arguments =
     [
         BlogCacheType.SiteMap |
@@ -134,7 +133,6 @@ public class PostController(
         BlogCacheType.Subscription
     ])]
     [HttpDelete("{postId:guid}/recycle")]
-    [ReadonlyMode]
     [ProducesResponseType(StatusCodes.Status204NoContent)]
     public async Task<IActionResult> Delete([NotEmpty] Guid postId)
     {
@@ -144,7 +142,6 @@ public class PostController(
 
     [TypeFilter(typeof(ClearBlogCache), Arguments = [BlogCacheType.Subscription | BlogCacheType.SiteMap])]
     [HttpPut("{postId:guid}/publish")]
-    [ReadonlyMode]
     [ProducesResponseType(StatusCodes.Status204NoContent)]
     public async Task<IActionResult> Publish([NotEmpty] Guid postId)
     {
@@ -154,7 +151,6 @@ public class PostController(
 
     [TypeFilter(typeof(ClearBlogCache), Arguments = [BlogCacheType.Subscription | BlogCacheType.SiteMap])]
     [HttpPut("{postId:guid}/unpublish")]
-    [ReadonlyMode]
     [ProducesResponseType(StatusCodes.Status204NoContent)]
     public async Task<IActionResult> Unpublish([NotEmpty] Guid postId)
     {
@@ -163,7 +159,6 @@ public class PostController(
     }
 
     [HttpPut("{postId:guid}/postpone")]
-    [ReadonlyMode]
     [ProducesResponseType(StatusCodes.Status204NoContent)]
     public async Task<IActionResult> Postpone([NotEmpty] Guid postId, [FromQuery][Range(1, 24)] int hours = 24)
     {

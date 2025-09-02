@@ -59,7 +59,6 @@ public class ImageController(IBlogImageStorage imageStorage,
     }
 
     [Authorize]
-    [ReadonlyMode]
     [HttpPost, IgnoreAntiforgeryToken]
     [ProducesResponseType(StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
