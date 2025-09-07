@@ -190,5 +190,41 @@ GET /ping
 This endpoint returns a simple JSON response indicating the status of your Moonglade instance. e.g.
 
 ```json
-{"appVersion":"14.26.0-beta.1 (49011f)","environmentTags":["azure-west-us"],"geoMatch":[]}
+{
+  "status": "healthy",
+  "clientIP": "**********",
+  "duration": 4.5948,
+  "timestamp": "2025-09-07T00:50:19.9009566+00:00",
+  "version": "14.28.0 (38355b)",
+  "environment": [
+    "azure-west-us"
+  ],
+  "geoMatch": "",
+  "checks": {
+    "self": {
+      "status": "healthy",
+      "duration": 0.0006,
+      "description": "Application is running",
+      "data": null,
+      "exception": null
+    },
+    "database": {
+      "status": "healthy",
+      "duration": 3.8793,
+      "description": null,
+      "data": null,
+      "exception": null
+    },
+    "database_connectivity": {
+      "status": "healthy",
+      "duration": 3.784,
+      "description": "Database is accessible",
+      "data": {
+        "catCount": 11,
+        "provider": "Microsoft.EntityFrameworkCore.SqlServer"
+      },
+      "exception": null
+    }
+  }
+}
 ```
