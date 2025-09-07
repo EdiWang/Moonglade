@@ -10,15 +10,15 @@
 - **Security:** Enable **HTTPS** and **HTTP/2** on your web server for optimal security and performance.
 - **Deployment Options:** While Azure is recommended, Moonglade can run on any cloud provider or on-premises.
 
+### Quick Azure Deploy (App Service on Linux)
+
+Get started in 10 minutes with minimal Azure resources using our [automated deployment script](https://github.com/EdiWang/Moonglade/wiki/Quick-Deploy-on-Azure).
+
 ### Full Azure Deployment
 
 This mirrors how [edi.wang](https://edi.wang) is deployed, utilizing a variety of Azure services for maximum speed and security. **No automated script is provided**—manual resource creation is required.
 
 ![Azure Architecture](https://cdn.edi.wang/web-assets/ediwang-azure-arch-visio-oct2024.svg)
-
-### Quick Azure Deploy (App Service on Linux)
-
-Get started in 10 minutes with minimal Azure resources using our [automated deployment script](https://github.com/EdiWang/Moonglade/wiki/Quick-Deploy-on-Azure).
 
 ## 🛠️ Development
 
