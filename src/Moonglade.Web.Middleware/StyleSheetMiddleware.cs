@@ -233,7 +233,7 @@ public class StyleSheetMiddleware(RequestDelegate next, ILogger<StyleSheetMiddle
 
 public static partial class ApplicationBuilderExtensions
 {
-    public static IApplicationBuilder UseCustomCss(this IApplicationBuilder app, Action<StyleSheetMiddlewareOptions>? options = null)
+    public static IApplicationBuilder UseCustomCss(this IApplicationBuilder app, Action<StyleSheetMiddlewareOptions> options = null)
     {
         options?.Invoke(StyleSheetMiddleware.Options);
         return app.UseMiddleware<StyleSheetMiddleware>();
