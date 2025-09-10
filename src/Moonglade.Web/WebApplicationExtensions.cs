@@ -10,9 +10,6 @@ public static class WebApplicationExtensions
     private const string HeaderNameKey = "HeaderName";
     private const string KnownProxiesKey = "KnownProxies";
 
-    // ASP.NET Core always use the last value in XFF header, which is AFD's IP address
-    // Need to set as `X-Azure-ClientIP` as workaround
-    // https://learn.microsoft.com/en-us/azure/frontdoor/front-door-http-headers-protocol
     public static void UseSmartXFFHeader(this WebApplication app)
     {
         var fho = new ForwardedHeadersOptions
