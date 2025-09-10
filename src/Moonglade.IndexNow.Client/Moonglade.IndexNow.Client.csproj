@@ -7,7 +7,7 @@
         <FrameworkReference Include="Microsoft.AspNetCore.App" />
     </ItemGroup>
     <ItemGroup>
-        <PackageReference Include="Microsoft.Extensions.Http.Resilience" Version="9.8.0" />
+        <PackageReference Include="Microsoft.Extensions.Http.Resilience" Version="9.9.0" />
     </ItemGroup>
     <ItemGroup>
       <ProjectReference Include="..\Moonglade.Utils\Moonglade.Utils.csproj" />
