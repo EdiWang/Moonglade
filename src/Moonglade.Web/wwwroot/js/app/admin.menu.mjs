@@ -296,7 +296,7 @@ function clearMenus() {
 }
 
 function updateJsonTextarea() {
-    const jsonTextarea = document.querySelector("[name='MenuJson']");
+    const jsonTextarea = document.getElementById("textarea-menu-json");
     jsonTextarea.value = JSON.stringify(menuData, null, 2);
 }
 
