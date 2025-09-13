@@ -23,7 +23,6 @@
             margin-bottom: 1rem;
         }
         .menu-item-header {
-            background-color: #f8f9fa;
             padding: 1rem;
             border-bottom: 1px solid #dee2e6;
             display: flex;
@@ -72,11 +71,6 @@
         <button type="button" id="btn-clear-menus" class="btn btn-outline-danger">
             <i class="bi-trash"></i> @SharedLocalizer["Clear menus"]
         </button>
-
-        <a class="btn btn-outline-accent" href="#" data-bs-toggle="modal" data-bs-target="#examplecodemodal">
-            <i class="bi-code"></i>
-            @SharedLocalizer["Example code"]
-        </a>
     </div>
 }
 
@@ -213,55 +207,6 @@
             <div class="modal-footer">
                 <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">@SharedLocalizer["Cancel"]</button>
                 <button type="button" class="btn btn-primary" id="save-sub-menu-item">@SharedLocalizer["Save"]</button>
-            </div>
-        </div>
-    </div>
-</div>
-
-<div class="modal fade" id="examplecodemodal" tabindex="-1" role="dialog" aria-labelledby="exampleLabel"
-     aria-hidden="true">
-    <div class="modal-dialog" role="document">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title" id="exampleLabel">@SharedLocalizer["Example"]</h5>
-                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close">
-                </button>
-            </div>
-
-            <div class="modal-body">
-                <pre>
-<code>
-[
-  {
-    "Title": "Apps",
-    "Url": "",
-    "Icon": "bi-app",
-    "DisplayOrder": 1,
-    "IsOpenInNewTab": false,
-    "SubMenus": [
-        {
-            "Title": "CIDR Calculator",
-            "Url": "https://cidr.edi.wang/",
-            "IsOpenInNewTab": true
-        },
-        {
-            "Title": "PDF to PNG Converter",
-            "Url": "https://pdf2png.edi.wang/",
-            "IsOpenInNewTab": true
-        }
-    ]
-  },
-  {
-    "Title": "About",
-    "Url": "/page/about",
-    "Icon": "bi-star",
-    "DisplayOrder": 2,
-    "IsOpenInNewTab": false,
-    "SubMenus": []
-  }
-]
-</code>
-</pre>
             </div>
         </div>
     </div>

@@ -266,12 +266,11 @@ function createSubMenusHtml(subMenus, parentIndex) {
     
     return `
         <div class="submenu-container">
-            <h6 class="mb-2">Sub Menu Items</h6>
             ${subMenus.map((subItem, subIndex) => `
                 <div class="submenu-item">
                     <div>
                         <strong>${escapeHtml(subItem.title)}</strong>
-                        <div class="text-muted small">${escapeHtml(subItem.url)}</div>
+                        <code>${escapeHtml(subItem.url)}</code>
                         ${subItem.isOpenInNewTab ? '<span class="badge bg-secondary">New Tab</span>' : ''}
                     </div>
                     <div class="btn-group">
