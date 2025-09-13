@@ -241,7 +241,7 @@ function createMenuItemHtml(item, index) {
                     <button type="button" class="btn btn-sm btn-outline-secondary" onclick="moveMenuItem(${index}, 'down')" ${index === menuData.length - 1 ? 'disabled' : ''}>
                         <i class="bi-arrow-down"></i>
                     </button>
-                    <button type="button" class="btn btn-sm btn-outline-primary" onclick="openMenuItemModal(${index})">
+                    <button type="button" class="btn btn-sm btn-outline-accent" onclick="openMenuItemModal(${index})">
                         <i class="bi-pencil"></i>
                     </button>
                     <button type="button" class="btn btn-sm btn-outline-danger" onclick="deleteMenuItem(${index})">
@@ -253,7 +253,7 @@ function createMenuItemHtml(item, index) {
             ${hasSubMenus ? createSubMenusHtml(item.subMenus, index) : ''}
             
             <div class="submenu-container">
-                <button type="button" class="btn btn-sm btn-outline-primary" onclick="openSubMenuItemModal(${index})">
+                <button type="button" class="btn btn-sm btn-outline-accent" onclick="openSubMenuItemModal(${index})">
                     <i class="bi-plus"></i> Add Sub Menu Item
                 </button>
             </div>
