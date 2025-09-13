@@ -17,10 +17,12 @@ function initializeModals() {
 }
 
 function loadExistingMenuData() {
-    const jsonData = document.querySelector("#settings_MenuJson").value;
+    const jsonData = document.querySelector("[name='MenuJson']").value;
+    console.log('Loading menu data:', jsonData); // Debug log
     try {
-        if (jsonData && jsonData.trim() !== '') {
+        if (jsonData && jsonData.trim() !== '' && jsonData.trim() !== '[]') {
             menuData = JSON.parse(jsonData);
+            console.log('Parsed menu data:', menuData); // Debug log
         }
     } catch (e) {
         console.error('Error parsing existing menu data:', e);
@@ -61,7 +63,7 @@ function updateIconPreview() {
 function openMenuItemModal(index = null) {
     const isEdit = index !== null;
     document.getElementById('menuItemModalLabel').textContent = isEdit ? 'Edit Menu Item' : 'Add Menu Item';
-    document.getElementById('menu-item-index').value = index || '';
+    document.getElementById('menu-item-index').value = index !== null ? index : '';
 
     if (isEdit && menuData[index]) {
         const item = menuData[index];
@@ -70,10 +72,12 @@ function openMenuItemModal(index = null) {
         document.getElementById('menu-icon').value = item.Icon || '';
         document.getElementById('menu-order').value = item.DisplayOrder || 1;
         document.getElementById('menu-new-tab').checked = item.IsOpenInNewTab || false;
+        console.log('Editing item:', item); // Debug log
     } else {
         // Reset form for new item
         document.getElementById('menu-item-form').reset();
         document.getElementById('menu-order').value = menuData.length + 1;
+        document.getElementById('menu-icon').value = 'bi-star';
     }
 
     updateIconPreview();
@@ -84,7 +88,7 @@ function openSubMenuItemModal(parentIndex, subIndex = null) {
     const isEdit = subIndex !== null;
     document.getElementById('subMenuItemModalLabel').textContent = isEdit ? 'Edit Sub Menu Item' : 'Add Sub Menu Item';
     document.getElementById('sub-menu-parent-index').value = parentIndex;
-    document.getElementById('sub-menu-item-index').value = subIndex || '';
+    document.getElementById('sub-menu-item-index').value = subIndex !== null ? subIndex : '';
 
     if (isEdit && menuData[parentIndex] && menuData[parentIndex].SubMenus[subIndex]) {
         const item = menuData[parentIndex].SubMenus[subIndex];
@@ -100,8 +104,9 @@ function openSubMenuItemModal(parentIndex, subIndex = null) {
 }
 
 function saveMenuItem() {
-    const index = document.getElementById('menu-item-index').value;
-    const isEdit = index !== '';
+    const indexValue = document.getElementById('menu-item-index').value;
+    const isEdit = indexValue !== '';
+    const index = isEdit ? parseInt(indexValue) : null;
 
     const menuItem = {
         Title: document.getElementById('menu-title').value.trim(),
@@ -130,8 +135,9 @@ function saveMenuItem() {
 
 function saveSubMenuItem() {
     const parentIndex = parseInt(document.getElementById('sub-menu-parent-index').value);
-    const subIndex = document.getElementById('sub-menu-item-index').value;
-    const isEdit = subIndex !== '';
+    const subIndexValue = document.getElementById('sub-menu-item-index').value;
+    const isEdit = subIndexValue !== '';
+    const subIndex = isEdit ? parseInt(subIndexValue) : null;
 
     const subMenuItem = {
         Title: document.getElementById('sub-menu-title').value.trim(),
@@ -203,12 +209,9 @@ function updateDisplay() {
 
     emptyState.style.display = 'none';
     
-    // Sort by display order
-    const sortedMenus = [...menuData].sort((a, b) => (a.DisplayOrder || 0) - (b.DisplayOrder || 0));
-    
-    container.innerHTML = sortedMenus.map((item, index) => {
-        const originalIndex = menuData.indexOf(item);
-        return createMenuItemHtml(item, originalIndex);
+    // Display menus in their natural array order, don't sort
+    container.innerHTML = menuData.map((item, index) => {
+        return createMenuItemHtml(item, index);
     }).join('');
 }
 
@@ -217,7 +220,7 @@ function createMenuItemHtml(item, index) {
     const iconClass = item.Icon || 'bi-star';
     
     return `
-        <div class="menu-item-card">
+        <div class="menu-item-card" data-index="${index}">
             <div class="menu-item-header">
                 <div class="d-flex align-items-center flex-grow-1">
                     <i class="drag-handle bi-grip-vertical me-2"></i>
@@ -294,11 +297,12 @@ function clearMenus() {
 }
 
 function updateJsonTextarea() {
-    const jsonTextarea = document.querySelector("#settings_MenuJson");
+    const jsonTextarea = document.querySelector("[name='MenuJson']");
     jsonTextarea.value = JSON.stringify(menuData, null, 2);
 }
 
 function escapeHtml(text) {
+    if (!text) return '';
     const div = document.createElement('div');
     div.textContent = text;
     return div.innerHTML;
