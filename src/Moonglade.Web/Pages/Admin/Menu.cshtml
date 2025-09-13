@@ -12,23 +12,66 @@
 }
 
 @section scripts {
-    <partial name="_MonacoLoaderScript" />
     <script type="module" src="~/js/app/admin.menu.mjs" asp-append-version="true"></script>
 }
 
 @section head {
     <style>
-        .monaco-target {
-            min-height: calc(100vh - 370px);
+        .menu-item-card {
+            border: 1px solid #dee2e6;
+            border-radius: 0.375rem;
+            margin-bottom: 1rem;
+        }
+        .menu-item-header {
+            background-color: #f8f9fa;
+            padding: 1rem;
+            border-bottom: 1px solid #dee2e6;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+        .submenu-container {
+            background-color: #f8f9fa;
+            border-top: 1px solid #dee2e6;
+            padding: 0.75rem;
+        }
+        .submenu-item {
+            background-color: white;
+            border: 1px solid #dee2e6;
+            border-radius: 0.25rem;
+            padding: 0.75rem;
+            margin-bottom: 0.5rem;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+        .menu-form {
+            padding: 1rem;
+        }
+        .drag-handle {
+            cursor: move;
+            color: #6c757d;
+        }
+        .empty-state {
+            text-align: center;
+            padding: 3rem 1rem;
+            color: #6c757d;
+        }
+        .icon-preview {
+            margin-right: 0.5rem;
         }
     </style>
 }
 
 @section admintoolbar {
     <div class="admin-toolbar pb-2 border-bottom mb-3">
-        <a id="btn-clear-menus" class="btn btn-outline-danger btn-delete-selected">
+        <button type="button" class="btn btn-outline-primary" id="btn-add-menu">
+            <i class="bi-plus-circle"></i> @SharedLocalizer["Add Menu Item"]
+        </button>
+
+        <button type="button" id="btn-clear-menus" class="btn btn-outline-danger">
             <i class="bi-trash"></i> @SharedLocalizer["Clear menus"]
-        </a>
+        </button>
 
         <a class="btn btn-outline-accent" href="#" data-bs-toggle="modal" data-bs-target="#examplecodemodal">
             <i class="bi-code"></i>
@@ -39,7 +82,7 @@
 
 <form id="form-settings" asp-controller="Settings" asp-action="CustomMenu">
     <div class="admin-settings-entry-container">
-        <div class="settings-entry row align-items-center py-3 px-2 rounded-3 border mb-1">
+        <div class="settings-entry row align-items-center py-3 px-2 rounded-3 border mb-3">
             <div class="col-auto">
                 <i class="bi-menu-app settings-entry-icon"></i>
             </div>
@@ -55,7 +98,16 @@
             </div>
         </div>
 
-        <div id="JsonContentEditor" class="monaco-target p-3 rounded-3 border">
+        <div id="menu-container">
+            <div id="menu-list">
+                <!-- Menu items will be dynamically populated here -->
+            </div>
+            
+            <div id="empty-state" class="empty-state">
+                <i class="bi-menu-app" style="font-size: 3rem; opacity: 0.3;"></i>
+                <h5>@SharedLocalizer["No menu items"]</h5>
+                <p>@SharedLocalizer["Click 'Add Menu Item' to create your first menu."]</p>
+            </div>
         </div>
     </div>
 
@@ -67,6 +119,104 @@
         </button>
     </div>
 </form>
+
+<!-- Menu Item Modal -->
+<div class="modal fade" id="menuItemModal" tabindex="-1" aria-labelledby="menuItemModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="menuItemModalLabel">@SharedLocalizer["Menu Item"]</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <form id="menu-item-form">
+                    <input type="hidden" id="menu-item-index" value="">
+                    
+                    <div class="mb-3">
+                        <label for="menu-title" class="form-label">@SharedLocalizer["Title"] *</label>
+                        <input type="text" class="form-control" id="menu-title" required>
+                    </div>
+                    
+                    <div class="mb-3">
+                        <label for="menu-url" class="form-label">@SharedLocalizer["URL"]</label>
+                        <input type="text" class="form-control" id="menu-url" placeholder="/page/about">
+                        <div class="form-text">@SharedLocalizer["Leave empty for dropdown menu with sub-items only"]</div>
+                    </div>
+                    
+                    <div class="row mb-3">
+                        <div class="col-md-8">
+                            <label for="menu-icon" class="form-label">@SharedLocalizer["Icon"]</label>
+                            <input type="text" class="form-control" id="menu-icon" placeholder="bi-star">
+                            <div class="form-text">@SharedLocalizer["Bootstrap Icons class name"]</div>
+                        </div>
+                        <div class="col-md-4">
+                            <label class="form-label">@SharedLocalizer["Preview"]</label>
+                            <div><i id="icon-preview" class="bi-star"></i></div>
+                        </div>
+                    </div>
+                    
+                    <div class="row mb-3">
+                        <div class="col-md-6">
+                            <label for="menu-order" class="form-label">@SharedLocalizer["Display Order"]</label>
+                            <input type="number" class="form-control" id="menu-order" min="1" value="1">
+                        </div>
+                        <div class="col-md-6">
+                            <div class="form-check form-switch mt-4">
+                                <input class="form-check-input" type="checkbox" id="menu-new-tab">
+                                <label class="form-check-label" for="menu-new-tab">
+                                    @SharedLocalizer["Open in new tab"]
+                                </label>
+                            </div>
+                        </div>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">@SharedLocalizer["Cancel"]</button>
+                <button type="button" class="btn btn-primary" id="save-menu-item">@SharedLocalizer["Save"]</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Sub Menu Item Modal -->
+<div class="modal fade" id="subMenuItemModal" tabindex="-1" aria-labelledby="subMenuItemModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="subMenuItemModalLabel">@SharedLocalizer["Sub Menu Item"]</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <form id="sub-menu-item-form">
+                    <input type="hidden" id="sub-menu-parent-index" value="">
+                    <input type="hidden" id="sub-menu-item-index" value="">
+                    
+                    <div class="mb-3">
+                        <label for="sub-menu-title" class="form-label">@SharedLocalizer["Title"] *</label>
+                        <input type="text" class="form-control" id="sub-menu-title" required>
+                    </div>
+                    
+                    <div class="mb-3">
+                        <label for="sub-menu-url" class="form-label">@SharedLocalizer["URL"] *</label>
+                        <input type="text" class="form-control" id="sub-menu-url" required placeholder="https://example.com">
+                    </div>
+                    
+                    <div class="form-check form-switch">
+                        <input class="form-check-input" type="checkbox" id="sub-menu-new-tab">
+                        <label class="form-check-label" for="sub-menu-new-tab">
+                            @SharedLocalizer["Open in new tab"]
+                        </label>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">@SharedLocalizer["Cancel"]</button>
+                <button type="button" class="btn btn-primary" id="save-sub-menu-item">@SharedLocalizer["Save"]</button>
+            </div>
+        </div>
+    </div>
+</div>
 
 <div class="modal fade" id="examplecodemodal" tabindex="-1" role="dialog" aria-labelledby="exampleLabel"
      aria-hidden="true">
