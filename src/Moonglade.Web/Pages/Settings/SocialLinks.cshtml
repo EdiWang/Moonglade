@@ -16,11 +16,43 @@
 @section head {
     <style>
         .th-actions {
-            width: 120px;
+            width: 140px;
         }
 
         .form-control-url {
             width: 300px;
+        }
+        
+        .settings-entry-icon {
+            font-size: 1.5rem;
+            color: var(--bs-primary);
+        }
+        
+        #linksTable tbody tr:hover {
+            background-color: var(--bs-gray-50);
+        }
+        
+        .btn-group .btn {
+            border-radius: 0.25rem;
+        }
+        
+        .btn-group .btn + .btn {
+            margin-left: 0.125rem;
+        }
+        
+        .text-break {
+            word-break: break-word;
+            max-width: 300px;
+        }
+        
+        @@media (max-width: 768px) {
+            .form-control-url {
+                width: 200px;
+            }
+            
+            .text-break {
+                max-width: 150px;
+            }
         }
     </style>
 }
@@ -29,7 +61,7 @@
     <partial name="_SettingsHeader" />
 }
 
-<form id="form-settings" asp-controller="Settings" asp-action="SocialLink">
+<form id="form-settings" asp-controller="Settings" asp-action="SocialLink" novalidate>
     <div class="admin-settings-entry-container">
         <div class="settings-entry row align-items-center py-3 px-2 rounded-3 border mb-3">
             <div class="col-auto">
@@ -46,46 +78,67 @@
             </div>
         </div>
 
-        <table id="linksTable" class="table table-bordered p-3 rounded-3">
-            <thead>
+        <table id="linksTable" class="table table-bordered table-hover p-3 rounded-3">
+            <thead class="table-light">
                 <tr>
-                    <th>Name</th>
-                    <th>Icon</th>
-                    <th class="th-url">URL</th>
-                    <th class="th-actions">Actions</th>
+                    <th scope="col">Name</th>
+                    <th scope="col">Icon</th>
+                    <th scope="col" class="th-url">URL</th>
+                    <th scope="col" class="th-actions text-center">Actions</th>
                 </tr>
             </thead>
             <tbody>
+                <tr id="empty-state" style="display: none;">
+                    <td colspan="4" class="text-center text-muted py-4">
+                        <i class="bi-info-circle me-2"></i>
+                        No social links configured. Add your first link above.
+                    </td>
+                </tr>
             </tbody>
         </table>
 
         <div id="form" class="row g-2 align-items-center">
             <div class="col-auto">
-                <label for="name">Name</label>
+                <label for="name" class="form-label">Name</label>
             </div>
             <div class="col-auto">
-                <input type="text" id="name" class="form-control form-control-sm">
+                <input type="text" id="name" class="form-control form-control-sm" 
+                       aria-describedby="nameHelp" maxlength="50" autocomplete="off">
+                <div id="nameHelp" class="form-text visually-hidden">Enter a unique name for the social link</div>
             </div>
             <div class="col-auto">
-                <label for="icon">Icon Class</label>
+                <label for="icon" class="form-label">Icon Class</label>
             </div>
             <div class="col-auto">
-                <input type="text" id="icon" class="form-control form-control-sm">
+                <input type="text" id="icon" class="form-control form-control-sm" 
+                       placeholder="e.g., bi-twitter, fa-facebook" 
+                       aria-describedby="iconHelp" maxlength="100" autocomplete="off">
+                <div id="iconHelp" class="form-text visually-hidden">CSS class for the icon (Bootstrap Icons or Font Awesome)</div>
             </div>
             <div class="col-auto">
-                <label for="url">URL</label>
+                <label for="url" class="form-label">URL</label>
             </div>
             <div class="col-auto">
-                <input type="text" id="url" class="form-control form-control-sm form-control-url">
+                <input type="url" id="url" class="form-control form-control-sm form-control-url" 
+                       placeholder="https://example.com" 
+                       aria-describedby="urlHelp" autocomplete="url">
+                <div id="urlHelp" class="form-text visually-hidden">Full URL including protocol (https://)</div>
             </div>
             <div class="col-auto">
-                <button type="button" id="btn-update" class="btn btn-sm btn-outline-accent">Add / Update</button>
+                <button type="button" id="btn-update" class="btn btn-sm btn-accent">
+                    <span id="btn-update-text">Add</span>
+                </button>
             </div>
             <div class="col-auto">
-                <button type="button" id="btn-cancel" class="btn btn-sm btn-outline-secondary">Cancel</button>
+                <button type="button" id="btn-cancel" class="btn btn-sm btn-outline-secondary" style="display: none;">
+                    Cancel
+                </button>
             </div>
+        </div>
 
-            <span id="error" class="text-danger"></span>
+        <div id="error" class="alert alert-danger mt-2" style="display: none;" role="alert">
+            <i class="bi-exclamation-triangle me-1"></i>
+            <span id="error-message"></span>
         </div>
     </div>
 
