@@ -215,7 +215,7 @@ function updateDisplay() {
 
 function createMenuItemHtml(item, index) {
     const hasSubMenus = item.subMenus && item.subMenus.length > 0;
-    const iconClass = item.Icon || 'bi-star';
+    const iconClass = item.icon || 'bi-star';
     
     return `
         <div class="menu-item-card" data-index="${index}">
@@ -225,10 +225,12 @@ function createMenuItemHtml(item, index) {
                     <i class="${iconClass} icon-preview"></i>
                     <div class="ms-2">
                         <strong>${escapeHtml(item.title)}</strong>
-                        ${item.url ? `<div class="text-muted small">${escapeHtml(item.url)}</div>` : ''}
+                        
                         <div class="text-muted small">
-                            Order: ${item.displayOrder || 1}
+                            #${item.displayOrder || 1}
                             ${item.isOpenInNewTab ? ' • Opens in new tab' : ''}
+
+                            ${item.url ? `<code>${escapeHtml(item.url)}</code>` : ''}
                         </div>
                     </div>
                 </div>
