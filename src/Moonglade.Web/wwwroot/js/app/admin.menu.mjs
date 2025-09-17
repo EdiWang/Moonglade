@@ -252,9 +252,9 @@ function createMenuItemHtml(item, index) {
             
             ${hasSubMenus ? createSubMenusHtml(item.subMenus, index) : ''}
             
-            <div class="submenu-container">
+            <div class="submenu-container rounded-bottom">
                 <button type="button" class="btn btn-sm btn-outline-accent" onclick="openSubMenuItemModal(${index})">
-                    <i class="bi-plus"></i> Add Sub Menu Item
+                    <i class="bi-plus-circle"></i> Add Sub Menu
                 </button>
             </div>
         </div>
