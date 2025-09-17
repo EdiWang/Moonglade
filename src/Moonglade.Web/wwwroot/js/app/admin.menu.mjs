@@ -115,7 +115,7 @@ function saveMenuItem() {
         subMenus: isEdit && menuData[index] ? menuData[index].subMenus : []
     };
 
-    if (!menuItem.Title) {
+    if (!menuItem.title) {
         alert('Title is required');
         return;
     }
