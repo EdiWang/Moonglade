@@ -33,7 +33,7 @@ public class WebManifestMapHandler
         httpContext.Response.Headers.TryAdd("cache-control", "public,max-age=3600");
 
         // Do not use `WriteAsJsonAsync` because it will override ContentType header
-        await httpContext.Response.WriteAsync(model.ToJson(true), httpContext.RequestAborted);
+        await httpContext.Response.WriteAsync(model.ToJson(), httpContext.RequestAborted);
     }
 }
 
