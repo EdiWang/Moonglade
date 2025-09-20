@@ -1,6 +1,6 @@
-﻿using Microsoft.Extensions.Configuration;
+﻿using Edi.AspNetCore.Utils;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using Moonglade.Utils;
 using System.Net.Http.Headers;
 
 namespace Moonglade.IndexNow.Client;

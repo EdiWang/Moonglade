@@ -1,4 +1,5 @@
-﻿using Microsoft.Extensions.Diagnostics.HealthChecks;
+﻿using Edi.AspNetCore.Utils;
+using Microsoft.Extensions.Diagnostics.HealthChecks;
 using System.Text.Json;
 
 namespace Moonglade.Web.Configuration;

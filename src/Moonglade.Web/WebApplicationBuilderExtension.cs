@@ -1,4 +1,5 @@
-﻿using System.Net;
+﻿using Edi.AspNetCore.Utils;
+using System.Net;
 using System.Net.NetworkInformation;
 using System.Net.Sockets;
 

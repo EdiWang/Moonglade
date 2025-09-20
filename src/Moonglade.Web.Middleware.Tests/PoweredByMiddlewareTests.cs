@@ -1,5 +1,5 @@
+using Edi.AspNetCore.Utils;
 using Microsoft.AspNetCore.Http;
-using Moonglade.Utils;
 using Moq;
 
 namespace Moonglade.Web.Middleware.Tests;

@@ -1,4 +1,5 @@
-﻿using LiteBus.Queries.Abstractions;
+﻿using Edi.AspNetCore.Utils;
+using LiteBus.Queries.Abstractions;
 using Microsoft.AspNetCore.Http;
 using Moonglade.Configuration;
 using Moonglade.Utils;
