@@ -17,7 +17,7 @@
         <PackageReference Include="Ardalis.Specification" Version="9.3.1" />
         <PackageReference Include="Ardalis.Specification.EntityFrameworkCore" Version="9.3.1" />
         <PackageReference Include="LiteBus" Version="4.0.0" />
-        <PackageReference Include="LiteBus.Extensions.MicrosoftDependencyInjection" Version="3.1.0" />
+        <PackageReference Include="LiteBus.Extensions.Microsoft.DependencyInjection" Version="4.0.0" />
 		<PackageReference Include="Microsoft.EntityFrameworkCore.Relational" Version="9.0.9" />
     </ItemGroup>
     <ItemGroup>
