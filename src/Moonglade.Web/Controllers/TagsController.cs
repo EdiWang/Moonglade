@@ -23,7 +23,7 @@ public class TagsController(IQueryMediator queryMediator, ICommandMediator comma
     [ProducesResponseType<List<TagEntity>>(StatusCodes.Status200OK)]
     public async Task<IActionResult> List()
     {
-        var list = await queryMediator.QueryAsync(new GetTagsQuery());
+        var list = await queryMediator.QueryAsync(new ListTagsQuery());
         return Ok(list);
     }
 
