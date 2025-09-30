@@ -88,7 +88,7 @@ public class SignInModel(IOptions<AuthenticationSettings> authSettings,
                     var p = new ClaimsPrincipal(ci);
 
                     await HttpContext.SignInAsync(CookieAuthenticationDefaults.AuthenticationScheme, p);
-                    await commandMediator.SendAsync(new LogSuccessLoginCommand(ClientIPHelper.GetClientIP(HttpContext), ua, "TODO"));
+                    await commandMediator.SendAsync(new LogSuccessLoginCommand(ClientIPHelper.GetClientIP(HttpContext), ua));
 
                     var successMessage = $@"Authentication success for local account ""{Username}""";
 
