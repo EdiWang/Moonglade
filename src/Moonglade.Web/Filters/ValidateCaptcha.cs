@@ -29,7 +29,7 @@ public class ValidateCaptcha(ISessionBasedCaptcha captcha) : ActionFilterAttribu
         base.OnActionExecuting(context);
     }
 
-    private void AddModelError(ActionExecutingContext context, string errorMessage)
+    private static void AddModelError(ActionExecutingContext context, string errorMessage)
     {
         context.ModelState.AddModelError(nameof(ICaptchable.CaptchaCode), errorMessage);
     }
