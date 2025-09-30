@@ -5,15 +5,16 @@
 }
 
 @media (max-width: 767px) {
-
     .article-post-slug {
         padding: 8px !important;
         box-shadow: none !important;
         border: none !important;
     }
 
-    .post-content img {
-        cursor: inherit;
+    .post-content {
+        & img {
+            cursor: inherit;
+        }
     }
 
     .post-publish-info {
@@ -46,7 +47,7 @@
         top: 0;
         width: 100%;
 
-        h4 {
+        & h4 {
             background-color: var(--transparent-light-20);
             border-radius: 5px;
             color: var(--bs-white);
@@ -56,13 +57,15 @@
         }
     }
 
-    .navbar .nav-item {
-        margin: 0 !important;
-    }
+    .navbar {
+        & .nav-item {
+            margin: 0 !important;
+        }
 
-    .navbar .dropdown-menu {
-        box-shadow: none;
-        font-size: 1rem;
+        & .dropdown-menu {
+            box-shadow: none;
+            font-size: 1rem;
+        }
     }
 
     .pagination {
