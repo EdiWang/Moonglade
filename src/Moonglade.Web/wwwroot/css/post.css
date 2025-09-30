@@ -22,9 +22,11 @@
     width: max-content;
 }
 
-.ul-cat-list-desktop a.btn,
-.ul-tag-list-desktop a.btn {
-    margin-right: 10px;
+.ul-cat-list-desktop,
+.ul-tag-list-desktop {
+    a.btn {
+        margin-right: 10px;
+    }
 }
 
 .modal-imgzoom {
@@ -33,36 +35,81 @@
 
 .article-post-slug {
     padding: 28px 38px;
+    
+    [data-bs-theme=dark] & {
+        background-color: transparent !important;
+        padding: 0;
+        border: 0 none !important;
+    }
 }
 
 h1.post-title,
 .post-content h1 {
     font-size: 1.6rem;
+    
+    @media (max-width: 767px) {
+        font-size: 1.4rem;
+    }
 }
 
-.post-content h2 {
-    font-size: 1.35rem;
-}
-
-.post-content h3 {
-    font-size: 1.25rem;
-}
-
-.post-content h4 {
-    font-size: 1.15rem;
-}
-
-.post-content p {
-    font-size: 0.95rem;
-    line-height: 1.6rem;
-    margin-bottom: 15px;
-    word-wrap: break-word;
-}
-
-.post-content img {
-    cursor: pointer;
-    min-height: 4px;
-    min-width: 4px;
+.post-content {
+    h2 {
+        font-size: 1.35rem;
+        
+        @media (max-width: 767px) {
+            font-size: 1.3rem;
+        }
+    }
+    
+    h3 {
+        font-size: 1.25rem;
+    }
+    
+    h4 {
+        font-size: 1.15rem;
+    }
+    
+    p {
+        font-size: 0.95rem;
+        line-height: 1.6rem;
+        margin-bottom: 15px;
+        word-wrap: break-word;
+    }
+    
+    img {
+        cursor: pointer;
+        min-height: 4px;
+        min-width: 4px;
+    }
+    
+    a {
+        border-bottom: 1px dashed var(--accent-color1);
+    }
+    
+    blockquote,
+    .blockquote {
+        border-left: 5px solid var(--bs-gray-300);
+        color: var(--bs-secondary);
+        margin: 0 0 20px;
+        padding: 10px 20px;
+        
+        p:last-child,
+        ul:last-child,
+        ol:last-child {
+            margin-bottom: 0;
+        }
+        
+        footer,
+        small,
+        .small {
+            font-size: 80%;
+        }
+        
+        [data-bs-theme=dark] & {
+            border-left: 5px solid var(--bs-border-color);
+            color: var(--bs-secondary-color);
+        }
+    }
 }
 
 .post-header-hr {
@@ -77,44 +124,34 @@ h1.post-title,
     font-size: 1rem;
 }
 
-.post-content a {
-    border-bottom: 1px dashed var(--accent-color1);
-}
-
-.post-content blockquote,
-.post-content .blockquote {
-    border-left: 5px solid var(--bs-gray-300);
-    color: var(--bs-secondary);
-    margin: 0 0 20px;
-    padding: 10px 20px;
-}
-
-    .post-content blockquote p:last-child,
-    .post-content blockquote ul:last-child,
-    .post-content blockquote ol:last-child {
-        margin-bottom: 0;
-    }
-
-    .post-content blockquote footer,
-    .post-content blockquote small,
-    .post-content blockquote .small {
-        font-size: 80%;
-    }
-
 .comment-form-containter {
     padding: 20px 38px;
-
+    
     .card-subtitle {
         font-size: 1rem;
     }
+    
+    [data-bs-theme=dark] & {
+        background-color: transparent !important;
+    }
 }
 
-.comment-list .thumbnail {
-    padding: 0;
+.comment-list {
+    .thumbnail {
+        padding: 0;
+    }
+    
+    .card {
+        position: relative;
+    }
 }
 
-.comment-list .card {
-    position: relative;
+.comment-item {
+    background-color: var(--bs-white);
+    
+    [data-bs-theme=dark] & {
+        background-color: var(--bs-body-bg);
+    }
 }
 
 pre {
@@ -136,6 +173,12 @@ math {
     padding: 1em;
     border-radius: 5px;
     font-size: 1rem;
+    
+    [data-bs-theme=dark] & {
+        background-color: #2e2e2e;
+        border: 1px solid #454545;
+        color: #e3e3e3;
+    }
 }
 
 .dynamic-heading-tag {
@@ -143,44 +186,4 @@ math {
     position: relative;
     top: -65px;
     visibility: hidden;
-}
-
-.comment-item {
-    background-color: var(--bs-white);
-}
-
-@media (max-width: 767px) {
-    h1.post-title, .post-content h1 {
-        font-size: 1.4rem;
-    }
-
-    .post-content h2 {
-        font-size: 1.3rem;
-    }
-}
-
-[data-bs-theme=dark] .article-post-slug {
-    background-color: transparent !important;
-    padding: 0;
-    border: 0 none !important;
-}
-
-[data-bs-theme=dark] math {
-    background-color: #2e2e2e;
-    border: 1px solid #454545;
-    color: #e3e3e3;
-}
-
-[data-bs-theme=dark] .comment-item {
-    background-color: var(--bs-body-bg);
-}
-
-[data-bs-theme=dark] .post-content blockquote,
-[data-bs-theme=dark] .post-content .blockquote {
-    border-left: 5px solid var(--bs-border-color);
-    color: var(--bs-secondary-color);
-}
-
-[data-bs-theme=dark] .comment-form-containter {
-    background-color: transparent !important;
 }
