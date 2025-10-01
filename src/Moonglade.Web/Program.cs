@@ -339,11 +339,6 @@ public class Program
         app.UseRouting();
         app.UseAuthentication().UseAuthorization();
 
-        app.MapHealthChecks("/ping", new()
-        {
-            ResponseWriter = PingEndpoint.WriteResponse
-        });
-
         app.MapHealthChecks("/health", new HealthCheckOptions
         {
             ResponseWriter = PingEndpoint.WriteResponse,
