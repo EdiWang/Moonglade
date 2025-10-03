@@ -4,7 +4,6 @@ using LiteBus.Events.Abstractions;
 using Moonglade.Data.Entities;
 using Moonglade.Email.Client;
 using Moonglade.Mention.Common;
-using Moonglade.Pingback;
 using Moonglade.Web.Attributes;
 using Moonglade.Webmention;
 using System.ComponentModel.DataAnnotations;
@@ -54,26 +53,6 @@ public class MentionController(
         WebmentionStatus.GenericError => StatusCode(StatusCodes.Status500InternalServerError, "An internal server error occurred."),
         _ => StatusCode(StatusCodes.Status500InternalServerError, "An unknown error occurred.")
     };
-
-    [HttpPost("/pingback")]
-    [IgnoreAntiforgeryToken]
-    [ProducesResponseType(StatusCodes.Status200OK)]
-    [ProducesResponseType(StatusCodes.Status403Forbidden)]
-    public async Task<IActionResult> ReceivePingback()
-    {
-        if (!blogConfig.AdvancedSettings.EnablePingback) return Forbid();
-
-        var ip = ClientIPHelper.GetClientIP(HttpContext);
-        var requestBody = await new StreamReader(HttpContext.Request.Body, Encoding.Default).ReadToEndAsync();
-
-        var response = await commandMediator.SendAsync(new ReceivePingCommand(requestBody, ip));
-        if (response.Status == PingbackStatus.Success)
-        {
-            SendMentionEmailAction(response.MentionEntity);
-        }
-
-        return new PingbackResult(response.Status);
-    }
 
     private async void SendMentionEmailAction(MentionEntity mention)
     {

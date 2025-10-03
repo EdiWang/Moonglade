@@ -59,7 +59,6 @@
 		<ProjectReference Include="..\Moonglade.Email.Client\Moonglade.Email.Client.csproj" />
 		<ProjectReference Include="..\Moonglade.IndexNow.Client\Moonglade.IndexNow.Client.csproj" />
 		<ProjectReference Include="..\Moonglade.Moderation\Moonglade.Moderation.csproj" />
-		<ProjectReference Include="..\Moonglade.Pingback\Moonglade.Pingback.csproj" />
 		<ProjectReference Include="..\Moonglade.Setup\Moonglade.Setup.csproj" />
 		<ProjectReference Include="..\Moonglade.Syndication\Moonglade.Syndication.csproj" />
 		<ProjectReference Include="..\Moonglade.Theme\Moonglade.Theme.csproj" />

@@ -16,7 +16,6 @@ using Moonglade.Email.Client;
 using Moonglade.IndexNow.Client;
 using Moonglade.Mention.Common;
 using Moonglade.Moderation;
-using Moonglade.Pingback;
 using Moonglade.Setup;
 using Moonglade.Syndication;
 using Moonglade.Web.BackgroundServices;
@@ -239,7 +238,6 @@ public class Program
     private static void ConfigureMoongladeServices(IServiceCollection services, IConfiguration configuration)
     {
         services.AddMentionCommon()
-                .AddPingback()
                 .AddWebmention();
 
         services.AddSyndication()
