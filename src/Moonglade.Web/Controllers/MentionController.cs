@@ -3,7 +3,6 @@ using LiteBus.Commands.Abstractions;
 using LiteBus.Events.Abstractions;
 using Moonglade.Data.Entities;
 using Moonglade.Email.Client;
-using Moonglade.Mention.Common;
 using Moonglade.Web.Attributes;
 using Moonglade.Webmention;
 using System.ComponentModel.DataAnnotations;

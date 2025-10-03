@@ -14,7 +14,6 @@ using Moonglade.Data.PostgreSql;
 using Moonglade.Data.SqlServer;
 using Moonglade.Email.Client;
 using Moonglade.IndexNow.Client;
-using Moonglade.Mention.Common;
 using Moonglade.Moderation;
 using Moonglade.Setup;
 using Moonglade.Syndication;

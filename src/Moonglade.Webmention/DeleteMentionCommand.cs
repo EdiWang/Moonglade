@@ -2,7 +2,7 @@
 using Moonglade.Data;
 using Moonglade.Data.Entities;
 
-namespace Moonglade.Mention.Common;
+namespace Moonglade.Webmention;
 
 public record DeleteMentionCommand(Guid Id) : ICommand;
 
