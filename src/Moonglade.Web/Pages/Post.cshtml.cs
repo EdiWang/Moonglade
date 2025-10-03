@@ -3,11 +3,9 @@ using LiteBus.Queries.Abstractions;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Moonglade.Core.PostFeature;
 using Moonglade.Data.Entities;
-using Moonglade.Pingback;
 
 namespace Moonglade.Web.Pages;
 
-[AddPingbackHeader("pingback")]
 public class PostModel(IConfiguration configuration, IQueryMediator queryMediator, ICommandMediator commandMediator) : PageModel
 {
     public PostEntity Post { get; set; }

@@ -1,4 +1,4 @@
-﻿namespace Moonglade.Mention.Common;
+﻿namespace Moonglade.Webmention;
 
 public record MentionRequest
 {

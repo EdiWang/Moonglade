@@ -14,9 +14,7 @@ using Moonglade.Data.PostgreSql;
 using Moonglade.Data.SqlServer;
 using Moonglade.Email.Client;
 using Moonglade.IndexNow.Client;
-using Moonglade.Mention.Common;
 using Moonglade.Moderation;
-using Moonglade.Pingback;
 using Moonglade.Setup;
 using Moonglade.Syndication;
 using Moonglade.Web.BackgroundServices;
@@ -57,11 +55,7 @@ public class Program
     {
         var assemblies = new[]
         {
-            // Core/Mention
-            "Moonglade.Mention.Common",
-            "Moonglade.Pingback",
             "Moonglade.Webmention",
-            // Core
             "Moonglade.Auth",
             "Moonglade.Comments",
             "Moonglade.Core",
@@ -70,9 +64,7 @@ public class Program
             "Moonglade.IndexNow.Client",
             "Moonglade.Syndication",
             "Moonglade.Theme",
-            // Data
             "Moonglade.Data",
-            // Infrastructure
             "Moonglade.Configuration"
         };
 
@@ -238,9 +230,7 @@ public class Program
 
     private static void ConfigureMoongladeServices(IServiceCollection services, IConfiguration configuration)
     {
-        services.AddMentionCommon()
-                .AddPingback()
-                .AddWebmention();
+        services.AddWebmention();
 
         services.AddSyndication()
                 .AddInMemoryCacheAside()

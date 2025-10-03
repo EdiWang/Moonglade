@@ -3,7 +3,7 @@ using Moonglade.Data;
 using Moonglade.Data.Entities;
 using Moonglade.Data.Specifications;
 
-namespace Moonglade.Mention.Common;
+namespace Moonglade.Webmention;
 
 public record ListMentionsQuery : IQuery<List<MentionEntity>>;
 

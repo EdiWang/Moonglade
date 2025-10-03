@@ -2,11 +2,11 @@
 using Moonglade.Data;
 using Moonglade.Data.Entities;
 
-namespace Moonglade.Mention.Common;
+namespace Moonglade.Webmention;
 
 public record ClearMentionsCommand : ICommand;
 
-public class ClearPingbackCommandHandler(MoongladeRepository<MentionEntity> repo) : ICommandHandler<ClearMentionsCommand>
+public class ClearMentionsCommandHandler(MoongladeRepository<MentionEntity> repo) : ICommandHandler<ClearMentionsCommand>
 {
     public Task HandleAsync(ClearMentionsCommand request, CancellationToken ct) => repo.Clear(ct);
 }

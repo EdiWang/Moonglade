@@ -1,7 +1,7 @@
 ﻿using Microsoft.Extensions.Logging;
 using System.Text.RegularExpressions;
 
-namespace Moonglade.Mention.Common;
+namespace Moonglade.Webmention;
 
 public interface IMentionSourceInspector
 {

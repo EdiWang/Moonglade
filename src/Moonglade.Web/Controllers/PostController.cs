@@ -1,7 +1,6 @@
 ﻿using LiteBus.Commands.Abstractions;
 using Moonglade.Core.PostFeature;
 using Moonglade.IndexNow.Client;
-using Moonglade.Pingback;
 using Moonglade.Web.Attributes;
 using Moonglade.Web.BackgroundServices;
 using Moonglade.Webmention;
@@ -100,11 +99,6 @@ public class PostController(
 
     private void NotifyExternalServices(string postContent, Uri link)
     {
-        if (blogConfig.AdvancedSettings.EnablePingback)
-        {
-            cannonService.FireAsync<IPingbackSender>(async sender => await sender.TrySendPingAsync(link.ToString(), postContent));
-        }
-
         if (blogConfig.AdvancedSettings.EnableWebmention)
         {
             cannonService.FireAsync<IWebmentionSender>(async sender => await sender.SendWebmentionAsync(link.ToString(), postContent));
