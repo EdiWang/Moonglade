@@ -147,7 +147,7 @@ Setup [Moonglade.ContentSecurity Azure Function](https://github.com/EdiWang/Moon
 
 ### Email Notifications
 
-For notifications on new comments, replies, webmentions, and pingbacks, use [Moonglade.Email Azure Function](https://github.com/EdiWang/Moonglade.Email):
+For notifications on new comments, replies and webmentions, use [Moonglade.Email Azure Function](https://github.com/EdiWang/Moonglade.Email):
 
 ```json
 "Email": {
