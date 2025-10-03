@@ -236,8 +236,7 @@ public class Program
 
     private static void ConfigureMoongladeServices(IServiceCollection services, IConfiguration configuration)
     {
-        services.AddMentionCommon()
-                .AddWebmention();
+        services.AddWebmention();
 
         services.AddSyndication()
                 .AddInMemoryCacheAside()
