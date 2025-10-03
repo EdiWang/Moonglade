@@ -55,10 +55,7 @@ public class Program
     {
         var assemblies = new[]
         {
-            // Core/Mention
-            "Moonglade.Mention.Common",
             "Moonglade.Webmention",
-            // Core
             "Moonglade.Auth",
             "Moonglade.Comments",
             "Moonglade.Core",
@@ -67,9 +64,7 @@ public class Program
             "Moonglade.IndexNow.Client",
             "Moonglade.Syndication",
             "Moonglade.Theme",
-            // Data
             "Moonglade.Data",
-            // Infrastructure
             "Moonglade.Configuration"
         };
 
