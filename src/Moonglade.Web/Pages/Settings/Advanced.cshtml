@@ -41,21 +41,6 @@
 
                     <div class="settings-entry row align-items-center py-3 px-2 rounded-3 border mb-1">
                         <div class="col-auto">
-                            <i class="bi-signpost settings-entry-icon"></i>
-                        </div>
-                        <div class="col">
-                            <label asp-for="@settings.EnablePingback" class="form-check-label"></label>
-                        </div>
-                        <div class="col-md-4 text-end">
-                            <div class="form-check form-switch form-control-lg">
-                                <input type="hidden" name="EnablePingback" value="false">
-                                <input type="checkbox" name="EnablePingback" value="true" class="form-check-input" @(settings.EnablePingback ? "checked" : null)>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="settings-entry row align-items-center py-3 px-2 rounded-3 border mb-1">
-                        <div class="col-auto">
                             <i class="bi-map settings-entry-icon"></i>
                         </div>
                         <div class="col">

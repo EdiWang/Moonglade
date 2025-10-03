@@ -58,7 +58,6 @@ public class Program
         {
             // Core/Mention
             "Moonglade.Mention.Common",
-            "Moonglade.Pingback",
             "Moonglade.Webmention",
             // Core
             "Moonglade.Auth",

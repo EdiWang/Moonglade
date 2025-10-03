@@ -67,11 +67,11 @@ public class MentionController(
     }
 
     [Authorize]
-    [HttpDelete("{pingbackId:guid}")]
+    [HttpDelete("{mentionId:guid}")]
     [ProducesResponseType(StatusCodes.Status204NoContent)]
-    public async Task<IActionResult> Delete([NotEmpty] Guid pingbackId)
+    public async Task<IActionResult> Delete([NotEmpty] Guid mentionId)
     {
-        await commandMediator.SendAsync(new DeleteMentionCommand(pingbackId));
+        await commandMediator.SendAsync(new DeleteMentionCommand(mentionId));
         return NoContent();
     }
 

@@ -15,9 +15,6 @@ public class AdvancedSettings : IBlogSettings
     [MaxLength(2048)]
     public string FootScripts { get; set; }
 
-    [Display(Name = "Enable Pingback")]
-    public bool EnablePingback { get; set; } = true;
-
     [Display(Name = "Enable Webmention")]
     public bool EnableWebmention { get; set; } = true;
 
