@@ -3,7 +3,7 @@ using System.ComponentModel.DataAnnotations;
 
 namespace Moonglade.Comments;
 
-public class CommentRequest : ICaptchable
+public class CommentRequest : ICaptchableWithToken
 {
     [Required]
     [MaxLength(64)]
@@ -20,4 +20,6 @@ public class CommentRequest : ICaptchable
     [Required]
     [StringLength(4)]
     public string CaptchaCode { get; set; }
+
+    public string CaptchaToken { get; set; }
 }

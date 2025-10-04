@@ -3,13 +3,13 @@ using Microsoft.AspNetCore.Mvc.Filters;
 
 namespace Moonglade.Web.Filters;
 
-public class ValidateCaptcha(ISessionBasedCaptcha captcha) : ActionFilterAttribute
+public class ValidateCaptcha(IStatelessCaptcha captcha) : ActionFilterAttribute
 {
     public override void OnActionExecuting(ActionExecutingContext context)
     {
         var captchableModel = context.ActionArguments
             .Values
-            .OfType<ICaptchable>()
+            .OfType<ICaptchableWithToken>()
             .FirstOrDefault();
 
         if (captchableModel == null)
@@ -19,7 +19,7 @@ public class ValidateCaptcha(ISessionBasedCaptcha captcha) : ActionFilterAttribu
             return;
         }
 
-        if (!captcha.Validate(captchableModel.CaptchaCode, context.HttpContext.Session))
+        if (!captcha.Validate(captchableModel.CaptchaCode, captchableModel.CaptchaToken))
         {
             AddModelError(context, "Wrong Captcha Code");
             context.Result = new ConflictObjectResult(context.ModelState);
