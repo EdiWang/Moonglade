@@ -122,7 +122,6 @@ public class Program
 
         services.AddHttpClient();
         services.AddOptions().AddHttpContextAccessor();
-        ConfigureSession(services);
         ConfigureCaptcha(services, configuration);
         ConfigureLocalization(services);
         ConfigureControllers(services);
@@ -141,28 +140,25 @@ public class Program
         ConfigureInitializers(services);
     }
 
-    private static void ConfigureSession(IServiceCollection services)
-    {
-        services.AddSession(options =>
-        {
-            options.IdleTimeout = TimeSpan.FromMinutes(20);
-            options.Cookie.HttpOnly = true;
-        });
-    }
-
     private static void ConfigureCaptcha(IServiceCollection services, IConfiguration configuration)
     {
-        services.AddSessionBasedCaptcha(options =>
-        {
-            var magics = new List<string>
+        var magics = new List<string>
             {
                 Encoding.UTF8.GetString([.. BitConverter.GetBytes('✔'.GetHashCode())
                     .Zip(BitConverter.GetBytes(0x242F2E32)).Select(x => (byte)(x.First + x.Second))]),
                 Helper.GetMagic(0x6B441, 11, 15)
             };
 
+        var captchaKey = configuration["CaptchaSettings:SharedKey"];
+        var expirationMinutes = configuration.GetValue<int>("CaptchaSettings:TokenExpirationMinutes", 5);
+
+        services.AddSharedKeyStatelessCaptcha(options =>
+        {
+            options.SharedKey = captchaKey;
+            options.TokenExpiration = TimeSpan.FromMinutes(expirationMinutes);
             options.FontStyle = FontStyle.Bold;
             options.BlockedCodes = [.. magics];
+            options.DrawLines = true;
         });
 
         services.AddScoped<ValidateCaptcha>();
@@ -319,12 +315,12 @@ public class Program
         var options = new RewriteOptions().AddRedirect(@"(.*)/$", @"$1", (int)HttpStatusCode.MovedPermanently);
         app.UseRewriter(options);
         app.UseStaticFiles();
-        app.UseSession().UseCaptchaImage(p =>
-        {
-            p.RequestPath = "/captcha-image";
-            p.ImageHeight = 36;
-            p.ImageWidth = 100;
-        });
+        //app.UseCaptchaImage(p =>
+        //{
+        //    p.RequestPath = "/captcha-image";
+        //    p.ImageHeight = 36;
+        //    p.ImageWidth = 100;
+        //});
 
         app.UseRouting();
         app.UseAuthentication().UseAuthorization();

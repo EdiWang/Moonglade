@@ -16,7 +16,8 @@ async function submitComment(pid) {
     const username = document.querySelector('#input-comment-name').value;
     const content = document.querySelector('#input-comment-content').value;
     const email = document.querySelector('#input-comment-email').value;
-    const captchaCode = document.querySelector('#input-comment-captcha').value;
+    const captchaCode = document.querySelector('#captcha-code').value;
+    const captchaToken = document.querySelector('#captcha-token').value;
 
     thxForComment.style.display = 'none';
     thxForCommentNonReview.style.display = 'none';
@@ -24,7 +25,7 @@ async function submitComment(pid) {
     btnSubmitComment.classList.add('disabled');
     btnSubmitComment.setAttribute('disabled', 'disabled');
 
-    const data = await fetch2(`/api/comment/${pid}`, 'POST', { username, content, email, captchaCode });
+    const data = await fetch2(`/api/comment/${pid}`, 'POST', { username, content, email, captchaCode, captchaToken });
     commentForm.reset();
     resetCaptchaImage();
 

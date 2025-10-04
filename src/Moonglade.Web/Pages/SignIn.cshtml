@@ -59,11 +59,14 @@
                             <div class="mb-3" id="captcha-container" style="display: none;">
                                 <div class="input-group">
                                     <input asp-for="CaptchaCode"
+                                           id="captcha-code"
                                            minlength="4"
                                            maxlength="4"
                                            placeholder="@SharedLocalizer["Captcha code"]"
                                            autocomplete="off"
                                            class="form-control" required />
+
+                                    <input type="hidden" id="captcha-token" asp-for="CaptchaToken" />
                                     <img id="img-captcha" title="@SharedLocalizer["Can't read? Click to change another image."]" />
                                 </div>
                             </div>
