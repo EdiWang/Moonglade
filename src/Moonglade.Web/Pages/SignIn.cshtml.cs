@@ -14,7 +14,7 @@ namespace Moonglade.Web.Pages;
 public class SignInModel(IOptions<AuthenticationSettings> authSettings,
         ICommandMediator commandMediator,
         ILogger<SignInModel> logger,
-        ISessionBasedCaptcha captcha)
+        IStatelessCaptcha captcha)
     : PageModel
 {
     private readonly AuthenticationSettings _authenticationSettings = authSettings.Value;
@@ -39,6 +39,10 @@ public class SignInModel(IOptions<AuthenticationSettings> authSettings,
     [StringLength(4)]
     public string CaptchaCode { get; set; }
 
+    [BindProperty]
+    [Required]
+    public string CaptchaToken { get; set; }
+
     public async Task<IActionResult> OnGetAsync()
     {
         switch (_authenticationSettings.Provider)
@@ -62,7 +66,7 @@ public class SignInModel(IOptions<AuthenticationSettings> authSettings,
     {
         try
         {
-            if (!captcha.Validate(CaptchaCode, HttpContext.Session))
+            if (!captcha.Validate(CaptchaCode, CaptchaToken))
             {
                 ModelState.AddModelError(nameof(CaptchaCode), "Wrong Captcha Code");
             }
