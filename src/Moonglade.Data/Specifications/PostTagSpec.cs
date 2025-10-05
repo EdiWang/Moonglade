@@ -46,3 +46,14 @@ public class PostTagEntityToPostDigestSpec : Specification<PostTagEntity, PostDi
         });
     }
 }
+
+public sealed class PublishedPostTagByTagIdSpec : SingleResultSpecification<PostTagEntity>
+{
+    public PublishedPostTagByTagIdSpec(int tagId)
+    {
+        Query.Where(
+            pt => pt.TagId == tagId
+            && pt.Post.PostStatus == PostStatusConstants.Published
+            && !pt.Post.IsDeleted);
+    }
+}

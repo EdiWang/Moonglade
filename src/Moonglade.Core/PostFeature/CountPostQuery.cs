@@ -31,10 +31,7 @@ public class CountPostQueryHandler(
                 : throw new InvalidOperationException("CatId must be provided for Category count."),
 
             CountType.Tag => request.TagId is int tagId
-                ? await postTagRepo.CountAsync(
-                    p => p.TagId == tagId &&
-                         p.Post.PostStatus == PostStatusConstants.Published &&
-                         !p.Post.IsDeleted, ct)
+                ? await postTagRepo.CountAsync(new PublishedPostTagByTagIdSpec(tagId), ct)
                 : throw new InvalidOperationException("TagId must be provided for Tag count."),
 
             CountType.Featured => await postRepo.CountAsync(new FeaturedPostSpec(), ct),
