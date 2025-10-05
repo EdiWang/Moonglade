@@ -55,6 +55,29 @@ public class CommentEntityToCommentSpec : Specification<CommentEntity, Comment>
     }
 }
 
+public class CommentEntityToCommentDetailedItemSpec : Specification<CommentEntity, CommentDetailedItem>
+{
+    public CommentEntityToCommentDetailedItemSpec()
+    {
+        Query.Select(p => new CommentDetailedItem
+        {
+            Id = p.Id,
+            CommentContent = p.CommentContent,
+            CreateTimeUtc = p.CreateTimeUtc,
+            Email = p.Email,
+            IpAddress = p.IPAddress,
+            Username = p.Username,
+            IsApproved = p.IsApproved,
+            PostTitle = p.Post.Title,
+            CommentReplies = p.Replies.Select(cr => new CommentReplyDigest
+            {
+                ReplyContent = cr.ReplyContent,
+                ReplyTimeUtc = cr.CreateTimeUtc
+            }).ToList()
+        });
+    }
+}
+
 public sealed class CommentWithPostByIdSpec : Specification<CommentEntity>
 {
     public CommentWithPostByIdSpec(Guid commentId)

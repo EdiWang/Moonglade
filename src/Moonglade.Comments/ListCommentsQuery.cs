@@ -1,4 +1,5 @@
-﻿using LiteBus.Queries.Abstractions;
+﻿using Ardalis.Specification;
+using LiteBus.Queries.Abstractions;
 using Moonglade.Data;
 using Moonglade.Data.Entities;
 using Moonglade.Data.Specifications;
@@ -18,7 +19,10 @@ public class ListCommentsQueryHandler(MoongladeRepository<CommentEntity> repo) :
         }
 
         var spec = new CommentPagingSepc(request.PageSize, request.PageIndex, request.SearchTerm);
-        var comments = repo.SelectAsync(spec, CommentDetailedItem.EntitySelector, ct);
+        var dtoSpec = new CommentEntityToCommentDetailedItemSpec();
+        var newSpec = spec.WithProjectionOf(dtoSpec);
+
+        var comments = repo.ListAsync(newSpec, ct);
 
         return comments;
     }
