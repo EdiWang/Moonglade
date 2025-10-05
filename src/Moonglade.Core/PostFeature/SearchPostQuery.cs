@@ -1,8 +1,7 @@
 ﻿using LiteBus.Queries.Abstractions;
-using Microsoft.EntityFrameworkCore;
 using Moonglade.Data;
 using Moonglade.Data.DTO;
-using System.Text.RegularExpressions;
+using Moonglade.Data.Specifications;
 
 namespace Moonglade.Core.PostFeature;
 
@@ -17,40 +16,9 @@ public class SearchPostQueryHandler(MoongladeRepository<PostEntity> repo) : IQue
             throw new ArgumentException("Keyword must not be null or whitespace.", nameof(request.Keyword));
         }
 
-        var query = BuildSearchQuery(request.Keyword);
-        //var results = await query.Select(PostDigest.EntitySelector).ToListAsync(ct);
-        //return results;
+        var spec = new SearchPostsSpec(request.Keyword);
+        var results = await repo.ListAsync(spec, ct);
 
-        throw new NotImplementedException("Mapping to PostDigest is not implemented yet.");
-    }
-
-    private IQueryable<PostEntity> BuildSearchQuery(string keyword)
-    {
-        var normalized = Regex.Replace(keyword.Trim(), @"\s+", " ");
-        var words = normalized.Split(' ', StringSplitOptions.RemoveEmptyEntries);
-
-        var query = repo.AsQueryable()
-            .Where(p => !p.IsDeleted && p.PostStatus == PostStatusConstants.Published)
-            .AsNoTracking();
-
-        if (words.Length > 1)
-        {
-            // All words must appear in Title
-            foreach (var word in words)
-            {
-                var temp = word; // Required for EF
-                query = query.Where(p => p.Title.Contains(temp));
-            }
-        }
-        else
-        {
-            var word = words[0];
-            query = query.Where(p =>
-                p.Title.Contains(word) ||
-                p.Tags.Any(t => t.DisplayName.Contains(word))
-            );
-        }
-
-        return query;
+        return results;
     }
 }
