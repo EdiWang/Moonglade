@@ -6,8 +6,6 @@ namespace Moonglade.Data;
 public class MoongladeRepository<T>(BlogDbContext dbContext) : RepositoryBase<T>(dbContext)
     where T : class
 {
-    public IQueryable<T> AsQueryable() => dbContext.Set<T>();
-
     public Task<int> CountAsync(Expression<Func<T, bool>> condition, CancellationToken ct = default) =>
         dbContext.Set<T>().CountAsync(condition, ct);
 
