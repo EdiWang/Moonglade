@@ -1,4 +1,5 @@
-﻿using LiteBus.Queries.Abstractions;
+﻿using Ardalis.Specification;
+using LiteBus.Queries.Abstractions;
 using Moonglade.Data;
 using Moonglade.Data.Specifications;
 using System.Linq.Expressions;
@@ -35,7 +36,10 @@ public class ListPostSegmentQueryHandler(MoongladeRepository<PostEntity> repo) :
         }
 
         var spec = new PostPagingByStatusSpec(request.PostStatus, request.Keyword, request.PageSize, request.Offset);
-        var posts = await repo.SelectAsync(spec, PostSegment.EntitySelector, ct);
+        var dtoSpec = new PostEntityToSegmentSpec();
+        var newSpec = spec.WithProjectionOf(dtoSpec);
+
+        var posts = await repo.ListAsync(newSpec, ct);
 
         Expression<Func<PostEntity, bool>> countExp = p => null == request.Keyword || p.Title.Contains(request.Keyword);
 

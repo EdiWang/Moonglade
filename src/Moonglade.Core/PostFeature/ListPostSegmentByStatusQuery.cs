@@ -1,4 +1,5 @@
-﻿using LiteBus.Queries.Abstractions;
+﻿using Ardalis.Specification;
+using LiteBus.Queries.Abstractions;
 using Moonglade.Data;
 using Moonglade.Data.Specifications;
 
@@ -11,6 +12,9 @@ public class ListPostSegmentByStatusQueryHandler(MoongladeRepository<PostEntity>
     public Task<List<PostSegment>> HandleAsync(ListPostSegmentByStatusQuery request, CancellationToken ct)
     {
         var spec = new PostByStatusSpec(request.Status);
-        return repo.SelectAsync(spec, PostSegment.EntitySelector, ct);
+        var dtoSpec = new PostEntityToSegmentSpec();
+        var newSpec = spec.WithProjectionOf(dtoSpec);
+
+        return repo.ListAsync(newSpec, ct);
     }
 }

@@ -1,6 +1,9 @@
-﻿using Moonglade.Data.Entities;
+﻿using Ardalis.Specification;
+using Moonglade.Data;
+using Moonglade.Data.Entities;
+using Moonglade.Data.Specifications;
 
-namespace Moonglade.Data.Specifications;
+namespace Moonglade.Core.PostFeature;
 
 public sealed class PostPagingSpec : Specification<PostEntity>
 {
@@ -42,5 +45,27 @@ public sealed class PostPagingByStatusSpec : Specification<PostEntity>
 
         Query.Skip(offset).Take(pageSize);
         Query.OrderByDescending(p => p.PubDateUtc);
+    }
+}
+
+public class PostEntityToSegmentSpec : Specification<PostEntity, PostSegment>
+{
+    public PostEntityToSegmentSpec()
+    {
+        Query.Select(p => new()
+        {
+            Id = p.Id,
+            Title = p.Title,
+            Slug = p.Slug,
+            PubDateUtc = p.PubDateUtc,
+            PostStatus = p.PostStatus,
+            IsFeatured = p.IsFeatured,
+            IsDeleted = p.IsDeleted,
+            IsOutdated = p.IsOutdated,
+            CreateTimeUtc = p.CreateTimeUtc,
+            LastModifiedUtc = p.LastModifiedUtc,
+            ScheduledPublishTimeUtc = p.ScheduledPublishTimeUtc,
+            ContentAbstract = p.ContentAbstract
+        });
     }
 }
