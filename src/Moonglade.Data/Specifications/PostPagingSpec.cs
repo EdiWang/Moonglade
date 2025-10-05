@@ -1,9 +1,7 @@
-﻿using Ardalis.Specification;
-using Moonglade.Data;
+﻿using Moonglade.Data.DTO;
 using Moonglade.Data.Entities;
-using Moonglade.Data.Specifications;
 
-namespace Moonglade.Core.PostFeature;
+namespace Moonglade.Data.Specifications;
 
 public sealed class PostPagingSpec : Specification<PostEntity>
 {

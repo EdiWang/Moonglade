@@ -1,4 +1,4 @@
-﻿namespace Moonglade.Data;
+﻿namespace Moonglade.Data.DTO;
 
 public class SiteMapInfo
 {

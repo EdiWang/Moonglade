@@ -1,7 +1,7 @@
-﻿using Ardalis.Specification;
+﻿using Moonglade.Data.DTO;
 using Moonglade.Data.Entities;
 
-namespace Moonglade.Comments;
+namespace Moonglade.Data.Specifications;
 
 public sealed class CommentPagingSepc : Specification<CommentEntity>
 {

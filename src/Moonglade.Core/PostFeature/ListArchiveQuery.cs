@@ -1,5 +1,7 @@
-﻿using LiteBus.Queries.Abstractions;
+﻿using Ardalis.Specification;
+using LiteBus.Queries.Abstractions;
 using Moonglade.Data;
+using Moonglade.Data.DTO;
 using Moonglade.Data.Specifications;
 
 namespace Moonglade.Core.PostFeature;
@@ -11,7 +13,10 @@ public class ListArchiveQueryHandler(MoongladeRepository<PostEntity> repo) : IQu
     public Task<List<PostDigest>> HandleAsync(ListArchiveQuery request, CancellationToken ct)
     {
         var spec = new PostByYearMonthSpec(request.Year, request.Month.GetValueOrDefault());
-        var list = repo.SelectAsync(spec, PostDigest.EntitySelector, ct);
+        var dtoSpec = new PostEntityToDigestSpec();
+        var newSpec = spec.WithProjectionOf(dtoSpec);
+
+        var list = repo.ListAsync(newSpec, ct);
         return list;
     }
 }

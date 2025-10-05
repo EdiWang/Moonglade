@@ -1,6 +1,4 @@
-﻿using System.Linq.Expressions;
-
-namespace Moonglade.Core.PostFeature;
+﻿namespace Moonglade.Data.DTO;
 
 public struct PostSegment
 {

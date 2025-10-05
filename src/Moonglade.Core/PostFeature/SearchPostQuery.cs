@@ -1,6 +1,7 @@
 ﻿using LiteBus.Queries.Abstractions;
 using Microsoft.EntityFrameworkCore;
 using Moonglade.Data;
+using Moonglade.Data.DTO;
 using System.Text.RegularExpressions;
 
 namespace Moonglade.Core.PostFeature;
@@ -17,8 +18,10 @@ public class SearchPostQueryHandler(MoongladeRepository<PostEntity> repo) : IQue
         }
 
         var query = BuildSearchQuery(request.Keyword);
-        var results = await query.Select(PostDigest.EntitySelector).ToListAsync(ct);
-        return results;
+        //var results = await query.Select(PostDigest.EntitySelector).ToListAsync(ct);
+        //return results;
+
+        throw new NotImplementedException("Mapping to PostDigest is not implemented yet.");
     }
 
     private IQueryable<PostEntity> BuildSearchQuery(string keyword)

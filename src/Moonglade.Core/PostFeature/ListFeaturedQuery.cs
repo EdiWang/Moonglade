@@ -1,5 +1,7 @@
-﻿using LiteBus.Queries.Abstractions;
+﻿using Ardalis.Specification;
+using LiteBus.Queries.Abstractions;
 using Moonglade.Data;
+using Moonglade.Data.DTO;
 using Moonglade.Data.Specifications;
 using Moonglade.Utils;
 
@@ -14,7 +16,11 @@ public class ListFeaturedQueryHandler(MoongladeRepository<PostEntity> repo) : IQ
         var (pageSize, pageIndex) = request;
         Helper.ValidatePagingParameters(pageSize, pageIndex);
 
-        var posts = repo.SelectAsync(new FeaturedPostPagingSpec(pageSize, pageIndex), PostDigest.EntitySelector, ct);
+        var spec = new FeaturedPostPagingSpec(pageSize, pageIndex);
+        var dtoSpec = new PostEntityToDigestSpec();
+        var newSpec = spec.WithProjectionOf(dtoSpec);
+
+        var posts = repo.ListAsync(newSpec, ct);
         return posts;
     }
 }

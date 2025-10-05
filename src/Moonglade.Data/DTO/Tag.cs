@@ -1,4 +1,4 @@
-﻿namespace Moonglade.Core.TagFeature;
+﻿namespace Moonglade.Data.DTO;
 
 public class Tag
 {

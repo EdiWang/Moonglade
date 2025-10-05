@@ -1,5 +1,7 @@
-﻿using LiteBus.Queries.Abstractions;
+﻿using Ardalis.Specification;
+using LiteBus.Queries.Abstractions;
 using Moonglade.Data;
+using Moonglade.Data.DTO;
 using Moonglade.Data.Specifications;
 using Moonglade.Utils;
 
@@ -22,6 +24,9 @@ public class ListPostsQueryHandler(MoongladeRepository<PostEntity> repo) : IQuer
         Helper.ValidatePagingParameters(request.PageSize, request.PageIndex);
 
         var spec = new PostPagingSpec(request.PageSize, request.PageIndex, request.CatId);
-        return repo.SelectAsync(spec, PostDigest.EntitySelector, ct);
+        var dtoSpec = new PostEntityToDigestSpec();
+        var newSpec = spec.WithProjectionOf(dtoSpec);
+
+        return repo.ListAsync(newSpec, ct);
     }
 }

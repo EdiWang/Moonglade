@@ -1,5 +1,6 @@
-﻿@using Moonglade.Web.PagedList
-@model BasePagedList<Moonglade.Core.PostFeature.PostDigest>
+﻿@using Moonglade.Data.DTO
+@using Moonglade.Web.PagedList
+@model BasePagedList<PostDigest>
 @inject IConfiguration Configuration
 
 @foreach (var item in Model)
