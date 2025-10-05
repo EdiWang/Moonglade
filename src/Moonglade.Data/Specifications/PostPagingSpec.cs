@@ -19,7 +19,7 @@ public sealed class PostPagingSpec : Specification<PostEntity>
 
 public sealed class PostPagingByStatusSpec : Specification<PostEntity>
 {
-    public PostPagingByStatusSpec(PostStatus postStatus, string keyword, int pageSize, int offset)
+    public PostPagingByStatusSpec(PostStatus postStatus, string keyword, int pageSize = 0, int offset = 0)
     {
         Query.Where(p => null == keyword || p.Title.Contains(keyword));
 
@@ -41,8 +41,11 @@ public sealed class PostPagingByStatusSpec : Specification<PostEntity>
                 throw new ArgumentOutOfRangeException(nameof(postStatus), postStatus, null);
         }
 
-        Query.Skip(offset).Take(pageSize);
-        Query.OrderByDescending(p => p.PubDateUtc);
+        if (pageSize > 0 || offset > 0)
+        {
+            Query.Skip(offset).Take(pageSize);
+            Query.OrderByDescending(p => p.PubDateUtc);
+        }
     }
 }
 

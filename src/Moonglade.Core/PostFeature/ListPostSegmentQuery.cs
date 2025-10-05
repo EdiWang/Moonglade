@@ -3,7 +3,6 @@ using LiteBus.Queries.Abstractions;
 using Moonglade.Data;
 using Moonglade.Data.DTO;
 using Moonglade.Data.Specifications;
-using System.Linq.Expressions;
 
 namespace Moonglade.Core.PostFeature;
 
@@ -42,27 +41,9 @@ public class ListPostSegmentQueryHandler(MoongladeRepository<PostEntity> repo) :
 
         var posts = await repo.ListAsync(newSpec, ct);
 
-        Expression<Func<PostEntity, bool>> countExp = p => null == request.Keyword || p.Title.Contains(request.Keyword);
+        var countSpec = new PostPagingByStatusSpec(request.PostStatus, request.Keyword);
+        var totalRows = await repo.CountAsync(countSpec, ct);
 
-        switch (request.PostStatus)
-        {
-            case PostStatus.Draft:
-                countExp.AndAlso(p => p.PostStatus == PostStatusConstants.Draft && !p.IsDeleted);
-                break;
-            case PostStatus.Published:
-                countExp.AndAlso(p => p.PostStatus == PostStatusConstants.Published && !p.IsDeleted);
-                break;
-            case PostStatus.Deleted:
-                countExp.AndAlso(p => p.IsDeleted);
-                break;
-            case PostStatus.Default:
-                countExp.AndAlso(p => true);
-                break;
-            default:
-                throw new ArgumentOutOfRangeException(nameof(request.PostStatus), request.PostStatus, null);
-        }
-
-        var totalRows = await repo.CountAsync(countExp, ct);
         return (posts, totalRows);
     }
 }
