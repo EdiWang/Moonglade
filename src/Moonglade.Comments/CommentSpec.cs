@@ -1,6 +1,7 @@
-﻿using Moonglade.Data.Entities;
+﻿using Ardalis.Specification;
+using Moonglade.Data.Entities;
 
-namespace Moonglade.Data.Specifications;
+namespace Moonglade.Comments;
 
 public sealed class CommentPagingSepc : Specification<CommentEntity>
 {
@@ -32,6 +33,25 @@ public sealed class CommentWithRepliesSpec : Specification<CommentEntity>
     {
         Query.Where(c => c.PostId == postId && c.IsApproved);
         Query.Include(p => p.Replies);
+    }
+}
+
+public class CommentEntityToCommentSpec : Specification<CommentEntity, Comment>
+{
+    public CommentEntityToCommentSpec()
+    {
+        Query.Select(p => new Comment
+        {
+            Username = p.Username,
+            Email = p.Email,
+            CreateTimeUtc = p.CreateTimeUtc,
+            CommentContent = p.CommentContent,
+            CommentReplies = p.Replies.Select(cr => new CommentReplyDigest
+            {
+                ReplyContent = cr.ReplyContent,
+                ReplyTimeUtc = cr.CreateTimeUtc
+            }).ToList()
+        });
     }
 }
 
