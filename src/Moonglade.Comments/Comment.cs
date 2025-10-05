@@ -1,7 +1,4 @@
-﻿using Moonglade.Data.Entities;
-using System.Linq.Expressions;
-
-namespace Moonglade.Comments;
+﻿namespace Moonglade.Comments;
 
 public class Comment
 {
