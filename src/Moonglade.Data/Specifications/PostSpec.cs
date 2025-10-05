@@ -35,70 +35,9 @@ public sealed class FeaturedPostSpec : Specification<PostEntity>
     }
 }
 
-public sealed class PostByCatSpec : Specification<PostEntity>
-{
-    public PostByCatSpec(Guid? categoryId, int? top = null)
-    {
-        Query.Where(p =>
-                    !p.IsDeleted &&
-                    p.PostStatus == PostStatusConstants.Published &&
-                    p.IsFeedIncluded &&
-                    (categoryId == null || p.PostCategory.Any(c => c.CategoryId == categoryId.Value)));
-
-        Query.OrderByDescending(p => p.PubDateUtc);
-
-        if (top.HasValue)
-        {
-            Query.Skip(0).Take(top.Value);
-        }
-    }
-}
-
-public sealed class PostByYearMonthSpec : Specification<PostEntity>
-{
-    public PostByYearMonthSpec(int year, int month = 0)
-    {
-        Query.Where(p => p.PubDateUtc.Value.Year == year &&
-                         (month == 0 || p.PubDateUtc.Value.Month == month));
-
-        // Fix #313: Filter out unpublished posts
-        Query.Where(p => p.PostStatus == PostStatusConstants.Published && !p.IsDeleted);
-
-        Query.OrderByDescending(p => p.PubDateUtc);
-        Query.AsNoTracking();
-    }
-}
-
 public sealed class PostByDeletionFlagSpec : Specification<PostEntity>
 {
     public PostByDeletionFlagSpec(bool isDeleted) => Query.Where(p => p.IsDeleted == isDeleted);
-}
-
-public sealed class PostByRouteLinkSpec : SingleResultSpecification<PostEntity>
-{
-    public PostByRouteLinkSpec(string routeLink)
-    {
-        Query.Where(p => p.RouteLink == routeLink && p.PostStatus == PostStatusConstants.Published && !p.IsDeleted);
-
-        Query.Include(p => p.Comments)
-             .Include(pt => pt.Tags)
-             .Include(p => p.PostCategory)
-                .ThenInclude(pc => pc.Category)
-             .AsSplitQuery();
-    }
-}
-
-public sealed class PostByRouteLinkForIdTitleSpec : SingleResultSpecification<PostEntity, (Guid Id, string Title)>
-{
-    public PostByRouteLinkForIdTitleSpec(string routeLink)
-    {
-        Query.Where(p =>
-            p.RouteLink == routeLink &&
-            p.PostStatus == PostStatusConstants.Published &&
-            !p.IsDeleted);
-
-        Query.Select(p => new ValueTuple<Guid, string>(p.Id, p.Title));
-    }
 }
 
 public class PostEntityToDigestSpec : Specification<PostEntity, PostDigest>
