@@ -9,11 +9,7 @@ public class MoongladeRepository<T>(BlogDbContext dbContext) : RepositoryBase<T>
     public Task<int> CountAsync(Expression<Func<T, bool>> condition, CancellationToken ct = default) =>
         dbContext.Set<T>().CountAsync(condition, ct);
 
-    public Task Clear(CancellationToken ct = default)
-    {
-        dbContext.RemoveRange(dbContext.Set<T>());
-        return dbContext.SaveChangesAsync(ct);
-    }
+    public Task<int> Clear(CancellationToken ct = default) => dbContext.Set<T>().ExecuteDeleteAsync(ct);
 
     public async Task<List<TResult>> SelectAsync<TGroup, TResult>(
         Expression<Func<T, TGroup>> groupExpression,
