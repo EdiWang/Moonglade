@@ -189,10 +189,10 @@ public class SearchPostsSpec : Specification<PostEntity, PostDigest>
         if (words.Length > 1)
         {
             // All words must appear in Title
-            foreach (var word in words)
+            for (int i = 0; i < words.Length; i++)
             {
-                var temp = word; // Required for EF
-                Query.Where(p => p.Title.Contains(temp));
+                string word = words[i];
+                Query.Search(p => p.Title, "%" + word + "%", group: i);
             }
         }
         else
