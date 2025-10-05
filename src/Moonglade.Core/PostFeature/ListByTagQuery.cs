@@ -1,4 +1,5 @@
-﻿using LiteBus.Queries.Abstractions;
+﻿using Ardalis.Specification;
+using LiteBus.Queries.Abstractions;
 using Moonglade.Data;
 using Moonglade.Data.DTO;
 using Moonglade.Data.Specifications;
@@ -15,7 +16,11 @@ public class ListByTagQueryHandler(MoongladeRepository<PostTagEntity> repo) : IQ
         if (request.TagId <= 0) throw new ArgumentOutOfRangeException(nameof(request.TagId));
         Helper.ValidatePagingParameters(request.PageSize, request.PageIndex);
 
-        var posts = repo.SelectAsync(new PostTagSpec(request.TagId, request.PageSize, request.PageIndex), PostDigest.EntitySelectorByTag, ct);
+        var spec = new PostTagSpec(request.TagId, request.PageSize, request.PageIndex);
+        var dtoSpec = new PostTagEntityToPostDigestSpec();
+        var newSpec = spec.WithProjectionOf(dtoSpec);
+
+        var posts = repo.ListAsync(newSpec, ct);
         return posts;
     }
 }
