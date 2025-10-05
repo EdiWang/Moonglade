@@ -27,10 +27,7 @@ public class CountPostQueryHandler(
             CountType.Public => await postRepo.CountAsync(new PostByStatusSpec(PostStatus.Published), ct),
 
             CountType.Category => request.CatId is Guid catId
-                ? await postCatRepo.CountAsync(
-                    c => c.CategoryId == catId &&
-                         c.Post.PostStatus == PostStatusConstants.Published &&
-                         !c.Post.IsDeleted, ct)
+                ? await postCatRepo.CountAsync(new PostCategorySpec(catId), ct)
                 : throw new InvalidOperationException("CatId must be provided for Category count."),
 
             CountType.Tag => request.TagId is int tagId
