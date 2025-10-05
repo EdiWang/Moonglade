@@ -1,11 +1,11 @@
 ﻿using LiteBus.Queries.Abstractions;
 using Moonglade.Data;
+using Moonglade.Data.DTO;
 using Moonglade.Data.Specifications;
 using System.Linq.Expressions;
 
 namespace Moonglade.Core.PostFeature;
 
-public record struct Archive(int Year, int Month, int Count);
 public record GetArchiveQuery : IQuery<List<Archive>>;
 
 public class GetArchiveQueryHandler(MoongladeRepository<PostEntity> repo) : IQueryHandler<GetArchiveQuery, List<Archive>>
