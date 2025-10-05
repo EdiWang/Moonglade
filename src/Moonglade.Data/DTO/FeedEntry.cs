@@ -1,4 +1,4 @@
-﻿namespace Moonglade.Syndication;
+﻿namespace Moonglade.Data.DTO;
 
 public record FeedEntry
 {

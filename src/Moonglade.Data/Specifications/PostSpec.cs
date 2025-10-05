@@ -220,3 +220,23 @@ public class SearchPostsSpec : Specification<PostEntity, PostDigest>
         });
     }
 }
+
+public class PostEntityToFeedEntrySpec : Specification<PostEntity, FeedEntry>
+{
+    public PostEntityToFeedEntrySpec(string baseUrl)
+    {
+        Query.Where(p => p.PubDateUtc != null);
+        Query.Select(p => new FeedEntry
+        {
+            Id = p.Id.ToString(),
+            Title = p.Title,
+            PubDateUtc = p.PubDateUtc.Value,
+            Description = p.ContentAbstract,
+            Link = $"{baseUrl}/post/{p.RouteLink}",
+            Author = "", // To be filled by caller
+            AuthorEmail = "", // To be filled by caller
+            LangCode = p.ContentLanguageCode,
+            Categories = p.PostCategory.Select(pc => pc.Category.DisplayName).ToArray()
+        });
+    }
+}

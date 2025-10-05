@@ -1,4 +1,6 @@
-﻿namespace Moonglade.Syndication;
+﻿using Moonglade.Data.DTO;
+
+namespace Moonglade.Syndication;
 
 public interface IFeedGenerator
 {
