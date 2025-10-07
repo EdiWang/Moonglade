@@ -1,5 +1,5 @@
 ﻿using LiteBus.Queries.Abstractions;
-using Moonglade.Features.CategoryFeature;
+using Moonglade.Features.Category;
 using Moonglade.Syndication;
 using System.ComponentModel.DataAnnotations;
 

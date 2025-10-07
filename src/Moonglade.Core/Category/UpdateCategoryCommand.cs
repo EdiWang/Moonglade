@@ -3,7 +3,7 @@ using LiteBus.Commands.Abstractions;
 using Microsoft.Extensions.Logging;
 using Moonglade.Data;
 
-namespace Moonglade.Features.CategoryFeature;
+namespace Moonglade.Features.Category;
 
 public class UpdateCategoryCommand : CreateCategoryCommand, ICommand<OperationCode>
 {
