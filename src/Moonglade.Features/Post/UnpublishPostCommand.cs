@@ -1,5 +1,4 @@
-﻿using Edi.CacheAside.InMemory;
-using LiteBus.Commands.Abstractions;
+﻿using LiteBus.Commands.Abstractions;
 using Microsoft.Extensions.Logging;
 using Moonglade.Data;
 
@@ -9,7 +8,6 @@ public record UnpublishPostCommand(Guid Id) : ICommand;
 
 public class UnpublishPostCommandHandler(
     MoongladeRepository<PostEntity> repo,
-    ICacheAside cache,
     ILogger<UnpublishPostCommandHandler> logger
     ) : ICommandHandler<UnpublishPostCommand>
 {
@@ -25,8 +23,6 @@ public class UnpublishPostCommandHandler(
         post.LastModifiedUtc = DateTime.UtcNow;
 
         await repo.UpdateAsync(post, ct);
-
-        cache.Remove(BlogCachePartition.Post.ToString(), request.Id.ToString());
 
         logger.LogInformation("Post [{PostId}] unpublished", request.Id);
     }

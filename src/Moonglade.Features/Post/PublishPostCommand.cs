@@ -1,5 +1,4 @@
-﻿using Edi.CacheAside.InMemory;
-using LiteBus.Commands.Abstractions;
+﻿using LiteBus.Commands.Abstractions;
 using Microsoft.Extensions.Logging;
 using Moonglade.Data;
 using Moonglade.Utils;
@@ -10,7 +9,6 @@ public record PublishPostCommand(Guid Id) : ICommand;
 
 public class PublishPostCommandHandler(
     MoongladeRepository<PostEntity> repo,
-    ICacheAside cache,
     ILogger<PublishPostCommandHandler> logger
     ) : ICommandHandler<PublishPostCommand>
 {
@@ -28,8 +26,6 @@ public class PublishPostCommandHandler(
         post.RouteLink = UrlHelper.GenerateRouteLink(post.PubDateUtc.GetValueOrDefault(), post.Slug);
 
         await repo.UpdateAsync(post, ct);
-
-        cache.Remove(BlogCachePartition.Post.ToString(), request.Id.ToString());
 
         logger.LogInformation("Post [{PostId}] Published", request.Id);
     }

@@ -12,6 +12,7 @@ namespace Moonglade.Web.Controllers;
 [ApiController]
 [Route("api/[controller]")]
 public class PostController(
+        ICacheAside cache,
         IConfiguration configuration,
         ICommandMediator commandMediator,
         IBlogConfig blogConfig,
@@ -74,6 +75,8 @@ public class PostController(
             var postEntity = model.PostId == Guid.Empty ?
                 await commandMediator.SendAsync(new CreatePostCommand(model)) :
                 await commandMediator.SendAsync(new UpdatePostCommand(model.PostId, model));
+
+            cache.Remove(BlogCachePartition.Post.ToString(), postEntity.RouteLink);
 
             if (model.PostStatus != PostStatusConstants.Published)
             {
@@ -140,6 +143,8 @@ public class PostController(
     public async Task<IActionResult> Publish([NotEmpty] Guid postId)
     {
         await commandMediator.SendAsync(new PublishPostCommand(postId));
+        cache.Remove(BlogCachePartition.Post.ToString(), postId.ToString());
+
         return NoContent();
     }
 
@@ -149,6 +154,8 @@ public class PostController(
     public async Task<IActionResult> Unpublish([NotEmpty] Guid postId)
     {
         await commandMediator.SendAsync(new UnpublishPostCommand(postId));
+        cache.Remove(BlogCachePartition.Post.ToString(), postId.ToString());
+
         return NoContent();
     }
 

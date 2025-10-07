@@ -6,7 +6,11 @@ using Moonglade.Features.Post;
 
 namespace Moonglade.Web.Pages;
 
-public class PostModel(IConfiguration configuration, IQueryMediator queryMediator, ICommandMediator commandMediator) : PageModel
+public class PostModel(
+    IConfiguration configuration,
+    ICacheAside cache,
+    IQueryMediator queryMediator,
+    ICommandMediator commandMediator) : PageModel
 {
     public PostEntity Post { get; set; }
 
@@ -18,17 +22,25 @@ public class PostModel(IConfiguration configuration, IQueryMediator queryMediato
     {
         if (year > DateTime.UtcNow.Year || string.IsNullOrWhiteSpace(slug)) return NotFound();
 
-        var post = await queryMediator.QueryAsync(new GetPostBySlugQuery(year, month, day, slug));
+        var routeLink = $"{year}/{month}/{day}/{slug}".ToLower();
 
-        if (post is null) return NotFound();
+        var psm = await cache.GetOrCreateAsync(BlogCachePartition.Post.ToString(), $"{routeLink}", async entry =>
+        {
+            entry.SlidingExpiration = TimeSpan.FromMinutes(int.Parse(configuration["Post:CacheMinutes"]!));
 
-        Post = post;
+            var post = await queryMediator.QueryAsync(new GetPostBySlugQuery(routeLink));
+            return post;
+        });
+
+        if (psm is null) return NotFound();
+
+        Post = psm;
         ViewData["TitlePrefix"] = $"{Post.Title}";
 
         if (IsViewCountEnabled)
         {
-            await commandMediator.SendAsync(new AddRequestCountCommand(post.Id));
-            PostView = await queryMediator.QueryAsync(new GetPostViewQuery(post.Id));
+            await commandMediator.SendAsync(new AddRequestCountCommand(psm.Id));
+            PostView = await queryMediator.QueryAsync(new GetPostViewQuery(psm.Id));
         }
 
         return Page();

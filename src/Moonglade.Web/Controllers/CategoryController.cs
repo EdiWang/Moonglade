@@ -9,7 +9,10 @@ namespace Moonglade.Web.Controllers;
 [Authorize]
 [ApiController]
 [Route("api/[controller]")]
-public class CategoryController(IQueryMediator queryMediator, ICommandMediator commandMediator) : ControllerBase
+public class CategoryController(
+    ICacheAside cache,
+    IQueryMediator queryMediator,
+    ICommandMediator commandMediator) : ControllerBase
 {
     [HttpGet("{id:guid}")]
     [ProducesResponseType<CategoryEntity>(StatusCodes.Status200OK)]
@@ -35,6 +38,8 @@ public class CategoryController(IQueryMediator queryMediator, ICommandMediator c
     public async Task<IActionResult> Create(CreateCategoryCommand command)
     {
         await commandMediator.SendAsync(command);
+        cache.Remove(BlogCachePartition.General.ToString(), "allcats");
+
         return Created(string.Empty, command);
     }
 
@@ -46,6 +51,8 @@ public class CategoryController(IQueryMediator queryMediator, ICommandMediator c
         var oc = await commandMediator.SendAsync(command);
         if (oc == OperationCode.ObjectNotFound) return NotFound();
 
+        cache.Remove(BlogCachePartition.General.ToString(), "allcats");
+
         return NoContent();
     }
 
@@ -55,6 +62,8 @@ public class CategoryController(IQueryMediator queryMediator, ICommandMediator c
     {
         var oc = await commandMediator.SendAsync(new DeleteCategoryCommand(id));
         if (oc == OperationCode.ObjectNotFound) return NotFound();
+
+        cache.Remove(BlogCachePartition.General.ToString(), "allcats");
 
         return NoContent();
     }

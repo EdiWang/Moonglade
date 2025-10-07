@@ -1,6 +1,5 @@
 ﻿using LiteBus.Queries.Abstractions;
 using Moonglade.Data;
-using Moonglade.Data.Entities;
 
 namespace Moonglade.Features.FriendLink;
 

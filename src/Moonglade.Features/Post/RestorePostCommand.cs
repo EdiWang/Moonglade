@@ -1,5 +1,4 @@
-﻿using Edi.CacheAside.InMemory;
-using LiteBus.Commands.Abstractions;
+﻿using LiteBus.Commands.Abstractions;
 using Microsoft.Extensions.Logging;
 using Moonglade.Data;
 
@@ -9,7 +8,6 @@ public record RestorePostCommand(Guid Id) : ICommand;
 
 public class RestorePostCommandHandler(
     MoongladeRepository<PostEntity> repo,
-    ICacheAside cache,
     ILogger<RestorePostCommandHandler> logger) : ICommandHandler<RestorePostCommand>
 {
     public async Task HandleAsync(RestorePostCommand request, CancellationToken ct)
@@ -19,8 +17,6 @@ public class RestorePostCommandHandler(
 
         post.IsDeleted = false;
         await repo.UpdateAsync(post, ct);
-
-        cache.Remove(BlogCachePartition.Post.ToString(), request.Id.ToString());
 
         logger.LogInformation("Post [{PostId}] restored", request.Id);
     }

@@ -8,13 +8,15 @@ namespace Moonglade.Web.Controllers;
 [Route("api/post")]
 [ApiController]
 [TypeFilter(typeof(ClearBlogCache), Arguments = [BlogCacheType.Subscription | BlogCacheType.SiteMap])]
-public class RecycleBinController(ICommandMediator commandMediator) : ControllerBase
+public class RecycleBinController(ICacheAside cache, ICommandMediator commandMediator) : ControllerBase
 {
     [HttpPost("{postId:guid}/restore")]
     [ProducesResponseType(StatusCodes.Status204NoContent)]
     public async Task<IActionResult> Restore([NotEmpty] Guid postId)
     {
         await commandMediator.SendAsync(new RestorePostCommand(postId));
+        cache.Remove(BlogCachePartition.Post.ToString(), postId.ToString());
+
         return NoContent();
     }
 
@@ -23,6 +25,8 @@ public class RecycleBinController(ICommandMediator commandMediator) : Controller
     public async Task<IActionResult> Delete([NotEmpty] Guid postId)
     {
         await commandMediator.SendAsync(new DeletePostCommand(postId));
+        cache.Remove(BlogCachePartition.Post.ToString(), postId.ToString());
+
         return NoContent();
     }
 
@@ -30,7 +34,13 @@ public class RecycleBinController(ICommandMediator commandMediator) : Controller
     [ProducesResponseType(StatusCodes.Status204NoContent)]
     public async Task<IActionResult> Clear()
     {
-        await commandMediator.SendAsync(new EmptyRecycleBinCommand());
+        var guids = await commandMediator.SendAsync(new EmptyRecycleBinCommand());
+
+        foreach (var guid in guids)
+        {
+            cache.Remove(BlogCachePartition.Post.ToString(), guid.ToString());
+        }
+
         return NoContent();
     }
 }

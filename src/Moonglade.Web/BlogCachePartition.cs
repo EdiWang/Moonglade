@@ -1,4 +1,4 @@
-﻿namespace Moonglade.Features;
+﻿namespace Moonglade.Web;
 
 public enum BlogCachePartition
 {

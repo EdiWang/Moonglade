@@ -1,4 +1,3 @@
-using Edi.CacheAside.InMemory;
 using LiteBus.Commands.Abstractions;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
@@ -13,7 +12,6 @@ public record UpdatePostCommand(Guid Id, PostEditModel Payload) : ICommand<PostE
 public class UpdatePostCommandHandler(
     MoongladeRepository<TagEntity> tagRepo,
     MoongladeRepository<PostEntity> postRepo,
-    ICacheAside cache,
     IBlogConfig blogConfig,
     IConfiguration configuration,
     ILogger<UpdatePostCommandHandler> logger) : ICommandHandler<UpdatePostCommand, PostEntity>
@@ -30,8 +28,6 @@ public class UpdatePostCommandHandler(
         UpdateCats(post, postEditModel.SelectedCatIds);
 
         await postRepo.UpdateAsync(post, ct);
-
-        cache.Remove(BlogCachePartition.Post.ToString(), post.RouteLink);
 
         logger.LogInformation("Post updated with ID: {PostId}", post.Id);
         return post;

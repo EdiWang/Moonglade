@@ -1,5 +1,4 @@
-﻿using Edi.CacheAside.InMemory;
-using LiteBus.Commands.Abstractions;
+﻿using LiteBus.Commands.Abstractions;
 using Microsoft.Extensions.Logging;
 using Moonglade.Data;
 using Moonglade.Data.Specifications;
@@ -28,7 +27,6 @@ public class CreateCategoryCommand : ICommand
 
 public class CreateCategoryCommandHandler(
     MoongladeRepository<CategoryEntity> catRepo,
-    ICacheAside cache,
     ILogger<CreateCategoryCommandHandler> logger) : ICommandHandler<CreateCategoryCommand>
 {
     public async Task HandleAsync(CreateCategoryCommand request, CancellationToken ct)
@@ -45,7 +43,6 @@ public class CreateCategoryCommandHandler(
         };
 
         await catRepo.AddAsync(category, ct);
-        cache.Remove(BlogCachePartition.General.ToString(), "allcats");
 
         logger.LogInformation("Category created: {Category}", category.Id);
     }
