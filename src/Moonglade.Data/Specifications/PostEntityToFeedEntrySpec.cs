@@ -15,8 +15,7 @@ public class PostEntityToFeedEntrySpec : Specification<PostEntity, FeedEntry>
             PubDateUtc = p.PubDateUtc.Value,
             Description = p.ContentAbstract,
             Link = $"{baseUrl}/post/{p.RouteLink}",
-            Author = "", // To be filled by caller
-            AuthorEmail = "", // To be filled by caller
+            Author = p.Author,
             LangCode = p.ContentLanguageCode,
             Categories = p.PostCategory.Select(pc => pc.Category.DisplayName).ToArray()
         });

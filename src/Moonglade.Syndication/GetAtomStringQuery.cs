@@ -11,11 +11,14 @@ public record GetAtomStringQuery(string Slug = null) : IQuery<string>;
 public class GetAtomStringQueryHandler : IQueryHandler<GetAtomStringQuery, string>
 {
     private readonly ISyndicationDataSource _sdds;
+    private readonly IBlogConfig _blogConfig;
     private readonly FeedGenerator _feedGenerator;
 
     public GetAtomStringQueryHandler(IBlogConfig blogConfig, ISyndicationDataSource sdds, IHttpContextAccessor httpContextAccessor)
     {
         _sdds = sdds;
+        _blogConfig = blogConfig;
+
         var baseUrl = $"{httpContextAccessor.HttpContext!.Request.Scheme}://{httpContextAccessor.HttpContext.Request.Host}";
 
         _feedGenerator = new(
@@ -32,6 +35,11 @@ public class GetAtomStringQueryHandler : IQueryHandler<GetAtomStringQuery, strin
     {
         var data = await _sdds.GetFeedDataAsync(request.Slug);
         if (data is null) return null;
+
+        data.ForEach(item =>
+        {
+            item.AuthorEmail = _blogConfig.GeneralSettings.OwnerEmail;
+        });
 
         _feedGenerator.FeedItemCollection = data;
         var xml = await _feedGenerator.WriteAtomAsync();
