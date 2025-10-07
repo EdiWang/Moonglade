@@ -5,13 +5,14 @@
         <ImplicitUsings>enable</ImplicitUsings>
     </PropertyGroup>
     <ItemGroup>
-    </ItemGroup>
-    <ItemGroup>
         <Using Include="System.Text" />
         <Using Include="Microsoft.AspNetCore.Mvc" />
         <Using Include="Microsoft.AspNetCore.Authorization" />
         <Using Include="Moonglade.Data.Entities" />
     </ItemGroup>
+	<ItemGroup>
+		<PackageReference Include="Edi.Captcha" Version="5.1.1" />
+	</ItemGroup>
     <ItemGroup>
         <ProjectReference Include="..\Moonglade.Configuration\Moonglade.Configuration.csproj" />
     </ItemGroup>

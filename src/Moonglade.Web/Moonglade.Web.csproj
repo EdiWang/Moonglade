@@ -46,7 +46,6 @@
 	</ItemGroup>
 	<ItemGroup>
 		<ProjectReference Include="..\Moonglade.Auth\Moonglade.Auth.csproj" />
-		<ProjectReference Include="..\Moonglade.Comments\Moonglade.Comments.csproj" />
 		<ProjectReference Include="..\Moonglade.Features\Moonglade.Features.csproj" />
 		<ProjectReference Include="..\Moonglade.Data.MySql\Moonglade.Data.MySql.csproj" />
 		<ProjectReference Include="..\Moonglade.Data.PostgreSql\Moonglade.Data.PostgreSql.csproj" />
