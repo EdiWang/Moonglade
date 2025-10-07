@@ -3,7 +3,7 @@ using System.Net;
 using System.Net.NetworkInformation;
 using System.Net.Sockets;
 
-namespace Moonglade.Web;
+namespace Moonglade.Web.Extensions;
 
 public static class WebApplicationBuilderExtension
 {
