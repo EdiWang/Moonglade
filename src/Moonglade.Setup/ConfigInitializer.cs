@@ -8,7 +8,7 @@ namespace Moonglade.Setup;
 /// <summary>
 /// Defines the contract for initializing blog configuration settings.
 /// </summary>
-public interface IBlogConfigInitializer
+public interface IConfigInitializer
 {
     /// <summary>
     /// Initializes the blog configuration with default settings.
@@ -27,11 +27,11 @@ public interface IBlogConfigInitializer
 /// <param name="commandMediator">The command mediator for executing configuration commands.</param>
 /// <param name="blogConfig">The blog configuration service.</param>
 /// <param name="logger">The logger for tracking initialization operations.</param>
-public class BlogConfigInitializer(
+public class ConfigInitializer(
     IQueryMediator queryMediator,
     ICommandMediator commandMediator,
     IBlogConfig blogConfig,
-    ILogger<BlogConfigInitializer> logger) : IBlogConfigInitializer
+    ILogger<ConfigInitializer> logger) : IConfigInitializer
 {
     /// <summary>
     /// Dictionary that maps configuration setting names to their corresponding default value providers.

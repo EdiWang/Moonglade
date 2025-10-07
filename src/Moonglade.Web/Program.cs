@@ -273,7 +273,7 @@ public class Program
     {
         services.AddTransient<ISiteIconBuilder, SiteIconBuilder>();
         services.AddScoped<IMigrationManager, MigrationManager>();
-        services.AddScoped<IBlogConfigInitializer, BlogConfigInitializer>();
+        services.AddScoped<IConfigInitializer, ConfigInitializer>();
         services.AddScoped<IStartUpInitializer, StartUpInitializer>();
     }
 
