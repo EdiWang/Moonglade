@@ -2,10 +2,6 @@
 	<PropertyGroup>
 		<OutputType>Exe</OutputType>
 		<TargetFramework>net8.0</TargetFramework>
-		<AssemblyName>Moonglade.Web</AssemblyName>
-		<RootNamespace>Moonglade.Web</RootNamespace>
-		<IsTestProject>false</IsTestProject>
-		<IsPackable>false</IsPackable>
 		<ImplicitUsings>enable</ImplicitUsings>
 		<PackageLicenseExpression>GNU General Public License v3.0</PackageLicenseExpression>
 		<PackageProjectUrl>https://github.com/EdiWang/Moonglade</PackageProjectUrl>
@@ -37,6 +33,7 @@
 		</Content>
 	</ItemGroup>
 	<ItemGroup>
+		<PackageReference Include="Edi.CacheAside.InMemory" Version="2.0.0" />
 		<PackageReference Include="Edi.Gravatar" Version="1.3.0" />
 		<PackageReference Include="Edi.ImageWatermark" Version="2.20.0" />
 		<PackageReference Include="Edi.PasswordGenerator" Version="2.2.0" />
