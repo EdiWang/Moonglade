@@ -1,6 +1,6 @@
 ﻿using LiteBus.Commands.Abstractions;
 using LiteBus.Queries.Abstractions;
-using Moonglade.FriendLink;
+using Moonglade.Features.FriendLink;
 
 namespace Moonglade.Web.Handlers;
 

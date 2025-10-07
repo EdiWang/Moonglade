@@ -5,7 +5,7 @@ using Moonglade.Data.Entities;
 using Moonglade.Utils;
 using System.ComponentModel.DataAnnotations;
 
-namespace Moonglade.FriendLink;
+namespace Moonglade.Features.FriendLink;
 
 public class EditLinkRequest : IValidatableObject
 {

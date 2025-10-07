@@ -3,7 +3,7 @@ using Microsoft.Extensions.Logging;
 using Moonglade.Data;
 using Moonglade.Data.Entities;
 
-namespace Moonglade.FriendLink;
+namespace Moonglade.Features.FriendLink;
 
 public record DeleteLinkCommand(Guid Id) : ICommand;
 

@@ -60,7 +60,6 @@ public class Program
             "Moonglade.Comments",
             "Moonglade.Features",
             "Moonglade.Email.Client",
-            "Moonglade.FriendLink",
             "Moonglade.IndexNow.Client",
             "Moonglade.Syndication",
             "Moonglade.Theme",

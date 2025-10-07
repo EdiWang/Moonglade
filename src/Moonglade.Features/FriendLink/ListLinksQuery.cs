@@ -2,7 +2,7 @@
 using Moonglade.Data;
 using Moonglade.Data.Entities;
 
-namespace Moonglade.FriendLink;
+namespace Moonglade.Features.FriendLink;
 
 public record ListLinksQuery : IQuery<List<FriendLinkEntity>>;
 

@@ -4,7 +4,7 @@ using Moonglade.Data;
 using Moonglade.Data.Entities;
 using Moonglade.Utils;
 
-namespace Moonglade.FriendLink;
+namespace Moonglade.Features.FriendLink;
 
 public record UpdateLinkCommand(Guid Id, EditLinkRequest Payload) : ICommand;
 
