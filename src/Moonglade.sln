@@ -5,7 +5,7 @@ VisualStudioVersion = 17.0.32014.148
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Moonglade.Web", "Moonglade.Web\Moonglade.Web.csproj", "{2BC1D1F3-B0B2-4184-A84B-34A6B531BD4A}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Moonglade.Features", "Moonglade.Core\Moonglade.Features.csproj", "{0A3BCAC1-1759-48F4-A222-71A4C65A23A0}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Moonglade.Features", "Moonglade.Features\Moonglade.Features.csproj", "{0A3BCAC1-1759-48F4-A222-71A4C65A23A0}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Application", "Application", "{9B62AB08-D68E-440E-819C-2C4636FF9C78}"
 EndProject
