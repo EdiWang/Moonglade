@@ -57,7 +57,7 @@ public class Program
         {
             "Moonglade.Webmention",
             "Moonglade.Auth",
-            "Moonglade.Comments",
+            "Moonglade.Features.Comment",
             "Moonglade.Features",
             "Moonglade.Email.Client",
             "Moonglade.IndexNow.Client",

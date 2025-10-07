@@ -1,7 +1,7 @@
 ﻿using Edi.Captcha;
 using System.ComponentModel.DataAnnotations;
 
-namespace Moonglade.Comments;
+namespace Moonglade.Features.Comment;
 
 public class CommentRequest : ICaptchableWithToken
 {

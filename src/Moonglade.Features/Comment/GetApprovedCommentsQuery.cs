@@ -1,17 +1,15 @@
 ﻿using Ardalis.Specification;
 using LiteBus.Queries.Abstractions;
 using Moonglade.Data;
-using Moonglade.Data.DTO;
-using Moonglade.Data.Entities;
 using Moonglade.Data.Specifications;
 
-namespace Moonglade.Comments;
+namespace Moonglade.Features.Comment;
 
-public record GetApprovedCommentsQuery(Guid PostId) : IQuery<List<Comment>>;
+public record GetApprovedCommentsQuery(Guid PostId) : IQuery<List<Data.DTO.Comment>>;
 
-public class GetApprovedCommentsQueryHandler(MoongladeRepository<CommentEntity> repo) : IQueryHandler<GetApprovedCommentsQuery, List<Comment>>
+public class GetApprovedCommentsQueryHandler(MoongladeRepository<CommentEntity> repo) : IQueryHandler<GetApprovedCommentsQuery, List<Data.DTO.Comment>>
 {
-    public async Task<List<Comment>> HandleAsync(GetApprovedCommentsQuery request, CancellationToken ct)
+    public async Task<List<Data.DTO.Comment>> HandleAsync(GetApprovedCommentsQuery request, CancellationToken ct)
     {
         var spec = new CommentWithRepliesSpec(request.PostId);
         var dtoSpec = new CommentEntityToCommentSpec();

@@ -2,11 +2,10 @@
 using Microsoft.Extensions.Logging;
 using Moonglade.Data;
 using Moonglade.Data.DTO;
-using Moonglade.Data.Entities;
 using Moonglade.Data.Specifications;
 using Moonglade.Utils;
 
-namespace Moonglade.Comments;
+namespace Moonglade.Features.Comment;
 
 public record ReplyCommentCommand(Guid CommentId, string ReplyContent) : ICommand<CommentReply>;
 

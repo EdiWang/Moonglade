@@ -19,7 +19,7 @@
 		<Using Include="Moonglade.Auth" />
 		<Using Include="Moonglade.Features" />
 		<Using Include="Moonglade.Configuration" />
-		<Using Include="Moonglade.Comments" />
+		<Using Include="Moonglade.Features.Comment" />
 		<Using Include="Moonglade.Theme" />
 		<Using Include="Moonglade.Utils" />
 		<Using Include="Moonglade.Data" />

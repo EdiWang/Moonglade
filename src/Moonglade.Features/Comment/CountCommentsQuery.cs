@@ -1,8 +1,7 @@
 ﻿using LiteBus.Queries.Abstractions;
 using Moonglade.Data;
-using Moonglade.Data.Entities;
 
-namespace Moonglade.Comments;
+namespace Moonglade.Features.Comment;
 
 public record CountCommentsQuery : IQuery<int>;
 

@@ -2,10 +2,9 @@
 using LiteBus.Queries.Abstractions;
 using Moonglade.Data;
 using Moonglade.Data.DTO;
-using Moonglade.Data.Entities;
 using Moonglade.Data.Specifications;
 
-namespace Moonglade.Comments;
+namespace Moonglade.Features.Comment;
 
 public record ListCommentsQuery(int PageSize, int PageIndex, string SearchTerm = null) : IQuery<List<CommentDetailedItem>>;
 
