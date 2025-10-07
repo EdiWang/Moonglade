@@ -21,7 +21,7 @@
 		<Using Include="Moonglade.Web.Filters" />
 		<Using Include="Moonglade.Web.Middleware" />
 		<Using Include="Moonglade.Auth" />
-		<Using Include="Moonglade.Core" />
+		<Using Include="Moonglade.Features" />
 		<Using Include="Moonglade.Configuration" />
 		<Using Include="Moonglade.Comments" />
 		<Using Include="Moonglade.Theme" />

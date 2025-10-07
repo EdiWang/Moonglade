@@ -2,7 +2,7 @@
 using Microsoft.Extensions.Logging;
 using Moonglade.Data;
 
-namespace Moonglade.Core.PostFeature;
+namespace Moonglade.Features.PostFeature;
 
 public record PostponePostCommand(Guid PostId, int Hours) : ICommand;
 

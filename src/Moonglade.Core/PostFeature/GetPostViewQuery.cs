@@ -1,7 +1,7 @@
 ﻿using LiteBus.Queries.Abstractions;
 using Moonglade.Data;
 
-namespace Moonglade.Core.PostFeature;
+namespace Moonglade.Features.PostFeature;
 
 public record GetPostViewQuery(Guid PostId) : IQuery<PostViewEntity>;
 

@@ -3,7 +3,7 @@ using Microsoft.Extensions.Logging;
 using Moonglade.Data;
 using Moonglade.Utils;
 
-namespace Moonglade.Core.TagFeature;
+namespace Moonglade.Features.TagFeature;
 
 public record UpdateTagCommand(int Id, string Name) : ICommand<OperationCode>;
 

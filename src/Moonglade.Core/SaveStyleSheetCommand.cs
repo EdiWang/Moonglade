@@ -3,7 +3,7 @@ using Microsoft.Extensions.Logging;
 using Moonglade.Data;
 using System.Security.Cryptography;
 
-namespace Moonglade.Core;
+namespace Moonglade.Features;
 
 public record SaveStyleSheetCommand(Guid Id, string Slug, string CssContent) : ICommand<Guid>;
 

@@ -4,7 +4,7 @@ using Microsoft.Extensions.Configuration;
 using Moonglade.Data;
 using Moonglade.Data.Specifications;
 
-namespace Moonglade.Core.PostFeature;
+namespace Moonglade.Features.PostFeature;
 
 public record GetPostBySlugQuery(int Year, int Month, int Day, string Slug) : IQuery<PostEntity>;
 

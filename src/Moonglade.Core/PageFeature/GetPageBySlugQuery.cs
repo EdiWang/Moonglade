@@ -2,7 +2,7 @@
 using Moonglade.Data;
 using Moonglade.Data.Specifications;
 
-namespace Moonglade.Core.PageFeature;
+namespace Moonglade.Features.PageFeature;
 
 public record GetPageBySlugQuery(string Slug) : IQuery<PageEntity>;
 

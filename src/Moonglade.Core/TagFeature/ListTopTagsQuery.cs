@@ -2,7 +2,7 @@
 using Moonglade.Data;
 using Moonglade.Data.Specifications;
 
-namespace Moonglade.Core.TagFeature;
+namespace Moonglade.Features.TagFeature;
 
 public record ListTopTagsQuery(int Top) : IQuery<List<(TagEntity Tag, int PostCount)>>;
 

@@ -2,7 +2,7 @@
 using LiteBus.Queries.Abstractions;
 using Moonglade.Data;
 
-namespace Moonglade.Core.CategoryFeature;
+namespace Moonglade.Features.CategoryFeature;
 
 public record ListCategoriesQuery : IQuery<List<CategoryEntity>>;
 

@@ -3,7 +3,7 @@ using LiteBus.Commands.Abstractions;
 using Microsoft.Extensions.Logging;
 using Moonglade.Data;
 
-namespace Moonglade.Core.CategoryFeature;
+namespace Moonglade.Features.CategoryFeature;
 
 public record DeleteCategoryCommand(Guid Id) : ICommand<OperationCode>;
 

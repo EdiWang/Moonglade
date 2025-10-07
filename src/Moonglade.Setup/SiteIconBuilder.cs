@@ -1,7 +1,7 @@
 ﻿using LiteBus.Queries.Abstractions;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Logging;
-using Moonglade.Core;
+using Moonglade.Features;
 
 namespace Moonglade.Setup;
 

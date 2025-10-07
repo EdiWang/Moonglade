@@ -5,7 +5,7 @@ using Moonglade.Data;
 using Moonglade.Data.Specifications;
 using System.ComponentModel.DataAnnotations;
 
-namespace Moonglade.Core.CategoryFeature;
+namespace Moonglade.Features.CategoryFeature;
 
 public class CreateCategoryCommand : ICommand
 {

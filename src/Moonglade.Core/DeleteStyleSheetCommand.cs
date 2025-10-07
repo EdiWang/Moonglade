@@ -2,7 +2,7 @@
 using Microsoft.Extensions.Logging;
 using Moonglade.Data;
 
-namespace Moonglade.Core;
+namespace Moonglade.Features;
 
 public record DeleteStyleSheetCommand(Guid Id) : ICommand;
 

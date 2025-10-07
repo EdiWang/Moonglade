@@ -3,7 +3,7 @@ using Moonglade.Data;
 using Moonglade.Data.Specifications;
 using Moonglade.Utils;
 
-namespace Moonglade.Core.PostFeature;
+namespace Moonglade.Features.PostFeature;
 
 public record PublishScheduledPostCommand : ICommand<int>;
 

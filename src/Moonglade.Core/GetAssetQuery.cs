@@ -1,7 +1,7 @@
 ﻿using LiteBus.Queries.Abstractions;
 using Moonglade.Data;
 
-namespace Moonglade.Core;
+namespace Moonglade.Features;
 
 public record GetAssetQuery(Guid AssetId) : IQuery<string>;
 

@@ -4,7 +4,7 @@ using Moonglade.Data;
 using Moonglade.Data.DTO;
 using Moonglade.Data.Specifications;
 
-namespace Moonglade.Core.PostFeature;
+namespace Moonglade.Features.PostFeature;
 
 public record ListPostSegmentByStatusQuery(PostStatus Status) : IQuery<List<PostSegment>>;
 

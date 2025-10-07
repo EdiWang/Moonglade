@@ -1,5 +1,5 @@
 ﻿using LiteBus.Commands.Abstractions;
-using Moonglade.Core.PostFeature;
+using Moonglade.Features.PostFeature;
 using Moonglade.IndexNow.Client;
 using Moonglade.Web.Attributes;
 using Moonglade.Web.BackgroundServices;

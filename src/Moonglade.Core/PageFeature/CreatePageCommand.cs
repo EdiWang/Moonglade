@@ -2,7 +2,7 @@
 using Microsoft.Extensions.Logging;
 using Moonglade.Data;
 
-namespace Moonglade.Core.PageFeature;
+namespace Moonglade.Features.PageFeature;
 
 public record CreatePageCommand(EditPageRequest Payload) : ICommand<Guid>;
 

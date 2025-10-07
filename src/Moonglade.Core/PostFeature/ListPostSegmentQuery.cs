@@ -4,7 +4,7 @@ using Moonglade.Data;
 using Moonglade.Data.DTO;
 using Moonglade.Data.Specifications;
 
-namespace Moonglade.Core.PostFeature;
+namespace Moonglade.Features.PostFeature;
 
 public class ListPostSegmentQuery(PostStatus postStatus, int offset, int pageSize, string keyword = null)
     : IQuery<(List<PostSegment> Posts, int TotalRows)>

@@ -1,7 +1,7 @@
 ﻿using LiteBus.Queries.Abstractions;
 using Moonglade.Configuration;
 
-namespace Moonglade.Core;
+namespace Moonglade.Features;
 
 public record ListSocialLinksQuery : IQuery<SocialLink[]>;
 

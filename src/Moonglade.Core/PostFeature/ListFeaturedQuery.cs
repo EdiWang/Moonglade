@@ -5,7 +5,7 @@ using Moonglade.Data.DTO;
 using Moonglade.Data.Specifications;
 using Moonglade.Utils;
 
-namespace Moonglade.Core.PostFeature;
+namespace Moonglade.Features.PostFeature;
 
 public record ListFeaturedQuery(int PageSize, int PageIndex) : IQuery<List<PostDigest>>;
 

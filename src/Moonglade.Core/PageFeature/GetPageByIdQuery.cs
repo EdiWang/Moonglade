@@ -1,7 +1,7 @@
 ﻿using LiteBus.Queries.Abstractions;
 using Moonglade.Data;
 
-namespace Moonglade.Core.PageFeature;
+namespace Moonglade.Features.PageFeature;
 
 public record GetPageByIdQuery(Guid Id) : IQuery<PageEntity>;
 

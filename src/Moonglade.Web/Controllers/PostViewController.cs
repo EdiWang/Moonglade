@@ -1,6 +1,6 @@
 ﻿using Edi.AspNetCore.Utils;
 using LiteBus.Commands.Abstractions;
-using Moonglade.Core.PostFeature;
+using Moonglade.Features.PostFeature;
 using Moonglade.Web.Attributes;
 using System.ComponentModel.DataAnnotations;
 

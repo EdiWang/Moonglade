@@ -2,7 +2,7 @@
 using Moonglade.Data;
 using Moonglade.Data.Specifications;
 
-namespace Moonglade.Core.CategoryFeature;
+namespace Moonglade.Features.CategoryFeature;
 
 public record GetCategoryBySlugQuery(string Slug) : IQuery<CategoryEntity>;
 

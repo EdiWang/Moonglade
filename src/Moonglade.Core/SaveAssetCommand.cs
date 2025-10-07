@@ -1,7 +1,7 @@
 ﻿using LiteBus.Events.Abstractions;
 using Moonglade.Data;
 
-namespace Moonglade.Core;
+namespace Moonglade.Features;
 
 public record SaveAssetEvent(Guid AssetId, string AssetBase64) : IEvent;
 

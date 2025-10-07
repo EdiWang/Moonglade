@@ -1,5 +1,5 @@
 ﻿using LiteBus.Queries.Abstractions;
-using Moonglade.Core.CategoryFeature;
+using Moonglade.Features.CategoryFeature;
 
 namespace Moonglade.Web.ViewComponents;
 

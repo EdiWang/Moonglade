@@ -1,5 +1,5 @@
 ﻿@page "/admin/page"
-@using Moonglade.Core.PageFeature
+@using Moonglade.Features.PageFeature
 @{
     ViewBag.Title = "Pages";
     var pageSegments = await QueryMediator.QueryAsync(new ListPageSegmentsQuery());

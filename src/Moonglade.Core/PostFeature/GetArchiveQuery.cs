@@ -4,7 +4,7 @@ using Moonglade.Data.DTO;
 using Moonglade.Data.Specifications;
 using System.Linq.Expressions;
 
-namespace Moonglade.Core.PostFeature;
+namespace Moonglade.Features.PostFeature;
 
 public record GetArchiveQuery : IQuery<List<Archive>>;
 

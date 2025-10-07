@@ -3,7 +3,7 @@ using LiteBus.Commands.Abstractions;
 using Microsoft.Extensions.Logging;
 using Moonglade.Data;
 
-namespace Moonglade.Core.PostFeature;
+namespace Moonglade.Features.PostFeature;
 
 public record DeletePostCommand(Guid Id, bool SoftDelete = false) : ICommand;
 
