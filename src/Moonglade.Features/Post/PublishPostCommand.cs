@@ -4,7 +4,7 @@ using Microsoft.Extensions.Logging;
 using Moonglade.Data;
 using Moonglade.Utils;
 
-namespace Moonglade.Features.PostFeature;
+namespace Moonglade.Features.Post;
 
 public record PublishPostCommand(Guid Id) : ICommand;
 

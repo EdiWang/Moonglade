@@ -2,7 +2,7 @@
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Moonglade.Data.DTO;
 using Moonglade.Data.Specifications;
-using Moonglade.Features.PostFeature;
+using Moonglade.Features.Post;
 using Moonglade.Web.PagedList;
 using System.ComponentModel.DataAnnotations;
 

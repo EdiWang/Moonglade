@@ -3,7 +3,7 @@ using Microsoft.Extensions.Logging;
 using Moonglade.Data;
 using System.Collections.Concurrent;
 
-namespace Moonglade.Features.PostFeature;
+namespace Moonglade.Features.Post;
 
 public record AddViewCountCommand(Guid PostId, string Ip) : ICommand<int>;
 

@@ -1,6 +1,6 @@
 ﻿@page "/admin/post/draft"
 @using Moonglade.Data.Specifications
-@using Moonglade.Features.PostFeature
+@using Moonglade.Features.Post
 @{
     ViewBag.Title = "Drafts";
     var posts = await QueryMediator.QueryAsync(new ListPostSegmentByStatusQuery(PostStatus.Draft));

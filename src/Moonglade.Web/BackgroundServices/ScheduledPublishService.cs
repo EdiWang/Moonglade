@@ -1,6 +1,6 @@
 ﻿using LiteBus.Commands.Abstractions;
 using LiteBus.Queries.Abstractions;
-using Moonglade.Features.PostFeature;
+using Moonglade.Features.Post;
 
 namespace Moonglade.Web.BackgroundServices;
 

@@ -1,7 +1,7 @@
 using LiteBus.Queries.Abstractions;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Moonglade.Features.Category;
-using Moonglade.Features.PostFeature;
+using Moonglade.Features.Post;
 
 namespace Moonglade.Web.Pages.Admin;
 

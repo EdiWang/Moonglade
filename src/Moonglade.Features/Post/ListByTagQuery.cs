@@ -5,7 +5,7 @@ using Moonglade.Data.DTO;
 using Moonglade.Data.Specifications;
 using Moonglade.Utils;
 
-namespace Moonglade.Features.PostFeature;
+namespace Moonglade.Features.Post;
 
 public record ListByTagQuery(int TagId, int PageSize, int PageIndex) : IQuery<List<PostDigest>>;
 

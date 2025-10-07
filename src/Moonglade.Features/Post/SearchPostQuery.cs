@@ -3,7 +3,7 @@ using Moonglade.Data;
 using Moonglade.Data.DTO;
 using Moonglade.Data.Specifications;
 
-namespace Moonglade.Features.PostFeature;
+namespace Moonglade.Features.Post;
 
 public record SearchPostQuery(string Keyword) : IQuery<List<PostDigest>>;
 

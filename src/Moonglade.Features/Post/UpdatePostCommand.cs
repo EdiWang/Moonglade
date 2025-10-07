@@ -7,7 +7,7 @@ using Moonglade.Data;
 using Moonglade.Data.Specifications;
 using Moonglade.Utils;
 
-namespace Moonglade.Features.PostFeature;
+namespace Moonglade.Features.Post;
 
 public record UpdatePostCommand(Guid Id, PostEditModel Payload) : ICommand<PostEntity>;
 public class UpdatePostCommandHandler(

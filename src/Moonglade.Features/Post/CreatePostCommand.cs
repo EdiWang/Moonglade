@@ -6,7 +6,7 @@ using Moonglade.Data;
 using Moonglade.Data.Specifications;
 using Moonglade.Utils;
 
-namespace Moonglade.Features.PostFeature;
+namespace Moonglade.Features.Post;
 
 public record CreatePostCommand(PostEditModel Payload) : ICommand<PostEntity>;
 

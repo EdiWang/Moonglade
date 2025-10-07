@@ -5,7 +5,7 @@ using Moonglade.Data.DTO;
 using Moonglade.Data.Specifications;
 using Moonglade.Utils;
 
-namespace Moonglade.Features.PostFeature;
+namespace Moonglade.Features.Post;
 
 public class ListPostsQuery(int pageSize, int pageIndex, Guid? catId = null)
     : IQuery<List<PostDigest>>

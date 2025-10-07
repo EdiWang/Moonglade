@@ -2,7 +2,7 @@ using LiteBus.Commands.Abstractions;
 using LiteBus.Queries.Abstractions;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Moonglade.Data.Entities;
-using Moonglade.Features.PostFeature;
+using Moonglade.Features.Post;
 
 namespace Moonglade.Web.Pages;
 
