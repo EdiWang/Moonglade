@@ -1,6 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations;
 
-namespace Moonglade.Features.PageFeature;
+namespace Moonglade.Features.Page;
 
 public class EditPageRequest
 {

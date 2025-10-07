@@ -3,7 +3,7 @@ using Moonglade.Data;
 using Moonglade.Data.DTO;
 using Moonglade.Data.Specifications;
 
-namespace Moonglade.Features.PageFeature;
+namespace Moonglade.Features.Page;
 
 public record ListPageSegmentsQuery : IQuery<List<PageSegment>>;
 
