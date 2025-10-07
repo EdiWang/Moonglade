@@ -1,7 +1,7 @@
 ﻿using LiteBus.Commands.Abstractions;
 using LiteBus.Queries.Abstractions;
-using Moonglade.Core.TagFeature;
 using Moonglade.Data.Entities;
+using Moonglade.Features.Tag;
 using System.ComponentModel.DataAnnotations;
 
 namespace Moonglade.Web.Controllers;
@@ -23,7 +23,7 @@ public class TagsController(IQueryMediator queryMediator, ICommandMediator comma
     [ProducesResponseType<List<TagEntity>>(StatusCodes.Status200OK)]
     public async Task<IActionResult> List()
     {
-        var list = await queryMediator.QueryAsync(new GetTagsQuery());
+        var list = await queryMediator.QueryAsync(new ListTagsQuery());
         return Ok(list);
     }
 

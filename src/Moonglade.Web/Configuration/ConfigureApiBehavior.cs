@@ -1,4 +1,6 @@
-﻿namespace Moonglade.Web.Configuration;
+﻿using Moonglade.Web.Extensions;
+
+namespace Moonglade.Web.Configuration;
 
 public class ConfigureApiBehavior
 {

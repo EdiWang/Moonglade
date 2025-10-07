@@ -1,6 +1,7 @@
 ﻿using Edi.SyndicationFeed.ReaderWriter;
 using Edi.SyndicationFeed.ReaderWriter.Atom;
 using Edi.SyndicationFeed.ReaderWriter.Rss;
+using Moonglade.Data.DTO;
 using System.Text;
 using System.Xml;
 

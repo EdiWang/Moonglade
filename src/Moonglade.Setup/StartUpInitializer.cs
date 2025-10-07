@@ -12,7 +12,7 @@ public interface IStartUpInitializer
 public class StartUpInitializer(
     ILogger<StartUpInitializer> logger,
     BlogDbContext context,
-    IBlogConfigInitializer blogConfigInitializer,
+    IConfigInitializer blogConfigInitializer,
     IMigrationManager migrationManager,
     ISiteIconBuilder siteIconInitializer) : IStartUpInitializer
 {

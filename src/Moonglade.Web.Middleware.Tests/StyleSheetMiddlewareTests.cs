@@ -1,10 +1,7 @@
 using LiteBus.Queries.Abstractions;
-using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Logging;
 using Moonglade.Configuration;
-using Moonglade.Core;
-using Moonglade.Data.Entities;
 using Moq;
 using System.Text;
 
@@ -172,7 +169,7 @@ public class StyleSheetMiddlewareTests
         var context = new DefaultHttpContext();
         context.Request.Path = "/custom.css";
         var cssCode = ".custom { color: red; }";
-        
+
         _appearanceSettings.EnableCustomCss = true;
         _appearanceSettings.CssCode = cssCode;
 
@@ -199,7 +196,7 @@ public class StyleSheetMiddlewareTests
         var context = new DefaultHttpContext();
         context.Request.Path = "/CUSTOM.CSS";
         var cssCode = ".test { font-size: 14px; }";
-        
+
         _appearanceSettings.EnableCustomCss = true;
         _appearanceSettings.CssCode = cssCode;
 
@@ -298,10 +295,10 @@ public class StyleSheetMiddlewareTests
         // Arrange
         var context = new DefaultHttpContext();
         context.Request.Path = "/custom.css";
-        
+
         // Create CSS content larger than MaxContentLength
         var largeCssCode = new string('a', StyleSheetMiddleware.Options.MaxContentLength + 1);
-        
+
         _appearanceSettings.EnableCustomCss = true;
         _appearanceSettings.CssCode = largeCssCode;
 
@@ -331,7 +328,7 @@ public class StyleSheetMiddlewareTests
         var context = new DefaultHttpContext();
         context.Request.Path = "/custom.css";
         var cssCode = ".test { color: green; }";
-        
+
         _appearanceSettings.EnableCustomCss = true;
         _appearanceSettings.CssCode = cssCode;
 
@@ -358,14 +355,14 @@ public class StyleSheetMiddlewareTests
         var context = new DefaultHttpContext();
         context.Request.Path = "/custom.css";
         var cssCode = ".test { color: blue; }";
-        
+
         _appearanceSettings.EnableCustomCss = true;
         _appearanceSettings.CssCode = cssCode;
 
         // Calculate expected ETag
         var hash = System.Security.Cryptography.SHA256.HashData(Encoding.UTF8.GetBytes(cssCode));
         var expectedETag = $"\"{Convert.ToHexString(hash)[..16]}\"";
-        
+
         context.Request.Headers.IfNoneMatch = expectedETag;
 
         // Act
@@ -424,7 +421,7 @@ public class StyleSheetMiddlewareTests
         // Arrange
         var context = new DefaultHttpContext();
         context.Request.Path = "/custom.css";
-        
+
         // Simulate response already started
         await context.Response.WriteAsync("some content");
 

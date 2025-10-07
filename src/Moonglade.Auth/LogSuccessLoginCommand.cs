@@ -4,7 +4,7 @@ using Moonglade.Data.Entities;
 
 namespace Moonglade.Auth;
 
-public record LogSuccessLoginCommand(string IpAddress, string UserAgent, string DeviceFingerprint) : ICommand;
+public record LogSuccessLoginCommand(string IpAddress, string UserAgent) : ICommand;
 
 public class LogSuccessLoginCommandHandler(MoongladeRepository<LoginHistoryEntity> repo) : ICommandHandler<LogSuccessLoginCommand>
 {
@@ -15,7 +15,6 @@ public class LogSuccessLoginCommandHandler(MoongladeRepository<LoginHistoryEntit
             LoginIp = request.IpAddress.Trim(),
             LoginTimeUtc = DateTime.UtcNow,
             LoginUserAgent = request.UserAgent.Trim(),
-            DeviceFingerprint = request.DeviceFingerprint.Trim()
         };
 
         await repo.AddAsync(entity, ct);

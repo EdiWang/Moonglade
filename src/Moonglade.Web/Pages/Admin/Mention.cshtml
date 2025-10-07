@@ -1,5 +1,5 @@
 ﻿@page "/admin/mention"
-@using Moonglade.Mention.Common
+@using Moonglade.Webmention
 @{
     ViewBag.Title = "Mentions";
     var mentionRecords = await QueryMediator.QueryAsync(new ListMentionsQuery());

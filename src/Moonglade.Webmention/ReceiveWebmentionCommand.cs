@@ -3,7 +3,6 @@ using Microsoft.Extensions.Logging;
 using Moonglade.Data;
 using Moonglade.Data.Entities;
 using Moonglade.Data.Specifications;
-using Moonglade.Mention.Common;
 using Moonglade.Utils;
 
 namespace Moonglade.Webmention;

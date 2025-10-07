@@ -1,8 +1,9 @@
 ﻿@page "/category/{slug:regex(^(?!-)([a-zA-Z0-9-]){{1,64}}$)}"
 @using Microsoft.AspNetCore.Mvc.TagHelpers
-@using Moonglade.Core.CategoryFeature
-@using Moonglade.Core.PostFeature
+@using Moonglade.Data.DTO
 @using Moonglade.Data.Entities
+@using Moonglade.Features.Category
+@using Moonglade.Features.Post
 @using Moonglade.Web.PagedList
 @{
     ViewBag.TitlePrefix = Cat.DisplayName;

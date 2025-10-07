@@ -1,15 +1,20 @@
-export function resetCaptchaImage() {
+export async function resetCaptchaImage() {
     const d = new Date();
-    document.querySelector('#img-captcha').src = `/captcha-image?${d.getTime()}`;
+    const response = await fetch(`/api/captcha/stateless?${d.getTime()}`);
+    const data = await response.json();
+
+    document.getElementById('captcha-token').value = data.token;
+    document.getElementById('img-captcha').src = `data:image/png;base64,${data.imageBase64}`;
+    document.getElementById('captcha-code').value = '';
 }
 
-export function showCaptcha() {
+export async function showCaptcha() {
     const captchaContainer = document.getElementById('captcha-container');
     if (!captchaContainer) return false;
 
     if (captchaContainer.style.display === 'none') {
         captchaContainer.style.display = 'flex';
-        resetCaptchaImage();
+        await resetCaptchaImage();
         return true;
     }
     return false;

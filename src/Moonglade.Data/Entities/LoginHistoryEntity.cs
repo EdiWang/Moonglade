@@ -15,7 +15,4 @@ public class LoginHistoryEntity
 
     [MaxLength(128)]
     public string LoginUserAgent { get; set; }
-
-    [MaxLength(128)]
-    public string DeviceFingerprint { get; set; }
 }

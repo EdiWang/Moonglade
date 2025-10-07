@@ -1,4 +1,5 @@
-﻿using Edi.ImageWatermark;
+﻿using Edi.AspNetCore.Utils;
+using Edi.ImageWatermark;
 using Microsoft.Extensions.Caching.Memory;
 using Microsoft.Extensions.Options;
 using SixLabors.ImageSharp;

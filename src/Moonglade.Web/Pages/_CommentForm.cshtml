@@ -35,10 +35,11 @@
         <div class="row">
             <div class="col-9">
                 <div class="input-group" id="captcha-container" style="display: none;">
+                    <input type="hidden" id="captcha-token" />
                     <img id="img-captcha" title="@SharedLocalizer["Can't read? Click to change another image."]" alt="@SharedLocalizer["Captcha code"]" />
                     <input type="text"
                            aria-label="@SharedLocalizer["Captcha code"]"
-                           id="input-comment-captcha"
+                           id="captcha-code"
                            class="form-control input-captcha"
                            placeholder="@SharedLocalizer["Captcha code"]"
                            autocomplete="off"

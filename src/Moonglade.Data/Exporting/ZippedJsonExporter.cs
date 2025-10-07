@@ -1,5 +1,4 @@
 ﻿using System.IO.Compression;
-using System.Linq.Expressions;
 using System.Text.Json;
 
 namespace Moonglade.Data.Exporting;
@@ -7,11 +6,18 @@ namespace Moonglade.Data.Exporting;
 public class ZippedJsonExporter<T>(MoongladeRepository<T> repository, string fileNamePrefix, string directory)
     where T : class
 {
-    public async Task<ExportResult> ExportData<TResult>(Expression<Func<T, TResult>> selector, CancellationToken ct)
+    public async Task<ExportResult> ExportData<TResult>(ISpecification<T, TResult> spec = null, CancellationToken ct = (default))
     {
-        ArgumentNullException.ThrowIfNull(selector);
-        var data = await repository.SelectAsync(selector, ct);
-        return await ToZippedJsonResult(data, ct);
+        if (spec == null)
+        {
+            var data = await repository.ListAsync(ct);
+            return await ToZippedJsonResult(data, ct);
+        }
+        else
+        {
+            var data = await repository.ListAsync(spec, ct);
+            return await ToZippedJsonResult(data, ct);
+        }
     }
 
     private async Task<ExportResult> ToZippedJsonResult<TE>(IEnumerable<TE> list, CancellationToken ct)

@@ -1,10 +1,10 @@
-﻿using LiteBus.Commands.Abstractions;
+﻿using Edi.AspNetCore.Utils;
+using LiteBus.Commands.Abstractions;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
 using Moonglade.Configuration;
 using Moonglade.Data;
-using Moonglade.Utils;
 using System.Text.RegularExpressions;
 
 namespace Moonglade.Setup;

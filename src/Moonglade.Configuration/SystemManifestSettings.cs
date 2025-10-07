@@ -1,4 +1,4 @@
-﻿using Moonglade.Utils;
+﻿using Edi.AspNetCore.Utils;
 using System.Text.Json.Serialization;
 
 namespace Moonglade.Configuration;

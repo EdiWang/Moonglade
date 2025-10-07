@@ -1,9 +1,9 @@
 ﻿using LiteBus.Commands.Abstractions;
-using Moonglade.Core.PostFeature;
+using Moonglade.Features.Post;
 using Moonglade.IndexNow.Client;
-using Moonglade.Pingback;
 using Moonglade.Web.Attributes;
 using Moonglade.Web.BackgroundServices;
+using Moonglade.Web.Extensions;
 using Moonglade.Webmention;
 using System.ComponentModel.DataAnnotations;
 
@@ -13,6 +13,7 @@ namespace Moonglade.Web.Controllers;
 [ApiController]
 [Route("api/[controller]")]
 public class PostController(
+        ICacheAside cache,
         IConfiguration configuration,
         ICommandMediator commandMediator,
         IBlogConfig blogConfig,
@@ -76,6 +77,8 @@ public class PostController(
                 await commandMediator.SendAsync(new CreatePostCommand(model)) :
                 await commandMediator.SendAsync(new UpdatePostCommand(model.PostId, model));
 
+            cache.Remove(BlogCachePartition.Post.ToString(), postEntity.RouteLink);
+
             if (model.PostStatus != PostStatusConstants.Published)
             {
                 return Ok(new { PostId = postEntity.Id });
@@ -100,11 +103,6 @@ public class PostController(
 
     private void NotifyExternalServices(string postContent, Uri link)
     {
-        if (blogConfig.AdvancedSettings.EnablePingback)
-        {
-            cannonService.FireAsync<IPingbackSender>(async sender => await sender.TrySendPingAsync(link.ToString(), postContent));
-        }
-
         if (blogConfig.AdvancedSettings.EnableWebmention)
         {
             cannonService.FireAsync<IWebmentionSender>(async sender => await sender.SendWebmentionAsync(link.ToString(), postContent));
@@ -146,6 +144,8 @@ public class PostController(
     public async Task<IActionResult> Publish([NotEmpty] Guid postId)
     {
         await commandMediator.SendAsync(new PublishPostCommand(postId));
+        cache.Remove(BlogCachePartition.Post.ToString(), postId.ToString());
+
         return NoContent();
     }
 
@@ -155,6 +155,8 @@ public class PostController(
     public async Task<IActionResult> Unpublish([NotEmpty] Guid postId)
     {
         await commandMediator.SendAsync(new UnpublishPostCommand(postId));
+        cache.Remove(BlogCachePartition.Post.ToString(), postId.ToString());
+
         return NoContent();
     }
 

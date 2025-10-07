@@ -1,4 +1,4 @@
-﻿using Moonglade.Utils;
+﻿using Edi.AspNetCore.Utils;
 using System.ComponentModel.DataAnnotations;
 using System.Text.Json.Serialization;
 

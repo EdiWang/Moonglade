@@ -249,9 +249,6 @@
   <data name="Clear Now" xml:space="preserve">
     <value>Jetzt löschen</value>
   </data>
-  <data name="Clear Pingback Logs" xml:space="preserve">
-    <value>Pingback-Logs löschen</value>
-  </data>
   <data name="Close" xml:space="preserve">
     <value>Schliessen</value>
   </data>
@@ -546,9 +543,6 @@
   <data name="Password" xml:space="preserve">
     <value>Passwort</value>
   </data>
-  <data name="Pingbacks" xml:space="preserve">
-    <value>Pingbacks</value>
-  </data>
   <data name="Post footer HTML code" xml:space="preserve">
     <value>Artikelfußzeilen-HTML</value>
   </data>
@@ -773,9 +767,6 @@
   </data>
   <data name="Account" xml:space="preserve">
     <value>Konto</value>
-  </data>
-  <data name="Enable Pingback" xml:space="preserve">
-    <value>Pingback aktivieren</value>
   </data>
   <data name="Include in feed and sitemap" xml:space="preserve">
     <value>Hinzufügen von Abonnements und Sitemaps</value>

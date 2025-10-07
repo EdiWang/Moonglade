@@ -1,4 +1,5 @@
-﻿using Moonglade.Data.Entities;
+﻿using Moonglade.Data.DTO;
+using Moonglade.Data.Entities;
 
 namespace Moonglade.Data.Specifications;
 
@@ -32,6 +33,48 @@ public sealed class CommentWithRepliesSpec : Specification<CommentEntity>
     {
         Query.Where(c => c.PostId == postId && c.IsApproved);
         Query.Include(p => p.Replies);
+    }
+}
+
+public class CommentEntityToCommentSpec : Specification<CommentEntity, Comment>
+{
+    public CommentEntityToCommentSpec()
+    {
+        Query.Select(p => new Comment
+        {
+            Username = p.Username,
+            Email = p.Email,
+            CreateTimeUtc = p.CreateTimeUtc,
+            CommentContent = p.CommentContent,
+            CommentReplies = p.Replies.Select(cr => new CommentReplyDigest
+            {
+                ReplyContent = cr.ReplyContent,
+                ReplyTimeUtc = cr.CreateTimeUtc
+            }).ToList()
+        });
+    }
+}
+
+public class CommentEntityToCommentDetailedItemSpec : Specification<CommentEntity, CommentDetailedItem>
+{
+    public CommentEntityToCommentDetailedItemSpec()
+    {
+        Query.Select(p => new CommentDetailedItem
+        {
+            Id = p.Id,
+            CommentContent = p.CommentContent,
+            CreateTimeUtc = p.CreateTimeUtc,
+            Email = p.Email,
+            IpAddress = p.IPAddress,
+            Username = p.Username,
+            IsApproved = p.IsApproved,
+            PostTitle = p.Post.Title,
+            CommentReplies = p.Replies.Select(cr => new CommentReplyDigest
+            {
+                ReplyContent = cr.ReplyContent,
+                ReplyTimeUtc = cr.CreateTimeUtc
+            }).ToList()
+        });
     }
 }
 

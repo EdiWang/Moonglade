@@ -1,9 +1,10 @@
+using Edi.AspNetCore.Utils;
 using Edi.Captcha;
 using Edi.PasswordGenerator;
-using LiteBus.Commands.Extensions.MicrosoftDependencyInjection;
-using LiteBus.Events.Extensions.MicrosoftDependencyInjection;
-using LiteBus.Messaging.Extensions.MicrosoftDependencyInjection;
-using LiteBus.Queries.Extensions.MicrosoftDependencyInjection;
+using LiteBus.Commands;
+using LiteBus.Events;
+using LiteBus.Extensions.Microsoft.DependencyInjection;
+using LiteBus.Queries;
 using Microsoft.AspNetCore.Diagnostics.HealthChecks;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.AspNetCore.Rewrite;
@@ -13,12 +14,11 @@ using Moonglade.Data.PostgreSql;
 using Moonglade.Data.SqlServer;
 using Moonglade.Email.Client;
 using Moonglade.IndexNow.Client;
-using Moonglade.Mention.Common;
 using Moonglade.Moderation;
-using Moonglade.Pingback;
 using Moonglade.Setup;
 using Moonglade.Syndication;
 using Moonglade.Web.BackgroundServices;
+using Moonglade.Web.Extensions;
 using Moonglade.Web.Handlers;
 using Moonglade.Web.HealthChecks;
 using Moonglade.Webmention;
@@ -56,22 +56,14 @@ public class Program
     {
         var assemblies = new[]
         {
-            // Core/Mention
-            "Moonglade.Mention.Common",
-            "Moonglade.Pingback",
             "Moonglade.Webmention",
-            // Core
             "Moonglade.Auth",
-            "Moonglade.Comments",
-            "Moonglade.Core",
+            "Moonglade.Features",
             "Moonglade.Email.Client",
-            "Moonglade.FriendLink",
             "Moonglade.IndexNow.Client",
             "Moonglade.Syndication",
             "Moonglade.Theme",
-            // Data
             "Moonglade.Data",
-            // Infrastructure
             "Moonglade.Configuration"
         };
 
@@ -129,7 +121,6 @@ public class Program
 
         services.AddHttpClient();
         services.AddOptions().AddHttpContextAccessor();
-        ConfigureSession(services);
         ConfigureCaptcha(services, configuration);
         ConfigureLocalization(services);
         ConfigureControllers(services);
@@ -148,28 +139,25 @@ public class Program
         ConfigureInitializers(services);
     }
 
-    private static void ConfigureSession(IServiceCollection services)
-    {
-        services.AddSession(options =>
-        {
-            options.IdleTimeout = TimeSpan.FromMinutes(20);
-            options.Cookie.HttpOnly = true;
-        });
-    }
-
     private static void ConfigureCaptcha(IServiceCollection services, IConfiguration configuration)
     {
-        services.AddSessionBasedCaptcha(options =>
-        {
-            var magics = new List<string>
+        var magics = new List<string>
             {
                 Encoding.UTF8.GetString([.. BitConverter.GetBytes('✔'.GetHashCode())
                     .Zip(BitConverter.GetBytes(0x242F2E32)).Select(x => (byte)(x.First + x.Second))]),
                 Helper.GetMagic(0x6B441, 11, 15)
             };
 
+        var captchaKey = configuration["CaptchaSettings:SharedKey"];
+        var expirationMinutes = configuration.GetValue<int>("CaptchaSettings:TokenExpirationMinutes", 5);
+
+        services.AddSharedKeyStatelessCaptcha(options =>
+        {
+            options.SharedKey = captchaKey;
+            options.TokenExpiration = TimeSpan.FromMinutes(expirationMinutes);
             options.FontStyle = FontStyle.Bold;
             options.BlockedCodes = [.. magics];
+            options.DrawLines = true;
         });
 
         services.AddScoped<ValidateCaptcha>();
@@ -237,9 +225,7 @@ public class Program
 
     private static void ConfigureMoongladeServices(IServiceCollection services, IConfiguration configuration)
     {
-        services.AddMentionCommon()
-                .AddPingback()
-                .AddWebmention();
+        services.AddWebmention();
 
         services.AddSyndication()
                 .AddInMemoryCacheAside()
@@ -286,7 +272,7 @@ public class Program
     {
         services.AddTransient<ISiteIconBuilder, SiteIconBuilder>();
         services.AddScoped<IMigrationManager, MigrationManager>();
-        services.AddScoped<IBlogConfigInitializer, BlogConfigInitializer>();
+        services.AddScoped<IConfigInitializer, ConfigInitializer>();
         services.AddScoped<IStartUpInitializer, StartUpInitializer>();
     }
 
@@ -328,20 +314,15 @@ public class Program
         var options = new RewriteOptions().AddRedirect(@"(.*)/$", @"$1", (int)HttpStatusCode.MovedPermanently);
         app.UseRewriter(options);
         app.UseStaticFiles();
-        app.UseSession().UseCaptchaImage(p =>
-        {
-            p.RequestPath = "/captcha-image";
-            p.ImageHeight = 36;
-            p.ImageWidth = 100;
-        });
+        //app.UseCaptchaImage(p =>
+        //{
+        //    p.RequestPath = "/captcha-image";
+        //    p.ImageHeight = 36;
+        //    p.ImageWidth = 100;
+        //});
 
         app.UseRouting();
         app.UseAuthentication().UseAuthorization();
-
-        app.MapHealthChecks("/ping", new()
-        {
-            ResponseWriter = PingEndpoint.WriteResponse
-        });
 
         app.MapHealthChecks("/health", new HealthCheckOptions
         {
