@@ -8,22 +8,6 @@ namespace Moonglade.Utils;
 
 public static class Helper
 {
-    public static void SetAppDomainData(string key, object value)
-    {
-        AppDomain.CurrentDomain.SetData(key, value);
-    }
-
-    public static T GetAppDomainData<T>(string key, T defaultValue = default(T))
-    {
-        object data = AppDomain.CurrentDomain.GetData(key);
-        if (data == null)
-        {
-            return defaultValue;
-        }
-
-        return (T)data;
-    }
-
     // Get `sec-ch-prefers-color-scheme` header value
     // This is to enhance user experience by stopping the screen from blinking when switching pages
     public static bool UseServerSideDarkMode(IConfiguration configuration, HttpContext context)
