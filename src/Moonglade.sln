@@ -5,7 +5,7 @@ VisualStudioVersion = 17.0.32014.148
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Moonglade.Web", "Moonglade.Web\Moonglade.Web.csproj", "{2BC1D1F3-B0B2-4184-A84B-34A6B531BD4A}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Moonglade.Core", "Moonglade.Core\Moonglade.Core.csproj", "{0A3BCAC1-1759-48F4-A222-71A4C65A23A0}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Moonglade.Features", "Moonglade.Core\Moonglade.Features.csproj", "{0A3BCAC1-1759-48F4-A222-71A4C65A23A0}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Application", "Application", "{9B62AB08-D68E-440E-819C-2C4636FF9C78}"
 EndProject
@@ -216,7 +216,7 @@ Global
 		{1CDEA73E-F5F9-4D21-BB22-C8F07BB3B1EC} = {02EA681E-C7D8-13C7-8484-4AC65E1B71E8}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
-		RESX_CultureCountyOverrides = zh=zh-Hant
 		SolutionGuid = {EBD14882-9899-4C4B-B9BC-22C0B93BD559}
+		RESX_CultureCountyOverrides = zh=zh-Hant
 	EndGlobalSection
 EndGlobal

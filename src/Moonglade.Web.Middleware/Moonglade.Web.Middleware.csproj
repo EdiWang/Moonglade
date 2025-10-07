@@ -8,6 +8,6 @@
 		<FrameworkReference Include="Microsoft.AspNetCore.App" />
 	</ItemGroup>
 	<ItemGroup>
-	  <ProjectReference Include="..\Moonglade.Core\Moonglade.Core.csproj" />
+	  <ProjectReference Include="..\Moonglade.Core\Moonglade.Features.csproj" />
 	</ItemGroup>
 </Project>
