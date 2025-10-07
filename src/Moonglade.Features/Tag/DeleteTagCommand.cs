@@ -3,7 +3,7 @@ using Microsoft.Extensions.Logging;
 using Moonglade.Data;
 using Moonglade.Data.Specifications;
 
-namespace Moonglade.Features.TagFeature;
+namespace Moonglade.Features.Tag;
 
 public record DeleteTagCommand(int Id) : ICommand<OperationCode>;
 

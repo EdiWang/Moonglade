@@ -1,7 +1,7 @@
 ﻿using LiteBus.Commands.Abstractions;
 using LiteBus.Queries.Abstractions;
 using Moonglade.Data.Entities;
-using Moonglade.Features.TagFeature;
+using Moonglade.Features.Tag;
 using System.ComponentModel.DataAnnotations;
 
 namespace Moonglade.Web.Controllers;

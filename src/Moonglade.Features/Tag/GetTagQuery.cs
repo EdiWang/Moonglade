@@ -2,7 +2,7 @@
 using Moonglade.Data;
 using Moonglade.Data.Specifications;
 
-namespace Moonglade.Features.TagFeature;
+namespace Moonglade.Features.Tag;
 
 public record GetTagQuery(string NormalizedName) : IQuery<TagEntity>;
 

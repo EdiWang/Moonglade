@@ -1,7 +1,7 @@
 ﻿using LiteBus.Queries.Abstractions;
 using Moonglade.Data;
 
-namespace Moonglade.Features.TagFeature;
+namespace Moonglade.Features.Tag;
 
 public record ListTagsQuery : IQuery<List<TagEntity>>;
 

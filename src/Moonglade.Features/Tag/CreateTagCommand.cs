@@ -4,7 +4,7 @@ using Moonglade.Data;
 using Moonglade.Data.Specifications;
 using Moonglade.Utils;
 
-namespace Moonglade.Features.TagFeature;
+namespace Moonglade.Features.Tag;
 
 public record CreateTagCommand(string Name) : ICommand<TagEntity>;
 
