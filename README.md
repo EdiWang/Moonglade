@@ -61,6 +61,18 @@ Change `ConnectionStrings:DatabaseProvider` in `appsettings.json` to match your 
 - By default: Local accounts (manage via `/admin/settings/account`)
 - **Microsoft Entra ID** (Azure AD) supported. [Setup guide](https://github.com/EdiWang/Moonglade/wiki/Use-Microsoft-Entra-ID-Authentication)
 
+### Captcha Shared Key
+
+Please update the default key in `appsettings.json`:
+
+```json
+"CaptchaSettings": {
+  "SharedKey": "<your value>"
+}
+```
+
+To generate a shared key, please see [this document](https://github.com/EdiWang/Edi.Captcha.AspNetCore?tab=readme-ov-file#shared-key-stateless-captcha-recommended-for-scalable-applications-without-dpapi)
+
 ### Image Storage
 
 Configure the `ImageStorage` section in `appsettings.json` to choose where blog images are stored.
@@ -184,7 +196,7 @@ Enable notifications in the admin portal.
 To ensure your Moonglade instance is running, you can use the health check endpoint:
 
 ```
-GET /ping
+GET /health
 ```
 
 This endpoint returns a simple JSON response indicating the status of your Moonglade instance.
