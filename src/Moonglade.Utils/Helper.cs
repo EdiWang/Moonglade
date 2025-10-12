@@ -65,8 +65,8 @@ public static class Helper
 
         // Simple validation: must contain exactly one @ with characters before and after
         int atIndex = value.IndexOf('@');
-        return atIndex > 0 && 
-               atIndex < value.Length - 1 && 
+        return atIndex > 0 &&
+               atIndex < value.Length - 1 &&
                value.IndexOf('@', atIndex + 1) == -1;
     }
 
