@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Logging;
 using Moonglade.Features;
+using Moonglade.Features.Asset;
 
 namespace Moonglade.Setup;
 
