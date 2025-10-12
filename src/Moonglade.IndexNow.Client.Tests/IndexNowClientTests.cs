@@ -3,7 +3,6 @@ using Microsoft.Extensions.Logging;
 using Moq;
 using Moq.Protected;
 using System.Net;
-using System.Text.Json;
 
 namespace Moonglade.IndexNow.Client.Tests;
 
