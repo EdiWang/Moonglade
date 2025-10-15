@@ -1,4 +1,4 @@
-﻿namespace Moonglade.Features;
+﻿namespace Moonglade.Features.Asset;
 
 public class AssetId
 {

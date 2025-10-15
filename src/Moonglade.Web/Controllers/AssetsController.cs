@@ -1,5 +1,6 @@
 ﻿using LiteBus.Events.Abstractions;
 using LiteBus.Queries.Abstractions;
+using Moonglade.Features.Asset;
 using Moonglade.Setup;
 using SixLabors.ImageSharp;
 

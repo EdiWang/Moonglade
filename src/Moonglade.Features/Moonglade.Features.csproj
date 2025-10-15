@@ -11,7 +11,7 @@
         <Using Include="Moonglade.Data.Entities" />
     </ItemGroup>
 	<ItemGroup>
-		<PackageReference Include="Edi.Captcha" Version="5.1.1" />
+		<PackageReference Include="Edi.Captcha" Version="5.2.0" />
 	</ItemGroup>
     <ItemGroup>
         <ProjectReference Include="..\Moonglade.Configuration\Moonglade.Configuration.csproj" />

@@ -73,6 +73,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Moonglade.Web.Middleware", 
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Moonglade.Web.Middleware.Tests", "Moonglade.Web.Middleware.Tests\Moonglade.Web.Middleware.Tests.csproj", "{1CDEA73E-F5F9-4D21-BB22-C8F07BB3B1EC}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Moonglade.IndexNow.Client.Tests", "Moonglade.IndexNow.Client.Tests\Moonglade.IndexNow.Client.Tests.csproj", "{8D1C9A65-C7AA-4612-93E9-12A55AB21547}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -171,6 +173,10 @@ Global
 		{1CDEA73E-F5F9-4D21-BB22-C8F07BB3B1EC}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{1CDEA73E-F5F9-4D21-BB22-C8F07BB3B1EC}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{1CDEA73E-F5F9-4D21-BB22-C8F07BB3B1EC}.Release|Any CPU.Build.0 = Release|Any CPU
+		{8D1C9A65-C7AA-4612-93E9-12A55AB21547}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{8D1C9A65-C7AA-4612-93E9-12A55AB21547}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{8D1C9A65-C7AA-4612-93E9-12A55AB21547}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{8D1C9A65-C7AA-4612-93E9-12A55AB21547}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -200,9 +206,10 @@ Global
 		{F8BF6745-6DEB-4232-9D9F-B5A0F8D899B8} = {02EA681E-C7D8-13C7-8484-4AC65E1B71E8}
 		{7C95D0F5-8F23-46D2-BD8B-8C02281EF8D8} = {9B62AB08-D68E-440E-819C-2C4636FF9C78}
 		{1CDEA73E-F5F9-4D21-BB22-C8F07BB3B1EC} = {02EA681E-C7D8-13C7-8484-4AC65E1B71E8}
+		{8D1C9A65-C7AA-4612-93E9-12A55AB21547} = {02EA681E-C7D8-13C7-8484-4AC65E1B71E8}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
-		SolutionGuid = {EBD14882-9899-4C4B-B9BC-22C0B93BD559}
 		RESX_CultureCountyOverrides = zh=zh-Hant
+		SolutionGuid = {EBD14882-9899-4C4B-B9BC-22C0B93BD559}
 	EndGlobalSection
 EndGlobal
