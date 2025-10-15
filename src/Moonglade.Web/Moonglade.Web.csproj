@@ -39,7 +39,7 @@
 		<PackageReference Include="Edi.PasswordGenerator" Version="2.2.0" />
 		<PackageReference Include="LiteBus.Extensions.MicrosoftDependencyInjection" Version="3.1.0" />
 		<PackageReference Include="Microsoft.Extensions.Diagnostics.HealthChecks.EntityFrameworkCore" Version="8.0.20" />
-		<PackageReference Include="Microsoft.Extensions.Logging.AzureAppServices" Version="9.0.9" />
+		<PackageReference Include="Microsoft.Extensions.Logging.AzureAppServices" Version="9.0.10" />
 
 		<PackageReference Include="TinyMCE" Version="8.1.2" />
 		<PackageReference Include="Moonglade.MonacoEditor" Version="0.50.0.1002" />
