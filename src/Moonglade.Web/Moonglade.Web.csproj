@@ -41,7 +41,7 @@
 		<PackageReference Include="Microsoft.Extensions.Diagnostics.HealthChecks.EntityFrameworkCore" Version="8.0.21" />
 		<PackageReference Include="Microsoft.Extensions.Logging.AzureAppServices" Version="9.0.10" />
 
-		<PackageReference Include="TinyMCE" Version="8.1.2" />
+		<PackageReference Include="TinyMCE" Version="8.2.0" />
 		<PackageReference Include="Moonglade.MonacoEditor" Version="0.50.0.1002" />
 	</ItemGroup>
 	<ItemGroup>
