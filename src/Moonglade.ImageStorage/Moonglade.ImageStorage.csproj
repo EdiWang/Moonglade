@@ -1,7 +1,7 @@
 <Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
     <OutputType>Library</OutputType>
-    <TargetFramework>net8.0</TargetFramework>
+    <TargetFramework>net10.0</TargetFramework>
     <AssemblyName>Moonglade.ImageStorage</AssemblyName>
     <RootNamespace>Moonglade.ImageStorage</RootNamespace>
     <IsTestProject>false</IsTestProject>
