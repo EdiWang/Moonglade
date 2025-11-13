@@ -33,10 +33,10 @@
 		</Content>
 	</ItemGroup>
 	<ItemGroup>
-		<PackageReference Include="Edi.CacheAside.InMemory" Version="2.0.0" />
+		<PackageReference Include="Edi.CacheAside.InMemory" Version="2.1.0" />
 		<PackageReference Include="Edi.Gravatar" Version="1.3.0" />
-		<PackageReference Include="Edi.ImageWatermark" Version="2.21.0" />
-		<PackageReference Include="Edi.PasswordGenerator" Version="2.2.0" />
+		<PackageReference Include="Edi.ImageWatermark" Version="2.22.0" />
+		<PackageReference Include="Edi.PasswordGenerator" Version="2.3.0" />
 		<PackageReference Include="LiteBus.Extensions.MicrosoftDependencyInjection" Version="3.1.0" />
 		<PackageReference Include="Microsoft.Extensions.Diagnostics.HealthChecks.EntityFrameworkCore" Version="10.0.0" />
 		<PackageReference Include="Microsoft.Extensions.Logging.AzureAppServices" Version="10.0.0" />

@@ -292,7 +292,7 @@ public class RemoteModerationServiceTests
             Content = new StringContent(responseJson, System.Text.Encoding.UTF8, "application/json")
         };
 
-        HttpRequestMessage? capturedRequest = null;
+        HttpRequestMessage capturedRequest = null;
         _mockHttpMessageHandler
             .Protected()
             .Setup<Task<HttpResponseMessage>>(
@@ -548,7 +548,7 @@ public class RemoteModerationServiceTests
             Content = new StringContent(responseJson, System.Text.Encoding.UTF8, "application/json")
         };
 
-        HttpRequestMessage? capturedRequest = null;
+        HttpRequestMessage capturedRequest = null;
         _mockHttpMessageHandler
             .Protected()
             .Setup<Task<HttpResponseMessage>>(
