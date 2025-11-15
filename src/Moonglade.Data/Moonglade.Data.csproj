@@ -1,7 +1,7 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
     <PropertyGroup>
         <OutputType>Library</OutputType>
-        <TargetFramework>net8.0</TargetFramework>
+        <TargetFramework>net10.0</TargetFramework>
         <AssemblyName>Moonglade.Data</AssemblyName>
         <RootNamespace>Moonglade.Data</RootNamespace>
         <IsTestProject>false</IsTestProject>
@@ -16,9 +16,9 @@
         <FrameworkReference Include="Microsoft.AspNetCore.App" />
         <PackageReference Include="Ardalis.Specification" Version="9.3.1" />
         <PackageReference Include="Ardalis.Specification.EntityFrameworkCore" Version="9.3.1" />
-        <PackageReference Include="LiteBus" Version="4.0.0" />
-        <PackageReference Include="LiteBus.Extensions.Microsoft.DependencyInjection" Version="4.0.0" />
-		<PackageReference Include="Microsoft.EntityFrameworkCore.Relational" Version="9.0.10" />
+        <PackageReference Include="LiteBus" Version="4.2.0" />
+        <PackageReference Include="LiteBus.Extensions.Microsoft.DependencyInjection" Version="4.2.0" />
+		<PackageReference Include="Microsoft.EntityFrameworkCore.Relational" Version="10.0.0" />
     </ItemGroup>
     <ItemGroup>
       <ProjectReference Include="..\Moonglade.Utils\Moonglade.Utils.csproj" />
