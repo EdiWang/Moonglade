@@ -3,7 +3,7 @@ name: Azure Web App (PROD)
 env:
   AZURE_WEBAPP_NAME: ediwang
   AZURE_WEBAPP_PACKAGE_PATH: '.'
-  DOTNET_VERSION: '8'
+  DOTNET_VERSION: '10'
 
 on:
   workflow_dispatch:
