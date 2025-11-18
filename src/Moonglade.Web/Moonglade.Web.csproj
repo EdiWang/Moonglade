@@ -6,6 +6,8 @@
 		<PackageLicenseExpression>GNU General Public License v3.0</PackageLicenseExpression>
 		<PackageProjectUrl>https://github.com/EdiWang/Moonglade</PackageProjectUrl>
 		<RepositoryUrl>https://github.com/EdiWang/Moonglade</RepositoryUrl>
+		<!-- Workaround PostgreSQL .NET 10 support -->
+		<NoWarn>NU1608,NU5104</NoWarn>
 	</PropertyGroup>
 	<ItemGroup>
 		<Using Include="System.Text" />
