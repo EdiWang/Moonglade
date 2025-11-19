@@ -1,0 +1,46 @@
+<Solution>
+  <Folder Name="/.Solution Items/">
+    <File Path="../.gitignore" />
+    <File Path="../Dockerfile" />
+    <File Path="../README.md" />
+    <File Path="Directory.Build.props" />
+  </Folder>
+  <Folder Name="/.Solution Items/Deployment/">
+    <File Path="../Deployment/AzureQuickDeploy.ps1" />
+    <File Path="../Deployment/mssql-migration.sql" />
+  </Folder>
+  <Folder Name="/Application/">
+    <Project Path="Moonglade.Web.Middleware/Moonglade.Web.Middleware.csproj" />
+    <Project Path="Moonglade.Web/Moonglade.Web.csproj" />
+  </Folder>
+  <Folder Name="/Core/">
+    <Project Path="Moonglade.Auth/Moonglade.Auth.csproj" />
+    <Project Path="Moonglade.Email.Client/Moonglade.Email.Client.csproj" />
+    <Project Path="Moonglade.Features/Moonglade.Features.csproj" />
+    <Project Path="Moonglade.IndexNow.Client/Moonglade.IndexNow.Client.csproj" />
+    <Project Path="Moonglade.Moderation/Moonglade.Moderation.csproj" />
+    <Project Path="Moonglade.Setup/Moonglade.Setup.csproj" />
+    <Project Path="Moonglade.Syndication/Moonglade.Syndication.csproj" />
+    <Project Path="Moonglade.Theme/Moonglade.Theme.csproj" />
+    <Project Path="Moonglade.Webmention/Moonglade.Webmention.csproj" />
+  </Folder>
+  <Folder Name="/Data/">
+    <Project Path="Moonglade.Data.MySql/Moonglade.Data.MySql.csproj" />
+    <Project Path="Moonglade.Data.PostgreSql/Moonglade.Data.PostgreSql.csproj" />
+    <Project Path="Moonglade.Data.SqlServer/Moonglade.Data.SqlServer.csproj" />
+    <Project Path="Moonglade.Data/Moonglade.Data.csproj" />
+    <Project Path="Moonglade.ImageStorage/Moonglade.ImageStorage.csproj" />
+  </Folder>
+  <Folder Name="/Infrastructure/">
+    <Project Path="Moonglade.Configuration/Moonglade.Configuration.csproj" />
+    <Project Path="Moonglade.Utils/Moonglade.Utils.csproj" />
+  </Folder>
+  <Folder Name="/Tests/">
+    <Project Path="Moonglade.ImageStorage.Tests/Moonglade.ImageStorage.Tests.csproj" />
+    <Project Path="Moonglade.IndexNow.Client.Tests/Moonglade.IndexNow.Client.Tests.csproj" />
+    <Project Path="Moonglade.Moderation.Tests/Moonglade.Moderation.Tests.csproj" />
+    <Project Path="Moonglade.Theme.Tests/Moonglade.Theme.Tests.csproj" />
+    <Project Path="Moonglade.Utils.Tests/Moonglade.Utils.Tests.csproj" />
+    <Project Path="Moonglade.Web.Middleware.Tests/Moonglade.Web.Middleware.Tests.csproj" />
+  </Folder>
+</Solution>
