@@ -24,7 +24,7 @@ This mirrors how [edi.wang](https://edi.wang) is deployed, utilizing a variety o
 
 | Tools                      | Alternatives                                                                                       |
 |----------------------------|----------------------------------------------------------------------------------------------------|
-| [Visual Studio 2022](https://visualstudio.microsoft.com/) | [VS Code](https://code.visualstudio.com/) + [.NET 8.0 SDK](http://dot.net)           |
+| [Visual Studio 2026](https://visualstudio.microsoft.com/) | [VS Code](https://code.visualstudio.com/) + [.NET 10.0 SDK](http://dot.net)           |
 | [SQL Server 2022](https://www.microsoft.com/en-us/sql-server/sql-server-2022) | [LocalDB](https://learn.microsoft.com/en-us/sql/database-engine/configure-windows/sql-server-express-localdb?view=sql-server-ver16&WT.mc_id=AZ-MVP-5002809), PostgreSQL, or MySQL |
 
 ### Database Setup
