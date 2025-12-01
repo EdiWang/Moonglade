@@ -145,17 +145,20 @@ For basic keyword filtering, use the built-in local provider:
 }
 ```
 
-#### Azure Content Moderator
+#### Remote Content Moderator
 
-Setup [Moonglade.ContentSecurity Azure Function](https://github.com/EdiWang/Moonglade.ContentSecurity):
+e.g. [Moonglade.ContentSecurity Azure Function](https://github.com/EdiWang/Moonglade.ContentSecurity):
 
 ```json
 "ContentModerator": {
-  "Provider": "Azure",
+  "Provider": "remote",
   "ApiEndpoint": "<Your Azure Function Endpoint>",
-  "ApiKey": "<Your Azure Function Key>"
+  "ApiKey": "<Your Azure Function Key>",
+  "ApiKeyHeader": "x-functions-key"
 }
 ```
+
+Note: You can also implement your own content moderation API by mimicking the interface of Moonglade.ContentSecurity. You are not limited to Azure!
 
 ### Email Notifications
 

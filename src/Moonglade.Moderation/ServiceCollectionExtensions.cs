@@ -30,7 +30,7 @@ public static class ServiceCollectionExtensions
 
                 if (!string.IsNullOrWhiteSpace(options.ApiKey))
                 {
-                    client.DefaultRequestHeaders.Add("x-functions-key", options.ApiKey);
+                    client.DefaultRequestHeaders.Add(options.ApiKeyHeader, options.ApiKey);
                 }
             }
         }).AddStandardResilienceHandler();
