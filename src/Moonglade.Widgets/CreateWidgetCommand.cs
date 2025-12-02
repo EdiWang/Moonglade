@@ -2,27 +2,10 @@ using LiteBus.Commands.Abstractions;
 using Microsoft.Extensions.Logging;
 using Moonglade.Data;
 using Moonglade.Data.Entities;
-using System.ComponentModel.DataAnnotations;
 
 namespace Moonglade.Widgets;
 
-public class CreateWidgetCommand : ICommand<Guid>
-{
-    [Required]
-    [Display(Name = "Title")]
-    [MaxLength(128)]
-    public string Title { get; set; }
-
-    [Required]
-    [Display(Name = "Widget Type")]
-    public WidgetType WidgetType { get; set; }
-
-    [Display(Name = "Display Order")]
-    public int DisplayOrder { get; set; }
-
-    [Display(Name = "Enabled")]
-    public bool IsEnabled { get; set; } = true;
-}
+public record CreateWidgetCommand(EditWidgetRequest Payload) : ICommand<Guid>;
 
 public class CreateWidgetCommandHandler(
     MoongladeRepository<WidgetEntity> widgetRepo,
@@ -33,10 +16,10 @@ public class CreateWidgetCommandHandler(
         var widget = new WidgetEntity
         {
             Id = Guid.NewGuid(),
-            Title = request.Title.Trim(),
-            WidgetType = request.WidgetType,
-            DisplayOrder = request.DisplayOrder,
-            IsEnabled = request.IsEnabled,
+            Title = request.Payload.Title.Trim(),
+            WidgetType = request.Payload.WidgetType,
+            DisplayOrder = request.Payload.DisplayOrder,
+            IsEnabled = request.Payload.IsEnabled,
             CreatedTimeUtc = DateTime.UtcNow
         };
 

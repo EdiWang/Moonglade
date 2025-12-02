@@ -5,10 +5,7 @@ using Moonglade.Data.Entities;
 
 namespace Moonglade.Widgets;
 
-public class UpdateWidgetCommand : CreateWidgetCommand, ICommand<OperationCode>
-{
-    public Guid Id { get; set; }
-}
+public record UpdateWidgetCommand(Guid Id, EditWidgetRequest Payload) : ICommand<OperationCode>;
 
 public class UpdateWidgetCommandHandler(
     MoongladeRepository<WidgetEntity> widgetRepo,
@@ -19,10 +16,10 @@ public class UpdateWidgetCommandHandler(
         var widget = await widgetRepo.GetByIdAsync(request.Id, ct);
         if (widget is null) return OperationCode.ObjectNotFound;
 
-        widget.Title = request.Title.Trim();
+        widget.Title = request.Payload.Title.Trim();
         // WidgetType is intentionally not updated - it's immutable after creation
-        widget.DisplayOrder = request.DisplayOrder;
-        widget.IsEnabled = request.IsEnabled;
+        widget.DisplayOrder = request.Payload.DisplayOrder;
+        widget.IsEnabled = request.Payload.IsEnabled;
 
         await widgetRepo.UpdateAsync(widget, ct);
 
