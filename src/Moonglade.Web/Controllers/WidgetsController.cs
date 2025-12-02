@@ -29,6 +29,7 @@ public class WidgetsController(
     [ProducesResponseType<List<WidgetEntity>>(StatusCodes.Status200OK)]
     public async Task<IActionResult> List()
     {
+        // TODO: Add caching
         var list = await queryMediator.QueryAsync(new ListWidgetsQuery());
         return Ok(list);
     }
