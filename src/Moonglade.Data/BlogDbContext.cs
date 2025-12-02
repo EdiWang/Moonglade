@@ -29,6 +29,8 @@ public class BlogDbContext : DbContext
     public virtual DbSet<StyleSheetEntity> StyleSheet { get; set; }
     public virtual DbSet<BlogAssetEntity> BlogAsset { get; set; }
     public virtual DbSet<BlogConfigurationEntity> BlogConfiguration { get; set; }
+    public virtual DbSet<WidgetEntity> Widget { get; set; }
+    public virtual DbSet<WidgetLinkItemEntity> WidgetLinkItem { get; set; }
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
@@ -49,6 +51,13 @@ public class BlogDbContext : DbContext
                     .HasOne(pt => pt.Post)
                     .WithMany()
                     .HasForeignKey(pt => pt.PostId));
+
+        modelBuilder
+            .Entity<WidgetEntity>()
+            .HasMany(w => w.LinkItems)
+            .WithOne(li => li.Widget)
+            .HasForeignKey(li => li.WidgetId)
+            .OnDelete(DeleteBehavior.Cascade);
     }
 }
 
@@ -72,5 +81,7 @@ public static class BlogDbContextExtension
         await context.StyleSheet.ExecuteDeleteAsync();
         await context.LoginHistory.ExecuteDeleteAsync();
         await context.CustomPage.ExecuteDeleteAsync();
+        await context.WidgetLinkItem.ExecuteDeleteAsync();
+        await context.Widget.ExecuteDeleteAsync();
     }
 }
