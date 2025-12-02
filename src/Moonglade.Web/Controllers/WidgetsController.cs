@@ -1,6 +1,7 @@
 ﻿using LiteBus.Commands.Abstractions;
 using LiteBus.Queries.Abstractions;
 using Moonglade.Data.Entities;
+using Moonglade.Features.Category;
 using Moonglade.Web.Attributes;
 using Moonglade.Widgets;
 
@@ -23,5 +24,13 @@ public class WidgetsController(
         if (null == widget) return NotFound();
 
         return Ok(widget);
+    }
+
+    [HttpGet("list")]
+    [ProducesResponseType<List<WidgetEntity>>(StatusCodes.Status200OK)]
+    public async Task<IActionResult> List()
+    {
+        var list = await queryMediator.QueryAsync(new ListWidgetsQuery());
+        return Ok(list);
     }
 }
