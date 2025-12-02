@@ -15,8 +15,7 @@ public class CreateWidgetCommand : ICommand<Guid>
 
     [Required]
     [Display(Name = "Widget Type")]
-    [MaxLength(64)]
-    public string WidgetType { get; set; }
+    public WidgetType WidgetType { get; set; }
 
     [Display(Name = "Display Order")]
     public int DisplayOrder { get; set; }
@@ -35,7 +34,7 @@ public class CreateWidgetCommandHandler(
         {
             Id = Guid.NewGuid(),
             Title = request.Title.Trim(),
-            WidgetType = request.WidgetType.Trim(),
+            WidgetType = request.WidgetType,
             DisplayOrder = request.DisplayOrder,
             IsEnabled = request.IsEnabled,
             CreatedTimeUtc = DateTime.UtcNow

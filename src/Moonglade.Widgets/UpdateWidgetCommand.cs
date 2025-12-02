@@ -20,7 +20,7 @@ public class UpdateWidgetCommandHandler(
         if (widget is null) return OperationCode.ObjectNotFound;
 
         widget.Title = request.Title.Trim();
-        widget.WidgetType = request.WidgetType.Trim();
+        // WidgetType is intentionally not updated - it's immutable after creation
         widget.DisplayOrder = request.DisplayOrder;
         widget.IsEnabled = request.IsEnabled;
 

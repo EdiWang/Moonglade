@@ -10,7 +10,9 @@ public class WidgetConfiguration : IEntityTypeConfiguration<WidgetEntity>
     {
         builder.Property(e => e.Id).ValueGeneratedNever();
         builder.Property(e => e.Title).HasMaxLength(100);
-        builder.Property(e => e.WidgetType).HasMaxLength(50);
+        builder.Property(e => e.WidgetType)
+            .HasMaxLength(50)
+            .HasConversion<string>();
     }
 }
 
