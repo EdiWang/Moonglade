@@ -7,7 +7,7 @@ using System.ComponentModel.DataAnnotations;
 
 namespace Moonglade.Widgets.Types.LinkList;
 
-public class CreateWidgetLinkItemCommand : ICommand<OperationCode>, IValidatableObject
+public class EditWidgetLinkItemRequest : IValidatableObject
 {
     [Required]
     public Guid WidgetId { get; set; }
@@ -45,6 +45,8 @@ public class CreateWidgetLinkItemCommand : ICommand<OperationCode>, IValidatable
     }
 }
 
+public record CreateWidgetLinkItemCommand(EditWidgetLinkItemRequest Payload) : ICommand<OperationCode>;
+
 public class CreateWidgetLinkItemCommandHandler(
     MoongladeRepository<WidgetLinkItemEntity> linkItemRepo,
     MoongladeRepository<WidgetEntity> widgetRepo,
@@ -52,7 +54,7 @@ public class CreateWidgetLinkItemCommandHandler(
 {
     public async Task<OperationCode> HandleAsync(CreateWidgetLinkItemCommand request, CancellationToken ct)
     {
-        var widget = await widgetRepo.GetByIdAsync(request.WidgetId, ct);
+        var widget = await widgetRepo.GetByIdAsync(request.Payload.WidgetId, ct);
         if (widget == null)
         {
             return OperationCode.ObjectNotFound;
@@ -61,18 +63,18 @@ public class CreateWidgetLinkItemCommandHandler(
         var linkItem = new WidgetLinkItemEntity
         {
             Id = Guid.NewGuid(),
-            WidgetId = request.WidgetId,
-            Title = request.Title.Trim(),
-            Url = SecurityHelper.SterilizeLink(request.Url),
-            IconName = request.IconName?.Trim() ?? string.Empty,
-            OpenInNewWindow = request.OpenInNewWindow,
-            DisplayOrder = request.DisplayOrder,
-            IsEnabled = request.IsEnabled
+            WidgetId = request.Payload.WidgetId,
+            Title = request.Payload.Title.Trim(),
+            Url = SecurityHelper.SterilizeLink(request.Payload.Url),
+            IconName = request.Payload.IconName?.Trim() ?? string.Empty,
+            OpenInNewWindow = request.Payload.OpenInNewWindow,
+            DisplayOrder = request.Payload.DisplayOrder,
+            IsEnabled = request.Payload.IsEnabled
         };
 
         await linkItemRepo.AddAsync(linkItem, ct);
 
-        logger.LogInformation("Widget link item created: {LinkItemId} for widget: {WidgetId}", linkItem.Id, request.WidgetId);
+        logger.LogInformation("Widget link item created: {LinkItemId} for widget: {WidgetId}", linkItem.Id, request.Payload.WidgetId);
 
         return OperationCode.Done;
     }
