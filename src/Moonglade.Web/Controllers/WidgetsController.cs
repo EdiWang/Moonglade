@@ -1,7 +1,6 @@
 ﻿using LiteBus.Commands.Abstractions;
 using LiteBus.Queries.Abstractions;
 using Moonglade.Data.Entities;
-using Moonglade.Features.Category;
 using Moonglade.Web.Attributes;
 using Moonglade.Widgets;
 
@@ -32,5 +31,29 @@ public class WidgetsController(
     {
         var list = await queryMediator.QueryAsync(new ListWidgetsQuery());
         return Ok(list);
+    }
+
+    [HttpPost]
+    [ProducesResponseType(StatusCodes.Status201Created)]
+    public async Task<IActionResult> Create(EditWidgetRequest request)
+    {
+        await commandMediator.SendAsync(new CreateWidgetCommand(request));
+        return Created();
+    }
+
+    [HttpPut("{id:guid}")]
+    [ProducesResponseType(StatusCodes.Status204NoContent)]
+    public async Task<IActionResult> Update([NotEmpty] Guid id, EditWidgetRequest request)
+    {
+        await commandMediator.SendAsync(new UpdateWidgetCommand(id, request));
+        return NoContent();
+    }
+
+    [HttpDelete("{id:guid}")]
+    [ProducesResponseType(StatusCodes.Status204NoContent)]
+    public async Task<IActionResult> Delete([NotEmpty] Guid id)
+    {
+        await commandMediator.SendAsync(new DeleteWidgetCommand(id));
+        return NoContent();
     }
 }
