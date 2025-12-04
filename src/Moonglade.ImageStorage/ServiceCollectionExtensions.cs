@@ -46,11 +46,8 @@ public static class ServiceCollectionExtensions
             case "filesystem":
                 RegisterFileSystemStorage(services, settings.FileSystemPath);
                 break;
-            case "miniostorage":
-                RegisterMinioStorage(services, settings.MinioStorageSettings);
-                break;
             default:
-                var supportedProviders = string.Join(", ", ["azurestorage", "filesystem", "miniostorage"]);
+                var supportedProviders = string.Join(", ", ["azurestorage", "filesystem"]);
                 throw new NotSupportedException($"Provider '{provider}' is not supported. Supported providers: {supportedProviders}");
         }
     }
@@ -90,26 +87,6 @@ public static class ServiceCollectionExtensions
             .AddScoped<IFileNameGenerator, DatedGuidFileNameGenerator>();
     }
 
-    private static void RegisterMinioStorage(IServiceCollection services, MinioStorageSettings settings)
-    {
-        if (settings is null)
-        {
-            throw new InvalidOperationException("MinioStorageSettings cannot be null when using Minio Storage provider.");
-        }
-
-        ValidateMinioStorageSettings(settings);
-
-        services.AddSingleton<IBlogImageStorage, MinioBlobImageStorage>()
-            .AddScoped<IFileNameGenerator, DatedGuidFileNameGenerator>()
-            .AddSingleton(_ => new MinioBlobConfiguration(
-                settings.EndPoint,
-                settings.AccessKey,
-                settings.SecretKey,
-                settings.BucketName,
-                settings.SecondaryBucketName,
-                settings.WithSSL));
-    }
-
     private static void ValidateAzureStorageSettings(AzureStorageSettings settings)
     {
         if (string.IsNullOrWhiteSpace(settings.ConnectionString))
@@ -120,29 +97,6 @@ public static class ServiceCollectionExtensions
         if (string.IsNullOrWhiteSpace(settings.ContainerName))
         {
             throw new InvalidOperationException("Azure Storage container name cannot be null or empty.");
-        }
-    }
-
-    private static void ValidateMinioStorageSettings(MinioStorageSettings settings)
-    {
-        if (string.IsNullOrWhiteSpace(settings.EndPoint))
-        {
-            throw new InvalidOperationException("Minio endpoint cannot be null or empty.");
-        }
-
-        if (string.IsNullOrWhiteSpace(settings.AccessKey))
-        {
-            throw new InvalidOperationException("Minio access key cannot be null or empty.");
-        }
-
-        if (string.IsNullOrWhiteSpace(settings.SecretKey))
-        {
-            throw new InvalidOperationException("Minio secret key cannot be null or empty.");
-        }
-
-        if (string.IsNullOrWhiteSpace(settings.BucketName))
-        {
-            throw new InvalidOperationException("Minio bucket name cannot be null or empty.");
         }
     }
 }
