@@ -92,23 +92,6 @@ Create an [Azure Blob Storage](https://azure.microsoft.com/en-us/services/storag
 ```
 - Enable CDN in admin settings for faster image delivery.
 
-#### **MinIO Blob Storage**
-
-Set up a [MinIO Server](https://docs.min.io/):
-
-```json
-{
-  "Provider": "miniostorage",
-  "MinioStorageSettings": {
-    "EndPoint": "localhost:9600",
-    "AccessKey": "YOUR_ACCESS_KEY",
-    "SecretKey": "YOUR_SECRET_KEY",
-    "BucketName": "YOUR_BUCKET_NAME",
-    "WithSSL": false
-  }
-}
-```
-
 #### **File System** (Not recommended)
 
 Windows:
