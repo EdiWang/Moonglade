@@ -1,18 +1,19 @@
 ﻿using LiteBus.Commands.Abstractions;
 using Moonglade.Data.Entities;
+using Moonglade.Widgets.Types;
 using System.Security.Cryptography;
 using System.Xml;
 
 namespace Moonglade.Web.Handlers;
 
-public class WriteFoafCommand(FoafDoc doc, string currentRequestUrl, List<FriendLinkEntity> links)
+public class WriteFoafCommand(FoafDoc doc, string currentRequestUrl, List<LinkListItem> links)
     : ICommand<string>
 {
     public FoafDoc Doc { get; set; } = doc;
 
     public string CurrentRequestUrl { get; set; } = currentRequestUrl;
 
-    public List<FriendLinkEntity> Links { get; set; } = links;
+    public List<LinkListItem> Links { get; set; } = links;
 
     public static string ContentType => "application/rdf+xml";
 }
@@ -56,10 +57,10 @@ public class WriteFoafCommandHandler : ICommandHandler<WriteFoafCommand, string>
 
         foreach (var friend in request.Links)
         {
-            me.Friends.Add(new("#" + friend.Id)
+            me.Friends.Add(new("#" + friend.Order)
             {
-                Name = friend.Title,
-                Homepage = friend.LinkUrl
+                Name = friend.Name,
+                Homepage = friend.Url
             });
         }
 

@@ -1,6 +1,10 @@
 ﻿using LiteBus.Commands.Abstractions;
 using LiteBus.Queries.Abstractions;
-using Moonglade.Features.FriendLink;
+using Moonglade.Data.Entities;
+using Moonglade.Data.Exporting;
+using Moonglade.Widgets;
+using Moonglade.Widgets.Types;
+using System.Text.Json;
 
 namespace Moonglade.Web.Handlers;
 
@@ -20,7 +24,9 @@ public class FoafMapHandler
 
         try
         {
-            var friends = await queryMediator.QueryAsync(new ListLinksQuery());
+            var widgets = await queryMediator.QueryAsync(new ListWidgetsQuery());
+            var linksJson = widgets.Where(p => p.WidgetType == WidgetType.LinkList && !string.IsNullOrWhiteSpace(p.ContentCode)).Select(p => p.ContentCode).ToList();
+            var links = linksJson.SelectMany(p => JsonSerializer.Deserialize<List<LinkListItem>>(p, MoongladeJsonSerializerOptions.Default)).ToList();
 
             var foafDoc = new FoafDoc(
                 Name: general.OwnerName,
@@ -30,7 +36,7 @@ public class FoafMapHandler
             );
 
             var requestUrl = GetRequestUri(httpContext.Request).ToString();
-            var xml = await commandMediator.SendAsync(new WriteFoafCommand(foafDoc, requestUrl, friends));
+            var xml = await commandMediator.SendAsync(new WriteFoafCommand(foafDoc, requestUrl, links));
 
             SetResponseHeaders(httpContext.Response);
             await httpContext.Response.WriteAsync(xml, httpContext.RequestAborted);

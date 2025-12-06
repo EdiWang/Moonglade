@@ -15,7 +15,6 @@ public interface IBlogConfig
     AppearanceSettings AppearanceSettings { get; set; }
     CustomMenuSettings CustomMenuSettings { get; set; }
     LocalAccountSettings LocalAccountSettings { get; set; }
-    SocialLinkSettings SocialLinkSettings { get; set; }
     SystemManifestSettings SystemManifestSettings { get; set; }
 
     IEnumerable<string> LoadFromConfig(IDictionary<string, string> config);

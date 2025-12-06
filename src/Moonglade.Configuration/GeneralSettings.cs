@@ -76,9 +76,6 @@ public class GeneralSettings : IBlogSettings
     [Display(Name = "Categories")]
     public bool WidgetsCategoryList { get; set; } = true;
 
-    [Display(Name = "Friend links")]
-    public bool WidgetsFriendLink { get; set; } = true;
-
     [Display(Name = "Subscription buttons")]
     public bool WidgetsSubscriptionButtons { get; set; } = true;
 

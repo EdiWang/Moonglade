@@ -40,22 +40,6 @@
         </section>
     }
 
-    @if (BlogConfig.SocialLinkSettings.IsEnabled)
-    {
-        <section id="aside-sociallink" class="mb-4">
-            <partial name="_WidgetRender" model="@("SocialLink")" />
-        </section>
-    }
-
-    @if (BlogConfig.GeneralSettings.WidgetsFriendLink)
-    {
-        <section id="aside-friendlink" class="mb-4">
-            <cache expires-after="@TimeSpan.FromMinutes(int.Parse(Configuration["WidgetCacheMinutes:FriendLink"]!))">
-                <partial name="_WidgetRender" model="@("FriendLink")" />
-            </cache>
-        </section>
-    }
-
     @await Component.InvokeAsync("Widgets")
 
     @if (BlogConfig.GeneralSettings.WidgetsSubscriptionButtons)
