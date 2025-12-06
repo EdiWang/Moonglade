@@ -22,7 +22,10 @@
                     @foreach (var item in linkData.OrderBy(c => c.Order).ThenBy(c => c.Name))
                     {
                         <a href="@SecurityHelper.SterilizeLink(item.Url)" target="_blank" class="d-block mb-3 mt-2" role="listitem">
-                            <i class="@item.Icon me-1"></i>
+                            @if (!string.IsNullOrWhiteSpace(item.Icon))
+                            {
+                                <i class="@item.Icon me-1"></i>
+                            }
                             @item.Name
                         </a>
                     }
