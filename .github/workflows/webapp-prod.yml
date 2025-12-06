@@ -1,4 +1,4 @@
-name: Azure Web App (PROD)
+name: Azure Web App (PROD) - LEGACY
 
 env:
   AZURE_WEBAPP_NAME: ediwang

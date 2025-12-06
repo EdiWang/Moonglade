@@ -31,7 +31,7 @@
     @switch (ec)
     {
         case EditorChoice.Html:
-            <script src="~/lib/tinymce/tinymce.min.js" asp-append-version="true"></script>
+            <script src="~/lib/tinymce/tinymce.min.js"></script>
             break;
         case EditorChoice.Markdown:
             <partial name="_MonacoLoaderScript" />
@@ -40,7 +40,7 @@
             break;
     }
 
-    <script type="module" src="~/js/app/admin.editpost.mjs" asp-append-version="true"></script>
+    <script type="module" src="~/js/app/admin.editpost.mjs"></script>
 }
 
 @section head {
