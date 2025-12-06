@@ -1,0 +1,22 @@
+﻿@page "/admin/widgets"
+
+@{
+    ViewBag.Title = "Widgets";
+}
+
+@section scripts {
+    <script type="module" src="~/js/app/admin.widgets.mjs"></script>
+}
+
+@section admintoolbar {
+    <div class="admin-toolbar pb-2 border-bottom mb-3">
+        <a id="btn-new-widget" class="btn btn-outline-accent">
+            <i class="bi-plus-lg"></i>
+            @SharedLocalizer["New"]
+        </a>
+    </div>
+}
+
+<section class="widgets-list">
+
+</section>

@@ -4,7 +4,7 @@ const csrfFieldName = 'CSRF-TOKEN-MOONGLADE-FORM';
 
 export async function fetch2(uri, method, request) {
     try {
-        const csrfValue = document.querySelector(`input[name="${csrfFieldName}"]`).value;
+        const csrfValue = document.querySelector(`input[name="${csrfFieldName}"]`)?.value;
         const response = await fetch(uri, {
             method,
             headers: {
