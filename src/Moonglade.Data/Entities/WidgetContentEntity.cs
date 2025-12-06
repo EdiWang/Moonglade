@@ -7,7 +7,7 @@ public class WidgetContentEntity
     public Guid Id { get; set; }
     public Guid WidgetId { get; set; }
     public string Title { get; set; }
-    public string ContentType { get; set; }
+    public WidgetContentType ContentType { get; set; }
     public string ContentCode { get; set; }
 
     [JsonIgnore]

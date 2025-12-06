@@ -22,7 +22,9 @@ public class WidgetLinkItemConfiguration : IEntityTypeConfiguration<WidgetConten
     {
         builder.Property(e => e.Id).ValueGeneratedNever();
         builder.Property(e => e.Title).HasMaxLength(100);
-        builder.Property(e => e.ContentType).HasMaxLength(25);
+        builder.Property(e => e.ContentType)
+            .HasMaxLength(25)
+            .HasConversion<string>();
         builder.Property(e => e.ContentCode).HasMaxLength(2000);
     }
 }
