@@ -19,7 +19,7 @@ public class CreateWidgetCommandHandler(
             Title = request.Payload.Title.Trim(),
             WidgetType = request.Payload.WidgetType,
             ContentType = WidgetContentType.JSON, // Hardcoded to JSON for now
-            ContentCode = request.Payload.ContentCode.Trim(),
+            ContentCode = request.Payload.ContentCode?.Trim(),
             DisplayOrder = request.Payload.DisplayOrder,
             IsEnabled = request.Payload.IsEnabled,
             CreatedTimeUtc = DateTime.UtcNow

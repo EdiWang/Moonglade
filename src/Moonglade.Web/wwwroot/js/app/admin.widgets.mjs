@@ -3,14 +3,6 @@ import { success } from './toastService.mjs'
 
 let editCanvas;
 
-function getWidgetTypeDisplayName(widgetType) {
-    const typeMap = {
-        'LinkList': 'Link List'
-    };
-    
-    return typeMap[widgetType] || widgetType || '';
-}
-
 async function loadWidgets() {
     const widgets = await fetch2('/api/widgets/list', 'GET');
     const widgetsList = document.querySelector('.widgets-list');
@@ -26,10 +18,9 @@ async function loadWidgets() {
             <div class="row">
                 <div class="col">
                     <h6>
-                        <span class="badge bg-accent1 me-1">${widget.displayOrder}</span> ${widget.title}
+                        ${widget.title}
                         ${!widget.isEnabled ? '<span class="badge bg-secondary ms-1">Disabled</span>' : ''}
                     </h6>
-                    <div class="text-muted small">${getWidgetTypeDisplayName(widget.widgetType)}</div>
                 </div>
                 <div class="col-auto">
                     <a class="btn btn-sm btn-outline-accent btn-edit" data-widgetid="${widget.id}"><i class="bi-pen"></i></a>

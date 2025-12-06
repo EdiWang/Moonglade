@@ -19,7 +19,7 @@ public class UpdateWidgetCommandHandler(
         widget.Title = request.Payload.Title.Trim();
         widget.WidgetType = request.Payload.WidgetType;
         widget.ContentType = WidgetContentType.JSON; // Currently only JSON is supported
-        widget.ContentCode = request.Payload.ContentCode.Trim();
+        widget.ContentCode = request.Payload.ContentCode?.Trim();
         widget.DisplayOrder = request.Payload.DisplayOrder;
         widget.IsEnabled = request.Payload.IsEnabled;
 
