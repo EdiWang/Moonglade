@@ -41,7 +41,7 @@ function renderWidgetCard(widget, container) {
     widgetEntry.id = `tr-${widget.id}`;
     
     widgetEntry.innerHTML = `
-        <div class="widget-entry p-3 rounded-3 border h-100">
+        <div class="widget-entry bg-white p-3 rounded-3 border h-100">
             ${buildWidgetHeader(widget)}
             <hr />
             ${buildWidgetContent(widget)}
