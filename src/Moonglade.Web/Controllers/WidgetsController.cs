@@ -10,7 +10,6 @@ namespace Moonglade.Web.Controllers;
 [Route("api/[controller]")]
 [ApiController]
 public class WidgetsController(
-    ICacheAside cache,
     IQueryMediator queryMediator,
     ICommandMediator commandMediator) : ControllerBase
 {
@@ -31,7 +30,6 @@ public class WidgetsController(
     [ProducesResponseType<List<WidgetEntity>>(StatusCodes.Status200OK)]
     public async Task<IActionResult> List()
     {
-        // TODO: Add caching
         var list = await queryMediator.QueryAsync(new ListWidgetsQuery());
         return Ok(list);
     }

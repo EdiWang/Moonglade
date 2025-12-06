@@ -27,13 +27,17 @@ async function loadWidgets() {
     const widgetsList = document.querySelector('.widgets-list');
     
     widgetsList.innerHTML = '';
-    widgets.forEach(widget => renderWidgetCard(widget, widgetsList));
+    
+    // Sort widgets by displayOrder before rendering
+    const sortedWidgets = widgets.sort((a, b) => a.displayOrder - b.displayOrder);
+    sortedWidgets.forEach(widget => renderWidgetCard(widget, widgetsList));
+    
     attachWidgetEventListeners();
 }
 
 function renderWidgetCard(widget, container) {
     const widgetEntry = document.createElement('div');
-    widgetEntry.className = 'col-12 col-md-6 col-lg-4';
+    widgetEntry.className = 'col-md-4';
     widgetEntry.id = `tr-${widget.id}`;
     
     widgetEntry.innerHTML = `
