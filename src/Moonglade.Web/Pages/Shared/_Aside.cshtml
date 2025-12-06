@@ -17,7 +17,7 @@
             <div class="aside-widget p-3 rounded-3 shadow-sm border">
                 <h6 class="card-subtitle mb-3 text-secondary">@SharedLocalizer["Tags"]</h6>
                 <div>
-                    <cache expires-after="@TimeSpan.FromMinutes(int.Parse(Configuration["WidgetCacheMinutes:Tags"]!))">
+                    <cache expires-after="@TimeSpan.FromMinutes(int.Parse(Configuration["WidgetCacheMinutes"]!))">
                         <partial name="_WidgetRender" model="@("Tags")" />
                     </cache>
                     <hr />
@@ -40,7 +40,7 @@
         </section>
     }
 
-    @await Component.InvokeAsync("Widgets")
+    <partial name="_WidgetRender" model="@("Widgets")" />
 
     @if (BlogConfig.GeneralSettings.WidgetsSubscriptionButtons)
     {
