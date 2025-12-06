@@ -14,9 +14,33 @@ async function loadWidgets() {
         widgetEntry.className = 'col-12 col-md-6 col-lg-4';
         widgetEntry.id = `tr-${widget.id}`;
         
+        // Parse and render LinkList content
+        let contentHtml = '';
+        if (widget.widgetType === 'LinkList' && widget.contentCode) {
+            try {
+                const links = JSON.parse(widget.contentCode);
+                contentHtml = '<div role="list" class="mt-2">';
+                links
+                    .sort((a, b) => a.order - b.order)
+                    .forEach(link => {
+                        const target = link.openInNewTab ? '_blank' : '_self';
+                        const icon = link.icon ? `<i class="${link.icon} me-1"></i>` : '';
+                        contentHtml += `
+                                <a href="${link.url}" target="${target}" role="listitem" class="d-block mb-3 mt-2">
+                                    ${icon}${link.name}
+                                    ${link.openInNewTab ? '<i class="bi-box-arrow-up-right ms-1 small"></i>' : ''}
+                                </a>
+                        `;
+                    });
+                contentHtml += '</div>';
+            } catch (e) {
+                contentHtml = '<div class="text-muted small mt-2">Invalid link data</div>';
+            }
+        }
+        
         widgetEntry.innerHTML = `
             <div class="widget-entry p-3 rounded-3 border h-100">
-                <div class="d-flex justify-content-between align-items-center h-100">
+                <div class="d-flex justify-content-between align-items-center">
                     <h6 class="mb-0">
                         ${widget.title}
                         ${!widget.isEnabled ? '<span class="badge bg-secondary ms-1">Disabled</span>' : ''}
@@ -27,6 +51,7 @@ async function loadWidgets() {
                     </div>
                 </div>
                 <hr />
+                ${contentHtml}
             </div>
         `;
         
