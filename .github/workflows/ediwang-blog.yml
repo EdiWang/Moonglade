@@ -6,10 +6,10 @@ permissions:
   contents: read
 env:
   AZURE_WEBAPP_NAME: ediwang-blog
-  AZURE_WEBAPP_PACKAGE_PATH: Moonglade.Web/published
+  AZURE_WEBAPP_PACKAGE_PATH: src/Moonglade.Web/published
   CONFIGURATION: Release
   DOTNET_CORE_VERSION: 10.0.x
-  WORKING_DIRECTORY: Moonglade.Web
+  WORKING_DIRECTORY: src/Moonglade.Web
 jobs:
   build:
     runs-on: ubuntu-latest
