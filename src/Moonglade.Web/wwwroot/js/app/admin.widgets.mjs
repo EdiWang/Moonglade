@@ -5,8 +5,7 @@ let editCanvas;
 
 function getWidgetTypeDisplayName(widgetType) {
     const typeMap = {
-        'LinkList': 'Link List',
-        0: 'Link List'
+        'LinkList': 'Link List'
     };
     
     return typeMap[widgetType] || widgetType || '';
@@ -76,7 +75,7 @@ function openNewWidgetForm() {
     // Clear the form for new widget
     document.getElementById('widget-id').value = '';
     document.getElementById('widget-title').value = '';
-    document.getElementById('widget-type').value = '0';
+    document.getElementById('widget-type').value = 'LinkList';
     document.getElementById('widget-display-order').value = '0';
     document.getElementById('widget-enabled').checked = true;
     
@@ -88,7 +87,7 @@ async function saveWidget(formData) {
     const widgetId = document.getElementById('widget-id').value;
     const requestData = {
         title: formData.get('title'),
-        widgetType: parseInt(formData.get('widgetType')),
+        widgetType: formData.get('widgetType'),
         displayOrder: parseInt(formData.get('displayOrder')),
         isEnabled: formData.get('isEnabled') === 'true'
     };
