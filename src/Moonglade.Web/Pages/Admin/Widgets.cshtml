@@ -23,7 +23,7 @@
 
 @Html.AntiForgeryToken()
 
-<div class="offcanvas offcanvas-end" tabindex="-1" id="editWidgetCanvas" aria-labelledby="editWidgetCanvasLabel">
+<div class="offcanvas offcanvas-end" tabindex="-1" id="editWidgetCanvas" aria-labelledby="editWidgetCanvasLabel" style="width: 500px;">
     <div class="offcanvas-header">
         <h5 class="offcanvas-title" id="editWidgetCanvasLabel">@SharedLocalizer["Widget Information"]</h5>
         <button type="button" class="btn-close text-reset" data-bs-dismiss="offcanvas" aria-label="Close"></button>
@@ -49,6 +49,21 @@
                 <input type="checkbox" id="widget-enabled" class="form-check-input" checked />
                 <label for="widget-enabled" class="form-check-label">@SharedLocalizer["Enabled"]</label>
             </div>
+            
+            <!-- LinkList Content Editor -->
+            <div id="linklist-editor" class="mb-3" style="display: none;">
+                <hr />
+                <div class="d-flex justify-content-between align-items-center mb-2">
+                    <label class="form-label mb-0">Links</label>
+                    <button type="button" id="btn-add-link" class="btn btn-sm btn-outline-primary">
+                        <i class="bi-plus-lg"></i> Add Link
+                    </button>
+                </div>
+                <div id="links-container" class="border rounded p-2" style="max-height: 400px; overflow-y: auto;">
+                    <p class="text-muted small text-center py-3 mb-0">No links added yet</p>
+                </div>
+            </div>
+            
             <div class="mt-3">
                 <button type="submit" class="btn btn-accent">@SharedLocalizer["Submit"]</button>
                 <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="offcanvas">@SharedLocalizer["Cancel"]</button>
