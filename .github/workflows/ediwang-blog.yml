@@ -44,9 +44,9 @@ jobs:
     - name: Azure Login
       uses: azure/login@v2
       with:
-        client-id: ${{ vars.ediwang_blog_CLIENT_ID_CD32 }}
-        tenant-id: ${{ vars.ediwang_blog_TENANT_ID_CD32 }}
-        subscription-id: ${{ vars.ediwang_blog_SUBSCRIPTION_ID_CD32 }}
+        client-id: ${{ vars.EDIWANG_BLOG_TENANT_ID_CD32 }}
+        tenant-id: ${{ vars.EDIWANG_BLOG_TENANT_ID_CD32 }}
+        subscription-id: ${{ vars.EDIWANG_BLOG_SUBSCRIPTION_ID_CD32 }}
     - name: Deploy to Azure WebApp
       uses: azure/webapps-deploy@v2
       with:
