@@ -1,4 +1,4 @@
-﻿import { fetch2 } from './httpService.mjs?v=1427'
+﻿import { fetch2 } from './httpService.mjs?v=1500'
 import { formatUtcTime, parseMetaContent } from './utils.module.mjs';
 import { resetCaptchaImage, showCaptcha } from './captchaService.mjs';
 import { resizeImages, applyImageZooming } from './post.imageutils.mjs';

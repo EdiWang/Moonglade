@@ -71,6 +71,15 @@
                     </div>
                 </div>
             </a>
+            <a asp-page="/Admin/Widgets"
+               class="list-group-item list-group-item-action @(currentPage is "/Admin/Widgets" ? "active" : null)">
+                <div class="positioning-region">
+                    <div class="content-region">
+                        <i class="bi-code-square admin-nav-icon" title="Manage widgets"></i>
+                        @SharedLocalizer["Widgets"]
+                    </div>
+                </div>
+            </a>
             <a asp-page="/Admin/Mention"
                class="list-group-item list-group-item-action @(currentPage is "/Admin/Mention" ? "active" : null)">
                 <div class="positioning-region">

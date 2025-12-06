@@ -29,6 +29,7 @@ public class BlogDbContext : DbContext
     public virtual DbSet<StyleSheetEntity> StyleSheet { get; set; }
     public virtual DbSet<BlogAssetEntity> BlogAsset { get; set; }
     public virtual DbSet<BlogConfigurationEntity> BlogConfiguration { get; set; }
+    public virtual DbSet<WidgetEntity> Widget { get; set; }
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
@@ -72,5 +73,6 @@ public static class BlogDbContextExtension
         await context.StyleSheet.ExecuteDeleteAsync();
         await context.LoginHistory.ExecuteDeleteAsync();
         await context.CustomPage.ExecuteDeleteAsync();
+        await context.Widget.ExecuteDeleteAsync();
     }
 }

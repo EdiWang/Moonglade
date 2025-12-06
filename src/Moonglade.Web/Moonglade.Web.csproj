@@ -59,5 +59,6 @@
 		<ProjectReference Include="..\Moonglade.Theme\Moonglade.Theme.csproj" />
 		<ProjectReference Include="..\Moonglade.Web.Middleware\Moonglade.Web.Middleware.csproj" />
 		<ProjectReference Include="..\Moonglade.Webmention\Moonglade.Webmention.csproj" />
+		<ProjectReference Include="..\Moonglade.Widgets\Moonglade.Widgets.csproj" />
 	</ItemGroup>
 </Project>

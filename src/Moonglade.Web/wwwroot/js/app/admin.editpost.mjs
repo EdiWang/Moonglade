@@ -1,4 +1,4 @@
-import { fetch2 } from './httpService.mjs?v=1427'
+import { fetch2 } from './httpService.mjs?v=1500'
 import { parseMetaContent, toMagicJson } from './utils.module.mjs'
 import { success, error } from './toastService.mjs'
 import { initEvents, loadTinyMCE, keepAlive, warnDirtyForm } from './admin.editor.module.mjs'

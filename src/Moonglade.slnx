@@ -23,6 +23,7 @@
     <Project Path="Moonglade.Syndication/Moonglade.Syndication.csproj" />
     <Project Path="Moonglade.Theme/Moonglade.Theme.csproj" />
     <Project Path="Moonglade.Webmention/Moonglade.Webmention.csproj" />
+    <Project Path="Moonglade.Widgets/Moonglade.Widgets.csproj" Id="03078b96-7d2c-426a-ad40-6e103ef2b20f" />
   </Folder>
   <Folder Name="/Data/">
     <Project Path="Moonglade.Data.MySql/Moonglade.Data.MySql.csproj" />

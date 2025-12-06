@@ -1,0 +1,12 @@
+using LiteBus.Queries.Abstractions;
+using Moonglade.Data;
+using Moonglade.Data.Entities;
+
+namespace Moonglade.Widgets;
+
+public record GetWidgetQuery(Guid Id) : IQuery<WidgetEntity>;
+
+public class GetWidgetQueryHandler(MoongladeRepository<WidgetEntity> repo) : IQueryHandler<GetWidgetQuery, WidgetEntity>
+{
+    public Task<WidgetEntity> HandleAsync(GetWidgetQuery request, CancellationToken ct) => repo.GetByIdAsync(request.Id, ct);
+}
