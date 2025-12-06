@@ -27,7 +27,6 @@ public class PostgreSqlBlogDbContext : BlogDbContext
         modelBuilder.ApplyConfiguration(new BlogConfigurationConfiguration());
         modelBuilder.ApplyConfiguration(new PageConfiguration());
         modelBuilder.ApplyConfiguration(new WidgetConfiguration());
-        modelBuilder.ApplyConfiguration(new WidgetLinkItemConfiguration());
 
         base.OnModelCreating(modelBuilder);
     }

@@ -16,9 +16,6 @@ public class DeleteWidgetCommandHandler(
         var widget = await widgetRepo.GetByIdAsync(request.Id, ct);
         if (widget is null) return OperationCode.ObjectNotFound;
 
-        // Delete associated link items first
-        widget.LinkItems.Clear();
-
         await widgetRepo.DeleteAsync(widget, ct);
 
         logger.LogInformation("Widget deleted: {WidgetId}", request.Id);
