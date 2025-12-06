@@ -56,6 +56,8 @@
         </section>
     }
 
+    @await Component.InvokeAsync("Widgets")
+
     @if (BlogConfig.GeneralSettings.WidgetsSubscriptionButtons)
     {
         <section id="aside-subscription" class="text-center mb-4">

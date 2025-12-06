@@ -1,0 +1,33 @@
+﻿@using Moonglade.Data.Entities
+@using Moonglade.Data.Exporting
+@using Moonglade.Widgets.Types
+@using System.Text.Json
+
+@model List<WidgetEntity>
+
+@if (Model.Any())
+{
+    @foreach (var widget in Model.OrderBy(p => p.DisplayOrder))
+    {
+        <div class="aside-widget p-3 rounded-3 shadow-sm border mb-4">
+            <h6 class="card-subtitle mb-3 text-secondary">@widget.Title</h6>
+
+            @if (widget.WidgetType == WidgetType.LinkList)
+            {
+                var linkData = widget.ContentCode != null
+                ? JsonSerializer.Deserialize<List<LinkListItem>>(widget.ContentCode, MoongladeJsonSerializerOptions.Default)
+                : new List<LinkListItem>();
+
+                <div role="list">
+                    @foreach (var item in linkData.OrderBy(c => c.Order).ThenBy(c => c.Name))
+                    {
+                        <a href="@SecurityHelper.SterilizeLink(item.Url)" target="_blank" class="d-block mb-3 mt-2" role="listitem">
+                            <i class="@item.Icon me-1"></i>
+                            @item.Name
+                        </a>
+                    }
+                </div>
+            }
+        </div>
+    }
+}
