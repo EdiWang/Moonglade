@@ -69,15 +69,12 @@ PRIMARY KEY CLUSTERED
 ) ON [PRIMARY]
 GO
 
-CREATE TABLE [WidgetLinkItem](
+CREATE TABLE [WidgetContent](
 	[Id] [uniqueidentifier] NOT NULL,
 	[WidgetId] [uniqueidentifier] NOT NULL,
 	[Title] [nvarchar](100) NOT NULL,
-	[Url] [nvarchar](500) NOT NULL,
-	[IconName] [nvarchar](50) NULL,
-	[OpenInNewWindow] [bit] NOT NULL,
-	[DisplayOrder] [int] NOT NULL,
-	[IsEnabled] [bit] NOT NULL,
+	[ContentType] [nvarchar](25) NOT NULL,
+	[ContentCode] [nvarchar](2000) NULL
 PRIMARY KEY CLUSTERED 
 (
 	[Id] ASC
@@ -85,10 +82,10 @@ PRIMARY KEY CLUSTERED
 ) ON [PRIMARY]
 GO
 
-ALTER TABLE [WidgetLinkItem]  WITH CHECK ADD  CONSTRAINT [FK_WidgetLinkItem_Widget] FOREIGN KEY([WidgetId])
+ALTER TABLE [WidgetContent]  WITH CHECK ADD  CONSTRAINT [FK_WidgetContent_Widget] FOREIGN KEY([WidgetId])
 REFERENCES [Widget] ([Id])
 ON DELETE CASCADE
 GO
 
-ALTER TABLE [WidgetLinkItem] CHECK CONSTRAINT [FK_WidgetLinkItem_Widget]
+ALTER TABLE [WidgetContent] CHECK CONSTRAINT [FK_WidgetContent_Widget]
 GO
