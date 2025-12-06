@@ -17,7 +17,9 @@ public class UpdateWidgetCommandHandler(
         if (widget is null) return OperationCode.ObjectNotFound;
 
         widget.Title = request.Payload.Title.Trim();
-        // WidgetType is intentionally not updated - it's immutable after creation
+        widget.WidgetType = request.Payload.WidgetType;
+        widget.ContentType = WidgetContentType.JSON; // Currently only JSON is supported
+        widget.ContentCode = request.Payload.ContentCode.Trim();
         widget.DisplayOrder = request.Payload.DisplayOrder;
         widget.IsEnabled = request.Payload.IsEnabled;
 

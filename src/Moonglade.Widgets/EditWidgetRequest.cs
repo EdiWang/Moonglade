@@ -14,6 +14,9 @@ public class EditWidgetRequest
     [Display(Name = "Widget Type")]
     public WidgetType WidgetType { get; set; }
 
+    [MaxLength(2000)]
+    public string ContentCode { get; set; }
+
     [Display(Name = "Display Order")]
     public int DisplayOrder { get; set; }
 
