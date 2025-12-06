@@ -30,7 +30,7 @@ public class BlogDbContext : DbContext
     public virtual DbSet<BlogAssetEntity> BlogAsset { get; set; }
     public virtual DbSet<BlogConfigurationEntity> BlogConfiguration { get; set; }
     public virtual DbSet<WidgetEntity> Widget { get; set; }
-    public virtual DbSet<WidgetLinkItemEntity> WidgetLinkItem { get; set; }
+    public virtual DbSet<WidgetContentEntity> WidgetLinkItem { get; set; }
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {

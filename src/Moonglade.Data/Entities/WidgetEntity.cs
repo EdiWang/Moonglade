@@ -6,7 +6,7 @@ public class WidgetEntity
 {
     public WidgetEntity()
     {
-        LinkItems = new HashSet<WidgetLinkItemEntity>();
+        LinkItems = new HashSet<WidgetContentEntity>();
     }
 
     public Guid Id { get; set; }
@@ -17,5 +17,5 @@ public class WidgetEntity
     public DateTime CreatedTimeUtc { get; set; }
 
     [JsonIgnore]
-    public ICollection<WidgetLinkItemEntity> LinkItems { get; set; }
+    public ICollection<WidgetContentEntity> LinkItems { get; set; }
 }

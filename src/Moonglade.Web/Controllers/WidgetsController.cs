@@ -4,7 +4,6 @@ using Moonglade.Data.Entities;
 using Moonglade.Utils;
 using Moonglade.Web.Attributes;
 using Moonglade.Widgets;
-using Moonglade.Widgets.Types.LinkList;
 
 namespace Moonglade.Web.Controllers;
 
@@ -59,56 +58,6 @@ public class WidgetsController(
     public async Task<IActionResult> Delete([NotEmpty] Guid id)
     {
         await commandMediator.SendAsync(new DeleteWidgetCommand(id));
-        return NoContent();
-    }
-
-    #endregion
-
-    #region Widget Link Item CRUD Operations
-
-    [HttpPost("linkitem")]
-    [ProducesResponseType(StatusCodes.Status201Created)]
-    [ProducesResponseType(StatusCodes.Status404NotFound)]
-    public async Task<IActionResult> CreateLinkItem(EditWidgetLinkItemRequest request)
-    {
-        var result = await commandMediator.SendAsync(new CreateWidgetLinkItemCommand(request));
-
-        if (result == OperationCode.ObjectNotFound)
-        {
-            return NotFound($"Widget with ID {request.WidgetId} not found");
-        }
-
-        return Created();
-    }
-
-    [HttpGet("linkitem/list/{widgetId:guid}")]
-    [ProducesResponseType<List<WidgetLinkItemEntity>>(StatusCodes.Status200OK)]
-    public async Task<IActionResult> ListLinkItems([NotEmpty] Guid widgetId)
-    {
-        var list = await queryMediator.QueryAsync(new ListWidgetLinkItemsByWidgetIdQuery(widgetId));
-        return Ok(list);
-    }
-
-    [HttpPut("linkitem/{id:guid}")]
-    [ProducesResponseType(StatusCodes.Status204NoContent)]
-    [ProducesResponseType(StatusCodes.Status404NotFound)]
-    public async Task<IActionResult> UpdateLinkItem([NotEmpty] Guid id, EditWidgetLinkItemRequest request)
-    {
-        var result = await commandMediator.SendAsync(new UpdateWidgetLinkItemCommand(id, request));
-
-        if (result == OperationCode.ObjectNotFound)
-        {
-            return NotFound($"Widget link item with ID {id} not found");
-        }
-
-        return NoContent();
-    }
-
-    [HttpDelete("linkitem/{id:guid}")]
-    [ProducesResponseType(StatusCodes.Status204NoContent)]
-    public async Task<IActionResult> DeleteLinkItem([NotEmpty] Guid id)
-    {
-        await commandMediator.SendAsync(new DeleteWidgetLinkItemCommand(id));
         return NoContent();
     }
 

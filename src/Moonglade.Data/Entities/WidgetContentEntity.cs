@@ -2,16 +2,13 @@ using System.Text.Json.Serialization;
 
 namespace Moonglade.Data.Entities;
 
-public class WidgetLinkItemEntity
+public class WidgetContentEntity
 {
     public Guid Id { get; set; }
     public Guid WidgetId { get; set; }
     public string Title { get; set; }
-    public string Url { get; set; }
-    public string IconName { get; set; }
-    public bool OpenInNewWindow { get; set; }
-    public int DisplayOrder { get; set; }
-    public bool IsEnabled { get; set; }
+    public string ContentType { get; set; }
+    public string ContentCode { get; set; }
 
     [JsonIgnore]
     public WidgetEntity Widget { get; set; }

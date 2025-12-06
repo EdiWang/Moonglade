@@ -16,13 +16,13 @@ public class WidgetConfiguration : IEntityTypeConfiguration<WidgetEntity>
     }
 }
 
-public class WidgetLinkItemConfiguration : IEntityTypeConfiguration<WidgetLinkItemEntity>
+public class WidgetLinkItemConfiguration : IEntityTypeConfiguration<WidgetContentEntity>
 {
-    public void Configure(EntityTypeBuilder<WidgetLinkItemEntity> builder)
+    public void Configure(EntityTypeBuilder<WidgetContentEntity> builder)
     {
         builder.Property(e => e.Id).ValueGeneratedNever();
         builder.Property(e => e.Title).HasMaxLength(100);
-        builder.Property(e => e.Url).HasMaxLength(500);
-        builder.Property(e => e.IconName).HasMaxLength(50);
+        builder.Property(e => e.ContentType).HasMaxLength(25);
+        builder.Property(e => e.ContentCode).HasMaxLength(2000);
     }
 }
