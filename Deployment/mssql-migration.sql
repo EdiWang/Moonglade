@@ -72,7 +72,6 @@ GO
 CREATE TABLE [WidgetContent](
 	[Id] [uniqueidentifier] NOT NULL,
 	[WidgetId] [uniqueidentifier] NOT NULL,
-	[Title] [nvarchar](100) NOT NULL,
 	[ContentType] [nvarchar](25) NOT NULL,
 	[ContentCode] [nvarchar](2000) NULL
 PRIMARY KEY CLUSTERED 
