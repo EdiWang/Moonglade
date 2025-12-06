@@ -291,7 +291,7 @@ function buildLinkItem(link, index, totalCount) {
                             data-index="${index}" ${index === totalCount - 1 ? 'disabled' : ''}>
                         <i class="bi-arrow-down"></i>
                     </button>
-                    <button type="button" class="btn btn-outline-primary btn-edit-link" 
+                    <button type="button" class="btn btn-outline-accent btn-edit-link" 
                             data-index="${index}">
                         <i class="bi-pen"></i>
                     </button>
@@ -305,7 +305,7 @@ function buildLinkItem(link, index, totalCount) {
                 <div class="text-truncate">
                     ${iconHtml}<a href="${link.url}" target="_blank">${link.url}</a>
                 </div>
-                <div>${tabIcon} • Order: ${link.order}</div>
+                <div>${tabIcon} #${link.order}</div>
             </div>
         </div>
     `;
@@ -412,8 +412,8 @@ function createLinkDialog(link, isNew) {
                     ${buildLinkFormFields(link)}
                 </div>
                 <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
-                    <button type="button" class="btn btn-primary" id="btn-save-link">Save Link</button>
+                    <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Cancel</button>
+                    <button type="button" class="btn btn-outline-accent" id="btn-save-link">Save Link</button>
                 </div>
             </div>
         </div>
