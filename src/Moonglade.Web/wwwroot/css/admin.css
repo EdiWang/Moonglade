@@ -382,7 +382,6 @@ div.mce-fullscreen {
 }
 
 .mention-item-entry,
-.friendlink-entry,
 .admin-comment-entry,
 .admin-post-entry {
     background-color: var(--bs-white);
@@ -455,7 +454,6 @@ div.mce-fullscreen {
     }
 
 [data-bs-theme="dark"] .mention-item-entry,
-[data-bs-theme="dark"] .friendlink-entry,
 [data-bs-theme="dark"] .admin-comment-entry,
 [data-bs-theme="dark"] .admin-post-entry {
     background-color: var(--bs-body-bg);

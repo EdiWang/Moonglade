@@ -402,12 +402,6 @@
   <data name="Footer HTML code" xml:space="preserve">
     <value>Fussbereich HTML Code</value>
   </data>
-  <data name="Friend Link Information" xml:space="preserve">
-    <value>FriendLink Information</value>
-  </data>
-  <data name="Friend Link Options" xml:space="preserve">
-    <value>FriendLink Optionen</value>
-  </data>
   <data name="General" xml:space="preserve">
     <value>Allgemein</value>
   </data>
@@ -770,9 +764,6 @@
   </data>
   <data name="Include in feed and sitemap" xml:space="preserve">
     <value>Hinzufügen von Abonnements und Sitemaps</value>
-  </data>
-  <data name="Friend links" xml:space="preserve">
-    <value>Verknüpfungen</value>
   </data>
   <data name="How many tags to show on sidebar" xml:space="preserve">
     <value>In der Seitenleiste wird die Anzahl der Beschriftungen angezeigt</value>
