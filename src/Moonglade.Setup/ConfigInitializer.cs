@@ -50,7 +50,6 @@ public class ConfigInitializer(
         { nameof(CommentSettings), _ => CommentSettings.DefaultValue.ToJson() },
         { nameof(CustomMenuSettings), _ => CustomMenuSettings.DefaultValue.ToJson() },
         { nameof(LocalAccountSettings), _ => LocalAccountSettings.DefaultValue.ToJson() },
-        { nameof(SocialLinkSettings), _ => SocialLinkSettings.DefaultValue.ToJson() },
         { nameof(SystemManifestSettings), isNew => isNew ? SystemManifestSettings.DefaultValueNew.ToJson() : SystemManifestSettings.DefaultValue.ToJson() }
     };
 

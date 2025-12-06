@@ -996,12 +996,6 @@
   <data name="Confirm" xml:space="preserve">
     <value>確認する</value>
   </data>
-  <data name="Enable Social Links" xml:space="preserve">
-    <value>ソーシャルリンクを有効にする</value>
-  </data>
-  <data name="Social Links" xml:space="preserve">
-    <value>ソーシャルリンク</value>
-  </data>
   <data name="System Themes" xml:space="preserve">
     <value>システムテーマ</value>
   </data>

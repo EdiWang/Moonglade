@@ -33,7 +33,6 @@ public class BlogConfig : IBlogConfig
     public AppearanceSettings AppearanceSettings { get; set; } = new();
     public CustomMenuSettings CustomMenuSettings { get; set; } = new();
     public LocalAccountSettings LocalAccountSettings { get; set; } = new();
-    public SocialLinkSettings SocialLinkSettings { get; set; } = new();
     public SystemManifestSettings SystemManifestSettings { get; set; } = new();
 
     private readonly List<string> _keysToInit = [];
