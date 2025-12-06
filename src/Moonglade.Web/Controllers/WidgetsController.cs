@@ -10,8 +10,6 @@ namespace Moonglade.Web.Controllers;
 [Route("api/[controller]")]
 [ApiController]
 public class WidgetsController(
-    ICacheAside cache,
-    IConfiguration configuration,
     IQueryMediator queryMediator,
     ICommandMediator commandMediator) : ControllerBase
 {
@@ -32,15 +30,7 @@ public class WidgetsController(
     [ProducesResponseType<List<WidgetEntity>>(StatusCodes.Status200OK)]
     public async Task<IActionResult> List()
     {
-        var list = await cache.GetOrCreateAsync(BlogCachePartition.General.ToString(), "widgets", async p =>
-        {
-            var exp = int.Parse(configuration["WidgetCacheMinutes"]);
-            p.AbsoluteExpirationRelativeToNow = TimeSpan.FromMinutes(exp);
-
-            var data = await queryMediator.QueryAsync(new ListWidgetsQuery());
-            return data;
-        });
-
+        var list = await queryMediator.QueryAsync(new ListWidgetsQuery());
         return Ok(list);
     }
 
@@ -49,8 +39,6 @@ public class WidgetsController(
     public async Task<IActionResult> Create(EditWidgetRequest request)
     {
         await commandMediator.SendAsync(new CreateWidgetCommand(request));
-        cache.Remove(BlogCachePartition.General.ToString(), "widgets");
-
         return Created();
     }
 
@@ -59,8 +47,6 @@ public class WidgetsController(
     public async Task<IActionResult> Update([NotEmpty] Guid id, EditWidgetRequest request)
     {
         await commandMediator.SendAsync(new UpdateWidgetCommand(id, request));
-        cache.Remove(BlogCachePartition.General.ToString(), "widgets");
-
         return NoContent();
     }
 
@@ -69,8 +55,6 @@ public class WidgetsController(
     public async Task<IActionResult> Delete([NotEmpty] Guid id)
     {
         await commandMediator.SendAsync(new DeleteWidgetCommand(id));
-        cache.Remove(BlogCachePartition.General.ToString(), "widgets");
-
         return NoContent();
     }
 
