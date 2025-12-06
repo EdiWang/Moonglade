@@ -1,5 +1,3 @@
-using System.Text.Json.Serialization;
-
 namespace Moonglade.Data.Entities;
 
 public class WidgetEntity

@@ -1,5 +1,4 @@
 ﻿using LiteBus.Commands.Abstractions;
-using Moonglade.Data.Entities;
 using Moonglade.Widgets.Types;
 using System.Security.Cryptography;
 using System.Xml;
