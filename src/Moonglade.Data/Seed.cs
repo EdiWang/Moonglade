@@ -18,8 +18,8 @@ public class Seed
             logger.LogDebug("Adding tags data...");
             await dbContext.Tag.AddRangeAsync(GetTags());
 
-            logger.LogDebug("Adding friend links data...");
-            await dbContext.FriendLink.AddRangeAsync(GetFriendLinks());
+            logger.LogDebug("Adding widgets data...");
+            await dbContext.Widget.AddRangeAsync(GetWidgets());
 
             logger.LogDebug("Adding pages data...");
             await dbContext.CustomPage.AddRangeAsync(GetPages());
@@ -81,13 +81,18 @@ public class Seed
             new() { DisplayName = ".NET", NormalizedName = "dot-net" }
         ];
 
-    private static IEnumerable<FriendLinkEntity> GetFriendLinks() =>
+    private static IEnumerable<WidgetEntity> GetWidgets() =>
         [
             new()
             {
                 Id = Guid.NewGuid(),
-                Title = "Edi.Wang",
-                LinkUrl = "https://edi.wang"
+                Title = "Friend Links",
+                WidgetType = WidgetType.LinkList,
+                ContentCode = "[{\"name\": \"Edi Wang\", \"url\": \"https://edi.wang\", \"openInNewTab\": true, \"order\": 0}]",
+                ContentType = WidgetContentType.JSON,
+                CreatedTimeUtc = DateTime.UtcNow,
+                DisplayOrder = 0,
+                IsEnabled = true
             }
         ];
 
