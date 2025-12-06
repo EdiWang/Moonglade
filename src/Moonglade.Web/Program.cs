@@ -313,7 +313,7 @@ public class Program
 
         var options = new RewriteOptions().AddRedirect(@"(.*)/$", @"$1", (int)HttpStatusCode.MovedPermanently);
         app.UseRewriter(options);
-        app.UseStaticFiles();
+        app.MapStaticAssets();
         //app.UseCaptchaImage(p =>
         //{
         //    p.RequestPath = "/captcha-image";
@@ -331,7 +331,7 @@ public class Program
         });
 
         app.MapControllers();
-        app.MapRazorPages();
+        app.MapRazorPages().WithStaticAssets();
         app.MapGet("/robots.txt", RobotsTxtMapHandler.Handler);
 
         if (!string.IsNullOrWhiteSpace(app.Configuration["IndexNow:ApiKey"]))
