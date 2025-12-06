@@ -47,8 +47,8 @@ Change `ConnectionStrings:DatabaseProvider` in `appsettings.json` to match your 
 
 1. Build and run `./src/Moonglade.sln`
 2. Access your blog:
-    - **Home:** `https://localhost:17251`
-    - **Admin:** `https://localhost:17251/admin`
+    - **Home:** `https://localhost:10210`
+    - **Admin:** `https://localhost:10210/admin`
       - Default username: `admin`
       - Default password: `admin123`
 
