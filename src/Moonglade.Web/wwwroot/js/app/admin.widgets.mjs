@@ -11,21 +11,22 @@ async function loadWidgets() {
     
     widgets.forEach(widget => {
         const widgetEntry = document.createElement('div');
-        widgetEntry.className = 'widget-entry p-3 rounded-3 border mb-1';
+        widgetEntry.className = 'col-12 col-md-6 col-lg-4';
         widgetEntry.id = `tr-${widget.id}`;
         
         widgetEntry.innerHTML = `
-            <div class="row">
-                <div class="col">
-                    <h6>
+            <div class="widget-entry p-3 rounded-3 border h-100">
+                <div class="d-flex justify-content-between align-items-center h-100">
+                    <h6 class="mb-0">
                         ${widget.title}
                         ${!widget.isEnabled ? '<span class="badge bg-secondary ms-1">Disabled</span>' : ''}
                     </h6>
+                    <div class="gap-2">
+                        <a class="btn btn-sm btn-outline-accent btn-edit flex-fill" data-widgetid="${widget.id}"><i class="bi-pen"></i> Edit Properties</a>
+                        <a class="btn btn-sm btn-outline-danger btn-delete flex-fill" data-widgetid="${widget.id}"><i class="bi-trash"></i></a>
+                    </div>
                 </div>
-                <div class="col-auto">
-                    <a class="btn btn-sm btn-outline-accent btn-edit" data-widgetid="${widget.id}"><i class="bi-pen"></i></a>
-                    <a class="btn btn-sm btn-outline-danger btn-delete" data-widgetid="${widget.id}"><i class="bi-trash"></i></a>
-                </div>
+                <hr />
             </div>
         `;
         
