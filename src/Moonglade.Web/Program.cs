@@ -239,7 +239,7 @@ public class Program
         services.AddIndexNowClient(configuration.GetSection("IndexNow"));
         services.AddContentModerator(configuration);
 
-        if (configuration.GetValue<bool>("PostScheduler:Enabled"))
+        if (configuration.GetValue<bool>("PostScheduler"))
         {
             services.AddSingleton<ScheduledPublishWakeUp>();
             services.AddHostedService<ScheduledPublishService>();
