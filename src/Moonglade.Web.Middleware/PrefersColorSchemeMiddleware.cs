@@ -1,13 +1,12 @@
 ﻿using Microsoft.AspNetCore.Http;
-using Microsoft.Extensions.Configuration;
 
 namespace Moonglade.Web.Middleware;
 
 public class PrefersColorSchemeMiddleware(RequestDelegate next)
 {
-    public async Task InvokeAsync(HttpContext context, IConfiguration configuration)
+    public async Task InvokeAsync(HttpContext context)
     {
-        var headerName = configuration["PrefersColorSchemeHeader:HeaderName"];
+        var headerName = "Sec-CH-Prefers-Color-Scheme";
         if (string.IsNullOrWhiteSpace(headerName))
         {
             await next(context);
