@@ -10,6 +10,7 @@ namespace Moonglade.Web.Controllers;
 [Route("api/[controller]")]
 [ApiController]
 public class WidgetsController(
+    ICacheAside cache,
     IQueryMediator queryMediator,
     ICommandMediator commandMediator) : ControllerBase
 {
@@ -39,6 +40,8 @@ public class WidgetsController(
     public async Task<IActionResult> Create(EditWidgetRequest request)
     {
         await commandMediator.SendAsync(new CreateWidgetCommand(request));
+        cache.Remove(BlogCachePartition.General.ToString(), "widgets");
+
         return Created();
     }
 
@@ -47,6 +50,8 @@ public class WidgetsController(
     public async Task<IActionResult> Update([NotEmpty] Guid id, EditWidgetRequest request)
     {
         await commandMediator.SendAsync(new UpdateWidgetCommand(id, request));
+        cache.Remove(BlogCachePartition.General.ToString(), "widgets");
+
         return NoContent();
     }
 
@@ -55,6 +60,8 @@ public class WidgetsController(
     public async Task<IActionResult> Delete([NotEmpty] Guid id)
     {
         await commandMediator.SendAsync(new DeleteWidgetCommand(id));
+        cache.Remove(BlogCachePartition.General.ToString(), "widgets");
+
         return NoContent();
     }
 
