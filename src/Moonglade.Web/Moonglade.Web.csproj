@@ -38,8 +38,8 @@
 		<PackageReference Include="Edi.ImageWatermark" Version="2.22.0" />
 		<PackageReference Include="Edi.PasswordGenerator" Version="2.3.0" />
 		<PackageReference Include="LiteBus.Extensions.MicrosoftDependencyInjection" Version="3.1.0" />
-		<PackageReference Include="Microsoft.Extensions.Diagnostics.HealthChecks.EntityFrameworkCore" Version="10.0.0" />
-		<PackageReference Include="Microsoft.Extensions.Logging.AzureAppServices" Version="10.0.0" />
+		<PackageReference Include="Microsoft.Extensions.Diagnostics.HealthChecks.EntityFrameworkCore" Version="10.0.1" />
+		<PackageReference Include="Microsoft.Extensions.Logging.AzureAppServices" Version="10.0.1" />
 
 		<PackageReference Include="TinyMCE" Version="8.2.2" />
 		<PackageReference Include="Moonglade.MonacoEditor" Version="0.50.0.1002" />
