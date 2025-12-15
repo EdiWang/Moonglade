@@ -61,7 +61,7 @@ function buildWidgetHeader(widget) {
             <h6 class="mb-0">${widget.title}${statusBadge}</h6>
             <div class="gap-2">
                 <a class="btn btn-sm btn-outline-accent btn-edit flex-fill" data-widgetid="${widget.id}">
-                    <i class="bi-pen"></i> Edit Properties
+                    <i class="bi-pen"></i> Edit
                 </a>
                 <a class="btn btn-sm btn-outline-danger btn-delete flex-fill" data-widgetid="${widget.id}">
                     <i class="bi-trash"></i>
@@ -413,7 +413,7 @@ function createLinkDialog(link, isNew) {
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Cancel</button>
-                    <button type="button" class="btn btn-outline-accent" id="btn-save-link">Save Link</button>
+                    <button type="button" class="btn btn-outline-accent" id="btn-save-link">Save</button>
                 </div>
             </div>
         </div>
