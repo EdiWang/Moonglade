@@ -105,7 +105,6 @@ function Update-WebAppConfig($webAppName, $rsgName, $sqlConnStr, $storageConn, $
     az webapp config appsettings set -g $rsgName -n $webAppName --settings ImageStorage__Provider=azurestorage  | Out-Null
     az webapp config appsettings set -g $rsgName -n $webAppName --settings ImageStorage__AzureStorageSettings__ConnectionString=$scon | Out-Null
     az webapp config appsettings set -g $rsgName -n $webAppName --settings ImageStorage__AzureStorageSettings__ContainerName=$storageContainerName | Out-Null
-    az webapp config appsettings set -g $rsgName -n $webAppName --settings ForwardedHeaders__UseForwardedHeaders=true | Out-Null
     az webapp config appsettings set -g $rsgName -n $webAppName --settings ASPNETCORE_FORWARDEDHEADERS_ENABLED=true | Out-Null
 }
 
