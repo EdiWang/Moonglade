@@ -4,7 +4,7 @@
 @inject IOptions<ContentModeratorOptions> ModeratorOptions
 
 @section scripts {
-    <script type="module" src="~/js/app/admin.settings.comment.mjs" asp-append-version="true"></script>
+    <script type="module" src="~/js/app/admin.settings.comment.mjs"></script>
 }
 @{
     var settings = BlogConfig.CommentSettings;
@@ -168,7 +168,7 @@
                             {
                                 <text>Using local provider</text>
                             }
-                            else if (ModeratorOptions.Value.Provider.ToLowerInvariant() == "azure")
+                            else if (ModeratorOptions.Value.Provider.ToLowerInvariant() == "remote")
                             {
                                 if (!string.IsNullOrWhiteSpace(ModeratorOptions.Value.ApiEndpoint))
                                 {

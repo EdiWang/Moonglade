@@ -10,7 +10,7 @@
     var currentVersion = (new Version(asm!.GetCustomAttribute<AssemblyFileVersionAttribute>()?.Version)).ToString();
 }
 @section scripts {
-    <script type="module" src="~/js/app/admin.settings.advanced.mjs" asp-append-version="true"></script>
+    <script type="module" src="~/js/app/admin.settings.advanced.mjs"></script>
 }
 
 @section admintoolbar {

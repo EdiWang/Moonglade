@@ -12,8 +12,8 @@ public static class Helper
     public static bool UseServerSideDarkMode(IConfiguration configuration, HttpContext context)
     {
         bool useServerSideDarkMode = false;
-        bool usePrefersColorSchemeHeader = configuration.GetValue<bool>("PrefersColorSchemeHeader:Enabled");
-        var prefersColorScheme = context.Request.Headers[configuration["PrefersColorSchemeHeader:HeaderName"]!];
+        bool usePrefersColorSchemeHeader = configuration.GetValue<bool>("PrefersColorSchemeHeader");
+        var prefersColorScheme = context.Request.Headers["Sec-CH-Prefers-Color-Scheme"];
         if (usePrefersColorSchemeHeader && prefersColorScheme == "dark")
         {
             useServerSideDarkMode = true;

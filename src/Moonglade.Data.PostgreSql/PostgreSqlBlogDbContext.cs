@@ -2,6 +2,7 @@
 using Moonglade.Data.PostgreSql.Configurations;
 
 namespace Moonglade.Data.PostgreSql;
+
 public class PostgreSqlBlogDbContext : BlogDbContext
 {
     public PostgreSqlBlogDbContext()
@@ -26,6 +27,7 @@ public class PostgreSqlBlogDbContext : BlogDbContext
         modelBuilder.ApplyConfiguration(new StyleSheetConfiguration());
         modelBuilder.ApplyConfiguration(new BlogConfigurationConfiguration());
         modelBuilder.ApplyConfiguration(new PageConfiguration());
+        modelBuilder.ApplyConfiguration(new WidgetConfiguration());
 
         base.OnModelCreating(modelBuilder);
     }

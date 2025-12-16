@@ -15,7 +15,6 @@ public interface IBlogConfig
     AppearanceSettings AppearanceSettings { get; set; }
     CustomMenuSettings CustomMenuSettings { get; set; }
     LocalAccountSettings LocalAccountSettings { get; set; }
-    SocialLinkSettings SocialLinkSettings { get; set; }
     SystemManifestSettings SystemManifestSettings { get; set; }
 
     IEnumerable<string> LoadFromConfig(IDictionary<string, string> config);
@@ -34,7 +33,6 @@ public class BlogConfig : IBlogConfig
     public AppearanceSettings AppearanceSettings { get; set; } = new();
     public CustomMenuSettings CustomMenuSettings { get; set; } = new();
     public LocalAccountSettings LocalAccountSettings { get; set; } = new();
-    public SocialLinkSettings SocialLinkSettings { get; set; } = new();
     public SystemManifestSettings SystemManifestSettings { get; set; } = new();
 
     private readonly List<string> _keysToInit = [];

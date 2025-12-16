@@ -49,8 +49,8 @@
 }
 
 @section head {
-    <link href="~/css/post.css" rel="stylesheet" asp-append-version="true" />
-    <link href="~/css/highlighter-custom.css" rel="stylesheet" asp-append-version="true" />
+    <link href="~/css/post.css" rel="stylesheet" />
+    <link href="~/css/highlighter-custom.css" rel="stylesheet" />
     @if (BlogConfig.ContentSettings.DocumentOutline)
     {
         <link href="~/css/outline.css" rel="stylesheet" />
@@ -69,7 +69,7 @@
 }
 
 @section scripts {
-    <script src="~/js/3rd/highlight.min.js" asp-append-version="true"></script>
+    <script src="~/js/3rd/highlight.min.js"></script>
     <script src="~/js/3rd/katex.min.js"></script>
 
     @if (BlogConfig.ContentSettings.DocumentOutline)
@@ -85,10 +85,10 @@
         </script>
     }
 
-    <script type="module" src="~/js/app/post.mjs" asp-append-version="true"></script>
+    <script type="module" src="~/js/app/post.mjs"></script>
     @if (BlogConfig.AdvancedSettings.WarnExternalLink)
     {
-        <script type="module" src="~/js/app/externalLinkWarning.mjs" asp-append-version="true"></script>
+        <script type="module" src="~/js/app/externalLinkWarning.mjs"></script>
     }
 }
 

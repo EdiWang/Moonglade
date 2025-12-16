@@ -27,6 +27,7 @@ public class MySqlBlogDbContext : BlogDbContext
         modelBuilder.ApplyConfiguration(new StyleSheetConfiguration());
         modelBuilder.ApplyConfiguration(new BlogConfigurationConfiguration());
         modelBuilder.ApplyConfiguration(new PageConfiguration());
+        modelBuilder.ApplyConfiguration(new WidgetConfiguration());
 
         base.OnModelCreating(modelBuilder);
     }

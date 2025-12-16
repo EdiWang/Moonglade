@@ -11,6 +11,4 @@ public class ImageStorageSettings
     public string FileSystemPath { get; set; }
 
     public AzureStorageSettings AzureStorageSettings { get; set; }
-
-    public MinioStorageSettings MinioStorageSettings { get; set; }
 }

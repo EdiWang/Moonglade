@@ -64,7 +64,8 @@ public class Program
             "Moonglade.Syndication",
             "Moonglade.Theme",
             "Moonglade.Data",
-            "Moonglade.Configuration"
+            "Moonglade.Configuration",
+            "Moonglade.Widgets"
         };
 
         foreach (var assembly in assemblies)
@@ -238,7 +239,7 @@ public class Program
         services.AddIndexNowClient(configuration.GetSection("IndexNow"));
         services.AddContentModerator(configuration);
 
-        if (configuration.GetValue<bool>("PostScheduler:Enabled"))
+        if (configuration.GetValue<bool>("PostScheduler"))
         {
             services.AddSingleton<ScheduledPublishWakeUp>();
             services.AddHostedService<ScheduledPublishService>();
@@ -289,7 +290,7 @@ public class Program
             options.IconFilePath = "/favicon-16x16.png";
         });
 
-        bool usePrefersColorSchemeHeader = app.Configuration.GetValue<bool>("PrefersColorSchemeHeader:Enabled");
+        bool usePrefersColorSchemeHeader = app.Configuration.GetValue<bool>("PrefersColorSchemeHeader");
         if (usePrefersColorSchemeHeader) app.UseMiddleware<PrefersColorSchemeMiddleware>();
 
         app.UseMiddleware<PoweredByMiddleware>();
@@ -313,7 +314,7 @@ public class Program
 
         var options = new RewriteOptions().AddRedirect(@"(.*)/$", @"$1", (int)HttpStatusCode.MovedPermanently);
         app.UseRewriter(options);
-        app.UseStaticFiles();
+        app.MapStaticAssets();
         //app.UseCaptchaImage(p =>
         //{
         //    p.RequestPath = "/captcha-image";
@@ -331,7 +332,7 @@ public class Program
         });
 
         app.MapControllers();
-        app.MapRazorPages();
+        app.MapRazorPages().WithStaticAssets();
         app.MapGet("/robots.txt", RobotsTxtMapHandler.Handler);
 
         if (!string.IsNullOrWhiteSpace(app.Configuration["IndexNow:ApiKey"]))

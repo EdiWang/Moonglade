@@ -24,8 +24,8 @@ This mirrors how [edi.wang](https://edi.wang) is deployed, utilizing a variety o
 
 | Tools                      | Alternatives                                                                                       |
 |----------------------------|----------------------------------------------------------------------------------------------------|
-| [Visual Studio 2022](https://visualstudio.microsoft.com/) | [VS Code](https://code.visualstudio.com/) + [.NET 8.0 SDK](http://dot.net)           |
-| [SQL Server 2022](https://www.microsoft.com/en-us/sql-server/sql-server-2022) | [LocalDB](https://learn.microsoft.com/en-us/sql/database-engine/configure-windows/sql-server-express-localdb?view=sql-server-ver16&WT.mc_id=AZ-MVP-5002809), PostgreSQL, or MySQL |
+| [Visual Studio 2026](https://visualstudio.microsoft.com/) | [VS Code](https://code.visualstudio.com/) + [.NET 10.0 SDK](http://dot.net)           |
+| [SQL Server 2025](https://www.microsoft.com/en-us/sql-server/) | [LocalDB](https://learn.microsoft.com/en-us/sql/database-engine/configure-windows/sql-server-express-localdb?view=sql-server-ver16&WT.mc_id=AZ-MVP-5002809), PostgreSQL, or MySQL |
 
 ### Database Setup
 
@@ -47,8 +47,8 @@ Change `ConnectionStrings:DatabaseProvider` in `appsettings.json` to match your 
 
 1. Build and run `./src/Moonglade.sln`
 2. Access your blog:
-    - **Home:** `https://localhost:17251`
-    - **Admin:** `https://localhost:17251/admin`
+    - **Home:** `https://localhost:10210`
+    - **Admin:** `https://localhost:10210/admin`
       - Default username: `admin`
       - Default password: `admin123`
 
@@ -92,23 +92,6 @@ Create an [Azure Blob Storage](https://azure.microsoft.com/en-us/services/storag
 ```
 - Enable CDN in admin settings for faster image delivery.
 
-#### **MinIO Blob Storage**
-
-Set up a [MinIO Server](https://docs.min.io/):
-
-```json
-{
-  "Provider": "miniostorage",
-  "MinioStorageSettings": {
-    "EndPoint": "localhost:9600",
-    "AccessKey": "YOUR_ACCESS_KEY",
-    "SecretKey": "YOUR_SECRET_KEY",
-    "BucketName": "YOUR_BUCKET_NAME",
-    "WithSSL": false
-  }
-}
-```
-
 #### **File System** (Not recommended)
 
 Windows:
@@ -145,17 +128,20 @@ For basic keyword filtering, use the built-in local provider:
 }
 ```
 
-#### Azure Content Moderator
+#### Remote Content Moderator
 
-Setup [Moonglade.ContentSecurity Azure Function](https://github.com/EdiWang/Moonglade.ContentSecurity):
+e.g. [Moonglade.ContentSecurity Azure Function](https://github.com/EdiWang/Moonglade.ContentSecurity):
 
 ```json
 "ContentModerator": {
-  "Provider": "Azure",
+  "Provider": "remote",
   "ApiEndpoint": "<Your Azure Function Endpoint>",
-  "ApiKey": "<Your Azure Function Key>"
+  "ApiKey": "<Your Azure Function Key>",
+  "ApiKeyHeader": "x-functions-key"
 }
 ```
+
+Note: You can also implement your own content moderation API by mimicking the interface of Moonglade.ContentSecurity. You are not limited to Azure!
 
 ### Email Notifications
 

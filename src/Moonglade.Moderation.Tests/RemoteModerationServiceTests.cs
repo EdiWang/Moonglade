@@ -292,7 +292,7 @@ public class RemoteModerationServiceTests
             Content = new StringContent(responseJson, System.Text.Encoding.UTF8, "application/json")
         };
 
-        HttpRequestMessage? capturedRequest = null;
+        HttpRequestMessage capturedRequest = null;
         _mockHttpMessageHandler
             .Protected()
             .Setup<Task<HttpResponseMessage>>(
@@ -548,7 +548,7 @@ public class RemoteModerationServiceTests
             Content = new StringContent(responseJson, System.Text.Encoding.UTF8, "application/json")
         };
 
-        HttpRequestMessage? capturedRequest = null;
+        HttpRequestMessage capturedRequest = null;
         _mockHttpMessageHandler
             .Protected()
             .Setup<Task<HttpResponseMessage>>(
@@ -599,7 +599,7 @@ public class RemoteModerationServiceTests
             Content = new StringContent(responseJson, System.Text.Encoding.UTF8, "application/json")
         };
 
-        HttpRequestMessage? capturedRequest = null;
+        HttpRequestMessage capturedRequest = null;
         _mockHttpMessageHandler
             .Protected()
             .Setup<Task<HttpResponseMessage>>(
@@ -713,7 +713,7 @@ public class RemoteModerationServiceTests
 
     #region Helper Methods
 
-    private void VerifyErrorLogging(string expectedMessage, Exception? expectedException = null)
+    private void VerifyErrorLogging(string expectedMessage, Exception expectedException = null)
     {
         if (expectedException != null)
         {
@@ -723,7 +723,7 @@ public class RemoteModerationServiceTests
                     It.IsAny<EventId>(),
                     It.Is<It.IsAnyType>((v, t) => v.ToString()!.Contains(expectedMessage)),
                     It.Is<Exception>(ex => ex == expectedException),
-                    It.IsAny<Func<It.IsAnyType, Exception?, string>>()),
+                    It.IsAny<Func<It.IsAnyType, Exception, string>>()),
                 Times.Once);
         }
         else
@@ -747,11 +747,5 @@ public class RemoteModerationServiceTests
         {
             _httpClient?.Dispose();
         }
-    }
-
-    public void Dispose()
-    {
-        Dispose(true);
-        GC.SuppressFinalize(this);
     }
 }

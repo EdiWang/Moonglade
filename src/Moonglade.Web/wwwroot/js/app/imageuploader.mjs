@@ -1,4 +1,4 @@
-﻿import { fetch2 } from './httpService.mjs?v=1427'
+﻿import { fetch2 } from './httpService.mjs?v=1500'
 import { success, error } from './toastService.mjs'
 
 export class ImageUploader {

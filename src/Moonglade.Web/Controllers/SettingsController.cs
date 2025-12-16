@@ -142,59 +142,6 @@ public class SettingsController(
         return NoContent();
     }
 
-    [HttpPost("social-link")]
-    [ProducesResponseType(StatusCodes.Status204NoContent)]
-    public async Task<IActionResult> SocialLink(SocialLinkSettingsJsonModel model)
-    {
-        if (model.IsEnabled && string.IsNullOrWhiteSpace(model.JsonData))
-        {
-            ModelState.AddModelError(nameof(SocialLinkSettingsJsonModel.JsonData), "JsonData is required");
-            return BadRequest(ModelState.GetCombinedErrorMessage());
-        }
-
-        var links = model.JsonData.FromJson<SocialLink[]>();
-
-        // Check each link, if any link is invalid, return BadRequest
-        foreach (var link in links)
-        {
-            if (string.IsNullOrWhiteSpace(link.Name))
-            {
-                ModelState.AddModelError($"{nameof(Moonglade.Configuration.SocialLink)}.{nameof(Moonglade.Configuration.SocialLink.Name)}", "Name is required");
-                return BadRequest(ModelState.GetCombinedErrorMessage());
-            }
-
-            if (string.IsNullOrWhiteSpace(link.Icon))
-            {
-                ModelState.AddModelError($"{nameof(Moonglade.Configuration.SocialLink)}.{nameof(Moonglade.Configuration.SocialLink.Icon)}", "Icon is required");
-                return BadRequest(ModelState.GetCombinedErrorMessage());
-            }
-
-            if (string.IsNullOrWhiteSpace(link.Url))
-            {
-                ModelState.AddModelError($"{nameof(Moonglade.Configuration.SocialLink)}.{nameof(Moonglade.Configuration.SocialLink.Url)}", "Url is required");
-                return BadRequest(ModelState.GetCombinedErrorMessage());
-            }
-
-            if (!Uri.TryCreate(link.Url, UriKind.Absolute, out _))
-            {
-                ModelState.AddModelError($"{nameof(Moonglade.Configuration.SocialLink)}.{nameof(Moonglade.Configuration.SocialLink.Url)}", "Url is invalid");
-                return BadRequest(ModelState.GetCombinedErrorMessage());
-            }
-
-            // Sterilize
-            link.Url = SecurityHelper.SterilizeLink(link.Url);
-        }
-
-        blogConfig.SocialLinkSettings = new()
-        {
-            IsEnabled = model.IsEnabled,
-            Links = links
-        };
-
-        await SaveConfigAsync(blogConfig.SocialLinkSettings);
-        return NoContent();
-    }
-
     [HttpPost("appearance")]
     [ProducesResponseType(StatusCodes.Status204NoContent)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]

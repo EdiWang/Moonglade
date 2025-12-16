@@ -21,12 +21,12 @@
     @await RenderSectionAsync("meta", false)
     <link rel="start" title="@BlogConfig.GeneralSettings.SiteTitle" href="~/" />
     <partial name="_Favicons" />
-    <link href="~/lib/twitter-bootstrap/css/bootstrap.min.css" rel="stylesheet" asp-append-version="true" />
-    <link href="~/lib/bootstrap-icons/bootstrap-icons.min.css" rel="stylesheet" asp-append-version="true" />
+    <link href="~/lib/twitter-bootstrap/css/bootstrap.min.css" rel="stylesheet" />
+    <link href="~/lib/bootstrap-icons/bootstrap-icons.min.css" rel="stylesheet" />
     <link href="~/fonts/font.css" rel="stylesheet" />
-    <link href="~/css/base.css" rel="stylesheet" asp-append-version="true" />
-    <link href="~/css/rwd.css" rel="stylesheet" asp-append-version="true" />
-    <link href="~/css/admin.css" rel="stylesheet" asp-append-version="true" />
+    <link href="~/css/base.css" rel="stylesheet" />
+    <link href="~/css/rwd.css" rel="stylesheet" />
+    <link href="~/css/admin.css" rel="stylesheet" />
     <link href="~/theme.css" rel="stylesheet" />
     @await RenderSectionAsync("head", false)
 </head>
@@ -96,8 +96,8 @@
 
     <partial name="_Toast" />
 
-    <script src="~/lib/twitter-bootstrap/js/bootstrap.bundle.min.js" asp-append-version="true"></script>
-    <script type="module" src="~/js/app/base.mjs" asp-append-version="true"></script>
+    <script src="~/lib/twitter-bootstrap/js/bootstrap.bundle.min.js"></script>
+    <script type="module" src="~/js/app/base.mjs"></script>
 
     @await RenderSectionAsync("scripts", false)
 </body>

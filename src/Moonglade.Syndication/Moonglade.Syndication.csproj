@@ -1,7 +1,7 @@
 <Project Sdk="Microsoft.NET.Sdk">
     <PropertyGroup>
         <OutputType>Library</OutputType>
-        <TargetFramework>net8.0</TargetFramework>
+        <TargetFramework>net10.0</TargetFramework>
         <AssemblyName>Moonglade.Syndication</AssemblyName>
         <RootNamespace>Moonglade.Syndication</RootNamespace>
         <IsTestProject>false</IsTestProject>
@@ -9,7 +9,7 @@
         <ImplicitUsings>enable</ImplicitUsings>
     </PropertyGroup>
     <ItemGroup>
-        <PackageReference Include="Edi.SyndicationFeed.ReaderWriter" Version="2.4.1" />
+        <PackageReference Include="Edi.SyndicationFeed.ReaderWriter" Version="2.5.0" />
     </ItemGroup>
     <ItemGroup>
         <FrameworkReference Include="Microsoft.AspNetCore.App" />

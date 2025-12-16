@@ -1,4 +1,4 @@
-import { fetch2 } from './httpService.mjs?v=1427'
+import { fetch2 } from './httpService.mjs?v=1500'
 import { formatUtcTime } from '/js/app/utils.module.mjs'
 
 document.querySelectorAll('.btn-delete').forEach(button => {

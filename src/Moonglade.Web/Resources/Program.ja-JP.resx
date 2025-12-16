@@ -402,12 +402,6 @@
   <data name="Footer HTML code" xml:space="preserve">
     <value>フッター HTML エリア</value>
   </data>
-  <data name="Friend Link Information" xml:space="preserve">
-    <value>友情リンク情報</value>
-  </data>
-  <data name="Friend Link Options" xml:space="preserve">
-    <value>アフィリエイトリンクオプション</value>
-  </data>
   <data name="General" xml:space="preserve">
     <value>ルーチン</value>
   </data>
@@ -771,9 +765,6 @@
   <data name="Include in feed and sitemap" xml:space="preserve">
     <value>サブスクリプションとサイトマップを追加する</value>
   </data>
-  <data name="Friend links" xml:space="preserve">
-    <value>リンクス</value>
-  </data>
   <data name="How many tags to show on sidebar" xml:space="preserve">
     <value>サイドバーにはラベルの数が表示されます</value>
   </data>
@@ -1004,12 +995,6 @@
   </data>
   <data name="Confirm" xml:space="preserve">
     <value>確認する</value>
-  </data>
-  <data name="Enable Social Links" xml:space="preserve">
-    <value>ソーシャルリンクを有効にする</value>
-  </data>
-  <data name="Social Links" xml:space="preserve">
-    <value>ソーシャルリンク</value>
   </data>
   <data name="System Themes" xml:space="preserve">
     <value>システムテーマ</value>

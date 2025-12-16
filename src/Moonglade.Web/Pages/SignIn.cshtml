@@ -15,12 +15,12 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no" />
     <partial name="_Favicons" />
-    <link href="~/lib/twitter-bootstrap/css/bootstrap.min.css" rel="stylesheet" asp-append-version="true" />
-    <link href="~/css/base.css" rel="stylesheet" asp-append-version="true" />
-    <link href="~/theme.css" rel="stylesheet" asp-append-version="true" />
+    <link href="~/lib/twitter-bootstrap/css/bootstrap.min.css" rel="stylesheet" />
+    <link href="~/css/base.css" rel="stylesheet" />
+    <link href="~/theme.css" rel="stylesheet" />
     @if (BlogConfig.AppearanceSettings.EnableCustomCss)
     {
-        <link href="~/custom.css" rel="stylesheet" asp-append-version="true" />
+        <link href="~/custom.css" rel="stylesheet" />
     }
     <style>
         main {
@@ -81,7 +81,7 @@
             </div>
         </main>
     </div>
-    <script type="module" src="~/js/app/base.mjs" asp-append-version="true"></script>
+    <script type="module" src="~/js/app/base.mjs"></script>
     <script type="module">
         import { resetCaptchaImage, showCaptcha } from '/js/app/captchaService.mjs';
 

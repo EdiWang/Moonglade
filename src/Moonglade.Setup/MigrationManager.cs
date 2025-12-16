@@ -232,9 +232,9 @@ public partial class MigrationManager(
     {
         return provider switch
         {
-            "Microsoft.EntityFrameworkCore.SqlServer" => configuration["Setup:DatabaseMigrationScript:SqlServer"],
-            "Pomelo.EntityFrameworkCore.MySql" => configuration["Setup:DatabaseMigrationScript:MySql"],
-            "Npgsql.EntityFrameworkCore.PostgreSQL" => configuration["Setup:DatabaseMigrationScript:PostgreSql"],
+            "Microsoft.EntityFrameworkCore.SqlServer" => "https://raw.githubusercontent.com/EdiWang/Moonglade/release/Deployment/mssql-migration.sql",
+            "Pomelo.EntityFrameworkCore.MySql" => string.Empty,
+            "Npgsql.EntityFrameworkCore.PostgreSQL" => string.Empty,
             _ => null
         };
     }
