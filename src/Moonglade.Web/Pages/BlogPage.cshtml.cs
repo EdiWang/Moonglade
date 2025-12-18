@@ -15,7 +15,7 @@ public class BlogPageModel(IQueryMediator queryMediator, ICacheAside cache, ICon
 
         var page = await cache.GetOrCreateAsync(BlogCachePartition.Page.ToString(), slug.ToLower(), async entry =>
         {
-            entry.SlidingExpiration = TimeSpan.FromMinutes(int.Parse(configuration["Page:CacheMinutes"]!));
+            entry.SlidingExpiration = TimeSpan.FromMinutes(int.Parse(configuration["PagesCacheMinutes"]!));
 
             var p = await queryMediator.QueryAsync(new GetPageBySlugQuery(slug));
             return p;
@@ -25,7 +25,7 @@ public class BlogPageModel(IQueryMediator queryMediator, ICacheAside cache, ICon
 
         BlogPage = page;
 
-        if (page.UpdateTimeUtc.HasValue && bool.Parse(configuration["Page:LastModifiedHeader"]!))
+        if (page.UpdateTimeUtc.HasValue)
         {
             Response.Headers.LastModified = page.UpdateTimeUtc.Value.ToString("R");
 
