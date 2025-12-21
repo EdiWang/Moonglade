@@ -1,6 +1,5 @@
 ﻿using LiteBus.Commands.Abstractions;
 using Moonglade.Features.Post;
-using Moonglade.Web.Attributes;
 
 namespace Moonglade.Web.Controllers;
 

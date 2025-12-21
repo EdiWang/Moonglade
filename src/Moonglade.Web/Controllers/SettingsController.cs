@@ -1,5 +1,4 @@
-﻿using Edi.AspNetCore.Utils;
-using Edi.PasswordGenerator;
+﻿using Edi.PasswordGenerator;
 using LiteBus.Commands.Abstractions;
 using LiteBus.Events.Abstractions;
 using LiteBus.Queries.Abstractions;

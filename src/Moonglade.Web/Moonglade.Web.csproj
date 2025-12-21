@@ -12,6 +12,7 @@
 		<Using Include="Microsoft.AspNetCore.Mvc" />
 		<Using Include="Microsoft.AspNetCore.Authorization" />
 		<Using Include="Edi.CacheAside.InMemory" />
+		<Using Include="Edi.AspNetCore.Utils" />
 		<Using Include="Moonglade.Web" />
 		<Using Include="Moonglade.Web.Configuration" />
 		<Using Include="Moonglade.Web.Filters" />

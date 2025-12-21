@@ -1,4 +1,3 @@
-using Edi.AspNetCore.Utils;
 using Edi.Captcha;
 using LiteBus.Commands.Abstractions;
 using Microsoft.AspNetCore.Authentication;

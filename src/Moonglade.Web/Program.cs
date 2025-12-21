@@ -1,4 +1,3 @@
-using Edi.AspNetCore.Utils;
 using Edi.Captcha;
 using Edi.PasswordGenerator;
 using LiteBus.Commands;
