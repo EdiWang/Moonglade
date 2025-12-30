@@ -1,5 +1,6 @@
 ﻿@page "/admin/about"
 @using System.Diagnostics
+@using System.Globalization
 @using Edi.AspNetCore.Utils
 @using Moonglade.Utils
 @inject IWebHostEnvironment WebHostEnvironment
@@ -7,7 +8,23 @@
 
 @{
     var process = Process.GetCurrentProcess();
-    ViewData["Title"] = SharedLocalizer["About"];
+    var workingSetMb = (process.WorkingSet64 / 1024d / 1024d).ToString("F2", CultureInfo.InvariantCulture);
+
+    var environmentName = Html.Encode(WebHostEnvironment.EnvironmentName);
+    var forwardedHeadersEnabled = Html.Encode(Configuration["ForwardedHeaders:Enabled"] ?? "false");
+    var forwardedHeadersName = Html.Encode(Configuration["ForwardedHeaders:HeaderName"] ?? "Not Set");
+    var clientIp = Html.Encode(HttpContext.Connection.RemoteIpAddress?.ToString() ?? "Unknown");
+
+    var currentDirectory = Html.Encode(Environment.CurrentDirectory);
+    var machineName = Html.Encode(Environment.MachineName);
+    var userName = Html.Encode($"{Environment.UserDomainName}\\{Environment.UserName}");
+    var timeZone = Html.Encode(TimeZoneInfo.Local.Id);
+    var aspNetCoreEnv = Html.Encode(Environment.GetEnvironmentVariable("ASPNETCORE_ENVIRONMENT") ?? "Not Set");
+
+    var isAzureAppService = EnvironmentHelper.IsRunningOnAzureAppService();
+    var azureFdId = Request.Headers.ContainsKey("X-Azure-FDID")
+        ? Html.Encode(Request.Headers["X-Azure-FDID"].ToString())
+        : null;
 }
 
 @section head {
@@ -47,7 +64,7 @@
                     </tr>
                     <tr>
                         <td>@SharedLocalizer["Environment"]</td>
-                        <td class="text-muted info-value">@Html.Encode(WebHostEnvironment.EnvironmentName)</td>
+                        <td class="text-muted info-value">@environmentName</td>
                     </tr>
                     <tr>
                         <td>@SharedLocalizer["Editor"]</td>
@@ -56,12 +73,12 @@
                     <tr>
                         <td>@SharedLocalizer["Forwarded Headers"]</td>
                         <td class="text-muted info-value">
-                            @Html.Encode(Configuration["ForwardedHeaders:Enabled"]): @Html.Encode(Configuration["ForwardedHeaders:HeaderName"])
+                            @forwardedHeadersEnabled: @forwardedHeadersName
                         </td>
                     </tr>
                     <tr>
                         <td>@SharedLocalizer["Client IP Address"]</td>
-                        <td class="text-muted info-value">@Html.Encode(HttpContext.Connection.RemoteIpAddress?.ToString() ?? "Unknown")</td>
+                        <td class="text-muted info-value">@clientIp</td>
                     </tr>
                 </tbody>
             </table>
@@ -84,19 +101,19 @@
                     </tr>
                     <tr>
                         <td>@SharedLocalizer["Directory"]</td>
-                        <td class="text-muted info-value">@Html.Encode(Environment.CurrentDirectory)</td>
+                        <td class="text-muted info-value">@currentDirectory</td>
                     </tr>
                     <tr>
                         <td>@SharedLocalizer["Machine Name"]</td>
-                        <td class="text-muted info-value">@Html.Encode(Environment.MachineName)</td>
+                        <td class="text-muted info-value">@machineName</td>
                     </tr>
                     <tr>
                         <td>@SharedLocalizer["User Name"]</td>
-                        <td class="text-muted info-value">@Html.Encode($"{Environment.UserDomainName}\\{Environment.UserName}")</td>
+                        <td class="text-muted info-value">@userName</td>
                     </tr>
                     <tr>
                         <td>@SharedLocalizer["Server Time Zone"]</td>
-                        <td class="text-muted info-value">@Html.Encode(TimeZoneInfo.Local.Id)</td>
+                        <td class="text-muted info-value">@timeZone</td>
                     </tr>
                     <tr>
                         <td>@SharedLocalizer[".NET Version"]</td>
@@ -104,7 +121,7 @@
                     </tr>
                     <tr>
                         <td>@SharedLocalizer["ASP.NET Core Environment"]</td>
-                        <td class="text-muted info-value">@Html.Encode(Environment.GetEnvironmentVariable("ASPNETCORE_ENVIRONMENT") ?? "Not Set")</td>
+                        <td class="text-muted info-value">@aspNetCoreEnv</td>
                     </tr>
                     <tr>
                         <td>@SharedLocalizer["Worker Process"]</td>
@@ -118,16 +135,14 @@
                     </tr>
                     <tr>
                         <td>@SharedLocalizer["Memory"]</td>
-                        <td class="text-muted info-value memory-usage">
-                            @((process.WorkingSet64 / 1024.0 / 1024.0).ToString("F2")) MB
-                        </td>
+                        <td class="text-muted info-value memory-usage">@workingSetMb MB</td>
                     </tr>
                     <tr>
                         <td>@SharedLocalizer["Docker Container"]</td>
                         <td class="text-muted info-value">@EnvironmentHelper.IsRunningInDocker()</td>
                     </tr>
 
-                    @if (EnvironmentHelper.IsRunningOnAzureAppService())
+                    @if (isAzureAppService)
                     {
                         <tr>
                             <td>@SharedLocalizer["Azure App Service"]</td>
@@ -140,12 +155,12 @@
                         </tr>
                     }
 
-                    @if (Request.Headers.ContainsKey("X-Azure-FDID"))
+                    @if (!string.IsNullOrWhiteSpace(azureFdId))
                     {
                         <tr>
                             <td>@SharedLocalizer["Azure Front Door"]</td>
                             <td class="text-muted info-value">
-                                X-Azure-FDID: <code>@Html.Encode(Request.Headers["X-Azure-FDID"].ToString())</code>
+                                X-Azure-FDID: <code>@azureFdId</code>
                             </td>
                         </tr>
                     }
