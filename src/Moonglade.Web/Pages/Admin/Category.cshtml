@@ -1,6 +1,5 @@
 ﻿@page "/admin/category"
 @using Microsoft.AspNetCore.Mvc.TagHelpers
-@using Moonglade.Data.Entities
 @using Moonglade.Features.Category
 @{
     ViewBag.Title = "Categories";
@@ -21,32 +20,16 @@
 
 @Html.AntiForgeryToken()
 
-<div class="row row-cols-1 row-cols-sm-2 row-cols-md-3 row-cols-lg-4 g-4">
-    @foreach (var cat in Categories.OrderBy(m => m.DisplayName))
-    {
-        <div class="col">
-            <div class="card shadow-sm" id="card-@cat.Id">
-                <div class="card-body">
-                    <h6 class="card-title">
-                        <a asp-page="/CategoryList" asp-route-slug="@cat.Slug" target="_blank">
-                            @cat.DisplayName
-                        </a>
-                    </h6>
-
-                    <p class="mt-2 h-30px">
-                        @cat.Note
-                    </p>
-
-                    <small class="text-muted">@cat.Slug</small>
-                </div>
-                <div class="card-footer">
-                    <a class="btn btn-sm btn-outline-accent btn-edit" data-catid="@cat.Id"><i class="bi-pen"></i></a>
-                    <a class="btn btn-sm btn-outline-danger btn-delete" data-catid="@cat.Id"><i class="bi-trash"></i></a>
-                </div>
-            </div>
-        </div>
-    }
+<div id="category-loading" class="d-flex align-items-center text-muted mb-3">
+    <div class="spinner-border spinner-border-sm me-2" role="status"></div>
+    <span>@SharedLocalizer["Loading categories..."]</span>
 </div>
+
+<div id="category-empty" class="alert alert-info d-none">
+    @SharedLocalizer["No categories yet."]
+</div>
+
+<div class="row row-cols-1 row-cols-sm-2 row-cols-md-3 row-cols-lg-4 g-4" id="category-grid"></div>
 
 <div class="offcanvas offcanvas-end" tabindex="-1" id="editCatCanvas" aria-labelledby="editCatCanvasLabel">
     <div class="offcanvas-header">
@@ -81,8 +64,4 @@
 @functions
 {
     public CreateCategoryCommand EditCategoryRequest { get; set; } = new();
-
-    public List<CategoryEntity> Categories { get; set; }
-
-    public async Task OnGet() => Categories = await QueryMediator.QueryAsync(new ListCategoriesQuery());
 }
