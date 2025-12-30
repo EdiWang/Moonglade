@@ -7,7 +7,6 @@
 }
 
 @section scripts {
-    <script type="module" src="~/js/app/json2csv.mjs"></script>
     <script type="module" src="~/js/app/admin.category.mjs"></script>
 }
 
@@ -16,11 +15,6 @@
         <a id="btn-new-cat" class="btn btn-outline-accent">
             <i class="bi-plus-lg"></i>
             @SharedLocalizer["New"]
-        </a>
-
-        <a class="btn btn-outline-accent btn-export" data-api="/api/category/list" data-filename="moonglade-categories.csv">
-            <i class="bi-filetype-csv"></i>
-            @SharedLocalizer["Export"]
         </a>
     </div>
 }
