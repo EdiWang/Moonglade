@@ -85,7 +85,7 @@
     </nav>
     <div class="d-flex admin-body-wrapper">
         <partial name="_AsideAdmin" />
-        <div class="admin-main mt-3 mb-3 me-3 ms-3">
+        <div class="admin-main mt-3 mb-3 me-3 ms-3" x-data="@ViewBag.XData">
             @await RenderSectionAsync("admintoolbar", false)
 
             <div class="admin-main-body">
