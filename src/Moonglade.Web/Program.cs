@@ -311,6 +311,7 @@ public class Program
 
         var options = new RewriteOptions().AddRedirect(@"(.*)/$", @"$1", (int)HttpStatusCode.MovedPermanently);
         app.UseRewriter(options);
+        app.UseStaticFiles();
         app.MapStaticAssets();
         //app.UseCaptchaImage(p =>
         //{
