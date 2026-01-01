@@ -19,7 +19,6 @@ using Moonglade.Syndication;
 using Moonglade.Web.BackgroundServices;
 using Moonglade.Web.Extensions;
 using Moonglade.Web.Handlers;
-using Moonglade.Web.HealthChecks;
 using Moonglade.Webmention;
 using SixLabors.Fonts;
 using System.Globalization;
@@ -131,9 +130,7 @@ public class Program
         ConfigureRouteOptions(services);
         services.AddTransient<IPasswordGenerator, DefaultPasswordGenerator>();
         services.AddHealthChecks()
-            .AddCheck("self", () => HealthCheckResult.Healthy("Application is running"))
-            .AddDbContextCheck<BlogDbContext>("database", tags: ["db", "ready"])
-            .AddCheck<DatabaseConnectivityHealthCheck>("database_connectivity", tags: ["db"]);
+            .AddCheck("self", () => HealthCheckResult.Healthy("Application is running"));
         ConfigureMoongladeServices(services, configuration);
         ConfigureDatabase(services, configuration);
         ConfigureInitializers(services);
