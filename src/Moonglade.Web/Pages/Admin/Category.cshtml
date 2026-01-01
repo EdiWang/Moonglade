@@ -6,12 +6,92 @@
 }
 
 @section scripts {
-    <script type="module" src="~/js/app/admin.category.mjs"></script>
+    <script type="module">
+        import { default as Alpine } from '/lib/alpinejs/alpinejs.3.15.0.module.esm.min.js';
+        import { fetch2 } from '/js/app/httpService.mjs?v=1500';
+        import { success } from '/js/app/toastService.mjs';
+
+        Alpine.data('categoryManager', () => ({
+            categories: [],
+            isLoading: true,
+            currentCategoryId: window.emptyGuid,
+            editCanvas: null,
+            formData: {
+                slug: '',
+                displayName: '',
+                note: ''
+            },
+
+            async init() {
+                this.editCanvas = new bootstrap.Offcanvas(this.$refs.editCatCanvas);
+                await this.loadCategories();
+            },
+
+            async loadCategories() {
+                this.isLoading = true;
+                try {
+                    this.categories = (await fetch2('/api/category/list', 'GET')) ?? [];
+                } finally {
+                    this.isLoading = false;
+                }
+            },
+
+            get sortedCategories() {
+                return [...this.categories].sort((a, b) => 
+                    a.displayName.localeCompare(b.displayName)
+                );
+            },
+
+            get hasCategories() {
+                return this.categories.length > 0;
+            },
+
+            initCreateCategory() {
+                this.currentCategoryId = window.emptyGuid;
+                this.formData = { slug: '', displayName: '', note: '' };
+                this.editCanvas.show();
+            },
+
+            async editCategory(id) {
+                const data = await fetch2(`/api/category/${id}`, 'GET');
+                this.currentCategoryId = data.id;
+                this.formData = {
+                    slug: data.slug,
+                    displayName: data.displayName,
+                    note: data.note
+                };
+                this.editCanvas.show();
+            },
+
+            async deleteCategory(id) {
+                if (confirm('Delete?')) {
+                    await fetch2(`/api/category/${id}`, 'DELETE');
+                    await this.loadCategories();
+                    success('Category deleted');
+                }
+            },
+
+            async handleSubmit() {
+                const isCreate = this.currentCategoryId === window.emptyGuid;
+                const apiAddress = isCreate ? '/api/category' : `/api/category/${this.currentCategoryId}`;
+                const verb = isCreate ? 'POST' : 'PUT';
+
+                await fetch2(apiAddress, verb, this.formData);
+
+                this.formData = { slug: '', displayName: '', note: '' };
+                this.editCanvas.hide();
+                await this.loadCategories();
+                success(isCreate ? 'Category created' : 'Category updated');
+            }
+        }));
+
+        Alpine.start();
+    </script>
 }
 
 @section admintoolbar {
     <div class="admin-toolbar pb-2 border-bottom mb-3">
-        <a id="btn-new-cat" class="btn btn-outline-accent">
+        <a x-on:click="initCreateCategory()" class="btn btn-outline-accent" role="button">
             <i class="bi-plus-lg"></i>
             @SharedLocalizer["New"]
         </a>
@@ -20,44 +100,68 @@
 
 @Html.AntiForgeryToken()
 
-<div id="category-loading" class="d-flex align-items-center text-muted mb-3">
-    <div class="spinner-border spinner-border-sm me-2" role="status"></div>
-    <span>@SharedLocalizer["Loading categories..."]</span>
-</div>
-
-<div id="category-empty" class="alert alert-info d-none">
-    @SharedLocalizer["No categories yet."]
-</div>
-
-<div class="row row-cols-1 row-cols-sm-2 row-cols-md-3 row-cols-lg-4 g-4" id="category-grid"></div>
-
-<div class="offcanvas offcanvas-end" tabindex="-1" id="editCatCanvas" aria-labelledby="editCatCanvasLabel">
-    <div class="offcanvas-header">
-        <h5 class="offcanvas-title" id="editCatCanvasLabel">@SharedLocalizer["Category Information"]</h5>
-        <button type="button" class="btn-close text-reset" data-bs-dismiss="offcanvas" aria-label="Close"></button>
+<div x-data="categoryManager">
+    <div x-show="isLoading" class="d-flex align-items-center text-muted mb-3">
+        <div class="spinner-border spinner-border-sm me-2" role="status"></div>
+        <span>@SharedLocalizer["Loading categories..."]</span>
     </div>
-    <div class="offcanvas-body">
-        <form id="edit-form" method="post">
-            <div class="mb-3">
-                <label class="form-label" asp-for="@EditCategoryRequest.DisplayName"></label>
-                <input asp-for="@EditCategoryRequest.DisplayName" class="form-control" required />
+
+    <div x-show="!isLoading && !hasCategories" class="alert alert-info">
+        @SharedLocalizer["No categories yet."]
+    </div>
+
+    <div class="row row-cols-1 row-cols-sm-2 row-cols-md-3 row-cols-lg-4 g-4">
+        <template x-for="cat in sortedCategories" :key="cat.id">
+            <div class="col">
+                <div class="card shadow-sm">
+                    <div class="card-body">
+                        <h6 class="card-title">
+                            <a :href="`/CategoryList?slug=${encodeURIComponent(cat.slug)}`" target="_blank" x-text="cat.displayName"></a>
+                        </h6>
+                        <p class="mt-2 h-30px" x-text="cat.note"></p>
+                        <small class="text-muted" x-text="cat.slug"></small>
+                    </div>
+                    <div class="card-footer">
+                        <a x-on:click="editCategory(cat.id)" class="btn btn-sm btn-outline-accent me-2" role="button">
+                            <i class="bi-pen"></i>
+                        </a>
+                        <a x-on:click="deleteCategory(cat.id)" class="btn btn-sm btn-outline-danger" role="button">
+                            <i class="bi-trash"></i>
+                        </a>
+                    </div>
+                </div>
             </div>
-            <div class="mb-3">
-                <label class="form-label" asp-for="@EditCategoryRequest.Slug"></label>
-                <input asp-for="@EditCategoryRequest.Slug" class="form-control" required pattern="(?!-)([a-z0-9-]+)" />
-                <small class="text-muted">
-                    @SharedLocalizer["lower case English letters (a-z) and numbers (0-9) with/out hyphen (-) in middle."]
-                </small>
-            </div>
-            <div class="mb-3">
-                <label class="form-label" asp-for="@EditCategoryRequest.Note"></label>
-                <input asp-for="@EditCategoryRequest.Note" class="form-control" required />
-            </div>
-            <div class="mt-3">
-                <button type="submit" class="btn btn-accent">@SharedLocalizer["Submit"]</button>
-                <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="offcanvas">@SharedLocalizer["Cancel"]</button>
-            </div>
-        </form>
+        </template>
+    </div>
+
+    <div class="offcanvas offcanvas-end" tabindex="-1" x-ref="editCatCanvas" aria-labelledby="editCatCanvasLabel">
+        <div class="offcanvas-header">
+            <h5 class="offcanvas-title" id="editCatCanvasLabel">@SharedLocalizer["Category Information"]</h5>
+            <button type="button" class="btn-close text-reset" data-bs-dismiss="offcanvas" aria-label="Close"></button>
+        </div>
+        <div class="offcanvas-body">
+            <form x-on:submit.prevent="handleSubmit()">
+                <div class="mb-3">
+                    <label class="form-label" asp-for="@EditCategoryRequest.DisplayName"></label>
+                    <input x-model="formData.displayName" class="form-control" required />
+                </div>
+                <div class="mb-3">
+                    <label class="form-label" asp-for="@EditCategoryRequest.Slug"></label>
+                    <input x-model="formData.slug" class="form-control" required pattern="(?!-)([a-z0-9-]+)" />
+                    <small class="text-muted">
+                        @SharedLocalizer["lower case English letters (a-z) and numbers (0-9) with/out hyphen (-) in middle."]
+                    </small>
+                </div>
+                <div class="mb-3">
+                    <label class="form-label" asp-for="@EditCategoryRequest.Note"></label>
+                    <input x-model="formData.note" class="form-control" required />
+                </div>
+                <div class="mt-3">
+                    <button type="submit" class="btn btn-accent">@SharedLocalizer["Submit"]</button>
+                    <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="offcanvas">@SharedLocalizer["Cancel"]</button>
+                </div>
+            </form>
+        </div>
     </div>
 </div>
 
