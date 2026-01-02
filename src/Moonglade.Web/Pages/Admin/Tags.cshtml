@@ -8,7 +8,6 @@
 @Html.AntiForgeryToken()
 
 @section scripts {
-    <script type="module" src="~/js/app/json2csv.mjs"></script>
     <script type="module" src="~/js/app/admin.tags.mjs"></script>
 }
 
@@ -17,11 +16,6 @@
         <a id="btn-new-tag" class="btn btn-outline-accent">
             <i class="bi-plus-lg"></i>
             @SharedLocalizer["New"]
-        </a>
-
-        <a class="btn btn-outline-accent btn-export" data-api="/api/tags/list" data-filename="moonglade-tags.csv">
-            <i class="bi-filetype-csv"></i>
-            @SharedLocalizer["Export"]
         </a>
     </div>
 }
