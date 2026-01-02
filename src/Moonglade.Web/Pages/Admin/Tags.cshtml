@@ -3,9 +3,8 @@
 @using Moonglade.Features.Tag
 @{
     ViewBag.Title = "Tags";
+    ViewBag.XData = "tagManager";
 }
-
-@Html.AntiForgeryToken()
 
 @section scripts {
     <script type="module" src="~/js/app/admin.tags.mjs"></script>
@@ -13,119 +12,113 @@
 
 @section admintoolbar {
     <div class="admin-toolbar pb-2 border-bottom mb-3">
-        <a id="btn-new-tag" class="btn btn-outline-accent">
+        <a x-on:click="initCreateTag()" class="btn btn-outline-accent" role="button">
             <i class="bi-plus-lg"></i>
             @SharedLocalizer["New"]
         </a>
     </div>
 }
 
+@Html.AntiForgeryToken()
+
 <div>
-    <input id="tagFilter"
+    <input x-model="tagFilter"
+           x-on:input="filterTags()"
            type="text"
            class="form-control mb-3"
            maxlength="32"
            placeholder="@SharedLocalizer["Filter"]"
            aria-label="@SharedLocalizer["Filter tags"]">
 
-    @if (TagCountList?.Count > 0)
-    {
-        var activeTags = TagCountList.Where(p => p.PostCount > 0).OrderBy(t => t.Tag.DisplayName).ToList();
-        var inactiveTags = TagCountList.Where(p => p.PostCount == 0).OrderBy(t => t.Tag.DisplayName).ToList();
+    <div x-show="isLoading"
+         class="text-muted mb-3"
+         :class="{ 'd-flex align-items-center': isLoading }">
+        <div class="spinner-border spinner-border-sm me-2" role="status"></div>
+        <span>@SharedLocalizer["Loading tags..."]</span>
+    </div>
 
+    <div x-show="!isLoading && !hasTags" class="alert alert-info" role="alert">
+        @SharedLocalizer["No tags found. Create your first tag to get started."]
+    </div>
+
+    <div x-show="!isLoading && hasTags">
         <section aria-labelledby="active-tags-heading">
             <h4 id="active-tags-heading">@SharedLocalizer["Active tags"]</h4>
             <hr />
-            @if (activeTags.Any())
-            {
-                <ul class="list-unstyled ul-tag-mgr" role="list">
-                    @foreach (var tagItem in activeTags)
-                    {
-                        <li id="li-tag-@tagItem.Tag.Id" class="admin-tag-item border rounded">
-                            <span class="span-tagcontent-editable"
-                                  contenteditable="true"
-                                  spellcheck="false"
-                                  data-tagid="@tagItem.Tag.Id"
-                                  aria-label="@string.Format(SharedLocalizer["Edit tag {0}"], tagItem.Tag.DisplayName)">
-                                @tagItem.Tag.DisplayName
-                            </span>
-                            <span class="tag-postcount"
-                                  title="@string.Format(SharedLocalizer["{0} posts"], tagItem.PostCount)">
-                                @tagItem.PostCount
-                            </span>
-                            <a class="btn-delete"
-                                    data-tagid="@tagItem.Tag.Id"
-                                    aria-label="@string.Format(SharedLocalizer["Delete tag {0}"], tagItem.Tag.DisplayName)"
-                                    title="@SharedLocalizer["Delete tag"]">
-                                <i class="bi-trash"></i>
-                            </a>
-                        </li>
-                    }
-                </ul>
-            }
-            else
-            {
-                <div class="alert alert-info" role="alert">
-                    @SharedLocalizer["No active tags found"]
-                </div>
-            }
+            <div x-show="!hasActiveTags" class="alert alert-info" role="alert">
+                @SharedLocalizer["No active tags found"]
+            </div>
+            <ul x-show="hasActiveTags" class="list-unstyled ul-tag-mgr" role="list">
+                <template x-for="tagItem in filteredActiveTags" :key="tagItem.tag.id">
+                    <li :id="`li-tag-${tagItem.tag.id}`" class="admin-tag-item border rounded me-1">
+                        <span class="span-tagcontent-editable"
+                              contenteditable="true"
+                              spellcheck="false"
+                              :data-tagid="tagItem.tag.id"
+                              x-on:blur="updateTag($event, tagItem.tag.id)"
+                              :aria-label="`@SharedLocalizer["Edit tag"]` + ' ' + tagItem.tag.displayName"
+                              x-text="tagItem.tag.displayName">
+                        </span>
+                        <span class="tag-postcount"
+                              :title="`${tagItem.postCount} @SharedLocalizer["posts"]`"
+                              x-text="tagItem.postCount">
+                        </span>
+                        <a class="btn-delete"
+                           x-on:click="deleteTag(tagItem.tag.id, tagItem.tag.displayName)"
+                           :aria-label="`@SharedLocalizer["Delete tag"]` + ' ' + tagItem.tag.displayName"
+                           title="@SharedLocalizer["Delete tag"]"
+                           role="button">
+                            <i class="bi-trash"></i>
+                        </a>
+                    </li>
+                </template>
+            </ul>
         </section>
 
         <section aria-labelledby="inactive-tags-heading" class="mt-4">
             <h4 id="inactive-tags-heading">@SharedLocalizer["Tags without posts"]</h4>
             <hr />
-            @if (inactiveTags.Any())
-            {
-                <ul class="list-unstyled ul-tag-mgr" role="list">
-                    @foreach (var tagItem in inactiveTags)
-                    {
-                        <li id="li-tag-@tagItem.Tag.Id" class="admin-tag-item border rounded opacity-75">
-                            <span class="span-tagcontent-editable"
-                                  contenteditable="true"
-                                  spellcheck="false"
-                                  data-tagid="@tagItem.Tag.Id"
-                                  aria-label="@string.Format(SharedLocalizer["Edit tag {0}"], tagItem.Tag.DisplayName)">
-                                @tagItem.Tag.DisplayName
-                            </span>
-                            <a class="btn-delete"
-                                    data-tagid="@tagItem.Tag.Id"
-                                    aria-label="@string.Format(SharedLocalizer["Delete tag {0}"], tagItem.Tag.DisplayName)"
-                                    title="@SharedLocalizer["Delete tag"]">
-                                <i class="bi-trash"></i>
-                            </a>
-                        </li>
-                    }
-                </ul>
-            }
-            else
-            {
-                <div class="alert alert-success" role="alert">
-                    @SharedLocalizer["No unused tags - all tags are being used!"]
-                </div>
-            }
+            <div x-show="!hasInactiveTags" class="alert alert-success" role="alert">
+                @SharedLocalizer["No unused tags - all tags are being used!"]
+            </div>
+            <ul x-show="hasInactiveTags" class="list-unstyled ul-tag-mgr" role="list">
+                <template x-for="tagItem in filteredInactiveTags" :key="tagItem.tag.id">
+                    <li :id="`li-tag-${tagItem.tag.id}`" class="admin-tag-item border rounded opacity-75">
+                        <span class="span-tagcontent-editable"
+                              contenteditable="true"
+                              spellcheck="false"
+                              :data-tagid="tagItem.tag.id"
+                              x-on:blur="updateTag($event, tagItem.tag.id)"
+                              :aria-label="`@SharedLocalizer["Edit tag"]` + ' ' + tagItem.tag.displayName"
+                              x-text="tagItem.tag.displayName">
+                        </span>
+                        <a class="btn-delete"
+                           x-on:click="deleteTag(tagItem.tag.id, tagItem.tag.displayName)"
+                           :aria-label="`@SharedLocalizer["Delete tag"]` + ' ' + tagItem.tag.displayName"
+                           title="@SharedLocalizer["Delete tag"]"
+                           role="button">
+                            <i class="bi-trash"></i>
+                        </a>
+                    </li>
+                </template>
+            </ul>
         </section>
-    }
-    else
-    {
-        <div class="alert alert-info" role="alert">
-            @SharedLocalizer["No tags found. Create your first tag to get started."]
-        </div>
-    }
+    </div>
 </div>
 
-<div class="offcanvas offcanvas-end" tabindex="-1" id="editTagCanvas" aria-labelledby="editTagCanvasLabel">
+<div class="offcanvas offcanvas-end" tabindex="-1" x-ref="editTagCanvas" aria-labelledby="editTagCanvasLabel">
     <div class="offcanvas-header">
         <h5 class="offcanvas-title" id="editTagCanvasLabel">@SharedLocalizer["Create Tag"]</h5>
         <button type="button" class="btn-close" data-bs-dismiss="offcanvas" aria-label="@SharedLocalizer["Close"]"></button>
     </div>
     <div class="offcanvas-body">
-        <form id="edit-form" method="post" novalidate>
+        <form x-on:submit.prevent="handleSubmit()">
             <div class="mb-3">
                 <label for="input-tag-name" class="form-label">
                     @SharedLocalizer["Name"] <span class="text-danger">*</span>
                 </label>
                 <input type="text"
-                       name="tagName"
+                       x-model="formData.displayName"
                        id="input-tag-name"
                        class="form-control"
                        required
@@ -151,24 +144,3 @@
         </form>
     </div>
 </div>
-
-@functions
-{
-    public List<(TagEntity Tag, int PostCount)> TagCountList { get; set; } = new();
-
-    public async Task<IActionResult> OnGetAsync()
-    {
-        try
-        {
-            var tags = await QueryMediator.QueryAsync(new GetTagCountListQuery());
-            TagCountList = tags?.ToList() ?? new List<(TagEntity Tag, int PostCount)>();
-            return Page();
-        }
-        catch (Exception)
-        {
-            // Log exception here
-            ModelState.AddModelError(string.Empty, SharedLocalizer["An error occurred while loading tags."]);
-            return Page();
-        }
-    }
-}

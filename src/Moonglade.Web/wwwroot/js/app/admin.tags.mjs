@@ -1,100 +1,127 @@
-import { fetch2 } from './httpService.mjs?v=1500';
-import { success, error } from './toastService.mjs';
+import { default as Alpine } from '/lib/alpinejs/alpinejs.3.15.0.module.esm.min.js';
+import { fetch2 } from '/js/app/httpService.mjs?v=1500';
+import { success } from '/js/app/toastService.mjs';
 
-const editCanvas = new bootstrap.Offcanvas(document.getElementById('editTagCanvas'));
-const tagLists = document.querySelectorAll('.ul-tag-mgr');
-const editForm = document.querySelector('#edit-form');
-const tagFilter = document.getElementById('tagFilter');
-const btnNewTag = document.getElementById('btn-new-tag');
+Alpine.data('tagManager', () => ({
+    tags: [],
+    isLoading: true,
+    tagFilter: '',
+    editCanvas: null,
+    formData: {
+        displayName: ''
+    },
+    originalTagNames: {},
 
-function showEditCanvas() {
-    editForm.reset();
-    editCanvas.show();
-}
+    async init() {
+        this.editCanvas = new bootstrap.Offcanvas(this.$refs.editTagCanvas);
+        await this.loadTags();
+    },
 
-tagLists.forEach(tagList => {
-    tagList.addEventListener('click', async (e) => {
-        const btn = e.target.closest('.btn-delete');
-        if (!btn) return;
-
-        const tagid = btn.getAttribute('data-tagid');
-        const tagName = btn.closest('.admin-tag-item').querySelector('.span-tagcontent-editable').textContent.trim();
-
-        if (!window.confirm(`Confirm to delete tag: ${tagName}`)) return;
-
+    async loadTags() {
+        this.isLoading = true;
         try {
-            await fetch2(`/api/tags/${tagid}`, 'DELETE');
-
-            const li = document.querySelector(`#li-tag-${tagid}`);
-            if (li) li.style.display = 'none';
-            success('Tag deleted');
-        } catch (err) {
-            error('Tag deletion failed.');
+            this.tags = (await fetch2('/api/tags/list/count', 'GET')) ?? [];
+        } finally {
+            this.isLoading = false;
         }
-    });
+    },
 
-    tagList.addEventListener('blur', async (e) => {
-        const span = e.target.closest('.span-tagcontent-editable');
-        if (!span) return;
+    get hasTags() {
+        return this.tags.length > 0;
+    },
 
-        const tagId = span.getAttribute('data-tagid');
-        const newTagName = span.textContent.trim();
-        const originalTagName = span.getAttribute('data-original') || '';
+    get activeTags() {
+        return this.tags
+            .filter(t => t.postCount > 0)
+            .sort((a, b) => a.tag.displayName.localeCompare(b.tag.displayName));
+    },
 
-        if (newTagName === originalTagName || !newTagName) return;
+    get inactiveTags() {
+        return this.tags
+            .filter(t => t.postCount === 0)
+            .sort((a, b) => a.tag.displayName.localeCompare(b.tag.displayName));
+    },
+
+    get filteredActiveTags() {
+        return this.filterTagList(this.activeTags);
+    },
+
+    get filteredInactiveTags() {
+        return this.filterTagList(this.inactiveTags);
+    },
+
+    get hasActiveTags() {
+        return this.filteredActiveTags.length > 0;
+    },
+
+    get hasInactiveTags() {
+        return this.filteredInactiveTags.length > 0;
+    },
+
+    filterTagList(tagList) {
+        if (!this.tagFilter) return tagList;
+        const filterLower = this.tagFilter.toLowerCase();
+        return tagList.filter(t => 
+            t.tag.displayName.toLowerCase().includes(filterLower)
+        );
+    },
+
+    filterTags() {
+        // Reactive filtering handled by computed properties
+    },
+
+    initCreateTag() {
+        this.formData = { displayName: '' };
+        this.editCanvas.show();
+    },
+
+    async updateTag(event, tagId) {
+        const newTagName = event.target.textContent.trim();
+        const originalTagName = this.originalTagNames[tagId] || 
+            this.tags.find(t => t.tag.id === tagId)?.tag.displayName || '';
+
+        if (newTagName === originalTagName || !newTagName) {
+            event.target.textContent = originalTagName;
+            return;
+        }
 
         try {
             await fetch2(`/api/tags/${tagId}`, 'PUT', newTagName);
-
-            span.setAttribute('data-original', newTagName);
+            this.originalTagNames[tagId] = newTagName;
+            await this.loadTags();
             success('Tag updated');
         } catch (err) {
-            error('Tag update failed.');
+            event.target.textContent = originalTagName;
+            console.error(err);
         }
-    }, true); // useCapture: true, to catch blur
-});
+    },
 
-tagFilter.addEventListener('keyup', function () {
-    const value = this.value.toLowerCase();
-    tagLists.forEach(tagList => {
-        tagList.querySelectorAll('li').forEach((item) => {
-            const show = item.textContent.toLowerCase().includes(value);
-            item.style.display = show ? 'inline-block' : 'none';
-        });
-    });
-});
+    async deleteTag(tagId, tagName) {
+        if (!confirm(`Confirm to delete tag: ${tagName}`)) return;
 
-btnNewTag.addEventListener('click', showEditCanvas);
+        try {
+            await fetch2(`/api/tags/${tagId}`, 'DELETE');
+            await this.loadTags();
+            success('Tag deleted');
+        } catch (err) {
+            console.error(err);
+        }
+    },
 
-editForm.addEventListener('submit', async function (event) {
-    event.preventDefault();
-    const formData = new FormData(editForm);
-    const tagName = formData.get('tagName').trim();
+    async handleSubmit() {
+        const tagName = this.formData.displayName.trim();
+        if (!tagName) return;
 
-    try {
-        const tag = await fetch2(`/api/tags`, 'POST', tagName);
-
-        editForm.reset();
-        insertNewTagElement(tag.id, tag.displayName);
-        success('Tag added');
-        editCanvas.hide();
-    } catch (err) {
-        console.error(err);
-        error('Tag creation failed.');
+        try {
+            await fetch2('/api/tags', 'POST', tagName);
+            this.formData = { displayName: '' };
+            this.editCanvas.hide();
+            await this.loadTags();
+            success('Tag added');
+        } catch (err) {
+            console.error(err);
+        }
     }
-});
+}));
 
-function insertNewTagElement(id, name) {
-    const li = document.createElement('li');
-    li.id = `li-tag-${id}`;
-    li.innerHTML = `
-    <li id="li-tag-${id}" class="admin-tag-item border rounded">
-        <span class="span-tagcontent-editable" contenteditable="true" spellcheck="false" data-tagid="${id}">${name}</span>
-        <a class="btn-delete" data-tagid="${id}">
-            <i class="bi-trash"></i>
-        </a>
-    </li>
-    `;
-    // Add to the first tag list (active tags)
-    tagLists[0].appendChild(li);
-}
+Alpine.start();

@@ -2,10 +2,20 @@
 
 namespace Moonglade.Data.Specifications;
 
-public sealed class TagCloudSpec : Specification<TagEntity, (TagEntity Tag, int PostCount)>
+public sealed class TagCloudSpec : Specification<TagEntity, TagWithCount>
 {
     public TagCloudSpec()
     {
-        Query.Select(t => new ValueTuple<TagEntity, int>(t, t.Posts.Count));
+        Query.Select(t => new TagWithCount
+        {
+            Tag = t,
+            PostCount = t.Posts.Count
+        });
     }
+}
+
+public class TagWithCount
+{
+    public TagEntity Tag { get; set; }
+    public int PostCount { get; set; }
 }

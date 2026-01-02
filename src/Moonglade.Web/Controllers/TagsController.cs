@@ -1,6 +1,7 @@
 ﻿using LiteBus.Commands.Abstractions;
 using LiteBus.Queries.Abstractions;
 using Moonglade.Data.Entities;
+using Moonglade.Data.Specifications;
 using Moonglade.Features.Tag;
 using System.ComponentModel.DataAnnotations;
 
@@ -24,6 +25,14 @@ public class TagsController(IQueryMediator queryMediator, ICommandMediator comma
     public async Task<IActionResult> List()
     {
         var list = await queryMediator.QueryAsync(new ListTagsQuery());
+        return Ok(list);
+    }
+
+    [HttpGet("list/count")]
+    [ProducesResponseType<List<TagWithCount>>(StatusCodes.Status200OK)]
+    public async Task<IActionResult> TagCountList()
+    {
+        var list = await queryMediator.QueryAsync(new GetTagCountListQuery());
         return Ok(list);
     }
 
