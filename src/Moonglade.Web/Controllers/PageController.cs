@@ -1,5 +1,6 @@
 ﻿using LiteBus.Commands.Abstractions;
 using LiteBus.Queries.Abstractions;
+using Moonglade.Data.DTO;
 using Moonglade.Features.Page;
 
 namespace Moonglade.Web.Controllers;
@@ -42,5 +43,13 @@ public class PageController(ICacheAside cache, IQueryMediator queryMediator, ICo
 
         cache.Remove(BlogCachePartition.Page.ToString(), page.Slug);
         return NoContent();
+    }
+
+    [HttpGet("segment/list")]
+    [ProducesResponseType<List<PageSegment>>(StatusCodes.Status200OK)]
+    public async Task<IActionResult> GetPageSegmentList()
+    {
+        var segments = await queryMediator.QueryAsync(new ListPageSegmentsQuery());
+        return Ok(segments);
     }
 }

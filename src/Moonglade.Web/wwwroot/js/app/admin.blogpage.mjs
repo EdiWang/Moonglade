@@ -1,25 +1,46 @@
-import { fetch2 } from './httpService.mjs?v=1500'
-import { success } from './toastService.mjs';
+import { default as Alpine } from '/lib/alpinejs/alpinejs.3.15.0.module.esm.min.js';
+import { fetch2 } from '/js/app/httpService.mjs?v=1500';
+import { success } from '/js/app/toastService.mjs';
 
-async function deletePage(pageid) {
-    await fetch2(`/api/page/${pageid}`, 'DELETE', {});
+Alpine.data('pageManager', () => ({
+    pages: [],
+    isLoading: true,
 
-    document.querySelector(`#card-${pageid}`).remove();
-    success('Page deleted');
-}
+    async init() {
+        await this.loadPages();
+    },
 
-async function deleteConfirm(pageid) {
-    var cfm = confirm("Delete Confirmation?");
-    if (cfm) await deletePage(pageid);
-}
+    async loadPages() {
+        this.isLoading = true;
+        try {
+            this.pages = (await fetch2('/api/page/segment/list', 'GET')) ?? [];
+        } finally {
+            this.isLoading = false;
+        }
+    },
 
-document.addEventListener('DOMContentLoaded', () => {
-    const exportButtons = document.querySelectorAll('.btn-delete');
+    get sortedPages() {
+        return [...this.pages].sort((a, b) =>
+            new Date(b.createTimeUtc) - new Date(a.createTimeUtc)
+        );
+    },
 
-    exportButtons.forEach(button => {
-        button.addEventListener('click', async () => {
-            const pageId = button.getAttribute('data-pageId');
-            await deleteConfirm(pageId);
-        });
-    });
-});
+    get hasPages() {
+        return this.pages.length > 0;
+    },
+
+    formatDate(dateString) {
+        const date = new Date(dateString);
+        return date.toLocaleString();
+    },
+
+    async deletePage(pageId) {
+        if (confirm('Delete Confirmation?')) {
+            await fetch2(`/api/page/${pageId}`, 'DELETE');
+            await this.loadPages();
+            success('Page deleted');
+        }
+    }
+}));
+
+Alpine.start();
