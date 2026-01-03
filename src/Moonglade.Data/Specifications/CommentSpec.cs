@@ -46,7 +46,7 @@ public class CommentEntityToCommentSpec : Specification<CommentEntity, Comment>
             Email = p.Email,
             CreateTimeUtc = p.CreateTimeUtc,
             CommentContent = p.CommentContent,
-            CommentReplies = p.Replies.Select(cr => new CommentReplyDigest
+            Replies = p.Replies.Select(cr => new CommentReplyDigest
             {
                 ReplyContent = cr.ReplyContent,
                 ReplyTimeUtc = cr.CreateTimeUtc
@@ -69,7 +69,7 @@ public class CommentEntityToCommentDetailedItemSpec : Specification<CommentEntit
             Username = p.Username,
             IsApproved = p.IsApproved,
             PostTitle = p.Post.Title,
-            CommentReplies = p.Replies.Select(cr => new CommentReplyDigest
+            Replies = p.Replies.Select(cr => new CommentReplyDigest
             {
                 ReplyContent = cr.ReplyContent,
                 ReplyTimeUtc = cr.CreateTimeUtc

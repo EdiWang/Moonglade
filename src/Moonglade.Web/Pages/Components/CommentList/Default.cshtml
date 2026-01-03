@@ -58,7 +58,7 @@
                     </div>
 
                     <div>
-                        @foreach (var reply in item.CommentReplies.OrderByDescending(t => t.ReplyTimeUtc))
+                        @foreach (var reply in item.Replies.OrderByDescending(t => t.ReplyTimeUtc))
                         {
                             <hr/>
                             <div class="reply-container">
