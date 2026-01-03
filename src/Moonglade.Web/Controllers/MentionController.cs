@@ -1,5 +1,6 @@
 ﻿using LiteBus.Commands.Abstractions;
 using LiteBus.Events.Abstractions;
+using LiteBus.Queries.Abstractions;
 using Moonglade.Data.Entities;
 using Moonglade.Email.Client;
 using Moonglade.Webmention;
@@ -12,6 +13,7 @@ namespace Moonglade.Web.Controllers;
 public class MentionController(
     ILogger<MentionController> logger,
     IBlogConfig blogConfig,
+    IQueryMediator queryMediator,
     IEventMediator eventMediator,
     ICommandMediator commandMediator) : ControllerBase
 {
@@ -61,6 +63,15 @@ public class MentionController(
         {
             logger.LogError(e, "Exception occurred while publishing MentionEvent: {Message}", e.Message);
         }
+    }
+
+    [Authorize]
+    [HttpGet("list")]
+    [ProducesResponseType<List<MentionEntity>>(StatusCodes.Status200OK)]
+    public async Task<IActionResult> ListMentions()
+    {
+        var mentions = await queryMediator.QueryAsync(new ListMentionsQuery());
+        return Ok(mentions);
     }
 
     [Authorize]
