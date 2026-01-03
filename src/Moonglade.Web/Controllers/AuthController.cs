@@ -1,12 +1,17 @@
-﻿using Microsoft.AspNetCore.Authentication;
+﻿using LiteBus.Queries.Abstractions;
+using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Authentication.OpenIdConnect;
 using Microsoft.Extensions.Options;
+using Moonglade.Data.Entities;
 
 namespace Moonglade.Web.Controllers;
 
 [Route("auth")]
-public class AuthController(IOptions<AuthenticationSettings> authSettings) : ControllerBase
+public class AuthController(
+    IOptions<AuthenticationSettings> authSettings,
+    IQueryMediator queryMediator
+    ) : ControllerBase
 {
     private readonly AuthenticationSettings _authenticationSettings = authSettings.Value;
 
@@ -38,5 +43,22 @@ public class AuthController(IOptions<AuthenticationSettings> authSettings) : Con
     {
         Response.StatusCode = StatusCodes.Status403Forbidden;
         return Content("Access Denied");
+    }
+
+    [Authorize]
+    [HttpGet("loginhistory/list")]
+    [ProducesResponseType<List<LoginHistoryEntity>>(StatusCodes.Status200OK)]
+    public async Task<IActionResult> ListLoginHistory()
+    {
+        var data = await queryMediator.QueryAsync(new ListLoginHistoryQuery());
+        return Ok(data);
+    }
+
+    [Authorize]
+    [HttpGet("me")]
+    [ProducesResponseType(StatusCodes.Status200OK)]
+    public IActionResult Me()
+    {
+        return Ok(new { UserName = User.Identity?.Name ?? "Anonymous" });
     }
 }
