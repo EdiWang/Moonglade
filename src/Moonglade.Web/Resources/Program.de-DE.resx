@@ -168,9 +168,6 @@
   <data name="Archive" xml:space="preserve">
     <value>Archiv</value>
   </data>
-  <data name="Are you sure to restart website? All current requests will be terminated." xml:space="preserve">
-    <value>Möchten Sie die Webseite wirklich neu starten? Alle aktuellen Anfragen werden verworfen.</value>
-  </data>
   <data name="Are you sure?" xml:space="preserve">
     <value>Sind Sie sicher?</value>
   </data>
