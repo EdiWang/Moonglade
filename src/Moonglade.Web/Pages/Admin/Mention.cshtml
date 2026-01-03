@@ -2,7 +2,7 @@
 @using Moonglade.Webmention
 @{
     ViewBag.Title = "Mentions";
-    var mentionRecords = await QueryMediator.QueryAsync(new ListMentionsQuery());
+    ViewBag.XData = "mentionManager";
 }
 
 @Html.AntiForgeryToken()
@@ -25,14 +25,14 @@
     <div class="admin-toolbar pb-2 border-bottom mb-3">
         <div class="row">
             <div class="col">
-                <a class="btn btn-outline-danger" href="javascript:;" data-bs-toggle="modal" data-bs-target="#clearmentionModal">
+                <a class="btn btn-outline-danger" href="javascript:;" x-on:click="clearAllMentions()">
                     <i class="bi-trash"></i>
                     @SharedLocalizer["Clear all"]
                 </a>
             </div>
             <div class="col-auto">
                 <div class="text-muted admin-toolbar-text">
-                    <span id="mention-count">@mentionRecords.Count</span> item(s)
+                    <span x-text="mentionCount"></span> item(s)
                 </div>
             </div>
         </div>
@@ -40,57 +40,50 @@
 }
 
 <div>
-    <input id="mentionFilter" type="text" class="form-control mb-3" maxlength="32" placeholder="Filter..">
+    <input x-model="filterText" type="text" class="form-control mb-3" maxlength="32" placeholder="Filter..">
+
+    <div x-show="isLoading"
+         class="text-muted mb-3"
+         :class="{ 'd-flex align-items-center': isLoading }">
+        <div class="spinner-border spinner-border-sm me-2" role="status"></div>
+        <span>@SharedLocalizer["Loading mentions..."]</span>
+    </div>
+
+    <div x-show="!isLoading && !hasMentions" class="alert alert-info">
+        @SharedLocalizer["No mentions yet."]
+    </div>
 
     <div class="mentions-container">
-        @foreach (var item in mentionRecords.OrderByDescending(p => p.PingTimeUtc))
-        {
+        <template x-for="item in filteredMentions" :key="item.id">
             <div class="mention-item-entry p-3 rounded-3 border mb-1">
-                <div id="mention-box-@item.Id" class="mention-item row">
+                <div :id="`mention-box-${item.id}`" class="mention-item row">
                     <div class="col">
                         <strong>
-                            <a href="@item.SourceUrl" target="_blank">@item.SourceTitle</a>
+                            <a :href="item.sourceUrl" target="_blank" x-text="item.sourceTitle"></a>
                         </strong>
 
                         <div>
                             <i class="bi-link"></i>
-
-                            @item.TargetPostTitle
+                            <span x-text="item.targetPostTitle"></span>
                         </div>
 
                         <div class="text-muted">
-                            @item.Domain, @item.SourceIp,
-                            <time data-utc-label="@item.PingTimeUtc.ToString("u")">@item.PingTimeUtc</time>, 
-                            @item.Worker
+                            <span x-text="item.domain"></span>, 
+                            <span x-text="item.sourceIp"></span>,
+                            <time :data-utc-label="item.pingTimeUtc" x-text="formatTime(item.pingTimeUtc)"></time>, 
+                            <span x-text="item.worker"></span>
                         </div>
                     </div>
 
                     <div class="col-auto">
-                        <a class="btn btn-sm btn-outline-danger btn-delete" data-mentionId="@item.Id">
+                        <a class="btn btn-sm btn-outline-danger btn-delete" 
+                           x-on:click="deleteMention(item.id)"
+                           role="button">
                             <i class="bi-trash"></i>
                         </a>
                     </div>
                 </div>
             </div>
-        }
-    </div>
-</div>
-
-<div class="modal fade" id="clearmentionModal" tabindex="-1" role="dialog" aria-labelledby="clearmentionModalLabel" aria-hidden="true">
-    <div class="modal-dialog" role="document">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title" id="clearmentionModalLabel">@SharedLocalizer["Clear Mention Logs"]</h5>
-                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close">
-                </button>
-            </div>
-            <div class="modal-body">
-                @SharedLocalizer["Are you sure?"]
-            </div>
-            <div class="modal-footer">
-                <a id="btn-clear-all" class="btn btn-outline-danger btn-clear"">@SharedLocalizer["Clear Now"]</a>
-                <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">@SharedLocalizer["Cancel"]</button>
-            </div>
-        </div>
+        </template>
     </div>
 </div>
