@@ -150,15 +150,6 @@ public class HtmlHelper
         return WrapInListItem(last, "paged-list-skip-to-last");
     }
 
-    private TagBuilder PageCountAndLocationText(IPagedList list, PagedListRenderOptions options)
-    {
-        var text = new TagBuilder("a");
-
-        text.InnerHtml.SetContent(string.Format(options.PageCountAndCurrentLocationFormat, list.PageNumber, list.PageCount));
-
-        return WrapInListItem(text, "PagedList-pageCountAndLocation", "disabled");
-    }
-
     #endregion Private methods
 
     public string PagedListPager(IPagedList pagedList, Func<int, string> generatePageUrl, PagedListRenderOptions options)
@@ -208,12 +199,6 @@ public class HtmlHelper
         if (!list.IsFirstPage)
         {
             listItemLinks.Add(Previous(list, generatePageUrl, options));
-        }
-
-        //text
-        if (options.DisplayPageCountAndCurrentLocation)
-        {
-            listItemLinks.Add(PageCountAndLocationText(list, options));
         }
 
         //page
