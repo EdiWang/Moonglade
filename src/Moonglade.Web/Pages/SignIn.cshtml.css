@@ -1,0 +1,12 @@
+﻿main {
+    height: 100vh;
+}
+
+.login-card {
+    min-width: 365px;
+}
+
+#img-captcha {
+    border-radius: 0 3px 3px 0;
+    cursor: pointer;
+}
