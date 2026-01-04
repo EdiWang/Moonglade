@@ -4,7 +4,7 @@ LABEL repo="https://github.com/EdiWang/Moonglade"
 
 USER app
 
-# If use aspnet:8.0-alpine, see https://github.com/dotnet/dotnet-docker/issues/1366
+# If use aspnet:10.0-alpine, see https://github.com/dotnet/dotnet-docker/issues/1366
 #RUN apk add --no-cache tzdata
 
 # Captcha font
