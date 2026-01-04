@@ -9,7 +9,7 @@ public static class Helper
 {
     // Get `sec-ch-prefers-color-scheme` header value
     // This is to enhance user experience by stopping the screen from blinking when switching pages
-    public static bool UseServerSideDarkMode(IConfiguration configuration, HttpContext context)
+    public static bool IsClientPreferDarkMode(HttpContext context)
     {
         bool useServerSideDarkMode = false;
         var prefersColorScheme = context.Request.Headers["Sec-CH-Prefers-Color-Scheme"];
