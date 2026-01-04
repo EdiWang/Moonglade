@@ -176,7 +176,8 @@ public class StartUpInitializer(
 
             var primaryResult = await AzureBlobImageStorage.CreateContainerIfNotExistsAsync(
                 settings.AzureStorageSettings.ConnectionString,
-                settings.AzureStorageSettings.ContainerName);
+                settings.AzureStorageSettings.ContainerName,
+                publicAccessType: Azure.Storage.Blobs.Models.PublicAccessType.Blob);
 
             if (primaryResult != null)
             {
