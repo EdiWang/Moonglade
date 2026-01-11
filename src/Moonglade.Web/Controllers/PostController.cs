@@ -198,4 +198,16 @@ public class PostController(
             Nonce = nonce
         });
     }
+
+    [HttpGet("drafts")]
+    [ProducesResponseType(StatusCodes.Status200OK)]
+    public async Task<IActionResult> Drafts()
+    {
+        var posts = await queryMediator.QueryAsync(new ListPostSegmentByStatusQuery(PostStatus.Draft));
+        
+        return Ok(new
+        {
+            Posts = posts
+        });
+    }
 }
