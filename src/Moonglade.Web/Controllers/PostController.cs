@@ -1,6 +1,5 @@
 ﻿using LiteBus.Commands.Abstractions;
 using LiteBus.Queries.Abstractions;
-using Moonglade.Data.DTO;
 using Moonglade.Data.Specifications;
 using Moonglade.Features.Post;
 using Moonglade.IndexNow.Client;
@@ -30,7 +29,7 @@ public class PostController(
     {
         var offset = (pageIndex - 1) * pageSize;
         var (posts, totalRows) = await queryMediator.QueryAsync(new ListPostSegmentQuery(PostStatus.Published, offset, pageSize, searchTerm));
-        
+
         return Ok(new
         {
             Posts = posts,
@@ -204,7 +203,7 @@ public class PostController(
     public async Task<IActionResult> Drafts()
     {
         var posts = await queryMediator.QueryAsync(new ListPostSegmentByStatusQuery(PostStatus.Draft));
-        
+
         return Ok(new
         {
             Posts = posts

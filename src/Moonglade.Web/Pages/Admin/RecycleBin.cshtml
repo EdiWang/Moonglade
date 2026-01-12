@@ -1,57 +1,61 @@
 ﻿@page "/admin/post/recycle-bin"
-@using Moonglade.Data.Specifications
-@using Moonglade.Features.Post
 @{
     ViewBag.Title = "Recycle Bin";
-    var posts = await QueryMediator.QueryAsync(new ListPostSegmentByStatusQuery(PostStatus.Deleted));
+    ViewBag.XData = "recycleBinManager";
 }
 
 @section scripts {
     <script type="module" src="~/js/app/admin.recyclebin.mjs"></script>
 }
-@Html.AntiForgeryToken()
 
 @section admintoolbar {
     <partial name="_PostManageHeader" />
 }
 
-<div class="admin-main-entry-container">
-    @if (posts.Any())
-    {
-        foreach (var post in posts.OrderByDescending(p => p.CreateTimeUtc))
-        {
-            <div id="post-@post.Id" class="admin-post-entry p-3 mb-2 rounded-3 shadow-sm border">
+@Html.AntiForgeryToken()
+
+<div>
+    <div x-show="isLoading"
+         class="text-muted mb-3"
+         :class="{ 'd-flex align-items-center': isLoading }">
+        <div class="spinner-border spinner-border-sm me-2" role="status"></div>
+        <span>@SharedLocalizer["Loading..."]</span>
+    </div>
+
+    <div x-show="!isLoading && !hasPosts">
+        <partial name="_NoPosts" />
+    </div>
+
+    <div x-show="!isLoading && hasPosts" class="admin-main-entry-container">
+        <template x-for="post in sortedPosts" :key="post.id">
+            <div :id="`post-${post.id}`" class="admin-post-entry p-3 mb-2 rounded-3 shadow-sm border">
                 <div class="d-flex">
                     <div class="flex-grow-1">
-                        <h6>
-                            @post.Title
-                        </h6>
+                        <h6 x-text="post.title"></h6>
                         <div>
                             <i class="bi-calendar-event"></i>
-                            <time data-utc-label="@post.CreateTimeUtc.ToString("u")">@post.CreateTimeUtc</time>
+                            <time :data-utc-label="post.createTimeUtc" x-text="post.createTimeUtc"></time>
                         </div>
                     </div>
                     <div>
-                        <a class="btn btn-sm btn-outline-accent btn-restore" data-postid="@post.Id" href="javascript:;">
+                        <button class="btn btn-sm btn-outline-accent btn-restore" 
+                                x-on:click="restorePost(post.id)">
                             <i class="bi-reply-fill"></i> @SharedLocalizer["Restore"]
-                        </a>
-                        <a class="btn btn-outline-danger btn-sm btn-delete" data-postid="@post.Id" href="javascript:;">
+                        </button>
+                        <button class="btn btn-outline-danger btn-sm btn-delete" 
+                                x-on:click="deletePost(post.id)">
                             <i class="bi-trash"></i> @SharedLocalizer["Delete"]
-                        </a>
+                        </button>
                     </div>
                 </div>
             </div>
-        }
-    }
-    else
-    {
-        <partial name="_NoPosts" />
-    }
-</div>
+        </template>
+    </div>
 
-<div class="admin-settings-action-container border-top pt-2 mt-2">
-    <a href="#" class="btn btn-outline-danger btn-empty-recbin mb-3">
-        <i class="bi-trash"></i>
-        @SharedLocalizer["Empty Recycle Bin"]
-    </a>
+    <div x-show="!isLoading && hasPosts" class="admin-settings-action-container border-top pt-2 mt-2">
+        <button x-on:click="emptyRecycleBin" class="btn btn-outline-danger btn-empty-recbin mb-3">
+            <i class="bi-trash"></i>
+            @SharedLocalizer["Empty Recycle Bin"]
+        </button>
+    </div>
 </div>
