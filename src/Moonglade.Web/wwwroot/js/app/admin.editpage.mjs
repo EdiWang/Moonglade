@@ -1,102 +1,139 @@
-import { fetch2 } from './httpService.mjs?v=1500'
-import { parseMetaContent } from './utils.module.mjs'
-import { success } from './toastService.mjs'
-
-let isPreviewRequired = false;
-let pageId = parseMetaContent('page-id');
-const btnSubmitPage = '#btn-submit';
+import { default as Alpine } from '/lib/alpinejs/alpinejs.3.15.0.module.esm.min.js';
+import { fetch2 } from './httpService.mjs?v=1500';
+import { success } from './toastService.mjs';
 
 let htmlContentEditor = null;
 let cssContentEditor = null;
 let hasCssEditorInitialized = false;
 
-require(['vs/editor/editor.main'], function () {
-    htmlContentEditor = initEditor('RawHtmlContentEditor', "#EditPageRequest_RawHtmlContent", 'html');
-});
+Alpine.data('pageEditor', () => ({
+    pageId: null,
+    isLoading: true,
+    isSaving: false,
+    isPreview: false,
+    formData: {
+        title: '',
+        slug: '',
+        metaDescription: '',
+        rawHtmlContent: '',
+        cssContent: '',
+        hideSidebar: false,
+        isPublished: false
+    },
 
-function assignEditorValues2() {
-    assignEditorValues(htmlContentEditor, "#EditPageRequest_RawHtmlContent")
+    async init() {
+        // Get pageId from URL
+        const urlParams = new URLSearchParams(window.location.search);
+        const pathSegments = window.location.pathname.split('/');
+        const idFromPath = pathSegments[pathSegments.length - 1];
+        
+        if (idFromPath && idFromPath !== 'edit' && idFromPath !== window.emptyGuid) {
+            this.pageId = idFromPath;
+            await this.loadPageData();
+        } else {
+            this.isLoading = false;
+        }
 
-    // Edit Mode, preserve old value when user has not clicked on CSS tab
-    let oldCssValue = document.querySelector("#EditPageRequest_CssContent").value;
-    let cssValue = hasCssEditorInitialized ? cssContentEditor.getValue() : oldCssValue;
+        this.initMonacoEditor();
+        this.setupTabHandlers();
+        this.setupKeyboardShortcuts();
+    },
 
-    document.querySelector("#EditPageRequest_CssContent").value = cssValue;
-}
+    async loadPageData() {
+        if (!this.pageId) return;
 
-function onPageCreateEditBegin() {
-    document.querySelector(btnSubmitPage).classList.add('disabled');
-    document.querySelector(btnSubmitPage).disabled = true;
-};
+        this.isLoading = true;
+        try {
+            const data = await fetch2(`/api/page/${this.pageId}`, 'GET');
+            
+            this.formData = {
+                title: data.title || '',
+                slug: data.slug || '',
+                metaDescription: data.metaDescription || '',
+                rawHtmlContent: data.htmlContent || '',
+                cssContent: data.cssContent || '',
+                hideSidebar: data.hideSidebar || false,
+                isPublished: data.isPublished || false
+            };
 
-function onPageCreateEditComplete() {
-    document.querySelector(btnSubmitPage).classList.remove('disabled');
-    document.querySelector(btnSubmitPage).removeAttribute('disabled');
-};
-
-async function postCreateOrEdit() {
-    onPageCreateEditBegin();
-
-    const apiAddress = pageId == window.emptyGuid ? `/api/page` : `/api/page/${pageId}`;
-    const verb = pageId == window.emptyGuid ? 'POST' : 'PUT';
-
-    const data = await fetch2(apiAddress, verb,
-        {
-            title: document.querySelector("#EditPageRequest_Title").value,
-            slug: document.querySelector("#EditPageRequest_Slug").value,
-            metaDescription: document.querySelector("#EditPageRequest_MetaDescription").value,
-            rawHtmlContent: document.querySelector("#EditPageRequest_RawHtmlContent").value,
-            cssContent: document.querySelector("#EditPageRequest_CssContent").value,
-            hideSidebar: document.querySelector('#EditPageRequest_HideSidebar').checked,
-            isPublished: document.querySelector('#EditPageRequest_IsPublished').checked
-        });
-
-    onPageCreateEditComplete();
-
-    if (data.pageId) {
-        pageId = data.pageId;
-        success('Page saved successfully.');
-
-        if (document.querySelector('#EditPageRequest_IsPublished').checked) {
-            if (document.querySelector('#btn-preview')) {
-                document.querySelector('#btn-preview').style.display = 'none';
+            // Update editors with loaded content
+            if (htmlContentEditor) {
+                htmlContentEditor.setValue(this.formData.rawHtmlContent);
             }
+        } finally {
+            this.isLoading = false;
+        }
+    },
+
+    initMonacoEditor() {
+        require(['vs/editor/editor.main'], () => {
+            htmlContentEditor = window.initEditor(
+                'RawHtmlContentEditor', 
+                '.page-rawhtmlcontent-textarea', 
+                'html'
+            );
+        });
+    },
+
+    setupTabHandlers() {
+        document.querySelectorAll('a[data-bs-toggle="tab"]').forEach(element => {
+            element.addEventListener('shown.bs.tab', (e) => {
+                const isCssTab = e.target.id === "csscontent-tab";
+                if (isCssTab && !hasCssEditorInitialized) {
+                    cssContentEditor = window.initEditor(
+                        'CssContentEditor', 
+                        '.page-csscontent-textarea', 
+                        'css'
+                    );
+                    hasCssEditorInitialized = true;
+                }
+            });
+        });
+    },
+
+    setupKeyboardShortcuts() {
+        window.addEventListener('keydown', (event) => {
+            if ((event.ctrlKey || event.metaKey) && event.key.toLowerCase() === 's') {
+                event.preventDefault();
+                this.handleSubmit();
+            }
+        });
+    },
+
+    syncEditorValues() {
+        if (htmlContentEditor) {
+            this.formData.rawHtmlContent = htmlContentEditor.getValue();
         }
 
-        if (isPreviewRequired) {
-            isPreviewRequired = false;
-            window.open(`/admin/page/preview/${data.pageId}`);
+        if (hasCssEditorInitialized && cssContentEditor) {
+            this.formData.cssContent = cssContentEditor.getValue();
+        }
+    },
+
+    async handleSubmit() {
+        this.syncEditorValues();
+        this.isSaving = true;
+
+        try {
+            const isCreateMode = !this.pageId || this.pageId === window.emptyGuid;
+            const apiAddress = isCreateMode ? '/api/page' : `/api/page/${this.pageId}`;
+            const verb = isCreateMode ? 'POST' : 'PUT';
+
+            const data = await fetch2(apiAddress, verb, this.formData);
+
+            if (data.pageId) {
+                this.pageId = data.pageId;
+                success('Page saved successfully.');
+
+                if (this.isPreview) {
+                    window.open(`/admin/page/preview/${data.pageId}`);
+                    this.isPreview = false;
+                }
+            }
+        } finally {
+            this.isSaving = false;
         }
     }
-}
+}));
 
-document.querySelectorAll('a[data-bs-toggle="tab"]').forEach(function (element) {
-    element.addEventListener('shown.bs.tab', function (e) {
-        var isCssTab = e.target.id === "csscontent-tab";
-        if (isCssTab && !hasCssEditorInitialized) {
-            cssContentEditor = initEditor('CssContentEditor', "#EditPageRequest_CssContent", 'css');
-            hasCssEditorInitialized = true;
-        }
-    });
-});
-
-const handleKeyboardShortcuts = (event) => {
-    if ((event.ctrlKey || event.metaKey) && event.key.toLowerCase() === 's') {
-        event.preventDefault();
-        document.querySelector(btnSubmitPostSelector).click();
-    }
-};
-
-window.addEventListener('keydown', handleKeyboardShortcuts);
-
-async function handleSubmit(e) {
-    e.preventDefault();
-
-    isPreviewRequired = e.submitter.id == 'btn-preview';
-    assignEditorValues2();
-
-    await postCreateOrEdit();
-}
-
-const form = document.querySelector('#page-edit-form');
-form.addEventListener('submit', handleSubmit);
+Alpine.start();
