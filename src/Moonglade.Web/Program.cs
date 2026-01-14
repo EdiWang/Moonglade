@@ -38,8 +38,8 @@ public class Program
         var cultures = GetSupportedCultures();
         var builder = WebApplication.CreateBuilder(args);
         builder.WriteParameterTable();
+        builder.Logging.AddAzureWebAppDiagnostics();
 
-        ConfigureLogging(builder);
         ConfigureServices(builder.Services, builder.Configuration, cultures);
 
         var app = builder.Build();
@@ -76,14 +76,6 @@ public class Program
     {
         var cultureCodes = new[] { "en-US", "zh-Hans", "zh-Hant", "de-DE", "ja-JP" };
         return [.. cultureCodes.Select(code => new CultureInfo(code))];
-    }
-
-    private static void ConfigureLogging(WebApplicationBuilder builder)
-    {
-        if (EnvironmentHelper.IsRunningOnAzureAppService())
-        {
-            builder.Logging.AddAzureWebAppDiagnostics();
-        }
     }
 
     private static void ConfigureServices(IServiceCollection services, IConfiguration configuration, List<CultureInfo> cultures)

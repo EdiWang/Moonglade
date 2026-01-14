@@ -14,6 +14,14 @@
 
 Get started in 10 minutes with minimal Azure resources using our [automated deployment script](https://github.com/EdiWang/Moonglade/wiki/Quick-Deploy-on-Azure).
 
+### Quick Local Deploy (Docker)
+
+For local testing or small-scale use, deploy Moonglade using Docker:
+
+```bash
+docker compose up -d
+```
+
 ### Full Azure Deployment
 
 This mirrors how [edi.wang](https://edi.wang) is deployed, utilizing a variety of Azure services for maximum speed and security. **No automated script is provided**—manual resource creation is required.

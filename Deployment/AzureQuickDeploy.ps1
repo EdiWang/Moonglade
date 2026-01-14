@@ -75,14 +75,6 @@ function Create-StorageAccount($storageAccountName, $rsgName, $regionName) {
     }
 }
 
-function Create-StorageContainer($storageContainerName, $storageConn) {
-    $storageContainerExists = az storage container exists --name $storageContainerName --connection-string $storageConn.connectionString | ConvertFrom-Json
-    if (!$storageContainerExists.exists) {
-        Write-Host "Creating storage container"
-        az storage container create --name $storageContainerName --connection-string $storageConn.connectionString --public-access container | Out-Null
-    }
-}
-
 function Create-WebApp($webAppName, $rsgName, $aspName, $dockerImageName) {
     $appCheck = az webapp list --query "[?name=='$webAppName']" | ConvertFrom-Json
     $appExists = $appCheck.Length -gt 0
@@ -94,7 +86,7 @@ function Create-WebApp($webAppName, $rsgName, $aspName, $dockerImageName) {
     }
 }
 
-function Update-WebAppConfig($webAppName, $rsgName, $sqlConnStr, $storageConn, $storageContainerName) {
+function Update-WebAppConfig($webAppName, $rsgName, $sqlConnStr, $storageConn) {
     Write-Host "Updating Configuration" -ForegroundColor Green
     Write-Host "Setting SQL Database Connection String"
     az webapp config connection-string set -g $rsgName -n $webAppName -t SQLAzure --settings MoongladeDatabase=$sqlConnStr
@@ -104,7 +96,6 @@ function Update-WebAppConfig($webAppName, $rsgName, $sqlConnStr, $storageConn, $
 
     az webapp config appsettings set -g $rsgName -n $webAppName --settings ImageStorage__Provider=azurestorage  | Out-Null
     az webapp config appsettings set -g $rsgName -n $webAppName --settings ImageStorage__AzureStorageSettings__ConnectionString=$scon | Out-Null
-    az webapp config appsettings set -g $rsgName -n $webAppName --settings ImageStorage__AzureStorageSettings__ContainerName=$storageContainerName | Out-Null
     az webapp config appsettings set -g $rsgName -n $webAppName --settings ASPNETCORE_FORWARDEDHEADERS_ENABLED=true | Out-Null
 }
 
@@ -166,7 +157,6 @@ $rndNumber = Get-Random -Minimum 1000 -Maximum 9999
 $rsgName = "moongladersg$rndNumber"
 $aspName = "moongladeplan$rndNumber"
 $storageAccountName = "moongladestorage$rndNumber"
-$storageContainerName = "moongladeimages$rndNumber"
 $sqlServerUsername = "moonglade"
 $sqlServerName = "moongladesql$rndNumber"
 $sqlDatabaseName = "moongladedb$rndNumber"
@@ -204,7 +194,6 @@ Create-SqlDatabase $sqlDatabaseName $rsgName $sqlServerName
 Create-StorageAccount $storageAccountName $rsgName $regionName
 
 $storageConn = az storage account show-connection-string -g $rsgName -n $storageAccountName | ConvertFrom-Json
-Create-StorageContainer $storageContainerName $storageConn
 
 Create-WebApp $webAppName $rsgName $aspName $dockerImageName
 
@@ -218,7 +207,7 @@ if ($createdExists) {
 # Update configuration
 $sqlConnStrTemplate = az sql db show-connection-string -s $sqlServerName -n $sqlDatabaseName -c ado.net --auth-type SqlPassword
 $sqlConnStr = $sqlConnStrTemplate.Replace("<username>", $sqlServerUsername).Replace("<password>", $sqlServerPassword)
-Update-WebAppConfig $webAppName $rsgName $sqlConnStr $storageConn $storageContainerName
+Update-WebAppConfig $webAppName $rsgName $sqlConnStr $storageConn
 
 az webapp restart --name $webAppName --resource-group $rsgName | Out-Null
 

@@ -1,0 +1,54 @@
+.menu-item-card {
+    border: 1px solid #dee2e6;
+    border-radius: 0.375rem;
+    margin-bottom: 1rem;
+}
+
+.menu-item-header {
+    padding: 1rem;
+    border-bottom: 1px solid #dee2e6;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.submenu-container {
+    background-color: #f8f9fa;
+    padding: 0.75rem;
+}
+
+.submenu-item {
+    background-color: white;
+    border: 1px solid #dee2e6;
+    border-radius: 0.25rem;
+    padding: 0.75rem;
+    margin-bottom: 0.5rem;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.menu-form {
+    padding: 1rem;
+}
+
+.drag-handle {
+    cursor: move;
+    color: #6c757d;
+}
+
+.empty-state {
+    text-align: center;
+    padding: 3rem 1rem;
+    color: #6c757d;
+}
+
+.icon-preview {
+    margin-right: 0.5rem;
+    font-size: 1rem;
+}
+
+.empty-state-icon {
+    font-size: 3rem;
+    opacity: 0.3;
+}

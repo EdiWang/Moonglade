@@ -1,162 +1,183 @@
 ﻿@page "/admin/menu"
-@Html.AntiForgeryToken()
 @{
     ViewBag.Title = "Menu";
-
-    var bc = BlogConfig.CustomMenuSettings;
-    var settings = new CustomMenuSettingsJsonModel
-            {
-                IsEnabled = bc.IsEnabled,
-                MenuJson = bc.Menus.ToJson()
-            };
+    ViewBag.XData = "menuManager";
 }
+
+@Html.AntiForgeryToken()
 
 @section scripts {
     <script type="module" src="~/js/app/admin.menu.mjs"></script>
 }
 
-@section head {
-    <style>
-        .menu-item-card {
-            border: 1px solid #dee2e6;
-            border-radius: 0.375rem;
-            margin-bottom: 1rem;
-        }
-        .menu-item-header {
-            padding: 1rem;
-            border-bottom: 1px solid #dee2e6;
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-        }
-        .submenu-container {
-            background-color: #f8f9fa;
-            padding: 0.75rem;
-        }
-        .submenu-item {
-            background-color: white;
-            border: 1px solid #dee2e6;
-            border-radius: 0.25rem;
-            padding: 0.75rem;
-            margin-bottom: 0.5rem;
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-        }
-        .menu-form {
-            padding: 1rem;
-        }
-        .drag-handle {
-            cursor: move;
-            color: #6c757d;
-        }
-        .empty-state {
-            text-align: center;
-            padding: 3rem 1rem;
-            color: #6c757d;
-        }
-        .icon-preview {
-            margin-right: 0.5rem;
-            font-size: 1rem;
-        }
-    </style>
-}
-
 @section admintoolbar {
     <div class="admin-toolbar pb-2 border-bottom mb-3">
-        <button type="button" class="btn btn-outline-accent" id="btn-add-menu">
+        <button type="button" class="btn btn-outline-accent" x-on:click="openMenuItemModal()">
             <i class="bi-plus-circle"></i> @SharedLocalizer["Add Menu Item"]
         </button>
 
-        <button type="button" id="btn-clear-menus" class="btn btn-outline-danger">
+        <button type="button" class="btn btn-outline-danger" x-on:click="clearMenus()">
             <i class="bi-trash"></i> @SharedLocalizer["Clear menus"]
         </button>
     </div>
 }
 
-<form id="form-settings" asp-controller="Settings" asp-action="CustomMenu">
-    <div class="admin-settings-entry-container">
-        <div class="settings-entry row align-items-center py-3 px-2 rounded-3 border mb-3">
-            <div class="col-auto">
-                <i class="bi-menu-app settings-entry-icon"></i>
+<div>
+    <div x-show="isLoading"
+         class="text-muted mb-3"
+         :class="{ 'd-flex align-items-center': isLoading }">
+        <div class="spinner-border spinner-border-sm me-2" role="status"></div>
+        <span>@SharedLocalizer["Loading menu settings..."]</span>
+    </div>
+
+    <form id="form-settings" x-show="!isLoading" x-on:submit.prevent="saveSettings()">
+        <div class="admin-settings-entry-container">
+            <div class="settings-entry row align-items-center py-3 px-2 rounded-3 border mb-3">
+                <div class="col-auto">
+                    <i class="bi-menu-app settings-entry-icon"></i>
+                </div>
+                <div class="col">
+                    <label class="form-check-label">@SharedLocalizer["Enable custom menus"]</label>
+                </div>
+                <div class="col-md-5 text-end">
+                    <div class="form-check form-switch form-control-lg">
+                        <input type="checkbox" x-model="settings.isEnabled" class="form-check-input" />
+                    </div>
+                </div>
             </div>
-            <div class="col">
-                <label asp-for="@settings.IsEnabled" class="form-check-label"></label>
-            </div>
-            <div class="col-md-5 text-end">
-                <div class="form-check form-switch form-control-lg">
-                    <input type="hidden" name="IsEnabled" value="false">
-                    <input type="checkbox" name="IsEnabled" value="true" class="form-check-input" @(@settings.IsEnabled
-                           ? "checked" : null) />
+
+            <div id="menu-container">
+                <div id="menu-list">
+                    <template x-for="(item, index) in settings.menus" :key="index">
+                        <div class="menu-item-card" :data-index="index">
+                            <div class="menu-item-header">
+                                <div class="d-flex align-items-center flex-grow-1">
+                                    <i class="drag-handle bi-grip-vertical me-2"></i>
+                                    <i :class="item.icon || 'bi-star'" class="icon-preview"></i>
+                                    <div class="ms-2">
+                                        <strong x-text="item.title"></strong>
+                                        
+                                        <div class="text-muted small">
+                                            <span>#</span><span x-text="item.displayOrder || 1"></span>
+                                            <span x-show="item.isOpenInNewTab"> • Opens in new tab</span>
+                                            <code x-show="item.url" x-text="item.url"></code>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="btn-group">
+                                    <button type="button" class="btn btn-sm btn-outline-secondary" 
+                                            x-on:click="moveMenuItem(index, 'up')" 
+                                            :disabled="index === 0">
+                                        <i class="bi-arrow-up"></i>
+                                    </button>
+                                    <button type="button" class="btn btn-sm btn-outline-secondary" 
+                                            x-on:click="moveMenuItem(index, 'down')" 
+                                            :disabled="index === settings.menus.length - 1">
+                                        <i class="bi-arrow-down"></i>
+                                    </button>
+                                    <button type="button" class="btn btn-sm btn-outline-accent" 
+                                            x-on:click="openMenuItemModal(index)">
+                                        <i class="bi-pencil"></i>
+                                    </button>
+                                    <button type="button" class="btn btn-sm btn-outline-danger" 
+                                            x-on:click="deleteMenuItem(index)">
+                                        <i class="bi-trash"></i>
+                                    </button>
+                                </div>
+                            </div>
+                            
+                            <!-- Sub Menus -->
+                            <template x-if="item.subMenus && item.subMenus.length > 0">
+                                <div class="submenu-container">
+                                    <template x-for="(subItem, subIndex) in item.subMenus" :key="subIndex">
+                                        <div class="submenu-item">
+                                            <div>
+                                                <strong x-text="subItem.title"></strong>
+                                                <code x-text="subItem.url"></code>
+                                                <span x-show="subItem.isOpenInNewTab" class="badge bg-secondary">New Tab</span>
+                                            </div>
+                                            <div class="btn-group">
+                                                <button type="button" class="btn btn-sm btn-outline-primary" 
+                                                        x-on:click="openSubMenuItemModal(index, subIndex)">
+                                                    <i class="bi-pencil"></i>
+                                                </button>
+                                                <button type="button" class="btn btn-sm btn-outline-danger" 
+                                                        x-on:click="deleteSubMenuItem(index, subIndex)">
+                                                    <i class="bi-trash"></i>
+                                                </button>
+                                            </div>
+                                        </div>
+                                    </template>
+                                </div>
+                            </template>
+                            
+                            <div class="submenu-container rounded-bottom">
+                                <button type="button" class="btn btn-sm btn-outline-accent" 
+                                        x-on:click="openSubMenuItemModal(index)">
+                                    <i class="bi-plus-circle"></i> Add Sub Menu
+                                </button>
+                            </div>
+                        </div>
+                    </template>
+                </div>
+                
+                <div x-show="!isLoading && settings.menus.length === 0" class="empty-state">
+                    <i class="bi-menu-app empty-state-icon"></i>
+                    <h5>@SharedLocalizer["No menu items"]</h5>
+                    <p>@SharedLocalizer["Click 'Add Menu Item' to create your first menu."]</p>
                 </div>
             </div>
         </div>
 
-        <div id="menu-container">
-            <div id="menu-list">
-                <!-- Menu items will be dynamically populated here -->
-            </div>
-            
-            <div id="empty-state" class="empty-state">
-                <i class="bi-menu-app" style="font-size: 3rem; opacity: 0.3;"></i>
-                <h5>@SharedLocalizer["No menu items"]</h5>
-                <p>@SharedLocalizer["Click 'Add Menu Item' to create your first menu."]</p>
-            </div>
+        <div class="admin-settings-action-container border-top pt-2 mt-2">
+            <button type="submit" class="btn btn-outline-accent">
+                @SharedLocalizer["Save"]
+            </button>
         </div>
-    </div>
-
-    <textarea id="textarea-menu-json" asp-for="@settings.MenuJson" class="settings-jsoncontent-textarea d-none"></textarea>
-
-    <div class="admin-settings-action-container border-top pt-2 mt-2">
-        <button type="submit" class="btn btn-outline-accent" id="btn-save-settings">
-            @SharedLocalizer["Save"]
-        </button>
-    </div>
-</form>
+    </form>
+</div>
 
 <!-- Menu Item Modal -->
 <div class="modal fade" id="menuItemModal" tabindex="-1" aria-labelledby="menuItemModalLabel" aria-hidden="true">
     <div class="modal-dialog">
         <div class="modal-content">
             <div class="modal-header">
-                <h5 class="modal-title" id="menuItemModalLabel">@SharedLocalizer["Menu Item"]</h5>
+                <h5 class="modal-title" id="menuItemModalLabel" x-text="editingIndex !== null ? '@SharedLocalizer["Edit Menu Item"]' : '@SharedLocalizer["Add Menu Item"]'"></h5>
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <div class="modal-body">
-                <form id="menu-item-form">
-                    <input type="hidden" id="menu-item-index" value="">
-                    
+                <form id="menu-item-form" x-on:submit.prevent="saveMenuItem()">
                     <div class="mb-3">
                         <label for="menu-title" class="form-label">@SharedLocalizer["Title"] *</label>
-                        <input type="text" class="form-control" id="menu-title" required>
+                        <input type="text" class="form-control" id="menu-title" x-model="currentMenuItem.title" required>
                     </div>
                     
                     <div class="mb-3">
                         <label for="menu-url" class="form-label">@SharedLocalizer["URL"]</label>
-                        <input type="text" class="form-control" id="menu-url" placeholder="/page/about">
+                        <input type="text" class="form-control" id="menu-url" x-model="currentMenuItem.url" placeholder="/page/about">
                         <div class="form-text">@SharedLocalizer["Leave empty for dropdown menu with sub-items only"]</div>
                     </div>
                     
                     <div class="row mb-3">
                         <div class="col-md-8">
                             <label for="menu-icon" class="form-label">@SharedLocalizer["Icon"]</label>
-                            <input type="text" class="form-control" id="menu-icon" placeholder="bi-star">
+                            <input type="text" class="form-control" id="menu-icon" x-model="currentMenuItem.icon" placeholder="bi-star">
                             <div class="form-text">@SharedLocalizer["Bootstrap Icons class name"]</div>
                         </div>
                         <div class="col-md-4">
                             <label class="form-label">@SharedLocalizer["Preview"]</label>
-                            <div><i id="icon-preview" class="bi-star"></i></div>
+                            <div><i id="icon-preview" :class="currentMenuItem.icon || 'bi-star'"></i></div>
                         </div>
                     </div>
                     
                     <div class="row mb-3">
                         <div class="col-md-6">
                             <label for="menu-order" class="form-label">@SharedLocalizer["Display Order"]</label>
-                            <input type="number" class="form-control" id="menu-order" min="1" value="1">
+                            <input type="number" class="form-control" id="menu-order" x-model.number="currentMenuItem.displayOrder" min="1">
                         </div>
                         <div class="col-md-6">
                             <div class="form-check form-switch mt-4">
-                                <input class="form-check-input" type="checkbox" id="menu-new-tab">
+                                <input class="form-check-input" type="checkbox" id="menu-new-tab" x-model="currentMenuItem.isOpenInNewTab">
                                 <label class="form-check-label" for="menu-new-tab">
                                     @SharedLocalizer["Open in new tab"]
                                 </label>
@@ -167,7 +188,7 @@
             </div>
             <div class="modal-footer">
                 <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">@SharedLocalizer["Cancel"]</button>
-                <button type="button" class="btn btn-outline-accent" id="save-menu-item">@SharedLocalizer["Save"]</button>
+                <button type="button" class="btn btn-outline-accent" x-on:click="saveMenuItem()">@SharedLocalizer["Save"]</button>
             </div>
         </div>
     </div>
@@ -178,26 +199,23 @@
     <div class="modal-dialog">
         <div class="modal-content">
             <div class="modal-header">
-                <h5 class="modal-title" id="subMenuItemModalLabel">@SharedLocalizer["Sub Menu Item"]</h5>
+                <h5 class="modal-title" id="subMenuItemModalLabel" x-text="editingSubIndex !== null ? '@SharedLocalizer["Edit Sub Menu Item"]' : '@SharedLocalizer["Add Sub Menu Item"]'"></h5>
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <div class="modal-body">
-                <form id="sub-menu-item-form">
-                    <input type="hidden" id="sub-menu-parent-index" value="">
-                    <input type="hidden" id="sub-menu-item-index" value="">
-                    
+                <form id="sub-menu-item-form" x-on:submit.prevent="saveSubMenuItem()">
                     <div class="mb-3">
                         <label for="sub-menu-title" class="form-label">@SharedLocalizer["Title"] *</label>
-                        <input type="text" class="form-control" id="sub-menu-title" required>
+                        <input type="text" class="form-control" id="sub-menu-title" x-model="currentSubMenuItem.title" required>
                     </div>
                     
                     <div class="mb-3">
                         <label for="sub-menu-url" class="form-label">@SharedLocalizer["URL"] *</label>
-                        <input type="text" class="form-control" id="sub-menu-url" required placeholder="https://example.com">
+                        <input type="text" class="form-control" id="sub-menu-url" x-model="currentSubMenuItem.url" required placeholder="https://example.com">
                     </div>
                     
                     <div class="form-check form-switch">
-                        <input class="form-check-input" type="checkbox" id="sub-menu-new-tab">
+                        <input class="form-check-input" type="checkbox" id="sub-menu-new-tab" x-model="currentSubMenuItem.isOpenInNewTab">
                         <label class="form-check-label" for="sub-menu-new-tab">
                             @SharedLocalizer["Open in new tab"]
                         </label>
@@ -206,7 +224,7 @@
             </div>
             <div class="modal-footer">
                 <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">@SharedLocalizer["Cancel"]</button>
-                <button type="button" class="btn btn-outline-accent" id="save-sub-menu-item">@SharedLocalizer["Save"]</button>
+                <button type="button" class="btn btn-outline-accent" x-on:click="saveSubMenuItem()">@SharedLocalizer["Save"]</button>
             </div>
         </div>
     </div>

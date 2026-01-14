@@ -159,6 +159,10 @@ public class SettingsController(
         return NoContent();
     }
 
+    [HttpGet("custom-menu")]
+    [ProducesResponseType<CustomMenuSettings>(StatusCodes.Status200OK)]
+    public async Task<IActionResult> CustomMenu() => Ok(blogConfig.CustomMenuSettings);
+
     [HttpPost("custom-menu")]
     [ProducesResponseType(StatusCodes.Status204NoContent)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]

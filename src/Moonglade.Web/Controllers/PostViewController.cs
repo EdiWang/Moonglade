@@ -9,9 +9,6 @@ namespace Moonglade.Web.Controllers;
 public class PostViewController(IConfiguration configuration, IBlogConfig blogConfig, ICommandMediator commandMediator) : ControllerBase
 {
     private readonly bool _isEnabled = configuration.GetValue<bool>("Post:EnableViewCount");
-    private readonly HashSet<string> _knownBots = new(
-        configuration.GetSection("Post:KnownBots").Get<string[]>() ?? [],
-        StringComparer.OrdinalIgnoreCase);
 
     [HttpPost]
     public async Task<IActionResult> AddViewCount([FromBody] ViewRequest request)
@@ -32,7 +29,7 @@ public class PostViewController(IConfiguration configuration, IBlogConfig blogCo
         }
 
         var userAgent = Request.Headers.UserAgent.ToString();
-        if (IsKnownBot(userAgent))
+        if (string.IsNullOrWhiteSpace(userAgent))
         {
             return Forbid();
         }
@@ -51,16 +48,6 @@ public class PostViewController(IConfiguration configuration, IBlogConfig blogCo
     private async Task SaveViewRecord(Guid postId, string ip)
     {
         await commandMediator.SendAsync(new AddViewCountCommand(postId, ip));
-    }
-
-    private bool IsKnownBot(string userAgent)
-    {
-        if (string.IsNullOrEmpty(userAgent))
-        {
-            return false;
-        }
-
-        return _knownBots.Any(bot => userAgent.Contains(bot, StringComparison.OrdinalIgnoreCase));
     }
 }
 

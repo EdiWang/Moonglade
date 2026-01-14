@@ -168,9 +168,6 @@
   <data name="Archive" xml:space="preserve">
     <value>歸檔時間軸</value>
   </data>
-  <data name="Are you sure to restart website? All current requests will be terminated." xml:space="preserve">
-    <value>你確定要重啟網站嗎？所有當前請求都會被終止。</value>
-  </data>
   <data name="Are you sure?" xml:space="preserve">
     <value>確定嗎？</value>
   </data>

@@ -1,9 +1,7 @@
 ﻿@page "/admin/post/draft"
-@using Moonglade.Data.Specifications
-@using Moonglade.Features.Post
 @{
     ViewBag.Title = "Drafts";
-    var posts = await QueryMediator.QueryAsync(new ListPostSegmentByStatusQuery(PostStatus.Draft));
+    ViewBag.XData = "draftManager";
 }
 
 @section scripts {
@@ -14,41 +12,46 @@
     <partial name="_PostManageHeader" />
 }
 
+@Html.AntiForgeryToken()
+
 <div>
-    @if (posts.Any())
-    {
-        @Html.AntiForgeryToken()
+    <div x-show="isLoading"
+         class="text-muted mb-3"
+         :class="{ 'd-flex align-items-center': isLoading }">
+        <div class="spinner-border spinner-border-sm me-2" role="status"></div>
+        <span>Loading drafts...</span>
+    </div>
 
-        @foreach (var post in posts.OrderByDescending(p => p.LastModifiedUtc))
-        {
-            <div id="post-@post.Id" class="admin-post-entry p-3 mb-2 rounded-3 shadow-sm border">
-                <div class="d-flex">
-                    <div class="flex-grow-1">
-                        <a asp-page="./EditPost" asp-route-id="@post.Id">
-                            <h6>
-                                @post.Title
-                            </h6>
-                        </a>
-                        <div>
-                            <i class="bi-calendar-event"></i>
-                            <span class="text-muted me-2">
-                                <time data-utc-label="@post.CreateTimeUtc.ToString("u")">@post.CreateTimeUtc</time>
-                            </span>
-                        </div>
-                    </div>
+    <div x-show="!isLoading && !hasPosts">
+        <partial name="_NoPosts" />
+    </div>
 
+    <template x-for="post in posts" :key="post.id">
+        <div :id="`post-${post.id}`" class="admin-post-entry p-3 mb-2 rounded-3 shadow-sm border">
+            <div class="d-flex">
+                <div class="flex-grow-1">
+                    <a :href="`/admin/post/edit/${post.id}`">
+                        <h6 x-text="post.title"></h6>
+                    </a>
                     <div>
-                        <a class="btn btn-outline-accent btn-sm btn-edit" asp-page="./EditPost" asp-route-id="@post.Id"><i class="bi-pen"></i></a>
-                        <a class="btn btn-outline-danger btn-sm btn-delete" data-postid="@post.Id" href="javascript:;">
-                            <i class="bi-trash"></i>
-                        </a>
+                        <i class="bi-calendar-event"></i>
+                        <span class="text-muted me-2">
+                            <time :data-utc-label="post.createTimeUtc" x-text="post.createTimeUtc"></time>
+                        </span>
                     </div>
                 </div>
+
+                <div>
+                    <a class="btn btn-outline-accent btn-sm btn-edit" 
+                       :href="`/admin/post/edit/${post.id}`">
+                        <i class="bi-pen"></i>
+                    </a>
+                    <button class="btn btn-outline-danger btn-sm btn-delete" 
+                            x-on:click="deletePost(post.id)">
+                        <i class="bi-trash"></i>
+                    </button>
+                </div>
             </div>
-        }
-    }
-    else
-    {
-        <partial name="_NoPosts" />
-    }
+        </div>
+    </template>
 </div>

@@ -1,45 +1,61 @@
-import { fetch2 } from './httpService.mjs?v=1500'
-import { formatUtcTime } from './utils.module.mjs'
-import { success } from './toastService.mjs'
+import { default as Alpine } from '/lib/alpinejs/alpinejs.3.15.0.module.esm.min.js';
+import { fetch2 } from '/js/app/httpService.mjs?v=1500';
+import { formatUtcTime } from './utils.module.mjs';
+import { success } from '/js/app/toastService.mjs';
 
-async function deletePost(postid) {
-    await fetch2(`/api/post/${postid}/destroy`, 'DELETE', {});
+Alpine.data('recycleBinManager', () => ({
+    posts: [],
+    isLoading: true,
 
-    document.querySelector(`#post-${postid}`).remove();
-    success('Post deleted');
-}
+    async init() {
+        await this.loadPosts();
+    },
 
-async function restorePost(postid) {
-    await fetch2(`/api/post/${postid}/restore`, 'POST', {});
-
-    document.querySelector(`#post-${postid}`).remove();
-    success('Post restored');
-}
-
-document.querySelectorAll('.btn-delete').forEach(function (button) {
-    button.addEventListener('click', async function () {
-        var cfm = confirm('Delete Confirmation?');
-        if (cfm) {
-            await deletePost(this.getAttribute('data-postid'));
+    async loadPosts() {
+        this.isLoading = true;
+        try {
+            const data = await fetch2('/api/post/list/recyclebin', 'GET');
+            this.posts = (data.posts ?? []).sort((a, b) => 
+                new Date(b.createTimeUtc) - new Date(a.createTimeUtc)
+            );
+            
+            formatUtcTime();
+        } finally {
+            this.isLoading = false;
         }
-    });
-});
+    },
 
-document.querySelectorAll('.btn-restore').forEach(function (button) {
-    button.addEventListener('click', async function () {
-        await restorePost(this.getAttribute('data-postid'));
-    });
-});
+    async deletePost(postId) {
+        if (confirm('Delete Confirmation?')) {
+            await fetch2(`/api/post/${postId}/destroy`, 'DELETE');
+            this.posts = this.posts.filter(p => p.id !== postId);
+            success('Post deleted');
+        }
+    },
 
-document.querySelectorAll('.btn-empty-recbin').forEach(function (button) {
-    button.addEventListener('click', async function () {
-        await fetch2('/api/post/recyclebin', 'DELETE', {});
+    async restorePost(postId) {
+        await fetch2(`/api/post/${postId}/restore`, 'POST');
+        this.posts = this.posts.filter(p => p.id !== postId);
+        success('Post restored');
+    },
 
-        success('Cleared');
-        setTimeout(function () {
-            window.location.reload();
-        }, 800);
-    });
-});
+    async emptyRecycleBin() {
+        if (confirm('Are you sure you want to empty the recycle bin? This action cannot be undone.')) {
+            await fetch2('/api/post/recyclebin', 'DELETE');
+            this.posts = [];
+            success('Cleared');
+        }
+    },
 
-formatUtcTime();
+    get hasPosts() {
+        return this.posts.length > 0;
+    },
+
+    get sortedPosts() {
+        return [...this.posts].sort((a, b) => 
+            new Date(b.createTimeUtc) - new Date(a.createTimeUtc)
+        );
+    }
+}));
+
+Alpine.start();

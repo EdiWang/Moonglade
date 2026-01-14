@@ -1,44 +1,71 @@
-import { fetch2 } from './httpService.mjs?v=1500'
-import { formatUtcTime } from './utils.module.mjs';
-import { success } from './toastService.mjs';
+import { default as Alpine } from '/lib/alpinejs/alpinejs.3.15.0.module.esm.min.js';
+import { fetch2 } from '/js/app/httpService.mjs?v=1500';
+import { success } from '/js/app/toastService.mjs';
 
-async function deleteMention(mentionId) {
-    await fetch2(`/api/mention/${mentionId}`, 'DELETE', {});
-    document.querySelector(`#mention-box-${mentionId}`).remove();
-}
+Alpine.data('mentionManager', () => ({
+    mentions: [],
+    isLoading: true,
+    filterText: '',
 
-async function clearMention() {
-    await fetch2(`/api/mention/clear`, 'DELETE', {});
+    async init() {
+        await this.loadMentions();
+    },
 
-    success('Mention logs are cleared');
-    setTimeout(function () {
-        window.location.reload();
-    }, 800);
-}
+    async loadMentions() {
+        this.isLoading = true;
+        try {
+            this.mentions = (await fetch2('/api/mention/list', 'GET')) ?? [];
+        } finally {
+            this.isLoading = false;
+        }
+    },
 
-formatUtcTime();
+    get sortedMentions() {
+        return [...this.mentions].sort((a, b) => 
+            new Date(b.pingTimeUtc) - new Date(a.pingTimeUtc)
+        );
+    },
 
-document.getElementById("mentionFilter").addEventListener("keyup", function () {
-    var value = this.value.toLowerCase();
-    var mentionItems = document.querySelectorAll(".mention-item-entry");
+    get filteredMentions() {
+        if (!this.filterText) {
+            return this.sortedMentions;
+        }
 
-    mentionItems.forEach(function (item) {
-        var text = item.textContent.toLowerCase();
-        item.style.display = text.indexOf(value) > -1 ? "" : "none";
-    });
-});
-
-document.addEventListener('DOMContentLoaded', () => {
-    const exportButtons = document.querySelectorAll('.btn-delete');
-
-    exportButtons.forEach(button => {
-        button.addEventListener('click', async () => {
-            const mentionId = button.getAttribute('data-mentionId');
-            await deleteMention(mentionId);
+        const filter = this.filterText.toLowerCase();
+        return this.sortedMentions.filter(item => {
+            const searchText = `${item.sourceTitle} ${item.targetPostTitle} ${item.domain} ${item.sourceIp} ${item.worker}`.toLowerCase();
+            return searchText.includes(filter);
         });
-    });
-});
+    },
 
-document.getElementById('btn-clear-all').addEventListener('click', async () => {
-    await clearMention();
-});
+    get hasMentions() {
+        return this.mentions.length > 0;
+    },
+
+    get mentionCount() {
+        return this.filteredMentions.length;
+    },
+
+    async deleteMention(mentionId) {
+        if (!confirm('Delete this mention?')) return;
+
+        await fetch2(`/api/mention/${mentionId}`, 'DELETE');
+        this.mentions = this.mentions.filter(m => m.id !== mentionId);
+        success('Mention deleted');
+    },
+
+    async clearAllMentions() {
+        if (!confirm('Are you sure you want to clear all mentions?')) return;
+
+        await fetch2('/api/mention/clear', 'DELETE');
+        this.mentions = [];
+        success('Mention logs are cleared');
+    },
+
+    formatTime(utcTime) {
+        const date = new Date(utcTime);
+        return date.toLocaleString();
+    }
+}));
+
+Alpine.start();

@@ -168,9 +168,6 @@
   <data name="Archive" xml:space="preserve">
     <value>鳩</value>
   </data>
-  <data name="Are you sure to restart website? All current requests will be terminated." xml:space="preserve">
-    <value>あなたはあなたのウェブサイトを再起動してもよろしいですか? 現在のすべての要求が終了します。</value>
-  </data>
   <data name="Are you sure?" xml:space="preserve">
     <value>確かですか。</value>
   </data>

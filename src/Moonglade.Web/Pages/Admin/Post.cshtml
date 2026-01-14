@@ -1,8 +1,7 @@
 ﻿@page "/admin/post"
-@using Moonglade.Web.PagedList
-@model Moonglade.Web.Pages.Admin.PostModel
 @{
     ViewBag.Title = "Posts";
+    ViewBag.XData = "postManager";
 }
 
 @section scripts {
@@ -16,67 +15,86 @@
 @Html.AntiForgeryToken()
 
 <div>
-    <form method="post">
+    <form x-on:submit.prevent="handleSearch()">
         <div class="d-flex search-box mb-3">
-            <input type="search" aria-label="Search" asp-for="SearchTerm" class="form-control" placeholder="@SharedLocalizer["Search"]" />
-            <button class="btn btn-light btn-search my-sm-0" type="submit"><i class="bi-search text-dark"></i></button>
+            <input type="search" 
+                   x-model="searchTerm"
+                   aria-label="Search" 
+                   class="form-control" 
+                   placeholder="@SharedLocalizer["Search"]" />
+            <button class="btn btn-light btn-search my-sm-0" type="submit">
+                <i class="bi-search text-dark"></i>
+            </button>
         </div>
     </form>
 
-    @if (Model.PostSegments.Count == 0)
-    {
+    <div x-show="isLoading"
+         class="text-muted mb-3"
+         :class="{ 'd-flex align-items-center': isLoading }">
+        <div class="spinner-border spinner-border-sm me-2" role="status"></div>
+        <span>@SharedLocalizer["Loading posts..."]</span>
+    </div>
+
+    <div x-show="!isLoading && !hasPosts">
         <partial name="_NoPosts" />
-    }
-    else
-    {
-        foreach (var item in Model.PostSegments)
-        {
-            <div id="post-@item.Id" class="admin-post-entry p-3 mb-2 rounded-3 shadow-sm border">
-                <div class="row">
-                    <div class="col">
-                        <a asp-page="/Post"
-                           asp-route-year="@item.PubDateUtc.GetValueOrDefault().Year"
-                           asp-route-month="@item.PubDateUtc.GetValueOrDefault().Month"
-                           asp-route-day="@item.PubDateUtc.GetValueOrDefault().Day"
-                           asp-route-slug="@item.Slug"
-                           class="d-inline-block"
-                           title="@item.Slug"
-                           target="_blank">
-                            <h6>
-                                @item.Title
-                                @if (item.IsFeatured)
-                                {
-                                    <i class="bi-star-fill text-warning"></i>
-                                }
+    </div>
 
-                                @if (item.IsOutdated)
-                                {
-                                    <span class="badge rounded-pill text-bg-secondary ms-2">Outdated</span>
-                                }
-                            </h6>
-                        </a>
-                        <div class="mb-2">
-                            @item.ContentAbstract
-                        </div>
-                        <div>
-                            <i class="bi-calendar-event"></i>
-                            <span class="text-muted me-2">
-                                <time data-utc-label="@item.CreateTimeUtc.ToString("u")">@item.CreateTimeUtc</time>
-                            </span>
-                        </div>
-                    </div>
-
-                    <div class="col-auto">
-                        <a class="btn btn-outline-accent btn-sm btn-edit" asp-page="./EditPost" asp-route-id="@item.Id"><i class="bi-pen"></i></a>
-                        <button class="btn btn-outline-danger btn-sm btn-delete" data-postId="@item.Id"><i class="bi-trash"></i></button>
+    <template x-for="post in posts" :key="post.id">
+        <div :id="`post-${post.id}`" class="admin-post-entry p-3 mb-2 rounded-3 shadow-sm border">
+            <div class="row">
+                <div class="col">
+                    <a :href="getPostUrl(post)"
+                       class="d-inline-block"
+                       :title="post.slug"
+                       target="_blank">
+                        <h6>
+                            <span x-text="post.title"></span>
+                            <i x-show="post.isFeatured" class="bi-star-fill text-warning"></i>
+                            <span x-show="post.isOutdated" class="badge rounded-pill text-bg-secondary ms-2">Outdated</span>
+                        </h6>
+                    </a>
+                    <div class="mb-2" x-text="post.contentAbstract"></div>
+                    <div>
+                        <i class="bi-calendar-event"></i>
+                        <span class="text-muted me-2">
+                            <time :data-utc-label="post.createTimeUtc" x-text="post.createTimeUtc"></time>
+                        </span>
                     </div>
                 </div>
-            </div>
-        }
 
-        @Html.PagedListPager(Model.PostSegments, page => $"?pageIndex={page}&searchTerm={Model.SearchTerm}", new()
-        {
-            UlElementClasses = ["pagination mt-4"]
-        })
-    }
+                <div class="col-auto">
+                    <a class="btn btn-outline-accent btn-sm btn-edit" 
+                       :href="`/admin/post/edit/${post.id}`">
+                        <i class="bi-pen"></i>
+                    </a>
+                    <button class="btn btn-outline-danger btn-sm btn-delete" 
+                            x-on:click="deletePost(post.id)">
+                        <i class="bi-trash"></i>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </template>
+
+    <nav x-show="!isLoading && totalPages > 1" aria-label="Page navigation" class="mt-4">
+        <ul class="pagination">
+            <li class="page-item" :class="{ 'disabled': currentPage === 1 }">
+                <a class="page-link" href="#" x-on:click.prevent="goToPage(currentPage - 1)">
+                    <span aria-hidden="true">&laquo;</span>
+                </a>
+            </li>
+            
+            <template x-for="page in paginationPages" :key="page">
+                <li class="page-item" :class="{ 'active': page === currentPage }">
+                    <a class="page-link" href="#" x-on:click.prevent="goToPage(page)" x-text="page"></a>
+                </li>
+            </template>
+            
+            <li class="page-item" :class="{ 'disabled': currentPage === totalPages }">
+                <a class="page-link" href="#" x-on:click.prevent="goToPage(currentPage + 1)">
+                    <span aria-hidden="true">&raquo;</span>
+                </a>
+            </li>
+        </ul>
+    </nav>
 </div>

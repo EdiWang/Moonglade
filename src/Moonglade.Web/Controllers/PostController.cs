@@ -1,4 +1,6 @@
 ﻿using LiteBus.Commands.Abstractions;
+using LiteBus.Queries.Abstractions;
+using Moonglade.Data.Specifications;
 using Moonglade.Features.Post;
 using Moonglade.IndexNow.Client;
 using Moonglade.Web.BackgroundServices;
@@ -15,11 +17,28 @@ public class PostController(
         ICacheAside cache,
         IConfiguration configuration,
         ICommandMediator commandMediator,
+        IQueryMediator queryMediator,
         IBlogConfig blogConfig,
         ScheduledPublishWakeUp wakeUp,
         ILogger<PostController> logger,
         CannonService cannonService) : ControllerBase
 {
+    [HttpGet("list")]
+    [ProducesResponseType(StatusCodes.Status200OK)]
+    public async Task<IActionResult> List([FromQuery] int pageIndex = 1, [FromQuery] int pageSize = 4, [FromQuery] string searchTerm = null)
+    {
+        var offset = (pageIndex - 1) * pageSize;
+        var (posts, totalRows) = await queryMediator.QueryAsync(new ListPostSegmentQuery(PostStatus.Published, offset, pageSize, searchTerm));
+
+        return Ok(new
+        {
+            Posts = posts,
+            TotalRows = totalRows,
+            PageIndex = pageIndex,
+            PageSize = pageSize
+        });
+    }
+
     [HttpPost("createoredit")]
     [TypeFilter(typeof(ClearBlogCache), Arguments =
     [
@@ -176,6 +195,18 @@ public class PostController(
         {
             ServerTime = DateTime.UtcNow,
             Nonce = nonce
+        });
+    }
+
+    [HttpGet("drafts")]
+    [ProducesResponseType(StatusCodes.Status200OK)]
+    public async Task<IActionResult> Drafts()
+    {
+        var posts = await queryMediator.QueryAsync(new ListPostSegmentByStatusQuery(PostStatus.Draft));
+
+        return Ok(new
+        {
+            Posts = posts
         });
     }
 }

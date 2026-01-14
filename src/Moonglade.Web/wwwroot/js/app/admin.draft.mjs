@@ -1,21 +1,41 @@
-import { fetch2 } from './httpService.mjs?v=1500'
-import { formatUtcTime } from './utils.module.mjs'
-import { success } from './toastService.mjs'
+import { default as Alpine } from '/lib/alpinejs/alpinejs.3.15.0.module.esm.min.js';
+import { fetch2 } from '/js/app/httpService.mjs?v=1500';
+import { formatUtcTime } from './utils.module.mjs';
+import { success } from '/js/app/toastService.mjs';
 
-async function deletePost(postid) {
-    await fetch2(`/api/post/${postid}/recycle`, 'DELETE', {});
+Alpine.data('draftManager', () => ({
+    posts: [],
+    isLoading: true,
 
-    success('Post deleted.');
-    document.querySelector(`#post-${postid}`).style.display = 'none';
-}
+    async init() {
+        await this.loadPosts();
+    },
 
-document.querySelectorAll(".btn-delete").forEach(function (button) {
-    button.addEventListener("click", async function () {
-        var cfm = confirm("Delete Confirmation?");
-        if (cfm) {
-            await deletePost(this.dataset.postid);
+    async loadPosts() {
+        this.isLoading = true;
+        try {
+            const data = await fetch2('/api/post/drafts', 'GET');
+            this.posts = (data.posts ?? []).sort((a, b) => 
+                new Date(b.lastModifiedUtc) - new Date(a.lastModifiedUtc)
+            );
+            
+            formatUtcTime();
+        } finally {
+            this.isLoading = false;
         }
-    });
-});
+    },
 
-formatUtcTime();
+    async deletePost(postId) {
+        if (confirm('Delete Confirmation?')) {
+            await fetch2(`/api/post/${postId}/recycle`, 'DELETE');
+            this.posts = this.posts.filter(p => p.id !== postId);
+            success('Post deleted');
+        }
+    },
+
+    get hasPosts() {
+        return this.posts.length > 0;
+    }
+}));
+
+Alpine.start();

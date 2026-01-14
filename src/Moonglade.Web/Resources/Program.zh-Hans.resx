@@ -168,9 +168,6 @@
   <data name="Archive" xml:space="preserve">
     <value>归档</value>
   </data>
-  <data name="Are you sure to restart website? All current requests will be terminated." xml:space="preserve">
-    <value>你确定要重启网站吗？所有当前请求都会被终止。</value>
-  </data>
   <data name="Are you sure?" xml:space="preserve">
     <value>确定吗？</value>
   </data>

@@ -1,11 +1,7 @@
 ﻿@page "/admin/page/edit/{id:guid?}"
-@model Moonglade.Web.Pages.Admin.EditPageModel
 @{
     ViewBag.Title = "Edit Page";
-}
-
-@section meta {
-    <meta name="page-id" content="@Model.PageId" />
+    ViewBag.XData = "pageEditor";
 }
 
 @section scripts {
@@ -13,57 +9,70 @@
     <script type="module" src="~/js/app/admin.editpage.mjs"></script>
 }
 
-@section head {
-    <style>
-        .monaco-target {
-            border-left: 1px solid #dee2e6;
-            border-right: 1px solid #dee2e6;
-            border-bottom: 1px solid #dee2e6;
-            min-height: calc(100vh - 330px);
-        }
-    </style>
-}
+@Html.AntiForgeryToken()
 
-<div>
-    <form id="page-edit-form" method="post">
+<div x-show="isLoading" class="text-muted mb-3" :class="{ 'd-flex align-items-center': isLoading }">
+    <div class="spinner-border spinner-border-sm me-2" role="status"></div>
+    <span>Loading page data...</span>
+</div>
+
+<div x-show="!isLoading" x-cloak>
+    <form id="page-edit-form" x-on:submit.prevent="handleSubmit">
         <div class="row g-2">
             <div class="col-md-9 col-xl-10">
-                <input type="text" asp-for="EditPageRequest.Title" class="form-control form-control-lg mb-1"
-                       placeholder="Title" required />
+                <input type="text"
+                       x-model="formData.title"
+                       class="form-control form-control-lg mb-1"
+                       placeholder="Title"
+                       required />
 
                 <div class="input-group input-group-sm">
-                    <label class="input-group-text" asp-for="EditPageRequest.Slug">
-                        <i class="bi-link-45deg">
-                        </i>
+                    <label class="input-group-text">
+                        <i class="bi-link-45deg"></i>
                     </label>
-                    <input type="text" asp-for="EditPageRequest.Slug" class="form-control form-control-sm"
-                           placeholder="Slug" required />
+                    <input type="text"
+                           x-model="formData.slug"
+                           class="form-control form-control-sm"
+                           placeholder="Slug"
+                           required />
                 </div>
 
                 <ul class="nav nav-tabs mt-3" id="editor-box-tabs" role="tablist">
                     <li class="nav-item">
-                        <a class="nav-link active" id="profile-tab" data-bs-toggle="tab"
-                           href="#rawhtmlcontent-editor-box" role="tab" aria-controls="html"
-                           aria-selected="false">HTML</a>
+                        <a class="nav-link active"
+                           id="profile-tab"
+                           data-bs-toggle="tab"
+                           href="#rawhtmlcontent-editor-box"
+                           role="tab"
+                           aria-controls="html"
+                           aria-selected="true">HTML</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" id="csscontent-tab" data-bs-toggle="tab" href="#csscontent-editor-box"
-                           role="tab" aria-controls="css" aria-selected="true">CSS</a>
+                        <a class="nav-link"
+                           id="csscontent-tab"
+                           data-bs-toggle="tab"
+                           href="#csscontent-editor-box"
+                           role="tab"
+                           aria-controls="css"
+                           aria-selected="false">CSS</a>
                     </li>
                 </ul>
 
                 <div class="tab-content">
-                    <div class="tab-pane active" id="rawhtmlcontent-editor-box" role="tabpanel"
+                    <div class="tab-pane active"
+                         id="rawhtmlcontent-editor-box"
+                         role="tabpanel"
                          aria-labelledby="html-tab">
-                        <div id="RawHtmlContentEditor" class="monaco-target">
-                        </div>
-                        <textarea asp-for="EditPageRequest.RawHtmlContent"
+                        <div id="RawHtmlContentEditor" class="monaco-target"></div>
+                        <textarea x-model="formData.rawHtmlContent"
                                   class="page-rawhtmlcontent-textarea d-none"></textarea>
                     </div>
-                    <div class="tab-pane" id="csscontent-editor-box" role="tabpanel" aria-labelledby="css-tab">
-                        <div id="CssContentEditor" class="monaco-target">
-                        </div>
-                        <textarea asp-for="EditPageRequest.CssContent"
+                    <div class="tab-pane"
+                         id="csscontent-editor-box"
+                         role="tabpanel"
+                         aria-labelledby="css-tab">
+                        <div id="CssContentEditor" class="monaco-target"></div>
+                        <textarea x-model="formData.cssContent"
                                   class="page-csscontent-textarea d-none"></textarea>
                     </div>
                 </div>
@@ -72,20 +81,29 @@
                 <div class="admin-side-options-container p-3 rounded-3 shadow-sm border mb-4">
                     <div class="mb-3">
                         <div class="form-check form-switch mb-2">
-                            <input type="checkbox" asp-for="EditPageRequest.HideSidebar" class="form-check-input">
-                            <label asp-for="EditPageRequest.HideSidebar" class="form-check-label"></label>
+                            <input type="checkbox"
+                                   x-model="formData.hideSidebar"
+                                   class="form-check-input"
+                                   id="hideSidebar">
+                            <label for="hideSidebar" class="form-check-label">Hide Sidebar</label>
                         </div>
                         <div class="form-check form-switch mb-2">
-                            <input type="checkbox" asp-for="EditPageRequest.IsPublished" class="form-check-input">
-                            <label asp-for="EditPageRequest.IsPublished" class="form-check-label"></label>
+                            <input type="checkbox"
+                                   x-model="formData.isPublished"
+                                   class="form-check-input"
+                                   id="isPublished">
+                            <label for="isPublished" class="form-check-label">Published</label>
                         </div>
                     </div>
                     <div class="border-top pt-3">
                         <div class="form-floating">
-                            <textarea asp-for="EditPageRequest.MetaDescription"
-                                      placeholder="@Html.DisplayNameFor(m => m.EditPageRequest.MetaDescription)"
-                                      class="form-control form-control-sm h-200px" spellcheck="false" required></textarea>
-                            <label class="form-label" asp-for="EditPageRequest.MetaDescription"></label>
+                            <textarea x-model="formData.metaDescription"
+                                      placeholder="Meta Description"
+                                      class="form-control form-control-sm h-200px"
+                                      spellcheck="false"
+                                      required
+                                      id="metaDescription"></textarea>
+                            <label class="form-label" for="metaDescription">Meta Description</label>
                         </div>
                     </div>
                 </div>
@@ -93,15 +111,22 @@
         </div>
 
         <div class="mt-3">
-            <button type="submit" class="btn btn-outline-accent" id="btn-submit">
-                @SharedLocalizer["Save"]
+            <button type="submit"
+                    class="btn btn-outline-accent"
+                    id="btn-submit"
+                    x-bind:disabled="isSaving"
+                    x-on:click="isPreview = false">
+                <span x-show="!isSaving">@SharedLocalizer["Save"]</span>
+                <span x-show="isSaving">Saving...</span>
             </button>
-            @if (!Model.EditPageRequest.IsPublished)
-            {
-                <button type="submit" class="btn btn-outline-success" id="btn-preview">
-                    @SharedLocalizer["Preview"]
-                </button>
-            }
+            <button type="submit"
+                    class="btn btn-outline-success"
+                    id="btn-preview"
+                    x-show="!formData.isPublished"
+                    x-bind:disabled="isSaving"
+                    x-on:click="isPreview = true">
+                @SharedLocalizer["Preview"]
+            </button>
             <a asp-page="./BlogPage" class="btn btn-outline-secondary">@SharedLocalizer["Cancel"]</a>
         </div>
     </form>

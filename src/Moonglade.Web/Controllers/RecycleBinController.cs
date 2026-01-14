@@ -1,4 +1,6 @@
 ﻿using LiteBus.Commands.Abstractions;
+using LiteBus.Queries.Abstractions;
+using Moonglade.Data.Specifications;
 using Moonglade.Features.Post;
 
 namespace Moonglade.Web.Controllers;
@@ -7,8 +9,23 @@ namespace Moonglade.Web.Controllers;
 [Route("api/post")]
 [ApiController]
 [TypeFilter(typeof(ClearBlogCache), Arguments = [BlogCacheType.Subscription | BlogCacheType.SiteMap])]
-public class RecycleBinController(ICacheAside cache, ICommandMediator commandMediator) : ControllerBase
+public class RecycleBinController(
+    ICacheAside cache,
+    IQueryMediator queryMediator,
+    ICommandMediator commandMediator) : ControllerBase
 {
+    [HttpGet("list/recyclebin")]
+    [ProducesResponseType(StatusCodes.Status200OK)]
+    public async Task<IActionResult> List()
+    {
+        var posts = await queryMediator.QueryAsync(new ListPostSegmentByStatusQuery(PostStatus.Deleted));
+
+        return Ok(new
+        {
+            Posts = posts
+        });
+    }
+
     [HttpPost("{postId:guid}/restore")]
     [ProducesResponseType(StatusCodes.Status204NoContent)]
     public async Task<IActionResult> Restore([NotEmpty] Guid postId)

@@ -7,10 +7,10 @@
         BlogConfig.GeneralSettings.AvatarUrl = Url.Action("Avatar", "Assets");
     }
 
-    bool useServerSideDarkMode = Helper.UseServerSideDarkMode(Configuration, Context);
+    bool clientPreferDarkMode = Helper.IsClientPreferDarkMode(Context);
 }
 <!DOCTYPE html>
-<html lang="@BlogConfig.GeneralSettings.DefaultLanguageCode" data-bs-theme="@(useServerSideDarkMode ? "dark" : null)">
+<html lang="@BlogConfig.GeneralSettings.DefaultLanguageCode" data-bs-theme="@(clientPreferDarkMode ? "dark" : null)">
 
 <head>
     <title>
@@ -28,6 +28,7 @@
     <link href="~/css/rwd.css" rel="stylesheet" />
     <link href="~/css/admin.css" rel="stylesheet" />
     <link href="~/theme.css" rel="stylesheet" />
+    <link href="~/Moonglade.Web.styles.css" rel="stylesheet" />
     @await RenderSectionAsync("head", false)
 </head>
 

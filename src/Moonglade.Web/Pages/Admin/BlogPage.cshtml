@@ -1,8 +1,9 @@
 ﻿@page "/admin/page"
+@using Microsoft.AspNetCore.Mvc.TagHelpers
 @using Moonglade.Features.Page
 @{
     ViewBag.Title = "Pages";
-    var pageSegments = await QueryMediator.QueryAsync(new ListPageSegmentsQuery());
+    ViewBag.XData = "pageManager";
 }
 
 @section scripts {
@@ -23,45 +24,42 @@
     </div>
 }
 
-@if (pageSegments.Any())
-{
-    <div>
-        @Html.AntiForgeryToken()
+@Html.AntiForgeryToken()
 
-        <div class="row row-cols-1 row-cols-sm-2 row-cols-md-3 row-cols-lg-4 g-4">
-            @foreach (var item in pageSegments.OrderByDescending(p => p.CreateTimeUtc))
-            {
-                <div class="col">
-                    <div class="card shadow-sm mb-4" id="card-@item.Id">
-                        <div class="card-body">
-                            <h6 class="card-title">
-                                <a asp-page="/BlogPage" asp-route-slug="@item.Slug" target="_blank">@item.Title</a>
-                            </h6>
-                            <p class="mt-2 h-30px">@item.Slug</p>
-                            <small class="text-muted">
-                                @item.CreateTimeUtc
-                            </small>
-                        </div>
-                        <div class="card-footer">
-                            <a class="btn btn-outline-accent btn-sm btn-edit" asp-page="./EditPage" asp-route-id="@item.Id">
-                                <i class="bi-pen"></i>
-                            </a>
-                            <a class="btn btn-outline-danger btn-sm btn-delete" data-pageId="@item.Id">
-                                <i class="bi-trash"></i>
-                            </a>
-                        </div>
-                    </div>
+<div x-show="isLoading"
+     class="text-muted mb-3"
+     :class="{ 'd-flex align-items-center': isLoading }">
+    <div class="spinner-border spinner-border-sm me-2" role="status"></div>
+    <span>@SharedLocalizer["Loading pages..."]</span>
+</div>
+
+<div x-show="!isLoading && !hasPages" class="empty-recycle">
+    <div class="text-center">
+        <h4>@SharedLocalizer["No Pages"]</h4>
+        <p class="text-muted">@SharedLocalizer["no items to show"]</p>
+    </div>
+</div>
+
+<div x-show="!isLoading && hasPages" class="row row-cols-1 row-cols-sm-2 row-cols-md-3 row-cols-lg-4 g-4">
+    <template x-for="page in sortedPages" :key="page.id">
+        <div class="col">
+            <div class="card shadow-sm mb-4" :id="`card-${page.id}`">
+                <div class="card-body">
+                    <h6 class="card-title">
+                        <a :href="`/page/${encodeURIComponent(page.slug)}`" target="_blank" x-text="page.title"></a>
+                    </h6>
+                    <p class="mt-2 h-30px" x-text="page.slug"></p>
+                    <small class="text-muted" x-text="formatDate(page.createTimeUtc)"></small>
                 </div>
-            }
+                <div class="card-footer">
+                    <a class="btn btn-outline-accent btn-sm btn-edit" :href="`./page/edit/${page.id}`">
+                        <i class="bi-pen"></i>
+                    </a>
+                    <a x-on:click="deletePage(page.id)" class="btn btn-outline-danger btn-sm btn-delete" role="button">
+                        <i class="bi-trash"></i>
+                    </a>
+                </div>
+            </div>
         </div>
-    </div>
-}
-else
-{
-    <div class="empty-recycle">
-        <div class="text-center">
-            <h4>@SharedLocalizer["No Pages"]</h4>
-            <p class="text-muted">@SharedLocalizer["no items to show"]</p>
-        </div>
-    </div>
-}
+    </template>
+</div>

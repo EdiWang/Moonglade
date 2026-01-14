@@ -1,4 +1,5 @@
-﻿using Azure.Storage.Blobs;
+﻿using Azure;
+using Azure.Storage.Blobs;
 using Azure.Storage.Blobs.Models;
 using Microsoft.Extensions.Logging;
 
@@ -30,6 +31,27 @@ public class AzureBlobImageStorage : IBlogImageStorage
     private readonly BlobContainerClient _container;
     private readonly BlobContainerClient _secondaryContainer;
     private readonly ILogger<AzureBlobImageStorage> _logger;
+
+    /// <summary>
+    /// Creates a blob container if it does not already exist.
+    /// </summary>
+    /// <param name="connectionString">The Azure Storage account connection string.</param>
+    /// <param name="containerName">The name of the blob container to create.</param>
+    /// <param name="publicAccessType">The public access level for the container. Defaults to <see cref="PublicAccessType.None"/>.</param>
+    /// <exception cref="ArgumentException">Thrown when the connection string or container name is null, empty, or whitespace.</exception>
+    public static async Task<Response<BlobContainerInfo>> CreateContainerIfNotExistsAsync(
+        string connectionString,
+        string containerName,
+        PublicAccessType publicAccessType = PublicAccessType.None)
+    {
+        ArgumentException.ThrowIfNullOrWhiteSpace(connectionString);
+        ArgumentException.ThrowIfNullOrWhiteSpace(containerName);
+
+        var containerClient = new BlobContainerClient(connectionString, containerName);
+        var response = await containerClient.CreateIfNotExistsAsync(publicAccessType).ConfigureAwait(false);
+
+        return response;
+    }
 
     /// <summary>
     /// Initializes a new instance of the <see cref="AzureBlobImageStorage"/> class.

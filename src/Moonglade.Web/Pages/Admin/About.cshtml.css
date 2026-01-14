@@ -1,0 +1,17 @@
+﻿.about-label {
+    width: 250px;
+}
+
+.info-section {
+    margin-bottom: 2rem;
+}
+
+.info-value {
+    word-break: break-all;
+    font-family: 'Consolas', 'Monaco', 'Courier New', monospace;
+    font-size: 0.9em;
+}
+
+.memory-usage {
+    color: var(--bs-info);
+}

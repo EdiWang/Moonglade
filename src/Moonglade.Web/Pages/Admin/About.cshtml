@@ -27,28 +27,6 @@
         : null;
 }
 
-@section head {
-    <style>
-        .about-label {
-            width: 250px;
-        }
-        
-        .info-section {
-            margin-bottom: 2rem;
-        }
-        
-        .info-value {
-            word-break: break-all;
-            font-family: 'Consolas', 'Monaco', 'Courier New', monospace;
-            font-size: 0.9em;
-        }
-        
-        .memory-usage {
-            color: var(--bs-info);
-        }
-    </style>
-}
-
 <div class="pb-3">
     <div class="info-section">
         <h4 class="admin-subtitle fw-bold mb-2">
@@ -147,9 +125,10 @@
                         <tr>
                             <td>@SharedLocalizer["Azure App Service"]</td>
                             <td class="text-muted info-value">
-                                <div>WEBSITE_SKU: @Html.Encode(Environment.GetEnvironmentVariable("WEBSITE_SKU") ?? "Not Available")</div>
                                 <div>WEBSITE_SITE_NAME: @Html.Encode(Environment.GetEnvironmentVariable("WEBSITE_SITE_NAME") ?? "Not Available")</div>
                                 <div>WEBSITE_HOSTNAME: @Html.Encode(Environment.GetEnvironmentVariable("WEBSITE_HOSTNAME") ?? "Not Available")</div>
+                                <div>WEBSITE_SKU: @Html.Encode(Environment.GetEnvironmentVariable("WEBSITE_SKU") ?? "Not Available")</div>
+                                <div>WEBSITE_RESOURCE_GROUP: @Html.Encode(Environment.GetEnvironmentVariable("WEBSITE_RESOURCE_GROUP") ?? "Not Available")</div>
                                 <div>REGION_NAME: @Html.Encode(Environment.GetEnvironmentVariable("REGION_NAME") ?? "Not Available")</div>
                             </td>
                         </tr>
@@ -193,16 +172,16 @@
                 <section>
                     <h5>Disclaimer</h5>
                     <p>
-                        The following disclaimer applies to the software named "Moonglade" developed by Edi Wang and other 
-                        <a href="https://github.com/EdiWang/Moonglade/graphs/contributors" target="_blank" rel="noopener noreferrer">contributors</a> 
+                        The following disclaimer applies to the software named "Moonglade" developed by Edi Wang and other
+                        <a href="https://github.com/EdiWang/Moonglade/graphs/contributors" target="_blank" rel="noopener noreferrer">contributors</a>
                         (hereinafter referred to as "the software developer"):
                     </p>
                     <p>
-                        This project is not affiliated with Microsoft Corporation. All product names, logos, and brands are property of their respective owners. 
+                        This project is not affiliated with Microsoft Corporation. All product names, logos, and brands are property of their respective owners.
                         All company, product and service names used in this website are for identification purposes only. Use of these names, logos, and brands does not imply endorsement.
                     </p>
                     <p>
-                        The software developer does not provide any warranties or guarantees regarding the functionality, performance, or suitability of Moonglade for any specific purpose. 
+                        The software developer does not provide any warranties or guarantees regarding the functionality, performance, or suitability of Moonglade for any specific purpose.
                         The software is provided "as is," and the software developer shall not be held liable for any direct or indirect damages arising from the use or inability to use Moonglade.
                     </p>
                 </section>
@@ -210,7 +189,7 @@
                 <section>
                     <h6>Data Privacy</h6>
                     <p>
-                        Moonglade does not send any user data or information to any government, <strong>including the Chinese government</strong>. 
+                        Moonglade does not send any user data or information to any government, <strong>including the Chinese government</strong>.
                         The software is designed to prioritize and respect user privacy.
                     </p>
                 </section>
@@ -218,8 +197,8 @@
                 <section>
                     <h6>Data Collection</h6>
                     <p>
-                        While using Moonglade, please note that the platform on which you deploy the software may collect data and usage information. 
-                        This data collection is solely the responsibility of the platform and not the software developer. We encourage you to review 
+                        While using Moonglade, please note that the platform on which you deploy the software may collect data and usage information.
+                        This data collection is solely the responsibility of the platform and not the software developer. We encourage you to review
                         the privacy policy and terms of service of the platform to understand how your data is handled.
                     </p>
                 </section>
@@ -227,7 +206,7 @@
                 <section>
                     <h6>User Responsibility</h6>
                     <p>
-                        As a user of Moonglade, it is your responsibility to ensure compliance with applicable laws and regulations regarding data privacy and usage. 
+                        As a user of Moonglade, it is your responsibility to ensure compliance with applicable laws and regulations regarding data privacy and usage.
                         The software developer shall not be held liable for any misuse, unauthorized access, or mishandling of data by the user or the platform on which Moonglade is deployed.
                     </p>
                 </section>
@@ -235,7 +214,7 @@
                 <section>
                     <h6>Updates and Modifications</h6>
                     <p>
-                        The software developer may release updates or modifications to Moonglade from time to time. 
+                        The software developer may release updates or modifications to Moonglade from time to time.
                         It is recommended that users stay informed about these updates and apply them to ensure optimal performance and security.
                     </p>
                 </section>

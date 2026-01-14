@@ -1,9 +1,10 @@
 ﻿@page "/admin/account"
-@using System.Globalization
 @{
     ViewBag.Title = "Account";
-    var loginHistoryList = await QueryMediator.QueryAsync(new ListLoginHistoryQuery());
+    ViewBag.XData = "accountManager";
 }
+
+@Html.AntiForgeryToken()
 
 @section scripts {
     <script type="module" src="~/js/app/admin.localaccount.mjs"></script>
@@ -11,7 +12,7 @@
 
 @section admintoolbar {
     <div class="admin-toolbar pb-2 border-bottom mb-3">
-        <a id="btn-reset-password" class="btn btn-outline-accent">
+        <a class="btn btn-outline-accent" href="javascript:;" x-on:click="openResetPasswordModal()">
             <i class="bi-key"></i>
             @SharedLocalizer["Change Password"]
         </a>
@@ -26,30 +27,37 @@
     Last 10 sign in activities
 </h4>
 
-@if (null != loginHistoryList && loginHistoryList.Any())
-{
-    <div class="mb-4 rounded-3 shadow-sm border bg-white p-2">
-        <table class="table table-borderless mb-0">
-            <thead>
+<div x-show="isLoading"
+     class="text-muted mb-3"
+     :class="{ 'd-flex align-items-center': isLoading }">
+    <div class="spinner-border spinner-border-sm me-2" role="status"></div>
+    <span>@SharedLocalizer["Loading login history..."]</span>
+</div>
+
+<div x-show="!isLoading && !hasLoginHistory" class="alert alert-info">
+    @SharedLocalizer["No login history yet."]
+</div>
+
+<div x-show="!isLoading && hasLoginHistory" class="mb-4 rounded-3 shadow-sm border bg-white p-2">
+    <table class="table table-borderless mb-0">
+        <thead>
+            <tr>
+                <th>@SharedLocalizer["Login IP"]</th>
+                <th>@SharedLocalizer["Login Time (UTC)"]</th>
+                <th>@SharedLocalizer["User Agent"]</th>
+            </tr>
+        </thead>
+        <tbody>
+            <template x-for="item in loginHistory" :key="item.id">
                 <tr>
-                    <th>@SharedLocalizer["Login IP"]</th>
-                    <th>@SharedLocalizer["Login Time (UTC)"]</th>
-                    <th>@SharedLocalizer["User Agent"]</th>
+                    <td x-text="item.loginIp"></td>
+                    <td x-text="formatTime(item.loginTimeUtc)"></td>
+                    <td x-text="item.loginUserAgent"></td>
                 </tr>
-            </thead>
-            <tbody>
-                @foreach (var item in loginHistoryList.OrderByDescending(p => p.LoginTimeUtc))
-                {
-                    <tr>
-                        <td>@item.LoginIp</td>
-                        <td>@item.LoginTimeUtc.ToString(CultureInfo.CurrentCulture)</td>
-                        <td>@item.LoginUserAgent</td>
-                    </tr>
-                }
-            </tbody>
-        </table>
-    </div>
-}
+            </template>
+        </tbody>
+    </table>
+</div>
 
 <div class="modal fade" id="resetPasswordModal" tabindex="-1" role="dialog" aria-labelledby="resetPasswordModalLabel" aria-hidden="true">
     <div class="modal-dialog" role="document">
@@ -60,27 +68,26 @@
                 </button>
             </div>
 
-            <form id="resetpassword-form" method="post">
+            <form x-on:submit.prevent="resetPassword">
                 <div class="modal-body">
                     <div class="mb-2">
-                        <label for="NewPassword">New username</label>
+                        <label for="NewUsername">New username</label>
                         <input class="form-control" type="text"
                                id="NewUsername"
+                               x-model="formData.newUsername"
                                minlength="3"
                                maxlength="16"
-                               name="NewUsername"
-                               value="@User.Identity?.Name?.Trim()"
                                pattern="^[A-Za-z0-9]{3,16}$"
                                required>
                         <div class="text-muted">English letters and numbers only.</div>
                     </div>
                     <div class="mb-2">
-                        <label for="NewPassword">Old password</label>
+                        <label for="OldPassword">Old password</label>
                         <input class="form-control" type="password"
                                id="OldPassword"
+                               x-model="formData.oldPassword"
                                minlength="8"
                                maxlength="32"
-                               name="OldPassword"
                                pattern="^(?=.*[a-zA-Z])(?=.*[0-9])[A-Za-z0-9._~!@@#$^&*]{8,}$"
                                required>
                     </div>
@@ -88,9 +95,9 @@
                         <label for="NewPassword">New password</label>
                         <input class="form-control" type="password"
                                id="NewPassword"
+                               x-model="formData.newPassword"
                                minlength="8"
                                maxlength="32"
-                               name="NewPassword"
                                pattern="^(?=.*[a-zA-Z])(?=.*[0-9])[A-Za-z0-9._~!@@#$^&*]{8,}$"
                                required>
                     </div>
@@ -105,7 +112,7 @@
                     </div>
                 </div>
                 <div class="modal-footer">
-                    <button type="submit" class="btn btn-outline-accent btn-resetpwd">@SharedLocalizer["Submit"]</button>
+                    <button type="submit" class="btn btn-outline-accent">@SharedLocalizer["Submit"]</button>
                     <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">@SharedLocalizer["Cancel"]</button>
                 </div>
             </form>

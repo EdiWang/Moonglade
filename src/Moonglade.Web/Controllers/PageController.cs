@@ -1,5 +1,7 @@
 ﻿using LiteBus.Commands.Abstractions;
 using LiteBus.Queries.Abstractions;
+using Moonglade.Data.DTO;
+using Moonglade.Data.Entities;
 using Moonglade.Features.Page;
 
 namespace Moonglade.Web.Controllers;
@@ -42,5 +44,40 @@ public class PageController(ICacheAside cache, IQueryMediator queryMediator, ICo
 
         cache.Remove(BlogCachePartition.Page.ToString(), page.Slug);
         return NoContent();
+    }
+
+    [HttpGet("segment/list")]
+    [ProducesResponseType<List<PageSegment>>(StatusCodes.Status200OK)]
+    public async Task<IActionResult> GetPageSegmentList()
+    {
+        var segments = await queryMediator.QueryAsync(new ListPageSegmentsQuery());
+        return Ok(segments);
+    }
+
+    [HttpGet("{id:guid}")]
+    [ProducesResponseType(StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status404NotFound)]
+    public async Task<IActionResult> Get([NotEmpty] Guid id)
+    {
+        var page = await queryMediator.QueryAsync(new GetPageByIdQuery(id));
+        if (page == null) return NotFound();
+
+        StyleSheetEntity css = null;
+        if (!string.IsNullOrWhiteSpace(page.CssId))
+        {
+            css = await queryMediator.QueryAsync(new GetStyleSheetQuery(Guid.Parse(page.CssId)));
+        }
+
+        return Ok(new
+        {
+            id = page.Id,
+            title = page.Title,
+            slug = page.Slug,
+            metaDescription = page.MetaDescription,
+            cssContent = css?.CssContent,
+            htmlContent = page.HtmlContent,
+            hideSidebar = page.HideSidebar,
+            isPublished = page.IsPublished
+        });
     }
 }
