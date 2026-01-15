@@ -50,7 +50,9 @@
                             <span class="text-muted me-2">
                                 @SharedLocalizer["Scheduled for"]
 
-                                <time :data-utc-label="post.scheduledPublishTimeUtc" x-text="post.scheduledPublishTimeUtc"></time>
+                                <time :data-utc-label="post.scheduledPublishTimeUtc" 
+                                      x-text="formatScheduledTime(post.scheduledPublishTimeUtc)">
+                                </time>
                             </span>
                         </div>
                     </div>

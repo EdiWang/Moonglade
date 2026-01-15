@@ -26,10 +26,9 @@ Alpine.data('scheduledManager', () => ({
         try {
             const data = await fetch2('/api/post/scheduled', 'GET');
             this.posts = data.posts ?? [];
-            
-            this.$nextTick(() => {
-                formatUtcTime();
-            });
+
+            await this.$nextTick();
+            setTimeout(() => formatUtcTime(), 50);
         } finally {
             this.isLoading = false;
         }
@@ -45,19 +44,14 @@ Alpine.data('scheduledManager', () => ({
 
     showPublishModal(postId) {
         this.currentPostId = postId;
-        if (this.modal) {
-            this.modal.show();
-        }
+        this.modal?.show();
     },
 
     async confirmPublish() {
-        if (this.currentPostId) {
-            await this.publishPost(this.currentPostId);
-            if (this.modal) {
-                this.modal.hide();
-            }
-            this.currentPostId = null;
-        }
+        if (!this.currentPostId) return;
+        await this.publishPost(this.currentPostId);
+        this.modal?.hide();
+        this.currentPostId = null;
     },
 
     async publishPost(postId) {
@@ -70,11 +64,28 @@ Alpine.data('scheduledManager', () => ({
         const hours = 24;
         await fetch2(`/api/post/${postId}/postpone?hours=${hours}`, 'PUT');
         success(`Post postponed for ${hours} hour(s)`);
-        
-        // Reload posts after a short delay
-        setTimeout(async () => {
-            await this.loadPosts();
-        }, 1000);
+        setTimeout(async () => await this.loadPosts(), 500);
+    },
+
+    parseUtcSafe(dateString) {
+        if (!dateString) return null;
+        const candidates = [
+            dateString,
+            `${dateString}Z`,
+            dateString.replace(' ', 'T'),
+            `${dateString.replace(' ', 'T')}Z`,
+            dateString.replace(/-/g, '/')
+        ];
+        for (const c of candidates) {
+            const d = new Date(c);
+            if (!isNaN(d.getTime())) return d;
+        }
+        return null;
+    },
+
+    formatScheduledTime(dateString) {
+        const d = this.parseUtcSafe(dateString);
+        return d ? d.toLocaleString() : (dateString ?? '');
     },
 
     get hasPosts() {
@@ -82,9 +93,11 @@ Alpine.data('scheduledManager', () => ({
     },
 
     get sortedPosts() {
-        return [...this.posts].sort((a, b) => 
-            new Date(b.scheduledPublishTimeUtc) - new Date(a.scheduledPublishTimeUtc)
-        );
+        return [...this.posts].sort((a, b) => {
+            const da = this.parseUtcSafe(a.scheduledPublishTimeUtc) ?? new Date(0);
+            const db = this.parseUtcSafe(b.scheduledPublishTimeUtc) ?? new Date(0);
+            return db - da;
+        });
     }
 }));
 
