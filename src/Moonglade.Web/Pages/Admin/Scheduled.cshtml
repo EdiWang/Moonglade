@@ -1,11 +1,9 @@
 ﻿@page "/admin/post/scheduled"
-@using Moonglade.Data.Specifications
-@using Moonglade.Features.Post
 @inject IConfiguration Configuration
 
 @{
     ViewBag.Title = "Scheduled";
-    var posts = await QueryMediator.QueryAsync(new ListPostSegmentByStatusQuery(PostStatus.Scheduled));
+    ViewBag.XData = "scheduledManager";
 }
 
 @section scripts {
@@ -16,6 +14,8 @@
     <partial name="_PostManageHeader" />
 }
 
+@Html.AntiForgeryToken()
+
 @if (!Configuration.GetValue<bool>("PostScheduler"))
 {
     <div class="alert alert-warning mb-3">
@@ -24,58 +24,78 @@
 }
 
 <div>
-    @if (posts.Any())
-    {
-        @Html.AntiForgeryToken()
+    <div x-show="isLoading"
+         class="text-muted mb-3"
+         :class="{ 'd-flex align-items-center': isLoading }">
+        <div class="spinner-border spinner-border-sm me-2" role="status"></div>
+        <span>@SharedLocalizer["Loading..."]</span>
+    </div>
 
-        @foreach (var post in posts.OrderByDescending(p => p.ScheduledPublishTimeUtc))
-        {
-            <div id="post-@post.Id" class="admin-post-entry p-3 mb-2 rounded-3 shadow-sm border">
+    <div x-show="!isLoading && !hasPosts">
+        <partial name="_NoPosts" />
+    </div>
+
+    <div x-show="!isLoading && hasPosts">
+        <template x-for="post in sortedPosts" :key="post.id">
+            <div :id="`post-${post.id}`" class="admin-post-entry p-3 mb-2 rounded-3 shadow-sm border">
                 <div class="row">
                     <div class="col">
-                        <a asp-page="./EditPost" asp-route-id="@post.Id">
-                            <h6>
-                                @post.Title
-                            </h6>
+                        <a :href="`./edit/${post.id}`">
+                            <h6 x-text="post.title"></h6>
                         </a>
-                        <div class="mb-2">
-                            @post.ContentAbstract
-                        </div>
+                        <div class="mb-2" x-text="post.contentAbstract"></div>
                         <div>
                             <i class="bi-clock"></i>
 
                             <span class="text-muted me-2">
                                 @SharedLocalizer["Scheduled for"]
 
-                                <time data-utc-label="@post.ScheduledPublishTimeUtc.Value.ToString("u")">
-                                    @post.ScheduledPublishTimeUtc
+                                <time :data-utc-label="post.scheduledPublishTimeUtc" 
+                                      x-text="formatScheduledTime(post.scheduledPublishTimeUtc)">
                                 </time>
                             </span>
                         </div>
                     </div>
 
                     <div class="col-auto">
-                        <a class="btn btn-outline-accent btn-sm btn-publish" data-postid="@post.Id" data-bs-toggle="modal" data-bs-target="#publishPostModal">
+                        <button class="btn btn-outline-accent btn-sm btn-publish"
+                                x-on:click="showPublishModal(post.id)">
                             <i class="bi-send"></i>
                             @SharedLocalizer["Publish Now"]
-                        </a>
-                        <a class="btn btn-outline-accent btn-sm btn-postpone" data-postid="@post.Id">
+                        </button>
+                        <button class="btn btn-outline-accent btn-sm btn-postpone"
+                                x-on:click="postponePost(post.id)">
                             <i class="bi-clock"></i>
                             @SharedLocalizer["Postpone"]
+                        </button>
+                        <a class="btn btn-outline-accent btn-sm btn-edit" :href="`./edit/${post.id}`">
+                            <i class="bi-pen"></i>
                         </a>
-                        <a class="btn btn-outline-accent btn-sm btn-edit" asp-page="./EditPost" asp-route-id="@post.Id"><i class="bi-pen"></i></a>
-                        <a class="btn btn-outline-danger btn-sm btn-delete" data-postid="@post.Id" href="javascript:;">
+                        <button class="btn btn-outline-danger btn-sm btn-delete"
+                                x-on:click="deletePost(post.id)">
                             <i class="bi-trash"></i>
-                        </a>
+                        </button>
                     </div>
                 </div>
             </div>
-        }
-    }
-    else
-    {
-        <partial name="_NoPosts" />
-    }
+        </template>
+    </div>
 </div>
 
-<partial name="_PublishPostModal" />
+<div class="modal fade" id="publishPostModal" tabindex="-1" aria-labelledby="publishPostModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="publishPostModalLabel">@SharedLocalizer["Publish Post"]</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                @SharedLocalizer["Are you sure you want to publish this post now?"]
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">@SharedLocalizer["Cancel"]</button>
+                <button type="button" class="btn btn-primary" x-on:click="confirmPublish" id="btn-publish-post">@SharedLocalizer["Publish"]</button>
+            </div>
+        </div>
+    </div>
+</div>
