@@ -40,7 +40,7 @@
             <div :id="`post-${post.id}`" class="admin-post-entry p-3 mb-2 rounded-3 shadow-sm border">
                 <div class="row">
                     <div class="col">
-                        <a :href="`./edit/${post.id}`">
+                        <a :href="`/admin/post/edit/${post.id}`">
                             <h6 x-text="post.title"></h6>
                         </a>
                         <div class="mb-2" x-text="post.contentAbstract"></div>
@@ -68,7 +68,7 @@
                             <i class="bi-clock"></i>
                             @SharedLocalizer["Postpone"]
                         </button>
-                        <a class="btn btn-outline-accent btn-sm btn-edit" :href="`./edit/${post.id}`">
+                        <a class="btn btn-outline-accent btn-sm btn-edit" :href="`/admin/post/edit/${post.id}`">
                             <i class="bi-pen"></i>
                         </a>
                         <button class="btn btn-outline-danger btn-sm btn-delete"
