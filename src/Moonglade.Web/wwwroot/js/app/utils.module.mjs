@@ -31,11 +31,25 @@ export function formatUtcTime(includeTime = true) {
 
     timeElements.forEach(e => {
         const utclabel = e.getAttribute('data-utc-label');
-        if (utclabel) {
-            const localTime = new Date(utclabel.replace(/-/g, "/"));
-            const formattedTime = includeTime ? localTime.toLocaleString() : localTime.toLocaleDateString();
-            e.innerHTML = formattedTime;
+        if (!utclabel) return;
+
+        const trimmed = utclabel.trim();
+        const isoLike = trimmed.includes('T');
+        const normalized = isoLike
+            ? (trimmed.endsWith('Z') ? trimmed : `${trimmed}Z`)
+            : trimmed.replace(/-/g, '/');
+
+        const localTime = new Date(normalized);
+        if (isNaN(localTime.getTime())) {
+            e.innerHTML = trimmed;
+            return;
         }
+
+        const formattedTime = includeTime
+            ? localTime.toLocaleString()
+            : localTime.toLocaleDateString();
+
+        e.innerHTML = formattedTime;
     });
 }
 
