@@ -1,6 +1,9 @@
 services:
   web:
-    image: ediwang/moonglade:latest
+    image: ${MOONGLADE_IMAGE:-ediwang/moonglade:latest}
+    build:
+      context: .
+      dockerfile: Dockerfile
     container_name: moonglade-web
     environment:
       ASPNETCORE_ENVIRONMENT: "Production"
