@@ -4,19 +4,23 @@ import { formatUtcTime } from './utils.module.mjs';
 import { success } from '/js/app/toastService.mjs';
 
 Alpine.data('postManager', () => ({
-    posts: [],
-    isLoading: true,
-    searchTerm: '',
-    currentPage: 1,
-    pageSize: 4,
-    totalRows: 0,
+posts: [],
+isLoading: true,
+searchTerm: '',
+currentPage: 1,
+pageSize: 4,
+totalRows: 0,
+confirmModal: null,
+confirmMessage: '',
+pendingDeleteId: null,
 
-    async init() {
-        const urlParams = new URLSearchParams(window.location.search);
-        this.currentPage = parseInt(urlParams.get('pageIndex')) || 1;
-        this.searchTerm = urlParams.get('searchTerm') || '';
-        await this.loadPosts();
-    },
+async init() {
+    const urlParams = new URLSearchParams(window.location.search);
+    this.currentPage = parseInt(urlParams.get('pageIndex')) || 1;
+    this.searchTerm = urlParams.get('searchTerm') || '';
+    this.confirmModal = new bootstrap.Modal(this.$refs.confirmModal);
+    await this.loadPosts();
+},
 
     async loadPosts() {
         this.isLoading = true;
@@ -63,10 +67,18 @@ Alpine.data('postManager', () => ({
     },
 
     async deletePost(postId) {
-        if (confirm('Delete Confirmation?')) {
-            await fetch2(`/api/post/${postId}/recycle`, 'DELETE');
+        this.pendingDeleteId = postId;
+        this.confirmMessage = 'Are you sure you want to delete this post?';
+        this.confirmModal.show();
+    },
+
+    async confirmAction() {
+        if (this.pendingDeleteId) {
+            await fetch2(`/api/post/${this.pendingDeleteId}/recycle`, 'DELETE');
             await this.loadPosts();
             success('Post deleted');
+            this.confirmModal.hide();
+            this.pendingDeleteId = null;
         }
     },
 
