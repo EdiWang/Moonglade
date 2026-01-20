@@ -144,3 +144,24 @@
         </form>
     </div>
 </div>
+
+<div class="modal fade" tabindex="-1" x-ref="deleteModal" aria-labelledby="deleteModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="deleteModalLabel">@SharedLocalizer["Delete Tag"]</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="@SharedLocalizer["Close"]"></button>
+            </div>
+            <div class="modal-body">
+                <p>@SharedLocalizer["Confirm to delete tag:"] <strong x-text="deleteTarget.tagName"></strong>?</p>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">@SharedLocalizer["Cancel"]</button>
+                <button type="button" class="btn btn-outline-danger" x-on:click="confirmDelete()">
+                    <i class="bi-trash"></i>
+                    @SharedLocalizer["Delete"]
+                </button>
+            </div>
+        </div>
+    </div>
+</div>

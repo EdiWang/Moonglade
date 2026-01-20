@@ -3,19 +3,25 @@ import { fetch2 } from '/js/app/httpService.mjs?v=1500';
 import { success } from '/js/app/toastService.mjs';
 
 Alpine.data('tagManager', () => ({
-    tags: [],
-    isLoading: true,
-    tagFilter: '',
-    editCanvas: null,
-    formData: {
-        displayName: ''
-    },
-    originalTagNames: {},
+tags: [],
+isLoading: true,
+tagFilter: '',
+editCanvas: null,
+deleteModal: null,
+deleteTarget: {
+    tagId: null,
+    tagName: ''
+},
+formData: {
+    displayName: ''
+},
+originalTagNames: {},
 
-    async init() {
-        this.editCanvas = new bootstrap.Offcanvas(this.$refs.editTagCanvas);
-        await this.loadTags();
-    },
+async init() {
+    this.editCanvas = new bootstrap.Offcanvas(this.$refs.editTagCanvas);
+    this.deleteModal = new bootstrap.Modal(this.$refs.deleteModal);
+    await this.loadTags();
+},
 
     async loadTags() {
         this.isLoading = true;
@@ -97,10 +103,14 @@ Alpine.data('tagManager', () => ({
     },
 
     async deleteTag(tagId, tagName) {
-        if (!confirm(`Confirm to delete tag: ${tagName}`)) return;
+        this.deleteTarget = { tagId, tagName };
+        this.deleteModal.show();
+    },
 
+    async confirmDelete() {
         try {
-            await fetch2(`/api/tags/${tagId}`, 'DELETE');
+            await fetch2(`/api/tags/${this.deleteTarget.tagId}`, 'DELETE');
+            this.deleteModal.hide();
             await this.loadTags();
             success('Tag deleted');
         } catch (err) {
