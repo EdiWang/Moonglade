@@ -55,11 +55,30 @@
                     <a class="btn btn-outline-accent btn-sm btn-edit" :href="`./page/edit/${page.id}`">
                         <i class="bi-pen"></i>
                     </a>
-                    <a x-on:click="deletePage(page.id)" class="btn btn-outline-danger btn-sm btn-delete" role="button">
+                    <a x-on:click="showDeleteModal(page.id)" class="btn btn-outline-danger btn-sm btn-delete" role="button">
                         <i class="bi-trash"></i>
                     </a>
                 </div>
             </div>
         </div>
     </template>
+</div>
+
+<!-- Delete Confirmation Modal -->
+<div class="modal fade" id="deleteConfirmModal" tabindex="-1" aria-labelledby="deleteConfirmModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="deleteConfirmModalLabel">@SharedLocalizer["Confirm Delete"]</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                @SharedLocalizer["Are you sure you want to delete this page?"]
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">@SharedLocalizer["Cancel"]</button>
+                <button type="button" class="btn btn-outline-danger" x-on:click="confirmDelete()">@SharedLocalizer["Delete"]</button>
+            </div>
+        </div>
+    </div>
 </div>

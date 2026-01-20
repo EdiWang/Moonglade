@@ -5,6 +5,7 @@ import { success } from '/js/app/toastService.mjs';
 Alpine.data('pageManager', () => ({
     pages: [],
     isLoading: true,
+    pageToDelete: null,
 
     async init() {
         await this.loadPages();
@@ -34,11 +35,21 @@ Alpine.data('pageManager', () => ({
         return date.toLocaleString();
     },
 
-    async deletePage(pageId) {
-        if (confirm('Delete Confirmation?')) {
-            await fetch2(`/api/page/${pageId}`, 'DELETE');
+    showDeleteModal(pageId) {
+        this.pageToDelete = pageId;
+        const modal = new bootstrap.Modal(document.getElementById('deleteConfirmModal'));
+        modal.show();
+    },
+
+    async confirmDelete() {
+        if (this.pageToDelete) {
+            await fetch2(`/api/page/${this.pageToDelete}`, 'DELETE');
             await this.loadPages();
             success('Page deleted');
+            
+            const modal = bootstrap.Modal.getInstance(document.getElementById('deleteConfirmModal'));
+            modal.hide();
+            this.pageToDelete = null;
         }
     }
 }));
