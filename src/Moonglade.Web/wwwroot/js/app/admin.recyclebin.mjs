@@ -6,6 +6,8 @@ import { success } from '/js/app/toastService.mjs';
 Alpine.data('recycleBinManager', () => ({
     posts: [],
     isLoading: true,
+    deleteTargetId: null,
+    deleteMessage: '',
 
     async init() {
         await this.loadPosts();
@@ -25,11 +27,22 @@ Alpine.data('recycleBinManager', () => ({
         }
     },
 
-    async deletePost(postId) {
-        if (confirm('Delete Confirmation?')) {
-            await fetch2(`/api/post/${postId}/destroy`, 'DELETE');
-            this.posts = this.posts.filter(p => p.id !== postId);
+    confirmDelete(postId, postTitle) {
+        this.deleteTargetId = postId;
+        this.deleteMessage = `Are you sure you want to delete "${postTitle}"?`;
+        const modal = new bootstrap.Modal(document.getElementById('deleteModal'));
+        modal.show();
+    },
+
+    async executeDelete() {
+        if (this.deleteTargetId) {
+            await fetch2(`/api/post/${this.deleteTargetId}/destroy`, 'DELETE');
+            this.posts = this.posts.filter(p => p.id !== this.deleteTargetId);
             success('Post deleted');
+            
+            const modal = bootstrap.Modal.getInstance(document.getElementById('deleteModal'));
+            modal.hide();
+            this.deleteTargetId = null;
         }
     },
 
@@ -39,12 +52,18 @@ Alpine.data('recycleBinManager', () => ({
         success('Post restored');
     },
 
-    async emptyRecycleBin() {
-        if (confirm('Are you sure you want to empty the recycle bin? This action cannot be undone.')) {
-            await fetch2('/api/post/recyclebin', 'DELETE');
-            this.posts = [];
-            success('Cleared');
-        }
+    confirmEmptyRecycleBin() {
+        const modal = new bootstrap.Modal(document.getElementById('emptyBinModal'));
+        modal.show();
+    },
+
+    async executeEmptyRecycleBin() {
+        await fetch2('/api/post/recyclebin', 'DELETE');
+        this.posts = [];
+        success('Cleared');
+        
+        const modal = bootstrap.Modal.getInstance(document.getElementById('emptyBinModal'));
+        modal.hide();
     },
 
     get hasPosts() {

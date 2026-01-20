@@ -43,7 +43,7 @@
                             <i class="bi-reply-fill"></i> @SharedLocalizer["Restore"]
                         </button>
                         <button class="btn btn-outline-danger btn-sm btn-delete" 
-                                x-on:click="deletePost(post.id)">
+                                x-on:click="confirmDelete(post.id, post.title)">
                             <i class="bi-trash"></i> @SharedLocalizer["Delete"]
                         </button>
                     </div>
@@ -53,9 +53,51 @@
     </div>
 
     <div x-show="!isLoading && hasPosts" class="admin-settings-action-container border-top pt-2 mt-2">
-        <button x-on:click="emptyRecycleBin" class="btn btn-outline-danger btn-empty-recbin mb-3">
+        <button x-on:click="confirmEmptyRecycleBin" class="btn btn-outline-danger btn-empty-recbin mb-3">
             <i class="bi-trash"></i>
             @SharedLocalizer["Empty Recycle Bin"]
         </button>
+    </div>
+</div>
+
+<!-- Delete Confirmation Modal -->
+<div class="modal fade" id="deleteModal" tabindex="-1" aria-labelledby="deleteModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="deleteModalLabel">@SharedLocalizer["Delete Confirmation"]</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <p x-text="deleteMessage"></p>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">@SharedLocalizer["Cancel"]</button>
+                <button type="button" class="btn btn-outline-danger" x-on:click="executeDelete">
+                    <i class="bi-trash"></i> @SharedLocalizer["Delete"]
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Empty Recycle Bin Confirmation Modal -->
+<div class="modal fade" id="emptyBinModal" tabindex="-1" aria-labelledby="emptyBinModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="emptyBinModalLabel">@SharedLocalizer["Empty Recycle Bin"]</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <p>@SharedLocalizer["Are you sure you want to empty the recycle bin? This action cannot be undone."]</p>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">@SharedLocalizer["Cancel"]</button>
+                <button type="button" class="btn btn-outline-danger" x-on:click="executeEmptyRecycleBin">
+                    <i class="bi-trash"></i> @SharedLocalizer["Empty Recycle Bin"]
+                </button>
+            </div>
+        </div>
     </div>
 </div>
