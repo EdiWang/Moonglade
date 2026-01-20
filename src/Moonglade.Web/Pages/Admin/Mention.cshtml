@@ -7,16 +7,6 @@
 
 @Html.AntiForgeryToken()
 
-@section head {
-    <style>
-        .mentions-container {
-            height: calc(100vh - 230px);
-            overflow-y: scroll;
-            overflow-x: hidden;
-        }
-    </style>
-}
-
 @section scripts{
     <script type="module" src="~/js/app/admin.mention.mjs"></script>
 }

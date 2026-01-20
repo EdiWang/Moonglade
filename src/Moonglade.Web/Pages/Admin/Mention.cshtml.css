@@ -1,0 +1,5 @@
+﻿.mentions-container {
+    height: calc(100vh - 230px);
+    overflow-y: scroll;
+    overflow-x: hidden;
+}
