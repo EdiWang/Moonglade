@@ -6,7 +6,8 @@ Alpine.data('mentionManager', () => ({
 mentions: [],
 isLoading: true,
 filterText: '',
-pendingDeleteId: null,
+selectedIds: [],
+pendingDeleteIds: [],
 deleteModal: null,
 clearAllModal: null,
 
@@ -54,19 +55,29 @@ async init() {
     },
 
     async deleteMention(mentionId) {
-        this.pendingDeleteId = mentionId;
+        this.pendingDeleteIds = [mentionId];
+        this.deleteModal.show();
+    },
+
+    async deleteSelectedMentions() {
+        if (this.selectedIds.length === 0) return;
+        
+        this.pendingDeleteIds = [...this.selectedIds];
         this.deleteModal.show();
     },
 
     async confirmDeleteMention() {
-        if (!this.pendingDeleteId) return;
+        if (!this.pendingDeleteIds || this.pendingDeleteIds.length === 0) return;
 
-        await fetch2(`/api/mention/${this.pendingDeleteId}`, 'DELETE');
-        this.mentions = this.mentions.filter(m => m.id !== this.pendingDeleteId);
-        success('Mention deleted');
+        await fetch2('/api/mention', 'DELETE', this.pendingDeleteIds);
+        this.mentions = this.mentions.filter(m => !this.pendingDeleteIds.includes(m.id));
+        this.selectedIds = this.selectedIds.filter(id => !this.pendingDeleteIds.includes(id));
+        
+        const count = this.pendingDeleteIds.length;
+        success(count === 1 ? 'Mention deleted' : `${count} mentions deleted`);
         
         this.deleteModal.hide();
-        this.pendingDeleteId = null;
+        this.pendingDeleteIds = [];
     },
 
     async clearAllMentions() {
