@@ -513,9 +513,6 @@
   <data name="Only lower case letters and hyphens are allowed." xml:space="preserve">
     <value>必須為小寫英文字元或中劃線</value>
   </data>
-  <data name="Open in New Tab" xml:space="preserve">
-    <value>在新分頁中開啟</value>
-  </data>
   <data name="Options" xml:space="preserve">
     <value>選項</value>
   </data>
