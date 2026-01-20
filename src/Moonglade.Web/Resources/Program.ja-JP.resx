@@ -145,28 +145,22 @@
     <value>アカウント情報</value>
   </data>
   <data name="Action" xml:space="preserve">
-    <value>動く</value>
+    <value>操作</value>
   </data>
   <data name="Admin" xml:space="preserve">
-    <value>取り締まる</value>
-  </data>
-  <data name="Admin Sign In" xml:space="preserve">
-    <value>管理者ログイン</value>
+    <value>管理者</value>
   </data>
   <data name="Advanced" xml:space="preserve">
-    <value>年上</value>
-  </data>
-  <data name="Advanced Settings" xml:space="preserve">
-    <value>詳細設定</value>
+    <value>高度な</value>
   </data>
   <data name="All Posts" xml:space="preserve">
     <value>すべての記事</value>
   </data>
   <data name="All Tags" xml:space="preserve">
-    <value>すべてのタブ</value>
+    <value>すべてのタグ</value>
   </data>
   <data name="Archive" xml:space="preserve">
-    <value>鳩</value>
+    <value>アーカイブ</value>
   </data>
   <data name="Are you sure?" xml:space="preserve">
     <value>確かですか。</value>
@@ -199,7 +193,7 @@
     <value>ブログタイトル</value>
   </data>
   <data name="Call-out" xml:space="preserve">
-    <value>スクロール</value>
+    <value>バナー</value>
   </data>
   <data name="Call-out section HTML code" xml:space="preserve">
     <value>バナー HTML コンテンツ</value>
@@ -214,10 +208,10 @@
     <value>正規URL</value>
   </data>
   <data name="Categories" xml:space="preserve">
-    <value>分類する</value>
+    <value>カテゴリー</value>
   </data>
   <data name="Category Information" xml:space="preserve">
-    <value>機密情報</value>
+    <value>カテゴリー情報</value>
   </data>
   <data name="Change" xml:space="preserve">
     <value>変える</value>
@@ -247,7 +241,7 @@
     <value>すぐに空にする</value>
   </data>
   <data name="Close" xml:space="preserve">
-    <value>シャットダウン</value>
+    <value>閉じる</value>
   </data>
   <data name="Comment of this post is disabled." xml:space="preserve">
     <value>この記事へのコメントは締め切りました</value>
@@ -298,7 +292,7 @@
     <value>チェックしたコメントを削除する</value>
   </data>
   <data name="Description" xml:space="preserve">
-    <value>形容</value>
+    <value>説明</value>
   </data>
   <data name="Directory" xml:space="preserve">
     <value>ディレクトリ</value>
@@ -382,7 +376,7 @@
     <value>データのエクスポート</value>
   </data>
   <data name="Featured" xml:space="preserve">
-    <value>入選</value>
+    <value>注目</value>
   </data>
   <data name="Featured Posts" xml:space="preserve">
     <value>注目の記事</value>
@@ -394,13 +388,13 @@
     <value>大きさ</value>
   </data>
   <data name="Footer" xml:space="preserve">
-    <value>ページフッター</value>
+    <value>フッター</value>
   </data>
   <data name="Footer HTML code" xml:space="preserve">
     <value>フッター HTML エリア</value>
   </data>
   <data name="General" xml:space="preserve">
-    <value>ルーチン</value>
+    <value>一般</value>
   </data>
   <data name="Generate password" xml:space="preserve">
     <value>パスワードの生成</value>
@@ -457,7 +451,7 @@
     <value>禁止単語のコード</value>
   </data>
   <data name="Memory" xml:space="preserve">
-    <value>記憶</value>
+    <value>メモリ</value>
   </data>
   <data name="Menu Editor" xml:space="preserve">
     <value>メニューエディタ</value>
