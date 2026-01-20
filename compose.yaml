@@ -5,10 +5,13 @@ services:
     environment:
       ASPNETCORE_ENVIRONMENT: "Production"
       ConnectionStrings__MoongladeDatabase: "Server=moonglade-sqlserver;Database=moonglade;User Id=sa;Password=${MSSQL_SA_PASSWORD:-Work@996};Trusted_Connection=False;TrustServerCertificate=True;"
+      ImageStorage__FileSystemPath: "/app/images"
     ports:
       - "8080:8080"
     depends_on:
       - database
+    volumes:
+      - moonglade-images:/app/images
     networks:
       - moonglade-network
   database:
@@ -27,6 +30,7 @@ services:
 
 volumes:
   mssql-data:
+  moonglade-images:
 
 networks:
   moonglade-network:

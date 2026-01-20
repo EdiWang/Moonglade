@@ -2,6 +2,9 @@ FROM mcr.microsoft.com/dotnet/aspnet:10.0 AS base
 LABEL maintainer="edi.wang@outlook.com"
 LABEL repo="https://github.com/EdiWang/Moonglade"
 
+USER root
+RUN mkdir -p /app/images && chown -R app:app /app/images
+
 USER app
 
 # If use aspnet:10.0-alpine, see https://github.com/dotnet/dotnet-docker/issues/1366
