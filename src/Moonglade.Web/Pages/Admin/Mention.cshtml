@@ -87,3 +87,41 @@
         </template>
     </div>
 </div>
+
+<!-- Delete Single Mention Modal -->
+<div class="modal fade" id="deleteMentionModal" tabindex="-1" aria-labelledby="deleteMentionModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="deleteMentionModalLabel">@SharedLocalizer["Confirm Delete"]</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                @SharedLocalizer["Delete this mention?"]
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">@SharedLocalizer["Cancel"]</button>
+                <button type="button" class="btn btn-outline-danger" x-on:click="confirmDeleteMention()">@SharedLocalizer["Delete"]</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Clear All Mentions Modal -->
+<div class="modal fade" id="clearAllMentionsModal" tabindex="-1" aria-labelledby="clearAllMentionsModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="clearAllMentionsModalLabel">@SharedLocalizer["Confirm Clear All"]</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                @SharedLocalizer["Are you sure you want to clear all mentions?"]
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">@SharedLocalizer["Cancel"]</button>
+                <button type="button" class="btn btn-outline-danger" x-on:click="confirmClearAllMentions()">@SharedLocalizer["Clear All"]</button>
+            </div>
+        </div>
+    </div>
+</div>
