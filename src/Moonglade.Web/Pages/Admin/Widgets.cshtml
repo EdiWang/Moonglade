@@ -9,6 +9,15 @@
     <script type="module" src="~/js/app/admin.widgets.mjs"></script>
 }
 
+<div id="localizedStrings" style="display:none"
+     data-delete-widget="@SharedLocalizer["Delete this widget?"]"
+     data-widget-deleted="@SharedLocalizer["Widget deleted"]"
+     data-widget-created="@SharedLocalizer["Widget created"]"
+     data-widget-updated="@SharedLocalizer["Widget updated"]"
+     data-remove-link="@SharedLocalizer["Are you sure you want to remove this link?"]"
+     data-name-url-required="@SharedLocalizer["Name and URL are required"]">
+</div>
+
 @section admintoolbar {
     <div class="admin-toolbar pb-2 border-bottom mb-3">
         <a x-on:click="initCreateWidget()" class="btn btn-outline-accent" role="button">

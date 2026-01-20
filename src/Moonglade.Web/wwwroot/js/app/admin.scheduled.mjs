@@ -3,6 +3,11 @@ import { fetch2 } from '/js/app/httpService.mjs?v=1500';
 import { formatUtcTime } from './utils.module.mjs';
 import { success } from '/js/app/toastService.mjs';
 
+function getLocalizedString(key) {
+    const container = document.getElementById('localizedStrings');
+    return container ? container.dataset[key] : '';
+}
+
 Alpine.data('scheduledManager', () => ({
     posts: [],
     isLoading: true,
@@ -35,10 +40,10 @@ Alpine.data('scheduledManager', () => ({
     },
 
     async deletePost(postId) {
-        if (confirm('Delete Confirmation?')) {
+        if (confirm(getLocalizedString('deleteConfirmation'))) {
             await fetch2(`/api/post/${postId}/recycle`, 'DELETE');
             this.posts = this.posts.filter(p => p.id !== postId);
-            success('Post deleted.');
+            success(getLocalizedString('postDeleted'));
         }
     },
 
@@ -57,13 +62,14 @@ Alpine.data('scheduledManager', () => ({
     async publishPost(postId) {
         await fetch2(`/api/post/${postId}/publish`, 'PUT');
         this.posts = this.posts.filter(p => p.id !== postId);
-        success('Post published');
+        success(getLocalizedString('postPublished'));
     },
 
     async postponePost(postId) {
         const hours = 24;
         await fetch2(`/api/post/${postId}/postpone?hours=${hours}`, 'PUT');
-        success(`Post postponed for ${hours} hour(s)`);
+        const template = getLocalizedString('postPostponed');
+        success(template.replace('{0}', hours));
         setTimeout(async () => await this.loadPosts(), 500);
     },
 

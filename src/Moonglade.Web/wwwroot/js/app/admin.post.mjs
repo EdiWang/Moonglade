@@ -3,6 +3,11 @@ import { fetch2 } from '/js/app/httpService.mjs?v=1500';
 import { formatUtcTime } from './utils.module.mjs';
 import { success } from '/js/app/toastService.mjs';
 
+function getLocalizedString(key) {
+    const container = document.getElementById('localizedStrings');
+    return container ? container.dataset[key] : '';
+}
+
 Alpine.data('postManager', () => ({
 posts: [],
 isLoading: true,
@@ -76,7 +81,7 @@ async init() {
         if (this.pendingDeleteId) {
             await fetch2(`/api/post/${this.pendingDeleteId}/recycle`, 'DELETE');
             await this.loadPosts();
-            success('Post deleted');
+            success(getLocalizedString('postDeleted'));
             this.confirmModal.hide();
             this.pendingDeleteId = null;
         }

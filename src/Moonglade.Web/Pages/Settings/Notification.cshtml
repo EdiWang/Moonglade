@@ -3,6 +3,11 @@
 @section scripts {
     <script type="module" src="~/js/app/admin.settings.notification.mjs"></script>
 }
+
+<div id="localizedStrings" style="display:none"
+     data-settings-updated="@SharedLocalizer["Settings Updated"]">
+</div>
+
 @{
     var settings = BlogConfig.NotificationSettings;
 }

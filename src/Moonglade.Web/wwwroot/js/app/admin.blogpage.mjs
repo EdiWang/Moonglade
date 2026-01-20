@@ -2,6 +2,11 @@ import { default as Alpine } from '/lib/alpinejs/alpinejs.3.15.0.module.esm.min.
 import { fetch2 } from '/js/app/httpService.mjs?v=1500';
 import { success } from '/js/app/toastService.mjs';
 
+function getLocalizedString(key) {
+    const container = document.getElementById('localizedStrings');
+    return container ? container.dataset[key] : '';
+}
+
 Alpine.data('pageManager', () => ({
     pages: [],
     isLoading: true,
@@ -45,7 +50,7 @@ Alpine.data('pageManager', () => ({
         if (this.pageToDelete) {
             await fetch2(`/api/page/${this.pageToDelete}`, 'DELETE');
             await this.loadPages();
-            success('Page deleted');
+            success(getLocalizedString('pageDeleted'));
             
             const modal = bootstrap.Modal.getInstance(document.getElementById('deleteConfirmModal'));
             modal.hide();

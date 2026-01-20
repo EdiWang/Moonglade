@@ -2,6 +2,11 @@
 import { toMagicJson } from './utils.module.mjs'
 import { success } from './toastService.mjs'
 
+function getLocalizedString(key) {
+    const container = document.getElementById('localizedStrings');
+    return container ? container.dataset[key] : '';
+}
+
 export async function handleSettingsSubmit(event) {
     event.preventDefault();
 
@@ -26,7 +31,7 @@ export async function handleSettingsSubmit(event) {
 
     await fetch2(event.currentTarget.action, 'POST', formattedValues);
 
-    success('Settings Updated');
+    success(getLocalizedString('settingsUpdated'));
     enableButton();
 }
 

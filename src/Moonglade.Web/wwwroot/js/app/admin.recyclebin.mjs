@@ -3,6 +3,11 @@ import { fetch2 } from '/js/app/httpService.mjs?v=1500';
 import { formatUtcTime } from './utils.module.mjs';
 import { success } from '/js/app/toastService.mjs';
 
+function getLocalizedString(key) {
+    const container = document.getElementById('localizedStrings');
+    return container ? container.dataset[key] : '';
+}
+
 Alpine.data('recycleBinManager', () => ({
     posts: [],
     isLoading: true,
@@ -29,7 +34,8 @@ Alpine.data('recycleBinManager', () => ({
 
     confirmDelete(postId, postTitle) {
         this.deleteTargetId = postId;
-        this.deleteMessage = `Are you sure you want to delete "${postTitle}"?`;
+        const template = getLocalizedString('confirmDelete');
+        this.deleteMessage = template.replace('{0}', postTitle);
         const modal = new bootstrap.Modal(document.getElementById('deleteModal'));
         modal.show();
     },
@@ -38,7 +44,7 @@ Alpine.data('recycleBinManager', () => ({
         if (this.deleteTargetId) {
             await fetch2(`/api/post/${this.deleteTargetId}/destroy`, 'DELETE');
             this.posts = this.posts.filter(p => p.id !== this.deleteTargetId);
-            success('Post deleted');
+            success(getLocalizedString('postDeleted'));
             
             const modal = bootstrap.Modal.getInstance(document.getElementById('deleteModal'));
             modal.hide();
@@ -49,7 +55,7 @@ Alpine.data('recycleBinManager', () => ({
     async restorePost(postId) {
         await fetch2(`/api/post/${postId}/restore`, 'POST');
         this.posts = this.posts.filter(p => p.id !== postId);
-        success('Post restored');
+        success(getLocalizedString('postRestored'));
     },
 
     confirmEmptyRecycleBin() {
@@ -60,7 +66,7 @@ Alpine.data('recycleBinManager', () => ({
     async executeEmptyRecycleBin() {
         await fetch2('/api/post/recyclebin', 'DELETE');
         this.posts = [];
-        success('Cleared');
+        success(getLocalizedString('cleared'));
         
         const modal = bootstrap.Modal.getInstance(document.getElementById('emptyBinModal'));
         modal.hide();

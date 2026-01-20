@@ -2,6 +2,11 @@
 import { fetch2 } from '/js/app/httpService.mjs?v=1500';
 import { success } from '/js/app/toastService.mjs';
 
+function getLocalizedString(key) {
+    const container = document.getElementById('localizedStrings');
+    return container ? container.dataset[key] : '';
+}
+
 let menuItemModal, subMenuItemModal;
 
 Alpine.data('menuManager', () => ({
@@ -49,7 +54,7 @@ Alpine.data('menuManager', () => ({
 
         try {
             await fetch2('/api/settings/custom-menu', 'POST', payload);
-            success('Settings saved successfully');
+            success(getLocalizedString('settingsSaved'));
         } catch (error) {
             console.error('Error saving settings:', error);
         }
@@ -78,7 +83,7 @@ Alpine.data('menuManager', () => ({
 
     saveMenuItem() {
         if (!this.currentMenuItem.title?.trim()) {
-            alert('Title is required');
+            alert(getLocalizedString('titleRequired'));
             return;
         }
 
@@ -123,7 +128,7 @@ Alpine.data('menuManager', () => ({
 
     saveSubMenuItem() {
         if (!this.currentSubMenuItem.title?.trim() || !this.currentSubMenuItem.url?.trim()) {
-            alert('Title and URL are required');
+            alert(getLocalizedString('titleUrlRequired'));
             return;
         }
 
@@ -150,13 +155,13 @@ Alpine.data('menuManager', () => ({
     },
 
     deleteMenuItem(index) {
-        if (!confirm('Are you sure you want to delete this menu item?')) return;
+        if (!confirm(getLocalizedString('confirmDeleteMenu'))) return;
 
         this.settings.menus.splice(index, 1);
     },
 
     deleteSubMenuItem(parentIndex, subIndex) {
-        if (!confirm('Are you sure you want to delete this sub menu item?')) return;
+        if (!confirm(getLocalizedString('confirmDeleteSubmenu'))) return;
 
         this.settings.menus[parentIndex].subMenus.splice(subIndex, 1);
     },
@@ -175,7 +180,7 @@ Alpine.data('menuManager', () => ({
     },
 
     clearMenus() {
-        if (!confirm('Are you sure you want to clear all menu items?')) return;
+        if (!confirm(getLocalizedString('confirmClearMenus'))) return;
 
         this.settings.menus = [];
     }

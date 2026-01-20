@@ -10,6 +10,15 @@
     <script type="module" src="~/js/app/admin.menu.mjs"></script>
 }
 
+<div id="localizedStrings" style="display:none"
+     data-settings-saved="@SharedLocalizer["Settings saved successfully"]"
+     data-title-required="@SharedLocalizer["Title is required"]"
+     data-title-url-required="@SharedLocalizer["Title and URL are required"]"
+     data-confirm-delete-menu="@SharedLocalizer["Are you sure you want to delete this menu item?"]"
+     data-confirm-delete-submenu="@SharedLocalizer["Are you sure you want to delete this sub menu item?"]"
+     data-confirm-clear-menus="@SharedLocalizer["Are you sure you want to clear all menu items?"]">
+</div>
+
 @section admintoolbar {
     <div class="admin-toolbar pb-2 border-bottom mb-3">
         <button type="button" class="btn btn-outline-accent" x-on:click="openMenuItemModal()">

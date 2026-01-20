@@ -10,6 +10,13 @@
     <script type="module" src="~/js/app/admin.scheduled.mjs"></script>
 }
 
+<div id="localizedStrings" style="display:none"
+     data-delete-confirmation="@SharedLocalizer["Delete Confirmation?"]"
+     data-post-deleted="@SharedLocalizer["Post deleted."]"
+     data-post-published="@SharedLocalizer["Post published"]"
+     data-post-postponed="@SharedLocalizer["Post postponed for {0} hour(s)"]">
+</div>
+
 @section admintoolbar {
     <partial name="_PostManageHeader" />
 }

@@ -2,6 +2,11 @@ import { default as Alpine } from '/lib/alpinejs/alpinejs.3.15.0.module.esm.min.
 import { fetch2 } from '/js/app/httpService.mjs?v=1500';
 import { success } from '/js/app/toastService.mjs';
 
+function getLocalizedString(key) {
+    const container = document.getElementById('localizedStrings');
+    return container ? container.dataset[key] : '';
+}
+
 Alpine.data('tagManager', () => ({
 tags: [],
 isLoading: true,
@@ -95,7 +100,7 @@ async init() {
             await fetch2(`/api/tags/${tagId}`, 'PUT', newTagName);
             this.originalTagNames[tagId] = newTagName;
             await this.loadTags();
-            success('Tag updated');
+            success(getLocalizedString('tagUpdated'));
         } catch (err) {
             event.target.textContent = originalTagName;
             console.error(err);
@@ -112,7 +117,7 @@ async init() {
             await fetch2(`/api/tags/${this.deleteTarget.tagId}`, 'DELETE');
             this.deleteModal.hide();
             await this.loadTags();
-            success('Tag deleted');
+            success(getLocalizedString('tagDeleted'));
         } catch (err) {
             console.error(err);
         }
@@ -127,7 +132,7 @@ async init() {
             this.formData = { displayName: '' };
             this.editCanvas.hide();
             await this.loadTags();
-            success('Tag added');
+            success(getLocalizedString('tagAdded'));
         } catch (err) {
             console.error(err);
         }

@@ -8,6 +8,13 @@
     <script type="module" src="~/js/app/admin.recyclebin.mjs"></script>
 }
 
+<div id="localizedStrings" style="display:none"
+     data-post-deleted="@SharedLocalizer["Post deleted"]" 
+     data-post-restored="@SharedLocalizer["Post restored"]" 
+     data-cleared="@SharedLocalizer["Cleared"]" 
+     data-confirm-delete="@SharedLocalizer["Are you sure you want to delete \"{0}\"?"]">
+</div>
+
 @section admintoolbar {
     <partial name="_PostManageHeader" />
 }

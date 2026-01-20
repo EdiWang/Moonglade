@@ -2,6 +2,11 @@ import { default as Alpine } from '/lib/alpinejs/alpinejs.3.15.0.module.esm.min.
 import { fetch2 } from '/js/app/httpService.mjs?v=1500';
 import { success } from '/js/app/toastService.mjs';
 
+function getLocalizedString(key) {
+    const container = document.getElementById('localizedStrings');
+    return container ? container.dataset[key] : '';
+}
+
 Alpine.data('mentionManager', () => ({
 mentions: [],
 isLoading: true,
@@ -74,7 +79,14 @@ async init() {
         this.selectedIds = this.selectedIds.filter(id => !this.pendingDeleteIds.includes(id));
         
         const count = this.pendingDeleteIds.length;
-        success(count === 1 ? 'Mention deleted' : `${count} mentions deleted`);
+        let message;
+        if (count === 1) {
+            message = getLocalizedString('mentionDeleted');
+        } else {
+            const template = getLocalizedString('mentionsDeleted');
+            message = template.replace('{0}', count);
+        }
+        success(message);
         
         this.deleteModal.hide();
         this.pendingDeleteIds = [];
@@ -87,7 +99,7 @@ async init() {
     async confirmClearAllMentions() {
         await fetch2('/api/mention/clear', 'DELETE');
         this.mentions = [];
-        success('Mention logs are cleared');
+        success(getLocalizedString('mentionsCleared'));
         
         this.clearAllModal.hide();
     },

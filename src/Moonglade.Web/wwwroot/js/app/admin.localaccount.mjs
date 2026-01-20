@@ -2,6 +2,11 @@ import { default as Alpine } from '/lib/alpinejs/alpinejs.3.15.0.module.esm.min.
 import { fetch2 } from '/js/app/httpService.mjs?v=1500';
 import { success } from '/js/app/toastService.mjs';
 
+function getLocalizedString(key) {
+    const container = document.getElementById('localizedStrings');
+    return container ? container.dataset[key] : '';
+}
+
 Alpine.data('accountManager', () => ({
     loginHistory: [],
     isLoading: true,
@@ -63,7 +68,7 @@ Alpine.data('accountManager', () => ({
         this.formData.oldPassword = '';
         this.formData.newPassword = '';
         this.resetPasswordModal.hide();
-        success('Password updated.');
+        success(getLocalizedString('passwordUpdated'));
     },
 
     formatTime(utcTime) {

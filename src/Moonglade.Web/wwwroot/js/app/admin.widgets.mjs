@@ -2,6 +2,11 @@
 import { fetch2 } from '/js/app/httpService.mjs?v=1500';
 import { success } from '/js/app/toastService.mjs';
 
+function getLocalizedString(key) {
+    const container = document.getElementById('localizedStrings');
+    return container ? container.dataset[key] : '';
+}
+
 Alpine.data('widgetManager', () => ({
     widgets: [],
     isLoading: true,
@@ -115,10 +120,10 @@ Alpine.data('widgetManager', () => ({
     },
 
     async deleteWidget(id) {
-        if (confirm('Delete this widget?')) {
+        if (confirm(getLocalizedString('deleteWidget'))) {
             await fetch2(`/api/widgets/${id}`, 'DELETE');
             await this.loadWidgets();
-            success('Widget deleted');
+            success(getLocalizedString('widgetDeleted'));
         }
     },
 
@@ -141,7 +146,7 @@ Alpine.data('widgetManager', () => ({
 
         this.editCanvas.hide();
         await this.loadWidgets();
-        success(isCreate ? 'Widget created' : 'Widget updated');
+        success(isCreate ? getLocalizedString('widgetCreated') : getLocalizedString('widgetUpdated'));
     },
 
     onWidgetTypeChange() {
@@ -180,7 +185,7 @@ Alpine.data('widgetManager', () => ({
     },
 
     removeLink(index) {
-        if (!confirm('Are you sure you want to remove this link?')) return;
+        if (!confirm(getLocalizedString('removeLink'))) return;
         
         const sortedLinks = this.sortedLinks;
         const actualIndex = this.formData.links.findIndex(l => l === sortedLinks[index]);
@@ -201,7 +206,7 @@ Alpine.data('widgetManager', () => ({
 
     saveLinkDialog() {
         if (!this.linkDialog.data.name || !this.linkDialog.data.url) {
-            alert('Name and URL are required');
+            alert(getLocalizedString('nameUrlRequired'));
             return;
         }
         
