@@ -2,6 +2,11 @@ import { default as Alpine } from '/lib/alpinejs/alpinejs.3.15.0.module.esm.min.
 import { fetch2 } from '/js/app/httpService.mjs?v=1500';
 import { success } from '/js/app/toastService.mjs';
 
+function getLocalizedString(key) {
+    const container = document.getElementById('localizedStrings');
+    return container ? container.dataset[key] : '';
+}
+
 Alpine.data('categoryManager', () => ({
     categories: [],
     isLoading: true,
@@ -60,7 +65,7 @@ Alpine.data('categoryManager', () => ({
 
     deleteCategory(id) {
         this.pendingDeleteId = id;
-        this.confirmMessage = 'Are you sure you want to delete this category?';
+        this.confirmMessage = getLocalizedString('confirmDelete');
         this.confirmModal.show();
     },
 
@@ -68,7 +73,7 @@ Alpine.data('categoryManager', () => ({
         if (this.pendingDeleteId) {
             await fetch2(`/api/category/${this.pendingDeleteId}`, 'DELETE');
             await this.loadCategories();
-            success('Category deleted');
+            success(getLocalizedString('categoryDeleted'));
             this.confirmModal.hide();
             this.pendingDeleteId = null;
         }
@@ -84,7 +89,7 @@ Alpine.data('categoryManager', () => ({
         this.formData = { slug: '', displayName: '', note: '' };
         this.editCanvas.hide();
         await this.loadCategories();
-        success(isCreate ? 'Category created' : 'Category updated');
+        success(isCreate ? getLocalizedString('categoryCreated') : getLocalizedString('categoryUpdated'));
     }
 }));
 

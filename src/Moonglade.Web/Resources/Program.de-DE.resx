@@ -1092,4 +1092,16 @@
   <data name="Filter.." xml:space="preserve">
     <value>Filter..</value>
   </data>
+  <data name="Are you sure you want to delete this category?" xml:space="preserve">
+    <value>Möchten Sie diese Kategorie wirklich löschen?</value>
+  </data>
+  <data name="Category deleted" xml:space="preserve">
+    <value>Kategorie gelöscht</value>
+  </data>
+  <data name="Category created" xml:space="preserve">
+    <value>Kategorie erstellt</value>
+  </data>
+  <data name="Category updated" xml:space="preserve">
+    <value>Kategorie aktualisiert</value>
+  </data>
 </root>

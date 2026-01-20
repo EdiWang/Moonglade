@@ -10,6 +10,13 @@
     <script type="module" src="~/js/app/admin.category.mjs"></script>
 }
 
+<div id="localizedStrings" style="display:none"
+     data-confirm-delete="@SharedLocalizer["Are you sure you want to delete this category?"]"
+     data-category-deleted="@SharedLocalizer["Category deleted"]"
+     data-category-created="@SharedLocalizer["Category created"]"
+     data-category-updated="@SharedLocalizer["Category updated"]">
+</div>
+
 @section admintoolbar {
     <div class="admin-toolbar pb-2 border-bottom mb-3">
         <a x-on:click="initCreateCategory()" class="btn btn-outline-accent" role="button">
