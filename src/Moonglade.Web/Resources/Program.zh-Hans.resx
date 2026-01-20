@@ -1044,4 +1044,52 @@
   <data name="Yes" xml:space="preserve">
     <value>是</value>
   </data>
+  <data name="Loading menu settings..." xml:space="preserve">
+    <value>加载菜单设置中...</value>
+  </data>
+  <data name="Edit Menu Item" xml:space="preserve">
+    <value>编辑菜单项</value>
+  </data>
+  <data name="Leave empty for dropdown menu with sub-items only" xml:space="preserve">
+    <value>留空表示仅包含子菜单项的下拉菜单</value>
+  </data>
+  <data name="Bootstrap Icons class name" xml:space="preserve">
+    <value>Bootstrap Icons 类名</value>
+  </data>
+  <data name="Open in new tab" xml:space="preserve">
+    <value>在新标签页中打开</value>
+  </data>
+  <data name="Edit Sub Menu Item" xml:space="preserve">
+    <value>编辑子菜单项</value>
+  </data>
+  <data name="Add Sub Menu Item" xml:space="preserve">
+    <value>添加子菜单项</value>
+  </data>
+  <data name="No menu items" xml:space="preserve">
+    <value>暂无菜单项</value>
+  </data>
+  <data name="Click 'Add Menu Item' to create your first menu." xml:space="preserve">
+    <value>点击"添加菜单项"来创建您的第一个菜单。</value>
+  </data>
+  <data name="Loading drafts..." xml:space="preserve">
+    <value>加载草稿中...</value>
+  </data>
+  <data name="Delete Confirmation" xml:space="preserve">
+    <value>删除确认</value>
+  </data>
+  <data name="Are you sure you want to delete this draft?" xml:space="preserve">
+    <value>您确定要删除此草稿吗？</value>
+  </data>
+  <data name="item(s)" xml:space="preserve">
+    <value>项</value>
+  </data>
+  <data name="No mentions yet." xml:space="preserve">
+    <value>暂无提及。</value>
+  </data>
+  <data name="Confirm Delete" xml:space="preserve">
+    <value>确认删除</value>
+  </data>
+  <data name="Filter.." xml:space="preserve">
+    <value>筛选..</value>
+  </data>
 </root>

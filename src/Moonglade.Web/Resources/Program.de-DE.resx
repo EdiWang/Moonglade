@@ -1044,4 +1044,52 @@
   <data name="Unpublish" xml:space="preserve">
     <value>Veröffentlichung aufheben</value>
   </data>
+  <data name="Loading menu settings..." xml:space="preserve">
+    <value>Menüeinstellungen werden geladen...</value>
+  </data>
+  <data name="Edit Menu Item" xml:space="preserve">
+    <value>Menüpunkt bearbeiten</value>
+  </data>
+  <data name="Leave empty for dropdown menu with sub-items only" xml:space="preserve">
+    <value>Leer lassen für Dropdown-Menü nur mit Unterelementen</value>
+  </data>
+  <data name="Bootstrap Icons class name" xml:space="preserve">
+    <value>Bootstrap Icons Klassenname</value>
+  </data>
+  <data name="Open in new tab" xml:space="preserve">
+    <value>In neuem Tab öffnen</value>
+  </data>
+  <data name="Edit Sub Menu Item" xml:space="preserve">
+    <value>Untermenüpunkt bearbeiten</value>
+  </data>
+  <data name="Add Sub Menu Item" xml:space="preserve">
+    <value>Untermenüpunkt hinzufügen</value>
+  </data>
+  <data name="No menu items" xml:space="preserve">
+    <value>Keine Menüpunkte</value>
+  </data>
+  <data name="Click 'Add Menu Item' to create your first menu." xml:space="preserve">
+    <value>Klicken Sie auf „Menüpunkt hinzufügen", um Ihr erstes Menü zu erstellen.</value>
+  </data>
+  <data name="Loading drafts..." xml:space="preserve">
+    <value>Entwürfe werden geladen...</value>
+  </data>
+  <data name="Delete Confirmation" xml:space="preserve">
+    <value>Bestätigung löschen</value>
+  </data>
+  <data name="Are you sure you want to delete this draft?" xml:space="preserve">
+    <value>Möchten Sie diesen Entwurf wirklich löschen?</value>
+  </data>
+  <data name="item(s)" xml:space="preserve">
+    <value>Artikel</value>
+  </data>
+  <data name="No mentions yet." xml:space="preserve">
+    <value>Noch keine Erwähnungen.</value>
+  </data>
+  <data name="Confirm Delete" xml:space="preserve">
+    <value>Löschen bestätigen</value>
+  </data>
+  <data name="Filter.." xml:space="preserve">
+    <value>Filter..</value>
+  </data>
 </root>
