@@ -150,8 +150,14 @@
   <data name="Admin" xml:space="preserve">
     <value>管理者</value>
   </data>
+  <data name="Admin Sign In" xml:space="preserve">
+    <value>管理者ログイン</value>
+  </data>
   <data name="Advanced" xml:space="preserve">
     <value>高度な</value>
+  </data>
+  <data name="Advanced Settings" xml:space="preserve">
+    <value>高度な設定</value>
   </data>
   <data name="All Posts" xml:space="preserve">
     <value>すべての記事</value>
