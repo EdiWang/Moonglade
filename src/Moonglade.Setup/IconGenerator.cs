@@ -12,6 +12,17 @@ public static class InMemoryIconGenerator
     // Expose as read-only
     public static IReadOnlyDictionary<string, byte[]> SiteIconDictionary => _siteIconDictionary;
 
+    /// <summary>
+    /// Get the cross-platform cache directory for site icons in temp folder
+    /// </summary>
+    public static string GetSiteIconCacheDirectory()
+    {
+        var tempPath = Path.GetTempPath();
+        var cacheDir = Path.Combine(tempPath, "moonglade-site-icons");
+        Directory.CreateDirectory(cacheDir);
+        return cacheDir;
+    }
+
     private const string DefaultIconFileName = "siteicon-default.png";
     private const string ImagesFolder = "images";
     private const string PngExtension = ".png";
@@ -90,6 +101,25 @@ public static class InMemoryIconGenerator
     {
         if (string.IsNullOrWhiteSpace(fileName)) return null;
         return _siteIconDictionary.TryGetValue(fileName, out var bytes) ? bytes : null;
+    }
+
+    /// <summary>
+    /// Load icon from byte array into memory dictionary
+    /// </summary>
+    public static void LoadIcon(string fileName, byte[] bytes)
+    {
+        if (!string.IsNullOrWhiteSpace(fileName) && bytes != null)
+        {
+            _siteIconDictionary[fileName] = bytes;
+        }
+    }
+
+    /// <summary>
+    /// Clear all icons from memory
+    /// </summary>
+    public static void ClearIcons()
+    {
+        _siteIconDictionary.Clear();
     }
 
     private static byte[] ResizeImage(Image image, int width, int height)

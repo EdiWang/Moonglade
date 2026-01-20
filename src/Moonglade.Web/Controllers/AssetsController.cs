@@ -11,7 +11,8 @@ public class AssetsController(
     IEventMediator eventMediator,
     IQueryMediator queryMediator,
     IWebHostEnvironment env,
-    ILogger<AssetsController> logger) : ControllerBase
+    ILogger<AssetsController> logger,
+    ISiteIconBuilder siteIconBuilder) : ControllerBase
 {
     [HttpGet("avatar")]
     [ResponseCache(Duration = 300)]
@@ -130,6 +131,9 @@ public class AssetsController(
         using var bmp = await Image.LoadAsync(new MemoryStream(base64Chars));
         if (bmp.Height != bmp.Width) return Conflict("image height must be equal to width");
         await eventMediator.PublishAsync(new SaveAssetEvent(AssetId.SiteIconBase64, base64Img));
+
+        // Regenerate site icons immediately after update
+        await siteIconBuilder.RegenerateSiteIcons(base64Img);
 
         logger.LogInformation("Site icon image updated successfully.");
 
