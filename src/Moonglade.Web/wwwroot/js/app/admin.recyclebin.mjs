@@ -1,12 +1,7 @@
 import { default as Alpine } from '/lib/alpinejs/alpinejs.3.15.0.module.esm.min.js';
 import { fetch2 } from '/js/app/httpService.mjs?v=1500';
-import { formatUtcTime } from './utils.module.mjs';
+import { formatUtcTime, getLocalizedString } from './utils.module.mjs';
 import { success } from '/js/app/toastService.mjs';
-
-function getLocalizedString(key) {
-    const container = document.getElementById('localizedStrings');
-    return container ? container.dataset[key] : '';
-}
 
 Alpine.data('recycleBinManager', () => ({
     posts: [],

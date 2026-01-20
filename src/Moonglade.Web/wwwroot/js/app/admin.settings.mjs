@@ -1,11 +1,6 @@
 ﻿import { fetch2 } from './httpService.mjs?v=1500'
-import { toMagicJson } from './utils.module.mjs'
+import { toMagicJson, getLocalizedString } from './utils.module.mjs'
 import { success } from './toastService.mjs'
-
-function getLocalizedString(key) {
-    const container = document.getElementById('localizedStrings');
-    return container ? container.dataset[key] : '';
-}
 
 export async function handleSettingsSubmit(event) {
     event.preventDefault();
