@@ -68,7 +68,7 @@ async init() {
 
     async deletePost(postId) {
         this.pendingDeleteId = postId;
-        this.confirmMessage = 'Are you sure you want to delete this post?';
+        this.confirmMessage = getLocalizedString('confirmDelete');
         this.confirmModal.show();
     },
 
