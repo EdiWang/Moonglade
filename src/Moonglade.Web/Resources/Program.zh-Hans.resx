@@ -1098,7 +1098,7 @@
   <data name="Are you sure you want to delete this post?" xml:space="preserve">
     <value>您确定要删除这篇文章吗？</value>
   </data>
-  <data name="Are you sure you want to delete \"{0}\"?" xml:space="preserve">
+  <data name="Are you sure you want to delete &quot;{0}&quot;?" xml:space="preserve">
     <value>您确定要删除"{0}"吗？</value>
   </data>
   <data name="Are you sure you want to empty the recycle bin? This action cannot be undone." xml:space="preserve">
