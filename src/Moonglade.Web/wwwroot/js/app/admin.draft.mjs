@@ -4,10 +4,16 @@ import { formatUtcTime } from './utils.module.mjs';
 import { success } from '/js/app/toastService.mjs';
 
 Alpine.data('draftManager', () => ({
+posts: [],
+isLoading: true,
+currentPostId: null,
+currentPostTitle: '',
+deleteModal: null,
     posts: [],
     isLoading: true,
 
     async init() {
+        this.deleteModal = new bootstrap.Modal(document.getElementById('deleteModal'));
         await this.loadPosts();
     },
 
@@ -25,11 +31,21 @@ Alpine.data('draftManager', () => ({
         }
     },
 
-    async deletePost(postId) {
-        if (confirm('Delete Confirmation?')) {
-            await fetch2(`/api/post/${postId}/recycle`, 'DELETE');
-            this.posts = this.posts.filter(p => p.id !== postId);
+    openDeleteModal(postId, postTitle) {
+        this.currentPostId = postId;
+        this.currentPostTitle = postTitle;
+        this.deleteModal.show();
+    },
+
+    async confirmDelete() {
+        if (this.currentPostId) {
+            await fetch2(`/api/post/${this.currentPostId}/recycle`, 'DELETE');
+            this.posts = this.posts.filter(p => p.id !== this.currentPostId);
             success('Post deleted');
+            
+            this.deleteModal.hide();
+            this.currentPostId = null;
+            this.currentPostTitle = '';
         }
     },
 
