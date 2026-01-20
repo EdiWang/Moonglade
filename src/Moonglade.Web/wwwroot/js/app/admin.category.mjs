@@ -7,6 +7,9 @@ Alpine.data('categoryManager', () => ({
     isLoading: true,
     currentCategoryId: window.emptyGuid,
     editCanvas: null,
+    confirmModal: null,
+    confirmMessage: '',
+    pendingDeleteId: null,
     formData: {
         slug: '',
         displayName: '',
@@ -15,8 +18,8 @@ Alpine.data('categoryManager', () => ({
 
     async init() {
         this.editCanvas = new bootstrap.Offcanvas(this.$refs.editCatCanvas);
+        this.confirmModal = new bootstrap.Modal(this.$refs.confirmModal);
         await this.loadCategories();
-        console.log(this.isLoading);
     },
 
     async loadCategories() {
@@ -55,11 +58,19 @@ Alpine.data('categoryManager', () => ({
         this.editCanvas.show();
     },
 
-    async deleteCategory(id) {
-        if (confirm('Delete?')) {
-            await fetch2(`/api/category/${id}`, 'DELETE');
+    deleteCategory(id) {
+        this.pendingDeleteId = id;
+        this.confirmMessage = 'Are you sure you want to delete this category?';
+        this.confirmModal.show();
+    },
+
+    async confirmAction() {
+        if (this.pendingDeleteId) {
+            await fetch2(`/api/category/${this.pendingDeleteId}`, 'DELETE');
             await this.loadCategories();
             success('Category deleted');
+            this.confirmModal.hide();
+            this.pendingDeleteId = null;
         }
     },
 
