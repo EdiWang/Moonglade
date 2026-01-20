@@ -4,7 +4,7 @@ services:
     container_name: moonglade-web
     environment:
       ASPNETCORE_ENVIRONMENT: "Production"
-      ConnectionStrings__MoongladeDatabase: "Server=moonglade-sqlserver;Database=moonglade;User Id=sa;Password=Work@996;Trusted_Connection=False;TrustServerCertificate=True;"
+      ConnectionStrings__MoongladeDatabase: "Server=moonglade-sqlserver;Database=moonglade;User Id=sa;Password=${MSSQL_SA_PASSWORD:-Work@996};Trusted_Connection=False;TrustServerCertificate=True;"
     ports:
       - "8080:8080"
     depends_on:
@@ -15,7 +15,7 @@ services:
     image: mcr.microsoft.com/mssql/server:2025-latest
     container_name: moonglade-sqlserver
     environment:
-      MSSQL_SA_PASSWORD: "Work@996"
+      MSSQL_SA_PASSWORD: "${MSSQL_SA_PASSWORD:-Work@996}"
       MSSQL_PID: "Express"
       ACCEPT_EULA: "Y"
     ports:
@@ -27,7 +27,6 @@ services:
 
 volumes:
   mssql-data:
-
 
 networks:
   moonglade-network:
