@@ -151,6 +151,7 @@ export function loadTinyMCE(textareaSelector) {
             { text: 'CSS', value: 'css' },
             { text: 'Dockerfile', value: 'dockerfile' },
             { text: 'Go', value: 'go' },
+            { text: 'GraphQL', value: 'graphql' },
             { text: 'HTML/XML', value: 'xml' },
             { text: 'JavaScript', value: 'javascript' },
             { text: 'Json', value: 'json' },
