@@ -1,6 +1,6 @@
 import { default as Alpine } from '/lib/alpinejs/alpinejs.3.15.0.module.esm.min.js';
 import { fetch2 } from '/js/app/httpService.mjs?v=1500';
-import { formatUtcTime } from '/js/app/utils.module.mjs';
+import { formatUtcTime, getLocalizedString } from '/js/app/utils.module.mjs';
 import { success } from '/js/app/toastService.mjs';
 
 Alpine.data('commentManager', () => ({
@@ -11,11 +11,16 @@ Alpine.data('commentManager', () => ({
     pageSize: 5,
     totalRows: 0,
     selectedCommentIds: [],
+    confirmModal: null,
+    confirmMessage: '',
+    pendingDeleteId: null,
+    isDeleteSelected: false,
 
     async init() {
         const urlParams = new URLSearchParams(window.location.search);
         this.currentPage = parseInt(urlParams.get('pageIndex')) || 1;
         this.searchTerm = urlParams.get('searchTerm') || '';
+        this.confirmModal = new bootstrap.Modal(this.$refs.confirmModal);
         await this.loadComments();
     },
 
@@ -69,18 +74,33 @@ Alpine.data('commentManager', () => ({
     },
 
     async deleteComment(commentId) {
-        await fetch2('/api/comment', 'DELETE', [commentId]);
-        await this.loadComments();
-        success('Comment deleted');
+        this.pendingDeleteId = commentId;
+        this.isDeleteSelected = false;
+        this.confirmMessage = getLocalizedString('confirmDelete');
+        this.confirmModal.show();
     },
 
     async deleteSelectedComments() {
         if (this.selectedCommentIds.length === 0) return;
         
-        await fetch2('/api/comment', 'DELETE', this.selectedCommentIds);
-        this.selectedCommentIds = [];
-        await this.loadComments();
-        success('Comments deleted');
+        this.isDeleteSelected = true;
+        this.confirmMessage = getLocalizedString('confirmDeleteSelected');
+        this.confirmModal.show();
+    },
+
+    async confirmAction() {
+        if (this.isDeleteSelected) {
+            await fetch2('/api/comment', 'DELETE', this.selectedCommentIds);
+            this.selectedCommentIds = [];
+            await this.loadComments();
+            success(getLocalizedString('commentsDeleted'));
+        } else if (this.pendingDeleteId) {
+            await fetch2('/api/comment', 'DELETE', [this.pendingDeleteId]);
+            await this.loadComments();
+            success(getLocalizedString('commentDeleted'));
+            this.pendingDeleteId = null;
+        }
+        this.confirmModal.hide();
     },
 
     async toggleApproval(commentId) {
