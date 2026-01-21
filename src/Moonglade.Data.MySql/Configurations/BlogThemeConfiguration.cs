@@ -4,13 +4,11 @@ using Moonglade.Data.Entities;
 
 namespace Moonglade.Data.MySql.Configurations;
 
-
-public class BlogThemeConfiguration : IEntityTypeConfiguration<BlogThemeEntity>
+public class BlogThemeConfiguration : Data.Configurations.BlogThemeConfiguration
 {
-    public void Configure(EntityTypeBuilder<BlogThemeEntity> builder)
+    protected override void ConfigureIdentityColumn(EntityTypeBuilder<BlogThemeEntity> builder)
     {
         builder.HasKey(e => e.Id);
         builder.Property(e => e.Id).ValueGeneratedOnAdd();
-        builder.Property(e => e.ThemeName).HasMaxLength(32);
     }
 }

@@ -4,12 +4,10 @@ using Moonglade.Data.Entities;
 
 namespace Moonglade.Data.MySql.Configurations;
 
-
-internal class BlogAssetConfiguration : IEntityTypeConfiguration<BlogAssetEntity>
+internal class BlogAssetConfiguration : Data.Configurations.BlogAssetConfiguration
 {
-    public void Configure(EntityTypeBuilder<BlogAssetEntity> builder)
+    protected override void ConfigureDateTimeColumns(EntityTypeBuilder<BlogAssetEntity> builder)
     {
-        builder.Property(e => e.Id).ValueGeneratedNever();
         builder.Property(e => e.LastModifiedTimeUtc).HasColumnType("datetime");
     }
 }

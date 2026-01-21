@@ -4,15 +4,10 @@ using Moonglade.Data.Entities;
 
 namespace Moonglade.Data.PostgreSql.Configurations;
 
-
-internal class CommentReplyConfiguration : IEntityTypeConfiguration<CommentReplyEntity>
+internal class CommentReplyConfiguration : Data.Configurations.CommentReplyConfiguration
 {
-    public void Configure(EntityTypeBuilder<CommentReplyEntity> builder)
+    protected override void ConfigureDateTimeColumns(EntityTypeBuilder<CommentReplyEntity> builder)
     {
-        builder.Property(e => e.Id).ValueGeneratedNever();
         builder.Property(e => e.CreateTimeUtc).HasColumnType("timestamp");
-        builder.HasOne(d => d.Comment)
-            .WithMany(p => p.Replies)
-            .HasForeignKey(d => d.CommentId);
     }
 }

@@ -4,9 +4,9 @@ using Moonglade.Data.Entities;
 
 namespace Moonglade.Data.PostgreSql.Configurations;
 
-internal class LoginHistoryConfiguration : IEntityTypeConfiguration<LoginHistoryEntity>
+internal class LoginHistoryConfiguration : Data.Configurations.LoginHistoryConfiguration
 {
-    public void Configure(EntityTypeBuilder<LoginHistoryEntity> builder)
+    protected override void ConfigureIdentityColumn(EntityTypeBuilder<LoginHistoryEntity> builder)
     {
         builder.Property(e => e.Id).UseIdentityColumn();
     }

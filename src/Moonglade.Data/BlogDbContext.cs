@@ -1,4 +1,5 @@
-﻿using Moonglade.Data.Entities;
+﻿using Moonglade.Data.Configurations;
+using Moonglade.Data.Entities;
 
 namespace Moonglade.Data;
 

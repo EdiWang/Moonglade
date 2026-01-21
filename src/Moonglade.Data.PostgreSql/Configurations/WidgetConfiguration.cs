@@ -4,18 +4,7 @@ using Moonglade.Data.Entities;
 
 namespace Moonglade.Data.PostgreSql.Configurations;
 
-public class WidgetConfiguration : IEntityTypeConfiguration<WidgetEntity>
+public class WidgetConfiguration : Data.Configurations.WidgetConfiguration
 {
-    public void Configure(EntityTypeBuilder<WidgetEntity> builder)
-    {
-        builder.Property(e => e.Id).ValueGeneratedNever();
-        builder.Property(e => e.Title).HasMaxLength(100);
-        builder.Property(e => e.WidgetType)
-            .HasMaxLength(50)
-            .HasConversion<string>();
-        builder.Property(e => e.ContentType)
-            .HasMaxLength(25)
-            .HasConversion<string>();
-        builder.Property(e => e.ContentCode).HasMaxLength(2000);
-    }
+    // No overrides needed - inherits all configuration from base
 }

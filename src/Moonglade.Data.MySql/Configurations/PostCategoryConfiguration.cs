@@ -4,21 +4,7 @@ using Moonglade.Data.Entities;
 
 namespace Moonglade.Data.MySql.Configurations;
 
-
-internal class PostCategoryConfiguration : IEntityTypeConfiguration<PostCategoryEntity>
+internal class PostCategoryConfiguration : Data.Configurations.PostCategoryConfiguration
 {
-    public void Configure(EntityTypeBuilder<PostCategoryEntity> builder)
-    {
-        builder.HasKey(e => new { e.PostId, e.CategoryId });
-
-        builder.HasOne(d => d.Category)
-            .WithMany(p => p.PostCategory)
-            .HasForeignKey(d => d.CategoryId)
-            .HasConstraintName("FK_PostCategory_Category");
-
-        builder.HasOne(d => d.Post)
-            .WithMany(p => p.PostCategory)
-            .HasForeignKey(d => d.PostId)
-            .HasConstraintName("FK_PostCategory_Post");
-    }
+    // No overrides needed - inherits all configuration from base
 }
