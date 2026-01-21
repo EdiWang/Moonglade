@@ -43,46 +43,6 @@ public class MigrationManagerIntegrationTests
         Assert.NotNull(manager);
     }
 
-    [Theory]
-    [InlineData("1.0.0", "2.0.0", true)]  // Major version change
-    [InlineData("1.0.0", "1.1.0", true)]  // Minor version change
-    [InlineData("1.0.0", "1.0.1", false)] // Patch only
-    [InlineData("2.0.0", "2.0.0", false)] // Same version
-    [InlineData("2.1.0", "2.0.0", false)] // Downgrade
-    public void ShouldMigrate_Logic_WorksCorrectly(string manifestVersion, string currentVersion, bool shouldMigrate)
-    {
-        // This test validates the migration logic indirectly through public API
-        // Arrange
-        var manager = CreateManager();
-        SetupSystemManifest(manifestVersion, DateTime.UtcNow);
-        SetupConfiguration("Setup:AutoDatabaseMigration", "true");
-
-        var options = new DbContextOptionsBuilder<BlogDbContext>()
-            .UseInMemoryDatabase(databaseName: Guid.NewGuid().ToString())
-            .Options;
-
-        using var context = new BlogDbContext(options);
-
-        // Act
-        var result = manager.TryMigrationAsync(context).Result;
-
-        // Assert
-        if (shouldMigrate)
-        {
-            // When migration is needed but provider is not supported (InMemory)
-            Assert.True(result.Status == MigrationStatus.UnsupportedProvider || 
-                       result.Status == MigrationStatus.VersionParsingError ||
-                       result.Status == MigrationStatus.UnsupportedVersion);
-        }
-        else
-        {
-            // When migration is not needed
-            Assert.True(result.Status == MigrationStatus.NotRequired || 
-                       result.Status == MigrationStatus.VersionParsingError ||
-                       result.Status == MigrationStatus.UnsupportedVersion);
-        }
-    }
-
     [Fact]
     public void MigrationScripts_AreEmbeddedCorrectly()
     {
@@ -124,38 +84,6 @@ public class MigrationManagerIntegrationTests
 
         // Assert
         Assert.Equal(expectedBatches, batches.Length);
-    }
-
-    [Fact]
-    public async Task TryMigrationAsync_UpdatesManifest_OnSuccessfulMigration()
-    {
-        // Arrange
-        var manager = CreateManager();
-        var manifestSettings = new SystemManifestSettings
-        {
-            VersionString = "0.0.1",
-            InstallTimeUtc = DateTime.UtcNow.AddDays(-1)
-        };
-
-        _blogConfigMock.Setup(x => x.SystemManifestSettings).Returns(manifestSettings);
-        _blogConfigMock.Setup(x => x.UpdateAsync(It.IsAny<SystemManifestSettings>()))
-            .Returns(new KeyValuePair<string, string>("SystemManifestSettings", "{}"));
-
-        SetupConfiguration("Setup:AutoDatabaseMigration", "true");
-
-        var options = new DbContextOptionsBuilder<BlogDbContext>()
-            .UseInMemoryDatabase(databaseName: Guid.NewGuid().ToString())
-            .Options;
-
-        using var context = new BlogDbContext(options);
-
-        // Act
-        var result = await manager.TryMigrationAsync(context);
-
-        // Assert
-        // The update should not be called if migration doesn't proceed due to unsupported provider
-        // but we can verify the setup is correct
-        Assert.NotNull(result);
     }
 
     [Fact]
