@@ -70,8 +70,8 @@ async function buildErrorMessage(response) {
         const data = await response.json();
         if (typeof data === 'string') {
             return data;
-        } else if (data.combinedErrorMessage) {
-            return data.combinedErrorMessage;
+        } else if (data.errors && Array.isArray(data.errors)) {
+            return data.errors.join(', ');
         } else {
             return Object.entries(data)
                 .map(([key, value]) => `${key}: ${value}`)

@@ -176,7 +176,7 @@ public class CommentController(
         if (!string.IsNullOrWhiteSpace(request.Email) && !Helper.IsValidEmailAddress(request.Email))
         {
             ModelState.AddModelError(nameof(request.Email), "Invalid email address.");
-            return BadRequest(ModelState.GetCombinedErrorMessage());
+            return BadRequest(new { Errors = ModelState.GetErrorMessages() });
         }
 
         return null;
