@@ -7,7 +7,6 @@
   </Folder>
   <Folder Name="/.Solution Items/Deployment/">
     <File Path="../Deployment/AzureQuickDeploy.ps1" />
-    <File Path="../Deployment/mssql-migration.sql" />
   </Folder>
   <Folder Name="/Application/">
     <Project Path="Moonglade.Web.Middleware/Moonglade.Web.Middleware.csproj" />

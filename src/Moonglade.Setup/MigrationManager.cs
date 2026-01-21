@@ -1,10 +1,13 @@
-﻿using Edi.AspNetCore.Utils;
+using Edi.AspNetCore.Utils;
 using LiteBus.Commands.Abstractions;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
 using Moonglade.Configuration;
 using Moonglade.Data;
+using System.Reflection;
+using System.Security.Cryptography;
+using System.Text;
 using System.Text.RegularExpressions;
 
 namespace Moonglade.Setup;
@@ -22,25 +25,22 @@ public enum MigrationStatus
     UnsupportedVersion,
     VersionParsingError,
     UnsupportedProvider,
-    Failed
+    Failed,
+    ScriptNotFound
 }
 
 public record MigrationResult(MigrationStatus Status, string ErrorMessage = null, Version FromVersion = null, Version ToVersion = null)
 {
     public bool IsSuccess => Status == MigrationStatus.Success || Status == MigrationStatus.NotRequired;
-    public bool IsFailed => Status == MigrationStatus.Failed || Status == MigrationStatus.VersionParsingError;
+    public bool IsFailed => Status == MigrationStatus.Failed || Status == MigrationStatus.VersionParsingError || Status == MigrationStatus.ScriptNotFound;
 }
 
 public partial class MigrationManager(
     ILogger<MigrationManager> logger,
     ICommandMediator commandMediator,
     IConfiguration configuration,
-    IBlogConfig blogConfig,
-    IHttpClientFactory httpClientFactory) : IMigrationManager
+    IBlogConfig blogConfig) : IMigrationManager
 {
-    private const int DefaultHttpTimeoutSeconds = 30;
-    private const int MaxScriptSizeBytes = 50 * 1024 * 1024; // 50MB limit
-
     public async Task<MigrationResult> TryMigrationAsync(BlogDbContext context, CancellationToken cancellationToken = default)
     {
         ArgumentNullException.ThrowIfNull(context);
@@ -78,9 +78,9 @@ public partial class MigrationManager(
         }
 
         var provider = context.Database.ProviderName;
-        var migrationScriptUrl = GetMigrationScriptUrl(provider);
+        var providerKey = GetProviderKey(provider);
 
-        if (string.IsNullOrWhiteSpace(migrationScriptUrl))
+        if (string.IsNullOrWhiteSpace(providerKey))
         {
             var message = $"Automatic database migration is not supported for provider `{provider}`. Please migrate manually.";
             logger.LogCritical(message);
@@ -92,7 +92,7 @@ public partial class MigrationManager(
 
         try
         {
-            await ExecuteMigrationAsync(context, migrationScriptUrl, cancellationToken);
+            await ExecuteMigrationAsync(context, providerKey, cancellationToken);
             await UpdateManifestAsync(cancellationToken);
 
             logger.LogInformation("Database migration completed successfully.");
@@ -132,48 +132,87 @@ public partial class MigrationManager(
                (manifestVersion.Major != currentVersion.Major || manifestVersion.Minor != currentVersion.Minor);
     }
 
-    private async Task ExecuteMigrationAsync(DbContext context, string scriptUrl, CancellationToken cancellationToken)
+    private async Task ExecuteMigrationAsync(DbContext context, string providerKey, CancellationToken cancellationToken)
     {
-        var scriptUrlWithNonce = $"{scriptUrl}?nonce={Guid.NewGuid():N}";
-
-        ValidateScriptUrl(scriptUrlWithNonce);
-
-        using var client = CreateHttpClient();
-
-        logger.LogInformation("Downloading migration script from {Url}...", scriptUrl);
-
-        using var response = await client.GetAsync(scriptUrlWithNonce, cancellationToken);
-        response.EnsureSuccessStatusCode();
-
-        // Check content length to prevent excessive memory usage
-        if (response.Content.Headers.ContentLength > MaxScriptSizeBytes)
-        {
-            throw new InvalidOperationException($"Migration script is too large: {response.Content.Headers.ContentLength} bytes");
-        }
-
-        var script = await response.Content.ReadAsStringAsync(cancellationToken);
+        var script = LoadEmbeddedMigrationScript(providerKey);
 
         if (string.IsNullOrWhiteSpace(script))
         {
-            logger.LogWarning("Migration script fetched is empty.");
-            return;
+            throw new InvalidOperationException($"Migration script for {providerKey} not found or is empty.");
         }
+
+        // Validate script integrity if enabled (optional but recommended for production)
+        if (configuration.GetValue("Setup:ValidateScriptIntegrity", false))
+        {
+            ValidateScriptIntegrity(script, providerKey);
+        }
+
+        logger.LogInformation("Loaded embedded migration script for {Provider}, size: {Size} bytes", 
+            providerKey, script.Length);
 
         logger.LogInformation("Executing migration script...");
         await ExecuteMigrationScriptBatchesAsync(script, context, cancellationToken);
         logger.LogInformation("Migration script executed successfully.");
     }
 
-    private HttpClient CreateHttpClient()
+    private string LoadEmbeddedMigrationScript(string providerKey)
     {
-        var client = httpClientFactory.CreateClient("MigrationManager");
+        var assembly = Assembly.GetExecutingAssembly();
+        var resourceName = $"Moonglade.Setup.MigrationScripts.{providerKey}.migration.sql";
 
-        var timeoutSeconds = configuration.GetValue("Setup:MigrationTimeoutSeconds", DefaultHttpTimeoutSeconds);
-        client.Timeout = TimeSpan.FromSeconds(timeoutSeconds);
+        logger.LogInformation("Loading embedded resource: {ResourceName}", resourceName);
 
-        client.DefaultRequestHeaders.UserAgent.ParseAdd($"Moonglade/{VersionHelper.AppVersionBasic}");
+        using var stream = assembly.GetManifestResourceStream(resourceName);
+        
+        if (stream == null)
+        {
+            // List all available resources for debugging
+            var availableResources = assembly.GetManifestResourceNames();
+            logger.LogError("Available embedded resources: {Resources}", 
+                string.Join(", ", availableResources));
+            
+            throw new InvalidOperationException(
+                $"Embedded migration script '{resourceName}' not found. " +
+                $"Available resources: {string.Join(", ", availableResources)}");
+        }
 
-        return client;
+        using var reader = new StreamReader(stream);
+        return reader.ReadToEnd();
+    }
+
+    private void ValidateScriptIntegrity(string script, string providerKey)
+    {
+        // Optional: Define expected SHA256 hashes for each provider's script
+        // This can be generated during build/release process
+        var scriptHashes = new Dictionary<string, string>
+        {
+            // Example: ["SqlServer"] = "ABC123...",
+            // These should be calculated and updated for each release
+        };
+
+        if (!scriptHashes.TryGetValue(providerKey, out var expectedHash))
+        {
+            logger.LogWarning("No hash defined for {Provider}, skipping integrity check.", providerKey);
+            return;
+        }
+
+        var actualHash = ComputeSha256Hash(script);
+
+        if (!string.Equals(actualHash, expectedHash, StringComparison.OrdinalIgnoreCase))
+        {
+            throw new SecurityException(
+                $"Migration script integrity check failed for {providerKey}. " +
+                $"Expected: {expectedHash}, Actual: {actualHash}");
+        }
+
+        logger.LogInformation("Migration script integrity verified for {Provider}.", providerKey);
+    }
+
+    private static string ComputeSha256Hash(string content)
+    {
+        var bytes = Encoding.UTF8.GetBytes(content);
+        var hash = SHA256.HashData(bytes);
+        return Convert.ToHexString(hash);
     }
 
     private async Task UpdateManifestAsync(CancellationToken cancellationToken)
@@ -185,56 +224,16 @@ public partial class MigrationManager(
         await commandMediator.SendAsync(new UpdateConfigurationCommand(kvp.Key, kvp.Value), cancellationToken);
     }
 
-    private static void ValidateScriptUrl(string scriptUrl)
-    {
-        if (scriptUrl.StartsWith("file://", StringComparison.OrdinalIgnoreCase))
-            throw new NotSupportedException("Local file system migration script is not supported.");
-
-        if (!Uri.TryCreate(scriptUrl, UriKind.Absolute, out var uriResult) ||
-            (uriResult.Scheme != Uri.UriSchemeHttp && uriResult.Scheme != Uri.UriSchemeHttps))
-            throw new ArgumentException("Invalid migration script URL.", nameof(scriptUrl));
-
-        // Additional security check for localhost/private IPs could be added here
-        if (IsPrivateOrLocalhost(uriResult.Host))
-        {
-            throw new SecurityException("Migration script URL cannot point to localhost or private network addresses.");
-        }
-    }
-
-    private static bool IsPrivateOrLocalhost(string host)
-    {
-        if (string.Equals(host, "localhost", StringComparison.OrdinalIgnoreCase) ||
-            string.Equals(host, "127.0.0.1", StringComparison.Ordinal) ||
-            string.Equals(host, "::1", StringComparison.Ordinal))
-        {
-            return true;
-        }
-
-        // Check for private IP ranges (10.0.0.0/8, 172.16.0.0/12, 192.168.0.0/16)
-        if (System.Net.IPAddress.TryParse(host, out var ipAddress))
-        {
-            var bytes = ipAddress.GetAddressBytes();
-            if (bytes.Length == 4) // IPv4
-            {
-                return bytes[0] == 10 ||
-                       (bytes[0] == 172 && bytes[1] >= 16 && bytes[1] <= 31) ||
-                       (bytes[0] == 192 && bytes[1] == 168);
-            }
-        }
-
-        return false;
-    }
-
     private bool GetAutoMigrationEnabled()
         => configuration.GetValue<bool>("Setup:AutoDatabaseMigration");
 
-    private string GetMigrationScriptUrl(string provider)
+    private static string GetProviderKey(string provider)
     {
         return provider switch
         {
-            "Microsoft.EntityFrameworkCore.SqlServer" => "https://raw.githubusercontent.com/EdiWang/Moonglade/release/Deployment/mssql-migration.sql",
-            "Pomelo.EntityFrameworkCore.MySql" => string.Empty,
-            "Npgsql.EntityFrameworkCore.PostgreSQL" => string.Empty,
+            "Microsoft.EntityFrameworkCore.SqlServer" => "SqlServer",
+            "Pomelo.EntityFrameworkCore.MySql" => "MySql",
+            "Npgsql.EntityFrameworkCore.PostgreSQL" => "PostgreSql",
             _ => null
         };
     }
@@ -278,7 +277,7 @@ public partial class MigrationManager(
     private static partial Regex SqlBatchSplitterRegex();
 }
 
-// Add this exception class for security-related issues
+// Exception class for security-related issues such as script integrity validation failures
 public class SecurityException : Exception
 {
     public SecurityException(string message) : base(message) { }
