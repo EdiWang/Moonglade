@@ -1143,4 +1143,7 @@
   <data name="Post scheduler is disabled, pending posts will not be published automatically." xml:space="preserve">
     <value>文章调度器已禁用，待发布的文章不会自动发布。</value>
   </data>
+  <data name="Search user name or email" xml:space="preserve">
+    <value>搜索用户名或邮箱</value>
+  </data>
 </root>

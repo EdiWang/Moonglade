@@ -1143,4 +1143,7 @@
   <data name="Post scheduler is disabled, pending posts will not be published automatically." xml:space="preserve">
     <value>文章排程器已停用，待發布的文章不會自動發布。</value>
   </data>
+  <data name="Search user name or email" xml:space="preserve">
+    <value>搜尋使用者名稱或電子郵件</value>
+  </data>
 </root>

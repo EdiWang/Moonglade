@@ -1143,4 +1143,7 @@
   <data name="Post scheduler is disabled, pending posts will not be published automatically." xml:space="preserve">
     <value>投稿スケジューラーが無効になっているため、保留中の投稿は自動的に公開されません。</value>
   </data>
+  <data name="Search user name or email" xml:space="preserve">
+    <value>ユーザー名またはメールアドレスを検索</value>
+  </data>
 </root>
