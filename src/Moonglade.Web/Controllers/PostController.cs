@@ -51,8 +51,6 @@ public class PostController(
     {
         try
         {
-            if (!ModelState.IsValid) return Conflict(new { Errors = ModelState.GetErrorMessages() });
-
             if (model.ChangePublishDate &&
                 model.PublishDate.HasValue &&
                 model.PublishDate <= DateTime.UtcNow &&
