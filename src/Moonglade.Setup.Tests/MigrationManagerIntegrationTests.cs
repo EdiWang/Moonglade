@@ -101,36 +101,4 @@ public class MigrationManagerIntegrationTests
         // Assert
         Assert.Equal(Convert.ToHexString(hash1), Convert.ToHexString(hash2));
     }
-
-    #region Helper Methods
-
-    private void SetupSystemManifest(string version, DateTime installTime)
-    {
-        var manifestSettings = new SystemManifestSettings
-        {
-            VersionString = version,
-            InstallTimeUtc = installTime
-        };
-
-        _blogConfigMock.Setup(x => x.SystemManifestSettings).Returns(manifestSettings);
-        _blogConfigMock.Setup(x => x.UpdateAsync(It.IsAny<SystemManifestSettings>()))
-            .Returns(new KeyValuePair<string, string>("SystemManifestSettings", "{}"));
-    }
-
-    private void SetupConfiguration(string key, string value)
-    {
-        var configSectionMock = new Mock<IConfigurationSection>();
-        configSectionMock.Setup(x => x.Value).Returns(value);
-        
-        _configurationMock.Setup(x => x.GetSection(key)).Returns(configSectionMock.Object);
-        _configurationMock.Setup(x => x[key]).Returns(value);
-
-        if (bool.TryParse(value, out var boolValue))
-        {
-            _configurationMock.Setup(x => x.GetValue<bool>(key)).Returns(boolValue);
-            _configurationMock.Setup(x => x.GetValue(key, It.IsAny<bool>())).Returns(boolValue);
-        }
-    }
-
-    #endregion
 }
