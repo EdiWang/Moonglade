@@ -1,11 +1,9 @@
-﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 using Moonglade.Data.Entities;
 
-namespace Moonglade.Data.MySql.Configurations;
+namespace Moonglade.Data.Configurations;
 
-
-internal class PostCategoryConfiguration : IEntityTypeConfiguration<PostCategoryEntity>
+public class PostCategoryConfiguration : IEntityTypeConfiguration<PostCategoryEntity>
 {
     public void Configure(EntityTypeBuilder<PostCategoryEntity> builder)
     {

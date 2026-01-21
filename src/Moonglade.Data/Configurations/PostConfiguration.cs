@@ -1,11 +1,9 @@
-﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 using Moonglade.Data.Entities;
 
-namespace Moonglade.Data.MySql.Configurations;
+namespace Moonglade.Data.Configurations;
 
-
-internal class PostConfiguration : IEntityTypeConfiguration<PostEntity>
+public class PostConfiguration : IEntityTypeConfiguration<PostEntity>
 {
     public void Configure(EntityTypeBuilder<PostEntity> builder)
     {
@@ -14,9 +12,7 @@ internal class PostConfiguration : IEntityTypeConfiguration<PostEntity>
         builder.Property(e => e.ContentAbstract).HasMaxLength(1024);
         builder.Property(e => e.ContentLanguageCode).HasMaxLength(8);
 
-        builder.Property(e => e.CreateTimeUtc).HasColumnType("datetime");
-        builder.Property(e => e.PubDateUtc).HasColumnType("datetime");
-        builder.Property(e => e.LastModifiedUtc).HasColumnType("datetime");
+        ConfigureDateTimeColumns(builder);
         builder.Property(e => e.PostContent);
 
         builder.Property(e => e.Author).HasMaxLength(64);
@@ -25,5 +21,13 @@ internal class PostConfiguration : IEntityTypeConfiguration<PostEntity>
         builder.Property(e => e.HeroImageUrl).HasMaxLength(256);
         builder.Property(e => e.RouteLink).HasMaxLength(256);
         builder.Property(e => e.Keywords).HasMaxLength(256);
+    }
+
+    protected virtual void ConfigureDateTimeColumns(EntityTypeBuilder<PostEntity> builder)
+    {
+        // Default: use datetime (SQL Server/MySQL compatible)
+        builder.Property(e => e.CreateTimeUtc).HasColumnType("datetime");
+        builder.Property(e => e.PubDateUtc).HasColumnType("datetime");
+        builder.Property(e => e.LastModifiedUtc).HasColumnType("datetime");
     }
 }

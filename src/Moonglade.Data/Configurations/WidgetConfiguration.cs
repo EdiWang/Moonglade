@@ -1,8 +1,7 @@
-using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 using Moonglade.Data.Entities;
 
-namespace Moonglade.Data.MySql.Configurations;
+namespace Moonglade.Data.Configurations;
 
 public class WidgetConfiguration : IEntityTypeConfiguration<WidgetEntity>
 {

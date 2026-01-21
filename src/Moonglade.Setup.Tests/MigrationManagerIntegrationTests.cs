@@ -1,10 +1,9 @@
+using LiteBus.Commands.Abstractions;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
 using Moonglade.Configuration;
-using Moonglade.Data;
 using Moq;
-using LiteBus.Commands.Abstractions;
 using System.Reflection;
 
 namespace Moonglade.Setup.Tests;
@@ -68,12 +67,12 @@ public class MigrationManagerIntegrationTests
     {
         // This tests the regex pattern used for splitting SQL batches
         // We'll use reflection to access the private method or test through integration
-        
+
         // Arrange
         var pattern = @"^\s*GO\s*$";
         var regex = new System.Text.RegularExpressions.Regex(
-            pattern, 
-            System.Text.RegularExpressions.RegexOptions.IgnoreCase | 
+            pattern,
+            System.Text.RegularExpressions.RegexOptions.IgnoreCase |
             System.Text.RegularExpressions.RegexOptions.Multiline);
 
         // Act
@@ -93,11 +92,11 @@ public class MigrationManagerIntegrationTests
         // Arrange
         const string content = "SELECT * FROM Users;";
         var bytes = System.Text.Encoding.UTF8.GetBytes(content);
-        
+
         // Act
         var hash1 = System.Security.Cryptography.SHA256.HashData(bytes);
         var hash2 = System.Security.Cryptography.SHA256.HashData(bytes);
-        
+
         // Assert
         Assert.Equal(Convert.ToHexString(hash1), Convert.ToHexString(hash2));
     }
