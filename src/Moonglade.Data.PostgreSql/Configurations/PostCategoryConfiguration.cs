@@ -1,8 +1,4 @@
-﻿using Microsoft.EntityFrameworkCore;
-using Microsoft.EntityFrameworkCore.Metadata.Builders;
-using Moonglade.Data.Entities;
-
-namespace Moonglade.Data.PostgreSql.Configurations;
+﻿namespace Moonglade.Data.PostgreSql.Configurations;
 
 internal class PostCategoryConfiguration : Data.Configurations.PostCategoryConfiguration
 {

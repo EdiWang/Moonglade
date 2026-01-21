@@ -1,7 +1,6 @@
 using Edi.AspNetCore.Utils;
 using LiteBus.Commands.Abstractions;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
 using Moonglade.Configuration;
@@ -125,7 +124,7 @@ public class MigrationManagerTests
     {
         // Arrange
         var manager = CreateManager();
-        
+
         // Parse current version and create a version with same major.minor but different patch
         if (Version.TryParse(VersionHelper.AppVersionBasic, out var currentVersion))
         {
@@ -238,7 +237,7 @@ public class MigrationManagerTests
     {
         // Arrange
         var innerException = new Exception("Inner");
-        
+
         // Act
         var exception = new SecurityException("Test message", innerException);
 
@@ -282,7 +281,7 @@ public class MigrationManagerTests
     {
         var configSectionMock = new Mock<IConfigurationSection>();
         configSectionMock.Setup(x => x.Value).Returns(value);
-        
+
         _configurationMock.Setup(x => x.GetSection(key)).Returns(configSectionMock.Object);
         _configurationMock.Setup(x => x[key]).Returns(value);
 

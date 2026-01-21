@@ -147,7 +147,7 @@ public partial class MigrationManager(
             ValidateScriptIntegrity(script, providerKey);
         }
 
-        logger.LogInformation("Loaded embedded migration script for {Provider}, size: {Size} bytes", 
+        logger.LogInformation("Loaded embedded migration script for {Provider}, size: {Size} bytes",
             providerKey, script.Length);
 
         logger.LogInformation("Executing migration script...");
@@ -163,14 +163,14 @@ public partial class MigrationManager(
         logger.LogInformation("Loading embedded resource: {ResourceName}", resourceName);
 
         using var stream = assembly.GetManifestResourceStream(resourceName);
-        
+
         if (stream == null)
         {
             // List all available resources for debugging
             var availableResources = assembly.GetManifestResourceNames();
-            logger.LogError("Available embedded resources: {Resources}", 
+            logger.LogError("Available embedded resources: {Resources}",
                 string.Join(", ", availableResources));
-            
+
             throw new InvalidOperationException(
                 $"Embedded migration script '{resourceName}' not found. " +
                 $"Available resources: {string.Join(", ", availableResources)}");

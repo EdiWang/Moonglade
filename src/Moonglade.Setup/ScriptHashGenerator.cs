@@ -45,7 +45,7 @@ public static class ScriptHashGenerator
         foreach (var provider in providers)
         {
             var scriptPath = Path.Combine(migrationScriptsPath, provider, "migration.sql");
-            
+
             if (File.Exists(scriptPath))
             {
                 hashes[provider] = GenerateHash(scriptPath);
