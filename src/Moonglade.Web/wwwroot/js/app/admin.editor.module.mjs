@@ -150,7 +150,6 @@ export function loadTinyMCE(textareaSelector) {
             { text: 'C++', value: 'cpp' },
             { text: 'CSS', value: 'css' },
             { text: 'Dockerfile', value: 'dockerfile' },
-            { text: 'F#', value: 'fsharp' },
             { text: 'Go', value: 'go' },
             { text: 'HTML/XML', value: 'xml' },
             { text: 'JavaScript', value: 'javascript' },
