@@ -70,8 +70,11 @@ async function buildErrorMessage(response) {
         const data = await response.json();
         if (typeof data === 'string') {
             return data;
-        } else if (data.errors && Array.isArray(data.errors)) {
+        } else if (Array.isArray(data.errors) && data.errors.length > 0) {
             return data.errors.join(', ');
+        } else if ('errors' in data) {
+            // errors is present but null, not an array, or an empty array
+            return 'An error occurred';
         } else {
             return Object.entries(data)
                 .map(([key, value]) => `${key}: ${value}`)
