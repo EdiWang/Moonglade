@@ -4,12 +4,10 @@ using Moonglade.Data.Entities;
 
 namespace Moonglade.Data.SqlServer.Configurations;
 
-
-internal class MentionConfiguration : IEntityTypeConfiguration<MentionEntity>
+internal class MentionConfiguration : Data.Configurations.MentionConfiguration
 {
-    public void Configure(EntityTypeBuilder<MentionEntity> builder)
+    protected override void ConfigureDateTimeColumns(EntityTypeBuilder<MentionEntity> builder)
     {
-        builder.Property(e => e.Id).ValueGeneratedNever();
         builder.Property(e => e.PingTimeUtc).HasColumnType("datetime");
     }
 }

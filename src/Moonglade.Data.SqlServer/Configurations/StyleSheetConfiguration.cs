@@ -4,13 +4,10 @@ using Moonglade.Data.Entities;
 
 namespace Moonglade.Data.SqlServer.Configurations;
 
-internal class StyleSheetConfiguration : IEntityTypeConfiguration<StyleSheetEntity>
+internal class StyleSheetConfiguration : Data.Configurations.StyleSheetConfiguration
 {
-    public void Configure(EntityTypeBuilder<StyleSheetEntity> builder)
+    protected override void ConfigureDateTimeColumns(EntityTypeBuilder<StyleSheetEntity> builder)
     {
-        builder.Property(e => e.Id).ValueGeneratedNever();
-        builder.Property(e => e.FriendlyName).HasMaxLength(32);
-        builder.Property(e => e.Hash).HasMaxLength(64);
         builder.Property(e => e.LastModifiedTimeUtc).HasColumnType("datetime");
     }
 }
