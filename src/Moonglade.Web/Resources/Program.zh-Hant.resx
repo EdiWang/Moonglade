@@ -1146,4 +1146,16 @@
   <data name="Search user name or email" xml:space="preserve">
     <value>搜尋使用者名稱或電子郵件</value>
   </data>
+  <data name="Comment deleted" xml:space="preserve">
+    <value>評論已刪除</value>
+  </data>
+  <data name="Comments deleted" xml:space="preserve">
+    <value>評論已刪除</value>
+  </data>
+  <data name="Are you sure you want to delete this comment?" xml:space="preserve">
+    <value>確定要刪除這則評論嗎？</value>
+  </data>
+  <data name="Are you sure you want to delete selected comments?" xml:space="preserve">
+    <value>確定要刪除選取的評論嗎？</value>
+  </data>
 </root>

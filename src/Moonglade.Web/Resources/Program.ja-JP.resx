@@ -1146,4 +1146,16 @@
   <data name="Search user name or email" xml:space="preserve">
     <value>ユーザー名またはメールアドレスを検索</value>
   </data>
+  <data name="Comment deleted" xml:space="preserve">
+    <value>コメントが削除されました</value>
+  </data>
+  <data name="Comments deleted" xml:space="preserve">
+    <value>コメントが削除されました</value>
+  </data>
+  <data name="Are you sure you want to delete this comment?" xml:space="preserve">
+    <value>このコメントを削除してもよろしいですか？</value>
+  </data>
+  <data name="Are you sure you want to delete selected comments?" xml:space="preserve">
+    <value>選択したコメントを削除してもよろしいですか？</value>
+  </data>
 </root>
