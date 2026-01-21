@@ -1,10 +1,7 @@
 ﻿@page "/admin/comments"
-@using System.ComponentModel.DataAnnotations
-@using Moonglade.Data.DTO
-@using Moonglade.Utils
-@using Moonglade.Web.PagedList
 @{
     ViewBag.Title = "Comments";
+    ViewBag.XData = "commentManager";
 }
 @Html.AntiForgeryToken()
 
@@ -26,135 +23,139 @@
 }
 @section admintoolbar {
     <div class="admin-toolbar pb-2 border-bottom mb-3">
-        <a href="javascript:window.deleteSelectedComments();" class="btn btn-outline-danger btn-delete-selected">
+        <a href="javascript:void(0);" 
+           x-on:click="deleteSelectedComments()" 
+           class="btn btn-outline-danger btn-delete-selected">
             <i class="bi-trash"></i> @SharedLocalizer["Delete selected"]
         </a>
     </div>
 }
 
 <div>
-    <form method="post">
+    <form x-on:submit.prevent="handleSearch()">
         <div class="d-flex search-box mb-3">
-            <input type="search" aria-label="Search" asp-for="SearchTerm" class="form-control" placeholder="Search user name or email" />
-            <button class="btn btn-light btn-search my-sm-0" type="submit"><i class="bi-search text-dark"></i></button>
+            <input type="search" 
+                   x-model="searchTerm"
+                   aria-label="Search" 
+                   class="form-control" 
+                   placeholder="Search user name or email" />
+            <button class="btn btn-light btn-search my-sm-0" type="submit">
+                <i class="bi-search text-dark"></i>
+            </button>
         </div>
     </form>
 
-    @if (CommentDetailedItems.Count == 0)
-    {
+    <div x-show="isLoading"
+         class="text-muted mb-3"
+         :class="{ 'd-flex align-items-center': isLoading }">
+        <div class="spinner-border spinner-border-sm me-2" role="status"></div>
+        <span>@SharedLocalizer["Loading..."]</span>
+    </div>
+
+    <div x-show="!isLoading && !hasComments">
         <div class="alert alert-info">
             @SharedLocalizer["No Comments"]
         </div>
-    }
-    else
-    {
-        foreach (var item in CommentDetailedItems)
-        {
-            <div id="panel-comment-@item.Id" class="admin-comment-entry p-3 mb-3 rounded-3 shadow-sm border row g-1">
-                <div class="form-check col-auto">
-                    <input type="checkbox" class="form-check-input chk-cid" id="comment-item-chk-@item.Id" data-cid="@item.Id" />
-                    <label class="form-check-label" for="comment-item-chk-@item.Id"></label>
-                </div>
+    </div>
 
-                <div class="col">
-                    <h6>
-                        @item.Username
-                        @if (!string.IsNullOrWhiteSpace(item.Email))
-                        {
-                            <text>
-                                (<a href="mailto:@item.Email" class="d-none d-sm-inline">@item.Email</a>)
-                            </text>
-                        }
-                    </h6>
-                    <div class="mdrendered-comment-content">
-                        @Html.Raw(ContentProcessor.MarkdownToContent(item.CommentContent, ContentProcessor.MarkdownConvertType.Html))
-                    </div>
-                    <div class="text-muted">
-                        @item.PostTitle
-                    </div>
+    <template x-for="item in comments" :key="item.id">
+        <div :id="`panel-comment-${item.id}`" class="admin-comment-entry p-3 mb-3 rounded-3 shadow-sm border row g-1">
+            <div class="form-check col-auto">
+                <input type="checkbox" 
+                       class="form-check-input chk-cid" 
+                       :id="`comment-item-chk-${item.id}`" 
+                       :value="item.id"
+                       x-model="selectedCommentIds" />
+                <label class="form-check-label" :for="`comment-item-chk-${item.id}`"></label>
+            </div>
 
-                    <small class="text-muted">
+            <div class="col">
+                <h6>
+                    <span x-text="item.username"></span>
+                    <template x-if="item.email">
                         <span>
-                            <time data-utc-label="@item.CreateTimeUtc.ToString("u")">@item.CreateTimeUtc</time>
+                            (<a :href="`mailto:${item.email}`" class="d-none d-sm-inline" x-text="item.email"></a>)
                         </span>
-                        <span class="text-muted d-none d-sm-inline">(@item.IpAddress)</span>
-                    </small>
+                    </template>
+                </h6>
+                <div class="mdrendered-comment-content" x-html="item.commentContent"></div>
+                <div class="text-muted" x-text="item.postTitle"></div>
 
-                    <div class="reply-ui mt-3" style="display: none;">
-                        <form>
-                            <div class="mb-2">
-                                <textarea class="form-control"
-                                  id="replycontent-@item.Id"
-                                  name="ReplyContent"
-                                  placeholder="Content" type="text"></textarea>
-                            </div>
+                <small class="text-muted">
+                    <span>
+                        <time :data-utc-label="item.createTimeUtc" x-text="item.createTimeUtc"></time>
+                    </span>
+                    <span class="text-muted d-none d-sm-inline">(<span x-text="item.ipAddress"></span>)</span>
+                </small>
 
-                            <a class="btn btn-sm btn-outline-accent btn-reply-post" href="#" data-commentid="@item.Id">
-                                @SharedLocalizer["Reply"]
-                            </a>
-                        </form>
-                    </div>
-                    <div class="reply-list">
-                        @foreach (var reply in item.Replies.OrderByDescending(t => t.ReplyTimeUtc))
-                        {
+                <div class="reply-ui mt-3" x-show="item.showReplyForm">
+                    <form x-on:submit.prevent="replyComment(item.id)">
+                        <div class="mb-2">
+                            <textarea class="form-control"
+                                      :id="`replycontent-${item.id}`"
+                                      x-model="item.replyContent"
+                                      placeholder="Content" 
+                                      type="text"></textarea>
+                        </div>
+
+                        <button type="submit" class="btn btn-sm btn-outline-accent">
+                            @SharedLocalizer["Reply"]
+                        </button>
+                    </form>
+                </div>
+                <div class="reply-list">
+                    <template x-for="(reply, index) in item.replies.slice().reverse()" :key="index">
+                        <div>
                             <hr />
                             <div class="reply-container">
-                                <div>
-                                    @Html.Raw(ContentProcessor.MarkdownToContent(reply.ReplyContent, ContentProcessor.MarkdownConvertType.Html))
-                                </div>
+                                <div x-html="reply.replyContentHtml"></div>
                                 <small class="text-muted">
-                                    <time data-utc-label="@reply.ReplyTimeUtc.ToString("u")">@reply.ReplyTimeUtc</time>
+                                    <time :data-utc-label="reply.replyTimeUtc" x-text="reply.replyTimeUtc"></time>
                                 </small>
                             </div>
-                        }
-                    </div>
-                </div>
-
-                <div class="col-auto">
-                    <a href="javascript:;" class="btn btn-sm @(item.IsApproved ? "btn-success" : "btn-outline-success") btn-approve" data-commentid="@item.Id">
-                        <i class="bi-check2"></i>
-                    </a>
-                    <button class="btn btn-sm btn-outline-accent btn-reply" data-commentid="@item.Id">
-                        <i class="bi-reply-fill"></i>
-                    </button>
-                    <button class="btn btn-sm btn-outline-danger btn-delete" data-commentid="@item.Id">
-                        <i class="bi-trash"></i>
-                    </button>
+                        </div>
+                    </template>
                 </div>
             </div>
-        }
-    }
 
+            <div class="col-auto">
+                <a href="javascript:void(0);" 
+                   class="btn btn-sm"
+                   :class="item.isApproved ? 'btn-success' : 'btn-outline-success'"
+                   x-on:click="toggleApproval(item.id)">
+                    <i class="bi-check2"></i>
+                </a>
+                <button class="btn btn-sm btn-outline-accent" 
+                        x-on:click="item.showReplyForm = !item.showReplyForm">
+                    <i class="bi-reply-fill"></i>
+                </button>
+                <button class="btn btn-sm btn-outline-danger" 
+                        x-on:click="deleteComment(item.id)">
+                    <i class="bi-trash"></i>
+                </button>
+            </div>
+        </div>
+    </template>
 
-    @Html.PagedListPager(CommentDetailedItems, page => $"?pageIndex={page}&searchTerm={SearchTerm}", new()
-    {
-        UlElementClasses = ["pagination mt-3"]
-    })
+    <nav x-show="!isLoading && totalPages > 1" aria-label="Page navigation" class="mt-4">
+        <ul class="pagination">
+            <li class="page-item" :class="{ 'disabled': currentPage === 1 }">
+                <a class="page-link" href="#" x-on:click.prevent="goToPage(currentPage - 1)">
+                    <span aria-hidden="true">&laquo;</span>
+                </a>
+            </li>
+            
+            <template x-for="page in paginationPages" :key="page">
+                <li class="page-item" :class="{ 'active': page === currentPage }">
+                    <a class="page-link" href="#" x-on:click.prevent="goToPage(page)" x-text="page"></a>
+                </li>
+            </template>
+            
+            <li class="page-item" :class="{ 'disabled': currentPage === totalPages }">
+                <a class="page-link" href="#" x-on:click.prevent="goToPage(currentPage + 1)">
+                    <span aria-hidden="true">&raquo;</span>
+                </a>
+            </li>
+        </ul>
+    </nav>
 </div>
-
-@functions
-{
-    public BasePagedList<CommentDetailedItem> CommentDetailedItems { get; set; }
-
-    private const int PageSize = 5;
-
-    [BindProperty]
-    [MaxLength(32)]
-    public string SearchTerm { get; set; }
-
-    public async Task OnPost() => await GetComments(1);
-
-    public async Task OnGet(int pageIndex = 1, string searchTerm = null)
-    {
-        if (!string.IsNullOrWhiteSpace(searchTerm)) SearchTerm = searchTerm;
-
-        await GetComments(pageIndex);
-    }
-
-    public async Task GetComments(int pageIndex)
-    {
-        var comments = await QueryMediator.QueryAsync(new ListCommentsQuery(PageSize, pageIndex, SearchTerm));
-        var count = await QueryMediator.QueryAsync(new CountCommentsQuery());
-        CommentDetailedItems = new(comments, pageIndex, PageSize, count);
-    }
-}
