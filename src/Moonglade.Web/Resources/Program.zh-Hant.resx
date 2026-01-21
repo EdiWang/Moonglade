@@ -1158,4 +1158,34 @@
   <data name="Are you sure you want to delete selected comments?" xml:space="preserve">
     <value>確定要刪除選取的評論嗎？</value>
   </data>
+  <data name="Widgets" xml:space="preserve">
+    <value>小工具</value>
+  </data>
+  <data name="Mentions" xml:space="preserve">
+    <value>提及</value>
+  </data>
+  <data name="Manage posts link" xml:space="preserve">
+    <value>管理文章連結</value>
+  </data>
+  <data name="Manage pages link" xml:space="preserve">
+    <value>管理頁面連結</value>
+  </data>
+  <data name="Manage categories link" xml:space="preserve">
+    <value>管理分類連結</value>
+  </data>
+  <data name="Manage comments link" xml:space="preserve">
+    <value>管理評論連結</value>
+  </data>
+  <data name="Manage tags link" xml:space="preserve">
+    <value>管理標籤連結</value>
+  </data>
+  <data name="Manage menus link" xml:space="preserve">
+    <value>管理選單連結</value>
+  </data>
+  <data name="Manage widgets" xml:space="preserve">
+    <value>管理小工具</value>
+  </data>
+  <data name="Manage mention link" xml:space="preserve">
+    <value>管理提及連結</value>
+  </data>
 </root>

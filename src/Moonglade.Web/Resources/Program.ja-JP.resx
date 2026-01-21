@@ -1158,4 +1158,34 @@
   <data name="Are you sure you want to delete selected comments?" xml:space="preserve">
     <value>選択したコメントを削除してもよろしいですか？</value>
   </data>
+  <data name="Widgets" xml:space="preserve">
+    <value>ウィジェット</value>
+  </data>
+  <data name="Mentions" xml:space="preserve">
+    <value>メンション</value>
+  </data>
+  <data name="Manage posts link" xml:space="preserve">
+    <value>記事管理リンク</value>
+  </data>
+  <data name="Manage pages link" xml:space="preserve">
+    <value>ページ管理リンク</value>
+  </data>
+  <data name="Manage categories link" xml:space="preserve">
+    <value>カテゴリ管理リンク</value>
+  </data>
+  <data name="Manage comments link" xml:space="preserve">
+    <value>コメント管理リンク</value>
+  </data>
+  <data name="Manage tags link" xml:space="preserve">
+    <value>タグ管理リンク</value>
+  </data>
+  <data name="Manage menus link" xml:space="preserve">
+    <value>メニュー管理リンク</value>
+  </data>
+  <data name="Manage widgets" xml:space="preserve">
+    <value>ウィジェットを管理</value>
+  </data>
+  <data name="Manage mention link" xml:space="preserve">
+    <value>メンション管理リンク</value>
+  </data>
 </root>

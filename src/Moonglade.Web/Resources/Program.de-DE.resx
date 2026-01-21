@@ -1158,4 +1158,34 @@
   <data name="Are you sure you want to delete selected comments?" xml:space="preserve">
     <value>Sind Sie sicher, dass Sie die ausgewählten Kommentare löschen möchten?</value>
   </data>
+  <data name="Widgets" xml:space="preserve">
+    <value>Widgets</value>
+  </data>
+  <data name="Mentions" xml:space="preserve">
+    <value>Erwähnungen</value>
+  </data>
+  <data name="Manage posts link" xml:space="preserve">
+    <value>Link zur Artikelverwaltung</value>
+  </data>
+  <data name="Manage pages link" xml:space="preserve">
+    <value>Link zur Seitenverwaltung</value>
+  </data>
+  <data name="Manage categories link" xml:space="preserve">
+    <value>Link zur Kategorieverwaltung</value>
+  </data>
+  <data name="Manage comments link" xml:space="preserve">
+    <value>Link zur Kommentarverwaltung</value>
+  </data>
+  <data name="Manage tags link" xml:space="preserve">
+    <value>Link zur Tag-Verwaltung</value>
+  </data>
+  <data name="Manage menus link" xml:space="preserve">
+    <value>Link zur Menüverwaltung</value>
+  </data>
+  <data name="Manage widgets" xml:space="preserve">
+    <value>Widgets verwalten</value>
+  </data>
+  <data name="Manage mention link" xml:space="preserve">
+    <value>Link zur Erwähnungsverwaltung</value>
+  </data>
 </root>
