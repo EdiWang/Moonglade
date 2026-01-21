@@ -1,13 +1,6 @@
-﻿using Microsoft.EntityFrameworkCore;
-using Microsoft.EntityFrameworkCore.Metadata.Builders;
-using Moonglade.Data.Entities;
-
-namespace Moonglade.Data.SqlServer.Configurations;
+﻿namespace Moonglade.Data.SqlServer.Configurations;
 
 internal class StyleSheetConfiguration : Data.Configurations.StyleSheetConfiguration
 {
-    protected override void ConfigureDateTimeColumns(EntityTypeBuilder<StyleSheetEntity> builder)
-    {
-        builder.Property(e => e.LastModifiedTimeUtc).HasColumnType("datetime");
-    }
+    // No overrides needed - uses base class datetime type
 }
