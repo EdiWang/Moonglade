@@ -4,12 +4,9 @@ namespace Moonglade.Web.Handlers;
 
 public class WebManifestMapHandler
 {
-    public static Delegate Handler => async (HttpContext httpContext, IBlogConfig blogConfig) =>
-    {
-        await Handle(httpContext, blogConfig);
-    };
+    public static Delegate Handler => Handle;
 
-    public static async Task Handle(HttpContext httpContext, IBlogConfig blogConfig)
+    public static IResult Handle(HttpContext httpContext, IBlogConfig blogConfig)
     {
         var model = new ManifestModel
         {
@@ -28,12 +25,9 @@ public class WebManifestMapHandler
             Orientation = "portrait"
         };
 
-        httpContext.Response.StatusCode = StatusCodes.Status200OK;
-        httpContext.Response.ContentType = "application/manifest+json";
-        httpContext.Response.Headers.TryAdd("cache-control", "public,max-age=3600");
+        httpContext.Response.Headers.CacheControl = "public, max-age=3600";
 
-        // Do not use `WriteAsJsonAsync` because it will override ContentType header
-        await httpContext.Response.WriteAsync(model.ToJson(), httpContext.RequestAborted);
+        return Results.Json(model, contentType: "application/manifest+json");
     }
 }
 
