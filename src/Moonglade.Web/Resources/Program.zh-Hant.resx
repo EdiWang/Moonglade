@@ -1062,6 +1062,9 @@
   <data name="Add Sub Menu Item" xml:space="preserve">
     <value>新增子選單項</value>
   </data>
+  <data name="Add Sub Menu" xml:space="preserve">
+    <value>新增子選單</value>
+  </data>
   <data name="No menu items" xml:space="preserve">
     <value>暫無選單項</value>
   </data>
@@ -1085,6 +1088,27 @@
   </data>
   <data name="Confirm Delete" xml:space="preserve">
     <value>確認刪除</value>
+  </data>
+  <data name="Add Menu Item" xml:space="preserve">
+    <value>新增選單項</value>
+  </data>
+  <data name="Settings saved successfully" xml:space="preserve">
+    <value>設定已成功保存</value>
+  </data>
+  <data name="Title is required" xml:space="preserve">
+    <value>標題為必填項</value>
+  </data>
+  <data name="Title and URL are required" xml:space="preserve">
+    <value>標題和連結為必填項</value>
+  </data>
+  <data name="Are you sure you want to delete this menu item?" xml:space="preserve">
+    <value>確定要刪除此選單項嗎？</value>
+  </data>
+  <data name="Are you sure you want to delete this sub menu item?" xml:space="preserve">
+    <value>確定要刪除此子選單項嗎？</value>
+  </data>
+  <data name="Are you sure you want to clear all menu items?" xml:space="preserve">
+    <value>確定要清空所有選單項嗎？</value>
   </data>
   <data name="Filter.." xml:space="preserve">
     <value>篩選..</value>
