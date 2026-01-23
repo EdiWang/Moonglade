@@ -55,7 +55,9 @@ public class CreatePostCommandHandler(
             IsDeleted = false,
             PostStatus = request.Payload.PostStatus ?? PostStatusConstants.Draft,
             IsFeatured = request.Payload.Featured,
-            HeroImageUrl = string.IsNullOrWhiteSpace(request.Payload.HeroImageUrl) ? null : SecurityHelper.SterilizeLink(request.Payload.HeroImageUrl),
+            HeroImageUrl = string.IsNullOrWhiteSpace(request.Payload.HeroImageUrl)
+            ? null
+            : Edi.AspNetCore.Utils.SecurityHelper.SterilizeLink(request.Payload.HeroImageUrl),
             IsOutdated = request.Payload.IsOutdated,
         };
 
