@@ -3,7 +3,7 @@ import { fetch2 } from '/js/app/httpService.mjs?v=1500';
 import { success } from '/js/app/toastService.mjs';
 import { getLocalizedString } from './utils.module.mjs';
 
-let menuItemModal, subMenuItemModal;
+let menuItemModal, subMenuItemModal, confirmModal;
 
 Alpine.data('menuManager', () => ({
     settings: {
@@ -16,6 +16,8 @@ Alpine.data('menuManager', () => ({
     editingIndex: null,
     editingSubIndex: null,
     editingParentIndex: null,
+    confirmAction: null,
+    confirmMessage: '',
 
     async init() {
         this.initializeModals();
@@ -25,6 +27,7 @@ Alpine.data('menuManager', () => ({
     initializeModals() {
         menuItemModal = new bootstrap.Modal(document.getElementById('menuItemModal'));
         subMenuItemModal = new bootstrap.Modal(document.getElementById('subMenuItemModal'));
+        confirmModal = new bootstrap.Modal(document.getElementById('confirmModal'));
     },
 
     async loadSettings() {
@@ -150,16 +153,40 @@ Alpine.data('menuManager', () => ({
         this.editingParentIndex = null;
     },
 
-    deleteMenuItem(index) {
-        if (!confirm(getLocalizedString('confirmDeleteMenu'))) return;
+    showConfirm(message, action) {
+        this.confirmMessage = message;
+        this.confirmAction = action;
+        confirmModal.show();
+    },
 
-        this.settings.menus.splice(index, 1);
+    executeConfirmAction() {
+        if (this.confirmAction) {
+            this.confirmAction();
+            confirmModal.hide();
+            this.confirmAction = null;
+            this.confirmMessage = '';
+        }
+    },
+
+    deleteMenuItem(index) {
+        this.showConfirm(
+            getLocalizedString('confirmDeleteMenu'),
+            () => this.settings.menus.splice(index, 1)
+        );
     },
 
     deleteSubMenuItem(parentIndex, subIndex) {
-        if (!confirm(getLocalizedString('confirmDeleteSubmenu'))) return;
+        this.showConfirm(
+            getLocalizedString('confirmDeleteSubmenu'),
+            () => this.settings.menus[parentIndex].subMenus.splice(subIndex, 1)
+        );
+    },
 
-        this.settings.menus[parentIndex].subMenus.splice(subIndex, 1);
+    clearMenus() {
+        this.showConfirm(
+            getLocalizedString('confirmClearMenus'),
+            () => this.settings.menus = []
+        );
     },
 
     moveMenuItem(index, direction) {
@@ -173,12 +200,6 @@ Alpine.data('menuManager', () => ({
             this.settings.menus[index].displayOrder = index + 1;
             this.settings.menus[newIndex].displayOrder = newIndex + 1;
         }
-    },
-
-    clearMenus() {
-        if (!confirm(getLocalizedString('confirmClearMenus'))) return;
-
-        this.settings.menus = [];
     }
 }));
 
