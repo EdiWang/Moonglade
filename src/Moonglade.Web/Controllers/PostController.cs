@@ -4,7 +4,6 @@ using Moonglade.Data.Specifications;
 using Moonglade.Features.Post;
 using Moonglade.IndexNow.Client;
 using Moonglade.Web.BackgroundServices;
-using Moonglade.Web.Extensions;
 using Moonglade.Webmention;
 using System.ComponentModel.DataAnnotations;
 

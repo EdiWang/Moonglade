@@ -27,7 +27,7 @@ public class FoafMapHandler
         {
             var widgets = await queryMediator.QueryAsync(new ListWidgetsQuery());
             var linksJson = widgets.Where(p => p.WidgetType == WidgetType.LinkList && !string.IsNullOrWhiteSpace(p.ContentCode)).Select(p => p.ContentCode).ToList();
-            
+
             var links = new List<LinkListItem>();
             foreach (var json in linksJson)
             {
