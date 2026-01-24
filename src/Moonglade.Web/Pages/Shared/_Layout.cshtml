@@ -221,13 +221,13 @@
                 </div>
             </section>
             <div class="container-xl mt-4 mb-5">
-                <div class="row">
+                <div class="d-flex gap-4">
                     @if (BlogConfig.GeneralSettings.SideBarOption == SideBarOption.Left)
                     {
                         <partial name="_Aside" />
                     }
 
-                    <main class="@(BlogConfig.GeneralSettings.SideBarOption == SideBarOption.Disabled ? null : "col")">
+                    <main>
                         @RenderBody()
                     </main>
 
