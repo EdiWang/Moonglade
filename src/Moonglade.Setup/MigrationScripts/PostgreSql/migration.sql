@@ -10,3 +10,6 @@ CREATE TABLE IF NOT EXISTS "Widget" (
     "CreatedTimeUtc" TIMESTAMP NOT NULL,
     PRIMARY KEY ("Id")
 );
+
+-- v15.3
+ALTER TABLE "Mention" DROP COLUMN IF EXISTS "Worker";

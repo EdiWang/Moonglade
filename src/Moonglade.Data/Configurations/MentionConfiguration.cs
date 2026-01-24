@@ -14,7 +14,6 @@ public class MentionConfiguration : IEntityTypeConfiguration<MentionEntity>
         builder.Property(e => e.SourceIp).HasMaxLength(64);
         builder.Property(e => e.SourceTitle).HasMaxLength(256);
         builder.Property(e => e.SourceUrl).HasMaxLength(256);
-        builder.Property(e => e.Worker).HasMaxLength(16);
         ConfigureDateTimeColumns(builder);
     }
 

@@ -17,3 +17,10 @@ BEGIN
     ) ON [PRIMARY]
 END
 GO
+
+-- v15.3
+IF EXISTS (SELECT * FROM sys.columns WHERE object_id = OBJECT_ID(N'[dbo].[Mention]') AND name = 'Worker')
+BEGIN
+    ALTER TABLE [dbo].[Mention] DROP COLUMN [Worker];
+END
+GO
