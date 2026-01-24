@@ -4,12 +4,23 @@ import { success } from '/js/app/toastService.mjs';
 import { getLocalizedString } from './utils.module.mjs';
 
 Alpine.data('widgetManager', () => ({
-    widgets: [],
-    isLoading: true,
-    currentWidgetId: window.emptyGuid,
-    editCanvas: null,
-    linkModal: null,
-    formData: {
+widgets: [],
+isLoading: true,
+currentWidgetId: window.emptyGuid,
+editCanvas: null,
+linkModal: null,
+confirmDeleteModal: null,
+deleteConfirm: {
+    title: '',
+    message: '',
+    buttonText: '',
+    callback: null
+},
+deleteTarget: {
+    widgetId: null,
+    linkIndex: -1
+},
+formData: {
         title: '',
         widgetType: 'LinkList',
         displayOrder: 0,
@@ -31,6 +42,7 @@ Alpine.data('widgetManager', () => ({
     async init() {
         this.editCanvas = new bootstrap.Offcanvas(this.$refs.editWidgetCanvas);
         this.linkModal = new bootstrap.Modal(this.$refs.linkDialogModal);
+        this.confirmDeleteModal = new bootstrap.Modal(this.$refs.confirmDeleteModal);
         await this.loadWidgets();
     },
 
@@ -115,12 +127,24 @@ Alpine.data('widgetManager', () => ({
         this.editCanvas.show();
     },
 
-    async deleteWidget(id) {
-        if (confirm(getLocalizedString('deleteWidget'))) {
-            await fetch2(`/api/widgets/${id}`, 'DELETE');
-            await this.loadWidgets();
-            success(getLocalizedString('widgetDeleted'));
-        }
+    deleteWidget(id) {
+        this.deleteTarget.widgetId = id;
+        this.deleteConfirm = {
+            title: 'Delete Widget',
+            message: getLocalizedString('deleteWidget'),
+            buttonText: 'Delete',
+            callback: async () => {
+                try {
+                    await fetch2(`/api/widgets/${this.deleteTarget.widgetId}`, 'DELETE');
+                    this.confirmDeleteModal.hide();
+                    await this.loadWidgets();
+                    success(getLocalizedString('widgetDeleted'));
+                } catch (err) {
+                    console.error(err);
+                }
+            }
+        };
+        this.confirmDeleteModal.show();
     },
 
     async handleSubmit() {
@@ -181,12 +205,20 @@ Alpine.data('widgetManager', () => ({
     },
 
     removeLink(index) {
-        if (!confirm(getLocalizedString('removeLink'))) return;
-        
-        const sortedLinks = this.sortedLinks;
-        const actualIndex = this.formData.links.findIndex(l => l === sortedLinks[index]);
-        
-        this.formData.links.splice(actualIndex, 1);
+        this.deleteTarget.linkIndex = index;
+        this.deleteConfirm = {
+            title: 'Remove Link',
+            message: getLocalizedString('removeLink'),
+            buttonText: 'Remove',
+            callback: () => {
+                const sortedLinks = this.sortedLinks;
+                const actualIndex = this.formData.links.findIndex(l => l === sortedLinks[this.deleteTarget.linkIndex]);
+                
+                this.formData.links.splice(actualIndex, 1);
+                this.confirmDeleteModal.hide();
+            }
+        };
+        this.confirmDeleteModal.show();
     },
 
     moveLink(index, direction) {
@@ -219,6 +251,10 @@ Alpine.data('widgetManager', () => ({
         return this.formData.links.length > 0 
             ? Math.max(...this.formData.links.map(l => l.order)) + 1 
             : 1;
+    },
+
+    getLocalizedString(key) {
+        return getLocalizedString(key);
     }
 }));
 
