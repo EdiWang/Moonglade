@@ -8,16 +8,27 @@ Alpine.data('scheduledManager', () => ({
     isLoading: true,
     currentPostId: null,
     modal: null,
+    deleteTargetId: null,
+    deleteMessage: '',
+    deleteModal: null,
 
     async init() {
         await this.loadPosts();
         this.initModal();
+        this.initDeleteModal();
     },
 
     initModal() {
         const modalElement = document.getElementById('publishPostModal');
         if (modalElement && typeof bootstrap !== 'undefined') {
             this.modal = new bootstrap.Modal(modalElement);
+        }
+    },
+
+    initDeleteModal() {
+        const modalElement = document.getElementById('deletePostModal');
+        if (modalElement && typeof bootstrap !== 'undefined') {
+            this.deleteModal = new bootstrap.Modal(modalElement);
         }
     },
 
@@ -35,11 +46,18 @@ Alpine.data('scheduledManager', () => ({
     },
 
     async deletePost(postId) {
-        if (confirm(getLocalizedString('deleteConfirmation'))) {
-            await fetch2(`/api/post/${postId}/recycle`, 'DELETE');
-            this.posts = this.posts.filter(p => p.id !== postId);
-            success(getLocalizedString('postDeleted'));
-        }
+        this.deleteTargetId = postId;
+        this.deleteMessage = getLocalizedString('deleteConfirmation');
+        this.deleteModal?.show();
+    },
+
+    async confirmDelete() {
+        if (!this.deleteTargetId) return;
+        await fetch2(`/api/post/${this.deleteTargetId}/recycle`, 'DELETE');
+        this.posts = this.posts.filter(p => p.id !== this.deleteTargetId);
+        success(getLocalizedString('postDeleted'));
+        this.deleteModal?.hide();
+        this.deleteTargetId = null;
     },
 
     showPublishModal(postId) {
