@@ -1,6 +1,7 @@
 import { default as Alpine } from '/lib/alpinejs/alpinejs.3.15.0.module.esm.min.js';
 import { fetch2 } from '/js/app/httpService.mjs?v=1500';
 import { success } from '/js/app/toastService.mjs';
+import { getLocalizedString } from './utils.module.mjs';
 
 Alpine.data('accountManager', () => ({
     loginHistory: [],
@@ -63,7 +64,7 @@ Alpine.data('accountManager', () => ({
         this.formData.oldPassword = '';
         this.formData.newPassword = '';
         this.resetPasswordModal.hide();
-        success('Password updated.');
+        success(getLocalizedString('passwordUpdated'));
     },
 
     formatTime(utcTime) {

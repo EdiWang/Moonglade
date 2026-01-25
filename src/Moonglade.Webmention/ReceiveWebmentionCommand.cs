@@ -77,8 +77,7 @@ public class ReceiveWebmentionCommandHandler(
                 SourceTitle = mentionRequest.Title,
                 TargetPostId = id,
                 TargetPostTitle = title,
-                SourceIp = request.RemoteIp,
-                Worker = "Webmention"
+                SourceIp = request.RemoteIp
             };
 
             await mentionRepo.AddAsync(obj, ct);

@@ -12,6 +12,9 @@
       <PackageReference Include="SixLabors.ImageSharp" Version="3.1.12" />
     </ItemGroup>
     <ItemGroup>
+        <EmbeddedResource Include="MigrationScripts\**\*.sql" />
+    </ItemGroup>
+    <ItemGroup>
         <ProjectReference Include="..\Moonglade.Configuration\Moonglade.Configuration.csproj" />
         <ProjectReference Include="..\Moonglade.Features\Moonglade.Features.csproj" />
         <ProjectReference Include="..\Moonglade.Data\Moonglade.Data.csproj" />

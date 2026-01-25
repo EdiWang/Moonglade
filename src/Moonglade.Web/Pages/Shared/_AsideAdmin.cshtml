@@ -6,7 +6,7 @@
     <section class="admin-nav-section mt-3 mb-3">
         <div class="list-group list-group-flush me-1">
             <a asp-page="/Admin/Post"
-               class="list-group-item list-group-item-action @(currentPage is "/Admin/Post" or "/Admin/EditPost" or "/Admin/Draft" or "/Admin/RecycleBin" ? "active" : null)" title="Manage posts link">
+               class="list-group-item list-group-item-action @(currentPage is "/Admin/Post" or "/Admin/EditPost" or "/Admin/Draft" or "/Admin/RecycleBin" ? "active" : null)" title="@SharedLocalizer["Manage posts link"]">
                 <div class="positioning-region">
                     <div class="content-region">
                         <i class="bi-file-earmark-richtext admin-nav-icon"></i>
@@ -15,7 +15,7 @@
                 </div>
             </a>
             <a asp-page="/Admin/BlogPage"
-               class="list-group-item list-group-item-action @(currentPage is "/Admin/BlogPage" or "/Admin/EditPage" ? "active" : null)" title="Manage pages link">
+               class="list-group-item list-group-item-action @(currentPage is "/Admin/BlogPage" or "/Admin/EditPage" ? "active" : null)" title="@SharedLocalizer["Manage pages link"]">
                 <div class="positioning-region">
                     <div class="content-region">
                         <i class="bi-file-earmark-post admin-nav-icon"></i>
@@ -24,10 +24,10 @@
                 </div>
             </a>
             <a asp-page="/Admin/Category"
-               class="list-group-item list-group-item-action @(currentPage is "/Admin/Category" ? "active" : null)">
+               class="list-group-item list-group-item-action @(currentPage is "/Admin/Category" ? "active" : null)" title="@SharedLocalizer["Manage categories link"]">
                 <div class="positioning-region">
                     <div class="content-region">
-                        <i class="bi-folder2 admin-nav-icon" title="Manage categories link"></i>
+                        <i class="bi-folder2 admin-nav-icon"></i>
                         @SharedLocalizer["Categories"]
                     </div>
                 </div>
@@ -35,47 +35,47 @@
             @if (BlogConfig.CommentSettings.CommentProvider == CommentProvider.BuiltIn)
             {
                 <a asp-page="/Admin/Comments"
-                   class="list-group-item list-group-item-action @(currentPage is "/Admin/Comments" ? "active" : null)">
+                   class="list-group-item list-group-item-action @(currentPage is "/Admin/Comments" ? "active" : null)" title="@SharedLocalizer["Manage comments link"]">
                     <div class="positioning-region">
                         <div class="content-region">
-                            <i class="bi-chat-left-text admin-nav-icon" title="Manage comments link"></i>
+                            <i class="bi-chat-left-text admin-nav-icon"></i>
                             @SharedLocalizer["Comments"]
                         </div>
                     </div>
                 </a>
             }
             <a asp-page="/Admin/Tags"
-               class="list-group-item list-group-item-action @(currentPage is "/Admin/Tags" ? "active" : null)">
+               class="list-group-item list-group-item-action @(currentPage is "/Admin/Tags" ? "active" : null)" title="@SharedLocalizer["Manage tags link"]">
                 <div class="positioning-region">
                     <div class="content-region">
-                        <i class="bi-tag admin-nav-icon" title="Manage tags link"></i>
+                        <i class="bi-tag admin-nav-icon"></i>
                         @SharedLocalizer["Tags"]
                     </div>
                 </div>
             </a>
             <a asp-page="/Admin/Menu"
-               class="list-group-item list-group-item-action @(currentPage is "/Admin/Menu" ? "active" : null)">
+               class="list-group-item list-group-item-action @(currentPage is "/Admin/Menu" ? "active" : null)" title="@SharedLocalizer["Manage menus link"]">
                 <div class="positioning-region">
                     <div class="content-region">
-                        <i class="bi-menu-button-wide admin-nav-icon" title="Manage menus link"></i>
+                        <i class="bi-menu-button-wide admin-nav-icon"></i>
                         @SharedLocalizer["Menus"]
                     </div>
                 </div>
             </a>
             <a asp-page="/Admin/Widgets"
-               class="list-group-item list-group-item-action @(currentPage is "/Admin/Widgets" ? "active" : null)">
+               class="list-group-item list-group-item-action @(currentPage is "/Admin/Widgets" ? "active" : null)" title="@SharedLocalizer["Manage widgets"]">
                 <div class="positioning-region">
                     <div class="content-region">
-                        <i class="bi-code-square admin-nav-icon" title="Manage widgets"></i>
+                        <i class="bi-code-square admin-nav-icon"></i>
                         @SharedLocalizer["Widgets"]
                     </div>
                 </div>
             </a>
             <a asp-page="/Admin/Mention"
-               class="list-group-item list-group-item-action @(currentPage is "/Admin/Mention" ? "active" : null)">
+               class="list-group-item list-group-item-action @(currentPage is "/Admin/Mention" ? "active" : null)" title="@SharedLocalizer["Manage mention link"]">
                 <div class="positioning-region">
                     <div class="content-region">
-                        <i class="bi-arrow-left-right admin-nav-icon" title="Manage mention link"></i>
+                        <i class="bi-arrow-left-right admin-nav-icon"></i>
                         @SharedLocalizer["Mentions"]
                     </div>
                 </div>

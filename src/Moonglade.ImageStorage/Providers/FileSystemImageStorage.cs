@@ -50,6 +50,7 @@ public class FileSystemImageStorage(FileSystemImageConfiguration imgConfig, ILog
     /// </remarks>
     public async Task<ImageInfo> GetAsync(string fileName)
     {
+        ValidateFileName(fileName);
         var imagePath = Path.Join(_path, fileName);
 
         if (!File.Exists(imagePath))
@@ -85,11 +86,45 @@ public class FileSystemImageStorage(FileSystemImageConfiguration imgConfig, ILog
     public async Task DeleteAsync(string fileName)
     {
         await Task.CompletedTask;
+        ValidateFileName(fileName);
         var imagePath = Path.Join(_path, fileName);
         if (File.Exists(imagePath))
         {
             File.Delete(imagePath);
             logger.LogInformation("Deleted image: {FileName}", fileName);
+        }
+    }
+
+    /// <summary>
+    /// Validates that a file name is safe and does not contain path traversal attempts.
+    /// </summary>
+    /// <param name="fileName">The file name to validate.</param>
+    /// <exception cref="ArgumentException">Thrown when the file name is invalid or contains path traversal characters.</exception>
+    private static void ValidateFileName(string fileName)
+    {
+        if (string.IsNullOrWhiteSpace(fileName))
+        {
+            throw new ArgumentException("File name cannot be null or empty.", nameof(fileName));
+        }
+
+        // Prevent path traversal attacks by ensuring fileName is just a filename without path components
+        var sanitizedFileName = Path.GetFileName(fileName);
+        if (sanitizedFileName != fileName)
+        {
+            throw new ArgumentException("File name contains invalid path characters.", nameof(fileName));
+        }
+
+        // Additional check for path traversal sequences
+        if (fileName.Contains("..", StringComparison.Ordinal))
+        {
+            throw new ArgumentException("File name contains path traversal sequences.", nameof(fileName));
+        }
+
+        // Check for invalid filename characters
+        var invalidChars = Path.GetInvalidFileNameChars();
+        if (fileName.IndexOfAny(invalidChars) >= 0)
+        {
+            throw new ArgumentException("File name contains invalid characters.", nameof(fileName));
         }
     }
 
@@ -117,6 +152,7 @@ public class FileSystemImageStorage(FileSystemImageConfiguration imgConfig, ILog
     /// </remarks>
     public async Task<string> InsertAsync(string fileName, byte[] imageBytes)
     {
+        ValidateFileName(fileName);
         var fullPath = Path.Join(_path, fileName);
 
         await using var sourceStream = new FileStream(fullPath, FileMode.Create, FileAccess.Write, FileShare.None,

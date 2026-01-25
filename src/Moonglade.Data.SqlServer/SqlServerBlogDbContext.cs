@@ -17,18 +17,18 @@ public class SqlServerBlogDbContext : BlogDbContext
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
-        modelBuilder.ApplyConfiguration(new CommentConfiguration());
-        modelBuilder.ApplyConfiguration(new CommentReplyConfiguration());
-        modelBuilder.ApplyConfiguration(new PostConfiguration());
-        modelBuilder.ApplyConfiguration(new PostCategoryConfiguration());
+        modelBuilder.ApplyConfiguration(new Data.Configurations.CommentConfiguration());
+        modelBuilder.ApplyConfiguration(new Data.Configurations.CommentReplyConfiguration());
+        modelBuilder.ApplyConfiguration(new Data.Configurations.PostConfiguration());
+        modelBuilder.ApplyConfiguration(new Data.Configurations.PostCategoryConfiguration());
         modelBuilder.ApplyConfiguration(new LoginHistoryConfiguration());
-        modelBuilder.ApplyConfiguration(new MentionConfiguration());
+        modelBuilder.ApplyConfiguration(new Data.Configurations.MentionConfiguration());
         modelBuilder.ApplyConfiguration(new BlogThemeConfiguration());
-        modelBuilder.ApplyConfiguration(new BlogAssetConfiguration());
-        modelBuilder.ApplyConfiguration(new StyleSheetConfiguration());
-        modelBuilder.ApplyConfiguration(new BlogConfigurationConfiguration());
-        modelBuilder.ApplyConfiguration(new PageConfiguration());
-        modelBuilder.ApplyConfiguration(new WidgetConfiguration());
+        modelBuilder.ApplyConfiguration(new Data.Configurations.BlogAssetConfiguration());
+        modelBuilder.ApplyConfiguration(new Data.Configurations.StyleSheetConfiguration());
+        modelBuilder.ApplyConfiguration(new Data.Configurations.BlogConfigurationConfiguration());
+        modelBuilder.ApplyConfiguration(new Data.Configurations.PageConfiguration());
+        modelBuilder.ApplyConfiguration(new Data.Configurations.WidgetConfiguration());
 
         base.OnModelCreating(modelBuilder);
     }

@@ -56,7 +56,9 @@ public class WriteFoafCommandHandler : ICommandHandler<WriteFoafCommand, string>
 
         foreach (var friend in request.Links)
         {
-            me.Friends.Add(new("#" + friend.Order)
+            // Use stable hash-based ID to avoid duplicates
+            var friendId = "#friend_" + Math.Abs(friend.Url.GetHashCode()).ToString();
+            me.Friends.Add(new(friendId)
             {
                 Name = friend.Name,
                 Homepage = friend.Url
@@ -70,7 +72,6 @@ public class WriteFoafCommandHandler : ICommandHandler<WriteFoafCommand, string>
         writer.Close();
 
         await sw.FlushAsync();
-        sw.GetStringBuilder();
         var xml = sw.ToString();
         return xml;
     }
@@ -96,7 +97,9 @@ public class WriteFoafCommandHandler : ICommandHandler<WriteFoafCommand, string>
 
         if (!string.IsNullOrEmpty(person.Email))
         {
-            await writer.WriteElementStringAsync("foaf", "mbox_sha1sum", null, CalculateSha1(person.Email, Encoding.UTF8));
+            // FOAF spec requires mailto: prefix before hashing
+            var mailtoEmail = person.Email.StartsWith("mailto:") ? person.Email : $"mailto:{person.Email}";
+            await writer.WriteElementStringAsync("foaf", "mbox_sha1sum", null, CalculateSha1(mailtoEmail, Encoding.UTF8));
         }
 
         if (!string.IsNullOrEmpty(person.Homepage))
@@ -169,7 +172,7 @@ public class WriteFoafCommandHandler : ICommandHandler<WriteFoafCommand, string>
     private static string CalculateSha1(string text, Encoding enc)
     {
         var buffer = enc.GetBytes(text);
-        var hash = BitConverter.ToString(SHA1.HashData(buffer)).Replace("-", string.Empty);
+        var hash = Convert.ToHexString(SHA1.HashData(buffer));
 
         return hash.ToLower();
     }

@@ -10,6 +10,13 @@
     <script type="module" src="~/js/app/admin.scheduled.mjs"></script>
 }
 
+<div id="localizedStrings" style="display:none"
+     data-delete-confirmation="@SharedLocalizer["Delete Confirmation?"]"
+     data-post-deleted="@SharedLocalizer["Post deleted."]"
+     data-post-published="@SharedLocalizer["Post published"]"
+     data-post-postponed="@SharedLocalizer["Post postponed for {0} hour(s)"]">
+</div>
+
 @section admintoolbar {
     <partial name="_PostManageHeader" />
 }
@@ -95,6 +102,27 @@
             <div class="modal-footer">
                 <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">@SharedLocalizer["Cancel"]</button>
                 <button type="button" class="btn btn-primary" x-on:click="confirmPublish" id="btn-publish-post">@SharedLocalizer["Publish"]</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Delete Confirmation Modal -->
+<div class="modal fade" id="deletePostModal" tabindex="-1" aria-labelledby="deletePostModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="deletePostModalLabel">@SharedLocalizer["Delete Confirmation"]</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <p x-text="deleteMessage"></p>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">@SharedLocalizer["Cancel"]</button>
+                <button type="button" class="btn btn-outline-danger" x-on:click="confirmDelete">
+                    <i class="bi-trash"></i> @SharedLocalizer["Delete"]
+                </button>
             </div>
         </div>
     </div>

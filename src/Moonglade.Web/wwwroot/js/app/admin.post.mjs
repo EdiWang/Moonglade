@@ -1,22 +1,26 @@
 import { default as Alpine } from '/lib/alpinejs/alpinejs.3.15.0.module.esm.min.js';
 import { fetch2 } from '/js/app/httpService.mjs?v=1500';
-import { formatUtcTime } from './utils.module.mjs';
+import { formatUtcTime, getLocalizedString } from './utils.module.mjs';
 import { success } from '/js/app/toastService.mjs';
 
 Alpine.data('postManager', () => ({
-    posts: [],
-    isLoading: true,
-    searchTerm: '',
-    currentPage: 1,
-    pageSize: 4,
-    totalRows: 0,
+posts: [],
+isLoading: true,
+searchTerm: '',
+currentPage: 1,
+pageSize: 4,
+totalRows: 0,
+confirmModal: null,
+confirmMessage: '',
+pendingDeleteId: null,
 
-    async init() {
-        const urlParams = new URLSearchParams(window.location.search);
-        this.currentPage = parseInt(urlParams.get('pageIndex')) || 1;
-        this.searchTerm = urlParams.get('searchTerm') || '';
-        await this.loadPosts();
-    },
+async init() {
+    const urlParams = new URLSearchParams(window.location.search);
+    this.currentPage = parseInt(urlParams.get('pageIndex')) || 1;
+    this.searchTerm = urlParams.get('searchTerm') || '';
+    this.confirmModal = new bootstrap.Modal(this.$refs.confirmModal);
+    await this.loadPosts();
+},
 
     async loadPosts() {
         this.isLoading = true;
@@ -63,10 +67,18 @@ Alpine.data('postManager', () => ({
     },
 
     async deletePost(postId) {
-        if (confirm('Delete Confirmation?')) {
-            await fetch2(`/api/post/${postId}/recycle`, 'DELETE');
+        this.pendingDeleteId = postId;
+        this.confirmMessage = getLocalizedString('confirmDelete');
+        this.confirmModal.show();
+    },
+
+    async confirmAction() {
+        if (this.pendingDeleteId) {
+            await fetch2(`/api/post/${this.pendingDeleteId}/recycle`, 'DELETE');
             await this.loadPosts();
-            success('Post deleted');
+            success(getLocalizedString('postDeleted'));
+            this.confirmModal.hide();
+            this.pendingDeleteId = null;
         }
     },
 

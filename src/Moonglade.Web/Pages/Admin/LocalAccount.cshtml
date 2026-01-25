@@ -10,6 +10,10 @@
     <script type="module" src="~/js/app/admin.localaccount.mjs"></script>
 }
 
+<div id="localizedStrings" style="display:none"
+     data-password-updated="@SharedLocalizer["Password updated."]">
+</div>
+
 @section admintoolbar {
     <div class="admin-toolbar pb-2 border-bottom mb-3">
         <a class="btn btn-outline-accent" href="javascript:;" x-on:click="openResetPasswordModal()">

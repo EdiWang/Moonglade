@@ -1,8 +1,9 @@
 ﻿import { default as Alpine } from '/lib/alpinejs/alpinejs.3.15.0.module.esm.min.js';
 import { fetch2 } from '/js/app/httpService.mjs?v=1500';
 import { success } from '/js/app/toastService.mjs';
+import { getLocalizedString } from './utils.module.mjs';
 
-let menuItemModal, subMenuItemModal;
+let menuItemModal, subMenuItemModal, confirmModal;
 
 Alpine.data('menuManager', () => ({
     settings: {
@@ -15,6 +16,8 @@ Alpine.data('menuManager', () => ({
     editingIndex: null,
     editingSubIndex: null,
     editingParentIndex: null,
+    confirmAction: null,
+    confirmMessage: '',
 
     async init() {
         this.initializeModals();
@@ -24,6 +27,7 @@ Alpine.data('menuManager', () => ({
     initializeModals() {
         menuItemModal = new bootstrap.Modal(document.getElementById('menuItemModal'));
         subMenuItemModal = new bootstrap.Modal(document.getElementById('subMenuItemModal'));
+        confirmModal = new bootstrap.Modal(document.getElementById('confirmModal'));
     },
 
     async loadSettings() {
@@ -49,7 +53,7 @@ Alpine.data('menuManager', () => ({
 
         try {
             await fetch2('/api/settings/custom-menu', 'POST', payload);
-            success('Settings saved successfully');
+            success(getLocalizedString('settingsSaved'));
         } catch (error) {
             console.error('Error saving settings:', error);
         }
@@ -78,7 +82,7 @@ Alpine.data('menuManager', () => ({
 
     saveMenuItem() {
         if (!this.currentMenuItem.title?.trim()) {
-            alert('Title is required');
+            alert(getLocalizedString('titleRequired'));
             return;
         }
 
@@ -123,7 +127,7 @@ Alpine.data('menuManager', () => ({
 
     saveSubMenuItem() {
         if (!this.currentSubMenuItem.title?.trim() || !this.currentSubMenuItem.url?.trim()) {
-            alert('Title and URL are required');
+            alert(getLocalizedString('titleUrlRequired'));
             return;
         }
 
@@ -149,16 +153,40 @@ Alpine.data('menuManager', () => ({
         this.editingParentIndex = null;
     },
 
-    deleteMenuItem(index) {
-        if (!confirm('Are you sure you want to delete this menu item?')) return;
+    showConfirm(message, action) {
+        this.confirmMessage = message;
+        this.confirmAction = action;
+        confirmModal.show();
+    },
 
-        this.settings.menus.splice(index, 1);
+    executeConfirmAction() {
+        if (this.confirmAction) {
+            this.confirmAction();
+            confirmModal.hide();
+            this.confirmAction = null;
+            this.confirmMessage = '';
+        }
+    },
+
+    deleteMenuItem(index) {
+        this.showConfirm(
+            getLocalizedString('confirmDeleteMenu'),
+            () => this.settings.menus.splice(index, 1)
+        );
     },
 
     deleteSubMenuItem(parentIndex, subIndex) {
-        if (!confirm('Are you sure you want to delete this sub menu item?')) return;
+        this.showConfirm(
+            getLocalizedString('confirmDeleteSubmenu'),
+            () => this.settings.menus[parentIndex].subMenus.splice(subIndex, 1)
+        );
+    },
 
-        this.settings.menus[parentIndex].subMenus.splice(subIndex, 1);
+    clearMenus() {
+        this.showConfirm(
+            getLocalizedString('confirmClearMenus'),
+            () => this.settings.menus = []
+        );
     },
 
     moveMenuItem(index, direction) {
@@ -172,12 +200,6 @@ Alpine.data('menuManager', () => ({
             this.settings.menus[index].displayOrder = index + 1;
             this.settings.menus[newIndex].displayOrder = newIndex + 1;
         }
-    },
-
-    clearMenus() {
-        if (!confirm('Are you sure you want to clear all menu items?')) return;
-
-        this.settings.menus = [];
     }
 }));
 

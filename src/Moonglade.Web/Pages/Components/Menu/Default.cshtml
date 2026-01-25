@@ -8,7 +8,7 @@
         if (menuModel.SubMenus.Count == 0)
         {
             <li class="nav-item">
-                <a href="@SecurityHelper.SterilizeLink(menuModel.Url)"
+                <a href="@Edi.AspNetCore.Utils.SecurityHelper.SterilizeLink(menuModel.Url)"
                    class="nav-link"
                    target="@(menuModel.IsOpenInNewTab ? "_blank" : null)">
                     <span class="@menuModel.Icon d-lg-none d-xl-inline-block"></span>
@@ -28,7 +28,7 @@
                     {
                         <li>
                             <a class="dropdown-item"
-                               href="@SecurityHelper.SterilizeLink(subMenu.Url)"
+                               href="@Edi.AspNetCore.Utils.SecurityHelper.SterilizeLink(subMenu.Url)"
                                target="@(subMenu.IsOpenInNewTab ? "_blank" : null)">
                                 <span class="bi-link-45deg"></span>
                                 @subMenu.Title

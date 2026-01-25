@@ -1,5 +1,6 @@
 ﻿using LiteBus.Commands.Abstractions;
 using LiteBus.Queries.Abstractions;
+using Microsoft.AspNetCore.Http.Extensions;
 using Moonglade.Data.Entities;
 using Moonglade.Data.Exporting;
 using Moonglade.Widgets;
@@ -26,7 +27,20 @@ public class FoafMapHandler
         {
             var widgets = await queryMediator.QueryAsync(new ListWidgetsQuery());
             var linksJson = widgets.Where(p => p.WidgetType == WidgetType.LinkList && !string.IsNullOrWhiteSpace(p.ContentCode)).Select(p => p.ContentCode).ToList();
-            var links = linksJson.SelectMany(p => JsonSerializer.Deserialize<List<LinkListItem>>(p, MoongladeJsonSerializerOptions.Default)).ToList();
+
+            var links = new List<LinkListItem>();
+            foreach (var json in linksJson)
+            {
+                try
+                {
+                    var items = JsonSerializer.Deserialize<List<LinkListItem>>(json, MoongladeJsonSerializerOptions.Default);
+                    if (items != null) links.AddRange(items);
+                }
+                catch (JsonException ex)
+                {
+                    logger.LogWarning(ex, "Failed to deserialize link list widget content, skipping.");
+                }
+            }
 
             var foafDoc = new FoafDoc(
                 Name: general.OwnerName,
@@ -35,7 +49,8 @@ public class FoafMapHandler
                 PhotoUrl: linkGenerator.GetUriByAction(httpContext, "Avatar", "Assets") ?? string.Empty
             );
 
-            var requestUrl = GetRequestUri(httpContext.Request).ToString();
+            // Use DisplayUrl for more robust URL representation
+            var requestUrl = httpContext.Request.GetDisplayUrl();
             var xml = await commandMediator.SendAsync(new WriteFoafCommand(foafDoc, requestUrl, links));
 
             SetResponseHeaders(httpContext.Response);
@@ -55,35 +70,6 @@ public class FoafMapHandler
         response.Headers.CacheControl = "public, max-age=3600";
         response.ContentType = WriteFoafCommand.ContentType;
     }
-
-    private static Uri GetRequestUri(HttpRequest request)
-    {
-        var host = GetSafeHost(request);
-        var scheme = request.Scheme;
-        var path = request.Path.Value ?? string.Empty;
-        var queryString = request.QueryString.Value ?? string.Empty;
-
-        return new Uri($"{scheme}://{host}{path}{queryString}");
-    }
-
-    private static string GetSafeHost(HttpRequest request)
-    {
-        if (!request.Host.HasValue)
-        {
-            return "localhost"; // Fallback to localhost instead of "UNKNOWN-HOST"
-        }
-
-        var hostValue = request.Host.Value;
-
-        // Handle multiple hosts by taking the first one
-        if (hostValue.Contains(','))
-        {
-            var firstHost = hostValue.Split(',')[0].Trim();
-            return string.IsNullOrWhiteSpace(firstHost) ? "localhost" : firstHost;
-        }
-
-        return hostValue;
-    }
 }
 
 public record FoafDoc(
@@ -101,7 +87,6 @@ public record FoafPerson(string Id)
     public string FirstName { get; init; } = string.Empty;
     public List<FoafPerson> Friends { get; init; } = new();
     public string Homepage { get; init; } = string.Empty;
-    public string Image { get; init; } = string.Empty;
     public string LastName { get; init; } = string.Empty;
     public string Name { get; init; } = string.Empty;
     public string Phone { get; init; } = string.Empty;

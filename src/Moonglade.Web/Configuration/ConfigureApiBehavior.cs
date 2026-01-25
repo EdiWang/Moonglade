@@ -11,7 +11,7 @@ public class ConfigureApiBehavior
             // Refer https://source.dot.net/#Microsoft.AspNetCore.Mvc.Core/ControllerBase.cs,1885
             var errorModel = new
             {
-                CombinedErrorMessage = context.ModelState.GetCombinedErrorMessage(),
+                Errors = context.ModelState.GetErrorMessages(),
                 RequestId = context.HttpContext.TraceIdentifier
             };
 

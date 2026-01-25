@@ -7,6 +7,11 @@
         form.addEventListener('submit', settings.handleSettingsSubmit);
     </script>
 }
+
+<div id="localizedStrings" style="display:none"
+     data-settings-updated="@SharedLocalizer["Settings Updated"]">
+</div>
+
 @{
     var settings = BlogConfig.FeedSettings;
 }

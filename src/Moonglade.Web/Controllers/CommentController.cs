@@ -1,5 +1,6 @@
 ﻿using LiteBus.Commands.Abstractions;
 using LiteBus.Events.Abstractions;
+using LiteBus.Queries.Abstractions;
 using Microsoft.AspNetCore.Mvc.ModelBinding;
 using Moonglade.Data.DTO;
 using Moonglade.Email.Client;
@@ -16,6 +17,7 @@ namespace Moonglade.Web.Controllers;
 public class CommentController(
         IEventMediator eventMediator,
         ICommandMediator commandMediator,
+        IQueryMediator queryMediator,
         IModeratorService moderator,
         IBlogConfig blogConfig,
         ILogger<CommentController> logger) : ControllerBase
@@ -100,6 +102,41 @@ public class CommentController(
         }
     }
 
+    [HttpGet("list")]
+    [ProducesResponseType(StatusCodes.Status200OK)]
+    public async Task<IActionResult> List([FromQuery] int pageIndex = 1, [FromQuery] int pageSize = 5, [FromQuery] string searchTerm = null)
+    {
+        var comments = await queryMediator.QueryAsync(new ListCommentsQuery(pageSize, pageIndex, searchTerm));
+        var count = await queryMediator.QueryAsync(new CountCommentsQuery());
+
+        // Convert markdown to HTML for display
+        var commentsWithHtml = comments.Select(c => new
+        {
+            c.Id,
+            c.Username,
+            c.Email,
+            c.CreateTimeUtc,
+            CommentContent = ContentProcessor.MarkdownToContent(c.CommentContent, ContentProcessor.MarkdownConvertType.Html),
+            c.IpAddress,
+            c.PostTitle,
+            c.IsApproved,
+            Replies = c.Replies.Select(r => new
+            {
+                r.ReplyTimeUtc,
+                r.ReplyContent,
+                ReplyContentHtml = ContentProcessor.MarkdownToContent(r.ReplyContent, ContentProcessor.MarkdownConvertType.Html)
+            }).ToList()
+        }).ToList();
+
+        return Ok(new
+        {
+            Comments = commentsWithHtml,
+            TotalRows = count,
+            PageIndex = pageIndex,
+            PageSize = pageSize
+        });
+    }
+
     [HttpPost("{commentId:guid}/reply")]
     [ProducesResponseType<CommentReply>(StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
@@ -139,7 +176,7 @@ public class CommentController(
         if (!string.IsNullOrWhiteSpace(request.Email) && !Helper.IsValidEmailAddress(request.Email))
         {
             ModelState.AddModelError(nameof(request.Email), "Invalid email address.");
-            return BadRequest(ModelState.GetCombinedErrorMessage());
+            return BadRequest(new { Errors = ModelState.GetErrorMessages() });
         }
 
         return null;

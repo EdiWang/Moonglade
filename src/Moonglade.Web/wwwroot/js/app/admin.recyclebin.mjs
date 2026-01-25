@@ -1,11 +1,13 @@
 import { default as Alpine } from '/lib/alpinejs/alpinejs.3.15.0.module.esm.min.js';
 import { fetch2 } from '/js/app/httpService.mjs?v=1500';
-import { formatUtcTime } from './utils.module.mjs';
+import { formatUtcTime, getLocalizedString } from './utils.module.mjs';
 import { success } from '/js/app/toastService.mjs';
 
 Alpine.data('recycleBinManager', () => ({
     posts: [],
     isLoading: true,
+    deleteTargetId: null,
+    deleteMessage: '',
 
     async init() {
         await this.loadPosts();
@@ -25,26 +27,44 @@ Alpine.data('recycleBinManager', () => ({
         }
     },
 
-    async deletePost(postId) {
-        if (confirm('Delete Confirmation?')) {
-            await fetch2(`/api/post/${postId}/destroy`, 'DELETE');
-            this.posts = this.posts.filter(p => p.id !== postId);
-            success('Post deleted');
+    confirmDelete(postId, postTitle) {
+        this.deleteTargetId = postId;
+        const template = getLocalizedString('confirmDelete');
+        this.deleteMessage = template.replace('{0}', postTitle);
+        const modal = new bootstrap.Modal(document.getElementById('deleteModal'));
+        modal.show();
+    },
+
+    async executeDelete() {
+        if (this.deleteTargetId) {
+            await fetch2(`/api/post/${this.deleteTargetId}/destroy`, 'DELETE');
+            this.posts = this.posts.filter(p => p.id !== this.deleteTargetId);
+            success(getLocalizedString('postDeleted'));
+            
+            const modal = bootstrap.Modal.getInstance(document.getElementById('deleteModal'));
+            modal.hide();
+            this.deleteTargetId = null;
         }
     },
 
     async restorePost(postId) {
         await fetch2(`/api/post/${postId}/restore`, 'POST');
         this.posts = this.posts.filter(p => p.id !== postId);
-        success('Post restored');
+        success(getLocalizedString('postRestored'));
     },
 
-    async emptyRecycleBin() {
-        if (confirm('Are you sure you want to empty the recycle bin? This action cannot be undone.')) {
-            await fetch2('/api/post/recyclebin', 'DELETE');
-            this.posts = [];
-            success('Cleared');
-        }
+    confirmEmptyRecycleBin() {
+        const modal = new bootstrap.Modal(document.getElementById('emptyBinModal'));
+        modal.show();
+    },
+
+    async executeEmptyRecycleBin() {
+        await fetch2('/api/post/recyclebin', 'DELETE');
+        this.posts = [];
+        success(getLocalizedString('cleared'));
+        
+        const modal = bootstrap.Modal.getInstance(document.getElementById('emptyBinModal'));
+        modal.hide();
     },
 
     get hasPosts() {

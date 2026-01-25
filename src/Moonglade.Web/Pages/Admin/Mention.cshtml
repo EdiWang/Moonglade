@@ -7,24 +7,27 @@
 
 @Html.AntiForgeryToken()
 
-@section head {
-    <style>
-        .mentions-container {
-            height: calc(100vh - 230px);
-            overflow-y: scroll;
-            overflow-x: hidden;
-        }
-    </style>
-}
-
 @section scripts{
     <script type="module" src="~/js/app/admin.mention.mjs"></script>
 }
+
+<div id="localizedStrings" style="display:none"
+     data-mention-deleted="@SharedLocalizer["Mention deleted"]"
+     data-mentions-deleted="@SharedLocalizer["{0} mentions deleted"]"
+     data-mentions-cleared="@SharedLocalizer["Mention logs are cleared"]">
+</div>
 
 @section admintoolbar{
     <div class="admin-toolbar pb-2 border-bottom mb-3">
         <div class="row">
             <div class="col">
+                <a class="btn btn-outline-danger me-2" 
+                   href="javascript:;" 
+                   x-on:click="deleteSelectedMentions()"
+                   x-show="selectedIds.length > 0">
+                    <i class="bi-trash"></i>
+                    <span x-text="`@SharedLocalizer["Delete Selected"] (${selectedIds.length})`"></span>
+                </a>
                 <a class="btn btn-outline-danger" href="javascript:;" x-on:click="clearAllMentions()">
                     <i class="bi-trash"></i>
                     @SharedLocalizer["Clear all"]
@@ -57,6 +60,13 @@
         <template x-for="item in filteredMentions" :key="item.id">
             <div class="mention-item-entry p-3 rounded-3 border mb-1">
                 <div :id="`mention-box-${item.id}`" class="mention-item row">
+                    <div class="col-auto d-flex align-items-center">
+                        <input type="checkbox" 
+                               class="form-check-input" 
+                               :id="`checkbox-${item.id}`"
+                               :value="item.id"
+                               x-model="selectedIds">
+                    </div>
                     <div class="col">
                         <strong>
                             <a :href="item.sourceUrl" target="_blank" x-text="item.sourceTitle"></a>
@@ -85,5 +95,43 @@
                 </div>
             </div>
         </template>
+    </div>
+</div>
+
+<!-- Delete Mention(s) Modal -->
+<div class="modal fade" id="deleteMentionModal" tabindex="-1" aria-labelledby="deleteMentionModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="deleteMentionModalLabel">@SharedLocalizer["Confirm Delete"]</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <span x-text="pendingDeleteIds.length === 1 ? '@SharedLocalizer["Delete this mention?"]' : `@SharedLocalizer["Delete"] ${pendingDeleteIds.length} @SharedLocalizer["mentions"]?`"></span>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">@SharedLocalizer["Cancel"]</button>
+                <button type="button" class="btn btn-outline-danger" x-on:click="confirmDeleteMention()">@SharedLocalizer["Delete"]</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Clear All Mentions Modal -->
+<div class="modal fade" id="clearAllMentionsModal" tabindex="-1" aria-labelledby="clearAllMentionsModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="clearAllMentionsModalLabel">@SharedLocalizer["Confirm Clear All"]</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                @SharedLocalizer["Are you sure you want to clear all mentions?"]
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">@SharedLocalizer["Cancel"]</button>
+                <button type="button" class="btn btn-outline-danger" x-on:click="confirmClearAllMentions()">@SharedLocalizer["Clear All"]</button>
+            </div>
+        </div>
     </div>
 </div>

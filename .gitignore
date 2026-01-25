@@ -270,3 +270,5 @@ __pycache__/
 
 # Special files need to be included
 !/package-src/Moonglade.MonacoEditor.*.nupkg
+
+.env

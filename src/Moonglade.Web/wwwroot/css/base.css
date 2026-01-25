@@ -20,7 +20,9 @@ body {
 }
 
 .blog-sidebar {
-    width: 300px;
+    flex-basis: 278px;
+    flex-grow: 0;
+    flex-shrink: 0;
 }
 
 a {
@@ -41,9 +43,9 @@ footer {
         color: var(--bs-gray-200);
     }
 
-    a:hover {
-        color: var(--bs-white);
-    }
+        a:hover {
+            color: var(--bs-white);
+        }
 
     .language-selection button {
         color: var(--transparent-light-60);

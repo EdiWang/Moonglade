@@ -7,17 +7,9 @@ namespace Moonglade.Web.Handlers;
 
 public class SiteMapMapHandler
 {
-    public static Delegate Handler => async (
-        HttpContext httpContext,
-        IBlogConfig blogConfig,
-        ICacheAside cache,
-        MoongladeRepository<PostEntity> postRepo,
-        MoongladeRepository<PageEntity> pageRepo) =>
-    {
-        await Handle(httpContext, blogConfig, cache, postRepo, pageRepo);
-    };
+    public static Delegate Handler => Handle;
 
-    public static async Task Handle(
+    public static async Task<IResult> Handle(
         HttpContext httpContext,
         IBlogConfig blogConfig,
         ICacheAside cache,
@@ -31,8 +23,7 @@ public class SiteMapMapHandler
             return data;
         });
 
-        httpContext.Response.ContentType = "text/xml";
-        await httpContext.Response.WriteAsync(xml, httpContext.RequestAborted);
+        return Results.Text(xml, "text/xml; charset=utf-8");
     }
 
     private static async Task<string> GetSiteMapData(

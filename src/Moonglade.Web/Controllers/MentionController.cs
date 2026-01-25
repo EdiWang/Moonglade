@@ -75,11 +75,17 @@ public class MentionController(
     }
 
     [Authorize]
-    [HttpDelete("{mentionId:guid}")]
+    [HttpDelete]
     [ProducesResponseType(StatusCodes.Status204NoContent)]
-    public async Task<IActionResult> Delete([NotEmpty] Guid mentionId)
+    [ProducesResponseType(StatusCodes.Status400BadRequest)]
+    public async Task<IActionResult> Delete([FromBody] List<Guid> mentionIds)
     {
-        await commandMediator.SendAsync(new DeleteMentionCommand(mentionId));
+        if (mentionIds == null || mentionIds.Count == 0)
+        {
+            return BadRequest("No mention IDs provided.");
+        }
+
+        await commandMediator.SendAsync(new DeleteMentionsCommand(mentionIds));
         return NoContent();
     }
 

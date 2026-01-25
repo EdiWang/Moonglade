@@ -1,17 +1,15 @@
-﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 using Moonglade.Data.Entities;
 
-namespace Moonglade.Data.MySql.Configurations;
+namespace Moonglade.Data.Configurations;
 
-
-internal class CommentConfiguration : IEntityTypeConfiguration<CommentEntity>
+public class CommentConfiguration : IEntityTypeConfiguration<CommentEntity>
 {
     public void Configure(EntityTypeBuilder<CommentEntity> builder)
     {
         builder.Property(e => e.Id).ValueGeneratedNever();
         builder.Property(e => e.CommentContent).IsRequired();
-        builder.Property(e => e.CreateTimeUtc).HasColumnType("datetime");
+        ConfigureDateTimeColumns(builder);
         builder.Property(e => e.Email).HasMaxLength(128);
         builder.Property(e => e.IPAddress).HasMaxLength(64);
         builder.Property(e => e.Username).HasMaxLength(64);
@@ -19,5 +17,11 @@ internal class CommentConfiguration : IEntityTypeConfiguration<CommentEntity>
             .WithMany(p => p.Comments)
             .HasForeignKey(d => d.PostId)
             .HasConstraintName("FK_Comment_Post");
+    }
+
+    protected virtual void ConfigureDateTimeColumns(EntityTypeBuilder<CommentEntity> builder)
+    {
+        // Default: use datetime (SQL Server/MySQL compatible)
+        builder.Property(e => e.CreateTimeUtc).HasColumnType("datetime");
     }
 }

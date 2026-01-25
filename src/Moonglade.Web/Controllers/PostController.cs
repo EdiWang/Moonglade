@@ -4,7 +4,6 @@ using Moonglade.Data.Specifications;
 using Moonglade.Features.Post;
 using Moonglade.IndexNow.Client;
 using Moonglade.Web.BackgroundServices;
-using Moonglade.Web.Extensions;
 using Moonglade.Webmention;
 using System.ComponentModel.DataAnnotations;
 
@@ -51,8 +50,6 @@ public class PostController(
     {
         try
         {
-            if (!ModelState.IsValid) return Conflict(ModelState.GetCombinedErrorMessage());
-
             if (model.ChangePublishDate &&
                 model.PublishDate.HasValue &&
                 model.PublishDate <= DateTime.UtcNow &&

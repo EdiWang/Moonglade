@@ -1,21 +1,28 @@
 import { default as Alpine } from '/lib/alpinejs/alpinejs.3.15.0.module.esm.min.js';
 import { fetch2 } from '/js/app/httpService.mjs?v=1500';
 import { success } from '/js/app/toastService.mjs';
+import { getLocalizedString } from './utils.module.mjs';
 
 Alpine.data('tagManager', () => ({
-    tags: [],
-    isLoading: true,
-    tagFilter: '',
-    editCanvas: null,
-    formData: {
-        displayName: ''
-    },
-    originalTagNames: {},
+tags: [],
+isLoading: true,
+tagFilter: '',
+editCanvas: null,
+deleteModal: null,
+deleteTarget: {
+    tagId: null,
+    tagName: ''
+},
+formData: {
+    displayName: ''
+},
+originalTagNames: {},
 
-    async init() {
-        this.editCanvas = new bootstrap.Offcanvas(this.$refs.editTagCanvas);
-        await this.loadTags();
-    },
+async init() {
+    this.editCanvas = new bootstrap.Offcanvas(this.$refs.editTagCanvas);
+    this.deleteModal = new bootstrap.Modal(this.$refs.deleteModal);
+    await this.loadTags();
+},
 
     async loadTags() {
         this.isLoading = true;
@@ -89,7 +96,7 @@ Alpine.data('tagManager', () => ({
             await fetch2(`/api/tags/${tagId}`, 'PUT', newTagName);
             this.originalTagNames[tagId] = newTagName;
             await this.loadTags();
-            success('Tag updated');
+            success(getLocalizedString('tagUpdated'));
         } catch (err) {
             event.target.textContent = originalTagName;
             console.error(err);
@@ -97,12 +104,16 @@ Alpine.data('tagManager', () => ({
     },
 
     async deleteTag(tagId, tagName) {
-        if (!confirm(`Confirm to delete tag: ${tagName}`)) return;
+        this.deleteTarget = { tagId, tagName };
+        this.deleteModal.show();
+    },
 
+    async confirmDelete() {
         try {
-            await fetch2(`/api/tags/${tagId}`, 'DELETE');
+            await fetch2(`/api/tags/${this.deleteTarget.tagId}`, 'DELETE');
+            this.deleteModal.hide();
             await this.loadTags();
-            success('Tag deleted');
+            success(getLocalizedString('tagDeleted'));
         } catch (err) {
             console.error(err);
         }
@@ -117,7 +128,7 @@ Alpine.data('tagManager', () => ({
             this.formData = { displayName: '' };
             this.editCanvas.hide();
             await this.loadTags();
-            success('Tag added');
+            success(getLocalizedString('tagAdded'));
         } catch (err) {
             console.error(err);
         }

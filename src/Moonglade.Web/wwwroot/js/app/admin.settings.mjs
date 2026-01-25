@@ -1,5 +1,5 @@
 ﻿import { fetch2 } from './httpService.mjs?v=1500'
-import { toMagicJson } from './utils.module.mjs'
+import { toMagicJson, getLocalizedString } from './utils.module.mjs'
 import { success } from './toastService.mjs'
 
 export async function handleSettingsSubmit(event) {
@@ -26,7 +26,7 @@ export async function handleSettingsSubmit(event) {
 
     await fetch2(event.currentTarget.action, 'POST', formattedValues);
 
-    success('Settings Updated');
+    success(getLocalizedString('settingsUpdated'));
     enableButton();
 }
 

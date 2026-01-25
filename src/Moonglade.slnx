@@ -7,7 +7,6 @@
   </Folder>
   <Folder Name="/.Solution Items/Deployment/">
     <File Path="../Deployment/AzureQuickDeploy.ps1" />
-    <File Path="../Deployment/mssql-migration.sql" />
   </Folder>
   <Folder Name="/Application/">
     <Project Path="Moonglade.Web.Middleware/Moonglade.Web.Middleware.csproj" />
@@ -40,6 +39,7 @@
     <Project Path="Moonglade.ImageStorage.Tests/Moonglade.ImageStorage.Tests.csproj" />
     <Project Path="Moonglade.IndexNow.Client.Tests/Moonglade.IndexNow.Client.Tests.csproj" />
     <Project Path="Moonglade.Moderation.Tests/Moonglade.Moderation.Tests.csproj" />
+    <Project Path="Moonglade.Setup.Tests/Moonglade.Setup.Tests.csproj" Id="44f51425-0044-4461-8825-f250a0f6ebff" />
     <Project Path="Moonglade.Theme.Tests/Moonglade.Theme.Tests.csproj" />
     <Project Path="Moonglade.Utils.Tests/Moonglade.Utils.Tests.csproj" />
     <Project Path="Moonglade.Web.Middleware.Tests/Moonglade.Web.Middleware.Tests.csproj" />

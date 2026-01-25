@@ -1,12 +1,16 @@
 import { default as Alpine } from '/lib/alpinejs/alpinejs.3.15.0.module.esm.min.js';
 import { fetch2 } from '/js/app/httpService.mjs?v=1500';
 import { success } from '/js/app/toastService.mjs';
+import { getLocalizedString } from './utils.module.mjs';
 
 Alpine.data('categoryManager', () => ({
     categories: [],
     isLoading: true,
     currentCategoryId: window.emptyGuid,
     editCanvas: null,
+    confirmModal: null,
+    confirmMessage: '',
+    pendingDeleteId: null,
     formData: {
         slug: '',
         displayName: '',
@@ -15,8 +19,8 @@ Alpine.data('categoryManager', () => ({
 
     async init() {
         this.editCanvas = new bootstrap.Offcanvas(this.$refs.editCatCanvas);
+        this.confirmModal = new bootstrap.Modal(this.$refs.confirmModal);
         await this.loadCategories();
-        console.log(this.isLoading);
     },
 
     async loadCategories() {
@@ -55,11 +59,19 @@ Alpine.data('categoryManager', () => ({
         this.editCanvas.show();
     },
 
-    async deleteCategory(id) {
-        if (confirm('Delete?')) {
-            await fetch2(`/api/category/${id}`, 'DELETE');
+    deleteCategory(id) {
+        this.pendingDeleteId = id;
+        this.confirmMessage = getLocalizedString('confirmDelete');
+        this.confirmModal.show();
+    },
+
+    async confirmAction() {
+        if (this.pendingDeleteId) {
+            await fetch2(`/api/category/${this.pendingDeleteId}`, 'DELETE');
             await this.loadCategories();
-            success('Category deleted');
+            success(getLocalizedString('categoryDeleted'));
+            this.confirmModal.hide();
+            this.pendingDeleteId = null;
         }
     },
 
@@ -73,7 +85,7 @@ Alpine.data('categoryManager', () => ({
         this.formData = { slug: '', displayName: '', note: '' };
         this.editCanvas.hide();
         await this.loadCategories();
-        success(isCreate ? 'Category created' : 'Category updated');
+        success(isCreate ? getLocalizedString('categoryCreated') : getLocalizedString('categoryUpdated'));
     }
 }));
 

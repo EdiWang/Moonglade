@@ -67,3 +67,9 @@ export function parseMetaContent(metaName) {
 
     return contentValue;
 }
+
+export function getLocalizedString(key) {
+    const container = document.getElementById('localizedStrings');
+    return container ? container.dataset[key] : '';
+}
+

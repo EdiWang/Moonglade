@@ -1,5 +1,4 @@
 <!--
-“能用代码做自己喜欢且有趣的事是一件值得被赞的事”
 “希望你保持勇气和热爱，无惧任何无常变迁”
 -->
 <Project>
@@ -7,8 +6,8 @@
     <Authors>Edi Wang</Authors>
     <Company>edi.wang</Company>
     <Copyright>(C) 2026 edi.wang@outlook.com</Copyright>
-    <AssemblyVersion>15.2.2</AssemblyVersion>
-    <FileVersion>15.2.2</FileVersion>
-    <Version>15.2.2</Version>
+    <AssemblyVersion>15.3.0</AssemblyVersion>
+    <FileVersion>15.3.0</FileVersion>
+    <Version>15.3.0</Version>
   </PropertyGroup>
 </Project>

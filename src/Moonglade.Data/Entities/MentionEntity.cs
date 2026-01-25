@@ -23,7 +23,4 @@ public class MentionEntity
 
     [MaxLength(100)]
     public string TargetPostTitle { get; set; }
-
-    [MaxLength(16)]
-    public string Worker { get; set; }
 }

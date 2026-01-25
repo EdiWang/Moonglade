@@ -1,28 +1,20 @@
 ﻿using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Configuration;
-using System.Text;
 
 namespace Moonglade.IndexNow.Client;
 
 public class IndexNowMapHandler
 {
-    public static Delegate Handler => async (HttpContext httpContext, IConfiguration configuration) =>
-    {
-        await Handle(httpContext, configuration);
-    };
+    public static Delegate Handler => Handle;
 
-    public static async Task Handle(HttpContext httpContext, IConfiguration configuration)
+    public static IResult Handle(IConfiguration configuration)
     {
         var apiKey = configuration["IndexNow:ApiKey"];
         if (string.IsNullOrWhiteSpace(apiKey))
         {
-            httpContext.Response.StatusCode = StatusCodes.Status404NotFound;
-            await httpContext.Response.WriteAsync("No IndexNow API Key is present.", httpContext.RequestAborted);
+            return Results.NotFound("No IndexNow API Key is present.");
         }
-        else
-        {
-            httpContext.Response.ContentType = "text/plain";
-            await httpContext.Response.WriteAsync(apiKey, Encoding.UTF8, httpContext.RequestAborted);
-        }
+
+        return Results.Text(apiKey, "text/plain");
     }
 }

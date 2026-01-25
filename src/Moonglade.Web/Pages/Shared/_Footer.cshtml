@@ -7,6 +7,7 @@
     var cultureItems = LocOptions.Value.SupportedUICultures
         .Select(c => new { Value = c.Name, c.NativeName });
     var returnUrl = string.IsNullOrEmpty(Context.Request.Path) ? "~/" : $"~{Context.Request.Path.Value}";
+    var currentCulture = System.Globalization.CultureInfo.CurrentUICulture.Name;
 }
 
 <footer id="blog-footer" class="moonglade-footer pt-4 pb-4 d-print-none">
@@ -32,7 +33,7 @@
                         @foreach (var item in cultureItems)
                         {
                             <li>
-                                <a class="dropdown-item"
+                                <a class="dropdown-item @(currentCulture == item.Value ? "active" : "")"
                                    asp-controller="Language"
                                    asp-action="SetLanguage"
                                    asp-route-returnUrl="@returnUrl"
@@ -65,7 +66,7 @@
                     @foreach (var item in cultureItems)
                     {
                         <li>
-                            <a asp-controller="Settings" asp-action="SetLanguage" asp-route-returnUrl="@returnUrl" asp-route-culture="@item.Value" rel="nofollow">@item.NativeName</a>
+                            <a asp-controller="Language" asp-action="SetLanguage" asp-route-returnUrl="@returnUrl" asp-route-culture="@item.Value" rel="nofollow" class="@(currentCulture == item.Value ? "fw-bold" : "")">@item.NativeName</a>
                         </li>
                     }
                 </ul>

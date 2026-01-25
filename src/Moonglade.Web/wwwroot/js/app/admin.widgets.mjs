@@ -1,14 +1,26 @@
 ﻿import { default as Alpine } from '/lib/alpinejs/alpinejs.3.15.0.module.esm.min.js';
 import { fetch2 } from '/js/app/httpService.mjs?v=1500';
 import { success } from '/js/app/toastService.mjs';
+import { getLocalizedString } from './utils.module.mjs';
 
 Alpine.data('widgetManager', () => ({
-    widgets: [],
-    isLoading: true,
-    currentWidgetId: window.emptyGuid,
-    editCanvas: null,
-    linkModal: null,
-    formData: {
+widgets: [],
+isLoading: true,
+currentWidgetId: window.emptyGuid,
+editCanvas: null,
+linkModal: null,
+confirmDeleteModal: null,
+deleteConfirm: {
+    title: '',
+    message: '',
+    buttonText: '',
+    callback: null
+},
+deleteTarget: {
+    widgetId: null,
+    linkIndex: -1
+},
+formData: {
         title: '',
         widgetType: 'LinkList',
         displayOrder: 0,
@@ -30,6 +42,7 @@ Alpine.data('widgetManager', () => ({
     async init() {
         this.editCanvas = new bootstrap.Offcanvas(this.$refs.editWidgetCanvas);
         this.linkModal = new bootstrap.Modal(this.$refs.linkDialogModal);
+        this.confirmDeleteModal = new bootstrap.Modal(this.$refs.confirmDeleteModal);
         await this.loadWidgets();
     },
 
@@ -114,12 +127,24 @@ Alpine.data('widgetManager', () => ({
         this.editCanvas.show();
     },
 
-    async deleteWidget(id) {
-        if (confirm('Delete this widget?')) {
-            await fetch2(`/api/widgets/${id}`, 'DELETE');
-            await this.loadWidgets();
-            success('Widget deleted');
-        }
+    deleteWidget(id) {
+        this.deleteTarget.widgetId = id;
+        this.deleteConfirm = {
+            title: 'Delete Widget',
+            message: getLocalizedString('deleteWidget'),
+            buttonText: 'Delete',
+            callback: async () => {
+                try {
+                    await fetch2(`/api/widgets/${this.deleteTarget.widgetId}`, 'DELETE');
+                    this.confirmDeleteModal.hide();
+                    await this.loadWidgets();
+                    success(getLocalizedString('widgetDeleted'));
+                } catch (err) {
+                    console.error(err);
+                }
+            }
+        };
+        this.confirmDeleteModal.show();
     },
 
     async handleSubmit() {
@@ -141,7 +166,7 @@ Alpine.data('widgetManager', () => ({
 
         this.editCanvas.hide();
         await this.loadWidgets();
-        success(isCreate ? 'Widget created' : 'Widget updated');
+        success(isCreate ? getLocalizedString('widgetCreated') : getLocalizedString('widgetUpdated'));
     },
 
     onWidgetTypeChange() {
@@ -180,12 +205,20 @@ Alpine.data('widgetManager', () => ({
     },
 
     removeLink(index) {
-        if (!confirm('Are you sure you want to remove this link?')) return;
-        
-        const sortedLinks = this.sortedLinks;
-        const actualIndex = this.formData.links.findIndex(l => l === sortedLinks[index]);
-        
-        this.formData.links.splice(actualIndex, 1);
+        this.deleteTarget.linkIndex = index;
+        this.deleteConfirm = {
+            title: 'Remove Link',
+            message: getLocalizedString('removeLink'),
+            buttonText: 'Remove',
+            callback: () => {
+                const sortedLinks = this.sortedLinks;
+                const actualIndex = this.formData.links.findIndex(l => l === sortedLinks[this.deleteTarget.linkIndex]);
+                
+                this.formData.links.splice(actualIndex, 1);
+                this.confirmDeleteModal.hide();
+            }
+        };
+        this.confirmDeleteModal.show();
     },
 
     moveLink(index, direction) {
@@ -201,7 +234,7 @@ Alpine.data('widgetManager', () => ({
 
     saveLinkDialog() {
         if (!this.linkDialog.data.name || !this.linkDialog.data.url) {
-            alert('Name and URL are required');
+            alert(getLocalizedString('nameUrlRequired'));
             return;
         }
         
@@ -218,6 +251,10 @@ Alpine.data('widgetManager', () => ({
         return this.formData.links.length > 0 
             ? Math.max(...this.formData.links.map(l => l.order)) + 1 
             : 1;
+    },
+
+    getLocalizedString(key) {
+        return getLocalizedString(key);
     }
 }));
 

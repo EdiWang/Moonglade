@@ -1,21 +1,27 @@
 services:
   web:
-    image: ediwang/moonglade:latest
+    image: ${MOONGLADE_IMAGE:-ediwang/moonglade:latest}
+    build:
+      context: .
+      dockerfile: Dockerfile
     container_name: moonglade-web
     environment:
       ASPNETCORE_ENVIRONMENT: "Production"
-      ConnectionStrings__MoongladeDatabase: "Server=moonglade-sqlserver;Database=moonglade;User Id=sa;Password=Work@996;Trusted_Connection=False;TrustServerCertificate=True;"
+      ConnectionStrings__MoongladeDatabase: "Server=moonglade-sqlserver;Database=moonglade;User Id=sa;Password=${MSSQL_SA_PASSWORD:-Work@996};Trusted_Connection=False;TrustServerCertificate=True;"
+      ImageStorage__FileSystemPath: "/app/images"
     ports:
       - "8080:8080"
     depends_on:
       - database
+    volumes:
+      - moonglade-images:/app/images
     networks:
       - moonglade-network
   database:
     image: mcr.microsoft.com/mssql/server:2025-latest
     container_name: moonglade-sqlserver
     environment:
-      MSSQL_SA_PASSWORD: "Work@996"
+      MSSQL_SA_PASSWORD: "${MSSQL_SA_PASSWORD:-Work@996}"
       MSSQL_PID: "Express"
       ACCEPT_EULA: "Y"
     ports:
@@ -27,7 +33,7 @@ services:
 
 volumes:
   mssql-data:
-
+  moonglade-images:
 
 networks:
   moonglade-network:

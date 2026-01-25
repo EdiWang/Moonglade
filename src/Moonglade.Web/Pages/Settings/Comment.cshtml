@@ -6,6 +6,11 @@
 @section scripts {
     <script type="module" src="~/js/app/admin.settings.comment.mjs"></script>
 }
+
+<div id="localizedStrings" style="display:none"
+     data-settings-updated="@SharedLocalizer["Settings Updated"]">
+</div>
+
 @{
     var settings = BlogConfig.CommentSettings;
 }

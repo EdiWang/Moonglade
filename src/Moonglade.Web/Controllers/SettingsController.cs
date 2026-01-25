@@ -5,6 +5,7 @@ using LiteBus.Queries.Abstractions;
 using Moonglade.Email.Client;
 using Moonglade.Features.Asset;
 using Moonglade.Web.Extensions;
+using SecurityHelper = Moonglade.Utils.SecurityHelper;
 
 namespace Moonglade.Web.Controllers;
 
@@ -150,7 +151,7 @@ public class SettingsController(
         if (model.EnableCustomCss && string.IsNullOrWhiteSpace(model.CssCode))
         {
             ModelState.AddModelError(nameof(AppearanceSettings.CssCode), "CSS Code is required");
-            return BadRequest(ModelState.GetCombinedErrorMessage());
+            return BadRequest(new { Errors = ModelState.GetErrorMessages() });
         }
 
         blogConfig.AppearanceSettings = model;
@@ -171,7 +172,7 @@ public class SettingsController(
         if (model.IsEnabled && string.IsNullOrWhiteSpace(model.MenuJson))
         {
             ModelState.AddModelError(nameof(CustomMenuSettingsJsonModel.MenuJson), "Menus is required");
-            return BadRequest(ModelState.GetCombinedErrorMessage());
+            return BadRequest(new { Errors = ModelState.GetErrorMessages() });
         }
 
         blogConfig.CustomMenuSettings = new()
