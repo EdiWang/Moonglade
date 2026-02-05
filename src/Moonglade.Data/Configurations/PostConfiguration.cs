@@ -1,6 +1,6 @@
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
+using Moonglade.Data.DTO;
 using Moonglade.Data.Entities;
-using Moonglade.Data.Specifications;
 
 namespace Moonglade.Data.Configurations;
 

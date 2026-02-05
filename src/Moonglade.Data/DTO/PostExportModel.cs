@@ -1,6 +1,4 @@
-﻿using Moonglade.Data.Specifications;
-
-namespace Moonglade.Data.DTO;
+﻿namespace Moonglade.Data.DTO;
 
 public class PostExportModel
 {

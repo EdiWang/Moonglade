@@ -1,4 +1,4 @@
-﻿using Moonglade.Data.Specifications;
+﻿using Moonglade.Data.DTO;
 
 namespace Moonglade.Data.Entities;
 

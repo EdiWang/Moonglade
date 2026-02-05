@@ -1,4 +1,4 @@
-﻿using Moonglade.Data.Specifications;
+﻿using Moonglade.Data.DTO;
 using System.ComponentModel.DataAnnotations;
 
 namespace Moonglade.Features.Post;

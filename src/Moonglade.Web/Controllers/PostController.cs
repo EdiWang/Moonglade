@@ -1,6 +1,6 @@
 ﻿using LiteBus.Commands.Abstractions;
 using LiteBus.Queries.Abstractions;
-using Moonglade.Data.Specifications;
+using Moonglade.Data.DTO;
 using Moonglade.Features.Post;
 using Moonglade.IndexNow.Client;
 using Moonglade.Web.BackgroundServices;

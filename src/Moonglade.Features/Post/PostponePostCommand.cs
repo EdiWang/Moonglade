@@ -1,7 +1,7 @@
 ﻿using LiteBus.Commands.Abstractions;
 using Microsoft.Extensions.Logging;
 using Moonglade.Data;
-using Moonglade.Data.Specifications;
+using Moonglade.Data.DTO;
 
 namespace Moonglade.Features.Post;
 
