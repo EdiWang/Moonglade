@@ -1,22 +1,22 @@
 ﻿namespace Moonglade.Data.DTO;
 
-public class Comment
+public record Comment
 {
-    public string Username { get; set; }
+    public string Username { get; init; }
 
-    public string Email { get; set; }
+    public string Email { get; init; }
 
-    public DateTime CreateTimeUtc { get; set; }
+    public DateTime CreateTimeUtc { get; init; }
 
-    public string CommentContent { get; set; }
+    public string CommentContent { get; init; }
 
-    public List<CommentReplyDigest> Replies { get; set; }
+    public List<CommentReplyDigest> Replies { get; init; }
 }
 
-public class CommentDetailedItem : Comment
+public record CommentDetailedItem : Comment
 {
-    public Guid Id { get; set; }
-    public string IpAddress { get; set; }
-    public string PostTitle { get; set; }
-    public bool IsApproved { get; set; }
+    public Guid Id { get; init; }
+    public string IpAddress { get; init; }
+    public string PostTitle { get; init; }
+    public bool IsApproved { get; init; }
 }

@@ -1,19 +1,19 @@
 ﻿namespace Moonglade.Data.DTO;
 
-public class CommentReplyDigest
+public record CommentReplyDigest
 {
-    public DateTime ReplyTimeUtc { get; set; }
-    public string ReplyContent { get; set; }
-    public string ReplyContentHtml { get; set; }
+    public DateTime ReplyTimeUtc { get; init; }
+    public string ReplyContent { get; init; }
+    public string ReplyContentHtml { get; init; }
 }
 
-public class CommentReply : CommentReplyDigest
+public record CommentReply : CommentReplyDigest
 {
-    public Guid Id { get; set; }
-    public Guid CommentId { get; set; }
-    public Guid PostId { get; set; }
-    public string Email { get; set; }
-    public string CommentContent { get; set; }
-    public string Title { get; set; }
-    public string RouteLink { get; set; }
+    public Guid Id { get; init; }
+    public Guid CommentId { get; init; }
+    public Guid PostId { get; init; }
+    public string Email { get; init; }
+    public string CommentContent { get; init; }
+    public string Title { get; init; }
+    public string RouteLink { get; init; }
 }
