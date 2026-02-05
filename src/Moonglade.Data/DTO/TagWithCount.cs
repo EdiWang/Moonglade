@@ -1,4 +1,4 @@
-﻿namespace Moonglade.Data.Specifications;
+﻿namespace Moonglade.Data.DTO;
 
 public record TagWithCount
 {
