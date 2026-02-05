@@ -25,6 +25,11 @@ body {
     flex-shrink: 0;
 }
 
+main {
+    flex: 1;
+    min-width: 0;
+}
+
 a {
     color: var(--accent-color1);
     text-decoration: none;
