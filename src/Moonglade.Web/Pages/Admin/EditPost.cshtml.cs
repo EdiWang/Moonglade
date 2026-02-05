@@ -1,5 +1,6 @@
 using LiteBus.Queries.Abstractions;
 using Microsoft.AspNetCore.Mvc.RazorPages;
+using Moonglade.Data.Specifications;
 using Moonglade.Features.Category;
 using Moonglade.Features.Post;
 
@@ -10,7 +11,7 @@ public class EditPostModel(IQueryMediator queryMediator, IBlogConfig blogConfig)
     public PostEditModel ViewModel { get; set; } = new()
     {
         IsOutdated = false,
-        PostStatus = PostStatusConstants.Draft,
+        PostStatus = PostStatus.Draft,
         Featured = false,
         EnableComment = true,
         FeedIncluded = true
@@ -48,7 +49,7 @@ public class EditPostModel(IQueryMediator queryMediator, IBlogConfig blogConfig)
         ViewModel = new()
         {
             PostId = post.Id,
-            PostStatus = post.PostStatus.ToLower().Trim(),
+            PostStatus = post.PostStatus,
             EditorContent = post.PostContent,
             Author = post.Author,
             Slug = post.Slug,

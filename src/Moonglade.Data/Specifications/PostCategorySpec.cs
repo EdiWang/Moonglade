@@ -8,7 +8,7 @@ public class PostCategorySpec : Specification<PostCategoryEntity>
     {
         Query.Where(
             pc => pc.CategoryId == catId
-            && pc.Post.PostStatus == PostStatusConstants.Published
+            && pc.Post.PostStatus == PostStatus.Published
             && !pc.Post.IsDeleted);
 
         // Query.Include(pc => pc.Post);

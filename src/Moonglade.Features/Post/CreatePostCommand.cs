@@ -47,13 +47,13 @@ public class CreatePostCommandHandler(
             Title = request.Payload.Title.Trim(),
             ContentLanguageCode = request.Payload.LanguageCode,
             IsFeedIncluded = request.Payload.FeedIncluded,
-            PubDateUtc = request.Payload.PostStatus == PostStatusConstants.Published ? utcNow : null,
+            PubDateUtc = request.Payload.PostStatus == PostStatus.Published ? utcNow : null,
             ScheduledPublishTimeUtc =
-                request.Payload.PostStatus == PostStatusConstants.Scheduled ?
+                request.Payload.PostStatus == PostStatus.Scheduled ?
                 request.Payload.ScheduledPublishTime :
                 null,
             IsDeleted = false,
-            PostStatus = request.Payload.PostStatus ?? PostStatusConstants.Draft,
+            PostStatus = request.Payload.PostStatus,
             IsFeatured = request.Payload.Featured,
             HeroImageUrl = string.IsNullOrWhiteSpace(request.Payload.HeroImageUrl)
             ? null

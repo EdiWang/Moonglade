@@ -16,7 +16,7 @@ public class SearchPostsSpec : Specification<PostEntity, PostDigest>
         var normalized = Regex.Replace(keyword.Trim(), @"\s+", " ");
         var words = normalized.Split(' ', StringSplitOptions.RemoveEmptyEntries);
 
-        Query.Where(p => !p.IsDeleted && p.PostStatus == PostStatusConstants.Published);
+        Query.Where(p => !p.IsDeleted && p.PostStatus == PostStatus.Published);
 
         if (words.Length > 1)
         {

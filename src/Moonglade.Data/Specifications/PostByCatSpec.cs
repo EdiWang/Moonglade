@@ -8,7 +8,7 @@ public sealed class PostByCatSpec : Specification<PostEntity>
     {
         Query.Where(p =>
                     !p.IsDeleted &&
-                    p.PostStatus == PostStatusConstants.Published &&
+                    p.PostStatus == PostStatus.Published &&
                     p.IsFeedIncluded &&
                     (categoryId == null || p.PostCategory.Any(c => c.CategoryId == categoryId.Value)));
 

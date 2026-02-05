@@ -10,7 +10,7 @@ public sealed class PostByYearMonthSpec : Specification<PostEntity>
                          (month == 0 || p.PubDateUtc.Value.Month == month));
 
         // Fix #313: Filter out unpublished posts
-        Query.Where(p => p.PostStatus == PostStatusConstants.Published && !p.IsDeleted);
+        Query.Where(p => p.PostStatus == PostStatus.Published && !p.IsDeleted);
 
         Query.OrderByDescending(p => p.PubDateUtc);
         Query.AsNoTracking();

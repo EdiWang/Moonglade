@@ -6,7 +6,7 @@ public sealed class PostByRouteLinkSpec : SingleResultSpecification<PostEntity>
 {
     public PostByRouteLinkSpec(string routeLink)
     {
-        Query.Where(p => p.RouteLink == routeLink && p.PostStatus == PostStatusConstants.Published && !p.IsDeleted);
+        Query.Where(p => p.RouteLink == routeLink && p.PostStatus == PostStatus.Published && !p.IsDeleted);
 
         Query.Include(p => p.Comments)
              .Include(pt => pt.Tags)

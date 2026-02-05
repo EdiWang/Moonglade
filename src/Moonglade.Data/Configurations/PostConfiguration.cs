@@ -1,5 +1,6 @@
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 using Moonglade.Data.Entities;
+using Moonglade.Data.Specifications;
 
 namespace Moonglade.Data.Configurations;
 
@@ -21,6 +22,13 @@ public class PostConfiguration : IEntityTypeConfiguration<PostEntity>
         builder.Property(e => e.HeroImageUrl).HasMaxLength(256);
         builder.Property(e => e.RouteLink).HasMaxLength(256);
         builder.Property(e => e.Keywords).HasMaxLength(256);
+
+        // Convert enum to string for database storage
+        builder.Property(e => e.PostStatus)
+            .HasConversion(
+                v => v.ToString().ToLower(),
+                v => Enum.Parse<PostStatus>(v, true))
+            .HasMaxLength(32);
     }
 
     protected virtual void ConfigureDateTimeColumns(EntityTypeBuilder<PostEntity> builder)

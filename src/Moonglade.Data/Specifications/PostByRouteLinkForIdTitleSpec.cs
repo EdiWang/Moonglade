@@ -8,7 +8,7 @@ public sealed class PostByRouteLinkForIdTitleSpec : SingleResultSpecification<Po
     {
         Query.Where(p =>
             p.RouteLink == routeLink &&
-            p.PostStatus == PostStatusConstants.Published &&
+            p.PostStatus == PostStatus.Published &&
             !p.IsDeleted);
 
         Query.Select(p => new ValueTuple<Guid, string>(p.Id, p.Title));

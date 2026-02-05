@@ -1,6 +1,7 @@
 ﻿using LiteBus.Commands.Abstractions;
 using Microsoft.Extensions.Logging;
 using Moonglade.Data;
+using Moonglade.Data.Specifications;
 using Moonglade.Utils;
 
 namespace Moonglade.Features.Post;
@@ -19,7 +20,7 @@ public class PublishPostCommandHandler(
 
         var utcNow = DateTime.UtcNow;
 
-        post.PostStatus = PostStatusConstants.Published;
+        post.PostStatus = PostStatus.Published;
         post.PubDateUtc = utcNow;
         post.ScheduledPublishTimeUtc = null;
         post.LastModifiedUtc = utcNow;

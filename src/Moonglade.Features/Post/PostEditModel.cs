@@ -1,4 +1,5 @@
 ﻿using System.ComponentModel.DataAnnotations;
+using Moonglade.Data.Specifications;
 
 namespace Moonglade.Features.Post;
 
@@ -31,7 +32,7 @@ public class PostEditModel
     public string EditorContent { get; set; }
 
     [Required]
-    public string PostStatus { get; set; }
+    public PostStatus PostStatus { get; set; }
 
     [Required]
     [Display(Name = "Featured")]

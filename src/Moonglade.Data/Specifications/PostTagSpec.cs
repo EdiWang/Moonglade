@@ -10,7 +10,7 @@ public sealed class PostTagSpec : Specification<PostTagEntity>
         Query.Where(pt =>
             pt.TagId == tagId
             && !pt.Post.IsDeleted
-            && pt.Post.PostStatus == PostStatusConstants.Published);
+            && pt.Post.PostStatus == PostStatus.Published);
 
         var startRow = (pageIndex - 1) * pageSize;
         Query.Skip(startRow).Take(pageSize);
@@ -53,7 +53,7 @@ public sealed class PublishedPostTagByTagIdSpec : SingleResultSpecification<Post
     {
         Query.Where(
             pt => pt.TagId == tagId
-            && pt.Post.PostStatus == PostStatusConstants.Published
+            && pt.Post.PostStatus == PostStatus.Published
             && !pt.Post.IsDeleted);
     }
 }

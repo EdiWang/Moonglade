@@ -1,4 +1,6 @@
-﻿namespace Moonglade.Data.Entities;
+﻿using Moonglade.Data.Specifications;
+
+namespace Moonglade.Data.Entities;
 
 public class PostEntity
 {
@@ -27,7 +29,7 @@ public class PostEntity
     public string HeroImageUrl { get; set; }
     public bool IsFeatured { get; set; }
     public string RouteLink { get; set; }
-    public string PostStatus { get; set; }
+    public PostStatus PostStatus { get; set; }
     public string Keywords { get; set; }
 
     public ICollection<CommentEntity> Comments { get; set; }

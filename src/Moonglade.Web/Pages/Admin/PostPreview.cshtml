@@ -1,6 +1,7 @@
 ﻿@page "/admin/post/preview/{postId:guid}"
 @using Microsoft.AspNetCore.Mvc.TagHelpers
 @using Moonglade.Data.Entities
+@using Moonglade.Data.Specifications
 @using Moonglade.Features.Post
 @using Moonglade.Utils
 
@@ -14,7 +15,7 @@
     <meta name="title" content="@Post.Title" />
     <meta name="author" content="@(string.IsNullOrWhiteSpace(Post.Author) ? BlogConfig.GeneralSettings.OwnerName : Post.Author) " />
     <meta name="image-device-dpi" content="@BlogConfig.ImageSettings.FitImageToDevicePixelRatio.ToString().ToLower()" />
-    <meta name="post-is-published" content="@((Model.Post.PostStatus == PostStatusConstants.Published).ToString().ToLower())" />
+    <meta name="post-is-published" content="@((Model.Post.PostStatus == PostStatus.Published).ToString().ToLower())" />
 }
 
 @section head {

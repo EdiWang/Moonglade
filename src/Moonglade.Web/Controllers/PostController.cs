@@ -58,7 +58,7 @@ public class PostController(
                 model.PublishDate = model.PublishDate.Value;
             }
 
-            if (model.PostStatus == PostStatusConstants.Scheduled && model.ScheduledPublishTime.HasValue)
+            if (model.PostStatus == PostStatus.Scheduled && model.ScheduledPublishTime.HasValue)
             {
                 if (string.IsNullOrWhiteSpace(model.ClientTimeZoneId))
                 {
@@ -75,7 +75,7 @@ public class PostController(
                     // return Conflict("Scheduled publish time must be in the future.");
 
                     // Instead of throwing error, just publish the post right away!
-                    model.PostStatus = PostStatusConstants.Published;
+                    model.PostStatus = PostStatus.Published;
                     model.ScheduledPublishTime = null;
                 }
                 else
@@ -94,7 +94,7 @@ public class PostController(
 
             cache.Remove(BlogCachePartition.Post.ToString(), postEntity.RouteLink);
 
-            if (model.PostStatus != PostStatusConstants.Published)
+            if (model.PostStatus != PostStatus.Published)
             {
                 return Ok(new { PostId = postEntity.Id });
             }

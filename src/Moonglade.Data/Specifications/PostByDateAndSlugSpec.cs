@@ -8,7 +8,7 @@ public sealed class PostByDateAndSlugSpec : Specification<PostEntity>
     {
         Query.Where(p =>
                     p.Slug == slug &&
-                    p.PostStatus == PostStatusConstants.Published &&
+                    p.PostStatus == PostStatus.Published &&
                     p.PubDateUtc.Value.Date == date &&
                     !p.IsDeleted);
 

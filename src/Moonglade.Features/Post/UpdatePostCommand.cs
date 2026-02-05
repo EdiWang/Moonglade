@@ -81,23 +81,23 @@ public class UpdatePostCommandHandler(
 
         // Only publish the post if it was not yet published
         // Otherwise, updating existing post will result in changing publish date and break the slug URL
-        if (post.PostStatus != PostStatusConstants.Published &&
-            postEditModel.PostStatus == PostStatusConstants.Published)
+        if (post.PostStatus != PostStatus.Published &&
+            postEditModel.PostStatus == PostStatus.Published)
         {
-            post.PostStatus = PostStatusConstants.Published;
+            post.PostStatus = PostStatus.Published;
             post.PubDateUtc = utcNow;
         }
 
-        if (postEditModel.PostStatus == PostStatusConstants.Scheduled)
+        if (postEditModel.PostStatus == PostStatus.Scheduled)
         {
-            post.PostStatus = PostStatusConstants.Scheduled;
+            post.PostStatus = PostStatus.Scheduled;
             post.ScheduledPublishTimeUtc = postEditModel.ScheduledPublishTime;
         }
 
         // Back to draft for unscheduled posts
-        if (postEditModel.PostStatus == PostStatusConstants.Draft)
+        if (postEditModel.PostStatus == PostStatus.Draft)
         {
-            post.PostStatus = PostStatusConstants.Draft;
+            post.PostStatus = PostStatus.Draft;
             post.PubDateUtc = null;
             post.ScheduledPublishTimeUtc = null;
             post.RouteLink = null;

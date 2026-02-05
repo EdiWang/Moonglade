@@ -1,6 +1,7 @@
 ﻿using LiteBus.Commands.Abstractions;
 using Microsoft.Extensions.Logging;
 using Moonglade.Data;
+using Moonglade.Data.Specifications;
 
 namespace Moonglade.Features.Post;
 
@@ -16,7 +17,7 @@ public class UnpublishPostCommandHandler(
         var post = await repo.GetByIdAsync(request.Id, ct);
         if (null == post) return;
 
-        post.PostStatus = PostStatusConstants.Draft;
+        post.PostStatus = PostStatus.Draft;
         post.PubDateUtc = null;
         post.ScheduledPublishTimeUtc = null;
         post.RouteLink = null;

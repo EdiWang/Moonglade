@@ -1,4 +1,6 @@
-﻿namespace Moonglade.Data.DTO;
+﻿using Moonglade.Data.Specifications;
+
+namespace Moonglade.Data.DTO;
 
 public class PostExportModel
 {
@@ -19,7 +21,7 @@ public class PostExportModel
     public bool IsDeleted { get; set; }
     public bool IsFeedIncluded { get; set; }
     public bool IsFeatured { get; set; }
-    public string PostStatus { get; set; } = null!;
+    public PostStatus PostStatus { get; set; }
     public bool IsOutdated { get; set; }
     public string Keywords { get; set; }
     public List<string> Categories { get; set; } = [];

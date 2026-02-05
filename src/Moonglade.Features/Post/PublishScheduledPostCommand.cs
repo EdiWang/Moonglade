@@ -22,7 +22,7 @@ public class PublishScheduledPostCommandHandler(MoongladeRepository<PostEntity> 
         int affectedRows = 0;
         foreach (var post in scheduledPosts)
         {
-            post.PostStatus = PostStatusConstants.Published;
+            post.PostStatus = PostStatus.Published;
             post.PubDateUtc = now;
             post.ScheduledPublishTimeUtc = null;
             post.RouteLink = UrlHelper.GenerateRouteLink(post.PubDateUtc.GetValueOrDefault(), post.Slug);

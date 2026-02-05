@@ -1,5 +1,6 @@
 ﻿using Microsoft.Extensions.Logging;
 using Moonglade.Data.Entities;
+using Moonglade.Data.Specifications;
 using System.Globalization;
 
 namespace Moonglade.Data;
@@ -35,11 +36,11 @@ public class Seed
                 Slug = "welcome-to-moonglade",
                 Author = "admin",
                 PostContent = content,
-                CommentEnabled = true,
-                CreateTimeUtc = DateTime.UtcNow,
-                ContentAbstract = "Moonglade is a personal blogging platform built for developers, optimized for seamless deployment on Microsoft Azure. It features essential blogging tools: posts, comments, categories, tags, archives, and pages.",
-                PostStatus = PostStatusConstants.Published,
-                IsFeatured = true,
+            CommentEnabled = true,
+            CreateTimeUtc = DateTime.UtcNow,
+            ContentAbstract = "Moonglade is a personal blogging platform built for developers, optimized for seamless deployment on Microsoft Azure. It features essential blogging tools: posts, comments, categories, tags, archives, and pages.",
+            PostStatus = PostStatus.Published,
+            IsFeatured = true,
                 IsFeedIncluded = true,
                 LastModifiedUtc = DateTime.UtcNow,
                 PubDateUtc = DateTime.UtcNow,

@@ -1,6 +1,7 @@
 ﻿using LiteBus.Commands.Abstractions;
 using Microsoft.Extensions.Logging;
 using Moonglade.Data;
+using Moonglade.Data.Specifications;
 
 namespace Moonglade.Features.Post;
 
@@ -19,7 +20,7 @@ public class PostponePostCommandHandler(
             return;
         }
 
-        if (post.PostStatus == PostStatusConstants.Scheduled && post.ScheduledPublishTimeUtc.HasValue)
+        if (post.PostStatus == PostStatus.Scheduled && post.ScheduledPublishTimeUtc.HasValue)
         {
             post.ScheduledPublishTimeUtc = post.ScheduledPublishTimeUtc.Value.AddHours(request.Hours);
             await postRepo.UpdateAsync(post, ct);

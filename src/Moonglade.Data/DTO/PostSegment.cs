@@ -1,4 +1,6 @@
-﻿namespace Moonglade.Data.DTO;
+﻿using Moonglade.Data.Specifications;
+
+namespace Moonglade.Data.DTO;
 
 public record PostSegment
 {
@@ -10,7 +12,7 @@ public record PostSegment
     public DateTime CreateTimeUtc { get; init; }
     public DateTime? LastModifiedUtc { get; init; }
     public DateTime? ScheduledPublishTimeUtc { get; init; }
-    public string PostStatus { get; init; }
+    public PostStatus PostStatus { get; init; }
     public bool IsFeatured { get; init; }
     public bool IsDeleted { get; init; }
     public bool IsOutdated { get; init; }
