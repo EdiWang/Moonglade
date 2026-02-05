@@ -1,5 +1,5 @@
-﻿using System.ComponentModel.DataAnnotations;
-using Moonglade.Data.Specifications;
+﻿using Moonglade.Data.Specifications;
+using System.ComponentModel.DataAnnotations;
 
 namespace Moonglade.Features.Post;
 
