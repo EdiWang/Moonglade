@@ -49,7 +49,7 @@ public class SiteMapMapHandler
                 var pubDate = item.CreateTimeUtc;
 
                 writer.WriteStartElement("url");
-                writer.WriteElementString("loc", $"{siteRootUrl}/post/{item.RouteLink.ToLower()}");
+                writer.WriteElementString("loc", $"{siteRootUrl}/post/{item.Slug.ToLower()}");
                 writer.WriteElementString("lastmod", pubDate.ToString("yyyy-MM-dd", CultureInfo.InvariantCulture));
                 writer.WriteElementString("changefreq", GetChangeFreq(pubDate, item.UpdateTimeUtc));
                 await writer.WriteEndElementAsync();
