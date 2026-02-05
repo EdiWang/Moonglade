@@ -1,17 +1,17 @@
 ﻿namespace Moonglade.Data.DTO;
 
-public struct PostSegment
+public record PostSegment
 {
-    public Guid Id { get; set; }
-    public string Title { get; set; }
-    public string Slug { get; set; }
-    public string ContentAbstract { get; set; }
-    public DateTime? PubDateUtc { get; set; }
-    public DateTime CreateTimeUtc { get; set; }
-    public DateTime? LastModifiedUtc { get; set; }
-    public DateTime? ScheduledPublishTimeUtc { get; set; }
-    public string PostStatus { get; set; }
-    public bool IsFeatured { get; set; }
-    public bool IsDeleted { get; set; }
-    public bool IsOutdated { get; set; }
+    public Guid Id { get; init; }
+    public string Title { get; init; }
+    public string Slug { get; init; }
+    public string ContentAbstract { get; init; }
+    public DateTime? PubDateUtc { get; init; }
+    public DateTime CreateTimeUtc { get; init; }
+    public DateTime? LastModifiedUtc { get; init; }
+    public DateTime? ScheduledPublishTimeUtc { get; init; }
+    public string PostStatus { get; init; }
+    public bool IsFeatured { get; init; }
+    public bool IsDeleted { get; init; }
+    public bool IsOutdated { get; init; }
 }
