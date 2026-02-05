@@ -1,8 +1,8 @@
 ﻿namespace Moonglade.Data.DTO;
 
-public class SiteMapInfo
+public record SiteMapInfo
 {
-    public string Slug { get; set; }
-    public DateTime CreateTimeUtc { get; set; }
-    public DateTime? UpdateTimeUtc { get; set; }
+    public string Slug { get; init; }
+    public DateTime CreateTimeUtc { get; init; }
+    public DateTime? UpdateTimeUtc { get; init; }
 }
