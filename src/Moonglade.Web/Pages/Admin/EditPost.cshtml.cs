@@ -59,7 +59,6 @@ public class EditPostModel(IQueryMediator queryMediator, IBlogConfig blogConfig)
             LanguageCode = post.ContentLanguageCode,
             Abstract = post.ContentAbstract.Replace("\u00A0\u2026", string.Empty),
             Featured = post.IsFeatured,
-            HeroImageUrl = post.HeroImageUrl,
             IsOutdated = post.IsOutdated,
             LastModifiedUtc = post.LastModifiedUtc?.ToString("u")
         };

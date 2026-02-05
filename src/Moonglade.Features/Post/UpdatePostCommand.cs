@@ -118,9 +118,6 @@ public class UpdatePostCommandHandler(
         post.IsFeedIncluded = postEditModel.FeedIncluded;
         post.ContentLanguageCode = postEditModel.LanguageCode;
         post.IsFeatured = postEditModel.Featured;
-        post.HeroImageUrl = string.IsNullOrWhiteSpace(postEditModel.HeroImageUrl)
-            ? null
-            : Edi.AspNetCore.Utils.SecurityHelper.SterilizeLink(postEditModel.HeroImageUrl);
         post.IsOutdated = postEditModel.IsOutdated;
         post.RouteLink = UrlHelper.GenerateRouteLink(post.PubDateUtc.GetValueOrDefault(), postEditModel.Slug);
         post.Keywords = ContentProcessor.GetKeywords(postEditModel.Keywords);

@@ -146,20 +146,6 @@
                         </div>
                     </div>
                     <div class="card-body border-top">
-                        <div class="form-floating mb-1">
-                            <textarea asp-for="ViewModel.HeroImageUrl"
-                                      class="form-control form-control-sm"
-                                      placeholder="@Html.DisplayNameFor(m => m.ViewModel.HeroImageUrl)"></textarea>
-                            <label class="form-label" asp-for="ViewModel.HeroImageUrl"></label>
-                        </div>
-                        <div>
-                            <a class="btn btn-sm btn-outline-secondary w-100" data-bs-toggle="modal" data-bs-target="#heroImageModal">
-                                <i class="bi-upload"></i>
-                                @SharedLocalizer["Upload Image"]
-                            </a>
-                        </div>
-                    </div>
-                    <div class="card-body border-top">
                         <div class="form-floating">
                             <textarea asp-for="ViewModel.Keywords"
                                       class="form-control form-control-sm"
@@ -270,6 +256,5 @@
         <partial name="_SchedulePublishModal" />
     </form>
 
-    <partial name="_EditPostHeroImage" />
     <partial name="_UnpublishPostModal" />
 </div>
