@@ -8,14 +8,9 @@ public sealed class TagCloudSpec : Specification<TagEntity, TagWithCount>
     {
         Query.Select(t => new TagWithCount
         {
-            Tag = t,
+            DisplayName = t.DisplayName,
+            NormalizedName = t.NormalizedName,
             PostCount = t.Posts.Count
         });
     }
-}
-
-public class TagWithCount
-{
-    public TagEntity Tag { get; set; }
-    public int PostCount { get; set; }
 }
