@@ -23,11 +23,13 @@ body {
     flex-basis: 278px;
     flex-grow: 0;
     flex-shrink: 0;
+    max-width: 278px;
 }
 
 main {
     flex: 1;
     min-width: 0;
+    max-width: 100%;
 }
 
 a {
