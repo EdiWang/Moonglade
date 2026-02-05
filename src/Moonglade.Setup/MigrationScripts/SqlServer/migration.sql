@@ -24,3 +24,9 @@ BEGIN
     ALTER TABLE [dbo].[Mention] DROP COLUMN [Worker];
 END
 GO
+
+-- v15.4
+IF EXISTS (SELECT * FROM sys.columns WHERE object_id = OBJECT_ID(N'[dbo].[Post]') AND name = 'HeroImageUrl')
+BEGIN
+    ALTER TABLE [dbo].[Post] DROP COLUMN [HeroImageUrl];
+END

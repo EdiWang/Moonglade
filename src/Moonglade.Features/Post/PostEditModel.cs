@@ -74,10 +74,6 @@ public class PostEditModel
     [Display(Name = "Change Publish Date")]
     public bool ChangePublishDate { get; set; }
 
-    [Display(Name = "Hero Image")]
-    [DataType(DataType.Url)]
-    public string HeroImageUrl { get; set; }
-
     [Display(Name = "Mark as outdated")]
     public bool IsOutdated { get; set; }
 

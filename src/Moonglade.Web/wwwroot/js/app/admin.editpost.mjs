@@ -4,16 +4,12 @@ import { success, error } from './toastService.mjs'
 import { initEvents, loadTinyMCE, keepAlive, warnDirtyForm } from './admin.editor.module.mjs'
 
 const btnSubmitPostSelector = '#btn-save';
-const heroImageInputSelector = '#ViewModel_HeroImageUrl';
-const heroImageFormSelector = '#form-hero-image';
 const postEditFormSelector = '.post-edit-form';
-const heroImageModalElement = document.getElementById('heroImageModal');
 const editorChoice = parseMetaContent('editor-choice');
 const scheduledPublishTimeElement = document.querySelector('input[name="ViewModel.ScheduledPublishTime"]');
 const postIdElement = document.querySelector('input[name="ViewModel.PostId"]');
 
 let isPreviewRequired = false;
-const heroImageModal = new bootstrap.Modal(heroImageModalElement);
 
 const handleKeyboardShortcuts = (event) => {
     if ((event.ctrlKey || event.metaKey) && event.key.toLowerCase() === 's') {
@@ -23,31 +19,6 @@ const handleKeyboardShortcuts = (event) => {
 };
 
 window.addEventListener('keydown', handleKeyboardShortcuts);
-
-window.ajaxImageUpload = async (formElement) => {
-    const formData = new FormData(formElement);
-
-    try {
-        const response = await fetch(formElement.action, {
-            method: 'POST',
-            body: formData,
-        });
-
-        if (!response.ok) {
-            throw new Error('Failed to upload image');
-        }
-
-        const data = await response.json();
-        document.querySelector(heroImageInputSelector).value = data.location;
-
-        // Reset form and hide modal
-        document.querySelector(heroImageFormSelector).reset();
-        heroImageModal.hide();
-    } catch (err) {
-        error('Image upload failed.');
-        console.error(err);
-    }
-};
 
 const handlePostSubmit = async (event) => {
     event.preventDefault();

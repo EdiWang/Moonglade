@@ -47,13 +47,6 @@
         <hr class="d-none d-md-block" />
     </header>
 
-    @if (!string.IsNullOrWhiteSpace(Post.HeroImageUrl))
-    {
-        <div class="post-hero-image-container text-center mb-3">
-            <img src="@Edi.AspNetCore.Utils.SecurityHelper.SterilizeLink(Post.HeroImageUrl)" class="post-hero-image img-fluid rounded-3 shadow-sm" />
-        </div>
-    }
-
     <section class="post-content clearfix">
         <partial name="_PostContentRender" model="Post.PostContent" />
     </section>

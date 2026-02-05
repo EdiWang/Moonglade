@@ -29,3 +29,22 @@ SET @preparedStatement = (SELECT IF(
 PREPARE alterIfExists FROM @preparedStatement;
 EXECUTE alterIfExists;
 DEALLOCATE PREPARE alterIfExists;
+
+-- v15.4
+SET @dbname = DATABASE();
+SET @tablename = 'Post';
+SET @columnname = 'HeroImageUrl';
+SET @preparedStatement = (SELECT IF(
+  (
+    SELECT COUNT(*) FROM INFORMATION_SCHEMA.COLUMNS
+    WHERE
+      (TABLE_SCHEMA = @dbname)
+      AND (TABLE_NAME = @tablename)
+      AND (COLUMN_NAME = @columnname)
+  ) > 0,
+  CONCAT('ALTER TABLE `', @tablename, '` DROP COLUMN `', @columnname, '`;'),
+  'SELECT 1;'
+));
+PREPARE alterIfExists FROM @preparedStatement;
+EXECUTE alterIfExists;
+DEALLOCATE PREPARE alterIfExists;
