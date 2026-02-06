@@ -1,8 +1,6 @@
-﻿using Ardalis.Specification;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Configuration;
 using Moonglade.Configuration;
-using Moonglade.Data;
 using Moonglade.Data.DTO;
 using Moonglade.Data.Entities;
 using Moonglade.Data.Specifications;
@@ -18,8 +16,8 @@ public interface ISyndicationDataSource
 public class SyndicationDataSource(
     IBlogConfig blogConfig,
     IHttpContextAccessor httpContextAccessor,
-    MoongladeRepository<CategoryEntity> catRepo,
-    MoongladeRepository<PostEntity> postRepo,
+    IRepositoryBase<CategoryEntity> catRepo,
+    IRepositoryBase<PostEntity> postRepo,
     IConfiguration configuration)
     : ISyndicationDataSource
 {
