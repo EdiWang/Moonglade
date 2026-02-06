@@ -1,6 +1,9 @@
 ﻿using LiteBus.Commands.Abstractions;
 using LiteBus.Queries.Abstractions;
+using Microsoft.AspNetCore.Builder;
+using Microsoft.Extensions.Options;
 using Moonglade.Data.DTO;
+using Moonglade.Features.Category;
 using Moonglade.Features.Post;
 using Moonglade.IndexNow.Client;
 using Moonglade.Web.BackgroundServices;
@@ -192,6 +195,65 @@ public class PostController(
         {
             ServerTime = DateTime.UtcNow,
             Nonce = nonce
+        });
+    }
+
+    [HttpGet("meta")]
+    [ProducesResponseType(StatusCodes.Status200OK)]
+    public async Task<IActionResult> GetMeta([FromServices] IOptions<RequestLocalizationOptions> locOptions)
+    {
+        var ec = configuration.GetValue<EditorChoice>("Post:Editor");
+        var cats = await queryMediator.QueryAsync(new ListCategoriesQuery());
+
+        var languages = locOptions.Value.SupportedUICultures?
+            .Select(c => new { value = c.Name.ToLower(), nativeName = c.NativeName })
+            .ToList();
+
+        return Ok(new
+        {
+            editorChoice = ec.ToString().ToLower(),
+            defaultAuthor = blogConfig.GeneralSettings.OwnerName,
+            abstractWords = blogConfig.ContentSettings.PostAbstractWords,
+            categories = cats.Select(c => new { id = c.Id, displayName = c.DisplayName }),
+            languages
+        });
+    }
+
+    [HttpGet("{id:guid}")]
+    [ProducesResponseType(StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status404NotFound)]
+    public async Task<IActionResult> GetPost([NotEmpty] Guid id)
+    {
+        var post = await queryMediator.QueryAsync(new GetPostByIdQuery(id));
+        if (post == null) return NotFound();
+
+        var tagStr = post.Tags
+            .Select(p => p.DisplayName)
+            .Aggregate(string.Empty, (current, item) => current + item + ",")
+            .TrimEnd(',');
+
+        var selectedCatIds = post.PostCategory.Select(pc => pc.CategoryId).ToArray();
+
+        return Ok(new
+        {
+            postId = post.Id,
+            title = post.Title,
+            slug = post.Slug,
+            author = post.Author,
+            editorContent = post.PostContent,
+            postStatus = post.PostStatus,
+            enableComment = post.CommentEnabled,
+            feedIncluded = post.IsFeedIncluded,
+            featured = post.IsFeatured,
+            isOutdated = post.IsOutdated,
+            languageCode = post.ContentLanguageCode,
+            contentAbstract = post.ContentAbstract?.Replace("\u00A0\u2026", string.Empty),
+            keywords = post.Keywords,
+            tags = tagStr,
+            publishDate = post.PubDateUtc,
+            scheduledPublishTimeUtc = post.ScheduledPublishTimeUtc,
+            lastModifiedUtc = post.LastModifiedUtc?.ToString("u"),
+            selectedCatIds
         });
     }
 
