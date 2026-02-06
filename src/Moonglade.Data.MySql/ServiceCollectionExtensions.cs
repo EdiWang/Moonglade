@@ -1,7 +1,6 @@
 using Ardalis.Specification;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
-using Moonglade.Data.MySql.Infrastructure;
 
 namespace Moonglade.Data.MySql;
 
