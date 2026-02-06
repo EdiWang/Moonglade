@@ -1,4 +1,4 @@
-﻿using LiteBus.Commands.Abstractions;
+using LiteBus.Commands.Abstractions;
 using Microsoft.Extensions.Logging;
 using Moonglade.Data;
 
@@ -7,7 +7,7 @@ namespace Moonglade.Features.Page;
 public record DeletePageCommand(Guid Id) : ICommand<OperationCode>;
 
 public class DeletePageCommandHandler(
-    MoongladeRepository<PageEntity> repo,
+    IRepositoryBase<PageEntity> repo,
     ICommandMediator commandMediator,
     ILogger<DeletePageCommandHandler> logger) : ICommandHandler<DeletePageCommand, OperationCode>
 {
