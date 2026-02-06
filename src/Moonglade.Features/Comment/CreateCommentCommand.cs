@@ -1,7 +1,6 @@
-﻿using LiteBus.Commands.Abstractions;
+using LiteBus.Commands.Abstractions;
 using Microsoft.Extensions.Logging;
 using Moonglade.Configuration;
-using Moonglade.Data;
 using Moonglade.Data.DTO;
 using Moonglade.Data.Specifications;
 
@@ -16,8 +15,8 @@ public record CreateCommentCommand(
 public class CreateCommentCommandHandler(
     IBlogConfig blogConfig,
     ILogger<CreateCommentCommandHandler> logger,
-    MoongladeRepository<PostEntity> postRepository,
-    MoongladeRepository<CommentEntity> commentRepository
+    IRepositoryBase<PostEntity> postRepository,
+    IRepositoryBase<CommentEntity> commentRepository
 ) : ICommandHandler<CreateCommentCommand, CommentDetailedItem>
 {
     public async Task<CommentDetailedItem> HandleAsync(CreateCommentCommand request, CancellationToken ct)

@@ -1,6 +1,4 @@
-﻿using Ardalis.Specification;
 using LiteBus.Queries.Abstractions;
-using Moonglade.Data;
 using Moonglade.Data.DTO;
 using Moonglade.Data.Specifications;
 
@@ -8,7 +6,7 @@ namespace Moonglade.Features.Comment;
 
 public record ListCommentsQuery(int PageSize, int PageIndex, string SearchTerm = null) : IQuery<List<CommentDetailedItem>>;
 
-public class ListCommentsQueryHandler(MoongladeRepository<CommentEntity> repo) : IQueryHandler<ListCommentsQuery, List<CommentDetailedItem>>
+public class ListCommentsQueryHandler(IRepositoryBase<CommentEntity> repo) : IQueryHandler<ListCommentsQuery, List<CommentDetailedItem>>
 {
     public Task<List<CommentDetailedItem>> HandleAsync(ListCommentsQuery request, CancellationToken ct)
     {
