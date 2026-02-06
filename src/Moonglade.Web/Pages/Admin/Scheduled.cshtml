@@ -14,7 +14,8 @@
      data-delete-confirmation="@SharedLocalizer["Delete Confirmation?"]"
      data-post-deleted="@SharedLocalizer["Post deleted."]"
      data-post-published="@SharedLocalizer["Post published"]"
-     data-post-postponed="@SharedLocalizer["Post postponed for {0} hour(s)"]">
+     data-post-postponed="@SharedLocalizer["Post postponed for {0} hour(s)"]"
+     data-schedule-cancelled="@SharedLocalizer["Schedule cancelled, post moved to drafts"]">
 </div>
 
 @section admintoolbar {
@@ -75,6 +76,11 @@
                             <i class="bi-clock"></i>
                             @SharedLocalizer["Postpone"]
                         </button>
+                        <button class="btn btn-outline-accent btn-sm btn-cancel"
+                                x-on:click="showCancelScheduleModal(post.id)">
+                            <i class="bi-x-circle"></i>
+                            @SharedLocalizer["Cancel"]
+                        </button>
                         <a class="btn btn-outline-accent btn-sm btn-edit" :href="`/admin/post/edit/${post.id}`">
                             <i class="bi-pen"></i>
                         </a>
@@ -102,6 +108,27 @@
             <div class="modal-footer">
                 <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">@SharedLocalizer["Cancel"]</button>
                 <button type="button" class="btn btn-primary" x-on:click="confirmPublish" id="btn-publish-post">@SharedLocalizer["Publish"]</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Cancel Schedule Modal -->
+<div class="modal fade" id="cancelScheduleModal" tabindex="-1" aria-labelledby="cancelScheduleModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="cancelScheduleModalLabel">@SharedLocalizer["Cancel Schedule"]</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                @SharedLocalizer["Are you sure you want to cancel the scheduled publish and move this post to drafts?"]
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">@SharedLocalizer["Cancel"]</button>
+                <button type="button" class="btn btn-outline-accent" x-on:click="confirmCancelSchedule">
+                    <i class="bi-x-circle"></i> @SharedLocalizer["Yes, Cancel Schedule"]
+                </button>
             </div>
         </div>
     </div>
