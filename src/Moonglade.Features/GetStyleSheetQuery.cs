@@ -1,11 +1,10 @@
-﻿using LiteBus.Queries.Abstractions;
-using Moonglade.Data;
+using LiteBus.Queries.Abstractions;
 
 namespace Moonglade.Features;
 
 public record GetStyleSheetQuery(Guid Id) : IQuery<StyleSheetEntity>;
 
-public class GetStyleSheetQueryHandler(MoongladeRepository<StyleSheetEntity> repo) : IQueryHandler<GetStyleSheetQuery, StyleSheetEntity>
+public class GetStyleSheetQueryHandler(IRepositoryBase<StyleSheetEntity> repo) : IQueryHandler<GetStyleSheetQuery, StyleSheetEntity>
 {
     public async Task<StyleSheetEntity> HandleAsync(GetStyleSheetQuery request, CancellationToken cancellationToken)
     {
