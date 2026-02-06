@@ -1,13 +1,11 @@
-using Ardalis.Specification;
 using LiteBus.Commands.Abstractions;
-using Moonglade.Data;
 using Moonglade.Data.Entities;
 
 namespace Moonglade.Webmention;
 
 public record DeleteMentionsCommand(List<Guid> Ids) : ICommand;
 
-public class DeleteMentionsCommandHandler(MoongladeRepository<MentionEntity> repo) : ICommandHandler<DeleteMentionsCommand>
+public class DeleteMentionsCommandHandler(IRepositoryBase<MentionEntity> repo) : ICommandHandler<DeleteMentionsCommand>
 {
     public async Task HandleAsync(DeleteMentionsCommand request, CancellationToken ct)
     {
