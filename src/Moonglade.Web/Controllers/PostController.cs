@@ -1,6 +1,5 @@
 ﻿using LiteBus.Commands.Abstractions;
 using LiteBus.Queries.Abstractions;
-using Microsoft.AspNetCore.Builder;
 using Microsoft.Extensions.Options;
 using Moonglade.Data.DTO;
 using Moonglade.Features.Category;
