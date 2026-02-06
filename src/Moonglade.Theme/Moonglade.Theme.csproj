@@ -10,6 +10,9 @@
         <AllowUnsafeBlocks>False</AllowUnsafeBlocks>
     </PropertyGroup>
     <ItemGroup>
+        <Using Include="Ardalis.Specification" />
+    </ItemGroup>
+    <ItemGroup>
         <ProjectReference Include="..\Moonglade.Data\Moonglade.Data.csproj" />
     </ItemGroup>
 </Project>

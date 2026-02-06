@@ -1,4 +1,4 @@
-﻿using LiteBus.Commands.Abstractions;
+using LiteBus.Commands.Abstractions;
 using Moonglade.Data;
 using Moonglade.Data.Entities;
 
@@ -6,7 +6,7 @@ namespace Moonglade.Theme;
 
 public record DeleteThemeCommand(int Id) : ICommand<OperationCode>;
 
-public class DeleteThemeCommandHandler(MoongladeRepository<BlogThemeEntity> repo) : ICommandHandler<DeleteThemeCommand, OperationCode>
+public class DeleteThemeCommandHandler(IRepositoryBase<BlogThemeEntity> repo) : ICommandHandler<DeleteThemeCommand, OperationCode>
 {
     public async Task<OperationCode> HandleAsync(DeleteThemeCommand request, CancellationToken ct)
     {
