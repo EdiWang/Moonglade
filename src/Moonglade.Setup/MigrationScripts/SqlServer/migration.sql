@@ -30,3 +30,4 @@ IF EXISTS (SELECT * FROM sys.columns WHERE object_id = OBJECT_ID(N'[dbo].[Post]'
 BEGIN
     ALTER TABLE [dbo].[Post] DROP COLUMN [HeroImageUrl];
 END
+GO
