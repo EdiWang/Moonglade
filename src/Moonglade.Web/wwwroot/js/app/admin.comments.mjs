@@ -44,7 +44,9 @@ Alpine.data('commentManager', () => ({
             }));
             this.totalRows = data.totalRows ?? 0;
             
-            formatUtcTime();
+            this.$nextTick(() => {
+                formatUtcTime();
+            });
         } finally {
             this.isLoading = false;
         }
@@ -121,7 +123,9 @@ Alpine.data('commentManager', () => ({
             comment.replies.push(reply);
             comment.showReplyForm = false;
             comment.replyContent = '';
-            formatUtcTime();
+            this.$nextTick(() => {
+                formatUtcTime();
+            });
             success('Reply posted');
         }
     },
