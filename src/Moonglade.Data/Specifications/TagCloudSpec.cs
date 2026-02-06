@@ -9,6 +9,7 @@ public sealed class TagCloudSpec : Specification<TagEntity, TagWithCount>
     {
         Query.Select(t => new TagWithCount
         {
+            Id = t.Id,
             DisplayName = t.DisplayName,
             NormalizedName = t.NormalizedName,
             PostCount = t.Posts.Count
