@@ -1,4 +1,6 @@
-﻿namespace Moonglade.Data.PostgreSql.Infrastructure;
+﻿using Ardalis.Specification.EntityFrameworkCore;
 
-public class PostgreSqlDbContextRepository<T>(PostgreSqlBlogDbContext dbContext) : MoongladeRepository<T>(dbContext)
+namespace Moonglade.Data.PostgreSql.Infrastructure;
+
+public class PostgreSqlDbContextRepository<T>(PostgreSqlBlogDbContext dbContext) : RepositoryBase<T>(dbContext)
     where T : class;

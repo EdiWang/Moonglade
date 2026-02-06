@@ -1,5 +1,7 @@
-﻿namespace Moonglade.Data.MySql.Infrastructure;
+﻿using Ardalis.Specification.EntityFrameworkCore;
+
+namespace Moonglade.Data.MySql.Infrastructure;
 
 
-public class MySqlDbContextRepository<T>(MySqlBlogDbContext dbContext) : MoongladeRepository<T>(dbContext)
+public class MySqlDbContextRepository<T>(MySqlBlogDbContext dbContext) : RepositoryBase<T>(dbContext)
     where T : class;

@@ -1,4 +1,5 @@
-﻿using Microsoft.EntityFrameworkCore;
+using Ardalis.Specification;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using Moonglade.Data.SqlServer.Infrastructure;
 
@@ -9,7 +10,7 @@ public static class ServiceCollectionExtensions
 {
     public static IServiceCollection AddSqlServerStorage(this IServiceCollection services, string connectionString)
     {
-        services.AddScoped(typeof(MoongladeRepository<>), typeof(SqlServerDbContextRepository<>));
+        services.AddScoped(typeof(IRepositoryBase<>), typeof(SqlServerDbContextRepository<>));
 
         services.AddDbContext<BlogDbContext, SqlServerBlogDbContext>(options => options
                 .UseSqlServer(connectionString, builder =>
