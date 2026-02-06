@@ -1,9 +1,9 @@
-﻿using System.IO.Compression;
+using System.IO.Compression;
 using System.Text.Json;
 
 namespace Moonglade.Data.Exporting;
 
-public class ZippedJsonExporter<T>(MoongladeRepository<T> repository, string fileNamePrefix, string directory)
+public class ZippedJsonExporter<T>(IRepositoryBase<T> repository, string fileNamePrefix, string directory)
     where T : class
 {
     public async Task<ExportResult> ExportData<TResult>(ISpecification<T, TResult> spec = null, CancellationToken ct = (default))

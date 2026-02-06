@@ -1,4 +1,4 @@
-﻿using LiteBus.Commands.Abstractions;
+using LiteBus.Commands.Abstractions;
 using Moonglade.Data.Entities;
 using Moonglade.Data.Specifications;
 
@@ -6,7 +6,7 @@ namespace Moonglade.Data.Exporting;
 
 public record ExportPostDataCommand : ICommand<ExportResult>;
 
-public class ExportPostDataCommandHandler(MoongladeRepository<PostEntity> repo) : ICommandHandler<ExportPostDataCommand, ExportResult>
+public class ExportPostDataCommandHandler(IRepositoryBase<PostEntity> repo) : ICommandHandler<ExportPostDataCommand, ExportResult>
 {
     public Task<ExportResult> HandleAsync(ExportPostDataCommand request, CancellationToken ct)
     {
