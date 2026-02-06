@@ -1,11 +1,10 @@
-﻿using LiteBus.Events.Abstractions;
-using Moonglade.Data;
+using LiteBus.Events.Abstractions;
 
 namespace Moonglade.Features.Asset;
 
 public record SaveAssetEvent(Guid AssetId, string AssetBase64) : IEvent;
 
-public class SaveAssetEventHandler(MoongladeRepository<BlogAssetEntity> repo) : IEventHandler<SaveAssetEvent>
+public class SaveAssetEventHandler(IRepositoryBase<BlogAssetEntity> repo) : IEventHandler<SaveAssetEvent>
 {
     public async Task HandleAsync(SaveAssetEvent request, CancellationToken ct)
     {
