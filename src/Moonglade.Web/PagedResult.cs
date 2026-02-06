@@ -1,4 +1,4 @@
-namespace Moonglade.Web.PagedList;
+namespace Moonglade.Web;
 
 public class PagedResult<T>(IEnumerable<T> items, int pageNumber, int pageSize, int totalItemCount)
 {
