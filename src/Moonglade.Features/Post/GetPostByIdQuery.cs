@@ -1,12 +1,11 @@
-﻿using LiteBus.Queries.Abstractions;
-using Moonglade.Data;
+using LiteBus.Queries.Abstractions;
 using Moonglade.Data.Specifications;
 
 namespace Moonglade.Features.Post;
 
 public record GetPostByIdQuery(Guid Id) : IQuery<PostEntity>;
 
-public class GetPostByIdQueryHandler(MoongladeRepository<PostEntity> repo) : IQueryHandler<GetPostByIdQuery, PostEntity>
+public class GetPostByIdQueryHandler(IRepositoryBase<PostEntity> repo) : IQueryHandler<GetPostByIdQuery, PostEntity>
 {
     public Task<PostEntity> HandleAsync(GetPostByIdQuery request, CancellationToken ct)
     {

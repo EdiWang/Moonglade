@@ -1,6 +1,5 @@
-﻿using LiteBus.Commands.Abstractions;
+using LiteBus.Commands.Abstractions;
 using Microsoft.Extensions.Logging;
-using Moonglade.Data;
 using Moonglade.Data.DTO;
 
 namespace Moonglade.Features.Post;
@@ -8,7 +7,7 @@ namespace Moonglade.Features.Post;
 public record PostponePostCommand(Guid PostId, int Hours) : ICommand;
 
 public class PostponePostCommandHandler(
-    MoongladeRepository<PostEntity> postRepo,
+    IRepositoryBase<PostEntity> postRepo,
     ILogger<PostponePostCommandHandler> logger) : ICommandHandler<PostponePostCommand>
 {
     public async Task HandleAsync(PostponePostCommand request, CancellationToken ct)

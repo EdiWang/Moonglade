@@ -1,6 +1,4 @@
-﻿using Ardalis.Specification;
 using LiteBus.Queries.Abstractions;
-using Moonglade.Data;
 using Moonglade.Data.DTO;
 using Moonglade.Data.Specifications;
 using Moonglade.Utils;
@@ -9,7 +7,7 @@ namespace Moonglade.Features.Post;
 
 public record ListFeaturedQuery(int PageSize, int PageIndex) : IQuery<List<PostDigest>>;
 
-public class ListFeaturedQueryHandler(MoongladeRepository<PostEntity> repo) : IQueryHandler<ListFeaturedQuery, List<PostDigest>>
+public class ListFeaturedQueryHandler(IRepositoryBase<PostEntity> repo) : IQueryHandler<ListFeaturedQuery, List<PostDigest>>
 {
     public Task<List<PostDigest>> HandleAsync(ListFeaturedQuery request, CancellationToken ct)
     {

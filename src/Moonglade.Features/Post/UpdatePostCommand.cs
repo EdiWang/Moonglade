@@ -2,7 +2,6 @@ using LiteBus.Commands.Abstractions;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
 using Moonglade.Configuration;
-using Moonglade.Data;
 using Moonglade.Data.DTO;
 using Moonglade.Data.Specifications;
 using Moonglade.Utils;
@@ -11,8 +10,8 @@ namespace Moonglade.Features.Post;
 
 public record UpdatePostCommand(Guid Id, PostEditModel Payload) : ICommand<PostEntity>;
 public class UpdatePostCommandHandler(
-    MoongladeRepository<TagEntity> tagRepo,
-    MoongladeRepository<PostEntity> postRepo,
+    IRepositoryBase<TagEntity> tagRepo,
+    IRepositoryBase<PostEntity> postRepo,
     IBlogConfig blogConfig,
     IConfiguration configuration,
     ILogger<UpdatePostCommandHandler> logger) : ICommandHandler<UpdatePostCommand, PostEntity>

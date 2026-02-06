@@ -1,13 +1,12 @@
-﻿using LiteBus.Commands.Abstractions;
+using LiteBus.Commands.Abstractions;
 using Microsoft.Extensions.Logging;
-using Moonglade.Data;
 
 namespace Moonglade.Features.Post;
 
 public record RestorePostCommand(Guid Id) : ICommand;
 
 public class RestorePostCommandHandler(
-    MoongladeRepository<PostEntity> repo,
+    IRepositoryBase<PostEntity> repo,
     ILogger<RestorePostCommandHandler> logger) : ICommandHandler<RestorePostCommand>
 {
     public async Task HandleAsync(RestorePostCommand request, CancellationToken ct)

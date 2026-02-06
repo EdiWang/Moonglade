@@ -1,6 +1,5 @@
-﻿using LiteBus.Commands.Abstractions;
+using LiteBus.Commands.Abstractions;
 using Microsoft.Extensions.Logging;
-using Moonglade.Data;
 using Moonglade.Data.DTO;
 
 namespace Moonglade.Features.Post;
@@ -8,7 +7,7 @@ namespace Moonglade.Features.Post;
 public record UnpublishPostCommand(Guid Id) : ICommand;
 
 public class UnpublishPostCommandHandler(
-    MoongladeRepository<PostEntity> repo,
+    IRepositoryBase<PostEntity> repo,
     ILogger<UnpublishPostCommandHandler> logger
     ) : ICommandHandler<UnpublishPostCommand>
 {

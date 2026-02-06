@@ -1,6 +1,5 @@
-﻿using LiteBus.Commands.Abstractions;
+using LiteBus.Commands.Abstractions;
 using Microsoft.Extensions.Logging;
-using Moonglade.Data;
 using System.Collections.Concurrent;
 
 namespace Moonglade.Features.Post;
@@ -8,7 +7,7 @@ namespace Moonglade.Features.Post;
 public record AddViewCountCommand(Guid PostId, string Ip) : ICommand<int>;
 
 public class AddViewCountCommandHandler(
-    MoongladeRepository<PostViewEntity> postViewRepo,
+    IRepositoryBase<PostViewEntity> postViewRepo,
     ILogger<AddViewCountCommandHandler> logger) : ICommandHandler<AddViewCountCommand, int>
 {
     // Ugly code to prevent race condition, which will make Moonglade a single instance application, shit

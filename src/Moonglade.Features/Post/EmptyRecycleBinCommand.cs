@@ -1,6 +1,5 @@
-﻿using LiteBus.Commands.Abstractions;
+using LiteBus.Commands.Abstractions;
 using Microsoft.Extensions.Logging;
-using Moonglade.Data;
 using Moonglade.Data.Specifications;
 
 namespace Moonglade.Features.Post;
@@ -8,7 +7,7 @@ namespace Moonglade.Features.Post;
 public record EmptyRecycleBinCommand : ICommand<Guid[]>;
 
 public class EmptyRecycleBinCommandHandler(
-    MoongladeRepository<PostEntity> repo,
+    IRepositoryBase<PostEntity> repo,
     ILogger<EmptyRecycleBinCommandHandler> logger
     ) : ICommandHandler<EmptyRecycleBinCommand, Guid[]>
 {

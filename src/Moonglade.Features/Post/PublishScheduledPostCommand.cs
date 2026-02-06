@@ -1,5 +1,4 @@
-﻿using LiteBus.Commands.Abstractions;
-using Moonglade.Data;
+using LiteBus.Commands.Abstractions;
 using Moonglade.Data.DTO;
 using Moonglade.Data.Specifications;
 using Moonglade.Utils;
@@ -8,7 +7,7 @@ namespace Moonglade.Features.Post;
 
 public record PublishScheduledPostCommand : ICommand<int>;
 
-public class PublishScheduledPostCommandHandler(MoongladeRepository<PostEntity> postRepo) :
+public class PublishScheduledPostCommandHandler(IRepositoryBase<PostEntity> postRepo) :
     ICommandHandler<PublishScheduledPostCommand, int>
 {
     public async Task<int> HandleAsync(PublishScheduledPostCommand request, CancellationToken ct)
