@@ -55,7 +55,7 @@ public class PageController(ICacheAside cache, IQueryMediator queryMediator, ICo
     }
 
     [HttpGet("{id:guid}")]
-    [ProducesResponseType(StatusCodes.Status200OK)]
+    [ProducesResponseType<PageDetail>(StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
     public async Task<IActionResult> Get([NotEmpty] Guid id)
     {
@@ -68,16 +68,18 @@ public class PageController(ICacheAside cache, IQueryMediator queryMediator, ICo
             css = await queryMediator.QueryAsync(new GetStyleSheetQuery(Guid.Parse(page.CssId)));
         }
 
-        return Ok(new
+        var response = new PageDetail
         {
-            id = page.Id,
-            title = page.Title,
-            slug = page.Slug,
-            metaDescription = page.MetaDescription,
-            cssContent = css?.CssContent,
-            htmlContent = page.HtmlContent,
-            hideSidebar = page.HideSidebar,
-            isPublished = page.IsPublished
-        });
+            Id = page.Id,
+            Title = page.Title,
+            Slug = page.Slug,
+            MetaDescription = page.MetaDescription,
+            CssContent = css?.CssContent,
+            HtmlContent = page.HtmlContent,
+            HideSidebar = page.HideSidebar,
+            IsPublished = page.IsPublished
+        };
+
+        return Ok(response);
     }
 }
