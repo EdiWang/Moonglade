@@ -1,6 +1,5 @@
-﻿using LiteBus.Commands.Abstractions;
+using LiteBus.Commands.Abstractions;
 using Microsoft.Extensions.Logging;
-using Moonglade.Data;
 using Moonglade.Data.Specifications;
 using System.ComponentModel.DataAnnotations;
 
@@ -26,7 +25,7 @@ public class CreateCategoryCommand : ICommand
 }
 
 public class CreateCategoryCommandHandler(
-    MoongladeRepository<CategoryEntity> catRepo,
+    IRepositoryBase<CategoryEntity> catRepo,
     ILogger<CreateCategoryCommandHandler> logger) : ICommandHandler<CreateCategoryCommand>
 {
     public async Task HandleAsync(CreateCategoryCommand request, CancellationToken ct)

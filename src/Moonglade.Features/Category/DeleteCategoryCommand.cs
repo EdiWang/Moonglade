@@ -1,4 +1,4 @@
-﻿using LiteBus.Commands.Abstractions;
+using LiteBus.Commands.Abstractions;
 using Microsoft.Extensions.Logging;
 using Moonglade.Data;
 
@@ -7,7 +7,7 @@ namespace Moonglade.Features.Category;
 public record DeleteCategoryCommand(Guid Id) : ICommand<OperationCode>;
 
 public class DeleteCategoryCommandHandler(
-    MoongladeRepository<CategoryEntity> catRepo,
+    IRepositoryBase<CategoryEntity> catRepo,
     ILogger<DeleteCategoryCommandHandler> logger)
     : ICommandHandler<DeleteCategoryCommand, OperationCode>
 {
