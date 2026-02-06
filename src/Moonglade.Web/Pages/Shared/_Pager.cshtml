@@ -1,0 +1,76 @@
+@using Moonglade.Web.PagedList
+@model PagerModel
+
+@if (Model.PageCount > 1)
+{
+    var maxPages = Model.MaxPageNumbers;
+    var pageNumber = Model.PageNumber;
+    var pageCount = Model.PageCount;
+
+    var firstPage = 1;
+    var lastPage = pageCount;
+    var pageNumbersToDisplay = lastPage;
+
+    if (pageCount > maxPages)
+    {
+        firstPage = pageNumber - maxPages / 2;
+        if (firstPage < 1) firstPage = 1;
+
+        pageNumbersToDisplay = maxPages;
+        lastPage = firstPage + pageNumbersToDisplay - 1;
+
+        if (lastPage > pageCount)
+        {
+            firstPage = pageCount - maxPages + 1;
+            lastPage = firstPage + pageNumbersToDisplay - 1;
+        }
+    }
+
+    <div class="pagination-container">
+        <ul class="pagination justify-content-end">
+            @if (firstPage > 1)
+            {
+                <li class="page-item paged-list-skip-to-first">
+                    <a class="page-link" href="?p=1">&lt;&lt;</a>
+                </li>
+            }
+
+            @if (pageNumber > 1)
+            {
+                <li class="page-item paged-list-skip-to-previous">
+                    <a class="page-link" rel="prev" href="?p=@(pageNumber - 1)">&lt;</a>
+                </li>
+            }
+
+            @for (var i = firstPage; i <= lastPage && i <= pageCount; i++)
+            {
+                if (i == pageNumber)
+                {
+                    <li class="page-item active">
+                        <span class="page-link">@i</span>
+                    </li>
+                }
+                else
+                {
+                    <li class="page-item">
+                        <a class="page-link" href="?p=@i">@i</a>
+                    </li>
+                }
+            }
+
+            @if (pageNumber < pageCount)
+            {
+                <li class="page-item paged-list-skip-to-next">
+                    <a class="page-link" rel="next" href="?p=@(pageNumber + 1)">&gt;</a>
+                </li>
+            }
+
+            @if (lastPage < pageCount)
+            {
+                <li class="page-item paged-list-skip-to-last">
+                    <a class="page-link" href="?p=@pageCount">&gt;&gt;</a>
+                </li>
+            }
+        </ul>
+    </div>
+}

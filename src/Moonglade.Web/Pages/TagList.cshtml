@@ -28,7 +28,7 @@ else
 
     [BindProperty(SupportsGet = true)]
     public int P { get; set; } = 1;
-    public BasePagedList<PostDigest> Posts { get; set; }
+    public PagedResult<PostDigest> Posts { get; set; }
 
     public async Task<IActionResult> OnGet(string normalizedName)
     {
@@ -43,8 +43,7 @@ else
 
         ViewData["TitlePrefix"] = tagResponse.DisplayName;
 
-        var list = new BasePagedList<PostDigest>(posts, P, pagesize, count);
-        Posts = list;
+        Posts = new PagedResult<PostDigest>(posts, P, pagesize, count);
 
         return Page();
     }

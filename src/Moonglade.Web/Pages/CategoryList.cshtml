@@ -37,7 +37,7 @@ else
 @functions {
     [BindProperty(SupportsGet = true)]
     public int P { get; set; } = 1;
-    public BasePagedList<PostDigest> Posts { get; set; }
+    public PagedResult<PostDigest> Posts { get; set; }
     public CategoryEntity Cat { get; set; }
 
     public async Task<IActionResult> OnGetAsync(string slug)

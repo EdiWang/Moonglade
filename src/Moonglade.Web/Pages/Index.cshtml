@@ -35,7 +35,7 @@ else
 
 @functions
 {
-    public BasePagedList<PostDigest> Posts { get; set; } = new BasePagedList<PostDigest>([], 1, 1, 0);
+    public PagedResult<PostDigest> Posts { get; set; } = new PagedResult<PostDigest>([], 1, 1, 0);
 
     [FromQuery]
     public int P { get; set; } = 1;
@@ -59,7 +59,7 @@ else
             return RedirectToPage("Index", new { p = totalPages });
         }
 
-        Posts = new BasePagedList<PostDigest>(posts ?? [], p, pageSize, totalPostsCount);
+        Posts = new PagedResult<PostDigest>(posts ?? [], p, pageSize, totalPostsCount);
 
         return Page();
     }
