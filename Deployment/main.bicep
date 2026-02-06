@@ -5,12 +5,16 @@ param webAppName string
 param appServicePlanName string
 
 @description('The name of the SQL Server')
+@minLength(1)
+@maxLength(63)
 param sqlServerName string
 
 @description('The name of the SQL Database')
 param sqlDatabaseName string
 
 @description('The name of the Storage Account')
+@minLength(3)
+@maxLength(24)
 param storageAccountName string
 
 @description('SQL Server admin username')
