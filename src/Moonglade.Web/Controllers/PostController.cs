@@ -199,28 +199,35 @@ public class PostController(
     }
 
     [HttpGet("meta")]
-    [ProducesResponseType(StatusCodes.Status200OK)]
+    [ProducesResponseType<PostEditorMeta>(StatusCodes.Status200OK)]
     public async Task<IActionResult> GetMeta([FromServices] IOptions<RequestLocalizationOptions> locOptions)
     {
         var ec = configuration.GetValue<EditorChoice>("Post:Editor");
         var cats = await queryMediator.QueryAsync(new ListCategoriesQuery());
 
-        var languages = locOptions.Value.SupportedUICultures?
-            .Select(c => new { value = c.Name.ToLower(), nativeName = c.NativeName })
-            .ToList();
-
-        return Ok(new
+        var response = new PostEditorMeta
         {
-            editorChoice = ec.ToString().ToLower(),
-            defaultAuthor = blogConfig.GeneralSettings.OwnerName,
-            abstractWords = blogConfig.ContentSettings.PostAbstractWords,
-            categories = cats.Select(c => new { id = c.Id, displayName = c.DisplayName }),
-            languages
-        });
+            EditorChoice = ec.ToString().ToLower(),
+            DefaultAuthor = blogConfig.GeneralSettings.OwnerName,
+            AbstractWords = blogConfig.ContentSettings.PostAbstractWords,
+            Categories = cats.Select(c => new CategoryBrief
+            {
+                Id = c.Id,
+                DisplayName = c.DisplayName
+            }).ToList(),
+            Languages = locOptions.Value.SupportedUICultures?
+                .Select(c => new LanguageInfo
+                {
+                    Value = c.Name.ToLower(),
+                    NativeName = c.NativeName
+                }).ToList()
+        };
+
+        return Ok(response);
     }
 
     [HttpGet("{id:guid}")]
-    [ProducesResponseType(StatusCodes.Status200OK)]
+    [ProducesResponseType<PostEditDetail>(StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
     public async Task<IActionResult> GetPost([NotEmpty] Guid id)
     {
@@ -232,29 +239,29 @@ public class PostController(
             .Aggregate(string.Empty, (current, item) => current + item + ",")
             .TrimEnd(',');
 
-        var selectedCatIds = post.PostCategory.Select(pc => pc.CategoryId).ToArray();
-
-        return Ok(new
+        var response = new PostEditDetail
         {
-            postId = post.Id,
-            title = post.Title,
-            slug = post.Slug,
-            author = post.Author,
-            editorContent = post.PostContent,
-            postStatus = post.PostStatus,
-            enableComment = post.CommentEnabled,
-            feedIncluded = post.IsFeedIncluded,
-            featured = post.IsFeatured,
-            isOutdated = post.IsOutdated,
-            languageCode = post.ContentLanguageCode,
-            contentAbstract = post.ContentAbstract?.Replace("\u00A0\u2026", string.Empty),
-            keywords = post.Keywords,
-            tags = tagStr,
-            publishDate = post.PubDateUtc,
-            scheduledPublishTimeUtc = post.ScheduledPublishTimeUtc,
-            lastModifiedUtc = post.LastModifiedUtc?.ToString("u"),
-            selectedCatIds
-        });
+            PostId = post.Id,
+            Title = post.Title,
+            Slug = post.Slug,
+            Author = post.Author,
+            EditorContent = post.PostContent,
+            PostStatus = post.PostStatus,
+            EnableComment = post.CommentEnabled,
+            FeedIncluded = post.IsFeedIncluded,
+            Featured = post.IsFeatured,
+            IsOutdated = post.IsOutdated,
+            LanguageCode = post.ContentLanguageCode,
+            ContentAbstract = post.ContentAbstract?.Replace("\u00A0\u2026", string.Empty),
+            Keywords = post.Keywords,
+            Tags = tagStr,
+            PublishDate = post.PubDateUtc,
+            ScheduledPublishTimeUtc = post.ScheduledPublishTimeUtc,
+            LastModifiedUtc = post.LastModifiedUtc?.ToString("u"),
+            SelectedCatIds = post.PostCategory.Select(pc => pc.CategoryId).ToArray()
+        };
+
+        return Ok(response);
     }
 
     [HttpGet("drafts")]
