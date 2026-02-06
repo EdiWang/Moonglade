@@ -107,7 +107,7 @@ public class CommentController(
     public async Task<IActionResult> List([FromQuery] int pageIndex = 1, [FromQuery] int pageSize = 5, [FromQuery] string searchTerm = null)
     {
         var comments = await queryMediator.QueryAsync(new ListCommentsQuery(pageSize, pageIndex, searchTerm));
-        var count = await queryMediator.QueryAsync(new CountCommentsQuery());
+        var count = await queryMediator.QueryAsync(new CountCommentsQuery(searchTerm));
 
         // Convert markdown to HTML for display
         var commentsWithHtml = comments.Select(c => new
