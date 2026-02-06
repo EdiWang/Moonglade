@@ -1,4 +1,4 @@
-﻿using LiteBus.Commands.Abstractions;
+using LiteBus.Commands.Abstractions;
 using Microsoft.Extensions.Logging;
 using Moonglade.Data;
 using Moonglade.Utils;
@@ -8,7 +8,7 @@ namespace Moonglade.Features.Tag;
 public record UpdateTagCommand(int Id, string Name) : ICommand<OperationCode>;
 
 public class UpdateTagCommandHandler(
-    MoongladeRepository<TagEntity> repo,
+    IRepositoryBase<TagEntity> repo,
     ILogger<UpdateTagCommandHandler> logger) : ICommandHandler<UpdateTagCommand, OperationCode>
 {
     public async Task<OperationCode> HandleAsync(UpdateTagCommand request, CancellationToken ct)

@@ -1,6 +1,5 @@
-﻿using LiteBus.Commands.Abstractions;
+using LiteBus.Commands.Abstractions;
 using Microsoft.Extensions.Logging;
-using Moonglade.Data;
 using Moonglade.Data.Specifications;
 using Moonglade.Utils;
 
@@ -9,7 +8,7 @@ namespace Moonglade.Features.Tag;
 public record CreateTagCommand(string Name) : ICommand<TagEntity>;
 
 public class CreateTagCommandHandler(
-    MoongladeRepository<TagEntity> repo,
+    IRepositoryBase<TagEntity> repo,
     ILogger<CreateTagCommandHandler> logger) : ICommandHandler<CreateTagCommand, TagEntity>
 {
     public async Task<TagEntity> HandleAsync(CreateTagCommand request, CancellationToken ct)
