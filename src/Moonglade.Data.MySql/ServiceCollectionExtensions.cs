@@ -1,6 +1,6 @@
-﻿using Microsoft.EntityFrameworkCore;
+using Ardalis.Specification;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
-using Moonglade.Data.MySql.Infrastructure;
 
 namespace Moonglade.Data.MySql;
 
@@ -9,7 +9,7 @@ public static class ServiceCollectionExtensions
 {
     public static IServiceCollection AddMySqlStorage(this IServiceCollection services, string connectionString)
     {
-        services.AddScoped(typeof(MoongladeRepository<>), typeof(MySqlDbContextRepository<>));
+        services.AddScoped(typeof(IRepositoryBase<>), typeof(MySqlDbContextRepository<>));
 
         services.AddDbContext<BlogDbContext, MySqlBlogDbContext>(options => options
                 .UseMySQL(connectionString, builder =>

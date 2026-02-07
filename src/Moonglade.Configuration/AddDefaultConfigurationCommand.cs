@@ -1,4 +1,4 @@
-﻿using LiteBus.Commands.Abstractions;
+using LiteBus.Commands.Abstractions;
 using Microsoft.Extensions.Logging;
 using Moonglade.Data;
 using Moonglade.Data.Entities;
@@ -11,7 +11,7 @@ public record AddDefaultConfigurationCommand(
     [Required] string DefaultJson) : ICommand<OperationCode>;
 
 public class AddDefaultConfigurationCommandHandler(
-    MoongladeRepository<BlogConfigurationEntity> repository,
+    IRepositoryBase<BlogConfigurationEntity> repository,
     ILogger<AddDefaultConfigurationCommandHandler> logger
     ) : ICommandHandler<AddDefaultConfigurationCommand, OperationCode>
 {

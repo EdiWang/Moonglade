@@ -1,4 +1,5 @@
-﻿using Moonglade.Data.Entities;
+﻿using Moonglade.Data.DTO;
+using Moonglade.Data.Entities;
 
 namespace Moonglade.Data.Specifications;
 
@@ -8,7 +9,7 @@ public sealed class PostByDateAndSlugSpec : Specification<PostEntity>
     {
         Query.Where(p =>
                     p.Slug == slug &&
-                    p.PostStatus == PostStatusConstants.Published &&
+                    p.PostStatus == PostStatus.Published &&
                     p.PubDateUtc.Value.Date == date &&
                     !p.IsDeleted);
 

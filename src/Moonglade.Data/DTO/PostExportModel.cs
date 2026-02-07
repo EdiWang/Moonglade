@@ -9,7 +9,6 @@ public class PostExportModel
     public string Author { get; set; } = null!;
     public string ContentAbstract { get; set; }
     public string PostContent { get; set; } = null!;
-    public string HeroImageUrl { get; set; }
     public DateTime CreateTimeUtc { get; set; }
     public DateTime? LastModifiedUtc { get; set; }
     public DateTime? ScheduledPublishTimeUtc { get; set; }
@@ -19,7 +18,7 @@ public class PostExportModel
     public bool IsDeleted { get; set; }
     public bool IsFeedIncluded { get; set; }
     public bool IsFeatured { get; set; }
-    public string PostStatus { get; set; } = null!;
+    public PostStatus PostStatus { get; set; }
     public bool IsOutdated { get; set; }
     public string Keywords { get; set; }
     public List<string> Categories { get; set; } = [];

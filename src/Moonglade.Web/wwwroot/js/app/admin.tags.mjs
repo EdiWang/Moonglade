@@ -1,4 +1,4 @@
-import { default as Alpine } from '/lib/alpinejs/alpinejs.3.15.0.module.esm.min.js';
+import { default as Alpine } from '/lib/alpinejs/alpinejs.3.15.8.module.esm.min.js';
 import { fetch2 } from '/js/app/httpService.mjs?v=1500';
 import { success } from '/js/app/toastService.mjs';
 import { getLocalizedString } from './utils.module.mjs';
@@ -40,13 +40,13 @@ async init() {
     get activeTags() {
         return this.tags
             .filter(t => t.postCount > 0)
-            .sort((a, b) => a.tag.displayName.localeCompare(b.tag.displayName));
+            .sort((a, b) => a.displayName.localeCompare(b.displayName));
     },
 
     get inactiveTags() {
         return this.tags
             .filter(t => t.postCount === 0)
-            .sort((a, b) => a.tag.displayName.localeCompare(b.tag.displayName));
+            .sort((a, b) => a.displayName.localeCompare(b.displayName));
     },
 
     get filteredActiveTags() {
@@ -69,7 +69,7 @@ async init() {
         if (!this.tagFilter) return tagList;
         const filterLower = this.tagFilter.toLowerCase();
         return tagList.filter(t => 
-            t.tag.displayName.toLowerCase().includes(filterLower)
+            t.displayName.toLowerCase().includes(filterLower)
         );
     },
 
@@ -85,7 +85,7 @@ async init() {
     async updateTag(event, tagId) {
         const newTagName = event.target.textContent.trim();
         const originalTagName = this.originalTagNames[tagId] || 
-            this.tags.find(t => t.tag.id === tagId)?.tag.displayName || '';
+            this.tags.find(t => t.id === tagId)?.displayName || '';
 
         if (newTagName === originalTagName || !newTagName) {
             event.target.textContent = originalTagName;

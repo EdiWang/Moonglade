@@ -1,5 +1,7 @@
 ﻿@page "/post/{year:int:min(1900):length(4)}/{month:int:range(1,12)}/{day:int:range(1,31)}/{slug:regex(^(?!-)([a-zA-Z0-9-]){{1,128}}$)}"
 @model Moonglade.Web.Pages.PostModel
+@using Moonglade.Data.DTO
+@using Moonglade.Data.Specifications
 @using Moonglade.Utils
 @inject IConfiguration Configuration
 
@@ -36,7 +38,7 @@
     <meta name="copyright" content="(C) @DateTime.UtcNow.Year @BlogConfig.GeneralSettings.SiteTitle">
     <meta name="author" content="@(string.IsNullOrWhiteSpace(Model.Post.Author) ? BlogConfig.GeneralSettings.OwnerName : Model.Post.Author) " />
     <meta name="image-device-dpi" content="@BlogConfig.ImageSettings.FitImageToDevicePixelRatio.ToString().ToLower()" />
-    <meta name="post-is-published" content="@((Model.Post.PostStatus == PostStatusConstants.Published).ToString().ToLower())" />
+    <meta name="post-is-published" content="@((Model.Post.PostStatus == PostStatus.Published).ToString().ToLower())" />
     @if (BlogConfig.GeneralSettings.UseDublinCoreMetaData)
     {
         <partial name="_DublinCoreMetaData" model="Model" />
@@ -134,13 +136,6 @@
     @if (Model.Post.IsOutdated)
     {
         <partial name="_PostOutdatedMessage" />
-    }
-
-    @if (!string.IsNullOrWhiteSpace(Model.Post.HeroImageUrl))
-    {
-        <div class="post-hero-image-container text-center mb-3">
-            <img src="@Edi.AspNetCore.Utils.SecurityHelper.SterilizeLink(Model.Post.HeroImageUrl)" class="post-hero-image img-fluid rounded-3 shadow-sm" />
-        </div>
     }
 
     <section class="post-content clearfix">

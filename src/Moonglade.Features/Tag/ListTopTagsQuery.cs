@@ -1,12 +1,11 @@
-﻿using LiteBus.Queries.Abstractions;
-using Moonglade.Data;
+using LiteBus.Queries.Abstractions;
 using Moonglade.Data.Specifications;
 
 namespace Moonglade.Features.Tag;
 
 public record ListTopTagsQuery(int Top) : IQuery<List<(TagEntity Tag, int PostCount)>>;
 
-public class ListTopTagsQueryHandler(MoongladeRepository<TagEntity> repo) : IQueryHandler<ListTopTagsQuery, List<(TagEntity Tag, int PostCount)>>
+public class ListTopTagsQueryHandler(IRepositoryBase<TagEntity> repo) : IQueryHandler<ListTopTagsQuery, List<(TagEntity Tag, int PostCount)>>
 {
     public async Task<List<(TagEntity Tag, int PostCount)>> HandleAsync(ListTopTagsQuery request, CancellationToken ct)
     {

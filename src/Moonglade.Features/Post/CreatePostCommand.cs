@@ -1,8 +1,8 @@
-﻿using LiteBus.Commands.Abstractions;
+using LiteBus.Commands.Abstractions;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
 using Moonglade.Configuration;
-using Moonglade.Data;
+using Moonglade.Data.DTO;
 using Moonglade.Data.Specifications;
 using Moonglade.Utils;
 
@@ -11,8 +11,8 @@ namespace Moonglade.Features.Post;
 public record CreatePostCommand(PostEditModel Payload) : ICommand<PostEntity>;
 
 public class CreatePostCommandHandler(
-        MoongladeRepository<PostEntity> postRepo,
-        MoongladeRepository<TagEntity> tagRepo,
+        IRepositoryBase<PostEntity> postRepo,
+        IRepositoryBase<TagEntity> tagRepo,
         ILogger<CreatePostCommandHandler> logger,
         IConfiguration configuration,
         IBlogConfig blogConfig)
@@ -47,17 +47,14 @@ public class CreatePostCommandHandler(
             Title = request.Payload.Title.Trim(),
             ContentLanguageCode = request.Payload.LanguageCode,
             IsFeedIncluded = request.Payload.FeedIncluded,
-            PubDateUtc = request.Payload.PostStatus == PostStatusConstants.Published ? utcNow : null,
+            PubDateUtc = request.Payload.PostStatus == PostStatus.Published ? utcNow : null,
             ScheduledPublishTimeUtc =
-                request.Payload.PostStatus == PostStatusConstants.Scheduled ?
+                request.Payload.PostStatus == PostStatus.Scheduled ?
                 request.Payload.ScheduledPublishTime :
                 null,
             IsDeleted = false,
-            PostStatus = request.Payload.PostStatus ?? PostStatusConstants.Draft,
+            PostStatus = request.Payload.PostStatus,
             IsFeatured = request.Payload.Featured,
-            HeroImageUrl = string.IsNullOrWhiteSpace(request.Payload.HeroImageUrl)
-            ? null
-            : Edi.AspNetCore.Utils.SecurityHelper.SterilizeLink(request.Payload.HeroImageUrl),
             IsOutdated = request.Payload.IsOutdated,
         };
 

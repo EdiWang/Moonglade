@@ -16,7 +16,6 @@ public class PostEntityToPostExportModelSpec : Specification<PostEntity, PostExp
             Author = p.Author,
             ContentAbstract = p.ContentAbstract,
             PostContent = p.PostContent,
-            HeroImageUrl = p.HeroImageUrl,
             CreateTimeUtc = p.CreateTimeUtc,
             LastModifiedUtc = p.LastModifiedUtc,
             ScheduledPublishTimeUtc = p.ScheduledPublishTimeUtc,

@@ -1,6 +1,5 @@
-﻿using LiteBus.Commands.Abstractions;
+using LiteBus.Commands.Abstractions;
 using Microsoft.Extensions.Logging;
-using Moonglade.Data;
 using Moonglade.Data.Specifications;
 
 namespace Moonglade.Features.Comment;
@@ -8,7 +7,7 @@ namespace Moonglade.Features.Comment;
 public record DeleteCommentsCommand(Guid[] Ids) : ICommand;
 
 public class DeleteCommentsCommandHandler(
-    MoongladeRepository<CommentEntity> commentRepo,
+    IRepositoryBase<CommentEntity> commentRepo,
     ILogger<DeleteCommentsCommandHandler> logger) : ICommandHandler<DeleteCommentsCommand>
 {
     public async Task HandleAsync(DeleteCommentsCommand request, CancellationToken ct)

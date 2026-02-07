@@ -1,6 +1,5 @@
-﻿using LiteBus.Commands.Abstractions;
+using LiteBus.Commands.Abstractions;
 using Microsoft.Extensions.Logging;
-using Moonglade.Data;
 using Moonglade.Data.Entities;
 using Moonglade.Data.Specifications;
 using Moonglade.Utils;
@@ -12,8 +11,8 @@ public record ReceiveWebmentionCommand(string Source, string Target, string Remo
 public class ReceiveWebmentionCommandHandler(
     ILogger<ReceiveWebmentionCommandHandler> logger,
     IMentionSourceInspector sourceInspector,
-    MoongladeRepository<MentionEntity> mentionRepo,
-    MoongladeRepository<PostEntity> postRepo
+    IRepositoryBase<MentionEntity> mentionRepo,
+    IRepositoryBase<PostEntity> postRepo
     ) : ICommandHandler<ReceiveWebmentionCommand, WebmentionResponse>
 {
     private string _sourceUrl;

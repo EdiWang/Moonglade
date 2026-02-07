@@ -1,4 +1,4 @@
-import { default as Alpine } from '/lib/alpinejs/alpinejs.3.15.0.module.esm.min.js';
+import { default as Alpine } from '/lib/alpinejs/alpinejs.3.15.8.module.esm.min.js';
 import { fetch2 } from '/js/app/httpService.mjs?v=1500';
 import { formatUtcTime, getLocalizedString } from '/js/app/utils.module.mjs';
 import { success } from '/js/app/toastService.mjs';
@@ -44,7 +44,9 @@ Alpine.data('commentManager', () => ({
             }));
             this.totalRows = data.totalRows ?? 0;
             
-            formatUtcTime();
+            this.$nextTick(() => {
+                formatUtcTime();
+            });
         } finally {
             this.isLoading = false;
         }
@@ -121,7 +123,9 @@ Alpine.data('commentManager', () => ({
             comment.replies.push(reply);
             comment.showReplyForm = false;
             comment.replyContent = '';
-            formatUtcTime();
+            this.$nextTick(() => {
+                formatUtcTime();
+            });
             success('Reply posted');
         }
     },

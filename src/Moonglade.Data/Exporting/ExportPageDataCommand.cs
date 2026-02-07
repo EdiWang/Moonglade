@@ -1,11 +1,11 @@
-﻿using LiteBus.Commands.Abstractions;
+using LiteBus.Commands.Abstractions;
 using Moonglade.Data.Entities;
 
 namespace Moonglade.Data.Exporting;
 
 public record ExportPageDataCommand : ICommand<ExportResult>;
 
-public class ExportPageDataCommandHandler(MoongladeRepository<PageEntity> repo) : ICommandHandler<ExportPageDataCommand, ExportResult>
+public class ExportPageDataCommandHandler(IRepositoryBase<PageEntity> repo) : ICommandHandler<ExportPageDataCommand, ExportResult>
 {
     public Task<ExportResult> HandleAsync(ExportPageDataCommand request, CancellationToken ct)
     {

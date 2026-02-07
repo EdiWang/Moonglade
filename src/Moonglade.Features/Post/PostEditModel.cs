@@ -1,4 +1,5 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using Moonglade.Data.DTO;
+using System.ComponentModel.DataAnnotations;
 
 namespace Moonglade.Features.Post;
 
@@ -31,7 +32,7 @@ public class PostEditModel
     public string EditorContent { get; set; }
 
     [Required]
-    public string PostStatus { get; set; }
+    public PostStatus PostStatus { get; set; }
 
     [Required]
     [Display(Name = "Featured")]
@@ -72,10 +73,6 @@ public class PostEditModel
 
     [Display(Name = "Change Publish Date")]
     public bool ChangePublishDate { get; set; }
-
-    [Display(Name = "Hero Image")]
-    [DataType(DataType.Url)]
-    public string HeroImageUrl { get; set; }
 
     [Display(Name = "Mark as outdated")]
     public bool IsOutdated { get; set; }

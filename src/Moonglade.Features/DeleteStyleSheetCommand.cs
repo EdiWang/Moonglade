@@ -1,13 +1,12 @@
-﻿using LiteBus.Commands.Abstractions;
+using LiteBus.Commands.Abstractions;
 using Microsoft.Extensions.Logging;
-using Moonglade.Data;
 
 namespace Moonglade.Features;
 
 public record DeleteStyleSheetCommand(Guid Id) : ICommand;
 
 public class DeleteStyleSheetCommandHandler(
-    MoongladeRepository<StyleSheetEntity> repo,
+    IRepositoryBase<StyleSheetEntity> repo,
     ILogger<DeleteStyleSheetCommandHandler> logger
     ) : ICommandHandler<DeleteStyleSheetCommand>
 {

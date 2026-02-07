@@ -24,7 +24,7 @@ public class CommentProviderGateAttribute : ActionFilterAttribute
         }
     }
 
-    public Task HandleDisabledComment(ActionExecutingContext context)
+    public static Task HandleDisabledComment(ActionExecutingContext context)
     {
         context.Result = new StatusCodeResult(StatusCodes.Status404NotFound);
         return Task.CompletedTask;

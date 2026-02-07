@@ -1,6 +1,6 @@
-﻿using Microsoft.EntityFrameworkCore;
+using Ardalis.Specification;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
-using Moonglade.Data.PostgreSql.Infrastructure;
 
 namespace Moonglade.Data.PostgreSql;
 
@@ -8,7 +8,7 @@ public static class ServiceCollectionExtensions
 {
     public static IServiceCollection AddPostgreSqlStorage(this IServiceCollection services, string connectionString)
     {
-        services.AddScoped(typeof(MoongladeRepository<>), typeof(PostgreSqlDbContextRepository<>));
+        services.AddScoped(typeof(IRepositoryBase<>), typeof(PostgreSqlDbContextRepository<>));
 
         AppContext.SetSwitch("Npgsql.EnableLegacyTimestampBehavior", true);
         services.AddDbContext<BlogDbContext, PostgreSqlBlogDbContext>(options => options

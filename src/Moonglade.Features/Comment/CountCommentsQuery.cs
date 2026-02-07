@@ -1,11 +1,14 @@
 ﻿using LiteBus.Queries.Abstractions;
-using Moonglade.Data;
+using Moonglade.Data.Specifications;
 
 namespace Moonglade.Features.Comment;
 
-public record CountCommentsQuery : IQuery<int>;
+public record CountCommentsQuery(string SearchTerm = null) : IQuery<int>;
 
-public class CountCommentsQueryHandler(MoongladeRepository<CommentEntity> repo) : IQueryHandler<CountCommentsQuery, int>
+public class CountCommentsQueryHandler(IRepositoryBase<CommentEntity> repo) : IQueryHandler<CountCommentsQuery, int>
 {
-    public Task<int> HandleAsync(CountCommentsQuery request, CancellationToken ct) => repo.CountAsync(ct);
+    public Task<int> HandleAsync(CountCommentsQuery request, CancellationToken ct)
+    {
+        return repo.CountAsync(new CommentCountSpec(request.SearchTerm), ct);
+    }
 }

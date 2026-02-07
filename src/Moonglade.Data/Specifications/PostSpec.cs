@@ -31,7 +31,7 @@ public sealed class FeaturedPostSpec : Specification<PostEntity>
 {
     public FeaturedPostSpec()
     {
-        Query.Where(p => p.IsFeatured && p.PostStatus == PostStatusConstants.Published && !p.IsDeleted);
+        Query.Where(p => p.IsFeatured && p.PostStatus == PostStatus.Published && !p.IsDeleted);
     }
 }
 

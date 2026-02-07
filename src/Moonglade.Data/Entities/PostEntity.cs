@@ -1,4 +1,6 @@
-﻿namespace Moonglade.Data.Entities;
+﻿using Moonglade.Data.DTO;
+
+namespace Moonglade.Data.Entities;
 
 public class PostEntity
 {
@@ -24,10 +26,9 @@ public class PostEntity
     public DateTime? ScheduledPublishTimeUtc { get; set; }
     public bool IsDeleted { get; set; }
     public bool IsOutdated { get; set; }
-    public string HeroImageUrl { get; set; }
     public bool IsFeatured { get; set; }
     public string RouteLink { get; set; }
-    public string PostStatus { get; set; }
+    public PostStatus PostStatus { get; set; }
     public string Keywords { get; set; }
 
     public ICollection<CommentEntity> Comments { get; set; }

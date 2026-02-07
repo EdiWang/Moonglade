@@ -1,4 +1,4 @@
-﻿using LiteBus.Commands.Abstractions;
+using LiteBus.Commands.Abstractions;
 using Microsoft.Extensions.Logging;
 using Moonglade.Data;
 using Moonglade.Data.Entities;
@@ -9,7 +9,7 @@ namespace Moonglade.Configuration;
 public record UpdateConfigurationCommand(string Name, string Json) : ICommand<OperationCode>;
 
 public class UpdateConfigurationCommandHandler(
-    MoongladeRepository<BlogConfigurationEntity> repository,
+    IRepositoryBase<BlogConfigurationEntity> repository,
     ILogger<UpdateConfigurationCommandHandler> logger
     ) : ICommandHandler<UpdateConfigurationCommand, OperationCode>
 {

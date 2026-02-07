@@ -9,6 +9,7 @@
         <Using Include="Microsoft.AspNetCore.Mvc" />
         <Using Include="Microsoft.AspNetCore.Authorization" />
         <Using Include="Moonglade.Data.Entities" />
+        <Using Include="Ardalis.Specification" />
     </ItemGroup>
 	<ItemGroup>
 		<PackageReference Include="Edi.Captcha" Version="5.3.0" />

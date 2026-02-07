@@ -29,76 +29,6 @@ function Scramble-String([string]$inputString) {
     return $outputString 
 }
 
-function Create-ResourceGroup($rsgName, $regionName) {
-    $rsgExists = az group exists -n $rsgName
-    if ($rsgExists -eq 'false') {
-        Write-Host "Creating Resource Group"
-        az group create -l $regionName -n $rsgName | Out-Null
-    }
-}
-
-function Create-AppServicePlan($aspName, $rsgName, $regionName) {
-    $planCheck = az appservice plan list --query "[?name=='$aspName']" | ConvertFrom-Json
-    $planExists = $planCheck.Length -gt 0
-    if (!$planExists) {
-        az appservice plan create -n $aspName -g $rsgName --is-linux --sku P0V3 --location $regionName | Out-Null
-    }
-}
-
-function Create-SqlServer($sqlServerName, $rsgName, $regionName, $sqlServerUsername, $sqlServerPassword) {
-    $sqlServerCheck = az sql server list --query "[?name=='$sqlServerName']" | ConvertFrom-Json
-    $sqlServerExists = $sqlServerCheck.Length -gt 0
-    if (!$sqlServerExists) {
-        Write-Host "Creating SQL Server"
-        az sql server create --name $sqlServerName --resource-group $rsgName --location $regionName --admin-user $sqlServerUsername --admin-password $sqlServerPassword | Out-Null
-        Write-Host "SQL Server Password: $sqlServerPassword" -ForegroundColor Yellow
-        Write-Host "Setting Firewall to Allow Azure Connection"
-        az sql server firewall-rule create --resource-group $rsgName --server $sqlServerName --name AllowAllIps --start-ip-address 0.0.0.0 --end-ip-address 0.0.0.0 | Out-Null
-    }
-}
-
-function Create-SqlDatabase($sqlDatabaseName, $rsgName, $sqlServerName) {
-    $sqlDbCheck = az sql db list --resource-group $rsgName --server $sqlServerName --query "[?name=='$sqlDatabaseName']" | ConvertFrom-Json
-    $sqlDbExists = $sqlDbCheck.Length -gt 0
-    if (!$sqlDbExists) {
-        Write-Host "Creating SQL Database"
-        az sql db create --resource-group $rsgName --server $sqlServerName --name $sqlDatabaseName --service-objective S0 --backup-storage-redundancy Local | Out-Null
-    }
-}
-
-function Create-StorageAccount($storageAccountName, $rsgName, $regionName) {
-    $storageAccountCheck = az storage account list --query "[?name=='$storageAccountName']" | ConvertFrom-Json
-    $storageAccountExists = $storageAccountCheck.Length -gt 0
-    if (!$storageAccountExists) {
-        Write-Host "Creating Storage Account"
-        az storage account create --name $storageAccountName --resource-group $rsgName --location $regionName --sku Standard_LRS --kind StorageV2 --allow-blob-public-access true | Out-Null
-    }
-}
-
-function Create-WebApp($webAppName, $rsgName, $aspName, $dockerImageName) {
-    $appCheck = az webapp list --query "[?name=='$webAppName']" | ConvertFrom-Json
-    $appExists = $appCheck.Length -gt 0
-    if (!$appExists) {
-        Write-Host "Creating Web App"
-        Write-Host "Using Linux Plan with Docker image from '$dockerImageName'."
-        az webapp create -g $rsgName -p $aspName -n $webAppName --container-image-name $dockerImageName | Out-Null
-        az webapp config set -g $rsgName -n $webAppName --always-on true --use-32bit-worker-process false --http20-enabled true | Out-Null
-    }
-}
-
-function Update-WebAppConfig($webAppName, $rsgName, $sqlConnStr, $storageConn) {
-    Write-Host "Updating Configuration" -ForegroundColor Green
-    Write-Host "Setting SQL Database Connection String"
-    az webapp config connection-string set -g $rsgName -n $webAppName -t SQLAzure --settings MoongladeDatabase=$sqlConnStr
-
-    Write-Host "Adding Blob Storage Connection String"
-    $scon = $storageConn.connectionString
-
-    az webapp config appsettings set -g $rsgName -n $webAppName --settings ImageStorage__Provider=azurestorage  | Out-Null
-    az webapp config appsettings set -g $rsgName -n $webAppName --settings ImageStorage__AzureStorageSettings__ConnectionString=$scon | Out-Null
-    az webapp config appsettings set -g $rsgName -n $webAppName --settings ASPNETCORE_FORWARDEDHEADERS_ENABLED=true | Out-Null
-}
-
 # Main script starts here
 [Console]::ResetColor()
 
@@ -186,29 +116,66 @@ Read-Host -Prompt "Press [ENTER] to continue, [CTRL + C] to cancel"
 az account set --subscription $subscriptionName
 Write-Host "Selected Azure Subscription: " $subscriptionName -ForegroundColor Cyan
 
-# Create resources
-Create-ResourceGroup $rsgName $regionName
-Create-AppServicePlan $aspName $rsgName $regionName
-Create-SqlServer $sqlServerName $rsgName $regionName $sqlServerUsername $sqlServerPassword
-Create-SqlDatabase $sqlDatabaseName $rsgName $sqlServerName
-Create-StorageAccount $storageAccountName $rsgName $regionName
-
-$storageConn = az storage account show-connection-string -g $rsgName -n $storageAccountName | ConvertFrom-Json
-
-Create-WebApp $webAppName $rsgName $aspName $dockerImageName
-
-$createdApp = az webapp list --query "[?name=='$webAppName']" | ConvertFrom-Json
-$createdExists = $createdApp.Length -gt 0
-if ($createdExists) {
-    $webAppUrl = "https://" + $createdApp.defaultHostName
-    Write-Host "Web App URL: $webAppUrl"
+# Create Resource Group
+Write-Host "Creating Resource Group: $rsgName" -ForegroundColor Green
+$rsgExists = az group exists -n $rsgName
+if ($rsgExists -eq 'false') {
+    az group create -l $regionName -n $rsgName | Out-Null
 }
 
-# Update configuration
-$sqlConnStrTemplate = az sql db show-connection-string -s $sqlServerName -n $sqlDatabaseName -c ado.net --auth-type SqlPassword
-$sqlConnStr = $sqlConnStrTemplate.Replace("<username>", $sqlServerUsername).Replace("<password>", $sqlServerPassword)
-Update-WebAppConfig $webAppName $rsgName $sqlConnStr $storageConn
+# Get Bicep file path
+$bicepFilePath = Join-Path $PSScriptRoot "main.bicep"
 
+# Deploy using Bicep
+Write-Host "Deploying Azure resources using Bicep..." -ForegroundColor Green
+Write-Host "SQL Server Password: $sqlServerPassword" -ForegroundColor Yellow
+
+$deploymentName = "moonglade-deployment-$(Get-Date -Format 'yyyyMMddHHmmss')"
+
+$deploymentOutput = az deployment group create `
+    --resource-group $rsgName `
+    --name $deploymentName `
+    --template-file $bicepFilePath `
+    --parameters `
+        webAppName=$webAppName `
+        appServicePlanName=$aspName `
+        sqlServerName=$sqlServerName `
+        sqlDatabaseName=$sqlDatabaseName `
+        storageAccountName=$storageAccountName `
+        sqlAdminUsername=$sqlServerUsername `
+        sqlAdminPassword=$sqlServerPassword `
+        dockerImageName=$dockerImageName `
+        location=$regionName `
+    --output json | ConvertFrom-Json
+
+if ($null -eq $deploymentOutput) {
+    Write-Host "Deployment failed. Please check the error messages above." -ForegroundColor Red
+    return
+}
+
+Write-Host "Deployment completed successfully!" -ForegroundColor Green
+
+# Get outputs from Bicep deployment
+$webAppUrl = $deploymentOutput.properties.outputs.webAppUrl.value
+$sqlConnStr = $deploymentOutput.properties.outputs.sqlConnectionString.value
+$storageConnStr = $deploymentOutput.properties.outputs.storageAccountConnectionString.value
+
+Write-Host "Web App URL: $webAppUrl" -ForegroundColor Cyan
+
+# Update Web App Configuration
+Write-Host "Updating Web App Configuration..." -ForegroundColor Green
+
+Write-Host "Setting SQL Database Connection String"
+az webapp config connection-string set -g $rsgName -n $webAppName -t SQLAzure --settings MoongladeDatabase=$sqlConnStr | Out-Null
+
+Write-Host "Adding Blob Storage Connection String and other settings"
+az webapp config appsettings set -g $rsgName -n $webAppName --settings `
+    ImageStorage__Provider=azurestorage `
+    ImageStorage__AzureStorageSettings__ConnectionString=$storageConnStr `
+    ASPNETCORE_FORWARDEDHEADERS_ENABLED=true | Out-Null
+
+# Restart Web App
+Write-Host "Restarting Web App..." -ForegroundColor Green
 az webapp restart --name $webAppName --resource-group $rsgName | Out-Null
 
 Write-Host "Warming up the container..."

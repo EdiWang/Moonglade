@@ -12,6 +12,7 @@
     <Using Include="System.Text" />
     <Using Include="Microsoft.AspNetCore.Mvc" />
     <Using Include="Microsoft.AspNetCore.Authorization" />
+    <Using Include="Ardalis.Specification" />
   </ItemGroup>
   <ItemGroup>
     <FrameworkReference Include="Microsoft.AspNetCore.App" />

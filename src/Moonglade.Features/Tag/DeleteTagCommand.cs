@@ -1,4 +1,4 @@
-﻿using LiteBus.Commands.Abstractions;
+using LiteBus.Commands.Abstractions;
 using Microsoft.Extensions.Logging;
 using Moonglade.Data;
 using Moonglade.Data.Specifications;
@@ -8,8 +8,8 @@ namespace Moonglade.Features.Tag;
 public record DeleteTagCommand(int Id) : ICommand<OperationCode>;
 
 public class DeleteTagCommandHandler(
-    MoongladeRepository<TagEntity> tagRepo,
-    MoongladeRepository<PostTagEntity> postTagRepo,
+    IRepositoryBase<TagEntity> tagRepo,
+    IRepositoryBase<PostTagEntity> postTagRepo,
     ILogger<DeleteTagCommandHandler> logger)
     : ICommandHandler<DeleteTagCommand, OperationCode>
 {

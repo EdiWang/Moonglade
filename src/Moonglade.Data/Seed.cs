@@ -1,4 +1,5 @@
 ﻿using Microsoft.Extensions.Logging;
+using Moonglade.Data.DTO;
 using Moonglade.Data.Entities;
 using System.Globalization;
 
@@ -38,7 +39,7 @@ public class Seed
                 CommentEnabled = true,
                 CreateTimeUtc = DateTime.UtcNow,
                 ContentAbstract = "Moonglade is a personal blogging platform built for developers, optimized for seamless deployment on Microsoft Azure. It features essential blogging tools: posts, comments, categories, tags, archives, and pages.",
-                PostStatus = PostStatusConstants.Published,
+                PostStatus = PostStatus.Published,
                 IsFeatured = true,
                 IsFeedIncluded = true,
                 LastModifiedUtc = DateTime.UtcNow,

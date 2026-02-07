@@ -1,5 +1,4 @@
-﻿using LiteBus.Queries.Abstractions;
-using Moonglade.Data;
+using LiteBus.Queries.Abstractions;
 using Moonglade.Data.Entities;
 using System.Text.Json;
 
@@ -7,7 +6,7 @@ namespace Moonglade.Theme;
 
 public record GetSiteThemeStyleSheetQuery(int Id) : IQuery<string>;
 
-public class GetStyleSheetQueryHandler(MoongladeRepository<BlogThemeEntity> repo)
+public class GetStyleSheetQueryHandler(IRepositoryBase<BlogThemeEntity> repo)
     : IQueryHandler<GetSiteThemeStyleSheetQuery, string>
 {
     private const int SystemThemeStartId = 100;

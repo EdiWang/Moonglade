@@ -1,6 +1,4 @@
-﻿using Ardalis.Specification;
 using LiteBus.Queries.Abstractions;
-using Moonglade.Data;
 using Moonglade.Data.DTO;
 using Moonglade.Data.Specifications;
 using Moonglade.Utils;
@@ -17,7 +15,7 @@ public class ListPostsQuery(int pageSize, int pageIndex, Guid? catId = null)
     public Guid? CatId { get; set; } = catId;
 }
 
-public class ListPostsQueryHandler(MoongladeRepository<PostEntity> repo) : IQueryHandler<ListPostsQuery, List<PostDigest>>
+public class ListPostsQueryHandler(IRepositoryBase<PostEntity> repo) : IQueryHandler<ListPostsQuery, List<PostDigest>>
 {
     public Task<List<PostDigest>> HandleAsync(ListPostsQuery request, CancellationToken ct)
     {

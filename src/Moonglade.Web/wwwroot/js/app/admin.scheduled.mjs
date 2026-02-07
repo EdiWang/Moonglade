@@ -1,4 +1,4 @@
-import { default as Alpine } from '/lib/alpinejs/alpinejs.3.15.0.module.esm.min.js';
+import { default as Alpine } from '/lib/alpinejs/alpinejs.3.15.8.module.esm.min.js';
 import { fetch2 } from '/js/app/httpService.mjs?v=1500';
 import { formatUtcTime, getLocalizedString } from './utils.module.mjs';
 import { success } from '/js/app/toastService.mjs';
@@ -11,11 +11,14 @@ Alpine.data('scheduledManager', () => ({
     deleteTargetId: null,
     deleteMessage: '',
     deleteModal: null,
+    cancelScheduleModal: null,
+    cancelScheduleTargetId: null,
 
     async init() {
         await this.loadPosts();
         this.initModal();
         this.initDeleteModal();
+        this.initCancelScheduleModal();
     },
 
     initModal() {
@@ -29,6 +32,13 @@ Alpine.data('scheduledManager', () => ({
         const modalElement = document.getElementById('deletePostModal');
         if (modalElement && typeof bootstrap !== 'undefined') {
             this.deleteModal = new bootstrap.Modal(modalElement);
+        }
+    },
+
+    initCancelScheduleModal() {
+        const modalElement = document.getElementById('cancelScheduleModal');
+        if (modalElement && typeof bootstrap !== 'undefined') {
+            this.cancelScheduleModal = new bootstrap.Modal(modalElement);
         }
     },
 
@@ -80,10 +90,24 @@ Alpine.data('scheduledManager', () => ({
 
     async postponePost(postId) {
         const hours = 24;
-        await fetch2(`/api/post/${postId}/postpone?hours=${hours}`, 'PUT');
+        await fetch2(`/api/schedule/${postId}/postpone?hours=${hours}`, 'PUT');
         const template = getLocalizedString('postPostponed');
         success(template.replace('{0}', hours));
         setTimeout(async () => await this.loadPosts(), 500);
+    },
+
+    showCancelScheduleModal(postId) {
+        this.cancelScheduleTargetId = postId;
+        this.cancelScheduleModal?.show();
+    },
+
+    async confirmCancelSchedule() {
+        if (!this.cancelScheduleTargetId) return;
+        await fetch2(`/api/schedule/${this.cancelScheduleTargetId}/cancel`, 'PUT');
+        this.posts = this.posts.filter(p => p.id !== this.cancelScheduleTargetId);
+        success(getLocalizedString('scheduleCancelled'));
+        this.cancelScheduleModal?.hide();
+        this.cancelScheduleTargetId = null;
     },
 
     parseUtcSafe(dateString) {

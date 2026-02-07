@@ -1,6 +1,5 @@
-﻿using LiteBus.Commands.Abstractions;
+using LiteBus.Commands.Abstractions;
 using Microsoft.Extensions.Logging;
-using Moonglade.Data;
 using Moonglade.Data.Specifications;
 
 namespace Moonglade.Features.Comment;
@@ -8,7 +7,7 @@ namespace Moonglade.Features.Comment;
 public record ToggleApprovalCommand(Guid[] CommentIds) : ICommand;
 
 public class ToggleApprovalCommandHandler(
-    MoongladeRepository<CommentEntity> repo,
+    IRepositoryBase<CommentEntity> repo,
     ILogger<ToggleApprovalCommandHandler> logger) : ICommandHandler<ToggleApprovalCommand>
 {
     public async Task HandleAsync(ToggleApprovalCommand request, CancellationToken ct)

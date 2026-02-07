@@ -1,6 +1,8 @@
 ﻿using LiteBus.Commands.Abstractions;
 using LiteBus.Queries.Abstractions;
-using Moonglade.Data.Specifications;
+using Microsoft.Extensions.Options;
+using Moonglade.Data.DTO;
+using Moonglade.Features.Category;
 using Moonglade.Features.Post;
 using Moonglade.IndexNow.Client;
 using Moonglade.Web.BackgroundServices;
@@ -58,7 +60,7 @@ public class PostController(
                 model.PublishDate = model.PublishDate.Value;
             }
 
-            if (model.PostStatus == PostStatusConstants.Scheduled && model.ScheduledPublishTime.HasValue)
+            if (model.PostStatus == PostStatus.Scheduled && model.ScheduledPublishTime.HasValue)
             {
                 if (string.IsNullOrWhiteSpace(model.ClientTimeZoneId))
                 {
@@ -75,7 +77,7 @@ public class PostController(
                     // return Conflict("Scheduled publish time must be in the future.");
 
                     // Instead of throwing error, just publish the post right away!
-                    model.PostStatus = PostStatusConstants.Published;
+                    model.PostStatus = PostStatus.Published;
                     model.ScheduledPublishTime = null;
                 }
                 else
@@ -94,7 +96,7 @@ public class PostController(
 
             cache.Remove(BlogCachePartition.Post.ToString(), postEntity.RouteLink);
 
-            if (model.PostStatus != PostStatusConstants.Published)
+            if (model.PostStatus != PostStatus.Published)
             {
                 return Ok(new { PostId = postEntity.Id });
             }
@@ -175,14 +177,6 @@ public class PostController(
         return NoContent();
     }
 
-    [HttpPut("{postId:guid}/postpone")]
-    [ProducesResponseType(StatusCodes.Status204NoContent)]
-    public async Task<IActionResult> Postpone([NotEmpty] Guid postId, [FromQuery][Range(1, 24)] int hours = 24)
-    {
-        await commandMediator.SendAsync(new PostponePostCommand(postId, hours));
-        return NoContent();
-    }
-
     [IgnoreAntiforgeryToken]
     [HttpPost("keep-alive")]
     [ProducesResponseType(StatusCodes.Status200OK)]
@@ -193,6 +187,72 @@ public class PostController(
             ServerTime = DateTime.UtcNow,
             Nonce = nonce
         });
+    }
+
+    [HttpGet("meta")]
+    [ProducesResponseType<PostEditorMeta>(StatusCodes.Status200OK)]
+    public async Task<IActionResult> GetMeta([FromServices] IOptions<RequestLocalizationOptions> locOptions)
+    {
+        var ec = configuration.GetValue<EditorChoice>("Post:Editor");
+        var cats = await queryMediator.QueryAsync(new ListCategoriesQuery());
+
+        var response = new PostEditorMeta
+        {
+            EditorChoice = ec.ToString().ToLower(),
+            DefaultAuthor = blogConfig.GeneralSettings.OwnerName,
+            AbstractWords = blogConfig.ContentSettings.PostAbstractWords,
+            Categories = cats.Select(c => new CategoryBrief
+            {
+                Id = c.Id,
+                DisplayName = c.DisplayName
+            }).ToList(),
+            Languages = locOptions.Value.SupportedUICultures?
+                .Select(c => new LanguageInfo
+                {
+                    Value = c.Name.ToLower(),
+                    NativeName = c.NativeName
+                }).ToList()
+        };
+
+        return Ok(response);
+    }
+
+    [HttpGet("{id:guid}")]
+    [ProducesResponseType<PostEditDetail>(StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status404NotFound)]
+    public async Task<IActionResult> GetPost([NotEmpty] Guid id)
+    {
+        var post = await queryMediator.QueryAsync(new GetPostByIdQuery(id));
+        if (post == null) return NotFound();
+
+        var tagStr = post.Tags
+            .Select(p => p.DisplayName)
+            .Aggregate(string.Empty, (current, item) => current + item + ",")
+            .TrimEnd(',');
+
+        var response = new PostEditDetail
+        {
+            PostId = post.Id,
+            Title = post.Title,
+            Slug = post.Slug,
+            Author = post.Author,
+            EditorContent = post.PostContent,
+            PostStatus = post.PostStatus,
+            EnableComment = post.CommentEnabled,
+            FeedIncluded = post.IsFeedIncluded,
+            Featured = post.IsFeatured,
+            IsOutdated = post.IsOutdated,
+            LanguageCode = post.ContentLanguageCode,
+            ContentAbstract = post.ContentAbstract?.Replace("\u00A0\u2026", string.Empty),
+            Keywords = post.Keywords,
+            Tags = tagStr,
+            PublishDate = post.PubDateUtc,
+            ScheduledPublishTimeUtc = post.ScheduledPublishTimeUtc,
+            LastModifiedUtc = post.LastModifiedUtc?.ToString("u"),
+            SelectedCatIds = post.PostCategory.Select(pc => pc.CategoryId).ToArray()
+        };
+
+        return Ok(response);
     }
 
     [HttpGet("drafts")]

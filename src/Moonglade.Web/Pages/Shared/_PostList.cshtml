@@ -1,16 +1,13 @@
 ﻿@using Moonglade.Data.DTO
-@using Moonglade.Web.PagedList
-@model BasePagedList<PostDigest>
+@model PagedResult<PostDigest>
 @inject IConfiguration Configuration
 
-@foreach (var item in Model)
+@foreach (var item in Model.Items)
 {
     <partial name="_PostListEntry" model="item" />
 }
 
-
-@Html.PagedListPager(Model, page => $"?p={page}", new()
-{
-    UlElementClasses = ["pagination justify-content-end"],
-    MaximumPageNumbersToDisplay = int.Parse(Configuration["Post:MaximumPageNumbersToDisplay"])
-})
+@{
+    var maxPageNumbers = int.Parse(Configuration["Post:MaximumPageNumbersToDisplay"]);
+}
+<partial name="_Pager" model="new PagerModel(Model.PageNumber, Model.PageCount, maxPageNumbers)" />

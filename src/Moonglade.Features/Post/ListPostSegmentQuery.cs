@@ -1,6 +1,4 @@
-﻿using Ardalis.Specification;
 using LiteBus.Queries.Abstractions;
-using Moonglade.Data;
 using Moonglade.Data.DTO;
 using Moonglade.Data.Specifications;
 
@@ -18,7 +16,7 @@ public class ListPostSegmentQuery(PostStatus postStatus, int offset, int pageSiz
     public string Keyword { get; set; } = keyword;
 }
 
-public class ListPostSegmentQueryHandler(MoongladeRepository<PostEntity> repo) :
+public class ListPostSegmentQueryHandler(IRepositoryBase<PostEntity> repo) :
     IQueryHandler<ListPostSegmentQuery, (List<PostSegment> Posts, int TotalRows)>
 {
     public async Task<(List<PostSegment> Posts, int TotalRows)> HandleAsync(ListPostSegmentQuery request, CancellationToken ct)

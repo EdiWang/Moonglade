@@ -1,5 +1,5 @@
-﻿using LiteBus.Queries.Abstractions;
-using Moonglade.Data;
+using LiteBus.Queries.Abstractions;
+using Moonglade.Data.DTO;
 using Moonglade.Data.Specifications;
 
 namespace Moonglade.Features.Post;
@@ -15,9 +15,9 @@ public enum CountType
 public record CountPostQuery(CountType CountType, Guid? CatId = null, int? TagId = null) : IQuery<int>;
 
 public class CountPostQueryHandler(
-    MoongladeRepository<PostEntity> postRepo,
-    MoongladeRepository<PostTagEntity> postTagRepo,
-    MoongladeRepository<PostCategoryEntity> postCatRepo)
+    IRepositoryBase<PostEntity> postRepo,
+    IRepositoryBase<PostTagEntity> postTagRepo,
+    IRepositoryBase<PostCategoryEntity> postCatRepo)
     : IQueryHandler<CountPostQuery, int>
 {
     public async Task<int> HandleAsync(CountPostQuery request, CancellationToken ct)

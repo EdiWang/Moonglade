@@ -1,12 +1,11 @@
-﻿using LiteBus.Queries.Abstractions;
-using Moonglade.Data;
+using LiteBus.Queries.Abstractions;
 using Moonglade.Data.Specifications;
 
 namespace Moonglade.Features.Page;
 
 public record GetPageBySlugQuery(string Slug) : IQuery<PageEntity>;
 
-public class GetPageBySlugQueryHandler(MoongladeRepository<PageEntity> repo) : IQueryHandler<GetPageBySlugQuery, PageEntity>
+public class GetPageBySlugQueryHandler(IRepositoryBase<PageEntity> repo) : IQueryHandler<GetPageBySlugQuery, PageEntity>
 {
     public async Task<PageEntity> HandleAsync(GetPageBySlugQuery request, CancellationToken ct)
     {

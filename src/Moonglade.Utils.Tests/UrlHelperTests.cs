@@ -1,4 +1,4 @@
-using Microsoft.AspNetCore.Http;
+ï»¿using Microsoft.AspNetCore.Http;
 using System.Globalization;
 
 namespace Moonglade.Utils.Tests;
@@ -410,15 +410,15 @@ public class UrlHelperTests
     [Fact]
     public void UrlHelper_AllMethods_HandleUnicodeCharactersCorrectly()
     {
-        // Test GenerateRouteLink with unicode
-        var unicodeSlug = "²âÊÔ-post";
+        // Test GenerateRouteLink with unicode - slug should be lowercased
+        var unicodeSlug = "Â²Ã¢ÃŠÃ”-post";
         var publishDate = new DateTime(2023, 12, 25);
         var routeResult = UrlHelper.GenerateRouteLink(publishDate, unicodeSlug);
-        Assert.Equal("2023/12/25/²âÊÔ-post", routeResult);
+        Assert.Equal("2023/12/25/Â²Ã¢ÃªÃ´-post", routeResult);
 
         // Test ResolveCanonicalUrl with unicode path
-        var canonicalResult = UrlHelper.ResolveCanonicalUrl("https://example.com", "²âÊÔ/path");
-        Assert.Equal("https://example.com/²âÊÔ/path", canonicalResult);
+        var canonicalResult = UrlHelper.ResolveCanonicalUrl("https://example.com", "Â²Ã¢ÃŠÃ”/path");
+        Assert.Equal("https://example.com/Â²Ã¢ÃŠÃ”/path", canonicalResult);
     }
 
     [Fact]

@@ -1,4 +1,4 @@
-﻿using LiteBus.Commands.Abstractions;
+using LiteBus.Commands.Abstractions;
 using Microsoft.Extensions.Logging;
 using Moonglade.Data;
 
@@ -10,7 +10,7 @@ public class UpdateCategoryCommand : CreateCategoryCommand, ICommand<OperationCo
 }
 
 public class UpdateCategoryCommandHandler(
-    MoongladeRepository<CategoryEntity> repo,
+    IRepositoryBase<CategoryEntity> repo,
     ILogger<UpdateCategoryCommandHandler> logger) : ICommandHandler<UpdateCategoryCommand, OperationCode>
 {
     public async Task<OperationCode> HandleAsync(UpdateCategoryCommand request, CancellationToken ct)

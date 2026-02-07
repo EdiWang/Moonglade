@@ -55,23 +55,23 @@
                 @SharedLocalizer["No active tags found"]
             </div>
             <ul x-show="hasActiveTags" class="list-unstyled ul-tag-mgr" role="list">
-                <template x-for="tagItem in filteredActiveTags" :key="tagItem.tag.id">
-                    <li :id="`li-tag-${tagItem.tag.id}`" class="admin-tag-item border rounded me-1">
+                <template x-for="tagItem in filteredActiveTags" :key="tagItem.id">
+                    <li :id="`li-tag-${tagItem.id}`" class="admin-tag-item border rounded me-1">
                         <span class="span-tagcontent-editable"
                               contenteditable="true"
                               spellcheck="false"
-                              :data-tagid="tagItem.tag.id"
-                              x-on:blur="updateTag($event, tagItem.tag.id)"
-                              :aria-label="`@SharedLocalizer["Edit tag"]` + ' ' + tagItem.tag.displayName"
-                              x-text="tagItem.tag.displayName">
+                              :data-tagid="tagItem.id"
+                              x-on:blur="updateTag($event, tagItem.id)"
+                              :aria-label="`@SharedLocalizer["Edit tag"]` + ' ' + tagItem.displayName"
+                              x-text="tagItem.displayName">
                         </span>
                         <span class="tag-postcount"
                               :title="`${tagItem.postCount} @SharedLocalizer["posts"]`"
                               x-text="tagItem.postCount">
                         </span>
                         <a class="btn-delete"
-                           x-on:click="deleteTag(tagItem.tag.id, tagItem.tag.displayName)"
-                           :aria-label="`@SharedLocalizer["Delete tag"]` + ' ' + tagItem.tag.displayName"
+                           x-on:click="deleteTag(tagItem.id, tagItem.displayName)"
+                           :aria-label="`@SharedLocalizer["Delete tag"]` + ' ' + tagItem.displayName"
                            title="@SharedLocalizer["Delete tag"]"
                            role="button">
                             <i class="bi-trash"></i>
@@ -88,19 +88,19 @@
                 @SharedLocalizer["No unused tags - all tags are being used!"]
             </div>
             <ul x-show="hasInactiveTags" class="list-unstyled ul-tag-mgr" role="list">
-                <template x-for="tagItem in filteredInactiveTags" :key="tagItem.tag.id">
-                    <li :id="`li-tag-${tagItem.tag.id}`" class="admin-tag-item border rounded opacity-75">
+                <template x-for="tagItem in filteredInactiveTags" :key="tagItem.id">
+                    <li :id="`li-tag-${tagItem.id}`" class="admin-tag-item border rounded opacity-75">
                         <span class="span-tagcontent-editable"
                               contenteditable="true"
                               spellcheck="false"
-                              :data-tagid="tagItem.tag.id"
-                              x-on:blur="updateTag($event, tagItem.tag.id)"
-                              :aria-label="`@SharedLocalizer["Edit tag"]` + ' ' + tagItem.tag.displayName"
-                              x-text="tagItem.tag.displayName">
+                              :data-tagid="tagItem.id"
+                              x-on:blur="updateTag($event, tagItem.id)"
+                              :aria-label="`@SharedLocalizer["Edit tag"]` + ' ' + tagItem.displayName"
+                              x-text="tagItem.displayName">
                         </span>
                         <a class="btn-delete"
-                           x-on:click="deleteTag(tagItem.tag.id, tagItem.tag.displayName)"
-                           :aria-label="`@SharedLocalizer["Delete tag"]` + ' ' + tagItem.tag.displayName"
+                           x-on:click="deleteTag(tagItem.id, tagItem.displayName)"
+                           :aria-label="`@SharedLocalizer["Delete tag"]` + ' ' + tagItem.displayName"
                            title="@SharedLocalizer["Delete tag"]"
                            role="button">
                             <i class="bi-trash"></i>

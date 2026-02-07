@@ -2,9 +2,9 @@
 
 namespace Moonglade.Data.Specifications;
 
-public sealed class TagDisplayNameNameSpec : Specification<TagEntity, string>
+public sealed class TagDisplayNameSpec : Specification<TagEntity, string>
 {
-    public TagDisplayNameNameSpec()
+    public TagDisplayNameSpec()
     {
         Query.Select(t => t.DisplayName);
     }

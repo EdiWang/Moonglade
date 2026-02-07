@@ -8,7 +8,7 @@ namespace Moonglade.Widgets;
 public record UpdateWidgetCommand(Guid Id, EditWidgetRequest Payload) : ICommand<OperationCode>;
 
 public class UpdateWidgetCommandHandler(
-    MoongladeRepository<WidgetEntity> widgetRepo,
+    IRepositoryBase<WidgetEntity> widgetRepo,
     ILogger<UpdateWidgetCommandHandler> logger) : ICommandHandler<UpdateWidgetCommand, OperationCode>
 {
     public async Task<OperationCode> HandleAsync(UpdateWidgetCommand request, CancellationToken ct)

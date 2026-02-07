@@ -2,7 +2,7 @@ using LiteBus.Commands.Abstractions;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
 using Moonglade.Configuration;
-using Moonglade.Data;
+using Moonglade.Data.DTO;
 using Moonglade.Data.Specifications;
 using Moonglade.Utils;
 
@@ -10,8 +10,8 @@ namespace Moonglade.Features.Post;
 
 public record UpdatePostCommand(Guid Id, PostEditModel Payload) : ICommand<PostEntity>;
 public class UpdatePostCommandHandler(
-    MoongladeRepository<TagEntity> tagRepo,
-    MoongladeRepository<PostEntity> postRepo,
+    IRepositoryBase<TagEntity> tagRepo,
+    IRepositoryBase<PostEntity> postRepo,
     IBlogConfig blogConfig,
     IConfiguration configuration,
     ILogger<UpdatePostCommandHandler> logger) : ICommandHandler<UpdatePostCommand, PostEntity>
@@ -81,23 +81,23 @@ public class UpdatePostCommandHandler(
 
         // Only publish the post if it was not yet published
         // Otherwise, updating existing post will result in changing publish date and break the slug URL
-        if (post.PostStatus != PostStatusConstants.Published &&
-            postEditModel.PostStatus == PostStatusConstants.Published)
+        if (post.PostStatus != PostStatus.Published &&
+            postEditModel.PostStatus == PostStatus.Published)
         {
-            post.PostStatus = PostStatusConstants.Published;
+            post.PostStatus = PostStatus.Published;
             post.PubDateUtc = utcNow;
         }
 
-        if (postEditModel.PostStatus == PostStatusConstants.Scheduled)
+        if (postEditModel.PostStatus == PostStatus.Scheduled)
         {
-            post.PostStatus = PostStatusConstants.Scheduled;
+            post.PostStatus = PostStatus.Scheduled;
             post.ScheduledPublishTimeUtc = postEditModel.ScheduledPublishTime;
         }
 
         // Back to draft for unscheduled posts
-        if (postEditModel.PostStatus == PostStatusConstants.Draft)
+        if (postEditModel.PostStatus == PostStatus.Draft)
         {
-            post.PostStatus = PostStatusConstants.Draft;
+            post.PostStatus = PostStatus.Draft;
             post.PubDateUtc = null;
             post.ScheduledPublishTimeUtc = null;
             post.RouteLink = null;
@@ -118,9 +118,6 @@ public class UpdatePostCommandHandler(
         post.IsFeedIncluded = postEditModel.FeedIncluded;
         post.ContentLanguageCode = postEditModel.LanguageCode;
         post.IsFeatured = postEditModel.Featured;
-        post.HeroImageUrl = string.IsNullOrWhiteSpace(postEditModel.HeroImageUrl)
-            ? null
-            : Edi.AspNetCore.Utils.SecurityHelper.SterilizeLink(postEditModel.HeroImageUrl);
         post.IsOutdated = postEditModel.IsOutdated;
         post.RouteLink = UrlHelper.GenerateRouteLink(post.PubDateUtc.GetValueOrDefault(), postEditModel.Slug);
         post.Keywords = ContentProcessor.GetKeywords(postEditModel.Keywords);

@@ -1,4 +1,5 @@
-﻿using Moonglade.Data.Entities;
+﻿using Moonglade.Data.DTO;
+using Moonglade.Data.Entities;
 
 namespace Moonglade.Data.Specifications;
 
@@ -8,7 +9,7 @@ public sealed class PostByCatSpec : Specification<PostEntity>
     {
         Query.Where(p =>
                     !p.IsDeleted &&
-                    p.PostStatus == PostStatusConstants.Published &&
+                    p.PostStatus == PostStatus.Published &&
                     p.IsFeedIncluded &&
                     (categoryId == null || p.PostCategory.Any(c => c.CategoryId == categoryId.Value)));
 

@@ -1,13 +1,12 @@
-﻿using LiteBus.Commands.Abstractions;
+using LiteBus.Commands.Abstractions;
 using Microsoft.Extensions.Logging;
-using Moonglade.Data;
 
 namespace Moonglade.Features.Page;
 
 public record UpdatePageCommand(Guid Id, EditPageRequest Payload) : ICommand<Guid>;
 
 public class UpdatePageCommandHandler(
-    MoongladeRepository<PageEntity> repo,
+    IRepositoryBase<PageEntity> repo,
     ICommandMediator commandMediator,
     ILogger<UpdatePageCommandHandler> logger) : ICommandHandler<UpdatePageCommand, Guid>
 {

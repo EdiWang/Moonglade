@@ -1,6 +1,5 @@
-﻿using LiteBus.Commands.Abstractions;
+using LiteBus.Commands.Abstractions;
 using Microsoft.Extensions.Logging;
-using Moonglade.Data;
 using System.Security.Cryptography;
 
 namespace Moonglade.Features;
@@ -8,7 +7,7 @@ namespace Moonglade.Features;
 public record SaveStyleSheetCommand(Guid Id, string Slug, string CssContent) : ICommand<Guid>;
 
 public class SaveStyleSheetCommandHandler(
-    MoongladeRepository<StyleSheetEntity> repo,
+    IRepositoryBase<StyleSheetEntity> repo,
     ILogger<SaveStyleSheetCommandHandler> logger
 ) : ICommandHandler<SaveStyleSheetCommand, Guid>
 {

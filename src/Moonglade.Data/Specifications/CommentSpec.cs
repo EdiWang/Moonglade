@@ -19,6 +19,14 @@ public sealed class CommentPagingSepc : Specification<CommentEntity>
     }
 }
 
+public sealed class CommentCountSpec : Specification<CommentEntity>
+{
+    public CommentCountSpec(string keyword)
+    {
+        Query.Where(p => null == keyword || p.Username.Contains(keyword) || p.Email.Contains(keyword));
+    }
+}
+
 public sealed class CommentByIdsSepc : Specification<CommentEntity>
 {
     public CommentByIdsSepc(Guid[] ids)

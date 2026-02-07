@@ -8,7 +8,7 @@ namespace Moonglade.Widgets;
 public record DeleteWidgetCommand(Guid Id) : ICommand<OperationCode>;
 
 public class DeleteWidgetCommandHandler(
-    MoongladeRepository<WidgetEntity> widgetRepo,
+    IRepositoryBase<WidgetEntity> widgetRepo,
     ILogger<DeleteWidgetCommandHandler> logger) : ICommandHandler<DeleteWidgetCommand, OperationCode>
 {
     public async Task<OperationCode> HandleAsync(DeleteWidgetCommand request, CancellationToken ct)

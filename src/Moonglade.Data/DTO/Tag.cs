@@ -1,8 +1,8 @@
 ﻿namespace Moonglade.Data.DTO;
 
-public class Tag
+public record Tag
 {
-    public string DisplayName { get; set; }
+    public string DisplayName { get; init; }
 
-    public string NormalizedName { get; set; }
+    public string NormalizedName { get; init; }
 }
