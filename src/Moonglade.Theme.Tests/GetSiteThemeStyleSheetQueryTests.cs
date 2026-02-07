@@ -111,7 +111,7 @@ public class GetSiteThemeStyleSheetQueryTests
     {
         // Arrange - System themes are 100-109 (10 themes)
         var systemThemes = ThemeFactory.GetSystemThemes().ToList();
-        
+
         // Act & Assert
         foreach (var theme in systemThemes)
         {

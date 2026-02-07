@@ -177,24 +177,6 @@ public class PostController(
         return NoContent();
     }
 
-    [HttpPut("{postId:guid}/schedule/cancel")]
-    [ProducesResponseType(StatusCodes.Status204NoContent)]
-    public async Task<IActionResult> CancelSchedule([NotEmpty] Guid postId)
-    {
-        await commandMediator.SendAsync(new CancelScheduleCommand(postId));
-        cache.Remove(BlogCachePartition.Post.ToString(), postId.ToString());
-
-        return NoContent();
-    }
-
-    [HttpPut("{postId:guid}/postpone")]
-    [ProducesResponseType(StatusCodes.Status204NoContent)]
-    public async Task<IActionResult> Postpone([NotEmpty] Guid postId, [FromQuery][Range(1, 24)] int hours = 24)
-    {
-        await commandMediator.SendAsync(new PostponePostCommand(postId, hours));
-        return NoContent();
-    }
-
     [IgnoreAntiforgeryToken]
     [HttpPost("keep-alive")]
     [ProducesResponseType(StatusCodes.Status200OK)]

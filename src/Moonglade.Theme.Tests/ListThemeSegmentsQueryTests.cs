@@ -96,13 +96,13 @@ public class ListThemeSegmentsQueryTests
 
         // Assert
         Assert.NotNull(result);
-        
+
         // First 10 should be system themes
         for (int i = 0; i < 10; i++)
         {
             Assert.Equal(ThemeType.System, result[i].ThemeType);
         }
-        
+
         // 11th should be custom theme
         Assert.Equal(ThemeType.User, result[10].ThemeType);
         Assert.Equal("Custom Theme", result[10].ThemeName);
@@ -123,7 +123,7 @@ public class ListThemeSegmentsQueryTests
         // Assert
         var expectedIds = new[] { 100, 101, 102, 103, 104, 105, 106, 107, 108, 109 };
         var actualIds = result.Select(t => t.Id).ToArray();
-        
+
         Assert.Equal(expectedIds, actualIds);
     }
 
@@ -212,7 +212,7 @@ public class ListThemeSegmentsQueryTests
 
         // Assert
         Assert.Equal(15, result.Count); // 10 system + 5 custom
-        
+
         // Verify all custom themes are present
         for (int i = 1; i <= 5; i++)
         {
