@@ -44,5 +44,6 @@
     <Project Path="Moonglade.Theme.Tests/Moonglade.Theme.Tests.csproj" />
     <Project Path="Moonglade.Utils.Tests/Moonglade.Utils.Tests.csproj" />
     <Project Path="Moonglade.Web.Middleware.Tests/Moonglade.Web.Middleware.Tests.csproj" />
+    <Project Path="Moonglade.Webmention.Tests/Moonglade.Webmention.Tests.csproj" Id="bf77741b-b5f0-431c-bb44-0dbf1ab337a9" />
   </Folder>
 </Solution>
