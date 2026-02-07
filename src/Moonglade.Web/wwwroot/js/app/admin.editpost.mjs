@@ -1,4 +1,4 @@
-import { default as Alpine } from '/lib/alpinejs/alpinejs.3.15.0.module.esm.min.js';
+import { default as Alpine } from '/lib/alpinejs/alpinejs.3.15.8.module.esm.min.js';
 import { fetch2 } from './httpService.mjs?v=1500';
 import { success, error } from './toastService.mjs';
 import { loadTinyMCE, keepAlive } from './admin.editor.module.mjs';
