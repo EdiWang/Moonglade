@@ -16,8 +16,16 @@ public class CancelScheduleCommandHandler(
         var post = await repo.GetByIdAsync(request.Id, ct);
         if (null == post) return;
 
+        if (post.PostStatus != PostStatus.Scheduled)
+        {
+            logger.LogWarning("Post [{PostId}] is not scheduled, cannot cancel schedule", request.Id);
+            return;
+        }
+
         post.PostStatus = PostStatus.Draft;
         post.ScheduledPublishTimeUtc = null;
+        post.RouteLink = null;
+        post.PubDateUtc = null;
         post.LastModifiedUtc = DateTime.UtcNow;
 
         await repo.UpdateAsync(post, ct);
