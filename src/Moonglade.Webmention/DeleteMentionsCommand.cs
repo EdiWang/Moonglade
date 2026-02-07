@@ -1,5 +1,6 @@
 using LiteBus.Commands.Abstractions;
 using Moonglade.Data.Entities;
+using Moonglade.Data.Specifications;
 
 namespace Moonglade.Webmention;
 
@@ -15,17 +16,9 @@ public class DeleteMentionsCommandHandler(IRepositoryBase<MentionEntity> repo) :
         }
 
         var entities = await repo.ListAsync(new MentionByIdsSpec(request.Ids), ct);
-        if (entities.Any())
+        if (entities.Count != 0)
         {
             await repo.DeleteRangeAsync(entities, ct);
         }
-    }
-}
-
-public class MentionByIdsSpec : Specification<MentionEntity>
-{
-    public MentionByIdsSpec(List<Guid> ids)
-    {
-        Query.Where(m => ids.Contains(m.Id));
     }
 }
