@@ -32,9 +32,6 @@ public class ImageSettings : IBlogSettings, IValidatableObject
     [Range(0, int.MaxValue)]
     public int WatermarkSkipPixel { get; set; } = 40000;
 
-    [Display(Name = "Fit image to device pixel ratio")]
-    public bool FitImageToDevicePixelRatio { get; set; }
-
     [Display(Name = "Enable CDN for images")]
     public bool EnableCDNRedirect { get; set; }
 
@@ -73,7 +70,6 @@ public class ImageSettings : IBlogSettings, IValidatableObject
             IsWatermarkEnabled = true,
             KeepOriginImage = false,
             WatermarkFontSize = 20,
-            WatermarkText = "Moonglade",
-            FitImageToDevicePixelRatio = true
+            WatermarkText = "Moonglade"
         };
 }
