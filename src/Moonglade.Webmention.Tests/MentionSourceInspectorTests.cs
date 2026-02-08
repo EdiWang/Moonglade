@@ -260,7 +260,7 @@ public class MentionSourceInspectorTests
     {
         var sourceUrl = "https://example.com/source";
         var targetUrl = "https://example.com/target";
-        
+
         // Create content larger than 1 MB
         var largeContent = new string('x', 2 * 1024 * 1024);
 
