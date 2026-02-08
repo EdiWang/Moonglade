@@ -20,20 +20,6 @@
                         @SharedLocalizer["General"]
                     </h4>
 
-                    <div class="settings-entry row align-items-center py-3 px-2 rounded-3 border mb-1">
-                        <div class="col-auto">
-                            <i class="bi-fullscreen settings-entry-icon"></i>
-                        </div>
-                        <div class="col">
-                            <label asp-for="@settings.FitImageToDevicePixelRatio" class="form-check-label"></label>
-                        </div>
-                        <div class="col-md-5 text-end">
-                            <div class="form-check form-switch form-control-lg">
-                                <input type="hidden" name="FitImageToDevicePixelRatio" value="false">
-                                <input type="checkbox" name="FitImageToDevicePixelRatio" value="true" class="form-check-input" @(settings.FitImageToDevicePixelRatio ? "checked" : null)>
-                            </div>
-                        </div>
-                    </div>
                 </div>
                 <div>
                     <h4 class="admin-subtitle fw-bold mb-2">
