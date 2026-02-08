@@ -157,8 +157,13 @@ Write-Host "Deployment completed successfully!" -ForegroundColor Green
 
 # Get outputs from Bicep deployment
 $webAppUrl = $deploymentOutput.properties.outputs.webAppUrl.value
-$sqlConnStr = $deploymentOutput.properties.outputs.sqlConnectionString.value
-$storageConnStr = $deploymentOutput.properties.outputs.storageAccountConnectionString.value
+$sqlServerFqdn = $deploymentOutput.properties.outputs.sqlServerFqdn.value
+
+# Build SQL connection string from known variables
+$sqlConnStr = "Server=tcp:${sqlServerFqdn},1433;Initial Catalog=${sqlDatabaseName};Persist Security Info=False;User ID=${sqlServerUsername};Password=${sqlServerPassword};MultipleActiveResultSets=False;Encrypt=True;TrustServerCertificate=False;Connection Timeout=30;"
+
+# Retrieve storage connection string securely
+$storageConnStr = az storage account show-connection-string -g $rsgName -n $storageAccountName --query connectionString -o tsv
 
 Write-Host "Web App URL: $webAppUrl" -ForegroundColor Cyan
 
