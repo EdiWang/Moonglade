@@ -29,6 +29,54 @@ function Scramble-String([string]$inputString) {
     return $outputString 
 }
 
+function Show-Menu {
+    param (
+        [string]$Title,
+        [string[]]$Options,
+        [int]$DefaultIndex = 0
+    )
+    
+    $selectedIndex = $DefaultIndex
+    $cursorVisible = [Console]::CursorVisible
+    [Console]::CursorVisible = $false
+    
+    try {
+        while ($true) {
+            Clear-Host
+            Write-Host $Title -ForegroundColor Green
+            Write-Host ""
+            
+            for ($i = 0; $i -lt $Options.Length; $i++) {
+                if ($i -eq $selectedIndex) {
+                    Write-Host "  > $($Options[$i])" -ForegroundColor Cyan
+                } else {
+                    Write-Host "    $($Options[$i])"
+                }
+            }
+            
+            Write-Host ""
+            Write-Host "Use arrow keys to select, press Enter to confirm" -ForegroundColor Gray
+            
+            $key = $Host.UI.RawUI.ReadKey("NoEcho,IncludeKeyDown")
+            
+            switch ($key.VirtualKeyCode) {
+                38 { # Up arrow
+                    $selectedIndex = [Math]::Max(0, $selectedIndex - 1)
+                }
+                40 { # Down arrow
+                    $selectedIndex = [Math]::Min($Options.Length - 1, $selectedIndex + 1)
+                }
+                13 { # Enter
+                    return $Options[$selectedIndex]
+                }
+            }
+        }
+    }
+    finally {
+        [Console]::CursorVisible = $cursorVisible
+    }
+}
+
 # Main script starts here
 [Console]::ResetColor()
 
@@ -56,13 +104,47 @@ else {
 }
 
 # Select region
-$regionName = Read-Host "Enter region name (default: $defaultRegion)"
-if ([string]::IsNullOrWhiteSpace($regionName)) {
-    $regionName = $defaultRegion
-}
-else {
-    $regionName = $regionName.Trim()
-}
+$azureRegions = @(
+    "West US",
+    "East US",
+    "East US 2",
+    "Central US",
+    "North Central US",
+    "South Central US",
+    "West US 2",
+    "West US 3",
+    "West Central US",
+    "Canada Central",
+    "Canada East",
+    "Brazil South",
+    "North Europe",
+    "West Europe",
+    "UK South",
+    "UK West",
+    "France Central",
+    "Germany West Central",
+    "Switzerland North",
+    "Norway East",
+    "East Asia",
+    "Southeast Asia",
+    "Japan East",
+    "Japan West",
+    "Australia East",
+    "Australia Southeast",
+    "Australia Central",
+    "Central India",
+    "South India",
+    "West India",
+    "Korea Central",
+    "Korea South"
+)
+
+$defaultIndex = [array]::IndexOf($azureRegions, $defaultRegion)
+if ($defaultIndex -eq -1) { $defaultIndex = 0 }
+
+$regionName = Show-Menu -Title "Select Azure Region:" -Options $azureRegions -DefaultIndex $defaultIndex
+Write-Host "Selected region: $regionName" -ForegroundColor Cyan
+Start-Sleep -Seconds 1
 
 # Select web app name
 while ($true) {
