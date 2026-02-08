@@ -22,28 +22,26 @@ public partial class WebmentionSender(
                 return;
             }
 
-            var content = postContent.ToUpperInvariant();
-            if (content.Contains("HTTP://") || content.Contains("HTTPS://"))
+            if (!ContainsUrl(postContent)) return;
+
+            logger.LogInformation("URL is detected in post content, trying to send webmention requests.");
+
+            foreach (var url in UrlHelper.GetUrlsFromContent(postContent))
             {
-                logger.LogInformation("URL is detected in post content, trying to send webmention requests.");
-
-                foreach (var url in UrlHelper.GetUrlsFromContent(postContent))
+                if (url.IsLocalhostUrl())
                 {
-                    if (url.IsLocalhostUrl())
-                    {
-                        logger.LogWarning("Target URL is localhost, skipping.");
-                        continue;
-                    }
+                    logger.LogWarning("Target URL is localhost, skipping.");
+                    continue;
+                }
 
-                    logger.LogInformation("Sending webmention to URL: {TargetUrl}", url);
-                    try
-                    {
-                        await SendAsync(uri, url);
-                    }
-                    catch (Exception e)
-                    {
-                        logger.LogError(e, "SendAsync Webmention Error.");
-                    }
+                logger.LogInformation("Sending webmention to URL: {TargetUrl}", url);
+                try
+                {
+                    await SendAsync(uri, url);
+                }
+                catch (Exception e)
+                {
+                    logger.LogError(e, "SendAsync Webmention Error.");
                 }
             }
         }
@@ -55,14 +53,12 @@ public partial class WebmentionSender(
 
     private async Task SendAsync(Uri sourceUrl, Uri targetUrl)
     {
-        if (sourceUrl is null || targetUrl is null)
-        {
-            return;
-        }
+        ArgumentNullException.ThrowIfNull(sourceUrl);
+        ArgumentNullException.ThrowIfNull(targetUrl);
 
         try
         {
-            string endpoint = await DiscoverWebmentionEndpoint(targetUrl);
+            var endpoint = await DiscoverWebmentionEndpoint(targetUrl);
             if (endpoint is null)
             {
                 logger.LogWarning("Webmention endpoint not found for '{TargetUrl}'.", targetUrl);
@@ -72,23 +68,21 @@ public partial class WebmentionSender(
             logger.LogInformation("Found Webmention service URL '{Endpoint}' on target '{TargetUrl}'", endpoint, targetUrl);
 
             // Resolve relative URLs against the target
-            bool successUrlCreation = Uri.TryCreate(targetUrl, endpoint, out var url);
-            if (successUrlCreation)
+            if (!Uri.TryCreate(targetUrl, endpoint, out var endpointUrl))
             {
-                var wmResponse = await requestor.Send(sourceUrl, targetUrl, url);
+                logger.LogWarning("Invalid Webmention service URL '{Endpoint}'", endpoint);
+                return;
+            }
 
-                if (!wmResponse.IsSuccessStatusCode)
-                {
-                    logger.LogError("Webmention request failed: {StatusCode}", wmResponse.StatusCode);
-                }
-                else
-                {
-                    logger.LogInformation("Webmention request successful: {StatusCode}", wmResponse.StatusCode);
-                }
+            var wmResponse = await requestor.Send(sourceUrl, targetUrl, endpointUrl);
+
+            if (!wmResponse.IsSuccessStatusCode)
+            {
+                logger.LogError("Webmention request failed: {StatusCode}", wmResponse.StatusCode);
             }
             else
             {
-                logger.LogInformation("Invalid Webmention service URL '{Endpoint}'", endpoint);
+                logger.LogInformation("Webmention request successful: {StatusCode}", wmResponse.StatusCode);
             }
         }
         catch (Exception e)
@@ -121,6 +115,10 @@ public partial class WebmentionSender(
 
         return match.Success ? match.Groups["href"].Value : null;
     }
+
+    private static bool ContainsUrl(string content) =>
+        content.Contains("http://", StringComparison.OrdinalIgnoreCase) ||
+        content.Contains("https://", StringComparison.OrdinalIgnoreCase);
 
     // Matches: <url>; rel="webmention"  or  <url>; rel=webmention
     [GeneratedRegex("""<([^>]+)>;\s*rel="?webmention"?""", RegexOptions.IgnoreCase)]
