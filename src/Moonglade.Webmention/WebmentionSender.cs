@@ -5,7 +5,7 @@ using System.Text.RegularExpressions;
 
 namespace Moonglade.Webmention;
 
-public class WebmentionSender(
+public partial class WebmentionSender(
     HttpClient httpClient,
     IWebmentionRequestor requestor,
     ILogger<WebmentionSender> logger) : IWebmentionSender
@@ -62,7 +62,7 @@ public class WebmentionSender(
 
         try
         {
-            string endpoint = await DiscoverWebmentionEndpoint(targetUrl.ToString());
+            string endpoint = await DiscoverWebmentionEndpoint(targetUrl);
             if (endpoint is null)
             {
                 logger.LogWarning("Webmention endpoint not found for '{TargetUrl}'.", targetUrl);
@@ -71,7 +71,8 @@ public class WebmentionSender(
 
             logger.LogInformation("Found Webmention service URL '{Endpoint}' on target '{TargetUrl}'", endpoint, targetUrl);
 
-            bool successUrlCreation = Uri.TryCreate(endpoint, UriKind.Absolute, out var url);
+            // Resolve relative URLs against the target
+            bool successUrlCreation = Uri.TryCreate(targetUrl, endpoint, out var url);
             if (successUrlCreation)
             {
                 var wmResponse = await requestor.Send(sourceUrl, targetUrl, url);
@@ -87,7 +88,7 @@ public class WebmentionSender(
             }
             else
             {
-                logger.LogInformation("Invliad Webmention service URL '{Endpoint}'", endpoint);
+                logger.LogInformation("Invalid Webmention service URL '{Endpoint}'", endpoint);
             }
         }
         catch (Exception e)
@@ -96,22 +97,36 @@ public class WebmentionSender(
         }
     }
 
-    private async Task<string> DiscoverWebmentionEndpoint(string targetUrl)
+    private async Task<string> DiscoverWebmentionEndpoint(Uri targetUrl)
     {
-        var response = await httpClient.GetAsync(targetUrl);
+        using var response = await httpClient.GetAsync(targetUrl, HttpCompletionOption.ResponseHeadersRead);
         if (!response.IsSuccessStatusCode) return null;
 
-        var html = await response.Content.ReadAsStringAsync();
-
-        // Regex to find the Webmention endpoint in the HTML
-        Regex regex = new Regex("<link rel=\"webmention\" href=\"([^\"]+)\"");
-        Match match = regex.Match(html);
-
-        if (match.Success)
+        // 1. Check HTTP Link header first (per W3C Webmention spec)
+        if (response.Headers.TryGetValues("Link", out var linkHeaders))
         {
-            return match.Groups[1].Value;
+            foreach (var header in linkHeaders)
+            {
+                var linkMatch = LinkHeaderRegex().Match(header);
+                if (linkMatch.Success)
+                {
+                    return linkMatch.Groups[1].Value;
+                }
+            }
         }
 
-        return null;
+        // 2. Fall back to HTML <link> tag
+        var html = await response.Content.ReadAsStringAsync();
+        var match = HtmlLinkRegex().Match(html);
+
+        return match.Success ? match.Groups["href"].Value : null;
     }
+
+    // Matches: <url>; rel="webmention"  or  <url>; rel=webmention
+    [GeneratedRegex("""<([^>]+)>;\s*rel="?webmention"?""", RegexOptions.IgnoreCase)]
+    private static partial Regex LinkHeaderRegex();
+
+    // Matches <link> with rel="webmention" regardless of attribute order
+    [GeneratedRegex("""<link\s[^>]*rel=["']webmention["'][^>]*href=["'](?<href>[^"']+)["']|<link\s[^>]*href=["'](?<href>[^"']+)["'][^>]*rel=["']webmention["']""", RegexOptions.IgnoreCase)]
+    private static partial Regex HtmlLinkRegex();
 }
