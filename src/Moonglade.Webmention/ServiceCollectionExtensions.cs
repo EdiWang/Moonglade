@@ -8,7 +8,11 @@ public static class ServiceCollectionExtensions
     public static IServiceCollection AddWebmention(this IServiceCollection services)
     {
         services.AddHttpClient<IMentionSourceInspector, MentionSourceInspector>()
-                .ConfigureHttpClient(p => p.Timeout = TimeSpan.FromSeconds(30))
+                .ConfigureHttpClient(p =>
+                {
+                    p.Timeout = TimeSpan.FromSeconds(30);
+                    p.MaxResponseContentBufferSize = 1024 * 1024; // 1 MB
+                })
                 .AddStandardResilienceHandler();
 
         services.AddHttpClient<IWebmentionSender, WebmentionSender>()

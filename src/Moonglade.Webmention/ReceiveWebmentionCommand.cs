@@ -3,6 +3,7 @@ using Microsoft.Extensions.Logging;
 using Moonglade.Data.Entities;
 using Moonglade.Data.Specifications;
 using Moonglade.Utils;
+using System.Net;
 
 namespace Moonglade.Webmention;
 
@@ -25,7 +26,7 @@ public class ReceiveWebmentionCommandHandler(
                 return WebmentionResponse.InvalidWebmentionRequest;
             }
 
-            logger.LogInformation($"Processing Webmention from: {sourceUrl} ({request.RemoteIp}) to {targetUrl}");
+            logger.LogInformation("Processing Webmention from: {SourceUrl} ({RemoteIp}) to {TargetUrl}", sourceUrl, request.RemoteIp, targetUrl);
 
             var mentionRequest = await sourceInspector.ExamineSourceAsync(sourceUrl, targetUrl);
             if (mentionRequest is null)
@@ -73,7 +74,35 @@ public class ReceiveWebmentionCommandHandler(
             return (false, string.Empty, string.Empty);
         }
 
+        if (!IsAllowedUri(sourceUri))
+        {
+            logger.LogError("Blocked webmention from disallowed source URI: {SourceUri}", sourceUri);
+            return (false, string.Empty, string.Empty);
+        }
+
         return (true, sourceUri.ToString(), targetUri.ToString());
+    }
+
+    private static bool IsAllowedUri(Uri uri)
+    {
+        if (uri.Scheme != "http" && uri.Scheme != "https") return false;
+        if (uri.IsLoopback) return false;
+
+        if (IPAddress.TryParse(uri.Host, out var ip))
+        {
+            var bytes = ip.GetAddressBytes();
+            if (bytes.Length >= 2)
+            {
+                // Block 10.0.0.0/8
+                if (bytes[0] == 10) return false;
+                // Block 172.16.0.0/12
+                if (bytes[0] == 172 && bytes[1] >= 16 && bytes[1] <= 31) return false;
+                // Block 192.168.0.0/16
+                if (bytes[0] == 192 && bytes[1] == 168) return false;
+            }
+        }
+
+        return true;
     }
 
     private WebmentionResponse ValidateMentionRequest(MentionRequest mentionRequest)
@@ -101,11 +130,11 @@ public class ReceiveWebmentionCommandHandler(
 
         if (id == Guid.Empty)
         {
-            logger.LogError($"Can not get post id and title for url '{targetUrl}'");
+            logger.LogError("Can not get post id and title for url '{TargetUrl}'", targetUrl);
             return (Guid.Empty, string.Empty);
         }
 
-        logger.LogInformation($"Post '{id}:{title}' is found for ping.");
+        logger.LogInformation("Post '{PostId}:{PostTitle}' is found for ping.", id, title);
         return (id, title);
     }
 
