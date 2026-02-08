@@ -387,9 +387,6 @@
   <data name="Featured Posts" xml:space="preserve">
     <value>注目の記事</value>
   </data>
-  <data name="Fit image to device pixel ratio" xml:space="preserve">
-    <value>画像はデバイスのDPIに自動的に適合します</value>
-  </data>
   <data name="Font size" xml:space="preserve">
     <value>大きさ</value>
   </data>
