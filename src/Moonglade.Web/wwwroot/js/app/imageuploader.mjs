@@ -13,18 +13,22 @@ export class ImageUploader {
 
                 var rawData = imgDataUrl.replace(/^data:image\/(png|jpeg|jpg);base64,/, '');
 
-                await fetch2(uploadUrl, 'POST', rawData);
+                try {
+                    await fetch2(uploadUrl, 'POST', rawData);
 
-                var modalElement = document.getElementById(`${targetName}modal`);
-                var modal = bootstrap.Modal.getInstance(modalElement);
-                if (modal) modal.hide();
+                    var modalElement = document.getElementById(`${targetName}modal`);
+                    var modal = bootstrap.Modal.getInstance(modalElement);
+                    if (modal) modal.hide();
 
-                success('Updated');
-                var d = new Date();
-                document.querySelector(`.blogadmin-${targetName}`).src = `/${targetName}?${d.getTime()}`;
-
-                btnUpload.classList.remove('disabled');
-                btnUpload.removeAttribute('disabled');
+                    success('Updated');
+                    var d = new Date();
+                    document.querySelector(`.blogadmin-${targetName}`).src = `/${targetName}?${d.getTime()}`;
+                } catch (err) {
+                    error(err);
+                } finally {
+                    btnUpload.classList.remove('disabled');
+                    btnUpload.removeAttribute('disabled');
+                }
             } else {
                 error('Please select an image');
             }

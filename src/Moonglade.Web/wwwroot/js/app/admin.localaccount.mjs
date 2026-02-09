@@ -1,6 +1,6 @@
 import { Alpine } from '/js/app/alpine-init.mjs';
 import { fetch2 } from '/js/app/httpService.mjs?v=1500';
-import { success } from '/js/app/toastService.mjs';
+import { success, error } from '/js/app/toastService.mjs';
 import { getLocalizedString } from './utils.module.mjs';
 
 Alpine.data('accountManager', () => ({
@@ -26,6 +26,8 @@ Alpine.data('accountManager', () => ({
             this.loginHistory = (data ?? [])
                 .sort((a, b) => new Date(b.loginTimeUtc) - new Date(a.loginTimeUtc))
                 .slice(0, 10);
+        } catch (err) {
+            error(err);
         } finally {
             this.isLoading = false;
         }
@@ -59,12 +61,15 @@ Alpine.data('accountManager', () => ({
             NewPassword: this.formData.newPassword
         };
 
-        await fetch2('/api/settings/password/local', 'PUT', payload);
-
-        this.formData.oldPassword = '';
-        this.formData.newPassword = '';
-        this.resetPasswordModal.hide();
-        success(getLocalizedString('passwordUpdated'));
+        try {
+            await fetch2('/api/settings/password/local', 'PUT', payload);
+            this.formData.oldPassword = '';
+            this.formData.newPassword = '';
+            this.resetPasswordModal.hide();
+            success(getLocalizedString('passwordUpdated'));
+        } catch (err) {
+            error(err);
+        }
     },
 
     formatTime(utcTime) {
