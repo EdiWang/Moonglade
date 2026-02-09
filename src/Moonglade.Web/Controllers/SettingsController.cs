@@ -6,6 +6,7 @@ using Moonglade.Email.Client;
 using Moonglade.Features.Asset;
 using Moonglade.Web.Extensions;
 using SecurityHelper = Moonglade.Utils.SecurityHelper;
+using Moonglade.Utils;
 
 namespace Moonglade.Web.Controllers;
 
@@ -134,8 +135,25 @@ public class SettingsController(
 
     [HttpPost("advanced")]
     [ProducesResponseType(StatusCodes.Status204NoContent)]
+    [ProducesResponseType(StatusCodes.Status400BadRequest)]
     public async Task<IActionResult> Advanced(AdvancedSettings model)
     {
+        if (!string.IsNullOrWhiteSpace(model.HeadScripts) &&
+            !ScriptTagValidator.IsValidScriptBlock(model.HeadScripts))
+        {
+            ModelState.AddModelError(nameof(AdvancedSettings.HeadScripts),
+                "Only <script>...</script> blocks are allowed.");
+            return BadRequest(new { Errors = ModelState.GetErrorMessages() });
+        }
+
+        if (!string.IsNullOrWhiteSpace(model.FootScripts) &&
+            !ScriptTagValidator.IsValidScriptBlock(model.FootScripts))
+        {
+            ModelState.AddModelError(nameof(AdvancedSettings.FootScripts),
+                "Only <script>...</script> blocks are allowed.");
+            return BadRequest(new { Errors = ModelState.GetErrorMessages() });
+        }
+
         blogConfig.AdvancedSettings = model;
 
         await SaveConfigAsync(blogConfig.AdvancedSettings);

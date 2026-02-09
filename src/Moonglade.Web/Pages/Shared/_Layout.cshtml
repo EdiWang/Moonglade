@@ -96,6 +96,11 @@
     {
         <partial name="_GoogleAnalytics" model="AnalyticsSettings.Value.GoogleAnalytics.GTagId" />
     }
+
+    @if (!string.IsNullOrWhiteSpace(BlogConfig.AdvancedSettings.HeadScripts))
+    {
+        @Html.Raw(BlogConfig.AdvancedSettings.HeadScripts)
+    }
 </head>
 <body class="@ViewBag.BodyClass">
     @if (BlogConfig.ContentSettings.ShowCalloutSection)
