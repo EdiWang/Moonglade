@@ -146,6 +146,21 @@
                         <textarea asp-for="@settings.RobotsTxtContent" class="form-control textarea-code" cols="60" rows="10" spellcheck="false"></textarea>
                     </div>
 
+                    <h4 class="admin-subtitle fw-bold mb-2">@Html.DisplayNameFor(m => settings.HeadScripts)</h4>
+                    <div class="p-3 rounded-3 border mb-3">
+                        <div class="alert alert-warning">
+                            @SharedLocalizer["Using a third party script may cause your website to be blocked by some browsers or ad blockers, it can have security risks too. Please use with caution."]
+                        </div>
+
+                        <textarea asp-for="@settings.HeadScripts" class="form-control textarea-code" cols="60" rows="10" spellcheck="false"></textarea>
+
+                        <div class="form-text">
+                            * Global script that will be injected into every page's <code>head</code> section. <br />
+
+                            * Please use valid <code>&lt;script&gt;...&lt;/script&gt;</code> code.
+                        </div>
+                    </div>
+
                     <h4 class="admin-subtitle fw-bold mb-2">@Html.DisplayNameFor(m => settings.FootScripts)</h4>
                     <div class="p-3 rounded-3 border mb-3">
                         <div class="alert alert-warning">
