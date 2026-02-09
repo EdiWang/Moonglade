@@ -28,8 +28,6 @@
     }
 
     bool clientPreferDarkMode = Helper.IsClientPreferDarkMode(Context);
-
-    var headScripts = Configuration.GetSection("HeadScripts").Get<List<HeadScript>>();
 }
 <!DOCTYPE html>
 <html lang="@langCode" data-bs-theme="@(clientPreferDarkMode ? "dark" : null)">
@@ -97,17 +95,6 @@
     @if (AnalyticsSettings.Value.GoogleAnalytics.Enabled)
     {
         <partial name="_GoogleAnalytics" model="AnalyticsSettings.Value.GoogleAnalytics.GTagId" />
-    }
-
-    @if (null != headScripts)
-    {
-        foreach (var script in headScripts)
-        {
-            @if (!string.IsNullOrWhiteSpace(script.Url))
-            {
-                <head-script src="@script.Url" integrity="@script.Integrity" crossorigin="@script.CrossOrigin" async="@script.IsAsync"></head-script>
-            }
-        }
     }
 </head>
 <body class="@ViewBag.BodyClass">
