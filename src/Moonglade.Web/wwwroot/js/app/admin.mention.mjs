@@ -1,6 +1,6 @@
 import { Alpine } from '/js/app/alpine-init.mjs';
 import { fetch2 } from '/js/app/httpService.mjs?v=1500';
-import { success } from '/js/app/toastService.mjs';
+import { success, error } from '/js/app/toastService.mjs';
 import { getLocalizedString } from './utils.module.mjs';
 
 Alpine.data('mentionManager', () => ({
@@ -24,6 +24,8 @@ async init() {
         this.isLoading = true;
         try {
             this.mentions = (await fetch2('/api/mention/list', 'GET')) ?? [];
+        } catch (err) {
+            error(err);
         } finally {
             this.isLoading = false;
         }
@@ -70,22 +72,26 @@ async init() {
     async confirmDeleteMention() {
         if (!this.pendingDeleteIds || this.pendingDeleteIds.length === 0) return;
 
-        await fetch2('/api/mention', 'DELETE', this.pendingDeleteIds);
-        this.mentions = this.mentions.filter(m => !this.pendingDeleteIds.includes(m.id));
-        this.selectedIds = this.selectedIds.filter(id => !this.pendingDeleteIds.includes(id));
-        
-        const count = this.pendingDeleteIds.length;
-        let message;
-        if (count === 1) {
-            message = getLocalizedString('mentionDeleted');
-        } else {
-            const template = getLocalizedString('mentionsDeleted');
-            message = template.replace('{0}', count);
+        try {
+            await fetch2('/api/mention', 'DELETE', this.pendingDeleteIds);
+            this.mentions = this.mentions.filter(m => !this.pendingDeleteIds.includes(m.id));
+            this.selectedIds = this.selectedIds.filter(id => !this.pendingDeleteIds.includes(id));
+            
+            const count = this.pendingDeleteIds.length;
+            let message;
+            if (count === 1) {
+                message = getLocalizedString('mentionDeleted');
+            } else {
+                const template = getLocalizedString('mentionsDeleted');
+                message = template.replace('{0}', count);
+            }
+            success(message);
+        } catch (err) {
+            error(err);
+        } finally {
+            this.deleteModal.hide();
+            this.pendingDeleteIds = [];
         }
-        success(message);
-        
-        this.deleteModal.hide();
-        this.pendingDeleteIds = [];
     },
 
     async clearAllMentions() {
@@ -93,11 +99,15 @@ async init() {
     },
 
     async confirmClearAllMentions() {
-        await fetch2('/api/mention/clear', 'DELETE');
-        this.mentions = [];
-        success(getLocalizedString('mentionsCleared'));
-        
-        this.clearAllModal.hide();
+        try {
+            await fetch2('/api/mention/clear', 'DELETE');
+            this.mentions = [];
+            success(getLocalizedString('mentionsCleared'));
+        } catch (err) {
+            error(err);
+        } finally {
+            this.clearAllModal.hide();
+        }
     },
 
     formatTime(utcTime) {

@@ -5,6 +5,7 @@ import { resizeImages, applyImageZooming } from './post.imageutils.mjs';
 import { renderCodeHighlighter, renderLaTeX } from './post.highlight.mjs';
 import { calculateReadingTime } from './post.readingtime.mjs';
 import { cleanupLocalStorage, recordPostView } from './postview.mjs';
+import { error } from './toastService.mjs';
 
 async function submitComment(pid) {
     const thxForComment = document.querySelector('#thx-for-comment');
@@ -25,20 +26,24 @@ async function submitComment(pid) {
     btnSubmitComment.classList.add('disabled');
     btnSubmitComment.setAttribute('disabled', 'disabled');
 
-    const data = await fetch2(`/api/comment/${pid}`, 'POST', { username, content, email, captchaCode, captchaToken });
-    commentForm.reset();
-    resetCaptchaImage();
+    try {
+        const data = await fetch2(`/api/comment/${pid}`, 'POST', { username, content, email, captchaCode, captchaToken });
+        commentForm.reset();
+        resetCaptchaImage();
 
-    if (data.requireCommentReview) {
-        thxForComment.style.display = 'block';
+        if (data.requireCommentReview) {
+            thxForComment.style.display = 'block';
+        }
+        else {
+            thxForCommentNonReview.style.display = 'block';
+        }
+    } catch (err) {
+        error(err);
+    } finally {
+        loadingIndicator.style.display = 'none';
+        btnSubmitComment.classList.remove('disabled');
+        btnSubmitComment.removeAttribute('disabled');
     }
-    else {
-        thxForCommentNonReview.style.display = 'block';
-    }
-
-    loadingIndicator.style.display = 'none';
-    btnSubmitComment.classList.remove('disabled');
-    btnSubmitComment.removeAttribute('disabled');
 }
 
 document.addEventListener('DOMContentLoaded', () => {

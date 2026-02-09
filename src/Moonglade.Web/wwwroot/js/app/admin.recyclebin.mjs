@@ -1,7 +1,7 @@
 import { Alpine } from '/js/app/alpine-init.mjs';
 import { fetch2 } from '/js/app/httpService.mjs?v=1500';
 import { formatUtcTime, getLocalizedString } from './utils.module.mjs';
-import { success } from '/js/app/toastService.mjs';
+import { success, error } from '/js/app/toastService.mjs';
 
 Alpine.data('recycleBinManager', () => ({
     posts: [],
@@ -22,6 +22,8 @@ Alpine.data('recycleBinManager', () => ({
             );
             
             formatUtcTime();
+        } catch (err) {
+            error(err);
         } finally {
             this.isLoading = false;
         }
@@ -37,20 +39,28 @@ Alpine.data('recycleBinManager', () => ({
 
     async executeDelete() {
         if (this.deleteTargetId) {
-            await fetch2(`/api/post/${this.deleteTargetId}/destroy`, 'DELETE');
-            this.posts = this.posts.filter(p => p.id !== this.deleteTargetId);
-            success(getLocalizedString('postDeleted'));
-            
-            const modal = bootstrap.Modal.getInstance(document.getElementById('deleteModal'));
-            modal.hide();
-            this.deleteTargetId = null;
+            try {
+                await fetch2(`/api/post/${this.deleteTargetId}/destroy`, 'DELETE');
+                this.posts = this.posts.filter(p => p.id !== this.deleteTargetId);
+                success(getLocalizedString('postDeleted'));
+            } catch (err) {
+                error(err);
+            } finally {
+                const modal = bootstrap.Modal.getInstance(document.getElementById('deleteModal'));
+                modal.hide();
+                this.deleteTargetId = null;
+            }
         }
     },
 
     async restorePost(postId) {
-        await fetch2(`/api/post/${postId}/restore`, 'POST');
-        this.posts = this.posts.filter(p => p.id !== postId);
-        success(getLocalizedString('postRestored'));
+        try {
+            await fetch2(`/api/post/${postId}/restore`, 'POST');
+            this.posts = this.posts.filter(p => p.id !== postId);
+            success(getLocalizedString('postRestored'));
+        } catch (err) {
+            error(err);
+        }
     },
 
     confirmEmptyRecycleBin() {
@@ -59,12 +69,16 @@ Alpine.data('recycleBinManager', () => ({
     },
 
     async executeEmptyRecycleBin() {
-        await fetch2('/api/post/recyclebin', 'DELETE');
-        this.posts = [];
-        success(getLocalizedString('cleared'));
-        
-        const modal = bootstrap.Modal.getInstance(document.getElementById('emptyBinModal'));
-        modal.hide();
+        try {
+            await fetch2('/api/post/recyclebin', 'DELETE');
+            this.posts = [];
+            success(getLocalizedString('cleared'));
+        } catch (err) {
+            error(err);
+        } finally {
+            const modal = bootstrap.Modal.getInstance(document.getElementById('emptyBinModal'));
+            modal.hide();
+        }
     },
 
     get hasPosts() {

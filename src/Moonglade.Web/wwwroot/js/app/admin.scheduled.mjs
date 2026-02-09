@@ -1,7 +1,7 @@
 import { Alpine } from '/js/app/alpine-init.mjs';
 import { fetch2 } from '/js/app/httpService.mjs?v=1500';
 import { formatUtcTime, getLocalizedString } from './utils.module.mjs';
-import { success } from '/js/app/toastService.mjs';
+import { success, error } from '/js/app/toastService.mjs';
 
 Alpine.data('scheduledManager', () => ({
     posts: [],
@@ -50,6 +50,8 @@ Alpine.data('scheduledManager', () => ({
 
             await this.$nextTick();
             setTimeout(() => formatUtcTime(), 50);
+        } catch (err) {
+            error(err);
         } finally {
             this.isLoading = false;
         }
@@ -63,11 +65,16 @@ Alpine.data('scheduledManager', () => ({
 
     async confirmDelete() {
         if (!this.deleteTargetId) return;
-        await fetch2(`/api/post/${this.deleteTargetId}/recycle`, 'DELETE');
-        this.posts = this.posts.filter(p => p.id !== this.deleteTargetId);
-        success(getLocalizedString('postDeleted'));
-        this.deleteModal?.hide();
-        this.deleteTargetId = null;
+        try {
+            await fetch2(`/api/post/${this.deleteTargetId}/recycle`, 'DELETE');
+            this.posts = this.posts.filter(p => p.id !== this.deleteTargetId);
+            success(getLocalizedString('postDeleted'));
+        } catch (err) {
+            error(err);
+        } finally {
+            this.deleteModal?.hide();
+            this.deleteTargetId = null;
+        }
     },
 
     showPublishModal(postId) {
@@ -83,17 +90,25 @@ Alpine.data('scheduledManager', () => ({
     },
 
     async publishPost(postId) {
-        await fetch2(`/api/post/${postId}/publish`, 'PUT');
-        this.posts = this.posts.filter(p => p.id !== postId);
-        success(getLocalizedString('postPublished'));
+        try {
+            await fetch2(`/api/post/${postId}/publish`, 'PUT');
+            this.posts = this.posts.filter(p => p.id !== postId);
+            success(getLocalizedString('postPublished'));
+        } catch (err) {
+            error(err);
+        }
     },
 
     async postponePost(postId) {
-        const hours = 24;
-        await fetch2(`/api/schedule/${postId}/postpone?hours=${hours}`, 'PUT');
-        const template = getLocalizedString('postPostponed');
-        success(template.replace('{0}', hours));
-        setTimeout(async () => await this.loadPosts(), 500);
+        try {
+            const hours = 24;
+            await fetch2(`/api/schedule/${postId}/postpone?hours=${hours}`, 'PUT');
+            const template = getLocalizedString('postPostponed');
+            success(template.replace('{0}', hours));
+            setTimeout(async () => await this.loadPosts(), 500);
+        } catch (err) {
+            error(err);
+        }
     },
 
     showCancelScheduleModal(postId) {
@@ -103,11 +118,16 @@ Alpine.data('scheduledManager', () => ({
 
     async confirmCancelSchedule() {
         if (!this.cancelScheduleTargetId) return;
-        await fetch2(`/api/schedule/${this.cancelScheduleTargetId}/cancel`, 'PUT');
-        this.posts = this.posts.filter(p => p.id !== this.cancelScheduleTargetId);
-        success(getLocalizedString('scheduleCancelled'));
-        this.cancelScheduleModal?.hide();
-        this.cancelScheduleTargetId = null;
+        try {
+            await fetch2(`/api/schedule/${this.cancelScheduleTargetId}/cancel`, 'PUT');
+            this.posts = this.posts.filter(p => p.id !== this.cancelScheduleTargetId);
+            success(getLocalizedString('scheduleCancelled'));
+        } catch (err) {
+            error(err);
+        } finally {
+            this.cancelScheduleModal?.hide();
+            this.cancelScheduleTargetId = null;
+        }
     },
 
     parseUtcSafe(dateString) {

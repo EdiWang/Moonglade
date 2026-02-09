@@ -20,8 +20,7 @@ async function sendTestEmail() {
         await fetch2('/api/settings/email/test', 'POST', {});
         success('Email is sent.');
     } catch (err) {
-        console.error('Failed to send test email:', err);
-        error('Failed to send test email.');
+        error(err);
     } finally {
         toggleButtonState(testEmailButton, false);
     }
