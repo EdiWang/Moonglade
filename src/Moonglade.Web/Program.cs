@@ -160,8 +160,7 @@ public class Program
     private static void ConfigureControllers(IServiceCollection services)
     {
         services.AddControllers(options => options.Filters.Add(new AutoValidateAntiforgeryTokenAttribute()))
-            .AddJsonOptions(options => options.JsonSerializerOptions.Converters.Add(new JsonStringEnumConverter()))
-            .ConfigureApiBehaviorOptions(ConfigureApiBehavior.BlogApiBehavior);
+            .AddJsonOptions(options => options.JsonSerializerOptions.Converters.Add(new JsonStringEnumConverter()));
     }
 
     private static void ConfigureRazorPages(IServiceCollection services)
