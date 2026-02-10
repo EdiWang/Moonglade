@@ -20,11 +20,7 @@ public class ScheduleController(
     public async Task<IActionResult> List()
     {
         var posts = await queryMediator.QueryAsync(new ListPostSegmentByStatusQuery(PostStatus.Scheduled));
-
-        return Ok(new
-        {
-            Posts = posts
-        });
+        return Ok(posts);
     }
 
     [HttpPut("{postId:guid}/cancel")]
