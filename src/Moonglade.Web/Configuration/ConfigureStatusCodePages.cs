@@ -7,15 +7,19 @@ public class ConfigureStatusCodePages
 {
     public static Func<StatusCodeContext, Task> Handler => async context =>
     {
-        var statusCode = context.HttpContext.Response.StatusCode;
-        var requestId = context.HttpContext.TraceIdentifier;
-        var description = ReasonPhrases.GetReasonPhrase(context.HttpContext.Response.StatusCode);
+        var httpContext = context.HttpContext;
+        var statusCode = httpContext.Response.StatusCode;
 
-        await context.HttpContext.Response.WriteAsJsonAsync(new
+        httpContext.Response.ContentType = "application/problem+json";
+
+        await httpContext.RequestServices.GetRequiredService<IProblemDetailsService>().WriteAsync(new ProblemDetailsContext
         {
-            statusCode,
-            requestId,
-            description
-        }, context.HttpContext.RequestAborted);
+            HttpContext = httpContext,
+            ProblemDetails =
+            {
+                Status = statusCode,
+                Title = ReasonPhrases.GetReasonPhrase(statusCode)
+            }
+        });
     };
 }

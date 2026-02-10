@@ -46,7 +46,7 @@ public class AssetsController(
         if (!Helper.TryParseBase64(base64Img, out var base64Chars))
         {
             logger.LogWarning("Bad base64 is used when setting avatar.");
-            return Conflict("Bad base64 data");
+            return Problem(detail: "Bad base64 data", statusCode: StatusCodes.Status409Conflict);
         }
 
         try
@@ -54,13 +54,13 @@ public class AssetsController(
             using var bmp = await Image.LoadAsync(new MemoryStream(base64Chars));
             if (bmp.Height != bmp.Width || bmp.Height + bmp.Width != 600)
             {
-                return Conflict("Image size must be 300x300.");
+                return Problem(detail: "Image size must be 300x300.", statusCode: StatusCodes.Status409Conflict);
             }
         }
         catch (Exception e)
         {
             logger.LogError(e, "Invalid base64img Image");
-            return Conflict(e.Message);
+            return Problem(detail: "Invalid image data.", statusCode: StatusCodes.Status409Conflict);
         }
 
         await eventMediator.PublishAsync(new SaveAssetEvent(AssetId.AvatarBase64, base64Img));
@@ -125,11 +125,11 @@ public class AssetsController(
         if (!Helper.TryParseBase64(base64Img, out var base64Chars))
         {
             logger.LogWarning("Bad base64 is used when setting site icon.");
-            return Conflict("Bad base64 data");
+            return Problem(detail: "Bad base64 data", statusCode: StatusCodes.Status409Conflict);
         }
 
         using var bmp = await Image.LoadAsync(new MemoryStream(base64Chars));
-        if (bmp.Height != bmp.Width) return Conflict("image height must be equal to width");
+        if (bmp.Height != bmp.Width) return Problem(detail: "image height must be equal to width", statusCode: StatusCodes.Status409Conflict);
         await eventMediator.PublishAsync(new SaveAssetEvent(AssetId.SiteIconBase64, base64Img));
 
         // Regenerate site icons immediately after update

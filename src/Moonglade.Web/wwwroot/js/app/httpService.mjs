@@ -31,38 +31,27 @@ export async function fetch2(uri, method, request) {
 }
 
 async function buildErrorMessage(response) {
-    switch (response.status) {
-        case 400:
-        case 409: {
-            const contentType = response.headers.get('content-type');
-            if (contentType && contentType.includes('application/problem+json')) {
-                const data = await response.json();
-                if (typeof data === 'string') {
-                    return data;
-                } else if (data.errors && typeof data.errors === 'object') {
-                    return Object.values(data.errors)
-                        .flat()
-                        .join('\n');
-                } else if (data.title) {
-                    return data.title;
-                } else {
-                    return Object.entries(data)
-                        .map(([key, value]) => `${key}: ${value}`)
-                        .join('\n');
-                }
-            }
-            return await response.text();
+    const contentType = response.headers.get('content-type');
+    if (contentType && contentType.includes('application/problem+json')) {
+        const data = await response.json();
+
+        // RFC 7807/9457: validation errors in "errors" property
+        if (data.errors && typeof data.errors === 'object') {
+            return Object.values(data.errors)
+                .flat()
+                .join('\n');
         }
-        case 401:
-            return 'Unauthorized';
-        case 404:
-            return 'Endpoint not found';
-        case 429:
-            return 'Too many requests';
-        case 500:
-        case 503:
-            return 'Server went boom';
-        default:
-            return `Error ${response.status}`;
+
+        // RFC 7807/9457: "detail" is the human-readable explanation
+        if (data.detail) {
+            return data.detail;
+        }
+
+        // Fallback to "title"
+        if (data.title) {
+            return data.title;
+        }
     }
+
+    return `Error ${response.status}`;
 }

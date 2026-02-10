@@ -50,7 +50,7 @@ public class CommentController(
         if (item == null)
         {
             ModelState.AddModelError(nameof(postId), "Comment is closed for this post.");
-            return Conflict(ModelState);
+            return ValidationProblem(ModelState);
         }
 
         try
@@ -81,7 +81,7 @@ public class CommentController(
         }
         catch (ArgumentException)
         {
-            return NotFound($"Comment with ID {commentId} not found.");
+            return Problem(detail: $"Comment with ID {commentId} not found.", statusCode: StatusCodes.Status404NotFound);
         }
     }
 
@@ -98,7 +98,7 @@ public class CommentController(
         }
         catch (ArgumentException ex)
         {
-            return NotFound(ex.Message);
+            return Problem(detail: ex.Message, statusCode: StatusCodes.Status404NotFound);
         }
     }
 
@@ -148,7 +148,7 @@ public class CommentController(
     {
         if (string.IsNullOrWhiteSpace(replyContent))
         {
-            return BadRequest("Reply content cannot be empty.");
+            return Problem(detail: "Reply content cannot be empty.", statusCode: StatusCodes.Status400BadRequest);
         }
 
         if (!blogConfig.CommentSettings.EnableComments)
@@ -165,7 +165,7 @@ public class CommentController(
         }
         catch (ArgumentException)
         {
-            return NotFound($"Comment with ID {commentId} not found.");
+            return Problem(detail: $"Comment with ID {commentId} not found.", statusCode: StatusCodes.Status404NotFound);
         }
     }
 
@@ -200,7 +200,7 @@ public class CommentController(
                 if (await moderator.Detect(request.Username, request.Content))
                 {
                     ModelState.AddModelError(nameof(request.Content), "Your comment contains inappropriate content.");
-                    return Conflict(ModelState);
+                    return ValidationProblem(ModelState);
                 }
                 break;
         }

@@ -123,6 +123,15 @@ public class Program
         services.AddTransient<IPasswordGenerator, DefaultPasswordGenerator>();
         services.AddHealthChecks()
             .AddCheck("self", () => HealthCheckResult.Healthy("Application is running"));
+        services.AddProblemDetails(options =>
+        {
+            options.CustomizeProblemDetails = context =>
+            {
+                context.ProblemDetails.Instance = context.HttpContext.Request.Path;
+                context.ProblemDetails.Extensions["traceId"] = context.HttpContext.TraceIdentifier;
+            };
+        });
+
         ConfigureMoongladeServices(services, configuration);
         ConfigureDatabase(services, configuration);
         ConfigureInitializers(services);
@@ -286,7 +295,36 @@ public class Program
         }
         else
         {
-            app.UseStatusCodePages(ConfigureStatusCodePages.Handler).UseExceptionHandler("/error");
+            app.UseExceptionHandler(exceptionApp =>
+            {
+                exceptionApp.Run(async context =>
+                {
+                    var exceptionFeature = context.Features.Get<Microsoft.AspNetCore.Diagnostics.IExceptionHandlerPathFeature>();
+                    if (exceptionFeature is not null)
+                    {
+                        var logger = context.RequestServices.GetRequiredService<ILoggerFactory>().CreateLogger("ExceptionHandler");
+                        var requestId = context.TraceIdentifier;
+                        logger.LogError(exceptionFeature.Error,
+                            "Unhandled exception at {Path}, client IP: {ClientIP}, request id: {RequestId}",
+                            exceptionFeature.Path,
+                            ClientIPHelper.GetClientIP(context),
+                            requestId);
+                    }
+
+                    context.Response.StatusCode = StatusCodes.Status500InternalServerError;
+                    await context.RequestServices.GetRequiredService<IProblemDetailsService>().WriteAsync(new ProblemDetailsContext
+                    {
+                        HttpContext = context,
+                        ProblemDetails =
+                        {
+                            Status = StatusCodes.Status500InternalServerError,
+                            Title = "An unexpected error occurred",
+                            Type = "https://tools.ietf.org/html/rfc9110#section-15.6.1"
+                        }
+                    });
+                });
+            });
+            app.UseStatusCodePages(ConfigureStatusCodePages.Handler);
         }
 
         app.UseHttpsRedirection();

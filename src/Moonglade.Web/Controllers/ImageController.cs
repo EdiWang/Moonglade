@@ -29,7 +29,7 @@ public class ImageController(IBlogImageStorage imageStorage,
         var invalidChars = Path.GetInvalidFileNameChars();
         if (filename.IndexOfAny(invalidChars) >= 0)
         {
-            return BadRequest("invalid filename");
+            return Problem(detail: "invalid filename", statusCode: StatusCodes.Status400BadRequest);
         }
 
         // Prevent access to origin images

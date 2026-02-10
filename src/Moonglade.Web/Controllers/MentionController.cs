@@ -44,13 +44,13 @@ public class MentionController(
 
     private ObjectResult HandleWebmentionFailure(WebmentionStatus status) => status switch
     {
-        WebmentionStatus.InvalidWebmentionRequest => BadRequest("Invalid webmention request."),
-        WebmentionStatus.ErrorSourceNotContainTargetUri => Conflict("The source URI does not contain a link to the target URI."),
-        WebmentionStatus.SpamDetectedFakeNotFound => NotFound("The requested resource was not found."),
-        WebmentionStatus.ErrorTargetUriNotExist => Conflict("Cannot retrieve post ID and title for the target URL."),
-        WebmentionStatus.ErrorWebmentionAlreadyRegistered => Conflict("Webmention already registered."),
-        WebmentionStatus.GenericError => StatusCode(StatusCodes.Status500InternalServerError, "An internal server error occurred."),
-        _ => StatusCode(StatusCodes.Status500InternalServerError, "An unknown error occurred.")
+        WebmentionStatus.InvalidWebmentionRequest => Problem(detail: "Invalid webmention request.", statusCode: StatusCodes.Status400BadRequest),
+        WebmentionStatus.ErrorSourceNotContainTargetUri => Problem(detail: "The source URI does not contain a link to the target URI.", statusCode: StatusCodes.Status409Conflict),
+        WebmentionStatus.SpamDetectedFakeNotFound => Problem(detail: "The requested resource was not found.", statusCode: StatusCodes.Status404NotFound),
+        WebmentionStatus.ErrorTargetUriNotExist => Problem(detail: "Cannot retrieve post ID and title for the target URL.", statusCode: StatusCodes.Status409Conflict),
+        WebmentionStatus.ErrorWebmentionAlreadyRegistered => Problem(detail: "Webmention already registered.", statusCode: StatusCodes.Status409Conflict),
+        WebmentionStatus.GenericError => Problem(detail: "An internal server error occurred.", statusCode: StatusCodes.Status500InternalServerError),
+        _ => Problem(detail: "An unknown error occurred.", statusCode: StatusCodes.Status500InternalServerError)
     };
 
     private async void SendMentionEmailAction(MentionEntity mention)
@@ -82,7 +82,7 @@ public class MentionController(
     {
         if (mentionIds == null || mentionIds.Count == 0)
         {
-            return BadRequest("No mention IDs provided.");
+            return Problem(detail: "No mention IDs provided.", statusCode: StatusCodes.Status400BadRequest);
         }
 
         await commandMediator.SendAsync(new DeleteMentionsCommand(mentionIds));
