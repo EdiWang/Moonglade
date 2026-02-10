@@ -34,10 +34,8 @@
                         {
                             <li>
                                 <a class="dropdown-item @(currentCulture == item.Value ? "active" : "")"
-                                   asp-controller="Language"
-                                   asp-action="SetLanguage"
-                                   asp-route-returnUrl="@returnUrl"
-                                   asp-route-culture="@item.Value">
+                                   href="#"
+                                   onclick="setLanguage('@item.Value', '@returnUrl'); return false;">
                                     @item.NativeName
                                 </a>
                             </li>
@@ -66,7 +64,12 @@
                     @foreach (var item in cultureItems)
                     {
                         <li>
-                            <a asp-controller="Language" asp-action="SetLanguage" asp-route-returnUrl="@returnUrl" asp-route-culture="@item.Value" rel="nofollow" class="@(currentCulture == item.Value ? "fw-bold" : "")">@item.NativeName</a>
+                            <a href="#"
+                               onclick="setLanguage('@item.Value', '@returnUrl'); return false;"
+                               rel="nofollow"
+                               class="@(currentCulture == item.Value ? "fw-bold" : "")">
+                                @item.NativeName
+                            </a>
                         </li>
                     }
                 </ul>
@@ -74,3 +77,17 @@
         </div>
     </div>
 </div>
+
+<form id="setLanguageForm" method="post" action="/api/language/set" style="display:none;">
+    @Html.AntiForgeryToken()
+    <input type="hidden" name="culture" id="language-culture" />
+    <input type="hidden" name="returnUrl" id="language-returnUrl" />
+</form>
+
+<script>
+    function setLanguage(culture, returnUrl) {
+        document.getElementById('language-culture').value = culture;
+        document.getElementById('language-returnUrl').value = returnUrl;
+        document.getElementById('setLanguageForm').submit();
+    }
+</script>
