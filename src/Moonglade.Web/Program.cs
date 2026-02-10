@@ -1,4 +1,5 @@
-﻿using Edi.Captcha;
+﻿using Edi.AspNetCore.Utils.Filters;
+using Edi.Captcha;
 using Edi.PasswordGenerator;
 using LiteBus.Commands;
 using LiteBus.Events;
