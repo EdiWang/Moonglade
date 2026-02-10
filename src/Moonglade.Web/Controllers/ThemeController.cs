@@ -48,7 +48,7 @@ public class ThemeController(
         };
 
         var id = await commandMediator.SendAsync(new CreateThemeCommand(request.Name, dic));
-        if (id == -1) return Problem(detail: "Theme with same name already exists", statusCode: StatusCodes.Status409Conflict);
+        if (id == -1) return Conflict("Theme with same name already exists");
 
         return Ok(id);
     }

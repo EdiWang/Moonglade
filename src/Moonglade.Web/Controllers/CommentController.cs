@@ -81,7 +81,7 @@ public class CommentController(
         }
         catch (ArgumentException)
         {
-            return Problem(detail: $"Comment with ID {commentId} not found.", statusCode: StatusCodes.Status404NotFound);
+            return NotFound($"Comment with ID {commentId} not found.");
         }
     }
 
@@ -98,7 +98,7 @@ public class CommentController(
         }
         catch (ArgumentException ex)
         {
-            return Problem(detail: ex.Message, statusCode: StatusCodes.Status404NotFound);
+            return NotFound(ex.Message);
         }
     }
 
@@ -148,7 +148,7 @@ public class CommentController(
     {
         if (string.IsNullOrWhiteSpace(replyContent))
         {
-            return Problem(detail: "Reply content cannot be empty.", statusCode: StatusCodes.Status400BadRequest);
+            return BadRequest("Reply content cannot be empty.");
         }
 
         if (!blogConfig.CommentSettings.EnableComments)
@@ -165,7 +165,7 @@ public class CommentController(
         }
         catch (ArgumentException)
         {
-            return Problem(detail: $"Comment with ID {commentId} not found.", statusCode: StatusCodes.Status404NotFound);
+            return NotFound($"Comment with ID {commentId} not found.");
         }
     }
 

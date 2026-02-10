@@ -1,4 +1,4 @@
-using Edi.Captcha;
+﻿using Edi.Captcha;
 using Edi.PasswordGenerator;
 using LiteBus.Commands;
 using LiteBus.Events;
@@ -168,7 +168,11 @@ public class Program
 
     private static void ConfigureControllers(IServiceCollection services)
     {
-        services.AddControllers(options => options.Filters.Add(new AutoValidateAntiforgeryTokenAttribute()))
+        services.AddControllers(options =>
+            {
+                options.Filters.Add(new AutoValidateAntiforgeryTokenAttribute());
+                options.Filters.Add<ProblemDetailsResultFilter>();
+            })
             .AddJsonOptions(options => options.JsonSerializerOptions.Converters.Add(new JsonStringEnumConverter()));
     }
 

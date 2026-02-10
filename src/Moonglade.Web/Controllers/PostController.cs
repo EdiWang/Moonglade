@@ -64,7 +64,7 @@ public class PostController(
             {
                 if (string.IsNullOrWhiteSpace(model.ClientTimeZoneId))
                 {
-                    return Problem(detail: "Client time zone ID is required for scheduled posts.", statusCode: StatusCodes.Status409Conflict);
+                    return Conflict("Client time zone ID is required for scheduled posts.");
                 }
 
                 var clientTimeZone = TimeZoneInfo.FindSystemTimeZoneById(model.ClientTimeZoneId);
@@ -114,7 +114,7 @@ public class PostController(
         catch (Exception ex)
         {
             logger.LogError(ex, "Error updating post.");
-            return Problem(detail: "Error updating post.", statusCode: StatusCodes.Status409Conflict);
+            return Conflict("Error updating post.");
         }
     }
 

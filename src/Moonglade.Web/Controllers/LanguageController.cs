@@ -21,7 +21,7 @@ public class LanguageController(ILogger<LanguageController> logger) : Controller
             if (string.IsNullOrWhiteSpace(culture))
             {
                 logger.LogWarning("SetLanguage called with null or empty culture parameter");
-                return Problem(detail: "Culture parameter is required", statusCode: StatusCodes.Status400BadRequest);
+                return BadRequest("Culture parameter is required");
             }
 
             // Sanitize and validate culture format
@@ -29,7 +29,7 @@ public class LanguageController(ILogger<LanguageController> logger) : Controller
             if (!IsValidCultureFormat(sanitizedCulture))
             {
                 logger.LogWarning("Invalid culture format provided: {Culture}", sanitizedCulture);
-                return Problem(detail: "Invalid culture format", statusCode: StatusCodes.Status400BadRequest);
+                return BadRequest("Invalid culture format");
             }
 
             // Validate return URL to prevent open redirect attacks
@@ -58,7 +58,7 @@ public class LanguageController(ILogger<LanguageController> logger) : Controller
         catch (ArgumentException ex)
         {
             logger.LogError(ex, "Invalid culture argument: {Culture}", culture);
-            return Problem(detail: "Invalid culture specified", statusCode: StatusCodes.Status400BadRequest);
+            return BadRequest("Invalid culture specified");
         }
         catch (Exception ex)
         {

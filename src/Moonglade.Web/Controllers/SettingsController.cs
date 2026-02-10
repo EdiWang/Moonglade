@@ -75,7 +75,7 @@ public class SettingsController(
         }
         catch (Exception e)
         {
-            return Problem(detail: "Failed to send test email.", statusCode: StatusCodes.Status500InternalServerError);
+            return StatusCode(StatusCodes.Status500InternalServerError, "Failed to send test email.");
         }
     }
 
@@ -221,7 +221,7 @@ public class SettingsController(
     {
         var oldPasswordValid = blogConfig.LocalAccountSettings.PasswordHash == SecurityHelper.HashPassword(request.OldPassword.Trim(), blogConfig.LocalAccountSettings.PasswordSalt);
 
-        if (!oldPasswordValid) return Problem(detail: "Old password is incorrect.", statusCode: StatusCodes.Status409Conflict);
+        if (!oldPasswordValid) return Conflict("Old password is incorrect.");
 
         var newSalt = SecurityHelper.GenerateSalt();
         blogConfig.LocalAccountSettings.Username = request.NewUsername.Trim();
