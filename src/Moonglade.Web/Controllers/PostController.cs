@@ -266,16 +266,4 @@ public class PostController(
             Posts = posts
         });
     }
-
-    [HttpGet("scheduled")]
-    [ProducesResponseType(StatusCodes.Status200OK)]
-    public async Task<IActionResult> Scheduled()
-    {
-        var posts = await queryMediator.QueryAsync(new ListPostSegmentByStatusQuery(PostStatus.Scheduled));
-
-        return Ok(new
-        {
-            Posts = posts
-        });
-    }
 }

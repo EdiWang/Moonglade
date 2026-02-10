@@ -1,4 +1,6 @@
 ﻿using LiteBus.Commands.Abstractions;
+using LiteBus.Queries.Abstractions;
+using Moonglade.Data.DTO;
 using Moonglade.Features.Post;
 using System.ComponentModel.DataAnnotations;
 
@@ -9,9 +11,22 @@ namespace Moonglade.Web.Controllers;
 [ApiController]
 public class ScheduleController(
     ICacheAside cache,
+    IQueryMediator queryMediator,
     ICommandMediator commandMediator
     ) : ControllerBase
 {
+    [HttpGet("list")]
+    [ProducesResponseType(StatusCodes.Status200OK)]
+    public async Task<IActionResult> List()
+    {
+        var posts = await queryMediator.QueryAsync(new ListPostSegmentByStatusQuery(PostStatus.Scheduled));
+
+        return Ok(new
+        {
+            Posts = posts
+        });
+    }
+
     [HttpPut("{postId:guid}/cancel")]
     [ProducesResponseType(StatusCodes.Status204NoContent)]
     public async Task<IActionResult> Cancel([NotEmpty] Guid postId)

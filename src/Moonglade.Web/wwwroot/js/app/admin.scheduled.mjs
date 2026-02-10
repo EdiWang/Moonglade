@@ -45,7 +45,7 @@ Alpine.data('scheduledManager', () => ({
     async loadPosts() {
         this.isLoading = true;
         try {
-            const data = await fetch2('/api/post/scheduled', 'GET');
+            const data = await fetch2('/api/schedule/list', 'GET');
             this.posts = data.posts ?? [];
 
             await this.$nextTick();
