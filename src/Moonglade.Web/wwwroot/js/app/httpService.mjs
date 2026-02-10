@@ -35,16 +35,20 @@ async function buildErrorMessage(response) {
         case 400:
         case 409: {
             const contentType = response.headers.get('content-type');
-            if (contentType && contentType.includes('application/json')) {
+            if (contentType && contentType.includes('application/problem+json')) {
                 const data = await response.json();
                 if (typeof data === 'string') {
                     return data;
-                } else if (data.errors && Array.isArray(data.errors)) {
-                    return data.errors.join(', ');
+                } else if (data.errors && typeof data.errors === 'object') {
+                    return Object.values(data.errors)
+                        .flat()
+                        .join('\n');
+                } else if (data.title) {
+                    return data.title;
                 } else {
                     return Object.entries(data)
                         .map(([key, value]) => `${key}: ${value}`)
-                        .join('\n\r');
+                        .join('\n');
                 }
             }
             return await response.text();

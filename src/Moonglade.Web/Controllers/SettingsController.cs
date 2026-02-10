@@ -142,7 +142,7 @@ public class SettingsController(
         {
             ModelState.AddModelError(nameof(AdvancedSettings.HeadScripts),
                 "Only <script>...</script> blocks are allowed.");
-            return BadRequest(new { Errors = ModelState.GetErrorMessages() });
+            return ValidationProblem(ModelState);
         }
 
         if (!string.IsNullOrWhiteSpace(model.FootScripts) &&
@@ -150,7 +150,7 @@ public class SettingsController(
         {
             ModelState.AddModelError(nameof(AdvancedSettings.FootScripts),
                 "Only <script>...</script> blocks are allowed.");
-            return BadRequest(new { Errors = ModelState.GetErrorMessages() });
+            return ValidationProblem(ModelState);
         }
 
         blogConfig.AdvancedSettings = model;
@@ -168,7 +168,7 @@ public class SettingsController(
         if (model.EnableCustomCss && string.IsNullOrWhiteSpace(model.CssCode))
         {
             ModelState.AddModelError(nameof(AppearanceSettings.CssCode), "CSS Code is required");
-            return BadRequest(new { Errors = ModelState.GetErrorMessages() });
+            return ValidationProblem(ModelState);
         }
 
         blogConfig.AppearanceSettings = model;
@@ -189,7 +189,7 @@ public class SettingsController(
         if (model.IsEnabled && string.IsNullOrWhiteSpace(model.MenuJson))
         {
             ModelState.AddModelError(nameof(CustomMenuSettingsJsonModel.MenuJson), "Menus is required");
-            return BadRequest(new { Errors = ModelState.GetErrorMessages() });
+            return ValidationProblem(ModelState);
         }
 
         blogConfig.CustomMenuSettings = new()
