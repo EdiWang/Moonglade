@@ -293,43 +293,8 @@ public class Program
         app.UseMiddleware<PrefersColorSchemeMiddleware>();
         app.UseMiddleware<PoweredByMiddleware>();
 
-        if (app.Environment.IsDevelopment())
-        {
-            app.UseDeveloperExceptionPage();
-        }
-        else
-        {
-            app.UseExceptionHandler(exceptionApp =>
-            {
-                exceptionApp.Run(async context =>
-                {
-                    var exceptionFeature = context.Features.Get<Microsoft.AspNetCore.Diagnostics.IExceptionHandlerPathFeature>();
-                    if (exceptionFeature is not null)
-                    {
-                        var logger = context.RequestServices.GetRequiredService<ILoggerFactory>().CreateLogger("ExceptionHandler");
-                        var requestId = context.TraceIdentifier;
-                        logger.LogError(exceptionFeature.Error,
-                            "Unhandled exception at {Path}, client IP: {ClientIP}, request id: {RequestId}",
-                            exceptionFeature.Path,
-                            ClientIPHelper.GetClientIP(context),
-                            requestId);
-                    }
-
-                    context.Response.StatusCode = StatusCodes.Status500InternalServerError;
-                    await context.RequestServices.GetRequiredService<IProblemDetailsService>().WriteAsync(new ProblemDetailsContext
-                    {
-                        HttpContext = context,
-                        ProblemDetails =
-                        {
-                            Status = StatusCodes.Status500InternalServerError,
-                            Title = "An unexpected error occurred",
-                            Type = "https://tools.ietf.org/html/rfc9110#section-15.6.1"
-                        }
-                    });
-                });
-            });
-            app.UseStatusCodePages(ConfigureStatusCodePages.Handler);
-        }
+        app.UseExceptionHandler(ConfigureExceptionHandler.Handler);
+        app.UseStatusCodePages(ConfigureStatusCodePages.Handler);
 
         app.UseHttpsRedirection();
         app.UseRequestLocalization(new RequestLocalizationOptions
