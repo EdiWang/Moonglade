@@ -4,7 +4,6 @@ using LiteBus.Events.Abstractions;
 using LiteBus.Queries.Abstractions;
 using Moonglade.Email.Client;
 using Moonglade.Features.Asset;
-using Moonglade.Web.Extensions;
 using SecurityHelper = Moonglade.Utils.SecurityHelper;
 
 namespace Moonglade.Web.Controllers;

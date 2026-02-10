@@ -1,6 +1,4 @@
 using Microsoft.AspNetCore.Diagnostics;
-using Microsoft.AspNetCore.Mvc;
-using Moonglade.Web.Extensions;
 
 namespace Moonglade.Web.Configuration;
 

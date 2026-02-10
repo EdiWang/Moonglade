@@ -5,7 +5,6 @@ using Microsoft.AspNetCore.Mvc.ModelBinding;
 using Moonglade.Data.DTO;
 using Moonglade.Email.Client;
 using Moonglade.Moderation;
-using Moonglade.Web.Extensions;
 using System.ComponentModel.DataAnnotations;
 
 namespace Moonglade.Web.Controllers;
