@@ -4,7 +4,6 @@ using LiteBus.Events.Abstractions;
 using LiteBus.Queries.Abstractions;
 using Moonglade.Email.Client;
 using Moonglade.Features.Asset;
-using Moonglade.Web.Extensions;
 using SecurityHelper = Moonglade.Utils.SecurityHelper;
 
 namespace Moonglade.Web.Controllers;
@@ -75,7 +74,7 @@ public class SettingsController(
         }
         catch (Exception e)
         {
-            return StatusCode(StatusCodes.Status500InternalServerError, e.Message);
+            return StatusCode(StatusCodes.Status500InternalServerError, "Failed to send test email.");
         }
     }
 

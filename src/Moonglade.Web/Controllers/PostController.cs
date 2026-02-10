@@ -114,7 +114,7 @@ public class PostController(
         catch (Exception ex)
         {
             logger.LogError(ex, "Error updating post.");
-            return Conflict(ex.Message);
+            return Conflict("Error updating post.");
         }
     }
 
