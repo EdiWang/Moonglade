@@ -23,7 +23,7 @@ public class ScheduleController(
         return Ok(posts);
     }
 
-    [HttpPut("{postId:guid}/cancel")]
+    [HttpPut("cancel/{postId:guid}")]
     [ProducesResponseType(StatusCodes.Status204NoContent)]
     public async Task<IActionResult> Cancel([NotEmpty] Guid postId)
     {
@@ -33,7 +33,7 @@ public class ScheduleController(
         return NoContent();
     }
 
-    [HttpPut("{postId:guid}/postpone")]
+    [HttpPut("postpone/{postId:guid}")]
     [ProducesResponseType(StatusCodes.Status204NoContent)]
     public async Task<IActionResult> Postpone([NotEmpty] Guid postId, [FromQuery][Range(1, 24)] int hours = 24)
     {

@@ -102,7 +102,7 @@ Alpine.data('scheduledManager', () => ({
     async postponePost(postId) {
         try {
             const hours = 24;
-            await fetch2(`/api/schedule/${postId}/postpone?hours=${hours}`, 'PUT');
+            await fetch2(`/api/schedule/postpone/${postId}?hours=${hours}`, 'PUT');
             const template = getLocalizedString('postPostponed');
             success(template.replace('{0}', hours));
             setTimeout(async () => await this.loadPosts(), 500);
@@ -119,7 +119,7 @@ Alpine.data('scheduledManager', () => ({
     async confirmCancelSchedule() {
         if (!this.cancelScheduleTargetId) return;
         try {
-            await fetch2(`/api/schedule/${this.cancelScheduleTargetId}/cancel`, 'PUT');
+            await fetch2(`/api/schedule/cancel/${this.cancelScheduleTargetId}`, 'PUT');
             this.posts = this.posts.filter(p => p.id !== this.cancelScheduleTargetId);
             success(getLocalizedString('scheduleCancelled'));
         } catch (err) {
