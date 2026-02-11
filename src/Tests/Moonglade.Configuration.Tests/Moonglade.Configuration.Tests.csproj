@@ -3,8 +3,8 @@
 	<PropertyGroup>
 		<TargetFramework>net10.0</TargetFramework>
 		<ImplicitUsings>enable</ImplicitUsings>
+		<Nullable>enable</Nullable>
 		<IsPackable>false</IsPackable>
-		<IsTestProject>true</IsTestProject>
 	</PropertyGroup>
 
 	<ItemGroup>
@@ -22,7 +22,7 @@
 	</ItemGroup>
 
 	<ItemGroup>
-		<ProjectReference Include="..\Moonglade.IndexNow.Client\Moonglade.IndexNow.Client.csproj" />
+	  <ProjectReference Include="..\..\Moonglade.Configuration\Moonglade.Configuration.csproj" />
 	</ItemGroup>
 
 	<ItemGroup>
