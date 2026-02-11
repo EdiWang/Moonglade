@@ -18,7 +18,7 @@
         <PackageReference Include="Ardalis.Specification.EntityFrameworkCore" Version="9.3.1" />
         <PackageReference Include="LiteBus" Version="4.2.0" />
         <PackageReference Include="LiteBus.Extensions.Microsoft.DependencyInjection" Version="4.2.0" />
-		<PackageReference Include="Microsoft.EntityFrameworkCore.Relational" Version="10.0.2" />
+		<PackageReference Include="Microsoft.EntityFrameworkCore.Relational" Version="10.0.3" />
     </ItemGroup>
     <ItemGroup>
       <ProjectReference Include="..\Moonglade.Utils\Moonglade.Utils.csproj" />
