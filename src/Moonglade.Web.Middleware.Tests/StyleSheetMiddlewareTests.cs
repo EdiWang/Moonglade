@@ -139,7 +139,7 @@ public class StyleSheetMiddlewareTests
         Assert.Equal("text/plain", context.Response.ContentType);
 
         responseBodyStream.Seek(0, SeekOrigin.Begin);
-        var responseBody = await new StreamReader(responseBodyStream).ReadToEndAsync();
+        var responseBody = await new StreamReader(responseBodyStream).ReadToEndAsync(TestContext.Current.CancellationToken);
         Assert.Equal("Stylesheet not found", responseBody);
     }
 
@@ -185,7 +185,7 @@ public class StyleSheetMiddlewareTests
         Assert.Equal(Encoding.UTF8.GetByteCount(cssCode), context.Response.ContentLength);
 
         responseBodyStream.Seek(0, SeekOrigin.Begin);
-        var responseBody = await new StreamReader(responseBodyStream).ReadToEndAsync();
+        var responseBody = await new StreamReader(responseBodyStream).ReadToEndAsync(TestContext.Current.CancellationToken);
         Assert.Equal(cssCode, responseBody);
     }
 
@@ -313,7 +313,7 @@ public class StyleSheetMiddlewareTests
         Assert.Equal("text/plain", context.Response.ContentType);
 
         responseBodyStream.Seek(0, SeekOrigin.Begin);
-        var responseBody = await new StreamReader(responseBodyStream).ReadToEndAsync();
+        var responseBody = await new StreamReader(responseBodyStream).ReadToEndAsync(TestContext.Current.CancellationToken);
         Assert.Equal("CSS content too large", responseBody);
     }
 
@@ -423,7 +423,7 @@ public class StyleSheetMiddlewareTests
         context.Request.Path = "/custom.css";
 
         // Simulate response already started
-        await context.Response.WriteAsync("some content");
+        await context.Response.WriteAsync("some content", TestContext.Current.CancellationToken);
 
         _mockBlogConfig.Setup(x => x.AppearanceSettings).Throws(new InvalidOperationException("Config error"));
 

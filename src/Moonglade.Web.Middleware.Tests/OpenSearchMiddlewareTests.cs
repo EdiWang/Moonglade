@@ -59,7 +59,7 @@ public class OpenSearchMiddlewareTests
         Assert.Equal("text/xml", context.Response.ContentType);
 
         responseBodyStream.Seek(0, SeekOrigin.Begin);
-        var responseBody = await new StreamReader(responseBodyStream).ReadToEndAsync();
+        var responseBody = await new StreamReader(responseBodyStream).ReadToEndAsync(TestContext.Current.CancellationToken);
 
         Assert.Contains("OpenSearchDescription", responseBody);
         Assert.Contains("Test Blog", responseBody);
@@ -124,7 +124,7 @@ public class OpenSearchMiddlewareTests
 
         // Assert
         responseBodyStream.Seek(0, SeekOrigin.Begin);
-        var responseBody = await new StreamReader(responseBodyStream).ReadToEndAsync();
+        var responseBody = await new StreamReader(responseBodyStream).ReadToEndAsync(TestContext.Current.CancellationToken);
 
         Assert.Contains("https://custom.domain.com/favicon-16x16.png", responseBody);
         Assert.Contains("https://custom.domain.com/search?term={searchTerms}", responseBody);
@@ -152,7 +152,7 @@ public class OpenSearchMiddlewareTests
 
         // Assert
         responseBodyStream.Seek(0, SeekOrigin.Begin);
-        var responseBody = await new StreamReader(responseBodyStream).ReadToEndAsync();
+        var responseBody = await new StreamReader(responseBodyStream).ReadToEndAsync(TestContext.Current.CancellationToken);
 
         Assert.Contains("https://example.com/favicon-16x16.png", responseBody);
         Assert.Contains("https://example.com/search?term={searchTerms}", responseBody);
@@ -180,7 +180,7 @@ public class OpenSearchMiddlewareTests
 
         // Assert
         responseBodyStream.Seek(0, SeekOrigin.Begin);
-        var responseBody = await new StreamReader(responseBodyStream).ReadToEndAsync();
+        var responseBody = await new StreamReader(responseBodyStream).ReadToEndAsync(TestContext.Current.CancellationToken);
 
         // Verify XML is valid by parsing it
         var xmlDoc = new XmlDocument();
@@ -237,7 +237,7 @@ public class OpenSearchMiddlewareTests
 
         // Assert
         responseBodyStream.Seek(0, SeekOrigin.Begin);
-        var responseBody = await new StreamReader(responseBodyStream).ReadToEndAsync();
+        var responseBody = await new StreamReader(responseBodyStream).ReadToEndAsync(TestContext.Current.CancellationToken);
 
         // Verify XML is still valid with special characters
         var xmlDoc = new XmlDocument();
@@ -284,7 +284,7 @@ public class OpenSearchMiddlewareTests
 
         // Assert
         responseBodyStream.Seek(0, SeekOrigin.Begin);
-        var responseBody = await new StreamReader(responseBodyStream).ReadToEndAsync();
+        var responseBody = await new StreamReader(responseBodyStream).ReadToEndAsync(TestContext.Current.CancellationToken);
 
         Assert.Contains("https://example.com/custom-icon.ico", responseBody);
         Assert.Contains("image/x-icon", responseBody);
