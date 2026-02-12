@@ -22,7 +22,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\Moonglade.Utils\Moonglade.Utils.csproj" />
+    <ProjectReference Include="..\..\Moonglade.Utils\Moonglade.Utils.csproj" />
   </ItemGroup>
 
   <ItemGroup>

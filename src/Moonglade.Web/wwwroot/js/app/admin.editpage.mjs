@@ -1,4 +1,4 @@
-import { default as Alpine } from '/lib/alpinejs/alpinejs.3.15.8.module.esm.min.js';
+import { Alpine } from '/js/app/alpine-init.mjs';
 import { fetch2 } from './httpService.mjs?v=1500';
 import { success } from './toastService.mjs';
 

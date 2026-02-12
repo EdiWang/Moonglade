@@ -6,7 +6,7 @@
 		<IsPackable>false</IsPackable>
 		<IsTestProject>true</IsTestProject>
 	</PropertyGroup>
-	
+
 	<ItemGroup>
 		<PackageReference Include="coverlet.collector" Version="6.0.4">
 			<PrivateAssets>all</PrivateAssets>
@@ -20,9 +20,9 @@
 			<IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
 		</PackageReference>
 	</ItemGroup>
-	
+
 	<ItemGroup>
-	  <ProjectReference Include="..\Moonglade.Moderation\Moonglade.Moderation.csproj" />
+		<ProjectReference Include="..\..\Moonglade.ImageStorage\Moonglade.ImageStorage.csproj" />
 	</ItemGroup>
 
 	<ItemGroup>

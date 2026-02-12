@@ -1,3 +1,4 @@
+﻿using Edi.AspNetCore.Utils.Filters;
 using Edi.Captcha;
 using Edi.PasswordGenerator;
 using LiteBus.Commands;
@@ -123,6 +124,15 @@ public class Program
         services.AddTransient<IPasswordGenerator, DefaultPasswordGenerator>();
         services.AddHealthChecks()
             .AddCheck("self", () => HealthCheckResult.Healthy("Application is running"));
+        services.AddProblemDetails(options =>
+        {
+            options.CustomizeProblemDetails = context =>
+            {
+                context.ProblemDetails.Instance = context.HttpContext.Request.Path;
+                context.ProblemDetails.Extensions["traceId"] = context.HttpContext.TraceIdentifier;
+            };
+        });
+
         ConfigureMoongladeServices(services, configuration);
         ConfigureDatabase(services, configuration);
         ConfigureInitializers(services);
@@ -159,9 +169,12 @@ public class Program
 
     private static void ConfigureControllers(IServiceCollection services)
     {
-        services.AddControllers(options => options.Filters.Add(new AutoValidateAntiforgeryTokenAttribute()))
-            .AddJsonOptions(options => options.JsonSerializerOptions.Converters.Add(new JsonStringEnumConverter()))
-            .ConfigureApiBehaviorOptions(ConfigureApiBehavior.BlogApiBehavior);
+        services.AddControllers(options =>
+            {
+                options.Filters.Add(new AutoValidateAntiforgeryTokenAttribute());
+                options.Filters.Add<ProblemDetailsResultFilter>();
+            })
+            .AddJsonOptions(options => options.JsonSerializerOptions.Converters.Add(new JsonStringEnumConverter()));
     }
 
     private static void ConfigureRazorPages(IServiceCollection services)
@@ -281,14 +294,8 @@ public class Program
         app.UseMiddleware<PrefersColorSchemeMiddleware>();
         app.UseMiddleware<PoweredByMiddleware>();
 
-        if (app.Environment.IsDevelopment())
-        {
-            app.UseDeveloperExceptionPage();
-        }
-        else
-        {
-            app.UseStatusCodePages(ConfigureStatusCodePages.Handler).UseExceptionHandler("/error");
-        }
+        app.UseExceptionHandler(ConfigureExceptionHandler.Handler);
+        app.UseStatusCodePages(ConfigureStatusCodePages.Handler);
 
         app.UseHttpsRedirection();
         app.UseRequestLocalization(new RequestLocalizationOptions

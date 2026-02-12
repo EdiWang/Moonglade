@@ -1,7 +1,7 @@
-import { default as Alpine } from '/lib/alpinejs/alpinejs.3.15.8.module.esm.min.js';
+import { Alpine } from '/js/app/alpine-init.mjs';
 import { fetch2 } from '/js/app/httpService.mjs?v=1500';
 import { formatUtcTime, getLocalizedString } from './utils.module.mjs';
-import { success } from '/js/app/toastService.mjs';
+import { success, error } from '/js/app/toastService.mjs';
 
 Alpine.data('postManager', () => ({
 posts: [],
@@ -39,6 +39,8 @@ async init() {
             this.totalRows = data.totalRows ?? 0;
             
             formatUtcTime();
+        } catch (err) {
+            error(err);
         } finally {
             this.isLoading = false;
         }
@@ -74,11 +76,16 @@ async init() {
 
     async confirmAction() {
         if (this.pendingDeleteId) {
-            await fetch2(`/api/post/${this.pendingDeleteId}/recycle`, 'DELETE');
-            await this.loadPosts();
-            success(getLocalizedString('postDeleted'));
-            this.confirmModal.hide();
-            this.pendingDeleteId = null;
+            try {
+                await fetch2(`/api/post/${this.pendingDeleteId}/recycle`, 'DELETE');
+                await this.loadPosts();
+                success(getLocalizedString('postDeleted'));
+            } catch (err) {
+                error(err);
+            } finally {
+                this.confirmModal.hide();
+                this.pendingDeleteId = null;
+            }
         }
     },
 

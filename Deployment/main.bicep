@@ -123,5 +123,3 @@ resource webApp 'Microsoft.Web/sites@2022-03-01' = {
 // Outputs
 output webAppUrl string = 'https://${webApp.properties.defaultHostName}'
 output sqlServerFqdn string = sqlServer.properties.fullyQualifiedDomainName
-output storageAccountConnectionString string = 'DefaultEndpointsProtocol=https;AccountName=${storageAccount.name};AccountKey=${storageAccount.listKeys().keys[0].value};EndpointSuffix=${environment().suffixes.storage}'
-output sqlConnectionString string = 'Server=tcp:${sqlServer.properties.fullyQualifiedDomainName},1433;Initial Catalog=${sqlDatabaseName};Persist Security Info=False;User ID=${sqlAdminUsername};Password=${sqlAdminPassword};MultipleActiveResultSets=False;Encrypt=True;TrustServerCertificate=False;Connection Timeout=30;'

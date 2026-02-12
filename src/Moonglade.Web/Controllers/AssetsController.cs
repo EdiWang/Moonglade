@@ -60,7 +60,7 @@ public class AssetsController(
         catch (Exception e)
         {
             logger.LogError(e, "Invalid base64img Image");
-            return Conflict(e.Message);
+            return Conflict("Invalid image data.");
         }
 
         await eventMediator.PublishAsync(new SaveAssetEvent(AssetId.AvatarBase64, base64Img));

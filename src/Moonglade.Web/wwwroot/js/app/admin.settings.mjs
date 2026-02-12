@@ -1,6 +1,6 @@
 ﻿import { fetch2 } from './httpService.mjs?v=1500'
 import { toMagicJson, getLocalizedString } from './utils.module.mjs'
-import { success } from './toastService.mjs'
+import { success, error } from './toastService.mjs'
 
 export async function handleSettingsSubmit(event) {
     event.preventDefault();
@@ -24,10 +24,14 @@ export async function handleSettingsSubmit(event) {
     const formValues = Object.fromEntries(formData.entries());
     const formattedValues = toMagicJson(formValues);
 
-    await fetch2(event.currentTarget.action, 'POST', formattedValues);
-
-    success(getLocalizedString('settingsUpdated'));
-    enableButton();
+    try {
+        await fetch2(event.currentTarget.action, 'POST', formattedValues);
+        success(getLocalizedString('settingsUpdated'));
+    } catch (err) {
+        error(err);
+    } finally {
+        enableButton();
+    }
 }
 
 export function compareVersionNumbers(v1, v2) {

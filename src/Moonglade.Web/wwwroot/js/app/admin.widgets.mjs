@@ -1,6 +1,6 @@
-﻿import { default as Alpine } from '/lib/alpinejs/alpinejs.3.15.8.module.esm.min.js';
+﻿import { Alpine } from '/js/app/alpine-init.mjs';
 import { fetch2 } from '/js/app/httpService.mjs?v=1500';
-import { success } from '/js/app/toastService.mjs';
+import { success, error } from '/js/app/toastService.mjs';
 import { getLocalizedString } from './utils.module.mjs';
 
 Alpine.data('widgetManager', () => ({
@@ -50,6 +50,8 @@ formData: {
         this.isLoading = true;
         try {
             this.widgets = (await fetch2('/api/widgets/list', 'GET')) ?? [];
+        } catch (err) {
+            error(err);
         } finally {
             this.isLoading = false;
         }
@@ -104,27 +106,31 @@ formData: {
     },
 
     async editWidget(id) {
-        const widget = await fetch2(`/api/widgets/${id}`, 'GET');
-        this.currentWidgetId = widget.id;
+        try {
+            const widget = await fetch2(`/api/widgets/${id}`, 'GET');
+            this.currentWidgetId = widget.id;
         
-        let links = [];
-        if (widget.widgetType === 'LinkList' && widget.contentCode) {
-            try {
-                links = JSON.parse(widget.contentCode);
-            } catch (e) {
-                links = [];
+            let links = [];
+            if (widget.widgetType === 'LinkList' && widget.contentCode) {
+                try {
+                    links = JSON.parse(widget.contentCode);
+                } catch (e) {
+                    links = [];
+                }
             }
+        
+            this.formData = {
+                title: widget.title,
+                widgetType: widget.widgetType,
+                displayOrder: widget.displayOrder,
+                isEnabled: widget.isEnabled,
+                links: links
+            };
+        
+            this.editCanvas.show();
+        } catch (err) {
+            error(err);
         }
-        
-        this.formData = {
-            title: widget.title,
-            widgetType: widget.widgetType,
-            displayOrder: widget.displayOrder,
-            isEnabled: widget.isEnabled,
-            links: links
-        };
-        
-        this.editCanvas.show();
     },
 
     deleteWidget(id) {
@@ -162,11 +168,15 @@ formData: {
                 : ''
         };
 
-        await fetch2(apiAddress, verb, requestData);
+        try {
+            await fetch2(apiAddress, verb, requestData);
 
-        this.editCanvas.hide();
-        await this.loadWidgets();
-        success(isCreate ? getLocalizedString('widgetCreated') : getLocalizedString('widgetUpdated'));
+            this.editCanvas.hide();
+            await this.loadWidgets();
+            success(isCreate ? getLocalizedString('widgetCreated') : getLocalizedString('widgetUpdated'));
+        } catch (err) {
+            error(err);
+        }
     },
 
     onWidgetTypeChange() {

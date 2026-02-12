@@ -1,6 +1,6 @@
-﻿import { default as Alpine } from '/lib/alpinejs/alpinejs.3.15.8.module.esm.min.js';
+﻿import { Alpine } from '/js/app/alpine-init.mjs';
 import { fetch2 } from '/js/app/httpService.mjs?v=1500';
-import { success } from '/js/app/toastService.mjs';
+import { success, error } from '/js/app/toastService.mjs';
 import { getLocalizedString } from './utils.module.mjs';
 
 let menuItemModal, subMenuItemModal, confirmModal;
@@ -40,6 +40,8 @@ Alpine.data('menuManager', () => ({
                     menus: data.menus || []
                 };
             }
+        } catch (err) {
+            error(err);
         } finally {
             this.isLoading = false;
         }
@@ -54,8 +56,8 @@ Alpine.data('menuManager', () => ({
         try {
             await fetch2('/api/settings/custom-menu', 'POST', payload);
             success(getLocalizedString('settingsSaved'));
-        } catch (error) {
-            console.error('Error saving settings:', error);
+        } catch (err) {
+            error(err);
         }
     },
 

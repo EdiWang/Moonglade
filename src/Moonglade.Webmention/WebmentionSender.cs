@@ -5,7 +5,7 @@ using System.Text.RegularExpressions;
 
 namespace Moonglade.Webmention;
 
-public class WebmentionSender(
+public partial class WebmentionSender(
     HttpClient httpClient,
     IWebmentionRequestor requestor,
     ILogger<WebmentionSender> logger) : IWebmentionSender
@@ -22,28 +22,26 @@ public class WebmentionSender(
                 return;
             }
 
-            var content = postContent.ToUpperInvariant();
-            if (content.Contains("HTTP://") || content.Contains("HTTPS://"))
+            if (!ContainsUrl(postContent)) return;
+
+            logger.LogInformation("URL is detected in post content, trying to send webmention requests.");
+
+            foreach (var url in UrlHelper.GetUrlsFromContent(postContent))
             {
-                logger.LogInformation("URL is detected in post content, trying to send webmention requests.");
-
-                foreach (var url in UrlHelper.GetUrlsFromContent(postContent))
+                if (url.IsLocalhostUrl())
                 {
-                    if (url.IsLocalhostUrl())
-                    {
-                        logger.LogWarning("Target URL is localhost, skipping.");
-                        continue;
-                    }
+                    logger.LogWarning("Target URL is localhost, skipping.");
+                    continue;
+                }
 
-                    logger.LogInformation("Sending webmention to URL: {TargetUrl}", url);
-                    try
-                    {
-                        await SendAsync(uri, url);
-                    }
-                    catch (Exception e)
-                    {
-                        logger.LogError(e, "SendAsync Webmention Error.");
-                    }
+                logger.LogInformation("Sending webmention to URL: {TargetUrl}", url);
+                try
+                {
+                    await SendAsync(uri, url);
+                }
+                catch (Exception e)
+                {
+                    logger.LogError(e, "SendAsync Webmention Error.");
                 }
             }
         }
@@ -55,14 +53,12 @@ public class WebmentionSender(
 
     private async Task SendAsync(Uri sourceUrl, Uri targetUrl)
     {
-        if (sourceUrl is null || targetUrl is null)
-        {
-            return;
-        }
+        ArgumentNullException.ThrowIfNull(sourceUrl);
+        ArgumentNullException.ThrowIfNull(targetUrl);
 
         try
         {
-            string endpoint = await DiscoverWebmentionEndpoint(targetUrl.ToString());
+            var endpoint = await DiscoverWebmentionEndpoint(targetUrl);
             if (endpoint is null)
             {
                 logger.LogWarning("Webmention endpoint not found for '{TargetUrl}'.", targetUrl);
@@ -71,23 +67,22 @@ public class WebmentionSender(
 
             logger.LogInformation("Found Webmention service URL '{Endpoint}' on target '{TargetUrl}'", endpoint, targetUrl);
 
-            bool successUrlCreation = Uri.TryCreate(endpoint, UriKind.Absolute, out var url);
-            if (successUrlCreation)
+            // Resolve relative URLs against the target
+            if (!Uri.TryCreate(targetUrl, endpoint, out var endpointUrl))
             {
-                var wmResponse = await requestor.Send(sourceUrl, targetUrl, url);
+                logger.LogWarning("Invalid Webmention service URL '{Endpoint}'", endpoint);
+                return;
+            }
 
-                if (!wmResponse.IsSuccessStatusCode)
-                {
-                    logger.LogError("Webmention request failed: {StatusCode}", wmResponse.StatusCode);
-                }
-                else
-                {
-                    logger.LogInformation("Webmention request successful: {StatusCode}", wmResponse.StatusCode);
-                }
+            var wmResponse = await requestor.Send(sourceUrl, targetUrl, endpointUrl);
+
+            if (!wmResponse.IsSuccessStatusCode)
+            {
+                logger.LogError("Webmention request failed: {StatusCode}", wmResponse.StatusCode);
             }
             else
             {
-                logger.LogInformation("Invliad Webmention service URL '{Endpoint}'", endpoint);
+                logger.LogInformation("Webmention request successful: {StatusCode}", wmResponse.StatusCode);
             }
         }
         catch (Exception e)
@@ -96,22 +91,40 @@ public class WebmentionSender(
         }
     }
 
-    private async Task<string> DiscoverWebmentionEndpoint(string targetUrl)
+    private async Task<string> DiscoverWebmentionEndpoint(Uri targetUrl)
     {
-        var response = await httpClient.GetAsync(targetUrl);
+        using var response = await httpClient.GetAsync(targetUrl, HttpCompletionOption.ResponseHeadersRead);
         if (!response.IsSuccessStatusCode) return null;
 
-        var html = await response.Content.ReadAsStringAsync();
-
-        // Regex to find the Webmention endpoint in the HTML
-        Regex regex = new Regex("<link rel=\"webmention\" href=\"([^\"]+)\"");
-        Match match = regex.Match(html);
-
-        if (match.Success)
+        // 1. Check HTTP Link header first (per W3C Webmention spec)
+        if (response.Headers.TryGetValues("Link", out var linkHeaders))
         {
-            return match.Groups[1].Value;
+            foreach (var header in linkHeaders)
+            {
+                var linkMatch = LinkHeaderRegex().Match(header);
+                if (linkMatch.Success)
+                {
+                    return linkMatch.Groups[1].Value;
+                }
+            }
         }
 
-        return null;
+        // 2. Fall back to HTML <link> tag
+        var html = await response.Content.ReadAsStringAsync();
+        var match = HtmlLinkRegex().Match(html);
+
+        return match.Success ? match.Groups["href"].Value : null;
     }
+
+    private static bool ContainsUrl(string content) =>
+        content.Contains("http://", StringComparison.OrdinalIgnoreCase) ||
+        content.Contains("https://", StringComparison.OrdinalIgnoreCase);
+
+    // Matches: <url>; rel="webmention"  or  <url>; rel=webmention
+    [GeneratedRegex("""<([^>]+)>;\s*rel="?webmention"?""", RegexOptions.IgnoreCase)]
+    private static partial Regex LinkHeaderRegex();
+
+    // Matches <link> with rel="webmention" regardless of attribute order
+    [GeneratedRegex("""<link\s[^>]*rel=["']webmention["'][^>]*href=["'](?<href>[^"']+)["']|<link\s[^>]*href=["'](?<href>[^"']+)["'][^>]*rel=["']webmention["']""", RegexOptions.IgnoreCase)]
+    private static partial Regex HtmlLinkRegex();
 }

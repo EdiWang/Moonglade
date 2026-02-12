@@ -311,7 +311,7 @@ public class RemoteModerationServiceTests
         Assert.EndsWith("/api/mask", capturedRequest.RequestUri!.ToString());
         Assert.Equal("application/json", capturedRequest.Content!.Headers.ContentType!.MediaType);
 
-        var requestBody = await capturedRequest.Content.ReadAsStringAsync();
+        var requestBody = await capturedRequest.Content.ReadAsStringAsync(TestContext.Current.CancellationToken);
         var payload = JsonSerializer.Deserialize<Payload>(requestBody);
 
         Assert.NotNull(payload);
@@ -567,7 +567,7 @@ public class RemoteModerationServiceTests
         Assert.EndsWith("/api/detect", capturedRequest.RequestUri!.ToString());
         Assert.Equal("application/json", capturedRequest.Content!.Headers.ContentType!.MediaType);
 
-        var requestBody = await capturedRequest.Content.ReadAsStringAsync();
+        var requestBody = await capturedRequest.Content.ReadAsStringAsync(TestContext.Current.CancellationToken);
         var payload = JsonSerializer.Deserialize<Payload>(requestBody);
 
         Assert.NotNull(payload);
@@ -616,7 +616,7 @@ public class RemoteModerationServiceTests
         Assert.False(result);
         Assert.NotNull(capturedRequest);
 
-        var requestBody = await capturedRequest.Content.ReadAsStringAsync();
+        var requestBody = await capturedRequest.Content.ReadAsStringAsync(TestContext.Current.CancellationToken);
         var payload = JsonSerializer.Deserialize<Payload>(requestBody);
 
         Assert.NotNull(payload);

@@ -5,7 +5,6 @@ using Microsoft.AspNetCore.Mvc.ModelBinding;
 using Moonglade.Data.DTO;
 using Moonglade.Email.Client;
 using Moonglade.Moderation;
-using Moonglade.Web.Extensions;
 using System.ComponentModel.DataAnnotations;
 
 namespace Moonglade.Web.Controllers;
@@ -50,7 +49,7 @@ public class CommentController(
         if (item == null)
         {
             ModelState.AddModelError(nameof(postId), "Comment is closed for this post.");
-            return Conflict(ModelState);
+            return ValidationProblem(ModelState);
         }
 
         try
@@ -176,7 +175,7 @@ public class CommentController(
         if (!string.IsNullOrWhiteSpace(request.Email) && !Helper.IsValidEmailAddress(request.Email))
         {
             ModelState.AddModelError(nameof(request.Email), "Invalid email address.");
-            return BadRequest(new { Errors = ModelState.GetErrorMessages() });
+            return ValidationProblem(ModelState);
         }
 
         return null;
@@ -200,7 +199,7 @@ public class CommentController(
                 if (await moderator.Detect(request.Username, request.Content))
                 {
                     ModelState.AddModelError(nameof(request.Content), "Your comment contains inappropriate content.");
-                    return Conflict(ModelState);
+                    return ValidationProblem(ModelState);
                 }
                 break;
         }

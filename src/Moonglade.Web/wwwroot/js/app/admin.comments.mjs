@@ -1,4 +1,4 @@
-import { default as Alpine } from '/lib/alpinejs/alpinejs.3.15.8.module.esm.min.js';
+import { Alpine } from '/js/app/alpine-init.mjs';
 import { fetch2 } from '/js/app/httpService.mjs?v=1500';
 import { formatUtcTime, getLocalizedString } from '/js/app/utils.module.mjs';
 import { success } from '/js/app/toastService.mjs';

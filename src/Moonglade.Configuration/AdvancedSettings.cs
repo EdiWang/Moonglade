@@ -10,9 +10,14 @@ public class AdvancedSettings : IBlogSettings
     [MaxLength(1024)]
     public string RobotsTxtContent { get; set; }
 
+    [Display(Name = "Head JavaScript")]
+    [DataType(DataType.MultilineText)]
+    [MaxLength(4096)]
+    public string HeadScripts { get; set; }
+
     [Display(Name = "Foot JavaScript")]
     [DataType(DataType.MultilineText)]
-    [MaxLength(2048)]
+    [MaxLength(4096)]
     public string FootScripts { get; set; }
 
     [Display(Name = "Enable Webmention")]

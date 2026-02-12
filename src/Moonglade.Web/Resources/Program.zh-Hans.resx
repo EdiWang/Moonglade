@@ -387,9 +387,6 @@
   <data name="Featured Posts" xml:space="preserve">
     <value>精选文章</value>
   </data>
-  <data name="Fit image to device pixel ratio" xml:space="preserve">
-    <value>图片自动适配设备DPI</value>
-  </data>
   <data name="Font size" xml:space="preserve">
     <value>字号</value>
   </data>

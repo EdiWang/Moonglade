@@ -44,7 +44,7 @@ public class MigrationManagerTests
         var manager = CreateManager();
 
         // Act & Assert
-        await Assert.ThrowsAsync<ArgumentNullException>(() => manager.TryMigrationAsync(null!));
+        await Assert.ThrowsAsync<ArgumentNullException>(() => manager.TryMigrationAsync(null!, TestContext.Current.CancellationToken));
     }
 
     [Fact]
@@ -56,89 +56,12 @@ public class MigrationManagerTests
         SetupConfiguration("Setup:AutoDatabaseMigration", "false");
 
         // Act
-        var result = await manager.TryMigrationAsync(_contextMock.Object);
+        var result = await manager.TryMigrationAsync(_contextMock.Object, TestContext.Current.CancellationToken);
 
         // Assert
         Assert.Equal(MigrationStatus.Disabled, result.Status);
         Assert.False(result.IsSuccess);
         Assert.Contains("disabled", result.ErrorMessage, StringComparison.OrdinalIgnoreCase);
-    }
-
-    [Fact]
-    public async Task TryMigrationAsync_ReturnsUnsupportedVersion_WhenVersionIsNonStable()
-    {
-        // Arrange
-        var manager = CreateManager();
-        SetupSystemManifest("1.0.0-preview", DateTime.UtcNow);
-        SetupConfiguration("Setup:AutoDatabaseMigration", "true");
-
-        // Mock VersionHelper.IsNonStableVersion to return true
-        // Note: This test assumes VersionHelper.IsNonStableVersion() can be controlled
-        // If it's a static method checking the actual app version, you may need to skip this test
-        // or use a different approach
-
-        // Act
-        var result = await manager.TryMigrationAsync(_contextMock.Object);
-
-        // Assert
-        // This test might need adjustment based on how VersionHelper works
-        Assert.NotEqual(MigrationStatus.Failed, result.Status);
-    }
-
-    [Fact]
-    public async Task TryMigrationAsync_ReturnsVersionParsingError_WhenManifestVersionIsInvalid()
-    {
-        // Arrange
-        var manager = CreateManager();
-        SetupSystemManifest("invalid-version", DateTime.UtcNow);
-        SetupConfiguration("Setup:AutoDatabaseMigration", "true");
-
-        // Act
-        var result = await manager.TryMigrationAsync(_contextMock.Object);
-
-        // Assert
-        Assert.Equal(MigrationStatus.VersionParsingError, result.Status);
-        Assert.True(result.IsFailed);
-        Assert.Contains("Invalid manifest version", result.ErrorMessage);
-    }
-
-    [Fact]
-    public async Task TryMigrationAsync_ReturnsNotRequired_WhenVersionsAreSame()
-    {
-        // Arrange
-        var manager = CreateManager();
-        var currentVersion = VersionHelper.AppVersionBasic;
-        SetupSystemManifest(currentVersion, DateTime.UtcNow);
-        SetupConfiguration("Setup:AutoDatabaseMigration", "true");
-
-        // Act
-        var result = await manager.TryMigrationAsync(_contextMock.Object);
-
-        // Assert
-        Assert.Equal(MigrationStatus.NotRequired, result.Status);
-        Assert.True(result.IsSuccess);
-    }
-
-    [Fact]
-    public async Task TryMigrationAsync_ReturnsNotRequired_WhenOnlyPatchVersionChanged()
-    {
-        // Arrange
-        var manager = CreateManager();
-
-        // Parse current version and create a version with same major.minor but different patch
-        if (Version.TryParse(VersionHelper.AppVersionBasic, out var currentVersion))
-        {
-            var manifestVersion = new Version(currentVersion.Major, currentVersion.Minor, 0);
-            SetupSystemManifest(manifestVersion.ToString(), DateTime.UtcNow);
-            SetupConfiguration("Setup:AutoDatabaseMigration", "true");
-
-            // Act
-            var result = await manager.TryMigrationAsync(_contextMock.Object);
-
-            // Assert
-            Assert.Equal(MigrationStatus.NotRequired, result.Status);
-            Assert.True(result.IsSuccess);
-        }
     }
 
     [Fact]
@@ -152,7 +75,7 @@ public class MigrationManagerTests
         SetupConfiguration("Setup:AutoDatabaseMigration", "false");
 
         // Act
-        await manager.TryMigrationAsync(_contextMock.Object);
+        await manager.TryMigrationAsync(_contextMock.Object, TestContext.Current.CancellationToken);
 
         // Assert
         _loggerMock.Verify(

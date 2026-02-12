@@ -36,12 +36,14 @@
     <Project Path="Moonglade.Utils/Moonglade.Utils.csproj" />
   </Folder>
   <Folder Name="/Tests/">
-    <Project Path="Moonglade.ImageStorage.Tests/Moonglade.ImageStorage.Tests.csproj" />
-    <Project Path="Moonglade.IndexNow.Client.Tests/Moonglade.IndexNow.Client.Tests.csproj" />
-    <Project Path="Moonglade.Moderation.Tests/Moonglade.Moderation.Tests.csproj" />
-    <Project Path="Moonglade.Setup.Tests/Moonglade.Setup.Tests.csproj" Id="44f51425-0044-4461-8825-f250a0f6ebff" />
-    <Project Path="Moonglade.Theme.Tests/Moonglade.Theme.Tests.csproj" />
-    <Project Path="Moonglade.Utils.Tests/Moonglade.Utils.Tests.csproj" />
-    <Project Path="Moonglade.Web.Middleware.Tests/Moonglade.Web.Middleware.Tests.csproj" />
+    <Project Path="Tests/Moonglade.Configuration.Tests/Moonglade.Configuration.Tests.csproj" Id="16bbf182-7908-4306-9a7e-207517fc9bc4" />
+    <Project Path="Tests/Moonglade.ImageStorage.Tests/Moonglade.ImageStorage.Tests.csproj" />
+    <Project Path="Tests/Moonglade.IndexNow.Client.Tests/Moonglade.IndexNow.Client.Tests.csproj" />
+    <Project Path="Tests/Moonglade.Moderation.Tests/Moonglade.Moderation.Tests.csproj" />
+    <Project Path="Tests/Moonglade.Setup.Tests/Moonglade.Setup.Tests.csproj" Id="44f51425-0044-4461-8825-f250a0f6ebff" />
+    <Project Path="Tests/Moonglade.Theme.Tests/Moonglade.Theme.Tests.csproj" />
+    <Project Path="Tests/Moonglade.Utils.Tests/Moonglade.Utils.Tests.csproj" />
+    <Project Path="Tests/Moonglade.Web.Middleware.Tests/Moonglade.Web.Middleware.Tests.csproj" />
+    <Project Path="Tests/Moonglade.Webmention.Tests/Moonglade.Webmention.Tests.csproj" Id="bf77741b-b5f0-431c-bb44-0dbf1ab337a9" />
   </Folder>
 </Solution>

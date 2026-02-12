@@ -1,6 +1,6 @@
-import { default as Alpine } from '/lib/alpinejs/alpinejs.3.15.8.module.esm.min.js';
+import { Alpine } from '/js/app/alpine-init.mjs';
 import { fetch2 } from '/js/app/httpService.mjs?v=1500';
-import { success } from '/js/app/toastService.mjs';
+import { success, error } from '/js/app/toastService.mjs';
 import { getLocalizedString } from './utils.module.mjs';
 
 Alpine.data('tagManager', () => ({
@@ -28,6 +28,8 @@ async init() {
         this.isLoading = true;
         try {
             this.tags = (await fetch2('/api/tags/list/count', 'GET')) ?? [];
+        } catch (err) {
+            error(err);
         } finally {
             this.isLoading = false;
         }
@@ -99,7 +101,7 @@ async init() {
             success(getLocalizedString('tagUpdated'));
         } catch (err) {
             event.target.textContent = originalTagName;
-            console.error(err);
+            error(err);
         }
     },
 
@@ -115,7 +117,7 @@ async init() {
             await this.loadTags();
             success(getLocalizedString('tagDeleted'));
         } catch (err) {
-            console.error(err);
+            error(err);
         }
     },
 
@@ -130,7 +132,7 @@ async init() {
             await this.loadTags();
             success(getLocalizedString('tagAdded'));
         } catch (err) {
-            console.error(err);
+            error(err);
         }
     }
 }));

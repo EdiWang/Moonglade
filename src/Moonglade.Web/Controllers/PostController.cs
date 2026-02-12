@@ -114,7 +114,7 @@ public class PostController(
         catch (Exception ex)
         {
             logger.LogError(ex, "Error updating post.");
-            return Conflict(ex.Message);
+            return Conflict("Error updating post.");
         }
     }
 
@@ -260,18 +260,6 @@ public class PostController(
     public async Task<IActionResult> Drafts()
     {
         var posts = await queryMediator.QueryAsync(new ListPostSegmentByStatusQuery(PostStatus.Draft));
-
-        return Ok(new
-        {
-            Posts = posts
-        });
-    }
-
-    [HttpGet("scheduled")]
-    [ProducesResponseType(StatusCodes.Status200OK)]
-    public async Task<IActionResult> Scheduled()
-    {
-        var posts = await queryMediator.QueryAsync(new ListPostSegmentByStatusQuery(PostStatus.Scheduled));
 
         return Ok(new
         {

@@ -12,8 +12,8 @@ public class LanguageController(ILogger<LanguageController> logger) : Controller
     /// <param name="culture">The culture code (e.g., "en-US", "zh-CN")</param>
     /// <param name="returnUrl">The URL to redirect to after setting the language</param>
     /// <returns>A redirect result or error response</returns>
-    [HttpGet("set")]
-    public IActionResult SetLanguage(string culture, string returnUrl)
+    [HttpPost("set")]
+    public IActionResult SetLanguage([FromForm] string culture, [FromForm] string returnUrl)
     {
         try
         {
