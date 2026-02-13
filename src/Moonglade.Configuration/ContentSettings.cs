@@ -30,6 +30,9 @@ public class ContentSettings : IBlogSettings
     [Display(Name = "Show post outline as side navigation")]
     public bool DocumentOutline { get; set; } = true;
 
+    [Display(Name = "Enable view count")]
+    public bool EnableViewCount { get; set; } = true;
+
     [Display(Name = "Word count in abstract")]
     public int PostAbstractWords { get; set; } = 400;
 
