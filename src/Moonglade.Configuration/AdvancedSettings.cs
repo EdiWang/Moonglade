@@ -35,6 +35,9 @@ public class AdvancedSettings : IBlogSettings
     [Display(Name = "Enable Site Map")]
     public bool EnableSiteMap { get; set; } = true;
 
+    [Display(Name = "Enable Post Scheduler")]
+    public bool EnablePostScheduler { get; set; } = true;
+
     [Display(Name = "Show warning when clicking external links")]
     public bool WarnExternalLink { get; set; }
 

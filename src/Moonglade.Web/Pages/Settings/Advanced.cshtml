@@ -123,6 +123,21 @@
                         </div>
                     </div>
 
+                    <div class="settings-entry row align-items-center py-3 px-2 rounded-3 border mb-1">
+                        <div class="col-auto">
+                            <i class="bi-clock settings-entry-icon"></i>
+                        </div>
+                        <div class="col">
+                            <label asp-for="@settings.EnablePostScheduler" class="form-check-label"></label>
+                        </div>
+                        <div class="col-md-4 text-end">
+                            <div class="form-check form-switch form-control-lg">
+                                <input type="hidden" name="EnablePostScheduler" value="false">
+                                <input type="checkbox" name="EnablePostScheduler" value="true" class="form-check-input" @(settings.EnablePostScheduler ? "checked" : null)>
+                            </div>
+                        </div>
+                    </div>
+
                     <div class="settings-entry row align-items-center py-3 px-2 rounded-3 border">
                         <div class="col-auto">
                             <i class="bi-exclamation-triangle settings-entry-icon"></i>
