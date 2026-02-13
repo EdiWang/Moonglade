@@ -141,12 +141,6 @@ public partial class MigrationManager(
             throw new InvalidOperationException($"Migration script for {providerKey} not found or is empty.");
         }
 
-        // Validate script integrity if enabled (optional but recommended for production)
-        if (configuration.GetValue("Setup:ValidateScriptIntegrity", false))
-        {
-            ValidateScriptIntegrity(script, providerKey);
-        }
-
         logger.LogInformation("Loaded embedded migration script for {Provider}, size: {Size} bytes",
             providerKey, script.Length);
 
@@ -178,41 +172,6 @@ public partial class MigrationManager(
 
         using var reader = new StreamReader(stream);
         return reader.ReadToEnd();
-    }
-
-    private void ValidateScriptIntegrity(string script, string providerKey)
-    {
-        // Optional: Define expected SHA256 hashes for each provider's script
-        // This can be generated during build/release process
-        var scriptHashes = new Dictionary<string, string>
-        {
-            // Example: ["SqlServer"] = "ABC123...",
-            // These should be calculated and updated for each release
-        };
-
-        if (!scriptHashes.TryGetValue(providerKey, out var expectedHash))
-        {
-            logger.LogWarning("No hash defined for {Provider}, skipping integrity check.", providerKey);
-            return;
-        }
-
-        var actualHash = ComputeSha256Hash(script);
-
-        if (!string.Equals(actualHash, expectedHash, StringComparison.OrdinalIgnoreCase))
-        {
-            throw new SecurityException(
-                $"Migration script integrity check failed for {providerKey}. " +
-                $"Expected: {expectedHash}, Actual: {actualHash}");
-        }
-
-        logger.LogInformation("Migration script integrity verified for {Provider}.", providerKey);
-    }
-
-    private static string ComputeSha256Hash(string content)
-    {
-        var bytes = Encoding.UTF8.GetBytes(content);
-        var hash = SHA256.HashData(bytes);
-        return Convert.ToHexString(hash);
     }
 
     private async Task UpdateManifestAsync(CancellationToken cancellationToken)
