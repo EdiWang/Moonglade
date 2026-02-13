@@ -1,13 +1,11 @@
-﻿.admin-editor-wrapper {
-    display: flex;
-    flex-direction: column;
-    height: calc(100vh - 56px);
-    overflow: hidden;
-}
-
-.page-editor-container {
+﻿.page-editor-container {
     height: 100%;
     overflow: hidden;
+    min-height: 0;
+}
+
+#page-edit-form {
+    min-height: 0;
 }
 
 .page-editor-header {
@@ -20,6 +18,10 @@
 
 .page-editor-footer {
     flex-shrink: 0;
+}
+
+.tab-content {
+    min-height: 0;
 }
 
 .monaco-target {

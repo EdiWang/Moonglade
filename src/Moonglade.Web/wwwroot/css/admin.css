@@ -99,6 +99,13 @@
     width: 100%;
 }
 
+.admin-editor-wrapper {
+    display: flex;
+    flex-direction: column;
+    height: calc(100vh - 56px);
+    overflow: hidden;
+}
+
 .admin-body-wrapper.toggled .admin-nav {
     margin-left: -15rem;
 }
