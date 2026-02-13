@@ -1,6 +1,30 @@
-﻿.monaco-target {
+﻿.admin-editor-wrapper {
+    display: flex;
+    flex-direction: column;
+    height: calc(100vh - 56px);
+    overflow: hidden;
+}
+
+.page-editor-container {
+    height: 100%;
+    overflow: hidden;
+}
+
+.page-editor-header {
+    flex-shrink: 0;
+}
+
+.page-editor-tabs {
+    flex-shrink: 0;
+}
+
+.page-editor-footer {
+    flex-shrink: 0;
+}
+
+.monaco-target {
     border-left: 1px solid #dee2e6;
     border-right: 1px solid #dee2e6;
     border-bottom: 1px solid #dee2e6;
-    min-height: calc(100vh - 330px);
+    height: 100%;
 }

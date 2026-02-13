@@ -26,7 +26,7 @@ Alpine.data('pageEditor', () => ({
         const urlParams = new URLSearchParams(window.location.search);
         const pathSegments = window.location.pathname.split('/');
         const idFromPath = pathSegments[pathSegments.length - 1];
-        
+
         if (idFromPath && idFromPath !== 'edit' && idFromPath !== window.emptyGuid) {
             this.pageId = idFromPath;
             await this.loadPageData();
@@ -37,6 +37,7 @@ Alpine.data('pageEditor', () => ({
         this.initMonacoEditor();
         this.setupTabHandlers();
         this.setupKeyboardShortcuts();
+        this.setupResizeHandler();
     },
 
     async loadPageData() {
@@ -97,6 +98,13 @@ Alpine.data('pageEditor', () => ({
                 event.preventDefault();
                 this.handleSubmit();
             }
+        });
+    },
+
+    setupResizeHandler() {
+        window.addEventListener('resize', () => {
+            if (htmlContentEditor) htmlContentEditor.layout();
+            if (cssContentEditor) cssContentEditor.layout();
         });
     },
 
