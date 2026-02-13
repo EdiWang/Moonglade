@@ -232,7 +232,6 @@ public class Program
         services.AddSyndication()
                 .AddInMemoryCacheAside()
                 .AddBlogConfig()
-                .AddAnalytics(configuration)
                 .AddBlogAuthenticaton(configuration)
                 .AddImageStorage(configuration);
 
