@@ -265,7 +265,12 @@ az webapp config appsettings set -g $rsgName -n $webAppName --settings `
 Write-Host "Restarting Web App..." -ForegroundColor Green
 az webapp restart --name $webAppName --resource-group $rsgName | Out-Null
 
-Write-Host "Warming up the container..."
-Start-Sleep -Seconds 20
+Write-Host "Warming up the container..." -ForegroundColor Green
+$warmupSeconds = 20
+for ($i = $warmupSeconds; $i -gt 0; $i--) {
+    Write-Host "`rWarming up... $i seconds remaining" -NoNewline -ForegroundColor Yellow
+    Start-Sleep -Seconds 1
+}
+Write-Host "`rWarming up... Complete!                  " -ForegroundColor Green
 
 Read-Host -Prompt "Setup is done, you should be able to run Moonglade on '$webAppUrl' now, if you get a 502 error, please try restarting Moonglade from Azure App Service blade. Press [ENTER] to exit."
