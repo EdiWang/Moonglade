@@ -25,6 +25,14 @@
     color: var(--bs-white);
 }
 
+.btn-nav-back {
+    color: var(--bs-btn-color) !important;
+}
+
+    .btn-nav-back:hover {
+        color: var(--bs-btn-hover-color) !important;
+    }
+
 .aspnet-tag-moonglade-userinfo,
 .aspnet-tag-moonglade-userinfo-name,
 .aspnet-tag-moonglade-userinfo-email {
@@ -97,6 +105,13 @@
 .admin-main {
     min-width: 0;
     width: 100%;
+}
+
+.admin-editor-wrapper {
+    display: flex;
+    flex-direction: column;
+    height: calc(100vh - 56px);
+    overflow: hidden;
 }
 
 .admin-body-wrapper.toggled .admin-nav {
@@ -209,38 +224,38 @@ div.mce-fullscreen {
         vertical-align: top;
     }
 
-    li.updated {
-        border: 1px solid var(--bs-green);
-    }
+        li.updated {
+            border: 1px solid var(--bs-green);
+        }
 }
 
-.ul-tag-mgr li span.span-tagcontent-editable {
-    display: inline-block;
-    padding: 0 10px;
-    vertical-align: top;
-}
-
-.ul-tag-mgr li a {
-    background-color: var(--bs-gray-200);
-    color: var(--bs-gray-dark);
-    cursor: pointer;
-    display: inline-block;
-    font-size: 16px;
-    height: 31px;
-    padding: 0 5px;
-}
-
-    .ul-tag-mgr li a:hover {
-        background-color: var(--bs-red);
-        color: var(--bs-white);
+    .ul-tag-mgr li span.span-tagcontent-editable {
+        display: inline-block;
+        padding: 0 10px;
+        vertical-align: top;
     }
 
-.ul-tag-mgr .tag-postcount {
-    border-left: 1px solid var(--bs-gray-400);
-    padding: 0 5px;
-    text-align: center;
-    color: var(--bs-secondary);
-}
+    .ul-tag-mgr li a {
+        background-color: var(--bs-gray-200);
+        color: var(--bs-gray-dark);
+        cursor: pointer;
+        display: inline-block;
+        font-size: 16px;
+        height: 31px;
+        padding: 0 5px;
+    }
+
+        .ul-tag-mgr li a:hover {
+            background-color: var(--bs-red);
+            color: var(--bs-white);
+        }
+
+    .ul-tag-mgr .tag-postcount {
+        border-left: 1px solid var(--bs-gray-400);
+        padding: 0 5px;
+        text-align: center;
+        color: var(--bs-secondary);
+    }
 
 .table .table-item-w10 {
     width: 10%;

@@ -26,7 +26,7 @@ Alpine.data('pageEditor', () => ({
         const urlParams = new URLSearchParams(window.location.search);
         const pathSegments = window.location.pathname.split('/');
         const idFromPath = pathSegments[pathSegments.length - 1];
-        
+
         if (idFromPath && idFromPath !== 'edit' && idFromPath !== window.emptyGuid) {
             this.pageId = idFromPath;
             await this.loadPageData();
@@ -37,6 +37,7 @@ Alpine.data('pageEditor', () => ({
         this.initMonacoEditor();
         this.setupTabHandlers();
         this.setupKeyboardShortcuts();
+        this.setupResizeHandler();
     },
 
     async loadPageData() {
@@ -87,8 +88,35 @@ Alpine.data('pageEditor', () => ({
                     );
                     hasCssEditorInitialized = true;
                 }
+
+                if (e.target.id === "preview-tab") {
+                    this.refreshPreview();
+                }
             });
         });
+    },
+
+    refreshPreview() {
+        this.syncEditorValues();
+        const frame = document.getElementById('preview-frame');
+        const doc = frame.contentDocument || frame.contentWindow.document;
+        doc.open();
+        doc.write(`<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <link rel="stylesheet" href="/lib/twitter-bootstrap/css/bootstrap.min.css" />
+    <link rel="stylesheet" href="/css/base.css" />
+    <style>${this.formData.cssContent || ''}</style>
+</head>
+<body>
+    <main>
+        ${this.formData.rawHtmlContent || ''}
+    </main>
+</body>
+</html>`);
+        doc.close();
     },
 
     setupKeyboardShortcuts() {
@@ -97,6 +125,13 @@ Alpine.data('pageEditor', () => ({
                 event.preventDefault();
                 this.handleSubmit();
             }
+        });
+    },
+
+    setupResizeHandler() {
+        window.addEventListener('resize', () => {
+            if (htmlContentEditor) htmlContentEditor.layout();
+            if (cssContentEditor) cssContentEditor.layout();
         });
     },
 
