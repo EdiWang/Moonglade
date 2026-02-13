@@ -71,6 +71,15 @@
                        aria-controls="css"
                        aria-selected="false">CSS</a>
                 </li>
+                <li class="nav-item">
+                    <a class="nav-link"
+                       id="preview-tab"
+                       data-bs-toggle="tab"
+                       href="#preview-box"
+                       role="tab"
+                       aria-controls="preview"
+                       aria-selected="false">Preview</a>
+                </li>
             </ul>
         </div>
 
@@ -90,6 +99,12 @@
                 <div id="CssContentEditor" class="monaco-target"></div>
                 <textarea x-model="formData.cssContent"
                           class="page-csscontent-textarea d-none"></textarea>
+            </div>
+            <div class="tab-pane h-100"
+                 id="preview-box"
+                 role="tabpanel"
+                 aria-labelledby="preview-tab">
+                <iframe id="preview-frame" class="w-100 h-100 border-0 bg-white"></iframe>
             </div>
         </div>
 

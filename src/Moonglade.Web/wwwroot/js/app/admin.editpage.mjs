@@ -88,8 +88,35 @@ Alpine.data('pageEditor', () => ({
                     );
                     hasCssEditorInitialized = true;
                 }
+
+                if (e.target.id === "preview-tab") {
+                    this.refreshPreview();
+                }
             });
         });
+    },
+
+    refreshPreview() {
+        this.syncEditorValues();
+        const frame = document.getElementById('preview-frame');
+        const doc = frame.contentDocument || frame.contentWindow.document;
+        doc.open();
+        doc.write(`<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <link rel="stylesheet" href="/lib/twitter-bootstrap/css/bootstrap.min.css" />
+    <link rel="stylesheet" href="/css/base.css" />
+    <style>${this.formData.cssContent || ''}</style>
+</head>
+<body>
+    <main>
+        ${this.formData.rawHtmlContent || ''}
+    </main>
+</body>
+</html>`);
+        doc.close();
     },
 
     setupKeyboardShortcuts() {
