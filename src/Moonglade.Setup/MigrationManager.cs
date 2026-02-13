@@ -52,7 +52,7 @@ public partial class MigrationManager(
 
         if (!GetAutoMigrationEnabled())
         {
-            const string message = "Automatic database migration is disabled. Enable `Setup:AutoDatabaseMigration` to allow automatic migrations.";
+            const string message = "Automatic database migration is disabled. Enable `AutoDatabaseMigration` to allow automatic migrations.";
             logger.LogWarning(message);
             return new MigrationResult(MigrationStatus.Disabled, message);
         }
@@ -184,7 +184,7 @@ public partial class MigrationManager(
     }
 
     private bool GetAutoMigrationEnabled()
-        => configuration.GetValue<bool>("Setup:AutoDatabaseMigration");
+        => configuration.GetValue<bool>("AutoDatabaseMigration");
 
     private static string GetProviderKey(string provider)
     {
