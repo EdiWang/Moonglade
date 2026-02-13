@@ -74,6 +74,7 @@ public class SettingsController(
         }
         catch (Exception e)
         {
+            logger.LogError(e, "Error sending test email");
             return StatusCode(StatusCodes.Status500InternalServerError, "Failed to send test email.");
         }
     }
