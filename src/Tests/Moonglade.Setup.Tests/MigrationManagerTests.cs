@@ -1,4 +1,3 @@
-using Edi.AspNetCore.Utils;
 using LiteBus.Commands.Abstractions;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
