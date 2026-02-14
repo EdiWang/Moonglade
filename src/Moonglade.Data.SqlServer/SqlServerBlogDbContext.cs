@@ -21,7 +21,6 @@ public class SqlServerBlogDbContext : BlogDbContext
         modelBuilder.ApplyConfiguration(new Data.Configurations.CommentReplyConfiguration());
         modelBuilder.ApplyConfiguration(new Data.Configurations.PostConfiguration());
         modelBuilder.ApplyConfiguration(new Data.Configurations.PostCategoryConfiguration());
-        modelBuilder.ApplyConfiguration(new LoginHistoryConfiguration());
         modelBuilder.ApplyConfiguration(new Data.Configurations.MentionConfiguration());
         modelBuilder.ApplyConfiguration(new BlogThemeConfiguration());
         modelBuilder.ApplyConfiguration(new Data.Configurations.BlogAssetConfiguration());

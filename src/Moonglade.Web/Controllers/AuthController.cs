@@ -43,14 +43,6 @@ public class AuthController(
     }
 
     [Authorize]
-    [HttpGet("loginhistory/list")]
-    public async Task<IActionResult> ListLoginHistory()
-    {
-        var data = await queryMediator.QueryAsync(new ListLoginHistoryQuery());
-        return Ok(data);
-    }
-
-    [Authorize]
     [HttpGet("me")]
     public IActionResult Me()
     {
