@@ -1,16 +1,16 @@
 ﻿using LiteBus.Commands.Abstractions;
 using LiteBus.Queries.Abstractions;
+using Moonglade.ActivityLog;
 using System.ComponentModel.DataAnnotations;
 
 namespace Moonglade.Web.Controllers;
 
-[ApiController]
 [Route("api/[controller]")]
 public class ThemeController(
     IQueryMediator queryMediator,
     ICommandMediator commandMediator,
     ICacheAside cache,
-    IBlogConfig blogConfig) : ControllerBase
+    IBlogConfig blogConfig) : BlogControllerBase(commandMediator)
 {
     [HttpGet("/theme.css")]
     public async Task<IActionResult> Css()
@@ -43,8 +43,15 @@ public class ThemeController(
             { "--accent-color2", accentColor2 }
         };
 
-        var id = await commandMediator.SendAsync(new CreateThemeCommand(request.Name, dic));
+        var id = await CommandMediator.SendAsync(new CreateThemeCommand(request.Name, dic));
         if (id == -1) return Conflict("Theme with same name already exists");
+
+        // Log activity
+        await LogActivityAsync(
+            EventType.ThemeCreated,
+            "Create Theme",
+            request.Name,
+            new { ThemeId = id, request.AccentColor });
 
         return Ok(id);
     }
@@ -55,7 +62,18 @@ public class ThemeController(
     [TypeFilter(typeof(ClearBlogCache), Arguments = [BlogCachePartition.General, "theme"])]
     public async Task<IActionResult> Delete([Range(1, int.MaxValue)] int id)
     {
-        var oc = await commandMediator.SendAsync(new DeleteThemeCommand(id));
+        var oc = await CommandMediator.SendAsync(new DeleteThemeCommand(id));
+
+        if (oc == OperationCode.Done)
+        {
+            // Log activity
+            await LogActivityAsync(
+                EventType.ThemeDeleted,
+                "Delete Theme",
+                $"Theme #{id}",
+                new { ThemeId = id });
+        }
+
         return oc switch
         {
             OperationCode.ObjectNotFound => NotFound(),

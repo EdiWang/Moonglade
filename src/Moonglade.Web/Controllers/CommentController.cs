@@ -1,6 +1,7 @@
 ﻿using LiteBus.Commands.Abstractions;
 using LiteBus.Events.Abstractions;
 using LiteBus.Queries.Abstractions;
+using Moonglade.ActivityLog;
 using Moonglade.BackgroundServices;
 using Moonglade.Email.Client;
 using Moonglade.Moderation;
@@ -8,15 +9,13 @@ using System.ComponentModel.DataAnnotations;
 
 namespace Moonglade.Web.Controllers;
 
-[Authorize]
-[ApiController]
 [Route("api/[controller]")]
 public class CommentController(
         ICommandMediator commandMediator,
         IQueryMediator queryMediator,
         IModeratorService moderator,
         IBlogConfig blogConfig,
-        CannonService cannonService) : ControllerBase
+        CannonService cannonService) : BlogControllerBase(commandMediator)
 {
     [HttpPost("{postId:guid}")]
     [AllowAnonymous]
@@ -37,13 +36,20 @@ public class CommentController(
         if (filterResult != null) return filterResult;
 
         var ip = ClientIPHelper.GetClientIP(HttpContext);
-        var item = await commandMediator.SendAsync(new CreateCommentCommand(postId, request, ip));
+        var item = await CommandMediator.SendAsync(new CreateCommentCommand(postId, request, ip));
 
         if (item == null)
         {
             ModelState.AddModelError(nameof(postId), "Comment is closed for this post.");
             return ValidationProblem(ModelState);
         }
+
+        // Log activity
+        await LogActivityAsync(
+            EventType.CommentCreated,
+            "Create Comment",
+            item.PostTitle,
+            new { CommentId = item.Id, item.Username, PostId = postId });
 
         // Send email notification (fire-and-forget)
         if (blogConfig.NotificationSettings.SendEmailOnNewComment)
@@ -68,7 +74,15 @@ public class CommentController(
     {
         try
         {
-            await commandMediator.SendAsync(new ToggleApprovalCommand([commentId]));
+            await CommandMediator.SendAsync(new ToggleApprovalCommand([commentId]));
+
+            // Log activity
+            await LogActivityAsync(
+                EventType.CommentApprovalToggled,
+                "Toggle Comment Approval",
+                $"Comment #{commentId}",
+                new { CommentId = commentId });
+
             return Ok(commentId);
         }
         catch (ArgumentException)
@@ -82,7 +96,15 @@ public class CommentController(
     {
         try
         {
-            await commandMediator.SendAsync(new DeleteCommentsCommand(commentIds));
+            await CommandMediator.SendAsync(new DeleteCommentsCommand(commentIds));
+
+            // Log activity
+            await LogActivityAsync(
+                EventType.CommentDeleted,
+                "Delete Comments",
+                $"{commentIds.Length} comment(s)",
+                new { CommentIds = commentIds });
+
             return Ok(commentIds);
         }
         catch (ArgumentException ex)
@@ -140,7 +162,14 @@ public class CommentController(
 
         try
         {
-            var reply = await commandMediator.SendAsync(new ReplyCommentCommand(commentId, replyContent));
+            var reply = await CommandMediator.SendAsync(new ReplyCommentCommand(commentId, replyContent));
+
+            // Log activity
+            await LogActivityAsync(
+                EventType.CommentReplied,
+                "Reply to Comment",
+                reply.Title,
+                new { CommentId = commentId, ReplyContent = replyContent });
 
             // Send email notification (fire-and-forget)
             if (blogConfig.NotificationSettings.SendEmailOnCommentReply && !string.IsNullOrWhiteSpace(reply.Email))

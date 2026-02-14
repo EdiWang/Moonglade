@@ -13,7 +13,10 @@ public enum EventType
     // Reserved for future use
 
     // Comment operations (300-399)
-    // Reserved for future use
+    CommentCreated = 300,
+    CommentApprovalToggled = 301,
+    CommentDeleted = 302,
+    CommentReplied = 303,
 
     // Page operations (400-499)
     // Reserved for future use
@@ -25,6 +28,10 @@ public enum EventType
     TagCreated = 600,
     TagUpdated = 601,
     TagDeleted = 602,
+
+    // Theme operations (700-799)
+    ThemeCreated = 700,
+    ThemeDeleted = 701,
 
     // System operations (900-999)
     // Reserved for future use
