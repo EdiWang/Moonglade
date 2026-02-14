@@ -23,7 +23,9 @@ public enum EventType
     CommentReplied = 303,
 
     // Page operations (400-499)
-    // Reserved for future use
+    PageCreated = 400,
+    PageUpdated = 401,
+    PageDeleted = 402,
 
     // User operations (500-599)
     // Reserved for future use
