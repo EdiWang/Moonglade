@@ -1,18 +1,20 @@
-﻿using LiteBus.Events.Abstractions;
+﻿using LiteBus.Commands.Abstractions;
+using LiteBus.Events.Abstractions;
 using LiteBus.Queries.Abstractions;
+using Moonglade.ActivityLog;
 using Moonglade.Features.Asset;
 using Moonglade.Setup;
 using SixLabors.ImageSharp;
 
 namespace Moonglade.Web.Controllers;
 
-[ApiController]
 public class AssetsController(
     IEventMediator eventMediator,
     IQueryMediator queryMediator,
     IWebHostEnvironment env,
     ILogger<AssetsController> logger,
-    ISiteIconBuilder siteIconBuilder) : ControllerBase
+    ISiteIconBuilder siteIconBuilder,
+    ICommandMediator commandMediator) : BlogControllerBase(commandMediator)
 {
     [HttpGet("avatar")]
     [ResponseCache(Duration = 300)]
@@ -63,6 +65,12 @@ public class AssetsController(
 
         await eventMediator.PublishAsync(new SaveAssetEvent(AssetId.AvatarBase64, base64Img));
         logger.LogInformation("Avatar image updated successfully.");
+
+        // Log activity
+        await LogActivityAsync(
+            EventType.AvatarUpdated,
+            "Update Avatar",
+            "Avatar Image");
 
         return Ok();
     }
@@ -130,6 +138,13 @@ public class AssetsController(
         await siteIconBuilder.RegenerateSiteIcons(base64Img);
 
         logger.LogInformation("Site icon image updated successfully.");
+
+        // Log activity
+        await LogActivityAsync(
+            EventType.SiteIconUpdated,
+            "Update Site Icon",
+            "Site Icon",
+            new { ImageSize = $"{bmp.Width}x{bmp.Height}" });
 
         return NoContent();
     }

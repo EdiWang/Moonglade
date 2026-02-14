@@ -56,6 +56,13 @@ public enum EventType
     SettingsCustomMenuUpdated = 808,
     SettingsPasswordUpdated = 809,
 
+    // Image operations (810-819)
+    ImageUploaded = 810,
+
+    // Asset operations (820-829)
+    AvatarUpdated = 820,
+    SiteIconUpdated = 821,
+
     // Widget operations (850-899)
     WidgetCreated = 850,
     WidgetUpdated = 851,
