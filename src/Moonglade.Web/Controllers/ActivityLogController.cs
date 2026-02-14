@@ -1,4 +1,4 @@
-using LiteBus.Commands.Abstractions;
+﻿using LiteBus.Commands.Abstractions;
 using LiteBus.Queries.Abstractions;
 using Moonglade.ActivityLog;
 
@@ -16,7 +16,7 @@ public class ActivityLogController(
     {
         if (pageIndex < 1) pageIndex = 1;
         if (pageSize < 1) pageSize = 10;
-        if (pageSize > 100) pageSize = 100; // 限制最大页面大小
+        if (pageSize > 100) pageSize = 100;
 
         var (logs, totalCount) = await queryMediator.QueryAsync(new ListActivityLogsQuery(pageSize, pageIndex));
 
