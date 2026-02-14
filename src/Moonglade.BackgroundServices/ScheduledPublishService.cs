@@ -3,11 +3,10 @@ using LiteBus.Queries.Abstractions;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
-using Moonglade.BackgroundServices;
 using Moonglade.Configuration;
 using Moonglade.Features.Post;
 
-namespace Moonglade.Web.BackgroundServices;
+namespace Moonglade.BackgroundServices;
 
 public class ScheduledPublishService(
     IServiceProvider serviceProvider,

@@ -18,7 +18,6 @@ using Moonglade.IndexNow.Client;
 using Moonglade.Moderation;
 using Moonglade.Setup;
 using Moonglade.Syndication;
-using Moonglade.Web.BackgroundServices;
 using Moonglade.Web.Extensions;
 using Moonglade.Web.Handlers;
 using Moonglade.Webmention;
