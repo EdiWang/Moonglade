@@ -1,6 +1,7 @@
 ﻿using LiteBus.Commands.Abstractions;
 using LiteBus.Queries.Abstractions;
 using Microsoft.Extensions.Options;
+using Moonglade.ActivityLog;
 using Moonglade.BackgroundServices;
 using Moonglade.Data.DTO;
 using Moonglade.Features.Category;
@@ -11,8 +12,6 @@ using System.ComponentModel.DataAnnotations;
 
 namespace Moonglade.Web.Controllers;
 
-[Authorize]
-[ApiController]
 [Route("api/[controller]")]
 public class PostController(
         ICacheAside cache,
@@ -22,7 +21,7 @@ public class PostController(
         IBlogConfig blogConfig,
         ScheduledPublishWakeUp wakeUp,
         ILogger<PostController> logger,
-        CannonService cannonService) : ControllerBase
+        CannonService cannonService) : BlogControllerBase(commandMediator)
 {
     [HttpGet("list")]
     public async Task<IActionResult> List([FromQuery] int pageIndex = 1, [FromQuery] int pageSize = 4, [FromQuery] string searchTerm = null)
@@ -88,10 +87,19 @@ public class PostController(
             }
 
             var postEntity = model.PostId == Guid.Empty ?
-                await commandMediator.SendAsync(new CreatePostCommand(model)) :
-                await commandMediator.SendAsync(new UpdatePostCommand(model.PostId, model));
+                await CommandMediator.SendAsync(new CreatePostCommand(model)) :
+                await CommandMediator.SendAsync(new UpdatePostCommand(model.PostId, model));
 
             cache.Remove(BlogCachePartition.Post.ToString(), postEntity.RouteLink);
+
+            // Log activity
+            var eventType = model.PostId == Guid.Empty ? EventType.PostCreated : EventType.PostUpdated;
+            var operation = model.PostId == Guid.Empty ? "Create Post" : "Update Post";
+            await LogActivityAsync(
+                eventType,
+                operation,
+                model.Title,
+                new { PostId = postEntity.Id, Slug = postEntity.RouteLink, PostStatus = model.PostStatus });
 
             if (model.PostStatus != PostStatus.Published)
             {
@@ -147,7 +155,15 @@ public class PostController(
     [HttpDelete("{postId:guid}/recycle")]
     public async Task<IActionResult> Delete([NotEmpty] Guid postId)
     {
-        await commandMediator.SendAsync(new DeletePostCommand(postId, true));
+        await CommandMediator.SendAsync(new DeletePostCommand(postId, true));
+
+        // Log activity
+        await LogActivityAsync(
+            EventType.PostDeleted,
+            "Delete Post (Move to Recycle Bin)",
+            $"Post #{postId}",
+            new { PostId = postId });
+
         return NoContent();
     }
 
@@ -155,8 +171,15 @@ public class PostController(
     [HttpPut("{postId:guid}/publish")]
     public async Task<IActionResult> Publish([NotEmpty] Guid postId)
     {
-        await commandMediator.SendAsync(new PublishPostCommand(postId));
+        await CommandMediator.SendAsync(new PublishPostCommand(postId));
         cache.Remove(BlogCachePartition.Post.ToString(), postId.ToString());
+
+        // Log activity
+        await LogActivityAsync(
+            EventType.PostPublished,
+            "Publish Post",
+            $"Post #{postId}",
+            new { PostId = postId });
 
         return NoContent();
     }
@@ -165,8 +188,15 @@ public class PostController(
     [HttpPut("{postId:guid}/unpublish")]
     public async Task<IActionResult> Unpublish([NotEmpty] Guid postId)
     {
-        await commandMediator.SendAsync(new UnpublishPostCommand(postId));
+        await CommandMediator.SendAsync(new UnpublishPostCommand(postId));
         cache.Remove(BlogCachePartition.Post.ToString(), postId.ToString());
+
+        // Log activity
+        await LogActivityAsync(
+            EventType.PostUnpublished,
+            "Unpublish Post",
+            $"Post #{postId}",
+            new { PostId = postId });
 
         return NoContent();
     }

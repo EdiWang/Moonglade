@@ -15,6 +15,11 @@ public enum EventType
     PostRestored = 202,
     PostPermanentlyDeleted = 203,
     RecycleBinCleared = 204,
+    PostCreated = 205,
+    PostUpdated = 206,
+    PostDeleted = 207,
+    PostPublished = 208,
+    PostUnpublished = 209,
 
     // Comment operations (300-399)
     CommentCreated = 300,
@@ -50,6 +55,11 @@ public enum EventType
     SettingsAppearanceUpdated = 807,
     SettingsCustomMenuUpdated = 808,
     SettingsPasswordUpdated = 809,
+
+    // Widget operations (850-899)
+    WidgetCreated = 850,
+    WidgetUpdated = 851,
+    WidgetDeleted = 852,
 
     // System operations (900-999)
     // Reserved for future use
