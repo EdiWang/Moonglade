@@ -33,6 +33,18 @@ public enum EventType
     ThemeCreated = 700,
     ThemeDeleted = 701,
 
+    // Settings operations (800-899)
+    SettingsGeneralUpdated = 800,
+    SettingsContentUpdated = 801,
+    SettingsCommentUpdated = 802,
+    SettingsNotificationUpdated = 803,
+    SettingsSubscriptionUpdated = 804,
+    SettingsImageUpdated = 805,
+    SettingsAdvancedUpdated = 806,
+    SettingsAppearanceUpdated = 807,
+    SettingsCustomMenuUpdated = 808,
+    SettingsPasswordUpdated = 809,
+
     // System operations (900-999)
     // Reserved for future use
 }

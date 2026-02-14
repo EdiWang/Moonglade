@@ -2,21 +2,20 @@
 using LiteBus.Commands.Abstractions;
 using LiteBus.Events.Abstractions;
 using LiteBus.Queries.Abstractions;
+using Moonglade.ActivityLog;
 using Moonglade.Email.Client;
 using Moonglade.Features.Asset;
 using SecurityHelper = Moonglade.Utils.SecurityHelper;
 
 namespace Moonglade.Web.Controllers;
 
-[Authorize]
-[ApiController]
 [Route("api/[controller]")]
 public class SettingsController(
         IBlogConfig blogConfig,
         ILogger<SettingsController> logger,
         IEventMediator eventMediator,
         IQueryMediator queryMediator,
-        ICommandMediator commandMediator) : ControllerBase
+        ICommandMediator commandMediator) : BlogControllerBase(commandMediator)
 {
     [HttpPost("general")]
     public async Task<IActionResult> General(GeneralSettings model)
@@ -25,6 +24,13 @@ public class SettingsController(
         blogConfig.GeneralSettings = model;
 
         await SaveConfigAsync(blogConfig.GeneralSettings);
+
+        // Log activity
+        await LogActivityAsync(
+            EventType.SettingsGeneralUpdated,
+            "Update General Settings",
+            "General Settings",
+            new { model.SiteTitle, model.LogoText });
 
         AppDomain.CurrentDomain.SetData("CurrentThemeColor", null);
 
@@ -37,6 +43,13 @@ public class SettingsController(
         blogConfig.ContentSettings = model;
 
         await SaveConfigAsync(blogConfig.ContentSettings);
+
+        // Log activity
+        await LogActivityAsync(
+            EventType.SettingsContentUpdated,
+            "Update Content Settings",
+            "Content Settings");
+
         return NoContent();
     }
 
@@ -46,6 +59,14 @@ public class SettingsController(
         blogConfig.CommentSettings = model;
 
         await SaveConfigAsync(blogConfig.CommentSettings);
+
+        // Log activity
+        await LogActivityAsync(
+            EventType.SettingsCommentUpdated,
+            "Update Comment Settings",
+            "Comment Settings",
+            new { model.EnableComments, model.RequireCommentReview });
+
         return NoContent();
     }
 
@@ -55,6 +76,13 @@ public class SettingsController(
         blogConfig.NotificationSettings = model;
 
         await SaveConfigAsync(blogConfig.NotificationSettings);
+
+        // Log activity
+        await LogActivityAsync(
+            EventType.SettingsNotificationUpdated,
+            "Update Notification Settings",
+            "Notification Settings");
+
         return NoContent();
     }
 
@@ -80,6 +108,13 @@ public class SettingsController(
         blogConfig.FeedSettings = model;
 
         await SaveConfigAsync(blogConfig.FeedSettings);
+
+        // Log activity
+        await LogActivityAsync(
+            EventType.SettingsSubscriptionUpdated,
+            "Update Subscription Settings",
+            "Subscription Settings");
+
         return NoContent();
     }
 
@@ -121,6 +156,13 @@ public class SettingsController(
 
         await SaveConfigAsync(blogConfig.ImageSettings);
 
+        // Log activity
+        await LogActivityAsync(
+            EventType.SettingsImageUpdated,
+            "Update Image Settings",
+            "Image Settings",
+            new { model.EnableCDNRedirect, model.IsWatermarkEnabled });
+
         return NoContent();
     }
 
@@ -146,6 +188,13 @@ public class SettingsController(
         blogConfig.AdvancedSettings = model;
 
         await SaveConfigAsync(blogConfig.AdvancedSettings);
+
+        // Log activity
+        await LogActivityAsync(
+            EventType.SettingsAdvancedUpdated,
+            "Update Advanced Settings",
+            "Advanced Settings");
+
         return NoContent();
     }
 
@@ -162,6 +211,14 @@ public class SettingsController(
         blogConfig.AppearanceSettings = model;
 
         await SaveConfigAsync(blogConfig.AppearanceSettings);
+
+        // Log activity
+        await LogActivityAsync(
+            EventType.SettingsAppearanceUpdated,
+            "Update Appearance Settings",
+            "Appearance Settings",
+            new { model.ThemeId, model.EnableCustomCss });
+
         return NoContent();
     }
 
@@ -184,6 +241,14 @@ public class SettingsController(
         };
 
         await SaveConfigAsync(blogConfig.CustomMenuSettings);
+
+        // Log activity
+        await LogActivityAsync(
+            EventType.SettingsCustomMenuUpdated,
+            "Update Custom Menu Settings",
+            "Custom Menu Settings",
+            new { model.IsEnabled });
+
         return NoContent();
     }
 
@@ -211,6 +276,14 @@ public class SettingsController(
         blogConfig.LocalAccountSettings.PasswordHash = SecurityHelper.HashPassword(request.NewPassword, newSalt);
 
         await SaveConfigAsync(blogConfig.LocalAccountSettings);
+
+        // Log activity
+        await LogActivityAsync(
+            EventType.SettingsPasswordUpdated,
+            "Update Local Account Password",
+            request.NewUsername,
+            new { Username = request.NewUsername });
+
         return NoContent();
     }
 
