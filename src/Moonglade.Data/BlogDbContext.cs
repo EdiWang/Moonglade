@@ -29,11 +29,13 @@ public class BlogDbContext : DbContext
     public virtual DbSet<BlogAssetEntity> BlogAsset { get; set; }
     public virtual DbSet<BlogConfigurationEntity> BlogConfiguration { get; set; }
     public virtual DbSet<WidgetEntity> Widget { get; set; }
+    public virtual DbSet<ActivityLogEntity> ActivityLog { get; set; }
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
         // base.OnModelCreating(modelBuilder);
         modelBuilder.ApplyConfiguration(new CategoryConfiguration());
+        modelBuilder.ApplyConfiguration(new ActivityLogConfiguration());
 
         modelBuilder
             .Entity<PostEntity>()
@@ -70,5 +72,6 @@ public static class BlogDbContextExtension
         await context.StyleSheet.ExecuteDeleteAsync();
         await context.CustomPage.ExecuteDeleteAsync();
         await context.Widget.ExecuteDeleteAsync();
+        await context.ActivityLog.ExecuteDeleteAsync();
     }
 }
