@@ -10,7 +10,11 @@ public enum EventType
     CategoryDeleted = 102,
 
     // Post operations (200-299)
-    // Reserved for future use
+    PostScheduleCancelled = 200,
+    PostSchedulePostponed = 201,
+    PostRestored = 202,
+    PostPermanentlyDeleted = 203,
+    RecycleBinCleared = 204,
 
     // Comment operations (300-399)
     CommentCreated = 300,
