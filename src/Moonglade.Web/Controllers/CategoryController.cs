@@ -31,7 +31,6 @@ public class CategoryController(
     {
         await CommandMediator.SendAsync(command);
 
-        // Log activity
         await LogActivityAsync(
             EventType.CategoryCreated,
             "Create Category",
@@ -49,7 +48,6 @@ public class CategoryController(
         var oc = await CommandMediator.SendAsync(command);
         if (oc == OperationCode.ObjectNotFound) return NotFound();
 
-        // Log activity
         await LogActivityAsync(
             EventType.CategoryUpdated,
             "Update Category",
@@ -69,7 +67,6 @@ public class CategoryController(
         var oc = await CommandMediator.SendAsync(new DeleteCategoryCommand(id));
         if (oc == OperationCode.ObjectNotFound) return NotFound();
 
-        // Log activity
         await LogActivityAsync(
             EventType.CategoryDeleted,
             "Delete Category",

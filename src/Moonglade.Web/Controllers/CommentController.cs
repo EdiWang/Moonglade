@@ -44,7 +44,6 @@ public class CommentController(
             return ValidationProblem(ModelState);
         }
 
-        // Log activity
         await LogActivityAsync(
             EventType.CommentCreated,
             "Create Comment",
@@ -76,7 +75,6 @@ public class CommentController(
         {
             await CommandMediator.SendAsync(new ToggleApprovalCommand([commentId]));
 
-            // Log activity
             await LogActivityAsync(
                 EventType.CommentApprovalToggled,
                 "Toggle Comment Approval",
@@ -98,7 +96,6 @@ public class CommentController(
         {
             await CommandMediator.SendAsync(new DeleteCommentsCommand(commentIds));
 
-            // Log activity
             await LogActivityAsync(
                 EventType.CommentDeleted,
                 "Delete Comments",
@@ -164,7 +161,6 @@ public class CommentController(
         {
             var reply = await CommandMediator.SendAsync(new ReplyCommentCommand(commentId, replyContent));
 
-            // Log activity
             await LogActivityAsync(
                 EventType.CommentReplied,
                 "Reply to Comment",

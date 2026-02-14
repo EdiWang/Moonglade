@@ -37,7 +37,6 @@ public class TagsController(IQueryMediator queryMediator, ICommandMediator comma
 
         var tag = await CommandMediator.SendAsync(new CreateTagCommand(name.Trim()));
 
-        // Log activity
         await LogActivityAsync(
             EventType.TagCreated,
             "Create Tag",
@@ -53,7 +52,6 @@ public class TagsController(IQueryMediator queryMediator, ICommandMediator comma
         var oc = await CommandMediator.SendAsync(new UpdateTagCommand(id, name));
         if (oc == OperationCode.ObjectNotFound) return NotFound();
 
-        // Log activity
         await LogActivityAsync(
             EventType.TagUpdated,
             "Update Tag",
@@ -70,7 +68,6 @@ public class TagsController(IQueryMediator queryMediator, ICommandMediator comma
         var oc = await CommandMediator.SendAsync(new DeleteTagCommand(id));
         if (oc == OperationCode.ObjectNotFound) return NotFound();
 
-        // Log activity
         await LogActivityAsync(
             EventType.TagDeleted,
             "Delete Tag",

@@ -25,7 +25,6 @@ public class SettingsController(
 
         await SaveConfigAsync(blogConfig.GeneralSettings);
 
-        // Log activity
         await LogActivityAsync(
             EventType.SettingsGeneralUpdated,
             "Update General Settings",
@@ -44,7 +43,6 @@ public class SettingsController(
 
         await SaveConfigAsync(blogConfig.ContentSettings);
 
-        // Log activity
         await LogActivityAsync(
             EventType.SettingsContentUpdated,
             "Update Content Settings",
@@ -60,7 +58,6 @@ public class SettingsController(
 
         await SaveConfigAsync(blogConfig.CommentSettings);
 
-        // Log activity
         await LogActivityAsync(
             EventType.SettingsCommentUpdated,
             "Update Comment Settings",
@@ -77,7 +74,6 @@ public class SettingsController(
 
         await SaveConfigAsync(blogConfig.NotificationSettings);
 
-        // Log activity
         await LogActivityAsync(
             EventType.SettingsNotificationUpdated,
             "Update Notification Settings",
@@ -109,7 +105,6 @@ public class SettingsController(
 
         await SaveConfigAsync(blogConfig.FeedSettings);
 
-        // Log activity
         await LogActivityAsync(
             EventType.SettingsSubscriptionUpdated,
             "Update Subscription Settings",
@@ -156,7 +151,6 @@ public class SettingsController(
 
         await SaveConfigAsync(blogConfig.ImageSettings);
 
-        // Log activity
         await LogActivityAsync(
             EventType.SettingsImageUpdated,
             "Update Image Settings",
@@ -189,7 +183,6 @@ public class SettingsController(
 
         await SaveConfigAsync(blogConfig.AdvancedSettings);
 
-        // Log activity
         await LogActivityAsync(
             EventType.SettingsAdvancedUpdated,
             "Update Advanced Settings",
@@ -212,7 +205,6 @@ public class SettingsController(
 
         await SaveConfigAsync(blogConfig.AppearanceSettings);
 
-        // Log activity
         await LogActivityAsync(
             EventType.SettingsAppearanceUpdated,
             "Update Appearance Settings",
@@ -242,7 +234,6 @@ public class SettingsController(
 
         await SaveConfigAsync(blogConfig.CustomMenuSettings);
 
-        // Log activity
         await LogActivityAsync(
             EventType.SettingsCustomMenuUpdated,
             "Update Custom Menu Settings",
@@ -277,7 +268,6 @@ public class SettingsController(
 
         await SaveConfigAsync(blogConfig.LocalAccountSettings);
 
-        // Log activity
         await LogActivityAsync(
             EventType.SettingsPasswordUpdated,
             "Update Local Account Password",

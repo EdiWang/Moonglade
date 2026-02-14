@@ -46,7 +46,6 @@ public class ThemeController(
         var id = await CommandMediator.SendAsync(new CreateThemeCommand(request.Name, dic));
         if (id == -1) return Conflict("Theme with same name already exists");
 
-        // Log activity
         await LogActivityAsync(
             EventType.ThemeCreated,
             "Create Theme",
@@ -66,7 +65,6 @@ public class ThemeController(
 
         if (oc == OperationCode.Done)
         {
-            // Log activity
             await LogActivityAsync(
                 EventType.ThemeDeleted,
                 "Delete Theme",

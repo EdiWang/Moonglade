@@ -18,7 +18,6 @@ public class PageController(ICacheAside cache, IQueryMediator queryMediator, ICo
 
         cache.Remove(BlogCachePartition.Page.ToString(), model.Slug.ToLower());
 
-        // Log activity
         await LogActivityAsync(
             EventType.PageCreated,
             "Create Page",
@@ -36,7 +35,6 @@ public class PageController(ICacheAside cache, IQueryMediator queryMediator, ICo
 
         cache.Remove(BlogCachePartition.Page.ToString(), model.Slug.ToLower());
 
-        // Log activity
         await LogActivityAsync(
             EventType.PageUpdated,
             "Update Page",
@@ -57,7 +55,6 @@ public class PageController(ICacheAside cache, IQueryMediator queryMediator, ICo
 
         cache.Remove(BlogCachePartition.Page.ToString(), page.Slug);
 
-        // Log activity
         await LogActivityAsync(
             EventType.PageDeleted,
             "Delete Page",

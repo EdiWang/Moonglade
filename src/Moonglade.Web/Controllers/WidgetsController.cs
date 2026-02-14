@@ -35,7 +35,6 @@ public class WidgetsController(
         await CommandMediator.SendAsync(new CreateWidgetCommand(request));
         cache.Remove(BlogCachePartition.General.ToString(), "widgets");
 
-        // Log activity
         await LogActivityAsync(
             EventType.WidgetCreated,
             "Create Widget",
@@ -51,7 +50,6 @@ public class WidgetsController(
         await CommandMediator.SendAsync(new UpdateWidgetCommand(id, request));
         cache.Remove(BlogCachePartition.General.ToString(), "widgets");
 
-        // Log activity
         await LogActivityAsync(
             EventType.WidgetUpdated,
             "Update Widget",
@@ -67,7 +65,6 @@ public class WidgetsController(
         await CommandMediator.SendAsync(new DeleteWidgetCommand(id));
         cache.Remove(BlogCachePartition.General.ToString(), "widgets");
 
-        // Log activity
         await LogActivityAsync(
             EventType.WidgetDeleted,
             "Delete Widget",

@@ -66,7 +66,6 @@ public class AssetsController(
         await eventMediator.PublishAsync(new SaveAssetEvent(AssetId.AvatarBase64, base64Img));
         logger.LogInformation("Avatar image updated successfully.");
 
-        // Log activity
         await LogActivityAsync(
             EventType.AvatarUpdated,
             "Update Avatar",
@@ -139,7 +138,6 @@ public class AssetsController(
 
         logger.LogInformation("Site icon image updated successfully.");
 
-        // Log activity
         await LogActivityAsync(
             EventType.SiteIconUpdated,
             "Update Site Icon",

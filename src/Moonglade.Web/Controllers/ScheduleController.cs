@@ -26,7 +26,6 @@ public class ScheduleController(
         await CommandMediator.SendAsync(new CancelScheduleCommand(postId));
         cache.Remove(BlogCachePartition.Post.ToString(), postId.ToString());
 
-        // Log activity
         await LogActivityAsync(
             EventType.PostScheduleCancelled,
             "Cancel Post Schedule",
@@ -41,7 +40,6 @@ public class ScheduleController(
     {
         await CommandMediator.SendAsync(new PostponePostCommand(postId, hours));
 
-        // Log activity
         await LogActivityAsync(
             EventType.PostSchedulePostponed,
             "Postpone Post Schedule",

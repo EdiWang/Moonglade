@@ -29,7 +29,6 @@ public class RecycleBinController(
         await CommandMediator.SendAsync(new RestorePostCommand(postId));
         cache.Remove(BlogCachePartition.Post.ToString(), postId.ToString());
 
-        // Log activity
         await LogActivityAsync(
             EventType.PostRestored,
             "Restore Post",
@@ -45,7 +44,6 @@ public class RecycleBinController(
         await CommandMediator.SendAsync(new DeletePostCommand(postId));
         cache.Remove(BlogCachePartition.Post.ToString(), postId.ToString());
 
-        // Log activity
         await LogActivityAsync(
             EventType.PostPermanentlyDeleted,
             "Permanently Delete Post",
@@ -65,7 +63,6 @@ public class RecycleBinController(
             cache.Remove(BlogCachePartition.Post.ToString(), guid.ToString());
         }
 
-        // Log activity
         await LogActivityAsync(
             EventType.RecycleBinCleared,
             "Clear Recycle Bin",

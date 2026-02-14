@@ -89,7 +89,6 @@ public class ImageController(
 
         logger.LogInformation($"Image '{primaryFileName}' uploaded.");
 
-        // Log activity
         await LogActivityAsync(
             EventType.ImageUploaded,
             "Upload Image",

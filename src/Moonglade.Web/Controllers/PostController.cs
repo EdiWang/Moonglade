@@ -92,7 +92,6 @@ public class PostController(
 
             cache.Remove(BlogCachePartition.Post.ToString(), postEntity.RouteLink);
 
-            // Log activity
             var eventType = model.PostId == Guid.Empty ? EventType.PostCreated : EventType.PostUpdated;
             var operation = model.PostId == Guid.Empty ? "Create Post" : "Update Post";
             await LogActivityAsync(
@@ -157,7 +156,6 @@ public class PostController(
     {
         await CommandMediator.SendAsync(new DeletePostCommand(postId, true));
 
-        // Log activity
         await LogActivityAsync(
             EventType.PostDeleted,
             "Delete Post (Move to Recycle Bin)",
@@ -174,7 +172,6 @@ public class PostController(
         await CommandMediator.SendAsync(new PublishPostCommand(postId));
         cache.Remove(BlogCachePartition.Post.ToString(), postId.ToString());
 
-        // Log activity
         await LogActivityAsync(
             EventType.PostPublished,
             "Publish Post",
@@ -191,7 +188,6 @@ public class PostController(
         await CommandMediator.SendAsync(new UnpublishPostCommand(postId));
         cache.Remove(BlogCachePartition.Post.ToString(), postId.ToString());
 
-        // Log activity
         await LogActivityAsync(
             EventType.PostUnpublished,
             "Unpublish Post",
