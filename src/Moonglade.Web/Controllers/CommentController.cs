@@ -11,7 +11,6 @@ namespace Moonglade.Web.Controllers;
 [Authorize]
 [ApiController]
 [Route("api/[controller]")]
-[CommentProviderGate]
 public class CommentController(
         ICommandMediator commandMediator,
         IQueryMediator queryMediator,
@@ -24,15 +23,15 @@ public class CommentController(
     [ServiceFilter(typeof(ValidateCaptcha))]
     public async Task<IActionResult> Create([NotEmpty] Guid postId, CommentRequest request)
     {
-        // Early validation checks
-        var validationResult = ValidateCommentRequest(request);
-        if (validationResult != null) return validationResult;
-
         if (!blogConfig.CommentSettings.EnableComments)
         {
             return Forbid();
         }
 
+        // Early validation checks
+        var validationResult = ValidateCommentRequest(request);
+        if (validationResult != null) return validationResult;
+        
         // Apply word filtering
         var filterResult = await ApplyWordFilteringAsync(request);
         if (filterResult != null) return filterResult;
