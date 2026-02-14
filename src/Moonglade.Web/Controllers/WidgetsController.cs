@@ -1,6 +1,5 @@
 ﻿using LiteBus.Commands.Abstractions;
 using LiteBus.Queries.Abstractions;
-using Moonglade.Data.Entities;
 using Moonglade.Widgets;
 
 namespace Moonglade.Web.Controllers;
