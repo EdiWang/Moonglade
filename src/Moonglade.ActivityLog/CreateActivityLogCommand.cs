@@ -27,21 +27,30 @@ public class CreateActivityLogCommandHandler(
 
     public async Task HandleAsync(CreateActivityLogCommand request, CancellationToken ct)
     {
-        var entity = new ActivityLogEntity
+        try
         {
-            EventId = (int)request.EventType,
-            EventTimeUtc = DateTime.UtcNow,
-            ActorId = request.ActorId?.Trim(),
-            Operation = request.Operation?.Trim(),
-            TargetName = request.TargetName?.Trim(),
-            MetaData = request.MetaData != null ? JsonSerializer.Serialize(request.MetaData, JsonOptions) : null,
-            IpAddress = request.IpAddress?.Trim(),
-            UserAgent = request.UserAgent?.Trim()
-        };
+            var entity = new ActivityLogEntity
+            {
+                EventId = (int)request.EventType,
+                EventTimeUtc = DateTime.UtcNow,
+                ActorId = request.ActorId?.Trim(),
+                Operation = request.Operation?.Trim(),
+                TargetName = request.TargetName?.Trim(),
+                MetaData = request.MetaData != null ? JsonSerializer.Serialize(request.MetaData, JsonOptions) : null,
+                IpAddress = request.IpAddress?.Trim(),
+                UserAgent = request.UserAgent?.Trim()
+            };
 
-        await repository.AddAsync(entity, ct);
+            await repository.AddAsync(entity, ct);
 
-        logger.LogInformation("Activity log created: {Operation} on {TargetName} by {ActorId}",
-            request.Operation, request.TargetName, request.ActorId);
+            logger.LogInformation("Activity log created: {Operation} on {TargetName} by {ActorId}",
+                request.Operation, request.TargetName, request.ActorId);
+        }
+        catch (Exception e)
+        {
+            // Log the error but do not throw, as we don't want to block the main operation due to logging failure
+            logger.LogError(e, "Failed to create activity log: {Operation} on {TargetName} by {ActorId}",
+                request.Operation, request.TargetName, request.ActorId);
+        }
     }
 }
