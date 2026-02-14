@@ -9,6 +9,7 @@
     <File Path="../Deployment/AzureQuickDeploy.ps1" />
   </Folder>
   <Folder Name="/Application/">
+    <Project Path="Moonglade.BackgroundServices/Moonglade.BackgroundServices.csproj" Id="73207b43-cf18-4eae-8b36-d44ce5e9760b" />
     <Project Path="Moonglade.Web.Middleware/Moonglade.Web.Middleware.csproj" />
     <Project Path="Moonglade.Web/Moonglade.Web.csproj" />
   </Folder>

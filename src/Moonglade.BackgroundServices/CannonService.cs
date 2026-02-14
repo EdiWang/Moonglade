@@ -1,6 +1,9 @@
-﻿using System.Threading.Channels;
+﻿using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Hosting;
+using Microsoft.Extensions.Logging;
+using System.Threading.Channels;
 
-namespace Moonglade.Web.BackgroundServices;
+namespace Moonglade.BackgroundServices;
 
 /// <summary>
 /// A reliable fire-and-forget service backed by <see cref="Channel{T}"/> and <see cref="BackgroundService"/>.

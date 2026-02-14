@@ -1,11 +1,11 @@
 ﻿using LiteBus.Commands.Abstractions;
 using LiteBus.Queries.Abstractions;
 using Microsoft.Extensions.Options;
+using Moonglade.BackgroundServices;
 using Moonglade.Data.DTO;
 using Moonglade.Features.Category;
 using Moonglade.Features.Post;
 using Moonglade.IndexNow.Client;
-using Moonglade.Web.BackgroundServices;
 using Moonglade.Webmention;
 using System.ComponentModel.DataAnnotations;
 
