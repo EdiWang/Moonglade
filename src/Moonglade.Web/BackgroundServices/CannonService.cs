@@ -1,6 +1,6 @@
 ﻿using System.Threading.Channels;
 
-namespace Moonglade.Web;
+namespace Moonglade.Web.BackgroundServices;
 
 /// <summary>
 /// A reliable fire-and-forget service backed by <see cref="Channel{T}"/> and <see cref="BackgroundService"/>.

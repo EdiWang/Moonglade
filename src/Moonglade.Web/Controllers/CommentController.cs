@@ -5,6 +5,7 @@ using Microsoft.AspNetCore.Mvc.ModelBinding;
 using Moonglade.Data.DTO;
 using Moonglade.Email.Client;
 using Moonglade.Moderation;
+using Moonglade.Web.BackgroundServices;
 using System.ComponentModel.DataAnnotations;
 
 namespace Moonglade.Web.Controllers;
@@ -18,7 +19,6 @@ public class CommentController(
         IQueryMediator queryMediator,
         IModeratorService moderator,
         IBlogConfig blogConfig,
-        ILogger<CommentController> logger,
         CannonService cannonService) : ControllerBase
 {
     [HttpPost("{postId:guid}")]

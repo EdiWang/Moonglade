@@ -1,6 +1,7 @@
 ﻿using Edi.ImageWatermark;
 using Microsoft.Extensions.Caching.Memory;
 using Microsoft.Extensions.Options;
+using Moonglade.Web.BackgroundServices;
 using SixLabors.ImageSharp;
 using System.ComponentModel.DataAnnotations;
 
