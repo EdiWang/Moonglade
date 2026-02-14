@@ -14,7 +14,6 @@ namespace Moonglade.Web.Controllers;
 [Route("api/[controller]")]
 [CommentProviderGate]
 public class CommentController(
-        IEventMediator eventMediator,
         ICommandMediator commandMediator,
         IQueryMediator queryMediator,
         IModeratorService moderator,
@@ -53,14 +52,16 @@ public class CommentController(
             return ValidationProblem(ModelState);
         }
 
-        try
+        // Send email notification (fire-and-forget)
+        if (blogConfig.NotificationSettings.SendEmailOnNewComment)
         {
-            await SendNewCommentNotificationAsync(item);
-        }
-        catch (Exception ex)
-        {
-            // Log the error but don't block the response
-            logger.LogError(ex, "Failed to send new comment notification for post {PostId}", postId);
+            cannonService.FireAsync<IEventMediator>(async mediator =>
+                await mediator.PublishAsync(new CommentEvent(
+                    item.Username,
+                    item.Email,
+                    item.IpAddress,
+                    item.PostTitle,
+                    item.CommentContent)));
         }
 
         return Ok(new
@@ -216,28 +217,6 @@ public class CommentController(
         }
 
         return null;
-    }
-
-    private async Task SendNewCommentNotificationAsync(CommentDetailedItem item)
-    {
-        if (!blogConfig.NotificationSettings.SendEmailOnNewComment)
-        {
-            return;
-        }
-
-        try
-        {
-            await eventMediator.PublishAsync(new CommentEvent(
-                item.Username,
-                item.Email,
-                item.IpAddress,
-                item.PostTitle,
-                item.CommentContent));
-        }
-        catch (Exception e)
-        {
-            logger.LogError(e, "Failed to send new comment notification for comment {CommentId}", item.Id);
-        }
     }
 
     private string GetPostUrl(string routeLink)
