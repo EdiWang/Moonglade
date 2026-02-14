@@ -48,3 +48,17 @@ SET @preparedStatement = (SELECT IF(
 PREPARE alterIfExists FROM @preparedStatement;
 EXECUTE alterIfExists;
 DEALLOCATE PREPARE alterIfExists;
+
+-- v15.6
+CREATE TABLE IF NOT EXISTS `ActivityLog` (
+    `Id` BIGINT NOT NULL AUTO_INCREMENT,
+    `EventId` INT NOT NULL,
+    `EventTimeUtc` DATETIME NULL,
+    `ActorId` VARCHAR(100) NULL,
+    `Operation` VARCHAR(100) NULL,
+    `TargetName` VARCHAR(200) NULL,
+    `MetaData` TEXT NULL,
+    `IpAddress` VARCHAR(50) NULL,
+    `UserAgent` VARCHAR(512) NULL,
+    PRIMARY KEY (`Id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
