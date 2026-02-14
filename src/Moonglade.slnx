@@ -14,6 +14,7 @@
     <Project Path="Moonglade.Web/Moonglade.Web.csproj" />
   </Folder>
   <Folder Name="/Core/">
+    <Project Path="Moonglade.ActivityLog/Moonglade.ActivityLog.csproj" Id="1aaf4c51-e632-4e50-8c75-281f8f3b1e9a" />
     <Project Path="Moonglade.Auth/Moonglade.Auth.csproj" />
     <Project Path="Moonglade.Email.Client/Moonglade.Email.Client.csproj" />
     <Project Path="Moonglade.Features/Moonglade.Features.csproj" />

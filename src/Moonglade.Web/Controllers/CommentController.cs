@@ -31,7 +31,7 @@ public class CommentController(
         // Early validation checks
         var validationResult = ValidateCommentRequest(request);
         if (validationResult != null) return validationResult;
-        
+
         // Apply word filtering
         var filterResult = await ApplyWordFilteringAsync(request);
         if (filterResult != null) return filterResult;
