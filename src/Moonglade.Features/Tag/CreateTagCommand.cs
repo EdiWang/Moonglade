@@ -1,22 +1,28 @@
 using LiteBus.Commands.Abstractions;
 using Microsoft.Extensions.Logging;
+using Moonglade.Data.DTO;
 using Moonglade.Data.Specifications;
 using Moonglade.Utils;
 
 namespace Moonglade.Features.Tag;
 
-public record CreateTagCommand(string Name) : ICommand<TagEntity>;
+public record CreateTagCommand(string Name) : ICommand<TagCommandResult>;
 
 public class CreateTagCommandHandler(
     IRepositoryBase<TagEntity> repo,
-    ILogger<CreateTagCommandHandler> logger) : ICommandHandler<CreateTagCommand, TagEntity>
+    ILogger<CreateTagCommandHandler> logger) : ICommandHandler<CreateTagCommand, TagCommandResult>
 {
-    public async Task<TagEntity> HandleAsync(CreateTagCommand request, CancellationToken ct)
+    public async Task<TagCommandResult> HandleAsync(CreateTagCommand request, CancellationToken ct)
     {
         var normalizedName = BlogTagHelper.NormalizeName(request.Name, BlogTagHelper.TagNormalizationDictionary);
 
         var existingTag = await repo.FirstOrDefaultAsync(new TagByNormalizedNameSpec(normalizedName), ct);
-        if (null != existingTag) return existingTag;
+        if (null != existingTag) return new TagCommandResult
+        {
+            Id = existingTag.Id,
+            DisplayName = existingTag.DisplayName,
+            NormalizedName = existingTag.NormalizedName
+        };
 
         var newTag = new TagEntity
         {
@@ -27,6 +33,11 @@ public class CreateTagCommandHandler(
         await repo.AddAsync(newTag, ct);
         logger.LogInformation("Tag created: {TagName}", request.Name);
 
-        return newTag;
+        return new TagCommandResult
+        {
+            Id = newTag.Id,
+            DisplayName = newTag.DisplayName,
+            NormalizedName = newTag.NormalizedName
+        };
     }
 }

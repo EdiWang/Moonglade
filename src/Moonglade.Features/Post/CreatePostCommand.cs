@@ -8,7 +8,7 @@ using Moonglade.Utils;
 
 namespace Moonglade.Features.Post;
 
-public record CreatePostCommand(PostEditModel Payload) : ICommand<PostEntity>;
+public record CreatePostCommand(PostEditModel Payload) : ICommand<PostCommandResult>;
 
 public class CreatePostCommandHandler(
         IRepositoryBase<PostEntity> postRepo,
@@ -16,9 +16,9 @@ public class CreatePostCommandHandler(
         ILogger<CreatePostCommandHandler> logger,
         IConfiguration configuration,
         IBlogConfig blogConfig)
-    : ICommandHandler<CreatePostCommand, PostEntity>
+    : ICommandHandler<CreatePostCommand, PostCommandResult>
 {
-    public async Task<PostEntity> HandleAsync(CreatePostCommand request, CancellationToken ct)
+    public async Task<PostCommandResult> HandleAsync(CreatePostCommand request, CancellationToken ct)
     {
         string abs;
         if (string.IsNullOrEmpty(request.Payload.Abstract))
@@ -70,7 +70,14 @@ public class CreatePostCommandHandler(
         await postRepo.AddAsync(post, ct);
 
         logger.LogInformation($"Created post Id: {post.Id}, Title: '{post.Title}'");
-        return post;
+        return new PostCommandResult
+        {
+            Id = post.Id,
+            RouteLink = post.RouteLink,
+            PostContent = post.PostContent,
+            PubDateUtc = post.PubDateUtc,
+            LastModifiedUtc = post.LastModifiedUtc
+        };
     }
 
     // check if exist same slug under the same day

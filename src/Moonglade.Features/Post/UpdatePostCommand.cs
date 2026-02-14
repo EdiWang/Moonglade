@@ -8,15 +8,15 @@ using Moonglade.Utils;
 
 namespace Moonglade.Features.Post;
 
-public record UpdatePostCommand(Guid Id, PostEditModel Payload) : ICommand<PostEntity>;
+public record UpdatePostCommand(Guid Id, PostEditModel Payload) : ICommand<PostCommandResult>;
 public class UpdatePostCommandHandler(
     IRepositoryBase<TagEntity> tagRepo,
     IRepositoryBase<PostEntity> postRepo,
     IBlogConfig blogConfig,
     IConfiguration configuration,
-    ILogger<UpdatePostCommandHandler> logger) : ICommandHandler<UpdatePostCommand, PostEntity>
+    ILogger<UpdatePostCommandHandler> logger) : ICommandHandler<UpdatePostCommand, PostCommandResult>
 {
-    public async Task<PostEntity> HandleAsync(UpdatePostCommand request, CancellationToken ct)
+    public async Task<PostCommandResult> HandleAsync(UpdatePostCommand request, CancellationToken ct)
     {
         var utcNow = DateTime.UtcNow;
         var (postId, postEditModel) = request;
@@ -30,7 +30,14 @@ public class UpdatePostCommandHandler(
         await postRepo.UpdateAsync(post, ct);
 
         logger.LogInformation("Post updated with ID: {PostId}", post.Id);
-        return post;
+        return new PostCommandResult
+        {
+            Id = post.Id,
+            RouteLink = post.RouteLink,
+            PostContent = post.PostContent,
+            PubDateUtc = post.PubDateUtc,
+            LastModifiedUtc = post.LastModifiedUtc
+        };
     }
 
     private async Task UpdateTags(PostEntity post, string tagString, CancellationToken ct)
