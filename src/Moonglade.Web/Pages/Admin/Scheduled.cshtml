@@ -24,7 +24,7 @@
 
 @Html.AntiForgeryToken()
 
-@if (!Configuration.GetValue<bool>("PostScheduler"))
+@if (!BlogConfig.AdvancedSettings.EnablePostScheduler)
 {
     <div class="alert alert-warning mb-3">
         @SharedLocalizer["Post scheduler is disabled, pending posts will not be published automatically."]
