@@ -48,6 +48,7 @@
 		<PackageReference Include="Moonglade.MonacoEditor" Version="0.55.1.1000" />
 	</ItemGroup>
 	<ItemGroup>
+		<ProjectReference Include="..\Moonglade.ActivityLog\Moonglade.ActivityLog.csproj" />
 		<ProjectReference Include="..\Moonglade.Auth\Moonglade.Auth.csproj" />
 		<ProjectReference Include="..\Moonglade.BackgroundServices\Moonglade.BackgroundServices.csproj" />
 		<ProjectReference Include="..\Moonglade.Features\Moonglade.Features.csproj" />
