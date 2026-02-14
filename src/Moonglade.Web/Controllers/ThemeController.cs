@@ -13,8 +13,6 @@ public class ThemeController(
     IBlogConfig blogConfig) : ControllerBase
 {
     [HttpGet("/theme.css")]
-    [ProducesResponseType(StatusCodes.Status200OK)]
-    [ProducesResponseType(StatusCodes.Status404NotFound)]
     public async Task<IActionResult> Css()
     {
         var css = await cache.GetOrCreateAsync(BlogCachePartition.General.ToString(), "theme", async entry =>
@@ -32,8 +30,6 @@ public class ThemeController(
 
     [Authorize]
     [HttpPost]
-    [ProducesResponseType<string>(StatusCodes.Status409Conflict)]
-    [ProducesResponseType<int>(StatusCodes.Status200OK)]
     [TypeFilter(typeof(ClearBlogCache), Arguments = [BlogCachePartition.General, "theme"])]
     public async Task<IActionResult> Create(CreateThemeRequest request)
     {

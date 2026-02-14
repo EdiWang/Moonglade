@@ -16,8 +16,6 @@ public class WidgetsController(
     #region Widget CRUD Operations
 
     [HttpGet("{id:guid}")]
-    [ProducesResponseType<WidgetEntity>(StatusCodes.Status200OK)]
-    [ProducesResponseType(StatusCodes.Status404NotFound)]
     public async Task<IActionResult> Get([NotEmpty] Guid id)
     {
         var widget = await queryMediator.QueryAsync(new GetWidgetQuery(id));
@@ -27,7 +25,6 @@ public class WidgetsController(
     }
 
     [HttpGet("list")]
-    [ProducesResponseType<List<WidgetEntity>>(StatusCodes.Status200OK)]
     public async Task<IActionResult> List()
     {
         var list = await queryMediator.QueryAsync(new ListWidgetsQuery());
@@ -35,7 +32,6 @@ public class WidgetsController(
     }
 
     [HttpPost]
-    [ProducesResponseType(StatusCodes.Status201Created)]
     public async Task<IActionResult> Create(EditWidgetRequest request)
     {
         await commandMediator.SendAsync(new CreateWidgetCommand(request));
@@ -45,7 +41,6 @@ public class WidgetsController(
     }
 
     [HttpPut("{id:guid}")]
-    [ProducesResponseType(StatusCodes.Status204NoContent)]
     public async Task<IActionResult> Update([NotEmpty] Guid id, EditWidgetRequest request)
     {
         await commandMediator.SendAsync(new UpdateWidgetCommand(id, request));
@@ -55,7 +50,6 @@ public class WidgetsController(
     }
 
     [HttpDelete("{id:guid}")]
-    [ProducesResponseType(StatusCodes.Status204NoContent)]
     public async Task<IActionResult> Delete([NotEmpty] Guid id)
     {
         await commandMediator.SendAsync(new DeleteWidgetCommand(id));

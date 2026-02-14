@@ -13,7 +13,6 @@ namespace Moonglade.Web.Controllers;
 public class TagsController(IQueryMediator queryMediator, ICommandMediator commandMediator) : ControllerBase
 {
     [HttpGet("names")]
-    [ProducesResponseType<List<string>>(StatusCodes.Status200OK)]
     public async Task<IActionResult> Names()
     {
         var names = await queryMediator.QueryAsync(new ListTagNamesQuery());
@@ -21,7 +20,6 @@ public class TagsController(IQueryMediator queryMediator, ICommandMediator comma
     }
 
     [HttpGet("list")]
-    [ProducesResponseType<List<TagEntity>>(StatusCodes.Status200OK)]
     public async Task<IActionResult> List()
     {
         var list = await queryMediator.QueryAsync(new ListTagsQuery());
@@ -29,7 +27,6 @@ public class TagsController(IQueryMediator queryMediator, ICommandMediator comma
     }
 
     [HttpGet("list/count")]
-    [ProducesResponseType<List<TagWithCount>>(StatusCodes.Status200OK)]
     public async Task<IActionResult> TagCountList()
     {
         var list = await queryMediator.QueryAsync(new GetTagCountListQuery());
@@ -37,9 +34,6 @@ public class TagsController(IQueryMediator queryMediator, ICommandMediator comma
     }
 
     [HttpPost]
-    [ProducesResponseType(StatusCodes.Status200OK)]
-    [ProducesResponseType(StatusCodes.Status400BadRequest)]
-    [ProducesResponseType(StatusCodes.Status409Conflict)]
     public async Task<IActionResult> Create([Required][FromBody] string name)
     {
         if (!BlogTagHelper.IsValidTagName(name)) return Conflict("Invalid tag name.");

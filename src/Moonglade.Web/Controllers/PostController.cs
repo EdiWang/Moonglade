@@ -25,7 +25,6 @@ public class PostController(
         CannonService cannonService) : ControllerBase
 {
     [HttpGet("list")]
-    [ProducesResponseType(StatusCodes.Status200OK)]
     public async Task<IActionResult> List([FromQuery] int pageIndex = 1, [FromQuery] int pageSize = 4, [FromQuery] string searchTerm = null)
     {
         var offset = (pageIndex - 1) * pageSize;
@@ -46,8 +45,6 @@ public class PostController(
         BlogCacheType.SiteMap |
         BlogCacheType.Subscription
     ])]
-    [ProducesResponseType(StatusCodes.Status200OK)]
-    [ProducesResponseType(StatusCodes.Status409Conflict)]
     public async Task<IActionResult> CreateOrEdit(PostEditModel model)
     {
         try
@@ -148,7 +145,6 @@ public class PostController(
         BlogCacheType.Subscription
     ])]
     [HttpDelete("{postId:guid}/recycle")]
-    [ProducesResponseType(StatusCodes.Status204NoContent)]
     public async Task<IActionResult> Delete([NotEmpty] Guid postId)
     {
         await commandMediator.SendAsync(new DeletePostCommand(postId, true));
@@ -157,7 +153,6 @@ public class PostController(
 
     [TypeFilter(typeof(ClearBlogCache), Arguments = [BlogCacheType.Subscription | BlogCacheType.SiteMap])]
     [HttpPut("{postId:guid}/publish")]
-    [ProducesResponseType(StatusCodes.Status204NoContent)]
     public async Task<IActionResult> Publish([NotEmpty] Guid postId)
     {
         await commandMediator.SendAsync(new PublishPostCommand(postId));
@@ -168,7 +163,6 @@ public class PostController(
 
     [TypeFilter(typeof(ClearBlogCache), Arguments = [BlogCacheType.Subscription | BlogCacheType.SiteMap])]
     [HttpPut("{postId:guid}/unpublish")]
-    [ProducesResponseType(StatusCodes.Status204NoContent)]
     public async Task<IActionResult> Unpublish([NotEmpty] Guid postId)
     {
         await commandMediator.SendAsync(new UnpublishPostCommand(postId));
@@ -179,7 +173,6 @@ public class PostController(
 
     [IgnoreAntiforgeryToken]
     [HttpPost("keep-alive")]
-    [ProducesResponseType(StatusCodes.Status200OK)]
     public IActionResult KeepAlive([MaxLength(16)] string nonce)
     {
         return Ok(new
@@ -190,7 +183,6 @@ public class PostController(
     }
 
     [HttpGet("meta")]
-    [ProducesResponseType<PostEditorMeta>(StatusCodes.Status200OK)]
     public async Task<IActionResult> GetMeta([FromServices] IOptions<RequestLocalizationOptions> locOptions)
     {
         var ec = configuration.GetValue<EditorChoice>("Post:Editor");
@@ -218,8 +210,6 @@ public class PostController(
     }
 
     [HttpGet("{id:guid}")]
-    [ProducesResponseType<PostEditDetail>(StatusCodes.Status200OK)]
-    [ProducesResponseType(StatusCodes.Status404NotFound)]
     public async Task<IActionResult> GetPost([NotEmpty] Guid id)
     {
         var post = await queryMediator.QueryAsync(new GetPostByIdQuery(id));
@@ -256,7 +246,6 @@ public class PostController(
     }
 
     [HttpGet("drafts")]
-    [ProducesResponseType(StatusCodes.Status200OK)]
     public async Task<IActionResult> Drafts()
     {
         var posts = await queryMediator.QueryAsync(new ListPostSegmentByStatusQuery(PostStatus.Draft));

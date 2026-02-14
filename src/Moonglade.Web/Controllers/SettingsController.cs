@@ -19,7 +19,6 @@ public class SettingsController(
         ICommandMediator commandMediator) : ControllerBase
 {
     [HttpPost("general")]
-    [ProducesResponseType(StatusCodes.Status204NoContent)]
     public async Task<IActionResult> General(GeneralSettings model)
     {
         model.AvatarUrl = blogConfig.GeneralSettings.AvatarUrl;
@@ -33,7 +32,6 @@ public class SettingsController(
     }
 
     [HttpPost("content")]
-    [ProducesResponseType(StatusCodes.Status204NoContent)]
     public async Task<IActionResult> Content(ContentSettings model)
     {
         blogConfig.ContentSettings = model;
@@ -43,7 +41,6 @@ public class SettingsController(
     }
 
     [HttpPost("comment")]
-    [ProducesResponseType(StatusCodes.Status204NoContent)]
     public async Task<IActionResult> Comment(CommentSettings model)
     {
         blogConfig.CommentSettings = model;
@@ -53,7 +50,6 @@ public class SettingsController(
     }
 
     [HttpPost("notification")]
-    [ProducesResponseType(StatusCodes.Status204NoContent)]
     public async Task<IActionResult> Notification(NotificationSettings model)
     {
         blogConfig.NotificationSettings = model;
@@ -64,7 +60,6 @@ public class SettingsController(
 
     [HttpPost("email/test")]
     [IgnoreAntiforgeryToken]
-    [ProducesResponseType(StatusCodes.Status200OK)]
     public async Task<IActionResult> TestEmail()
     {
         try
@@ -80,7 +75,6 @@ public class SettingsController(
     }
 
     [HttpPost("subscription")]
-    [ProducesResponseType(StatusCodes.Status204NoContent)]
     public async Task<IActionResult> Subscription(FeedSettings model)
     {
         blogConfig.FeedSettings = model;
@@ -90,8 +84,6 @@ public class SettingsController(
     }
 
     [HttpPost("watermark")]
-    [ProducesResponseType(StatusCodes.Status204NoContent)]
-    [ProducesResponseType(StatusCodes.Status400BadRequest)]
     public async Task<IActionResult> Image(ImageSettings model, IBlogImageStorage imageStorage)
     {
         blogConfig.ImageSettings = model;
@@ -133,8 +125,6 @@ public class SettingsController(
     }
 
     [HttpPost("advanced")]
-    [ProducesResponseType(StatusCodes.Status204NoContent)]
-    [ProducesResponseType(StatusCodes.Status400BadRequest)]
     public async Task<IActionResult> Advanced(AdvancedSettings model)
     {
         if (!string.IsNullOrWhiteSpace(model.HeadScripts) &&
@@ -160,8 +150,6 @@ public class SettingsController(
     }
 
     [HttpPost("appearance")]
-    [ProducesResponseType(StatusCodes.Status204NoContent)]
-    [ProducesResponseType(StatusCodes.Status400BadRequest)]
     [TypeFilter(typeof(ClearBlogCache), Arguments = [BlogCachePartition.General, "theme"])]
     public async Task<IActionResult> Appearance(AppearanceSettings model)
     {
@@ -178,12 +166,9 @@ public class SettingsController(
     }
 
     [HttpGet("custom-menu")]
-    [ProducesResponseType<CustomMenuSettings>(StatusCodes.Status200OK)]
     public async Task<IActionResult> CustomMenu() => Ok(blogConfig.CustomMenuSettings);
 
     [HttpPost("custom-menu")]
-    [ProducesResponseType(StatusCodes.Status204NoContent)]
-    [ProducesResponseType(StatusCodes.Status400BadRequest)]
     public async Task<IActionResult> CustomMenu(CustomMenuSettingsJsonModel model)
     {
         if (model.IsEnabled && string.IsNullOrWhiteSpace(model.MenuJson))
@@ -203,7 +188,6 @@ public class SettingsController(
     }
 
     [HttpGet("password/generate")]
-    [ProducesResponseType(StatusCodes.Status200OK)]
     public IActionResult GeneratePassword([FromServices] IPasswordGenerator passwordGenerator)
     {
         var password = passwordGenerator.GeneratePassword(new(10, 3));
@@ -215,8 +199,6 @@ public class SettingsController(
     }
 
     [HttpPut("password/local")]
-    [ProducesResponseType(StatusCodes.Status204NoContent)]
-    [ProducesResponseType(StatusCodes.Status409Conflict)]
     public async Task<IActionResult> UpdateLocalAccountPassword(UpdateLocalAccountPasswordRequest request)
     {
         var oldPasswordValid = blogConfig.LocalAccountSettings.PasswordHash == SecurityHelper.HashPassword(request.OldPassword.Trim(), blogConfig.LocalAccountSettings.PasswordSalt);

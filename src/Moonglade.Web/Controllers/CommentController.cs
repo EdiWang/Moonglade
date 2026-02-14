@@ -24,10 +24,6 @@ public class CommentController(
     [HttpPost("{postId:guid}")]
     [AllowAnonymous]
     [ServiceFilter(typeof(ValidateCaptcha))]
-    [ProducesResponseType(StatusCodes.Status200OK)]
-    [ProducesResponseType(StatusCodes.Status400BadRequest)]
-    [ProducesResponseType(StatusCodes.Status403Forbidden)]
-    [ProducesResponseType<ModelStateDictionary>(StatusCodes.Status409Conflict)]
     public async Task<IActionResult> Create([NotEmpty] Guid postId, CommentRequest request)
     {
         // Early validation checks
@@ -71,8 +67,6 @@ public class CommentController(
     }
 
     [HttpPut("{commentId:guid}/approval/toggle")]
-    [ProducesResponseType<Guid>(StatusCodes.Status200OK)]
-    [ProducesResponseType(StatusCodes.Status404NotFound)]
     public async Task<IActionResult> Approval([NotEmpty] Guid commentId)
     {
         try
@@ -87,9 +81,6 @@ public class CommentController(
     }
 
     [HttpDelete]
-    [ProducesResponseType<Guid[]>(StatusCodes.Status200OK)]
-    [ProducesResponseType<string>(StatusCodes.Status400BadRequest)]
-    [ProducesResponseType(StatusCodes.Status404NotFound)]
     public async Task<IActionResult> Delete([FromBody][MinLength(1)] Guid[] commentIds)
     {
         try
@@ -104,7 +95,6 @@ public class CommentController(
     }
 
     [HttpGet("list")]
-    [ProducesResponseType(StatusCodes.Status200OK)]
     public async Task<IActionResult> List([FromQuery] int pageIndex = 1, [FromQuery] int pageSize = 5, [FromQuery] string searchTerm = null)
     {
         var comments = await queryMediator.QueryAsync(new ListCommentsQuery(pageSize, pageIndex, searchTerm));
@@ -139,10 +129,6 @@ public class CommentController(
     }
 
     [HttpPost("{commentId:guid}/reply")]
-    [ProducesResponseType<CommentReply>(StatusCodes.Status200OK)]
-    [ProducesResponseType(StatusCodes.Status400BadRequest)]
-    [ProducesResponseType(StatusCodes.Status403Forbidden)]
-    [ProducesResponseType(StatusCodes.Status404NotFound)]
     public async Task<IActionResult> Reply(
         [NotEmpty] Guid commentId,
         [Required][FromBody] string replyContent)

@@ -14,7 +14,6 @@ public class RecycleBinController(
     ICommandMediator commandMediator) : ControllerBase
 {
     [HttpGet("list/recyclebin")]
-    [ProducesResponseType(StatusCodes.Status200OK)]
     public async Task<IActionResult> List()
     {
         var posts = await queryMediator.QueryAsync(new ListPostSegmentByStatusQuery(PostStatus.Deleted));
@@ -26,7 +25,6 @@ public class RecycleBinController(
     }
 
     [HttpPost("{postId:guid}/restore")]
-    [ProducesResponseType(StatusCodes.Status204NoContent)]
     public async Task<IActionResult> Restore([NotEmpty] Guid postId)
     {
         await commandMediator.SendAsync(new RestorePostCommand(postId));
@@ -36,7 +34,6 @@ public class RecycleBinController(
     }
 
     [HttpDelete("{postId:guid}/destroy")]
-    [ProducesResponseType(StatusCodes.Status204NoContent)]
     public async Task<IActionResult> Delete([NotEmpty] Guid postId)
     {
         await commandMediator.SendAsync(new DeletePostCommand(postId));
@@ -46,7 +43,6 @@ public class RecycleBinController(
     }
 
     [HttpDelete("recyclebin")]
-    [ProducesResponseType(StatusCodes.Status204NoContent)]
     public async Task<IActionResult> Clear()
     {
         var guids = await commandMediator.SendAsync(new EmptyRecycleBinCommand());

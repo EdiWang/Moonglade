@@ -15,7 +15,6 @@ public class ScheduleController(
     ) : ControllerBase
 {
     [HttpGet("list")]
-    [ProducesResponseType(StatusCodes.Status200OK)]
     public async Task<IActionResult> List()
     {
         var posts = await queryMediator.QueryAsync(new ListPostSegmentByStatusQuery(PostStatus.Scheduled));
@@ -23,7 +22,6 @@ public class ScheduleController(
     }
 
     [HttpPut("cancel/{postId:guid}")]
-    [ProducesResponseType(StatusCodes.Status204NoContent)]
     public async Task<IActionResult> Cancel([NotEmpty] Guid postId)
     {
         await commandMediator.SendAsync(new CancelScheduleCommand(postId));
@@ -33,7 +31,6 @@ public class ScheduleController(
     }
 
     [HttpPut("postpone/{postId:guid}")]
-    [ProducesResponseType(StatusCodes.Status204NoContent)]
     public async Task<IActionResult> Postpone([NotEmpty] Guid postId, [FromQuery][Range(1, 24)] int hours = 24)
     {
         await commandMediator.SendAsync(new PostponePostCommand(postId, hours));

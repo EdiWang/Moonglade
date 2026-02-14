@@ -13,7 +13,6 @@ public class PageController(ICacheAside cache, IQueryMediator queryMediator, ICo
 {
     [HttpPost]
     [TypeFilter(typeof(ClearBlogCache), Arguments = [BlogCacheType.SiteMap])]
-    [ProducesResponseType(StatusCodes.Status200OK)]
     public async Task<IActionResult> Create(EditPageRequest model)
     {
         var uid = await commandMediator.SendAsync(new CreatePageCommand(model));
@@ -24,7 +23,6 @@ public class PageController(ICacheAside cache, IQueryMediator queryMediator, ICo
 
     [HttpPut("{id:guid}")]
     [TypeFilter(typeof(ClearBlogCache), Arguments = [BlogCacheType.SiteMap])]
-    [ProducesResponseType(StatusCodes.Status200OK)]
     public async Task<IActionResult> Edit([NotEmpty] Guid id, EditPageRequest model)
     {
         var uid = await commandMediator.SendAsync(new UpdatePageCommand(id, model));
@@ -47,7 +45,6 @@ public class PageController(ICacheAside cache, IQueryMediator queryMediator, ICo
     }
 
     [HttpGet("segment/list")]
-    [ProducesResponseType<List<PageSegment>>(StatusCodes.Status200OK)]
     public async Task<IActionResult> GetPageSegmentList()
     {
         var segments = await queryMediator.QueryAsync(new ListPageSegmentsQuery());
@@ -55,8 +52,6 @@ public class PageController(ICacheAside cache, IQueryMediator queryMediator, ICo
     }
 
     [HttpGet("{id:guid}")]
-    [ProducesResponseType<PageDetail>(StatusCodes.Status200OK)]
-    [ProducesResponseType(StatusCodes.Status404NotFound)]
     public async Task<IActionResult> Get([NotEmpty] Guid id)
     {
         var page = await queryMediator.QueryAsync(new GetPageByIdQuery(id));

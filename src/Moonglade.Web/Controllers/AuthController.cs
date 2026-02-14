@@ -16,7 +16,6 @@ public class AuthController(
     private readonly AuthenticationSettings _authenticationSettings = authSettings.Value;
 
     [HttpGet("signout")]
-    [ProducesResponseType(StatusCodes.Status302Found)]
     public async Task<IActionResult> SignOut(int nounce = 996)
     {
         switch (_authenticationSettings.Provider)
@@ -38,7 +37,6 @@ public class AuthController(
     [AllowAnonymous]
     [HttpGet("/account/accessdenied")]
     [HttpGet("accessdenied")]
-    [ProducesResponseType(StatusCodes.Status403Forbidden)]
     public IActionResult AccessDenied()
     {
         Response.StatusCode = StatusCodes.Status403Forbidden;
@@ -47,7 +45,6 @@ public class AuthController(
 
     [Authorize]
     [HttpGet("loginhistory/list")]
-    [ProducesResponseType<List<LoginHistoryEntity>>(StatusCodes.Status200OK)]
     public async Task<IActionResult> ListLoginHistory()
     {
         var data = await queryMediator.QueryAsync(new ListLoginHistoryQuery());
@@ -56,7 +53,6 @@ public class AuthController(
 
     [Authorize]
     [HttpGet("me")]
-    [ProducesResponseType(StatusCodes.Status200OK)]
     public IActionResult Me()
     {
         return Ok(new { UserName = User.Identity?.Name ?? "Anonymous" });

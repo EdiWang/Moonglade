@@ -21,10 +21,6 @@ public class ImageController(IBlogImageStorage imageStorage,
     private readonly ImageStorageSettings _imageStorageSettings = imageStorageSettings.Value;
 
     [HttpGet(@"{filename:regex((?!-)([[a-z0-9-]]+)\.(png|jpg|jpeg|gif|bmp|webp|svg))}")]
-    [ProducesResponseType(StatusCodes.Status200OK)]
-    [ProducesResponseType(StatusCodes.Status302Found)]
-    [ProducesResponseType(StatusCodes.Status400BadRequest)]
-    [ProducesResponseType(StatusCodes.Status404NotFound)]
     public async Task<IActionResult> Image([MaxLength(256)] string filename)
     {
         var invalidChars = Path.GetInvalidFileNameChars();
@@ -61,8 +57,6 @@ public class ImageController(IBlogImageStorage imageStorage,
 
     [Authorize]
     [HttpPost, IgnoreAntiforgeryToken]
-    [ProducesResponseType(StatusCodes.Status200OK)]
-    [ProducesResponseType(StatusCodes.Status400BadRequest)]
     public async Task<IActionResult> Image([Required] IFormFile file, [FromQuery] bool skipWatermark = false)
     {
         var name = Path.GetFileName(file.FileName);

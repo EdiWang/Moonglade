@@ -13,8 +13,6 @@ public class CategoryController(
     ICommandMediator commandMediator) : ControllerBase
 {
     [HttpGet("{id:guid}")]
-    [ProducesResponseType<CategoryEntity>(StatusCodes.Status200OK)]
-    [ProducesResponseType(StatusCodes.Status404NotFound)]
     public async Task<IActionResult> Get([NotEmpty] Guid id)
     {
         var cat = await queryMediator.QueryAsync(new GetCategoryQuery(id));
@@ -24,7 +22,6 @@ public class CategoryController(
     }
 
     [HttpGet("list")]
-    [ProducesResponseType<List<CategoryEntity>>(StatusCodes.Status200OK)]
     public async Task<IActionResult> List()
     {
         var list = await queryMediator.QueryAsync(new ListCategoriesQuery());
@@ -32,7 +29,6 @@ public class CategoryController(
     }
 
     [HttpPost]
-    [ProducesResponseType(StatusCodes.Status201Created)]
     public async Task<IActionResult> Create(CreateCategoryCommand command)
     {
         await commandMediator.SendAsync(command);

@@ -19,11 +19,6 @@ public class MentionController(
 {
     [HttpPost("/webmention")]
     [IgnoreAntiforgeryToken]
-    [ProducesResponseType(StatusCodes.Status200OK)]
-    [ProducesResponseType(StatusCodes.Status400BadRequest)]
-    [ProducesResponseType(StatusCodes.Status409Conflict)]
-    [ProducesResponseType(StatusCodes.Status404NotFound)]
-    [ProducesResponseType(StatusCodes.Status500InternalServerError)]
     public async Task<IActionResult> ReceiveWebmention(
         [FromForm][Required] string source,
         [FromForm][Required] string target)
@@ -67,7 +62,6 @@ public class MentionController(
 
     [Authorize]
     [HttpGet("list")]
-    [ProducesResponseType<List<MentionEntity>>(StatusCodes.Status200OK)]
     public async Task<IActionResult> ListMentions()
     {
         var mentions = await queryMediator.QueryAsync(new ListMentionsQuery());
@@ -76,8 +70,6 @@ public class MentionController(
 
     [Authorize]
     [HttpDelete]
-    [ProducesResponseType(StatusCodes.Status204NoContent)]
-    [ProducesResponseType(StatusCodes.Status400BadRequest)]
     public async Task<IActionResult> Delete([FromBody] List<Guid> mentionIds)
     {
         if (mentionIds == null || mentionIds.Count == 0)
@@ -91,7 +83,6 @@ public class MentionController(
 
     [Authorize]
     [HttpDelete("clear")]
-    [ProducesResponseType(StatusCodes.Status204NoContent)]
     public async Task<IActionResult> Clear()
     {
         await commandMediator.SendAsync(new ClearMentionsCommand());
