@@ -36,11 +36,17 @@ public class ContentSettings : IBlogSettings
     [Display(Name = "Word count in abstract")]
     public int PostAbstractWords { get; set; } = 400;
 
+    [Required]
+    [Display(Name = "Maximum page numbers to display in pagination")]
+    [Range(2, 10)]
+    public int MaximumPageNumbersToDisplay { get; set; } = 5;
+
     [JsonIgnore]
     public static ContentSettings DefaultValue => new()
     {
         PostListPageSize = 10,
-        CalloutSectionHtmlPitch = string.Empty
+        CalloutSectionHtmlPitch = string.Empty,
+        MaximumPageNumbersToDisplay = 5
     };
 }
 
