@@ -14,12 +14,12 @@ namespace Moonglade.Web.Controllers;
 [Route("api/[controller]")]
 [CommentProviderGate]
 public class CommentController(
-        IEventMediator eventMediator,
         ICommandMediator commandMediator,
         IQueryMediator queryMediator,
         IModeratorService moderator,
         IBlogConfig blogConfig,
-        ILogger<CommentController> logger) : ControllerBase
+        ILogger<CommentController> logger,
+        CannonService cannonService) : ControllerBase
 {
     [HttpPost("{postId:guid}")]
     [AllowAnonymous]
@@ -52,14 +52,16 @@ public class CommentController(
             return ValidationProblem(ModelState);
         }
 
-        try
+        // Send email notification (fire-and-forget)
+        if (blogConfig.NotificationSettings.SendEmailOnNewComment)
         {
-            await SendNewCommentNotificationAsync(item);
-        }
-        catch (Exception ex)
-        {
-            // Log the error but don't block the response
-            logger.LogError(ex, "Failed to send new comment notification for post {PostId}", postId);
+            cannonService.FireAsync<IEventMediator>(async mediator =>
+                await mediator.PublishAsync(new CommentEvent(
+                    item.Username,
+                    item.Email,
+                    item.IpAddress,
+                    item.PostTitle,
+                    item.CommentContent)));
         }
 
         return Ok(new
@@ -158,7 +160,17 @@ public class CommentController(
             var reply = await commandMediator.SendAsync(new ReplyCommentCommand(commentId, replyContent));
 
             // Send email notification (fire-and-forget)
-            _ = Task.Run(async () => await SendReplyNotificationAsync(reply));
+            if (blogConfig.NotificationSettings.SendEmailOnCommentReply && !string.IsNullOrWhiteSpace(reply.Email))
+            {
+                var postLink = GetPostUrl(reply.RouteLink);
+                cannonService.FireAsync<IEventMediator>(async mediator =>
+                    await mediator.PublishAsync(new CommentReplyEvent(
+                        reply.Email,
+                        reply.CommentContent,
+                        reply.Title,
+                        reply.ReplyContentHtml,
+                        postLink)));
+            }
 
             return Ok(reply);
         }
@@ -205,52 +217,6 @@ public class CommentController(
         }
 
         return null;
-    }
-
-    private async Task SendNewCommentNotificationAsync(CommentDetailedItem item)
-    {
-        if (!blogConfig.NotificationSettings.SendEmailOnNewComment)
-        {
-            return;
-        }
-
-        try
-        {
-            await eventMediator.PublishAsync(new CommentEvent(
-                item.Username,
-                item.Email,
-                item.IpAddress,
-                item.PostTitle,
-                item.CommentContent));
-        }
-        catch (Exception e)
-        {
-            logger.LogError(e, "Failed to send new comment notification for comment {CommentId}", item.Id);
-        }
-    }
-
-    private async Task SendReplyNotificationAsync(CommentReply reply)
-    {
-        if (!blogConfig.NotificationSettings.SendEmailOnCommentReply || string.IsNullOrWhiteSpace(reply.Email))
-        {
-            return;
-        }
-
-        var postLink = GetPostUrl(reply.RouteLink);
-
-        try
-        {
-            await eventMediator.PublishAsync(new CommentReplyEvent(
-                reply.Email,
-                reply.CommentContent,
-                reply.Title,
-                reply.ReplyContentHtml,
-                postLink));
-        }
-        catch (Exception e)
-        {
-            logger.LogError(e, "Failed to send reply notification for reply to comment {CommentId}", reply.Email);
-        }
     }
 
     private string GetPostUrl(string routeLink)

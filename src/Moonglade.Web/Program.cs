@@ -243,6 +243,7 @@ public class Program
         services.AddHostedService<ScheduledPublishService>();
 
         services.AddSingleton<CannonService>();
+        services.AddHostedService(sp => sp.GetRequiredService<CannonService>());
     }
 
     private static void ConfigureDatabase(IServiceCollection services, IConfiguration configuration)
