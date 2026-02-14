@@ -1,22 +1,25 @@
 ﻿using Edi.ImageWatermark;
+using LiteBus.Commands.Abstractions;
 using Microsoft.Extensions.Caching.Memory;
 using Microsoft.Extensions.Options;
+using Moonglade.ActivityLog;
 using Moonglade.BackgroundServices;
 using SixLabors.ImageSharp;
 using System.ComponentModel.DataAnnotations;
 
 namespace Moonglade.Web.Controllers;
 
-[ApiController]
 [Route("image")]
-public class ImageController(IBlogImageStorage imageStorage,
+public class ImageController(
+        IBlogImageStorage imageStorage,
         ILogger<ImageController> logger,
         IBlogConfig blogConfig,
         IMemoryCache cache,
         IFileNameGenerator fileNameGen,
         IOptions<ImageStorageSettings> imageStorageSettings,
-        CannonService cannonService)
-    : ControllerBase
+        CannonService cannonService,
+        ICommandMediator commandMediator)
+    : BlogControllerBase(commandMediator)
 {
     private readonly ImageStorageSettings _imageStorageSettings = imageStorageSettings.Value;
 
@@ -85,6 +88,12 @@ public class ImageController(IBlogImageStorage imageStorage,
         }
 
         logger.LogInformation($"Image '{primaryFileName}' uploaded.");
+
+        await LogActivityAsync(
+            EventType.ImageUploaded,
+            "Upload Image",
+            finalName,
+            new { FileName = finalName, FileSize = file.Length, SkipWatermark = skipWatermark });
 
         return Ok(new
         {

@@ -64,7 +64,8 @@ public class Program
             "Moonglade.Theme",
             "Moonglade.Data",
             "Moonglade.Configuration",
-            "Moonglade.Widgets"
+            "Moonglade.Widgets",
+            "Moonglade.ActivityLog"
         };
 
         foreach (var assembly in assemblies)

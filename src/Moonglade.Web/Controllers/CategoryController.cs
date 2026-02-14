@@ -1,15 +1,14 @@
 ﻿using LiteBus.Commands.Abstractions;
 using LiteBus.Queries.Abstractions;
+using Moonglade.ActivityLog;
 using Moonglade.Features.Category;
 
 namespace Moonglade.Web.Controllers;
 
-[Authorize]
-[ApiController]
 [Route("api/[controller]")]
 public class CategoryController(
     IQueryMediator queryMediator,
-    ICommandMediator commandMediator) : ControllerBase
+    ICommandMediator commandMediator) : BlogControllerBase(commandMediator)
 {
     [HttpGet("{id:guid}")]
     public async Task<IActionResult> Get([NotEmpty] Guid id)
@@ -30,7 +29,14 @@ public class CategoryController(
     [HttpPost]
     public async Task<IActionResult> Create(CreateCategoryCommand command)
     {
-        await commandMediator.SendAsync(command);
+        await CommandMediator.SendAsync(command);
+
+        await LogActivityAsync(
+            EventType.CategoryCreated,
+            "Create Category",
+            command.DisplayName,
+            new { command.Slug, command.Note });
+
         return Created(string.Empty, command);
     }
 
@@ -39,8 +45,14 @@ public class CategoryController(
     public async Task<IActionResult> Update([NotEmpty] Guid id, UpdateCategoryCommand command)
     {
         command.Id = id;
-        var oc = await commandMediator.SendAsync(command);
+        var oc = await CommandMediator.SendAsync(command);
         if (oc == OperationCode.ObjectNotFound) return NotFound();
+
+        await LogActivityAsync(
+            EventType.CategoryUpdated,
+            "Update Category",
+            command.DisplayName,
+            new { command.Id, command.Slug, command.Note });
 
         return NoContent();
     }
@@ -49,8 +61,17 @@ public class CategoryController(
     [ApiConventionMethod(typeof(DefaultApiConventions), nameof(DefaultApiConventions.Delete))]
     public async Task<IActionResult> Delete([NotEmpty] Guid id)
     {
-        var oc = await commandMediator.SendAsync(new DeleteCategoryCommand(id));
+        // Get category info before deletion for logging
+        var cat = await queryMediator.QueryAsync(new GetCategoryQuery(id));
+
+        var oc = await CommandMediator.SendAsync(new DeleteCategoryCommand(id));
         if (oc == OperationCode.ObjectNotFound) return NotFound();
+
+        await LogActivityAsync(
+            EventType.CategoryDeleted,
+            "Delete Category",
+            cat?.DisplayName ?? id.ToString(),
+            new { CategoryId = id });
 
         return NoContent();
     }

@@ -2,21 +2,20 @@
 using LiteBus.Commands.Abstractions;
 using LiteBus.Events.Abstractions;
 using LiteBus.Queries.Abstractions;
+using Moonglade.ActivityLog;
 using Moonglade.Email.Client;
 using Moonglade.Features.Asset;
 using SecurityHelper = Moonglade.Utils.SecurityHelper;
 
 namespace Moonglade.Web.Controllers;
 
-[Authorize]
-[ApiController]
 [Route("api/[controller]")]
 public class SettingsController(
         IBlogConfig blogConfig,
         ILogger<SettingsController> logger,
         IEventMediator eventMediator,
         IQueryMediator queryMediator,
-        ICommandMediator commandMediator) : ControllerBase
+        ICommandMediator commandMediator) : BlogControllerBase(commandMediator)
 {
     [HttpPost("general")]
     public async Task<IActionResult> General(GeneralSettings model)
@@ -25,6 +24,12 @@ public class SettingsController(
         blogConfig.GeneralSettings = model;
 
         await SaveConfigAsync(blogConfig.GeneralSettings);
+
+        await LogActivityAsync(
+            EventType.SettingsGeneralUpdated,
+            "Update General Settings",
+            "General Settings",
+            new { model.SiteTitle, model.LogoText });
 
         AppDomain.CurrentDomain.SetData("CurrentThemeColor", null);
 
@@ -37,6 +42,12 @@ public class SettingsController(
         blogConfig.ContentSettings = model;
 
         await SaveConfigAsync(blogConfig.ContentSettings);
+
+        await LogActivityAsync(
+            EventType.SettingsContentUpdated,
+            "Update Content Settings",
+            "Content Settings");
+
         return NoContent();
     }
 
@@ -46,6 +57,13 @@ public class SettingsController(
         blogConfig.CommentSettings = model;
 
         await SaveConfigAsync(blogConfig.CommentSettings);
+
+        await LogActivityAsync(
+            EventType.SettingsCommentUpdated,
+            "Update Comment Settings",
+            "Comment Settings",
+            new { model.EnableComments, model.RequireCommentReview });
+
         return NoContent();
     }
 
@@ -55,6 +73,12 @@ public class SettingsController(
         blogConfig.NotificationSettings = model;
 
         await SaveConfigAsync(blogConfig.NotificationSettings);
+
+        await LogActivityAsync(
+            EventType.SettingsNotificationUpdated,
+            "Update Notification Settings",
+            "Notification Settings");
+
         return NoContent();
     }
 
@@ -80,6 +104,12 @@ public class SettingsController(
         blogConfig.FeedSettings = model;
 
         await SaveConfigAsync(blogConfig.FeedSettings);
+
+        await LogActivityAsync(
+            EventType.SettingsSubscriptionUpdated,
+            "Update Subscription Settings",
+            "Subscription Settings");
+
         return NoContent();
     }
 
@@ -121,6 +151,12 @@ public class SettingsController(
 
         await SaveConfigAsync(blogConfig.ImageSettings);
 
+        await LogActivityAsync(
+            EventType.SettingsImageUpdated,
+            "Update Image Settings",
+            "Image Settings",
+            new { model.EnableCDNRedirect, model.IsWatermarkEnabled });
+
         return NoContent();
     }
 
@@ -146,6 +182,12 @@ public class SettingsController(
         blogConfig.AdvancedSettings = model;
 
         await SaveConfigAsync(blogConfig.AdvancedSettings);
+
+        await LogActivityAsync(
+            EventType.SettingsAdvancedUpdated,
+            "Update Advanced Settings",
+            "Advanced Settings");
+
         return NoContent();
     }
 
@@ -162,6 +204,13 @@ public class SettingsController(
         blogConfig.AppearanceSettings = model;
 
         await SaveConfigAsync(blogConfig.AppearanceSettings);
+
+        await LogActivityAsync(
+            EventType.SettingsAppearanceUpdated,
+            "Update Appearance Settings",
+            "Appearance Settings",
+            new { model.ThemeId, model.EnableCustomCss });
+
         return NoContent();
     }
 
@@ -184,6 +233,13 @@ public class SettingsController(
         };
 
         await SaveConfigAsync(blogConfig.CustomMenuSettings);
+
+        await LogActivityAsync(
+            EventType.SettingsCustomMenuUpdated,
+            "Update Custom Menu Settings",
+            "Custom Menu Settings",
+            new { model.IsEnabled });
+
         return NoContent();
     }
 
@@ -211,12 +267,19 @@ public class SettingsController(
         blogConfig.LocalAccountSettings.PasswordHash = SecurityHelper.HashPassword(request.NewPassword, newSalt);
 
         await SaveConfigAsync(blogConfig.LocalAccountSettings);
+
+        await LogActivityAsync(
+            EventType.SettingsPasswordUpdated,
+            "Update Local Account Password",
+            request.NewUsername,
+            new { Username = request.NewUsername });
+
         return NoContent();
     }
 
     private async Task SaveConfigAsync<T>(T blogSettings) where T : IBlogSettings
     {
         var kvp = blogConfig.UpdateAsync(blogSettings);
-        await commandMediator.SendAsync(new UpdateConfigurationCommand(kvp.Key, kvp.Value));
+        await CommandMediator.SendAsync(new UpdateConfigurationCommand(kvp.Key, kvp.Value));
     }
 }

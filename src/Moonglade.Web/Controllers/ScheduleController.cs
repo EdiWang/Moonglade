@@ -1,18 +1,17 @@
 ﻿using LiteBus.Commands.Abstractions;
 using LiteBus.Queries.Abstractions;
+using Moonglade.ActivityLog;
 using Moonglade.Features.Post;
 using System.ComponentModel.DataAnnotations;
 
 namespace Moonglade.Web.Controllers;
 
-[Authorize]
 [Route("api/[controller]")]
-[ApiController]
 public class ScheduleController(
     ICacheAside cache,
     IQueryMediator queryMediator,
     ICommandMediator commandMediator
-    ) : ControllerBase
+    ) : BlogControllerBase(commandMediator)
 {
     [HttpGet("list")]
     public async Task<IActionResult> List()
@@ -24,8 +23,14 @@ public class ScheduleController(
     [HttpPut("cancel/{postId:guid}")]
     public async Task<IActionResult> Cancel([NotEmpty] Guid postId)
     {
-        await commandMediator.SendAsync(new CancelScheduleCommand(postId));
+        await CommandMediator.SendAsync(new CancelScheduleCommand(postId));
         cache.Remove(BlogCachePartition.Post.ToString(), postId.ToString());
+
+        await LogActivityAsync(
+            EventType.PostScheduleCancelled,
+            "Cancel Post Schedule",
+            $"Post #{postId}",
+            new { PostId = postId });
 
         return NoContent();
     }
@@ -33,7 +38,14 @@ public class ScheduleController(
     [HttpPut("postpone/{postId:guid}")]
     public async Task<IActionResult> Postpone([NotEmpty] Guid postId, [FromQuery][Range(1, 24)] int hours = 24)
     {
-        await commandMediator.SendAsync(new PostponePostCommand(postId, hours));
+        await CommandMediator.SendAsync(new PostponePostCommand(postId, hours));
+
+        await LogActivityAsync(
+            EventType.PostSchedulePostponed,
+            "Postpone Post Schedule",
+            $"Post #{postId}",
+            new { PostId = postId, Hours = hours });
+
         return NoContent();
     }
 }

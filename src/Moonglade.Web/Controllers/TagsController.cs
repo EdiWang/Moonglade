@@ -1,14 +1,13 @@
 ﻿using LiteBus.Commands.Abstractions;
 using LiteBus.Queries.Abstractions;
+using Moonglade.ActivityLog;
 using Moonglade.Features.Tag;
 using System.ComponentModel.DataAnnotations;
 
 namespace Moonglade.Web.Controllers;
 
-[Authorize]
-[ApiController]
 [Route("api/[controller]")]
-public class TagsController(IQueryMediator queryMediator, ICommandMediator commandMediator) : ControllerBase
+public class TagsController(IQueryMediator queryMediator, ICommandMediator commandMediator) : BlogControllerBase(commandMediator)
 {
     [HttpGet("names")]
     public async Task<IActionResult> Names()
@@ -36,7 +35,13 @@ public class TagsController(IQueryMediator queryMediator, ICommandMediator comma
     {
         if (!BlogTagHelper.IsValidTagName(name)) return Conflict("Invalid tag name.");
 
-        var tag = await commandMediator.SendAsync(new CreateTagCommand(name.Trim()));
+        var tag = await CommandMediator.SendAsync(new CreateTagCommand(name.Trim()));
+
+        await LogActivityAsync(
+            EventType.TagCreated,
+            "Create Tag",
+            name.Trim());
+
         return Ok(tag);
     }
 
@@ -44,8 +49,14 @@ public class TagsController(IQueryMediator queryMediator, ICommandMediator comma
     [ApiConventionMethod(typeof(DefaultApiConventions), nameof(DefaultApiConventions.Put))]
     public async Task<IActionResult> Update([Range(1, int.MaxValue)] int id, [Required][FromBody] string name)
     {
-        var oc = await commandMediator.SendAsync(new UpdateTagCommand(id, name));
+        var oc = await CommandMediator.SendAsync(new UpdateTagCommand(id, name));
         if (oc == OperationCode.ObjectNotFound) return NotFound();
+
+        await LogActivityAsync(
+            EventType.TagUpdated,
+            "Update Tag",
+            name,
+            new { TagId = id });
 
         return NoContent();
     }
@@ -54,8 +65,14 @@ public class TagsController(IQueryMediator queryMediator, ICommandMediator comma
     [ApiConventionMethod(typeof(DefaultApiConventions), nameof(DefaultApiConventions.Delete))]
     public async Task<IActionResult> Delete([Range(0, int.MaxValue)] int id)
     {
-        var oc = await commandMediator.SendAsync(new DeleteTagCommand(id));
+        var oc = await CommandMediator.SendAsync(new DeleteTagCommand(id));
         if (oc == OperationCode.ObjectNotFound) return NotFound();
+
+        await LogActivityAsync(
+            EventType.TagDeleted,
+            "Delete Tag",
+            $"Tag #{id}",
+            new { TagId = id });
 
         return NoContent();
     }

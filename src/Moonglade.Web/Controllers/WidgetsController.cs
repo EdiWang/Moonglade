@@ -1,16 +1,15 @@
 ﻿using LiteBus.Commands.Abstractions;
 using LiteBus.Queries.Abstractions;
+using Moonglade.ActivityLog;
 using Moonglade.Widgets;
 
 namespace Moonglade.Web.Controllers;
 
-[Authorize]
 [Route("api/[controller]")]
-[ApiController]
 public class WidgetsController(
     ICacheAside cache,
     IQueryMediator queryMediator,
-    ICommandMediator commandMediator) : ControllerBase
+    ICommandMediator commandMediator) : BlogControllerBase(commandMediator)
 {
     #region Widget CRUD Operations
 
@@ -33,8 +32,14 @@ public class WidgetsController(
     [HttpPost]
     public async Task<IActionResult> Create(EditWidgetRequest request)
     {
-        await commandMediator.SendAsync(new CreateWidgetCommand(request));
+        await CommandMediator.SendAsync(new CreateWidgetCommand(request));
         cache.Remove(BlogCachePartition.General.ToString(), "widgets");
+
+        await LogActivityAsync(
+            EventType.WidgetCreated,
+            "Create Widget",
+            request.Title,
+            new { request.WidgetType });
 
         return Created();
     }
@@ -42,8 +47,14 @@ public class WidgetsController(
     [HttpPut("{id:guid}")]
     public async Task<IActionResult> Update([NotEmpty] Guid id, EditWidgetRequest request)
     {
-        await commandMediator.SendAsync(new UpdateWidgetCommand(id, request));
+        await CommandMediator.SendAsync(new UpdateWidgetCommand(id, request));
         cache.Remove(BlogCachePartition.General.ToString(), "widgets");
+
+        await LogActivityAsync(
+            EventType.WidgetUpdated,
+            "Update Widget",
+            request.Title,
+            new { WidgetId = id, request.WidgetType });
 
         return NoContent();
     }
@@ -51,8 +62,14 @@ public class WidgetsController(
     [HttpDelete("{id:guid}")]
     public async Task<IActionResult> Delete([NotEmpty] Guid id)
     {
-        await commandMediator.SendAsync(new DeleteWidgetCommand(id));
+        await CommandMediator.SendAsync(new DeleteWidgetCommand(id));
         cache.Remove(BlogCachePartition.General.ToString(), "widgets");
+
+        await LogActivityAsync(
+            EventType.WidgetDeleted,
+            "Delete Widget",
+            $"Widget #{id}",
+            new { WidgetId = id });
 
         return NoContent();
     }
