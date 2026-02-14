@@ -202,11 +202,17 @@
                     </div>
                 </div>
 
-                <div x-show="formData.postId && formData.postId !== window.emptyGuid" class="text-center mb-2">
-                    <a class="btn btn-sm btn-outline-secondary" data-bs-toggle="modal" data-bs-target="#changePublishDateModal">
+                <div class="mx-5 d-flex flex-column gap-2">
+                    <a x-show="formData.postId && formData.postId !== window.emptyGuid" class="btn btn-sm btn-outline-secondary w-100" data-bs-toggle="modal" data-bs-target="#changePublishDateModal">
                         <i class="bi-clock-history"></i>
                         @SharedLocalizer["Change Publish Date"]
                     </a>
+
+                    <a x-show="formData.postStatus === 'Published'"
+                       x-cloak
+                       class="unpublish-link btn btn-sm btn-outline-secondary w-100"
+                       data-bs-toggle="modal"
+                       data-bs-target="#unpublishPostModal">@SharedLocalizer["Unpublish"]</a>
                 </div>
             </div>
         </div>
@@ -220,12 +226,6 @@
                 <span x-show="formData.postStatus === 'Draft'" x-cloak>@SharedLocalizer["Save"]</span>
                 <span x-show="formData.postStatus === 'Published' || formData.postStatus === 'Scheduled'" x-cloak>@SharedLocalizer["Update"]</span>
             </button>
-
-            <a x-show="formData.postStatus === 'Published'"
-               x-cloak
-               class="unpublish-link btn btn-outline-secondary"
-               data-bs-toggle="modal"
-               data-bs-target="#unpublishPostModal">@SharedLocalizer["Unpublish"]</a>
 
             <div x-show="formData.postStatus !== 'Published'" x-cloak class="btn-group">
                 <button type="submit"
@@ -259,8 +259,6 @@
                     </li>
                 </ul>
             </div>
-
-            <a asp-page="./Post" class="btn btn-outline-secondary">@SharedLocalizer["Cancel"]</a>
 
             <div class="schedule-info d-inline-block text-muted ms-4" x-html="scheduleInfoHtml"></div>
         </div>
