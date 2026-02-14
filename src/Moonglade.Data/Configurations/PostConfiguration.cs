@@ -1,5 +1,4 @@
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
-using Moonglade.Data.DTO;
 using Moonglade.Data.Entities;
 
 namespace Moonglade.Data.Configurations;

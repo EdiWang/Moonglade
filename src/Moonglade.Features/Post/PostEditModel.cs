@@ -1,5 +1,4 @@
-﻿using Moonglade.Data.DTO;
-using System.ComponentModel.DataAnnotations;
+﻿using System.ComponentModel.DataAnnotations;
 
 namespace Moonglade.Features.Post;
 

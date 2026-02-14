@@ -6,8 +6,6 @@ using Microsoft.Extensions.Logging;
 using Moonglade.Configuration;
 using Moonglade.Data;
 using System.Reflection;
-using System.Security.Cryptography;
-using System.Text;
 using System.Text.RegularExpressions;
 
 namespace Moonglade.Setup;

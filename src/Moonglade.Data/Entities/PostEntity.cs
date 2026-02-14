@@ -1,6 +1,4 @@
-﻿using Moonglade.Data.DTO;
-
-namespace Moonglade.Data.Entities;
+﻿namespace Moonglade.Data.Entities;
 
 public class PostEntity
 {
