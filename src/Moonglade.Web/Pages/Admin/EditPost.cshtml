@@ -4,6 +4,8 @@
 @{
     ViewBag.Title = "Edit Post";
     ViewBag.XData = "postEditor";
+    ViewBag.HideAdminSidebar = true;
+    ViewBag.AdminBackUrl = "javascript:history.go(-1);";
     var ec = Configuration.GetValue<EditorChoice>("Post:Editor");
 }
 
@@ -44,7 +46,7 @@
     <span>Loading post data...</span>
 </div>
 
-<div x-show="!isLoading" x-cloak>
+<div x-show="!isLoading" x-cloak class="post-editor-container d-flex flex-column px-3 pt-2">
     <form id="post-edit-form" x-on:submit.prevent="handleSubmit">
         <div class="row g-2">
             <div class="col-md-9 col-xl-10">
@@ -180,7 +182,7 @@
                             </a>
                         </h6>
 
-                        <div class="catlist" x-show="categories.length > 0">
+                        <div class="post-editor-catlist" x-show="categories.length > 0">
                             <ul>
                                 <template x-for="cat in categories" :key="cat.id">
                                     <li>

@@ -179,22 +179,18 @@
         background-color: var(--transparent-dark-2);
     }
 
-.admin-main .validation-summary-errors ul {
-    margin-bottom: 0;
-}
-
-.admin-main .catlist ul {
+.post-editor-catlist ul {
     list-style-type: none;
     margin: 0;
     padding: 0;
 }
 
-    .admin-main .catlist ul li {
+    .post-editor-catlist ul li {
         display: inline-block;
         width: 100%;
     }
 
-        .admin-main .catlist ul li label {
+        .post-editor-catlist ul li label {
             display: inline-block;
             font-weight: normal;
             padding-left: 6px;
