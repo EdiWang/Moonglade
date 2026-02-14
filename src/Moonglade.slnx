@@ -37,6 +37,7 @@
     <Project Path="Moonglade.Utils/Moonglade.Utils.csproj" />
   </Folder>
   <Folder Name="/Tests/">
+    <Project Path="Tests/Moonglade.BackgroundServices.Tests/Moonglade.BackgroundServices.Tests.csproj" Id="34394544-da00-4795-a40b-834ba56875a9" />
     <Project Path="Tests/Moonglade.Configuration.Tests/Moonglade.Configuration.Tests.csproj" Id="16bbf182-7908-4306-9a7e-207517fc9bc4" />
     <Project Path="Tests/Moonglade.ImageStorage.Tests/Moonglade.ImageStorage.Tests.csproj" />
     <Project Path="Tests/Moonglade.IndexNow.Client.Tests/Moonglade.IndexNow.Client.Tests.csproj" />

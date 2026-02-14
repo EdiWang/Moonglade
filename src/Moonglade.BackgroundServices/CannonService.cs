@@ -32,7 +32,7 @@ public class CannonService : BackgroundService
     /// Enqueue a fire-and-forget work item. The dependency <typeparamref name="T"/> is resolved
     /// from a new DI scope when the item is dequeued and executed.
     /// </summary>
-    public void FireAsync<T>(Func<T, Task> bullet, Action<Exception> handler = null)
+    public void FireAsync<T>(Func<T, Task> bullet, Action<Exception>? handler = null) where T : notnull
     {
         if (!_queue.Writer.TryWrite(async sp =>
             {
