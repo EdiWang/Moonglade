@@ -9,7 +9,7 @@ namespace Moonglade.Web.Controllers;
 [Authorize]
 [ApiController]
 [Route("api/[controller]")]
-public class PageController(ICacheAside cache, IQueryMediator queryMediator, ICommandMediator commandMediator) : Controller
+public class PageController(ICacheAside cache, IQueryMediator queryMediator, ICommandMediator commandMediator) : ControllerBase
 {
     [HttpPost]
     [TypeFilter(typeof(ClearBlogCache), Arguments = [BlogCacheType.SiteMap])]
