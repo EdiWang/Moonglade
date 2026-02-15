@@ -29,8 +29,17 @@ public class ActivityLogController(
         });
     }
 
+    [HttpGet("{id:long}/metadata")]
+    public async Task<IActionResult> GetMetadata([NotEmpty] long id)
+    {
+        var metadata = await queryMediator.QueryAsync(new GetMetaDataByActivityLogIdQuery(id));
+
+        if (metadata == null) return NotFound();
+
+        return Ok(metadata);
+    }
+
     [HttpDelete("{id:long}")]
-    [ApiConventionMethod(typeof(DefaultApiConventions), nameof(DefaultApiConventions.Delete))]
     public async Task<IActionResult> Delete([NotEmpty] long id)
     {
         var oc = await commandMediator.SendAsync(new DeleteActivityLogCommand(id));
