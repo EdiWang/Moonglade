@@ -12,6 +12,7 @@ public class ThemeController(
     ICacheAside cache,
     IBlogConfig blogConfig) : BlogControllerBase(commandMediator)
 {
+    [AllowAnonymous]
     [HttpGet("/theme.css")]
     public async Task<IActionResult> Css()
     {
@@ -28,7 +29,6 @@ public class ThemeController(
         return Content(css, "text/css; charset=utf-8");
     }
 
-    [Authorize]
     [HttpPost]
     [TypeFilter(typeof(ClearBlogCache), Arguments = [BlogCachePartition.General, "theme"])]
     public async Task<IActionResult> Create(CreateThemeRequest request)
@@ -55,7 +55,6 @@ public class ThemeController(
         return Ok(id);
     }
 
-    [Authorize]
     [HttpDelete("{id:int}")]
     [ApiConventionMethod(typeof(DefaultApiConventions), nameof(DefaultApiConventions.Delete))]
     [TypeFilter(typeof(ClearBlogCache), Arguments = [BlogCachePartition.General, "theme"])]
