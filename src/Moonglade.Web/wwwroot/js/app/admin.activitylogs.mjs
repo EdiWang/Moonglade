@@ -15,6 +15,7 @@ Alpine.data('activityLogManager', () => ({
     endDate: '',
     deleteModal: null,
     detailModal: null,
+    filterCanvas: null,
     pendingDeleteId: null,
     currentMetadata: null,
     currentLogOperation: '',
@@ -25,6 +26,7 @@ Alpine.data('activityLogManager', () => ({
 
         this.deleteModal = new bootstrap.Modal(document.getElementById('deleteLogModal'));
         this.detailModal = new bootstrap.Modal(document.getElementById('detailModal'));
+        this.filterCanvas = new bootstrap.Offcanvas(this.$refs.filterCanvas);
 
         await this.loadEventTypes();
         await this.loadLogs();
@@ -76,6 +78,7 @@ Alpine.data('activityLogManager', () => ({
         this.currentPage = 1;
         await this.loadLogs();
         this.updateUrl();
+        this.filterCanvas.hide();
     },
 
     async clearFilter() {
@@ -85,6 +88,7 @@ Alpine.data('activityLogManager', () => ({
         this.currentPage = 1;
         await this.loadLogs();
         this.updateUrl();
+        this.filterCanvas.hide();
     },
 
     async goToPage(page) {
@@ -152,6 +156,26 @@ Alpine.data('activityLogManager', () => ({
             pages.push(i);
         }
         return pages;
+    },
+
+    openFilter() {
+        this.filterCanvas.show();
+    },
+
+    toggleEventType(value) {
+        const index = this.selectedEventTypes.indexOf(value);
+        if (index === -1) {
+            this.selectedEventTypes.push(value);
+        } else {
+            this.selectedEventTypes.splice(index, 1);
+        }
+    },
+
+    get activeFilterCount() {
+        let count = this.selectedEventTypes.length;
+        if (this.startDate) count++;
+        if (this.endDate) count++;
+        return count;
     },
 
     getEventTypeName(eventType) {

@@ -10,50 +10,21 @@
     <script type="module" src="~/js/app/admin.activitylogs.mjs"></script>
 }
 
+@section admintoolbar {
+    <div class="admin-toolbar pb-2 border-bottom mb-3">
+        <a x-on:click="openFilter()" class="btn btn-outline-accent" role="button">
+            <i class="bi-funnel"></i>
+            @SharedLocalizer["Filter"]
+            <span x-show="activeFilterCount > 0" class="badge bg-accent ms-1" x-text="activeFilterCount"></span>
+        </a>
+    </div>
+}
+
 <div id="localizedStrings" style="display:none"
      data-log-deleted="@SharedLocalizer["Log deleted"]">
 </div>
 
 <div>
-    <div class="card mb-3">
-        <div class="card-body">
-            <h6 class="card-title">@SharedLocalizer["Filter"]</h6>
-            <form x-on:submit.prevent="handleFilter()">
-                <div class="row g-3">
-                    <div class="col-md-4">
-                        <label class="form-label">@SharedLocalizer["Event Types"]</label>
-                        <select class="form-select" x-model="selectedEventTypes" multiple size="5">
-                            <template x-for="group in eventTypeGroups" :key="group.category">
-                                <optgroup :label="group.category">
-                                    <template x-for="item in group.items" :key="item.value">
-                                        <option :value="item.value" x-text="item.name"></option>
-                                    </template>
-                                </optgroup>
-                            </template>
-                        </select>
-                        <small class="form-text text-muted">Hold Ctrl/Cmd to select multiple</small>
-                    </div>
-                    <div class="col-md-4">
-                        <label class="form-label">@SharedLocalizer["Start Date"]</label>
-                        <input type="date" class="form-control" x-model="startDate" />
-                    </div>
-                    <div class="col-md-4">
-                        <label class="form-label">@SharedLocalizer["End Date"]</label>
-                        <input type="date" class="form-control" x-model="endDate" />
-                    </div>
-                </div>
-                <div class="mt-3">
-                    <button type="submit" class="btn btn-primary">
-                        <i class="bi-funnel"></i> @SharedLocalizer["Apply Filter"]
-                    </button>
-                    <button type="button" class="btn btn-outline-secondary" x-on:click="clearFilter()">
-                        <i class="bi-x-circle"></i> @SharedLocalizer["Clear"]
-                    </button>
-                </div>
-            </form>
-        </div>
-    </div>
-
     <div x-show="isLoading"
          class="text-muted mb-3"
          :class="{ 'd-flex align-items-center': isLoading }">
@@ -140,6 +111,53 @@
             </li>
         </ul>
     </nav>
+</div>
+
+<!-- Filter Offcanvas -->
+<div class="offcanvas offcanvas-end" tabindex="-1" x-ref="filterCanvas" aria-labelledby="filterCanvasLabel">
+    <div class="offcanvas-header">
+        <h5 class="offcanvas-title" id="filterCanvasLabel">@SharedLocalizer["Filter"]</h5>
+        <button type="button" class="btn-close text-reset" data-bs-dismiss="offcanvas" aria-label="Close"></button>
+    </div>
+    <div class="offcanvas-body">
+        <form x-on:submit.prevent="handleFilter()">
+            <div class="mb-4">
+                <h6 class="fw-semibold mb-3">@SharedLocalizer["Event Types"]</h6>
+                <template x-for="group in eventTypeGroups" :key="group.category">
+                    <div class="mb-3">
+                        <div class="text-muted small fw-semibold text-uppercase mb-2" x-text="group.category"></div>
+                        <template x-for="item in group.items" :key="item.value">
+                            <div class="form-check mb-1">
+                                <input class="form-check-input" type="checkbox"
+                                       :id="`evt-${item.value}`"
+                                       :value="item.value"
+                                       :checked="selectedEventTypes.includes(String(item.value))"
+                                       x-on:change="toggleEventType(String(item.value))">
+                                <label class="form-check-label" :for="`evt-${item.value}`" x-text="item.name"></label>
+                            </div>
+                        </template>
+                    </div>
+                </template>
+            </div>
+            <hr />
+            <div class="mb-3">
+                <label class="form-label">@SharedLocalizer["Start Date"]</label>
+                <input type="date" class="form-control" x-model="startDate" />
+            </div>
+            <div class="mb-3">
+                <label class="form-label">@SharedLocalizer["End Date"]</label>
+                <input type="date" class="form-control" x-model="endDate" />
+            </div>
+            <div class="mt-4 d-grid gap-2">
+                <button type="submit" class="btn btn-accent">
+                    <i class="bi-funnel"></i> @SharedLocalizer["Apply Filter"]
+                </button>
+                <button type="button" class="btn btn-outline-secondary" x-on:click="clearFilter()">
+                    <i class="bi-x-circle"></i> @SharedLocalizer["Clear"]
+                </button>
+            </div>
+        </form>
+    </div>
 </div>
 
 <!-- Delete Log Modal -->
