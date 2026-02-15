@@ -121,14 +121,13 @@
     </div>
     <div class="offcanvas-body d-flex flex-column p-0">
         <form x-on:submit.prevent="handleFilter()" class="d-flex flex-column h-100">
-            <!-- Scrollable Content Area -->
-            <div class="flex-grow-1 overflow-auto p-3">
-                <!-- Event Types Card -->
-                <div class="card mb-3">
+            <!-- Event Types Card - Takes remaining space -->
+            <div class="flex-grow-1 d-flex flex-column p-3 pb-0" style="min-height: 0;">
+                <div class="card d-flex flex-column h-100">
                     <div class="card-header">
                         <h6 class="mb-0 fw-semibold">@SharedLocalizer["Event Types"]</h6>
                     </div>
-                    <div class="card-body" style="max-height: 300px; overflow-y: auto;">
+                    <div class="card-body flex-grow-1 overflow-auto">
                         <template x-for="group in eventTypeGroups" :key="group.category">
                             <div class="mb-3">
                                 <div class="text-muted small fw-semibold text-uppercase mb-2" x-text="group.category"></div>
@@ -146,8 +145,10 @@
                         </template>
                     </div>
                 </div>
+            </div>
 
-                <!-- Date Range Filters -->
+            <!-- Date Range Filters - Fixed position above buttons -->
+            <div class="p-3">
                 <div class="mb-3">
                     <label class="form-label">@SharedLocalizer["Start Date"]</label>
                     <input type="date" class="form-control" x-model="startDate" />
