@@ -61,16 +61,13 @@ public class CategoryController(
     [ApiConventionMethod(typeof(DefaultApiConventions), nameof(DefaultApiConventions.Delete))]
     public async Task<IActionResult> Delete([NotEmpty] Guid id)
     {
-        // Get category info before deletion for logging
-        var cat = await queryMediator.QueryAsync(new GetCategoryQuery(id));
-
         var oc = await CommandMediator.SendAsync(new DeleteCategoryCommand(id));
         if (oc == OperationCode.ObjectNotFound) return NotFound();
 
         await LogActivityAsync(
             EventType.CategoryDeleted,
             "Delete Category",
-            cat?.DisplayName ?? id.ToString(),
+            id.ToString(),
             new { CategoryId = id });
 
         return NoContent();
