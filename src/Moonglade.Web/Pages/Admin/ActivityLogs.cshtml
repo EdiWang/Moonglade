@@ -23,68 +23,13 @@
                     <div class="col-md-4">
                         <label class="form-label">@SharedLocalizer["Event Types"]</label>
                         <select class="form-select" x-model="selectedEventTypes" multiple size="5">
-                            <optgroup label="Category">
-                                <option value="100">Category Created</option>
-                                <option value="101">Category Updated</option>
-                                <option value="102">Category Deleted</option>
-                            </optgroup>
-                            <optgroup label="Post">
-                                <option value="200">Post Schedule Cancelled</option>
-                                <option value="201">Post Schedule Postponed</option>
-                                <option value="202">Post Restored</option>
-                                <option value="203">Post Permanently Deleted</option>
-                                <option value="204">Recycle Bin Cleared</option>
-                                <option value="205">Post Created</option>
-                                <option value="206">Post Updated</option>
-                                <option value="207">Post Deleted</option>
-                                <option value="208">Post Published</option>
-                                <option value="209">Post Unpublished</option>
-                            </optgroup>
-                            <optgroup label="Comment">
-                                <option value="300">Comment Created</option>
-                                <option value="301">Comment Approval Toggled</option>
-                                <option value="302">Comment Deleted</option>
-                                <option value="303">Comment Replied</option>
-                            </optgroup>
-                            <optgroup label="Page">
-                                <option value="400">Page Created</option>
-                                <option value="401">Page Updated</option>
-                                <option value="402">Page Deleted</option>
-                            </optgroup>
-                            <optgroup label="Tag">
-                                <option value="600">Tag Created</option>
-                                <option value="601">Tag Updated</option>
-                                <option value="602">Tag Deleted</option>
-                            </optgroup>
-                            <optgroup label="Theme">
-                                <option value="700">Theme Created</option>
-                                <option value="701">Theme Deleted</option>
-                            </optgroup>
-                            <optgroup label="Settings">
-                                <option value="800">Settings General Updated</option>
-                                <option value="801">Settings Content Updated</option>
-                                <option value="802">Settings Comment Updated</option>
-                                <option value="803">Settings Notification Updated</option>
-                                <option value="804">Settings Subscription Updated</option>
-                                <option value="805">Settings Image Updated</option>
-                                <option value="806">Settings Advanced Updated</option>
-                                <option value="807">Settings Appearance Updated</option>
-                                <option value="808">Settings Custom Menu Updated</option>
-                                <option value="809">Settings Password Updated</option>
-                            </optgroup>
-                            <optgroup label="Image & Asset">
-                                <option value="810">Image Uploaded</option>
-                                <option value="820">Avatar Updated</option>
-                                <option value="821">Site Icon Updated</option>
-                            </optgroup>
-                            <optgroup label="Widget">
-                                <option value="850">Widget Created</option>
-                                <option value="851">Widget Updated</option>
-                                <option value="852">Widget Deleted</option>
-                            </optgroup>
-                            <optgroup label="System">
-                                <option value="900">Activity Log Deleted</option>
-                            </optgroup>
+                            <template x-for="group in eventTypeGroups" :key="group.category">
+                                <optgroup :label="group.category">
+                                    <template x-for="item in group.items" :key="item.value">
+                                        <option :value="item.value" x-text="item.name"></option>
+                                    </template>
+                                </optgroup>
+                            </template>
                         </select>
                         <small class="form-text text-muted">Hold Ctrl/Cmd to select multiple</small>
                     </div>

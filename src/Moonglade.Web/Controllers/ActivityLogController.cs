@@ -11,6 +11,13 @@ public class ActivityLogController(
     IQueryMediator queryMediator,
     ICommandMediator commandMediator) : BlogControllerBase(commandMediator)
 {
+    [HttpGet("eventtypes")]
+    public async Task<IActionResult> GetEventTypes()
+    {
+        var eventTypes = await queryMediator.QueryAsync(new GetEventTypesQuery());
+        return Ok(eventTypes);
+    }
+
     [HttpGet("list")]
     public async Task<IActionResult> List(
         [FromQuery] int pageIndex = 1, 

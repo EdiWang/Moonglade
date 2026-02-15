@@ -5,6 +5,7 @@ import { success, error } from '/js/app/toastService.mjs';
 
 Alpine.data('activityLogManager', () => ({
     logs: [],
+    eventTypeGroups: [],
     isLoading: true,
     currentPage: 1,
     pageSize: 10,
@@ -21,11 +22,20 @@ Alpine.data('activityLogManager', () => ({
     async init() {
         const urlParams = new URLSearchParams(window.location.search);
         this.currentPage = parseInt(urlParams.get('pageIndex')) || 1;
-        
+
         this.deleteModal = new bootstrap.Modal(document.getElementById('deleteLogModal'));
         this.detailModal = new bootstrap.Modal(document.getElementById('detailModal'));
-        
+
+        await this.loadEventTypes();
         await this.loadLogs();
+    },
+
+    async loadEventTypes() {
+        try {
+            this.eventTypeGroups = await fetch2('/api/activitylog/eventtypes', 'GET');
+        } catch (err) {
+            error(err);
+        }
     },
 
     async loadLogs() {
@@ -145,52 +155,11 @@ Alpine.data('activityLogManager', () => ({
     },
 
     getEventTypeName(eventType) {
-        const eventTypeNames = {
-            0: 'Default',
-            100: 'Category Created',
-            101: 'Category Updated',
-            102: 'Category Deleted',
-            200: 'Post Schedule Cancelled',
-            201: 'Post Schedule Postponed',
-            202: 'Post Restored',
-            203: 'Post Permanently Deleted',
-            204: 'Recycle Bin Cleared',
-            205: 'Post Created',
-            206: 'Post Updated',
-            207: 'Post Deleted',
-            208: 'Post Published',
-            209: 'Post Unpublished',
-            300: 'Comment Created',
-            301: 'Comment Approval Toggled',
-            302: 'Comment Deleted',
-            303: 'Comment Replied',
-            400: 'Page Created',
-            401: 'Page Updated',
-            402: 'Page Deleted',
-            600: 'Tag Created',
-            601: 'Tag Updated',
-            602: 'Tag Deleted',
-            700: 'Theme Created',
-            701: 'Theme Deleted',
-            800: 'Settings General Updated',
-            801: 'Settings Content Updated',
-            802: 'Settings Comment Updated',
-            803: 'Settings Notification Updated',
-            804: 'Settings Subscription Updated',
-            805: 'Settings Image Updated',
-            806: 'Settings Advanced Updated',
-            807: 'Settings Appearance Updated',
-            808: 'Settings Custom Menu Updated',
-            809: 'Settings Password Updated',
-            810: 'Image Uploaded',
-            820: 'Avatar Updated',
-            821: 'Site Icon Updated',
-            850: 'Widget Created',
-            851: 'Widget Updated',
-            852: 'Widget Deleted',
-            900: 'Activity Log Deleted'
-        };
-        return eventTypeNames[eventType] || 'Unknown';
+        for (const group of this.eventTypeGroups) {
+            const item = group.items.find(i => i.value === eventType);
+            if (item) return item.name;
+        }
+        return 'Unknown';
     }
 }));
 
