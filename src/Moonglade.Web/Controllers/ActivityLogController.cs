@@ -12,13 +12,21 @@ public class ActivityLogController(
     ICommandMediator commandMediator) : BlogControllerBase(commandMediator)
 {
     [HttpGet("list")]
-    public async Task<IActionResult> List([FromQuery] int pageIndex = 1, [FromQuery] int pageSize = 10)
+    public async Task<IActionResult> List(
+        [FromQuery] int pageIndex = 1, 
+        [FromQuery] int pageSize = 10,
+        [FromQuery] int[]? eventTypes = null,
+        [FromQuery] DateTime? startTimeUtc = null,
+        [FromQuery] DateTime? endTimeUtc = null)
     {
         if (pageIndex < 1) pageIndex = 1;
         if (pageSize < 1) pageSize = 10;
         if (pageSize > 100) pageSize = 100;
 
-        var (logs, totalCount) = await queryMediator.QueryAsync(new ListActivityLogsQuery(pageSize, pageIndex));
+        EventType[]? eventTypeEnums = eventTypes?.Select(et => (EventType)et).ToArray();
+
+        var (logs, totalCount) = await queryMediator.QueryAsync(
+            new ListActivityLogsQuery(pageSize, pageIndex, eventTypeEnums, startTimeUtc, endTimeUtc));
 
         return Ok(new
         {

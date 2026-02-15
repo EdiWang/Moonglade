@@ -1,2 +1,228 @@
 ﻿@page "/Admin/ActivityLogs"
+@{
+    ViewBag.Title = "Activity Logs";
+    ViewBag.XData = "activityLogManager";
+}
 
+@Html.AntiForgeryToken()
+
+@section scripts {
+    <script type="module" src="~/js/app/admin.activitylogs.mjs"></script>
+}
+
+<div id="localizedStrings" style="display:none"
+     data-log-deleted="@SharedLocalizer["Log deleted"]">
+</div>
+
+<div>
+    <div class="card mb-3">
+        <div class="card-body">
+            <h6 class="card-title">@SharedLocalizer["Filter"]</h6>
+            <form x-on:submit.prevent="handleFilter()">
+                <div class="row g-3">
+                    <div class="col-md-4">
+                        <label class="form-label">@SharedLocalizer["Event Types"]</label>
+                        <select class="form-select" x-model="selectedEventTypes" multiple size="5">
+                            <optgroup label="Category">
+                                <option value="100">Category Created</option>
+                                <option value="101">Category Updated</option>
+                                <option value="102">Category Deleted</option>
+                            </optgroup>
+                            <optgroup label="Post">
+                                <option value="200">Post Schedule Cancelled</option>
+                                <option value="201">Post Schedule Postponed</option>
+                                <option value="202">Post Restored</option>
+                                <option value="203">Post Permanently Deleted</option>
+                                <option value="204">Recycle Bin Cleared</option>
+                                <option value="205">Post Created</option>
+                                <option value="206">Post Updated</option>
+                                <option value="207">Post Deleted</option>
+                                <option value="208">Post Published</option>
+                                <option value="209">Post Unpublished</option>
+                            </optgroup>
+                            <optgroup label="Comment">
+                                <option value="300">Comment Created</option>
+                                <option value="301">Comment Approval Toggled</option>
+                                <option value="302">Comment Deleted</option>
+                                <option value="303">Comment Replied</option>
+                            </optgroup>
+                            <optgroup label="Page">
+                                <option value="400">Page Created</option>
+                                <option value="401">Page Updated</option>
+                                <option value="402">Page Deleted</option>
+                            </optgroup>
+                            <optgroup label="Tag">
+                                <option value="600">Tag Created</option>
+                                <option value="601">Tag Updated</option>
+                                <option value="602">Tag Deleted</option>
+                            </optgroup>
+                            <optgroup label="Theme">
+                                <option value="700">Theme Created</option>
+                                <option value="701">Theme Deleted</option>
+                            </optgroup>
+                            <optgroup label="Settings">
+                                <option value="800">Settings General Updated</option>
+                                <option value="801">Settings Content Updated</option>
+                                <option value="802">Settings Comment Updated</option>
+                                <option value="803">Settings Notification Updated</option>
+                                <option value="804">Settings Subscription Updated</option>
+                                <option value="805">Settings Image Updated</option>
+                                <option value="806">Settings Advanced Updated</option>
+                                <option value="807">Settings Appearance Updated</option>
+                                <option value="808">Settings Custom Menu Updated</option>
+                                <option value="809">Settings Password Updated</option>
+                            </optgroup>
+                            <optgroup label="Image & Asset">
+                                <option value="810">Image Uploaded</option>
+                                <option value="820">Avatar Updated</option>
+                                <option value="821">Site Icon Updated</option>
+                            </optgroup>
+                            <optgroup label="Widget">
+                                <option value="850">Widget Created</option>
+                                <option value="851">Widget Updated</option>
+                                <option value="852">Widget Deleted</option>
+                            </optgroup>
+                            <optgroup label="System">
+                                <option value="900">Activity Log Deleted</option>
+                            </optgroup>
+                        </select>
+                        <small class="form-text text-muted">Hold Ctrl/Cmd to select multiple</small>
+                    </div>
+                    <div class="col-md-4">
+                        <label class="form-label">@SharedLocalizer["Start Date"]</label>
+                        <input type="date" class="form-control" x-model="startDate" />
+                    </div>
+                    <div class="col-md-4">
+                        <label class="form-label">@SharedLocalizer["End Date"]</label>
+                        <input type="date" class="form-control" x-model="endDate" />
+                    </div>
+                </div>
+                <div class="mt-3">
+                    <button type="submit" class="btn btn-primary">
+                        <i class="bi-funnel"></i> @SharedLocalizer["Apply Filter"]
+                    </button>
+                    <button type="button" class="btn btn-outline-secondary" x-on:click="clearFilter()">
+                        <i class="bi-x-circle"></i> @SharedLocalizer["Clear"]
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <div x-show="isLoading"
+         class="text-muted mb-3"
+         :class="{ 'd-flex align-items-center': isLoading }">
+        <div class="spinner-border spinner-border-sm me-2" role="status"></div>
+        <span>@SharedLocalizer["Loading..."]</span>
+    </div>
+
+    <div x-show="!isLoading && !hasLogs">
+        <div class="alert alert-info">
+            @SharedLocalizer["No activity logs found."]
+        </div>
+    </div>
+
+    <template x-for="log in logs" :key="log.id">
+        <div :id="`log-${log.id}`" class="admin-log-entry p-3 mb-2 rounded-3 shadow-sm border">
+            <div class="row">
+                <div class="col">
+                    <div class="d-flex align-items-center mb-2">
+                        <span class="badge bg-secondary me-2" x-text="getEventTypeName(log.eventType)"></span>
+                        <strong x-text="log.operation"></strong>
+                    </div>
+                    <div class="mb-1">
+                        <i class="bi-tag"></i>
+                        <span class="text-muted me-3" x-text="log.targetName"></span>
+                    </div>
+                    <div class="mb-1">
+                        <i class="bi-person"></i>
+                        <span class="text-muted me-3">
+                            <span x-text="log.actorId || 'System'"></span>
+                        </span>
+                        <i class="bi-globe"></i>
+                        <span class="text-muted me-3" x-text="log.ipAddress"></span>
+                    </div>
+                    <div>
+                        <i class="bi-calendar-event"></i>
+                        <span class="text-muted">
+                            <time :data-utc-label="log.eventTimeUtc" x-text="log.eventTimeUtc"></time>
+                        </span>
+                    </div>
+                </div>
+
+                <div class="col-auto">
+                    <button class="btn btn-outline-primary btn-sm" 
+                            x-on:click="showDetail(log.id, log.operation)">
+                        <i class="bi-info-circle"></i> Detail
+                    </button>
+                    <button class="btn btn-outline-danger btn-sm" 
+                            x-on:click="deleteLog(log.id)">
+                        <i class="bi-trash"></i>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </template>
+
+    <nav x-show="!isLoading && totalPages > 1" aria-label="Page navigation" class="mt-4">
+        <ul class="pagination">
+            <li class="page-item" :class="{ 'disabled': currentPage === 1 }">
+                <a class="page-link" href="#" x-on:click.prevent="goToPage(currentPage - 1)">
+                    <span aria-hidden="true">&laquo;</span>
+                </a>
+            </li>
+
+            <template x-for="page in paginationPages" :key="page">
+                <li class="page-item" :class="{ 'active': page === currentPage }">
+                    <a class="page-link" href="#" x-on:click.prevent="goToPage(page)" x-text="page"></a>
+                </li>
+            </template>
+
+            <li class="page-item" :class="{ 'disabled': currentPage === totalPages }">
+                <a class="page-link" href="#" x-on:click.prevent="goToPage(currentPage + 1)">
+                    <span aria-hidden="true">&raquo;</span>
+                </a>
+            </li>
+        </ul>
+    </nav>
+</div>
+
+<!-- Delete Log Modal -->
+<div class="modal fade" id="deleteLogModal" tabindex="-1" aria-labelledby="deleteLogModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="deleteLogModalLabel">@SharedLocalizer["Confirm Delete"]</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                @SharedLocalizer["Are you sure you want to delete this activity log?"]
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">@SharedLocalizer["Cancel"]</button>
+                <button type="button" class="btn btn-outline-danger" x-on:click="confirmDelete()">@SharedLocalizer["Delete"]</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Detail Modal -->
+<div class="modal fade" id="detailModal" tabindex="-1" aria-labelledby="detailModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="detailModalLabel">
+                    @SharedLocalizer["Activity Log Detail"] - <span x-text="currentLogOperation"></span>
+                </h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <h6>@SharedLocalizer["Metadata"]</h6>
+                <pre class="bg-light p-3 rounded" style="max-height: 400px; overflow-y: auto;"><code x-text="currentMetadata ? JSON.stringify(JSON.parse(currentMetadata), null, 2) : 'No metadata'"></code></pre>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">@SharedLocalizer["Close"]</button>
+            </div>
+        </div>
+    </div>
+</div>
