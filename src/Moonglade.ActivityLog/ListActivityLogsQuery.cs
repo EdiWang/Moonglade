@@ -5,10 +5,10 @@ using Moonglade.Data.Specifications;
 namespace Moonglade.ActivityLog;
 
 public record ListActivityLogsQuery(
-    int PageSize = 10, 
-    int PageIndex = 1, 
-    EventType[]? EventTypes = null, 
-    DateTime? StartTimeUtc = null, 
+    int PageSize = 10,
+    int PageIndex = 1,
+    EventType[]? EventTypes = null,
+    DateTime? StartTimeUtc = null,
     DateTime? EndTimeUtc = null) : IQuery<(List<ActivityLogItem> Logs, int TotalCount)>;
 
 public class ListActivityLogsQueryHandler(IRepositoryBase<ActivityLogEntity> repository)

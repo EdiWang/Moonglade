@@ -17,7 +17,7 @@ public class GetMetaDataByActivityLogIdQueryHandler(IRepositoryBase<ActivityLogE
         }
 
         var entity = await repository.GetByIdAsync(request.ActivityLogId, ct);
-        
+
         return entity?.MetaData;
     }
 }
