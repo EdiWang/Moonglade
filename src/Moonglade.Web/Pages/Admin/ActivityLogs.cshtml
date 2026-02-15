@@ -67,47 +67,57 @@
         </div>
     </div>
 
-    <template x-for="log in logs" :key="log.id">
-        <div :id="`log-${log.id}`" class="admin-log-entry p-3 mb-2 rounded-3 shadow-sm border">
-            <div class="row">
-                <div class="col">
-                    <div class="d-flex align-items-center mb-2">
-                        <span class="badge bg-secondary me-2" x-text="getEventTypeName(log.eventType)"></span>
-                        <strong x-text="log.operation"></strong>
-                    </div>
-                    <div class="mb-1">
-                        <i class="bi-tag"></i>
-                        <span class="text-muted me-3" x-text="log.targetName"></span>
-                    </div>
-                    <div class="mb-1">
-                        <i class="bi-person"></i>
-                        <span class="text-muted me-3">
+    <div x-show="!isLoading && hasLogs" class="table-responsive">
+        <table class="table table-hover table-striped align-middle">
+            <thead class="table-light">
+                <tr>
+                    <th>@SharedLocalizer["Event Type"]</th>
+                    <th>@SharedLocalizer["Operation"]</th>
+                    <th>@SharedLocalizer["Target"]</th>
+                    <th>@SharedLocalizer["Actor"]</th>
+                    <th>@SharedLocalizer["IP Address"]</th>
+                    <th>@SharedLocalizer["Time"]</th>
+                    <th class="text-end">@SharedLocalizer["Actions"]</th>
+                </tr>
+            </thead>
+            <tbody>
+                <template x-for="log in logs" :key="log.id">
+                    <tr :id="`log-${log.id}`">
+                        <td>
+                            <span class="badge bg-secondary" x-text="getEventTypeName(log.eventType)"></span>
+                        </td>
+                        <td>
+                            <strong x-text="log.operation"></strong>
+                        </td>
+                        <td>
+                            <span class="text-muted" x-text="log.targetName"></span>
+                        </td>
+                        <td>
                             <span x-text="log.actorId || 'System'"></span>
-                        </span>
-                        <i class="bi-globe"></i>
-                        <span class="text-muted me-3" x-text="log.ipAddress"></span>
-                    </div>
-                    <div>
-                        <i class="bi-calendar-event"></i>
-                        <span class="text-muted">
+                        </td>
+                        <td>
+                            <span class="text-muted" x-text="log.ipAddress"></span>
+                        </td>
+                        <td>
                             <time :data-utc-label="log.eventTimeUtc" x-text="log.eventTimeUtc"></time>
-                        </span>
-                    </div>
-                </div>
-
-                <div class="col-auto">
-                    <button class="btn btn-outline-primary btn-sm" 
-                            x-on:click="showDetail(log.id, log.operation)">
-                        <i class="bi-info-circle"></i> Detail
-                    </button>
-                    <button class="btn btn-outline-danger btn-sm" 
-                            x-on:click="deleteLog(log.id)">
-                        <i class="bi-trash"></i>
-                    </button>
-                </div>
-            </div>
-        </div>
-    </template>
+                        </td>
+                        <td class="text-end">
+                            <button class="btn btn-outline-primary btn-sm" 
+                                    x-on:click="showDetail(log.id, log.operation)"
+                                    title="Detail">
+                                <i class="bi-info-circle"></i>
+                            </button>
+                            <button class="btn btn-outline-danger btn-sm" 
+                                    x-on:click="deleteLog(log.id)"
+                                    title="Delete">
+                                <i class="bi-trash"></i>
+                            </button>
+                        </td>
+                    </tr>
+                </template>
+            </tbody>
+        </table>
+    </div>
 
     <nav x-show="!isLoading && totalPages > 1" aria-label="Page navigation" class="mt-4">
         <ul class="pagination">
