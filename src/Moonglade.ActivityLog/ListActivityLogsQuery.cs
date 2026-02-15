@@ -1,9 +1,15 @@
 using LiteBus.Queries.Abstractions;
 using Moonglade.Data.Entities;
+using Moonglade.Data.Specifications;
 
 namespace Moonglade.ActivityLog;
 
-public record ListActivityLogsQuery(int PageSize = 10, int PageIndex = 1) : IQuery<(List<ActivityLogItem> Logs, int TotalCount)>;
+public record ListActivityLogsQuery(
+    int PageSize = 10, 
+    int PageIndex = 1, 
+    EventType[]? EventTypes = null, 
+    DateTime? StartTimeUtc = null, 
+    DateTime? EndTimeUtc = null) : IQuery<(List<ActivityLogItem> Logs, int TotalCount)>;
 
 public class ListActivityLogsQueryHandler(IRepositoryBase<ActivityLogEntity> repository)
     : IQueryHandler<ListActivityLogsQuery, (List<ActivityLogItem> Logs, int TotalCount)>
@@ -22,18 +28,15 @@ public class ListActivityLogsQueryHandler(IRepositoryBase<ActivityLogEntity> rep
                 $"{nameof(request.PageIndex)} can not be less than 1, current value: {request.PageIndex}.");
         }
 
-        var totalCount = await repository.CountAsync(ct);
+        var eventIds = request.EventTypes?.Select(et => (int)et).ToArray();
 
-        var skip = (request.PageIndex - 1) * request.PageSize;
-        var entities = await repository.ListAsync(ct);
+        var pagingSpec = new ActivityLogPagingSpec(request.PageSize, request.PageIndex, eventIds, request.StartTimeUtc, request.EndTimeUtc);
+        var entities = await repository.ListAsync(pagingSpec, ct);
 
-        var logs = entities
-            .OrderByDescending(e => e.EventTimeUtc)
-            .ThenByDescending(e => e.Id)
-            .Skip(skip)
-            .Take(request.PageSize)
-            .Select(ToDto)
-            .ToList();
+        var countSpec = new ActivityLogCountSpec(eventIds, request.StartTimeUtc, request.EndTimeUtc);
+        var totalCount = await repository.CountAsync(countSpec, ct);
+
+        var logs = entities.Select(ToDto).ToList();
 
         return (logs, totalCount);
     }
@@ -46,7 +49,6 @@ public class ListActivityLogsQueryHandler(IRepositoryBase<ActivityLogEntity> rep
         ActorId = entity.ActorId,
         Operation = entity.Operation,
         TargetName = entity.TargetName,
-        MetaData = entity.MetaData,
         IpAddress = entity.IpAddress,
         UserAgent = entity.UserAgent
     };
