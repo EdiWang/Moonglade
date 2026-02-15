@@ -25,6 +25,13 @@ public class CreateActivityLogCommandHandler(
         WriteIndented = false
     };
 
+    private static string TruncateString(string value, int maxLength)
+    {
+        if (string.IsNullOrEmpty(value)) return value;
+        var trimmed = value.Trim();
+        return trimmed.Length <= maxLength ? trimmed : trimmed[..maxLength];
+    }
+
     public async Task HandleAsync(CreateActivityLogCommand request, CancellationToken ct)
     {
         try
@@ -33,12 +40,12 @@ public class CreateActivityLogCommandHandler(
             {
                 EventId = (int)request.EventType,
                 EventTimeUtc = DateTime.UtcNow,
-                ActorId = request.ActorId?.Trim(),
-                Operation = request.Operation?.Trim(),
-                TargetName = request.TargetName?.Trim(),
+                ActorId = TruncateString(request.ActorId, 100),
+                Operation = TruncateString(request.Operation, 100),
+                TargetName = TruncateString(request.TargetName, 200),
                 MetaData = request.MetaData != null ? JsonSerializer.Serialize(request.MetaData, JsonOptions) : null,
-                IpAddress = request.IpAddress?.Trim(),
-                UserAgent = request.UserAgent?.Trim()
+                IpAddress = TruncateString(request.IpAddress, 50),
+                UserAgent = TruncateString(request.UserAgent, 512)
             };
 
             await repository.AddAsync(entity, ct);
