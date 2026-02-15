@@ -69,5 +69,5 @@ public enum EventType
     WidgetDeleted = 852,
 
     // System operations (900-999)
-    // Reserved for future use
+    ActivityLogDeleted = 900
 }

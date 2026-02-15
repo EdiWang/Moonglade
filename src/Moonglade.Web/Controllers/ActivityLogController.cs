@@ -9,7 +9,7 @@ namespace Moonglade.Web.Controllers;
 [Route("api/[controller]")]
 public class ActivityLogController(
     IQueryMediator queryMediator,
-    ICommandMediator commandMediator) : ControllerBase
+    ICommandMediator commandMediator) : BlogControllerBase(commandMediator)
 {
     [HttpGet("list")]
     public async Task<IActionResult> List([FromQuery] int pageIndex = 1, [FromQuery] int pageSize = 10)
@@ -29,12 +29,27 @@ public class ActivityLogController(
         });
     }
 
+    [HttpGet("{id:long}/metadata")]
+    public async Task<IActionResult> GetMetadata([NotEmpty] long id)
+    {
+        var metadata = await queryMediator.QueryAsync(new GetMetaDataByActivityLogIdQuery(id));
+
+        if (metadata == null) return NotFound();
+
+        return Ok(metadata);
+    }
+
     [HttpDelete("{id:long}")]
-    [ApiConventionMethod(typeof(DefaultApiConventions), nameof(DefaultApiConventions.Delete))]
     public async Task<IActionResult> Delete([NotEmpty] long id)
     {
-        var oc = await commandMediator.SendAsync(new DeleteActivityLogCommand(id));
+        var oc = await CommandMediator.SendAsync(new DeleteActivityLogCommand(id));
         if (oc == OperationCode.ObjectNotFound) return NotFound();
+
+        await LogActivityAsync(
+            EventType.ActivityLogDeleted,
+            "Delete Activity Log",
+            $"Activity Log #{id}",
+            new { ActivityLogId = id });
 
         return NoContent();
     }
