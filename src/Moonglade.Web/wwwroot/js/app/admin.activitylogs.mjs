@@ -155,8 +155,14 @@ Alpine.data('activityLogManager', () => ({
     },
 
     getEventTypeName(eventType) {
+        // eventType from API is a string (enum name like "PostCreated")
+        // We need to match it with the item.name after converting from camelCase
         for (const group of this.eventTypeGroups) {
-            const item = group.items.find(i => i.value === eventType);
+            const item = group.items.find(i => {
+                // Convert "Post Created" back to "PostCreated" and compare
+                const enumName = i.name.replace(/\s+/g, '');
+                return enumName === eventType;
+            });
             if (item) return item.name;
         }
         return 'Unknown';
