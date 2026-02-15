@@ -19,15 +19,17 @@ public abstract class BlogControllerBase(ICommandMediator commandMediator) : Con
     /// <param name="operation">Description of the operation</param>
     /// <param name="targetName">Name of the target entity</param>
     /// <param name="metaData">Additional metadata</param>
+    /// <param name="username">Optional username to log. If null, uses User.Identity.Name</param>
     protected async Task LogActivityAsync(
         EventType eventType,
         string operation,
         string targetName,
-        object metaData = null)
+        object metaData = null,
+        string username = null)
     {
         await CommandMediator.SendAsync(new CreateActivityLogCommand(
             eventType,
-            User.Identity?.Name,
+            username ?? User.Identity?.Name,
             operation,
             targetName,
             metaData,

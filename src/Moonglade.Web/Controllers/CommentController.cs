@@ -48,7 +48,8 @@ public class CommentController(
             EventType.CommentCreated,
             "Create Comment",
             item.PostTitle,
-            new { CommentId = item.Id, item.Username, PostId = postId });
+            new { CommentId = item.Id, item.Username, PostId = postId },
+            username: item.Username);
 
         // Send email notification (fire-and-forget)
         if (blogConfig.NotificationSettings.SendEmailOnNewComment)
