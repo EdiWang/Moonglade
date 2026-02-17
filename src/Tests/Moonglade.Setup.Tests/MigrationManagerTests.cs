@@ -1,4 +1,3 @@
-using Edi.AspNetCore.Utils;
 using LiteBus.Commands.Abstractions;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
@@ -53,7 +52,7 @@ public class MigrationManagerTests
         // Arrange
         var manager = CreateManager();
         SetupSystemManifest("1.0.0", DateTime.UtcNow);
-        SetupConfiguration("Setup:AutoDatabaseMigration", "false");
+        SetupConfiguration("AutoDatabaseMigration", "false");
 
         // Act
         var result = await manager.TryMigrationAsync(_contextMock.Object, TestContext.Current.CancellationToken);
@@ -72,7 +71,7 @@ public class MigrationManagerTests
         var version = "1.0.0";
         var installTime = DateTime.UtcNow;
         SetupSystemManifest(version, installTime);
-        SetupConfiguration("Setup:AutoDatabaseMigration", "false");
+        SetupConfiguration("AutoDatabaseMigration", "false");
 
         // Act
         await manager.TryMigrationAsync(_contextMock.Object, TestContext.Current.CancellationToken);

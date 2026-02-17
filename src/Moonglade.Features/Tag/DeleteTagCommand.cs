@@ -1,6 +1,5 @@
 using LiteBus.Commands.Abstractions;
 using Microsoft.Extensions.Logging;
-using Moonglade.Data;
 using Moonglade.Data.Specifications;
 
 namespace Moonglade.Features.Tag;

@@ -1,18 +1,20 @@
-﻿using LiteBus.Events.Abstractions;
+﻿using LiteBus.Commands.Abstractions;
+using LiteBus.Events.Abstractions;
 using LiteBus.Queries.Abstractions;
+using Moonglade.ActivityLog;
 using Moonglade.Features.Asset;
 using Moonglade.Setup;
 using SixLabors.ImageSharp;
 
 namespace Moonglade.Web.Controllers;
 
-[ApiController]
 public class AssetsController(
     IEventMediator eventMediator,
     IQueryMediator queryMediator,
     IWebHostEnvironment env,
     ILogger<AssetsController> logger,
-    ISiteIconBuilder siteIconBuilder) : ControllerBase
+    ISiteIconBuilder siteIconBuilder,
+    ICommandMediator commandMediator) : BlogControllerBase(commandMediator)
 {
     [HttpGet("avatar")]
     [ResponseCache(Duration = 300)]
@@ -37,8 +39,6 @@ public class AssetsController(
 
     [Authorize]
     [HttpPost("avatar")]
-    [ProducesResponseType(StatusCodes.Status200OK)]
-    [ProducesResponseType(StatusCodes.Status409Conflict)]
     [TypeFilter(typeof(ClearBlogCache), Arguments = [BlogCachePartition.General, "avatar"])]
     public async Task<IActionResult> Avatar([FromBody] string base64Img)
     {
@@ -66,6 +66,11 @@ public class AssetsController(
         await eventMediator.PublishAsync(new SaveAssetEvent(AssetId.AvatarBase64, base64Img));
         logger.LogInformation("Avatar image updated successfully.");
 
+        await LogActivityAsync(
+            EventType.AvatarUpdated,
+            "Update Avatar",
+            "Avatar Image");
+
         return Ok();
     }
 
@@ -74,8 +79,6 @@ public class AssetsController(
     [ResponseCache(Duration = 3600)]
     [HttpHead("/{filename:regex(^(favicon|android-icon|apple-icon).*(ico|png)$)}")]
     [HttpGet("/{filename:regex(^(favicon|android-icon|apple-icon).*(ico|png)$)}")]
-    [ProducesResponseType(StatusCodes.Status200OK)]
-    [ProducesResponseType(StatusCodes.Status404NotFound)]
     public IActionResult SiteIcon(string filename)
     {
         var iconBytes = InMemoryIconGenerator.GetIcon(filename);
@@ -117,8 +120,6 @@ public class AssetsController(
 
     [Authorize]
     [HttpPost("siteicon")]
-    [ProducesResponseType(StatusCodes.Status204NoContent)]
-    [ProducesResponseType(StatusCodes.Status409Conflict)]
     public async Task<IActionResult> UpdateSiteIcon([FromBody] string base64Img)
     {
         base64Img = base64Img.Trim();
@@ -136,6 +137,12 @@ public class AssetsController(
         await siteIconBuilder.RegenerateSiteIcons(base64Img);
 
         logger.LogInformation("Site icon image updated successfully.");
+
+        await LogActivityAsync(
+            EventType.SiteIconUpdated,
+            "Update Site Icon",
+            "Site Icon",
+            new { ImageSize = $"{bmp.Width}x{bmp.Height}" });
 
         return NoContent();
     }

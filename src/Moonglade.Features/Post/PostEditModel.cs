@@ -1,11 +1,9 @@
-﻿using Moonglade.Data.DTO;
-using System.ComponentModel.DataAnnotations;
+﻿using System.ComponentModel.DataAnnotations;
 
 namespace Moonglade.Features.Post;
 
 public class PostEditModel
 {
-    [HiddenInput]
     public Guid PostId { get; set; } = Guid.Empty;
 
     [Required]
@@ -79,6 +77,5 @@ public class PostEditModel
 
     public bool WarnSlugModification => PublishDate.HasValue && (DateTime.UtcNow - PublishDate.Value).Days > 3;
 
-    [HiddenInput]
     public string LastModifiedUtc { get; set; }
 }

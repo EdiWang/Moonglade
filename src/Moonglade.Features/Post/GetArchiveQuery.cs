@@ -1,7 +1,6 @@
 using Ardalis.Specification.EntityFrameworkCore;
 using LiteBus.Queries.Abstractions;
 using Microsoft.EntityFrameworkCore;
-using Moonglade.Data;
 using Moonglade.Data.DTO;
 using Moonglade.Data.Specifications;
 

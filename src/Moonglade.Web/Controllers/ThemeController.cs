@@ -1,20 +1,19 @@
 ﻿using LiteBus.Commands.Abstractions;
 using LiteBus.Queries.Abstractions;
+using Moonglade.ActivityLog;
 using System.ComponentModel.DataAnnotations;
 
 namespace Moonglade.Web.Controllers;
 
-[ApiController]
 [Route("api/[controller]")]
 public class ThemeController(
     IQueryMediator queryMediator,
     ICommandMediator commandMediator,
     ICacheAside cache,
-    IBlogConfig blogConfig) : ControllerBase
+    IBlogConfig blogConfig) : BlogControllerBase(commandMediator)
 {
+    [AllowAnonymous]
     [HttpGet("/theme.css")]
-    [ProducesResponseType(StatusCodes.Status200OK)]
-    [ProducesResponseType(StatusCodes.Status404NotFound)]
     public async Task<IActionResult> Css()
     {
         var css = await cache.GetOrCreateAsync(BlogCachePartition.General.ToString(), "theme", async entry =>
@@ -30,10 +29,7 @@ public class ThemeController(
         return Content(css, "text/css; charset=utf-8");
     }
 
-    [Authorize]
     [HttpPost]
-    [ProducesResponseType<string>(StatusCodes.Status409Conflict)]
-    [ProducesResponseType<int>(StatusCodes.Status200OK)]
     [TypeFilter(typeof(ClearBlogCache), Arguments = [BlogCachePartition.General, "theme"])]
     public async Task<IActionResult> Create(CreateThemeRequest request)
     {
@@ -47,19 +43,34 @@ public class ThemeController(
             { "--accent-color2", accentColor2 }
         };
 
-        var id = await commandMediator.SendAsync(new CreateThemeCommand(request.Name, dic));
+        var id = await CommandMediator.SendAsync(new CreateThemeCommand(request.Name, dic));
         if (id == -1) return Conflict("Theme with same name already exists");
+
+        await LogActivityAsync(
+            EventType.ThemeCreated,
+            "Create Theme",
+            request.Name,
+            new { ThemeId = id, request.AccentColor });
 
         return Ok(id);
     }
 
-    [Authorize]
     [HttpDelete("{id:int}")]
     [ApiConventionMethod(typeof(DefaultApiConventions), nameof(DefaultApiConventions.Delete))]
     [TypeFilter(typeof(ClearBlogCache), Arguments = [BlogCachePartition.General, "theme"])]
     public async Task<IActionResult> Delete([Range(1, int.MaxValue)] int id)
     {
-        var oc = await commandMediator.SendAsync(new DeleteThemeCommand(id));
+        var oc = await CommandMediator.SendAsync(new DeleteThemeCommand(id));
+
+        if (oc == OperationCode.Done)
+        {
+            await LogActivityAsync(
+                EventType.ThemeDeleted,
+                "Delete Theme",
+                $"Theme #{id}",
+                new { ThemeId = id });
+        }
+
         return oc switch
         {
             OperationCode.ObjectNotFound => NotFound(),

@@ -1,13 +1,18 @@
 ﻿using LiteBus.Commands.Abstractions;
 using LiteBus.Queries.Abstractions;
+using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Hosting;
+using Microsoft.Extensions.Logging;
+using Moonglade.Configuration;
 using Moonglade.Features.Post;
 
-namespace Moonglade.Web.BackgroundServices;
+namespace Moonglade.BackgroundServices;
 
 public class ScheduledPublishService(
     IServiceProvider serviceProvider,
     ILogger<ScheduledPublishService> logger,
-    ScheduledPublishWakeUp wakeUp
+    ScheduledPublishWakeUp wakeUp,
+    IBlogConfig blogConfig
     ) : BackgroundService
 {
     private static readonly TimeSpan MaxWaitInterval = TimeSpan.FromMinutes(5);
@@ -20,6 +25,12 @@ public class ScheduledPublishService(
         {
             try
             {
+                if (!blogConfig.AdvancedSettings.EnablePostScheduler)
+                {
+                    await Task.Delay(MaxWaitInterval, stoppingToken);
+                    continue;
+                }
+
                 DateTime? nextScheduleTime = await GetNextScheduledTimeAsync(stoppingToken);
                 TimeSpan delay;
 

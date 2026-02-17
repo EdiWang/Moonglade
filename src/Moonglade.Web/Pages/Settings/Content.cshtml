@@ -33,7 +33,7 @@
                     </div>
                 </div>
 
-                <div class="settings-entry row align-items-center py-3 px-2 rounded-3 border mb-4">
+                <div class="settings-entry row align-items-center py-3 px-2 rounded-3 border mb-1">
                     <div class="col-auto">
                         <i class="settings-entry-icon bi-file-word"></i>
                     </div>
@@ -43,6 +43,18 @@
                     </div>
                     <div class="col-4">
                         <input asp-for="@settings.PostAbstractWords" class="form-control" max="65536" required />
+                    </div>
+                </div>
+
+                <div class="settings-entry row align-items-center py-3 px-2 rounded-3 border mb-4">
+                    <div class="col-auto">
+                        <i class="settings-entry-icon bi-hash"></i>
+                    </div>
+                    <div class="col">
+                        <label asp-for="@settings.MaximumPageNumbersToDisplay"></label>
+                    </div>
+                    <div class="col-4">
+                        <input asp-for="@settings.MaximumPageNumbersToDisplay" class="form-control" min="2" max="10" required />
                     </div>
                 </div>
 
@@ -78,6 +90,21 @@
                         <div class="form-check form-switch form-control-lg">
                             <input type="hidden" name="DocumentOutline" value="false">
                             <input type="checkbox" name="DocumentOutline" value="true" class="form-check-input" @(settings.DocumentOutline ? "checked" : null)>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="settings-entry row align-items-center py-3 px-2 rounded-3 border mb-1">
+                    <div class="col-auto">
+                        <i class="bi-eye settings-entry-icon"></i>
+                    </div>
+                    <div class="col">
+                        <label asp-for="@settings.EnableViewCount" class="form-check-label"></label>
+                    </div>
+                    <div class="col-md-5 text-end">
+                        <div class="form-check form-switch form-control-lg">
+                            <input type="hidden" name="EnableViewCount" value="false">
+                            <input type="checkbox" name="EnableViewCount" value="true" class="form-check-input" @(settings.EnableViewCount ? "checked" : null)>
                         </div>
                     </div>
                 </div>

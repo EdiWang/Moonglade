@@ -8,6 +8,7 @@ namespace Moonglade.Web.Pages;
 
 public class PostModel(
     IConfiguration configuration,
+    IBlogConfig blogConfig,
     ICacheAside cache,
     IQueryMediator queryMediator,
     ICommandMediator commandMediator) : PageModel
@@ -16,7 +17,7 @@ public class PostModel(
 
     public PostViewEntity PostView { get; set; }
 
-    public bool IsViewCountEnabled { get; } = configuration.GetValue<bool>("Post:EnableViewCount");
+    public bool IsViewCountEnabled => blogConfig.ContentSettings.EnableViewCount;
 
     public async Task<IActionResult> OnGetAsync(int year, int month, int day, string slug)
     {

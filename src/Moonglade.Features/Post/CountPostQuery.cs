@@ -1,5 +1,4 @@
 using LiteBus.Queries.Abstractions;
-using Moonglade.Data.DTO;
 using Moonglade.Data.Specifications;
 
 namespace Moonglade.Features.Post;

@@ -1,20 +1,16 @@
 ﻿using LiteBus.Commands.Abstractions;
 using LiteBus.Queries.Abstractions;
-using Moonglade.Data.Entities;
+using Moonglade.ActivityLog;
 using Moonglade.Features.Category;
 
 namespace Moonglade.Web.Controllers;
 
-[Authorize]
-[ApiController]
 [Route("api/[controller]")]
 public class CategoryController(
     IQueryMediator queryMediator,
-    ICommandMediator commandMediator) : ControllerBase
+    ICommandMediator commandMediator) : BlogControllerBase(commandMediator)
 {
     [HttpGet("{id:guid}")]
-    [ProducesResponseType<CategoryEntity>(StatusCodes.Status200OK)]
-    [ProducesResponseType(StatusCodes.Status404NotFound)]
     public async Task<IActionResult> Get([NotEmpty] Guid id)
     {
         var cat = await queryMediator.QueryAsync(new GetCategoryQuery(id));
@@ -24,7 +20,6 @@ public class CategoryController(
     }
 
     [HttpGet("list")]
-    [ProducesResponseType<List<CategoryEntity>>(StatusCodes.Status200OK)]
     public async Task<IActionResult> List()
     {
         var list = await queryMediator.QueryAsync(new ListCategoriesQuery());
@@ -32,10 +27,16 @@ public class CategoryController(
     }
 
     [HttpPost]
-    [ProducesResponseType(StatusCodes.Status201Created)]
     public async Task<IActionResult> Create(CreateCategoryCommand command)
     {
-        await commandMediator.SendAsync(command);
+        await CommandMediator.SendAsync(command);
+
+        await LogActivityAsync(
+            EventType.CategoryCreated,
+            "Create Category",
+            command.DisplayName,
+            new { command.Slug, command.Note });
+
         return Created(string.Empty, command);
     }
 
@@ -44,8 +45,14 @@ public class CategoryController(
     public async Task<IActionResult> Update([NotEmpty] Guid id, UpdateCategoryCommand command)
     {
         command.Id = id;
-        var oc = await commandMediator.SendAsync(command);
+        var oc = await CommandMediator.SendAsync(command);
         if (oc == OperationCode.ObjectNotFound) return NotFound();
+
+        await LogActivityAsync(
+            EventType.CategoryUpdated,
+            "Update Category",
+            command.DisplayName,
+            new { command.Id, command.Slug, command.Note });
 
         return NoContent();
     }
@@ -54,8 +61,14 @@ public class CategoryController(
     [ApiConventionMethod(typeof(DefaultApiConventions), nameof(DefaultApiConventions.Delete))]
     public async Task<IActionResult> Delete([NotEmpty] Guid id)
     {
-        var oc = await commandMediator.SendAsync(new DeleteCategoryCommand(id));
+        var oc = await CommandMediator.SendAsync(new DeleteCategoryCommand(id));
         if (oc == OperationCode.ObjectNotFound) return NotFound();
+
+        await LogActivityAsync(
+            EventType.CategoryDeleted,
+            "Delete Category",
+            id.ToString(),
+            new { CategoryId = id });
 
         return NoContent();
     }

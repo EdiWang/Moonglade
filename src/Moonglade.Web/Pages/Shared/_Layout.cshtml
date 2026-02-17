@@ -2,7 +2,6 @@
 @using Microsoft.AspNetCore.Localization
 @using System.Globalization
 @inject IConfiguration Configuration
-@inject IOptions<AnalyticsSettings> AnalyticsSettings
 
 @{
     if (string.IsNullOrEmpty(BlogConfig.GeneralSettings.AvatarUrl))
@@ -91,11 +90,6 @@
             console.warn('Moonglade is running in @(WebHostEnvironment.EnvironmentName) environment');
         </script>
     </environment>
-
-    @if (AnalyticsSettings.Value.GoogleAnalytics.Enabled)
-    {
-        <partial name="_GoogleAnalytics" model="AnalyticsSettings.Value.GoogleAnalytics.GTagId" />
-    }
 
     @if (!string.IsNullOrWhiteSpace(BlogConfig.AdvancedSettings.HeadScripts))
     {
@@ -240,11 +234,6 @@
     <script type="module" src="~/js/app/base.mjs"></script>
 
     @await RenderSectionAsync("scripts", false)
-
-    @if (AnalyticsSettings.Value.MicrosoftClarity.Enabled)
-    {
-        <partial name="_MicrosoftClarity" model="AnalyticsSettings.Value.MicrosoftClarity.ProjectId" />
-    }
 
     @if (!string.IsNullOrWhiteSpace(BlogConfig.AdvancedSettings.FootScripts))
     {

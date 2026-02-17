@@ -4,6 +4,8 @@
 @{
     ViewBag.Title = "Edit Post";
     ViewBag.XData = "postEditor";
+    ViewBag.HideAdminSidebar = true;
+    ViewBag.AdminBackUrl = "javascript:history.go(-1);";
     var ec = Configuration.GetValue<EditorChoice>("Post:Editor");
 }
 
@@ -44,7 +46,7 @@
     <span>Loading post data...</span>
 </div>
 
-<div x-show="!isLoading" x-cloak>
+<div x-show="!isLoading" x-cloak class="post-editor-container d-flex flex-column px-3 pt-2">
     <form id="post-edit-form" x-on:submit.prevent="handleSubmit">
         <div class="row g-2">
             <div class="col-md-9 col-xl-10">
@@ -180,7 +182,7 @@
                             </a>
                         </h6>
 
-                        <div class="catlist" x-show="categories.length > 0">
+                        <div class="post-editor-catlist" x-show="categories.length > 0">
                             <ul>
                                 <template x-for="cat in categories" :key="cat.id">
                                     <li>
@@ -200,11 +202,17 @@
                     </div>
                 </div>
 
-                <div x-show="formData.postId && formData.postId !== window.emptyGuid" class="text-center mb-2">
-                    <a class="btn btn-sm btn-outline-secondary" data-bs-toggle="modal" data-bs-target="#changePublishDateModal">
+                <div class="mx-5 d-flex flex-column gap-2">
+                    <a x-show="formData.postId && formData.postId !== window.emptyGuid" class="btn btn-sm btn-outline-secondary w-100" data-bs-toggle="modal" data-bs-target="#changePublishDateModal">
                         <i class="bi-clock-history"></i>
                         @SharedLocalizer["Change Publish Date"]
                     </a>
+
+                    <a x-show="formData.postStatus === 'Published'"
+                       x-cloak
+                       class="unpublish-link btn btn-sm btn-outline-secondary w-100"
+                       data-bs-toggle="modal"
+                       data-bs-target="#unpublishPostModal">@SharedLocalizer["Unpublish"]</a>
                 </div>
             </div>
         </div>
@@ -218,12 +226,6 @@
                 <span x-show="formData.postStatus === 'Draft'" x-cloak>@SharedLocalizer["Save"]</span>
                 <span x-show="formData.postStatus === 'Published' || formData.postStatus === 'Scheduled'" x-cloak>@SharedLocalizer["Update"]</span>
             </button>
-
-            <a x-show="formData.postStatus === 'Published'"
-               x-cloak
-               class="unpublish-link btn btn-outline-secondary"
-               data-bs-toggle="modal"
-               data-bs-target="#unpublishPostModal">@SharedLocalizer["Unpublish"]</a>
 
             <div x-show="formData.postStatus !== 'Published'" x-cloak class="btn-group">
                 <button type="submit"
@@ -257,8 +259,6 @@
                     </li>
                 </ul>
             </div>
-
-            <a asp-page="./Post" class="btn btn-outline-secondary">@SharedLocalizer["Cancel"]</a>
 
             <div class="schedule-info d-inline-block text-muted ms-4" x-html="scheduleInfoHtml"></div>
         </div>

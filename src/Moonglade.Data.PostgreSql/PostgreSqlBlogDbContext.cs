@@ -20,7 +20,6 @@ public class PostgreSqlBlogDbContext : BlogDbContext
         modelBuilder.ApplyConfiguration(new CommentReplyConfiguration());
         modelBuilder.ApplyConfiguration(new PostConfiguration());
         modelBuilder.ApplyConfiguration(new PostCategoryConfiguration());
-        modelBuilder.ApplyConfiguration(new LoginHistoryConfiguration());
         modelBuilder.ApplyConfiguration(new MentionConfiguration());
         modelBuilder.ApplyConfiguration(new BlogThemeConfiguration());
         modelBuilder.ApplyConfiguration(new BlogAssetConfiguration());
@@ -28,6 +27,7 @@ public class PostgreSqlBlogDbContext : BlogDbContext
         modelBuilder.ApplyConfiguration(new BlogConfigurationConfiguration());
         modelBuilder.ApplyConfiguration(new PageConfiguration());
         modelBuilder.ApplyConfiguration(new WidgetConfiguration());
+        modelBuilder.ApplyConfiguration(new ActivityLogConfiguration());
 
         base.OnModelCreating(modelBuilder);
     }

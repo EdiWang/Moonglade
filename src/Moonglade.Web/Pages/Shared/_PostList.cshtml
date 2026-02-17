@@ -1,6 +1,5 @@
 ﻿@using Moonglade.Data.DTO
 @model PagedResult<PostDigest>
-@inject IConfiguration Configuration
 
 @foreach (var item in Model.Items)
 {
@@ -8,6 +7,6 @@
 }
 
 @{
-    var maxPageNumbers = int.Parse(Configuration["Post:MaximumPageNumbersToDisplay"]);
+    var maxPageNumbers = BlogConfig.ContentSettings.MaximumPageNumbersToDisplay;
 }
 <partial name="_Pager" model="new PagerModel(Model.PageNumber, Model.PageCount, maxPageNumbers)" />

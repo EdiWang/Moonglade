@@ -1,6 +1,6 @@
 ﻿using System.Text.Json.Serialization;
 
-namespace Moonglade.Data.DTO;
+namespace Moonglade.Data;
 
 [JsonConverter(typeof(JsonStringEnumConverter<PostStatus>))]
 public enum PostStatus

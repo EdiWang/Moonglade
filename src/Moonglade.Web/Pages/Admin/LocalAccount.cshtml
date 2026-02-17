@@ -27,42 +27,6 @@
     Local account is not secure. It's recommended to use <a href="https://learn.microsoft.com/en-us/azure/active-directory/fundamentals/whatis?WT.mc_id=AZ-MVP-5002809">Microsoft Entra ID</a> for authentication. Click <a href="https://github.com/EdiWang/Moonglade/wiki/Use-Microsoft-Entra-ID-Authentication" target="_blank">here</a> to configure.
 </div>
 
-<h4 class="admin-subtitle fw-bold mb-2">
-    Last 10 sign in activities
-</h4>
-
-<div x-show="isLoading"
-     class="text-muted mb-3"
-     :class="{ 'd-flex align-items-center': isLoading }">
-    <div class="spinner-border spinner-border-sm me-2" role="status"></div>
-    <span>@SharedLocalizer["Loading login history..."]</span>
-</div>
-
-<div x-show="!isLoading && !hasLoginHistory" class="alert alert-info">
-    @SharedLocalizer["No login history yet."]
-</div>
-
-<div x-show="!isLoading && hasLoginHistory" class="mb-4 rounded-3 shadow-sm border bg-white p-2">
-    <table class="table table-borderless mb-0">
-        <thead>
-            <tr>
-                <th>@SharedLocalizer["Login IP"]</th>
-                <th>@SharedLocalizer["Login Time (UTC)"]</th>
-                <th>@SharedLocalizer["User Agent"]</th>
-            </tr>
-        </thead>
-        <tbody>
-            <template x-for="item in loginHistory" :key="item.id">
-                <tr>
-                    <td x-text="item.loginIp"></td>
-                    <td x-text="formatTime(item.loginTimeUtc)"></td>
-                    <td x-text="item.loginUserAgent"></td>
-                </tr>
-            </template>
-        </tbody>
-    </table>
-</div>
-
 <div class="modal fade" id="resetPasswordModal" tabindex="-1" role="dialog" aria-labelledby="resetPasswordModalLabel" aria-hidden="true">
     <div class="modal-dialog" role="document">
         <div class="modal-content">

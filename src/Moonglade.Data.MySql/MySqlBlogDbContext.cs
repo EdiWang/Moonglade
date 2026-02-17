@@ -27,6 +27,7 @@ public class MySqlBlogDbContext : BlogDbContext
         modelBuilder.ApplyConfiguration(new Data.Configurations.BlogConfigurationConfiguration());
         modelBuilder.ApplyConfiguration(new Data.Configurations.PageConfiguration());
         modelBuilder.ApplyConfiguration(new Data.Configurations.WidgetConfiguration());
+        modelBuilder.ApplyConfiguration(new Data.Configurations.ActivityLogConfiguration());
 
         base.OnModelCreating(modelBuilder);
     }

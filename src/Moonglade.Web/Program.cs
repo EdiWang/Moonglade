@@ -9,6 +9,7 @@ using Microsoft.AspNetCore.Diagnostics.HealthChecks;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.AspNetCore.Rewrite;
 using Microsoft.Extensions.Diagnostics.HealthChecks;
+using Moonglade.BackgroundServices;
 using Moonglade.Data.MySql;
 using Moonglade.Data.PostgreSql;
 using Moonglade.Data.SqlServer;
@@ -17,7 +18,6 @@ using Moonglade.IndexNow.Client;
 using Moonglade.Moderation;
 using Moonglade.Setup;
 using Moonglade.Syndication;
-using Moonglade.Web.BackgroundServices;
 using Moonglade.Web.Extensions;
 using Moonglade.Web.Handlers;
 using Moonglade.Webmention;
@@ -64,7 +64,8 @@ public class Program
             "Moonglade.Theme",
             "Moonglade.Data",
             "Moonglade.Configuration",
-            "Moonglade.Widgets"
+            "Moonglade.Widgets",
+            "Moonglade.ActivityLog"
         };
 
         foreach (var assembly in assemblies)
@@ -232,7 +233,6 @@ public class Program
         services.AddSyndication()
                 .AddInMemoryCacheAside()
                 .AddBlogConfig()
-                .AddAnalytics(configuration)
                 .AddBlogAuthenticaton(configuration)
                 .AddImageStorage(configuration);
 
@@ -240,13 +240,11 @@ public class Program
         services.AddIndexNowClient(configuration.GetSection("IndexNow"));
         services.AddContentModerator(configuration);
 
-        if (configuration.GetValue<bool>("PostScheduler"))
-        {
-            services.AddSingleton<ScheduledPublishWakeUp>();
-            services.AddHostedService<ScheduledPublishService>();
-        }
+        services.AddSingleton<ScheduledPublishWakeUp>();
+        services.AddHostedService<ScheduledPublishService>();
 
         services.AddSingleton<CannonService>();
+        services.AddHostedService(sp => sp.GetRequiredService<CannonService>());
     }
 
     private static void ConfigureDatabase(IServiceCollection services, IConfiguration configuration)

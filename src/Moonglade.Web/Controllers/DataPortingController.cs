@@ -9,7 +9,6 @@ namespace Moonglade.Web.Controllers;
 public class DataPortingController(ICommandMediator commandMediator) : ControllerBase
 {
     [HttpGet("export/{type}")]
-    [ProducesResponseType(StatusCodes.Status400BadRequest)]
     public async Task<IActionResult> ExportDownload(ExportType type, CancellationToken ct)
     {
         var exportResult = type switch

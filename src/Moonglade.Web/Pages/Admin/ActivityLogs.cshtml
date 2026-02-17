@@ -1,0 +1,215 @@
+﻿@page "/admin/activitylogs"
+@{
+    ViewBag.Title = "Activity Logs";
+    ViewBag.XData = "activityLogManager";
+}
+
+@Html.AntiForgeryToken()
+
+@section scripts {
+    <script type="module" src="~/js/app/admin.activitylogs.mjs"></script>
+}
+
+@section admintoolbar {
+    <div class="admin-toolbar pb-2 border-bottom mb-3">
+        <a x-on:click="openFilter()" class="btn btn-outline-accent" role="button">
+            <i class="bi-funnel"></i>
+            @SharedLocalizer["Filter"]
+            <span x-show="activeFilterCount > 0" class="badge bg-accent ms-1" x-text="activeFilterCount"></span>
+        </a>
+    </div>
+}
+
+<div id="localizedStrings" style="display:none"
+     data-log-deleted="@SharedLocalizer["Log deleted"]">
+</div>
+
+<div>
+    <div x-show="isLoading"
+         class="text-muted mb-3"
+         :class="{ 'd-flex align-items-center': isLoading }">
+        <div class="spinner-border spinner-border-sm me-2" role="status"></div>
+        <span>@SharedLocalizer["Loading..."]</span>
+    </div>
+
+    <div x-show="!isLoading && !hasLogs">
+        <div class="alert alert-info">
+            @SharedLocalizer["No activity logs found."]
+        </div>
+    </div>
+
+    <div x-show="!isLoading && hasLogs" class="table-responsive">
+        <table class="table table-hover table-striped align-middle">
+            <thead class="table-light">
+                <tr>
+                    <th>@SharedLocalizer["Event Type"]</th>
+                    <th>@SharedLocalizer["Operation"]</th>
+                    <th>@SharedLocalizer["Target"]</th>
+                    <th>@SharedLocalizer["Actor"]</th>
+                    <th>@SharedLocalizer["IP Address"]</th>
+                    <th>@SharedLocalizer["Time"]</th>
+                    <th class="text-end">@SharedLocalizer["Actions"]</th>
+                </tr>
+            </thead>
+            <tbody>
+                <template x-for="log in logs" :key="log.id">
+                    <tr :id="`log-${log.id}`">
+                        <td>
+                            <span class="badge bg-secondary" x-text="getEventTypeName(log.eventType)"></span>
+                        </td>
+                        <td>
+                            <strong x-text="log.operation"></strong>
+                        </td>
+                        <td>
+                            <span class="text-muted" x-text="log.targetName"></span>
+                        </td>
+                        <td>
+                            <span x-text="log.actorId || 'System'"></span>
+                        </td>
+                        <td>
+                            <span class="text-muted" x-text="log.ipAddress"></span>
+                        </td>
+                        <td>
+                            <time :data-utc-label="log.eventTimeUtc" x-text="log.eventTimeUtc"></time>
+                        </td>
+                        <td class="text-end">
+                            <button class="btn btn-outline-primary btn-sm" 
+                                    x-on:click="showDetail(log.id, log.operation)"
+                                    title="Detail">
+                                <i class="bi-info-circle"></i>
+                            </button>
+                            <button class="btn btn-outline-danger btn-sm" 
+                                    x-on:click="deleteLog(log.id)"
+                                    title="Delete">
+                                <i class="bi-trash"></i>
+                            </button>
+                        </td>
+                    </tr>
+                </template>
+            </tbody>
+        </table>
+    </div>
+
+    <nav x-show="!isLoading && totalPages > 1" aria-label="Page navigation" class="mt-4">
+        <ul class="pagination">
+            <li class="page-item" :class="{ 'disabled': currentPage === 1 }">
+                <a class="page-link" href="#" x-on:click.prevent="goToPage(currentPage - 1)">
+                    <span aria-hidden="true">&laquo;</span>
+                </a>
+            </li>
+
+            <template x-for="page in paginationPages" :key="page">
+                <li class="page-item" :class="{ 'active': page === currentPage }">
+                    <a class="page-link" href="#" x-on:click.prevent="goToPage(page)" x-text="page"></a>
+                </li>
+            </template>
+
+            <li class="page-item" :class="{ 'disabled': currentPage === totalPages }">
+                <a class="page-link" href="#" x-on:click.prevent="goToPage(currentPage + 1)">
+                    <span aria-hidden="true">&raquo;</span>
+                </a>
+            </li>
+        </ul>
+    </nav>
+</div>
+
+<!-- Filter Offcanvas -->
+<div class="offcanvas offcanvas-end" tabindex="-1" x-ref="filterCanvas" aria-labelledby="filterCanvasLabel">
+    <div class="offcanvas-header">
+        <h5 class="offcanvas-title" id="filterCanvasLabel">@SharedLocalizer["Filter"]</h5>
+        <button type="button" class="btn-close text-reset" data-bs-dismiss="offcanvas" aria-label="Close"></button>
+    </div>
+    <div class="offcanvas-body d-flex flex-column p-0">
+        <form x-on:submit.prevent="handleFilter()" class="d-flex flex-column h-100">
+            <!-- Event Types Card - Takes remaining space -->
+            <div class="flex-grow-1 d-flex flex-column p-3 pb-0" style="min-height: 0;">
+                <div class="card d-flex flex-column h-100">
+                    <div class="card-header">
+                        <h6 class="mb-0 fw-semibold">@SharedLocalizer["Event Types"]</h6>
+                    </div>
+                    <div class="card-body flex-grow-1 overflow-auto">
+                        <template x-for="group in eventTypeGroups" :key="group.category">
+                            <div class="mb-3">
+                                <div class="text-muted small fw-semibold text-uppercase mb-2" x-text="group.category"></div>
+                                <template x-for="item in group.items" :key="item.value">
+                                    <div class="form-check mb-1">
+                                        <input class="form-check-input" type="checkbox"
+                                               :id="`evt-${item.value}`"
+                                               :value="item.value"
+                                               :checked="selectedEventTypes.includes(String(item.value))"
+                                               x-on:change="toggleEventType(String(item.value))">
+                                        <label class="form-check-label" :for="`evt-${item.value}`" x-text="item.name"></label>
+                                    </div>
+                                </template>
+                            </div>
+                        </template>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Date Range Filters - Fixed position above buttons -->
+            <div class="p-3">
+                <div class="mb-3">
+                    <label class="form-label">@SharedLocalizer["Start Date"]</label>
+                    <input type="date" class="form-control" x-model="startDate" />
+                </div>
+                <div class="mb-3">
+                    <label class="form-label">@SharedLocalizer["End Date"]</label>
+                    <input type="date" class="form-control" x-model="endDate" />
+                </div>
+            </div>
+
+            <!-- Fixed Bottom Buttons -->
+            <div class="border-top p-3 bg-light">
+                <div class="d-grid gap-2">
+                    <button type="submit" class="btn btn-accent">
+                        <i class="bi-funnel"></i> @SharedLocalizer["Apply Filter"]
+                    </button>
+                    <button type="button" class="btn btn-outline-secondary" x-on:click="clearFilter()">
+                        <i class="bi-x-circle"></i> @SharedLocalizer["Clear"]
+                    </button>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
+
+<!-- Delete Log Modal -->
+<div class="modal fade" id="deleteLogModal" tabindex="-1" aria-labelledby="deleteLogModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="deleteLogModalLabel">@SharedLocalizer["Confirm Delete"]</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                @SharedLocalizer["Are you sure you want to delete this activity log?"]
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">@SharedLocalizer["Cancel"]</button>
+                <button type="button" class="btn btn-outline-danger" x-on:click="confirmDelete()">@SharedLocalizer["Delete"]</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Detail Modal -->
+<div class="modal fade" id="detailModal" tabindex="-1" aria-labelledby="detailModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="detailModalLabel">
+                    @SharedLocalizer["Activity Log Detail"] - <span x-text="currentLogOperation"></span>
+                </h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <h6>@SharedLocalizer["Metadata"]</h6>
+                <pre class="bg-light p-3 rounded" style="max-height: 400px; overflow-y: auto;"><code x-text="currentMetadata ? JSON.stringify(JSON.parse(currentMetadata), null, 2) : 'No metadata'"></code></pre>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">@SharedLocalizer["Close"]</button>
+            </div>
+        </div>
+    </div>
+</div>

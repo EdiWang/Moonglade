@@ -68,26 +68,33 @@
         <h5 class="offcanvas-title" id="editCatCanvasLabel">@SharedLocalizer["Category Information"]</h5>
         <button type="button" class="btn-close text-reset" data-bs-dismiss="offcanvas" aria-label="Close"></button>
     </div>
-    <div class="offcanvas-body">
-        <form x-on:submit.prevent="handleSubmit()">
-            <div class="mb-3">
-                <label class="form-label" asp-for="@EditCategoryRequest.DisplayName"></label>
-                <input x-model="formData.displayName" class="form-control" required />
+    <div class="offcanvas-body d-flex flex-column p-0">
+        <form x-on:submit.prevent="handleSubmit()" class="d-flex flex-column h-100">
+            <!-- Form Fields - Takes remaining space -->
+            <div class="flex-grow-1 p-3 pb-0" style="min-height: 0; overflow-y: auto;">
+                <div class="mb-3">
+                    <label class="form-label" asp-for="@EditCategoryRequest.DisplayName"></label>
+                    <input x-model="formData.displayName" class="form-control" required />
+                </div>
+                <div class="mb-3">
+                    <label class="form-label" asp-for="@EditCategoryRequest.Slug"></label>
+                    <input x-model="formData.slug" class="form-control" required pattern="(?!-)([a-z0-9-]+)" />
+                    <small class="text-muted">
+                        @SharedLocalizer["lower case English letters (a-z) and numbers (0-9) with/out hyphen (-) in middle."]
+                    </small>
+                </div>
+                <div class="mb-3">
+                    <label class="form-label" asp-for="@EditCategoryRequest.Note"></label>
+                    <input x-model="formData.note" class="form-control" required />
+                </div>
             </div>
-            <div class="mb-3">
-                <label class="form-label" asp-for="@EditCategoryRequest.Slug"></label>
-                <input x-model="formData.slug" class="form-control" required pattern="(?!-)([a-z0-9-]+)" />
-                <small class="text-muted">
-                    @SharedLocalizer["lower case English letters (a-z) and numbers (0-9) with/out hyphen (-) in middle."]
-                </small>
-            </div>
-            <div class="mb-3">
-                <label class="form-label" asp-for="@EditCategoryRequest.Note"></label>
-                <input x-model="formData.note" class="form-control" required />
-            </div>
-            <div class="mt-3">
-                <button type="submit" class="btn btn-accent">@SharedLocalizer["Submit"]</button>
-                <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="offcanvas">@SharedLocalizer["Cancel"]</button>
+
+            <!-- Fixed Bottom Buttons -->
+            <div class="border-top p-3 bg-light">
+                <div class="d-grid gap-2">
+                    <button type="submit" class="btn btn-accent">@SharedLocalizer["Submit"]</button>
+                    <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="offcanvas">@SharedLocalizer["Cancel"]</button>
+                </div>
             </div>
         </form>
     </div>

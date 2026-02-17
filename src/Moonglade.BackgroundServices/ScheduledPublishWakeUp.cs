@@ -1,4 +1,4 @@
-﻿namespace Moonglade.Web.BackgroundServices;
+﻿namespace Moonglade.BackgroundServices;
 
 public class ScheduledPublishWakeUp
 {

@@ -4,8 +4,6 @@ import { success, error } from '/js/app/toastService.mjs';
 import { getLocalizedString } from './utils.module.mjs';
 
 Alpine.data('accountManager', () => ({
-    loginHistory: [],
-    isLoading: true,
     resetPasswordModal: null,
     formData: {
         newUsername: '',
@@ -15,22 +13,7 @@ Alpine.data('accountManager', () => ({
 
     async init() {
         this.resetPasswordModal = new bootstrap.Modal('#resetPasswordModal');
-        await this.loadLoginHistory();
         await this.loadCurrentUsername();
-    },
-
-    async loadLoginHistory() {
-        this.isLoading = true;
-        try {
-            const data = await fetch2('/auth/loginhistory/list', 'GET');
-            this.loginHistory = (data ?? [])
-                .sort((a, b) => new Date(b.loginTimeUtc) - new Date(a.loginTimeUtc))
-                .slice(0, 10);
-        } catch (err) {
-            error(err);
-        } finally {
-            this.isLoading = false;
-        }
     },
 
     async loadCurrentUsername() {
@@ -42,10 +25,6 @@ Alpine.data('accountManager', () => ({
         } catch (error) {
             console.error('Failed to load current username:', error);
         }
-    },
-
-    get hasLoginHistory() {
-        return this.loginHistory.length > 0;
     },
 
     openResetPasswordModal() {
@@ -70,11 +49,6 @@ Alpine.data('accountManager', () => ({
         } catch (err) {
             error(err);
         }
-    },
-
-    formatTime(utcTime) {
-        const date = new Date(utcTime);
-        return date.toLocaleString();
     }
 }));
 

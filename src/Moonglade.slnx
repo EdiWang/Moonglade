@@ -9,10 +9,12 @@
     <File Path="../Deployment/AzureQuickDeploy.ps1" />
   </Folder>
   <Folder Name="/Application/">
+    <Project Path="Moonglade.BackgroundServices/Moonglade.BackgroundServices.csproj" Id="73207b43-cf18-4eae-8b36-d44ce5e9760b" />
     <Project Path="Moonglade.Web.Middleware/Moonglade.Web.Middleware.csproj" />
     <Project Path="Moonglade.Web/Moonglade.Web.csproj" />
   </Folder>
   <Folder Name="/Core/">
+    <Project Path="Moonglade.ActivityLog/Moonglade.ActivityLog.csproj" Id="1aaf4c51-e632-4e50-8c75-281f8f3b1e9a" />
     <Project Path="Moonglade.Auth/Moonglade.Auth.csproj" />
     <Project Path="Moonglade.Email.Client/Moonglade.Email.Client.csproj" />
     <Project Path="Moonglade.Features/Moonglade.Features.csproj" />
@@ -36,6 +38,7 @@
     <Project Path="Moonglade.Utils/Moonglade.Utils.csproj" />
   </Folder>
   <Folder Name="/Tests/">
+    <Project Path="Tests/Moonglade.BackgroundServices.Tests/Moonglade.BackgroundServices.Tests.csproj" Id="34394544-da00-4795-a40b-834ba56875a9" />
     <Project Path="Tests/Moonglade.Configuration.Tests/Moonglade.Configuration.Tests.csproj" Id="16bbf182-7908-4306-9a7e-207517fc9bc4" />
     <Project Path="Tests/Moonglade.ImageStorage.Tests/Moonglade.ImageStorage.Tests.csproj" />
     <Project Path="Tests/Moonglade.IndexNow.Client.Tests/Moonglade.IndexNow.Client.Tests.csproj" />

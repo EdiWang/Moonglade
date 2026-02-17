@@ -1,50 +1,42 @@
 ﻿using LiteBus.Commands.Abstractions;
 using LiteBus.Events.Abstractions;
 using LiteBus.Queries.Abstractions;
-using Microsoft.AspNetCore.Mvc.ModelBinding;
-using Moonglade.Data.DTO;
+using Moonglade.ActivityLog;
+using Moonglade.BackgroundServices;
 using Moonglade.Email.Client;
 using Moonglade.Moderation;
 using System.ComponentModel.DataAnnotations;
 
 namespace Moonglade.Web.Controllers;
 
-[Authorize]
-[ApiController]
 [Route("api/[controller]")]
-[CommentProviderGate]
 public class CommentController(
-        IEventMediator eventMediator,
         ICommandMediator commandMediator,
         IQueryMediator queryMediator,
         IModeratorService moderator,
         IBlogConfig blogConfig,
-        ILogger<CommentController> logger) : ControllerBase
+        CannonService cannonService) : BlogControllerBase(commandMediator)
 {
     [HttpPost("{postId:guid}")]
     [AllowAnonymous]
     [ServiceFilter(typeof(ValidateCaptcha))]
-    [ProducesResponseType(StatusCodes.Status200OK)]
-    [ProducesResponseType(StatusCodes.Status400BadRequest)]
-    [ProducesResponseType(StatusCodes.Status403Forbidden)]
-    [ProducesResponseType<ModelStateDictionary>(StatusCodes.Status409Conflict)]
     public async Task<IActionResult> Create([NotEmpty] Guid postId, CommentRequest request)
     {
-        // Early validation checks
-        var validationResult = ValidateCommentRequest(request);
-        if (validationResult != null) return validationResult;
-
         if (!blogConfig.CommentSettings.EnableComments)
         {
             return Forbid();
         }
+
+        // Early validation checks
+        var validationResult = ValidateCommentRequest(request);
+        if (validationResult != null) return validationResult;
 
         // Apply word filtering
         var filterResult = await ApplyWordFilteringAsync(request);
         if (filterResult != null) return filterResult;
 
         var ip = ClientIPHelper.GetClientIP(HttpContext);
-        var item = await commandMediator.SendAsync(new CreateCommentCommand(postId, request, ip));
+        var item = await CommandMediator.SendAsync(new CreateCommentCommand(postId, request, ip));
 
         if (item == null)
         {
@@ -52,14 +44,23 @@ public class CommentController(
             return ValidationProblem(ModelState);
         }
 
-        try
+        await LogActivityAsync(
+            EventType.CommentCreated,
+            "Create Comment",
+            item.PostTitle,
+            new { CommentId = item.Id, item.Username, PostId = postId },
+            username: item.Username);
+
+        // Send email notification (fire-and-forget)
+        if (blogConfig.NotificationSettings.SendEmailOnNewComment)
         {
-            await SendNewCommentNotificationAsync(item);
-        }
-        catch (Exception ex)
-        {
-            // Log the error but don't block the response
-            logger.LogError(ex, "Failed to send new comment notification for post {PostId}", postId);
+            cannonService.FireAsync<IEventMediator>(async mediator =>
+                await mediator.PublishAsync(new CommentEvent(
+                    item.Username,
+                    item.Email,
+                    item.IpAddress,
+                    item.PostTitle,
+                    item.CommentContent)));
         }
 
         return Ok(new
@@ -69,13 +70,18 @@ public class CommentController(
     }
 
     [HttpPut("{commentId:guid}/approval/toggle")]
-    [ProducesResponseType<Guid>(StatusCodes.Status200OK)]
-    [ProducesResponseType(StatusCodes.Status404NotFound)]
     public async Task<IActionResult> Approval([NotEmpty] Guid commentId)
     {
         try
         {
-            await commandMediator.SendAsync(new ToggleApprovalCommand([commentId]));
+            await CommandMediator.SendAsync(new ToggleApprovalCommand([commentId]));
+
+            await LogActivityAsync(
+                EventType.CommentApprovalToggled,
+                "Toggle Comment Approval",
+                $"Comment #{commentId}",
+                new { CommentId = commentId });
+
             return Ok(commentId);
         }
         catch (ArgumentException)
@@ -85,14 +91,18 @@ public class CommentController(
     }
 
     [HttpDelete]
-    [ProducesResponseType<Guid[]>(StatusCodes.Status200OK)]
-    [ProducesResponseType<string>(StatusCodes.Status400BadRequest)]
-    [ProducesResponseType(StatusCodes.Status404NotFound)]
     public async Task<IActionResult> Delete([FromBody][MinLength(1)] Guid[] commentIds)
     {
         try
         {
-            await commandMediator.SendAsync(new DeleteCommentsCommand(commentIds));
+            await CommandMediator.SendAsync(new DeleteCommentsCommand(commentIds));
+
+            await LogActivityAsync(
+                EventType.CommentDeleted,
+                "Delete Comments",
+                $"{commentIds.Length} comment(s)",
+                new { CommentIds = commentIds });
+
             return Ok(commentIds);
         }
         catch (ArgumentException ex)
@@ -102,7 +112,6 @@ public class CommentController(
     }
 
     [HttpGet("list")]
-    [ProducesResponseType(StatusCodes.Status200OK)]
     public async Task<IActionResult> List([FromQuery] int pageIndex = 1, [FromQuery] int pageSize = 5, [FromQuery] string searchTerm = null)
     {
         var comments = await queryMediator.QueryAsync(new ListCommentsQuery(pageSize, pageIndex, searchTerm));
@@ -137,10 +146,6 @@ public class CommentController(
     }
 
     [HttpPost("{commentId:guid}/reply")]
-    [ProducesResponseType<CommentReply>(StatusCodes.Status200OK)]
-    [ProducesResponseType(StatusCodes.Status400BadRequest)]
-    [ProducesResponseType(StatusCodes.Status403Forbidden)]
-    [ProducesResponseType(StatusCodes.Status404NotFound)]
     public async Task<IActionResult> Reply(
         [NotEmpty] Guid commentId,
         [Required][FromBody] string replyContent)
@@ -155,10 +160,26 @@ public class CommentController(
 
         try
         {
-            var reply = await commandMediator.SendAsync(new ReplyCommentCommand(commentId, replyContent));
+            var reply = await CommandMediator.SendAsync(new ReplyCommentCommand(commentId, replyContent));
+
+            await LogActivityAsync(
+                EventType.CommentReplied,
+                "Reply to Comment",
+                reply.Title,
+                new { CommentId = commentId, ReplyContent = replyContent });
 
             // Send email notification (fire-and-forget)
-            _ = Task.Run(async () => await SendReplyNotificationAsync(reply));
+            if (blogConfig.NotificationSettings.SendEmailOnCommentReply && !string.IsNullOrWhiteSpace(reply.Email))
+            {
+                var postLink = GetPostUrl(reply.RouteLink);
+                cannonService.FireAsync<IEventMediator>(async mediator =>
+                    await mediator.PublishAsync(new CommentReplyEvent(
+                        reply.Email,
+                        reply.CommentContent,
+                        reply.Title,
+                        reply.ReplyContentHtml,
+                        postLink)));
+            }
 
             return Ok(reply);
         }
@@ -205,52 +226,6 @@ public class CommentController(
         }
 
         return null;
-    }
-
-    private async Task SendNewCommentNotificationAsync(CommentDetailedItem item)
-    {
-        if (!blogConfig.NotificationSettings.SendEmailOnNewComment)
-        {
-            return;
-        }
-
-        try
-        {
-            await eventMediator.PublishAsync(new CommentEvent(
-                item.Username,
-                item.Email,
-                item.IpAddress,
-                item.PostTitle,
-                item.CommentContent));
-        }
-        catch (Exception e)
-        {
-            logger.LogError(e, "Failed to send new comment notification for comment {CommentId}", item.Id);
-        }
-    }
-
-    private async Task SendReplyNotificationAsync(CommentReply reply)
-    {
-        if (!blogConfig.NotificationSettings.SendEmailOnCommentReply || string.IsNullOrWhiteSpace(reply.Email))
-        {
-            return;
-        }
-
-        var postLink = GetPostUrl(reply.RouteLink);
-
-        try
-        {
-            await eventMediator.PublishAsync(new CommentReplyEvent(
-                reply.Email,
-                reply.CommentContent,
-                reply.Title,
-                reply.ReplyContentHtml,
-                postLink));
-        }
-        catch (Exception e)
-        {
-            logger.LogError(e, "Failed to send reply notification for reply to comment {CommentId}", reply.Email);
-        }
     }
 
     private string GetPostUrl(string routeLink)

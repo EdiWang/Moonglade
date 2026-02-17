@@ -23,18 +23,19 @@ public class BlogDbContext : DbContext
     public virtual DbSet<PostViewEntity> PostView { get; set; }
     public virtual DbSet<TagEntity> Tag { get; set; }
     public virtual DbSet<PageEntity> CustomPage { get; set; }
-    public virtual DbSet<LoginHistoryEntity> LoginHistory { get; set; }
     public virtual DbSet<MentionEntity> Mention { get; set; }
     public virtual DbSet<BlogThemeEntity> BlogTheme { get; set; }
     public virtual DbSet<StyleSheetEntity> StyleSheet { get; set; }
     public virtual DbSet<BlogAssetEntity> BlogAsset { get; set; }
     public virtual DbSet<BlogConfigurationEntity> BlogConfiguration { get; set; }
     public virtual DbSet<WidgetEntity> Widget { get; set; }
+    public virtual DbSet<ActivityLogEntity> ActivityLog { get; set; }
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
         // base.OnModelCreating(modelBuilder);
         modelBuilder.ApplyConfiguration(new CategoryConfiguration());
+        modelBuilder.ApplyConfiguration(new ActivityLogConfiguration());
 
         modelBuilder
             .Entity<PostEntity>()
@@ -69,8 +70,8 @@ public static class BlogDbContextExtension
         await context.BlogAsset.ExecuteDeleteAsync();
         await context.BlogTheme.ExecuteDeleteAsync();
         await context.StyleSheet.ExecuteDeleteAsync();
-        await context.LoginHistory.ExecuteDeleteAsync();
         await context.CustomPage.ExecuteDeleteAsync();
         await context.Widget.ExecuteDeleteAsync();
+        await context.ActivityLog.ExecuteDeleteAsync();
     }
 }
