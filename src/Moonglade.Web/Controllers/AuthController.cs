@@ -8,8 +8,7 @@ namespace Moonglade.Web.Controllers;
 
 [Route("auth")]
 public class AuthController(
-    IOptions<AuthenticationSettings> authSettings,
-    IQueryMediator queryMediator
+    IOptions<AuthenticationSettings> authSettings
     ) : ControllerBase
 {
     private readonly AuthenticationSettings _authenticationSettings = authSettings.Value;
