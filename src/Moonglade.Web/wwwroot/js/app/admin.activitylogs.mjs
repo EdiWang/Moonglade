@@ -66,7 +66,9 @@ Alpine.data('activityLogManager', () => ({
             this.logs = data.logs ?? [];
             this.totalRows = data.totalCount ?? 0;
 
-            formatUtcTime();
+            this.$nextTick(() => {
+                formatUtcTime();
+            });
         } catch (err) {
             error(err);
         } finally {
