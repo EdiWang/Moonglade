@@ -55,7 +55,7 @@ public class CannonServiceTests
         await service.StartAsync(cts.Token);
 
         // Give it some time to process
-        await Task.Delay(100);
+        await Task.Delay(100, TestContext.Current.CancellationToken);
 
         // Stop the service
         cts.Cancel();
@@ -85,7 +85,7 @@ public class CannonServiceTests
 
         using var cts = new CancellationTokenSource();
         await service.StartAsync(cts.Token);
-        await Task.Delay(100);
+        await Task.Delay(100, TestContext.Current.CancellationToken);
         cts.Cancel();
         await service.StopAsync(CancellationToken.None);
 
@@ -122,7 +122,7 @@ public class CannonServiceTests
 
         using var cts = new CancellationTokenSource();
         await service.StartAsync(cts.Token);
-        await Task.Delay(100);
+        await Task.Delay(100, TestContext.Current.CancellationToken);
         cts.Cancel();
         await service.StopAsync(CancellationToken.None);
 
@@ -166,7 +166,7 @@ public class CannonServiceTests
 
         using var cts = new CancellationTokenSource();
         await service.StartAsync(cts.Token);
-        await Task.Delay(200);
+        await Task.Delay(200, TestContext.Current.CancellationToken);
         cts.Cancel();
         await service.StopAsync(CancellationToken.None);
 
@@ -197,7 +197,7 @@ public class CannonServiceTests
 
         using var cts = new CancellationTokenSource();
         await service.StartAsync(cts.Token);
-        await Task.Delay(50);
+        await Task.Delay(50, TestContext.Current.CancellationToken);
 
         // Stop should drain remaining items
         await service.StopAsync(CancellationToken.None);
@@ -223,7 +223,7 @@ public class CannonServiceTests
         // Act
         using var cts = new CancellationTokenSource();
         await service.StartAsync(cts.Token);
-        await Task.Delay(50);
+        await Task.Delay(50, TestContext.Current.CancellationToken);
         cts.Cancel();
         await service.StopAsync(CancellationToken.None);
 
@@ -257,7 +257,7 @@ public class CannonServiceTests
 
         using var cts = new CancellationTokenSource();
         await service.StartAsync(cts.Token);
-        await Task.Delay(100);
+        await Task.Delay(100, TestContext.Current.CancellationToken);
         cts.Cancel();
         await service.StopAsync(CancellationToken.None);
 
