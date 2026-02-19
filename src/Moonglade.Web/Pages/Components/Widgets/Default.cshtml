@@ -31,6 +31,35 @@
                     }
                 </div>
             }
+            else if (widget.WidgetType == WidgetType.ImageLink)
+            {
+                var imgData = widget.ContentCode != null
+                    ? JsonSerializer.Deserialize<ImageLinkData>(widget.ContentCode, MoongladeJsonSerializerOptions.Default)
+                    : null;
+
+                if (imgData != null)
+                {
+                    var sterilizedImageUrl = Edi.AspNetCore.Utils.SecurityHelper.SterilizeLink(imgData.ImageUrl);
+
+                    if (!string.IsNullOrWhiteSpace(imgData.LinkUrl))
+                    {
+                        var sterilizedLinkUrl = Edi.AspNetCore.Utils.SecurityHelper.SterilizeLink(imgData.LinkUrl);
+                        <a href="@sterilizedLinkUrl" target="@(imgData.OpenInNewTab ? "_blank" : null)" rel="@(imgData.OpenInNewTab ? "noopener noreferrer" : null)">
+                            <img src="@sterilizedImageUrl"
+                                 class="@imgData.CssClass"
+                                 title="@imgData.Title"
+                                 alt="@imgData.AltText" />
+                        </a>
+                    }
+                    else
+                    {
+                        <img src="@sterilizedImageUrl"
+                             class="@imgData.CssClass"
+                             title="@imgData.Title"
+                             alt="@imgData.AltText" />
+                    }
+                }
+            }
         </div>
     }
 }

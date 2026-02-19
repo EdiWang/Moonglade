@@ -15,7 +15,8 @@
      data-widget-created="@SharedLocalizer["Widget created"]"
      data-widget-updated="@SharedLocalizer["Widget updated"]"
      data-remove-link="@SharedLocalizer["Are you sure you want to remove this link?"]"
-     data-name-url-required="@SharedLocalizer["Name and URL are required"]">
+     data-name-url-required="@SharedLocalizer["Name and URL are required"]"
+     data-image-url-required="@SharedLocalizer["Image URL is required"]">
 </div>
 
 @section admintoolbar {
@@ -84,6 +85,7 @@
                     <label for="widget-type" class="form-label">@SharedLocalizer["Widget Type"]</label>
                     <select x-model="formData.widgetType" x-on:change="onWidgetTypeChange()" id="widget-type" class="form-select" required>
                         <option value="LinkList">Link List</option>
+                        <option value="ImageLink">Image Link</option>
                     </select>
                 </div>
                 <div class="mb-3">
@@ -144,6 +146,40 @@
                                 </div>
                             </div>
                         </template>
+                    </div>
+                </div>
+
+                <!-- ImageLink Content Editor -->
+                <div x-show="formData.widgetType === 'ImageLink'" id="imagelink-editor" class="mb-3">
+                    <hr />
+                    <label class="form-label mb-2">Image Link Settings</label>
+                    <div class="mb-3">
+                        <label for="imagelink-image-url" class="form-label">@SharedLocalizer["Image URL"] *</label>
+                        <input x-model="formData.imageLink.imageUrl" type="url" id="imagelink-image-url" class="form-control"
+                               placeholder="https://example.com/image.png" />
+                    </div>
+                    <div class="mb-3">
+                        <label for="imagelink-css-class" class="form-label">@SharedLocalizer["CSS Class"]</label>
+                        <input x-model="formData.imageLink.cssClass" type="text" id="imagelink-css-class" class="form-control"
+                               placeholder="img-fluid rounded" />
+                    </div>
+                    <div class="mb-3">
+                        <label for="imagelink-title" class="form-label">@SharedLocalizer["Image Title"]</label>
+                        <input x-model="formData.imageLink.title" type="text" id="imagelink-title" class="form-control" />
+                    </div>
+                    <div class="mb-3">
+                        <label for="imagelink-alt" class="form-label">@SharedLocalizer["Alt Text"]</label>
+                        <input x-model="formData.imageLink.altText" type="text" id="imagelink-alt" class="form-control" />
+                    </div>
+                    <div class="mb-3">
+                        <label for="imagelink-link-url" class="form-label">@SharedLocalizer["Link URL"]</label>
+                        <input x-model="formData.imageLink.linkUrl" type="url" id="imagelink-link-url" class="form-control"
+                               placeholder="https://example.com" />
+                        <small class="form-text text-muted">@SharedLocalizer["Leave empty if the image should not be a hyperlink"]</small>
+                    </div>
+                    <div class="mb-3 form-check">
+                        <input x-model="formData.imageLink.openInNewTab" type="checkbox" id="imagelink-new-tab" class="form-check-input" />
+                        <label for="imagelink-new-tab" class="form-check-label">@SharedLocalizer["Open in new tab"]</label>
                     </div>
                 </div>
             </div>
