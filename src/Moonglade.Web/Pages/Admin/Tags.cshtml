@@ -84,7 +84,7 @@
         <section aria-labelledby="inactive-tags-heading" class="mt-4">
             <h4 id="inactive-tags-heading">@SharedLocalizer["Tags without posts"]</h4>
             <hr />
-            <div x-show="!hasInactiveTags" class="alert alert-success" role="alert">
+            <div x-show="!hasInactiveTags" class="text-center text-muted" role="alert">
                 @SharedLocalizer["No unused tags - all tags are being used!"]
             </div>
             <ul x-show="hasInactiveTags" class="list-unstyled ul-tag-mgr" role="list">
