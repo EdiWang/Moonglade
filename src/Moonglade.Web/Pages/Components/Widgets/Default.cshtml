@@ -7,7 +7,7 @@
 
 @if (Model.Any())
 {
-    @foreach (var widget in Model.OrderBy(p => p.DisplayOrder))
+    @foreach (var widget in Model)
     {
         if (widget.WidgetType == WidgetType.ImageLink)
         {

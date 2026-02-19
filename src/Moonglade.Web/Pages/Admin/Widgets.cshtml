@@ -90,7 +90,8 @@
                 </div>
                 <div class="mb-3">
                     <label for="widget-display-order" class="form-label">@SharedLocalizer["Display Order"]</label>
-                    <input x-model.number="formData.displayOrder" type="number" id="widget-display-order" class="form-control" required />
+                    <input x-model.number="formData.displayOrder" type="number" id="widget-display-order" class="form-control" min="-3" max="999" required />
+                    <small class="form-text text-muted">@SharedLocalizer["-3: before Profile, -2: before Tags, -1: before Categories, 0+: after Categories"]</small>
                 </div>
                 <div class="mb-3 form-check">
                     <input x-model="formData.isEnabled" type="checkbox" id="widget-enabled" class="form-check-input" />

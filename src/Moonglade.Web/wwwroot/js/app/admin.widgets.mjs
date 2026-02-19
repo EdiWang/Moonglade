@@ -197,6 +197,11 @@ formData: {
         const apiAddress = isCreate ? '/api/widgets' : `/api/widgets/${this.currentWidgetId}`;
         const verb = isCreate ? 'POST' : 'PUT';
 
+        if (this.formData.displayOrder < -3 || this.formData.displayOrder > 999) {
+            alert('Display Order must be between -3 and 999.');
+            return;
+        }
+
         let contentCode = '';
         if (this.formData.widgetType === 'LinkList') {
             contentCode = JSON.stringify(this.formData.links);

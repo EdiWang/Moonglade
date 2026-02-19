@@ -8,7 +8,7 @@ public class WidgetsViewComponent(
     ICacheAside cache,
     IConfiguration configuration) : ViewComponent
 {
-    public async Task<IViewComponentResult> InvokeAsync()
+    public async Task<IViewComponentResult> InvokeAsync(int minOrder = int.MinValue, int maxOrder = int.MaxValue)
     {
         var widgets = await cache.GetOrCreateAsync(BlogCachePartition.General.ToString(), "widgets", async p =>
         {
@@ -19,6 +19,11 @@ public class WidgetsViewComponent(
             return data;
         });
 
-        return View(widgets);
+        var filtered = widgets
+            .Where(w => w.IsEnabled && w.DisplayOrder >= minOrder && w.DisplayOrder <= maxOrder)
+            .OrderBy(w => w.DisplayOrder)
+            .ToList();
+
+        return View(filtered);
     }
 }
