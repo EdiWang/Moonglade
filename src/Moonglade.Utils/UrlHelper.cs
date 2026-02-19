@@ -5,12 +5,11 @@ using System.Text.RegularExpressions;
 
 namespace Moonglade.Utils;
 
-public static class UrlHelper
+public static partial class UrlHelper
 {
     public static string GetRouteLinkFromUrl(string url)
     {
-        var blogSlugRegex = new Regex(@"^https?:\/\/.*\/post\/(?<yyyy>\d{4})\/(?<MM>\d{1,12})\/(?<dd>\d{1,31})\/(?<slug>.*)$");
-        Match match = blogSlugRegex.Match(url);
+        Match match = BlogSlugRegex().Match(url);
         if (!match.Success)
         {
             throw new FormatException("Invalid Slug Format");
@@ -35,8 +34,11 @@ public static class UrlHelper
         return $"{yyyy}/{mm}/{dd}/{slug}".ToLower();
     }
 
-    private static readonly Regex UrlsRegex = new(
-        @"<a.*?href=[""'](?<url>.*?)[""'].*?>(?<name>.*?)</a>", RegexOptions.IgnoreCase | RegexOptions.Compiled);
+    [GeneratedRegex(@"^https?:\/\/.*\/post\/(?<yyyy>\d{4})\/(?<MM>\d{1,12})\/(?<dd>\d{1,31})\/(?<slug>.*)$")]
+    private static partial Regex BlogSlugRegex();
+
+    [GeneratedRegex(@"<a.*?href=[""'](?<url>.*?)[""'].*?>(?<name>.*?)</a>", RegexOptions.IgnoreCase)]
+    private static partial Regex UrlsRegex();
 
     public static IEnumerable<Uri> GetUrlsFromContent(string content)
     {
@@ -47,7 +49,7 @@ public static class UrlHelper
 
         var urlsList = new List<Uri>();
         foreach (var url in
-                 UrlsRegex.Matches(content).Select(myMatch => myMatch.Groups["url"].ToString().Trim()))
+                 UrlsRegex().Matches(content).Select(myMatch => myMatch.Groups["url"].ToString().Trim()))
         {
             if (Uri.TryCreate(url, UriKind.Absolute, out var uri))
             {
