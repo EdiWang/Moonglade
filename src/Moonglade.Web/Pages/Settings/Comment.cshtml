@@ -52,16 +52,16 @@
                             @Html.RadioButtonFor(model => settings.CommentProvider, CommentProvider.BuiltIn, new
                             {
                                 id = CommentProvider.BuiltIn.ToString(),
-                                @class = "form-check-input comment-provider-checkbox"
-                            })
+                                                        @class = "form-check-input comment-provider-checkbox"
+                                                        })
                             <label class="form-check-label" for="@CommentProvider.BuiltIn">@SharedLocalizer["Built in"]</label>
                         </div>
                         <div class="form-check form-check-inline">
                             @Html.RadioButtonFor(model => settings.CommentProvider, CommentProvider.ThirdParty, new
-                            {
+                                                        {
                                 id = CommentProvider.ThirdParty.ToString(),
-                                @class = "form-check-input comment-provider-checkbox"
-                            })
+                                                        @class = "form-check-input comment-provider-checkbox"
+                                                        })
                             <label class="form-check-label" for="@CommentProvider.ThirdParty">@SharedLocalizer["Third party"]</label>
                         </div>
                     </div>
@@ -118,21 +118,6 @@
 
                     <div class="settings-entry row align-items-center py-3 px-2 rounded-3 border mb-1">
                         <div class="col-auto">
-                            <i class="bi-person-check settings-entry-icon"></i>
-                        </div>
-                        <div class="col">
-                            <label asp-for="@settings.RequireCommentReview" class="form-check-label"></label>
-                        </div>
-                        <div class="col-md-5 text-end">
-                            <div class="form-check form-switch form-control-lg">
-                                <input type="hidden" name="RequireCommentReview" value="false">
-                                <input type="checkbox" name="RequireCommentReview" value="true" class="form-check-input" @(settings.RequireCommentReview ? "checked" : null)>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="settings-entry row align-items-center py-3 px-2 rounded-3 border mb-1">
-                        <div class="col-auto">
                             <i class="bi-person-square settings-entry-icon"></i>
                         </div>
                         <div class="col">
@@ -161,6 +146,21 @@
             </div>
             <div class="col-md-6">
                 <h4 class="admin-subtitle fw-bold mb-2">@SharedLocalizer["Moderation"]</h4>
+
+                <div class="settings-entry row align-items-center py-3 px-2 rounded-3 border mb-1">
+                    <div class="col-auto">
+                        <i class="bi-person-check settings-entry-icon"></i>
+                    </div>
+                    <div class="col">
+                        <label asp-for="@settings.RequireCommentReview" class="form-check-label"></label>
+                    </div>
+                    <div class="col-md-5 text-end">
+                        <div class="form-check form-switch form-control-lg">
+                            <input type="hidden" name="RequireCommentReview" value="false">
+                            <input type="checkbox" name="RequireCommentReview" value="true" class="form-check-input" @(settings.RequireCommentReview ? "checked" : null)>
+                        </div>
+                    </div>
+                </div>
 
                 <div class="settings-entry row align-items-center py-3 px-2 rounded-3 border mb-1">
                     <div class="col-auto">
