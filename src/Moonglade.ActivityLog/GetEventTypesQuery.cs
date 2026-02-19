@@ -17,7 +17,7 @@ public class EventTypeItem
     public string Name { get; set; }
 }
 
-public class GetEventTypesQueryHandler : IQueryHandler<GetEventTypesQuery, List<EventTypeGroup>>
+public partial class GetEventTypesQueryHandler : IQueryHandler<GetEventTypesQuery, List<EventTypeGroup>>
 {
     public Task<List<EventTypeGroup>> HandleAsync(GetEventTypesQuery request, CancellationToken ct)
     {
@@ -47,8 +47,11 @@ public class GetEventTypesQueryHandler : IQueryHandler<GetEventTypesQuery, List<
 
     private static string SplitCamelCase(string input)
     {
-        return Regex.Replace(input, "([a-z])([A-Z])", "$1 $2");
+        return CamelCaseRegex().Replace(input, "$1 $2");
     }
+
+    [GeneratedRegex("([a-z])([A-Z])")]
+    private static partial Regex CamelCaseRegex();
 
     private static string GetCategory(EventType eventType)
     {

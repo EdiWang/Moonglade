@@ -3,7 +3,7 @@ using System.Text.RegularExpressions;
 
 namespace Moonglade.Utils;
 
-public static class BlogTagHelper
+public static partial class BlogTagHelper
 {
     public static Dictionary<string, string> TagNormalizationDictionary => new()
     {
@@ -15,7 +15,7 @@ public static class BlogTagHelper
 
     public static string NormalizeName(string orgTagName, IDictionary<string, string> normalizations)
     {
-        var isEnglishName = Regex.IsMatch(orgTagName, @"^[a-zA-Z 0-9\.\-\+\#\s]*$");
+        var isEnglishName = EnglishTagNameRegex().IsMatch(orgTagName);
         if (isEnglishName)
         {
             // special case
@@ -43,18 +43,14 @@ public static class BlogTagHelper
     {
         if (string.IsNullOrWhiteSpace(tagDisplayName)) return false;
 
-        // Regex performance best practice
-        // See https://docs.microsoft.com/en-us/dotnet/standard/base-types/best-practices
+        if (EnglishTagNameRegex().IsMatch(tagDisplayName)) return true;
 
-        const string pattern = @"^[a-zA-Z 0-9\.\-\+\#\s]*$";
-        var isEng = Regex.IsMatch(tagDisplayName, pattern);
-        if (isEng) return true;
-
-        // https://docs.microsoft.com/en-us/dotnet/standard/base-types/character-classes-in-regular-expressions#supported-named-blocks
-        const string chsPattern = @"^[\p{IsCJKUnifiedIdeographs}]*$";
-        var isChs = Regex.IsMatch(tagDisplayName, chsPattern);
-
-        return isChs;
+        return CjkTagNameRegex().IsMatch(tagDisplayName);
     }
 
+    [GeneratedRegex(@"^[a-zA-Z 0-9\.\-\+\#\s]*$")]
+    private static partial Regex EnglishTagNameRegex();
+
+    [GeneratedRegex(@"^[\p{IsCJKUnifiedIdeographs}]*$")]
+    private static partial Regex CjkTagNameRegex();
 }

@@ -4,7 +4,7 @@ using System.Text.RegularExpressions;
 
 namespace Moonglade.Utils;
 
-public static class Helper
+public static partial class Helper
 {
     // Get `sec-ch-prefers-color-scheme` header value
     // This is to enhance user experience by stopping the screen from blinking when switching pages
@@ -38,7 +38,7 @@ public static class Helper
 
         if (string.IsNullOrWhiteSpace(input) ||
             input.Length % 4 != 0 ||
-            !Regex.IsMatch(input, @"^[a-zA-Z0-9\+/]*={0,3}$", RegexOptions.None))
+            !Base64Regex().IsMatch(input))
         {
             return false;
         }
@@ -85,4 +85,7 @@ public static class Helper
 
     public static string GetMagic(int value, int start, int end) =>
         Convert.ToBase64String(SHA256.HashData(BitConverter.GetBytes(value)))[start..end];
+
+    [GeneratedRegex(@"^[a-zA-Z0-9\+/]*={0,3}$")]
+    private static partial Regex Base64Regex();
 }

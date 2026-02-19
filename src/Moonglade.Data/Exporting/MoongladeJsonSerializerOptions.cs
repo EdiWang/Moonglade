@@ -6,7 +6,7 @@ namespace Moonglade.Data.Exporting;
 
 public static class MoongladeJsonSerializerOptions
 {
-    public static JsonSerializerOptions Default => new()
+    public static JsonSerializerOptions Default { get; } = new()
     {
         Encoder = JavaScriptEncoder.Create(UnicodeRanges.All),
         PropertyNameCaseInsensitive = true,
