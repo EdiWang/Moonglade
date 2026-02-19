@@ -8,6 +8,11 @@
         <partial name="_WidgetsProfile" />
     }
 
+    @if (!string.IsNullOrWhiteSpace(BlogConfig.GeneralSettings.SideBarCustomizedHtmlPitch))
+    {
+        @Html.Raw(BlogConfig.GeneralSettings.SideBarCustomizedHtmlPitch)
+    }
+
     @await Component.InvokeAsync("Widgets", new { minOrder = -2, maxOrder = -2 })
 
     @if (BlogConfig.GeneralSettings.HotTagAmount > 0)
