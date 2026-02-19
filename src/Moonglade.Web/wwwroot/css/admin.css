@@ -218,6 +218,11 @@ div.mce-fullscreen {
     width: 208px;
 }
 
+.tag-manager-container {
+    height: calc(100vh - 215px);
+    overflow-y: scroll;
+}
+
 .ul-tag-mgr {
     line-height: 28px;
     text-align: justify;
@@ -262,6 +267,32 @@ div.mce-fullscreen {
         text-align: center;
         color: var(--bs-secondary);
     }
+
+.tag-letter-group {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: flex-start;
+    gap: 12px;
+}
+
+.tag-letter-tile {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 48px;
+    height: 48px;
+    border: 2px solid var(--accent-color1);
+    color: var(--accent-color1);
+    font-size: 1.5rem;
+    font-weight: 700;
+    border-radius: 6px;
+    flex-shrink: 0;
+}
+
+.tag-letter-group .ul-tag-mgr {
+    flex: 1;
+    min-width: 0;
+}
 
 .table .table-item-w10 {
     width: 10%;
@@ -462,6 +493,10 @@ div.mce-fullscreen {
 
 [data-bs-theme="dark"] .admin-tag-item {
     background-color: var(--bs-body-bg);
+}
+
+[data-bs-theme="dark"] .tag-letter-tile {
+    background-color: var(--accent-color1);
 }
 
 [data-bs-theme="dark"] .ul-tag-mgr li a {
