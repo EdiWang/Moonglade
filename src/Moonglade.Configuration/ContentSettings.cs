@@ -33,9 +33,6 @@ public class ContentSettings : IBlogSettings
     [Display(Name = "Enable view count")]
     public bool EnableViewCount { get; set; } = true;
 
-    [Display(Name = "Word count in abstract")]
-    public int PostAbstractWords { get; set; } = 400;
-
     [Required]
     [Display(Name = "Maximum page numbers to display in pagination")]
     [Range(2, 10)]

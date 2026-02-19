@@ -95,70 +95,6 @@ public class ContentProcessorTests
 
     #endregion
 
-    #region GetPostAbstract Tests
-
-    [Theory]
-    [InlineData("", 10, false, "")]
-    //[InlineData("Simple text content", 5, false, "Simple text content\u00A0\u2026")]
-    //[InlineData("Simple text content", 20, false, "Simple text content")]
-    public void GetPostAbstract_WithPlainText_ReturnsExpectedResult(string content, int wordCount, bool useMarkdown, string expected)
-    {
-        // Act
-        var result = ContentProcessor.GetPostAbstract(content, wordCount, useMarkdown);
-
-        // Assert
-        Assert.Equal(expected, result);
-    }
-
-    //[Fact]
-    //public void GetPostAbstract_WithHtmlContent_RemovesTags()
-    //{
-    //    // Arrange
-    //    const string content = "<p>This is <strong>bold</strong> text</p>";
-    //    const int wordCount = 10;
-
-    //    // Act
-    //    var result = ContentProcessor.GetPostAbstract(content, wordCount, false);
-
-    //    // Assert
-    //    Assert.Equal("This is bold text", result);
-    //}
-
-    //[Fact]
-    //public void GetPostAbstract_WithMarkdownContent_ConvertsToPlainText()
-    //{
-    //    // Arrange
-    //    const string content = "# Heading\n\nThis is **bold** text with a [link](http://example.com).";
-    //    const int wordCount = 20;
-
-    //    // Act
-    //    var result = ContentProcessor.GetPostAbstract(content, wordCount, true);
-
-    //    // Assert
-    //    Assert.Contains("Heading", result);
-    //    Assert.Contains("This is bold text", result);
-    //    Assert.DoesNotContain("#", result);
-    //    Assert.DoesNotContain("**", result);
-    //    Assert.DoesNotContain("[", result);
-    //    Assert.DoesNotContain("](", result);
-    //}
-
-    //[Fact]
-    //public void GetPostAbstract_WithHtmlEncodedContent_DecodesHtml()
-    //{
-    //    // Arrange
-    //    const string content = "This &amp; that &lt;tag&gt;";
-    //    const int wordCount = 10;
-
-    //    // Act
-    //    var result = ContentProcessor.GetPostAbstract(content, wordCount, false);
-
-    //    // Assert
-    //    Assert.Equal("This & that <tag>", result);
-    //}
-
-    #endregion
-
     #region HtmlDecode Tests
 
     [Theory]
@@ -273,67 +209,6 @@ public class ContentProcessorTests
 
         // Assert
         Assert.Equal("Text with non-breaking spaces", result);
-    }
-
-    #endregion
-
-    #region Ellipsize Tests
-
-    [Theory]
-    [InlineData("", 10, "")]
-    [InlineData("   ", 10, "")]
-    [InlineData("Short", 10, "Short\u00A0\u2026")]
-    [InlineData("This is a longer text", 10, "This is a \u00A0\u2026")]
-    public void Ellipsize_WithVariousInputs_ReturnsExpectedResult(string text, int characterCount, string expected)
-    {
-        // Act
-        var result = text.Ellipsize(characterCount);
-
-        // Assert
-        Assert.Equal(expected, result);
-    }
-
-    [Fact]
-    public void Ellipsize_WithNegativeCharacterCount_ReturnsTextWithEllipsis()
-    {
-        // Arrange
-        const string text = "Some text";
-        const int characterCount = -5;
-
-        // Act
-        var result = text.Ellipsize(characterCount);
-
-        // Assert
-        Assert.Equal("Some text\u00A0\u2026", result);
-    }
-
-    [Fact]
-    public void Ellipsize_WithTextShorterThanLimit_ReturnsOriginalTextWithEllipsis()
-    {
-        // Arrange
-        const string text = "Short";
-        const int characterCount = 10;
-
-        // Act
-        var result = text.Ellipsize(characterCount);
-
-        // Assert
-        Assert.Equal("Short\u00A0\u2026", result);
-    }
-
-    [Fact]
-    public void Ellipsize_WithWordBoundary_BreaksAtWordBoundary()
-    {
-        // Arrange
-        const string text = "This is a test sentence";
-        const int characterCount = 10;
-
-        // Act
-        var result = text.Ellipsize(characterCount);
-
-        // Assert
-        Assert.Equal("This is a \u00A0\u2026", result);
-        Assert.DoesNotContain("te", result); // Should not cut in middle of "test"
     }
 
     #endregion

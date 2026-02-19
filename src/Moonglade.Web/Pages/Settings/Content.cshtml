@@ -33,19 +33,6 @@
                     </div>
                 </div>
 
-                <div class="settings-entry row align-items-center py-3 px-2 rounded-3 border mb-1">
-                    <div class="col-auto">
-                        <i class="settings-entry-icon bi-file-word"></i>
-                    </div>
-                    <div class="col">
-                        <label asp-for="@settings.PostAbstractWords"></label>
-                        <div class="form-text">@SharedLocalizer["How many words to use for generating abstract when it's absent, change this value will only affect new posts"]</div>
-                    </div>
-                    <div class="col-4">
-                        <input asp-for="@settings.PostAbstractWords" class="form-control" max="65536" required />
-                    </div>
-                </div>
-
                 <div class="settings-entry row align-items-center py-3 px-2 rounded-3 border mb-4">
                     <div class="col-auto">
                         <i class="settings-entry-icon bi-hash"></i>
