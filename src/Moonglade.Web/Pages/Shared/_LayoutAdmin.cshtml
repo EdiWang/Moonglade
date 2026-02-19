@@ -59,11 +59,6 @@
             <ul class="navbar-nav @(string.IsNullOrEmpty(adminBackUrl) ? "ms-auto" : "")">
                 @await RenderSectionAsync("navbarActions", false)
                 <li class="nav-item">
-                    <a class="nav-link" asp-page="/Settings/General" title="settings link">
-                        <i class="bi-gear"></i>
-                    </a>
-                </li>
-                <li class="nav-item">
                     <a class="nav-link" asp-page="/Admin/About" title="about link">
                         <i class="bi-info-circle"></i>
                     </a>
