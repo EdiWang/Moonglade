@@ -47,6 +47,7 @@ public class PostEditModel
     [RegularExpression("^[a-z]{2}-[a-zA-Z]{2,4}$")]
     public string LanguageCode { get; set; }
 
+    [Required]
     [DataType(DataType.MultilineText)]
     [MaxLength(1024)]
     public string Abstract { get; set; }

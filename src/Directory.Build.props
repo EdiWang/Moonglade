@@ -6,8 +6,8 @@
     <Authors>Edi Wang</Authors>
     <Company>edi.wang</Company>
     <Copyright>(C) 2026 edi.wang@outlook.com</Copyright>
-    <AssemblyVersion>15.6.1</AssemblyVersion>
-    <FileVersion>15.6.1</FileVersion>
-    <Version>15.6.1</Version>
+    <AssemblyVersion>15.7.0</AssemblyVersion>
+    <FileVersion>15.7.0</FileVersion>
+    <Version>15.7.0-preview.1</Version>
   </PropertyGroup>
 </Project>

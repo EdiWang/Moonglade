@@ -4,7 +4,6 @@ public record PostEditorMeta
 {
     public string EditorChoice { get; set; }
     public string DefaultAuthor { get; set; }
-    public int AbstractWords { get; set; }
     public List<CategoryBrief> Categories { get; set; }
     public List<LanguageInfo> Languages { get; set; }
 }

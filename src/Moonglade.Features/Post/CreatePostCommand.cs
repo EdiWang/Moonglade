@@ -1,7 +1,5 @@
 using LiteBus.Commands.Abstractions;
-using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
-using Moonglade.Configuration;
 using Moonglade.Data.DTO;
 using Moonglade.Data.Specifications;
 using Moonglade.Utils;
@@ -13,25 +11,12 @@ public record CreatePostCommand(PostEditModel Payload) : ICommand<PostCommandRes
 public class CreatePostCommandHandler(
         IRepositoryBase<PostEntity> postRepo,
         IRepositoryBase<TagEntity> tagRepo,
-        ILogger<CreatePostCommandHandler> logger,
-        IConfiguration configuration,
-        IBlogConfig blogConfig)
+        ILogger<CreatePostCommandHandler> logger)
     : ICommandHandler<CreatePostCommand, PostCommandResult>
 {
     public async Task<PostCommandResult> HandleAsync(CreatePostCommand request, CancellationToken ct)
     {
-        string abs;
-        if (string.IsNullOrEmpty(request.Payload.Abstract))
-        {
-            abs = ContentProcessor.GetPostAbstract(
-                request.Payload.EditorContent,
-                blogConfig.ContentSettings.PostAbstractWords,
-                configuration.GetValue<EditorChoice>("Post:Editor") == EditorChoice.Markdown);
-        }
-        else
-        {
-            abs = request.Payload.Abstract.Trim();
-        }
+        var abs = request.Payload.Abstract.Trim();
 
         var utcNow = DateTime.UtcNow;
         var post = new PostEntity

@@ -218,7 +218,6 @@ public class PostController(
         {
             EditorChoice = ec.ToString().ToLower(),
             DefaultAuthor = blogConfig.GeneralSettings.OwnerName,
-            AbstractWords = blogConfig.ContentSettings.PostAbstractWords,
             Categories = cats.Select(c => new CategoryBrief
             {
                 Id = c.Id,

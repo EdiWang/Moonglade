@@ -67,17 +67,6 @@ public static class ContentProcessor
         return result.ToString();
     }
 
-    public static string GetPostAbstract(string content, int wordCount, bool useMarkdown = false)
-    {
-        var plainText = useMarkdown ?
-            MarkdownToContent(content, MarkdownConvertType.Text) :
-            RemoveTags(content);
-
-        var decodedText = HtmlDecode(plainText);
-        var result = decodedText.Ellipsize(wordCount);
-        return result;
-    }
-
     // Fix #833 - umlauts like (ä,ö,ü). are not displayed correctly in the abstract
     public static string HtmlDecode(string content) => HttpUtility.HtmlDecode(content);
 
@@ -99,11 +88,6 @@ public static class ContentProcessor
         {
             return RemoveTagsBackup(html);
         }
-    }
-
-    public static string Ellipsize(this string text, int characterCount)
-    {
-        return text.Ellipsize(characterCount, "\u00A0\u2026");
     }
 
     public static bool IsLetter(this char c) => c is >= 'a' and <= 'z' or >= 'A' and <= 'Z';
@@ -183,45 +167,6 @@ public static class ContentProcessor
         var stringResult = new string(result, 0, cursor);
 
         return stringResult.Replace("&nbsp;", " ");
-    }
-
-    private static string Ellipsize(this string text, int characterCount, string ellipsis, bool wordBoundary = false)
-    {
-        if (string.IsNullOrWhiteSpace(text))
-            return "";
-
-        if (characterCount < 0 || text.Length <= characterCount)
-            return text + ellipsis;
-
-        // search beginning of word
-        var backup = characterCount;
-        while (characterCount > 0 && text[characterCount - 1].IsLetter())
-        {
-            characterCount--;
-        }
-
-        // search previous word, but preserve at least one space
-        var spaceCount = 0;
-        while (characterCount > 0 && text[characterCount - 1].IsSpace())
-        {
-            characterCount--;
-            spaceCount++;
-        }
-
-        // if we found spaces, add one back to preserve word separation
-        if (spaceCount > 0 && characterCount < backup)
-        {
-            characterCount++;
-        }
-
-        // if it was the last word, recover it, unless boundary is requested
-        if (characterCount == 0 && !wordBoundary)
-        {
-            characterCount = backup;
-        }
-
-        var trimmed = text[..characterCount];
-        return trimmed + ellipsis;
     }
 
     #endregion
