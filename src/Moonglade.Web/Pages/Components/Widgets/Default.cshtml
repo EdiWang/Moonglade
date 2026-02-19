@@ -9,39 +9,18 @@
 {
     @foreach (var widget in Model.OrderBy(p => p.DisplayOrder))
     {
-        <div class="aside-widget p-3 rounded-3 shadow-sm border mb-4">
-            <h6 class="card-subtitle mb-3 text-secondary">@widget.Title</h6>
+        if (widget.WidgetType == WidgetType.ImageLink)
+        {
+            var imgData = widget.ContentCode != null
+                ? JsonSerializer.Deserialize<ImageLinkData>(widget.ContentCode, MoongladeJsonSerializerOptions.Default)
+                : null;
 
-            @if (widget.WidgetType == WidgetType.LinkList)
+            if (imgData != null)
             {
-                var linkData = widget.ContentCode != null
-                ? JsonSerializer.Deserialize<List<LinkListItem>>(widget.ContentCode, MoongladeJsonSerializerOptions.Default)
-                : new List<LinkListItem>();
+                var sterilizedImageUrl = Edi.AspNetCore.Utils.SecurityHelper.SterilizeLink(imgData.ImageUrl);
 
-                <div role="list">
-                    @foreach (var item in linkData.OrderBy(c => c.Order).ThenBy(c => c.Name))
-                    {
-                        <a href="@Edi.AspNetCore.Utils.SecurityHelper.SterilizeLink(item.Url)" target="_blank" class="d-block mb-3 mt-2" role="listitem">
-                            @if (!string.IsNullOrWhiteSpace(item.Icon))
-                            {
-                                <i class="@item.Icon me-1"></i>
-                            }
-                            @item.Name
-                        </a>
-                    }
-                </div>
-            }
-            else if (widget.WidgetType == WidgetType.ImageLink)
-            {
-                var imgData = widget.ContentCode != null
-                    ? JsonSerializer.Deserialize<ImageLinkData>(widget.ContentCode, MoongladeJsonSerializerOptions.Default)
-                    : null;
-
-                if (imgData != null)
-                {
-                    var sterilizedImageUrl = Edi.AspNetCore.Utils.SecurityHelper.SterilizeLink(imgData.ImageUrl);
-
-                    if (!string.IsNullOrWhiteSpace(imgData.LinkUrl))
+                <div class="mb-4">
+                    @if (!string.IsNullOrWhiteSpace(imgData.LinkUrl))
                     {
                         var sterilizedLinkUrl = Edi.AspNetCore.Utils.SecurityHelper.SterilizeLink(imgData.LinkUrl);
                         <a href="@sterilizedLinkUrl" target="@(imgData.OpenInNewTab ? "_blank" : null)" rel="@(imgData.OpenInNewTab ? "noopener noreferrer" : null)">
@@ -58,8 +37,34 @@
                              title="@imgData.Title"
                              alt="@imgData.AltText" />
                     }
-                }
+                </div>
             }
-        </div>
+        }
+        else
+        {
+            <div class="aside-widget p-3 rounded-3 shadow-sm border mb-4">
+                <h6 class="card-subtitle mb-3 text-secondary">@widget.Title</h6>
+
+                @if (widget.WidgetType == WidgetType.LinkList)
+                {
+                    var linkData = widget.ContentCode != null
+                    ? JsonSerializer.Deserialize<List<LinkListItem>>(widget.ContentCode, MoongladeJsonSerializerOptions.Default)
+                    : new List<LinkListItem>();
+
+                    <div role="list">
+                        @foreach (var item in linkData.OrderBy(c => c.Order).ThenBy(c => c.Name))
+                        {
+                            <a href="@Edi.AspNetCore.Utils.SecurityHelper.SterilizeLink(item.Url)" target="_blank" class="d-block mb-3 mt-2" role="listitem">
+                                @if (!string.IsNullOrWhiteSpace(item.Icon))
+                                {
+                                    <i class="@item.Icon me-1"></i>
+                                }
+                                @item.Name
+                            </a>
+                        }
+                    </div>
+                }
+            </div>
+        }
     }
 }
