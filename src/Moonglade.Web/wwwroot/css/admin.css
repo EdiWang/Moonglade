@@ -201,6 +201,10 @@ div.mce-fullscreen {
     z-index: 1050;
 }
 
+.tagify {
+    width: 100% !important;
+}
+
 .empty-recycle {
     height: 208px;
     margin: 0 auto;

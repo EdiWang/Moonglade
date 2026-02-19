@@ -28,15 +28,6 @@
 
 @section head {
     <link href="~/lib/tagify/tagify.css" rel="stylesheet" />
-    <style>
-        .tagify {
-            width: 100% !important;
-        }
-
-        .monaco-target {
-            min-height: calc(100vh - 370px);
-        }
-    </style>
 }
 
 @Html.AntiForgeryToken()
@@ -115,9 +106,7 @@
                     </div>
                 </template>
 
-                <div class="mt-1 admin-taginput-container">
-                    <input type="text" id="post-tags-input" placeholder="@SharedLocalizer["Tags"]" />
-                </div>
+
                 <div class="mt-1">
                     <div class="form-floating">
                         <textarea x-model="formData.abstract"
@@ -164,6 +153,10 @@
                         </div>
                     </div>
                     <div class="card-body border-top">
+                        <div class="mb-1">
+                            <input type="text" id="post-tags-input" placeholder="@SharedLocalizer["Tags"]" />
+                        </div>
+
                         <div class="form-floating">
                             <textarea x-model="formData.keywords"
                                       class="form-control form-control-sm"
