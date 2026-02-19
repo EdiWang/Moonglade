@@ -268,27 +268,6 @@ div.mce-fullscreen {
         color: var(--bs-secondary);
     }
 
-.tag-letter-group {
-    display: flex;
-    flex-wrap: wrap;
-    align-items: flex-start;
-    gap: 12px;
-}
-
-.tag-letter-tile {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    width: 48px;
-    height: 48px;
-    border: 2px solid var(--accent-color1);
-    color: var(--accent-color1);
-    font-size: 1.5rem;
-    font-weight: 700;
-    border-radius: 6px;
-    flex-shrink: 0;
-}
-
 .tag-letter-group .ul-tag-mgr {
     flex: 1;
     min-width: 0;

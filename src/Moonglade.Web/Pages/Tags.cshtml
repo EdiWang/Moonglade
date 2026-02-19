@@ -35,6 +35,14 @@
     {
         var tagMax = tags.Max(p => p.PostCount);
         var sortedTags = tags.Where(t => t.PostCount > 0).OrderBy(t => t.DisplayName).ToList();
+        var groupedTags = sortedTags
+            .GroupBy(t =>
+            {
+                var first = char.ToUpperInvariant(t.DisplayName[0]);
+                return char.IsLetter(first) ? first.ToString() : "#";
+            })
+            .OrderBy(g => g.Key)
+            .ToList();
 
         <div class="mb-3">
             <input id="tagFilter"
@@ -46,25 +54,35 @@
                    aria-label="@SharedLocalizer["Filter tags"]">
         </div>
 
-        <ul class="list-unstyled ul-tags" role="list">
-            @foreach (var tagItem in sortedTags)
+        <div class="tag-groups">
+            @foreach (var group in groupedTags)
             {
-                var weightPercent = (double)tagItem.PostCount / tagMax * 100;
-                var weightClass = GetWeightClass(weightPercent);
-                var displayName = FormatDisplayName(tagItem.DisplayName);
-                var normalizedName = tagItem.NormalizedName?.ToLowerInvariant();
+                <div class="tag-letter-group" data-letter="@group.Key">
+                    <div class="tag-letter-tile">
+                        <span>@group.Key</span>
+                    </div>
+                    <ul class="list-unstyled ul-tags mb-0" role="list">
+                        @foreach (var tagItem in group)
+                        {
+                            var weightPercent = (double)tagItem.PostCount / tagMax * 100;
+                            var weightClass = GetWeightClass(weightPercent);
+                            var displayName = FormatDisplayName(tagItem.DisplayName);
+                            var normalizedName = tagItem.NormalizedName?.ToLowerInvariant();
 
-                <li class="d-inline-block mb-2 me-2">
-                    <a asp-page="/TagList"
-                       asp-route-normalizedName="@normalizedName"
-                       class="btn btn-sm btn-@weightClass"
-                       title="@string.Format(SharedLocalizer["{0} posts"], tagItem.PostCount)"
-                       aria-label="@string.Format(SharedLocalizer["View posts tagged with {0}"], displayName)">
-                        @displayName
-                    </a>
-                </li>
+                            <li class="d-inline-block mb-2 me-2">
+                                <a asp-page="/TagList"
+                                   asp-route-normalizedName="@normalizedName"
+                                   class="btn btn-sm btn-@weightClass"
+                                   title="@string.Format(SharedLocalizer["{0} posts"], tagItem.PostCount)"
+                                   aria-label="@string.Format(SharedLocalizer["View posts tagged with {0}"], displayName)">
+                                    @displayName
+                                </a>
+                            </li>
+                        }
+                    </ul>
+                </div>
             }
-        </ul>
+        </div>
 
         <div class="mt-3 text-muted small">
             @string.Format(SharedLocalizer["Showing {0} tags"], sortedTags.Count)
