@@ -6,11 +6,6 @@
         <partial name="_WidgetsProfile" />
     }
 
-    @if (!string.IsNullOrWhiteSpace(BlogConfig.GeneralSettings.SideBarCustomizedHtmlPitch))
-    {
-        @Html.Raw(BlogConfig.GeneralSettings.SideBarCustomizedHtmlPitch)
-    }
-
     @if (BlogConfig.GeneralSettings.HotTagAmount > 0)
     {
         <section id="aside-tags" class="mt-4 mb-4">
