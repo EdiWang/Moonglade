@@ -1,0 +1,28 @@
+@using Moonglade.Data.Entities
+@using Moonglade.Data.Exporting
+@using Moonglade.Widgets.Types
+@using System.Text.Json
+
+@model WidgetEntity
+
+@{
+    var buttons = Model.ContentCode != null
+        ? JsonSerializer.Deserialize<List<ButtonLinkItem>>(Model.ContentCode, MoongladeJsonSerializerOptions.Default)
+        : new List<ButtonLinkItem>();
+}
+
+@if (buttons is { Count: > 0 })
+{
+    <div class="mb-4">
+        <div class="btn-group" role="group">
+            @foreach (var btn in buttons)
+            {
+                var sterilizedUrl = Edi.AspNetCore.Utils.SecurityHelper.SterilizeLink(btn.Url);
+                <a href="@sterilizedUrl"
+                   class="btn @btn.CssClass"
+                   target="@(btn.OpenInNewTab ? "_blank" : null)"
+                   rel="@(btn.OpenInNewTab ? "noopener noreferrer" : null)">@btn.Text</a>
+            }
+        </div>
+    </div>
+}
