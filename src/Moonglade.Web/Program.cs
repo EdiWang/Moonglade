@@ -187,7 +187,6 @@ public class Program
             {
                 options.Conventions.AddPageRoute("/Admin/Post", "admin");
                 options.Conventions.AuthorizeFolder("/Admin");
-                options.Conventions.AuthorizeFolder("/Settings");
             })
             .AddViewOptions(options =>
             {
