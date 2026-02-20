@@ -91,7 +91,6 @@ footer {
 .tag-letter-group .ul-tags {
     flex: 1;
     min-width: 0;
-    padding-top: 4px;
 }
 
 .nav-item-icon {
