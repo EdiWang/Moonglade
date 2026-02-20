@@ -47,67 +47,85 @@
         @SharedLocalizer["No tags found. Create your first tag to get started."]
     </div>
 
-    <div x-show="!isLoading && hasTags">
+    <div x-show="!isLoading && hasTags" class="tag-manager-container">
         <section aria-labelledby="active-tags-heading">
             <h4 id="active-tags-heading">@SharedLocalizer["Active tags"]</h4>
             <hr />
             <div x-show="!hasActiveTags" class="alert alert-info" role="alert">
                 @SharedLocalizer["No active tags found"]
             </div>
-            <ul x-show="hasActiveTags" class="list-unstyled ul-tag-mgr" role="list">
-                <template x-for="tagItem in filteredActiveTags" :key="tagItem.id">
-                    <li :id="`li-tag-${tagItem.id}`" class="admin-tag-item border rounded me-1">
-                        <span class="span-tagcontent-editable"
-                              contenteditable="true"
-                              spellcheck="false"
-                              :data-tagid="tagItem.id"
-                              x-on:blur="updateTag($event, tagItem.id)"
-                              :aria-label="`@SharedLocalizer["Edit tag"]` + ' ' + tagItem.displayName"
-                              x-text="tagItem.displayName">
-                        </span>
-                        <span class="tag-postcount"
-                              :title="`${tagItem.postCount} @SharedLocalizer["posts"]`"
-                              x-text="tagItem.postCount">
-                        </span>
-                        <a class="btn-delete"
-                           x-on:click="deleteTag(tagItem.id, tagItem.displayName)"
-                           :aria-label="`@SharedLocalizer["Delete tag"]` + ' ' + tagItem.displayName"
-                           title="@SharedLocalizer["Delete tag"]"
-                           role="button">
-                            <i class="bi-trash"></i>
-                        </a>
-                    </li>
+            <div x-show="hasActiveTags">
+                <template x-for="group in groupedActiveTags" :key="'active-' + group.letter">
+                    <div class="tag-letter-group mb-4" :id="'active-group-' + group.letter">
+                        <div class="tag-letter-tile">
+                            <span x-text="group.letter"></span>
+                        </div>
+                        <ul class="list-unstyled ul-tag-mgr mb-0" role="list">
+                            <template x-for="tagItem in group.tags" :key="tagItem.id">
+                                <li :id="`li-tag-${tagItem.id}`" class="admin-tag-item border rounded me-1">
+                                    <span class="span-tagcontent-editable"
+                                          contenteditable="true"
+                                          spellcheck="false"
+                                          :data-tagid="tagItem.id"
+                                          x-on:blur="updateTag($event, tagItem.id)"
+                                          :aria-label="`@SharedLocalizer["Edit tag"]` + ' ' + tagItem.displayName"
+                                          x-text="tagItem.displayName">
+                                    </span>
+                                    <span class="tag-postcount"
+                                          :title="`${tagItem.postCount} @SharedLocalizer["posts"]`"
+                                          x-text="tagItem.postCount">
+                                    </span>
+                                    <a class="btn-delete"
+                                       x-on:click="deleteTag(tagItem.id, tagItem.displayName)"
+                                       :aria-label="`@SharedLocalizer["Delete tag"]` + ' ' + tagItem.displayName"
+                                       title="@SharedLocalizer["Delete tag"]"
+                                       role="button">
+                                        <i class="bi-trash"></i>
+                                    </a>
+                                </li>
+                            </template>
+                        </ul>
+                    </div>
                 </template>
-            </ul>
+            </div>
         </section>
 
         <section aria-labelledby="inactive-tags-heading" class="mt-4">
             <h4 id="inactive-tags-heading">@SharedLocalizer["Tags without posts"]</h4>
             <hr />
-            <div x-show="!hasInactiveTags" class="alert alert-success" role="alert">
+            <div x-show="!hasInactiveTags" class="text-center text-muted" role="alert">
                 @SharedLocalizer["No unused tags - all tags are being used!"]
             </div>
-            <ul x-show="hasInactiveTags" class="list-unstyled ul-tag-mgr" role="list">
-                <template x-for="tagItem in filteredInactiveTags" :key="tagItem.id">
-                    <li :id="`li-tag-${tagItem.id}`" class="admin-tag-item border rounded opacity-75">
-                        <span class="span-tagcontent-editable"
-                              contenteditable="true"
-                              spellcheck="false"
-                              :data-tagid="tagItem.id"
-                              x-on:blur="updateTag($event, tagItem.id)"
-                              :aria-label="`@SharedLocalizer["Edit tag"]` + ' ' + tagItem.displayName"
-                              x-text="tagItem.displayName">
-                        </span>
-                        <a class="btn-delete"
-                           x-on:click="deleteTag(tagItem.id, tagItem.displayName)"
-                           :aria-label="`@SharedLocalizer["Delete tag"]` + ' ' + tagItem.displayName"
-                           title="@SharedLocalizer["Delete tag"]"
-                           role="button">
-                            <i class="bi-trash"></i>
-                        </a>
-                    </li>
+            <div x-show="hasInactiveTags">
+                <template x-for="group in groupedInactiveTags" :key="'inactive-' + group.letter">
+                    <div class="tag-letter-group mb-4" :id="'inactive-group-' + group.letter">
+                        <div class="tag-letter-tile">
+                            <span x-text="group.letter"></span>
+                        </div>
+                        <ul class="list-unstyled ul-tag-mgr mb-0" role="list">
+                            <template x-for="tagItem in group.tags" :key="tagItem.id">
+                                <li :id="`li-tag-${tagItem.id}`" class="admin-tag-item border rounded opacity-75">
+                                    <span class="span-tagcontent-editable"
+                                          contenteditable="true"
+                                          spellcheck="false"
+                                          :data-tagid="tagItem.id"
+                                          x-on:blur="updateTag($event, tagItem.id)"
+                                          :aria-label="`@SharedLocalizer["Edit tag"]` + ' ' + tagItem.displayName"
+                                          x-text="tagItem.displayName">
+                                    </span>
+                                    <a class="btn-delete"
+                                       x-on:click="deleteTag(tagItem.id, tagItem.displayName)"
+                                       :aria-label="`@SharedLocalizer["Delete tag"]` + ' ' + tagItem.displayName"
+                                       title="@SharedLocalizer["Delete tag"]"
+                                       role="button">
+                                        <i class="bi-trash"></i>
+                                    </a>
+                                </li>
+                            </template>
+                        </ul>
+                    </div>
                 </template>
-            </ul>
+            </div>
         </section>
     </div>
 </div>

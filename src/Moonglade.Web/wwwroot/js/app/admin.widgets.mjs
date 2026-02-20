@@ -25,7 +25,15 @@ formData: {
         widgetType: 'LinkList',
         displayOrder: 0,
         isEnabled: true,
-        links: []
+        links: [],
+        imageLink: {
+            imageUrl: '',
+            cssClass: '',
+            title: '',
+            altText: '',
+            linkUrl: '',
+            openInNewTab: true
+        }
     },
     linkDialog: {
         isNew: true,
@@ -78,16 +86,30 @@ formData: {
             try {
                 const links = JSON.parse(widget.contentCode);
                 const sortedLinks = links.sort((a, b) => a.order - b.order);
-                
+
                 return sortedLinks.map(link => {
                     const target = link.openInNewTab ? '_blank' : '_self';
                     const icon = link.icon ? `<i class="${link.icon} me-1"></i>` : '';
                     const externalIcon = link.openInNewTab ? '<i class="bi-box-arrow-up-right ms-1 small"></i>' : '';
-                    
+
                     return `<a href="${link.url}" target="${target}" class="d-block mb-2">${icon}${link.name}${externalIcon}</a>`;
                 }).join('');
             } catch (e) {
                 return '<div class="text-muted small">Invalid link data</div>';
+            }
+        }
+        if (widget.widgetType === 'ImageLink' && widget.contentCode) {
+            try {
+                const data = JSON.parse(widget.contentCode);
+                const imgTag = `<img src="${data.imageUrl}" class="${data.cssClass || ''}" title="${data.title || ''}" alt="${data.altText || ''}" style="max-width:100%" />`;
+                if (data.linkUrl) {
+                    const target = data.openInNewTab ? '_blank' : '_self';
+                    const rel = data.openInNewTab ? 'noopener noreferrer' : '';
+                    return `<a href="${data.linkUrl}" target="${target}" rel="${rel}">${imgTag}</a>`;
+                }
+                return imgTag;
+            } catch (e) {
+                return '<div class="text-muted small">Invalid image link data</div>';
             }
         }
         return '';
@@ -100,7 +122,15 @@ formData: {
             widgetType: 'LinkList',
             displayOrder: 0,
             isEnabled: true,
-            links: []
+            links: [],
+            imageLink: {
+                imageUrl: '',
+                cssClass: '',
+                title: '',
+                altText: '',
+                linkUrl: '',
+                openInNewTab: true
+            }
         };
         this.editCanvas.show();
     },
@@ -109,24 +139,33 @@ formData: {
         try {
             const widget = await fetch2(`/api/widgets/${id}`, 'GET');
             this.currentWidgetId = widget.id;
-        
+
             let links = [];
+            let imageLink = { imageUrl: '', cssClass: '', title: '', altText: '', linkUrl: '', openInNewTab: true };
+
             if (widget.widgetType === 'LinkList' && widget.contentCode) {
                 try {
                     links = JSON.parse(widget.contentCode);
                 } catch (e) {
                     links = [];
                 }
+            } else if (widget.widgetType === 'ImageLink' && widget.contentCode) {
+                try {
+                    imageLink = JSON.parse(widget.contentCode);
+                } catch (e) {
+                    imageLink = { imageUrl: '', cssClass: '', title: '', altText: '', linkUrl: '', openInNewTab: true };
+                }
             }
-        
+
             this.formData = {
                 title: widget.title,
                 widgetType: widget.widgetType,
                 displayOrder: widget.displayOrder,
                 isEnabled: widget.isEnabled,
-                links: links
+                links: links,
+                imageLink: imageLink
             };
-        
+
             this.editCanvas.show();
         } catch (err) {
             error(err);
@@ -158,14 +197,28 @@ formData: {
         const apiAddress = isCreate ? '/api/widgets' : `/api/widgets/${this.currentWidgetId}`;
         const verb = isCreate ? 'POST' : 'PUT';
 
+        if (this.formData.displayOrder < -3 || this.formData.displayOrder > 999) {
+            alert('Display Order must be between -3 and 999.');
+            return;
+        }
+
+        let contentCode = '';
+        if (this.formData.widgetType === 'LinkList') {
+            contentCode = JSON.stringify(this.formData.links);
+        } else if (this.formData.widgetType === 'ImageLink') {
+            if (!this.formData.imageLink.imageUrl) {
+                alert(getLocalizedString('imageUrlRequired'));
+                return;
+            }
+            contentCode = JSON.stringify(this.formData.imageLink);
+        }
+
         const requestData = {
             title: this.formData.title,
             widgetType: this.formData.widgetType,
             displayOrder: this.formData.displayOrder,
             isEnabled: this.formData.isEnabled,
-            contentCode: this.formData.widgetType === 'LinkList' 
-                ? JSON.stringify(this.formData.links) 
-                : ''
+            contentCode: contentCode
         };
 
         try {
@@ -180,9 +233,11 @@ formData: {
     },
 
     onWidgetTypeChange() {
-        // Reset links when widget type changes
         if (this.formData.widgetType !== 'LinkList') {
             this.formData.links = [];
+        }
+        if (this.formData.widgetType !== 'ImageLink') {
+            this.formData.imageLink = { imageUrl: '', cssClass: '', title: '', altText: '', linkUrl: '', openInNewTab: true };
         }
     },
 

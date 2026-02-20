@@ -67,6 +67,36 @@ async init() {
         return this.filteredInactiveTags.length > 0;
     },
 
+    groupByLetter(tagList) {
+        const groups = {};
+        tagList.forEach(tag => {
+            const first = tag.displayName.charAt(0).toUpperCase();
+            const letter = /[A-Z]/.test(first) ? first : '#';
+            if (!groups[letter]) groups[letter] = [];
+            groups[letter].push(tag);
+        });
+        return Object.keys(groups).sort().map(letter => ({
+            letter,
+            tags: groups[letter]
+        }));
+    },
+
+    get groupedActiveTags() {
+        return this.groupByLetter(this.filteredActiveTags);
+    },
+
+    get groupedInactiveTags() {
+        return this.groupByLetter(this.filteredInactiveTags);
+    },
+
+    get activeLetters() {
+        return this.groupedActiveTags.map(g => g.letter);
+    },
+
+    get inactiveLetters() {
+        return this.groupedInactiveTags.map(g => g.letter);
+    },
+
     filterTagList(tagList) {
         if (!this.tagFilter) return tagList;
         const filterLower = this.tagFilter.toLowerCase();

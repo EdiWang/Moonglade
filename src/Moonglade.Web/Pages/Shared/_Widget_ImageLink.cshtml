@@ -1,0 +1,37 @@
+@using Moonglade.Data.Entities
+@using Moonglade.Data.Exporting
+@using Moonglade.Widgets.Types
+@using System.Text.Json
+
+@model WidgetEntity
+
+@{
+    var imgData = Model.ContentCode != null
+        ? JsonSerializer.Deserialize<ImageLinkData>(Model.ContentCode, MoongladeJsonSerializerOptions.Default)
+        : null;
+}
+
+@if (imgData != null)
+{
+    var sterilizedImageUrl = Edi.AspNetCore.Utils.SecurityHelper.SterilizeLink(imgData.ImageUrl);
+
+    <div class="mb-4">
+        @if (!string.IsNullOrWhiteSpace(imgData.LinkUrl))
+        {
+            var sterilizedLinkUrl = Edi.AspNetCore.Utils.SecurityHelper.SterilizeLink(imgData.LinkUrl);
+            <a href="@sterilizedLinkUrl" target="@(imgData.OpenInNewTab ? "_blank" : null)" rel="@(imgData.OpenInNewTab ? "noopener noreferrer" : null)">
+                <img src="@sterilizedImageUrl"
+                     class="@imgData.CssClass"
+                     title="@imgData.Title"
+                     alt="@imgData.AltText" />
+            </a>
+        }
+        else
+        {
+            <img src="@sterilizedImageUrl"
+                 class="@imgData.CssClass"
+                 title="@imgData.Title"
+                 alt="@imgData.AltText" />
+        }
+    </div>
+}

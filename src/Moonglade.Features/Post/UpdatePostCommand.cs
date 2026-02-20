@@ -1,7 +1,5 @@
 using LiteBus.Commands.Abstractions;
-using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
-using Moonglade.Configuration;
 using Moonglade.Data.DTO;
 using Moonglade.Data.Specifications;
 using Moonglade.Utils;
@@ -12,8 +10,6 @@ public record UpdatePostCommand(Guid Id, PostEditModel Payload) : ICommand<PostC
 public class UpdatePostCommandHandler(
     IRepositoryBase<TagEntity> tagRepo,
     IRepositoryBase<PostEntity> postRepo,
-    IBlogConfig blogConfig,
-    IConfiguration configuration,
     ILogger<UpdatePostCommandHandler> logger) : ICommandHandler<UpdatePostCommand, PostCommandResult>
 {
     public async Task<PostCommandResult> HandleAsync(UpdatePostCommand request, CancellationToken ct)
@@ -79,12 +75,7 @@ public class UpdatePostCommandHandler(
     {
         post.CommentEnabled = postEditModel.EnableComment;
         post.PostContent = postEditModel.EditorContent;
-        post.ContentAbstract = string.IsNullOrEmpty(postEditModel.Abstract)
-            ? ContentProcessor.GetPostAbstract(
-                postEditModel.EditorContent,
-                blogConfig.ContentSettings.PostAbstractWords,
-                configuration.GetValue<EditorChoice>("Post:Editor") == EditorChoice.Markdown)
-            : postEditModel.Abstract.Trim();
+        post.ContentAbstract = postEditModel.Abstract.Trim();
 
         // Only publish the post if it was not yet published
         // Otherwise, updating existing post will result in changing publish date and break the slug URL

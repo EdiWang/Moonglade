@@ -24,8 +24,8 @@ deleteModal: null,
             this.posts = (data.posts ?? []).sort((a, b) => 
                 new Date(b.lastModifiedUtc) - new Date(a.lastModifiedUtc)
             );
-            
-            formatUtcTime();
+
+            this.$nextTick(() => formatUtcTime());
         } finally {
             this.isLoading = false;
         }

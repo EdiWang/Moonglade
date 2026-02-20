@@ -30,3 +30,7 @@ CREATE TABLE IF NOT EXISTS "ActivityLog" (
     "UserAgent" VARCHAR(512) NULL,
     PRIMARY KEY ("Id")
 );
+
+-- v15.7
+-- Rename `CustomPage` table to `BlogPage`
+ALTER TABLE IF EXISTS "CustomPage" RENAME TO "BlogPage";

@@ -67,6 +67,32 @@ footer {
     background-color: var(--gray-1);
 }
 
+.tag-letter-group {
+    display: flex;
+    align-items: flex-start;
+    gap: 12px;
+    margin-bottom: 1.25rem;
+}
+
+.tag-letter-tile {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 48px;
+    height: 48px;
+    background-color: var(--accent-color1);
+    color: #fff;
+    font-size: 1.5rem;
+    font-weight: 700;
+    border-radius: 6px;
+    flex-shrink: 0;
+}
+
+.tag-letter-group .ul-tags {
+    flex: 1;
+    min-width: 0;
+}
+
 .nav-item-icon {
     width: 16px;
 }

@@ -1,0 +1,29 @@
+@using Moonglade.Data.Entities
+@using Moonglade.Data.Exporting
+@using Moonglade.Widgets.Types
+@using System.Text.Json
+
+@model WidgetEntity
+
+@{
+    var linkData = Model.ContentCode != null
+        ? JsonSerializer.Deserialize<List<LinkListItem>>(Model.ContentCode, MoongladeJsonSerializerOptions.Default)
+        : new List<LinkListItem>();
+}
+
+<div class="aside-widget p-3 rounded-3 shadow-sm border mb-4">
+    <h6 class="card-subtitle mb-3 text-secondary">@Model.Title</h6>
+
+    <div role="list">
+        @foreach (var item in linkData.OrderBy(c => c.Order).ThenBy(c => c.Name))
+        {
+            <a href="@Edi.AspNetCore.Utils.SecurityHelper.SterilizeLink(item.Url)" target="_blank" class="d-block mb-3 mt-2" role="listitem">
+                @if (!string.IsNullOrWhiteSpace(item.Icon))
+                {
+                    <i class="@item.Icon me-1"></i>
+                }
+                @item.Name
+            </a>
+        }
+    </div>
+</div>

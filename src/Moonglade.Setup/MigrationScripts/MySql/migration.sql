@@ -62,3 +62,21 @@ CREATE TABLE IF NOT EXISTS `ActivityLog` (
     `UserAgent` VARCHAR(512) NULL,
     PRIMARY KEY (`Id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+-- v15.7
+-- Rename `CustomPage` table to `BlogPage`
+SET @dbname = DATABASE();
+SET @tablename = 'CustomPage';
+SET @preparedStatement = (SELECT IF(
+  (
+    SELECT COUNT(*) FROM INFORMATION_SCHEMA.TABLES
+    WHERE
+      (TABLE_SCHEMA = @dbname)
+      AND (TABLE_NAME = @tablename)
+  ) > 0,
+  'RENAME TABLE `CustomPage` TO `BlogPage`;',
+  'SELECT 1;'
+));
+PREPARE renameIfExists FROM @preparedStatement;
+EXECUTE renameIfExists;
+DEALLOCATE PREPARE renameIfExists;

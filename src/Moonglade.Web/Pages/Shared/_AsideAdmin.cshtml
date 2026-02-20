@@ -2,7 +2,7 @@
     var currentPage = ViewContext.RouteData.Values["Page"]?.ToString();
 }
 
-<aside class="admin-nav">
+<aside class="admin-nav d-flex flex-column">
     <section class="admin-nav-section mt-3 mb-3">
         <div class="list-group list-group-flush me-1">
             <a asp-page="/Admin/Post"
@@ -77,6 +77,20 @@
                     <div class="content-region">
                         <i class="bi-arrow-left-right admin-nav-icon"></i>
                         @SharedLocalizer["Mentions"]
+                    </div>
+                </div>
+            </a>
+        </div>
+    </section>
+
+    <section class="admin-nav-section admin-nav-bottom mb-3">
+        <div class="list-group list-group-flush me-1">
+            <a asp-page="/Settings/General"
+               class="list-group-item list-group-item-action @(currentPage?.StartsWith("/Settings/") == true ? "active" : null)" title="@SharedLocalizer["Settings"]">
+                <div class="positioning-region">
+                    <div class="content-region">
+                        <i class="bi-gear admin-nav-icon"></i>
+                        @SharedLocalizer["Settings"]
                     </div>
                 </div>
             </a>

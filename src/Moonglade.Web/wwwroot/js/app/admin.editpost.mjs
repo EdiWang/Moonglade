@@ -22,7 +22,6 @@ Alpine.data('postEditor', () => ({
     editorChoice: '',
     categories: [],
     languages: [],
-    abstractWords: 400,
     warnSlugModification: false,
     slugUnlocked: false,
     scheduleInfoHtml: '',
@@ -52,10 +51,6 @@ Alpine.data('postEditor', () => ({
         changePublishDate: false,
         lastModifiedUtc: '',
         selectedCatIds: []
-    },
-
-    get abstractTooltip() {
-        return `The first ${this.abstractWords} character(s) will be used as abstract if you leave this field blank.`;
     },
 
     async init() {
@@ -93,7 +88,6 @@ Alpine.data('postEditor', () => ({
             this.editorChoice = meta.editorChoice;
             this.categories = meta.categories || [];
             this.languages = meta.languages || [];
-            this.abstractWords = meta.abstractWords || 400;
 
             if (!this.postId) {
                 this.formData.author = meta.defaultAuthor || '';

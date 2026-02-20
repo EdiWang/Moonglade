@@ -20,7 +20,7 @@ public class ActivityLogController(
 
     [HttpGet("list")]
     public async Task<IActionResult> List(
-        [FromQuery] int pageIndex = 1, 
+        [FromQuery] int pageIndex = 1,
         [FromQuery] int pageSize = 10,
         [FromQuery] int[]? eventTypes = null,
         [FromQuery] DateTime? startTimeUtc = null,
