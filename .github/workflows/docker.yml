@@ -3,10 +3,10 @@ name: Docker Linux x64
 on:
   push:
     branches: [ release ]
-    #paths:
-    #- src/**
-jobs:
+    tags:
+      - 'v*.*.*'
 
+jobs:
   build:
     if: github.repository == 'EdiWang/Moonglade'
     runs-on: ubuntu-latest
@@ -14,6 +14,17 @@ jobs:
     steps:
     - name: Check Out Repo
       uses: actions/checkout@v5
+
+    - name: Docker meta
+      id: meta
+      uses: docker/metadata-action@v5
+      with:
+        images: ${{ secrets.DOCKER_HUB_USERNAME }}/moonglade
+        tags: |
+          type=ref,event=branch
+          type=semver,pattern={{version}}
+          type=semver,pattern={{major}}.{{minor}}
+          type=raw,value=latest,enable={{is_default_branch}}
 
     - name: Login to Docker Hub
       uses: docker/login-action@v3
@@ -32,7 +43,8 @@ jobs:
         context: ./
         file: ./Dockerfile
         push: true
-        tags: ${{ secrets.DOCKER_HUB_USERNAME }}/moonglade:latest
+        tags: ${{ steps.meta.outputs.tags }}
+        labels: ${{ steps.meta.outputs.labels }}
 
     - name: Image digest
       run: echo ${{ steps.docker_build.outputs.digest }}
