@@ -18,7 +18,7 @@ public class EditWidgetRequest
     public string ContentCode { get; set; }
 
     [Display(Name = "Display Order")]
-    [Range(-3, 999)]
+    [Range(-30, 999)]
     public int DisplayOrder { get; set; }
 
     [Display(Name = "Enabled")]

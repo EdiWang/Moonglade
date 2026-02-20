@@ -231,8 +231,8 @@ formData: {
         const apiAddress = isCreate ? '/api/widgets' : `/api/widgets/${this.currentWidgetId}`;
         const verb = isCreate ? 'POST' : 'PUT';
 
-        if (this.formData.displayOrder < -3 || this.formData.displayOrder > 999) {
-            alert('Display Order must be between -3 and 999.');
+        if (this.formData.displayOrder < -30 || this.formData.displayOrder > 999) {
+            alert('Display Order must be between -30 and 999.');
             return;
         }
 
