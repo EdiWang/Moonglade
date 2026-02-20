@@ -52,11 +52,6 @@ public class GeneralSettings : IBlogSettings
     [MaxLength(32)]
     public string Pronouns { get; set; }
 
-    [Display(Name = "Side bar HTML code")]
-    [DataType(DataType.MultilineText)]
-    [MaxLength(2048)]
-    public string SideBarCustomizedHtmlPitch { get; set; }
-
     [Display(Name = "Side bar display")]
     public SideBarOption SideBarOption { get; set; }
 
