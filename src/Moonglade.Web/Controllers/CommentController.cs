@@ -204,7 +204,7 @@ public class CommentController(
 
     private async Task<IActionResult> ApplyWordFilteringAsync(CommentRequest request)
     {
-        if (!blogConfig.CommentSettings.EnableWordFilter || !blogConfig.CommentSettings.RequireCommentReview)
+        if (!blogConfig.CommentSettings.EnableWordFilter || blogConfig.CommentSettings.RequireCommentReview)
         {
             return null;
         }
