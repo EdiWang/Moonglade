@@ -22,7 +22,7 @@ public class Seed
             await dbContext.Widget.AddRangeAsync(GetWidgets());
 
             logger.LogDebug("Adding pages data...");
-            await dbContext.CustomPage.AddRangeAsync(GetPages());
+            await dbContext.BlogPage.AddRangeAsync(GetPages());
 
             logger.LogDebug("Adding example post...");
             // Add example post

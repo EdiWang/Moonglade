@@ -52,3 +52,11 @@ BEGIN
 ) ON [PRIMARY] TEXTIMAGE_ON [PRIMARY]
 END
 GO
+
+-- v15.7
+-- Rename `CustomPage` table to `BlogPage`
+IF EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[CustomPage]') AND type in (N'U'))
+BEGIN
+    EXEC sp_rename 'CustomPage', 'BlogPage';
+END
+GO
