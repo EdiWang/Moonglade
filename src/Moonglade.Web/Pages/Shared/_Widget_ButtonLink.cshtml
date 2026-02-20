@@ -13,8 +13,8 @@
 
 @if (buttons is { Count: > 0 })
 {
-    <div class="mb-4">
-        <div class="btn-group" role="group">
+    <div class="widget-button-link-container">
+        <div class="btn-group w-100" role="group">
             @foreach (var btn in buttons)
             {
                 var sterilizedUrl = Edi.AspNetCore.Utils.SecurityHelper.SterilizeLink(btn.Url);
