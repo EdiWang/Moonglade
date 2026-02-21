@@ -242,28 +242,6 @@
     </div>
 </div>
 
-<!-- Confirm Delete Modal -->
-<div class="modal fade" tabindex="-1" x-ref="confirmDeleteModal" aria-labelledby="confirmDeleteModalLabel" aria-hidden="true">
-    <div class="modal-dialog">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title" id="confirmDeleteModalLabel" x-text="deleteConfirm.title"></h5>
-                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="@SharedLocalizer["Close"]"></button>
-            </div>
-            <div class="modal-body">
-                <p x-text="deleteConfirm.message"></p>
-            </div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">@SharedLocalizer["Cancel"]</button>
-                <button type="button" class="btn btn-outline-danger" x-on:click="deleteConfirm.callback()">
-                    <i class="bi-trash"></i>
-                    <span x-text="deleteConfirm.buttonText"></span>
-                </button>
-            </div>
-        </div>
-    </div>
-</div>
-
 <!-- Link Dialog Modal -->
 <div class="modal fade" tabindex="-1" x-ref="linkDialogModal" aria-labelledby="linkDialogLabel" aria-hidden="true">
     <div class="modal-dialog">
