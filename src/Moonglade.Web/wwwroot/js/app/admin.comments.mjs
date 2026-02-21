@@ -2,6 +2,7 @@ import { Alpine } from '/js/app/alpine-init.mjs';
 import { fetch2 } from '/js/app/httpService.mjs?v=1500';
 import { formatUtcTime, getLocalizedString } from '/js/app/utils.module.mjs';
 import { success } from '/js/app/toastService.mjs';
+import { showConfirmModal, hideConfirmModal } from '/js/app/adminModal.mjs';
 
 Alpine.data('commentManager', () => ({
     comments: [],
@@ -11,16 +12,11 @@ Alpine.data('commentManager', () => ({
     pageSize: 5,
     totalRows: 0,
     selectedCommentIds: [],
-    confirmModal: null,
-    confirmMessage: '',
-    pendingDeleteId: null,
-    isDeleteSelected: false,
 
     async init() {
         const urlParams = new URLSearchParams(window.location.search);
         this.currentPage = parseInt(urlParams.get('pageIndex')) || 1;
         this.searchTerm = urlParams.get('searchTerm') || '';
-        this.confirmModal = new bootstrap.Modal(this.$refs.confirmModal);
         await this.loadComments();
     },
 
@@ -76,33 +72,38 @@ Alpine.data('commentManager', () => ({
     },
 
     async deleteComment(commentId) {
-        this.pendingDeleteId = commentId;
-        this.isDeleteSelected = false;
-        this.confirmMessage = getLocalizedString('confirmDelete');
-        this.confirmModal.show();
+        showConfirmModal({
+            title: 'Confirm',
+            body: getLocalizedString('confirmDelete'),
+            confirmText: 'Delete',
+            confirmClass: 'btn-outline-danger',
+            confirmIcon: 'bi-trash',
+            onConfirm: async () => {
+                await fetch2('/api/comment', 'DELETE', [commentId]);
+                await this.loadComments();
+                success(getLocalizedString('commentDeleted'));
+                hideConfirmModal();
+            }
+        });
     },
 
     async deleteSelectedComments() {
         if (this.selectedCommentIds.length === 0) return;
-        
-        this.isDeleteSelected = true;
-        this.confirmMessage = getLocalizedString('confirmDeleteSelected');
-        this.confirmModal.show();
-    },
 
-    async confirmAction() {
-        if (this.isDeleteSelected) {
-            await fetch2('/api/comment', 'DELETE', this.selectedCommentIds);
-            this.selectedCommentIds = [];
-            await this.loadComments();
-            success(getLocalizedString('commentsDeleted'));
-        } else if (this.pendingDeleteId) {
-            await fetch2('/api/comment', 'DELETE', [this.pendingDeleteId]);
-            await this.loadComments();
-            success(getLocalizedString('commentDeleted'));
-            this.pendingDeleteId = null;
-        }
-        this.confirmModal.hide();
+        showConfirmModal({
+            title: 'Confirm',
+            body: getLocalizedString('confirmDeleteSelected'),
+            confirmText: 'Delete',
+            confirmClass: 'btn-outline-danger',
+            confirmIcon: 'bi-trash',
+            onConfirm: async () => {
+                await fetch2('/api/comment', 'DELETE', this.selectedCommentIds);
+                this.selectedCommentIds = [];
+                await this.loadComments();
+                success(getLocalizedString('commentsDeleted'));
+                hideConfirmModal();
+            }
+        });
     },
 
     async toggleApproval(commentId) {
