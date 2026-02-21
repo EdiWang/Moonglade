@@ -49,7 +49,6 @@ Alpine.data('postEditor', () => ({
         scheduledPublishTime: null,
         scheduledPublishTimeUtc: null,
         clientTimeZoneId: '',
-        changePublishDate: false,
         lastModifiedUtc: '',
         selectedCatIds: []
     },
@@ -312,7 +311,6 @@ Alpine.data('postEditor', () => ({
                 keywords: this.formData.keywords,
                 tags: this.formData.tags,
                 selectedCatIds: this.formData.selectedCatIds,
-                changePublishDate: this.formData.changePublishDate,
                 publishDate: this.formData.publishDate,
                 scheduledPublishTime: this.formData.scheduledPublishTime || null,
                 clientTimeZoneId: this.formData.clientTimeZoneId,

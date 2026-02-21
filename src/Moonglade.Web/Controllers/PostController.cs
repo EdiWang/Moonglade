@@ -48,14 +48,6 @@ public class PostController(
     {
         try
         {
-            if (model.ChangePublishDate &&
-                model.PublishDate.HasValue &&
-                model.PublishDate <= DateTime.UtcNow &&
-                model.PublishDate.GetValueOrDefault().Year >= 1975)
-            {
-                model.PublishDate = model.PublishDate.Value;
-            }
-
             if (model.PostStatus == PostStatus.Scheduled && model.ScheduledPublishTime.HasValue)
             {
                 if (string.IsNullOrWhiteSpace(model.ClientTimeZoneId))

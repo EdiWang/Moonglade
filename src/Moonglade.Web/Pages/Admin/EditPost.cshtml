@@ -189,11 +189,6 @@
                 </div>
 
                 <div class="mx-5 d-flex flex-column gap-2">
-                    <a x-show="formData.postId && formData.postId !== window.emptyGuid" class="btn btn-sm btn-outline-secondary w-100" data-bs-toggle="modal" data-bs-target="#changePublishDateModal">
-                        <i class="bi-clock-history"></i>
-                        @SharedLocalizer["Change Publish Date"]
-                    </a>
-
                     <a x-show="formData.postStatus === 'Published'"
                        x-cloak
                        class="unpublish-link btn btn-sm btn-outline-secondary w-100"
@@ -231,33 +226,6 @@
             </button>
 
             <div class="schedule-info d-inline-block text-muted ms-4" x-html="scheduleInfoHtml"></div>
-        </div>
-
-        <!-- Change Publish Date Modal -->
-        <div class="modal fade" id="changePublishDateModal" tabindex="-1" role="dialog" aria-labelledby="changePublishDateModalLabel" aria-hidden="true">
-            <div class="modal-dialog" role="document">
-                <div class="modal-content">
-                    <div class="modal-header">
-                        <h5 class="modal-title" id="changePublishDateModalLabel">@SharedLocalizer["Change Publish Date"]</h5>
-                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                    </div>
-                    <div class="modal-body">
-                        <div class="alert alert-warning">@SharedLocalizer["Changing publish date will modify the URL of the post, and may cause unexpected results like breaking links on third parties that were pointing to this post. Please check the checkbox below if you confirm."]</div>
-                        <div class="mb-2">
-                            <input type="checkbox" x-model="formData.changePublishDate" class="form-check-input" id="changePublishDateCheck">
-                            <label for="changePublishDateCheck">Change Publish Date</label>
-                        </div>
-                        <div class="mb-2">
-                            <label for="publishDate">Publish Date</label>
-                            <input type="date" x-model="formData.publishDate" class="form-control" id="publishDate" />
-                        </div>
-                    </div>
-                    <div class="modal-footer">
-                        <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">@SharedLocalizer["Cancel"]</button>
-                        <button type="button" class="btn btn-danger" data-bs-dismiss="modal">@SharedLocalizer["Continue"]</button>
-                    </div>
-                </div>
-            </div>
         </div>
 
         <!-- Publish Modal -->
