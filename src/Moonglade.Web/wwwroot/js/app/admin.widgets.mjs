@@ -3,55 +3,32 @@ import { fetch2 } from '/js/app/httpService.mjs?v=1500';
 import { success, error } from '/js/app/toastService.mjs';
 import { getLocalizedString } from './utils.module.mjs';
 import { showConfirmModal, hideConfirmModal } from './adminModal.mjs';
+import { renderWidgetContent } from './admin.widgets.render.mjs';
+import { createLinkMixin } from './admin.widgets.links.mjs';
+import { createButtonMixin } from './admin.widgets.buttons.mjs';
+
+const emptyImageLink = () => ({ imageUrl: '', cssClass: '', title: '', altText: '', linkUrl: '', openInNewTab: true });
+const emptyFormData = () => ({
+    title: '',
+    widgetType: 'LinkList',
+    displayOrder: 0,
+    isEnabled: true,
+    links: [],
+    imageLink: emptyImageLink(),
+    buttons: []
+});
 
 Alpine.data('widgetManager', () => ({
-widgets: [],
-isLoading: true,
-currentWidgetId: window.emptyGuid,
-editCanvas: null,
-linkModal: null,
-buttonModal: null,
-deleteTarget: {
-    widgetId: null,
-    linkIndex: -1
-},
-formData: {
-        title: '',
-        widgetType: 'LinkList',
-        displayOrder: 0,
-        isEnabled: true,
-        links: [],
-        imageLink: {
-            imageUrl: '',
-            cssClass: '',
-            title: '',
-            altText: '',
-            linkUrl: '',
-            openInNewTab: true
-        },
-        buttons: []
-    },
-    linkDialog: {
-        isNew: true,
-        index: -1,
-        data: {
-            name: '',
-            url: '',
-            icon: '',
-            order: 1,
-            openInNewTab: true
-        }
-    },
-    buttonDialog: {
-        isNew: true,
-        index: -1,
-        data: {
-            text: '',
-            url: '',
-            cssClass: 'btn-outline-primary',
-            openInNewTab: true
-        }
-    },
+    widgets: [],
+    isLoading: true,
+    currentWidgetId: window.emptyGuid,
+    editCanvas: null,
+    linkModal: null,
+    buttonModal: null,
+    deleteTarget: { widgetId: null, linkIndex: -1 },
+    formData: emptyFormData(),
+    ...createLinkMixin(),
+    ...createButtonMixin(),
 
     async init() {
         this.editCanvas = new bootstrap.Offcanvas(this.$refs.editWidgetCanvas);
@@ -87,70 +64,11 @@ formData: {
         return this.formData.links.length > 0;
     },
 
-    renderWidgetContent(widget) {
-        if (widget.widgetType === 'LinkList' && widget.contentCode) {
-            try {
-                const links = JSON.parse(widget.contentCode);
-                const sortedLinks = links.sort((a, b) => a.order - b.order);
-
-                return sortedLinks.map(link => {
-                    const target = link.openInNewTab ? '_blank' : '_self';
-                    const icon = link.icon ? `<i class="${link.icon} me-1"></i>` : '';
-                    const externalIcon = link.openInNewTab ? '<i class="bi-box-arrow-up-right ms-1 small"></i>' : '';
-
-                    return `<a href="${link.url}" target="${target}" class="d-block mb-2">${icon}${link.name}${externalIcon}</a>`;
-                }).join('');
-            } catch (e) {
-                return '<div class="text-muted small">Invalid link data</div>';
-            }
-        }
-        if (widget.widgetType === 'ImageLink' && widget.contentCode) {
-            try {
-                const data = JSON.parse(widget.contentCode);
-                const imgTag = `<img src="${data.imageUrl}" class="${data.cssClass || ''}" title="${data.title || ''}" alt="${data.altText || ''}" style="max-width:100%" />`;
-                if (data.linkUrl) {
-                    const target = data.openInNewTab ? '_blank' : '_self';
-                    const rel = data.openInNewTab ? 'noopener noreferrer' : '';
-                    return `<a href="${data.linkUrl}" target="${target}" rel="${rel}">${imgTag}</a>`;
-                }
-                return imgTag;
-            } catch (e) {
-                return '<div class="text-muted small">Invalid image link data</div>';
-            }
-        }
-        if (widget.widgetType === 'ButtonLink' && widget.contentCode) {
-            try {
-                const buttons = JSON.parse(widget.contentCode);
-                return '<div class="btn-group">' + buttons.map(btn => {
-                    const target = btn.openInNewTab ? '_blank' : '_self';
-                    const rel = btn.openInNewTab ? 'noopener noreferrer' : '';
-                    return `<a href="${btn.url}" target="${target}" rel="${rel}" class="btn ${btn.cssClass || 'btn-outline-primary'}">${btn.text}</a>`;
-                }).join('') + '</div>';
-            } catch (e) {
-                return '<div class="text-muted small">Invalid button link data</div>';
-            }
-        }
-        return '';
-    },
+    renderWidgetContent,
 
     initCreateWidget() {
         this.currentWidgetId = window.emptyGuid;
-        this.formData = {
-            title: '',
-            widgetType: 'LinkList',
-            displayOrder: 0,
-            isEnabled: true,
-            links: [],
-            imageLink: {
-                imageUrl: '',
-                cssClass: '',
-                title: '',
-                altText: '',
-                linkUrl: '',
-                openInNewTab: true
-            },
-            buttons: []
-        };
+        this.formData = emptyFormData();
         this.editCanvas.show();
     },
 
@@ -160,27 +78,15 @@ formData: {
             this.currentWidgetId = widget.id;
 
             let links = [];
-            let imageLink = { imageUrl: '', cssClass: '', title: '', altText: '', linkUrl: '', openInNewTab: true };
+            let imageLink = emptyImageLink();
             let buttons = [];
 
             if (widget.widgetType === 'LinkList' && widget.contentCode) {
-                try {
-                    links = JSON.parse(widget.contentCode);
-                } catch (e) {
-                    links = [];
-                }
+                try { links = JSON.parse(widget.contentCode); } catch (e) { links = []; }
             } else if (widget.widgetType === 'ImageLink' && widget.contentCode) {
-                try {
-                    imageLink = JSON.parse(widget.contentCode);
-                } catch (e) {
-                    imageLink = { imageUrl: '', cssClass: '', title: '', altText: '', linkUrl: '', openInNewTab: true };
-                }
+                try { imageLink = JSON.parse(widget.contentCode); } catch (e) { imageLink = emptyImageLink(); }
             } else if (widget.widgetType === 'ButtonLink' && widget.contentCode) {
-                try {
-                    buttons = JSON.parse(widget.contentCode);
-                } catch (e) {
-                    buttons = [];
-                }
+                try { buttons = JSON.parse(widget.contentCode); } catch (e) { buttons = []; }
             }
 
             this.formData = {
@@ -188,9 +94,9 @@ formData: {
                 widgetType: widget.widgetType,
                 displayOrder: widget.displayOrder,
                 isEnabled: widget.isEnabled,
-                links: links,
-                imageLink: imageLink,
-                buttons: buttons
+                links,
+                imageLink,
+                buttons
             };
 
             this.editCanvas.show();
@@ -246,17 +152,14 @@ formData: {
             contentCode = JSON.stringify(this.formData.buttons);
         }
 
-        const requestData = {
-            title: this.formData.title,
-            widgetType: this.formData.widgetType,
-            displayOrder: this.formData.displayOrder,
-            isEnabled: this.formData.isEnabled,
-            contentCode: contentCode
-        };
-
         try {
-            await fetch2(apiAddress, verb, requestData);
-
+            await fetch2(apiAddress, verb, {
+                title: this.formData.title,
+                widgetType: this.formData.widgetType,
+                displayOrder: this.formData.displayOrder,
+                isEnabled: this.formData.isEnabled,
+                contentCode
+            });
             this.editCanvas.hide();
             await this.loadWidgets();
             success(isCreate ? getLocalizedString('widgetCreated') : getLocalizedString('widgetUpdated'));
@@ -266,148 +169,9 @@ formData: {
     },
 
     onWidgetTypeChange() {
-        if (this.formData.widgetType !== 'LinkList') {
-            this.formData.links = [];
-        }
-        if (this.formData.widgetType !== 'ImageLink') {
-            this.formData.imageLink = { imageUrl: '', cssClass: '', title: '', altText: '', linkUrl: '', openInNewTab: true };
-        }
-        if (this.formData.widgetType !== 'ButtonLink') {
-            this.formData.buttons = [];
-        }
-    },
-
-    // Button management methods
-    addNewButton() {
-        if (this.formData.buttons.length >= 3) {
-            alert(getLocalizedString('maxButtons'));
-            return;
-        }
-        this.buttonDialog = {
-            isNew: true,
-            index: -1,
-            data: {
-                text: '',
-                url: '',
-                cssClass: 'btn-outline-primary',
-                openInNewTab: true
-            }
-        };
-        this.buttonModal.show();
-    },
-
-    editButton(index) {
-        this.buttonDialog = {
-            isNew: false,
-            index: index,
-            data: { ...this.formData.buttons[index] }
-        };
-        this.buttonModal.show();
-    },
-
-    removeButton(index) {
-        showConfirmModal({
-            title: 'Remove Button',
-            body: getLocalizedString('removeButton'),
-            confirmText: 'Remove',
-            confirmClass: 'btn-outline-danger',
-            confirmIcon: 'bi-trash',
-            onConfirm: () => {
-                this.formData.buttons.splice(index, 1);
-                hideConfirmModal();
-            }
-        });
-    },
-
-    saveButtonDialog() {
-        if (!this.buttonDialog.data.text || !this.buttonDialog.data.url) {
-            alert(getLocalizedString('textUrlRequired'));
-            return;
-        }
-
-        if (this.buttonDialog.isNew) {
-            this.formData.buttons.push({ ...this.buttonDialog.data });
-        } else {
-            this.formData.buttons[this.buttonDialog.index] = { ...this.buttonDialog.data };
-        }
-
-        this.buttonModal.hide();
-    },
-
-    // Link management methods
-    addNewLink() {
-        this.linkDialog = {
-            isNew: true,
-            index: -1,
-            data: {
-                name: '',
-                url: '',
-                icon: '',
-                order: this.getNextLinkOrder(),
-                openInNewTab: true
-            }
-        };
-        this.linkModal.show();
-    },
-
-    editLink(index) {
-        const sortedLinks = this.sortedLinks;
-        const actualIndex = this.formData.links.findIndex(l => l === sortedLinks[index]);
-        
-        this.linkDialog = {
-            isNew: false,
-            index: actualIndex,
-            data: { ...this.formData.links[actualIndex] }
-        };
-        this.linkModal.show();
-    },
-
-    removeLink(index) {
-        showConfirmModal({
-            title: 'Remove Link',
-            body: getLocalizedString('removeLink'),
-            confirmText: 'Remove',
-            confirmClass: 'btn-outline-danger',
-            confirmIcon: 'bi-trash',
-            onConfirm: () => {
-                const sortedLinks = this.sortedLinks;
-                const actualIndex = this.formData.links.findIndex(l => l === sortedLinks[index]);
-                this.formData.links.splice(actualIndex, 1);
-                hideConfirmModal();
-            }
-        });
-    },
-
-    moveLink(index, direction) {
-        const sortedLinks = this.sortedLinks;
-        const newIndex = index + direction;
-        
-        if (newIndex >= 0 && newIndex < sortedLinks.length) {
-            const tempOrder = sortedLinks[index].order;
-            sortedLinks[index].order = sortedLinks[newIndex].order;
-            sortedLinks[newIndex].order = tempOrder;
-        }
-    },
-
-    saveLinkDialog() {
-        if (!this.linkDialog.data.name || !this.linkDialog.data.url) {
-            alert(getLocalizedString('nameUrlRequired'));
-            return;
-        }
-        
-        if (this.linkDialog.isNew) {
-            this.formData.links.push({ ...this.linkDialog.data });
-        } else {
-            this.formData.links[this.linkDialog.index] = { ...this.linkDialog.data };
-        }
-        
-        this.linkModal.hide();
-    },
-
-    getNextLinkOrder() {
-        return this.formData.links.length > 0 
-            ? Math.max(...this.formData.links.map(l => l.order)) + 1 
-            : 1;
+        if (this.formData.widgetType !== 'LinkList') this.formData.links = [];
+        if (this.formData.widgetType !== 'ImageLink') this.formData.imageLink = emptyImageLink();
+        if (this.formData.widgetType !== 'ButtonLink') this.formData.buttons = [];
     },
 
     getLocalizedString(key) {
