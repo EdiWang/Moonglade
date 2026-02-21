@@ -2,14 +2,13 @@ import { Alpine } from '/js/app/alpine-init.mjs';
 import { fetch2 } from '/js/app/httpService.mjs?v=1500';
 import { success } from '/js/app/toastService.mjs';
 import { getLocalizedString } from './utils.module.mjs';
+import { showConfirmModal, hideConfirmModal } from './adminModal.mjs';
 
 Alpine.data('categoryManager', () => ({
     categories: [],
     isLoading: true,
     currentCategoryId: window.emptyGuid,
     editCanvas: null,
-    confirmModal: null,
-    confirmMessage: '',
     pendingDeleteId: null,
     formData: {
         slug: '',
@@ -19,7 +18,6 @@ Alpine.data('categoryManager', () => ({
 
     async init() {
         this.editCanvas = new bootstrap.Offcanvas(this.$refs.editCatCanvas);
-        this.confirmModal = new bootstrap.Modal(this.$refs.confirmModal);
         await this.loadCategories();
     },
 
@@ -61,18 +59,20 @@ Alpine.data('categoryManager', () => ({
 
     deleteCategory(id) {
         this.pendingDeleteId = id;
-        this.confirmMessage = getLocalizedString('confirmDelete');
-        this.confirmModal.show();
-    },
-
-    async confirmAction() {
-        if (this.pendingDeleteId) {
-            await fetch2(`/api/category/${this.pendingDeleteId}`, 'DELETE');
-            await this.loadCategories();
-            success(getLocalizedString('categoryDeleted'));
-            this.confirmModal.hide();
-            this.pendingDeleteId = null;
-        }
+        showConfirmModal({
+            title: getLocalizedString('confirmDelete'),
+            body: getLocalizedString('confirmDelete'),
+            confirmText: 'Delete',
+            confirmClass: 'btn-outline-danger',
+            confirmIcon: 'bi-trash',
+            onConfirm: async () => {
+                await fetch2(`/api/category/${this.pendingDeleteId}`, 'DELETE');
+                await this.loadCategories();
+                success(getLocalizedString('categoryDeleted'));
+                hideConfirmModal();
+                this.pendingDeleteId = null;
+            }
+        });
     },
 
     async handleSubmit() {
