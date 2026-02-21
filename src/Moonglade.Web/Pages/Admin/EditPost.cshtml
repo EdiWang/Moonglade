@@ -211,6 +211,8 @@
             <button type="submit"
                     class="btn btn-outline-secondary"
                     id="btn-preview"
+                    x-show="formData.postStatus !== 'Published'"
+                    x-cloak
                     x-bind:disabled="isSaving"
                     x-on:click="submitAction = 'preview'">
                 <i class="bi-eye me-1"></i>@SharedLocalizer["Preview"]
