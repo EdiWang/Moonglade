@@ -418,7 +418,6 @@ div.mce-fullscreen {
 
 .admin-settings-entry-container {
     height: calc(100vh - 215px);
-    overflow-y: scroll;
     overflow-x: hidden;
 }
 

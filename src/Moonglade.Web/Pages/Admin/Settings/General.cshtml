@@ -182,7 +182,7 @@
                     </div>
                 </div>
             </div>
-            <div class="col-6">
+            <div class="col-md-6">
                 <div class="mb-3">
                     <h4 class="admin-subtitle fw-bold mb-2">
                         @SharedLocalizer["Side Bar"]
@@ -301,50 +301,51 @@
                         </div>
 
                         <div class="rounded-3 border mb-2">
-                        <div class="settings-entry row align-items-center rounded-3 py-3 px-2">
-                            <label>@SharedLocalizer["Side bar items"]</label>
-                            <div class="text-muted">@SharedLocalizer["Show or hide widgets that display on the side bar"]</div>
-                        </div>
+                            <div class="settings-entry row align-items-center rounded-3 py-3 px-2">
+                                <label>@SharedLocalizer["Side bar items"]</label>
+                                <div class="text-muted">@SharedLocalizer["Show or hide widgets that display on the side bar"]</div>
+                            </div>
 
-                        <div class="border-top settings-entry row align-items-center py-3 px-2">
-                            <div class="col-auto">
-                                <i class="bi-tags settings-entry-icon"></i>
-                            </div>
-                            <div class="col">
-                                <label asp-for="@ViewModel.HotTagAmount"></label>
-                                <div class="text-muted">@SharedLocalizer["Set to 0 to hide tags widget"]</div>
-                            </div>
-                            <div class="col-4">
-                                <input asp-for="@ViewModel.HotTagAmount" class="form-control" min="1" max="32" />
-                            </div>
-                        </div>
-
-                        <div class="border-top settings-entry row align-items-center py-3 px-2">
-                            <div class="col-auto">
-                                <i class="bi-folder2 settings-entry-icon"></i>
-                            </div>
-                            <div class="col">
-                                <label asp-for="@ViewModel.WidgetsCategoryList" class="form-check-label"></label>
-                            </div>
-                            <div class="col-md-5 text-end">
-                                <div class="form-check form-switch form-control-lg">
-                                    <input type="hidden" name="WidgetsCategoryList" value="false">
-                                    <input type="checkbox" name="WidgetsCategoryList" value="true" class="form-check-input" @(ViewModel.WidgetsCategoryList ? "checked" : null)>
+                            <div class="border-top settings-entry row align-items-center py-3 px-2">
+                                <div class="col-auto">
+                                    <i class="bi-tags settings-entry-icon"></i>
+                                </div>
+                                <div class="col">
+                                    <label asp-for="@ViewModel.HotTagAmount"></label>
+                                    <div class="text-muted">@SharedLocalizer["Set to 0 to hide tags widget"]</div>
+                                </div>
+                                <div class="col-4">
+                                    <input asp-for="@ViewModel.HotTagAmount" class="form-control" min="1" max="32" />
                                 </div>
                             </div>
-                        </div>
 
-                        <div class="border-top settings-entry row align-items-center rounded-bottom-3 py-3 px-2">
-                            <div class="col-auto">
-                                <i class="bi-menu-button settings-entry-icon"></i>
+                            <div class="border-top settings-entry row align-items-center py-3 px-2">
+                                <div class="col-auto">
+                                    <i class="bi-folder2 settings-entry-icon"></i>
+                                </div>
+                                <div class="col">
+                                    <label asp-for="@ViewModel.WidgetsCategoryList" class="form-check-label"></label>
+                                </div>
+                                <div class="col-md-5 text-end">
+                                    <div class="form-check form-switch form-control-lg">
+                                        <input type="hidden" name="WidgetsCategoryList" value="false">
+                                        <input type="checkbox" name="WidgetsCategoryList" value="true" class="form-check-input" @(ViewModel.WidgetsCategoryList ? "checked" : null)>
+                                    </div>
+                                </div>
                             </div>
-                            <div class="col">
-                                <label asp-for="@ViewModel.WidgetsSubscriptionButtons" class="form-check-label"></label>
-                            </div>
-                            <div class="col-md-5 text-end">
-                                <div class="form-check form-switch form-control-lg">
-                                    <input type="hidden" name="WidgetsSubscriptionButtons" value="false">
-                                    <input type="checkbox" name="WidgetsSubscriptionButtons" value="true" class="form-check-input" @(ViewModel.WidgetsSubscriptionButtons ? "checked" : null)>
+
+                            <div class="border-top settings-entry row align-items-center rounded-bottom-3 py-3 px-2">
+                                <div class="col-auto">
+                                    <i class="bi-menu-button settings-entry-icon"></i>
+                                </div>
+                                <div class="col">
+                                    <label asp-for="@ViewModel.WidgetsSubscriptionButtons" class="form-check-label"></label>
+                                </div>
+                                <div class="col-md-5 text-end">
+                                    <div class="form-check form-switch form-control-lg">
+                                        <input type="hidden" name="WidgetsSubscriptionButtons" value="false">
+                                        <input type="checkbox" name="WidgetsSubscriptionButtons" value="true" class="form-check-input" @(ViewModel.WidgetsSubscriptionButtons ? "checked" : null)>
+                                    </div>
                                 </div>
                             </div>
                         </div>
