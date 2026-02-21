@@ -130,6 +130,7 @@ export function loadTinyMCE(textareaSelector) {
         branding: false,
         promotion: false,
         statusbar: false,
+        menubar: false,
         block_formats: 'Paragraph=p; Header 2=h2; Header 3=h3; Header 4=h4; Preformatted=pre',
         plugins: 'advlist autolink autosave link image lists charmap preview anchor pagebreak searchreplace wordcount visualblocks visualchars code fullscreen insertdatetime media nonbreaking save table directionality codesample emoticons',
         toolbar: 'undo redo | blocks bold italic underline strikethrough forecolor backcolor | pastetext removeformat | hr link image codesample table | alignleft aligncenter alignright alignjustify | bullist numlist outdent indent | code fullscreen',
