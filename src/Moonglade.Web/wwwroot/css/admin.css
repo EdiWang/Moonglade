@@ -140,9 +140,9 @@
     overflow: hidden;
 }
 
-.post-editor-container #post-edit-form {
-    min-height: 0;
-}
+    .post-editor-container #post-edit-form {
+        min-height: 0;
+    }
 
 .post-editor-row {
     flex: 1;
@@ -158,11 +158,11 @@
     overflow: hidden;
 }
 
-.post-editor-main .tox-tinymce {
-    flex: 1 1 0;
-    min-height: 200px;
-    height: auto !important;
-}
+    .post-editor-main .tox-tinymce {
+        flex: 1 1 0;
+        min-height: 200px;
+        height: auto !important;
+    }
 
 .post-editor-md-wrapper {
     display: flex;
@@ -171,10 +171,10 @@
     min-height: 0;
 }
 
-.post-editor-md-wrapper .monaco-target {
-    flex: 1;
-    min-height: 200px;
-}
+    .post-editor-md-wrapper .monaco-target {
+        flex: 1;
+        min-height: 200px;
+    }
 
 .post-editor-abstract {
     flex-shrink: 0;
