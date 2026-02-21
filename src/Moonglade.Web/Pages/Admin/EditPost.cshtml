@@ -38,9 +38,9 @@
 </div>
 
 <div x-show="!isLoading" x-cloak class="post-editor-container d-flex flex-column px-3 pt-2">
-    <form id="post-edit-form" x-on:submit.prevent="handleSubmit">
-        <div class="row g-2">
-            <div class="col-md-9 col-xl-10">
+    <form id="post-edit-form" x-on:submit.prevent="handleSubmit" class="d-flex flex-column flex-grow-1">
+        <div class="row g-2 post-editor-row">
+            <div class="col-md-9 col-xl-10 post-editor-main">
                 <input type="text"
                        x-model="formData.title"
                        class="form-control form-control-lg mb-1"
@@ -53,7 +53,7 @@
                     <textarea class="post-content-textarea" x-model="formData.editorContent"></textarea>
                 </template>
                 <template x-if="editorChoice === 'markdown'">
-                    <div>
+                    <div class="post-editor-md-wrapper">
                         <div id="markdown-content-editor" class="monaco-target overflow-y-hidden"></div>
                         <textarea class="post-content-textarea d-none" x-model="formData.editorContent"></textarea>
                         <div class="md-editor-image-upload-area text-center border-secondary-subtle p-3 mt-1">
@@ -62,7 +62,7 @@
                     </div>
                 </template>
 
-                <div class="mt-1">
+                <div class="mt-1 post-editor-abstract">
                     <div class="form-floating">
                         <textarea x-model="formData.abstract"
                                   placeholder="@SharedLocalizer["Abstract"]"
@@ -75,7 +75,7 @@
                     </div>
                 </div>
             </div>
-            <div class="col-md-3 col-xl-2">
+            <div class="col-md-3 col-xl-2 post-editor-sidebar">
                 <div class="card mb-3">
                     <div class="card-body">
                         <div class="input-group input-group-sm mb-2">
@@ -185,7 +185,7 @@
             </div>
         </div>
 
-        <div class="mt-3">
+        <div class="mt-2 post-editor-actions">
             <button type="submit"
                     class="btn btn-outline-accent"
                     id="btn-save"

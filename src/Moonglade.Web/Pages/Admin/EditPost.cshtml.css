@@ -1,9 +1,3 @@
-﻿.post-editor-container {
-    height: 100%;
-    overflow: hidden;
+﻿.post-content-textarea {
     min-height: 0;
-}
-
-.monaco-target {
-    min-height: calc(100vh - 370px);
 }
