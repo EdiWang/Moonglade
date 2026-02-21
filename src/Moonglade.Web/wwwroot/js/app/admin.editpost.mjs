@@ -239,10 +239,12 @@ Alpine.data('postEditor', () => ({
     },
 
     unlockSlug() {
-        const message = 'This post was published for a period of time, changing slug will result in breaking SEO, would you like to continue?';
-        if (confirm(message)) {
-            this.slugUnlocked = true;
-        }
+        const modal = new bootstrap.Modal(document.getElementById('slugUnlockModal'));
+        modal.show();
+    },
+
+    confirmUnlockSlug() {
+        this.slugUnlocked = true;
     },
 
     toggleCategory(catId, checked) {
