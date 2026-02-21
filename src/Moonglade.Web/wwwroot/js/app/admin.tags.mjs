@@ -2,7 +2,7 @@ import { Alpine } from '/js/app/alpine-init.mjs';
 import { fetch2 } from '/js/app/httpService.mjs?v=1500';
 import { success, error } from '/js/app/toastService.mjs';
 import { getLocalizedString } from './utils.module.mjs';
-import { showConfirmModal, hideConfirmModal } from './adminModal.mjs';
+import { showConfirmModal, hideConfirmModal, escapeHtml } from './adminModal.mjs';
 
 Alpine.data('tagManager', () => ({
 tags: [],
@@ -133,7 +133,7 @@ async init() {
     async deleteTag(tagId, tagName) {
         showConfirmModal({
             title: 'Delete Tag',
-            body: `Confirm to delete tag: <strong>${tagName}</strong>?`,
+            body: `Confirm to delete tag: <strong>${escapeHtml(tagName)}</strong>?`,
             confirmText: 'Delete',
             confirmClass: 'btn-outline-danger',
             confirmIcon: 'bi-trash',
