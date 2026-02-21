@@ -20,6 +20,8 @@ using Moonglade.Setup;
 using Moonglade.Syndication;
 using Moonglade.Web.Extensions;
 using Moonglade.Web.Handlers;
+using Moonglade.Web.Services;
+using System.Net.Http.Headers;
 using Moonglade.Webmention;
 using SixLabors.Fonts;
 using System.Globalization;
@@ -244,6 +246,15 @@ public class Program
 
         services.AddSingleton<CannonService>();
         services.AddHostedService(sp => sp.GetRequiredService<CannonService>());
+
+        services.AddSingleton<UpdateCheckerState>();
+        services.AddHttpClient<IGitHubReleaseClient, GitHubReleaseClient>(client =>
+        {
+            client.BaseAddress = new Uri("https://api.github.com");
+            client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/vnd.github+json"));
+            client.DefaultRequestHeaders.UserAgent.Add(new ProductInfoHeaderValue("Moonglade", VersionHelper.AppVersionBasic));
+        });
+        services.AddHostedService<UpdateCheckService>();
     }
 
     private static void ConfigureDatabase(IServiceCollection services, IConfiguration configuration)
