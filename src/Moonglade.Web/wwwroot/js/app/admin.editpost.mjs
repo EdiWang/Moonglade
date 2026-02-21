@@ -2,6 +2,7 @@ import { Alpine } from '/js/app/alpine-init.mjs';
 import { fetch2 } from './httpService.mjs?v=1500';
 import { success, error } from './toastService.mjs';
 import { loadTinyMCE, keepAlive } from './admin.editor.module.mjs';
+import { showConfirmModal, hideConfirmModal, escapeHtml } from './adminModal.mjs';
 
 function slugify(text) {
     if (!/^[A-Za-z][A-Za-z0-9 \(\)#,\.\?]*$/.test(text)) {
@@ -239,12 +240,16 @@ Alpine.data('postEditor', () => ({
     },
 
     unlockSlug() {
-        const modal = new bootstrap.Modal(document.getElementById('slugUnlockModal'));
-        modal.show();
-    },
-
-    confirmUnlockSlug() {
-        this.slugUnlocked = true;
+        showConfirmModal({
+            title: 'Modify Slug',
+            body: '<div class="alert alert-warning">This post was published for a period of time, changing slug will result in breaking SEO, would you like to continue?</div>',
+            confirmText: 'Modify',
+            confirmClass: 'btn-warning',
+            onConfirm: () => {
+                this.slugUnlocked = true;
+                hideConfirmModal();
+            }
+        });
     },
 
     toggleCategory(catId, checked) {
@@ -336,11 +341,20 @@ Alpine.data('postEditor', () => ({
         }
     },
 
-    async unpublishPost() {
-        if (!this.postId) return;
-        await fetch2(`/api/post/${this.postId}/unpublish`, 'PUT', {});
-        success('Post unpublished');
-        location.reload();
+    openUnpublishModal() {
+        showConfirmModal({
+            title: 'Unpublish Post',
+            body: `<div class="alert alert-warning">Unpublishing this post will remove it from the public site and turn it into a draft. This will have impact on SEO. Please confirm.</div><p>${escapeHtml(this.formData.title)}</p>`,
+            confirmText: 'Confirm',
+            confirmClass: 'btn-danger',
+            onConfirm: async () => {
+                if (!this.postId) return;
+                await fetch2(`/api/post/${this.postId}/unpublish`, 'PUT', {});
+                success('Post unpublished');
+                hideConfirmModal();
+                location.reload();
+            }
+        });
     },
 
     initScheduleState() {
