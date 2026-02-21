@@ -2,17 +2,13 @@ import { Alpine } from '/js/app/alpine-init.mjs';
 import { fetch2 } from '/js/app/httpService.mjs?v=1500';
 import { success, error } from '/js/app/toastService.mjs';
 import { getLocalizedString } from './utils.module.mjs';
+import { showConfirmModal, hideConfirmModal, escapeHtml } from './adminModal.mjs';
 
 Alpine.data('tagManager', () => ({
 tags: [],
 isLoading: true,
 tagFilter: '',
 editCanvas: null,
-deleteModal: null,
-deleteTarget: {
-    tagId: null,
-    tagName: ''
-},
 formData: {
     displayName: ''
 },
@@ -20,7 +16,6 @@ originalTagNames: {},
 
 async init() {
     this.editCanvas = new bootstrap.Offcanvas(this.$refs.editTagCanvas);
-    this.deleteModal = new bootstrap.Modal(this.$refs.deleteModal);
     await this.loadTags();
 },
 
@@ -136,19 +131,23 @@ async init() {
     },
 
     async deleteTag(tagId, tagName) {
-        this.deleteTarget = { tagId, tagName };
-        this.deleteModal.show();
-    },
-
-    async confirmDelete() {
-        try {
-            await fetch2(`/api/tags/${this.deleteTarget.tagId}`, 'DELETE');
-            this.deleteModal.hide();
-            await this.loadTags();
-            success(getLocalizedString('tagDeleted'));
-        } catch (err) {
-            error(err);
-        }
+        showConfirmModal({
+            title: 'Delete Tag',
+            body: `Confirm to delete tag: <strong>${escapeHtml(tagName)}</strong>?`,
+            confirmText: 'Delete',
+            confirmClass: 'btn-outline-danger',
+            confirmIcon: 'bi-trash',
+            onConfirm: async () => {
+                try {
+                    await fetch2(`/api/tags/${tagId}`, 'DELETE');
+                    hideConfirmModal();
+                    await this.loadTags();
+                    success(getLocalizedString('tagDeleted'));
+                } catch (err) {
+                    error(err);
+                }
+            }
+        });
     },
 
     async handleSubmit() {

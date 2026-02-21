@@ -2,44 +2,14 @@ import { Alpine } from '/js/app/alpine-init.mjs';
 import { fetch2 } from '/js/app/httpService.mjs?v=1500';
 import { formatUtcTime, getLocalizedString } from './utils.module.mjs';
 import { success, error } from '/js/app/toastService.mjs';
+import { showConfirmModal, hideConfirmModal } from './adminModal.mjs';
 
 Alpine.data('scheduledManager', () => ({
     posts: [],
     isLoading: true,
-    currentPostId: null,
-    modal: null,
-    deleteTargetId: null,
-    deleteMessage: '',
-    deleteModal: null,
-    cancelScheduleModal: null,
-    cancelScheduleTargetId: null,
 
     async init() {
         await this.loadPosts();
-        this.initModal();
-        this.initDeleteModal();
-        this.initCancelScheduleModal();
-    },
-
-    initModal() {
-        const modalElement = document.getElementById('publishPostModal');
-        if (modalElement && typeof bootstrap !== 'undefined') {
-            this.modal = new bootstrap.Modal(modalElement);
-        }
-    },
-
-    initDeleteModal() {
-        const modalElement = document.getElementById('deletePostModal');
-        if (modalElement && typeof bootstrap !== 'undefined') {
-            this.deleteModal = new bootstrap.Modal(modalElement);
-        }
-    },
-
-    initCancelScheduleModal() {
-        const modalElement = document.getElementById('cancelScheduleModal');
-        if (modalElement && typeof bootstrap !== 'undefined') {
-            this.cancelScheduleModal = new bootstrap.Modal(modalElement);
-        }
     },
 
     async loadPosts() {
@@ -58,35 +28,37 @@ Alpine.data('scheduledManager', () => ({
     },
 
     async deletePost(postId) {
-        this.deleteTargetId = postId;
-        this.deleteMessage = getLocalizedString('deleteConfirmation');
-        this.deleteModal?.show();
-    },
-
-    async confirmDelete() {
-        if (!this.deleteTargetId) return;
-        try {
-            await fetch2(`/api/post/${this.deleteTargetId}/recycle`, 'DELETE');
-            this.posts = this.posts.filter(p => p.id !== this.deleteTargetId);
-            success(getLocalizedString('postDeleted'));
-        } catch (err) {
-            error(err);
-        } finally {
-            this.deleteModal?.hide();
-            this.deleteTargetId = null;
-        }
+        showConfirmModal({
+            title: 'Delete Confirmation',
+            body: getLocalizedString('deleteConfirmation'),
+            confirmText: 'Delete',
+            confirmClass: 'btn-outline-danger',
+            confirmIcon: 'bi-trash',
+            onConfirm: async () => {
+                try {
+                    await fetch2(`/api/post/${postId}/recycle`, 'DELETE');
+                    this.posts = this.posts.filter(p => p.id !== postId);
+                    success(getLocalizedString('postDeleted'));
+                } catch (err) {
+                    error(err);
+                } finally {
+                    hideConfirmModal();
+                }
+            }
+        });
     },
 
     showPublishModal(postId) {
-        this.currentPostId = postId;
-        this.modal?.show();
-    },
-
-    async confirmPublish() {
-        if (!this.currentPostId) return;
-        await this.publishPost(this.currentPostId);
-        this.modal?.hide();
-        this.currentPostId = null;
+        showConfirmModal({
+            title: 'Publish Post',
+            body: 'Are you sure you want to publish this post now?',
+            confirmText: 'Publish',
+            confirmClass: 'btn-accent',
+            onConfirm: async () => {
+                await this.publishPost(postId);
+                hideConfirmModal();
+            }
+        });
     },
 
     async publishPost(postId) {
@@ -112,22 +84,24 @@ Alpine.data('scheduledManager', () => ({
     },
 
     showCancelScheduleModal(postId) {
-        this.cancelScheduleTargetId = postId;
-        this.cancelScheduleModal?.show();
-    },
-
-    async confirmCancelSchedule() {
-        if (!this.cancelScheduleTargetId) return;
-        try {
-            await fetch2(`/api/schedule/cancel/${this.cancelScheduleTargetId}`, 'PUT');
-            this.posts = this.posts.filter(p => p.id !== this.cancelScheduleTargetId);
-            success(getLocalizedString('scheduleCancelled'));
-        } catch (err) {
-            error(err);
-        } finally {
-            this.cancelScheduleModal?.hide();
-            this.cancelScheduleTargetId = null;
-        }
+        showConfirmModal({
+            title: 'Cancel Schedule',
+            body: 'Are you sure you want to cancel the scheduled publish and move this post to drafts?',
+            confirmText: 'Yes, Cancel Schedule',
+            confirmClass: 'btn-outline-accent',
+            confirmIcon: 'bi-x-circle',
+            onConfirm: async () => {
+                try {
+                    await fetch2(`/api/schedule/cancel/${postId}`, 'PUT');
+                    this.posts = this.posts.filter(p => p.id !== postId);
+                    success(getLocalizedString('scheduleCancelled'));
+                } catch (err) {
+                    error(err);
+                } finally {
+                    hideConfirmModal();
+                }
+            }
+        });
     },
 
     parseUtcSafe(dateString) {

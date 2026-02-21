@@ -217,8 +217,7 @@
             <a x-show="formData.postStatus === 'Published'"
                x-cloak
                class="unpublish-link btn btn-outline-secondary"
-               data-bs-toggle="modal"
-               data-bs-target="#unpublishPostModal">@SharedLocalizer["Unpublish"]</a>
+               x-on:click="openUnpublishModal()">@SharedLocalizer["Unpublish"]</a>
 
             <div class="schedule-info d-inline-block text-muted ms-4" x-html="scheduleInfoHtml"></div>
         </div>
@@ -259,43 +258,4 @@
             </div>
         </div>
     </form>
-
-    <!-- Slug Unlock Confirmation Modal -->
-    <div class="modal fade" id="slugUnlockModal" tabindex="-1" role="dialog" aria-labelledby="slugUnlockModalLabel" aria-hidden="true">
-        <div class="modal-dialog" role="document">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title" id="slugUnlockModalLabel">Modify Slug</h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                </div>
-                <div class="modal-body">
-                    <div class="alert alert-warning">This post was published for a period of time, changing slug will result in breaking SEO, would you like to continue?</div>
-                </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">@SharedLocalizer["Cancel"]</button>
-                    <button type="button" class="btn btn-warning" x-on:click="confirmUnlockSlug" data-bs-dismiss="modal">Modify</button>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <!-- Unpublish Post Modal -->
-    <div class="modal fade" id="unpublishPostModal" tabindex="-1" role="dialog" aria-labelledby="unpublishPostModalLabel" aria-hidden="true">
-        <div class="modal-dialog" role="document">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title" id="unpublishPostModalLabel">@SharedLocalizer["Unpublish Post"]</h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                </div>
-                <div class="modal-body">
-                    <div class="alert alert-warning">@SharedLocalizer["Unpublishing this post will remove it from the public site and turn it into a draft. This will have impact on SEO. Please confirm."]</div>
-                    <p x-text="formData.title"></p>
-                </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">@SharedLocalizer["Cancel"]</button>
-                    <a id="btn-unpublish-post" class="btn btn-danger" x-on:click="unpublishPost" data-bs-dismiss="modal">@SharedLocalizer["Confirm"]</a>
-                </div>
-            </div>
-        </div>
-    </div>
 </div>

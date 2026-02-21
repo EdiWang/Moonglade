@@ -2,6 +2,7 @@
 import { fetch2 } from '/js/app/httpService.mjs?v=1500';
 import { success, error } from '/js/app/toastService.mjs';
 import { getLocalizedString } from './utils.module.mjs';
+import { showConfirmModal, hideConfirmModal } from './adminModal.mjs';
 
 Alpine.data('widgetManager', () => ({
 widgets: [],
@@ -10,13 +11,6 @@ currentWidgetId: window.emptyGuid,
 editCanvas: null,
 linkModal: null,
 buttonModal: null,
-confirmDeleteModal: null,
-deleteConfirm: {
-    title: '',
-    message: '',
-    buttonText: '',
-    callback: null
-},
 deleteTarget: {
     widgetId: null,
     linkIndex: -1
@@ -63,7 +57,6 @@ formData: {
         this.editCanvas = new bootstrap.Offcanvas(this.$refs.editWidgetCanvas);
         this.linkModal = new bootstrap.Modal(this.$refs.linkDialogModal);
         this.buttonModal = new bootstrap.Modal(this.$refs.buttonDialogModal);
-        this.confirmDeleteModal = new bootstrap.Modal(this.$refs.confirmDeleteModal);
         await this.loadWidgets();
     },
 
@@ -207,23 +200,23 @@ formData: {
     },
 
     deleteWidget(id) {
-        this.deleteTarget.widgetId = id;
-        this.deleteConfirm = {
+        showConfirmModal({
             title: 'Delete Widget',
-            message: getLocalizedString('deleteWidget'),
-            buttonText: 'Delete',
-            callback: async () => {
+            body: getLocalizedString('deleteWidget'),
+            confirmText: 'Delete',
+            confirmClass: 'btn-outline-danger',
+            confirmIcon: 'bi-trash',
+            onConfirm: async () => {
                 try {
-                    await fetch2(`/api/widgets/${this.deleteTarget.widgetId}`, 'DELETE');
-                    this.confirmDeleteModal.hide();
+                    await fetch2(`/api/widgets/${id}`, 'DELETE');
+                    hideConfirmModal();
                     await this.loadWidgets();
                     success(getLocalizedString('widgetDeleted'));
                 } catch (err) {
                     console.error(err);
                 }
             }
-        };
-        this.confirmDeleteModal.show();
+        });
     },
 
     async handleSubmit() {
@@ -313,16 +306,17 @@ formData: {
     },
 
     removeButton(index) {
-        this.deleteConfirm = {
+        showConfirmModal({
             title: 'Remove Button',
-            message: getLocalizedString('removeButton'),
-            buttonText: 'Remove',
-            callback: () => {
+            body: getLocalizedString('removeButton'),
+            confirmText: 'Remove',
+            confirmClass: 'btn-outline-danger',
+            confirmIcon: 'bi-trash',
+            onConfirm: () => {
                 this.formData.buttons.splice(index, 1);
-                this.confirmDeleteModal.hide();
+                hideConfirmModal();
             }
-        };
-        this.confirmDeleteModal.show();
+        });
     },
 
     saveButtonDialog() {
@@ -369,20 +363,19 @@ formData: {
     },
 
     removeLink(index) {
-        this.deleteTarget.linkIndex = index;
-        this.deleteConfirm = {
+        showConfirmModal({
             title: 'Remove Link',
-            message: getLocalizedString('removeLink'),
-            buttonText: 'Remove',
-            callback: () => {
+            body: getLocalizedString('removeLink'),
+            confirmText: 'Remove',
+            confirmClass: 'btn-outline-danger',
+            confirmIcon: 'bi-trash',
+            onConfirm: () => {
                 const sortedLinks = this.sortedLinks;
-                const actualIndex = this.formData.links.findIndex(l => l === sortedLinks[this.deleteTarget.linkIndex]);
-                
+                const actualIndex = this.formData.links.findIndex(l => l === sortedLinks[index]);
                 this.formData.links.splice(actualIndex, 1);
-                this.confirmDeleteModal.hide();
+                hideConfirmModal();
             }
-        };
-        this.confirmDeleteModal.show();
+        });
     },
 
     moveLink(index, direction) {
