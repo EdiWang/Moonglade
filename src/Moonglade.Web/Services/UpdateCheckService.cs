@@ -1,18 +1,21 @@
-using Edi.AspNetCore.Utils;
-using Microsoft.Extensions.Hosting;
-using Microsoft.Extensions.Logging;
-
 namespace Moonglade.Web.Services;
 
 public class UpdateCheckService(
     IGitHubReleaseClient gitHubReleaseClient,
     UpdateCheckerState updateCheckerState,
+    IConfiguration configuration,
     ILogger<UpdateCheckService> logger) : BackgroundService
 {
     private static readonly TimeSpan CheckInterval = TimeSpan.FromHours(24);
 
     protected override async Task ExecuteAsync(CancellationToken stoppingToken)
     {
+        if (!configuration.GetValue("EnableUpdateCheck", true))
+        {
+            logger.LogInformation("UpdateCheckService is disabled via configuration.");
+            return;
+        }
+
         // Wait until the next 6:00 UTC
         var delay = GetDelayUntilNextCheckTime();
         logger.LogInformation("UpdateCheckService started. First check in {Delay}.", delay);
