@@ -132,13 +132,6 @@
                         </div>
                         <div class="form-check form-switch">
                             <input type="checkbox"
-                                   x-model="formData.feedIncluded"
-                                   class="form-check-input"
-                                   id="feedIncluded">
-                            <label for="feedIncluded" class="form-check-label">Include in feed and sitemap</label>
-                        </div>
-                        <div class="form-check form-switch">
-                            <input type="checkbox"
                                    x-model="formData.featured"
                                    class="form-check-input"
                                    id="featured">
@@ -220,38 +213,22 @@
                 <span x-show="formData.postStatus === 'Published' || formData.postStatus === 'Scheduled'" x-cloak>@SharedLocalizer["Update"]</span>
             </button>
 
-            <div x-show="formData.postStatus !== 'Published'" x-cloak class="btn-group">
-                <button type="submit"
-                        class="btn btn-outline-accent"
-                        id="btn-publish"
-                        x-bind:disabled="isSaving"
-                        x-on:click="submitAction = 'publish'">
-                    @SharedLocalizer["Publish"]
-                </button>
-                <button type="button"
-                        class="btn btn-outline-accent dropdown-toggle dropdown-toggle-split"
-                        data-bs-toggle="dropdown"
-                        aria-expanded="false">
-                    <span class="visually-hidden">Toggle Dropdown</span>
-                </button>
-                <ul class="dropdown-menu">
-                    <li>
-                        <a class="dropdown-item" href="#" data-bs-toggle="modal" data-bs-target="#schedulePublishModal">
-                            <i class="bi-clock"></i>
-                            Schedule Publish Time
-                        </a>
-                    </li>
-                    <li>
-                        <button class="btn btn-link dropdown-item"
-                                id="btn-preview"
-                                type="submit"
-                                x-on:click="submitAction = 'preview'">
-                            <i class="bi-eye"></i>
-                            @SharedLocalizer["Preview"]
-                        </button>
-                    </li>
-                </ul>
-            </div>
+            <button type="submit"
+                    class="btn btn-outline-secondary"
+                    id="btn-preview"
+                    x-bind:disabled="isSaving"
+                    x-on:click="submitAction = 'preview'">
+                <i class="bi-eye me-1"></i>@SharedLocalizer["Preview"]
+            </button>
+
+            <button x-show="formData.postStatus !== 'Published'" x-cloak
+                    type="button"
+                    class="btn btn-outline-accent"
+                    id="btn-publish"
+                    x-bind:disabled="isSaving"
+                    x-on:click="openPublishModal()">
+                @SharedLocalizer["Publish"]
+            </button>
 
             <div class="schedule-info d-inline-block text-muted ms-4" x-html="scheduleInfoHtml"></div>
         </div>
@@ -283,25 +260,37 @@
             </div>
         </div>
 
-        <!-- Schedule Publish Modal -->
-        <div class="modal fade" id="schedulePublishModal" tabindex="-1" role="dialog" aria-labelledby="schedulePublishModalLabel" aria-hidden="true">
+        <!-- Publish Modal -->
+        <div class="modal fade" id="publishModal" tabindex="-1" role="dialog" aria-labelledby="publishModalLabel" aria-hidden="true">
             <div class="modal-dialog" role="document">
                 <div class="modal-content">
                     <div class="modal-header">
-                        <h5 class="modal-title" id="schedulePublishModalLabel">@SharedLocalizer["Schedule Publish Time"]</h5>
+                        <h5 class="modal-title" id="publishModalLabel">@SharedLocalizer["Publish"]</h5>
                         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                     </div>
                     <div class="modal-body">
-                        <div class="mb-2">
-                            @SharedLocalizer["Set a time in your local time zone to schedule the post to be automatically published."]
+                        <div class="form-check form-switch mb-3">
+                            <input type="checkbox"
+                                   x-model="formData.feedIncluded"
+                                   class="form-check-input"
+                                   id="publishFeedIncluded">
+                            <label for="publishFeedIncluded" class="form-check-label">Include in feed and sitemap</label>
                         </div>
-                        <div class="mb-2">
+                        <div class="form-check form-switch mb-3">
+                            <input type="checkbox"
+                                   x-model="enableSchedule"
+                                   class="form-check-input"
+                                   id="enableScheduleToggle">
+                            <label for="enableScheduleToggle" class="form-check-label">Schedule Publish</label>
+                        </div>
+                        <div x-show="enableSchedule" x-cloak class="mb-2">
+                            <label class="form-label">@SharedLocalizer["Set a time in your local time zone to schedule the post to be automatically published."]</label>
                             <input type="datetime-local" x-model="formData.scheduledPublishTime" class="form-control" :min="minScheduleDate" />
                         </div>
                     </div>
                     <div class="modal-footer">
-                        <button id="btn-cancel-schedule" type="button" class="btn btn-outline-danger" data-bs-dismiss="modal" x-on:click="cancelSchedule">@SharedLocalizer["Cancel Schedule"]</button>
-                        <button id="btn-schedule-publish" class="btn btn-accent" data-bs-dismiss="modal" x-on:click="confirmSchedule">@SharedLocalizer["Confirm"]</button>
+                        <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">@SharedLocalizer["Cancel"]</button>
+                        <button type="button" class="btn btn-accent" x-on:click="submitPublish">@SharedLocalizer["Submit"]</button>
                     </div>
                 </div>
             </div>
