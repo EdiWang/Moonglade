@@ -1,3 +1,5 @@
+using Cronos;
+
 namespace Moonglade.Web.Services;
 
 public class UpdateCheckService(
@@ -6,7 +8,7 @@ public class UpdateCheckService(
     IConfiguration configuration,
     ILogger<UpdateCheckService> logger) : BackgroundService
 {
-    private static readonly TimeSpan CheckInterval = TimeSpan.FromHours(24);
+    private const string DefaultCron = "0 6 * * *";
 
     protected override async Task ExecuteAsync(CancellationToken stoppingToken)
     {
@@ -16,31 +18,43 @@ public class UpdateCheckService(
             return;
         }
 
-        // Wait until the next 6:00 UTC
-        var delay = GetDelayUntilNextCheckTime();
-        logger.LogInformation("UpdateCheckService started. First check in {Delay}.", delay);
-
+        var cronExpression = configuration.GetValue<string>("UpdateCheckCron") ?? DefaultCron;
+        CronExpression cron;
         try
         {
-            await Task.Delay(delay, stoppingToken);
+            cron = CronExpression.Parse(cronExpression);
         }
-        catch (OperationCanceledException)
+        catch (CronFormatException ex)
         {
+            logger.LogError(ex, "Invalid UpdateCheckCron expression: '{CronExpression}'. Service will not start.", cronExpression);
             return;
         }
 
+        logger.LogInformation("UpdateCheckService started with CRON schedule: {CronExpression}", cronExpression);
+
         while (!stoppingToken.IsCancellationRequested)
         {
-            await CheckForUpdateAsync(stoppingToken);
+            var utcNow = DateTime.UtcNow;
+            var nextOccurrence = cron.GetNextOccurrence(utcNow, inclusive: false);
+            if (nextOccurrence is null)
+            {
+                logger.LogWarning("No next occurrence found for CRON expression: '{CronExpression}'. Stopping.", cronExpression);
+                break;
+            }
+
+            var delay = nextOccurrence.Value - utcNow;
+            logger.LogInformation("Next update check at {NextCheck} (in {Delay}).", nextOccurrence.Value, delay);
 
             try
             {
-                await Task.Delay(CheckInterval, stoppingToken);
+                await Task.Delay(delay, stoppingToken);
             }
             catch (OperationCanceledException)
             {
                 break;
             }
+
+            await CheckForUpdateAsync(stoppingToken);
         }
     }
 
@@ -86,17 +100,5 @@ public class UpdateCheckService(
         {
             logger.LogError(ex, "Error checking for Moonglade updates.");
         }
-    }
-
-    internal static TimeSpan GetDelayUntilNextCheckTime()
-    {
-        var now = DateTime.UtcNow;
-        var nextCheck = now.Date.AddHours(6);
-        if (now >= nextCheck)
-        {
-            nextCheck = nextCheck.AddDays(1);
-        }
-
-        return nextCheck - now;
     }
 }
