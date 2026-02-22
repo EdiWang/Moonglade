@@ -20,7 +20,6 @@ using Moonglade.Setup;
 using Moonglade.Syndication;
 using Moonglade.Web.Extensions;
 using Moonglade.Web.Handlers;
-using Moonglade.Web.Services;
 using Moonglade.Webmention;
 using SixLabors.Fonts;
 using System.Globalization;

@@ -1,4 +1,4 @@
-namespace Moonglade.Web.Services;
+namespace Moonglade.BackgroundServices;
 
 public class UpdateCheckerState
 {

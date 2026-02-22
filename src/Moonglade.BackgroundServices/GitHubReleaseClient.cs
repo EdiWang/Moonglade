@@ -1,6 +1,6 @@
 using System.Text.Json;
 
-namespace Moonglade.Web.Services;
+namespace Moonglade.BackgroundServices;
 
 public class GitHubReleaseClient(HttpClient httpClient) : IGitHubReleaseClient
 {

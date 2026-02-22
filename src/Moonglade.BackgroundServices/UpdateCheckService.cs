@@ -1,6 +1,10 @@
 using Cronos;
+using Edi.AspNetCore.Utils;
+using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.Hosting;
+using Microsoft.Extensions.Logging;
 
-namespace Moonglade.Web.Services;
+namespace Moonglade.BackgroundServices;
 
 public class UpdateCheckService(
     IGitHubReleaseClient gitHubReleaseClient,

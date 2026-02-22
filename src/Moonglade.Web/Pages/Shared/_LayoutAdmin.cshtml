@@ -1,6 +1,6 @@
 ﻿@inject IOptions<AuthenticationSettings> AuthOptions
 @inject IConfiguration Configuration
-@inject Moonglade.Web.Services.UpdateCheckerState UpdateCheckerState
+@inject Moonglade.BackgroundServices.UpdateCheckerState UpdateCheckerState
 
 @{
     if (string.IsNullOrEmpty(BlogConfig.GeneralSettings.AvatarUrl))
