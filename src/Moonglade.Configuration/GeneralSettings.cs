@@ -55,11 +55,6 @@ public class GeneralSettings : IBlogSettings
     [Display(Name = "Side bar display")]
     public SideBarOption SideBarOption { get; set; }
 
-    [Display(Name = "Footer HTML code")]
-    [DataType(DataType.MultilineText)]
-    [MaxLength(4096)]
-    public string FooterCustomizedHtmlPitch { get; set; }
-
     [Display(Name = "Profile")]
     public bool WidgetsProfile { get; set; } = true;
 
