@@ -39,7 +39,7 @@
                                 <label asp-for="Password"></label>
                             </div>
 
-                            <div class="mb-3" id="captcha-container" style="display: none;">
+                            <div class="mb-3" id="captcha-container">
                                 <div class="input-group">
                                     <input asp-for="CaptchaCode"
                                            id="captcha-code"
@@ -50,7 +50,7 @@
                                            class="form-control" required />
 
                                     <input type="hidden" id="captcha-token" asp-for="CaptchaToken" />
-                                    <img id="img-captcha" title="@SharedLocalizer["Can't read? Click to change another image."]" />
+                                    <img id="img-captcha" src="/api/captcha/stateless" title="@SharedLocalizer["Can't read? Click to change another image."]" />
                                 </div>
                             </div>
 
@@ -66,15 +66,13 @@
     </div>
     <script type="module" src="~/js/app/base.mjs"></script>
     <script type="module">
-        import { resetCaptchaImage, showCaptcha } from '/js/app/captchaService.mjs';
+        import { resetCaptchaImage } from '/js/app/captchaService.mjs';
 
         document.getElementById('img-captcha')?.addEventListener('click', function () {
             resetCaptchaImage();
         });
 
-        document.getElementById('Password')?.addEventListener('focus', function () {
-            showCaptcha();
-        });
+        await resetCaptchaImage();
     </script>
 </body>
 </html>
