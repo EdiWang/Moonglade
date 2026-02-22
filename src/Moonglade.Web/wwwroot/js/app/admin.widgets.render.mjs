@@ -6,10 +6,11 @@ export function renderWidgetContent(widget) {
 
             return sortedLinks.map(link => {
                 const target = link.openInNewTab ? '_blank' : '_self';
+                const rel = link.openInNewTab ? 'noopener noreferrer' : '';
                 const icon = link.icon ? `<i class="${link.icon} me-1"></i>` : '';
                 const externalIcon = link.openInNewTab ? '<i class="bi-box-arrow-up-right ms-1 small"></i>' : '';
 
-                return `<a href="${link.url}" target="${target}" class="d-block mb-2">${icon}${link.name}${externalIcon}</a>`;
+                return `<a href="${link.url}" target="${target}" rel="${rel}" class="d-block mb-2">${icon}${link.name}${externalIcon}</a>`;
             }).join('');
         } catch (e) {
             return '<div class="text-muted small">Invalid link data</div>';
