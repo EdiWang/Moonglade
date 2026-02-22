@@ -138,37 +138,39 @@
                             </div>
                         </div>
 
-                        </div>
+                    </div>
                 </div>
 
                 <div>
                     <h4 class="admin-subtitle fw-bold mb-2">
                         @SharedLocalizer["Dublin Core Metadata"]
                     </h4>
-                    <div class="settings-entry row align-items-center py-3 px-2 rounded-3 border mb-1">
-                        <div class="col-auto">
-                            <i class="bi bi-globe settings-entry-icon"></i>
-                        </div>
-                        <div class="col">
-                            <label asp-for="@BlogConfig.GeneralSettings.UseDublinCoreMetaData" class="form-check-label"></label>
-                        </div>
-                        <div class="col-md-5 text-end">
-                            <div class="form-check form-switch form-control-lg">
-                                <input type="hidden" name="UseDublinCoreMetaData" value="false">
-                                <input type="checkbox" name="UseDublinCoreMetaData" value="true" class="form-check-input" @(BlogConfig.GeneralSettings.UseDublinCoreMetaData ? "checked" : null)>
+                    <div class="rounded-3 border">
+                        <div class="settings-entry row align-items-center rounded-3 py-3 px-2">
+                            <div class="col-auto">
+                                <i class="bi bi-globe settings-entry-icon"></i>
+                            </div>
+                            <div class="col">
+                                <label asp-for="@BlogConfig.GeneralSettings.UseDublinCoreMetaData" class="form-check-label"></label>
+                            </div>
+                            <div class="col-md-5 text-end">
+                                <div class="form-check form-switch form-control-lg">
+                                    <input type="hidden" name="UseDublinCoreMetaData" value="false">
+                                    <input type="checkbox" name="UseDublinCoreMetaData" value="true" class="form-check-input" @(BlogConfig.GeneralSettings.UseDublinCoreMetaData ? "checked" : null)>
+                                </div>
                             </div>
                         </div>
-                    </div>
 
-                    <div class="settings-entry row align-items-center py-3 px-2 rounded-3 border mb-2">
-                        <div class="col-auto">
-                            <i class="bi-link settings-entry-icon"></i>
-                        </div>
-                        <div class="col">
-                            <label asp-for="@BlogConfig.GeneralSettings.DcLicenseUrl"></label>
-                        </div>
-                        <div class="col-md-5 text-end">
-                            <input asp-for="@BlogConfig.GeneralSettings.DcLicenseUrl" class="form-control" />
+                        <div class="border-top settings-entry row align-items-center rounded-bottom-3 py-3 px-2">
+                            <div class="col-auto">
+                                <i class="bi-link settings-entry-icon"></i>
+                            </div>
+                            <div class="col">
+                                <label asp-for="@BlogConfig.GeneralSettings.DcLicenseUrl"></label>
+                            </div>
+                            <div class="col-md-5 text-end">
+                                <input asp-for="@BlogConfig.GeneralSettings.DcLicenseUrl" class="form-control" />
+                            </div>
                         </div>
                     </div>
                 </div>
