@@ -20,28 +20,29 @@
         <div class="row">
             <div class="col-md-6">
                 <h4 class="admin-subtitle fw-bold mb-2">@SharedLocalizer["Posts list"]</h4>
+                <div class="rounded-3 border mb-3">
+                    <div class="settings-entry row align-items-center rounded-3 py-3 px-2">
+                        <div class="col-auto">
+                            <i class="bi-sort-numeric-down settings-entry-icon"></i>
+                        </div>
+                        <div class="col">
+                            <label asp-for="@settings.PostListPageSize"></label>
+                        </div>
+                        <div class="col-4">
+                            <input asp-for="@settings.PostListPageSize" class="form-control" min="1" max="30" required />
+                        </div>
+                    </div>
 
-                <div class="settings-entry row align-items-center py-3 px-2 rounded-3 border mb-1">
-                    <div class="col-auto">
-                        <i class="bi-sort-numeric-down settings-entry-icon"></i>
-                    </div>
-                    <div class="col">
-                        <label asp-for="@settings.PostListPageSize"></label>
-                    </div>
-                    <div class="col-4">
-                        <input asp-for="@settings.PostListPageSize" class="form-control" min="1" max="30" required />
-                    </div>
-                </div>
-
-                <div class="settings-entry row align-items-center py-3 px-2 rounded-3 border mb-4">
-                    <div class="col-auto">
-                        <i class="settings-entry-icon bi-hash"></i>
-                    </div>
-                    <div class="col">
-                        <label asp-for="@settings.MaximumPageNumbersToDisplay"></label>
-                    </div>
-                    <div class="col-4">
-                        <input asp-for="@settings.MaximumPageNumbersToDisplay" class="form-control" min="2" max="10" required />
+                    <div class="border-top settings-entry row align-items-center rounded-bottom-3 py-3 px-2">
+                        <div class="col-auto">
+                            <i class="settings-entry-icon bi-hash"></i>
+                        </div>
+                        <div class="col">
+                            <label asp-for="@settings.MaximumPageNumbersToDisplay"></label>
+                        </div>
+                        <div class="col-4">
+                            <input asp-for="@settings.MaximumPageNumbersToDisplay" class="form-control" min="2" max="10" required />
+                        </div>
                     </div>
                 </div>
 
