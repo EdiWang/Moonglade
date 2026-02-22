@@ -19,31 +19,33 @@
                     CDN
                 </h4>
 
-                <div class="settings-entry row align-items-center py-3 px-2 rounded-3 border mb-1">
-                    <div class="col-auto">
-                        <i class="bi-globe settings-entry-icon"></i>
-                    </div>
-                    <div class="col">
-                        <label asp-for="@settings.EnableCDNRedirect" class="form-check-label"></label>
-                    </div>
-                    <div class="col-md-5 text-end">
-                        <div class="form-check form-switch form-control-lg">
-                            <input type="hidden" name="EnableCDNRedirect" value="false">
-                            <input type="checkbox" name="EnableCDNRedirect" value="true" class="form-check-input" @(settings.EnableCDNRedirect ? "checked" : null)>
+                <div class="rounded-3 border mb-2">
+                    <div class="settings-entry row align-items-center rounded-3 py-3 px-2">
+                        <div class="col-auto">
+                            <i class="bi-globe settings-entry-icon"></i>
+                        </div>
+                        <div class="col">
+                            <label asp-for="@settings.EnableCDNRedirect" class="form-check-label"></label>
+                        </div>
+                        <div class="col-md-5 text-end">
+                            <div class="form-check form-switch form-control-lg">
+                                <input type="hidden" name="EnableCDNRedirect" value="false">
+                                <input type="checkbox" name="EnableCDNRedirect" value="true" class="form-check-input" @(settings.EnableCDNRedirect ? "checked" : null)>
+                            </div>
                         </div>
                     </div>
-                </div>
 
-                <div class="settings-entry row align-items-center py-3 px-2 rounded-3 border mb-1">
-                    <div class="col-auto">
-                        <i class="bi-link settings-entry-icon"></i>
-                    </div>
-                    <div class="col">
-                        <label asp-for="@settings.CDNEndpoint"></label>
-                        <div class="form-text">e.g. https://cdn.edi.wang/ediwang-images</div>
-                    </div>
-                    <div class="col-md-5">
-                        <input asp-for="@settings.CDNEndpoint" class="form-control" />
+                    <div class="border-top settings-entry row align-items-center rounded-bottom-3 py-3 px-2">
+                        <div class="col-auto">
+                            <i class="bi-link settings-entry-icon"></i>
+                        </div>
+                        <div class="col">
+                            <label asp-for="@settings.CDNEndpoint"></label>
+                            <div class="form-text">e.g. https://cdn.edi.wang/ediwang-images</div>
+                        </div>
+                        <div class="col-md-5">
+                            <input asp-for="@settings.CDNEndpoint" class="form-control" />
+                        </div>
                     </div>
                 </div>
 
