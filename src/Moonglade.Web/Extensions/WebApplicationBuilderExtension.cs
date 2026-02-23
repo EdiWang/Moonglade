@@ -44,7 +44,7 @@ public static class WebApplicationBuilderExtension
             { "Database", GetConnectionStringProvider(configuration) },
             { "Image storage", configuration["ImageStorage:Provider"] ?? "N/A" },
             { "Authentication", configuration["Authentication:Provider"] ?? "N/A" },
-            { "Editor", configuration["Post:Editor"] ?? "N/A" },
+            { "Editor", configuration["Editor"] ?? "N/A" },
             { "Environment", envName }
         };
     }
