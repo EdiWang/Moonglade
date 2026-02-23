@@ -1,7 +1,7 @@
-﻿using LiteBus.Commands.Abstractions;
+﻿using Edi.AspNetCore.Utils;
+using LiteBus.Commands.Abstractions;
 using Microsoft.Extensions.Logging;
 using Moonglade.Configuration;
-using Moonglade.Utils;
 
 namespace Moonglade.Auth;
 
