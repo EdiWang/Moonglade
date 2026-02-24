@@ -123,10 +123,9 @@
 
             @if (Model.IsViewCountEnabled)
             {
-                <span id="view-count" class="ms-2"
-                      title="@Model.PostView.RequestCount request(s), @(Model.PostView.ViewCount + 1) read(s) since @Model.PostView.BeginTimeUtc (UTC)">
+                <span id="view-count" class="ms-2">
                     <i class="bi-eye"></i>
-                    <span>@(Model.PostView.ViewCount + 1)</span>
+                    <span>@Model.PostView.ViewCount</span>
                 </span>
             }
         </div>
