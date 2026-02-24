@@ -1,7 +1,6 @@
 ﻿using LiteBus.Commands.Abstractions;
 using Microsoft.Extensions.Caching.Memory;
 using Moonglade.Features.Post;
-using System.ComponentModel.DataAnnotations;
 
 namespace Moonglade.Web.Controllers;
 
