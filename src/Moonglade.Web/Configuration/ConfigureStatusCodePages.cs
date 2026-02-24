@@ -10,16 +10,15 @@ public class ConfigureStatusCodePages
         var httpContext = context.HttpContext;
         var statusCode = httpContext.Response.StatusCode;
 
-        httpContext.Response.ContentType = "application/problem+json";
-
-        await httpContext.RequestServices.GetRequiredService<IProblemDetailsService>().WriteAsync(new ProblemDetailsContext
+        var problemDetails = new ProblemDetails
         {
-            HttpContext = httpContext,
-            ProblemDetails =
-            {
-                Status = statusCode,
-                Title = ReasonPhrases.GetReasonPhrase(statusCode)
-            }
-        });
+            Status = statusCode,
+            Title = ReasonPhrases.GetReasonPhrase(statusCode),
+            Instance = httpContext.Request.Path
+        };
+        problemDetails.Extensions["traceId"] = httpContext.TraceIdentifier;
+
+        httpContext.Response.ContentType = "application/problem+json";
+        await httpContext.Response.WriteAsJsonAsync(problemDetails);
     };
 }

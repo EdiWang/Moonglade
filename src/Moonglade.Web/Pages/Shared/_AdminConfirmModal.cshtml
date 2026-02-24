@@ -1,0 +1,21 @@
+<div x-data class="modal fade" id="adminSharedModal" tabindex="-1" aria-labelledby="adminSharedModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="adminSharedModalLabel" x-text="$store.modal.title"></h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body" x-html="$store.modal.body">
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">@SharedLocalizer["Cancel"]</button>
+                <button type="button"
+                        :class="'btn ' + $store.modal.confirmClass"
+                        x-on:click="$store.modal.confirm()">
+                    <i x-show="$store.modal.confirmIcon" :class="$store.modal.confirmIcon" class="me-1"></i>
+                    <span x-text="$store.modal.confirmText"></span>
+                </button>
+            </div>
+        </div>
+    </div>
+</div>

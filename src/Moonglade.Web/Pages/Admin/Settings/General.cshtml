@@ -117,35 +117,17 @@
                             <select class="form-select" asp-for="@ViewModel.DefaultLanguageCode" asp-items="@langList"></select>
                         </div>
                     </div>
-                </div>
 
-                <div class="mb-3">
-                    <h4 class="admin-subtitle fw-bold mb-2">
-                        @SharedLocalizer["Footer"]
-                    </h4>
-
-                    <div class="mb-2 border rounded-3">
-                        <div class="settings-entry row align-items-center py-3 px-2 rounded-3">
-                            <div class="col-auto">
-                                <i class="bi-check2-square settings-entry-icon"></i>
-                            </div>
-                            <div class="col">
-                                <label asp-for="@ViewModel.Copyright"></label>
-                                <div class="form-text">@Html.Raw(@SharedLocalizer["Use [c] for copyright mark: &copy;, [year] for current year."])</div>
-                            </div>
-                            <div class="col-md-5 text-end">
-                                <input asp-for="@ViewModel.Copyright" class="form-control" required />
-                            </div>
+                    <div class="settings-entry row align-items-center py-3 px-2 rounded-3 border">
+                        <div class="col-auto">
+                            <i class="bi-check2-square settings-entry-icon"></i>
                         </div>
-
-                        <div class="border-top p-2">
-                            <div class="form-floating">
-                                <textarea asp-for="@ViewModel.FooterCustomizedHtmlPitch"
-                                          placeholder="@Html.DisplayName(ViewModel.FooterCustomizedHtmlPitch)"
-                                          class="form-control form-control-sm h-100px textarea-code"
-                                          spellcheck="false" rows="10" cols="10"></textarea>
-                                <label class="form-label" asp-for="@ViewModel.FooterCustomizedHtmlPitch"></label>
-                            </div>
+                        <div class="col">
+                            <label asp-for="@ViewModel.Copyright"></label>
+                            <div class="form-text">@Html.Raw(@SharedLocalizer["Use [c] for copyright mark: &copy;, [year] for current year."])</div>
+                        </div>
+                        <div class="col-md-5 text-end">
+                            <input asp-for="@ViewModel.Copyright" class="form-control" required />
                         </div>
                     </div>
                 </div>
@@ -154,35 +136,37 @@
                     <h4 class="admin-subtitle fw-bold mb-2">
                         @SharedLocalizer["Dublin Core Metadata"]
                     </h4>
-                    <div class="settings-entry row align-items-center py-3 px-2 rounded-3 border mb-1">
-                        <div class="col-auto">
-                            <i class="bi bi-globe settings-entry-icon"></i>
-                        </div>
-                        <div class="col">
-                            <label asp-for="@BlogConfig.GeneralSettings.UseDublinCoreMetaData" class="form-check-label"></label>
-                        </div>
-                        <div class="col-md-5 text-end">
-                            <div class="form-check form-switch form-control-lg">
-                                <input type="hidden" name="UseDublinCoreMetaData" value="false">
-                                <input type="checkbox" name="UseDublinCoreMetaData" value="true" class="form-check-input" @(BlogConfig.GeneralSettings.UseDublinCoreMetaData ? "checked" : null)>
+                    <div class="rounded-3 border">
+                        <div class="settings-entry row align-items-center rounded-3 py-3 px-2">
+                            <div class="col-auto">
+                                <i class="bi bi-globe settings-entry-icon"></i>
+                            </div>
+                            <div class="col">
+                                <label asp-for="@BlogConfig.GeneralSettings.UseDublinCoreMetaData" class="form-check-label"></label>
+                            </div>
+                            <div class="col-md-5 text-end">
+                                <div class="form-check form-switch form-control-lg">
+                                    <input type="hidden" name="UseDublinCoreMetaData" value="false">
+                                    <input type="checkbox" name="UseDublinCoreMetaData" value="true" class="form-check-input" @(BlogConfig.GeneralSettings.UseDublinCoreMetaData ? "checked" : null)>
+                                </div>
                             </div>
                         </div>
-                    </div>
 
-                    <div class="settings-entry row align-items-center py-3 px-2 rounded-3 border mb-2">
-                        <div class="col-auto">
-                            <i class="bi-link settings-entry-icon"></i>
-                        </div>
-                        <div class="col">
-                            <label asp-for="@BlogConfig.GeneralSettings.DcLicenseUrl"></label>
-                        </div>
-                        <div class="col-md-5 text-end">
-                            <input asp-for="@BlogConfig.GeneralSettings.DcLicenseUrl" class="form-control" />
+                        <div class="border-top settings-entry row align-items-center rounded-bottom-3 py-3 px-2">
+                            <div class="col-auto">
+                                <i class="bi-link settings-entry-icon"></i>
+                            </div>
+                            <div class="col">
+                                <label asp-for="@BlogConfig.GeneralSettings.DcLicenseUrl"></label>
+                            </div>
+                            <div class="col-md-5 text-end">
+                                <input asp-for="@BlogConfig.GeneralSettings.DcLicenseUrl" class="form-control" />
+                            </div>
                         </div>
                     </div>
                 </div>
             </div>
-            <div class="col-6">
+            <div class="col-md-6">
                 <div class="mb-3">
                     <h4 class="admin-subtitle fw-bold mb-2">
                         @SharedLocalizer["Side Bar"]
@@ -251,7 +235,7 @@
                                     <a class="btn w-100 btn-sm btn-outline-accent" href="#" data-bs-toggle="modal" data-bs-target="#avatarmodal">@SharedLocalizer["Change"]</a>
                                 </div>
                                 <div class="col-md-10 col-sm-8">
-                                    <div class="row mb-2">
+                                    <div class="row mb-2 gap-0">
                                         <div class="col">
                                             <label class="form-label" asp-for="@ViewModel.OwnerName"></label>
                                             <input asp-for="@ViewModel.OwnerName" class="form-control" required />
@@ -298,25 +282,6 @@
                             <div class="col-md-5 text-end">
                                 <select class="form-select" asp-for="@ViewModel.Pronouns" asp-items="@pronounsList"></select>
                             </div>
-                        </div>
-
-                        <div class="border-top p-2">
-                            <div class="form-floating">
-                                <textarea asp-for="@ViewModel.SideBarCustomizedHtmlPitch"
-                                          placeholder="@Html.DisplayName(ViewModel.SideBarCustomizedHtmlPitch)"
-                                          class="form-control form-control-sm h-100px textarea-code"
-                                          spellcheck="false"
-                                          cols="10"
-                                          rows="10"></textarea>
-                                <label class="form-label" asp-for="@ViewModel.SideBarCustomizedHtmlPitch"></label>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="rounded-3 border mb-2">
-                        <div class="settings-entry row align-items-center rounded-3 py-3 px-2">
-                            <label>@SharedLocalizer["Side bar items"]</label>
-                            <div class="text-muted">@SharedLocalizer["Show or hide widgets that display on the side bar"]</div>
                         </div>
 
                         <div class="border-top settings-entry row align-items-center py-3 px-2">

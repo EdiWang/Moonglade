@@ -10,7 +10,8 @@
             <li class="nav-item">
                 <a href="@Edi.AspNetCore.Utils.SecurityHelper.SterilizeLink(menuModel.Url)"
                    class="nav-link"
-                   target="@(menuModel.IsOpenInNewTab ? "_blank" : null)">
+                   target="@(menuModel.IsOpenInNewTab ? "_blank" : null)"
+                   rel="@(menuModel.IsOpenInNewTab ? "noopener noreferrer" : null)">
                     <span class="@menuModel.Icon d-lg-none d-xl-inline-block"></span>
                     <strong>@menuModel.Title</strong>
                 </a>
@@ -29,7 +30,8 @@
                         <li>
                             <a class="dropdown-item"
                                href="@Edi.AspNetCore.Utils.SecurityHelper.SterilizeLink(subMenu.Url)"
-                               target="@(subMenu.IsOpenInNewTab ? "_blank" : null)">
+                               target="@(subMenu.IsOpenInNewTab ? "_blank" : null)"
+                               rel="@(subMenu.IsOpenInNewTab ? "noopener noreferrer" : null)">
                                 <span class="bi-link-45deg"></span>
                                 @subMenu.Title
                             </a>

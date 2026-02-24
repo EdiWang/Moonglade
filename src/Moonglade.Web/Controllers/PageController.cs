@@ -45,7 +45,6 @@ public class PageController(ICacheAside cache, IQueryMediator queryMediator, ICo
     }
 
     [HttpDelete("{id:guid}")]
-    [ApiConventionMethod(typeof(DefaultApiConventions), nameof(DefaultApiConventions.Delete))]
     public async Task<IActionResult> Delete([NotEmpty] Guid id)
     {
         var page = await queryMediator.QueryAsync(new GetPageByIdQuery(id));

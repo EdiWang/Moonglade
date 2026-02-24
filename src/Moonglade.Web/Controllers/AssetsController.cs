@@ -16,6 +16,7 @@ public class AssetsController(
     ISiteIconBuilder siteIconBuilder,
     ICommandMediator commandMediator) : BlogControllerBase(commandMediator)
 {
+    [AllowAnonymous]
     [HttpGet("avatar")]
     [ResponseCache(Duration = 300)]
     public async Task<IActionResult> Avatar(ICacheAside cache)
@@ -37,7 +38,6 @@ public class AssetsController(
         return PhysicalFile(fallbackImageFile, "image/png");
     }
 
-    [Authorize]
     [HttpPost("avatar")]
     [TypeFilter(typeof(ClearBlogCache), Arguments = [BlogCachePartition.General, "avatar"])]
     public async Task<IActionResult> Avatar([FromBody] string base64Img)
@@ -76,6 +76,7 @@ public class AssetsController(
 
     #region Site Icon
 
+    [AllowAnonymous]
     [ResponseCache(Duration = 3600)]
     [HttpHead("/{filename:regex(^(favicon|android-icon|apple-icon).*(ico|png)$)}")]
     [HttpGet("/{filename:regex(^(favicon|android-icon|apple-icon).*(ico|png)$)}")]
@@ -95,7 +96,6 @@ public class AssetsController(
         return File(iconBytes, contentType);
     }
 
-    [Authorize]
     [HttpGet("siteicon")]
     public async Task<IActionResult> SiteIconOrigin()
     {
@@ -118,7 +118,6 @@ public class AssetsController(
         }
     }
 
-    [Authorize]
     [HttpPost("siteicon")]
     public async Task<IActionResult> UpdateSiteIcon([FromBody] string base64Img)
     {

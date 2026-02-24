@@ -41,7 +41,6 @@ public class CategoryController(
     }
 
     [HttpPut("{id:guid}")]
-    [ApiConventionMethod(typeof(DefaultApiConventions), nameof(DefaultApiConventions.Put))]
     public async Task<IActionResult> Update([NotEmpty] Guid id, UpdateCategoryCommand command)
     {
         command.Id = id;
@@ -58,7 +57,6 @@ public class CategoryController(
     }
 
     [HttpDelete("{id:guid}")]
-    [ApiConventionMethod(typeof(DefaultApiConventions), nameof(DefaultApiConventions.Delete))]
     public async Task<IActionResult> Delete([NotEmpty] Guid id)
     {
         var oc = await CommandMediator.SendAsync(new DeleteCategoryCommand(id));

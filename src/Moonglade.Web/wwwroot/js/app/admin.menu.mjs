@@ -2,8 +2,9 @@
 import { fetch2 } from '/js/app/httpService.mjs?v=1500';
 import { success, error } from '/js/app/toastService.mjs';
 import { getLocalizedString } from './utils.module.mjs';
+import { showConfirmModal, hideConfirmModal } from './adminModal.mjs';
 
-let menuItemModal, subMenuItemModal, confirmModal;
+let menuItemModal, subMenuItemModal;
 
 Alpine.data('menuManager', () => ({
     settings: {
@@ -16,8 +17,6 @@ Alpine.data('menuManager', () => ({
     editingIndex: null,
     editingSubIndex: null,
     editingParentIndex: null,
-    confirmAction: null,
-    confirmMessage: '',
 
     async init() {
         this.initializeModals();
@@ -27,7 +26,6 @@ Alpine.data('menuManager', () => ({
     initializeModals() {
         menuItemModal = new bootstrap.Modal(document.getElementById('menuItemModal'));
         subMenuItemModal = new bootstrap.Modal(document.getElementById('subMenuItemModal'));
-        confirmModal = new bootstrap.Modal(document.getElementById('confirmModal'));
     },
 
     async loadSettings() {
@@ -155,40 +153,46 @@ Alpine.data('menuManager', () => ({
         this.editingParentIndex = null;
     },
 
-    showConfirm(message, action) {
-        this.confirmMessage = message;
-        this.confirmAction = action;
-        confirmModal.show();
-    },
-
-    executeConfirmAction() {
-        if (this.confirmAction) {
-            this.confirmAction();
-            confirmModal.hide();
-            this.confirmAction = null;
-            this.confirmMessage = '';
-        }
-    },
-
     deleteMenuItem(index) {
-        this.showConfirm(
-            getLocalizedString('confirmDeleteMenu'),
-            () => this.settings.menus.splice(index, 1)
-        );
+        showConfirmModal({
+            title: 'Confirm Delete',
+            body: getLocalizedString('confirmDeleteMenu'),
+            confirmText: 'Delete',
+            confirmClass: 'btn-outline-danger',
+            confirmIcon: 'bi-trash',
+            onConfirm: () => {
+                this.settings.menus.splice(index, 1);
+                hideConfirmModal();
+            }
+        });
     },
 
     deleteSubMenuItem(parentIndex, subIndex) {
-        this.showConfirm(
-            getLocalizedString('confirmDeleteSubmenu'),
-            () => this.settings.menus[parentIndex].subMenus.splice(subIndex, 1)
-        );
+        showConfirmModal({
+            title: 'Confirm Delete',
+            body: getLocalizedString('confirmDeleteSubmenu'),
+            confirmText: 'Delete',
+            confirmClass: 'btn-outline-danger',
+            confirmIcon: 'bi-trash',
+            onConfirm: () => {
+                this.settings.menus[parentIndex].subMenus.splice(subIndex, 1);
+                hideConfirmModal();
+            }
+        });
     },
 
     clearMenus() {
-        this.showConfirm(
-            getLocalizedString('confirmClearMenus'),
-            () => this.settings.menus = []
-        );
+        showConfirmModal({
+            title: 'Confirm',
+            body: getLocalizedString('confirmClearMenus'),
+            confirmText: 'Clear',
+            confirmClass: 'btn-outline-danger',
+            confirmIcon: 'bi-trash',
+            onConfirm: () => {
+                this.settings.menus = [];
+                hideConfirmModal();
+            }
+        });
     },
 
     moveMenuItem(index, direction) {

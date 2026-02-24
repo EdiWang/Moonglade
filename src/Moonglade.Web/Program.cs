@@ -9,6 +9,7 @@ using Microsoft.AspNetCore.Diagnostics.HealthChecks;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.AspNetCore.Rewrite;
 using Microsoft.Extensions.Diagnostics.HealthChecks;
+using Microsoft.Extensions.Logging.Console;
 using Moonglade.BackgroundServices;
 using Moonglade.Data.MySql;
 using Moonglade.Data.PostgreSql;
@@ -24,6 +25,7 @@ using Moonglade.Webmention;
 using SixLabors.Fonts;
 using System.Globalization;
 using System.Net;
+using System.Net.Http.Headers;
 using System.Text.Json.Serialization;
 using Encoder = Moonglade.Web.Configuration.Encoder;
 
@@ -39,7 +41,20 @@ public class Program
         var cultures = GetSupportedCultures();
         var builder = WebApplication.CreateBuilder(args);
         builder.WriteParameterTable();
-        builder.Logging.AddAzureWebAppDiagnostics();
+
+        if (builder.Environment.IsProduction())
+        {
+            builder.Logging.ClearProviders();
+            builder.Logging.AddSimpleConsole(o =>
+            {
+                o.SingleLine = true;
+                o.TimestampFormat = "yyyy-MM-dd HH:mm:ss.fff ";
+                o.UseUtcTimestamp = true;
+                o.ColorBehavior = LoggerColorBehavior.Disabled;
+            });
+
+            builder.Logging.AddAzureWebAppDiagnostics();
+        }
 
         ConfigureServices(builder.Services, builder.Configuration, cultures);
 
@@ -187,7 +202,6 @@ public class Program
             {
                 options.Conventions.AddPageRoute("/Admin/Post", "admin");
                 options.Conventions.AuthorizeFolder("/Admin");
-                options.Conventions.AuthorizeFolder("/Settings");
             })
             .AddViewOptions(options =>
             {
@@ -245,6 +259,15 @@ public class Program
 
         services.AddSingleton<CannonService>();
         services.AddHostedService(sp => sp.GetRequiredService<CannonService>());
+
+        services.AddSingleton<UpdateCheckerState>();
+        services.AddHttpClient<IGitHubReleaseClient, GitHubReleaseClient>(client =>
+        {
+            client.BaseAddress = new Uri("https://api.github.com");
+            client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/vnd.github+json"));
+            client.DefaultRequestHeaders.UserAgent.Add(new ProductInfoHeaderValue("Moonglade", VersionHelper.AppVersionBasic));
+        });
+        services.AddHostedService<UpdateCheckService>();
     }
 
     private static void ConfigureDatabase(IServiceCollection services, IConfiguration configuration)

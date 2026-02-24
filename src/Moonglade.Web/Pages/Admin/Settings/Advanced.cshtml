@@ -1,13 +1,9 @@
 ﻿@page "/admin/settings/advanced"
-@using System.Reflection
 @inject IConfiguration Configuration
 
 @Html.AntiForgeryToken()
 @{
     var settings = BlogConfig.AdvancedSettings;
-
-    var asm = Assembly.GetEntryAssembly();
-    var currentVersion = (new Version(asm!.GetCustomAttribute<AssemblyFileVersionAttribute>()?.Version)).ToString();
 }
 @section scripts {
     <script type="module" src="~/js/app/admin.settings.advanced.mjs"></script>
@@ -191,34 +187,10 @@
                         </div>
                     </div>
                 </div>
-                <div>
-                    <h4 class="admin-subtitle fw-bold mb-2">
-                        @SharedLocalizer["Options"]
-                    </h4>
-
-                    <div class="settings-entry row align-items-center py-3 px-2 rounded-3 border mb-1">
-                        <div class="col-auto">
-                            <i class="bi-moon-stars settings-entry-icon"></i>
-                        </div>
-                        <div class="col">
-                            @SharedLocalizer["Update"]
-                            <div class="form-text">
-                                @SharedLocalizer["Check online for new Moonglade release."]
                             </div>
                         </div>
-                        <div class="col-md-5 text-end">
-                            <a href="#" class="btn btn-sm btn-outline-accent btn-check-update">
-                                @SharedLocalizer["Check now"]
-                            </a>
-                        </div>
                     </div>
-                </div>
-            </div>
-        </div>
-    </div>
-    <div class="admin-settings-action-container border-top pt-2 mt-2">
-        <input id="btn-save-settings" type="submit" value="@SharedLocalizer["Save"]" class="btn btn-outline-accent" />
-    </div>
-</form>
-
-<partial name="_UpdateCheckCanvas" />
+                    <div class="admin-settings-action-container border-top pt-2 mt-2">
+                        <input id="btn-save-settings" type="submit" value="@SharedLocalizer["Save"]" class="btn btn-outline-accent" />
+                    </div>
+                </form>

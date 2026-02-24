@@ -101,14 +101,6 @@ public class UpdatePostCommandHandler(
             post.RouteLink = null;
         }
 
-        // #325: Allow changing publish date for published posts
-        if (postEditModel.ChangePublishDate && postEditModel.PublishDate is not null && post.PubDateUtc.HasValue)
-        {
-            var tod = post.PubDateUtc.Value.TimeOfDay;
-            var adjustedDate = postEditModel.PublishDate.Value;
-            post.PubDateUtc = adjustedDate.AddTicks(tod.Ticks);
-        }
-
         post.Author = postEditModel.Author?.Trim();
         post.Slug = postEditModel.Slug.ToLower().Trim();
         post.Title = postEditModel.Title.Trim();

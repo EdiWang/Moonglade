@@ -16,7 +16,10 @@
      data-widget-updated="@SharedLocalizer["Widget updated"]"
      data-remove-link="@SharedLocalizer["Are you sure you want to remove this link?"]"
      data-name-url-required="@SharedLocalizer["Name and URL are required"]"
-     data-image-url-required="@SharedLocalizer["Image URL is required"]">
+     data-image-url-required="@SharedLocalizer["Image URL is required"]"
+     data-text-url-required="@SharedLocalizer["Button text and URL are required"]"
+     data-max-buttons="@SharedLocalizer["You can add up to 3 buttons"]"
+     data-remove-button="@SharedLocalizer["Are you sure you want to remove this button?"]">
 </div>
 
 @section admintoolbar {
@@ -86,12 +89,13 @@
                     <select x-model="formData.widgetType" x-on:change="onWidgetTypeChange()" id="widget-type" class="form-select" required>
                         <option value="LinkList">Link List</option>
                         <option value="ImageLink">Image Link</option>
+                        <option value="ButtonLink">Button Link</option>
                     </select>
                 </div>
                 <div class="mb-3">
                     <label for="widget-display-order" class="form-label">@SharedLocalizer["Display Order"]</label>
-                    <input x-model.number="formData.displayOrder" type="number" id="widget-display-order" class="form-control" min="-3" max="999" required />
-                    <small class="form-text text-muted">@SharedLocalizer["-3: before Profile, -2: before Tags, -1: before Categories, 0+: after Categories"]</small>
+                    <input x-model.number="formData.displayOrder" type="number" id="widget-display-order" class="form-control" min="-30" max="999" required />
+                    <small class="form-text text-muted">@SharedLocalizer["[-21, -30]: before Profile, [-11, -20]: before Tags, [-1, -10]: before Categories, [0, 999]: after Categories"]</small>
                 </div>
                 <div class="mb-3 form-check">
                     <input x-model="formData.isEnabled" type="checkbox" id="widget-enabled" class="form-check-input" />
@@ -150,6 +154,48 @@
                     </div>
                 </div>
 
+                <!-- ButtonLink Content Editor -->
+                <div x-show="formData.widgetType === 'ButtonLink'" id="buttonlink-editor" class="mb-3">
+                    <hr />
+                    <div class="d-flex justify-content-between align-items-center mb-2">
+                        <label class="form-label mb-0">@SharedLocalizer["Buttons"]</label>
+                        <button type="button" x-on:click="addNewButton()" class="btn btn-sm btn-outline-accent" :disabled="formData.buttons.length >= 3">
+                            <i class="bi-plus-lg"></i> @SharedLocalizer["Add Button"]
+                        </button>
+                    </div>
+                    <p x-show="formData.buttons.length >= 3" class="text-muted small">@SharedLocalizer["Maximum 3 buttons allowed"]</p>
+                    <div id="buttons-container">
+                        <p x-show="formData.buttons.length === 0" class="text-muted small text-center py-3 mb-0">@SharedLocalizer["No buttons added yet"]</p>
+                        <template x-for="(btn, bIdx) in formData.buttons" :key="bIdx">
+                            <div class="border rounded p-2 mb-2 bg-light">
+                                <div class="d-flex justify-content-between align-items-start mb-2">
+                                    <strong class="text-truncate me-2" x-text="btn.text || 'Unnamed Button'"></strong>
+                                    <div class="btn-group btn-group-sm" role="group">
+                                        <button type="button" x-on:click="editButton(bIdx)" class="btn btn-outline-accent">
+                                            <i class="bi-pen"></i>
+                                        </button>
+                                        <button type="button" x-on:click="removeButton(bIdx)" class="btn btn-outline-danger">
+                                            <i class="bi-trash"></i>
+                                        </button>
+                                    </div>
+                                </div>
+                                <div class="small text-muted">
+                                    <div class="text-truncate">
+                                        <span class="badge" :class="'btn-sm ' + (btn.cssClass || 'btn-outline-primary')" x-text="btn.text"></span>
+                                    </div>
+                                    <div class="mt-1">
+                                        <a :href="btn.url" target="_blank" x-text="btn.url" class="text-truncate d-inline-block" style="max-width:280px"></a>
+                                    </div>
+                                    <div>
+                                        <i :class="btn.openInNewTab ? 'bi-box-arrow-up-right' : 'bi-arrow-return-right'"></i>
+                                        <span x-text="btn.openInNewTab ? 'Opens in new tab' : 'Opens in same tab'"></span>
+                                    </div>
+                                </div>
+                            </div>
+                        </template>
+                    </div>
+                </div>
+
                 <!-- ImageLink Content Editor -->
                 <div x-show="formData.widgetType === 'ImageLink'" id="imagelink-editor" class="mb-3">
                     <hr />
@@ -196,28 +242,6 @@
     </div>
 </div>
 
-<!-- Confirm Delete Modal -->
-<div class="modal fade" tabindex="-1" x-ref="confirmDeleteModal" aria-labelledby="confirmDeleteModalLabel" aria-hidden="true">
-    <div class="modal-dialog">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title" id="confirmDeleteModalLabel" x-text="deleteConfirm.title"></h5>
-                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="@SharedLocalizer["Close"]"></button>
-            </div>
-            <div class="modal-body">
-                <p x-text="deleteConfirm.message"></p>
-            </div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">@SharedLocalizer["Cancel"]</button>
-                <button type="button" class="btn btn-outline-danger" x-on:click="deleteConfirm.callback()">
-                    <i class="bi-trash"></i>
-                    <span x-text="deleteConfirm.buttonText"></span>
-                </button>
-            </div>
-        </div>
-    </div>
-</div>
-
 <!-- Link Dialog Modal -->
 <div class="modal fade" tabindex="-1" x-ref="linkDialogModal" aria-labelledby="linkDialogLabel" aria-hidden="true">
     <div class="modal-dialog">
@@ -255,6 +279,49 @@
             <div class="modal-footer">
                 <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Cancel</button>
                 <button type="button" class="btn btn-outline-accent" x-on:click="saveLinkDialog()">Save</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Button Dialog Modal -->
+<div class="modal fade" tabindex="-1" x-ref="buttonDialogModal" aria-labelledby="buttonDialogLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="buttonDialogLabel" x-text="buttonDialog.isNew ? 'Add New Button' : 'Edit Button'"></h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <div class="mb-3">
+                    <label for="button-text" class="form-label">@SharedLocalizer["Button Text"] *</label>
+                    <input x-model="buttonDialog.data.text" type="text" id="button-text" class="form-control" maxlength="64" required />
+                </div>
+                <div class="mb-3">
+                    <label for="button-url" class="form-label">URL *</label>
+                    <input x-model="buttonDialog.data.url" type="url" id="button-url" class="form-control"
+                           placeholder="https://example.com" required />
+                </div>
+                <div class="mb-3">
+                    <label for="button-css-class" class="form-label">@SharedLocalizer["CSS Class"]</label>
+                    <input x-model="buttonDialog.data.cssClass" type="text" id="button-css-class" class="form-control"
+                           placeholder="btn-sm btn-outline-primary" />
+                    <small class="form-text text-muted">@SharedLocalizer["Bootstrap button classes excluding 'btn' (e.g., btn-sm btn-outline-primary, btn-danger)"]</small>
+                </div>
+                <div class="mb-3 form-check">
+                    <input x-model="buttonDialog.data.openInNewTab" type="checkbox" id="button-new-tab" class="form-check-input" />
+                    <label for="button-new-tab" class="form-check-label">@SharedLocalizer["Open in new tab"]</label>
+                </div>
+                <div class="mb-3">
+                    <label class="form-label">@SharedLocalizer["Preview"]</label>
+                    <div>
+                        <a :href="buttonDialog.data.url || '#'" :class="'btn ' + (buttonDialog.data.cssClass || 'btn-outline-primary')" x-text="buttonDialog.data.text || 'Button'" target="_blank"></a>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">@SharedLocalizer["Cancel"]</button>
+                <button type="button" class="btn btn-outline-accent" x-on:click="saveButtonDialog()">@SharedLocalizer["Save"]</button>
             </div>
         </div>
     </div>

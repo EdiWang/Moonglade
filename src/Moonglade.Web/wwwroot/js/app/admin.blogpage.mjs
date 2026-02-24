@@ -2,11 +2,11 @@ import { Alpine } from '/js/app/alpine-init.mjs';
 import { fetch2 } from '/js/app/httpService.mjs?v=1500';
 import { success } from '/js/app/toastService.mjs';
 import { getLocalizedString } from './utils.module.mjs';
+import { showConfirmModal, hideConfirmModal } from './adminModal.mjs';
 
 Alpine.data('pageManager', () => ({
     pages: [],
     isLoading: true,
-    pageToDelete: null,
 
     async init() {
         await this.loadPages();
@@ -37,21 +37,19 @@ Alpine.data('pageManager', () => ({
     },
 
     showDeleteModal(pageId) {
-        this.pageToDelete = pageId;
-        const modal = new bootstrap.Modal(document.getElementById('deleteConfirmModal'));
-        modal.show();
-    },
-
-    async confirmDelete() {
-        if (this.pageToDelete) {
-            await fetch2(`/api/page/${this.pageToDelete}`, 'DELETE');
-            await this.loadPages();
-            success(getLocalizedString('pageDeleted'));
-            
-            const modal = bootstrap.Modal.getInstance(document.getElementById('deleteConfirmModal'));
-            modal.hide();
-            this.pageToDelete = null;
-        }
+        showConfirmModal({
+            title: 'Confirm Delete',
+            body: 'Are you sure you want to delete this page?',
+            confirmText: 'Delete',
+            confirmClass: 'btn-outline-danger',
+            confirmIcon: 'bi-trash',
+            onConfirm: async () => {
+                await fetch2(`/api/page/${pageId}`, 'DELETE');
+                await this.loadPages();
+                success(getLocalizedString('pageDeleted'));
+                hideConfirmModal();
+            }
+        });
     }
 }));
 

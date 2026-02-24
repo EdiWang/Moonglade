@@ -56,7 +56,6 @@ public class ThemeController(
     }
 
     [HttpDelete("{id:int}")]
-    [ApiConventionMethod(typeof(DefaultApiConventions), nameof(DefaultApiConventions.Delete))]
     [TypeFilter(typeof(ClearBlogCache), Arguments = [BlogCachePartition.General, "theme"])]
     public async Task<IActionResult> Delete([Range(1, int.MaxValue)] int id)
     {

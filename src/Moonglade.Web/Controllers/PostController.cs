@@ -48,14 +48,6 @@ public class PostController(
     {
         try
         {
-            if (model.ChangePublishDate &&
-                model.PublishDate.HasValue &&
-                model.PublishDate <= DateTime.UtcNow &&
-                model.PublishDate.GetValueOrDefault().Year >= 1975)
-            {
-                model.PublishDate = model.PublishDate.Value;
-            }
-
             if (model.PostStatus == PostStatus.Scheduled && model.ScheduledPublishTime.HasValue)
             {
                 if (string.IsNullOrWhiteSpace(model.ClientTimeZoneId))
@@ -211,7 +203,7 @@ public class PostController(
     [HttpGet("meta")]
     public async Task<IActionResult> GetMeta([FromServices] IOptions<RequestLocalizationOptions> locOptions)
     {
-        var ec = configuration.GetValue<EditorChoice>("Post:Editor");
+        var ec = configuration.GetValue<EditorChoice>("Editor");
         var cats = await queryMediator.QueryAsync(new ListCategoriesQuery());
 
         var response = new PostEditorMeta

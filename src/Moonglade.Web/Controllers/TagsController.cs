@@ -46,7 +46,6 @@ public class TagsController(IQueryMediator queryMediator, ICommandMediator comma
     }
 
     [HttpPut("{id:int}")]
-    [ApiConventionMethod(typeof(DefaultApiConventions), nameof(DefaultApiConventions.Put))]
     public async Task<IActionResult> Update([Range(1, int.MaxValue)] int id, [Required][FromBody] string name)
     {
         var oc = await CommandMediator.SendAsync(new UpdateTagCommand(id, name));
@@ -62,7 +61,6 @@ public class TagsController(IQueryMediator queryMediator, ICommandMediator comma
     }
 
     [HttpDelete("{id:int}")]
-    [ApiConventionMethod(typeof(DefaultApiConventions), nameof(DefaultApiConventions.Delete))]
     public async Task<IActionResult> Delete([Range(0, int.MaxValue)] int id)
     {
         var oc = await CommandMediator.SendAsync(new DeleteTagCommand(id));

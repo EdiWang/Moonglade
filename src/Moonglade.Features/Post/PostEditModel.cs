@@ -70,9 +70,6 @@ public class PostEditModel
 
     public string ClientTimeZoneId { get; set; }
 
-    [Display(Name = "Change Publish Date")]
-    public bool ChangePublishDate { get; set; }
-
     [Display(Name = "Mark as outdated")]
     public bool IsOutdated { get; set; }
 

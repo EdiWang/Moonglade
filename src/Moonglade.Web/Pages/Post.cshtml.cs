@@ -27,7 +27,7 @@ public class PostModel(
 
         var psm = await cache.GetOrCreateAsync(BlogCachePartition.Post.ToString(), $"{routeLink}", async entry =>
         {
-            entry.SlidingExpiration = TimeSpan.FromMinutes(int.Parse(configuration["Post:CacheMinutes"]!));
+            entry.SlidingExpiration = TimeSpan.FromMinutes(int.Parse(configuration["PostCacheMinutes"]!));
 
             var post = await queryMediator.QueryAsync(new GetPostBySlugQuery(routeLink));
             return post;

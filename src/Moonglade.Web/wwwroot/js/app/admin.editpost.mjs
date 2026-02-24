@@ -2,6 +2,7 @@ import { Alpine } from '/js/app/alpine-init.mjs';
 import { fetch2 } from './httpService.mjs?v=1500';
 import { success, error } from './toastService.mjs';
 import { loadTinyMCE, keepAlive } from './admin.editor.module.mjs';
+import { showConfirmModal, hideConfirmModal, escapeHtml } from './adminModal.mjs';
 
 function slugify(text) {
     if (!/^[A-Za-z][A-Za-z0-9 \(\)#,\.\?]*$/.test(text)) {
@@ -28,6 +29,7 @@ Alpine.data('postEditor', () => ({
     minScheduleDate: '',
     tagifyInstance: null,
     isFormDirty: false,
+    enableSchedule: false,
 
     formData: {
         postId: '',
@@ -48,7 +50,6 @@ Alpine.data('postEditor', () => ({
         scheduledPublishTime: null,
         scheduledPublishTimeUtc: null,
         clientTimeZoneId: '',
-        changePublishDate: false,
         lastModifiedUtc: '',
         selectedCatIds: []
     },
@@ -75,7 +76,7 @@ Alpine.data('postEditor', () => ({
             this.initEditor();
             this.initTagify();
             this.updateMinScheduleDate();
-            this.updateScheduleInfo();
+            this.initScheduleState();
             this.setupKeyboardShortcuts();
             this.setupDirtyFormWarning();
             keepAlive();
@@ -239,10 +240,16 @@ Alpine.data('postEditor', () => ({
     },
 
     unlockSlug() {
-        const message = 'This post was published for a period of time, changing slug will result in breaking SEO, would you like to continue?';
-        if (confirm(message)) {
-            this.slugUnlocked = true;
-        }
+        showConfirmModal({
+            title: 'Modify Slug',
+            body: '<div class="alert alert-warning">This post was published for a period of time, changing slug will result in breaking SEO, would you like to continue?</div>',
+            confirmText: 'Modify',
+            confirmClass: 'btn-warning',
+            onConfirm: () => {
+                this.slugUnlocked = true;
+                hideConfirmModal();
+            }
+        });
     },
 
     toggleCategory(catId, checked) {
@@ -283,7 +290,12 @@ Alpine.data('postEditor', () => ({
         }
 
         if (this.submitAction === 'publish') {
-            this.formData.postStatus = 'Published';
+            if (this.enableSchedule && this.formData.scheduledPublishTime) {
+                this.formData.postStatus = 'Scheduled';
+            } else {
+                this.formData.postStatus = 'Published';
+                this.formData.scheduledPublishTime = null;
+            }
         }
 
         this.isSaving = true;
@@ -306,7 +318,6 @@ Alpine.data('postEditor', () => ({
                 keywords: this.formData.keywords,
                 tags: this.formData.tags,
                 selectedCatIds: this.formData.selectedCatIds,
-                changePublishDate: this.formData.changePublishDate,
                 publishDate: this.formData.publishDate,
                 scheduledPublishTime: this.formData.scheduledPublishTime || null,
                 clientTimeZoneId: this.formData.clientTimeZoneId,
@@ -330,22 +341,55 @@ Alpine.data('postEditor', () => ({
         }
     },
 
-    async unpublishPost() {
-        if (!this.postId) return;
-        await fetch2(`/api/post/${this.postId}/unpublish`, 'PUT', {});
-        success('Post unpublished');
-        location.reload();
+    openUnpublishModal() {
+        showConfirmModal({
+            title: 'Unpublish Post',
+            body: `<div class="alert alert-warning">Unpublishing this post will remove it from the public site and turn it into a draft. This will have impact on SEO. Please confirm.</div><p>${escapeHtml(this.formData.title)}</p>`,
+            confirmText: 'Confirm',
+            confirmClass: 'btn-danger',
+            onConfirm: async () => {
+                if (!this.postId) return;
+                await fetch2(`/api/post/${this.postId}/unpublish`, 'PUT', {});
+                success('Post unpublished');
+                hideConfirmModal();
+                location.reload();
+            }
+        });
     },
 
-    cancelSchedule() {
-        this.formData.scheduledPublishTime = null;
-        this.formData.postStatus = 'Draft';
-        this.updateScheduleInfo();
+    initScheduleState() {
+        if (this.formData.postStatus === 'Scheduled') {
+            this.enableSchedule = true;
+
+            if (this.formData.scheduledPublishTimeUtc) {
+                const utcDate = new Date(this.formData.scheduledPublishTimeUtc);
+                const localDate = new Date(utcDate.getTime() - utcDate.getTimezoneOffset() * 60000);
+
+                const pad = n => n < 10 ? '0' + n : n;
+                const year = localDate.getFullYear();
+                const month = pad(localDate.getMonth() + 1);
+                const day = pad(localDate.getDate());
+                const hours = pad(localDate.getHours());
+                const minutes = pad(localDate.getMinutes());
+                this.formData.scheduledPublishTime = `${year}-${month}-${day}T${hours}:${minutes}`;
+            }
+
+            this.updateScheduleInfo();
+        }
     },
 
-    confirmSchedule() {
-        this.formData.postStatus = 'Scheduled';
-        this.updateScheduleInfo();
+    openPublishModal() {
+        this.updateMinScheduleDate();
+        const modal = new bootstrap.Modal(document.getElementById('publishModal'));
+        modal.show();
+    },
+
+    submitPublish() {
+        const modal = bootstrap.Modal.getInstance(document.getElementById('publishModal'));
+        if (modal) modal.hide();
+
+        this.submitAction = 'publish';
+        this.handleSubmit();
     },
 
     updateMinScheduleDate() {
@@ -364,15 +408,6 @@ Alpine.data('postEditor', () => ({
                 const utcDate = new Date(this.formData.scheduledPublishTimeUtc);
                 const localDate = new Date(utcDate.getTime() - utcDate.getTimezoneOffset() * 60000);
                 displayTime = localDate.toLocaleString();
-
-                // Sync the local time back to the input
-                const pad = n => n < 10 ? '0' + n : n;
-                const year = localDate.getFullYear();
-                const month = pad(localDate.getMonth() + 1);
-                const day = pad(localDate.getDate());
-                const hours = pad(localDate.getHours());
-                const minutes = pad(localDate.getMinutes());
-                this.formData.scheduledPublishTime = `${year}-${month}-${day}T${hours}:${minutes}`;
             }
 
             this.scheduleInfoHtml = `<i class="bi-clock"></i> <span>Scheduled for: ${displayTime}</span>`;

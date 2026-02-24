@@ -6,7 +6,7 @@
     ViewBag.XData = "postEditor";
     ViewBag.HideAdminSidebar = true;
     ViewBag.AdminBackUrl = "javascript:history.go(-1);";
-    var ec = Configuration.GetValue<EditorChoice>("Post:Editor");
+    var ec = Configuration.GetValue<EditorChoice>("Editor");
 }
 
 @section scripts {
@@ -38,66 +38,22 @@
 </div>
 
 <div x-show="!isLoading" x-cloak class="post-editor-container d-flex flex-column px-3 pt-2">
-    <form id="post-edit-form" x-on:submit.prevent="handleSubmit">
-        <div class="row g-2">
-            <div class="col-md-9 col-xl-10">
+    <form id="post-edit-form" x-on:submit.prevent="handleSubmit" class="d-flex flex-column flex-grow-1">
+        <div class="row g-2 post-editor-row">
+            <div class="col-md-9 col-xl-10 post-editor-main">
                 <input type="text"
                        x-model="formData.title"
-                       class="form-control form-control-lg"
+                       class="form-control form-control-lg mb-1"
                        placeholder="@SharedLocalizer["Title"]"
                        required
                        maxlength="128"
                        x-on:change="onTitleChange" />
-                <div class="mt-1">
-                    <div class="row g-1">
-                        <div class="col">
-                            <div class="input-group input-group-sm">
-                                <label class="input-group-text">
-                                    <i class="bi-link-45deg"></i>
-                                </label>
-                                <input type="text"
-                                       x-model="formData.slug"
-                                       class="form-control form-control-sm"
-                                       placeholder="Slug"
-                                       spellcheck="false"
-                                       required
-                                       pattern="[a-z0-9\-]+"
-                                       maxlength="128"
-                                       x-bind:readonly="warnSlugModification && !slugUnlocked" />
-                                <a x-show="warnSlugModification && !slugUnlocked"
-                                   x-on:click="unlockSlug"
-                                   class="btn btn-warning btn-sm">Modify</a>
-                            </div>
-                        </div>
-                        <div class="col-md-auto">
-                            <div class="input-group input-group-sm mb-2">
-                                <label class="input-group-text">Author</label>
-                                <input type="text"
-                                       class="form-control form-control-sm"
-                                       spellcheck="false"
-                                       x-model="formData.author" />
-                            </div>
-                        </div>
-                        <div class="col-md-auto">
-                            <div class="input-group input-group-sm mb-2">
-                                <label class="input-group-text">
-                                    <i class="bi-globe"></i>
-                                </label>
-                                <select class="form-select" x-model="formData.languageCode">
-                                    <template x-for="lang in languages" :key="lang.value">
-                                        <option :value="lang.value" x-text="lang.nativeName"></option>
-                                    </template>
-                                </select>
-                            </div>
-                        </div>
-                    </div>
-                </div>
 
                 <template x-if="editorChoice === 'html'">
                     <textarea class="post-content-textarea" x-model="formData.editorContent"></textarea>
                 </template>
                 <template x-if="editorChoice === 'markdown'">
-                    <div>
+                    <div class="post-editor-md-wrapper">
                         <div id="markdown-content-editor" class="monaco-target overflow-y-hidden"></div>
                         <textarea class="post-content-textarea d-none" x-model="formData.editorContent"></textarea>
                         <div class="md-editor-image-upload-area text-center border-secondary-subtle p-3 mt-1">
@@ -106,8 +62,7 @@
                     </div>
                 </template>
 
-
-                <div class="mt-1">
+                <div class="mt-1 post-editor-abstract">
                     <div class="form-floating">
                         <textarea x-model="formData.abstract"
                                   placeholder="@SharedLocalizer["Abstract"]"
@@ -120,22 +75,55 @@
                     </div>
                 </div>
             </div>
-            <div class="col-md-3 col-xl-2">
+            <div class="col-md-3 col-xl-2 post-editor-sidebar">
                 <div class="card mb-3">
                     <div class="card-body">
+                        <div class="input-group input-group-sm mb-2">
+                            <label class="input-group-text">
+                                <i class="bi-link-45deg"></i>
+                            </label>
+                            <input type="text"
+                                   x-model="formData.slug"
+                                   class="form-control form-control-sm"
+                                   placeholder="Slug"
+                                   spellcheck="false"
+                                   required
+                                   pattern="[a-z0-9\-]+"
+                                   maxlength="128"
+                                   x-bind:readonly="warnSlugModification && !slugUnlocked" />
+                            <a x-show="warnSlugModification && !slugUnlocked"
+                               x-on:click="unlockSlug"
+                               class="btn btn-warning btn-sm">Modify</a>
+                        </div>
+
+                        <div class="input-group input-group-sm mb-2">
+                            <label class="input-group-text">
+                                <i class="bi-person"></i>
+                            </label>
+                            <input type="text"
+                                   class="form-control form-control-sm"
+                                   spellcheck="false"
+                                   x-model="formData.author" />
+                        </div>
+
+                        <div class="input-group input-group-sm">
+                            <label class="input-group-text">
+                                <i class="bi-globe"></i>
+                            </label>
+                            <select class="form-select" x-model="formData.languageCode">
+                                <template x-for="lang in languages" :key="lang.value">
+                                    <option :value="lang.value" x-text="lang.nativeName"></option>
+                                </template>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="card-body border-top">
                         <div class="form-check form-switch">
                             <input type="checkbox"
                                    x-model="formData.enableComment"
                                    class="form-check-input"
                                    id="enableComment">
                             <label for="enableComment" class="form-check-label">Enable Comment</label>
-                        </div>
-                        <div class="form-check form-switch">
-                            <input type="checkbox"
-                                   x-model="formData.feedIncluded"
-                                   class="form-check-input"
-                                   id="feedIncluded">
-                            <label for="feedIncluded" class="form-check-label">Include in feed and sitemap</label>
                         </div>
                         <div class="form-check form-switch">
                             <input type="checkbox"
@@ -194,23 +182,10 @@
                         </div>
                     </div>
                 </div>
-
-                <div class="mx-5 d-flex flex-column gap-2">
-                    <a x-show="formData.postId && formData.postId !== window.emptyGuid" class="btn btn-sm btn-outline-secondary w-100" data-bs-toggle="modal" data-bs-target="#changePublishDateModal">
-                        <i class="bi-clock-history"></i>
-                        @SharedLocalizer["Change Publish Date"]
-                    </a>
-
-                    <a x-show="formData.postStatus === 'Published'"
-                       x-cloak
-                       class="unpublish-link btn btn-sm btn-outline-secondary w-100"
-                       data-bs-toggle="modal"
-                       data-bs-target="#unpublishPostModal">@SharedLocalizer["Unpublish"]</a>
-                </div>
             </div>
         </div>
 
-        <div class="mt-3">
+        <div class="my-2 post-editor-actions">
             <button type="submit"
                     class="btn btn-outline-accent"
                     id="btn-save"
@@ -220,111 +195,67 @@
                 <span x-show="formData.postStatus === 'Published' || formData.postStatus === 'Scheduled'" x-cloak>@SharedLocalizer["Update"]</span>
             </button>
 
-            <div x-show="formData.postStatus !== 'Published'" x-cloak class="btn-group">
-                <button type="submit"
-                        class="btn btn-outline-accent"
-                        id="btn-publish"
-                        x-bind:disabled="isSaving"
-                        x-on:click="submitAction = 'publish'">
-                    @SharedLocalizer["Publish"]
-                </button>
-                <button type="button"
-                        class="btn btn-outline-accent dropdown-toggle dropdown-toggle-split"
-                        data-bs-toggle="dropdown"
-                        aria-expanded="false">
-                    <span class="visually-hidden">Toggle Dropdown</span>
-                </button>
-                <ul class="dropdown-menu">
-                    <li>
-                        <a class="dropdown-item" href="#" data-bs-toggle="modal" data-bs-target="#schedulePublishModal">
-                            <i class="bi-clock"></i>
-                            Schedule Publish Time
-                        </a>
-                    </li>
-                    <li>
-                        <button class="btn btn-link dropdown-item"
-                                id="btn-preview"
-                                type="submit"
-                                x-on:click="submitAction = 'preview'">
-                            <i class="bi-eye"></i>
-                            @SharedLocalizer["Preview"]
-                        </button>
-                    </li>
-                </ul>
-            </div>
+            <button type="submit"
+                    class="btn btn-outline-secondary"
+                    id="btn-preview"
+                    x-show="formData.postStatus !== 'Published'"
+                    x-cloak
+                    x-bind:disabled="isSaving"
+                    x-on:click="submitAction = 'preview'">
+                <i class="bi-eye me-1"></i>@SharedLocalizer["Preview"]
+            </button>
+
+            <button x-show="formData.postStatus !== 'Published'" x-cloak
+                    type="button"
+                    class="btn btn-outline-accent"
+                    id="btn-publish"
+                    x-bind:disabled="isSaving"
+                    x-on:click="openPublishModal()">
+                @SharedLocalizer["Publish"]
+            </button>
+
+            <a x-show="formData.postStatus === 'Published'"
+               x-cloak
+               class="unpublish-link btn btn-outline-secondary"
+               x-on:click="openUnpublishModal()">@SharedLocalizer["Unpublish"]</a>
 
             <div class="schedule-info d-inline-block text-muted ms-4" x-html="scheduleInfoHtml"></div>
         </div>
 
-        <!-- Change Publish Date Modal -->
-        <div class="modal fade" id="changePublishDateModal" tabindex="-1" role="dialog" aria-labelledby="changePublishDateModalLabel" aria-hidden="true">
+        <!-- Publish Modal -->
+        <div class="modal fade" id="publishModal" tabindex="-1" role="dialog" aria-labelledby="publishModalLabel" aria-hidden="true">
             <div class="modal-dialog" role="document">
                 <div class="modal-content">
                     <div class="modal-header">
-                        <h5 class="modal-title" id="changePublishDateModalLabel">@SharedLocalizer["Change Publish Date"]</h5>
+                        <h5 class="modal-title" id="publishModalLabel">@SharedLocalizer["Publish"]</h5>
                         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                     </div>
                     <div class="modal-body">
-                        <div class="alert alert-warning">@SharedLocalizer["Changing publish date will modify the URL of the post, and may cause unexpected results like breaking links on third parties that were pointing to this post. Please check the checkbox below if you confirm."]</div>
-                        <div class="mb-2">
-                            <input type="checkbox" x-model="formData.changePublishDate" class="form-check-input" id="changePublishDateCheck">
-                            <label for="changePublishDateCheck">Change Publish Date</label>
+                        <div class="form-check form-switch mb-3">
+                            <input type="checkbox"
+                                   x-model="formData.feedIncluded"
+                                   class="form-check-input"
+                                   id="publishFeedIncluded">
+                            <label for="publishFeedIncluded" class="form-check-label">Include in feed and sitemap</label>
                         </div>
-                        <div class="mb-2">
-                            <label for="publishDate">Publish Date</label>
-                            <input type="date" x-model="formData.publishDate" class="form-control" id="publishDate" />
+                        <div class="form-check form-switch mb-3">
+                            <input type="checkbox"
+                                   x-model="enableSchedule"
+                                   class="form-check-input"
+                                   id="enableScheduleToggle">
+                            <label for="enableScheduleToggle" class="form-check-label">Schedule Publish</label>
                         </div>
-                    </div>
-                    <div class="modal-footer">
-                        <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">@SharedLocalizer["Cancel"]</button>
-                        <button type="button" class="btn btn-danger" data-bs-dismiss="modal">@SharedLocalizer["Continue"]</button>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        <!-- Schedule Publish Modal -->
-        <div class="modal fade" id="schedulePublishModal" tabindex="-1" role="dialog" aria-labelledby="schedulePublishModalLabel" aria-hidden="true">
-            <div class="modal-dialog" role="document">
-                <div class="modal-content">
-                    <div class="modal-header">
-                        <h5 class="modal-title" id="schedulePublishModalLabel">@SharedLocalizer["Schedule Publish Time"]</h5>
-                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                    </div>
-                    <div class="modal-body">
-                        <div class="mb-2">
-                            @SharedLocalizer["Set a time in your local time zone to schedule the post to be automatically published."]
-                        </div>
-                        <div class="mb-2">
+                        <div x-show="enableSchedule" x-cloak class="mb-2">
+                            <label class="form-label">@SharedLocalizer["Set a time in your local time zone to schedule the post to be automatically published."]</label>
                             <input type="datetime-local" x-model="formData.scheduledPublishTime" class="form-control" :min="minScheduleDate" />
                         </div>
                     </div>
                     <div class="modal-footer">
-                        <button id="btn-cancel-schedule" type="button" class="btn btn-outline-danger" data-bs-dismiss="modal" x-on:click="cancelSchedule">@SharedLocalizer["Cancel Schedule"]</button>
-                        <button id="btn-schedule-publish" class="btn btn-accent" data-bs-dismiss="modal" x-on:click="confirmSchedule">@SharedLocalizer["Confirm"]</button>
+                        <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">@SharedLocalizer["Cancel"]</button>
+                        <button type="button" class="btn btn-accent" x-on:click="submitPublish">@SharedLocalizer["Submit"]</button>
                     </div>
                 </div>
             </div>
         </div>
     </form>
-
-    <!-- Unpublish Post Modal -->
-    <div class="modal fade" id="unpublishPostModal" tabindex="-1" role="dialog" aria-labelledby="unpublishPostModalLabel" aria-hidden="true">
-        <div class="modal-dialog" role="document">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title" id="unpublishPostModalLabel">@SharedLocalizer["Unpublish Post"]</h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                </div>
-                <div class="modal-body">
-                    <div class="alert alert-warning">@SharedLocalizer["Unpublishing this post will remove it from the public site and turn it into a draft. This will have impact on SEO. Please confirm."]</div>
-                    <p x-text="formData.title"></p>
-                </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">@SharedLocalizer["Cancel"]</button>
-                    <a id="btn-unpublish-post" class="btn btn-danger" x-on:click="unpublishPost" data-bs-dismiss="modal">@SharedLocalizer["Confirm"]</a>
-                </div>
-            </div>
-        </div>
-    </div>
 </div>

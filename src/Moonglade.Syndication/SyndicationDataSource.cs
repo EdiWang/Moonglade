@@ -70,7 +70,7 @@ public class SyndicationDataSource(
 
     private string FormatPostContent(string rawContent)
     {
-        var htmlContent = configuration.GetValue<EditorChoice>("Post:Editor") == EditorChoice.Markdown ?
+        var htmlContent = configuration.GetValue<EditorChoice>("Editor") == EditorChoice.Markdown ?
             ContentProcessor.MarkdownToContent(rawContent, ContentProcessor.MarkdownConvertType.Html, false) :
             rawContent;
 

@@ -36,6 +36,7 @@
 		</Content>
 	</ItemGroup>
 	<ItemGroup>
+		<PackageReference Include="Cronos" Version="0.11.1" />
 		<PackageReference Include="Edi.CacheAside.InMemory" Version="2.1.0" />
 		<PackageReference Include="Edi.Gravatar" Version="1.4.0" />
 		<PackageReference Include="Edi.ImageWatermark" Version="2.22.0" />
