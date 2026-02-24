@@ -1,23 +1,16 @@
 using LiteBus.Commands.Abstractions;
 using Microsoft.Extensions.Logging;
-using System.Collections.Concurrent;
 
 namespace Moonglade.Features.Post;
 
-public record AddViewCountCommand(Guid PostId, string Ip) : ICommand<int>;
+public record AddViewCountCommand(Guid PostId) : ICommand<int>;
 
 public class AddViewCountCommandHandler(
     IRepositoryBase<PostViewEntity> postViewRepo,
     ILogger<AddViewCountCommandHandler> logger) : ICommandHandler<AddViewCountCommand, int>
 {
-    // Ugly code to prevent race condition, which will make Moonglade a single instance application, shit
-    private static readonly ConcurrentDictionary<Guid, SemaphoreSlim> _locks = new();
-
     public async Task<int> HandleAsync(AddViewCountCommand request, CancellationToken cancellationToken)
     {
-        var postLock = _locks.GetOrAdd(request.PostId, _ => new SemaphoreSlim(1, 1));
-        await postLock.WaitAsync(cancellationToken);
-
         try
         {
             var entity = await postViewRepo.GetByIdAsync(request.PostId, cancellationToken);
@@ -26,24 +19,12 @@ public class AddViewCountCommandHandler(
             entity.ViewCount++;
             await postViewRepo.UpdateAsync(entity, cancellationToken);
 
-            logger.LogInformation("View count updated for {PostId}, {ViewCount}", request.PostId, entity.ViewCount);
-
             return entity.ViewCount;
         }
         catch (Exception ex)
         {
-            // Not fatal error, eat it and do not block application from running
             logger.LogError(ex, "Failed to add view count for {PostId}", request.PostId);
             return -1;
-        }
-        finally
-        {
-            postLock.Release();
-
-            if (postLock.CurrentCount == 1)
-            {
-                _locks.TryRemove(request.PostId, out _);
-            }
         }
     }
 }
