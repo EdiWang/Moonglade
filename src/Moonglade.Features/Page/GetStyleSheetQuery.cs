@@ -1,6 +1,6 @@
 using LiteBus.Queries.Abstractions;
 
-namespace Moonglade.Features;
+namespace Moonglade.Features.Page;
 
 public record GetStyleSheetQuery(Guid Id) : IQuery<StyleSheetEntity>;
 

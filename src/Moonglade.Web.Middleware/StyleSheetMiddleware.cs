@@ -3,7 +3,7 @@ using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Logging;
 using Moonglade.Configuration;
-using Moonglade.Features;
+using Moonglade.Features.Page;
 using System.Security.Cryptography;
 using System.Text;
 using System.Web;
