@@ -9,6 +9,7 @@ using Microsoft.AspNetCore.Diagnostics.HealthChecks;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.AspNetCore.Rewrite;
 using Microsoft.Extensions.Diagnostics.HealthChecks;
+using Microsoft.Extensions.Logging.Console;
 using Moonglade.BackgroundServices;
 using Moonglade.Data.MySql;
 using Moonglade.Data.PostgreSql;
@@ -40,7 +41,20 @@ public class Program
         var cultures = GetSupportedCultures();
         var builder = WebApplication.CreateBuilder(args);
         builder.WriteParameterTable();
-        builder.Logging.AddAzureWebAppDiagnostics();
+
+        if (builder.Environment.IsProduction())
+        {
+            builder.Logging.ClearProviders();
+            builder.Logging.AddSimpleConsole(o =>
+            {
+                o.SingleLine = true;
+                o.TimestampFormat = "yyyy-MM-dd HH:mm:ss.fff ";
+                o.UseUtcTimestamp = true;
+                o.ColorBehavior = LoggerColorBehavior.Disabled;
+            });
+
+            builder.Logging.AddAzureWebAppDiagnostics();
+        }
 
         ConfigureServices(builder.Services, builder.Configuration, cultures);
 
