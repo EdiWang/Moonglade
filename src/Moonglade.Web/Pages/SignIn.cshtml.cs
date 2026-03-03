@@ -92,9 +92,7 @@ public class SignInModel(IOptions<AuthenticationSettings> authSettings,
 
                     await HttpContext.SignInAsync(CookieAuthenticationDefaults.AuthenticationScheme, p);
 
-                    var successMessage = $@"Authentication success for local account ""{Username}""";
-
-                    logger.LogInformation(successMessage);
+                    logger.LogInformation("Authentication success for local account '{Username}'", Username);
 
                     return RedirectToPage("/Admin/Post");
                 }
@@ -102,9 +100,7 @@ public class SignInModel(IOptions<AuthenticationSettings> authSettings,
                 return Page();
             }
 
-            var failMessage = $@"Authentication failed for local account ""{Username}""";
-
-            logger.LogWarning(failMessage);
+            logger.LogWarning("Authentication failed for local account '{Username}'", Username);
 
             Response.StatusCode = StatusCodes.Status400BadRequest;
             ModelState.AddModelError(string.Empty, "Bad Request.");
@@ -112,7 +108,7 @@ public class SignInModel(IOptions<AuthenticationSettings> authSettings,
         }
         catch (Exception e)
         {
-            logger.LogWarning($@"Authentication failed for local account ""{Username}""");
+            logger.LogWarning(e, "Authentication failed for local account '{Username}'", Username);
 
             ModelState.AddModelError(string.Empty, e.Message);
             return Page();

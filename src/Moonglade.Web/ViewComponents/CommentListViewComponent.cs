@@ -10,8 +10,7 @@ public class CommentListViewComponent(ILogger<CommentListViewComponent> logger, 
         {
             if (postId == Guid.Empty)
             {
-                logger.LogError($"postId: {postId} is not a valid GUID");
-                throw new ArgumentOutOfRangeException(nameof(postId));
+                throw new ArgumentOutOfRangeException(nameof(postId), "postId is not a valid GUID.");
             }
 
             var comments = await queryMediator.QueryAsync(new GetApprovedCommentsQuery(postId));
@@ -19,7 +18,7 @@ public class CommentListViewComponent(ILogger<CommentListViewComponent> logger, 
         }
         catch (Exception e)
         {
-            logger.LogError(e, $"Error reading comments for post id: {postId}");
+            logger.LogError(e, "Error reading comments for post id: {PostId}", postId);
             return Content("ERROR");
         }
     }

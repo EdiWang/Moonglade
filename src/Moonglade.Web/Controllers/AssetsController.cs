@@ -113,7 +113,7 @@ public class AssetsController(
         }
         catch (FormatException e)
         {
-            logger.LogError(e, $"Error {nameof(SiteIconOrigin)}(), Invalid Base64 string");
+            logger.LogError(e, "Error {Action}(), Invalid Base64 string", nameof(SiteIconOrigin));
             return PhysicalFile(fallbackImageFile, "image/png");
         }
     }

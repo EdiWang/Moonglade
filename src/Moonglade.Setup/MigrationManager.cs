@@ -81,7 +81,7 @@ public partial class MigrationManager(
         if (string.IsNullOrWhiteSpace(providerKey))
         {
             var message = $"Automatic database migration is not supported for provider `{provider}`. Please migrate manually.";
-            logger.LogCritical(message);
+            logger.LogCritical("Automatic database migration is not supported for provider '{Provider}'. Please migrate manually.", provider);
             return new MigrationResult(MigrationStatus.UnsupportedProvider, message, manifestVersion, currentVersion);
         }
 

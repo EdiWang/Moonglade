@@ -60,7 +60,7 @@ public class ReceiveWebmentionCommandHandler(
         }
         catch (Exception e)
         {
-            logger.LogError(e, e.Message);
+            logger.LogError(e, "Error processing Webmention request.");
             return WebmentionResponse.GenericError;
         }
     }
@@ -70,13 +70,13 @@ public class ReceiveWebmentionCommandHandler(
         if (!Uri.TryCreate(source, UriKind.Absolute, out var sourceUri) ||
             !Uri.TryCreate(target, UriKind.Absolute, out var targetUri))
         {
-            logger.LogError("Invalid webmention request: source or target URL is invalid.");
+            logger.LogWarning("Invalid webmention request: source or target URL is invalid.");
             return (false, string.Empty, string.Empty);
         }
 
         if (!IsAllowedUri(sourceUri))
         {
-            logger.LogError("Blocked webmention from disallowed source URI: {SourceUri}", sourceUri);
+            logger.LogWarning("Blocked webmention from disallowed source URI: {SourceUri}", sourceUri);
             return (false, string.Empty, string.Empty);
         }
 
