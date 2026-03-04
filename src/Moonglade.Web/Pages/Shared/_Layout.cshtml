@@ -2,6 +2,7 @@
 @using Microsoft.AspNetCore.Localization
 @using System.Globalization
 @inject IConfiguration Configuration
+@inject ICacheAside Cache
 
 @{
     if (string.IsNullOrEmpty(BlogConfig.GeneralSettings.AvatarUrl))
@@ -27,6 +28,12 @@
     }
 
     bool clientPreferDarkMode = Helper.IsClientPreferDarkMode(Context);
+
+    var themeCss = await Cache.GetOrCreateAsync(BlogCachePartition.General.ToString(), "theme", async entry =>
+    {
+        entry.SlidingExpiration = TimeSpan.FromMinutes(20);
+        return await QueryMediator.QueryAsync(new GetSiteThemeStyleSheetQuery(BlogConfig.AppearanceSettings.ThemeId));
+    });
 }
 <!DOCTYPE html>
 <html lang="@langCode" data-bs-theme="@(clientPreferDarkMode ? "dark" : null)">
@@ -79,7 +86,10 @@
     <link href="~/css/base.css" rel="stylesheet" />
     <link href="~/css/rwd.css" rel="stylesheet" />
     @await RenderSectionAsync("head", false)
-    <link href="~/theme.css" rel="stylesheet" />
+    @if (!string.IsNullOrEmpty(themeCss))
+    {
+        <style>@Html.Raw(themeCss)</style>
+    }
     @if (BlogConfig.AppearanceSettings.EnableCustomCss)
     {
         <link href="~/custom.css" rel="stylesheet" />
