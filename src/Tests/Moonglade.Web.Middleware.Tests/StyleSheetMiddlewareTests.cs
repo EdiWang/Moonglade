@@ -1,6 +1,7 @@
 using LiteBus.Queries.Abstractions;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Options;
 using Moonglade.Configuration;
 using Moq;
 using System.Text;
@@ -23,15 +24,15 @@ public class StyleSheetMiddlewareTests
         _mockBlogConfig = new Mock<IBlogConfig>();
         _mockQueryMediator = new Mock<IQueryMediator>();
         _appearanceSettings = new AppearanceSettings();
-        _middleware = new StyleSheetMiddleware(_mockNext.Object, _mockLogger.Object);
-
-        // Setup default middleware options for testing
-        StyleSheetMiddleware.Options = new StyleSheetMiddlewareOptions
-        {
-            MaxContentLength = 65536,
-            DefaultPath = "/custom.css",
-            CacheMaxAge = 3600
-        };
+        _middleware = new StyleSheetMiddleware(
+            _mockNext.Object,
+            _mockLogger.Object,
+            Options.Create(new StyleSheetMiddlewareOptions
+            {
+                MaxContentLength = 65536,
+                DefaultPath = "/custom.css",
+                CacheMaxAge = 3600
+            }));
 
         // Setup default blog config mocks
         _mockBlogConfig.Setup(x => x.AppearanceSettings).Returns(_appearanceSettings);
@@ -297,7 +298,7 @@ public class StyleSheetMiddlewareTests
         context.Request.Path = "/custom.css";
 
         // Create CSS content larger than MaxContentLength
-        var largeCssCode = new string('a', StyleSheetMiddleware.Options.MaxContentLength + 1);
+        var largeCssCode = new string('a', 65537); // MaxContentLength (65536) + 1
 
         _appearanceSettings.EnableCustomCss = true;
         _appearanceSettings.CssCode = largeCssCode;
@@ -340,7 +341,7 @@ public class StyleSheetMiddlewareTests
 
         // Assert
         Assert.True(context.Response.Headers.ContainsKey("ETag"));
-        Assert.True(context.Response.Headers.ContainsKey("Last-Modified"));
+        Assert.False(context.Response.Headers.ContainsKey("Last-Modified"));
         Assert.True(context.Response.Headers.ContainsKey("Cache-Control"));
         Assert.True(context.Response.Headers.ContainsKey("Expires"));
 

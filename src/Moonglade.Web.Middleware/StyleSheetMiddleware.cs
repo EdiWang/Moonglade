@@ -2,17 +2,22 @@
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Options;
 using Moonglade.Configuration;
 using Moonglade.Features.Page;
+using System.Globalization;
 using System.Security.Cryptography;
 using System.Text;
 using System.Web;
 
 namespace Moonglade.Web.Middleware;
 
-public class StyleSheetMiddleware(RequestDelegate next, ILogger<StyleSheetMiddleware> logger)
+public class StyleSheetMiddleware(
+    RequestDelegate next,
+    ILogger<StyleSheetMiddleware> logger,
+    IOptions<StyleSheetMiddlewareOptions> options)
 {
-    public static StyleSheetMiddlewareOptions Options { get; set; } = new();
+    private readonly StyleSheetMiddlewareOptions _options = options.Value;
 
     public async Task Invoke(HttpContext context, IBlogConfig blogConfig, IQueryMediator queryMediator)
     {
@@ -37,7 +42,7 @@ public class StyleSheetMiddleware(RequestDelegate next, ILogger<StyleSheetMiddle
 
             var normalizedPath = requestPath.ToLowerInvariant();
 
-            if (string.Equals(normalizedPath, Options.DefaultPath.Value?.ToLowerInvariant(), StringComparison.Ordinal))
+            if (string.Equals(normalizedPath, _options.DefaultPath.Value?.ToLowerInvariant(), StringComparison.Ordinal))
             {
                 await HandleDefaultPath(context, blogConfig);
             }
@@ -157,7 +162,7 @@ public class StyleSheetMiddleware(RequestDelegate next, ILogger<StyleSheetMiddle
         }
     }
 
-    private static async Task WriteStyleSheet(HttpContext context, string cssCode, DateTime? lastModified = null)
+    private async Task WriteStyleSheet(HttpContext context, string cssCode, DateTime? lastModified = null)
     {
         if (string.IsNullOrWhiteSpace(cssCode))
         {
@@ -167,7 +172,7 @@ public class StyleSheetMiddleware(RequestDelegate next, ILogger<StyleSheetMiddle
 
         var cssLength = Encoding.UTF8.GetByteCount(cssCode);
 
-        if (cssLength > Options.MaxContentLength)
+        if (cssLength > _options.MaxContentLength)
         {
             context.Response.StatusCode = StatusCodes.Status413PayloadTooLarge;
             context.Response.ContentType = "text/plain";
@@ -175,11 +180,11 @@ public class StyleSheetMiddleware(RequestDelegate next, ILogger<StyleSheetMiddle
             return;
         }
 
-        // Set caching headers
-        SetCachingHeaders(context, cssCode, lastModified);
+        var etag = GenerateETag(cssCode);
 
-        // Check if client has cached version
-        if (IsNotModified(context, cssCode))
+        SetCachingHeaders(context, etag, lastModified);
+
+        if (IsNotModified(context, etag, lastModified))
         {
             context.Response.StatusCode = StatusCodes.Status304NotModified;
             return;
@@ -192,21 +197,19 @@ public class StyleSheetMiddleware(RequestDelegate next, ILogger<StyleSheetMiddle
         await context.Response.WriteAsync(cssCode, context.RequestAborted);
     }
 
-    private static void SetCachingHeaders(HttpContext context, string cssCode, DateTime? lastModified)
+    private void SetCachingHeaders(HttpContext context, string etag, DateTime? lastModified)
     {
         var response = context.Response;
 
-        // Generate ETag based on content hash
-        var etag = GenerateETag(cssCode);
         response.Headers.ETag = etag;
 
-        // Set Last-Modified header
-        var lastModifiedDate = lastModified ?? DateTime.UtcNow;
-        response.Headers.LastModified = lastModifiedDate.ToString("R");
+        if (lastModified.HasValue)
+        {
+            response.Headers.LastModified = lastModified.Value.ToString("R");
+        }
 
-        // Set cache control headers
-        response.Headers.CacheControl = $"public, max-age={Options.CacheMaxAge}";
-        response.Headers.Expires = DateTime.UtcNow.AddSeconds(Options.CacheMaxAge).ToString("R");
+        response.Headers.CacheControl = $"public, max-age={_options.CacheMaxAge}";
+        response.Headers.Expires = DateTime.UtcNow.AddSeconds(_options.CacheMaxAge).ToString("R");
     }
 
     private static string GenerateETag(string content)
@@ -215,16 +218,27 @@ public class StyleSheetMiddleware(RequestDelegate next, ILogger<StyleSheetMiddle
         return $"\"{Convert.ToHexString(hash)[..16]}\"";
     }
 
-    private static bool IsNotModified(HttpContext context, string cssCode)
+    private static bool IsNotModified(HttpContext context, string etag, DateTime? lastModified)
     {
         var request = context.Request;
-        var etag = GenerateETag(cssCode);
 
-        // Check If-None-Match header
         if (request.Headers.IfNoneMatch.Count > 0)
         {
             return request.Headers.IfNoneMatch.Any(value =>
-                string.Equals(value, etag, StringComparison.Ordinal));
+                string.Equals(value, etag, StringComparison.Ordinal) ||
+                string.Equals(value, "*", StringComparison.Ordinal));
+        }
+
+        if (lastModified.HasValue &&
+            request.Headers.IfModifiedSince.Count > 0 &&
+            DateTime.TryParseExact(
+                request.Headers.IfModifiedSince,
+                "R",
+                CultureInfo.InvariantCulture,
+                DateTimeStyles.AdjustToUniversal,
+                out var ifModifiedSince))
+        {
+            return lastModified.Value <= ifModifiedSince;
         }
 
         return false;
@@ -233,10 +247,11 @@ public class StyleSheetMiddleware(RequestDelegate next, ILogger<StyleSheetMiddle
 
 public static partial class ApplicationBuilderExtensions
 {
-    public static IApplicationBuilder UseCustomCss(this IApplicationBuilder app, Action<StyleSheetMiddlewareOptions> options = null)
+    public static IApplicationBuilder UseCustomCss(this IApplicationBuilder app, Action<StyleSheetMiddlewareOptions> configure = null)
     {
-        options?.Invoke(StyleSheetMiddleware.Options);
-        return app.UseMiddleware<StyleSheetMiddleware>();
+        var opt = new StyleSheetMiddlewareOptions();
+        configure?.Invoke(opt);
+        return app.UseMiddleware<StyleSheetMiddleware>(Options.Create(opt));
     }
 }
 
