@@ -307,13 +307,6 @@ public class Program
         bool useXFFHeaders = app.Configuration.GetValue<bool>("ForwardedHeaders:Enabled");
         if (useXFFHeaders) app.UseSmartXFFHeader();
 
-        app.UseOpenSearch(options =>
-        {
-            options.RequestPath = "/opensearch";
-            options.IconFileType = "image/png";
-            options.IconFilePath = "/favicon-16x16.png";
-        });
-
         app.UseMiddleware<PrefersColorSchemeMiddleware>();
         app.UseMiddleware<PoweredByMiddleware>();
 
@@ -359,6 +352,7 @@ public class Program
         }
 
         app.MapGet("/manifest.webmanifest", WebManifestMapHandler.Handler);
+        app.MapGet("/opensearch", OpenSearchMapHandler.Handler);
         var bc = app.Services.GetRequiredService<IBlogConfig>();
         if (bc.AdvancedSettings.EnableFoaf)
         {
