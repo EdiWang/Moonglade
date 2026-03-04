@@ -307,7 +307,6 @@ public class Program
         bool useXFFHeaders = app.Configuration.GetValue<bool>("ForwardedHeaders:Enabled");
         if (useXFFHeaders) app.UseSmartXFFHeader();
 
-        app.UseCustomCss(options => options.MaxContentLength = 10240);
         app.UseOpenSearch(options =>
         {
             options.RequestPath = "/opensearch";
@@ -351,6 +350,7 @@ public class Program
 
         app.MapControllers();
         app.MapRazorPages().WithStaticAssets();
+        app.MapStyleSheets(options => options.MaxContentLength = 10240);
         app.MapGet("/robots.txt", RobotsTxtMapHandler.Handler);
 
         if (!string.IsNullOrWhiteSpace(app.Configuration["IndexNow:ApiKey"]))
