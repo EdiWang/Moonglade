@@ -8,7 +8,7 @@ namespace Moonglade.Web.Handlers;
 public class OpenSearchMapHandler
 {
     private const string Xmlns = "http://a9.com/-/spec/opensearch/1.1/";
-    private const string ContentType = "application/opensearchdescription+xml";
+    private const string ContentType = "text/xml";
     private const string IconFileType = "image/png";
     private const string IconFilePath = "/favicon-16x16.png";
 
