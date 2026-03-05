@@ -9,6 +9,7 @@ services:
       ASPNETCORE_ENVIRONMENT: "Production"
       ConnectionStrings__MoongladeDatabase: "Server=moonglade-sqlserver;Database=moonglade;User Id=sa;Password=${MSSQL_SA_PASSWORD:-Work@996};Trusted_Connection=False;TrustServerCertificate=True;"
       ImageStorage__FileSystemPath: "/app/images"
+    restart: unless-stopped
     ports:
       - "8080:8080"
     depends_on:
@@ -24,6 +25,7 @@ services:
       MSSQL_SA_PASSWORD: "${MSSQL_SA_PASSWORD:-Work@996}"
       MSSQL_PID: "Express"
       ACCEPT_EULA: "Y"
+    restart: unless-stopped
     ports:
       - "1433:1433"
     volumes:
