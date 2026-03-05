@@ -11,8 +11,6 @@ public class WidgetsController(
     IQueryMediator queryMediator,
     ICommandMediator commandMediator) : BlogControllerBase(commandMediator)
 {
-    #region Widget CRUD Operations
-
     [HttpGet("{id:guid}")]
     public async Task<IActionResult> Get([NotEmpty] Guid id)
     {
@@ -73,6 +71,4 @@ public class WidgetsController(
 
         return NoContent();
     }
-
-    #endregion
 }

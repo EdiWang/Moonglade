@@ -1,5 +1,4 @@
 ﻿using LiteBus.Commands.Abstractions;
-using LiteBus.Queries.Abstractions;
 using Moonglade.ActivityLog;
 using System.ComponentModel.DataAnnotations;
 
@@ -7,28 +6,8 @@ namespace Moonglade.Web.Controllers;
 
 [Route("api/[controller]")]
 public class ThemeController(
-    IQueryMediator queryMediator,
-    ICommandMediator commandMediator,
-    ICacheAside cache,
-    IBlogConfig blogConfig) : BlogControllerBase(commandMediator)
+    ICommandMediator commandMediator) : BlogControllerBase(commandMediator)
 {
-    [AllowAnonymous]
-    [HttpGet("/theme.css")]
-    public async Task<IActionResult> Css()
-    {
-        var css = await cache.GetOrCreateAsync(BlogCachePartition.General.ToString(), "theme", async entry =>
-        {
-            entry.SlidingExpiration = TimeSpan.FromMinutes(20);
-
-            var data = await queryMediator.QueryAsync(new GetSiteThemeStyleSheetQuery(blogConfig.AppearanceSettings.ThemeId));
-            return data;
-        });
-
-        if (css == null) return NotFound();
-
-        return Content(css, "text/css; charset=utf-8");
-    }
-
     [HttpPost]
     [TypeFilter(typeof(ClearBlogCache), Arguments = [BlogCachePartition.General, "theme"])]
     public async Task<IActionResult> Create(CreateThemeRequest request)

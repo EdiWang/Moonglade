@@ -68,7 +68,7 @@ public class ImageController(
 
         if (!allowedExts.Contains(ext))
         {
-            logger.LogError($"Invalid file extension: {ext}");
+            logger.LogWarning("Invalid file extension: {Extension}", ext);
             return BadRequest();
         }
 
@@ -87,7 +87,7 @@ public class ImageController(
             StoreOriginalImageAsync(secondaryFileName, stream);
         }
 
-        logger.LogInformation($"Image '{primaryFileName}' uploaded.");
+        logger.LogInformation("Image '{FileName}' uploaded.", primaryFileName);
 
         await LogActivityAsync(
             EventType.ImageUploaded,
@@ -109,7 +109,7 @@ public class ImageController(
         if (ext.Equals(".gif", StringComparison.OrdinalIgnoreCase) ||
             ext.Equals(".svg", StringComparison.OrdinalIgnoreCase))
         {
-            logger.LogInformation($"Skipped watermark for extension name: {ext}");
+            logger.LogInformation("Skipped watermark for extension name: {Extension}", ext);
             return null;
         }
 

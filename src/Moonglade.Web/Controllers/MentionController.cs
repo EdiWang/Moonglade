@@ -56,7 +56,7 @@ public class MentionController(
         }
         catch (Exception e)
         {
-            logger.LogError(e, "Exception occurred while publishing MentionEvent: {Message}", e.Message);
+            logger.LogError(e, "Exception occurred while publishing MentionEvent.");
         }
     }
 

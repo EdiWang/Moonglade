@@ -2,7 +2,7 @@ using LiteBus.Commands.Abstractions;
 using Microsoft.Extensions.Logging;
 using System.Security.Cryptography;
 
-namespace Moonglade.Features;
+namespace Moonglade.Features.Page;
 
 public record SaveStyleSheetCommand(Guid Id, string Slug, string CssContent) : ICommand<Guid>;
 

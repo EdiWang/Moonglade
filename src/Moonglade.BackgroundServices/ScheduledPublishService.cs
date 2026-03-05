@@ -76,7 +76,7 @@ public class ScheduledPublishService(
             }
             catch (Exception ex)
             {
-                logger.LogError(ex, "Error in ScheduledPublishService: {Message}", ex.Message);
+                logger.LogError(ex, "Error in ScheduledPublishService.");
                 // Pause for a while before retrying to avoid tight loop on errors
                 await Task.Delay(TimeSpan.FromSeconds(10), stoppingToken);
             }

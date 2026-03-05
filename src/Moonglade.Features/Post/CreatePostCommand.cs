@@ -54,7 +54,7 @@ public class CreatePostCommandHandler(
 
         await postRepo.AddAsync(post, ct);
 
-        logger.LogInformation($"Created post Id: {post.Id}, Title: '{post.Title}'");
+        logger.LogInformation("Created post Id: {PostId}, Title: '{PostTitle}'", post.Id, post.Title);
         return new PostCommandResult
         {
             Id = post.Id,
@@ -73,7 +73,7 @@ public class CreatePostCommandHandler(
         {
             var uid = Guid.NewGuid();
             post.Slug += $"-{uid.ToString().ToLower()[..8]}";
-            logger.LogInformation($"Found conflict for post slug, generated new slug: {post.Slug}");
+            logger.LogInformation("Found conflict for post slug, generated new slug: {Slug}", post.Slug);
         }
     }
 
@@ -120,7 +120,7 @@ public class CreatePostCommandHandler(
 
         var tag = await tagRepo.AddAsync(newTag);
 
-        logger.LogInformation($"Created tag: {tag.DisplayName}");
+        logger.LogInformation("Created tag: {TagName}", tag.DisplayName);
         return tag;
     }
 }

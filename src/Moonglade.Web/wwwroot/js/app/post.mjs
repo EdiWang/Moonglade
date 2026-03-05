@@ -4,7 +4,7 @@ import { resetCaptchaImage, showCaptcha } from './captchaService.mjs';
 import { resizeImages, applyImageZooming } from './post.imageutils.mjs';
 import { renderCodeHighlighter, renderLaTeX } from './post.highlight.mjs';
 import { calculateReadingTime } from './post.readingtime.mjs';
-import { cleanupLocalStorage, recordPostView } from './postview.mjs';
+import { recordPostView } from './postview.mjs';
 import { error } from './toastService.mjs';
 
 async function submitComment(pid) {
@@ -82,7 +82,6 @@ document.addEventListener('DOMContentLoaded', () => {
 
         formatUtcTime();
 
-        cleanupLocalStorage();
         recordPostView(pid);
     }
 });
