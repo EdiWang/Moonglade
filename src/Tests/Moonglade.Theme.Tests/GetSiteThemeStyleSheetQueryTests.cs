@@ -340,5 +340,30 @@ public class GetSiteThemeStyleSheetQueryTests
         _mockRepo.Verify(r => r.GetByIdAsync(50, cts.Token), Times.Once);
     }
 
+    [Fact]
+    public async Task HandleAsync_CssValueWithScriptInjection_StripsAngleBrackets()
+    {
+        // Arrange
+        var cssRules = """{"--color": "</style><script>alert(1)</script><style>"}""";
+        var theme = new BlogThemeEntity
+        {
+            Id = 50,
+            CssRules = cssRules
+        };
+        _mockRepo.Setup(r => r.GetByIdAsync(50, It.IsAny<CancellationToken>()))
+            .ReturnsAsync(theme);
+
+        var query = new GetSiteThemeStyleSheetQuery(50);
+
+        // Act
+        var result = await _handler.HandleAsync(query, CancellationToken.None);
+
+        // Assert
+        Assert.DoesNotContain("<", result);
+        Assert.DoesNotContain(">", result);
+        Assert.DoesNotContain("</style>", result);
+        Assert.DoesNotContain("<script>", result);
+    }
+
     #endregion
 }

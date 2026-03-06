@@ -88,6 +88,7 @@
     @await RenderSectionAsync("head", false)
     @if (!string.IsNullOrEmpty(themeCss))
     {
+        themeCss = themeCss.Replace("</style", string.Empty, StringComparison.OrdinalIgnoreCase);
         <style>@Html.Raw(themeCss)</style>
     }
     @if (BlogConfig.AppearanceSettings.EnableCustomCss)

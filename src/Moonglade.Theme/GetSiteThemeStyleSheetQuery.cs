@@ -40,13 +40,16 @@ public class GetStyleSheetQueryHandler(IRepositoryBase<BlogThemeEntity> repo)
             throw new InvalidDataException($"Theme id '{request.Id}' CssRules deserialized to empty or null.");
         }
 
-        // Generate CSS
+        // Generate CSS (strip angle brackets from keys/values to prevent XSS when inlined in <style>)
         var css = $":root {{{string.Join("", rules
             .Where(kv => !string.IsNullOrWhiteSpace(kv.Key) && !string.IsNullOrWhiteSpace(kv.Value))
-            .Select(kv => $"{kv.Key}: {kv.Value};"))}}}";
+            .Select(kv => $"{SanitizeCssToken(kv.Key)}: {SanitizeCssToken(kv.Value)};"))}}}";
 
         return css;
     }
+
+    private static string SanitizeCssToken(string value) =>
+        value.Replace("<", string.Empty).Replace(">", string.Empty);
 
     private async Task<BlogThemeEntity> GetThemeAsync(int id, CancellationToken ct)
     {
