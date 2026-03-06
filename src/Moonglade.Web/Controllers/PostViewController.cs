@@ -22,8 +22,7 @@ public class PostViewController(
 
         // UA blacklist filter
         var crawlerKeywords = configuration.GetSection("ViewCount:CrawlerUserAgents").Get<string[]>() ?? [];
-        var uaLower = userAgent.ToLowerInvariant();
-        if (crawlerKeywords.Any(keyword => uaLower.Contains(keyword, StringComparison.OrdinalIgnoreCase)))
+        if (crawlerKeywords.Any(keyword => userAgent.Contains(keyword, StringComparison.OrdinalIgnoreCase)))
         {
             return NoContent();
         }
