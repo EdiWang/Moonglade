@@ -16,9 +16,7 @@ Alpine.data('recycleBinManager', () => ({
         this.isLoading = true;
         try {
             const data = await fetch2('/api/post/list/recyclebin', 'GET');
-            this.posts = (data.posts ?? []).sort((a, b) => 
-                new Date(b.createTimeUtc) - new Date(a.createTimeUtc)
-            );
+            this.posts = data.posts ?? [];
             
             formatUtcTime();
         } catch (err) {
