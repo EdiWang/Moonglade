@@ -1,9 +1,17 @@
 ﻿@page "/auth/signin"
+@inject ICacheAside Cache
 @model Moonglade.Web.Pages.SignInModel
 @using Edi.AspNetCore.Utils
 @using Moonglade.Utils
+
 @{
     Layout = null;
+
+    var themeCss = await Cache.GetOrCreateAsync(BlogCachePartition.General.ToString(), "theme", async entry =>
+    {
+        entry.SlidingExpiration = TimeSpan.FromMinutes(20);
+        return await QueryMediator.QueryAsync(new GetSiteThemeStyleSheetQuery(BlogConfig.AppearanceSettings.ThemeId));
+    });
 }
 
 <!DOCTYPE html>
@@ -17,7 +25,11 @@
     <partial name="_Favicons" />
     <link href="~/lib/twitter-bootstrap/css/bootstrap.min.css" rel="stylesheet" />
     <link href="~/css/base.css" rel="stylesheet" />
-    <link href="~/theme.css" rel="stylesheet" />
+    @if (!string.IsNullOrEmpty(themeCss))
+    {
+        themeCss = themeCss.Replace("</style", string.Empty, StringComparison.OrdinalIgnoreCase);
+        <style>@Html.Raw(themeCss)</style>
+    }
     <link href="~/Moonglade.Web.styles.css" rel="stylesheet" />
 </head>
 <body>

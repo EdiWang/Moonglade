@@ -1,5 +1,6 @@
 ﻿@inject IOptions<AuthenticationSettings> AuthOptions
 @inject IConfiguration Configuration
+@inject ICacheAside Cache
 @inject Moonglade.BackgroundServices.UpdateCheckerState UpdateCheckerState
 
 @{
@@ -11,6 +12,12 @@
     bool clientPreferDarkMode = Helper.IsClientPreferDarkMode(Context);
     bool hideAdminSidebar = ViewBag.HideAdminSidebar == true;
     string adminBackUrl = ViewBag.AdminBackUrl as string;
+
+    var themeCss = await Cache.GetOrCreateAsync(BlogCachePartition.General.ToString(), "theme", async entry =>
+    {
+        entry.SlidingExpiration = TimeSpan.FromMinutes(20);
+        return await QueryMediator.QueryAsync(new GetSiteThemeStyleSheetQuery(BlogConfig.AppearanceSettings.ThemeId));
+    });
 }
 <!DOCTYPE html>
 <html lang="@BlogConfig.GeneralSettings.DefaultLanguageCode" data-bs-theme="@(clientPreferDarkMode ? "dark" : null)">
@@ -30,7 +37,11 @@
     <link href="~/css/base.css" rel="stylesheet" />
     <link href="~/css/rwd.css" rel="stylesheet" />
     <link href="~/css/admin.css" rel="stylesheet" />
-    <link href="~/theme.css" rel="stylesheet" />
+    @if (!string.IsNullOrEmpty(themeCss))
+    {
+        themeCss = themeCss.Replace("</style", string.Empty, StringComparison.OrdinalIgnoreCase);
+        <style>@Html.Raw(themeCss)</style>
+    }
     <link href="~/Moonglade.Web.styles.css" rel="stylesheet" />
     @await RenderSectionAsync("head", false)
 </head>
