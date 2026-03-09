@@ -1,8 +1,8 @@
-import { Alpine } from '/js/app/alpine-init.mjs';
-import { fetch2 } from '/js/app/httpService.mjs?v=1500';
-import { formatUtcTime, getLocalizedString } from '/js/app/utils.module.mjs';
-import { success } from '/js/app/toastService.mjs';
-import { showConfirmModal, hideConfirmModal } from '/js/app/adminModal.mjs';
+import { Alpine } from './alpine-init.mjs';
+import { fetch2 } from './httpService.mjs?v=1500';
+import { formatUtcTime, getLocalizedString } from './utils.module.mjs';
+import { success } from './toastService.mjs';
+import { showConfirmModal, hideConfirmModal } from './adminModal.mjs';
 
 Alpine.data('commentManager', () => ({
     comments: [],

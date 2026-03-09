@@ -1,4 +1,4 @@
-import { Alpine } from '/js/app/alpine-init.mjs';
+import { Alpine } from './alpine-init.mjs';
 
 function escapeHtml(str) {
     const div = document.createElement('div');

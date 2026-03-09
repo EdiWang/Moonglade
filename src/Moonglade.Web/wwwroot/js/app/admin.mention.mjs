@@ -1,6 +1,6 @@
-import { Alpine } from '/js/app/alpine-init.mjs';
-import { fetch2 } from '/js/app/httpService.mjs?v=1500';
-import { success, error } from '/js/app/toastService.mjs';
+import { Alpine } from './alpine-init.mjs';
+import { fetch2 } from './httpService.mjs?v=1500';
+import { success, error } from './toastService.mjs';
 import { getLocalizedString } from './utils.module.mjs';
 
 Alpine.data('mentionManager', () => ({

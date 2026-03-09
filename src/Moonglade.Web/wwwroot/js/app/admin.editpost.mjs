@@ -1,4 +1,4 @@
-import { Alpine } from '/js/app/alpine-init.mjs';
+import { Alpine } from './alpine-init.mjs';
 import { fetch2 } from './httpService.mjs?v=1500';
 import { success, error } from './toastService.mjs';
 import { loadTinyMCE, keepAlive } from './admin.editor.module.mjs';
