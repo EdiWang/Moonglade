@@ -14,7 +14,10 @@
 <div id="localizedStrings" style="display:none"
      data-mention-deleted="@SharedLocalizer["Mention deleted"]"
      data-mentions-deleted="@SharedLocalizer["{0} mentions deleted"]"
-     data-mentions-cleared="@SharedLocalizer["Mention logs are cleared"]">
+     data-mentions-cleared="@SharedLocalizer["Mention logs are cleared"]"
+     data-confirm-delete-mention="@SharedLocalizer["Delete this mention?"]"
+     data-confirm-delete-mentions="@SharedLocalizer["Delete {0} mentions?"]"
+     data-confirm-clear-all="@SharedLocalizer["Are you sure you want to clear all mentions?"]">
 </div>
 
 @section admintoolbar{
@@ -94,43 +97,5 @@
                 </div>
             </div>
         </template>
-    </div>
-</div>
-
-<!-- Delete Mention(s) Modal -->
-<div class="modal fade" id="deleteMentionModal" tabindex="-1" aria-labelledby="deleteMentionModalLabel" aria-hidden="true">
-    <div class="modal-dialog">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title" id="deleteMentionModalLabel">@SharedLocalizer["Confirm Delete"]</h5>
-                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-            </div>
-            <div class="modal-body">
-                <span x-text="pendingDeleteIds.length === 1 ? '@SharedLocalizer["Delete this mention?"]' : `@SharedLocalizer["Delete"] ${pendingDeleteIds.length} @SharedLocalizer["mentions"]?`"></span>
-            </div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">@SharedLocalizer["Cancel"]</button>
-                <button type="button" class="btn btn-outline-danger" x-on:click="confirmDeleteMention()">@SharedLocalizer["Delete"]</button>
-            </div>
-        </div>
-    </div>
-</div>
-
-<!-- Clear All Mentions Modal -->
-<div class="modal fade" id="clearAllMentionsModal" tabindex="-1" aria-labelledby="clearAllMentionsModalLabel" aria-hidden="true">
-    <div class="modal-dialog">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title" id="clearAllMentionsModalLabel">@SharedLocalizer["Confirm Clear All"]</h5>
-                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-            </div>
-            <div class="modal-body">
-                @SharedLocalizer["Are you sure you want to clear all mentions?"]
-            </div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">@SharedLocalizer["Cancel"]</button>
-                <button type="button" class="btn btn-outline-danger" x-on:click="confirmClearAllMentions()">@SharedLocalizer["Clear All"]</button>
-            </div>
-        </div>
     </div>
 </div>

@@ -2,6 +2,7 @@ import { Alpine } from './alpine-init.mjs';
 import { fetch2 } from './httpService.mjs?v=1500';
 import { formatUtcTime, getLocalizedString } from './utils.module.mjs';
 import { success, error } from './toastService.mjs';
+import { showConfirmModal, hideConfirmModal } from './adminModal.mjs';
 
 Alpine.data('activityLogManager', () => ({
     logs: [],
@@ -13,10 +14,8 @@ Alpine.data('activityLogManager', () => ({
     selectedEventTypes: [],
     startDate: '',
     endDate: '',
-    deleteModal: null,
     detailModal: null,
     filterCanvas: null,
-    pendingDeleteId: null,
     currentMetadata: null,
     currentLogOperation: '',
 
@@ -24,7 +23,6 @@ Alpine.data('activityLogManager', () => ({
         const urlParams = new URLSearchParams(window.location.search);
         this.currentPage = parseInt(urlParams.get('pageIndex')) || 1;
 
-        this.deleteModal = new bootstrap.Modal(document.getElementById('deleteLogModal'));
         this.detailModal = new bootstrap.Modal(document.getElementById('detailModal'));
         this.filterCanvas = new bootstrap.Offcanvas(this.$refs.filterCanvas);
 
@@ -106,24 +104,25 @@ Alpine.data('activityLogManager', () => ({
         window.history.pushState({}, '', `?${params.toString()}`);
     },
 
-    async deleteLog(logId) {
-        this.pendingDeleteId = logId;
-        this.deleteModal.show();
-    },
-
-    async confirmDelete() {
-        if (!this.pendingDeleteId) return;
-
-        try {
-            await fetch2(`/api/activitylog/${this.pendingDeleteId}`, 'DELETE');
-            await this.loadLogs();
-            success(getLocalizedString('logDeleted'));
-        } catch (err) {
-            error(err);
-        } finally {
-            this.deleteModal.hide();
-            this.pendingDeleteId = null;
-        }
+    deleteLog(logId) {
+        showConfirmModal({
+            title: 'Confirm Delete',
+            body: getLocalizedString('confirmDeleteLog'),
+            confirmText: 'Delete',
+            confirmClass: 'btn-outline-danger',
+            confirmIcon: 'bi-trash',
+            onConfirm: async () => {
+                try {
+                    await fetch2(`/api/activitylog/${logId}`, 'DELETE');
+                    await this.loadLogs();
+                    success(getLocalizedString('logDeleted'));
+                } catch (err) {
+                    error(err);
+                } finally {
+                    hideConfirmModal();
+                }
+            }
+        });
     },
 
     async showDetail(logId, operation) {

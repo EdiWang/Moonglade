@@ -2,6 +2,7 @@ import { Alpine } from './alpine-init.mjs';
 import { fetch2 } from './httpService.mjs?v=1500';
 import { formatUtcTime, getLocalizedString } from './utils.module.mjs';
 import { success, error } from './toastService.mjs';
+import { showConfirmModal, hideConfirmModal } from './adminModal.mjs';
 
 Alpine.data('postManager', () => ({
 posts: [],
@@ -10,15 +11,11 @@ searchTerm: '',
 currentPage: 1,
 pageSize: 4,
 totalRows: 0,
-confirmModal: null,
-confirmMessage: '',
-pendingDeleteId: null,
 
 async init() {
     const urlParams = new URLSearchParams(window.location.search);
     this.currentPage = parseInt(urlParams.get('pageIndex')) || 1;
     this.searchTerm = urlParams.get('searchTerm') || '';
-    this.confirmModal = new bootstrap.Modal(this.$refs.confirmModal);
     await this.loadPosts();
 },
 
@@ -68,25 +65,25 @@ async init() {
         window.history.pushState({}, '', `?${params.toString()}`);
     },
 
-    async deletePost(postId) {
-        this.pendingDeleteId = postId;
-        this.confirmMessage = getLocalizedString('confirmDelete');
-        this.confirmModal.show();
-    },
-
-    async confirmAction() {
-        if (this.pendingDeleteId) {
-            try {
-                await fetch2(`/api/post/${this.pendingDeleteId}/recycle`, 'DELETE');
-                await this.loadPosts();
-                success(getLocalizedString('postDeleted'));
-            } catch (err) {
-                error(err);
-            } finally {
-                this.confirmModal.hide();
-                this.pendingDeleteId = null;
+    deletePost(postId) {
+        showConfirmModal({
+            title: 'Confirm',
+            body: getLocalizedString('confirmDelete'),
+            confirmText: 'Delete',
+            confirmClass: 'btn-outline-danger',
+            confirmIcon: 'bi-trash',
+            onConfirm: async () => {
+                try {
+                    await fetch2(`/api/post/${postId}/recycle`, 'DELETE');
+                    await this.loadPosts();
+                    success(getLocalizedString('postDeleted'));
+                } catch (err) {
+                    error(err);
+                } finally {
+                    hideConfirmModal();
+                }
             }
-        }
+        });
     },
 
     get hasPosts() {
