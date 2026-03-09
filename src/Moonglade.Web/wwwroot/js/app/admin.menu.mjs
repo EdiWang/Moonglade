@@ -4,8 +4,6 @@ import { success, error } from './toastService.mjs';
 import { getLocalizedString } from './utils.module.mjs';
 import { showConfirmModal, hideConfirmModal } from './adminModal.mjs';
 
-let menuItemModal, subMenuItemModal;
-
 Alpine.data('menuManager', () => ({
     settings: {
         isEnabled: false,
@@ -17,6 +15,8 @@ Alpine.data('menuManager', () => ({
     editingIndex: null,
     editingSubIndex: null,
     editingParentIndex: null,
+    menuItemModal: null,
+    subMenuItemModal: null,
 
     async init() {
         this.initializeModals();
@@ -24,8 +24,8 @@ Alpine.data('menuManager', () => ({
     },
 
     initializeModals() {
-        menuItemModal = new bootstrap.Modal(document.getElementById('menuItemModal'));
-        subMenuItemModal = new bootstrap.Modal(document.getElementById('subMenuItemModal'));
+        this.menuItemModal = new bootstrap.Modal(this.$refs.menuItemModal);
+        this.subMenuItemModal = new bootstrap.Modal(this.$refs.subMenuItemModal);
     },
 
     async loadSettings() {
@@ -77,7 +77,7 @@ Alpine.data('menuManager', () => ({
             };
         }
 
-        menuItemModal.show();
+        this.menuItemModal.show();
     },
 
     saveMenuItem() {
@@ -101,7 +101,7 @@ Alpine.data('menuManager', () => ({
             this.settings.menus.push(menuItem);
         }
 
-        menuItemModal.hide();
+        this.menuItemModal.hide();
         this.currentMenuItem = {};
         this.editingIndex = null;
     },
@@ -122,7 +122,7 @@ Alpine.data('menuManager', () => ({
             };
         }
 
-        subMenuItemModal.show();
+        this.subMenuItemModal.show();
     },
 
     saveSubMenuItem() {
@@ -147,7 +147,7 @@ Alpine.data('menuManager', () => ({
             this.settings.menus[this.editingParentIndex].subMenus.push(subMenuItem);
         }
 
-        subMenuItemModal.hide();
+        this.subMenuItemModal.hide();
         this.currentSubMenuItem = {};
         this.editingSubIndex = null;
         this.editingParentIndex = null;
