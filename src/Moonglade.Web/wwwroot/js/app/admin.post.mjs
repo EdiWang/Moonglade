@@ -118,5 +118,3 @@ async init() {
         return `/Post/${date.getFullYear()}/${date.getMonth() + 1}/${date.getDate()}/${post.slug}`;
     }
 }));
-
-Alpine.start();

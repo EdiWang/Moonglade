@@ -46,5 +46,3 @@ Alpine.data('draftManager', () => ({
         return this.posts.length > 0;
     }
 }));
-
-Alpine.start();

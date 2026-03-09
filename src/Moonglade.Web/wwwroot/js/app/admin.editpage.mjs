@@ -170,5 +170,3 @@ Alpine.data('pageEditor', () => ({
         }
     }
 }));
-
-Alpine.start();

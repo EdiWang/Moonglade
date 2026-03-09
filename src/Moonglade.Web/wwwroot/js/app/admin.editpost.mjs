@@ -416,5 +416,3 @@ Alpine.data('postEditor', () => ({
         }
     }
 }));
-
-Alpine.start();

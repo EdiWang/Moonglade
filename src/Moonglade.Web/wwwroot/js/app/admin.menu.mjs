@@ -208,5 +208,3 @@ Alpine.data('menuManager', () => ({
         }
     }
 }));
-
-Alpine.start();

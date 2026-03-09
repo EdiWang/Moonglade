@@ -51,5 +51,3 @@ Alpine.data('accountManager', () => ({
         }
     }
 }));
-
-Alpine.start();

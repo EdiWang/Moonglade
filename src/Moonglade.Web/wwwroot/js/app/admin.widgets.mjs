@@ -178,5 +178,3 @@ Alpine.data('widgetManager', () => ({
         return getLocalizedString(key);
     }
 }));
-
-Alpine.start();

@@ -137,5 +137,3 @@ Alpine.data('scheduledManager', () => ({
         });
     }
 }));
-
-Alpine.start();

@@ -165,5 +165,3 @@ async init() {
         }
     }
 }));
-
-Alpine.start();

@@ -155,5 +155,3 @@ Alpine.data('commentManager', () => ({
         return pages;
     }
 }));
-
-Alpine.start();

@@ -88,5 +88,3 @@ Alpine.data('categoryManager', () => ({
         success(isCreate ? getLocalizedString('categoryCreated') : getLocalizedString('categoryUpdated'));
     }
 }));
-
-Alpine.start();

@@ -194,5 +194,3 @@ Alpine.data('activityLogManager', () => ({
         return 'Unknown';
     }
 }));
-
-Alpine.start();

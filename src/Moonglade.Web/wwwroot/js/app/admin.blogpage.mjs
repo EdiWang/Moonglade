@@ -52,5 +52,3 @@ Alpine.data('pageManager', () => ({
         });
     }
 }));
-
-Alpine.start();

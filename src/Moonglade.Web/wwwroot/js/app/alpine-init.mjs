@@ -43,4 +43,6 @@ Alpine.store('modal', {
     }
 });
 
+queueMicrotask(() => Alpine.start());
+
 export { Alpine };

@@ -92,5 +92,3 @@ Alpine.data('recycleBinManager', () => ({
         );
     }
 }));
-
-Alpine.start();

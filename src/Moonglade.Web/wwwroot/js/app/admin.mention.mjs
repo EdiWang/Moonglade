@@ -115,5 +115,3 @@ async init() {
         return date.toLocaleString();
     }
 }));
-
-Alpine.start();
