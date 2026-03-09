@@ -3,24 +3,21 @@ import { fetch2 } from './httpService.mjs?v=1500';
 import { formatUtcTime, getLocalizedString } from './utils.module.mjs';
 import { success, error } from './toastService.mjs';
 import { showConfirmModal, hideConfirmModal } from './adminModal.mjs';
+import { withPagination } from './admin.pagination.mjs';
 
-Alpine.data('commentManager', () => ({
+Alpine.data('commentManager', () => withPagination(5, {
     comments: [],
     isLoading: true,
     searchTerm: '',
-    currentPage: 1,
-    pageSize: 5,
-    totalRows: 0,
     selectedCommentIds: [],
 
     async init() {
-        const urlParams = new URLSearchParams(window.location.search);
-        this.currentPage = parseInt(urlParams.get('pageIndex')) || 1;
+        const urlParams = this.initPageFromUrl();
         this.searchTerm = urlParams.get('searchTerm') || '';
-        await this.loadComments();
+        await this.loadData();
     },
 
-    async loadComments() {
+    async loadData() {
         this.isLoading = true;
         try {
             const params = new URLSearchParams({
@@ -52,16 +49,8 @@ Alpine.data('commentManager', () => ({
 
     async handleSearch() {
         this.currentPage = 1;
-        await this.loadComments();
+        await this.loadData();
         this.updateUrl();
-    },
-
-    async goToPage(page) {
-        if (page < 1 || page > this.totalPages) return;
-        this.currentPage = page;
-        await this.loadComments();
-        this.updateUrl();
-        window.scrollTo(0, 0);
     },
 
     updateUrl() {
@@ -83,7 +72,7 @@ Alpine.data('commentManager', () => ({
             onConfirm: async () => {
                 try {
                     await fetch2('/api/comment', 'DELETE', [commentId]);
-                    await this.loadComments();
+                    await this.loadData();
                     success(getLocalizedString('commentDeleted'));
                 } catch (err) {
                     error(err);
@@ -107,7 +96,7 @@ Alpine.data('commentManager', () => ({
                 try {
                     await fetch2('/api/comment', 'DELETE', this.selectedCommentIds);
                     this.selectedCommentIds = [];
-                    await this.loadComments();
+                    await this.loadData();
                     success(getLocalizedString('commentsDeleted'));
                 } catch (err) {
                     error(err);
@@ -153,25 +142,5 @@ Alpine.data('commentManager', () => ({
 
     get hasComments() {
         return this.comments.length > 0;
-    },
-
-    get totalPages() {
-        return Math.ceil(this.totalRows / this.pageSize);
-    },
-
-    get paginationPages() {
-        const pages = [];
-        const maxVisible = 5;
-        let startPage = Math.max(1, this.currentPage - Math.floor(maxVisible / 2));
-        let endPage = Math.min(this.totalPages, startPage + maxVisible - 1);
-
-        if (endPage - startPage < maxVisible - 1) {
-            startPage = Math.max(1, endPage - maxVisible + 1);
-        }
-
-        for (let i = startPage; i <= endPage; i++) {
-            pages.push(i);
-        }
-        return pages;
     }
 }));

@@ -3,23 +3,20 @@ import { fetch2 } from './httpService.mjs?v=1500';
 import { formatUtcTime, getLocalizedString } from './utils.module.mjs';
 import { success, error } from './toastService.mjs';
 import { showConfirmModal, hideConfirmModal } from './adminModal.mjs';
+import { withPagination } from './admin.pagination.mjs';
 
-Alpine.data('postManager', () => ({
-posts: [],
-isLoading: true,
-searchTerm: '',
-currentPage: 1,
-pageSize: 4,
-totalRows: 0,
+Alpine.data('postManager', () => withPagination(4, {
+    posts: [],
+    isLoading: true,
+    searchTerm: '',
 
-async init() {
-    const urlParams = new URLSearchParams(window.location.search);
-    this.currentPage = parseInt(urlParams.get('pageIndex')) || 1;
-    this.searchTerm = urlParams.get('searchTerm') || '';
-    await this.loadPosts();
-},
+    async init() {
+        const urlParams = this.initPageFromUrl();
+        this.searchTerm = urlParams.get('searchTerm') || '';
+        await this.loadData();
+    },
 
-    async loadPosts() {
+    async loadData() {
         this.isLoading = true;
         try {
             const params = new URLSearchParams({
@@ -45,15 +42,8 @@ async init() {
 
     async handleSearch() {
         this.currentPage = 1;
-        await this.loadPosts();
+        await this.loadData();
         this.updateUrl();
-    },
-
-    async goToPage(page) {
-        this.currentPage = page;
-        await this.loadPosts();
-        this.updateUrl();
-        window.scrollTo(0, 0);
     },
 
     updateUrl() {
@@ -75,7 +65,7 @@ async init() {
             onConfirm: async () => {
                 try {
                     await fetch2(`/api/post/${postId}/recycle`, 'DELETE');
-                    await this.loadPosts();
+                    await this.loadData();
                     success(getLocalizedString('postDeleted'));
                 } catch (err) {
                     error(err);
@@ -88,26 +78,6 @@ async init() {
 
     get hasPosts() {
         return this.posts.length > 0;
-    },
-
-    get totalPages() {
-        return Math.ceil(this.totalRows / this.pageSize);
-    },
-
-    get paginationPages() {
-        const pages = [];
-        const maxVisible = 5;
-        let startPage = Math.max(1, this.currentPage - Math.floor(maxVisible / 2));
-        let endPage = Math.min(this.totalPages, startPage + maxVisible - 1);
-
-        if (endPage - startPage < maxVisible - 1) {
-            startPage = Math.max(1, endPage - maxVisible + 1);
-        }
-
-        for (let i = startPage; i <= endPage; i++) {
-            pages.push(i);
-        }
-        return pages;
     },
 
     getPostUrl(post) {

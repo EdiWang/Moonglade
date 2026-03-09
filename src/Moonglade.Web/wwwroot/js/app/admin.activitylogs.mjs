@@ -3,14 +3,12 @@ import { fetch2 } from './httpService.mjs?v=1500';
 import { formatUtcTime, getLocalizedString } from './utils.module.mjs';
 import { success, error } from './toastService.mjs';
 import { showConfirmModal, hideConfirmModal } from './adminModal.mjs';
+import { withPagination } from './admin.pagination.mjs';
 
-Alpine.data('activityLogManager', () => ({
+Alpine.data('activityLogManager', () => withPagination(10, {
     logs: [],
     eventTypeGroups: [],
     isLoading: true,
-    currentPage: 1,
-    pageSize: 10,
-    totalRows: 0,
     selectedEventTypes: [],
     startDate: '',
     endDate: '',
@@ -20,14 +18,13 @@ Alpine.data('activityLogManager', () => ({
     currentLogOperation: '',
 
     async init() {
-        const urlParams = new URLSearchParams(window.location.search);
-        this.currentPage = parseInt(urlParams.get('pageIndex')) || 1;
+        this.initPageFromUrl();
 
         this.detailModal = new bootstrap.Modal(document.getElementById('detailModal'));
         this.filterCanvas = new bootstrap.Offcanvas(this.$refs.filterCanvas);
 
         await this.loadEventTypes();
-        await this.loadLogs();
+        await this.loadData();
     },
 
     async loadEventTypes() {
@@ -38,7 +35,7 @@ Alpine.data('activityLogManager', () => ({
         }
     },
 
-    async loadLogs() {
+    async loadData() {
         this.isLoading = true;
         try {
             const params = new URLSearchParams({
@@ -76,7 +73,7 @@ Alpine.data('activityLogManager', () => ({
 
     async handleFilter() {
         this.currentPage = 1;
-        await this.loadLogs();
+        await this.loadData();
         this.updateUrl();
         this.filterCanvas.hide();
     },
@@ -86,22 +83,9 @@ Alpine.data('activityLogManager', () => ({
         this.startDate = '';
         this.endDate = '';
         this.currentPage = 1;
-        await this.loadLogs();
+        await this.loadData();
         this.updateUrl();
         this.filterCanvas.hide();
-    },
-
-    async goToPage(page) {
-        this.currentPage = page;
-        await this.loadLogs();
-        this.updateUrl();
-        window.scrollTo(0, 0);
-    },
-
-    updateUrl() {
-        const params = new URLSearchParams();
-        params.set('pageIndex', this.currentPage);
-        window.history.pushState({}, '', `?${params.toString()}`);
     },
 
     deleteLog(logId) {
@@ -114,7 +98,7 @@ Alpine.data('activityLogManager', () => ({
             onConfirm: async () => {
                 try {
                     await fetch2(`/api/activitylog/${logId}`, 'DELETE');
-                    await this.loadLogs();
+                    await this.loadData();
                     success(getLocalizedString('logDeleted'));
                 } catch (err) {
                     error(err);
@@ -137,26 +121,6 @@ Alpine.data('activityLogManager', () => ({
 
     get hasLogs() {
         return this.logs.length > 0;
-    },
-
-    get totalPages() {
-        return Math.ceil(this.totalRows / this.pageSize);
-    },
-
-    get paginationPages() {
-        const pages = [];
-        const maxVisible = 5;
-        let startPage = Math.max(1, this.currentPage - Math.floor(maxVisible / 2));
-        let endPage = Math.min(this.totalPages, startPage + maxVisible - 1);
-
-        if (endPage - startPage < maxVisible - 1) {
-            startPage = Math.max(1, endPage - maxVisible + 1);
-        }
-
-        for (let i = startPage; i <= endPage; i++) {
-            pages.push(i);
-        }
-        return pages;
     },
 
     openFilter() {
