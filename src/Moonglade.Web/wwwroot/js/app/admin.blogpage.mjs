@@ -1,6 +1,6 @@
 import { Alpine } from './alpine-init.mjs';
 import { fetch2 } from './httpService.mjs?v=1500';
-import { success } from './toastService.mjs';
+import { success, error } from './toastService.mjs';
 import { getLocalizedString } from './utils.module.mjs';
 import { showConfirmModal, hideConfirmModal } from './adminModal.mjs';
 
@@ -16,6 +16,8 @@ Alpine.data('pageManager', () => ({
         this.isLoading = true;
         try {
             this.pages = (await fetch2('/api/page/segment/list', 'GET')) ?? [];
+        } catch (err) {
+            error(err);
         } finally {
             this.isLoading = false;
         }
@@ -44,10 +46,15 @@ Alpine.data('pageManager', () => ({
             confirmClass: 'btn-outline-danger',
             confirmIcon: 'bi-trash',
             onConfirm: async () => {
-                await fetch2(`/api/page/${pageId}`, 'DELETE');
-                await this.loadPages();
-                success(getLocalizedString('pageDeleted'));
-                hideConfirmModal();
+                try {
+                    await fetch2(`/api/page/${pageId}`, 'DELETE');
+                    await this.loadPages();
+                    success(getLocalizedString('pageDeleted'));
+                } catch (err) {
+                    error(err);
+                } finally {
+                    hideConfirmModal();
+                }
             }
         });
     }

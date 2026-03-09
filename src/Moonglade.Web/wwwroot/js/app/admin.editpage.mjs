@@ -1,6 +1,6 @@
 import { Alpine } from './alpine-init.mjs';
 import { fetch2 } from './httpService.mjs?v=1500';
-import { success } from './toastService.mjs';
+import { success, error } from './toastService.mjs';
 
 let htmlContentEditor = null;
 let cssContentEditor = null;
@@ -46,7 +46,7 @@ Alpine.data('pageEditor', () => ({
         this.isLoading = true;
         try {
             const data = await fetch2(`/api/page/${this.pageId}`, 'GET');
-            
+
             this.formData = {
                 title: data.title || '',
                 slug: data.slug || '',
@@ -61,6 +61,8 @@ Alpine.data('pageEditor', () => ({
             if (htmlContentEditor) {
                 htmlContentEditor.setValue(this.formData.rawHtmlContent);
             }
+        } catch (err) {
+            error(err);
         } finally {
             this.isLoading = false;
         }
@@ -165,6 +167,8 @@ Alpine.data('pageEditor', () => ({
                     this.isPreview = false;
                 }
             }
+        } catch (err) {
+            error(err);
         } finally {
             this.isSaving = false;
         }

@@ -1,6 +1,6 @@
 import { Alpine } from './alpine-init.mjs';
 import { fetch2 } from './httpService.mjs?v=1500';
-import { success } from './toastService.mjs';
+import { success, error } from './toastService.mjs';
 import { getLocalizedString } from './utils.module.mjs';
 import { showConfirmModal, hideConfirmModal } from './adminModal.mjs';
 
@@ -25,6 +25,8 @@ Alpine.data('categoryManager', () => ({
         this.isLoading = true;
         try {
             this.categories = (await fetch2('/api/category/list', 'GET')) ?? [];
+        } catch (err) {
+            error(err);
         } finally {
             this.isLoading = false;
         }
@@ -47,14 +49,18 @@ Alpine.data('categoryManager', () => ({
     },
 
     async editCategory(id) {
-        const data = await fetch2(`/api/category/${id}`, 'GET');
-        this.currentCategoryId = data.id;
-        this.formData = {
-            slug: data.slug,
-            displayName: data.displayName,
-            note: data.note
-        };
-        this.editCanvas.show();
+        try {
+            const data = await fetch2(`/api/category/${id}`, 'GET');
+            this.currentCategoryId = data.id;
+            this.formData = {
+                slug: data.slug,
+                displayName: data.displayName,
+                note: data.note
+            };
+            this.editCanvas.show();
+        } catch (err) {
+            error(err);
+        }
     },
 
     deleteCategory(id) {
@@ -66,11 +72,16 @@ Alpine.data('categoryManager', () => ({
             confirmClass: 'btn-outline-danger',
             confirmIcon: 'bi-trash',
             onConfirm: async () => {
-                await fetch2(`/api/category/${this.pendingDeleteId}`, 'DELETE');
-                await this.loadCategories();
-                success(getLocalizedString('categoryDeleted'));
-                hideConfirmModal();
-                this.pendingDeleteId = null;
+                try {
+                    await fetch2(`/api/category/${this.pendingDeleteId}`, 'DELETE');
+                    await this.loadCategories();
+                    success(getLocalizedString('categoryDeleted'));
+                    this.pendingDeleteId = null;
+                } catch (err) {
+                    error(err);
+                } finally {
+                    hideConfirmModal();
+                }
             }
         });
     },
@@ -80,11 +91,15 @@ Alpine.data('categoryManager', () => ({
         const apiAddress = isCreate ? '/api/category' : `/api/category/${this.currentCategoryId}`;
         const verb = isCreate ? 'POST' : 'PUT';
 
-        await fetch2(apiAddress, verb, this.formData);
+        try {
+            await fetch2(apiAddress, verb, this.formData);
 
-        this.formData = { slug: '', displayName: '', note: '' };
-        this.editCanvas.hide();
-        await this.loadCategories();
-        success(isCreate ? getLocalizedString('categoryCreated') : getLocalizedString('categoryUpdated'));
+            this.formData = { slug: '', displayName: '', note: '' };
+            this.editCanvas.hide();
+            await this.loadCategories();
+            success(isCreate ? getLocalizedString('categoryCreated') : getLocalizedString('categoryUpdated'));
+        } catch (err) {
+            error(err);
+        }
     }
 }));

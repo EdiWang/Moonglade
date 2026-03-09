@@ -84,55 +84,63 @@ Alpine.data('postEditor', () => ({
     },
 
     async loadMeta() {
-        const meta = await fetch2('/api/post/meta', 'GET');
-        if (meta) {
-            this.editorChoice = meta.editorChoice;
-            this.categories = meta.categories || [];
-            this.languages = meta.languages || [];
+        try {
+            const meta = await fetch2('/api/post/meta', 'GET');
+            if (meta) {
+                this.editorChoice = meta.editorChoice;
+                this.categories = meta.categories || [];
+                this.languages = meta.languages || [];
 
-            if (!this.postId) {
-                this.formData.author = meta.defaultAuthor || '';
-            }
+                if (!this.postId) {
+                    this.formData.author = meta.defaultAuthor || '';
+                }
 
-            if (this.languages.length > 0 && !this.formData.languageCode) {
-                this.formData.languageCode = this.languages[0].value;
+                if (this.languages.length > 0 && !this.formData.languageCode) {
+                    this.formData.languageCode = this.languages[0].value;
+                }
             }
+        } catch (err) {
+            error(err);
         }
     },
 
     async loadPostData() {
         if (!this.postId) return;
 
-        const data = await fetch2(`/api/post/${this.postId}`, 'GET');
-        if (!data) return;
+        try {
+            const data = await fetch2(`/api/post/${this.postId}`, 'GET');
+            if (!data) return;
 
-        this.formData = {
-            ...this.formData,
-            postId: data.postId || '',
-            title: data.title || '',
-            slug: data.slug || '',
-            author: data.author || '',
-            editorContent: data.editorContent || '',
-            postStatus: data.postStatus || 'Draft',
-            enableComment: data.enableComment ?? true,
-            feedIncluded: data.feedIncluded ?? true,
-            featured: data.featured ?? false,
-            isOutdated: data.isOutdated ?? false,
-            languageCode: data.languageCode || '',
-            abstract: data.contentAbstract || '',
-            keywords: data.keywords || '',
-            tags: data.tags || '',
-            publishDate: data.publishDate ? data.publishDate.substring(0, 10) : null,
-            scheduledPublishTimeUtc: data.scheduledPublishTimeUtc || null,
-            lastModifiedUtc: data.lastModifiedUtc || '',
-            selectedCatIds: data.selectedCatIds || []
-        };
+            this.formData = {
+                ...this.formData,
+                postId: data.postId || '',
+                title: data.title || '',
+                slug: data.slug || '',
+                author: data.author || '',
+                editorContent: data.editorContent || '',
+                postStatus: data.postStatus || 'Draft',
+                enableComment: data.enableComment ?? true,
+                feedIncluded: data.feedIncluded ?? true,
+                featured: data.featured ?? false,
+                isOutdated: data.isOutdated ?? false,
+                languageCode: data.languageCode || '',
+                abstract: data.contentAbstract || '',
+                keywords: data.keywords || '',
+                tags: data.tags || '',
+                publishDate: data.publishDate ? data.publishDate.substring(0, 10) : null,
+                scheduledPublishTimeUtc: data.scheduledPublishTimeUtc || null,
+                lastModifiedUtc: data.lastModifiedUtc || '',
+                selectedCatIds: data.selectedCatIds || []
+            };
 
-        // Determine warnSlugModification: post published > 3 days ago
-        if (data.publishDate) {
-            const pubDate = new Date(data.publishDate);
-            const daysSincePublish = (Date.now() - pubDate.getTime()) / (1000 * 60 * 60 * 24);
-            this.warnSlugModification = daysSincePublish > 3;
+            // Determine warnSlugModification: post published > 3 days ago
+            if (data.publishDate) {
+                const pubDate = new Date(data.publishDate);
+                const daysSincePublish = (Date.now() - pubDate.getTime()) / (1000 * 60 * 60 * 24);
+                this.warnSlugModification = daysSincePublish > 3;
+            }
+        } catch (err) {
+            error(err);
         }
     },
 
@@ -335,6 +343,8 @@ Alpine.data('postEditor', () => ({
                     window.open(`/admin/post/preview/${resp.postId}`);
                 }
             }
+        } catch (err) {
+            error(err);
         } finally {
             this.isSaving = false;
             this.submitAction = 'save';
@@ -348,11 +358,16 @@ Alpine.data('postEditor', () => ({
             confirmText: 'Confirm',
             confirmClass: 'btn-danger',
             onConfirm: async () => {
-                if (!this.postId) return;
-                await fetch2(`/api/post/${this.postId}/unpublish`, 'PUT', {});
-                success('Post unpublished');
-                hideConfirmModal();
-                location.reload();
+                try {
+                    if (!this.postId) return;
+                    await fetch2(`/api/post/${this.postId}/unpublish`, 'PUT', {});
+                    success('Post unpublished');
+                    location.reload();
+                } catch (err) {
+                    error(err);
+                } finally {
+                    hideConfirmModal();
+                }
             }
         });
     },

@@ -1,7 +1,7 @@
 import { Alpine } from './alpine-init.mjs';
 import { fetch2 } from './httpService.mjs?v=1500';
 import { formatUtcTime, getLocalizedString } from './utils.module.mjs';
-import { success } from './toastService.mjs';
+import { success, error } from './toastService.mjs';
 import { showConfirmModal, hideConfirmModal } from './adminModal.mjs';
 
 Alpine.data('commentManager', () => ({
@@ -27,7 +27,7 @@ Alpine.data('commentManager', () => ({
                 pageIndex: this.currentPage,
                 pageSize: this.pageSize
             });
-            
+
             if (this.searchTerm) {
                 params.append('searchTerm', this.searchTerm);
             }
@@ -39,10 +39,12 @@ Alpine.data('commentManager', () => ({
                 replyContent: ''
             }));
             this.totalRows = data.totalRows ?? 0;
-            
+
             this.$nextTick(() => {
                 formatUtcTime();
             });
+        } catch (err) {
+            error(err);
         } finally {
             this.isLoading = false;
         }
@@ -79,10 +81,15 @@ Alpine.data('commentManager', () => ({
             confirmClass: 'btn-outline-danger',
             confirmIcon: 'bi-trash',
             onConfirm: async () => {
-                await fetch2('/api/comment', 'DELETE', [commentId]);
-                await this.loadComments();
-                success(getLocalizedString('commentDeleted'));
-                hideConfirmModal();
+                try {
+                    await fetch2('/api/comment', 'DELETE', [commentId]);
+                    await this.loadComments();
+                    success(getLocalizedString('commentDeleted'));
+                } catch (err) {
+                    error(err);
+                } finally {
+                    hideConfirmModal();
+                }
             }
         });
     },
@@ -97,20 +104,29 @@ Alpine.data('commentManager', () => ({
             confirmClass: 'btn-outline-danger',
             confirmIcon: 'bi-trash',
             onConfirm: async () => {
-                await fetch2('/api/comment', 'DELETE', this.selectedCommentIds);
-                this.selectedCommentIds = [];
-                await this.loadComments();
-                success(getLocalizedString('commentsDeleted'));
-                hideConfirmModal();
+                try {
+                    await fetch2('/api/comment', 'DELETE', this.selectedCommentIds);
+                    this.selectedCommentIds = [];
+                    await this.loadComments();
+                    success(getLocalizedString('commentsDeleted'));
+                } catch (err) {
+                    error(err);
+                } finally {
+                    hideConfirmModal();
+                }
             }
         });
     },
 
     async toggleApproval(commentId) {
-        await fetch2(`/api/comment/${commentId}/approval/toggle`, 'PUT', {});
-        const comment = this.comments.find(c => c.id === commentId);
-        if (comment) {
-            comment.isApproved = !comment.isApproved;
+        try {
+            await fetch2(`/api/comment/${commentId}/approval/toggle`, 'PUT', {});
+            const comment = this.comments.find(c => c.id === commentId);
+            if (comment) {
+                comment.isApproved = !comment.isApproved;
+            }
+        } catch (err) {
+            error(err);
         }
     },
 
@@ -118,16 +134,20 @@ Alpine.data('commentManager', () => ({
         const comment = this.comments.find(c => c.id === commentId);
         if (!comment || !comment.replyContent) return;
 
-        const reply = await fetch2(`/api/comment/${commentId}/reply`, 'POST', comment.replyContent);
-        
-        if (reply) {
-            comment.replies.push(reply);
-            comment.showReplyForm = false;
-            comment.replyContent = '';
-            this.$nextTick(() => {
-                formatUtcTime();
-            });
-            success('Reply posted');
+        try {
+            const reply = await fetch2(`/api/comment/${commentId}/reply`, 'POST', comment.replyContent);
+
+            if (reply) {
+                comment.replies.push(reply);
+                comment.showReplyForm = false;
+                comment.replyContent = '';
+                this.$nextTick(() => {
+                    formatUtcTime();
+                });
+                success('Reply posted');
+            }
+        } catch (err) {
+            error(err);
         }
     },
 
