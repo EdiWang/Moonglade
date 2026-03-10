@@ -113,7 +113,7 @@ public class ImageController(
             return null;
         }
 
-        using var watermarker = new ImageWatermarker(stream, ext, blogConfig.ImageSettings.WatermarkSkipPixel);
+        using var watermarker = new ImageWatermarker(stream, blogConfig.ImageSettings.WatermarkSkipPixel);
         return watermarker.AddWatermark(
             blogConfig.ImageSettings.WatermarkText,
             Color.FromRgba(128, 128, 128, (byte)blogConfig.ImageSettings.WatermarkColorA),
