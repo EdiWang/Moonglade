@@ -156,4 +156,4 @@ Alpine.data('activityLogManager', () => withPagination(10, {
         }
         return 'Unknown';
     }
-}));
+}, [10, 20, 30, 40, 50]));
