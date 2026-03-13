@@ -1,35 +1,21 @@
 import { Alpine } from './alpine-init.mjs';
 import { fetch2 } from './httpService.mjs?v=1500';
 import { success, error } from './toastService.mjs';
-import { loadTinyMCE, keepAlive } from './admin.editor.module.mjs';
+import { keepAlive } from './admin.editor.module.mjs';
 import { showConfirmModal, hideConfirmModal, escapeHtml } from './adminModal.mjs';
-
-function slugify(text) {
-    if (!/^[A-Za-z][A-Za-z0-9 \(\)#,\.\?]*$/.test(text)) {
-        return '';
-    }
-    return text
-        .toLowerCase()
-        .replace(/[()#,.?]/g, '')
-        .replace(/[^\w ]+/g, '')
-        .replace(/ +/g, '-');
-}
+import { createSlugMixin } from './admin.editpost.slug.mjs';
+import { createEditorMixin } from './admin.editpost.editor.mjs';
+import { createTagifyMixin } from './admin.editpost.tagify.mjs';
+import { createScheduleMixin } from './admin.editpost.schedule.mjs';
+import { createFormMixin } from './admin.editpost.form.mjs';
 
 Alpine.data('postEditor', () => ({
     postId: null,
     isLoading: true,
     isSaving: false,
     submitAction: 'save',
-    editorChoice: '',
     categories: [],
     languages: [],
-    warnSlugModification: false,
-    slugUnlocked: false,
-    scheduleInfoHtml: '',
-    minScheduleDate: '',
-    tagifyInstance: null,
-    isFormDirty: false,
-    enableSchedule: false,
 
     formData: {
         postId: '',
@@ -53,6 +39,12 @@ Alpine.data('postEditor', () => ({
         lastModifiedUtc: '',
         selectedCatIds: []
     },
+
+    ...createSlugMixin(),
+    ...createEditorMixin(),
+    ...createTagifyMixin(),
+    ...createScheduleMixin(),
+    ...createFormMixin(),
 
     async init() {
         const pathSegments = window.location.pathname.split('/');
@@ -144,122 +136,6 @@ Alpine.data('postEditor', () => ({
         }
     },
 
-    initEditor() {
-        if (this.editorChoice === 'html') {
-            loadTinyMCE('.post-content-textarea');
-        }
-
-        if (this.editorChoice === 'markdown') {
-            require(['vs/editor/editor.main'], () => {
-                window.mdContentEditor = initEditor('markdown-content-editor', '.post-content-textarea', 'markdown');
-
-                if (this.formData.editorContent) {
-                    window.mdContentEditor.setValue(this.formData.editorContent);
-                }
-
-                inlineAttachment.editors.monaco.attach(
-                    window.mdContentEditor,
-                    document.getElementsByClassName('md-editor-image-upload-area')[0],
-                    {
-                        uploadUrl: '/image',
-                        urlText: '![file]({filename})',
-                        onFileUploadResponse: function (xhr) {
-                            var result = JSON.parse(xhr.responseText),
-                                filename = result[this.settings.jsonFieldName];
-
-                            if (result && filename) {
-                                var newValue;
-                                if (typeof this.settings.urlText === 'function') {
-                                    newValue = this.settings.urlText.call(this, filename, result);
-                                } else {
-                                    newValue = this.settings.urlText.replace(this.filenameTag, filename);
-                                }
-                                var text = this.editor.getValue().replace(this.lastValue, newValue);
-                                this.editor.setValue(text);
-                                this.settings.onFileUploaded.call(this, filename);
-                            }
-                            return false;
-                        }
-                    }
-                );
-            });
-        }
-    },
-
-    async initTagify() {
-        const data = await fetch2('/api/tags/names', 'GET', {});
-        const input = document.querySelector('#post-tags-input');
-        if (!input) return;
-
-        this.tagifyInstance = new Tagify(input, {
-            pattern: /^[a-zA-Z 0-9\.\-\+\#\s]*$/i,
-            whitelist: data,
-            originalInputValueFormat: valuesArr => valuesArr.map(item => item.value).join(','),
-            maxTags: 10,
-            dropdown: {
-                maxItems: 30,
-                classname: 'tags-dropdown',
-                enabled: 0,
-                closeOnSelect: false
-            }
-        });
-
-        // Load existing tags
-        if (this.formData.tags) {
-            const existingTags = this.formData.tags.split(',').filter(t => t.trim());
-            this.tagifyInstance.addTags(existingTags);
-        }
-    },
-
-    setupKeyboardShortcuts() {
-        window.addEventListener('keydown', (event) => {
-            if ((event.ctrlKey || event.metaKey) && event.key.toLowerCase() === 's') {
-                event.preventDefault();
-                this.submitAction = 'save';
-                this.handleSubmit();
-            }
-        });
-    },
-
-    setupDirtyFormWarning() {
-        const form = document.getElementById('post-edit-form');
-        if (!form) return;
-
-        form.addEventListener('input', () => {
-            this.isFormDirty = true;
-        });
-
-        window.addEventListener('beforeunload', (event) => {
-            if (this.isFormDirty) {
-                const message = 'You have unsaved changes, are you sure to leave this page?';
-                event.returnValue = message;
-                return message;
-            }
-        });
-    },
-
-    onTitleChange() {
-        if (!this.warnSlugModification || this.slugUnlocked) {
-            const newSlug = slugify(this.formData.title);
-            if (newSlug) {
-                this.formData.slug = newSlug;
-            }
-        }
-    },
-
-    unlockSlug() {
-        showConfirmModal({
-            title: 'Modify Slug',
-            body: '<div class="alert alert-warning">This post was published for a period of time, changing slug will result in breaking SEO, would you like to continue?</div>',
-            confirmText: 'Modify',
-            confirmClass: 'btn-warning',
-            onConfirm: () => {
-                this.slugUnlocked = true;
-                hideConfirmModal();
-            }
-        });
-    },
-
     toggleCategory(catId, checked) {
         if (checked) {
             if (!this.formData.selectedCatIds.includes(catId)) {
@@ -267,20 +143,6 @@ Alpine.data('postEditor', () => ({
             }
         } else {
             this.formData.selectedCatIds = this.formData.selectedCatIds.filter(id => id !== catId);
-        }
-    },
-
-    syncEditorContent() {
-        if (window.tinyMCE) {
-            window.tinyMCE.triggerSave();
-            const ta = document.querySelector('.post-content-textarea');
-            if (ta) {
-                this.formData.editorContent = ta.value;
-            }
-        }
-
-        if (window.mdContentEditor) {
-            this.formData.editorContent = window.mdContentEditor.getValue();
         }
     },
 
@@ -293,9 +155,7 @@ Alpine.data('postEditor', () => ({
         }
 
         // Sync tags from tagify
-        if (this.tagifyInstance) {
-            this.formData.tags = this.tagifyInstance.value.map(t => t.value).join(',');
-        }
+        this.syncTags();
 
         if (this.submitAction === 'publish') {
             if (this.enableSchedule && this.formData.scheduledPublishTime) {
@@ -370,64 +230,5 @@ Alpine.data('postEditor', () => ({
                 }
             }
         });
-    },
-
-    initScheduleState() {
-        if (this.formData.postStatus === 'Scheduled') {
-            this.enableSchedule = true;
-
-            if (this.formData.scheduledPublishTimeUtc) {
-                const utcDate = new Date(this.formData.scheduledPublishTimeUtc);
-                const localDate = new Date(utcDate.getTime() - utcDate.getTimezoneOffset() * 60000);
-
-                const pad = n => n < 10 ? '0' + n : n;
-                const year = localDate.getFullYear();
-                const month = pad(localDate.getMonth() + 1);
-                const day = pad(localDate.getDate());
-                const hours = pad(localDate.getHours());
-                const minutes = pad(localDate.getMinutes());
-                this.formData.scheduledPublishTime = `${year}-${month}-${day}T${hours}:${minutes}`;
-            }
-
-            this.updateScheduleInfo();
-        }
-    },
-
-    openPublishModal() {
-        this.updateMinScheduleDate();
-        const modal = new bootstrap.Modal(document.getElementById('publishModal'));
-        modal.show();
-    },
-
-    submitPublish() {
-        const modal = bootstrap.Modal.getInstance(document.getElementById('publishModal'));
-        if (modal) modal.hide();
-
-        this.submitAction = 'publish';
-        this.handleSubmit();
-    },
-
-    updateMinScheduleDate() {
-        this.minScheduleDate = new Date().toISOString().slice(0, 16);
-    },
-
-    updateScheduleInfo() {
-        const status = this.formData.postStatus;
-
-        if (status === 'Scheduled') {
-            let displayTime;
-
-            if (this.formData.scheduledPublishTime) {
-                displayTime = new Date(this.formData.scheduledPublishTime).toLocaleString();
-            } else if (this.formData.scheduledPublishTimeUtc) {
-                const utcDate = new Date(this.formData.scheduledPublishTimeUtc);
-                const localDate = new Date(utcDate.getTime() - utcDate.getTimezoneOffset() * 60000);
-                displayTime = localDate.toLocaleString();
-            }
-
-            this.scheduleInfoHtml = `<i class="bi-clock"></i> <span>Scheduled for: ${displayTime}</span>`;
-        } else {
-            this.scheduleInfoHtml = '';
-        }
     }
 }));
