@@ -5,9 +5,16 @@ export function createTagifyMixin() {
         tagifyInstance: null,
 
         async initTagify() {
-            const data = await fetch2('/api/tags/names', 'GET', {});
             const input = document.querySelector('#post-tags-input');
             if (!input) return;
+
+            let data;
+            try {
+                data = await fetch2('/api/tags/names', 'GET', {});
+            } catch (error) {
+                console.error('Failed to fetch tag names:', error);
+                return;
+            }
 
             this.tagifyInstance = new Tagify(input, {
                 pattern: /^[a-zA-Z 0-9\.\-\+\#\s]*$/i,
