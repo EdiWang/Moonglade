@@ -176,14 +176,15 @@ Enable notifications in the admin portal.
 | Atom         | Subscription  | Supported   | `/atom`         |
 | OPML         | Subscription  | Supported   | `/opml`         |
 | Open Search  | Search        | Supported   | `/opensearch`   |
-| Pingback     | Social        | Deprecated  | N/A             |
+| FOAF         | Social        | Supported   | `/foaf.xml`     |
 | Webmention   | Social        | Supported   | `/webmention`   |
 | Reader View  | Reader Mode   | Supported   | N/A             |
-| FOAF         | Social        | Supported   | `/foaf.xml`     |
+| u-card	   | SEO           | Supported   | N/A             |
 | IndexNow     | SEO           | Supported   | N/A             |
+| Dublin Core  | SEO           | Basic       | N/A             |
 | RSD          | Discovery     | Deprecated  | N/A             |
 | MetaWeblog   | Blogging      | Deprecated  | N/A             |
-| Dublin Core  | SEO           | Basic       | N/A             |
+| Pingback     | Social        | Deprecated  | N/A             |
 
 ## Health Check
 
