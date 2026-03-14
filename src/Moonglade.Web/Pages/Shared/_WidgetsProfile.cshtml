@@ -1,4 +1,4 @@
-﻿<section class="blog-info-desktop-lg text-light d-none d-lg-block">
+﻿<section class="blog-info-desktop-lg text-light d-none d-lg-block h-card">
     <div class="card-background-container">
         @if (BlogConfig.GeneralSettings.UseGravatarAsProfilePicture)
         {
@@ -12,7 +12,7 @@
     <div class="blog-info-photo-text text-center">
         @if (BlogConfig.GeneralSettings.UseGravatarAsProfilePicture)
         {
-            <gravatar class="rounded-circle blogger-head-pic"
+            <gravatar class="rounded-circle blogger-head-pic u-photo"
                       size="256"
                       alt="@BlogConfig.GeneralSettings.OwnerName" 
                       email="@BlogConfig.GeneralSettings.OwnerEmail" />
@@ -21,25 +21,25 @@
         {
             <img src="@BlogConfig.GeneralSettings.AvatarUrl"
                  alt="@BlogConfig.GeneralSettings.OwnerName"
-                 class="rounded-circle blogger-head-pic"/>
+                 class="rounded-circle blogger-head-pic u-photo"/>
         }
 
         <div>
             @if (!string.IsNullOrWhiteSpace(BlogConfig.GeneralSettings.Pronouns))
             {
                 <h3 class="mt-3 mb-0 text-white font-sairas heading-ownername" title="@BlogConfig.GeneralSettings.OwnerName (@BlogConfig.GeneralSettings.Pronouns)">
-                    @BlogConfig.GeneralSettings.OwnerName
+                    <a class="p-name u-url text-white text-decoration-none" rel="me" href="~/">@BlogConfig.GeneralSettings.OwnerName</a>
                 </h3>
-                <div class="profile-pronouns mb-2">@BlogConfig.GeneralSettings.Pronouns</div>
+                <div class="profile-pronouns mb-2 p-pronoun">@BlogConfig.GeneralSettings.Pronouns</div>
             }
             else
             {
                 <h3 class="mt-3 text-white font-sairas heading-ownername">
-                    @BlogConfig.GeneralSettings.OwnerName
+                    <a class="p-name u-url text-white text-decoration-none" rel="me" href="~/">@BlogConfig.GeneralSettings.OwnerName</a>
                 </h3>
             }
 
-            <p class="me-3 ms-3 profile-description">
+            <p class="me-3 ms-3 profile-description p-note">
                 @BlogConfig.GeneralSettings.Description
             </p>
         </div>
