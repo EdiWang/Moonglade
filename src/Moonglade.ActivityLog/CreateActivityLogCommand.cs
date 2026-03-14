@@ -11,9 +11,9 @@ public record CreateActivityLogCommand(
     string ActorId,
     string Operation,
     string TargetName,
-    object MetaData = null,
-    string IpAddress = null,
-    string UserAgent = null) : ICommand;
+    object? MetaData = null,
+    string? IpAddress = null,
+    string? UserAgent = null) : ICommand;
 
 public class CreateActivityLogCommandHandler(
     IRepositoryBase<ActivityLogEntity> repository,
@@ -44,8 +44,8 @@ public class CreateActivityLogCommandHandler(
                 Operation = TruncateString(request.Operation, 100),
                 TargetName = TruncateString(request.TargetName, 200),
                 MetaData = request.MetaData != null ? JsonSerializer.Serialize(request.MetaData, JsonOptions) : null,
-                IpAddress = TruncateString(request.IpAddress, 50),
-                UserAgent = TruncateString(request.UserAgent, 512)
+                IpAddress = TruncateString(request.IpAddress!, 50),
+                UserAgent = TruncateString(request.UserAgent!, 512)
             };
 
             await repository.AddAsync(entity, ct);
