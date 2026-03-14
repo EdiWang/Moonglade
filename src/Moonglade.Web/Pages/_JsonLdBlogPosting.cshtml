@@ -1,0 +1,51 @@
+@model Moonglade.Web.Pages.PostModel
+@using Moonglade.Utils
+@using System.Text.Json
+@removeTagHelper *, Microsoft.AspNetCore.Mvc.TagHelpers
+
+@{
+    var authorName = string.IsNullOrWhiteSpace(Model.Post.Author)
+        ? BlogConfig.GeneralSettings.OwnerName
+        : Model.Post.Author;
+
+    var postUrl = !string.IsNullOrWhiteSpace(BlogConfig.GeneralSettings.CanonicalPrefix)
+        ? UrlHelper.ResolveCanonicalUrl(BlogConfig.GeneralSettings.CanonicalPrefix, Context.Request.Path)
+        : $"{Context.Request.Scheme}://{Context.Request.Host}{Context.Request.Path}";
+
+    var jsonLd = new Dictionary<string, object>
+    {
+        ["@context"] = "https://schema.org",
+        ["@type"] = "BlogPosting",
+        ["headline"] = Model.Post.Title,
+        ["description"] = Model.Post.ContentAbstract ?? string.Empty,
+        ["author"] = new Dictionary<string, string>
+        {
+            ["@type"] = "Person",
+            ["name"] = authorName
+        },
+        ["publisher"] = new Dictionary<string, string>
+        {
+            ["@type"] = "Organization",
+            ["name"] = BlogConfig.GeneralSettings.SiteTitle
+        },
+        ["datePublished"] = Model.Post.PubDateUtc.GetValueOrDefault().ToString("o"),
+        ["inLanguage"] = Model.Post.ContentLanguageCode ?? BlogConfig.GeneralSettings.DefaultLanguageCode,
+        ["url"] = postUrl
+    };
+
+    if (Model.Post.LastModifiedUtc.HasValue)
+    {
+        jsonLd["dateModified"] = Model.Post.LastModifiedUtc.Value.ToString("o");
+    }
+
+    var tags = Model.Post.Tags.Select(t => t.NormalizedName).ToArray();
+    if (tags.Length > 0)
+    {
+        jsonLd["keywords"] = string.Join(", ", tags);
+    }
+
+    var json = JsonSerializer.Serialize(jsonLd, new JsonSerializerOptions { WriteIndented = false });
+}
+<script type="application/ld+json">
+    @Html.Raw(json)
+</script>
