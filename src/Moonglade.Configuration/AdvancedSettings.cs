@@ -41,6 +41,9 @@ public class AdvancedSettings : IBlogSettings
     [Display(Name = "Show warning when clicking external links")]
     public bool WarnExternalLink { get; set; }
 
+    [Display(Name = "Enable JSON-LD BlogPosting")]
+    public bool EnableJsonLdBlogPosting { get; set; } = true;
+
     [JsonIgnore]
     public static AdvancedSettings DefaultValue => new();
 }
