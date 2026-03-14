@@ -133,4 +133,11 @@ public static partial class UrlHelper
             newUri.ToString() :
             string.Empty;
     }
+
+    public static string GetPostUrl(HttpContext httpContext, string routeLink)
+    {
+        var baseUri = new Uri(ResolveRootUrl(httpContext, null, removeTailSlash: true));
+        var link = new Uri(baseUri, $"post/{routeLink.ToLower()}");
+        return link.ToString();
+    }
 }

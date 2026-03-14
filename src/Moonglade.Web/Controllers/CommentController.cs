@@ -171,7 +171,7 @@ public class CommentController(
             // Send email notification (fire-and-forget)
             if (blogConfig.NotificationSettings.SendEmailOnCommentReply && !string.IsNullOrWhiteSpace(reply.Email))
             {
-                var postLink = GetPostUrl(reply.RouteLink);
+                var postLink = UrlHelper.GetPostUrl(HttpContext, reply.RouteLink);
                 cannonService.FireAsync<IEventMediator>(async mediator =>
                     await mediator.PublishAsync(new CommentReplyEvent(
                         reply.Email,
@@ -226,13 +226,6 @@ public class CommentController(
         }
 
         return null;
-    }
-
-    private string GetPostUrl(string routeLink)
-    {
-        var baseUri = new Uri(UrlHelper.ResolveRootUrl(HttpContext, null, removeTailSlash: true));
-        var link = new Uri(baseUri, $"post/{routeLink.ToLower()}");
-        return link.ToString();
     }
 
     #endregion

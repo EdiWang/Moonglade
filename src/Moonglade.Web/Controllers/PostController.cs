@@ -99,8 +99,7 @@ public class PostController(
 
             logger.LogInformation("Trying to Ping URL for post: {Id}", postEntity.Id);
 
-            var baseUri = new Uri(UrlHelper.ResolveRootUrl(HttpContext, null, removeTailSlash: true));
-            var link = new Uri(baseUri, $"post/{postEntity.RouteLink.ToLower()}");
+            var link = new Uri(UrlHelper.GetPostUrl(HttpContext, postEntity.RouteLink));
 
             NotifyExternalServices(postEntity.PostContent, link);
             ProcessIndexing(model.LastModifiedUtc, postEntity.LastModifiedUtc == postEntity.PubDateUtc, link);
