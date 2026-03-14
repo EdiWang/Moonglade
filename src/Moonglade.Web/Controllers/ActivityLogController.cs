@@ -35,13 +35,7 @@ public class ActivityLogController(
         var (logs, totalCount) = await queryMediator.QueryAsync(
             new ListActivityLogsQuery(pageSize, pageIndex, eventTypeEnums, startTimeUtc, endTimeUtc));
 
-        return Ok(new
-        {
-            Logs = logs,
-            TotalCount = totalCount,
-            PageIndex = pageIndex,
-            PageSize = pageSize
-        });
+        return Ok(new PagedResult<ActivityLogItem>(logs, pageIndex, pageSize, totalCount));
     }
 
     [HttpGet("{id:long}/metadata")]

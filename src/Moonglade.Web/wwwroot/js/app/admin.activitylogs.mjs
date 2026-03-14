@@ -58,8 +58,8 @@ Alpine.data('activityLogManager', () => withPagination(10, {
             }
 
             const data = await fetch2(`/api/activitylog/list?${params.toString()}`, 'GET');
-            this.logs = data.logs ?? [];
-            this.totalRows = data.totalCount ?? 0;
+            this.logs = data.items ?? [];
+            this.totalRows = data.totalItemCount ?? 0;
 
             this.$nextTick(() => {
                 formatUtcTime();

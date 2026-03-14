@@ -29,13 +29,7 @@ public class PostController(
         var offset = (pageIndex - 1) * pageSize;
         var (posts, totalRows) = await queryMediator.QueryAsync(new ListPostSegmentQuery(PostStatus.Published, offset, pageSize, searchTerm));
 
-        return Ok(new
-        {
-            Posts = posts,
-            TotalRows = totalRows,
-            PageIndex = pageIndex,
-            PageSize = pageSize
-        });
+        return Ok(new PagedResult<PostSegment>(posts, pageIndex, pageSize, totalRows));
     }
 
     [HttpPost("createoredit")]

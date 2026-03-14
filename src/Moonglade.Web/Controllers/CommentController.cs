@@ -136,13 +136,7 @@ public class CommentController(
             }).ToList()
         }).ToList();
 
-        return Ok(new
-        {
-            Comments = commentsWithHtml,
-            TotalRows = count,
-            PageIndex = pageIndex,
-            PageSize = pageSize
-        });
+        return Ok(new PagedResult<object>(commentsWithHtml, pageIndex, pageSize, count));
     }
 
     [HttpPost("{commentId:guid}/reply")]

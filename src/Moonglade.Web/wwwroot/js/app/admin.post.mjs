@@ -29,8 +29,8 @@ Alpine.data('postManager', () => withPagination(4, {
             }
 
             const data = await fetch2(`/api/post/list?${params.toString()}`, 'GET');
-            this.posts = data.posts ?? [];
-            this.totalRows = data.totalRows ?? 0;
+            this.posts = data.items ?? [];
+            this.totalRows = data.totalItemCount ?? 0;
 
             this.$nextTick(() => formatUtcTime());
         } catch (err) {

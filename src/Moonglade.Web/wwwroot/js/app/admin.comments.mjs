@@ -30,12 +30,12 @@ Alpine.data('commentManager', () => withPagination(5, {
             }
 
             const data = await fetch2(`/api/comment/list?${params.toString()}`, 'GET');
-            this.comments = (data.comments ?? []).map(comment => ({
+            this.comments = (data.items ?? []).map(comment => ({
                 ...comment,
                 showReplyForm: false,
                 replyContent: ''
             }));
-            this.totalRows = data.totalRows ?? 0;
+            this.totalRows = data.totalItemCount ?? 0;
 
             this.$nextTick(() => {
                 formatUtcTime();
