@@ -62,10 +62,23 @@ public class MentionController(
 
     [Authorize]
     [HttpGet("list")]
-    public async Task<IActionResult> ListMentions()
+    public async Task<IActionResult> ListMentions(
+        [FromQuery] int pageIndex = 1,
+        [FromQuery] int pageSize = 10,
+        [FromQuery] string? domain = null,
+        [FromQuery] string? sourceTitle = null,
+        [FromQuery] string? targetPostTitle = null,
+        [FromQuery] DateTime? startTimeUtc = null,
+        [FromQuery] DateTime? endTimeUtc = null)
     {
-        var mentions = await queryMediator.QueryAsync(new ListMentionsQuery());
-        return Ok(mentions);
+        if (pageIndex < 1) pageIndex = 1;
+        if (pageSize < 1) pageSize = 10;
+        if (pageSize > 100) pageSize = 100;
+
+        var (mentions, totalCount) = await queryMediator.QueryAsync(
+            new ListMentionsQuery(pageSize, pageIndex, domain, sourceTitle, targetPostTitle, startTimeUtc, endTimeUtc));
+
+        return Ok(new PagedResult<MentionEntity>(mentions, pageIndex, pageSize, totalCount));
     }
 
     [Authorize]

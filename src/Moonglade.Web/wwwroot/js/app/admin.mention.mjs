@@ -1,23 +1,64 @@
 import { Alpine } from './alpine-init.mjs';
 import { fetch2 } from './httpService.mjs?v=1500';
 import { success, error } from './toastService.mjs';
-import { getLocalizedString } from './utils.module.mjs';
+import { formatUtcTime, getLocalizedString } from './utils.module.mjs';
 import { showConfirmModal, hideConfirmModal } from './adminModal.mjs';
+import { withPagination } from './admin.pagination.mjs';
 
-Alpine.data('mentionManager', () => ({
+Alpine.data('mentionManager', () => withPagination(10, {
 mentions: [],
 isLoading: true,
-filterText: '',
 selectedIds: [],
+domainFilter: '',
+sourceTitleFilter: '',
+targetPostTitleFilter: '',
+startDate: '',
+endDate: '',
+filterCanvas: null,
 
 async init() {
-    await this.loadMentions();
+    this.initPageFromUrl();
+    this.filterCanvas = new bootstrap.Offcanvas(this.$refs.filterCanvas);
+    await this.loadData();
 },
 
-    async loadMentions() {
+    async loadData() {
         this.isLoading = true;
         try {
-            this.mentions = (await fetch2('/api/mention/list', 'GET')) ?? [];
+            const params = new URLSearchParams({
+                pageIndex: this.currentPage,
+                pageSize: this.pageSize
+            });
+
+            if (this.domainFilter) {
+                params.append('domain', this.domainFilter);
+            }
+
+            if (this.sourceTitleFilter) {
+                params.append('sourceTitle', this.sourceTitleFilter);
+            }
+
+            if (this.targetPostTitleFilter) {
+                params.append('targetPostTitle', this.targetPostTitleFilter);
+            }
+
+            if (this.startDate) {
+                const startUtc = new Date(this.startDate).toISOString();
+                params.append('startTimeUtc', startUtc);
+            }
+
+            if (this.endDate) {
+                const endUtc = new Date(this.endDate + 'T23:59:59').toISOString();
+                params.append('endTimeUtc', endUtc);
+            }
+
+            const data = await fetch2(`/api/mention/list?${params.toString()}`, 'GET');
+            this.mentions = data.items ?? [];
+            this.totalRows = data.totalItemCount ?? 0;
+
+            this.$nextTick(() => {
+                formatUtcTime();
+            });
         } catch (err) {
             error(err);
         } finally {
@@ -25,30 +66,12 @@ async init() {
         }
     },
 
-    get sortedMentions() {
-        return [...this.mentions].sort((a, b) => 
-            new Date(b.pingTimeUtc) - new Date(a.pingTimeUtc)
-        );
-    },
-
-    get filteredMentions() {
-        if (!this.filterText) {
-            return this.sortedMentions;
-        }
-
-        const filter = this.filterText.toLowerCase();
-        return this.sortedMentions.filter(item => {
-            const searchText = `${item.sourceTitle} ${item.targetPostTitle} ${item.domain} ${item.sourceIp} ${item.worker}`.toLowerCase();
-            return searchText.includes(filter);
-        });
-    },
-
     get hasMentions() {
         return this.mentions.length > 0;
     },
 
     get mentionCount() {
-        return this.filteredMentions.length;
+        return this.totalRows;
     },
 
     deleteMention(mentionId) {
@@ -61,8 +84,8 @@ async init() {
             onConfirm: async () => {
                 try {
                     await fetch2('/api/mention', 'DELETE', [mentionId]);
-                    this.mentions = this.mentions.filter(m => m.id !== mentionId);
                     this.selectedIds = this.selectedIds.filter(id => id !== mentionId);
+                    await this.loadData();
                     success(getLocalizedString('mentionDeleted'));
                 } catch (err) {
                     error(err);
@@ -91,8 +114,8 @@ async init() {
             onConfirm: async () => {
                 try {
                     await fetch2('/api/mention', 'DELETE', idsToDelete);
-                    this.mentions = this.mentions.filter(m => !idsToDelete.includes(m.id));
-                    this.selectedIds = this.selectedIds.filter(id => !idsToDelete.includes(id));
+                    this.selectedIds = [];
+                    await this.loadData();
                     const template = getLocalizedString('mentionsDeleted');
                     success(template.replace('{0}', count));
                 } catch (err) {
@@ -115,6 +138,8 @@ async init() {
                 try {
                     await fetch2('/api/mention/clear', 'DELETE');
                     this.mentions = [];
+                    this.totalRows = 0;
+                    this.selectedIds = [];
                     success(getLocalizedString('mentionsCleared'));
                 } catch (err) {
                     error(err);
@@ -128,5 +153,40 @@ async init() {
     formatTime(utcTime) {
         const date = new Date(utcTime);
         return date.toLocaleString();
+    },
+
+    openFilter() {
+        this.filterCanvas.show();
+    },
+
+    async handleFilter() {
+        this.currentPage = 1;
+        this.selectedIds = [];
+        await this.loadData();
+        this.updateUrl();
+        this.filterCanvas.hide();
+    },
+
+    async clearFilter() {
+        this.domainFilter = '';
+        this.sourceTitleFilter = '';
+        this.targetPostTitleFilter = '';
+        this.startDate = '';
+        this.endDate = '';
+        this.currentPage = 1;
+        this.selectedIds = [];
+        await this.loadData();
+        this.updateUrl();
+        this.filterCanvas.hide();
+    },
+
+    get activeFilterCount() {
+        let count = 0;
+        if (this.domainFilter) count++;
+        if (this.sourceTitleFilter) count++;
+        if (this.targetPostTitleFilter) count++;
+        if (this.startDate) count++;
+        if (this.endDate) count++;
+        return count;
     }
-}));
+}, [10, 20, 30, 40, 50]));
