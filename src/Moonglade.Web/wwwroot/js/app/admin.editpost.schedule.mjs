@@ -40,7 +40,15 @@ export function createScheduleMixin() {
         },
 
         updateMinScheduleDate() {
-            this.minScheduleDate = new Date().toISOString().slice(0, 16);
+            const now = new Date();
+            const localNow = new Date(now.getTime() - now.getTimezoneOffset() * 60000);
+            const pad = n => n < 10 ? '0' + n : n;
+            const year = localNow.getFullYear();
+            const month = pad(localNow.getMonth() + 1);
+            const day = pad(localNow.getDate());
+            const hours = pad(localNow.getHours());
+            const minutes = pad(localNow.getMinutes());
+            this.minScheduleDate = `${year}-${month}-${day}T${hours}:${minutes}`;
         },
 
         updateScheduleInfo() {
