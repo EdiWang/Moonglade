@@ -1,8 +1,8 @@
 import { Alpine } from './alpine-init.mjs';
 import { fetch2 } from './httpService.mjs?v=1500';
 import { success, error } from './toastService.mjs';
-import { formatUtcTime, getLocalizedString } from './utils.module.mjs';
-import { showConfirmModal, hideConfirmModal } from './adminModal.mjs';
+import { formatUtcTime, getLocalizedString, formatDateString } from './utils.module.mjs';
+import { showDeleteConfirmModal, hideConfirmModal } from './adminModal.mjs';
 import { withPagination } from './admin.pagination.mjs';
 
 Alpine.data('mentionManager', () => withPagination(10, {
@@ -75,23 +75,16 @@ async init() {
     },
 
     deleteMention(mentionId) {
-        showConfirmModal({
-            title: 'Confirm Delete',
-            body: getLocalizedString('confirmDeleteMention'),
-            confirmText: 'Delete',
-            confirmClass: 'btn-outline-danger',
-            confirmIcon: 'bi-trash',
-            onConfirm: async () => {
-                try {
-                    await fetch2('/api/mention', 'DELETE', [mentionId]);
-                    this.selectedIds = this.selectedIds.filter(id => id !== mentionId);
-                    await this.loadData();
-                    success(getLocalizedString('mentionDeleted'));
-                } catch (err) {
-                    error(err);
-                } finally {
-                    hideConfirmModal();
-                }
+        showDeleteConfirmModal(getLocalizedString('confirmDeleteMention'), async () => {
+            try {
+                await fetch2('/api/mention', 'DELETE', [mentionId]);
+                this.selectedIds = this.selectedIds.filter(id => id !== mentionId);
+                await this.loadData();
+                success(getLocalizedString('mentionDeleted'));
+            } catch (err) {
+                error(err);
+            } finally {
+                hideConfirmModal();
             }
         });
     },
@@ -105,54 +98,39 @@ async init() {
             ? getLocalizedString('confirmDeleteMention')
             : getLocalizedString('confirmDeleteMentions').replace('{0}', count);
 
-        showConfirmModal({
-            title: 'Confirm Delete',
-            body: body,
-            confirmText: 'Delete',
-            confirmClass: 'btn-outline-danger',
-            confirmIcon: 'bi-trash',
-            onConfirm: async () => {
-                try {
-                    await fetch2('/api/mention', 'DELETE', idsToDelete);
-                    this.selectedIds = [];
-                    await this.loadData();
-                    const template = getLocalizedString('mentionsDeleted');
-                    success(template.replace('{0}', count));
-                } catch (err) {
-                    error(err);
-                } finally {
-                    hideConfirmModal();
-                }
+        showDeleteConfirmModal(body, async () => {
+            try {
+                await fetch2('/api/mention', 'DELETE', idsToDelete);
+                this.selectedIds = [];
+                await this.loadData();
+                const template = getLocalizedString('mentionsDeleted');
+                success(template.replace('{0}', count));
+            } catch (err) {
+                error(err);
+            } finally {
+                hideConfirmModal();
             }
         });
     },
 
     clearAllMentions() {
-        showConfirmModal({
-            title: 'Confirm Clear All',
-            body: getLocalizedString('confirmClearAll'),
-            confirmText: 'Clear All',
-            confirmClass: 'btn-outline-danger',
-            confirmIcon: 'bi-trash',
-            onConfirm: async () => {
-                try {
-                    await fetch2('/api/mention/clear', 'DELETE');
-                    this.mentions = [];
-                    this.totalRows = 0;
-                    this.selectedIds = [];
-                    success(getLocalizedString('mentionsCleared'));
-                } catch (err) {
-                    error(err);
-                } finally {
-                    hideConfirmModal();
-                }
+        showDeleteConfirmModal(getLocalizedString('confirmClearAll'), async () => {
+            try {
+                await fetch2('/api/mention/clear', 'DELETE');
+                this.mentions = [];
+                this.totalRows = 0;
+                this.selectedIds = [];
+                success(getLocalizedString('mentionsCleared'));
+            } catch (err) {
+                error(err);
+            } finally {
+                hideConfirmModal();
             }
         });
     },
 
     formatTime(utcTime) {
-        const date = new Date(utcTime);
-        return date.toLocaleString();
+        return formatDateString(utcTime);
     },
 
     openFilter() {

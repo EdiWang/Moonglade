@@ -2,7 +2,7 @@
 import { fetch2 } from './httpService.mjs?v=1500';
 import { success, error } from './toastService.mjs';
 import { getLocalizedString } from './utils.module.mjs';
-import { showConfirmModal, hideConfirmModal } from './adminModal.mjs';
+import { showDeleteConfirmModal, hideConfirmModal } from './adminModal.mjs';
 
 Alpine.data('menuManager', () => ({
     settings: {
@@ -154,44 +154,23 @@ Alpine.data('menuManager', () => ({
     },
 
     deleteMenuItem(index) {
-        showConfirmModal({
-            title: 'Confirm Delete',
-            body: getLocalizedString('confirmDeleteMenu'),
-            confirmText: 'Delete',
-            confirmClass: 'btn-outline-danger',
-            confirmIcon: 'bi-trash',
-            onConfirm: () => {
-                this.settings.menus.splice(index, 1);
-                hideConfirmModal();
-            }
+        showDeleteConfirmModal(getLocalizedString('confirmDeleteMenu'), () => {
+            this.settings.menus.splice(index, 1);
+            hideConfirmModal();
         });
     },
 
     deleteSubMenuItem(parentIndex, subIndex) {
-        showConfirmModal({
-            title: 'Confirm Delete',
-            body: getLocalizedString('confirmDeleteSubmenu'),
-            confirmText: 'Delete',
-            confirmClass: 'btn-outline-danger',
-            confirmIcon: 'bi-trash',
-            onConfirm: () => {
-                this.settings.menus[parentIndex].subMenus.splice(subIndex, 1);
-                hideConfirmModal();
-            }
+        showDeleteConfirmModal(getLocalizedString('confirmDeleteSubmenu'), () => {
+            this.settings.menus[parentIndex].subMenus.splice(subIndex, 1);
+            hideConfirmModal();
         });
     },
 
     clearMenus() {
-        showConfirmModal({
-            title: 'Confirm',
-            body: getLocalizedString('confirmClearMenus'),
-            confirmText: 'Clear',
-            confirmClass: 'btn-outline-danger',
-            confirmIcon: 'bi-trash',
-            onConfirm: () => {
-                this.settings.menus = [];
-                hideConfirmModal();
-            }
+        showDeleteConfirmModal(getLocalizedString('confirmClearMenus'), () => {
+            this.settings.menus = [];
+            hideConfirmModal();
         });
     },
 

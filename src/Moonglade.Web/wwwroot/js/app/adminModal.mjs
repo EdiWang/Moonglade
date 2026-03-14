@@ -10,6 +10,17 @@ export function showConfirmModal(options) {
     Alpine.store('modal').show(options);
 }
 
+export function showDeleteConfirmModal(body, onConfirm) {
+    showConfirmModal({
+        title: 'Confirm Delete',
+        body,
+        confirmText: 'Delete',
+        confirmClass: 'btn-outline-danger',
+        confirmIcon: 'bi-trash',
+        onConfirm
+    });
+}
+
 export function hideConfirmModal() {
     Alpine.store('modal').hide();
 }

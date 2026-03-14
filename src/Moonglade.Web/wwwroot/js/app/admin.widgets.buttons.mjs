@@ -1,5 +1,5 @@
 import { getLocalizedString } from './utils.module.mjs';
-import { showConfirmModal, hideConfirmModal } from './adminModal.mjs';
+import { showDeleteConfirmModal, hideConfirmModal } from './adminModal.mjs';
 
 export function createButtonMixin() {
     return {
@@ -42,16 +42,9 @@ export function createButtonMixin() {
         },
 
         removeButton(index) {
-            showConfirmModal({
-                title: 'Remove Button',
-                body: getLocalizedString('removeButton'),
-                confirmText: 'Remove',
-                confirmClass: 'btn-outline-danger',
-                confirmIcon: 'bi-trash',
-                onConfirm: () => {
-                    this.formData.buttons.splice(index, 1);
-                    hideConfirmModal();
-                }
+            showDeleteConfirmModal(getLocalizedString('removeButton'), () => {
+                this.formData.buttons.splice(index, 1);
+                hideConfirmModal();
             });
         },
 

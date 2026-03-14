@@ -2,7 +2,7 @@ import { Alpine } from './alpine-init.mjs';
 import { fetch2 } from './httpService.mjs?v=1500';
 import { formatUtcTime, getLocalizedString } from './utils.module.mjs';
 import { success, error } from './toastService.mjs';
-import { showConfirmModal, hideConfirmModal, escapeHtml } from './adminModal.mjs';
+import { showDeleteConfirmModal, hideConfirmModal, escapeHtml } from './adminModal.mjs';
 
 Alpine.data('recycleBinManager', () => ({
     posts: [],
@@ -29,22 +29,15 @@ Alpine.data('recycleBinManager', () => ({
     confirmDelete(postId, postTitle) {
         const template = getLocalizedString('confirmDelete');
         const message = template.replace('{0}', escapeHtml(postTitle));
-        showConfirmModal({
-            title: 'Delete Confirmation',
-            body: `<p>${message}</p>`,
-            confirmText: 'Delete',
-            confirmClass: 'btn-outline-danger',
-            confirmIcon: 'bi-trash',
-            onConfirm: async () => {
-                try {
-                    await fetch2(`/api/post/${postId}/destroy`, 'DELETE');
-                    this.posts = this.posts.filter(p => p.id !== postId);
-                    success(getLocalizedString('postDeleted'));
-                } catch (err) {
-                    error(err);
-                } finally {
-                    hideConfirmModal();
-                }
+        showDeleteConfirmModal(`<p>${message}</p>`, async () => {
+            try {
+                await fetch2(`/api/post/${postId}/destroy`, 'DELETE');
+                this.posts = this.posts.filter(p => p.id !== postId);
+                success(getLocalizedString('postDeleted'));
+            } catch (err) {
+                error(err);
+            } finally {
+                hideConfirmModal();
             }
         });
     },
@@ -60,22 +53,15 @@ Alpine.data('recycleBinManager', () => ({
     },
 
     confirmEmptyRecycleBin() {
-        showConfirmModal({
-            title: 'Empty Recycle Bin',
-            body: '<p>Are you sure you want to empty the recycle bin? This action cannot be undone.</p>',
-            confirmText: 'Empty Recycle Bin',
-            confirmClass: 'btn-outline-danger',
-            confirmIcon: 'bi-trash',
-            onConfirm: async () => {
-                try {
-                    await fetch2('/api/post/recyclebin', 'DELETE');
-                    this.posts = [];
-                    success(getLocalizedString('cleared'));
-                } catch (err) {
-                    error(err);
-                } finally {
-                    hideConfirmModal();
-                }
+        showDeleteConfirmModal('<p>Are you sure you want to empty the recycle bin? This action cannot be undone.</p>', async () => {
+            try {
+                await fetch2('/api/post/recyclebin', 'DELETE');
+                this.posts = [];
+                success(getLocalizedString('cleared'));
+            } catch (err) {
+                error(err);
+            } finally {
+                hideConfirmModal();
             }
         });
     },

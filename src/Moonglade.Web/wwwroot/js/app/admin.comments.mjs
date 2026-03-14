@@ -2,7 +2,7 @@ import { Alpine } from './alpine-init.mjs';
 import { fetch2 } from './httpService.mjs?v=1500';
 import { formatUtcTime, getLocalizedString } from './utils.module.mjs';
 import { success, error } from './toastService.mjs';
-import { showConfirmModal, hideConfirmModal } from './adminModal.mjs';
+import { showDeleteConfirmModal, hideConfirmModal } from './adminModal.mjs';
 import { withPagination } from './admin.pagination.mjs';
 
 Alpine.data('commentManager', () => withPagination(5, {
@@ -63,22 +63,15 @@ Alpine.data('commentManager', () => withPagination(5, {
     },
 
     async deleteComment(commentId) {
-        showConfirmModal({
-            title: 'Confirm',
-            body: getLocalizedString('confirmDelete'),
-            confirmText: 'Delete',
-            confirmClass: 'btn-outline-danger',
-            confirmIcon: 'bi-trash',
-            onConfirm: async () => {
-                try {
-                    await fetch2('/api/comment', 'DELETE', [commentId]);
-                    await this.loadData();
-                    success(getLocalizedString('commentDeleted'));
-                } catch (err) {
-                    error(err);
-                } finally {
-                    hideConfirmModal();
-                }
+        showDeleteConfirmModal(getLocalizedString('confirmDelete'), async () => {
+            try {
+                await fetch2('/api/comment', 'DELETE', [commentId]);
+                await this.loadData();
+                success(getLocalizedString('commentDeleted'));
+            } catch (err) {
+                error(err);
+            } finally {
+                hideConfirmModal();
             }
         });
     },
@@ -86,23 +79,16 @@ Alpine.data('commentManager', () => withPagination(5, {
     async deleteSelectedComments() {
         if (this.selectedCommentIds.length === 0) return;
 
-        showConfirmModal({
-            title: 'Confirm',
-            body: getLocalizedString('confirmDeleteSelected'),
-            confirmText: 'Delete',
-            confirmClass: 'btn-outline-danger',
-            confirmIcon: 'bi-trash',
-            onConfirm: async () => {
-                try {
-                    await fetch2('/api/comment', 'DELETE', this.selectedCommentIds);
-                    this.selectedCommentIds = [];
-                    await this.loadData();
-                    success(getLocalizedString('commentsDeleted'));
-                } catch (err) {
-                    error(err);
-                } finally {
-                    hideConfirmModal();
-                }
+        showDeleteConfirmModal(getLocalizedString('confirmDeleteSelected'), async () => {
+            try {
+                await fetch2('/api/comment', 'DELETE', this.selectedCommentIds);
+                this.selectedCommentIds = [];
+                await this.loadData();
+                success(getLocalizedString('commentsDeleted'));
+            } catch (err) {
+                error(err);
+            } finally {
+                hideConfirmModal();
             }
         });
     },

@@ -73,3 +73,20 @@ export function getLocalizedString(key) {
     return container ? container.dataset[key] : '';
 }
 
+export function slugify(text) {
+    if (!/^[A-Za-z][A-Za-z0-9 \(\)#,\.\?]*$/.test(text)) {
+        return '';
+    }
+    return text
+        .toLowerCase()
+        .replace(/[()#,.?]/g, '')
+        .replace(/[^\w ]+/g, '')
+        .replace(/ +/g, '-');
+}
+
+export function formatDateString(dateString) {
+    if (!dateString) return '';
+    const date = new Date(dateString);
+    return isNaN(date.getTime()) ? dateString : date.toLocaleString();
+}
+

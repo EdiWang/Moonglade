@@ -2,7 +2,7 @@
 import { fetch2 } from './httpService.mjs?v=1500';
 import { success, error } from './toastService.mjs';
 import { getLocalizedString } from './utils.module.mjs';
-import { showConfirmModal, hideConfirmModal } from './adminModal.mjs';
+import { showDeleteConfirmModal, hideConfirmModal } from './adminModal.mjs';
 import { renderWidgetContent } from './admin.widgets.render.mjs';
 import { createLinkMixin } from './admin.widgets.links.mjs';
 import { createButtonMixin } from './admin.widgets.buttons.mjs';
@@ -106,21 +106,14 @@ Alpine.data('widgetManager', () => ({
     },
 
     deleteWidget(id) {
-        showConfirmModal({
-            title: 'Delete Widget',
-            body: getLocalizedString('deleteWidget'),
-            confirmText: 'Delete',
-            confirmClass: 'btn-outline-danger',
-            confirmIcon: 'bi-trash',
-            onConfirm: async () => {
-                try {
-                    await fetch2(`/api/widgets/${id}`, 'DELETE');
-                    hideConfirmModal();
-                    await this.loadWidgets();
-                    success(getLocalizedString('widgetDeleted'));
-                } catch (err) {
-                    console.error(err);
-                }
+        showDeleteConfirmModal(getLocalizedString('deleteWidget'), async () => {
+            try {
+                await fetch2(`/api/widgets/${id}`, 'DELETE');
+                hideConfirmModal();
+                await this.loadWidgets();
+                success(getLocalizedString('widgetDeleted'));
+            } catch (err) {
+                console.error(err);
             }
         });
     },

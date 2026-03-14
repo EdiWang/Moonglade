@@ -1,15 +1,5 @@
 import { showConfirmModal, hideConfirmModal } from './adminModal.mjs';
-
-function slugify(text) {
-    if (!/^[A-Za-z][A-Za-z0-9 \(\)#,\.\?]*$/.test(text)) {
-        return '';
-    }
-    return text
-        .toLowerCase()
-        .replace(/[()#,.?]/g, '')
-        .replace(/[^\w ]+/g, '')
-        .replace(/ +/g, '-');
-}
+import { slugify } from './utils.module.mjs';
 
 export function createSlugMixin() {
     return {
