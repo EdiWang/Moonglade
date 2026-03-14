@@ -1,6 +1,7 @@
 @model Moonglade.Web.Pages.PostModel
 @using Moonglade.Utils
 @using System.Text.Json
+@removeTagHelper *, Microsoft.AspNetCore.Mvc.TagHelpers
 
 @{
     var authorName = string.IsNullOrWhiteSpace(Model.Post.Author)
@@ -44,8 +45,7 @@
     }
 
     var json = JsonSerializer.Serialize(jsonLd, new JsonSerializerOptions { WriteIndented = false });
-
-    // Do not use <script> tag with type="application/ld+json" in Razor view directly, otherwise the `type` attribute will be HTML-encoded and become invalid.
-    var script = $"<script type=\"application/ld+json\">{json}</script>";
 }
-@Html.Raw(script)
+<script type="application/ld+json">
+    @Html.Raw(json)
+</script>
