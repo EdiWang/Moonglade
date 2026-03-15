@@ -22,7 +22,7 @@ public class ActivityLogController(
     public async Task<IActionResult> List(
         [FromQuery] int pageIndex = 1,
         [FromQuery] int pageSize = 10,
-        [FromQuery] int[]? eventTypes = null,
+        [FromQuery] int[] eventTypes = null,
         [FromQuery] DateTime? startTimeUtc = null,
         [FromQuery] DateTime? endTimeUtc = null)
     {

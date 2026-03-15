@@ -170,7 +170,7 @@ public class Program
         {
             options.SharedKey = captchaKey;
             options.TokenExpiration = TimeSpan.FromMinutes(expirationMinutes);
-            options.FontStyle = FontStyle.Bold;
+            options.FontStyle = CaptchaFontStyle.Regular;
             options.BlockedCodes = [.. magics];
             options.DrawLines = true;
         });
