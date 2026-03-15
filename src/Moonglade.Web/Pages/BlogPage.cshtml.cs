@@ -13,13 +13,11 @@ public class BlogPageModel(IQueryMediator queryMediator, ICacheAside cache, ICon
     {
         if (string.IsNullOrWhiteSpace(slug)) return BadRequest();
 
-        var page = await cache.GetOrCreateAsync(BlogCachePartition.Page.ToString(), slug.ToLower(), async entry =>
+        var page = await cache.GetOrCreateAsync(BlogCachePartition.Page.ToString(), slug.ToLower(), async () =>
         {
-            entry.SlidingExpiration = TimeSpan.FromMinutes(int.Parse(configuration["PagesCacheMinutes"]!));
-
             var p = await queryMediator.QueryAsync(new GetPageBySlugQuery(slug));
             return p;
-        });
+        }, TimeSpan.FromMinutes(int.Parse(configuration["PagesCacheMinutes"]!)));
 
         if (page is null || !page.IsPublished) return NotFound();
 

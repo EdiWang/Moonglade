@@ -16,7 +16,7 @@ public class SiteMapMapHandler
         IRepositoryBase<PostEntity> postRepo,
         IRepositoryBase<PageEntity> pageRepo)
     {
-        var xml = await cache.GetOrCreateAsync(BlogCachePartition.General.ToString(), "sitemap", async _ =>
+        var xml = await cache.GetOrCreateAsync(BlogCachePartition.General.ToString(), "sitemap", async () =>
         {
             var url = UrlHelper.ResolveRootUrl(httpContext, blogConfig.GeneralSettings.CanonicalPrefix, true, true);
             var data = await GetSiteMapData(url, postRepo, pageRepo, httpContext.RequestAborted);

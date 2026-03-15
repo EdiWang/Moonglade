@@ -67,10 +67,8 @@ public class SubscriptionController(
         return await cache.GetOrCreateAsync(
             hasRoute ? categoryPartition.ToString() : BlogCachePartition.General.ToString(),
             route ?? defaultCacheKey,
-            async entry =>
+            async () =>
             {
-                entry.SlidingExpiration = TimeSpan.FromHours(1);
-
                 var xml = await queryMediator.QueryAsync(queryFactory(slug));
                 if (string.IsNullOrWhiteSpace(xml))
                 {
@@ -78,6 +76,6 @@ public class SubscriptionController(
                 }
 
                 return Content(xml, "text/xml");
-            });
+            }, TimeSpan.FromHours(1));
     }
 }

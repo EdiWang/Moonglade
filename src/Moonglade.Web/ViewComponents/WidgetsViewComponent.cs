@@ -10,14 +10,11 @@ public class WidgetsViewComponent(
 {
     public async Task<IViewComponentResult> InvokeAsync(int minOrder = int.MinValue, int maxOrder = int.MaxValue)
     {
-        var widgets = await cache.GetOrCreateAsync(BlogCachePartition.General.ToString(), "widgets", async p =>
+        var widgets = await cache.GetOrCreateAsync(BlogCachePartition.General.ToString(), "widgets", async () =>
         {
-            var exp = int.Parse(configuration["WidgetCacheMinutes"]);
-            p.AbsoluteExpirationRelativeToNow = TimeSpan.FromMinutes(exp);
-
             var data = await queryMediator.QueryAsync(new ListWidgetsQuery());
             return data;
-        });
+        }, TimeSpan.FromMinutes(int.Parse(configuration["WidgetCacheMinutes"])));
 
         var filtered = widgets
             .Where(w => w.IsEnabled && w.DisplayOrder >= minOrder && w.DisplayOrder <= maxOrder)
