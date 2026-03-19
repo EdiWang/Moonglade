@@ -1,4 +1,4 @@
-name: Docker Linux x64 (Preview)
+name: Docker Image (Preview)
 
 on:
   push:
