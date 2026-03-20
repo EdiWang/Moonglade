@@ -121,7 +121,7 @@ public class PostController(
         var minimalIntervalMinutes = int.Parse(configuration["IndexNow:MinimalIntervalMinutes"]!);
         if (!string.IsNullOrWhiteSpace(lastModifiedUtc))
         {
-            var lastSavedInterval = DateTime.Parse(lastModifiedUtc) - DateTime.UtcNow;
+            var lastSavedInterval = DateTime.UtcNow - DateTime.Parse(lastModifiedUtc);
             indexCoolDown = lastSavedInterval.TotalMinutes > minimalIntervalMinutes;
         }
 

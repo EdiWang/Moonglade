@@ -15,8 +15,9 @@ public class IndexNowClient(
         .GetSection("IndexNow:PingTargets")
         .Get<string[]>() ?? [];
 
-    private readonly string _apiKey = configuration["IndexNow:ApiKey"]
-        ?? throw new InvalidOperationException("IndexNow:ApiKey is not configured.");
+    private readonly string _apiKey = !string.IsNullOrWhiteSpace(configuration["IndexNow:ApiKey"])
+        ? configuration["IndexNow:ApiKey"]!
+        : throw new InvalidOperationException("IndexNow:ApiKey is not configured.");
 
     private static readonly JsonSerializerOptions JsonOptions = new()
     {
@@ -26,12 +27,6 @@ public class IndexNowClient(
 
     public async Task SendRequestAsync(Uri uri)
     {
-        if (string.IsNullOrWhiteSpace(_apiKey))
-        {
-            logger.LogWarning("IndexNow:ApiKey is not configured.");
-            return;
-        }
-
         if (_pingTargets.Length == 0)
         {
             logger.LogWarning("IndexNow:PingTargets is not configured.");
@@ -39,21 +34,19 @@ public class IndexNowClient(
         }
 
         var requestBody = CreateRequestBody(uri);
-        var content = new StringContent(
-            JsonSerializer.Serialize(requestBody, JsonOptions),
-            Encoding.UTF8,
-            "application/json");
+        var json = JsonSerializer.Serialize(requestBody, JsonOptions);
 
-        var tasks = _pingTargets.Select(pingTarget => SendToPingTargetAsync(pingTarget, content));
+        var tasks = _pingTargets.Select(pingTarget => SendToPingTargetAsync(pingTarget, json));
         await Task.WhenAll(tasks);
     }
 
-    private async Task SendToPingTargetAsync(string pingTarget, HttpContent content)
+    private async Task SendToPingTargetAsync(string pingTarget, string json)
     {
         var client = httpClientFactory.CreateClient(pingTarget);
 
         try
         {
+            using var content = new StringContent(json, Encoding.UTF8, "application/json");
             using var request = new HttpRequestMessage(HttpMethod.Post, "/indexnow") { Content = content };
             var response = await client.SendAsync(request);
             await HandleResponseAsync(pingTarget, response);
