@@ -29,13 +29,7 @@ public class PostController(
         var offset = (pageIndex - 1) * pageSize;
         var (posts, totalRows) = await queryMediator.QueryAsync(new ListPostSegmentQuery(PostStatus.Published, offset, pageSize, searchTerm));
 
-        return Ok(new
-        {
-            Posts = posts,
-            TotalRows = totalRows,
-            PageIndex = pageIndex,
-            PageSize = pageSize
-        });
+        return Ok(new PagedResult<PostSegment>(posts, pageIndex, pageSize, totalRows));
     }
 
     [HttpPost("createoredit")]
@@ -99,8 +93,7 @@ public class PostController(
 
             logger.LogInformation("Trying to Ping URL for post: {Id}", postEntity.Id);
 
-            var baseUri = new Uri(UrlHelper.ResolveRootUrl(HttpContext, null, removeTailSlash: true));
-            var link = new Uri(baseUri, $"post/{postEntity.RouteLink.ToLower()}");
+            var link = new Uri(UrlHelper.GetPostUrl(HttpContext, postEntity.RouteLink));
 
             NotifyExternalServices(postEntity.PostContent, link);
             ProcessIndexing(model.LastModifiedUtc, postEntity.LastModifiedUtc == postEntity.PubDateUtc, link);
@@ -128,7 +121,7 @@ public class PostController(
         var minimalIntervalMinutes = int.Parse(configuration["IndexNow:MinimalIntervalMinutes"]!);
         if (!string.IsNullOrWhiteSpace(lastModifiedUtc))
         {
-            var lastSavedInterval = DateTime.Parse(lastModifiedUtc) - DateTime.UtcNow;
+            var lastSavedInterval = DateTime.UtcNow - DateTime.Parse(lastModifiedUtc);
             indexCoolDown = lastSavedInterval.TotalMinutes > minimalIntervalMinutes;
         }
 

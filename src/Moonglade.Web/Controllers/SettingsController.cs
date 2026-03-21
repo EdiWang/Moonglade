@@ -22,63 +22,36 @@ public class SettingsController(
         model.AvatarUrl = blogConfig.GeneralSettings.AvatarUrl;
         blogConfig.GeneralSettings = model;
 
-        await SaveConfigAsync(blogConfig.GeneralSettings);
-
-        await LogActivityAsync(
-            EventType.SettingsGeneralUpdated,
-            "Update General Settings",
-            "General Settings",
-            new { model.SiteTitle, model.LogoText });
-
         AppDomain.CurrentDomain.SetData("CurrentThemeColor", null);
 
-        return NoContent();
+        return await UpdateSettingsAsync(blogConfig.GeneralSettings,
+            EventType.SettingsGeneralUpdated, "Update General Settings", "General Settings",
+            new { model.SiteTitle, model.LogoText });
     }
 
     [HttpPost("content")]
     public async Task<IActionResult> Content(ContentSettings model)
     {
         blogConfig.ContentSettings = model;
-
-        await SaveConfigAsync(blogConfig.ContentSettings);
-
-        await LogActivityAsync(
-            EventType.SettingsContentUpdated,
-            "Update Content Settings",
-            "Content Settings");
-
-        return NoContent();
+        return await UpdateSettingsAsync(blogConfig.ContentSettings,
+            EventType.SettingsContentUpdated, "Update Content Settings", "Content Settings");
     }
 
     [HttpPost("comment")]
     public async Task<IActionResult> Comment(CommentSettings model)
     {
         blogConfig.CommentSettings = model;
-
-        await SaveConfigAsync(blogConfig.CommentSettings);
-
-        await LogActivityAsync(
-            EventType.SettingsCommentUpdated,
-            "Update Comment Settings",
-            "Comment Settings",
+        return await UpdateSettingsAsync(blogConfig.CommentSettings,
+            EventType.SettingsCommentUpdated, "Update Comment Settings", "Comment Settings",
             new { model.EnableComments, model.RequireCommentReview });
-
-        return NoContent();
     }
 
     [HttpPost("notification")]
     public async Task<IActionResult> Notification(NotificationSettings model)
     {
         blogConfig.NotificationSettings = model;
-
-        await SaveConfigAsync(blogConfig.NotificationSettings);
-
-        await LogActivityAsync(
-            EventType.SettingsNotificationUpdated,
-            "Update Notification Settings",
-            "Notification Settings");
-
-        return NoContent();
+        return await UpdateSettingsAsync(blogConfig.NotificationSettings,
+            EventType.SettingsNotificationUpdated, "Update Notification Settings", "Notification Settings");
     }
 
     [HttpPost("email/test")]
@@ -101,15 +74,8 @@ public class SettingsController(
     public async Task<IActionResult> Subscription(FeedSettings model)
     {
         blogConfig.FeedSettings = model;
-
-        await SaveConfigAsync(blogConfig.FeedSettings);
-
-        await LogActivityAsync(
-            EventType.SettingsSubscriptionUpdated,
-            "Update Subscription Settings",
-            "Subscription Settings");
-
-        return NoContent();
+        return await UpdateSettingsAsync(blogConfig.FeedSettings,
+            EventType.SettingsSubscriptionUpdated, "Update Subscription Settings", "Subscription Settings");
     }
 
     [HttpPost("watermark")]
@@ -148,15 +114,9 @@ public class SettingsController(
             await SaveConfigAsync(blogConfig.GeneralSettings);
         }
 
-        await SaveConfigAsync(blogConfig.ImageSettings);
-
-        await LogActivityAsync(
-            EventType.SettingsImageUpdated,
-            "Update Image Settings",
-            "Image Settings",
+        return await UpdateSettingsAsync(blogConfig.ImageSettings,
+            EventType.SettingsImageUpdated, "Update Image Settings", "Image Settings",
             new { model.EnableCDNRedirect, model.IsWatermarkEnabled });
-
-        return NoContent();
     }
 
     [HttpPost("advanced")]
@@ -179,15 +139,8 @@ public class SettingsController(
         }
 
         blogConfig.AdvancedSettings = model;
-
-        await SaveConfigAsync(blogConfig.AdvancedSettings);
-
-        await LogActivityAsync(
-            EventType.SettingsAdvancedUpdated,
-            "Update Advanced Settings",
-            "Advanced Settings");
-
-        return NoContent();
+        return await UpdateSettingsAsync(blogConfig.AdvancedSettings,
+            EventType.SettingsAdvancedUpdated, "Update Advanced Settings", "Advanced Settings");
     }
 
     [HttpPost("appearance")]
@@ -201,16 +154,9 @@ public class SettingsController(
         }
 
         blogConfig.AppearanceSettings = model;
-
-        await SaveConfigAsync(blogConfig.AppearanceSettings);
-
-        await LogActivityAsync(
-            EventType.SettingsAppearanceUpdated,
-            "Update Appearance Settings",
-            "Appearance Settings",
+        return await UpdateSettingsAsync(blogConfig.AppearanceSettings,
+            EventType.SettingsAppearanceUpdated, "Update Appearance Settings", "Appearance Settings",
             new { model.ThemeId, model.EnableCustomCss });
-
-        return NoContent();
     }
 
     [HttpGet("custom-menu")]
@@ -231,15 +177,9 @@ public class SettingsController(
             Menus = model.MenuJson.FromJson<Menu[]>()
         };
 
-        await SaveConfigAsync(blogConfig.CustomMenuSettings);
-
-        await LogActivityAsync(
-            EventType.SettingsCustomMenuUpdated,
-            "Update Custom Menu Settings",
-            "Custom Menu Settings",
+        return await UpdateSettingsAsync(blogConfig.CustomMenuSettings,
+            EventType.SettingsCustomMenuUpdated, "Update Custom Menu Settings", "Custom Menu Settings",
             new { model.IsEnabled });
-
-        return NoContent();
     }
 
     [HttpGet("password/generate")]
@@ -265,20 +205,26 @@ public class SettingsController(
         blogConfig.LocalAccountSettings.PasswordSalt = newSalt;
         blogConfig.LocalAccountSettings.PasswordHash = SecurityHelper.HashPassword(request.NewPassword, newSalt);
 
-        await SaveConfigAsync(blogConfig.LocalAccountSettings);
-
-        await LogActivityAsync(
-            EventType.SettingsPasswordUpdated,
-            "Update Local Account Password",
-            request.NewUsername,
+        return await UpdateSettingsAsync(blogConfig.LocalAccountSettings,
+            EventType.SettingsPasswordUpdated, "Update Local Account Password", request.NewUsername,
             new { Username = request.NewUsername });
+    }
 
+    private async Task<IActionResult> UpdateSettingsAsync<T>(
+        T settings,
+        EventType eventType,
+        string operation,
+        string targetName,
+        object metadata = null) where T : IBlogSettings
+    {
+        await SaveConfigAsync(settings);
+        await LogActivityAsync(eventType, operation, targetName, metadata);
         return NoContent();
     }
 
-    private async Task SaveConfigAsync<T>(T blogSettings) where T : IBlogSettings
+    private async Task SaveConfigAsync<T>(T settings) where T : IBlogSettings
     {
-        var kvp = blogConfig.UpdateAsync(blogSettings);
+        var kvp = blogConfig.UpdateAsync(settings);
         await CommandMediator.SendAsync(new UpdateConfigurationCommand(kvp.Key, kvp.Value));
     }
 }

@@ -20,8 +20,8 @@ public class UpdatePostCommandHandler(
 
         UpdatePostDetails(post, postEditModel, utcNow);
 
-        await UpdateTags(post, postEditModel.Tags, ct);
-        UpdateCats(post, postEditModel.SelectedCatIds);
+        await PostEntityHelper.ResolveAndAssignTagsAsync(post, postEditModel.Tags, tagRepo, logger, ct);
+        PostEntityHelper.SetCategories(post, postEditModel.SelectedCatIds);
 
         await postRepo.UpdateAsync(post, ct);
 
@@ -34,41 +34,6 @@ public class UpdatePostCommandHandler(
             PubDateUtc = post.PubDateUtc,
             LastModifiedUtc = post.LastModifiedUtc
         };
-    }
-
-    private async Task UpdateTags(PostEntity post, string tagString, CancellationToken ct)
-    {
-        // 1. Add new tags to tag lib
-        var tags = string.IsNullOrWhiteSpace(tagString) ?
-            [] :
-            tagString.Split(',').ToArray();
-
-        foreach (var item in tags)
-        {
-            if (!await tagRepo.AnyAsync(new TagByDisplayNameSpec(item), ct))
-            {
-                await tagRepo.AddAsync(new()
-                {
-                    DisplayName = item,
-                    NormalizedName = BlogTagHelper.NormalizeName(item, BlogTagHelper.TagNormalizationDictionary)
-                }, ct);
-            }
-        }
-
-        post.Tags.Clear();
-        if (tags.Length != 0)
-        {
-            foreach (var tagName in tags)
-            {
-                if (!BlogTagHelper.IsValidTagName(tagName))
-                {
-                    continue;
-                }
-
-                var tag = await tagRepo.FirstOrDefaultAsync(new TagByDisplayNameSpec(tagName), ct);
-                if (tag is not null) post.Tags.Add(tag);
-            }
-        }
     }
 
     private void UpdatePostDetails(PostEntity post, PostEditModel postEditModel, DateTime utcNow)
@@ -111,21 +76,5 @@ public class UpdatePostCommandHandler(
         post.IsOutdated = postEditModel.IsOutdated;
         post.RouteLink = UrlHelper.GenerateRouteLink(post.PubDateUtc.GetValueOrDefault(), postEditModel.Slug);
         post.Keywords = ContentProcessor.GetKeywords(postEditModel.Keywords);
-    }
-
-    private static void UpdateCats(PostEntity post, Guid[] catIds)
-    {
-        post.PostCategory.Clear();
-        if (catIds.Length != 0)
-        {
-            foreach (var cid in catIds)
-            {
-                post.PostCategory.Add(new()
-                {
-                    PostId = post.Id,
-                    CategoryId = cid
-                });
-            }
-        }
     }
 }

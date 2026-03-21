@@ -1,5 +1,5 @@
 import { getLocalizedString } from './utils.module.mjs';
-import { showConfirmModal, hideConfirmModal } from './adminModal.mjs';
+import { showDeleteConfirmModal, hideConfirmModal } from './adminModal.mjs';
 
 export function createLinkMixin() {
     return {
@@ -43,18 +43,11 @@ export function createLinkMixin() {
         },
 
         removeLink(index) {
-            showConfirmModal({
-                title: 'Remove Link',
-                body: getLocalizedString('removeLink'),
-                confirmText: 'Remove',
-                confirmClass: 'btn-outline-danger',
-                confirmIcon: 'bi-trash',
-                onConfirm: () => {
-                    const sortedLinks = this.sortedLinks;
-                    const actualIndex = this.formData.links.findIndex(l => l === sortedLinks[index]);
-                    this.formData.links.splice(actualIndex, 1);
-                    hideConfirmModal();
-                }
+            showDeleteConfirmModal(getLocalizedString('removeLink'), () => {
+                const sortedLinks = this.sortedLinks;
+                const actualIndex = this.formData.links.findIndex(l => l === sortedLinks[index]);
+                this.formData.links.splice(actualIndex, 1);
+                hideConfirmModal();
             });
         },
 

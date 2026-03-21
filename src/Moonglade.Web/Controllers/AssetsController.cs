@@ -21,7 +21,7 @@ public class AssetsController(
     [ResponseCache(Duration = 300)]
     public async Task<IActionResult> Avatar(ICacheAside cache)
     {
-        var bytes = await cache.GetOrCreateAsync(BlogCachePartition.General.ToString(), "avatar", async _ =>
+        var bytes = await cache.GetOrCreateAsync(BlogCachePartition.General.ToString(), "avatar", async () =>
         {
             logger.LogTrace("Avatar not on cache, getting new avatar image...");
 

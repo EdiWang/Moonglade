@@ -11,7 +11,7 @@
         <Using Include="Ardalis.Specification" />
     </ItemGroup>
 	<ItemGroup>
-		<PackageReference Include="Edi.Captcha" Version="5.3.0" />
+		<PackageReference Include="Edi.Captcha" Version="6.0.0" />
 	</ItemGroup>
     <ItemGroup>
         <ProjectReference Include="..\Moonglade.Configuration\Moonglade.Configuration.csproj" />

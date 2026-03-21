@@ -7,11 +7,10 @@
 @{
     Layout = null;
 
-    var themeCss = await Cache.GetOrCreateAsync(BlogCachePartition.General.ToString(), "theme", async entry =>
+    var themeCss = await Cache.GetOrCreateAsync(BlogCachePartition.General.ToString(), "theme", async () =>
     {
-        entry.SlidingExpiration = TimeSpan.FromMinutes(20);
         return await QueryMediator.QueryAsync(new GetSiteThemeStyleSheetQuery(BlogConfig.AppearanceSettings.ThemeId));
-    });
+    }, TimeSpan.FromMinutes(20));
 }
 
 <!DOCTYPE html>

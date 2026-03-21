@@ -37,37 +37,45 @@ public class SubscriptionController(
     [HttpGet("rss/{slug?}")]
     public async Task<IActionResult> Rss([MaxLength(64)] string slug = null)
     {
+        return await GetFeedAsync(
+            slug,
+            BlogCachePartition.RssCategory,
+            "rss",
+            s => new GetRssStringQuery(s));
+    }
+
+    [HttpGet("atom/{slug?}")]
+    public async Task<IActionResult> Atom([MaxLength(64)] string slug = null)
+    {
+        return await GetFeedAsync(
+            slug,
+            BlogCachePartition.AtomCategory,
+            "atom",
+            s => new GetAtomStringQuery(s));
+    }
+
+    private async Task<IActionResult> GetFeedAsync<TQuery>(
+        string slug,
+        BlogCachePartition categoryPartition,
+        string defaultCacheKey,
+        Func<string, TQuery> queryFactory)
+        where TQuery : IQuery<string>
+    {
         bool hasRoute = !string.IsNullOrWhiteSpace(slug);
         var route = hasRoute ? slug.ToLower().Trim() : null;
 
         return await cache.GetOrCreateAsync(
-            hasRoute ? BlogCachePartition.RssCategory.ToString() : BlogCachePartition.General.ToString(), route ?? "rss", async entry =>
+            hasRoute ? categoryPartition.ToString() : BlogCachePartition.General.ToString(),
+            route ?? defaultCacheKey,
+            async () =>
             {
-                entry.SlidingExpiration = TimeSpan.FromHours(1);
-
-                var xml = await queryMediator.QueryAsync(new GetRssStringQuery(slug));
+                var xml = await queryMediator.QueryAsync(queryFactory(slug));
                 if (string.IsNullOrWhiteSpace(xml))
                 {
                     return (IActionResult)NotFound();
                 }
 
                 return Content(xml, "text/xml");
-            });
-    }
-
-    [HttpGet("atom/{slug?}")]
-    public async Task<IActionResult> Atom([MaxLength(64)] string slug = null)
-    {
-        bool hasRoute = !string.IsNullOrWhiteSpace(slug);
-        var route = hasRoute ? slug.ToLower().Trim() : null;
-
-        return await cache.GetOrCreateAsync(
-            hasRoute ? BlogCachePartition.AtomCategory.ToString() : BlogCachePartition.General.ToString(), route ?? "atom", async entry =>
-        {
-            entry.SlidingExpiration = TimeSpan.FromHours(1);
-
-            var xml = await queryMediator.QueryAsync(new GetAtomStringQuery(slug));
-            return Content(xml, "text/xml");
-        });
+            }, TimeSpan.FromHours(1));
     }
 }

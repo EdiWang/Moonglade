@@ -1,5 +1,7 @@
 <Solution>
   <Folder Name="/.Solution Items/">
+    <File Path="../.github/workflows/docker-preview.yml" />
+    <File Path="../.github/workflows/docker.yml" />
     <File Path="../.gitignore" />
     <File Path="../Dockerfile" />
     <File Path="../README.md" />

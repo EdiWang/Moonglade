@@ -2,7 +2,7 @@ import { Alpine } from './alpine-init.mjs';
 import { fetch2 } from './httpService.mjs?v=1500';
 import { formatUtcTime, getLocalizedString } from './utils.module.mjs';
 import { success, error } from './toastService.mjs';
-import { showConfirmModal, hideConfirmModal } from './adminModal.mjs';
+import { showDeleteConfirmModal, hideConfirmModal } from './adminModal.mjs';
 import { withPagination } from './admin.pagination.mjs';
 
 Alpine.data('postManager', () => withPagination(4, {
@@ -29,8 +29,8 @@ Alpine.data('postManager', () => withPagination(4, {
             }
 
             const data = await fetch2(`/api/post/list?${params.toString()}`, 'GET');
-            this.posts = data.posts ?? [];
-            this.totalRows = data.totalRows ?? 0;
+            this.posts = data.items ?? [];
+            this.totalRows = data.totalItemCount ?? 0;
 
             this.$nextTick(() => formatUtcTime());
         } catch (err) {
@@ -56,22 +56,15 @@ Alpine.data('postManager', () => withPagination(4, {
     },
 
     deletePost(postId) {
-        showConfirmModal({
-            title: 'Confirm',
-            body: getLocalizedString('confirmDelete'),
-            confirmText: 'Delete',
-            confirmClass: 'btn-outline-danger',
-            confirmIcon: 'bi-trash',
-            onConfirm: async () => {
-                try {
-                    await fetch2(`/api/post/${postId}/recycle`, 'DELETE');
-                    await this.loadData();
-                    success(getLocalizedString('postDeleted'));
-                } catch (err) {
-                    error(err);
-                } finally {
-                    hideConfirmModal();
-                }
+        showDeleteConfirmModal(getLocalizedString('confirmDelete'), async () => {
+            try {
+                await fetch2(`/api/post/${postId}/recycle`, 'DELETE');
+                await this.loadData();
+                success(getLocalizedString('postDeleted'));
+            } catch (err) {
+                error(err);
+            } finally {
+                hideConfirmModal();
             }
         });
     },

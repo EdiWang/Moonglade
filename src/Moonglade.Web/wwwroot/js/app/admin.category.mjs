@@ -2,7 +2,7 @@ import { Alpine } from './alpine-init.mjs';
 import { fetch2 } from './httpService.mjs?v=1500';
 import { success, error } from './toastService.mjs';
 import { getLocalizedString } from './utils.module.mjs';
-import { showConfirmModal, hideConfirmModal } from './adminModal.mjs';
+import { showDeleteConfirmModal, hideConfirmModal } from './adminModal.mjs';
 
 Alpine.data('categoryManager', () => ({
     categories: [],
@@ -65,23 +65,16 @@ Alpine.data('categoryManager', () => ({
 
     deleteCategory(id) {
         this.pendingDeleteId = id;
-        showConfirmModal({
-            title: getLocalizedString('confirmDelete'),
-            body: getLocalizedString('confirmDelete'),
-            confirmText: 'Delete',
-            confirmClass: 'btn-outline-danger',
-            confirmIcon: 'bi-trash',
-            onConfirm: async () => {
-                try {
-                    await fetch2(`/api/category/${this.pendingDeleteId}`, 'DELETE');
-                    await this.loadCategories();
-                    success(getLocalizedString('categoryDeleted'));
-                    this.pendingDeleteId = null;
-                } catch (err) {
-                    error(err);
-                } finally {
-                    hideConfirmModal();
-                }
+        showDeleteConfirmModal(getLocalizedString('confirmDelete'), async () => {
+            try {
+                await fetch2(`/api/category/${this.pendingDeleteId}`, 'DELETE');
+                await this.loadCategories();
+                success(getLocalizedString('categoryDeleted'));
+                this.pendingDeleteId = null;
+            } catch (err) {
+                error(err);
+            } finally {
+                hideConfirmModal();
             }
         });
     },

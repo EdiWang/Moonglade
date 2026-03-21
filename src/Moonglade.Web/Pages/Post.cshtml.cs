@@ -25,13 +25,11 @@ public class PostModel(
 
         var routeLink = $"{year}/{month}/{day}/{slug}".ToLower();
 
-        var psm = await cache.GetOrCreateAsync(BlogCachePartition.Post.ToString(), $"{routeLink}", async entry =>
+        var psm = await cache.GetOrCreateAsync(BlogCachePartition.Post.ToString(), $"{routeLink}", async () =>
         {
-            entry.SlidingExpiration = TimeSpan.FromMinutes(int.Parse(configuration["PostCacheMinutes"]!));
-
             var post = await queryMediator.QueryAsync(new GetPostBySlugQuery(routeLink));
             return post;
-        });
+        }, TimeSpan.FromMinutes(int.Parse(configuration["PostCacheMinutes"]!)));
 
         if (psm is null) return NotFound();
 

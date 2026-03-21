@@ -56,6 +56,10 @@
     {
         <link href="~/css/outline.css" rel="stylesheet" />
     }
+    @if (BlogConfig.AdvancedSettings.EnableJsonLdBlogPosting)
+    {
+        <partial name="_JsonLdBlogPosting" model="Model" />
+    }
 }
 
 @section opengraph {

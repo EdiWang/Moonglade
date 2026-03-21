@@ -2,7 +2,7 @@ import { Alpine } from './alpine-init.mjs';
 import { fetch2 } from './httpService.mjs?v=1500';
 import { formatUtcTime, getLocalizedString } from './utils.module.mjs';
 import { success } from './toastService.mjs';
-import { showConfirmModal, hideConfirmModal, escapeHtml } from './adminModal.mjs';
+import { showDeleteConfirmModal, hideConfirmModal, escapeHtml } from './adminModal.mjs';
 
 Alpine.data('draftManager', () => ({
     posts: [],
@@ -27,18 +27,11 @@ Alpine.data('draftManager', () => ({
     },
 
     openDeleteModal(postId, postTitle) {
-        showConfirmModal({
-            title: 'Delete Confirmation',
-            body: `<p>Are you sure you want to delete this draft?</p><p class="text-muted">${escapeHtml(postTitle)}</p>`,
-            confirmText: 'Delete',
-            confirmClass: 'btn-outline-danger',
-            confirmIcon: 'bi-trash',
-            onConfirm: async () => {
-                await fetch2(`/api/post/${postId}/recycle`, 'DELETE');
-                this.posts = this.posts.filter(p => p.id !== postId);
-                success(getLocalizedString('postDeleted'));
-                hideConfirmModal();
-            }
+        showDeleteConfirmModal(`<p>Are you sure you want to delete this draft?</p><p class="text-muted">${escapeHtml(postTitle)}</p>`, async () => {
+            await fetch2(`/api/post/${postId}/recycle`, 'DELETE');
+            this.posts = this.posts.filter(p => p.id !== postId);
+            success(getLocalizedString('postDeleted'));
+            hideConfirmModal();
         });
     },
 

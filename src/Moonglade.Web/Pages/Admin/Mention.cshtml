@@ -24,6 +24,11 @@
     <div class="admin-toolbar pb-2 border-bottom mb-3">
         <div class="row">
             <div class="col">
+                <a x-on:click="openFilter()" class="btn btn-outline-accent me-2" role="button">
+                    <i class="bi-funnel"></i>
+                    @SharedLocalizer["Filter"]
+                    <span x-show="activeFilterCount > 0" class="badge bg-accent ms-1" x-text="activeFilterCount"></span>
+                </a>
                 <a class="btn btn-outline-danger me-2" 
                    href="javascript:;" 
                    x-on:click="deleteSelectedMentions()"
@@ -46,8 +51,6 @@
 }
 
 <div>
-    <input x-model="filterText" type="text" class="form-control mb-3" maxlength="32" placeholder="Filter..">
-
     <div x-show="isLoading"
          class="text-muted mb-3"
          :class="{ 'd-flex align-items-center': isLoading }">
@@ -60,7 +63,7 @@
     </div>
 
     <div class="mentions-container">
-        <template x-for="item in filteredMentions" :key="item.id">
+        <template x-for="item in mentions" :key="item.id">
             <div class="mention-item-entry p-3 rounded-3 border mb-1">
                 <div :id="`mention-box-${item.id}`" class="mention-item row">
                     <div class="col-auto d-flex align-items-center">
@@ -97,5 +100,85 @@
                 </div>
             </div>
         </template>
+    </div>
+
+    <div x-show="!isLoading && hasMentions" class="d-flex justify-content-between align-items-center mt-4">
+        <nav x-show="totalPages > 1" aria-label="Page navigation">
+            <ul class="pagination mb-0">
+                <li class="page-item" :class="{ 'disabled': currentPage === 1 }">
+                    <a class="page-link" href="#" x-on:click.prevent="goToPage(currentPage - 1)">
+                        <span aria-hidden="true">&laquo;</span>
+                    </a>
+                </li>
+
+                <template x-for="page in paginationPages" :key="page">
+                    <li class="page-item" :class="{ 'active': page === currentPage }">
+                        <a class="page-link" href="#" x-on:click.prevent="goToPage(page)" x-text="page"></a>
+                    </li>
+                </template>
+
+                <li class="page-item" :class="{ 'disabled': currentPage === totalPages }">
+                    <a class="page-link" href="#" x-on:click.prevent="goToPage(currentPage + 1)">
+                        <span aria-hidden="true">&raquo;</span>
+                    </a>
+                </li>
+            </ul>
+        </nav>
+
+        <div class="d-flex align-items-center gap-2">
+            <label class="form-label mb-0 text-nowrap">@SharedLocalizer["Page Size"]</label>
+            <select class="form-select form-select-sm" style="width: auto;"
+                    x-on:change="changePageSize($event.target.value)">
+                <template x-for="size in pageSizeOptions" :key="size">
+                    <option :value="size" x-text="size" :selected="size === pageSize"></option>
+                </template>
+            </select>
+        </div>
+    </div>
+</div>
+
+<!-- Filter Offcanvas -->
+<div class="offcanvas offcanvas-end" tabindex="-1" x-ref="filterCanvas" aria-labelledby="filterCanvasLabel">
+    <div class="offcanvas-header">
+        <h5 class="offcanvas-title" id="filterCanvasLabel">@SharedLocalizer["Filter"]</h5>
+        <button type="button" class="btn-close text-reset" data-bs-dismiss="offcanvas" aria-label="Close"></button>
+    </div>
+    <div class="offcanvas-body d-flex flex-column p-0">
+        <form x-on:submit.prevent="handleFilter()" class="d-flex flex-column h-100">
+            <div class="flex-grow-1 p-3 pb-0" style="min-height: 0; overflow-y: auto;">
+                <div class="mb-3">
+                    <label class="form-label">@SharedLocalizer["Domain"]</label>
+                    <input type="text" class="form-control" x-model="domainFilter" maxlength="128" placeholder="e.g. example.com" />
+                </div>
+                <div class="mb-3">
+                    <label class="form-label">@SharedLocalizer["Source Title"]</label>
+                    <input type="text" class="form-control" x-model="sourceTitleFilter" maxlength="128" />
+                </div>
+                <div class="mb-3">
+                    <label class="form-label">@SharedLocalizer["Target Post Title"]</label>
+                    <input type="text" class="form-control" x-model="targetPostTitleFilter" maxlength="128" />
+                </div>
+                <div class="mb-3">
+                    <label class="form-label">@SharedLocalizer["Start Date"]</label>
+                    <input type="date" class="form-control" x-model="startDate" />
+                </div>
+                <div class="mb-3">
+                    <label class="form-label">@SharedLocalizer["End Date"]</label>
+                    <input type="date" class="form-control" x-model="endDate" />
+                </div>
+            </div>
+
+            <!-- Fixed Bottom Buttons -->
+            <div class="border-top p-3 bg-light">
+                <div class="d-grid gap-2">
+                    <button type="submit" class="btn btn-accent">
+                        <i class="bi-funnel"></i> @SharedLocalizer["Apply Filter"]
+                    </button>
+                    <button type="button" class="btn btn-outline-secondary" x-on:click="clearFilter()">
+                        <i class="bi-x-circle"></i> @SharedLocalizer["Clear"]
+                    </button>
+                </div>
+            </div>
+        </form>
     </div>
 </div>

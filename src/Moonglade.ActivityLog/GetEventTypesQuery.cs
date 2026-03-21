@@ -7,14 +7,14 @@ public record GetEventTypesQuery : IQuery<List<EventTypeGroup>>;
 
 public class EventTypeGroup
 {
-    public string Category { get; set; }
-    public List<EventTypeItem> Items { get; set; }
+    public string? Category { get; set; }
+    public List<EventTypeItem>? Items { get; set; }
 }
 
 public class EventTypeItem
 {
     public int Value { get; set; }
-    public string Name { get; set; }
+    public string? Name { get; set; }
 }
 
 public partial class GetEventTypesQueryHandler : IQueryHandler<GetEventTypesQuery, List<EventTypeGroup>>

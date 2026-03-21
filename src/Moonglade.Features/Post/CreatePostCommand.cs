@@ -48,9 +48,9 @@ public class CreatePostCommandHandler(
 
         await CheckSlugConflict(post, ct);
 
-        AddCategories(request.Payload.SelectedCatIds, post);
+        PostEntityHelper.SetCategories(post, request.Payload.SelectedCatIds);
 
-        await AddTags(request.Payload.Tags, post, ct);
+        await PostEntityHelper.ResolveAndAssignTagsAsync(post, request.Payload.Tags, tagRepo, logger, ct);
 
         await postRepo.AddAsync(post, ct);
 
@@ -77,50 +77,4 @@ public class CreatePostCommandHandler(
         }
     }
 
-    private static void AddCategories(Guid[] selectedCatIds, PostEntity post)
-    {
-        if (selectedCatIds is { Length: > 0 })
-        {
-            foreach (var id in selectedCatIds)
-            {
-                post.PostCategory.Add(new()
-                {
-                    CategoryId = id,
-                    PostId = post.Id
-                });
-            }
-        }
     }
-
-    private async Task AddTags(string tagString, PostEntity post, CancellationToken ct)
-    {
-        var tags = string.IsNullOrWhiteSpace(tagString) ?
-            [] :
-            tagString.Split(',').ToArray();
-
-        if (tags is { Length: > 0 })
-        {
-            foreach (var item in tags)
-            {
-                if (!BlogTagHelper.IsValidTagName(item)) continue;
-
-                var tag = await tagRepo.FirstOrDefaultAsync(new TagByDisplayNameSpec(item), ct) ?? await CreateTag(item);
-                post.Tags.Add(tag);
-            }
-        }
-    }
-
-    private async Task<TagEntity> CreateTag(string item)
-    {
-        var newTag = new TagEntity
-        {
-            DisplayName = item,
-            NormalizedName = BlogTagHelper.NormalizeName(item, BlogTagHelper.TagNormalizationDictionary)
-        };
-
-        var tag = await tagRepo.AddAsync(newTag);
-
-        logger.LogInformation("Created tag: {TagName}", tag.DisplayName);
-        return tag;
-    }
-}

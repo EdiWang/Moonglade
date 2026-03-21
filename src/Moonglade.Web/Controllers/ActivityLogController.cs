@@ -22,7 +22,7 @@ public class ActivityLogController(
     public async Task<IActionResult> List(
         [FromQuery] int pageIndex = 1,
         [FromQuery] int pageSize = 10,
-        [FromQuery] int[]? eventTypes = null,
+        [FromQuery] int[] eventTypes = null,
         [FromQuery] DateTime? startTimeUtc = null,
         [FromQuery] DateTime? endTimeUtc = null)
     {
@@ -35,13 +35,7 @@ public class ActivityLogController(
         var (logs, totalCount) = await queryMediator.QueryAsync(
             new ListActivityLogsQuery(pageSize, pageIndex, eventTypeEnums, startTimeUtc, endTimeUtc));
 
-        return Ok(new
-        {
-            Logs = logs,
-            TotalCount = totalCount,
-            PageIndex = pageIndex,
-            PageSize = pageSize
-        });
+        return Ok(new PagedResult<ActivityLogItem>(logs, pageIndex, pageSize, totalCount));
     }
 
     [HttpGet("{id:long}/metadata")]
