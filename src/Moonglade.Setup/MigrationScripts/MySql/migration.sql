@@ -80,3 +80,23 @@ SET @preparedStatement = (SELECT IF(
 PREPARE renameIfExists FROM @preparedStatement;
 EXECUTE renameIfExists;
 DEALLOCATE PREPARE renameIfExists;
+
+-- v16.0
+-- Add ContentType column to Post table
+SET @dbname = DATABASE();
+SET @tablename = 'Post';
+SET @columnname = 'ContentType';
+SET @preparedStatement = (SELECT IF(
+  (
+    SELECT COUNT(*) FROM INFORMATION_SCHEMA.COLUMNS
+    WHERE
+      (TABLE_SCHEMA = @dbname)
+      AND (TABLE_NAME = @tablename)
+      AND (COLUMN_NAME = @columnname)
+  ) > 0,
+  'SELECT 1;',
+  CONCAT('ALTER TABLE `', @tablename, '` ADD COLUMN `', @columnname, '` VARCHAR(16) NOT NULL DEFAULT '''';')
+));
+PREPARE alterIfNotExists FROM @preparedStatement;
+EXECUTE alterIfNotExists;
+DEALLOCATE PREPARE alterIfNotExists;

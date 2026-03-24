@@ -60,3 +60,12 @@ BEGIN
     EXEC sp_rename 'CustomPage', 'BlogPage';
 END
 GO
+
+-- v16.0
+-- Add ContentType column to Post table
+IF NOT EXISTS (SELECT * FROM sys.columns WHERE object_id = OBJECT_ID(N'[dbo].[Post]') AND name = 'ContentType')
+BEGIN
+    ALTER TABLE [dbo].[Post] ADD [ContentType] [nvarchar](16) NOT NULL
+        CONSTRAINT [DF_Post_ContentType] DEFAULT '';
+END
+GO
