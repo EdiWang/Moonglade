@@ -1,17 +1,63 @@
 import { loadTinyMCE } from './admin.editor.module.mjs';
 
+const scriptPromises = new Map();
+
 function loadScript(src) {
-    return new Promise((resolve, reject) => {
-        if (document.querySelector(`script[src="${src}"]`)) {
-            resolve();
-            return;
+    if (scriptPromises.has(src)) {
+        return scriptPromises.get(src);
+    }
+
+    const existing = document.querySelector(`script[src="${src}"]`);
+    if (existing) {
+        // If the script element is already loaded, resolve immediately and cache.
+        if (
+            existing.dataset.loaded === 'true' ||
+            existing.readyState === 'complete' ||
+            existing.readyState === 'loaded'
+        ) {
+            const resolved = Promise.resolve();
+            scriptPromises.set(src, resolved);
+            return resolved;
         }
+        // Script tag exists but may still be loading; create a promise that
+        // resolves when it finishes, and attach listeners if not already present.
+        const promise = new Promise((resolve, reject) => {
+            const onLoad = () => {
+                existing.dataset.loaded = 'true';
+                existing.removeEventListener('load', onLoad);
+                existing.removeEventListener('error', onError);
+                resolve();
+            };
+            const onError = (e) => {
+                existing.removeEventListener('load', onLoad);
+                existing.removeEventListener('error', onError);
+                scriptPromises.delete(src);
+                reject(e);
+            };
+
+            existing.addEventListener('load', onLoad);
+            existing.addEventListener('error', onError);
+        });
+        scriptPromises.set(src, promise);
+        return promise;
+    }
+
+    const promise = new Promise((resolve, reject) => {
         const script = document.createElement('script');
         script.src = src;
-        script.onload = resolve;
-        script.onerror = reject;
+        script.onload = () => {
+            script.dataset.loaded = 'true';
+            resolve();
+        };
+        script.onerror = (e) => {
+            scriptPromises.delete(src);
+            reject(e);
+        };
         document.head.appendChild(script);
     });
+
+    scriptPromises.set(src, promise);
+    return promise;
 }
 
 let monacoReady = false;
