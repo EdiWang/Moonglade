@@ -49,6 +49,7 @@ Alpine.data('postManager', () => withPagination(4, {
     updateUrl() {
         const params = new URLSearchParams();
         params.set('pageIndex', this.currentPage);
+        params.set('pageSize', this.pageSize);
         if (this.searchTerm) {
             params.set('searchTerm', this.searchTerm);
         }
@@ -77,4 +78,4 @@ Alpine.data('postManager', () => withPagination(4, {
         const date = new Date(post.pubDateUtc);
         return `/Post/${date.getFullYear()}/${date.getMonth() + 1}/${date.getDate()}/${post.slug}`;
     }
-}));
+}, [4, 10, 20, 40]));
