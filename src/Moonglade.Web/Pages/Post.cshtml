@@ -141,7 +141,7 @@
     }
 
     <section class="post-content clearfix">
-        <partial name="_PostContentRender" model="Model.Post.PostContent" />
+        <partial name="_PostContentRender" model="(Model.Post.PostContent, Model.Post.ContentType)" />
     </section>
 
     @if (BlogConfig.ContentSettings.ShowPostFooter)
