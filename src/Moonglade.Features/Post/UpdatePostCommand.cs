@@ -74,6 +74,7 @@ public class UpdatePostCommandHandler(
         post.ContentLanguageCode = postEditModel.LanguageCode;
         post.IsFeatured = postEditModel.Featured;
         post.IsOutdated = postEditModel.IsOutdated;
+        post.ContentType = postEditModel.ContentType;
         post.RouteLink = UrlHelper.GenerateRouteLink(post.PubDateUtc.GetValueOrDefault(), postEditModel.Slug);
         post.Keywords = ContentProcessor.GetKeywords(postEditModel.Keywords);
     }

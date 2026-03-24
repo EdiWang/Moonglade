@@ -41,6 +41,7 @@ public class CreatePostCommandHandler(
             PostStatus = request.Payload.PostStatus,
             IsFeatured = request.Payload.Featured,
             IsOutdated = request.Payload.IsOutdated,
+            ContentType = request.Payload.ContentType,
         };
 
         post.RouteLink = UrlHelper.GenerateRouteLink(post.PubDateUtc.GetValueOrDefault(), request.Payload.Slug);
