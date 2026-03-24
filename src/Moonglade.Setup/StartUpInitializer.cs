@@ -158,10 +158,9 @@ public class StartUpInitializer(
             async () =>
             {
                 var editorValue = configuration.GetValue<string>("Editor")?.ToLower() ?? "html";
-                var affected = await context.Database.ExecuteSqlRawAsync(
-                    "UPDATE Post SET ContentType = {0} WHERE ContentType = ''",
-                    [editorValue],
-                    cancellationToken);
+                var affected = await context.Post
+                    .Where(p => p.ContentType == "")
+                    .ExecuteUpdateAsync(s => s.SetProperty(p => p.ContentType, editorValue), cancellationToken);
 
                 if (affected > 0)
                 {
