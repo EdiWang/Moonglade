@@ -61,16 +61,20 @@ public class SyndicationDataSource(
         {
             foreach (var simpleFeedItem in list)
             {
-                simpleFeedItem.Description = FormatPostContent(simpleFeedItem.Description);
+                simpleFeedItem.Description = FormatPostContent(simpleFeedItem.Description, simpleFeedItem.ContentType);
             }
         }
 
         return list;
     }
 
-    private string FormatPostContent(string rawContent)
+    private string FormatPostContent(string rawContent, string contentType)
     {
-        var htmlContent = configuration.GetValue<EditorChoice>("Editor") == EditorChoice.Markdown ?
+        var effectiveType = string.IsNullOrEmpty(contentType)
+            ? configuration.GetValue<EditorChoice>("Editor").ToString().ToLower()
+            : contentType;
+
+        var htmlContent = effectiveType == "markdown" ?
             ContentProcessor.MarkdownToContent(rawContent, ContentProcessor.MarkdownConvertType.Html, false) :
             rawContent;
 
