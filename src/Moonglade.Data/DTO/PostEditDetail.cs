@@ -20,4 +20,5 @@ public record PostEditDetail
     public DateTime? ScheduledPublishTimeUtc { get; set; }
     public string LastModifiedUtc { get; set; }
     public Guid[] SelectedCatIds { get; set; }
+    public string ContentType { get; set; }
 }
