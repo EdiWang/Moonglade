@@ -37,7 +37,8 @@ Alpine.data('postEditor', () => ({
         scheduledPublishTimeUtc: null,
         clientTimeZoneId: '',
         lastModifiedUtc: '',
-        selectedCatIds: []
+        selectedCatIds: [],
+        contentType: ''
     },
 
     ...createSlugMixin(),
@@ -64,8 +65,8 @@ Alpine.data('postEditor', () => ({
 
         this.isLoading = false;
 
-        this.$nextTick(() => {
-            this.initEditor();
+        this.$nextTick(async () => {
+            await this.initEditor();
             this.initTagify();
             this.updateMinScheduleDate();
             this.initScheduleState();
@@ -85,6 +86,7 @@ Alpine.data('postEditor', () => ({
 
                 if (!this.postId) {
                     this.formData.author = meta.defaultAuthor || '';
+                    this.formData.contentType = meta.editorChoice || 'html';
                 }
 
                 if (this.languages.length > 0 && !this.formData.languageCode) {
@@ -122,7 +124,8 @@ Alpine.data('postEditor', () => ({
                 publishDate: data.publishDate ? data.publishDate.substring(0, 10) : null,
                 scheduledPublishTimeUtc: data.scheduledPublishTimeUtc || null,
                 lastModifiedUtc: data.lastModifiedUtc || '',
-                selectedCatIds: data.selectedCatIds || []
+                selectedCatIds: data.selectedCatIds || [],
+                contentType: data.contentType || this.editorChoice || 'html'
             };
 
             // Determine warnSlugModification: post published > 3 days ago
@@ -189,7 +192,8 @@ Alpine.data('postEditor', () => ({
                 publishDate: this.formData.publishDate,
                 scheduledPublishTime: this.formData.scheduledPublishTime || null,
                 clientTimeZoneId: this.formData.clientTimeZoneId,
-                lastModifiedUtc: this.formData.lastModifiedUtc
+                lastModifiedUtc: this.formData.lastModifiedUtc,
+                contentType: this.formData.contentType
             };
 
             const resp = await fetch2('/api/post/createoredit', 'POST', requestData);

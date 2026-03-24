@@ -1,28 +1,14 @@
 ﻿@page "/admin/post/edit/{id:guid?}"
-@inject IConfiguration Configuration
 
 @{
     ViewBag.Title = "Edit Post";
     ViewBag.XData = "postEditor";
     ViewBag.HideAdminSidebar = true;
     ViewBag.AdminBackUrl = "javascript:history.go(-1);";
-    var ec = Configuration.GetValue<EditorChoice>("Editor");
 }
 
 @section scripts {
     <script src="~/lib/tagify/tagify.js"></script>
-    @switch (ec)
-    {
-        case EditorChoice.Html:
-            <script src="~/lib/tinymce/tinymce.min.js"></script>
-            break;
-        case EditorChoice.Markdown:
-            <partial name="_MonacoLoaderScript" />
-            <script src="~/js/3rd/inline-attachment.js"></script>
-            <script src="~/js/3rd/monaco.inline-attachment.js"></script>
-            break;
-    }
-
     <script type="module" src="~/js/app/admin.editpost.mjs"></script>
 }
 
@@ -49,10 +35,25 @@
                        maxlength="128"
                        x-on:change="onTitleChange" />
 
-                <template x-if="editorChoice === 'html'">
+                <div class="mb-1">
+                    <div class="btn-group btn-group-sm" role="group" aria-label="Editor type">
+                        <input type="radio" class="btn-check" name="editorType" id="editor-html"
+                               value="html" x-model="formData.contentType" x-on:change="switchEditor">
+                        <label class="btn btn-outline-secondary" for="editor-html">
+                            <i class="bi-code-slash me-1"></i>HTML
+                        </label>
+                        <input type="radio" class="btn-check" name="editorType" id="editor-markdown"
+                               value="markdown" x-model="formData.contentType" x-on:change="switchEditor">
+                        <label class="btn btn-outline-secondary" for="editor-markdown">
+                            <i class="bi-markdown me-1"></i>Markdown
+                        </label>
+                    </div>
+                </div>
+
+                <template x-if="formData.contentType === 'html'">
                     <textarea class="post-content-textarea" x-model="formData.editorContent"></textarea>
                 </template>
-                <template x-if="editorChoice === 'markdown'">
+                <template x-if="formData.contentType === 'markdown'">
                     <div class="post-editor-md-wrapper">
                         <div id="markdown-content-editor" class="monaco-target overflow-y-hidden"></div>
                         <textarea class="post-content-textarea d-none" x-model="formData.editorContent"></textarea>
