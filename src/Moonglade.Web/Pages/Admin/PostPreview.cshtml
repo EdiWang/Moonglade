@@ -48,7 +48,7 @@
     </header>
 
     <section class="post-content clearfix">
-        <partial name="_PostContentRender" model="Post.PostContent" />
+        <partial name="_PostContentRender" model="(Post.PostContent, Post.ContentType)" />
     </section>
     @if (BlogConfig.ContentSettings.ShowPostFooter)
     {

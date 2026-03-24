@@ -17,7 +17,8 @@ public class PostEntityToFeedEntrySpec : Specification<PostEntity, FeedEntry>
             Link = $"{baseUrl}/post/{p.RouteLink}",
             Author = p.Author,
             LangCode = p.ContentLanguageCode,
-            Categories = p.PostCategory.Select(pc => pc.Category.DisplayName).ToArray()
+            Categories = p.PostCategory.Select(pc => pc.Category.DisplayName).ToArray(),
+            ContentType = p.ContentType
         });
     }
 }

@@ -249,7 +249,8 @@ public class PostController(
             PublishDate = post.PubDateUtc,
             ScheduledPublishTimeUtc = post.ScheduledPublishTimeUtc,
             LastModifiedUtc = post.LastModifiedUtc?.ToString("u"),
-            SelectedCatIds = post.PostCategory.Select(pc => pc.CategoryId).ToArray()
+            SelectedCatIds = post.PostCategory.Select(pc => pc.CategoryId).ToArray(),
+            ContentType = post.ContentType
         };
 
         return Ok(response);

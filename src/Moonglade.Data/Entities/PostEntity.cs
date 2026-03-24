@@ -28,6 +28,7 @@ public class PostEntity
     public string RouteLink { get; set; }
     public PostStatus PostStatus { get; set; }
     public string Keywords { get; set; }
+    public string ContentType { get; set; }
 
     public ICollection<CommentEntity> Comments { get; set; }
     public ICollection<PostCategoryEntity> PostCategory { get; set; }
