@@ -35,6 +35,6 @@ CREATE TABLE IF NOT EXISTS "ActivityLog" (
 -- Rename `CustomPage` table to `BlogPage`
 ALTER TABLE IF EXISTS "CustomPage" RENAME TO "BlogPage";
 
--- v16.0
+-- v15.12
 -- Add ContentType column to Post table
 ALTER TABLE "Post" ADD COLUMN IF NOT EXISTS "ContentType" VARCHAR(16) NOT NULL DEFAULT '';

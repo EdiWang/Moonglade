@@ -81,7 +81,7 @@ PREPARE renameIfExists FROM @preparedStatement;
 EXECUTE renameIfExists;
 DEALLOCATE PREPARE renameIfExists;
 
--- v16.0
+-- v15.12
 -- Add ContentType column to Post table
 SET @dbname = DATABASE();
 SET @tablename = 'Post';

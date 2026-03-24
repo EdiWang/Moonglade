@@ -61,7 +61,7 @@ BEGIN
 END
 GO
 
--- v16.0
+-- v15.12
 -- Add ContentType column to Post table
 IF NOT EXISTS (SELECT * FROM sys.columns WHERE object_id = OBJECT_ID(N'[dbo].[Post]') AND name = 'ContentType')
 BEGIN
