@@ -3,16 +3,22 @@ param(
     [switch] $preRelease = $false
 )
 
+$ErrorActionPreference = "Stop"
+
 function Get-UrlStatusCode([string] $Url) {
     try {
-        [System.Net.WebRequest]::Create($Url).GetResponse().StatusCode
+        (Invoke-WebRequest -Uri $Url -Method Head -UseBasicParsing -TimeoutSec 10).StatusCode
     }
-    catch [Net.WebException] {
-        [int]$_.Exception.Response.StatusCode
+    catch {
+        if ($_.Exception.Response) {
+            [int]$_.Exception.Response.StatusCode
+        } else {
+            0
+        }
     }
 }
 
-function Check-Command($cmdname) {
+function Test-Command($cmdname) {
     return [bool](Get-Command -Name $cmdname -ErrorAction SilentlyContinue)
 }
 
@@ -22,7 +28,7 @@ function Get-RandomCharacters($length, $characters) {
     return [String]$characters[$random]
 }
 
-function Scramble-String([string]$inputString) {     
+function Get-ScrambledString([string]$inputString) {     
     $characterArray = $inputString.ToCharArray()   
     $scrambledStringArray = $characterArray | Get-Random -Count $characterArray.Length     
     $outputString = -join $scrambledStringArray
@@ -80,7 +86,7 @@ function Show-Menu {
 # Main script starts here
 [Console]::ResetColor()
 
-if (-not (Check-Command -cmdname 'az')) {
+if (-not (Test-Command -cmdname 'az')) {
     Invoke-WebRequest -Uri https://aka.ms/installazurecliwindows -OutFile .\AzureCLI.msi
     Start-Process msiexec.exe -Wait -ArgumentList '/I AzureCLI.msi /quiet'
     Write-Host "Please run 'az-login' and re-execute this script"
@@ -173,11 +179,11 @@ $sqlServerUsername = "moonglade"
 $sqlServerName = "moongladesql$rndNumber"
 $sqlDatabaseName = "moongladedb$rndNumber"
 
-$password = Get-RandomCharacters -length 5 -characters 'abcdefghiklmnoprstuvwxyz'
-$password += Get-RandomCharacters -length 1 -characters 'ABCDEFGHKLMNOPRSTUVWXYZ'
-$password += Get-RandomCharacters -length 1 -characters '1234567890'
-$password += Get-RandomCharacters -length 1 -characters '!$%@#'
-$password = Scramble-String $password
+$password = Get-RandomCharacters -length 8 -characters 'abcdefghiklmnoprstuvwxyz'
+$password += Get-RandomCharacters -length 2 -characters 'ABCDEFGHKLMNOPRSTUVWXYZ'
+$password += Get-RandomCharacters -length 2 -characters '1234567890'
+$password += Get-RandomCharacters -length 2 -characters '!$%@#'
+$password = Get-ScrambledString $password
 $sqlServerPassword = "m$password"
 
 # Set docker image name based on pre-release flag
@@ -210,7 +216,6 @@ $bicepFilePath = Join-Path $PSScriptRoot "main.bicep"
 
 # Deploy using Bicep
 Write-Host "Deploying Azure resources using Bicep..." -ForegroundColor Green
-Write-Host "SQL Server Password: $sqlServerPassword" -ForegroundColor Yellow
 
 $deploymentName = "moonglade-deployment-$(Get-Date -Format 'yyyyMMddHHmmss')"
 
