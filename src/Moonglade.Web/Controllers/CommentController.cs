@@ -112,10 +112,17 @@ public class CommentController(
     }
 
     [HttpGet("list")]
-    public async Task<IActionResult> List([FromQuery] int pageIndex = 1, [FromQuery] int pageSize = 5, [FromQuery] string searchTerm = null)
+    public async Task<IActionResult> List(
+        [FromQuery] int pageIndex = 1,
+        [FromQuery] int pageSize = 5,
+        [FromQuery] string username = null,
+        [FromQuery] string email = null,
+        [FromQuery] string commentContent = null,
+        [FromQuery] DateTime? startTimeUtc = null,
+        [FromQuery] DateTime? endTimeUtc = null)
     {
-        var comments = await queryMediator.QueryAsync(new ListCommentsQuery(pageSize, pageIndex, searchTerm));
-        var count = await queryMediator.QueryAsync(new CountCommentsQuery(searchTerm));
+        var comments = await queryMediator.QueryAsync(new ListCommentsQuery(pageSize, pageIndex, username, email, commentContent, startTimeUtc, endTimeUtc));
+        var count = await queryMediator.QueryAsync(new CountCommentsQuery(username, email, commentContent, startTimeUtc, endTimeUtc));
 
         // Convert markdown to HTML for display
         var commentsWithHtml = comments.Select(c => new

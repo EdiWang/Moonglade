@@ -5,11 +5,15 @@ namespace Moonglade.Data.Specifications;
 
 public sealed class CommentPagingSepc : Specification<CommentEntity>
 {
-    public CommentPagingSepc(int pageSize, int pageIndex, string keyword)
+    public CommentPagingSepc(int pageSize, int pageIndex, string username = null, string email = null, string commentContent = null, DateTime? startTimeUtc = null, DateTime? endTimeUtc = null)
     {
         var startRow = (pageIndex - 1) * pageSize;
 
-        Query.Where(p => null == keyword || p.Username.Contains(keyword) || p.Email.Contains(keyword));
+        Query.Where(p => (null == username || p.Username.Contains(username))
+                      && (null == email || p.Email.Contains(email))
+                      && (null == commentContent || p.CommentContent.Contains(commentContent))
+                      && (!startTimeUtc.HasValue || p.CreateTimeUtc >= startTimeUtc.Value)
+                      && (!endTimeUtc.HasValue || p.CreateTimeUtc <= endTimeUtc.Value));
 
         Query.Include(c => c.Post);
         Query.Include(c => c.Replies);
@@ -21,9 +25,13 @@ public sealed class CommentPagingSepc : Specification<CommentEntity>
 
 public sealed class CommentCountSpec : Specification<CommentEntity>
 {
-    public CommentCountSpec(string keyword)
+    public CommentCountSpec(string username = null, string email = null, string commentContent = null, DateTime? startTimeUtc = null, DateTime? endTimeUtc = null)
     {
-        Query.Where(p => null == keyword || p.Username.Contains(keyword) || p.Email.Contains(keyword));
+        Query.Where(p => (null == username || p.Username.Contains(username))
+                      && (null == email || p.Email.Contains(email))
+                      && (null == commentContent || p.CommentContent.Contains(commentContent))
+                      && (!startTimeUtc.HasValue || p.CreateTimeUtc >= startTimeUtc.Value)
+                      && (!endTimeUtc.HasValue || p.CreateTimeUtc <= endTimeUtc.Value));
     }
 }
 

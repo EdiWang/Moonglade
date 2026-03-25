@@ -8,12 +8,17 @@ import { withPagination } from './admin.pagination.mjs';
 Alpine.data('commentManager', () => withPagination(5, {
     comments: [],
     isLoading: true,
-    searchTerm: '',
     selectedCommentIds: [],
+    usernameFilter: '',
+    emailFilter: '',
+    commentContentFilter: '',
+    startDate: '',
+    endDate: '',
+    filterCanvas: null,
 
     async init() {
-        const urlParams = this.initPageFromUrl();
-        this.searchTerm = urlParams.get('searchTerm') || '';
+        this.initPageFromUrl();
+        this.filterCanvas = new bootstrap.Offcanvas(this.$refs.filterCanvas);
         await this.loadData();
     },
 
@@ -25,8 +30,26 @@ Alpine.data('commentManager', () => withPagination(5, {
                 pageSize: this.pageSize
             });
 
-            if (this.searchTerm) {
-                params.append('searchTerm', this.searchTerm);
+            if (this.usernameFilter) {
+                params.append('username', this.usernameFilter);
+            }
+
+            if (this.emailFilter) {
+                params.append('email', this.emailFilter);
+            }
+
+            if (this.commentContentFilter) {
+                params.append('commentContent', this.commentContentFilter);
+            }
+
+            if (this.startDate) {
+                const startUtc = new Date(this.startDate).toISOString();
+                params.append('startTimeUtc', startUtc);
+            }
+
+            if (this.endDate) {
+                const endUtc = new Date(this.endDate + 'T23:59:59').toISOString();
+                params.append('endTimeUtc', endUtc);
             }
 
             const data = await fetch2(`/api/comment/list?${params.toString()}`, 'GET');
@@ -47,19 +70,49 @@ Alpine.data('commentManager', () => withPagination(5, {
         }
     },
 
-    async handleSearch() {
-        this.currentPage = 1;
-        await this.loadData();
-        this.updateUrl();
-    },
-
     updateUrl() {
         const params = new URLSearchParams();
         params.set('pageIndex', this.currentPage);
-        if (this.searchTerm) {
-            params.set('searchTerm', this.searchTerm);
-        }
         window.history.pushState({}, '', `?${params.toString()}`);
+    },
+
+    openFilter() {
+        this.filterCanvas.show();
+    },
+
+    async handleFilter() {
+        this.currentPage = 1;
+        this.selectedCommentIds = [];
+        await this.loadData();
+        this.updateUrl();
+        this.filterCanvas.hide();
+    },
+
+    async clearFilter() {
+        this.usernameFilter = '';
+        this.emailFilter = '';
+        this.commentContentFilter = '';
+        this.startDate = '';
+        this.endDate = '';
+        this.currentPage = 1;
+        this.selectedCommentIds = [];
+        await this.loadData();
+        this.updateUrl();
+        this.filterCanvas.hide();
+    },
+
+    get activeFilterCount() {
+        let count = 0;
+        if (this.usernameFilter) count++;
+        if (this.emailFilter) count++;
+        if (this.commentContentFilter) count++;
+        if (this.startDate) count++;
+        if (this.endDate) count++;
+        return count;
+    },
+
+    get commentCount() {
+        return this.totalRows;
     },
 
     async deleteComment(commentId) {
