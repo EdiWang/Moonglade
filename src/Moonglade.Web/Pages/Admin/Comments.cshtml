@@ -181,24 +181,24 @@
         <form x-on:submit.prevent="handleFilter()" class="d-flex flex-column h-100">
             <div class="flex-grow-1 p-3 pb-0" style="min-height: 0; overflow-y: auto;">
                 <div class="mb-3">
-                    <label class="form-label">@SharedLocalizer["Username"]</label>
-                    <input type="text" class="form-control" x-model="usernameFilter" maxlength="128" />
+                    <label class="form-label" for="filterUsername">@SharedLocalizer["Username"]</label>
+                    <input type="text" class="form-control" id="filterUsername" x-model="usernameFilter" maxlength="128" />
                 </div>
                 <div class="mb-3">
-                    <label class="form-label">@SharedLocalizer["Email"]</label>
-                    <input type="text" class="form-control" x-model="emailFilter" maxlength="128" />
+                    <label class="form-label" for="filterEmail">@SharedLocalizer["Email"]</label>
+                    <input type="text" class="form-control" id="filterEmail" x-model="emailFilter" maxlength="128" />
                 </div>
                 <div class="mb-3">
-                    <label class="form-label">@SharedLocalizer["Comment Content"]</label>
-                    <input type="text" class="form-control" x-model="commentContentFilter" maxlength="256" />
+                    <label class="form-label" for="filterCommentContent">@SharedLocalizer["Comment Content"]</label>
+                    <input type="text" class="form-control" id="filterCommentContent" x-model="commentContentFilter" maxlength="256" />
                 </div>
                 <div class="mb-3">
-                    <label class="form-label">@SharedLocalizer["Start Date"]</label>
-                    <input type="date" class="form-control" x-model="startDate" />
+                    <label class="form-label" for="filterStartDate">@SharedLocalizer["Start Date"]</label>
+                    <input type="date" class="form-control" id="filterStartDate" x-model="startDate" />
                 </div>
                 <div class="mb-3">
-                    <label class="form-label">@SharedLocalizer["End Date"]</label>
-                    <input type="date" class="form-control" x-model="endDate" />
+                    <label class="form-label" for="filterEndDate">@SharedLocalizer["End Date"]</label>
+                    <input type="date" class="form-control" id="filterEndDate" x-model="endDate" />
                 </div>
             </div>
 
