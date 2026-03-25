@@ -4,7 +4,7 @@ using Moonglade.Data.Specifications;
 
 namespace Moonglade.Features.Comment;
 
-public record ListCommentsQuery(int PageSize, int PageIndex, string SearchTerm = null) : IQuery<List<CommentDetailedItem>>;
+public record ListCommentsQuery(int PageSize, int PageIndex, CommentFilter Filter) : IQuery<List<CommentDetailedItem>>;
 
 public class ListCommentsQueryHandler(IRepositoryBase<CommentEntity> repo) : IQueryHandler<ListCommentsQuery, List<CommentDetailedItem>>
 {
@@ -16,7 +16,7 @@ public class ListCommentsQueryHandler(IRepositoryBase<CommentEntity> repo) : IQu
                 $"{nameof(request.PageSize)} can not be less than 1, current value: {request.PageSize}.");
         }
 
-        var spec = new CommentPagingSepc(request.PageSize, request.PageIndex, request.SearchTerm);
+        var spec = new CommentPagingSepc(request.PageSize, request.PageIndex, request.Filter);
         var dtoSpec = new CommentEntityToCommentDetailedItemSpec();
         var newSpec = spec.WithProjectionOf(dtoSpec);
 

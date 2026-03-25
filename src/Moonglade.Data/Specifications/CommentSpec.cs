@@ -5,11 +5,11 @@ namespace Moonglade.Data.Specifications;
 
 public sealed class CommentPagingSepc : Specification<CommentEntity>
 {
-    public CommentPagingSepc(int pageSize, int pageIndex, string keyword)
+    public CommentPagingSepc(int pageSize, int pageIndex, CommentFilter filter)
     {
         var startRow = (pageIndex - 1) * pageSize;
 
-        Query.Where(p => null == keyword || p.Username.Contains(keyword) || p.Email.Contains(keyword));
+        ApplyFilter(filter);
 
         Query.Include(c => c.Post);
         Query.Include(c => c.Replies);
@@ -17,13 +17,64 @@ public sealed class CommentPagingSepc : Specification<CommentEntity>
         Query.OrderByDescending(p => p.CreateTimeUtc);
         Query.Take(pageSize).Skip(startRow);
     }
+
+    private void ApplyFilter(CommentFilter filter)
+    {
+        if (!string.IsNullOrWhiteSpace(filter.Username))
+        {
+            Query.Where(p => p.Username.Contains(filter.Username));
+        }
+
+        if (!string.IsNullOrWhiteSpace(filter.Email))
+        {
+            Query.Where(p => p.Email.Contains(filter.Email));
+        }
+
+        if (!string.IsNullOrWhiteSpace(filter.CommentContent))
+        {
+            Query.Where(p => p.CommentContent.Contains(filter.CommentContent));
+        }
+
+        if (filter.StartTimeUtc.HasValue)
+        {
+            Query.Where(p => p.CreateTimeUtc >= filter.StartTimeUtc.Value);
+        }
+
+        if (filter.EndTimeUtc.HasValue)
+        {
+            Query.Where(p => p.CreateTimeUtc <= filter.EndTimeUtc.Value);
+        }
+    }
 }
 
 public sealed class CommentCountSpec : Specification<CommentEntity>
 {
-    public CommentCountSpec(string keyword)
+    public CommentCountSpec(CommentFilter filter)
     {
-        Query.Where(p => null == keyword || p.Username.Contains(keyword) || p.Email.Contains(keyword));
+        if (!string.IsNullOrWhiteSpace(filter.Username))
+        {
+            Query.Where(p => p.Username.Contains(filter.Username));
+        }
+
+        if (!string.IsNullOrWhiteSpace(filter.Email))
+        {
+            Query.Where(p => p.Email.Contains(filter.Email));
+        }
+
+        if (!string.IsNullOrWhiteSpace(filter.CommentContent))
+        {
+            Query.Where(p => p.CommentContent.Contains(filter.CommentContent));
+        }
+
+        if (filter.StartTimeUtc.HasValue)
+        {
+            Query.Where(p => p.CreateTimeUtc >= filter.StartTimeUtc.Value);
+        }
+
+        if (filter.EndTimeUtc.HasValue)
+        {
+            Query.Where(p => p.CreateTimeUtc <= filter.EndTimeUtc.Value);
+        }
     }
 }
 
