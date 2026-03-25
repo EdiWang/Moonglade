@@ -5,15 +5,11 @@ namespace Moonglade.Data.Specifications;
 
 public sealed class CommentPagingSepc : Specification<CommentEntity>
 {
-    public CommentPagingSepc(int pageSize, int pageIndex, string username = null, string email = null, string commentContent = null, DateTime? startTimeUtc = null, DateTime? endTimeUtc = null)
+    public CommentPagingSepc(int pageSize, int pageIndex, CommentFilter filter)
     {
         var startRow = (pageIndex - 1) * pageSize;
 
-        Query.Where(p => (null == username || p.Username.Contains(username))
-                      && (null == email || p.Email.Contains(email))
-                      && (null == commentContent || p.CommentContent.Contains(commentContent))
-                      && (!startTimeUtc.HasValue || p.CreateTimeUtc >= startTimeUtc.Value)
-                      && (!endTimeUtc.HasValue || p.CreateTimeUtc <= endTimeUtc.Value));
+        ApplyFilter(filter);
 
         Query.Include(c => c.Post);
         Query.Include(c => c.Replies);
@@ -21,17 +17,64 @@ public sealed class CommentPagingSepc : Specification<CommentEntity>
         Query.OrderByDescending(p => p.CreateTimeUtc);
         Query.Take(pageSize).Skip(startRow);
     }
+
+    private void ApplyFilter(CommentFilter filter)
+    {
+        if (!string.IsNullOrWhiteSpace(filter.Username))
+        {
+            Query.Where(p => p.Username.Contains(filter.Username));
+        }
+
+        if (!string.IsNullOrWhiteSpace(filter.Email))
+        {
+            Query.Where(p => p.Email.Contains(filter.Email));
+        }
+
+        if (!string.IsNullOrWhiteSpace(filter.CommentContent))
+        {
+            Query.Where(p => p.CommentContent.Contains(filter.CommentContent));
+        }
+
+        if (filter.StartTimeUtc.HasValue)
+        {
+            Query.Where(p => p.CreateTimeUtc >= filter.StartTimeUtc.Value);
+        }
+
+        if (filter.EndTimeUtc.HasValue)
+        {
+            Query.Where(p => p.CreateTimeUtc <= filter.EndTimeUtc.Value);
+        }
+    }
 }
 
 public sealed class CommentCountSpec : Specification<CommentEntity>
 {
-    public CommentCountSpec(string username = null, string email = null, string commentContent = null, DateTime? startTimeUtc = null, DateTime? endTimeUtc = null)
+    public CommentCountSpec(CommentFilter filter)
     {
-        Query.Where(p => (null == username || p.Username.Contains(username))
-                      && (null == email || p.Email.Contains(email))
-                      && (null == commentContent || p.CommentContent.Contains(commentContent))
-                      && (!startTimeUtc.HasValue || p.CreateTimeUtc >= startTimeUtc.Value)
-                      && (!endTimeUtc.HasValue || p.CreateTimeUtc <= endTimeUtc.Value));
+        if (!string.IsNullOrWhiteSpace(filter.Username))
+        {
+            Query.Where(p => p.Username.Contains(filter.Username));
+        }
+
+        if (!string.IsNullOrWhiteSpace(filter.Email))
+        {
+            Query.Where(p => p.Email.Contains(filter.Email));
+        }
+
+        if (!string.IsNullOrWhiteSpace(filter.CommentContent))
+        {
+            Query.Where(p => p.CommentContent.Contains(filter.CommentContent));
+        }
+
+        if (filter.StartTimeUtc.HasValue)
+        {
+            Query.Where(p => p.CreateTimeUtc >= filter.StartTimeUtc.Value);
+        }
+
+        if (filter.EndTimeUtc.HasValue)
+        {
+            Query.Where(p => p.CreateTimeUtc <= filter.EndTimeUtc.Value);
+        }
     }
 }
 

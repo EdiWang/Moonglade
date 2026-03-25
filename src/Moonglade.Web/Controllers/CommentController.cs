@@ -5,6 +5,7 @@ using Moonglade.ActivityLog;
 using Moonglade.BackgroundServices;
 using Moonglade.Email.Client;
 using Moonglade.Moderation;
+using Moonglade.Data.Specifications;
 using System.ComponentModel.DataAnnotations;
 
 namespace Moonglade.Web.Controllers;
@@ -115,14 +116,11 @@ public class CommentController(
     public async Task<IActionResult> List(
         [FromQuery] int pageIndex = 1,
         [FromQuery] int pageSize = 5,
-        [FromQuery] string username = null,
-        [FromQuery] string email = null,
-        [FromQuery] string commentContent = null,
-        [FromQuery] DateTime? startTimeUtc = null,
-        [FromQuery] DateTime? endTimeUtc = null)
+        [FromQuery] CommentFilter filter = null)
     {
-        var comments = await queryMediator.QueryAsync(new ListCommentsQuery(pageSize, pageIndex, username, email, commentContent, startTimeUtc, endTimeUtc));
-        var count = await queryMediator.QueryAsync(new CountCommentsQuery(username, email, commentContent, startTimeUtc, endTimeUtc));
+        filter ??= new();
+        var comments = await queryMediator.QueryAsync(new ListCommentsQuery(pageSize, pageIndex, filter));
+        var count = await queryMediator.QueryAsync(new CountCommentsQuery(filter));
 
         // Convert markdown to HTML for display
         var commentsWithHtml = comments.Select(c => new
