@@ -36,7 +36,7 @@
                 <a x-on:click="openFilter()" class="btn btn-outline-accent me-2" role="button">
                     <i class="bi-funnel"></i>
                     @SharedLocalizer["Filter"]
-                    <span x-show="activeFilterCount > 0" class="badge bg-accent ms-1" x-text="activeFilterCount"></span>
+                    <span x-show="activeFilterCount > 0" class="badge bg-danger ms-1" x-text="activeFilterCount"></span>
                 </a>
                 <a href="javascript:void(0);"
                    x-on:click="deleteSelectedComments()"
