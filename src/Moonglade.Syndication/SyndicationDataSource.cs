@@ -29,7 +29,7 @@ public class SyndicationDataSource(
         List<FeedEntry> itemCollection;
         if (!string.IsNullOrWhiteSpace(catSlug))
         {
-            var cat = await db.Category.FirstOrDefaultAsync(c => c.Slug == catSlug);
+            var cat = await db.Category.AsNoTracking().FirstOrDefaultAsync(c => c.Slug == catSlug);
             if (cat is null) return null;
 
             itemCollection = await GetFeedEntriesAsync(cat.Id);
