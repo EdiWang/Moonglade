@@ -1,6 +1,5 @@
 using LiteBus.Commands.Abstractions;
 using Microsoft.Extensions.Logging;
-using Moonglade.Data.Specifications;
 using System.ComponentModel.DataAnnotations;
 
 namespace Moonglade.Features.Category;
@@ -25,12 +24,12 @@ public class CreateCategoryCommand : ICommand
 }
 
 public class CreateCategoryCommandHandler(
-    IRepositoryBase<CategoryEntity> catRepo,
+    BlogDbContext db,
     ILogger<CreateCategoryCommandHandler> logger) : ICommandHandler<CreateCategoryCommand>
 {
     public async Task HandleAsync(CreateCategoryCommand request, CancellationToken ct)
     {
-        var exists = await catRepo.AnyAsync(new CategoryBySlugSpec(request.Slug), ct);
+        var exists = await db.Category.AnyAsync(c => c.Slug == request.Slug, ct);
         if (exists) return;
 
         var category = new CategoryEntity
@@ -41,7 +40,8 @@ public class CreateCategoryCommandHandler(
             DisplayName = request.DisplayName.Trim()
         };
 
-        await catRepo.AddAsync(category, ct);
+        await db.Category.AddAsync(category, ct);
+        await db.SaveChangesAsync(ct);
 
         logger.LogInformation("Category created: {Category}", category.Id);
     }

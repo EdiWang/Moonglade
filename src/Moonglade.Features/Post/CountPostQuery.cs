@@ -16,7 +16,7 @@ public record CountPostQuery(CountType CountType, Guid? CatId = null, int? TagId
 public class CountPostQueryHandler(
     IRepositoryBase<PostEntity> postRepo,
     IRepositoryBase<PostTagEntity> postTagRepo,
-    IRepositoryBase<PostCategoryEntity> postCatRepo)
+    BlogDbContext db)
     : IQueryHandler<CountPostQuery, int>
 {
     public async Task<int> HandleAsync(CountPostQuery request, CancellationToken ct)
@@ -26,7 +26,10 @@ public class CountPostQueryHandler(
             CountType.Public => await postRepo.CountAsync(new PostByStatusSpec(PostStatus.Published), ct),
 
             CountType.Category => request.CatId is Guid catId
-                ? await postCatRepo.CountAsync(new PostCategorySpec(catId), ct)
+                ? await db.PostCategory.CountAsync(
+                    pc => pc.CategoryId == catId
+                          && pc.Post.PostStatus == PostStatus.Published
+                          && !pc.Post.IsDeleted, ct)
                 : throw new InvalidOperationException("CatId must be provided for Category count."),
 
             CountType.Tag => request.TagId is int tagId

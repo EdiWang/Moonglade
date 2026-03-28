@@ -9,19 +9,19 @@ public class UpdateCategoryCommand : CreateCategoryCommand, ICommand<OperationCo
 }
 
 public class UpdateCategoryCommandHandler(
-    IRepositoryBase<CategoryEntity> repo,
+    BlogDbContext db,
     ILogger<UpdateCategoryCommandHandler> logger) : ICommandHandler<UpdateCategoryCommand, OperationCode>
 {
     public async Task<OperationCode> HandleAsync(UpdateCategoryCommand request, CancellationToken ct)
     {
-        var cat = await repo.GetByIdAsync(request.Id, ct);
+        var cat = await db.Category.FindAsync([request.Id], ct);
         if (cat is null) return OperationCode.ObjectNotFound;
 
         cat.Slug = request.Slug.Trim();
         cat.DisplayName = request.DisplayName.Trim();
         cat.Note = request.Note?.Trim();
 
-        await repo.UpdateAsync(cat, ct);
+        await db.SaveChangesAsync(ct);
 
         logger.LogInformation("Category updated: {Category}", cat.Id);
         return OperationCode.Done;
