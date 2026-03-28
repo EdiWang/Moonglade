@@ -1,6 +1,7 @@
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Configuration;
 using Moonglade.Configuration;
+using Moonglade.Data;
 using Moonglade.Data.DTO;
 using Moonglade.Data.Entities;
 using Moonglade.Data.Specifications;
@@ -16,7 +17,7 @@ public interface ISyndicationDataSource
 public class SyndicationDataSource(
     IBlogConfig blogConfig,
     IHttpContextAccessor httpContextAccessor,
-    IRepositoryBase<CategoryEntity> catRepo,
+    BlogDbContext db,
     IRepositoryBase<PostEntity> postRepo,
     IConfiguration configuration)
     : ISyndicationDataSource
@@ -28,7 +29,7 @@ public class SyndicationDataSource(
         List<FeedEntry> itemCollection;
         if (!string.IsNullOrWhiteSpace(catSlug))
         {
-            var cat = await catRepo.FirstOrDefaultAsync(new CategoryBySlugSpec(catSlug));
+            var cat = await db.Category.FirstOrDefaultAsync(c => c.Slug == catSlug);
             if (cat is null) return null;
 
             itemCollection = await GetFeedEntriesAsync(cat.Id);
