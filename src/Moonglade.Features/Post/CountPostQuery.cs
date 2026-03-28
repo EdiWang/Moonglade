@@ -15,7 +15,6 @@ public record CountPostQuery(CountType CountType, Guid? CatId = null, int? TagId
 
 public class CountPostQueryHandler(
     IRepositoryBase<PostEntity> postRepo,
-    IRepositoryBase<PostTagEntity> postTagRepo,
     BlogDbContext db)
     : IQueryHandler<CountPostQuery, int>
 {
@@ -33,7 +32,10 @@ public class CountPostQueryHandler(
                 : throw new InvalidOperationException("CatId must be provided for Category count."),
 
             CountType.Tag => request.TagId is int tagId
-                ? await postTagRepo.CountAsync(new PublishedPostTagByTagIdSpec(tagId), ct)
+                ? await db.PostTag.CountAsync(
+                    pt => pt.TagId == tagId
+                          && pt.Post.PostStatus == PostStatus.Published
+                          && !pt.Post.IsDeleted, ct)
                 : throw new InvalidOperationException("TagId must be provided for Tag count."),
 
             CountType.Featured => await postRepo.CountAsync(new FeaturedPostSpec(), ct),

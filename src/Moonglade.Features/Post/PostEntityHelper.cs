@@ -1,5 +1,4 @@
 using Microsoft.Extensions.Logging;
-using Moonglade.Data.Specifications;
 using Moonglade.Utils;
 
 namespace Moonglade.Features.Post;
@@ -13,7 +12,7 @@ internal static class PostEntityHelper
     public static async Task ResolveAndAssignTagsAsync(
         PostEntity post,
         string tagString,
-        IRepositoryBase<TagEntity> tagRepo,
+        BlogDbContext db,
         ILogger logger,
         CancellationToken ct)
     {
@@ -27,8 +26,8 @@ internal static class PostEntityHelper
         {
             if (!BlogTagHelper.IsValidTagName(item)) continue;
 
-            var tag = await tagRepo.FirstOrDefaultAsync(new TagByDisplayNameSpec(item), ct)
-                      ?? await CreateTagAsync(item, tagRepo, logger, ct);
+            var tag = await db.Tag.FirstOrDefaultAsync(t => t.DisplayName == item, ct)
+                      ?? await CreateTagAsync(item, db, logger, ct);
 
             post.Tags.Add(tag);
         }
@@ -55,7 +54,7 @@ internal static class PostEntityHelper
 
     private static async Task<TagEntity> CreateTagAsync(
         string name,
-        IRepositoryBase<TagEntity> tagRepo,
+        BlogDbContext db,
         ILogger logger,
         CancellationToken ct)
     {
@@ -65,8 +64,8 @@ internal static class PostEntityHelper
             NormalizedName = BlogTagHelper.NormalizeName(name, BlogTagHelper.TagNormalizationDictionary)
         };
 
-        var tag = await tagRepo.AddAsync(newTag, ct);
-        logger.LogInformation("Created tag: {TagName}", tag.DisplayName);
-        return tag;
+        await db.Tag.AddAsync(newTag, ct);
+        logger.LogInformation("Created tag: {TagName}", newTag.DisplayName);
+        return newTag;
     }
 }

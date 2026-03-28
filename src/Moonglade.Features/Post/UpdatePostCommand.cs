@@ -8,7 +8,7 @@ namespace Moonglade.Features.Post;
 
 public record UpdatePostCommand(Guid Id, PostEditModel Payload) : ICommand<PostCommandResult>;
 public class UpdatePostCommandHandler(
-    IRepositoryBase<TagEntity> tagRepo,
+    BlogDbContext db,
     IRepositoryBase<PostEntity> postRepo,
     ILogger<UpdatePostCommandHandler> logger) : ICommandHandler<UpdatePostCommand, PostCommandResult>
 {
@@ -20,7 +20,7 @@ public class UpdatePostCommandHandler(
 
         UpdatePostDetails(post, postEditModel, utcNow);
 
-        await PostEntityHelper.ResolveAndAssignTagsAsync(post, postEditModel.Tags, tagRepo, logger, ct);
+        await PostEntityHelper.ResolveAndAssignTagsAsync(post, postEditModel.Tags, db, logger, ct);
         PostEntityHelper.SetCategories(post, postEditModel.SelectedCatIds);
 
         await postRepo.UpdateAsync(post, ct);

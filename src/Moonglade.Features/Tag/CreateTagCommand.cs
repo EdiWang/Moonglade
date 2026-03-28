@@ -1,7 +1,6 @@
 using LiteBus.Commands.Abstractions;
 using Microsoft.Extensions.Logging;
 using Moonglade.Data.DTO;
-using Moonglade.Data.Specifications;
 using Moonglade.Utils;
 
 namespace Moonglade.Features.Tag;
@@ -9,14 +8,14 @@ namespace Moonglade.Features.Tag;
 public record CreateTagCommand(string Name) : ICommand<TagCommandResult>;
 
 public class CreateTagCommandHandler(
-    IRepositoryBase<TagEntity> repo,
+    BlogDbContext db,
     ILogger<CreateTagCommandHandler> logger) : ICommandHandler<CreateTagCommand, TagCommandResult>
 {
     public async Task<TagCommandResult> HandleAsync(CreateTagCommand request, CancellationToken ct)
     {
         var normalizedName = BlogTagHelper.NormalizeName(request.Name, BlogTagHelper.TagNormalizationDictionary);
 
-        var existingTag = await repo.FirstOrDefaultAsync(new TagByNormalizedNameSpec(normalizedName), ct);
+        var existingTag = await db.Tag.FirstOrDefaultAsync(t => t.NormalizedName == normalizedName, ct);
         if (null != existingTag) return new TagCommandResult
         {
             Id = existingTag.Id,
@@ -30,7 +29,8 @@ public class CreateTagCommandHandler(
             NormalizedName = normalizedName
         };
 
-        await repo.AddAsync(newTag, ct);
+        await db.Tag.AddAsync(newTag, ct);
+        await db.SaveChangesAsync(ct);
         logger.LogInformation("Tag created: {TagName}", request.Name);
 
         return new TagCommandResult
