@@ -4,8 +4,8 @@ using Moonglade.Configuration;
 using Moonglade.Data;
 using Moonglade.Data.DTO;
 using Moonglade.Data.Entities;
-using Moonglade.Data.Specifications;
 using Moonglade.Utils;
+using Microsoft.EntityFrameworkCore;
 
 namespace Moonglade.Syndication;
 
@@ -18,7 +18,6 @@ public class SyndicationDataSource(
     IBlogConfig blogConfig,
     IHttpContextAccessor httpContextAccessor,
     BlogDbContext db,
-    IRepositoryBase<PostEntity> postRepo,
     IConfiguration configuration)
     : ISyndicationDataSource
 {
@@ -50,11 +49,31 @@ public class SyndicationDataSource(
             top = blogConfig.FeedSettings.FeedItemCount;
         }
 
-        var postSpec = new PostByCatSpec(catId, top);
-        var dtoSpec = new PostEntityToFeedEntrySpec(_baseUrl);
-        var newSpec = postSpec.WithProjectionOf(dtoSpec);
+        IQueryable<PostEntity> query = db.Post.AsNoTracking()
+            .Where(p => !p.IsDeleted &&
+                        p.PostStatus == PostStatus.Published &&
+                        p.IsFeedIncluded &&
+                        p.PubDateUtc != null &&
+                        (catId == null || p.PostCategory.Any(c => c.CategoryId == catId.Value)))
+            .OrderByDescending(p => p.PubDateUtc);
 
-        var list = await postRepo.ListAsync(newSpec);
+        if (top.HasValue)
+        {
+            query = query.Take(top.Value);
+        }
+
+        var list = await query.Select(p => new FeedEntry
+        {
+            Id = p.Id.ToString(),
+            Title = p.Title,
+            PubDateUtc = p.PubDateUtc.Value,
+            Description = p.ContentAbstract,
+            Link = $"{_baseUrl}/post/{p.RouteLink}",
+            Author = p.Author,
+            LangCode = p.ContentLanguageCode,
+            Categories = p.PostCategory.Select(pc => pc.Category.DisplayName).ToArray(),
+            ContentType = p.ContentType
+        }).ToListAsync();
 
         // Workaround EF limitation
         // Man, this is super ugly

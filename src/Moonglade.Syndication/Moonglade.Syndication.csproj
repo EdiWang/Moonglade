@@ -9,7 +9,6 @@
         <ImplicitUsings>enable</ImplicitUsings>
     </PropertyGroup>
     <ItemGroup>
-        <Using Include="Ardalis.Specification" />
         <Using Include="Microsoft.EntityFrameworkCore" />
     </ItemGroup>
     <ItemGroup>
