@@ -1,7 +1,5 @@
 using Microsoft.EntityFrameworkCore;
 using Moonglade.Data.DTO;
-using Moonglade.Data.Entities;
-using Moonglade.Data.Specifications;
 using System.Globalization;
 using System.Xml;
 
@@ -15,13 +13,12 @@ public class SiteMapMapHandler
         HttpContext httpContext,
         IBlogConfig blogConfig,
         ICacheAside cache,
-        IRepositoryBase<PostEntity> postRepo,
         BlogDbContext db)
     {
         var xml = await cache.GetOrCreateAsync(BlogCachePartition.General.ToString(), "sitemap", async () =>
         {
             var url = UrlHelper.ResolveRootUrl(httpContext, blogConfig.GeneralSettings.CanonicalPrefix, true, true);
-            var data = await GetSiteMapData(url, postRepo, db, httpContext.RequestAborted);
+            var data = await GetSiteMapData(url, db, httpContext.RequestAborted);
             return data;
         });
 
@@ -30,7 +27,6 @@ public class SiteMapMapHandler
 
     private static async Task<string> GetSiteMapData(
         string siteRootUrl,
-        IRepositoryBase<PostEntity> postRepo,
         BlogDbContext db,
         CancellationToken ct)
     {
@@ -43,8 +39,15 @@ public class SiteMapMapHandler
             writer.WriteStartElement("urlset", "http://www.sitemaps.org/schemas/sitemap/0.9");
 
             // Posts
-            var spec = new PostSiteMapSpec();
-            var posts = await postRepo.ListAsync(spec, ct);
+            var posts = await db.Post.AsNoTracking()
+                .Where(p => p.PostStatus == PostStatus.Published && !p.IsDeleted)
+                .Select(p => new SiteMapInfo
+                {
+                    Slug = p.RouteLink,
+                    CreateTimeUtc = p.PubDateUtc.GetValueOrDefault(),
+                    UpdateTimeUtc = p.LastModifiedUtc
+                })
+                .ToListAsync(ct);
 
             foreach (var item in posts.OrderByDescending(p => p.UpdateTimeUtc))
             {
