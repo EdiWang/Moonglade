@@ -10,7 +10,7 @@ public record CreatePostCommand(PostEditModel Payload) : ICommand<PostCommandRes
 
 public class CreatePostCommandHandler(
         IRepositoryBase<PostEntity> postRepo,
-        IRepositoryBase<TagEntity> tagRepo,
+        BlogDbContext db,
         ILogger<CreatePostCommandHandler> logger)
     : ICommandHandler<CreatePostCommand, PostCommandResult>
 {
@@ -51,7 +51,7 @@ public class CreatePostCommandHandler(
 
         PostEntityHelper.SetCategories(post, request.Payload.SelectedCatIds);
 
-        await PostEntityHelper.ResolveAndAssignTagsAsync(post, request.Payload.Tags, tagRepo, logger, ct);
+        await PostEntityHelper.ResolveAndAssignTagsAsync(post, request.Payload.Tags, db, logger, ct);
 
         await postRepo.AddAsync(post, ct);
 
