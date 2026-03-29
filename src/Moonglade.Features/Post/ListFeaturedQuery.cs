@@ -21,20 +21,7 @@ public class ListFeaturedQueryHandler(BlogDbContext db) : IQueryHandler<ListFeat
             .OrderByDescending(p => p.PubDateUtc)
             .Skip(startRow)
             .Take(pageSize)
-            .Select(p => new PostDigest
-            {
-                Title = p.Title,
-                Slug = p.Slug,
-                ContentAbstract = p.ContentAbstract,
-                PubDateUtc = p.PubDateUtc.GetValueOrDefault(),
-                LangCode = p.ContentLanguageCode,
-                IsFeatured = p.IsFeatured,
-                Tags = p.Tags.Select(pt => new Moonglade.Data.DTO.Tag
-                {
-                    NormalizedName = pt.NormalizedName,
-                    DisplayName = pt.DisplayName
-                })
-            })
+            .SelectToDigest()
             .ToListAsync(ct);
 
         return posts;

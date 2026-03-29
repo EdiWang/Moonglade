@@ -37,20 +37,9 @@ public class SearchPostQueryHandler(BlogDbContext db) : IQueryHandler<SearchPost
                 p.Tags.Any(t => t.DisplayName.Contains(word)));
         }
 
-        var results = await query.Select(p => new PostDigest
-        {
-            Title = p.Title,
-            Slug = p.Slug,
-            ContentAbstract = p.ContentAbstract,
-            PubDateUtc = p.PubDateUtc.GetValueOrDefault(),
-            LangCode = p.ContentLanguageCode,
-            IsFeatured = p.IsFeatured,
-            Tags = p.Tags.Select(pt => new Moonglade.Data.DTO.Tag
-            {
-                NormalizedName = pt.NormalizedName,
-                DisplayName = pt.DisplayName
-            })
-        }).ToListAsync(ct);
+        var results = await query
+            .SelectToDigest()
+            .ToListAsync(ct);
 
         return results;
     }
