@@ -1,4 +1,5 @@
 using LiteBus.Queries.Abstractions;
+using Moonglade.Data;
 using Moonglade.Data.Entities;
 using System.Text.Json;
 
@@ -6,7 +7,7 @@ namespace Moonglade.Theme;
 
 public record GetSiteThemeStyleSheetQuery(int Id) : IQuery<string>;
 
-public class GetStyleSheetQueryHandler(IRepositoryBase<BlogThemeEntity> repo)
+public class GetStyleSheetQueryHandler(BlogDbContext db)
     : IQueryHandler<GetSiteThemeStyleSheetQuery, string>
 {
     private const int SystemThemeStartId = 100;
@@ -56,7 +57,7 @@ public class GetStyleSheetQueryHandler(IRepositoryBase<BlogThemeEntity> repo)
         if (id < SystemThemeStartId || id > SystemThemeEndId)
         {
             // Custom theme, fallback to default system theme if not found
-            return await repo.GetByIdAsync(id, ct)
+            return await db.BlogTheme.FindAsync([id], ct)
                 ?? ThemeFactory.GetSystemThemes().FirstOrDefault(t => t.Id == DefaultSystemThemeId);
         }
         // System theme
