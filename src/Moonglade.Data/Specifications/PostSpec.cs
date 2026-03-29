@@ -1,5 +1,4 @@
-﻿using Moonglade.Data.DTO;
-using Moonglade.Data.Entities;
+﻿using Moonglade.Data.Entities;
 
 namespace Moonglade.Data.Specifications;
 
@@ -38,25 +37,4 @@ public sealed class FeaturedPostSpec : Specification<PostEntity>
 public sealed class PostByDeletionFlagSpec : Specification<PostEntity>
 {
     public PostByDeletionFlagSpec(bool isDeleted) => Query.Where(p => p.IsDeleted == isDeleted);
-}
-
-public class PostEntityToDigestSpec : Specification<PostEntity, PostDigest>
-{
-    public PostEntityToDigestSpec()
-    {
-        Query.Select(p => new()
-        {
-            Title = p.Title,
-            Slug = p.Slug,
-            ContentAbstract = p.ContentAbstract,
-            PubDateUtc = p.PubDateUtc.GetValueOrDefault(),
-            LangCode = p.ContentLanguageCode,
-            IsFeatured = p.IsFeatured,
-            Tags = p.Tags.Select(pt => new Tag
-            {
-                NormalizedName = pt.NormalizedName,
-                DisplayName = pt.DisplayName
-            })
-        });
-    }
 }
