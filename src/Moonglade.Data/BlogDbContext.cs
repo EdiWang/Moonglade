@@ -36,7 +36,7 @@ public class BlogDbContext : DbContext
         // base.OnModelCreating(modelBuilder);
         modelBuilder.ApplyConfiguration(new CategoryConfiguration());
         modelBuilder.ApplyConfiguration(new ActivityLogConfiguration());
-
+        modelBuilder.ApplyConfiguration(new PostCategoryConfiguration());
         modelBuilder
             .Entity<PostEntity>()
             .HasMany(p => p.Tags)

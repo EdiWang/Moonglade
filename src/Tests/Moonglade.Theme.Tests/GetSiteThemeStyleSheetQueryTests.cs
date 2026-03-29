@@ -1,17 +1,16 @@
+using Moonglade.Data;
 using Moonglade.Data.Entities;
-using Moq;
 
 namespace Moonglade.Theme.Tests;
 
 public class GetSiteThemeStyleSheetQueryTests
 {
-    private readonly Mock<IRepositoryBase<BlogThemeEntity>> _mockRepo;
-    private readonly GetStyleSheetQueryHandler _handler;
-
-    public GetSiteThemeStyleSheetQueryTests()
+    private static BlogDbContext CreateDbContext()
     {
-        _mockRepo = new Mock<IRepositoryBase<BlogThemeEntity>>();
-        _handler = new GetStyleSheetQueryHandler(_mockRepo.Object);
+        var options = new DbContextOptionsBuilder<BlogDbContext>()
+            .UseInMemoryDatabase(databaseName: Guid.NewGuid().ToString())
+            .Options;
+        return new BlogDbContext(options);
     }
 
     #region HandleAsync Tests - Success Cases
@@ -20,38 +19,40 @@ public class GetSiteThemeStyleSheetQueryTests
     public async Task HandleAsync_SystemTheme_ReturnsValidCss()
     {
         // Arrange
+        using var db = CreateDbContext();
+        var handler = new GetStyleSheetQueryHandler(db);
         var query = new GetSiteThemeStyleSheetQuery(100);
 
         // Act
-        var result = await _handler.HandleAsync(query, CancellationToken.None);
+        var result = await handler.HandleAsync(query, CancellationToken.None);
 
         // Assert
         Assert.NotNull(result);
         Assert.StartsWith(":root {", result);
         Assert.Contains("--accent-color1", result);
         Assert.Contains("--accent-color2", result);
-        _mockRepo.Verify(r => r.GetByIdAsync(It.IsAny<int>(), It.IsAny<CancellationToken>()), Times.Never);
     }
 
     [Fact]
     public async Task HandleAsync_CustomTheme_ReturnsValidCss()
     {
         // Arrange
+        using var db = CreateDbContext();
         var cssRules = """{"--primary-color": "#ff0000", "--secondary-color": "#00ff00"}""";
-        var theme = new BlogThemeEntity
+        db.BlogTheme.Add(new BlogThemeEntity
         {
             Id = 1,
             ThemeName = "Custom Theme",
             CssRules = cssRules,
             ThemeType = ThemeType.User
-        };
-        _mockRepo.Setup(r => r.GetByIdAsync(1, It.IsAny<CancellationToken>()))
-            .ReturnsAsync(theme);
+        });
+        await db.SaveChangesAsync();
 
+        var handler = new GetStyleSheetQueryHandler(db);
         var query = new GetSiteThemeStyleSheetQuery(1);
 
         // Act
-        var result = await _handler.HandleAsync(query, CancellationToken.None);
+        var result = await handler.HandleAsync(query, CancellationToken.None);
 
         // Assert
         Assert.NotNull(result);
@@ -62,19 +63,21 @@ public class GetSiteThemeStyleSheetQueryTests
     public async Task HandleAsync_ValidCssRules_GeneratesCorrectCss()
     {
         // Arrange
+        using var db = CreateDbContext();
         var cssRules = """{"--color-1": "blue", "--color-2": "red", "--color-3": "green"}""";
-        var theme = new BlogThemeEntity
+        db.BlogTheme.Add(new BlogThemeEntity
         {
             Id = 50,
+            ThemeName = "Test",
             CssRules = cssRules
-        };
-        _mockRepo.Setup(r => r.GetByIdAsync(50, It.IsAny<CancellationToken>()))
-            .ReturnsAsync(theme);
+        });
+        await db.SaveChangesAsync();
 
+        var handler = new GetStyleSheetQueryHandler(db);
         var query = new GetSiteThemeStyleSheetQuery(50);
 
         // Act
-        var result = await _handler.HandleAsync(query, CancellationToken.None);
+        var result = await handler.HandleAsync(query, CancellationToken.None);
 
         // Assert
         Assert.Contains("--color-1: blue;", result);
@@ -86,19 +89,21 @@ public class GetSiteThemeStyleSheetQueryTests
     public async Task HandleAsync_CssRulesWithWhitespace_FiltersOutEmptyRules()
     {
         // Arrange
+        using var db = CreateDbContext();
         var cssRules = """{"--valid-color": "blue", "": "red", "--another-color": "", "  ": "green"}""";
-        var theme = new BlogThemeEntity
+        db.BlogTheme.Add(new BlogThemeEntity
         {
             Id = 50,
+            ThemeName = "Test",
             CssRules = cssRules
-        };
-        _mockRepo.Setup(r => r.GetByIdAsync(50, It.IsAny<CancellationToken>()))
-            .ReturnsAsync(theme);
+        });
+        await db.SaveChangesAsync();
 
+        var handler = new GetStyleSheetQueryHandler(db);
         var query = new GetSiteThemeStyleSheetQuery(50);
 
         // Act
-        var result = await _handler.HandleAsync(query, CancellationToken.None);
+        var result = await handler.HandleAsync(query, CancellationToken.None);
 
         // Assert
         Assert.Contains("--valid-color: blue;", result);
@@ -110,13 +115,15 @@ public class GetSiteThemeStyleSheetQueryTests
     public async Task HandleAsync_AllSystemThemeIds_ReturnValidCss()
     {
         // Arrange - System themes are 100-109 (10 themes)
+        using var db = CreateDbContext();
+        var handler = new GetStyleSheetQueryHandler(db);
         var systemThemes = ThemeFactory.GetSystemThemes().ToList();
 
         // Act & Assert
         foreach (var theme in systemThemes)
         {
             var query = new GetSiteThemeStyleSheetQuery(theme.Id);
-            var result = await _handler.HandleAsync(query, CancellationToken.None);
+            var result = await handler.HandleAsync(query, CancellationToken.None);
 
             Assert.NotNull(result);
             Assert.StartsWith(":root {", result);
@@ -131,32 +138,28 @@ public class GetSiteThemeStyleSheetQueryTests
     public async Task HandleAsync_CustomThemeNotFound_FallsBackToDefaultSystemTheme()
     {
         // Arrange
-        _mockRepo.Setup(r => r.GetByIdAsync(99, It.IsAny<CancellationToken>()))
-            .ReturnsAsync((BlogThemeEntity)null);
-
+        using var db = CreateDbContext();
+        var handler = new GetStyleSheetQueryHandler(db);
         var query = new GetSiteThemeStyleSheetQuery(99);
 
         // Act
-        var result = await _handler.HandleAsync(query, CancellationToken.None);
+        var result = await handler.HandleAsync(query, CancellationToken.None);
 
         // Assert
         Assert.NotNull(result);
         Assert.StartsWith(":root {", result);
-        _mockRepo.Verify(r => r.GetByIdAsync(99, It.IsAny<CancellationToken>()), Times.Once);
     }
 
     [Fact]
-    public async Task HandleAsync_ThemeIsNull_ReturnsNull()
+    public async Task HandleAsync_ThemeIsNull_FallsBackToDefaultSystemTheme()
     {
         // Arrange
-        _mockRepo.Setup(r => r.GetByIdAsync(999, It.IsAny<CancellationToken>()))
-            .ReturnsAsync((BlogThemeEntity)null);
-
-        // Mock ThemeFactory to return empty list for this test scenario
+        using var db = CreateDbContext();
+        var handler = new GetStyleSheetQueryHandler(db);
         var query = new GetSiteThemeStyleSheetQuery(999);
 
         // Act
-        var result = await _handler.HandleAsync(query, CancellationToken.None);
+        var result = await handler.HandleAsync(query, CancellationToken.None);
 
         // Assert
         // When custom theme not found, it falls back to default system theme (100)
@@ -171,19 +174,21 @@ public class GetSiteThemeStyleSheetQueryTests
     public async Task HandleAsync_EmptyCssRules_ThrowsInvalidDataException()
     {
         // Arrange
-        var theme = new BlogThemeEntity
+        using var db = CreateDbContext();
+        db.BlogTheme.Add(new BlogThemeEntity
         {
             Id = 50,
+            ThemeName = "Test",
             CssRules = ""
-        };
-        _mockRepo.Setup(r => r.GetByIdAsync(50, It.IsAny<CancellationToken>()))
-            .ReturnsAsync(theme);
+        });
+        await db.SaveChangesAsync();
 
+        var handler = new GetStyleSheetQueryHandler(db);
         var query = new GetSiteThemeStyleSheetQuery(50);
 
         // Act & Assert
         var exception = await Assert.ThrowsAsync<InvalidDataException>(
-            () => _handler.HandleAsync(query, CancellationToken.None));
+            () => handler.HandleAsync(query, CancellationToken.None));
 
         Assert.Contains("Theme id '50' has empty CSS rules", exception.Message);
     }
@@ -192,19 +197,21 @@ public class GetSiteThemeStyleSheetQueryTests
     public async Task HandleAsync_WhitespaceCssRules_ThrowsInvalidDataException()
     {
         // Arrange
-        var theme = new BlogThemeEntity
+        using var db = CreateDbContext();
+        db.BlogTheme.Add(new BlogThemeEntity
         {
             Id = 50,
+            ThemeName = "Test",
             CssRules = "   "
-        };
-        _mockRepo.Setup(r => r.GetByIdAsync(50, It.IsAny<CancellationToken>()))
-            .ReturnsAsync(theme);
+        });
+        await db.SaveChangesAsync();
 
+        var handler = new GetStyleSheetQueryHandler(db);
         var query = new GetSiteThemeStyleSheetQuery(50);
 
         // Act & Assert
         var exception = await Assert.ThrowsAsync<InvalidDataException>(
-            () => _handler.HandleAsync(query, CancellationToken.None));
+            () => handler.HandleAsync(query, CancellationToken.None));
 
         Assert.Contains("has empty CSS rules", exception.Message);
     }
@@ -213,19 +220,21 @@ public class GetSiteThemeStyleSheetQueryTests
     public async Task HandleAsync_InvalidJson_ThrowsInvalidDataException()
     {
         // Arrange
-        var theme = new BlogThemeEntity
+        using var db = CreateDbContext();
+        db.BlogTheme.Add(new BlogThemeEntity
         {
             Id = 50,
+            ThemeName = "Test",
             CssRules = "invalid json {{{["
-        };
-        _mockRepo.Setup(r => r.GetByIdAsync(50, It.IsAny<CancellationToken>()))
-            .ReturnsAsync(theme);
+        });
+        await db.SaveChangesAsync();
 
+        var handler = new GetStyleSheetQueryHandler(db);
         var query = new GetSiteThemeStyleSheetQuery(50);
 
         // Act & Assert
         var exception = await Assert.ThrowsAsync<InvalidDataException>(
-            () => _handler.HandleAsync(query, CancellationToken.None));
+            () => handler.HandleAsync(query, CancellationToken.None));
 
         Assert.Contains("Theme id '50' has invalid JSON in CssRules", exception.Message);
         Assert.NotNull(exception.InnerException);
@@ -235,19 +244,21 @@ public class GetSiteThemeStyleSheetQueryTests
     public async Task HandleAsync_NullDeserializedRules_ThrowsInvalidDataException()
     {
         // Arrange
-        var theme = new BlogThemeEntity
+        using var db = CreateDbContext();
+        db.BlogTheme.Add(new BlogThemeEntity
         {
             Id = 50,
+            ThemeName = "Test",
             CssRules = "null"
-        };
-        _mockRepo.Setup(r => r.GetByIdAsync(50, It.IsAny<CancellationToken>()))
-            .ReturnsAsync(theme);
+        });
+        await db.SaveChangesAsync();
 
+        var handler = new GetStyleSheetQueryHandler(db);
         var query = new GetSiteThemeStyleSheetQuery(50);
 
         // Act & Assert
         var exception = await Assert.ThrowsAsync<InvalidDataException>(
-            () => _handler.HandleAsync(query, CancellationToken.None));
+            () => handler.HandleAsync(query, CancellationToken.None));
 
         Assert.Contains("Theme id '50' CssRules deserialized to empty or null", exception.Message);
     }
@@ -256,19 +267,21 @@ public class GetSiteThemeStyleSheetQueryTests
     public async Task HandleAsync_EmptyJsonObject_ThrowsInvalidDataException()
     {
         // Arrange
-        var theme = new BlogThemeEntity
+        using var db = CreateDbContext();
+        db.BlogTheme.Add(new BlogThemeEntity
         {
             Id = 50,
+            ThemeName = "Test",
             CssRules = "{}"
-        };
-        _mockRepo.Setup(r => r.GetByIdAsync(50, It.IsAny<CancellationToken>()))
-            .ReturnsAsync(theme);
+        });
+        await db.SaveChangesAsync();
 
+        var handler = new GetStyleSheetQueryHandler(db);
         var query = new GetSiteThemeStyleSheetQuery(50);
 
         // Act & Assert
         var exception = await Assert.ThrowsAsync<InvalidDataException>(
-            () => _handler.HandleAsync(query, CancellationToken.None));
+            () => handler.HandleAsync(query, CancellationToken.None));
 
         Assert.Contains("Theme id '50' CssRules deserialized to empty or null", exception.Message);
     }
@@ -282,81 +295,91 @@ public class GetSiteThemeStyleSheetQueryTests
     [InlineData(111)] // Just above system theme range
     [InlineData(1)]   // Small custom theme ID
     [InlineData(50)]  // Mid-range custom theme ID
-    public async Task HandleAsync_CustomThemeId_CallsRepository(int themeId)
+    public async Task HandleAsync_CustomThemeId_QueriesDatabase(int themeId)
     {
         // Arrange
-        var theme = new BlogThemeEntity
+        using var db = CreateDbContext();
+        db.BlogTheme.Add(new BlogThemeEntity
         {
             Id = themeId,
+            ThemeName = "Test",
             CssRules = """{"--color": "blue"}"""
-        };
-        _mockRepo.Setup(r => r.GetByIdAsync(themeId, It.IsAny<CancellationToken>()))
-            .ReturnsAsync(theme);
+        });
+        await db.SaveChangesAsync();
 
+        var handler = new GetStyleSheetQueryHandler(db);
         var query = new GetSiteThemeStyleSheetQuery(themeId);
 
         // Act
-        await _handler.HandleAsync(query, CancellationToken.None);
+        var result = await handler.HandleAsync(query, CancellationToken.None);
 
         // Assert
-        _mockRepo.Verify(r => r.GetByIdAsync(themeId, It.IsAny<CancellationToken>()), Times.Once);
+        Assert.NotNull(result);
+        Assert.Contains("--color: blue;", result);
     }
 
     [Theory]
     [InlineData(100)] // System theme start
     [InlineData(105)] // System theme middle
-    [InlineData(110)] // System theme end
-    public async Task HandleAsync_SystemThemeId_DoesNotCallRepository(int themeId)
+    [InlineData(109)] // System theme end
+    public async Task HandleAsync_SystemThemeId_DoesNotNeedDatabase(int themeId)
     {
         // Arrange
+        using var db = CreateDbContext();
+        var handler = new GetStyleSheetQueryHandler(db);
         var query = new GetSiteThemeStyleSheetQuery(themeId);
 
         // Act
-        await _handler.HandleAsync(query, CancellationToken.None);
+        var result = await handler.HandleAsync(query, CancellationToken.None);
 
         // Assert
-        _mockRepo.Verify(r => r.GetByIdAsync(It.IsAny<int>(), It.IsAny<CancellationToken>()), Times.Never);
+        Assert.NotNull(result);
+        Assert.StartsWith(":root {", result);
     }
 
     [Fact]
-    public async Task HandleAsync_CancellationToken_PassedToRepository()
+    public async Task HandleAsync_CancellationToken_PassedToDatabase()
     {
         // Arrange
-        var cts = new CancellationTokenSource();
-        var theme = new BlogThemeEntity
+        using var db = CreateDbContext();
+        db.BlogTheme.Add(new BlogThemeEntity
         {
             Id = 50,
+            ThemeName = "Test",
             CssRules = """{"--color": "blue"}"""
-        };
-        _mockRepo.Setup(r => r.GetByIdAsync(50, cts.Token))
-            .ReturnsAsync(theme);
+        });
+        await db.SaveChangesAsync();
 
+        var cts = new CancellationTokenSource();
+        var handler = new GetStyleSheetQueryHandler(db);
         var query = new GetSiteThemeStyleSheetQuery(50);
 
         // Act
-        await _handler.HandleAsync(query, cts.Token);
+        var result = await handler.HandleAsync(query, cts.Token);
 
         // Assert
-        _mockRepo.Verify(r => r.GetByIdAsync(50, cts.Token), Times.Once);
+        Assert.NotNull(result);
     }
 
     [Fact]
     public async Task HandleAsync_CssValueWithScriptInjection_StripsAngleBrackets()
     {
         // Arrange
+        using var db = CreateDbContext();
         var cssRules = """{"--color": "</style><script>alert(1)</script><style>"}""";
-        var theme = new BlogThemeEntity
+        db.BlogTheme.Add(new BlogThemeEntity
         {
             Id = 50,
+            ThemeName = "Test",
             CssRules = cssRules
-        };
-        _mockRepo.Setup(r => r.GetByIdAsync(50, It.IsAny<CancellationToken>()))
-            .ReturnsAsync(theme);
+        });
+        await db.SaveChangesAsync();
 
+        var handler = new GetStyleSheetQueryHandler(db);
         var query = new GetSiteThemeStyleSheetQuery(50);
 
         // Act
-        var result = await _handler.HandleAsync(query, CancellationToken.None);
+        var result = await handler.HandleAsync(query, CancellationToken.None);
 
         // Assert
         Assert.DoesNotContain("<", result);

@@ -1,5 +1,6 @@
 using LiteBus.Commands.Abstractions;
 using Microsoft.Extensions.Logging;
+using Moonglade.Data;
 using Moonglade.Data.Entities;
 using System.Text.Encodings.Web;
 using System.Text.Json;
@@ -16,7 +17,7 @@ public record CreateActivityLogCommand(
     string? UserAgent = null) : ICommand;
 
 public class CreateActivityLogCommandHandler(
-    IRepositoryBase<ActivityLogEntity> repository,
+    BlogDbContext db,
     ILogger<CreateActivityLogCommandHandler> logger) : ICommandHandler<CreateActivityLogCommand>
 {
     private static readonly JsonSerializerOptions JsonOptions = new()
@@ -48,7 +49,8 @@ public class CreateActivityLogCommandHandler(
                 UserAgent = TruncateString(request.UserAgent!, 512)
             };
 
-            await repository.AddAsync(entity, ct);
+            await db.ActivityLog.AddAsync(entity, ct);
+            await db.SaveChangesAsync(ct);
 
             logger.LogInformation("Activity log created: {Operation} on {TargetName} by {ActorId}",
                 request.Operation, request.TargetName, request.ActorId);
