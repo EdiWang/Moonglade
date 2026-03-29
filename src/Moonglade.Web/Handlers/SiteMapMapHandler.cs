@@ -1,3 +1,6 @@
+using Microsoft.EntityFrameworkCore;
+using Moonglade.Data;
+using Moonglade.Data.DTO;
 using Moonglade.Data.Entities;
 using Moonglade.Data.Specifications;
 using System.Globalization;
@@ -14,12 +17,12 @@ public class SiteMapMapHandler
         IBlogConfig blogConfig,
         ICacheAside cache,
         IRepositoryBase<PostEntity> postRepo,
-        IRepositoryBase<PageEntity> pageRepo)
+        BlogDbContext db)
     {
         var xml = await cache.GetOrCreateAsync(BlogCachePartition.General.ToString(), "sitemap", async () =>
         {
             var url = UrlHelper.ResolveRootUrl(httpContext, blogConfig.GeneralSettings.CanonicalPrefix, true, true);
-            var data = await GetSiteMapData(url, postRepo, pageRepo, httpContext.RequestAborted);
+            var data = await GetSiteMapData(url, postRepo, db, httpContext.RequestAborted);
             return data;
         });
 
@@ -29,7 +32,7 @@ public class SiteMapMapHandler
     private static async Task<string> GetSiteMapData(
         string siteRootUrl,
         IRepositoryBase<PostEntity> postRepo,
-        IRepositoryBase<PageEntity> pageRepo,
+        BlogDbContext db,
         CancellationToken ct)
     {
         var sb = new StringBuilder();
@@ -56,7 +59,15 @@ public class SiteMapMapHandler
             }
 
             // Pages
-            var pages = await pageRepo.ListAsync(new PageSitemapSpec(), ct);
+            var pages = await db.BlogPage.AsNoTracking()
+                .Where(p => p.IsPublished)
+                .Select(p => new SiteMapInfo
+                {
+                    Slug = p.Slug,
+                    CreateTimeUtc = p.CreateTimeUtc,
+                    UpdateTimeUtc = p.UpdateTimeUtc
+                })
+                .ToListAsync(ct);
             foreach (var page in pages)
             {
                 writer.WriteStartElement("url");

@@ -1,16 +1,15 @@
 using LiteBus.Queries.Abstractions;
-using Moonglade.Data.Specifications;
 
 namespace Moonglade.Features.Page;
 
 public record GetPageBySlugQuery(string Slug) : IQuery<PageEntity>;
 
-public class GetPageBySlugQueryHandler(IRepositoryBase<PageEntity> repo) : IQueryHandler<GetPageBySlugQuery, PageEntity>
+public class GetPageBySlugQueryHandler(BlogDbContext db) : IQueryHandler<GetPageBySlugQuery, PageEntity>
 {
     public async Task<PageEntity> HandleAsync(GetPageBySlugQuery request, CancellationToken ct)
     {
         var lower = request.Slug.ToLower();
-        var entity = await repo.FirstOrDefaultAsync(new PageBySlugSpec(lower), ct);
+        var entity = await db.BlogPage.FirstOrDefaultAsync(p => p.Slug == lower, ct);
         return entity;
     }
 }

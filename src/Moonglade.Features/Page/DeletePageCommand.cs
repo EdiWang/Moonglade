@@ -6,13 +6,13 @@ namespace Moonglade.Features.Page;
 public record DeletePageCommand(Guid Id) : ICommand<OperationCode>;
 
 public class DeletePageCommandHandler(
-    IRepositoryBase<PageEntity> repo,
+    BlogDbContext db,
     ICommandMediator commandMediator,
     ILogger<DeletePageCommandHandler> logger) : ICommandHandler<DeletePageCommand, OperationCode>
 {
     public async Task<OperationCode> HandleAsync(DeletePageCommand request, CancellationToken ct)
     {
-        var page = await repo.GetByIdAsync(request.Id, ct);
+        var page = await db.BlogPage.FindAsync([request.Id], ct);
         if (page == null) return OperationCode.ObjectNotFound;
 
         if (!string.IsNullOrWhiteSpace(page.CssId))
@@ -20,7 +20,8 @@ public class DeletePageCommandHandler(
             await commandMediator.SendAsync(new DeleteStyleSheetCommand(new(page.CssId)), ct);
         }
 
-        await repo.DeleteAsync(page, ct);
+        db.BlogPage.Remove(page);
+        await db.SaveChangesAsync(ct);
 
         logger.LogInformation("Deleted page: {PageId}", request.Id);
         return OperationCode.Done;

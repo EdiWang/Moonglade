@@ -6,7 +6,7 @@ namespace Moonglade.Features.Page;
 public record CreatePageCommand(EditPageRequest Payload) : ICommand<Guid>;
 
 public class CreatePageCommandHandler(
-    IRepositoryBase<PageEntity> repo,
+    BlogDbContext db,
     ICommandMediator commandMediator,
     ILogger<CreatePageCommandHandler> logger) : ICommandHandler<CreatePageCommand, Guid>
 {
@@ -37,7 +37,8 @@ public class CreatePageCommandHandler(
             CssId = cssId.ToString()
         };
 
-        await repo.AddAsync(page, ct);
+        await db.BlogPage.AddAsync(page, ct);
+        await db.SaveChangesAsync(ct);
 
         logger.LogInformation("Created page: {PageId}", uid);
         return uid;
