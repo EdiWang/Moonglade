@@ -15,8 +15,6 @@ public class DeleteCategoryCommandHandler(
         var cat = await db.Category.FindAsync([request.Id], ct);
         if (null == cat) return OperationCode.ObjectNotFound;
 
-        cat.PostCategory.Clear();
-
         db.Category.Remove(cat);
         await db.SaveChangesAsync(ct);
 

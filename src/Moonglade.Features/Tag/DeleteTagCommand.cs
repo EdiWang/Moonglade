@@ -12,15 +12,15 @@ public class DeleteTagCommandHandler(
 {
     public async Task<OperationCode> HandleAsync(DeleteTagCommand request, CancellationToken ct)
     {
-        var tag = await db.Tag.FindAsync([request.Id], ct);
-        if (null == tag) return OperationCode.ObjectNotFound;
+        if (!await db.Tag.AnyAsync(t => t.Id == request.Id, ct))
+            return OperationCode.ObjectNotFound;
 
-        // 1. Delete Post-Tag Association
+        await using var transaction = await db.Database.BeginTransactionAsync(ct);
+
         await db.PostTag.Where(pt => pt.TagId == request.Id).ExecuteDeleteAsync(ct);
+        await db.Tag.Where(t => t.Id == request.Id).ExecuteDeleteAsync(ct);
 
-        // 2. Delete Tag itself
-        db.Tag.Remove(tag);
-        await db.SaveChangesAsync(ct);
+        await transaction.CommitAsync(ct);
 
         logger.LogInformation("Deleted tag: {TagId}", request.Id);
         return OperationCode.Done;

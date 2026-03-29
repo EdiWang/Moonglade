@@ -1,13 +1,21 @@
 using LiteBus.Queries.Abstractions;
 using Moonglade.Data.DTO;
-using Moonglade.Data.Specifications;
 
 namespace Moonglade.Features.Page;
 
 public record ListPageSegmentsQuery : IQuery<List<PageSegment>>;
 
-public class ListPageSegmentsQueryHandler(IRepositoryBase<PageEntity> repo) : IQueryHandler<ListPageSegmentsQuery, List<PageSegment>>
+public class ListPageSegmentsQueryHandler(BlogDbContext db) : IQueryHandler<ListPageSegmentsQuery, List<PageSegment>>
 {
     public Task<List<PageSegment>> HandleAsync(ListPageSegmentsQuery request, CancellationToken ct) =>
-        repo.ListAsync(new PageSegmentSpec(), ct);
+        db.BlogPage.AsNoTracking()
+            .Select(page => new PageSegment
+            {
+                Id = page.Id,
+                CreateTimeUtc = page.CreateTimeUtc,
+                Slug = page.Slug,
+                Title = page.Title,
+                IsPublished = page.IsPublished
+            })
+            .ToListAsync(ct);
 }

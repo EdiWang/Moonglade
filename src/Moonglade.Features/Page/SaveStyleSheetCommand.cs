@@ -7,7 +7,7 @@ namespace Moonglade.Features.Page;
 public record SaveStyleSheetCommand(Guid Id, string Slug, string CssContent) : ICommand<Guid>;
 
 public class SaveStyleSheetCommandHandler(
-    IRepositoryBase<StyleSheetEntity> repo,
+    BlogDbContext db,
     ILogger<SaveStyleSheetCommandHandler> logger
 ) : ICommandHandler<SaveStyleSheetCommand, Guid>
 {
@@ -17,7 +17,7 @@ public class SaveStyleSheetCommandHandler(
         var css = request.CssContent.Trim();
         var hash = CalculateHash($"{slug}_{css}");
 
-        var entity = await repo.GetByIdAsync(request.Id, cancellationToken);
+        var entity = await db.StyleSheet.FindAsync([request.Id], cancellationToken);
 
         if (entity != null)
         {
@@ -26,7 +26,6 @@ public class SaveStyleSheetCommandHandler(
             entity.Hash = hash;
             entity.LastModifiedTimeUtc = DateTime.UtcNow;
 
-            await repo.UpdateAsync(entity, cancellationToken);
             logger.LogInformation("Style sheet updated: {slug}", slug);
         }
         else
@@ -40,10 +39,11 @@ public class SaveStyleSheetCommandHandler(
                 LastModifiedTimeUtc = DateTime.UtcNow
             };
 
-            await repo.AddAsync(entity, cancellationToken);
+            await db.StyleSheet.AddAsync(entity, cancellationToken);
             logger.LogInformation("New style sheet added: {slug}", slug);
         }
 
+        await db.SaveChangesAsync(cancellationToken);
         return entity.Id;
     }
 
