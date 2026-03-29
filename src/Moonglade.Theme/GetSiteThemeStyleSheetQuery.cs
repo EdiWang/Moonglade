@@ -11,7 +11,7 @@ public class GetStyleSheetQueryHandler(BlogDbContext db)
     : IQueryHandler<GetSiteThemeStyleSheetQuery, string>
 {
     private const int SystemThemeStartId = 100;
-    private const int SystemThemeEndId = 110;
+    private static readonly int SystemThemeEndId = ThemeFactory.GetSystemThemes().Max(t => t.Id);
     private const int DefaultSystemThemeId = 100;
 
     public async Task<string> HandleAsync(GetSiteThemeStyleSheetQuery request, CancellationToken ct)
