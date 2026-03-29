@@ -5,7 +5,6 @@ using Moonglade.Data;
 using Moonglade.Data.DTO;
 using Moonglade.Data.Entities;
 using Moonglade.Utils;
-using Microsoft.EntityFrameworkCore;
 
 namespace Moonglade.Syndication;
 
