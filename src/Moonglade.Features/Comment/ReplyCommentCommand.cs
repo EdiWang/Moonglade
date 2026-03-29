@@ -1,7 +1,6 @@
 using LiteBus.Commands.Abstractions;
 using Microsoft.Extensions.Logging;
 using Moonglade.Data.DTO;
-using Moonglade.Data.Specifications;
 using Moonglade.Utils;
 
 namespace Moonglade.Features.Comment;
@@ -10,12 +9,13 @@ public record ReplyCommentCommand(Guid CommentId, string ReplyContent) : IComman
 
 public class ReplyCommentCommandHandler(
     ILogger<ReplyCommentCommandHandler> logger,
-    IRepositoryBase<CommentEntity> commentRepo,
-    IRepositoryBase<CommentReplyEntity> commentReplyRepo) : ICommandHandler<ReplyCommentCommand, CommentReply>
+    BlogDbContext db) : ICommandHandler<ReplyCommentCommand, CommentReply>
 {
     public async Task<CommentReply> HandleAsync(ReplyCommentCommand request, CancellationToken ct)
     {
-        var cmt = await commentRepo.FirstOrDefaultAsync(new CommentWithPostByIdSpec(request.CommentId), ct)
+        var cmt = await db.Comment
+            .Include(c => c.Post)
+            .FirstOrDefaultAsync(c => c.Id == request.CommentId, ct)
             ?? throw new InvalidOperationException($"Comment {request.CommentId} is not found.");
 
         var id = Guid.NewGuid();
@@ -27,7 +27,8 @@ public class ReplyCommentCommandHandler(
             CommentId = request.CommentId
         };
 
-        await commentReplyRepo.AddAsync(model, ct);
+        await db.CommentReply.AddAsync(model, ct);
+        await db.SaveChangesAsync(ct);
 
         var reply = new CommentReply
         {

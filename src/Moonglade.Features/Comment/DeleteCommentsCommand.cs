@@ -1,24 +1,23 @@
 using LiteBus.Commands.Abstractions;
 using Microsoft.Extensions.Logging;
-using Moonglade.Data.Specifications;
 
 namespace Moonglade.Features.Comment;
 
 public record DeleteCommentsCommand(Guid[] Ids) : ICommand;
 
 public class DeleteCommentsCommandHandler(
-    IRepositoryBase<CommentEntity> commentRepo,
+    BlogDbContext db,
     ILogger<DeleteCommentsCommandHandler> logger) : ICommandHandler<DeleteCommentsCommand>
 {
     public async Task HandleAsync(DeleteCommentsCommand request, CancellationToken ct)
     {
-        var spec = new CommentByIdsSepc(request.Ids);
-        var comments = await commentRepo.ListAsync(spec, ct);
-        foreach (var cmt in comments)
-        {
-            cmt.Replies.Clear();
-            await commentRepo.DeleteAsync(cmt, ct);
-        }
+        var comments = await db.Comment
+            .Include(c => c.Replies)
+            .Where(c => request.Ids.Contains(c.Id))
+            .ToListAsync(ct);
+
+        db.Comment.RemoveRange(comments);
+        await db.SaveChangesAsync(ct);
 
         logger.LogInformation("Deleted {Count} comment(s)", comments.Count);
     }

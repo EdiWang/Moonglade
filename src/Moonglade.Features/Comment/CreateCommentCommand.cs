@@ -2,7 +2,6 @@ using LiteBus.Commands.Abstractions;
 using Microsoft.Extensions.Logging;
 using Moonglade.Configuration;
 using Moonglade.Data.DTO;
-using Moonglade.Data.Specifications;
 
 namespace Moonglade.Features.Comment;
 
@@ -15,8 +14,7 @@ public record CreateCommentCommand(
 public class CreateCommentCommandHandler(
     IBlogConfig blogConfig,
     ILogger<CreateCommentCommandHandler> logger,
-    IRepositoryBase<PostEntity> postRepository,
-    IRepositoryBase<CommentEntity> commentRepository
+    BlogDbContext db
 ) : ICommandHandler<CreateCommentCommand, CommentDetailedItem>
 {
     public async Task<CommentDetailedItem> HandleAsync(CreateCommentCommand request, CancellationToken ct)
@@ -29,13 +27,15 @@ public class CreateCommentCommandHandler(
         }
 
         // Fetch post info
-        var spec = new PostByIdForTitleDateSpec(request.PostId);
-        var (Title, PubDateUtc) = await postRepository.FirstOrDefaultAsync(spec, ct);
+        var postInfo = await db.Post
+            .Where(p => p.Id == request.PostId)
+            .Select(p => new { p.Title, p.PubDateUtc })
+            .FirstOrDefaultAsync(ct);
 
         // Check if comments are closed
         if (blogConfig.CommentSettings.CloseCommentAfterDays > 0)
         {
-            var daysSincePublished = (DateTime.UtcNow.Date - PubDateUtc.GetValueOrDefault()).Days;
+            var daysSincePublished = (DateTime.UtcNow.Date - postInfo.PubDateUtc.GetValueOrDefault()).Days;
             if (daysSincePublished > blogConfig.CommentSettings.CloseCommentAfterDays)
             {
                 logger.LogInformation("Comments are closed for post {PostId} after {Days} days.", request.PostId, daysSincePublished);
@@ -56,7 +56,8 @@ public class CreateCommentCommandHandler(
             IsApproved = !blogConfig.CommentSettings.RequireCommentReview
         };
 
-        await commentRepository.AddAsync(comment, ct);
+        await db.Comment.AddAsync(comment, ct);
+        await db.SaveChangesAsync(ct);
 
         var result = new CommentDetailedItem
         {
@@ -66,7 +67,7 @@ public class CreateCommentCommandHandler(
             Email = comment.Email,
             IpAddress = comment.IPAddress,
             IsApproved = comment.IsApproved,
-            PostTitle = Title,
+            PostTitle = postInfo.Title,
             Username = comment.Username
         };
 
