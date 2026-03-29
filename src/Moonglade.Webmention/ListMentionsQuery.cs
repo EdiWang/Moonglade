@@ -1,6 +1,7 @@
 using LiteBus.Queries.Abstractions;
+using Microsoft.EntityFrameworkCore;
+using Moonglade.Data;
 using Moonglade.Data.Entities;
-using Moonglade.Data.Specifications;
 
 namespace Moonglade.Webmention;
 
@@ -13,7 +14,7 @@ public record ListMentionsQuery(
     DateTime? StartTimeUtc = null,
     DateTime? EndTimeUtc = null) : IQuery<(List<MentionEntity> Mentions, int TotalCount)>;
 
-public class ListMentionsQueryHandler(IRepositoryBase<MentionEntity> repo) :
+public class ListMentionsQueryHandler(BlogDbContext db) :
     IQueryHandler<ListMentionsQuery, (List<MentionEntity> Mentions, int TotalCount)>
 {
     public async Task<(List<MentionEntity> Mentions, int TotalCount)> HandleAsync(ListMentionsQuery request, CancellationToken ct)
@@ -30,16 +31,31 @@ public class ListMentionsQueryHandler(IRepositoryBase<MentionEntity> repo) :
                 $"{nameof(request.PageIndex)} can not be less than 1, current value: {request.PageIndex}.");
         }
 
-        var pagingSpec = new MentionPagingSpec(
-            request.PageSize, request.PageIndex,
-            request.Domain, request.SourceTitle, request.TargetPostTitle,
-            request.StartTimeUtc, request.EndTimeUtc);
-        var entities = await repo.ListAsync(pagingSpec, ct);
+        IQueryable<MentionEntity> query = db.Mention.AsNoTracking();
 
-        var countSpec = new MentionCountSpec(
-            request.Domain, request.SourceTitle, request.TargetPostTitle,
-            request.StartTimeUtc, request.EndTimeUtc);
-        var totalCount = await repo.CountAsync(countSpec, ct);
+        if (!string.IsNullOrWhiteSpace(request.Domain))
+            query = query.Where(e => e.Domain.Contains(request.Domain));
+
+        if (!string.IsNullOrWhiteSpace(request.SourceTitle))
+            query = query.Where(e => e.SourceTitle.Contains(request.SourceTitle));
+
+        if (!string.IsNullOrWhiteSpace(request.TargetPostTitle))
+            query = query.Where(e => e.TargetPostTitle.Contains(request.TargetPostTitle));
+
+        if (request.StartTimeUtc.HasValue)
+            query = query.Where(e => e.PingTimeUtc >= request.StartTimeUtc.Value);
+
+        if (request.EndTimeUtc.HasValue)
+            query = query.Where(e => e.PingTimeUtc <= request.EndTimeUtc.Value);
+
+        var totalCount = await query.CountAsync(ct);
+
+        var skip = (request.PageIndex - 1) * request.PageSize;
+        var entities = await query
+            .OrderByDescending(e => e.PingTimeUtc)
+            .Skip(skip)
+            .Take(request.PageSize)
+            .ToListAsync(ct);
 
         return (entities, totalCount);
     }

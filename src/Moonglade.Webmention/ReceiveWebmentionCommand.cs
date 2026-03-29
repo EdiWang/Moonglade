@@ -1,7 +1,8 @@
 using LiteBus.Commands.Abstractions;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
+using Moonglade.Data;
 using Moonglade.Data.Entities;
-using Moonglade.Data.Specifications;
 using Moonglade.Utils;
 using System.Net;
 
@@ -12,8 +13,7 @@ public record ReceiveWebmentionCommand(string Source, string Target, string Remo
 public class ReceiveWebmentionCommandHandler(
     ILogger<ReceiveWebmentionCommandHandler> logger,
     IMentionSourceInspector sourceInspector,
-    IRepositoryBase<MentionEntity> mentionRepo,
-    IRepositoryBase<PostEntity> postRepo
+    BlogDbContext db
     ) : ICommandHandler<ReceiveWebmentionCommand, WebmentionResponse>
 {
     public async Task<WebmentionResponse> HandleAsync(ReceiveWebmentionCommand request, CancellationToken ct)
@@ -125,22 +125,26 @@ public class ReceiveWebmentionCommandHandler(
     private async Task<(Guid PostId, string PostTitle)> FindTargetPostAsync(string mentionTargetUrl, string targetUrl, CancellationToken ct)
     {
         var routeLink = UrlHelper.GetRouteLinkFromUrl(mentionTargetUrl);
-        var spec = new PostByRouteLinkForIdTitleSpec(routeLink);
-        var (id, title) = await postRepo.FirstOrDefaultAsync(spec, ct);
+        var result = await db.Post
+            .AsNoTracking()
+            .Where(p => p.RouteLink == routeLink && p.PostStatus == PostStatus.Published && !p.IsDeleted)
+            .Select(p => new { p.Id, p.Title })
+            .FirstOrDefaultAsync(ct);
 
-        if (id == Guid.Empty)
+        if (result is null)
         {
             logger.LogError("Can not get post id and title for url '{TargetUrl}'", targetUrl);
             return (Guid.Empty, string.Empty);
         }
 
-        logger.LogInformation("Post '{PostId}:{PostTitle}' is found for ping.", id, title);
-        return (id, title);
+        logger.LogInformation("Post '{PostId}:{PostTitle}' is found for ping.", result.Id, result.Title);
+        return (result.Id, result.Title);
     }
 
     private async Task<bool> IsDuplicateMentionAsync(Guid postId, string sourceUrl, string remoteIp, CancellationToken ct)
     {
-        return await mentionRepo.AnyAsync(new MentionSpec(postId, sourceUrl, remoteIp), ct);
+        return await db.Mention.AnyAsync(
+            p => p.TargetPostId == postId && p.SourceUrl == sourceUrl && p.SourceIp == remoteIp, ct);
     }
 
     private async Task<MentionEntity> CreateMentionAsync(string sourceUrl, string sourceTitle, Guid postId, string postTitle, string remoteIp, CancellationToken ct)
@@ -160,7 +164,8 @@ public class ReceiveWebmentionCommandHandler(
             SourceIp = remoteIp
         };
 
-        await mentionRepo.AddAsync(mention, ct);
+        await db.Mention.AddAsync(mention, ct);
+        await db.SaveChangesAsync(ct);
         return mention;
     }
 }
