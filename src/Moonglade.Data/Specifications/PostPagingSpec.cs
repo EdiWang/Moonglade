@@ -15,35 +15,3 @@ public sealed class PostPagingSpec : Specification<PostEntity>
         Query.Skip(startRow).Take(pageSize);
     }
 }
-
-public sealed class PostPagingByStatusSpec : Specification<PostEntity>
-{
-    public PostPagingByStatusSpec(PostStatus postStatus, string keyword, int pageSize = 0, int offset = 0)
-    {
-        Query.Where(p => null == keyword || p.Title.Contains(keyword));
-
-        switch (postStatus)
-        {
-            case PostStatus.Draft:
-                Query.Where(p => p.PostStatus == PostStatus.Draft && !p.IsDeleted);
-                break;
-            case PostStatus.Published:
-                Query.Where(p => p.PostStatus == PostStatus.Published && !p.IsDeleted);
-                break;
-            case PostStatus.Deleted:
-                Query.Where(p => p.IsDeleted);
-                break;
-            case PostStatus.Default:
-                Query.Where(p => true);
-                break;
-            default:
-                throw new ArgumentOutOfRangeException(nameof(postStatus), postStatus, null);
-        }
-
-        if (pageSize > 0 || offset > 0)
-        {
-            Query.Skip(offset).Take(pageSize);
-            Query.OrderByDescending(p => p.PubDateUtc);
-        }
-    }
-}

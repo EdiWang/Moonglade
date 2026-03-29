@@ -1,6 +1,5 @@
 using LiteBus.Queries.Abstractions;
 using Moonglade.Data.DTO;
-using Moonglade.Data.Specifications;
 
 namespace Moonglade.Features.Post;
 
@@ -16,7 +15,7 @@ public class ListPostSegmentQuery(PostStatus postStatus, int offset, int pageSiz
     public string Keyword { get; set; } = keyword;
 }
 
-public class ListPostSegmentQueryHandler(IRepositoryBase<PostEntity> repo) :
+public class ListPostSegmentQueryHandler(BlogDbContext db) :
     IQueryHandler<ListPostSegmentQuery, (List<PostSegment> Posts, int TotalRows)>
 {
     public async Task<(List<PostSegment> Posts, int TotalRows)> HandleAsync(ListPostSegmentQuery request, CancellationToken ct)
@@ -33,14 +32,23 @@ public class ListPostSegmentQueryHandler(IRepositoryBase<PostEntity> repo) :
                 $"{nameof(request.Offset)} can not be less than 0, current value: {request.Offset}.");
         }
 
-        var spec = new PostPagingByStatusSpec(request.PostStatus, request.Keyword, request.PageSize, request.Offset);
-        var dtoSpec = new PostEntityToSegmentSpec();
-        var newSpec = spec.WithProjectionOf(dtoSpec);
+        var query = db.Post
+            .AsNoTracking()
+            .FilterByStatus(request.PostStatus);
 
-        var posts = await repo.ListAsync(newSpec, ct);
+        if (request.Keyword is not null)
+        {
+            query = query.Where(p => p.Title.Contains(request.Keyword));
+        }
 
-        var countSpec = new PostPagingByStatusSpec(request.PostStatus, request.Keyword);
-        var totalRows = await repo.CountAsync(countSpec, ct);
+        var totalRows = await query.CountAsync(ct);
+
+        var posts = await query
+            .OrderByDescending(p => p.PubDateUtc)
+            .Skip(request.Offset)
+            .Take(request.PageSize)
+            .SelectToSegment()
+            .ToListAsync(ct);
 
         return (posts, totalRows);
     }
