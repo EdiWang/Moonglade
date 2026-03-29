@@ -1,8 +1,6 @@
 using LiteBus.Commands.Abstractions;
-using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using Moonglade.Data;
-using Moonglade.Data.Entities;
 
 namespace Moonglade.Configuration;
 

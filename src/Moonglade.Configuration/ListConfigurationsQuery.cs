@@ -1,5 +1,4 @@
 using LiteBus.Queries.Abstractions;
-using Microsoft.EntityFrameworkCore;
 using Moonglade.Data;
 
 namespace Moonglade.Configuration;

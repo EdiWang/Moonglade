@@ -232,7 +232,10 @@ public class ListThemeSegmentsQueryTests
         using var db = CreateDbContext();
         db.BlogTheme.Add(new BlogThemeEntity
         {
-            Id = 1, ThemeName = "Custom", CssRules = "{}", ThemeType = ThemeType.User
+            Id = 1,
+            ThemeName = "Custom",
+            CssRules = "{}",
+            ThemeType = ThemeType.User
         });
         await db.SaveChangesAsync();
 
@@ -275,7 +278,10 @@ public class ListThemeSegmentsQueryTests
         using var db = CreateDbContext();
         db.BlogTheme.Add(new BlogThemeEntity
         {
-            Id = 1, ThemeName = "Custom", CssRules = "{}", ThemeType = ThemeType.User
+            Id = 1,
+            ThemeName = "Custom",
+            CssRules = "{}",
+            ThemeType = ThemeType.User
         });
         await db.SaveChangesAsync();
 

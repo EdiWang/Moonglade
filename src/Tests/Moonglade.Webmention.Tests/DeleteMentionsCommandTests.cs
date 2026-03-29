@@ -1,4 +1,3 @@
-using Microsoft.EntityFrameworkCore;
 using Moonglade.Data;
 using Moonglade.Data.Entities;
 

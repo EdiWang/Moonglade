@@ -1,7 +1,5 @@
 using LiteBus.Commands.Abstractions;
-using Microsoft.EntityFrameworkCore;
 using Moonglade.Data;
-using Moonglade.Data.Entities;
 
 namespace Moonglade.Webmention;
 
