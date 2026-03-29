@@ -11,7 +11,7 @@ public record AddDefaultConfigurationCommand(
     [Required] string DefaultJson) : ICommand<OperationCode>;
 
 public class AddDefaultConfigurationCommandHandler(
-    IRepositoryBase<BlogConfigurationEntity> repository,
+    BlogDbContext db,
     ILogger<AddDefaultConfigurationCommandHandler> logger
     ) : ICommandHandler<AddDefaultConfigurationCommand, OperationCode>
 {
@@ -26,7 +26,8 @@ public class AddDefaultConfigurationCommandHandler(
                 LastModifiedTimeUtc = DateTime.UtcNow
             };
 
-            await repository.AddAsync(entity, ct);
+            await db.BlogConfiguration.AddAsync(entity, ct);
+            await db.SaveChangesAsync(ct);
 
             logger.LogInformation("Successfully added default configuration: {CfgKey}", request.CfgKey);
             return OperationCode.Done;
