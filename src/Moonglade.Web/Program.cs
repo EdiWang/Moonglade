@@ -22,7 +22,6 @@ using Moonglade.Syndication;
 using Moonglade.Web.Extensions;
 using Moonglade.Web.Handlers;
 using Moonglade.Webmention;
-using SixLabors.Fonts;
 using System.Globalization;
 using System.Net;
 using System.Net.Http.Headers;
