@@ -3,6 +3,7 @@ using LiteBus.Events.Abstractions;
 using LiteBus.Queries.Abstractions;
 using Moonglade.ActivityLog;
 using Moonglade.BackgroundServices;
+using Moonglade.Data.DTO;
 using Moonglade.Email.Client;
 using Moonglade.Moderation;
 using System.ComponentModel.DataAnnotations;
