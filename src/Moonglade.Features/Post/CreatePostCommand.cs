@@ -1,7 +1,6 @@
 using LiteBus.Commands.Abstractions;
 using Microsoft.Extensions.Logging;
 using Moonglade.Data.DTO;
-using Moonglade.Data.Specifications;
 using Moonglade.Utils;
 
 namespace Moonglade.Features.Post;
@@ -9,7 +8,6 @@ namespace Moonglade.Features.Post;
 public record CreatePostCommand(PostEditModel Payload) : ICommand<PostCommandResult>;
 
 public class CreatePostCommandHandler(
-        IRepositoryBase<PostEntity> postRepo,
         BlogDbContext db,
         ILogger<CreatePostCommandHandler> logger)
     : ICommandHandler<CreatePostCommand, PostCommandResult>
@@ -53,7 +51,8 @@ public class CreatePostCommandHandler(
 
         await PostEntityHelper.ResolveAndAssignTagsAsync(post, request.Payload.Tags, db, logger, ct);
 
-        await postRepo.AddAsync(post, ct);
+        db.Post.Add(post);
+        await db.SaveChangesAsync(ct);
 
         logger.LogInformation("Created post Id: {PostId}, Title: '{PostTitle}'", post.Id, post.Title);
         return new PostCommandResult
@@ -70,7 +69,13 @@ public class CreatePostCommandHandler(
     private async Task CheckSlugConflict(PostEntity post, CancellationToken ct)
     {
         var todayUtc = DateTime.UtcNow.Date;
-        if (await postRepo.AnyAsync(new PostByDateAndSlugSpec(todayUtc, post.Slug, false), ct))
+        var exists = await db.Post.AnyAsync(p =>
+            p.Slug == post.Slug &&
+            p.PostStatus == PostStatus.Published &&
+            p.PubDateUtc.Value.Date == todayUtc &&
+            !p.IsDeleted, ct);
+
+        if (exists)
         {
             var uid = Guid.NewGuid();
             post.Slug += $"-{uid.ToString().ToLower()[..8]}";
