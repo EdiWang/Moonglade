@@ -16,16 +16,3 @@ public sealed class PostSpec : Specification<PostEntity>
         }
     }
 }
-
-public sealed class FeaturedPostSpec : Specification<PostEntity>
-{
-    public FeaturedPostSpec()
-    {
-        Query.Where(p => p.IsFeatured && p.PostStatus == PostStatus.Published && !p.IsDeleted);
-    }
-}
-
-public sealed class PostByDeletionFlagSpec : Specification<PostEntity>
-{
-    public PostByDeletionFlagSpec(bool isDeleted) => Query.Where(p => p.IsDeleted == isDeleted);
-}

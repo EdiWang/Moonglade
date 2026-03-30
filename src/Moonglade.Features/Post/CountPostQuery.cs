@@ -38,7 +38,7 @@ public class CountPostQueryHandler(
                           && !pt.Post.IsDeleted, ct)
                 : throw new InvalidOperationException("TagId must be provided for Tag count."),
 
-            CountType.Featured => await postRepo.CountAsync(new FeaturedPostSpec(), ct),
+            CountType.Featured => await db.Post.CountAsync(p => p.IsFeatured && p.PostStatus == PostStatus.Published && !p.IsDeleted, ct),
 
             _ => throw new ArgumentOutOfRangeException(nameof(request.CountType), "Unknown CountType.")
         };
