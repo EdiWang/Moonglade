@@ -1,7 +1,6 @@
 using LiteBus.Commands.Abstractions;
 using Microsoft.Extensions.Logging;
 using Moonglade.Data.DTO;
-using Moonglade.Data.Specifications;
 using Moonglade.Utils;
 
 namespace Moonglade.Features.Post;
@@ -9,21 +8,24 @@ namespace Moonglade.Features.Post;
 public record UpdatePostCommand(Guid Id, PostEditModel Payload) : ICommand<PostCommandResult>;
 public class UpdatePostCommandHandler(
     BlogDbContext db,
-    IRepositoryBase<PostEntity> postRepo,
     ILogger<UpdatePostCommandHandler> logger) : ICommandHandler<UpdatePostCommand, PostCommandResult>
 {
     public async Task<PostCommandResult> HandleAsync(UpdatePostCommand request, CancellationToken ct)
     {
         var utcNow = DateTime.UtcNow;
         var (postId, postEditModel) = request;
-        var post = await postRepo.FirstOrDefaultAsync(new PostSpec(postId), ct) ?? throw new InvalidOperationException($"Post {postId} is not found.");
+        var post = await db.Post
+            .Include(p => p.Tags)
+            .Include(p => p.PostCategory)
+                .ThenInclude(pc => pc.Category)
+            .FirstOrDefaultAsync(p => p.Id == postId, ct) ?? throw new InvalidOperationException($"Post {postId} is not found.");
 
         UpdatePostDetails(post, postEditModel, utcNow);
 
         await PostEntityHelper.ResolveAndAssignTagsAsync(post, postEditModel.Tags, db, logger, ct);
         PostEntityHelper.SetCategories(post, postEditModel.SelectedCatIds);
 
-        await postRepo.UpdateAsync(post, ct);
+        await db.SaveChangesAsync(ct);
 
         logger.LogInformation("Post updated with ID: {PostId}", post.Id);
         return new PostCommandResult
