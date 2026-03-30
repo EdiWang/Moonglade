@@ -1,36 +1,33 @@
 using LiteBus.Commands.Abstractions;
-using Moonglade.Data.Specifications;
 using Moonglade.Utils;
 
 namespace Moonglade.Features.Post;
 
 public record PublishScheduledPostCommand : ICommand<int>;
 
-public class PublishScheduledPostCommandHandler(IRepositoryBase<PostEntity> postRepo) :
+public class PublishScheduledPostCommandHandler(BlogDbContext db) :
     ICommandHandler<PublishScheduledPostCommand, int>
 {
     public async Task<int> HandleAsync(PublishScheduledPostCommand request, CancellationToken ct)
     {
         var now = DateTime.UtcNow;
-        var scheduledPosts = await postRepo.ListAsync(new ScheduledPostSpec(now), ct);
+        var scheduledPosts = await db.Post
+            .Where(p => p.PostStatus == PostStatus.Scheduled && !p.IsDeleted && p.ScheduledPublishTimeUtc <= now)
+            .ToListAsync(ct);
+
         if (scheduledPosts.Count == 0)
         {
             return 0;
         }
 
-        int affectedRows = 0;
         foreach (var post in scheduledPosts)
         {
             post.PostStatus = PostStatus.Published;
             post.PubDateUtc = now;
             post.ScheduledPublishTimeUtc = null;
             post.RouteLink = UrlHelper.GenerateRouteLink(post.PubDateUtc.GetValueOrDefault(), post.Slug);
-
-            await postRepo.UpdateAsync(post, ct);
-
-            affectedRows++;
         }
 
-        return affectedRows;
+        return await db.SaveChangesAsync(ct);
     }
 }
