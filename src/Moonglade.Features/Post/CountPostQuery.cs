@@ -1,5 +1,4 @@
 using LiteBus.Queries.Abstractions;
-using Moonglade.Data.Specifications;
 
 namespace Moonglade.Features.Post;
 
@@ -14,7 +13,6 @@ public enum CountType
 public record CountPostQuery(CountType CountType, Guid? CatId = null, int? TagId = null) : IQuery<int>;
 
 public class CountPostQueryHandler(
-    IRepositoryBase<PostEntity> postRepo,
     BlogDbContext db)
     : IQueryHandler<CountPostQuery, int>
 {
@@ -22,7 +20,7 @@ public class CountPostQueryHandler(
     {
         return request.CountType switch
         {
-            CountType.Public => await postRepo.CountAsync(new PostByStatusSpec(PostStatus.Published), ct),
+            CountType.Public => await db.Post.CountAsync(p => p.PostStatus == PostStatus.Published && !p.IsDeleted, ct),
 
             CountType.Category => request.CatId is Guid catId
                 ? await db.PostCategory.CountAsync(
