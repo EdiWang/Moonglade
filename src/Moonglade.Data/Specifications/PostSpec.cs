@@ -17,15 +17,6 @@ public sealed class PostSpec : Specification<PostEntity>
     }
 }
 
-public sealed class PostByIdForTitleDateSpec : SingleResultSpecification<PostEntity, (string Title, DateTime? PubDateUtc)>
-{
-    public PostByIdForTitleDateSpec(Guid id)
-    {
-        Query.Where(p => p.Id == id);
-        Query.Select(p => new ValueTuple<string, DateTime?>(p.Title, p.PubDateUtc));
-    }
-}
-
 public sealed class FeaturedPostSpec : Specification<PostEntity>
 {
     public FeaturedPostSpec()
