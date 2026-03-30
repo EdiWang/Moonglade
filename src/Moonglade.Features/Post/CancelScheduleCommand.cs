@@ -6,13 +6,13 @@ namespace Moonglade.Features.Post;
 public record CancelScheduleCommand(Guid Id) : ICommand;
 
 public class CancelScheduleCommandHandler(
-    IRepositoryBase<PostEntity> repo,
+    BlogDbContext db,
     ILogger<CancelScheduleCommandHandler> logger
     ) : ICommandHandler<CancelScheduleCommand>
 {
     public async Task HandleAsync(CancelScheduleCommand request, CancellationToken ct)
     {
-        var post = await repo.GetByIdAsync(request.Id, ct);
+        var post = await db.Post.FindAsync([request.Id], ct);
         if (null == post) return;
 
         if (post.PostStatus != PostStatus.Scheduled)
@@ -27,7 +27,7 @@ public class CancelScheduleCommandHandler(
         post.PubDateUtc = null;
         post.LastModifiedUtc = DateTime.UtcNow;
 
-        await repo.UpdateAsync(post, ct);
+        await db.SaveChangesAsync(ct);
 
         logger.LogInformation("Post [{PostId}] schedule canceled", request.Id);
     }

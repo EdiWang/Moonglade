@@ -25,7 +25,6 @@
 		<Using Include="Moonglade.Theme" />
 		<Using Include="Moonglade.Utils" />
 		<Using Include="Moonglade.Data" />
-		<Using Include="Ardalis.Specification" />
 		<Using Include="Moonglade.ImageStorage" />
 	</ItemGroup>
 	<ItemGroup>

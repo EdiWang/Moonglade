@@ -8,12 +8,12 @@ namespace Moonglade.Widgets;
 public record UpdateWidgetCommand(Guid Id, EditWidgetRequest Payload) : ICommand<OperationCode>;
 
 public class UpdateWidgetCommandHandler(
-    IRepositoryBase<WidgetEntity> widgetRepo,
+    BlogDbContext db,
     ILogger<UpdateWidgetCommandHandler> logger) : ICommandHandler<UpdateWidgetCommand, OperationCode>
 {
     public async Task<OperationCode> HandleAsync(UpdateWidgetCommand request, CancellationToken ct)
     {
-        var widget = await widgetRepo.GetByIdAsync(request.Id, ct);
+        var widget = await db.Widget.FindAsync([request.Id], ct);
         if (widget is null) return OperationCode.ObjectNotFound;
 
         widget.Title = request.Payload.Title.Trim();
@@ -23,7 +23,7 @@ public class UpdateWidgetCommandHandler(
         widget.DisplayOrder = request.Payload.DisplayOrder;
         widget.IsEnabled = request.Payload.IsEnabled;
 
-        await widgetRepo.UpdateAsync(widget, ct);
+        await db.SaveChangesAsync(ct);
 
         logger.LogInformation("Widget updated: {WidgetId}", widget.Id);
         return OperationCode.Done;

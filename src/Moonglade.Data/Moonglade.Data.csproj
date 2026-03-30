@@ -8,18 +8,15 @@
         <IsPackable>false</IsPackable>
         <ImplicitUsings>enable</ImplicitUsings>
     </PropertyGroup>
-    <ItemGroup>
-        <Using Include="Microsoft.EntityFrameworkCore" />
-        <Using Include="Ardalis.Specification" />
-    </ItemGroup>
-    <ItemGroup>
-        <FrameworkReference Include="Microsoft.AspNetCore.App" />
-        <PackageReference Include="Ardalis.Specification" Version="9.3.1" />
-        <PackageReference Include="Ardalis.Specification.EntityFrameworkCore" Version="9.3.1" />
-        <PackageReference Include="LiteBus" Version="4.3.0" />
-        <PackageReference Include="LiteBus.Extensions.Microsoft.DependencyInjection" Version="4.3.0" />
+	<ItemGroup>
+		<Using Include="Microsoft.EntityFrameworkCore" />
+	</ItemGroup>
+	<ItemGroup>
+		<FrameworkReference Include="Microsoft.AspNetCore.App" />
+		<PackageReference Include="LiteBus" Version="4.3.0" />
+		<PackageReference Include="LiteBus.Extensions.Microsoft.DependencyInjection" Version="4.3.0" />
 		<PackageReference Include="Microsoft.EntityFrameworkCore.Relational" Version="10.0.5" />
-    </ItemGroup>
+	</ItemGroup>
     <ItemGroup>
       <ProjectReference Include="..\Moonglade.Utils\Moonglade.Utils.csproj" />
     </ItemGroup>

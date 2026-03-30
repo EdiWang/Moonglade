@@ -1,5 +1,6 @@
 using LiteBus.Commands.Abstractions;
 using Microsoft.Extensions.Logging;
+using Moonglade.Data;
 using Moonglade.Data.Entities;
 
 namespace Moonglade.Widgets;
@@ -7,7 +8,7 @@ namespace Moonglade.Widgets;
 public record CreateWidgetCommand(EditWidgetRequest Payload) : ICommand<Guid>;
 
 public class CreateWidgetCommandHandler(
-    IRepositoryBase<WidgetEntity> widgetRepo,
+    BlogDbContext db,
     ILogger<CreateWidgetCommandHandler> logger) : ICommandHandler<CreateWidgetCommand, Guid>
 {
     public async Task<Guid> HandleAsync(CreateWidgetCommand request, CancellationToken ct)
@@ -24,7 +25,8 @@ public class CreateWidgetCommandHandler(
             CreatedTimeUtc = DateTime.UtcNow
         };
 
-        await widgetRepo.AddAsync(widget, ct);
+        db.Widget.Add(widget);
+        await db.SaveChangesAsync(ct);
 
         logger.LogInformation("Widget created: {WidgetId}", widget.Id);
 

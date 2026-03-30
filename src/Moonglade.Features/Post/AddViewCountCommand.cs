@@ -6,18 +6,18 @@ namespace Moonglade.Features.Post;
 public record AddViewCountCommand(Guid PostId) : ICommand<int>;
 
 public class AddViewCountCommandHandler(
-    IRepositoryBase<PostViewEntity> postViewRepo,
+    BlogDbContext db,
     ILogger<AddViewCountCommandHandler> logger) : ICommandHandler<AddViewCountCommand, int>
 {
     public async Task<int> HandleAsync(AddViewCountCommand request, CancellationToken cancellationToken)
     {
         try
         {
-            var entity = await postViewRepo.GetByIdAsync(request.PostId, cancellationToken);
+            var entity = await db.PostView.FindAsync([request.PostId], cancellationToken);
             if (entity is null) return 0;
 
             entity.ViewCount++;
-            await postViewRepo.UpdateAsync(entity, cancellationToken);
+            await db.SaveChangesAsync(cancellationToken);
 
             return entity.ViewCount;
         }

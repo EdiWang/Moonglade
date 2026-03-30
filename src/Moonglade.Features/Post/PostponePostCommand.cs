@@ -6,12 +6,12 @@ namespace Moonglade.Features.Post;
 public record PostponePostCommand(Guid PostId, int Hours) : ICommand;
 
 public class PostponePostCommandHandler(
-    IRepositoryBase<PostEntity> postRepo,
+    BlogDbContext db,
     ILogger<PostponePostCommandHandler> logger) : ICommandHandler<PostponePostCommand>
 {
     public async Task HandleAsync(PostponePostCommand request, CancellationToken ct)
     {
-        var post = await postRepo.GetByIdAsync(request.PostId, ct);
+        var post = await db.Post.FindAsync([request.PostId], ct);
         if (post == null)
         {
             logger.LogWarning("Post with ID {PostId} not found", request.PostId);
@@ -21,7 +21,7 @@ public class PostponePostCommandHandler(
         if (post.PostStatus == PostStatus.Scheduled && post.ScheduledPublishTimeUtc.HasValue)
         {
             post.ScheduledPublishTimeUtc = post.ScheduledPublishTimeUtc.Value.AddHours(request.Hours);
-            await postRepo.UpdateAsync(post, ct);
+            await db.SaveChangesAsync(ct);
 
             logger.LogInformation("Post {PostId} postponed by {Hours} hour(s)", request.PostId, request.Hours);
         }

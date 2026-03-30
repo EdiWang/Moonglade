@@ -7,7 +7,7 @@ namespace Moonglade.Features.Post;
 public record AddRequestCountCommand(Guid PostId) : ICommand<int>;
 
 public class AddRequestCountCommandHandler(
-    IRepositoryBase<PostViewEntity> postViewRepo,
+    BlogDbContext db,
     ILogger<AddRequestCountCommandHandler> logger) : ICommandHandler<AddRequestCountCommand, int>
 {
     // Ugly code to prevent race condition, which will make Moonglade a single instance application, shit
@@ -20,7 +20,7 @@ public class AddRequestCountCommandHandler(
 
         try
         {
-            var entity = await postViewRepo.GetByIdAsync(request.PostId, cancellationToken);
+            var entity = await db.PostView.FindAsync([request.PostId], cancellationToken);
             if (entity is null)
             {
                 entity = new PostViewEntity
@@ -30,14 +30,15 @@ public class AddRequestCountCommandHandler(
                     BeginTimeUtc = DateTime.UtcNow
                 };
 
-                await postViewRepo.AddAsync(entity, cancellationToken);
+                db.PostView.Add(entity);
+                await db.SaveChangesAsync(cancellationToken);
 
                 logger.LogInformation("New request added for {PostId}", request.PostId);
                 return 1;
             }
 
             entity.RequestCount++;
-            await postViewRepo.UpdateAsync(entity, cancellationToken);
+            await db.SaveChangesAsync(cancellationToken);
 
             logger.LogInformation("Request count updated for {PostId}, {RequestCount}", request.PostId, entity.RequestCount);
 

@@ -6,16 +6,16 @@ namespace Moonglade.Features.Post;
 public record RestorePostCommand(Guid Id) : ICommand;
 
 public class RestorePostCommandHandler(
-    IRepositoryBase<PostEntity> repo,
+    BlogDbContext db,
     ILogger<RestorePostCommandHandler> logger) : ICommandHandler<RestorePostCommand>
 {
     public async Task HandleAsync(RestorePostCommand request, CancellationToken ct)
     {
-        var post = await repo.GetByIdAsync(request.Id, ct);
+        var post = await db.Post.FindAsync([request.Id], ct);
         if (null == post) return;
 
         post.IsDeleted = false;
-        await repo.UpdateAsync(post, ct);
+        await db.SaveChangesAsync(ct);
 
         logger.LogInformation("Post [{PostId}] restored", request.Id);
     }
