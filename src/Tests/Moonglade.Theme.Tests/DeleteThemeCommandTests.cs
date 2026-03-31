@@ -1,18 +1,16 @@
 using Moonglade.Data;
 using Moonglade.Data.Entities;
-using Moq;
 
 namespace Moonglade.Theme.Tests;
 
 public class DeleteThemeCommandTests
 {
-    private readonly Mock<IRepositoryBase<BlogThemeEntity>> _mockRepo;
-    private readonly DeleteThemeCommandHandler _handler;
-
-    public DeleteThemeCommandTests()
+    private static BlogDbContext CreateDbContext()
     {
-        _mockRepo = new Mock<IRepositoryBase<BlogThemeEntity>>();
-        _handler = new DeleteThemeCommandHandler(_mockRepo.Object);
+        var options = new DbContextOptionsBuilder<BlogDbContext>()
+            .UseInMemoryDatabase(databaseName: Guid.NewGuid().ToString())
+            .Options;
+        return new BlogDbContext(options);
     }
 
     [Fact]
@@ -20,22 +18,21 @@ public class DeleteThemeCommandTests
     {
         // Arrange
         var command = new DeleteThemeCommand(999);
-        _mockRepo.Setup(r => r.GetByIdAsync(999, It.IsAny<CancellationToken>()))
-            .ReturnsAsync((BlogThemeEntity)null);
+        using var db = CreateDbContext();
+        var handler = new DeleteThemeCommandHandler(db);
 
         // Act
-        var result = await _handler.HandleAsync(command, CancellationToken.None);
+        var result = await handler.HandleAsync(command, CancellationToken.None);
 
         // Assert
         Assert.Equal(OperationCode.ObjectNotFound, result);
-        _mockRepo.Verify(r => r.GetByIdAsync(999, It.IsAny<CancellationToken>()), Times.Once);
-        _mockRepo.Verify(r => r.DeleteAsync(It.IsAny<BlogThemeEntity>(), It.IsAny<CancellationToken>()), Times.Never);
     }
 
     [Fact]
     public async Task HandleAsync_SystemTheme_ReturnsCanceled()
     {
         // Arrange
+        using var db = CreateDbContext();
         var systemTheme = new BlogThemeEntity
         {
             Id = 1,
@@ -43,23 +40,25 @@ public class DeleteThemeCommandTests
             ThemeType = ThemeType.System,
             CssRules = "{}"
         };
+        db.BlogTheme.Add(systemTheme);
+        await db.SaveChangesAsync();
+
         var command = new DeleteThemeCommand(1);
-        _mockRepo.Setup(r => r.GetByIdAsync(1, It.IsAny<CancellationToken>()))
-            .ReturnsAsync(systemTheme);
+        var handler = new DeleteThemeCommandHandler(db);
 
         // Act
-        var result = await _handler.HandleAsync(command, CancellationToken.None);
+        var result = await handler.HandleAsync(command, CancellationToken.None);
 
         // Assert
         Assert.Equal(OperationCode.Canceled, result);
-        _mockRepo.Verify(r => r.GetByIdAsync(1, It.IsAny<CancellationToken>()), Times.Once);
-        _mockRepo.Verify(r => r.DeleteAsync(It.IsAny<BlogThemeEntity>(), It.IsAny<CancellationToken>()), Times.Never);
+        Assert.NotNull(await db.BlogTheme.FindAsync(1)); // Still exists
     }
 
     [Fact]
     public async Task HandleAsync_UserTheme_DeletesAndReturnsDone()
     {
         // Arrange
+        using var db = CreateDbContext();
         var userTheme = new BlogThemeEntity
         {
             Id = 2,
@@ -67,25 +66,25 @@ public class DeleteThemeCommandTests
             ThemeType = ThemeType.User,
             CssRules = """{"--primary-color": "#ff0000"}"""
         };
+        db.BlogTheme.Add(userTheme);
+        await db.SaveChangesAsync();
+
         var command = new DeleteThemeCommand(2);
-        _mockRepo.Setup(r => r.GetByIdAsync(2, It.IsAny<CancellationToken>()))
-            .ReturnsAsync(userTheme);
-        _mockRepo.Setup(r => r.DeleteAsync(userTheme, It.IsAny<CancellationToken>()))
-            .ReturnsAsync(1);
+        var handler = new DeleteThemeCommandHandler(db);
 
         // Act
-        var result = await _handler.HandleAsync(command, CancellationToken.None);
+        var result = await handler.HandleAsync(command, CancellationToken.None);
 
         // Assert
         Assert.Equal(OperationCode.Done, result);
-        _mockRepo.Verify(r => r.GetByIdAsync(2, It.IsAny<CancellationToken>()), Times.Once);
-        _mockRepo.Verify(r => r.DeleteAsync(userTheme, It.IsAny<CancellationToken>()), Times.Once);
+        Assert.Null(await db.BlogTheme.FindAsync(2)); // Deleted
     }
 
     [Fact]
     public async Task HandleAsync_UserThemeWithAdditionalProps_DeletesAndReturnsDone()
     {
         // Arrange
+        using var db = CreateDbContext();
         var userTheme = new BlogThemeEntity
         {
             Id = 5,
@@ -94,34 +93,42 @@ public class DeleteThemeCommandTests
             CssRules = """{"--accent-color": "#00ff00"}""",
             AdditionalProps = """{"darkMode": true}"""
         };
+        db.BlogTheme.Add(userTheme);
+        await db.SaveChangesAsync();
+
         var command = new DeleteThemeCommand(5);
-        _mockRepo.Setup(r => r.GetByIdAsync(5, It.IsAny<CancellationToken>()))
-            .ReturnsAsync(userTheme);
-        _mockRepo.Setup(r => r.DeleteAsync(userTheme, It.IsAny<CancellationToken>()))
-            .ReturnsAsync(1);
+        var handler = new DeleteThemeCommandHandler(db);
 
         // Act
-        var result = await _handler.HandleAsync(command, CancellationToken.None);
+        var result = await handler.HandleAsync(command, CancellationToken.None);
 
         // Assert
         Assert.Equal(OperationCode.Done, result);
-        _mockRepo.Verify(r => r.GetByIdAsync(5, It.IsAny<CancellationToken>()), Times.Once);
-        _mockRepo.Verify(r => r.DeleteAsync(userTheme, It.IsAny<CancellationToken>()), Times.Once);
+        Assert.Null(await db.BlogTheme.FindAsync(5)); // Deleted
     }
 
     [Fact]
     public async Task HandleAsync_CancellationRequested_ThrowsOperationCanceledException()
     {
         // Arrange
+        using var db = CreateDbContext();
+        db.BlogTheme.Add(new BlogThemeEntity
+        {
+            Id = 1,
+            ThemeName = "Theme",
+            ThemeType = ThemeType.User,
+            CssRules = "{}"
+        });
+        await db.SaveChangesAsync();
+
         var command = new DeleteThemeCommand(1);
         var cts = new CancellationTokenSource();
-        cts.Cancel();
+        await cts.CancelAsync();
 
-        _mockRepo.Setup(r => r.GetByIdAsync(It.IsAny<int>(), It.IsAny<CancellationToken>()))
-            .ThrowsAsync(new OperationCanceledException());
+        var handler = new DeleteThemeCommandHandler(db);
 
         // Act & Assert
-        await Assert.ThrowsAsync<OperationCanceledException>(() =>
-            _handler.HandleAsync(command, cts.Token));
+        await Assert.ThrowsAnyAsync<OperationCanceledException>(() =>
+            handler.HandleAsync(command, cts.Token));
     }
 }

@@ -1,7 +1,6 @@
 using LiteBus.Commands.Abstractions;
 using Microsoft.Extensions.Logging;
 using Moonglade.Data.DTO;
-using Moonglade.Data.Specifications;
 using Moonglade.Utils;
 
 namespace Moonglade.Features.Post;
@@ -9,8 +8,7 @@ namespace Moonglade.Features.Post;
 public record CreatePostCommand(PostEditModel Payload) : ICommand<PostCommandResult>;
 
 public class CreatePostCommandHandler(
-        IRepositoryBase<PostEntity> postRepo,
-        IRepositoryBase<TagEntity> tagRepo,
+        BlogDbContext db,
         ILogger<CreatePostCommandHandler> logger)
     : ICommandHandler<CreatePostCommand, PostCommandResult>
 {
@@ -41,6 +39,7 @@ public class CreatePostCommandHandler(
             PostStatus = request.Payload.PostStatus,
             IsFeatured = request.Payload.Featured,
             IsOutdated = request.Payload.IsOutdated,
+            ContentType = request.Payload.ContentType,
         };
 
         post.RouteLink = UrlHelper.GenerateRouteLink(post.PubDateUtc.GetValueOrDefault(), request.Payload.Slug);
@@ -50,9 +49,10 @@ public class CreatePostCommandHandler(
 
         PostEntityHelper.SetCategories(post, request.Payload.SelectedCatIds);
 
-        await PostEntityHelper.ResolveAndAssignTagsAsync(post, request.Payload.Tags, tagRepo, logger, ct);
+        await PostEntityHelper.ResolveAndAssignTagsAsync(post, request.Payload.Tags, db, logger, ct);
 
-        await postRepo.AddAsync(post, ct);
+        db.Post.Add(post);
+        await db.SaveChangesAsync(ct);
 
         logger.LogInformation("Created post Id: {PostId}, Title: '{PostTitle}'", post.Id, post.Title);
         return new PostCommandResult
@@ -69,7 +69,13 @@ public class CreatePostCommandHandler(
     private async Task CheckSlugConflict(PostEntity post, CancellationToken ct)
     {
         var todayUtc = DateTime.UtcNow.Date;
-        if (await postRepo.AnyAsync(new PostByDateAndSlugSpec(todayUtc, post.Slug, false), ct))
+        var exists = await db.Post.AnyAsync(p =>
+            p.Slug == post.Slug &&
+            p.PostStatus == PostStatus.Published &&
+            p.PubDateUtc.Value.Date == todayUtc &&
+            !p.IsDeleted, ct);
+
+        if (exists)
         {
             var uid = Guid.NewGuid();
             post.Slug += $"-{uid.ToString().ToLower()[..8]}";
@@ -77,4 +83,4 @@ public class CreatePostCommandHandler(
         }
     }
 
-    }
+}

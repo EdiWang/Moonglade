@@ -1,5 +1,5 @@
-using Moonglade.Data.Entities;
-using Moonglade.Data.Specifications;
+using Microsoft.EntityFrameworkCore;
+using Moonglade.Data.DTO;
 using System.Globalization;
 using System.Xml;
 
@@ -13,13 +13,12 @@ public class SiteMapMapHandler
         HttpContext httpContext,
         IBlogConfig blogConfig,
         ICacheAside cache,
-        IRepositoryBase<PostEntity> postRepo,
-        IRepositoryBase<PageEntity> pageRepo)
+        BlogDbContext db)
     {
         var xml = await cache.GetOrCreateAsync(BlogCachePartition.General.ToString(), "sitemap", async () =>
         {
             var url = UrlHelper.ResolveRootUrl(httpContext, blogConfig.GeneralSettings.CanonicalPrefix, true, true);
-            var data = await GetSiteMapData(url, postRepo, pageRepo, httpContext.RequestAborted);
+            var data = await GetSiteMapData(url, db, httpContext.RequestAborted);
             return data;
         });
 
@@ -28,8 +27,7 @@ public class SiteMapMapHandler
 
     private static async Task<string> GetSiteMapData(
         string siteRootUrl,
-        IRepositoryBase<PostEntity> postRepo,
-        IRepositoryBase<PageEntity> pageRepo,
+        BlogDbContext db,
         CancellationToken ct)
     {
         var sb = new StringBuilder();
@@ -41,8 +39,15 @@ public class SiteMapMapHandler
             writer.WriteStartElement("urlset", "http://www.sitemaps.org/schemas/sitemap/0.9");
 
             // Posts
-            var spec = new PostSiteMapSpec();
-            var posts = await postRepo.ListAsync(spec, ct);
+            var posts = await db.Post.AsNoTracking()
+                .Where(p => p.PostStatus == PostStatus.Published && !p.IsDeleted)
+                .Select(p => new SiteMapInfo
+                {
+                    Slug = p.RouteLink,
+                    CreateTimeUtc = p.PubDateUtc.GetValueOrDefault(),
+                    UpdateTimeUtc = p.LastModifiedUtc
+                })
+                .ToListAsync(ct);
 
             foreach (var item in posts.OrderByDescending(p => p.UpdateTimeUtc))
             {
@@ -56,7 +61,15 @@ public class SiteMapMapHandler
             }
 
             // Pages
-            var pages = await pageRepo.ListAsync(new PageSitemapSpec(), ct);
+            var pages = await db.BlogPage.AsNoTracking()
+                .Where(p => p.IsPublished)
+                .Select(p => new SiteMapInfo
+                {
+                    Slug = p.Slug,
+                    CreateTimeUtc = p.CreateTimeUtc,
+                    UpdateTimeUtc = p.UpdateTimeUtc
+                })
+                .ToListAsync(ct);
             foreach (var page in pages)
             {
                 writer.WriteStartElement("url");

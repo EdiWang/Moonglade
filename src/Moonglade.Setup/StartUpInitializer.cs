@@ -53,6 +53,11 @@ public class StartUpInitializer(
                 result = await MigrateDatabaseAsync(cancellationToken);
                 if (result != InitStartUpResult.Success)
                     return result;
+
+                // Step 4.5: Backfill ContentType for existing posts
+                result = await BackfillPostContentTypeAsync(cancellationToken);
+                if (result != InitStartUpResult.Success)
+                    return result;
             }
 
             // Step 5: Generate site icons (non-blocking operation)
@@ -140,6 +145,28 @@ public class StartUpInitializer(
                 if (migrationResult.IsFailed)
                 {
                     throw new InvalidOperationException($"Migration failed with result: {migrationResult}");
+                }
+            },
+            InitStartUpResult.FailedDatabaseMigration,
+            cancellationToken);
+    }
+
+    private async Task<InitStartUpResult> BackfillPostContentTypeAsync(CancellationToken cancellationToken)
+    {
+        return await ExecuteStepAsync(
+            "Backfilling post content type",
+            async () =>
+            {
+                var editorValue = configuration.GetValue<string>("Editor")?.ToLower() ?? "html";
+                var affected = await context.Post
+                    .Where(p => p.ContentType == "")
+                    .ExecuteUpdateAsync(s => s.SetProperty(p => p.ContentType, editorValue), cancellationToken);
+
+                if (affected > 0)
+                {
+                    logger.LogInformation(
+                        "Backfilled ContentType='{ContentType}' for {Count} existing posts.",
+                        editorValue, affected);
                 }
             },
             InitStartUpResult.FailedDatabaseMigration,

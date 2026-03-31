@@ -20,6 +20,7 @@ public class PostConfiguration : IEntityTypeConfiguration<PostEntity>
         builder.Property(e => e.Title).HasMaxLength(128);
         builder.Property(e => e.RouteLink).HasMaxLength(256);
         builder.Property(e => e.Keywords).HasMaxLength(256);
+        builder.Property(e => e.ContentType).HasMaxLength(16).HasDefaultValue("");
 
         // Convert enum to string for database storage
         builder.Property(e => e.PostStatus)

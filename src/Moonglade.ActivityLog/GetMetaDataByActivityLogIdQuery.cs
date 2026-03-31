@@ -1,11 +1,11 @@
 using LiteBus.Queries.Abstractions;
-using Moonglade.Data.Entities;
+using Moonglade.Data;
 
 namespace Moonglade.ActivityLog;
 
 public record GetMetaDataByActivityLogIdQuery(long ActivityLogId) : IQuery<string?>;
 
-public class GetMetaDataByActivityLogIdQueryHandler(IRepositoryBase<ActivityLogEntity> repository)
+public class GetMetaDataByActivityLogIdQueryHandler(BlogDbContext db)
     : IQueryHandler<GetMetaDataByActivityLogIdQuery, string?>
 {
     public async Task<string?> HandleAsync(GetMetaDataByActivityLogIdQuery request, CancellationToken ct)
@@ -16,7 +16,7 @@ public class GetMetaDataByActivityLogIdQueryHandler(IRepositoryBase<ActivityLogE
                 $"{nameof(request.ActivityLogId)} must be greater than 0, current value: {request.ActivityLogId}.");
         }
 
-        var entity = await repository.GetByIdAsync(request.ActivityLogId, ct);
+        var entity = await db.ActivityLog.FindAsync([request.ActivityLogId], ct);
 
         return entity?.MetaData;
     }

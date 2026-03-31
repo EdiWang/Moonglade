@@ -1,15 +1,16 @@
 using LiteBus.Commands.Abstractions;
-using Moonglade.Data.Entities;
 
 namespace Moonglade.Data.Exporting;
 
 public record ExportPageDataCommand : ICommand<ExportResult>;
 
-public class ExportPageDataCommandHandler(IRepositoryBase<PageEntity> repo) : ICommandHandler<ExportPageDataCommand, ExportResult>
+public class ExportPageDataCommandHandler(BlogDbContext db) : ICommandHandler<ExportPageDataCommand, ExportResult>
 {
-    public Task<ExportResult> HandleAsync(ExportPageDataCommand request, CancellationToken ct)
+    public async Task<ExportResult> HandleAsync(ExportPageDataCommand request, CancellationToken ct)
     {
-        var pgExp = new ZippedJsonExporter<PageEntity>(repo, "moonglade-pages", Path.GetTempPath());
-        return pgExp.ExportData<PageEntity>(null, ct);
+        var data = await db.BlogPage.AsNoTracking().ToListAsync(ct);
+
+        var exporter = new ZippedJsonExporter("moonglade-pages", Path.GetTempPath());
+        return await exporter.ExportData(data, ct);
     }
 }

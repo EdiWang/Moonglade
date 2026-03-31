@@ -6,19 +6,20 @@ namespace Moonglade.Features.Page;
 public record DeleteStyleSheetCommand(Guid Id) : ICommand;
 
 public class DeleteStyleSheetCommandHandler(
-    IRepositoryBase<StyleSheetEntity> repo,
+    BlogDbContext db,
     ILogger<DeleteStyleSheetCommandHandler> logger
     ) : ICommandHandler<DeleteStyleSheetCommand>
 {
     public async Task HandleAsync(DeleteStyleSheetCommand request, CancellationToken ct)
     {
-        var styleSheet = await repo.GetByIdAsync(request.Id, ct);
+        var styleSheet = await db.StyleSheet.FindAsync([request.Id], ct);
         if (styleSheet is null)
         {
             throw new InvalidOperationException($"StyleSheetEntity with Id '{request.Id}' not found.");
         }
 
-        await repo.DeleteAsync(styleSheet, ct);
+        db.StyleSheet.Remove(styleSheet);
+        await db.SaveChangesAsync(ct);
 
         logger.LogInformation("Deleted StyleSheetEntity with Id '{Id}'", request.Id);
     }

@@ -6,13 +6,13 @@ namespace Moonglade.Features.Post;
 public record UnpublishPostCommand(Guid Id) : ICommand;
 
 public class UnpublishPostCommandHandler(
-    IRepositoryBase<PostEntity> repo,
+    BlogDbContext db,
     ILogger<UnpublishPostCommandHandler> logger
     ) : ICommandHandler<UnpublishPostCommand>
 {
     public async Task HandleAsync(UnpublishPostCommand request, CancellationToken ct)
     {
-        var post = await repo.GetByIdAsync(request.Id, ct);
+        var post = await db.Post.FindAsync([request.Id], ct);
         if (null == post) return;
 
         post.PostStatus = PostStatus.Draft;
@@ -21,7 +21,7 @@ public class UnpublishPostCommandHandler(
         post.RouteLink = null;
         post.LastModifiedUtc = DateTime.UtcNow;
 
-        await repo.UpdateAsync(post, ct);
+        await db.SaveChangesAsync(ct);
 
         logger.LogInformation("Post [{PostId}] unpublished", request.Id);
     }

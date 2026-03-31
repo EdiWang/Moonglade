@@ -1,4 +1,3 @@
-using Ardalis.Specification;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 
@@ -8,8 +7,6 @@ public static class ServiceCollectionExtensions
 {
     public static IServiceCollection AddPostgreSqlStorage(this IServiceCollection services, string connectionString)
     {
-        services.AddScoped(typeof(IRepositoryBase<>), typeof(PostgreSqlDbContextRepository<>));
-
         AppContext.SetSwitch("Npgsql.EnableLegacyTimestampBehavior", true);
         services.AddDbContext<BlogDbContext, PostgreSqlBlogDbContext>(options => options
             .EnableDetailedErrors()

@@ -1,9 +1,9 @@
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Configuration;
 using Moonglade.Configuration;
+using Moonglade.Data;
 using Moonglade.Data.DTO;
 using Moonglade.Data.Entities;
-using Moonglade.Data.Specifications;
 using Moonglade.Utils;
 
 namespace Moonglade.Syndication;
@@ -16,8 +16,7 @@ public interface ISyndicationDataSource
 public class SyndicationDataSource(
     IBlogConfig blogConfig,
     IHttpContextAccessor httpContextAccessor,
-    IRepositoryBase<CategoryEntity> catRepo,
-    IRepositoryBase<PostEntity> postRepo,
+    BlogDbContext db,
     IConfiguration configuration)
     : ISyndicationDataSource
 {
@@ -28,7 +27,7 @@ public class SyndicationDataSource(
         List<FeedEntry> itemCollection;
         if (!string.IsNullOrWhiteSpace(catSlug))
         {
-            var cat = await catRepo.FirstOrDefaultAsync(new CategoryBySlugSpec(catSlug));
+            var cat = await db.Category.AsNoTracking().FirstOrDefaultAsync(c => c.Slug == catSlug);
             if (cat is null) return null;
 
             itemCollection = await GetFeedEntriesAsync(cat.Id);
@@ -49,11 +48,31 @@ public class SyndicationDataSource(
             top = blogConfig.FeedSettings.FeedItemCount;
         }
 
-        var postSpec = new PostByCatSpec(catId, top);
-        var dtoSpec = new PostEntityToFeedEntrySpec(_baseUrl);
-        var newSpec = postSpec.WithProjectionOf(dtoSpec);
+        IQueryable<PostEntity> query = db.Post.AsNoTracking()
+            .Where(p => !p.IsDeleted &&
+                        p.PostStatus == PostStatus.Published &&
+                        p.IsFeedIncluded &&
+                        p.PubDateUtc != null &&
+                        (catId == null || p.PostCategory.Any(c => c.CategoryId == catId.Value)))
+            .OrderByDescending(p => p.PubDateUtc);
 
-        var list = await postRepo.ListAsync(newSpec);
+        if (top.HasValue)
+        {
+            query = query.Take(top.Value);
+        }
+
+        var list = await query.Select(p => new FeedEntry
+        {
+            Id = p.Id.ToString(),
+            Title = p.Title,
+            PubDateUtc = p.PubDateUtc.Value,
+            Description = p.ContentAbstract,
+            Link = $"{_baseUrl}/post/{p.RouteLink}",
+            Author = p.Author,
+            LangCode = p.ContentLanguageCode,
+            Categories = p.PostCategory.Select(pc => pc.Category.DisplayName).ToArray(),
+            ContentType = p.ContentType
+        }).ToListAsync();
 
         // Workaround EF limitation
         // Man, this is super ugly
@@ -61,16 +80,20 @@ public class SyndicationDataSource(
         {
             foreach (var simpleFeedItem in list)
             {
-                simpleFeedItem.Description = FormatPostContent(simpleFeedItem.Description);
+                simpleFeedItem.Description = FormatPostContent(simpleFeedItem.Description, simpleFeedItem.ContentType);
             }
         }
 
         return list;
     }
 
-    private string FormatPostContent(string rawContent)
+    private string FormatPostContent(string rawContent, string contentType)
     {
-        var htmlContent = configuration.GetValue<EditorChoice>("Editor") == EditorChoice.Markdown ?
+        var effectiveType = string.IsNullOrEmpty(contentType)
+            ? configuration.GetValue<EditorChoice>("Editor").ToString().ToLower()
+            : contentType;
+
+        var htmlContent = effectiveType == "markdown" ?
             ContentProcessor.MarkdownToContent(rawContent, ContentProcessor.MarkdownConvertType.Html, false) :
             rawContent;
 

@@ -33,6 +33,10 @@ public class PostEditModel
     public PostStatus PostStatus { get; set; }
 
     [Required]
+    [RegularExpression("^(html|markdown)$")]
+    public string ContentType { get; set; }
+
+    [Required]
     [Display(Name = "Featured")]
     public bool Featured { get; set; }
 

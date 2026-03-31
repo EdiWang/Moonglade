@@ -1,15 +1,13 @@
 using LiteBus.Commands.Abstractions;
 using Microsoft.Extensions.Logging;
 using Moonglade.Data;
-using Moonglade.Data.Entities;
-using Moonglade.Data.Specifications;
 
 namespace Moonglade.Configuration;
 
 public record UpdateConfigurationCommand(string Name, string Json) : ICommand<OperationCode>;
 
 public class UpdateConfigurationCommandHandler(
-    IRepositoryBase<BlogConfigurationEntity> repository,
+    BlogDbContext db,
     ILogger<UpdateConfigurationCommandHandler> logger
     ) : ICommandHandler<UpdateConfigurationCommand, OperationCode>
 {
@@ -19,7 +17,7 @@ public class UpdateConfigurationCommandHandler(
 
         try
         {
-            var entity = await repository.FirstOrDefaultAsync(new BlogConfigurationSpec(name), ct);
+            var entity = await db.BlogConfiguration.FirstOrDefaultAsync(p => p.CfgKey == name, ct);
             if (entity == null)
             {
                 logger.LogWarning("Configuration entity not found: {Name}", name);
@@ -36,7 +34,7 @@ public class UpdateConfigurationCommandHandler(
             entity.CfgValue = json;
             entity.LastModifiedTimeUtc = DateTime.UtcNow;
 
-            await repository.UpdateAsync(entity, ct);
+            await db.SaveChangesAsync(ct);
 
             logger.LogInformation("Configuration updated successfully: {Name}", name);
             return OperationCode.Done;

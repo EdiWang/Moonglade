@@ -11,6 +11,6 @@
   <ItemGroup>
     <FrameworkReference Include="Microsoft.AspNetCore.App" />
     <PackageReference Include="Edi.AspNetCore.Utils" Version="1.7.0" />
-    <PackageReference Include="Markdig" Version="1.1.1" />
+    <PackageReference Include="Markdig" Version="1.1.2" />
   </ItemGroup>
 </Project>

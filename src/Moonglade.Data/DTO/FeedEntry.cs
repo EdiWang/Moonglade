@@ -11,4 +11,5 @@ public record FeedEntry
     public string AuthorEmail { get; set; }
     public string LangCode { get; set; }
     public string[] Categories { get; set; }
+    public string ContentType { get; set; }
 }

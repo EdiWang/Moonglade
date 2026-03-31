@@ -7,13 +7,13 @@ namespace Moonglade.Features.Post;
 public record PublishPostCommand(Guid Id) : ICommand;
 
 public class PublishPostCommandHandler(
-    IRepositoryBase<PostEntity> repo,
+    BlogDbContext db,
     ILogger<PublishPostCommandHandler> logger
     ) : ICommandHandler<PublishPostCommand>
 {
     public async Task HandleAsync(PublishPostCommand request, CancellationToken ct)
     {
-        var post = await repo.GetByIdAsync(request.Id, ct);
+        var post = await db.Post.FindAsync([request.Id], ct);
         if (null == post) return;
 
         var utcNow = DateTime.UtcNow;
@@ -24,7 +24,7 @@ public class PublishPostCommandHandler(
         post.LastModifiedUtc = utcNow;
         post.RouteLink = UrlHelper.GenerateRouteLink(post.PubDateUtc.GetValueOrDefault(), post.Slug);
 
-        await repo.UpdateAsync(post, ct);
+        await db.SaveChangesAsync(ct);
 
         logger.LogInformation("Post [{PostId}] Published", request.Id);
     }

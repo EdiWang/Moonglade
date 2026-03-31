@@ -1,12 +1,11 @@
 using LiteBus.Queries.Abstractions;
 using Moonglade.Data.DTO;
-using Moonglade.Data.Specifications;
 
 namespace Moonglade.Features.Comment;
 
-public record ListCommentsQuery(int PageSize, int PageIndex, string SearchTerm = null) : IQuery<List<CommentDetailedItem>>;
+public record ListCommentsQuery(int PageSize, int PageIndex, CommentFilter Filter) : IQuery<List<CommentDetailedItem>>;
 
-public class ListCommentsQueryHandler(IRepositoryBase<CommentEntity> repo) : IQueryHandler<ListCommentsQuery, List<CommentDetailedItem>>
+public class ListCommentsQueryHandler(BlogDbContext db) : IQueryHandler<ListCommentsQuery, List<CommentDetailedItem>>
 {
     public Task<List<CommentDetailedItem>> HandleAsync(ListCommentsQuery request, CancellationToken ct)
     {
@@ -16,12 +15,58 @@ public class ListCommentsQueryHandler(IRepositoryBase<CommentEntity> repo) : IQu
                 $"{nameof(request.PageSize)} can not be less than 1, current value: {request.PageSize}.");
         }
 
-        var spec = new CommentPagingSepc(request.PageSize, request.PageIndex, request.SearchTerm);
-        var dtoSpec = new CommentEntityToCommentDetailedItemSpec();
-        var newSpec = spec.WithProjectionOf(dtoSpec);
+        var startRow = (request.PageIndex - 1) * request.PageSize;
+        var filter = request.Filter;
 
-        var comments = repo.ListAsync(newSpec, ct);
+        IQueryable<CommentEntity> query = db.Comment.AsNoTracking()
+            .Include(c => c.Post)
+            .Include(c => c.Replies);
 
-        return comments;
+        if (!string.IsNullOrWhiteSpace(filter.Username))
+        {
+            query = query.Where(c => c.Username.Contains(filter.Username));
+        }
+
+        if (!string.IsNullOrWhiteSpace(filter.Email))
+        {
+            query = query.Where(c => c.Email.Contains(filter.Email));
+        }
+
+        if (!string.IsNullOrWhiteSpace(filter.CommentContent))
+        {
+            query = query.Where(c => c.CommentContent.Contains(filter.CommentContent));
+        }
+
+        if (filter.StartTimeUtc.HasValue)
+        {
+            query = query.Where(c => c.CreateTimeUtc >= filter.StartTimeUtc.Value);
+        }
+
+        if (filter.EndTimeUtc.HasValue)
+        {
+            query = query.Where(c => c.CreateTimeUtc <= filter.EndTimeUtc.Value);
+        }
+
+        return query
+            .OrderByDescending(c => c.CreateTimeUtc)
+            .Skip(startRow)
+            .Take(request.PageSize)
+            .Select(c => new CommentDetailedItem
+            {
+                Id = c.Id,
+                CommentContent = c.CommentContent,
+                CreateTimeUtc = c.CreateTimeUtc,
+                Email = c.Email,
+                IpAddress = c.IPAddress,
+                Username = c.Username,
+                IsApproved = c.IsApproved,
+                PostTitle = c.Post.Title,
+                Replies = c.Replies.Select(cr => new CommentReplyDigest
+                {
+                    ReplyContent = cr.ReplyContent,
+                    ReplyTimeUtc = cr.CreateTimeUtc
+                }).ToList()
+            })
+            .ToListAsync(ct);
     }
 }

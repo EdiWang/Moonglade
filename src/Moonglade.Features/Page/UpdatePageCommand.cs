@@ -6,14 +6,14 @@ namespace Moonglade.Features.Page;
 public record UpdatePageCommand(Guid Id, EditPageRequest Payload) : ICommand<Guid>;
 
 public class UpdatePageCommandHandler(
-    IRepositoryBase<PageEntity> repo,
+    BlogDbContext db,
     ICommandMediator commandMediator,
     ILogger<UpdatePageCommandHandler> logger) : ICommandHandler<UpdatePageCommand, Guid>
 {
     public async Task<Guid> HandleAsync(UpdatePageCommand request, CancellationToken ct)
     {
         var (guid, payload) = request;
-        var page = await repo.GetByIdAsync(guid, ct) ?? throw new InvalidOperationException($"PageEntity with Id '{guid}' not found.");
+        var page = await db.BlogPage.FindAsync([guid], ct) ?? throw new InvalidOperationException($"PageEntity with Id '{guid}' not found.");
         var slug = request.Payload.Slug.ToLower().Trim();
 
         Guid? cssId = null;
@@ -31,7 +31,7 @@ public class UpdatePageCommandHandler(
         page.IsPublished = payload.IsPublished;
         page.CssId = cssId.ToString();
 
-        await repo.UpdateAsync(page, ct);
+        await db.SaveChangesAsync(ct);
 
         logger.LogInformation("Page updated: {PageId}", page.Id);
         return page.Id;

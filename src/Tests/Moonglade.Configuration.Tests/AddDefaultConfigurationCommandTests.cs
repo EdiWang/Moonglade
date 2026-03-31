@@ -1,120 +1,100 @@
-using Ardalis.Specification;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using Moonglade.Data;
-using Moonglade.Data.Entities;
 using Moq;
 
 namespace Moonglade.Configuration.Tests;
 
 public class AddDefaultConfigurationCommandTests
 {
-    private readonly Mock<IRepositoryBase<BlogConfigurationEntity>> _mockRepo;
-    private readonly Mock<ILogger<AddDefaultConfigurationCommandHandler>> _mockLogger;
-    private readonly AddDefaultConfigurationCommandHandler _handler;
+    private readonly Mock<ILogger<AddDefaultConfigurationCommandHandler>> _mockLogger = new();
 
-    public AddDefaultConfigurationCommandTests()
+    private static BlogDbContext CreateDbContext()
     {
-        _mockRepo = new Mock<IRepositoryBase<BlogConfigurationEntity>>();
-        _mockLogger = new Mock<ILogger<AddDefaultConfigurationCommandHandler>>();
-        _handler = new AddDefaultConfigurationCommandHandler(_mockRepo.Object, _mockLogger.Object);
+        var options = new DbContextOptionsBuilder<BlogDbContext>()
+            .UseInMemoryDatabase(Guid.NewGuid().ToString())
+            .Options;
+        return new BlogDbContext(options);
     }
 
     [Fact]
     public async Task HandleAsync_ValidCommand_AddsEntityAndReturnsDone()
     {
         // Arrange
+        using var db = CreateDbContext();
+        var handler = new AddDefaultConfigurationCommandHandler(db, _mockLogger.Object);
         var command = new AddDefaultConfigurationCommand("TestKey", "{\"value\":\"default\"}");
-
-        BlogConfigurationEntity? capturedEntity = null;
-        _mockRepo.Setup(r => r.AddAsync(It.IsAny<BlogConfigurationEntity>(), It.IsAny<CancellationToken>()))
-            .Callback<BlogConfigurationEntity, CancellationToken>((entity, ct) =>
-            {
-                capturedEntity = entity;
-            })
-            .ReturnsAsync((BlogConfigurationEntity e, CancellationToken _) => e);
 
         var beforeAdd = DateTime.UtcNow;
 
         // Act
-        var result = await _handler.HandleAsync(command, CancellationToken.None);
+        var result = await handler.HandleAsync(command, CancellationToken.None);
 
         // Assert
         Assert.Equal(OperationCode.Done, result);
-        _mockRepo.Verify(r => r.AddAsync(It.IsAny<BlogConfigurationEntity>(), It.IsAny<CancellationToken>()), Times.Once);
 
-        Assert.NotNull(capturedEntity);
-        Assert.Equal("TestKey", capturedEntity.CfgKey);
-        Assert.Equal("{\"value\":\"default\"}", capturedEntity.CfgValue);
-        Assert.True(capturedEntity.LastModifiedTimeUtc >= beforeAdd);
+        var entity = await db.BlogConfiguration.FirstOrDefaultAsync(c => c.CfgKey == "TestKey");
+        Assert.NotNull(entity);
+        Assert.Equal("TestKey", entity.CfgKey);
+        Assert.Equal("{\"value\":\"default\"}", entity.CfgValue);
+        Assert.True(entity.LastModifiedTimeUtc >= beforeAdd);
     }
 
     [Fact]
-    public async Task HandleAsync_RepositoryThrowsException_RethrowsException()
+    public async Task HandleAsync_ExceptionThrown_RethrowsException()
     {
-        // Arrange
-        var command = new AddDefaultConfigurationCommand("TestKey", "{\"value\":\"default\"}");
-        var expectedException = new InvalidOperationException("Database error");
+        // Arrange — use a disposed context to trigger an exception
+        var db = CreateDbContext();
+        await db.DisposeAsync();
 
-        _mockRepo.Setup(r => r.AddAsync(It.IsAny<BlogConfigurationEntity>(), It.IsAny<CancellationToken>()))
-            .ThrowsAsync(expectedException);
+        var handler = new AddDefaultConfigurationCommandHandler(db, _mockLogger.Object);
+        var command = new AddDefaultConfigurationCommand("TestKey", "{\"value\":\"default\"}");
 
         // Act & Assert
-        var exception = await Assert.ThrowsAsync<InvalidOperationException>(
-            () => _handler.HandleAsync(command, CancellationToken.None));
-
-        Assert.Equal("Database error", exception.Message);
+        await Assert.ThrowsAsync<ObjectDisposedException>(
+            () => handler.HandleAsync(command, CancellationToken.None));
     }
 
     [Fact]
     public async Task HandleAsync_SetsCorrectCfgKeyAndCfgValue()
     {
         // Arrange
+        using var db = CreateDbContext();
+        var handler = new AddDefaultConfigurationCommandHandler(db, _mockLogger.Object);
         var cfgKey = "GeneralSettings";
         var defaultJson = "{\"theme\":\"dark\",\"language\":\"en\"}";
         var command = new AddDefaultConfigurationCommand(cfgKey, defaultJson);
 
-        BlogConfigurationEntity? capturedEntity = null;
-        _mockRepo.Setup(r => r.AddAsync(It.IsAny<BlogConfigurationEntity>(), It.IsAny<CancellationToken>()))
-            .Callback<BlogConfigurationEntity, CancellationToken>((entity, ct) =>
-            {
-                capturedEntity = entity;
-            })
-            .ReturnsAsync((BlogConfigurationEntity e, CancellationToken _) => e);
-
         // Act
-        await _handler.HandleAsync(command, CancellationToken.None);
+        await handler.HandleAsync(command, CancellationToken.None);
 
         // Assert
-        Assert.NotNull(capturedEntity);
-        Assert.Equal(cfgKey, capturedEntity.CfgKey);
-        Assert.Equal(defaultJson, capturedEntity.CfgValue);
+        var entity = await db.BlogConfiguration.FirstOrDefaultAsync(c => c.CfgKey == cfgKey);
+        Assert.NotNull(entity);
+        Assert.Equal(cfgKey, entity.CfgKey);
+        Assert.Equal(defaultJson, entity.CfgValue);
     }
 
     [Fact]
     public async Task HandleAsync_SetsLastModifiedTimeUtcToCurrentUtcTime()
     {
         // Arrange
+        using var db = CreateDbContext();
+        var handler = new AddDefaultConfigurationCommandHandler(db, _mockLogger.Object);
         var command = new AddDefaultConfigurationCommand("TimeTestKey", "{\"value\":\"test\"}");
-
-        BlogConfigurationEntity? capturedEntity = null;
-        _mockRepo.Setup(r => r.AddAsync(It.IsAny<BlogConfigurationEntity>(), It.IsAny<CancellationToken>()))
-            .Callback<BlogConfigurationEntity, CancellationToken>((entity, ct) =>
-            {
-                capturedEntity = entity;
-            })
-            .ReturnsAsync((BlogConfigurationEntity e, CancellationToken _) => e);
 
         var before = DateTime.UtcNow;
 
         // Act
-        await _handler.HandleAsync(command, CancellationToken.None);
+        await handler.HandleAsync(command, CancellationToken.None);
 
         var after = DateTime.UtcNow;
 
         // Assert
-        Assert.NotNull(capturedEntity);
-        Assert.NotNull(capturedEntity.LastModifiedTimeUtc);
-        Assert.True(capturedEntity.LastModifiedTimeUtc >= before);
-        Assert.True(capturedEntity.LastModifiedTimeUtc <= after);
+        var entity = await db.BlogConfiguration.FirstOrDefaultAsync(c => c.CfgKey == "TimeTestKey");
+        Assert.NotNull(entity);
+        Assert.NotNull(entity.LastModifiedTimeUtc);
+        Assert.True(entity.LastModifiedTimeUtc >= before);
+        Assert.True(entity.LastModifiedTimeUtc <= after);
     }
 }

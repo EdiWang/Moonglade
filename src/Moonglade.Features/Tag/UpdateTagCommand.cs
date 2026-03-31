@@ -7,18 +7,18 @@ namespace Moonglade.Features.Tag;
 public record UpdateTagCommand(int Id, string Name) : ICommand<OperationCode>;
 
 public class UpdateTagCommandHandler(
-    IRepositoryBase<TagEntity> repo,
+    BlogDbContext db,
     ILogger<UpdateTagCommandHandler> logger) : ICommandHandler<UpdateTagCommand, OperationCode>
 {
     public async Task<OperationCode> HandleAsync(UpdateTagCommand request, CancellationToken ct)
     {
         var (id, name) = request;
-        var tag = await repo.GetByIdAsync(id, ct);
+        var tag = await db.Tag.FindAsync([id], ct);
         if (null == tag) return OperationCode.ObjectNotFound;
 
         tag.DisplayName = name;
         tag.NormalizedName = BlogTagHelper.NormalizeName(name, BlogTagHelper.TagNormalizationDictionary);
-        await repo.UpdateAsync(tag, ct);
+        await db.SaveChangesAsync(ct);
 
         logger.LogInformation("Updated tag: {TagId}", request.Id);
         return OperationCode.Done;

@@ -3,21 +3,11 @@ using System.Text.Json;
 
 namespace Moonglade.Data.Exporting;
 
-public class ZippedJsonExporter<T>(IRepositoryBase<T> repository, string fileNamePrefix, string directory)
-    where T : class
+public class ZippedJsonExporter(string fileNamePrefix, string directory)
 {
-    public async Task<ExportResult> ExportData<TResult>(ISpecification<T, TResult> spec = null, CancellationToken ct = (default))
+    public async Task<ExportResult> ExportData<T>(IReadOnlyList<T> data, CancellationToken ct = default)
     {
-        if (spec == null)
-        {
-            var data = await repository.ListAsync(ct);
-            return await ToZippedJsonResult(data, ct);
-        }
-        else
-        {
-            var data = await repository.ListAsync(spec, ct);
-            return await ToZippedJsonResult(data, ct);
-        }
+        return await ToZippedJsonResult(data, ct);
     }
 
     private async Task<ExportResult> ToZippedJsonResult<TE>(IEnumerable<TE> list, CancellationToken ct)

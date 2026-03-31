@@ -1,77 +1,114 @@
+using Moonglade.Data;
 using Moonglade.Data.Entities;
-using Moonglade.Data.Specifications;
-using Moq;
 
 namespace Moonglade.Webmention.Tests;
 
 public class DeleteMentionsCommandTests
 {
-    private readonly Mock<IRepositoryBase<MentionEntity>> _mockRepo;
-    private readonly DeleteMentionsCommandHandler _handler;
-
-    public DeleteMentionsCommandTests()
+    private static BlogDbContext CreateDbContext()
     {
-        _mockRepo = new Mock<IRepositoryBase<MentionEntity>>();
-        _handler = new DeleteMentionsCommandHandler(_mockRepo.Object);
+        var options = new DbContextOptionsBuilder<BlogDbContext>()
+            .UseInMemoryDatabase(Guid.NewGuid().ToString())
+            .Options;
+        return new BlogDbContext(options);
     }
 
     [Fact]
     public async Task HandleAsync_NullIds_ReturnsWithoutDeleting()
     {
+        using var db = CreateDbContext();
+        db.Mention.Add(new MentionEntity
+        {
+            Id = Guid.NewGuid(),
+            Domain = "test.com",
+            SourceUrl = "https://test.com",
+            SourceTitle = "Test",
+            SourceIp = "1.2.3.4",
+            TargetPostId = Guid.NewGuid(),
+            PingTimeUtc = DateTime.UtcNow,
+            TargetPostTitle = "Post"
+        });
+        await db.SaveChangesAsync();
+
+        var handler = new DeleteMentionsCommandHandler(db);
         var command = new DeleteMentionsCommand(null!);
 
-        await _handler.HandleAsync(command, CancellationToken.None);
+        await handler.HandleAsync(command, CancellationToken.None);
 
-        _mockRepo.Verify(r => r.ListAsync(It.IsAny<MentionByIdsSpec>(), It.IsAny<CancellationToken>()), Times.Never);
-        _mockRepo.Verify(r => r.DeleteRangeAsync(It.IsAny<IEnumerable<MentionEntity>>(), It.IsAny<CancellationToken>()), Times.Never);
+        Assert.Equal(1, await db.Mention.CountAsync());
     }
 
     [Fact]
     public async Task HandleAsync_EmptyIds_ReturnsWithoutDeleting()
     {
+        using var db = CreateDbContext();
+        db.Mention.Add(new MentionEntity
+        {
+            Id = Guid.NewGuid(),
+            Domain = "test.com",
+            SourceUrl = "https://test.com",
+            SourceTitle = "Test",
+            SourceIp = "1.2.3.4",
+            TargetPostId = Guid.NewGuid(),
+            PingTimeUtc = DateTime.UtcNow,
+            TargetPostTitle = "Post"
+        });
+        await db.SaveChangesAsync();
+
+        var handler = new DeleteMentionsCommandHandler(db);
         var command = new DeleteMentionsCommand([]);
 
-        await _handler.HandleAsync(command, CancellationToken.None);
+        await handler.HandleAsync(command, CancellationToken.None);
 
-        _mockRepo.Verify(r => r.ListAsync(It.IsAny<MentionByIdsSpec>(), It.IsAny<CancellationToken>()), Times.Never);
-        _mockRepo.Verify(r => r.DeleteRangeAsync(It.IsAny<IEnumerable<MentionEntity>>(), It.IsAny<CancellationToken>()), Times.Never);
+        Assert.Equal(1, await db.Mention.CountAsync());
     }
 
     [Fact]
     public async Task HandleAsync_NoMatchingEntities_DoesNotDelete()
     {
-        var ids = new List<Guid> { Guid.NewGuid() };
-        var command = new DeleteMentionsCommand(ids);
+        using var db = CreateDbContext();
+        db.Mention.Add(new MentionEntity
+        {
+            Id = Guid.NewGuid(),
+            Domain = "test.com",
+            SourceUrl = "https://test.com",
+            SourceTitle = "Test",
+            SourceIp = "1.2.3.4",
+            TargetPostId = Guid.NewGuid(),
+            PingTimeUtc = DateTime.UtcNow,
+            TargetPostTitle = "Post"
+        });
+        await db.SaveChangesAsync();
 
-        _mockRepo.Setup(r => r.ListAsync(It.IsAny<MentionByIdsSpec>(), It.IsAny<CancellationToken>()))
-            .ReturnsAsync(new List<MentionEntity>());
+        var handler = new DeleteMentionsCommandHandler(db);
+        var command = new DeleteMentionsCommand([Guid.NewGuid()]);
 
-        await _handler.HandleAsync(command, CancellationToken.None);
+        await handler.HandleAsync(command, CancellationToken.None);
 
-        _mockRepo.Verify(r => r.ListAsync(It.IsAny<MentionByIdsSpec>(), It.IsAny<CancellationToken>()), Times.Once);
-        _mockRepo.Verify(r => r.DeleteRangeAsync(It.IsAny<IEnumerable<MentionEntity>>(), It.IsAny<CancellationToken>()), Times.Never);
+        Assert.Equal(1, await db.Mention.CountAsync());
     }
 
     [Fact]
     public async Task HandleAsync_WithMatchingEntities_DeletesThem()
     {
+        using var db = CreateDbContext();
         var id1 = Guid.NewGuid();
         var id2 = Guid.NewGuid();
-        var ids = new List<Guid> { id1, id2 };
-        var command = new DeleteMentionsCommand(ids);
+        var keepId = Guid.NewGuid();
 
-        var entities = new List<MentionEntity>
-        {
-            new() { Id = id1 },
-            new() { Id = id2 }
-        };
+        db.Mention.AddRange(
+            new MentionEntity { Id = id1, Domain = "a.com", SourceUrl = "https://a.com", SourceTitle = "A", SourceIp = "1.1.1.1", TargetPostId = Guid.NewGuid(), PingTimeUtc = DateTime.UtcNow, TargetPostTitle = "P1" },
+            new MentionEntity { Id = id2, Domain = "b.com", SourceUrl = "https://b.com", SourceTitle = "B", SourceIp = "2.2.2.2", TargetPostId = Guid.NewGuid(), PingTimeUtc = DateTime.UtcNow, TargetPostTitle = "P2" },
+            new MentionEntity { Id = keepId, Domain = "c.com", SourceUrl = "https://c.com", SourceTitle = "C", SourceIp = "3.3.3.3", TargetPostId = Guid.NewGuid(), PingTimeUtc = DateTime.UtcNow, TargetPostTitle = "P3" }
+        );
+        await db.SaveChangesAsync();
 
-        _mockRepo.Setup(r => r.ListAsync(It.IsAny<MentionByIdsSpec>(), It.IsAny<CancellationToken>()))
-            .ReturnsAsync(entities);
+        var handler = new DeleteMentionsCommandHandler(db);
+        var command = new DeleteMentionsCommand([id1, id2]);
 
-        await _handler.HandleAsync(command, CancellationToken.None);
+        await handler.HandleAsync(command, CancellationToken.None);
 
-        _mockRepo.Verify(r => r.ListAsync(It.IsAny<MentionByIdsSpec>(), It.IsAny<CancellationToken>()), Times.Once);
-        _mockRepo.Verify(r => r.DeleteRangeAsync(entities, It.IsAny<CancellationToken>()), Times.Once);
+        Assert.Equal(1, await db.Mention.CountAsync());
+        Assert.NotNull(await db.Mention.FindAsync(keepId));
     }
 }

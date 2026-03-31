@@ -1,16 +1,20 @@
 using LiteBus.Queries.Abstractions;
-using Moonglade.Data.Specifications;
 
 namespace Moonglade.Features.Post;
 
 public record GetDraftQuery(Guid Id) : IQuery<PostEntity>;
 
-public class GetDraftQueryHandler(IRepositoryBase<PostEntity> repo) : IQueryHandler<GetDraftQuery, PostEntity>
+public class GetDraftQueryHandler(BlogDbContext db) : IQueryHandler<GetDraftQuery, PostEntity>
 {
-    public Task<PostEntity> HandleAsync(GetDraftQuery request, CancellationToken ct)
+    public async Task<PostEntity> HandleAsync(GetDraftQuery request, CancellationToken ct)
     {
-        var spec = new PostSpec(request.Id);
-        var post = repo.FirstOrDefaultAsync(spec, ct);
+        var post = await db.Post
+            .AsNoTracking()
+            .Include(p => p.Tags)
+            .Include(p => p.PostCategory)
+                .ThenInclude(pc => pc.Category)
+            .FirstOrDefaultAsync(p => p.Id == request.Id, ct);
+
         return post;
     }
 }

@@ -31,28 +31,31 @@
 }
 @section admintoolbar {
     <div class="admin-toolbar pb-2 border-bottom mb-3">
-        <a href="javascript:void(0);" 
-           x-on:click="deleteSelectedComments()" 
-           class="btn btn-outline-danger btn-delete-selected">
-            <i class="bi-trash"></i> @SharedLocalizer["Delete selected"]
-        </a>
+        <div class="row">
+            <div class="col">
+                <a x-on:click="openFilter()" class="btn btn-outline-accent me-2" role="button">
+                    <i class="bi-funnel"></i>
+                    @SharedLocalizer["Filter"]
+                    <span x-show="activeFilterCount > 0" class="badge bg-danger ms-1" x-text="activeFilterCount"></span>
+                </a>
+                <a href="javascript:void(0);"
+                   x-on:click="deleteSelectedComments()"
+                   class="btn btn-outline-danger btn-delete-selected"
+                   x-show="selectedCommentIds.length > 0">
+                    <i class="bi-trash"></i>
+                    <span x-text="`@SharedLocalizer["Delete selected"] (${selectedCommentIds.length})`"></span>
+                </a>
+            </div>
+            <div class="col-auto">
+                <div class="text-muted admin-toolbar-text">
+                    <span x-text="commentCount"></span> item(s)
+                </div>
+            </div>
+        </div>
     </div>
 }
 
 <div>
-    <form x-on:submit.prevent="handleSearch()">
-        <div class="d-flex search-box mb-3">
-            <input type="search" 
-                   x-model="searchTerm"
-                   aria-label="Search" 
-                   class="form-control" 
-                   placeholder="@SharedLocalizer["Search user name or email"]" />
-            <button class="btn btn-light btn-search my-sm-0" type="submit">
-                <i class="bi-search text-dark"></i>
-            </button>
-        </div>
-    </form>
-
     <div x-show="isLoading"
          class="text-muted mb-3"
          :class="{ 'd-flex align-items-center': isLoading }">
@@ -166,4 +169,50 @@
             </li>
         </ul>
     </nav>
+</div>
+
+<!-- Filter Offcanvas -->
+<div class="offcanvas offcanvas-end" tabindex="-1" x-ref="filterCanvas" aria-labelledby="filterCanvasLabel">
+    <div class="offcanvas-header">
+        <h5 class="offcanvas-title" id="filterCanvasLabel">@SharedLocalizer["Filter"]</h5>
+        <button type="button" class="btn-close text-reset" data-bs-dismiss="offcanvas" aria-label="Close"></button>
+    </div>
+    <div class="offcanvas-body d-flex flex-column p-0">
+        <form x-on:submit.prevent="handleFilter()" class="d-flex flex-column h-100">
+            <div class="flex-grow-1 p-3 pb-0" style="min-height: 0; overflow-y: auto;">
+                <div class="mb-3">
+                    <label class="form-label" for="filterUsername">@SharedLocalizer["Username"]</label>
+                    <input type="text" class="form-control" id="filterUsername" x-model="usernameFilter" maxlength="128" />
+                </div>
+                <div class="mb-3">
+                    <label class="form-label" for="filterEmail">@SharedLocalizer["Email"]</label>
+                    <input type="text" class="form-control" id="filterEmail" x-model="emailFilter" maxlength="128" />
+                </div>
+                <div class="mb-3">
+                    <label class="form-label" for="filterCommentContent">@SharedLocalizer["Comment Content"]</label>
+                    <input type="text" class="form-control" id="filterCommentContent" x-model="commentContentFilter" maxlength="256" />
+                </div>
+                <div class="mb-3">
+                    <label class="form-label" for="filterStartDate">@SharedLocalizer["Start Date"]</label>
+                    <input type="date" class="form-control" id="filterStartDate" x-model="startDate" />
+                </div>
+                <div class="mb-3">
+                    <label class="form-label" for="filterEndDate">@SharedLocalizer["End Date"]</label>
+                    <input type="date" class="form-control" id="filterEndDate" x-model="endDate" />
+                </div>
+            </div>
+
+            <!-- Fixed Bottom Buttons -->
+            <div class="border-top p-3 bg-light">
+                <div class="d-grid gap-2">
+                    <button type="submit" class="btn btn-accent">
+                        <i class="bi-funnel"></i> @SharedLocalizer["Apply Filter"]
+                    </button>
+                    <button type="button" class="btn btn-outline-secondary" x-on:click="clearFilter()">
+                        <i class="bi-x-circle"></i> @SharedLocalizer["Clear"]
+                    </button>
+                </div>
+            </div>
+        </form>
+    </div>
 </div>
