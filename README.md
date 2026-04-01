@@ -10,11 +10,11 @@
 - **Security:** Enable **HTTPS** and **HTTP/2** on your web server for optimal security and performance.
 - **Deployment Options:** While Azure is recommended, Moonglade can run on any cloud provider or on-premises.
 
-### Quick Azure Deploy (App Service on Linux)
+### Quick Azure Deployment (App Service on Linux)
 
 Get started in 10 minutes with minimal Azure resources using our [automated deployment script](https://github.com/EdiWang/Moonglade/wiki/Quick-Deploy-on-Azure).
 
-### Quick Local Deploy (Docker)
+### Quick Local Deployment (Docker)
 
 For local testing or small-scale use, deploy Moonglade using Docker:
 
