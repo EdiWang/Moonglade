@@ -69,14 +69,16 @@ public class MentionController(
         [FromQuery] string sourceTitle = null,
         [FromQuery] string targetPostTitle = null,
         [FromQuery] DateTime? startTimeUtc = null,
-        [FromQuery] DateTime? endTimeUtc = null)
+        [FromQuery] DateTime? endTimeUtc = null,
+        [FromQuery] string sortBy = null,
+        [FromQuery] bool sortDescending = true)
     {
         if (pageIndex < 1) pageIndex = 1;
         if (pageSize < 1) pageSize = 10;
         if (pageSize > 100) pageSize = 100;
 
         var (mentions, totalCount) = await queryMediator.QueryAsync(
-            new ListMentionsQuery(pageSize, pageIndex, domain, sourceTitle, targetPostTitle, startTimeUtc, endTimeUtc));
+            new ListMentionsQuery(pageSize, pageIndex, domain, sourceTitle, targetPostTitle, startTimeUtc, endTimeUtc, sortBy, sortDescending));
 
         return Ok(new PagedResult<MentionEntity>(mentions, pageIndex, pageSize, totalCount));
     }
