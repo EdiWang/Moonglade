@@ -219,11 +219,14 @@ public class SettingsController(
         if (!oldPasswordValid) return Conflict("Old password is incorrect.");
 
         var newSalt = SecurityHelper.GenerateSalt();
-        blogConfig.LocalAccountSettings.Username = request.NewUsername.Trim();
-        blogConfig.LocalAccountSettings.PasswordSalt = newSalt;
-        blogConfig.LocalAccountSettings.PasswordHash = SecurityHelper.HashPassword(request.NewPassword, newSalt);
+        var newSettings = new LocalAccountSettings
+        {
+            Username = request.NewUsername.Trim(),
+            PasswordSalt = newSalt,
+            PasswordHash = SecurityHelper.HashPassword(request.NewPassword, newSalt)
+        };
 
-        return await UpdateSettingsAsync(blogConfig.LocalAccountSettings,
+        return await UpdateSettingsAsync(newSettings,
             EventType.SettingsPasswordUpdated, "Update Local Account Password", request.NewUsername,
             new { Username = request.NewUsername });
     }
