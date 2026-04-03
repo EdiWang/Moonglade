@@ -12,7 +12,7 @@ public class RestorePostCommandHandler(
     public async Task HandleAsync(RestorePostCommand request, CancellationToken ct)
     {
         var post = await db.Post.FindAsync([request.Id], ct);
-        if (null == post) return;
+        if (post == null) return;
 
         post.IsDeleted = false;
         await db.SaveChangesAsync(ct);

@@ -32,7 +32,7 @@ public class AssetsController(
             return avatarBytes;
         });
 
-        if (null != bytes) return File(bytes, "image/png");
+        if (bytes != null) return File(bytes, "image/png");
 
         var fallbackImageFile = Path.Join($"{env.WebRootPath}", "images", "default-avatar.png");
         return PhysicalFile(fallbackImageFile, "image/png");

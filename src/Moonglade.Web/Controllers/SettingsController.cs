@@ -85,7 +85,7 @@ public class SettingsController(
 
         if (model.EnableCDNRedirect)
         {
-            if (null != blogConfig.GeneralSettings.AvatarUrl
+            if (blogConfig.GeneralSettings.AvatarUrl != null
             && !blogConfig.GeneralSettings.AvatarUrl.StartsWith(model.CDNEndpoint))
             {
                 try

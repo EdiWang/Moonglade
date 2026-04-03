@@ -13,7 +13,7 @@ public class CancelScheduleCommandHandler(
     public async Task HandleAsync(CancelScheduleCommand request, CancellationToken ct)
     {
         var post = await db.Post.FindAsync([request.Id], ct);
-        if (null == post) return;
+        if (post == null) return;
 
         if (post.PostStatus != PostStatus.Scheduled)
         {

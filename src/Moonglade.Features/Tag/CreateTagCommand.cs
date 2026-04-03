@@ -16,7 +16,7 @@ public class CreateTagCommandHandler(
         var normalizedName = BlogTagHelper.NormalizeName(request.Name, BlogTagHelper.TagNormalizationDictionary);
 
         var existingTag = await db.Tag.FirstOrDefaultAsync(t => t.NormalizedName == normalizedName, ct);
-        if (null != existingTag) return new TagCommandResult
+        if (existingTag != null) return new TagCommandResult
         {
             Id = existingTag.Id,
             DisplayName = existingTag.DisplayName,

@@ -14,7 +14,7 @@ public class DeletePostCommandHandler(
     {
         var (guid, softDelete) = request;
         var post = await db.Post.FindAsync([guid], ct);
-        if (null == post) return;
+        if (post == null) return;
 
         if (softDelete)
         {

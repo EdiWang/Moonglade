@@ -13,7 +13,7 @@ public class DeleteCategoryCommandHandler(
     public async Task<OperationCode> HandleAsync(DeleteCategoryCommand request, CancellationToken ct)
     {
         var cat = await db.Category.FindAsync([request.Id], ct);
-        if (null == cat) return OperationCode.ObjectNotFound;
+        if (cat == null) return OperationCode.ObjectNotFound;
 
         db.Category.Remove(cat);
         await db.SaveChangesAsync(ct);

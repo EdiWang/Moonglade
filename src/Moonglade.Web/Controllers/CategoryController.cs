@@ -14,7 +14,7 @@ public class CategoryController(
     public async Task<IActionResult> Get([NotEmpty] Guid id)
     {
         var cat = await queryMediator.QueryAsync(new GetCategoryQuery(id));
-        if (null == cat) return NotFound();
+        if (cat == null) return NotFound();
 
         return Ok(cat);
     }
