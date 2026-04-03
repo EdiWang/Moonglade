@@ -4,5 +4,8 @@
         "**/*.user": true,
         "**/bin": true,
         "**/obj": true
+    },
+    "chat.tools.terminal.autoApprove": {
+        "dotnet build": true
     }
 }
