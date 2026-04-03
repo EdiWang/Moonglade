@@ -196,7 +196,7 @@ public class PostController(
     [HttpGet("meta")]
     public async Task<IActionResult> GetMeta([FromServices] IOptions<RequestLocalizationOptions> locOptions)
     {
-        var ec = configuration.GetValue<EditorChoice>("Editor");
+        var ec = configuration.GetValue<EditorChoice>("DefaultEditor");
         var cats = await queryMediator.QueryAsync(new ListCategoriesQuery());
 
         var response = new PostEditorMeta
