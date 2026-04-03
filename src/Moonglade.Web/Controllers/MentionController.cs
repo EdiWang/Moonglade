@@ -1,6 +1,7 @@
 ﻿using LiteBus.Commands.Abstractions;
 using LiteBus.Events.Abstractions;
 using LiteBus.Queries.Abstractions;
+using Moonglade.BackgroundServices;
 using Moonglade.Data.Entities;
 using Moonglade.Email.Client;
 using Moonglade.Webmention;
@@ -14,7 +15,7 @@ public class MentionController(
     ILogger<MentionController> logger,
     IBlogConfig blogConfig,
     IQueryMediator queryMediator,
-    IEventMediator eventMediator,
+    CannonService cannonService,
     ICommandMediator commandMediator) : ControllerBase
 {
     [HttpPost("/webmention")]
@@ -48,16 +49,15 @@ public class MentionController(
         _ => StatusCode(StatusCodes.Status500InternalServerError, "An unknown error occurred.")
     };
 
-    private async void SendMentionEmailAction(MentionEntity mention)
+    private void SendMentionEmailAction(MentionEntity mention)
     {
-        try
-        {
-            await eventMediator.PublishAsync(new MentionEvent(mention.TargetPostTitle, mention.Domain, mention.SourceIp, mention.SourceUrl, mention.SourceTitle));
-        }
-        catch (Exception e)
-        {
-            logger.LogError(e, "Exception occurred while publishing MentionEvent.");
-        }
+        cannonService.FireAsync<IEventMediator>(async mediator =>
+            await mediator.PublishAsync(new MentionEvent(
+                mention.TargetPostTitle,
+                mention.Domain,
+                mention.SourceIp,
+                mention.SourceUrl,
+                mention.SourceTitle)));
     }
 
     [Authorize]
