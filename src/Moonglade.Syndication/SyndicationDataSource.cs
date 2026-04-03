@@ -1,5 +1,4 @@
 using Microsoft.AspNetCore.Http;
-using Microsoft.Extensions.Configuration;
 using Moonglade.Configuration;
 using Moonglade.Data;
 using Moonglade.Data.DTO;
@@ -16,8 +15,7 @@ public interface ISyndicationDataSource
 public class SyndicationDataSource(
     IBlogConfig blogConfig,
     IHttpContextAccessor httpContextAccessor,
-    BlogDbContext db,
-    IConfiguration configuration)
+    BlogDbContext db)
     : ISyndicationDataSource
 {
     private readonly string _baseUrl = $"{httpContextAccessor.HttpContext!.Request.Scheme}://{httpContextAccessor.HttpContext.Request.Host}";
@@ -89,9 +87,7 @@ public class SyndicationDataSource(
 
     private string FormatPostContent(string rawContent, string contentType)
     {
-        var effectiveType = string.IsNullOrEmpty(contentType)
-            ? configuration.GetValue<EditorChoice>("Editor").ToString().ToLower()
-            : contentType;
+        var effectiveType = string.IsNullOrEmpty(contentType) ? "html" : contentType;
 
         var htmlContent = effectiveType == "markdown" ?
             ContentProcessor.MarkdownToContent(rawContent, ContentProcessor.MarkdownConvertType.Html, false) :
