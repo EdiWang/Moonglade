@@ -57,6 +57,8 @@ public static class BlogDbContextExtension
 {
     public static async Task ClearAllData(this BlogDbContext context)
     {
+        await using var transaction = await context.Database.BeginTransactionAsync();
+
         await context.PostView.ExecuteDeleteAsync();
         await context.CommentReply.ExecuteDeleteAsync();
         await context.Comment.ExecuteDeleteAsync();
@@ -73,5 +75,7 @@ public static class BlogDbContextExtension
         await context.BlogPage.ExecuteDeleteAsync();
         await context.Widget.ExecuteDeleteAsync();
         await context.ActivityLog.ExecuteDeleteAsync();
+
+        await transaction.CommitAsync();
     }
 }
