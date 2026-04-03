@@ -5,7 +5,7 @@ namespace Moonglade.Web.Configuration;
 
 public static class Encoder
 {
-    public static HtmlEncoder MoongladeHtmlEncoder => HtmlEncoder.Create(
+    public static readonly HtmlEncoder MoongladeHtmlEncoder = HtmlEncoder.Create(
         UnicodeRanges.BasicLatin,
         UnicodeRanges.CjkCompatibility,
         UnicodeRanges.CjkCompatibilityForms,
