@@ -57,25 +57,29 @@ public static class BlogDbContextExtension
 {
     public static async Task ClearAllData(this BlogDbContext context)
     {
-        await using var transaction = await context.Database.BeginTransactionAsync();
+        var strategy = context.Database.CreateExecutionStrategy();
+        await strategy.ExecuteAsync(async () =>
+        {
+            await using var transaction = await context.Database.BeginTransactionAsync();
 
-        await context.PostView.ExecuteDeleteAsync();
-        await context.CommentReply.ExecuteDeleteAsync();
-        await context.Comment.ExecuteDeleteAsync();
-        await context.PostTag.ExecuteDeleteAsync();
-        await context.PostCategory.ExecuteDeleteAsync();
-        await context.Post.ExecuteDeleteAsync();
-        await context.Category.ExecuteDeleteAsync();
-        await context.Tag.ExecuteDeleteAsync();
-        await context.Mention.ExecuteDeleteAsync();
-        await context.BlogConfiguration.ExecuteDeleteAsync();
-        await context.BlogAsset.ExecuteDeleteAsync();
-        await context.BlogTheme.ExecuteDeleteAsync();
-        await context.StyleSheet.ExecuteDeleteAsync();
-        await context.BlogPage.ExecuteDeleteAsync();
-        await context.Widget.ExecuteDeleteAsync();
-        await context.ActivityLog.ExecuteDeleteAsync();
+            await context.PostView.ExecuteDeleteAsync();
+            await context.CommentReply.ExecuteDeleteAsync();
+            await context.Comment.ExecuteDeleteAsync();
+            await context.PostTag.ExecuteDeleteAsync();
+            await context.PostCategory.ExecuteDeleteAsync();
+            await context.Post.ExecuteDeleteAsync();
+            await context.Category.ExecuteDeleteAsync();
+            await context.Tag.ExecuteDeleteAsync();
+            await context.Mention.ExecuteDeleteAsync();
+            await context.BlogConfiguration.ExecuteDeleteAsync();
+            await context.BlogAsset.ExecuteDeleteAsync();
+            await context.BlogTheme.ExecuteDeleteAsync();
+            await context.StyleSheet.ExecuteDeleteAsync();
+            await context.BlogPage.ExecuteDeleteAsync();
+            await context.Widget.ExecuteDeleteAsync();
+            await context.ActivityLog.ExecuteDeleteAsync();
 
-        await transaction.CommitAsync();
+            await transaction.CommitAsync();
+        });
     }
 }
