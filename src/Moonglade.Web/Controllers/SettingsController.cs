@@ -171,10 +171,28 @@ public class SettingsController(
             return ValidationProblem(ModelState);
         }
 
+        Menu[] menus;
+        try
+        {
+            menus = model.MenuJson.FromJson<Menu[]>();
+        }
+        catch (System.Text.Json.JsonException ex)
+        {
+            logger.LogWarning(ex, "Invalid JSON in custom menu settings");
+            ModelState.AddModelError(nameof(CustomMenuSettingsJsonModel.MenuJson), "Invalid JSON format for menus.");
+            return ValidationProblem(ModelState);
+        }
+
+        if (menus is null)
+        {
+            ModelState.AddModelError(nameof(CustomMenuSettingsJsonModel.MenuJson), "Invalid JSON format for menus.");
+            return ValidationProblem(ModelState);
+        }
+
         blogConfig.CustomMenuSettings = new()
         {
             IsEnabled = model.IsEnabled,
-            Menus = model.MenuJson.FromJson<Menu[]>()
+            Menus = menus
         };
 
         return await UpdateSettingsAsync(blogConfig.CustomMenuSettings,
@@ -215,14 +233,14 @@ public class SettingsController(
         EventType eventType,
         string operation,
         string targetName,
-        object metadata = null) where T : IBlogSettings
+        object metadata = null) where T : IBlogSettings<T>
     {
         await SaveConfigAsync(settings);
         await LogActivityAsync(eventType, operation, targetName, metadata);
         return NoContent();
     }
 
-    private async Task SaveConfigAsync<T>(T settings) where T : IBlogSettings
+    private async Task SaveConfigAsync<T>(T settings) where T : IBlogSettings<T>
     {
         var kvp = blogConfig.UpdateAsync(settings);
         await CommandMediator.SendAsync(new UpdateConfigurationCommand(kvp.Key, kvp.Value));

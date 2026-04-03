@@ -4,7 +4,7 @@ using System.Text.Json.Serialization;
 
 namespace Moonglade.Configuration;
 
-public class ImageSettings : IBlogSettings, IValidatableObject
+public class ImageSettings : IBlogSettings<ImageSettings>, IValidatableObject
 {
     [Display(Name = "Enabled watermark")]
     public bool IsWatermarkEnabled { get; set; }

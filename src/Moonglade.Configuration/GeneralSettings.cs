@@ -3,7 +3,7 @@ using System.Text.Json.Serialization;
 
 namespace Moonglade.Configuration;
 
-public class GeneralSettings : IBlogSettings
+public class GeneralSettings : IBlogSettings<GeneralSettings>
 {
     [Required]
     [Display(Name = "Meta keyword")]

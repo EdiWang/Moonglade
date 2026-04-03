@@ -3,7 +3,7 @@ using System.Text.Json.Serialization;
 
 namespace Moonglade.Configuration;
 
-public class NotificationSettings : IBlogSettings
+public class NotificationSettings : IBlogSettings<NotificationSettings>
 {
     [Display(Name = "Enable email sending")]
     public bool EnableEmailSending { get; set; }

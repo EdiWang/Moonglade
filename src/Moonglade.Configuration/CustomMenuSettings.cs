@@ -12,7 +12,7 @@ public class CustomMenuSettingsJsonModel
     public string MenuJson { get; set; }
 }
 
-public class CustomMenuSettings : IBlogSettings
+public class CustomMenuSettings : IBlogSettings<CustomMenuSettings>
 {
     public bool IsEnabled { get; set; }
 

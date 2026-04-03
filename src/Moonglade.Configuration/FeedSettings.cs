@@ -3,7 +3,7 @@ using System.Text.Json.Serialization;
 
 namespace Moonglade.Configuration;
 
-public class FeedSettings : IBlogSettings
+public class FeedSettings : IBlogSettings<FeedSettings>
 {
     [Display(Name = "Feed items")]
     public int FeedItemCount { get; set; }

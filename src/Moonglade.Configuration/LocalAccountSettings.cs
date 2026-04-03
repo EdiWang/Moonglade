@@ -1,6 +1,6 @@
 ﻿namespace Moonglade.Configuration;
 
-public class LocalAccountSettings : IBlogSettings
+public class LocalAccountSettings : IBlogSettings<LocalAccountSettings>
 {
     public string Username { get; set; }
 
