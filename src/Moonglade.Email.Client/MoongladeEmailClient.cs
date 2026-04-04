@@ -78,14 +78,14 @@ public class MoongladeEmailClient : IMoongladeEmailClient
     /// Send email to `/api/enqueue` endpoint
     /// </summary>
     /// <param name="type">Type of email message</param>
-    /// <param name="receipts">Email recipients</param>
+    /// <param name="recipients">Email recipients</param>
     /// <param name="payload">Email payload data</param>
     /// <param name="cancellationToken">Cancellation token</param>
     /// <returns>True if email was sent successfully, false otherwise</returns>
-    public async Task<bool> SendEmailAsync<T>(MailMesageTypes type, string[] receipts, T payload, CancellationToken cancellationToken = default) where T : class
+    public async Task<bool> SendEmailAsync<T>(MailMesageTypes type, string[] recipients, T payload, CancellationToken cancellationToken = default) where T : class
     {
         // Validate inputs
-        if (receipts == null || receipts.Length == 0)
+        if (recipients == null || recipients.Length == 0)
         {
             _logger.LogWarning("Cannot send email: no recipients provided");
             return false;
@@ -115,7 +115,7 @@ public class MoongladeEmailClient : IMoongladeEmailClient
             var emailNotification = new EmailNotification
             {
                 Type = type.ToString(),
-                Receipts = receipts,
+                Recipients = recipients,
                 Payload = payload,
                 OriginAspNetRequestId = _httpContextAccessor.HttpContext?.TraceIdentifier ?? Guid.NewGuid().ToString()
             };
@@ -128,12 +128,12 @@ public class MoongladeEmailClient : IMoongladeEmailClient
             if (response.IsSuccessStatusCode)
             {
                 _logger.LogInformation("Email notification queued successfully. Type: {EmailType}, Recipients: {RecipientCount}",
-                    type, receipts.Length);
+                    type, recipients.Length);
                 return true;
             }
 
             _logger.LogWarning("Failed to queue email notification. Status: {StatusCode}, Type: {EmailType}, Recipients: {RecipientCount}",
-                response.StatusCode, type, receipts.Length);
+                response.StatusCode, type, recipients.Length);
 
             return false;
         }
