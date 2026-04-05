@@ -25,8 +25,9 @@ using Moonglade.Webmention;
 using System.Globalization;
 using System.Net;
 using System.Net.Http.Headers;
+using System.Text.Encodings.Web;
 using System.Text.Json.Serialization;
-using Encoder = Moonglade.Web.Configuration.Encoder;
+using System.Text.Unicode;
 
 namespace Moonglade.Web;
 
@@ -132,7 +133,7 @@ public class Program
         ConfigureLocalization(services);
         ConfigureControllers(services);
         ConfigureRazorPages(services);
-        services.AddSingleton(Encoder.MoongladeHtmlEncoder);
+        services.AddSingleton(HtmlEncoder.Create(UnicodeRanges.All));
         ConfigureAntiforgery(services);
         ConfigureRequestLocalization(services, cultures);
         ConfigureRouteOptions(services);
