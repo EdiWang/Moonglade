@@ -3,6 +3,7 @@
     <File Path="../.github/workflows/docker-preview.yml" />
     <File Path="../.github/workflows/docker.yml" />
     <File Path="../.gitignore" />
+    <File Path="../compose.yaml" />
     <File Path="../Dockerfile" />
     <File Path="../README.md" />
     <File Path="Directory.Build.props" />
