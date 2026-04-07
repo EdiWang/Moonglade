@@ -311,7 +311,7 @@ public class Program
         app.UseMiddleware<PoweredByMiddleware>();
 
         app.UseExceptionHandler(ConfigureExceptionHandler.Handler);
-        app.UseStatusCodePages(ConfigureStatusCodePages.Handler);
+        app.UseStatusCodePages(ProblemDetailsStatusCodePages.Handler);
 
         app.UseHttpsRedirection();
         app.UseRequestLocalization(new RequestLocalizationOptions
