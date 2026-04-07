@@ -15,7 +15,7 @@ public class WidgetsController(
     public async Task<IActionResult> Get([NotEmpty] Guid id)
     {
         var widget = await queryMediator.QueryAsync(new GetWidgetQuery(id));
-        if (null == widget) return NotFound();
+        if (widget == null) return NotFound();
 
         return Ok(widget);
     }

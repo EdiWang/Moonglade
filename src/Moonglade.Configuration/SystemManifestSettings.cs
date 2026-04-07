@@ -3,7 +3,7 @@ using System.Text.Json.Serialization;
 
 namespace Moonglade.Configuration;
 
-public class SystemManifestSettings : IBlogSettings
+public class SystemManifestSettings : IBlogSettings<SystemManifestSettings>
 {
     public string VersionString { get; set; }
     public DateTime InstallTimeUtc { get; set; }

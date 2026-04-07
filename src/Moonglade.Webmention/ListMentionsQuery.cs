@@ -11,7 +11,9 @@ public record ListMentionsQuery(
     string? SourceTitle = null,
     string? TargetPostTitle = null,
     DateTime? StartTimeUtc = null,
-    DateTime? EndTimeUtc = null) : IQuery<(List<MentionEntity> Mentions, int TotalCount)>;
+    DateTime? EndTimeUtc = null,
+    string? SortBy = null,
+    bool SortDescending = true) : IQuery<(List<MentionEntity> Mentions, int TotalCount)>;
 
 public class ListMentionsQueryHandler(BlogDbContext db) :
     IQueryHandler<ListMentionsQuery, (List<MentionEntity> Mentions, int TotalCount)>
@@ -50,8 +52,24 @@ public class ListMentionsQueryHandler(BlogDbContext db) :
         var totalCount = await query.CountAsync(ct);
 
         var skip = (request.PageIndex - 1) * request.PageSize;
-        var entities = await query
-            .OrderByDescending(e => e.PingTimeUtc)
+
+        IOrderedQueryable<MentionEntity> orderedQuery = request.SortBy?.ToLowerInvariant() switch
+        {
+            "sourceurl" => request.SortDescending
+                ? query.OrderByDescending(e => e.SourceUrl)
+                : query.OrderBy(e => e.SourceUrl),
+            "sourcetitle" => request.SortDescending
+                ? query.OrderByDescending(e => e.SourceTitle)
+                : query.OrderBy(e => e.SourceTitle),
+            "targetposttitle" => request.SortDescending
+                ? query.OrderByDescending(e => e.TargetPostTitle)
+                : query.OrderBy(e => e.TargetPostTitle),
+            _ => request.SortDescending
+                ? query.OrderByDescending(e => e.PingTimeUtc)
+                : query.OrderBy(e => e.PingTimeUtc)
+        };
+
+        var entities = await orderedQuery
             .Skip(skip)
             .Take(request.PageSize)
             .ToListAsync(ct);

@@ -58,11 +58,4 @@
             </div>
         </template>
     </div>
-
-    <div x-show="!isLoading && hasPosts" class="admin-settings-action-container border-top pt-2 mt-2">
-        <button x-on:click="confirmEmptyRecycleBin" class="btn btn-outline-danger btn-empty-recbin mb-3">
-            <i class="bi-trash"></i>
-            @SharedLocalizer["Empty Recycle Bin"]
-        </button>
-    </div>
 </div>

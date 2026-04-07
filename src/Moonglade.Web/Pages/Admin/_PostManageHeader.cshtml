@@ -20,6 +20,13 @@
         </ul>
     </div>
     <div class="col-auto">
+        @if (currentPage == "/Admin/RecycleBin")
+        {
+            <button x-show="hasPosts" x-cloak x-on:click="confirmEmptyRecycleBin" class="btn btn-outline-danger btn-empty-recbin me-1">
+                <i class="bi-trash"></i>
+                @SharedLocalizer["Empty Recycle Bin"]
+            </button>
+        }
         <a class="btn btn-outline-accent" asp-page="./EditPost">
             <i class="bi-plus-lg"></i>
             @SharedLocalizer["New"]

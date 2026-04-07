@@ -14,7 +14,7 @@ public class PublishPostCommandHandler(
     public async Task HandleAsync(PublishPostCommand request, CancellationToken ct)
     {
         var post = await db.Post.FindAsync([request.Id], ct);
-        if (null == post) return;
+        if (post == null) return;
 
         var utcNow = DateTime.UtcNow;
 

@@ -13,7 +13,7 @@ public class UnpublishPostCommandHandler(
     public async Task HandleAsync(UnpublishPostCommand request, CancellationToken ct)
     {
         var post = await db.Post.FindAsync([request.Id], ct);
-        if (null == post) return;
+        if (post == null) return;
 
         post.PostStatus = PostStatus.Draft;
         post.PubDateUtc = null;

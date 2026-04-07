@@ -24,7 +24,7 @@ public class PostController(
         CannonService cannonService) : BlogControllerBase(commandMediator)
 {
     [HttpGet("list")]
-    public async Task<IActionResult> List([FromQuery] int pageIndex = 1, [FromQuery] int pageSize = 4, [FromQuery] string searchTerm = null)
+    public async Task<IActionResult> List([FromQuery][Range(1, int.MaxValue)] int pageIndex = 1, [FromQuery][Range(1, 100)] int pageSize = 4, [FromQuery] string searchTerm = null)
     {
         var offset = (pageIndex - 1) * pageSize;
         var (posts, totalRows) = await queryMediator.QueryAsync(new ListPostSegmentQuery(PostStatus.Published, offset, pageSize, searchTerm));
@@ -196,7 +196,7 @@ public class PostController(
     [HttpGet("meta")]
     public async Task<IActionResult> GetMeta([FromServices] IOptions<RequestLocalizationOptions> locOptions)
     {
-        var ec = configuration.GetValue<EditorChoice>("Editor");
+        var ec = configuration.GetValue<EditorChoice>("DefaultEditor");
         var cats = await queryMediator.QueryAsync(new ListCategoriesQuery());
 
         var response = new PostEditorMeta

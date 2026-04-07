@@ -3,7 +3,7 @@ using System.Text.Json.Serialization;
 
 namespace Moonglade.Configuration;
 
-public class AdvancedSettings : IBlogSettings
+public class AdvancedSettings : IBlogSettings<AdvancedSettings>
 {
     [Display(Name = "robots.txt")]
     [DataType(DataType.MultilineText)]

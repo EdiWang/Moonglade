@@ -3,7 +3,7 @@ using System.Text.Json.Serialization;
 
 namespace Moonglade.Configuration;
 
-public class AppearanceSettings : IBlogSettings
+public class AppearanceSettings : IBlogSettings<AppearanceSettings>
 {
     public int ThemeId { get; set; } = 100;
 

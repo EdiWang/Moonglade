@@ -102,7 +102,7 @@ public class FeedGenerator : IFeedGenerator, IRssGenerator, IAtomGenerator
     private static List<SyndicationItem> GetItemCollection(IEnumerable<FeedEntry> itemCollection)
     {
         var synItemCollection = new List<SyndicationItem>();
-        if (null == itemCollection) return synItemCollection;
+        if (itemCollection == null) return synItemCollection;
 
         foreach (var item in itemCollection)
         {

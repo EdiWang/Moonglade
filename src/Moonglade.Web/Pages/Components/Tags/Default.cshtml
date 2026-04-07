@@ -1,12 +1,12 @@
-﻿@model List<(Moonglade.Data.Entities.TagEntity Tag, int PostCount)>
+﻿@model List<Moonglade.Data.DTO.TagWithCount>
 
 @if (Model.Any())
 {
-    foreach (var (tag, count) in Model)
+    foreach (var tag in Model)
     {
         <a asp-page="/TagList"
            asp-route-normalizedName="@tag.NormalizedName"
-           rel="@count"
+           rel="@tag.PostCount"
            class="d-inline-block btn btn-sm btn-accent mb-2 me-1">
             @tag.DisplayName
         </a>

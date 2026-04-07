@@ -17,12 +17,11 @@ Alpine.data('recycleBinManager', () => ({
         try {
             const data = await fetch2('/api/post/list/recyclebin', 'GET');
             this.posts = data.posts ?? [];
-            
-            formatUtcTime();
         } catch (err) {
             error(err);
         } finally {
             this.isLoading = false;
+            this.$nextTick(() => formatUtcTime());
         }
     },
 

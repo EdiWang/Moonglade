@@ -110,7 +110,7 @@ public class SignInModel(IOptions<AuthenticationSettings> authSettings,
         {
             logger.LogWarning(e, "Authentication failed for local account '{Username}'", Username);
 
-            ModelState.AddModelError(string.Empty, e.Message);
+            ModelState.AddModelError(string.Empty, "An error occurred during authentication. Please try again later.");
             return Page();
         }
     }

@@ -11,7 +11,7 @@ public class DeleteThemeCommandHandler(BlogDbContext db) : ICommandHandler<Delet
     public async Task<OperationCode> HandleAsync(DeleteThemeCommand request, CancellationToken ct)
     {
         var theme = await db.BlogTheme.FindAsync([request.Id], ct);
-        if (null == theme) return OperationCode.ObjectNotFound;
+        if (theme == null) return OperationCode.ObjectNotFound;
         if (theme.ThemeType == ThemeType.System) return OperationCode.Canceled;
 
         db.BlogTheme.Remove(theme);

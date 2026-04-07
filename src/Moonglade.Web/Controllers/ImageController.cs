@@ -53,7 +53,7 @@ public class ImageController(
             return imageInfo;
         });
 
-        if (null == image) return NotFound();
+        if (image == null) return NotFound();
 
         return File(image.ImageBytes, image.ImageContentType);
     }

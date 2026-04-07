@@ -1,7 +1,10 @@
 ﻿
 namespace Moonglade.Configuration;
 
-public interface IBlogSettings;
+public interface IBlogSettings<TSelf> where TSelf : IBlogSettings<TSelf>
+{
+    static abstract TSelf DefaultValue { get; }
+}
 
 public interface IBlogConfig
 {
@@ -18,7 +21,7 @@ public interface IBlogConfig
     SystemManifestSettings SystemManifestSettings { get; set; }
 
     IEnumerable<string> LoadFromConfig(IDictionary<string, string> config);
-    KeyValuePair<string, string> UpdateAsync<T>(T blogSettings) where T : IBlogSettings;
+    KeyValuePair<string, string> UpdateAsync<T>(T blogSettings) where T : IBlogSettings<T>;
 }
 
 public class BlogConfig : IBlogConfig
@@ -39,49 +42,43 @@ public class BlogConfig : IBlogConfig
 
     public IEnumerable<string> LoadFromConfig(IDictionary<string, string> config)
     {
-        var properties = GetType().GetProperties()
-            .Where(p => typeof(IBlogSettings).IsAssignableFrom(p.PropertyType));
-
-        foreach (var prop in properties)
-        {
-            var currentValue = prop.GetValue(this);
-            var defaultValueProp = prop.PropertyType.GetProperty("DefaultValue");
-
-            if (defaultValueProp == null || !defaultValueProp.CanRead)
-            {
-                throw new InvalidOperationException($"Property {prop.Name} does not have a DefaultValue property or it is not readable.");
-            }
-
-            var defaultValue = defaultValueProp?.GetValue(currentValue);
-
-            var assignedValue = AssignValueForConfigItem((IBlogSettings)defaultValue, config, prop.Name, prop.PropertyType);
-            prop.SetValue(this, assignedValue);
-        }
+        Assign<GeneralSettings>(config, v => GeneralSettings = v);
+        Assign<ContentSettings>(config, v => ContentSettings = v);
+        Assign<CommentSettings>(config, v => CommentSettings = v);
+        Assign<NotificationSettings>(config, v => NotificationSettings = v);
+        Assign<FeedSettings>(config, v => FeedSettings = v);
+        Assign<ImageSettings>(config, v => ImageSettings = v);
+        Assign<AdvancedSettings>(config, v => AdvancedSettings = v);
+        Assign<AppearanceSettings>(config, v => AppearanceSettings = v);
+        Assign<CustomMenuSettings>(config, v => CustomMenuSettings = v);
+        Assign<LocalAccountSettings>(config, v => LocalAccountSettings = v);
+        Assign<SystemManifestSettings>(config, v => SystemManifestSettings = v);
 
         return _keysToInit.AsEnumerable();
     }
 
-    private IBlogSettings AssignValueForConfigItem(IBlogSettings defaultValue, IDictionary<string, string> config, string name, Type type)
+    private void Assign<T>(IDictionary<string, string> config, Action<T> setter) where T : IBlogSettings<T>
     {
-        if (config.TryGetValue(name, out var value))
+        var name = typeof(T).Name;
+
+        if (config.TryGetValue(name, out var json))
         {
             try
             {
-                // Assuming you have a FromJson extension method
-                var method = typeof(JsonExtensions).GetMethod("FromJson").MakeGenericMethod(type);
-                return (IBlogSettings)method.Invoke(null, [value]);
+                setter(json.FromJson<T>());
+                return;
             }
             catch
             {
-                // Handle deserialization error if needed
+                // Fall through to use default value
             }
         }
 
         _keysToInit.Add(name);
-        return defaultValue;
+        setter(T.DefaultValue);
     }
 
-    public KeyValuePair<string, string> UpdateAsync<T>(T blogSettings) where T : IBlogSettings
+    public KeyValuePair<string, string> UpdateAsync<T>(T blogSettings) where T : IBlogSettings<T>
     {
         var name = typeof(T).Name;
         var json = blogSettings.ToJson();

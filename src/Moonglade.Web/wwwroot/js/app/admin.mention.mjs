@@ -14,7 +14,15 @@ sourceTitleFilter: '',
 targetPostTitleFilter: '',
 startDate: '',
 endDate: '',
+sortBy: 'pingTimeUtc',
+sortDescending: 'true',
 filterCanvas: null,
+sortByOptions: [
+    { value: 'sourceUrl', label: 'Source URL' },
+    { value: 'sourceTitle', label: 'Source Title' },
+    { value: 'targetPostTitle', label: 'Target Post Title' },
+    { value: 'pingTimeUtc', label: 'Ping Time' }
+],
 
 async init() {
     this.initPageFromUrl();
@@ -51,6 +59,11 @@ async init() {
                 const endUtc = new Date(this.endDate + 'T23:59:59').toISOString();
                 params.append('endTimeUtc', endUtc);
             }
+
+            if (this.sortBy) {
+                params.append('sortBy', this.sortBy);
+            }
+            params.append('sortDescending', this.sortDescending === 'true');
 
             const data = await fetch2(`/api/mention/list?${params.toString()}`, 'GET');
             this.mentions = data.items ?? [];
@@ -151,6 +164,8 @@ async init() {
         this.targetPostTitleFilter = '';
         this.startDate = '';
         this.endDate = '';
+        this.sortBy = 'pingTimeUtc';
+        this.sortDescending = 'true';
         this.currentPage = 1;
         this.selectedIds = [];
         await this.loadData();
@@ -165,6 +180,7 @@ async init() {
         if (this.targetPostTitleFilter) count++;
         if (this.startDate) count++;
         if (this.endDate) count++;
+        if (this.sortBy !== 'pingTimeUtc' || this.sortDescending !== 'true') count++;
         return count;
     }
 }, [10, 20, 30, 40, 50]));

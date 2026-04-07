@@ -13,7 +13,7 @@ public class SaveAssetEventHandler(BlogDbContext db) : IEventHandler<SaveAssetEv
 
         var entity = await db.BlogAsset.FirstOrDefaultAsync(a => a.Id == request.AssetId, ct);
 
-        if (null == entity)
+        if (entity == null)
         {
             db.BlogAsset.Add(new()
             {

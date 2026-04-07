@@ -3,7 +3,7 @@ using System.Text.Json.Serialization;
 
 namespace Moonglade.Configuration;
 
-public class CommentSettings : IBlogSettings
+public class CommentSettings : IBlogSettings<CommentSettings>
 {
     [Display(Name = "Comment provider")]
     public CommentProvider CommentProvider { get; set; }

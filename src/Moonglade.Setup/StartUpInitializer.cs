@@ -157,7 +157,7 @@ public class StartUpInitializer(
             "Backfilling post content type",
             async () =>
             {
-                var editorValue = configuration.GetValue<string>("Editor")?.ToLower() ?? "html";
+                var editorValue = configuration.GetValue<string>("DefaultEditor")?.ToLower() ?? "html";
                 var affected = await context.Post
                     .Where(p => p.ContentType == "")
                     .ExecuteUpdateAsync(s => s.SetProperty(p => p.ContentType, editorValue), cancellationToken);

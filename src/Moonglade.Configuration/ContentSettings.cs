@@ -3,7 +3,7 @@ using System.Text.Json.Serialization;
 
 namespace Moonglade.Configuration;
 
-public class ContentSettings : IBlogSettings
+public class ContentSettings : IBlogSettings<ContentSettings>
 {
     [Required]
     [Display(Name = "Post list page size")]

@@ -14,7 +14,7 @@ public class UpdateTagCommandHandler(
     {
         var (id, name) = request;
         var tag = await db.Tag.FindAsync([id], ct);
-        if (null == tag) return OperationCode.ObjectNotFound;
+        if (tag == null) return OperationCode.ObjectNotFound;
 
         tag.DisplayName = name;
         tag.NormalizedName = BlogTagHelper.NormalizeName(name, BlogTagHelper.TagNormalizationDictionary);

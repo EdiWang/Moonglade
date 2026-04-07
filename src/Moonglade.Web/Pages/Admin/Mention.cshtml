@@ -166,6 +166,22 @@
                     <label class="form-label">@SharedLocalizer["End Date"]</label>
                     <input type="date" class="form-control" x-model="endDate" />
                 </div>
+                <hr />
+                <div class="mb-3">
+                    <label class="form-label">@SharedLocalizer["Sort By"]</label>
+                    <select class="form-select" x-model="sortBy">
+                        <template x-for="opt in sortByOptions" :key="opt.value">
+                            <option :value="opt.value" x-text="opt.label" :selected="opt.value === sortBy"></option>
+                        </template>
+                    </select>
+                </div>
+                <div class="mb-3">
+                    <label class="form-label">@SharedLocalizer["Sort Order"]</label>
+                    <select class="form-select" x-model="sortDescending">
+                        <option value="true">@SharedLocalizer["Descending"]</option>
+                        <option value="false">@SharedLocalizer["Ascending"]</option>
+                    </select>
+                </div>
             </div>
 
             <!-- Fixed Bottom Buttons -->
