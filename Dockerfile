@@ -10,6 +10,9 @@ USER app
 # If use aspnet:10.0-alpine, see https://github.com/dotnet/dotnet-docker/issues/1366
 #RUN apk add --no-cache tzdata
 
+# Captcha font
+COPY ./build/OpenSans-Bold.ttf /usr/share/fonts/OpenSans-Bold.ttf
+
 WORKDIR /app
 EXPOSE 8080
 EXPOSE 8081
