@@ -11,7 +11,6 @@ using Microsoft.AspNetCore.Rewrite;
 using Microsoft.Extensions.Diagnostics.HealthChecks;
 using Microsoft.Extensions.Logging.Console;
 using Moonglade.BackgroundServices;
-using Moonglade.Data.MySql;
 using Moonglade.Data.PostgreSql;
 using Moonglade.Data.SqlServer;
 using Moonglade.Email.Client;
@@ -276,11 +275,7 @@ public class Program
         var dbType = configuration.GetConnectionString("DatabaseProvider")
             ?? throw new InvalidOperationException("ConnectionStrings:DatabaseProvider is not configured.");
 
-        if (string.Equals(dbType, "mysql", StringComparison.OrdinalIgnoreCase))
-        {
-            services.AddMySqlStorage(connStr!);
-        }
-        else if (string.Equals(dbType, "postgresql", StringComparison.OrdinalIgnoreCase))
+        if (string.Equals(dbType, "postgresql", StringComparison.OrdinalIgnoreCase))
         {
             services.AddPostgreSqlStorage(connStr!);
         }

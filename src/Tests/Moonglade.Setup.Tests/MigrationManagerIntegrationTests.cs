@@ -50,7 +50,6 @@ public class MigrationManagerIntegrationTests
 
         // Act
         var sqlServerScript = resourceNames.FirstOrDefault(r => r.Contains("SqlServer") && r.EndsWith(".sql"));
-        var mySqlScript = resourceNames.FirstOrDefault(r => r.Contains("MySql") && r.EndsWith(".sql"));
         var postgreSqlScript = resourceNames.FirstOrDefault(r => r.Contains("PostgreSql") && r.EndsWith(".sql"));
 
         // Assert - At least verify the naming pattern exists
