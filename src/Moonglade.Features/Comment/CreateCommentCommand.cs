@@ -32,6 +32,12 @@ public class CreateCommentCommandHandler(
             .Select(p => new { p.Title, p.PubDateUtc })
             .FirstOrDefaultAsync(ct);
 
+        if (postInfo is null)
+        {
+            logger.LogWarning("Comment target post {PostId} was not found.", request.PostId);
+            return null;
+        }
+
         // Check if comments are closed
         if (blogConfig.CommentSettings.CloseCommentAfterDays > 0)
         {
