@@ -45,6 +45,7 @@
     <Project Path="Tests/Moonglade.BackgroundServices.Tests/Moonglade.BackgroundServices.Tests.csproj" Id="34394544-da00-4795-a40b-834ba56875a9" />
     <Project Path="Tests/Moonglade.Configuration.Tests/Moonglade.Configuration.Tests.csproj" Id="16bbf182-7908-4306-9a7e-207517fc9bc4" />
     <Project Path="Tests/Moonglade.Email.Client.Tests/Moonglade.Email.Client.Tests.csproj" />
+    <Project Path="Tests/Moonglade.Features.Tests/Moonglade.Features.Tests.csproj" />
     <Project Path="Tests/Moonglade.ImageStorage.Tests/Moonglade.ImageStorage.Tests.csproj" />
     <Project Path="Tests/Moonglade.IndexNow.Client.Tests/Moonglade.IndexNow.Client.Tests.csproj" />
     <Project Path="Tests/Moonglade.Moderation.Tests/Moonglade.Moderation.Tests.csproj" />

@@ -42,10 +42,10 @@ public class CreatePostCommandHandler(
             ContentType = request.Payload.ContentType,
         };
 
-        post.RouteLink = UrlHelper.GenerateRouteLink(post.PubDateUtc.GetValueOrDefault(), request.Payload.Slug);
         post.Keywords = ContentProcessor.GetKeywords(request.Payload.Keywords);
 
         await CheckSlugConflict(post, ct);
+        post.RouteLink = GetRouteLink(post);
 
         PostEntityHelper.SetCategories(post, request.Payload.SelectedCatIds);
 
@@ -68,11 +68,17 @@ public class CreatePostCommandHandler(
     // check if exist same slug under the same day
     private async Task CheckSlugConflict(PostEntity post, CancellationToken ct)
     {
-        var todayUtc = DateTime.UtcNow.Date;
+        if (post.PostStatus != PostStatus.Published || post.PubDateUtc is null)
+        {
+            return;
+        }
+
+        var publishDateUtc = post.PubDateUtc.Value.Date;
         var exists = await db.Post.AnyAsync(p =>
             p.Slug == post.Slug &&
             p.PostStatus == PostStatus.Published &&
-            p.PubDateUtc.Value.Date == todayUtc &&
+            p.PubDateUtc.HasValue &&
+            p.PubDateUtc.Value.Date == publishDateUtc &&
             !p.IsDeleted, ct);
 
         if (exists)
@@ -81,6 +87,13 @@ public class CreatePostCommandHandler(
             post.Slug += $"-{uid.ToString().ToLower()[..8]}";
             logger.LogInformation("Found conflict for post slug, generated new slug: {Slug}", post.Slug);
         }
+    }
+
+    private static string GetRouteLink(PostEntity post)
+    {
+        return post.PostStatus == PostStatus.Published && post.PubDateUtc.HasValue
+            ? UrlHelper.GenerateRouteLink(post.PubDateUtc.Value, post.Slug)
+            : null;
     }
 
 }
