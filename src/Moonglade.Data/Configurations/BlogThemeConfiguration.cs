@@ -13,7 +13,7 @@ public class BlogThemeConfiguration : IEntityTypeConfiguration<BlogThemeEntity>
 
     protected virtual void ConfigureIdentityColumn(EntityTypeBuilder<BlogThemeEntity> builder)
     {
-        // Default: ValueGeneratedOnAdd (MySQL compatible)
+        // Default: ValueGeneratedOnAdd
         builder.HasKey(e => e.Id);
         builder.Property(e => e.Id).ValueGeneratedOnAdd();
     }

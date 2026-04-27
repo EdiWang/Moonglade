@@ -40,7 +40,7 @@ public static class ScriptHashGenerator
     public static Dictionary<string, string> GenerateAllHashes(string migrationScriptsPath)
     {
         var hashes = new Dictionary<string, string>();
-        var providers = new[] { "SqlServer", "MySql", "PostgreSql" };
+        var providers = new[] { "SqlServer", "PostgreSql" };
 
         foreach (var provider in providers)
         {

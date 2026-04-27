@@ -52,7 +52,6 @@
 		<ProjectReference Include="..\Moonglade.Auth\Moonglade.Auth.csproj" />
 		<ProjectReference Include="..\Moonglade.BackgroundServices\Moonglade.BackgroundServices.csproj" />
 		<ProjectReference Include="..\Moonglade.Features\Moonglade.Features.csproj" />
-		<ProjectReference Include="..\Moonglade.Data.MySql\Moonglade.Data.MySql.csproj" />
 		<ProjectReference Include="..\Moonglade.Data.PostgreSql\Moonglade.Data.PostgreSql.csproj" />
 		<ProjectReference Include="..\Moonglade.Data.SqlServer\Moonglade.Data.SqlServer.csproj" />
 		<ProjectReference Include="..\Moonglade.ImageStorage\Moonglade.ImageStorage.csproj" />

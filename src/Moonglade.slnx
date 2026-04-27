@@ -31,7 +31,6 @@
     <Project Path="Moonglade.Widgets/Moonglade.Widgets.csproj" Id="03078b96-7d2c-426a-ad40-6e103ef2b20f" />
   </Folder>
   <Folder Name="/Data/">
-    <Project Path="Moonglade.Data.MySql/Moonglade.Data.MySql.csproj" />
     <Project Path="Moonglade.Data.PostgreSql/Moonglade.Data.PostgreSql.csproj" />
     <Project Path="Moonglade.Data.SqlServer/Moonglade.Data.SqlServer.csproj" />
     <Project Path="Moonglade.Data/Moonglade.Data.csproj" />
