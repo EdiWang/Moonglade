@@ -21,6 +21,8 @@ public class ImageController(
         ICommandMediator commandMediator)
     : BlogControllerBase(commandMediator)
 {
+    private const long MaxUploadBytes = 5 * 1024 * 1024;
+
     private readonly ImageStorageSettings _imageStorageSettings = imageStorageSettings.Value;
 
     [HttpGet(@"{filename:regex((?!-)([[a-z0-9-]]+)\.(png|jpg|jpeg|gif|bmp|webp|svg))}")]
@@ -62,6 +64,17 @@ public class ImageController(
     [HttpPost, IgnoreAntiforgeryToken]
     public async Task<IActionResult> Image([Required] IFormFile file, [FromQuery] bool skipWatermark = false)
     {
+        if (file.Length <= 0)
+        {
+            return BadRequest("Image file is empty.");
+        }
+
+        if (file.Length > MaxUploadBytes)
+        {
+            logger.LogWarning("Image upload rejected because file size {FileSize} exceeds limit {MaxUploadBytes}.", file.Length, MaxUploadBytes);
+            return BadRequest("Image file size cannot exceed 5 MB.");
+        }
+
         var name = Path.GetFileName(file.FileName);
         var ext = Path.GetExtension(name).ToLower();
         string[] allowedExts = [".png", ".jpg", ".jpeg", ".gif", ".webp", ".svg"];
