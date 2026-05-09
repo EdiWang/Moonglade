@@ -35,7 +35,7 @@
 		</Content>
 	</ItemGroup>
 	<ItemGroup>
-		<PackageReference Include="Cronos" Version="0.12.0" />
+		<PackageReference Include="Cronos" Version="0.13.0" />
 		<PackageReference Include="Edi.CacheAside.InMemory" Version="4.0.0" />
 		<PackageReference Include="Edi.Gravatar" Version="1.4.0" />
 		<PackageReference Include="Edi.ImageWatermark" Version="2.24.0" />
@@ -44,7 +44,7 @@
 		<PackageReference Include="Microsoft.Extensions.Diagnostics.HealthChecks.EntityFrameworkCore" Version="10.0.7" />
 		<PackageReference Include="Microsoft.Extensions.Logging.AzureAppServices" Version="10.0.7" />
 
-		<PackageReference Include="TinyMCE" Version="8.4.0" />
+		<PackageReference Include="TinyMCE" Version="8.5.0" />
 		<PackageReference Include="Moonglade.MonacoEditor" Version="0.55.1.1000" />
 	</ItemGroup>
 	<ItemGroup>
