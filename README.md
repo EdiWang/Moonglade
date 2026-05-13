@@ -33,7 +33,7 @@ This mirrors how [edi.wang](https://edi.wang) is deployed, utilizing a variety o
 | Tools                      | Alternatives                                                                                       |
 |----------------------------|----------------------------------------------------------------------------------------------------|
 | [Visual Studio 2026](https://visualstudio.microsoft.com/) | [VS Code](https://code.visualstudio.com/) + [.NET 10.0 SDK](http://dot.net)           |
-| [SQL Server 2025](https://www.microsoft.com/en-us/sql-server/) | [LocalDB](https://learn.microsoft.com/en-us/sql/database-engine/configure-windows/sql-server-express-localdb?view=sql-server-ver16&WT.mc_id=AZ-MVP-5002809), PostgreSQL, or MySQL |
+| [SQL Server 2025](https://www.microsoft.com/en-us/sql-server/) | [LocalDB](https://learn.microsoft.com/en-us/sql/database-engine/configure-windows/sql-server-express-localdb?view=sql-server-ver16&WT.mc_id=AZ-MVP-5002809) or PostgreSQL |
 
 ### Database Setup
 
@@ -42,13 +42,11 @@ This mirrors how [edi.wang](https://edi.wang) is deployed, utilizing a variety o
 | Database         | Example Connection String (`appsettings.json > ConnectionStrings > MoongladeDatabase`)         |
 |------------------|----------------------------------------------------------------------------------------------|
 | SQL Server       | `Server=(local);Database=moonglade;Trusted_Connection=True;`                                  |
-| MySQL            | `Server=localhost;Port=3306;Database=moonglade;Uid=root;Pwd=***;`                             |
 | PostgreSQL       | `User ID=***;Password=***;Host=localhost;Port=5432;Database=moonglade;Pooling=true;`          |
 
 Change `ConnectionStrings:DatabaseProvider` in `appsettings.json` to match your database type.` 
 
 - SQL Server: `SqlServer`
-- MySQL: `MySql`
 - PostgreSQL: `PostgreSql`
 
 ### Build & Run

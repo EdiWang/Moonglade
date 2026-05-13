@@ -56,7 +56,9 @@ public class UpdatePostCommandHandler(
         if (postEditModel.PostStatus == PostStatus.Scheduled)
         {
             post.PostStatus = PostStatus.Scheduled;
+            post.PubDateUtc = null;
             post.ScheduledPublishTimeUtc = postEditModel.ScheduledPublishTime;
+            post.RouteLink = null;
         }
 
         // Back to draft for unscheduled posts
@@ -77,7 +79,14 @@ public class UpdatePostCommandHandler(
         post.IsFeatured = postEditModel.Featured;
         post.IsOutdated = postEditModel.IsOutdated;
         post.ContentType = postEditModel.ContentType;
-        post.RouteLink = UrlHelper.GenerateRouteLink(post.PubDateUtc.GetValueOrDefault(), postEditModel.Slug);
+        post.RouteLink = GetRouteLink(post);
         post.Keywords = ContentProcessor.GetKeywords(postEditModel.Keywords);
+    }
+
+    private static string GetRouteLink(PostEntity post)
+    {
+        return post.PostStatus == PostStatus.Published && post.PubDateUtc.HasValue
+            ? UrlHelper.GenerateRouteLink(post.PubDateUtc.Value, post.Slug)
+            : null;
     }
 }

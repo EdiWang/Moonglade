@@ -32,7 +32,7 @@ public class PostConfiguration : IEntityTypeConfiguration<PostEntity>
 
     protected virtual void ConfigureDateTimeColumns(EntityTypeBuilder<PostEntity> builder)
     {
-        // Default: use datetime (SQL Server/MySQL compatible)
+        // Default: use datetime (SQL Server compatible)
         builder.Property(e => e.CreateTimeUtc).HasColumnType("datetime");
         builder.Property(e => e.PubDateUtc).HasColumnType("datetime");
         builder.Property(e => e.LastModifiedUtc).HasColumnType("datetime");

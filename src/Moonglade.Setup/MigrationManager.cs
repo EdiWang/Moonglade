@@ -189,7 +189,6 @@ public partial class MigrationManager(
         return provider switch
         {
             "Microsoft.EntityFrameworkCore.SqlServer" => "SqlServer",
-            "Pomelo.EntityFrameworkCore.MySql" => "MySql",
             "Npgsql.EntityFrameworkCore.PostgreSQL" => "PostgreSql",
             _ => null
         };

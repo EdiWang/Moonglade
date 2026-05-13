@@ -35,16 +35,16 @@
 		</Content>
 	</ItemGroup>
 	<ItemGroup>
-		<PackageReference Include="Cronos" Version="0.12.0" />
+		<PackageReference Include="Cronos" Version="0.13.0" />
 		<PackageReference Include="Edi.CacheAside.InMemory" Version="4.0.0" />
 		<PackageReference Include="Edi.Gravatar" Version="1.4.0" />
 		<PackageReference Include="Edi.ImageWatermark" Version="2.24.0" />
 		<PackageReference Include="Edi.PasswordGenerator" Version="2.3.0" />
 		<PackageReference Include="LiteBus.Extensions.MicrosoftDependencyInjection" Version="3.1.0" />
-		<PackageReference Include="Microsoft.Extensions.Diagnostics.HealthChecks.EntityFrameworkCore" Version="10.0.7" />
-		<PackageReference Include="Microsoft.Extensions.Logging.AzureAppServices" Version="10.0.7" />
+		<PackageReference Include="Microsoft.Extensions.Diagnostics.HealthChecks.EntityFrameworkCore" Version="10.0.8" />
+		<PackageReference Include="Microsoft.Extensions.Logging.AzureAppServices" Version="10.0.8" />
 
-		<PackageReference Include="TinyMCE" Version="8.4.0" />
+		<PackageReference Include="TinyMCE" Version="8.5.0" />
 		<PackageReference Include="Moonglade.MonacoEditor" Version="0.55.1.1000" />
 	</ItemGroup>
 	<ItemGroup>
@@ -52,7 +52,6 @@
 		<ProjectReference Include="..\Moonglade.Auth\Moonglade.Auth.csproj" />
 		<ProjectReference Include="..\Moonglade.BackgroundServices\Moonglade.BackgroundServices.csproj" />
 		<ProjectReference Include="..\Moonglade.Features\Moonglade.Features.csproj" />
-		<ProjectReference Include="..\Moonglade.Data.MySql\Moonglade.Data.MySql.csproj" />
 		<ProjectReference Include="..\Moonglade.Data.PostgreSql\Moonglade.Data.PostgreSql.csproj" />
 		<ProjectReference Include="..\Moonglade.Data.SqlServer\Moonglade.Data.SqlServer.csproj" />
 		<ProjectReference Include="..\Moonglade.ImageStorage\Moonglade.ImageStorage.csproj" />

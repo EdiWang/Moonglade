@@ -16,7 +16,7 @@ public class StyleSheetConfiguration : IEntityTypeConfiguration<StyleSheetEntity
 
     protected virtual void ConfigureDateTimeColumns(EntityTypeBuilder<StyleSheetEntity> builder)
     {
-        // Default: use datetime (SQL Server/MySQL compatible)
+        // Default: use datetime (SQL Server compatible)
         builder.Property(e => e.LastModifiedTimeUtc).HasColumnType("datetime");
     }
 }

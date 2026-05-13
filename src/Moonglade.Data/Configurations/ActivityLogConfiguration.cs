@@ -18,7 +18,7 @@ public class ActivityLogConfiguration : IEntityTypeConfiguration<ActivityLogEnti
 
     protected virtual void ConfigureDateTimeColumns(EntityTypeBuilder<ActivityLogEntity> builder)
     {
-        // Default: use datetime (SQL Server/MySQL compatible)
+        // Default: use datetime (SQL Server compatible)
         builder.Property(e => e.EventTimeUtc).HasColumnType("datetime");
     }
 }

@@ -1,13 +1,10 @@
-<!--
-“希望你保持勇气和热爱，无惧任何无常变迁”
--->
 <Project>
   <PropertyGroup>
     <Authors>Edi Wang</Authors>
     <Company>edi.wang</Company>
     <Copyright>(C) 2026 edi.wang@outlook.com</Copyright>
-    <AssemblyVersion>15.13.3</AssemblyVersion>
-    <FileVersion>15.13.3</FileVersion>
-    <Version>15.13.3</Version>
+    <AssemblyVersion>15.14.0</AssemblyVersion>
+    <FileVersion>15.14.0</FileVersion>
+    <Version>15.14.0</Version>
   </PropertyGroup>
 </Project>
