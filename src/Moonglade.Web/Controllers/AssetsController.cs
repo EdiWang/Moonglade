@@ -4,7 +4,7 @@ using LiteBus.Queries.Abstractions;
 using Moonglade.ActivityLog;
 using Moonglade.Features.Asset;
 using Moonglade.Setup;
-using SixLabors.ImageSharp;
+using SkiaSharp;
 
 namespace Moonglade.Web.Controllers;
 
@@ -51,7 +51,12 @@ public class AssetsController(
 
         try
         {
-            using var bmp = await Image.LoadAsync(new MemoryStream(base64Chars));
+            using var bmp = SKBitmap.Decode(base64Chars);
+            if (bmp is null)
+            {
+                return Conflict("Invalid image data.");
+            }
+
             if (bmp.Height != bmp.Width || bmp.Height + bmp.Width != 600)
             {
                 return Conflict("Image size must be 300x300.");
@@ -128,7 +133,9 @@ public class AssetsController(
             return Conflict("Bad base64 data");
         }
 
-        using var bmp = await Image.LoadAsync(new MemoryStream(base64Chars));
+        using var bmp = SKBitmap.Decode(base64Chars);
+        if (bmp is null) return Conflict("Invalid image data.");
+
         if (bmp.Height != bmp.Width) return Conflict("image height must be equal to width");
         await eventMediator.PublishAsync(new SaveAssetEvent(AssetId.SiteIconBase64, base64Img));
 
