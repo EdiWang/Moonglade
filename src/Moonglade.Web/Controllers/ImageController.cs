@@ -4,7 +4,7 @@ using Microsoft.Extensions.Caching.Memory;
 using Microsoft.Extensions.Options;
 using Moonglade.ActivityLog;
 using Moonglade.BackgroundServices;
-using SixLabors.ImageSharp;
+using SkiaSharp;
 using System.ComponentModel.DataAnnotations;
 
 namespace Moonglade.Web.Controllers;
@@ -129,7 +129,7 @@ public class ImageController(
         using var watermarker = new ImageWatermarker(stream, blogConfig.ImageSettings.WatermarkSkipPixel);
         return watermarker.AddWatermark(
             blogConfig.ImageSettings.WatermarkText,
-            Color.FromRgba(128, 128, 128, (byte)blogConfig.ImageSettings.WatermarkColorA),
+            new SKColor(128, 128, 128, (byte)blogConfig.ImageSettings.WatermarkColorA),
             WatermarkPosition.BottomRight,
             15,
             blogConfig.ImageSettings.WatermarkFontSize)?.ToArray();

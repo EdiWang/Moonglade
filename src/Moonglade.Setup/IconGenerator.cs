@@ -1,6 +1,5 @@
 ﻿using Microsoft.Extensions.Logging;
-using SixLabors.ImageSharp;
-using SixLabors.ImageSharp.Processing;
+using SkiaSharp;
 using System.Collections.Concurrent;
 
 namespace Moonglade.Setup;
@@ -63,8 +62,7 @@ public static class InMemoryIconGenerator
             }
         }
 
-        using var ms = new MemoryStream(buffer);
-        using var image = Image.Load(ms);
+        using var image = SKBitmap.Decode(buffer) ?? throw new InvalidOperationException("Site icon source image is not valid.");
 
         if (image.Height != image.Width)
         {
@@ -122,12 +120,22 @@ public static class InMemoryIconGenerator
         _siteIconDictionary.Clear();
     }
 
-    private static byte[] ResizeImage(Image image, int width, int height)
+    private static byte[] ResizeImage(SKBitmap bitmap, int width, int height)
     {
-        // Clone to avoid mutating the original image
-        using var clone = image.Clone(ctx => ctx.Resize(width, height));
-        using var ms = new MemoryStream();
-        clone.SaveAsPng(ms);
-        return ms.ToArray();
+        var imageInfo = new SKImageInfo(width, height, SKColorType.Rgba8888, SKAlphaType.Premul);
+        using var resizedBitmap = new SKBitmap(imageInfo);
+        using var canvas = new SKCanvas(resizedBitmap);
+        using var sourceImage = SKImage.FromBitmap(bitmap);
+
+        canvas.Clear(SKColors.Transparent);
+        canvas.DrawImage(sourceImage, new SKRect(0, 0, width, height),
+            new SKSamplingOptions(SKFilterMode.Linear, SKMipmapMode.Linear));
+        canvas.Flush();
+
+        using var resizedImage = SKImage.FromBitmap(resizedBitmap);
+        using var data = resizedImage.Encode(SKEncodedImageFormat.Png, 100)
+            ?? throw new InvalidOperationException("Failed to encode site icon as PNG.");
+
+        return data.ToArray();
     }
 }
