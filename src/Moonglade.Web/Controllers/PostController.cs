@@ -76,7 +76,10 @@ public class PostController(
                 await CommandMediator.SendAsync(new CreatePostCommand(model)) :
                 await CommandMediator.SendAsync(new UpdatePostCommand(model.PostId, model));
 
-            cache.Remove(BlogCachePartition.Post.ToString(), postEntity.RouteLink);
+            if (!string.IsNullOrWhiteSpace(postEntity.RouteLink))
+            {
+                cache.Remove(BlogCachePartition.Post.ToString(), postEntity.RouteLink);
+            }
 
             var eventType = model.PostId == Guid.Empty ? EventType.PostCreated : EventType.PostUpdated;
             var operation = model.PostId == Guid.Empty ? "Create Post" : "Update Post";
