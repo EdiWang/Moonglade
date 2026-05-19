@@ -1,6 +1,22 @@
 ﻿(function () {
     'use strict';
 
+    function insertText(editor, text) {
+        var selection = editor.getSelection();
+        var range = selection;
+
+        if (!range && typeof monaco !== 'undefined' && monaco.Range) {
+            var position = editor.getPosition();
+            range = new monaco.Range(position.lineNumber, position.column, position.lineNumber, position.column);
+        }
+
+        editor.executeEdits('inline-attachment', [{
+            range: range,
+            text: text,
+            forceMoveMarkers: true
+        }]);
+    }
+
     inlineAttachment.editors.monaco = {
         Editor: function (monacoEditor) {
 
@@ -11,8 +27,7 @@
                     return me.getValue();
                 },
                 insertValue: function (val) {
-                    //inlineAttachment.util.insertTextAtCursor(input, val);
-                    insertTextToMonacoEditor(me, "\n" + val);
+                    insertText(me, "\n" + val);
                 },
                 setValue: function (val) {
                     me.setValue(val);
