@@ -93,6 +93,23 @@ public class ContentProcessorTests
         Assert.Equal(expected, result);
     }
 
+    [Fact]
+    public void ReplaceCDNEndpointToImgTags_AfterMarkdownToContent_ReplacesMarkdownImageHtmlCorrectly()
+    {
+        // Arrange
+        const string markdown = "![test](/image/test.jpg)";
+        const string endpoint = "https://cdn.example.com";
+
+        // Act
+        var html = ContentProcessor.MarkdownToContent(markdown, ContentProcessor.MarkdownConvertType.Html, false);
+        var result = html.ReplaceCDNEndpointToImgTags(endpoint);
+
+        // Assert
+        Assert.Contains("src=\"https://cdn.example.com/test.jpg\"", result);
+        Assert.Contains("alt=\"test\"", result);
+        Assert.DoesNotContain("src=\"/image/test.jpg\"", result);
+    }
+
     #endregion
 
     #region HtmlDecode Tests
