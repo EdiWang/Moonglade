@@ -25,6 +25,7 @@ public class ImageController(
 
     private readonly ImageStorageSettings _imageStorageSettings = imageStorageSettings.Value;
 
+    [AllowAnonymous]
     [HttpGet(@"{filename:regex((?!-)([[a-z0-9-]]+)\.(png|jpg|jpeg|gif|bmp|webp|svg))}")]
     public async Task<IActionResult> Image([MaxLength(256)] string filename)
     {
@@ -60,7 +61,6 @@ public class ImageController(
         return File(image.ImageBytes, image.ImageContentType);
     }
 
-    [Authorize]
     [HttpPost, IgnoreAntiforgeryToken]
     public async Task<IActionResult> Image([Required] IFormFile file, [FromQuery] bool skipWatermark = false)
     {
