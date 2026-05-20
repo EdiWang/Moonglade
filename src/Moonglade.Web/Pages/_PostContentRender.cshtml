@@ -6,16 +6,14 @@
         ? Configuration.GetValue<EditorChoice>("Editor").ToString().ToLower()
         : Model.ContentType;
 
-    var content = BlogConfig.ImageSettings.EnableCDNRedirect ? 
-        Model.Content.ReplaceCDNEndpointToImgTags(BlogConfig.ImageSettings.CDNEndpoint) : 
-        Model.Content;
+    var content = effectiveType == "markdown"
+        ? ContentProcessor.MarkdownToContent(Model.Content, ContentProcessor.MarkdownConvertType.Html, false)
+        : Model.Content;
+
+    if (BlogConfig.ImageSettings.EnableCDNRedirect)
+    {
+        content = content.ReplaceCDNEndpointToImgTags(BlogConfig.ImageSettings.CDNEndpoint);
+    }
 }
 
-@if (effectiveType == "markdown")
-{
-    @Html.Raw(ContentProcessor.MarkdownToContent(content, ContentProcessor.MarkdownConvertType.Html, false))
-}
-else
-{
-    @Html.Raw(content)
-}
+@Html.Raw(content)
