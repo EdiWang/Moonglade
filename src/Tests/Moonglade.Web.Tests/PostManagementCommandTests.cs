@@ -45,12 +45,12 @@ public class PostManagementCommandTests
         var routeLink = "2026/5/21/test-post";
 
         _commandMediator.SetResult<CreatePostCommand, PostCommandResult>(new PostCommandResult
-            {
-                Id = postId,
-                RouteLink = routeLink,
-                PostContent = model.EditorContent,
-                LastModifiedUtc = DateTime.UtcNow
-            });
+        {
+            Id = postId,
+            RouteLink = routeLink,
+            PostContent = model.EditorContent,
+            LastModifiedUtc = DateTime.UtcNow
+        });
 
         var result = await handler.HandleAsync(new SavePostCommand(model, CreateContext()), TestContext.Current.CancellationToken);
 
@@ -79,11 +79,11 @@ public class PostManagementCommandTests
         model.ClientTimeZoneId = "UTC";
 
         _commandMediator.SetResult<UpdatePostCommand, PostCommandResult>(new PostCommandResult
-            {
-                Id = postId,
-                PostContent = model.EditorContent,
-                LastModifiedUtc = DateTime.UtcNow
-            });
+        {
+            Id = postId,
+            PostContent = model.EditorContent,
+            LastModifiedUtc = DateTime.UtcNow
+        });
 
         var result = await handler.HandleAsync(new SavePostCommand(model, CreateContext()), TestContext.Current.CancellationToken);
 

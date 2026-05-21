@@ -1,5 +1,4 @@
 using LiteBus.Commands.Abstractions;
-using Microsoft.Extensions.Logging;
 using Moonglade.ActivityLog;
 using Moonglade.BackgroundServices;
 using Moonglade.Data.DTO;
