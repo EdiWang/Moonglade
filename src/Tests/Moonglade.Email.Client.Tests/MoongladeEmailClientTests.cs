@@ -240,7 +240,7 @@ public class MoongladeEmailClientTests
         Assert.NotNull(body);
         Assert.Contains("\"testProp\"", body);
         Assert.Contains("\"type\"", body);
-        Assert.Contains("\"receipts\"", body);
+        Assert.Contains("\"recipients\"", body);
     }
 }
 
