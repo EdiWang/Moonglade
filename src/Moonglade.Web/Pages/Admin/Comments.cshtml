@@ -151,6 +151,12 @@
     <nav x-show="!isLoading && totalPages > 1" aria-label="Page navigation" class="mt-4">
         <ul class="pagination">
             <li class="page-item" :class="{ 'disabled': currentPage === 1 }">
+                <a class="page-link" href="#" x-on:click.prevent="goToPage(1)">
+                    <span aria-hidden="true">&laquo;&laquo;</span>
+                </a>
+            </li>
+
+            <li class="page-item" :class="{ 'disabled': currentPage === 1 }">
                 <a class="page-link" href="#" x-on:click.prevent="goToPage(currentPage - 1)">
                     <span aria-hidden="true">&laquo;</span>
                 </a>
@@ -165,6 +171,12 @@
             <li class="page-item" :class="{ 'disabled': currentPage === totalPages }">
                 <a class="page-link" href="#" x-on:click.prevent="goToPage(currentPage + 1)">
                     <span aria-hidden="true">&raquo;</span>
+                </a>
+            </li>
+
+            <li class="page-item" :class="{ 'disabled': currentPage === totalPages }">
+                <a class="page-link" href="#" x-on:click.prevent="goToPage(totalPages)">
+                    <span aria-hidden="true">&raquo;&raquo;</span>
                 </a>
             </li>
         </ul>
