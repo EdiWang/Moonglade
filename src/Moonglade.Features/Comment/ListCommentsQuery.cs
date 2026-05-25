@@ -47,8 +47,14 @@ public class ListCommentsQueryHandler(BlogDbContext db) : IQueryHandler<ListComm
             query = query.Where(c => c.CreateTimeUtc <= filter.EndTimeUtc.Value);
         }
 
-        return query
-            .OrderByDescending(c => c.CreateTimeUtc)
+        IOrderedQueryable<CommentEntity> orderedQuery = filter.SortBy?.ToLowerInvariant() switch
+        {
+            _ => filter.SortDescending
+                ? query.OrderByDescending(c => c.CreateTimeUtc)
+                : query.OrderBy(c => c.CreateTimeUtc)
+        };
+
+        return orderedQuery
             .Skip(startRow)
             .Take(request.PageSize)
             .Select(c => new CommentDetailedItem

@@ -5,4 +5,6 @@ public record CommentFilter(
     string Email = null,
     string CommentContent = null,
     DateTime? StartTimeUtc = null,
-    DateTime? EndTimeUtc = null);
+    DateTime? EndTimeUtc = null,
+    string SortBy = null,
+    bool SortDescending = true);

@@ -14,7 +14,12 @@ Alpine.data('commentManager', () => withPagination(5, {
     commentContentFilter: '',
     startDate: '',
     endDate: '',
+    sortBy: 'createTimeUtc',
+    sortDescending: 'true',
     filterCanvas: null,
+    sortByOptions: [
+        { value: 'createTimeUtc', label: 'Create Time' }
+    ],
 
     async init() {
         this.initPageFromUrl();
@@ -51,6 +56,11 @@ Alpine.data('commentManager', () => withPagination(5, {
                 const endUtc = new Date(this.endDate + 'T23:59:59').toISOString();
                 params.append('endTimeUtc', endUtc);
             }
+
+            if (this.sortBy) {
+                params.append('sortBy', this.sortBy);
+            }
+            params.append('sortDescending', this.sortDescending === 'true');
 
             const data = await fetch2(`/api/comment/list?${params.toString()}`, 'GET');
             this.comments = (data.items ?? []).map(comment => ({
@@ -94,6 +104,8 @@ Alpine.data('commentManager', () => withPagination(5, {
         this.commentContentFilter = '';
         this.startDate = '';
         this.endDate = '';
+        this.sortBy = 'createTimeUtc';
+        this.sortDescending = 'true';
         this.currentPage = 1;
         this.selectedCommentIds = [];
         await this.loadData();
@@ -108,6 +120,7 @@ Alpine.data('commentManager', () => withPagination(5, {
         if (this.commentContentFilter) count++;
         if (this.startDate) count++;
         if (this.endDate) count++;
+        if (this.sortBy !== 'createTimeUtc' || this.sortDescending !== 'true') count++;
         return count;
     },
 
