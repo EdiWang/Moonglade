@@ -9,7 +9,7 @@ namespace Moonglade.Email.Client;
 
 public interface IMoongladeEmailClient
 {
-    Task<bool> SendEmailAsync<T>(MailMesageTypes type, string[] receipts, T payload, CancellationToken cancellationToken = default) where T : class;
+    Task<bool> SendEmailAsync<T>(MailMesageTypes type, string[] recipients, T payload, CancellationToken cancellationToken = default) where T : class;
 }
 
 public class MoongladeEmailClient : IMoongladeEmailClient

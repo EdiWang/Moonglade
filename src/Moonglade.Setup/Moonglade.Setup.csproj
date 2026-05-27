@@ -9,8 +9,8 @@
         <ImplicitUsings>enable</ImplicitUsings>
     </PropertyGroup>
     <ItemGroup>
-          <PackageReference Include="SkiaSharp" Version="3.119.2" />
-          <PackageReference Include="SkiaSharp.NativeAssets.Linux.NoDependencies" Version="3.119.2" />
+          <PackageReference Include="SkiaSharp" Version="3.119.4" />
+          <PackageReference Include="SkiaSharp.NativeAssets.Linux.NoDependencies" Version="3.119.4" />
     </ItemGroup>
     <ItemGroup>
         <EmbeddedResource Include="MigrationScripts\**\*.sql" />

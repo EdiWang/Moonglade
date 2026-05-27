@@ -1,27 +1,20 @@
 ﻿using LiteBus.Commands.Abstractions;
 using LiteBus.Queries.Abstractions;
 using Microsoft.Extensions.Options;
-using Moonglade.ActivityLog;
-using Moonglade.BackgroundServices;
 using Moonglade.Data.DTO;
 using Moonglade.Features.Category;
 using Moonglade.Features.Post;
-using Moonglade.IndexNow.Client;
-using Moonglade.Webmention;
+using Moonglade.Web.Commands;
 using System.ComponentModel.DataAnnotations;
 
 namespace Moonglade.Web.Controllers;
 
 [Route("api/[controller]")]
 public class PostController(
-        ICacheAside cache,
-        IConfiguration configuration,
-        ICommandMediator commandMediator,
-        IQueryMediator queryMediator,
-        IBlogConfig blogConfig,
-        ScheduledPublishWakeUp wakeUp,
-        ILogger<PostController> logger,
-        CannonService cannonService) : BlogControllerBase(commandMediator)
+    IConfiguration configuration,
+    ICommandMediator commandMediator,
+    IQueryMediator queryMediator,
+    IBlogConfig blogConfig) : BlogControllerBase(commandMediator)
 {
     [HttpGet("list")]
     public async Task<IActionResult> List([FromQuery][Range(1, int.MaxValue)] int pageIndex = 1, [FromQuery][Range(1, 100)] int pageSize = 4, [FromQuery] string searchTerm = null)
@@ -40,98 +33,13 @@ public class PostController(
     ])]
     public async Task<IActionResult> CreateOrEdit(PostEditModel model)
     {
-        try
+        var result = await CommandMediator.SendAsync(new SavePostCommand(model, CreatePostOperationContext()));
+        if (!result.Succeeded)
         {
-            if (model.PostStatus == PostStatus.Scheduled && model.ScheduledPublishTime.HasValue)
-            {
-                if (string.IsNullOrWhiteSpace(model.ClientTimeZoneId))
-                {
-                    return Conflict("Client time zone ID is required for scheduled posts.");
-                }
-
-                var clientTimeZone = TimeZoneInfo.FindSystemTimeZoneById(model.ClientTimeZoneId);
-                var clientLocalTime = model.ScheduledPublishTime.Value;
-                var clientUtcTime = TimeZoneInfo.ConvertTimeToUtc(clientLocalTime, clientTimeZone);
-
-                model.ScheduledPublishTime = clientUtcTime;
-                if (model.ScheduledPublishTime < DateTime.UtcNow)
-                {
-                    // return Conflict("Scheduled publish time must be in the future.");
-
-                    // Instead of throwing error, just publish the post right away!
-                    model.PostStatus = PostStatus.Published;
-                    model.ScheduledPublishTime = null;
-                }
-                else
-                {
-                    logger.LogInformation("Post scheduled for publish at {clientUtcTime} UTC.", clientUtcTime);
-
-                    wakeUp.WakeUp();
-
-                    logger.LogInformation("Scheduled publish wake-up triggered for post: {PostId}", model.PostId);
-                }
-            }
-
-            var postEntity = model.PostId == Guid.Empty ?
-                await CommandMediator.SendAsync(new CreatePostCommand(model)) :
-                await CommandMediator.SendAsync(new UpdatePostCommand(model.PostId, model));
-
-            if (!string.IsNullOrWhiteSpace(postEntity.RouteLink))
-            {
-                cache.Remove(BlogCachePartition.Post.ToString(), postEntity.RouteLink);
-            }
-
-            var eventType = model.PostId == Guid.Empty ? EventType.PostCreated : EventType.PostUpdated;
-            var operation = model.PostId == Guid.Empty ? "Create Post" : "Update Post";
-            await LogActivityAsync(
-                eventType,
-                operation,
-                model.Title,
-                new { PostId = postEntity.Id, Slug = postEntity.RouteLink, PostStatus = model.PostStatus });
-
-            if (model.PostStatus != PostStatus.Published)
-            {
-                return Ok(new { PostId = postEntity.Id });
-            }
-
-            logger.LogInformation("Trying to Ping URL for post: {Id}", postEntity.Id);
-
-            var link = new Uri(UrlHelper.GetPostUrl(HttpContext, postEntity.RouteLink));
-
-            NotifyExternalServices(postEntity.PostContent, link);
-            ProcessIndexing(model.LastModifiedUtc, postEntity.LastModifiedUtc == postEntity.PubDateUtc, link);
-
-            return Ok(new { PostId = postEntity.Id });
-        }
-        catch (Exception ex)
-        {
-            logger.LogError(ex, "Error updating post.");
-            return Conflict("Error updating post.");
-        }
-    }
-
-    private void NotifyExternalServices(string postContent, Uri link)
-    {
-        if (blogConfig.AdvancedSettings.EnableWebmention)
-        {
-            cannonService.FireAsync<IWebmentionSender>(async sender => await sender.SendWebmentionAsync(link.ToString(), postContent));
-        }
-    }
-
-    private void ProcessIndexing(string lastModifiedUtc, bool isNewPublish, Uri link)
-    {
-        bool indexCoolDown = true;
-        var minimalIntervalMinutes = int.Parse(configuration["IndexNow:MinimalIntervalMinutes"]!);
-        if (!string.IsNullOrWhiteSpace(lastModifiedUtc))
-        {
-            var lastSavedInterval = DateTime.UtcNow - DateTime.Parse(lastModifiedUtc);
-            indexCoolDown = lastSavedInterval.TotalMinutes > minimalIntervalMinutes;
+            return Conflict(result.ErrorMessage);
         }
 
-        if (isNewPublish || indexCoolDown)
-        {
-            cannonService.FireAsync<IIndexNowClient>(async sender => await sender.SendRequestAsync(link));
-        }
+        return Ok(new { result.PostId });
     }
 
     [TypeFilter(typeof(ClearBlogCache), Arguments =
@@ -142,13 +50,7 @@ public class PostController(
     [HttpDelete("{postId:guid}/recycle")]
     public async Task<IActionResult> Delete([NotEmpty] Guid postId)
     {
-        await CommandMediator.SendAsync(new DeletePostCommand(postId, true));
-
-        await LogActivityAsync(
-            EventType.PostDeleted,
-            "Delete Post (Move to Recycle Bin)",
-            $"Post #{postId}",
-            new { PostId = postId });
+        await CommandMediator.SendAsync(new RecyclePostCommand(postId, CreatePostOperationContext()));
 
         return NoContent();
     }
@@ -157,14 +59,7 @@ public class PostController(
     [HttpPut("{postId:guid}/publish")]
     public async Task<IActionResult> Publish([NotEmpty] Guid postId)
     {
-        await CommandMediator.SendAsync(new PublishPostCommand(postId));
-        cache.Remove(BlogCachePartition.Post.ToString(), postId.ToString());
-
-        await LogActivityAsync(
-            EventType.PostPublished,
-            "Publish Post",
-            $"Post #{postId}",
-            new { PostId = postId });
+        await CommandMediator.SendAsync(new PublishPostWorkflowCommand(postId, CreatePostOperationContext()));
 
         return NoContent();
     }
@@ -173,14 +68,7 @@ public class PostController(
     [HttpPut("{postId:guid}/unpublish")]
     public async Task<IActionResult> Unpublish([NotEmpty] Guid postId)
     {
-        await CommandMediator.SendAsync(new UnpublishPostCommand(postId));
-        cache.Remove(BlogCachePartition.Post.ToString(), postId.ToString());
-
-        await LogActivityAsync(
-            EventType.PostUnpublished,
-            "Unpublish Post",
-            $"Post #{postId}",
-            new { PostId = postId });
+        await CommandMediator.SendAsync(new UnpublishPostWorkflowCommand(postId, CreatePostOperationContext()));
 
         return NoContent();
     }
@@ -268,5 +156,14 @@ public class PostController(
         {
             Posts = posts
         });
+    }
+
+    private PostOperationContext CreatePostOperationContext()
+    {
+        return new(
+            User.Identity?.Name ?? string.Empty,
+            HttpContext.Connection.RemoteIpAddress?.ToString() ?? string.Empty,
+            Request.Headers.UserAgent.ToString(),
+            UrlHelper.ResolveRootUrl(HttpContext, null, removeTailSlash: true));
     }
 }
