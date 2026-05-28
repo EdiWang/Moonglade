@@ -4,7 +4,6 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Moonglade.ActivityLog;
 using Moonglade.Data;
-using Moonglade.Web;
 using Moonglade.Web.Controllers;
 using Moq;
 using System.Net;

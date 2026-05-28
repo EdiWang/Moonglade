@@ -8,7 +8,6 @@ using Microsoft.Extensions.Logging;
 using Moonglade.BackgroundServices;
 using Moonglade.Configuration;
 using Moonglade.Data.Entities;
-using Moonglade.Email.Client;
 using Moonglade.Web.Controllers;
 using Moonglade.Webmention;
 using Moq;

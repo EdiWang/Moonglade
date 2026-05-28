@@ -45,7 +45,7 @@ public class AssetsControllerTests
             .Setup(x => x.GetOrCreateAsync(
                 BlogCachePartition.General.ToString(),
                 "avatar",
-                It.IsAny<Func<Task<byte[]>>>() ))
+                It.IsAny<Func<Task<byte[]>>>()))
             .ReturnsAsync(bytes);
 
         var controller = CreateController();
@@ -64,7 +64,7 @@ public class AssetsControllerTests
             .Setup(x => x.GetOrCreateAsync(
                 BlogCachePartition.General.ToString(),
                 "avatar",
-                It.IsAny<Func<Task<byte[]>>>() ))
+                It.IsAny<Func<Task<byte[]>>>()))
             .ReturnsAsync((byte[])null);
 
         var controller = CreateController();
