@@ -1,6 +1,6 @@
-﻿@page "/admin/post/recycle-bin"
+@page "/admin/page/recycle-bin"
 @{
-    ViewBag.Title = "Recycle Bin";
+    ViewBag.Title = "Pages Recycle Bin";
     ViewBag.XData = "recycleBinManager";
 }
 
@@ -9,17 +9,17 @@
 }
 
 <div id="localizedStrings" style="display:none"
-     data-mode="posts"
-     data-post-deleted="@SharedLocalizer["Post deleted"]" 
-     data-post-restored="@SharedLocalizer["Post restored"]" 
+     data-mode="pages"
+     data-post-deleted="@SharedLocalizer["Post deleted"]"
+     data-post-restored="@SharedLocalizer["Post restored"]"
      data-page-deleted="@SharedLocalizer["Page deleted"]"
      data-page-restored="@SharedLocalizer["Page restored"]"
-     data-cleared="@SharedLocalizer["Cleared"]" 
+     data-cleared="@SharedLocalizer["Cleared"]"
      data-confirm-delete="@SharedLocalizer["Are you sure you want to delete \"{0}\"?"]">
 </div>
 
 @section admintoolbar {
-    <partial name="_PostManageHeader" />
+    <partial name="_PageManageHeader" />
 }
 
 @Html.AntiForgeryToken()
@@ -33,38 +33,13 @@
     </div>
 
     <div x-show="!isLoading && !hasItems">
-        <partial name="_NoPosts" />
+        <div class="text-center">
+            <h4>@SharedLocalizer["No Pages"]</h4>
+            <p class="text-muted">@SharedLocalizer["no items to show"]</p>
+        </div>
     </div>
 
-    <div x-show="!isLoading && showPosts" class="admin-main-entry-container">
-        <h5 class="mb-3">@SharedLocalizer["Posts"]</h5>
-        <template x-for="post in sortedPosts" :key="post.id">
-            <div :id="`post-${post.id}`" class="admin-post-entry p-3 mb-2 rounded-3 shadow-sm border">
-                <div class="d-flex">
-                    <div class="flex-grow-1">
-                        <h6 x-text="post.title"></h6>
-                        <div>
-                            <i class="bi-calendar-event"></i>
-                            <time :data-utc-label="post.createTimeUtc" x-text="post.createTimeUtc"></time>
-                        </div>
-                    </div>
-                    <div>
-                        <button class="btn btn-sm btn-outline-accent btn-restore" 
-                                x-on:click="restorePost(post.id)">
-                            <i class="bi-reply-fill"></i> @SharedLocalizer["Restore"]
-                        </button>
-                        <button class="btn btn-outline-danger btn-sm btn-delete" 
-                                x-on:click="confirmDelete(post.id, post.title)">
-                            <i class="bi-trash"></i> @SharedLocalizer["Delete"]
-                        </button>
-                    </div>
-                </div>
-            </div>
-        </template>
-    </div>
-
-    <div x-show="!isLoading && showPages" class="admin-main-entry-container mt-4">
-        <h5 class="mb-3">@SharedLocalizer["Pages"]</h5>
+    <div x-show="!isLoading && showPages" class="admin-main-entry-container">
         <template x-for="page in sortedPages" :key="page.id">
             <div :id="`page-${page.id}`" class="admin-post-entry p-3 mb-2 rounded-3 shadow-sm border">
                 <div class="d-flex">
