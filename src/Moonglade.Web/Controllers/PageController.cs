@@ -50,7 +50,7 @@ public class PageController(ICacheAside cache, IQueryMediator queryMediator, ICo
         var page = await queryMediator.QueryAsync(new GetPageByIdQuery(id));
         if (page == null) return NotFound();
 
-        await CommandMediator.SendAsync(new DeletePageCommand(id));
+        await CommandMediator.SendAsync(new DeletePageCommand(id, SoftDelete: true));
 
         cache.Remove(BlogCachePartition.Page.ToString(), page.Slug);
 

@@ -3,7 +3,7 @@ using Microsoft.Extensions.Logging;
 
 namespace Moonglade.Features.Page;
 
-public record DeletePageCommand(Guid Id) : ICommand<OperationCode>;
+public record DeletePageCommand(Guid Id, bool SoftDelete = false) : ICommand<OperationCode>;
 
 public class DeletePageCommandHandler(
     BlogDbContext db,
@@ -15,12 +15,20 @@ public class DeletePageCommandHandler(
         var page = await db.BlogPage.FindAsync([request.Id], ct);
         if (page == null) return OperationCode.ObjectNotFound;
 
-        if (!string.IsNullOrWhiteSpace(page.CssId))
+        if (request.SoftDelete)
         {
-            await commandMediator.SendAsync(new DeleteStyleSheetCommand(new(page.CssId)), ct);
+            page.IsDeleted = true;
+        }
+        else
+        {
+            if (!string.IsNullOrWhiteSpace(page.CssId))
+            {
+                await commandMediator.SendAsync(new DeleteStyleSheetCommand(new(page.CssId)), ct);
+            }
+
+            db.BlogPage.Remove(page);
         }
 
-        db.BlogPage.Remove(page);
         await db.SaveChangesAsync(ct);
 
         logger.LogInformation("Deleted page: {PageId}", request.Id);
