@@ -19,32 +19,7 @@
 </div>
 
 @section admintoolbar {
-    <div class="admin-toolbar pb-2 border-bottom mb-3 d-flex">
-        <div class="col">
-            <ul class="nav nav-pills">
-                <li role="presentation" class="nav-item nav-item-non-margin">
-                    <a class="nav-link" asp-page="./BlogPage">@SharedLocalizer["Pages"]</a>
-                </li>
-                <li role="presentation" class="nav-item nav-item-non-margin">
-                    <a class="nav-link active" href="/admin/page/recycle-bin">@SharedLocalizer["Recycle Bin"]</a>
-                </li>
-            </ul>
-        </div>
-        <div class="col-auto">
-            <button x-show="hasPages" x-cloak x-on:click="confirmEmptyRecycleBin" class="btn btn-outline-danger btn-empty-recbin me-1">
-                <i class="bi-trash"></i>
-                @SharedLocalizer["Empty Recycle Bin"]
-            </button>
-            <a class="btn btn-outline-accent" asp-page="./EditPage">
-                <i class="bi-plus-lg"></i>
-                @SharedLocalizer["New"]
-            </a>
-            <a asp-action="ExportDownload" asp-controller="DataPorting" asp-route-type="Pages" class="btn btn-outline-accent" target="_blank">
-                <i class="bi-upload"></i>
-                @SharedLocalizer["Export"]
-            </a>
-        </div>
-    </div>
+    <partial name="_PageManageHeader" />
 }
 
 @Html.AntiForgeryToken()
