@@ -1,6 +1,7 @@
 ﻿using LiteBus.Commands.Abstractions;
 using LiteBus.Queries.Abstractions;
 using Moonglade.ActivityLog;
+using Moonglade.Features.Page;
 using Moonglade.Features.Post;
 
 namespace Moonglade.Web.Controllers;
@@ -16,10 +17,12 @@ public class RecycleBinController(
     public async Task<IActionResult> List()
     {
         var posts = await queryMediator.QueryAsync(new ListPostSegmentByStatusQuery(PostStatus.Deleted));
+        var pages = await queryMediator.QueryAsync(new ListPageSegmentsQuery(DeletedOnly: true));
 
         return Ok(new
         {
-            Posts = posts
+            Posts = posts,
+            Pages = pages
         });
     }
 
@@ -49,6 +52,61 @@ public class RecycleBinController(
             "Permanently Delete Post",
             $"Post #{postId}",
             new { PostId = postId });
+
+        return NoContent();
+    }
+
+    [HttpPost("page/{pageId:guid}/restore")]
+    public async Task<IActionResult> RestorePage([NotEmpty] Guid pageId)
+    {
+        var page = await queryMediator.QueryAsync(new GetPageByIdQuery(pageId));
+        if (page == null) return NotFound();
+
+        await CommandMediator.SendAsync(new RestorePageCommand(pageId));
+        cache.Remove(BlogCachePartition.Page.ToString(), page.Slug);
+
+        await LogActivityAsync(
+            EventType.PageRestored,
+            "Restore Page",
+            page.Title,
+            new { PageId = pageId, page.Slug });
+
+        return NoContent();
+    }
+
+    [HttpDelete("page/{pageId:guid}/destroy")]
+    public async Task<IActionResult> DeletePage([NotEmpty] Guid pageId)
+    {
+        var page = await queryMediator.QueryAsync(new GetPageByIdQuery(pageId));
+        if (page == null) return NotFound();
+
+        await CommandMediator.SendAsync(new DeletePageCommand(pageId));
+        cache.Remove(BlogCachePartition.Page.ToString(), page.Slug);
+
+        await LogActivityAsync(
+            EventType.PagePermanentlyDeleted,
+            "Permanently Delete Page",
+            page.Title,
+            new { PageId = pageId, page.Slug });
+
+        return NoContent();
+    }
+
+    [HttpDelete("page/recyclebin")]
+    public async Task<IActionResult> ClearPages()
+    {
+        var guids = await CommandMediator.SendAsync(new EmptyPageRecycleBinCommand());
+
+        foreach (var guid in guids)
+        {
+            cache.Remove(BlogCachePartition.Page.ToString(), guid.ToString());
+        }
+
+        await LogActivityAsync(
+            EventType.PageRecycleBinCleared,
+            "Clear Page Recycle Bin",
+            "All deleted pages",
+            new { Count = guids.Length });
 
         return NoContent();
     }

@@ -22,7 +22,7 @@
     <div class="col-auto">
         @if (currentPage == "/Admin/RecycleBin")
         {
-            <button x-show="hasPosts" x-cloak x-on:click="confirmEmptyRecycleBin" class="btn btn-outline-danger btn-empty-recbin me-1">
+            <button x-show="hasItems" x-cloak x-on:click="confirmEmptyRecycleBin" class="btn btn-outline-danger btn-empty-recbin me-1">
                 <i class="bi-trash"></i>
                 @SharedLocalizer["Empty Recycle Bin"]
             </button>

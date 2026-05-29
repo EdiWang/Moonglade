@@ -134,6 +134,61 @@ public class PageCommandTests
         Assert.Contains(pageId.ToString(), exception.Message);
     }
 
+    [Fact]
+    public async Task DeletePageCommand_SoftDelete_SetsIsDeleted()
+    {
+        using var db = CreateDbContext();
+        var pageId = Guid.NewGuid();
+        db.BlogPage.Add(CreatePageEntity(pageId));
+        await db.SaveChangesAsync(TestContext.Current.CancellationToken);
+
+        var handler = new DeletePageCommandHandler(db, new RecordingCommandMediator(), Mock.Of<ILogger<DeletePageCommandHandler>>());
+
+        var result = await handler.HandleAsync(new DeletePageCommand(pageId, SoftDelete: true), TestContext.Current.CancellationToken);
+
+        Assert.Equal(OperationCode.Done, result);
+        var page = await db.BlogPage.SingleAsync(p => p.Id == pageId, TestContext.Current.CancellationToken);
+        Assert.True(page.IsDeleted);
+    }
+
+    [Fact]
+    public async Task DeletePageCommand_HardDelete_RemovesPageAndStyleSheet()
+    {
+        using var db = CreateDbContext();
+        var pageId = Guid.NewGuid();
+        var page = CreatePageEntity(pageId);
+        db.BlogPage.Add(page);
+        await db.SaveChangesAsync(TestContext.Current.CancellationToken);
+
+        var mediator = new RecordingCommandMediator();
+        var handler = new DeletePageCommandHandler(db, mediator, Mock.Of<ILogger<DeletePageCommandHandler>>());
+
+        var result = await handler.HandleAsync(new DeletePageCommand(pageId), TestContext.Current.CancellationToken);
+
+        Assert.Equal(OperationCode.Done, result);
+        Assert.Empty(await db.BlogPage.ToListAsync(TestContext.Current.CancellationToken));
+        var command = mediator.Single<DeleteStyleSheetCommand>();
+        Assert.Equal(Guid.Parse(page.CssId), command.Id);
+    }
+
+    [Fact]
+    public async Task RestorePageCommand_SetsIsDeletedFalse()
+    {
+        using var db = CreateDbContext();
+        var pageId = Guid.NewGuid();
+        var page = CreatePageEntity(pageId);
+        page.IsDeleted = true;
+        db.BlogPage.Add(page);
+        await db.SaveChangesAsync(TestContext.Current.CancellationToken);
+
+        var handler = new RestorePageCommandHandler(db, Mock.Of<ILogger<RestorePageCommandHandler>>());
+
+        await handler.HandleAsync(new RestorePageCommand(pageId), TestContext.Current.CancellationToken);
+
+        var restoredPage = await db.BlogPage.SingleAsync(p => p.Id == pageId, TestContext.Current.CancellationToken);
+        Assert.False(restoredPage.IsDeleted);
+    }
+
     private static EditPageRequest CreateEditPageRequest()
     {
         return new EditPageRequest
