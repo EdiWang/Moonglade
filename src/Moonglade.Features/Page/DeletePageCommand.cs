@@ -31,7 +31,15 @@ public class DeletePageCommandHandler(
 
         await db.SaveChangesAsync(ct);
 
-        logger.LogInformation("Deleted page: {PageId}", request.Id);
+        if (request.SoftDelete)
+        {
+            logger.LogInformation("Soft deleted page: {PageId}", request.Id);
+        }
+        else
+        {
+            logger.LogInformation("Deleted page: {PageId}", request.Id);
+        }
+
         return OperationCode.Done;
     }
 }
