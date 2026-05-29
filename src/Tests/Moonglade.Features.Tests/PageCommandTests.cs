@@ -1,4 +1,5 @@
 using LiteBus.Commands.Abstractions;
+using Microsoft.Data.Sqlite;
 using Microsoft.Extensions.Logging;
 using Moonglade.Data;
 using Moonglade.Data.Entities;
@@ -187,6 +188,36 @@ public class PageCommandTests
 
         var restoredPage = await db.BlogPage.SingleAsync(p => p.Id == pageId, TestContext.Current.CancellationToken);
         Assert.False(restoredPage.IsDeleted);
+    }
+
+    [Fact]
+    public async Task EmptyPageRecycleBinCommand_DeletesOnlyDeletedPagesAndReturnsDeletedSlugs()
+    {
+        await using var connection = new SqliteConnection("Data Source=:memory:");
+        await connection.OpenAsync(TestContext.Current.CancellationToken);
+        var options = new DbContextOptionsBuilder<BlogDbContext>()
+            .UseSqlite(connection)
+            .Options;
+        await using var db = new BlogDbContext(options);
+        await db.Database.EnsureCreatedAsync(TestContext.Current.CancellationToken);
+        var deletedPage = CreatePageEntity(Guid.NewGuid());
+        deletedPage.Slug = "deleted-page";
+        deletedPage.IsDeleted = true;
+        var activePage = CreatePageEntity(Guid.NewGuid());
+        activePage.Slug = "active-page";
+        db.BlogPage.AddRange(deletedPage, activePage);
+        await db.SaveChangesAsync(TestContext.Current.CancellationToken);
+
+        var mediator = new RecordingCommandMediator();
+        var handler = new EmptyPageRecycleBinCommandHandler(db, mediator, Mock.Of<ILogger<EmptyPageRecycleBinCommandHandler>>());
+
+        var result = await handler.HandleAsync(new EmptyPageRecycleBinCommand(), TestContext.Current.CancellationToken);
+
+        Assert.Equal(["deleted-page"], result);
+        var remainingPage = await db.BlogPage.SingleAsync(TestContext.Current.CancellationToken);
+        Assert.Equal(activePage.Id, remainingPage.Id);
+        var command = mediator.Single<DeleteStyleSheetCommand>();
+        Assert.Equal(Guid.Parse(deletedPage.CssId), command.Id);
     }
 
     private static EditPageRequest CreateEditPageRequest()

@@ -95,18 +95,18 @@ public class RecycleBinController(
     [HttpDelete("page/recyclebin")]
     public async Task<IActionResult> ClearPages()
     {
-        var guids = await CommandMediator.SendAsync(new EmptyPageRecycleBinCommand());
+        var slugs = await CommandMediator.SendAsync(new EmptyPageRecycleBinCommand());
 
-        foreach (var guid in guids)
+        foreach (var slug in slugs)
         {
-            cache.Remove(BlogCachePartition.Page.ToString(), guid.ToString());
+            cache.Remove(BlogCachePartition.Page.ToString(), slug.ToLower());
         }
 
         await LogActivityAsync(
             EventType.PageRecycleBinCleared,
             "Clear Page Recycle Bin",
             "All deleted pages",
-            new { Count = guids.Length });
+            new { Count = slugs.Length });
 
         return NoContent();
     }
