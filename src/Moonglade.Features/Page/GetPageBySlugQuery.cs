@@ -9,7 +9,7 @@ public class GetPageBySlugQueryHandler(BlogDbContext db) : IQueryHandler<GetPage
     public async Task<PageEntity> HandleAsync(GetPageBySlugQuery request, CancellationToken ct)
     {
         var lower = request.Slug.ToLower();
-        var entity = await db.BlogPage.FirstOrDefaultAsync(p => p.Slug == lower, ct);
+        var entity = await db.BlogPage.FirstOrDefaultAsync(p => p.Slug == lower && !p.IsDeleted, ct);
         return entity;
     }
 }
