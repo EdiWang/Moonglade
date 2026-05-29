@@ -10,6 +10,7 @@ public class PageEntity
     public string CssId { get; set; }
     public bool HideSidebar { get; set; }
     public bool IsPublished { get; set; }
+    public bool IsDeleted { get; set; }
     public DateTime CreateTimeUtc { get; set; }
     public DateTime? UpdateTimeUtc { get; set; }
 }
