@@ -20,7 +20,7 @@ public class ValidateLoginCommandTests
     [Fact]
     public async Task HandleAsync_NullAccount_ReturnsFalse()
     {
-        _blogConfigMock.Setup(c => c.LocalAccountSettings).Returns((LocalAccountSettings)null);
+        _blogConfigMock.Setup(c => c.LocalAccountSettings).Returns((LocalAccountSettings)null!);
 
         var command = new ValidateLoginCommand("admin", "password");
         var result = await _handler.HandleAsync(command, TestContext.Current.CancellationToken);

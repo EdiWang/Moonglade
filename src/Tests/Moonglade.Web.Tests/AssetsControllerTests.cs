@@ -65,7 +65,7 @@ public class AssetsControllerTests
                 BlogCachePartition.General.ToString(),
                 "avatar",
                 It.IsAny<Func<Task<byte[]>>>()))
-            .ReturnsAsync((byte[])null);
+            .ReturnsAsync((byte[])null!);
 
         var controller = CreateController();
 
@@ -174,7 +174,7 @@ public class AssetsControllerTests
     {
         _queryMediator
             .Setup(x => x.QueryAsync(It.IsAny<GetAssetQuery>(), It.IsAny<QueryMediationSettings>(), It.IsAny<CancellationToken>()))
-            .ReturnsAsync((string)null);
+            .ReturnsAsync((string)null!);
 
         var controller = CreateController();
 

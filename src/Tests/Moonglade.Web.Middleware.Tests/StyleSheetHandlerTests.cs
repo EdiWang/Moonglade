@@ -145,7 +145,7 @@ public class StyleSheetHandlerTests
 
         _mockQueryMediator
             .Setup(x => x.QueryAsync<StyleSheetEntity>(It.IsAny<GetStyleSheetQuery>(), It.IsAny<QueryMediationSettings>(), It.IsAny<CancellationToken>()))
-            .ReturnsAsync((StyleSheetEntity)null);
+            .ReturnsAsync((StyleSheetEntity)null!);
 
         await StyleSheetHandler.HandleContentCssAsync(context, _mockQueryMediator.Object, _options, _mockLogger.Object);
 

@@ -70,7 +70,7 @@ public class ImageControllerTests
     [Fact]
     public async Task Image_Get_WhenImageDoesNotExist_ReturnsNotFound()
     {
-        _imageStorage.Setup(x => x.GetAsync("missing.png")).ReturnsAsync((ImageInfo)null);
+        _imageStorage.Setup(x => x.GetAsync("missing.png")).ReturnsAsync((ImageInfo)null!);
         var controller = CreateController();
 
         var result = await controller.Image("missing.png");

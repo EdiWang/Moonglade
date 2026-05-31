@@ -99,7 +99,7 @@ public class ActivityLogControllerTests
     {
         _queryMediator
             .Setup(x => x.QueryAsync(It.IsAny<GetMetaDataByActivityLogIdQuery>(), It.IsAny<QueryMediationSettings>(), It.IsAny<CancellationToken>()))
-            .ReturnsAsync((string)null);
+            .ReturnsAsync((string)null!);
 
         var controller = CreateController();
 

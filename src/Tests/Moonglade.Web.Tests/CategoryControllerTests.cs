@@ -24,7 +24,7 @@ public class CategoryControllerTests
         var id = Guid.NewGuid();
         _queryMediator
             .Setup(x => x.QueryAsync(It.IsAny<GetCategoryQuery>(), It.IsAny<QueryMediationSettings>(), It.IsAny<CancellationToken>()))
-            .ReturnsAsync((CategoryEntity)null);
+            .ReturnsAsync((CategoryEntity)null!);
 
         var controller = CreateController();
 
