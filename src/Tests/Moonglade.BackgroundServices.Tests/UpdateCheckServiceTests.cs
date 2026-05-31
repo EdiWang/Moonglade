@@ -57,7 +57,7 @@ public class UpdateCheckServiceTests
         var state = new UpdateCheckerState();
         state.SetNewVersion("v99.0.0");
 
-        state.SetNewVersion(null!);
+        state.SetNewVersion(null);
 
         Assert.False(state.HasNewVersion);
         Assert.Null(state.NewVersion);

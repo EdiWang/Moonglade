@@ -3,9 +3,9 @@ namespace Moonglade.BackgroundServices;
 public class UpdateCheckerState
 {
     private readonly Lock _lock = new();
-    private string _newVersion;
+    private string? _newVersion;
 
-    public string NewVersion
+    public string? NewVersion
     {
         get
         {
@@ -13,7 +13,7 @@ public class UpdateCheckerState
         }
     }
 
-    public void SetNewVersion(string version)
+    public void SetNewVersion(string? version)
     {
         lock (_lock) _newVersion = version;
     }
