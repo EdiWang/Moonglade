@@ -57,7 +57,7 @@ public class OpenSearchMapHandlerTests
 
         responseBody.Seek(0, SeekOrigin.Begin);
         using var reader = new StreamReader(responseBody, Encoding.UTF8, leaveOpen: true);
-        var xml = await reader.ReadToEndAsync();
+        var xml = await reader.ReadToEndAsync(TestContext.Current.CancellationToken);
 
         var document = XDocument.Parse(xml);
         XNamespace ns = "http://a9.com/-/spec/opensearch/1.1/";

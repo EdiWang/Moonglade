@@ -59,7 +59,7 @@ public class RobotsTxtMapHandlerTests
 
         responseBody.Seek(0, SeekOrigin.Begin);
         using var reader = new StreamReader(responseBody, Encoding.UTF8, leaveOpen: true);
-        var body = await reader.ReadToEndAsync();
+        var body = await reader.ReadToEndAsync(TestContext.Current.CancellationToken);
 
         Assert.Equal(robotsTxt, body);
     }
