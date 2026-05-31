@@ -19,7 +19,20 @@
             </li>
         </ul>
     </div>
-    <div class="col-auto">
+    <div class="col-auto d-flex align-items-center gap-2">
+        @if (currentPage == "/Admin/Post")
+        {
+            <div class="text-muted admin-toolbar-text">
+                <span x-text="postCount"></span> item(s)
+            </div>
+
+            <a x-on:click="openFilter()" class="btn btn-outline-accent" role="button">
+                <i class="bi-funnel"></i>
+                @SharedLocalizer["Filter"]
+                <span x-show="activeFilterCount > 0" class="badge bg-danger ms-1" x-text="activeFilterCount"></span>
+            </a>
+        }
+
         @if (currentPage == "/Admin/RecycleBin")
         {
             <button x-show="hasItems" x-cloak x-on:click="confirmEmptyRecycleBin" class="btn btn-outline-danger btn-empty-recbin me-1">

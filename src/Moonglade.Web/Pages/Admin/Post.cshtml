@@ -15,22 +15,6 @@
 
 @section admintoolbar {
     <partial name="_PostManageHeader" />
-    <div class="admin-toolbar pb-2 border-bottom mb-3">
-        <div class="row">
-            <div class="col">
-                <a x-on:click="openFilter()" class="btn btn-outline-accent" role="button">
-                    <i class="bi-funnel"></i>
-                    @SharedLocalizer["Filter"]
-                    <span x-show="activeFilterCount > 0" class="badge bg-danger ms-1" x-text="activeFilterCount"></span>
-                </a>
-            </div>
-            <div class="col-auto">
-                <div class="text-muted admin-toolbar-text">
-                    <span x-text="postCount"></span> item(s)
-                </div>
-            </div>
-        </div>
-    </div>
 }
 
 @Html.AntiForgeryToken()
