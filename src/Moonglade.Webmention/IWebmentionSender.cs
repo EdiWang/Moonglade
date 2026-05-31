@@ -9,6 +9,6 @@ public class WebmentionSendResult
 {
     public bool IsSuccess { get; set; }
     public int StatusCode { get; set; }
-    public string ResponseContent { get; set; }
-    public string AdditionalInfo { get; set; }
+    public string ResponseContent { get; set; } = string.Empty;
+    public string AdditionalInfo { get; set; } = string.Empty;
 }

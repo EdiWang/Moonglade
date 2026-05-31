@@ -91,7 +91,7 @@ public partial class WebmentionSender(
         }
     }
 
-    private async Task<string> DiscoverWebmentionEndpoint(Uri targetUrl)
+    private async Task<string?> DiscoverWebmentionEndpoint(Uri targetUrl)
     {
         using var response = await httpClient.GetAsync(targetUrl, HttpCompletionOption.ResponseHeadersRead);
         if (!response.IsSuccessStatusCode) return null;

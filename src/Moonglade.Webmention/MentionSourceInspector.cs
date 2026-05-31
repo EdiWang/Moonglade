@@ -5,14 +5,14 @@ namespace Moonglade.Webmention;
 
 public interface IMentionSourceInspector
 {
-    Task<MentionRequest> ExamineSourceAsync(string sourceUrl, string targetUrl);
+    Task<MentionRequest?> ExamineSourceAsync(string sourceUrl, string targetUrl);
 }
 
 public partial class MentionSourceInspector(ILogger<MentionSourceInspector> logger, HttpClient httpClient) : IMentionSourceInspector
 {
     private const int MaxResponseSizeBytes = 1024 * 1024; // 1 MB
 
-    public async Task<MentionRequest> ExamineSourceAsync(string sourceUrl, string targetUrl)
+    public async Task<MentionRequest?> ExamineSourceAsync(string sourceUrl, string targetUrl)
     {
         if (string.IsNullOrWhiteSpace(sourceUrl) || string.IsNullOrWhiteSpace(targetUrl))
         {
@@ -47,7 +47,7 @@ public partial class MentionSourceInspector(ILogger<MentionSourceInspector> logg
         }
     }
 
-    private async Task<string> FetchHtmlAsync(string sourceUrl)
+    private async Task<string?> FetchHtmlAsync(string sourceUrl)
     {
         using var response = await httpClient.GetAsync(sourceUrl, HttpCompletionOption.ResponseHeadersRead);
         response.EnsureSuccessStatusCode();
