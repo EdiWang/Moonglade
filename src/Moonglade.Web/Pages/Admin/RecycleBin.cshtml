@@ -37,7 +37,6 @@
     </div>
 
     <div x-show="!isLoading && showPosts" class="admin-main-entry-container">
-        <h5 class="mb-3">@SharedLocalizer["Posts"]</h5>
         <template x-for="post in sortedPosts" :key="post.id">
             <div :id="`post-${post.id}`" class="admin-post-entry p-3 mb-2 rounded-3 shadow-sm border">
                 <div class="d-flex">
