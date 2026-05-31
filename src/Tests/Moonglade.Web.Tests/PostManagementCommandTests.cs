@@ -139,7 +139,7 @@ public class PostManagementCommandTests
     private SavePostCommandHandler CreateSavePostHandler(ScheduledPublishWakeUp? wakeUp = null)
     {
         var configuration = new ConfigurationBuilder()
-            .AddInMemoryCollection(new Dictionary<string, string>
+            .AddInMemoryCollection(new Dictionary<string, string?>
             {
                 ["IndexNow:MinimalIntervalMinutes"] = "10"
             })
@@ -218,12 +218,12 @@ public class PostManagementCommandTests
             CancellationToken cancellationToken)
         {
             Commands.Add(command);
-            return Task.FromResult((TCommandResult)_results[command.GetType()]);
+            return Task.FromResult((TCommandResult)_results[command.GetType()]!);
         }
 
         public void SetResult<TCommand, TResult>(TResult result) where TCommand : ICommand<TResult>
         {
-            _results[typeof(TCommand)] = result;
+            _results[typeof(TCommand)] = result!;
         }
 
         public TCommand Single<TCommand>() where TCommand : ICommand

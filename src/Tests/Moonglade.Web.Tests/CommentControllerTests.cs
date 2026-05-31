@@ -127,7 +127,7 @@ public class CommentControllerTests
     [Fact]
     public async Task Create_WhenCommandReturnsNull_ReturnsValidationProblem()
     {
-        _commandMediator.SetResult<CreateCommentCommand, CommentDetailedItem>(null);
+        _commandMediator.SetResult<CreateCommentCommand, CommentDetailedItem>(null!);
         var controller = CreateController();
 
         var result = await controller.Create(Guid.NewGuid(), CreateCommentRequest());

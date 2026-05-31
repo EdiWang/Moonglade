@@ -22,7 +22,7 @@ public class ImageControllerTests
     private readonly Mock<IFileNameGenerator> _fileNameGenerator = new();
     private readonly RecordingCommandMediator _commandMediator = new();
     private readonly IMemoryCache _cache = new MemoryCache(new MemoryCacheOptions());
-    private CannonService _cannonService;
+    private CannonService _cannonService = null!;
 
     [Fact]
     public async Task Image_Get_WhenFilenameContainsInvalidCharacters_ReturnsBadRequest()
