@@ -180,7 +180,6 @@ public class MentionControllerTests
         services.AddSingleton(_eventMediator.Object);
 
         var controller = new MentionController(
-            Mock.Of<ILogger<MentionController>>(),
             _blogConfig,
             _queryMediator.Object,
             new CannonService(Mock.Of<ILogger<CannonService>>(), services.BuildServiceProvider().GetRequiredService<IServiceScopeFactory>()),

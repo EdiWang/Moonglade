@@ -30,7 +30,7 @@ public class ActivityLogController(
         if (pageSize < 1) pageSize = 10;
         if (pageSize > 100) pageSize = 100;
 
-        EventType[]? eventTypeEnums = eventTypes?.Select(et => (EventType)et).ToArray();
+        EventType[] eventTypeEnums = eventTypes?.Select(et => (EventType)et).ToArray();
 
         var (logs, totalCount) = await queryMediator.QueryAsync(
             new ListActivityLogsQuery(pageSize, pageIndex, eventTypeEnums, startTimeUtc, endTimeUtc));
