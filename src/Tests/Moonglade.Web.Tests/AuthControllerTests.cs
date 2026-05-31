@@ -116,7 +116,7 @@ public class AuthControllerTests
         Assert.Equal("Anonymous", userNameValue);
     }
 
-    private static AuthController CreateController(AuthenticationProvider provider, Action<DefaultHttpContext> configure = null)
+    private static AuthController CreateController(AuthenticationProvider provider, Action<DefaultHttpContext>? configure = null)
     {
         var controller = new AuthController(Options.Create(new AuthenticationSettings
         {

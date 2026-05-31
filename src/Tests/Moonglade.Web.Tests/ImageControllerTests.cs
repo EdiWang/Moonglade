@@ -227,9 +227,9 @@ public class ImageControllerTests
 
     private ImageController CreateController(
         BlogConfig? blogConfig = null,
-        string username = null,
-        IPAddress remoteIpAddress = null,
-        string userAgent = null)
+        string? username = null,
+        IPAddress? remoteIpAddress = null,
+        string? userAgent = null)
     {
         var services = new ServiceCollection();
         services.AddSingleton(_imageStorage.Object);

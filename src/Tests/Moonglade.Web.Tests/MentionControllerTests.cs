@@ -174,7 +174,7 @@ public class MentionControllerTests
         Assert.IsType<ClearMentionsCommand>(_commandMediator.Commands.Single());
     }
 
-    private MentionController CreateController(IPAddress remoteIpAddress = null)
+    private MentionController CreateController(IPAddress? remoteIpAddress = null)
     {
         var services = new ServiceCollection();
         services.AddSingleton(_eventMediator.Object);

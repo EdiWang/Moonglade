@@ -386,9 +386,9 @@ public class CommentControllerTests
     }
 
     private CommentController CreateController(
-        string username = null,
-        IPAddress remoteIpAddress = null,
-        string userAgent = null)
+        string? username = null,
+        IPAddress? remoteIpAddress = null,
+        string? userAgent = null)
     {
         var controller = new CommentController(
             _commandMediator,

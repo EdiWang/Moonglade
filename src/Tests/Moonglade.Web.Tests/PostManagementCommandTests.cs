@@ -136,7 +136,7 @@ public class PostManagementCommandTests
         Assert.Equal(EventType.PostDeleted, _commandMediator.Single<CreateActivityLogCommand>().EventType);
     }
 
-    private SavePostCommandHandler CreateSavePostHandler(ScheduledPublishWakeUp wakeUp = null)
+    private SavePostCommandHandler CreateSavePostHandler(ScheduledPublishWakeUp? wakeUp = null)
     {
         var configuration = new ConfigurationBuilder()
             .AddInMemoryCollection(new Dictionary<string, string>

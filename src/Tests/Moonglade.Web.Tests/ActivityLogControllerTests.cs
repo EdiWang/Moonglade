@@ -162,9 +162,9 @@ public class ActivityLogControllerTests
     }
 
     private ActivityLogController CreateController(
-        string username = null,
-        IPAddress remoteIpAddress = null,
-        string userAgent = null)
+        string? username = null,
+        IPAddress? remoteIpAddress = null,
+        string? userAgent = null)
     {
         var controller = new ActivityLogController(_queryMediator.Object, _commandMediator);
         var httpContext = new DefaultHttpContext();
