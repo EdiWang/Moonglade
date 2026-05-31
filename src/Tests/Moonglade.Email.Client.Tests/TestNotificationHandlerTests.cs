@@ -17,7 +17,7 @@ public class TestNotificationHandlerTests
 
         var handler = new TestNotificationHandler(emailClientMock.Object, blogConfigMock.Object);
 
-        await handler.HandleAsync(new TestEmailEvent(), CancellationToken.None);
+        await handler.HandleAsync(new TestEmailEvent(), TestContext.Current.CancellationToken);
 
         emailClientMock.Verify(
             c => c.SendEmailAsync(

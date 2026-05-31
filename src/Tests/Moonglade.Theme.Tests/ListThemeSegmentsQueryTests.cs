@@ -24,7 +24,7 @@ public class ListThemeSegmentsQueryTests
         var query = new ListThemeSegmentsQuery();
 
         // Act
-        var result = await handler.HandleAsync(query, CancellationToken.None);
+        var result = await handler.HandleAsync(query, TestContext.Current.CancellationToken);
 
         // Assert
         Assert.NotNull(result);
@@ -53,13 +53,13 @@ public class ListThemeSegmentsQueryTests
                 ThemeType = ThemeType.User
             }
         );
-        await db.SaveChangesAsync();
+        await db.SaveChangesAsync(TestContext.Current.CancellationToken);
 
         var handler = new ListThemeSegmentsQueryHandler(db);
         var query = new ListThemeSegmentsQuery();
 
         // Act
-        var result = await handler.HandleAsync(query, CancellationToken.None);
+        var result = await handler.HandleAsync(query, TestContext.Current.CancellationToken);
 
         // Assert
         Assert.NotNull(result);
@@ -80,13 +80,13 @@ public class ListThemeSegmentsQueryTests
             CssRules = """{"--color": "blue"}""",
             ThemeType = ThemeType.User
         });
-        await db.SaveChangesAsync();
+        await db.SaveChangesAsync(TestContext.Current.CancellationToken);
 
         var handler = new ListThemeSegmentsQueryHandler(db);
         var query = new ListThemeSegmentsQuery();
 
         // Act
-        var result = await handler.HandleAsync(query, CancellationToken.None);
+        var result = await handler.HandleAsync(query, TestContext.Current.CancellationToken);
 
         // Assert
         Assert.NotNull(result);
@@ -111,7 +111,7 @@ public class ListThemeSegmentsQueryTests
         var query = new ListThemeSegmentsQuery();
 
         // Act
-        var result = await handler.HandleAsync(query, CancellationToken.None);
+        var result = await handler.HandleAsync(query, TestContext.Current.CancellationToken);
 
         // Assert
         var expectedIds = new[] { 100, 101, 102, 103, 104, 105, 106, 107, 108, 109 };
@@ -129,7 +129,7 @@ public class ListThemeSegmentsQueryTests
         var query = new ListThemeSegmentsQuery();
 
         // Act
-        var result = await handler.HandleAsync(query, CancellationToken.None);
+        var result = await handler.HandleAsync(query, TestContext.Current.CancellationToken);
 
         // Assert
         Assert.All(result, theme =>
@@ -156,13 +156,13 @@ public class ListThemeSegmentsQueryTests
             AdditionalProps = """{"font": "Arial"}""",
             ThemeType = ThemeType.User
         });
-        await db.SaveChangesAsync();
+        await db.SaveChangesAsync(TestContext.Current.CancellationToken);
 
         var handler = new ListThemeSegmentsQueryHandler(db);
         var query = new ListThemeSegmentsQuery();
 
         // Act
-        var result = await handler.HandleAsync(query, CancellationToken.None);
+        var result = await handler.HandleAsync(query, TestContext.Current.CancellationToken);
 
         // Assert
         var customTheme = result.FirstOrDefault(t => t.Id == 50);
@@ -190,13 +190,13 @@ public class ListThemeSegmentsQueryTests
             new BlogThemeEntity { Id = 4, ThemeName = "Theme 4", CssRules = "{}", ThemeType = ThemeType.User },
             new BlogThemeEntity { Id = 5, ThemeName = "Theme 5", CssRules = "{}", ThemeType = ThemeType.User }
         );
-        await db.SaveChangesAsync();
+        await db.SaveChangesAsync(TestContext.Current.CancellationToken);
 
         var handler = new ListThemeSegmentsQueryHandler(db);
         var query = new ListThemeSegmentsQuery();
 
         // Act
-        var result = await handler.HandleAsync(query, CancellationToken.None);
+        var result = await handler.HandleAsync(query, TestContext.Current.CancellationToken);
 
         // Assert
         Assert.Equal(15, result.Count); // 10 system + 5 custom
@@ -237,14 +237,14 @@ public class ListThemeSegmentsQueryTests
             CssRules = "{}",
             ThemeType = ThemeType.User
         });
-        await db.SaveChangesAsync();
+        await db.SaveChangesAsync(TestContext.Current.CancellationToken);
 
         var handler = new ListThemeSegmentsQueryHandler(db);
         var query = new ListThemeSegmentsQuery();
 
         // Act
-        var result1 = await handler.HandleAsync(query, CancellationToken.None);
-        var result2 = await handler.HandleAsync(query, CancellationToken.None);
+        var result1 = await handler.HandleAsync(query, TestContext.Current.CancellationToken);
+        var result2 = await handler.HandleAsync(query, TestContext.Current.CancellationToken);
 
         // Assert
         Assert.Equal(result1.Count, result2.Count);
@@ -264,7 +264,7 @@ public class ListThemeSegmentsQueryTests
         var query = new ListThemeSegmentsQuery();
 
         // Act
-        var result = await handler.HandleAsync(query, CancellationToken.None);
+        var result = await handler.HandleAsync(query, TestContext.Current.CancellationToken);
 
         // Assert
         Assert.NotNull(result);
@@ -283,14 +283,14 @@ public class ListThemeSegmentsQueryTests
             CssRules = "{}",
             ThemeType = ThemeType.User
         });
-        await db.SaveChangesAsync();
+        await db.SaveChangesAsync(TestContext.Current.CancellationToken);
 
         var handler = new ListThemeSegmentsQueryHandler(db);
         var query = new ListThemeSegmentsQuery();
 
         // Act
-        var result1 = await handler.HandleAsync(query, CancellationToken.None);
-        var result2 = await handler.HandleAsync(query, CancellationToken.None);
+        var result1 = await handler.HandleAsync(query, TestContext.Current.CancellationToken);
+        var result2 = await handler.HandleAsync(query, TestContext.Current.CancellationToken);
 
         // Assert
         // The result should be a new list each time
@@ -317,13 +317,13 @@ public class ListThemeSegmentsQueryTests
                 ThemeType = ThemeType.User
             });
         }
-        await db.SaveChangesAsync();
+        await db.SaveChangesAsync(TestContext.Current.CancellationToken);
 
         var handler = new ListThemeSegmentsQueryHandler(db);
         var query = new ListThemeSegmentsQuery();
 
         // Act
-        var result = await handler.HandleAsync(query, CancellationToken.None);
+        var result = await handler.HandleAsync(query, TestContext.Current.CancellationToken);
 
         // Assert
         Assert.Equal(10 + customCount, result.Count);

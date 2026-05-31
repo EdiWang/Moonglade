@@ -28,12 +28,12 @@ public class AddDefaultConfigurationCommandTests
         var beforeAdd = DateTime.UtcNow;
 
         // Act
-        var result = await handler.HandleAsync(command, CancellationToken.None);
+        var result = await handler.HandleAsync(command, TestContext.Current.CancellationToken);
 
         // Assert
         Assert.Equal(OperationCode.Done, result);
 
-        var entity = await db.BlogConfiguration.FirstOrDefaultAsync(c => c.CfgKey == "TestKey");
+        var entity = await db.BlogConfiguration.FirstOrDefaultAsync(c => c.CfgKey == "TestKey", TestContext.Current.CancellationToken);
         Assert.NotNull(entity);
         Assert.Equal("TestKey", entity.CfgKey);
         Assert.Equal("{\"value\":\"default\"}", entity.CfgValue);
@@ -52,7 +52,7 @@ public class AddDefaultConfigurationCommandTests
 
         // Act & Assert
         await Assert.ThrowsAsync<ObjectDisposedException>(
-            () => handler.HandleAsync(command, CancellationToken.None));
+            () => handler.HandleAsync(command, TestContext.Current.CancellationToken));
     }
 
     [Fact]
@@ -66,10 +66,10 @@ public class AddDefaultConfigurationCommandTests
         var command = new AddDefaultConfigurationCommand(cfgKey, defaultJson);
 
         // Act
-        await handler.HandleAsync(command, CancellationToken.None);
+        await handler.HandleAsync(command, TestContext.Current.CancellationToken);
 
         // Assert
-        var entity = await db.BlogConfiguration.FirstOrDefaultAsync(c => c.CfgKey == cfgKey);
+        var entity = await db.BlogConfiguration.FirstOrDefaultAsync(c => c.CfgKey == cfgKey, TestContext.Current.CancellationToken);
         Assert.NotNull(entity);
         Assert.Equal(cfgKey, entity.CfgKey);
         Assert.Equal(defaultJson, entity.CfgValue);
@@ -86,12 +86,12 @@ public class AddDefaultConfigurationCommandTests
         var before = DateTime.UtcNow;
 
         // Act
-        await handler.HandleAsync(command, CancellationToken.None);
+        await handler.HandleAsync(command, TestContext.Current.CancellationToken);
 
         var after = DateTime.UtcNow;
 
         // Assert
-        var entity = await db.BlogConfiguration.FirstOrDefaultAsync(c => c.CfgKey == "TimeTestKey");
+        var entity = await db.BlogConfiguration.FirstOrDefaultAsync(c => c.CfgKey == "TimeTestKey", TestContext.Current.CancellationToken);
         Assert.NotNull(entity);
         Assert.NotNull(entity.LastModifiedTimeUtc);
         Assert.True(entity.LastModifiedTimeUtc >= before);

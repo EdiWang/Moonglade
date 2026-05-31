@@ -27,7 +27,7 @@ public class CommentNotificationEventHandlerTests
     {
         var evt = new CommentEvent("user1", "user@test.com", "127.0.0.1", "My Post", "Hello **world**");
 
-        await _handler.HandleAsync(evt, CancellationToken.None);
+        await _handler.HandleAsync(evt, TestContext.Current.CancellationToken);
 
         _emailClientMock.Verify(
             c => c.SendEmailAsync(
@@ -53,7 +53,7 @@ public class CommentNotificationEventHandlerTests
             .Callback<MailMesageTypes, string[], CommentEvent, CancellationToken>((_, _, e, _) => capturedEvent = e)
             .ReturnsAsync(true);
 
-        await _handler.HandleAsync(evt, CancellationToken.None);
+        await _handler.HandleAsync(evt, TestContext.Current.CancellationToken);
 
         Assert.NotNull(capturedEvent);
         Assert.Contains("<strong>bold</strong>", capturedEvent.CommentContent);
@@ -64,7 +64,7 @@ public class CommentNotificationEventHandlerTests
     {
         var evt = new CommentEvent("user1", "user@test.com", "127.0.0.1", "Post", "Content");
 
-        await _handler.HandleAsync(evt, CancellationToken.None);
+        await _handler.HandleAsync(evt, TestContext.Current.CancellationToken);
 
         _emailClientMock.Verify(
             c => c.SendEmailAsync(

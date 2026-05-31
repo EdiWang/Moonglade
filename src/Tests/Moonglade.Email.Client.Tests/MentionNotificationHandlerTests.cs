@@ -19,7 +19,7 @@ public class MentionNotificationHandlerTests
 
         var evt = new MentionEvent("Target Post", "source.com", "1.2.3.4", "https://source.com/post", "Source Title");
 
-        await handler.HandleAsync(evt, CancellationToken.None);
+        await handler.HandleAsync(evt, TestContext.Current.CancellationToken);
 
         emailClientMock.Verify(
             c => c.SendEmailAsync(

@@ -28,14 +28,14 @@ public class DeleteMentionsCommandTests
             PingTimeUtc = DateTime.UtcNow,
             TargetPostTitle = "Post"
         });
-        await db.SaveChangesAsync();
+        await db.SaveChangesAsync(TestContext.Current.CancellationToken);
 
         var handler = new DeleteMentionsCommandHandler(db);
         var command = new DeleteMentionsCommand(null!);
 
-        await handler.HandleAsync(command, CancellationToken.None);
+        await handler.HandleAsync(command, TestContext.Current.CancellationToken);
 
-        Assert.Equal(1, await db.Mention.CountAsync());
+        Assert.Equal(1, await db.Mention.CountAsync(TestContext.Current.CancellationToken));
     }
 
     [Fact]
@@ -53,14 +53,14 @@ public class DeleteMentionsCommandTests
             PingTimeUtc = DateTime.UtcNow,
             TargetPostTitle = "Post"
         });
-        await db.SaveChangesAsync();
+        await db.SaveChangesAsync(TestContext.Current.CancellationToken);
 
         var handler = new DeleteMentionsCommandHandler(db);
         var command = new DeleteMentionsCommand([]);
 
-        await handler.HandleAsync(command, CancellationToken.None);
+        await handler.HandleAsync(command, TestContext.Current.CancellationToken);
 
-        Assert.Equal(1, await db.Mention.CountAsync());
+        Assert.Equal(1, await db.Mention.CountAsync(TestContext.Current.CancellationToken));
     }
 
     [Fact]
@@ -78,14 +78,14 @@ public class DeleteMentionsCommandTests
             PingTimeUtc = DateTime.UtcNow,
             TargetPostTitle = "Post"
         });
-        await db.SaveChangesAsync();
+        await db.SaveChangesAsync(TestContext.Current.CancellationToken);
 
         var handler = new DeleteMentionsCommandHandler(db);
         var command = new DeleteMentionsCommand([Guid.NewGuid()]);
 
-        await handler.HandleAsync(command, CancellationToken.None);
+        await handler.HandleAsync(command, TestContext.Current.CancellationToken);
 
-        Assert.Equal(1, await db.Mention.CountAsync());
+        Assert.Equal(1, await db.Mention.CountAsync(TestContext.Current.CancellationToken));
     }
 
     [Fact]
@@ -101,14 +101,14 @@ public class DeleteMentionsCommandTests
             new MentionEntity { Id = id2, Domain = "b.com", SourceUrl = "https://b.com", SourceTitle = "B", SourceIp = "2.2.2.2", TargetPostId = Guid.NewGuid(), PingTimeUtc = DateTime.UtcNow, TargetPostTitle = "P2" },
             new MentionEntity { Id = keepId, Domain = "c.com", SourceUrl = "https://c.com", SourceTitle = "C", SourceIp = "3.3.3.3", TargetPostId = Guid.NewGuid(), PingTimeUtc = DateTime.UtcNow, TargetPostTitle = "P3" }
         );
-        await db.SaveChangesAsync();
+        await db.SaveChangesAsync(TestContext.Current.CancellationToken);
 
         var handler = new DeleteMentionsCommandHandler(db);
         var command = new DeleteMentionsCommand([id1, id2]);
 
-        await handler.HandleAsync(command, CancellationToken.None);
+        await handler.HandleAsync(command, TestContext.Current.CancellationToken);
 
-        Assert.Equal(1, await db.Mention.CountAsync());
-        Assert.NotNull(await db.Mention.FindAsync(keepId));
+        Assert.Equal(1, await db.Mention.CountAsync(TestContext.Current.CancellationToken));
+        Assert.NotNull(await db.Mention.FindAsync([keepId], TestContext.Current.CancellationToken));
     }
 }
