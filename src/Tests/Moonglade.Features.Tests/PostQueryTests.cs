@@ -1,4 +1,5 @@
 using Moonglade.Data;
+using Moonglade.Data.DTO;
 using Moonglade.Data.Entities;
 using Moonglade.Features.Post;
 
@@ -104,6 +105,52 @@ public class PostQueryTests
     }
 
     [Fact]
+    public async Task ListPostSegmentQuery_FiltersByTitleAbstractAndTag()
+    {
+        using var db = CreateDbContext();
+        var matchingPost = CreatePost(Guid.NewGuid(), "match", PostStatus.Published, DateTime.UtcNow, title: "Azure Functions Guide", contentAbstract: "Serverless hosting notes");
+        matchingPost.Tags.Add(new TagEntity { DisplayName = "Cloud", NormalizedName = "cloud" });
+        var wrongTitlePost = CreatePost(Guid.NewGuid(), "wrong-title", PostStatus.Published, DateTime.UtcNow.AddDays(-1), title: "ASP.NET Core Guide", contentAbstract: "Serverless hosting notes");
+        wrongTitlePost.Tags.Add(new TagEntity { DisplayName = "Cloud", NormalizedName = "cloud" });
+        var wrongAbstractPost = CreatePost(Guid.NewGuid(), "wrong-abstract", PostStatus.Published, DateTime.UtcNow.AddDays(-2), title: "Azure Functions Guide", contentAbstract: "Container hosting notes");
+        wrongAbstractPost.Tags.Add(new TagEntity { DisplayName = "Cloud", NormalizedName = "cloud" });
+        var wrongTagPost = CreatePost(Guid.NewGuid(), "wrong-tag", PostStatus.Published, DateTime.UtcNow.AddDays(-3), title: "Azure Functions Guide", contentAbstract: "Serverless hosting notes");
+        wrongTagPost.Tags.Add(new TagEntity { DisplayName = "DevOps", NormalizedName = "devops" });
+        db.Post.AddRange(matchingPost, wrongTitlePost, wrongAbstractPost, wrongTagPost);
+        await db.SaveChangesAsync(TestContext.Current.CancellationToken);
+
+        var handler = new ListPostSegmentQueryHandler(db);
+
+        var (posts, totalRows) = await handler.HandleAsync(
+            new ListPostSegmentQuery(PostStatus.Published, 0, 10, new PostFilter("Azure", "Serverless", "Cloud")),
+            TestContext.Current.CancellationToken);
+
+        Assert.Equal(1, totalRows);
+        Assert.Single(posts);
+        Assert.Equal("match", posts[0].Slug);
+    }
+
+    [Fact]
+    public async Task ListPostSegmentQuery_OrdersByPublishDateAscendingWhenRequested()
+    {
+        using var db = CreateDbContext();
+        db.Post.AddRange(
+            CreatePost(Guid.NewGuid(), "new", PostStatus.Published, DateTime.UtcNow),
+            CreatePost(Guid.NewGuid(), "old", PostStatus.Published, DateTime.UtcNow.AddDays(-2)));
+        await db.SaveChangesAsync(TestContext.Current.CancellationToken);
+
+        var handler = new ListPostSegmentQueryHandler(db);
+
+        var (posts, _) = await handler.HandleAsync(
+            new ListPostSegmentQuery(PostStatus.Published, 0, 10, new PostFilter(SortDescending: false)),
+            TestContext.Current.CancellationToken);
+
+        Assert.Collection(posts,
+            p => Assert.Equal("old", p.Slug),
+            p => Assert.Equal("new", p.Slug));
+    }
+
+    [Fact]
     public async Task GetPostBySlugQuery_ReturnsOnlyPublishedNotDeletedPost()
     {
         using var db = CreateDbContext();
@@ -191,7 +238,8 @@ public class PostQueryTests
         bool isDeleted = false,
         bool isFeatured = false,
         string? title = null,
-        string? routeLink = null)
+        string? routeLink = null,
+        string? contentAbstract = null)
     {
         return new PostEntity
         {
@@ -203,7 +251,7 @@ public class PostQueryTests
             CommentEnabled = true,
             CreateTimeUtc = DateTime.UtcNow.AddDays(-3),
             LastModifiedUtc = DateTime.UtcNow.AddDays(-2),
-            ContentAbstract = "Abstract",
+            ContentAbstract = contentAbstract ?? "Abstract",
             ContentLanguageCode = "en-us",
             IsFeedIncluded = true,
             PubDateUtc = pubDateUtc,

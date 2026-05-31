@@ -8,11 +8,18 @@ import { withPagination } from './admin.pagination.mjs';
 Alpine.data('postManager', () => withPagination(4, {
     posts: [],
     isLoading: true,
-    searchTerm: '',
+    titleFilter: '',
+    abstractFilter: '',
+    tagFilter: '',
+    sortBy: 'pubDateUtc',
+    sortDescending: 'true',
+    filterCanvas: null,
+    sortByOptions: [
+        { value: 'pubDateUtc', label: 'Publish Time' }
+    ],
 
     async init() {
-        const urlParams = this.initPageFromUrl();
-        this.searchTerm = urlParams.get('searchTerm') || '';
+        this.initPageFromUrl();
         await this.loadData();
     },
 
@@ -24,9 +31,19 @@ Alpine.data('postManager', () => withPagination(4, {
                 pageSize: this.pageSize
             });
             
-            if (this.searchTerm) {
-                params.append('searchTerm', this.searchTerm);
+            if (this.titleFilter) {
+                params.append('title', this.titleFilter);
             }
+
+            if (this.abstractFilter) {
+                params.append('contentAbstract', this.abstractFilter);
+            }
+
+            if (this.tagFilter) {
+                params.append('tag', this.tagFilter);
+            }
+
+            params.append('sortDescending', this.sortDescending === 'true');
 
             const data = await fetch2(`/api/post/list?${params.toString()}`, 'GET');
             this.posts = data.items ?? [];
@@ -40,19 +57,34 @@ Alpine.data('postManager', () => withPagination(4, {
         }
     },
 
-    async handleSearch() {
+    openFilter() {
+        this.filterCanvas ??= new bootstrap.Offcanvas(this.$refs.filterCanvas);
+        this.filterCanvas.show();
+    },
+
+    async handleFilter() {
         this.currentPage = 1;
         await this.loadData();
         this.updateUrl();
+        this.filterCanvas?.hide();
+    },
+
+    async clearFilter() {
+        this.titleFilter = '';
+        this.abstractFilter = '';
+        this.tagFilter = '';
+        this.sortBy = 'pubDateUtc';
+        this.sortDescending = 'true';
+        this.currentPage = 1;
+        await this.loadData();
+        this.updateUrl();
+        this.filterCanvas?.hide();
     },
 
     updateUrl() {
         const params = new URLSearchParams();
         params.set('pageIndex', this.currentPage);
         params.set('pageSize', this.pageSize);
-        if (this.searchTerm) {
-            params.set('searchTerm', this.searchTerm);
-        }
         window.history.pushState({}, '', `?${params.toString()}`);
     },
 
@@ -72,6 +104,19 @@ Alpine.data('postManager', () => withPagination(4, {
 
     get hasPosts() {
         return this.posts.length > 0;
+    },
+
+    get postCount() {
+        return this.totalRows;
+    },
+
+    get activeFilterCount() {
+        let count = 0;
+        if (this.titleFilter) count++;
+        if (this.abstractFilter) count++;
+        if (this.tagFilter) count++;
+        if (this.sortBy !== 'pubDateUtc' || this.sortDescending !== 'true') count++;
+        return count;
     },
 
     getPostUrl(post) {

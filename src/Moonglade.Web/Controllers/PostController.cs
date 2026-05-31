@@ -17,10 +17,14 @@ public class PostController(
     IBlogConfig blogConfig) : BlogControllerBase(commandMediator)
 {
     [HttpGet("list")]
-    public async Task<IActionResult> List([FromQuery][Range(1, int.MaxValue)] int pageIndex = 1, [FromQuery][Range(1, 100)] int pageSize = 4, [FromQuery] string searchTerm = null)
+    public async Task<IActionResult> List(
+        [FromQuery][Range(1, int.MaxValue)] int pageIndex = 1,
+        [FromQuery][Range(1, 100)] int pageSize = 4,
+        [FromQuery] PostFilter filter = null)
     {
+        filter ??= new();
         var offset = (pageIndex - 1) * pageSize;
-        var (posts, totalRows) = await queryMediator.QueryAsync(new ListPostSegmentQuery(PostStatus.Published, offset, pageSize, searchTerm));
+        var (posts, totalRows) = await queryMediator.QueryAsync(new ListPostSegmentQuery(PostStatus.Published, offset, pageSize, filter));
 
         return Ok(new PagedResult<PostSegment>(posts, pageIndex, pageSize, totalRows));
     }

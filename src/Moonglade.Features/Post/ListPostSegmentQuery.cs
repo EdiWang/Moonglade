@@ -3,7 +3,7 @@ using Moonglade.Data.DTO;
 
 namespace Moonglade.Features.Post;
 
-public class ListPostSegmentQuery(PostStatus postStatus, int offset, int pageSize, string keyword = null)
+public class ListPostSegmentQuery(PostStatus postStatus, int offset, int pageSize, PostFilter filter = null)
     : IQuery<(List<PostSegment> Posts, int TotalRows)>
 {
     public PostStatus PostStatus { get; set; } = postStatus;
@@ -12,7 +12,7 @@ public class ListPostSegmentQuery(PostStatus postStatus, int offset, int pageSiz
 
     public int PageSize { get; set; } = pageSize;
 
-    public string Keyword { get; set; } = keyword;
+    public PostFilter Filter { get; set; } = filter ?? new();
 }
 
 public class ListPostSegmentQueryHandler(BlogDbContext db) :
@@ -36,15 +36,30 @@ public class ListPostSegmentQueryHandler(BlogDbContext db) :
             .AsNoTracking()
             .FilterByStatus(request.PostStatus);
 
-        if (request.Keyword is not null)
+        if (!string.IsNullOrWhiteSpace(request.Filter.Title))
         {
-            query = query.Where(p => p.Title.Contains(request.Keyword));
+            query = query.Where(p => p.Title.Contains(request.Filter.Title));
+        }
+
+        if (!string.IsNullOrWhiteSpace(request.Filter.ContentAbstract))
+        {
+            query = query.Where(p => p.ContentAbstract.Contains(request.Filter.ContentAbstract));
+        }
+
+        if (!string.IsNullOrWhiteSpace(request.Filter.Tag))
+        {
+            query = query.Where(p => p.Tags.Any(t =>
+                t.DisplayName.Contains(request.Filter.Tag) ||
+                t.NormalizedName.Contains(request.Filter.Tag)));
         }
 
         var totalRows = await query.CountAsync(ct);
 
-        var posts = await query
-            .OrderByDescending(p => p.PubDateUtc)
+        var orderedQuery = request.Filter.SortDescending
+            ? query.OrderByDescending(p => p.PubDateUtc)
+            : query.OrderBy(p => p.PubDateUtc);
+
+        var posts = await orderedQuery
             .Skip(request.Offset)
             .Take(request.PageSize)
             .SelectToSegment()
