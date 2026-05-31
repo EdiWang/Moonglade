@@ -199,7 +199,7 @@ public class ActivityLogControllerTests
 
         public List<ICommand> Commands { get; } = [];
 
-        public Task SendAsync(ICommand command, CommandMediationSettings settings, CancellationToken cancellationToken)
+        public Task SendAsync(ICommand command, CommandMediationSettings? settings, CancellationToken cancellationToken)
         {
             Commands.Add(command);
             return Task.CompletedTask;
@@ -207,7 +207,7 @@ public class ActivityLogControllerTests
 
         public Task<TCommandResult> SendAsync<TCommandResult>(
             ICommand<TCommandResult> command,
-            CommandMediationSettings settings,
+            CommandMediationSettings? settings,
             CancellationToken cancellationToken)
         {
             Commands.Add(command);

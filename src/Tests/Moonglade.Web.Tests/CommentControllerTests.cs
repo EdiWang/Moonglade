@@ -445,7 +445,7 @@ public class CommentControllerTests
 
         public List<ICommand> Commands { get; } = [];
 
-        public Task SendAsync(ICommand command, CommandMediationSettings settings, CancellationToken cancellationToken)
+        public Task SendAsync(ICommand command, CommandMediationSettings? settings, CancellationToken cancellationToken)
         {
             Commands.Add(command);
 
@@ -459,7 +459,7 @@ public class CommentControllerTests
 
         public Task<TCommandResult> SendAsync<TCommandResult>(
             ICommand<TCommandResult> command,
-            CommandMediationSettings settings,
+            CommandMediationSettings? settings,
             CancellationToken cancellationToken)
         {
             Commands.Add(command);
