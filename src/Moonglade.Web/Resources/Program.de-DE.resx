@@ -1209,4 +1209,10 @@
   <data name="Manage mention link" xml:space="preserve">
     <value>Link zur Erwähnungsverwaltung</value>
   </data>
+  <data name="Contains AI-assisted content" xml:space="preserve">
+    <value>Enthält KI-unterstützte Inhalte</value>
+  </data>
+  <data name="This post contains AI-generated or AI-assisted edits." xml:space="preserve">
+    <value>Dieser Beitrag enthält KI-generierte oder KI-unterstützte Bearbeitungen.</value>
+  </data>
 </root>

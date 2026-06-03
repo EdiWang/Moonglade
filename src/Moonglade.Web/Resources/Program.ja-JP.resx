@@ -1209,4 +1209,10 @@
   <data name="Manage mention link" xml:space="preserve">
     <value>メンション管理リンク</value>
   </data>
+  <data name="Contains AI-assisted content" xml:space="preserve">
+    <value>AI支援コンテンツを含む</value>
+  </data>
+  <data name="This post contains AI-generated or AI-assisted edits." xml:space="preserve">
+    <value>この投稿には、AI生成またはAI支援による編集が含まれています。</value>
+  </data>
 </root>
