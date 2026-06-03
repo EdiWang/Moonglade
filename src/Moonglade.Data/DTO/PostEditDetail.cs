@@ -12,6 +12,7 @@ public record PostEditDetail
     public bool FeedIncluded { get; set; }
     public bool Featured { get; set; }
     public bool IsOutdated { get; set; }
+    public bool ContainsAiAssistedContent { get; set; }
     public string LanguageCode { get; set; }
     public string ContentAbstract { get; set; }
     public string Keywords { get; set; }

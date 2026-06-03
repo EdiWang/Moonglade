@@ -78,6 +78,7 @@ public class UpdatePostCommandHandler(
         post.ContentLanguageCode = postEditModel.LanguageCode;
         post.IsFeatured = postEditModel.Featured;
         post.IsOutdated = postEditModel.IsOutdated;
+        post.ContainsAiAssistedContent = postEditModel.ContainsAiAssistedContent;
         post.ContentType = postEditModel.ContentType;
         post.RouteLink = GetRouteLink(post);
         post.Keywords = ContentProcessor.GetKeywords(postEditModel.Keywords);

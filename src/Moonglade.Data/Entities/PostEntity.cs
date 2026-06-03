@@ -25,6 +25,7 @@ public class PostEntity
     public bool IsDeleted { get; set; }
     public bool IsOutdated { get; set; }
     public bool IsFeatured { get; set; }
+    public bool ContainsAiAssistedContent { get; set; }
     public string RouteLink { get; set; }
     public PostStatus PostStatus { get; set; }
     public string Keywords { get; set; }

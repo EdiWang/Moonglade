@@ -131,6 +131,14 @@
                     <span>@Model.PostView.ViewCount</span>
                 </span>
             }
+
+            @if (Model.Post.ContainsAiAssistedContent)
+            {
+                <span class="ms-2">
+                    <i class="bi-stars"></i>
+                    @SharedLocalizer["This post contains AI-generated or AI-assisted edits."]
+                </span>
+            }
         </div>
     </header>
 

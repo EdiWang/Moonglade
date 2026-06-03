@@ -31,6 +31,7 @@ public class ExportPostDataCommandHandler(BlogDbContext db) : ICommandHandler<Ex
                 IsFeatured = p.IsFeatured,
                 PostStatus = p.PostStatus,
                 IsOutdated = p.IsOutdated,
+                ContainsAiAssistedContent = p.ContainsAiAssistedContent,
                 Keywords = p.Keywords,
                 Categories = p.PostCategory.Select(pc => pc.Category.DisplayName).ToList(),
                 Tags = p.Tags.Select(t => t.DisplayName).ToList()
