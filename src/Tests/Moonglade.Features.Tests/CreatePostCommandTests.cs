@@ -99,6 +99,20 @@ public class CreatePostCommandTests
     }
 
     [Fact]
+    public async Task HandleAsync_WithAiAssistedContent_PersistsDisclosure()
+    {
+        using var db = CreateDbContext();
+        var handler = CreateHandler(db);
+        var model = CreatePostEditModel(PostStatus.Draft);
+        model.ContainsAiAssistedContent = true;
+
+        var result = await handler.HandleAsync(new CreatePostCommand(model), TestContext.Current.CancellationToken);
+
+        var post = await db.Post.SingleAsync(p => p.Id == result.Id, TestContext.Current.CancellationToken);
+        Assert.True(post.ContainsAiAssistedContent);
+    }
+
+    [Fact]
     public async Task HandleAsync_PublishedSlugConflict_AppendsSuffixToSlug()
     {
         using var db = CreateDbContext();

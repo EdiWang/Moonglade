@@ -39,6 +39,7 @@ public class CreatePostCommandHandler(
             PostStatus = request.Payload.PostStatus,
             IsFeatured = request.Payload.Featured,
             IsOutdated = request.Payload.IsOutdated,
+            ContainsAiAssistedContent = request.Payload.ContainsAiAssistedContent,
             ContentType = request.Payload.ContentType,
         };
 

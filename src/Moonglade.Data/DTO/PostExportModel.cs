@@ -20,6 +20,7 @@ public class PostExportModel
     public bool IsFeatured { get; set; }
     public PostStatus PostStatus { get; set; }
     public bool IsOutdated { get; set; }
+    public bool ContainsAiAssistedContent { get; set; }
     public string Keywords { get; set; }
     public List<string> Categories { get; set; } = [];
     public List<string> Tags { get; set; } = [];

@@ -137,6 +137,7 @@ public class PostController(
             FeedIncluded = post.IsFeedIncluded,
             Featured = post.IsFeatured,
             IsOutdated = post.IsOutdated,
+            ContainsAiAssistedContent = post.ContainsAiAssistedContent,
             LanguageCode = post.ContentLanguageCode,
             ContentAbstract = post.ContentAbstract?.Replace("\u00A0\u2026", string.Empty),
             Keywords = post.Keywords,

@@ -139,6 +139,24 @@ public class UpdatePostCommandTests
     }
 
     [Fact]
+    public async Task HandleAsync_WithAiAssistedContent_UpdatesDisclosure()
+    {
+        using var db = CreateDbContext();
+        var postId = Guid.NewGuid();
+        db.Post.Add(CreatePostEntity(postId, PostStatus.Draft, "draft-post"));
+        await db.SaveChangesAsync(TestContext.Current.CancellationToken);
+
+        var model = CreatePostEditModel(PostStatus.Draft);
+        model.ContainsAiAssistedContent = true;
+        var handler = CreateHandler(db);
+
+        await handler.HandleAsync(new UpdatePostCommand(postId, model), TestContext.Current.CancellationToken);
+
+        var post = await db.Post.SingleAsync(p => p.Id == postId, TestContext.Current.CancellationToken);
+        Assert.True(post.ContainsAiAssistedContent);
+    }
+
+    [Fact]
     public async Task HandleAsync_PostDoesNotExist_ThrowsInvalidOperationException()
     {
         using var db = CreateDbContext();
