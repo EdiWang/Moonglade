@@ -17,10 +17,34 @@ Alpine.data('postManager', () => withPagination(4, {
     sortByOptions: [
         { value: 'pubDateUtc', label: 'Publish Time' }
     ],
+    popStateHandler: null,
 
     async init() {
-        this.initPageFromUrl();
+        this.initPostStateFromUrl();
+        this.popStateHandler = async () => {
+            this.initPostStateFromUrl();
+            await this.loadData();
+        };
+        window.addEventListener('popstate', this.popStateHandler);
         await this.loadData();
+    },
+
+    destroy() {
+        if (this.popStateHandler) {
+            window.removeEventListener('popstate', this.popStateHandler);
+        }
+    },
+
+    initPostStateFromUrl() {
+        const urlParams = this.initPageFromUrl();
+        this.titleFilter = urlParams.get('title') || '';
+        this.abstractFilter = urlParams.get('contentAbstract') || '';
+        this.tagFilter = urlParams.get('tag') || '';
+
+        const sortDescending = urlParams.get('sortDescending');
+        if (sortDescending === 'true' || sortDescending === 'false') {
+            this.sortDescending = sortDescending;
+        }
     },
 
     async loadData() {
@@ -85,6 +109,20 @@ Alpine.data('postManager', () => withPagination(4, {
         const params = new URLSearchParams();
         params.set('pageIndex', this.currentPage);
         params.set('pageSize', this.pageSize);
+
+        if (this.titleFilter) {
+            params.set('title', this.titleFilter);
+        }
+
+        if (this.abstractFilter) {
+            params.set('contentAbstract', this.abstractFilter);
+        }
+
+        if (this.tagFilter) {
+            params.set('tag', this.tagFilter);
+        }
+
+        params.set('sortDescending', this.sortDescending);
         window.history.pushState({}, '', `?${params.toString()}`);
     },
 
