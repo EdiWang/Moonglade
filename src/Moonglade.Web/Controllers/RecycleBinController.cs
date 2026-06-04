@@ -63,7 +63,7 @@ public class RecycleBinController(
         if (page == null) return NotFound();
 
         await CommandMediator.SendAsync(new RestorePageCommand(pageId));
-        cache.Remove(BlogCachePartition.Page.ToString(), page.Slug);
+        cache.Remove(BlogCachePartition.Page.ToString(), page.Slug.ToLower());
 
         await LogActivityAsync(
             EventType.PageRestored,
