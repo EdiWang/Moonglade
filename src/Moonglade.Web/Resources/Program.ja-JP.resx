@@ -627,8 +627,11 @@
   <data name="Show customize footer on each post" xml:space="preserve">
     <value>各記事の下部にカスタムフッターを表示する</value>
   </data>
-  <data name="Show warning when clicking external links" xml:space="preserve">
-    <value>外部リンクをクリックすると警告が表示されます</value>
+  <data name="Show warning when clicking external links in posts" xml:space="preserve">
+    <value>記事内の外部リンクをクリックすると警告を表示する</value>
+  </data>
+  <data name="Show warning when clicking external links in comments" xml:space="preserve">
+    <value>コメント内の外部リンクをクリックすると警告を表示する</value>
   </data>
   <data name="Side Bar" xml:space="preserve">
     <value>サイドバー</value>

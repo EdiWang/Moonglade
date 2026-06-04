@@ -1,4 +1,11 @@
-﻿<div class="modal modal-lg fade" id="externalLinkModal" tabindex="-1" role="dialog" aria-labelledby="externalLinkModalLabel" aria-hidden="true">
+<div class="modal modal-lg fade"
+     id="externalLinkModal"
+     tabindex="-1"
+     role="dialog"
+     aria-labelledby="externalLinkModalLabel"
+     aria-hidden="true"
+     data-warn-post-links="@BlogConfig.AdvancedSettings.WarnPostExternalLink.ToString().ToLowerInvariant()"
+     data-warn-comment-links="@BlogConfig.AdvancedSettings.WarnCommentExternalLink.ToString().ToLowerInvariant()">
     <div class="modal-dialog modal-externalLink" role="document">
         <div class="modal-content">
             <div class="modal-header">
@@ -9,7 +16,7 @@
             <div class="modal-body">
                 <div class="alert alert-warning">
                     @SharedLocalizer["You are about to leave this website and go to an external link."] <br />
-                    
+
                     @SharedLocalizer["This link could lead to websites with malicious content, phishing attempts, or other security threats. It is important to exercise caution when clicking on any external link."]
                 </div>
                 <p>@SharedLocalizer["By continuing to browse this website and accessing any external links, you acknowledge and accept the following:"]</p>
@@ -21,7 +28,7 @@
                 <p>
                     @SharedLocalizer["By clicking \"Continue\", you agree that you are aware of the risks and will proceed at your own discretion."]
                 </p>
-                
+
                 <span>@SharedLocalizer["Link URL:"]&nbsp;</span><span id="extlink-url"></span>
             </div>
             <div class="modal-footer">

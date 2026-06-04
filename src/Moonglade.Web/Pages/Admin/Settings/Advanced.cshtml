@@ -139,12 +139,27 @@
                             <i class="bi-exclamation-triangle settings-entry-icon"></i>
                         </div>
                         <div class="col">
-                            <label asp-for="@settings.WarnExternalLink" class="form-check-label"></label>
+                            <label asp-for="@settings.WarnPostExternalLink" class="form-check-label"></label>
                         </div>
                         <div class="col-md-4 text-end">
                             <div class="form-check form-switch form-control-lg">
-                                <input type="hidden" name="WarnExternalLink" value="false">
-                                <input type="checkbox" name="WarnExternalLink" value="true" class="form-check-input" @(settings.WarnExternalLink ? "checked" : null)>
+                                <input type="hidden" name="WarnPostExternalLink" value="false">
+                                <input type="checkbox" name="WarnPostExternalLink" value="true" class="form-check-input" @(settings.WarnPostExternalLink ? "checked" : null)>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="settings-entry row align-items-center py-3 px-2 rounded-3 border mb-1">
+                        <div class="col-auto">
+                            <i class="bi-chat-left-text settings-entry-icon"></i>
+                        </div>
+                        <div class="col">
+                            <label asp-for="@settings.WarnCommentExternalLink" class="form-check-label"></label>
+                        </div>
+                        <div class="col-md-4 text-end">
+                            <div class="form-check form-switch form-control-lg">
+                                <input type="hidden" name="WarnCommentExternalLink" value="false">
+                                <input type="checkbox" name="WarnCommentExternalLink" value="true" class="form-check-input" @(settings.WarnCommentExternalLink ? "checked" : null)>
                             </div>
                         </div>
                     </div>

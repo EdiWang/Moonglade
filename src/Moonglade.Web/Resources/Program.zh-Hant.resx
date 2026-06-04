@@ -627,8 +627,11 @@
   <data name="Show customize footer on each post" xml:space="preserve">
     <value>在每篇文章底下顯示自定義頁腳</value>
   </data>
-  <data name="Show warning when clicking external links" xml:space="preserve">
-    <value>點擊外部連結時彈出警告</value>
+  <data name="Show warning when clicking external links in posts" xml:space="preserve">
+    <value>點擊文章中的外部連結時彈出警告</value>
+  </data>
+  <data name="Show warning when clicking external links in comments" xml:space="preserve">
+    <value>點擊評論中的外部連結時彈出警告</value>
   </data>
   <data name="Side Bar" xml:space="preserve">
     <value>側邊欄</value>

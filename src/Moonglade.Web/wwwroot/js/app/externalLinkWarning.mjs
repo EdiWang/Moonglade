@@ -1,4 +1,5 @@
-const externalLinkModal = new bootstrap.Modal(document.getElementById('externalLinkModal'));
+const externalLinkModalElement = document.getElementById('externalLinkModal');
+const externalLinkModal = new bootstrap.Modal(externalLinkModalElement);
 const modalUrlElement = document.getElementById('extlink-url');
 const modalContinueButton = document.getElementById('extlink-continue');
 
@@ -18,7 +19,18 @@ function getExternalLinkUrl(link) {
 }
 
 function markExternalLinks() {
-    const links = document.querySelectorAll('.post-content a, .comment-list a');
+    const selectors = [];
+    if (externalLinkModalElement.dataset.warnPostLinks === 'true') {
+        selectors.push('.post-content a');
+    }
+    if (externalLinkModalElement.dataset.warnCommentLinks === 'true') {
+        selectors.push('.comment-list a');
+    }
+    if (selectors.length === 0) {
+        return;
+    }
+
+    const links = document.querySelectorAll(selectors.join(', '));
     links.forEach(link => {
         if (getExternalLinkUrl(link)) {
             link.classList.add('external');

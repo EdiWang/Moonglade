@@ -90,7 +90,7 @@
     }
 
     <script type="module" src="~/js/app/post.mjs"></script>
-    @if (BlogConfig.AdvancedSettings.WarnExternalLink)
+    @if (BlogConfig.AdvancedSettings.WarnPostExternalLink || BlogConfig.AdvancedSettings.WarnCommentExternalLink)
     {
         <script type="module" src="~/js/app/externalLinkWarning.mjs"></script>
     }
@@ -230,7 +230,7 @@
     </div>
 </div>
 
-@if (BlogConfig.AdvancedSettings.WarnExternalLink)
+@if (BlogConfig.AdvancedSettings.WarnPostExternalLink || BlogConfig.AdvancedSettings.WarnCommentExternalLink)
 {
     <partial name="_ExternalLink" />
 }

@@ -117,6 +117,7 @@ The solution file is `src/Moonglade.slnx`. The root `README.md` is the main depl
 - Frontend code is built around the existing Razor layouts, Bootstrap, Alpine.js, TinyMCE, Monaco editor, and Tagify. Do not add a new frontend framework unless explicitly requested.
 - The TinyMCE language folder README says language packs should not be translated directly; use Crowdin instead.
 - Server-rendered UI text should consider resource files. Supported cultures are currently `en-US`, `zh-Hans`, `zh-Hant`, `de-DE`, and `ja-JP`.
+- Localization uses shared resources under `src/Moonglade.Web/Resources/Program.*.resx`. Razor pages inject `IStringLocalizer<Program>` as `SharedLocalizer`, and DataAnnotations display names are configured to use the same `Program` resource. When adding or renaming any `SharedLocalizer["..."]` key or `[Display(Name = "...")]` text, update all non-English resource files: `Program.zh-Hans.resx`, `Program.zh-Hant.resx`, `Program.de-DE.resx`, and `Program.ja-JP.resx`.
 
 ### Documentation And Licenses
 

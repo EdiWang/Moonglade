@@ -38,8 +38,11 @@ public class AdvancedSettings : IBlogSettings<AdvancedSettings>
     [Display(Name = "Enable Post Scheduler")]
     public bool EnablePostScheduler { get; set; } = true;
 
-    [Display(Name = "Show warning when clicking external links")]
-    public bool WarnExternalLink { get; set; }
+    [Display(Name = "Show warning when clicking external links in posts")]
+    public bool WarnPostExternalLink { get; set; }
+
+    [Display(Name = "Show warning when clicking external links in comments")]
+    public bool WarnCommentExternalLink { get; set; } = true;
 
     [Display(Name = "Enable JSON-LD BlogPosting")]
     public bool EnableJsonLdBlogPosting { get; set; } = true;
