@@ -10,5 +10,7 @@ public record PageSegment
 
     public bool IsPublished { get; set; }
 
+    public bool IsDeleted { get; set; }
+
     public DateTime CreateTimeUtc { get; set; }
 }

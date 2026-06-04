@@ -24,7 +24,7 @@ public class CategoryControllerTests
         var id = Guid.NewGuid();
         _queryMediator
             .Setup(x => x.QueryAsync(It.IsAny<GetCategoryQuery>(), It.IsAny<QueryMediationSettings>(), It.IsAny<CancellationToken>()))
-            .ReturnsAsync((CategoryEntity)null);
+            .ReturnsAsync((CategoryEntity)null!);
 
         var controller = CreateController();
 
@@ -210,9 +210,9 @@ public class CategoryControllerTests
     }
 
     private CategoryController CreateController(
-        string username = null,
-        IPAddress remoteIpAddress = null,
-        string userAgent = null)
+        string? username = null,
+        IPAddress? remoteIpAddress = null,
+        string? userAgent = null)
     {
         var controller = new CategoryController(_queryMediator.Object, _commandMediator);
         var httpContext = new DefaultHttpContext();
@@ -247,7 +247,7 @@ public class CategoryControllerTests
 
         public List<ICommand> Commands { get; } = [];
 
-        public Task SendAsync(ICommand command, CommandMediationSettings settings, CancellationToken cancellationToken)
+        public Task SendAsync(ICommand command, CommandMediationSettings? settings, CancellationToken cancellationToken)
         {
             Commands.Add(command);
             return Task.CompletedTask;
@@ -255,7 +255,7 @@ public class CategoryControllerTests
 
         public Task<TCommandResult> SendAsync<TCommandResult>(
             ICommand<TCommandResult> command,
-            CommandMediationSettings settings,
+            CommandMediationSettings? settings,
             CancellationToken cancellationToken)
         {
             Commands.Add(command);

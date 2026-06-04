@@ -15,7 +15,7 @@
                 </div>
             </a>
             <a asp-page="/Admin/BlogPage"
-               class="list-group-item list-group-item-action @(currentPage is "/Admin/BlogPage" or "/Admin/EditPage" ? "active" : null)" title="@SharedLocalizer["Manage pages link"]">
+               class="list-group-item list-group-item-action @(currentPage is "/Admin/BlogPage" or "/Admin/EditPage" or "/Admin/PageRecycleBin" ? "active" : null)" title="@SharedLocalizer["Manage pages link"]">
                 <div class="positioning-region">
                     <div class="content-region">
                         <i class="bi-file-earmark-post admin-nav-icon"></i>

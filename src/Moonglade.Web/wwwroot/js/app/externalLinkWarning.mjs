@@ -1,15 +1,38 @@
-const externalLinkModal = new bootstrap.Modal(document.getElementById('externalLinkModal'));
+const externalLinkModalElement = document.getElementById('externalLinkModal');
+const externalLinkModal = new bootstrap.Modal(externalLinkModalElement);
 const modalUrlElement = document.getElementById('extlink-url');
 const modalContinueButton = document.getElementById('extlink-continue');
 
-function isExternalLink(link) {
-    return !link.href.startsWith('mailto:') && link.hostname !== location.hostname;
+function getExternalLinkUrl(link) {
+    const href = link.getAttribute('href');
+    if (!href) {
+        return null;
+    }
+
+    try {
+        const url = new URL(href, location.href);
+        const isWarnableProtocol = url.protocol === 'http:' || url.protocol === 'https:';
+        return isWarnableProtocol && url.hostname !== location.hostname ? href : null;
+    } catch {
+        return null;
+    }
 }
 
 function markExternalLinks() {
-    const links = document.querySelectorAll('.post-content a');
+    const selectors = [];
+    if (externalLinkModalElement.dataset.warnPostLinks === 'true') {
+        selectors.push('.post-content a');
+    }
+    if (externalLinkModalElement.dataset.warnCommentLinks === 'true') {
+        selectors.push('.comment-list a');
+    }
+    if (selectors.length === 0) {
+        return;
+    }
+
+    const links = document.querySelectorAll(selectors.join(', '));
     links.forEach(link => {
-        if (isExternalLink(link)) {
+        if (getExternalLinkUrl(link)) {
             link.classList.add('external');
         }
     });
@@ -22,8 +45,12 @@ function bindExternalLinkEvents() {
 }
 
 function handleExternalLinkClick(event) {
+    const linkHref = getExternalLinkUrl(event.currentTarget);
+    if (!linkHref) {
+        return;
+    }
+
     event.preventDefault();
-    const linkHref = event.currentTarget.getAttribute('href');
     modalUrlElement.textContent = linkHref;
     modalContinueButton.href = linkHref;
     externalLinkModal.show();

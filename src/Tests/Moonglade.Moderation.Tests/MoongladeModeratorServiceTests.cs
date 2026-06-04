@@ -268,7 +268,7 @@ public class MoongladeModeratorServiceTests
         var options = CreateValidRemoteOptions();
         _mockOptions.Setup(x => x.Value).Returns(options);
 
-        _mockHttpContextAccessor.Setup(x => x.HttpContext).Returns((HttpContext)null);
+        _mockHttpContextAccessor.Setup(x => x.HttpContext).Returns((HttpContext)null!);
 
         const string input = "test input";
         const string maskedOutput = "masked output";
@@ -500,7 +500,7 @@ public class MoongladeModeratorServiceTests
         var options = CreateValidRemoteOptions();
         _mockOptions.Setup(x => x.Value).Returns(options);
 
-        _mockHttpContextAccessor.Setup(x => x.HttpContext).Returns((HttpContext)null);
+        _mockHttpContextAccessor.Setup(x => x.HttpContext).Returns((HttpContext)null!);
 
         var inputs = new[] { "test input" };
         _mockRemoteService.Setup(x => x.DetectAsync(inputs, string.Empty))

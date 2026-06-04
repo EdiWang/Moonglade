@@ -38,3 +38,10 @@ ALTER TABLE IF EXISTS "CustomPage" RENAME TO "BlogPage";
 -- v15.12
 -- Add ContentType column to Post table
 ALTER TABLE "Post" ADD COLUMN IF NOT EXISTS "ContentType" VARCHAR(16) NOT NULL DEFAULT '';
+
+-- v15.16
+-- Add IsDeleted column to BlogPage table
+ALTER TABLE "BlogPage" ADD COLUMN IF NOT EXISTS "IsDeleted" BOOLEAN NOT NULL DEFAULT FALSE;
+
+-- Add ContainsAiAssistedContent column to Post table
+ALTER TABLE "Post" ADD COLUMN IF NOT EXISTS "ContainsAiAssistedContent" BOOLEAN NOT NULL DEFAULT FALSE;

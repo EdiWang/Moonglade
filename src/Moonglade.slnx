@@ -1,5 +1,6 @@
 <Solution>
   <Folder Name="/.Solution Items/">
+    <File Path="../.github/copilot-instructions.md" />
     <File Path="../.github/workflows/docker-preview.yml" />
     <File Path="../.github/workflows/docker.yml" />
     <File Path="../.gitignore" />

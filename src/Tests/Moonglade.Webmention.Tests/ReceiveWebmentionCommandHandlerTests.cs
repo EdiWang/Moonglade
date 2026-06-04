@@ -40,7 +40,7 @@ public class ReceiveWebmentionCommandHandlerTests
         var handler = CreateHandler(db);
         var command = new ReceiveWebmentionCommand("invalid-url", "https://example.com/post", "192.168.1.1");
 
-        var result = await handler.HandleAsync(command, CancellationToken.None);
+        var result = await handler.HandleAsync(command, TestContext.Current.CancellationToken);
 
         Assert.Equal(WebmentionStatus.InvalidWebmentionRequest, result.Status);
         _mockSourceInspector.Verify(x => x.ExamineSourceAsync(It.IsAny<string>(), It.IsAny<string>()), Times.Never);
@@ -53,7 +53,7 @@ public class ReceiveWebmentionCommandHandlerTests
         var handler = CreateHandler(db);
         var command = new ReceiveWebmentionCommand("https://example.com/source", "invalid-url", "192.168.1.1");
 
-        var result = await handler.HandleAsync(command, CancellationToken.None);
+        var result = await handler.HandleAsync(command, TestContext.Current.CancellationToken);
 
         Assert.Equal(WebmentionStatus.InvalidWebmentionRequest, result.Status);
         _mockSourceInspector.Verify(x => x.ExamineSourceAsync(It.IsAny<string>(), It.IsAny<string>()), Times.Never);
@@ -66,7 +66,7 @@ public class ReceiveWebmentionCommandHandlerTests
         var handler = CreateHandler(db);
         var command = new ReceiveWebmentionCommand("http://localhost/source", "https://example.com/post", "192.168.1.1");
 
-        var result = await handler.HandleAsync(command, CancellationToken.None);
+        var result = await handler.HandleAsync(command, TestContext.Current.CancellationToken);
 
         Assert.Equal(WebmentionStatus.InvalidWebmentionRequest, result.Status);
         _mockSourceInspector.Verify(x => x.ExamineSourceAsync(It.IsAny<string>(), It.IsAny<string>()), Times.Never);
@@ -79,7 +79,7 @@ public class ReceiveWebmentionCommandHandlerTests
         var handler = CreateHandler(db);
         var command = new ReceiveWebmentionCommand("http://10.0.0.1/source", "https://example.com/post", "192.168.1.1");
 
-        var result = await handler.HandleAsync(command, CancellationToken.None);
+        var result = await handler.HandleAsync(command, TestContext.Current.CancellationToken);
 
         Assert.Equal(WebmentionStatus.InvalidWebmentionRequest, result.Status);
         _mockSourceInspector.Verify(x => x.ExamineSourceAsync(It.IsAny<string>(), It.IsAny<string>()), Times.Never);
@@ -92,7 +92,7 @@ public class ReceiveWebmentionCommandHandlerTests
         var handler = CreateHandler(db);
         var command = new ReceiveWebmentionCommand("http://172.16.0.1/source", "https://example.com/post", "192.168.1.1");
 
-        var result = await handler.HandleAsync(command, CancellationToken.None);
+        var result = await handler.HandleAsync(command, TestContext.Current.CancellationToken);
 
         Assert.Equal(WebmentionStatus.InvalidWebmentionRequest, result.Status);
         _mockSourceInspector.Verify(x => x.ExamineSourceAsync(It.IsAny<string>(), It.IsAny<string>()), Times.Never);
@@ -105,7 +105,7 @@ public class ReceiveWebmentionCommandHandlerTests
         var handler = CreateHandler(db);
         var command = new ReceiveWebmentionCommand("http://192.168.1.100/source", "https://example.com/post", "192.168.1.1");
 
-        var result = await handler.HandleAsync(command, CancellationToken.None);
+        var result = await handler.HandleAsync(command, TestContext.Current.CancellationToken);
 
         Assert.Equal(WebmentionStatus.InvalidWebmentionRequest, result.Status);
         _mockSourceInspector.Verify(x => x.ExamineSourceAsync(It.IsAny<string>(), It.IsAny<string>()), Times.Never);
@@ -118,7 +118,7 @@ public class ReceiveWebmentionCommandHandlerTests
         var handler = CreateHandler(db);
         var command = new ReceiveWebmentionCommand("ftp://example.com/source", "https://example.com/post", "192.168.1.1");
 
-        var result = await handler.HandleAsync(command, CancellationToken.None);
+        var result = await handler.HandleAsync(command, TestContext.Current.CancellationToken);
 
         Assert.Equal(WebmentionStatus.InvalidWebmentionRequest, result.Status);
         _mockSourceInspector.Verify(x => x.ExamineSourceAsync(It.IsAny<string>(), It.IsAny<string>()), Times.Never);
@@ -134,7 +134,7 @@ public class ReceiveWebmentionCommandHandlerTests
         _mockSourceInspector.Setup(x => x.ExamineSourceAsync(It.IsAny<string>(), It.IsAny<string>()))
             .ReturnsAsync((MentionRequest)null!);
 
-        var result = await handler.HandleAsync(command, CancellationToken.None);
+        var result = await handler.HandleAsync(command, TestContext.Current.CancellationToken);
 
         Assert.Equal(WebmentionStatus.InvalidWebmentionRequest, result.Status);
         _mockSourceInspector.Verify(x => x.ExamineSourceAsync("https://example.com/source", "https://myblog.com/post"), Times.Once);
@@ -159,7 +159,7 @@ public class ReceiveWebmentionCommandHandlerTests
         _mockSourceInspector.Setup(x => x.ExamineSourceAsync(It.IsAny<string>(), It.IsAny<string>()))
             .ReturnsAsync(mentionRequest);
 
-        var result = await handler.HandleAsync(command, CancellationToken.None);
+        var result = await handler.HandleAsync(command, TestContext.Current.CancellationToken);
 
         Assert.Equal(WebmentionStatus.ErrorSourceNotContainTargetUri, result.Status);
     }
@@ -183,7 +183,7 @@ public class ReceiveWebmentionCommandHandlerTests
         _mockSourceInspector.Setup(x => x.ExamineSourceAsync(It.IsAny<string>(), It.IsAny<string>()))
             .ReturnsAsync(mentionRequest);
 
-        var result = await handler.HandleAsync(command, CancellationToken.None);
+        var result = await handler.HandleAsync(command, TestContext.Current.CancellationToken);
 
         Assert.Equal(WebmentionStatus.SpamDetectedFakeNotFound, result.Status);
     }
@@ -208,7 +208,7 @@ public class ReceiveWebmentionCommandHandlerTests
             .ReturnsAsync(mentionRequest);
 
         // No post seeded — so FindTargetPostAsync will return Guid.Empty
-        var result = await handler.HandleAsync(command, CancellationToken.None);
+        var result = await handler.HandleAsync(command, TestContext.Current.CancellationToken);
 
         Assert.Equal(WebmentionStatus.ErrorTargetUriNotExist, result.Status);
     }
@@ -249,7 +249,7 @@ public class ReceiveWebmentionCommandHandlerTests
             PingTimeUtc = DateTime.UtcNow,
             TargetPostTitle = "Test Post Title"
         });
-        await db.SaveChangesAsync();
+        await db.SaveChangesAsync(TestContext.Current.CancellationToken);
 
         var handler = CreateHandler(db);
         var command = new ReceiveWebmentionCommand("https://example.com/source", "https://myblog.com/post/2024/1/15/test-post", "192.168.1.1");
@@ -266,7 +266,7 @@ public class ReceiveWebmentionCommandHandlerTests
         _mockSourceInspector.Setup(x => x.ExamineSourceAsync(It.IsAny<string>(), It.IsAny<string>()))
             .ReturnsAsync(mentionRequest);
 
-        var result = await handler.HandleAsync(command, CancellationToken.None);
+        var result = await handler.HandleAsync(command, TestContext.Current.CancellationToken);
 
         Assert.Equal(WebmentionStatus.ErrorWebmentionAlreadyRegistered, result.Status);
     }
@@ -293,7 +293,7 @@ public class ReceiveWebmentionCommandHandlerTests
             IsFeedIncluded = true,
             PubDateUtc = DateTime.UtcNow
         });
-        await db.SaveChangesAsync();
+        await db.SaveChangesAsync(TestContext.Current.CancellationToken);
 
         var handler = CreateHandler(db);
         var command = new ReceiveWebmentionCommand("https://example.com/source", "https://myblog.com/post/2024/1/15/test-post", "203.0.113.1");
@@ -310,7 +310,7 @@ public class ReceiveWebmentionCommandHandlerTests
         _mockSourceInspector.Setup(x => x.ExamineSourceAsync("https://example.com/source", "https://myblog.com/post/2024/1/15/test-post"))
             .ReturnsAsync(mentionRequest);
 
-        var result = await handler.HandleAsync(command, CancellationToken.None);
+        var result = await handler.HandleAsync(command, TestContext.Current.CancellationToken);
 
         Assert.Equal(WebmentionStatus.Success, result.Status);
         Assert.NotNull(result.MentionEntity);
@@ -323,7 +323,7 @@ public class ReceiveWebmentionCommandHandlerTests
         Assert.NotEqual(Guid.Empty, result.MentionEntity.Id);
 
         // Verify it was persisted
-        Assert.Equal(1, await db.Mention.CountAsync());
+        Assert.Equal(1, await db.Mention.CountAsync(TestContext.Current.CancellationToken));
     }
 
     [Fact]
@@ -336,7 +336,7 @@ public class ReceiveWebmentionCommandHandlerTests
         _mockSourceInspector.Setup(x => x.ExamineSourceAsync(It.IsAny<string>(), It.IsAny<string>()))
             .ThrowsAsync(new Exception("Test exception"));
 
-        var result = await handler.HandleAsync(command, CancellationToken.None);
+        var result = await handler.HandleAsync(command, TestContext.Current.CancellationToken);
 
         Assert.Equal(WebmentionStatus.GenericError, result.Status);
     }
@@ -365,7 +365,7 @@ public class ReceiveWebmentionCommandHandlerTests
             IsFeedIncluded = true,
             PubDateUtc = DateTime.UtcNow
         });
-        await db.SaveChangesAsync();
+        await db.SaveChangesAsync(TestContext.Current.CancellationToken);
 
         var handler = CreateHandler(db);
         var command = new ReceiveWebmentionCommand(sourceUrl, "https://myblog.com/post/2024/1/15/test-post", "203.0.113.1");
@@ -382,7 +382,7 @@ public class ReceiveWebmentionCommandHandlerTests
         _mockSourceInspector.Setup(x => x.ExamineSourceAsync(It.IsAny<string>(), It.IsAny<string>()))
             .ReturnsAsync(mentionRequest);
 
-        var result = await handler.HandleAsync(command, CancellationToken.None);
+        var result = await handler.HandleAsync(command, TestContext.Current.CancellationToken);
 
         Assert.Equal(WebmentionStatus.Success, result.Status);
         Assert.NotNull(result.MentionEntity);
@@ -411,7 +411,7 @@ public class ReceiveWebmentionCommandHandlerTests
             IsFeedIncluded = true,
             PubDateUtc = DateTime.UtcNow
         });
-        await db.SaveChangesAsync();
+        await db.SaveChangesAsync(TestContext.Current.CancellationToken);
 
         var handler = CreateHandler(db);
         var command = new ReceiveWebmentionCommand("https://example.com/source", "https://myblog.com/post/2024/1/15/test-post", "203.0.113.1");
@@ -428,7 +428,7 @@ public class ReceiveWebmentionCommandHandlerTests
         _mockSourceInspector.Setup(x => x.ExamineSourceAsync(It.IsAny<string>(), It.IsAny<string>()))
             .ReturnsAsync(mentionRequest);
 
-        var result = await handler.HandleAsync(command, CancellationToken.None);
+        var result = await handler.HandleAsync(command, TestContext.Current.CancellationToken);
         var afterTest = DateTime.UtcNow.AddSeconds(1);
 
         Assert.Equal(WebmentionStatus.Success, result.Status);
@@ -464,7 +464,7 @@ public class ReceiveWebmentionCommandHandlerTests
             IsFeedIncluded = true,
             PubDateUtc = DateTime.UtcNow
         });
-        await db.SaveChangesAsync();
+        await db.SaveChangesAsync(TestContext.Current.CancellationToken);
 
         var handler = CreateHandler(db);
         var command = new ReceiveWebmentionCommand(sourceUrl, "https://myblog.com/post/2024/1/15/test-post", "203.0.113.1");
@@ -481,7 +481,7 @@ public class ReceiveWebmentionCommandHandlerTests
         _mockSourceInspector.Setup(x => x.ExamineSourceAsync(It.IsAny<string>(), It.IsAny<string>()))
             .ReturnsAsync(mentionRequest);
 
-        var result = await handler.HandleAsync(command, CancellationToken.None);
+        var result = await handler.HandleAsync(command, TestContext.Current.CancellationToken);
 
         Assert.Equal(WebmentionStatus.Success, result.Status);
     }

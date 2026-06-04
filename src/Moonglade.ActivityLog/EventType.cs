@@ -31,6 +31,9 @@ public enum EventType
     PageCreated = 400,
     PageUpdated = 401,
     PageDeleted = 402,
+    PageRestored = 403,
+    PagePermanentlyDeleted = 404,
+    PageRecycleBinCleared = 405,
 
     // User operations (500-599)
     // Reserved for future use

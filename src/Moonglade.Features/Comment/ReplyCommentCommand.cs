@@ -38,7 +38,7 @@ public class ReplyCommentCommandHandler(
             Id = model.Id,
             PostId = cmt.PostId,
             ReplyContent = model.ReplyContent,
-            ReplyContentHtml = ContentProcessor.MarkdownToContent(model.ReplyContent, ContentProcessor.MarkdownConvertType.Html),
+            ReplyContentHtml = ContentProcessor.MarkdownToCommentHtml(model.ReplyContent),
             ReplyTimeUtc = model.CreateTimeUtc,
             RouteLink = cmt.Post.RouteLink,
             Title = cmt.Post.Title

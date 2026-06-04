@@ -1,15 +1,15 @@
 # Copilot Instructions
 
 ## Project Overview
-- Moonglade is an ASP.NET Core personal blogging platform targeting .NET 10. It includes public blog pages, an admin portal, APIs, background services, syndication, webmention, image storage, content moderation, email notifications, IndexNow, and Azure-friendly deployment assets.
-- The solution is intentionally split into focused projects under `src/`: `Moonglade.Web` is the composition root and UI host; domain features live in feature-oriented class libraries such as `Moonglade.Features`, `Moonglade.Configuration`, `Moonglade.ActivityLog`, `Moonglade.Theme`, `Moonglade.Widgets`, and integration-focused projects such as `Moonglade.Email.Client`, `Moonglade.IndexNow.Client`, `Moonglade.Moderation`, and `Moonglade.Webmention`.
+- Moonglade is an ASP.NET Core personal blogging platform targeting .NET 10. It includes public Razor Pages, an admin portal, APIs, background services, syndication, webmention, image storage, content moderation, email notifications, IndexNow, authentication, and Azure-friendly deployment assets.
+- The solution is intentionally split into focused projects under `src/`: `Moonglade.Web` is the composition root and UI host; domain features live in feature-oriented class libraries such as `Moonglade.Features`, `Moonglade.Configuration`, `Moonglade.ActivityLog`, `Moonglade.Theme`, `Moonglade.Widgets`, `Moonglade.Auth`, and `Moonglade.ImageStorage`; integration-focused projects include `Moonglade.Email.Client`, `Moonglade.IndexNow.Client`, `Moonglade.Moderation`, and `Moonglade.Webmention`.
 - Data access is centered on EF Core `BlogDbContext` in `Moonglade.Data`, with provider-specific setup in `Moonglade.Data.SqlServer` and `Moonglade.Data.PostgreSql`. Keep SQL Server and PostgreSQL support in mind when changing queries, migrations, mappings, and date/time behavior.
 
 ## Architecture Guidelines
 - Keep `Moonglade.Web` thin. Use controllers, Razor Pages, view components, map handlers, middleware, and filters for HTTP concerns only. Put business behavior in the relevant class library and invoke it through LiteBus command/query/event mediators.
 - Follow the existing CQRS style: define request records such as `CreatePostCommand`, `ListPostsQuery`, or `SaveAssetEvent`, then implement a matching `*Handler` class. Commands mutate state, queries read state, and events trigger side effects.
 - Prefer feature-local files and namespaces. Add post behavior under `Moonglade.Features.Post`, comment behavior under `Moonglade.Features.Comment`, configuration behavior under `Moonglade.Configuration`, and so on.
-- Register reusable services with `IServiceCollection` extension methods in the owning project. Avoid adding feature-specific registration details directly to `Program.cs` unless the Web host is genuinely the owner.
+- Register reusable services with `IServiceCollection` extension methods in the owning project. Compose web services in `Moonglade.Web/Extensions/ServiceCollectionExtensions.cs`, and keep request pipeline or endpoint wiring in `Moonglade.Web/Extensions/WebApplicationExtensions.cs`. Avoid adding feature-specific registration details directly to `Program.cs` unless the Web host is genuinely the owner.
 - Preserve assembly scanning in `Program.LoadAssemblies()` and LiteBus registration. If a new project contains commands, queries, or events that must be discovered at runtime, ensure the assembly is loaded by the Web host.
 - Use constructor injection and primary constructors where they match the existing style. Do not introduce service locators or static mutable state.
 
@@ -19,9 +19,11 @@
 | Web host and UI | `Moonglade.Web` | Composition root, controllers, Razor Pages, view components, filters, middleware, endpoint mapping, static assets, and web-only adapters. |
 | Blog features | `Moonglade.Features` | Post, page, category, tag, comment, asset, recycle bin, and view-count commands/queries. |
 | Configuration | `Moonglade.Configuration` | Blog settings, strongly typed settings models, default configuration, and configuration update commands. |
+| Authentication | `Moonglade.Auth` | Local account and Microsoft Entra ID authentication settings, schemas, login/password commands, and auth service registration. |
 | Data model | `Moonglade.Data` | EF Core `BlogDbContext`, entities, DTOs/read models, data export/import primitives, and provider-neutral mappings. |
 | Database providers | `Moonglade.Data.SqlServer`, `Moonglade.Data.PostgreSql` | Provider-specific EF Core registration, provider-specific context behavior, retry policies, and database compatibility details. |
 | Integrations | `Moonglade.Email.Client`, `Moonglade.IndexNow.Client`, `Moonglade.Moderation`, `Moonglade.Webmention` | External service clients, protocol send/receive logic, moderation, notification, and related event handlers. |
+| Image storage | `Moonglade.ImageStorage` | Blog image storage abstractions, file naming, local file system storage, Azure Blob storage, and storage-related options. |
 | Presentation helpers | `Moonglade.Theme`, `Moonglade.Widgets`, `Moonglade.Syndication` | Theme data, widgets, feed generation, OPML, sitemap, OpenSearch, FOAF, and subscription-oriented read models. |
 | App lifecycle | `Moonglade.Setup`, `Moonglade.BackgroundServices` | Startup initialization, migration orchestration, scheduled publishing, update checks, and background queue processing. |
 | Shared utilities | `Moonglade.Utils`, `Moonglade.Web.Middleware` | Cross-cutting utilities and reusable middleware that do not own blog domain behavior. |

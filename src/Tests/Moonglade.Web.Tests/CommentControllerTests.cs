@@ -8,9 +8,7 @@ using Microsoft.Extensions.Logging;
 using Moonglade.ActivityLog;
 using Moonglade.BackgroundServices;
 using Moonglade.Configuration;
-using Moonglade.Data;
 using Moonglade.Data.DTO;
-using Moonglade.Email.Client;
 using Moonglade.Features.Comment;
 using Moonglade.Moderation;
 using Moonglade.Web.Controllers;
@@ -129,7 +127,7 @@ public class CommentControllerTests
     [Fact]
     public async Task Create_WhenCommandReturnsNull_ReturnsValidationProblem()
     {
-        _commandMediator.SetResult<CreateCommentCommand, CommentDetailedItem>(null);
+        _commandMediator.SetResult<CreateCommentCommand, CommentDetailedItem>(null!);
         var controller = CreateController();
 
         var result = await controller.Create(Guid.NewGuid(), CreateCommentRequest());
@@ -388,9 +386,9 @@ public class CommentControllerTests
     }
 
     private CommentController CreateController(
-        string username = null,
-        IPAddress remoteIpAddress = null,
-        string userAgent = null)
+        string? username = null,
+        IPAddress? remoteIpAddress = null,
+        string? userAgent = null)
     {
         var controller = new CommentController(
             _commandMediator,
@@ -447,7 +445,7 @@ public class CommentControllerTests
 
         public List<ICommand> Commands { get; } = [];
 
-        public Task SendAsync(ICommand command, CommandMediationSettings settings, CancellationToken cancellationToken)
+        public Task SendAsync(ICommand command, CommandMediationSettings? settings, CancellationToken cancellationToken)
         {
             Commands.Add(command);
 
@@ -461,7 +459,7 @@ public class CommentControllerTests
 
         public Task<TCommandResult> SendAsync<TCommandResult>(
             ICommand<TCommandResult> command,
-            CommandMediationSettings settings,
+            CommandMediationSettings? settings,
             CancellationToken cancellationToken)
         {
             Commands.Add(command);

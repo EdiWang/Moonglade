@@ -27,7 +27,7 @@ public class UpdateConfigurationCommandTests
         var command = new UpdateConfigurationCommand("NonExistentConfig", "{\"value\":\"test\"}");
 
         // Act
-        var result = await handler.HandleAsync(command, CancellationToken.None);
+        var result = await handler.HandleAsync(command, TestContext.Current.CancellationToken);
 
         // Assert
         Assert.Equal(OperationCode.ObjectNotFound, result);
@@ -45,19 +45,19 @@ public class UpdateConfigurationCommandTests
             CfgValue = existingJson,
             LastModifiedTimeUtc = DateTime.UtcNow.AddDays(-1)
         });
-        await db.SaveChangesAsync();
+        await db.SaveChangesAsync(TestContext.Current.CancellationToken);
 
-        var originalTime = (await db.BlogConfiguration.FirstAsync()).LastModifiedTimeUtc;
+        var originalTime = (await db.BlogConfiguration.FirstAsync(TestContext.Current.CancellationToken)).LastModifiedTimeUtc;
 
         var handler = new UpdateConfigurationCommandHandler(db, _mockLogger.Object);
         var command = new UpdateConfigurationCommand("ExistingConfig", existingJson);
 
         // Act
-        var result = await handler.HandleAsync(command, CancellationToken.None);
+        var result = await handler.HandleAsync(command, TestContext.Current.CancellationToken);
 
         // Assert
         Assert.Equal(OperationCode.Done, result);
-        var entity = await db.BlogConfiguration.FirstAsync();
+        var entity = await db.BlogConfiguration.FirstAsync(TestContext.Current.CancellationToken);
         Assert.Equal(originalTime, entity.LastModifiedTimeUtc);
     }
 
@@ -75,7 +75,7 @@ public class UpdateConfigurationCommandTests
             CfgValue = oldJson,
             LastModifiedTimeUtc = DateTime.UtcNow.AddDays(-1)
         });
-        await db.SaveChangesAsync();
+        await db.SaveChangesAsync(TestContext.Current.CancellationToken);
 
         var beforeUpdate = DateTime.UtcNow;
 
@@ -83,12 +83,12 @@ public class UpdateConfigurationCommandTests
         var command = new UpdateConfigurationCommand("ExistingConfig", newJson);
 
         // Act
-        var result = await handler.HandleAsync(command, CancellationToken.None);
+        var result = await handler.HandleAsync(command, TestContext.Current.CancellationToken);
 
         // Assert
         Assert.Equal(OperationCode.Done, result);
 
-        var entity = await db.BlogConfiguration.FirstAsync();
+        var entity = await db.BlogConfiguration.FirstAsync(TestContext.Current.CancellationToken);
         Assert.Equal(newJson, entity.CfgValue);
         Assert.NotNull(entity.LastModifiedTimeUtc);
         Assert.True(entity.LastModifiedTimeUtc >= beforeUpdate);
@@ -111,17 +111,17 @@ public class UpdateConfigurationCommandTests
             CfgValue = "{\"value\":\"other\"}",
             LastModifiedTimeUtc = DateTime.UtcNow
         });
-        await db.SaveChangesAsync();
+        await db.SaveChangesAsync(TestContext.Current.CancellationToken);
 
         var handler = new UpdateConfigurationCommandHandler(db, _mockLogger.Object);
         var command = new UpdateConfigurationCommand("TestConfig", "{\"value\":\"new\"}");
 
         // Act
-        await handler.HandleAsync(command, CancellationToken.None);
+        await handler.HandleAsync(command, TestContext.Current.CancellationToken);
 
         // Assert
-        var testConfig = await db.BlogConfiguration.FirstAsync(c => c.CfgKey == "TestConfig");
-        var otherConfig = await db.BlogConfiguration.FirstAsync(c => c.CfgKey == "OtherConfig");
+        var testConfig = await db.BlogConfiguration.FirstAsync(c => c.CfgKey == "TestConfig", TestContext.Current.CancellationToken);
+        var otherConfig = await db.BlogConfiguration.FirstAsync(c => c.CfgKey == "OtherConfig", TestContext.Current.CancellationToken);
         Assert.Equal("{\"value\":\"new\"}", testConfig.CfgValue);
         Assert.Equal("{\"value\":\"other\"}", otherConfig.CfgValue);
     }
@@ -138,7 +138,7 @@ public class UpdateConfigurationCommandTests
 
         // Act & Assert
         await Assert.ThrowsAsync<ObjectDisposedException>(
-            () => handler.HandleAsync(command, CancellationToken.None));
+            () => handler.HandleAsync(command, TestContext.Current.CancellationToken));
     }
 
     [Fact]
@@ -152,7 +152,7 @@ public class UpdateConfigurationCommandTests
             CfgValue = "{\"value\":\"old\"}",
             LastModifiedTimeUtc = DateTime.UtcNow
         });
-        await db.SaveChangesAsync();
+        await db.SaveChangesAsync(TestContext.Current.CancellationToken);
 
         var handler = new UpdateConfigurationCommandHandler(db, _mockLogger.Object);
         var command = new UpdateConfigurationCommand("TestConfig", "{\"value\":\"new\"}");

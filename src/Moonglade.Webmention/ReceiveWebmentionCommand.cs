@@ -104,7 +104,7 @@ public class ReceiveWebmentionCommandHandler(
         return true;
     }
 
-    private WebmentionResponse ValidateMentionRequest(MentionRequest mentionRequest)
+    private WebmentionResponse? ValidateMentionRequest(MentionRequest mentionRequest)
     {
         if (!mentionRequest.SourceHasTarget)
         {

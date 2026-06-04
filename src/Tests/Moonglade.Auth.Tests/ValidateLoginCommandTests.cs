@@ -20,10 +20,10 @@ public class ValidateLoginCommandTests
     [Fact]
     public async Task HandleAsync_NullAccount_ReturnsFalse()
     {
-        _blogConfigMock.Setup(c => c.LocalAccountSettings).Returns((LocalAccountSettings)null);
+        _blogConfigMock.Setup(c => c.LocalAccountSettings).Returns((LocalAccountSettings)null!);
 
         var command = new ValidateLoginCommand("admin", "password");
-        var result = await _handler.HandleAsync(command, CancellationToken.None);
+        var result = await _handler.HandleAsync(command, TestContext.Current.CancellationToken);
 
         Assert.False(result);
     }
@@ -34,7 +34,7 @@ public class ValidateLoginCommandTests
         _blogConfigMock.Setup(c => c.LocalAccountSettings).Returns(LocalAccountSettings.DefaultValue);
 
         var command = new ValidateLoginCommand("wronguser", "admin123");
-        var result = await _handler.HandleAsync(command, CancellationToken.None);
+        var result = await _handler.HandleAsync(command, TestContext.Current.CancellationToken);
 
         Assert.False(result);
     }
@@ -45,7 +45,7 @@ public class ValidateLoginCommandTests
         _blogConfigMock.Setup(c => c.LocalAccountSettings).Returns(LocalAccountSettings.DefaultValue);
 
         var command = new ValidateLoginCommand("admin", "wrongpassword");
-        var result = await _handler.HandleAsync(command, CancellationToken.None);
+        var result = await _handler.HandleAsync(command, TestContext.Current.CancellationToken);
 
         Assert.False(result);
     }
@@ -57,7 +57,7 @@ public class ValidateLoginCommandTests
         _blogConfigMock.Setup(c => c.LocalAccountSettings).Returns(LocalAccountSettings.DefaultValue);
 
         var command = new ValidateLoginCommand("admin", "admin123");
-        var result = await _handler.HandleAsync(command, CancellationToken.None);
+        var result = await _handler.HandleAsync(command, TestContext.Current.CancellationToken);
 
         Assert.True(result);
     }
@@ -68,7 +68,7 @@ public class ValidateLoginCommandTests
         _blogConfigMock.Setup(c => c.LocalAccountSettings).Returns(LocalAccountSettings.DefaultValue);
 
         var command = new ValidateLoginCommand("admin", " admin123 ");
-        var result = await _handler.HandleAsync(command, CancellationToken.None);
+        var result = await _handler.HandleAsync(command, TestContext.Current.CancellationToken);
 
         Assert.True(result);
     }
@@ -79,7 +79,7 @@ public class ValidateLoginCommandTests
         _blogConfigMock.Setup(c => c.LocalAccountSettings).Returns(LocalAccountSettings.DefaultValue);
 
         var command = new ValidateLoginCommand("admin", "wrongpassword");
-        await _handler.HandleAsync(command, CancellationToken.None);
+        await _handler.HandleAsync(command, TestContext.Current.CancellationToken);
 
         _loggerMock.Verify(
             x => x.Log(
@@ -97,7 +97,7 @@ public class ValidateLoginCommandTests
         _blogConfigMock.Setup(c => c.LocalAccountSettings).Returns(LocalAccountSettings.DefaultValue);
 
         var command = new ValidateLoginCommand("admin", "admin123");
-        await _handler.HandleAsync(command, CancellationToken.None);
+        await _handler.HandleAsync(command, TestContext.Current.CancellationToken);
 
         _loggerMock.Verify(
             x => x.Log(

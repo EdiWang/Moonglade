@@ -45,7 +45,7 @@ public class AssetsControllerTests
             .Setup(x => x.GetOrCreateAsync(
                 BlogCachePartition.General.ToString(),
                 "avatar",
-                It.IsAny<Func<Task<byte[]>>>() ))
+                It.IsAny<Func<Task<byte[]>>>()))
             .ReturnsAsync(bytes);
 
         var controller = CreateController();
@@ -64,8 +64,8 @@ public class AssetsControllerTests
             .Setup(x => x.GetOrCreateAsync(
                 BlogCachePartition.General.ToString(),
                 "avatar",
-                It.IsAny<Func<Task<byte[]>>>() ))
-            .ReturnsAsync((byte[])null);
+                It.IsAny<Func<Task<byte[]>>>()))
+            .ReturnsAsync((byte[])null!);
 
         var controller = CreateController();
 
@@ -174,7 +174,7 @@ public class AssetsControllerTests
     {
         _queryMediator
             .Setup(x => x.QueryAsync(It.IsAny<GetAssetQuery>(), It.IsAny<QueryMediationSettings>(), It.IsAny<CancellationToken>()))
-            .ReturnsAsync((string)null);
+            .ReturnsAsync((string)null!);
 
         var controller = CreateController();
 
@@ -276,9 +276,9 @@ public class AssetsControllerTests
     }
 
     private AssetsController CreateController(
-        string username = null,
-        IPAddress remoteIpAddress = null,
-        string userAgent = null)
+        string? username = null,
+        IPAddress? remoteIpAddress = null,
+        string? userAgent = null)
     {
         var controller = new AssetsController(
             _eventMediator.Object,
@@ -328,7 +328,7 @@ public class AssetsControllerTests
     {
         public List<ICommand> Commands { get; } = [];
 
-        public Task SendAsync(ICommand command, CommandMediationSettings settings, CancellationToken cancellationToken)
+        public Task SendAsync(ICommand command, CommandMediationSettings? settings, CancellationToken cancellationToken)
         {
             Commands.Add(command);
             return Task.CompletedTask;
@@ -336,7 +336,7 @@ public class AssetsControllerTests
 
         public Task<TCommandResult> SendAsync<TCommandResult>(
             ICommand<TCommandResult> command,
-            CommandMediationSettings settings,
+            CommandMediationSettings? settings,
             CancellationToken cancellationToken)
         {
             Commands.Add(command);

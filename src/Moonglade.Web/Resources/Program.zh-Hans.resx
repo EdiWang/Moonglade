@@ -627,8 +627,11 @@
   <data name="Show customize footer on each post" xml:space="preserve">
     <value>在每篇文章底下显示自定义页脚</value>
   </data>
-  <data name="Show warning when clicking external links" xml:space="preserve">
-    <value>点击外部链接时弹出警告</value>
+  <data name="Show warning when clicking external links in posts" xml:space="preserve">
+    <value>点击文章中的外部链接时弹出警告</value>
+  </data>
+  <data name="Show warning when clicking external links in comments" xml:space="preserve">
+    <value>点击评论中的外部链接时弹出警告</value>
   </data>
   <data name="Side Bar" xml:space="preserve">
     <value>侧边栏</value>
@@ -1208,5 +1211,11 @@
   </data>
   <data name="Manage mention link" xml:space="preserve">
     <value>管理提及链接</value>
+  </data>
+  <data name="Contains AI-assisted content" xml:space="preserve">
+    <value>包含 AI 辅助内容</value>
+  </data>
+  <data name="This post contains AI-generated or AI-assisted edits." xml:space="preserve">
+    <value>本文包含 AI 创作或辅助润色的部分。</value>
   </data>
 </root>

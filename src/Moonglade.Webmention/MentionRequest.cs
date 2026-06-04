@@ -2,11 +2,11 @@
 
 public record MentionRequest
 {
-    public string SourceUrl { get; set; }
+    public string SourceUrl { get; set; } = string.Empty;
 
-    public string TargetUrl { get; set; }
+    public string TargetUrl { get; set; } = string.Empty;
 
-    public string Title { get; set; }
+    public string Title { get; set; } = string.Empty;
 
     public bool ContainsHtml { get; set; }
 

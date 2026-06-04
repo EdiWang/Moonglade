@@ -202,7 +202,7 @@ public class MoongladeEmailClientTests
     [Fact]
     public async Task SendEmailAsync_NullHttpContext_DoesNotThrow()
     {
-        _httpContextAccessorMock.Setup(a => a.HttpContext).Returns((HttpContext)null);
+        _httpContextAccessorMock.Setup(a => a.HttpContext).Returns((HttpContext)null!);
 
         var client = CreateClient(CreateMockHttpClient());
 

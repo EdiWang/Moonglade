@@ -27,7 +27,7 @@ public class GetOpmlQueryTests
         var handler = new GetOpmlQueryHandler();
         var query = new GetOpmlQuery(CreateSampleOpmlDoc());
 
-        var result = await handler.HandleAsync(query, CancellationToken.None);
+        var result = await handler.HandleAsync(query, TestContext.Current.CancellationToken);
 
         Assert.NotNull(result);
         Assert.NotEmpty(result);
@@ -42,7 +42,7 @@ public class GetOpmlQueryTests
         var handler = new GetOpmlQueryHandler();
         var query = new GetOpmlQuery(CreateSampleOpmlDoc());
 
-        var result = await handler.HandleAsync(query, CancellationToken.None);
+        var result = await handler.HandleAsync(query, TestContext.Current.CancellationToken);
         var doc = XDocument.Parse(result);
 
         Assert.Equal("1.0", doc.Root.Attribute("version")?.Value);
@@ -54,7 +54,7 @@ public class GetOpmlQueryTests
         var handler = new GetOpmlQueryHandler();
         var query = new GetOpmlQuery(CreateSampleOpmlDoc());
 
-        var result = await handler.HandleAsync(query, CancellationToken.None);
+        var result = await handler.HandleAsync(query, TestContext.Current.CancellationToken);
         var doc = XDocument.Parse(result);
 
         var head = doc.Root.Element("head");
@@ -68,7 +68,7 @@ public class GetOpmlQueryTests
         var handler = new GetOpmlQueryHandler();
         var query = new GetOpmlQuery(CreateSampleOpmlDoc());
 
-        var result = await handler.HandleAsync(query, CancellationToken.None);
+        var result = await handler.HandleAsync(query, TestContext.Current.CancellationToken);
         var doc = XDocument.Parse(result);
 
         var body = doc.Root.Element("body");
@@ -88,7 +88,7 @@ public class GetOpmlQueryTests
         var handler = new GetOpmlQueryHandler();
         var query = new GetOpmlQuery(CreateSampleOpmlDoc());
 
-        var result = await handler.HandleAsync(query, CancellationToken.None);
+        var result = await handler.HandleAsync(query, TestContext.Current.CancellationToken);
         var doc = XDocument.Parse(result);
 
         var body = doc.Root.Element("body");
@@ -119,7 +119,7 @@ public class GetOpmlQueryTests
         var handler = new GetOpmlQueryHandler();
         var query = new GetOpmlQuery(opmlDoc);
 
-        var result = await handler.HandleAsync(query, CancellationToken.None);
+        var result = await handler.HandleAsync(query, TestContext.Current.CancellationToken);
         var doc = XDocument.Parse(result);
 
         var body = doc.Root.Element("body");
@@ -135,7 +135,7 @@ public class GetOpmlQueryTests
         var handler = new GetOpmlQueryHandler();
         var query = new GetOpmlQuery(CreateSampleOpmlDoc());
 
-        var result = await handler.HandleAsync(query, CancellationToken.None);
+        var result = await handler.HandleAsync(query, TestContext.Current.CancellationToken);
         var doc = XDocument.Parse(result);
 
         var body = doc.Root.Element("body");

@@ -136,10 +136,10 @@ public class PostManagementCommandTests
         Assert.Equal(EventType.PostDeleted, _commandMediator.Single<CreateActivityLogCommand>().EventType);
     }
 
-    private SavePostCommandHandler CreateSavePostHandler(ScheduledPublishWakeUp wakeUp = null)
+    private SavePostCommandHandler CreateSavePostHandler(ScheduledPublishWakeUp? wakeUp = null)
     {
         var configuration = new ConfigurationBuilder()
-            .AddInMemoryCollection(new Dictionary<string, string>
+            .AddInMemoryCollection(new Dictionary<string, string?>
             {
                 ["IndexNow:MinimalIntervalMinutes"] = "10"
             })
@@ -206,7 +206,7 @@ public class PostManagementCommandTests
 
         public List<ICommand> Commands { get; } = [];
 
-        public Task SendAsync(ICommand command, CommandMediationSettings settings, CancellationToken cancellationToken)
+        public Task SendAsync(ICommand command, CommandMediationSettings? settings, CancellationToken cancellationToken)
         {
             Commands.Add(command);
             return Task.CompletedTask;
@@ -214,16 +214,16 @@ public class PostManagementCommandTests
 
         public Task<TCommandResult> SendAsync<TCommandResult>(
             ICommand<TCommandResult> command,
-            CommandMediationSettings settings,
+            CommandMediationSettings? settings,
             CancellationToken cancellationToken)
         {
             Commands.Add(command);
-            return Task.FromResult((TCommandResult)_results[command.GetType()]);
+            return Task.FromResult((TCommandResult)_results[command.GetType()]!);
         }
 
         public void SetResult<TCommand, TResult>(TResult result) where TCommand : ICommand<TResult>
         {
-            _results[typeof(TCommand)] = result;
+            _results[typeof(TCommand)] = result!;
         }
 
         public TCommand Single<TCommand>() where TCommand : ICommand

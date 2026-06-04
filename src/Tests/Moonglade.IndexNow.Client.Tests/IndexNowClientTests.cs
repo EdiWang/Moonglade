@@ -242,7 +242,7 @@ public class IndexNowClientTests
     public void Constructor_ApiKeyNotConfigured_ThrowsInvalidOperationException()
     {
         // Arrange
-        _configurationMock.Setup(c => c["IndexNow:ApiKey"]).Returns((string)null);
+        _configurationMock.Setup(c => c["IndexNow:ApiKey"]).Returns((string)null!);
         SetupPingTargetsSection(["https://api.bing.com"]);
 
         // Act & Assert

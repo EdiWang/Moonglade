@@ -8,7 +8,6 @@ using Microsoft.Extensions.Logging;
 using Moonglade.BackgroundServices;
 using Moonglade.Configuration;
 using Moonglade.Data.Entities;
-using Moonglade.Email.Client;
 using Moonglade.Web.Controllers;
 using Moonglade.Webmention;
 using Moq;
@@ -175,13 +174,12 @@ public class MentionControllerTests
         Assert.IsType<ClearMentionsCommand>(_commandMediator.Commands.Single());
     }
 
-    private MentionController CreateController(IPAddress remoteIpAddress = null)
+    private MentionController CreateController(IPAddress? remoteIpAddress = null)
     {
         var services = new ServiceCollection();
         services.AddSingleton(_eventMediator.Object);
 
         var controller = new MentionController(
-            Mock.Of<ILogger<MentionController>>(),
             _blogConfig,
             _queryMediator.Object,
             new CannonService(Mock.Of<ILogger<CannonService>>(), services.BuildServiceProvider().GetRequiredService<IServiceScopeFactory>()),
@@ -219,7 +217,7 @@ public class MentionControllerTests
 
         public List<ICommand> Commands { get; } = [];
 
-        public Task SendAsync(ICommand command, CommandMediationSettings settings, CancellationToken cancellationToken)
+        public Task SendAsync(ICommand command, CommandMediationSettings? settings, CancellationToken cancellationToken)
         {
             Commands.Add(command);
             return Task.CompletedTask;
@@ -227,7 +225,7 @@ public class MentionControllerTests
 
         public Task<TCommandResult> SendAsync<TCommandResult>(
             ICommand<TCommandResult> command,
-            CommandMediationSettings settings,
+            CommandMediationSettings? settings,
             CancellationToken cancellationToken)
         {
             Commands.Add(command);

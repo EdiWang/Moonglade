@@ -83,6 +83,7 @@ Alpine.data('commentManager', () => withPagination(5, {
     updateUrl() {
         const params = new URLSearchParams();
         params.set('pageIndex', this.currentPage);
+        params.set('pageSize', this.pageSize);
         window.history.pushState({}, '', `?${params.toString()}`);
     },
 
@@ -195,4 +196,4 @@ Alpine.data('commentManager', () => withPagination(5, {
     get hasComments() {
         return this.comments.length > 0;
     }
-}));
+}, [5, 10, 20, 40]));

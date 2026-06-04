@@ -4,7 +4,6 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Moonglade.ActivityLog;
 using Moonglade.Data;
-using Moonglade.Web;
 using Moonglade.Web.Controllers;
 using Moq;
 using System.Net;
@@ -100,7 +99,7 @@ public class ActivityLogControllerTests
     {
         _queryMediator
             .Setup(x => x.QueryAsync(It.IsAny<GetMetaDataByActivityLogIdQuery>(), It.IsAny<QueryMediationSettings>(), It.IsAny<CancellationToken>()))
-            .ReturnsAsync((string)null);
+            .ReturnsAsync((string)null!);
 
         var controller = CreateController();
 
@@ -163,9 +162,9 @@ public class ActivityLogControllerTests
     }
 
     private ActivityLogController CreateController(
-        string username = null,
-        IPAddress remoteIpAddress = null,
-        string userAgent = null)
+        string? username = null,
+        IPAddress? remoteIpAddress = null,
+        string? userAgent = null)
     {
         var controller = new ActivityLogController(_queryMediator.Object, _commandMediator);
         var httpContext = new DefaultHttpContext();
@@ -200,7 +199,7 @@ public class ActivityLogControllerTests
 
         public List<ICommand> Commands { get; } = [];
 
-        public Task SendAsync(ICommand command, CommandMediationSettings settings, CancellationToken cancellationToken)
+        public Task SendAsync(ICommand command, CommandMediationSettings? settings, CancellationToken cancellationToken)
         {
             Commands.Add(command);
             return Task.CompletedTask;
@@ -208,7 +207,7 @@ public class ActivityLogControllerTests
 
         public Task<TCommandResult> SendAsync<TCommandResult>(
             ICommand<TCommandResult> command,
-            CommandMediationSettings settings,
+            CommandMediationSettings? settings,
             CancellationToken cancellationToken)
         {
             Commands.Add(command);

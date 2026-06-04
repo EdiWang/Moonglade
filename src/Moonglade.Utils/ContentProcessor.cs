@@ -1,5 +1,6 @@
 ﻿using Markdig;
 using System.Text;
+using System.Text.RegularExpressions;
 using System.Web;
 using System.Xml.Linq;
 
@@ -7,6 +8,11 @@ namespace Moonglade.Utils;
 
 public static class ContentProcessor
 {
+    private static readonly Regex AnchorTagRegex = new("<a\\b(?<attrs>[^>]*)>", RegexOptions.Compiled | RegexOptions.CultureInvariant | RegexOptions.IgnoreCase);
+    private static readonly Regex HrefAttributeRegex = new("\\s+href=\"(?<href>[^\"]*)\"", RegexOptions.Compiled | RegexOptions.CultureInvariant | RegexOptions.IgnoreCase);
+    private static readonly Regex RelAttributeRegex = new("\\s+rel=\"[^\"]*\"", RegexOptions.Compiled | RegexOptions.CultureInvariant | RegexOptions.IgnoreCase);
+    private static readonly Regex AttributeWhitespaceRegex = new("\\s+", RegexOptions.Compiled | RegexOptions.CultureInvariant);
+
     public static string ReplaceCDNEndpointToImgTags(this string html, string endpoint)
     {
         if (string.IsNullOrWhiteSpace(html)) return html;
@@ -114,6 +120,86 @@ public static class ContentProcessor
         };
 
         return result;
+    }
+
+    public static string MarkdownToCommentHtml(string markdown)
+    {
+        var html = MarkdownToContent(markdown, MarkdownConvertType.Html);
+        return SecureCommentLinks(html);
+    }
+
+    private static string SecureCommentLinks(string html)
+    {
+        if (string.IsNullOrWhiteSpace(html))
+        {
+            return html;
+        }
+
+        return AnchorTagRegex.Replace(html, match =>
+        {
+            var attributes = match.Groups["attrs"].Value;
+            var hrefMatch = HrefAttributeRegex.Match(attributes);
+            if (!hrefMatch.Success)
+            {
+                return match.Value;
+            }
+
+            var href = hrefMatch.Groups["href"].Value;
+            var remainingAttributes = HrefAttributeRegex.Replace(attributes, "", 1);
+            remainingAttributes = RelAttributeRegex.Replace(remainingAttributes, "");
+            remainingAttributes = AttributeWhitespaceRegex.Replace(remainingAttributes, " ").Trim();
+
+            return IsSafeCommentLink(href)
+                ? BuildAnchorTag(href, remainingAttributes)
+                : BuildAnchorTag(null, remainingAttributes);
+        });
+    }
+
+    private static string BuildAnchorTag(string href, string attributes)
+    {
+        var parts = new List<string>();
+        if (!string.IsNullOrWhiteSpace(href))
+        {
+            parts.Add($"href=\"{href}\"");
+        }
+
+        if (!string.IsNullOrWhiteSpace(attributes))
+        {
+            parts.Add(attributes);
+        }
+
+        if (!string.IsNullOrWhiteSpace(href))
+        {
+            parts.Add("rel=\"nofollow ugc noopener noreferrer\"");
+        }
+
+        return parts.Count == 0 ? "<a>" : $"<a {string.Join(' ', parts)}>";
+    }
+
+    private static bool IsSafeCommentLink(string href)
+    {
+        if (string.IsNullOrWhiteSpace(href))
+        {
+            return false;
+        }
+
+        var decodedHref = HttpUtility.HtmlDecode(href).Trim();
+        if (decodedHref.StartsWith('/') || decodedHref.StartsWith('#'))
+        {
+            return true;
+        }
+
+        if (!Uri.TryCreate(decodedHref, UriKind.RelativeOrAbsolute, out var uri))
+        {
+            return false;
+        }
+
+        if (!uri.IsAbsoluteUri)
+        {
+            return true;
+        }
+
+        return uri.Scheme is "http" or "https" or "mailto";
     }
 
     public enum MarkdownConvertType

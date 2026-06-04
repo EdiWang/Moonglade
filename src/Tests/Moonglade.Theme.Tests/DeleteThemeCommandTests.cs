@@ -22,7 +22,7 @@ public class DeleteThemeCommandTests
         var handler = new DeleteThemeCommandHandler(db);
 
         // Act
-        var result = await handler.HandleAsync(command, CancellationToken.None);
+        var result = await handler.HandleAsync(command, TestContext.Current.CancellationToken);
 
         // Assert
         Assert.Equal(OperationCode.ObjectNotFound, result);
@@ -41,17 +41,17 @@ public class DeleteThemeCommandTests
             CssRules = "{}"
         };
         db.BlogTheme.Add(systemTheme);
-        await db.SaveChangesAsync();
+        await db.SaveChangesAsync(TestContext.Current.CancellationToken);
 
         var command = new DeleteThemeCommand(1);
         var handler = new DeleteThemeCommandHandler(db);
 
         // Act
-        var result = await handler.HandleAsync(command, CancellationToken.None);
+        var result = await handler.HandleAsync(command, TestContext.Current.CancellationToken);
 
         // Assert
         Assert.Equal(OperationCode.Canceled, result);
-        Assert.NotNull(await db.BlogTheme.FindAsync(1)); // Still exists
+        Assert.NotNull(await db.BlogTheme.FindAsync([1], TestContext.Current.CancellationToken)); // Still exists
     }
 
     [Fact]
@@ -67,17 +67,17 @@ public class DeleteThemeCommandTests
             CssRules = """{"--primary-color": "#ff0000"}"""
         };
         db.BlogTheme.Add(userTheme);
-        await db.SaveChangesAsync();
+        await db.SaveChangesAsync(TestContext.Current.CancellationToken);
 
         var command = new DeleteThemeCommand(2);
         var handler = new DeleteThemeCommandHandler(db);
 
         // Act
-        var result = await handler.HandleAsync(command, CancellationToken.None);
+        var result = await handler.HandleAsync(command, TestContext.Current.CancellationToken);
 
         // Assert
         Assert.Equal(OperationCode.Done, result);
-        Assert.Null(await db.BlogTheme.FindAsync(2)); // Deleted
+        Assert.Null(await db.BlogTheme.FindAsync([2], TestContext.Current.CancellationToken)); // Deleted
     }
 
     [Fact]
@@ -94,17 +94,17 @@ public class DeleteThemeCommandTests
             AdditionalProps = """{"darkMode": true}"""
         };
         db.BlogTheme.Add(userTheme);
-        await db.SaveChangesAsync();
+        await db.SaveChangesAsync(TestContext.Current.CancellationToken);
 
         var command = new DeleteThemeCommand(5);
         var handler = new DeleteThemeCommandHandler(db);
 
         // Act
-        var result = await handler.HandleAsync(command, CancellationToken.None);
+        var result = await handler.HandleAsync(command, TestContext.Current.CancellationToken);
 
         // Assert
         Assert.Equal(OperationCode.Done, result);
-        Assert.Null(await db.BlogTheme.FindAsync(5)); // Deleted
+        Assert.Null(await db.BlogTheme.FindAsync([5], TestContext.Current.CancellationToken)); // Deleted
     }
 
     [Fact]
@@ -119,7 +119,7 @@ public class DeleteThemeCommandTests
             ThemeType = ThemeType.User,
             CssRules = "{}"
         });
-        await db.SaveChangesAsync();
+        await db.SaveChangesAsync(TestContext.Current.CancellationToken);
 
         var command = new DeleteThemeCommand(1);
         var cts = new CancellationTokenSource();

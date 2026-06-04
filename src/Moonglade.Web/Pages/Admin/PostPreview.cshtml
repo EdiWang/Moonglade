@@ -26,6 +26,10 @@
     <script src="~/js/3rd/highlight.min.js"></script>
     <script src="~/js/3rd/katex.min.js"></script>
     <script type="module" src="~/js/app/post.mjs"></script>
+    @if (BlogConfig.AdvancedSettings.WarnPostExternalLink)
+    {
+        <script type="module" src="~/js/app/externalLinkWarning.mjs"></script>
+    }
 }
 
 <div class="alert alert-info">
@@ -67,7 +71,7 @@
     </div>
 </div>
 
-@if (BlogConfig.AdvancedSettings.WarnExternalLink)
+@if (BlogConfig.AdvancedSettings.WarnPostExternalLink)
 {
     <partial name="_ExternalLink" />
 }

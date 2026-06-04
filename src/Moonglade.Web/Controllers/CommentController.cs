@@ -129,7 +129,7 @@ public class CommentController(
             c.Username,
             c.Email,
             c.CreateTimeUtc,
-            CommentContent = ContentProcessor.MarkdownToContent(c.CommentContent, ContentProcessor.MarkdownConvertType.Html),
+            CommentContent = ContentProcessor.MarkdownToCommentHtml(c.CommentContent),
             c.IpAddress,
             c.PostTitle,
             c.IsApproved,
@@ -137,7 +137,7 @@ public class CommentController(
             {
                 r.ReplyTimeUtc,
                 r.ReplyContent,
-                ReplyContentHtml = ContentProcessor.MarkdownToContent(r.ReplyContent, ContentProcessor.MarkdownConvertType.Html)
+                ReplyContentHtml = ContentProcessor.MarkdownToCommentHtml(r.ReplyContent)
             }).ToList()
         }).ToList();
 

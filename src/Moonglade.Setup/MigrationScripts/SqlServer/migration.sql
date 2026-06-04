@@ -69,3 +69,20 @@ BEGIN
         CONSTRAINT [DF_Post_ContentType] DEFAULT '';
 END
 GO
+
+-- v15.16
+-- Add IsDeleted column to BlogPage table
+IF NOT EXISTS (SELECT * FROM sys.columns WHERE object_id = OBJECT_ID(N'[dbo].[BlogPage]') AND name = 'IsDeleted')
+BEGIN
+    ALTER TABLE [dbo].[BlogPage] ADD [IsDeleted] [bit] NOT NULL
+        CONSTRAINT [DF_BlogPage_IsDeleted] DEFAULT 0;
+END
+GO
+
+-- Add ContainsAiAssistedContent column to Post table
+IF NOT EXISTS (SELECT * FROM sys.columns WHERE object_id = OBJECT_ID(N'[dbo].[Post]') AND name = 'ContainsAiAssistedContent')
+BEGIN
+    ALTER TABLE [dbo].[Post] ADD [ContainsAiAssistedContent] [bit] NOT NULL
+        CONSTRAINT [DF_Post_ContainsAiAssistedContent] DEFAULT 0;
+END
+GO

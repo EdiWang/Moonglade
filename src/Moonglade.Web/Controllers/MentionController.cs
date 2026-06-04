@@ -12,7 +12,6 @@ namespace Moonglade.Web.Controllers;
 [ApiController]
 [Route("api/[controller]")]
 public class MentionController(
-    ILogger<MentionController> logger,
     IBlogConfig blogConfig,
     IQueryMediator queryMediator,
     CannonService cannonService,

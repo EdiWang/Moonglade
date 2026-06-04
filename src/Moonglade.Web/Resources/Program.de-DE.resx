@@ -627,8 +627,11 @@
   <data name="Show customize footer on each post" xml:space="preserve">
     <value>Die benutzerdefinierte Fusszeile nach jedem Artikel anzeigen</value>
   </data>
-  <data name="Show warning when clicking external links" xml:space="preserve">
-    <value>Warnung bei Benutzung externer Links anzeigen</value>
+  <data name="Show warning when clicking external links in posts" xml:space="preserve">
+    <value>Warnung beim Anklicken externer Links in Beiträgen anzeigen</value>
+  </data>
+  <data name="Show warning when clicking external links in comments" xml:space="preserve">
+    <value>Warnung beim Anklicken externer Links in Kommentaren anzeigen</value>
   </data>
   <data name="Side Bar" xml:space="preserve">
     <value>Seitenleiste</value>
@@ -1208,5 +1211,11 @@
   </data>
   <data name="Manage mention link" xml:space="preserve">
     <value>Link zur Erwähnungsverwaltung</value>
+  </data>
+  <data name="Contains AI-assisted content" xml:space="preserve">
+    <value>Enthält KI-unterstützte Inhalte</value>
+  </data>
+  <data name="This post contains AI-generated or AI-assisted edits." xml:space="preserve">
+    <value>Dieser Beitrag enthält KI-generierte oder KI-unterstützte Bearbeitungen.</value>
   </data>
 </root>

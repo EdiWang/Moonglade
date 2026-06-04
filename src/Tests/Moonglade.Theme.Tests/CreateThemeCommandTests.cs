@@ -33,12 +33,12 @@ public class CreateThemeCommandTests
             CssRules = "{}",
             ThemeType = ThemeType.User
         });
-        await db.SaveChangesAsync();
+        await db.SaveChangesAsync(TestContext.Current.CancellationToken);
 
         var handler = new CreateThemeCommandHandler(db);
 
         // Act
-        var result = await handler.HandleAsync(command, CancellationToken.None);
+        var result = await handler.HandleAsync(command, TestContext.Current.CancellationToken);
 
         // Assert
         Assert.Equal(-1, result);
@@ -60,12 +60,12 @@ public class CreateThemeCommandTests
         var handler = new CreateThemeCommandHandler(db);
 
         // Act
-        var result = await handler.HandleAsync(command, CancellationToken.None);
+        var result = await handler.HandleAsync(command, TestContext.Current.CancellationToken);
 
         // Assert
         Assert.True(result > 0);
 
-        var savedEntity = await db.BlogTheme.FindAsync(result);
+        var savedEntity = await db.BlogTheme.FindAsync([result], TestContext.Current.CancellationToken);
         Assert.NotNull(savedEntity);
         Assert.Equal(themeName, savedEntity.ThemeName);
         Assert.Equal(ThemeType.User, savedEntity.ThemeType);
@@ -93,11 +93,11 @@ public class CreateThemeCommandTests
         var handler = new CreateThemeCommandHandler(db);
 
         // Act
-        var result = await handler.HandleAsync(command, CancellationToken.None);
+        var result = await handler.HandleAsync(command, TestContext.Current.CancellationToken);
 
         // Assert
         Assert.True(result > 0);
-        var savedEntity = await db.BlogTheme.FindAsync(result);
+        var savedEntity = await db.BlogTheme.FindAsync([result], TestContext.Current.CancellationToken);
         Assert.NotNull(savedEntity);
         Assert.Equal(expectedTrimmedName, savedEntity.ThemeName);
     }
@@ -114,11 +114,11 @@ public class CreateThemeCommandTests
         var handler = new CreateThemeCommandHandler(db);
 
         // Act
-        var result = await handler.HandleAsync(command, CancellationToken.None);
+        var result = await handler.HandleAsync(command, TestContext.Current.CancellationToken);
 
         // Assert
         Assert.True(result > 0);
-        var savedEntity = await db.BlogTheme.FindAsync(result);
+        var savedEntity = await db.BlogTheme.FindAsync([result], TestContext.Current.CancellationToken);
         Assert.NotNull(savedEntity);
         Assert.Equal("{}", savedEntity.CssRules);
     }
@@ -142,11 +142,11 @@ public class CreateThemeCommandTests
         var handler = new CreateThemeCommandHandler(db);
 
         // Act
-        var result = await handler.HandleAsync(command, CancellationToken.None);
+        var result = await handler.HandleAsync(command, TestContext.Current.CancellationToken);
 
         // Assert
         Assert.True(result > 0);
-        var savedEntity = await db.BlogTheme.FindAsync(result);
+        var savedEntity = await db.BlogTheme.FindAsync([result], TestContext.Current.CancellationToken);
         Assert.NotNull(savedEntity);
 
         var deserializedRules = JsonSerializer.Deserialize<Dictionary<string, string>>(savedEntity.CssRules);
@@ -176,6 +176,6 @@ public class CreateThemeCommandTests
 
         // Assert
         Assert.True(result > 0);
-        Assert.Equal(1, await db.BlogTheme.CountAsync());
+        Assert.Equal(1, await db.BlogTheme.CountAsync(TestContext.Current.CancellationToken));
     }
 }
