@@ -17,8 +17,7 @@ public class CommentNotificationEventHandler(IMoongladeEmailClient moongladeEmai
     {
         notification = notification with
         {
-            CommentContent = ContentProcessor.MarkdownToContent(notification.CommentContent,
-                ContentProcessor.MarkdownConvertType.Html)
+            CommentContent = ContentProcessor.MarkdownToCommentHtml(notification.CommentContent)
         };
 
         var dl = new[] { blogConfig.GeneralSettings.OwnerEmail };

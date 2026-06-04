@@ -54,7 +54,7 @@
                     </div>
 
                     <div>
-                        @Html.Raw(ContentProcessor.MarkdownToContent(item.CommentContent, ContentProcessor.MarkdownConvertType.Html))
+                        @Html.Raw(ContentProcessor.MarkdownToCommentHtml(item.CommentContent))
                     </div>
 
                     <div>
@@ -72,7 +72,7 @@
                                     </span>
                                 </div>
                                 <p>
-                                    @Html.Raw(ContentProcessor.MarkdownToContent(reply.ReplyContent, ContentProcessor.MarkdownConvertType.Html))
+                                    @Html.Raw(ContentProcessor.MarkdownToCommentHtml(reply.ReplyContent))
                                 </p>
                             </div>
                         }

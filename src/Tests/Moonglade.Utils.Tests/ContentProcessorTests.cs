@@ -393,6 +393,53 @@ public class ContentProcessorTests
         Assert.NotNull(textResult);
     }
 
+    [Fact]
+    public void MarkdownToCommentHtml_WithHttpLink_AddsCommentLinkRel()
+    {
+        const string markdown = "[example](https://example.com?a=1&b=2)";
+
+        var result = ContentProcessor.MarkdownToCommentHtml(markdown);
+
+        Assert.Contains("<a href=\"https://example.com?a=1&amp;b=2\" rel=\"nofollow ugc noopener noreferrer\">example</a>", result);
+    }
+
+    [Theory]
+    [InlineData("[script](javascript:alert(1))")]
+    [InlineData("[script](java&#x73;cript:alert(1))")]
+    [InlineData("[data](data:text/html,hello)")]
+    public void MarkdownToCommentHtml_WithUnsafeLinkProtocol_RemovesHref(string markdown)
+    {
+        var result = ContentProcessor.MarkdownToCommentHtml(markdown);
+
+        Assert.DoesNotContain("href=", result);
+        Assert.DoesNotContain("javascript:", result);
+        Assert.DoesNotContain("data:", result);
+    }
+
+    [Theory]
+    [InlineData("[relative](/about)", "href=\"/about\"")]
+    [InlineData("[fragment](#comments)", "href=\"#comments\"")]
+    [InlineData("[mail](mailto:test@example.com)", "href=\"mailto:test@example.com\"")]
+    public void MarkdownToCommentHtml_WithAllowedLinkProtocol_KeepsHref(string markdown, string expectedHref)
+    {
+        var result = ContentProcessor.MarkdownToCommentHtml(markdown);
+
+        Assert.Contains(expectedHref, result);
+        Assert.Contains("rel=\"nofollow ugc noopener noreferrer\"", result);
+    }
+
+    [Fact]
+    public void MarkdownToCommentHtml_WithLinkTitle_PreservesTitle()
+    {
+        const string markdown = "[example](https://example.com \"Example Site\")";
+
+        var result = ContentProcessor.MarkdownToCommentHtml(markdown);
+
+        Assert.Contains("href=\"https://example.com\"", result);
+        Assert.Contains("title=\"Example Site\"", result);
+        Assert.Contains("rel=\"nofollow ugc noopener noreferrer\"", result);
+    }
+
     #endregion
 
     #region GetKeywords Tests
