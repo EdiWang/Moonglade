@@ -122,6 +122,7 @@ The solution file is `src/Moonglade.slnx`. The root `README.md` is the main depl
 
 ### Documentation And Licenses
 
+- Repository content must be written in English unless the file is a localization resource, such as `src/Moonglade.Web/Resources/Program.*.resx` or third-party language pack files. Do not add non-English text to Markdown files, source code, comments, tests, configuration, or documentation outside localization resources.
 - The README states that this blogging system must not be used to serve users in mainland China or to publish content prohibited by Chinese law or any applicable regulations.
 - The repository license is GPL-3.0. TinyMCE includes a GPL-2.0-or-later license notice. Do not remove or rewrite third-party license files casually.
 - Do not add license or copyright headers unless explicitly requested.
