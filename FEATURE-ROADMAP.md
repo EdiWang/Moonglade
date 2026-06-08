@@ -29,11 +29,13 @@ Moonglade is already a mature personal blogging platform for developers. Its exi
 
 The current search experience mainly covers post titles and tags. It should become a more complete site search experience.
 
-- [ ] Search across titles, abstracts, keywords, categories, and tags without scanning full post bodies.
-- [ ] Support pagination, sorting, and result highlighting.
-- [ ] Support filters by category, tag, language, and publish date.
-- [ ] Keep the implementation compatible with SQL Server and PostgreSQL.
-- [ ] Add matching Features and Web tests.
+- [x] Search across titles, abstracts, keywords, categories, and tags without scanning full post bodies.
+- [x] Support pagination, sorting, and result highlighting.
+- [x] Support filters by category, tag, language, and publish date.
+- [x] Keep the implementation compatible with SQL Server and PostgreSQL.
+- [x] Add matching Features tests for search query behavior.
+- [ ] Add optional Web tests for search page rendering and query string state.
+- [x] Keep full-body search out of scope to avoid the complexity and performance cost of full-text search.
 
 ### Editing Experience
 
@@ -223,7 +225,7 @@ This is a larger architectural change and should be deferred until higher-priori
 
 Goal: improve daily use and create a stronger foundation for future features.
 
-- [ ] Enhance site search.
+- [x] Enhance site search.
 - [ ] Expand complete export coverage.
 - [ ] Add an admin system diagnostics page.
 - [ ] Clean up hard-coded localization text.
@@ -231,7 +233,7 @@ Goal: improve daily use and create a stronger foundation for future features.
 
 Acceptance criteria:
 
-- [ ] Search results are more complete and support pagination, filtering, and sorting.
+- [x] Search results are more complete and support pagination, filtering, and sorting.
 - [ ] Exported data covers the main business entities.
 - [ ] Admin users can inspect the health of critical dependencies.
 - [ ] New or changed UI text is synchronized to non-English resource files.
