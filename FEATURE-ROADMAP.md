@@ -41,7 +41,7 @@ The current search experience mainly covers post titles and tags. It should beco
 
 Moonglade already has HTML and Markdown editors, but the writing and publishing workflow can be more robust.
 
-- [ ] Add draft autosave.
+- [x] Add draft autosave.
 - [ ] Restore drafts after accidental refresh or navigation.
 - [ ] Add live Markdown preview.
 - [ ] Add SEO preview for title, abstract, canonical URL, and keywords.
@@ -243,7 +243,7 @@ Acceptance criteria:
 
 Goal: make writing, editing, and publishing more reliable.
 
-- [ ] Add draft autosave.
+- [x] Add draft autosave.
 - [ ] Add draft recovery.
 - [ ] Add post revision history.
 - [ ] Add Markdown preview.
