@@ -1254,4 +1254,61 @@
   <data name="{0} results" xml:space="preserve">
     <value>{0} 件の結果</value>
   </data>
+  <data name="Auto save" xml:space="preserve">
+    <value>自動保存</value>
+  </data>
+  <data name="Auto save is on." xml:space="preserve">
+    <value>自動保存はオンです。</value>
+  </data>
+  <data name="Auto save is off." xml:space="preserve">
+    <value>自動保存はオフです。</value>
+  </data>
+  <data name="Auto save is waiting for required fields." xml:space="preserve">
+    <value>自動保存は必須項目の入力を待っています。</value>
+  </data>
+  <data name="Auto saved at {0}" xml:space="preserve">
+    <value>{0} に自動保存しました</value>
+  </data>
+  <data name="Please enter content." xml:space="preserve">
+    <value>内容を入力してください。</value>
+  </data>
+  <data name="Post saved successfully." xml:space="preserve">
+    <value>投稿を保存しました。</value>
+  </data>
+  <data name="Loading post data..." xml:space="preserve">
+    <value>投稿データを読み込んでいます...</value>
+  </data>
+  <data name="Drag &amp; Drop / Paste image here to upload." xml:space="preserve">
+    <value>画像をここにドラッグ＆ドロップ、または貼り付けてアップロードします。</value>
+  </data>
+  <data name="Slug" xml:space="preserve">
+    <value>Slug</value>
+  </data>
+  <data name="Modify" xml:space="preserve">
+    <value>変更</value>
+  </data>
+  <data name="Mark as outdated" xml:space="preserve">
+    <value>古い投稿としてマーク</value>
+  </data>
+  <data name="Keywords (split by comma ',')" xml:space="preserve">
+    <value>キーワード（カンマ "," 区切り）</value>
+  </data>
+  <data name="Schedule Publish" xml:space="preserve">
+    <value>公開を予約</value>
+  </data>
+  <data name="Modify Slug" xml:space="preserve">
+    <value>Slug を変更</value>
+  </data>
+  <data name="This post was published for a period of time, changing slug will result in breaking SEO, would you like to continue?" xml:space="preserve">
+    <value>この投稿は公開されてから時間が経っています。Slug を変更すると SEO に影響します。続行しますか？</value>
+  </data>
+  <data name="Scheduled for: {0}" xml:space="preserve">
+    <value>公開予約: {0}</value>
+  </data>
+  <data name="Edit Post" xml:space="preserve">
+    <value>投稿を編集</value>
+  </data>
+  <data name="Post unpublished" xml:space="preserve">
+    <value>投稿の公開を取り消しました</value>
+  </data>
 </root>

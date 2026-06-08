@@ -43,7 +43,11 @@ public class PostController(
             return Conflict(result.ErrorMessage);
         }
 
-        return Ok(new { result.PostId });
+        return Ok(new
+        {
+            result.PostId,
+            LastModifiedUtc = result.LastModifiedUtc?.ToString("u")
+        });
     }
 
     [TypeFilter(typeof(ClearBlogCache), Arguments =

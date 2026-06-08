@@ -1254,4 +1254,61 @@
   <data name="{0} results" xml:space="preserve">
     <value>{0} Ergebnisse</value>
   </data>
+  <data name="Auto save" xml:space="preserve">
+    <value>Automatisch speichern</value>
+  </data>
+  <data name="Auto save is on." xml:space="preserve">
+    <value>Automatisches Speichern ist aktiviert.</value>
+  </data>
+  <data name="Auto save is off." xml:space="preserve">
+    <value>Automatisches Speichern ist deaktiviert.</value>
+  </data>
+  <data name="Auto save is waiting for required fields." xml:space="preserve">
+    <value>Automatisches Speichern wartet auf Pflichtfelder.</value>
+  </data>
+  <data name="Auto saved at {0}" xml:space="preserve">
+    <value>Automatisch gespeichert um {0}</value>
+  </data>
+  <data name="Please enter content." xml:space="preserve">
+    <value>Bitte geben Sie Inhalt ein.</value>
+  </data>
+  <data name="Post saved successfully." xml:space="preserve">
+    <value>Beitrag wurde erfolgreich gespeichert.</value>
+  </data>
+  <data name="Loading post data..." xml:space="preserve">
+    <value>Beitragsdaten werden geladen...</value>
+  </data>
+  <data name="Drag &amp; Drop / Paste image here to upload." xml:space="preserve">
+    <value>Bild hierher ziehen und ablegen oder einfügen, um es hochzuladen.</value>
+  </data>
+  <data name="Slug" xml:space="preserve">
+    <value>Slug</value>
+  </data>
+  <data name="Modify" xml:space="preserve">
+    <value>Ändern</value>
+  </data>
+  <data name="Mark as outdated" xml:space="preserve">
+    <value>Als veraltet markieren</value>
+  </data>
+  <data name="Keywords (split by comma ',')" xml:space="preserve">
+    <value>Schlüsselwörter (durch Komma "," trennen)</value>
+  </data>
+  <data name="Schedule Publish" xml:space="preserve">
+    <value>Veröffentlichung planen</value>
+  </data>
+  <data name="Modify Slug" xml:space="preserve">
+    <value>Slug ändern</value>
+  </data>
+  <data name="This post was published for a period of time, changing slug will result in breaking SEO, would you like to continue?" xml:space="preserve">
+    <value>Dieser Beitrag ist bereits seit einiger Zeit veröffentlicht. Das Ändern des Slugs kann SEO beeinträchtigen. Möchten Sie fortfahren?</value>
+  </data>
+  <data name="Scheduled for: {0}" xml:space="preserve">
+    <value>Geplant für: {0}</value>
+  </data>
+  <data name="Edit Post" xml:space="preserve">
+    <value>Beitrag bearbeiten</value>
+  </data>
+  <data name="Post unpublished" xml:space="preserve">
+    <value>Beitrag wurde zurückgezogen</value>
+  </data>
 </root>

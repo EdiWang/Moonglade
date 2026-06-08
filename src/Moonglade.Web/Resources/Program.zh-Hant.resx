@@ -1254,4 +1254,61 @@
   <data name="{0} results" xml:space="preserve">
     <value>{0} 個結果</value>
   </data>
+  <data name="Auto save" xml:space="preserve">
+    <value>自動儲存</value>
+  </data>
+  <data name="Auto save is on." xml:space="preserve">
+    <value>自動儲存已開啟。</value>
+  </data>
+  <data name="Auto save is off." xml:space="preserve">
+    <value>自動儲存已關閉。</value>
+  </data>
+  <data name="Auto save is waiting for required fields." xml:space="preserve">
+    <value>自動儲存正在等待必填欄位。</value>
+  </data>
+  <data name="Auto saved at {0}" xml:space="preserve">
+    <value>已於 {0} 自動儲存</value>
+  </data>
+  <data name="Please enter content." xml:space="preserve">
+    <value>請輸入內容。</value>
+  </data>
+  <data name="Post saved successfully." xml:space="preserve">
+    <value>文章儲存成功。</value>
+  </data>
+  <data name="Loading post data..." xml:space="preserve">
+    <value>正在載入文章資料...</value>
+  </data>
+  <data name="Drag &amp; Drop / Paste image here to upload." xml:space="preserve">
+    <value>將圖片拖放或貼到此處上傳。</value>
+  </data>
+  <data name="Slug" xml:space="preserve">
+    <value>Slug</value>
+  </data>
+  <data name="Modify" xml:space="preserve">
+    <value>修改</value>
+  </data>
+  <data name="Mark as outdated" xml:space="preserve">
+    <value>標記為過時</value>
+  </data>
+  <data name="Keywords (split by comma ',')" xml:space="preserve">
+    <value>關鍵字（以逗號 "," 分隔）</value>
+  </data>
+  <data name="Schedule Publish" xml:space="preserve">
+    <value>排程發布</value>
+  </data>
+  <data name="Modify Slug" xml:space="preserve">
+    <value>修改 Slug</value>
+  </data>
+  <data name="This post was published for a period of time, changing slug will result in breaking SEO, would you like to continue?" xml:space="preserve">
+    <value>此文章已發布一段時間，修改 Slug 會影響 SEO，是否繼續？</value>
+  </data>
+  <data name="Scheduled for: {0}" xml:space="preserve">
+    <value>排程發布：{0}</value>
+  </data>
+  <data name="Edit Post" xml:space="preserve">
+    <value>編輯文章</value>
+  </data>
+  <data name="Post unpublished" xml:space="preserve">
+    <value>文章已取消發布</value>
+  </data>
 </root>

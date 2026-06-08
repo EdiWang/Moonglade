@@ -1,5 +1,5 @@
 import { showConfirmModal, hideConfirmModal } from './adminModal.mjs';
-import { slugify } from './utils.module.mjs';
+import { getLocalizedString, slugify } from './utils.module.mjs';
 
 export function createSlugMixin() {
     return {
@@ -17,9 +17,9 @@ export function createSlugMixin() {
 
         unlockSlug() {
             showConfirmModal({
-                title: 'Modify Slug',
-                body: '<div class="alert alert-warning">This post was published for a period of time, changing slug will result in breaking SEO, would you like to continue?</div>',
-                confirmText: 'Modify',
+                title: getLocalizedString('modifySlug'),
+                body: `<div class="alert alert-warning">${getLocalizedString('modifySlugWarning')}</div>`,
+                confirmText: getLocalizedString('modify'),
                 confirmClass: 'btn-warning',
                 onConfirm: () => {
                     this.slugUnlocked = true;
