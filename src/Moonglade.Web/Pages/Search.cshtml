@@ -33,18 +33,18 @@
             <input id="search-term" name="term" value="@SearchTerm" class="form-control" maxlength="30" required />
         </div>
         <div class="col-md-2">
-            <label for="sort" class="form-label">Sort</label>
+            <label for="sort" class="form-label">@SharedLocalizer["Sort"]</label>
             <select id="sort" name="sort" class="form-select">
-                <option value="newest" selected="@(Sort == "newest")">Newest first</option>
-                <option value="oldest" selected="@(Sort == "oldest")">Oldest first</option>
-                <option value="title-asc" selected="@(Sort == "title-asc")">Title A-Z</option>
-                <option value="title-desc" selected="@(Sort == "title-desc")">Title Z-A</option>
+                <option value="newest" selected="@(Sort == "newest")">@SharedLocalizer["Newest first"]</option>
+                <option value="oldest" selected="@(Sort == "oldest")">@SharedLocalizer["Oldest first"]</option>
+                <option value="title-asc" selected="@(Sort == "title-asc")">@SharedLocalizer["Title A-Z"]</option>
+                <option value="title-desc" selected="@(Sort == "title-desc")">@SharedLocalizer["Title Z-A"]</option>
             </select>
         </div>
         <div class="col-md-3">
             <label for="category" class="form-label">@SharedLocalizer["Categories"]</label>
             <select id="category" name="category" class="form-select">
-                <option value="">All categories</option>
+                <option value="">@SharedLocalizer["All categories"]</option>
                 @foreach (var category in Categories.OrderBy(c => c.DisplayName))
                 {
                     <option value="@category.Slug" selected="@(Category == category.Slug)">@category.DisplayName</option>
@@ -54,7 +54,7 @@
         <div class="col-md-3">
             <label for="tag" class="form-label">@SharedLocalizer["Tags"]</label>
             <select id="tag" name="tag" class="form-select">
-                <option value="">All tags</option>
+                <option value="">@SharedLocalizer["All Tags"]</option>
                 @foreach (var tag in Tags.OrderBy(t => t.DisplayName))
                 {
                     <option value="@tag.NormalizedName" selected="@(Tag == tag.NormalizedName)">@tag.DisplayName</option>
@@ -64,7 +64,7 @@
         <div class="col-md-3">
             <label for="language" class="form-label">@SharedLocalizer["Language"]</label>
             <select id="language" name="language" class="form-select">
-                <option value="">All languages</option>
+                <option value="">@SharedLocalizer["All languages"]</option>
                 @foreach (var language in cultureItems)
                 {
                     <option value="@language.Value" selected="@(Language == language.Value)">@language.NativeName</option>
@@ -72,11 +72,11 @@
             </select>
         </div>
         <div class="col-md-3">
-            <label for="startDate" class="form-label">Published from</label>
+            <label for="startDate" class="form-label">@SharedLocalizer["Published from"]</label>
             <input id="startDate" name="startDate" value="@FormatDate(StartDate)" class="form-control" type="date" />
         </div>
         <div class="col-md-3">
-            <label for="endDate" class="form-label">Published to</label>
+            <label for="endDate" class="form-label">@SharedLocalizer["Published to"]</label>
             <input id="endDate" name="endDate" value="@FormatDate(EndDate)" class="form-control" type="date" />
         </div>
         <div class="col-md-3 d-flex gap-2">
@@ -84,7 +84,7 @@
                 @SharedLocalizer["Filter"]
             </button>
             <a href="@Url.Page("/Search", new { term = SearchTerm })" class="btn btn-outline-secondary">
-                Clear
+                @SharedLocalizer["Clear"]
             </a>
         </div>
     </div>
@@ -99,7 +99,7 @@
 else
 {
     <div class="text-muted mb-3">
-        @Posts.TotalItemCount result@(Posts.TotalItemCount == 1 ? string.Empty : "s")
+        @SharedLocalizer[Posts.TotalItemCount == 1 ? "{0} result" : "{0} results", Posts.TotalItemCount]
     </div>
 
     foreach (var item in Posts.Items)

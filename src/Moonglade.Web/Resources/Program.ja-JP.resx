@@ -1218,4 +1218,40 @@
   <data name="This post contains AI-generated or AI-assisted edits." xml:space="preserve">
     <value>この投稿には、AI生成またはAI支援による編集が含まれています。</value>
   </data>
+  <data name="Sort" xml:space="preserve">
+    <value>並べ替え</value>
+  </data>
+  <data name="Newest first" xml:space="preserve">
+    <value>新しい順</value>
+  </data>
+  <data name="Oldest first" xml:space="preserve">
+    <value>古い順</value>
+  </data>
+  <data name="Title A-Z" xml:space="preserve">
+    <value>タイトル A-Z</value>
+  </data>
+  <data name="Title Z-A" xml:space="preserve">
+    <value>タイトル Z-A</value>
+  </data>
+  <data name="All categories" xml:space="preserve">
+    <value>すべてのカテゴリ</value>
+  </data>
+  <data name="All languages" xml:space="preserve">
+    <value>すべての言語</value>
+  </data>
+  <data name="Published from" xml:space="preserve">
+    <value>公開日（開始）</value>
+  </data>
+  <data name="Published to" xml:space="preserve">
+    <value>公開日（終了）</value>
+  </data>
+  <data name="Clear" xml:space="preserve">
+    <value>クリア</value>
+  </data>
+  <data name="{0} result" xml:space="preserve">
+    <value>{0} 件の結果</value>
+  </data>
+  <data name="{0} results" xml:space="preserve">
+    <value>{0} 件の結果</value>
+  </data>
 </root>

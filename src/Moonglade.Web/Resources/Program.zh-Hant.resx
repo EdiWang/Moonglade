@@ -1218,4 +1218,40 @@
   <data name="This post contains AI-generated or AI-assisted edits." xml:space="preserve">
     <value>本文包含 AI 創作或輔助潤色的部分。</value>
   </data>
+  <data name="Sort" xml:space="preserve">
+    <value>排序</value>
+  </data>
+  <data name="Newest first" xml:space="preserve">
+    <value>最新優先</value>
+  </data>
+  <data name="Oldest first" xml:space="preserve">
+    <value>最早優先</value>
+  </data>
+  <data name="Title A-Z" xml:space="preserve">
+    <value>標題 A-Z</value>
+  </data>
+  <data name="Title Z-A" xml:space="preserve">
+    <value>標題 Z-A</value>
+  </data>
+  <data name="All categories" xml:space="preserve">
+    <value>所有分類</value>
+  </data>
+  <data name="All languages" xml:space="preserve">
+    <value>所有語言</value>
+  </data>
+  <data name="Published from" xml:space="preserve">
+    <value>發布起始日期</value>
+  </data>
+  <data name="Published to" xml:space="preserve">
+    <value>發布結束日期</value>
+  </data>
+  <data name="Clear" xml:space="preserve">
+    <value>清除</value>
+  </data>
+  <data name="{0} result" xml:space="preserve">
+    <value>{0} 個結果</value>
+  </data>
+  <data name="{0} results" xml:space="preserve">
+    <value>{0} 個結果</value>
+  </data>
 </root>

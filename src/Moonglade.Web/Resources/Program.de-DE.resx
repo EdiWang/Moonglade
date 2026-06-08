@@ -1218,4 +1218,40 @@
   <data name="This post contains AI-generated or AI-assisted edits." xml:space="preserve">
     <value>Dieser Beitrag enthält KI-generierte oder KI-unterstützte Bearbeitungen.</value>
   </data>
+  <data name="Sort" xml:space="preserve">
+    <value>Sortieren</value>
+  </data>
+  <data name="Newest first" xml:space="preserve">
+    <value>Neueste zuerst</value>
+  </data>
+  <data name="Oldest first" xml:space="preserve">
+    <value>Älteste zuerst</value>
+  </data>
+  <data name="Title A-Z" xml:space="preserve">
+    <value>Titel A-Z</value>
+  </data>
+  <data name="Title Z-A" xml:space="preserve">
+    <value>Titel Z-A</value>
+  </data>
+  <data name="All categories" xml:space="preserve">
+    <value>Alle Kategorien</value>
+  </data>
+  <data name="All languages" xml:space="preserve">
+    <value>Alle Sprachen</value>
+  </data>
+  <data name="Published from" xml:space="preserve">
+    <value>Veröffentlicht ab</value>
+  </data>
+  <data name="Published to" xml:space="preserve">
+    <value>Veröffentlicht bis</value>
+  </data>
+  <data name="Clear" xml:space="preserve">
+    <value>Zurücksetzen</value>
+  </data>
+  <data name="{0} result" xml:space="preserve">
+    <value>{0} Ergebnis</value>
+  </data>
+  <data name="{0} results" xml:space="preserve">
+    <value>{0} Ergebnisse</value>
+  </data>
 </root>
