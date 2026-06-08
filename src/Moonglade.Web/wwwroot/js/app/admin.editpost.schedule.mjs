@@ -1,3 +1,5 @@
+import { getLocalizedString } from './utils.module.mjs';
+
 export function createScheduleMixin() {
     return {
         enableSchedule: false,
@@ -65,7 +67,8 @@ export function createScheduleMixin() {
                     displayTime = localDate.toLocaleString();
                 }
 
-                this.scheduleInfoHtml = `<i class="bi-clock"></i> <span>Scheduled for: ${displayTime}</span>`;
+                const scheduleText = getLocalizedString('scheduledFor').replace('{0}', displayTime);
+                this.scheduleInfoHtml = `<i class="bi-clock"></i> <span>${scheduleText}</span>`;
             } else {
                 this.scheduleInfoHtml = '';
             }

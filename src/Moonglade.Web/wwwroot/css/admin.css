@@ -189,6 +189,22 @@
     flex-shrink: 0;
 }
 
+#auto-save-toggle {
+    background-color: rgba(0, 0, 0, 0.45);
+    border-color: rgba(255, 255, 255, 0.65);
+}
+
+    #auto-save-toggle:checked {
+        background-color: var(--bs-white) !important;
+        border-color: var(--bs-white) !important;
+        background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='-4 -4 8 8'%3e%3ccircle r='3' fill='%23212529'/%3e%3c/svg%3e");
+    }
+
+    #auto-save-toggle:focus {
+        border-color: var(--bs-white);
+        box-shadow: 0 0 0 .2rem rgba(255, 255, 255, 0.25);
+    }
+
 .post-edit-form .CodeMirror {
     height: 620px;
 }

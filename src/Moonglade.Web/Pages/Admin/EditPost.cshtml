@@ -1,7 +1,7 @@
 ﻿@page "/admin/post/edit/{id:guid?}"
 
 @{
-    ViewBag.Title = "Edit Post";
+    ViewBag.Title = SharedLocalizer["Edit Post"];
     ViewBag.XData = "postEditor";
     ViewBag.HideAdminSidebar = true;
     ViewBag.AdminBackUrl = "javascript:history.go(-1);";
@@ -12,15 +12,49 @@
     <script type="module" src="~/js/app/admin.editpost.mjs"></script>
 }
 
+@section navbarActions {
+    <li id="auto-save-nav-item" class="nav-item d-none align-items-center me-2">
+        <div class="form-check form-switch text-white mb-0">
+            <input class="form-check-input"
+                   type="checkbox"
+                   role="switch"
+                   id="auto-save-toggle"
+                   aria-describedby="auto-save-status">
+            <label class="form-check-label small" for="auto-save-toggle">
+                <i class="bi-cloud-arrow-up me-1"></i>
+                @SharedLocalizer["Auto save"]
+            </label>
+        </div>
+        <span id="auto-save-status" class="navbar-text small text-white-50 ms-2"></span>
+    </li>
+}
+
 @section head {
     <link href="~/lib/tagify/tagify.css" rel="stylesheet" />
 }
 
 @Html.AntiForgeryToken()
 
+<div id="localizedStrings" style="display:none"
+     data-please-enter-content="@SharedLocalizer["Please enter content."]"
+     data-post-saved="@SharedLocalizer["Post saved successfully."]"
+     data-auto-save-on="@SharedLocalizer["Auto save is on."]"
+     data-auto-save-off="@SharedLocalizer["Auto save is off."]"
+     data-auto-save-waiting="@SharedLocalizer["Auto save is waiting for required fields."]"
+     data-auto-saved-at="@SharedLocalizer["Auto saved at {0}"]"
+     data-unsaved-changes="@SharedLocalizer["You have unsaved changes, are you sure to leave this page?"]"
+     data-modify-slug="@SharedLocalizer["Modify Slug"]"
+     data-modify-slug-warning="@SharedLocalizer["This post was published for a period of time, changing slug will result in breaking SEO, would you like to continue?"]"
+     data-unpublish-title="@SharedLocalizer["Unpublish Post"]"
+     data-unpublish-warning="@SharedLocalizer["Unpublishing this post will remove it from the public site and turn it into a draft. This will have impact on SEO. Please confirm."]"
+     data-post-unpublished="@SharedLocalizer["Post unpublished"]"
+     data-confirm="@SharedLocalizer["Confirm"]"
+     data-modify="@SharedLocalizer["Modify"]"
+     data-scheduled-for="@SharedLocalizer["Scheduled for: {0}"]"></div>
+
 <div x-show="isLoading" class="text-muted mb-3" :class="{ 'd-flex align-items-center': isLoading }">
     <div class="spinner-border spinner-border-sm me-2" role="status"></div>
-    <span>Loading post data...</span>
+    <span>@SharedLocalizer["Loading post data..."]</span>
 </div>
 
 <div x-show="!isLoading" x-cloak class="post-editor-container d-flex flex-column px-3 pt-2">
@@ -43,7 +77,7 @@
                         <div id="markdown-content-editor" class="monaco-target overflow-y-hidden"></div>
                         <textarea class="post-content-textarea d-none" x-model="formData.editorContent"></textarea>
                         <div class="md-editor-image-upload-area text-center border-secondary-subtle p-3 mt-1">
-                            Drag &amp; Drop / Paste image here to upload.
+                            @SharedLocalizer["Drag & Drop / Paste image here to upload."]
                         </div>
                     </div>
                 </template>
@@ -71,7 +105,7 @@
                             <input type="text"
                                    x-model="formData.slug"
                                    class="form-control form-control-sm"
-                                   placeholder="Slug"
+                                   placeholder="@SharedLocalizer["Slug"]"
                                    spellcheck="false"
                                    required
                                    pattern="[a-z0-9\-]+"
@@ -79,7 +113,7 @@
                                    x-bind:readonly="warnSlugModification && !slugUnlocked" />
                             <a x-show="warnSlugModification && !slugUnlocked"
                                x-on:click="unlockSlug"
-                               class="btn btn-warning btn-sm">Modify</a>
+                               class="btn btn-warning btn-sm">@SharedLocalizer["Modify"]</a>
                         </div>
 
                         <div class="input-group input-group-sm mb-2">
@@ -122,21 +156,21 @@
                                    x-model="formData.enableComment"
                                    class="form-check-input"
                                    id="enableComment">
-                            <label for="enableComment" class="form-check-label">Enable Comment</label>
+                            <label for="enableComment" class="form-check-label">@SharedLocalizer["Enable Comment"]</label>
                         </div>
                         <div class="form-check form-switch">
                             <input type="checkbox"
                                    x-model="formData.featured"
                                    class="form-check-input"
                                    id="featured">
-                            <label for="featured" class="form-check-label">Featured</label>
+                            <label for="featured" class="form-check-label">@SharedLocalizer["Featured"]</label>
                         </div>
                         <div class="form-check form-switch">
                             <input type="checkbox"
                                    x-model="formData.isOutdated"
                                    class="form-check-input"
                                    id="isOutdated">
-                            <label for="isOutdated" class="form-check-label">Mark as outdated</label>
+                            <label for="isOutdated" class="form-check-label">@SharedLocalizer["Mark as outdated"]</label>
                         </div>
                         <div class="form-check form-switch">
                             <input type="checkbox"
@@ -154,9 +188,9 @@
                         <div class="form-floating">
                             <textarea x-model="formData.keywords"
                                       class="form-control form-control-sm"
-                                      placeholder="Keywords (split by comma ',')"
+                                      placeholder="@SharedLocalizer["Keywords (split by comma ',')"]"
                                       id="post-keywords"></textarea>
-                            <label class="form-label" for="post-keywords">Keywords (split by comma ',')</label>
+                            <label class="form-label" for="post-keywords">@SharedLocalizer["Keywords (split by comma ',')"]</label>
                         </div>
                     </div>
                     <div class="card-body border-top">
@@ -234,7 +268,7 @@
                 <div class="modal-content">
                     <div class="modal-header">
                         <h5 class="modal-title" id="publishModalLabel">@SharedLocalizer["Publish"]</h5>
-                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="@SharedLocalizer["Close"]"></button>
                     </div>
                     <div class="modal-body">
                         <div class="form-check form-switch mb-3">
@@ -242,14 +276,14 @@
                                    x-model="formData.feedIncluded"
                                    class="form-check-input"
                                    id="publishFeedIncluded">
-                            <label for="publishFeedIncluded" class="form-check-label">Include in feed and sitemap</label>
+                            <label for="publishFeedIncluded" class="form-check-label">@SharedLocalizer["Include in feed and sitemap"]</label>
                         </div>
                         <div class="form-check form-switch mb-3">
                             <input type="checkbox"
                                    x-model="enableSchedule"
                                    class="form-check-input"
                                    id="enableScheduleToggle">
-                            <label for="enableScheduleToggle" class="form-check-label">Schedule Publish</label>
+                            <label for="enableScheduleToggle" class="form-check-label">@SharedLocalizer["Schedule Publish"]</label>
                         </div>
                         <div x-show="enableSchedule" x-cloak class="mb-2">
                             <label class="form-label">@SharedLocalizer["Set a time in your local time zone to schedule the post to be automatically published."]</label>
