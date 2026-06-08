@@ -81,10 +81,10 @@ public class PostQueryTests
 
         var result = await handler.HandleAsync(new SearchPostQuery("Azure"), TestContext.Current.CancellationToken);
 
-        Assert.Equal(2, result.Count);
-        Assert.Contains(result, p => p.Slug == "title-match");
-        Assert.Contains(result, p => p.Slug == "tag-match");
-        Assert.DoesNotContain(result, p => p.Slug == "draft");
+        Assert.Equal(2, result.TotalRows);
+        Assert.Contains(result.Posts, p => p.Slug == "title-match");
+        Assert.Contains(result.Posts, p => p.Slug == "tag-match");
+        Assert.DoesNotContain(result.Posts, p => p.Slug == "draft");
     }
 
     [Fact]
@@ -100,8 +100,74 @@ public class PostQueryTests
 
         var result = await handler.HandleAsync(new SearchPostQuery("Azure Functions"), TestContext.Current.CancellationToken);
 
-        Assert.Single(result);
-        Assert.Equal("match", result[0].Slug);
+        Assert.Single(result.Posts);
+        Assert.Equal("match", result.Posts[0].Slug);
+    }
+
+    [Fact]
+    public async Task SearchPostQuery_PaginatesAndSorts()
+    {
+        using var db = CreateDbContext();
+        db.Post.AddRange(
+            CreatePost(Guid.NewGuid(), "b", PostStatus.Published, DateTime.UtcNow.AddDays(-1), title: "Azure B"),
+            CreatePost(Guid.NewGuid(), "a", PostStatus.Published, DateTime.UtcNow.AddDays(-2), title: "Azure A"),
+            CreatePost(Guid.NewGuid(), "c", PostStatus.Published, DateTime.UtcNow, title: "Azure C"));
+        await db.SaveChangesAsync(TestContext.Current.CancellationToken);
+
+        var handler = new SearchPostQueryHandler(db);
+
+        var result = await handler.HandleAsync(
+            new SearchPostQuery("Azure", PageSize: 2, PageIndex: 1, Sort: SearchPostSort.TitleAscending),
+            TestContext.Current.CancellationToken);
+
+        Assert.Equal(3, result.TotalRows);
+        Assert.Collection(result.Posts,
+            p => Assert.Equal("a", p.Slug),
+            p => Assert.Equal("b", p.Slug));
+    }
+
+    [Fact]
+    public async Task SearchPostQuery_FiltersByCategoryTagLanguageAndDate()
+    {
+        using var db = CreateDbContext();
+        var category = new CategoryEntity { Id = Guid.NewGuid(), Slug = "cloud", DisplayName = "Cloud" };
+        var tag = new TagEntity { DisplayName = "Azure", NormalizedName = "azure" };
+        var matchingPost = CreatePost(
+            Guid.NewGuid(),
+            "match",
+            PostStatus.Published,
+            new DateTime(2024, 4, 10, 0, 0, 0, DateTimeKind.Utc),
+            title: "Azure Guide",
+            languageCode: "en-us");
+        matchingPost.Tags.Add(tag);
+        matchingPost.PostCategory.Add(new PostCategoryEntity
+        {
+            Post = matchingPost,
+            PostId = matchingPost.Id,
+            Category = category,
+            CategoryId = category.Id
+        });
+        db.Category.Add(category);
+        db.Post.AddRange(
+            matchingPost,
+            CreatePost(Guid.NewGuid(), "wrong-language", PostStatus.Published, new DateTime(2024, 4, 10, 0, 0, 0, DateTimeKind.Utc), title: "Azure Guide", languageCode: "de-de"),
+            CreatePost(Guid.NewGuid(), "wrong-date", PostStatus.Published, new DateTime(2024, 3, 1, 0, 0, 0, DateTimeKind.Utc), title: "Azure Guide"));
+        await db.SaveChangesAsync(TestContext.Current.CancellationToken);
+
+        var handler = new SearchPostQueryHandler(db);
+
+        var result = await handler.HandleAsync(
+            new SearchPostQuery(
+                "Azure",
+                CategorySlug: "cloud",
+                Tag: "azure",
+                LanguageCode: "en-us",
+                StartDateUtc: new DateTime(2024, 4, 1, 0, 0, 0, DateTimeKind.Utc),
+                EndDateUtc: new DateTime(2024, 4, 30, 0, 0, 0, DateTimeKind.Utc)),
+            TestContext.Current.CancellationToken);
+
+        Assert.Single(result.Posts);
+        Assert.Equal("match", result.Posts[0].Slug);
     }
 
     [Fact]
@@ -239,7 +305,8 @@ public class PostQueryTests
         bool isFeatured = false,
         string? title = null,
         string? routeLink = null,
-        string? contentAbstract = null)
+        string? contentAbstract = null,
+        string languageCode = "en-us")
     {
         return new PostEntity
         {
@@ -252,7 +319,7 @@ public class PostQueryTests
             CreateTimeUtc = DateTime.UtcNow.AddDays(-3),
             LastModifiedUtc = DateTime.UtcNow.AddDays(-2),
             ContentAbstract = contentAbstract ?? "Abstract",
-            ContentLanguageCode = "en-us",
+            ContentLanguageCode = languageCode,
             IsFeedIncluded = true,
             PubDateUtc = pubDateUtc,
             PostStatus = status,

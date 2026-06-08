@@ -29,7 +29,7 @@ Moonglade is already a mature personal blogging platform for developers. Its exi
 
 The current search experience mainly covers post titles and tags. It should become a more complete site search experience.
 
-- [ ] Search across titles, abstracts, body content, keywords, categories, and tags.
+- [ ] Search across titles, abstracts, keywords, categories, and tags without scanning full post bodies.
 - [ ] Support pagination, sorting, and result highlighting.
 - [ ] Support filters by category, tag, language, and publish date.
 - [ ] Keep the implementation compatible with SQL Server and PostgreSQL.
