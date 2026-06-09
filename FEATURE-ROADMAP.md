@@ -25,18 +25,6 @@ Moonglade is already a mature personal blogging platform for developers. Its exi
 
 ## Features Worth Enhancing
 
-### Search
-
-The current search experience mainly covers post titles and tags. It should become a more complete site search experience.
-
-- [x] Search across titles, abstracts, keywords, categories, and tags without scanning full post bodies.
-- [x] Support pagination, sorting, and result highlighting.
-- [x] Support filters by category, tag, language, and publish date.
-- [x] Keep the implementation compatible with SQL Server and PostgreSQL.
-- [x] Add matching Features tests for search query behavior.
-- [x] Add optional Web tests for search page rendering and query string state.
-- [x] Keep full-body search out of scope to avoid the complexity and performance cost of full-text search.
-
 ### Editing Experience
 
 Moonglade already has HTML and Markdown editors, but the writing and publishing workflow can be more robust.
@@ -122,18 +110,6 @@ Moonglade has a good SEO foundation. The next step is improving search engine an
 - [ ] Add category-level and tag-level sitemap or feed support.
 - [ ] Add redirect management for slug changes.
 - [ ] Add structured data validation hints.
-
-### Localization Consistency
-
-Moonglade already has multilingual resources, but some Razor and JavaScript text may still be hard-coded in English.
-
-- [ ] Resource hard-coded text in admin pages.
-- [ ] Resource hard-coded text in public pages.
-- [x] Resource JavaScript toast, confirm, and alert text.
-- [x] Update `Program.zh-Hans.resx`.
-- [x] Update `Program.zh-Hant.resx`.
-- [x] Update `Program.de-DE.resx`.
-- [x] Update `Program.ja-JP.resx`.
 
 ### Security Hardening
 
