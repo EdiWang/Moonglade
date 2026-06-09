@@ -68,7 +68,7 @@ Moonglade already has captcha, review, word filtering, and Webmention validation
 - [ ] Add an email blacklist.
 - [ ] Add a domain blacklist.
 - [ ] Add comment rate limiting.
-- [ ] Add Webmention source rate limiting.
+- [x] Add Webmention source rate limiting.
 - [ ] Add trusted and blocked domain rules for Webmention.
 - [ ] Improve batch approval and batch deletion workflows.
 - [ ] Record review reasons and blocking reasons.

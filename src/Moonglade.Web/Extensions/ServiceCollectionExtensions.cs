@@ -209,7 +209,7 @@ public static class ServiceCollectionExtensions
 
     private static IServiceCollection AddMoongladeCoreServices(this IServiceCollection services, IConfiguration configuration)
     {
-        services.AddWebmention();
+        services.AddWebmention(configuration);
 
         services.AddSyndication()
                 .AddInMemoryCacheAside()

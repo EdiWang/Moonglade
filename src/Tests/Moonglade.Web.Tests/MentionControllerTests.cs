@@ -66,6 +66,7 @@ public class MentionControllerTests
     [InlineData(WebmentionStatus.SpamDetectedFakeNotFound, typeof(NotFoundObjectResult), StatusCodes.Status404NotFound, "The requested resource was not found.")]
     [InlineData(WebmentionStatus.ErrorTargetUriNotExist, typeof(ConflictObjectResult), StatusCodes.Status409Conflict, "Cannot retrieve post ID and title for the target URL.")]
     [InlineData(WebmentionStatus.ErrorWebmentionAlreadyRegistered, typeof(ConflictObjectResult), StatusCodes.Status409Conflict, "Webmention already registered.")]
+    [InlineData(WebmentionStatus.SourceRateLimitExceeded, typeof(ObjectResult), StatusCodes.Status429TooManyRequests, "Webmention source rate limit exceeded.")]
     [InlineData(WebmentionStatus.GenericError, typeof(ObjectResult), StatusCodes.Status500InternalServerError, "An internal server error occurred.")]
     public async Task ReceiveWebmention_WhenCommandReturnsFailure_ReturnsMappedResult(
         WebmentionStatus status,
