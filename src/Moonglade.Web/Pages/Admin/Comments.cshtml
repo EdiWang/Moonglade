@@ -8,7 +8,9 @@
      data-comment-deleted="@SharedLocalizer["Comment deleted"]"
      data-comments-deleted="@SharedLocalizer["Comments deleted"]"
      data-confirm-delete="@SharedLocalizer["Are you sure you want to delete this comment?"]"
-     data-confirm-delete-selected="@SharedLocalizer["Are you sure you want to delete selected comments?"]">
+     data-confirm-delete-selected="@SharedLocalizer["Are you sure you want to delete selected comments?"]"
+     data-create-time="@SharedLocalizer["Create Time"]"
+     data-reply-posted="@SharedLocalizer["Reply posted"]">
 </div>
 
 @Html.AntiForgeryToken()
@@ -199,7 +201,7 @@
 <div class="offcanvas offcanvas-end" tabindex="-1" x-ref="filterCanvas" aria-labelledby="filterCanvasLabel">
     <div class="offcanvas-header">
         <h5 class="offcanvas-title" id="filterCanvasLabel">@SharedLocalizer["Filter"]</h5>
-        <button type="button" class="btn-close text-reset" data-bs-dismiss="offcanvas" aria-label="Close"></button>
+        <button type="button" class="btn-close text-reset" data-bs-dismiss="offcanvas" aria-label="@SharedLocalizer["Close"]"></button>
     </div>
     <div class="offcanvas-body d-flex flex-column p-0">
         <form x-on:submit.prevent="handleFilter()" class="d-flex flex-column h-100">

@@ -1,6 +1,7 @@
 import { fetch2 } from './httpService.mjs?v=1500'
 import { handleSettingsSubmit } from './admin.settings.mjs';
 import { success, error } from './toastService.mjs';
+import { getLocalizedString } from './utils.module.mjs';
 
 async function handleSubmit(event) {
     assignEditorValues(cssContentEditor, "#ViewModel_CssCode");
@@ -31,7 +32,7 @@ window.deleteTheme = async function (id) {
         var col = document.getElementById(`user-theme-col-${id}`);
         col.remove();
 
-        success('Theme deleted.');
+        success(getLocalizedString('themeDeleted'));
     } catch (err) {
         error(err);
     }

@@ -18,7 +18,7 @@ Alpine.data('commentManager', () => withPagination(5, {
     sortDescending: 'true',
     filterCanvas: null,
     sortByOptions: [
-        { value: 'createTimeUtc', label: 'Create Time' }
+        { value: 'createTimeUtc', label: getLocalizedString('createTime') }
     ],
 
     async init() {
@@ -186,7 +186,7 @@ Alpine.data('commentManager', () => withPagination(5, {
                 this.$nextTick(() => {
                     formatUtcTime();
                 });
-                success('Reply posted');
+                success(getLocalizedString('replyPosted'));
             }
         } catch (err) {
             error(err);

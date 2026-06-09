@@ -19,7 +19,17 @@
      data-image-url-required="@SharedLocalizer["Image URL is required"]"
      data-text-url-required="@SharedLocalizer["Button text and URL are required"]"
      data-max-buttons="@SharedLocalizer["You can add up to 3 buttons"]"
-     data-remove-button="@SharedLocalizer["Are you sure you want to remove this button?"]">
+     data-remove-button="@SharedLocalizer["Are you sure you want to remove this button?"]"
+     data-display-order-range="@SharedLocalizer["Display Order must be between -30 and 999."]"
+     data-unnamed-link="@SharedLocalizer["Unnamed Link"]"
+     data-unnamed-button="@SharedLocalizer["Unnamed Button"]"
+     data-open-in-new-tab="@SharedLocalizer["Open in new tab"]"
+     data-open-in-same-tab="@SharedLocalizer["Opens in same tab"]"
+     data-add-new-link="@SharedLocalizer["Add New Link"]"
+     data-edit-link="@SharedLocalizer["Edit Link"]"
+     data-add-new-button="@SharedLocalizer["Add New Button"]"
+     data-edit-button="@SharedLocalizer["Edit Button"]"
+     data-button="@SharedLocalizer["Button"]">
 </div>
 
 @section admintoolbar {
@@ -52,7 +62,7 @@
                     <div class="d-flex justify-content-between align-items-start mb-2">
                         <h6 class="card-title mb-0">
                             <span x-text="widget.title"></span>
-                            <span x-show="!widget.isEnabled" class="badge bg-secondary ms-1">Disabled</span>
+                            <span x-show="!widget.isEnabled" class="badge bg-secondary ms-1">@SharedLocalizer["Disabled"]</span>
                         </h6>
                     </div>
                     <hr class="my-2" />
@@ -60,7 +70,7 @@
                 </div>
                 <div class="card-footer">
                     <a x-on:click="editWidget(widget.id)" class="btn btn-sm btn-outline-accent me-2" role="button">
-                        <i class="bi-pen"></i> Edit
+                        <i class="bi-pen"></i> @SharedLocalizer["Edit"]
                     </a>
                     <a x-on:click="deleteWidget(widget.id)" class="btn btn-sm btn-outline-danger" role="button">
                         <i class="bi-trash"></i>
@@ -74,7 +84,7 @@
 <div class="offcanvas offcanvas-end overflow-hidden" tabindex="-1" x-ref="editWidgetCanvas" aria-labelledby="editWidgetCanvasLabel" style="width: 500px;">
     <div class="offcanvas-header">
         <h5 class="offcanvas-title" id="editWidgetCanvasLabel">@SharedLocalizer["Widget Information"]</h5>
-        <button type="button" class="btn-close text-reset" data-bs-dismiss="offcanvas" aria-label="Close"></button>
+        <button type="button" class="btn-close text-reset" data-bs-dismiss="offcanvas" aria-label="@SharedLocalizer["Close"]"></button>
     </div>
     <div class="offcanvas-body d-flex flex-column p-0 overflow-hidden">
         <form x-on:submit.prevent="handleSubmit()" class="d-flex flex-column h-100">
@@ -87,9 +97,9 @@
                 <div class="mb-3">
                     <label for="widget-type" class="form-label">@SharedLocalizer["Widget Type"]</label>
                     <select x-model="formData.widgetType" x-on:change="onWidgetTypeChange()" id="widget-type" class="form-select" required>
-                        <option value="LinkList">Link List</option>
-                        <option value="ImageLink">Image Link</option>
-                        <option value="ButtonLink">Button Link</option>
+                        <option value="LinkList">@SharedLocalizer["Link List"]</option>
+                        <option value="ImageLink">@SharedLocalizer["Image Link"]</option>
+                        <option value="ButtonLink">@SharedLocalizer["Button Link"]</option>
                     </select>
                 </div>
                 <div class="mb-3">
@@ -106,17 +116,17 @@
                 <div x-show="formData.widgetType === 'LinkList'" id="linklist-editor" class="flex-grow-1 d-flex flex-column mb-3 overflow-hidden" style="min-height: 0;">
                     <hr />
                     <div class="d-flex justify-content-between align-items-center mb-2">
-                        <label class="form-label mb-0">Links</label>
+                        <label class="form-label mb-0">@SharedLocalizer["Links"]</label>
                         <button type="button" x-on:click="addNewLink()" class="btn btn-sm btn-outline-accent">
-                            <i class="bi-plus-lg"></i> Add Link
+                            <i class="bi-plus-lg"></i> @SharedLocalizer["Add Link"]
                         </button>
                     </div>
                     <div id="links-container" class="flex-grow-1" style="min-height: 0; overflow-y: auto;">
-                        <p x-show="!hasLinks" class="text-muted small text-center py-3 mb-0">No links added yet</p>
+                        <p x-show="!hasLinks" class="text-muted small text-center py-3 mb-0">@SharedLocalizer["No links added yet"]</p>
                         <template x-for="(link, index) in sortedLinks" :key="index">
                             <div class="link-item border rounded p-2 mb-2 bg-light">
                                 <div class="d-flex justify-content-between align-items-start mb-2">
-                                    <strong class="text-truncate me-2" x-text="link.name || 'Unnamed Link'"></strong>
+                                    <strong class="text-truncate me-2" x-text="link.name || getLocalizedString('unnamedLink')"></strong>
                                     <div class="btn-group btn-group-sm" role="group">
                                         <button type="button" x-on:click="moveLink(index, -1)" 
                                                 class="btn btn-outline-secondary" 
@@ -145,7 +155,7 @@
                                     </div>
                                     <div>
                                         <i :class="link.openInNewTab ? 'bi-box-arrow-up-right' : 'bi-arrow-return-right'"></i>
-                                        <span x-text="link.openInNewTab ? 'Opens in new tab' : 'Opens in same tab'"></span>
+                                        <span x-text="getLocalizedString(link.openInNewTab ? 'openInNewTab' : 'openInSameTab')"></span>
                                         <span x-text="` #${link.order}`"></span>
                                     </div>
                                 </div>
@@ -169,7 +179,7 @@
                         <template x-for="(btn, bIdx) in formData.buttons" :key="bIdx">
                             <div class="border rounded p-2 mb-2 bg-light">
                                 <div class="d-flex justify-content-between align-items-start mb-2">
-                                    <strong class="text-truncate me-2" x-text="btn.text || 'Unnamed Button'"></strong>
+                                    <strong class="text-truncate me-2" x-text="btn.text || getLocalizedString('unnamedButton')"></strong>
                                     <div class="btn-group btn-group-sm" role="group">
                                         <button type="button" x-on:click="editButton(bIdx)" class="btn btn-outline-accent">
                                             <i class="bi-pen"></i>
@@ -188,7 +198,7 @@
                                     </div>
                                     <div>
                                         <i :class="btn.openInNewTab ? 'bi-box-arrow-up-right' : 'bi-arrow-return-right'"></i>
-                                        <span x-text="btn.openInNewTab ? 'Opens in new tab' : 'Opens in same tab'"></span>
+                                        <span x-text="getLocalizedString(btn.openInNewTab ? 'openInNewTab' : 'openInSameTab')"></span>
                                     </div>
                                 </div>
                             </div>
@@ -199,7 +209,7 @@
                 <!-- ImageLink Content Editor -->
                 <div x-show="formData.widgetType === 'ImageLink'" id="imagelink-editor" class="mb-3">
                     <hr />
-                    <label class="form-label mb-2">Image Link Settings</label>
+                    <label class="form-label mb-2">@SharedLocalizer["Image Link Settings"]</label>
                     <div class="mb-3">
                         <label for="imagelink-image-url" class="form-label">@SharedLocalizer["Image URL"] *</label>
                         <input x-model="formData.imageLink.imageUrl" type="url" id="imagelink-image-url" class="form-control"
@@ -247,38 +257,38 @@
     <div class="modal-dialog">
         <div class="modal-content">
             <div class="modal-header">
-                <h5 class="modal-title" id="linkDialogLabel" x-text="linkDialog.isNew ? 'Add New Link' : 'Edit Link'"></h5>
-                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                <h5 class="modal-title" id="linkDialogLabel" x-text="getLocalizedString(linkDialog.isNew ? 'addNewLink' : 'editLink')"></h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="@SharedLocalizer["Close"]"></button>
             </div>
             <div class="modal-body">
                 <div class="mb-3">
-                    <label for="link-name" class="form-label">Link Name *</label>
+                    <label for="link-name" class="form-label">@SharedLocalizer["Link Name"] *</label>
                     <input x-model="linkDialog.data.name" type="text" id="link-name" class="form-control" required />
                 </div>
                 <div class="mb-3">
-                    <label for="link-url" class="form-label">URL *</label>
+                    <label for="link-url" class="form-label">@SharedLocalizer["URL"] *</label>
                     <input x-model="linkDialog.data.url" type="url" id="link-url" class="form-control" 
                            placeholder="https://example.com" required />
                 </div>
                 <div class="mb-3">
-                    <label for="link-icon" class="form-label">Icon Class (optional)</label>
+                    <label for="link-icon" class="form-label">@SharedLocalizer["Icon Class (optional)"]</label>
                     <input x-model="linkDialog.data.icon" type="text" id="link-icon" class="form-control" 
                            placeholder="bi-link-45deg" />
-                    <small class="form-text text-muted">Use Bootstrap Icons classes (e.g., bi-link-45deg, bi-github)</small>
+                    <small class="form-text text-muted">@SharedLocalizer["Use Bootstrap Icons classes (e.g., bi-link-45deg, bi-github)"]</small>
                 </div>
                 <div class="mb-3">
-                    <label for="link-order" class="form-label">Display Order</label>
+                    <label for="link-order" class="form-label">@SharedLocalizer["Display Order"]</label>
                     <input x-model.number="linkDialog.data.order" type="number" id="link-order" class="form-control" 
                            min="0" required />
                 </div>
                 <div class="mb-3 form-check">
                     <input x-model="linkDialog.data.openInNewTab" type="checkbox" id="link-new-tab" class="form-check-input" />
-                    <label for="link-new-tab" class="form-check-label">Open in new tab</label>
+                    <label for="link-new-tab" class="form-check-label">@SharedLocalizer["Open in new tab"]</label>
                 </div>
             </div>
             <div class="modal-footer">
-                <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Cancel</button>
-                <button type="button" class="btn btn-outline-accent" x-on:click="saveLinkDialog()">Save</button>
+                <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">@SharedLocalizer["Cancel"]</button>
+                <button type="button" class="btn btn-outline-accent" x-on:click="saveLinkDialog()">@SharedLocalizer["Save"]</button>
             </div>
         </div>
     </div>
@@ -289,8 +299,8 @@
     <div class="modal-dialog">
         <div class="modal-content">
             <div class="modal-header">
-                <h5 class="modal-title" id="buttonDialogLabel" x-text="buttonDialog.isNew ? 'Add New Button' : 'Edit Button'"></h5>
-                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                <h5 class="modal-title" id="buttonDialogLabel" x-text="getLocalizedString(buttonDialog.isNew ? 'addNewButton' : 'editButton')"></h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="@SharedLocalizer["Close"]"></button>
             </div>
             <div class="modal-body">
                 <div class="mb-3">
@@ -298,7 +308,7 @@
                     <input x-model="buttonDialog.data.text" type="text" id="button-text" class="form-control" maxlength="64" required />
                 </div>
                 <div class="mb-3">
-                    <label for="button-url" class="form-label">URL *</label>
+                    <label for="button-url" class="form-label">@SharedLocalizer["URL"] *</label>
                     <input x-model="buttonDialog.data.url" type="url" id="button-url" class="form-control"
                            placeholder="https://example.com" required />
                 </div>
@@ -315,7 +325,7 @@
                 <div class="mb-3">
                     <label class="form-label">@SharedLocalizer["Preview"]</label>
                     <div>
-                        <a :href="buttonDialog.data.url || '#'" :class="'btn ' + (buttonDialog.data.cssClass || 'btn-outline-primary')" x-text="buttonDialog.data.text || 'Button'" target="_blank"></a>
+                        <a :href="buttonDialog.data.url || '#'" :class="'btn ' + (buttonDialog.data.cssClass || 'btn-outline-primary')" x-text="buttonDialog.data.text || getLocalizedString('button')" target="_blank"></a>
                     </div>
                 </div>
             </div>

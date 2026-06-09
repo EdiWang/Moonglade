@@ -1,6 +1,6 @@
 ﻿import { fetch2 } from './httpService.mjs?v=1500'
 import { getPreferredTheme } from './themeService.mjs';
-import { slugify } from './utils.module.mjs';
+import { getLocalizedString, slugify } from './utils.module.mjs';
 
 export async function initEvents(slugifyTitle) {
 
@@ -27,7 +27,7 @@ export async function initEvents(slugifyTitle) {
     });
 
     document.querySelector('.btn-modify-slug')?.addEventListener('click', function () {
-        var message = 'This post was published for a period of time, changing slug will result in breaking SEO, would you like to continue?';
+        var message = getLocalizedString('modifySlugWarning');
 
         if (confirm(message)) {
             var slugInput = document.getElementById('ViewModel_Slug');
@@ -88,7 +88,7 @@ export function warnDirtyForm(selector) {
 
     window.addEventListener('beforeunload', function (event) {
         if (isFormDirty) {
-            const message = 'You have unsaved changes, are you sure to leave this page?';
+            const message = getLocalizedString('unsavedChanges');
             event.returnValue = message;
             return message;
         }

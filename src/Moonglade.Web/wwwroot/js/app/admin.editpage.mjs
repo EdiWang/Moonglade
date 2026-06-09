@@ -1,6 +1,7 @@
 import { Alpine } from './alpine-init.mjs';
 import { fetch2 } from './httpService.mjs?v=1500';
 import { success, error } from './toastService.mjs';
+import { getLocalizedString } from './utils.module.mjs';
 
 let htmlContentEditor = null;
 let cssContentEditor = null;
@@ -160,7 +161,7 @@ Alpine.data('pageEditor', () => ({
 
             if (data.pageId) {
                 this.pageId = data.pageId;
-                success('Page saved successfully.');
+                success(getLocalizedString('pageSaved'));
 
                 if (this.isPreview) {
                     window.open(`/admin/page/preview/${data.pageId}`);

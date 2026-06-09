@@ -1,6 +1,7 @@
 import { fetch2 } from './httpService.mjs?v=1500'
 import { handleSettingsSubmit } from './admin.settings.mjs';
 import { success, error } from './toastService.mjs';
+import { getLocalizedString } from './utils.module.mjs';
 
 function toggleButtonState(button, isDisabled) {
     if (isDisabled) {
@@ -18,7 +19,7 @@ async function sendTestEmail() {
 
     try {
         await fetch2('/api/settings/email/test', 'POST', {});
-        success('Email is sent.');
+        success(getLocalizedString('emailSent'));
     } catch (err) {
         error(err);
     } finally {

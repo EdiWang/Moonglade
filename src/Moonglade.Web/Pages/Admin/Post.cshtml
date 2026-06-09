@@ -42,7 +42,7 @@
                         <h6>
                             <span x-text="post.title"></span>
                             <i x-show="post.isFeatured" class="bi-star-fill text-warning"></i>
-                            <span x-show="post.isOutdated" class="badge rounded-pill text-bg-secondary ms-2">Outdated</span>
+                            <span x-show="post.isOutdated" class="badge rounded-pill text-bg-secondary ms-2">@SharedLocalizer["Outdated"]</span>
                         </h6>
                     </a>
                     <div class="mb-2" x-text="post.contentAbstract"></div>
@@ -72,7 +72,7 @@
 <div class="offcanvas offcanvas-end" tabindex="-1" x-ref="filterCanvas" aria-labelledby="filterCanvasLabel">
     <div class="offcanvas-header">
         <h5 class="offcanvas-title" id="filterCanvasLabel">@SharedLocalizer["Filter"]</h5>
-        <button type="button" class="btn-close text-reset" data-bs-dismiss="offcanvas" aria-label="Close"></button>
+        <button type="button" class="btn-close text-reset" data-bs-dismiss="offcanvas" aria-label="@SharedLocalizer["Close"]"></button>
     </div>
     <div class="offcanvas-body d-flex flex-column p-0">
         <form x-on:submit.prevent="handleFilter()" class="d-flex flex-column h-100">

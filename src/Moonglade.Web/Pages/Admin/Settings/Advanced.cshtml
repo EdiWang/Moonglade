@@ -59,12 +59,12 @@
                             <i class="bi-file-earmark-check settings-entry-icon"></i>
                         </div>
                         <div class="col">
-                            <label class="form-check-label">Index Now</label>
+                            <label class="form-check-label">@SharedLocalizer["Index Now"]</label>
                         </div>
                         <div class="col-md-4 text-end">
                             @if (string.IsNullOrWhiteSpace(Configuration["IndexNow:ApiKey"]))
                             {
-                                <text>Not configured</text>
+                                <text>@SharedLocalizer["Not configured"]</text>
                             }
                             else
                             {
@@ -196,9 +196,9 @@
                         <textarea asp-for="@settings.HeadScripts" class="form-control textarea-code" cols="60" rows="10" spellcheck="false"></textarea>
 
                         <div class="form-text">
-                            * Global script that will be injected into every page's <code>head</code> section. <br />
+                            @Html.Raw(string.Format(SharedLocalizer["* Global script that will be injected into every page's {0} section."].Value, "<code>head</code>")) <br />
 
-                            * Please use valid <code>&lt;script&gt;...&lt;/script&gt;</code> code.
+                            @Html.Raw(string.Format(SharedLocalizer["* Please use valid {0} code."].Value, "<code>&lt;script&gt;...&lt;/script&gt;</code>"))
                         </div>
                     </div>
 
@@ -211,9 +211,9 @@
                         <textarea asp-for="@settings.FootScripts" class="form-control textarea-code" cols="60" rows="10" spellcheck="false"></textarea>
 
                         <div class="form-text">
-                            * Global script that will be injected into every page's footer, before the ending of <code>body</code> tag. Typically used for third party analytics services. <br />
+                            @Html.Raw(string.Format(SharedLocalizer["* Global script that will be injected into every page's footer, before the ending of {0} tag. Typically used for third party analytics services."].Value, "<code>body</code>")) <br />
 
-                            * Please use valid <code>&lt;script&gt;...&lt;/script&gt;</code> code.
+                            @Html.Raw(string.Format(SharedLocalizer["* Please use valid {0} code."].Value, "<code>&lt;script&gt;...&lt;/script&gt;</code>"))
                         </div>
                     </div>
                 </div>

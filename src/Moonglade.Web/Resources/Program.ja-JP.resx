@@ -1,4 +1,4 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
+<?xml version="1.0" encoding="utf-8"?>
 <root>
   <!-- 
     Microsoft ResX Schema 
@@ -1310,5 +1310,515 @@
   </data>
   <data name="Post unpublished" xml:space="preserve">
     <value>投稿の公開を取り消しました</value>
+  </data>
+  <data name="[-21, -30]: before Profile, [-11, -20]: before Tags, [-1, -10]: before Categories, [0, 999]: after Categories" xml:space="preserve">
+    <value>[-21, -30]: プロフィールの前、[-11, -20]: タグの前、[-1, -10]: カテゴリの前、[0, 999]: カテゴリの後</value>
+  </data>
+  <data name="{0} mentions deleted" xml:space="preserve">
+    <value>{0} 件のメンションを削除しました</value>
+  </data>
+  <data name="{0} posts" xml:space="preserve">
+    <value>{0} 件の投稿</value>
+  </data>
+  <data name="* Changing site icon requires restarting the application" xml:space="preserve">
+    <value>* サイトアイコンの変更にはアプリケーションの再起動が必要です</value>
+  </data>
+  <data name="* Global script that will be injected into every page&apos;s {0} section." xml:space="preserve">
+    <value>* すべてのページの {0} セクションに挿入されるグローバルスクリプトです。</value>
+  </data>
+  <data name="* Global script that will be injected into every page&apos;s footer, before the ending of {0} tag. Typically used for third party analytics services." xml:space="preserve">
+    <value>* すべてのページのフッター、終了 {0} タグの前に挿入されるグローバルスクリプトです。通常はサードパーティの分析サービスに使用します。</value>
+  </data>
+  <data name="* Please use valid {0} code." xml:space="preserve">
+    <value>* 有効な {0} コードを使用してください。</value>
+  </data>
+  <data name="* Recommend to use {0}" xml:space="preserve">
+    <value>* {0} の使用を推奨します</value>
+  </data>
+  <data name="Actions" xml:space="preserve">
+    <value>操作</value>
+  </data>
+  <data name="Active tags" xml:space="preserve">
+    <value>有効なタグ</value>
+  </data>
+  <data name="Activity Log Detail" xml:space="preserve">
+    <value>アクティビティログの詳細</value>
+  </data>
+  <data name="Actor" xml:space="preserve">
+    <value>実行者</value>
+  </data>
+  <data name="Add Button" xml:space="preserve">
+    <value>ボタンを追加</value>
+  </data>
+  <data name="Add Link" xml:space="preserve">
+    <value>リンクを追加</value>
+  </data>
+  <data name="Add New Button" xml:space="preserve">
+    <value>新しいボタンを追加</value>
+  </data>
+  <data name="Add New Link" xml:space="preserve">
+    <value>新しいリンクを追加</value>
+  </data>
+  <data name="Alpha" xml:space="preserve">
+    <value>アルファ</value>
+  </data>
+  <data name="Alt Text" xml:space="preserve">
+    <value>代替テキスト</value>
+  </data>
+  <data name="API Endpoint" xml:space="preserve">
+    <value>API エンドポイント</value>
+  </data>
+  <data name="Apply Filter" xml:space="preserve">
+    <value>フィルターを適用</value>
+  </data>
+  <data name="Are you sure you want to clear all mentions?" xml:space="preserve">
+    <value>すべてのメンションをクリアしますか？</value>
+  </data>
+  <data name="Are you sure you want to delete this activity log?" xml:space="preserve">
+    <value>このアクティビティログを削除しますか？</value>
+  </data>
+  <data name="Are you sure you want to remove this button?" xml:space="preserve">
+    <value>このボタンを削除しますか？</value>
+  </data>
+  <data name="Are you sure you want to remove this link?" xml:space="preserve">
+    <value>このリンクを削除しますか？</value>
+  </data>
+  <data name="Ascending" xml:space="preserve">
+    <value>昇順</value>
+  </data>
+  <data name="Back" xml:space="preserve">
+    <value>戻る</value>
+  </data>
+  <data name="Be at least 8 characters long." xml:space="preserve">
+    <value>8 文字以上にしてください。</value>
+  </data>
+  <data name="Bootstrap button classes excluding &apos;btn&apos; (e.g., btn-sm btn-outline-primary, btn-danger)" xml:space="preserve">
+    <value>&apos;btn&apos; を除く Bootstrap ボタンクラス（例: btn-sm btn-outline-primary、btn-danger）</value>
+  </data>
+  <data name="Button" xml:space="preserve">
+    <value>ボタン</value>
+  </data>
+  <data name="Button Link" xml:space="preserve">
+    <value>ボタンリンク</value>
+  </data>
+  <data name="Button Text" xml:space="preserve">
+    <value>ボタンテキスト</value>
+  </data>
+  <data name="Button text and URL are required" xml:space="preserve">
+    <value>ボタンテキストと URL は必須です</value>
+  </data>
+  <data name="Buttons" xml:space="preserve">
+    <value>ボタン</value>
+  </data>
+  <data name="Choose display language" xml:space="preserve">
+    <value>表示言語を選択</value>
+  </data>
+  <data name="Comment Content" xml:space="preserve">
+    <value>コメント内容</value>
+  </data>
+  <data name="Comment is closed." xml:space="preserve">
+    <value>コメントは閉じられています。</value>
+  </data>
+  <data name="Contain at least one digit." xml:space="preserve">
+    <value>少なくとも 1 つの数字を含めてください。</value>
+  </data>
+  <data name="Contain at least one letter (can be either lowercase or uppercase)." xml:space="preserve">
+    <value>少なくとも 1 つの英字（小文字または大文字）を含めてください。</value>
+  </data>
+  <data name="CSS" xml:space="preserve">
+    <value>CSS</value>
+  </data>
+  <data name="CSS Class" xml:space="preserve">
+    <value>CSS クラス</value>
+  </data>
+  <data name="Delete {0} mentions?" xml:space="preserve">
+    <value>{0} 件のメンションを削除しますか？</value>
+  </data>
+  <data name="Delete tag" xml:space="preserve">
+    <value>タグを削除</value>
+  </data>
+  <data name="Delete this mention?" xml:space="preserve">
+    <value>このメンションを削除しますか？</value>
+  </data>
+  <data name="Delete this widget?" xml:space="preserve">
+    <value>このウィジェットを削除しますか？</value>
+  </data>
+  <data name="Descending" xml:space="preserve">
+    <value>降順</value>
+  </data>
+  <data name="Display Order must be between -30 and 999." xml:space="preserve">
+    <value>表示順は -30 から 999 の間で指定してください。</value>
+  </data>
+  <data name="Domain" xml:space="preserve">
+    <value>ドメイン</value>
+  </data>
+  <data name="e.g. https://cdn.edi.wang/ediwang-images" xml:space="preserve">
+    <value>例: https://cdn.edi.wang/ediwang-images</value>
+  </data>
+  <data name="Edit" xml:space="preserve">
+    <value>編集</value>
+  </data>
+  <data name="Edit Button" xml:space="preserve">
+    <value>ボタンを編集</value>
+  </data>
+  <data name="Edit Link" xml:space="preserve">
+    <value>リンクを編集</value>
+  </data>
+  <data name="Edit Page" xml:space="preserve">
+    <value>ページを編集</value>
+  </data>
+  <data name="Edit tag" xml:space="preserve">
+    <value>タグを編集</value>
+  </data>
+  <data name="Email" xml:space="preserve">
+    <value>メール</value>
+  </data>
+  <data name="Enabled" xml:space="preserve">
+    <value>有効</value>
+  </data>
+  <data name="End Date" xml:space="preserve">
+    <value>終了日</value>
+  </data>
+  <data name="English letters and numbers only." xml:space="preserve">
+    <value>英字と数字のみ使用できます。</value>
+  </data>
+  <data name="Enter tag name" xml:space="preserve">
+    <value>タグ名を入力</value>
+  </data>
+  <data name="Event Type" xml:space="preserve">
+    <value>イベント種別</value>
+  </data>
+  <data name="Event Types" xml:space="preserve">
+    <value>イベント種別</value>
+  </data>
+  <data name="Favicon" xml:space="preserve">
+    <value>ファビコン</value>
+  </data>
+  <data name="Filter tags" xml:space="preserve">
+    <value>タグを絞り込み</value>
+  </data>
+  <data name="Filter tags..." xml:space="preserve">
+    <value>タグを絞り込み...</value>
+  </data>
+  <data name="HTML" xml:space="preserve">
+    <value>HTML</value>
+  </data>
+  <data name="Icon Class (optional)" xml:space="preserve">
+    <value>アイコンクラス（任意）</value>
+  </data>
+  <data name="Image Link" xml:space="preserve">
+    <value>画像リンク</value>
+  </data>
+  <data name="Image Link Settings" xml:space="preserve">
+    <value>画像リンク設定</value>
+  </data>
+  <data name="Image Title" xml:space="preserve">
+    <value>画像タイトル</value>
+  </data>
+  <data name="Image URL" xml:space="preserve">
+    <value>画像 URL</value>
+  </data>
+  <data name="Image URL is required" xml:space="preserve">
+    <value>画像 URL は必須です</value>
+  </data>
+  <data name="Index Now" xml:space="preserve">
+    <value>IndexNow</value>
+  </data>
+  <data name="IP Address" xml:space="preserve">
+    <value>IP アドレス</value>
+  </data>
+  <data name="Languages" xml:space="preserve">
+    <value>言語</value>
+  </data>
+  <data name="Leave empty if the image should not be a hyperlink" xml:space="preserve">
+    <value>画像をリンクにしない場合は空のままにしてください</value>
+  </data>
+  <data name="Legal Information" xml:space="preserve">
+    <value>法的情報</value>
+  </data>
+  <data name="Link List" xml:space="preserve">
+    <value>リンク一覧</value>
+  </data>
+  <data name="Link Name" xml:space="preserve">
+    <value>リンク名</value>
+  </data>
+  <data name="Link URL" xml:space="preserve">
+    <value>リンク URL</value>
+  </data>
+  <data name="Links" xml:space="preserve">
+    <value>リンク</value>
+  </data>
+  <data name="Loading categories..." xml:space="preserve">
+    <value>カテゴリを読み込み中...</value>
+  </data>
+  <data name="Loading mentions..." xml:space="preserve">
+    <value>メンションを読み込み中...</value>
+  </data>
+  <data name="Loading page data..." xml:space="preserve">
+    <value>ページデータを読み込み中...</value>
+  </data>
+  <data name="Loading pages..." xml:space="preserve">
+    <value>ページを読み込み中...</value>
+  </data>
+  <data name="Loading tags..." xml:space="preserve">
+    <value>タグを読み込み中...</value>
+  </data>
+  <data name="Loading widgets..." xml:space="preserve">
+    <value>ウィジェットを読み込み中...</value>
+  </data>
+  <data name="Local account is not secure. It&apos;s recommended to use {0} for authentication. Click {1} to configure." xml:space="preserve">
+    <value>ローカルアカウントは安全ではありません。認証には {0} の使用を推奨します。設定するには {1} をクリックしてください。</value>
+  </data>
+  <data name="Log deleted" xml:space="preserve">
+    <value>ログを削除しました</value>
+  </data>
+  <data name="Maximum 3 buttons allowed" xml:space="preserve">
+    <value>ボタンは最大 3 個までです</value>
+  </data>
+  <data name="Mention deleted" xml:space="preserve">
+    <value>メンションを削除しました</value>
+  </data>
+  <data name="Mention logs are cleared" xml:space="preserve">
+    <value>メンションログをクリアしました</value>
+  </data>
+  <data name="Meta Description" xml:space="preserve">
+    <value>メタ説明</value>
+  </data>
+  <data name="Metadata" xml:space="preserve">
+    <value>メタデータ</value>
+  </data>
+  <data name="Moderation" xml:space="preserve">
+    <value>モデレーション</value>
+  </data>
+  <data name="Name and URL are required" xml:space="preserve">
+    <value>名前と URL は必須です</value>
+  </data>
+  <data name="New password" xml:space="preserve">
+    <value>新しいパスワード</value>
+  </data>
+  <data name="New Tab" xml:space="preserve">
+    <value>新しいタブ</value>
+  </data>
+  <data name="New username" xml:space="preserve">
+    <value>新しいユーザー名</value>
+  </data>
+  <data name="New version available" xml:space="preserve">
+    <value>新しいバージョンがあります</value>
+  </data>
+  <data name="No active tags found" xml:space="preserve">
+    <value>有効なタグが見つかりません</value>
+  </data>
+  <data name="No activity logs found." xml:space="preserve">
+    <value>アクティビティログが見つかりません。</value>
+  </data>
+  <data name="No buttons added yet" xml:space="preserve">
+    <value>ボタンはまだ追加されていません</value>
+  </data>
+  <data name="No categories yet." xml:space="preserve">
+    <value>カテゴリはまだありません。</value>
+  </data>
+  <data name="No Comments" xml:space="preserve">
+    <value>コメントはありません</value>
+  </data>
+  <data name="No links added yet" xml:space="preserve">
+    <value>リンクはまだ追加されていません</value>
+  </data>
+  <data name="No tags found. Create your first tag to get started." xml:space="preserve">
+    <value>タグが見つかりません。最初のタグを作成して開始してください。</value>
+  </data>
+  <data name="No unused tags - all tags are being used!" xml:space="preserve">
+    <value>未使用のタグはありません。すべてのタグが使用されています。</value>
+  </data>
+  <data name="No widgets yet." xml:space="preserve">
+    <value>ウィジェットはまだありません。</value>
+  </data>
+  <data name="Not configured" xml:space="preserve">
+    <value>未設定</value>
+  </data>
+  <data name="Old password" xml:space="preserve">
+    <value>現在のパスワード</value>
+  </data>
+  <data name="Only contain characters from the set: uppercase letters, lowercase letters, digits, and the special characters {0}." xml:space="preserve">
+    <value>使用できる文字は、大文字、小文字、数字、特殊文字 {0} のみです。</value>
+  </data>
+  <data name="Opens in same tab" xml:space="preserve">
+    <value>同じタブで開く</value>
+  </data>
+  <data name="Operation" xml:space="preserve">
+    <value>操作</value>
+  </data>
+  <data name="Outdated" xml:space="preserve">
+    <value>古い情報</value>
+  </data>
+  <data name="Page deleted" xml:space="preserve">
+    <value>ページを削除しました</value>
+  </data>
+  <data name="Page Properties" xml:space="preserve">
+    <value>ページのプロパティ</value>
+  </data>
+  <data name="Page restored" xml:space="preserve">
+    <value>ページを復元しました</value>
+  </data>
+  <data name="Page Size" xml:space="preserve">
+    <value>ページサイズ</value>
+  </data>
+  <data name="Password updated." xml:space="preserve">
+    <value>パスワードを更新しました。</value>
+  </data>
+  <data name="Please configure `SecondaryContainerName` in `appsettings.json`" xml:space="preserve">
+    <value>`appsettings.json` で `SecondaryContainerName` を設定してください</value>
+  </data>
+  <data name="Please follow {0} to setup content security API" xml:space="preserve">
+    <value>コンテンツセキュリティ API を設定するには {0} に従ってください</value>
+  </data>
+  <data name="Please follow {0} to setup email API." xml:space="preserve">
+    <value>メール API を設定するには {0} に従ってください。</value>
+  </data>
+  <data name="Please provide a valid tag name." xml:space="preserve">
+    <value>有効なタグ名を入力してください。</value>
+  </data>
+  <data name="Powered by" xml:space="preserve">
+    <value>Powered by</value>
+  </data>
+  <data name="Saving..." xml:space="preserve">
+    <value>保存中...</value>
+  </data>
+  <data name="Schedule cancelled, post moved to drafts" xml:space="preserve">
+    <value>予約をキャンセルし、投稿を下書きへ移動しました</value>
+  </data>
+  <data name="Send" xml:space="preserve">
+    <value>送信</value>
+  </data>
+  <data name="Set a time in your local time zone to schedule the post to be automatically published." xml:space="preserve">
+    <value>投稿を自動公開する時刻をローカルタイムゾーンで設定します。</value>
+  </data>
+  <data name="Set to 0 to hide tags widget" xml:space="preserve">
+    <value>0 に設定するとタグウィジェットを非表示にします</value>
+  </data>
+  <data name="Settings" xml:space="preserve">
+    <value>設定</value>
+  </data>
+  <data name="Settings Updated" xml:space="preserve">
+    <value>設定を更新しました</value>
+  </data>
+  <data name="Showing {0} tags" xml:space="preserve">
+    <value>{0} 件のタグを表示中</value>
+  </data>
+  <data name="Sort By" xml:space="preserve">
+    <value>並べ替え</value>
+  </data>
+  <data name="Sort Order" xml:space="preserve">
+    <value>並び順</value>
+  </data>
+  <data name="Source Title" xml:space="preserve">
+    <value>ソースタイトル</value>
+  </data>
+  <data name="Start Date" xml:space="preserve">
+    <value>開始日</value>
+  </data>
+  <data name="Subscribe recent posts" xml:space="preserve">
+    <value>最新投稿を購読</value>
+  </data>
+  <data name="Tag" xml:space="preserve">
+    <value>タグ</value>
+  </data>
+  <data name="Tag added" xml:space="preserve">
+    <value>タグを追加しました</value>
+  </data>
+  <data name="Tag deleted" xml:space="preserve">
+    <value>タグを削除しました</value>
+  </data>
+  <data name="Tag names should be descriptive and concise." xml:space="preserve">
+    <value>タグ名は説明的で簡潔にしてください。</value>
+  </data>
+  <data name="Tag updated" xml:space="preserve">
+    <value>タグを更新しました</value>
+  </data>
+  <data name="Tags without posts" xml:space="preserve">
+    <value>投稿のないタグ</value>
+  </data>
+  <data name="Target" xml:space="preserve">
+    <value>対象</value>
+  </data>
+  <data name="Target Post Title" xml:space="preserve">
+    <value>対象投稿タイトル</value>
+  </data>
+  <data name="Time" xml:space="preserve">
+    <value>時刻</value>
+  </data>
+  <data name="Unknown provider, this feature may not be working." xml:space="preserve">
+    <value>不明なプロバイダーです。この機能は動作しない可能性があります。</value>
+  </data>
+  <data name="Unnamed Button" xml:space="preserve">
+    <value>名前のないボタン</value>
+  </data>
+  <data name="Unnamed Link" xml:space="preserve">
+    <value>名前のないリンク</value>
+  </data>
+  <data name="Use Bootstrap Icons classes (e.g., bi-link-45deg, bi-github)" xml:space="preserve">
+    <value>Bootstrap Icons クラスを使用します（例: bi-link-45deg、bi-github）</value>
+  </data>
+  <data name="Using Azure provider at {0}" xml:space="preserve">
+    <value>{0} の Azure プロバイダーを使用中</value>
+  </data>
+  <data name="Using local provider" xml:space="preserve">
+    <value>ローカルプロバイダーを使用中</value>
+  </data>
+  <data name="View posts tagged with {0}" xml:space="preserve">
+    <value>{0} タグの投稿を表示</value>
+  </data>
+  <data name="Widget created" xml:space="preserve">
+    <value>ウィジェットを作成しました</value>
+  </data>
+  <data name="Widget deleted" xml:space="preserve">
+    <value>ウィジェットを削除しました</value>
+  </data>
+  <data name="Widget Information" xml:space="preserve">
+    <value>ウィジェット情報</value>
+  </data>
+  <data name="Widget Type" xml:space="preserve">
+    <value>ウィジェット種別</value>
+  </data>
+  <data name="Widget updated" xml:space="preserve">
+    <value>ウィジェットを更新しました</value>
+  </data>
+  <data name="Word filter only applies when comment review is disabled." xml:space="preserve">
+    <value>単語フィルターはコメント承認が無効な場合のみ適用されます。</value>
+  </data>
+  <data name="You can add up to 3 buttons" xml:space="preserve">
+    <value>ボタンは最大 3 個まで追加できます</value>
+  </data>
+  <data name="You have unsaved changes, are you sure to leave this page?" xml:space="preserve">
+    <value>未保存の変更があります。このページを離れますか？</value>
+  </data>
+  <data name="Your password must be:" xml:space="preserve">
+    <value>パスワードの条件:</value>
+  </data>
+  <data name="Create Time" xml:space="preserve">
+    <value>作成日時</value>
+  </data>
+  <data name="Email is sent." xml:space="preserve">
+    <value>メールを送信しました。</value>
+  </data>
+  <data name="Page saved successfully." xml:space="preserve">
+    <value>ページを保存しました。</value>
+  </data>
+  <data name="Please select an image" xml:space="preserve">
+    <value>画像を選択してください</value>
+  </data>
+  <data name="Please select an image file." xml:space="preserve">
+    <value>画像ファイルを選択してください。</value>
+  </data>
+  <data name="Reply posted" xml:space="preserve">
+    <value>返信を投稿しました</value>
+  </data>
+  <data name="The File APIs are not fully supported in this browser." xml:space="preserve">
+    <value>このブラウザーは File API を完全にはサポートしていません。</value>
+  </data>
+  <data name="Theme deleted." xml:space="preserve">
+    <value>テーマを削除しました。</value>
+  </data>
+  <data name="Updated" xml:space="preserve">
+    <value>更新しました</value>
   </data>
 </root>

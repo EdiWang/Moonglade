@@ -129,11 +129,11 @@ Moonglade already has multilingual resources, but some Razor and JavaScript text
 
 - [ ] Resource hard-coded text in admin pages.
 - [ ] Resource hard-coded text in public pages.
-- [ ] Resource JavaScript toast, confirm, and alert text.
-- [ ] Update `Program.zh-Hans.resx`.
-- [ ] Update `Program.zh-Hant.resx`.
-- [ ] Update `Program.de-DE.resx`.
-- [ ] Update `Program.ja-JP.resx`.
+- [x] Resource JavaScript toast, confirm, and alert text.
+- [x] Update `Program.zh-Hans.resx`.
+- [x] Update `Program.zh-Hant.resx`.
+- [x] Update `Program.de-DE.resx`.
+- [x] Update `Program.ja-JP.resx`.
 
 ### Security Hardening
 
