@@ -42,11 +42,9 @@ The current search experience mainly covers post titles and tags. It should beco
 Moonglade already has HTML and Markdown editors, but the writing and publishing workflow can be more robust.
 
 - [x] Add draft autosave.
-- [ ] Restore drafts after accidental refresh or navigation.
 - [ ] Add live Markdown preview.
 - [ ] Add SEO preview for title, abstract, canonical URL, and keywords.
 - [ ] Add social sharing preview for OpenGraph and Twitter Card metadata.
-- [ ] Add a pre-publish checklist for abstract, categories, tags, image alt text, external links, and feed inclusion.
 
 ### Media Management
 
