@@ -34,7 +34,7 @@ The current search experience mainly covers post titles and tags. It should beco
 - [x] Support filters by category, tag, language, and publish date.
 - [x] Keep the implementation compatible with SQL Server and PostgreSQL.
 - [x] Add matching Features tests for search query behavior.
-- [ ] Add optional Web tests for search page rendering and query string state.
+- [x] Add optional Web tests for search page rendering and query string state.
 - [x] Keep full-body search out of scope to avoid the complexity and performance cost of full-text search.
 
 ### Editing Experience
