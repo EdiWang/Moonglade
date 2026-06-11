@@ -27,7 +27,11 @@
 }
 
 <div id="localizedStrings" style="display:none"
-     data-settings-updated="@SharedLocalizer["Settings Updated"]">
+     data-settings-updated="@SharedLocalizer["Settings Updated"]"
+     data-image-updated="@SharedLocalizer["Updated"]"
+     data-please-select-image="@SharedLocalizer["Please select an image"]"
+     data-please-select-image-file="@SharedLocalizer["Please select an image file."]"
+     data-file-apis-not-supported="@SharedLocalizer["The File APIs are not fully supported in this browser."]">
 </div>
 
 @section admintoolbar {
@@ -83,7 +87,7 @@
                         </div>
 
                         <div class="col">
-                            <label>Favicon</label>
+                            <label>@SharedLocalizer["Favicon"]</label>
                         </div>
 
                         <div class="col-md-5 text-end">

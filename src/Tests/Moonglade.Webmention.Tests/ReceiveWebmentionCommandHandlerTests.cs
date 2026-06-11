@@ -9,11 +9,14 @@ public class ReceiveWebmentionCommandHandlerTests
 {
     private readonly Mock<ILogger<ReceiveWebmentionCommandHandler>> _mockLogger;
     private readonly Mock<IMentionSourceInspector> _mockSourceInspector;
+    private readonly Mock<IWebmentionSourceRateLimiter> _mockSourceRateLimiter;
 
     public ReceiveWebmentionCommandHandlerTests()
     {
         _mockLogger = new Mock<ILogger<ReceiveWebmentionCommandHandler>>();
         _mockSourceInspector = new Mock<IMentionSourceInspector>();
+        _mockSourceRateLimiter = new Mock<IWebmentionSourceRateLimiter>();
+        _mockSourceRateLimiter.Setup(x => x.TryAcquire(It.IsAny<Uri>())).Returns(true);
     }
 
     private static BlogDbContext CreateDbContext()
@@ -29,6 +32,7 @@ public class ReceiveWebmentionCommandHandlerTests
         return new ReceiveWebmentionCommandHandler(
             _mockLogger.Object,
             _mockSourceInspector.Object,
+            _mockSourceRateLimiter.Object,
             db
         );
     }
@@ -138,6 +142,21 @@ public class ReceiveWebmentionCommandHandlerTests
 
         Assert.Equal(WebmentionStatus.InvalidWebmentionRequest, result.Status);
         _mockSourceInspector.Verify(x => x.ExamineSourceAsync("https://example.com/source", "https://myblog.com/post"), Times.Once);
+    }
+
+    [Fact]
+    public async Task HandleAsync_SourceRateLimitExceeded_ReturnsSourceRateLimitExceeded()
+    {
+        using var db = CreateDbContext();
+        var handler = CreateHandler(db);
+        var command = new ReceiveWebmentionCommand("https://example.com/source", "https://myblog.com/post", "192.168.1.1");
+        _mockSourceRateLimiter.Setup(x => x.TryAcquire(It.IsAny<Uri>())).Returns(false);
+
+        var result = await handler.HandleAsync(command, TestContext.Current.CancellationToken);
+
+        Assert.Equal(WebmentionStatus.SourceRateLimitExceeded, result.Status);
+        _mockSourceRateLimiter.Verify(x => x.TryAcquire(It.Is<Uri>(uri => uri.Host == "example.com")), Times.Once);
+        _mockSourceInspector.Verify(x => x.ExamineSourceAsync(It.IsAny<string>(), It.IsAny<string>()), Times.Never);
     }
 
     [Fact]

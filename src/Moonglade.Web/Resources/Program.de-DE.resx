@@ -1,4 +1,4 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
+<?xml version="1.0" encoding="utf-8"?>
 <root>
   <!-- 
     Microsoft ResX Schema 
@@ -1217,5 +1217,608 @@
   </data>
   <data name="This post contains AI-generated or AI-assisted edits." xml:space="preserve">
     <value>Dieser Beitrag enthält KI-generierte oder KI-unterstützte Bearbeitungen.</value>
+  </data>
+  <data name="Sort" xml:space="preserve">
+    <value>Sortieren</value>
+  </data>
+  <data name="Newest first" xml:space="preserve">
+    <value>Neueste zuerst</value>
+  </data>
+  <data name="Oldest first" xml:space="preserve">
+    <value>Älteste zuerst</value>
+  </data>
+  <data name="Title A-Z" xml:space="preserve">
+    <value>Titel A-Z</value>
+  </data>
+  <data name="Title Z-A" xml:space="preserve">
+    <value>Titel Z-A</value>
+  </data>
+  <data name="All categories" xml:space="preserve">
+    <value>Alle Kategorien</value>
+  </data>
+  <data name="All languages" xml:space="preserve">
+    <value>Alle Sprachen</value>
+  </data>
+  <data name="Published from" xml:space="preserve">
+    <value>Veröffentlicht ab</value>
+  </data>
+  <data name="Published to" xml:space="preserve">
+    <value>Veröffentlicht bis</value>
+  </data>
+  <data name="Clear" xml:space="preserve">
+    <value>Zurücksetzen</value>
+  </data>
+  <data name="{0} result" xml:space="preserve">
+    <value>{0} Ergebnis</value>
+  </data>
+  <data name="{0} results" xml:space="preserve">
+    <value>{0} Ergebnisse</value>
+  </data>
+  <data name="Auto save" xml:space="preserve">
+    <value>Automatisch speichern</value>
+  </data>
+  <data name="Auto save is on." xml:space="preserve">
+    <value>Automatisches Speichern ist aktiviert.</value>
+  </data>
+  <data name="Auto save is off." xml:space="preserve">
+    <value>Automatisches Speichern ist deaktiviert.</value>
+  </data>
+  <data name="Auto save is waiting for required fields." xml:space="preserve">
+    <value>Automatisches Speichern wartet auf Pflichtfelder.</value>
+  </data>
+  <data name="Auto saved at {0}" xml:space="preserve">
+    <value>Automatisch gespeichert um {0}</value>
+  </data>
+  <data name="Please enter content." xml:space="preserve">
+    <value>Bitte geben Sie Inhalt ein.</value>
+  </data>
+  <data name="Post saved successfully." xml:space="preserve">
+    <value>Beitrag wurde erfolgreich gespeichert.</value>
+  </data>
+  <data name="Loading post data..." xml:space="preserve">
+    <value>Beitragsdaten werden geladen...</value>
+  </data>
+  <data name="Drag &amp; Drop / Paste image here to upload." xml:space="preserve">
+    <value>Bild hierher ziehen und ablegen oder einfügen, um es hochzuladen.</value>
+  </data>
+  <data name="Slug" xml:space="preserve">
+    <value>Slug</value>
+  </data>
+  <data name="Modify" xml:space="preserve">
+    <value>Ändern</value>
+  </data>
+  <data name="Mark as outdated" xml:space="preserve">
+    <value>Als veraltet markieren</value>
+  </data>
+  <data name="Keywords (split by comma ',')" xml:space="preserve">
+    <value>Schlüsselwörter (durch Komma "," trennen)</value>
+  </data>
+  <data name="Schedule Publish" xml:space="preserve">
+    <value>Veröffentlichung planen</value>
+  </data>
+  <data name="Modify Slug" xml:space="preserve">
+    <value>Slug ändern</value>
+  </data>
+  <data name="This post was published for a period of time, changing slug will result in breaking SEO, would you like to continue?" xml:space="preserve">
+    <value>Dieser Beitrag ist bereits seit einiger Zeit veröffentlicht. Das Ändern des Slugs kann SEO beeinträchtigen. Möchten Sie fortfahren?</value>
+  </data>
+  <data name="Scheduled for: {0}" xml:space="preserve">
+    <value>Geplant für: {0}</value>
+  </data>
+  <data name="Edit Post" xml:space="preserve">
+    <value>Beitrag bearbeiten</value>
+  </data>
+  <data name="Post unpublished" xml:space="preserve">
+    <value>Beitrag wurde zurückgezogen</value>
+  </data>
+  <data name="[-21, -30]: before Profile, [-11, -20]: before Tags, [-1, -10]: before Categories, [0, 999]: after Categories" xml:space="preserve">
+    <value>[-21, -30]: vor Profil, [-11, -20]: vor Tags, [-1, -10]: vor Kategorien, [0, 999]: nach Kategorien</value>
+  </data>
+  <data name="{0} mentions deleted" xml:space="preserve">
+    <value>{0} Erwähnungen gelöscht</value>
+  </data>
+  <data name="{0} posts" xml:space="preserve">
+    <value>{0} Beiträge</value>
+  </data>
+  <data name="* Changing site icon requires restarting the application" xml:space="preserve">
+    <value>* Das Ändern des Website-Symbols erfordert einen Neustart der Anwendung</value>
+  </data>
+  <data name="* Global script that will be injected into every page&apos;s {0} section." xml:space="preserve">
+    <value>* Globales Skript, das in den {0}-Bereich jeder Seite eingefügt wird.</value>
+  </data>
+  <data name="* Global script that will be injected into every page&apos;s footer, before the ending of {0} tag. Typically used for third party analytics services." xml:space="preserve">
+    <value>* Globales Skript, das in die Fußzeile jeder Seite vor dem schließenden {0}-Tag eingefügt wird. Wird typischerweise für Analysedienste von Drittanbietern verwendet.</value>
+  </data>
+  <data name="* Please use valid {0} code." xml:space="preserve">
+    <value>* Bitte verwenden Sie gültigen {0}-Code.</value>
+  </data>
+  <data name="* Recommend to use {0}" xml:space="preserve">
+    <value>* Empfohlen: {0}</value>
+  </data>
+  <data name="Actions" xml:space="preserve">
+    <value>Aktionen</value>
+  </data>
+  <data name="Active tags" xml:space="preserve">
+    <value>Aktive Tags</value>
+  </data>
+  <data name="Activity Log Detail" xml:space="preserve">
+    <value>Aktivitätsprotokolldetails</value>
+  </data>
+  <data name="Actor" xml:space="preserve">
+    <value>Akteur</value>
+  </data>
+  <data name="Add Button" xml:space="preserve">
+    <value>Schaltfläche hinzufügen</value>
+  </data>
+  <data name="Add Link" xml:space="preserve">
+    <value>Link hinzufügen</value>
+  </data>
+  <data name="Add New Button" xml:space="preserve">
+    <value>Neue Schaltfläche hinzufügen</value>
+  </data>
+  <data name="Add New Link" xml:space="preserve">
+    <value>Neuen Link hinzufügen</value>
+  </data>
+  <data name="Alpha" xml:space="preserve">
+    <value>Alpha</value>
+  </data>
+  <data name="Alt Text" xml:space="preserve">
+    <value>Alternativtext</value>
+  </data>
+  <data name="API Endpoint" xml:space="preserve">
+    <value>API-Endpunkt</value>
+  </data>
+  <data name="Apply Filter" xml:space="preserve">
+    <value>Filter anwenden</value>
+  </data>
+  <data name="Are you sure you want to clear all mentions?" xml:space="preserve">
+    <value>Möchten Sie wirklich alle Erwähnungen löschen?</value>
+  </data>
+  <data name="Are you sure you want to delete this activity log?" xml:space="preserve">
+    <value>Möchten Sie dieses Aktivitätsprotokoll wirklich löschen?</value>
+  </data>
+  <data name="Are you sure you want to remove this button?" xml:space="preserve">
+    <value>Möchten Sie diese Schaltfläche wirklich entfernen?</value>
+  </data>
+  <data name="Are you sure you want to remove this link?" xml:space="preserve">
+    <value>Möchten Sie diesen Link wirklich entfernen?</value>
+  </data>
+  <data name="Ascending" xml:space="preserve">
+    <value>Aufsteigend</value>
+  </data>
+  <data name="Back" xml:space="preserve">
+    <value>Zurück</value>
+  </data>
+  <data name="Be at least 8 characters long." xml:space="preserve">
+    <value>Mindestens 8 Zeichen lang sein.</value>
+  </data>
+  <data name="Bootstrap button classes excluding &apos;btn&apos; (e.g., btn-sm btn-outline-primary, btn-danger)" xml:space="preserve">
+    <value>Bootstrap-Schaltflächenklassen ohne &apos;btn&apos; (z. B. btn-sm btn-outline-primary, btn-danger)</value>
+  </data>
+  <data name="Button" xml:space="preserve">
+    <value>Schaltfläche</value>
+  </data>
+  <data name="Button Link" xml:space="preserve">
+    <value>Schaltflächenlink</value>
+  </data>
+  <data name="Button Text" xml:space="preserve">
+    <value>Schaltflächentext</value>
+  </data>
+  <data name="Button text and URL are required" xml:space="preserve">
+    <value>Schaltflächentext und URL sind erforderlich</value>
+  </data>
+  <data name="Buttons" xml:space="preserve">
+    <value>Schaltflächen</value>
+  </data>
+  <data name="Choose display language" xml:space="preserve">
+    <value>Anzeigesprache auswählen</value>
+  </data>
+  <data name="Comment Content" xml:space="preserve">
+    <value>Kommentarinhalt</value>
+  </data>
+  <data name="Comment is closed." xml:space="preserve">
+    <value>Kommentare sind geschlossen.</value>
+  </data>
+  <data name="Contain at least one digit." xml:space="preserve">
+    <value>Mindestens eine Ziffer enthalten.</value>
+  </data>
+  <data name="Contain at least one letter (can be either lowercase or uppercase)." xml:space="preserve">
+    <value>Mindestens einen Buchstaben enthalten (Klein- oder Großbuchstabe).</value>
+  </data>
+  <data name="CSS" xml:space="preserve">
+    <value>CSS</value>
+  </data>
+  <data name="CSS Class" xml:space="preserve">
+    <value>CSS-Klasse</value>
+  </data>
+  <data name="Delete {0} mentions?" xml:space="preserve">
+    <value>{0} Erwähnungen löschen?</value>
+  </data>
+  <data name="Delete tag" xml:space="preserve">
+    <value>Tag löschen</value>
+  </data>
+  <data name="Delete this mention?" xml:space="preserve">
+    <value>Diese Erwähnung löschen?</value>
+  </data>
+  <data name="Delete this widget?" xml:space="preserve">
+    <value>Dieses Widget löschen?</value>
+  </data>
+  <data name="Descending" xml:space="preserve">
+    <value>Absteigend</value>
+  </data>
+  <data name="Display Order must be between -30 and 999." xml:space="preserve">
+    <value>Die Anzeigereihenfolge muss zwischen -30 und 999 liegen.</value>
+  </data>
+  <data name="Domain" xml:space="preserve">
+    <value>Domain</value>
+  </data>
+  <data name="e.g. https://cdn.edi.wang/ediwang-images" xml:space="preserve">
+    <value>z. B. https://cdn.edi.wang/ediwang-images</value>
+  </data>
+  <data name="Edit" xml:space="preserve">
+    <value>Bearbeiten</value>
+  </data>
+  <data name="Edit Button" xml:space="preserve">
+    <value>Schaltfläche bearbeiten</value>
+  </data>
+  <data name="Edit Link" xml:space="preserve">
+    <value>Link bearbeiten</value>
+  </data>
+  <data name="Edit Page" xml:space="preserve">
+    <value>Seite bearbeiten</value>
+  </data>
+  <data name="Edit tag" xml:space="preserve">
+    <value>Tag bearbeiten</value>
+  </data>
+  <data name="Email" xml:space="preserve">
+    <value>E-Mail</value>
+  </data>
+  <data name="Enabled" xml:space="preserve">
+    <value>Aktiviert</value>
+  </data>
+  <data name="End Date" xml:space="preserve">
+    <value>Enddatum</value>
+  </data>
+  <data name="English letters and numbers only." xml:space="preserve">
+    <value>Nur englische Buchstaben und Zahlen.</value>
+  </data>
+  <data name="Enter tag name" xml:space="preserve">
+    <value>Tag-Namen eingeben</value>
+  </data>
+  <data name="Event Type" xml:space="preserve">
+    <value>Ereignistyp</value>
+  </data>
+  <data name="Event Types" xml:space="preserve">
+    <value>Ereignistypen</value>
+  </data>
+  <data name="Favicon" xml:space="preserve">
+    <value>Favicon</value>
+  </data>
+  <data name="Filter tags" xml:space="preserve">
+    <value>Tags filtern</value>
+  </data>
+  <data name="Filter tags..." xml:space="preserve">
+    <value>Tags filtern...</value>
+  </data>
+  <data name="HTML" xml:space="preserve">
+    <value>HTML</value>
+  </data>
+  <data name="Icon Class (optional)" xml:space="preserve">
+    <value>Symbolklasse (optional)</value>
+  </data>
+  <data name="Image Link" xml:space="preserve">
+    <value>Bildlink</value>
+  </data>
+  <data name="Image Link Settings" xml:space="preserve">
+    <value>Bildlink-Einstellungen</value>
+  </data>
+  <data name="Image Title" xml:space="preserve">
+    <value>Bildtitel</value>
+  </data>
+  <data name="Image URL" xml:space="preserve">
+    <value>Bild-URL</value>
+  </data>
+  <data name="Image URL is required" xml:space="preserve">
+    <value>Bild-URL ist erforderlich</value>
+  </data>
+  <data name="Index Now" xml:space="preserve">
+    <value>IndexNow</value>
+  </data>
+  <data name="IP Address" xml:space="preserve">
+    <value>IP-Adresse</value>
+  </data>
+  <data name="Languages" xml:space="preserve">
+    <value>Sprachen</value>
+  </data>
+  <data name="Leave empty if the image should not be a hyperlink" xml:space="preserve">
+    <value>Leer lassen, wenn das Bild kein Hyperlink sein soll</value>
+  </data>
+  <data name="Legal Information" xml:space="preserve">
+    <value>Rechtliche Informationen</value>
+  </data>
+  <data name="Link List" xml:space="preserve">
+    <value>Linkliste</value>
+  </data>
+  <data name="Link Name" xml:space="preserve">
+    <value>Linkname</value>
+  </data>
+  <data name="Link URL" xml:space="preserve">
+    <value>Link-URL</value>
+  </data>
+  <data name="Links" xml:space="preserve">
+    <value>Links</value>
+  </data>
+  <data name="Loading categories..." xml:space="preserve">
+    <value>Kategorien werden geladen...</value>
+  </data>
+  <data name="Loading mentions..." xml:space="preserve">
+    <value>Erwähnungen werden geladen...</value>
+  </data>
+  <data name="Loading page data..." xml:space="preserve">
+    <value>Seitendaten werden geladen...</value>
+  </data>
+  <data name="Loading pages..." xml:space="preserve">
+    <value>Seiten werden geladen...</value>
+  </data>
+  <data name="Loading tags..." xml:space="preserve">
+    <value>Tags werden geladen...</value>
+  </data>
+  <data name="Loading widgets..." xml:space="preserve">
+    <value>Widgets werden geladen...</value>
+  </data>
+  <data name="Local account is not secure. It&apos;s recommended to use {0} for authentication. Click {1} to configure." xml:space="preserve">
+    <value>Das lokale Konto ist nicht sicher. Für die Authentifizierung wird {0} empfohlen. Klicken Sie zum Konfigurieren auf {1}.</value>
+  </data>
+  <data name="Log deleted" xml:space="preserve">
+    <value>Protokoll gelöscht</value>
+  </data>
+  <data name="Maximum 3 buttons allowed" xml:space="preserve">
+    <value>Maximal 3 Schaltflächen erlaubt</value>
+  </data>
+  <data name="Mention deleted" xml:space="preserve">
+    <value>Erwähnung gelöscht</value>
+  </data>
+  <data name="Mention logs are cleared" xml:space="preserve">
+    <value>Erwähnungsprotokolle wurden gelöscht</value>
+  </data>
+  <data name="Meta Description" xml:space="preserve">
+    <value>Meta-Beschreibung</value>
+  </data>
+  <data name="Metadata" xml:space="preserve">
+    <value>Metadaten</value>
+  </data>
+  <data name="Moderation" xml:space="preserve">
+    <value>Moderation</value>
+  </data>
+  <data name="Name and URL are required" xml:space="preserve">
+    <value>Name und URL sind erforderlich</value>
+  </data>
+  <data name="New password" xml:space="preserve">
+    <value>Neues Kennwort</value>
+  </data>
+  <data name="New Tab" xml:space="preserve">
+    <value>Neuer Tab</value>
+  </data>
+  <data name="New username" xml:space="preserve">
+    <value>Neuer Benutzername</value>
+  </data>
+  <data name="New version available" xml:space="preserve">
+    <value>Neue Version verfügbar</value>
+  </data>
+  <data name="No active tags found" xml:space="preserve">
+    <value>Keine aktiven Tags gefunden</value>
+  </data>
+  <data name="No activity logs found." xml:space="preserve">
+    <value>Keine Aktivitätsprotokolle gefunden.</value>
+  </data>
+  <data name="No buttons added yet" xml:space="preserve">
+    <value>Noch keine Schaltflächen hinzugefügt</value>
+  </data>
+  <data name="No categories yet." xml:space="preserve">
+    <value>Noch keine Kategorien.</value>
+  </data>
+  <data name="No Comments" xml:space="preserve">
+    <value>Keine Kommentare</value>
+  </data>
+  <data name="No links added yet" xml:space="preserve">
+    <value>Noch keine Links hinzugefügt</value>
+  </data>
+  <data name="No tags found. Create your first tag to get started." xml:space="preserve">
+    <value>Keine Tags gefunden. Erstellen Sie Ihren ersten Tag, um zu beginnen.</value>
+  </data>
+  <data name="No unused tags - all tags are being used!" xml:space="preserve">
+    <value>Keine ungenutzten Tags - alle Tags werden verwendet!</value>
+  </data>
+  <data name="No widgets yet." xml:space="preserve">
+    <value>Noch keine Widgets.</value>
+  </data>
+  <data name="Not configured" xml:space="preserve">
+    <value>Nicht konfiguriert</value>
+  </data>
+  <data name="Old password" xml:space="preserve">
+    <value>Altes Kennwort</value>
+  </data>
+  <data name="Only contain characters from the set: uppercase letters, lowercase letters, digits, and the special characters {0}." xml:space="preserve">
+    <value>Nur Zeichen aus diesem Satz enthalten: Großbuchstaben, Kleinbuchstaben, Ziffern und die Sonderzeichen {0}.</value>
+  </data>
+  <data name="Opens in same tab" xml:space="preserve">
+    <value>Wird im selben Tab geöffnet</value>
+  </data>
+  <data name="Operation" xml:space="preserve">
+    <value>Vorgang</value>
+  </data>
+  <data name="Outdated" xml:space="preserve">
+    <value>Veraltet</value>
+  </data>
+  <data name="Page deleted" xml:space="preserve">
+    <value>Seite gelöscht</value>
+  </data>
+  <data name="Page Properties" xml:space="preserve">
+    <value>Seiteneigenschaften</value>
+  </data>
+  <data name="Page restored" xml:space="preserve">
+    <value>Seite wiederhergestellt</value>
+  </data>
+  <data name="Page Size" xml:space="preserve">
+    <value>Seitengröße</value>
+  </data>
+  <data name="Password updated." xml:space="preserve">
+    <value>Kennwort aktualisiert.</value>
+  </data>
+  <data name="Please configure `SecondaryContainerName` in `appsettings.json`" xml:space="preserve">
+    <value>Bitte konfigurieren Sie `SecondaryContainerName` in `appsettings.json`</value>
+  </data>
+  <data name="Please follow {0} to setup content security API" xml:space="preserve">
+    <value>Bitte folgen Sie {0}, um die Content-Security-API einzurichten</value>
+  </data>
+  <data name="Please follow {0} to setup email API." xml:space="preserve">
+    <value>Bitte folgen Sie {0}, um die E-Mail-API einzurichten.</value>
+  </data>
+  <data name="Please provide a valid tag name." xml:space="preserve">
+    <value>Bitte geben Sie einen gültigen Tag-Namen an.</value>
+  </data>
+  <data name="Powered by" xml:space="preserve">
+    <value>Bereitgestellt von</value>
+  </data>
+  <data name="Saving..." xml:space="preserve">
+    <value>Wird gespeichert...</value>
+  </data>
+  <data name="Schedule cancelled, post moved to drafts" xml:space="preserve">
+    <value>Planung abgebrochen, Beitrag in Entwürfe verschoben</value>
+  </data>
+  <data name="Send" xml:space="preserve">
+    <value>Senden</value>
+  </data>
+  <data name="Set a time in your local time zone to schedule the post to be automatically published." xml:space="preserve">
+    <value>Legen Sie eine Zeit in Ihrer lokalen Zeitzone fest, zu der der Beitrag automatisch veröffentlicht werden soll.</value>
+  </data>
+  <data name="Set to 0 to hide tags widget" xml:space="preserve">
+    <value>Auf 0 setzen, um das Tags-Widget auszublenden</value>
+  </data>
+  <data name="Settings" xml:space="preserve">
+    <value>Einstellungen</value>
+  </data>
+  <data name="Settings Updated" xml:space="preserve">
+    <value>Einstellungen aktualisiert</value>
+  </data>
+  <data name="Showing {0} tags" xml:space="preserve">
+    <value>{0} Tags werden angezeigt</value>
+  </data>
+  <data name="Sort By" xml:space="preserve">
+    <value>Sortieren nach</value>
+  </data>
+  <data name="Sort Order" xml:space="preserve">
+    <value>Sortierreihenfolge</value>
+  </data>
+  <data name="Source Title" xml:space="preserve">
+    <value>Quelltitel</value>
+  </data>
+  <data name="Start Date" xml:space="preserve">
+    <value>Startdatum</value>
+  </data>
+  <data name="Subscribe recent posts" xml:space="preserve">
+    <value>Aktuelle Beiträge abonnieren</value>
+  </data>
+  <data name="Tag" xml:space="preserve">
+    <value>Tag</value>
+  </data>
+  <data name="Tag added" xml:space="preserve">
+    <value>Tag hinzugefügt</value>
+  </data>
+  <data name="Tag deleted" xml:space="preserve">
+    <value>Tag gelöscht</value>
+  </data>
+  <data name="Tag names should be descriptive and concise." xml:space="preserve">
+    <value>Tag-Namen sollten beschreibend und knapp sein.</value>
+  </data>
+  <data name="Tag updated" xml:space="preserve">
+    <value>Tag aktualisiert</value>
+  </data>
+  <data name="Tags without posts" xml:space="preserve">
+    <value>Tags ohne Beiträge</value>
+  </data>
+  <data name="Target" xml:space="preserve">
+    <value>Ziel</value>
+  </data>
+  <data name="Target Post Title" xml:space="preserve">
+    <value>Titel des Zielbeitrags</value>
+  </data>
+  <data name="Time" xml:space="preserve">
+    <value>Zeit</value>
+  </data>
+  <data name="Unknown provider, this feature may not be working." xml:space="preserve">
+    <value>Unbekannter Anbieter, diese Funktion funktioniert möglicherweise nicht.</value>
+  </data>
+  <data name="Unnamed Button" xml:space="preserve">
+    <value>Unbenannte Schaltfläche</value>
+  </data>
+  <data name="Unnamed Link" xml:space="preserve">
+    <value>Unbenannter Link</value>
+  </data>
+  <data name="Use Bootstrap Icons classes (e.g., bi-link-45deg, bi-github)" xml:space="preserve">
+    <value>Bootstrap-Icons-Klassen verwenden (z. B. bi-link-45deg, bi-github)</value>
+  </data>
+  <data name="Using Azure provider at {0}" xml:space="preserve">
+    <value>Azure-Anbieter unter {0} wird verwendet</value>
+  </data>
+  <data name="Using local provider" xml:space="preserve">
+    <value>Lokaler Anbieter wird verwendet</value>
+  </data>
+  <data name="View posts tagged with {0}" xml:space="preserve">
+    <value>Beiträge mit dem Tag {0} anzeigen</value>
+  </data>
+  <data name="Widget created" xml:space="preserve">
+    <value>Widget erstellt</value>
+  </data>
+  <data name="Widget deleted" xml:space="preserve">
+    <value>Widget gelöscht</value>
+  </data>
+  <data name="Widget Information" xml:space="preserve">
+    <value>Widget-Informationen</value>
+  </data>
+  <data name="Widget Type" xml:space="preserve">
+    <value>Widget-Typ</value>
+  </data>
+  <data name="Widget updated" xml:space="preserve">
+    <value>Widget aktualisiert</value>
+  </data>
+  <data name="Word filter only applies when comment review is disabled." xml:space="preserve">
+    <value>Der Wortfilter gilt nur, wenn die Kommentarprüfung deaktiviert ist.</value>
+  </data>
+  <data name="You can add up to 3 buttons" xml:space="preserve">
+    <value>Sie können bis zu 3 Schaltflächen hinzufügen</value>
+  </data>
+  <data name="You have unsaved changes, are you sure to leave this page?" xml:space="preserve">
+    <value>Sie haben ungespeicherte Änderungen. Möchten Sie diese Seite wirklich verlassen?</value>
+  </data>
+  <data name="Your password must be:" xml:space="preserve">
+    <value>Ihr Kennwort muss:</value>
+  </data>
+  <data name="Create Time" xml:space="preserve">
+    <value>Erstellungszeit</value>
+  </data>
+  <data name="Email is sent." xml:space="preserve">
+    <value>E-Mail wurde gesendet.</value>
+  </data>
+  <data name="Page saved successfully." xml:space="preserve">
+    <value>Seite erfolgreich gespeichert.</value>
+  </data>
+  <data name="Please select an image" xml:space="preserve">
+    <value>Bitte wählen Sie ein Bild aus</value>
+  </data>
+  <data name="Please select an image file." xml:space="preserve">
+    <value>Bitte wählen Sie eine Bilddatei aus.</value>
+  </data>
+  <data name="Reply posted" xml:space="preserve">
+    <value>Antwort veröffentlicht</value>
+  </data>
+  <data name="The File APIs are not fully supported in this browser." xml:space="preserve">
+    <value>Die File APIs werden in diesem Browser nicht vollständig unterstützt.</value>
+  </data>
+  <data name="Theme deleted." xml:space="preserve">
+    <value>Theme gelöscht.</value>
+  </data>
+  <data name="Updated" xml:space="preserve">
+    <value>Aktualisiert</value>
   </data>
 </root>

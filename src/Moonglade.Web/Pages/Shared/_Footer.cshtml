@@ -18,7 +18,7 @@
                     @Html.Raw(Helper.FormatCopyright2Html(BlogConfig.GeneralSettings.Copyright))
                 </div>
                 <small>
-                    Powered by <a href="https://github.com/EdiWang/Moonglade" target="_blank">Moonglade</a> @VersionHelper.AppVersion
+                    @SharedLocalizer["Powered by"] <a href="https://github.com/EdiWang/Moonglade" target="_blank">Moonglade</a> @VersionHelper.AppVersion
                 </small>
             </section>
 
@@ -43,7 +43,7 @@
             </section>
 
             <section id="footer-language-mobile" class="col d-block d-md-none text-end font-125rem">
-                <a href="#" data-bs-toggle="modal" data-bs-target="#langselectormodal" aria-label="Choose display language"><i class="bi-translate"></i></a>
+                <a href="#" data-bs-toggle="modal" data-bs-target="#langselectormodal" aria-label="@SharedLocalizer["Choose display language"]"><i class="bi-translate"></i></a>
             </section>
         </div>
     </div>
@@ -53,8 +53,8 @@
     <div class="modal-dialog" role="document">
         <div class="modal-content">
             <div class="modal-header">
-                <h6 class="modal-title" id="langselectorLabel">Languages</h6>
-                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close">
+                <h6 class="modal-title" id="langselectorLabel">@SharedLocalizer["Languages"]</h6>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="@SharedLocalizer["Close"]">
                 </button>
             </div>
             <div class="modal-body">

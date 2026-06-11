@@ -12,6 +12,7 @@ public record ReceiveWebmentionCommand(string Source, string Target, string Remo
 public class ReceiveWebmentionCommandHandler(
     ILogger<ReceiveWebmentionCommandHandler> logger,
     IMentionSourceInspector sourceInspector,
+    IWebmentionSourceRateLimiter sourceRateLimiter,
     BlogDbContext db
     ) : ICommandHandler<ReceiveWebmentionCommand, WebmentionResponse>
 {
@@ -26,6 +27,11 @@ public class ReceiveWebmentionCommandHandler(
             }
 
             logger.LogInformation("Processing Webmention from: {SourceUrl} ({RemoteIp}) to {TargetUrl}", sourceUrl, request.RemoteIp, targetUrl);
+
+            if (!sourceRateLimiter.TryAcquire(new Uri(sourceUrl)))
+            {
+                return WebmentionResponse.SourceRateLimitExceeded;
+            }
 
             var mentionRequest = await sourceInspector.ExamineSourceAsync(sourceUrl, targetUrl);
             if (mentionRequest is null)

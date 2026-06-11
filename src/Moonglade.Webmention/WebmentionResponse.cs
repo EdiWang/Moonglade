@@ -13,6 +13,7 @@ public class WebmentionResponse(WebmentionStatus status)
     public static WebmentionResponse ErrorWebmentionAlreadyRegistered => new(WebmentionStatus.ErrorWebmentionAlreadyRegistered);
     public static WebmentionResponse ErrorSourceNotContainTargetUri => new(WebmentionStatus.ErrorSourceNotContainTargetUri);
     public static WebmentionResponse SpamDetectedFakeNotFound => new(WebmentionStatus.SpamDetectedFakeNotFound);
+    public static WebmentionResponse SourceRateLimitExceeded => new(WebmentionStatus.SourceRateLimitExceeded);
 }
 
 public enum WebmentionStatus
@@ -23,5 +24,6 @@ public enum WebmentionStatus
     ErrorTargetUriNotExist,
     ErrorWebmentionAlreadyRegistered,
     ErrorSourceNotContainTargetUri,
-    SpamDetectedFakeNotFound
+    SpamDetectedFakeNotFound,
+    SourceRateLimitExceeded
 }

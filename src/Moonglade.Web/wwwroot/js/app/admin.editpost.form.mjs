@@ -1,3 +1,5 @@
+import { getLocalizedString } from './utils.module.mjs';
+
 export function createFormMixin() {
     return {
         isFormDirty: false,
@@ -22,7 +24,7 @@ export function createFormMixin() {
 
             window.addEventListener('beforeunload', (event) => {
                 if (this.isFormDirty) {
-                    const message = 'You have unsaved changes, are you sure to leave this page?';
+                    const message = getLocalizedString('unsavedChanges');
                     event.returnValue = message;
                     return message;
                 }

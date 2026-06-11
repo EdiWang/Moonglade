@@ -44,6 +44,7 @@ public class MentionController(
         WebmentionStatus.SpamDetectedFakeNotFound => NotFound("The requested resource was not found."),
         WebmentionStatus.ErrorTargetUriNotExist => Conflict("Cannot retrieve post ID and title for the target URL."),
         WebmentionStatus.ErrorWebmentionAlreadyRegistered => Conflict("Webmention already registered."),
+        WebmentionStatus.SourceRateLimitExceeded => StatusCode(StatusCodes.Status429TooManyRequests, "Webmention source rate limit exceeded."),
         WebmentionStatus.GenericError => StatusCode(StatusCodes.Status500InternalServerError, "An internal server error occurred."),
         _ => StatusCode(StatusCodes.Status500InternalServerError, "An unknown error occurred.")
     };

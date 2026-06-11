@@ -1,7 +1,7 @@
 ﻿@page "/admin/page/edit/{id:guid?}"
 @using Microsoft.AspNetCore.Mvc.TagHelpers
 @{
-    ViewBag.Title = "Edit Page";
+    ViewBag.Title = SharedLocalizer["Edit Page"];
     ViewBag.XData = "pageEditor";
     ViewBag.HideAdminSidebar = true;
     ViewBag.AdminBackUrl = "/admin/page";
@@ -11,6 +11,10 @@
     <partial name="_MonacoLoaderScript" />
     <script type="module" src="~/js/app/admin.editpage.mjs"></script>
 }
+
+<div id="localizedStrings" style="display:none"
+     data-page-saved="@SharedLocalizer["Page saved successfully."]">
+</div>
 
 @section navbarActions {
     <li class="nav-item">
@@ -27,7 +31,7 @@
 
 <div x-show="isLoading" class="text-muted p-3" :class="{ 'd-flex align-items-center': isLoading }">
     <div class="spinner-border spinner-border-sm me-2" role="status"></div>
-    <span>Loading page data...</span>
+    <span>@SharedLocalizer["Loading page data..."]</span>
 </div>
 
 <div x-show="!isLoading" x-cloak class="page-editor-container d-flex flex-column">
@@ -36,7 +40,7 @@
             <input type="text"
                    x-model="formData.title"
                    class="form-control form-control-lg mb-1"
-                   placeholder="Title"
+                   placeholder="@SharedLocalizer["Title"]"
                    required />
 
             <div class="input-group input-group-sm">
@@ -46,7 +50,7 @@
                 <input type="text"
                        x-model="formData.slug"
                        class="form-control form-control-sm"
-                       placeholder="Slug"
+                       placeholder="@SharedLocalizer["Slug"]"
                        required />
             </div>
         </div>
@@ -60,7 +64,7 @@
                        href="#rawhtmlcontent-editor-box"
                        role="tab"
                        aria-controls="html"
-                       aria-selected="true">HTML</a>
+                       aria-selected="true">@SharedLocalizer["HTML"]</a>
                 </li>
                 <li class="nav-item">
                     <a class="nav-link"
@@ -69,7 +73,7 @@
                        href="#csscontent-editor-box"
                        role="tab"
                        aria-controls="css"
-                       aria-selected="false">CSS</a>
+                       aria-selected="false">@SharedLocalizer["CSS"]</a>
                 </li>
                 <li class="nav-item">
                     <a class="nav-link"
@@ -78,7 +82,7 @@
                        href="#preview-box"
                        role="tab"
                        aria-controls="preview"
-                       aria-selected="false">Preview</a>
+                       aria-selected="false">@SharedLocalizer["Preview"]</a>
                 </li>
             </ul>
         </div>
@@ -115,7 +119,7 @@
                     x-bind:disabled="isSaving"
                     x-on:click="isPreview = false">
                 <span x-show="!isSaving">@SharedLocalizer["Save"]</span>
-                <span x-show="isSaving">Saving...</span>
+                <span x-show="isSaving">@SharedLocalizer["Saving..."]</span>
             </button>
             <button type="submit"
                     class="btn btn-outline-success"
@@ -132,7 +136,7 @@
 <div class="offcanvas offcanvas-end" tabindex="-1" id="pageSettingsCanvas" x-ref="settingsCanvas" aria-labelledby="pageSettingsCanvasLabel">
     <div class="offcanvas-header">
         <h5 class="offcanvas-title" id="pageSettingsCanvasLabel">@SharedLocalizer["Page Properties"]</h5>
-        <button type="button" class="btn-close text-reset" data-bs-dismiss="offcanvas" aria-label="Close"></button>
+        <button type="button" class="btn-close text-reset" data-bs-dismiss="offcanvas" aria-label="@SharedLocalizer["Close"]"></button>
     </div>
     <div class="offcanvas-body">
         <div class="mb-3">
@@ -141,25 +145,25 @@
                        x-model="formData.hideSidebar"
                        class="form-check-input"
                        id="hideSidebar">
-                <label for="hideSidebar" class="form-check-label">Hide Sidebar</label>
+                <label for="hideSidebar" class="form-check-label">@SharedLocalizer["Hide Sidebar"]</label>
             </div>
             <div class="form-check form-switch mb-2">
                 <input type="checkbox"
                        x-model="formData.isPublished"
                        class="form-check-input"
                        id="isPublished">
-                <label for="isPublished" class="form-check-label">Published</label>
+                <label for="isPublished" class="form-check-label">@SharedLocalizer["Published"]</label>
             </div>
         </div>
         <div class="border-top pt-3">
             <div class="form-floating">
                 <textarea x-model="formData.metaDescription"
-                          placeholder="Meta Description"
+                          placeholder="@SharedLocalizer["Meta Description"]"
                           class="form-control form-control-sm h-200px"
                           spellcheck="false"
                           required
                           id="metaDescription"></textarea>
-                <label class="form-label" for="metaDescription">Meta Description</label>
+                <label class="form-label" for="metaDescription">@SharedLocalizer["Meta Description"]</label>
             </div>
         </div>
     </div>

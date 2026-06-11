@@ -1,5 +1,6 @@
 ﻿import { fetch2 } from './httpService.mjs?v=1500'
 import { success, error } from './toastService.mjs'
+import { getLocalizedString } from './utils.module.mjs';
 
 export class ImageUploader {
     constructor(targetName, hw, imgMimeType) {
@@ -20,7 +21,7 @@ export class ImageUploader {
                     var modal = bootstrap.Modal.getInstance(modalElement);
                     if (modal) modal.hide();
 
-                    success('Updated');
+                    success(getLocalizedString('imageUpdated'));
                     var d = new Date();
                     document.querySelector(`.blogadmin-${targetName}`).src = `/${targetName}?${d.getTime()}`;
                 } catch (err) {
@@ -30,7 +31,7 @@ export class ImageUploader {
                     btnUpload.removeAttribute('disabled');
                 }
             } else {
-                error('Please select an image');
+                error(getLocalizedString('pleaseSelectImage'));
             }
         };
 
@@ -48,7 +49,7 @@ export class ImageUploader {
                 }
 
                 if (!file.type.match('image.*')) {
-                    error('Please select an image file.');
+                    error(getLocalizedString('pleaseSelectImageFile'));
                     return;
                 }
 
@@ -89,7 +90,7 @@ export class ImageUploader {
                 };
                 reader.readAsDataURL(file);
             } else {
-                error('The File APIs are not fully supported in this browser.');
+                error(getLocalizedString('fileApisNotSupported'));
             }
         };
 

@@ -115,12 +115,14 @@ The solution file is `src/Moonglade.slnx`. The root `README.md` is the main depl
 - Public and admin pages are primarily Razor Pages under `src/Moonglade.Web/Pages`.
 - Admin JSON operations are primarily API controllers under `src/Moonglade.Web/Controllers`.
 - Frontend code is built around the existing Razor layouts, Bootstrap, Alpine.js, TinyMCE, Monaco editor, and Tagify. Do not add a new frontend framework unless explicitly requested.
+- Code block language support has two UI surfaces: the public post renderer and the admin TinyMCE code sample dialog. When adding a highlight.js language, register the language before `hljs.highlightElement` in `src/Moonglade.Web/wwwroot/js/app/post.highlight.mjs` and also add the language to `codesample_languages` in `src/Moonglade.Web/wwwroot/js/app/admin.editor.module.mjs`, otherwise authors cannot select it from the editor.
 - The TinyMCE language folder README says language packs should not be translated directly; use Crowdin instead.
 - Server-rendered UI text should consider resource files. Supported cultures are currently `en-US`, `zh-Hans`, `zh-Hant`, `de-DE`, and `ja-JP`.
 - Localization uses shared resources under `src/Moonglade.Web/Resources/Program.*.resx`. Razor pages inject `IStringLocalizer<Program>` as `SharedLocalizer`, and DataAnnotations display names are configured to use the same `Program` resource. When adding or renaming any `SharedLocalizer["..."]` key or `[Display(Name = "...")]` text, update all non-English resource files: `Program.zh-Hans.resx`, `Program.zh-Hant.resx`, `Program.de-DE.resx`, and `Program.ja-JP.resx`.
 
 ### Documentation And Licenses
 
+- Repository content must be written in English unless the file is a localization resource, such as `src/Moonglade.Web/Resources/Program.*.resx` or third-party language pack files. Unit test data may also contain non-English values when the behavior under test requires them. Do not add non-English text to Markdown files, source code, comments, configuration, or documentation outside localization resources.
 - The README states that this blogging system must not be used to serve users in mainland China or to publish content prohibited by Chinese law or any applicable regulations.
 - The repository license is GPL-3.0. TinyMCE includes a GPL-2.0-or-later license notice. Do not remove or rewrite third-party license files casually.
 - Do not add license or copyright headers unless explicitly requested.

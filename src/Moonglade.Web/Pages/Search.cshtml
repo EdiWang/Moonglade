@@ -1,7 +1,13 @@
-﻿@page "/search"
+@page "/search"
+@using Microsoft.AspNetCore.Builder
 @using Microsoft.AspNetCore.Mvc.TagHelpers
+@using Microsoft.Extensions.Options
 @using Moonglade.Data.DTO
+@using Moonglade.Data.Entities
+@using Moonglade.Features.Category
 @using Moonglade.Features.Post
+@using Moonglade.Features.Tag
+@inject IOptions<RequestLocalizationOptions> LocOptions
 
 @section meta
 {
@@ -10,13 +16,81 @@
 @{
     ViewBag.BodyClass = "body-search-list bg-gray-1";
     HttpContext.Response.Headers.Add("X-Robots-Tag", "noindex, nofollow");
+
+    var cultureItems = LocOptions.Value.SupportedUICultures?
+        .Select(c => new { Value = c.Name.ToLower(), c.NativeName })
+        .ToList() ?? [];
 }
 
 <h3 class="mb-4">
     @SharedLocalizer["Search Result"]
 </h3>
 
-@if (!Posts.Any())
+<form method="get" action="/search" class="rounded-3 shadow-sm border bg-white p-3 mb-4">
+    <div class="row g-2 align-items-end">
+        <div class="col-md-4">
+            <label for="search-term" class="form-label">@SharedLocalizer["Search"]</label>
+            <input id="search-term" name="term" value="@SearchTerm" class="form-control" maxlength="30" required />
+        </div>
+        <div class="col-md-2">
+            <label for="sort" class="form-label">@SharedLocalizer["Sort"]</label>
+            <select id="sort" name="sort" class="form-select">
+                <option value="newest" selected="@(Sort == "newest")">@SharedLocalizer["Newest first"]</option>
+                <option value="oldest" selected="@(Sort == "oldest")">@SharedLocalizer["Oldest first"]</option>
+                <option value="title-asc" selected="@(Sort == "title-asc")">@SharedLocalizer["Title A-Z"]</option>
+                <option value="title-desc" selected="@(Sort == "title-desc")">@SharedLocalizer["Title Z-A"]</option>
+            </select>
+        </div>
+        <div class="col-md-3">
+            <label for="category" class="form-label">@SharedLocalizer["Categories"]</label>
+            <select id="category" name="category" class="form-select">
+                <option value="">@SharedLocalizer["All categories"]</option>
+                @foreach (var category in Categories.OrderBy(c => c.DisplayName))
+                {
+                    <option value="@category.Slug" selected="@(Category == category.Slug)">@category.DisplayName</option>
+                }
+            </select>
+        </div>
+        <div class="col-md-3">
+            <label for="tag" class="form-label">@SharedLocalizer["Tags"]</label>
+            <select id="tag" name="tag" class="form-select">
+                <option value="">@SharedLocalizer["All Tags"]</option>
+                @foreach (var tag in Tags.OrderBy(t => t.DisplayName))
+                {
+                    <option value="@tag.NormalizedName" selected="@(Tag == tag.NormalizedName)">@tag.DisplayName</option>
+                }
+            </select>
+        </div>
+        <div class="col-md-3">
+            <label for="language" class="form-label">@SharedLocalizer["Language"]</label>
+            <select id="language" name="language" class="form-select">
+                <option value="">@SharedLocalizer["All languages"]</option>
+                @foreach (var language in cultureItems)
+                {
+                    <option value="@language.Value" selected="@(Language == language.Value)">@language.NativeName</option>
+                }
+            </select>
+        </div>
+        <div class="col-md-3">
+            <label for="startDate" class="form-label">@SharedLocalizer["Published from"]</label>
+            <input id="startDate" name="startDate" value="@FormatDate(StartDate)" class="form-control" type="date" />
+        </div>
+        <div class="col-md-3">
+            <label for="endDate" class="form-label">@SharedLocalizer["Published to"]</label>
+            <input id="endDate" name="endDate" value="@FormatDate(EndDate)" class="form-control" type="date" />
+        </div>
+        <div class="col-md-3 d-flex gap-2">
+            <button type="submit" class="btn btn-accent flex-fill">
+                @SharedLocalizer["Filter"]
+            </button>
+            <a href="@Url.Page("/Search", new { term = SearchTerm })" class="btn btn-outline-secondary">
+                @SharedLocalizer["Clear"]
+            </a>
+        </div>
+    </div>
+</form>
+
+@if (!Posts.Items.Any())
 {
     <div class="alert alert-info">
         @SharedLocalizer["No Matching Result"]
@@ -24,26 +98,157 @@
 }
 else
 {
-    foreach (var item in Posts.OrderByDescending(s => s.PubDateUtc))
+    <div class="text-muted mb-3">
+        @SharedLocalizer[Posts.TotalItemCount == 1 ? "{0} result" : "{0} results", Posts.TotalItemCount]
+    </div>
+
+    foreach (var item in Posts.Items)
     {
         <partial name="_PostListEntry" model="item" view-data="@(new ViewDataDictionary(ViewData) { { "SearchTerm", SearchTerm } })" />
+    }
+
+    @if (Posts.PageCount > 1)
+    {
+        <div class="pagination-container">
+            <ul class="pagination justify-content-end">
+                @if (Posts.PageNumber > 1)
+                {
+                    <li class="page-item">
+                        <a class="page-link" rel="prev" href="@BuildPageUrl(Posts.PageNumber - 1)">&lt;</a>
+                    </li>
+                }
+
+                @foreach (var pageNumber in GetPageNumbers())
+                {
+                    if (pageNumber == Posts.PageNumber)
+                    {
+                        <li class="page-item active">
+                            <span class="page-link">@pageNumber</span>
+                        </li>
+                    }
+                    else
+                    {
+                        <li class="page-item">
+                            <a class="page-link" href="@BuildPageUrl(pageNumber)">@pageNumber</a>
+                        </li>
+                    }
+                }
+
+                @if (Posts.PageNumber < Posts.PageCount)
+                {
+                    <li class="page-item">
+                        <a class="page-link" rel="next" href="@BuildPageUrl(Posts.PageNumber + 1)">&gt;</a>
+                    </li>
+                }
+            </ul>
+        </div>
     }
 }
 
 @functions {
-    public List<PostDigest> Posts { get; set; } = new();
+    public PagedResult<PostDigest> Posts { get; set; } = new([], 1, 1, 0);
+    public List<CategoryEntity> Categories { get; set; } = [];
+    public List<TagEntity> Tags { get; set; } = [];
     public string SearchTerm { get; set; } = string.Empty;
+    public string Sort { get; set; } = "newest";
+    public string Category { get; set; }
+    public string Tag { get; set; }
+    public string Language { get; set; }
+    public DateTime? StartDate { get; set; }
+    public DateTime? EndDate { get; set; }
 
-    public async Task<IActionResult> OnGetAsync(string term)
+    public async Task<IActionResult> OnGetAsync(
+        string term,
+        int p = 1,
+        string sort = "newest",
+        string category = null,
+        string tag = null,
+        string language = null,
+        DateTime? startDate = null,
+        DateTime? endDate = null)
     {
         if (string.IsNullOrWhiteSpace(term)) return RedirectToPage("Index");
 
-        ViewData["TitlePrefix"] = term;
-        SearchTerm = term;
+        SearchTerm = term.Trim();
+        Sort = NormalizeSort(sort);
+        Category = NormalizeSlug(category);
+        Tag = NormalizeSlug(tag);
+        Language = NormalizeSlug(language);
+        StartDate = startDate;
+        EndDate = endDate;
+        ViewData["TitlePrefix"] = SearchTerm;
 
-        var posts = await QueryMediator.QueryAsync(new SearchPostQuery(term));
-        Posts = posts;
+        Categories = await QueryMediator.QueryAsync(new ListCategoriesQuery());
+        Tags = await QueryMediator.QueryAsync(new ListTagsQuery());
+
+        var pageNumber = Math.Max(1, p);
+        var pageSize = BlogConfig.ContentSettings.PostListPageSize;
+        var result = await QueryMediator.QueryAsync(new SearchPostQuery(
+            SearchTerm,
+            pageSize,
+            pageNumber,
+            Category,
+            Tag,
+            Language,
+            StartDate,
+            EndDate,
+            ParseSort(Sort)));
+
+        Posts = new PagedResult<PostDigest>(result.Posts, pageNumber, pageSize, result.TotalRows);
+        if (Posts.PageCount > 0 && pageNumber > Posts.PageCount)
+        {
+            return Redirect(BuildPageUrl(Posts.PageCount));
+        }
 
         return Page();
     }
+
+    private string BuildPageUrl(int page) => Url.Page("/Search", new
+    {
+        term = SearchTerm,
+        p = page,
+        sort = Sort,
+        category = Category,
+        tag = Tag,
+        language = Language,
+        startDate = FormatDate(StartDate),
+        endDate = FormatDate(EndDate)
+    });
+
+    private IEnumerable<int> GetPageNumbers()
+    {
+        var maxPages = BlogConfig.ContentSettings.MaximumPageNumbersToDisplay;
+        var firstPage = Math.Max(1, Posts.PageNumber - maxPages / 2);
+        var lastPage = Math.Min(Posts.PageCount, firstPage + maxPages - 1);
+
+        if (lastPage - firstPage + 1 < maxPages)
+        {
+            firstPage = Math.Max(1, lastPage - maxPages + 1);
+        }
+
+        return Enumerable.Range(firstPage, lastPage - firstPage + 1);
+    }
+
+    private static string FormatDate(DateTime? date) => date?.ToString("yyyy-MM-dd");
+
+    private static string NormalizeSlug(string value) =>
+        string.IsNullOrWhiteSpace(value) ? null : value.Trim().ToLower();
+
+    private static string NormalizeSort(string sort) =>
+        sort?.Trim().ToLower() switch
+        {
+            "oldest" => "oldest",
+            "title-asc" => "title-asc",
+            "title-desc" => "title-desc",
+            _ => "newest"
+        };
+
+    private static SearchPostSort ParseSort(string sort) =>
+        sort switch
+        {
+            "oldest" => SearchPostSort.Oldest,
+            "title-asc" => SearchPostSort.TitleAscending,
+            "title-desc" => SearchPostSort.TitleDescending,
+            _ => SearchPostSort.Newest
+        };
 }

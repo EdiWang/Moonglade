@@ -1,4 +1,5 @@
 import bicep from '../3rd/highlight.bicep.js'
+import kusto from '../3rd/highlight.kusto.js'
 
 export function renderCodeHighlighter() {
     const pres = document.querySelectorAll('pre');
@@ -19,6 +20,7 @@ export function renderCodeHighlighter() {
     });
 
     hljs.registerLanguage('bicep', bicep);
+    hljs.registerLanguage('kusto', kusto);
 
     const codeBlocks = document.querySelectorAll('pre code');
     codeBlocks.forEach(block => {

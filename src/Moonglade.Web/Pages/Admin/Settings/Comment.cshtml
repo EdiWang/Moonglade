@@ -172,24 +172,26 @@
                             <div class="form-text">
                                 @if (ModeratorOptions.Value.Provider.ToLowerInvariant() == "local")
                                 {
-                                    <text>Using local provider</text>
+                                    <text>@SharedLocalizer["Using local provider"]</text>
                                 }
                                 else if (ModeratorOptions.Value.Provider.ToLowerInvariant() == "remote")
                                 {
                                     if (!string.IsNullOrWhiteSpace(ModeratorOptions.Value.ApiEndpoint))
                                     {
-                                        <text>Using Azure provider at <code>@ModeratorOptions.Value.ApiEndpoint</code></text>
+                                        @Html.Raw(string.Format(
+                                            SharedLocalizer["Using Azure provider at {0}"].Value,
+                                            $"<code>{System.Net.WebUtility.HtmlEncode(ModeratorOptions.Value.ApiEndpoint)}</code>"))
                                     }
                                     else
                                     {
-                                        <text>
-                                            Please follow<a href="https://github.com/EdiWang/Moonglade.ContentSecurity" target="_blank"> instruction </a> to setup content security API
-                                        </text>
+                                        @Html.Raw(string.Format(
+                                            SharedLocalizer["Please follow {0} to setup content security API"].Value,
+                                            "<a href=\"https://github.com/EdiWang/Moonglade.ContentSecurity\" target=\"_blank\">instruction</a>"))
                                     }
                                 }
                                 else
                                 {
-                                    <text>Unknown provider, this feature may not be working.</text>
+                                    <text>@SharedLocalizer["Unknown provider, this feature may not be working."]</text>
                                 }
                             </div>
                             <div class="form-text">@SharedLocalizer["Word filter only applies when comment review is disabled."]</div>

@@ -14,11 +14,11 @@ public record PostOperationContext(
     string UserAgent,
     string RootUrl);
 
-public record PostOperationResult(bool Succeeded, Guid PostId, string ErrorMessage)
+public record PostOperationResult(bool Succeeded, Guid PostId, DateTime? LastModifiedUtc, string ErrorMessage)
 {
-    public static PostOperationResult Success(Guid postId) => new(true, postId, string.Empty);
+    public static PostOperationResult Success(Guid postId, DateTime? lastModifiedUtc) => new(true, postId, lastModifiedUtc, string.Empty);
 
-    public static PostOperationResult Conflict(string errorMessage) => new(false, Guid.Empty, errorMessage);
+    public static PostOperationResult Conflict(string errorMessage) => new(false, Guid.Empty, null, errorMessage);
 }
 
 public record SavePostCommand(PostEditModel Payload, PostOperationContext Context) : ICommand<PostOperationResult>;
@@ -67,7 +67,7 @@ public class SavePostCommandHandler(
                 ProcessPublishedPost(model.LastModifiedUtc, postEntity, request.Context);
             }
 
-            return PostOperationResult.Success(postEntity.Id);
+            return PostOperationResult.Success(postEntity.Id, postEntity.LastModifiedUtc);
         }
         catch (Exception ex)
         {

@@ -68,7 +68,7 @@
                                         
                                         <div class="text-muted small">
                                             <span>#</span><span x-text="item.displayOrder || 1"></span>
-                                            <span x-show="item.isOpenInNewTab"> • Opens in new tab</span>
+                                            <span x-show="item.isOpenInNewTab"> &bull; @SharedLocalizer["Open in new tab"]</span>
                                             <code x-show="item.url" x-text="item.url"></code>
                                         </div>
                                     </div>
@@ -103,7 +103,7 @@
                                             <div>
                                                 <strong x-text="subItem.title"></strong>
                                                 <code x-text="subItem.url"></code>
-                                                <span x-show="subItem.isOpenInNewTab" class="badge bg-secondary">New Tab</span>
+                                                <span x-show="subItem.isOpenInNewTab" class="badge bg-secondary">@SharedLocalizer["New Tab"]</span>
                                             </div>
                                             <div class="btn-group">
                                                 <button type="button" class="btn btn-sm btn-outline-primary" 

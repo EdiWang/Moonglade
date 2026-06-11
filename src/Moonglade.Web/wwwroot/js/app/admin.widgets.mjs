@@ -124,7 +124,7 @@ Alpine.data('widgetManager', () => ({
         const verb = isCreate ? 'POST' : 'PUT';
 
         if (this.formData.displayOrder < -30 || this.formData.displayOrder > 999) {
-            alert('Display Order must be between -30 and 999.');
+            alert(getLocalizedString('displayOrderRange'));
             return;
         }
 
