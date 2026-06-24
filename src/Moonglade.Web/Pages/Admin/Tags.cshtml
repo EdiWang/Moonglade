@@ -16,25 +16,25 @@
 </div>
 
 @section admintoolbar {
-    <div class="admin-toolbar pb-2 border-bottom mb-3">
+    <div class="admin-toolbar pb-2 border-bottom mb-3 d-flex flex-column flex-md-row align-items-start align-items-md-center gap-2">
         <a x-on:click="initCreateTag()" class="btn btn-outline-accent" role="button">
             <i class="bi-plus-lg"></i>
             @SharedLocalizer["New"]
         </a>
+
+        <input x-model="tagFilter"
+               x-on:input="filterTags()"
+               type="text"
+               class="form-control admin-tags-filter ms-md-auto"
+               maxlength="32"
+               placeholder="@SharedLocalizer["Filter"]"
+               aria-label="@SharedLocalizer["Filter tags"]">
     </div>
 }
 
 @Html.AntiForgeryToken()
 
 <div>
-    <input x-model="tagFilter"
-           x-on:input="filterTags()"
-           type="text"
-           class="form-control mb-3"
-           maxlength="32"
-           placeholder="@SharedLocalizer["Filter"]"
-           aria-label="@SharedLocalizer["Filter tags"]">
-
     <div x-show="isLoading"
          class="text-muted mb-3"
          :class="{ 'd-flex align-items-center': isLoading }">

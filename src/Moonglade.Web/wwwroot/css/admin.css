@@ -295,6 +295,10 @@ div.mce-fullscreen {
     overflow-y: scroll;
 }
 
+.admin-tags-filter {
+    max-width: 360px;
+}
+
 .ul-tag-mgr {
     line-height: 28px;
     text-align: justify;
