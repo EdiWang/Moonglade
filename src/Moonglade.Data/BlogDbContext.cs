@@ -21,6 +21,7 @@ public class BlogDbContext : DbContext
     public virtual DbSet<PostCategoryEntity> PostCategory { get; set; }
     public virtual DbSet<PostTagEntity> PostTag { get; set; }
     public virtual DbSet<PostViewEntity> PostView { get; set; }
+    public virtual DbSet<PostViewDailyEntity> PostViewDaily { get; set; }
     public virtual DbSet<TagEntity> Tag { get; set; }
     public virtual DbSet<PageEntity> BlogPage { get; set; }
     public virtual DbSet<MentionEntity> Mention { get; set; }
@@ -36,6 +37,7 @@ public class BlogDbContext : DbContext
         // base.OnModelCreating(modelBuilder);
         modelBuilder.ApplyConfiguration(new CategoryConfiguration());
         modelBuilder.ApplyConfiguration(new ActivityLogConfiguration());
+        modelBuilder.ApplyConfiguration(new PostViewDailyConfiguration());
         modelBuilder.ApplyConfiguration(new PostCategoryConfiguration());
         modelBuilder
             .Entity<PostEntity>()
@@ -62,6 +64,7 @@ public static class BlogDbContextExtension
         {
             await using var transaction = await context.Database.BeginTransactionAsync();
 
+            await context.PostViewDaily.ExecuteDeleteAsync();
             await context.PostView.ExecuteDeleteAsync();
             await context.CommentReply.ExecuteDeleteAsync();
             await context.Comment.ExecuteDeleteAsync();
