@@ -1818,6 +1818,30 @@
   <data name="Theme deleted." xml:space="preserve">
     <value>Theme gelöscht.</value>
   </data>
+  <data name="Dashboard" xml:space="preserve">
+    <value>Dashboard</value>
+  </data>
+  <data name="Blog overview" xml:space="preserve">
+    <value>Blogübersicht</value>
+  </data>
+  <data name="New Post" xml:space="preserve">
+    <value>Neuer Beitrag</value>
+  </data>
+  <data name="Reading views" xml:space="preserve">
+    <value>Aufrufe</value>
+  </data>
+  <data name="Yesterday" xml:space="preserve">
+    <value>Gestern</value>
+  </data>
+  <data name="This Week" xml:space="preserve">
+    <value>Diese Woche</value>
+  </data>
+  <data name="This Month" xml:space="preserve">
+    <value>Dieser Monat</value>
+  </data>
+  <data name="Taxonomy" xml:space="preserve">
+    <value>Kategorien und Tags</value>
+  </data>
   <data name="Updated" xml:space="preserve">
     <value>Aktualisiert</value>
   </data>
