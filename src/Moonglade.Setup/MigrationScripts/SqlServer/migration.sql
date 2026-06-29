@@ -87,6 +87,7 @@ BEGIN
 END
 GO
 
+-- v15.18
 -- Add daily post view aggregation table
 IF NOT EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[PostViewDaily]') AND type in (N'U'))
 BEGIN
