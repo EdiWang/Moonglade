@@ -137,7 +137,7 @@ public static class ServiceCollectionExtensions
                 options.DataAnnotationLocalizerProvider = (_, factory) => factory.Create(typeof(Program)))
             .AddRazorPagesOptions(options =>
             {
-                options.Conventions.AddPageRoute("/Admin/Post", "admin");
+                options.Conventions.AddPageRoute("/Admin/Dashboard", "admin");
                 options.Conventions.AuthorizeFolder("/Admin");
             })
             .AddViewOptions(options =>
