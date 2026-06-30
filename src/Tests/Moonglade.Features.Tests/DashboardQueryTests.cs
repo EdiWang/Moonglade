@@ -56,6 +56,29 @@ public class DashboardQueryTests
         Assert.Equal(1, stats.TagCount);
     }
 
+    [Fact]
+    public async Task GetDashboardStatsQuery_IncludesPreviousMonthViewsInCurrentWeek()
+    {
+        using var db = CreateDbContext();
+        var now = new DateTime(2024, 5, 1, 8, 0, 0, DateTimeKind.Utc);
+
+        db.PostViewDaily.AddRange(
+            CreatePostViewDaily(new DateTime(2024, 4, 29), 5),
+            CreatePostViewDaily(new DateTime(2024, 4, 30), 3),
+            CreatePostViewDaily(new DateTime(2024, 5, 1), 7),
+            CreatePostViewDaily(new DateTime(2024, 4, 28), 11));
+
+        await db.SaveChangesAsync(TestContext.Current.CancellationToken);
+
+        var handler = new GetDashboardStatsQueryHandler(db);
+
+        var stats = await handler.HandleAsync(new GetDashboardStatsQuery(now), TestContext.Current.CancellationToken);
+
+        Assert.Equal(3, stats.YesterdayViews);
+        Assert.Equal(15, stats.ThisWeekViews);
+        Assert.Equal(7, stats.ThisMonthViews);
+    }
+
     private static PostViewDailyEntity CreatePostViewDaily(DateTime dateUtc, int viewCount) =>
         new()
         {

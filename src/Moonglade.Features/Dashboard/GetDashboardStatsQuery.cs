@@ -23,10 +23,18 @@ public class GetDashboardStatsQueryHandler(BlogDbContext db) : IQueryHandler<Get
         var yesterdayUtc = todayUtc.AddDays(-1);
         var weekStartUtc = todayUtc.AddDays(-GetDaysSinceMonday(todayUtc));
         var monthStartUtc = new DateTime(todayUtc.Year, todayUtc.Month, 1);
+        var viewStartUtc = new[] { yesterdayUtc, weekStartUtc, monthStartUtc }.Min();
 
-        var yesterdayViews = await SumViewsAsync(yesterdayUtc, todayUtc, ct);
-        var thisWeekViews = await SumViewsAsync(weekStartUtc, tomorrowUtc, ct);
-        var thisMonthViews = await SumViewsAsync(monthStartUtc, tomorrowUtc, ct);
+        var viewCounts = await db.PostViewDaily.AsNoTracking()
+            .Where(v => v.ViewDateUtc >= viewStartUtc && v.ViewDateUtc < tomorrowUtc)
+            .GroupBy(_ => 1)
+            .Select(g => new
+            {
+                Yesterday = g.Sum(v => v.ViewDateUtc >= yesterdayUtc && v.ViewDateUtc < todayUtc ? v.ViewCount : 0),
+                ThisWeek = g.Sum(v => v.ViewDateUtc >= weekStartUtc ? v.ViewCount : 0),
+                ThisMonth = g.Sum(v => v.ViewDateUtc >= monthStartUtc ? v.ViewCount : 0)
+            })
+            .SingleOrDefaultAsync(ct);
 
         var postCounts = await db.Post.AsNoTracking()
             .Where(p => !p.IsDeleted)
@@ -38,24 +46,14 @@ public class GetDashboardStatsQueryHandler(BlogDbContext db) : IQueryHandler<Get
         var tagCount = await db.Tag.CountAsync(ct);
 
         return new DashboardStats(
-            yesterdayViews,
-            thisWeekViews,
-            thisMonthViews,
+            viewCounts?.Yesterday ?? 0,
+            viewCounts?.ThisWeek ?? 0,
+            viewCounts?.ThisMonth ?? 0,
             postCounts.GetValueOrDefault(PostStatus.Published),
             postCounts.GetValueOrDefault(PostStatus.Draft),
             postCounts.GetValueOrDefault(PostStatus.Scheduled),
             categoryCount,
             tagCount);
-    }
-
-    private async Task<int> SumViewsAsync(DateTime startUtc, DateTime endUtc, CancellationToken ct)
-    {
-        var total = await db.PostViewDaily.AsNoTracking()
-            .Where(v => v.ViewDateUtc >= startUtc && v.ViewDateUtc < endUtc)
-            .Select(v => (int?)v.ViewCount)
-            .SumAsync(ct);
-
-        return total ?? 0;
     }
 
     private static int GetDaysSinceMonday(DateTime date) => ((int)date.DayOfWeek + 6) % 7;
