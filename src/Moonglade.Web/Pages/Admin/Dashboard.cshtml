@@ -84,21 +84,21 @@
         <section class="col-12 col-xl-4" aria-labelledby="taxonomyStatsTitle">
             <div class="dashboard-panel">
                 <h2 id="taxonomyStatsTitle" class="admin-subtitle fw-bold mb-3">@SharedLocalizer["Taxonomy"]</h2>
-                <div class="dashboard-link-list">
-                    <a class="dashboard-link-item" asp-page="/Admin/Category">
-                        <span>
-                            <i class="bi-folder2 me-2"></i>
-                            @SharedLocalizer["Categories"]
-                        </span>
+                <div class="dashboard-count-grid dashboard-taxonomy-grid">
+                    <div class="dashboard-count-item position-relative">
+                        <span class="dashboard-count-label">@SharedLocalizer["Categories"]</span>
                         <strong>@Model.Stats.CategoryCount</strong>
-                    </a>
-                    <a class="dashboard-link-item" asp-page="/Admin/Tags">
-                        <span>
-                            <i class="bi-tag me-2"></i>
-                            @SharedLocalizer["Tags"]
-                        </span>
+                        <a class="stretched-link dashboard-count-link"
+                           asp-page="/Admin/Category"
+                           aria-label="@SharedLocalizer["Categories"]"></a>
+                    </div>
+                    <div class="dashboard-count-item position-relative">
+                        <span class="dashboard-count-label">@SharedLocalizer["Tags"]</span>
                         <strong>@Model.Stats.TagCount</strong>
-                    </a>
+                        <a class="stretched-link dashboard-count-link"
+                           asp-page="/Admin/Tags"
+                           aria-label="@SharedLocalizer["Tags"]"></a>
+                    </div>
                 </div>
             </div>
         </section>
