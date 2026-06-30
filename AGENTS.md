@@ -8,6 +8,50 @@ Moonglade is a personal blogging platform built with ASP.NET Core / .NET 10. The
 
 The solution file is `src/Moonglade.slnx`. The root `README.md` is the main deployment and configuration guide. `.github/copilot-instructions.md` already contains detailed collaboration guidance; this file follows the same intent and adds concise business, architecture, coding, and verification rules for agents.
 
+## Technology Stack
+
+| Area | Confirmed stack |
+| --- | --- |
+| Language/runtime | C# on .NET 10.0 / ASP.NET Core 10.0; projects target `net10.0` with implicit usings enabled. |
+| Web app model | ASP.NET Core Razor Pages for public/admin pages, controller-based APIs for admin JSON and public endpoints, endpoint routing for handlers such as health, robots, manifest, sitemap, FOAF, and OpenSearch. |
+| Architecture style | Multi-project modular solution with LiteBus command/query/event handlers and feature-oriented folders. |
+| Data access | EF Core with `BlogDbContext`; SQL Server via `Moonglade.Data.SqlServer`; PostgreSQL via `Moonglade.Data.PostgreSql`. |
+| Cache | `Edi.CacheAside.InMemory` with `BlogCachePartition` names for blog, post, page, widget, sitemap, and subscription-related caches. |
+| Background work | ASP.NET Core hosted services, `Cronos`, `ScheduledPublishService`, `UpdateCheckService`, and `CannonService` for queued fire-and-forget work. |
+| Authentication | Cookie-based local account authentication and Microsoft Entra ID through `Microsoft.Identity.Web`. |
+| Frontend | Server-rendered Razor, Bootstrap, Bootstrap Icons, Alpine.js, TinyMCE, Monaco editor, Tagify, and project-local JavaScript modules under `src/Moonglade.Web/wwwroot/js/app`. |
+| Image storage | `IBlogImageStorage` abstraction with Azure Blob Storage and local file system providers. |
+| External integrations | Webmention, IndexNow, email notification API, local/remote content moderation, Gravatar, Azure App Service logging, and Azure/Docker deployment assets. |
+| Package management | NuGet package references in project files; no repository-level `Directory.Packages.props`, `NuGet.config`, or package lock file was found at the time this document was updated. |
+| Build tools | .NET SDK CLI, Visual Studio, VS Code task `dotnet build ${workspaceFolder}/src/Moonglade.Web/Moonglade.Web.csproj`, Docker multi-stage build, Docker Compose, and Azure Bicep/PowerShell deployment assets. |
+| Tests | xUnit v3, Moq, `Microsoft.NET.Test.Sdk`, `coverlet.collector`, EF Core InMemory/Sqlite patterns, and ASP.NET Core TestHost for Web tests. |
+| Formatting/linting | To be confirmed. No repository-level `.editorconfig`, dedicated analyzer config, or lint task was found at the time this document was updated. Follow nearby style and avoid bulk formatting. |
+
+## Configuration And Environment
+
+Primary application configuration is in `src/Moonglade.Web/appsettings.json`, with local overrides in `src/Moonglade.Web/appsettings.Development.json`. ASP.NET Core environment variable overrides use the standard double-underscore form, for example `ConnectionStrings__MoongladeDatabase`.
+
+Important configuration areas:
+
+| Key or section | Purpose | Required? | Notes |
+| --- | --- | --- | --- |
+| `ConnectionStrings:MoongladeDatabase` | Database connection string. | Yes | Do not document or commit production values. |
+| `ConnectionStrings:DatabaseProvider` | Selects `SqlServer` or `PostgreSql`. | Yes | Keep provider names aligned with `AddMoongladeDatabase`. |
+| `Authentication:Provider` | Selects local auth or Microsoft Entra ID. | Yes | Entra ID settings live under `Authentication:EntraID`. |
+| `CaptchaSettings:SharedKey` | Shared key for stateless captcha tokens. | Yes for captcha | Replace default/example values before deployment. |
+| `ContentModerator` | Local keyword filtering or remote moderation API settings. | Optional | Keep provider-specific behavior out of controllers. |
+| `Webmention` | Webmention options, including source rate limiting. | Optional | Preserve protocol endpoint behavior. |
+| `Email` | Notification API endpoint/key/header. | Optional | Store real keys outside source control. |
+| `IndexNow` | API key, ping targets, and cooldown interval. | Optional | API key also maps the IndexNow verification file endpoint. |
+| `ForwardedHeaders` | Reverse proxy/client IP configuration. | Deployment-dependent | Required behind some proxies/load balancers. |
+| `ImageStorage` | Selects `filesystem` or `azurestorage` and related paths/container names. | Yes | Use environment overrides for provider secrets and production paths. |
+| `DefaultEditor` | Default post content editor/content type. | Optional | Used during startup backfill for older posts. |
+| `PostCacheMinutes`, `PagesCacheMinutes`, `WidgetCacheMinutes` | Cache durations. | Optional | Revisit when changing rendering or invalidation paths. |
+| `AutoDatabaseMigration` | Startup migration behavior. | Optional | Be careful when changing deployment/database initialization behavior. |
+| `EnableUpdateCheck`, `UpdateCheckCron` | GitHub release update check scheduling. | Optional | Cron parsing is handled by `Cronos`. |
+| `ViewCount` | Crawler user-agent filtering and deduplication window. | Optional | Affects analytics/view-count behavior. |
+| `.env.example` / `MSSQL_SA_PASSWORD` | Docker Compose SQL Server password override. | Local/deployment-dependent | Use a strong secret value outside committed files. |
+
 ## Main Business Logic
 
 ### Blog Content
@@ -169,3 +213,54 @@ The default local launch URL comes from `src/Moonglade.Web/Properties/launchSett
 - Do not overwrite user changes. Check `git status --short` before finishing.
 - After changes, explain what changed, what was verified, and any remaining risk.
 - If verification commands could not be run, say why.
+
+### Complex Task Breakdown
+
+For complex work, first split the request into small sub-tasks that can be implemented, checked, tested, committed, and rolled back independently. Make dependencies explicit, especially when a change crosses projects, affects data shape, changes public endpoints, or alters deployment behavior.
+
+Create a task record under `docs/tasks/` when the work:
+
+- Crosses multiple modules or services.
+- Requires multiple rounds of context to complete.
+- Is a high-risk refactor or migration.
+- Changes architecture, data models, protocol contracts, configuration, or deployment flow.
+- Is explicitly requested by the user as a retained task record.
+
+Use `docs/tasks/task-<short-task-name>.md` for task records unless a more specific project convention appears later. Keep the record updated while working so another agent can resume after context compression or interruption. At minimum, record the original goal, background, scope, task breakdown, execution order, dependencies, status, verification log, issues/resolutions, and follow-ups. A starter template lives at `docs/tasks/task-template.md`.
+
+### Documentation Sync Rules
+
+After development, bug fixes, refactors, or configuration changes, check whether the change affects:
+
+- Project positioning or business workflows.
+- Runtime, build, test, or deployment steps.
+- Technology stack or dependencies.
+- Code architecture or module boundaries.
+- Environment variables or configuration keys.
+- Development conventions.
+- Reusable troubleshooting knowledge.
+
+If it does, update the appropriate long-lived docs, including `README.md`, `AGENTS.md`, and relevant files under `docs/`. If it does not, say in the final response that no documentation update was needed.
+
+### Troubleshooting / Lessons Learned
+
+Only add troubleshooting notes after the issue has been fixed and the user has confirmed the outcome, unless the user explicitly asks for a note earlier. Add the note when future developers or agents are likely to hit the same issue, the root cause is project-specific, the fix is non-obvious, or the user asks to preserve it.
+
+Short notes may live here. Longer or multi-issue notes should go in `docs/troubleshooting.md`, with a short summary and link from this file. Use this structure:
+
+```markdown
+## Troubleshooting / Lessons Learned
+
+### Issue title
+
+- Symptom:
+- Trigger:
+- Root cause:
+- Fix:
+- Verification:
+- Prevention:
+```
+
+### Communication Rules
+
+Ask the user before proceeding when business meaning cannot be confirmed, multiple technical interpretations are plausible, a command could affect external services or production data, a change may overwrite important human-maintained documentation, suspected secrets are discovered, or module boundaries are unclear. Keep the question specific and update the relevant documentation after the answer changes project knowledge.
