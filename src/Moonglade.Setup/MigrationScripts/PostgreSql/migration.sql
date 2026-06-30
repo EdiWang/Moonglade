@@ -45,3 +45,14 @@ ALTER TABLE "BlogPage" ADD COLUMN IF NOT EXISTS "IsDeleted" BOOLEAN NOT NULL DEF
 
 -- Add ContainsAiAssistedContent column to Post table
 ALTER TABLE "Post" ADD COLUMN IF NOT EXISTS "ContainsAiAssistedContent" BOOLEAN NOT NULL DEFAULT FALSE;
+
+-- v15.18
+-- Add daily post view aggregation table
+CREATE TABLE IF NOT EXISTS "PostViewDaily" (
+    "PostId" UUID NOT NULL,
+    "ViewDateUtc" TIMESTAMP NOT NULL,
+    "ViewCount" INTEGER NOT NULL,
+    PRIMARY KEY ("PostId", "ViewDateUtc")
+);
+
+CREATE INDEX IF NOT EXISTS "IX_PostViewDaily_ViewDateUtc" ON "PostViewDaily" ("ViewDateUtc");

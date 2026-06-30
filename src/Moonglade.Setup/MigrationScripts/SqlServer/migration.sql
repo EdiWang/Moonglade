@@ -86,3 +86,22 @@ BEGIN
         CONSTRAINT [DF_Post_ContainsAiAssistedContent] DEFAULT 0;
 END
 GO
+
+-- v15.18
+-- Add daily post view aggregation table
+IF NOT EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[PostViewDaily]') AND type in (N'U'))
+BEGIN
+    CREATE TABLE [dbo].[PostViewDaily](
+        [PostId] [uniqueidentifier] NOT NULL,
+        [ViewDateUtc] [datetime] NOT NULL,
+        [ViewCount] [int] NOT NULL,
+        CONSTRAINT [PK_PostViewDaily] PRIMARY KEY CLUSTERED
+        (
+            [PostId] ASC,
+            [ViewDateUtc] ASC
+        )
+    ) ON [PRIMARY]
+
+    CREATE INDEX [IX_PostViewDaily_ViewDateUtc] ON [dbo].[PostViewDaily]([ViewDateUtc]);
+END
+GO

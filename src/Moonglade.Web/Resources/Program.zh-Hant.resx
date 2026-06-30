@@ -1818,6 +1818,30 @@
   <data name="Theme deleted." xml:space="preserve">
     <value>佈景主題已刪除。</value>
   </data>
+  <data name="Dashboard" xml:space="preserve">
+    <value>儀表板</value>
+  </data>
+  <data name="Blog overview" xml:space="preserve">
+    <value>部落格概覽</value>
+  </data>
+  <data name="New Post" xml:space="preserve">
+    <value>新增文章</value>
+  </data>
+  <data name="Reading views" xml:space="preserve">
+    <value>閱讀量</value>
+  </data>
+  <data name="Yesterday" xml:space="preserve">
+    <value>昨日</value>
+  </data>
+  <data name="This Week" xml:space="preserve">
+    <value>本週</value>
+  </data>
+  <data name="This Month" xml:space="preserve">
+    <value>本月</value>
+  </data>
+  <data name="Taxonomy" xml:space="preserve">
+    <value>分類與標籤</value>
+  </data>
   <data name="Updated" xml:space="preserve">
     <value>已更新</value>
   </data>

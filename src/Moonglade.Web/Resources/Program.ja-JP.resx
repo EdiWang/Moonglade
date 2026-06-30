@@ -1818,6 +1818,30 @@
   <data name="Theme deleted." xml:space="preserve">
     <value>テーマを削除しました。</value>
   </data>
+  <data name="Dashboard" xml:space="preserve">
+    <value>ダッシュボード</value>
+  </data>
+  <data name="Blog overview" xml:space="preserve">
+    <value>ブログ概要</value>
+  </data>
+  <data name="New Post" xml:space="preserve">
+    <value>新規投稿</value>
+  </data>
+  <data name="Reading views" xml:space="preserve">
+    <value>閲覧数</value>
+  </data>
+  <data name="Yesterday" xml:space="preserve">
+    <value>昨日</value>
+  </data>
+  <data name="This Week" xml:space="preserve">
+    <value>今週</value>
+  </data>
+  <data name="This Month" xml:space="preserve">
+    <value>今月</value>
+  </data>
+  <data name="Taxonomy" xml:space="preserve">
+    <value>カテゴリーとタグ</value>
+  </data>
   <data name="Updated" xml:space="preserve">
     <value>更新しました</value>
   </data>
