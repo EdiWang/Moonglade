@@ -37,11 +37,6 @@ public class AddViewCountCommandHandler(
         finally
         {
             postLock.Release();
-
-            if (postLock.CurrentCount == 1)
-            {
-                _locks.TryRemove(request.PostId, out _);
-            }
         }
     }
 
