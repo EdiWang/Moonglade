@@ -164,33 +164,15 @@ Leave the `FileSystemPath` empty to use the default path (`~/home/moonglade/imag
 
 ### Comment Moderation
 
-#### Local Moderation Provider
-
-For basic keyword filtering, use the built-in local provider:
+For basic keyword filtering, configure the built-in local moderator:
 
 ```json
 "ContentModerator": {
-  "Provider": "Local",
-  "LocalKeywords": "fuck|shit",
-  "ApiEndpoint": "",
-  "ApiKey": ""
+  "LocalKeywords": "fuck|shit"
 }
 ```
 
-#### Remote Content Moderator
-
-e.g. [Moonglade.ContentSecurity Azure Function](https://github.com/EdiWang/Moonglade.ContentSecurity):
-
-```json
-"ContentModerator": {
-  "Provider": "remote",
-  "ApiEndpoint": "<Your Azure Function Endpoint>",
-  "ApiKey": "<Your Azure Function Key>",
-  "ApiKeyHeader": "x-functions-key"
-}
-```
-
-Note: You can also implement your own content moderation API by mimicking the interface of Moonglade.ContentSecurity. You are not limited to Azure!
+Moonglade comment moderation runs locally and does not call a remote moderation API.
 
 ### Email Notifications
 

@@ -21,7 +21,7 @@ The solution file is `src/Moonglade.slnx`. The root `README.md` is the main depl
 | Authentication | Cookie-based local account authentication and Microsoft Entra ID through `Microsoft.Identity.Web`. |
 | Frontend | Server-rendered Razor, Bootstrap, Bootstrap Icons, Alpine.js, Moonglade.Editor for HTML post editing, Monaco editor for Markdown/CSS/HTML code editing, Tagify, and project-local JavaScript modules under `src/Moonglade.Web/wwwroot/js/app`. |
 | Image storage | `IBlogImageStorage` abstraction with Azure Blob Storage and local file system providers. |
-| External integrations | Webmention, IndexNow, email notification API, local/remote content moderation, Gravatar, Azure App Service logging, and Azure/Docker deployment assets. |
+| External integrations | Webmention, IndexNow, email notification API, local content moderation, Gravatar, Azure App Service logging, and Azure/Docker deployment assets. |
 | Package management | NuGet package references in project files; no repository-level `Directory.Packages.props`, `NuGet.config`, or package lock file was found at the time this document was updated. |
 | Build tools | .NET SDK CLI, Visual Studio, VS Code task `dotnet build ${workspaceFolder}/src/Moonglade.Web/Moonglade.Web.csproj`, Docker multi-stage build, Docker Compose, and Azure Bicep/PowerShell deployment assets. |
 | Tests | xUnit v3, Moq, `Microsoft.NET.Test.Sdk`, `coverlet.collector`, EF Core InMemory/Sqlite patterns, and ASP.NET Core TestHost for Web tests. |
@@ -39,7 +39,7 @@ Important configuration areas:
 | `ConnectionStrings:DatabaseProvider` | Selects `SqlServer` or `PostgreSql`. | Yes | Keep provider names aligned with `AddMoongladeDatabase`. |
 | `Authentication:Provider` | Selects local auth or Microsoft Entra ID. | Yes | Entra ID settings live under `Authentication:EntraID`. |
 | `CaptchaSettings:SharedKey` | Shared key for stateless captcha tokens. | Yes for captcha | Replace default/example values before deployment. |
-| `ContentModerator` | Local keyword filtering or remote moderation API settings. | Optional | Keep provider-specific behavior out of controllers. |
+| `ContentModerator` | Local keyword filtering settings. | Optional | Moderation runs in-process with configured local keywords. |
 | `Webmention` | Webmention options, including source rate limiting. | Optional | Preserve protocol endpoint behavior. |
 | `Email` | Notification API endpoint/key/header. | Optional | Store real keys outside source control. |
 | `IndexNow` | API key, ping targets, and cooldown interval. | Optional | API key also maps the IndexNow verification file endpoint. |
@@ -66,7 +66,7 @@ Important configuration areas:
 
 - The public comment entry point is `Moonglade.Web.Controllers.CommentController`; comment creation is handled by `Moonglade.Features.Comment.CreateCommentCommand`.
 - Whether comments are enabled, require review, close after a number of days, or use word filtering comes from `IBlogConfig.CommentSettings`.
-- Content moderation is abstracted in `Moonglade.Moderation` and supports local and remote providers. Do not put provider-specific moderation behavior directly in controllers.
+- Content moderation is abstracted in `Moonglade.Moderation` and supports local keyword filtering. Do not put moderation behavior directly in controllers.
 - Comments, replies, and Webmentions can trigger activity logs and email notifications. Slow external calls should go through existing events, `CannonService`, or background mechanisms instead of blocking request handlers.
 
 ### Configuration

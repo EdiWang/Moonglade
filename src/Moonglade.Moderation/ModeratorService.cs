@@ -1,6 +1,4 @@
-﻿using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Logging;
-using Microsoft.Extensions.Options;
 
 namespace Moonglade.Moderation;
 
@@ -12,94 +10,44 @@ public interface IModeratorService
 
 public class MoongladeModeratorService : IModeratorService
 {
-    private readonly IHttpContextAccessor _httpContextAccessor;
     private readonly ILogger<MoongladeModeratorService> _logger;
-    private readonly ContentModeratorOptions _options;
     private readonly ILocalModerationService _localService;
-    private readonly IRemoteModerationService _remoteService;
     private readonly bool _isEnabled;
 
     public MoongladeModeratorService(
-        IHttpContextAccessor httpContextAccessor,
         ILogger<MoongladeModeratorService> logger,
-        IOptions<ContentModeratorOptions> options,
-        ILocalModerationService localService = null,
-        IRemoteModerationService remoteService = null)
+        ILocalModerationService localService = null)
     {
-        _httpContextAccessor = httpContextAccessor;
         _logger = logger;
-        _options = options.Value;
         _localService = localService;
-        _remoteService = remoteService;
         _isEnabled = ValidateConfiguration();
     }
 
-    public async Task<string> Mask(string input)
+    public Task<string> Mask(string input)
     {
         if (!_isEnabled || string.IsNullOrWhiteSpace(input))
-            return input;
+            return Task.FromResult(input);
 
-        if (IsLocalProvider())
-        {
-            return _localService?.ModerateContent(input) ?? input;
-        }
-
-        if (_remoteService != null)
-        {
-            var requestId = _httpContextAccessor.HttpContext?.TraceIdentifier ?? string.Empty;
-            return await _remoteService.MaskAsync(input, requestId);
-        }
-
-        return input;
+        return Task.FromResult(_localService?.ModerateContent(input) ?? input);
     }
 
-    public async Task<bool> Detect(params string[] input)
+    public Task<bool> Detect(params string[] input)
     {
         if (!_isEnabled || input == null || input.Length == 0)
-            return false;
+            return Task.FromResult(false);
 
         var validInputs = input.Where(s => !string.IsNullOrWhiteSpace(s)).ToArray();
         if (validInputs.Length == 0)
-            return false;
+            return Task.FromResult(false);
 
-        if (IsLocalProvider())
-        {
-            return _localService?.HasBadWords(validInputs) ?? false;
-        }
-
-        if (_remoteService != null)
-        {
-            var requestId = _httpContextAccessor.HttpContext?.TraceIdentifier ?? string.Empty;
-            return await _remoteService.DetectAsync(validInputs, requestId);
-        }
-
-        return false;
+        return Task.FromResult(_localService?.HasBadWords(validInputs) ?? false);
     }
-
-    private bool IsLocalProvider() =>
-        string.Equals(_options.Provider, "local", StringComparison.OrdinalIgnoreCase);
 
     private bool ValidateConfiguration()
     {
-        if (IsLocalProvider())
+        if (_localService == null)
         {
-            if (_localService == null)
-            {
-                _logger.LogError("Local moderation service is not configured");
-                return false;
-            }
-            return true;
-        }
-
-        if (string.IsNullOrWhiteSpace(_options.ApiEndpoint) || string.IsNullOrWhiteSpace(_options.ApiKey))
-        {
-            _logger.LogError("Remote ContentModerator API configuration is incomplete");
-            return false;
-        }
-
-        if (_remoteService == null)
-        {
-            _logger.LogError("Remote moderation service is not configured");
+            _logger.LogError("Local moderation service is not configured");
             return false;
         }
 
