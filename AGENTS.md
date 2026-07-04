@@ -39,7 +39,6 @@ Important configuration areas:
 | `ConnectionStrings:DatabaseProvider` | Selects `SqlServer` or `PostgreSql`. | Yes | Keep provider names aligned with `AddMoongladeDatabase`. |
 | `Authentication:Provider` | Selects local auth or Microsoft Entra ID. | Yes | Entra ID settings live under `Authentication:EntraID`. |
 | `CaptchaSettings:SharedKey` | Shared key for stateless captcha tokens. | Yes for captcha | Replace default/example values before deployment. |
-| `ContentModerator` | Local keyword filtering settings. | Optional | Moderation runs in-process with configured local keywords. |
 | `Webmention` | Webmention options, including source rate limiting. | Optional | Preserve protocol endpoint behavior. |
 | `Email` | Notification API endpoint/key/header. | Optional | Store real keys outside source control. |
 | `IndexNow` | API key, ping targets, and cooldown interval. | Optional | API key also maps the IndexNow verification file endpoint. |
@@ -71,7 +70,7 @@ Important configuration areas:
 
 ### Configuration
 
-- Application-level configuration lives in `src/Moonglade.Web/appsettings.json`, including database, authentication, captcha, image storage, moderation, email, IndexNow, cache durations, and background task switches.
+- Application-level configuration lives in `src/Moonglade.Web/appsettings.json`, including database, authentication, captcha, image storage, email, IndexNow, cache durations, and background task switches.
 - Runtime blog settings are managed by `Moonglade.Configuration.BlogConfig` and persisted in the `BlogConfiguration` table. When adding a blog setting, follow the `IBlogSettings<T>` pattern, provide a default value, and consider initialization and update commands.
 - `/admin/settings` is the main UI for blog settings. Do not hard-code administrator-configurable blog behavior in the Web layer.
 

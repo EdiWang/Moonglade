@@ -164,15 +164,7 @@ Leave the `FileSystemPath` empty to use the default path (`~/home/moonglade/imag
 
 ### Comment Moderation
 
-For basic keyword filtering, configure the built-in local moderator:
-
-```json
-"ContentModerator": {
-  "LocalKeywords": "fuck|shit"
-}
-```
-
-Moonglade comment moderation runs locally and does not call a remote moderation API.
+Moonglade comment moderation runs locally and does not call a remote moderation API. Configure the word filter and keyword list from `/admin/settings/comment`.
 
 ### Email Notifications
 

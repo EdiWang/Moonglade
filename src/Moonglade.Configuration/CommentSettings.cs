@@ -34,6 +34,10 @@ public class CommentSettings : IBlogSettings<CommentSettings>
     [Display(Name = "Word filter mode")]
     public WordFilterMode WordFilterMode { get; set; }
 
+    [Display(Name = "Word filter keywords")]
+    [MaxLength(4096)]
+    public string WordFilterKeywords { get; set; } = "fuck|shit";
+
     [Display(Name = "Show comment section on mobile screens")]
     public bool EnableCommentSectionOnMobile { get; set; }
 
@@ -43,7 +47,8 @@ public class CommentSettings : IBlogSettings<CommentSettings>
         EnableGravatar = true,
         EnableComments = true,
         RequireCommentReview = true,
-        EnableWordFilter = false
+        EnableWordFilter = false,
+        WordFilterKeywords = "fuck|shit"
     };
 }
 

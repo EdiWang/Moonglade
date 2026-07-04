@@ -178,7 +178,7 @@
                         </div>
                     </div>
 
-                    <div class="border-top settings-entry row align-items-center rounded-bottom-3 py-3 px-2">
+                    <div class="border-top settings-entry row align-items-center py-3 px-2">
                         <div class="col-auto">
                             <i class="bi-check2-circle settings-entry-icon"></i>
                         </div>
@@ -195,6 +195,19 @@
                                 @Html.RadioButtonFor(model => settings.WordFilterMode, WordFilterMode.Block, new { id = WordFilterMode.Block.ToString(), @class = "form-check-input" })
                                 <label class="form-check-label" for="@WordFilterMode.Block">@SharedLocalizer["Block Comment"]</label>
                             </div>
+                        </div>
+                    </div>
+
+                    <div class="border-top settings-entry row align-items-center rounded-bottom-3 py-3 px-2">
+                        <div class="col-auto">
+                            <i class="bi-ban settings-entry-icon"></i>
+                        </div>
+                        <div class="col">
+                            <label asp-for="@settings.WordFilterKeywords"></label>
+                            <div class="form-text">@SharedLocalizer["Separate keywords with |"]</div>
+                        </div>
+                        <div class="col-md-5">
+                            <input asp-for="@settings.WordFilterKeywords" class="form-control" spellcheck="false" maxlength="4096" />
                         </div>
                     </div>
                 </div>

@@ -1,4 +1,4 @@
-﻿namespace Moonglade.Moderation;
+namespace Moonglade.Moderation;
 
 public interface ILocalModerationService
 {
@@ -6,11 +6,22 @@ public interface ILocalModerationService
     bool HasBadWords(params string[] input);
 }
 
-public class LocalModerationService(string keywords) : ILocalModerationService
+public class LocalModerationService : ILocalModerationService
 {
-    private readonly LocalWordFilter _wordFilter = new(keywords ?? throw new ArgumentNullException(nameof(keywords)));
+    private readonly IModerationKeywordProvider _keywordProvider;
 
-    public string ModerateContent(string input) => _wordFilter.ModerateContent(input);
+    public LocalModerationService(IModerationKeywordProvider keywordProvider)
+    {
+        _keywordProvider = keywordProvider ?? throw new ArgumentNullException(nameof(keywordProvider));
+    }
 
-    public bool HasBadWords(params string[] input) => _wordFilter.HasBadWord(input);
+    public LocalModerationService(string keywords) : this(new StaticModerationKeywordProvider(keywords))
+    {
+    }
+
+    public string ModerateContent(string input) => CreateWordFilter().ModerateContent(input);
+
+    public bool HasBadWords(params string[] input) => CreateWordFilter().HasBadWord(input);
+
+    private LocalWordFilter CreateWordFilter() => new(_keywordProvider.GetKeywords() ?? string.Empty);
 }

@@ -317,4 +317,28 @@ public class LocalModerationServiceTests
     }
 
     #endregion
+
+    [Fact]
+    public void DynamicKeywordProvider_UsesLatestKeywords()
+    {
+        // Arrange
+        var provider = new MutableKeywordProvider("alpha");
+        var service = new LocalModerationService(provider);
+
+        // Act & Assert
+        Assert.True(service.HasBadWords("alpha text"));
+        Assert.False(service.HasBadWords("beta text"));
+
+        provider.Keywords = "beta";
+
+        Assert.False(service.HasBadWords("alpha text"));
+        Assert.True(service.HasBadWords("beta text"));
+    }
+
+    private sealed class MutableKeywordProvider(string keywords) : IModerationKeywordProvider
+    {
+        public string Keywords { get; set; } = keywords;
+
+        public string GetKeywords() => Keywords;
+    }
 }

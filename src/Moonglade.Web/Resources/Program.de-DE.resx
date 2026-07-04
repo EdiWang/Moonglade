@@ -735,6 +735,12 @@
   <data name="Word filter mode" xml:space="preserve">
     <value>Wortfiltermodus</value>
   </data>
+  <data name="Word filter keywords" xml:space="preserve">
+    <value>Wortfilter-Schlüsselwörter</value>
+  </data>
+  <data name="Separate keywords with |" xml:space="preserve">
+    <value>Schlüsselwörter mit | trennen</value>
+  </data>
   <data name="Worker Process" xml:space="preserve">
     <value>Worker-Prozess</value>
   </data>
