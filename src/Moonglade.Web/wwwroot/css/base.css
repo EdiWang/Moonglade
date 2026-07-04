@@ -585,6 +585,3 @@ div.animbrand a:hover {
     background-color: transparent;
 }
 
-[data-bs-theme=dark] .tox .tox-edit-area::before {
-    border: 2px solid transparent !important;
-}

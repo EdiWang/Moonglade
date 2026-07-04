@@ -247,17 +247,17 @@ Before committing dependency changes:
 | --- | --- | --- | --- | --- |
 | 1 | Create research and migration task record | User selected ProseMirror | Task record exists under `docs/tasks/` | Complete |
 | 2 | Create standalone `Moonglade.Editor` repository scaffold | Task 1 and decision to avoid frontend build in Moonglade | `npm install`, `npm test`, `npm run build` in `Moonglade.Editor` | Complete |
-| 3 | Build ProseMirror schema, serializer, and sanitizer | Task 2 | Unit or browser fixture tests for HTML round-trip | Started |
-| 4 | Build basic editor view and toolbar shell | Task 3 | Manual browser check: editor loads existing HTML and syncs to textarea | Started |
-| 5 | Implement text formatting, headings, blockquote, lists, alignment, undo/redo | Task 4 | Browser checks and serialized HTML snapshots | Not started |
-| 6 | Implement link dialog and safe URL handling | Task 4 | Link add/edit/remove checks, unsafe URL stripping checks | Not started |
-| 7 | Implement image upload, paste, drag/drop, and image editing | Task 4 | Upload to `/image`, inserted image renders, `loading="lazy"` applied | Not started |
-| 8 | Implement code snippet insertion and language selection | Task 4 | Public highlight.js still highlights saved snippets | Not started |
-| 9 | Implement table insertion and editing controls | Task 4 | Add/delete row/column, header toggle, merge/split where supported | Not started |
-| 10 | Implement HTML source view/edit mode | Tasks 3-9 | Source edit round-trips through schema and sanitizer | Not started |
-| 11 | Choose and implement Moonglade consumption path for `Moonglade.Editor/dist` | Tasks 4-10 | Moonglade loads the built editor without npm/build tooling | Not started |
+| 3 | Build ProseMirror schema, serializer, and sanitizer | Task 2 | Unit or browser fixture tests for HTML round-trip | Complete |
+| 4 | Build basic editor view and toolbar shell | Task 3 | Manual browser check: editor loads existing HTML and syncs to textarea | Complete |
+| 5 | Implement text formatting, headings, blockquote, lists, alignment, undo/redo | Task 4 | Browser checks and serialized HTML snapshots | Complete |
+| 6 | Implement link dialog and safe URL handling | Task 4 | Link add/edit/remove checks, unsafe URL stripping checks | Complete |
+| 7 | Implement image upload, paste, drag/drop, and image editing | Task 4 | Upload to `/image`, inserted image renders, `loading="lazy"` applied | Complete |
+| 8 | Implement code snippet insertion and language selection | Task 4 | Public highlight.js still highlights saved snippets | Complete |
+| 9 | Implement table insertion and editing controls | Task 4 | Add/delete row/column, header toggle, merge/split where supported | Complete |
+| 10 | Implement HTML source view/edit mode | Tasks 3-9 | Source edit round-trips through schema and sanitizer | Complete |
+| 11 | Choose and implement Moonglade consumption path for `Moonglade.Editor/dist` | Tasks 4-10 | Moonglade loads the built editor without npm/build tooling | Complete |
 | 12 | Remove TinyMCE package/assets/config after parity | Task 11 | `dotnet build`, affected web tests, browser smoke tests | Not started |
-| 13 | Update README/AGENTS/docs after implementation | Task 12 | Docs mention ProseMirror and build steps accurately | Not started |
+| 13 | Update README/AGENTS/docs after implementation | Task 12 | Docs mention ProseMirror and build steps accurately | Started |
 
 ## Execution Order
 
@@ -271,7 +271,7 @@ Before committing dependency changes:
 
 ## Current Progress
 
-Research and planning are complete. No implementation code has been changed yet.
+Research and planning are complete. Moonglade.Editor first-version implementation is complete and verified locally. The first Moonglade integration batch is complete.
 
 Current decision:
 
@@ -279,6 +279,8 @@ Current decision:
 - Keep the editor first-party and focused on Moonglade's required feature set.
 - Keep frontend build tooling out of the Moonglade repository.
 - Build the editor in a separate repository at `E:\GitHub\ediwang\Moonglade.Editor`, then let Moonglade consume prebuilt `dist` assets or a package artifact.
+- Moonglade consumes copied built ESM release artifacts from `src/Moonglade.Web/wwwroot/lib/moonglade-editor/` and wires the post HTML editor path to `createMoongladeEditor(...)` through dynamic `import()`.
+- Do not remove TinyMCE until the Moonglade integration passes browser smoke tests for create, edit, save, preview, publish, editor switching, image upload, source mode, and table editing.
 
 ## Verification Log
 
@@ -291,6 +293,16 @@ Current decision:
 | 2026-06-30 | Created standalone `E:\GitHub\ediwang\Moonglade.Editor` scaffold | Complete | The editor project contains TypeScript, ProseMirror, esbuild, Vitest, AGENTS.md, README, demo, tests, and build output. |
 | 2026-06-30 | `npm test` in `Moonglade.Editor` | Passed | 3 Vitest/jsdom tests for HTML parsing, serialization, marks, and unsafe link stripping. |
 | 2026-06-30 | `npm run build` in `Moonglade.Editor` | Passed | Emitted ESM, browser global, CSS, sourcemaps, and TypeScript declarations under `dist/`. |
+| 2026-07-04 | Reviewed `Moonglade.Editor` AGENTS.md, README, implementation task, public API, and key source files | Complete | The editor exposes `createMoongladeEditor`, `getHTML`, `setHTML`, `syncToTextarea`, `focus`, `destroy`, `setSpellcheck`, configurable image upload, allowed image extensions, and code sample language options. |
+| 2026-07-04 | `npm test` in `Moonglade.Editor` | Passed | 4 Vitest/jsdom files and 86 tests passed, covering safety, HTML, commands, and editor behavior. |
+| 2026-07-04 | `npm run build` in `Moonglade.Editor` | Passed | Rebuilt ESM, browser-global bundle, CSS, maps, and declarations; size checks passed with JS and CSS under configured budgets. |
+| 2026-07-04 | Inspected current Moonglade TinyMCE integration points | Complete | Migration remains concentrated in `admin.editpost.editor.mjs`, `admin.editor.module.mjs`, `EditPost.cshtml`, `admin.css`, `Moonglade.Web.csproj`, and copied static assets. |
+| 2026-07-04 | `dotnet build src/Moonglade.Web/Moonglade.Web.csproj` | Passed | Main application baseline builds successfully on .NET SDK 10.0.301 with 0 warnings and 0 errors. |
+| 2026-07-04 | Copied `Moonglade.Editor/dist` ESM assets into Moonglade | Complete | Added `moonglade-editor.js`, `moonglade-editor.js.map`, and `moonglade-editor.css` under `src/Moonglade.Web/wwwroot/lib/moonglade-editor/`. |
+| 2026-07-04 | Wired `EditPost` HTML mode to Moonglade.Editor | Complete | HTML mode now renders an editor host plus hidden textarea, dynamically imports the ESM editor, syncs `formData.editorContent`, and keeps Markdown editor behavior separate. |
+| 2026-07-04 | `dotnet build src/Moonglade.Web/Moonglade.Web.csproj` after integration | Passed | Main application builds successfully with 0 warnings and 0 errors. |
+| 2026-07-04 | Browser static asset harness through `https://localhost:10210` | Passed | Verified ESM/CSS asset loading, editor rendering, typing, bold toolbar interaction, HTML source dialog, textarea/onChange sync, desktop screenshot, mobile toolbar wrapping, and no console warnings/errors. |
+| 2026-07-04 | Browser check for `/admin/post/edit` | Blocked | Both in-app Browser and Chrome were redirected to `/auth/signin` with CAPTCHA. Full admin create/edit/save/preview/publish smoke test still requires a signed-in browser session or user-assisted CAPTCHA completion. |
 
 ## Issues and Resolutions
 
@@ -303,6 +315,7 @@ Known risks to track:
 - Existing historical TinyMCE HTML may include unsupported tags or styles. The first implementation should load common legacy content gracefully rather than failing hard.
 - Introducing npm/esbuild adds a new developer prerequisite in `Moonglade.Editor`, but not in the main Moonglade repository.
 - Public rendering currently uses raw HTML for HTML posts, so unsafe output must be prevented at editor import/export boundaries.
+- Full admin workflow browser smoke testing is still pending because the local admin sign-in page requires CAPTCHA.
 
 ## Follow-ups
 
