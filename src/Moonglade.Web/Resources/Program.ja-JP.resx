@@ -1674,9 +1674,6 @@
   <data name="Please configure `SecondaryContainerName` in `appsettings.json`" xml:space="preserve">
     <value>`appsettings.json` で `SecondaryContainerName` を設定してください</value>
   </data>
-  <data name="Please follow {0} to setup content security API" xml:space="preserve">
-    <value>コンテンツセキュリティ API を設定するには {0} に従ってください</value>
-  </data>
   <data name="Please follow {0} to setup email API." xml:space="preserve">
     <value>メール API を設定するには {0} に従ってください。</value>
   </data>
@@ -1752,9 +1749,6 @@
   <data name="Time" xml:space="preserve">
     <value>時刻</value>
   </data>
-  <data name="Unknown provider, this feature may not be working." xml:space="preserve">
-    <value>不明なプロバイダーです。この機能は動作しない可能性があります。</value>
-  </data>
   <data name="Unnamed Button" xml:space="preserve">
     <value>名前のないボタン</value>
   </data>
@@ -1763,9 +1757,6 @@
   </data>
   <data name="Use Bootstrap Icons classes (e.g., bi-link-45deg, bi-github)" xml:space="preserve">
     <value>Bootstrap Icons クラスを使用します（例: bi-link-45deg、bi-github）</value>
-  </data>
-  <data name="Using Azure provider at {0}" xml:space="preserve">
-    <value>{0} の Azure プロバイダーを使用中</value>
   </data>
   <data name="Using local provider" xml:space="preserve">
     <value>ローカルプロバイダーを使用中</value>

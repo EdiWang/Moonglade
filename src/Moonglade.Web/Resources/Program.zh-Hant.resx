@@ -1674,9 +1674,6 @@
   <data name="Please configure `SecondaryContainerName` in `appsettings.json`" xml:space="preserve">
     <value>請在 `appsettings.json` 中設定 `SecondaryContainerName`</value>
   </data>
-  <data name="Please follow {0} to setup content security API" xml:space="preserve">
-    <value>請依照 {0} 設定內容安全 API</value>
-  </data>
   <data name="Please follow {0} to setup email API." xml:space="preserve">
     <value>請依照 {0} 設定電子郵件 API。</value>
   </data>
@@ -1752,9 +1749,6 @@
   <data name="Time" xml:space="preserve">
     <value>時間</value>
   </data>
-  <data name="Unknown provider, this feature may not be working." xml:space="preserve">
-    <value>未知提供者，此功能可能無法正常運作。</value>
-  </data>
   <data name="Unnamed Button" xml:space="preserve">
     <value>未命名按鈕</value>
   </data>
@@ -1763,9 +1757,6 @@
   </data>
   <data name="Use Bootstrap Icons classes (e.g., bi-link-45deg, bi-github)" xml:space="preserve">
     <value>使用 Bootstrap Icons 類別（例如 bi-link-45deg、bi-github）</value>
-  </data>
-  <data name="Using Azure provider at {0}" xml:space="preserve">
-    <value>正在使用位於 {0} 的 Azure 提供者</value>
   </data>
   <data name="Using local provider" xml:space="preserve">
     <value>正在使用本機提供者</value>
