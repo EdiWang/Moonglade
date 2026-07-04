@@ -6,17 +6,17 @@ Replace TinyMCE as the HTML post editor with a lighter custom editor built direc
 
 ## Background
 
-Moonglade currently supports two post content types: `html` and `markdown`. The Markdown editor uses Monaco. The HTML editor uses TinyMCE 8.6.0 and is loaded dynamically only on the admin post editing surface.
+Before this migration, Moonglade supported two post content types: `html` and `markdown`; Markdown used Monaco, while HTML used TinyMCE 8.6.0 loaded dynamically on the admin post editing surface. After the migration, HTML post editing is handled by Moonglade.Editor and Markdown remains on Monaco.
 
-Relevant local context inspected:
+Initial local context inspected before migration:
 
-- `src/Moonglade.Web/Moonglade.Web.csproj` references `TinyMCE` 8.6.0 and `Moonglade.MonacoEditor`.
-- `src/Moonglade.Web/wwwroot/js/app/admin.editpost.editor.mjs` loads `/lib/tinymce/tinymce.min.js`, initializes TinyMCE for `contentType === 'html'`, and manages editor switching.
-- `src/Moonglade.Web/wwwroot/js/app/admin.editor.module.mjs` contains `loadTinyMCE`, the TinyMCE toolbar/plugin list, image upload URL, code sample languages, and submit-time `triggerSave` behavior.
-- `src/Moonglade.Web/Pages/Admin/EditPost.cshtml` renders the HTML editor as `.post-content-textarea` and uses Alpine to switch between HTML and Markdown editors.
-- `src/Moonglade.Web/Controllers/ImageController.cs` already provides the `/image` upload endpoint with TinyMCE-compatible `{ location, filename }` output and a 5 MB upload limit.
+- `src/Moonglade.Web/Moonglade.Web.csproj` referenced `TinyMCE` 8.6.0 and `Moonglade.MonacoEditor`.
+- `src/Moonglade.Web/wwwroot/js/app/admin.editpost.editor.mjs` loaded `/lib/tinymce/tinymce.min.js`, initialized TinyMCE for `contentType === 'html'`, and managed editor switching.
+- `src/Moonglade.Web/wwwroot/js/app/admin.editor.module.mjs` contained `loadTinyMCE`, the TinyMCE toolbar/plugin list, image upload URL, code sample languages, and submit-time `triggerSave` behavior.
+- `src/Moonglade.Web/Pages/Admin/EditPost.cshtml` rendered the HTML editor as `.post-content-textarea` and used Alpine to switch between HTML and Markdown editors.
+- `src/Moonglade.Web/Controllers/ImageController.cs` already provides the `/image` upload endpoint with legacy-compatible `{ location, filename }` output and a 5 MB upload limit.
 - `src/Moonglade.Web/Pages/_PostContentRender.cshtml` renders HTML post content using `@Html.Raw(content)`, so editor output must be constrained and predictable.
-- `src/Moonglade.Web/wwwroot/css/admin.css` contains TinyMCE-specific `.tox-tinymce` layout styles.
+- `src/Moonglade.Web/wwwroot/css/admin.css` contained TinyMCE-specific `.tox-tinymce` layout styles.
 - No repository-level `package.json`, npm lock file, Vite, Rollup, webpack, or esbuild configuration was found outside static vendor assets.
 
 Relevant external research:
@@ -47,7 +47,7 @@ Reference links:
 
 ## Scope
 
-This task will eventually:
+This task covered:
 
 - Add a custom Moonglade HTML editor built directly on ProseMirror for post `html` content.
 - Keep the existing `contentType` values and persistence model unchanged.
@@ -65,7 +65,7 @@ This task will eventually:
   - Bullet and numbered lists.
   - Text alignment.
   - View and edit HTML source.
-- Remove TinyMCE only after the ProseMirror editor is feature-complete and verified.
+- Remove the legacy editor only after the ProseMirror editor is feature-complete and verified.
 - Update relevant documentation after implementation.
 
 ## Out of Scope
@@ -107,27 +107,27 @@ E:/GitHub/ediwang/Moonglade.Editor/
     moonglade-editor.css
 ```
 
-The editor project may use npm and esbuild internally. Moonglade should later consume one of these outputs:
+The editor project uses npm and esbuild internally. Moonglade currently consumes copied static files from `Moonglade.Editor/dist/`; other long-term consumption models considered were:
 
 - copied static files from `Moonglade.Editor/dist/`;
 - an npm package artifact;
 - a NuGet package that carries static web assets;
 - a git submodule/subtree plus checked-in `dist/`.
 
-Runtime integration:
+Runtime integration completed:
 
-- Replace `ensureTinyMCE` with `ensureMoongladeHtmlEditor`.
-- Replace `loadTinyMCE('.post-content-textarea')` with `createMoongladeEditor({ textarea, uploadUrl: '/image', ... })`.
-- Store the editor instance as `window.htmlContentEditor` or a local Alpine-bound field.
-- Provide methods:
+- Replaced the legacy HTML editor loader with `ensureMoongladeHtmlEditor`.
+- Replaced the legacy textarea editor initialization with `createMoongladeEditor({ textarea, uploadUrl: '/image', ... })`.
+- Stored the editor instance as `window.htmlContentEditor`.
+- Consumed methods:
   - `getHTML()`
   - `setHTML(html)`
   - `focus()`
   - `destroy()`
   - `syncToTextarea()`
   - `isDirty()` if needed later
-- Keep submit behavior compatible with existing `syncEditorContent`.
-- Preserve `formData.editorContent` as the posted HTML string.
+- Kept submit behavior compatible with existing `syncEditorContent`.
+- Preserved `formData.editorContent` as the posted HTML string.
 
 ## Schema Design
 
@@ -239,7 +239,7 @@ Before committing dependency changes:
 - Confirm exact versions and licenses.
 - Commit the npm lock file.
 - Add third-party license notices if the project convention requires it.
-- Keep TinyMCE until the replacement passes verification.
+- Remove legacy editor dependencies only after replacement verification passes.
 
 ## Task Breakdown
 
@@ -256,8 +256,8 @@ Before committing dependency changes:
 | 9 | Implement table insertion and editing controls | Task 4 | Add/delete row/column, header toggle, merge/split where supported | Complete |
 | 10 | Implement HTML source view/edit mode | Tasks 3-9 | Source edit round-trips through schema and sanitizer | Complete |
 | 11 | Choose and implement Moonglade consumption path for `Moonglade.Editor/dist` | Tasks 4-10 | Moonglade loads the built editor without npm/build tooling | Complete |
-| 12 | Remove TinyMCE package/assets/config after parity | Task 11 | `dotnet build`, affected web tests, browser smoke tests | Not started |
-| 13 | Update README/AGENTS/docs after implementation | Task 12 | Docs mention ProseMirror and build steps accurately | Started |
+| 12 | Remove TinyMCE package/assets/config after parity | Task 11 | `dotnet build`, affected web tests, browser smoke tests | Complete |
+| 13 | Update README/AGENTS/docs after implementation | Task 12 | Docs mention ProseMirror and build steps accurately | Complete |
 
 ## Execution Order
 
@@ -266,7 +266,7 @@ Before committing dependency changes:
 3. Keep Moonglade free of frontend build tooling; use only prebuilt editor assets during integration.
 4. Integrate the editor into the existing HTML editor branch while leaving Markdown untouched.
 5. Verify create/edit/save/preview/publish and editor switching.
-6. Only then remove TinyMCE.
+6. Remove legacy editor dependencies only after verification passes.
 7. Update long-lived docs after behavior and tooling are finalized.
 
 ## Current Progress
@@ -280,7 +280,7 @@ Current decision:
 - Keep frontend build tooling out of the Moonglade repository.
 - Build the editor in a separate repository at `E:\GitHub\ediwang\Moonglade.Editor`, then let Moonglade consume prebuilt `dist` assets or a package artifact.
 - Moonglade consumes copied built ESM release artifacts from `src/Moonglade.Web/wwwroot/lib/moonglade-editor/` and wires the post HTML editor path to `createMoongladeEditor(...)` through dynamic `import()`.
-- Do not remove TinyMCE until the Moonglade integration passes browser smoke tests for create, edit, save, preview, publish, editor switching, image upload, source mode, and table editing.
+- TinyMCE has been removed after Moonglade integration smoke testing passed.
 
 ## Verification Log
 
@@ -296,26 +296,29 @@ Current decision:
 | 2026-07-04 | Reviewed `Moonglade.Editor` AGENTS.md, README, implementation task, public API, and key source files | Complete | The editor exposes `createMoongladeEditor`, `getHTML`, `setHTML`, `syncToTextarea`, `focus`, `destroy`, `setSpellcheck`, configurable image upload, allowed image extensions, and code sample language options. |
 | 2026-07-04 | `npm test` in `Moonglade.Editor` | Passed | 4 Vitest/jsdom files and 86 tests passed, covering safety, HTML, commands, and editor behavior. |
 | 2026-07-04 | `npm run build` in `Moonglade.Editor` | Passed | Rebuilt ESM, browser-global bundle, CSS, maps, and declarations; size checks passed with JS and CSS under configured budgets. |
-| 2026-07-04 | Inspected current Moonglade TinyMCE integration points | Complete | Migration remains concentrated in `admin.editpost.editor.mjs`, `admin.editor.module.mjs`, `EditPost.cshtml`, `admin.css`, `Moonglade.Web.csproj`, and copied static assets. |
+| 2026-07-04 | Inspected then-current Moonglade TinyMCE integration points | Complete | Migration was concentrated in `admin.editpost.editor.mjs`, `admin.editor.module.mjs`, `EditPost.cshtml`, `admin.css`, `Moonglade.Web.csproj`, and copied static assets. |
 | 2026-07-04 | `dotnet build src/Moonglade.Web/Moonglade.Web.csproj` | Passed | Main application baseline builds successfully on .NET SDK 10.0.301 with 0 warnings and 0 errors. |
 | 2026-07-04 | Copied `Moonglade.Editor/dist` ESM assets into Moonglade | Complete | Added `moonglade-editor.js`, `moonglade-editor.js.map`, and `moonglade-editor.css` under `src/Moonglade.Web/wwwroot/lib/moonglade-editor/`. |
 | 2026-07-04 | Wired `EditPost` HTML mode to Moonglade.Editor | Complete | HTML mode now renders an editor host plus hidden textarea, dynamically imports the ESM editor, syncs `formData.editorContent`, and keeps Markdown editor behavior separate. |
 | 2026-07-04 | `dotnet build src/Moonglade.Web/Moonglade.Web.csproj` after integration | Passed | Main application builds successfully with 0 warnings and 0 errors. |
 | 2026-07-04 | Browser static asset harness through `https://localhost:10210` | Passed | Verified ESM/CSS asset loading, editor rendering, typing, bold toolbar interaction, HTML source dialog, textarea/onChange sync, desktop screenshot, mobile toolbar wrapping, and no console warnings/errors. |
 | 2026-07-04 | Browser check for `/admin/post/edit` | Blocked | Both in-app Browser and Chrome were redirected to `/auth/signin` with CAPTCHA. Full admin create/edit/save/preview/publish smoke test still requires a signed-in browser session or user-assisted CAPTCHA completion. |
+| 2026-07-04 | User-confirmed Moonglade admin smoke test | Passed | User reported the smoke test passed and asked to complete cleanup. |
+| 2026-07-04 | Removed TinyMCE runtime remnants | Complete | Removed the TinyMCE package reference, old editor initialization/fallback code, TinyMCE CSS files, TinyMCE-specific CSS selectors, and the untracked `wwwroot/lib/tinymce` vendor directory. |
+| 2026-07-04 | Residual reference scan after cleanup | Complete | Runtime/source references are gone; remaining TinyMCE mentions are historical notes in this task record only. |
+| 2026-07-04 | `dotnet build src/Moonglade.Web/Moonglade.Web.csproj` after cleanup | Passed | Main application builds successfully with 0 warnings and 0 errors. |
 
 ## Issues and Resolutions
 
-No implementation issues yet.
+No open implementation issues remain from this cleanup.
 
 Known risks to track:
 
 - HTML source mode can bypass toolbar constraints unless source import is sanitized through the schema.
 - Table editing is the highest-complexity requested feature.
-- Existing historical TinyMCE HTML may include unsupported tags or styles. The first implementation should load common legacy content gracefully rather than failing hard.
 - Introducing npm/esbuild adds a new developer prerequisite in `Moonglade.Editor`, but not in the main Moonglade repository.
 - Public rendering currently uses raw HTML for HTML posts, so unsafe output must be prevented at editor import/export boundaries.
-- Full admin workflow browser smoke testing is still pending because the local admin sign-in page requires CAPTCHA.
+- TinyMCE-authored historical post HTML may contain unsupported tags or styles; Moonglade.Editor imports through its schema and sanitizer, so unsupported content may be normalized when edited.
 
 ## Follow-ups
 
@@ -324,14 +327,14 @@ Known risks to track:
 - Decide link policy for `target="_blank"` and `rel`.
 - Decide how much table functionality is required for the first release: basic insert/edit versus merge/split/resizing.
 - Decide whether to add server-side HTML sanitization as a separate hardening task.
-- Decide whether to keep a temporary feature flag for switching between TinyMCE and ProseMirror during rollout.
+- Confirm whether a future release note should mention that HTML editor output may be normalized when legacy posts are edited.
 
 ## Notes
 
 Resume guidance for future agents:
 
 - Read `AGENTS.md` first.
-- Do not remove TinyMCE in the first implementation batch.
+- TinyMCE has been removed after the first integration batch passed smoke testing.
 - Keep changes scoped to the post HTML editor path.
 - Preserve Markdown editor behavior.
 - Preserve post content type values and the save payload shape.
