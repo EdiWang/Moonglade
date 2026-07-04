@@ -1,0 +1,4 @@
+interface:
+  display_name: "Update Moonglade Editor Assets"
+  short_description: "Sync Moonglade.Editor assets into Moonglade"
+  default_prompt: "Use $update-moonglade-editor-assets to rebuild Moonglade.Editor and sync its latest static assets into Moonglade."

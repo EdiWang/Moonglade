@@ -179,10 +179,13 @@ dotnet restore src/Moonglade.Web/Moonglade.Web.csproj
 dotnet build src/Moonglade.Web/Moonglade.Web.csproj
 dotnet test src/Tests/Moonglade.Features.Tests/Moonglade.Features.Tests.csproj
 dotnet test src/Tests/Moonglade.Web.Tests/Moonglade.Web.Tests.csproj
+powershell -ExecutionPolicy Bypass -File .codex/skills/update-moonglade-editor-assets/scripts/update-moonglade-editor-assets.ps1
 docker compose up -d
 ```
 
 The default local launch URL comes from `src/Moonglade.Web/Properties/launchSettings.json`: `https://localhost:10210`. The admin portal is `/admin`; the default local account is documented in the README.
+
+Project-level Codex skills live under `.codex/skills/`. Use `update-moonglade-editor-assets` when syncing the latest `Moonglade.Editor` build output into `src/Moonglade.Web/wwwroot/lib/moonglade-editor/`.
 
 ### Testing Conventions
 
