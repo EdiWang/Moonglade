@@ -1839,6 +1839,24 @@
   <data name="Taxonomy" xml:space="preserve">
     <value>カテゴリーとタグ</value>
   </data>
+  <data name="Recent Drafts" xml:space="preserve">
+    <value>最近の下書き</value>
+  </data>
+  <data name="Recent Published" xml:space="preserve">
+    <value>最近の公開</value>
+  </data>
+  <data name="Last Updated" xml:space="preserve">
+    <value>最終更新日時</value>
+  </data>
+  <data name="All Drafts" xml:space="preserve">
+    <value>すべての下書き</value>
+  </data>
+  <data name="All" xml:space="preserve">
+    <value>すべて</value>
+  </data>
+  <data name="None" xml:space="preserve">
+    <value>なし</value>
+  </data>
   <data name="Updated" xml:space="preserve">
     <value>更新しました</value>
   </data>

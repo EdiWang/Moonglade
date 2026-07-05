@@ -1839,6 +1839,24 @@
   <data name="Taxonomy" xml:space="preserve">
     <value>Kategorien und Tags</value>
   </data>
+  <data name="Recent Drafts" xml:space="preserve">
+    <value>Aktuelle Entwürfe</value>
+  </data>
+  <data name="Recent Published" xml:space="preserve">
+    <value>Aktuell veröffentlicht</value>
+  </data>
+  <data name="Last Updated" xml:space="preserve">
+    <value>Zuletzt aktualisiert</value>
+  </data>
+  <data name="All Drafts" xml:space="preserve">
+    <value>Alle Entwürfe</value>
+  </data>
+  <data name="All" xml:space="preserve">
+    <value>Alle</value>
+  </data>
+  <data name="None" xml:space="preserve">
+    <value>Keine</value>
+  </data>
   <data name="Updated" xml:space="preserve">
     <value>Aktualisiert</value>
   </data>

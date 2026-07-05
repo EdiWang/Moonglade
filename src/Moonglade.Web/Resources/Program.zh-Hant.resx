@@ -1839,6 +1839,24 @@
   <data name="Taxonomy" xml:space="preserve">
     <value>分類與標籤</value>
   </data>
+  <data name="Recent Drafts" xml:space="preserve">
+    <value>近期草稿</value>
+  </data>
+  <data name="Recent Published" xml:space="preserve">
+    <value>近期發佈</value>
+  </data>
+  <data name="Last Updated" xml:space="preserve">
+    <value>最後更新時間</value>
+  </data>
+  <data name="All Drafts" xml:space="preserve">
+    <value>全部草稿</value>
+  </data>
+  <data name="All" xml:space="preserve">
+    <value>全部</value>
+  </data>
+  <data name="None" xml:space="preserve">
+    <value>無</value>
+  </data>
   <data name="Updated" xml:space="preserve">
     <value>已更新</value>
   </data>

@@ -4,6 +4,10 @@
     ViewBag.Title = "Dashboard";
 }
 
+@section scripts {
+    <script type="module" src="~/js/app/admin.dashboard.mjs"></script>
+}
+
 <div class="admin-dashboard">
     <div class="d-flex flex-wrap align-items-center justify-content-between gap-2 mb-3">
         <div>
@@ -100,6 +104,68 @@
                            aria-label="@SharedLocalizer["Tags"]"></a>
                     </div>
                 </div>
+            </div>
+        </section>
+    </div>
+
+    <div class="row g-3 mt-1">
+        <section class="col-12 col-xl-6" aria-labelledby="recentDraftsTitle">
+            <div class="dashboard-panel h-100">
+                <div class="d-flex align-items-center justify-content-between gap-2 mb-3">
+                    <h2 id="recentDraftsTitle" class="admin-subtitle fw-bold mb-0">@SharedLocalizer["Recent Drafts"]</h2>
+                    <a class="btn btn-sm btn-outline-accent" asp-page="/Admin/Draft">
+                        @SharedLocalizer["All Drafts"]
+                    </a>
+                </div>
+                @if (Model.Stats.RecentDrafts.Count == 0)
+                {
+                    <div class="dashboard-empty text-muted">@SharedLocalizer["None"]</div>
+                }
+                else
+                {
+                    <div class="dashboard-post-list">
+                        @foreach (var post in Model.Stats.RecentDrafts)
+                        {
+                            <a class="dashboard-post-item" asp-page="/Admin/EditPost" asp-route-id="@post.Id">
+                                <span class="dashboard-post-title">@post.Title</span>
+                                <span class="dashboard-post-meta">
+                                    <time data-utc-label="@post.DateUtc.ToString("u")"
+                                          aria-label="@SharedLocalizer["Last Updated"]">@post.DateUtc.ToString("u")</time>
+                                </span>
+                            </a>
+                        }
+                    </div>
+                }
+            </div>
+        </section>
+
+        <section class="col-12 col-xl-6" aria-labelledby="recentPublishedTitle">
+            <div class="dashboard-panel h-100">
+                <div class="d-flex align-items-center justify-content-between gap-2 mb-3">
+                    <h2 id="recentPublishedTitle" class="admin-subtitle fw-bold mb-0">@SharedLocalizer["Recent Published"]</h2>
+                    <a class="btn btn-sm btn-outline-accent" asp-page="/Admin/Post">
+                        @SharedLocalizer["All"]
+                    </a>
+                </div>
+                @if (Model.Stats.RecentPublishedPosts.Count == 0)
+                {
+                    <div class="dashboard-empty text-muted">@SharedLocalizer["None"]</div>
+                }
+                else
+                {
+                    <div class="dashboard-post-list">
+                        @foreach (var post in Model.Stats.RecentPublishedPosts)
+                        {
+                            <a class="dashboard-post-item" asp-page="/Admin/EditPost" asp-route-id="@post.Id">
+                                <span class="dashboard-post-title">@post.Title</span>
+                                <span class="dashboard-post-meta">
+                                    <time data-utc-label="@post.DateUtc.ToString("u")"
+                                          aria-label="@SharedLocalizer["Publish Date"]">@post.DateUtc.ToString("u")</time>
+                                </span>
+                            </a>
+                        }
+                    </div>
+                }
             </div>
         </section>
     </div>

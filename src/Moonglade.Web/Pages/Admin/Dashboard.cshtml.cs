@@ -6,7 +6,7 @@ namespace Moonglade.Web.Pages.Admin;
 
 public class DashboardModel(IQueryMediator queryMediator) : PageModel
 {
-    public DashboardStats Stats { get; private set; }
+    public DashboardStats Stats { get; private set; } = default!;
 
     public async Task OnGetAsync(CancellationToken cancellationToken)
     {

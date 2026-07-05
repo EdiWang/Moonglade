@@ -10,7 +10,11 @@ public record DashboardStats(
     int DraftPostCount,
     int ScheduledPostCount,
     int CategoryCount,
-    int TagCount);
+    int TagCount,
+    IReadOnlyList<DashboardRecentPost> RecentDrafts,
+    IReadOnlyList<DashboardRecentPost> RecentPublishedPosts);
+
+public record DashboardRecentPost(Guid Id, string Title, DateTime DateUtc);
 
 public record GetDashboardStatsQuery(DateTime? UtcNow = null) : IQuery<DashboardStats>;
 
@@ -45,6 +49,26 @@ public class GetDashboardStatsQueryHandler(BlogDbContext db) : IQueryHandler<Get
         var categoryCount = await db.Category.CountAsync(ct);
         var tagCount = await db.Tag.CountAsync(ct);
 
+        var recentDrafts = await db.Post.AsNoTracking()
+            .Where(p => !p.IsDeleted && p.PostStatus == PostStatus.Draft)
+            .OrderByDescending(p => p.LastModifiedUtc ?? p.CreateTimeUtc)
+            .Take(2)
+            .Select(p => new DashboardRecentPost(
+                p.Id,
+                p.Title,
+                p.LastModifiedUtc ?? p.CreateTimeUtc))
+            .ToListAsync(ct);
+
+        var recentPublishedPosts = await db.Post.AsNoTracking()
+            .Where(p => !p.IsDeleted && p.PostStatus == PostStatus.Published && p.PubDateUtc != null)
+            .OrderByDescending(p => p.PubDateUtc)
+            .Take(2)
+            .Select(p => new DashboardRecentPost(
+                p.Id,
+                p.Title,
+                p.PubDateUtc.GetValueOrDefault()))
+            .ToListAsync(ct);
+
         return new DashboardStats(
             viewCounts?.Yesterday ?? 0,
             viewCounts?.ThisWeek ?? 0,
@@ -53,7 +77,9 @@ public class GetDashboardStatsQueryHandler(BlogDbContext db) : IQueryHandler<Get
             postCounts.GetValueOrDefault(PostStatus.Draft),
             postCounts.GetValueOrDefault(PostStatus.Scheduled),
             categoryCount,
-            tagCount);
+            tagCount,
+            recentDrafts,
+            recentPublishedPosts);
     }
 
     private static int GetDaysSinceMonday(DateTime date) => ((int)date.DayOfWeek + 6) % 7;

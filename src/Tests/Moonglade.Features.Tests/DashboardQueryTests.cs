@@ -57,6 +57,42 @@ public class DashboardQueryTests
     }
 
     [Fact]
+    public async Task GetDashboardStatsQuery_ReturnsRecentDraftsAndPublishedPosts()
+    {
+        using var db = CreateDbContext();
+
+        var oldDraftId = Guid.NewGuid();
+        var newDraftId = Guid.NewGuid();
+        var newestDraftId = Guid.NewGuid();
+        var oldPublishedId = Guid.NewGuid();
+        var newPublishedId = Guid.NewGuid();
+        var newestPublishedId = Guid.NewGuid();
+
+        db.Post.AddRange(
+            CreatePost(PostStatus.Draft, oldDraftId, "Old Draft", createTimeUtc: new DateTime(2024, 4, 1, 0, 0, 0, DateTimeKind.Utc)),
+            CreatePost(PostStatus.Draft, newDraftId, "New Draft", lastModifiedUtc: new DateTime(2024, 4, 3, 0, 0, 0, DateTimeKind.Utc)),
+            CreatePost(PostStatus.Draft, newestDraftId, "Newest Draft", lastModifiedUtc: new DateTime(2024, 4, 4, 0, 0, 0, DateTimeKind.Utc)),
+            CreatePost(PostStatus.Draft, Guid.NewGuid(), "Deleted Draft", isDeleted: true, lastModifiedUtc: new DateTime(2024, 4, 5, 0, 0, 0, DateTimeKind.Utc)),
+            CreatePost(PostStatus.Published, oldPublishedId, "Old Published", pubDateUtc: new DateTime(2024, 4, 1, 0, 0, 0, DateTimeKind.Utc)),
+            CreatePost(PostStatus.Published, newPublishedId, "New Published", pubDateUtc: new DateTime(2024, 4, 3, 0, 0, 0, DateTimeKind.Utc)),
+            CreatePost(PostStatus.Published, newestPublishedId, "Newest Published", pubDateUtc: new DateTime(2024, 4, 4, 0, 0, 0, DateTimeKind.Utc)),
+            CreatePost(PostStatus.Published, Guid.NewGuid(), "Deleted Published", isDeleted: true, pubDateUtc: new DateTime(2024, 4, 5, 0, 0, 0, DateTimeKind.Utc)));
+
+        await db.SaveChangesAsync(TestContext.Current.CancellationToken);
+
+        var handler = new GetDashboardStatsQueryHandler(db);
+
+        var stats = await handler.HandleAsync(new GetDashboardStatsQuery(), TestContext.Current.CancellationToken);
+
+        Assert.Equal([newestDraftId, newDraftId], stats.RecentDrafts.Select(p => p.Id));
+        Assert.Equal("Newest Draft", stats.RecentDrafts[0].Title);
+        Assert.Equal(new DateTime(2024, 4, 4, 0, 0, 0, DateTimeKind.Utc), stats.RecentDrafts[0].DateUtc);
+        Assert.Equal([newestPublishedId, newPublishedId], stats.RecentPublishedPosts.Select(p => p.Id));
+        Assert.Equal("Newest Published", stats.RecentPublishedPosts[0].Title);
+        Assert.Equal(new DateTime(2024, 4, 4, 0, 0, 0, DateTimeKind.Utc), stats.RecentPublishedPosts[0].DateUtc);
+    }
+
+    [Fact]
     public async Task GetDashboardStatsQuery_IncludesPreviousMonthViewsInCurrentWeek()
     {
         using var db = CreateDbContext();
@@ -87,21 +123,36 @@ public class DashboardQueryTests
             ViewCount = viewCount
         };
 
-    private static PostEntity CreatePost(PostStatus status, bool isDeleted = false) =>
+    private static PostEntity CreatePost(
+        PostStatus status,
+        bool isDeleted = false,
+        DateTime? pubDateUtc = null,
+        DateTime? createTimeUtc = null,
+        DateTime? lastModifiedUtc = null) =>
+        CreatePost(status, Guid.NewGuid(), "Test Post", isDeleted, pubDateUtc, createTimeUtc, lastModifiedUtc);
+
+    private static PostEntity CreatePost(
+        PostStatus status,
+        Guid id,
+        string title,
+        bool isDeleted = false,
+        DateTime? pubDateUtc = null,
+        DateTime? createTimeUtc = null,
+        DateTime? lastModifiedUtc = null) =>
         new()
         {
-            Id = Guid.NewGuid(),
-            Title = "Test Post",
+            Id = id,
+            Title = title,
             Slug = Guid.NewGuid().ToString("N"),
             Author = "Author",
             PostContent = "Content",
             CommentEnabled = true,
-            CreateTimeUtc = DateTime.UtcNow.AddDays(-1),
-            LastModifiedUtc = DateTime.UtcNow.AddDays(-1),
+            CreateTimeUtc = createTimeUtc ?? DateTime.UtcNow.AddDays(-1),
+            LastModifiedUtc = lastModifiedUtc,
             ContentAbstract = "Abstract",
             ContentLanguageCode = "en-us",
             IsFeedIncluded = true,
-            PubDateUtc = status == PostStatus.Published ? DateTime.UtcNow.AddDays(-1) : null,
+            PubDateUtc = status == PostStatus.Published ? pubDateUtc ?? DateTime.UtcNow.AddDays(-1) : null,
             PostStatus = status,
             IsDeleted = isDeleted,
             RouteLink = status == PostStatus.Published ? "2024/4/17/test-post" : null,
