@@ -14,7 +14,7 @@
             <h1 class="admin-dashboard-title mb-1">@SharedLocalizer["Dashboard"]</h1>
             <div class="text-muted">@SharedLocalizer["Blog overview"]</div>
         </div>
-        <a class="btn btn-accent" asp-page="/Admin/EditPost">
+        <a class="btn btn-outline-accent" asp-page="/Admin/EditPost">
             <i class="bi-plus-lg me-1"></i>
             @SharedLocalizer["New Post"]
         </a>
@@ -64,9 +64,6 @@
             <div class="dashboard-panel">
                 <div class="d-flex align-items-center justify-content-between mb-3">
                     <h2 id="postStatsTitle" class="admin-subtitle fw-bold mb-0">@SharedLocalizer["Posts"]</h2>
-                    <a class="btn btn-sm btn-outline-accent" asp-page="/Admin/Post" title="@SharedLocalizer["Posts"]" aria-label="@SharedLocalizer["Posts"]">
-                        <i class="bi-arrow-right"></i>
-                    </a>
                 </div>
                 <div class="dashboard-count-grid">
                     <div class="dashboard-count-item">
