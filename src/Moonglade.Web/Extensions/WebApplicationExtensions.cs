@@ -28,7 +28,9 @@ public static class WebApplicationExtensions
             SupportedUICultures = cultures
         });
 
-        var options = new RewriteOptions().AddRedirect(@"(.*)/$", @"$1", (int)HttpStatusCode.MovedPermanently);
+        var options = new RewriteOptions()
+            .AddRedirect(@"(.*)/$", @"$1", (int)HttpStatusCode.MovedPermanently)
+            .AddRedirect(@"^(?i:(?:index|default)\.(?:aspx?|htm|s?html|php|pl|cfm))$", "/", (int)HttpStatusCode.MovedPermanently);
         app.UseRewriter(options);
         app.UseStaticFiles();
         app.UseRouting();
