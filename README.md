@@ -54,7 +54,7 @@ docker compose up -d
 
 This mirrors how [edi.wang](https://edi.wang) is deployed, utilizing a variety of Azure services for maximum speed and security. **No automated script is provided**—manual resource creation is required.
 
-![Azure Architecture](https://cdn.edi.wang/web-assets/ediwang-azure-arch-visio-oct2024.svg)
+![Azure Architecture](https://img.edi.wang/ediwang-azure-arch-visio-oct2024.svg)
 
 ## 🛠️ Development
 
