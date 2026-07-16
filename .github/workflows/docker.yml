@@ -14,11 +14,15 @@ jobs:
     steps:
     - name: Check Out Repo
       uses: actions/checkout@v6
+      with:
+        fetch-depth: 0
+        fetch-tags: true
 
     - name: Docker meta
       id: meta
       uses: docker/metadata-action@v6
       with:
+        context: git
         images: ${{ secrets.DOCKER_HUB_USERNAME }}/moonglade
         tags: |
           type=ref,event=branch
