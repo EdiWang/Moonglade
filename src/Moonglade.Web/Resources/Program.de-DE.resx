@@ -735,6 +735,12 @@
   <data name="Word filter mode" xml:space="preserve">
     <value>Wortfiltermodus</value>
   </data>
+  <data name="Word filter keywords" xml:space="preserve">
+    <value>Wortfilter-Schlüsselwörter</value>
+  </data>
+  <data name="Separate keywords with |" xml:space="preserve">
+    <value>Schlüsselwörter mit | trennen</value>
+  </data>
   <data name="Worker Process" xml:space="preserve">
     <value>Worker-Prozess</value>
   </data>
@@ -1668,9 +1674,6 @@
   <data name="Please configure `SecondaryContainerName` in `appsettings.json`" xml:space="preserve">
     <value>Bitte konfigurieren Sie `SecondaryContainerName` in `appsettings.json`</value>
   </data>
-  <data name="Please follow {0} to setup content security API" xml:space="preserve">
-    <value>Bitte folgen Sie {0}, um die Content-Security-API einzurichten</value>
-  </data>
   <data name="Please follow {0} to setup email API." xml:space="preserve">
     <value>Bitte folgen Sie {0}, um die E-Mail-API einzurichten.</value>
   </data>
@@ -1746,9 +1749,6 @@
   <data name="Time" xml:space="preserve">
     <value>Zeit</value>
   </data>
-  <data name="Unknown provider, this feature may not be working." xml:space="preserve">
-    <value>Unbekannter Anbieter, diese Funktion funktioniert möglicherweise nicht.</value>
-  </data>
   <data name="Unnamed Button" xml:space="preserve">
     <value>Unbenannte Schaltfläche</value>
   </data>
@@ -1757,9 +1757,6 @@
   </data>
   <data name="Use Bootstrap Icons classes (e.g., bi-link-45deg, bi-github)" xml:space="preserve">
     <value>Bootstrap-Icons-Klassen verwenden (z. B. bi-link-45deg, bi-github)</value>
-  </data>
-  <data name="Using Azure provider at {0}" xml:space="preserve">
-    <value>Azure-Anbieter unter {0} wird verwendet</value>
   </data>
   <data name="Using local provider" xml:space="preserve">
     <value>Lokaler Anbieter wird verwendet</value>
@@ -1817,6 +1814,48 @@
   </data>
   <data name="Theme deleted." xml:space="preserve">
     <value>Theme gelöscht.</value>
+  </data>
+  <data name="Dashboard" xml:space="preserve">
+    <value>Dashboard</value>
+  </data>
+  <data name="Blog overview" xml:space="preserve">
+    <value>Blogübersicht</value>
+  </data>
+  <data name="New Post" xml:space="preserve">
+    <value>Neuer Beitrag</value>
+  </data>
+  <data name="Reading views" xml:space="preserve">
+    <value>Aufrufe</value>
+  </data>
+  <data name="Yesterday" xml:space="preserve">
+    <value>Gestern</value>
+  </data>
+  <data name="This Week" xml:space="preserve">
+    <value>Diese Woche</value>
+  </data>
+  <data name="This Month" xml:space="preserve">
+    <value>Dieser Monat</value>
+  </data>
+  <data name="Taxonomy" xml:space="preserve">
+    <value>Kategorien und Tags</value>
+  </data>
+  <data name="Recent Drafts" xml:space="preserve">
+    <value>Aktuelle Entwürfe</value>
+  </data>
+  <data name="Recent Published" xml:space="preserve">
+    <value>Aktuell veröffentlicht</value>
+  </data>
+  <data name="Last Updated" xml:space="preserve">
+    <value>Zuletzt aktualisiert</value>
+  </data>
+  <data name="All Drafts" xml:space="preserve">
+    <value>Alle Entwürfe</value>
+  </data>
+  <data name="All" xml:space="preserve">
+    <value>Alle</value>
+  </data>
+  <data name="None" xml:space="preserve">
+    <value>Keine</value>
   </data>
   <data name="Updated" xml:space="preserve">
     <value>Aktualisiert</value>

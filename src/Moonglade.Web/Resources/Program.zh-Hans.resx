@@ -735,6 +735,12 @@
   <data name="Word filter mode" xml:space="preserve">
     <value>违禁词屏蔽模式</value>
   </data>
+  <data name="Word filter keywords" xml:space="preserve">
+    <value>违禁词列表</value>
+  </data>
+  <data name="Separate keywords with |" xml:space="preserve">
+    <value>使用 | 分隔关键词</value>
+  </data>
   <data name="Worker Process" xml:space="preserve">
     <value>工作进程</value>
   </data>
@@ -1668,9 +1674,6 @@
   <data name="Please configure `SecondaryContainerName` in `appsettings.json`" xml:space="preserve">
     <value>请在 `appsettings.json` 中配置 `SecondaryContainerName`</value>
   </data>
-  <data name="Please follow {0} to setup content security API" xml:space="preserve">
-    <value>请按照 {0} 设置内容安全 API</value>
-  </data>
   <data name="Please follow {0} to setup email API." xml:space="preserve">
     <value>请按照 {0} 设置电子邮件 API。</value>
   </data>
@@ -1746,9 +1749,6 @@
   <data name="Time" xml:space="preserve">
     <value>时间</value>
   </data>
-  <data name="Unknown provider, this feature may not be working." xml:space="preserve">
-    <value>未知提供程序，此功能可能无法正常工作。</value>
-  </data>
   <data name="Unnamed Button" xml:space="preserve">
     <value>未命名按钮</value>
   </data>
@@ -1757,9 +1757,6 @@
   </data>
   <data name="Use Bootstrap Icons classes (e.g., bi-link-45deg, bi-github)" xml:space="preserve">
     <value>使用 Bootstrap Icons 类（例如 bi-link-45deg、bi-github）</value>
-  </data>
-  <data name="Using Azure provider at {0}" xml:space="preserve">
-    <value>正在使用位于 {0} 的 Azure 提供程序</value>
   </data>
   <data name="Using local provider" xml:space="preserve">
     <value>正在使用本地提供程序</value>
@@ -1817,6 +1814,48 @@
   </data>
   <data name="Theme deleted." xml:space="preserve">
     <value>主题已删除。</value>
+  </data>
+  <data name="Dashboard" xml:space="preserve">
+    <value>仪表盘</value>
+  </data>
+  <data name="Blog overview" xml:space="preserve">
+    <value>博客概览</value>
+  </data>
+  <data name="New Post" xml:space="preserve">
+    <value>新建文章</value>
+  </data>
+  <data name="Reading views" xml:space="preserve">
+    <value>阅读量</value>
+  </data>
+  <data name="Yesterday" xml:space="preserve">
+    <value>昨日</value>
+  </data>
+  <data name="This Week" xml:space="preserve">
+    <value>本周</value>
+  </data>
+  <data name="This Month" xml:space="preserve">
+    <value>本月</value>
+  </data>
+  <data name="Taxonomy" xml:space="preserve">
+    <value>分类和标签</value>
+  </data>
+  <data name="Recent Drafts" xml:space="preserve">
+    <value>近期草稿</value>
+  </data>
+  <data name="Recent Published" xml:space="preserve">
+    <value>近期发布</value>
+  </data>
+  <data name="Last Updated" xml:space="preserve">
+    <value>最后更新时间</value>
+  </data>
+  <data name="All Drafts" xml:space="preserve">
+    <value>全部草稿</value>
+  </data>
+  <data name="All" xml:space="preserve">
+    <value>全部</value>
+  </data>
+  <data name="None" xml:space="preserve">
+    <value>无</value>
   </data>
   <data name="Updated" xml:space="preserve">
     <value>已更新</value>

@@ -15,6 +15,7 @@ using Moonglade.IndexNow.Client;
 using Moonglade.Moderation;
 using Moonglade.Setup;
 using Moonglade.Syndication;
+using Moonglade.Web.Services;
 using Moonglade.Webmention;
 using System.Globalization;
 using System.Net.Http.Headers;
@@ -137,7 +138,7 @@ public static class ServiceCollectionExtensions
                 options.DataAnnotationLocalizerProvider = (_, factory) => factory.Create(typeof(Program)))
             .AddRazorPagesOptions(options =>
             {
-                options.Conventions.AddPageRoute("/Admin/Post", "admin");
+                options.Conventions.AddPageRoute("/Admin/Dashboard", "admin");
                 options.Conventions.AuthorizeFolder("/Admin");
             })
             .AddViewOptions(options =>
@@ -219,7 +220,8 @@ public static class ServiceCollectionExtensions
 
         services.AddEmailClient();
         services.AddIndexNowClient(configuration.GetSection("IndexNow"));
-        services.AddContentModerator(configuration);
+        services.AddScoped<IModerationKeywordProvider, BlogConfigModerationKeywordProvider>();
+        services.AddContentModerator();
 
         services.AddSingleton<ScheduledPublishWakeUp>();
         services.AddHostedService<ScheduledPublishService>();

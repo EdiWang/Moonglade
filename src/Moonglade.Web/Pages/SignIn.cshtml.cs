@@ -94,7 +94,7 @@ public class SignInModel(IOptions<AuthenticationSettings> authSettings,
 
                     logger.LogInformation("Authentication success for local account '{Username}'", Username);
 
-                    return RedirectToPage("/Admin/Post");
+                    return RedirectToPage("/Admin/Dashboard");
                 }
                 ModelState.AddModelError(string.Empty, "Invalid Login Attempt.");
                 return Page();

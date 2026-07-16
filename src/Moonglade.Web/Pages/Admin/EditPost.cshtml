@@ -31,6 +31,7 @@
 
 @section head {
     <link href="~/lib/tagify/tagify.css" rel="stylesheet" />
+    <link href="~/lib/moonglade-editor/moonglade-editor.css" rel="stylesheet" />
 }
 
 @Html.AntiForgeryToken()
@@ -70,7 +71,10 @@
                        x-on:change="onTitleChange" />
 
                 <template x-if="formData.contentType === 'html'">
-                    <textarea class="post-content-textarea" x-model="formData.editorContent"></textarea>
+                    <div class="post-editor-html-wrapper">
+                        <div id="html-content-editor"></div>
+                        <textarea class="post-content-textarea d-none" x-model="formData.editorContent"></textarea>
+                    </div>
                 </template>
                 <template x-if="formData.contentType === 'markdown'">
                     <div class="post-editor-md-wrapper">

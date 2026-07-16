@@ -29,10 +29,6 @@
 	</ItemGroup>
 	<ItemGroup>
 		<Content Update="appsettings.Development.json" CopyToPublishDirectory="Never" />
-		<Content Update="wwwroot\css\tinymce-custom-dark.css">
-			<ExcludeFromSingleFile>true</ExcludeFromSingleFile>
-			<CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
-		</Content>
 	</ItemGroup>
 	<ItemGroup>
 		<PackageReference Include="Cronos" Version="0.13.0" />
@@ -41,10 +37,9 @@
 		<PackageReference Include="Edi.ImageWatermark" Version="3.0.0" />
 		<PackageReference Include="Edi.PasswordGenerator" Version="2.3.0" />
 		<PackageReference Include="LiteBus.Extensions.MicrosoftDependencyInjection" Version="3.1.0" />
-		<PackageReference Include="Microsoft.Extensions.Diagnostics.HealthChecks.EntityFrameworkCore" Version="10.0.9" />
-		<PackageReference Include="Microsoft.Extensions.Logging.AzureAppServices" Version="10.0.9" />
+		<PackageReference Include="Microsoft.Extensions.Diagnostics.HealthChecks.EntityFrameworkCore" Version="10.0.10" />
+		<PackageReference Include="Microsoft.Extensions.Logging.AzureAppServices" Version="10.0.10" />
 
-		<PackageReference Include="TinyMCE" Version="8.6.0" />
 		<PackageReference Include="Moonglade.MonacoEditor" Version="0.55.1.1000" />
 	</ItemGroup>
 	<ItemGroup>

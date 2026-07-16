@@ -1,6 +1,10 @@
-import { loadTinyMCE } from './admin.editor.module.mjs';
+import { codeSampleLanguages } from './admin.editor.module.mjs';
+
+const htmlEditorModulePath = '/lib/moonglade-editor/moonglade-editor.js';
+const htmlEditorImageExtensions = ['.png', '.jpg', '.jpeg', '.gif', '.webp', '.svg'];
 
 const scriptPromises = new Map();
+let htmlEditorModulePromise = null;
 
 function loadScript(src) {
     if (scriptPromises.has(src)) {
@@ -62,9 +66,12 @@ function loadScript(src) {
 
 let monacoReady = false;
 
-async function ensureTinyMCE() {
-    if (window.tinyMCE) return;
-    await loadScript('/lib/tinymce/tinymce.min.js');
+async function ensureMoongladeHtmlEditor() {
+    if (!htmlEditorModulePromise) {
+        htmlEditorModulePromise = import(htmlEditorModulePath);
+    }
+
+    return await htmlEditorModulePromise;
 }
 
 async function ensureMonaco() {
@@ -104,8 +111,28 @@ export function createEditorMixin() {
 
         async initEditor() {
             if (this.formData.contentType === 'html') {
-                await ensureTinyMCE();
-                loadTinyMCE('.post-content-textarea');
+                const { createMoongladeEditor } = await ensureMoongladeHtmlEditor();
+                const editorElement = document.getElementById('html-content-editor');
+                const textarea = document.querySelector('.post-content-textarea');
+
+                if (editorElement && textarea) {
+                    if (window.htmlContentEditor) {
+                        window.htmlContentEditor.destroy();
+                    }
+
+                    window.htmlContentEditor = createMoongladeEditor({
+                        element: editorElement,
+                        textarea,
+                        height: '100%',
+                        spellcheck: true,
+                        uploadUrl: '/image',
+                        allowedImageExtensions: htmlEditorImageExtensions,
+                        codesample_languages: codeSampleLanguages,
+                        onChange: (html) => {
+                            this.formData.editorContent = html;
+                        }
+                    });
+                }
             }
 
             if (this.formData.contentType === 'markdown') {
@@ -159,8 +186,9 @@ export function createEditorMixin() {
             this.syncEditorContent();
 
             // Destroy current editors
-            if (window.tinyMCE) {
-                window.tinyMCE.remove();
+            if (window.htmlContentEditor) {
+                window.htmlContentEditor.destroy();
+                window.htmlContentEditor = null;
             }
             if (window.mdContentEditor) {
                 window.mdContentEditor.dispose();
@@ -173,12 +201,9 @@ export function createEditorMixin() {
         },
 
         syncEditorContent() {
-            if (window.tinyMCE) {
-                window.tinyMCE.triggerSave();
-                const ta = document.querySelector('.post-content-textarea');
-                if (ta) {
-                    this.formData.editorContent = ta.value;
-                }
+            if (window.htmlContentEditor) {
+                window.htmlContentEditor.syncToTextarea();
+                this.formData.editorContent = window.htmlContentEditor.getHTML();
             }
 
             if (window.mdContentEditor) {

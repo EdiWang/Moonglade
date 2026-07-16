@@ -2,6 +2,34 @@
 
 **Moonglade** is a personal blogging platform built for developers, optimized for seamless deployment on [**Microsoft Azure**](https://azure.microsoft.com/en-us/). It features essential blogging tools: posts, comments, categories, tags, archives, and pages.
 
+## What Moonglade Does
+
+Moonglade provides a self-hosted blog with a public reading experience and an authenticated admin portal. The core workflow is authoring posts and pages, organizing them with categories and tags, publishing immediately or on a schedule, and exposing the published content through web pages, feeds, sitemap, Webmention, and search-engine notification protocols.
+
+Key business areas include:
+
+- **Content publishing:** posts, drafts, scheduled posts, pages, featured/outdated flags, archives, recycle bin behavior, and route links for published posts.
+- **Reader interaction:** comments, replies, Webmentions, comment moderation, view counts, and optional email notifications.
+- **Site management:** runtime blog settings, widgets, themes, custom CSS, menus, image storage, account settings, and data import/export.
+- **Discovery and interoperability:** RSS, Atom, OPML, OpenSearch, FOAF, sitemap, robots.txt, IndexNow, reader-friendly markup, and health checks.
+
+## Repository Layout
+
+The main solution file is `src/Moonglade.slnx`.
+
+| Path | Purpose |
+| --- | --- |
+| `src/Moonglade.Web` | ASP.NET Core web host, Razor Pages, API controllers, endpoint mapping, filters, middleware wiring, and static assets. |
+| `src/Moonglade.Features` | Blog feature commands and queries for posts, pages, comments, categories, tags, assets, dashboard data, and recycle bin behavior. |
+| `src/Moonglade.Data` | EF Core `BlogDbContext`, entities, DTOs, mappings, and import/export primitives. |
+| `src/Moonglade.Data.SqlServer`, `src/Moonglade.Data.PostgreSql` | SQL Server and PostgreSQL provider registration and provider-specific EF Core behavior. |
+| `src/Moonglade.Configuration` | Persisted blog settings models, defaults, loading, and update commands. |
+| `src/Moonglade.Auth` | Local account and Microsoft Entra ID authentication support. |
+| `src/Moonglade.BackgroundServices` | Scheduled publishing, update checks, and fire-and-forget background work. |
+| `src/Moonglade.*` | Supporting projects for image storage, email, IndexNow, moderation, Webmention, syndication, themes, widgets, setup, utilities, and middleware. |
+| `src/Tests/Moonglade.*.Tests` | xUnit test projects aligned with the production projects. |
+| `Deployment`, `Dockerfile`, `compose.yaml` | Azure and Docker deployment assets. |
+
 ## 🚀 Deployment
 
 > This blogging system must not be used to serve users in mainland China or to publish content prohibited by Chinese law or any applicable regulations.
@@ -26,7 +54,7 @@ docker compose up -d
 
 This mirrors how [edi.wang](https://edi.wang) is deployed, utilizing a variety of Azure services for maximum speed and security. **No automated script is provided**—manual resource creation is required.
 
-![Azure Architecture](https://cdn.edi.wang/web-assets/ediwang-azure-arch-visio-oct2024.svg)
+![Azure Architecture](https://img.edi.wang/ediwang-azure-arch-visio-oct2024.svg)
 
 ## 🛠️ Development
 
@@ -44,14 +72,29 @@ This mirrors how [edi.wang](https://edi.wang) is deployed, utilizing a variety o
 | SQL Server       | `Server=(local);Database=moonglade;Trusted_Connection=True;`                                  |
 | PostgreSQL       | `User ID=***;Password=***;Host=localhost;Port=5432;Database=moonglade;Pooling=true;`          |
 
-Change `ConnectionStrings:DatabaseProvider` in `appsettings.json` to match your database type.` 
+Change `ConnectionStrings:DatabaseProvider` in `appsettings.json` to match your database type.
 
 - SQL Server: `SqlServer`
 - PostgreSQL: `PostgreSql`
 
 ### Build & Run
 
-1. Build and run `./src/Moonglade.sln`
+The commands below are derived from the project files and launch settings:
+
+```bash
+dotnet restore src/Moonglade.Web/Moonglade.Web.csproj
+dotnet build src/Moonglade.Web/Moonglade.Web.csproj
+dotnet run --project src/Moonglade.Web/Moonglade.Web.csproj
+```
+
+Focused tests can be run from the matching test project, for example:
+
+```bash
+dotnet test src/Tests/Moonglade.Features.Tests/Moonglade.Features.Tests.csproj
+dotnet test src/Tests/Moonglade.Web.Tests/Moonglade.Web.Tests.csproj
+```
+
+1. Build and run `./src/Moonglade.slnx` or `src/Moonglade.Web/Moonglade.Web.csproj`
 2. Access your blog:
     - **Home:** `https://localhost:10210`
     - **Admin:** `https://localhost:10210/admin`
@@ -121,33 +164,7 @@ Leave the `FileSystemPath` empty to use the default path (`~/home/moonglade/imag
 
 ### Comment Moderation
 
-#### Local Moderation Provider
-
-For basic keyword filtering, use the built-in local provider:
-
-```json
-"ContentModerator": {
-  "Provider": "Local",
-  "LocalKeywords": "fuck|shit",
-  "ApiEndpoint": "",
-  "ApiKey": ""
-}
-```
-
-#### Remote Content Moderator
-
-e.g. [Moonglade.ContentSecurity Azure Function](https://github.com/EdiWang/Moonglade.ContentSecurity):
-
-```json
-"ContentModerator": {
-  "Provider": "remote",
-  "ApiEndpoint": "<Your Azure Function Endpoint>",
-  "ApiKey": "<Your Azure Function Key>",
-  "ApiKeyHeader": "x-functions-key"
-}
-```
-
-Note: You can also implement your own content moderation API by mimicking the interface of Moonglade.ContentSecurity. You are not limited to Azure!
+Moonglade comment moderation runs locally and does not call a remote moderation API. Configure the word filter and keyword list from `/admin/settings/comment`.
 
 ### Email Notifications
 

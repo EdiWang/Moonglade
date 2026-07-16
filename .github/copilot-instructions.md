@@ -66,7 +66,7 @@
 - Public pages are Razor Pages and partials under `Moonglade.Web/Pages`; admin and JSON operations commonly use API controllers under `Moonglade.Web/Controllers`.
 - Respect antiforgery defaults. Only use `[IgnoreAntiforgeryToken]` for deliberate endpoints such as keep-alive or protocol callbacks.
 - Prefer JavaScript modules (`.mjs`) for application scripts. Keep third-party or bundled library files under the existing `wwwroot/lib` or `wwwroot/js/3rd` conventions.
-- Keep frontend changes compatible with Bootstrap, Alpine.js, TinyMCE, Monaco editor, Tagify, and the current Razor layout structure. Do not introduce a new frontend framework unless explicitly requested.
+- Keep frontend changes compatible with Bootstrap, Alpine.js, Monaco editor, Tagify, and the current Razor layout structure. Do not introduce a new frontend framework unless explicitly requested.
 - Keep localized UI text in resources when the text is part of server-rendered UI. Supported cultures currently include `en-US`, `zh-Hans`, `zh-Hant`, `de-DE`, and `ja-JP`.
 
 ## Configuration And Security

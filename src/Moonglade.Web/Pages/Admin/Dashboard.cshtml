@@ -1,0 +1,169 @@
+@page "/admin/dashboard"
+@model Moonglade.Web.Pages.Admin.DashboardModel
+@{
+    ViewBag.Title = "Dashboard";
+}
+
+@section scripts {
+    <script type="module" src="~/js/app/admin.dashboard.mjs"></script>
+}
+
+<div class="admin-dashboard">
+    <div class="d-flex flex-wrap align-items-center justify-content-between gap-2 mb-3">
+        <div>
+            <h1 class="admin-dashboard-title mb-1">@SharedLocalizer["Dashboard"]</h1>
+            <div class="text-muted">@SharedLocalizer["Blog overview"]</div>
+        </div>
+        <a class="btn btn-outline-accent" asp-page="/Admin/EditPost">
+            <i class="bi-plus-lg me-1"></i>
+            @SharedLocalizer["New Post"]
+        </a>
+    </div>
+
+    <section class="dashboard-section mb-4" aria-labelledby="viewStatsTitle">
+        <h2 id="viewStatsTitle" class="admin-subtitle fw-bold mb-2">@SharedLocalizer["Reading views"]</h2>
+        <div class="row g-3">
+            <div class="col-12 col-md-4">
+                <div class="dashboard-metric">
+                    <div class="dashboard-metric-icon text-bg-primary-subtle text-primary">
+                        <i class="bi-calendar-day"></i>
+                    </div>
+                    <div>
+                        <div class="dashboard-metric-label">@SharedLocalizer["Yesterday"]</div>
+                        <div class="dashboard-metric-value">@Model.Stats.YesterdayViews</div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-12 col-md-4">
+                <div class="dashboard-metric">
+                    <div class="dashboard-metric-icon text-bg-success-subtle text-success">
+                        <i class="bi-calendar-week"></i>
+                    </div>
+                    <div>
+                        <div class="dashboard-metric-label">@SharedLocalizer["This Week"]</div>
+                        <div class="dashboard-metric-value">@Model.Stats.ThisWeekViews</div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-12 col-md-4">
+                <div class="dashboard-metric">
+                    <div class="dashboard-metric-icon text-bg-warning-subtle text-warning">
+                        <i class="bi-calendar-month"></i>
+                    </div>
+                    <div>
+                        <div class="dashboard-metric-label">@SharedLocalizer["This Month"]</div>
+                        <div class="dashboard-metric-value">@Model.Stats.ThisMonthViews</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <div class="row g-3">
+        <section class="col-12 col-xl-8" aria-labelledby="postStatsTitle">
+            <div class="dashboard-panel">
+                <div class="d-flex align-items-center justify-content-between mb-3">
+                    <h2 id="postStatsTitle" class="admin-subtitle fw-bold mb-0">@SharedLocalizer["Posts"]</h2>
+                </div>
+                <div class="dashboard-count-grid">
+                    <div class="dashboard-count-item">
+                        <span class="dashboard-count-label">@SharedLocalizer["Published"]</span>
+                        <strong>@Model.Stats.PublishedPostCount</strong>
+                    </div>
+                    <div class="dashboard-count-item">
+                        <span class="dashboard-count-label">@SharedLocalizer["Drafts"]</span>
+                        <strong>@Model.Stats.DraftPostCount</strong>
+                    </div>
+                    <div class="dashboard-count-item">
+                        <span class="dashboard-count-label">@SharedLocalizer["Scheduled"]</span>
+                        <strong>@Model.Stats.ScheduledPostCount</strong>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section class="col-12 col-xl-4" aria-labelledby="taxonomyStatsTitle">
+            <div class="dashboard-panel">
+                <h2 id="taxonomyStatsTitle" class="admin-subtitle fw-bold mb-3">@SharedLocalizer["Taxonomy"]</h2>
+                <div class="dashboard-count-grid dashboard-taxonomy-grid">
+                    <div class="dashboard-count-item position-relative">
+                        <span class="dashboard-count-label">@SharedLocalizer["Categories"]</span>
+                        <strong>@Model.Stats.CategoryCount</strong>
+                        <a class="stretched-link dashboard-count-link"
+                           asp-page="/Admin/Category"
+                           aria-label="@SharedLocalizer["Categories"]"></a>
+                    </div>
+                    <div class="dashboard-count-item position-relative">
+                        <span class="dashboard-count-label">@SharedLocalizer["Tags"]</span>
+                        <strong>@Model.Stats.TagCount</strong>
+                        <a class="stretched-link dashboard-count-link"
+                           asp-page="/Admin/Tags"
+                           aria-label="@SharedLocalizer["Tags"]"></a>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </div>
+
+    <div class="row g-3 mt-1">
+        <section class="col-12 col-xl-6" aria-labelledby="recentDraftsTitle">
+            <div class="dashboard-panel h-100">
+                <div class="d-flex align-items-center justify-content-between gap-2 mb-3">
+                    <h2 id="recentDraftsTitle" class="admin-subtitle fw-bold mb-0">@SharedLocalizer["Recent Drafts"]</h2>
+                    <a class="btn btn-sm btn-outline-accent" asp-page="/Admin/Draft">
+                        @SharedLocalizer["All Drafts"]
+                    </a>
+                </div>
+                @if (Model.Stats.RecentDrafts.Count == 0)
+                {
+                    <div class="dashboard-empty text-muted">@SharedLocalizer["None"]</div>
+                }
+                else
+                {
+                    <div class="dashboard-post-list">
+                        @foreach (var post in Model.Stats.RecentDrafts)
+                        {
+                            <a class="dashboard-post-item" asp-page="/Admin/EditPost" asp-route-id="@post.Id">
+                                <span class="dashboard-post-title">@post.Title</span>
+                                <span class="dashboard-post-meta">
+                                    <time data-utc-label="@post.DateUtc.ToString("u")"
+                                          aria-label="@SharedLocalizer["Last Updated"]">@post.DateUtc.ToString("u")</time>
+                                </span>
+                            </a>
+                        }
+                    </div>
+                }
+            </div>
+        </section>
+
+        <section class="col-12 col-xl-6" aria-labelledby="recentPublishedTitle">
+            <div class="dashboard-panel h-100">
+                <div class="d-flex align-items-center justify-content-between gap-2 mb-3">
+                    <h2 id="recentPublishedTitle" class="admin-subtitle fw-bold mb-0">@SharedLocalizer["Recent Published"]</h2>
+                    <a class="btn btn-sm btn-outline-accent" asp-page="/Admin/Post">
+                        @SharedLocalizer["All"]
+                    </a>
+                </div>
+                @if (Model.Stats.RecentPublishedPosts.Count == 0)
+                {
+                    <div class="dashboard-empty text-muted">@SharedLocalizer["None"]</div>
+                }
+                else
+                {
+                    <div class="dashboard-post-list">
+                        @foreach (var post in Model.Stats.RecentPublishedPosts)
+                        {
+                            <a class="dashboard-post-item" asp-page="/Admin/EditPost" asp-route-id="@post.Id">
+                                <span class="dashboard-post-title">@post.Title</span>
+                                <span class="dashboard-post-meta">
+                                    <time data-utc-label="@post.DateUtc.ToString("u")"
+                                          aria-label="@SharedLocalizer["Publish Date"]">@post.DateUtc.ToString("u")</time>
+                                </span>
+                            </a>
+                        }
+                    </div>
+                }
+            </div>
+        </section>
+    </div>
+</div>

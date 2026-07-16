@@ -1,41 +1,14 @@
-﻿using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Options;
+using Microsoft.Extensions.DependencyInjection.Extensions;
 
 namespace Moonglade.Moderation;
 
 public static class ServiceCollectionExtensions
 {
-    public static IServiceCollection AddContentModerator(this IServiceCollection services, IConfiguration configuration)
+    public static IServiceCollection AddContentModerator(this IServiceCollection services)
     {
-        // Configure options
-        services.Configure<ContentModeratorOptions>(configuration.GetSection("ContentModerator"));
-
-        // Register services based on provider
-        services.AddSingleton<ILocalModerationService>(provider =>
-        {
-            var options = provider.GetRequiredService<IOptions<ContentModeratorOptions>>().Value;
-            return new LocalModerationService(options.LocalKeywords ?? string.Empty);
-        });
-
-        // Configure HttpClient for remote service
-        services.AddHttpClient<IRemoteModerationService, RemoteModerationService>((serviceProvider, client) =>
-        {
-            var options = serviceProvider.GetRequiredService<IOptions<ContentModeratorOptions>>().Value;
-
-            if (!string.IsNullOrWhiteSpace(options.ApiEndpoint))
-            {
-                client.BaseAddress = new Uri(options.ApiEndpoint);
-                client.Timeout = TimeSpan.FromSeconds(options.TimeoutSeconds);
-
-                if (!string.IsNullOrWhiteSpace(options.ApiKey))
-                {
-                    client.DefaultRequestHeaders.Add(options.ApiKeyHeader, options.ApiKey);
-                }
-            }
-        }).AddStandardResilienceHandler();
-
-        // Register main service
+        services.TryAddScoped<IModerationKeywordProvider, EmptyModerationKeywordProvider>();
+        services.AddScoped<ILocalModerationService, LocalModerationService>();
         services.AddScoped<IModeratorService, MoongladeModeratorService>();
 
         return services;

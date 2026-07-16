@@ -56,7 +56,7 @@ public class AddRequestCountCommandHandler(
 
             if (postLock.CurrentCount == 1)
             {
-                _locks.TryRemove(request.PostId, out _);
+                _locks.TryRemove(new KeyValuePair<Guid, SemaphoreSlim>(request.PostId, postLock));
             }
         }
     }

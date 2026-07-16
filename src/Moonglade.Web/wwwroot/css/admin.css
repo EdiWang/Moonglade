@@ -158,10 +158,16 @@
     overflow: hidden;
 }
 
-    .post-editor-main .tox-tinymce {
+    .post-editor-main .post-editor-html-wrapper {
+        display: flex;
+        flex: 1 1 0;
+        flex-direction: column;
+        min-height: 200px;
+    }
+
+    .post-editor-main .mg-editor {
         flex: 1 1 0;
         min-height: 200px;
-        height: auto !important;
     }
 
 .post-editor-md-wrapper {
@@ -275,10 +281,6 @@
             vertical-align: middle;
         }
 
-div.mce-fullscreen {
-    z-index: 1050;
-}
-
 .tagify {
     width: 100% !important;
 }
@@ -293,6 +295,10 @@ div.mce-fullscreen {
 .tag-manager-container {
     height: calc(100vh - 215px);
     overflow-y: scroll;
+}
+
+.admin-tags-filter {
+    max-width: 360px;
 }
 
 .ul-tag-mgr {
