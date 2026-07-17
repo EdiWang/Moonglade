@@ -166,6 +166,17 @@ Leave the `FileSystemPath` empty to use the default path (`~/home/moonglade/imag
 
 Moonglade comment moderation runs locally and does not call a remote moderation API. Configure the word filter and keyword list from `/admin/settings/comment`.
 
+### Security HTTP Headers
+
+Moonglade always emits `X-Content-Type-Options: nosniff`. To enable a custom Content Security Policy response header, set `EnableCSP` to `true` and provide the policy in `CSPValue`:
+
+```json
+{
+  "EnableCSP": true,
+  "CSPValue": "default-src 'self'; img-src 'self' https: data:"
+}
+```
+
 ### Email Notifications
 
 For notifications on new comments, replies and webmentions, use [Moonglade.Email Azure Function](https://github.com/EdiWang/Moonglade.Email):

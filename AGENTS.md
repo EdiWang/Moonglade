@@ -43,6 +43,7 @@ Important configuration areas:
 | `Email` | Notification API endpoint/key/header. | Optional | Store real keys outside source control. |
 | `IndexNow` | API key, ping targets, and cooldown interval. | Optional | API key also maps the IndexNow verification file endpoint. |
 | `ForwardedHeaders` | Reverse proxy/client IP configuration. | Deployment-dependent | Required behind some proxies/load balancers. |
+| `EnableCSP`, `CSPValue` | Optional Content Security Policy response header. | Optional | `X-Content-Type-Options: nosniff` is always emitted; CSP is emitted only when enabled and non-empty. |
 | `ImageStorage` | Selects `filesystem` or `azurestorage` and related paths/container names. | Yes | Use environment overrides for provider secrets and production paths. |
 | `DefaultEditor` | Default post content editor/content type. | Optional | Used during startup backfill for older posts. |
 | `PostCacheMinutes`, `PagesCacheMinutes`, `WidgetCacheMinutes` | Cache durations. | Optional | Revisit when changing rendering or invalidation paths. |
@@ -70,7 +71,7 @@ Important configuration areas:
 
 ### Configuration
 
-- Application-level configuration lives in `src/Moonglade.Web/appsettings.json`, including database, authentication, captcha, image storage, email, IndexNow, cache durations, and background task switches.
+- Application-level configuration lives in `src/Moonglade.Web/appsettings.json`, including database, authentication, captcha, image storage, email, IndexNow, security headers, cache durations, and background task switches.
 - Runtime blog settings are managed by `Moonglade.Configuration.BlogConfig` and persisted in the `BlogConfiguration` table. When adding a blog setting, follow the `IBlogSettings<T>` pattern, provide a default value, and consider initialization and update commands.
 - `/admin/settings` is the main UI for blog settings. Do not hard-code administrator-configurable blog behavior in the Web layer.
 
