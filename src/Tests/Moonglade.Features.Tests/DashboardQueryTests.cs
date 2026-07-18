@@ -1,7 +1,6 @@
 using Moonglade.Data;
 using Moonglade.Data.Entities;
 using Moonglade.Features.Dashboard;
-using Moonglade.Features.Post;
 
 namespace Moonglade.Features.Tests;
 
