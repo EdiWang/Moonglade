@@ -1,5 +1,6 @@
 using LiteBus.Commands.Abstractions;
 using Microsoft.AspNetCore.Authentication;
+using Microsoft.AspNetCore.Authentication.OpenIdConnect;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
@@ -66,10 +67,41 @@ public class SignInModelTests
             Times.Never);
     }
 
+    [Fact]
+    public async Task OnPostAsync_WhenProviderIsEntraId_ChallengesWithoutLocalLogin()
+    {
+        var authenticationService = new Mock<IAuthenticationService>();
+        var commandMediator = new StubCommandMediator(loginValid: true);
+        var model = CreateModel(
+            LocalAccountSettings.DefaultValue,
+            authenticationService,
+            commandMediator,
+            AuthenticationProvider.EntraID);
+        model.Username = "admin";
+        model.Password = "admin123";
+
+        var result = await model.OnPostAsync();
+
+        var challenge = Assert.IsType<ChallengeResult>(result);
+        Assert.Contains(OpenIdConnectDefaults.AuthenticationScheme, challenge.AuthenticationSchemes);
+        Assert.Equal(0, commandMediator.SendResultCallCount);
+    }
+
     private static SignInModel CreateModel(
         LocalAccountSettings account,
         bool loginValid,
-        Mock<IAuthenticationService> authenticationService)
+        Mock<IAuthenticationService> authenticationService) =>
+        CreateModel(
+            account,
+            authenticationService,
+            new StubCommandMediator(loginValid),
+            AuthenticationProvider.Local);
+
+    private static SignInModel CreateModel(
+        LocalAccountSettings account,
+        Mock<IAuthenticationService> authenticationService,
+        StubCommandMediator commandMediator,
+        AuthenticationProvider provider)
     {
         var services = new ServiceCollection()
             .AddSingleton(authenticationService.Object)
@@ -87,8 +119,8 @@ public class SignInModelTests
         };
 
         var model = new SignInModel(
-            Options.Create(new AuthenticationSettings { Provider = AuthenticationProvider.Local }),
-            new StubCommandMediator(loginValid),
+            Options.Create(new AuthenticationSettings { Provider = provider }),
+            commandMediator,
             Mock.Of<ILogger<SignInModel>>(),
             blogConfig,
             new LocalAccountTotpService());
@@ -103,6 +135,8 @@ public class SignInModelTests
 
     private sealed class StubCommandMediator(bool loginValid) : ICommandMediator
     {
+        public int SendResultCallCount { get; private set; }
+
         public Task SendAsync(ICommand command, CommandMediationSettings? settings, CancellationToken cancellationToken) =>
             Task.CompletedTask;
 
@@ -111,6 +145,8 @@ public class SignInModelTests
             CommandMediationSettings? settings,
             CancellationToken cancellationToken)
         {
+            SendResultCallCount++;
+
             if (command is ValidateLoginCommand && typeof(TCommandResult) == typeof(bool))
             {
                 return Task.FromResult((TCommandResult)(object)loginValid);

@@ -61,6 +61,19 @@ public class SignInModel(IOptions<AuthenticationSettings> authSettings,
     {
         try
         {
+            switch (_authenticationSettings.Provider)
+            {
+                case AuthenticationProvider.Local:
+                    break;
+                case AuthenticationProvider.EntraID:
+                    return Challenge(
+                        new AuthenticationProperties { RedirectUri = "/" },
+                        OpenIdConnectDefaults.AuthenticationScheme);
+                default:
+                    Response.StatusCode = StatusCodes.Status501NotImplemented;
+                    return Content("Invalid AuthenticationProvider, please check system settings.");
+            }
+
             // Check User-Agent
             var ua = Request.Headers["User-Agent"].ToString();
             if (string.IsNullOrWhiteSpace(ua))

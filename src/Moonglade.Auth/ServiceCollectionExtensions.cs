@@ -33,19 +33,21 @@ public static class ServiceCollectionExtensions
                         options.AccessDeniedPath = "/auth/accessdenied";
                         options.LoginPath = "/auth/signin";
                         options.LogoutPath = "/auth/signout";
-                    })
-                    .AddCookie(BlogAuthSchemas.LocalAccountSetup, options =>
-                    {
-                        options.Cookie.Name = ".Moonglade.LocalAccount.Setup";
-                        options.LoginPath = "/auth/signin";
-                        options.ExpireTimeSpan = TimeSpan.FromMinutes(10);
-                        options.SlidingExpiration = false;
                     });
                 break;
             default:
                 var msg = $"Provider {authentication.Provider} is not supported.";
                 throw new NotSupportedException(msg);
         }
+
+        services.AddAuthentication()
+            .AddCookie(BlogAuthSchemas.LocalAccountSetup, options =>
+            {
+                options.Cookie.Name = ".Moonglade.LocalAccount.Setup";
+                options.LoginPath = "/auth/signin";
+                options.ExpireTimeSpan = TimeSpan.FromMinutes(10);
+                options.SlidingExpiration = false;
+            });
 
         return services;
     }
