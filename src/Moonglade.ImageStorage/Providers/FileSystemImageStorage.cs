@@ -36,20 +36,9 @@ public class FileSystemImageStorage(FileSystemImageConfiguration imgConfig, ILog
         }
     }
 
-    /// <summary>
-    /// Retrieves an image from the file system storage.
-    /// </summary>
-    /// <param name="fileName">The name of the image file to retrieve.</param>
-    /// <returns>
-    /// An <see cref="ImageInfo"/> object containing the image data and metadata,
-    /// or null if the file does not exist.
-    /// </returns>
-    /// <remarks>
-    /// Returns null instead of throwing FileNotFoundException to prevent
-    /// potential denial of service attacks from repeated 404 image requests.
-    /// </remarks>
-    public async Task<ImageInfo> GetAsync(string fileName)
+    public async Task<ImageInfo> GetInfoAsync(string fileName)
     {
+        await Task.CompletedTask;
         ValidateFileName(fileName);
         var imagePath = Path.Join(_path, fileName);
 
@@ -61,18 +50,40 @@ public class FileSystemImageStorage(FileSystemImageConfiguration imgConfig, ILog
             return null;
         }
 
+        var fileInfo = new FileInfo(imagePath);
         var extension = Path.GetExtension(imagePath);
-
-        var fileType = extension.Replace(".", string.Empty);
-        var imageBytes = await ReadFileAsync(imagePath);
+        var fileType = extension.TrimStart('.');
 
         var imageInfo = new ImageInfo
         {
-            ImageBytes = imageBytes,
-            ImageExtensionName = fileType
+            ImageExtensionName = fileType,
+            ContentType = ImageInfo.GetContentType(fileType),
+            ContentLength = fileInfo.Length,
+            LastModifiedUtc = fileInfo.LastWriteTimeUtc,
+            EntityTag = CreateEntityTag(fileInfo)
         };
 
         return imageInfo;
+    }
+
+    public async Task<Stream> OpenReadAsync(string fileName)
+    {
+        await Task.CompletedTask;
+        ValidateFileName(fileName);
+        var imagePath = Path.Join(_path, fileName);
+
+        if (!File.Exists(imagePath))
+        {
+            return null;
+        }
+
+        return new FileStream(
+            imagePath,
+            FileMode.Open,
+            FileAccess.Read,
+            FileShare.Read,
+            bufferSize: 64 * 1024,
+            FileOptions.Asynchronous | FileOptions.SequentialScan);
     }
 
     /// <summary>
@@ -128,18 +139,9 @@ public class FileSystemImageStorage(FileSystemImageConfiguration imgConfig, ILog
         }
     }
 
-    /// <summary>
-    /// Asynchronously reads the entire contents of a file into a byte array.
-    /// </summary>
-    /// <param name="filename">The path to the file to read.</param>
-    /// <returns>A byte array containing the file contents.</returns>
-    private static async Task<byte[]> ReadFileAsync(string filename)
-    {
-        await using var file = new FileStream(filename, FileMode.Open, FileAccess.Read, FileShare.Read, 4096, true);
-        var buff = new byte[file.Length];
-        await file.ReadExactlyAsync(buff.AsMemory(0, (int)file.Length));
-        return buff;
-    }
+    private static string CreateEntityTag(FileInfo fileInfo)
+        => $"\"{fileInfo.LastWriteTimeUtc.Ticks:x}-{fileInfo.Length:x}\"";
+
 
     /// <summary>
     /// Saves an image to the file system storage.

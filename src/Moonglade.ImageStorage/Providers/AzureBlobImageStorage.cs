@@ -141,7 +141,7 @@ public class AzureBlobImageStorage : IBlogImageStorage
             var blob = container.GetBlobClient(fileName);
             var blobHttpHeader = new BlobHttpHeaders
             {
-                ContentType = GetContentType(Path.GetExtension(fileName))
+                ContentType = ImageInfo.GetContentType(Path.GetExtension(fileName))
             };
 
             await using var fileStream = new MemoryStream(imageBytes);
@@ -156,27 +156,6 @@ public class AzureBlobImageStorage : IBlogImageStorage
             _logger.LogError(ex, "Failed to upload '{FileName}' to Azure Blob Storage.", fileName);
             throw;
         }
-    }
-
-    /// <summary>
-    /// Determines the appropriate MIME content type based on the file extension.
-    /// </summary>
-    /// <param name="extension">The file extension including the leading dot.</param>
-    /// <returns>The MIME content type string for the specified file extension.</returns>
-    private static string GetContentType(string extension)
-    {
-        return extension.ToLowerInvariant() switch
-        {
-            ".jpg" or ".jpeg" => "image/jpeg",
-            ".png" => "image/png",
-            ".gif" => "image/gif",
-            ".webp" => "image/webp",
-            ".svg" => "image/svg+xml",
-            ".bmp" => "image/bmp",
-            ".tiff" or ".tif" => "image/tiff",
-            ".ico" => "image/x-icon",
-            _ => "application/octet-stream"
-        };
     }
 
     /// <summary>
@@ -210,13 +189,62 @@ public class AzureBlobImageStorage : IBlogImageStorage
         }
     }
 
-    /// <summary>
-    /// Retrieves an image from the primary blob container.
-    /// </summary>
-    /// <param name="fileName">The name of the file to retrieve.</param>
-    /// <returns>A task that represents the asynchronous get operation. The task result contains the image information, or null if the image does not exist.</returns>
-    /// <exception cref="ArgumentException">Thrown when the file name is null, empty, whitespace, or has no file extension.</exception>
-    public async Task<ImageInfo> GetAsync(string fileName)
+    public async Task<ImageInfo> GetInfoAsync(string fileName)
+    {
+        var extension = ValidateImageFileName(fileName);
+
+        try
+        {
+            var blobClient = _container.GetBlobClient(fileName);
+            var propertiesResponse = await blobClient.GetPropertiesAsync().ConfigureAwait(false);
+            var properties = propertiesResponse.Value;
+
+            _logger.LogInformation("Fetched blob metadata for '{FileName}' from Azure Blob Storage.", fileName);
+            return new ImageInfo
+            {
+                ImageExtensionName = extension.TrimStart('.'),
+                ContentType = string.IsNullOrWhiteSpace(properties.ContentType)
+                    ? ImageInfo.GetContentType(extension)
+                    : properties.ContentType,
+                ContentLength = properties.ContentLength,
+                LastModifiedUtc = properties.LastModified,
+                EntityTag = properties.ETag.ToString()
+            };
+        }
+        catch (RequestFailedException ex) when (ex.Status == 404)
+        {
+            _logger.LogWarning("Blob '{FileName}' does not exist.", fileName);
+            return null;
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError(ex, "Failed to fetch blob metadata for '{FileName}' from Azure Blob Storage.", fileName);
+            throw;
+        }
+    }
+
+    public async Task<Stream> OpenReadAsync(string fileName)
+    {
+        ValidateImageFileName(fileName);
+
+        try
+        {
+            var blobClient = _container.GetBlobClient(fileName);
+            return await blobClient.OpenReadAsync(new BlobOpenReadOptions(allowModifications: false)).ConfigureAwait(false);
+        }
+        catch (RequestFailedException ex) when (ex.Status == 404)
+        {
+            _logger.LogWarning("Blob '{FileName}' does not exist.", fileName);
+            return null;
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError(ex, "Failed to open blob stream for '{FileName}' from Azure Blob Storage.", fileName);
+            throw;
+        }
+    }
+
+    private string ValidateImageFileName(string fileName)
     {
         ArgumentException.ThrowIfNullOrWhiteSpace(fileName);
 
@@ -227,30 +255,6 @@ public class AzureBlobImageStorage : IBlogImageStorage
             throw new ArgumentException("File extension is empty.", nameof(fileName));
         }
 
-        try
-        {
-            var blobClient = _container.GetBlobClient(fileName);
-
-            if (!await blobClient.ExistsAsync().ConfigureAwait(false))
-            {
-                _logger.LogWarning("Blob '{FileName}' does not exist.", fileName);
-                return null;
-            }
-
-            _logger.LogInformation("Fetching blob '{FileName}' from Azure Blob Storage.", fileName);
-            await using var memoryStream = new MemoryStream();
-            await blobClient.DownloadToAsync(memoryStream).ConfigureAwait(false);
-
-            return new ImageInfo
-            {
-                ImageBytes = memoryStream.ToArray(),
-                ImageExtensionName = extension.TrimStart('.')
-            };
-        }
-        catch (Exception ex)
-        {
-            _logger.LogError(ex, "Failed to fetch blob '{FileName}' from Azure Blob Storage.", fileName);
-            throw;
-        }
+        return extension;
     }
 }

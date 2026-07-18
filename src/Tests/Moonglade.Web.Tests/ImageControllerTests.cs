@@ -29,22 +29,32 @@ public class ImageControllerTests
     {
         var controller = CreateController();
 
-        var result = await controller.Image("bad" + Path.GetInvalidFileNameChars()[0] + ".png");
+        var result = await controller.Image("bad" + Path.GetInvalidFileNameChars()[0] + ".png", TestContext.Current.CancellationToken);
 
         var badRequestResult = Assert.IsType<BadRequestObjectResult>(result);
         Assert.Equal("invalid filename", badRequestResult.Value);
-        _imageStorage.Verify(x => x.GetAsync(It.IsAny<string>()), Times.Never);
+        _imageStorage.Verify(x => x.GetInfoAsync(It.IsAny<string>()), Times.Never);
+        _imageStorage.Verify(x => x.OpenReadAsync(It.IsAny<string>()), Times.Never);
     }
 
     [Fact]
-    public async Task Image_Get_WhenOriginImageRequested_ReturnsForbid()
+    public async Task Image_Get_WhenOriginImageRequested_ReturnsFileStreamResult()
     {
+        var bytes = new byte[] { 1, 2, 3 };
+        _imageStorage
+            .Setup(x => x.GetInfoAsync("photo-origin.png"))
+            .ReturnsAsync(CreateImageInfo("png", bytes.Length));
+        _imageStorage
+            .Setup(x => x.OpenReadAsync("photo-origin.png"))
+            .ReturnsAsync(new MemoryStream(bytes));
         var controller = CreateController(remoteIpAddress: IPAddress.Parse("127.0.0.1"));
 
-        var result = await controller.Image("photo-origin.png");
+        var result = await controller.Image("photo-origin.png", TestContext.Current.CancellationToken);
 
-        Assert.IsType<ForbidResult>(result);
-        _imageStorage.Verify(x => x.GetAsync(It.IsAny<string>()), Times.Never);
+        var fileResult = Assert.IsType<FileStreamResult>(result);
+        Assert.Equal("image/png", fileResult.ContentType);
+        _imageStorage.Verify(x => x.GetInfoAsync("photo-origin.png"), Times.Once);
+        _imageStorage.Verify(x => x.OpenReadAsync("photo-origin.png"), Times.Once);
     }
 
     [Fact]
@@ -59,54 +69,108 @@ public class ImageControllerTests
             }
         });
 
-        var result = await controller.Image("photo.png");
+        var result = await controller.Image("photo.png", TestContext.Current.CancellationToken);
 
         var redirectResult = Assert.IsType<RedirectResult>(result);
         Assert.True(redirectResult.Permanent);
         Assert.Equal("https://cdn.example.com/images/photo.png", redirectResult.Url);
-        _imageStorage.Verify(x => x.GetAsync(It.IsAny<string>()), Times.Never);
+        _imageStorage.Verify(x => x.GetInfoAsync(It.IsAny<string>()), Times.Never);
+        _imageStorage.Verify(x => x.OpenReadAsync(It.IsAny<string>()), Times.Never);
     }
 
     [Fact]
     public async Task Image_Get_WhenImageDoesNotExist_ReturnsNotFound()
     {
-        _imageStorage.Setup(x => x.GetAsync("missing.png")).ReturnsAsync((ImageInfo)null!);
+        _imageStorage.Setup(x => x.GetInfoAsync("missing.png")).ReturnsAsync((ImageInfo)null!);
         var controller = CreateController();
 
-        var result = await controller.Image("missing.png");
+        var result = await controller.Image("missing.png", TestContext.Current.CancellationToken);
 
         Assert.IsType<NotFoundResult>(result);
-        _imageStorage.Verify(x => x.GetAsync("missing.png"), Times.Once);
+        _imageStorage.Verify(x => x.GetInfoAsync("missing.png"), Times.Once);
+        _imageStorage.Verify(x => x.OpenReadAsync(It.IsAny<string>()), Times.Never);
     }
 
     [Fact]
-    public async Task Image_Get_WhenImageExists_ReturnsFileContentResult()
+    public async Task Image_Get_WhenImageExists_ReturnsFileStreamResultWithCacheHeaders()
     {
         var bytes = new byte[] { 1, 2, 3 };
+        var lastModified = new DateTimeOffset(2026, 2, 23, 10, 30, 0, TimeSpan.Zero);
         _imageStorage
-            .Setup(x => x.GetAsync("photo.png"))
-            .ReturnsAsync(new ImageInfo { ImageBytes = bytes, ImageExtensionName = "png" });
+            .Setup(x => x.GetInfoAsync("photo.png"))
+            .ReturnsAsync(CreateImageInfo("png", bytes.Length, lastModified, "\"photo-etag\""));
+        _imageStorage
+            .Setup(x => x.OpenReadAsync("photo.png"))
+            .ReturnsAsync(new MemoryStream(bytes));
         var controller = CreateController();
 
-        var result = await controller.Image("photo.png");
+        var result = await controller.Image("photo.png", TestContext.Current.CancellationToken);
 
-        var fileResult = Assert.IsType<FileContentResult>(result);
+        var fileResult = Assert.IsType<FileStreamResult>(result);
         Assert.Equal("image/png", fileResult.ContentType);
-        Assert.Equal(bytes, fileResult.FileContents);
+        Assert.True(fileResult.EnableRangeProcessing);
+        Assert.Equal(lastModified, fileResult.LastModified);
+        Assert.Equal("\"photo-etag\"", fileResult.EntityTag!.ToString());
+        Assert.Equal("public, max-age=300", controller.HttpContext.Response.Headers.CacheControl.ToString());
+
+        using var reader = new MemoryStream();
+        await fileResult.FileStream.CopyToAsync(reader, TestContext.Current.CancellationToken);
+        Assert.Equal(bytes, reader.ToArray());
     }
 
     [Fact]
-    public async Task Image_Get_WhenCalledTwice_UsesCache()
+    public async Task Image_Get_WhenCalledTwice_UsesMetadataCacheAndOpensFreshStreams()
     {
+        var bytes = new byte[] { 4, 5, 6 };
         _imageStorage
-            .Setup(x => x.GetAsync("photo.webp"))
-            .ReturnsAsync(new ImageInfo { ImageBytes = [4, 5, 6], ImageExtensionName = "webp" });
+            .Setup(x => x.GetInfoAsync("photo.webp"))
+            .ReturnsAsync(CreateImageInfo("webp", bytes.Length));
+        _imageStorage
+            .Setup(x => x.OpenReadAsync("photo.webp"))
+            .Returns(() => Task.FromResult<Stream>(new MemoryStream(bytes)));
         var controller = CreateController();
 
-        await controller.Image("photo.webp");
-        await controller.Image("photo.webp");
+        await controller.Image("photo.webp", TestContext.Current.CancellationToken);
+        await controller.Image("photo.webp", TestContext.Current.CancellationToken);
 
-        _imageStorage.Verify(x => x.GetAsync("photo.webp"), Times.Once);
+        _imageStorage.Verify(x => x.GetInfoAsync("photo.webp"), Times.Once);
+        _imageStorage.Verify(x => x.OpenReadAsync("photo.webp"), Times.Exactly(2));
+    }
+
+    [Fact]
+    public async Task Image_Get_WhenIfNoneMatchMatches_ReturnsNotModifiedWithoutOpeningStream()
+    {
+        _imageStorage
+            .Setup(x => x.GetInfoAsync("photo.png"))
+            .ReturnsAsync(CreateImageInfo("png", 3, entityTag: "\"photo-etag\""));
+        var controller = CreateController();
+        controller.HttpContext.Request.Headers.IfNoneMatch = "\"photo-etag\"";
+
+        var result = await controller.Image("photo.png", TestContext.Current.CancellationToken);
+
+        var statusCodeResult = Assert.IsType<StatusCodeResult>(result);
+        Assert.Equal(StatusCodes.Status304NotModified, statusCodeResult.StatusCode);
+        Assert.Equal("\"photo-etag\"", controller.HttpContext.Response.Headers.ETag.ToString());
+        Assert.Equal("public, max-age=300", controller.HttpContext.Response.Headers.CacheControl.ToString());
+        _imageStorage.Verify(x => x.OpenReadAsync(It.IsAny<string>()), Times.Never);
+    }
+
+    [Fact]
+    public async Task Image_Get_WhenIfModifiedSinceIsCurrent_ReturnsNotModifiedWithoutOpeningStream()
+    {
+        var lastModified = new DateTimeOffset(2026, 2, 23, 10, 30, 0, TimeSpan.Zero);
+        _imageStorage
+            .Setup(x => x.GetInfoAsync("photo.png"))
+            .ReturnsAsync(CreateImageInfo("png", 3, lastModified));
+        var controller = CreateController();
+        controller.HttpContext.Request.Headers.IfModifiedSince = lastModified.ToString("R");
+
+        var result = await controller.Image("photo.png", TestContext.Current.CancellationToken);
+
+        var statusCodeResult = Assert.IsType<StatusCodeResult>(result);
+        Assert.Equal(StatusCodes.Status304NotModified, statusCodeResult.StatusCode);
+        Assert.Equal(lastModified.ToString("R"), controller.HttpContext.Response.Headers.LastModified.ToString());
+        _imageStorage.Verify(x => x.OpenReadAsync(It.IsAny<string>()), Times.Never);
     }
 
     [Fact]
@@ -281,6 +345,22 @@ public class ImageControllerTests
     private static FormFile CreateFormFile(string fileName, byte[] bytes)
     {
         return new FormFile(new MemoryStream(bytes), 0, bytes.Length, "file", fileName);
+    }
+
+    private static ImageInfo CreateImageInfo(
+        string extension,
+        long contentLength,
+        DateTimeOffset? lastModified = null,
+        string entityTag = "\"test-etag\"")
+    {
+        return new ImageInfo
+        {
+            ImageExtensionName = extension,
+            ContentType = ImageInfo.GetContentType(extension),
+            ContentLength = contentLength,
+            LastModifiedUtc = lastModified ?? new DateTimeOffset(2026, 1, 1, 0, 0, 0, TimeSpan.Zero),
+            EntityTag = entityTag
+        };
     }
 
     private sealed class RecordingCommandMediator : ICommandMediator
