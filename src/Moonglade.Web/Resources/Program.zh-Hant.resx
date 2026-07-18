@@ -1875,7 +1875,19 @@
   <data name="Verify" xml:space="preserve">
     <value>驗證</value>
   </data>
+  <data name="Verify Authenticator" xml:space="preserve">
+    <value>驗證身份驗證器</value>
+  </data>
   <data name="Local account sign-in is protected by an authenticator app." xml:space="preserve">
     <value>本機帳號登入已受到驗證器應用程式保護。</value>
+  </data>
+  <data name="Reset Authenticator" xml:space="preserve">
+    <value>重設驗證器</value>
+  </data>
+  <data name="Current password" xml:space="preserve">
+    <value>目前密碼</value>
+  </data>
+  <data name="Resetting the authenticator signs you out and requires setting up a new authenticator app on the next sign-in." xml:space="preserve">
+    <value>重設驗證器會讓你登出，並要求你在下次登入時設定新的驗證器應用程式。</value>
   </data>
 </root>

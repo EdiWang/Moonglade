@@ -1875,7 +1875,19 @@
   <data name="Verify" xml:space="preserve">
     <value>検証</value>
   </data>
+  <data name="Verify Authenticator" xml:space="preserve">
+    <value>認証アプリを検証</value>
+  </data>
   <data name="Local account sign-in is protected by an authenticator app." xml:space="preserve">
     <value>ローカル アカウントのサインインは認証アプリで保護されています。</value>
+  </data>
+  <data name="Reset Authenticator" xml:space="preserve">
+    <value>認証アプリをリセット</value>
+  </data>
+  <data name="Current password" xml:space="preserve">
+    <value>現在のパスワード</value>
+  </data>
+  <data name="Resetting the authenticator signs you out and requires setting up a new authenticator app on the next sign-in." xml:space="preserve">
+    <value>認証アプリをリセットするとサインアウトされ、次回サインイン時に新しい認証アプリの設定が必要になります。</value>
   </data>
 </root>

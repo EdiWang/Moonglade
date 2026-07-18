@@ -27,7 +27,6 @@ public class SignInModelTests
             authenticationService);
         model.Username = "admin";
         model.Password = "admin123";
-        model.AuthenticatorCode = string.Empty;
 
         var result = await model.OnPostAsync();
 
@@ -40,10 +39,13 @@ public class SignInModelTests
                 It.IsAny<ClaimsPrincipal>(),
                 It.IsAny<AuthenticationProperties>()),
             Times.Once);
+        authenticationService.Verify(
+            x => x.SignOutAsync(model.HttpContext, BlogAuthSchemas.LocalAccountTwoFactor, null),
+            Times.Once);
     }
 
     [Fact]
-    public async Task OnPostAsync_EnabledTotpWithWrongCode_ReturnsPageWithoutSignIn()
+    public async Task OnPostAsync_EnabledTotp_RedirectsToVerifyAuthenticator()
     {
         var authenticationService = new Mock<IAuthenticationService>();
         var account = LocalAccountSettings.DefaultValue;
@@ -52,19 +54,21 @@ public class SignInModelTests
         var model = CreateModel(account, loginValid: true, authenticationService);
         model.Username = "admin";
         model.Password = "admin123";
-        model.AuthenticatorCode = "000000";
 
         var result = await model.OnPostAsync();
 
-        Assert.IsType<PageResult>(result);
-        Assert.False(model.ModelState.IsValid);
+        var redirect = Assert.IsType<RedirectToPageResult>(result);
+        Assert.Equal("/VerifyAuthenticator", redirect.PageName);
         authenticationService.Verify(
             x => x.SignInAsync(
-                It.IsAny<HttpContext>(),
-                It.IsAny<string>(),
+                model.HttpContext,
+                BlogAuthSchemas.LocalAccountTwoFactor,
                 It.IsAny<ClaimsPrincipal>(),
                 It.IsAny<AuthenticationProperties>()),
-            Times.Never);
+            Times.Once);
+        authenticationService.Verify(
+            x => x.SignOutAsync(model.HttpContext, BlogAuthSchemas.LocalAccountSetup, null),
+            Times.Once);
     }
 
     [Fact]
@@ -122,8 +126,7 @@ public class SignInModelTests
             Options.Create(new AuthenticationSettings { Provider = provider }),
             commandMediator,
             Mock.Of<ILogger<SignInModel>>(),
-            blogConfig,
-            new LocalAccountTotpService());
+            blogConfig);
 
         model.PageContext = new PageContext
         {

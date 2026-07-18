@@ -15,6 +15,7 @@ Moonglade uses cookie authentication for local admin accounts and stores the sin
 - Add QR code generation support for authenticator app setup.
 - Remove captcha from admin local account sign-in.
 - Add `/auth/setup-authenticator` for first-time TOTP enrollment.
+- Add an authenticated `/admin/account` reset flow for replacing the configured authenticator app.
 - Add focused tests and documentation updates.
 
 ## Out of Scope
@@ -22,7 +23,7 @@ Moonglade uses cookie authentication for local admin accounts and stores the sin
 - Full ASP.NET Core Identity migration.
 - Encrypted TOTP secret storage.
 - Bootstrap token or first-deployer takeover protection.
-- Recovery codes and self-service authenticator reset.
+- Recovery codes.
 - Removing captcha support from public comments.
 
 ## Task Breakdown
@@ -34,6 +35,7 @@ Moonglade uses cookie authentication for local admin accounts and stores the sin
 | 3 | Update sign-in and setup Razor Pages | Task 2 | Web build and page tests where practical | Done |
 | 4 | Update docs and localization resources | Tasks 2-3 | Resource/build validation | Done |
 | 5 | Run focused tests and build | Tasks 2-4 | `dotnet test` / `dotnet build` | Done |
+| 6 | Add authenticated authenticator reset from `/admin/account` | Tasks 2-5 | Web controller tests and build | Done |
 
 ## Execution Order
 
@@ -41,7 +43,7 @@ Start with the reusable authentication model and service, then wire the Web flow
 
 ## Current Progress
 
-TOTP fields, the TOTP service, temporary setup cookie scheme, sign-in flow, setup page, QR code generation, account page copy, localization resources, tests, and documentation updates are complete.
+TOTP fields, the TOTP service, temporary setup and two-factor cookie schemes, two-step sign-in flow, setup page, verification page, QR code generation, account page copy, localization resources, tests, documentation updates, and the `/admin/account` reset flow are complete.
 
 ## Verification Log
 
@@ -51,6 +53,9 @@ TOTP fields, the TOTP service, temporary setup cookie scheme, sign-in flow, setu
 | 2026-07-18 | `dotnet test src/Tests/Moonglade.Auth.Tests/Moonglade.Auth.Tests.csproj` | Passed | 31 tests |
 | 2026-07-18 | `dotnet test src/Tests/Moonglade.Web.Tests/Moonglade.Web.Tests.csproj` | Passed | 107 tests |
 | 2026-07-18 | `dotnet build src/Moonglade.Web/Moonglade.Web.csproj` | Passed | 0 warnings, 0 errors |
+| 2026-07-18 | `dotnet test src/Tests/Moonglade.Web.Tests/Moonglade.Web.Tests.csproj` | Passed | 118 tests |
+| 2026-07-18 | `dotnet test src/Tests/Moonglade.Auth.Tests/Moonglade.Auth.Tests.csproj` | Passed | 33 tests |
+| 2026-07-18 | `dotnet build src/Moonglade.Web/Moonglade.Web.csproj` | Passed | 0 warnings, 0 errors |
 
 ## Issues and Resolutions
 
@@ -58,7 +63,7 @@ TOTP fields, the TOTP service, temporary setup cookie scheme, sign-in flow, setu
 
 ## Follow-ups
 
-- Consider recovery codes or an authenticated reset UI later.
+- Consider recovery codes later.
 - Consider sign-in rate limiting as a separate hardening task.
 
 ## Notes

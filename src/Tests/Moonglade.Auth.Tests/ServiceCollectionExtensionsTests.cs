@@ -9,7 +9,7 @@ public class ServiceCollectionExtensionsTests
     [Theory]
     [InlineData("Local")]
     [InlineData("EntraID")]
-    public async Task AddBlogAuthenticaton_RegistersLocalAccountSetupScheme(string provider)
+    public async Task AddBlogAuthenticaton_RegistersLocalAccountTemporarySchemes(string provider)
     {
         var configuration = new ConfigurationBuilder()
             .AddInMemoryCollection(new Dictionary<string, string>
@@ -28,8 +28,10 @@ public class ServiceCollectionExtensionsTests
 
         var providerServices = services.BuildServiceProvider();
         var schemeProvider = providerServices.GetRequiredService<IAuthenticationSchemeProvider>();
-        var scheme = await schemeProvider.GetSchemeAsync(BlogAuthSchemas.LocalAccountSetup);
+        var setupScheme = await schemeProvider.GetSchemeAsync(BlogAuthSchemas.LocalAccountSetup);
+        var twoFactorScheme = await schemeProvider.GetSchemeAsync(BlogAuthSchemas.LocalAccountTwoFactor);
 
-        Assert.NotNull(scheme);
+        Assert.NotNull(setupScheme);
+        Assert.NotNull(twoFactorScheme);
     }
 }

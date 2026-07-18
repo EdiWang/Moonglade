@@ -1875,7 +1875,19 @@
   <data name="Verify" xml:space="preserve">
     <value>Überprüfen</value>
   </data>
+  <data name="Verify Authenticator" xml:space="preserve">
+    <value>Authenticator überprüfen</value>
+  </data>
   <data name="Local account sign-in is protected by an authenticator app." xml:space="preserve">
     <value>Die Anmeldung mit dem lokalen Konto ist durch eine Authenticator-App geschützt.</value>
+  </data>
+  <data name="Reset Authenticator" xml:space="preserve">
+    <value>Authenticator zurücksetzen</value>
+  </data>
+  <data name="Current password" xml:space="preserve">
+    <value>Aktuelles Passwort</value>
+  </data>
+  <data name="Resetting the authenticator signs you out and requires setting up a new authenticator app on the next sign-in." xml:space="preserve">
+    <value>Das Zurücksetzen des Authenticators meldet Sie ab und erfordert beim nächsten Anmelden das Einrichten einer neuen Authenticator-App.</value>
   </data>
 </root>
