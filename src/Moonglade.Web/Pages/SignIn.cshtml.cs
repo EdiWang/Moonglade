@@ -12,8 +12,7 @@ namespace Moonglade.Web.Pages;
 public class SignInModel(IOptions<AuthenticationSettings> authSettings,
         ICommandMediator commandMediator,
         ILogger<SignInModel> logger,
-        IBlogConfig blogConfig,
-        ILocalAccountTotpService totpService)
+        IBlogConfig blogConfig)
     : PageModel
 {
     private readonly AuthenticationSettings _authenticationSettings = authSettings.Value;
@@ -33,10 +32,6 @@ public class SignInModel(IOptions<AuthenticationSettings> authSettings,
     [RegularExpression("^(?=.*[a-zA-Z])(?=.*[0-9])[A-Za-z0-9._~!@#$^&*]{8,}$")]
     public string Password { get; set; }
 
-    [BindProperty]
-    [Display(Name = "Authenticator code")]
-    public string AuthenticatorCode { get; set; }
-
     public async Task<IActionResult> OnGetAsync()
     {
         switch (_authenticationSettings.Provider)
@@ -48,6 +43,7 @@ public class SignInModel(IOptions<AuthenticationSettings> authSettings,
             case AuthenticationProvider.Local:
                 await HttpContext.SignOutAsync(CookieAuthenticationDefaults.AuthenticationScheme);
                 await HttpContext.SignOutAsync(BlogAuthSchemas.LocalAccountSetup);
+                await HttpContext.SignOutAsync(BlogAuthSchemas.LocalAccountTwoFactor);
                 break;
             default:
                 Response.StatusCode = StatusCodes.Status501NotImplemented;
@@ -90,22 +86,14 @@ public class SignInModel(IOptions<AuthenticationSettings> authSettings,
 
                     if (!IsTotpConfigured(account))
                     {
+                        await HttpContext.SignOutAsync(BlogAuthSchemas.LocalAccountTwoFactor);
                         await SignInSetupAsync(account.Username);
                         return RedirectToPage("/SetupAuthenticator");
                     }
 
-                    if (!totpService.VerifyCode(account.TotpSecret, AuthenticatorCode))
-                    {
-                        ModelState.AddModelError(nameof(AuthenticatorCode), "Invalid authenticator code.");
-                        return Page();
-                    }
-
                     await HttpContext.SignOutAsync(BlogAuthSchemas.LocalAccountSetup);
-                    await SignInAdminAsync(account.Username);
-
-                    logger.LogInformation("Authentication success for local account '{Username}'", Username);
-
-                    return RedirectToPage("/Admin/Dashboard");
+                    await SignInTwoFactorAsync(account.Username);
+                    return RedirectToPage("/VerifyAuthenticator");
                 }
                 ModelState.AddModelError(string.Empty, "Invalid Login Attempt.");
                 return Page();
@@ -135,10 +123,10 @@ public class SignInModel(IOptions<AuthenticationSettings> authSettings,
         await HttpContext.SignInAsync(BlogAuthSchemas.LocalAccountSetup, principal);
     }
 
-    private async Task SignInAdminAsync(string username)
+    private async Task SignInTwoFactorAsync(string username)
     {
-        var principal = CreatePrincipal(username, CookieAuthenticationDefaults.AuthenticationScheme);
-        await HttpContext.SignInAsync(CookieAuthenticationDefaults.AuthenticationScheme, principal);
+        var principal = CreatePrincipal(username, BlogAuthSchemas.LocalAccountTwoFactor);
+        await HttpContext.SignInAsync(BlogAuthSchemas.LocalAccountTwoFactor, principal);
     }
 
     private static ClaimsPrincipal CreatePrincipal(string username, string authenticationType)

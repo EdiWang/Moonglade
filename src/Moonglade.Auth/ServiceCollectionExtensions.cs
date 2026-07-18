@@ -47,6 +47,13 @@ public static class ServiceCollectionExtensions
                 options.LoginPath = "/auth/signin";
                 options.ExpireTimeSpan = TimeSpan.FromMinutes(10);
                 options.SlidingExpiration = false;
+            })
+            .AddCookie(BlogAuthSchemas.LocalAccountTwoFactor, options =>
+            {
+                options.Cookie.Name = ".Moonglade.LocalAccount.TwoFactor";
+                options.LoginPath = "/auth/signin";
+                options.ExpireTimeSpan = TimeSpan.FromMinutes(10);
+                options.SlidingExpiration = false;
             });
 
         return services;

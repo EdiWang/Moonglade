@@ -65,6 +65,9 @@ public class AuthControllerTests
         authenticationService.Verify(
             x => x.SignOutAsync(controller.HttpContext, BlogAuthSchemas.LocalAccountSetup, null),
             Times.Once);
+        authenticationService.Verify(
+            x => x.SignOutAsync(controller.HttpContext, BlogAuthSchemas.LocalAccountTwoFactor, null),
+            Times.Once);
     }
 
     [Fact]

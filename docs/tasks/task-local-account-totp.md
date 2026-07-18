@@ -41,7 +41,7 @@ Start with the reusable authentication model and service, then wire the Web flow
 
 ## Current Progress
 
-TOTP fields, the TOTP service, temporary setup cookie scheme, sign-in flow, setup page, QR code generation, account page copy, localization resources, tests, and documentation updates are complete.
+TOTP fields, the TOTP service, temporary setup and two-factor cookie schemes, two-step sign-in flow, setup page, verification page, QR code generation, account page copy, localization resources, tests, and documentation updates are complete.
 
 ## Verification Log
 

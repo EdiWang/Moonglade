@@ -1,6 +1,6 @@
-﻿@page "/auth/signin"
+@page "/auth/verify-authenticator"
 @inject ICacheAside Cache
-@model Moonglade.Web.Pages.SignInModel
+@model Moonglade.Web.Pages.VerifyAuthenticatorModel
 @using Edi.AspNetCore.Utils
 @using Moonglade.Utils
 
@@ -17,7 +17,7 @@
 <html>
 <head>
     <title>
-        @SharedLocalizer["Admin Sign In"]
+        @SharedLocalizer["Verify Authenticator"]
     </title>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no" />
@@ -37,20 +37,24 @@
             <div class="position-absolute top-50 start-50 translate-middle">
                 <div class="login-card card shadow">
                     <div class="card-body">
-                        <h5 class="card-title text-center mb-4">@SharedLocalizer["Sign In"]</h5>
+                        <h5 class="card-title text-center mb-4">@SharedLocalizer["Verify Authenticator"]</h5>
 
                         <form method="post">
                             <div asp-validation-summary="All" class="text-danger"></div>
                             <div class="form-floating mb-3">
-                                <input asp-for="Username" class="form-control" placeholder="@Html.DisplayNameFor(m => m.Username)" required minlength="2" maxlength="32" />
-                                <label asp-for="Username"></label>
-                            </div>
-                            <div class="form-floating mb-3">
-                                <input asp-for="Password" class="form-control" required pattern="^(?=.*[a-zA-Z])(?=.*[0-9])[A-Za-z0-9._~!@@#$^&*]{8,}$" placeholder="@Html.DisplayNameFor(m => m.Password)" minlength="8" maxlength="32" />
-                                <label asp-for="Password"></label>
+                                <input asp-for="AuthenticatorCode"
+                                       class="form-control"
+                                       inputmode="numeric"
+                                       autocomplete="one-time-code"
+                                       pattern="[0-9]{6}"
+                                       minlength="6"
+                                       maxlength="6"
+                                       required
+                                       placeholder="@Html.DisplayNameFor(m => m.AuthenticatorCode)" />
+                                <label asp-for="AuthenticatorCode"></label>
                             </div>
 
-                            <input type="submit" value="@SharedLocalizer["Sign In"]" class="btn w-100 btn-accent" />
+                            <input type="submit" value="@SharedLocalizer["Verify"]" class="btn w-100 btn-accent" />
                         </form>
                     </div>
                 </div>

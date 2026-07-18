@@ -1875,6 +1875,9 @@
   <data name="Verify" xml:space="preserve">
     <value>驗證</value>
   </data>
+  <data name="Verify Authenticator" xml:space="preserve">
+    <value>驗證身份驗證器</value>
+  </data>
   <data name="Local account sign-in is protected by an authenticator app." xml:space="preserve">
     <value>本機帳號登入已受到驗證器應用程式保護。</value>
   </data>
