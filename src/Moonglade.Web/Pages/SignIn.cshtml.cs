@@ -1,4 +1,3 @@
-using Edi.Captcha;
 using LiteBus.Commands.Abstractions;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.Cookies;
@@ -13,7 +12,8 @@ namespace Moonglade.Web.Pages;
 public class SignInModel(IOptions<AuthenticationSettings> authSettings,
         ICommandMediator commandMediator,
         ILogger<SignInModel> logger,
-        IStatelessCaptcha captcha)
+        IBlogConfig blogConfig,
+        ILocalAccountTotpService totpService)
     : PageModel
 {
     private readonly AuthenticationSettings _authenticationSettings = authSettings.Value;
@@ -34,13 +34,8 @@ public class SignInModel(IOptions<AuthenticationSettings> authSettings,
     public string Password { get; set; }
 
     [BindProperty]
-    [Required]
-    [StringLength(4)]
-    public string CaptchaCode { get; set; }
-
-    [BindProperty]
-    [Required]
-    public string CaptchaToken { get; set; }
+    [Display(Name = "Authenticator code")]
+    public string AuthenticatorCode { get; set; }
 
     public async Task<IActionResult> OnGetAsync()
     {
@@ -52,6 +47,7 @@ public class SignInModel(IOptions<AuthenticationSettings> authSettings,
                     OpenIdConnectDefaults.AuthenticationScheme);
             case AuthenticationProvider.Local:
                 await HttpContext.SignOutAsync(CookieAuthenticationDefaults.AuthenticationScheme);
+                await HttpContext.SignOutAsync(BlogAuthSchemas.LocalAccountSetup);
                 break;
             default:
                 Response.StatusCode = StatusCodes.Status501NotImplemented;
@@ -65,11 +61,6 @@ public class SignInModel(IOptions<AuthenticationSettings> authSettings,
     {
         try
         {
-            if (!captcha.Validate(CaptchaCode, CaptchaToken))
-            {
-                ModelState.AddModelError(nameof(CaptchaCode), "Wrong Captcha Code");
-            }
-
             // Check User-Agent
             var ua = Request.Headers["User-Agent"].ToString();
             if (string.IsNullOrWhiteSpace(ua))
@@ -82,15 +73,22 @@ public class SignInModel(IOptions<AuthenticationSettings> authSettings,
                 var isValid = await commandMediator.SendAsync(new ValidateLoginCommand(Username, Password));
                 if (isValid)
                 {
-                    var claims = new List<Claim>
-                    {
-                        new (ClaimTypes.Name, Username),
-                        new (ClaimTypes.Role, "Administrator")
-                    };
-                    var ci = new ClaimsIdentity(claims, CookieAuthenticationDefaults.AuthenticationScheme);
-                    var p = new ClaimsPrincipal(ci);
+                    var account = blogConfig.LocalAccountSettings;
 
-                    await HttpContext.SignInAsync(CookieAuthenticationDefaults.AuthenticationScheme, p);
+                    if (!IsTotpConfigured(account))
+                    {
+                        await SignInSetupAsync(account.Username);
+                        return RedirectToPage("/SetupAuthenticator");
+                    }
+
+                    if (!totpService.VerifyCode(account.TotpSecret, AuthenticatorCode))
+                    {
+                        ModelState.AddModelError(nameof(AuthenticatorCode), "Invalid authenticator code.");
+                        return Page();
+                    }
+
+                    await HttpContext.SignOutAsync(BlogAuthSchemas.LocalAccountSetup);
+                    await SignInAdminAsync(account.Username);
 
                     logger.LogInformation("Authentication success for local account '{Username}'", Username);
 
@@ -113,5 +111,31 @@ public class SignInModel(IOptions<AuthenticationSettings> authSettings,
             ModelState.AddModelError(string.Empty, "An error occurred during authentication. Please try again later.");
             return Page();
         }
+    }
+
+    private static bool IsTotpConfigured(LocalAccountSettings account) =>
+        account.IsTotpEnabled && !string.IsNullOrWhiteSpace(account.TotpSecret);
+
+    private async Task SignInSetupAsync(string username)
+    {
+        var principal = CreatePrincipal(username, BlogAuthSchemas.LocalAccountSetup);
+        await HttpContext.SignInAsync(BlogAuthSchemas.LocalAccountSetup, principal);
+    }
+
+    private async Task SignInAdminAsync(string username)
+    {
+        var principal = CreatePrincipal(username, CookieAuthenticationDefaults.AuthenticationScheme);
+        await HttpContext.SignInAsync(CookieAuthenticationDefaults.AuthenticationScheme, principal);
+    }
+
+    private static ClaimsPrincipal CreatePrincipal(string username, string authenticationType)
+    {
+        var claims = new List<Claim>
+        {
+            new(ClaimTypes.Name, username),
+            new(ClaimTypes.Role, "Administrator")
+        };
+        var ci = new ClaimsIdentity(claims, authenticationType);
+        return new ClaimsPrincipal(ci);
     }
 }

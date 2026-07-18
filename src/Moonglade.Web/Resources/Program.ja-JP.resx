@@ -1860,4 +1860,22 @@
   <data name="Updated" xml:space="preserve">
     <value>更新しました</value>
   </data>
+  <data name="Authenticator code" xml:space="preserve">
+    <value>認証コード</value>
+  </data>
+  <data name="Set up Authenticator" xml:space="preserve">
+    <value>認証アプリを設定</value>
+  </data>
+  <data name="Authenticator QR code" xml:space="preserve">
+    <value>認証アプリの QR コード</value>
+  </data>
+  <data name="Manual setup key" xml:space="preserve">
+    <value>手動設定キー</value>
+  </data>
+  <data name="Verify" xml:space="preserve">
+    <value>検証</value>
+  </data>
+  <data name="Local account sign-in is protected by an authenticator app." xml:space="preserve">
+    <value>ローカル アカウントのサインインは認証アプリで保護されています。</value>
+  </data>
 </root>

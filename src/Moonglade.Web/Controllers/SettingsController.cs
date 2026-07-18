@@ -223,7 +223,9 @@ public class SettingsController(
         {
             Username = request.NewUsername.Trim(),
             PasswordSalt = newSalt,
-            PasswordHash = SecurityHelper.HashPassword(request.NewPassword, newSalt)
+            PasswordHash = SecurityHelper.HashPassword(request.NewPassword, newSalt),
+            TotpSecret = blogConfig.LocalAccountSettings.TotpSecret,
+            IsTotpEnabled = blogConfig.LocalAccountSettings.IsTotpEnabled
         };
 
         return await UpdateSettingsAsync(newSettings,

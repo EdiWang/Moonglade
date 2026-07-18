@@ -41,6 +41,7 @@
 		<PackageReference Include="Microsoft.Extensions.Logging.AzureAppServices" Version="10.0.10" />
 
 		<PackageReference Include="Moonglade.MonacoEditor" Version="0.55.1.1000" />
+		<PackageReference Include="QRCoder" Version="1.8.0" />
 	</ItemGroup>
 	<ItemGroup>
 		<ProjectReference Include="..\Moonglade.ActivityLog\Moonglade.ActivityLog.csproj" />

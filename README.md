@@ -100,6 +100,7 @@ dotnet test src/Tests/Moonglade.Web.Tests/Moonglade.Web.Tests.csproj
     - **Admin:** `https://localhost:10210/admin`
       - Default username: `admin`
       - Default password: `admin123`
+      - On first local-account sign-in, scan the authenticator QR code and enter the 6-digit code to enable TOTP.
 
 ## ⚙️ Configuration
 
@@ -107,7 +108,17 @@ dotnet test src/Tests/Moonglade.Web.Tests/Moonglade.Web.Tests.csproj
 
 ### Authentication
 
-- By default: Local accounts (manage via `/admin/settings/account`)
+- By default: Local accounts with TOTP authenticator app verification (manage via `/admin/account`)
+- Optional TOTP issuer display name for authenticator apps:
+
+```json
+"Authentication": {
+  "Totp": {
+    "Issuer": "Moonglade"
+  }
+}
+```
+
 - **Microsoft Entra ID** (Azure AD) supported. [Setup guide](https://github.com/EdiWang/Moonglade/wiki/Use-Microsoft-Entra-ID-Authentication)
 
 ### Captcha Shared Key
