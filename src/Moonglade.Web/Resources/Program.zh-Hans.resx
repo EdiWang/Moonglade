@@ -1881,4 +1881,13 @@
   <data name="Local account sign-in is protected by an authenticator app." xml:space="preserve">
     <value>本地账号登录已受到验证器应用保护。</value>
   </data>
+  <data name="Reset Authenticator" xml:space="preserve">
+    <value>重置验证器</value>
+  </data>
+  <data name="Current password" xml:space="preserve">
+    <value>当前密码</value>
+  </data>
+  <data name="Resetting the authenticator signs you out and requires setting up a new authenticator app on the next sign-in." xml:space="preserve">
+    <value>重置验证器会让你退出登录，并要求你在下次登录时设置新的验证器应用。</value>
+  </data>
 </root>

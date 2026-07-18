@@ -20,11 +20,49 @@
             <i class="bi-key"></i>
             @SharedLocalizer["Change Password"]
         </a>
+        <a class="btn btn-outline-accent" href="javascript:;" x-on:click="openResetAuthenticatorModal()">
+            <i class="bi-shield-lock"></i>
+            @SharedLocalizer["Reset Authenticator"]
+        </a>
     </div>
 }
 
 <div class="alert alert-info">
     @SharedLocalizer["Local account sign-in is protected by an authenticator app."]
+</div>
+
+<div class="modal fade" id="resetAuthenticatorModal" tabindex="-1" role="dialog" aria-labelledby="resetAuthenticatorModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="resetAuthenticatorModalLabel">@SharedLocalizer["Reset Authenticator"]</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="@SharedLocalizer["Close"]">
+                </button>
+            </div>
+
+            <form x-on:submit.prevent="resetAuthenticator">
+                <div class="modal-body">
+                    <div class="alert alert-warning">
+                        @SharedLocalizer["Resetting the authenticator signs you out and requires setting up a new authenticator app on the next sign-in."]
+                    </div>
+                    <div class="mb-2">
+                        <label for="ResetAuthenticatorPassword">@SharedLocalizer["Current password"]</label>
+                        <input class="form-control" type="password"
+                               id="ResetAuthenticatorPassword"
+                               x-model="formData.currentPassword"
+                               minlength="8"
+                               maxlength="32"
+                               pattern="^(?=.*[a-zA-Z])(?=.*[0-9])[A-Za-z0-9._~!@@#$^&*]{8,}$"
+                               required>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="submit" class="btn btn-outline-danger">@SharedLocalizer["Reset Authenticator"]</button>
+                    <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">@SharedLocalizer["Cancel"]</button>
+                </div>
+            </form>
+        </div>
+    </div>
 </div>
 
 <div class="modal fade" id="resetPasswordModal" tabindex="-1" role="dialog" aria-labelledby="resetPasswordModalLabel" aria-hidden="true">
