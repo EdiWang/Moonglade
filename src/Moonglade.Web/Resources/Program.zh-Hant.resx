@@ -1860,4 +1860,22 @@
   <data name="Updated" xml:space="preserve">
     <value>已更新</value>
   </data>
+  <data name="Authenticator code" xml:space="preserve">
+    <value>驗證器代碼</value>
+  </data>
+  <data name="Set up Authenticator" xml:space="preserve">
+    <value>設定驗證器</value>
+  </data>
+  <data name="Authenticator QR code" xml:space="preserve">
+    <value>驗證器 QR Code</value>
+  </data>
+  <data name="Manual setup key" xml:space="preserve">
+    <value>手動設定金鑰</value>
+  </data>
+  <data name="Verify" xml:space="preserve">
+    <value>驗證</value>
+  </data>
+  <data name="Local account sign-in is protected by an authenticator app." xml:space="preserve">
+    <value>本機帳號登入已受到驗證器應用程式保護。</value>
+  </data>
 </root>

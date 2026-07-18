@@ -13,6 +13,7 @@ public static class ServiceCollectionExtensions
         var section = configuration.GetSection("Authentication");
         var authentication = section.Get<AuthenticationSettings>();
         services.Configure<AuthenticationSettings>(section);
+        services.AddSingleton<ILocalAccountTotpService, LocalAccountTotpService>();
 
         switch (authentication.Provider)
         {
@@ -38,6 +39,15 @@ public static class ServiceCollectionExtensions
                 var msg = $"Provider {authentication.Provider} is not supported.";
                 throw new NotSupportedException(msg);
         }
+
+        services.AddAuthentication()
+            .AddCookie(BlogAuthSchemas.LocalAccountSetup, options =>
+            {
+                options.Cookie.Name = ".Moonglade.LocalAccount.Setup";
+                options.LoginPath = "/auth/signin";
+                options.ExpireTimeSpan = TimeSpan.FromMinutes(10);
+                options.SlidingExpiration = false;
+            });
 
         return services;
     }

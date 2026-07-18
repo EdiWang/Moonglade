@@ -38,6 +38,7 @@ Important configuration areas:
 | `ConnectionStrings:MoongladeDatabase` | Database connection string. | Yes | Do not document or commit production values. |
 | `ConnectionStrings:DatabaseProvider` | Selects `SqlServer` or `PostgreSql`. | Yes | Keep provider names aligned with `AddMoongladeDatabase`. |
 | `Authentication:Provider` | Selects local auth or Microsoft Entra ID. | Yes | Entra ID settings live under `Authentication:EntraID`. |
+| `Authentication:Totp:Issuer` | Display issuer for local-account authenticator app QR codes. | Optional | Defaults to `Moonglade`; the TOTP secret is stored in `LocalAccountSettings`. |
 | `CaptchaSettings:SharedKey` | Shared key for stateless captcha tokens. | Yes for captcha | Replace default/example values before deployment. |
 | `Webmention` | Webmention options, including source rate limiting. | Optional | Preserve protocol endpoint behavior. |
 | `Email` | Notification API endpoint/key/header. | Optional | Store real keys outside source control. |
@@ -77,7 +78,7 @@ Important configuration areas:
 
 ### Authentication And Security
 
-- Authentication logic lives in `Moonglade.Auth` and supports local accounts and Microsoft Entra ID.
+- Authentication logic lives in `Moonglade.Auth` and supports local accounts with TOTP and Microsoft Entra ID.
 - Admin Razor Pages are authorized by Razor Pages conventions; API controllers inherit `[Authorize]` from `BlogControllerBase`.
 - Controllers use antiforgery validation by default. Use `[IgnoreAntiforgeryToken]` only for deliberate endpoints such as keep-alive or protocol callbacks.
 - Do not commit real connection strings, API keys, tenant IDs, storage credentials, or captcha shared keys. Use configuration binding and environment variable overrides.
@@ -100,7 +101,7 @@ Important configuration areas:
 | Data model | `src/Moonglade.Data` | EF Core `BlogDbContext`, entities, DTO/read models, provider-neutral mappings, and import/export primitives. |
 | Database providers | `src/Moonglade.Data.SqlServer`, `src/Moonglade.Data.PostgreSql` | SQL Server / PostgreSQL EF Core registration and provider-specific behavior. |
 | Configuration | `src/Moonglade.Configuration` | Blog setting models, defaults, loading, updates, and initialization-related logic. |
-| Authentication | `src/Moonglade.Auth` | Local account, Entra ID, login validation, password updates, and authentication registration. |
+| Authentication | `src/Moonglade.Auth` | Local account, TOTP verification, Entra ID, login validation, password updates, and authentication registration. |
 | Integrations | `src/Moonglade.Email.Client`, `src/Moonglade.IndexNow.Client`, `src/Moonglade.Moderation`, `src/Moonglade.Webmention` | External service clients, protocol send/receive logic, notifications, and moderation. |
 | Startup and background work | `src/Moonglade.Setup`, `src/Moonglade.BackgroundServices` | Startup initialization, database creation/migration, seed data, scheduled publishing, update checks, and fire-and-forget background queueing. |
 | Presentation helpers | `src/Moonglade.Theme`, `src/Moonglade.Widgets`, `src/Moonglade.Syndication` | Themes, widgets, feeds, and presentation-oriented read models. |
@@ -183,7 +184,7 @@ powershell -ExecutionPolicy Bypass -File .codex/skills/update-moonglade-editor-a
 docker compose up -d
 ```
 
-The default local launch URL comes from `src/Moonglade.Web/Properties/launchSettings.json`: `https://localhost:10210`. The admin portal is `/admin`; the default local account is documented in the README.
+The default local launch URL comes from `src/Moonglade.Web/Properties/launchSettings.json`: `https://localhost:10210`. The admin portal is `/admin`; the default local account is documented in the README. First local-account sign-in after deployment or upgrade requires authenticator app TOTP setup.
 
 Project-level Codex skills live under `.codex/skills/`. Use `update-moonglade-editor-assets` when syncing the latest `Moonglade.Editor` build output into `src/Moonglade.Web/wwwroot/lib/moonglade-editor/`.
 
