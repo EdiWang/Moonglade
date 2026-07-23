@@ -4,6 +4,7 @@ using Edi.PasswordGenerator;
 using LiteBus.Commands;
 using LiteBus.Events;
 using LiteBus.Extensions.Microsoft.DependencyInjection;
+using LiteBus.Messaging;
 using LiteBus.Queries;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.Extensions.Diagnostics.HealthChecks;
@@ -60,7 +61,9 @@ public static class ServiceCollectionExtensions
 
         services.AddLiteBus(liteBus =>
         {
-            liteBus.AddCommandModule(module =>
+            liteBus.AddMessaging(_ => { });
+
+            liteBus.AddCommands(module =>
             {
                 foreach (var assembly in assemblies)
                 {
@@ -68,7 +71,7 @@ public static class ServiceCollectionExtensions
                 }
             });
 
-            liteBus.AddQueryModule(module =>
+            liteBus.AddQueries(module =>
             {
                 foreach (var assembly in assemblies)
                 {
@@ -76,7 +79,7 @@ public static class ServiceCollectionExtensions
                 }
             });
 
-            liteBus.AddEventModule(module =>
+            liteBus.AddEvents(module =>
             {
                 foreach (var assembly in assemblies)
                 {

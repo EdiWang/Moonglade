@@ -36,7 +36,7 @@
 		<PackageReference Include="Edi.Gravatar" Version="1.4.0" />
 		<PackageReference Include="Edi.ImageWatermark" Version="3.0.0" />
 		<PackageReference Include="Edi.PasswordGenerator" Version="2.3.0" />
-		<PackageReference Include="LiteBus.Extensions.MicrosoftDependencyInjection" Version="3.1.0" />
+		<PackageReference Include="LiteBus.Extensions.Microsoft.DependencyInjection" Version="6.0.1" />
 		<PackageReference Include="Microsoft.Extensions.Diagnostics.HealthChecks.EntityFrameworkCore" Version="10.0.10" />
 		<PackageReference Include="Microsoft.Extensions.Logging.AzureAppServices" Version="10.0.10" />
 
