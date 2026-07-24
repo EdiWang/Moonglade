@@ -51,6 +51,8 @@ Implemented `CommentSubmissionGuardOptions`, `CommentSubmissionGuard`, request f
 ## Issues and Resolutions
 
 - Running Web tests and Web build in parallel caused transient CS2012 file-lock errors for shared project `obj` DLLs. Reran `dotnet build src/Moonglade.Web/Moonglade.Web.csproj` serially and it passed.
+- PR #988 review noted that refreshing `formRenderedUtc` with `Date.now()` could reject valid submissions when client and server clocks differ. Fixed by returning a new server-issued `FormRenderedUtc` value from `CommentController.Create` and using that value in `post.mjs`.
+- PR #988 review noted that `CommentSubmissionGuardResult` used null defaults for non-nullable string properties. Fixed by enabling nullable context in `CommentSubmissionGuard.cs` and marking `ModelStateKey` and `ErrorMessage` as nullable.
 
 ## Follow-ups
 

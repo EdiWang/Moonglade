@@ -129,6 +129,7 @@ public class CommentControllerTests
 
         var okResult = Assert.IsType<OkObjectResult>(result);
         Assert.False((bool)okResult.Value!.GetType().GetProperty(nameof(CommentSettings.RequireCommentReview))!.GetValue(okResult.Value)!);
+        Assert.True((long)okResult.Value.GetType().GetProperty(nameof(CommentRequest.FormRenderedUtc))!.GetValue(okResult.Value)! > 0);
         var command = _commandMediator.Single<CreateCommentCommand>();
         Assert.Equal(postId, command.PostId);
         Assert.Same(request, command.Payload);

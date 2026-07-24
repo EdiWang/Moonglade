@@ -31,7 +31,7 @@ async function submitComment(pid) {
     try {
         const data = await fetch2(`/api/comment/${pid}`, 'POST', { username, content, email, captchaCode, captchaToken, source, formRenderedUtc });
         commentForm.reset();
-        resetCommentFormRenderedAt();
+        resetCommentFormRenderedAt(data.formRenderedUtc);
         resetCaptchaImage();
 
         if (data.requireCommentReview) {
@@ -49,10 +49,10 @@ async function submitComment(pid) {
     }
 }
 
-function resetCommentFormRenderedAt() {
+function resetCommentFormRenderedAt(formRenderedUtc) {
     const input = document.querySelector('#input-comment-form-rendered-utc');
-    if (input) {
-        input.value = Date.now().toString();
+    if (input && Number.isFinite(formRenderedUtc)) {
+        input.value = formRenderedUtc.toString();
     }
 }
 

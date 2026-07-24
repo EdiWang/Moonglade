@@ -1,13 +1,15 @@
+#nullable enable
+
 using Microsoft.Extensions.Options;
 
 namespace Moonglade.Web.Services;
 
 public interface ICommentSubmissionGuard
 {
-    CommentSubmissionGuardResult Validate(CommentRequest request);
+    CommentSubmissionGuardResult Validate(CommentRequest? request);
 }
 
-public record CommentSubmissionGuardResult(bool Succeeded, string ModelStateKey = null, string ErrorMessage = null)
+public record CommentSubmissionGuardResult(bool Succeeded, string? ModelStateKey = null, string? ErrorMessage = null)
 {
     public static CommentSubmissionGuardResult Success { get; } = new(true);
 
@@ -21,7 +23,7 @@ public class CommentSubmissionGuard(
 {
     private const string InvalidSubmissionMessage = "Invalid comment submission.";
 
-    public CommentSubmissionGuardResult Validate(CommentRequest request)
+    public CommentSubmissionGuardResult Validate(CommentRequest? request)
     {
         var settings = options.CurrentValue;
         if (!settings.Enabled || request is null)

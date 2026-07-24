@@ -77,7 +77,8 @@ public class CommentController(
 
         return Ok(new
         {
-            blogConfig.CommentSettings.RequireCommentReview
+            blogConfig.CommentSettings.RequireCommentReview,
+            FormRenderedUtc = DateTimeOffset.UtcNow.ToUnixTimeMilliseconds()
         });
     }
 
