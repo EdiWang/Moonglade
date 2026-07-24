@@ -204,9 +204,6 @@
   <data name="Call-out section HTML code" xml:space="preserve">
     <value>橫幅HTML內容</value>
   </data>
-  <data name="Can't read? Click to change another image." xml:space="preserve">
-    <value>看不清？點圖更換驗證碼</value>
-  </data>
   <data name="Cancel" xml:space="preserve">
     <value>取消</value>
   </data>
@@ -842,9 +839,6 @@
   </data>
   <data name="Enter your email to receive reply notifications and display your Gravatar. Your email will not be displayed publicly." xml:space="preserve">
     <value>輸入您的電子郵件以接收回復通知並顯示您的 Gravatar。 您的電子郵件不會公開顯示。</value>
-  </data>
-  <data name="Captcha code" xml:space="preserve">
-    <value>驗證碼</value>
   </data>
   <data name="Email (Optional)" xml:space="preserve">
     <value>Email （可選）</value>

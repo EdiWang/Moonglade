@@ -6,7 +6,7 @@ Add a honeypot field and submission elapsed-time check to the built-in public co
 
 ## Background
 
-The built-in comment form is rendered by `src/Moonglade.Web/Pages/_CommentForm.cshtml` and submitted by `src/Moonglade.Web/wwwroot/js/app/post.mjs` as JSON to `POST /api/comment/{postId}`. Existing protection includes stateless captcha and the new IP-plus-post rate limit. This task adds another lightweight anti-automation layer before comment creation.
+The built-in comment form is rendered by `src/Moonglade.Web/Pages/_CommentForm.cshtml` and submitted by `src/Moonglade.Web/wwwroot/js/app/post.mjs` as JSON to `POST /api/comment/{postId}`. Existing protection includes the IP-plus-post rate limit. This task adds another lightweight anti-automation layer before comment creation.
 
 ## Scope
 
@@ -18,7 +18,6 @@ The built-in comment form is rendered by `src/Moonglade.Web/Pages/_CommentForm.c
 
 ## Out of Scope
 
-- Captcha endpoint rate limiting.
 - Third-party bot detection services.
 - Admin UI for these host-level settings.
 

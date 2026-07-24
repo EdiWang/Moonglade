@@ -24,7 +24,6 @@ public class CommentController(
     [HttpPost("{postId:guid}")]
     [AllowAnonymous]
     [EnableRateLimiting(CommentRateLimitPolicy.PolicyName)]
-    [ServiceFilter(typeof(ValidateCaptcha))]
     public async Task<IActionResult> Create([NotEmpty] Guid postId, CommentRequest request)
     {
         if (!blogConfig.CommentSettings.EnableComments)

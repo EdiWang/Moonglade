@@ -1,6 +1,5 @@
-﻿import { fetch2 } from './httpService.mjs?v=1500'
+import { fetch2 } from './httpService.mjs?v=1500'
 import { formatUtcTime, parseMetaContent } from './utils.module.mjs';
-import { resetCaptchaImage, showCaptcha } from './captchaService.mjs';
 import { resizeImages, applyImageZooming } from './post.imageutils.mjs';
 import { renderCodeHighlighter, renderLaTeX } from './post.highlight.mjs';
 import { calculateReadingTime } from './post.readingtime.mjs';
@@ -17,8 +16,6 @@ async function submitComment(pid) {
     const username = document.querySelector('#input-comment-name').value;
     const content = document.querySelector('#input-comment-content').value;
     const email = document.querySelector('#input-comment-email').value;
-    const captchaCode = document.querySelector('#captcha-code').value;
-    const captchaToken = document.querySelector('#captcha-token').value;
     const source = document.querySelector('#input-comment-source')?.value ?? '';
     const formRenderedUtc = Number(document.querySelector('#input-comment-form-rendered-utc')?.value ?? 0);
 
@@ -29,10 +26,9 @@ async function submitComment(pid) {
     btnSubmitComment.setAttribute('disabled', 'disabled');
 
     try {
-        const data = await fetch2(`/api/comment/${pid}`, 'POST', { username, content, email, captchaCode, captchaToken, source, formRenderedUtc });
+        const data = await fetch2(`/api/comment/${pid}`, 'POST', { username, content, email, source, formRenderedUtc });
         commentForm.reset();
         resetCommentFormRenderedAt(data.formRenderedUtc);
-        resetCaptchaImage();
 
         if (data.requireCommentReview) {
             thxForComment.style.display = 'block';
@@ -80,14 +76,6 @@ document.addEventListener('DOMContentLoaded', () => {
         document.getElementById('comment-form')?.addEventListener('submit', function (e) {
             e.preventDefault();
             submitComment(pid);
-        });
-
-        document.getElementById('input-comment-content')?.addEventListener('focus', function () {
-            showCaptcha();
-        });
-
-        document.getElementById('img-captcha')?.addEventListener('click', function () {
-            resetCaptchaImage();
         });
 
         formatUtcTime();

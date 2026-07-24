@@ -2,11 +2,11 @@
 
 ## Original Goal
 
-Add configurable rate limiting to the public built-in comment creation API. The limit must be partitioned by client IP and post ID, and captcha refresh rate limiting is out of scope.
+Add configurable rate limiting to the public built-in comment creation API. The limit must be partitioned by client IP and post ID.
 
 ## Background
 
-The built-in public comment endpoint is `POST /api/comment/{postId}` in `Moonglade.Web.Controllers.CommentController`. Current protection includes stateless captcha, optional comment review, word filtering, and comment close-after-days settings. ASP.NET Core's built-in rate limiting middleware fits the Web host layer and can apply a named policy to only the comment creation action.
+The built-in public comment endpoint is `POST /api/comment/{postId}` in `Moonglade.Web.Controllers.CommentController`. Current protection includes optional comment review, word filtering, and comment close-after-days settings. ASP.NET Core's built-in rate limiting middleware fits the Web host layer and can apply a named policy to only the comment creation action.
 
 ## Scope
 
@@ -18,8 +18,7 @@ The built-in public comment endpoint is `POST /api/comment/{postId}` in `Moongla
 
 ## Out of Scope
 
-- Rate limiting captcha image/token generation.
-- Replacing captcha or adding third-party bot protection.
+- Adding third-party bot protection.
 - Adding an admin UI for the host-level rate limit settings.
 
 ## Task Breakdown
@@ -52,7 +51,6 @@ Implemented `CommentRateLimitOptions`, `CommentRateLimitPolicy`, DI/middleware w
 
 ## Follow-ups
 
-- Consider separate captcha endpoint rate limiting later.
 - Consider content-based spam scoring separately from transport-level rate limiting.
 
 ## Notes

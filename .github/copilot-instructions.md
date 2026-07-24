@@ -72,7 +72,7 @@
 ## Configuration And Security
 - Do not hard-code secrets, connection strings, API keys, tenant IDs, or storage credentials. Use configuration binding and existing options/settings classes.
 - Keep configuration cross-platform: file paths, storage paths, and shell commands must work on Windows and Linux where possible.
-- Preserve HTTPS, forwarded header, health check, security header, captcha, authentication, and content moderation behavior unless the task explicitly targets them.
+- Preserve HTTPS, forwarded header, health check, security header, authentication, and content moderation behavior unless the task explicitly targets them.
 - Authentication supports local accounts and Microsoft Entra ID. Keep auth-provider-specific logic isolated in `Moonglade.Auth` or the existing Web authentication setup.
 - When touching deployment assets, keep Azure App Service on Linux, Docker Compose, SQL Server, and PostgreSQL scenarios in mind.
 

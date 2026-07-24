@@ -123,18 +123,6 @@ dotnet test src/Tests/Moonglade.Web.Tests/Moonglade.Web.Tests.csproj
 
 - **Microsoft Entra ID** (Azure AD) supported. [Setup guide](https://github.com/EdiWang/Moonglade/wiki/Use-Microsoft-Entra-ID-Authentication)
 
-### Captcha Shared Key
-
-Please update the default key in `appsettings.json`:
-
-```json
-"CaptchaSettings": {
-  "SharedKey": "<your value>"
-}
-```
-
-To generate a shared key, please see [this document](https://github.com/EdiWang/Edi.Captcha.AspNetCore?tab=readme-ov-file#shared-key-stateless-captcha-recommended-for-scalable-applications-without-dpapi)
-
 ### Comment Rate Limiting
 
 Built-in comment submissions are rate limited by the combination of client IP address and post ID. Configure the `CommentRateLimit` section in `appsettings.json`:

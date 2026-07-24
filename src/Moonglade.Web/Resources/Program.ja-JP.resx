@@ -204,9 +204,6 @@
   <data name="Call-out section HTML code" xml:space="preserve">
     <value>バナー HTML コンテンツ</value>
   </data>
-  <data name="Can't read? Click to change another image." xml:space="preserve">
-    <value>はっきりと見えませんか? 画像をクリックして確認コードを変更します</value>
-  </data>
   <data name="Cancel" xml:space="preserve">
     <value>キャンセル</value>
   </data>
@@ -842,9 +839,6 @@
   </data>
   <data name="Enter your email to receive reply notifications and display your Gravatar. Your email will not be displayed publicly." xml:space="preserve">
     <value>返信通知を受け取り、Gravatarを表示するためにメールを入力します。 メールは公開されません。</value>
-  </data>
-  <data name="Captcha code" xml:space="preserve">
-    <value>キャプチャ</value>
   </data>
   <data name="Email (Optional)" xml:space="preserve">
     <value>メール (オプション)</value>
