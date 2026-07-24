@@ -36,6 +36,7 @@ public static class WebApplicationExtensions
         app.UseStaticFiles();
         app.UseRouting();
         app.UseAuthentication().UseAuthorization();
+        app.UseRateLimiter();
 
         return app;
     }
