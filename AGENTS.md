@@ -41,6 +41,7 @@ Important configuration areas:
 | `Authentication:Totp:Issuer` | Display issuer for local-account authenticator app QR codes. | Optional | Defaults to `Moonglade`; the TOTP secret is stored in `LocalAccountSettings`. |
 | `CaptchaSettings:SharedKey` | Shared key for stateless captcha tokens. | Yes for captcha | Replace default/example values before deployment. |
 | `CommentRateLimit` | Built-in comment submission rate limiting by client IP and post ID. | Optional | Uses a fixed window policy; captcha endpoint rate limiting is separate and not currently configured. |
+| `CommentSubmissionGuard` | Built-in comment honeypot and elapsed-time checks. | Optional | Rejects filled honeypot fields, too-fast submissions, and stale form timestamps. |
 | `Webmention` | Webmention options, including source rate limiting. | Optional | Preserve protocol endpoint behavior. |
 | `Email` | Notification API endpoint/key/header. | Optional | Store real keys outside source control. |
 | `IndexNow` | API key, ping targets, and cooldown interval. | Optional | API key also maps the IndexNow verification file endpoint. |
@@ -69,12 +70,13 @@ Important configuration areas:
 - The public comment entry point is `Moonglade.Web.Controllers.CommentController`; comment creation is handled by `Moonglade.Features.Comment.CreateCommentCommand`.
 - Whether comments are enabled, require review, close after a number of days, or use word filtering comes from `IBlogConfig.CommentSettings`.
 - Built-in comment creation is also protected by host-level `CommentRateLimit` settings that partition requests by client IP and post ID.
+- Built-in comment creation checks `CommentSubmissionGuard` honeypot and elapsed-time fields before dispatching the create command.
 - Content moderation is abstracted in `Moonglade.Moderation` and supports local keyword filtering. Do not put moderation behavior directly in controllers.
 - Comments, replies, and Webmentions can trigger activity logs and email notifications. Slow external calls should go through existing events, `CannonService`, or background mechanisms instead of blocking request handlers.
 
 ### Configuration
 
-- Application-level configuration lives in `src/Moonglade.Web/appsettings.json`, including database, authentication, captcha, comment rate limiting, image storage, email, IndexNow, security headers, cache durations, and background task switches.
+- Application-level configuration lives in `src/Moonglade.Web/appsettings.json`, including database, authentication, captcha, comment rate limiting, comment submission guard settings, image storage, email, IndexNow, security headers, cache durations, and background task switches.
 - Runtime blog settings are managed by `Moonglade.Configuration.BlogConfig` and persisted in the `BlogConfiguration` table. When adding a blog setting, follow the `IBlogSettings<T>` pattern, provide a default value, and consider initialization and update commands.
 - `/admin/settings` is the main UI for blog settings. Do not hard-code administrator-configurable blog behavior in the Web layer.
 

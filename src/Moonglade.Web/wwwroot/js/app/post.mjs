@@ -19,6 +19,8 @@ async function submitComment(pid) {
     const email = document.querySelector('#input-comment-email').value;
     const captchaCode = document.querySelector('#captcha-code').value;
     const captchaToken = document.querySelector('#captcha-token').value;
+    const source = document.querySelector('#input-comment-source')?.value ?? '';
+    const formRenderedUtc = Number(document.querySelector('#input-comment-form-rendered-utc')?.value ?? 0);
 
     thxForComment.style.display = 'none';
     thxForCommentNonReview.style.display = 'none';
@@ -27,8 +29,9 @@ async function submitComment(pid) {
     btnSubmitComment.setAttribute('disabled', 'disabled');
 
     try {
-        const data = await fetch2(`/api/comment/${pid}`, 'POST', { username, content, email, captchaCode, captchaToken });
+        const data = await fetch2(`/api/comment/${pid}`, 'POST', { username, content, email, captchaCode, captchaToken, source, formRenderedUtc });
         commentForm.reset();
+        resetCommentFormRenderedAt(data.formRenderedUtc);
         resetCaptchaImage();
 
         if (data.requireCommentReview) {
@@ -43,6 +46,13 @@ async function submitComment(pid) {
         loadingIndicator.style.display = 'none';
         btnSubmitComment.classList.remove('disabled');
         btnSubmitComment.removeAttribute('disabled');
+    }
+}
+
+function resetCommentFormRenderedAt(formRenderedUtc) {
+    const input = document.querySelector('#input-comment-form-rendered-utc');
+    if (input && Number.isFinite(formRenderedUtc)) {
+        input.value = formRenderedUtc.toString();
     }
 }
 

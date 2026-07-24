@@ -18,6 +18,7 @@ public class CommentController(
         IQueryMediator queryMediator,
         IModeratorService moderator,
         IBlogConfig blogConfig,
+        ICommentSubmissionGuard submissionGuard,
         CannonService cannonService) : BlogControllerBase(commandMediator)
 {
     [HttpPost("{postId:guid}")]
@@ -34,6 +35,13 @@ public class CommentController(
         // Early validation checks
         var validationResult = ValidateCommentRequest(request);
         if (validationResult != null) return validationResult;
+
+        var submissionGuardResult = submissionGuard.Validate(request);
+        if (!submissionGuardResult.Succeeded)
+        {
+            ModelState.AddModelError(submissionGuardResult.ModelStateKey, submissionGuardResult.ErrorMessage);
+            return ValidationProblem(ModelState);
+        }
 
         // Apply word filtering
         var filterResult = await ApplyWordFilteringAsync(request);
@@ -69,7 +77,8 @@ public class CommentController(
 
         return Ok(new
         {
-            blogConfig.CommentSettings.RequireCommentReview
+            blogConfig.CommentSettings.RequireCommentReview,
+            FormRenderedUtc = DateTimeOffset.UtcNow.ToUnixTimeMilliseconds()
         });
     }
 

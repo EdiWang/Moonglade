@@ -8,6 +8,7 @@ using LiteBus.Messaging;
 using LiteBus.Queries;
 using Microsoft.AspNetCore.RateLimiting;
 using Microsoft.AspNetCore.Mvc.Rendering;
+using Microsoft.Extensions.DependencyInjection.Extensions;
 using Microsoft.Extensions.Diagnostics.HealthChecks;
 using Microsoft.Extensions.Options;
 using Moonglade.BackgroundServices;
@@ -50,6 +51,7 @@ public static class ServiceCollectionExtensions
         services.AddMoongladeHealthChecks();
         services.AddMoongladeProblemDetails();
         services.AddMoongladeCommentRateLimiting(configuration);
+        services.AddMoongladeCommentSubmissionGuard(configuration);
         services.AddMoongladeCoreServices(configuration);
         services.AddMoongladeDatabase(configuration);
         services.AddMoongladeInitializers();
@@ -227,6 +229,20 @@ public static class ServiceCollectionExtensions
         {
             options.AddPolicy<string, CommentRateLimitPolicy>(CommentRateLimitPolicy.PolicyName);
         });
+
+        return services;
+    }
+
+    private static IServiceCollection AddMoongladeCommentSubmissionGuard(this IServiceCollection services, IConfiguration configuration)
+    {
+        services.AddOptions<CommentSubmissionGuardOptions>()
+            .Bind(configuration.GetSection(CommentSubmissionGuardOptions.SectionName))
+            .Validate(options => !options.Enabled || options.MinimumElapsedSeconds >= 0, "CommentSubmissionGuard:MinimumElapsedSeconds must be 0 or greater.")
+            .Validate(options => !options.Enabled || options.MaxFormAgeMinutes >= 0, "CommentSubmissionGuard:MaxFormAgeMinutes must be 0 or greater.")
+            .ValidateOnStart();
+
+        services.TryAddSingleton(TimeProvider.System);
+        services.AddSingleton<ICommentSubmissionGuard, CommentSubmissionGuard>();
 
         return services;
     }

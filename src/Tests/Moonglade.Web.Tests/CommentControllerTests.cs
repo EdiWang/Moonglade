@@ -12,6 +12,7 @@ using Moonglade.Data.DTO;
 using Moonglade.Features.Comment;
 using Moonglade.Moderation;
 using Moonglade.Web.Controllers;
+using Moonglade.Web.Services;
 using Moq;
 using System.Net;
 using System.Security.Claims;
@@ -32,6 +33,14 @@ public class CommentControllerTests
     private readonly RecordingCommandMediator _commandMediator = new();
     private readonly Mock<IQueryMediator> _queryMediator = new();
     private readonly Mock<IModeratorService> _moderator = new();
+    private readonly Mock<ICommentSubmissionGuard> _submissionGuard = new();
+
+    public CommentControllerTests()
+    {
+        _submissionGuard
+            .Setup(x => x.Validate(It.IsAny<CommentRequest>()))
+            .Returns(CommentSubmissionGuardResult.Success);
+    }
 
     [Fact]
     public async Task Create_WhenCommentsDisabled_ReturnsForbid()
@@ -55,6 +64,22 @@ public class CommentControllerTests
         var problemResult = Assert.IsType<ObjectResult>(result);
         Assert.IsType<ValidationProblemDetails>(problemResult.Value);
         Assert.True(controller.ModelState.ContainsKey(nameof(CommentRequest.Email)));
+        Assert.Empty(_commandMediator.Commands);
+    }
+
+    [Fact]
+    public async Task Create_WhenSubmissionGuardRejectsRequest_ReturnsValidationProblem()
+    {
+        _submissionGuard
+            .Setup(x => x.Validate(It.IsAny<CommentRequest>()))
+            .Returns(CommentSubmissionGuardResult.Failure(nameof(CommentRequest.FormRenderedUtc), "Invalid comment submission."));
+        var controller = CreateController();
+
+        var result = await controller.Create(Guid.NewGuid(), CreateCommentRequest());
+
+        var problemResult = Assert.IsType<ObjectResult>(result);
+        Assert.IsType<ValidationProblemDetails>(problemResult.Value);
+        Assert.True(controller.ModelState.ContainsKey(nameof(CommentRequest.FormRenderedUtc)));
         Assert.Empty(_commandMediator.Commands);
     }
 
@@ -104,6 +129,7 @@ public class CommentControllerTests
 
         var okResult = Assert.IsType<OkObjectResult>(result);
         Assert.False((bool)okResult.Value!.GetType().GetProperty(nameof(CommentSettings.RequireCommentReview))!.GetValue(okResult.Value)!);
+        Assert.True((long)okResult.Value.GetType().GetProperty(nameof(CommentRequest.FormRenderedUtc))!.GetValue(okResult.Value)! > 0);
         var command = _commandMediator.Single<CreateCommentCommand>();
         Assert.Equal(postId, command.PostId);
         Assert.Same(request, command.Payload);
@@ -395,6 +421,7 @@ public class CommentControllerTests
             _queryMediator.Object,
             _moderator.Object,
             _blogConfig,
+            _submissionGuard.Object,
             CreateCannonService());
         var httpContext = new DefaultHttpContext();
 
@@ -434,6 +461,8 @@ public class CommentControllerTests
         Username = "reader",
         Content = "Hello world",
         Email = email,
+        Source = string.Empty,
+        FormRenderedUtc = DateTimeOffset.UtcNow.AddSeconds(-10).ToUnixTimeMilliseconds(),
         CaptchaCode = "1234",
         CaptchaToken = "token"
     };

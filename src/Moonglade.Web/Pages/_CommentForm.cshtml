@@ -1,4 +1,13 @@
 ﻿<form id="comment-form">
+    <input type="hidden" id="input-comment-form-rendered-utc" name="formRenderedUtc" value="@(DateTimeOffset.UtcNow.ToUnixTimeMilliseconds())" />
+    <div class="visually-hidden" aria-hidden="true">
+        <label for="input-comment-source">Website</label>
+        <input type="text"
+               id="input-comment-source"
+               name="source"
+               tabindex="-1"
+               autocomplete="off" />
+    </div>
     <div>
         <div class="row g-2 mb-2">
             <div class="col-md-5">
