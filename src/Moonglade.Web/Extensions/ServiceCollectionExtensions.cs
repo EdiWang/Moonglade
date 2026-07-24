@@ -6,8 +6,10 @@ using LiteBus.Events;
 using LiteBus.Extensions.Microsoft.DependencyInjection;
 using LiteBus.Messaging;
 using LiteBus.Queries;
+using Microsoft.AspNetCore.RateLimiting;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.Extensions.Diagnostics.HealthChecks;
+using Microsoft.Extensions.Options;
 using Moonglade.BackgroundServices;
 using Moonglade.Data.PostgreSql;
 using Moonglade.Data.SqlServer;
@@ -47,6 +49,7 @@ public static class ServiceCollectionExtensions
         services.AddTransient<IPasswordGenerator, DefaultPasswordGenerator>();
         services.AddMoongladeHealthChecks();
         services.AddMoongladeProblemDetails();
+        services.AddMoongladeCommentRateLimiting(configuration);
         services.AddMoongladeCoreServices(configuration);
         services.AddMoongladeDatabase(configuration);
         services.AddMoongladeInitializers();
@@ -206,6 +209,23 @@ public static class ServiceCollectionExtensions
                 context.ProblemDetails.Instance = context.HttpContext.Request.Path;
                 context.ProblemDetails.Extensions["traceId"] = context.HttpContext.TraceIdentifier;
             };
+        });
+
+        return services;
+    }
+
+    private static IServiceCollection AddMoongladeCommentRateLimiting(this IServiceCollection services, IConfiguration configuration)
+    {
+        services.AddOptions<CommentRateLimitOptions>()
+            .Bind(configuration.GetSection(CommentRateLimitOptions.SectionName))
+            .Validate(options => !options.Enabled || options.PermitLimit > 0, "CommentRateLimit:PermitLimit must be greater than 0 when rate limiting is enabled.")
+            .Validate(options => !options.Enabled || options.WindowMinutes > 0, "CommentRateLimit:WindowMinutes must be greater than 0 when rate limiting is enabled.")
+            .ValidateOnStart();
+
+        services.AddSingleton<CommentRateLimitPolicy>();
+        services.AddRateLimiter(options =>
+        {
+            options.AddPolicy<string, CommentRateLimitPolicy>(CommentRateLimitPolicy.PolicyName);
         });
 
         return services;

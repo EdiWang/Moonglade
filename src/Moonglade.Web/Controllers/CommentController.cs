@@ -1,11 +1,13 @@
 ﻿using LiteBus.Commands.Abstractions;
 using LiteBus.Events.Abstractions;
 using LiteBus.Queries.Abstractions;
+using Microsoft.AspNetCore.RateLimiting;
 using Moonglade.ActivityLog;
 using Moonglade.BackgroundServices;
 using Moonglade.Data.DTO;
 using Moonglade.Email.Client;
 using Moonglade.Moderation;
+using Moonglade.Web.Services;
 using System.ComponentModel.DataAnnotations;
 
 namespace Moonglade.Web.Controllers;
@@ -20,6 +22,7 @@ public class CommentController(
 {
     [HttpPost("{postId:guid}")]
     [AllowAnonymous]
+    [EnableRateLimiting(CommentRateLimitPolicy.PolicyName)]
     [ServiceFilter(typeof(ValidateCaptcha))]
     public async Task<IActionResult> Create([NotEmpty] Guid postId, CommentRequest request)
     {

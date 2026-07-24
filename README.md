@@ -135,6 +135,20 @@ Please update the default key in `appsettings.json`:
 
 To generate a shared key, please see [this document](https://github.com/EdiWang/Edi.Captcha.AspNetCore?tab=readme-ov-file#shared-key-stateless-captcha-recommended-for-scalable-applications-without-dpapi)
 
+### Comment Rate Limiting
+
+Built-in comment submissions are rate limited by the combination of client IP address and post ID. Configure the `CommentRateLimit` section in `appsettings.json`:
+
+```json
+"CommentRateLimit": {
+  "Enabled": true,
+  "PermitLimit": 5,
+  "WindowMinutes": 10
+}
+```
+
+`PermitLimit` is the number of comment submissions allowed for the same IP and post during each fixed window. `WindowMinutes` controls the fixed window length. Set `Enabled` to `false` to disable this host-level safeguard.
+
 ### Image Storage
 
 Configure the `ImageStorage` section in `appsettings.json` to choose where blog images are stored.
