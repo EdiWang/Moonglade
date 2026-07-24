@@ -17,6 +17,11 @@ public class CommentRequest : ICaptchableWithToken
     [DataType(DataType.EmailAddress)]
     public string Email { get; set; }
 
+    [MaxLength(128)]
+    public string Source { get; set; }
+
+    public long? FormRenderedUtc { get; set; }
+
     [Required]
     [StringLength(4)]
     public string CaptchaCode { get; set; }

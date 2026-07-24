@@ -149,6 +149,21 @@ Built-in comment submissions are rate limited by the combination of client IP ad
 
 `PermitLimit` is the number of comment submissions allowed for the same IP and post during each fixed window. `WindowMinutes` controls the fixed window length. Set `Enabled` to `false` to disable this host-level safeguard.
 
+### Comment Submission Guard
+
+Built-in comment submissions also use a hidden honeypot field and form elapsed-time checks. Configure the `CommentSubmissionGuard` section in `appsettings.json`:
+
+```json
+"CommentSubmissionGuard": {
+  "Enabled": true,
+  "HoneypotEnabled": true,
+  "MinimumElapsedSeconds": 3,
+  "MaxFormAgeMinutes": 240
+}
+```
+
+`MinimumElapsedSeconds` rejects submissions that arrive too quickly after the comment form is rendered. `MaxFormAgeMinutes` rejects stale form timestamps; set it to `0` to disable the max-age check. Set `Enabled` to `false` to disable this guard.
+
 ### Image Storage
 
 Configure the `ImageStorage` section in `appsettings.json` to choose where blog images are stored.
