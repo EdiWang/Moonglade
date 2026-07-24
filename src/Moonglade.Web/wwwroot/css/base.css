@@ -265,10 +265,6 @@ footer {
     color: var(--bs-white) !important;
 }
 
-.input-captcha {
-    max-width: 160px;
-}
-
 .btn-accent {
     --bs-btn-color: #fff;
     --bs-btn-bg: var(--accent-color1);

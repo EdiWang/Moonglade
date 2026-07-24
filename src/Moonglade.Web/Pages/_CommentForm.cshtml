@@ -1,4 +1,4 @@
-﻿<form id="comment-form">
+<form id="comment-form">
     <input type="hidden" id="input-comment-form-rendered-utc" name="formRenderedUtc" value="@(DateTimeOffset.UtcNow.ToUnixTimeMilliseconds())" />
     <div class="visually-hidden" aria-hidden="true">
         <label for="input-comment-source">Website</label>
@@ -41,31 +41,14 @@
                       maxlength="1024"
                       required></textarea>
         </div>
-        <div class="row">
-            <div class="col-9">
-                <div class="input-group" id="captcha-container" style="display: none;">
-                    <input type="hidden" id="captcha-token" />
-                    <img id="img-captcha" title="@SharedLocalizer["Can't read? Click to change another image."]" alt="@SharedLocalizer["Captcha code"]" />
-                    <input type="text"
-                           aria-label="@SharedLocalizer["Captcha code"]"
-                           id="captcha-code"
-                           class="form-control input-captcha"
-                           placeholder="@SharedLocalizer["Captcha code"]"
-                           autocomplete="off"
-                           minlength="4"
-                           maxlength="4"
-                           required />
-                </div>
-            </div>
-            <div class="col-3">
-                <button id="btn-submit-comment" type="submit" class="btn btn-accent float-end">
-                    <span id="loadingIndicator" class="spinner-border spinner-border-sm" role="status" aria-hidden="true" style="display: none;"></span>
+        <div class="d-flex justify-content-end">
+            <button id="btn-submit-comment" type="submit" class="btn btn-accent">
+                <span id="loadingIndicator" class="spinner-border spinner-border-sm" role="status" aria-hidden="true" style="display: none;"></span>
 
-                    <span class="d-none d-md-inline-block">
-                        @SharedLocalizer["Submit"]
-                    </span>
-                </button>
-            </div>
+                <span class="d-none d-md-inline-block">
+                    @SharedLocalizer["Submit"]
+                </span>
+            </button>
         </div>
     </div>
 </form>

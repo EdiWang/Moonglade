@@ -1,5 +1,4 @@
 using Edi.AspNetCore.Utils.Filters;
-using Edi.Captcha;
 using Edi.PasswordGenerator;
 using LiteBus.Commands;
 using LiteBus.Events;
@@ -39,7 +38,6 @@ public static class ServiceCollectionExtensions
         services.AddMoongladeLiteBus();
         services.AddHttpClient();
         services.AddOptions().AddHttpContextAccessor();
-        services.AddMoongladeCaptcha(configuration);
         services.AddMoongladeLocalization();
         services.AddMoongladeControllers();
         services.AddMoongladeRazorPages();
@@ -93,31 +91,6 @@ public static class ServiceCollectionExtensions
             });
         });
 
-        return services;
-    }
-
-    private static IServiceCollection AddMoongladeCaptcha(this IServiceCollection services, IConfiguration configuration)
-    {
-        var magics = new List<string>
-            {
-                Encoding.UTF8.GetString([.. BitConverter.GetBytes('✔'.GetHashCode())
-                    .Zip(BitConverter.GetBytes(0x242F2E32)).Select(x => (byte)(x.First + x.Second))]),
-                Helper.GetMagic(0x6B441, 11, 15)
-            };
-
-        var captchaKey = configuration["CaptchaSettings:SharedKey"];
-        var expirationMinutes = configuration.GetValue<int>("CaptchaSettings:TokenExpirationMinutes", 5);
-
-        services.AddSharedKeyStatelessCaptcha(options =>
-        {
-            options.SharedKey = captchaKey;
-            options.TokenExpiration = TimeSpan.FromMinutes(expirationMinutes);
-            options.FontStyle = CaptchaFontStyle.Regular;
-            options.BlockedCodes = [.. magics];
-            options.DrawLines = true;
-        });
-
-        services.AddScoped<ValidateCaptcha>();
         return services;
     }
 

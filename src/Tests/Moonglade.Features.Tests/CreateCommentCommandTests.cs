@@ -35,9 +35,7 @@ public class CreateCommentCommandTests
         {
             Username = "Reader",
             Content = "Nice post",
-            Email = "reader@example.com",
-            CaptchaCode = "1234",
-            CaptchaToken = "token"
+            Email = "reader@example.com"
         };
 
         var result = await handler.HandleAsync(new CreateCommentCommand(Guid.NewGuid(), request, "127.0.0.1"), TestContext.Current.CancellationToken);
@@ -142,9 +140,7 @@ public class CreateCommentCommandTests
         {
             Username = "Reader",
             Content = "Nice post",
-            Email = "reader@example.com",
-            CaptchaCode = "1234",
-            CaptchaToken = "token"
+            Email = "reader@example.com"
         };
     }
 }

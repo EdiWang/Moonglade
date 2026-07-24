@@ -204,9 +204,6 @@
   <data name="Call-out section HTML code" xml:space="preserve">
     <value>Call-out HTML Code Sektion</value>
   </data>
-  <data name="Can't read? Click to change another image." xml:space="preserve">
-    <value>Können Sie es nicht lesen? Klicken Sie, um ein anderes Bild zu erhalten.</value>
-  </data>
   <data name="Cancel" xml:space="preserve">
     <value>Abbrechen</value>
   </data>
@@ -842,9 +839,6 @@
   </data>
   <data name="Enter your email to receive reply notifications and display your Gravatar. Your email will not be displayed publicly." xml:space="preserve">
     <value>Geben Sie Ihre E-Mail-Adresse ein, um eine Antwortbenachrichtigung zu erhalten und Ihren Gravatar anzuzeigen. Ihre E-Mail ist dann nicht für die Öffentlichkeit sichtbar.</value>
-  </data>
-  <data name="Captcha code" xml:space="preserve">
-    <value>Das Kaptcha</value>
   </data>
   <data name="Email (Optional)" xml:space="preserve">
     <value>E-Mail (optional)</value>

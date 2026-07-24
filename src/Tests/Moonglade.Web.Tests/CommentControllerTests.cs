@@ -462,9 +462,7 @@ public class CommentControllerTests
         Content = "Hello world",
         Email = email,
         Source = string.Empty,
-        FormRenderedUtc = DateTimeOffset.UtcNow.AddSeconds(-10).ToUnixTimeMilliseconds(),
-        CaptchaCode = "1234",
-        CaptchaToken = "token"
+        FormRenderedUtc = DateTimeOffset.UtcNow.AddSeconds(-10).ToUnixTimeMilliseconds()
     };
 
     private sealed class RecordingCommandMediator : ICommandMediator

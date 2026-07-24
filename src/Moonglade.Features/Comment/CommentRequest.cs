@@ -1,9 +1,8 @@
-﻿using Edi.Captcha;
 using System.ComponentModel.DataAnnotations;
 
 namespace Moonglade.Features.Comment;
 
-public class CommentRequest : ICaptchableWithToken
+public class CommentRequest
 {
     [Required]
     [MaxLength(64)]
@@ -21,10 +20,4 @@ public class CommentRequest : ICaptchableWithToken
     public string Source { get; set; }
 
     public long? FormRenderedUtc { get; set; }
-
-    [Required]
-    [StringLength(4)]
-    public string CaptchaCode { get; set; }
-
-    public string CaptchaToken { get; set; }
 }

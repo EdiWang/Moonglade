@@ -39,8 +39,7 @@ Important configuration areas:
 | `ConnectionStrings:DatabaseProvider` | Selects `SqlServer` or `PostgreSql`. | Yes | Keep provider names aligned with `AddMoongladeDatabase`. |
 | `Authentication:Provider` | Selects local auth or Microsoft Entra ID. | Yes | Entra ID settings live under `Authentication:EntraID`. |
 | `Authentication:Totp:Issuer` | Display issuer for local-account authenticator app QR codes. | Optional | Defaults to `Moonglade`; the TOTP secret is stored in `LocalAccountSettings`. |
-| `CaptchaSettings:SharedKey` | Shared key for stateless captcha tokens. | Yes for captcha | Replace default/example values before deployment. |
-| `CommentRateLimit` | Built-in comment submission rate limiting by client IP and post ID. | Optional | Uses a fixed window policy; captcha endpoint rate limiting is separate and not currently configured. |
+| `CommentRateLimit` | Built-in comment submission rate limiting by client IP and post ID. | Optional | Uses a fixed window policy. |
 | `CommentSubmissionGuard` | Built-in comment honeypot and elapsed-time checks. | Optional | Rejects filled honeypot fields, too-fast submissions, and stale form timestamps. |
 | `Webmention` | Webmention options, including source rate limiting. | Optional | Preserve protocol endpoint behavior. |
 | `Email` | Notification API endpoint/key/header. | Optional | Store real keys outside source control. |
@@ -76,7 +75,7 @@ Important configuration areas:
 
 ### Configuration
 
-- Application-level configuration lives in `src/Moonglade.Web/appsettings.json`, including database, authentication, captcha, comment rate limiting, comment submission guard settings, image storage, email, IndexNow, security headers, cache durations, and background task switches.
+- Application-level configuration lives in `src/Moonglade.Web/appsettings.json`, including database, authentication, comment rate limiting, comment submission guard settings, image storage, email, IndexNow, security headers, cache durations, and background task switches.
 - Runtime blog settings are managed by `Moonglade.Configuration.BlogConfig` and persisted in the `BlogConfiguration` table. When adding a blog setting, follow the `IBlogSettings<T>` pattern, provide a default value, and consider initialization and update commands.
 - `/admin/settings` is the main UI for blog settings. Do not hard-code administrator-configurable blog behavior in the Web layer.
 
@@ -85,7 +84,7 @@ Important configuration areas:
 - Authentication logic lives in `Moonglade.Auth` and supports local accounts with TOTP and Microsoft Entra ID.
 - Admin Razor Pages are authorized by Razor Pages conventions; API controllers inherit `[Authorize]` from `BlogControllerBase`.
 - Controllers use antiforgery validation by default. Use `[IgnoreAntiforgeryToken]` only for deliberate endpoints such as keep-alive or protocol callbacks.
-- Do not commit real connection strings, API keys, tenant IDs, storage credentials, or captcha shared keys. Use configuration binding and environment variable overrides.
+- Do not commit real connection strings, API keys, tenant IDs, or storage credentials. Use configuration binding and environment variable overrides.
 
 ### Images, Themes, Feeds, And Protocols
 
@@ -210,7 +209,7 @@ Project-level Codex skills live under `.codex/skills/`. Use `update-moonglade-ed
 3. Does it change post URLs, publish timestamps, status transitions, caches, feeds, sitemap, Webmention, IndexNow, or email notifications?
 4. Does it require updating `Program.LoadAssemblies()`, a DI extension, default configuration, resource files, or tests?
 5. Does it add an external call? Make it configurable, testable, logged, and avoid blocking the main request.
-6. Does it touch a security boundary? Check authentication, authorization, antiforgery, captcha, moderation, secret configuration, and forwarded headers.
+6. Does it touch a security boundary? Check authentication, authorization, antiforgery, moderation, secret configuration, and forwarded headers.
 7. Does documentation need to change? The README and this file should reflect important developer-facing behavior.
 
 ## Agent Working Rules
