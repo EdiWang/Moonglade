@@ -8,7 +8,9 @@ public interface IBlogImageStorage
 
     Task<string> InsertSecondaryAsync(string fileName, byte[] imageBytes);
 
-    Task<ImageInfo> GetAsync(string fileName);
+    Task<ImageInfo> GetInfoAsync(string fileName);
+
+    Task<Stream> OpenReadAsync(string fileName);
 
     Task DeleteAsync(string fileName);
 }

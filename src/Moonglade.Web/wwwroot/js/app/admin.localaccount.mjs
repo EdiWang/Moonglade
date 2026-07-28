@@ -5,14 +5,17 @@ import { getLocalizedString } from './utils.module.mjs';
 
 Alpine.data('accountManager', () => ({
     resetPasswordModal: null,
+    resetAuthenticatorModal: null,
     formData: {
         newUsername: '',
         oldPassword: '',
-        newPassword: ''
+        newPassword: '',
+        currentPassword: ''
     },
 
     async init() {
         this.resetPasswordModal = new bootstrap.Modal('#resetPasswordModal');
+        this.resetAuthenticatorModal = new bootstrap.Modal('#resetAuthenticatorModal');
         await this.loadCurrentUsername();
     },
 
@@ -33,6 +36,11 @@ Alpine.data('accountManager', () => ({
         this.resetPasswordModal.show();
     },
 
+    openResetAuthenticatorModal() {
+        this.formData.currentPassword = '';
+        this.resetAuthenticatorModal.show();
+    },
+
     async resetPassword() {
         const payload = {
             NewUsername: this.formData.newUsername,
@@ -46,6 +54,21 @@ Alpine.data('accountManager', () => ({
             this.formData.newPassword = '';
             this.resetPasswordModal.hide();
             success(getLocalizedString('passwordUpdated'));
+        } catch (err) {
+            error(err);
+        }
+    },
+
+    async resetAuthenticator() {
+        const payload = {
+            CurrentPassword: this.formData.currentPassword
+        };
+
+        try {
+            await fetch2('/api/settings/totp/local/reset', 'PUT', payload);
+            this.formData.currentPassword = '';
+            this.resetAuthenticatorModal.hide();
+            window.location.href = '/auth/signin';
         } catch (err) {
             error(err);
         }

@@ -23,27 +23,58 @@ public class FileSystemImageStorageTests : IDisposable
     }
 
     [Fact]
-    public async Task GetAsync_ExistingFile_ReturnsImageInfo()
+    public async Task GetInfoAsync_ExistingFile_ReturnsImageInfo()
+    {
+        Directory.CreateDirectory(_tempDirectory);
+        var bytes = Encoding.UTF8.GetBytes("image data");
+        var filePath = Path.Combine(_tempDirectory, "test.png");
+        await File.WriteAllBytesAsync(filePath, bytes, TestContext.Current.CancellationToken);
+        var storage = CreateStorage();
+
+        var result = await storage.GetInfoAsync("test.png");
+
+        Assert.NotNull(result);
+        Assert.Equal("png", result.ImageExtensionName);
+        Assert.Equal("image/png", result.ImageContentType);
+        Assert.Equal(bytes.Length, result.ContentLength);
+        Assert.NotNull(result.LastModifiedUtc);
+        Assert.NotNull(result.EntityTag);
+    }
+
+    [Fact]
+    public async Task GetInfoAsync_MissingFile_ReturnsNull()
+    {
+        Directory.CreateDirectory(_tempDirectory);
+        var storage = CreateStorage();
+
+        var result = await storage.GetInfoAsync("missing.jpg");
+
+        Assert.Null(result);
+    }
+
+    [Fact]
+    public async Task OpenReadAsync_ExistingFile_ReturnsReadableStream()
     {
         Directory.CreateDirectory(_tempDirectory);
         var bytes = Encoding.UTF8.GetBytes("image data");
         await File.WriteAllBytesAsync(Path.Combine(_tempDirectory, "test.png"), bytes, TestContext.Current.CancellationToken);
         var storage = CreateStorage();
 
-        var result = await storage.GetAsync("test.png");
+        await using var result = await storage.OpenReadAsync("test.png");
 
         Assert.NotNull(result);
-        Assert.Equal(bytes, result.ImageBytes);
-        Assert.Equal("png", result.ImageExtensionName);
+        using var reader = new MemoryStream();
+        await result.CopyToAsync(reader, TestContext.Current.CancellationToken);
+        Assert.Equal(bytes, reader.ToArray());
     }
 
     [Fact]
-    public async Task GetAsync_MissingFile_ReturnsNull()
+    public async Task OpenReadAsync_MissingFile_ReturnsNull()
     {
         Directory.CreateDirectory(_tempDirectory);
         var storage = CreateStorage();
 
-        var result = await storage.GetAsync("missing.jpg");
+        var result = await storage.OpenReadAsync("missing.jpg");
 
         Assert.Null(result);
     }
@@ -81,7 +112,8 @@ public class FileSystemImageStorageTests : IDisposable
         Directory.CreateDirectory(_tempDirectory);
         var storage = CreateStorage();
 
-        await Assert.ThrowsAsync<ArgumentException>(() => storage.GetAsync(fileName));
+        await Assert.ThrowsAsync<ArgumentException>(() => storage.GetInfoAsync(fileName));
+        await Assert.ThrowsAsync<ArgumentException>(() => storage.OpenReadAsync(fileName));
         await Assert.ThrowsAsync<ArgumentException>(() => storage.InsertAsync(fileName, [1, 2, 3]));
         await Assert.ThrowsAsync<ArgumentException>(() => storage.DeleteAsync(fileName));
     }

@@ -204,9 +204,6 @@
   <data name="Call-out section HTML code" xml:space="preserve">
     <value>Call-out HTML Code Sektion</value>
   </data>
-  <data name="Can't read? Click to change another image." xml:space="preserve">
-    <value>Können Sie es nicht lesen? Klicken Sie, um ein anderes Bild zu erhalten.</value>
-  </data>
   <data name="Cancel" xml:space="preserve">
     <value>Abbrechen</value>
   </data>
@@ -842,9 +839,6 @@
   </data>
   <data name="Enter your email to receive reply notifications and display your Gravatar. Your email will not be displayed publicly." xml:space="preserve">
     <value>Geben Sie Ihre E-Mail-Adresse ein, um eine Antwortbenachrichtigung zu erhalten und Ihren Gravatar anzuzeigen. Ihre E-Mail ist dann nicht für die Öffentlichkeit sichtbar.</value>
-  </data>
-  <data name="Captcha code" xml:space="preserve">
-    <value>Das Kaptcha</value>
   </data>
   <data name="Email (Optional)" xml:space="preserve">
     <value>E-Mail (optional)</value>
@@ -1859,5 +1853,35 @@
   </data>
   <data name="Updated" xml:space="preserve">
     <value>Aktualisiert</value>
+  </data>
+  <data name="Authenticator code" xml:space="preserve">
+    <value>Authenticator-Code</value>
+  </data>
+  <data name="Set up Authenticator" xml:space="preserve">
+    <value>Authenticator einrichten</value>
+  </data>
+  <data name="Authenticator QR code" xml:space="preserve">
+    <value>Authenticator-QR-Code</value>
+  </data>
+  <data name="Manual setup key" xml:space="preserve">
+    <value>Manueller Einrichtungsschlüssel</value>
+  </data>
+  <data name="Verify" xml:space="preserve">
+    <value>Überprüfen</value>
+  </data>
+  <data name="Verify Authenticator" xml:space="preserve">
+    <value>Authenticator überprüfen</value>
+  </data>
+  <data name="Local account sign-in is protected by an authenticator app." xml:space="preserve">
+    <value>Die Anmeldung mit dem lokalen Konto ist durch eine Authenticator-App geschützt.</value>
+  </data>
+  <data name="Reset Authenticator" xml:space="preserve">
+    <value>Authenticator zurücksetzen</value>
+  </data>
+  <data name="Current password" xml:space="preserve">
+    <value>Aktuelles Passwort</value>
+  </data>
+  <data name="Resetting the authenticator signs you out and requires setting up a new authenticator app on the next sign-in." xml:space="preserve">
+    <value>Das Zurücksetzen des Authenticators meldet Sie ab und erfordert beim nächsten Anmelden das Einrichten einer neuen Authenticator-App.</value>
   </data>
 </root>

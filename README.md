@@ -100,6 +100,7 @@ dotnet test src/Tests/Moonglade.Web.Tests/Moonglade.Web.Tests.csproj
     - **Admin:** `https://localhost:10210/admin`
       - Default username: `admin`
       - Default password: `admin123`
+      - On first local-account sign-in, scan the authenticator QR code and enter the 6-digit code to enable TOTP.
 
 ## ⚙️ Configuration
 
@@ -107,20 +108,49 @@ dotnet test src/Tests/Moonglade.Web.Tests/Moonglade.Web.Tests.csproj
 
 ### Authentication
 
-- By default: Local accounts (manage via `/admin/settings/account`)
-- **Microsoft Entra ID** (Azure AD) supported. [Setup guide](https://github.com/EdiWang/Moonglade/wiki/Use-Microsoft-Entra-ID-Authentication)
-
-### Captcha Shared Key
-
-Please update the default key in `appsettings.json`:
+- By default: Local accounts with TOTP authenticator app verification (manage via `/admin/account`)
+- Local sign-in is two-step after setup: username/password first, then the authenticator code on the next screen.
+- To replace a configured authenticator app, use `/admin/account` to reset it; the reset signs out the administrator and starts TOTP setup on the next sign-in.
+- Optional TOTP issuer display name for authenticator apps:
 
 ```json
-"CaptchaSettings": {
-  "SharedKey": "<your value>"
+"Authentication": {
+  "Totp": {
+    "Issuer": "Moonglade"
+  }
 }
 ```
 
-To generate a shared key, please see [this document](https://github.com/EdiWang/Edi.Captcha.AspNetCore?tab=readme-ov-file#shared-key-stateless-captcha-recommended-for-scalable-applications-without-dpapi)
+- **Microsoft Entra ID** (Azure AD) supported. [Setup guide](https://github.com/EdiWang/Moonglade/wiki/Use-Microsoft-Entra-ID-Authentication)
+
+### Comment Rate Limiting
+
+Built-in comment submissions are rate limited by the combination of client IP address and post ID. Configure the `CommentRateLimit` section in `appsettings.json`:
+
+```json
+"CommentRateLimit": {
+  "Enabled": true,
+  "PermitLimit": 5,
+  "WindowMinutes": 10
+}
+```
+
+`PermitLimit` is the number of comment submissions allowed for the same IP and post during each fixed window. `WindowMinutes` controls the fixed window length. Set `Enabled` to `false` to disable this host-level safeguard.
+
+### Comment Submission Guard
+
+Built-in comment submissions also use a hidden honeypot field and form elapsed-time checks. Configure the `CommentSubmissionGuard` section in `appsettings.json`:
+
+```json
+"CommentSubmissionGuard": {
+  "Enabled": true,
+  "HoneypotEnabled": true,
+  "MinimumElapsedSeconds": 3,
+  "MaxFormAgeMinutes": 240
+}
+```
+
+`MinimumElapsedSeconds` rejects submissions that arrive too quickly after the comment form is rendered. `MaxFormAgeMinutes` rejects stale form timestamps; set it to `0` to disable the max-age check. Set `Enabled` to `false` to disable this guard.
 
 ### Image Storage
 
@@ -165,6 +195,17 @@ Leave the `FileSystemPath` empty to use the default path (`~/home/moonglade/imag
 ### Comment Moderation
 
 Moonglade comment moderation runs locally and does not call a remote moderation API. Configure the word filter and keyword list from `/admin/settings/comment`.
+
+### Security HTTP Headers
+
+Moonglade always emits `X-Content-Type-Options: nosniff`. To enable a custom Content Security Policy response header, set `EnableCSP` to `true` and provide the policy in `CSPValue`:
+
+```json
+{
+  "EnableCSP": true,
+  "CSPValue": "default-src 'self'; img-src 'self' https: data:"
+}
+```
 
 ### Email Notifications
 

@@ -25,6 +25,8 @@ public class AuthController(
                     OpenIdConnectDefaults.AuthenticationScheme);
             case AuthenticationProvider.Local:
                 await HttpContext.SignOutAsync(CookieAuthenticationDefaults.AuthenticationScheme);
+                await HttpContext.SignOutAsync(BlogAuthSchemas.LocalAccountSetup);
+                await HttpContext.SignOutAsync(BlogAuthSchemas.LocalAccountTwoFactor);
                 return RedirectToPage("/Index");
             default:
                 return RedirectToPage("/Index");

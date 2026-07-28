@@ -58,6 +58,7 @@ public enum EventType
     SettingsAppearanceUpdated = 807,
     SettingsCustomMenuUpdated = 808,
     SettingsPasswordUpdated = 809,
+    SettingsAuthenticatorReset = 830,
 
     // Image operations (810-819)
     ImageUploaded = 810,

@@ -66,17 +66,26 @@
                     <h2 id="postStatsTitle" class="admin-subtitle fw-bold mb-0">@SharedLocalizer["Posts"]</h2>
                 </div>
                 <div class="dashboard-count-grid">
-                    <div class="dashboard-count-item">
+                    <div class="dashboard-count-item position-relative">
                         <span class="dashboard-count-label">@SharedLocalizer["Published"]</span>
                         <strong>@Model.Stats.PublishedPostCount</strong>
+                        <a class="stretched-link dashboard-count-link"
+                           asp-page="/Admin/Post"
+                           aria-label="@SharedLocalizer["Published"]"></a>
                     </div>
-                    <div class="dashboard-count-item">
+                    <div class="dashboard-count-item position-relative">
                         <span class="dashboard-count-label">@SharedLocalizer["Drafts"]</span>
                         <strong>@Model.Stats.DraftPostCount</strong>
+                        <a class="stretched-link dashboard-count-link"
+                           asp-page="/Admin/Draft"
+                           aria-label="@SharedLocalizer["Drafts"]"></a>
                     </div>
-                    <div class="dashboard-count-item">
+                    <div class="dashboard-count-item position-relative">
                         <span class="dashboard-count-label">@SharedLocalizer["Scheduled"]</span>
                         <strong>@Model.Stats.ScheduledPostCount</strong>
+                        <a class="stretched-link dashboard-count-link"
+                           asp-page="/Admin/Scheduled"
+                           aria-label="@SharedLocalizer["Scheduled"]"></a>
                     </div>
                 </div>
             </div>

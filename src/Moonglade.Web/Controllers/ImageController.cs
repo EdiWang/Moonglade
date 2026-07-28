@@ -2,6 +2,7 @@
 using LiteBus.Commands.Abstractions;
 using Microsoft.Extensions.Caching.Memory;
 using Microsoft.Extensions.Options;
+using Microsoft.Net.Http.Headers;
 using Moonglade.ActivityLog;
 using Moonglade.BackgroundServices;
 using SkiaSharp;
@@ -22,24 +23,19 @@ public class ImageController(
     : BlogControllerBase(commandMediator)
 {
     private const long MaxUploadBytes = 5 * 1024 * 1024;
+    private const string ImageCacheKeyPrefix = "image-meta:";
 
     private readonly ImageStorageSettings _imageStorageSettings = imageStorageSettings.Value;
 
     [AllowAnonymous]
     [HttpGet(@"{filename:regex((?!-)([[a-z0-9-]]+)\.(png|jpg|jpeg|gif|bmp|webp|svg))}")]
-    public async Task<IActionResult> Image([MaxLength(256)] string filename)
+    [HttpHead(@"{filename:regex((?!-)([[a-z0-9-]]+)\.(png|jpg|jpeg|gif|bmp|webp|svg))}")]
+    public async Task<IActionResult> Image([MaxLength(256)] string filename, CancellationToken cancellationToken = default)
     {
         var invalidChars = Path.GetInvalidFileNameChars();
         if (filename.IndexOfAny(invalidChars) >= 0)
         {
             return BadRequest("invalid filename");
-        }
-
-        // Prevent access to origin images
-        if (filename.Contains("-origin.", StringComparison.OrdinalIgnoreCase))
-        {
-            logger.LogWarning("Attempt to access origin image: `{Filename}` is blocked. Client IP: {ClientIP}", filename, HttpContext.Connection.RemoteIpAddress);
-            return Forbid();
         }
 
         // Fallback method for legacy "/image/..." references (e.g. from third party websites)
@@ -49,16 +45,26 @@ public class ImageController(
             return RedirectPermanent(imageUrl);
         }
 
-        var image = await cache.GetOrCreateAsync(filename, async entry =>
-        {
-            entry.SlidingExpiration = TimeSpan.FromMinutes(_imageStorageSettings.CacheMinutes);
-            var imageInfo = await imageStorage.GetAsync(filename);
-            return imageInfo;
-        });
+        var image = await GetImageInfoAsync(filename, cancellationToken);
 
         if (image == null) return NotFound();
 
-        return File(image.ImageBytes, image.ImageContentType);
+        var entityTag = TryCreateEntityTag(image.EntityTag);
+        ApplyCacheHeaders(image, entityTag);
+
+        if (IsNotModified(image, entityTag))
+        {
+            return StatusCode(StatusCodes.Status304NotModified);
+        }
+
+        var imageStream = await imageStorage.OpenReadAsync(filename);
+        if (imageStream == null)
+        {
+            cache.Remove(GetImageCacheKey(filename));
+            return NotFound();
+        }
+
+        return File(imageStream, image.ImageContentType, image.LastModifiedUtc, entityTag, enableRangeProcessing: true);
     }
 
     [HttpPost, IgnoreAntiforgeryToken]
@@ -146,5 +152,77 @@ public class ImageController(
         var originalImageData = stream.ToArray();
         cannonService.FireAsync<IBlogImageStorage>(async storage =>
             await storage.InsertSecondaryAsync(fileName, originalImageData));
+    }
+
+    private async Task<ImageInfo> GetImageInfoAsync(string filename, CancellationToken cancellationToken)
+    {
+        if (_imageStorageSettings.CacheMinutes <= 0)
+        {
+            return await imageStorage.GetInfoAsync(filename);
+        }
+
+        return await cache.GetOrCreateAsync(GetImageCacheKey(filename), async entry =>
+        {
+            entry.SlidingExpiration = TimeSpan.FromMinutes(_imageStorageSettings.CacheMinutes);
+            return await imageStorage.GetInfoAsync(filename);
+        });
+    }
+
+    private static string GetImageCacheKey(string filename) => $"{ImageCacheKeyPrefix}{filename}";
+
+    private void ApplyCacheHeaders(ImageInfo image, EntityTagHeaderValue entityTag)
+    {
+        var typedHeaders = Response.GetTypedHeaders();
+        typedHeaders.CacheControl = new CacheControlHeaderValue
+        {
+            Public = true,
+            MaxAge = TimeSpan.FromMinutes(Math.Max(0, _imageStorageSettings.CacheMinutes))
+        };
+        typedHeaders.ETag = entityTag;
+        typedHeaders.LastModified = image.LastModifiedUtc;
+    }
+
+    private bool IsNotModified(ImageInfo image, EntityTagHeaderValue entityTag)
+    {
+        var requestHeaders = Request.GetTypedHeaders();
+
+        if (requestHeaders.IfNoneMatch is { Count: > 0 })
+        {
+            if (entityTag == null) return false;
+
+            return requestHeaders.IfNoneMatch.Any(tag =>
+                string.Equals(tag.ToString(), "*", StringComparison.Ordinal) ||
+                string.Equals(tag.ToString(), entityTag.ToString(), StringComparison.Ordinal));
+        }
+
+        if (requestHeaders.IfModifiedSince.HasValue && image.LastModifiedUtc.HasValue)
+        {
+            return TruncateToSeconds(image.LastModifiedUtc.Value) <= requestHeaders.IfModifiedSince.Value;
+        }
+
+        return false;
+    }
+
+    private static EntityTagHeaderValue TryCreateEntityTag(string entityTag)
+    {
+        if (string.IsNullOrWhiteSpace(entityTag))
+        {
+            return null;
+        }
+
+        try
+        {
+            return EntityTagHeaderValue.Parse(entityTag);
+        }
+        catch (FormatException)
+        {
+            return null;
+        }
+    }
+
+    private static DateTimeOffset TruncateToSeconds(DateTimeOffset value)
+    {
+        var utcValue = value.ToUniversalTime();
+        return new DateTimeOffset(utcValue.Ticks - utcValue.Ticks % TimeSpan.TicksPerSecond, TimeSpan.Zero);
     }
 }

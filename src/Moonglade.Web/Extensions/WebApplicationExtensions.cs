@@ -14,6 +14,7 @@ public static class WebApplicationExtensions
         bool useXFFHeaders = app.Configuration.GetValue<bool>("ForwardedHeaders:Enabled");
         if (useXFFHeaders) app.UseSmartXFFHeader();
 
+        app.UseMiddleware<SecurityHeadersMiddleware>();
         app.UseMiddleware<PrefersColorSchemeMiddleware>();
         app.UseMiddleware<PoweredByMiddleware>();
 
@@ -35,6 +36,7 @@ public static class WebApplicationExtensions
         app.UseStaticFiles();
         app.UseRouting();
         app.UseAuthentication().UseAuthorization();
+        app.UseRateLimiter();
 
         return app;
     }

@@ -62,6 +62,7 @@ public class RequestPipelineRedirectTests
         builder.Services.AddProblemDetails();
         builder.Services.AddAuthentication();
         builder.Services.AddAuthorization();
+        builder.Services.AddRateLimiter();
 
         var app = builder.Build();
         app.UseMoongladeRequestPipeline(CreateCultures());

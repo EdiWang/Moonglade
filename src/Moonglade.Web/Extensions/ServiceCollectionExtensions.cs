@@ -1,11 +1,12 @@
 using Edi.AspNetCore.Utils.Filters;
-using Edi.Captcha;
 using Edi.PasswordGenerator;
 using LiteBus.Commands;
 using LiteBus.Events;
 using LiteBus.Extensions.Microsoft.DependencyInjection;
+using LiteBus.Messaging;
 using LiteBus.Queries;
 using Microsoft.AspNetCore.Mvc.Rendering;
+using Microsoft.Extensions.DependencyInjection.Extensions;
 using Microsoft.Extensions.Diagnostics.HealthChecks;
 using Moonglade.BackgroundServices;
 using Moonglade.Data.PostgreSql;
@@ -35,7 +36,6 @@ public static class ServiceCollectionExtensions
         services.AddMoongladeLiteBus();
         services.AddHttpClient();
         services.AddOptions().AddHttpContextAccessor();
-        services.AddMoongladeCaptcha(configuration);
         services.AddMoongladeLocalization();
         services.AddMoongladeControllers();
         services.AddMoongladeRazorPages();
@@ -46,6 +46,8 @@ public static class ServiceCollectionExtensions
         services.AddTransient<IPasswordGenerator, DefaultPasswordGenerator>();
         services.AddMoongladeHealthChecks();
         services.AddMoongladeProblemDetails();
+        services.AddMoongladeCommentRateLimiting(configuration);
+        services.AddMoongladeCommentSubmissionGuard(configuration);
         services.AddMoongladeCoreServices(configuration);
         services.AddMoongladeDatabase(configuration);
         services.AddMoongladeInitializers();
@@ -60,7 +62,9 @@ public static class ServiceCollectionExtensions
 
         services.AddLiteBus(liteBus =>
         {
-            liteBus.AddCommandModule(module =>
+            liteBus.AddMessaging(_ => { });
+
+            liteBus.AddCommands(module =>
             {
                 foreach (var assembly in assemblies)
                 {
@@ -68,7 +72,7 @@ public static class ServiceCollectionExtensions
                 }
             });
 
-            liteBus.AddQueryModule(module =>
+            liteBus.AddQueries(module =>
             {
                 foreach (var assembly in assemblies)
                 {
@@ -76,7 +80,7 @@ public static class ServiceCollectionExtensions
                 }
             });
 
-            liteBus.AddEventModule(module =>
+            liteBus.AddEvents(module =>
             {
                 foreach (var assembly in assemblies)
                 {
@@ -85,31 +89,6 @@ public static class ServiceCollectionExtensions
             });
         });
 
-        return services;
-    }
-
-    private static IServiceCollection AddMoongladeCaptcha(this IServiceCollection services, IConfiguration configuration)
-    {
-        var magics = new List<string>
-            {
-                Encoding.UTF8.GetString([.. BitConverter.GetBytes('✔'.GetHashCode())
-                    .Zip(BitConverter.GetBytes(0x242F2E32)).Select(x => (byte)(x.First + x.Second))]),
-                Helper.GetMagic(0x6B441, 11, 15)
-            };
-
-        var captchaKey = configuration["CaptchaSettings:SharedKey"];
-        var expirationMinutes = configuration.GetValue<int>("CaptchaSettings:TokenExpirationMinutes", 5);
-
-        services.AddSharedKeyStatelessCaptcha(options =>
-        {
-            options.SharedKey = captchaKey;
-            options.TokenExpiration = TimeSpan.FromMinutes(expirationMinutes);
-            options.FontStyle = CaptchaFontStyle.Regular;
-            options.BlockedCodes = [.. magics];
-            options.DrawLines = true;
-        });
-
-        services.AddScoped<ValidateCaptcha>();
         return services;
     }
 
@@ -204,6 +183,37 @@ public static class ServiceCollectionExtensions
                 context.ProblemDetails.Extensions["traceId"] = context.HttpContext.TraceIdentifier;
             };
         });
+
+        return services;
+    }
+
+    private static IServiceCollection AddMoongladeCommentRateLimiting(this IServiceCollection services, IConfiguration configuration)
+    {
+        services.AddOptions<CommentRateLimitOptions>()
+            .Bind(configuration.GetSection(CommentRateLimitOptions.SectionName))
+            .Validate(options => !options.Enabled || options.PermitLimit > 0, "CommentRateLimit:PermitLimit must be greater than 0 when rate limiting is enabled.")
+            .Validate(options => !options.Enabled || options.WindowMinutes > 0, "CommentRateLimit:WindowMinutes must be greater than 0 when rate limiting is enabled.")
+            .ValidateOnStart();
+
+        services.AddSingleton<CommentRateLimitPolicy>();
+        services.AddRateLimiter(options =>
+        {
+            options.AddPolicy<string, CommentRateLimitPolicy>(CommentRateLimitPolicy.PolicyName);
+        });
+
+        return services;
+    }
+
+    private static IServiceCollection AddMoongladeCommentSubmissionGuard(this IServiceCollection services, IConfiguration configuration)
+    {
+        services.AddOptions<CommentSubmissionGuardOptions>()
+            .Bind(configuration.GetSection(CommentSubmissionGuardOptions.SectionName))
+            .Validate(options => !options.Enabled || options.MinimumElapsedSeconds >= 0, "CommentSubmissionGuard:MinimumElapsedSeconds must be 0 or greater.")
+            .Validate(options => !options.Enabled || options.MaxFormAgeMinutes >= 0, "CommentSubmissionGuard:MaxFormAgeMinutes must be 0 or greater.")
+            .ValidateOnStart();
+
+        services.TryAddSingleton(TimeProvider.System);
+        services.AddSingleton<ICommentSubmissionGuard, CommentSubmissionGuard>();
 
         return services;
     }

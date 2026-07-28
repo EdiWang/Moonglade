@@ -50,21 +50,6 @@
                                 <label asp-for="Password"></label>
                             </div>
 
-                            <div class="mb-3" id="captcha-container">
-                                <div class="input-group">
-                                    <input asp-for="CaptchaCode"
-                                           id="captcha-code"
-                                           minlength="4"
-                                           maxlength="4"
-                                           placeholder="@SharedLocalizer["Captcha code"]"
-                                           autocomplete="off"
-                                           class="form-control" required />
-
-                                    <input type="hidden" id="captcha-token" asp-for="CaptchaToken" />
-                                    <img id="img-captcha" src="/api/captcha/stateless" title="@SharedLocalizer["Can't read? Click to change another image."]" />
-                                </div>
-                            </div>
-
                             <input type="submit" value="@SharedLocalizer["Sign In"]" class="btn w-100 btn-accent" />
                         </form>
                     </div>
@@ -76,14 +61,5 @@
         </main>
     </div>
     <script type="module" src="~/js/app/base.mjs"></script>
-    <script type="module">
-        import { resetCaptchaImage } from '/js/app/captchaService.mjs';
-
-        document.getElementById('img-captcha')?.addEventListener('click', function () {
-            resetCaptchaImage();
-        });
-
-        await resetCaptchaImage();
-    </script>
 </body>
 </html>

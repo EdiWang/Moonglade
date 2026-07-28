@@ -1,7 +1,6 @@
 using Edi.CacheAside.InMemory;
 using LiteBus.Queries.Abstractions;
 using Microsoft.AspNetCore.Builder;
-using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc.Controllers;
 using Microsoft.AspNetCore.TestHost;
 using Microsoft.Extensions.Configuration;
@@ -17,7 +16,6 @@ using Moonglade.Theme;
 using Moq;
 using System.Globalization;
 using System.Net;
-using System.Net.Http;
 using System.Text.RegularExpressions;
 
 namespace Moonglade.Web.Tests;

@@ -204,9 +204,6 @@
   <data name="Call-out section HTML code" xml:space="preserve">
     <value>横幅HTML内容</value>
   </data>
-  <data name="Can't read? Click to change another image." xml:space="preserve">
-    <value>看不清？点击图片更换验证码</value>
-  </data>
   <data name="Cancel" xml:space="preserve">
     <value>取消</value>
   </data>
@@ -842,9 +839,6 @@
   </data>
   <data name="Enter your email to receive reply notifications and display your Gravatar. Your email will not be displayed publicly." xml:space="preserve">
     <value>输入您的电子邮件以接收回复通知并显示您的 Gravatar。您的电子邮件不会公开显示。</value>
-  </data>
-  <data name="Captcha code" xml:space="preserve">
-    <value>验证码</value>
   </data>
   <data name="Email (Optional)" xml:space="preserve">
     <value>Email (可选)</value>
@@ -1859,5 +1853,35 @@
   </data>
   <data name="Updated" xml:space="preserve">
     <value>已更新</value>
+  </data>
+  <data name="Authenticator code" xml:space="preserve">
+    <value>验证器代码</value>
+  </data>
+  <data name="Set up Authenticator" xml:space="preserve">
+    <value>设置验证器</value>
+  </data>
+  <data name="Authenticator QR code" xml:space="preserve">
+    <value>验证器二维码</value>
+  </data>
+  <data name="Manual setup key" xml:space="preserve">
+    <value>手动设置密钥</value>
+  </data>
+  <data name="Verify" xml:space="preserve">
+    <value>验证</value>
+  </data>
+  <data name="Verify Authenticator" xml:space="preserve">
+    <value>验证身份验证器</value>
+  </data>
+  <data name="Local account sign-in is protected by an authenticator app." xml:space="preserve">
+    <value>本地账号登录已受到验证器应用保护。</value>
+  </data>
+  <data name="Reset Authenticator" xml:space="preserve">
+    <value>重置验证器</value>
+  </data>
+  <data name="Current password" xml:space="preserve">
+    <value>当前密码</value>
+  </data>
+  <data name="Resetting the authenticator signs you out and requires setting up a new authenticator app on the next sign-in." xml:space="preserve">
+    <value>重置验证器会让你退出登录，并要求你在下次登录时设置新的验证器应用。</value>
   </data>
 </root>

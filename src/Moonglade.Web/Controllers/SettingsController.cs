@@ -2,6 +2,8 @@
 using LiteBus.Commands.Abstractions;
 using LiteBus.Events.Abstractions;
 using LiteBus.Queries.Abstractions;
+using Microsoft.AspNetCore.Authentication;
+using Microsoft.AspNetCore.Authentication.Cookies;
 using Moonglade.ActivityLog;
 using Moonglade.Email.Client;
 using Moonglade.Features.Asset;
@@ -223,12 +225,45 @@ public class SettingsController(
         {
             Username = request.NewUsername.Trim(),
             PasswordSalt = newSalt,
-            PasswordHash = SecurityHelper.HashPassword(request.NewPassword, newSalt)
+            PasswordHash = SecurityHelper.HashPassword(request.NewPassword, newSalt),
+            TotpSecret = blogConfig.LocalAccountSettings.TotpSecret,
+            IsTotpEnabled = blogConfig.LocalAccountSettings.IsTotpEnabled
         };
 
         return await UpdateSettingsAsync(newSettings,
             EventType.SettingsPasswordUpdated, "Update Local Account Password", request.NewUsername,
             new { Username = request.NewUsername });
+    }
+
+    [HttpPut("totp/local/reset")]
+    public async Task<IActionResult> ResetLocalAccountTotp(ResetLocalAccountTotpRequest request)
+    {
+        var account = blogConfig.LocalAccountSettings;
+        var passwordValid = account.PasswordHash == SecurityHelper.HashPassword(request.CurrentPassword.Trim(), account.PasswordSalt);
+
+        if (!passwordValid) return Conflict("Current password is incorrect.");
+
+        var newSettings = new LocalAccountSettings
+        {
+            Username = account.Username,
+            PasswordSalt = account.PasswordSalt,
+            PasswordHash = account.PasswordHash,
+            TotpSecret = string.Empty,
+            IsTotpEnabled = false
+        };
+
+        await SaveConfigAsync(newSettings);
+        await LogActivityAsync(
+            EventType.SettingsAuthenticatorReset,
+            "Reset Local Account Authenticator",
+            account.Username,
+            new { account.Username });
+
+        await HttpContext.SignOutAsync(CookieAuthenticationDefaults.AuthenticationScheme);
+        await HttpContext.SignOutAsync(BlogAuthSchemas.LocalAccountSetup);
+        await HttpContext.SignOutAsync(BlogAuthSchemas.LocalAccountTwoFactor);
+
+        return NoContent();
     }
 
     private async Task<IActionResult> UpdateSettingsAsync<T>(

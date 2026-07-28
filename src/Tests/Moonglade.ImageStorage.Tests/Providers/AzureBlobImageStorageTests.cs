@@ -159,20 +159,43 @@ public class AzureBlobImageStorageTests
 
     #endregion
 
-    #region GetAsync Tests
+    #region GetInfoAsync Tests
 
     [Fact]
-    public async Task GetAsync_WithNonExistentFile_ReturnsNull()
+    public async Task GetInfoAsync_WithExistingFile_ReturnsImageInfo()
+    {
+        // Arrange
+        const string fileName = "test.jpg";
+        var lastModified = new DateTimeOffset(2026, 2, 23, 10, 30, 0, TimeSpan.Zero);
+
+        var storage = CreateStorageWithMockedContainer();
+        SetupSuccessfulProperties(lastModified, 123, "image/jpeg", "\"etag-value\"");
+
+        // Act
+        var result = await storage.GetInfoAsync(fileName);
+
+        // Assert
+        Assert.NotNull(result);
+        Assert.Equal("jpg", result.ImageExtensionName);
+        Assert.Equal("image/jpeg", result.ImageContentType);
+        Assert.Equal(123, result.ContentLength);
+        Assert.Equal(lastModified, result.LastModifiedUtc);
+        Assert.Equal("\"etag-value\"", result.EntityTag);
+        VerifyPropertiesCalls(fileName);
+    }
+
+    [Fact]
+    public async Task GetInfoAsync_WithNonExistentFile_ReturnsNull()
     {
         // Arrange
         const string fileName = "nonexistent.jpg";
 
         var storage = CreateStorageWithMockedContainer();
-        _mockBlobClient.Setup(x => x.ExistsAsync(default))
-                      .ReturnsAsync(Response.FromValue(false, Mock.Of<Response>()));
+        _mockBlobClient.Setup(x => x.GetPropertiesAsync(null, default))
+            .ThrowsAsync(new RequestFailedException(404, "Blob not found."));
 
         // Act
-        var result = await storage.GetAsync(fileName);
+        var result = await storage.GetInfoAsync(fileName);
 
         // Assert
         Assert.Null(result);
@@ -184,30 +207,70 @@ public class AzureBlobImageStorageTests
     [InlineData("   ")]
     [InlineData("\t")]
     [InlineData("\n")]
-    public async Task GetAsync_WithInvalidFileName_ThrowsArgumentException(string fileName)
+    public async Task GetInfoAsync_WithInvalidFileName_ThrowsArgumentException(string fileName)
     {
         // Arrange
         var storage = new AzureBlobImageStorage(_mockLogger.Object, _configuration);
 
         // Act & Assert
         await Assert.ThrowsAsync<ArgumentException>(() =>
-            storage.GetAsync(fileName!));
+            storage.GetInfoAsync(fileName!));
     }
 
     [Theory]
     [InlineData("filename")]
     [InlineData("noextension")]
     [InlineData("file.")]
-    public async Task GetAsync_WithoutExtension_ThrowsArgumentException(string fileName)
+    public async Task GetInfoAsync_WithoutExtension_ThrowsArgumentException(string fileName)
     {
         // Arrange
         var storage = new AzureBlobImageStorage(_mockLogger.Object, _configuration);
 
         // Act & Assert
         var exception = await Assert.ThrowsAsync<ArgumentException>(() =>
-            storage.GetAsync(fileName));
+            storage.GetInfoAsync(fileName));
         Assert.Equal("fileName", exception.ParamName);
         Assert.Contains("File extension is empty", exception.Message);
+    }
+
+    [Fact]
+    public async Task OpenReadAsync_WithExistingFile_ReturnsBlobStream()
+    {
+        // Arrange
+        const string fileName = "test.png";
+        var bytes = Encoding.UTF8.GetBytes("fake image data");
+
+        var storage = CreateStorageWithMockedContainer();
+        _mockBlobClient.Setup(x => x.OpenReadAsync(It.IsAny<BlobOpenReadOptions>(), default))
+            .ReturnsAsync(new MemoryStream(bytes));
+
+        // Act
+        await using var result = await storage.OpenReadAsync(fileName);
+
+        // Assert
+        Assert.NotNull(result);
+        using var reader = new MemoryStream();
+        await result.CopyToAsync(reader, TestContext.Current.CancellationToken);
+        Assert.Equal(bytes, reader.ToArray());
+        _mockBlobClient.Verify(x => x.OpenReadAsync(It.IsAny<BlobOpenReadOptions>(), default), Times.Once);
+    }
+
+    [Fact]
+    public async Task OpenReadAsync_WithNonExistentFile_ReturnsNull()
+    {
+        // Arrange
+        const string fileName = "missing.png";
+
+        var storage = CreateStorageWithMockedContainer();
+        _mockBlobClient.Setup(x => x.OpenReadAsync(It.IsAny<BlobOpenReadOptions>(), default))
+            .ThrowsAsync(new RequestFailedException(404, "Blob not found."));
+
+        // Act
+        var result = await storage.OpenReadAsync(fileName);
+
+        // Assert
+        Assert.Null(result);
+        VerifyNonExistentFileLogging(fileName);
     }
 
     #endregion
@@ -349,24 +412,22 @@ public class AzureBlobImageStorageTests
         return storage;
     }
 
-    private void SetupSuccessfulDownload(string fileName, byte[] imageBytes)
+    private void SetupSuccessfulProperties(DateTimeOffset lastModified, long contentLength, string contentType, string entityTag)
     {
-        _mockBlobClient.Setup(x => x.ExistsAsync(default))
-                      .ReturnsAsync(Response.FromValue(true, Mock.Of<Response>()));
+        var properties = BlobsModelFactory.BlobProperties(
+            lastModified: lastModified,
+            contentLength: contentLength,
+            contentType: contentType,
+            eTag: new ETag(entityTag));
 
-        _mockBlobClient.Setup(x => x.DownloadToAsync(It.IsAny<MemoryStream>(), default))
-                      .Callback<Stream, CancellationToken>((stream, _) =>
-                      {
-                          stream.Write(imageBytes, 0, imageBytes.Length);
-                      })
-                      .Returns(Task.FromResult(Mock.Of<Response>()));
+        _mockBlobClient.Setup(x => x.GetPropertiesAsync(null, default))
+            .ReturnsAsync(Response.FromValue(properties, Mock.Of<Response>()));
     }
 
-    private void VerifyDownloadCalls(string fileName)
+    private void VerifyPropertiesCalls(string fileName)
     {
         _mockContainer.Verify(x => x.GetBlobClient(fileName), Times.Once);
-        _mockBlobClient.Verify(x => x.ExistsAsync(default), Times.Once);
-        _mockBlobClient.Verify(x => x.DownloadToAsync(It.IsAny<MemoryStream>(), default), Times.Once);
+        _mockBlobClient.Verify(x => x.GetPropertiesAsync(null, default), Times.Once);
     }
 
     private void VerifyDeleteCalls(string fileName)

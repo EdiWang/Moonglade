@@ -6,4 +6,6 @@ public static class BlogAuthSchemas
 {
     public const string EntraID = CookieAuthenticationDefaults.AuthenticationScheme;
     public const string Local = CookieAuthenticationDefaults.AuthenticationScheme;
+    public const string LocalAccountSetup = "MoongladeLocalAccountSetup";
+    public const string LocalAccountTwoFactor = "MoongladeLocalAccountTwoFactor";
 }
