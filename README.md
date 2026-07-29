@@ -104,13 +104,15 @@ dotnet test src/Tests/Moonglade.Web.Tests/Moonglade.Web.Tests.csproj
 
 - By default: Local accounts with TOTP authenticator app verification (manage via `/admin/account`)
 - Local sign-in is two-step after setup: username/password first, then the authenticator code on the next screen.
+- Local development can disable the TOTP step with `Authentication:Totp:Required=false`; this bypass is ignored outside the `Development` environment.
 - To replace a configured authenticator app, use `/admin/account` to reset it; the reset signs out the administrator and starts TOTP setup on the next sign-in.
-- Optional TOTP issuer display name for authenticator apps:
+- TOTP options:
 
 ```json
 "Authentication": {
   "Totp": {
-    "Issuer": "Moonglade"
+    "Issuer": "Moonglade",
+    "Required": true
   }
 }
 ```

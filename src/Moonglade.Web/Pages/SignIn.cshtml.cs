@@ -2,7 +2,9 @@ using LiteBus.Commands.Abstractions;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Authentication.OpenIdConnect;
+using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc.RazorPages;
+using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Options;
 using System.ComponentModel.DataAnnotations;
 using System.Security.Claims;
@@ -12,7 +14,8 @@ namespace Moonglade.Web.Pages;
 public class SignInModel(IOptions<AuthenticationSettings> authSettings,
         ICommandMediator commandMediator,
         ILogger<SignInModel> logger,
-        IBlogConfig blogConfig)
+        IBlogConfig blogConfig,
+        IWebHostEnvironment webHostEnvironment)
     : PageModel
 {
     private readonly AuthenticationSettings _authenticationSettings = authSettings.Value;
@@ -84,6 +87,17 @@ public class SignInModel(IOptions<AuthenticationSettings> authSettings,
                 {
                     var account = blogConfig.LocalAccountSettings;
 
+                    if (!IsTotpRequired())
+                    {
+                        await HttpContext.SignOutAsync(BlogAuthSchemas.LocalAccountSetup);
+                        await HttpContext.SignOutAsync(BlogAuthSchemas.LocalAccountTwoFactor);
+                        await SignInAdminAsync(account.Username);
+
+                        logger.LogInformation("Authentication success for local account '{Username}' without TOTP in Development environment", account.Username);
+
+                        return RedirectToPage("/Admin/Dashboard");
+                    }
+
                     if (!IsTotpConfigured(account))
                     {
                         await HttpContext.SignOutAsync(BlogAuthSchemas.LocalAccountTwoFactor);
@@ -116,6 +130,15 @@ public class SignInModel(IOptions<AuthenticationSettings> authSettings,
 
     private static bool IsTotpConfigured(LocalAccountSettings account) =>
         account.IsTotpEnabled && !string.IsNullOrWhiteSpace(account.TotpSecret);
+
+    private bool IsTotpRequired() =>
+        _authenticationSettings.Totp.Required || !webHostEnvironment.IsDevelopment();
+
+    private async Task SignInAdminAsync(string username)
+    {
+        var principal = CreatePrincipal(username, CookieAuthenticationDefaults.AuthenticationScheme);
+        await HttpContext.SignInAsync(CookieAuthenticationDefaults.AuthenticationScheme, principal);
+    }
 
     private async Task SignInSetupAsync(string username)
     {
