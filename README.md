@@ -50,12 +50,6 @@ For local testing or small-scale use, deploy Moonglade using Docker:
 docker compose up -d
 ```
 
-### Full Azure Deployment
-
-This mirrors how [edi.wang](https://edi.wang) is deployed, utilizing a variety of Azure services for maximum speed and security. **No automated script is provided**—manual resource creation is required.
-
-![Azure Architecture](https://img.edi.wang/ediwang-azure-arch-visio-oct2024.svg)
-
 ## 🛠️ Development
 
 | Tools                      | Alternatives                                                                                       |
