@@ -76,11 +76,7 @@ export async function initEvents(slugifyTitle) {
         }
 
         if (window.mdContentEditor) {
-            if (typeof window.mdContentEditor.syncToTextarea === 'function') {
-                window.mdContentEditor.syncToTextarea();
-            } else if (typeof assignEditorValues === 'function') {
-                assignEditorValues(window.mdContentEditor, ".post-content-textarea");
-            }
+            window.mdContentEditor.syncToTextarea();
         }
 
         if (document.querySelector('input[name="ViewModel.PostStatus"]').value === 'published') {

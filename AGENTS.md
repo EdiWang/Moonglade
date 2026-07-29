@@ -19,7 +19,7 @@ The solution file is `src/Moonglade.slnx`. The root `README.md` is the main depl
 | Cache | `Edi.CacheAside.InMemory` with `BlogCachePartition` names for blog, post, page, widget, sitemap, and subscription-related caches. |
 | Background work | ASP.NET Core hosted services, `Cronos`, `ScheduledPublishService`, `UpdateCheckService`, and `CannonService` for queued fire-and-forget work. |
 | Authentication | Cookie-based local account authentication and Microsoft Entra ID through `Microsoft.Identity.Web`. |
-| Frontend | Server-rendered Razor, Bootstrap, Bootstrap Icons, Alpine.js, Moonglade.Editor for HTML post editing, Moonglade.CodeEditor for Markdown/CSS/HTML code-like editing, Tagify, and project-local JavaScript modules under `src/Moonglade.Web/wwwroot/js/app`. Monaco package/static artifacts may remain until final cleanup after browser verification. |
+| Frontend | Server-rendered Razor, Bootstrap, Bootstrap Icons, Alpine.js, Moonglade.Editor for HTML post editing, Moonglade.CodeEditor for Markdown/CSS/HTML code-like editing, Tagify, and project-local JavaScript modules under `src/Moonglade.Web/wwwroot/js/app`. |
 | Image storage | `IBlogImageStorage` abstraction with Azure Blob Storage and local file system providers. |
 | External integrations | Webmention, IndexNow, email notification API, local content moderation, Gravatar, Azure App Service logging, and Azure/Docker deployment assets. |
 | Package management | NuGet package references in project files; no repository-level `Directory.Packages.props`, `NuGet.config`, or package lock file was found at the time this document was updated. |

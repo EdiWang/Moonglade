@@ -41,7 +41,9 @@ Update Razor asset loading first so the CodeEditor global is available. Then rep
 
 ## Current Progress
 
-Implementation and command-line verification are complete. `EditPost.cshtml` now loads CodeEditor CSS/global JS and renders the Markdown editor target as `post-code-editor`. `admin.editpost.editor.mjs` no longer loads Monaco, AMD `require`, `inline-attachment`, or the Monaco attachment adapter for Markdown posts. Markdown image paste/drop upload now uses CodeEditor's `markdownImageUpload.upload(file)` hook to post multipart form-data to `/image` and map `{ location, filename }` into `{ url }`. HTML post editing still uses `Moonglade.Editor`.
+Implementation, command-line verification, and user browser verification are complete. `EditPost.cshtml` now loads CodeEditor CSS/global JS and renders the Markdown editor target as `post-code-editor`. `admin.editpost.editor.mjs` no longer loads Monaco, AMD `require`, `inline-attachment`, or the Monaco attachment adapter for Markdown posts. Markdown image paste/drop upload now uses CodeEditor's `markdownImageUpload.upload(file)` hook to post multipart form-data to `/image` and map `{ location, filename }` into `{ url }`. HTML post editing still uses `Moonglade.Editor`.
+
+After browser verification, the final Monaco cleanup was handled in `docs/tasks/task-remove-monaco-editor.md`.
 
 ## Verification Log
 
@@ -54,15 +56,15 @@ Implementation and command-line verification are complete. `EditPost.cshtml` now
 | 2026-07-29 | `dotnet build src\Moonglade.Web\Moonglade.Web.csproj` | Passed | Build succeeded with 0 warnings and 0 errors. |
 | 2026-07-29 | `dotnet test src\Tests\Moonglade.Web.Tests\Moonglade.Web.Tests.csproj` | Passed | Web tests passed: 129 tests. |
 | 2026-07-29 | `Test-NetConnection localhost:10210` | Not running | Browser verification was not attempted because the local Moonglade site was not listening and starting it can trigger configured database initialization. |
+| 2026-07-29 | User browser verification | Passed | User verified the migrated Markdown post editor and requested final Monaco cleanup. |
 
 ## Issues and Resolutions
 
-The migration removes all active EditPost Markdown Monaco usage, but the `Moonglade.MonacoEditor` package reference, `_MonacoLoaderScript`, Monaco inline-attachment adapter, and global `.monaco-target` styles remain for a separate final cleanup after real browser verification.
+The migration removed all active EditPost Markdown Monaco usage. After user browser verification, the `Moonglade.MonacoEditor` package reference, `_MonacoLoaderScript`, Monaco inline-attachment scripts, legacy sync fallback, and global `.monaco-target` styles were removed in the final cleanup task.
 
 ## Follow-ups
 
-- Browser-check Markdown post editing, content-type switching, autosave, preview/save/publish, and image paste/drop upload in a running local admin session.
-- Remove remaining Monaco artifacts after browser verification confirms no admin surface still depends on Monaco.
+- Continue browser regression checks when changing CodeEditor integration behavior.
 
 ## Notes
 
