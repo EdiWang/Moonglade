@@ -177,8 +177,8 @@
     min-height: 0;
 }
 
-    .post-editor-md-wrapper .monaco-target {
-        flex: 1;
+    .post-editor-md-wrapper .post-code-editor {
+        flex: 1 1 0;
         min-height: 200px;
     }
 
@@ -494,20 +494,6 @@
 .admin-post-entry {
     background-color: var(--bs-white);
 }
-
-.md-editor-image-upload-area {
-    border-width: 2px;
-    border-style: dashed;
-    background-color: var(--bs-secondary-bg);
-}
-
-    .md-editor-image-upload-area:focus,
-    .md-editor-image-upload-area:hover,
-    .md-editor-image-upload-area.drag-over {
-        color: var(--bs-warning-text-emphasis) !important;
-        background-color: var(--bs-warning-bg-subtle) !important;
-        border-color: var(--bs-warning-border-subtle) !important;
-    }
 
 [data-bs-theme="dark"] .navbar-brand {
     color: var(--bs-white);

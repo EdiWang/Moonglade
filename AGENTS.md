@@ -19,7 +19,7 @@ The solution file is `src/Moonglade.slnx`. The root `README.md` is the main depl
 | Cache | `Edi.CacheAside.InMemory` with `BlogCachePartition` names for blog, post, page, widget, sitemap, and subscription-related caches. |
 | Background work | ASP.NET Core hosted services, `Cronos`, `ScheduledPublishService`, `UpdateCheckService`, and `CannonService` for queued fire-and-forget work. |
 | Authentication | Cookie-based local account authentication and Microsoft Entra ID through `Microsoft.Identity.Web`. |
-| Frontend | Server-rendered Razor, Bootstrap, Bootstrap Icons, Alpine.js, Moonglade.Editor for HTML post editing, Monaco editor for Markdown/CSS/HTML code editing, Tagify, and project-local JavaScript modules under `src/Moonglade.Web/wwwroot/js/app`. |
+| Frontend | Server-rendered Razor, Bootstrap, Bootstrap Icons, Alpine.js, Moonglade.Editor for HTML post editing, Moonglade.CodeEditor for Markdown/CSS/HTML code-like editing, Tagify, and project-local JavaScript modules under `src/Moonglade.Web/wwwroot/js/app`. Monaco package/static artifacts may remain until final cleanup after browser verification. |
 | Image storage | `IBlogImageStorage` abstraction with Azure Blob Storage and local file system providers. |
 | External integrations | Webmention, IndexNow, email notification API, local content moderation, Gravatar, Azure App Service logging, and Azure/Docker deployment assets. |
 | Package management | NuGet package references in project files; no repository-level `Directory.Packages.props`, `NuGet.config`, or package lock file was found at the time this document was updated. |
@@ -162,7 +162,7 @@ Important configuration areas:
 
 - Public and admin pages are primarily Razor Pages under `src/Moonglade.Web/Pages`.
 - Admin JSON operations are primarily API controllers under `src/Moonglade.Web/Controllers`.
-- Frontend code is built around the existing Razor layouts, Bootstrap, Alpine.js, Moonglade.Editor, Monaco editor, and Tagify. Do not add a new frontend framework unless explicitly requested.
+- Frontend code is built around the existing Razor layouts, Bootstrap, Alpine.js, Moonglade.Editor, Moonglade.CodeEditor, and Tagify. Do not add a new frontend framework unless explicitly requested.
 - Code block language support has two UI surfaces: the public post renderer and the admin Moonglade.Editor code sample dialog. When adding a highlight.js language, register the language before `hljs.highlightElement` in `src/Moonglade.Web/wwwroot/js/app/post.highlight.mjs` and also add the language to `codeSampleLanguages` in `src/Moonglade.Web/wwwroot/js/app/admin.editor.module.mjs`, otherwise authors cannot select it from the editor.
 - Server-rendered UI text should consider resource files. Supported cultures are currently `en-US`, `zh-Hans`, `zh-Hant`, `de-DE`, and `ja-JP`.
 - Localization uses shared resources under `src/Moonglade.Web/Resources/Program.*.resx`. Razor pages inject `IStringLocalizer<Program>` as `SharedLocalizer`, and DataAnnotations display names are configured to use the same `Program` resource. When adding or renaming any `SharedLocalizer["..."]` key or `[Display(Name = "...")]` text, update all non-English resource files: `Program.zh-Hans.resx`, `Program.zh-Hant.resx`, `Program.de-DE.resx`, and `Program.ja-JP.resx`.
