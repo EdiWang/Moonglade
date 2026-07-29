@@ -4,7 +4,7 @@
     min-height: 0;
 }
 
-#page-edit-form {
+.page-editor-container ::deep #page-edit-form {
     min-height: 0;
 }
 
@@ -21,12 +21,20 @@
 }
 
 .tab-content {
+    display: flex;
+    flex: 1 1 auto;
+    flex-direction: column;
     min-height: 0;
+    overflow: hidden;
 }
 
-.monaco-target {
-    border-left: 1px solid #dee2e6;
-    border-right: 1px solid #dee2e6;
-    border-bottom: 1px solid #dee2e6;
+.tab-pane {
+    flex: 1 1 auto;
+    min-height: 0;
+    overflow: hidden;
+}
+
+.page-code-editor {
     height: 100%;
+    min-height: 0;
 }

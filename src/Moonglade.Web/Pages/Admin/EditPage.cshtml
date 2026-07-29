@@ -8,8 +8,12 @@
 }
 
 @section scripts {
-    <partial name="_MonacoLoaderScript" />
+    <script src="~/lib/moonglade-code-editor/moonglade-code-editor.global.js" asp-append-version="true"></script>
     <script type="module" src="~/js/app/admin.editpage.mjs"></script>
+}
+
+@section head {
+    <link href="~/lib/moonglade-code-editor/moonglade-code-editor.css" rel="stylesheet" asp-append-version="true" />
 }
 
 <div id="localizedStrings" style="display:none"
@@ -92,7 +96,7 @@
                  id="rawhtmlcontent-editor-box"
                  role="tabpanel"
                  aria-labelledby="html-tab">
-                <div id="RawHtmlContentEditor" class="monaco-target"></div>
+                <div id="RawHtmlContentEditor" class="page-code-editor"></div>
                 <textarea x-model="formData.rawHtmlContent"
                           class="page-rawhtmlcontent-textarea d-none"></textarea>
             </div>
@@ -100,7 +104,7 @@
                  id="csscontent-editor-box"
                  role="tabpanel"
                  aria-labelledby="css-tab">
-                <div id="CssContentEditor" class="monaco-target"></div>
+                <div id="CssContentEditor" class="page-code-editor"></div>
                 <textarea x-model="formData.cssContent"
                           class="page-csscontent-textarea d-none"></textarea>
             </div>

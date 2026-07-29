@@ -7,6 +7,11 @@ let htmlContentEditor = null;
 let cssContentEditor = null;
 let hasCssEditorInitialized = false;
 
+const codeEditor = window.MoongladeCodeEditor;
+if (!codeEditor) {
+    throw new Error('Moonglade.CodeEditor static assets were not loaded.');
+}
+
 Alpine.data('pageEditor', () => ({
     pageId: null,
     isLoading: true,
@@ -35,10 +40,10 @@ Alpine.data('pageEditor', () => ({
             this.isLoading = false;
         }
 
-        this.initMonacoEditor();
+        await this.$nextTick();
+        this.initCodeEditors();
         this.setupTabHandlers();
         this.setupKeyboardShortcuts();
-        this.setupResizeHandler();
     },
 
     async loadPageData() {
@@ -62,6 +67,10 @@ Alpine.data('pageEditor', () => ({
             if (htmlContentEditor) {
                 htmlContentEditor.setValue(this.formData.rawHtmlContent);
             }
+
+            if (cssContentEditor) {
+                cssContentEditor.setValue(this.formData.cssContent);
+            }
         } catch (err) {
             error(err);
         } finally {
@@ -69,14 +78,12 @@ Alpine.data('pageEditor', () => ({
         }
     },
 
-    initMonacoEditor() {
-        require(['vs/editor/editor.main'], () => {
-            htmlContentEditor = window.initEditor(
-                'RawHtmlContentEditor', 
-                '.page-rawhtmlcontent-textarea', 
-                'html'
-            );
-        });
+    initCodeEditors() {
+        htmlContentEditor = this.createCodeEditor(
+            '#RawHtmlContentEditor',
+            'html',
+            this.formData.rawHtmlContent
+        );
     },
 
     setupTabHandlers() {
@@ -84,10 +91,10 @@ Alpine.data('pageEditor', () => ({
             element.addEventListener('shown.bs.tab', (e) => {
                 const isCssTab = e.target.id === "csscontent-tab";
                 if (isCssTab && !hasCssEditorInitialized) {
-                    cssContentEditor = window.initEditor(
-                        'CssContentEditor', 
-                        '.page-csscontent-textarea', 
-                        'css'
+                    cssContentEditor = this.createCodeEditor(
+                        '#CssContentEditor',
+                        'css',
+                        this.formData.cssContent
                     );
                     hasCssEditorInitialized = true;
                 }
@@ -96,6 +103,17 @@ Alpine.data('pageEditor', () => ({
                     this.refreshPreview();
                 }
             });
+        });
+    },
+
+    createCodeEditor(elementSelector, language, content) {
+        return codeEditor.createMoongladeCodeEditor({
+            element: document.querySelector(elementSelector),
+            content: content || '',
+            language,
+            height: '100%',
+            lineWrapping: true,
+            tabSize: 2
         });
     },
 
@@ -128,13 +146,6 @@ Alpine.data('pageEditor', () => ({
                 event.preventDefault();
                 this.handleSubmit();
             }
-        });
-    },
-
-    setupResizeHandler() {
-        window.addEventListener('resize', () => {
-            if (htmlContentEditor) htmlContentEditor.layout();
-            if (cssContentEditor) cssContentEditor.layout();
         });
     },
 
