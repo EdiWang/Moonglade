@@ -3,7 +3,7 @@
 
 @Html.AntiForgeryToken()
 @section scripts {
-    <partial name="_MonacoLoaderScript" />
+    <script src="~/lib/moonglade-code-editor/moonglade-code-editor.global.js"></script>
     <script type="module" src="~/js/app/admin.settings.appearance.mjs"></script>
 }
 
@@ -13,8 +13,9 @@
 </div>
 
 @section head {
+    <link href="~/lib/moonglade-code-editor/moonglade-code-editor.css" rel="stylesheet" />
     <style>
-        .monaco-target {
+        .settings-code-editor {
             min-height: calc(100vh - 450px);
         }
 
@@ -163,7 +164,7 @@
                     </div>
                 </div>
 
-                <div id="CssContentEditor" class="monaco-target p-3 rounded-3 border">
+                <div id="CssContentEditor" class="settings-code-editor">
                 </div>
                 <textarea asp-for="@ViewModel.CssCode" class="settings-csscontent-textarea d-none"></textarea>
             </div>

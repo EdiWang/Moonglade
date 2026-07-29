@@ -4,7 +4,7 @@ import { success, error } from './toastService.mjs';
 import { getLocalizedString } from './utils.module.mjs';
 
 async function handleSubmit(event) {
-    assignEditorValues(cssContentEditor, "#ViewModel_CssCode");
+    cssContentEditor.syncToTextarea();
     await handleSettingsSubmit(event);
 }
 
@@ -40,8 +40,18 @@ window.deleteTheme = async function (id) {
 
 let cssContentEditor = null;
 
-require(['vs/editor/editor.main'], function () {
-    cssContentEditor = initEditor('CssContentEditor', "#ViewModel_CssCode", 'css');
+const codeEditor = window.MoongladeCodeEditor;
+if (!codeEditor) {
+    throw new Error('Moonglade.CodeEditor static assets were not loaded.');
+}
+
+cssContentEditor = codeEditor.createMoongladeCodeEditor({
+    element: document.querySelector('#CssContentEditor'),
+    textarea: document.querySelector('#ViewModel_CssCode'),
+    language: 'css',
+    height: 'calc(100vh - 450px)',
+    lineWrapping: true,
+    tabSize: 2
 });
 
 const form = document.querySelector('#form-settings');
