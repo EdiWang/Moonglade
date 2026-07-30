@@ -18,6 +18,7 @@ public static class WebApplicationExtensions
         app.UseMiddleware<PrefersColorSchemeMiddleware>();
         app.UseMiddleware<PoweredByMiddleware>();
 
+        app.UseResponseCompression();
         app.UseExceptionHandler(ConfigureExceptionHandler.Handler);
         app.UseStatusCodePages(ProblemDetailsStatusCodePages.Handler);
 

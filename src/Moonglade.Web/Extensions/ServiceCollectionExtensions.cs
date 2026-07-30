@@ -6,6 +6,7 @@ using LiteBus.Extensions.Microsoft.DependencyInjection;
 using LiteBus.Messaging;
 using LiteBus.Queries;
 using Microsoft.AspNetCore.Mvc.Rendering;
+using Microsoft.AspNetCore.ResponseCompression;
 using Microsoft.Extensions.DependencyInjection.Extensions;
 using Microsoft.Extensions.Diagnostics.HealthChecks;
 using Moonglade.BackgroundServices;
@@ -19,6 +20,7 @@ using Moonglade.Syndication;
 using Moonglade.Web.Services;
 using Moonglade.Webmention;
 using System.Globalization;
+using System.IO.Compression;
 using System.Net.Http.Headers;
 using System.Text.Encodings.Web;
 using System.Text.Json.Serialization;
@@ -43,6 +45,7 @@ public static class ServiceCollectionExtensions
         services.AddMoongladeAntiforgery();
         services.AddMoongladeRequestLocalization(cultures);
         services.AddMoongladeRouteOptions();
+        services.AddMoongladeResponseCompression();
         services.AddTransient<IPasswordGenerator, DefaultPasswordGenerator>();
         services.AddMoongladeHealthChecks();
         services.AddMoongladeProblemDetails();
@@ -51,6 +54,34 @@ public static class ServiceCollectionExtensions
         services.AddMoongladeCoreServices(configuration);
         services.AddMoongladeDatabase(configuration);
         services.AddMoongladeInitializers();
+
+        return services;
+    }
+
+    private static IServiceCollection AddMoongladeResponseCompression(this IServiceCollection services)
+    {
+        services.AddResponseCompression(options =>
+        {
+            options.EnableForHttps = true;
+            options.Providers.Add<BrotliCompressionProvider>();
+            options.Providers.Add<GzipCompressionProvider>();
+            options.MimeTypes = ResponseCompressionDefaults.MimeTypes.Concat(
+            [
+                "application/atom+xml",
+                "application/manifest+json",
+                "application/rdf+xml",
+                "application/rss+xml"
+            ]);
+        });
+
+        services.Configure<BrotliCompressionProviderOptions>(options =>
+        {
+            options.Level = CompressionLevel.Fastest;
+        });
+        services.Configure<GzipCompressionProviderOptions>(options =>
+        {
+            options.Level = CompressionLevel.Fastest;
+        });
 
         return services;
     }
