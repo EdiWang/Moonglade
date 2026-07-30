@@ -1,24 +1,16 @@
 import { codeSampleLanguages } from './admin.editor.module.mjs';
 
-const htmlEditorModulePath = '/lib/moonglade-editor/moonglade-editor.js';
+const editorModulePath = '/lib/moonglade-editor/moonglade-editor.js';
 const htmlEditorImageExtensions = ['.png', '.jpg', '.jpeg', '.gif', '.webp', '.svg'];
 
-let htmlEditorModulePromise = null;
+let editorModulePromise = null;
 
-async function ensureMoongladeHtmlEditor() {
-    if (!htmlEditorModulePromise) {
-        htmlEditorModulePromise = import(htmlEditorModulePath);
+async function ensureMoongladeEditor() {
+    if (!editorModulePromise) {
+        editorModulePromise = import(editorModulePath);
     }
 
-    return await htmlEditorModulePromise;
-}
-
-function ensureCodeEditor() {
-    if (!window.MoongladeCodeEditor?.createMoongladeCodeEditor) {
-        throw new Error('Moonglade.CodeEditor static assets were not loaded.');
-    }
-
-    return window.MoongladeCodeEditor;
+    return await editorModulePromise;
 }
 
 async function uploadMarkdownImage(file) {
@@ -52,8 +44,9 @@ export function createEditorMixin() {
         _editorInitialized: false,
 
         async initEditor() {
+            const { createMoongladeEditor } = await ensureMoongladeEditor();
+
             if (this.formData.contentType === 'html') {
-                const { createMoongladeEditor } = await ensureMoongladeHtmlEditor();
                 const editorElement = document.getElementById('html-content-editor');
                 const textarea = document.querySelector('.post-content-textarea');
 
@@ -63,6 +56,7 @@ export function createEditorMixin() {
                     }
 
                     window.htmlContentEditor = createMoongladeEditor({
+                        mode: 'rich-html',
                         element: editorElement,
                         textarea,
                         height: '100%',
@@ -78,7 +72,6 @@ export function createEditorMixin() {
             }
 
             if (this.formData.contentType === 'markdown') {
-                const codeEditor = ensureCodeEditor();
                 const editorElement = document.getElementById('markdown-content-editor');
                 const textarea = document.querySelector('.post-content-textarea');
 
@@ -87,11 +80,11 @@ export function createEditorMixin() {
                         window.mdContentEditor.destroy();
                     }
 
-                    window.mdContentEditor = codeEditor.createMoongladeCodeEditor({
+                    window.mdContentEditor = createMoongladeEditor({
+                        mode: 'markdown',
                         element: editorElement,
                         textarea,
                         content: this.formData.editorContent || '',
-                        language: 'markdown',
                         height: '100%',
                         lineWrapping: true,
                         tabSize: 2,
