@@ -85,7 +85,9 @@ $distPath = Join-Path $editorPath "dist"
 $assetFiles = @(
     "moonglade-editor.js",
     "moonglade-editor.js.map",
-    "moonglade-editor.css"
+    "moonglade-editor.css",
+    "moonglade-editor.formatter.js",
+    "moonglade-editor.formatter.js.map"
 )
 
 Run-Step "Initial repository status: Moonglade" {

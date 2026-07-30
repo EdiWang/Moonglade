@@ -3,7 +3,6 @@
 
 @Html.AntiForgeryToken()
 @section scripts {
-    <script src="~/lib/moonglade-code-editor/moonglade-code-editor.global.js" asp-append-version="true"></script>
     <script type="module" src="~/js/app/admin.settings.appearance.mjs"></script>
 }
 
@@ -13,7 +12,7 @@
 </div>
 
 @section head {
-    <link href="~/lib/moonglade-code-editor/moonglade-code-editor.css" rel="stylesheet" asp-append-version="true" />
+    <link href="~/lib/moonglade-editor/moonglade-editor.css" rel="stylesheet" asp-append-version="true" />
     <style>
         .settings-code-editor {
             min-height: calc(100vh - 450px);

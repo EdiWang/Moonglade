@@ -2,15 +2,11 @@ import { Alpine } from './alpine-init.mjs';
 import { fetch2 } from './httpService.mjs?v=1500';
 import { success, error } from './toastService.mjs';
 import { getLocalizedString } from './utils.module.mjs';
+import { createMoongladeEditor } from '/lib/moonglade-editor/moonglade-editor.js';
 
 let htmlContentEditor = null;
 let cssContentEditor = null;
 let hasCssEditorInitialized = false;
-
-const codeEditor = window.MoongladeCodeEditor;
-if (!codeEditor) {
-    throw new Error('Moonglade.CodeEditor static assets were not loaded.');
-}
 
 Alpine.data('pageEditor', () => ({
     pageId: null,
@@ -107,10 +103,10 @@ Alpine.data('pageEditor', () => ({
     },
 
     createCodeEditor(elementSelector, language, content) {
-        return codeEditor.createMoongladeCodeEditor({
+        return createMoongladeEditor({
+            mode: language,
             element: document.querySelector(elementSelector),
             content: content || '',
-            language,
             height: '100%',
             lineWrapping: true,
             tabSize: 2
