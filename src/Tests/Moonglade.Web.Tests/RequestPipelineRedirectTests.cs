@@ -80,6 +80,8 @@ public class RequestPipelineRedirectTests
 
         Assert.Equal(HttpStatusCode.OK, response.StatusCode);
         Assert.Equal("gzip", Assert.Single(response.Content.Headers.ContentEncoding));
+        Assert.Contains("Accept-Encoding", response.Headers.Vary);
+        Assert.Contains("Sec-CH-Prefers-Color-Scheme", response.Headers.Vary);
     }
 
     private static async Task<WebApplication> CreateTestApp()

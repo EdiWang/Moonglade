@@ -14,7 +14,7 @@ public class PrefersColorSchemeMiddleware(RequestDelegate next)
 
         context.Response.OnStarting(() =>
         {
-            context.Response.Headers.Vary = headerName;
+            context.Response.Headers.Append("Vary", headerName);
             context.Response.Headers["Accept-CH"] = headerName;
             context.Response.Headers["Critical-CH"] = headerName;
             return Task.CompletedTask;
