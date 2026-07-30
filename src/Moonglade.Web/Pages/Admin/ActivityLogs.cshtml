@@ -17,12 +17,18 @@
             @SharedLocalizer["Filter"]
             <span x-show="activeFilterCount > 0" class="badge bg-danger ms-1" x-text="activeFilterCount"></span>
         </a>
+        <a x-on:click="clearAllLogs()" class="btn btn-outline-danger ms-2" role="button">
+            <i class="bi-trash"></i>
+            @SharedLocalizer["Clear all"]
+        </a>
     </div>
 }
 
 <div id="localizedStrings" style="display:none"
      data-log-deleted="@SharedLocalizer["Log deleted"]"
-     data-confirm-delete-log="@SharedLocalizer["Are you sure you want to delete this activity log?"]">
+     data-logs-cleared="@SharedLocalizer["Activity logs are cleared"]"
+     data-confirm-delete-log="@SharedLocalizer["Are you sure you want to delete this activity log?"]"
+     data-confirm-clear-all-logs="@SharedLocalizer["Are you sure you want to clear all activity logs? This action will be recorded."]">
 </div>
 
 <div>

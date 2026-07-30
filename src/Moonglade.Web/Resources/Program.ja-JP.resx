@@ -1374,6 +1374,9 @@
   <data name="Are you sure you want to clear all mentions?" xml:space="preserve">
     <value>すべてのメンションをクリアしますか？</value>
   </data>
+  <data name="Are you sure you want to clear all activity logs? This action will be recorded." xml:space="preserve">
+    <value>すべてのアクティビティログをクリアしますか？この操作は記録されます。</value>
+  </data>
   <data name="Are you sure you want to delete this activity log?" xml:space="preserve">
     <value>このアクティビティログを削除しますか？</value>
   </data>
@@ -1571,6 +1574,9 @@
   </data>
   <data name="Log deleted" xml:space="preserve">
     <value>ログを削除しました</value>
+  </data>
+  <data name="Activity logs are cleared" xml:space="preserve">
+    <value>アクティビティログをクリアしました</value>
   </data>
   <data name="Maximum 3 buttons allowed" xml:space="preserve">
     <value>ボタンは最大 3 個までです</value>

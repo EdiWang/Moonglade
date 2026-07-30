@@ -161,6 +161,28 @@ public class ActivityLogControllerTests
         Assert.Equal(42L, activityCommand.MetaData!.GetType().GetProperty("ActivityLogId")!.GetValue(activityCommand.MetaData));
     }
 
+    [Fact]
+    public async Task Clear_ClearsActivityLogsAndWritesActivityLog()
+    {
+        _commandMediator.SetResult<ClearActivityLogsCommand, int>(7);
+        var controller = CreateController("admin", IPAddress.Parse("127.0.0.1"), "unit-test-agent");
+
+        var result = await controller.Clear();
+
+        Assert.IsType<NoContentResult>(result);
+        Assert.IsType<ClearActivityLogsCommand>(_commandMediator.Commands[0]);
+
+        var activityCommand = _commandMediator.Single<CreateActivityLogCommand>();
+        Assert.Equal(EventType.ActivityLogsCleared, activityCommand.EventType);
+        Assert.Equal("admin", activityCommand.ActorId);
+        Assert.Equal("Clear Activity Logs", activityCommand.Operation);
+        Assert.Equal("Activity Logs", activityCommand.TargetName);
+        Assert.Equal("127.0.0.1", activityCommand.IpAddress);
+        Assert.Equal("unit-test-agent", activityCommand.UserAgent);
+        Assert.NotNull(activityCommand.MetaData);
+        Assert.Equal(7, activityCommand.MetaData!.GetType().GetProperty("DeletedCount")!.GetValue(activityCommand.MetaData));
+    }
+
     private ActivityLogController CreateController(
         string? username = null,
         IPAddress? remoteIpAddress = null,

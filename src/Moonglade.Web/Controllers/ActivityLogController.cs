@@ -62,4 +62,18 @@ public class ActivityLogController(
 
         return NoContent();
     }
+
+    [HttpDelete("clear")]
+    public async Task<IActionResult> Clear()
+    {
+        var deletedCount = await CommandMediator.SendAsync(new ClearActivityLogsCommand());
+
+        await LogActivityAsync(
+            EventType.ActivityLogsCleared,
+            "Clear Activity Logs",
+            "Activity Logs",
+            new { DeletedCount = deletedCount });
+
+        return NoContent();
+    }
 }
