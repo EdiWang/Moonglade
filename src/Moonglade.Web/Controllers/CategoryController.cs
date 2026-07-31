@@ -35,7 +35,9 @@ public class CategoryController(
             EventType.CategoryCreated,
             "Create Category",
             command.DisplayName,
-            new { command.Slug, command.Note });
+            ActivityLogMetaData.Create(
+                ("Slug", command.Slug),
+                ("Note", command.Note)));
 
         return Created(string.Empty, command);
     }
@@ -51,7 +53,10 @@ public class CategoryController(
             EventType.CategoryUpdated,
             "Update Category",
             command.DisplayName,
-            new { command.Id, command.Slug, command.Note });
+            ActivityLogMetaData.Create(
+                ("Id", command.Id),
+                ("Slug", command.Slug),
+                ("Note", command.Note)));
 
         return NoContent();
     }
@@ -66,7 +71,7 @@ public class CategoryController(
             EventType.CategoryDeleted,
             "Delete Category",
             id.ToString(),
-            new { CategoryId = id });
+            ActivityLogMetaData.Create(("CategoryId", id)));
 
         return NoContent();
     }

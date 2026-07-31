@@ -58,7 +58,7 @@ public class ActivityLogController(
             EventType.ActivityLogDeleted,
             "Delete Activity Log",
             $"Activity Log #{id}",
-            new { ActivityLogId = id });
+            ActivityLogMetaData.Create(("ActivityLogId", id)));
 
         return NoContent();
     }
@@ -72,7 +72,7 @@ public class ActivityLogController(
             EventType.ActivityLogsCleared,
             "Clear Activity Logs",
             "Activity Logs",
-            new { DeletedCount = deletedCount });
+            ActivityLogMetaData.Create(("DeletedCount", deletedCount)));
 
         return NoContent();
     }

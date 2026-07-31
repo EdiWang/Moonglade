@@ -60,7 +60,7 @@ public class MoongladeEmailClientTests
         var config = CreateConfiguration(null);
         var client = CreateClient(CreateMockHttpClient(), config);
 
-        var result = await client.SendEmailAsync(MailMesageTypes.TestMail, ["a@b.com"], new { }, CancellationToken.None);
+        var result = await client.SendEmailAsync(MailMesageTypes.TestMail, ["a@b.com"], new EmptyEmailPayload(), CancellationToken.None);
 
         Assert.False(result);
     }
@@ -77,7 +77,7 @@ public class MoongladeEmailClientTests
 
         var client = CreateClient(CreateMockHttpClient(), config);
 
-        var result = await client.SendEmailAsync(MailMesageTypes.TestMail, ["a@b.com"], new { }, CancellationToken.None);
+        var result = await client.SendEmailAsync(MailMesageTypes.TestMail, ["a@b.com"], new EmptyEmailPayload(), CancellationToken.None);
 
         Assert.False(result);
     }
@@ -95,7 +95,7 @@ public class MoongladeEmailClientTests
 
         var client = CreateClient(CreateMockHttpClient(), config);
 
-        var result = await client.SendEmailAsync(MailMesageTypes.TestMail, ["a@b.com"], new { }, CancellationToken.None);
+        var result = await client.SendEmailAsync(MailMesageTypes.TestMail, ["a@b.com"], new EmptyEmailPayload(), CancellationToken.None);
 
         Assert.False(result);
     }
@@ -107,7 +107,7 @@ public class MoongladeEmailClientTests
     {
         var client = CreateClient(CreateMockHttpClient());
 
-        var result = await client.SendEmailAsync(MailMesageTypes.TestMail, null, new { }, CancellationToken.None);
+        var result = await client.SendEmailAsync(MailMesageTypes.TestMail, null, new EmptyEmailPayload(), CancellationToken.None);
 
         Assert.False(result);
     }
@@ -117,7 +117,7 @@ public class MoongladeEmailClientTests
     {
         var client = CreateClient(CreateMockHttpClient());
 
-        var result = await client.SendEmailAsync(MailMesageTypes.TestMail, [], new { }, CancellationToken.None);
+        var result = await client.SendEmailAsync(MailMesageTypes.TestMail, [], new EmptyEmailPayload(), CancellationToken.None);
 
         Assert.False(result);
     }
@@ -144,7 +144,7 @@ public class MoongladeEmailClientTests
 
         var client = CreateClient(CreateMockHttpClient());
 
-        var result = await client.SendEmailAsync(MailMesageTypes.TestMail, ["a@b.com"], new { }, CancellationToken.None);
+        var result = await client.SendEmailAsync(MailMesageTypes.TestMail, ["a@b.com"], new EmptyEmailPayload(), CancellationToken.None);
 
         Assert.False(result);
     }
@@ -156,7 +156,7 @@ public class MoongladeEmailClientTests
     {
         var client = CreateClient(CreateMockHttpClient(HttpStatusCode.OK));
 
-        var result = await client.SendEmailAsync(MailMesageTypes.TestMail, ["a@b.com"], new { Message = "Hello" }, CancellationToken.None);
+        var result = await client.SendEmailAsync(MailMesageTypes.TestMail, ["a@b.com"], new TestEmailPayload("Hello"), CancellationToken.None);
 
         Assert.True(result);
     }
@@ -168,7 +168,7 @@ public class MoongladeEmailClientTests
     {
         var client = CreateClient(CreateMockHttpClient(HttpStatusCode.InternalServerError));
 
-        var result = await client.SendEmailAsync(MailMesageTypes.TestMail, ["a@b.com"], new { }, CancellationToken.None);
+        var result = await client.SendEmailAsync(MailMesageTypes.TestMail, ["a@b.com"], new EmptyEmailPayload(), CancellationToken.None);
 
         Assert.False(result);
     }
@@ -178,7 +178,7 @@ public class MoongladeEmailClientTests
     {
         var client = CreateClient(CreateMockHttpClient(HttpStatusCode.Unauthorized));
 
-        var result = await client.SendEmailAsync(MailMesageTypes.TestMail, ["a@b.com"], new { }, CancellationToken.None);
+        var result = await client.SendEmailAsync(MailMesageTypes.TestMail, ["a@b.com"], new EmptyEmailPayload(), CancellationToken.None);
 
         Assert.False(result);
     }
@@ -192,7 +192,7 @@ public class MoongladeEmailClientTests
         var httpClient = new HttpClient(handler);
         var client = CreateClient(httpClient);
 
-        var result = await client.SendEmailAsync(MailMesageTypes.TestMail, ["a@b.com"], new { }, CancellationToken.None);
+        var result = await client.SendEmailAsync(MailMesageTypes.TestMail, ["a@b.com"], new EmptyEmailPayload(), CancellationToken.None);
 
         Assert.False(result);
     }
@@ -206,7 +206,7 @@ public class MoongladeEmailClientTests
 
         var client = CreateClient(CreateMockHttpClient());
 
-        var result = await client.SendEmailAsync(MailMesageTypes.TestMail, ["a@b.com"], new { }, CancellationToken.None);
+        var result = await client.SendEmailAsync(MailMesageTypes.TestMail, ["a@b.com"], new EmptyEmailPayload(), CancellationToken.None);
 
         Assert.True(result);
     }
@@ -220,7 +220,7 @@ public class MoongladeEmailClientTests
         var httpClient = new HttpClient(handler);
         var client = CreateClient(httpClient);
 
-        await client.SendEmailAsync(MailMesageTypes.NewCommentNotification, ["a@b.com"], new { Title = "Test" }, CancellationToken.None);
+        await client.SendEmailAsync(MailMesageTypes.NewCommentNotification, ["a@b.com"], new CommentNotificationPayload("Test"), CancellationToken.None);
 
         Assert.NotNull(handler.CapturedRequest);
         Assert.Equal("/api/enqueue", handler.CapturedRequest.RequestUri?.AbsolutePath);
@@ -234,7 +234,7 @@ public class MoongladeEmailClientTests
         var httpClient = new HttpClient(handler);
         var client = CreateClient(httpClient);
 
-        await client.SendEmailAsync(MailMesageTypes.TestMail, ["a@b.com"], new { TestProp = "value" }, CancellationToken.None);
+        await client.SendEmailAsync(MailMesageTypes.TestMail, ["a@b.com"], new CamelCaseTestPayload("value"), CancellationToken.None);
 
         var body = handler.CapturedBody;
         Assert.NotNull(body);
@@ -259,6 +259,14 @@ internal class FakeHttpMessageHandler : HttpMessageHandler
         return Task.FromResult(new HttpResponseMessage(_statusCode!.Value));
     }
 }
+
+file sealed record EmptyEmailPayload;
+
+file sealed record TestEmailPayload(string Message);
+
+file sealed record CommentNotificationPayload(string Title);
+
+file sealed record CamelCaseTestPayload(string TestProp);
 
 internal class CapturingHttpMessageHandler(HttpStatusCode statusCode) : HttpMessageHandler
 {

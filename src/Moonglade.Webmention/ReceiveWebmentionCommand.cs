@@ -133,7 +133,7 @@ public class ReceiveWebmentionCommandHandler(
         var result = await db.Post
             .AsNoTracking()
             .Where(p => p.RouteLink == routeLink && p.PostStatus == PostStatus.Published && !p.IsDeleted)
-            .Select(p => new { p.Id, p.Title })
+            .Select(p => new WebmentionTargetPost(p.Id, p.Title))
             .FirstOrDefaultAsync(ct);
 
         if (result is null)
@@ -174,3 +174,5 @@ public class ReceiveWebmentionCommandHandler(
         return mention;
     }
 }
+
+file sealed record WebmentionTargetPost(Guid Id, string Title);

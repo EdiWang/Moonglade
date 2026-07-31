@@ -59,7 +59,10 @@ public class CommentController(
             EventType.CommentCreated,
             "Create Comment",
             item.PostTitle,
-            new { CommentId = item.Id, item.Username, PostId = postId },
+            ActivityLogMetaData.Create(
+                ("CommentId", item.Id),
+                ("Username", item.Username),
+                ("PostId", postId)),
             username: item.Username);
 
         // Send email notification (fire-and-forget)
@@ -74,11 +77,9 @@ public class CommentController(
                     item.CommentContent)));
         }
 
-        return Ok(new
-        {
+        return Ok(new CommentCreateResponse(
             blogConfig.CommentSettings.RequireCommentReview,
-            FormRenderedUtc = DateTimeOffset.UtcNow.ToUnixTimeMilliseconds()
-        });
+            DateTimeOffset.UtcNow.ToUnixTimeMilliseconds()));
     }
 
     [HttpPut("{commentId:guid}/approval/toggle")]
@@ -92,7 +93,7 @@ public class CommentController(
                 EventType.CommentApprovalToggled,
                 "Toggle Comment Approval",
                 $"Comment #{commentId}",
-                new { CommentId = commentId });
+                ActivityLogMetaData.Create(("CommentId", commentId)));
 
             return Ok(commentId);
         }
@@ -113,7 +114,7 @@ public class CommentController(
                 EventType.CommentDeleted,
                 "Delete Comments",
                 $"{commentIds.Length} comment(s)",
-                new { CommentIds = commentIds });
+                ActivityLogMetaData.Create(("CommentIds", commentIds)));
 
             return Ok(commentIds);
         }
@@ -134,25 +135,21 @@ public class CommentController(
         var count = await queryMediator.QueryAsync(new CountCommentsQuery(filter));
 
         // Convert markdown to HTML for display
-        var commentsWithHtml = comments.Select(c => new
-        {
+        var commentsWithHtml = comments.Select(c => new CommentListItem(
             c.Id,
             c.Username,
             c.Email,
             c.CreateTimeUtc,
-            CommentContent = ContentProcessor.MarkdownToCommentHtml(c.CommentContent),
+            ContentProcessor.MarkdownToCommentHtml(c.CommentContent),
             c.IpAddress,
             c.PostTitle,
             c.IsApproved,
-            Replies = c.Replies.Select(r => new
-            {
+            c.Replies.Select(r => new CommentReplyListItem(
                 r.ReplyTimeUtc,
                 r.ReplyContent,
-                ReplyContentHtml = ContentProcessor.MarkdownToCommentHtml(r.ReplyContent)
-            }).ToList()
-        }).ToList();
+                ContentProcessor.MarkdownToCommentHtml(r.ReplyContent))).ToList())).ToList();
 
-        return Ok(new PagedResult<object>(commentsWithHtml, pageIndex, pageSize, count));
+        return Ok(new PagedResult<CommentListItem>(commentsWithHtml, pageIndex, pageSize, count));
     }
 
     [HttpPost("{commentId:guid}/reply")]
@@ -176,7 +173,9 @@ public class CommentController(
                 EventType.CommentReplied,
                 "Reply to Comment",
                 reply.Title,
-                new { CommentId = commentId, ReplyContent = replyContent });
+                ActivityLogMetaData.Create(
+                    ("CommentId", commentId),
+                    ("ReplyContent", replyContent)));
 
             // Send email notification (fire-and-forget)
             if (blogConfig.NotificationSettings.SendEmailOnCommentReply && !string.IsNullOrWhiteSpace(reply.Email))
@@ -240,3 +239,21 @@ public class CommentController(
 
     #endregion
 }
+
+file sealed record CommentCreateResponse(bool RequireCommentReview, long FormRenderedUtc);
+
+file sealed record CommentListItem(
+    Guid Id,
+    string Username,
+    string Email,
+    DateTime CreateTimeUtc,
+    string CommentContent,
+    string IpAddress,
+    string PostTitle,
+    bool IsApproved,
+    IReadOnlyList<CommentReplyListItem> Replies);
+
+file sealed record CommentReplyListItem(
+    DateTime ReplyTimeUtc,
+    string ReplyContent,
+    string ReplyContentHtml);

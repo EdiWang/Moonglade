@@ -59,7 +59,10 @@ public class SavePostCommandHandler(
                 isNewPost ? EventType.PostCreated : EventType.PostUpdated,
                 isNewPost ? "Create Post" : "Update Post",
                 model.Title,
-                new { PostId = postEntity.Id, Slug = postEntity.RouteLink, PostStatus = model.PostStatus },
+                ActivityLogMetaData.Create(
+                    ("PostId", postEntity.Id),
+                    ("Slug", postEntity.RouteLink),
+                    ("PostStatus", model.PostStatus)),
                 ct);
 
             if (model.PostStatus == PostStatus.Published)
@@ -165,7 +168,7 @@ public class RecyclePostCommandHandler(
             EventType.PostDeleted,
             "Delete Post (Move to Recycle Bin)",
             $"Post #{request.PostId}",
-            new { request.PostId },
+            ActivityLogMetaData.Create(("PostId", request.PostId)),
             ct);
     }
 
@@ -188,7 +191,7 @@ public class PublishPostWorkflowCommandHandler(
             EventType.PostPublished,
             "Publish Post",
             $"Post #{request.PostId}",
-            new { request.PostId },
+            ActivityLogMetaData.Create(("PostId", request.PostId)),
             ct);
     }
 
@@ -211,7 +214,7 @@ public class UnpublishPostWorkflowCommandHandler(
             EventType.PostUnpublished,
             "Unpublish Post",
             $"Post #{request.PostId}",
-            new { request.PostId },
+            ActivityLogMetaData.Create(("PostId", request.PostId)),
             ct);
     }
 

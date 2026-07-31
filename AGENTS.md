@@ -142,6 +142,7 @@ Important configuration areas:
 - The target framework is `net10.0`. Follow the existing C# style, including implicit usings, primary constructors, record request models, and feature-local files.
 - Keep namespaces aligned with folders. Put new code in the project and feature folder that owns the behavior.
 - Use constructor injection. Do not introduce service locators or unnecessary static mutable state.
+- Do not use C# anonymous object initializers (`new { ... }`) in C# source or test files. Razor files are excluded from this rule because route values, HTML attributes, and view component arguments commonly use anonymous objects there.
 - Use structured logging placeholders, for example `logger.LogInformation("Post updated with ID: {PostId}", post.Id);`.
 - Keep comments sparse and useful. Add comments only for non-obvious compatibility, security, localization, protocol, or business decisions.
 - Keep changes cross-platform, especially paths, environment variables, container behavior, and Linux App Service scenarios.

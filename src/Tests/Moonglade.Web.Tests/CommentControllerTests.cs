@@ -145,9 +145,9 @@ public class CommentControllerTests
         Assert.Equal("127.0.0.1", activityCommand.IpAddress);
         Assert.Equal("unit-test-agent", activityCommand.UserAgent);
         Assert.NotNull(activityCommand.MetaData);
-        Assert.Equal(comment.Id, activityCommand.MetaData!.GetType().GetProperty("CommentId")!.GetValue(activityCommand.MetaData));
-        Assert.Equal(comment.Username, activityCommand.MetaData.GetType().GetProperty(nameof(comment.Username))!.GetValue(activityCommand.MetaData));
-        Assert.Equal(postId, activityCommand.MetaData.GetType().GetProperty("PostId")!.GetValue(activityCommand.MetaData));
+        Assert.Equal(comment.Id, ActivityLogMetaDataAssert.Value<Guid>(activityCommand, "CommentId"));
+        Assert.Equal(comment.Username, ActivityLogMetaDataAssert.Value<string>(activityCommand, nameof(comment.Username)));
+        Assert.Equal(postId, ActivityLogMetaDataAssert.Value<Guid>(activityCommand, "PostId"));
     }
 
     [Fact]
@@ -184,7 +184,7 @@ public class CommentControllerTests
         Assert.Equal("127.0.0.1", activityCommand.IpAddress);
         Assert.Equal("unit-test-agent", activityCommand.UserAgent);
         Assert.NotNull(activityCommand.MetaData);
-        Assert.Equal(commentId, activityCommand.MetaData!.GetType().GetProperty("CommentId")!.GetValue(activityCommand.MetaData));
+        Assert.Equal(commentId, ActivityLogMetaDataAssert.Value<Guid>(activityCommand, "CommentId"));
     }
 
     [Fact]
@@ -221,7 +221,7 @@ public class CommentControllerTests
         Assert.Equal("127.0.0.1", activityCommand.IpAddress);
         Assert.Equal("unit-test-agent", activityCommand.UserAgent);
         Assert.NotNull(activityCommand.MetaData);
-        Assert.Same(commentIds, activityCommand.MetaData!.GetType().GetProperty("CommentIds")!.GetValue(activityCommand.MetaData));
+        Assert.Same(commentIds, ActivityLogMetaDataAssert.Value<Guid[]>(activityCommand, "CommentIds"));
     }
 
     [Fact]
@@ -291,12 +291,16 @@ public class CommentControllerTests
                 It.IsAny<CancellationToken>()),
             Times.Once);
         var okResult = Assert.IsType<OkObjectResult>(result);
-        var pagedResult = Assert.IsType<PagedResult<object>>(okResult.Value);
-        Assert.Equal(2, pagedResult.PageNumber);
-        Assert.Equal(10, pagedResult.PageSize);
-        Assert.Equal(12, pagedResult.TotalItemCount);
+        Assert.NotNull(okResult.Value);
+        var pagedResult = okResult.Value;
+        Assert.Equal(typeof(PagedResult<>), pagedResult.GetType().GetGenericTypeDefinition());
+        Assert.Equal(2, pagedResult.GetType().GetProperty(nameof(PagedResult<object>.PageNumber))!.GetValue(pagedResult));
+        Assert.Equal(10, pagedResult.GetType().GetProperty(nameof(PagedResult<object>.PageSize))!.GetValue(pagedResult));
+        Assert.Equal(12, pagedResult.GetType().GetProperty(nameof(PagedResult<object>.TotalItemCount))!.GetValue(pagedResult));
 
-        var item = Assert.Single(pagedResult.Items);
+        var items = Assert.IsAssignableFrom<System.Collections.IEnumerable>(
+            pagedResult.GetType().GetProperty(nameof(PagedResult<object>.Items))!.GetValue(pagedResult));
+        var item = Assert.Single(items.Cast<object>());
         Assert.Equal(commentId, item.GetType().GetProperty(nameof(CommentDetailedItem.Id))!.GetValue(item));
         Assert.Equal("reader", item.GetType().GetProperty(nameof(CommentDetailedItem.Username))!.GetValue(item));
         Assert.Contains("<strong>Hello</strong>", (string)item.GetType().GetProperty(nameof(CommentDetailedItem.CommentContent))!.GetValue(item)!);
@@ -393,8 +397,8 @@ public class CommentControllerTests
         Assert.Equal("127.0.0.1", activityCommand.IpAddress);
         Assert.Equal("unit-test-agent", activityCommand.UserAgent);
         Assert.NotNull(activityCommand.MetaData);
-        Assert.Equal(commentId, activityCommand.MetaData!.GetType().GetProperty("CommentId")!.GetValue(activityCommand.MetaData));
-        Assert.Equal("Thanks", activityCommand.MetaData.GetType().GetProperty("ReplyContent")!.GetValue(activityCommand.MetaData));
+        Assert.Equal(commentId, ActivityLogMetaDataAssert.Value<Guid>(activityCommand, "CommentId"));
+        Assert.Equal("Thanks", ActivityLogMetaDataAssert.Value<string>(activityCommand, "ReplyContent"));
     }
 
     [Fact]

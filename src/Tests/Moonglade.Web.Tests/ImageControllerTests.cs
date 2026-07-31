@@ -231,8 +231,8 @@ public class ImageControllerTests
         var result = await controller.Image(file);
 
         var okResult = Assert.IsType<OkObjectResult>(result);
-        Assert.Equal("/image/photo-cdn.png", okResult.Value!.GetType().GetProperty("location")!.GetValue(okResult.Value));
-        Assert.Equal("/image/photo-cdn.png", okResult.Value.GetType().GetProperty("filename")!.GetValue(okResult.Value));
+        Assert.Equal("/image/photo-cdn.png", okResult.Value!.GetType().GetProperty("Location")!.GetValue(okResult.Value));
+        Assert.Equal("/image/photo-cdn.png", okResult.Value.GetType().GetProperty("Filename")!.GetValue(okResult.Value));
         _imageStorage.Verify(x => x.InsertAsync("photo-primary.png", It.Is<byte[]>(bytes => bytes.SequenceEqual(imageBytes))), Times.Once);
         _imageStorage.Verify(x => x.InsertSecondaryAsync(It.IsAny<string>(), It.IsAny<byte[]>()), Times.Never);
 
@@ -244,9 +244,9 @@ public class ImageControllerTests
         Assert.Equal("127.0.0.1", activityCommand.IpAddress);
         Assert.Equal("unit-test-agent", activityCommand.UserAgent);
         Assert.NotNull(activityCommand.MetaData);
-        Assert.Equal("photo-cdn.png", activityCommand.MetaData!.GetType().GetProperty("FileName")!.GetValue(activityCommand.MetaData));
-        Assert.Equal(file.Length, activityCommand.MetaData.GetType().GetProperty("FileSize")!.GetValue(activityCommand.MetaData));
-        Assert.Equal(false, activityCommand.MetaData.GetType().GetProperty("SkipWatermark")!.GetValue(activityCommand.MetaData));
+        Assert.Equal("photo-cdn.png", ActivityLogMetaDataAssert.Value<string>(activityCommand, "FileName"));
+        Assert.Equal(file.Length, ActivityLogMetaDataAssert.Value<long>(activityCommand, "FileSize"));
+        Assert.False(ActivityLogMetaDataAssert.Value<bool>(activityCommand, "SkipWatermark"));
     }
 
     [Fact]
@@ -261,7 +261,7 @@ public class ImageControllerTests
         await controller.Image(file, skipWatermark: true);
 
         _imageStorage.Verify(x => x.InsertSecondaryAsync(It.IsAny<string>(), It.IsAny<byte[]>()), Times.Never);
-        Assert.True(_commandMediator.Single<CreateActivityLogCommand>().MetaData!.GetType().GetProperty("SkipWatermark")!.GetValue(_commandMediator.Single<CreateActivityLogCommand>().MetaData) as bool?);
+        Assert.True(ActivityLogMetaDataAssert.Value<bool>(_commandMediator.Single<CreateActivityLogCommand>(), "SkipWatermark"));
     }
 
     [Fact]

@@ -18,6 +18,10 @@ public record DashboardRecentPost(Guid Id, string Title, DateTime DateUtc);
 
 public record GetDashboardStatsQuery(DateTime? UtcNow = null) : IQuery<DashboardStats>;
 
+public record DashboardViewCounts(int Yesterday, int ThisWeek, int ThisMonth);
+
+public record DashboardPostStatusCount(PostStatus Status, int Count);
+
 public class GetDashboardStatsQueryHandler(BlogDbContext db) : IQueryHandler<GetDashboardStatsQuery, DashboardStats>
 {
     public async Task<DashboardStats> HandleAsync(GetDashboardStatsQuery request, CancellationToken ct)
@@ -32,18 +36,16 @@ public class GetDashboardStatsQueryHandler(BlogDbContext db) : IQueryHandler<Get
         var viewCounts = await db.PostViewDaily.AsNoTracking()
             .Where(v => v.ViewDateUtc >= viewStartUtc && v.ViewDateUtc < tomorrowUtc)
             .GroupBy(_ => 1)
-            .Select(g => new
-            {
-                Yesterday = g.Sum(v => v.ViewDateUtc >= yesterdayUtc && v.ViewDateUtc < todayUtc ? v.ViewCount : 0),
-                ThisWeek = g.Sum(v => v.ViewDateUtc >= weekStartUtc ? v.ViewCount : 0),
-                ThisMonth = g.Sum(v => v.ViewDateUtc >= monthStartUtc ? v.ViewCount : 0)
-            })
+            .Select(g => new DashboardViewCounts(
+                g.Sum(v => v.ViewDateUtc >= yesterdayUtc && v.ViewDateUtc < todayUtc ? v.ViewCount : 0),
+                g.Sum(v => v.ViewDateUtc >= weekStartUtc ? v.ViewCount : 0),
+                g.Sum(v => v.ViewDateUtc >= monthStartUtc ? v.ViewCount : 0)))
             .SingleOrDefaultAsync(ct);
 
         var postCounts = await db.Post.AsNoTracking()
             .Where(p => !p.IsDeleted)
             .GroupBy(p => p.PostStatus)
-            .Select(g => new { Status = g.Key, Count = g.Count() })
+            .Select(g => new DashboardPostStatusCount(g.Key, g.Count()))
             .ToDictionaryAsync(g => g.Status, g => g.Count, ct);
 
         var categoryCount = await db.Category.CountAsync(ct);

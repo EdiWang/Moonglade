@@ -115,8 +115,8 @@ public class CategoryControllerTests
         Assert.Equal("127.0.0.1", activityCommand.IpAddress);
         Assert.Equal("unit-test-agent", activityCommand.UserAgent);
         Assert.NotNull(activityCommand.MetaData);
-        Assert.Equal(command.Slug, activityCommand.MetaData!.GetType().GetProperty(nameof(command.Slug))!.GetValue(activityCommand.MetaData));
-        Assert.Equal(command.Note, activityCommand.MetaData.GetType().GetProperty(nameof(command.Note))!.GetValue(activityCommand.MetaData));
+        Assert.Equal(command.Slug, ActivityLogMetaDataAssert.Value<string>(activityCommand, nameof(command.Slug)));
+        Assert.Equal(command.Note, ActivityLogMetaDataAssert.Value<string>(activityCommand, nameof(command.Note)));
     }
 
     [Fact]
@@ -167,9 +167,9 @@ public class CategoryControllerTests
         Assert.Equal("127.0.0.1", activityCommand.IpAddress);
         Assert.Equal("unit-test-agent", activityCommand.UserAgent);
         Assert.NotNull(activityCommand.MetaData);
-        Assert.Equal(id, activityCommand.MetaData!.GetType().GetProperty(nameof(command.Id))!.GetValue(activityCommand.MetaData));
-        Assert.Equal(command.Slug, activityCommand.MetaData.GetType().GetProperty(nameof(command.Slug))!.GetValue(activityCommand.MetaData));
-        Assert.Equal(command.Note, activityCommand.MetaData.GetType().GetProperty(nameof(command.Note))!.GetValue(activityCommand.MetaData));
+        Assert.Equal(id, ActivityLogMetaDataAssert.Value<Guid>(activityCommand, nameof(command.Id)));
+        Assert.Equal(command.Slug, ActivityLogMetaDataAssert.Value<string>(activityCommand, nameof(command.Slug)));
+        Assert.Equal(command.Note, ActivityLogMetaDataAssert.Value<string>(activityCommand, nameof(command.Note)));
     }
 
     [Fact]
@@ -206,7 +206,7 @@ public class CategoryControllerTests
         Assert.Equal("127.0.0.1", activityCommand.IpAddress);
         Assert.Equal("unit-test-agent", activityCommand.UserAgent);
         Assert.NotNull(activityCommand.MetaData);
-        Assert.Equal(id, activityCommand.MetaData!.GetType().GetProperty("CategoryId")!.GetValue(activityCommand.MetaData));
+        Assert.Equal(id, ActivityLogMetaDataAssert.Value<Guid>(activityCommand, "CategoryId"));
     }
 
     private CategoryController CreateController(

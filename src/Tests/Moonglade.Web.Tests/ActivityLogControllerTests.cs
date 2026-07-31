@@ -158,7 +158,7 @@ public class ActivityLogControllerTests
         Assert.Equal("127.0.0.1", activityCommand.IpAddress);
         Assert.Equal("unit-test-agent", activityCommand.UserAgent);
         Assert.NotNull(activityCommand.MetaData);
-        Assert.Equal(42L, activityCommand.MetaData!.GetType().GetProperty("ActivityLogId")!.GetValue(activityCommand.MetaData));
+        Assert.Equal(42L, ActivityLogMetaDataAssert.Value<long>(activityCommand, "ActivityLogId"));
     }
 
     [Fact]
@@ -180,7 +180,7 @@ public class ActivityLogControllerTests
         Assert.Equal("127.0.0.1", activityCommand.IpAddress);
         Assert.Equal("unit-test-agent", activityCommand.UserAgent);
         Assert.NotNull(activityCommand.MetaData);
-        Assert.Equal(7, activityCommand.MetaData!.GetType().GetProperty("DeletedCount")!.GetValue(activityCommand.MetaData));
+        Assert.Equal(7, ActivityLogMetaDataAssert.Value<int>(activityCommand, "DeletedCount"));
     }
 
     private ActivityLogController CreateController(

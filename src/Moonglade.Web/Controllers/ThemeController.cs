@@ -29,7 +29,9 @@ public class ThemeController(
             EventType.ThemeCreated,
             "Create Theme",
             request.Name,
-            new { ThemeId = id, request.AccentColor });
+            ActivityLogMetaData.Create(
+                ("ThemeId", id),
+                ("AccentColor", request.AccentColor)));
 
         return Ok(id);
     }
@@ -46,7 +48,7 @@ public class ThemeController(
                 EventType.ThemeDeleted,
                 "Delete Theme",
                 $"Theme #{id}",
-                new { ThemeId = id });
+                ActivityLogMetaData.Create(("ThemeId", id)));
         }
 
         return oc switch

@@ -29,7 +29,7 @@ public class CreateCommentCommandHandler(
         // Fetch post info
         var postInfo = await db.Post
             .Where(p => p.Id == request.PostId)
-            .Select(p => new { p.Title, p.PubDateUtc })
+            .Select(p => new CommentPostInfo(p.Title, p.PubDateUtc))
             .FirstOrDefaultAsync(ct);
 
         if (postInfo is null)
@@ -81,3 +81,5 @@ public class CreateCommentCommandHandler(
         return result;
     }
 }
+
+file sealed record CommentPostInfo(string Title, DateTime? PubDateUtc);
