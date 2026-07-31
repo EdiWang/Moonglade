@@ -1344,6 +1344,9 @@
   <data name="Activity Log Detail" xml:space="preserve">
     <value>Aktivitätsprotokolldetails</value>
   </data>
+  <data name="Activity Logs" xml:space="preserve">
+    <value>Aktivitätsprotokolle</value>
+  </data>
   <data name="Actor" xml:space="preserve">
     <value>Akteur</value>
   </data>
@@ -1889,5 +1892,11 @@
   </data>
   <data name="Resetting the authenticator signs you out and requires setting up a new authenticator app on the next sign-in." xml:space="preserve">
     <value>Das Zurücksetzen des Authenticators meldet Sie ab und erfordert beim nächsten Anmelden das Einrichten einer neuen Authenticator-App.</value>
+  </data>
+  <data name="Update your local username and password for administrator sign-in." xml:space="preserve">
+    <value>Aktualisieren Sie den lokalen Benutzernamen und das Passwort für die Administratoranmeldung.</value>
+  </data>
+  <data name="Clear the current authenticator setup and enroll a new app on next sign-in." xml:space="preserve">
+    <value>Löscht die aktuelle Authenticator-Einrichtung und richtet bei der nächsten Anmeldung eine neue App ein.</value>
   </data>
 </root>

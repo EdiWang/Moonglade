@@ -412,6 +412,116 @@
     background-color: var(--bs-white);
 }
 
+.local-account-actions {
+    align-content: center;
+    display: grid;
+    gap: 32px;
+    grid-template-columns: repeat(2, minmax(240px, 320px));
+    justify-content: center;
+    min-height: calc(100vh - 170px);
+    padding: 48px 16px;
+}
+
+.local-account-action {
+    appearance: none;
+    background-color: var(--bs-white);
+    border: 1px solid var(--bs-border-color);
+    border-radius: 8px;
+    box-shadow: 0 10px 28px rgba(0, 0, 0, 0.04);
+    color: var(--accent-color1);
+    cursor: pointer;
+    display: flex;
+    flex-direction: column;
+    font-family: inherit;
+    gap: 26px;
+    justify-content: center;
+    min-height: 300px;
+    padding: 28px;
+    text-align: center;
+    transition: border-color .18s ease, box-shadow .18s ease;
+}
+
+    .local-account-action:hover,
+    .local-account-action:focus {
+        border-color: var(--accent-color1);
+        box-shadow: 0 16px 36px rgba(0, 0, 0, 0.09);
+        color: var(--accent-color1);
+    }
+
+    .local-account-action:focus-visible {
+        outline: 3px solid rgba(13, 110, 253, 0.25);
+        outline-offset: 3px;
+    }
+
+.local-account-action-danger {
+    color: var(--bs-danger);
+}
+
+    .local-account-action-danger:hover,
+    .local-account-action-danger:focus {
+        border-color: var(--bs-danger);
+        color: var(--bs-danger);
+    }
+
+.local-account-action-icon {
+    align-items: center;
+    border-radius: 8px;
+    display: inline-flex;
+    font-size: 1.85rem;
+    height: 64px;
+    justify-content: center;
+    margin: 0 auto;
+    width: 64px;
+    background-color: color-mix(in srgb, currentColor 10%, transparent);
+}
+
+.local-account-action-body {
+    align-self: center;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    margin: 0;
+    max-width: 220px;
+}
+
+.local-account-action-title {
+    font-size: 1.2rem;
+    font-weight: 700;
+    line-height: 1.25;
+    text-align: center;
+}
+
+.local-account-action-description {
+    color: var(--bs-secondary-color);
+    font-size: 0.86rem;
+    font-weight: 400;
+    line-height: 1.55;
+    text-align: center;
+}
+
+@media (max-width: 767.98px) {
+    .local-account-actions {
+        grid-template-columns: minmax(0, 1fr);
+        min-height: auto;
+        padding: 24px 0;
+    }
+
+    .local-account-action {
+        min-height: 220px;
+        padding: 24px;
+    }
+
+    .local-account-action-icon {
+        font-size: 1.6rem;
+        height: 56px;
+        width: 56px;
+    }
+
+    .local-account-action-title {
+        font-size: 1.12rem;
+    }
+}
+
 .tags-dropdown .tagify__dropdown__item {
     display: inline-block;
     border-radius: 3px;
@@ -503,6 +613,16 @@
 
 [data-bs-theme="dark"] .settings-entry {
     background-color: var(--bs-body-bg);
+}
+
+[data-bs-theme="dark"] .local-account-action {
+    background-color: var(--bs-body-bg);
+    box-shadow: none;
+}
+
+[data-bs-theme="dark"] .local-account-action:hover,
+[data-bs-theme="dark"] .local-account-action:focus {
+    box-shadow: 0 16px 36px rgba(0, 0, 0, 0.24);
 }
 
 [data-bs-theme="dark"] .image-drop-target {

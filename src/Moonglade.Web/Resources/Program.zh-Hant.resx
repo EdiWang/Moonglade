@@ -1344,6 +1344,9 @@
   <data name="Activity Log Detail" xml:space="preserve">
     <value>活動記錄詳細資料</value>
   </data>
+  <data name="Activity Logs" xml:space="preserve">
+    <value>活動記錄</value>
+  </data>
   <data name="Actor" xml:space="preserve">
     <value>操作者</value>
   </data>
@@ -1889,5 +1892,11 @@
   </data>
   <data name="Resetting the authenticator signs you out and requires setting up a new authenticator app on the next sign-in." xml:space="preserve">
     <value>重設驗證器會讓你登出，並要求你在下次登入時設定新的驗證器應用程式。</value>
+  </data>
+  <data name="Update your local username and password for administrator sign-in." xml:space="preserve">
+    <value>更新管理員登入使用的本機使用者名稱與密碼。</value>
+  </data>
+  <data name="Clear the current authenticator setup and enroll a new app on next sign-in." xml:space="preserve">
+    <value>清除目前驗證器設定，並在下次登入時綁定新的應用程式。</value>
   </data>
 </root>
