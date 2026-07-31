@@ -1,6 +1,6 @@
 import { codeSampleLanguages } from './admin.editor.module.mjs';
 
-const editorModulePath = '/lib/moonglade-editor/moonglade-editor.js';
+const editorModulePath = '/_content/Moonglade.Editor.StaticAssets/moonglade-editor/moonglade-editor.js';
 const htmlEditorImageExtensions = ['.png', '.jpg', '.jpeg', '.gif', '.webp', '.svg'];
 
 let editorModulePromise = null;

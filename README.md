@@ -81,6 +81,8 @@ dotnet build src/Moonglade.Web/Moonglade.Web.csproj
 dotnet run --project src/Moonglade.Web/Moonglade.Web.csproj
 ```
 
+The admin content editor is provided by the `Moonglade.Editor.StaticAssets` NuGet package. Its browser assets are served from `/_content/Moonglade.Editor.StaticAssets/moonglade-editor/`; do not copy editor build output into `wwwroot`.
+
 Focused tests can be run from the matching test project, for example:
 
 ```bash

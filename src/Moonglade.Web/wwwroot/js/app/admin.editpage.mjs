@@ -2,7 +2,7 @@ import { Alpine } from './alpine-init.mjs';
 import { fetch2 } from './httpService.mjs?v=1500';
 import { success, error } from './toastService.mjs';
 import { getLocalizedString } from './utils.module.mjs';
-import { createMoongladeEditor } from '/lib/moonglade-editor/moonglade-editor.js';
+import { createMoongladeEditor } from '/_content/Moonglade.Editor.StaticAssets/moonglade-editor/moonglade-editor.js';
 
 let htmlContentEditor = null;
 let cssContentEditor = null;
