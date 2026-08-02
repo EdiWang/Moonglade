@@ -56,3 +56,26 @@ CREATE TABLE IF NOT EXISTS "PostViewDaily" (
 );
 
 CREATE INDEX IF NOT EXISTS "IX_PostViewDaily_ViewDateUtc" ON "PostViewDaily" ("ViewDateUtc");
+
+-- v16.2
+-- Add durable email outbox table
+CREATE TABLE IF NOT EXISTS "EmailOutboxMessage" (
+    "Id" UUID NOT NULL,
+    "MessageType" VARCHAR(100) NOT NULL,
+    "DistributionList" VARCHAR(4000) NOT NULL,
+    "MessageBody" TEXT NOT NULL,
+    "Status" INTEGER NOT NULL,
+    "AttemptCount" INTEGER NOT NULL,
+    "CreatedTimeUtc" TIMESTAMP NOT NULL,
+    "LastAttemptTimeUtc" TIMESTAMP NULL,
+    "NotBeforeUtc" TIMESTAMP NULL,
+    "LockedUntilUtc" TIMESTAMP NULL,
+    "LockedBy" VARCHAR(128) NULL,
+    "SentTimeUtc" TIMESTAMP NULL,
+    "LastError" VARCHAR(2000) NULL,
+    "ConcurrencyToken" UUID NOT NULL,
+    PRIMARY KEY ("Id")
+);
+
+CREATE INDEX IF NOT EXISTS "IX_EmailOutboxMessage_Dequeue"
+ON "EmailOutboxMessage" ("Status", "NotBeforeUtc", "LockedUntilUtc", "CreatedTimeUtc");

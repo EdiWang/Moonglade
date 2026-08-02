@@ -105,3 +105,37 @@ BEGIN
     CREATE INDEX [IX_PostViewDaily_ViewDateUtc] ON [dbo].[PostViewDaily]([ViewDateUtc]);
 END
 GO
+
+-- v16.2
+-- Add durable email outbox table
+IF NOT EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[EmailOutboxMessage]') AND type in (N'U'))
+BEGIN
+    CREATE TABLE [dbo].[EmailOutboxMessage](
+        [Id] [uniqueidentifier] NOT NULL,
+        [MessageType] [nvarchar](100) NOT NULL,
+        [DistributionList] [nvarchar](4000) NOT NULL,
+        [MessageBody] [nvarchar](max) NOT NULL,
+        [Status] [int] NOT NULL,
+        [AttemptCount] [int] NOT NULL,
+        [CreatedTimeUtc] [datetime] NOT NULL,
+        [LastAttemptTimeUtc] [datetime] NULL,
+        [NotBeforeUtc] [datetime] NULL,
+        [LockedUntilUtc] [datetime] NULL,
+        [LockedBy] [nvarchar](128) NULL,
+        [SentTimeUtc] [datetime] NULL,
+        [LastError] [nvarchar](2000) NULL,
+        [ConcurrencyToken] [uniqueidentifier] NOT NULL,
+        CONSTRAINT [PK_EmailOutboxMessage] PRIMARY KEY CLUSTERED
+        (
+            [Id] ASC
+        )
+    ) ON [PRIMARY] TEXTIMAGE_ON [PRIMARY]
+END
+GO
+
+IF NOT EXISTS (SELECT * FROM sys.indexes WHERE object_id = OBJECT_ID(N'[dbo].[EmailOutboxMessage]') AND name = N'IX_EmailOutboxMessage_Dequeue')
+BEGIN
+    CREATE INDEX [IX_EmailOutboxMessage_Dequeue]
+    ON [dbo].[EmailOutboxMessage]([Status], [NotBeforeUtc], [LockedUntilUtc], [CreatedTimeUtc]);
+END
+GO

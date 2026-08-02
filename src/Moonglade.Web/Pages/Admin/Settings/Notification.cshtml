@@ -6,11 +6,30 @@
 
 <div id="localizedStrings" style="display:none"
      data-settings-updated="@SharedLocalizer["Settings Updated"]"
-     data-email-sent="@SharedLocalizer["Email is sent."]">
+     data-email-sent="@SharedLocalizer["Test email is queued."]">
 </div>
 
 @{
     var settings = BlogConfig.NotificationSettings;
+    var emailProvider = string.IsNullOrWhiteSpace(Configuration["Email:Provider"])
+        ? "smtp"
+        : Configuration["Email:Provider"]!.Trim().ToLowerInvariant();
+    var isAzureCommunicationProvider = string.Equals(
+        emailProvider,
+        "azurecommunication",
+        StringComparison.OrdinalIgnoreCase);
+    var providerLabel = isAzureCommunicationProvider ? "Azure Communication Services" : "SMTP";
+    var senderAddress = isAzureCommunicationProvider
+        ? Configuration["Email:AcsSenderAddress"]
+        : Configuration["Email:SmtpUserName"];
+    var providerConfigured = isAzureCommunicationProvider
+        ? !string.IsNullOrWhiteSpace(Configuration["Email:AcsConnectionString"]) &&
+          !string.IsNullOrWhiteSpace(senderAddress)
+        : !string.IsNullOrWhiteSpace(Configuration["Email:SmtpServer"]) &&
+          !string.IsNullOrWhiteSpace(Configuration["Email:SmtpUserName"]) &&
+          !string.IsNullOrWhiteSpace(Configuration["Email:SmtpPassword"]);
+    var workerEnabledValue = Configuration["Email:OutboxWorker:Enabled"];
+    var workerEnabled = !bool.TryParse(workerEnabledValue, out var parsedWorkerEnabled) || parsedWorkerEnabled;
 }
 
 @section admintoolbar {
@@ -24,29 +43,55 @@
                 <div>
                     <h4 class="admin-subtitle fw-bold mb-2">@SharedLocalizer["Email Options"]</h4>
 
-                    @if (string.IsNullOrWhiteSpace(Configuration["Email:ApiEndpoint"]) ||
-                    string.IsNullOrWhiteSpace(Configuration["Email:ApiKey"]))
+                    @if (!providerConfigured)
                     {
                         <div class="alert alert-warning">
-                            @Html.Raw(string.Format(
-                                SharedLocalizer["Please follow {0} to setup email API."].Value,
-                                "<a href=\"https://github.com/EdiWang/Moonglade/blob/master/README.md#email-notification\" target=\"_blank\">instructions</a>"))
+                            @SharedLocalizer["Please configure email provider settings in appsettings.json."]
                         </div>
                     }
-                    else
+
+                    @if (!workerEnabled)
                     {
-                        <div class="settings-entry row align-items-center py-3 px-2 rounded-3 border mb-1">
-                            <div class="col-auto">
-                                <i class="bi-link settings-entry-icon"></i>
-                            </div>
-                            <div class="col">
-                                <label>@SharedLocalizer["API Endpoint"]</label>
-                            </div>
-                            <div class="col-6">
-                                <input readonly="readonly" class="form-control" spellcheck="false" value="@Configuration["Email:ApiEndpoint"]" />
-                            </div>
+                        <div class="alert alert-warning">
+                            @SharedLocalizer["Email outbox worker is disabled."]
                         </div>
                     }
+
+                    <div class="settings-entry row align-items-center py-3 px-2 rounded-3 border mb-1">
+                        <div class="col-auto">
+                            <i class="bi-envelope-gear settings-entry-icon"></i>
+                        </div>
+                        <div class="col">
+                            <label>@SharedLocalizer["Provider"]</label>
+                        </div>
+                        <div class="col-6">
+                            <input readonly="readonly" class="form-control" spellcheck="false" value="@providerLabel" />
+                        </div>
+                    </div>
+
+                    <div class="settings-entry row align-items-center py-3 px-2 rounded-3 border mb-1">
+                        <div class="col-auto">
+                            <i class="bi-send settings-entry-icon"></i>
+                        </div>
+                        <div class="col">
+                            <label>@SharedLocalizer["Sender Address"]</label>
+                        </div>
+                        <div class="col-6">
+                            <input readonly="readonly" class="form-control" spellcheck="false" value="@(string.IsNullOrWhiteSpace(senderAddress) ? SharedLocalizer["Not configured"] : senderAddress)" />
+                        </div>
+                    </div>
+
+                    <div class="settings-entry row align-items-center py-3 px-2 rounded-3 border mb-1">
+                        <div class="col-auto">
+                            <i class="bi-inboxes settings-entry-icon"></i>
+                        </div>
+                        <div class="col">
+                            <label>@SharedLocalizer["Outbox Worker"]</label>
+                        </div>
+                        <div class="col-6">
+                            <input readonly="readonly" class="form-control" spellcheck="false" value="@(workerEnabled ? SharedLocalizer["Enabled"] : SharedLocalizer["Disabled"])" />
+                        </div>
+                    </div>
 
                     <div class="settings-entry row align-items-center py-3 px-2 rounded-3 border mb-1">
                         <div class="col-auto">

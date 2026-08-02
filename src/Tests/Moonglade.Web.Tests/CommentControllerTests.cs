@@ -3,12 +3,11 @@ using LiteBus.Events.Abstractions;
 using LiteBus.Queries.Abstractions;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using Moonglade.ActivityLog;
-using Moonglade.BackgroundServices;
 using Moonglade.Configuration;
 using Moonglade.Data.DTO;
+using Moonglade.Email;
 using Moonglade.Features.Comment;
 using Moonglade.Moderation;
 using Moonglade.Web.Controllers;
@@ -32,6 +31,7 @@ public class CommentControllerTests
     };
     private readonly RecordingCommandMediator _commandMediator = new();
     private readonly Mock<IQueryMediator> _queryMediator = new();
+    private readonly Mock<IEventMediator> _eventMediator = new();
     private readonly Mock<IModeratorService> _moderator = new();
     private readonly Mock<ICommentSubmissionGuard> _submissionGuard = new();
 
@@ -40,6 +40,9 @@ public class CommentControllerTests
         _submissionGuard
             .Setup(x => x.Validate(It.IsAny<CommentRequest>()))
             .Returns(CommentSubmissionGuardResult.Success);
+        _eventMediator
+            .Setup(x => x.PublishAsync(It.IsAny<IEvent>(), It.IsAny<EventMediationSettings>(), It.IsAny<CancellationToken>()))
+            .Returns(Task.CompletedTask);
     }
 
     [Fact]
@@ -148,6 +151,47 @@ public class CommentControllerTests
         Assert.Equal(comment.Id, ActivityLogMetaDataAssert.Value<Guid>(activityCommand, "CommentId"));
         Assert.Equal(comment.Username, ActivityLogMetaDataAssert.Value<string>(activityCommand, nameof(comment.Username)));
         Assert.Equal(postId, ActivityLogMetaDataAssert.Value<Guid>(activityCommand, "PostId"));
+        _eventMediator.Verify(
+            x => x.PublishAsync(It.IsAny<IEvent>(), It.IsAny<EventMediationSettings>(), It.IsAny<CancellationToken>()),
+            Times.Never);
+    }
+
+    [Fact]
+    public async Task Create_WhenNewCommentEmailEnabled_PublishesCommentEvent()
+    {
+        var postId = Guid.NewGuid();
+        var request = CreateCommentRequest();
+        var comment = new CommentDetailedItem
+        {
+            Id = Guid.NewGuid(),
+            Username = "reader",
+            Email = request.Email,
+            IpAddress = "127.0.0.1",
+            PostTitle = "Hello Post",
+            CommentContent = "Hello world",
+            CreateTimeUtc = DateTime.UtcNow,
+            IsApproved = true
+        };
+        _blogConfig.NotificationSettings.SendEmailOnNewComment = true;
+        _commandMediator.SetResult<CreateCommentCommand, CommentDetailedItem>(comment);
+        using var requestAbortedSource = new CancellationTokenSource();
+        var controller = CreateController(
+            remoteIpAddress: IPAddress.Parse("127.0.0.1"),
+            configureHttpContext: httpContext => httpContext.RequestAborted = requestAbortedSource.Token);
+
+        await controller.Create(postId, request);
+
+        _eventMediator.Verify(
+            x => x.PublishAsync(
+                It.Is<CommentEvent>(e =>
+                    e.Username == comment.Username &&
+                    e.Email == comment.Email &&
+                    e.IPAddress == comment.IpAddress &&
+                    e.PostTitle == comment.PostTitle &&
+                    e.CommentContent == comment.CommentContent),
+                It.IsAny<EventMediationSettings>(),
+                It.Is<CancellationToken>(ct => ct == requestAbortedSource.Token)),
+            Times.Once);
     }
 
     [Fact]
@@ -399,6 +443,47 @@ public class CommentControllerTests
         Assert.NotNull(activityCommand.MetaData);
         Assert.Equal(commentId, ActivityLogMetaDataAssert.Value<Guid>(activityCommand, "CommentId"));
         Assert.Equal("Thanks", ActivityLogMetaDataAssert.Value<string>(activityCommand, "ReplyContent"));
+        _eventMediator.Verify(
+            x => x.PublishAsync(It.IsAny<IEvent>(), It.IsAny<EventMediationSettings>(), It.IsAny<CancellationToken>()),
+            Times.Never);
+    }
+
+    [Fact]
+    public async Task Reply_WhenReplyEmailEnabled_PublishesCommentReplyEvent()
+    {
+        var commentId = Guid.NewGuid();
+        var reply = new CommentReply
+        {
+            Id = Guid.NewGuid(),
+            CommentId = commentId,
+            Email = "reader@example.com",
+            CommentContent = "Original",
+            Title = "Hello Post",
+            ReplyContent = "Thanks",
+            ReplyContentHtml = "<p>Thanks</p>",
+            ReplyTimeUtc = DateTime.UtcNow,
+            RouteLink = "hello-post"
+        };
+        _blogConfig.NotificationSettings.SendEmailOnCommentReply = true;
+        _commandMediator.SetResult<ReplyCommentCommand, CommentReply>(reply);
+        using var requestAbortedSource = new CancellationTokenSource();
+        var controller = CreateController(
+            "admin",
+            configureHttpContext: httpContext => httpContext.RequestAborted = requestAbortedSource.Token);
+
+        await controller.Reply(commentId, "Thanks");
+
+        _eventMediator.Verify(
+            x => x.PublishAsync(
+                It.Is<CommentReplyEvent>(e =>
+                    e.Email == reply.Email &&
+                    e.CommentContent == reply.CommentContent &&
+                    e.Title == reply.Title &&
+                    e.ReplyContentHtml == reply.ReplyContentHtml &&
+                    e.PostLink == "https://blog.example.com/post/hello-post"),
+                It.IsAny<EventMediationSettings>(),
+                It.Is<CancellationToken>(ct => ct == requestAbortedSource.Token)),
+            Times.Once);
     }
 
     [Fact]
@@ -418,7 +503,8 @@ public class CommentControllerTests
     private CommentController CreateController(
         string? username = null,
         IPAddress? remoteIpAddress = null,
-        string? userAgent = null)
+        string? userAgent = null,
+        Action<DefaultHttpContext>? configureHttpContext = null)
     {
         var controller = new CommentController(
             _commandMediator,
@@ -426,8 +512,11 @@ public class CommentControllerTests
             _moderator.Object,
             _blogConfig,
             _submissionGuard.Object,
-            CreateCannonService());
+            _eventMediator.Object,
+            Mock.Of<ILogger<CommentController>>());
         var httpContext = new DefaultHttpContext();
+        httpContext.Request.Scheme = "https";
+        httpContext.Request.Host = new HostString("blog.example.com");
 
         if (!string.IsNullOrWhiteSpace(username))
         {
@@ -445,19 +534,14 @@ public class CommentControllerTests
             httpContext.Request.Headers.UserAgent = userAgent;
         }
 
+        configureHttpContext?.Invoke(httpContext);
+
         controller.ControllerContext = new ControllerContext
         {
             HttpContext = httpContext
         };
 
         return controller;
-    }
-
-    private static CannonService CreateCannonService()
-    {
-        var services = new ServiceCollection();
-        services.AddSingleton(Mock.Of<IEventMediator>());
-        return new CannonService(Mock.Of<ILogger<CannonService>>(), services.BuildServiceProvider().GetRequiredService<IServiceScopeFactory>());
     }
 
     private static CommentRequest CreateCommentRequest(string email = "reader@example.com") => new()

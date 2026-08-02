@@ -5,7 +5,7 @@ using LiteBus.Queries.Abstractions;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Moonglade.ActivityLog;
-using Moonglade.Email.Client;
+using Moonglade.Email;
 using Moonglade.Features.Asset;
 
 namespace Moonglade.Web.Controllers;

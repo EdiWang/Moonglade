@@ -12,7 +12,7 @@ using Microsoft.Extensions.Diagnostics.HealthChecks;
 using Moonglade.BackgroundServices;
 using Moonglade.Data.PostgreSql;
 using Moonglade.Data.SqlServer;
-using Moonglade.Email.Client;
+using Moonglade.Email;
 using Moonglade.IndexNow.Client;
 using Moonglade.Moderation;
 using Moonglade.Setup;
@@ -259,7 +259,7 @@ public static class ServiceCollectionExtensions
                 .AddBlogAuthenticaton(configuration)
                 .AddImageStorage(configuration);
 
-        services.AddEmailClient();
+        services.AddMoongladeEmail(configuration);
         services.AddIndexNowClient(configuration.GetSection("IndexNow"));
         services.AddScoped<IModerationKeywordProvider, BlogConfigModerationKeywordProvider>();
         services.AddContentModerator();
