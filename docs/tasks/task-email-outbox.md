@@ -40,7 +40,7 @@ Relevant code inspected:
 | 0 | Create this task record | None | `git status --short` | Completed |
 | 1 | Add `Moonglade.Email` core project and reusable email delivery code | Task 0 | `dotnet build src/Moonglade.Web/Moonglade.Web.csproj` | Completed |
 | 2 | Add focused `Moonglade.Email.Tests` project | Task 1 | `dotnet test src/Tests/Moonglade.Email.Tests/Moonglade.Email.Tests.csproj` | Completed |
-| 3 | Add database outbox model and queue store | Task 1 | Build and email tests | Not started |
+| 3 | Add database outbox model and queue store | Task 1 | Build and email tests | Completed |
 | 4 | Add background outbox worker | Task 3 | Build and email tests | Not started |
 | 5 | Replace Function HTTP enqueue path in Web | Tasks 3-4 | Web and email tests | Not started |
 | 6 | Update configuration and notification settings UI | Task 5 | Web tests and build | Not started |
@@ -53,7 +53,7 @@ Work proceeds in small batches. Batch 0 creates the durable task record. Batch 1
 
 ## Current Progress
 
-Batch 0 and Batch 1 are complete. The repository now contains a `Moonglade.Email` core project with reusable email message contracts, validation, template message building, dispatching, SMTP sender, Azure Communication Services sender, and delivery failure classification. A focused `Moonglade.Email.Tests` project covers the new core behavior.
+Batch 0, Batch 1, and Batch 2 are complete. The repository now contains a `Moonglade.Email` core project with reusable email message contracts, validation, template message building, dispatching, SMTP sender, Azure Communication Services sender, delivery failure classification, and a database-backed email outbox store. A focused `Moonglade.Email.Tests` project covers the new core behavior and outbox queue state transitions.
 
 No runtime email behavior has been changed yet. `Moonglade.Web` still uses `Moonglade.Email.Client` and the existing Azure Function enqueue path.
 
@@ -64,6 +64,11 @@ No runtime email behavior has been changed yet. `Moonglade.Web` still uses `Moon
 | 2026-08-02 | `dotnet test src\Tests\Moonglade.Email.Tests\Moonglade.Email.Tests.csproj` | Passed | 36 tests passed. |
 | 2026-08-02 | `dotnet build src\Moonglade.Web\Moonglade.Web.csproj` | Passed | Build succeeded with 0 warnings and 0 errors. |
 | 2026-08-02 | `dotnet build src\Moonglade.slnx --no-restore` | Passed | Solution build succeeded with 0 warnings and 0 errors. |
+| 2026-08-02 | `dotnet test src\Tests\Moonglade.Email.Tests\Moonglade.Email.Tests.csproj` | Passed | 45 tests passed after adding database outbox tests. |
+| 2026-08-02 | `dotnet test src\Tests\Moonglade.Setup.Tests\Moonglade.Setup.Tests.csproj` | Passed | 18 tests passed after migration script changes. |
+| 2026-08-02 | `dotnet build src\Moonglade.Web\Moonglade.Web.csproj` | Passed | Build succeeded with 0 warnings and 0 errors after data model changes. |
+| 2026-08-02 | `dotnet build src\Moonglade.slnx --no-restore` | Passed | Solution build succeeded with 0 warnings and 0 errors after Batch 2. |
+| 2026-08-02 | `git diff --check` | Passed with line-ending warnings | Only CRLF normalization warnings were reported. |
 
 ## Issues and Resolutions
 
@@ -71,7 +76,7 @@ None yet.
 
 ## Follow-ups
 
-- Decide in Batch 2 whether the outbox claim implementation should use provider-specific SQL for SQL Server and PostgreSQL or a simpler single-worker polling model first.
+- Revisit whether outbox claim should use provider-specific SQL Server/PostgreSQL atomic update queries if Moonglade later supports multiple active web instances or a separate worker container. Batch 2 uses an EF-based lease plus optimistic concurrency token, which is appropriate for the initial single-worker personal blog target.
 - Preserve at-least-once semantics and make duplicate email risk explicit.
 - Keep SMTP support available as an optional provider even if Azure Communication Services remains the primary provider.
 

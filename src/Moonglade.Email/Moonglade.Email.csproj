@@ -17,6 +17,9 @@
 		<PackageReference Include="Edi.TemplateEmail.Smtp" Version="2026.4.2" />
 	</ItemGroup>
 	<ItemGroup>
+		<ProjectReference Include="..\Moonglade.Data\Moonglade.Data.csproj" />
+	</ItemGroup>
+	<ItemGroup>
 		<None Update="mailConfiguration.xml">
 			<CopyToOutputDirectory>Always</CopyToOutputDirectory>
 		</None>
