@@ -1899,4 +1899,22 @@
   <data name="Clear the current authenticator setup and enroll a new app on next sign-in." xml:space="preserve">
     <value>清除目前驗證器設定，並在下次登入時綁定新的應用程式。</value>
   </data>
+  <data name="Email outbox worker is disabled." xml:space="preserve">
+    <value>Email 寄件匣背景工作已停用。</value>
+  </data>
+  <data name="Outbox Worker" xml:space="preserve">
+    <value>寄件匣背景工作</value>
+  </data>
+  <data name="Please configure email provider settings in appsettings.json." xml:space="preserve">
+    <value>請在 `appsettings.json` 中設定郵件提供者設定。</value>
+  </data>
+  <data name="Provider" xml:space="preserve">
+    <value>提供者</value>
+  </data>
+  <data name="Sender Address" xml:space="preserve">
+    <value>寄件者地址</value>
+  </data>
+  <data name="Test email is queued." xml:space="preserve">
+    <value>測試郵件已加入佇列。</value>
+  </data>
 </root>

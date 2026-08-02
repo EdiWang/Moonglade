@@ -21,7 +21,7 @@ The solution file is `src/Moonglade.slnx`. The root `README.md` is the main depl
 | Authentication | Cookie-based local account authentication and Microsoft Entra ID through `Microsoft.Identity.Web`. |
 | Frontend | Server-rendered Razor, Bootstrap, Bootstrap Icons, Alpine.js, unified Moonglade.Editor for rich HTML post editing plus Markdown/CSS/HTML code-like modes, Tagify, and project-local JavaScript modules under `src/Moonglade.Web/wwwroot/js/app`. |
 | Image storage | `IBlogImageStorage` abstraction with Azure Blob Storage and local file system providers. |
-| External integrations | Webmention, IndexNow, email notification API, local content moderation, Gravatar, Azure App Service logging, and Azure/Docker deployment assets. |
+| External integrations | Webmention, IndexNow, email outbox delivery, local content moderation, Gravatar, Azure App Service logging, and Azure/Docker deployment assets. |
 | Package management | NuGet package references in project files; no repository-level `Directory.Packages.props`, `NuGet.config`, or package lock file was found at the time this document was updated. |
 | Build tools | .NET SDK CLI, Visual Studio, VS Code task `dotnet build ${workspaceFolder}/src/Moonglade.Web/Moonglade.Web.csproj`, Docker multi-stage build, Docker Compose, and Azure Bicep/PowerShell deployment assets. |
 | Tests | xUnit v3, Moq, `Microsoft.NET.Test.Sdk`, `coverlet.collector`, EF Core InMemory/Sqlite patterns, and ASP.NET Core TestHost for Web tests. |
@@ -43,7 +43,7 @@ Important configuration areas:
 | `CommentRateLimit` | Built-in comment submission rate limiting by client IP and post ID. | Optional | Uses a fixed window policy. |
 | `CommentSubmissionGuard` | Built-in comment honeypot and elapsed-time checks. | Optional | Rejects filled honeypot fields, too-fast submissions, and stale form timestamps. |
 | `Webmention` | Webmention options, including source rate limiting. | Optional | Preserve protocol endpoint behavior. |
-| `Email` | Notification API endpoint/key/header. | Optional | Store real keys outside source control. |
+| `Email` | Email provider settings and database outbox worker options. | Optional | Supports `AzureCommunication` and `smtp`; store real connection strings and passwords outside source control. |
 | `IndexNow` | API key, ping targets, and cooldown interval. | Optional | API key also maps the IndexNow verification file endpoint. |
 | `ForwardedHeaders` | Reverse proxy/client IP configuration. | Deployment-dependent | Required behind some proxies/load balancers. |
 | `EnableCSP`, `CSPValue` | Optional Content Security Policy response header. | Optional | `X-Content-Type-Options: nosniff` is always emitted; CSP is emitted only when enabled and non-empty. |
@@ -110,7 +110,7 @@ Important configuration areas:
 | Configuration | `src/Moonglade.Configuration` | Blog setting models, defaults, loading, updates, and initialization-related logic. |
 | Authentication | `src/Moonglade.Auth` | Local account, TOTP verification, Entra ID, login validation, password updates, and authentication registration. |
 | Image storage | `src/Moonglade.ImageStorage` | Blog image storage abstractions, file naming, local file system storage, Azure Blob storage, and storage-related options. |
-| Integrations | `src/Moonglade.Email.Client`, `src/Moonglade.IndexNow.Client`, `src/Moonglade.Moderation`, `src/Moonglade.Webmention` | External service clients, protocol send/receive logic, notifications, and moderation. |
+| Integrations | `src/Moonglade.Email`, `src/Moonglade.Email.Client`, `src/Moonglade.IndexNow.Client`, `src/Moonglade.Moderation`, `src/Moonglade.Webmention` | Email outbox delivery, temporary email client compatibility, external service clients, protocol send/receive logic, notifications, and moderation. |
 | Startup and background work | `src/Moonglade.Setup`, `src/Moonglade.BackgroundServices` | Startup initialization, database creation/migration, seed data, scheduled publishing, update checks, and fire-and-forget background queueing. |
 | Presentation helpers | `src/Moonglade.Theme`, `src/Moonglade.Widgets`, `src/Moonglade.Syndication` | Themes, widgets, feeds, and presentation-oriented read models. |
 | Shared utilities | `src/Moonglade.Utils`, `src/Moonglade.Web.Middleware` | Cross-cutting utilities, TagHelpers, and reusable middleware. |

@@ -1899,4 +1899,22 @@
   <data name="Clear the current authenticator setup and enroll a new app on next sign-in." xml:space="preserve">
     <value>Löscht die aktuelle Authenticator-Einrichtung und richtet bei der nächsten Anmeldung eine neue App ein.</value>
   </data>
+  <data name="Email outbox worker is disabled." xml:space="preserve">
+    <value>Der E-Mail-Outbox-Worker ist deaktiviert.</value>
+  </data>
+  <data name="Outbox Worker" xml:space="preserve">
+    <value>Outbox-Worker</value>
+  </data>
+  <data name="Please configure email provider settings in appsettings.json." xml:space="preserve">
+    <value>Bitte konfigurieren Sie die E-Mail-Anbietereinstellungen in `appsettings.json`.</value>
+  </data>
+  <data name="Provider" xml:space="preserve">
+    <value>Anbieter</value>
+  </data>
+  <data name="Sender Address" xml:space="preserve">
+    <value>Absenderadresse</value>
+  </data>
+  <data name="Test email is queued." xml:space="preserve">
+    <value>Test-E-Mail wurde in die Warteschlange gestellt.</value>
+  </data>
 </root>

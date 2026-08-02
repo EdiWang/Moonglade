@@ -4,6 +4,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection.Extensions;
 using Microsoft.Extensions.Options;
+using Moonglade.Configuration;
 using Moonglade.Email.Core;
 
 namespace Moonglade.Email;
@@ -41,14 +42,21 @@ public static class ServiceCollectionExtensions
         services.AddSingleton(sp =>
         {
             var opts = sp.GetRequiredService<IOptions<EmailServiceOptions>>().Value;
+            var blogConfig = sp.GetRequiredService<IBlogConfig>();
             var smtpSettings = new SmtpSettings(opts.SmtpServer, opts.SmtpUserName, opts.SmtpPassword, opts.SmtpPort)
             {
                 EnableTls = opts.EnableSsl
             };
             var settings = new EmailSettings { SmtpSettings = smtpSettings };
-            if (!string.IsNullOrWhiteSpace(opts.SenderDisplayName))
+            var senderDisplayName = blogConfig.NotificationSettings.EmailDisplayName;
+            if (string.IsNullOrWhiteSpace(senderDisplayName))
             {
-                settings.EmailDisplayName = opts.SenderDisplayName;
+                senderDisplayName = opts.SenderDisplayName;
+            }
+
+            if (!string.IsNullOrWhiteSpace(senderDisplayName))
+            {
+                settings.EmailDisplayName = senderDisplayName;
             }
 
             return settings;
@@ -64,6 +72,7 @@ public static class ServiceCollectionExtensions
         services.AddScoped<IEmailOutboxStore>(sp => sp.GetRequiredService<DbEmailNotificationQueue>());
         services.AddScoped<IEmailNotificationQueue>(sp => sp.GetRequiredService<DbEmailNotificationQueue>());
         services.AddScoped<IEmailOutboxMessageProcessor, EmailOutboxMessageProcessor>();
+        services.AddHostedService<EmailOutboxWorker>();
 
         return services;
     }

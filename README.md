@@ -207,15 +207,20 @@ Moonglade always emits `X-Content-Type-Options: nosniff`. To enable a custom Con
 
 ### Email Notifications
 
-For notifications on new comments, replies and webmentions, use [Moonglade.Email Azure Function](https://github.com/EdiWang/Moonglade.Email):
+Email notifications for new comments, replies, and Webmentions are queued in the Moonglade database and delivered by the in-process email outbox worker. Configure the `Email` section in `appsettings.json`, then enable notifications in the admin portal.
 
 ```json
 "Email": {
-  "ApiEndpoint": "",
-  "ApiKey": ""
+  "Provider": "AzureCommunication",
+  "AcsConnectionString": "",
+  "AcsSenderAddress": "",
+  "OutboxWorker": {
+    "Enabled": true
+  }
 }
 ```
-Enable notifications in the admin portal.
+
+Supported providers are `AzureCommunication` and `smtp`. Use environment variable overrides such as `Email__AcsConnectionString` or `Email__SmtpPassword` for real secrets.
 
 ### More Settings
 
