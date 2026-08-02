@@ -3,9 +3,8 @@ using LiteBus.Events.Abstractions;
 using LiteBus.Queries.Abstractions;
 using Microsoft.AspNetCore.RateLimiting;
 using Moonglade.ActivityLog;
-using Moonglade.BackgroundServices;
 using Moonglade.Data.DTO;
-using Moonglade.Email.Client;
+using Moonglade.Email;
 using Moonglade.Moderation;
 using Moonglade.Web.Services;
 using System.ComponentModel.DataAnnotations;
@@ -19,7 +18,8 @@ public class CommentController(
         IModeratorService moderator,
         IBlogConfig blogConfig,
         ICommentSubmissionGuard submissionGuard,
-        CannonService cannonService) : BlogControllerBase(commandMediator)
+        IEventMediator eventMediator,
+        ILogger<CommentController> logger) : BlogControllerBase(commandMediator)
 {
     [HttpPost("{postId:guid}")]
     [AllowAnonymous]
@@ -65,16 +65,22 @@ public class CommentController(
                 ("PostId", postId)),
             username: item.Username);
 
-        // Send email notification (fire-and-forget)
+        // Send email notification
         if (blogConfig.NotificationSettings.SendEmailOnNewComment)
         {
-            cannonService.FireAsync<IEventMediator>(async mediator =>
-                await mediator.PublishAsync(new CommentEvent(
+            try
+            {
+                await eventMediator.PublishAsync(new CommentEvent(
                     item.Username,
                     item.Email,
                     item.IpAddress,
                     item.PostTitle,
-                    item.CommentContent)));
+                    item.CommentContent));
+            }
+            catch (Exception ex)
+            {
+                logger.LogError(ex, "Failed to enqueue new comment email notification for comment {CommentId}.", item.Id);
+            }
         }
 
         return Ok(new CommentCreateResponse(
@@ -177,17 +183,23 @@ public class CommentController(
                     ("CommentId", commentId),
                     ("ReplyContent", replyContent)));
 
-            // Send email notification (fire-and-forget)
+            // Send email notification
             if (blogConfig.NotificationSettings.SendEmailOnCommentReply && !string.IsNullOrWhiteSpace(reply.Email))
             {
                 var postLink = UrlHelper.GetPostUrl(HttpContext, reply.RouteLink);
-                cannonService.FireAsync<IEventMediator>(async mediator =>
-                    await mediator.PublishAsync(new CommentReplyEvent(
+                try
+                {
+                    await eventMediator.PublishAsync(new CommentReplyEvent(
                         reply.Email,
                         reply.CommentContent,
                         reply.Title,
                         reply.ReplyContentHtml,
-                        postLink)));
+                        postLink));
+                }
+                catch (Exception ex)
+                {
+                    logger.LogError(ex, "Failed to enqueue comment reply email notification for comment {CommentId}.", commentId);
+                }
             }
 
             return Ok(reply);

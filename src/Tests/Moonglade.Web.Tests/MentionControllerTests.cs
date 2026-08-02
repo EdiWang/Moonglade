@@ -3,11 +3,10 @@ using LiteBus.Events.Abstractions;
 using LiteBus.Queries.Abstractions;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
-using Moonglade.BackgroundServices;
 using Moonglade.Configuration;
 using Moonglade.Data.Entities;
+using Moonglade.Email;
 using Moonglade.Web.Controllers;
 using Moonglade.Webmention;
 using Moq;
@@ -27,6 +26,13 @@ public class MentionControllerTests
     private readonly Mock<IQueryMediator> _queryMediator = new();
     private readonly Mock<IEventMediator> _eventMediator = new();
     private readonly RecordingCommandMediator _commandMediator = new();
+
+    public MentionControllerTests()
+    {
+        _eventMediator
+            .Setup(x => x.PublishAsync(It.IsAny<IEvent>(), It.IsAny<EventMediationSettings>(), It.IsAny<CancellationToken>()))
+            .Returns(Task.CompletedTask);
+    }
 
     [Fact]
     public async Task ReceiveWebmention_WhenWebmentionDisabled_ReturnsForbid()
@@ -58,6 +64,17 @@ public class MentionControllerTests
         Assert.Equal("https://source.example/post", command.Source);
         Assert.Equal("https://target.example/post", command.Target);
         Assert.Equal("127.0.0.1", command.RemoteIp);
+        _eventMediator.Verify(
+            x => x.PublishAsync(
+                It.Is<MentionEvent>(e =>
+                    e.TargetPostTitle == mention.TargetPostTitle &&
+                    e.Domain == mention.Domain &&
+                    e.SourceIp == mention.SourceIp &&
+                    e.SourceUrl == mention.SourceUrl &&
+                    e.SourceTitle == mention.SourceTitle),
+                It.IsAny<EventMediationSettings>(),
+                It.IsAny<CancellationToken>()),
+            Times.Once);
     }
 
     [Theory]
@@ -177,14 +194,12 @@ public class MentionControllerTests
 
     private MentionController CreateController(IPAddress? remoteIpAddress = null)
     {
-        var services = new ServiceCollection();
-        services.AddSingleton(_eventMediator.Object);
-
         var controller = new MentionController(
             _blogConfig,
             _queryMediator.Object,
-            new CannonService(Mock.Of<ILogger<CannonService>>(), services.BuildServiceProvider().GetRequiredService<IServiceScopeFactory>()),
-            _commandMediator);
+            _eventMediator.Object,
+            _commandMediator,
+            Mock.Of<ILogger<MentionController>>());
 
         var httpContext = new DefaultHttpContext();
         if (remoteIpAddress is not null)

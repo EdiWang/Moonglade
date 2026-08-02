@@ -17,6 +17,7 @@
 		<PackageReference Include="Edi.TemplateEmail.Smtp" Version="2026.4.2" />
 	</ItemGroup>
 	<ItemGroup>
+		<ProjectReference Include="..\Moonglade.Configuration\Moonglade.Configuration.csproj" />
 		<ProjectReference Include="..\Moonglade.Data\Moonglade.Data.csproj" />
 	</ItemGroup>
 	<ItemGroup>

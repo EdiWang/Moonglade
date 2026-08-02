@@ -1,9 +1,8 @@
 ﻿using LiteBus.Commands.Abstractions;
 using LiteBus.Events.Abstractions;
 using LiteBus.Queries.Abstractions;
-using Moonglade.BackgroundServices;
 using Moonglade.Data.Entities;
-using Moonglade.Email.Client;
+using Moonglade.Email;
 using Moonglade.Webmention;
 using System.ComponentModel.DataAnnotations;
 
@@ -14,8 +13,9 @@ namespace Moonglade.Web.Controllers;
 public class MentionController(
     IBlogConfig blogConfig,
     IQueryMediator queryMediator,
-    CannonService cannonService,
-    ICommandMediator commandMediator) : ControllerBase
+    IEventMediator eventMediator,
+    ICommandMediator commandMediator,
+    ILogger<MentionController> logger) : ControllerBase
 {
     [HttpPost("/webmention")]
     [IgnoreAntiforgeryToken]
@@ -30,7 +30,7 @@ public class MentionController(
 
         if (response.Status == WebmentionStatus.Success)
         {
-            SendMentionEmailAction(response.MentionEntity);
+            await SendMentionEmailAction(response.MentionEntity);
             return Ok("Webmention received and verified.");
         }
 
@@ -49,15 +49,21 @@ public class MentionController(
         _ => StatusCode(StatusCodes.Status500InternalServerError, "An unknown error occurred.")
     };
 
-    private void SendMentionEmailAction(MentionEntity mention)
+    private async Task SendMentionEmailAction(MentionEntity mention)
     {
-        cannonService.FireAsync<IEventMediator>(async mediator =>
-            await mediator.PublishAsync(new MentionEvent(
+        try
+        {
+            await eventMediator.PublishAsync(new MentionEvent(
                 mention.TargetPostTitle,
                 mention.Domain,
                 mention.SourceIp,
                 mention.SourceUrl,
-                mention.SourceTitle)));
+                mention.SourceTitle));
+        }
+        catch (Exception ex)
+        {
+            logger.LogError(ex, "Failed to enqueue webmention email notification for mention {MentionId}.", mention.Id);
+        }
     }
 
     [Authorize]

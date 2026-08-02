@@ -1,0 +1,70 @@
+using Edi.TemplateEmail;
+using Edi.TemplateEmail.Smtp;
+using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.DependencyInjection.Extensions;
+using Microsoft.Extensions.Options;
+using Moonglade.Email.Core;
+
+namespace Moonglade.Email;
+
+public static class ServiceCollectionExtensions
+{
+    public static IServiceCollection AddMoongladeEmail(this IServiceCollection services, IConfiguration configuration)
+    {
+        services.TryAddSingleton(TimeProvider.System);
+
+        services.AddOptions<EmailServiceOptions>()
+            .Bind(configuration.GetSection("Email"));
+
+        services.AddSingleton<IValidateOptions<EmailOutboxWorkerOptions>, EmailOutboxWorkerOptionsValidator>();
+        services.AddOptions<EmailOutboxWorkerOptions>()
+            .Bind(configuration.GetSection(EmailOutboxWorkerOptions.SectionName))
+            .ValidateOnStart();
+
+        services.AddSingleton<IEmailHelper>(_ =>
+        {
+            var configSource = Path.Join(AppContext.BaseDirectory, "mailConfiguration.xml");
+            if (!File.Exists(configSource))
+            {
+                configSource = Path.Join(AppContext.BaseDirectory, "Moonglade.Email", "mailConfiguration.xml");
+            }
+
+            if (!File.Exists(configSource))
+            {
+                throw new FileNotFoundException("Configuration file for EmailHelper is not present.", configSource);
+            }
+
+            return new EmailHelper(configSource);
+        });
+
+        services.AddSingleton(sp =>
+        {
+            var opts = sp.GetRequiredService<IOptions<EmailServiceOptions>>().Value;
+            var smtpSettings = new SmtpSettings(opts.SmtpServer, opts.SmtpUserName, opts.SmtpPassword, opts.SmtpPort)
+            {
+                EnableTls = opts.EnableSsl
+            };
+            var settings = new EmailSettings { SmtpSettings = smtpSettings };
+            if (!string.IsNullOrWhiteSpace(opts.SenderDisplayName))
+            {
+                settings.EmailDisplayName = opts.SenderDisplayName;
+            }
+
+            return settings;
+        });
+
+        services.AddSingleton<MessageBuilder>();
+        services.AddSingleton<IAzureCommunicationEmailClient, AzureCommunicationEmailClient>();
+        services.AddSingleton<IEmailProviderSender, SmtpEmailSender>();
+        services.AddSingleton<IEmailProviderSender, AzureCommunicationSender>();
+        services.AddSingleton<IEmailDispatcher, EmailDispatcher>();
+
+        services.AddScoped<DbEmailNotificationQueue>();
+        services.AddScoped<IEmailOutboxStore>(sp => sp.GetRequiredService<DbEmailNotificationQueue>());
+        services.AddScoped<IEmailNotificationQueue>(sp => sp.GetRequiredService<DbEmailNotificationQueue>());
+        services.AddScoped<IEmailOutboxMessageProcessor, EmailOutboxMessageProcessor>();
+
+        return services;
+    }
+}
