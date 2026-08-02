@@ -1,0 +1,24 @@
+<Project Sdk="Microsoft.NET.Sdk">
+	<PropertyGroup>
+		<OutputType>Library</OutputType>
+		<TargetFramework>net10.0</TargetFramework>
+		<AssemblyName>Moonglade.Email</AssemblyName>
+		<RootNamespace>Moonglade.Email</RootNamespace>
+		<IsTestProject>false</IsTestProject>
+		<IsPackable>false</IsPackable>
+		<ImplicitUsings>enable</ImplicitUsings>
+	</PropertyGroup>
+	<ItemGroup>
+		<FrameworkReference Include="Microsoft.AspNetCore.App" />
+	</ItemGroup>
+	<ItemGroup>
+		<PackageReference Include="Azure.Communication.Email" Version="1.1.0" />
+		<PackageReference Include="Edi.TemplateEmail" Version="2026.4.2" />
+		<PackageReference Include="Edi.TemplateEmail.Smtp" Version="2026.4.2" />
+	</ItemGroup>
+	<ItemGroup>
+		<None Update="mailConfiguration.xml">
+			<CopyToOutputDirectory>Always</CopyToOutputDirectory>
+		</None>
+	</ItemGroup>
+</Project>
