@@ -49,7 +49,6 @@ public class Program
             "Moonglade.Auth",
             "Moonglade.Features",
             "Moonglade.Email",
-            "Moonglade.Email.Client",
             "Moonglade.IndexNow.Client",
             "Moonglade.Syndication",
             "Moonglade.Theme",
