@@ -16,7 +16,7 @@ The solution file is `src/Moonglade.slnx`. The root `README.md` is the main depl
 | Web app model | ASP.NET Core Razor Pages for public/admin pages, controller-based APIs for admin JSON and public endpoints, endpoint routing for handlers such as health, robots, manifest, sitemap, FOAF, and OpenSearch. |
 | Architecture style | Multi-project modular solution with LiteBus command/query/event handlers and feature-oriented folders. |
 | Data access | EF Core with `BlogDbContext`; SQL Server via `Moonglade.Data.SqlServer`; PostgreSQL via `Moonglade.Data.PostgreSql`. |
-| Cache | `Edi.CacheAside.InMemory` with `BlogCachePartition` names for blog, post, page, widget, sitemap, and subscription-related caches. |
+| Cache | `Edi.CacheAside.InMemory` with `BlogCachePartition` values `General`, `Post`, `Page`, `RssCategory`, and `AtomCategory`; widgets, sitemap, and uncategorized feeds use keys in the `General` partition. |
 | Background work | ASP.NET Core hosted services, `Cronos`, `ScheduledPublishService`, `UpdateCheckService`, and `CannonService` for queued fire-and-forget work. |
 | Authentication | Cookie-based local account authentication and Microsoft Entra ID through `Microsoft.Identity.Web`. |
 | Frontend | Server-rendered Razor, Bootstrap, Bootstrap Icons, Alpine.js, unified Moonglade.Editor for rich HTML post editing plus Markdown/CSS/HTML code-like modes, Tagify, and project-local JavaScript modules under `src/Moonglade.Web/wwwroot/js/app`. |
@@ -86,6 +86,7 @@ Important configuration areas:
 - Admin Razor Pages are authorized by Razor Pages conventions; API controllers inherit `[Authorize]` from `BlogControllerBase`.
 - Controllers use antiforgery validation by default. Use `[IgnoreAntiforgeryToken]` only for deliberate endpoints such as keep-alive or protocol callbacks.
 - Do not commit real connection strings, API keys, tenant IDs, or storage credentials. Use configuration binding and environment variable overrides.
+- Treat `src/Moonglade.Web/appsettings.Development.json` as a local override that may contain developer secrets; do not quote or copy sensitive values from it into code, docs, logs, commits, or task records.
 - Preserve HTTPS, forwarded header, health check, security header, authentication, and content moderation behavior unless the task explicitly targets them.
 
 ### Images, Themes, Feeds, And Protocols
@@ -183,7 +184,7 @@ Important configuration areas:
 - Frontend code is built around the existing Razor layouts, Bootstrap, Alpine.js, unified Moonglade.Editor modes, and Tagify. Do not add a new frontend framework unless explicitly requested.
 - Code block language support has two UI surfaces: the public post renderer and the admin Moonglade.Editor code sample dialog. When adding a highlight.js language, register the language before `hljs.highlightElement` in `src/Moonglade.Web/wwwroot/js/app/post.highlight.mjs` and also add the language to `codeSampleLanguages` in `src/Moonglade.Web/wwwroot/js/app/admin.editor.module.mjs`, otherwise authors cannot select it from the editor.
 - Server-rendered UI text should consider resource files. Supported cultures are currently `en-US`, `zh-Hans`, `zh-Hant`, `de-DE`, and `ja-JP`.
-- Localization uses shared resources under `src/Moonglade.Web/Resources/Program.*.resx`. Razor pages inject `IStringLocalizer<Program>` as `SharedLocalizer`, and DataAnnotations display names are configured to use the same `Program` resource. When adding or renaming any `SharedLocalizer["..."]` key or `[Display(Name = "...")]` text, update all non-English resource files: `Program.zh-Hans.resx`, `Program.zh-Hant.resx`, `Program.de-DE.resx`, and `Program.ja-JP.resx`.
+- Non-English shared resources live under `src/Moonglade.Web/Resources/Program.*.resx`; neutral English strings are used as resource keys in Razor/C# code. Razor pages inject `IStringLocalizer<Program>` as `SharedLocalizer`, and DataAnnotations display names are configured to use the same `Program` resource. When adding or renaming any `SharedLocalizer["..."]` key or `[Display(Name = "...")]` text, update all non-English resource files: `Program.zh-Hans.resx`, `Program.zh-Hant.resx`, `Program.de-DE.resx`, and `Program.ja-JP.resx`.
 
 ### Documentation And Licenses
 
@@ -204,9 +205,9 @@ dotnet test src/Tests/Moonglade.Web.Tests/Moonglade.Web.Tests.csproj
 docker compose up -d
 ```
 
-The default local launch URL comes from `src/Moonglade.Web/Properties/launchSettings.json`: `https://localhost:10210`. The admin portal is `/admin`; the default local account is documented in the README. First local-account sign-in after deployment or upgrade requires authenticator app TOTP setup.
+The default local launch URL comes from `src/Moonglade.Web/Properties/launchSettings.json`: `https://localhost:10210`. The admin portal is `/admin`; the default local account is documented in the README. In non-Development environments, or whenever `Authentication:Totp:Required` is `true`, first local-account sign-in after deployment or upgrade requires authenticator app TOTP setup.
 
-Moonglade consumes Moonglade.Editor through the `Moonglade.Editor.StaticAssets` NuGet package. Do not copy editor build output into `src/Moonglade.Web/wwwroot/lib/moonglade-editor/`.
+Moonglade consumes Moonglade.Editor through the `Moonglade.Editor.StaticAssets` NuGet package, served from `/_content/Moonglade.Editor.StaticAssets/moonglade-editor/`. Do not copy editor build output into `src/Moonglade.Web/wwwroot/lib/moonglade-editor/` or other `wwwroot` paths.
 
 ### Testing Conventions
 
