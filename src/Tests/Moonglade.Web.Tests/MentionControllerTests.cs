@@ -54,7 +54,10 @@ public class MentionControllerTests
         {
             MentionEntity = mention
         });
-        var controller = CreateController(IPAddress.Parse("127.0.0.1"));
+        using var requestAbortedSource = new CancellationTokenSource();
+        var controller = CreateController(
+            IPAddress.Parse("127.0.0.1"),
+            httpContext => httpContext.RequestAborted = requestAbortedSource.Token);
 
         var result = await controller.ReceiveWebmention("https://source.example/post", "https://target.example/post");
 
@@ -73,7 +76,7 @@ public class MentionControllerTests
                     e.SourceUrl == mention.SourceUrl &&
                     e.SourceTitle == mention.SourceTitle),
                 It.IsAny<EventMediationSettings>(),
-                It.IsAny<CancellationToken>()),
+                It.Is<CancellationToken>(ct => ct == requestAbortedSource.Token)),
             Times.Once);
     }
 
@@ -192,7 +195,9 @@ public class MentionControllerTests
         Assert.IsType<ClearMentionsCommand>(_commandMediator.Commands.Single());
     }
 
-    private MentionController CreateController(IPAddress? remoteIpAddress = null)
+    private MentionController CreateController(
+        IPAddress? remoteIpAddress = null,
+        Action<DefaultHttpContext>? configureHttpContext = null)
     {
         var controller = new MentionController(
             _blogConfig,
@@ -206,6 +211,8 @@ public class MentionControllerTests
         {
             httpContext.Connection.RemoteIpAddress = remoteIpAddress;
         }
+
+        configureHttpContext?.Invoke(httpContext);
 
         controller.ControllerContext = new ControllerContext
         {

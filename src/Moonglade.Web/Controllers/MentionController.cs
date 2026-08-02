@@ -53,12 +53,14 @@ public class MentionController(
     {
         try
         {
-            await eventMediator.PublishAsync(new MentionEvent(
-                mention.TargetPostTitle,
-                mention.Domain,
-                mention.SourceIp,
-                mention.SourceUrl,
-                mention.SourceTitle));
+            await eventMediator.PublishAsync(
+                new MentionEvent(
+                    mention.TargetPostTitle,
+                    mention.Domain,
+                    mention.SourceIp,
+                    mention.SourceUrl,
+                    mention.SourceTitle),
+                cancellationToken: HttpContext.RequestAborted);
         }
         catch (Exception ex)
         {

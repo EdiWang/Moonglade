@@ -11,7 +11,7 @@
         <tr>
             <th style="vertical-align: bottom;border: 1px solid #dee2e6;padding: 5px;">Property</th>
             <th style="vertical-align: bottom;border: 1px solid #dee2e6;padding: 5px;">Value</th>
-        </th>
+        </tr>
     </thead>
     <tbody>
         <tr>

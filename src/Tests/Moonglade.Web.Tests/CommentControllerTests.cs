@@ -174,7 +174,10 @@ public class CommentControllerTests
         };
         _blogConfig.NotificationSettings.SendEmailOnNewComment = true;
         _commandMediator.SetResult<CreateCommentCommand, CommentDetailedItem>(comment);
-        var controller = CreateController(remoteIpAddress: IPAddress.Parse("127.0.0.1"));
+        using var requestAbortedSource = new CancellationTokenSource();
+        var controller = CreateController(
+            remoteIpAddress: IPAddress.Parse("127.0.0.1"),
+            configureHttpContext: httpContext => httpContext.RequestAborted = requestAbortedSource.Token);
 
         await controller.Create(postId, request);
 
@@ -187,7 +190,7 @@ public class CommentControllerTests
                     e.PostTitle == comment.PostTitle &&
                     e.CommentContent == comment.CommentContent),
                 It.IsAny<EventMediationSettings>(),
-                It.IsAny<CancellationToken>()),
+                It.Is<CancellationToken>(ct => ct == requestAbortedSource.Token)),
             Times.Once);
     }
 
@@ -463,7 +466,10 @@ public class CommentControllerTests
         };
         _blogConfig.NotificationSettings.SendEmailOnCommentReply = true;
         _commandMediator.SetResult<ReplyCommentCommand, CommentReply>(reply);
-        var controller = CreateController("admin");
+        using var requestAbortedSource = new CancellationTokenSource();
+        var controller = CreateController(
+            "admin",
+            configureHttpContext: httpContext => httpContext.RequestAborted = requestAbortedSource.Token);
 
         await controller.Reply(commentId, "Thanks");
 
@@ -476,7 +482,7 @@ public class CommentControllerTests
                     e.ReplyContentHtml == reply.ReplyContentHtml &&
                     e.PostLink == "https://blog.example.com/post/hello-post"),
                 It.IsAny<EventMediationSettings>(),
-                It.IsAny<CancellationToken>()),
+                It.Is<CancellationToken>(ct => ct == requestAbortedSource.Token)),
             Times.Once);
     }
 
@@ -497,7 +503,8 @@ public class CommentControllerTests
     private CommentController CreateController(
         string? username = null,
         IPAddress? remoteIpAddress = null,
-        string? userAgent = null)
+        string? userAgent = null,
+        Action<DefaultHttpContext>? configureHttpContext = null)
     {
         var controller = new CommentController(
             _commandMediator,
@@ -526,6 +533,8 @@ public class CommentControllerTests
         {
             httpContext.Request.Headers.UserAgent = userAgent;
         }
+
+        configureHttpContext?.Invoke(httpContext);
 
         controller.ControllerContext = new ControllerContext
         {

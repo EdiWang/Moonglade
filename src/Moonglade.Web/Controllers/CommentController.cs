@@ -70,12 +70,14 @@ public class CommentController(
         {
             try
             {
-                await eventMediator.PublishAsync(new CommentEvent(
-                    item.Username,
-                    item.Email,
-                    item.IpAddress,
-                    item.PostTitle,
-                    item.CommentContent));
+                await eventMediator.PublishAsync(
+                    new CommentEvent(
+                        item.Username,
+                        item.Email,
+                        item.IpAddress,
+                        item.PostTitle,
+                        item.CommentContent),
+                    cancellationToken: HttpContext.RequestAborted);
             }
             catch (Exception ex)
             {
@@ -189,12 +191,14 @@ public class CommentController(
                 var postLink = UrlHelper.GetPostUrl(HttpContext, reply.RouteLink);
                 try
                 {
-                    await eventMediator.PublishAsync(new CommentReplyEvent(
-                        reply.Email,
-                        reply.CommentContent,
-                        reply.Title,
-                        reply.ReplyContentHtml,
-                        postLink));
+                    await eventMediator.PublishAsync(
+                        new CommentReplyEvent(
+                            reply.Email,
+                            reply.CommentContent,
+                            reply.Title,
+                            reply.ReplyContentHtml,
+                            postLink),
+                        cancellationToken: HttpContext.RequestAborted);
                 }
                 catch (Exception ex)
                 {
