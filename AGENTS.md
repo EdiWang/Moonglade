@@ -17,7 +17,7 @@ The solution file is `src/Moonglade.slnx`. The root `README.md` is the main depl
 | Architecture style | Multi-project modular solution with LiteBus command/query/event handlers and feature-oriented folders. |
 | Data access | EF Core with `BlogDbContext`; SQL Server via `Moonglade.Data.SqlServer`; PostgreSQL via `Moonglade.Data.PostgreSql`. |
 | Cache | `Edi.CacheAside.InMemory` with `BlogCachePartition` values `General`, `Post`, `Page`, `RssCategory`, and `AtomCategory`; widgets, sitemap, and uncategorized feeds use keys in the `General` partition. |
-| Background work | ASP.NET Core hosted services, `Cronos`, `ScheduledPublishService`, `UpdateCheckService`, and `CannonService` for queued fire-and-forget work. |
+| Background work | ASP.NET Core hosted services, `Cronos`, `ScheduledPublishService`, `UpdateCheckService`, `EmailOutboxWorker`, and `CannonService` for queued fire-and-forget work. |
 | Authentication | Cookie-based local account authentication and Microsoft Entra ID through `Microsoft.Identity.Web`. |
 | Frontend | Server-rendered Razor, Bootstrap, Bootstrap Icons, Alpine.js, unified Moonglade.Editor for rich HTML post editing plus Markdown/CSS/HTML code-like modes, Tagify, and project-local JavaScript modules under `src/Moonglade.Web/wwwroot/js/app`. |
 | Image storage | `IBlogImageStorage` abstraction with Azure Blob Storage and local file system providers. |
@@ -43,7 +43,7 @@ Important configuration areas:
 | `CommentRateLimit` | Built-in comment submission rate limiting by client IP and post ID. | Optional | Uses a fixed window policy. |
 | `CommentSubmissionGuard` | Built-in comment honeypot and elapsed-time checks. | Optional | Rejects filled honeypot fields, too-fast submissions, and stale form timestamps. |
 | `Webmention` | Webmention options, including source rate limiting. | Optional | Preserve protocol endpoint behavior. |
-| `Email` | Email provider settings and database outbox worker options. | Optional | Supports `AzureCommunication` and `smtp`; store real connection strings and passwords outside source control. |
+| `Email` | Email provider settings and database outbox worker options. | Optional | Supports `AzureCommunication` and `smtp`; store real connection strings and passwords outside source control. `Email:OutboxWorker:Enabled=false` stops in-process delivery but does not prevent enqueueing. |
 | `IndexNow` | API key, ping targets, and cooldown interval. | Optional | API key also maps the IndexNow verification file endpoint. |
 | `ForwardedHeaders` | Reverse proxy/client IP configuration. | Deployment-dependent | Required behind some proxies/load balancers. |
 | `EnableCSP`, `CSPValue` | Optional Content Security Policy response header. | Optional | `X-Content-Type-Options: nosniff` is always emitted; CSP is emitted only when enabled and non-empty. |
@@ -72,7 +72,7 @@ Important configuration areas:
 - Built-in comment creation is also protected by host-level `CommentRateLimit` settings that partition requests by client IP and post ID.
 - Built-in comment creation checks `CommentSubmissionGuard` honeypot and elapsed-time fields before dispatching the create command.
 - Content moderation is abstracted in `Moonglade.Moderation` and supports local keyword filtering. Do not put moderation behavior directly in controllers.
-- Comments, replies, and Webmentions can trigger activity logs and email notifications. Slow external calls should go through existing events, `CannonService`, or background mechanisms instead of blocking request handlers.
+- Comments, replies, and Webmentions can trigger activity logs and email notifications. Email notification handlers should enqueue to the database outbox; external delivery belongs in `EmailOutboxWorker` instead of request handlers.
 
 ### Configuration
 
@@ -111,7 +111,7 @@ Important configuration areas:
 | Authentication | `src/Moonglade.Auth` | Local account, TOTP verification, Entra ID, login validation, password updates, and authentication registration. |
 | Image storage | `src/Moonglade.ImageStorage` | Blog image storage abstractions, file naming, local file system storage, Azure Blob storage, and storage-related options. |
 | Integrations | `src/Moonglade.Email`, `src/Moonglade.IndexNow.Client`, `src/Moonglade.Moderation`, `src/Moonglade.Webmention` | Email outbox delivery, external service clients, protocol send/receive logic, notifications, and moderation. |
-| Startup and background work | `src/Moonglade.Setup`, `src/Moonglade.BackgroundServices` | Startup initialization, database creation/migration, seed data, scheduled publishing, update checks, and fire-and-forget background queueing. |
+| Startup and background work | `src/Moonglade.Setup`, `src/Moonglade.BackgroundServices`, `src/Moonglade.Email` | Startup initialization, database creation/migration, seed data, scheduled publishing, update checks, email outbox delivery, and fire-and-forget background queueing. |
 | Presentation helpers | `src/Moonglade.Theme`, `src/Moonglade.Widgets`, `src/Moonglade.Syndication` | Themes, widgets, feeds, and presentation-oriented read models. |
 | Shared utilities | `src/Moonglade.Utils`, `src/Moonglade.Web.Middleware` | Cross-cutting utilities, TagHelpers, and reusable middleware. |
 | Tests | `src/Tests/Moonglade.*.Tests` | Tests that match the production project or feature area being changed. |
@@ -173,7 +173,7 @@ Important configuration areas:
 - Prefer centralized invalidation through filters or event handlers over scattered controller-level `cache.Remove(...)` calls when adding new write paths.
 - For post and page writes, review sitemap, feed/subscription, per-post/page, archive, tag/category, and widget cache impact.
 - For settings and theme changes, review site-wide rendering, custom CSS, manifest, robots, FOAF, and sitemap impact.
-- Publishing posts can trigger Webmention and IndexNow. Comments, replies, and Webmentions can trigger email notifications. New side effects should usually be events or background work through existing services such as `CannonService`, LiteBus events, `IWebmentionSender`, `IIndexNowClient`, and email handlers instead of slow inline request work.
+- Publishing posts can trigger Webmention and IndexNow. Comments, replies, and Webmentions can trigger email notifications. New side effects should usually be events or background work through existing services such as `CannonService`, LiteBus events, `IWebmentionSender`, `IIndexNowClient`, and the email outbox instead of slow inline request work.
 - Preserve hosted service patterns for scheduled publishing and update checks. Configuration-driven background behavior should remain controlled by `appsettings` values.
 
 ### Razor, Static Assets, And Localization

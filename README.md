@@ -222,6 +222,8 @@ Email notifications for new comments, replies, and Webmentions are queued in the
 
 Supported providers are `AzureCommunication` and `smtp`. Use environment variable overrides such as `Email__AcsConnectionString` or `Email__SmtpPassword` for real secrets.
 
+Email delivery uses at-least-once processing. If the application stops while a message is being sent, a later retry can occasionally send a duplicate notification. Set `Email:OutboxWorker:Enabled` to `false` only when another process is responsible for draining the outbox.
+
 ### More Settings
 
 - [System Settings](https://github.com/EdiWang/Moonglade/wiki/System-Settings)

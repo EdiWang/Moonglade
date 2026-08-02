@@ -1677,9 +1677,6 @@
   <data name="Please configure `SecondaryContainerName` in `appsettings.json`" xml:space="preserve">
     <value>Bitte konfigurieren Sie `SecondaryContainerName` in `appsettings.json`</value>
   </data>
-  <data name="Please follow {0} to setup email API." xml:space="preserve">
-    <value>Bitte folgen Sie {0}, um die E-Mail-API einzurichten.</value>
-  </data>
   <data name="Please provide a valid tag name." xml:space="preserve">
     <value>Bitte geben Sie einen gültigen Tag-Namen an.</value>
   </data>
@@ -1796,9 +1793,6 @@
   </data>
   <data name="Create Time" xml:space="preserve">
     <value>Erstellungszeit</value>
-  </data>
-  <data name="Email is sent." xml:space="preserve">
-    <value>E-Mail wurde gesendet.</value>
   </data>
   <data name="Page saved successfully." xml:space="preserve">
     <value>Seite erfolgreich gespeichert.</value>

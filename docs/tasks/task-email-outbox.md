@@ -6,11 +6,11 @@ Reduce Moonglade's dependency on Azure by moving the Moonglade.Email Azure Funct
 
 ## Background
 
-Moonglade currently sends email notifications from the web application through `Moonglade.Email.Client`, which posts to an Azure Function `/api/enqueue` endpoint. The Function validates the payload, stores it in Azure Storage Queue, and processes it with a queue trigger that builds template-based messages and sends them through SMTP or Azure Communication Services.
+Before this migration, Moonglade sent email notifications from the web application through `Moonglade.Email.Client`, which posted to an Azure Function `/api/enqueue` endpoint. The Function validated the payload, stored it in Azure Storage Queue, and processed it with a queue trigger that built template-based messages and sent them through SMTP or Azure Communication Services.
 
 The blog has very low email volume, usually only a few notifications per month with occasional short bursts from comments. The target architecture should prefer simple, durable behavior over high-throughput enterprise messaging.
 
-Relevant code inspected:
+Historical code inspected:
 
 - `src/Moonglade.Email.Client`
 - `src/Moonglade.Web/Controllers/CommentController.cs`
@@ -24,13 +24,10 @@ Relevant code inspected:
 - Add an in-repository `Moonglade.Email` core module.
 - Move reusable email contract, validation, message building, dispatching, and provider sender logic into the main solution.
 - Add focused tests for the new email core module.
-- Later batches will add database outbox persistence, a background worker, web integration, configuration updates, and old Function client cleanup.
+- Add database outbox persistence, a background worker, web integration, configuration updates, and old Function client cleanup.
 
 ## Out of Scope
 
-- Do not change the current runtime email path in Batch 0 or Batch 1.
-- Do not add database tables or migrations until Batch 2.
-- Do not remove `Moonglade.Email.Client` until Batch 6.
 - Do not add a separate Docker worker unless a later decision explicitly chooses that path.
 
 ## Task Breakdown
@@ -45,7 +42,7 @@ Relevant code inspected:
 | 5 | Replace Function HTTP enqueue path in Web | Tasks 3-4 | Web and email tests | Completed |
 | 6 | Update configuration and notification settings UI | Task 5 | Web tests and build | Completed |
 | 7 | Remove old Function client from main solution | Task 6 | Build, Web tests, email tests | Completed |
-| 8 | Update README, AGENTS.md, and related docs | Tasks 5-7 | `git diff --check`, build | Not started |
+| 8 | Update README, AGENTS.md, and related docs | Tasks 5-7 | `git diff --check`, build | Completed |
 
 ## Execution Order
 
@@ -53,9 +50,11 @@ Work proceeds in small batches. Batch 0 creates the durable task record. Batch 1
 
 ## Current Progress
 
-Batch 0 through Batch 6 are complete. The repository now contains a `Moonglade.Email` core project with reusable email message contracts, validation, template message building, dispatching, SMTP sender, Azure Communication Services sender, delivery failure classification, a database-backed email outbox store, and a background outbox worker with a testable message processor. A focused `Moonglade.Email.Tests` project covers the new core behavior, outbox queue state transitions, worker processing decisions, notification event handlers, and email service registration.
+Batch 0 through Batch 8 are complete. The repository now contains a `Moonglade.Email` core project with reusable email message contracts, validation, template message building, dispatching, SMTP sender, Azure Communication Services sender, delivery failure classification, a database-backed email outbox store, and a background outbox worker with a testable message processor. A focused `Moonglade.Email.Tests` project covers the new core behavior, outbox queue state transitions, worker processing decisions, notification event handlers, and email service registration.
 
 `Moonglade.Web` now references `Moonglade.Email`, loads the `Moonglade.Email` assembly for LiteBus discovery, and publishes comment, comment reply, webmention, and test email events to the new database outbox queue path. The outbox worker is registered as an in-process hosted service and controlled by `Email:OutboxWorker:Enabled`. The old `Moonglade.Email.Client` project and tests have been removed from the solution.
+
+Long-lived documentation now describes the database-backed email outbox, supported email providers, at-least-once delivery semantics, worker configuration, and module ownership. Obsolete Function API UI resource keys were removed.
 
 ## Verification Log
 
@@ -86,6 +85,8 @@ Batch 0 through Batch 6 are complete. The repository now contains a `Moonglade.E
 | 2026-08-02 | `dotnet test src\Tests\Moonglade.Web.Tests\Moonglade.Web.Tests.csproj` | Passed | 135 tests passed after removing the old email client Web reference. |
 | 2026-08-02 | `dotnet build src\Moonglade.Web\Moonglade.Web.csproj` | Passed | Build succeeded with 0 warnings and 0 errors after Batch 6. |
 | 2026-08-02 | `dotnet build src\Moonglade.slnx --no-restore` | Passed | Solution build succeeded with 0 warnings and 0 errors after Batch 6. |
+| 2026-08-02 | `dotnet build src\Moonglade.Web\Moonglade.Web.csproj` | Passed | Build succeeded with 0 warnings and 0 errors after final documentation and localization cleanup. |
+| 2026-08-02 | `dotnet build src\Moonglade.slnx --no-restore` | Passed | Solution build succeeded with 0 warnings and 0 errors after final documentation and localization cleanup. |
 
 ## Issues and Resolutions
 
@@ -93,13 +94,11 @@ Batch 0 through Batch 6 are complete. The repository now contains a `Moonglade.E
 - The new reply email Web test needed a valid `HttpContext.Request.Scheme` and `Host` because `UrlHelper.GetPostUrl` builds an absolute post URL. Updated the test controller factory to provide `https://blog.example.com`.
 - Registering `EmailOutboxWorker` made the old Function API settings misleading in `/admin/settings/notification`. Replaced that UI with provider, sender address, and outbox worker status, and changed the test email success text to indicate queueing.
 - Removing the old email client required deleting the Web project reference, removing `Moonglade.Email.Client` from `Program.LoadAssemblies()`, and removing both old client projects from `Moonglade.slnx`.
+- Final documentation cleanup removed unused Function API localization keys and documented that rare duplicate notifications are possible because delivery is at-least-once.
 
 ## Follow-ups
 
 - Revisit whether outbox claim should use provider-specific SQL Server/PostgreSQL atomic update queries if Moonglade later supports multiple active web instances or a separate worker container. Batch 2 uses an EF-based lease plus optimistic concurrency token, which is appropriate for the initial single-worker personal blog target.
-- Batch 8 should perform a final documentation pass after the old email client removal is verified.
-- Preserve at-least-once semantics and make duplicate email risk explicit.
-- Keep SMTP support available as an optional provider even if Azure Communication Services remains the primary provider.
 
 ## Notes
 
