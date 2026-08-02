@@ -6,7 +6,7 @@ This file is for AI agents working in this repository. Before changing code, rea
 
 Moonglade is a personal blogging platform built with ASP.NET Core / .NET 10. The main application host is `src/Moonglade.Web`. It targets developer-focused personal blogs and includes posts, pages, categories, tags, comments, archives, themes, widgets, image storage, syndication feeds, Webmention, IndexNow, email notifications, content moderation, an admin portal, and Azure/Docker deployment assets.
 
-The solution file is `src/Moonglade.slnx`. The root `README.md` is the main deployment and configuration guide. `.github/copilot-instructions.md` already contains detailed collaboration guidance; this file follows the same intent and adds concise business, architecture, coding, and verification rules for agents.
+The solution file is `src/Moonglade.slnx`. The root `README.md` is the main deployment and configuration guide. `AGENTS.md` is the consolidated repository-specific guidance for AI coding agents.
 
 ## Technology Stack
 
@@ -86,6 +86,7 @@ Important configuration areas:
 - Admin Razor Pages are authorized by Razor Pages conventions; API controllers inherit `[Authorize]` from `BlogControllerBase`.
 - Controllers use antiforgery validation by default. Use `[IgnoreAntiforgeryToken]` only for deliberate endpoints such as keep-alive or protocol callbacks.
 - Do not commit real connection strings, API keys, tenant IDs, or storage credentials. Use configuration binding and environment variable overrides.
+- Preserve HTTPS, forwarded header, health check, security header, authentication, and content moderation behavior unless the task explicitly targets them.
 
 ### Images, Themes, Feeds, And Protocols
 
@@ -102,10 +103,12 @@ Important configuration areas:
 | --- | --- | --- |
 | Web host | `src/Moonglade.Web` | ASP.NET Core composition root, Razor Pages, API controllers, view components, filters, handlers, endpoint mapping, and static assets. |
 | Blog features | `src/Moonglade.Features` | Post, page, category, tag, comment, asset, recycle bin, and view-count commands/queries. |
+| Activity logging | `src/Moonglade.ActivityLog` | Activity log commands, queries, metadata helpers, and event type definitions. |
 | Data model | `src/Moonglade.Data` | EF Core `BlogDbContext`, entities, DTO/read models, provider-neutral mappings, and import/export primitives. |
 | Database providers | `src/Moonglade.Data.SqlServer`, `src/Moonglade.Data.PostgreSql` | SQL Server / PostgreSQL EF Core registration and provider-specific behavior. |
 | Configuration | `src/Moonglade.Configuration` | Blog setting models, defaults, loading, updates, and initialization-related logic. |
 | Authentication | `src/Moonglade.Auth` | Local account, TOTP verification, Entra ID, login validation, password updates, and authentication registration. |
+| Image storage | `src/Moonglade.ImageStorage` | Blog image storage abstractions, file naming, local file system storage, Azure Blob storage, and storage-related options. |
 | Integrations | `src/Moonglade.Email.Client`, `src/Moonglade.IndexNow.Client`, `src/Moonglade.Moderation`, `src/Moonglade.Webmention` | External service clients, protocol send/receive logic, notifications, and moderation. |
 | Startup and background work | `src/Moonglade.Setup`, `src/Moonglade.BackgroundServices` | Startup initialization, database creation/migration, seed data, scheduled publishing, update checks, and fire-and-forget background queueing. |
 | Presentation helpers | `src/Moonglade.Theme`, `src/Moonglade.Widgets`, `src/Moonglade.Syndication` | Themes, widgets, feeds, and presentation-oriented read models. |
@@ -115,7 +118,7 @@ Important configuration areas:
 ### Web Entry Point
 
 - `src/Moonglade.Web/Program.cs` should stay as startup orchestration: load business assemblies, create the builder, register services, build the app, run startup initialization, attach the request pipeline, and map endpoints.
-- Service registration is centralized in `src/Moonglade.Web/Extensions/ServiceCollectionExtensions.cs`.
+- Reusable service registration belongs in `IServiceCollection` extension methods in the owning project. Compose Web-host services in `src/Moonglade.Web/Extensions/ServiceCollectionExtensions.cs`, and avoid adding feature-specific registration details directly to `Program.cs` unless the Web host is genuinely the owner.
 - Request pipeline and endpoint mapping are centralized in `src/Moonglade.Web/Extensions/WebApplicationExtensions.cs`.
 - If a new project contains LiteBus handlers, confirm `Program.LoadAssemblies()` loads that assembly; otherwise command/query/event handlers may not be discovered at runtime.
 
@@ -133,6 +136,7 @@ Important configuration areas:
 - Prefer provider-neutral configuration in `Moonglade.Data.Configurations`; SQL Server/PostgreSQL-specific behavior belongs in the provider projects.
 - Keep queries compatible with both SQL Server and PostgreSQL. Avoid scattered provider-specific SQL; isolate it in provider projects if it is truly necessary.
 - Prefer `AsNoTracking()` for read-only queries. Use async EF Core APIs and pass `CancellationToken` through write operations and handlers where available.
+- Use EF Core set-based operations such as `ExecuteDeleteAsync` when they fit the existing pattern.
 - Be careful with many-to-many relationships, cascade behavior, slug/route link generation, publish timestamps, and soft-delete fields because posts, lists, archives, tags, feeds, sitemap, and cache invalidation depend on them.
 
 ## Coding Guidelines
@@ -140,12 +144,17 @@ Important configuration areas:
 ### C# / ASP.NET Core
 
 - The target framework is `net10.0`. Follow the existing C# style, including implicit usings, primary constructors, record request models, and feature-local files.
+- Use the latest applicable C# features while staying readable and consistent with nearby code.
 - Keep namespaces aligned with folders. Put new code in the project and feature folder that owns the behavior.
 - Use constructor injection. Do not introduce service locators or unnecessary static mutable state.
+- Use async APIs end to end and pass `CancellationToken` through command/query handlers and EF Core calls where available.
+- Use UTC for persisted or cross-boundary timestamps. Convert to user/client time only at the UI or boundary layer.
+- Prefer nullable-safe code and explicit validation for public inputs.
 - Do not use C# anonymous object initializers (`new { ... }`) in C# source or test files. Razor files are excluded from this rule because route values, HTML attributes, and view component arguments commonly use anonymous objects there.
 - Use structured logging placeholders, for example `logger.LogInformation("Post updated with ID: {PostId}", post.Id);`.
 - Keep comments sparse and useful. Add comments only for non-obvious compatibility, security, localization, protocol, or business decisions.
 - Keep changes cross-platform, especially paths, environment variables, container behavior, and Linux App Service scenarios.
+- When touching deployment assets, keep Azure App Service on Linux, Docker Compose, SQL Server, and PostgreSQL scenarios in mind.
 
 ### HTTP And Error Handling
 
@@ -153,17 +162,24 @@ Important configuration areas:
 - For new APIs, follow existing response styles: `Ok`, `NoContent`, `NotFound`, `Conflict`, `ValidationProblem`, or ProblemDetails-compatible responses.
 - Avoid using ambiguous `null` for multiple failure reasons. For new complex behavior, prefer a lightweight result model that distinguishes not found, validation failure, conflict, forbidden, and success.
 - Validate public inputs explicitly. Reuse existing attributes such as `[NotEmpty]`, `[Range]`, and `[Required]` where appropriate.
+- Use ProblemDetails-compatible responses for API failures where practical, and preserve existing response shapes for public endpoints unless the task explicitly changes them.
+- Do not swallow exceptions from external services silently. Log enough context to diagnose the operation, target resource, and available correlation details.
 
 ### Caching And Side Effects
 
 - Write operations must consider cache impact. Changes to posts, pages, categories, tags, widgets, configuration, themes, comments, and assets can affect page caches, post caches, sitemap, feeds, archives, tag/category lists, and widget caches.
 - Existing caching uses `Edi.CacheAside.InMemory` and `BlogCachePartition`. Controllers commonly use the `ClearBlogCache` filter, and workflows sometimes call `cache.Remove` directly.
-- Publishing posts can trigger Webmention and IndexNow. Comments, replies, and Webmentions can trigger email notifications. New side effects should usually be events or background work.
+- Prefer centralized invalidation through filters or event handlers over scattered controller-level `cache.Remove(...)` calls when adding new write paths.
+- For post and page writes, review sitemap, feed/subscription, per-post/page, archive, tag/category, and widget cache impact.
+- For settings and theme changes, review site-wide rendering, custom CSS, manifest, robots, FOAF, and sitemap impact.
+- Publishing posts can trigger Webmention and IndexNow. Comments, replies, and Webmentions can trigger email notifications. New side effects should usually be events or background work through existing services such as `CannonService`, LiteBus events, `IWebmentionSender`, `IIndexNowClient`, and email handlers instead of slow inline request work.
+- Preserve hosted service patterns for scheduled publishing and update checks. Configuration-driven background behavior should remain controlled by `appsettings` values.
 
 ### Razor, Static Assets, And Localization
 
-- Public and admin pages are primarily Razor Pages under `src/Moonglade.Web/Pages`.
+- Public and admin pages are primarily Razor Pages and partials under `src/Moonglade.Web/Pages`.
 - Admin JSON operations are primarily API controllers under `src/Moonglade.Web/Controllers`.
+- Prefer JavaScript modules (`.mjs`) for application scripts. Keep third-party or bundled library files under the existing `wwwroot/lib` or `wwwroot/js/3rd` conventions.
 - Frontend code is built around the existing Razor layouts, Bootstrap, Alpine.js, unified Moonglade.Editor modes, and Tagify. Do not add a new frontend framework unless explicitly requested.
 - Code block language support has two UI surfaces: the public post renderer and the admin Moonglade.Editor code sample dialog. When adding a highlight.js language, register the language before `hljs.highlightElement` in `src/Moonglade.Web/wwwroot/js/app/post.highlight.mjs` and also add the language to `codeSampleLanguages` in `src/Moonglade.Web/wwwroot/js/app/admin.editor.module.mjs`, otherwise authors cannot select it from the editor.
 - Server-rendered UI text should consider resource files. Supported cultures are currently `en-US`, `zh-Hans`, `zh-Hant`, `de-DE`, and `ja-JP`.
@@ -201,6 +217,7 @@ Moonglade consumes Moonglade.Editor through the `Moonglade.Editor.StaticAssets` 
   - Auth/configuration/theme/syndication/webmention/image storage/moderation/email/indexnow/background/setup: the matching `Moonglade.*.Tests` project.
 - Tests use xUnit v3, Moq, and EF Core InMemory/Sqlite patterns.
 - When following the existing async test style, use `TestContext.Current.CancellationToken`.
+- Prefer focused unit tests for command/query handlers, services, middleware, validators, and protocol generators. Use integration tests when behavior depends on EF/database setup or host-level wiring.
 - Prefer running the affected test project. For cross-module changes or startup registration changes, at least run the Web project build.
 
 ## Pre-Change Checklist
