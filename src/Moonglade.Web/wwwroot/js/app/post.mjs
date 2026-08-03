@@ -2,6 +2,7 @@ import { fetch2 } from './httpService.mjs?v=1500'
 import { formatUtcTime, parseMetaContent } from './utils.module.mjs';
 import { resizeImages, applyImageZooming } from './post.imageutils.mjs';
 import { renderCodeHighlighter, renderLaTeX } from './post.highlight.mjs';
+import { renderMermaid } from './post.mermaid.mjs';
 import { calculateReadingTime } from './post.readingtime.mjs';
 import { recordPostView } from './postview.mjs';
 import { error } from './toastService.mjs';
@@ -52,12 +53,13 @@ function resetCommentFormRenderedAt(formRenderedUtc) {
     }
 }
 
-document.addEventListener('DOMContentLoaded', () => {
+document.addEventListener('DOMContentLoaded', async () => {
     resizeImages('.post-content img');
     if (window.innerWidth >= 768) {
         applyImageZooming('.post-content img');
     }
 
+    await renderMermaid();
     renderCodeHighlighter();
     renderLaTeX('pre.language-latex code');
 
