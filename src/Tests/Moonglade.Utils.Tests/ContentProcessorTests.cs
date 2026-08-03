@@ -342,6 +342,21 @@ public class ContentProcessorTests
     }
 
     [Fact]
+    public void MarkdownToContent_WithMermaidCodeBlock_PreservesLanguageClass()
+    {
+        // Arrange
+        const string markdown = "```mermaid\nflowchart TD\nA-->B\n```";
+
+        // Act
+        var result = ContentProcessor.MarkdownToContent(markdown, ContentProcessor.MarkdownConvertType.Html);
+
+        // Assert
+        Assert.Contains("<pre><code class=\"language-mermaid\">", result);
+        Assert.Contains("flowchart TD", result);
+        Assert.Contains("A--&gt;B", result);
+    }
+
+    [Fact]
     public void MarkdownToContent_WithDisableHtmlFalse_AllowsHtml()
     {
         // Arrange

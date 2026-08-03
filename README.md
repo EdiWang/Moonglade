@@ -8,7 +8,7 @@ Moonglade provides a self-hosted blog with a public reading experience and an au
 
 Key business areas include:
 
-- **Content publishing:** posts, drafts, scheduled posts, pages, featured/outdated flags, archives, recycle bin behavior, and route links for published posts.
+- **Content publishing:** posts, drafts, scheduled posts, Markdown Mermaid diagrams, pages, featured/outdated flags, archives, recycle bin behavior, and route links for published posts.
 - **Reader interaction:** comments, replies, Webmentions, comment moderation, view counts, and optional email notifications.
 - **Site management:** runtime blog settings, widgets, themes, custom CSS, menus, image storage, account settings, and data import/export.
 - **Discovery and interoperability:** RSS, Atom, OPML, OpenSearch, FOAF, sitemap, robots.txt, IndexNow, reader-friendly markup, and health checks.
