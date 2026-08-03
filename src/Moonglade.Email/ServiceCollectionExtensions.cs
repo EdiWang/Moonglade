@@ -6,6 +6,7 @@ using Microsoft.Extensions.DependencyInjection.Extensions;
 using Microsoft.Extensions.Options;
 using Moonglade.Configuration;
 using Moonglade.Email.Core;
+using System.Xml.Serialization;
 
 namespace Moonglade.Email;
 
@@ -23,21 +24,7 @@ public static class ServiceCollectionExtensions
             .Bind(configuration.GetSection(EmailOutboxWorkerOptions.SectionName))
             .ValidateOnStart();
 
-        services.AddSingleton<IEmailHelper>(_ =>
-        {
-            var configSource = Path.Join(AppContext.BaseDirectory, "mailConfiguration.xml");
-            if (!File.Exists(configSource))
-            {
-                configSource = Path.Join(AppContext.BaseDirectory, "Moonglade.Email", "mailConfiguration.xml");
-            }
-
-            if (!File.Exists(configSource))
-            {
-                throw new FileNotFoundException("Configuration file for EmailHelper is not present.", configSource);
-            }
-
-            return new EmailHelper(configSource);
-        });
+        services.AddSingleton<IEmailHelper>(_ => new EmailHelper(LoadMailConfiguration()));
 
         services.AddSingleton(sp =>
         {
@@ -75,5 +62,25 @@ public static class ServiceCollectionExtensions
         services.AddHostedService<EmailOutboxWorker>();
 
         return services;
+    }
+
+    private static MailConfiguration LoadMailConfiguration()
+    {
+        var configSource = Path.Join(AppContext.BaseDirectory, "mailConfiguration.xml");
+        if (!File.Exists(configSource))
+        {
+            configSource = Path.Join(AppContext.BaseDirectory, "Moonglade.Email", "mailConfiguration.xml");
+        }
+
+        if (!File.Exists(configSource))
+        {
+            throw new FileNotFoundException("Configuration file for EmailHelper is not present.", configSource);
+        }
+
+        var serializer = new XmlSerializer(typeof(MailConfiguration));
+        using var stream = File.Open(configSource, FileMode.Open, FileAccess.Read, FileShare.Read);
+
+        return serializer.Deserialize(stream) as MailConfiguration
+            ?? throw new InvalidOperationException("Configuration file for EmailHelper is invalid.");
     }
 }

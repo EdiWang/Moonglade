@@ -1,3 +1,4 @@
+using Edi.TemplateEmail;
 using Edi.TemplateEmail.Smtp;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -42,6 +43,34 @@ public class ServiceCollectionExtensionsTests
         var settings = serviceProvider.GetRequiredService<EmailSettings>();
 
         Assert.Equal("Blog Sender", settings.EmailDisplayName);
+    }
+
+    [Fact]
+    public void AddMoongladeEmail_EmailHelperCanLoadReadOnlyMailConfiguration()
+    {
+        var services = new ServiceCollection();
+        services.AddSingleton<IBlogConfig>(new BlogConfig());
+        services.AddLogging();
+        services.AddMoongladeEmail(CreateConfiguration());
+
+        var configSource = Path.Join(AppContext.BaseDirectory, "mailConfiguration.xml");
+        Assert.True(File.Exists(configSource), $"Expected email configuration file at '{configSource}'.");
+
+        var fileInfo = new FileInfo(configSource);
+        var originalAttributes = fileInfo.Attributes;
+        fileInfo.Attributes = originalAttributes | FileAttributes.ReadOnly;
+
+        try
+        {
+            using var serviceProvider = services.BuildServiceProvider();
+            var emailHelper = serviceProvider.GetRequiredService<IEmailHelper>();
+
+            Assert.NotNull(emailHelper);
+        }
+        finally
+        {
+            fileInfo.Attributes = originalAttributes;
+        }
     }
 
     private static IConfiguration CreateConfiguration()
