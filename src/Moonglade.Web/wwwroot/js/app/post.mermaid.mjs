@@ -20,11 +20,16 @@ export async function renderMermaid() {
         return;
     }
 
-    mermaid.initialize({
-        startOnLoad: false,
-        securityLevel: 'strict',
-        theme: getMermaidTheme()
-    });
+    try {
+        mermaid.initialize({
+            startOnLoad: false,
+            securityLevel: 'strict',
+            theme: getMermaidTheme()
+        });
+    } catch (err) {
+        console.error(err);
+        return;
+    }
 
     const nodes = [];
     codeBlocks.forEach((block) => {

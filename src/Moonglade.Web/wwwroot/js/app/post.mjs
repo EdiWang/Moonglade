@@ -53,13 +53,13 @@ function resetCommentFormRenderedAt(formRenderedUtc) {
     }
 }
 
-document.addEventListener('DOMContentLoaded', async () => {
+document.addEventListener('DOMContentLoaded', () => {
     resizeImages('.post-content img');
     if (window.innerWidth >= 768) {
         applyImageZooming('.post-content img');
     }
 
-    await renderMermaid();
+    renderMermaid().catch(err => console.error(err));
     renderCodeHighlighter();
     renderLaTeX('pre.language-latex code');
 
