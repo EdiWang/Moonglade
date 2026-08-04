@@ -32,7 +32,7 @@ The initial implementation is split into batches so configuration, provider impl
 | --- | --- | --- | --- | --- |
 | 1 | Add S3-compatible configuration and DI scaffold | None | `dotnet build src/Moonglade.ImageStorage/Moonglade.ImageStorage.csproj`; `dotnet test src/Tests/Moonglade.ImageStorage.Tests/Moonglade.ImageStorage.Tests.csproj` | Done |
 | 2 | Implement `S3CompatibleImageStorage` storage operations | Task 1 | `dotnet build src/Moonglade.ImageStorage/Moonglade.ImageStorage.csproj` | Done |
-| 3 | Add provider and registration tests | Task 2 | `dotnet test src/Tests/Moonglade.ImageStorage.Tests/Moonglade.ImageStorage.Tests.csproj`; `dotnet build src/Moonglade.Web/Moonglade.Web.csproj` | Not started |
+| 3 | Add provider and registration tests | Task 2 | `dotnet test src/Tests/Moonglade.ImageStorage.Tests/Moonglade.ImageStorage.Tests.csproj`; `dotnet build src/Moonglade.Web/Moonglade.Web.csproj` | Done |
 | 4 | Update configuration examples and documentation | Task 3 | `dotnet build src/Moonglade.Web/Moonglade.Web.csproj`; `git status --short` | Not started |
 
 ## Execution Order
@@ -41,7 +41,7 @@ Batch 1 introduces only the configuration shape and service registration boundar
 
 ## Current Progress
 
-Batch 2 is implemented on branch `codex/s3-compatible-image-storage`. `S3CompatibleImageStorage` now performs S3-compatible upload, secondary upload, metadata lookup, stream read, and delete operations through `AWSSDK.S3`.
+Batch 3 is implemented on branch `codex/s3-compatible-image-storage`. The S3-compatible provider now has focused unit coverage for upload, secondary upload, metadata lookup, stream reads, delete behavior, not-found handling, filename validation, and client configuration. DI registration and configuration validation are also covered.
 
 ## Verification Log
 
@@ -52,10 +52,13 @@ Batch 2 is implemented on branch `codex/s3-compatible-image-storage`. `S3Compati
 | 2026-08-04 | `dotnet test src/Tests/Moonglade.ImageStorage.Tests/Moonglade.ImageStorage.Tests.csproj` | Passed | 93 passed, 0 failed, 0 skipped. |
 | 2026-08-04 | `dotnet build src/Moonglade.ImageStorage/Moonglade.ImageStorage.csproj` | Passed | Batch 2 implementation build; 0 warnings, 0 errors. |
 | 2026-08-04 | `dotnet test src/Tests/Moonglade.ImageStorage.Tests/Moonglade.ImageStorage.Tests.csproj` | Passed | Existing ImageStorage tests; 93 passed, 0 failed, 0 skipped. |
+| 2026-08-04 | `dotnet test src/Tests/Moonglade.ImageStorage.Tests/Moonglade.ImageStorage.Tests.csproj` | Passed | Batch 3 provider and DI tests; 121 passed, 0 failed, 0 skipped. |
+| 2026-08-04 | `dotnet build src/Moonglade.Web/Moonglade.Web.csproj` | Passed | 0 warnings, 0 errors. |
 
 ## Issues and Resolutions
 
-None yet.
+- Initial Batch 3 tests assumed `ServiceURL` would not include a trailing slash after AWS SDK client construction. The SDK normalizes it to `https://storage.example.com/`; the assertion now matches the runtime value.
+- Initial upload test attempted to read the captured request stream after the provider returned. The provider disposes its upload stream at method exit, so the test now captures bytes inside the Moq callback while the stream is open.
 
 ## Follow-ups
 
