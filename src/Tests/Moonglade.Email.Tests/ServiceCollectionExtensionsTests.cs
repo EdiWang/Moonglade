@@ -3,6 +3,7 @@ using Edi.TemplateEmail.Smtp;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using Microsoft.Extensions.Options;
 using Moonglade.Configuration;
 using Moonglade.Email.Core;
 
@@ -71,6 +72,30 @@ public class ServiceCollectionExtensionsTests
         {
             fileInfo.Attributes = originalAttributes;
         }
+    }
+
+    [Fact]
+    public async Task AddMoongladeEmail_InvalidEmailServiceOptionsFailOnHostStart()
+    {
+        var configuration = new ConfigurationBuilder()
+            .AddInMemoryCollection(new Dictionary<string, string>
+            {
+                ["Email:Provider"] = "smtp",
+                ["Email:SmtpPort"] = "587",
+                ["Email:OutboxWorker:Enabled"] = "false"
+            })
+            .Build();
+        var builder = Host.CreateApplicationBuilder();
+        builder.Configuration.AddConfiguration(configuration);
+        builder.Services.AddSingleton<IBlogConfig>(new BlogConfig());
+        builder.Services.AddMoongladeEmail(builder.Configuration);
+
+        using var host = builder.Build();
+
+        var exception = await Assert.ThrowsAsync<OptionsValidationException>(() =>
+            host.StartAsync(TestContext.Current.CancellationToken));
+
+        Assert.Contains("Email:SmtpServer", exception.Message);
     }
 
     private static IConfiguration CreateConfiguration()

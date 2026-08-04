@@ -16,8 +16,10 @@ public static class ServiceCollectionExtensions
     {
         services.TryAddSingleton(TimeProvider.System);
 
+        services.AddSingleton<IValidateOptions<EmailServiceOptions>, EmailServiceOptionsValidator>();
         services.AddOptions<EmailServiceOptions>()
-            .Bind(configuration.GetSection("Email"));
+            .Bind(configuration.GetSection("Email"))
+            .ValidateOnStart();
 
         services.AddSingleton<IValidateOptions<EmailOutboxWorkerOptions>, EmailOutboxWorkerOptionsValidator>();
         services.AddOptions<EmailOutboxWorkerOptions>()
