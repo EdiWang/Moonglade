@@ -11,4 +11,6 @@ public class ImageStorageSettings
     public string FileSystemPath { get; set; }
 
     public AzureStorageSettings AzureStorageSettings { get; set; }
+
+    public S3CompatibleStorageSettings S3CompatibleStorageSettings { get; set; }
 }

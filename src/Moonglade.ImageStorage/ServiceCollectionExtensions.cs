@@ -43,11 +43,14 @@ public static class ServiceCollectionExtensions
             case "azurestorage":
                 RegisterAzureStorage(services, settings.AzureStorageSettings);
                 break;
+            case "s3compatible":
+                RegisterS3CompatibleStorage(services, settings.S3CompatibleStorageSettings);
+                break;
             case "filesystem":
                 RegisterFileSystemStorage(services, settings.FileSystemPath);
                 break;
             default:
-                var supportedProviders = string.Join(", ", ["azurestorage", "filesystem"]);
+                var supportedProviders = string.Join(", ", ["azurestorage", "filesystem", "s3compatible"]);
                 throw new NotSupportedException($"Provider '{provider}' is not supported. Supported providers: {supportedProviders}");
         }
     }
@@ -87,6 +90,27 @@ public static class ServiceCollectionExtensions
             .AddScoped<IFileNameGenerator, DatedGuidFileNameGenerator>();
     }
 
+    private static void RegisterS3CompatibleStorage(IServiceCollection services, S3CompatibleStorageSettings settings)
+    {
+        if (settings is null)
+        {
+            throw new InvalidOperationException("S3CompatibleStorageSettings cannot be null when using S3-compatible storage provider.");
+        }
+
+        ValidateS3CompatibleStorageSettings(settings);
+
+        services.AddSingleton(_ => new S3CompatibleStorageConfiguration(
+                settings.ServiceUrl,
+                settings.Region,
+                settings.AccessKeyId,
+                settings.SecretAccessKey,
+                settings.BucketName,
+                settings.SecondaryBucketName,
+                settings.ForcePathStyle))
+            .AddSingleton<IBlogImageStorage, S3CompatibleImageStorage>()
+            .AddScoped<IFileNameGenerator, DatedGuidFileNameGenerator>();
+    }
+
     private static void ValidateAzureStorageSettings(AzureStorageSettings settings)
     {
         if (string.IsNullOrWhiteSpace(settings.ConnectionString))
@@ -97,6 +121,29 @@ public static class ServiceCollectionExtensions
         if (string.IsNullOrWhiteSpace(settings.ContainerName))
         {
             throw new InvalidOperationException("Azure Storage container name cannot be null or empty.");
+        }
+    }
+
+    private static void ValidateS3CompatibleStorageSettings(S3CompatibleStorageSettings settings)
+    {
+        if (string.IsNullOrWhiteSpace(settings.ServiceUrl))
+        {
+            throw new InvalidOperationException("S3-compatible storage service URL cannot be null or empty.");
+        }
+
+        if (string.IsNullOrWhiteSpace(settings.AccessKeyId))
+        {
+            throw new InvalidOperationException("S3-compatible storage access key ID cannot be null or empty.");
+        }
+
+        if (string.IsNullOrWhiteSpace(settings.SecretAccessKey))
+        {
+            throw new InvalidOperationException("S3-compatible storage secret access key cannot be null or empty.");
+        }
+
+        if (string.IsNullOrWhiteSpace(settings.BucketName))
+        {
+            throw new InvalidOperationException("S3-compatible storage bucket name cannot be null or empty.");
         }
     }
 }
