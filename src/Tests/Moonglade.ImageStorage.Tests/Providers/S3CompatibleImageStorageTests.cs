@@ -55,6 +55,7 @@ public class S3CompatibleImageStorageTests
         Assert.Equal("primary-bucket", capturedRequest.BucketName);
         Assert.Equal("photo.png", capturedRequest.Key);
         Assert.Equal("image/png", capturedRequest.ContentType);
+        Assert.True(capturedRequest.AutoResetStreamPosition);
         Assert.Equal(bytes, capturedBytes);
     }
 

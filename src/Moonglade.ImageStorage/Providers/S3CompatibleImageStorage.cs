@@ -174,8 +174,7 @@ public class S3CompatibleImageStorage(
                     Key = fileName,
                     InputStream = fileStream,
                     ContentType = ImageInfo.GetContentType(extension),
-                    AutoCloseStream = false,
-                    AutoResetStreamPosition = false
+                    AutoCloseStream = false
                 }).ConfigureAwait(false);
 
             logger.LogInformation(
@@ -251,13 +250,6 @@ public class S3CompatibleImageStorage(
         public override void SetLength(long value) => _stream.SetLength(value);
 
         public override void Write(byte[] buffer, int offset, int count) => _stream.Write(buffer, offset, count);
-
-        public override async ValueTask DisposeAsync()
-        {
-            await _stream.DisposeAsync().ConfigureAwait(false);
-            response.Dispose();
-            await base.DisposeAsync().ConfigureAwait(false);
-        }
 
         protected override void Dispose(bool disposing)
         {
