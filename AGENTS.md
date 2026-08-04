@@ -40,6 +40,7 @@ Important configuration areas:
 | `Authentication:Provider` | Selects local auth or Microsoft Entra ID. | Yes | Entra ID settings live under `Authentication:EntraID`. |
 | `Authentication:Totp:Issuer` | Display issuer for local-account authenticator app QR codes. | Optional | Defaults to `Moonglade`; the TOTP secret is stored in `LocalAccountSettings`. |
 | `Authentication:Totp:Required` | Requires local-account authenticator verification after password sign-in. | Optional | Defaults to `true`; `false` is honored only in the `Development` environment. |
+| `Authentication:LocalAccountRateLimit` | Fixed-window rate limiting for local password sign-in and TOTP verification attempts. | Optional | Defaults to enabled, 10 attempts per 1 minute, partitioned by client IP and account context. |
 | `CommentRateLimit` | Built-in comment submission rate limiting by client IP and post ID. | Optional | Uses a fixed window policy. |
 | `CommentSubmissionGuard` | Built-in comment honeypot and elapsed-time checks. | Optional | Rejects filled honeypot fields, too-fast submissions, and stale form timestamps. |
 | `Webmention` | Webmention options, including source rate limiting. | Optional | Preserve protocol endpoint behavior. |
@@ -83,6 +84,7 @@ Important configuration areas:
 ### Authentication And Security
 
 - Authentication logic lives in `Moonglade.Auth` and supports local accounts with TOTP and Microsoft Entra ID.
+- Local-account password sign-in and TOTP setup/verification are protected by `LocalAccountRateLimitPolicy`; keep the default 10 attempts per 1 minute unless there is a deployment-specific reason to adjust `Authentication:LocalAccountRateLimit`.
 - Admin Razor Pages are authorized by Razor Pages conventions; API controllers inherit `[Authorize]` from `BlogControllerBase`.
 - Controllers use antiforgery validation by default. Use `[IgnoreAntiforgeryToken]` only for deliberate endpoints such as keep-alive or protocol callbacks.
 - Do not commit real connection strings, API keys, tenant IDs, or storage credentials. Use configuration binding and environment variable overrides.

@@ -49,6 +49,7 @@ public static class ServiceCollectionExtensions
         services.AddTransient<IPasswordGenerator, DefaultPasswordGenerator>();
         services.AddMoongladeHealthChecks();
         services.AddMoongladeProblemDetails();
+        services.AddMoongladeLocalAccountRateLimiting(configuration);
         services.AddMoongladeCommentRateLimiting(configuration);
         services.AddMoongladeCommentSubmissionGuard(configuration);
         services.AddMoongladeCoreServices(configuration);
@@ -230,6 +231,23 @@ public static class ServiceCollectionExtensions
         services.AddRateLimiter(options =>
         {
             options.AddPolicy<string, CommentRateLimitPolicy>(CommentRateLimitPolicy.PolicyName);
+        });
+
+        return services;
+    }
+
+    private static IServiceCollection AddMoongladeLocalAccountRateLimiting(this IServiceCollection services, IConfiguration configuration)
+    {
+        services.AddOptions<LocalAccountRateLimitOptions>()
+            .Bind(configuration.GetSection(LocalAccountRateLimitOptions.SectionName))
+            .Validate(options => !options.Enabled || options.PermitLimit > 0, "Authentication:LocalAccountRateLimit:PermitLimit must be greater than 0 when rate limiting is enabled.")
+            .Validate(options => !options.Enabled || options.WindowMinutes > 0, "Authentication:LocalAccountRateLimit:WindowMinutes must be greater than 0 when rate limiting is enabled.")
+            .ValidateOnStart();
+
+        services.AddSingleton<LocalAccountRateLimitPolicy>();
+        services.AddRateLimiter(options =>
+        {
+            options.AddPolicy<string, LocalAccountRateLimitPolicy>(LocalAccountRateLimitPolicy.PolicyName);
         });
 
         return services;

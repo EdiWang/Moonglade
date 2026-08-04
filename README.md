@@ -106,6 +106,7 @@ dotnet test src/Tests/Moonglade.Web.Tests/Moonglade.Web.Tests.csproj
 
 - By default: Local accounts with TOTP authenticator app verification (manage via `/admin/account`)
 - Local sign-in is two-step after setup: username/password first, then the authenticator code on the next screen.
+- Local username/password sign-in and TOTP code verification are rate limited by client IP plus account context.
 - Local development can disable the TOTP step with `Authentication:Totp:Required=false`; this bypass is ignored outside the `Development` environment.
 - To replace a configured authenticator app, use `/admin/account` to reset it; the reset signs out the administrator and starts TOTP setup on the next sign-in.
 - TOTP options:
@@ -115,9 +116,16 @@ dotnet test src/Tests/Moonglade.Web.Tests/Moonglade.Web.Tests.csproj
   "Totp": {
     "Issuer": "Moonglade",
     "Required": true
+  },
+  "LocalAccountRateLimit": {
+    "Enabled": true,
+    "PermitLimit": 10,
+    "WindowMinutes": 1
   }
 }
 ```
+
+`Authentication:LocalAccountRateLimit` uses a fixed window. `PermitLimit` is the number of attempts allowed for the same partition during each window. Set `Enabled` to `false` only when another authentication-layer throttle is in place.
 
 - **Microsoft Entra ID** (Azure AD) supported. [Setup guide](https://github.com/EdiWang/Moonglade/wiki/Use-Microsoft-Entra-ID-Authentication)
 
