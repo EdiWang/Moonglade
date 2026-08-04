@@ -277,6 +277,8 @@ Email delivery uses at-least-once processing. If the application stops while a m
 | MetaWeblog   | Blogging      | Deprecated  | N/A             |
 | Pingback     | Social        | Deprecated  | N/A             |
 
+Incoming Webmention source URLs must use public HTTP/HTTPS addresses. Moonglade rejects private, loopback, link-local, documentation, reserved, and other special-use address ranges before fetching source content.
+
 ## Health Check
 
 To ensure your Moonglade instance is running, you can use the health check endpoint:

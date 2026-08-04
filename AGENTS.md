@@ -97,6 +97,7 @@ Important configuration areas:
 - Themes and custom CSS are handled by `Moonglade.Theme` and `Moonglade.Web.Middleware.StyleSheetEndpoints`.
 - RSS, Atom, and OPML generation lives in `Moonglade.Syndication`; OpenSearch, FOAF, manifest, robots, and sitemap handlers live under `Moonglade.Web/Handlers`.
 - Preserve the public protocol endpoints listed in the README, including `/rss`, `/atom`, `/opml`, `/opensearch`, `/foaf.xml`, `/webmention`, and `/health`.
+- Incoming Webmention source fetches must stay restricted to public HTTP/HTTPS URLs. Reject private, loopback, link-local, documentation, reserved, and other special-use source or redirect addresses before fetching content.
 
 ## Code Architecture
 

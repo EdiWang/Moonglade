@@ -2,6 +2,7 @@ using Microsoft.Extensions.Logging;
 using Moonglade.Data;
 using Moonglade.Data.Entities;
 using Moq;
+using System.Net;
 
 namespace Moonglade.Webmention.Tests;
 
@@ -10,6 +11,7 @@ public class ReceiveWebmentionCommandHandlerTests
     private readonly Mock<ILogger<ReceiveWebmentionCommandHandler>> _mockLogger;
     private readonly Mock<IMentionSourceInspector> _mockSourceInspector;
     private readonly Mock<IWebmentionSourceRateLimiter> _mockSourceRateLimiter;
+    private readonly Mock<IWebmentionUrlSafetyValidator> _mockUrlSafetyValidator;
 
     public ReceiveWebmentionCommandHandlerTests()
     {
@@ -17,6 +19,11 @@ public class ReceiveWebmentionCommandHandlerTests
         _mockSourceInspector = new Mock<IMentionSourceInspector>();
         _mockSourceRateLimiter = new Mock<IWebmentionSourceRateLimiter>();
         _mockSourceRateLimiter.Setup(x => x.TryAcquire(It.IsAny<Uri>())).Returns(true);
+        _mockUrlSafetyValidator = new Mock<IWebmentionUrlSafetyValidator>();
+        _mockUrlSafetyValidator
+            .Setup(x => x.IsSafeSourceAsync(It.IsAny<Uri>(), It.IsAny<CancellationToken>()))
+            .Returns((Uri uri, CancellationToken _) =>
+                Task.FromResult(!IPAddress.TryParse(uri.Host, out var ip) || WebmentionUrlSafetyValidator.IsPublicAddress(ip)));
     }
 
     private static BlogDbContext CreateDbContext()
@@ -33,6 +40,7 @@ public class ReceiveWebmentionCommandHandlerTests
             _mockLogger.Object,
             _mockSourceInspector.Object,
             _mockSourceRateLimiter.Object,
+            _mockUrlSafetyValidator.Object,
             db
         );
     }
@@ -73,6 +81,23 @@ public class ReceiveWebmentionCommandHandlerTests
         var result = await handler.HandleAsync(command, TestContext.Current.CancellationToken);
 
         Assert.Equal(WebmentionStatus.InvalidWebmentionRequest, result.Status);
+        _mockSourceInspector.Verify(x => x.ExamineSourceAsync(It.IsAny<string>(), It.IsAny<string>()), Times.Never);
+    }
+
+    [Fact]
+    public async Task HandleAsync_DnsResolvedPrivateSourceUrl_ReturnsInvalidWebmentionRequest()
+    {
+        using var db = CreateDbContext();
+        var handler = CreateHandler(db);
+        var command = new ReceiveWebmentionCommand("https://internal.example/source", "https://example.com/post", "192.168.1.1");
+        _mockUrlSafetyValidator
+            .Setup(x => x.IsSafeSourceAsync(It.Is<Uri>(uri => uri.Host == "internal.example"), It.IsAny<CancellationToken>()))
+            .ReturnsAsync(false);
+
+        var result = await handler.HandleAsync(command, TestContext.Current.CancellationToken);
+
+        Assert.Equal(WebmentionStatus.InvalidWebmentionRequest, result.Status);
+        _mockSourceRateLimiter.Verify(x => x.TryAcquire(It.IsAny<Uri>()), Times.Never);
         _mockSourceInspector.Verify(x => x.ExamineSourceAsync(It.IsAny<string>(), It.IsAny<string>()), Times.Never);
     }
 

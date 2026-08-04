@@ -1,4 +1,5 @@
 ﻿using Microsoft.Extensions.Logging;
+using System.Net;
 using System.Text.RegularExpressions;
 
 namespace Moonglade.Webmention;
@@ -8,9 +9,13 @@ public interface IMentionSourceInspector
     Task<MentionRequest?> ExamineSourceAsync(string sourceUrl, string targetUrl);
 }
 
-public partial class MentionSourceInspector(ILogger<MentionSourceInspector> logger, HttpClient httpClient) : IMentionSourceInspector
+public partial class MentionSourceInspector(
+    ILogger<MentionSourceInspector> logger,
+    HttpClient httpClient,
+    IWebmentionUrlSafetyValidator urlSafetyValidator) : IMentionSourceInspector
 {
     private const int MaxResponseSizeBytes = 1024 * 1024; // 1 MB
+    private const int MaxRedirects = 5;
 
     public async Task<MentionRequest?> ExamineSourceAsync(string sourceUrl, string targetUrl)
     {
@@ -21,7 +26,7 @@ public partial class MentionSourceInspector(ILogger<MentionSourceInspector> logg
 
         try
         {
-            var html = await FetchHtmlAsync(sourceUrl);
+            var html = await FetchHtmlAsync(new Uri(sourceUrl));
             if (html is null)
             {
                 return null;
@@ -47,25 +52,53 @@ public partial class MentionSourceInspector(ILogger<MentionSourceInspector> logg
         }
     }
 
-    private async Task<string?> FetchHtmlAsync(string sourceUrl)
+    private async Task<string?> FetchHtmlAsync(Uri sourceUri)
     {
-        using var response = await httpClient.GetAsync(sourceUrl, HttpCompletionOption.ResponseHeadersRead);
-        response.EnsureSuccessStatusCode();
-
-        if (response.Content.Headers.ContentLength > MaxResponseSizeBytes)
+        var currentUri = sourceUri;
+        for (var redirectCount = 0; redirectCount <= MaxRedirects; redirectCount++)
         {
-            logger.LogWarning("Source URL response too large ({ContentLength} bytes): {SourceUrl}", response.Content.Headers.ContentLength, sourceUrl);
-            return null;
+            if (!await urlSafetyValidator.IsSafeSourceAsync(currentUri))
+            {
+                logger.LogWarning("Blocked unsafe Webmention source URL before fetch: {SourceUrl}", currentUri);
+                return null;
+            }
+
+            using var request = new HttpRequestMessage(HttpMethod.Get, currentUri);
+            using var response = await httpClient.SendAsync(request, HttpCompletionOption.ResponseHeadersRead);
+
+            if (IsRedirect(response.StatusCode))
+            {
+                if (redirectCount == MaxRedirects || response.Headers.Location is null)
+                {
+                    logger.LogWarning("Source URL exceeded redirect limit or returned an invalid redirect: {SourceUrl}", currentUri);
+                    return null;
+                }
+
+                currentUri = response.Headers.Location.IsAbsoluteUri
+                    ? response.Headers.Location
+                    : new Uri(currentUri, response.Headers.Location);
+                continue;
+            }
+
+            response.EnsureSuccessStatusCode();
+
+            if (response.Content.Headers.ContentLength > MaxResponseSizeBytes)
+            {
+                logger.LogWarning("Source URL response too large ({ContentLength} bytes): {SourceUrl}", response.Content.Headers.ContentLength, currentUri);
+                return null;
+            }
+
+            var content = await response.Content.ReadAsStringAsync();
+            if (content.Length > MaxResponseSizeBytes)
+            {
+                logger.LogWarning("Source URL content too large ({ContentLength} chars): {SourceUrl}", content.Length, currentUri);
+                return null;
+            }
+
+            return content;
         }
 
-        var content = await response.Content.ReadAsStringAsync();
-        if (content.Length > MaxResponseSizeBytes)
-        {
-            logger.LogWarning("Source URL content too large ({ContentLength} chars): {SourceUrl}", content.Length, sourceUrl);
-            return null;
-        }
-
-        return content;
+        return null;
     }
 
     private string ExtractTitle(string html)
@@ -95,6 +128,13 @@ public partial class MentionSourceInspector(ILogger<MentionSourceInspector> logg
 
         return false;
     }
+
+    private static bool IsRedirect(HttpStatusCode statusCode) =>
+        statusCode is HttpStatusCode.Moved
+            or HttpStatusCode.Redirect
+            or HttpStatusCode.RedirectMethod
+            or HttpStatusCode.TemporaryRedirect
+            or HttpStatusCode.PermanentRedirect;
 
     [GeneratedRegex(@"<title.*?>(.*?)</title>", RegexOptions.IgnoreCase | RegexOptions.Singleline)]
     private static partial Regex TitleRegex();
