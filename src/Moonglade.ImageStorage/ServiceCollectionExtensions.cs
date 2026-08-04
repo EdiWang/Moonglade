@@ -1,4 +1,5 @@
-﻿using Microsoft.Extensions.Configuration;
+using Amazon.S3;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Moonglade.ImageStorage.Providers;
 
@@ -107,6 +108,7 @@ public static class ServiceCollectionExtensions
                 settings.BucketName,
                 settings.SecondaryBucketName,
                 settings.ForcePathStyle))
+            .AddSingleton<IAmazonS3>(sp => S3CompatibleImageStorage.CreateClient(sp.GetRequiredService<S3CompatibleStorageConfiguration>()))
             .AddSingleton<IBlogImageStorage, S3CompatibleImageStorage>()
             .AddScoped<IFileNameGenerator, DatedGuidFileNameGenerator>();
     }
@@ -129,6 +131,12 @@ public static class ServiceCollectionExtensions
         if (string.IsNullOrWhiteSpace(settings.ServiceUrl))
         {
             throw new InvalidOperationException("S3-compatible storage service URL cannot be null or empty.");
+        }
+
+        if (!Uri.TryCreate(settings.ServiceUrl, UriKind.Absolute, out var serviceUri) ||
+            serviceUri.Scheme is not ("http" or "https"))
+        {
+            throw new InvalidOperationException("S3-compatible storage service URL must be an absolute HTTP or HTTPS URL.");
         }
 
         if (string.IsNullOrWhiteSpace(settings.AccessKeyId))

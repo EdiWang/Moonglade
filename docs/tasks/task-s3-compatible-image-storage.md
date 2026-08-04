@@ -31,7 +31,7 @@ The initial implementation is split into batches so configuration, provider impl
 | No. | Task | Dependencies | Verification | Status |
 | --- | --- | --- | --- | --- |
 | 1 | Add S3-compatible configuration and DI scaffold | None | `dotnet build src/Moonglade.ImageStorage/Moonglade.ImageStorage.csproj`; `dotnet test src/Tests/Moonglade.ImageStorage.Tests/Moonglade.ImageStorage.Tests.csproj` | Done |
-| 2 | Implement `S3CompatibleImageStorage` storage operations | Task 1 | `dotnet build src/Moonglade.ImageStorage/Moonglade.ImageStorage.csproj` | Not started |
+| 2 | Implement `S3CompatibleImageStorage` storage operations | Task 1 | `dotnet build src/Moonglade.ImageStorage/Moonglade.ImageStorage.csproj` | Done |
 | 3 | Add provider and registration tests | Task 2 | `dotnet test src/Tests/Moonglade.ImageStorage.Tests/Moonglade.ImageStorage.Tests.csproj`; `dotnet build src/Moonglade.Web/Moonglade.Web.csproj` | Not started |
 | 4 | Update configuration examples and documentation | Task 3 | `dotnet build src/Moonglade.Web/Moonglade.Web.csproj`; `git status --short` | Not started |
 
@@ -41,7 +41,7 @@ Batch 1 introduces only the configuration shape and service registration boundar
 
 ## Current Progress
 
-Batch 1 is implemented on branch `codex/s3-compatible-image-storage`. The repository now has S3-compatible configuration settings, DI registration, and a small storage provider scaffold. Real S3 object operations are intentionally deferred to Batch 2.
+Batch 2 is implemented on branch `codex/s3-compatible-image-storage`. `S3CompatibleImageStorage` now performs S3-compatible upload, secondary upload, metadata lookup, stream read, and delete operations through `AWSSDK.S3`.
 
 ## Verification Log
 
@@ -50,6 +50,8 @@ Batch 1 is implemented on branch `codex/s3-compatible-image-storage`. The reposi
 | 2026-08-04 | `git status --short --branch` | Passed | Started from clean `master` before creating feature branch. |
 | 2026-08-04 | `dotnet build src/Moonglade.ImageStorage/Moonglade.ImageStorage.csproj` | Passed | 0 warnings, 0 errors. |
 | 2026-08-04 | `dotnet test src/Tests/Moonglade.ImageStorage.Tests/Moonglade.ImageStorage.Tests.csproj` | Passed | 93 passed, 0 failed, 0 skipped. |
+| 2026-08-04 | `dotnet build src/Moonglade.ImageStorage/Moonglade.ImageStorage.csproj` | Passed | Batch 2 implementation build; 0 warnings, 0 errors. |
+| 2026-08-04 | `dotnet test src/Tests/Moonglade.ImageStorage.Tests/Moonglade.ImageStorage.Tests.csproj` | Passed | Existing ImageStorage tests; 93 passed, 0 failed, 0 skipped. |
 
 ## Issues and Resolutions
 
