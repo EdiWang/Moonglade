@@ -61,7 +61,6 @@ public class SettingsController(
     }
 
     [HttpPost("email/test")]
-    [IgnoreAntiforgeryToken]
     public async Task<IActionResult> TestEmail()
     {
         try

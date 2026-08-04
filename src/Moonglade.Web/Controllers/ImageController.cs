@@ -67,7 +67,7 @@ public class ImageController(
         return File(imageStream, image.ImageContentType, image.LastModifiedUtc, entityTag, enableRangeProcessing: true);
     }
 
-    [HttpPost, IgnoreAntiforgeryToken]
+    [HttpPost]
     public async Task<IActionResult> Image([Required] IFormFile file, [FromQuery] bool skipWatermark = false)
     {
         if (file.Length <= 0)

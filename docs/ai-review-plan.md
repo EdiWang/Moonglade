@@ -1,3 +1,4 @@
+# AI Review Plan
 
 ## Review Date
 
@@ -6,6 +7,7 @@
 ## Scope
 
 This review used read-only inspection only. No build, test, lint, restore, format, package installation, or code-fix command was run.
+
 Reviewed areas:
 
 - Repository structure and long-lived docs: `AGENTS.md`, `README.md`, `docs/tasks/`.
@@ -13,6 +15,13 @@ Reviewed areas:
 - ASP.NET Core host and pipeline: `src/Moonglade.Web/Program.cs`, `src/Moonglade.Web/Extensions/ServiceCollectionExtensions.cs`, `src/Moonglade.Web/Extensions/WebApplicationExtensions.cs`.
 - Web controllers and selected pages/scripts: comments, images, settings, posts, widgets, auth, webmention, data export, admin JavaScript modules.
 - Feature/data modules: post, comment, widget, image storage, email, webmention, background services, data export, EF context.
+- Tests were inspected as evidence, but not executed.
+
+## Overall Assessment
+
+Overall risk: medium.
+
+The codebase has a clear modular structure, good separation between Web, feature handlers, data providers, integrations, and tests. Most query paths use async EF Core APIs and `AsNoTracking()` where appropriate, and the Web host keeps startup orchestration mostly in extension methods.
 
 Highest-priority improvements should focus on security and operational stability around mutable admin endpoints, public outbound-fetch paths, configuration validation, and authentication throttling. Broad architecture rewrites, framework changes, or dependency upgrades are not recommended as first steps.
 

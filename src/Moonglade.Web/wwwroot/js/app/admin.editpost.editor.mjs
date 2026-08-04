@@ -2,6 +2,7 @@ import { codeSampleLanguages } from './admin.editor.module.mjs';
 
 const editorModulePath = '/_content/Moonglade.Editor.StaticAssets/moonglade-editor/moonglade-editor.js';
 const htmlEditorImageExtensions = ['.png', '.jpg', '.jpeg', '.gif', '.webp', '.svg'];
+const csrfFieldName = 'CSRF-TOKEN-MOONGLADE-FORM';
 
 let editorModulePromise = null;
 
@@ -13,13 +14,21 @@ async function ensureMoongladeEditor() {
     return await editorModulePromise;
 }
 
-async function uploadMarkdownImage(file) {
+function getCsrfToken() {
+    return document.querySelector(`input[name="${csrfFieldName}"]`)?.value ?? '';
+}
+
+async function uploadPostImage(file) {
     const formData = new FormData();
     formData.append('file', file);
 
     const response = await fetch('/image', {
         method: 'POST',
         credentials: 'include',
+        headers: {
+            'Accept': 'application/json',
+            'XSRF-TOKEN': getCsrfToken()
+        },
         body: formData
     });
 
@@ -35,7 +44,16 @@ async function uploadMarkdownImage(file) {
         throw new Error('Image upload response did not include an image URL.');
     }
 
-    return { url };
+    return {
+        src: url,
+        alt: result?.filename || file.name,
+        title: result?.title
+    };
+}
+
+async function uploadMarkdownImage(file) {
+    const result = await uploadPostImage(file);
+    return { url: result.src };
 }
 
 export function createEditorMixin() {
@@ -61,7 +79,7 @@ export function createEditorMixin() {
                         textarea,
                         height: '100%',
                         spellcheck: true,
-                        uploadUrl: '/image',
+                        uploadImage: uploadPostImage,
                         allowedImageExtensions: htmlEditorImageExtensions,
                         codesample_languages: codeSampleLanguages,
                         onChange: (html) => {

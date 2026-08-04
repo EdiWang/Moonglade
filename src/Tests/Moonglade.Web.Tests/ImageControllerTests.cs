@@ -25,6 +25,17 @@ public class ImageControllerTests
     private CannonService _cannonService = null!;
 
     [Fact]
+    public void Image_Post_UsesGlobalAntiforgeryValidation()
+    {
+        var method = typeof(ImageController).GetMethods()
+            .Single(m =>
+                m.Name == nameof(ImageController.Image) &&
+                m.GetParameters().Any(p => p.ParameterType == typeof(IFormFile)));
+
+        Assert.Empty(method.GetCustomAttributes(typeof(IgnoreAntiforgeryTokenAttribute), inherit: false));
+    }
+
+    [Fact]
     public async Task Image_Get_WhenFilenameContainsInvalidCharacters_ReturnsBadRequest()
     {
         var controller = CreateController();
