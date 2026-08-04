@@ -33,7 +33,7 @@ The initial implementation is split into batches so configuration, provider impl
 | 1 | Add S3-compatible configuration and DI scaffold | None | `dotnet build src/Moonglade.ImageStorage/Moonglade.ImageStorage.csproj`; `dotnet test src/Tests/Moonglade.ImageStorage.Tests/Moonglade.ImageStorage.Tests.csproj` | Done |
 | 2 | Implement `S3CompatibleImageStorage` storage operations | Task 1 | `dotnet build src/Moonglade.ImageStorage/Moonglade.ImageStorage.csproj` | Done |
 | 3 | Add provider and registration tests | Task 2 | `dotnet test src/Tests/Moonglade.ImageStorage.Tests/Moonglade.ImageStorage.Tests.csproj`; `dotnet build src/Moonglade.Web/Moonglade.Web.csproj` | Done |
-| 4 | Update configuration examples and documentation | Task 3 | `dotnet build src/Moonglade.Web/Moonglade.Web.csproj`; `git status --short` | Not started |
+| 4 | Update configuration examples and documentation | Task 3 | `dotnet build src/Moonglade.Web/Moonglade.Web.csproj`; `git status --short` | Done |
 
 ## Execution Order
 
@@ -41,7 +41,7 @@ Batch 1 introduces only the configuration shape and service registration boundar
 
 ## Current Progress
 
-Batch 3 is implemented on branch `codex/s3-compatible-image-storage`. The S3-compatible provider now has focused unit coverage for upload, secondary upload, metadata lookup, stream reads, delete behavior, not-found handling, filename validation, and client configuration. DI registration and configuration validation are also covered.
+Batch 4 is implemented on branch `codex/s3-compatible-image-storage`. Default configuration examples and long-lived documentation now describe `Provider=s3compatible`, `S3CompatibleStorageSettings`, environment variable overrides for credentials, and the existing CDN/public URL boundary.
 
 ## Verification Log
 
@@ -54,16 +54,19 @@ Batch 3 is implemented on branch `codex/s3-compatible-image-storage`. The S3-com
 | 2026-08-04 | `dotnet test src/Tests/Moonglade.ImageStorage.Tests/Moonglade.ImageStorage.Tests.csproj` | Passed | Existing ImageStorage tests; 93 passed, 0 failed, 0 skipped. |
 | 2026-08-04 | `dotnet test src/Tests/Moonglade.ImageStorage.Tests/Moonglade.ImageStorage.Tests.csproj` | Passed | Batch 3 provider and DI tests; 121 passed, 0 failed, 0 skipped. |
 | 2026-08-04 | `dotnet build src/Moonglade.Web/Moonglade.Web.csproj` | Passed | 0 warnings, 0 errors. |
+| 2026-08-04 | `dotnet build src/Moonglade.Web/Moonglade.Web.csproj` | Passed | Batch 4 configuration/documentation verification; 0 warnings, 0 errors. |
+| 2026-08-04 | `git status --short` | Passed | Only Batch 4 documentation/configuration files were modified before commit. |
 
 ## Issues and Resolutions
 
 - Initial Batch 3 tests assumed `ServiceURL` would not include a trailing slash after AWS SDK client construction. The SDK normalizes it to `https://storage.example.com/`; the assertion now matches the runtime value.
 - Initial upload test attempted to read the captured request stream after the provider returned. The provider disposes its upload stream at method exit, so the test now captures bytes inside the Moq callback while the stream is open.
+- Batch 4 intentionally did not update `appsettings.Development.json` because that file can contain local developer secrets.
 
 ## Follow-ups
 
-- Confirm which S3-compatible providers need manual smoke-test examples after the provider implementation lands.
 - Revisit whether shared image key validation should be factored out once S3 behavior is implemented and tested.
+- Run a manual smoke test against at least one S3-compatible service before announcing provider-specific support details in release notes.
 
 ## Notes
 

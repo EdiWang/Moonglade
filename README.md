@@ -154,7 +154,7 @@ Built-in comment submissions also use a hidden honeypot field and form elapsed-t
 
 Configure the `ImageStorage` section in `appsettings.json` to choose where blog images are stored.
 
-#### **Azure Blob Storage** (Recommended)
+#### **Azure Blob Storage**
 
 Create an [Azure Blob Storage](https://azure.microsoft.com/en-us/services/storage/blobs/) container with appropriate permissions:
 
@@ -163,11 +163,33 @@ Create an [Azure Blob Storage](https://azure.microsoft.com/en-us/services/storag
   "Provider": "azurestorage",
   "AzureStorageSettings": {
     "ConnectionString": "YOUR_CONNECTION_STRING",
-    "ContainerName": "YOUR_CONTAINER_NAME"
+    "ContainerName": "YOUR_CONTAINER_NAME",
+    "SecondaryContainerName": "YOUR_ORIGINAL_IMAGE_CONTAINER_NAME"
   }
 }
 ```
 - Enable CDN in admin settings for faster image delivery.
+
+#### **S3-Compatible Object Storage**
+
+Use `s3compatible` for AWS S3 and S3-compatible object storage services such as Cloudflare R2, MinIO, Backblaze B2, DigitalOcean Spaces, Alibaba Cloud OSS, and Tencent Cloud COS.
+
+```json
+{
+  "Provider": "s3compatible",
+  "S3CompatibleStorageSettings": {
+    "ServiceUrl": "https://YOUR_S3_COMPATIBLE_ENDPOINT",
+    "Region": "us-east-1",
+    "AccessKeyId": "YOUR_ACCESS_KEY_ID",
+    "SecretAccessKey": "YOUR_SECRET_ACCESS_KEY",
+    "BucketName": "YOUR_BUCKET_NAME",
+    "SecondaryBucketName": "YOUR_ORIGINAL_IMAGE_BUCKET_NAME",
+    "ForcePathStyle": false
+  }
+}
+```
+
+Use environment variables or another secret provider for credentials in production, for example `ImageStorage__S3CompatibleStorageSettings__SecretAccessKey`. Keep `InsertAsync` results as object keys; CDN/public URL behavior still comes from the admin image settings and the `/image/{filename}` endpoint.
 
 #### **File System** (Not recommended)
 
