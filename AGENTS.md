@@ -25,7 +25,7 @@ The solution file is `src/Moonglade.slnx`. The root `README.md` is the main depl
 | Package management | NuGet package references in project files; no repository-level `Directory.Packages.props`, `NuGet.config`, or package lock file was found at the time this document was updated. |
 | Build tools | .NET SDK CLI, Visual Studio, VS Code task `dotnet build ${workspaceFolder}/src/Moonglade.Web/Moonglade.Web.csproj`, Docker multi-stage build, Docker Compose, and Azure Bicep/PowerShell deployment assets. |
 | Tests | xUnit v3, Moq, `Microsoft.NET.Test.Sdk`, `coverlet.collector`, EF Core InMemory/Sqlite patterns, and ASP.NET Core TestHost for Web tests. |
-| Formatting/linting | To be confirmed. No repository-level `.editorconfig`, dedicated analyzer config, or lint task was found at the time this document was updated. Follow nearby style and avoid bulk formatting. |
+| Formatting/linting | Minimal repository-level `.editorconfig` for UTF-8, CRLF, final newlines, trimmed trailing whitespace, 4-space C#/Razor/JS/JSON/YAML indentation, and tab-indented MSBuild XML. No dedicated analyzer config or lint task was found at the time this document was updated. Follow nearby style and avoid bulk formatting. |
 
 ## Configuration And Environment
 
