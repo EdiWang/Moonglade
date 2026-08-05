@@ -126,9 +126,9 @@ Highest-priority improvements should focus on security and operational stability
 
 1. Task 1: Normalize comment paging validation.
 2. Task 2: Unify image filename validation across providers while preserving Azure Blob virtual folders.
-3. Task 5: Add a minimal `.editorconfig`.
+3. Task 3: Clean up view/request-count comments and document best-effort behavior.
 4. Task 4: Add export zip cleanup.
-5. Task 3: Clean up view/request-count comments and document best-effort behavior.
+5. Task 5: Add a minimal `.editorconfig`.
 
 ## Not Recommended Now
 
@@ -137,10 +137,9 @@ Highest-priority improvements should focus on security and operational stability
 - Do not introduce a separate worker or external durable queue just for `CannonService`; the email path already uses a database outbox, and other work appears low volume.
 - Do not do broad dependency upgrades without a specific security advisory or compatibility goal.
 - Do not centralize NuGet package versions before the team wants that maintenance model; `.editorconfig` has a better risk/reward ratio as a first hygiene step.
-- Do not change `/health` semantics. Add a separate readiness endpoint instead.
+- Do not fold readiness checks into `/health`; keep liveness and readiness endpoints separate.
 - Do not make view/request counts distributed-exact; best-effort multi-instance behavior is acceptable.
 - Do not block Azure Blob virtual-folder image keys; validation should reject unsafe paths without removing supported key shapes.
-- Do not preserve Docker Compose demo password fallbacks; requiring `.env` is acceptable.
 
 ## Resolved Decisions And Remaining Implementation Defaults
 
