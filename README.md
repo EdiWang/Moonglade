@@ -291,12 +291,18 @@ When the queue is full, new work is rejected and logged instead of running inlin
 
 Incoming Webmention source URLs must use public HTTP/HTTPS addresses. Moonglade rejects private, loopback, link-local, documentation, reserved, and other special-use address ranges before fetching source content.
 
-## Health Check
+## Health Checks
 
-To ensure your Moonglade instance is running, you can use the health check endpoint:
+To ensure your Moonglade process is running, use the liveness health check endpoint:
 
 ```
 GET /health
 ```
 
-This endpoint returns a simple JSON response indicating the status of your Moonglade instance.
+This endpoint is intentionally process-only and does not check database availability.
+
+For readiness diagnostics that include database connectivity, use:
+
+```
+GET /health/ready
+```

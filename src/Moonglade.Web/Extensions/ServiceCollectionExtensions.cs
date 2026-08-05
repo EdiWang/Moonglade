@@ -200,7 +200,13 @@ public static class ServiceCollectionExtensions
     private static IServiceCollection AddMoongladeHealthChecks(this IServiceCollection services)
     {
         services.AddHealthChecks()
-            .AddCheck("self", () => HealthCheckResult.Healthy("Application is running"));
+            .AddCheck(
+                "self",
+                () => HealthCheckResult.Healthy("Application is running"),
+                tags: [MoongladeHealthCheckOptions.LivenessTag])
+            .AddDbContextCheck<BlogDbContext>(
+                "database",
+                tags: [MoongladeHealthCheckOptions.ReadinessTag]);
 
         return services;
     }
