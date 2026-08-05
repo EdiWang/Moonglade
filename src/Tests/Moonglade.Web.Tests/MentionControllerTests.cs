@@ -3,11 +3,10 @@ using LiteBus.Events.Abstractions;
 using LiteBus.Queries.Abstractions;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
-using Moonglade.BackgroundServices;
 using Moonglade.Configuration;
 using Moonglade.Data.Entities;
+using Moonglade.Email;
 using Moonglade.Web.Controllers;
 using Moonglade.Webmention;
 using Moq;
@@ -27,6 +26,13 @@ public class MentionControllerTests
     private readonly Mock<IQueryMediator> _queryMediator = new();
     private readonly Mock<IEventMediator> _eventMediator = new();
     private readonly RecordingCommandMediator _commandMediator = new();
+
+    public MentionControllerTests()
+    {
+        _eventMediator
+            .Setup(x => x.PublishAsync(It.IsAny<IEvent>(), It.IsAny<EventMediationSettings>(), It.IsAny<CancellationToken>()))
+            .Returns(Task.CompletedTask);
+    }
 
     [Fact]
     public async Task ReceiveWebmention_WhenWebmentionDisabled_ReturnsForbid()
@@ -48,7 +54,10 @@ public class MentionControllerTests
         {
             MentionEntity = mention
         });
-        var controller = CreateController(IPAddress.Parse("127.0.0.1"));
+        using var requestAbortedSource = new CancellationTokenSource();
+        var controller = CreateController(
+            IPAddress.Parse("127.0.0.1"),
+            httpContext => httpContext.RequestAborted = requestAbortedSource.Token);
 
         var result = await controller.ReceiveWebmention("https://source.example/post", "https://target.example/post");
 
@@ -58,6 +67,17 @@ public class MentionControllerTests
         Assert.Equal("https://source.example/post", command.Source);
         Assert.Equal("https://target.example/post", command.Target);
         Assert.Equal("127.0.0.1", command.RemoteIp);
+        _eventMediator.Verify(
+            x => x.PublishAsync(
+                It.Is<MentionEvent>(e =>
+                    e.TargetPostTitle == mention.TargetPostTitle &&
+                    e.Domain == mention.Domain &&
+                    e.SourceIp == mention.SourceIp &&
+                    e.SourceUrl == mention.SourceUrl &&
+                    e.SourceTitle == mention.SourceTitle),
+                It.IsAny<EventMediationSettings>(),
+                It.Is<CancellationToken>(ct => ct == requestAbortedSource.Token)),
+            Times.Once);
     }
 
     [Theory]
@@ -175,22 +195,24 @@ public class MentionControllerTests
         Assert.IsType<ClearMentionsCommand>(_commandMediator.Commands.Single());
     }
 
-    private MentionController CreateController(IPAddress? remoteIpAddress = null)
+    private MentionController CreateController(
+        IPAddress? remoteIpAddress = null,
+        Action<DefaultHttpContext>? configureHttpContext = null)
     {
-        var services = new ServiceCollection();
-        services.AddSingleton(_eventMediator.Object);
-
         var controller = new MentionController(
             _blogConfig,
             _queryMediator.Object,
-            new CannonService(Mock.Of<ILogger<CannonService>>(), services.BuildServiceProvider().GetRequiredService<IServiceScopeFactory>()),
-            _commandMediator);
+            _eventMediator.Object,
+            _commandMediator,
+            Mock.Of<ILogger<MentionController>>());
 
         var httpContext = new DefaultHttpContext();
         if (remoteIpAddress is not null)
         {
             httpContext.Connection.RemoteIpAddress = remoteIpAddress;
         }
+
+        configureHttpContext?.Invoke(httpContext);
 
         controller.ControllerContext = new ControllerContext
         {

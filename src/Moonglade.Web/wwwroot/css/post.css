@@ -153,9 +153,20 @@ pre {
 
 pre,
 code {
-    font-family: "Cascadia Code", Consolas, SFMono-Regular, Menlo, Monaco, "Liberation Mono", "Courier New", monospace;
+    font-family: "Cascadia Code", Consolas, SFMono-Regular, Menlo, "Liberation Mono", "Courier New", monospace;
     white-space: pre-wrap;
     word-wrap: break-word;
+}
+
+pre.mermaid {
+    background-color: transparent;
+    display: block !important;
+    overflow-x: auto;
+}
+
+.mermaid svg {
+    height: auto;
+    max-width: 100%;
 }
 
 math {

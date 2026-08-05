@@ -1,10 +1,13 @@
 using LiteBus.Commands.Abstractions;
 using Microsoft.AspNetCore.Authentication;
+using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Authentication.OpenIdConnect;
+using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using Moonglade.Auth;
@@ -72,6 +75,74 @@ public class SignInModelTests
     }
 
     [Fact]
+    public async Task OnPostAsync_WhenTotpIsNotRequiredInDevelopment_SignsInAdmin()
+    {
+        var authenticationService = new Mock<IAuthenticationService>();
+        var model = CreateModel(
+            LocalAccountSettings.DefaultValue,
+            authenticationService,
+            new StubCommandMediator(loginValid: true),
+            AuthenticationProvider.Local,
+            totpRequired: false,
+            environmentName: Environments.Development);
+        model.Username = "admin";
+        model.Password = "admin123";
+
+        var result = await model.OnPostAsync();
+
+        var redirect = Assert.IsType<RedirectToPageResult>(result);
+        Assert.Equal("/Admin/Dashboard", redirect.PageName);
+        authenticationService.Verify(
+            x => x.SignInAsync(
+                model.HttpContext,
+                CookieAuthenticationDefaults.AuthenticationScheme,
+                It.Is<ClaimsPrincipal>(p => p.Identity!.Name == "admin"),
+                It.IsAny<AuthenticationProperties>()),
+            Times.Once);
+        authenticationService.Verify(
+            x => x.SignInAsync(
+                model.HttpContext,
+                BlogAuthSchemas.LocalAccountSetup,
+                It.IsAny<ClaimsPrincipal>(),
+                It.IsAny<AuthenticationProperties>()),
+            Times.Never);
+        authenticationService.Verify(
+            x => x.SignInAsync(
+                model.HttpContext,
+                BlogAuthSchemas.LocalAccountTwoFactor,
+                It.IsAny<ClaimsPrincipal>(),
+                It.IsAny<AuthenticationProperties>()),
+            Times.Never);
+    }
+
+    [Fact]
+    public async Task OnPostAsync_WhenTotpIsNotRequiredOutsideDevelopment_RedirectsToSetup()
+    {
+        var authenticationService = new Mock<IAuthenticationService>();
+        var model = CreateModel(
+            LocalAccountSettings.DefaultValue,
+            authenticationService,
+            new StubCommandMediator(loginValid: true),
+            AuthenticationProvider.Local,
+            totpRequired: false,
+            environmentName: Environments.Production);
+        model.Username = "admin";
+        model.Password = "admin123";
+
+        var result = await model.OnPostAsync();
+
+        var redirect = Assert.IsType<RedirectToPageResult>(result);
+        Assert.Equal("/SetupAuthenticator", redirect.PageName);
+        authenticationService.Verify(
+            x => x.SignInAsync(
+                model.HttpContext,
+                BlogAuthSchemas.LocalAccountSetup,
+                It.IsAny<ClaimsPrincipal>(),
+                It.IsAny<AuthenticationProperties>()),
+            Times.Once);
+    }
+
+    [Fact]
     public async Task OnPostAsync_WhenProviderIsEntraId_ChallengesWithoutLocalLogin()
     {
         var authenticationService = new Mock<IAuthenticationService>();
@@ -105,7 +176,9 @@ public class SignInModelTests
         LocalAccountSettings account,
         Mock<IAuthenticationService> authenticationService,
         StubCommandMediator commandMediator,
-        AuthenticationProvider provider)
+        AuthenticationProvider provider,
+        bool totpRequired = true,
+        string environmentName = "Production")
     {
         var services = new ServiceCollection()
             .AddSingleton(authenticationService.Object)
@@ -123,10 +196,15 @@ public class SignInModelTests
         };
 
         var model = new SignInModel(
-            Options.Create(new AuthenticationSettings { Provider = provider }),
+            Options.Create(new AuthenticationSettings
+            {
+                Provider = provider,
+                Totp = new TotpAuthenticationSettings { Required = totpRequired }
+            }),
             commandMediator,
             Mock.Of<ILogger<SignInModel>>(),
-            blogConfig);
+            blogConfig,
+            Mock.Of<IWebHostEnvironment>(x => x.EnvironmentName == environmentName));
 
         model.PageContext = new PageContext
         {

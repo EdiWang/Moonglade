@@ -9,19 +9,24 @@ public class MentionSourceInspectorTests
 {
     private readonly Mock<ILogger<MentionSourceInspector>> _mockLogger;
     private readonly Mock<HttpMessageHandler> _mockHttpMessageHandler;
+    private readonly Mock<IWebmentionUrlSafetyValidator> _mockUrlSafetyValidator;
     private readonly HttpClient _httpClient;
 
     public MentionSourceInspectorTests()
     {
         _mockLogger = new Mock<ILogger<MentionSourceInspector>>();
         _mockHttpMessageHandler = new Mock<HttpMessageHandler>();
+        _mockUrlSafetyValidator = new Mock<IWebmentionUrlSafetyValidator>();
+        _mockUrlSafetyValidator
+            .Setup(x => x.IsSafeSourceAsync(It.IsAny<Uri>(), It.IsAny<CancellationToken>()))
+            .ReturnsAsync(true);
         _httpClient = new HttpClient(_mockHttpMessageHandler.Object);
     }
 
     [Fact]
     public async Task ExamineSourceAsync_NullSourceUrl_ThrowsArgumentException()
     {
-        var inspector = new MentionSourceInspector(_mockLogger.Object, _httpClient);
+        var inspector = CreateInspector();
 
         await Assert.ThrowsAsync<ArgumentException>(() =>
             inspector.ExamineSourceAsync(null!, "https://example.com/target"));
@@ -30,7 +35,7 @@ public class MentionSourceInspectorTests
     [Fact]
     public async Task ExamineSourceAsync_EmptySourceUrl_ThrowsArgumentException()
     {
-        var inspector = new MentionSourceInspector(_mockLogger.Object, _httpClient);
+        var inspector = CreateInspector();
 
         await Assert.ThrowsAsync<ArgumentException>(() =>
             inspector.ExamineSourceAsync("", "https://example.com/target"));
@@ -39,7 +44,7 @@ public class MentionSourceInspectorTests
     [Fact]
     public async Task ExamineSourceAsync_WhitespaceSourceUrl_ThrowsArgumentException()
     {
-        var inspector = new MentionSourceInspector(_mockLogger.Object, _httpClient);
+        var inspector = CreateInspector();
 
         await Assert.ThrowsAsync<ArgumentException>(() =>
             inspector.ExamineSourceAsync("   ", "https://example.com/target"));
@@ -48,7 +53,7 @@ public class MentionSourceInspectorTests
     [Fact]
     public async Task ExamineSourceAsync_NullTargetUrl_ThrowsArgumentException()
     {
-        var inspector = new MentionSourceInspector(_mockLogger.Object, _httpClient);
+        var inspector = CreateInspector();
 
         await Assert.ThrowsAsync<ArgumentException>(() =>
             inspector.ExamineSourceAsync("https://example.com/source", null!));
@@ -57,7 +62,7 @@ public class MentionSourceInspectorTests
     [Fact]
     public async Task ExamineSourceAsync_EmptyTargetUrl_ThrowsArgumentException()
     {
-        var inspector = new MentionSourceInspector(_mockLogger.Object, _httpClient);
+        var inspector = CreateInspector();
 
         await Assert.ThrowsAsync<ArgumentException>(() =>
             inspector.ExamineSourceAsync("https://example.com/source", ""));
@@ -80,7 +85,7 @@ public class MentionSourceInspectorTests
 
         SetupHttpResponse(html);
 
-        var inspector = new MentionSourceInspector(_mockLogger.Object, _httpClient);
+        var inspector = CreateInspector();
         var result = await inspector.ExamineSourceAsync(sourceUrl, targetUrl);
 
         Assert.NotNull(result);
@@ -108,7 +113,7 @@ public class MentionSourceInspectorTests
 
         SetupHttpResponse(html);
 
-        var inspector = new MentionSourceInspector(_mockLogger.Object, _httpClient);
+        var inspector = CreateInspector();
         var result = await inspector.ExamineSourceAsync(sourceUrl, targetUrl);
 
         Assert.NotNull(result);
@@ -133,7 +138,7 @@ public class MentionSourceInspectorTests
 
         SetupHttpResponse(html);
 
-        var inspector = new MentionSourceInspector(_mockLogger.Object, _httpClient);
+        var inspector = CreateInspector();
         var result = await inspector.ExamineSourceAsync(sourceUrl, targetUrl);
 
         Assert.NotNull(result);
@@ -156,7 +161,7 @@ public class MentionSourceInspectorTests
 
         SetupHttpResponse(html);
 
-        var inspector = new MentionSourceInspector(_mockLogger.Object, _httpClient);
+        var inspector = CreateInspector();
         var result = await inspector.ExamineSourceAsync(sourceUrl, targetUrl);
 
         Assert.NotNull(result);
@@ -180,7 +185,7 @@ public class MentionSourceInspectorTests
 
         SetupHttpResponse(html);
 
-        var inspector = new MentionSourceInspector(_mockLogger.Object, _httpClient);
+        var inspector = CreateInspector();
         var result = await inspector.ExamineSourceAsync(sourceUrl, targetUrl);
 
         Assert.NotNull(result);
@@ -204,7 +209,7 @@ public class MentionSourceInspectorTests
 
         SetupHttpResponse(html);
 
-        var inspector = new MentionSourceInspector(_mockLogger.Object, _httpClient);
+        var inspector = CreateInspector();
         var result = await inspector.ExamineSourceAsync(sourceUrl, targetUrl);
 
         Assert.NotNull(result);
@@ -224,10 +229,109 @@ public class MentionSourceInspectorTests
                 ItExpr.IsAny<CancellationToken>())
             .ThrowsAsync(new HttpRequestException("Network error"));
 
-        var inspector = new MentionSourceInspector(_mockLogger.Object, _httpClient);
+        var inspector = CreateInspector();
         var result = await inspector.ExamineSourceAsync(sourceUrl, targetUrl);
 
         Assert.Null(result);
+    }
+
+    [Fact]
+    public async Task ExamineSourceAsync_UnsafeSourceUrl_ReturnsNullWithoutFetching()
+    {
+        var sourceUrl = "https://internal.example/source";
+        var targetUrl = "https://example.com/target";
+        _mockUrlSafetyValidator
+            .Setup(x => x.IsSafeSourceAsync(It.Is<Uri>(uri => uri.Host == "internal.example"), It.IsAny<CancellationToken>()))
+            .ReturnsAsync(false);
+
+        var inspector = CreateInspector();
+        var result = await inspector.ExamineSourceAsync(sourceUrl, targetUrl);
+
+        Assert.Null(result);
+        _mockHttpMessageHandler.Protected()
+            .Verify(
+                "SendAsync",
+                Times.Never(),
+                ItExpr.IsAny<HttpRequestMessage>(),
+                ItExpr.IsAny<CancellationToken>());
+    }
+
+    [Fact]
+    public async Task ExamineSourceAsync_UnsafeRedirectUrl_ReturnsNullWithoutFollowingRedirect()
+    {
+        var sourceUrl = "https://example.com/source";
+        var targetUrl = "https://example.com/target";
+        var redirectResponse = new HttpResponseMessage(HttpStatusCode.Redirect)
+        {
+            Headers =
+            {
+                Location = new Uri("http://10.0.0.5/private")
+            }
+        };
+        _mockHttpMessageHandler.Protected()
+            .Setup<Task<HttpResponseMessage>>(
+                "SendAsync",
+                ItExpr.IsAny<HttpRequestMessage>(),
+                ItExpr.IsAny<CancellationToken>())
+            .ReturnsAsync(redirectResponse);
+        _mockUrlSafetyValidator
+            .Setup(x => x.IsSafeSourceAsync(It.Is<Uri>(uri => uri.Host == "10.0.0.5"), It.IsAny<CancellationToken>()))
+            .ReturnsAsync(false);
+
+        var inspector = CreateInspector();
+        var result = await inspector.ExamineSourceAsync(sourceUrl, targetUrl);
+
+        Assert.Null(result);
+        _mockHttpMessageHandler.Protected()
+            .Verify(
+                "SendAsync",
+                Times.Once(),
+                ItExpr.Is<HttpRequestMessage>(request => request.RequestUri!.ToString() == sourceUrl),
+                ItExpr.IsAny<CancellationToken>());
+    }
+
+    [Fact]
+    public async Task ExamineSourceAsync_SafeRelativeRedirect_FollowsRedirect()
+    {
+        var sourceUrl = "https://example.com/source";
+        var targetUrl = "https://example.com/target";
+        var redirectResponse = new HttpResponseMessage(HttpStatusCode.Redirect)
+        {
+            Headers =
+            {
+                Location = new Uri("/redirected", UriKind.Relative)
+            }
+        };
+        var html = """
+            <html>
+                <head><title>Redirected</title></head>
+                <body><a href="https://example.com/target">target</a></body>
+            </html>
+            """;
+        var finalResponse = new HttpResponseMessage(HttpStatusCode.OK)
+        {
+            Content = new StringContent(html)
+        };
+        _mockHttpMessageHandler.Protected()
+            .SetupSequence<Task<HttpResponseMessage>>(
+                "SendAsync",
+                ItExpr.IsAny<HttpRequestMessage>(),
+                ItExpr.IsAny<CancellationToken>())
+            .ReturnsAsync(redirectResponse)
+            .ReturnsAsync(finalResponse);
+
+        var inspector = CreateInspector();
+        var result = await inspector.ExamineSourceAsync(sourceUrl, targetUrl);
+
+        Assert.NotNull(result);
+        Assert.Equal("Redirected", result.Title);
+        Assert.True(result.SourceHasTarget);
+        _mockUrlSafetyValidator.Verify(
+            x => x.IsSafeSourceAsync(It.Is<Uri>(uri => uri.ToString() == sourceUrl), It.IsAny<CancellationToken>()),
+            Times.Once);
+        _mockUrlSafetyValidator.Verify(
+            x => x.IsSafeSourceAsync(It.Is<Uri>(uri => uri.ToString() == "https://example.com/redirected"), It.IsAny<CancellationToken>()),
+            Times.Once);
     }
 
     [Fact]
@@ -249,7 +353,7 @@ public class MentionSourceInspectorTests
                 ItExpr.IsAny<CancellationToken>())
             .ReturnsAsync(response);
 
-        var inspector = new MentionSourceInspector(_mockLogger.Object, _httpClient);
+        var inspector = CreateInspector();
         var result = await inspector.ExamineSourceAsync(sourceUrl, targetUrl);
 
         Assert.Null(result);
@@ -266,7 +370,7 @@ public class MentionSourceInspectorTests
 
         SetupHttpResponse(largeContent);
 
-        var inspector = new MentionSourceInspector(_mockLogger.Object, _httpClient);
+        var inspector = CreateInspector();
         var result = await inspector.ExamineSourceAsync(sourceUrl, targetUrl);
 
         Assert.Null(result);
@@ -290,7 +394,7 @@ public class MentionSourceInspectorTests
 
         SetupHttpResponse(html);
 
-        var inspector = new MentionSourceInspector(_mockLogger.Object, _httpClient);
+        var inspector = CreateInspector();
         var result = await inspector.ExamineSourceAsync(sourceUrl, targetUrl);
 
         Assert.NotNull(result);
@@ -314,7 +418,7 @@ public class MentionSourceInspectorTests
 
         SetupHttpResponse(html);
 
-        var inspector = new MentionSourceInspector(_mockLogger.Object, _httpClient);
+        var inspector = CreateInspector();
         var result = await inspector.ExamineSourceAsync(sourceUrl, targetUrl);
 
         Assert.NotNull(result);
@@ -338,7 +442,7 @@ public class MentionSourceInspectorTests
 
         SetupHttpResponse(html);
 
-        var inspector = new MentionSourceInspector(_mockLogger.Object, _httpClient);
+        var inspector = CreateInspector();
         var result = await inspector.ExamineSourceAsync(sourceUrl, targetUrl);
 
         Assert.NotNull(result);
@@ -359,4 +463,7 @@ public class MentionSourceInspectorTests
                 ItExpr.IsAny<CancellationToken>())
             .ReturnsAsync(response);
     }
+
+    private MentionSourceInspector CreateInspector() =>
+        new(_mockLogger.Object, _httpClient, _mockUrlSafetyValidator.Object);
 }

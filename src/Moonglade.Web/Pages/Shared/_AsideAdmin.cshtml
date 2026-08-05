@@ -94,6 +94,15 @@
 
     <section class="admin-nav-section admin-nav-bottom mb-3">
         <div class="list-group list-group-flush me-1">
+            <a asp-page="/Admin/ActivityLogs"
+               class="list-group-item list-group-item-action @(currentPage is "/Admin/ActivityLogs" ? "active" : null)" title="@SharedLocalizer["Activity Logs"]">
+                <div class="positioning-region">
+                    <div class="content-region">
+                        <i class="bi-card-list admin-nav-icon"></i>
+                        @SharedLocalizer["Activity Logs"]
+                    </div>
+                </div>
+            </a>
             <a asp-page="/Admin/Settings/General"
                class="list-group-item list-group-item-action @(currentPage?.StartsWith("/Admin/Settings/") == true ? "active" : null)" title="@SharedLocalizer["Settings"]">
                 <div class="positioning-region">

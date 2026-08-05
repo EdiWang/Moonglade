@@ -1,6 +1,7 @@
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.ResponseCompression;
 using Microsoft.AspNetCore.TestHost;
 using Microsoft.Extensions.DependencyInjection;
 using Moonglade.Web.Extensions;
@@ -11,6 +12,25 @@ namespace Moonglade.Web.Tests;
 
 public class RequestPipelineRedirectTests
 {
+    private const string PlainTextResponse = """
+        Moonglade response compression test payload. Moonglade response compression test payload.
+        Moonglade response compression test payload. Moonglade response compression test payload.
+        Moonglade response compression test payload. Moonglade response compression test payload.
+        Moonglade response compression test payload. Moonglade response compression test payload.
+        Moonglade response compression test payload. Moonglade response compression test payload.
+        Moonglade response compression test payload. Moonglade response compression test payload.
+        Moonglade response compression test payload. Moonglade response compression test payload.
+        Moonglade response compression test payload. Moonglade response compression test payload.
+        Moonglade response compression test payload. Moonglade response compression test payload.
+        Moonglade response compression test payload. Moonglade response compression test payload.
+        Moonglade response compression test payload. Moonglade response compression test payload.
+        Moonglade response compression test payload. Moonglade response compression test payload.
+        Moonglade response compression test payload. Moonglade response compression test payload.
+        Moonglade response compression test payload. Moonglade response compression test payload.
+        Moonglade response compression test payload. Moonglade response compression test payload.
+        Moonglade response compression test payload. Moonglade response compression test payload.
+        """;
+
     [Theory]
     [InlineData("/index.asp")]
     [InlineData("/index.aspx")]
@@ -46,6 +66,24 @@ public class RequestPipelineRedirectTests
         Assert.Null(response.Headers.Location);
     }
 
+    [Fact]
+    public async Task RequestPipeline_WhenClientAcceptsGzip_CompressesTextResponse()
+    {
+        using var app = await CreateTestApp();
+        using var client = app.GetTestClient();
+        client.BaseAddress = new Uri("https://localhost");
+
+        using var request = new HttpRequestMessage(HttpMethod.Get, "/archive/index.html");
+        request.Headers.AcceptEncoding.ParseAdd("gzip");
+
+        var response = await client.SendAsync(request, TestContext.Current.CancellationToken);
+
+        Assert.Equal(HttpStatusCode.OK, response.StatusCode);
+        Assert.Equal("gzip", Assert.Single(response.Content.Headers.ContentEncoding));
+        Assert.Contains("Accept-Encoding", response.Headers.Vary);
+        Assert.Contains("Sec-CH-Prefers-Color-Scheme", response.Headers.Vary);
+    }
+
     private static async Task<WebApplication> CreateTestApp()
     {
         var webRoot = FindWebProjectRoot();
@@ -63,10 +101,19 @@ public class RequestPipelineRedirectTests
         builder.Services.AddAuthentication();
         builder.Services.AddAuthorization();
         builder.Services.AddRateLimiter();
+        builder.Services.AddResponseCompression(options =>
+        {
+            options.EnableForHttps = true;
+            options.Providers.Add<GzipCompressionProvider>();
+        });
 
         var app = builder.Build();
         app.UseMoongladeRequestPipeline(CreateCultures());
-        app.Run(context => context.Response.WriteAsync("ok", TestContext.Current.CancellationToken));
+        app.Run(context =>
+        {
+            context.Response.ContentType = "text/plain; charset=utf-8";
+            return context.Response.WriteAsync(PlainTextResponse, TestContext.Current.CancellationToken);
+        });
 
         await app.StartAsync(TestContext.Current.CancellationToken);
         return app;

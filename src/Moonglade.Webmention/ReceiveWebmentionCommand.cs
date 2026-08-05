@@ -3,7 +3,6 @@ using Microsoft.Extensions.Logging;
 using Moonglade.Data;
 using Moonglade.Data.Entities;
 using Moonglade.Utils;
-using System.Net;
 
 namespace Moonglade.Webmention;
 
@@ -13,6 +12,7 @@ public class ReceiveWebmentionCommandHandler(
     ILogger<ReceiveWebmentionCommandHandler> logger,
     IMentionSourceInspector sourceInspector,
     IWebmentionSourceRateLimiter sourceRateLimiter,
+    IWebmentionUrlSafetyValidator urlSafetyValidator,
     BlogDbContext db
     ) : ICommandHandler<ReceiveWebmentionCommand, WebmentionResponse>
 {
@@ -20,15 +20,21 @@ public class ReceiveWebmentionCommandHandler(
     {
         try
         {
-            var (isValid, sourceUrl, targetUrl) = ValidateUrls(request.Source, request.Target);
+            var (isValid, sourceUri, sourceUrl, targetUrl) = ValidateUrls(request.Source, request.Target);
             if (!isValid)
             {
                 return WebmentionResponse.InvalidWebmentionRequest;
             }
 
+            if (!await urlSafetyValidator.IsSafeSourceAsync(sourceUri!, ct))
+            {
+                logger.LogWarning("Blocked webmention from unsafe source URI: {SourceUri}", sourceUri);
+                return WebmentionResponse.InvalidWebmentionRequest;
+            }
+
             logger.LogInformation("Processing Webmention from: {SourceUrl} ({RemoteIp}) to {TargetUrl}", sourceUrl, request.RemoteIp, targetUrl);
 
-            if (!sourceRateLimiter.TryAcquire(new Uri(sourceUrl)))
+            if (!sourceRateLimiter.TryAcquire(sourceUri!))
             {
                 return WebmentionResponse.SourceRateLimitExceeded;
             }
@@ -70,44 +76,28 @@ public class ReceiveWebmentionCommandHandler(
         }
     }
 
-    private (bool IsValid, string SourceUrl, string TargetUrl) ValidateUrls(string source, string target)
+    private (bool IsValid, Uri? SourceUri, string SourceUrl, string TargetUrl) ValidateUrls(string source, string target)
     {
         if (!Uri.TryCreate(source, UriKind.Absolute, out var sourceUri) ||
             !Uri.TryCreate(target, UriKind.Absolute, out var targetUri))
         {
             logger.LogWarning("Invalid webmention request: source or target URL is invalid.");
-            return (false, string.Empty, string.Empty);
+            return (false, null, string.Empty, string.Empty);
         }
 
-        if (!IsAllowedUri(sourceUri))
+        if (sourceUri.Scheme is not "http" and not "https")
         {
-            logger.LogWarning("Blocked webmention from disallowed source URI: {SourceUri}", sourceUri);
-            return (false, string.Empty, string.Empty);
+            logger.LogWarning("Blocked webmention from disallowed source URI scheme: {SourceUri}", sourceUri);
+            return (false, null, string.Empty, string.Empty);
         }
 
-        return (true, sourceUri.ToString(), targetUri.ToString());
-    }
-
-    private static bool IsAllowedUri(Uri uri)
-    {
-        if (uri.Scheme != "http" && uri.Scheme != "https") return false;
-        if (uri.IsLoopback) return false;
-
-        if (IPAddress.TryParse(uri.Host, out var ip))
+        if (targetUri.Scheme is not "http" and not "https")
         {
-            var bytes = ip.GetAddressBytes();
-            if (bytes.Length >= 2)
-            {
-                // Block 10.0.0.0/8
-                if (bytes[0] == 10) return false;
-                // Block 172.16.0.0/12
-                if (bytes[0] == 172 && bytes[1] >= 16 && bytes[1] <= 31) return false;
-                // Block 192.168.0.0/16
-                if (bytes[0] == 192 && bytes[1] == 168) return false;
-            }
+            logger.LogWarning("Invalid webmention request: target URL has a disallowed scheme: {TargetUri}", targetUri);
+            return (false, null, string.Empty, string.Empty);
         }
 
-        return true;
+        return (true, sourceUri, sourceUri.ToString(), targetUri.ToString());
     }
 
     private WebmentionResponse? ValidateMentionRequest(MentionRequest mentionRequest)
@@ -133,7 +123,7 @@ public class ReceiveWebmentionCommandHandler(
         var result = await db.Post
             .AsNoTracking()
             .Where(p => p.RouteLink == routeLink && p.PostStatus == PostStatus.Published && !p.IsDeleted)
-            .Select(p => new { p.Id, p.Title })
+            .Select(p => new WebmentionTargetPost(p.Id, p.Title))
             .FirstOrDefaultAsync(ct);
 
         if (result is null)
@@ -174,3 +164,5 @@ public class ReceiveWebmentionCommandHandler(
         return mention;
     }
 }
+
+file sealed record WebmentionTargetPost(Guid Id, string Title);

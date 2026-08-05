@@ -12,6 +12,9 @@ public static class ServiceCollectionExtensions
             configuration.GetSection("Webmention:SourceRateLimit"));
         services.AddSingleton(TimeProvider.System);
         services.AddSingleton<IWebmentionSourceRateLimiter, WebmentionSourceRateLimiter>();
+        services.AddSingleton<IWebmentionDnsResolver, WebmentionDnsResolver>();
+        services.AddSingleton<IWebmentionUrlSafetyValidator, WebmentionUrlSafetyValidator>();
+        services.AddSingleton<WebmentionSafeHttpMessageHandlerFactory>();
 
         services.AddHttpClient<IMentionSourceInspector, MentionSourceInspector>()
                 .ConfigureHttpClient(p =>
@@ -19,6 +22,8 @@ public static class ServiceCollectionExtensions
                     p.Timeout = TimeSpan.FromSeconds(30);
                     p.MaxResponseContentBufferSize = 1024 * 1024; // 1 MB
                 })
+                .ConfigurePrimaryHttpMessageHandler(sp =>
+                    sp.GetRequiredService<WebmentionSafeHttpMessageHandlerFactory>().Create())
                 .AddStandardResilienceHandler();
 
         services.AddHttpClient<IWebmentionSender, WebmentionSender>()

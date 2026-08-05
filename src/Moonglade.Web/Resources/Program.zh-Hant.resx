@@ -1344,6 +1344,9 @@
   <data name="Activity Log Detail" xml:space="preserve">
     <value>活動記錄詳細資料</value>
   </data>
+  <data name="Activity Logs" xml:space="preserve">
+    <value>活動記錄</value>
+  </data>
   <data name="Actor" xml:space="preserve">
     <value>操作者</value>
   </data>
@@ -1373,6 +1376,9 @@
   </data>
   <data name="Are you sure you want to clear all mentions?" xml:space="preserve">
     <value>確定要清除所有提及嗎？</value>
+  </data>
+  <data name="Are you sure you want to clear all activity logs? This action will be recorded." xml:space="preserve">
+    <value>確定要清除所有活動記錄嗎？此操作將被記錄。</value>
   </data>
   <data name="Are you sure you want to delete this activity log?" xml:space="preserve">
     <value>確定要刪除此活動記錄嗎？</value>
@@ -1572,6 +1578,9 @@
   <data name="Log deleted" xml:space="preserve">
     <value>記錄已刪除</value>
   </data>
+  <data name="Activity logs are cleared" xml:space="preserve">
+    <value>活動記錄已清除</value>
+  </data>
   <data name="Maximum 3 buttons allowed" xml:space="preserve">
     <value>最多允許 3 個按鈕</value>
   </data>
@@ -1667,9 +1676,6 @@
   </data>
   <data name="Please configure `SecondaryContainerName` in `appsettings.json`" xml:space="preserve">
     <value>請在 `appsettings.json` 中設定 `SecondaryContainerName`</value>
-  </data>
-  <data name="Please follow {0} to setup email API." xml:space="preserve">
-    <value>請依照 {0} 設定電子郵件 API。</value>
   </data>
   <data name="Please provide a valid tag name." xml:space="preserve">
     <value>請提供有效的標籤名稱。</value>
@@ -1788,9 +1794,6 @@
   <data name="Create Time" xml:space="preserve">
     <value>建立時間</value>
   </data>
-  <data name="Email is sent." xml:space="preserve">
-    <value>電子郵件已傳送。</value>
-  </data>
   <data name="Page saved successfully." xml:space="preserve">
     <value>頁面已成功儲存。</value>
   </data>
@@ -1883,5 +1886,29 @@
   </data>
   <data name="Resetting the authenticator signs you out and requires setting up a new authenticator app on the next sign-in." xml:space="preserve">
     <value>重設驗證器會讓你登出，並要求你在下次登入時設定新的驗證器應用程式。</value>
+  </data>
+  <data name="Update your local username and password for administrator sign-in." xml:space="preserve">
+    <value>更新管理員登入使用的本機使用者名稱與密碼。</value>
+  </data>
+  <data name="Clear the current authenticator setup and enroll a new app on next sign-in." xml:space="preserve">
+    <value>清除目前驗證器設定，並在下次登入時綁定新的應用程式。</value>
+  </data>
+  <data name="Email outbox worker is disabled." xml:space="preserve">
+    <value>Email 寄件匣背景工作已停用。</value>
+  </data>
+  <data name="Outbox Worker" xml:space="preserve">
+    <value>寄件匣背景工作</value>
+  </data>
+  <data name="Please configure email provider settings in appsettings.json." xml:space="preserve">
+    <value>請在 `appsettings.json` 中設定郵件提供者設定。</value>
+  </data>
+  <data name="Provider" xml:space="preserve">
+    <value>提供者</value>
+  </data>
+  <data name="Sender Address" xml:space="preserve">
+    <value>寄件者地址</value>
+  </data>
+  <data name="Test email is queued." xml:space="preserve">
+    <value>測試郵件已加入佇列。</value>
   </data>
 </root>

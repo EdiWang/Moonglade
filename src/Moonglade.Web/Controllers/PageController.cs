@@ -22,9 +22,12 @@ public class PageController(ICacheAside cache, IQueryMediator queryMediator, ICo
             EventType.PageCreated,
             "Create Page",
             model.Title,
-            new { PageId = uid, model.Slug, model.IsPublished });
+            ActivityLogMetaData.Create(
+                ("PageId", uid),
+                ("Slug", model.Slug),
+                ("IsPublished", model.IsPublished)));
 
-        return Ok(new { PageId = uid });
+        return Ok(new PageIdResponse(uid));
     }
 
     [HttpPut("{id:guid}")]
@@ -39,9 +42,12 @@ public class PageController(ICacheAside cache, IQueryMediator queryMediator, ICo
             EventType.PageUpdated,
             "Update Page",
             model.Title,
-            new { PageId = uid, model.Slug, model.IsPublished });
+            ActivityLogMetaData.Create(
+                ("PageId", uid),
+                ("Slug", model.Slug),
+                ("IsPublished", model.IsPublished)));
 
-        return Ok(new { PageId = uid });
+        return Ok(new PageIdResponse(uid));
     }
 
     [HttpDelete("{id:guid}")]
@@ -58,7 +64,9 @@ public class PageController(ICacheAside cache, IQueryMediator queryMediator, ICo
             EventType.PageDeleted,
             "Delete Page",
             page.Title,
-            new { PageId = id, page.Slug });
+            ActivityLogMetaData.Create(
+                ("PageId", id),
+                ("Slug", page.Slug)));
 
         return NoContent();
     }
@@ -97,3 +105,5 @@ public class PageController(ICacheAside cache, IQueryMediator queryMediator, ICo
         return Ok(response);
     }
 }
+
+file sealed record PageIdResponse(Guid PageId);

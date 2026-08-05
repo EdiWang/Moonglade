@@ -36,11 +36,11 @@
 		<PackageReference Include="Edi.Gravatar" Version="1.4.0" />
 		<PackageReference Include="Edi.ImageWatermark" Version="3.0.0" />
 		<PackageReference Include="Edi.PasswordGenerator" Version="2.3.0" />
-		<PackageReference Include="LiteBus.Extensions.Microsoft.DependencyInjection" Version="6.0.1" />
+		<PackageReference Include="LiteBus.Extensions.Microsoft.DependencyInjection" Version="6.0.2" />
 		<PackageReference Include="Microsoft.Extensions.Diagnostics.HealthChecks.EntityFrameworkCore" Version="10.0.10" />
 		<PackageReference Include="Microsoft.Extensions.Logging.AzureAppServices" Version="10.0.10" />
+		<PackageReference Include="Moonglade.Editor.StaticAssets" Version="0.5.0" />
 
-		<PackageReference Include="Moonglade.MonacoEditor" Version="0.55.1.1000" />
 		<PackageReference Include="QRCoder" Version="1.8.0" />
 	</ItemGroup>
 	<ItemGroup>
@@ -51,7 +51,7 @@
 		<ProjectReference Include="..\Moonglade.Data.PostgreSql\Moonglade.Data.PostgreSql.csproj" />
 		<ProjectReference Include="..\Moonglade.Data.SqlServer\Moonglade.Data.SqlServer.csproj" />
 		<ProjectReference Include="..\Moonglade.ImageStorage\Moonglade.ImageStorage.csproj" />
-		<ProjectReference Include="..\Moonglade.Email.Client\Moonglade.Email.Client.csproj" />
+		<ProjectReference Include="..\Moonglade.Email\Moonglade.Email.csproj" />
 		<ProjectReference Include="..\Moonglade.IndexNow.Client\Moonglade.IndexNow.Client.csproj" />
 		<ProjectReference Include="..\Moonglade.Moderation\Moonglade.Moderation.csproj" />
 		<ProjectReference Include="..\Moonglade.Setup\Moonglade.Setup.csproj" />

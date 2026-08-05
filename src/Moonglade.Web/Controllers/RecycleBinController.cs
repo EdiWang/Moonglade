@@ -19,11 +19,7 @@ public class RecycleBinController(
         var posts = await queryMediator.QueryAsync(new ListPostSegmentByStatusQuery(PostStatus.Deleted));
         var pages = await queryMediator.QueryAsync(new ListPageSegmentsQuery(DeletedOnly: true));
 
-        return Ok(new
-        {
-            Posts = posts,
-            Pages = pages
-        });
+        return Ok(new RecycleBinListResponse(posts, pages));
     }
 
     [HttpPost("{postId:guid}/restore")]
@@ -36,7 +32,7 @@ public class RecycleBinController(
             EventType.PostRestored,
             "Restore Post",
             $"Post #{postId}",
-            new { PostId = postId });
+            ActivityLogMetaData.Create(("PostId", postId)));
 
         return NoContent();
     }
@@ -51,7 +47,7 @@ public class RecycleBinController(
             EventType.PostPermanentlyDeleted,
             "Permanently Delete Post",
             $"Post #{postId}",
-            new { PostId = postId });
+            ActivityLogMetaData.Create(("PostId", postId)));
 
         return NoContent();
     }
@@ -69,7 +65,9 @@ public class RecycleBinController(
             EventType.PageRestored,
             "Restore Page",
             page.Title,
-            new { PageId = pageId, page.Slug });
+            ActivityLogMetaData.Create(
+                ("PageId", pageId),
+                ("Slug", page.Slug)));
 
         return NoContent();
     }
@@ -87,7 +85,9 @@ public class RecycleBinController(
             EventType.PagePermanentlyDeleted,
             "Permanently Delete Page",
             page.Title,
-            new { PageId = pageId, page.Slug });
+            ActivityLogMetaData.Create(
+                ("PageId", pageId),
+                ("Slug", page.Slug)));
 
         return NoContent();
     }
@@ -106,7 +106,7 @@ public class RecycleBinController(
             EventType.PageRecycleBinCleared,
             "Clear Page Recycle Bin",
             "All deleted pages",
-            new { Count = slugs.Length });
+            ActivityLogMetaData.Create(("Count", slugs.Length)));
 
         return NoContent();
     }
@@ -125,8 +125,12 @@ public class RecycleBinController(
             EventType.RecycleBinCleared,
             "Clear Recycle Bin",
             "All deleted posts",
-            new { Count = guids.Count() });
+            ActivityLogMetaData.Create(("Count", guids.Count())));
 
         return NoContent();
     }
 }
+
+file sealed record RecycleBinListResponse(
+    IReadOnlyList<Moonglade.Data.DTO.PostSegment> Posts,
+    IReadOnlyList<Moonglade.Data.DTO.PageSegment> Pages);

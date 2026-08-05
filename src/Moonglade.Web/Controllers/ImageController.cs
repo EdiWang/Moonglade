@@ -67,7 +67,7 @@ public class ImageController(
         return File(imageStream, image.ImageContentType, image.LastModifiedUtc, entityTag, enableRangeProcessing: true);
     }
 
-    [HttpPost, IgnoreAntiforgeryToken]
+    [HttpPost]
     public async Task<IActionResult> Image([Required] IFormFile file, [FromQuery] bool skipWatermark = false)
     {
         if (file.Length <= 0)
@@ -112,13 +112,13 @@ public class ImageController(
             EventType.ImageUploaded,
             "Upload Image",
             finalName,
-            new { FileName = finalName, FileSize = file.Length, SkipWatermark = skipWatermark });
+            ActivityLogMetaData.Create(
+                ("FileName", finalName),
+                ("FileSize", file.Length),
+                ("SkipWatermark", skipWatermark)));
 
-        return Ok(new
-        {
-            location = $"/image/{finalName}",
-            filename = $"/image/{finalName}"
-        });
+        var imageUrl = $"/image/{finalName}";
+        return Ok(new ImageUploadResponse(imageUrl, imageUrl));
     }
 
     private byte[] AddWatermarkIfNeeded(MemoryStream stream, string ext, bool skipWatermark)
@@ -226,3 +226,5 @@ public class ImageController(
         return new DateTimeOffset(utcValue.Ticks - utcValue.Ticks % TimeSpan.TicksPerSecond, TimeSpan.Zero);
     }
 }
+
+file sealed record ImageUploadResponse(string Location, string Filename);

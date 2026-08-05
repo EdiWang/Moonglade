@@ -46,6 +46,8 @@ public class AuthController(
     [HttpGet("me")]
     public IActionResult Me()
     {
-        return Ok(new { UserName = User.Identity?.Name ?? "Anonymous" });
+        return Ok(new CurrentUserResponse(User.Identity?.Name ?? "Anonymous"));
     }
 }
+
+file sealed record CurrentUserResponse(string UserName);

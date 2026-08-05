@@ -14,7 +14,7 @@ public class EmptyPageRecycleBinCommandHandler(
     {
         var deletedPages = await db.BlogPage
             .Where(p => p.IsDeleted)
-            .Select(p => new { p.Slug, p.CssId })
+            .Select(p => new DeletedPageRecycleBinItem(p.Slug, p.CssId))
             .ToArrayAsync(ct);
 
         foreach (var page in deletedPages.Where(p => !string.IsNullOrWhiteSpace(p.CssId)))
@@ -29,3 +29,5 @@ public class EmptyPageRecycleBinCommandHandler(
         return deletedPages.Select(p => p.Slug).ToArray();
     }
 }
+
+file sealed record DeletedPageRecycleBinItem(string Slug, string CssId);

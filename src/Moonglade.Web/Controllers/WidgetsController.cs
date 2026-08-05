@@ -37,7 +37,7 @@ public class WidgetsController(
             EventType.WidgetCreated,
             "Create Widget",
             request.Title,
-            new { request.WidgetType });
+            ActivityLogMetaData.Create(("WidgetType", request.WidgetType)));
 
         return Created();
     }
@@ -52,7 +52,9 @@ public class WidgetsController(
             EventType.WidgetUpdated,
             "Update Widget",
             request.Title,
-            new { WidgetId = id, request.WidgetType });
+            ActivityLogMetaData.Create(
+                ("WidgetId", id),
+                ("WidgetType", request.WidgetType)));
 
         return NoContent();
     }
@@ -67,7 +69,7 @@ public class WidgetsController(
             EventType.WidgetDeleted,
             "Delete Widget",
             $"Widget #{id}",
-            new { WidgetId = id });
+            ActivityLogMetaData.Create(("WidgetId", id)));
 
         return NoContent();
     }

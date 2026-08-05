@@ -55,7 +55,7 @@ public class TagsController(IQueryMediator queryMediator, ICommandMediator comma
             EventType.TagUpdated,
             "Update Tag",
             name,
-            new { TagId = id });
+            ActivityLogMetaData.Create(("TagId", id)));
 
         return NoContent();
     }
@@ -70,7 +70,7 @@ public class TagsController(IQueryMediator queryMediator, ICommandMediator comma
             EventType.TagDeleted,
             "Delete Tag",
             $"Tag #{id}",
-            new { TagId = id });
+            ActivityLogMetaData.Create(("TagId", id)));
 
         return NoContent();
     }

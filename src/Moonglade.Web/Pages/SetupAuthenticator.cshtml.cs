@@ -1,8 +1,10 @@
 using LiteBus.Commands.Abstractions;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.Cookies;
+using Microsoft.AspNetCore.RateLimiting;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.Extensions.Options;
+using Moonglade.Web.Services;
 using QRCoder;
 using System.ComponentModel.DataAnnotations;
 using System.Security.Claims;
@@ -10,6 +12,7 @@ using System.Security.Claims;
 namespace Moonglade.Web.Pages;
 
 [Authorize(AuthenticationSchemes = BlogAuthSchemas.LocalAccountSetup)]
+[EnableRateLimiting(LocalAccountRateLimitPolicy.PolicyName)]
 public class SetupAuthenticatorModel(
     IOptions<AuthenticationSettings> authSettings,
     IBlogConfig blogConfig,

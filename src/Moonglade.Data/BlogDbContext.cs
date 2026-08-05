@@ -31,12 +31,14 @@ public class BlogDbContext : DbContext
     public virtual DbSet<BlogConfigurationEntity> BlogConfiguration { get; set; }
     public virtual DbSet<WidgetEntity> Widget { get; set; }
     public virtual DbSet<ActivityLogEntity> ActivityLog { get; set; }
+    public virtual DbSet<EmailOutboxMessageEntity> EmailOutboxMessage { get; set; }
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
         // base.OnModelCreating(modelBuilder);
         modelBuilder.ApplyConfiguration(new CategoryConfiguration());
         modelBuilder.ApplyConfiguration(new ActivityLogConfiguration());
+        modelBuilder.ApplyConfiguration(new EmailOutboxMessageConfiguration());
         modelBuilder.ApplyConfiguration(new PostViewDailyConfiguration());
         modelBuilder.ApplyConfiguration(new PostCategoryConfiguration());
         modelBuilder
@@ -81,6 +83,7 @@ public static class BlogDbContextExtension
             await context.BlogPage.ExecuteDeleteAsync();
             await context.Widget.ExecuteDeleteAsync();
             await context.ActivityLog.ExecuteDeleteAsync();
+            await context.EmailOutboxMessage.ExecuteDeleteAsync();
 
             await transaction.CommitAsync();
         });

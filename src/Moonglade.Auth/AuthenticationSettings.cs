@@ -9,4 +9,5 @@ public class AuthenticationSettings
 public class TotpAuthenticationSettings
 {
     public string Issuer { get; set; } = "Moonglade";
+    public bool Required { get; set; } = true;
 }

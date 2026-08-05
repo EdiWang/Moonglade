@@ -1,4 +1,3 @@
-using Microsoft.AspNetCore.Diagnostics.HealthChecks;
 using Microsoft.AspNetCore.Rewrite;
 using Moonglade.IndexNow.Client;
 using Moonglade.Web.Handlers;
@@ -18,6 +17,7 @@ public static class WebApplicationExtensions
         app.UseMiddleware<PrefersColorSchemeMiddleware>();
         app.UseMiddleware<PoweredByMiddleware>();
 
+        app.UseResponseCompression();
         app.UseExceptionHandler(ConfigureExceptionHandler.Handler);
         app.UseStatusCodePages(ProblemDetailsStatusCodePages.Handler);
 
@@ -44,11 +44,8 @@ public static class WebApplicationExtensions
     public static WebApplication MapMoongladeEndpoints(this WebApplication app)
     {
         app.MapStaticAssets();
-        app.MapHealthChecks("/health", new HealthCheckOptions
-        {
-            ResponseWriter = PingEndpoint.WriteResponse,
-            AllowCachingResponses = false
-        });
+        app.MapHealthChecks("/health", MoongladeHealthCheckOptions.CreateLivenessOptions());
+        app.MapHealthChecks("/health/ready", MoongladeHealthCheckOptions.CreateReadinessOptions());
 
         app.MapControllers();
         app.MapRazorPages().WithStaticAssets();

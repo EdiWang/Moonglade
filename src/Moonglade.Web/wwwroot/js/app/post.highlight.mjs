@@ -4,6 +4,10 @@ import kusto from '../3rd/highlight.kusto.js'
 export function renderCodeHighlighter() {
     const pres = document.querySelectorAll('pre');
     pres.forEach(pre => {
+        if (pre.classList.contains('mermaid')) {
+            return;
+        }
+
         // Find <pre> that doesn't have a <code> inside it.
         if (!pre.querySelector('code')) {
             const code = document.createElement('code');
@@ -24,6 +28,10 @@ export function renderCodeHighlighter() {
 
     const codeBlocks = document.querySelectorAll('pre code');
     codeBlocks.forEach(block => {
+        if (block.classList.contains('language-mermaid') || block.classList.contains('lang-mermaid')) {
+            return;
+        }
+
         hljs.highlightElement(block);
     });
 }

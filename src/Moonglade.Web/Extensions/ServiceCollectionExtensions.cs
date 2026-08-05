@@ -6,12 +6,13 @@ using LiteBus.Extensions.Microsoft.DependencyInjection;
 using LiteBus.Messaging;
 using LiteBus.Queries;
 using Microsoft.AspNetCore.Mvc.Rendering;
+using Microsoft.AspNetCore.ResponseCompression;
 using Microsoft.Extensions.DependencyInjection.Extensions;
 using Microsoft.Extensions.Diagnostics.HealthChecks;
 using Moonglade.BackgroundServices;
 using Moonglade.Data.PostgreSql;
 using Moonglade.Data.SqlServer;
-using Moonglade.Email.Client;
+using Moonglade.Email;
 using Moonglade.IndexNow.Client;
 using Moonglade.Moderation;
 using Moonglade.Setup;
@@ -19,6 +20,7 @@ using Moonglade.Syndication;
 using Moonglade.Web.Services;
 using Moonglade.Webmention;
 using System.Globalization;
+using System.IO.Compression;
 using System.Net.Http.Headers;
 using System.Text.Encodings.Web;
 using System.Text.Json.Serialization;
@@ -43,14 +45,44 @@ public static class ServiceCollectionExtensions
         services.AddMoongladeAntiforgery();
         services.AddMoongladeRequestLocalization(cultures);
         services.AddMoongladeRouteOptions();
+        services.AddMoongladeResponseCompression();
         services.AddTransient<IPasswordGenerator, DefaultPasswordGenerator>();
         services.AddMoongladeHealthChecks();
         services.AddMoongladeProblemDetails();
+        services.AddMoongladeLocalAccountRateLimiting(configuration);
         services.AddMoongladeCommentRateLimiting(configuration);
         services.AddMoongladeCommentSubmissionGuard(configuration);
         services.AddMoongladeCoreServices(configuration);
         services.AddMoongladeDatabase(configuration);
         services.AddMoongladeInitializers();
+
+        return services;
+    }
+
+    private static IServiceCollection AddMoongladeResponseCompression(this IServiceCollection services)
+    {
+        services.AddResponseCompression(options =>
+        {
+            options.EnableForHttps = true;
+            options.Providers.Add<BrotliCompressionProvider>();
+            options.Providers.Add<GzipCompressionProvider>();
+            options.MimeTypes = ResponseCompressionDefaults.MimeTypes.Concat(
+            [
+                "application/atom+xml",
+                "application/manifest+json",
+                "application/rdf+xml",
+                "application/rss+xml"
+            ]);
+        });
+
+        services.Configure<BrotliCompressionProviderOptions>(options =>
+        {
+            options.Level = CompressionLevel.Fastest;
+        });
+        services.Configure<GzipCompressionProviderOptions>(options =>
+        {
+            options.Level = CompressionLevel.Fastest;
+        });
 
         return services;
     }
@@ -168,7 +200,13 @@ public static class ServiceCollectionExtensions
     private static IServiceCollection AddMoongladeHealthChecks(this IServiceCollection services)
     {
         services.AddHealthChecks()
-            .AddCheck("self", () => HealthCheckResult.Healthy("Application is running"));
+            .AddCheck(
+                "self",
+                () => HealthCheckResult.Healthy("Application is running"),
+                tags: [MoongladeHealthCheckOptions.LivenessTag])
+            .AddDbContextCheck<BlogDbContext>(
+                "database",
+                tags: [MoongladeHealthCheckOptions.ReadinessTag]);
 
         return services;
     }
@@ -204,6 +242,23 @@ public static class ServiceCollectionExtensions
         return services;
     }
 
+    private static IServiceCollection AddMoongladeLocalAccountRateLimiting(this IServiceCollection services, IConfiguration configuration)
+    {
+        services.AddOptions<LocalAccountRateLimitOptions>()
+            .Bind(configuration.GetSection(LocalAccountRateLimitOptions.SectionName))
+            .Validate(options => !options.Enabled || options.PermitLimit > 0, "Authentication:LocalAccountRateLimit:PermitLimit must be greater than 0 when rate limiting is enabled.")
+            .Validate(options => !options.Enabled || options.WindowMinutes > 0, "Authentication:LocalAccountRateLimit:WindowMinutes must be greater than 0 when rate limiting is enabled.")
+            .ValidateOnStart();
+
+        services.AddSingleton<LocalAccountRateLimitPolicy>();
+        services.AddRateLimiter(options =>
+        {
+            options.AddPolicy<string, LocalAccountRateLimitPolicy>(LocalAccountRateLimitPolicy.PolicyName);
+        });
+
+        return services;
+    }
+
     private static IServiceCollection AddMoongladeCommentSubmissionGuard(this IServiceCollection services, IConfiguration configuration)
     {
         services.AddOptions<CommentSubmissionGuardOptions>()
@@ -228,7 +283,7 @@ public static class ServiceCollectionExtensions
                 .AddBlogAuthenticaton(configuration)
                 .AddImageStorage(configuration);
 
-        services.AddEmailClient();
+        services.AddMoongladeEmail(configuration);
         services.AddIndexNowClient(configuration.GetSection("IndexNow"));
         services.AddScoped<IModerationKeywordProvider, BlogConfigModerationKeywordProvider>();
         services.AddContentModerator();
@@ -236,6 +291,10 @@ public static class ServiceCollectionExtensions
         services.AddSingleton<ScheduledPublishWakeUp>();
         services.AddHostedService<ScheduledPublishService>();
 
+        services.AddOptions<CannonServiceOptions>()
+                .Bind(configuration.GetSection(CannonServiceOptions.SectionName))
+                .Validate(options => options.QueueCapacity > 0, "CannonService:QueueCapacity must be greater than 0.")
+                .ValidateOnStart();
         services.AddSingleton<CannonService>();
         services.AddHostedService(sp => sp.GetRequiredService<CannonService>());
 

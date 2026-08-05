@@ -148,7 +148,7 @@ public class AssetsController(
             EventType.SiteIconUpdated,
             "Update Site Icon",
             "Site Icon",
-            new { ImageSize = $"{bmp.Width}x{bmp.Height}" });
+            ActivityLogMetaData.Create(("ImageSize", $"{bmp.Width}x{bmp.Height}")));
 
         return NoContent();
     }

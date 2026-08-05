@@ -6,7 +6,7 @@ This file is for AI agents working in this repository. Before changing code, rea
 
 Moonglade is a personal blogging platform built with ASP.NET Core / .NET 10. The main application host is `src/Moonglade.Web`. It targets developer-focused personal blogs and includes posts, pages, categories, tags, comments, archives, themes, widgets, image storage, syndication feeds, Webmention, IndexNow, email notifications, content moderation, an admin portal, and Azure/Docker deployment assets.
 
-The solution file is `src/Moonglade.slnx`. The root `README.md` is the main deployment and configuration guide. `.github/copilot-instructions.md` already contains detailed collaboration guidance; this file follows the same intent and adds concise business, architecture, coding, and verification rules for agents.
+The solution file is `src/Moonglade.slnx`. The root `README.md` is the main deployment and configuration guide. `AGENTS.md` is the consolidated repository-specific guidance for AI coding agents.
 
 ## Technology Stack
 
@@ -16,16 +16,16 @@ The solution file is `src/Moonglade.slnx`. The root `README.md` is the main depl
 | Web app model | ASP.NET Core Razor Pages for public/admin pages, controller-based APIs for admin JSON and public endpoints, endpoint routing for handlers such as health, robots, manifest, sitemap, FOAF, and OpenSearch. |
 | Architecture style | Multi-project modular solution with LiteBus command/query/event handlers and feature-oriented folders. |
 | Data access | EF Core with `BlogDbContext`; SQL Server via `Moonglade.Data.SqlServer`; PostgreSQL via `Moonglade.Data.PostgreSql`. |
-| Cache | `Edi.CacheAside.InMemory` with `BlogCachePartition` names for blog, post, page, widget, sitemap, and subscription-related caches. |
-| Background work | ASP.NET Core hosted services, `Cronos`, `ScheduledPublishService`, `UpdateCheckService`, and `CannonService` for queued fire-and-forget work. |
+| Cache | `Edi.CacheAside.InMemory` with `BlogCachePartition` values `General`, `Post`, `Page`, `RssCategory`, and `AtomCategory`; widgets, sitemap, and uncategorized feeds use keys in the `General` partition. |
+| Background work | ASP.NET Core hosted services, `Cronos`, `ScheduledPublishService`, `UpdateCheckService`, `EmailOutboxWorker`, and `CannonService` for queued fire-and-forget work. |
 | Authentication | Cookie-based local account authentication and Microsoft Entra ID through `Microsoft.Identity.Web`. |
-| Frontend | Server-rendered Razor, Bootstrap, Bootstrap Icons, Alpine.js, Moonglade.Editor for HTML post editing, Monaco editor for Markdown/CSS/HTML code editing, Tagify, and project-local JavaScript modules under `src/Moonglade.Web/wwwroot/js/app`. |
-| Image storage | `IBlogImageStorage` abstraction with Azure Blob Storage and local file system providers. |
-| External integrations | Webmention, IndexNow, email notification API, local content moderation, Gravatar, Azure App Service logging, and Azure/Docker deployment assets. |
+| Frontend | Server-rendered Razor, Bootstrap, Bootstrap Icons, Alpine.js, unified Moonglade.Editor for rich HTML post editing plus Markdown/CSS/HTML code-like modes, Tagify, Mermaid.js for Markdown diagrams on post reading pages, and project-local JavaScript modules under `src/Moonglade.Web/wwwroot/js/app`. |
+| Image storage | `IBlogImageStorage` abstraction with Azure Blob Storage, S3-compatible object storage through `AWSSDK.S3`, and local file system providers. |
+| External integrations | Webmention, IndexNow, email outbox delivery, local content moderation, Gravatar, Azure App Service logging, and Azure/Docker deployment assets. |
 | Package management | NuGet package references in project files; no repository-level `Directory.Packages.props`, `NuGet.config`, or package lock file was found at the time this document was updated. |
 | Build tools | .NET SDK CLI, Visual Studio, VS Code task `dotnet build ${workspaceFolder}/src/Moonglade.Web/Moonglade.Web.csproj`, Docker multi-stage build, Docker Compose, and Azure Bicep/PowerShell deployment assets. |
 | Tests | xUnit v3, Moq, `Microsoft.NET.Test.Sdk`, `coverlet.collector`, EF Core InMemory/Sqlite patterns, and ASP.NET Core TestHost for Web tests. |
-| Formatting/linting | To be confirmed. No repository-level `.editorconfig`, dedicated analyzer config, or lint task was found at the time this document was updated. Follow nearby style and avoid bulk formatting. |
+| Formatting/linting | Minimal repository-level `.editorconfig` for UTF-8, CRLF, final newlines, trimmed trailing whitespace, 4-space C#/Razor/JS/JSON/YAML indentation, and tab-indented MSBuild XML. No dedicated analyzer config or lint task was found at the time this document was updated. Follow nearby style and avoid bulk formatting. |
 
 ## Configuration And Environment
 
@@ -39,17 +39,20 @@ Important configuration areas:
 | `ConnectionStrings:DatabaseProvider` | Selects `SqlServer` or `PostgreSql`. | Yes | Keep provider names aligned with `AddMoongladeDatabase`. |
 | `Authentication:Provider` | Selects local auth or Microsoft Entra ID. | Yes | Entra ID settings live under `Authentication:EntraID`. |
 | `Authentication:Totp:Issuer` | Display issuer for local-account authenticator app QR codes. | Optional | Defaults to `Moonglade`; the TOTP secret is stored in `LocalAccountSettings`. |
+| `Authentication:Totp:Required` | Requires local-account authenticator verification after password sign-in. | Optional | Defaults to `true`; `false` is honored only in the `Development` environment. |
+| `Authentication:LocalAccountRateLimit` | Fixed-window rate limiting for local password sign-in and TOTP verification attempts. | Optional | Defaults to enabled, 10 attempts per 1 minute, partitioned by client IP and account context. |
 | `CommentRateLimit` | Built-in comment submission rate limiting by client IP and post ID. | Optional | Uses a fixed window policy. |
 | `CommentSubmissionGuard` | Built-in comment honeypot and elapsed-time checks. | Optional | Rejects filled honeypot fields, too-fast submissions, and stale form timestamps. |
 | `Webmention` | Webmention options, including source rate limiting. | Optional | Preserve protocol endpoint behavior. |
-| `Email` | Notification API endpoint/key/header. | Optional | Store real keys outside source control. |
+| `Email` | Email provider settings and database outbox worker options. | Optional | Supports `AzureCommunication` and `smtp`; store real connection strings and passwords outside source control. `Email:OutboxWorker:Enabled=false` stops in-process delivery but does not prevent enqueueing. |
 | `IndexNow` | API key, ping targets, and cooldown interval. | Optional | API key also maps the IndexNow verification file endpoint. |
 | `ForwardedHeaders` | Reverse proxy/client IP configuration. | Deployment-dependent | Required behind some proxies/load balancers. |
 | `EnableCSP`, `CSPValue` | Optional Content Security Policy response header. | Optional | `X-Content-Type-Options: nosniff` is always emitted; CSP is emitted only when enabled and non-empty. |
-| `ImageStorage` | Selects `filesystem` or `azurestorage` and related paths/container names. | Yes | Use environment overrides for provider secrets and production paths. |
+| `ImageStorage` | Selects `filesystem`, `azurestorage`, or `s3compatible` and related paths/container/bucket names. | Yes | Use environment overrides for provider secrets and production paths. S3-compatible credentials live under `ImageStorage:S3CompatibleStorageSettings`. |
 | `DefaultEditor` | Default post content editor/content type. | Optional | Used during startup backfill for older posts. |
 | `PostCacheMinutes`, `PagesCacheMinutes`, `WidgetCacheMinutes` | Cache durations. | Optional | Revisit when changing rendering or invalidation paths. |
 | `AutoDatabaseMigration` | Startup migration behavior. | Optional | Be careful when changing deployment/database initialization behavior. |
+| `CannonService:QueueCapacity` | Capacity for the in-process fire-and-forget background queue. | Optional | Defaults to `1000`; when full, new work is rejected and logged instead of running inline on the request path. |
 | `EnableUpdateCheck`, `UpdateCheckCron` | GitHub release update check scheduling. | Optional | Cron parsing is handled by `Cronos`. |
 | `ViewCount` | Crawler user-agent filtering and deduplication window. | Optional | Affects analytics/view-count behavior. |
 | `.env.example` / `MSSQL_SA_PASSWORD` | Docker Compose SQL Server password override. | Local/deployment-dependent | Use a strong secret value outside committed files. |
@@ -71,7 +74,7 @@ Important configuration areas:
 - Built-in comment creation is also protected by host-level `CommentRateLimit` settings that partition requests by client IP and post ID.
 - Built-in comment creation checks `CommentSubmissionGuard` honeypot and elapsed-time fields before dispatching the create command.
 - Content moderation is abstracted in `Moonglade.Moderation` and supports local keyword filtering. Do not put moderation behavior directly in controllers.
-- Comments, replies, and Webmentions can trigger activity logs and email notifications. Slow external calls should go through existing events, `CannonService`, or background mechanisms instead of blocking request handlers.
+- Comments, replies, and Webmentions can trigger activity logs and email notifications. Email notification handlers should enqueue to the database outbox; external delivery belongs in `EmailOutboxWorker` instead of request handlers.
 
 ### Configuration
 
@@ -82,16 +85,20 @@ Important configuration areas:
 ### Authentication And Security
 
 - Authentication logic lives in `Moonglade.Auth` and supports local accounts with TOTP and Microsoft Entra ID.
+- Local-account password sign-in and TOTP setup/verification are protected by `LocalAccountRateLimitPolicy`; keep the default 10 attempts per 1 minute unless there is a deployment-specific reason to adjust `Authentication:LocalAccountRateLimit`.
 - Admin Razor Pages are authorized by Razor Pages conventions; API controllers inherit `[Authorize]` from `BlogControllerBase`.
 - Controllers use antiforgery validation by default. Use `[IgnoreAntiforgeryToken]` only for deliberate endpoints such as keep-alive or protocol callbacks.
 - Do not commit real connection strings, API keys, tenant IDs, or storage credentials. Use configuration binding and environment variable overrides.
+- Treat `src/Moonglade.Web/appsettings.Development.json` as a local override that may contain developer secrets; do not quote or copy sensitive values from it into code, docs, logs, commits, or task records.
+- Preserve HTTPS, forwarded header, health check, security header, authentication, and content moderation behavior unless the task explicitly targets them.
 
 ### Images, Themes, Feeds, And Protocols
 
-- Image storage is abstracted in `Moonglade.ImageStorage` and supports Azure Blob Storage and the local file system. New image behavior should depend on `IBlogImageStorage`, not on a concrete provider.
+- Image storage is abstracted in `Moonglade.ImageStorage` and supports Azure Blob Storage, S3-compatible object storage, and the local file system. New image behavior should depend on `IBlogImageStorage`, not on a concrete provider.
 - Themes and custom CSS are handled by `Moonglade.Theme` and `Moonglade.Web.Middleware.StyleSheetEndpoints`.
 - RSS, Atom, and OPML generation lives in `Moonglade.Syndication`; OpenSearch, FOAF, manifest, robots, and sitemap handlers live under `Moonglade.Web/Handlers`.
-- Preserve the public protocol endpoints listed in the README, including `/rss`, `/atom`, `/opml`, `/opensearch`, `/foaf.xml`, `/webmention`, and `/health`.
+- Preserve the public protocol endpoints listed in the README, including `/rss`, `/atom`, `/opml`, `/opensearch`, `/foaf.xml`, `/webmention`, `/health`, and `/health/ready`. Keep `/health` liveness-only; use `/health/ready` for database readiness.
+- Incoming Webmention source fetches must stay restricted to public HTTP/HTTPS URLs. Reject private, loopback, link-local, documentation, reserved, and other special-use source or redirect addresses before fetching content.
 
 ## Code Architecture
 
@@ -101,12 +108,14 @@ Important configuration areas:
 | --- | --- | --- |
 | Web host | `src/Moonglade.Web` | ASP.NET Core composition root, Razor Pages, API controllers, view components, filters, handlers, endpoint mapping, and static assets. |
 | Blog features | `src/Moonglade.Features` | Post, page, category, tag, comment, asset, recycle bin, and view-count commands/queries. |
+| Activity logging | `src/Moonglade.ActivityLog` | Activity log commands, queries, metadata helpers, and event type definitions. |
 | Data model | `src/Moonglade.Data` | EF Core `BlogDbContext`, entities, DTO/read models, provider-neutral mappings, and import/export primitives. |
 | Database providers | `src/Moonglade.Data.SqlServer`, `src/Moonglade.Data.PostgreSql` | SQL Server / PostgreSQL EF Core registration and provider-specific behavior. |
 | Configuration | `src/Moonglade.Configuration` | Blog setting models, defaults, loading, updates, and initialization-related logic. |
 | Authentication | `src/Moonglade.Auth` | Local account, TOTP verification, Entra ID, login validation, password updates, and authentication registration. |
-| Integrations | `src/Moonglade.Email.Client`, `src/Moonglade.IndexNow.Client`, `src/Moonglade.Moderation`, `src/Moonglade.Webmention` | External service clients, protocol send/receive logic, notifications, and moderation. |
-| Startup and background work | `src/Moonglade.Setup`, `src/Moonglade.BackgroundServices` | Startup initialization, database creation/migration, seed data, scheduled publishing, update checks, and fire-and-forget background queueing. |
+| Image storage | `src/Moonglade.ImageStorage` | Blog image storage abstractions, file naming, local file system storage, Azure Blob storage, S3-compatible object storage, and storage-related options. |
+| Integrations | `src/Moonglade.Email`, `src/Moonglade.IndexNow.Client`, `src/Moonglade.Moderation`, `src/Moonglade.Webmention` | Email outbox delivery, external service clients, protocol send/receive logic, notifications, and moderation. |
+| Startup and background work | `src/Moonglade.Setup`, `src/Moonglade.BackgroundServices`, `src/Moonglade.Email` | Startup initialization, database creation/migration, seed data, scheduled publishing, update checks, email outbox delivery, and fire-and-forget background queueing. |
 | Presentation helpers | `src/Moonglade.Theme`, `src/Moonglade.Widgets`, `src/Moonglade.Syndication` | Themes, widgets, feeds, and presentation-oriented read models. |
 | Shared utilities | `src/Moonglade.Utils`, `src/Moonglade.Web.Middleware` | Cross-cutting utilities, TagHelpers, and reusable middleware. |
 | Tests | `src/Tests/Moonglade.*.Tests` | Tests that match the production project or feature area being changed. |
@@ -114,7 +123,7 @@ Important configuration areas:
 ### Web Entry Point
 
 - `src/Moonglade.Web/Program.cs` should stay as startup orchestration: load business assemblies, create the builder, register services, build the app, run startup initialization, attach the request pipeline, and map endpoints.
-- Service registration is centralized in `src/Moonglade.Web/Extensions/ServiceCollectionExtensions.cs`.
+- Reusable service registration belongs in `IServiceCollection` extension methods in the owning project. Compose Web-host services in `src/Moonglade.Web/Extensions/ServiceCollectionExtensions.cs`, and avoid adding feature-specific registration details directly to `Program.cs` unless the Web host is genuinely the owner.
 - Request pipeline and endpoint mapping are centralized in `src/Moonglade.Web/Extensions/WebApplicationExtensions.cs`.
 - If a new project contains LiteBus handlers, confirm `Program.LoadAssemblies()` loads that assembly; otherwise command/query/event handlers may not be discovered at runtime.
 
@@ -132,6 +141,7 @@ Important configuration areas:
 - Prefer provider-neutral configuration in `Moonglade.Data.Configurations`; SQL Server/PostgreSQL-specific behavior belongs in the provider projects.
 - Keep queries compatible with both SQL Server and PostgreSQL. Avoid scattered provider-specific SQL; isolate it in provider projects if it is truly necessary.
 - Prefer `AsNoTracking()` for read-only queries. Use async EF Core APIs and pass `CancellationToken` through write operations and handlers where available.
+- Use EF Core set-based operations such as `ExecuteDeleteAsync` when they fit the existing pattern.
 - Be careful with many-to-many relationships, cascade behavior, slug/route link generation, publish timestamps, and soft-delete fields because posts, lists, archives, tags, feeds, sitemap, and cache invalidation depend on them.
 
 ## Coding Guidelines
@@ -139,11 +149,17 @@ Important configuration areas:
 ### C# / ASP.NET Core
 
 - The target framework is `net10.0`. Follow the existing C# style, including implicit usings, primary constructors, record request models, and feature-local files.
+- Use the latest applicable C# features while staying readable and consistent with nearby code.
 - Keep namespaces aligned with folders. Put new code in the project and feature folder that owns the behavior.
 - Use constructor injection. Do not introduce service locators or unnecessary static mutable state.
+- Use async APIs end to end and pass `CancellationToken` through command/query handlers and EF Core calls where available.
+- Use UTC for persisted or cross-boundary timestamps. Convert to user/client time only at the UI or boundary layer.
+- Prefer nullable-safe code and explicit validation for public inputs.
+- Do not use C# anonymous object initializers (`new { ... }`) in C# source or test files. Razor files are excluded from this rule because route values, HTML attributes, and view component arguments commonly use anonymous objects there.
 - Use structured logging placeholders, for example `logger.LogInformation("Post updated with ID: {PostId}", post.Id);`.
 - Keep comments sparse and useful. Add comments only for non-obvious compatibility, security, localization, protocol, or business decisions.
 - Keep changes cross-platform, especially paths, environment variables, container behavior, and Linux App Service scenarios.
+- When touching deployment assets, keep Azure App Service on Linux, Docker Compose, SQL Server, and PostgreSQL scenarios in mind.
 
 ### HTTP And Error Handling
 
@@ -151,21 +167,30 @@ Important configuration areas:
 - For new APIs, follow existing response styles: `Ok`, `NoContent`, `NotFound`, `Conflict`, `ValidationProblem`, or ProblemDetails-compatible responses.
 - Avoid using ambiguous `null` for multiple failure reasons. For new complex behavior, prefer a lightweight result model that distinguishes not found, validation failure, conflict, forbidden, and success.
 - Validate public inputs explicitly. Reuse existing attributes such as `[NotEmpty]`, `[Range]`, and `[Required]` where appropriate.
+- Use ProblemDetails-compatible responses for API failures where practical, and preserve existing response shapes for public endpoints unless the task explicitly changes them.
+- Do not swallow exceptions from external services silently. Log enough context to diagnose the operation, target resource, and available correlation details.
 
 ### Caching And Side Effects
 
 - Write operations must consider cache impact. Changes to posts, pages, categories, tags, widgets, configuration, themes, comments, and assets can affect page caches, post caches, sitemap, feeds, archives, tag/category lists, and widget caches.
 - Existing caching uses `Edi.CacheAside.InMemory` and `BlogCachePartition`. Controllers commonly use the `ClearBlogCache` filter, and workflows sometimes call `cache.Remove` directly.
-- Publishing posts can trigger Webmention and IndexNow. Comments, replies, and Webmentions can trigger email notifications. New side effects should usually be events or background work.
+- Prefer centralized invalidation through filters or event handlers over scattered controller-level `cache.Remove(...)` calls when adding new write paths.
+- For post and page writes, review sitemap, feed/subscription, per-post/page, archive, tag/category, and widget cache impact.
+- For settings and theme changes, review site-wide rendering, custom CSS, manifest, robots, FOAF, and sitemap impact.
+- Publishing posts can trigger Webmention and IndexNow. Comments, replies, and Webmentions can trigger email notifications. New side effects should usually be events or background work through existing services such as `CannonService`, LiteBus events, `IWebmentionSender`, `IIndexNowClient`, and the email outbox instead of slow inline request work.
+- `CannonService` is an in-process bounded queue controlled by `CannonService:QueueCapacity`; do not run overflow work inline on request paths.
+- Preserve hosted service patterns for scheduled publishing and update checks. Configuration-driven background behavior should remain controlled by `appsettings` values.
 
 ### Razor, Static Assets, And Localization
 
-- Public and admin pages are primarily Razor Pages under `src/Moonglade.Web/Pages`.
+- Public and admin pages are primarily Razor Pages and partials under `src/Moonglade.Web/Pages`.
 - Admin JSON operations are primarily API controllers under `src/Moonglade.Web/Controllers`.
-- Frontend code is built around the existing Razor layouts, Bootstrap, Alpine.js, Moonglade.Editor, Monaco editor, and Tagify. Do not add a new frontend framework unless explicitly requested.
+- Prefer JavaScript modules (`.mjs`) for application scripts. Keep third-party or bundled library files under the existing `wwwroot/lib` or `wwwroot/js/3rd` conventions.
+- Frontend code is built around the existing Razor layouts, Bootstrap, Alpine.js, unified Moonglade.Editor modes, and Tagify. Do not add a new frontend framework unless explicitly requested.
+- Mermaid code blocks in Markdown posts are rendered on the reading and post-preview pages by `src/Moonglade.Web/wwwroot/js/app/post.mermaid.mjs`, using the local Mermaid.js asset in `src/Moonglade.Web/wwwroot/js/3rd`. Keep Mermaid blocks out of highlight.js processing.
 - Code block language support has two UI surfaces: the public post renderer and the admin Moonglade.Editor code sample dialog. When adding a highlight.js language, register the language before `hljs.highlightElement` in `src/Moonglade.Web/wwwroot/js/app/post.highlight.mjs` and also add the language to `codeSampleLanguages` in `src/Moonglade.Web/wwwroot/js/app/admin.editor.module.mjs`, otherwise authors cannot select it from the editor.
 - Server-rendered UI text should consider resource files. Supported cultures are currently `en-US`, `zh-Hans`, `zh-Hant`, `de-DE`, and `ja-JP`.
-- Localization uses shared resources under `src/Moonglade.Web/Resources/Program.*.resx`. Razor pages inject `IStringLocalizer<Program>` as `SharedLocalizer`, and DataAnnotations display names are configured to use the same `Program` resource. When adding or renaming any `SharedLocalizer["..."]` key or `[Display(Name = "...")]` text, update all non-English resource files: `Program.zh-Hans.resx`, `Program.zh-Hant.resx`, `Program.de-DE.resx`, and `Program.ja-JP.resx`.
+- Non-English shared resources live under `src/Moonglade.Web/Resources/Program.*.resx`; neutral English strings are used as resource keys in Razor/C# code. Razor pages inject `IStringLocalizer<Program>` as `SharedLocalizer`, and DataAnnotations display names are configured to use the same `Program` resource. When adding or renaming any `SharedLocalizer["..."]` key or `[Display(Name = "...")]` text, update all non-English resource files: `Program.zh-Hans.resx`, `Program.zh-Hant.resx`, `Program.de-DE.resx`, and `Program.ja-JP.resx`.
 
 ### Documentation And Licenses
 
@@ -183,13 +208,12 @@ dotnet restore src/Moonglade.Web/Moonglade.Web.csproj
 dotnet build src/Moonglade.Web/Moonglade.Web.csproj
 dotnet test src/Tests/Moonglade.Features.Tests/Moonglade.Features.Tests.csproj
 dotnet test src/Tests/Moonglade.Web.Tests/Moonglade.Web.Tests.csproj
-powershell -ExecutionPolicy Bypass -File .codex/skills/update-moonglade-editor-assets/scripts/update-moonglade-editor-assets.ps1
 docker compose up -d
 ```
 
-The default local launch URL comes from `src/Moonglade.Web/Properties/launchSettings.json`: `https://localhost:10210`. The admin portal is `/admin`; the default local account is documented in the README. First local-account sign-in after deployment or upgrade requires authenticator app TOTP setup.
+The default local launch URL comes from `src/Moonglade.Web/Properties/launchSettings.json`: `https://localhost:10210`. The admin portal is `/admin`; the default local account is documented in the README. In non-Development environments, or whenever `Authentication:Totp:Required` is `true`, first local-account sign-in after deployment or upgrade requires authenticator app TOTP setup.
 
-Project-level Codex skills live under `.codex/skills/`. Use `update-moonglade-editor-assets` when syncing the latest `Moonglade.Editor` build output into `src/Moonglade.Web/wwwroot/lib/moonglade-editor/`.
+Moonglade consumes Moonglade.Editor through the `Moonglade.Editor.StaticAssets` NuGet package, served from `/_content/Moonglade.Editor.StaticAssets/moonglade-editor/`. Do not copy editor build output into `src/Moonglade.Web/wwwroot/lib/moonglade-editor/` or other `wwwroot` paths.
 
 ### Testing Conventions
 
@@ -200,6 +224,7 @@ Project-level Codex skills live under `.codex/skills/`. Use `update-moonglade-ed
   - Auth/configuration/theme/syndication/webmention/image storage/moderation/email/indexnow/background/setup: the matching `Moonglade.*.Tests` project.
 - Tests use xUnit v3, Moq, and EF Core InMemory/Sqlite patterns.
 - When following the existing async test style, use `TestContext.Current.CancellationToken`.
+- Prefer focused unit tests for command/query handlers, services, middleware, validators, and protocol generators. Use integration tests when behavior depends on EF/database setup or host-level wiring.
 - Prefer running the affected test project. For cross-module changes or startup registration changes, at least run the Web project build.
 
 ## Pre-Change Checklist

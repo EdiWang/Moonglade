@@ -30,7 +30,7 @@ public class ScheduleController(
             EventType.PostScheduleCancelled,
             "Cancel Post Schedule",
             $"Post #{postId}",
-            new { PostId = postId });
+            ActivityLogMetaData.Create(("PostId", postId)));
 
         return NoContent();
     }
@@ -44,7 +44,9 @@ public class ScheduleController(
             EventType.PostSchedulePostponed,
             "Postpone Post Schedule",
             $"Post #{postId}",
-            new { PostId = postId, Hours = hours });
+            ActivityLogMetaData.Create(
+                ("PostId", postId),
+                ("Hours", hours)));
 
         return NoContent();
     }

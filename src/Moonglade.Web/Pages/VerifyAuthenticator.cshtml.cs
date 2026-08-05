@@ -1,13 +1,16 @@
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.Cookies;
+using Microsoft.AspNetCore.RateLimiting;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.Extensions.Options;
+using Moonglade.Web.Services;
 using System.ComponentModel.DataAnnotations;
 using System.Security.Claims;
 
 namespace Moonglade.Web.Pages;
 
 [Authorize(AuthenticationSchemes = BlogAuthSchemas.LocalAccountTwoFactor)]
+[EnableRateLimiting(LocalAccountRateLimitPolicy.PolicyName)]
 public class VerifyAuthenticatorModel(
     IOptions<AuthenticationSettings> authSettings,
     IBlogConfig blogConfig,

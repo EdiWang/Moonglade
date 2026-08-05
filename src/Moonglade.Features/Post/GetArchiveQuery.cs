@@ -19,8 +19,8 @@ public class GetArchiveQueryHandler(BlogDbContext dbContext) : IQueryHandler<Get
         }
 
         var list = await query
-            .GroupBy(post => new { post.PubDateUtc!.Value.Year, post.PubDateUtc.Value.Month })
-            .Select(p => new Archive(p.Key.Year, p.Key.Month, p.Count()))
+            .GroupBy(post => post.PubDateUtc!.Value.Year * 100 + post.PubDateUtc.Value.Month)
+            .Select(p => new Archive(p.Key / 100, p.Key % 100, p.Count()))
             .ToListAsync(ct);
 
         return list;

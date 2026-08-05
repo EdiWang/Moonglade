@@ -30,6 +30,15 @@ public class SettingsControllerTests
     };
 
     [Fact]
+    public void TestEmail_UsesGlobalAntiforgeryValidation()
+    {
+        var method = typeof(SettingsController).GetMethod(nameof(SettingsController.TestEmail), Type.EmptyTypes);
+
+        Assert.NotNull(method);
+        Assert.Empty(method!.GetCustomAttributes(typeof(IgnoreAntiforgeryTokenAttribute), inherit: false));
+    }
+
+    [Fact]
     public async Task ResetLocalAccountTotp_WhenPasswordIsValid_DisablesTotpAndSignsOut()
     {
         var account = CreateLocalAccount();

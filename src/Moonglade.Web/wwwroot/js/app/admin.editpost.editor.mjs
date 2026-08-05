@@ -1,107 +1,59 @@
 import { codeSampleLanguages } from './admin.editor.module.mjs';
 
-const htmlEditorModulePath = '/lib/moonglade-editor/moonglade-editor.js';
+const editorModulePath = '/_content/Moonglade.Editor.StaticAssets/moonglade-editor/moonglade-editor.js';
 const htmlEditorImageExtensions = ['.png', '.jpg', '.jpeg', '.gif', '.webp', '.svg'];
+const csrfFieldName = 'CSRF-TOKEN-MOONGLADE-FORM';
 
-const scriptPromises = new Map();
-let htmlEditorModulePromise = null;
+let editorModulePromise = null;
 
-function loadScript(src) {
-    if (scriptPromises.has(src)) {
-        return scriptPromises.get(src);
+async function ensureMoongladeEditor() {
+    if (!editorModulePromise) {
+        editorModulePromise = import(editorModulePath);
     }
 
-    const existing = document.querySelector(`script[src="${src}"]`);
-    if (existing) {
-        // If the script element is already loaded, resolve immediately and cache.
-        if (
-            existing.dataset.loaded === 'true' ||
-            existing.readyState === 'complete' ||
-            existing.readyState === 'loaded'
-        ) {
-            const resolved = Promise.resolve();
-            scriptPromises.set(src, resolved);
-            return resolved;
-        }
-        // Script tag exists but may still be loading; create a promise that
-        // resolves when it finishes, and attach listeners if not already present.
-        const promise = new Promise((resolve, reject) => {
-            const onLoad = () => {
-                existing.dataset.loaded = 'true';
-                existing.removeEventListener('load', onLoad);
-                existing.removeEventListener('error', onError);
-                resolve();
-            };
-            const onError = (e) => {
-                existing.removeEventListener('load', onLoad);
-                existing.removeEventListener('error', onError);
-                scriptPromises.delete(src);
-                reject(e);
-            };
+    return await editorModulePromise;
+}
 
-            existing.addEventListener('load', onLoad);
-            existing.addEventListener('error', onError);
-        });
-        scriptPromises.set(src, promise);
-        return promise;
-    }
+function getCsrfToken() {
+    return document.querySelector(`input[name="${csrfFieldName}"]`)?.value ?? '';
+}
 
-    const promise = new Promise((resolve, reject) => {
-        const script = document.createElement('script');
-        script.src = src;
-        script.onload = () => {
-            script.dataset.loaded = 'true';
-            resolve();
-        };
-        script.onerror = (e) => {
-            scriptPromises.delete(src);
-            reject(e);
-        };
-        document.head.appendChild(script);
+async function uploadPostImage(file) {
+    const formData = new FormData();
+    formData.append('file', file);
+
+    const response = await fetch('/image', {
+        method: 'POST',
+        credentials: 'include',
+        headers: {
+            'Accept': 'application/json',
+            'XSRF-TOKEN': getCsrfToken()
+        },
+        body: formData
     });
 
-    scriptPromises.set(src, promise);
-    return promise;
-}
-
-let monacoReady = false;
-
-async function ensureMoongladeHtmlEditor() {
-    if (!htmlEditorModulePromise) {
-        htmlEditorModulePromise = import(htmlEditorModulePath);
+    if (!response.ok) {
+        const message = await response.text();
+        throw new Error(message || `Image upload failed with status ${response.status}.`);
     }
 
-    return await htmlEditorModulePromise;
-}
+    const result = await response.json();
+    const url = result?.location || result?.filename;
 
-async function ensureMonaco() {
-    if (monacoReady) return;
-
-    await loadScript('/lib/moonglade-monaco/min/vs/loader.js');
-
-    require.config({ paths: { 'vs': '/lib/moonglade-monaco/min/vs' } });
-
-    if (!window.initEditor) {
-        window.initEditor = function (containerId, textAreaQuerySelector, lang) {
-            var editorDiv = document.getElementById(containerId);
-
-            if (window.getPreferredTheme && window.getPreferredTheme() === 'dark') {
-                monaco.editor.setTheme('vs-dark');
-            }
-
-            var editorInstance = monaco.editor.create(editorDiv, { language: lang });
-            editorInstance.layout();
-
-            var editorValue = document.querySelector(textAreaQuerySelector).value;
-            editorInstance.setValue(editorValue);
-
-            return editorInstance;
-        };
+    if (!url) {
+        throw new Error('Image upload response did not include an image URL.');
     }
 
-    await loadScript('/js/3rd/inline-attachment.js');
-    await loadScript('/js/3rd/monaco.inline-attachment.js');
-    monacoReady = true;
+    return {
+        src: url,
+        alt: result?.filename || file.name,
+        title: result?.title
+    };
+}
+
+async function uploadMarkdownImage(file) {
+    const result = await uploadPostImage(file);
+    return { url: result.src };
 }
 
 export function createEditorMixin() {
@@ -110,8 +62,9 @@ export function createEditorMixin() {
         _editorInitialized: false,
 
         async initEditor() {
+            const { createMoongladeEditor } = await ensureMoongladeEditor();
+
             if (this.formData.contentType === 'html') {
-                const { createMoongladeEditor } = await ensureMoongladeHtmlEditor();
                 const editorElement = document.getElementById('html-content-editor');
                 const textarea = document.querySelector('.post-content-textarea');
 
@@ -121,11 +74,12 @@ export function createEditorMixin() {
                     }
 
                     window.htmlContentEditor = createMoongladeEditor({
+                        mode: 'rich-html',
                         element: editorElement,
                         textarea,
                         height: '100%',
                         spellcheck: true,
-                        uploadUrl: '/image',
+                        uploadImage: uploadPostImage,
                         allowedImageExtensions: htmlEditorImageExtensions,
                         codesample_languages: codeSampleLanguages,
                         onChange: (html) => {
@@ -136,45 +90,30 @@ export function createEditorMixin() {
             }
 
             if (this.formData.contentType === 'markdown') {
-                await ensureMonaco();
+                const editorElement = document.getElementById('markdown-content-editor');
+                const textarea = document.querySelector('.post-content-textarea');
 
-                await new Promise((resolve) => {
-                    require(['vs/editor/editor.main'], () => {
-                        window.mdContentEditor = window.initEditor('markdown-content-editor', '.post-content-textarea', 'markdown');
+                if (editorElement && textarea) {
+                    if (window.mdContentEditor) {
+                        window.mdContentEditor.destroy();
+                    }
 
-                        if (this.formData.editorContent) {
-                            window.mdContentEditor.setValue(this.formData.editorContent);
+                    window.mdContentEditor = createMoongladeEditor({
+                        mode: 'markdown',
+                        element: editorElement,
+                        textarea,
+                        content: this.formData.editorContent || '',
+                        height: '100%',
+                        lineWrapping: true,
+                        tabSize: 2,
+                        markdownImageUpload: {
+                            upload: uploadMarkdownImage
+                        },
+                        onChange: (markdown) => {
+                            this.formData.editorContent = markdown;
                         }
-
-                        inlineAttachment.editors.monaco.attach(
-                            window.mdContentEditor,
-                            document.getElementsByClassName('md-editor-image-upload-area')[0],
-                            {
-                                uploadUrl: '/image',
-                                urlText: '![file]({filename})',
-                                onFileUploadResponse: function (xhr) {
-                                    var result = JSON.parse(xhr.responseText),
-                                        filename = result[this.settings.jsonFieldName];
-
-                                    if (result && filename) {
-                                        var newValue;
-                                        if (typeof this.settings.urlText === 'function') {
-                                            newValue = this.settings.urlText.call(this, filename, result);
-                                        } else {
-                                            newValue = this.settings.urlText.replace(this.filenameTag, filename);
-                                        }
-                                        var text = this.editor.getValue().replace(this.lastValue, newValue);
-                                        this.editor.setValue(text);
-                                        this.settings.onFileUploaded.call(this, filename);
-                                    }
-                                    return false;
-                                }
-                            }
-                        );
-
-                        resolve();
                     });
-                });
+                }
             }
 
             this._editorInitialized = true;
@@ -191,7 +130,7 @@ export function createEditorMixin() {
                 window.htmlContentEditor = null;
             }
             if (window.mdContentEditor) {
-                window.mdContentEditor.dispose();
+                window.mdContentEditor.destroy();
                 window.mdContentEditor = null;
             }
 

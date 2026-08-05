@@ -19,6 +19,7 @@ export const codeSampleLanguages = [
     { text: 'LaTeX', value: 'latex' },
     { text: 'Lua', value: 'lua' },
     { text: 'Markdown', value: 'markdown' },
+    { text: 'Mermaid', value: 'mermaid' },
     { text: 'Nginx', value: 'nginx' },
     { text: 'PowerShell', value: 'powershell' },
     { text: 'Plain Text', value: 'plaintext' },
@@ -76,7 +77,7 @@ export async function initEvents(slugifyTitle) {
         }
 
         if (window.mdContentEditor) {
-            assignEditorValues(window.mdContentEditor, ".post-content-textarea");
+            window.mdContentEditor.syncToTextarea();
         }
 
         if (document.querySelector('input[name="ViewModel.PostStatus"]').value === 'published') {

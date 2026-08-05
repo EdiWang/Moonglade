@@ -5,7 +5,7 @@ using LiteBus.Queries.Abstractions;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Moonglade.ActivityLog;
-using Moonglade.Email.Client;
+using Moonglade.Email;
 using Moonglade.Features.Asset;
 
 namespace Moonglade.Web.Controllers;
@@ -28,7 +28,9 @@ public class SettingsController(
 
         return await UpdateSettingsAsync(blogConfig.GeneralSettings,
             EventType.SettingsGeneralUpdated, "Update General Settings", "General Settings",
-            new { model.SiteTitle, model.LogoText });
+            ActivityLogMetaData.Create(
+                ("SiteTitle", model.SiteTitle),
+                ("LogoText", model.LogoText)));
     }
 
     [HttpPost("content")]
@@ -45,7 +47,9 @@ public class SettingsController(
         blogConfig.CommentSettings = model;
         return await UpdateSettingsAsync(blogConfig.CommentSettings,
             EventType.SettingsCommentUpdated, "Update Comment Settings", "Comment Settings",
-            new { model.EnableComments, model.RequireCommentReview });
+            ActivityLogMetaData.Create(
+                ("EnableComments", model.EnableComments),
+                ("RequireCommentReview", model.RequireCommentReview)));
     }
 
     [HttpPost("notification")]
@@ -57,7 +61,6 @@ public class SettingsController(
     }
 
     [HttpPost("email/test")]
-    [IgnoreAntiforgeryToken]
     public async Task<IActionResult> TestEmail()
     {
         try
@@ -118,7 +121,9 @@ public class SettingsController(
 
         return await UpdateSettingsAsync(blogConfig.ImageSettings,
             EventType.SettingsImageUpdated, "Update Image Settings", "Image Settings",
-            new { model.EnableCDNRedirect, model.IsWatermarkEnabled });
+            ActivityLogMetaData.Create(
+                ("EnableCDNRedirect", model.EnableCDNRedirect),
+                ("IsWatermarkEnabled", model.IsWatermarkEnabled)));
     }
 
     [HttpPost("advanced")]
@@ -158,7 +163,9 @@ public class SettingsController(
         blogConfig.AppearanceSettings = model;
         return await UpdateSettingsAsync(blogConfig.AppearanceSettings,
             EventType.SettingsAppearanceUpdated, "Update Appearance Settings", "Appearance Settings",
-            new { model.ThemeId, model.EnableCustomCss });
+            ActivityLogMetaData.Create(
+                ("ThemeId", model.ThemeId),
+                ("EnableCustomCss", model.EnableCustomCss)));
     }
 
     [HttpGet("custom-menu")]
@@ -199,18 +206,14 @@ public class SettingsController(
 
         return await UpdateSettingsAsync(blogConfig.CustomMenuSettings,
             EventType.SettingsCustomMenuUpdated, "Update Custom Menu Settings", "Custom Menu Settings",
-            new { model.IsEnabled });
+            ActivityLogMetaData.Create(("IsEnabled", model.IsEnabled)));
     }
 
     [HttpGet("password/generate")]
     public IActionResult GeneratePassword([FromServices] IPasswordGenerator passwordGenerator)
     {
         var password = passwordGenerator.GeneratePassword(new(10, 3));
-        return Ok(new
-        {
-            ServerTimeUtc = DateTime.UtcNow,
-            Password = password
-        });
+        return Ok(new GeneratedPasswordResponse(DateTime.UtcNow, password));
     }
 
     [HttpPut("password/local")]
@@ -232,7 +235,7 @@ public class SettingsController(
 
         return await UpdateSettingsAsync(newSettings,
             EventType.SettingsPasswordUpdated, "Update Local Account Password", request.NewUsername,
-            new { Username = request.NewUsername });
+            ActivityLogMetaData.Create(("Username", request.NewUsername)));
     }
 
     [HttpPut("totp/local/reset")]
@@ -257,7 +260,7 @@ public class SettingsController(
             EventType.SettingsAuthenticatorReset,
             "Reset Local Account Authenticator",
             account.Username,
-            new { account.Username });
+            ActivityLogMetaData.Create(("Username", account.Username)));
 
         await HttpContext.SignOutAsync(CookieAuthenticationDefaults.AuthenticationScheme);
         await HttpContext.SignOutAsync(BlogAuthSchemas.LocalAccountSetup);
@@ -284,3 +287,5 @@ public class SettingsController(
         await CommandMediator.SendAsync(new UpdateConfigurationCommand(kvp.Key, kvp.Value));
     }
 }
+
+file sealed record GeneratedPasswordResponse(DateTime ServerTimeUtc, string Password);

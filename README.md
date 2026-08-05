@@ -8,7 +8,7 @@ Moonglade provides a self-hosted blog with a public reading experience and an au
 
 Key business areas include:
 
-- **Content publishing:** posts, drafts, scheduled posts, pages, featured/outdated flags, archives, recycle bin behavior, and route links for published posts.
+- **Content publishing:** posts, drafts, scheduled posts, Markdown Mermaid diagrams, pages, featured/outdated flags, archives, recycle bin behavior, and route links for published posts.
 - **Reader interaction:** comments, replies, Webmentions, comment moderation, view counts, and optional email notifications.
 - **Site management:** runtime blog settings, widgets, themes, custom CSS, menus, image storage, account settings, and data import/export.
 - **Discovery and interoperability:** RSS, Atom, OPML, OpenSearch, FOAF, sitemap, robots.txt, IndexNow, reader-friendly markup, and health checks.
@@ -50,12 +50,6 @@ For local testing or small-scale use, deploy Moonglade using Docker:
 docker compose up -d
 ```
 
-### Full Azure Deployment
-
-This mirrors how [edi.wang](https://edi.wang) is deployed, utilizing a variety of Azure services for maximum speed and security. **No automated script is provided**—manual resource creation is required.
-
-![Azure Architecture](https://img.edi.wang/ediwang-azure-arch-visio-oct2024.svg)
-
 ## 🛠️ Development
 
 | Tools                      | Alternatives                                                                                       |
@@ -87,6 +81,8 @@ dotnet build src/Moonglade.Web/Moonglade.Web.csproj
 dotnet run --project src/Moonglade.Web/Moonglade.Web.csproj
 ```
 
+The admin content editor is provided by the `Moonglade.Editor.StaticAssets` NuGet package. Its browser assets are served from `/_content/Moonglade.Editor.StaticAssets/moonglade-editor/`; do not copy editor build output into `wwwroot`.
+
 Focused tests can be run from the matching test project, for example:
 
 ```bash
@@ -110,16 +106,26 @@ dotnet test src/Tests/Moonglade.Web.Tests/Moonglade.Web.Tests.csproj
 
 - By default: Local accounts with TOTP authenticator app verification (manage via `/admin/account`)
 - Local sign-in is two-step after setup: username/password first, then the authenticator code on the next screen.
+- Local username/password sign-in and TOTP code verification are rate limited by client IP plus account context.
+- Local development can disable the TOTP step with `Authentication:Totp:Required=false`; this bypass is ignored outside the `Development` environment.
 - To replace a configured authenticator app, use `/admin/account` to reset it; the reset signs out the administrator and starts TOTP setup on the next sign-in.
-- Optional TOTP issuer display name for authenticator apps:
+- TOTP options:
 
 ```json
 "Authentication": {
   "Totp": {
-    "Issuer": "Moonglade"
+    "Issuer": "Moonglade",
+    "Required": true
+  },
+  "LocalAccountRateLimit": {
+    "Enabled": true,
+    "PermitLimit": 10,
+    "WindowMinutes": 1
   }
 }
 ```
+
+`Authentication:LocalAccountRateLimit` uses a fixed window. `PermitLimit` is the number of attempts allowed for the same partition during each window. Set `Enabled` to `false` only when another authentication-layer throttle is in place.
 
 - **Microsoft Entra ID** (Azure AD) supported. [Setup guide](https://github.com/EdiWang/Moonglade/wiki/Use-Microsoft-Entra-ID-Authentication)
 
@@ -156,7 +162,7 @@ Built-in comment submissions also use a hidden honeypot field and form elapsed-t
 
 Configure the `ImageStorage` section in `appsettings.json` to choose where blog images are stored.
 
-#### **Azure Blob Storage** (Recommended)
+#### **Azure Blob Storage**
 
 Create an [Azure Blob Storage](https://azure.microsoft.com/en-us/services/storage/blobs/) container with appropriate permissions:
 
@@ -165,11 +171,33 @@ Create an [Azure Blob Storage](https://azure.microsoft.com/en-us/services/storag
   "Provider": "azurestorage",
   "AzureStorageSettings": {
     "ConnectionString": "YOUR_CONNECTION_STRING",
-    "ContainerName": "YOUR_CONTAINER_NAME"
+    "ContainerName": "YOUR_CONTAINER_NAME",
+    "SecondaryContainerName": "YOUR_ORIGINAL_IMAGE_CONTAINER_NAME"
   }
 }
 ```
 - Enable CDN in admin settings for faster image delivery.
+
+#### **S3-Compatible Object Storage**
+
+Use `s3compatible` for AWS S3 and S3-compatible object storage services such as Cloudflare R2, MinIO, Backblaze B2, DigitalOcean Spaces, Alibaba Cloud OSS, and Tencent Cloud COS.
+
+```json
+{
+  "Provider": "s3compatible",
+  "S3CompatibleStorageSettings": {
+    "ServiceUrl": "https://YOUR_S3_COMPATIBLE_ENDPOINT",
+    "Region": "us-east-1",
+    "AccessKeyId": "YOUR_ACCESS_KEY_ID",
+    "SecretAccessKey": "YOUR_SECRET_ACCESS_KEY",
+    "BucketName": "YOUR_BUCKET_NAME",
+    "SecondaryBucketName": "YOUR_ORIGINAL_IMAGE_BUCKET_NAME",
+    "ForcePathStyle": false
+  }
+}
+```
+
+Use environment variables or another secret provider for credentials in production, for example `ImageStorage__S3CompatibleStorageSettings__SecretAccessKey`. Keep `InsertAsync` results as object keys; CDN/public URL behavior still comes from the admin image settings and the `/image/{filename}` endpoint.
 
 #### **File System** (Not recommended)
 
@@ -209,15 +237,34 @@ Moonglade always emits `X-Content-Type-Options: nosniff`. To enable a custom Con
 
 ### Email Notifications
 
-For notifications on new comments, replies and webmentions, use [Moonglade.Email Azure Function](https://github.com/EdiWang/Moonglade.Email):
+Email notifications for new comments, replies, and Webmentions are queued in the Moonglade database and delivered by the in-process email outbox worker. Configure the `Email` section in `appsettings.json`, then enable notifications in the admin portal.
 
 ```json
 "Email": {
-  "ApiEndpoint": "",
-  "ApiKey": ""
+  "Provider": "AzureCommunication",
+  "AcsConnectionString": "",
+  "AcsSenderAddress": "",
+  "OutboxWorker": {
+    "Enabled": true
+  }
 }
 ```
-Enable notifications in the admin portal.
+
+Supported providers are `AzureCommunication` and `smtp`. Use environment variable overrides such as `Email__AcsConnectionString` or `Email__SmtpPassword` for real secrets.
+
+Email delivery uses at-least-once processing. If the application stops while a message is being sent, a later retry can occasionally send a duplicate notification. Set `Email:OutboxWorker:Enabled` to `false` only when another process is responsible for draining the outbox.
+
+### Background Work Queue
+
+`CannonService` handles low-volume in-process fire-and-forget work such as Webmention pings, IndexNow notifications, and original image storage. Configure `CannonService:QueueCapacity` to bound memory use:
+
+```json
+"CannonService": {
+  "QueueCapacity": 1000
+}
+```
+
+When the queue is full, new work is rejected and logged instead of running inline on the request path.
 
 ### More Settings
 
@@ -242,12 +289,20 @@ Enable notifications in the admin portal.
 | MetaWeblog   | Blogging      | Deprecated  | N/A             |
 | Pingback     | Social        | Deprecated  | N/A             |
 
-## Health Check
+Incoming Webmention source URLs must use public HTTP/HTTPS addresses. Moonglade rejects private, loopback, link-local, documentation, reserved, and other special-use address ranges before fetching source content.
 
-To ensure your Moonglade instance is running, you can use the health check endpoint:
+## Health Checks
+
+To ensure your Moonglade process is running, use the liveness health check endpoint:
 
 ```
 GET /health
 ```
 
-This endpoint returns a simple JSON response indicating the status of your Moonglade instance.
+This endpoint is intentionally process-only and does not check database availability.
+
+For readiness diagnostics that include database connectivity, use:
+
+```
+GET /health/ready
+```

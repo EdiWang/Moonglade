@@ -1,6 +1,7 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Options;
 using System.Threading.Channels;
 
 namespace Moonglade.BackgroundServices;
@@ -19,12 +20,22 @@ public class CannonService : BackgroundService
     public CannonService(
         ILogger<CannonService> logger,
         IServiceScopeFactory scopeFactory)
+        : this(logger, scopeFactory, Options.Create(new CannonServiceOptions()))
+    {
+    }
+
+    public CannonService(
+        ILogger<CannonService> logger,
+        IServiceScopeFactory scopeFactory,
+        IOptions<CannonServiceOptions> options)
     {
         _logger = logger;
         _scopeFactory = scopeFactory;
-        _queue = Channel.CreateUnbounded<Func<IServiceProvider, Task>>(new UnboundedChannelOptions
+        var queueCapacity = Math.Max(1, options.Value.QueueCapacity);
+        _queue = Channel.CreateBounded<Func<IServiceProvider, Task>>(new BoundedChannelOptions(queueCapacity)
         {
-            SingleReader = true
+            SingleReader = true,
+            FullMode = BoundedChannelFullMode.Wait
         });
     }
 
@@ -48,7 +59,7 @@ public class CannonService : BackgroundService
                 }
             }))
         {
-            _logger.LogWarning("Failed to enqueue background work item of type {DependencyType}.", typeof(T).Name);
+            _logger.LogWarning("Failed to enqueue background work item of type {DependencyType} because the queue is full or stopping.", typeof(T).Name);
         }
     }
 

@@ -272,7 +272,7 @@ public class AssetsControllerTests
         Assert.Equal("127.0.0.1", activityCommand.IpAddress);
         Assert.Equal("unit-test-agent", activityCommand.UserAgent);
         Assert.NotNull(activityCommand.MetaData);
-        Assert.Equal("64x64", activityCommand.MetaData!.GetType().GetProperty("ImageSize")!.GetValue(activityCommand.MetaData));
+        Assert.Equal("64x64", ActivityLogMetaDataAssert.Value<string>(activityCommand, "ImageSize"));
     }
 
     private AssetsController CreateController(

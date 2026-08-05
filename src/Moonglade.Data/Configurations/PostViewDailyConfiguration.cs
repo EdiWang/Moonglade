@@ -7,7 +7,7 @@ public class PostViewDailyConfiguration : IEntityTypeConfiguration<PostViewDaily
 {
     public void Configure(EntityTypeBuilder<PostViewDailyEntity> builder)
     {
-        builder.HasKey(e => new { e.PostId, e.ViewDateUtc });
+        builder.HasKey(nameof(PostViewDailyEntity.PostId), nameof(PostViewDailyEntity.ViewDateUtc));
         builder.HasIndex(e => e.ViewDateUtc);
         builder.Property(e => e.PostId).ValueGeneratedNever();
     }

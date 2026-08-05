@@ -31,7 +31,7 @@
 
 @section head {
     <link href="~/lib/tagify/tagify.css" rel="stylesheet" />
-    <link href="~/lib/moonglade-editor/moonglade-editor.css" rel="stylesheet" />
+    <link href="~/_content/Moonglade.Editor.StaticAssets/moonglade-editor/moonglade-editor.css" rel="stylesheet" asp-append-version="true" />
 }
 
 @Html.AntiForgeryToken()
@@ -78,11 +78,8 @@
                 </template>
                 <template x-if="formData.contentType === 'markdown'">
                     <div class="post-editor-md-wrapper">
-                        <div id="markdown-content-editor" class="monaco-target overflow-y-hidden"></div>
+                        <div id="markdown-content-editor" class="post-code-editor"></div>
                         <textarea class="post-content-textarea d-none" x-model="formData.editorContent"></textarea>
-                        <div class="md-editor-image-upload-area text-center border-secondary-subtle p-3 mt-1">
-                            @SharedLocalizer["Drag & Drop / Paste image here to upload."]
-                        </div>
                     </div>
                 </template>
 

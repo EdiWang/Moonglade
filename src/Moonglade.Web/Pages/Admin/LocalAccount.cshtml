@@ -14,21 +14,30 @@
      data-password-updated="@SharedLocalizer["Password updated."]">
 </div>
 
-@section admintoolbar {
-    <div class="admin-toolbar pb-2 border-bottom mb-3">
-        <a class="btn btn-outline-accent" href="javascript:;" x-on:click="openResetPasswordModal()">
+<div class="local-account-actions">
+    <button type="button"
+            class="local-account-action"
+            x-on:click="openResetPasswordModal()">
+        <span class="local-account-action-icon">
             <i class="bi-key"></i>
-            @SharedLocalizer["Change Password"]
-        </a>
-        <a class="btn btn-outline-accent" href="javascript:;" x-on:click="openResetAuthenticatorModal()">
-            <i class="bi-shield-lock"></i>
-            @SharedLocalizer["Reset Authenticator"]
-        </a>
-    </div>
-}
+        </span>
+        <span class="local-account-action-body">
+            <span class="local-account-action-title">@SharedLocalizer["Change Password"]</span>
+            <span class="local-account-action-description">@SharedLocalizer["Update your local username and password for administrator sign-in."]</span>
+        </span>
+    </button>
 
-<div class="alert alert-info">
-    @SharedLocalizer["Local account sign-in is protected by an authenticator app."]
+    <button type="button"
+            class="local-account-action local-account-action-danger"
+            x-on:click="openResetAuthenticatorModal()">
+        <span class="local-account-action-icon">
+            <i class="bi-shield-lock"></i>
+        </span>
+        <span class="local-account-action-body">
+            <span class="local-account-action-title">@SharedLocalizer["Reset Authenticator"]</span>
+            <span class="local-account-action-description">@SharedLocalizer["Clear the current authenticator setup and enroll a new app on next sign-in."]</span>
+        </span>
+    </button>
 </div>
 
 <div class="modal fade" id="resetAuthenticatorModal" tabindex="-1" role="dialog" aria-labelledby="resetAuthenticatorModalLabel" aria-hidden="true">
