@@ -57,73 +57,7 @@ Highest-priority improvements should focus on security and operational stability
 
 ## Phased Improvement Plan
 
-### Task 1: Register Email Service Options Validation
-
-- Priority: P1
-- Related findings: F-04
-- Goal: Fail fast on invalid email provider configuration.
-- Change scope: `Moonglade.Email` service registration and focused email service-registration tests.
-- Excludes: Provider behavior changes, email template changes, dependency upgrades.
-- Expected result: Invalid SMTP/ACS settings fail during startup validation instead of during outbox delivery.
-- Verification: `dotnet test src/Tests/Moonglade.Email.Tests/Moonglade.Email.Tests.csproj`; optionally `dotnet build src/Moonglade.Web/Moonglade.Web.csproj`.
-- Release risk: low.
-- Rollback: Remove the validator registration and `ValidateOnStart()` call.
-- Needs user confirmation: no.
-
-### Task 2: Restore Antiforgery Protection For Admin Mutations
-
-- Priority: P1
-- Related findings: F-01
-- Goal: Ensure authenticated admin mutations use the existing antiforgery pattern.
-- Change scope: Image upload JavaScript, test-email JavaScript if needed, controller attributes, Web tests.
-- Excludes: Public protocol callbacks such as `/webmention`; auth redesign.
-- Expected result: Image upload and test email still work from the admin UI but cross-site requests without token fail.
-- Verification: `dotnet test src/Tests/Moonglade.Web.Tests/Moonglade.Web.Tests.csproj`; manual admin image upload smoke test if UI verification is allowed.
-- Release risk: medium because editor image upload is user-facing admin workflow.
-- Rollback: Restore the endpoint exemptions while retaining tests as skipped/pending evidence.
-- Needs user confirmation: no. User confirmed there are no external no-token image upload clients.
-- Confirmed constraint: keep `/webmention` and other deliberate protocol callbacks exempt.
-
-### Task 3: Add Local Login Throttling
-
-- Priority: P1
-- Related findings: F-03
-- Goal: Reduce brute-force risk for local account sign-in and TOTP verification.
-- Change scope: rate-limit policy/options for local login and TOTP verification, `SignInModel`, `VerifyAuthenticator`, tests for limited and normal paths.
-- Excludes: Password hash migration, account lockout persistence, Entra ID behavior changes.
-- Expected result: Local password login and TOTP verification are limited to 10 attempts per 1 minute. Prefer partitioning by client IP plus username/account context to avoid one user affecting unrelated users.
-- Verification: `dotnet test src/Tests/Moonglade.Auth.Tests/Moonglade.Auth.Tests.csproj` and `dotnet test src/Tests/Moonglade.Web.Tests/Moonglade.Web.Tests.csproj`.
-- Release risk: medium; throttling can affect legitimate admins behind shared IPs if configured too tightly.
-- Rollback: Disable the new policy by configuration.
-- Needs user confirmation: no. User confirmed 10 attempts per 1 minute and TOTP coverage.
-
-### Task 4: Harden Webmention Outbound Fetch Safety
-
-- Priority: P1
-- Related findings: F-02
-- Goal: Close SSRF gaps in incoming Webmention source inspection.
-- Change scope: Webmention URL safety service, HttpClient redirect behavior if needed, Webmention tests.
-- Excludes: Changing Webmention protocol response shapes unless required for safety.
-- Expected result: private/special-use DNS results, link-local, IPv6 private ranges, intranet/self-hosted private-address sources, and unsafe redirects are rejected before content fetch.
-- Verification: `dotnet test src/Tests/Moonglade.Webmention.Tests/Moonglade.Webmention.Tests.csproj`.
-- Release risk: medium because stricter validation intentionally rejects private-address sources.
-- Rollback: Feature-flag or relax specific rejected ranges after evidence.
-- Needs user confirmation: no. User confirmed intranet/self-hosted private-address sources are not allowed.
-
-### Task 5: Remove Committed Default Database Passwords
-
-- Priority: P2
-- Related findings: F-05
-- Goal: Align committed config with documented secret-handling rules.
-- Change scope: committed default config/Compose examples and README instructions if behavior changes.
-- Excludes: Real secret rotation, production deployment changes.
-- Expected result: Repository no longer contains a concrete reusable database password in default application/Compose configuration.
-- Verification: static search for `Password=` defaults and `MSSQL_SA_PASSWORD`; `dotnet build` only if project config behavior changes.
-- Release risk: medium for Docker first-run experience.
-- Rollback: Restore the old fallback after documenting the risk.
-- Needs user confirmation: no. User confirmed Docker Compose may require `.env`.
-
-### Task 6: Normalize Paging Validation
+### Task 1: Normalize Paging Validation
 
 - Priority: P2
 - Related findings: F-06
@@ -136,33 +70,7 @@ Highest-priority improvements should focus on security and operational stability
 - Rollback: Revert controller validation.
 - Needs user confirmation: no.
 
-### Task 7: Bound CannonService Queue
-
-- Priority: P2
-- Related findings: F-07
-- Goal: Prevent unbounded memory growth while preserving simple in-process background work.
-- Change scope: `CannonService`, optional options class/config defaults, background service tests.
-- Excludes: Durable queue, separate worker service, replacing the email outbox.
-- Expected result: Background queue has configurable capacity and clear reject logging. Use a conservative default capacity and fail enqueue with a warning when full; do not execute external side effects inline on the request path.
-- Verification: `dotnet test src/Tests/Moonglade.BackgroundServices.Tests/Moonglade.BackgroundServices.Tests.csproj`; Web tests if call sites change.
-- Release risk: medium if queue capacity is too low for image/upload bursts.
-- Rollback: Set capacity high or restore unbounded queue.
-- Needs user confirmation: no for planning. If implementation chooses a very low capacity or changes user-visible behavior, confirm before merging.
-
-### Task 8: Validate Widget Content Contracts
-
-- Priority: P2
-- Related findings: F-08
-- Goal: Ensure widget JSON matches the selected widget type and admin previews do not inject raw unescaped values.
-- Change scope: `Moonglade.Widgets`, `WidgetsController`/command validation if needed, admin preview renderer, widget tests.
-- Excludes: Widget schema redesign, new frontend framework.
-- Expected result: invalid widget JSON is rejected with validation feedback; preview escapes untrusted fields. No legacy `ContentCode` migration is required.
-- Verification: widget command tests plus `dotnet test src/Tests/Moonglade.Web.Tests/Moonglade.Web.Tests.csproj` if controller behavior changes.
-- Release risk: low to medium because user confirmed no legacy widget content formats; read paths should still remain tolerant of malformed data.
-- Rollback: Keep read-side tolerant parsing while reverting stricter write validation.
-- Needs user confirmation: no.
-
-### Task 9: Unify Image Filename Validation Across Providers
+### Task 2: Unify Image Filename Validation Across Providers
 
 - Priority: P2
 - Related findings: F-09
@@ -175,20 +83,7 @@ Highest-priority improvements should focus on security and operational stability
 - Rollback: Keep the older Azure extension-only validation while retaining new tests as pending.
 - Needs user confirmation: no. User confirmed Azure Blob virtual-folder keys may exist.
 
-### Task 10: Improve Health Checks For Readiness
-
-- Priority: P2
-- Related findings: F-10
-- Goal: Improve operational diagnostics while keeping `/health` liveness-only.
-- Change scope: health-check registration and a separate readiness route.
-- Excludes: Full observability stack, metrics platform, external dependency checks beyond database.
-- Expected result: `/health` remains self/liveness only; a new endpoint such as `/health/ready` reports database readiness.
-- Verification: Web build and focused Web tests if health endpoint tests exist or are added.
-- Release risk: low because the existing `/health` contract is preserved.
-- Rollback: Remove the new readiness endpoint.
-- Needs user confirmation: no. User confirmed `/health` should remain liveness-only.
-
-### Task 11: Clarify And Later Improve View Count Concurrency
+### Task 3: Clarify And Later Improve View Count Concurrency
 
 - Priority: P3
 - Related findings: F-11
@@ -201,7 +96,7 @@ Highest-priority improvements should focus on security and operational stability
 - Rollback: Revert the comment/documentation change.
 - Needs user confirmation: no. User confirmed exact multi-instance view/request count accuracy is not required.
 
-### Task 12: Add Export Zip Cleanup
+### Task 4: Add Export Zip Cleanup
 
 - Priority: P3
 - Related findings: F-12
@@ -214,7 +109,7 @@ Highest-priority improvements should focus on security and operational stability
 - Rollback: Disable cleanup if downloads are interrupted unexpectedly.
 - Needs user confirmation: no.
 
-### Task 13: Add Minimal EditorConfig
+### Task 5: Add Minimal EditorConfig
 
 - Priority: P3
 - Related findings: F-13
@@ -229,19 +124,11 @@ Highest-priority improvements should focus on security and operational stability
 
 ## Suggested Execution Order
 
-1. Task 1: Register email options validation.
-2. Task 2: Restore antiforgery for admin mutations.
-3. Task 3: Add local login throttling.
-4. Task 4: Harden Webmention outbound fetch safety.
-5. Task 5: Remove committed default database passwords and require `.env` for Docker Compose secrets.
-6. Task 6: Normalize comment paging validation.
-7. Task 8: Validate widget content contracts.
-8. Task 9: Unify image filename validation across providers while preserving Azure Blob virtual folders.
-9. Task 10: Add a separate readiness endpoint while keeping `/health` liveness-only.
-10. Task 7: Bound `CannonService` queue.
-11. Task 13: Add a minimal `.editorconfig`.
-12. Task 12: Add export zip cleanup.
-13. Task 11: Clean up view/request-count comments and document best-effort behavior.
+1. Task 1: Normalize comment paging validation.
+2. Task 2: Unify image filename validation across providers while preserving Azure Blob virtual folders.
+3. Task 5: Add a minimal `.editorconfig`.
+4. Task 4: Add export zip cleanup.
+5. Task 3: Clean up view/request-count comments and document best-effort behavior.
 
 ## Not Recommended Now
 
@@ -261,9 +148,7 @@ All previously open planning questions have been answered by the user. There are
 
 Implementation defaults to choose during the relevant tasks:
 
-1. `CannonService` bounded capacity should be conservative and configurable. If a very low default or user-visible rejection behavior is proposed, confirm it before merging.
-2. Use `/health/ready` as the tentative readiness route unless project maintainers prefer another route name.
-3. Keep the first `.editorconfig` minimal and style-preserving; do not bulk-format existing files.
+1. Keep the first `.editorconfig` minimal and style-preserving; do not bulk-format existing files.
 
 ## Notes For Future Execution
 
