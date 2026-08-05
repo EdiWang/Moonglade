@@ -254,6 +254,18 @@ Supported providers are `AzureCommunication` and `smtp`. Use environment variabl
 
 Email delivery uses at-least-once processing. If the application stops while a message is being sent, a later retry can occasionally send a duplicate notification. Set `Email:OutboxWorker:Enabled` to `false` only when another process is responsible for draining the outbox.
 
+### Background Work Queue
+
+`CannonService` handles low-volume in-process fire-and-forget work such as Webmention pings, IndexNow notifications, and original image storage. Configure `CannonService:QueueCapacity` to bound memory use:
+
+```json
+"CannonService": {
+  "QueueCapacity": 1000
+}
+```
+
+When the queue is full, new work is rejected and logged instead of running inline on the request path.
+
 ### More Settings
 
 - [System Settings](https://github.com/EdiWang/Moonglade/wiki/System-Settings)

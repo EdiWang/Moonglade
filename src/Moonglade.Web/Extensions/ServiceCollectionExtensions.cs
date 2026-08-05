@@ -285,6 +285,10 @@ public static class ServiceCollectionExtensions
         services.AddSingleton<ScheduledPublishWakeUp>();
         services.AddHostedService<ScheduledPublishService>();
 
+        services.AddOptions<CannonServiceOptions>()
+                .Bind(configuration.GetSection(CannonServiceOptions.SectionName))
+                .Validate(options => options.QueueCapacity > 0, "CannonService:QueueCapacity must be greater than 0.")
+                .ValidateOnStart();
         services.AddSingleton<CannonService>();
         services.AddHostedService(sp => sp.GetRequiredService<CannonService>());
 

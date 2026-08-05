@@ -52,6 +52,7 @@ Important configuration areas:
 | `DefaultEditor` | Default post content editor/content type. | Optional | Used during startup backfill for older posts. |
 | `PostCacheMinutes`, `PagesCacheMinutes`, `WidgetCacheMinutes` | Cache durations. | Optional | Revisit when changing rendering or invalidation paths. |
 | `AutoDatabaseMigration` | Startup migration behavior. | Optional | Be careful when changing deployment/database initialization behavior. |
+| `CannonService:QueueCapacity` | Capacity for the in-process fire-and-forget background queue. | Optional | Defaults to `1000`; when full, new work is rejected and logged instead of running inline on the request path. |
 | `EnableUpdateCheck`, `UpdateCheckCron` | GitHub release update check scheduling. | Optional | Cron parsing is handled by `Cronos`. |
 | `ViewCount` | Crawler user-agent filtering and deduplication window. | Optional | Affects analytics/view-count behavior. |
 | `.env.example` / `MSSQL_SA_PASSWORD` | Docker Compose SQL Server password override. | Local/deployment-dependent | Use a strong secret value outside committed files. |
@@ -177,6 +178,7 @@ Important configuration areas:
 - For post and page writes, review sitemap, feed/subscription, per-post/page, archive, tag/category, and widget cache impact.
 - For settings and theme changes, review site-wide rendering, custom CSS, manifest, robots, FOAF, and sitemap impact.
 - Publishing posts can trigger Webmention and IndexNow. Comments, replies, and Webmentions can trigger email notifications. New side effects should usually be events or background work through existing services such as `CannonService`, LiteBus events, `IWebmentionSender`, `IIndexNowClient`, and the email outbox instead of slow inline request work.
+- `CannonService` is an in-process bounded queue controlled by `CannonService:QueueCapacity`; do not run overflow work inline on request paths.
 - Preserve hosted service patterns for scheduled publishing and update checks. Configuration-driven background behavior should remain controlled by `appsettings` values.
 
 ### Razor, Static Assets, And Localization

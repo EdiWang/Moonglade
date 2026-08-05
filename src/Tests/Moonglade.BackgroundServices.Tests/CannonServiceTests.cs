@@ -1,5 +1,6 @@
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Options;
 using Moq;
 
 namespace Moonglade.BackgroundServices.Tests;
@@ -174,6 +175,30 @@ public class CannonServiceTests
         Assert.Equal(3, executionOrder.Count);
         Assert.Equal([1, 2, 3], executionOrder);
         testService.Verify(x => x.DoWorkAsync(), Times.Exactly(3));
+    }
+
+    [Fact]
+    public void FireAsync_WhenQueueIsFull_LogsWarningAndRejectsAdditionalWork()
+    {
+        // Arrange
+        var service = new CannonService(
+            _loggerMock.Object,
+            _scopeFactoryMock.Object,
+            Options.Create(new CannonServiceOptions { QueueCapacity = 1 }));
+
+        // Act
+        service.FireAsync<ITestService>(svc => svc.DoWorkAsync());
+        service.FireAsync<ITestService>(svc => svc.DoWorkAsync());
+
+        // Assert
+        _loggerMock.Verify(
+            x => x.Log(
+                LogLevel.Warning,
+                It.IsAny<EventId>(),
+                It.Is<It.IsAnyType>((v, t) => v.ToString()!.Contains("queue is full or stopping")),
+                null,
+                It.IsAny<Func<It.IsAnyType, Exception?, string>>()),
+            Times.Once);
     }
 
     [Fact]
