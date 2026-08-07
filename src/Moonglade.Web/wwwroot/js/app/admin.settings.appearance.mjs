@@ -2,7 +2,7 @@ import { fetch2 } from './httpService.mjs?v=1500'
 import { handleSettingsSubmit } from './admin.settings.mjs';
 import { success, error } from './toastService.mjs';
 import { getLocalizedString } from './utils.module.mjs';
-import { createMoongladeEditor } from '/_content/Moonglade.Editor.StaticAssets/moonglade-editor/moonglade-editor.js';
+import { createMoongladeCodeEditor } from '/_content/Moonglade.Editor.StaticAssets/moonglade-editor/moonglade-editor.code.js';
 
 async function handleSubmit(event) {
     cssContentEditor.syncToTextarea();
@@ -41,8 +41,8 @@ window.deleteTheme = async function (id) {
 
 let cssContentEditor = null;
 
-cssContentEditor = createMoongladeEditor({
-    mode: 'css',
+cssContentEditor = createMoongladeCodeEditor({
+    language: 'css',
     element: document.querySelector('#CssContentEditor'),
     textarea: document.querySelector('#ViewModel_CssCode'),
     height: 'calc(100vh - 450px)',

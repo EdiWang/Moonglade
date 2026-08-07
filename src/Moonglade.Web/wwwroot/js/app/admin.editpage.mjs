@@ -2,7 +2,7 @@ import { Alpine } from './alpine-init.mjs';
 import { fetch2 } from './httpService.mjs?v=1500';
 import { success, error } from './toastService.mjs';
 import { getLocalizedString } from './utils.module.mjs';
-import { createMoongladeEditor } from '/_content/Moonglade.Editor.StaticAssets/moonglade-editor/moonglade-editor.js';
+import { createMoongladeCodeEditor } from '/_content/Moonglade.Editor.StaticAssets/moonglade-editor/moonglade-editor.code.js';
 
 let htmlContentEditor = null;
 let cssContentEditor = null;
@@ -103,8 +103,8 @@ Alpine.data('pageEditor', () => ({
     },
 
     createCodeEditor(elementSelector, language, content) {
-        return createMoongladeEditor({
-            mode: language,
+        return createMoongladeCodeEditor({
+            language,
             element: document.querySelector(elementSelector),
             content: content || '',
             height: '100%',

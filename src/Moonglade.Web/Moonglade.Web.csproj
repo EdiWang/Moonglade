@@ -39,7 +39,7 @@
 		<PackageReference Include="LiteBus.Extensions.Microsoft.DependencyInjection" Version="6.0.2" />
 		<PackageReference Include="Microsoft.Extensions.Diagnostics.HealthChecks.EntityFrameworkCore" Version="10.0.10" />
 		<PackageReference Include="Microsoft.Extensions.Logging.AzureAppServices" Version="10.0.10" />
-		<PackageReference Include="Moonglade.Editor.StaticAssets" Version="0.5.0" />
+		<PackageReference Include="Moonglade.Editor.StaticAssets" Version="0.6.0" />
 
 		<PackageReference Include="QRCoder" Version="1.8.0" />
 	</ItemGroup>
