@@ -744,6 +744,9 @@
   <data name="Your comments (Markdown supported)" xml:space="preserve">
     <value>Ihre Kommentare (Markdown wird unterstützt)</value>
   </data>
+  <data name="Use Markdown editor" xml:space="preserve">
+    <value>Markdown-Editor verwenden</value>
+  </data>
   <data name="Your description" xml:space="preserve">
     <value>Ihre Beschreibung</value>
   </data>

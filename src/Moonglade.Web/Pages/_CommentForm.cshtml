@@ -38,10 +38,21 @@
                       rows="4"
                       aria-label="@SharedLocalizer["Your comments (Markdown supported)"]"
                       placeholder="@SharedLocalizer["Your comments (Markdown supported)"]"
+                      data-comment-required-message="@SharedLocalizer["Your comments (Markdown supported)"]"
                       maxlength="1024"
                       required></textarea>
+            <div id="comment-markdown-editor" class="comment-markdown-editor d-none"></div>
         </div>
-        <div class="d-flex justify-content-end">
+        <div class="d-flex justify-content-between align-items-center gap-3 flex-wrap">
+            <div class="form-check">
+                <input id="input-comment-use-markdown-editor"
+                       class="form-check-input"
+                       type="checkbox"
+                       autocomplete="off" />
+                <label class="form-check-label" for="input-comment-use-markdown-editor">
+                    @SharedLocalizer["Use Markdown editor"]
+                </label>
+            </div>
             <button id="btn-submit-comment" type="submit" class="btn btn-accent">
                 <span id="loadingIndicator" class="spinner-border spinner-border-sm" role="status" aria-hidden="true" style="display: none;"></span>
 

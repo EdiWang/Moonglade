@@ -744,6 +744,9 @@
   <data name="Your comments (Markdown supported)" xml:space="preserve">
     <value>あなたのコメント(Markdown対応)</value>
   </data>
+  <data name="Use Markdown editor" xml:space="preserve">
+    <value>Markdown エディターを使用</value>
+  </data>
   <data name="Your description" xml:space="preserve">
     <value>ブロガーのプロフィール</value>
   </data>

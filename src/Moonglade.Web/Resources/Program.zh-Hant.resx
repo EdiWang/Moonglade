@@ -744,6 +744,9 @@
   <data name="Your comments (Markdown supported)" xml:space="preserve">
     <value>您的評論（支援Markdown）</value>
   </data>
+  <data name="Use Markdown editor" xml:space="preserve">
+    <value>使用 Markdown 編輯器</value>
+  </data>
   <data name="Your description" xml:space="preserve">
     <value>博主簡介</value>
   </data>
