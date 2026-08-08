@@ -95,6 +95,7 @@ Important configuration areas:
 ### Images, Themes, Feeds, And Protocols
 
 - Image storage is abstracted in `Moonglade.ImageStorage` and supports Azure Blob Storage, S3-compatible object storage, and the local file system. New image behavior should depend on `IBlogImageStorage`, not on a concrete provider.
+- Image uploads are validated by content before storage. SVG upload is supported, but SVG content must pass through the Web-layer sanitizer before primary or original image bytes are saved.
 - Themes and custom CSS are handled by `Moonglade.Theme` and `Moonglade.Web.Middleware.StyleSheetEndpoints`.
 - RSS, Atom, and OPML generation lives in `Moonglade.Syndication`; OpenSearch, FOAF, manifest, robots, and sitemap handlers live under `Moonglade.Web/Handlers`.
 - Preserve the public protocol endpoints listed in the README, including `/rss`, `/atom`, `/opml`, `/opensearch`, `/foaf.xml`, `/webmention`, `/health`, and `/health/ready`. Keep `/health` liveness-only; use `/health/ready` for database readiness.

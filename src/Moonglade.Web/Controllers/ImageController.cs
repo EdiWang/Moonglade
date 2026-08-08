@@ -5,6 +5,7 @@ using Microsoft.Extensions.Options;
 using Microsoft.Net.Http.Headers;
 using Moonglade.ActivityLog;
 using Moonglade.BackgroundServices;
+using Moonglade.Web.Services;
 using SkiaSharp;
 using System.ComponentModel.DataAnnotations;
 
@@ -17,6 +18,7 @@ public class ImageController(
         IBlogConfig blogConfig,
         IMemoryCache cache,
         IFileNameGenerator fileNameGen,
+        IImageUploadValidator imageUploadValidator,
         IOptions<ImageStorageSettings> imageStorageSettings,
         CannonService cannonService,
         ICommandMediator commandMediator)
@@ -96,14 +98,20 @@ public class ImageController(
 
         await using var stream = new MemoryStream();
         await file.CopyToAsync(stream);
-        stream.Position = 0;
+        var uploadValidation = imageUploadValidator.Validate(name, stream.ToArray());
+        if (!uploadValidation.Succeeded)
+        {
+            logger.LogWarning("Image upload rejected for file '{FileName}': {Reason}", name, uploadValidation.ErrorMessage);
+            return BadRequest(uploadValidation.ErrorMessage);
+        }
 
-        var watermarkedStream = AddWatermarkIfNeeded(stream, ext, skipWatermark);
-        var finalName = await imageStorage.InsertAsync(primaryFileName, watermarkedStream ?? stream.ToArray());
+        await using var validatedStream = new MemoryStream(uploadValidation.ImageBytes);
+        var watermarkedStream = AddWatermarkIfNeeded(validatedStream, uploadValidation.Extension, skipWatermark);
+        var finalName = await imageStorage.InsertAsync(primaryFileName, watermarkedStream ?? uploadValidation.ImageBytes);
 
         if (ShouldKeepOriginal(skipWatermark))
         {
-            StoreOriginalImageAsync(secondaryFileName, stream);
+            StoreOriginalImageAsync(secondaryFileName, uploadValidation.ImageBytes);
         }
 
         logger.LogInformation("Image '{FileName}' uploaded.", primaryFileName);
@@ -147,9 +155,8 @@ public class ImageController(
                (blogConfig.ImageSettings.KeepOriginImage || !skipWatermark);
     }
 
-    private void StoreOriginalImageAsync(string fileName, MemoryStream stream)
+    private void StoreOriginalImageAsync(string fileName, byte[] originalImageData)
     {
-        var originalImageData = stream.ToArray();
         cannonService.FireAsync<IBlogImageStorage>(async storage =>
             await storage.InsertSecondaryAsync(fileName, originalImageData));
     }

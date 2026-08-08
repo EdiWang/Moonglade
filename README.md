@@ -162,6 +162,8 @@ Built-in comment submissions also use a hidden honeypot field and form elapsed-t
 
 Configure the `ImageStorage` section in `appsettings.json` to choose where blog images are stored.
 
+Uploaded image files are validated against their file content before storage. SVG uploads are supported, but active content and unsafe URL references are sanitized before the image is saved.
+
 #### **Azure Blob Storage**
 
 Create an [Azure Blob Storage](https://azure.microsoft.com/en-us/services/storage/blobs/) container with appropriate permissions:

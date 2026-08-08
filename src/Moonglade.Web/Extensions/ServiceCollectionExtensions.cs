@@ -55,6 +55,7 @@ public static class ServiceCollectionExtensions
         services.AddMoongladeCoreServices(configuration);
         services.AddMoongladeDatabase(configuration);
         services.AddMoongladeInitializers();
+        services.AddSingleton<IImageUploadValidator, ImageUploadValidator>();
 
         return services;
     }
