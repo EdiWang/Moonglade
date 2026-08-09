@@ -71,6 +71,11 @@ public static class WebApplicationExtensions
             app.MapGet("/sitemap.xml", SiteMapMapHandler.Handler);
         }
 
+        app.MapMethods(
+            """/{filename:maxlength(128):regex(^[A-Za-z0-9][A-Za-z0-9._-]*\.(txt|html|htm|xml|json)$)}""",
+            ["GET", "HEAD"],
+            SiteVerificationFileMapHandler.Handler);
+
         return app;
     }
 }

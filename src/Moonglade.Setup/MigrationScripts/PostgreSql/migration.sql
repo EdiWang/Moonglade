@@ -79,3 +79,20 @@ CREATE TABLE IF NOT EXISTS "EmailOutboxMessage" (
 
 CREATE INDEX IF NOT EXISTS "IX_EmailOutboxMessage_Dequeue"
 ON "EmailOutboxMessage" ("Status", "NotBeforeUtc", "LockedUntilUtc", "CreatedTimeUtc");
+
+-- v16.4
+-- Add site verification files table
+CREATE TABLE IF NOT EXISTS "SiteVerificationFile" (
+    "Id" UUID NOT NULL,
+    "FileName" VARCHAR(128) NOT NULL,
+    "NormalizedFileName" VARCHAR(128) NOT NULL,
+    "Content" VARCHAR(65536) NOT NULL,
+    "ContentType" VARCHAR(64) NOT NULL,
+    "IsEnabled" BOOLEAN NOT NULL,
+    "CreatedTimeUtc" TIMESTAMP NOT NULL,
+    "LastModifiedTimeUtc" TIMESTAMP NOT NULL,
+    PRIMARY KEY ("Id")
+);
+
+CREATE UNIQUE INDEX IF NOT EXISTS "IX_SiteVerificationFile_NormalizedFileName"
+ON "SiteVerificationFile" ("NormalizedFileName");

@@ -30,5 +30,7 @@ public class PostgreSqlBlogDbContext : BlogDbContext
         modelBuilder.ApplyConfiguration(new ActivityLogConfiguration());
 
         base.OnModelCreating(modelBuilder);
+
+        modelBuilder.ApplyConfiguration(new SiteVerificationFileConfiguration());
     }
 }
