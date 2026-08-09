@@ -1,0 +1,158 @@
+@page "/admin/settings/verification-files"
+
+@{
+    ViewBag.Title = "Verification Files";
+    ViewBag.XData = "siteVerificationFileManager";
+}
+
+@section scripts {
+    <script type="module" src="~/js/app/admin.settings.verification-files.mjs"></script>
+}
+
+<div id="localizedStrings" style="display:none"
+     data-file-created="@SharedLocalizer["Verification file created"]"
+     data-file-updated="@SharedLocalizer["Verification file updated"]"
+     data-file-deleted="@SharedLocalizer["Verification file deleted"]"
+     data-file-enabled="@SharedLocalizer["Verification file enabled"]"
+     data-file-disabled="@SharedLocalizer["Verification file disabled"]"
+     data-delete-file="@SharedLocalizer["Delete this verification file?"]"
+     data-file-loaded="@SharedLocalizer["File loaded"]"
+     data-file-read-failed="@SharedLocalizer["Could not read file"]"
+     data-url-copied="@SharedLocalizer["URL copied"]"
+     data-file-name-required="@SharedLocalizer["File name is required"]"
+     data-file-content-required="@SharedLocalizer["File content is required"]">
+</div>
+
+@section admintoolbar {
+    <partial name="_SettingsHeader" />
+}
+
+@Html.AntiForgeryToken()
+
+<div class="d-flex justify-content-between align-items-center mb-3">
+    <h4 class="admin-subtitle fw-bold mb-0">@SharedLocalizer["Verification Files"]</h4>
+    <button type="button" class="btn btn-outline-accent" x-on:click="initCreateFile()">
+        <i class="bi-plus-lg"></i>
+        @SharedLocalizer["New"]
+    </button>
+</div>
+
+<div x-show="isLoading"
+     class="text-muted mb-3"
+     :class="{ 'd-flex align-items-center': isLoading }">
+    <div class="spinner-border spinner-border-sm me-2" role="status"></div>
+    <span>@SharedLocalizer["Loading verification files..."]</span>
+</div>
+
+<div x-show="!isLoading && !hasFiles" class="alert alert-info">
+    @SharedLocalizer["No verification files yet."]
+</div>
+
+<div x-show="!isLoading && hasFiles" class="table-responsive">
+    <table class="table align-middle">
+        <thead>
+        <tr>
+            <th>@SharedLocalizer["File Name"]</th>
+            <th>@SharedLocalizer["Content Type"]</th>
+            <th>@SharedLocalizer["Size"]</th>
+            <th>@SharedLocalizer["Status"]</th>
+            <th>@SharedLocalizer["Last Modified"]</th>
+            <th class="text-end">@SharedLocalizer["Actions"]</th>
+        </tr>
+        </thead>
+        <tbody>
+        <template x-for="file in files" :key="file.id">
+            <tr>
+                <td>
+                    <div class="fw-semibold" x-text="file.fileName"></div>
+                    <a class="small" :href="getFileUrl(file.fileName)" target="_blank" rel="noopener noreferrer" x-text="getFileUrl(file.fileName)"></a>
+                </td>
+                <td><code x-text="file.contentType"></code></td>
+                <td x-text="formatBytes(file.contentBytes)"></td>
+                <td>
+                    <span x-show="file.isEnabled" class="badge bg-success">@SharedLocalizer["Enabled"]</span>
+                    <span x-show="!file.isEnabled" class="badge bg-secondary">@SharedLocalizer["Disabled"]</span>
+                </td>
+                <td>
+                    <time :data-utc-label="file.lastModifiedTimeUtc" x-text="formatDate(file.lastModifiedTimeUtc)"></time>
+                </td>
+                <td class="text-end">
+                    <div class="btn-group btn-group-sm" role="group">
+                        <button type="button" class="btn btn-outline-secondary" x-on:click="copyUrl(file.fileName)" title="@SharedLocalizer["Copy URL"]">
+                            <i class="bi-copy"></i>
+                        </button>
+                        <button type="button" class="btn btn-outline-accent" x-on:click="editFile(file.id)" title="@SharedLocalizer["Edit"]">
+                            <i class="bi-pen"></i>
+                        </button>
+                        <button type="button" class="btn btn-outline-secondary" x-on:click="toggleFile(file)" :title="file.isEnabled ? '@SharedLocalizer["Disable"]' : '@SharedLocalizer["Enable"]'">
+                            <i :class="file.isEnabled ? 'bi-pause-fill' : 'bi-play-fill'"></i>
+                        </button>
+                        <button type="button" class="btn btn-outline-danger" x-on:click="deleteFile(file)" title="@SharedLocalizer["Delete"]">
+                            <i class="bi-trash"></i>
+                        </button>
+                    </div>
+                </td>
+            </tr>
+        </template>
+        </tbody>
+    </table>
+</div>
+
+<div class="offcanvas offcanvas-end overflow-hidden" tabindex="-1" x-ref="editFileCanvas" aria-labelledby="editFileCanvasLabel" style="width: 560px;">
+    <div class="offcanvas-header">
+        <h5 class="offcanvas-title" id="editFileCanvasLabel" x-text="isCreateMode ? '@SharedLocalizer["New Verification File"]' : '@SharedLocalizer["Edit Verification File"]'"></h5>
+        <button type="button" class="btn-close text-reset" data-bs-dismiss="offcanvas" aria-label="@SharedLocalizer["Close"]"></button>
+    </div>
+    <div class="offcanvas-body d-flex flex-column p-0 overflow-hidden">
+        <form x-on:submit.prevent="handleSubmit()" class="d-flex flex-column h-100">
+            <div class="flex-grow-1 p-3 overflow-auto">
+                <div class="mb-3">
+                    <label for="verification-file-upload" class="form-label">@SharedLocalizer["Upload File"]</label>
+                    <input id="verification-file-upload"
+                           type="file"
+                           class="form-control"
+                           accept=".txt,.html,.htm,.xml,.json,text/plain,text/html,application/xml,application/json"
+                           x-on:change="loadSelectedFile($event)" />
+                </div>
+
+                <div class="mb-3">
+                    <label for="verification-file-name" class="form-label">@SharedLocalizer["File Name"]</label>
+                    <input id="verification-file-name"
+                           x-model.trim="formData.fileName"
+                           type="text"
+                           class="form-control"
+                           maxlength="128"
+                           placeholder="google123.html"
+                           required />
+                </div>
+
+                <div class="mb-3">
+                    <label for="verification-file-content" class="form-label">@SharedLocalizer["Content"]</label>
+                    <textarea id="verification-file-content"
+                              x-model="formData.content"
+                              class="form-control textarea-code"
+                              rows="14"
+                              maxlength="65536"
+                              spellcheck="false"
+                              required></textarea>
+                    <div class="form-text">
+                        <span x-text="formatBytes(contentBytes)"></span>
+                        <span>/ 64 KB</span>
+                    </div>
+                </div>
+
+                <div class="form-check form-switch">
+                    <input id="verification-file-enabled" x-model="formData.isEnabled" type="checkbox" class="form-check-input" />
+                    <label for="verification-file-enabled" class="form-check-label">@SharedLocalizer["Enabled"]</label>
+                </div>
+            </div>
+
+            <div class="border-top p-3 bg-light">
+                <div class="d-grid gap-2">
+                    <button type="submit" class="btn btn-accent">@SharedLocalizer["Save"]</button>
+                    <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="offcanvas">@SharedLocalizer["Cancel"]</button>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>

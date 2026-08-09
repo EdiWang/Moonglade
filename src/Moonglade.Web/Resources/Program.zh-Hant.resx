@@ -1914,4 +1914,79 @@
   <data name="Test email is queued." xml:space="preserve">
     <value>測試郵件已加入佇列。</value>
   </data>
+  <data name="Verification Files" xml:space="preserve">
+    <value>驗證檔案</value>
+  </data>
+  <data name="Verification file created" xml:space="preserve">
+    <value>驗證檔案已建立</value>
+  </data>
+  <data name="Verification file updated" xml:space="preserve">
+    <value>驗證檔案已更新</value>
+  </data>
+  <data name="Verification file deleted" xml:space="preserve">
+    <value>驗證檔案已刪除</value>
+  </data>
+  <data name="Verification file enabled" xml:space="preserve">
+    <value>驗證檔案已啟用</value>
+  </data>
+  <data name="Verification file disabled" xml:space="preserve">
+    <value>驗證檔案已停用</value>
+  </data>
+  <data name="Delete this verification file?" xml:space="preserve">
+    <value>要刪除這個驗證檔案嗎？</value>
+  </data>
+  <data name="File loaded" xml:space="preserve">
+    <value>檔案已載入</value>
+  </data>
+  <data name="Could not read file" xml:space="preserve">
+    <value>無法讀取檔案</value>
+  </data>
+  <data name="URL copied" xml:space="preserve">
+    <value>URL 已複製</value>
+  </data>
+  <data name="File name is required" xml:space="preserve">
+    <value>檔案名稱必填</value>
+  </data>
+  <data name="File content is required" xml:space="preserve">
+    <value>檔案內容必填</value>
+  </data>
+  <data name="Loading verification files..." xml:space="preserve">
+    <value>正在載入驗證檔案...</value>
+  </data>
+  <data name="No verification files yet." xml:space="preserve">
+    <value>還沒有驗證檔案。</value>
+  </data>
+  <data name="File Name" xml:space="preserve">
+    <value>檔案名稱</value>
+  </data>
+  <data name="Content Type" xml:space="preserve">
+    <value>內容類型</value>
+  </data>
+  <data name="Size" xml:space="preserve">
+    <value>大小</value>
+  </data>
+  <data name="Status" xml:space="preserve">
+    <value>狀態</value>
+  </data>
+  <data name="Last Modified" xml:space="preserve">
+    <value>最後修改</value>
+  </data>
+  <data name="Copy URL" xml:space="preserve">
+    <value>複製 URL</value>
+  </data>
+  <data name="Disable" xml:space="preserve">
+    <value>停用</value>
+  </data>
+  <data name="Enable" xml:space="preserve">
+    <value>啟用</value>
+  </data>
+  <data name="New Verification File" xml:space="preserve">
+    <value>新增驗證檔案</value>
+  </data>
+  <data name="Edit Verification File" xml:space="preserve">
+    <value>編輯驗證檔案</value>
+  </data>
+  <data name="Upload File" xml:space="preserve">
+    <value>上傳檔案</value>
+  </data>
 </root>

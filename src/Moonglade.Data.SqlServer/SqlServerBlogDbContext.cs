@@ -29,6 +29,7 @@ public class SqlServerBlogDbContext : BlogDbContext
         modelBuilder.ApplyConfiguration(new Data.Configurations.PageConfiguration());
         modelBuilder.ApplyConfiguration(new Data.Configurations.WidgetConfiguration());
         modelBuilder.ApplyConfiguration(new Data.Configurations.ActivityLogConfiguration());
+        modelBuilder.ApplyConfiguration(new Data.Configurations.SiteVerificationFileConfiguration());
 
         base.OnModelCreating(modelBuilder);
     }

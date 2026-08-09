@@ -139,3 +139,31 @@ BEGIN
     ON [dbo].[EmailOutboxMessage]([Status], [NotBeforeUtc], [LockedUntilUtc], [CreatedTimeUtc]);
 END
 GO
+
+-- v16.4
+-- Add site verification files table
+IF NOT EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[SiteVerificationFile]') AND type in (N'U'))
+BEGIN
+    CREATE TABLE [dbo].[SiteVerificationFile](
+        [Id] [uniqueidentifier] NOT NULL,
+        [FileName] [nvarchar](128) NOT NULL,
+        [NormalizedFileName] [nvarchar](128) NOT NULL,
+        [Content] [nvarchar](max) NOT NULL,
+        [ContentType] [nvarchar](64) NOT NULL,
+        [IsEnabled] [bit] NOT NULL,
+        [CreatedTimeUtc] [datetime] NOT NULL,
+        [LastModifiedTimeUtc] [datetime] NOT NULL,
+        CONSTRAINT [PK_SiteVerificationFile] PRIMARY KEY CLUSTERED
+        (
+            [Id] ASC
+        )
+    ) ON [PRIMARY] TEXTIMAGE_ON [PRIMARY]
+END
+GO
+
+IF NOT EXISTS (SELECT * FROM sys.indexes WHERE object_id = OBJECT_ID(N'[dbo].[SiteVerificationFile]') AND name = N'IX_SiteVerificationFile_NormalizedFileName')
+BEGIN
+    CREATE UNIQUE INDEX [IX_SiteVerificationFile_NormalizedFileName]
+    ON [dbo].[SiteVerificationFile]([NormalizedFileName]);
+END
+GO

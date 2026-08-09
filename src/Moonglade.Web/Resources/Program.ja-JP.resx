@@ -1914,4 +1914,79 @@
   <data name="Test email is queued." xml:space="preserve">
     <value>テストメールをキューに追加しました。</value>
   </data>
+  <data name="Verification Files" xml:space="preserve">
+    <value>認証ファイル</value>
+  </data>
+  <data name="Verification file created" xml:space="preserve">
+    <value>認証ファイルを作成しました。</value>
+  </data>
+  <data name="Verification file updated" xml:space="preserve">
+    <value>認証ファイルを更新しました。</value>
+  </data>
+  <data name="Verification file deleted" xml:space="preserve">
+    <value>認証ファイルを削除しました。</value>
+  </data>
+  <data name="Verification file enabled" xml:space="preserve">
+    <value>認証ファイルを有効にしました。</value>
+  </data>
+  <data name="Verification file disabled" xml:space="preserve">
+    <value>認証ファイルを無効にしました。</value>
+  </data>
+  <data name="Delete this verification file?" xml:space="preserve">
+    <value>この認証ファイルを削除しますか？</value>
+  </data>
+  <data name="File loaded" xml:space="preserve">
+    <value>ファイルを読み込みました。</value>
+  </data>
+  <data name="Could not read file" xml:space="preserve">
+    <value>ファイルを読み取れませんでした。</value>
+  </data>
+  <data name="URL copied" xml:space="preserve">
+    <value>URL をコピーしました。</value>
+  </data>
+  <data name="File name is required" xml:space="preserve">
+    <value>ファイル名は必須です。</value>
+  </data>
+  <data name="File content is required" xml:space="preserve">
+    <value>ファイル内容は必須です。</value>
+  </data>
+  <data name="Loading verification files..." xml:space="preserve">
+    <value>認証ファイルを読み込んでいます...</value>
+  </data>
+  <data name="No verification files yet." xml:space="preserve">
+    <value>認証ファイルはまだありません。</value>
+  </data>
+  <data name="File Name" xml:space="preserve">
+    <value>ファイル名</value>
+  </data>
+  <data name="Content Type" xml:space="preserve">
+    <value>コンテンツタイプ</value>
+  </data>
+  <data name="Size" xml:space="preserve">
+    <value>サイズ</value>
+  </data>
+  <data name="Status" xml:space="preserve">
+    <value>状態</value>
+  </data>
+  <data name="Last Modified" xml:space="preserve">
+    <value>最終更新</value>
+  </data>
+  <data name="Copy URL" xml:space="preserve">
+    <value>URL をコピー</value>
+  </data>
+  <data name="Disable" xml:space="preserve">
+    <value>無効化</value>
+  </data>
+  <data name="Enable" xml:space="preserve">
+    <value>有効化</value>
+  </data>
+  <data name="New Verification File" xml:space="preserve">
+    <value>新しい認証ファイル</value>
+  </data>
+  <data name="Edit Verification File" xml:space="preserve">
+    <value>認証ファイルを編集</value>
+  </data>
+  <data name="Upload File" xml:space="preserve">
+    <value>ファイルをアップロード</value>
+  </data>
 </root>

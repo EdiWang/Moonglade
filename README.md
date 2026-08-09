@@ -10,8 +10,8 @@ Key business areas include:
 
 - **Content publishing:** posts, drafts, scheduled posts, Markdown Mermaid diagrams, pages, featured/outdated flags, archives, recycle bin behavior, and route links for published posts.
 - **Reader interaction:** comments, replies, Webmentions, comment moderation, view counts, and optional email notifications.
-- **Site management:** runtime blog settings, widgets, themes, custom CSS, menus, image storage, account settings, and data import/export.
-- **Discovery and interoperability:** RSS, Atom, OPML, OpenSearch, FOAF, sitemap, robots.txt, IndexNow, reader-friendly markup, and health checks.
+- **Site management:** runtime blog settings, widgets, themes, custom CSS, menus, image storage, site verification files, account settings, and data import/export.
+- **Discovery and interoperability:** RSS, Atom, OPML, OpenSearch, FOAF, sitemap, robots.txt, IndexNow, root-level site ownership verification files, reader-friendly markup, and health checks.
 
 ## Repository Layout
 
@@ -101,6 +101,12 @@ dotnet test src/Tests/Moonglade.Web.Tests/Moonglade.Web.Tests.csproj
 ## ⚙️ Configuration
 
 > Most settings are managed in `appsettings.json`. For blog settings, use the `/admin/settings` UI.
+
+### Site Verification Files
+
+Some search engines and external services verify site ownership by requesting a specific file from the website root, such as `/google123.html` or `/ads.txt`. In Docker and Azure deployments, use `/admin/settings/verification-files` to add these files without modifying `wwwroot` inside the container.
+
+Verification files are stored in the Moonglade database and served from root-level virtual endpoints. Supported file types are `.txt`, `.html`, `.htm`, `.xml`, and `.json`; each file is limited to 64 KB and must use a single root-level file name with letters, digits, dots, underscores, or hyphens. Existing static files and built-in endpoints such as `/robots.txt`, `/sitemap.xml`, and `/manifest.webmanifest` keep priority.
 
 ### Authentication
 
