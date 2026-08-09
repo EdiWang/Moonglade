@@ -82,6 +82,32 @@ public class SiteVerificationFileMapHandlerTests
     }
 
     [Fact]
+    public async Task Handle_WhenIfModifiedSinceMatchesOnlyTruncatedSecond_ReturnsOk()
+    {
+        const string fileName = "google123.txt";
+        const string content = "verification-token";
+        var preciseLastModified = new DateTime(2026, 8, 9, 1, 2, 3, 500, DateTimeKind.Utc);
+        var file = CreatePublicFile(fileName, content, preciseLastModified);
+        var cache = CreateCache(fileName, file);
+        var httpContext = CreateHttpContext();
+        httpContext.Request.Headers.IfModifiedSince = "Sun, 09 Aug 2026 01:02:03 GMT";
+
+        var result = await SiteVerificationFileMapHandler.Handle(
+            fileName,
+            httpContext,
+            cache.Object,
+            Mock.Of<IQueryMediator>());
+
+        await result.ExecuteAsync(httpContext);
+
+        Assert.Equal(StatusCodes.Status200OK, httpContext.Response.StatusCode);
+        Assert.Equal("Sun, 09 Aug 2026 01:02:03 GMT", httpContext.Response.Headers.LastModified.ToString());
+
+        var body = await ReadBodyAsync(httpContext);
+        Assert.Equal(content, body);
+    }
+
+    [Fact]
     public async Task Handle_WhenFileNameIsInvalid_ReturnsNotFoundWithoutQuery()
     {
         var cache = new Mock<ICacheAside>();
@@ -151,9 +177,12 @@ public class SiteVerificationFileMapHandlerTests
         return httpContext;
     }
 
-    private static PublicSiteVerificationFile CreatePublicFile(string fileName, string content)
+    private static PublicSiteVerificationFile CreatePublicFile(
+        string fileName,
+        string content,
+        DateTime? lastModifiedUtc = null)
     {
-        var lastModified = new DateTime(2026, 8, 9, 1, 2, 3, DateTimeKind.Utc);
+        var lastModified = lastModifiedUtc ?? new DateTime(2026, 8, 9, 1, 2, 3, DateTimeKind.Utc);
         var contentBytes = Encoding.UTF8.GetByteCount(content);
         return new PublicSiteVerificationFile(
             fileName,

@@ -34,8 +34,8 @@ public class SiteVerificationFileMapHandler
         }
 
         var entityTag = EntityTagHeaderValue.Parse(file.EntityTag);
-        var lastModified = new DateTimeOffset(
-            TruncateToSeconds(DateTime.SpecifyKind(file.LastModifiedTimeUtc, DateTimeKind.Utc)));
+        var preciseLastModified = new DateTimeOffset(DateTime.SpecifyKind(file.LastModifiedTimeUtc, DateTimeKind.Utc));
+        var responseLastModified = new DateTimeOffset(TruncateToSeconds(preciseLastModified.UtcDateTime), TimeSpan.Zero);
 
         var typedHeaders = httpContext.Response.GetTypedHeaders();
         typedHeaders.CacheControl = new CacheControlHeaderValue
@@ -44,9 +44,9 @@ public class SiteVerificationFileMapHandler
             MaxAge = TimeSpan.FromMinutes(5)
         };
         typedHeaders.ETag = entityTag;
-        typedHeaders.LastModified = lastModified;
+        typedHeaders.LastModified = responseLastModified;
 
-        if (IsNotModified(httpContext, entityTag, lastModified))
+        if (IsNotModified(httpContext, entityTag, preciseLastModified))
         {
             return Results.StatusCode(StatusCodes.Status304NotModified);
         }

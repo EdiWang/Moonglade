@@ -72,7 +72,7 @@ public static class WebApplicationExtensions
         }
 
         app.MapMethods(
-            """/{filename:regex(^[A-Za-z0-9][A-Za-z0-9._-]{{0,127}}\.(txt|html|htm|xml|json)$)}""",
+            """/{filename:maxlength(128):regex(^[A-Za-z0-9][A-Za-z0-9._-]*\.(txt|html|htm|xml|json)$)}""",
             ["GET", "HEAD"],
             SiteVerificationFileMapHandler.Handler);
 
