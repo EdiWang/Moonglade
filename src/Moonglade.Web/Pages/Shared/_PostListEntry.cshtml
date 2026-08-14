@@ -39,7 +39,7 @@
         </div>
     </div>
     <div class="post-summary-box">
-        <time datetime="@Model.PubDateUtc.ToString("u")" class="d-none">
+        <time datetime="@UtcDateTimeFormatter.ToIsoString(Model.PubDateUtc)" class="d-none">
             @Model.PubDateUtc
         </time>
 

@@ -46,7 +46,9 @@ public class PostController(
         return Ok(new
         {
             result.PostId,
-            LastModifiedUtc = result.LastModifiedUtc?.ToString("u")
+            LastModifiedUtc = result.LastModifiedUtc.HasValue
+                ? UtcDateTimeFormatter.ToIsoString(result.LastModifiedUtc.Value)
+                : null
         });
     }
 
@@ -148,7 +150,9 @@ public class PostController(
             Tags = tagStr,
             PublishDate = post.PubDateUtc,
             ScheduledPublishTimeUtc = post.ScheduledPublishTimeUtc,
-            LastModifiedUtc = post.LastModifiedUtc?.ToString("u"),
+            LastModifiedUtc = post.LastModifiedUtc.HasValue
+                ? UtcDateTimeFormatter.ToIsoString(post.LastModifiedUtc.Value)
+                : null,
             SelectedCatIds = post.PostCategory.Select(pc => pc.CategoryId).ToArray(),
             ContentType = post.ContentType
         };

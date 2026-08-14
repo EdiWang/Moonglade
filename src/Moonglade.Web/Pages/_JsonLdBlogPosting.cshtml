@@ -28,14 +28,14 @@
             ["@type"] = "Organization",
             ["name"] = BlogConfig.GeneralSettings.SiteTitle
         },
-        ["datePublished"] = Model.Post.PubDateUtc.GetValueOrDefault().ToString("o"),
+        ["datePublished"] = UtcDateTimeFormatter.ToIsoString(Model.Post.PubDateUtc.GetValueOrDefault()),
         ["inLanguage"] = Model.Post.ContentLanguageCode ?? BlogConfig.GeneralSettings.DefaultLanguageCode,
         ["url"] = postUrl
     };
 
     if (Model.Post.LastModifiedUtc.HasValue)
     {
-        jsonLd["dateModified"] = Model.Post.LastModifiedUtc.Value.ToString("o");
+        jsonLd["dateModified"] = UtcDateTimeFormatter.ToIsoString(Model.Post.LastModifiedUtc.Value);
     }
 
     var tags = Model.Post.Tags.Select(t => t.NormalizedName).ToArray();

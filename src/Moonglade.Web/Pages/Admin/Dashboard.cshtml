@@ -135,8 +135,8 @@
                             <a class="dashboard-post-item" asp-page="/Admin/EditPost" asp-route-id="@post.Id">
                                 <span class="dashboard-post-title">@post.Title</span>
                                 <span class="dashboard-post-meta">
-                                    <time data-utc-label="@post.DateUtc.ToString("u")"
-                                          aria-label="@SharedLocalizer["Last Updated"]">@post.DateUtc.ToString("u")</time>
+                                    <time data-utc-label="@UtcDateTimeFormatter.ToIsoString(post.DateUtc)"
+                                          aria-label="@SharedLocalizer["Last Updated"]">@UtcDateTimeFormatter.ToIsoString(post.DateUtc)</time>
                                 </span>
                             </a>
                         }
@@ -165,8 +165,8 @@
                             <a class="dashboard-post-item" asp-page="/Admin/EditPost" asp-route-id="@post.Id">
                                 <span class="dashboard-post-title">@post.Title</span>
                                 <span class="dashboard-post-meta">
-                                    <time data-utc-label="@post.DateUtc.ToString("u")"
-                                          aria-label="@SharedLocalizer["Publish Date"]">@post.DateUtc.ToString("u")</time>
+                                    <time data-utc-label="@UtcDateTimeFormatter.ToIsoString(post.DateUtc)"
+                                          aria-label="@SharedLocalizer["Publish Date"]">@UtcDateTimeFormatter.ToIsoString(post.DateUtc)</time>
                                 </span>
                             </a>
                         }

@@ -1,4 +1,4 @@
-import { getLocalizedString } from './utils.module.mjs';
+import { getLocalizedString, parseUtcDate, toLocalDateTimeInputValue } from './utils.module.mjs';
 
 export function createScheduleMixin() {
     return {
@@ -11,16 +11,8 @@ export function createScheduleMixin() {
                 this.enableSchedule = true;
 
                 if (this.formData.scheduledPublishTimeUtc) {
-                    const utcDate = new Date(this.formData.scheduledPublishTimeUtc);
-                    const localDate = new Date(utcDate.getTime() - utcDate.getTimezoneOffset() * 60000);
-
-                    const pad = n => n < 10 ? '0' + n : n;
-                    const year = localDate.getFullYear();
-                    const month = pad(localDate.getMonth() + 1);
-                    const day = pad(localDate.getDate());
-                    const hours = pad(localDate.getHours());
-                    const minutes = pad(localDate.getMinutes());
-                    this.formData.scheduledPublishTime = `${year}-${month}-${day}T${hours}:${minutes}`;
+                    this.formData.scheduledPublishTime = toLocalDateTimeInputValue(
+                        this.formData.scheduledPublishTimeUtc);
                 }
 
                 this.updateScheduleInfo();
@@ -42,15 +34,7 @@ export function createScheduleMixin() {
         },
 
         updateMinScheduleDate() {
-            const now = new Date();
-            const localNow = new Date(now.getTime() - now.getTimezoneOffset() * 60000);
-            const pad = n => n < 10 ? '0' + n : n;
-            const year = localNow.getFullYear();
-            const month = pad(localNow.getMonth() + 1);
-            const day = pad(localNow.getDate());
-            const hours = pad(localNow.getHours());
-            const minutes = pad(localNow.getMinutes());
-            this.minScheduleDate = `${year}-${month}-${day}T${hours}:${minutes}`;
+            this.minScheduleDate = toLocalDateTimeInputValue(new Date().toISOString());
         },
 
         updateScheduleInfo() {
@@ -62,9 +46,10 @@ export function createScheduleMixin() {
                 if (this.formData.scheduledPublishTime) {
                     displayTime = new Date(this.formData.scheduledPublishTime).toLocaleString();
                 } else if (this.formData.scheduledPublishTimeUtc) {
-                    const utcDate = new Date(this.formData.scheduledPublishTimeUtc);
-                    const localDate = new Date(utcDate.getTime() - utcDate.getTimezoneOffset() * 60000);
-                    displayTime = localDate.toLocaleString();
+                    const utcDate = parseUtcDate(this.formData.scheduledPublishTimeUtc);
+                    displayTime = utcDate
+                        ? utcDate.toLocaleString()
+                        : this.formData.scheduledPublishTimeUtc;
                 }
 
                 const scheduleText = getLocalizedString('scheduledFor').replace('{0}', displayTime);

@@ -5,6 +5,7 @@ using Moonglade.Data.DTO;
 using Moonglade.Features.Post;
 using Moonglade.IndexNow.Client;
 using Moonglade.Webmention;
+using System.Globalization;
 
 namespace Moonglade.Web.Commands;
 
@@ -135,7 +136,11 @@ public class SavePostCommandHandler(
         var minimalIntervalMinutes = int.Parse(configuration["IndexNow:MinimalIntervalMinutes"]!);
         if (!string.IsNullOrWhiteSpace(lastModifiedUtc))
         {
-            var lastSavedInterval = DateTime.UtcNow - DateTime.Parse(lastModifiedUtc);
+            var lastSavedUtc = DateTime.Parse(
+                lastModifiedUtc,
+                CultureInfo.InvariantCulture,
+                DateTimeStyles.AssumeUniversal | DateTimeStyles.AdjustToUniversal);
+            var lastSavedInterval = DateTime.UtcNow - lastSavedUtc;
             indexCoolDown = lastSavedInterval.TotalMinutes > minimalIntervalMinutes;
         }
 

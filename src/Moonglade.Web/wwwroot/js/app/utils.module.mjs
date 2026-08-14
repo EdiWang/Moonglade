@@ -33,15 +33,9 @@ export function formatUtcTime(includeTime = true) {
         const utclabel = e.getAttribute('data-utc-label');
         if (!utclabel) return;
 
-        const trimmed = utclabel.trim();
-        const isoLike = trimmed.includes('T');
-        const normalized = isoLike
-            ? (trimmed.endsWith('Z') ? trimmed : `${trimmed}Z`)
-            : trimmed.replace(/-/g, '/');
-
-        const localTime = new Date(normalized);
-        if (isNaN(localTime.getTime())) {
-            e.innerHTML = trimmed;
+        const localTime = parseUtcDate(utclabel);
+        if (!localTime) {
+            e.textContent = utclabel.trim();
             return;
         }
 
@@ -49,8 +43,44 @@ export function formatUtcTime(includeTime = true) {
             ? localTime.toLocaleString()
             : localTime.toLocaleDateString();
 
-        e.innerHTML = formattedTime;
+        e.textContent = formattedTime;
     });
+}
+
+export function parseUtcDate(dateString) {
+    if (!dateString) return null;
+
+    let normalized = dateString.trim().replace(' ', 'T');
+    if (/^\d{4}-\d{2}-\d{2}$/.test(normalized)) {
+        normalized = `${normalized}T00:00:00Z`;
+    } else if (!/(?:Z|[+-]\d{2}:\d{2})$/i.test(normalized)) {
+        normalized = `${normalized}Z`;
+    }
+
+    const date = new Date(normalized);
+    return Number.isNaN(date.getTime()) ? null : date;
+}
+
+export function toUtcDatePath(dateString) {
+    const date = parseUtcDate(dateString);
+    if (!date) return null;
+
+    return `${date.getUTCFullYear()}/${date.getUTCMonth() + 1}/${date.getUTCDate()}`;
+}
+
+export function toLocalDateTimeInputValue(dateString) {
+    const date = parseUtcDate(dateString);
+    if (!date) return '';
+
+    const pad = value => value.toString().padStart(2, '0');
+    return `${date.getFullYear()}-${pad(date.getMonth() + 1)}-${pad(date.getDate())}T${pad(date.getHours())}:${pad(date.getMinutes())}`;
+}
+
+export function localDateBoundaryToUtcIso(dateString, endOfDay = false) {
+    if (!dateString) return null;
+
+    const localTime = new Date(`${dateString}T${endOfDay ? '23:59:59' : '00:00:00'}`);
+    return Number.isNaN(localTime.getTime()) ? null : localTime.toISOString();
 }
 
 export function parseMetaContent(metaName) {
@@ -86,7 +116,7 @@ export function slugify(text) {
 
 export function formatDateString(dateString) {
     if (!dateString) return '';
-    const date = new Date(dateString);
-    return isNaN(date.getTime()) ? dateString : date.toLocaleString();
+    const date = parseUtcDate(dateString);
+    return date ? date.toLocaleString() : dateString;
 }
 

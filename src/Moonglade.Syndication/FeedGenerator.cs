@@ -2,6 +2,7 @@
 using Edi.SyndicationFeed.ReaderWriter.Atom;
 using Edi.SyndicationFeed.ReaderWriter.Rss;
 using Moonglade.Data.DTO;
+using Moonglade.Utils;
 using System.Text;
 using System.Xml;
 
@@ -112,8 +113,8 @@ public class FeedGenerator : IFeedGenerator, IRssGenerator, IAtomGenerator
                 Id = item.Id,
                 Title = item.Title,
                 Description = item.Description,
-                LastUpdated = item.PubDateUtc.ToUniversalTime(),
-                Published = item.PubDateUtc.ToUniversalTime()
+                LastUpdated = UtcDateTimeFormatter.Normalize(item.PubDateUtc),
+                Published = UtcDateTimeFormatter.Normalize(item.PubDateUtc)
             };
 
             sItem.AddLink(new SyndicationLink(new(item.Link))

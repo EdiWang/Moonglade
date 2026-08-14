@@ -33,7 +33,7 @@
     }
 
     <meta name="title" content="@Model.Post.Title" />
-    <meta name="displaydate" content="@Model.Post.PubDateUtc.GetValueOrDefault().ToString("u")">
+    <meta name="displaydate" content="@UtcDateTimeFormatter.ToIsoString(Model.Post.PubDateUtc.GetValueOrDefault())">
     <meta name="copyright" content="(C) @DateTime.UtcNow.Year @BlogConfig.GeneralSettings.SiteTitle">
     <meta name="author" content="@(string.IsNullOrWhiteSpace(Model.Post.Author) ? BlogConfig.GeneralSettings.OwnerName : Model.Post.Author) " />
     <meta name="post-is-published" content="@((Model.Post.PostStatus == PostStatus.Published).ToString().ToLower())" />
@@ -117,7 +117,7 @@
 
             <i class="bi-calendar-event"></i>
             <span class="me-2">
-                <time data-utc-label="@Model.Post.PubDateUtc.GetValueOrDefault().ToString("u")">
+                <time data-utc-label="@UtcDateTimeFormatter.ToIsoString(Model.Post.PubDateUtc.GetValueOrDefault())">
                     @DateOnly.FromDateTime(Model.Post.PubDateUtc.GetValueOrDefault()) (UTC)
                 </time>
             </span>

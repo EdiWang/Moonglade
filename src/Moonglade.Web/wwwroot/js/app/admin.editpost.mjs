@@ -3,7 +3,7 @@ import { fetch2 } from './httpService.mjs?v=1500';
 import { success, error } from './toastService.mjs';
 import { keepAlive } from './admin.editor.module.mjs';
 import { showConfirmModal, hideConfirmModal, escapeHtml } from './adminModal.mjs';
-import { getLocalizedString } from './utils.module.mjs';
+import { getLocalizedString, parseUtcDate } from './utils.module.mjs';
 import { createSlugMixin } from './admin.editpost.slug.mjs';
 import { createEditorMixin } from './admin.editpost.editor.mjs';
 import { createTagifyMixin } from './admin.editpost.tagify.mjs';
@@ -141,9 +141,11 @@ Alpine.data('postEditor', () => ({
 
             // Determine warnSlugModification: post published > 3 days ago
             if (data.publishDate) {
-                const pubDate = new Date(data.publishDate);
-                const daysSincePublish = (Date.now() - pubDate.getTime()) / (1000 * 60 * 60 * 24);
-                this.warnSlugModification = daysSincePublish > 3;
+                const pubDate = parseUtcDate(data.publishDate);
+                if (pubDate) {
+                    const daysSincePublish = (Date.now() - pubDate.getTime()) / (1000 * 60 * 60 * 24);
+                    this.warnSlugModification = daysSincePublish > 3;
+                }
             }
         } catch (err) {
             error(err);
