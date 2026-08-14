@@ -1,0 +1,106 @@
+# UTC Time and Database Type Migration
+
+## Original Goal
+
+Analyze and correct Moonglade's time and time-zone handling, then migrate SQL Server temporal columns to `datetime2(7)` and PostgreSQL temporal columns to `timestamp with time zone` without changing published URL semantics.
+
+The work must be delivered as independently executable, testable, and committable batches. Only the latest stable release, `v16.3.0`, is supported as the upgrade source, and the migration will ship with `v16.4.0` rather than a patch release.
+
+## Background
+
+Moonglade persists cross-boundary timestamps as UTC, but its current database schemas do not consistently preserve that contract:
+
+- The SQL Server cumulative migration script creates temporal columns as `datetime`, while some EF Core defaults can create `datetime2`, resulting in schema drift.
+- The PostgreSQL provider maps timestamps to `timestamp without time zone` and enables `Npgsql.EnableLegacyTimestampBehavior`.
+- Values read from time-zone-less columns can have `DateTimeKind.Unspecified`. Some output paths call `ToUniversalTime()` or serialize the value without an explicit UTC designator, so results can depend on the application host time zone.
+- Scheduled publishing accepts a browser local time and IANA time-zone identifier but does not explicitly reject daylight-saving invalid or ambiguous local times.
+- The scheduled-publish transition needs to record the actual successful publication time, not the originally requested schedule time.
+
+A read-only inventory of the database configured by `src/Moonglade.Web/appsettings.Development.json` confirmed 24 temporal columns: 22 active UTC timestamp columns, `PostViewDaily.ViewDateUtc`, and `LoginHistory.LoginTimeUtc`. The active database contained about 340 posts and 789 comments. `LoginHistory` was empty and is no longer represented by the application model. `PostViewDaily` contained 13 rows and all date keys were at midnight. The temporal data ranges were compatible with the target SQL Server types.
+
+## Confirmed Decisions
+
+- SQL Server UTC timestamps use `datetime2(7)`.
+- PostgreSQL UTC timestamps use `timestamp with time zone` (`timestamptz`).
+- `Npgsql.EnableLegacyTimestampBehavior` is removed.
+- `PostViewDaily.ViewDateUtc` becomes SQL Server `date` / PostgreSQL `date` and should use `DateOnly` in the application model.
+- The entire legacy `LoginHistory` table is dropped.
+- Persisted and cross-boundary timestamps remain UTC.
+- Published routes, archives, and date-based lookup semantics remain UTC.
+- Daylight-saving invalid and ambiguous scheduled local times are rejected with a clear request to choose another time.
+- A scheduled post's publication timestamp is the actual successful publication time.
+- Existing handwritten, cumulative provider migration SQL remains the migration mechanism.
+- The migration runs only when upgrading the latest stable release to the next major or minor release.
+- A maintenance window of up to one hour is acceptable.
+- Docker Desktop may be used for disposable SQL Server and PostgreSQL verification.
+
+## Scope
+
+- Add repeatable migration tests against real disposable SQL Server and PostgreSQL containers.
+- Correct startup ordering so schema migration precedes writes that require the new timestamp contract.
+- Define provider-neutral UTC materialization/persistence behavior and provider-specific database types.
+- Make API, feed, structured-data, and browser boundaries explicit about UTC.
+- Validate scheduled local times against daylight-saving gaps and overlaps.
+- Extend both cumulative migration scripts to convert all active temporal columns, convert the daily-view key to a date, preserve dependent keys/indexes, and remove `LoginHistory`.
+- Remove PostgreSQL legacy timestamp behavior.
+- Add focused unit, integration, upgrade, and time-zone regression coverage.
+- Update deployment and upgrade documentation when the implementation is complete.
+
+## Out of Scope
+
+- Supporting upgrades from releases older than the latest stable release.
+- Changing published URL or archive date semantics from UTC to a blog-specific time zone.
+- Changing the current handwritten cumulative migration mechanism to EF Core migrations.
+- Running migration SQL against the configured development database during implementation or automated tests.
+- General date/time refactoring unrelated to persisted or cross-boundary behavior.
+
+## Task Breakdown
+
+| No. | Task | Dependencies | Verification | Status |
+| --- | --- | --- | --- | --- |
+| 1 | Add pinned SQL Server/PostgreSQL container fixtures, latest-stable schema fixtures, and tests for embedded script loading, transactional rollback, data preservation, and idempotent cumulative migration execution. | Confirmed migration decisions and Docker Desktop | `Moonglade.Setup.Tests` unit and container integration tests; Web build | Completed |
+| 2 | Reorder startup initialization so database migration completes before configuration initialization or any other temporal writes. | Batch 1 | Startup/setup unit tests and both provider container smoke tests | Not started |
+| 3 | Add a provider-neutral UTC timestamp contract and deterministic provider mappings; map daily views to `DateOnly`. | Batches 1-2 | Mapping/unit tests and both provider round-trip tests | Not started |
+| 4 | Correct UTC output boundaries in feeds, JSON/JSON-LD, Razor models, and browser parsing/formatting without changing route semantics. | Batch 3 | Unit tests under multiple host time zones plus focused Web tests | Not started |
+| 5 | Reject daylight-saving invalid and ambiguous schedule times with localized validation feedback. | Batches 3-4 | Scheduling unit tests for normal, gap, and overlap times; Web request tests | Not started |
+| 6 | Implement the cumulative SQL Server and PostgreSQL schema cutover, remove `LoginHistory`, remove PostgreSQL legacy timestamp behavior, and record actual successful publish time. | Batches 1-5 | Upgrade from latest-stable fixtures twice; schema/data/index assertions; scheduled-publish integration tests | Not started |
+| 7 | Run full regression and upgrade rehearsals, measure migration duration, and update README/AGENTS/upgrade documentation. | Batches 1-6 | Full solution tests/build, both provider rehearsals, documented rollback/backup checklist | Not started |
+
+## Execution Order
+
+Each batch is implemented, verified, reviewed, and committed independently. Later batches depend on the test infrastructure in batch 1. Database type changes are deliberately deferred until application reads, writes, validation, startup ordering, and output boundaries have deterministic UTC behavior. The final cutover is rehearsed from frozen latest-stable fixtures before it is considered ready for a release.
+
+For the production upgrade, the intended order is: stop the application, take and verify a database backup, deploy the next major/minor release, run the cumulative migration before application initialization writes, execute smoke checks, and reopen traffic. If validation fails, stop the new application and restore the backup with the previous release; the handwritten migration is not treated as automatically reversible.
+
+## Current Progress
+
+Batch 1 is complete. The frozen fixtures represent `v16.3.0`; the current cumulative script advances them through the existing `v16.4` schema additions. Both provider scripts have been executed twice against disposable databases, and transaction rollback has been proven with a deliberately failing second batch. No production migration SQL or business time behavior was changed. The configured development database was inspected read-only during planning; container tests use isolated databases and do not connect to it. Batch 2 is the next executable unit.
+
+## Verification Log
+
+| Date | Command or check | Result | Notes |
+| --- | --- | --- | --- |
+| 2026-08-14 | Read-only inventory of configured SQL Server database | Passed | Confirmed row counts, 24 temporal columns, dependent indexes, empty `LoginHistory`, and compatible data ranges without recording secrets. |
+| 2026-08-14 | `docker version` | Passed | Docker Desktop server 29.7.2 was available for disposable integration databases. |
+| 2026-08-14 | `dotnet test src/Tests/Moonglade.Setup.Tests/Moonglade.Setup.Tests.csproj --no-restore` | Passed | 20/20 tests passed. SQL Server 2022 and PostgreSQL 17.6 containers verified the v16.3.0 baseline, current cumulative migration twice, data/index preservation, and transactional rollback. |
+| 2026-08-14 | `dotnet build src/Moonglade.Web/Moonglade.Web.csproj --no-restore` | Passed | Build completed with 0 warnings and 0 errors. |
+| 2026-08-14 | `dotnet list src/Tests/Moonglade.Setup.Tests/Moonglade.Setup.Tests.csproj package --vulnerable --include-transitive` | Passed | No vulnerable direct or transitive packages were reported by the configured sources. |
+
+## Issues and Resolutions
+
+- SQL Server and PostgreSQL currently materialize UTC data without a reliable UTC kind/offset contract. The migration therefore cannot be only a column-type alteration; batches 3-5 establish deterministic application behavior before batch 6 changes storage types.
+- Current startup initialization can write configuration before migration. Batch 2 moves migration ahead of temporal writes so the PostgreSQL legacy-behavior removal and `timestamptz` cutover are safe.
+- `EmailOutboxMessage` and `PostViewDaily` have indexes involving converted columns. Batch 6 must explicitly preserve or rebuild these indexes and validate their definitions.
+- The first SQL Server fixture assertion included system objects because it queried `INFORMATION_SCHEMA` by schema alone. The assertion now joins `sys.tables` and excludes `is_ms_shipped` objects; both providers report the expected 22 baseline columns and 24 columns after the existing v16.4 schema addition.
+- Testcontainers 4.13.0 initially resolved vulnerable `SSH.NET` 2025.1.0. The test project pins patched `SSH.NET` 2026.0.0, and NuGet's vulnerability audit is clean.
+
+## Follow-ups
+
+- Capture representative production-like backup/restore timings during batch 7 and confirm they fit the one-hour maintenance window.
+- Keep all unresolved business or compatibility choices in this record and ask the user before changing an already confirmed decision.
+
+## Notes
+
+- Actual connection strings and credentials from `appsettings.Development.json` must never be copied into this task record, source files, logs, or commits.
+- Route links and date-based public behavior remain UTC even when local display formatting is corrected.
+- Container fixtures represent the supported latest-stable upgrade boundary; they are not a promise to support arbitrary historical schemas.

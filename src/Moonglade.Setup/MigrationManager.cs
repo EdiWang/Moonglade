@@ -147,7 +147,7 @@ public partial class MigrationManager(
         logger.LogInformation("Migration script executed successfully.");
     }
 
-    private string LoadEmbeddedMigrationScript(string providerKey)
+    internal string LoadEmbeddedMigrationScript(string providerKey)
     {
         var assembly = Assembly.GetExecutingAssembly();
         var resourceName = $"Moonglade.Setup.MigrationScripts.{providerKey}.migration.sql";
@@ -194,7 +194,7 @@ public partial class MigrationManager(
         };
     }
 
-    private async Task ExecuteMigrationScriptBatchesAsync(string script, DbContext context, CancellationToken cancellationToken)
+    internal async Task ExecuteMigrationScriptBatchesAsync(string script, DbContext context, CancellationToken cancellationToken)
     {
         var batches = SplitScriptIntoBatches(script);
 
