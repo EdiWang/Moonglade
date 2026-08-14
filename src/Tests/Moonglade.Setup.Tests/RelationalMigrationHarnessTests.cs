@@ -3,6 +3,9 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging.Abstractions;
 using Moonglade.Configuration;
+using Moonglade.Data;
+using Moonglade.Data.PostgreSql;
+using Moonglade.Data.SqlServer;
 using Moq;
 using System.Data.Common;
 using System.Reflection;
@@ -130,7 +133,7 @@ public sealed class RelationalMigrationHarnessTests(RelationalDatabaseFixture fi
     }
 
     private static async Task VerifyMigrationHarnessAsync(
-        DbContext context,
+        BlogDbContext context,
         string providerKey,
         string fixtureResourceName,
         int baselineTemporalColumnCount,
@@ -163,6 +166,8 @@ public sealed class RelationalMigrationHarnessTests(RelationalDatabaseFixture fi
         Assert.Equal(1, await ExecuteScalarIntAsync(context, postCountSql, cancellationToken));
         Assert.Equal(migratedIndexCount, await ExecuteScalarIntAsync(context, requiredIndexCountSql, cancellationToken));
 
+        await VerifyStartupOrderingAsync(context, cancellationToken);
+
         await Assert.ThrowsAnyAsync<Exception>(() =>
             manager.ExecuteMigrationScriptBatchesAsync(rollbackScript, context, cancellationToken));
 
@@ -178,22 +183,64 @@ public sealed class RelationalMigrationHarnessTests(RelationalDatabaseFixture fi
             Mock.Of<IBlogConfig>());
     }
 
-    private static MigrationTestDbContext CreateSqlServerContext(string connectionString)
+    private static SqlServerBlogDbContext CreateSqlServerContext(string connectionString)
     {
-        var options = new DbContextOptionsBuilder<MigrationTestDbContext>()
+        var options = new DbContextOptionsBuilder<SqlServerBlogDbContext>()
             .UseSqlServer(connectionString)
             .Options;
 
-        return new MigrationTestDbContext(options);
+        return new SqlServerBlogDbContext(options);
     }
 
-    private static MigrationTestDbContext CreatePostgreSqlContext(string connectionString)
+    private static PostgreSqlBlogDbContext CreatePostgreSqlContext(string connectionString)
     {
-        var options = new DbContextOptionsBuilder<MigrationTestDbContext>()
+        var options = new DbContextOptionsBuilder<PostgreSqlBlogDbContext>()
             .UseNpgsql(connectionString)
             .Options;
 
-        return new MigrationTestDbContext(options);
+        return new PostgreSqlBlogDbContext(options);
+    }
+
+    private static async Task VerifyStartupOrderingAsync(
+        BlogDbContext context,
+        CancellationToken cancellationToken)
+    {
+        var operations = new List<string>();
+        var configInitializer = new Mock<IConfigInitializer>(MockBehavior.Strict);
+        configInitializer
+            .Setup(x => x.Load(cancellationToken))
+            .Callback(() => operations.Add("load configuration"))
+            .Returns(Task.CompletedTask);
+        configInitializer
+            .Setup(x => x.Initialize(false, cancellationToken))
+            .Callback(() => operations.Add("initialize configuration"))
+            .Returns(Task.CompletedTask);
+
+        var migrationManager = new Mock<IMigrationManager>(MockBehavior.Strict);
+        migrationManager
+            .Setup(x => x.TryMigrationAsync(context, cancellationToken))
+            .Callback(() => operations.Add("migrate database"))
+            .ReturnsAsync(new MigrationResult(MigrationStatus.NotRequired));
+
+        var siteIconBuilder = new Mock<ISiteIconBuilder>(MockBehavior.Strict);
+        siteIconBuilder
+            .Setup(x => x.GenerateSiteIcons())
+            .Returns(Task.CompletedTask);
+
+        var initializer = new StartUpInitializer(
+            NullLogger<StartUpInitializer>.Instance,
+            context,
+            configInitializer.Object,
+            migrationManager.Object,
+            new ConfigurationBuilder().Build(),
+            siteIconBuilder.Object);
+
+        var result = await initializer.InitStartUpAsync(cancellationToken);
+
+        Assert.Equal(InitStartUpResult.Success, result);
+        Assert.Equal<string>(
+            ["load configuration", "migrate database", "initialize configuration"],
+            operations);
     }
 
     private static string LoadFixture(string resourceName)
@@ -218,7 +265,4 @@ public sealed class RelationalMigrationHarnessTests(RelationalDatabaseFixture fi
 
         return Convert.ToInt32(result);
     }
-
-    private sealed class MigrationTestDbContext(DbContextOptions<MigrationTestDbContext> options)
-        : DbContext(options);
 }

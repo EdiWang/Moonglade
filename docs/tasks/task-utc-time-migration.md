@@ -59,7 +59,7 @@ A read-only inventory of the database configured by `src/Moonglade.Web/appsettin
 | No. | Task | Dependencies | Verification | Status |
 | --- | --- | --- | --- | --- |
 | 1 | Add pinned SQL Server/PostgreSQL container fixtures, latest-stable schema fixtures, and tests for embedded script loading, transactional rollback, data preservation, and idempotent cumulative migration execution. | Confirmed migration decisions and Docker Desktop | `Moonglade.Setup.Tests` unit and container integration tests; Web build | Completed |
-| 2 | Reorder startup initialization so database migration completes before configuration initialization or any other temporal writes. | Batch 1 | Startup/setup unit tests and both provider container smoke tests | Not started |
+| 2 | Reorder startup initialization so database migration completes before configuration initialization or any other temporal writes. | Batch 1 | Startup/setup unit tests and both provider container smoke tests | Completed |
 | 3 | Add a provider-neutral UTC timestamp contract and deterministic provider mappings; map daily views to `DateOnly`. | Batches 1-2 | Mapping/unit tests and both provider round-trip tests | Not started |
 | 4 | Correct UTC output boundaries in feeds, JSON/JSON-LD, Razor models, and browser parsing/formatting without changing route semantics. | Batch 3 | Unit tests under multiple host time zones plus focused Web tests | Not started |
 | 5 | Reject daylight-saving invalid and ambiguous schedule times with localized validation feedback. | Batches 3-4 | Scheduling unit tests for normal, gap, and overlap times; Web request tests | Not started |
@@ -74,7 +74,7 @@ For the production upgrade, the intended order is: stop the application, take an
 
 ## Current Progress
 
-Batch 1 is complete. The frozen fixtures represent `v16.3.0`; the current cumulative script advances them through the existing `v16.4` schema additions. Both provider scripts have been executed twice against disposable databases, and transaction rollback has been proven with a deliberately failing second batch. No production migration SQL or business time behavior was changed. The configured development database was inspected read-only during planning; container tests use isolated databases and do not connect to it. Batch 2 is the next executable unit.
+Batches 1 and 2 are complete. Startup configuration initialization is now split into a read-only load and a later missing-default write phase. Existing databases load `SystemManifestSettings`, perform the migration check and content-type backfill, and only then write missing configuration defaults. SQL Server and PostgreSQL container tests prove this order against the v16.3.0 fixture after applying the current cumulative script. New databases still seed the current schema before configuration initialization and do not run upgrade migration. Batch 3 is the next executable unit.
 
 ## Verification Log
 
@@ -85,6 +85,8 @@ Batch 1 is complete. The frozen fixtures represent `v16.3.0`; the current cumula
 | 2026-08-14 | `dotnet test src/Tests/Moonglade.Setup.Tests/Moonglade.Setup.Tests.csproj --no-restore` | Passed | 20/20 tests passed. SQL Server 2022 and PostgreSQL 17.6 containers verified the v16.3.0 baseline, current cumulative migration twice, data/index preservation, and transactional rollback. |
 | 2026-08-14 | `dotnet build src/Moonglade.Web/Moonglade.Web.csproj --no-restore` | Passed | Build completed with 0 warnings and 0 errors. |
 | 2026-08-14 | `dotnet list src/Tests/Moonglade.Setup.Tests/Moonglade.Setup.Tests.csproj package --vulnerable --include-transitive` | Passed | No vulnerable direct or transitive packages were reported by the configured sources. |
+| 2026-08-14 | `dotnet test src/Tests/Moonglade.Setup.Tests/Moonglade.Setup.Tests.csproj --no-restore` after batch 2 | Passed | 22/22 tests passed. Both providers verified read-only configuration loading before migration and missing-default writes after migration. |
+| 2026-08-14 | `dotnet build src/Moonglade.Web/Moonglade.Web.csproj --no-restore` after batch 2 | Passed | Build completed with 0 warnings and 0 errors. |
 
 ## Issues and Resolutions
 
@@ -93,6 +95,8 @@ Batch 1 is complete. The frozen fixtures represent `v16.3.0`; the current cumula
 - `EmailOutboxMessage` and `PostViewDaily` have indexes involving converted columns. Batch 6 must explicitly preserve or rebuild these indexes and validate their definitions.
 - The first SQL Server fixture assertion included system objects because it queried `INFORMATION_SCHEMA` by schema alone. The assertion now joins `sys.tables` and excludes `is_ms_shipped` objects; both providers report the expected 22 baseline columns and 24 columns after the existing v16.4 schema addition.
 - Testcontainers 4.13.0 initially resolved vulnerable `SSH.NET` 2025.1.0. The test project pins patched `SSH.NET` 2026.0.0, and NuGet's vulnerability audit is clean.
+- Migration needs the persisted `SystemManifestSettings` version, so configuration initialization could not simply move wholesale after migration. It is now explicitly two-phase: read-only load before migration, missing-default writes after migration.
+- `AutoDatabaseMigration=false` retains its existing manual-migration semantics. The migration check still occurs before configuration writes, but operators who disable automatic migration must apply the cumulative script manually before starting the new release.
 
 ## Follow-ups
 

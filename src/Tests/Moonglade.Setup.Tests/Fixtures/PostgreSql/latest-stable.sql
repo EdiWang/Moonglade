@@ -17,8 +17,9 @@ CREATE TABLE "BlogAsset" (
 );
 
 CREATE TABLE "BlogConfiguration" (
-    "Id" UUID NOT NULL PRIMARY KEY,
-    "LastModifiedTimeUtc" TIMESTAMP NOT NULL
+    "CfgKey" VARCHAR(64) NOT NULL PRIMARY KEY,
+    "CfgValue" TEXT NOT NULL,
+    "LastModifiedTimeUtc" TIMESTAMP NULL
 );
 
 CREATE TABLE "BlogPage" (
@@ -126,3 +127,6 @@ INSERT INTO "EmailOutboxMessage" (
     TIMESTAMP '2026-08-14 01:02:03.123456', NULL, TIMESTAMP '2026-08-14 01:05:00', NULL, NULL, NULL, NULL,
     '33333333-3333-3333-3333-333333333333'
 );
+
+INSERT INTO "BlogConfiguration" ("CfgKey", "CfgValue", "LastModifiedTimeUtc")
+VALUES ('SystemManifestSettings', 'fixture', TIMESTAMP '2026-01-01 00:00:00');

@@ -19,8 +19,9 @@ CREATE TABLE [dbo].[BlogAsset](
 GO
 
 CREATE TABLE [dbo].[BlogConfiguration](
-    [Id] [uniqueidentifier] NOT NULL PRIMARY KEY,
-    [LastModifiedTimeUtc] [datetime] NOT NULL
+    [CfgKey] [nvarchar](64) NOT NULL PRIMARY KEY,
+    [CfgValue] [nvarchar](max) NOT NULL,
+    [LastModifiedTimeUtc] [datetime] NULL
 );
 GO
 
@@ -143,4 +144,8 @@ INSERT INTO [dbo].[EmailOutboxMessage] (
     '2026-08-14T01:02:03.123', NULL, '2026-08-14T01:05:00', NULL, NULL, NULL, NULL,
     '33333333-3333-3333-3333-333333333333'
 );
+GO
+
+INSERT INTO [dbo].[BlogConfiguration] ([CfgKey], [CfgValue], [LastModifiedTimeUtc])
+VALUES ('SystemManifestSettings', 'fixture', '2026-01-01T00:00:00');
 GO

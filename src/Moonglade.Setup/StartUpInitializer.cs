@@ -42,12 +42,13 @@ public class StartUpInitializer(
                     return result;
             }
 
-            // Step 3: Initialize blog configuration
-            result = await InitializeBlogConfigurationAsync(isNewDatabase, cancellationToken);
+            // Step 3: Load persisted configuration without writing defaults.
+            // Migration needs the installed version from SystemManifestSettings.
+            result = await LoadBlogConfigurationAsync(cancellationToken);
             if (result != InitStartUpResult.Success)
                 return result;
 
-            // Step 4: Migrate database if not new
+            // Step 4: Migrate existing databases before any configuration writes
             if (!isNewDatabase)
             {
                 result = await MigrateDatabaseAsync(cancellationToken);
@@ -60,10 +61,15 @@ public class StartUpInitializer(
                     return result;
             }
 
-            // Step 5: Generate site icons (non-blocking operation)
+            // Step 5: Add missing configuration defaults only after migration
+            result = await InitializeBlogConfigurationAsync(isNewDatabase, cancellationToken);
+            if (result != InitStartUpResult.Success)
+                return result;
+
+            // Step 6: Generate site icons (non-blocking operation)
             await GenerateSiteIconsAsync(cancellationToken);
 
-            // Step 6: Prepare image storage containers
+            // Step 7: Prepare image storage containers
             await PrepareImageContainers();
 
             stopwatch.Stop();
@@ -130,7 +136,16 @@ public class StartUpInitializer(
     {
         return await ExecuteStepAsync(
             "Initializing blog configuration",
-            async () => await blogConfigInitializer.Initialize(isNew),
+            async () => await blogConfigInitializer.Initialize(isNew, cancellationToken),
+            InitStartUpResult.FailedInitBlogConfig,
+            cancellationToken);
+    }
+
+    private async Task<InitStartUpResult> LoadBlogConfigurationAsync(CancellationToken cancellationToken)
+    {
+        return await ExecuteStepAsync(
+            "Loading blog configuration",
+            async () => await blogConfigInitializer.Load(cancellationToken),
             InitStartUpResult.FailedInitBlogConfig,
             cancellationToken);
     }
