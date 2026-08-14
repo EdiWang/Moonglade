@@ -8,7 +8,7 @@ internal class SiteVerificationFileConfiguration : Data.Configurations.SiteVerif
 {
     protected override void ConfigureDateTimeColumns(EntityTypeBuilder<SiteVerificationFileEntity> builder)
     {
-        builder.Property(e => e.CreatedTimeUtc).HasColumnType("timestamp");
-        builder.Property(e => e.LastModifiedTimeUtc).HasColumnType("timestamp");
+        builder.Property(e => e.CreatedTimeUtc).HasColumnType("timestamp with time zone");
+        builder.Property(e => e.LastModifiedTimeUtc).HasColumnType("timestamp with time zone");
     }
 }

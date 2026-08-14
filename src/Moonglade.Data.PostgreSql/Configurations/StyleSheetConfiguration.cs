@@ -8,6 +8,6 @@ internal class StyleSheetConfiguration : Data.Configurations.StyleSheetConfigura
 {
     protected override void ConfigureDateTimeColumns(EntityTypeBuilder<StyleSheetEntity> builder)
     {
-        builder.Property(e => e.LastModifiedTimeUtc).HasColumnType("timestamp");
+        builder.Property(e => e.LastModifiedTimeUtc).HasColumnType("timestamp with time zone");
     }
 }

@@ -51,7 +51,8 @@ public class ListCommentsQueryTests
         db.Post.Add(new PostEntity
         {
             Id = postId,
-            Title = "Test Post"
+            Title = "Test Post",
+            CreateTimeUtc = new DateTime(2024, 1, 1, 0, 0, 0, DateTimeKind.Utc)
         });
 
         db.Comment.AddRange(

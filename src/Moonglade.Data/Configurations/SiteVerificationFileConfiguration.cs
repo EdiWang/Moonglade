@@ -19,7 +19,7 @@ public class SiteVerificationFileConfiguration : IEntityTypeConfiguration<SiteVe
 
     protected virtual void ConfigureDateTimeColumns(EntityTypeBuilder<SiteVerificationFileEntity> builder)
     {
-        builder.Property(e => e.CreatedTimeUtc).HasColumnType("datetime");
-        builder.Property(e => e.LastModifiedTimeUtc).HasColumnType("datetime");
+        builder.Property(e => e.CreatedTimeUtc);
+        builder.Property(e => e.LastModifiedTimeUtc);
     }
 }

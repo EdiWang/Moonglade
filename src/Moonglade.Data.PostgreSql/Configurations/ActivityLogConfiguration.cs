@@ -8,6 +8,6 @@ internal class ActivityLogConfiguration : Data.Configurations.ActivityLogConfigu
 {
     protected override void ConfigureDateTimeColumns(EntityTypeBuilder<ActivityLogEntity> builder)
     {
-        builder.Property(e => e.EventTimeUtc).HasColumnType("timestamp");
+        builder.Property(e => e.EventTimeUtc).HasColumnType("timestamp with time zone");
     }
 }

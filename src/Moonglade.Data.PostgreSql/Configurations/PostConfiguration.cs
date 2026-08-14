@@ -8,8 +8,9 @@ internal class PostConfiguration : Data.Configurations.PostConfiguration
 {
     protected override void ConfigureDateTimeColumns(EntityTypeBuilder<PostEntity> builder)
     {
-        builder.Property(e => e.CreateTimeUtc).HasColumnType("timestamp");
-        builder.Property(e => e.PubDateUtc).HasColumnType("timestamp");
-        builder.Property(e => e.LastModifiedUtc).HasColumnType("timestamp");
+        builder.Property(e => e.CreateTimeUtc).HasColumnType("timestamp with time zone");
+        builder.Property(e => e.PubDateUtc).HasColumnType("timestamp with time zone");
+        builder.Property(e => e.LastModifiedUtc).HasColumnType("timestamp with time zone");
+        builder.Property(e => e.ScheduledPublishTimeUtc).HasColumnType("timestamp with time zone");
     }
 }

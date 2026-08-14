@@ -19,7 +19,6 @@ public class CommentReplyConfiguration : IEntityTypeConfiguration<CommentReplyEn
 
     protected virtual void ConfigureDateTimeColumns(EntityTypeBuilder<CommentReplyEntity> builder)
     {
-        // Default: use datetime (SQL Server compatible)
-        builder.Property(e => e.CreateTimeUtc).HasColumnType("datetime");
+        builder.Property(e => e.CreateTimeUtc);
     }
 }

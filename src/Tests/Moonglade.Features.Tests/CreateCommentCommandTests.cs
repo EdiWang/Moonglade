@@ -128,6 +128,7 @@ public class CreateCommentCommandTests
         {
             Id = postId,
             Title = "Test Post",
+            CreateTimeUtc = pubDateUtc,
             PubDateUtc = pubDateUtc
         });
         await db.SaveChangesAsync(TestContext.Current.CancellationToken);

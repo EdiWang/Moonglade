@@ -8,7 +8,7 @@ internal class PageConfiguration : Data.Configurations.PageConfiguration
 {
     protected override void ConfigureDateTimeColumns(EntityTypeBuilder<PageEntity> builder)
     {
-        builder.Property(e => e.CreateTimeUtc).HasColumnType("timestamp");
-        builder.Property(e => e.UpdateTimeUtc).HasColumnType("timestamp");
+        builder.Property(e => e.CreateTimeUtc).HasColumnType("timestamp with time zone");
+        builder.Property(e => e.UpdateTimeUtc).HasColumnType("timestamp with time zone");
     }
 }

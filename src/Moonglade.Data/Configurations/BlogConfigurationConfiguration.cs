@@ -14,7 +14,6 @@ public class BlogConfigurationConfiguration : IEntityTypeConfiguration<BlogConfi
 
     protected virtual void ConfigureDateTimeColumns(EntityTypeBuilder<BlogConfigurationEntity> builder)
     {
-        // Default: use datetime (SQL Server compatible)
-        builder.Property(e => e.LastModifiedTimeUtc).HasColumnType("datetime");
+        builder.Property(e => e.LastModifiedTimeUtc);
     }
 }

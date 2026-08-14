@@ -19,7 +19,6 @@ public class MentionConfiguration : IEntityTypeConfiguration<MentionEntity>
 
     protected virtual void ConfigureDateTimeColumns(EntityTypeBuilder<MentionEntity> builder)
     {
-        // Default: use datetime (SQL Server compatible)
-        builder.Property(e => e.PingTimeUtc).HasColumnType("datetime");
+        builder.Property(e => e.PingTimeUtc);
     }
 }

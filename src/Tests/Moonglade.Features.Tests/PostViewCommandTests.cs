@@ -34,7 +34,7 @@ public class PostViewCommandTests
         await db.SaveChangesAsync(TestContext.Current.CancellationToken);
 
         var handler = new AddViewCountCommandHandler(db, Mock.Of<ILogger<AddViewCountCommandHandler>>());
-        var todayUtc = DateTime.UtcNow.Date;
+        var todayUtc = DateOnly.FromDateTime(DateTime.UtcNow);
 
         var result = await handler.HandleAsync(new AddViewCountCommand(postId), TestContext.Current.CancellationToken);
 
@@ -62,7 +62,7 @@ public class PostViewCommandTests
         db.PostViewDaily.Add(new PostViewDailyEntity
         {
             PostId = postId,
-            ViewDateUtc = DateTime.UtcNow.Date,
+            ViewDateUtc = DateOnly.FromDateTime(DateTime.UtcNow),
             ViewCount = 2
         });
         await db.SaveChangesAsync(TestContext.Current.CancellationToken);

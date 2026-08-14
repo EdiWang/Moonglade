@@ -8,6 +8,6 @@ internal class CommentReplyConfiguration : Data.Configurations.CommentReplyConfi
 {
     protected override void ConfigureDateTimeColumns(EntityTypeBuilder<CommentReplyEntity> builder)
     {
-        builder.Property(e => e.CreateTimeUtc).HasColumnType("timestamp");
+        builder.Property(e => e.CreateTimeUtc).HasColumnType("timestamp with time zone");
     }
 }

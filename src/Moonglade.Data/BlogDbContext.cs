@@ -56,6 +56,39 @@ public class BlogDbContext : DbContext
                     .HasOne(pt => pt.Post)
                     .WithMany()
                     .HasForeignKey(pt => pt.PostId));
+
+        modelBuilder.ConfigureUtcDateTimeContract();
+    }
+
+    public override int SaveChanges(bool acceptAllChangesOnSuccess)
+    {
+        ValidateUtcDateTimeValues();
+        return base.SaveChanges(acceptAllChangesOnSuccess);
+    }
+
+    public override Task<int> SaveChangesAsync(
+        bool acceptAllChangesOnSuccess,
+        CancellationToken cancellationToken = default)
+    {
+        ValidateUtcDateTimeValues();
+        return base.SaveChangesAsync(acceptAllChangesOnSuccess, cancellationToken);
+    }
+
+    private void ValidateUtcDateTimeValues()
+    {
+        foreach (var entry in ChangeTracker.Entries()
+                     .Where(entry => entry.State is EntityState.Added or EntityState.Modified))
+        {
+            foreach (var property in entry.Properties.Where(property =>
+                         UtcDateTimeConvention.IsUtcDateTimeProperty(property.Metadata)))
+            {
+                if (property.CurrentValue is DateTime value && value.Kind != DateTimeKind.Utc)
+                {
+                    throw new InvalidOperationException(
+                        $"Property '{entry.Metadata.ClrType.Name}.{property.Metadata.Name}' must contain a UTC DateTime value.");
+                }
+            }
+        }
     }
 }
 

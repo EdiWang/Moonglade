@@ -32,5 +32,7 @@ public class SqlServerBlogDbContext : BlogDbContext
         modelBuilder.ApplyConfiguration(new Data.Configurations.SiteVerificationFileConfiguration());
 
         base.OnModelCreating(modelBuilder);
+
+        Data.Configurations.UtcDateTimeConvention.ConfigureUtcDateTimeColumnType(modelBuilder, "datetime2(7)");
     }
 }

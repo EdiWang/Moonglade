@@ -8,6 +8,6 @@ internal class MentionConfiguration : Data.Configurations.MentionConfiguration
 {
     protected override void ConfigureDateTimeColumns(EntityTypeBuilder<MentionEntity> builder)
     {
-        builder.Property(e => e.PingTimeUtc).HasColumnType("timestamp");
+        builder.Property(e => e.PingTimeUtc).HasColumnType("timestamp with time zone");
     }
 }

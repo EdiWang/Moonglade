@@ -8,6 +8,6 @@ internal class BlogConfigurationConfiguration : Data.Configurations.BlogConfigur
 {
     protected override void ConfigureDateTimeColumns(EntityTypeBuilder<BlogConfigurationEntity> builder)
     {
-        builder.Property(e => e.LastModifiedTimeUtc).HasColumnType("timestamp");
+        builder.Property(e => e.LastModifiedTimeUtc).HasColumnType("timestamp with time zone");
     }
 }

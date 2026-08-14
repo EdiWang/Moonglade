@@ -20,8 +20,7 @@ public class PageConfiguration : IEntityTypeConfiguration<PageEntity>
 
     protected virtual void ConfigureDateTimeColumns(EntityTypeBuilder<PageEntity> builder)
     {
-        // Default: use datetime (SQL Server compatible)
-        builder.Property(e => e.CreateTimeUtc).HasColumnType("datetime");
-        builder.Property(e => e.UpdateTimeUtc).HasColumnType("datetime");
+        builder.Property(e => e.CreateTimeUtc);
+        builder.Property(e => e.UpdateTimeUtc);
     }
 }

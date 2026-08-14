@@ -32,5 +32,8 @@ public class PostgreSqlBlogDbContext : BlogDbContext
         base.OnModelCreating(modelBuilder);
 
         modelBuilder.ApplyConfiguration(new SiteVerificationFileConfiguration());
+        Data.Configurations.UtcDateTimeConvention.ConfigureUtcDateTimeColumnType(
+            modelBuilder,
+            "timestamp with time zone");
     }
 }

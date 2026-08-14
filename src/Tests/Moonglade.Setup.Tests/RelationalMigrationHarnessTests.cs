@@ -1,12 +1,16 @@
 using LiteBus.Commands.Abstractions;
+using Microsoft.Data.SqlClient;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging.Abstractions;
 using Moonglade.Configuration;
 using Moonglade.Data;
+using Moonglade.Data.Configurations;
+using Moonglade.Data.Entities;
 using Moonglade.Data.PostgreSql;
 using Moonglade.Data.SqlServer;
 using Moq;
+using Npgsql;
 using System.Data.Common;
 using System.Reflection;
 using Testcontainers.MsSql;
@@ -87,6 +91,12 @@ public sealed class RelationalMigrationHarnessTests(RelationalDatabaseFixture fi
                 WHERE object_id = OBJECT_ID(N'[dbo].[MigrationRollbackProbe]');
                 """,
             TestContext.Current.CancellationToken);
+
+        await using var contractContext = CreateFreshSqlServerContext(fixture.SqlServer.GetConnectionString());
+        await VerifyTemporalContractAsync(
+            contractContext,
+            expectedTimestampColumnType: "datetime2(7)",
+            TestContext.Current.CancellationToken);
     }
 
     [Fact]
@@ -129,6 +139,12 @@ public sealed class RelationalMigrationHarnessTests(RelationalDatabaseFixture fi
                 FROM information_schema.tables
                 WHERE table_schema = 'public' AND table_name = 'MigrationRollbackProbe';
                 """,
+            TestContext.Current.CancellationToken);
+
+        await using var contractContext = CreateFreshPostgreSqlContext(fixture.PostgreSql.GetConnectionString());
+        await VerifyTemporalContractAsync(
+            contractContext,
+            expectedTimestampColumnType: "timestamp with time zone",
             TestContext.Current.CancellationToken);
     }
 
@@ -199,6 +215,82 @@ public sealed class RelationalMigrationHarnessTests(RelationalDatabaseFixture fi
             .Options;
 
         return new PostgreSqlBlogDbContext(options);
+    }
+
+    private static SqlServerBlogDbContext CreateFreshSqlServerContext(string connectionString)
+    {
+        var connectionStringBuilder = new SqlConnectionStringBuilder(connectionString)
+        {
+            InitialCatalog = $"MoongladeUtcContract{Guid.NewGuid():N}"
+        };
+
+        return CreateSqlServerContext(connectionStringBuilder.ConnectionString);
+    }
+
+    private static PostgreSqlBlogDbContext CreateFreshPostgreSqlContext(string connectionString)
+    {
+        var connectionStringBuilder = new NpgsqlConnectionStringBuilder(connectionString)
+        {
+            Database = $"moonglade_utc_contract_{Guid.NewGuid():N}"
+        };
+
+        return CreatePostgreSqlContext(connectionStringBuilder.ConnectionString);
+    }
+
+    private static async Task VerifyTemporalContractAsync(
+        BlogDbContext context,
+        string expectedTimestampColumnType,
+        CancellationToken cancellationToken)
+    {
+        Assert.True(await context.Database.EnsureCreatedAsync(cancellationToken));
+
+        var utcProperties = context.Model.GetEntityTypes()
+            .SelectMany(entityType => entityType.GetProperties())
+            .Where(UtcDateTimeConvention.IsUtcDateTimeProperty)
+            .ToArray();
+
+        Assert.Equal(22, utcProperties.Length);
+        Assert.All(
+            utcProperties,
+            property => Assert.Equal(expectedTimestampColumnType, property.GetColumnType()));
+        Assert.All(
+            utcProperties,
+            property => Assert.NotNull(property.GetValueConverter()));
+
+        var dailyViewDateProperty = context.Model
+            .FindEntityType(typeof(PostViewDailyEntity))!
+            .FindProperty(nameof(PostViewDailyEntity.ViewDateUtc))!;
+        Assert.Equal(typeof(DateOnly), dailyViewDateProperty.ClrType);
+        Assert.Equal("date", dailyViewDateProperty.GetColumnType());
+
+        var timestampUtc = new DateTime(2026, 8, 15, 1, 2, 3, DateTimeKind.Utc).AddTicks(1_234_560);
+        var viewDateUtc = new DateOnly(2026, 8, 15);
+        context.ActivityLog.Add(new ActivityLogEntity
+        {
+            EventId = 1,
+            EventTimeUtc = timestampUtc
+        });
+        context.PostViewDaily.Add(new PostViewDailyEntity
+        {
+            PostId = Guid.NewGuid(),
+            ViewDateUtc = viewDateUtc,
+            ViewCount = 7
+        });
+        await context.SaveChangesAsync(cancellationToken);
+
+        context.ChangeTracker.Clear();
+
+        var storedActivity = await context.ActivityLog.AsNoTracking().SingleAsync(cancellationToken);
+        var storedDailyView = await context.PostViewDaily.AsNoTracking().SingleAsync(cancellationToken);
+        var nextViewDateUtc = viewDateUtc.AddDays(1);
+        var dailyViewCount = await context.PostViewDaily
+            .AsNoTracking()
+            .Where(view => view.ViewDateUtc >= viewDateUtc && view.ViewDateUtc < nextViewDateUtc)
+            .SumAsync(view => view.ViewCount, cancellationToken);
+        Assert.Equal(timestampUtc, storedActivity.EventTimeUtc);
+        Assert.Equal(DateTimeKind.Utc, storedActivity.EventTimeUtc!.Value.Kind);
+        Assert.Equal(viewDateUtc, storedDailyView.ViewDateUtc);
+        Assert.Equal(7, dailyViewCount);
     }
 
     private static async Task VerifyStartupOrderingAsync(
