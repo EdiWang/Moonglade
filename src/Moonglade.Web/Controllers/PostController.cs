@@ -1,5 +1,6 @@
 ﻿using LiteBus.Commands.Abstractions;
 using LiteBus.Queries.Abstractions;
+using Microsoft.Extensions.Localization;
 using Microsoft.Extensions.Options;
 using Moonglade.Data.DTO;
 using Moonglade.Features.Category;
@@ -14,7 +15,8 @@ public class PostController(
     IConfiguration configuration,
     ICommandMediator commandMediator,
     IQueryMediator queryMediator,
-    IBlogConfig blogConfig) : BlogControllerBase(commandMediator)
+    IBlogConfig blogConfig,
+    IStringLocalizer<Program> localizer) : BlogControllerBase(commandMediator)
 {
     [HttpGet("list")]
     public async Task<IActionResult> List(
@@ -40,6 +42,16 @@ public class PostController(
         var result = await CommandMediator.SendAsync(new SavePostCommand(model, CreatePostOperationContext()));
         if (!result.Succeeded)
         {
+            if (result.FailureType == PostOperationFailureType.Validation)
+            {
+                var errorMessage = localizer[result.ErrorMessage].Value;
+                ModelState.AddModelError(nameof(model.ScheduledPublishTime), errorMessage);
+                return ValidationProblem(
+                    detail: errorMessage,
+                    statusCode: StatusCodes.Status400BadRequest,
+                    modelStateDictionary: ModelState);
+            }
+
             return Conflict(result.ErrorMessage);
         }
 

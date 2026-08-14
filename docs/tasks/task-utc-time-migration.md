@@ -63,7 +63,7 @@ A read-only inventory of the database configured by `src/Moonglade.Web/appsettin
 | 2 | Reorder startup initialization so database migration completes before configuration initialization or any other temporal writes. | Batch 1 | Startup/setup unit tests and both provider container smoke tests | Completed |
 | 3 | Add a provider-neutral UTC timestamp contract and deterministic provider mappings; map daily views to `DateOnly`. | Batches 1-2 | Mapping/unit tests and both provider round-trip tests | Completed |
 | 4 | Correct UTC output boundaries in feeds, JSON/JSON-LD, Razor models, and browser parsing/formatting without changing route semantics. | Batch 3 | Unit tests under multiple host time zones plus focused Web tests | Completed |
-| 5 | Reject daylight-saving invalid and ambiguous schedule times with localized validation feedback. | Batches 3-4 | Scheduling unit tests for normal, gap, and overlap times; Web request tests | Not started |
+| 5 | Reject daylight-saving invalid and ambiguous schedule times with localized validation feedback. | Batches 3-4 | Scheduling unit tests for normal, gap, and overlap times; Web request tests | Completed |
 | 6 | Implement the cumulative SQL Server and PostgreSQL schema cutover, remove `LoginHistory`, remove PostgreSQL legacy timestamp behavior, and record actual successful publish time. | Batches 1-5 | Upgrade from latest-stable fixtures twice; schema/data/index assertions; scheduled-publish integration tests | Not started |
 | 7 | Run full regression and upgrade rehearsals, measure migration duration, and update README/AGENTS/upgrade documentation. | Batches 1-6 | Full solution tests/build, both provider rehearsals, documented rollback/backup checklist | Not started |
 
@@ -81,7 +81,9 @@ The application model now identifies all 22 active `*Utc` timestamp properties a
 
 The disposable database baseline now uses `postgres:18-alpine` and `mcr.microsoft.com/mssql/server:2025-latest`. The pulled images reported PostgreSQL 18.6 and SQL Server 17.0.4075.5 respectively.
 
-Batches 1 through 4 are complete. Server-rendered timestamp attributes, post-management API strings, JSON-LD, and feeds now emit explicit UTC values. Legacy unspecified feed values preserve their stored UTC clock time instead of being converted through the host time zone. Browser code uses a shared UTC parser, converts local filter boundaries explicitly to UTC, performs one UTC-to-local conversion for scheduled-time inputs, and constructs published post routes from UTC calendar components. Batch 5 is the next executable unit.
+Batches 1 through 5 are complete. Server-rendered timestamp attributes, post-management API strings, JSON-LD, and feeds now emit explicit UTC values. Legacy unspecified feed values preserve their stored UTC clock time instead of being converted through the host time zone. Browser code uses a shared UTC parser, converts local filter boundaries explicitly to UTC, performs one UTC-to-local conversion for scheduled-time inputs, and constructs published post routes from UTC calendar components.
+
+Scheduled local wall-clock values are now checked against the browser's IANA time zone before conversion. Normal values convert to UTC; daylight-saving gaps and overlaps, missing times, and missing or invalid time-zone identifiers return a localized HTTP 400 validation response and do not execute the post save command or wake the scheduled publisher. Batch 6 is the next executable unit.
 
 ## Verification Log
 
@@ -104,6 +106,10 @@ Batches 1 through 4 are complete. Server-rendered timestamp attributes, post-man
 | 2026-08-15 | `dotnet test src/Tests/Moonglade.Syndication.Tests/Moonglade.Syndication.Tests.csproj --no-restore` after batch 4 | Passed | 23/23 tests passed. RSS and Atom preserve legacy unspecified UTC clock values without host-zone conversion. |
 | 2026-08-15 | `dotnet test src/Tests/Moonglade.Web.Tests/Moonglade.Web.Tests.csproj --no-restore` after batch 4 | Passed | 165/165 tests passed, including explicit `Z` designators for post-management API timestamps. |
 | 2026-08-15 | `dotnet build src/Moonglade.Web/Moonglade.Web.csproj --no-restore` after batch 4 | Passed | Build completed with 0 warnings and 0 errors. |
+| 2026-08-15 | `dotnet test src/Tests/Moonglade.Web.Tests/Moonglade.Web.Tests.csproj --no-restore` after batch 5 | Passed | 173/173 tests passed. Normal, DST gap, DST overlap, missing time-zone, missing time, no-save/no-wake behavior, and localized ProblemDetails responses are covered. |
+| 2026-08-15 | Run focused scheduling tests with `TZ=UTC` and `TZ=America/Los_Angeles` | Passed | 7/7 focused tests passed in each host time zone while resolving `America/New_York` normal, gap, and overlap wall-clock values. |
+| 2026-08-15 | Validate scheduling resource keys in all non-English resource files | Passed | All four validation keys are present in `zh-Hans`, `zh-Hant`, `de-DE`, and `ja-JP`. |
+| 2026-08-15 | `dotnet build src/Moonglade.Web/Moonglade.Web.csproj --no-restore` after batch 5 | Passed | Build completed with 0 warnings and 0 errors. |
 
 ## Issues and Resolutions
 
@@ -120,6 +126,9 @@ Batches 1 through 4 are complete. Server-rendered timestamp attributes, post-man
 - Several Razor timestamp attributes used the sortable `u` format while browser code guessed whether a missing `T` or offset meant UTC. Batch 4 replaces those boundaries with invariant round-trip ISO strings carrying an explicit `Z` and centralizes browser parsing.
 - The admin post list rebuilt published URLs with local `getFullYear`, `getMonth`, and `getDate` values. Posts near a UTC day boundary could therefore receive a different route date in non-UTC browsers. It now uses UTC calendar components, preserving the existing server route semantics.
 - Scheduled-time display code previously adjusted the browser offset manually and then read local date components, applying the offset twice for explicit UTC inputs. Batch 4 performs one conversion. Daylight-saving gap and overlap rejection remains intentionally deferred to batch 5.
+- `TimeZoneInfo.ConvertTimeToUtc` alone does not express the required product choice for repeated local times. Batch 5 checks `IsInvalidTime` and `IsAmbiguousTime` first and rejects both cases instead of selecting an offset or allowing a conversion exception to become a generic save failure.
+- A browser `datetime-local` value represents wall-clock components and carries no offset. The resolver explicitly changes its `DateTimeKind` to `Unspecified` before validating it against the supplied IANA time zone, preventing the application host time zone from influencing the result.
+- Schedule validation previously returned a plain-text conflict response, while the shared browser request code only extracts messages from ProblemDetails. Batch 5 returns an explicit HTTP 400 validation ProblemDetails response localized at the controller boundary, so the existing editor toast displays the reason and asks the author to choose again.
 
 ## Follow-ups
 

@@ -22,7 +22,7 @@ public class PostManagementCommandTests
     private readonly RecordingCommandMediator _commandMediator = new();
 
     [Fact]
-    public async Task SavePostCommand_ScheduledWithoutClientTimeZone_ReturnsConflictAndSkipsSave()
+    public async Task SavePostCommand_ScheduledWithoutClientTimeZone_ReturnsValidationAndSkipsSave()
     {
         var handler = CreateSavePostHandler();
         var model = CreatePostEditModel(PostStatus.Scheduled);
@@ -32,8 +32,54 @@ public class PostManagementCommandTests
         var result = await handler.HandleAsync(new SavePostCommand(model, CreateContext()), TestContext.Current.CancellationToken);
 
         Assert.False(result.Succeeded);
-        Assert.Equal("Client time zone ID is required for scheduled posts.", result.ErrorMessage);
+        Assert.Equal(PostOperationFailureType.Validation, result.FailureType);
+        Assert.Equal(ScheduledPublishValidationMessages.InvalidTimeZone, result.ErrorMessage);
         Assert.Empty(_commandMediator.Commands);
+    }
+
+    [Fact]
+    public async Task SavePostCommand_ScheduledWithoutTime_ReturnsValidationAndSkipsSave()
+    {
+        var handler = CreateSavePostHandler();
+        var model = CreatePostEditModel(PostStatus.Scheduled);
+        model.ClientTimeZoneId = "UTC";
+
+        var result = await handler.HandleAsync(
+            new SavePostCommand(model, CreateContext()),
+            TestContext.Current.CancellationToken);
+
+        Assert.False(result.Succeeded);
+        Assert.Equal(PostOperationFailureType.Validation, result.FailureType);
+        Assert.Equal(ScheduledPublishValidationMessages.MissingTime, result.ErrorMessage);
+        Assert.Empty(_commandMediator.Commands);
+    }
+
+    [Theory]
+    [InlineData(3, 10, 2, 30, ScheduledPublishValidationMessages.InvalidLocalTime)]
+    [InlineData(11, 3, 1, 30, ScheduledPublishValidationMessages.AmbiguousLocalTime)]
+    public async Task SavePostCommand_DaylightSavingTransitionTime_ReturnsValidationAndSkipsSave(
+        int month,
+        int day,
+        int hour,
+        int minute,
+        string expectedMessage)
+    {
+        var wakeUp = new ScheduledPublishWakeUp();
+        var wakeToken = wakeUp.GetWakeToken();
+        var handler = CreateSavePostHandler(wakeUp);
+        var model = CreatePostEditModel(PostStatus.Scheduled);
+        model.ScheduledPublishTime = new DateTime(2030, month, day, hour, minute, 0, DateTimeKind.Unspecified);
+        model.ClientTimeZoneId = "America/New_York";
+
+        var result = await handler.HandleAsync(
+            new SavePostCommand(model, CreateContext()),
+            TestContext.Current.CancellationToken);
+
+        Assert.False(result.Succeeded);
+        Assert.Equal(PostOperationFailureType.Validation, result.FailureType);
+        Assert.Equal(expectedMessage, result.ErrorMessage);
+        Assert.Empty(_commandMediator.Commands);
+        Assert.False(wakeToken.IsCancellationRequested);
     }
 
     [Fact]

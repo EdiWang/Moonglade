@@ -15,11 +15,36 @@ public record PostOperationContext(
     string UserAgent,
     string RootUrl);
 
-public record PostOperationResult(bool Succeeded, Guid PostId, DateTime? LastModifiedUtc, string ErrorMessage)
+public enum PostOperationFailureType
 {
-    public static PostOperationResult Success(Guid postId, DateTime? lastModifiedUtc) => new(true, postId, lastModifiedUtc, string.Empty);
+    None,
+    Validation,
+    Conflict
+}
 
-    public static PostOperationResult Conflict(string errorMessage) => new(false, Guid.Empty, null, errorMessage);
+public record PostOperationResult(
+    bool Succeeded,
+    Guid PostId,
+    DateTime? LastModifiedUtc,
+    PostOperationFailureType FailureType,
+    string ErrorMessage)
+{
+    public static PostOperationResult Success(Guid postId, DateTime? lastModifiedUtc) =>
+        new(true, postId, lastModifiedUtc, PostOperationFailureType.None, string.Empty);
+
+    public static PostOperationResult Validation(string errorMessage) =>
+        new(false, Guid.Empty, null, PostOperationFailureType.Validation, errorMessage);
+
+    public static PostOperationResult Conflict(string errorMessage) =>
+        new(false, Guid.Empty, null, PostOperationFailureType.Conflict, errorMessage);
+}
+
+public static class ScheduledPublishValidationMessages
+{
+    public const string MissingTime = "Please select a scheduled publish time.";
+    public const string InvalidTimeZone = "Client time zone information is invalid. Please reload the page and choose the time again.";
+    public const string InvalidLocalTime = "The selected time does not exist in this time zone because of a daylight-saving transition. Please choose another time.";
+    public const string AmbiguousLocalTime = "The selected time occurs twice in this time zone because of a daylight-saving transition. Please choose another time.";
 }
 
 public record SavePostCommand(PostEditModel Payload, PostOperationContext Context) : ICommand<PostOperationResult>;
@@ -40,9 +65,10 @@ public class SavePostCommandHandler(
             var model = request.Payload;
             var isNewPost = model.PostId == Guid.Empty;
 
-            if (!PrepareScheduledPost(model))
+            var scheduleValidation = PrepareScheduledPost(model);
+            if (scheduleValidation is not null)
             {
-                return PostOperationResult.Conflict("Client time zone ID is required for scheduled posts.");
+                return scheduleValidation;
             }
 
             var postEntity = isNewPost ?
@@ -80,37 +106,48 @@ public class SavePostCommandHandler(
         }
     }
 
-    private bool PrepareScheduledPost(PostEditModel model)
+    private PostOperationResult PrepareScheduledPost(PostEditModel model)
     {
-        if (model.PostStatus != PostStatus.Scheduled || !model.ScheduledPublishTime.HasValue)
+        if (model.PostStatus != PostStatus.Scheduled)
         {
-            return true;
+            return null;
         }
 
-        if (string.IsNullOrWhiteSpace(model.ClientTimeZoneId))
+        if (!model.ScheduledPublishTime.HasValue)
         {
-            return false;
+            return PostOperationResult.Validation(ScheduledPublishValidationMessages.MissingTime);
         }
 
-        var clientTimeZone = TimeZoneInfo.FindSystemTimeZoneById(model.ClientTimeZoneId);
-        var clientLocalTime = model.ScheduledPublishTime.Value;
-        var clientUtcTime = TimeZoneInfo.ConvertTimeToUtc(clientLocalTime, clientTimeZone);
+        var resolution = ScheduledPublishTimeResolver.Resolve(
+            model.ScheduledPublishTime.Value,
+            model.ClientTimeZoneId);
+        if (!resolution.Succeeded)
+        {
+            return PostOperationResult.Validation(GetScheduleValidationMessage(resolution.Status));
+        }
 
-        model.ScheduledPublishTime = clientUtcTime;
+        model.ScheduledPublishTime = resolution.UtcTime;
         if (model.ScheduledPublishTime < DateTime.UtcNow)
         {
             model.PostStatus = PostStatus.Published;
             model.ScheduledPublishTime = null;
-            return true;
+            return null;
         }
 
-        logger.LogInformation("Post scheduled for publish at {ClientUtcTime} UTC.", clientUtcTime);
+        logger.LogInformation("Post scheduled for publish at {ClientUtcTime} UTC.", resolution.UtcTime);
 
         wakeUp.WakeUp();
 
         logger.LogInformation("Scheduled publish wake-up triggered for post: {PostId}", model.PostId);
-        return true;
+        return null;
     }
+
+    private static string GetScheduleValidationMessage(ScheduledPublishTimeResolutionStatus status) => status switch
+    {
+        ScheduledPublishTimeResolutionStatus.InvalidLocalTime => ScheduledPublishValidationMessages.InvalidLocalTime,
+        ScheduledPublishTimeResolutionStatus.AmbiguousLocalTime => ScheduledPublishValidationMessages.AmbiguousLocalTime,
+        _ => ScheduledPublishValidationMessages.InvalidTimeZone
+    };
 
     private void ProcessPublishedPost(string lastModifiedUtc, PostCommandResult postEntity, PostOperationContext context)
     {

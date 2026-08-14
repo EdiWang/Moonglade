@@ -1308,6 +1308,18 @@
   <data name="Scheduled for: {0}" xml:space="preserve">
     <value>定时发布：{0}</value>
   </data>
+  <data name="Please select a scheduled publish time." xml:space="preserve">
+    <value>请选择计划发布时间。</value>
+  </data>
+  <data name="Client time zone information is invalid. Please reload the page and choose the time again." xml:space="preserve">
+    <value>客户端时区信息无效。请刷新页面并重新选择时间。</value>
+  </data>
+  <data name="The selected time does not exist in this time zone because of a daylight-saving transition. Please choose another time." xml:space="preserve">
+    <value>由于夏令时切换，所选时间在此时区中不存在。请选择其他时间。</value>
+  </data>
+  <data name="The selected time occurs twice in this time zone because of a daylight-saving transition. Please choose another time." xml:space="preserve">
+    <value>由于夏令时切换，所选时间在此时区中会出现两次。请选择其他时间。</value>
+  </data>
   <data name="Edit Post" xml:space="preserve">
     <value>编辑文章</value>
   </data>

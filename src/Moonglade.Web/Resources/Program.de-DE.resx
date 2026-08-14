@@ -1308,6 +1308,18 @@
   <data name="Scheduled for: {0}" xml:space="preserve">
     <value>Geplant für: {0}</value>
   </data>
+  <data name="Please select a scheduled publish time." xml:space="preserve">
+    <value>Bitte wählen Sie einen Zeitpunkt für die geplante Veröffentlichung aus.</value>
+  </data>
+  <data name="Client time zone information is invalid. Please reload the page and choose the time again." xml:space="preserve">
+    <value>Die Zeitzoneninformationen des Clients sind ungültig. Laden Sie die Seite neu und wählen Sie die Zeit erneut aus.</value>
+  </data>
+  <data name="The selected time does not exist in this time zone because of a daylight-saving transition. Please choose another time." xml:space="preserve">
+    <value>Die ausgewählte Zeit existiert in dieser Zeitzone aufgrund einer Sommerzeitumstellung nicht. Bitte wählen Sie eine andere Zeit.</value>
+  </data>
+  <data name="The selected time occurs twice in this time zone because of a daylight-saving transition. Please choose another time." xml:space="preserve">
+    <value>Die ausgewählte Zeit tritt in dieser Zeitzone aufgrund einer Sommerzeitumstellung zweimal auf. Bitte wählen Sie eine andere Zeit.</value>
+  </data>
   <data name="Edit Post" xml:space="preserve">
     <value>Beitrag bearbeiten</value>
   </data>

@@ -1,11 +1,14 @@
 using LiteBus.Commands.Abstractions;
 using LiteBus.Queries.Abstractions;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.Localization;
 using Moonglade.Configuration;
 using Moonglade.Data.DTO;
 using Moonglade.Data.Entities;
 using Moonglade.Features.Post;
+using Moonglade.Web.Commands;
 using Moonglade.Web.Controllers;
 using Moq;
 using System.Text.Json;
@@ -41,7 +44,8 @@ public class PostControllerTests
             new ConfigurationBuilder().Build(),
             Mock.Of<ICommandMediator>(),
             queryMediator.Object,
-            new BlogConfig());
+            new BlogConfig(),
+            Mock.Of<IStringLocalizer<Program>>());
 
         var result = await controller.GetPost(postId);
 
@@ -52,5 +56,48 @@ public class PostControllerTests
         Assert.Contains("\"publishDate\":\"2026-08-15T01:02:03Z\"", json);
         Assert.Contains("\"scheduledPublishTimeUtc\":\"2026-08-16T01:02:03Z\"", json);
         Assert.Contains("\"lastModifiedUtc\":\"2026-08-15T01:07:03.1234567Z\"", json);
+    }
+
+    [Fact]
+    public async Task CreateOrEdit_ScheduleValidationFailure_ReturnsLocalizedValidationProblem()
+    {
+        const string localizedMessage = "Choose another local time.";
+        var commandMediator = new Mock<ICommandMediator>();
+        commandMediator
+            .Setup(mediator => mediator.SendAsync(
+                It.IsAny<SavePostCommand>(),
+                It.IsAny<CommandMediationSettings>(),
+                It.IsAny<CancellationToken>()))
+            .ReturnsAsync(PostOperationResult.Validation(ScheduledPublishValidationMessages.InvalidLocalTime));
+        var localizer = new Mock<IStringLocalizer<Program>>();
+        localizer
+            .Setup(value => value[ScheduledPublishValidationMessages.InvalidLocalTime])
+            .Returns(new LocalizedString(
+                ScheduledPublishValidationMessages.InvalidLocalTime,
+                localizedMessage));
+        var controller = new PostController(
+            new ConfigurationBuilder().Build(),
+            commandMediator.Object,
+            Mock.Of<IQueryMediator>(),
+            new BlogConfig(),
+            localizer.Object)
+        {
+            ControllerContext = new ControllerContext
+            {
+                HttpContext = new DefaultHttpContext()
+            }
+        };
+        controller.Request.Scheme = "https";
+        controller.Request.Host = new HostString("example.com");
+
+        var result = await controller.CreateOrEdit(new PostEditModel());
+
+        var problemResult = Assert.IsType<BadRequestObjectResult>(result);
+        var problem = Assert.IsType<ValidationProblemDetails>(problemResult.Value);
+        Assert.Equal(StatusCodes.Status400BadRequest, problem.Status);
+        Assert.Equal(localizedMessage, problem.Detail);
+        Assert.Equal(
+            [localizedMessage],
+            problem.Errors[nameof(PostEditModel.ScheduledPublishTime)]);
     }
 }
