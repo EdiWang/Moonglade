@@ -33,6 +33,7 @@ A read-only inventory of the database configured by `src/Moonglade.Web/appsettin
 - The migration runs only when upgrading the latest stable release to the next major or minor release.
 - A maintenance window of up to one hour is acceptable.
 - Docker Desktop may be used for disposable SQL Server and PostgreSQL verification.
+- Disposable integration tests use PostgreSQL 18 and SQL Server 2025 container images.
 
 ## Scope
 
@@ -78,6 +79,8 @@ Batches 1 through 3 are complete. Startup configuration initialization is split 
 
 The application model now identifies all 22 active `*Utc` timestamp properties as one persistence contract. SQL Server maps them to `datetime2(7)`, PostgreSQL maps them to `timestamp with time zone`, materialization restores `DateTimeKind.Utc`, and tracked writes reject local or unspecified `DateTime` values. `PostViewDaily.ViewDateUtc` is a `DateOnly` mapped to provider `date`, including dashboard range queries. Batch 4 is the next executable unit.
 
+The disposable database baseline now uses `postgres:18-alpine` and `mcr.microsoft.com/mssql/server:2025-latest`. The pulled images reported PostgreSQL 18.6 and SQL Server 17.0.4075.5 respectively.
+
 ## Verification Log
 
 | Date | Command or check | Result | Notes |
@@ -92,6 +95,7 @@ The application model now identifies all 22 active `*Utc` timestamp properties a
 | 2026-08-15 | `dotnet test src/Tests/Moonglade.Features.Tests/Moonglade.Features.Tests.csproj --no-restore` after batch 3 | Passed | 95/95 tests passed, including `DateOnly` daily-view writes and dashboard aggregation. |
 | 2026-08-15 | `dotnet test src/Tests/Moonglade.Setup.Tests/Moonglade.Setup.Tests.csproj --no-restore` after batch 3 | Passed | 25/25 tests passed. Fresh SQL Server and PostgreSQL databases verified all 22 mappings, UTC-kind round trips, UTC write rejection, provider date storage, and translated `DateOnly` range queries. Existing v16.3.0 upgrade harness tests also remained green. |
 | 2026-08-15 | `dotnet test src/Moonglade.slnx --no-restore` after batch 3 | Blocked by unrelated baseline issue | All executed projects passed, including Features, Setup, Configuration, Email, BackgroundServices, Auth, Syndication, Web, and other test suites. `Moonglade.Webmention.Tests` did not compile because unchanged test code references the inaccessible internal `WebmentionUrlSafetyValidator.IsPublicAddress` member. |
+| 2026-08-15 | Upgrade disposable database images and rerun `Moonglade.Setup.Tests` | Passed | 25/25 tests passed with PostgreSQL 18.6 (`postgres:18-alpine`) and SQL Server 17.0.4075.5 / SQL Server 2025 (`mcr.microsoft.com/mssql/server:2025-latest`). |
 
 ## Issues and Resolutions
 

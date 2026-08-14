@@ -26,10 +26,10 @@ public sealed class RelationalMigrationCollection : ICollectionFixture<Relationa
 
 public sealed class RelationalDatabaseFixture : IAsyncLifetime
 {
-    public MsSqlContainer SqlServer { get; } = new MsSqlBuilder("mcr.microsoft.com/mssql/server:2022-CU14-ubuntu-22.04")
+    public MsSqlContainer SqlServer { get; } = new MsSqlBuilder("mcr.microsoft.com/mssql/server:2025-latest")
         .Build();
 
-    public PostgreSqlContainer PostgreSql { get; } = new PostgreSqlBuilder("postgres:17.6-alpine")
+    public PostgreSqlContainer PostgreSql { get; } = new PostgreSqlBuilder("postgres:18-alpine")
         .Build();
 
     public async ValueTask InitializeAsync()
