@@ -2,7 +2,6 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using Moonglade.Data;
 using Moonglade.Data.Entities;
-using Moonglade.Email;
 using Moonglade.Email.Core;
 using Moq;
 using System.Text.Json;

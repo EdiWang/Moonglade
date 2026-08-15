@@ -1,5 +1,5 @@
-using System.Text.Json;
 using Moonglade.Email.Core;
+using System.Text.Json;
 
 namespace Moonglade.Email.Tests;
 

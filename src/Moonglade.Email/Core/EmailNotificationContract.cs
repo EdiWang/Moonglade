@@ -1,6 +1,5 @@
 using System.ComponentModel.DataAnnotations;
 using System.Text.Json;
-using Moonglade.Email;
 
 namespace Moonglade.Email.Core;
 
