@@ -1,3 +1,4 @@
+using Edi.AspNetCore.Utils;
 using Microsoft.Extensions.Logging;
 using Moonglade.Data;
 using Moonglade.Data.Entities;
@@ -10,7 +11,7 @@ public class ReceiveWebmentionCommandHandlerTests
     private readonly Mock<ILogger<ReceiveWebmentionCommandHandler>> _mockLogger;
     private readonly Mock<IMentionSourceInspector> _mockSourceInspector;
     private readonly Mock<IWebmentionSourceRateLimiter> _mockSourceRateLimiter;
-    private readonly Mock<IWebmentionUrlSafetyValidator> _mockUrlSafetyValidator;
+    private readonly Mock<IPublicHttpUrlValidator> _mockUrlSafetyValidator;
 
     public ReceiveWebmentionCommandHandlerTests()
     {
@@ -18,9 +19,9 @@ public class ReceiveWebmentionCommandHandlerTests
         _mockSourceInspector = new Mock<IMentionSourceInspector>();
         _mockSourceRateLimiter = new Mock<IWebmentionSourceRateLimiter>();
         _mockSourceRateLimiter.Setup(x => x.TryAcquire(It.IsAny<Uri>())).Returns(true);
-        _mockUrlSafetyValidator = new Mock<IWebmentionUrlSafetyValidator>();
+        _mockUrlSafetyValidator = new Mock<IPublicHttpUrlValidator>();
         _mockUrlSafetyValidator
-            .Setup(x => x.IsSafeSourceAsync(It.IsAny<Uri>(), It.IsAny<CancellationToken>()))
+            .Setup(x => x.IsPublicHttpUrlAsync(It.IsAny<Uri>(), It.IsAny<CancellationToken>()))
             .ReturnsAsync(true);
     }
 
@@ -76,7 +77,7 @@ public class ReceiveWebmentionCommandHandlerTests
         var handler = CreateHandler(db);
         var command = new ReceiveWebmentionCommand("http://localhost/source", "https://example.com/post", "192.168.1.1");
         _mockUrlSafetyValidator
-            .Setup(x => x.IsSafeSourceAsync(It.Is<Uri>(uri => uri.Host == "localhost"), It.IsAny<CancellationToken>()))
+            .Setup(x => x.IsPublicHttpUrlAsync(It.Is<Uri>(uri => uri.Host == "localhost"), It.IsAny<CancellationToken>()))
             .ReturnsAsync(false);
 
         var result = await handler.HandleAsync(command, TestContext.Current.CancellationToken);
@@ -92,7 +93,7 @@ public class ReceiveWebmentionCommandHandlerTests
         var handler = CreateHandler(db);
         var command = new ReceiveWebmentionCommand("https://internal.example/source", "https://example.com/post", "192.168.1.1");
         _mockUrlSafetyValidator
-            .Setup(x => x.IsSafeSourceAsync(It.Is<Uri>(uri => uri.Host == "internal.example"), It.IsAny<CancellationToken>()))
+            .Setup(x => x.IsPublicHttpUrlAsync(It.Is<Uri>(uri => uri.Host == "internal.example"), It.IsAny<CancellationToken>()))
             .ReturnsAsync(false);
 
         var result = await handler.HandleAsync(command, TestContext.Current.CancellationToken);
@@ -109,7 +110,7 @@ public class ReceiveWebmentionCommandHandlerTests
         var handler = CreateHandler(db);
         var command = new ReceiveWebmentionCommand("http://10.0.0.1/source", "https://example.com/post", "192.168.1.1");
         _mockUrlSafetyValidator
-            .Setup(x => x.IsSafeSourceAsync(It.Is<Uri>(uri => uri.Host == "10.0.0.1"), It.IsAny<CancellationToken>()))
+            .Setup(x => x.IsPublicHttpUrlAsync(It.Is<Uri>(uri => uri.Host == "10.0.0.1"), It.IsAny<CancellationToken>()))
             .ReturnsAsync(false);
 
         var result = await handler.HandleAsync(command, TestContext.Current.CancellationToken);
@@ -125,7 +126,7 @@ public class ReceiveWebmentionCommandHandlerTests
         var handler = CreateHandler(db);
         var command = new ReceiveWebmentionCommand("http://172.16.0.1/source", "https://example.com/post", "192.168.1.1");
         _mockUrlSafetyValidator
-            .Setup(x => x.IsSafeSourceAsync(It.Is<Uri>(uri => uri.Host == "172.16.0.1"), It.IsAny<CancellationToken>()))
+            .Setup(x => x.IsPublicHttpUrlAsync(It.Is<Uri>(uri => uri.Host == "172.16.0.1"), It.IsAny<CancellationToken>()))
             .ReturnsAsync(false);
 
         var result = await handler.HandleAsync(command, TestContext.Current.CancellationToken);
@@ -141,7 +142,7 @@ public class ReceiveWebmentionCommandHandlerTests
         var handler = CreateHandler(db);
         var command = new ReceiveWebmentionCommand("http://192.168.1.100/source", "https://example.com/post", "192.168.1.1");
         _mockUrlSafetyValidator
-            .Setup(x => x.IsSafeSourceAsync(It.Is<Uri>(uri => uri.Host == "192.168.1.100"), It.IsAny<CancellationToken>()))
+            .Setup(x => x.IsPublicHttpUrlAsync(It.Is<Uri>(uri => uri.Host == "192.168.1.100"), It.IsAny<CancellationToken>()))
             .ReturnsAsync(false);
 
         var result = await handler.HandleAsync(command, TestContext.Current.CancellationToken);

@@ -1,3 +1,4 @@
+using Edi.AspNetCore.Utils;
 using Microsoft.Extensions.Logging;
 using Moq;
 using Moq.Protected;
@@ -9,16 +10,16 @@ public class MentionSourceInspectorTests
 {
     private readonly Mock<ILogger<MentionSourceInspector>> _mockLogger;
     private readonly Mock<HttpMessageHandler> _mockHttpMessageHandler;
-    private readonly Mock<IWebmentionUrlSafetyValidator> _mockUrlSafetyValidator;
+    private readonly Mock<IPublicHttpUrlValidator> _mockUrlSafetyValidator;
     private readonly HttpClient _httpClient;
 
     public MentionSourceInspectorTests()
     {
         _mockLogger = new Mock<ILogger<MentionSourceInspector>>();
         _mockHttpMessageHandler = new Mock<HttpMessageHandler>();
-        _mockUrlSafetyValidator = new Mock<IWebmentionUrlSafetyValidator>();
+        _mockUrlSafetyValidator = new Mock<IPublicHttpUrlValidator>();
         _mockUrlSafetyValidator
-            .Setup(x => x.IsSafeSourceAsync(It.IsAny<Uri>(), It.IsAny<CancellationToken>()))
+            .Setup(x => x.IsPublicHttpUrlAsync(It.IsAny<Uri>(), It.IsAny<CancellationToken>()))
             .ReturnsAsync(true);
         _httpClient = new HttpClient(_mockHttpMessageHandler.Object);
     }
@@ -241,7 +242,7 @@ public class MentionSourceInspectorTests
         var sourceUrl = "https://internal.example/source";
         var targetUrl = "https://example.com/target";
         _mockUrlSafetyValidator
-            .Setup(x => x.IsSafeSourceAsync(It.Is<Uri>(uri => uri.Host == "internal.example"), It.IsAny<CancellationToken>()))
+            .Setup(x => x.IsPublicHttpUrlAsync(It.Is<Uri>(uri => uri.Host == "internal.example"), It.IsAny<CancellationToken>()))
             .ReturnsAsync(false);
 
         var inspector = CreateInspector();
@@ -275,7 +276,7 @@ public class MentionSourceInspectorTests
                 ItExpr.IsAny<CancellationToken>())
             .ReturnsAsync(redirectResponse);
         _mockUrlSafetyValidator
-            .Setup(x => x.IsSafeSourceAsync(It.Is<Uri>(uri => uri.Host == "10.0.0.5"), It.IsAny<CancellationToken>()))
+            .Setup(x => x.IsPublicHttpUrlAsync(It.Is<Uri>(uri => uri.Host == "10.0.0.5"), It.IsAny<CancellationToken>()))
             .ReturnsAsync(false);
 
         var inspector = CreateInspector();
@@ -327,10 +328,10 @@ public class MentionSourceInspectorTests
         Assert.Equal("Redirected", result.Title);
         Assert.True(result.SourceHasTarget);
         _mockUrlSafetyValidator.Verify(
-            x => x.IsSafeSourceAsync(It.Is<Uri>(uri => uri.ToString() == sourceUrl), It.IsAny<CancellationToken>()),
+            x => x.IsPublicHttpUrlAsync(It.Is<Uri>(uri => uri.ToString() == sourceUrl), It.IsAny<CancellationToken>()),
             Times.Once);
         _mockUrlSafetyValidator.Verify(
-            x => x.IsSafeSourceAsync(It.Is<Uri>(uri => uri.ToString() == "https://example.com/redirected"), It.IsAny<CancellationToken>()),
+            x => x.IsPublicHttpUrlAsync(It.Is<Uri>(uri => uri.ToString() == "https://example.com/redirected"), It.IsAny<CancellationToken>()),
             Times.Once);
     }
 

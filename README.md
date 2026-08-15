@@ -135,6 +135,12 @@ Verification files are stored in the Moonglade database and served from root-lev
 
 - **Microsoft Entra ID** (Azure AD) supported. [Setup guide](https://github.com/EdiWang/Moonglade/wiki/Use-Microsoft-Entra-ID-Authentication)
 
+### Reverse Proxy Client Addresses
+
+When `ForwardedHeaders:Enabled` is enabled, list every trusted reverse proxy IP in `ForwardedHeaders:KnownProxies`. Moonglade accepts forwarded client addresses only from those proxies. If the list is empty or contains no valid addresses, ASP.NET Core's loopback-only defaults remain in effect; forwarded headers from unknown proxies are ignored.
+
+The application reads the processed `HttpContext.Connection.RemoteIpAddress` and never trusts raw `X-Forwarded-For` or vendor-specific client-IP headers directly.
+
 ### Comment Rate Limiting
 
 Built-in comment submissions are rate limited by the combination of client IP address and post ID. Configure the `CommentRateLimit` section in `appsettings.json`:
@@ -297,7 +303,7 @@ When the queue is full, new work is rejected and logged instead of running inlin
 | MetaWeblog   | Blogging      | Deprecated  | N/A             |
 | Pingback     | Social        | Deprecated  | N/A             |
 
-Incoming Webmention source URLs must use public HTTP/HTTPS addresses. Moonglade rejects private, loopback, link-local, documentation, reserved, and other special-use address ranges before fetching source content.
+Incoming and outgoing Webmention URLs must use public HTTP/HTTPS addresses. Moonglade rejects private, loopback, link-local, documentation, reserved, and other special-use IPv4 and IPv6 ranges before fetching a source, following a redirect, discovering an endpoint, or submitting a Webmention. Connections are bound to a validated DNS result, and automatic proxy and redirect handling is disabled to prevent address-check bypasses.
 
 ## Health Checks
 

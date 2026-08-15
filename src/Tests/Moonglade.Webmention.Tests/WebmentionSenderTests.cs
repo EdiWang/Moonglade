@@ -1,3 +1,4 @@
+using Edi.AspNetCore.Utils;
 using Microsoft.Extensions.Logging;
 using Moq;
 using Moq.Protected;
@@ -9,6 +10,7 @@ public class WebmentionSenderTests
 {
     private readonly Mock<ILogger<WebmentionSender>> _mockLogger;
     private readonly Mock<IWebmentionRequestor> _mockRequestor;
+    private readonly Mock<IPublicHttpUrlValidator> _mockPublicUrlValidator;
     private readonly Mock<HttpMessageHandler> _mockHttpMessageHandler;
     private readonly HttpClient _httpClient;
 
@@ -16,6 +18,10 @@ public class WebmentionSenderTests
     {
         _mockLogger = new Mock<ILogger<WebmentionSender>>();
         _mockRequestor = new Mock<IWebmentionRequestor>();
+        _mockPublicUrlValidator = new Mock<IPublicHttpUrlValidator>();
+        _mockPublicUrlValidator
+            .Setup(x => x.IsPublicHttpUrlAsync(It.IsAny<Uri>(), It.IsAny<CancellationToken>()))
+            .ReturnsAsync(true);
         _mockHttpMessageHandler = new Mock<HttpMessageHandler>();
         _httpClient = new HttpClient(_mockHttpMessageHandler.Object);
     }
@@ -25,6 +31,11 @@ public class WebmentionSenderTests
     [Fact]
     public async Task SendWebmentionAsync_LocalhostSourceUrl_Skips()
     {
+        _mockPublicUrlValidator
+            .Setup(x => x.IsPublicHttpUrlAsync(
+                It.Is<Uri>(uri => uri.Host == "localhost"),
+                It.IsAny<CancellationToken>()))
+            .ReturnsAsync(false);
         var sender = CreateSender();
 
         await sender.SendWebmentionAsync(
@@ -53,6 +64,11 @@ public class WebmentionSenderTests
     [Fact]
     public async Task SendWebmentionAsync_LocalhostTargetUrl_SkipsTarget()
     {
+        _mockPublicUrlValidator
+            .Setup(x => x.IsPublicHttpUrlAsync(
+                It.Is<Uri>(uri => uri.Host == "localhost"),
+                It.IsAny<CancellationToken>()))
+            .ReturnsAsync(false);
         var sender = CreateSender();
 
         await sender.SendWebmentionAsync(
@@ -136,6 +152,95 @@ public class WebmentionSenderTests
             "https://example.com/post/2024/1/1/test",
             "<p><a href=\"https://target.example.com/page\">link</a></p>");
 
+        _mockRequestor.Verify(
+            r => r.Send(It.IsAny<Uri>(), It.IsAny<Uri>(), It.IsAny<Uri>()),
+            Times.Never);
+    }
+
+    [Fact]
+    public async Task SendAsync_NonPublicEndpoint_DoesNotSend()
+    {
+        const string endpointUrl = "http://192.168.1.10/webmention";
+        SetupHttpResponse($"<html><link rel=\"webmention\" href=\"{endpointUrl}\"></html>");
+        _mockPublicUrlValidator
+            .Setup(x => x.IsPublicHttpUrlAsync(
+                It.Is<Uri>(uri => uri.ToString() == endpointUrl),
+                It.IsAny<CancellationToken>()))
+            .ReturnsAsync(false);
+
+        var sender = CreateSender();
+
+        await sender.SendWebmentionAsync(
+            "https://example.com/post/2024/1/1/test",
+            "<p><a href=\"https://target.example.com/page\">link</a></p>");
+
+        _mockRequestor.Verify(
+            r => r.Send(It.IsAny<Uri>(), It.IsAny<Uri>(), It.IsAny<Uri>()),
+            Times.Never);
+    }
+
+    [Fact]
+    public async Task DiscoverEndpoint_PublicRedirect_UsesRedirectUriAsRelativeEndpointBase()
+    {
+        var redirectResponse = new HttpResponseMessage(HttpStatusCode.Redirect);
+        redirectResponse.Headers.Location = new Uri("https://canonical.example.com/article");
+        var targetResponse = new HttpResponseMessage(HttpStatusCode.OK)
+        {
+            Content = new StringContent("<html><link rel=\"webmention\" href=\"/webmention\"></html>")
+        };
+        var responses = new Queue<HttpResponseMessage>([redirectResponse, targetResponse]);
+        _mockHttpMessageHandler.Protected()
+            .Setup<Task<HttpResponseMessage>>(
+                "SendAsync",
+                ItExpr.IsAny<HttpRequestMessage>(),
+                ItExpr.IsAny<CancellationToken>())
+            .ReturnsAsync(() => responses.Dequeue());
+        _mockRequestor
+            .Setup(r => r.Send(It.IsAny<Uri>(), It.IsAny<Uri>(), It.IsAny<Uri>()))
+            .ReturnsAsync(new HttpResponseMessage(HttpStatusCode.OK));
+
+        var sender = CreateSender();
+
+        await sender.SendWebmentionAsync(
+            "https://example.com/post/2024/1/1/test",
+            "<p><a href=\"https://target.example.com/page\">link</a></p>");
+
+        _mockRequestor.Verify(
+            r => r.Send(
+                It.IsAny<Uri>(),
+                It.IsAny<Uri>(),
+                It.Is<Uri>(uri => uri.ToString() == "https://canonical.example.com/webmention")),
+            Times.Once);
+    }
+
+    [Fact]
+    public async Task DiscoverEndpoint_NonPublicRedirect_DoesNotFollow()
+    {
+        var redirectResponse = new HttpResponseMessage(HttpStatusCode.Redirect);
+        redirectResponse.Headers.Location = new Uri("http://10.0.0.10/internal");
+        _mockHttpMessageHandler.Protected()
+            .Setup<Task<HttpResponseMessage>>(
+                "SendAsync",
+                ItExpr.IsAny<HttpRequestMessage>(),
+                ItExpr.IsAny<CancellationToken>())
+            .ReturnsAsync(redirectResponse);
+        _mockPublicUrlValidator
+            .Setup(x => x.IsPublicHttpUrlAsync(
+                It.Is<Uri>(uri => uri.Host == "10.0.0.10"),
+                It.IsAny<CancellationToken>()))
+            .ReturnsAsync(false);
+
+        var sender = CreateSender();
+
+        await sender.SendWebmentionAsync(
+            "https://example.com/post/2024/1/1/test",
+            "<p><a href=\"https://target.example.com/page\">link</a></p>");
+
+        _mockHttpMessageHandler.Protected().Verify(
+            "SendAsync",
+            Times.Once(),
+            ItExpr.IsAny<HttpRequestMessage>(),
+            ItExpr.IsAny<CancellationToken>());
         _mockRequestor.Verify(
             r => r.Send(It.IsAny<Uri>(), It.IsAny<Uri>(), It.IsAny<Uri>()),
             Times.Never);
@@ -353,7 +458,11 @@ public class WebmentionSenderTests
 
     private WebmentionSender CreateSender()
     {
-        return new WebmentionSender(_httpClient, _mockRequestor.Object, _mockLogger.Object);
+        return new WebmentionSender(
+            _httpClient,
+            _mockRequestor.Object,
+            _mockPublicUrlValidator.Object,
+            _mockLogger.Object);
     }
 
     private void SetupHttpResponse(string content)

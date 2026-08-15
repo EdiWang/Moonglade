@@ -46,7 +46,7 @@ Important configuration areas:
 | `Webmention` | Webmention options, including source rate limiting. | Optional | Preserve protocol endpoint behavior. |
 | `Email` | Email provider settings and database outbox worker options. | Optional | Supports `AzureCommunication` and `smtp`; store real connection strings and passwords outside source control. `Email:OutboxWorker:Enabled=false` stops in-process delivery but does not prevent enqueueing. |
 | `IndexNow` | API key, ping targets, and cooldown interval. | Optional | API key also maps the IndexNow verification file endpoint. |
-| `ForwardedHeaders` | Reverse proxy/client IP configuration. | Deployment-dependent | Required behind some proxies/load balancers. |
+| `ForwardedHeaders` | Reverse proxy/client IP configuration. | Deployment-dependent | Required behind some proxies/load balancers. Only explicitly configured `KnownProxies` are trusted; an empty or invalid list retains ASP.NET Core's loopback-only defaults. |
 | `EnableCSP`, `CSPValue` | Optional Content Security Policy response header. | Optional | `X-Content-Type-Options: nosniff` is always emitted; CSP is emitted only when enabled and non-empty. |
 | `ImageStorage` | Selects `filesystem`, `azurestorage`, or `s3compatible` and related paths/container/bucket names. | Yes | Use environment overrides for provider secrets and production paths. S3-compatible credentials live under `ImageStorage:S3CompatibleStorageSettings`. |
 | `DefaultEditor` | Default post content editor/content type. | Optional | Used during startup backfill for older posts. |
@@ -100,7 +100,7 @@ Important configuration areas:
 - RSS, Atom, and OPML generation lives in `Moonglade.Syndication`; OpenSearch, FOAF, manifest, robots, sitemap, and site verification file handlers live under `Moonglade.Web/Handlers`.
 - Site verification files are managed from `/admin/settings/verification-files`, persisted in the database, and served as virtual root-level files. They are text-only (`.txt`, `.html`, `.htm`, `.xml`, `.json`), limited to 64 KB, and must use a single safe ASCII file name. Do not write these files into container `wwwroot`.
 - Preserve the public protocol endpoints listed in the README, including `/rss`, `/atom`, `/opml`, `/opensearch`, `/foaf.xml`, `/webmention`, `/health`, and `/health/ready`. Keep `/health` liveness-only; use `/health/ready` for database readiness.
-- Incoming Webmention source fetches must stay restricted to public HTTP/HTTPS URLs. Reject private, loopback, link-local, documentation, reserved, and other special-use source or redirect addresses before fetching content.
+- Incoming and outgoing Webmention requests must stay restricted to public HTTP/HTTPS URLs through Edi.AspNetCore.Utils public-HTTP safety services. Reject private, loopback, link-local, documentation, reserved, and other special-use source, target, redirect, or endpoint addresses. Keep socket connections bound to validated DNS results and do not enable automatic redirects, cookies, proxies, or ambient credentials on these clients.
 
 ## Code Architecture
 
