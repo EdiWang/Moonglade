@@ -2,7 +2,6 @@ using Microsoft.Extensions.Logging;
 using Moonglade.Data;
 using Moonglade.Data.Entities;
 using Moq;
-using System.Net;
 
 namespace Moonglade.Webmention.Tests;
 
@@ -22,8 +21,7 @@ public class ReceiveWebmentionCommandHandlerTests
         _mockUrlSafetyValidator = new Mock<IWebmentionUrlSafetyValidator>();
         _mockUrlSafetyValidator
             .Setup(x => x.IsSafeSourceAsync(It.IsAny<Uri>(), It.IsAny<CancellationToken>()))
-            .Returns((Uri uri, CancellationToken _) =>
-                Task.FromResult(!IPAddress.TryParse(uri.Host, out var ip) || WebmentionUrlSafetyValidator.IsPublicAddress(ip)));
+            .ReturnsAsync(true);
     }
 
     private static BlogDbContext CreateDbContext()
@@ -77,6 +75,9 @@ public class ReceiveWebmentionCommandHandlerTests
         using var db = CreateDbContext();
         var handler = CreateHandler(db);
         var command = new ReceiveWebmentionCommand("http://localhost/source", "https://example.com/post", "192.168.1.1");
+        _mockUrlSafetyValidator
+            .Setup(x => x.IsSafeSourceAsync(It.Is<Uri>(uri => uri.Host == "localhost"), It.IsAny<CancellationToken>()))
+            .ReturnsAsync(false);
 
         var result = await handler.HandleAsync(command, TestContext.Current.CancellationToken);
 
@@ -107,6 +108,9 @@ public class ReceiveWebmentionCommandHandlerTests
         using var db = CreateDbContext();
         var handler = CreateHandler(db);
         var command = new ReceiveWebmentionCommand("http://10.0.0.1/source", "https://example.com/post", "192.168.1.1");
+        _mockUrlSafetyValidator
+            .Setup(x => x.IsSafeSourceAsync(It.Is<Uri>(uri => uri.Host == "10.0.0.1"), It.IsAny<CancellationToken>()))
+            .ReturnsAsync(false);
 
         var result = await handler.HandleAsync(command, TestContext.Current.CancellationToken);
 
@@ -120,6 +124,9 @@ public class ReceiveWebmentionCommandHandlerTests
         using var db = CreateDbContext();
         var handler = CreateHandler(db);
         var command = new ReceiveWebmentionCommand("http://172.16.0.1/source", "https://example.com/post", "192.168.1.1");
+        _mockUrlSafetyValidator
+            .Setup(x => x.IsSafeSourceAsync(It.Is<Uri>(uri => uri.Host == "172.16.0.1"), It.IsAny<CancellationToken>()))
+            .ReturnsAsync(false);
 
         var result = await handler.HandleAsync(command, TestContext.Current.CancellationToken);
 
@@ -133,6 +140,9 @@ public class ReceiveWebmentionCommandHandlerTests
         using var db = CreateDbContext();
         var handler = CreateHandler(db);
         var command = new ReceiveWebmentionCommand("http://192.168.1.100/source", "https://example.com/post", "192.168.1.1");
+        _mockUrlSafetyValidator
+            .Setup(x => x.IsSafeSourceAsync(It.Is<Uri>(uri => uri.Host == "192.168.1.100"), It.IsAny<CancellationToken>()))
+            .ReturnsAsync(false);
 
         var result = await handler.HandleAsync(command, TestContext.Current.CancellationToken);
 
