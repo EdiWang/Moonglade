@@ -50,6 +50,12 @@ For local testing or small-scale use, deploy Moonglade using Docker:
 docker compose up -d
 ```
 
+### Upgrading to v16.4
+
+The v16.4 database migration supports v16.3.0 as its only direct upgrade source and changes the SQL Server and PostgreSQL UTC column types. Stop every application instance, take a database backup and verify it with a restore, and keep traffic closed until the database and application smoke checks pass. Do not treat the migration SQL as automatically reversible.
+
+See the [v16.4 upgrade guide](docs/upgrade-v16.4.md) for automatic and manual migration steps, validation queries, and the rollback procedure.
+
 ## 🛠️ Development
 
 | Tools                      | Alternatives                                                                                       |

@@ -132,6 +132,35 @@ INSERT INTO [dbo].[Post] (
 );
 GO
 
+;WITH [Numbers] AS (
+    SELECT TOP (339) ROW_NUMBER() OVER (ORDER BY (SELECT NULL)) AS [Number]
+    FROM sys.all_objects AS [a]
+    CROSS JOIN sys.all_objects AS [b]
+)
+INSERT INTO [dbo].[Post] (
+    [Id], [CreateTimeUtc], [PubDateUtc], [LastModifiedUtc], [ScheduledPublishTimeUtc], [ContentType], [ContainsAiAssistedContent]
+)
+SELECT
+    NEWID(),
+    DATEADD(minute, -[Number], CONVERT(datetime, '2026-08-14T12:00:00')),
+    CASE WHEN [Number] % 2 = 0 THEN DATEADD(minute, -[Number], CONVERT(datetime, '2026-08-14T12:00:00')) ELSE NULL END,
+    NULL,
+    NULL,
+    'HTML',
+    0
+FROM [Numbers];
+GO
+
+;WITH [Numbers] AS (
+    SELECT TOP (789) ROW_NUMBER() OVER (ORDER BY (SELECT NULL)) AS [Number]
+    FROM sys.all_objects AS [a]
+    CROSS JOIN sys.all_objects AS [b]
+)
+INSERT INTO [dbo].[Comment] ([Id], [CreateTimeUtc])
+SELECT NEWID(), DATEADD(second, -[Number], CONVERT(datetime, '2026-08-14T12:00:00'))
+FROM [Numbers];
+GO
+
 INSERT INTO [dbo].[PostViewDaily] ([PostId], [ViewDateUtc], [ViewCount])
 VALUES ('11111111-1111-1111-1111-111111111111', '2026-08-13T00:00:00', 7);
 GO

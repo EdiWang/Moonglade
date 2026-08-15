@@ -13,6 +13,7 @@ using Moonglade.Features.Post;
 using Moq;
 using Npgsql;
 using System.Data.Common;
+using System.Diagnostics;
 using System.Reflection;
 using Testcontainers.MsSql;
 using Testcontainers.PostgreSql;
@@ -55,7 +56,7 @@ public sealed class RelationalMigrationHarnessTests(RelationalDatabaseFixture fi
     {
         await using var context = CreateSqlServerContext(fixture.SqlServer.GetConnectionString());
 
-        await VerifyMigrationHarnessAsync(
+        var migrationDuration = await VerifyMigrationHarnessAsync(
             context,
             providerKey: "SqlServer",
             fixtureResourceName: "MigrationFixtures.SqlServer.latest-stable.sql",
@@ -78,6 +79,7 @@ public sealed class RelationalMigrationHarnessTests(RelationalDatabaseFixture fi
                 WHERE s.name = 'dbo' AND ty.name = 'datetime2' AND c.scale = 7 AND t.is_ms_shipped = 0;
                 """,
             postCountSql: $"SELECT COUNT(*) FROM [dbo].[Post] WHERE [Id] = '{SeedPostId}';",
+            representativeRowCountSql: "SELECT (SELECT COUNT(*) FROM [dbo].[Post]) + (SELECT COUNT(*) FROM [dbo].[Comment]);",
             preservedDataCountSql: $"""
                 SELECT
                     (SELECT COUNT(*) FROM [dbo].[Post]
@@ -153,6 +155,11 @@ public sealed class RelationalMigrationHarnessTests(RelationalDatabaseFixture fi
                 """,
             TestContext.Current.CancellationToken);
 
+        Assert.True(migrationDuration < TimeSpan.FromHours(1));
+        TestContext.Current.TestOutputHelper?.WriteLine(
+            "SQL Server cumulative migration duration: {0:F3} ms",
+            migrationDuration.TotalMilliseconds);
+
         await using var contractContext = CreateFreshSqlServerContext(fixture.SqlServer.GetConnectionString());
         await VerifyTemporalContractAsync(
             contractContext,
@@ -166,7 +173,7 @@ public sealed class RelationalMigrationHarnessTests(RelationalDatabaseFixture fi
     {
         await using var context = CreatePostgreSqlContext(fixture.PostgreSql.GetConnectionString());
 
-        await VerifyMigrationHarnessAsync(
+        var migrationDuration = await VerifyMigrationHarnessAsync(
             context,
             providerKey: "PostgreSql",
             fixtureResourceName: "MigrationFixtures.PostgreSql.latest-stable.sql",
@@ -183,6 +190,7 @@ public sealed class RelationalMigrationHarnessTests(RelationalDatabaseFixture fi
                 WHERE table_schema = 'public' AND data_type = 'timestamp with time zone';
                 """,
             postCountSql: $"SELECT COUNT(*) FROM \"Post\" WHERE \"Id\" = '{SeedPostId}';",
+            representativeRowCountSql: "SELECT (SELECT COUNT(*) FROM \"Post\") + (SELECT COUNT(*) FROM \"Comment\");",
             preservedDataCountSql: $"""
                 SELECT
                     (SELECT COUNT(*) FROM "Post"
@@ -251,6 +259,11 @@ public sealed class RelationalMigrationHarnessTests(RelationalDatabaseFixture fi
                 """,
             TestContext.Current.CancellationToken);
 
+        Assert.True(migrationDuration < TimeSpan.FromHours(1));
+        TestContext.Current.TestOutputHelper?.WriteLine(
+            "PostgreSQL cumulative migration duration: {0:F3} ms",
+            migrationDuration.TotalMilliseconds);
+
         await using var contractContext = CreateFreshPostgreSqlContext(fixture.PostgreSql.GetConnectionString());
         await VerifyTemporalContractAsync(
             contractContext,
@@ -258,7 +271,7 @@ public sealed class RelationalMigrationHarnessTests(RelationalDatabaseFixture fi
             TestContext.Current.CancellationToken);
     }
 
-    private static async Task VerifyMigrationHarnessAsync(
+    private static async Task<TimeSpan> VerifyMigrationHarnessAsync(
         BlogDbContext context,
         string providerKey,
         string fixtureResourceName,
@@ -267,6 +280,7 @@ public sealed class RelationalMigrationHarnessTests(RelationalDatabaseFixture fi
         string temporalColumnCountSql,
         string targetTemporalColumnCountSql,
         string postCountSql,
+        string representativeRowCountSql,
         string preservedDataCountSql,
         string dailyDateColumnCountSql,
         string loginHistoryTableCountSql,
@@ -287,6 +301,7 @@ public sealed class RelationalMigrationHarnessTests(RelationalDatabaseFixture fi
 
         Assert.Equal(baselineTemporalColumnCount, await ExecuteScalarIntAsync(context, temporalColumnCountSql, cancellationToken));
         Assert.Equal(1, await ExecuteScalarIntAsync(context, postCountSql, cancellationToken));
+        Assert.Equal(1129, await ExecuteScalarIntAsync(context, representativeRowCountSql, cancellationToken));
         Assert.Equal(0, await ExecuteScalarIntAsync(context, targetTemporalColumnCountSql, cancellationToken));
         Assert.Equal(0, await ExecuteScalarIntAsync(context, dailyDateColumnCountSql, cancellationToken));
         Assert.Equal(1, await ExecuteScalarIntAsync(context, loginHistoryTableCountSql, cancellationToken));
@@ -300,12 +315,15 @@ public sealed class RelationalMigrationHarnessTests(RelationalDatabaseFixture fi
         var cumulativeScript = manager.LoadEmbeddedMigrationScript(providerKey);
         Assert.False(string.IsNullOrWhiteSpace(cumulativeScript));
 
+        var migrationStopwatch = Stopwatch.StartNew();
         await manager.ExecuteMigrationScriptBatchesAsync(cumulativeScript, context, cancellationToken);
+        migrationStopwatch.Stop();
         await manager.ExecuteMigrationScriptBatchesAsync(cumulativeScript, context, cancellationToken);
 
         Assert.Equal(migratedTemporalColumnCount, await ExecuteScalarIntAsync(context, temporalColumnCountSql, cancellationToken));
         Assert.Equal(22, await ExecuteScalarIntAsync(context, targetTemporalColumnCountSql, cancellationToken));
         Assert.Equal(1, await ExecuteScalarIntAsync(context, postCountSql, cancellationToken));
+        Assert.Equal(1129, await ExecuteScalarIntAsync(context, representativeRowCountSql, cancellationToken));
         Assert.Equal(3, await ExecuteScalarIntAsync(context, preservedDataCountSql, cancellationToken));
         Assert.Equal(1, await ExecuteScalarIntAsync(context, dailyDateColumnCountSql, cancellationToken));
         Assert.Equal(0, await ExecuteScalarIntAsync(context, loginHistoryTableCountSql, cancellationToken));
@@ -319,6 +337,7 @@ public sealed class RelationalMigrationHarnessTests(RelationalDatabaseFixture fi
             manager.ExecuteMigrationScriptBatchesAsync(rollbackScript, context, cancellationToken));
 
         Assert.Equal(0, await ExecuteScalarIntAsync(context, rollbackProbeCountSql, cancellationToken));
+        return migrationStopwatch.Elapsed;
     }
 
     private static MigrationManager CreateManager()

@@ -116,6 +116,25 @@ INSERT INTO "Post" (
     TIMESTAMP '2025-12-31 23:59:59.999999', NULL, NULL, 'HTML', FALSE
 );
 
+INSERT INTO "Post" (
+    "Id", "CreateTimeUtc", "PubDateUtc", "LastModifiedUtc", "ScheduledPublishTimeUtc", "ContentType", "ContainsAiAssistedContent"
+)
+SELECT
+    md5('post-' || number)::uuid,
+    TIMESTAMP '2026-08-14 12:00:00' - number * INTERVAL '1 minute',
+    CASE WHEN number % 2 = 0 THEN TIMESTAMP '2026-08-14 12:00:00' - number * INTERVAL '1 minute' ELSE NULL END,
+    NULL,
+    NULL,
+    'HTML',
+    FALSE
+FROM generate_series(1, 339) AS number;
+
+INSERT INTO "Comment" ("Id", "CreateTimeUtc")
+SELECT
+    md5('comment-' || number)::uuid,
+    TIMESTAMP '2026-08-14 12:00:00' - number * INTERVAL '1 second'
+FROM generate_series(1, 789) AS number;
+
 INSERT INTO "PostViewDaily" ("PostId", "ViewDateUtc", "ViewCount")
 VALUES ('11111111-1111-1111-1111-111111111111', TIMESTAMP '2026-08-13 00:00:00', 7);
 
