@@ -34,7 +34,7 @@ public class SiteVerificationFileMapHandler
         }
 
         var entityTag = EntityTagHeaderValue.Parse(file.EntityTag);
-        var preciseLastModified = new DateTimeOffset(DateTime.SpecifyKind(file.LastModifiedTimeUtc, DateTimeKind.Utc));
+        var preciseLastModified = new DateTimeOffset(file.LastModifiedTimeUtc);
         var responseLastModified = new DateTimeOffset(TruncateToSeconds(preciseLastModified.UtcDateTime), TimeSpan.Zero);
 
         var typedHeaders = httpContext.Response.GetTypedHeaders();

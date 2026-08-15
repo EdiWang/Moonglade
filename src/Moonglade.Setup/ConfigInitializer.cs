@@ -11,11 +11,11 @@ namespace Moonglade.Setup;
 public interface IConfigInitializer
 {
     /// <summary>
-    /// Initializes the blog configuration with default settings.
+    /// Loads persisted blog configuration and writes defaults for missing settings.
     /// </summary>
     /// <param name="isNew">Indicates whether this is a new blog installation.</param>
     /// <returns>A task representing the asynchronous initialization operation.</returns>
-    Task Initialize(bool isNew);
+    Task Initialize(bool isNew, CancellationToken cancellationToken = default);
 }
 
 /// <summary>
@@ -53,28 +53,14 @@ public class ConfigInitializer(
         { nameof(SystemManifestSettings), isNew => isNew ? SystemManifestSettings.DefaultValueNew.ToJson() : SystemManifestSettings.DefaultValue.ToJson() }
     };
 
-    /// <summary>
-    /// Initializes the blog configuration by loading existing settings and adding default values
-    /// for any missing configuration keys.
-    /// </summary>
-    /// <param name="isNew">
-    /// Indicates whether this is a new blog installation. This affects certain settings
-    /// like SystemManifestSettings which have different defaults for new installations.
-    /// </param>
-    /// <returns>A task representing the asynchronous initialization operation.</returns>
-    /// <exception cref="Exception">
-    /// Thrown when configuration initialization fails due to data access issues
-    /// or command execution failures.
-    /// </exception>
-    public async Task Initialize(bool isNew)
+    public async Task Initialize(bool isNew, CancellationToken cancellationToken = default)
     {
         try
         {
             logger.LogInformation("Starting blog configuration initialization. IsNew: {IsNew}", isNew);
 
-            // Load configurations into singleton
-            var config = await queryMediator.QueryAsync(new ListConfigurationsQuery());
-            var keysToAdd = blogConfig.LoadFromConfig(config)?.ToArray() ?? [];
+            var config = await queryMediator.QueryAsync(new ListConfigurationsQuery(), cancellationToken);
+            var keysToAdd = blogConfig.LoadFromConfig(config)?.Distinct().ToArray() ?? [];
 
             if (keysToAdd.Length == 0)
             {
@@ -82,12 +68,14 @@ public class ConfigInitializer(
                 return;
             }
 
-            logger.LogInformation("Initializing {Count} configuration keys: {Keys}", keysToAdd.Length, string.Join(", ", keysToAdd));
+            logger.LogInformation(
+                "Initializing {Count} configuration keys: {Keys}",
+                keysToAdd.Length,
+                string.Join(", ", keysToAdd));
 
-            // Process settings one by one sequentially
             foreach (var key in keysToAdd)
             {
-                await InitializeSettingAsync(key, isNew);
+                await InitializeSettingAsync(key, isNew, cancellationToken);
             }
 
             var missingProviders = keysToAdd.Except(SettingProviders.Keys).ToArray();
@@ -117,7 +105,7 @@ public class ConfigInitializer(
     /// <exception cref="Exception">
     /// Thrown when the setting initialization fails due to command execution issues.
     /// </exception>
-    private async Task InitializeSettingAsync(string key, bool isNew)
+    private async Task InitializeSettingAsync(string key, bool isNew, CancellationToken cancellationToken)
     {
         if (!SettingProviders.TryGetValue(key, out var settingProvider))
         {
@@ -128,7 +116,7 @@ public class ConfigInitializer(
         try
         {
             var settingJson = settingProvider(isNew);
-            await commandMediator.SendAsync(new AddDefaultConfigurationCommand(key, settingJson));
+            await commandMediator.SendAsync(new AddDefaultConfigurationCommand(key, settingJson), cancellationToken);
             logger.LogDebug("Successfully initialized setting: {Key}", key);
         }
         catch (Exception ex)

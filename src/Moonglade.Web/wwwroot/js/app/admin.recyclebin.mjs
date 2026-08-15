@@ -1,6 +1,6 @@
 import { Alpine } from './alpine-init.mjs';
 import { fetch2 } from './httpService.mjs?v=1500';
-import { formatUtcTime, getLocalizedString } from './utils.module.mjs';
+import { formatUtcTime, getLocalizedString, parseUtcDate } from './utils.module.mjs';
 import { success, error } from './toastService.mjs';
 import { showDeleteConfirmModal, hideConfirmModal, escapeHtml } from './adminModal.mjs';
 
@@ -122,13 +122,15 @@ Alpine.data('recycleBinManager', () => ({
 
     get sortedPosts() {
         return [...this.posts].sort((a, b) => 
-            new Date(b.createTimeUtc) - new Date(a.createTimeUtc)
+            (parseUtcDate(b.createTimeUtc)?.getTime() ?? 0) -
+            (parseUtcDate(a.createTimeUtc)?.getTime() ?? 0)
         );
     },
 
     get sortedPages() {
         return [...this.pages].sort((a, b) =>
-            new Date(b.createTimeUtc) - new Date(a.createTimeUtc)
+            (parseUtcDate(b.createTimeUtc)?.getTime() ?? 0) -
+            (parseUtcDate(a.createTimeUtc)?.getTime() ?? 0)
         );
     }
 }));

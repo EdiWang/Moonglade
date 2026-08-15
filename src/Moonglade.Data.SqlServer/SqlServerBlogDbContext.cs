@@ -17,20 +17,9 @@ public class SqlServerBlogDbContext : BlogDbContext
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
-        modelBuilder.ApplyConfiguration(new Data.Configurations.CommentConfiguration());
-        modelBuilder.ApplyConfiguration(new Data.Configurations.CommentReplyConfiguration());
-        modelBuilder.ApplyConfiguration(new Data.Configurations.PostConfiguration());
-        modelBuilder.ApplyConfiguration(new Data.Configurations.PostCategoryConfiguration());
-        modelBuilder.ApplyConfiguration(new Data.Configurations.MentionConfiguration());
-        modelBuilder.ApplyConfiguration(new BlogThemeConfiguration());
-        modelBuilder.ApplyConfiguration(new Data.Configurations.BlogAssetConfiguration());
-        modelBuilder.ApplyConfiguration(new Data.Configurations.StyleSheetConfiguration());
-        modelBuilder.ApplyConfiguration(new Data.Configurations.BlogConfigurationConfiguration());
-        modelBuilder.ApplyConfiguration(new Data.Configurations.PageConfiguration());
-        modelBuilder.ApplyConfiguration(new Data.Configurations.WidgetConfiguration());
-        modelBuilder.ApplyConfiguration(new Data.Configurations.ActivityLogConfiguration());
-        modelBuilder.ApplyConfiguration(new Data.Configurations.SiteVerificationFileConfiguration());
-
         base.OnModelCreating(modelBuilder);
+
+        modelBuilder.ApplyConfiguration(new BlogThemeConfiguration());
+        Data.Configurations.UtcDateTimeConvention.ConfigureUtcDateTimeColumnType(modelBuilder, "datetime2(7)");
     }
 }

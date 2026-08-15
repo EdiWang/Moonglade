@@ -51,7 +51,7 @@ Important configuration areas:
 | `ImageStorage` | Selects `filesystem`, `azurestorage`, or `s3compatible` and related paths/container/bucket names. | Yes | Use environment overrides for provider secrets and production paths. S3-compatible credentials live under `ImageStorage:S3CompatibleStorageSettings`. |
 | `DefaultEditor` | Default post content editor/content type. | Optional | Used during startup backfill for older posts. |
 | `PostCacheMinutes`, `PagesCacheMinutes`, `WidgetCacheMinutes` | Cache durations. | Optional | Revisit when changing rendering or invalidation paths. |
-| `AutoDatabaseMigration` | Startup migration behavior. | Optional | Be careful when changing deployment/database initialization behavior. |
+| `AutoDatabaseMigration` | Production startup migration behavior. | Optional | Automatic migration is skipped outside `Production`. A stable Production release reads the manifest directly, migrates before configuration initialization writes, and then initializes configuration once. Cumulative scripts update the manifest as their completion marker. When disabled, operators must apply the provider script before starting the new release. |
 | `CannonService:QueueCapacity` | Capacity for the in-process fire-and-forget background queue. | Optional | Defaults to `1000`; when full, new work is rejected and logged instead of running inline on the request path. |
 | `EnableUpdateCheck`, `UpdateCheckCron` | GitHub release update check scheduling. | Optional | Cron parsing is handled by `Cronos`. |
 | `ViewCount` | Crawler user-agent filtering and deduplication window. | Optional | Affects analytics/view-count behavior. |
@@ -145,6 +145,9 @@ Important configuration areas:
 - Prefer `AsNoTracking()` for read-only queries. Use async EF Core APIs and pass `CancellationToken` through write operations and handlers where available.
 - Use EF Core set-based operations such as `ExecuteDeleteAsync` when they fit the existing pattern.
 - Be careful with many-to-many relationships, cascade behavior, slug/route link generation, publish timestamps, and soft-delete fields because posts, lists, archives, tags, feeds, sitemap, and cache invalidation depend on them.
+- Persisted `DateTime` properties whose names end in `Utc` use the shared UTC contract: SQL Server `datetime2(7)`, PostgreSQL `timestamp with time zone`, UTC materialization, and rejection of local or unspecified tracked writes. `PostViewDaily.ViewDateUtc` is a `DateOnly` stored as `date`.
+- Browser wall-clock values are accepted only by Web request DTOs. Convert them with the supplied IANA time zone before dispatching feature commands; feature models and persisted values must contain UTC timestamps only.
+- Handwritten cumulative migration scripts live under `src/Moonglade.Setup/MigrationScripts`. Preserve explicit UTC conversion, transactional execution, dependent key/index recreation, the final `SystemManifestSettings` completion marker, and backup-based rollback when changing these scripts. Do not re-enable `Npgsql.EnableLegacyTimestampBehavior`.
 
 ## Coding Guidelines
 
@@ -212,6 +215,8 @@ dotnet test src/Tests/Moonglade.Features.Tests/Moonglade.Features.Tests.csproj
 dotnet test src/Tests/Moonglade.Web.Tests/Moonglade.Web.Tests.csproj
 docker compose up -d
 ```
+
+The relational migration harness uses `mcr.microsoft.com/mssql/server:2025-latest` and `postgres:18-alpine`. Run `Moonglade.Setup.Tests` with Docker Desktop available when changing database mappings, startup migration order, cumulative SQL, or upgrade documentation. The operator procedure for the v16.4 cutover is documented in `docs/upgrade-v16.4.md`.
 
 The default local launch URL comes from `src/Moonglade.Web/Properties/launchSettings.json`: `https://localhost:10210`. The admin portal is `/admin`; the default local account is documented in the README. In non-Development environments, or whenever `Authentication:Totp:Required` is `true`, first local-account sign-in after deployment or upgrade requires authenticator app TOTP setup.
 

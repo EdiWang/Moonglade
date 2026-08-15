@@ -1,7 +1,7 @@
 import { Alpine } from './alpine-init.mjs';
 import { fetch2 } from './httpService.mjs?v=1500';
 import { success, error } from './toastService.mjs';
-import { getLocalizedString } from './utils.module.mjs';
+import { getLocalizedString, parseUtcDate } from './utils.module.mjs';
 import { showDeleteConfirmModal, hideConfirmModal } from './adminModal.mjs';
 
 const emptyFormData = () => ({
@@ -156,8 +156,7 @@ Alpine.data('siteVerificationFileManager', () => ({
 
     formatDate(dateString) {
         if (!dateString) return '';
-        const normalized = dateString.endsWith('Z') ? dateString : `${dateString}Z`;
-        const date = new Date(normalized);
-        return isNaN(date.getTime()) ? dateString : date.toLocaleString();
+        const date = parseUtcDate(dateString);
+        return date ? date.toLocaleString() : dateString;
     }
 }));

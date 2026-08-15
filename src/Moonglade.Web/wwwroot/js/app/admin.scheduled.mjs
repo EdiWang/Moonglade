@@ -1,6 +1,6 @@
 import { Alpine } from './alpine-init.mjs';
 import { fetch2 } from './httpService.mjs?v=1500';
-import { formatUtcTime, getLocalizedString } from './utils.module.mjs';
+import { formatUtcTime, getLocalizedString, parseUtcDate } from './utils.module.mjs';
 import { success, error } from './toastService.mjs';
 import { showConfirmModal, showDeleteConfirmModal, hideConfirmModal } from './adminModal.mjs';
 
@@ -98,19 +98,7 @@ Alpine.data('scheduledManager', () => ({
     },
 
     parseUtcSafe(dateString) {
-        if (!dateString) return null;
-        const candidates = [
-            dateString,
-            `${dateString}Z`,
-            dateString.replace(' ', 'T'),
-            `${dateString.replace(' ', 'T')}Z`,
-            dateString.replace(/-/g, '/')
-        ];
-        for (const c of candidates) {
-            const d = new Date(c);
-            if (!isNaN(d.getTime())) return d;
-        }
-        return null;
+        return parseUtcDate(dateString);
     },
 
     formatScheduledTime(dateString) {

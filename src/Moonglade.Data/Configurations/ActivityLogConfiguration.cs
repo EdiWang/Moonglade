@@ -13,12 +13,5 @@ public class ActivityLogConfiguration : IEntityTypeConfiguration<ActivityLogEnti
         builder.Property(e => e.TargetName).HasMaxLength(200);
         builder.Property(e => e.IpAddress).HasMaxLength(50);
         builder.Property(e => e.UserAgent).HasMaxLength(512);
-        ConfigureDateTimeColumns(builder);
-    }
-
-    protected virtual void ConfigureDateTimeColumns(EntityTypeBuilder<ActivityLogEntity> builder)
-    {
-        // Default: use datetime (SQL Server compatible)
-        builder.Property(e => e.EventTimeUtc).HasColumnType("datetime");
     }
 }

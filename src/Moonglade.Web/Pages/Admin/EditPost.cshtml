@@ -288,7 +288,7 @@
                         </div>
                         <div x-show="enableSchedule" x-cloak class="mb-2">
                             <label class="form-label">@SharedLocalizer["Set a time in your local time zone to schedule the post to be automatically published."]</label>
-                            <input type="datetime-local" x-model="formData.scheduledPublishTime" class="form-control" :min="minScheduleDate" />
+                            <input type="datetime-local" x-model="formData.scheduledPublishLocalTime" class="form-control" :min="minScheduleDate" />
                         </div>
                     </div>
                     <div class="modal-footer">

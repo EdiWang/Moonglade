@@ -1,7 +1,7 @@
 import { Alpine } from './alpine-init.mjs';
 import { fetch2 } from './httpService.mjs?v=1500';
 import { success, error } from './toastService.mjs';
-import { formatUtcTime, getLocalizedString, formatDateString } from './utils.module.mjs';
+import { formatUtcTime, getLocalizedString, formatDateString, localDateBoundaryToUtcIso } from './utils.module.mjs';
 import { showDeleteConfirmModal, hideConfirmModal } from './adminModal.mjs';
 import { withPagination } from './admin.pagination.mjs';
 
@@ -51,13 +51,13 @@ async init() {
             }
 
             if (this.startDate) {
-                const startUtc = new Date(this.startDate).toISOString();
-                params.append('startTimeUtc', startUtc);
+                const startUtc = localDateBoundaryToUtcIso(this.startDate);
+                if (startUtc) params.append('startTimeUtc', startUtc);
             }
 
             if (this.endDate) {
-                const endUtc = new Date(this.endDate + 'T23:59:59').toISOString();
-                params.append('endTimeUtc', endUtc);
+                const endUtc = localDateBoundaryToUtcIso(this.endDate, true);
+                if (endUtc) params.append('endTimeUtc', endUtc);
             }
 
             if (this.sortBy) {

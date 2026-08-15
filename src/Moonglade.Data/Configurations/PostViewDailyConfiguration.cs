@@ -10,5 +10,6 @@ public class PostViewDailyConfiguration : IEntityTypeConfiguration<PostViewDaily
         builder.HasKey(nameof(PostViewDailyEntity.PostId), nameof(PostViewDailyEntity.ViewDateUtc));
         builder.HasIndex(e => e.ViewDateUtc);
         builder.Property(e => e.PostId).ValueGeneratedNever();
+        builder.Property(e => e.ViewDateUtc).HasColumnType("date");
     }
 }

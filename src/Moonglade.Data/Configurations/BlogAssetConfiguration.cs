@@ -9,12 +9,5 @@ public class BlogAssetConfiguration : IEntityTypeConfiguration<BlogAssetEntity>
     {
         builder.Property(e => e.Id).ValueGeneratedNever();
         builder.Property(e => e.Base64Data).IsRequired();
-        ConfigureDateTimeColumns(builder);
-    }
-
-    protected virtual void ConfigureDateTimeColumns(EntityTypeBuilder<BlogAssetEntity> builder)
-    {
-        // Default: use datetime (SQL Server compatible)
-        builder.Property(e => e.LastModifiedTimeUtc).HasColumnType("datetime");
     }
 }

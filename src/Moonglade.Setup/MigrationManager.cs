@@ -1,7 +1,8 @@
 using Edi.AspNetCore.Utils;
-using LiteBus.Commands.Abstractions;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Storage;
 using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using Moonglade.Configuration;
 using Moonglade.Data;
@@ -19,50 +20,53 @@ public enum MigrationStatus
 {
     Success = 0,
     NotRequired,
-    Disabled,
+    Skipped,
+    ManualMigrationRequired,
     UnsupportedVersion,
     VersionParsingError,
     UnsupportedProvider,
-    Failed,
-    ScriptNotFound
+    Failed
 }
 
 public record MigrationResult(MigrationStatus Status, string ErrorMessage = null, Version FromVersion = null, Version ToVersion = null)
 {
-    public bool IsSuccess => Status == MigrationStatus.Success || Status == MigrationStatus.NotRequired;
-    public bool IsFailed => Status == MigrationStatus.Failed || Status == MigrationStatus.VersionParsingError || Status == MigrationStatus.ScriptNotFound;
+    public bool CanContinueStartup => Status is MigrationStatus.Success or MigrationStatus.NotRequired or MigrationStatus.Skipped;
 }
 
 public partial class MigrationManager(
     ILogger<MigrationManager> logger,
-    ICommandMediator commandMediator,
     IConfiguration configuration,
-    IBlogConfig blogConfig) : IMigrationManager
+    IHostEnvironment hostEnvironment) : IMigrationManager
 {
     public async Task<MigrationResult> TryMigrationAsync(BlogDbContext context, CancellationToken cancellationToken = default)
     {
         ArgumentNullException.ThrowIfNull(context);
 
+        if (!hostEnvironment.IsProduction())
+        {
+            logger.LogInformation(
+                "Automatic database migration is skipped in the {EnvironmentName} environment.",
+                hostEnvironment.EnvironmentName);
+            return new MigrationResult(MigrationStatus.Skipped);
+        }
+
+        SystemManifestSettings manifest;
+        try
+        {
+            manifest = await LoadManifestAsync(context, cancellationToken);
+        }
+        catch (Exception ex)
+        {
+            logger.LogError(ex, "Failed to load SystemManifestSettings from the database.");
+            return new MigrationResult(MigrationStatus.VersionParsingError, ex.Message);
+        }
+
         logger.LogInformation(
             "Found manifest, VersionString: {VersionString}, installed on {InstallTimeUtc} UTC",
-            blogConfig.SystemManifestSettings.VersionString,
-            blogConfig.SystemManifestSettings.InstallTimeUtc);
+            manifest.VersionString,
+            manifest.InstallTimeUtc);
 
-        if (!GetAutoMigrationEnabled())
-        {
-            const string message = "Automatic database migration is disabled. Enable `AutoDatabaseMigration` to allow automatic migrations.";
-            logger.LogWarning(message);
-            return new MigrationResult(MigrationStatus.Disabled, message);
-        }
-
-        if (VersionHelper.IsNonStableVersion())
-        {
-            const string message = "Database migration is not supported on non-stable version. Skipped.";
-            logger.LogWarning(message);
-            return new MigrationResult(MigrationStatus.UnsupportedVersion, message);
-        }
-
-        if (!TryParseVersions(out var manifestVersion, out var currentVersion, out var versionError))
+        if (!TryParseVersions(manifest, out var manifestVersion, out var currentVersion, out var versionError))
         {
             logger.LogError("Version parsing failed: {Error}", versionError);
             return new MigrationResult(MigrationStatus.VersionParsingError, versionError);
@@ -75,6 +79,13 @@ public partial class MigrationManager(
             return new MigrationResult(MigrationStatus.NotRequired, "No migration required", manifestVersion, currentVersion);
         }
 
+        if (VersionHelper.IsNonStableVersion())
+        {
+            const string message = "Database migration is not supported on a non-stable application version.";
+            logger.LogWarning(message);
+            return new MigrationResult(MigrationStatus.UnsupportedVersion, message, manifestVersion, currentVersion);
+        }
+
         var provider = context.Database.ProviderName;
         var providerKey = GetProviderKey(provider);
 
@@ -85,13 +96,19 @@ public partial class MigrationManager(
             return new MigrationResult(MigrationStatus.UnsupportedProvider, message, manifestVersion, currentVersion);
         }
 
+        if (!GetAutoMigrationEnabled())
+        {
+            const string message = "Database migration is required but automatic migration is disabled. Apply the cumulative provider script before starting this release.";
+            logger.LogWarning(message);
+            return new MigrationResult(MigrationStatus.ManualMigrationRequired, message, manifestVersion, currentVersion);
+        }
+
         logger.LogInformation("Migrating database from {FromVersion} to {ToVersion} using provider {Provider}.",
             manifestVersion, currentVersion, provider);
 
         try
         {
             await ExecuteMigrationAsync(context, providerKey, cancellationToken);
-            await UpdateManifestAsync(cancellationToken);
 
             logger.LogInformation("Database migration completed successfully.");
             return new MigrationResult(MigrationStatus.Success, null, manifestVersion, currentVersion);
@@ -103,14 +120,18 @@ public partial class MigrationManager(
         }
     }
 
-    private bool TryParseVersions(out Version manifestVersion, out Version currentVersion, out string error)
+    private static bool TryParseVersions(
+        SystemManifestSettings manifest,
+        out Version manifestVersion,
+        out Version currentVersion,
+        out string error)
     {
         manifestVersion = null!;
         currentVersion = null!;
 
-        if (!Version.TryParse(blogConfig.SystemManifestSettings.VersionString, out manifestVersion))
+        if (!Version.TryParse(manifest.VersionString, out manifestVersion))
         {
-            error = $"Invalid manifest version string: {blogConfig.SystemManifestSettings.VersionString}";
+            error = $"Invalid manifest version string: {manifest.VersionString}";
             return false;
         }
 
@@ -147,7 +168,7 @@ public partial class MigrationManager(
         logger.LogInformation("Migration script executed successfully.");
     }
 
-    private string LoadEmbeddedMigrationScript(string providerKey)
+    internal string LoadEmbeddedMigrationScript(string providerKey)
     {
         var assembly = Assembly.GetExecutingAssembly();
         var resourceName = $"Moonglade.Setup.MigrationScripts.{providerKey}.migration.sql";
@@ -172,13 +193,23 @@ public partial class MigrationManager(
         return reader.ReadToEnd();
     }
 
-    private async Task UpdateManifestAsync(CancellationToken cancellationToken)
+    private static async Task<SystemManifestSettings> LoadManifestAsync(
+        BlogDbContext context,
+        CancellationToken cancellationToken)
     {
-        blogConfig.SystemManifestSettings.VersionString = VersionHelper.AppVersionBasic;
-        blogConfig.SystemManifestSettings.InstallTimeUtc = DateTime.UtcNow;
-        var kvp = blogConfig.UpdateAsync(blogConfig.SystemManifestSettings);
+        var json = await context.BlogConfiguration
+            .AsNoTracking()
+            .Where(item => item.CfgKey == nameof(SystemManifestSettings))
+            .Select(item => item.CfgValue)
+            .SingleOrDefaultAsync(cancellationToken);
 
-        await commandMediator.SendAsync(new UpdateConfigurationCommand(kvp.Key, kvp.Value), cancellationToken);
+        if (string.IsNullOrWhiteSpace(json))
+        {
+            throw new InvalidOperationException("SystemManifestSettings was not found in the database.");
+        }
+
+        return json.FromJson<SystemManifestSettings>()
+            ?? throw new InvalidOperationException("SystemManifestSettings could not be deserialized.");
     }
 
     private bool GetAutoMigrationEnabled()
@@ -194,7 +225,7 @@ public partial class MigrationManager(
         };
     }
 
-    private async Task ExecuteMigrationScriptBatchesAsync(string script, DbContext context, CancellationToken cancellationToken)
+    internal async Task ExecuteMigrationScriptBatchesAsync(string script, DbContext context, CancellationToken cancellationToken)
     {
         var batches = SplitScriptIntoBatches(script);
 
@@ -209,7 +240,7 @@ public partial class MigrationManager(
                 cancellationToken.ThrowIfCancellationRequested();
 
                 logger.LogInformation("Executing batch {Index} of {Total}...", i + 1, batches.Length);
-                await context.Database.ExecuteSqlRawAsync(batches[i], cancellationToken);
+                await ExecuteBatchAsync(context, batches[i], cancellationToken);
             }
 
             await transaction.CommitAsync(cancellationToken);
@@ -219,6 +250,17 @@ public partial class MigrationManager(
             await transaction.RollbackAsync(cancellationToken);
             throw;
         }
+    }
+
+    private static async Task ExecuteBatchAsync(
+        DbContext context,
+        string sql,
+        CancellationToken cancellationToken)
+    {
+        await using var command = context.Database.GetDbConnection().CreateCommand();
+        command.CommandText = sql;
+        command.Transaction = context.Database.CurrentTransaction?.GetDbTransaction();
+        await command.ExecuteNonQueryAsync(cancellationToken);
     }
 
     private static string[] SplitScriptIntoBatches(string script)
@@ -231,11 +273,4 @@ public partial class MigrationManager(
 
     [GeneratedRegex(@"^\s*GO\s*$", RegexOptions.IgnoreCase | RegexOptions.Multiline, "en-US")]
     private static partial Regex SqlBatchSplitterRegex();
-}
-
-// Exception class for security-related issues such as script integrity validation failures
-public class SecurityException : Exception
-{
-    public SecurityException(string message) : base(message) { }
-    public SecurityException(string message, Exception innerException) : base(message, innerException) { }
 }

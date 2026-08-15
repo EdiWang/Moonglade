@@ -112,8 +112,8 @@ public class FeedGenerator : IFeedGenerator, IRssGenerator, IAtomGenerator
                 Id = item.Id,
                 Title = item.Title,
                 Description = item.Description,
-                LastUpdated = item.PubDateUtc.ToUniversalTime(),
-                Published = item.PubDateUtc.ToUniversalTime()
+                LastUpdated = item.PubDateUtc,
+                Published = item.PubDateUtc
             };
 
             sItem.AddLink(new SyndicationLink(new(item.Link))

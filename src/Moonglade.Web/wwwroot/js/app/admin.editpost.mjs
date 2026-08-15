@@ -3,7 +3,7 @@ import { fetch2 } from './httpService.mjs?v=1500';
 import { success, error } from './toastService.mjs';
 import { keepAlive } from './admin.editor.module.mjs';
 import { showConfirmModal, hideConfirmModal, escapeHtml } from './adminModal.mjs';
-import { getLocalizedString } from './utils.module.mjs';
+import { getLocalizedString, parseUtcDate } from './utils.module.mjs';
 import { createSlugMixin } from './admin.editpost.slug.mjs';
 import { createEditorMixin } from './admin.editpost.editor.mjs';
 import { createTagifyMixin } from './admin.editpost.tagify.mjs';
@@ -41,10 +41,10 @@ Alpine.data('postEditor', () => ({
         keywords: '',
         tags: '',
         publishDate: null,
-        scheduledPublishTime: null,
+        scheduledPublishLocalTime: null,
         scheduledPublishTimeUtc: null,
         clientTimeZoneId: '',
-        lastModifiedUtc: '',
+        lastModifiedUtc: null,
         selectedCatIds: [],
         contentType: ''
     },
@@ -134,16 +134,18 @@ Alpine.data('postEditor', () => ({
                 tags: data.tags || '',
                 publishDate: data.publishDate ? data.publishDate.substring(0, 10) : null,
                 scheduledPublishTimeUtc: data.scheduledPublishTimeUtc || null,
-                lastModifiedUtc: data.lastModifiedUtc || '',
+                lastModifiedUtc: data.lastModifiedUtc || null,
                 selectedCatIds: data.selectedCatIds || [],
                 contentType: data.contentType || this.editorChoice || 'html'
             };
 
             // Determine warnSlugModification: post published > 3 days ago
             if (data.publishDate) {
-                const pubDate = new Date(data.publishDate);
-                const daysSincePublish = (Date.now() - pubDate.getTime()) / (1000 * 60 * 60 * 24);
-                this.warnSlugModification = daysSincePublish > 3;
+                const pubDate = parseUtcDate(data.publishDate);
+                if (pubDate) {
+                    const daysSincePublish = (Date.now() - pubDate.getTime()) / (1000 * 60 * 60 * 24);
+                    this.warnSlugModification = daysSincePublish > 3;
+                }
             }
         } catch (err) {
             error(err);
@@ -183,9 +185,9 @@ Alpine.data('postEditor', () => ({
             tags: this.formData.tags,
             selectedCatIds: this.formData.selectedCatIds,
             publishDate: this.formData.publishDate,
-            scheduledPublishTime: this.formData.scheduledPublishTime || null,
+            scheduledPublishLocalTime: this.formData.scheduledPublishLocalTime || null,
             clientTimeZoneId: this.formData.clientTimeZoneId,
-            lastModifiedUtc: this.formData.lastModifiedUtc,
+            lastModifiedUtc: this.formData.lastModifiedUtc || null,
             contentType: this.formData.contentType
         };
     },
@@ -229,11 +231,11 @@ Alpine.data('postEditor', () => ({
         this.syncTags();
 
         if (this.submitAction === 'publish') {
-            if (this.enableSchedule && this.formData.scheduledPublishTime) {
+            if (this.enableSchedule && this.formData.scheduledPublishLocalTime) {
                 this.formData.postStatus = 'Scheduled';
             } else {
                 this.formData.postStatus = 'Published';
-                this.formData.scheduledPublishTime = null;
+                this.formData.scheduledPublishLocalTime = null;
             }
         }
 
