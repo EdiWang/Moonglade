@@ -6,6 +6,9 @@ namespace Moonglade.Features.Tests;
 
 public class PublishScheduledPostCommandTests
 {
+    private static readonly DateTimeOffset DueCutoffUtc = new(2026, 8, 15, 1, 2, 3, TimeSpan.Zero);
+    private static readonly DateTimeOffset SuccessfulPublishTimeUtc = DueCutoffUtc.AddSeconds(2);
+
     private static BlogDbContext CreateDbContext()
     {
         var options = new DbContextOptionsBuilder<BlogDbContext>()
@@ -20,23 +23,19 @@ public class PublishScheduledPostCommandTests
     {
         using var db = CreateDbContext();
         var postId = Guid.NewGuid();
-        db.Post.Add(CreatePostEntity(postId, PostStatus.Scheduled, "scheduled-post", DateTime.UtcNow.AddMinutes(-5)));
+        db.Post.Add(CreatePostEntity(postId, PostStatus.Scheduled, "scheduled-post", DueCutoffUtc.UtcDateTime.AddMinutes(-5)));
         await db.SaveChangesAsync(TestContext.Current.CancellationToken);
 
-        var handler = new PublishScheduledPostCommandHandler(db);
-        var before = DateTime.UtcNow;
+        var handler = CreateHandler(db);
 
         var result = await handler.HandleAsync(new PublishScheduledPostCommand(), TestContext.Current.CancellationToken);
 
-        var after = DateTime.UtcNow;
         var post = await db.Post.SingleAsync(p => p.Id == postId, TestContext.Current.CancellationToken);
         Assert.True(result > 0);
         Assert.Equal(PostStatus.Published, post.PostStatus);
-        Assert.NotNull(post.PubDateUtc);
-        Assert.InRange(post.PubDateUtc.Value, before, after);
+        Assert.Equal(SuccessfulPublishTimeUtc.UtcDateTime, post.PubDateUtc);
         Assert.Null(post.ScheduledPublishTimeUtc);
-        Assert.NotNull(post.RouteLink);
-        Assert.Contains("scheduled-post", post.RouteLink);
+        Assert.Equal("2026/8/15/scheduled-post", post.RouteLink);
     }
 
     [Fact]
@@ -44,11 +43,11 @@ public class PublishScheduledPostCommandTests
     {
         using var db = CreateDbContext();
         var postId = Guid.NewGuid();
-        var scheduledTime = DateTime.UtcNow.AddHours(1);
+        var scheduledTime = DueCutoffUtc.UtcDateTime.AddHours(1);
         db.Post.Add(CreatePostEntity(postId, PostStatus.Scheduled, "future-post", scheduledTime));
         await db.SaveChangesAsync(TestContext.Current.CancellationToken);
 
-        var handler = new PublishScheduledPostCommandHandler(db);
+        var handler = CreateHandler(db);
 
         var result = await handler.HandleAsync(new PublishScheduledPostCommand(), TestContext.Current.CancellationToken);
 
@@ -65,13 +64,13 @@ public class PublishScheduledPostCommandTests
     {
         using var db = CreateDbContext();
         var postId = Guid.NewGuid();
-        var scheduledTime = DateTime.UtcNow.AddMinutes(-5);
+        var scheduledTime = DueCutoffUtc.UtcDateTime.AddMinutes(-5);
         var post = CreatePostEntity(postId, PostStatus.Scheduled, "deleted-scheduled-post", scheduledTime);
         post.IsDeleted = true;
         db.Post.Add(post);
         await db.SaveChangesAsync(TestContext.Current.CancellationToken);
 
-        var handler = new PublishScheduledPostCommandHandler(db);
+        var handler = CreateHandler(db);
 
         var result = await handler.HandleAsync(new PublishScheduledPostCommand(), TestContext.Current.CancellationToken);
 
@@ -91,12 +90,15 @@ public class PublishScheduledPostCommandTests
         db.Post.Add(CreatePostEntity(Guid.NewGuid(), PostStatus.Published, "published-post", pubDateUtc: DateTime.UtcNow.AddDays(-1)));
         await db.SaveChangesAsync(TestContext.Current.CancellationToken);
 
-        var handler = new PublishScheduledPostCommandHandler(db);
+        var handler = CreateHandler(db);
 
         var result = await handler.HandleAsync(new PublishScheduledPostCommand(), TestContext.Current.CancellationToken);
 
         Assert.Equal(0, result);
     }
+
+    private static PublishScheduledPostCommandHandler CreateHandler(BlogDbContext db) =>
+        new(db, new SequenceTimeProvider(DueCutoffUtc, SuccessfulPublishTimeUtc));
 
     private static PostEntity CreatePostEntity(Guid id, PostStatus status, string slug, DateTime? scheduledPublishTimeUtc = null, DateTime? pubDateUtc = null)
     {
@@ -120,5 +122,17 @@ public class PublishScheduledPostCommandTests
             RouteLink = pubDateUtc.HasValue ? $"{pubDateUtc:yyyy/M/d}/{slug}" : null,
             ContentType = "html"
         };
+    }
+
+    private sealed class SequenceTimeProvider(params DateTimeOffset[] utcTimes) : TimeProvider
+    {
+        private int _index;
+
+        public override DateTimeOffset GetUtcNow()
+        {
+            var index = Math.Min(_index, utcTimes.Length - 1);
+            _index++;
+            return utcTimes[index];
+        }
     }
 }

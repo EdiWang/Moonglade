@@ -64,7 +64,7 @@ A read-only inventory of the database configured by `src/Moonglade.Web/appsettin
 | 3 | Add a provider-neutral UTC timestamp contract and deterministic provider mappings; map daily views to `DateOnly`. | Batches 1-2 | Mapping/unit tests and both provider round-trip tests | Completed |
 | 4 | Correct UTC output boundaries in feeds, JSON/JSON-LD, Razor models, and browser parsing/formatting without changing route semantics. | Batch 3 | Unit tests under multiple host time zones plus focused Web tests | Completed |
 | 5 | Reject daylight-saving invalid and ambiguous schedule times with localized validation feedback. | Batches 3-4 | Scheduling unit tests for normal, gap, and overlap times; Web request tests | Completed |
-| 6 | Implement the cumulative SQL Server and PostgreSQL schema cutover, remove `LoginHistory`, remove PostgreSQL legacy timestamp behavior, and record actual successful publish time. | Batches 1-5 | Upgrade from latest-stable fixtures twice; schema/data/index assertions; scheduled-publish integration tests | Not started |
+| 6 | Implement the cumulative SQL Server and PostgreSQL schema cutover, remove `LoginHistory`, remove PostgreSQL legacy timestamp behavior, and record actual successful publish time. | Batches 1-5 | Upgrade from latest-stable fixtures twice; schema/data/index assertions; scheduled-publish integration tests | Completed |
 | 7 | Run full regression and upgrade rehearsals, measure migration duration, and update README/AGENTS/upgrade documentation. | Batches 1-6 | Full solution tests/build, both provider rehearsals, documented rollback/backup checklist | Not started |
 
 ## Execution Order
@@ -83,7 +83,9 @@ The disposable database baseline now uses `postgres:18-alpine` and `mcr.microsof
 
 Batches 1 through 5 are complete. Server-rendered timestamp attributes, post-management API strings, JSON-LD, and feeds now emit explicit UTC values. Legacy unspecified feed values preserve their stored UTC clock time instead of being converted through the host time zone. Browser code uses a shared UTC parser, converts local filter boundaries explicitly to UTC, performs one UTC-to-local conversion for scheduled-time inputs, and constructs published post routes from UTC calendar components.
 
-Scheduled local wall-clock values are now checked against the browser's IANA time zone before conversion. Normal values convert to UTC; daylight-saving gaps and overlaps, missing times, and missing or invalid time-zone identifiers return a localized HTTP 400 validation response and do not execute the post save command or wake the scheduled publisher. Batch 6 is the next executable unit.
+Scheduled local wall-clock values are now checked against the browser's IANA time zone before conversion. Normal values convert to UTC; daylight-saving gaps and overlaps, missing times, and missing or invalid time-zone identifiers return a localized HTTP 400 validation response and do not execute the post save command or wake the scheduled publisher.
+
+Batches 1 through 6 are complete. The cumulative scripts now convert the 22 active SQL Server timestamp columns to `datetime2(7)` and the PostgreSQL columns to `timestamp with time zone`, convert the daily-view key to `date`, rebuild dependent keys and indexes, and drop `LoginHistory`. PostgreSQL attaches UTC explicitly while converting legacy wall-clock values, so the result is independent of the database session time zone. The Npgsql legacy timestamp switch has been removed. Scheduled publication now uses a clock value captured after due posts are selected, and both providers verify that the persisted publication timestamp and route date use that actual processing time rather than the requested schedule. Batch 7 is the next executable unit.
 
 ## Verification Log
 
@@ -110,6 +112,11 @@ Scheduled local wall-clock values are now checked against the browser's IANA tim
 | 2026-08-15 | Run focused scheduling tests with `TZ=UTC` and `TZ=America/Los_Angeles` | Passed | 7/7 focused tests passed in each host time zone while resolving `America/New_York` normal, gap, and overlap wall-clock values. |
 | 2026-08-15 | Validate scheduling resource keys in all non-English resource files | Passed | All four validation keys are present in `zh-Hans`, `zh-Hant`, `de-DE`, and `ja-JP`. |
 | 2026-08-15 | `dotnet build src/Moonglade.Web/Moonglade.Web.csproj --no-restore` after batch 5 | Passed | Build completed with 0 warnings and 0 errors. |
+| 2026-08-15 | `dotnet test src/Tests/Moonglade.Setup.Tests/Moonglade.Setup.Tests.csproj --no-restore` after batch 6 | Passed | 25/25 tests passed with PostgreSQL 18.6 and SQL Server 2025 containers. Each v16.3.0 fixture was upgraded twice; all 22 target timestamp types, the `date` key, UTC values, dependent key/index definitions, `LoginHistory` removal, and transactional rollback were verified. PostgreSQL migration ran under an `America/Los_Angeles` session time zone. |
+| 2026-08-15 | Real-provider scheduled publication verification after batch 6 | Passed | Fresh SQL Server and PostgreSQL databases persisted the injected successful processing time in UTC and generated the route from that date across a UTC day boundary. |
+| 2026-08-15 | `dotnet test src/Tests/Moonglade.Features.Tests/Moonglade.Features.Tests.csproj --no-restore` after batch 6 | Passed | 95/95 tests passed, including deterministic due-selection and successful-publication timestamps. |
+| 2026-08-15 | `dotnet test src/Tests/Moonglade.Web.Tests/Moonglade.Web.Tests.csproj --no-restore` after batch 6 | Passed | 173/173 tests passed. |
+| 2026-08-15 | `dotnet build src/Moonglade.Web/Moonglade.Web.csproj --no-restore` after batch 6 | Passed | Build completed with 0 warnings and 0 errors. |
 
 ## Issues and Resolutions
 
@@ -129,6 +136,9 @@ Scheduled local wall-clock values are now checked against the browser's IANA tim
 - `TimeZoneInfo.ConvertTimeToUtc` alone does not express the required product choice for repeated local times. Batch 5 checks `IsInvalidTime` and `IsAmbiguousTime` first and rejects both cases instead of selecting an offset or allowing a conversion exception to become a generic save failure.
 - A browser `datetime-local` value represents wall-clock components and carries no offset. The resolver explicitly changes its `DateTimeKind` to `Unspecified` before validating it against the supplied IANA time zone, preventing the application host time zone from influencing the result.
 - Schedule validation previously returned a plain-text conflict response, while the shared browser request code only extracts messages from ProblemDetails. Batch 5 returns an explicit HTTP 400 validation ProblemDetails response localized at the controller boundary, so the existing editor toast displays the reason and asks the author to choose again.
+- PostgreSQL implicitly interprets a `timestamp without time zone` through the current database session time zone when converting it to `timestamptz`. Batch 6 uses `AT TIME ZONE 'UTC'` for every legacy UTC column and verifies the result under a non-UTC session, preserving the stored clock values as UTC instants.
+- SQL Server cannot alter indexed temporal columns in place while the dependent index or key exists. Batch 6 drops and recreates the email dequeue index and the daily-view primary key/index within the migration transaction, then checks their column order after two executions.
+- The scheduler previously sampled `DateTime.UtcNow` before querying due posts. Batch 6 uses `TimeProvider`, retaining a separate due cutoff while sampling the persisted publication time after selection. Provider integration tests cross a UTC date boundary to prove both `PubDateUtc` and `RouteLink` use the successful processing time.
 
 ## Follow-ups
 

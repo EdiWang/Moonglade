@@ -5,14 +5,14 @@ namespace Moonglade.Features.Post;
 
 public record PublishScheduledPostCommand : ICommand<int>;
 
-public class PublishScheduledPostCommandHandler(BlogDbContext db) :
+public class PublishScheduledPostCommandHandler(BlogDbContext db, TimeProvider timeProvider) :
     ICommandHandler<PublishScheduledPostCommand, int>
 {
     public async Task<int> HandleAsync(PublishScheduledPostCommand request, CancellationToken ct)
     {
-        var now = DateTime.UtcNow;
+        var dueCutoffUtc = timeProvider.GetUtcNow().UtcDateTime;
         var scheduledPosts = await db.Post
-            .Where(p => p.PostStatus == PostStatus.Scheduled && !p.IsDeleted && p.ScheduledPublishTimeUtc <= now)
+            .Where(p => p.PostStatus == PostStatus.Scheduled && !p.IsDeleted && p.ScheduledPublishTimeUtc <= dueCutoffUtc)
             .ToListAsync(ct);
 
         if (scheduledPosts.Count == 0)
@@ -20,10 +20,11 @@ public class PublishScheduledPostCommandHandler(BlogDbContext db) :
             return 0;
         }
 
+        var publishedTimeUtc = timeProvider.GetUtcNow().UtcDateTime;
         foreach (var post in scheduledPosts)
         {
             post.PostStatus = PostStatus.Published;
-            post.PubDateUtc = now;
+            post.PubDateUtc = publishedTimeUtc;
             post.ScheduledPublishTimeUtc = null;
             post.RouteLink = UrlHelper.GenerateRouteLink(post.PubDateUtc.GetValueOrDefault(), post.Slug);
         }

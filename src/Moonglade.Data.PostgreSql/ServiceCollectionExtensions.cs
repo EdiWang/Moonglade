@@ -7,7 +7,6 @@ public static class ServiceCollectionExtensions
 {
     public static IServiceCollection AddPostgreSqlStorage(this IServiceCollection services, string connectionString)
     {
-        AppContext.SetSwitch("Npgsql.EnableLegacyTimestampBehavior", true);
         services.AddDbContext<BlogDbContext, PostgreSqlBlogDbContext>(options => options
             .EnableDetailedErrors()
             .UseNpgsql(connectionString, options =>
