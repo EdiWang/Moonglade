@@ -55,7 +55,7 @@ A backup is not considered verified merely because its command succeeded. Restor
 2. Take and verify the final pre-upgrade backup.
 3. Deploy the v16.4 application package while keeping traffic closed.
 4. Apply the database migration using one of these modes:
-   - With `AutoDatabaseMigration=true`, start one v16.4 instance. Startup reads the installed manifest directly, executes the provider script before configuration initialization writes, and then completes normal initialization.
+   - With `AutoDatabaseMigration=true`, start one stable v16.4 instance with `ASPNETCORE_ENVIRONMENT=Production`. Startup reads the installed manifest directly, executes the provider script before configuration initialization writes, and then completes normal initialization. Non-Production environments skip startup migration and require manual script execution when their schema must be upgraded.
    - With `AutoDatabaseMigration=false`, keep the application stopped and apply the matching cumulative script manually before startup. The scripts are `src/Moonglade.Setup/MigrationScripts/SqlServer/migration.sql` and `src/Moonglade.Setup/MigrationScripts/PostgreSql/migration.sql`. Each script updates `SystemManifestSettings` after its schema changes complete, allowing startup to verify that manual migration is no longer required. Use tooling that stops on errors; the SQL Server script requires a client that understands `GO` batch separators.
 5. Review startup logs. Do not open traffic if migration or initialization reports a failure.
 6. Run the database and application checks below.

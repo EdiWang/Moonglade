@@ -1,10 +1,12 @@
 using Edi.AspNetCore.Utils;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging.Abstractions;
 using Moonglade.Configuration;
 using Moonglade.Data;
 using Moonglade.Data.Entities;
+using Moq;
 
 namespace Moonglade.Setup.Tests;
 
@@ -17,6 +19,20 @@ public sealed class MigrationManagerTests
 
         await Assert.ThrowsAsync<ArgumentNullException>(() =>
             manager.TryMigrationAsync(null!, TestContext.Current.CancellationToken));
+    }
+
+    [Theory]
+    [InlineData("Development")]
+    [InlineData("Staging")]
+    public async Task TryMigrationAsync_NonProductionEnvironment_SkipsMigrationAndContinuesStartup(string environmentName)
+    {
+        await using var context = CreateContext("not-json");
+        var manager = CreateManager(environmentName: environmentName);
+
+        var result = await manager.TryMigrationAsync(context, TestContext.Current.CancellationToken);
+
+        Assert.Equal(MigrationStatus.Skipped, result.Status);
+        Assert.True(result.CanContinueStartup);
     }
 
     [Fact]
@@ -68,6 +84,7 @@ public sealed class MigrationManagerTests
     [Theory]
     [InlineData(MigrationStatus.Success, true)]
     [InlineData(MigrationStatus.NotRequired, true)]
+    [InlineData(MigrationStatus.Skipped, true)]
     [InlineData(MigrationStatus.ManualMigrationRequired, false)]
     [InlineData(MigrationStatus.UnsupportedVersion, false)]
     [InlineData(MigrationStatus.VersionParsingError, false)]
@@ -80,7 +97,9 @@ public sealed class MigrationManagerTests
         Assert.Equal(expected, result.CanContinueStartup);
     }
 
-    private static MigrationManager CreateManager(bool autoMigrationEnabled = true)
+    private static MigrationManager CreateManager(
+        bool autoMigrationEnabled = true,
+        string environmentName = "Production")
     {
         var configuration = new ConfigurationBuilder()
             .AddInMemoryCollection(new Dictionary<string, string>
@@ -89,7 +108,13 @@ public sealed class MigrationManagerTests
             })
             .Build();
 
-        return new MigrationManager(NullLogger<MigrationManager>.Instance, configuration);
+        var hostEnvironment = new Mock<IHostEnvironment>();
+        hostEnvironment.SetupGet(x => x.EnvironmentName).Returns(environmentName);
+
+        return new MigrationManager(
+            NullLogger<MigrationManager>.Instance,
+            configuration,
+            hostEnvironment.Object);
     }
 
     private static BlogDbContext CreateContext(string manifestJson)

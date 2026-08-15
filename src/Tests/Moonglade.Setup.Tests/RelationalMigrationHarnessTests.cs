@@ -2,6 +2,7 @@ using LiteBus.Commands.Abstractions;
 using Microsoft.Data.SqlClient;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging.Abstractions;
 using Moonglade.Configuration;
 using Moonglade.Data;
@@ -350,9 +351,13 @@ public sealed class RelationalMigrationHarnessTests(RelationalDatabaseFixture fi
 
     private static MigrationManager CreateManager()
     {
+        var hostEnvironment = new Mock<IHostEnvironment>();
+        hostEnvironment.SetupGet(x => x.EnvironmentName).Returns(Environments.Production);
+
         return new MigrationManager(
             NullLogger<MigrationManager>.Instance,
-            new ConfigurationBuilder().Build());
+            new ConfigurationBuilder().Build(),
+            hostEnvironment.Object);
     }
 
     private static SqlServerBlogDbContext CreateSqlServerContext(string connectionString)

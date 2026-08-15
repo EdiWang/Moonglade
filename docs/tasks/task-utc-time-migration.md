@@ -128,6 +128,7 @@ The final rehearsal uses 340 posts and 789 comments. SQL Server 2025 and Postgre
 | 2026-08-15 | UTC contract refactor: `Moonglade.Setup.Tests` | Passed | 17/17 tests passed with SQL Server 2025 and PostgreSQL 18 containers. Both cumulative scripts ran twice, preserved the temporal contract, rolled back failed batches, and recorded `16.4.0` in `SystemManifestSettings`. |
 | 2026-08-15 | UTC contract refactor: JavaScript, Features, Utils, Syndication, and Web tests | Passed | JavaScript 5/5, Features 95/95, Utils 288/288, Syndication 23/23, and Web 172/172 passed. Tests cover strict `Z` parsing, UTC-only formatting, browser wall-clock conversion, DST rejection, and post-save scheduler wake-up. |
 | 2026-08-15 | `dotnet build src/Moonglade.Web/Moonglade.Web.csproj --no-restore` after UTC contract refactor | Passed | Build completed with 0 warnings and 0 errors. |
+| 2026-08-15 | Non-Production startup migration guard regression | Passed | `MigrationManagerTests` passed 14/14, the Web project built with 0 warnings and 0 errors, and the full Setup suite passed 20/20 with SQL Server 2025 and PostgreSQL 18 after Docker Desktop was started. Non-Production skips migration before manifest loading; Production migration behavior remains covered. |
 
 ## Issues and Resolutions
 
@@ -138,6 +139,7 @@ The final rehearsal uses 340 posts and 789 comments. SQL Server 2025 and Postgre
 - Testcontainers 4.13.0 initially resolved vulnerable `SSH.NET` 2025.1.0. The test project pins patched `SSH.NET` 2026.0.0, and NuGet's vulnerability audit is clean.
 - Migration reads the persisted `SystemManifestSettings` row directly. Configuration initialization therefore remains a single operation after migration, and the cumulative script records its own successful completion in the manifest.
 - `AutoDatabaseMigration=false` requires the cumulative script to be applied manually before startup. The script updates `SystemManifestSettings` only after its schema work completes; an older manifest now blocks startup instead of allowing the current model to run against an unverified schema.
+- Startup migration is restricted to `Production`. Development and other non-Production environments return a successful skipped result before reading the manifest, preserving the manual development migration workflow. A Production prerelease still refuses a required migration, while a stable Production release follows `AutoDatabaseMigration`.
 
 ## UTC Contract Refactor Follow-up
 

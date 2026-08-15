@@ -2,6 +2,7 @@ using Edi.AspNetCore.Utils;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Storage;
 using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using Moonglade.Configuration;
 using Moonglade.Data;
@@ -19,6 +20,7 @@ public enum MigrationStatus
 {
     Success = 0,
     NotRequired,
+    Skipped,
     ManualMigrationRequired,
     UnsupportedVersion,
     VersionParsingError,
@@ -28,16 +30,25 @@ public enum MigrationStatus
 
 public record MigrationResult(MigrationStatus Status, string ErrorMessage = null, Version FromVersion = null, Version ToVersion = null)
 {
-    public bool CanContinueStartup => Status is MigrationStatus.Success or MigrationStatus.NotRequired;
+    public bool CanContinueStartup => Status is MigrationStatus.Success or MigrationStatus.NotRequired or MigrationStatus.Skipped;
 }
 
 public partial class MigrationManager(
     ILogger<MigrationManager> logger,
-    IConfiguration configuration) : IMigrationManager
+    IConfiguration configuration,
+    IHostEnvironment hostEnvironment) : IMigrationManager
 {
     public async Task<MigrationResult> TryMigrationAsync(BlogDbContext context, CancellationToken cancellationToken = default)
     {
         ArgumentNullException.ThrowIfNull(context);
+
+        if (!hostEnvironment.IsProduction())
+        {
+            logger.LogInformation(
+                "Automatic database migration is skipped in the {EnvironmentName} environment.",
+                hostEnvironment.EnvironmentName);
+            return new MigrationResult(MigrationStatus.Skipped);
+        }
 
         SystemManifestSettings manifest;
         try
