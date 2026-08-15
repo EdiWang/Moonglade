@@ -11,11 +11,5 @@ public class StyleSheetConfiguration : IEntityTypeConfiguration<StyleSheetEntity
         builder.Property(e => e.CssContent).IsRequired();
         builder.Property(e => e.FriendlyName).HasMaxLength(32);
         builder.Property(e => e.Hash).HasMaxLength(64);
-        ConfigureDateTimeColumns(builder);
-    }
-
-    protected virtual void ConfigureDateTimeColumns(EntityTypeBuilder<StyleSheetEntity> builder)
-    {
-        builder.Property(e => e.LastModifiedTimeUtc);
     }
 }

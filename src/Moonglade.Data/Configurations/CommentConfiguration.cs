@@ -9,7 +9,6 @@ public class CommentConfiguration : IEntityTypeConfiguration<CommentEntity>
     {
         builder.Property(e => e.Id).ValueGeneratedNever();
         builder.Property(e => e.CommentContent).IsRequired();
-        ConfigureDateTimeColumns(builder);
         builder.Property(e => e.Email).HasMaxLength(128);
         builder.Property(e => e.IPAddress).HasMaxLength(64);
         builder.Property(e => e.Username).HasMaxLength(64);
@@ -17,10 +16,5 @@ public class CommentConfiguration : IEntityTypeConfiguration<CommentEntity>
             .WithMany(p => p.Comments)
             .HasForeignKey(d => d.PostId)
             .HasConstraintName("FK_Comment_Post");
-    }
-
-    protected virtual void ConfigureDateTimeColumns(EntityTypeBuilder<CommentEntity> builder)
-    {
-        builder.Property(e => e.CreateTimeUtc);
     }
 }

@@ -60,19 +60,8 @@ public class PostEditModel
     [Display(Name = "Keywords (split by comma ',')")]
     public string Keywords { get; set; }
 
-    [Display(Name = "Publish Date")]
-    [DataType(DataType.Date)]
-    public DateTime? PublishDate { get; set; }
-
     [Display(Name = "Scheduled Publish Time")]
-    [DataType(DataType.DateTime)]
-    public DateTime? ScheduledPublishTime { get; set; }
-
-    // Only used in editing mode
-    [DataType(DataType.DateTime)]
     public DateTime? ScheduledPublishTimeUtc { get; set; }
-
-    public string ClientTimeZoneId { get; set; }
 
     [Display(Name = "Mark as outdated")]
     public bool IsOutdated { get; set; }
@@ -80,7 +69,4 @@ public class PostEditModel
     [Display(Name = "Contains AI-assisted content")]
     public bool ContainsAiAssistedContent { get; set; }
 
-    public bool WarnSlugModification => PublishDate.HasValue && (DateTime.UtcNow - PublishDate.Value).Days > 3;
-
-    public string LastModifiedUtc { get; set; }
 }

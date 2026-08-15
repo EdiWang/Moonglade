@@ -254,3 +254,10 @@ BEGIN
     ON [dbo].[SiteVerificationFile]([NormalizedFileName]);
 END
 GO
+
+UPDATE [dbo].[BlogConfiguration]
+SET [CfgValue] = N'{"versionString":"16.4.0","installTimeUtc":"' +
+        CONVERT(nvarchar(33), SYSUTCDATETIME(), 126) + N'Z"}',
+    [LastModifiedTimeUtc] = SYSUTCDATETIME()
+WHERE [CfgKey] = N'SystemManifestSettings';
+GO

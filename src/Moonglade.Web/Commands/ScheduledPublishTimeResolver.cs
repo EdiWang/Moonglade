@@ -1,9 +1,17 @@
 namespace Moonglade.Web.Commands;
 
+public static class ScheduledPublishValidationMessages
+{
+    public const string MissingTime = "Please select a scheduled publish time.";
+    public const string InvalidTimeZone = "Client time zone information is invalid. Please reload the page and choose the time again.";
+    public const string InvalidLocalTime = "The selected time does not exist in this time zone because of a daylight-saving transition. Please choose another time.";
+    public const string AmbiguousLocalTime = "The selected time occurs twice in this time zone because of a daylight-saving transition. Please choose another time.";
+}
+
 public enum ScheduledPublishTimeResolutionStatus
 {
     Success,
-    MissingTimeZone,
+    MissingTime,
     InvalidTimeZone,
     InvalidLocalTime,
     AmbiguousLocalTime
@@ -18,11 +26,16 @@ public readonly record struct ScheduledPublishTimeResolution(
 
 public static class ScheduledPublishTimeResolver
 {
-    public static ScheduledPublishTimeResolution Resolve(DateTime localTime, string timeZoneId)
+    public static ScheduledPublishTimeResolution Resolve(DateTime? localTime, string timeZoneId)
     {
+        if (!localTime.HasValue)
+        {
+            return new(ScheduledPublishTimeResolutionStatus.MissingTime, default);
+        }
+
         if (string.IsNullOrWhiteSpace(timeZoneId))
         {
-            return new(ScheduledPublishTimeResolutionStatus.MissingTimeZone, default);
+            return new(ScheduledPublishTimeResolutionStatus.InvalidTimeZone, default);
         }
 
         TimeZoneInfo timeZone;
@@ -39,7 +52,7 @@ public static class ScheduledPublishTimeResolver
             return new(ScheduledPublishTimeResolutionStatus.InvalidTimeZone, default);
         }
 
-        var wallClockTime = DateTime.SpecifyKind(localTime, DateTimeKind.Unspecified);
+        var wallClockTime = DateTime.SpecifyKind(localTime.Value, DateTimeKind.Unspecified);
         if (timeZone.IsInvalidTime(wallClockTime))
         {
             return new(ScheduledPublishTimeResolutionStatus.InvalidLocalTime, default);

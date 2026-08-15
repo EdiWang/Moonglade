@@ -4,13 +4,13 @@ namespace Moonglade.Utils;
 
 public static class UtcDateTimeFormatter
 {
-    public static DateTime Normalize(DateTime value) => value.Kind switch
+    public static string ToIsoString(DateTime value)
     {
-        DateTimeKind.Utc => value,
-        DateTimeKind.Unspecified => DateTime.SpecifyKind(value, DateTimeKind.Utc),
-        _ => throw new ArgumentException("A UTC timestamp cannot have DateTimeKind.Local.", nameof(value))
-    };
+        if (value.Kind != DateTimeKind.Utc)
+        {
+            throw new ArgumentException("A UTC timestamp must have DateTimeKind.Utc.", nameof(value));
+        }
 
-    public static string ToIsoString(DateTime value) =>
-        Normalize(value).ToString("O", CultureInfo.InvariantCulture);
+        return value.ToString("O", CultureInfo.InvariantCulture);
+    }
 }

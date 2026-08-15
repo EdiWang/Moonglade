@@ -48,14 +48,10 @@ export function formatUtcTime(includeTime = true) {
 }
 
 export function parseUtcDate(dateString) {
-    if (!dateString) return null;
+    if (typeof dateString !== 'string') return null;
 
-    let normalized = dateString.trim().replace(' ', 'T');
-    if (/^\d{4}-\d{2}-\d{2}$/.test(normalized)) {
-        normalized = `${normalized}T00:00:00Z`;
-    } else if (!/(?:Z|[+-]\d{2}:\d{2})$/i.test(normalized)) {
-        normalized = `${normalized}Z`;
-    }
+    const normalized = dateString.trim();
+    if (!normalized.endsWith('Z')) return null;
 
     const date = new Date(normalized);
     return Number.isNaN(date.getTime()) ? null : date;

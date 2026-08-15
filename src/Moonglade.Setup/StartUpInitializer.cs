@@ -42,34 +42,28 @@ public class StartUpInitializer(
                     return result;
             }
 
-            // Step 3: Load persisted configuration without writing defaults.
-            // Migration needs the installed version from SystemManifestSettings.
-            result = await LoadBlogConfigurationAsync(cancellationToken);
-            if (result != InitStartUpResult.Success)
-                return result;
-
-            // Step 4: Migrate existing databases before any configuration writes
+            // Step 3: Migrate existing databases before configuration initialization writes
             if (!isNewDatabase)
             {
                 result = await MigrateDatabaseAsync(cancellationToken);
                 if (result != InitStartUpResult.Success)
                     return result;
 
-                // Step 4.5: Backfill ContentType for existing posts
+                // Step 3.5: Backfill ContentType for existing posts
                 result = await BackfillPostContentTypeAsync(cancellationToken);
                 if (result != InitStartUpResult.Success)
                     return result;
             }
 
-            // Step 5: Add missing configuration defaults only after migration
+            // Step 4: Load configuration and add missing defaults only after migration
             result = await InitializeBlogConfigurationAsync(isNewDatabase, cancellationToken);
             if (result != InitStartUpResult.Success)
                 return result;
 
-            // Step 6: Generate site icons (non-blocking operation)
+            // Step 5: Generate site icons (non-blocking operation)
             await GenerateSiteIconsAsync(cancellationToken);
 
-            // Step 7: Prepare image storage containers
+            // Step 6: Prepare image storage containers
             await PrepareImageContainers();
 
             stopwatch.Stop();
@@ -141,15 +135,6 @@ public class StartUpInitializer(
             cancellationToken);
     }
 
-    private async Task<InitStartUpResult> LoadBlogConfigurationAsync(CancellationToken cancellationToken)
-    {
-        return await ExecuteStepAsync(
-            "Loading blog configuration",
-            async () => await blogConfigInitializer.Load(cancellationToken),
-            InitStartUpResult.FailedInitBlogConfig,
-            cancellationToken);
-    }
-
     private async Task<InitStartUpResult> MigrateDatabaseAsync(CancellationToken cancellationToken)
     {
         return await ExecuteStepAsync(
@@ -157,7 +142,7 @@ public class StartUpInitializer(
             async () =>
             {
                 var migrationResult = await migrationManager.TryMigrationAsync(context, cancellationToken);
-                if (migrationResult.IsFailed)
+                if (!migrationResult.CanContinueStartup)
                 {
                     throw new InvalidOperationException($"Migration failed with result: {migrationResult}");
                 }

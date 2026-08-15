@@ -6,6 +6,7 @@ using Moonglade.Data.DTO;
 using Moonglade.Features.Category;
 using Moonglade.Features.Post;
 using Moonglade.Web.Commands;
+using Moonglade.Web.Models;
 using System.ComponentModel.DataAnnotations;
 
 namespace Moonglade.Web.Controllers;
@@ -37,31 +38,41 @@ public class PostController(
         BlogCacheType.SiteMap |
         BlogCacheType.Subscription
     ])]
-    public async Task<IActionResult> CreateOrEdit(PostEditModel model)
+    public async Task<IActionResult> CreateOrEdit(PostEditRequest model)
     {
-        var result = await CommandMediator.SendAsync(new SavePostCommand(model, CreatePostOperationContext()));
-        if (!result.Succeeded)
+        if (model.PostStatus == PostStatus.Scheduled)
         {
-            if (result.FailureType == PostOperationFailureType.Validation)
+            var resolution = ScheduledPublishTimeResolver.Resolve(
+                model.ScheduledPublishLocalTime,
+                model.ClientTimeZoneId);
+            if (!resolution.Succeeded)
             {
-                var errorMessage = localizer[result.ErrorMessage].Value;
-                ModelState.AddModelError(nameof(model.ScheduledPublishTime), errorMessage);
+                var resourceKey = GetScheduleValidationMessage(resolution.Status);
+                var errorMessage = localizer[resourceKey].Value;
+                ModelState.AddModelError(nameof(model.ScheduledPublishLocalTime), errorMessage);
                 return ValidationProblem(
                     detail: errorMessage,
                     statusCode: StatusCodes.Status400BadRequest,
                     modelStateDictionary: ModelState);
             }
 
+            model.ScheduledPublishTimeUtc = resolution.UtcTime;
+        }
+        else
+        {
+            model.ScheduledPublishTimeUtc = null;
+        }
+
+        var result = await CommandMediator.SendAsync(new SavePostCommand(
+            model,
+            model.LastModifiedUtc?.ToUniversalTime(),
+            CreatePostOperationContext()));
+        if (!result.Succeeded)
+        {
             return Conflict(result.ErrorMessage);
         }
 
-        return Ok(new
-        {
-            result.PostId,
-            LastModifiedUtc = result.LastModifiedUtc.HasValue
-                ? UtcDateTimeFormatter.ToIsoString(result.LastModifiedUtc.Value)
-                : null
-        });
+        return Ok(new SavePostResponse(result.PostId, result.LastModifiedUtc));
     }
 
     [TypeFilter(typeof(ClearBlogCache), Arguments =
@@ -162,9 +173,7 @@ public class PostController(
             Tags = tagStr,
             PublishDate = post.PubDateUtc,
             ScheduledPublishTimeUtc = post.ScheduledPublishTimeUtc,
-            LastModifiedUtc = post.LastModifiedUtc.HasValue
-                ? UtcDateTimeFormatter.ToIsoString(post.LastModifiedUtc.Value)
-                : null,
+            LastModifiedUtc = post.LastModifiedUtc,
             SelectedCatIds = post.PostCategory.Select(pc => pc.CategoryId).ToArray(),
             ContentType = post.ContentType
         };
@@ -191,4 +200,12 @@ public class PostController(
             Request.Headers.UserAgent.ToString(),
             UrlHelper.ResolveRootUrl(HttpContext, null, removeTailSlash: true));
     }
+
+    private static string GetScheduleValidationMessage(ScheduledPublishTimeResolutionStatus status) => status switch
+    {
+        ScheduledPublishTimeResolutionStatus.MissingTime => ScheduledPublishValidationMessages.MissingTime,
+        ScheduledPublishTimeResolutionStatus.InvalidLocalTime => ScheduledPublishValidationMessages.InvalidLocalTime,
+        ScheduledPublishTimeResolutionStatus.AmbiguousLocalTime => ScheduledPublishValidationMessages.AmbiguousLocalTime,
+        _ => ScheduledPublishValidationMessages.InvalidTimeZone
+    };
 }

@@ -41,7 +41,7 @@ Alpine.data('postEditor', () => ({
         keywords: '',
         tags: '',
         publishDate: null,
-        scheduledPublishTime: null,
+        scheduledPublishLocalTime: null,
         scheduledPublishTimeUtc: null,
         clientTimeZoneId: '',
         lastModifiedUtc: '',
@@ -185,7 +185,7 @@ Alpine.data('postEditor', () => ({
             tags: this.formData.tags,
             selectedCatIds: this.formData.selectedCatIds,
             publishDate: this.formData.publishDate,
-            scheduledPublishTime: this.formData.scheduledPublishTime || null,
+            scheduledPublishLocalTime: this.formData.scheduledPublishLocalTime || null,
             clientTimeZoneId: this.formData.clientTimeZoneId,
             lastModifiedUtc: this.formData.lastModifiedUtc,
             contentType: this.formData.contentType
@@ -231,11 +231,11 @@ Alpine.data('postEditor', () => ({
         this.syncTags();
 
         if (this.submitAction === 'publish') {
-            if (this.enableSchedule && this.formData.scheduledPublishTime) {
+            if (this.enableSchedule && this.formData.scheduledPublishLocalTime) {
                 this.formData.postStatus = 'Scheduled';
             } else {
                 this.formData.postStatus = 'Published';
-                this.formData.scheduledPublishTime = null;
+                this.formData.scheduledPublishLocalTime = null;
             }
         }
 

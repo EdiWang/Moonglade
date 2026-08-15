@@ -4,7 +4,7 @@
 
 Analyze and correct Moonglade's time and time-zone handling, then migrate SQL Server temporal columns to `datetime2(7)` and PostgreSQL temporal columns to `timestamp with time zone` without changing published URL semantics.
 
-The work must be delivered as independently executable, testable, and committable batches. Only the latest stable release, `v16.3.0`, is supported as the upgrade source, and the migration will ship with `v16.4.0` rather than a patch release.
+The work must be delivered as independently executable, testable, and committable batches. The migration will ship with `v16.4.0` rather than a patch release and remains cumulative for supported existing installations.
 
 ## Background
 
@@ -30,7 +30,7 @@ A read-only inventory of the database configured by `src/Moonglade.Web/appsettin
 - Daylight-saving invalid and ambiguous scheduled local times are rejected with a clear request to choose another time.
 - A scheduled post's publication timestamp is the actual successful publication time.
 - Existing handwritten, cumulative provider migration SQL remains the migration mechanism.
-- The migration runs only when upgrading the latest stable release to the next major or minor release.
+- The migration runs when an installed version requires the next cumulative major or minor database upgrade.
 - A maintenance window of up to one hour is acceptable.
 - Docker Desktop may be used for disposable SQL Server and PostgreSQL verification.
 - Disposable integration tests use PostgreSQL 18 and SQL Server 2025 container images.
@@ -49,7 +49,6 @@ A read-only inventory of the database configured by `src/Moonglade.Web/appsettin
 
 ## Out of Scope
 
-- Supporting upgrades from releases older than the latest stable release.
 - Changing published URL or archive date semantics from UTC to a blog-specific time zone.
 - Changing the current handwritten cumulative migration mechanism to EF Core migrations.
 - Running migration SQL against the configured development database during implementation or automated tests.
@@ -75,7 +74,7 @@ For the production upgrade, the intended order is: stop the application, take an
 
 ## Current Progress
 
-Batches 1 through 3 are complete. Startup configuration initialization is split into a read-only load and a later missing-default write phase. Existing databases load `SystemManifestSettings`, perform the migration check and content-type backfill, and only then write missing configuration defaults. SQL Server and PostgreSQL container tests prove this order against the v16.3.0 fixture after applying the current cumulative script. New databases still seed the current schema before configuration initialization and do not run upgrade migration.
+Batches 1 through 3 are complete. Existing databases read `SystemManifestSettings` directly, perform the migration check and content-type backfill, and only then load configuration and write missing defaults. The cumulative scripts update the manifest as their final completion marker, so automatic and manual migration follow the same startup contract. SQL Server and PostgreSQL container tests prove this order against the v16.3.0 fixture after applying the current cumulative script. New databases still seed the current schema before configuration initialization and do not run upgrade migration.
 
 The application model now identifies all 22 active `*Utc` timestamp properties as one persistence contract. SQL Server maps them to `datetime2(7)`, PostgreSQL maps them to `timestamp with time zone`, materialization restores `DateTimeKind.Utc`, and tracked writes reject local or unspecified `DateTime` values. `PostViewDaily.ViewDateUtc` is a `DateOnly` mapped to provider `date`, including dashboard range queries.
 
@@ -125,7 +124,10 @@ The final rehearsal uses 340 posts and 789 comments. SQL Server 2025 and Postgre
 | 2026-08-15 | `dotnet test src/Tests/Moonglade.Setup.Tests/Moonglade.Setup.Tests.csproj --no-restore` after representative fixture update | Passed | 25/25 tests passed with SQL Server 2025 and PostgreSQL 18. |
 | 2026-08-15 | `dotnet test src/Moonglade.slnx --no-restore` and `dotnet build src/Moonglade.slnx --no-restore` final regression | Blocked by unrelated baseline issue | All 1,039 tests that compiled passed. The unchanged `Moonglade.Webmention.Tests` project still cannot compile because its test references the inaccessible `WebmentionUrlSafetyValidator.IsPublicAddress` member. |
 | 2026-08-15 | `dotnet build src/Moonglade.Web/Moonglade.Web.csproj --no-restore` final build | Passed | Build completed with 0 warnings and 0 errors. |
-| 2026-08-15 | Upgrade documentation review | Passed | README links the v16.4 operator guide; AGENTS records the UTC persistence and cumulative migration rules; the guide covers supported source version, maintenance preparation, automatic/manual execution, validation, smoke checks, and backup-based rollback. |
+| 2026-08-15 | Upgrade documentation review | Passed | README links the v16.4 operator guide; AGENTS records the UTC persistence and cumulative migration rules; the guide covers maintenance preparation, automatic/manual execution, validation, smoke checks, and backup-based rollback. |
+| 2026-08-15 | UTC contract refactor: `Moonglade.Setup.Tests` | Passed | 17/17 tests passed with SQL Server 2025 and PostgreSQL 18 containers. Both cumulative scripts ran twice, preserved the temporal contract, rolled back failed batches, and recorded `16.4.0` in `SystemManifestSettings`. |
+| 2026-08-15 | UTC contract refactor: JavaScript, Features, Utils, Syndication, and Web tests | Passed | JavaScript 5/5, Features 95/95, Utils 288/288, Syndication 23/23, and Web 172/172 passed. Tests cover strict `Z` parsing, UTC-only formatting, browser wall-clock conversion, DST rejection, and post-save scheduler wake-up. |
+| 2026-08-15 | `dotnet build src/Moonglade.Web/Moonglade.Web.csproj --no-restore` after UTC contract refactor | Passed | Build completed with 0 warnings and 0 errors. |
 
 ## Issues and Resolutions
 
@@ -134,10 +136,14 @@ The final rehearsal uses 340 posts and 789 comments. SQL Server 2025 and Postgre
 - `EmailOutboxMessage` and `PostViewDaily` have indexes involving converted columns. Batch 6 must explicitly preserve or rebuild these indexes and validate their definitions.
 - The first SQL Server fixture assertion included system objects because it queried `INFORMATION_SCHEMA` by schema alone. The assertion now joins `sys.tables` and excludes `is_ms_shipped` objects. The final upgrade assertions require zero legacy timestamp columns, 22 target UTC timestamp columns, and one provider `date` column.
 - Testcontainers 4.13.0 initially resolved vulnerable `SSH.NET` 2025.1.0. The test project pins patched `SSH.NET` 2026.0.0, and NuGet's vulnerability audit is clean.
-- Migration needs the persisted `SystemManifestSettings` version, so configuration initialization could not simply move wholesale after migration. It is now explicitly two-phase: read-only load before migration, missing-default writes after migration.
-- `AutoDatabaseMigration=false` retains its existing manual-migration semantics. The migration check still occurs before configuration writes, but operators who disable automatic migration must apply the cumulative script manually before starting the new release.
+- Migration reads the persisted `SystemManifestSettings` row directly. Configuration initialization therefore remains a single operation after migration, and the cumulative script records its own successful completion in the manifest.
+- `AutoDatabaseMigration=false` requires the cumulative script to be applied manually before startup. The script updates `SystemManifestSettings` only after its schema work completes; an older manifest now blocks startup instead of allowing the current model to run against an unverified schema.
+
+## UTC Contract Refactor Follow-up
+
+After local migration smoke testing, the implementation was reviewed against the stricter rule that only Web input boundaries may handle browser wall-clock values. The follow-up removes legacy unspecified-time normalization, consolidates provider mappings, converts post scheduling before feature dispatch, delays scheduler wake-up until a successful save, and simplifies startup configuration initialization. The documented single-source-version restriction was removed because cumulative migration is not limited to v16.3.0.
 - SQL Server does not preserve `DateTime.Kind` in a timestamp column. Batch 3 applies a model-wide materialization converter so all `*Utc` values return as `Utc`, while change-tracked saves reject local and unspecified values before either provider is called.
-- Several provider configuration classes previously listed only some timestamp properties. Batch 3 retains their provider-specific mappings but also applies a final model-wide convention, preventing unmapped current or future `*Utc` properties from silently using provider defaults.
+- Provider-specific timestamp configuration is model-wide. PostgreSQL no longer needs per-entity subclasses that repeat `timestamp with time zone`; only genuinely provider-specific identity configuration remains.
 - The full solution test command currently has an unrelated compile-time baseline failure in `Moonglade.Webmention.Tests`: unchanged test code cannot access the internal `WebmentionUrlSafetyValidator.IsPublicAddress` member. This batch does not alter that module; all batch-specific and all other executed suites pass.
 - Several Razor timestamp attributes used the sortable `u` format while browser code guessed whether a missing `T` or offset meant UTC. Batch 4 replaces those boundaries with invariant round-trip ISO strings carrying an explicit `Z` and centralizes browser parsing.
 - The admin post list rebuilt published URLs with local `getFullYear`, `getMonth`, and `getDate` values. Posts near a UTC day boundary could therefore receive a different route date in non-UTC browsers. It now uses UTC calendar components, preserving the existing server route semantics.

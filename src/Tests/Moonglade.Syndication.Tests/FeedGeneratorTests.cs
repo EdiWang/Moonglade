@@ -233,11 +233,11 @@ public class FeedGeneratorTests
     }
 
     [Fact]
-    public async Task FeedDates_LegacyUnspecifiedUtcValue_PreserveUtcClockTime()
+    public async Task FeedDates_UtcValue_PreserveUtcClockTime()
     {
         var expectedUtc = new DateTimeOffset(2025, 1, 15, 10, 0, 0, TimeSpan.Zero);
         var entry = CreateSampleEntries()[0];
-        entry.PubDateUtc = DateTime.SpecifyKind(expectedUtc.UtcDateTime, DateTimeKind.Unspecified);
+        entry.PubDateUtc = expectedUtc.UtcDateTime;
         var generator = CreateGenerator();
         generator.FeedItemCollection = [entry];
 

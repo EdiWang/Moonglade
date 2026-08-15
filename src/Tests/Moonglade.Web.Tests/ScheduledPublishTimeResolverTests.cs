@@ -7,6 +7,26 @@ public class ScheduledPublishTimeResolverTests
     private const string EasternTimeZoneId = "America/New_York";
 
     [Fact]
+    public void Resolve_MissingLocalTime_ReturnsMissingTime()
+    {
+        var result = ScheduledPublishTimeResolver.Resolve(null, EasternTimeZoneId);
+
+        Assert.False(result.Succeeded);
+        Assert.Equal(ScheduledPublishTimeResolutionStatus.MissingTime, result.Status);
+    }
+
+    [Fact]
+    public void Resolve_MissingTimeZone_ReturnsInvalidTimeZone()
+    {
+        var result = ScheduledPublishTimeResolver.Resolve(
+            new DateTime(2030, 1, 1, 12, 0, 0, DateTimeKind.Unspecified),
+            string.Empty);
+
+        Assert.False(result.Succeeded);
+        Assert.Equal(ScheduledPublishTimeResolutionStatus.InvalidTimeZone, result.Status);
+    }
+
+    [Fact]
     public void Resolve_NormalLocalTime_ReturnsUtc()
     {
         var localTime = new DateTime(2030, 3, 10, 3, 30, 0, DateTimeKind.Unspecified);

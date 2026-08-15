@@ -11,7 +11,7 @@ export function createScheduleMixin() {
                 this.enableSchedule = true;
 
                 if (this.formData.scheduledPublishTimeUtc) {
-                    this.formData.scheduledPublishTime = toLocalDateTimeInputValue(
+                    this.formData.scheduledPublishLocalTime = toLocalDateTimeInputValue(
                         this.formData.scheduledPublishTimeUtc);
                 }
 
@@ -43,8 +43,8 @@ export function createScheduleMixin() {
             if (status === 'Scheduled') {
                 let displayTime;
 
-                if (this.formData.scheduledPublishTime) {
-                    displayTime = new Date(this.formData.scheduledPublishTime).toLocaleString();
+                if (this.formData.scheduledPublishLocalTime) {
+                    displayTime = new Date(this.formData.scheduledPublishLocalTime).toLocaleString();
                 } else if (this.formData.scheduledPublishTimeUtc) {
                     const utcDate = parseUtcDate(this.formData.scheduledPublishTimeUtc);
                     displayTime = utcDate

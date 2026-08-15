@@ -22,67 +22,6 @@ public class PostManagementCommandTests
     private readonly RecordingCommandMediator _commandMediator = new();
 
     [Fact]
-    public async Task SavePostCommand_ScheduledWithoutClientTimeZone_ReturnsValidationAndSkipsSave()
-    {
-        var handler = CreateSavePostHandler();
-        var model = CreatePostEditModel(PostStatus.Scheduled);
-        model.ScheduledPublishTime = DateTime.UtcNow.AddHours(1);
-        model.ClientTimeZoneId = string.Empty;
-
-        var result = await handler.HandleAsync(new SavePostCommand(model, CreateContext()), TestContext.Current.CancellationToken);
-
-        Assert.False(result.Succeeded);
-        Assert.Equal(PostOperationFailureType.Validation, result.FailureType);
-        Assert.Equal(ScheduledPublishValidationMessages.InvalidTimeZone, result.ErrorMessage);
-        Assert.Empty(_commandMediator.Commands);
-    }
-
-    [Fact]
-    public async Task SavePostCommand_ScheduledWithoutTime_ReturnsValidationAndSkipsSave()
-    {
-        var handler = CreateSavePostHandler();
-        var model = CreatePostEditModel(PostStatus.Scheduled);
-        model.ClientTimeZoneId = "UTC";
-
-        var result = await handler.HandleAsync(
-            new SavePostCommand(model, CreateContext()),
-            TestContext.Current.CancellationToken);
-
-        Assert.False(result.Succeeded);
-        Assert.Equal(PostOperationFailureType.Validation, result.FailureType);
-        Assert.Equal(ScheduledPublishValidationMessages.MissingTime, result.ErrorMessage);
-        Assert.Empty(_commandMediator.Commands);
-    }
-
-    [Theory]
-    [InlineData(3, 10, 2, 30, ScheduledPublishValidationMessages.InvalidLocalTime)]
-    [InlineData(11, 3, 1, 30, ScheduledPublishValidationMessages.AmbiguousLocalTime)]
-    public async Task SavePostCommand_DaylightSavingTransitionTime_ReturnsValidationAndSkipsSave(
-        int month,
-        int day,
-        int hour,
-        int minute,
-        string expectedMessage)
-    {
-        var wakeUp = new ScheduledPublishWakeUp();
-        var wakeToken = wakeUp.GetWakeToken();
-        var handler = CreateSavePostHandler(wakeUp);
-        var model = CreatePostEditModel(PostStatus.Scheduled);
-        model.ScheduledPublishTime = new DateTime(2030, month, day, hour, minute, 0, DateTimeKind.Unspecified);
-        model.ClientTimeZoneId = "America/New_York";
-
-        var result = await handler.HandleAsync(
-            new SavePostCommand(model, CreateContext()),
-            TestContext.Current.CancellationToken);
-
-        Assert.False(result.Succeeded);
-        Assert.Equal(PostOperationFailureType.Validation, result.FailureType);
-        Assert.Equal(expectedMessage, result.ErrorMessage);
-        Assert.Empty(_commandMediator.Commands);
-        Assert.False(wakeToken.IsCancellationRequested);
-    }
-
-    [Fact]
     public async Task SavePostCommand_CreatePost_RemovesPostCacheAndWritesActivityLog()
     {
         var handler = CreateSavePostHandler();
@@ -98,7 +37,7 @@ public class PostManagementCommandTests
             LastModifiedUtc = DateTime.UtcNow
         });
 
-        var result = await handler.HandleAsync(new SavePostCommand(model, CreateContext()), TestContext.Current.CancellationToken);
+        var result = await handler.HandleAsync(new SavePostCommand(model, null, CreateContext()), TestContext.Current.CancellationToken);
 
         Assert.True(result.Succeeded);
         Assert.Equal(postId, result.PostId);
@@ -121,8 +60,7 @@ public class PostManagementCommandTests
         var scheduledTime = DateTime.UtcNow.AddHours(2);
         var model = CreatePostEditModel(PostStatus.Scheduled);
         model.PostId = postId;
-        model.ScheduledPublishTime = scheduledTime;
-        model.ClientTimeZoneId = "UTC";
+        model.ScheduledPublishTimeUtc = scheduledTime;
 
         _commandMediator.SetResult<UpdatePostCommand, PostCommandResult>(new PostCommandResult
         {
@@ -130,15 +68,22 @@ public class PostManagementCommandTests
             PostContent = model.EditorContent,
             LastModifiedUtc = DateTime.UtcNow
         });
+        _commandMediator.BeforeSend = command =>
+        {
+            if (command is UpdatePostCommand)
+            {
+                Assert.False(wakeToken.IsCancellationRequested);
+            }
+        };
 
-        var result = await handler.HandleAsync(new SavePostCommand(model, CreateContext()), TestContext.Current.CancellationToken);
+        var result = await handler.HandleAsync(new SavePostCommand(model, null, CreateContext()), TestContext.Current.CancellationToken);
 
         Assert.True(result.Succeeded);
         Assert.True(wakeToken.IsCancellationRequested);
         var updateCommand = _commandMediator.Single<UpdatePostCommand>();
         Assert.Equal(postId, updateCommand.Id);
         Assert.Same(model, updateCommand.Payload);
-        Assert.Equal(scheduledTime, updateCommand.Payload.ScheduledPublishTime);
+        Assert.Equal(scheduledTime, updateCommand.Payload.ScheduledPublishTimeUtc);
         Assert.Equal(EventType.PostUpdated, _commandMediator.Single<CreateActivityLogCommand>().EventType);
     }
 
@@ -206,7 +151,8 @@ public class PostManagementCommandTests
             blogConfig,
             wakeUp ?? new ScheduledPublishWakeUp(),
             Mock.Of<ILogger<SavePostCommandHandler>>(),
-            CreateCannonService());
+            CreateCannonService(),
+            TimeProvider.System);
     }
 
     private static CannonService CreateCannonService()
@@ -251,9 +197,11 @@ public class PostManagementCommandTests
         private readonly Dictionary<Type, object> _results = [];
 
         public List<ICommand> Commands { get; } = [];
+        public Action<ICommand>? BeforeSend { get; set; }
 
         public Task SendAsync(ICommand command, CommandMediationSettings? settings, CancellationToken cancellationToken)
         {
+            BeforeSend?.Invoke(command);
             Commands.Add(command);
             return Task.CompletedTask;
         }
@@ -263,6 +211,7 @@ public class PostManagementCommandTests
             CommandMediationSettings? settings,
             CancellationToken cancellationToken)
         {
+            BeforeSend?.Invoke(command);
             Commands.Add(command);
             return Task.FromResult((TCommandResult)_results[command.GetType()]!);
         }

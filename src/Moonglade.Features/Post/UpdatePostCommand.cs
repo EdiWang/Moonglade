@@ -57,7 +57,7 @@ public class UpdatePostCommandHandler(
         {
             post.PostStatus = PostStatus.Scheduled;
             post.PubDateUtc = null;
-            post.ScheduledPublishTimeUtc = postEditModel.ScheduledPublishTime;
+            post.ScheduledPublishTimeUtc = postEditModel.ScheduledPublishTimeUtc;
             post.RouteLink = null;
         }
 

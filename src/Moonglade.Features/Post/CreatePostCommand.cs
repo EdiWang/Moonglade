@@ -33,7 +33,7 @@ public class CreatePostCommandHandler(
             PubDateUtc = request.Payload.PostStatus == PostStatus.Published ? utcNow : null,
             ScheduledPublishTimeUtc =
                 request.Payload.PostStatus == PostStatus.Scheduled ?
-                request.Payload.ScheduledPublishTime :
+                request.Payload.ScheduledPublishTimeUtc :
                 null,
             IsDeleted = false,
             PostStatus = request.Payload.PostStatus,

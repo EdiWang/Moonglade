@@ -176,5 +176,5 @@ INSERT INTO [dbo].[EmailOutboxMessage] (
 GO
 
 INSERT INTO [dbo].[BlogConfiguration] ([CfgKey], [CfgValue], [LastModifiedTimeUtc])
-VALUES ('SystemManifestSettings', 'fixture', '2026-01-01T00:00:00');
+VALUES ('SystemManifestSettings', '{"versionString":"16.3.0","installTimeUtc":"2026-01-01T00:00:00Z"}', '2026-01-01T00:00:00');
 GO

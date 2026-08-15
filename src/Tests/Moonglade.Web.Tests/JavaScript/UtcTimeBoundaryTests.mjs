@@ -7,10 +7,13 @@ import {
     toUtcDatePath
 } from '../../../Moonglade.Web/wwwroot/js/app/utils.module.mjs';
 
-test('parseUtcDate treats a timestamp without an offset as UTC', () => {
-    const parsed = parseUtcDate('2026-08-15T01:02:03.1234567');
+test('parseUtcDate requires an explicit UTC designator', () => {
+    const parsed = parseUtcDate('2026-08-15T01:02:03.1234567Z');
 
     assert.equal(parsed?.toISOString(), '2026-08-15T01:02:03.123Z');
+    assert.equal(parseUtcDate('2026-08-15T01:02:03.1234567'), null);
+    assert.equal(parseUtcDate('2026-08-15'), null);
+    assert.equal(parseUtcDate('2026-08-15T09:02:03+08:00'), null);
 });
 
 test('toUtcDatePath keeps published routes on the UTC calendar date', () => {

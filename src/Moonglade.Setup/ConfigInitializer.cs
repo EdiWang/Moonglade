@@ -11,12 +11,7 @@ namespace Moonglade.Setup;
 public interface IConfigInitializer
 {
     /// <summary>
-    /// Loads persisted blog configuration into the application singleton without writing defaults.
-    /// </summary>
-    Task Load(CancellationToken cancellationToken = default);
-
-    /// <summary>
-    /// Writes defaults for settings found to be missing during <see cref="Load"/>.
+    /// Loads persisted blog configuration and writes defaults for missing settings.
     /// </summary>
     /// <param name="isNew">Indicates whether this is a new blog installation.</param>
     /// <returns>A task representing the asynchronous initialization operation.</returns>
@@ -38,8 +33,6 @@ public class ConfigInitializer(
     IBlogConfig blogConfig,
     ILogger<ConfigInitializer> logger) : IConfigInitializer
 {
-    private string[] _keysToAdd;
-
     /// <summary>
     /// Dictionary that maps configuration setting names to their corresponding default value providers.
     /// Each provider function takes a boolean parameter indicating if this is a new installation
@@ -60,44 +53,16 @@ public class ConfigInitializer(
         { nameof(SystemManifestSettings), isNew => isNew ? SystemManifestSettings.DefaultValueNew.ToJson() : SystemManifestSettings.DefaultValue.ToJson() }
     };
 
-    /// <summary>
-    /// Loads existing settings without adding missing defaults.
-    /// </summary>
-    public async Task Load(CancellationToken cancellationToken = default)
-    {
-        try
-        {
-            logger.LogInformation("Loading persisted blog configuration");
-
-            var config = await queryMediator.QueryAsync(new ListConfigurationsQuery(), cancellationToken);
-            _keysToAdd = blogConfig.LoadFromConfig(config)?.Distinct().ToArray() ?? [];
-
-            logger.LogInformation(
-                "Persisted blog configuration loaded. Missing settings: {MissingSettingCount}",
-                _keysToAdd.Length);
-        }
-        catch (Exception ex)
-        {
-            logger.LogError(ex, "Failed to load persisted blog configuration");
-            throw;
-        }
-    }
-
-    /// <summary>
-    /// Adds default values for settings found to be missing by <see cref="Load"/>.
-    /// </summary>
     public async Task Initialize(bool isNew, CancellationToken cancellationToken = default)
     {
-        if (_keysToAdd is null)
-        {
-            throw new InvalidOperationException("Blog configuration must be loaded before missing settings can be initialized.");
-        }
-
         try
         {
-            logger.LogInformation("Starting missing blog configuration initialization. IsNew: {IsNew}", isNew);
+            logger.LogInformation("Starting blog configuration initialization. IsNew: {IsNew}", isNew);
 
-            if (_keysToAdd.Length == 0)
+            var config = await queryMediator.QueryAsync(new ListConfigurationsQuery(), cancellationToken);
+            var keysToAdd = blogConfig.LoadFromConfig(config)?.Distinct().ToArray() ?? [];
+
+            if (keysToAdd.Length == 0)
             {
                 logger.LogInformation("No configuration keys to initialize");
                 return;
@@ -105,15 +70,15 @@ public class ConfigInitializer(
 
             logger.LogInformation(
                 "Initializing {Count} configuration keys: {Keys}",
-                _keysToAdd.Length,
-                string.Join(", ", _keysToAdd));
+                keysToAdd.Length,
+                string.Join(", ", keysToAdd));
 
-            foreach (var key in _keysToAdd)
+            foreach (var key in keysToAdd)
             {
                 await InitializeSettingAsync(key, isNew, cancellationToken);
             }
 
-            var missingProviders = _keysToAdd.Except(SettingProviders.Keys).ToArray();
+            var missingProviders = keysToAdd.Except(SettingProviders.Keys).ToArray();
             if (missingProviders.Length > 0)
             {
                 logger.LogWarning("No setting providers found for keys: {MissingKeys}", string.Join(", ", missingProviders));

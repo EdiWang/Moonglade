@@ -330,6 +330,14 @@ public sealed class RelationalMigrationHarnessTests(RelationalDatabaseFixture fi
         Assert.Equal(migratedIndexCount, await ExecuteScalarIntAsync(context, requiredIndexCountSql, cancellationToken));
         Assert.Equal(migratedIndexCount, await ExecuteScalarIntAsync(context, requiredIndexDefinitionCountSql, cancellationToken));
         Assert.Equal(1, await ExecuteScalarIntAsync(context, dailyPrimaryKeyCountSql, cancellationToken));
+        Assert.Equal(
+            "16.4.0",
+            await ExecuteScalarStringAsync(
+                context,
+                providerKey == "SqlServer"
+                    ? "SELECT JSON_VALUE([CfgValue], '$.versionString') FROM [dbo].[BlogConfiguration] WHERE [CfgKey] = 'SystemManifestSettings';"
+                    : "SELECT \"CfgValue\"::jsonb ->> 'versionString' FROM \"BlogConfiguration\" WHERE \"CfgKey\" = 'SystemManifestSettings';",
+                cancellationToken));
 
         await VerifyStartupOrderingAsync(context, cancellationToken);
 
@@ -344,9 +352,7 @@ public sealed class RelationalMigrationHarnessTests(RelationalDatabaseFixture fi
     {
         return new MigrationManager(
             NullLogger<MigrationManager>.Instance,
-            Mock.Of<ICommandMediator>(),
-            Mock.Of<IConfiguration>(),
-            Mock.Of<IBlogConfig>());
+            new ConfigurationBuilder().Build());
     }
 
     private static SqlServerBlogDbContext CreateSqlServerContext(string connectionString)
@@ -493,10 +499,6 @@ public sealed class RelationalMigrationHarnessTests(RelationalDatabaseFixture fi
         var operations = new List<string>();
         var configInitializer = new Mock<IConfigInitializer>(MockBehavior.Strict);
         configInitializer
-            .Setup(x => x.Load(cancellationToken))
-            .Callback(() => operations.Add("load configuration"))
-            .Returns(Task.CompletedTask);
-        configInitializer
             .Setup(x => x.Initialize(false, cancellationToken))
             .Callback(() => operations.Add("initialize configuration"))
             .Returns(Task.CompletedTask);
@@ -524,7 +526,7 @@ public sealed class RelationalMigrationHarnessTests(RelationalDatabaseFixture fi
 
         Assert.Equal(InitStartUpResult.Success, result);
         Assert.Equal<string>(
-            ["load configuration", "migrate database", "initialize configuration"],
+            ["migrate database", "initialize configuration"],
             operations);
     }
 
@@ -549,6 +551,21 @@ public sealed class RelationalMigrationHarnessTests(RelationalDatabaseFixture fi
         var result = await command.ExecuteScalarAsync(cancellationToken);
 
         return Convert.ToInt32(result);
+    }
+
+    private static async Task<string> ExecuteScalarStringAsync(
+        DbContext context,
+        string commandText,
+        CancellationToken cancellationToken)
+    {
+        var connection = context.Database.GetDbConnection();
+        await context.Database.OpenConnectionAsync(cancellationToken);
+
+        await using DbCommand command = connection.CreateCommand();
+        command.CommandText = commandText;
+        var result = await command.ExecuteScalarAsync(cancellationToken);
+
+        return Convert.ToString(result)!;
     }
 
     private sealed class SequenceTimeProvider(params DateTimeOffset[] utcTimes) : TimeProvider

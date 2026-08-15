@@ -14,12 +14,5 @@ public class SiteVerificationFileConfiguration : IEntityTypeConfiguration<SiteVe
         builder.Property(e => e.Content).IsRequired().HasMaxLength(65536);
         builder.Property(e => e.ContentType).IsRequired().HasMaxLength(64);
         builder.HasIndex(e => e.NormalizedFileName).IsUnique();
-        ConfigureDateTimeColumns(builder);
-    }
-
-    protected virtual void ConfigureDateTimeColumns(EntityTypeBuilder<SiteVerificationFileEntity> builder)
-    {
-        builder.Property(e => e.CreatedTimeUtc);
-        builder.Property(e => e.LastModifiedTimeUtc);
     }
 }

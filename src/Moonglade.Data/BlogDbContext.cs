@@ -36,13 +36,23 @@ public class BlogDbContext : DbContext
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
-        // base.OnModelCreating(modelBuilder);
+        base.OnModelCreating(modelBuilder);
+
         modelBuilder.ApplyConfiguration(new CategoryConfiguration());
+        modelBuilder.ApplyConfiguration(new CommentConfiguration());
+        modelBuilder.ApplyConfiguration(new CommentReplyConfiguration());
+        modelBuilder.ApplyConfiguration(new PostConfiguration());
+        modelBuilder.ApplyConfiguration(new PostCategoryConfiguration());
+        modelBuilder.ApplyConfiguration(new MentionConfiguration());
+        modelBuilder.ApplyConfiguration(new BlogAssetConfiguration());
+        modelBuilder.ApplyConfiguration(new StyleSheetConfiguration());
+        modelBuilder.ApplyConfiguration(new BlogConfigurationConfiguration());
+        modelBuilder.ApplyConfiguration(new PageConfiguration());
+        modelBuilder.ApplyConfiguration(new WidgetConfiguration());
         modelBuilder.ApplyConfiguration(new ActivityLogConfiguration());
         modelBuilder.ApplyConfiguration(new EmailOutboxMessageConfiguration());
         modelBuilder.ApplyConfiguration(new SiteVerificationFileConfiguration());
         modelBuilder.ApplyConfiguration(new PostViewDailyConfiguration());
-        modelBuilder.ApplyConfiguration(new PostCategoryConfiguration());
         modelBuilder
             .Entity<PostEntity>()
             .HasMany(p => p.Tags)

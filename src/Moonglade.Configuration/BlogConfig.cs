@@ -42,6 +42,8 @@ public class BlogConfig : IBlogConfig
 
     public IEnumerable<string> LoadFromConfig(IDictionary<string, string> config)
     {
+        _keysToInit.Clear();
+
         Assign<GeneralSettings>(config, v => GeneralSettings = v);
         Assign<ContentSettings>(config, v => ContentSettings = v);
         Assign<CommentSettings>(config, v => CommentSettings = v);

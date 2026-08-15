@@ -2,8 +2,6 @@
 
 ## Supported Upgrade Path
 
-This database upgrade supports Moonglade v16.3.0 as its only source version. Upgrade older installations to v16.3.0 first and verify them before scheduling this maintenance window.
-
 The v16.4 migration changes the persisted UTC contract:
 
 - SQL Server UTC timestamp columns become `datetime2(7)`.
@@ -19,12 +17,12 @@ The migration is transactional, but it is not treated as automatically reversibl
 
 Before the window:
 
-1. Confirm that the running application is exactly v16.3.0 and identify whether `ConnectionStrings:DatabaseProvider` is `SqlServer` or `PostgreSql`.
+1. Record the running application version and identify whether `ConnectionStrings:DatabaseProvider` is `SqlServer` or `PostgreSql`.
 2. Confirm that the v16.4 application package has the correct connection string and provider setting without copying credentials into logs or deployment records.
 3. Test the provider's backup and restore procedure in a non-production environment.
 4. Confirm sufficient database storage for both the backup and migration transaction.
 5. Reserve a maintenance window of up to one hour and ensure every application instance and background worker can be stopped together.
-6. Record the v16.3.0 deployment artifact and configuration needed for rollback.
+6. Record the current deployment artifact and configuration needed for rollback.
 
 ## Backup and Verification
 
@@ -53,12 +51,12 @@ A backup is not considered verified merely because its command succeeded. Restor
 
 ## Upgrade Procedure
 
-1. Put the site into maintenance mode and stop every v16.3.0 application instance. Do not leave a scheduler or email worker connected to the database.
+1. Put the site into maintenance mode and stop every application instance. Do not leave a scheduler or email worker connected to the database.
 2. Take and verify the final pre-upgrade backup.
 3. Deploy the v16.4 application package while keeping traffic closed.
 4. Apply the database migration using one of these modes:
-   - With `AutoDatabaseMigration=true`, start one v16.4 instance. Startup reads the installed manifest, executes the provider script before configuration initialization writes, and then completes normal initialization.
-   - With `AutoDatabaseMigration=false`, keep the application stopped and apply the matching cumulative script manually before startup. The scripts are `src/Moonglade.Setup/MigrationScripts/SqlServer/migration.sql` and `src/Moonglade.Setup/MigrationScripts/PostgreSql/migration.sql`. Use tooling that stops on errors; the SQL Server script requires a client that understands `GO` batch separators.
+   - With `AutoDatabaseMigration=true`, start one v16.4 instance. Startup reads the installed manifest directly, executes the provider script before configuration initialization writes, and then completes normal initialization.
+   - With `AutoDatabaseMigration=false`, keep the application stopped and apply the matching cumulative script manually before startup. The scripts are `src/Moonglade.Setup/MigrationScripts/SqlServer/migration.sql` and `src/Moonglade.Setup/MigrationScripts/PostgreSql/migration.sql`. Each script updates `SystemManifestSettings` after its schema changes complete, allowing startup to verify that manual migration is no longer required. Use tooling that stops on errors; the SQL Server script requires a client that understands `GO` batch separators.
 5. Review startup logs. Do not open traffic if migration or initialization reports a failure.
 6. Run the database and application checks below.
 7. Reopen traffic only after every check passes.
@@ -150,8 +148,8 @@ If migration, initialization, or smoke validation fails:
 1. Keep traffic closed and stop every v16.4 instance.
 2. Preserve the failed-upgrade logs for diagnosis without recording database credentials.
 3. Restore the verified pre-upgrade backup to a clean database or replace the failed database according to the platform's restore procedure.
-4. Restore the v16.3.0 application artifact and its configuration.
-5. Start one v16.3.0 instance and validate database connectivity, admin sign-in, published routes, feeds, comments, and scheduled posts.
+4. Restore the previously deployed application artifact and its configuration.
+5. Start the previously deployed version and validate database connectivity, admin sign-in, published routes, feeds, comments, and scheduled posts.
 6. Reopen traffic only after the restored deployment passes validation.
 
 Do not attempt to reverse the temporal column changes with ad hoc SQL.

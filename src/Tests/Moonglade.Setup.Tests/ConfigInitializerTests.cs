@@ -9,7 +9,7 @@ namespace Moonglade.Setup.Tests;
 public sealed class ConfigInitializerTests
 {
     [Fact]
-    public async Task Load_ReadsPersistedSettingsWithoutWritingMissingDefaults()
+    public async Task Initialize_LoadsPersistedSettingsAndWritesMissingDefaults()
     {
         var cancellationToken = TestContext.Current.CancellationToken;
         var persistedSettings = new Dictionary<string, string>
@@ -35,32 +35,13 @@ public sealed class ConfigInitializerTests
             blogConfig,
             NullLogger<ConfigInitializer>.Instance);
 
-        await initializer.Load(cancellationToken);
-
-        Assert.Empty(commandMediator.Commands);
-        Assert.Equal("16.3.0", blogConfig.SystemManifestSettings.VersionString);
-
         await initializer.Initialize(isNew: false, cancellationToken);
 
+        Assert.Equal("16.3.0", blogConfig.SystemManifestSettings.VersionString);
         Assert.Equal(10, commandMediator.Commands.Count);
         Assert.DoesNotContain(
             commandMediator.Commands.OfType<AddDefaultConfigurationCommand>(),
             command => command.CfgKey == nameof(SystemManifestSettings));
-    }
-
-    [Fact]
-    public async Task Initialize_WhenConfigurationWasNotLoaded_ThrowsInvalidOperationException()
-    {
-        var initializer = new ConfigInitializer(
-            Mock.Of<IQueryMediator>(),
-            Mock.Of<ICommandMediator>(),
-            new BlogConfig(),
-            NullLogger<ConfigInitializer>.Instance);
-
-        var exception = await Assert.ThrowsAsync<InvalidOperationException>(() =>
-            initializer.Initialize(isNew: false, TestContext.Current.CancellationToken));
-
-        Assert.Contains("must be loaded", exception.Message, StringComparison.OrdinalIgnoreCase);
     }
 
     private sealed class RecordingCommandMediator : ICommandMediator

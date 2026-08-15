@@ -51,7 +51,7 @@ Important configuration areas:
 | `ImageStorage` | Selects `filesystem`, `azurestorage`, or `s3compatible` and related paths/container/bucket names. | Yes | Use environment overrides for provider secrets and production paths. S3-compatible credentials live under `ImageStorage:S3CompatibleStorageSettings`. |
 | `DefaultEditor` | Default post content editor/content type. | Optional | Used during startup backfill for older posts. |
 | `PostCacheMinutes`, `PagesCacheMinutes`, `WidgetCacheMinutes` | Cache durations. | Optional | Revisit when changing rendering or invalidation paths. |
-| `AutoDatabaseMigration` | Startup migration behavior. | Optional | Existing installations load the manifest, migrate before configuration initialization writes, and then finish initialization. When disabled, operators must apply the cumulative provider script before starting the new release. |
+| `AutoDatabaseMigration` | Startup migration behavior. | Optional | Existing installations read the manifest directly, migrate before configuration initialization writes, and then initialize configuration once. Cumulative scripts update the manifest as their completion marker. When disabled, operators must apply the provider script before starting the new release. |
 | `CannonService:QueueCapacity` | Capacity for the in-process fire-and-forget background queue. | Optional | Defaults to `1000`; when full, new work is rejected and logged instead of running inline on the request path. |
 | `EnableUpdateCheck`, `UpdateCheckCron` | GitHub release update check scheduling. | Optional | Cron parsing is handled by `Cronos`. |
 | `ViewCount` | Crawler user-agent filtering and deduplication window. | Optional | Affects analytics/view-count behavior. |
@@ -146,7 +146,8 @@ Important configuration areas:
 - Use EF Core set-based operations such as `ExecuteDeleteAsync` when they fit the existing pattern.
 - Be careful with many-to-many relationships, cascade behavior, slug/route link generation, publish timestamps, and soft-delete fields because posts, lists, archives, tags, feeds, sitemap, and cache invalidation depend on them.
 - Persisted `DateTime` properties whose names end in `Utc` use the shared UTC contract: SQL Server `datetime2(7)`, PostgreSQL `timestamp with time zone`, UTC materialization, and rejection of local or unspecified tracked writes. `PostViewDaily.ViewDateUtc` is a `DateOnly` stored as `date`.
-- Handwritten cumulative migration scripts live under `src/Moonglade.Setup/MigrationScripts`. The v16.4 temporal cutover supports only v16.3.0 as its source version. Preserve explicit UTC conversion, transactional execution, dependent key/index recreation, and backup-based rollback when changing these scripts. Do not re-enable `Npgsql.EnableLegacyTimestampBehavior`.
+- Browser wall-clock values are accepted only by Web request DTOs. Convert them with the supplied IANA time zone before dispatching feature commands; feature models and persisted values must contain UTC timestamps only.
+- Handwritten cumulative migration scripts live under `src/Moonglade.Setup/MigrationScripts`. Preserve explicit UTC conversion, transactional execution, dependent key/index recreation, the final `SystemManifestSettings` completion marker, and backup-based rollback when changing these scripts. Do not re-enable `Npgsql.EnableLegacyTimestampBehavior`.
 
 ## Coding Guidelines
 

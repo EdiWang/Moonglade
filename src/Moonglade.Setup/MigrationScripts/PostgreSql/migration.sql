@@ -198,3 +198,10 @@ $migration$;
 CREATE INDEX IF NOT EXISTS "IX_PostViewDaily_ViewDateUtc" ON "PostViewDaily" ("ViewDateUtc");
 
 DROP TABLE IF EXISTS "LoginHistory";
+
+UPDATE "BlogConfiguration"
+SET "CfgValue" = jsonb_build_object(
+        'versionString', '16.4.0',
+        'installTimeUtc', to_char(CURRENT_TIMESTAMP AT TIME ZONE 'UTC', 'YYYY-MM-DD"T"HH24:MI:SS.US"Z"'))::text,
+    "LastModifiedTimeUtc" = CURRENT_TIMESTAMP
+WHERE "CfgKey" = 'SystemManifestSettings';

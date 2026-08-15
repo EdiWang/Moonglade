@@ -148,4 +148,4 @@ INSERT INTO "EmailOutboxMessage" (
 );
 
 INSERT INTO "BlogConfiguration" ("CfgKey", "CfgValue", "LastModifiedTimeUtc")
-VALUES ('SystemManifestSettings', 'fixture', TIMESTAMP '2026-01-01 00:00:00');
+VALUES ('SystemManifestSettings', '{"versionString":"16.3.0","installTimeUtc":"2026-01-01T00:00:00Z"}', TIMESTAMP '2026-01-01 00:00:00');

@@ -12,7 +12,6 @@ public class PostConfiguration : IEntityTypeConfiguration<PostEntity>
         builder.Property(e => e.ContentAbstract).HasMaxLength(1024);
         builder.Property(e => e.ContentLanguageCode).HasMaxLength(8);
 
-        ConfigureDateTimeColumns(builder);
         builder.Property(e => e.PostContent);
 
         builder.Property(e => e.Author).HasMaxLength(64);
@@ -28,13 +27,5 @@ public class PostConfiguration : IEntityTypeConfiguration<PostEntity>
                 v => v.ToString().ToLower(),
                 v => Enum.Parse<PostStatus>(v, true))
             .HasMaxLength(32);
-    }
-
-    protected virtual void ConfigureDateTimeColumns(EntityTypeBuilder<PostEntity> builder)
-    {
-        builder.Property(e => e.CreateTimeUtc);
-        builder.Property(e => e.PubDateUtc);
-        builder.Property(e => e.LastModifiedUtc);
-        builder.Property(e => e.ScheduledPublishTimeUtc);
     }
 }

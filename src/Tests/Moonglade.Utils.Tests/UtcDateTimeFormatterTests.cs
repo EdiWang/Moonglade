@@ -13,21 +13,21 @@ public class UtcDateTimeFormatterTests
     }
 
     [Fact]
-    public void ToIsoString_LegacyUnspecifiedValue_PreservesUtcClockTime()
+    public void ToIsoString_UnspecifiedValue_Throws()
     {
         var value = new DateTime(2026, 8, 15, 1, 2, 3, DateTimeKind.Unspecified);
 
-        var result = UtcDateTimeFormatter.ToIsoString(value);
+        var exception = Assert.Throws<ArgumentException>(() => UtcDateTimeFormatter.ToIsoString(value));
 
-        Assert.Equal("2026-08-15T01:02:03.0000000Z", result);
+        Assert.Equal("value", exception.ParamName);
     }
 
     [Fact]
-    public void Normalize_LocalValue_Throws()
+    public void ToIsoString_LocalValue_Throws()
     {
         var value = new DateTime(2026, 8, 15, 1, 2, 3, DateTimeKind.Local);
 
-        var exception = Assert.Throws<ArgumentException>(() => UtcDateTimeFormatter.Normalize(value));
+        var exception = Assert.Throws<ArgumentException>(() => UtcDateTimeFormatter.ToIsoString(value));
 
         Assert.Equal("value", exception.ParamName);
     }
