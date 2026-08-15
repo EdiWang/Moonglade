@@ -20,6 +20,19 @@ namespace Moonglade.Web.Tests;
 public class PostControllerTests
 {
     [Fact]
+    public void PostEditRequest_NullLastModifiedUtc_DeserializesAsNoPreviousSave()
+    {
+        const string json = """{"lastModifiedUtc":null}""";
+
+        var request = JsonSerializer.Deserialize<PostEditRequest>(
+            json,
+            new JsonSerializerOptions(JsonSerializerDefaults.Web));
+
+        Assert.NotNull(request);
+        Assert.Null(request.LastModifiedUtc);
+    }
+
+    [Fact]
     public async Task GetPost_UtcTimestamps_SerializesExplicitUtcDesignators()
     {
         var postId = Guid.NewGuid();

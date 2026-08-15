@@ -44,7 +44,7 @@ Alpine.data('postEditor', () => ({
         scheduledPublishLocalTime: null,
         scheduledPublishTimeUtc: null,
         clientTimeZoneId: '',
-        lastModifiedUtc: '',
+        lastModifiedUtc: null,
         selectedCatIds: [],
         contentType: ''
     },
@@ -134,7 +134,7 @@ Alpine.data('postEditor', () => ({
                 tags: data.tags || '',
                 publishDate: data.publishDate ? data.publishDate.substring(0, 10) : null,
                 scheduledPublishTimeUtc: data.scheduledPublishTimeUtc || null,
-                lastModifiedUtc: data.lastModifiedUtc || '',
+                lastModifiedUtc: data.lastModifiedUtc || null,
                 selectedCatIds: data.selectedCatIds || [],
                 contentType: data.contentType || this.editorChoice || 'html'
             };
@@ -187,7 +187,7 @@ Alpine.data('postEditor', () => ({
             publishDate: this.formData.publishDate,
             scheduledPublishLocalTime: this.formData.scheduledPublishLocalTime || null,
             clientTimeZoneId: this.formData.clientTimeZoneId,
-            lastModifiedUtc: this.formData.lastModifiedUtc,
+            lastModifiedUtc: this.formData.lastModifiedUtc || null,
             contentType: this.formData.contentType
         };
     },
