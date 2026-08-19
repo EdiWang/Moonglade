@@ -19,7 +19,7 @@ public record PostEditDetail
     public string Tags { get; set; }
     public DateTime? PublishDate { get; set; }
     public DateTime? ScheduledPublishTimeUtc { get; set; }
-    public string LastModifiedUtc { get; set; }
+    public DateTime? LastModifiedUtc { get; set; }
     public Guid[] SelectedCatIds { get; set; }
     public string ContentType { get; set; }
 }

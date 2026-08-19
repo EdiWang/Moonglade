@@ -1,6 +1,5 @@
 using Edi.TemplateEmail;
 using Edi.TemplateEmail.Smtp;
-using Moonglade.Email;
 
 namespace Moonglade.Email.Core;
 

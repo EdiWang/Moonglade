@@ -66,6 +66,10 @@ public enum EventType
     // Asset operations (820-829)
     AvatarUpdated = 820,
     SiteIconUpdated = 821,
+    SiteVerificationFileCreated = 822,
+    SiteVerificationFileUpdated = 823,
+    SiteVerificationFileDeleted = 824,
+    SiteVerificationFileToggled = 825,
 
     // Widget operations (850-899)
     WidgetCreated = 850,

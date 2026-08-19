@@ -1,6 +1,6 @@
 import { Alpine } from './alpine-init.mjs';
 import { fetch2 } from './httpService.mjs?v=1500';
-import { formatUtcTime, getLocalizedString } from './utils.module.mjs';
+import { formatUtcTime, getLocalizedString, parseUtcDate } from './utils.module.mjs';
 import { success } from './toastService.mjs';
 import { showDeleteConfirmModal, hideConfirmModal, escapeHtml } from './adminModal.mjs';
 
@@ -17,7 +17,8 @@ Alpine.data('draftManager', () => ({
         try {
             const data = await fetch2('/api/post/drafts', 'GET');
             this.posts = (data.posts ?? []).sort((a, b) => 
-                new Date(b.lastModifiedUtc) - new Date(a.lastModifiedUtc)
+                (parseUtcDate(b.lastModifiedUtc)?.getTime() ?? 0) -
+                (parseUtcDate(a.lastModifiedUtc)?.getTime() ?? 0)
             );
 
             this.$nextTick(() => formatUtcTime());

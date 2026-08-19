@@ -1,7 +1,7 @@
 import { Alpine } from './alpine-init.mjs';
 import { fetch2 } from './httpService.mjs?v=1500';
 import { success, error } from './toastService.mjs';
-import { getLocalizedString, formatDateString } from './utils.module.mjs';
+import { getLocalizedString, formatDateString, parseUtcDate } from './utils.module.mjs';
 import { showDeleteConfirmModal, hideConfirmModal } from './adminModal.mjs';
 
 Alpine.data('pageManager', () => ({
@@ -25,7 +25,8 @@ Alpine.data('pageManager', () => ({
 
     get sortedPages() {
         return [...this.pages].sort((a, b) =>
-            new Date(b.createTimeUtc) - new Date(a.createTimeUtc)
+            (parseUtcDate(b.createTimeUtc)?.getTime() ?? 0) -
+            (parseUtcDate(a.createTimeUtc)?.getTime() ?? 0)
         );
     },
 

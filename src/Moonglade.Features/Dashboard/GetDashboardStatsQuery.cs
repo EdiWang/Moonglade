@@ -26,11 +26,11 @@ public class GetDashboardStatsQueryHandler(BlogDbContext db) : IQueryHandler<Get
 {
     public async Task<DashboardStats> HandleAsync(GetDashboardStatsQuery request, CancellationToken ct)
     {
-        var todayUtc = (request.UtcNow ?? DateTime.UtcNow).Date;
+        var todayUtc = DateOnly.FromDateTime(request.UtcNow ?? DateTime.UtcNow);
         var tomorrowUtc = todayUtc.AddDays(1);
         var yesterdayUtc = todayUtc.AddDays(-1);
         var weekStartUtc = todayUtc.AddDays(-GetDaysSinceMonday(todayUtc));
-        var monthStartUtc = new DateTime(todayUtc.Year, todayUtc.Month, 1);
+        var monthStartUtc = new DateOnly(todayUtc.Year, todayUtc.Month, 1);
         var viewStartUtc = new[] { yesterdayUtc, weekStartUtc, monthStartUtc }.Min();
 
         var viewCounts = await db.PostViewDaily.AsNoTracking()
@@ -84,5 +84,5 @@ public class GetDashboardStatsQueryHandler(BlogDbContext db) : IQueryHandler<Get
             recentPublishedPosts);
     }
 
-    private static int GetDaysSinceMonday(DateTime date) => ((int)date.DayOfWeek + 6) % 7;
+    private static int GetDaysSinceMonday(DateOnly date) => ((int)date.DayOfWeek + 6) % 7;
 }

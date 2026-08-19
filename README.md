@@ -10,8 +10,8 @@ Key business areas include:
 
 - **Content publishing:** posts, drafts, scheduled posts, Markdown Mermaid diagrams, pages, featured/outdated flags, archives, recycle bin behavior, and route links for published posts.
 - **Reader interaction:** comments, replies, Webmentions, comment moderation, view counts, and optional email notifications.
-- **Site management:** runtime blog settings, widgets, themes, custom CSS, menus, image storage, account settings, and data import/export.
-- **Discovery and interoperability:** RSS, Atom, OPML, OpenSearch, FOAF, sitemap, robots.txt, IndexNow, reader-friendly markup, and health checks.
+- **Site management:** runtime blog settings, widgets, themes, custom CSS, menus, image storage, site verification files, account settings, and data import/export.
+- **Discovery and interoperability:** RSS, Atom, OPML, OpenSearch, FOAF, sitemap, robots.txt, IndexNow, root-level site ownership verification files, reader-friendly markup, and health checks.
 
 ## Repository Layout
 
@@ -102,6 +102,12 @@ dotnet test src/Tests/Moonglade.Web.Tests/Moonglade.Web.Tests.csproj
 
 > Most settings are managed in `appsettings.json`. For blog settings, use the `/admin/settings` UI.
 
+### Site Verification Files
+
+Some search engines and external services verify site ownership by requesting a specific file from the website root, such as `/google123.html` or `/ads.txt`. In Docker and Azure deployments, use `/admin/settings/verification-files` to add these files without modifying `wwwroot` inside the container.
+
+Verification files are stored in the Moonglade database and served from root-level virtual endpoints. Supported file types are `.txt`, `.html`, `.htm`, `.xml`, and `.json`; each file is limited to 64 KB and must use a single root-level file name with letters, digits, dots, underscores, or hyphens. Existing static files and built-in endpoints such as `/robots.txt`, `/sitemap.xml`, and `/manifest.webmanifest` keep priority.
+
 ### Authentication
 
 - By default: Local accounts with TOTP authenticator app verification (manage via `/admin/account`)
@@ -128,6 +134,12 @@ dotnet test src/Tests/Moonglade.Web.Tests/Moonglade.Web.Tests.csproj
 `Authentication:LocalAccountRateLimit` uses a fixed window. `PermitLimit` is the number of attempts allowed for the same partition during each window. Set `Enabled` to `false` only when another authentication-layer throttle is in place.
 
 - **Microsoft Entra ID** (Azure AD) supported. [Setup guide](https://github.com/EdiWang/Moonglade/wiki/Use-Microsoft-Entra-ID-Authentication)
+
+### Reverse Proxy Client Addresses
+
+When `ForwardedHeaders:Enabled` is enabled, list every trusted reverse proxy IP in `ForwardedHeaders:KnownProxies`. Moonglade accepts forwarded client addresses only from those proxies. If the list is empty or contains no valid addresses, ASP.NET Core's loopback-only defaults remain in effect; forwarded headers from unknown proxies are ignored.
+
+The application reads the processed `HttpContext.Connection.RemoteIpAddress` and never trusts raw `X-Forwarded-For` or vendor-specific client-IP headers directly.
 
 ### Comment Rate Limiting
 
@@ -161,6 +173,8 @@ Built-in comment submissions also use a hidden honeypot field and form elapsed-t
 ### Image Storage
 
 Configure the `ImageStorage` section in `appsettings.json` to choose where blog images are stored.
+
+Uploaded image files are validated against their file content before storage. SVG uploads are supported, but active content and unsafe URL references are sanitized before the image is saved.
 
 #### **Azure Blob Storage**
 
@@ -289,7 +303,7 @@ When the queue is full, new work is rejected and logged instead of running inlin
 | MetaWeblog   | Blogging      | Deprecated  | N/A             |
 | Pingback     | Social        | Deprecated  | N/A             |
 
-Incoming Webmention source URLs must use public HTTP/HTTPS addresses. Moonglade rejects private, loopback, link-local, documentation, reserved, and other special-use address ranges before fetching source content.
+Incoming and outgoing Webmention URLs must use public HTTP/HTTPS addresses. Moonglade rejects private, loopback, link-local, documentation, reserved, and other special-use IPv4 and IPv6 ranges before fetching a source, following a redirect, discovering an endpoint, or submitting a Webmention. Connections are bound to a validated DNS result, and automatic proxy and redirect handling is disabled to prevent address-check bypasses.
 
 ## Health Checks
 

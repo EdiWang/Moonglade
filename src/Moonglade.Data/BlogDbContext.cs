@@ -32,15 +32,27 @@ public class BlogDbContext : DbContext
     public virtual DbSet<WidgetEntity> Widget { get; set; }
     public virtual DbSet<ActivityLogEntity> ActivityLog { get; set; }
     public virtual DbSet<EmailOutboxMessageEntity> EmailOutboxMessage { get; set; }
+    public virtual DbSet<SiteVerificationFileEntity> SiteVerificationFile { get; set; }
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
-        // base.OnModelCreating(modelBuilder);
+        base.OnModelCreating(modelBuilder);
+
         modelBuilder.ApplyConfiguration(new CategoryConfiguration());
+        modelBuilder.ApplyConfiguration(new CommentConfiguration());
+        modelBuilder.ApplyConfiguration(new CommentReplyConfiguration());
+        modelBuilder.ApplyConfiguration(new PostConfiguration());
+        modelBuilder.ApplyConfiguration(new PostCategoryConfiguration());
+        modelBuilder.ApplyConfiguration(new MentionConfiguration());
+        modelBuilder.ApplyConfiguration(new BlogAssetConfiguration());
+        modelBuilder.ApplyConfiguration(new StyleSheetConfiguration());
+        modelBuilder.ApplyConfiguration(new BlogConfigurationConfiguration());
+        modelBuilder.ApplyConfiguration(new PageConfiguration());
+        modelBuilder.ApplyConfiguration(new WidgetConfiguration());
         modelBuilder.ApplyConfiguration(new ActivityLogConfiguration());
         modelBuilder.ApplyConfiguration(new EmailOutboxMessageConfiguration());
+        modelBuilder.ApplyConfiguration(new SiteVerificationFileConfiguration());
         modelBuilder.ApplyConfiguration(new PostViewDailyConfiguration());
-        modelBuilder.ApplyConfiguration(new PostCategoryConfiguration());
         modelBuilder
             .Entity<PostEntity>()
             .HasMany(p => p.Tags)
@@ -54,6 +66,39 @@ public class BlogDbContext : DbContext
                     .HasOne(pt => pt.Post)
                     .WithMany()
                     .HasForeignKey(pt => pt.PostId));
+
+        modelBuilder.ConfigureUtcDateTimeContract();
+    }
+
+    public override int SaveChanges(bool acceptAllChangesOnSuccess)
+    {
+        ValidateUtcDateTimeValues();
+        return base.SaveChanges(acceptAllChangesOnSuccess);
+    }
+
+    public override Task<int> SaveChangesAsync(
+        bool acceptAllChangesOnSuccess,
+        CancellationToken cancellationToken = default)
+    {
+        ValidateUtcDateTimeValues();
+        return base.SaveChangesAsync(acceptAllChangesOnSuccess, cancellationToken);
+    }
+
+    private void ValidateUtcDateTimeValues()
+    {
+        foreach (var entry in ChangeTracker.Entries()
+                     .Where(entry => entry.State is EntityState.Added or EntityState.Modified))
+        {
+            foreach (var property in entry.Properties.Where(property =>
+                         UtcDateTimeConvention.IsUtcDateTimeProperty(property.Metadata)))
+            {
+                if (property.CurrentValue is DateTime value && value.Kind != DateTimeKind.Utc)
+                {
+                    throw new InvalidOperationException(
+                        $"Property '{entry.Metadata.ClrType.Name}.{property.Metadata.Name}' must contain a UTC DateTime value.");
+                }
+            }
+        }
     }
 }
 
@@ -84,6 +129,7 @@ public static class BlogDbContextExtension
             await context.Widget.ExecuteDeleteAsync();
             await context.ActivityLog.ExecuteDeleteAsync();
             await context.EmailOutboxMessage.ExecuteDeleteAsync();
+            await context.SiteVerificationFile.ExecuteDeleteAsync();
 
             await transaction.CommitAsync();
         });

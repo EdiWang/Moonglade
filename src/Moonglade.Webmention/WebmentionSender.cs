@@ -1,6 +1,7 @@
 ﻿using Edi.AspNetCore.Utils;
 using Microsoft.Extensions.Logging;
 using Moonglade.Utils;
+using System.Net;
 using System.Text.RegularExpressions;
 
 namespace Moonglade.Webmention;
@@ -8,17 +9,20 @@ namespace Moonglade.Webmention;
 public partial class WebmentionSender(
     HttpClient httpClient,
     IWebmentionRequestor requestor,
+    IPublicHttpUrlValidator publicUrlValidator,
     ILogger<WebmentionSender> logger) : IWebmentionSender
 {
+    private const int MaxRedirects = 5;
+
     public async Task SendWebmentionAsync(string postUrl, string postContent)
     {
         try
         {
             var uri = new Uri(postUrl);
 
-            if (uri.IsLocalhostUrl())
+            if (!await publicUrlValidator.IsPublicHttpUrlAsync(uri))
             {
-                logger.LogWarning("Source URL is localhost, skipping.");
+                logger.LogWarning("Source URL is not public, skipping: {SourceUrl}", uri);
                 return;
             }
 
@@ -28,9 +32,9 @@ public partial class WebmentionSender(
 
             foreach (var url in UrlHelper.GetUrlsFromContent(postContent))
             {
-                if (url.IsLocalhostUrl())
+                if (!await publicUrlValidator.IsPublicHttpUrlAsync(url))
                 {
-                    logger.LogWarning("Target URL is localhost, skipping.");
+                    logger.LogWarning("Target URL is not public, skipping: {TargetUrl}", url);
                     continue;
                 }
 
@@ -58,21 +62,14 @@ public partial class WebmentionSender(
 
         try
         {
-            var endpoint = await DiscoverWebmentionEndpoint(targetUrl);
-            if (endpoint is null)
+            var endpointUrl = await DiscoverWebmentionEndpoint(targetUrl);
+            if (endpointUrl is null)
             {
                 logger.LogWarning("Webmention endpoint not found for '{TargetUrl}'.", targetUrl);
                 return;
             }
 
-            logger.LogInformation("Found Webmention service URL '{Endpoint}' on target '{TargetUrl}'", endpoint, targetUrl);
-
-            // Resolve relative URLs against the target
-            if (!Uri.TryCreate(targetUrl, endpoint, out var endpointUrl))
-            {
-                logger.LogWarning("Invalid Webmention service URL '{Endpoint}'", endpoint);
-                return;
-            }
+            logger.LogInformation("Found Webmention service URL '{Endpoint}' on target '{TargetUrl}'", endpointUrl, targetUrl);
 
             var wmResponse = await requestor.Send(sourceUrl, targetUrl, endpointUrl);
 
@@ -91,11 +88,57 @@ public partial class WebmentionSender(
         }
     }
 
-    private async Task<string?> DiscoverWebmentionEndpoint(Uri targetUrl)
+    private async Task<Uri?> DiscoverWebmentionEndpoint(Uri targetUrl)
     {
-        using var response = await httpClient.GetAsync(targetUrl, HttpCompletionOption.ResponseHeadersRead);
-        if (!response.IsSuccessStatusCode) return null;
+        var currentUri = targetUrl;
+        for (var redirectCount = 0; redirectCount <= MaxRedirects; redirectCount++)
+        {
+            if (!await publicUrlValidator.IsPublicHttpUrlAsync(currentUri))
+            {
+                logger.LogWarning("Webmention discovery URL is not public, skipping: {TargetUrl}", currentUri);
+                return null;
+            }
 
+            using var response = await httpClient.GetAsync(currentUri, HttpCompletionOption.ResponseHeadersRead);
+            if (IsRedirect(response.StatusCode))
+            {
+                if (redirectCount == MaxRedirects || response.Headers.Location is null)
+                {
+                    logger.LogWarning("Webmention discovery exceeded redirect limit or returned an invalid redirect: {TargetUrl}", currentUri);
+                    return null;
+                }
+
+                currentUri = response.Headers.Location.IsAbsoluteUri
+                    ? response.Headers.Location
+                    : new Uri(currentUri, response.Headers.Location);
+                continue;
+            }
+
+            if (!response.IsSuccessStatusCode)
+            {
+                return null;
+            }
+
+            var endpoint = await FindWebmentionEndpoint(response);
+            if (endpoint is null || !Uri.TryCreate(currentUri, endpoint, out var endpointUrl))
+            {
+                return null;
+            }
+
+            if (!await publicUrlValidator.IsPublicHttpUrlAsync(endpointUrl))
+            {
+                logger.LogWarning("Webmention endpoint URL is not public, skipping: {EndpointUrl}", endpointUrl);
+                return null;
+            }
+
+            return endpointUrl;
+        }
+
+        return null;
+    }
+
+    private static async Task<string?> FindWebmentionEndpoint(HttpResponseMessage response)
+    {
         // 1. Check HTTP Link header first (per W3C Webmention spec)
         if (response.Headers.TryGetValues("Link", out var linkHeaders))
         {
@@ -115,6 +158,13 @@ public partial class WebmentionSender(
 
         return match.Success ? match.Groups["href"].Value : null;
     }
+
+    private static bool IsRedirect(HttpStatusCode statusCode) =>
+        statusCode is HttpStatusCode.Moved
+            or HttpStatusCode.Redirect
+            or HttpStatusCode.RedirectMethod
+            or HttpStatusCode.TemporaryRedirect
+            or HttpStatusCode.PermanentRedirect;
 
     private static bool ContainsUrl(string content) =>
         content.Contains("http://", StringComparison.OrdinalIgnoreCase) ||

@@ -1,3 +1,4 @@
+using Edi.AspNetCore.Utils;
 using LiteBus.Commands.Abstractions;
 using Microsoft.Extensions.Logging;
 using Moonglade.Data;
@@ -12,7 +13,7 @@ public class ReceiveWebmentionCommandHandler(
     ILogger<ReceiveWebmentionCommandHandler> logger,
     IMentionSourceInspector sourceInspector,
     IWebmentionSourceRateLimiter sourceRateLimiter,
-    IWebmentionUrlSafetyValidator urlSafetyValidator,
+    IPublicHttpUrlValidator publicUrlValidator,
     BlogDbContext db
     ) : ICommandHandler<ReceiveWebmentionCommand, WebmentionResponse>
 {
@@ -26,7 +27,7 @@ public class ReceiveWebmentionCommandHandler(
                 return WebmentionResponse.InvalidWebmentionRequest;
             }
 
-            if (!await urlSafetyValidator.IsSafeSourceAsync(sourceUri!, ct))
+            if (!await publicUrlValidator.IsPublicHttpUrlAsync(sourceUri!, ct))
             {
                 logger.LogWarning("Blocked webmention from unsafe source URI: {SourceUri}", sourceUri);
                 return WebmentionResponse.InvalidWebmentionRequest;

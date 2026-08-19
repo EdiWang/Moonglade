@@ -10,9 +10,11 @@ using Moonglade.BackgroundServices;
 using Moonglade.Configuration;
 using Moonglade.ImageStorage;
 using Moonglade.Web.Controllers;
+using Moonglade.Web.Services;
 using Moq;
 using System.Net;
 using System.Security.Claims;
+using System.Text;
 
 namespace Moonglade.Web.Tests;
 
@@ -226,9 +228,23 @@ public class ImageControllerTests
     }
 
     [Fact]
+    public async Task Image_Post_WhenContentDoesNotMatchExtension_ReturnsBadRequest()
+    {
+        var controller = CreateController();
+        var file = CreateFormFile("photo.png", Encoding.UTF8.GetBytes("<svg xmlns=\"http://www.w3.org/2000/svg\"></svg>"));
+
+        var result = await controller.Image(file);
+
+        var badRequestResult = Assert.IsType<BadRequestObjectResult>(result);
+        Assert.Equal("Image content does not match file extension.", badRequestResult.Value);
+        _imageStorage.Verify(x => x.InsertAsync(It.IsAny<string>(), It.IsAny<byte[]>()), Times.Never);
+        Assert.Empty(_commandMediator.Commands);
+    }
+
+    [Fact]
     public async Task Image_Post_WhenValidFileAndWatermarkDisabled_SavesImageAndWritesActivityLog()
     {
-        var imageBytes = new byte[] { 1, 2, 3, 4 };
+        var imageBytes = ValidPngBytes();
         _fileNameGenerator.Setup(x => x.GetFileName("photo.png", "")).Returns("photo-primary.png");
         _fileNameGenerator.Setup(x => x.GetFileName("photo.png", "origin")).Returns("photo-origin.png");
         _imageStorage.Setup(x => x.InsertAsync("photo-primary.png", It.IsAny<byte[]>())).ReturnsAsync("photo-cdn.png");
@@ -267,7 +283,7 @@ public class ImageControllerTests
         _fileNameGenerator.Setup(x => x.GetFileName("photo.png", "origin")).Returns("photo-origin.png");
         _imageStorage.Setup(x => x.InsertAsync("photo-primary.png", It.IsAny<byte[]>())).ReturnsAsync("photo-primary.png");
         var controller = CreateController(new BlogConfig { ImageSettings = ImageSettings.DefaultValue });
-        var file = CreateFormFile("photo.png", [1, 2, 3]);
+        var file = CreateFormFile("photo.png", ValidPngBytes());
 
         await controller.Image(file, skipWatermark: true);
 
@@ -278,7 +294,7 @@ public class ImageControllerTests
     [Fact]
     public async Task Image_Post_WhenWatermarkEnabledAndKeepOriginalEnabled_StoresOriginalImageInBackgroundQueue()
     {
-        var imageBytes = new byte[] { 1, 2, 3, 4 };
+        var imageBytes = ValidSvgBytes();
         _fileNameGenerator.Setup(x => x.GetFileName("photo.svg", "")).Returns("photo.svg");
         _fileNameGenerator.Setup(x => x.GetFileName("photo.svg", "origin")).Returns("photo-origin.svg");
         _imageStorage.Setup(x => x.InsertAsync("photo.svg", It.IsAny<byte[]>())).ReturnsAsync("photo.svg");
@@ -297,7 +313,57 @@ public class ImageControllerTests
         await controller.Image(file);
         await StopCannonServiceAsync();
 
-        _imageStorage.Verify(x => x.InsertSecondaryAsync("photo-origin.svg", It.Is<byte[]>(bytes => bytes.SequenceEqual(imageBytes))), Times.Once);
+        _imageStorage.Verify(x => x.InsertSecondaryAsync("photo-origin.svg", It.Is<byte[]>(bytes =>
+            Encoding.UTF8.GetString(bytes).Contains("<svg", StringComparison.Ordinal))), Times.Once);
+    }
+
+    [Fact]
+    public async Task Image_Post_WhenSvgContainsActiveContent_SavesSanitizedSvg()
+    {
+        byte[]? savedBytes = null;
+        _fileNameGenerator.Setup(x => x.GetFileName("payload.svg", "")).Returns("payload.svg");
+        _fileNameGenerator.Setup(x => x.GetFileName("payload.svg", "origin")).Returns("payload-origin.svg");
+        _imageStorage
+            .Setup(x => x.InsertAsync("payload.svg", It.IsAny<byte[]>()))
+            .Callback<string, byte[]>((_, bytes) => savedBytes = bytes)
+            .ReturnsAsync("payload.svg");
+        var controller = CreateController(new BlogConfig
+        {
+            ImageSettings = new ImageSettings { IsWatermarkEnabled = false }
+        });
+        var file = CreateFormFile("payload.svg", MaliciousSvgBytes());
+
+        var result = await controller.Image(file);
+
+        Assert.IsType<OkObjectResult>(result);
+        Assert.NotNull(savedBytes);
+        var sanitizedSvg = Encoding.UTF8.GetString(savedBytes);
+        Assert.Contains("<svg", sanitizedSvg, StringComparison.Ordinal);
+        Assert.Contains("<rect", sanitizedSvg, StringComparison.Ordinal);
+        Assert.DoesNotContain("<script", sanitizedSvg, StringComparison.OrdinalIgnoreCase);
+        Assert.DoesNotContain("foreignObject", sanitizedSvg, StringComparison.OrdinalIgnoreCase);
+        Assert.DoesNotContain("onclick", sanitizedSvg, StringComparison.OrdinalIgnoreCase);
+        Assert.DoesNotContain("href=", sanitizedSvg, StringComparison.OrdinalIgnoreCase);
+        Assert.DoesNotContain("javascript:", sanitizedSvg, StringComparison.OrdinalIgnoreCase);
+    }
+
+    [Fact]
+    public async Task Image_Post_WhenSvgContainsDoctype_ReturnsBadRequest()
+    {
+        var controller = CreateController();
+        var file = CreateFormFile("payload.svg", Encoding.UTF8.GetBytes("""
+            <!DOCTYPE svg [
+              <!ENTITY xxe SYSTEM "file:///etc/passwd">
+            ]>
+            <svg xmlns="http://www.w3.org/2000/svg">&xxe;</svg>
+            """));
+
+        var result = await controller.Image(file);
+
+        var badRequestResult = Assert.IsType<BadRequestObjectResult>(result);
+        Assert.Equal("Invalid SVG data.", badRequestResult.Value);
+        _imageStorage.Verify(x => x.InsertAsync(It.IsAny<string>(), It.IsAny<byte[]>()), Times.Never);
+        Assert.Empty(_commandMediator.Commands);
     }
 
     private ImageController CreateController(
@@ -318,6 +384,7 @@ public class ImageControllerTests
             blogConfig ?? new BlogConfig { ImageSettings = new ImageSettings() },
             _cache,
             _fileNameGenerator.Object,
+            new ImageUploadValidator(),
             Options.Create(new ImageStorageSettings { CacheMinutes = 5 }),
             _cannonService,
             _commandMediator);
@@ -357,6 +424,25 @@ public class ImageControllerTests
     {
         return new FormFile(new MemoryStream(bytes), 0, bytes.Length, "file", fileName);
     }
+
+    private static byte[] ValidPngBytes()
+    {
+        const string base64Png = "iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mP8/x8AAwMCAO+/p9sAAAAASUVORK5CYII=";
+        return Convert.FromBase64String(base64Png);
+    }
+
+    private static byte[] ValidSvgBytes() =>
+        Encoding.UTF8.GetBytes("<svg xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 1 1\"><rect width=\"1\" height=\"1\" fill=\"red\" /></svg>");
+
+    private static byte[] MaliciousSvgBytes() =>
+        Encoding.UTF8.GetBytes("""
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1 1">
+              <script>alert(1)</script>
+              <foreignObject><body>bad</body></foreignObject>
+              <a href="java&#x09;script:alert(1)"><text>click</text></a>
+              <rect width="1" height="1" onclick="alert(1)" style="fill:red" />
+            </svg>
+            """);
 
     private static ImageInfo CreateImageInfo(
         string extension,

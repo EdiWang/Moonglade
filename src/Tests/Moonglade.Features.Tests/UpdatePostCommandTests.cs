@@ -91,7 +91,7 @@ public class UpdatePostCommandTests
 
         var scheduledTime = DateTime.UtcNow.AddDays(1);
         var model = CreatePostEditModel(PostStatus.Scheduled);
-        model.ScheduledPublishTime = scheduledTime;
+        model.ScheduledPublishTimeUtc = scheduledTime;
         var handler = CreateHandler(db);
 
         var result = await handler.HandleAsync(new UpdatePostCommand(postId, model), TestContext.Current.CancellationToken);

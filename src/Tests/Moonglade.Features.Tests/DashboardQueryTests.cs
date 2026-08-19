@@ -22,10 +22,10 @@ public class DashboardQueryTests
         var now = new DateTime(2024, 4, 17, 8, 0, 0, DateTimeKind.Utc);
 
         db.PostViewDaily.AddRange(
-            CreatePostViewDaily(now.Date.AddDays(-1), 3),
-            CreatePostViewDaily(now.Date.AddDays(-2), 5),
-            CreatePostViewDaily(new DateTime(2024, 4, 1), 7),
-            CreatePostViewDaily(new DateTime(2024, 3, 31), 11));
+            CreatePostViewDaily(new DateOnly(2024, 4, 16), 3),
+            CreatePostViewDaily(new DateOnly(2024, 4, 15), 5),
+            CreatePostViewDaily(new DateOnly(2024, 4, 1), 7),
+            CreatePostViewDaily(new DateOnly(2024, 3, 31), 11));
 
         db.Post.AddRange(
             CreatePost(PostStatus.Published),
@@ -98,10 +98,10 @@ public class DashboardQueryTests
         var now = new DateTime(2024, 5, 1, 8, 0, 0, DateTimeKind.Utc);
 
         db.PostViewDaily.AddRange(
-            CreatePostViewDaily(new DateTime(2024, 4, 29), 5),
-            CreatePostViewDaily(new DateTime(2024, 4, 30), 3),
-            CreatePostViewDaily(new DateTime(2024, 5, 1), 7),
-            CreatePostViewDaily(new DateTime(2024, 4, 28), 11));
+            CreatePostViewDaily(new DateOnly(2024, 4, 29), 5),
+            CreatePostViewDaily(new DateOnly(2024, 4, 30), 3),
+            CreatePostViewDaily(new DateOnly(2024, 5, 1), 7),
+            CreatePostViewDaily(new DateOnly(2024, 4, 28), 11));
 
         await db.SaveChangesAsync(TestContext.Current.CancellationToken);
 
@@ -114,7 +114,7 @@ public class DashboardQueryTests
         Assert.Equal(7, stats.ThisMonthViews);
     }
 
-    private static PostViewDailyEntity CreatePostViewDaily(DateTime dateUtc, int viewCount) =>
+    private static PostViewDailyEntity CreatePostViewDaily(DateOnly dateUtc, int viewCount) =>
         new()
         {
             PostId = Guid.NewGuid(),

@@ -4,7 +4,7 @@ public class PostViewDailyEntity
 {
     public Guid PostId { get; set; }
 
-    public DateTime ViewDateUtc { get; set; }
+    public DateOnly ViewDateUtc { get; set; }
 
     public int ViewCount { get; set; }
 }

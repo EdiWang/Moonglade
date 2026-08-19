@@ -16,19 +16,11 @@ public class PostgreSqlBlogDbContext : BlogDbContext
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
-        modelBuilder.ApplyConfiguration(new CommentConfiguration());
-        modelBuilder.ApplyConfiguration(new CommentReplyConfiguration());
-        modelBuilder.ApplyConfiguration(new PostConfiguration());
-        modelBuilder.ApplyConfiguration(new PostCategoryConfiguration());
-        modelBuilder.ApplyConfiguration(new MentionConfiguration());
-        modelBuilder.ApplyConfiguration(new BlogThemeConfiguration());
-        modelBuilder.ApplyConfiguration(new BlogAssetConfiguration());
-        modelBuilder.ApplyConfiguration(new StyleSheetConfiguration());
-        modelBuilder.ApplyConfiguration(new BlogConfigurationConfiguration());
-        modelBuilder.ApplyConfiguration(new PageConfiguration());
-        modelBuilder.ApplyConfiguration(new WidgetConfiguration());
-        modelBuilder.ApplyConfiguration(new ActivityLogConfiguration());
-
         base.OnModelCreating(modelBuilder);
+
+        modelBuilder.ApplyConfiguration(new BlogThemeConfiguration());
+        Data.Configurations.UtcDateTimeConvention.ConfigureUtcDateTimeColumnType(
+            modelBuilder,
+            "timestamp with time zone");
     }
 }

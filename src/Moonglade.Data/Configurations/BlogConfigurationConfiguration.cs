@@ -9,12 +9,5 @@ public class BlogConfigurationConfiguration : IEntityTypeConfiguration<BlogConfi
     {
         builder.HasKey(e => e.CfgKey);
         builder.Property(e => e.CfgKey).HasMaxLength(64);
-        ConfigureDateTimeColumns(builder);
-    }
-
-    protected virtual void ConfigureDateTimeColumns(EntityTypeBuilder<BlogConfigurationEntity> builder)
-    {
-        // Default: use datetime (SQL Server compatible)
-        builder.Property(e => e.LastModifiedTimeUtc).HasColumnType("datetime");
     }
 }

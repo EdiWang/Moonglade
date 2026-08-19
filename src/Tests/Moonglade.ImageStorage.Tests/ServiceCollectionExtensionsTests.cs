@@ -1,7 +1,6 @@
 using Amazon.S3;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Logging;
 using Moonglade.ImageStorage.Providers;
 
 namespace Moonglade.ImageStorage.Tests;

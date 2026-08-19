@@ -7,18 +7,140 @@ import { calculateReadingTime } from './post.readingtime.mjs';
 import { recordPostView } from './postview.mjs';
 import { error } from './toastService.mjs';
 
+const commentEditorStylesheetId = 'comment-markdown-editor-stylesheet';
+const commentEditorStylesheetPath = '/_content/Moonglade.Editor.StaticAssets/moonglade-editor/moonglade-editor.css';
+const commentEditorModulePath = '/_content/Moonglade.Editor.StaticAssets/moonglade-editor/moonglade-editor.code.js';
+let commentEditorModulePromise = null;
+let commentMarkdownEditor = null;
+let commentMarkdownEditorEnabled = false;
+
+function ensureCommentEditorStylesheet() {
+    if (document.getElementById(commentEditorStylesheetId)) {
+        return;
+    }
+
+    const link = document.createElement('link');
+    link.id = commentEditorStylesheetId;
+    link.rel = 'stylesheet';
+    link.href = commentEditorStylesheetPath;
+    document.head.append(link);
+}
+
+async function ensureCommentEditorModule() {
+    commentEditorModulePromise ??= import(commentEditorModulePath);
+    return await commentEditorModulePromise;
+}
+
+async function enableCommentMarkdownEditor() {
+    if (commentMarkdownEditorEnabled) {
+        return;
+    }
+
+    const editorElement = document.querySelector('#comment-markdown-editor');
+    const textarea = document.querySelector('#input-comment-content');
+    if (!editorElement || !textarea) {
+        return;
+    }
+
+    ensureCommentEditorStylesheet();
+    const { createMoongladeCodeEditor } = await ensureCommentEditorModule();
+
+    textarea.removeAttribute('required');
+    textarea.classList.add('d-none');
+    editorElement.classList.remove('d-none');
+    commentMarkdownEditor = createMoongladeCodeEditor({
+        element: editorElement,
+        textarea,
+        content: textarea.value || '',
+        language: 'markdown',
+        height: '180px',
+        lineWrapping: true
+    });
+    commentMarkdownEditorEnabled = true;
+    commentMarkdownEditor.focus();
+}
+
+function disableCommentMarkdownEditor() {
+    const editorElement = document.querySelector('#comment-markdown-editor');
+    const textarea = document.querySelector('#input-comment-content');
+
+    if (commentMarkdownEditor) {
+        commentMarkdownEditor.syncToTextarea();
+        commentMarkdownEditor.destroy();
+        commentMarkdownEditor = null;
+    }
+
+    editorElement?.replaceChildren();
+    editorElement?.classList.add('d-none');
+
+    if (textarea) {
+        textarea.classList.remove('d-none');
+        textarea.setAttribute('required', 'required');
+    }
+
+    commentMarkdownEditorEnabled = false;
+}
+
+function resetCommentMarkdownEditor() {
+    const toggle = document.querySelector('#input-comment-use-markdown-editor');
+    if (toggle) {
+        toggle.checked = false;
+    }
+
+    disableCommentMarkdownEditor();
+}
+
+function syncCommentMarkdownEditor() {
+    commentMarkdownEditor?.syncToTextarea();
+}
+
+function isCommentMarkdownEditorEnabled() {
+    return commentMarkdownEditorEnabled && !!commentMarkdownEditor;
+}
+
+async function toggleCommentMarkdownEditor(event) {
+    const checkbox = event.currentTarget;
+    checkbox.disabled = true;
+
+    try {
+        if (checkbox.checked) {
+            await enableCommentMarkdownEditor();
+        }
+        else {
+            disableCommentMarkdownEditor();
+        }
+    }
+    catch (err) {
+        checkbox.checked = false;
+        disableCommentMarkdownEditor();
+        error(err);
+    }
+    finally {
+        checkbox.disabled = false;
+    }
+}
+
 async function submitComment(pid) {
     const thxForComment = document.querySelector('#thx-for-comment');
     const thxForCommentNonReview = document.querySelector('#thx-for-comment-non-review');
     const loadingIndicator = document.querySelector('#loadingIndicator');
     const btnSubmitComment = document.querySelector('#btn-submit-comment');
     const commentForm = document.querySelector('#comment-form');
+    const commentContentInput = document.querySelector('#input-comment-content');
+
+    syncCommentMarkdownEditor();
 
     const username = document.querySelector('#input-comment-name').value;
-    const content = document.querySelector('#input-comment-content').value;
+    const content = commentContentInput.value;
     const email = document.querySelector('#input-comment-email').value;
     const source = document.querySelector('#input-comment-source')?.value ?? '';
     const formRenderedUtc = Number(document.querySelector('#input-comment-form-rendered-utc')?.value ?? 0);
+
+    if (isCommentMarkdownEditorEnabled() && !content.trim()) {
+        commentMarkdownEditor.focus();
+        error(commentContentInput.dataset.commentRequiredMessage || commentContentInput.placeholder);
+        return;
+    }
 
     thxForComment.style.display = 'none';
     thxForCommentNonReview.style.display = 'none';
@@ -28,6 +150,7 @@ async function submitComment(pid) {
 
     try {
         const data = await fetch2(`/api/comment/${pid}`, 'POST', { username, content, email, source, formRenderedUtc });
+        resetCommentMarkdownEditor();
         commentForm.reset();
         resetCommentFormRenderedAt(data.formRenderedUtc);
 
@@ -79,6 +202,8 @@ document.addEventListener('DOMContentLoaded', () => {
             e.preventDefault();
             submitComment(pid);
         });
+        document.getElementById('input-comment-use-markdown-editor')?.addEventListener('change', toggleCommentMarkdownEditor);
+        document.getElementById('btn-submit-comment')?.addEventListener('click', syncCommentMarkdownEditor);
 
         formatUtcTime();
 

@@ -1,6 +1,6 @@
+using Edi.AspNetCore.Utils;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using System.Net;
 
 namespace Moonglade.Webmention;
 
@@ -12,9 +12,7 @@ public static class ServiceCollectionExtensions
             configuration.GetSection("Webmention:SourceRateLimit"));
         services.AddSingleton(TimeProvider.System);
         services.AddSingleton<IWebmentionSourceRateLimiter, WebmentionSourceRateLimiter>();
-        services.AddSingleton<IWebmentionDnsResolver, WebmentionDnsResolver>();
-        services.AddSingleton<IWebmentionUrlSafetyValidator, WebmentionUrlSafetyValidator>();
-        services.AddSingleton<WebmentionSafeHttpMessageHandlerFactory>();
+        services.AddPublicHttpClientSafety();
 
         services.AddHttpClient<IMentionSourceInspector, MentionSourceInspector>()
                 .ConfigureHttpClient(p =>
@@ -23,14 +21,17 @@ public static class ServiceCollectionExtensions
                     p.MaxResponseContentBufferSize = 1024 * 1024; // 1 MB
                 })
                 .ConfigurePrimaryHttpMessageHandler(sp =>
-                    sp.GetRequiredService<WebmentionSafeHttpMessageHandlerFactory>().Create())
+                    sp.GetRequiredService<PublicHttpMessageHandlerFactory>().Create())
                 .AddStandardResilienceHandler();
 
         services.AddHttpClient<IWebmentionSender, WebmentionSender>()
+                .ConfigurePrimaryHttpMessageHandler(sp =>
+                    sp.GetRequiredService<PublicHttpMessageHandlerFactory>().Create())
                 .AddStandardResilienceHandler();
 
         services.AddHttpClient<IWebmentionRequestor, WebmentionRequestor>()
-                .ConfigurePrimaryHttpMessageHandler(() => new HttpClientHandler { Credentials = CredentialCache.DefaultNetworkCredentials })
+                .ConfigurePrimaryHttpMessageHandler(sp =>
+                    sp.GetRequiredService<PublicHttpMessageHandlerFactory>().Create())
                 .AddStandardResilienceHandler();
 
         return services;

@@ -15,13 +15,5 @@ public class PageConfiguration : IEntityTypeConfiguration<PageEntity>
         builder.Property(e => e.HtmlContent).IsRequired();
         builder.Property(e => e.CssId);
         builder.Property(e => e.HtmlContent);
-        ConfigureDateTimeColumns(builder);
-    }
-
-    protected virtual void ConfigureDateTimeColumns(EntityTypeBuilder<PageEntity> builder)
-    {
-        // Default: use datetime (SQL Server compatible)
-        builder.Property(e => e.CreateTimeUtc).HasColumnType("datetime");
-        builder.Property(e => e.UpdateTimeUtc).HasColumnType("datetime");
     }
 }

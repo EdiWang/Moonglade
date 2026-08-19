@@ -14,14 +14,23 @@ public record PostOperationContext(
     string UserAgent,
     string RootUrl);
 
-public record PostOperationResult(bool Succeeded, Guid PostId, DateTime? LastModifiedUtc, string ErrorMessage)
+public record PostOperationResult(
+    bool Succeeded,
+    Guid PostId,
+    DateTime? LastModifiedUtc,
+    string ErrorMessage)
 {
-    public static PostOperationResult Success(Guid postId, DateTime? lastModifiedUtc) => new(true, postId, lastModifiedUtc, string.Empty);
+    public static PostOperationResult Success(Guid postId, DateTime? lastModifiedUtc) =>
+        new(true, postId, lastModifiedUtc, string.Empty);
 
-    public static PostOperationResult Conflict(string errorMessage) => new(false, Guid.Empty, null, errorMessage);
+    public static PostOperationResult Conflict(string errorMessage) =>
+        new(false, Guid.Empty, null, errorMessage);
 }
 
-public record SavePostCommand(PostEditModel Payload, PostOperationContext Context) : ICommand<PostOperationResult>;
+public record SavePostCommand(
+    PostEditModel Payload,
+    DateTimeOffset? PreviousLastModifiedUtc,
+    PostOperationContext Context) : ICommand<PostOperationResult>;
 
 public class SavePostCommandHandler(
     ICacheAside cache,
@@ -30,7 +39,8 @@ public class SavePostCommandHandler(
     IBlogConfig blogConfig,
     ScheduledPublishWakeUp wakeUp,
     ILogger<SavePostCommandHandler> logger,
-    CannonService cannonService) : ICommandHandler<SavePostCommand, PostOperationResult>
+    CannonService cannonService,
+    TimeProvider timeProvider) : ICommandHandler<SavePostCommand, PostOperationResult>
 {
     public async Task<PostOperationResult> HandleAsync(SavePostCommand request, CancellationToken ct)
     {
@@ -39,14 +49,17 @@ public class SavePostCommandHandler(
             var model = request.Payload;
             var isNewPost = model.PostId == Guid.Empty;
 
-            if (!PrepareScheduledPost(model))
-            {
-                return PostOperationResult.Conflict("Client time zone ID is required for scheduled posts.");
-            }
+            var wakeScheduledPublisher = PrepareScheduledPost(model);
 
             var postEntity = isNewPost ?
                 await commandMediator.SendAsync(new CreatePostCommand(model), ct) :
                 await commandMediator.SendAsync(new UpdatePostCommand(model.PostId, model), ct);
+
+            if (wakeScheduledPublisher)
+            {
+                wakeUp.WakeUp();
+                logger.LogInformation("Scheduled publish wake-up triggered for post: {PostId}", postEntity.Id);
+            }
 
             if (!string.IsNullOrWhiteSpace(postEntity.RouteLink))
             {
@@ -67,7 +80,7 @@ public class SavePostCommandHandler(
 
             if (model.PostStatus == PostStatus.Published)
             {
-                ProcessPublishedPost(model.LastModifiedUtc, postEntity, request.Context);
+                ProcessPublishedPost(request.PreviousLastModifiedUtc, postEntity, request.Context);
             }
 
             return PostOperationResult.Success(postEntity.Id, postEntity.LastModifiedUtc);
@@ -81,37 +94,29 @@ public class SavePostCommandHandler(
 
     private bool PrepareScheduledPost(PostEditModel model)
     {
-        if (model.PostStatus != PostStatus.Scheduled || !model.ScheduledPublishTime.HasValue)
+        if (model.PostStatus != PostStatus.Scheduled)
         {
-            return true;
-        }
-
-        if (string.IsNullOrWhiteSpace(model.ClientTimeZoneId))
-        {
+            model.ScheduledPublishTimeUtc = null;
             return false;
         }
 
-        var clientTimeZone = TimeZoneInfo.FindSystemTimeZoneById(model.ClientTimeZoneId);
-        var clientLocalTime = model.ScheduledPublishTime.Value;
-        var clientUtcTime = TimeZoneInfo.ConvertTimeToUtc(clientLocalTime, clientTimeZone);
-
-        model.ScheduledPublishTime = clientUtcTime;
-        if (model.ScheduledPublishTime < DateTime.UtcNow)
+        if (!model.ScheduledPublishTimeUtc.HasValue)
         {
-            model.PostStatus = PostStatus.Published;
-            model.ScheduledPublishTime = null;
-            return true;
+            throw new InvalidOperationException("A scheduled post must have a UTC publish time.");
         }
 
-        logger.LogInformation("Post scheduled for publish at {ClientUtcTime} UTC.", clientUtcTime);
+        if (model.ScheduledPublishTimeUtc < timeProvider.GetUtcNow().UtcDateTime)
+        {
+            model.PostStatus = PostStatus.Published;
+            model.ScheduledPublishTimeUtc = null;
+            return false;
+        }
 
-        wakeUp.WakeUp();
-
-        logger.LogInformation("Scheduled publish wake-up triggered for post: {PostId}", model.PostId);
+        logger.LogInformation("Post scheduled for publish at {ScheduledPublishTimeUtc} UTC.", model.ScheduledPublishTimeUtc);
         return true;
     }
 
-    private void ProcessPublishedPost(string lastModifiedUtc, PostCommandResult postEntity, PostOperationContext context)
+    private void ProcessPublishedPost(DateTimeOffset? lastModifiedUtc, PostCommandResult postEntity, PostOperationContext context)
     {
         logger.LogInformation("Trying to Ping URL for post: {PostId}", postEntity.Id);
 
@@ -129,13 +134,13 @@ public class SavePostCommandHandler(
         }
     }
 
-    private void ProcessIndexing(string lastModifiedUtc, bool isNewPublish, Uri link)
+    private void ProcessIndexing(DateTimeOffset? lastModifiedUtc, bool isNewPublish, Uri link)
     {
         bool indexCoolDown = true;
         var minimalIntervalMinutes = int.Parse(configuration["IndexNow:MinimalIntervalMinutes"]!);
-        if (!string.IsNullOrWhiteSpace(lastModifiedUtc))
+        if (lastModifiedUtc.HasValue)
         {
-            var lastSavedInterval = DateTime.UtcNow - DateTime.Parse(lastModifiedUtc);
+            var lastSavedInterval = timeProvider.GetUtcNow() - lastModifiedUtc.Value;
             indexCoolDown = lastSavedInterval.TotalMinutes > minimalIntervalMinutes;
         }
 

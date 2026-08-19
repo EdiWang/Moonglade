@@ -1,4 +1,5 @@
 ﻿using Microsoft.Extensions.Logging;
+using Edi.AspNetCore.Utils;
 using System.Net;
 using System.Text.RegularExpressions;
 
@@ -12,7 +13,7 @@ public interface IMentionSourceInspector
 public partial class MentionSourceInspector(
     ILogger<MentionSourceInspector> logger,
     HttpClient httpClient,
-    IWebmentionUrlSafetyValidator urlSafetyValidator) : IMentionSourceInspector
+    IPublicHttpUrlValidator publicUrlValidator) : IMentionSourceInspector
 {
     private const int MaxResponseSizeBytes = 1024 * 1024; // 1 MB
     private const int MaxRedirects = 5;
@@ -57,7 +58,7 @@ public partial class MentionSourceInspector(
         var currentUri = sourceUri;
         for (var redirectCount = 0; redirectCount <= MaxRedirects; redirectCount++)
         {
-            if (!await urlSafetyValidator.IsSafeSourceAsync(currentUri))
+            if (!await publicUrlValidator.IsPublicHttpUrlAsync(currentUri))
             {
                 logger.LogWarning("Blocked unsafe Webmention source URL before fetch: {SourceUrl}", currentUri);
                 return null;

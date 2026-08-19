@@ -1,4 +1,5 @@
 using Moonglade.Data.DTO;
+using System.Globalization;
 using System.Xml.Linq;
 
 namespace Moonglade.Syndication.Tests;
@@ -229,5 +230,37 @@ public class FeedGeneratorTests
         var channel = doc.Root.Element("channel");
         var items = channel?.Elements("item").ToList();
         Assert.Empty(items);
+    }
+
+    [Fact]
+    public async Task FeedDates_UtcValue_PreserveUtcClockTime()
+    {
+        var expectedUtc = new DateTimeOffset(2025, 1, 15, 10, 0, 0, TimeSpan.Zero);
+        var entry = CreateSampleEntries()[0];
+        entry.PubDateUtc = expectedUtc.UtcDateTime;
+        var generator = CreateGenerator();
+        generator.FeedItemCollection = [entry];
+
+        var rss = XDocument.Parse(await generator.WriteRssAsync());
+        var rssPublished = DateTimeOffset.Parse(
+            rss.Root!.Element("channel")!.Element("item")!.Element("pubDate")!.Value,
+            CultureInfo.InvariantCulture,
+            DateTimeStyles.AssumeUniversal);
+
+        var atom = XDocument.Parse(await generator.WriteAtomAsync());
+        XNamespace atomNamespace = "http://www.w3.org/2005/Atom";
+        var atomEntry = atom.Root!.Element(atomNamespace + "entry")!;
+        var atomPublished = DateTimeOffset.Parse(
+            atomEntry.Element(atomNamespace + "published")!.Value,
+            CultureInfo.InvariantCulture,
+            DateTimeStyles.RoundtripKind);
+        var atomUpdated = DateTimeOffset.Parse(
+            atomEntry.Element(atomNamespace + "updated")!.Value,
+            CultureInfo.InvariantCulture,
+            DateTimeStyles.RoundtripKind);
+
+        Assert.Equal(expectedUtc, rssPublished);
+        Assert.Equal(expectedUtc, atomPublished);
+        Assert.Equal(expectedUtc, atomUpdated);
     }
 }

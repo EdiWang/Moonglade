@@ -13,7 +13,7 @@ The solution file is `src/Moonglade.slnx`. The root `README.md` is the main depl
 | Area | Confirmed stack |
 | --- | --- |
 | Language/runtime | C# on .NET 10.0 / ASP.NET Core 10.0; projects target `net10.0` with implicit usings enabled. |
-| Web app model | ASP.NET Core Razor Pages for public/admin pages, controller-based APIs for admin JSON and public endpoints, endpoint routing for handlers such as health, robots, manifest, sitemap, FOAF, and OpenSearch. |
+| Web app model | ASP.NET Core Razor Pages for public/admin pages, controller-based APIs for admin JSON and public endpoints, endpoint routing for handlers such as health, robots, manifest, sitemap, FOAF, OpenSearch, and virtual site verification files. |
 | Architecture style | Multi-project modular solution with LiteBus command/query/event handlers and feature-oriented folders. |
 | Data access | EF Core with `BlogDbContext`; SQL Server via `Moonglade.Data.SqlServer`; PostgreSQL via `Moonglade.Data.PostgreSql`. |
 | Cache | `Edi.CacheAside.InMemory` with `BlogCachePartition` values `General`, `Post`, `Page`, `RssCategory`, and `AtomCategory`; widgets, sitemap, and uncategorized feeds use keys in the `General` partition. |
@@ -21,7 +21,7 @@ The solution file is `src/Moonglade.slnx`. The root `README.md` is the main depl
 | Authentication | Cookie-based local account authentication and Microsoft Entra ID through `Microsoft.Identity.Web`. |
 | Frontend | Server-rendered Razor, Bootstrap, Bootstrap Icons, Alpine.js, unified Moonglade.Editor for rich HTML post editing plus Markdown/CSS/HTML code-like modes, Tagify, Mermaid.js for Markdown diagrams on post reading pages, and project-local JavaScript modules under `src/Moonglade.Web/wwwroot/js/app`. |
 | Image storage | `IBlogImageStorage` abstraction with Azure Blob Storage, S3-compatible object storage through `AWSSDK.S3`, and local file system providers. |
-| External integrations | Webmention, IndexNow, email outbox delivery, local content moderation, Gravatar, Azure App Service logging, and Azure/Docker deployment assets. |
+| External integrations | Webmention, IndexNow, site ownership verification files, email outbox delivery, local content moderation, Gravatar, Azure App Service logging, and Azure/Docker deployment assets. |
 | Package management | NuGet package references in project files; no repository-level `Directory.Packages.props`, `NuGet.config`, or package lock file was found at the time this document was updated. |
 | Build tools | .NET SDK CLI, Visual Studio, VS Code task `dotnet build ${workspaceFolder}/src/Moonglade.Web/Moonglade.Web.csproj`, Docker multi-stage build, Docker Compose, and Azure Bicep/PowerShell deployment assets. |
 | Tests | xUnit v3, Moq, `Microsoft.NET.Test.Sdk`, `coverlet.collector`, EF Core InMemory/Sqlite patterns, and ASP.NET Core TestHost for Web tests. |
@@ -46,12 +46,12 @@ Important configuration areas:
 | `Webmention` | Webmention options, including source rate limiting. | Optional | Preserve protocol endpoint behavior. |
 | `Email` | Email provider settings and database outbox worker options. | Optional | Supports `AzureCommunication` and `smtp`; store real connection strings and passwords outside source control. `Email:OutboxWorker:Enabled=false` stops in-process delivery but does not prevent enqueueing. |
 | `IndexNow` | API key, ping targets, and cooldown interval. | Optional | API key also maps the IndexNow verification file endpoint. |
-| `ForwardedHeaders` | Reverse proxy/client IP configuration. | Deployment-dependent | Required behind some proxies/load balancers. |
+| `ForwardedHeaders` | Reverse proxy/client IP configuration. | Deployment-dependent | Required behind some proxies/load balancers. Only explicitly configured `KnownProxies` are trusted; an empty or invalid list retains ASP.NET Core's loopback-only defaults. |
 | `EnableCSP`, `CSPValue` | Optional Content Security Policy response header. | Optional | `X-Content-Type-Options: nosniff` is always emitted; CSP is emitted only when enabled and non-empty. |
 | `ImageStorage` | Selects `filesystem`, `azurestorage`, or `s3compatible` and related paths/container/bucket names. | Yes | Use environment overrides for provider secrets and production paths. S3-compatible credentials live under `ImageStorage:S3CompatibleStorageSettings`. |
 | `DefaultEditor` | Default post content editor/content type. | Optional | Used during startup backfill for older posts. |
 | `PostCacheMinutes`, `PagesCacheMinutes`, `WidgetCacheMinutes` | Cache durations. | Optional | Revisit when changing rendering or invalidation paths. |
-| `AutoDatabaseMigration` | Startup migration behavior. | Optional | Be careful when changing deployment/database initialization behavior. |
+| `AutoDatabaseMigration` | Production startup migration behavior. | Optional | Automatic migration is skipped outside `Production`. A stable Production release reads the manifest directly, migrates before configuration initialization writes, and then initializes configuration once. Cumulative scripts update the manifest as their completion marker. When disabled, operators must apply the provider script before starting the new release. |
 | `CannonService:QueueCapacity` | Capacity for the in-process fire-and-forget background queue. | Optional | Defaults to `1000`; when full, new work is rejected and logged instead of running inline on the request path. |
 | `EnableUpdateCheck`, `UpdateCheckCron` | GitHub release update check scheduling. | Optional | Cron parsing is handled by `Cronos`. |
 | `ViewCount` | Crawler user-agent filtering and deduplication window. | Optional | Affects analytics/view-count behavior. |
@@ -95,10 +95,12 @@ Important configuration areas:
 ### Images, Themes, Feeds, And Protocols
 
 - Image storage is abstracted in `Moonglade.ImageStorage` and supports Azure Blob Storage, S3-compatible object storage, and the local file system. New image behavior should depend on `IBlogImageStorage`, not on a concrete provider.
+- Image uploads are validated by content before storage. SVG upload is supported, but SVG content must pass through the Web-layer sanitizer before primary or original image bytes are saved.
 - Themes and custom CSS are handled by `Moonglade.Theme` and `Moonglade.Web.Middleware.StyleSheetEndpoints`.
-- RSS, Atom, and OPML generation lives in `Moonglade.Syndication`; OpenSearch, FOAF, manifest, robots, and sitemap handlers live under `Moonglade.Web/Handlers`.
+- RSS, Atom, and OPML generation lives in `Moonglade.Syndication`; OpenSearch, FOAF, manifest, robots, sitemap, and site verification file handlers live under `Moonglade.Web/Handlers`.
+- Site verification files are managed from `/admin/settings/verification-files`, persisted in the database, and served as virtual root-level files. They are text-only (`.txt`, `.html`, `.htm`, `.xml`, `.json`), limited to 64 KB, and must use a single safe ASCII file name. Do not write these files into container `wwwroot`.
 - Preserve the public protocol endpoints listed in the README, including `/rss`, `/atom`, `/opml`, `/opensearch`, `/foaf.xml`, `/webmention`, `/health`, and `/health/ready`. Keep `/health` liveness-only; use `/health/ready` for database readiness.
-- Incoming Webmention source fetches must stay restricted to public HTTP/HTTPS URLs. Reject private, loopback, link-local, documentation, reserved, and other special-use source or redirect addresses before fetching content.
+- Incoming and outgoing Webmention requests must stay restricted to public HTTP/HTTPS URLs through Edi.AspNetCore.Utils public-HTTP safety services. Reject private, loopback, link-local, documentation, reserved, and other special-use source, target, redirect, or endpoint addresses. Keep socket connections bound to validated DNS results and do not enable automatic redirects, cookies, proxies, or ambient credentials on these clients.
 
 ## Code Architecture
 
@@ -143,6 +145,9 @@ Important configuration areas:
 - Prefer `AsNoTracking()` for read-only queries. Use async EF Core APIs and pass `CancellationToken` through write operations and handlers where available.
 - Use EF Core set-based operations such as `ExecuteDeleteAsync` when they fit the existing pattern.
 - Be careful with many-to-many relationships, cascade behavior, slug/route link generation, publish timestamps, and soft-delete fields because posts, lists, archives, tags, feeds, sitemap, and cache invalidation depend on them.
+- Persisted `DateTime` properties whose names end in `Utc` use the shared UTC contract: SQL Server `datetime2(7)`, PostgreSQL `timestamp with time zone`, UTC materialization, and rejection of local or unspecified tracked writes. `PostViewDaily.ViewDateUtc` is a `DateOnly` stored as `date`.
+- Browser wall-clock values are accepted only by Web request DTOs. Convert them with the supplied IANA time zone before dispatching feature commands; feature models and persisted values must contain UTC timestamps only.
+- Handwritten cumulative migration scripts live under `src/Moonglade.Setup/MigrationScripts`. Preserve explicit UTC conversion, transactional execution, dependent key/index recreation, the final `SystemManifestSettings` completion marker, and backup-based rollback when changing these scripts. Do not re-enable `Npgsql.EnableLegacyTimestampBehavior`.
 
 ## Coding Guidelines
 
@@ -210,6 +215,8 @@ dotnet test src/Tests/Moonglade.Features.Tests/Moonglade.Features.Tests.csproj
 dotnet test src/Tests/Moonglade.Web.Tests/Moonglade.Web.Tests.csproj
 docker compose up -d
 ```
+
+The relational migration harness uses `mcr.microsoft.com/mssql/server:2025-latest` and `postgres:18-alpine`. Run `Moonglade.Setup.Tests` with Docker Desktop available when changing database mappings, startup migration order, cumulative SQL, or upgrade documentation. The operator procedure for the v16.4 cutover is documented in `docs/upgrade-v16.4.md`.
 
 The default local launch URL comes from `src/Moonglade.Web/Properties/launchSettings.json`: `https://localhost:10210`. The admin portal is `/admin`; the default local account is documented in the README. In non-Development environments, or whenever `Authentication:Totp:Required` is `true`, first local-account sign-in after deployment or upgrade requires authenticator app TOTP setup.
 

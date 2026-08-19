@@ -744,6 +744,9 @@
   <data name="Your comments (Markdown supported)" xml:space="preserve">
     <value>あなたのコメント(Markdown対応)</value>
   </data>
+  <data name="Use Markdown editor" xml:space="preserve">
+    <value>Markdown エディターを使用</value>
+  </data>
   <data name="Your description" xml:space="preserve">
     <value>ブロガーのプロフィール</value>
   </data>
@@ -1304,6 +1307,18 @@
   </data>
   <data name="Scheduled for: {0}" xml:space="preserve">
     <value>公開予約: {0}</value>
+  </data>
+  <data name="Please select a scheduled publish time." xml:space="preserve">
+    <value>公開予定日時を選択してください。</value>
+  </data>
+  <data name="Client time zone information is invalid. Please reload the page and choose the time again." xml:space="preserve">
+    <value>クライアントのタイムゾーン情報が無効です。ページを再読み込みして、日時を選択し直してください。</value>
+  </data>
+  <data name="The selected time does not exist in this time zone because of a daylight-saving transition. Please choose another time." xml:space="preserve">
+    <value>夏時間の切り替えにより、選択した日時はこのタイムゾーンに存在しません。別の日時を選択してください。</value>
+  </data>
+  <data name="The selected time occurs twice in this time zone because of a daylight-saving transition. Please choose another time." xml:space="preserve">
+    <value>夏時間の切り替えにより、選択した日時はこのタイムゾーンで2回発生します。別の日時を選択してください。</value>
   </data>
   <data name="Edit Post" xml:space="preserve">
     <value>投稿を編集</value>
@@ -1910,5 +1925,80 @@
   </data>
   <data name="Test email is queued." xml:space="preserve">
     <value>テストメールをキューに追加しました。</value>
+  </data>
+  <data name="Verification Files" xml:space="preserve">
+    <value>認証ファイル</value>
+  </data>
+  <data name="Verification file created" xml:space="preserve">
+    <value>認証ファイルを作成しました。</value>
+  </data>
+  <data name="Verification file updated" xml:space="preserve">
+    <value>認証ファイルを更新しました。</value>
+  </data>
+  <data name="Verification file deleted" xml:space="preserve">
+    <value>認証ファイルを削除しました。</value>
+  </data>
+  <data name="Verification file enabled" xml:space="preserve">
+    <value>認証ファイルを有効にしました。</value>
+  </data>
+  <data name="Verification file disabled" xml:space="preserve">
+    <value>認証ファイルを無効にしました。</value>
+  </data>
+  <data name="Delete this verification file?" xml:space="preserve">
+    <value>この認証ファイルを削除しますか？</value>
+  </data>
+  <data name="File loaded" xml:space="preserve">
+    <value>ファイルを読み込みました。</value>
+  </data>
+  <data name="Could not read file" xml:space="preserve">
+    <value>ファイルを読み取れませんでした。</value>
+  </data>
+  <data name="URL copied" xml:space="preserve">
+    <value>URL をコピーしました。</value>
+  </data>
+  <data name="File name is required" xml:space="preserve">
+    <value>ファイル名は必須です。</value>
+  </data>
+  <data name="File content is required" xml:space="preserve">
+    <value>ファイル内容は必須です。</value>
+  </data>
+  <data name="Loading verification files..." xml:space="preserve">
+    <value>認証ファイルを読み込んでいます...</value>
+  </data>
+  <data name="No verification files yet." xml:space="preserve">
+    <value>認証ファイルはまだありません。</value>
+  </data>
+  <data name="File Name" xml:space="preserve">
+    <value>ファイル名</value>
+  </data>
+  <data name="Content Type" xml:space="preserve">
+    <value>コンテンツタイプ</value>
+  </data>
+  <data name="Size" xml:space="preserve">
+    <value>サイズ</value>
+  </data>
+  <data name="Status" xml:space="preserve">
+    <value>状態</value>
+  </data>
+  <data name="Last Modified" xml:space="preserve">
+    <value>最終更新</value>
+  </data>
+  <data name="Copy URL" xml:space="preserve">
+    <value>URL をコピー</value>
+  </data>
+  <data name="Disable" xml:space="preserve">
+    <value>無効化</value>
+  </data>
+  <data name="Enable" xml:space="preserve">
+    <value>有効化</value>
+  </data>
+  <data name="New Verification File" xml:space="preserve">
+    <value>新しい認証ファイル</value>
+  </data>
+  <data name="Edit Verification File" xml:space="preserve">
+    <value>認証ファイルを編集</value>
+  </data>
+  <data name="Upload File" xml:space="preserve">
+    <value>ファイルをアップロード</value>
   </data>
 </root>

@@ -13,20 +13,29 @@
 			<PrivateAssets>all</PrivateAssets>
 			<IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
 		</PackageReference>
-		<PackageReference Include="Microsoft.EntityFrameworkCore.InMemory" Version="10.0.10" />
-		<PackageReference Include="Microsoft.NET.Test.Sdk" Version="18.8.1" />
+		<PackageReference Include="Microsoft.EntityFrameworkCore.InMemory" Version="10.0.11" />
+		<PackageReference Include="Microsoft.NET.Test.Sdk" Version="18.9.0" />
 		<PackageReference Include="Moq" Version="4.20.72" />
-		<PackageReference Include="xunit.v3" Version="3.2.2" />
-		<PackageReference Include="xunit.runner.visualstudio" Version="3.1.5">
+		<PackageReference Include="SSH.NET" Version="2026.0.0" />
+		<PackageReference Include="Testcontainers.MsSql" Version="4.14.0" />
+		<PackageReference Include="Testcontainers.PostgreSql" Version="4.14.0" />
+		<PackageReference Include="xunit.v3" Version="4.0.0" />
+		<PackageReference Include="xunit.runner.visualstudio" Version="4.0.0">
 			<PrivateAssets>all</PrivateAssets>
 			<IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
 		</PackageReference>
 	</ItemGroup>
 
 	<ItemGroup>
-	  <ProjectReference Include="..\..\Moonglade.Setup\Moonglade.Setup.csproj" />
+		<ProjectReference Include="..\..\Moonglade.Data.PostgreSql\Moonglade.Data.PostgreSql.csproj" />
+		<ProjectReference Include="..\..\Moonglade.Data.SqlServer\Moonglade.Data.SqlServer.csproj" />
+		<ProjectReference Include="..\..\Moonglade.Setup\Moonglade.Setup.csproj" />
 	</ItemGroup>
 
+	<ItemGroup>
+		<EmbeddedResource Include="Fixtures\PostgreSql\latest-stable.sql" LogicalName="MigrationFixtures.PostgreSql.latest-stable.sql" />
+		<EmbeddedResource Include="Fixtures\SqlServer\latest-stable.sql" LogicalName="MigrationFixtures.SqlServer.latest-stable.sql" />
+	</ItemGroup>
 
 	<ItemGroup>
 		<Using Include="Xunit" />

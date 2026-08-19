@@ -144,6 +144,7 @@ public class CommentManagementCommandTests
             Slug = "test-post",
             RouteLink = "2024/1/1/test-post",
             PostStatus = PostStatus.Published,
+            CreateTimeUtc = new DateTime(2024, 1, 1, 0, 0, 0, DateTimeKind.Utc),
             PubDateUtc = new DateTime(2024, 1, 1, 0, 0, 0, DateTimeKind.Utc),
             PostContent = "Content",
             ContentAbstract = "Abstract",

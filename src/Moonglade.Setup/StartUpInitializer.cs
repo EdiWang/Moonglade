@@ -42,23 +42,23 @@ public class StartUpInitializer(
                     return result;
             }
 
-            // Step 3: Initialize blog configuration
-            result = await InitializeBlogConfigurationAsync(isNewDatabase, cancellationToken);
-            if (result != InitStartUpResult.Success)
-                return result;
-
-            // Step 4: Migrate database if not new
+            // Step 3: Migrate existing databases before configuration initialization writes
             if (!isNewDatabase)
             {
                 result = await MigrateDatabaseAsync(cancellationToken);
                 if (result != InitStartUpResult.Success)
                     return result;
 
-                // Step 4.5: Backfill ContentType for existing posts
+                // Step 3.5: Backfill ContentType for existing posts
                 result = await BackfillPostContentTypeAsync(cancellationToken);
                 if (result != InitStartUpResult.Success)
                     return result;
             }
+
+            // Step 4: Load configuration and add missing defaults only after migration
+            result = await InitializeBlogConfigurationAsync(isNewDatabase, cancellationToken);
+            if (result != InitStartUpResult.Success)
+                return result;
 
             // Step 5: Generate site icons (non-blocking operation)
             await GenerateSiteIconsAsync(cancellationToken);
@@ -130,7 +130,7 @@ public class StartUpInitializer(
     {
         return await ExecuteStepAsync(
             "Initializing blog configuration",
-            async () => await blogConfigInitializer.Initialize(isNew),
+            async () => await blogConfigInitializer.Initialize(isNew, cancellationToken),
             InitStartUpResult.FailedInitBlogConfig,
             cancellationToken);
     }
@@ -142,7 +142,7 @@ public class StartUpInitializer(
             async () =>
             {
                 var migrationResult = await migrationManager.TryMigrationAsync(context, cancellationToken);
-                if (migrationResult.IsFailed)
+                if (!migrationResult.CanContinueStartup)
                 {
                     throw new InvalidOperationException($"Migration failed with result: {migrationResult}");
                 }

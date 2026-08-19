@@ -46,7 +46,7 @@ public class AddViewCountCommandHandler(
 
     private async Task AddDailyViewCountAsync(Guid postId, CancellationToken cancellationToken)
     {
-        var todayUtc = DateTime.UtcNow.Date;
+        var todayUtc = DateOnly.FromDateTime(DateTime.UtcNow);
         var daily = await db.PostViewDaily.FindAsync([postId, todayUtc], cancellationToken);
         if (daily is null)
         {

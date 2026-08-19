@@ -9,17 +9,10 @@ public class CommentReplyConfiguration : IEntityTypeConfiguration<CommentReplyEn
     {
         builder.Property(e => e.Id).ValueGeneratedNever();
         builder.Property(e => e.ReplyContent).IsRequired();
-        ConfigureDateTimeColumns(builder);
 
         builder.HasOne(d => d.Comment)
             .WithMany(p => p.Replies)
             .HasForeignKey(d => d.CommentId)
             .HasConstraintName("FK_CommentReply_Comment");
-    }
-
-    protected virtual void ConfigureDateTimeColumns(EntityTypeBuilder<CommentReplyEntity> builder)
-    {
-        // Default: use datetime (SQL Server compatible)
-        builder.Property(e => e.CreateTimeUtc).HasColumnType("datetime");
     }
 }

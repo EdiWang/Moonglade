@@ -15,6 +15,7 @@
 		<ProjectReference Include="..\Moonglade.Utils\Moonglade.Utils.csproj" />
 	</ItemGroup>
 	<ItemGroup>
-		<PackageReference Include="Microsoft.Extensions.Http.Resilience" Version="10.8.0" />
+		<PackageReference Include="Edi.AspNetCore.Utils" Version="2.0.0" />
+		<PackageReference Include="Microsoft.Extensions.Http.Resilience" Version="10.9.0" />
 	</ItemGroup>
 </Project>

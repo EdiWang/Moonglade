@@ -744,6 +744,9 @@
   <data name="Your comments (Markdown supported)" xml:space="preserve">
     <value>Ihre Kommentare (Markdown wird unterstützt)</value>
   </data>
+  <data name="Use Markdown editor" xml:space="preserve">
+    <value>Markdown-Editor verwenden</value>
+  </data>
   <data name="Your description" xml:space="preserve">
     <value>Ihre Beschreibung</value>
   </data>
@@ -1304,6 +1307,18 @@
   </data>
   <data name="Scheduled for: {0}" xml:space="preserve">
     <value>Geplant für: {0}</value>
+  </data>
+  <data name="Please select a scheduled publish time." xml:space="preserve">
+    <value>Bitte wählen Sie einen Zeitpunkt für die geplante Veröffentlichung aus.</value>
+  </data>
+  <data name="Client time zone information is invalid. Please reload the page and choose the time again." xml:space="preserve">
+    <value>Die Zeitzoneninformationen des Clients sind ungültig. Laden Sie die Seite neu und wählen Sie die Zeit erneut aus.</value>
+  </data>
+  <data name="The selected time does not exist in this time zone because of a daylight-saving transition. Please choose another time." xml:space="preserve">
+    <value>Die ausgewählte Zeit existiert in dieser Zeitzone aufgrund einer Sommerzeitumstellung nicht. Bitte wählen Sie eine andere Zeit.</value>
+  </data>
+  <data name="The selected time occurs twice in this time zone because of a daylight-saving transition. Please choose another time." xml:space="preserve">
+    <value>Die ausgewählte Zeit tritt in dieser Zeitzone aufgrund einer Sommerzeitumstellung zweimal auf. Bitte wählen Sie eine andere Zeit.</value>
   </data>
   <data name="Edit Post" xml:space="preserve">
     <value>Beitrag bearbeiten</value>
@@ -1910,5 +1925,80 @@
   </data>
   <data name="Test email is queued." xml:space="preserve">
     <value>Test-E-Mail wurde in die Warteschlange gestellt.</value>
+  </data>
+  <data name="Verification Files" xml:space="preserve">
+    <value>Bestätigungsdateien</value>
+  </data>
+  <data name="Verification file created" xml:space="preserve">
+    <value>Bestätigungsdatei wurde erstellt.</value>
+  </data>
+  <data name="Verification file updated" xml:space="preserve">
+    <value>Bestätigungsdatei wurde aktualisiert.</value>
+  </data>
+  <data name="Verification file deleted" xml:space="preserve">
+    <value>Bestätigungsdatei wurde gelöscht.</value>
+  </data>
+  <data name="Verification file enabled" xml:space="preserve">
+    <value>Bestätigungsdatei wurde aktiviert.</value>
+  </data>
+  <data name="Verification file disabled" xml:space="preserve">
+    <value>Bestätigungsdatei wurde deaktiviert.</value>
+  </data>
+  <data name="Delete this verification file?" xml:space="preserve">
+    <value>Diese Bestätigungsdatei löschen?</value>
+  </data>
+  <data name="File loaded" xml:space="preserve">
+    <value>Datei geladen.</value>
+  </data>
+  <data name="Could not read file" xml:space="preserve">
+    <value>Datei konnte nicht gelesen werden.</value>
+  </data>
+  <data name="URL copied" xml:space="preserve">
+    <value>URL kopiert.</value>
+  </data>
+  <data name="File name is required" xml:space="preserve">
+    <value>Dateiname ist erforderlich.</value>
+  </data>
+  <data name="File content is required" xml:space="preserve">
+    <value>Dateiinhalt ist erforderlich.</value>
+  </data>
+  <data name="Loading verification files..." xml:space="preserve">
+    <value>Bestätigungsdateien werden geladen...</value>
+  </data>
+  <data name="No verification files yet." xml:space="preserve">
+    <value>Noch keine Bestätigungsdateien.</value>
+  </data>
+  <data name="File Name" xml:space="preserve">
+    <value>Dateiname</value>
+  </data>
+  <data name="Content Type" xml:space="preserve">
+    <value>Inhaltstyp</value>
+  </data>
+  <data name="Size" xml:space="preserve">
+    <value>Größe</value>
+  </data>
+  <data name="Status" xml:space="preserve">
+    <value>Status</value>
+  </data>
+  <data name="Last Modified" xml:space="preserve">
+    <value>Zuletzt geändert</value>
+  </data>
+  <data name="Copy URL" xml:space="preserve">
+    <value>URL kopieren</value>
+  </data>
+  <data name="Disable" xml:space="preserve">
+    <value>Deaktivieren</value>
+  </data>
+  <data name="Enable" xml:space="preserve">
+    <value>Aktivieren</value>
+  </data>
+  <data name="New Verification File" xml:space="preserve">
+    <value>Neue Bestätigungsdatei</value>
+  </data>
+  <data name="Edit Verification File" xml:space="preserve">
+    <value>Bestätigungsdatei bearbeiten</value>
+  </data>
+  <data name="Upload File" xml:space="preserve">
+    <value>Datei hochladen</value>
   </data>
 </root>

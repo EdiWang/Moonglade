@@ -744,6 +744,9 @@
   <data name="Your comments (Markdown supported)" xml:space="preserve">
     <value>您的评论（支持Markdown）</value>
   </data>
+  <data name="Use Markdown editor" xml:space="preserve">
+    <value>使用 Markdown 编辑器</value>
+  </data>
   <data name="Your description" xml:space="preserve">
     <value>博主简介</value>
   </data>
@@ -1304,6 +1307,18 @@
   </data>
   <data name="Scheduled for: {0}" xml:space="preserve">
     <value>定时发布：{0}</value>
+  </data>
+  <data name="Please select a scheduled publish time." xml:space="preserve">
+    <value>请选择计划发布时间。</value>
+  </data>
+  <data name="Client time zone information is invalid. Please reload the page and choose the time again." xml:space="preserve">
+    <value>客户端时区信息无效。请刷新页面并重新选择时间。</value>
+  </data>
+  <data name="The selected time does not exist in this time zone because of a daylight-saving transition. Please choose another time." xml:space="preserve">
+    <value>由于夏令时切换，所选时间在此时区中不存在。请选择其他时间。</value>
+  </data>
+  <data name="The selected time occurs twice in this time zone because of a daylight-saving transition. Please choose another time." xml:space="preserve">
+    <value>由于夏令时切换，所选时间在此时区中会出现两次。请选择其他时间。</value>
   </data>
   <data name="Edit Post" xml:space="preserve">
     <value>编辑文章</value>
@@ -1910,5 +1925,80 @@
   </data>
   <data name="Test email is queued." xml:space="preserve">
     <value>测试邮件已加入队列。</value>
+  </data>
+  <data name="Verification Files" xml:space="preserve">
+    <value>验证文件</value>
+  </data>
+  <data name="Verification file created" xml:space="preserve">
+    <value>验证文件已创建</value>
+  </data>
+  <data name="Verification file updated" xml:space="preserve">
+    <value>验证文件已更新</value>
+  </data>
+  <data name="Verification file deleted" xml:space="preserve">
+    <value>验证文件已删除</value>
+  </data>
+  <data name="Verification file enabled" xml:space="preserve">
+    <value>验证文件已启用</value>
+  </data>
+  <data name="Verification file disabled" xml:space="preserve">
+    <value>验证文件已禁用</value>
+  </data>
+  <data name="Delete this verification file?" xml:space="preserve">
+    <value>要删除这个验证文件吗？</value>
+  </data>
+  <data name="File loaded" xml:space="preserve">
+    <value>文件已载入</value>
+  </data>
+  <data name="Could not read file" xml:space="preserve">
+    <value>无法读取文件</value>
+  </data>
+  <data name="URL copied" xml:space="preserve">
+    <value>URL 已复制</value>
+  </data>
+  <data name="File name is required" xml:space="preserve">
+    <value>文件名必填</value>
+  </data>
+  <data name="File content is required" xml:space="preserve">
+    <value>文件内容必填</value>
+  </data>
+  <data name="Loading verification files..." xml:space="preserve">
+    <value>正在加载验证文件...</value>
+  </data>
+  <data name="No verification files yet." xml:space="preserve">
+    <value>还没有验证文件。</value>
+  </data>
+  <data name="File Name" xml:space="preserve">
+    <value>文件名</value>
+  </data>
+  <data name="Content Type" xml:space="preserve">
+    <value>内容类型</value>
+  </data>
+  <data name="Size" xml:space="preserve">
+    <value>大小</value>
+  </data>
+  <data name="Status" xml:space="preserve">
+    <value>状态</value>
+  </data>
+  <data name="Last Modified" xml:space="preserve">
+    <value>最后修改</value>
+  </data>
+  <data name="Copy URL" xml:space="preserve">
+    <value>复制 URL</value>
+  </data>
+  <data name="Disable" xml:space="preserve">
+    <value>禁用</value>
+  </data>
+  <data name="Enable" xml:space="preserve">
+    <value>启用</value>
+  </data>
+  <data name="New Verification File" xml:space="preserve">
+    <value>新建验证文件</value>
+  </data>
+  <data name="Edit Verification File" xml:space="preserve">
+    <value>编辑验证文件</value>
+  </data>
+  <data name="Upload File" xml:space="preserve">
+    <value>上传文件</value>
   </data>
 </root>

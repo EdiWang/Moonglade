@@ -49,7 +49,7 @@
                         <h6 class="card-title mb-3">@item.Username</h6>
                         <span class="flex-spacer" aria-hidden="true" role="none"></span>
                         <div class="card-subtitle text-body-secondary">
-                            <time data-utc-label="@item.CreateTimeUtc.ToString("u")">@item.CreateTimeUtc</time>
+                            <time data-utc-label="@UtcDateTimeFormatter.ToIsoString(item.CreateTimeUtc)">@item.CreateTimeUtc</time>
                         </div>
                     </div>
 
@@ -68,7 +68,7 @@
                                     </strong>
                                     <span class="float-end text-muted">
                                         @SharedLocalizer["Replied at"]
-                                        <time data-utc-label="@reply.ReplyTimeUtc.ToString("u")">@reply.ReplyTimeUtc</time>
+                                        <time data-utc-label="@UtcDateTimeFormatter.ToIsoString(reply.ReplyTimeUtc)">@reply.ReplyTimeUtc</time>
                                     </span>
                                 </div>
                                 <p>

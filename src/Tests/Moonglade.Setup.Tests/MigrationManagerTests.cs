@@ -1,216 +1,135 @@
-using LiteBus.Commands.Abstractions;
+using Edi.AspNetCore.Utils;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
-using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Hosting;
+using Microsoft.Extensions.Logging.Abstractions;
 using Moonglade.Configuration;
 using Moonglade.Data;
+using Moonglade.Data.Entities;
 using Moq;
 
 namespace Moonglade.Setup.Tests;
 
-public class MigrationManagerTests
+public sealed class MigrationManagerTests
 {
-    private readonly Mock<ILogger<MigrationManager>> _loggerMock;
-    private readonly Mock<ICommandMediator> _commandMediatorMock;
-    private readonly Mock<IConfiguration> _configurationMock;
-    private readonly Mock<IBlogConfig> _blogConfigMock;
-    private readonly Mock<BlogDbContext> _contextMock;
-
-    public MigrationManagerTests()
-    {
-        _loggerMock = new Mock<ILogger<MigrationManager>>();
-        _commandMediatorMock = new Mock<ICommandMediator>();
-        _configurationMock = new Mock<IConfiguration>();
-        _blogConfigMock = new Mock<IBlogConfig>();
-        _contextMock = new Mock<BlogDbContext>(new DbContextOptions<BlogDbContext>());
-    }
-
-    private MigrationManager CreateManager()
-    {
-        return new MigrationManager(
-            _loggerMock.Object,
-            _commandMediatorMock.Object,
-            _configurationMock.Object,
-            _blogConfigMock.Object);
-    }
-
-    #region TryMigrationAsync Tests
-
     [Fact]
-    public async Task TryMigrationAsync_ThrowsArgumentNullException_WhenContextIsNull()
+    public async Task TryMigrationAsync_NullContext_ThrowsArgumentNullException()
     {
-        // Arrange
         var manager = CreateManager();
 
-        // Act & Assert
-        await Assert.ThrowsAsync<ArgumentNullException>(() => manager.TryMigrationAsync(null!, TestContext.Current.CancellationToken));
-    }
-
-    [Fact]
-    public async Task TryMigrationAsync_ReturnsDisabled_WhenAutoMigrationIsDisabled()
-    {
-        // Arrange
-        var manager = CreateManager();
-        SetupSystemManifest("1.0.0", DateTime.UtcNow);
-        SetupConfiguration("AutoDatabaseMigration", "false");
-
-        // Act
-        var result = await manager.TryMigrationAsync(_contextMock.Object, TestContext.Current.CancellationToken);
-
-        // Assert
-        Assert.Equal(MigrationStatus.Disabled, result.Status);
-        Assert.False(result.IsSuccess);
-        Assert.Contains("disabled", result.ErrorMessage, StringComparison.OrdinalIgnoreCase);
-    }
-
-    [Fact]
-    public async Task TryMigrationAsync_LogsCorrectInformation_WhenCalled()
-    {
-        // Arrange
-        var manager = CreateManager();
-        var version = "1.0.0";
-        var installTime = DateTime.UtcNow;
-        SetupSystemManifest(version, installTime);
-        SetupConfiguration("AutoDatabaseMigration", "false");
-
-        // Act
-        await manager.TryMigrationAsync(_contextMock.Object, TestContext.Current.CancellationToken);
-
-        // Assert
-        _loggerMock.Verify(
-            x => x.Log(
-                LogLevel.Information,
-                It.IsAny<EventId>(),
-                It.Is<It.IsAnyType>((v, t) => v.ToString()!.Contains(version)),
-                It.IsAny<Exception>(),
-                It.IsAny<Func<It.IsAnyType, Exception, string>>()),
-            Times.AtLeastOnce);
-    }
-
-    #endregion
-
-    #region MigrationResult Tests
-
-    [Fact]
-    public void MigrationResult_IsSuccess_ReturnsTrueForSuccessStatus()
-    {
-        // Arrange
-        var result = new MigrationResult(MigrationStatus.Success);
-
-        // Assert
-        Assert.True(result.IsSuccess);
-        Assert.False(result.IsFailed);
-    }
-
-    [Fact]
-    public void MigrationResult_IsSuccess_ReturnsTrueForNotRequiredStatus()
-    {
-        // Arrange
-        var result = new MigrationResult(MigrationStatus.NotRequired);
-
-        // Assert
-        Assert.True(result.IsSuccess);
-        Assert.False(result.IsFailed);
+        await Assert.ThrowsAsync<ArgumentNullException>(() =>
+            manager.TryMigrationAsync(null!, TestContext.Current.CancellationToken));
     }
 
     [Theory]
-    [InlineData(MigrationStatus.Failed)]
-    [InlineData(MigrationStatus.VersionParsingError)]
-    [InlineData(MigrationStatus.ScriptNotFound)]
-    public void MigrationResult_IsFailed_ReturnsTrueForFailureStatuses(MigrationStatus status)
+    [InlineData("Development")]
+    [InlineData("Staging")]
+    public async Task TryMigrationAsync_NonProductionEnvironment_SkipsMigrationAndContinuesStartup(string environmentName)
     {
-        // Arrange
-        var result = new MigrationResult(status, "Error message");
+        await using var context = CreateContext("not-json");
+        var manager = CreateManager(environmentName: environmentName);
 
-        // Assert
-        Assert.True(result.IsFailed);
-        Assert.False(result.IsSuccess);
+        var result = await manager.TryMigrationAsync(context, TestContext.Current.CancellationToken);
+
+        Assert.Equal(MigrationStatus.Skipped, result.Status);
+        Assert.True(result.CanContinueStartup);
     }
 
     [Fact]
-    public void MigrationResult_ContainsVersionInformation()
+    public async Task TryMigrationAsync_CurrentManifest_DoesNotRequireAutomaticMigration()
     {
-        // Arrange
-        var fromVersion = new Version(1, 0);
-        var toVersion = new Version(2, 0);
-        var result = new MigrationResult(MigrationStatus.Success, null, fromVersion, toVersion);
+        await using var context = CreateContext(SystemManifestSettings.DefaultValueNew.ToJson());
+        var manager = CreateManager(autoMigrationEnabled: false);
 
-        // Assert
-        Assert.Equal(fromVersion, result.FromVersion);
-        Assert.Equal(toVersion, result.ToVersion);
-    }
+        var result = await manager.TryMigrationAsync(context, TestContext.Current.CancellationToken);
 
-    #endregion
-
-    #region SecurityException Tests
-
-    [Fact]
-    public void SecurityException_CanBeThrown()
-    {
-        // Arrange & Act
-        var exception = new SecurityException("Test message");
-
-        // Assert
-        Assert.Equal("Test message", exception.Message);
+        Assert.Equal(MigrationStatus.NotRequired, result.Status);
+        Assert.True(result.CanContinueStartup);
     }
 
     [Fact]
-    public void SecurityException_WithInnerException_CanBeThrown()
+    public async Task TryMigrationAsync_InvalidManifest_ReturnsVersionParsingError()
     {
-        // Arrange
-        var innerException = new Exception("Inner");
+        await using var context = CreateContext("not-json");
+        var manager = CreateManager();
 
-        // Act
-        var exception = new SecurityException("Test message", innerException);
+        var result = await manager.TryMigrationAsync(context, TestContext.Current.CancellationToken);
 
-        // Assert
-        Assert.Equal("Test message", exception.Message);
-        Assert.Equal(innerException, exception.InnerException);
+        Assert.Equal(MigrationStatus.VersionParsingError, result.Status);
+        Assert.False(result.CanContinueStartup);
     }
-
-    #endregion
-
-    #region GetProviderKey Tests
 
     [Fact]
-    public void GetProviderKey_CannotBeTestedDirectly()
+    public async Task TryMigrationAsync_OlderManifestOnPrereleaseBuild_StopsStartup()
     {
-        // This test would require GetProviderKey to be internal or using reflection
-        // Since it's private static, we can test it indirectly through the public API
-        // or make it internal and use InternalsVisibleTo in the main project
-        // The provider key functionality is already tested indirectly through TryMigrationAsync tests
-        Assert.True(true);
-    }
-
-    #endregion
-
-    #region Helper Methods
-
-    private void SetupSystemManifest(string version, DateTime installTime)
-    {
-        var manifestSettings = new SystemManifestSettings
+        if (!VersionHelper.IsNonStableVersion())
         {
-            VersionString = version,
-            InstallTimeUtc = installTime
+            return;
+        }
+
+        var manifest = new SystemManifestSettings
+        {
+            VersionString = "1.0.0",
+            InstallTimeUtc = new DateTime(2026, 1, 1, 0, 0, 0, DateTimeKind.Utc)
         };
+        await using var context = CreateContext(manifest.ToJson());
+        var manager = CreateManager();
 
-        _blogConfigMock.Setup(x => x.SystemManifestSettings).Returns(manifestSettings);
-        _blogConfigMock.Setup(x => x.UpdateAsync(It.IsAny<SystemManifestSettings>()))
-            .Returns(new KeyValuePair<string, string>("SystemManifestSettings", "{}"));
+        var result = await manager.TryMigrationAsync(context, TestContext.Current.CancellationToken);
+
+        Assert.Equal(MigrationStatus.UnsupportedVersion, result.Status);
+        Assert.False(result.CanContinueStartup);
     }
 
-    private void SetupConfiguration(string key, string value)
+    [Theory]
+    [InlineData(MigrationStatus.Success, true)]
+    [InlineData(MigrationStatus.NotRequired, true)]
+    [InlineData(MigrationStatus.Skipped, true)]
+    [InlineData(MigrationStatus.ManualMigrationRequired, false)]
+    [InlineData(MigrationStatus.UnsupportedVersion, false)]
+    [InlineData(MigrationStatus.VersionParsingError, false)]
+    [InlineData(MigrationStatus.UnsupportedProvider, false)]
+    [InlineData(MigrationStatus.Failed, false)]
+    public void MigrationResult_CanContinueStartup_MatchesStatus(MigrationStatus status, bool expected)
     {
-        var configSectionMock = new Mock<IConfigurationSection>();
-        configSectionMock.Setup(x => x.Value).Returns(value);
+        var result = new MigrationResult(status);
 
-        _configurationMock.Setup(x => x.GetSection(key)).Returns(configSectionMock.Object);
-        _configurationMock.Setup(x => x[key]).Returns(value);
-
-        // Extension methods like GetValue<T>() cannot be mocked with Moq
-        // The actual code should use the indexer x[key] or GetSection() which are mocked above
+        Assert.Equal(expected, result.CanContinueStartup);
     }
 
-    #endregion
-}
+    private static MigrationManager CreateManager(
+        bool autoMigrationEnabled = true,
+        string environmentName = "Production")
+    {
+        var configuration = new ConfigurationBuilder()
+            .AddInMemoryCollection(new Dictionary<string, string>
+            {
+                ["AutoDatabaseMigration"] = autoMigrationEnabled.ToString()
+            })
+            .Build();
 
+        var hostEnvironment = new Mock<IHostEnvironment>();
+        hostEnvironment.SetupGet(x => x.EnvironmentName).Returns(environmentName);
+
+        return new MigrationManager(
+            NullLogger<MigrationManager>.Instance,
+            configuration,
+            hostEnvironment.Object);
+    }
+
+    private static BlogDbContext CreateContext(string manifestJson)
+    {
+        var options = new DbContextOptionsBuilder<BlogDbContext>()
+            .UseInMemoryDatabase(Guid.NewGuid().ToString())
+            .Options;
+        var context = new BlogDbContext(options);
+        context.BlogConfiguration.Add(new BlogConfigurationEntity
+        {
+            CfgKey = nameof(SystemManifestSettings),
+            CfgValue = manifestJson,
+            LastModifiedTimeUtc = new DateTime(2026, 1, 1, 0, 0, 0, DateTimeKind.Utc)
+        });
+        context.SaveChanges();
+        return context;
+    }
+}
