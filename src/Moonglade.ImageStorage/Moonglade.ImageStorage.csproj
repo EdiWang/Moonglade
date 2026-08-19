@@ -10,7 +10,7 @@
   </PropertyGroup>
   <ItemGroup>
     <FrameworkReference Include="Microsoft.AspNetCore.App" />
-    <PackageReference Include="AWSSDK.S3" Version="4.0.102.1" />
+    <PackageReference Include="AWSSDK.S3" Version="4.0.102.2" />
     <PackageReference Include="Azure.Storage.Blobs" Version="12.29.1" />
   </ItemGroup>
 </Project>
