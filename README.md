@@ -1,6 +1,6 @@
 # 🌙 Moonglade Blog
 
-**Moonglade** is a personal blogging platform built for developers, optimized for seamless deployment on [**Microsoft Azure**](https://azure.microsoft.com/en-us/). It features essential blogging tools: posts, comments, categories, tags, archives, and pages.
+**Moonglade** is a personal blogging platform built for developers. It features essential blogging tools: posts, comments, categories, tags, archives, and pages.
 
 ## What Moonglade Does
 
@@ -81,15 +81,6 @@ dotnet build src/Moonglade.Web/Moonglade.Web.csproj
 dotnet run --project src/Moonglade.Web/Moonglade.Web.csproj
 ```
 
-The admin content editor is provided by the `Moonglade.Editor.StaticAssets` NuGet package. Its browser assets are served from `/_content/Moonglade.Editor.StaticAssets/moonglade-editor/`; do not copy editor build output into `wwwroot`.
-
-Focused tests can be run from the matching test project, for example:
-
-```bash
-dotnet test src/Tests/Moonglade.Features.Tests/Moonglade.Features.Tests.csproj
-dotnet test src/Tests/Moonglade.Web.Tests/Moonglade.Web.Tests.csproj
-```
-
 1. Build and run `./src/Moonglade.slnx` or `src/Moonglade.Web/Moonglade.Web.csproj`
 2. Access your blog:
     - **Home:** `https://localhost:10210`
@@ -100,19 +91,11 @@ dotnet test src/Tests/Moonglade.Web.Tests/Moonglade.Web.Tests.csproj
 
 ## ⚙️ Configuration
 
-> Most settings are managed in `appsettings.json`. For blog settings, use the `/admin/settings` UI.
-
-### Site Verification Files
-
-Some search engines and external services verify site ownership by requesting a specific file from the website root, such as `/google123.html` or `/ads.txt`. In Docker and Azure deployments, use `/admin/settings/verification-files` to add these files without modifying `wwwroot` inside the container.
-
-Verification files are stored in the Moonglade database and served from root-level virtual endpoints. Supported file types are `.txt`, `.html`, `.htm`, `.xml`, and `.json`; each file is limited to 64 KB and must use a single root-level file name with letters, digits, dots, underscores, or hyphens. Existing static files and built-in endpoints such as `/robots.txt`, `/sitemap.xml`, and `/manifest.webmanifest` keep priority.
+> These settings are managed in `appsettings.json`. For blog settings, use the `/admin/settings` UI.
 
 ### Authentication
 
 - By default: Local accounts with TOTP authenticator app verification (manage via `/admin/account`)
-- Local sign-in is two-step after setup: username/password first, then the authenticator code on the next screen.
-- Local username/password sign-in and TOTP code verification are rate limited by client IP plus account context.
 - Local development can disable the TOTP step with `Authentication:Totp:Required=false`; this bypass is ignored outside the `Development` environment.
 - To replace a configured authenticator app, use `/admin/account` to reset it; the reset signs out the administrator and starts TOTP setup on the next sign-in.
 - TOTP options:
@@ -134,12 +117,6 @@ Verification files are stored in the Moonglade database and served from root-lev
 `Authentication:LocalAccountRateLimit` uses a fixed window. `PermitLimit` is the number of attempts allowed for the same partition during each window. Set `Enabled` to `false` only when another authentication-layer throttle is in place.
 
 - **Microsoft Entra ID** (Azure AD) supported. [Setup guide](https://github.com/EdiWang/Moonglade/wiki/Use-Microsoft-Entra-ID-Authentication)
-
-### Reverse Proxy Client Addresses
-
-When `ForwardedHeaders:Enabled` is enabled, list every trusted reverse proxy IP in `ForwardedHeaders:KnownProxies`. Moonglade accepts forwarded client addresses only from those proxies. If the list is empty or contains no valid addresses, ASP.NET Core's loopback-only defaults remain in effect; forwarded headers from unknown proxies are ignored.
-
-The application reads the processed `HttpContext.Connection.RemoteIpAddress` and never trusts raw `X-Forwarded-For` or vendor-specific client-IP headers directly.
 
 ### Comment Rate Limiting
 
@@ -267,18 +244,6 @@ Email notifications for new comments, replies, and Webmentions are queued in the
 Supported providers are `AzureCommunication` and `smtp`. Use environment variable overrides such as `Email__AcsConnectionString` or `Email__SmtpPassword` for real secrets.
 
 Email delivery uses at-least-once processing. If the application stops while a message is being sent, a later retry can occasionally send a duplicate notification. Set `Email:OutboxWorker:Enabled` to `false` only when another process is responsible for draining the outbox.
-
-### Background Work Queue
-
-`CannonService` handles low-volume in-process fire-and-forget work such as Webmention pings, IndexNow notifications, and original image storage. Configure `CannonService:QueueCapacity` to bound memory use:
-
-```json
-"CannonService": {
-  "QueueCapacity": 1000
-}
-```
-
-When the queue is full, new work is rejected and logged instead of running inline on the request path.
 
 ### More Settings
 
