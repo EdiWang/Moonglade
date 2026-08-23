@@ -9,6 +9,7 @@ using Moonglade.ActivityLog;
 using Moonglade.BackgroundServices;
 using Moonglade.Configuration;
 using Moonglade.ImageStorage;
+using Moonglade.ImageStorage.Providers;
 using Moonglade.Web.Controllers;
 using Moonglade.Web.Services;
 using Moq;
@@ -51,27 +52,56 @@ public class ImageControllerTests
     }
 
     [Fact]
-    public async Task Image_Get_WhenOriginImageRequested_ReturnsFileStreamResult()
+    public async Task Image_Post_WhenOriginalIsKept_PublicEndpointCannotReadOriginalStorage()
     {
-        var bytes = new byte[] { 1, 2, 3 };
-        _imageStorage
-            .Setup(x => x.GetInfoAsync("photo-origin.png"))
-            .ReturnsAsync(CreateImageInfo("png", bytes.Length));
-        _imageStorage
-            .Setup(x => x.OpenReadAsync("photo-origin.png"))
-            .ReturnsAsync(new MemoryStream(bytes));
-        var controller = CreateController(remoteIpAddress: IPAddress.Parse("127.0.0.1"));
+        var tempDirectory = Path.Combine(Path.GetTempPath(), "moonglade-web-image-tests", Guid.NewGuid().ToString("N"));
+        var primaryPath = Path.Combine(tempDirectory, "primary");
+        var originalPath = Path.Combine(tempDirectory, "original");
+        var storageConfiguration = FileSystemImageStorage.ResolveImageStoragePaths(primaryPath, originalPath);
+        var storage = new FileSystemImageStorage(storageConfiguration, Mock.Of<ILogger<FileSystemImageStorage>>());
+        var imageBytes = ValidSvgBytes();
+        _fileNameGenerator.Setup(x => x.GetFileName("photo.svg", "")).Returns("photo.svg");
+        _fileNameGenerator.Setup(x => x.GetFileName("photo.svg", "origin")).Returns("photo-origin.svg");
+        var controller = CreateController(
+            new BlogConfig
+            {
+                ImageSettings = new ImageSettings
+                {
+                    IsWatermarkEnabled = true,
+                    KeepOriginImage = true,
+                    WatermarkFontSize = 20,
+                    WatermarkText = "Moonglade"
+                }
+            },
+            imageStorage: storage);
 
-        var result = await controller.Image("photo-origin.png", TestContext.Current.CancellationToken);
+        try
+        {
+            var uploadResult = await controller.Image(CreateFormFile("photo.svg", imageBytes));
+            await StopCannonServiceAsync();
 
-        var fileResult = Assert.IsType<FileStreamResult>(result);
-        Assert.Equal("image/png", fileResult.ContentType);
-        _imageStorage.Verify(x => x.GetInfoAsync("photo-origin.png"), Times.Once);
-        _imageStorage.Verify(x => x.OpenReadAsync("photo-origin.png"), Times.Once);
+            var okResult = Assert.IsType<OkObjectResult>(uploadResult);
+            Assert.Equal("/image/photo.svg", okResult.Value!.GetType().GetProperty("Location")!.GetValue(okResult.Value));
+            Assert.True(File.Exists(Path.Combine(primaryPath, "photo.svg")));
+            Assert.True(File.Exists(Path.Combine(originalPath, "photo-origin.svg")));
+            Assert.False(File.Exists(Path.Combine(primaryPath, "photo-origin.svg")));
+
+            var originalResult = await controller.Image("photo-origin.svg", TestContext.Current.CancellationToken);
+            Assert.IsType<NotFoundResult>(originalResult);
+        }
+        finally
+        {
+            if (Directory.Exists(tempDirectory))
+            {
+                Directory.Delete(tempDirectory, recursive: true);
+            }
+        }
     }
 
-    [Fact]
-    public async Task Image_Get_WhenCdnRedirectIsEnabled_ReturnsPermanentRedirect()
+    [Theory]
+    [InlineData("GET")]
+    [InlineData("HEAD")]
+    public async Task Image_WhenCdnRedirectIsEnabled_ReturnsPermanentRedirectWithoutReadingStorage(string httpMethod)
     {
         var controller = CreateController(new BlogConfig
         {
@@ -81,6 +111,7 @@ public class ImageControllerTests
                 CDNEndpoint = "https://cdn.example.com/images"
             }
         });
+        controller.Request.Method = httpMethod;
 
         var result = await controller.Image("photo.png", TestContext.Current.CancellationToken);
 
@@ -261,7 +292,7 @@ public class ImageControllerTests
         Assert.Equal("/image/photo-cdn.png", okResult.Value!.GetType().GetProperty("Location")!.GetValue(okResult.Value));
         Assert.Equal("/image/photo-cdn.png", okResult.Value.GetType().GetProperty("Filename")!.GetValue(okResult.Value));
         _imageStorage.Verify(x => x.InsertAsync("photo-primary.png", It.Is<byte[]>(bytes => bytes.SequenceEqual(imageBytes))), Times.Once);
-        _imageStorage.Verify(x => x.InsertSecondaryAsync(It.IsAny<string>(), It.IsAny<byte[]>()), Times.Never);
+        _imageStorage.Verify(x => x.InsertOriginalAsync(It.IsAny<string>(), It.IsAny<byte[]>()), Times.Never);
 
         var activityCommand = _commandMediator.Single<CreateActivityLogCommand>();
         Assert.Equal(EventType.ImageUploaded, activityCommand.EventType);
@@ -287,7 +318,7 @@ public class ImageControllerTests
 
         await controller.Image(file, skipWatermark: true);
 
-        _imageStorage.Verify(x => x.InsertSecondaryAsync(It.IsAny<string>(), It.IsAny<byte[]>()), Times.Never);
+        _imageStorage.Verify(x => x.InsertOriginalAsync(It.IsAny<string>(), It.IsAny<byte[]>()), Times.Never);
         Assert.True(ActivityLogMetaDataAssert.Value<bool>(_commandMediator.Single<CreateActivityLogCommand>(), "SkipWatermark"));
     }
 
@@ -313,7 +344,7 @@ public class ImageControllerTests
         await controller.Image(file);
         await StopCannonServiceAsync();
 
-        _imageStorage.Verify(x => x.InsertSecondaryAsync("photo-origin.svg", It.Is<byte[]>(bytes =>
+        _imageStorage.Verify(x => x.InsertOriginalAsync("photo-origin.svg", It.Is<byte[]>(bytes =>
             Encoding.UTF8.GetString(bytes).Contains("<svg", StringComparison.Ordinal))), Times.Once);
     }
 
@@ -370,16 +401,18 @@ public class ImageControllerTests
         BlogConfig? blogConfig = null,
         string? username = null,
         IPAddress? remoteIpAddress = null,
-        string? userAgent = null)
+        string? userAgent = null,
+        IBlogImageStorage? imageStorage = null)
     {
+        var storage = imageStorage ?? _imageStorage.Object;
         var services = new ServiceCollection();
-        services.AddSingleton(_imageStorage.Object);
+        services.AddSingleton(storage);
         var serviceProvider = services.BuildServiceProvider();
         _cannonService = new CannonService(Mock.Of<ILogger<CannonService>>(), serviceProvider.GetRequiredService<IServiceScopeFactory>());
         _cannonService.StartAsync(TestContext.Current.CancellationToken);
 
         var controller = new ImageController(
-            _imageStorage.Object,
+            storage,
             Mock.Of<ILogger<ImageController>>(),
             blogConfig ?? new BlogConfig { ImageSettings = new ImageSettings() },
             _cache,

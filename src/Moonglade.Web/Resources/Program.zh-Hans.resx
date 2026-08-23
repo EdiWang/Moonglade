@@ -1689,8 +1689,8 @@
   <data name="Password updated." xml:space="preserve">
     <value>密码已更新。</value>
   </data>
-  <data name="Please configure `SecondaryContainerName` in `appsettings.json`" xml:space="preserve">
-    <value>请在 `appsettings.json` 中配置 `SecondaryContainerName`</value>
+  <data name="Original images are stored in the private `OriginalFileSystemPath` location." xml:space="preserve">
+    <value>原始图片存储在私有的 `OriginalFileSystemPath` 路径中。</value>
   </data>
   <data name="Please provide a valid tag name." xml:space="preserve">
     <value>请提供有效的标签名称。</value>

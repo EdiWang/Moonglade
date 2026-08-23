@@ -89,8 +89,34 @@ resource storageAccount 'Microsoft.Storage/storageAccounts@2022-09-01' = {
   }
   kind: 'StorageV2'
   properties: {
-    allowBlobPublicAccess: true
+    allowBlobPublicAccess: false
+    allowSharedKeyAccess: true
+    minimumTlsVersion: 'TLS1_2'
     supportsHttpsTrafficOnly: true
+  }
+}
+
+resource fileService 'Microsoft.Storage/storageAccounts/fileServices@2022-09-01' = {
+  parent: storageAccount
+  name: 'default'
+  properties: {}
+}
+
+resource primaryImageShare 'Microsoft.Storage/storageAccounts/fileServices/shares@2022-09-01' = {
+  parent: fileService
+  name: 'moonglade-images'
+  properties: {
+    accessTier: 'TransactionOptimized'
+    enabledProtocols: 'SMB'
+  }
+}
+
+resource originalImageShare 'Microsoft.Storage/storageAccounts/fileServices/shares@2022-09-01' = {
+  parent: fileService
+  name: 'moonglade-images-origin'
+  properties: {
+    accessTier: 'TransactionOptimized'
+    enabledProtocols: 'SMB'
   }
 }
 
@@ -114,9 +140,38 @@ resource webApp 'Microsoft.Web/sites@2022-03-01' = {
           name: 'DOCKER_REGISTRY_SERVER_URL'
           value: 'https://index.docker.io'
         }
+        {
+          name: 'ImageStorage__FileSystemPath'
+          value: '/app/images'
+        }
+        {
+          name: 'ImageStorage__OriginalFileSystemPath'
+          value: '/app/images-origin'
+        }
       ]
     }
     httpsOnly: true
+  }
+}
+
+resource webAppStorageMounts 'Microsoft.Web/sites/config@2022-03-01' = {
+  parent: webApp
+  name: 'azurestorageaccounts'
+  properties: {
+    primaryImages: {
+      type: 'AzureFiles'
+      accountName: storageAccount.name
+      shareName: primaryImageShare.name
+      accessKey: storageAccount.listKeys().keys[0].value
+      mountPath: '/app/images'
+    }
+    originalImages: {
+      type: 'AzureFiles'
+      accountName: storageAccount.name
+      shareName: originalImageShare.name
+      accessKey: storageAccount.listKeys().keys[0].value
+      mountPath: '/app/images-origin'
+    }
   }
 }
 
