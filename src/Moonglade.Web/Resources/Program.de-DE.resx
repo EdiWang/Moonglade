@@ -1917,6 +1917,12 @@
   <data name="Please configure email provider settings in appsettings.json." xml:space="preserve">
     <value>Bitte konfigurieren Sie die E-Mail-Anbietereinstellungen in `appsettings.json`.</value>
   </data>
+  <data name="Email notifications are not configured. Add email provider settings to enable this feature." xml:space="preserve">
+    <value>E-Mail-Benachrichtigungen sind nicht konfiguriert. Fügen Sie E-Mail-Anbietereinstellungen hinzu, um diese Funktion zu aktivieren.</value>
+  </data>
+  <data name="Email notification configuration is invalid." xml:space="preserve">
+    <value>Die Konfiguration für E-Mail-Benachrichtigungen ist ungültig.</value>
+  </data>
   <data name="Provider" xml:space="preserve">
     <value>Anbieter</value>
   </data>

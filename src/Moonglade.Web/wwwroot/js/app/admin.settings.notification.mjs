@@ -15,6 +15,10 @@ function toggleButtonState(button, isDisabled) {
 
 async function sendTestEmail() {
     const testEmailButton = document.querySelector('#a-send-test-mail');
+    if (testEmailButton.disabled) {
+        return;
+    }
+
     toggleButtonState(testEmailButton, true);
 
     try {
