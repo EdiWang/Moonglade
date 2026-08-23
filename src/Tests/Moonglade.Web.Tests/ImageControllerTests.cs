@@ -261,7 +261,7 @@ public class ImageControllerTests
         Assert.Equal("/image/photo-cdn.png", okResult.Value!.GetType().GetProperty("Location")!.GetValue(okResult.Value));
         Assert.Equal("/image/photo-cdn.png", okResult.Value.GetType().GetProperty("Filename")!.GetValue(okResult.Value));
         _imageStorage.Verify(x => x.InsertAsync("photo-primary.png", It.Is<byte[]>(bytes => bytes.SequenceEqual(imageBytes))), Times.Once);
-        _imageStorage.Verify(x => x.InsertSecondaryAsync(It.IsAny<string>(), It.IsAny<byte[]>()), Times.Never);
+        _imageStorage.Verify(x => x.InsertOriginalAsync(It.IsAny<string>(), It.IsAny<byte[]>()), Times.Never);
 
         var activityCommand = _commandMediator.Single<CreateActivityLogCommand>();
         Assert.Equal(EventType.ImageUploaded, activityCommand.EventType);
@@ -287,7 +287,7 @@ public class ImageControllerTests
 
         await controller.Image(file, skipWatermark: true);
 
-        _imageStorage.Verify(x => x.InsertSecondaryAsync(It.IsAny<string>(), It.IsAny<byte[]>()), Times.Never);
+        _imageStorage.Verify(x => x.InsertOriginalAsync(It.IsAny<string>(), It.IsAny<byte[]>()), Times.Never);
         Assert.True(ActivityLogMetaDataAssert.Value<bool>(_commandMediator.Single<CreateActivityLogCommand>(), "SkipWatermark"));
     }
 
@@ -313,7 +313,7 @@ public class ImageControllerTests
         await controller.Image(file);
         await StopCannonServiceAsync();
 
-        _imageStorage.Verify(x => x.InsertSecondaryAsync("photo-origin.svg", It.Is<byte[]>(bytes =>
+        _imageStorage.Verify(x => x.InsertOriginalAsync("photo-origin.svg", It.Is<byte[]>(bytes =>
             Encoding.UTF8.GetString(bytes).Contains("<svg", StringComparison.Ordinal))), Times.Once);
     }
 

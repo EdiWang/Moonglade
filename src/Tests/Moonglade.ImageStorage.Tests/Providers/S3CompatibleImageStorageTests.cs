@@ -60,7 +60,7 @@ public class S3CompatibleImageStorageTests
     }
 
     [Fact]
-    public async Task InsertSecondaryAsync_WithConfiguredBucket_UploadsToSecondaryBucket()
+    public async Task InsertOriginalAsync_WithConfiguredBucket_UploadsToSecondaryBucket()
     {
         var bytes = Encoding.UTF8.GetBytes("image data");
         PutObjectRequest capturedRequest = null;
@@ -70,7 +70,7 @@ public class S3CompatibleImageStorageTests
             .ReturnsAsync(new PutObjectResponse());
         var storage = CreateStorage();
 
-        var result = await storage.InsertSecondaryAsync("photo-origin.jpg", bytes);
+        var result = await storage.InsertOriginalAsync("photo-origin.jpg", bytes);
 
         Assert.Equal("photo-origin.jpg", result);
         Assert.NotNull(capturedRequest);
@@ -80,7 +80,7 @@ public class S3CompatibleImageStorageTests
     }
 
     [Fact]
-    public async Task InsertSecondaryAsync_WithoutSecondaryBucket_ThrowsInvalidOperationException()
+    public async Task InsertOriginalAsync_WithoutSecondaryBucket_ThrowsInvalidOperationException()
     {
         var configuration = new S3CompatibleStorageConfiguration(
             _configuration.ServiceUrl,
@@ -91,7 +91,7 @@ public class S3CompatibleImageStorageTests
         var storage = new S3CompatibleImageStorage(_logger.Object, configuration, _s3Client.Object);
 
         var exception = await Assert.ThrowsAsync<InvalidOperationException>(() =>
-            storage.InsertSecondaryAsync("photo-origin.jpg", [1, 2, 3]));
+            storage.InsertOriginalAsync("photo-origin.jpg", [1, 2, 3]));
 
         Assert.Contains("Secondary bucket is not configured", exception.Message);
         _s3Client.Verify(x => x.PutObjectAsync(It.IsAny<PutObjectRequest>(), It.IsAny<CancellationToken>()), Times.Never);

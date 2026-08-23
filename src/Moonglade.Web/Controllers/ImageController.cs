@@ -158,7 +158,7 @@ public class ImageController(
     private void StoreOriginalImageAsync(string fileName, byte[] originalImageData)
     {
         cannonService.FireAsync<IBlogImageStorage>(async storage =>
-            await storage.InsertSecondaryAsync(fileName, originalImageData));
+            await storage.InsertOriginalAsync(fileName, originalImageData));
     }
 
     private async Task<ImageInfo> GetImageInfoAsync(string filename, CancellationToken cancellationToken)

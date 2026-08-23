@@ -139,10 +139,10 @@ public class AzureBlobImageStorageTests
 
     #endregion
 
-    #region InsertSecondaryAsync Tests
+    #region InsertOriginalAsync Tests
 
     [Fact]
-    public async Task InsertSecondaryAsync_WithoutSecondaryContainer_ThrowsInvalidOperationException()
+    public async Task InsertOriginalAsync_WithoutSecondaryContainer_ThrowsInvalidOperationException()
     {
         // Arrange
         var storage = new AzureBlobImageStorage(_mockLogger.Object, _configuration);
@@ -151,7 +151,7 @@ public class AzureBlobImageStorageTests
 
         // Act & Assert
         var exception = await Assert.ThrowsAsync<InvalidOperationException>(() =>
-            storage.InsertSecondaryAsync(fileName, imageBytes));
+            storage.InsertOriginalAsync(fileName, imageBytes));
         Assert.Contains("Secondary container is not configured", exception.Message);
 
         VerifySecondaryContainerErrorLogging();

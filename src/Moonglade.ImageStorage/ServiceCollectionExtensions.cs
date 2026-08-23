@@ -48,7 +48,7 @@ public static class ServiceCollectionExtensions
                 RegisterS3CompatibleStorage(services, settings.S3CompatibleStorageSettings);
                 break;
             case "filesystem":
-                RegisterFileSystemStorage(services, settings.FileSystemPath);
+                RegisterFileSystemStorage(services, settings.FileSystemPath, settings.OriginalFileSystemPath);
                 break;
             default:
                 var supportedProviders = string.Join(", ", ["azurestorage", "filesystem", "s3compatible"]);
@@ -73,20 +73,31 @@ public static class ServiceCollectionExtensions
             .AddScoped<IFileNameGenerator, DatedGuidFileNameGenerator>();
     }
 
-    private static void RegisterFileSystemStorage(IServiceCollection services, string fileSystemPath)
+    private static void RegisterFileSystemStorage(
+        IServiceCollection services,
+        string fileSystemPath,
+        string originalFileSystemPath)
     {
-        var path = string.IsNullOrWhiteSpace(fileSystemPath)
+        var primaryPath = string.IsNullOrWhiteSpace(fileSystemPath)
             ? FileSystemImageStorage.DefaultPath
             : fileSystemPath;
+        var originalPath = string.IsNullOrWhiteSpace(originalFileSystemPath)
+            ? FileSystemImageStorage.DefaultOriginalPath
+            : originalFileSystemPath;
 
         if (string.IsNullOrWhiteSpace(fileSystemPath))
         {
-            Console.WriteLine($"FileSystemPath is not set, using default path: {path}");
+            Console.WriteLine($"FileSystemPath is not set, using default path: {primaryPath}");
         }
 
-        var fullPath = FileSystemImageStorage.ResolveImageStoragePath(path);
+        if (string.IsNullOrWhiteSpace(originalFileSystemPath))
+        {
+            Console.WriteLine($"OriginalFileSystemPath is not set, using default path: {originalPath}");
+        }
 
-        services.AddSingleton(_ => new FileSystemImageConfiguration(fullPath))
+        var imageConfiguration = FileSystemImageStorage.ResolveImageStoragePaths(primaryPath, originalPath);
+
+        services.AddSingleton(imageConfiguration)
             .AddSingleton<IBlogImageStorage, FileSystemImageStorage>()
             .AddScoped<IFileNameGenerator, DatedGuidFileNameGenerator>();
     }

@@ -104,7 +104,7 @@ public class AzureBlobImageStorage : IBlogImageStorage
     /// <exception cref="ArgumentException">Thrown when the file name is null, empty, or whitespace, or when image bytes are empty.</exception>
     /// <exception cref="ArgumentNullException">Thrown when image bytes are null.</exception>
     /// <exception cref="InvalidOperationException">Thrown when the secondary container is not configured.</exception>
-    public async Task<string> InsertSecondaryAsync(string fileName, byte[] imageBytes)
+    public async Task<string> InsertOriginalAsync(string fileName, byte[] imageBytes)
     {
         if (_secondaryContainer is null)
         {

@@ -49,7 +49,7 @@ public class S3CompatibleImageStorage(
         return await InsertInternalAsync(storageConfiguration.BucketName, fileName, imageBytes).ConfigureAwait(false);
     }
 
-    public async Task<string> InsertSecondaryAsync(string fileName, byte[] imageBytes)
+    public async Task<string> InsertOriginalAsync(string fileName, byte[] imageBytes)
     {
         if (string.IsNullOrWhiteSpace(storageConfiguration.SecondaryBucketName))
         {
