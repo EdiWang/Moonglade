@@ -14,6 +14,8 @@ using Moonglade.ActivityLog;
 using Moonglade.Auth;
 using Moonglade.Configuration;
 using Moonglade.Data;
+using Moonglade.Email;
+using Moonglade.Email.Core;
 using Moonglade.Features.Asset;
 using Moonglade.ImageStorage;
 using Moonglade.Web.Controllers;
@@ -38,6 +40,132 @@ public class SettingsControllerTests
 
         Assert.NotNull(method);
         Assert.Empty(method!.GetCustomAttributes(typeof(IgnoreAntiforgeryTokenAttribute), inherit: false));
+    }
+
+    [Theory]
+    [InlineData(
+        EmailCapabilityState.NotConfigured,
+        StatusCodes.Status503ServiceUnavailable,
+        "Add the required Email provider settings")]
+    [InlineData(
+        EmailCapabilityState.Invalid,
+        StatusCodes.Status503ServiceUnavailable,
+        "Email:OutboxWorker:PollIntervalSeconds")]
+    [InlineData(
+        EmailCapabilityState.Disabled,
+        StatusCodes.Status409Conflict,
+        "Email:OutboxWorker:Enabled")]
+    public async Task TestEmail_WhenCapabilityUnavailable_ReturnsProblemWithoutPublishing(
+        EmailCapabilityState state,
+        int expectedStatusCode,
+        string expectedDetail)
+    {
+        var eventMediator = new Mock<IEventMediator>(MockBehavior.Strict);
+        var controller = CreateController(
+            CreateEmailEnabledBlogConfig(),
+            new RecordingCommandMediator(),
+            Mock.Of<IQueryMediator>(),
+            new Mock<IAuthenticationService>(),
+            eventMediator: eventMediator.Object,
+            emailCapabilityStatus: CreateEmailCapabilityStatus(state));
+
+        var result = await controller.TestEmail();
+
+        var objectResult = Assert.IsType<ObjectResult>(result);
+        Assert.Equal(expectedStatusCode, objectResult.StatusCode);
+        var problem = Assert.IsType<ProblemDetails>(objectResult.Value);
+        Assert.Equal(expectedStatusCode, problem.Status);
+        Assert.Contains(expectedDetail, problem.Detail);
+        eventMediator.Verify(
+            mediator => mediator.PublishAsync(
+                It.IsAny<TestEmailEvent>(),
+                It.IsAny<EventMediationSettings>(),
+                It.IsAny<CancellationToken>()),
+            Times.Never);
+    }
+
+    [Fact]
+    public async Task TestEmail_WhenBlogEmailSendingDisabled_ReturnsConflictWithoutPublishing()
+    {
+        var eventMediator = new Mock<IEventMediator>(MockBehavior.Strict);
+        var blogConfig = CreateEmailEnabledBlogConfig();
+        blogConfig.NotificationSettings.EnableEmailSending = false;
+        var controller = CreateController(
+            blogConfig,
+            new RecordingCommandMediator(),
+            Mock.Of<IQueryMediator>(),
+            new Mock<IAuthenticationService>(),
+            eventMediator: eventMediator.Object,
+            emailCapabilityStatus: CreateEmailCapabilityStatus(EmailCapabilityState.Available));
+
+        var result = await controller.TestEmail();
+
+        var objectResult = Assert.IsType<ObjectResult>(result);
+        Assert.Equal(StatusCodes.Status409Conflict, objectResult.StatusCode);
+        var problem = Assert.IsType<ProblemDetails>(objectResult.Value);
+        Assert.Contains("Enable email sending in Notification settings", problem.Detail);
+        eventMediator.Verify(
+            mediator => mediator.PublishAsync(
+                It.IsAny<TestEmailEvent>(),
+                It.IsAny<EventMediationSettings>(),
+                It.IsAny<CancellationToken>()),
+            Times.Never);
+    }
+
+    [Fact]
+    public async Task TestEmail_WhenCapabilityAvailable_QueuesTestEmail()
+    {
+        var eventMediator = new Mock<IEventMediator>();
+        eventMediator
+            .Setup(mediator => mediator.PublishAsync(
+                It.IsAny<TestEmailEvent>(),
+                It.IsAny<EventMediationSettings>(),
+                It.IsAny<CancellationToken>()))
+            .Returns(Task.CompletedTask);
+        var controller = CreateController(
+            CreateEmailEnabledBlogConfig(),
+            new RecordingCommandMediator(),
+            Mock.Of<IQueryMediator>(),
+            new Mock<IAuthenticationService>(),
+            eventMediator: eventMediator.Object,
+            emailCapabilityStatus: CreateEmailCapabilityStatus(EmailCapabilityState.Available));
+
+        var result = await controller.TestEmail();
+
+        var okResult = Assert.IsType<OkObjectResult>(result);
+        Assert.True(Assert.IsType<bool>(okResult.Value));
+        eventMediator.Verify(
+            mediator => mediator.PublishAsync(
+                It.IsAny<TestEmailEvent>(),
+                It.IsAny<EventMediationSettings>(),
+                It.IsAny<CancellationToken>()),
+            Times.Once);
+    }
+
+    [Fact]
+    public async Task TestEmail_WhenQueueingFails_ReturnsProblem()
+    {
+        var eventMediator = new Mock<IEventMediator>();
+        eventMediator
+            .Setup(mediator => mediator.PublishAsync(
+                It.IsAny<TestEmailEvent>(),
+                It.IsAny<EventMediationSettings>(),
+                It.IsAny<CancellationToken>()))
+            .ThrowsAsync(new InvalidOperationException("Queue failed"));
+        var controller = CreateController(
+            CreateEmailEnabledBlogConfig(),
+            new RecordingCommandMediator(),
+            Mock.Of<IQueryMediator>(),
+            new Mock<IAuthenticationService>(),
+            eventMediator: eventMediator.Object,
+            emailCapabilityStatus: CreateEmailCapabilityStatus(EmailCapabilityState.Available));
+
+        var result = await controller.TestEmail();
+
+        var objectResult = Assert.IsType<ObjectResult>(result);
+        Assert.Equal(StatusCodes.Status500InternalServerError, objectResult.StatusCode);
+        var problem = Assert.IsType<ProblemDetails>(objectResult.Value);
+        Assert.Equal("The test email could not be queued.", problem.Detail);
     }
 
     [Fact]
@@ -163,6 +291,52 @@ public class SettingsControllerTests
         };
     }
 
+    private static BlogConfig CreateEmailEnabledBlogConfig() => new()
+    {
+        NotificationSettings = new NotificationSettings
+        {
+            EnableEmailSending = true,
+            EmailDisplayName = "Moonglade"
+        }
+    };
+
+    private static EmailCapabilityStatus CreateEmailCapabilityStatus(EmailCapabilityState state)
+    {
+        var serviceOptions = new EmailServiceOptions
+        {
+            Provider = "smtp",
+            SmtpServer = "smtp.example.com",
+            SmtpUserName = "sender@example.com",
+            SmtpPassword = "password",
+            SmtpPort = 587
+        };
+        var workerOptions = new EmailOutboxWorkerOptions();
+
+        switch (state)
+        {
+            case EmailCapabilityState.NotConfigured:
+                serviceOptions.Provider = "AzureCommunication";
+                serviceOptions.AcsConnectionString = "";
+                serviceOptions.AcsSenderAddress = "";
+                break;
+
+            case EmailCapabilityState.Invalid:
+                workerOptions.PollIntervalSeconds = -2;
+                break;
+
+            case EmailCapabilityState.Disabled:
+                workerOptions.Enabled = false;
+                break;
+        }
+
+        var evaluator = new EmailCapabilityStatusEvaluator(
+            new EmailServiceOptionsValidator(),
+            new EmailOutboxWorkerOptionsValidator());
+        var status = evaluator.Evaluate(serviceOptions, workerOptions);
+        Assert.Equal(state, status.State);
+        return status;
+    }
+
     private static SettingsController CreateController(
         LocalAccountSettings account,
         RecordingCommandMediator commandMediator,
@@ -181,11 +355,15 @@ public class SettingsControllerTests
         RecordingCommandMediator commandMediator,
         IQueryMediator queryMediator,
         Mock<IAuthenticationService> authenticationService,
-        string username = "admin")
+        string username = "admin",
+        IEventMediator? eventMediator = null,
+        EmailCapabilityStatus? emailCapabilityStatus = null)
     {
-        var services = new ServiceCollection()
-            .AddSingleton(authenticationService.Object)
-            .BuildServiceProvider();
+        var serviceCollection = new ServiceCollection();
+        serviceCollection.AddSingleton(authenticationService.Object);
+        serviceCollection.AddLogging();
+        serviceCollection.AddControllers();
+        var services = serviceCollection.BuildServiceProvider();
 
         var httpContext = new DefaultHttpContext
         {
@@ -199,7 +377,8 @@ public class SettingsControllerTests
         var controller = new SettingsController(
             blogConfig,
             Mock.Of<ILogger<SettingsController>>(),
-            Mock.Of<IEventMediator>(),
+            eventMediator ?? Mock.Of<IEventMediator>(),
+            emailCapabilityStatus ?? CreateEmailCapabilityStatus(EmailCapabilityState.Available),
             queryMediator,
             commandMediator);
 

@@ -1917,6 +1917,12 @@
   <data name="Please configure email provider settings in appsettings.json." xml:space="preserve">
     <value>`appsettings.json` でメールプロバイダー設定を構成してください。</value>
   </data>
+  <data name="Email notifications are not configured. Add email provider settings to enable this feature." xml:space="preserve">
+    <value>メール通知が設定されていません。この機能を有効にするには、メールプロバイダー設定を追加してください。</value>
+  </data>
+  <data name="Email notification configuration is invalid." xml:space="preserve">
+    <value>メール通知の設定が無効です。</value>
+  </data>
   <data name="Provider" xml:space="preserve">
     <value>プロバイダー</value>
   </data>

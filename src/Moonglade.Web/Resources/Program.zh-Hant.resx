@@ -1917,6 +1917,12 @@
   <data name="Please configure email provider settings in appsettings.json." xml:space="preserve">
     <value>請在 `appsettings.json` 中設定郵件提供者設定。</value>
   </data>
+  <data name="Email notifications are not configured. Add email provider settings to enable this feature." xml:space="preserve">
+    <value>尚未設定電子郵件通知。請新增郵件提供者設定以啟用此功能。</value>
+  </data>
+  <data name="Email notification configuration is invalid." xml:space="preserve">
+    <value>電子郵件通知設定無效。</value>
+  </data>
   <data name="Provider" xml:space="preserve">
     <value>提供者</value>
   </data>
