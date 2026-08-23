@@ -105,9 +105,8 @@ public class FileSystemImageStorage : IBlogImageStorage
     /// <remarks>
     /// If the file does not exist, the operation completes silently without error.
     /// </remarks>
-    public async Task DeleteAsync(string fileName)
+    public Task DeleteAsync(string fileName)
     {
-        await Task.CompletedTask;
         ValidateFileName(fileName);
         var imagePath = Path.Join(_primaryPath, fileName);
         if (File.Exists(imagePath))
@@ -115,6 +114,8 @@ public class FileSystemImageStorage : IBlogImageStorage
             File.Delete(imagePath);
             _logger.LogInformation("Deleted image: {FileName}", fileName);
         }
+
+        return Task.CompletedTask;
     }
 
     /// <summary>
@@ -179,6 +180,12 @@ public class FileSystemImageStorage : IBlogImageStorage
     private async Task<string> InsertInternalAsync(string storagePath, string fileName, byte[] imageBytes)
     {
         ValidateFileName(fileName);
+        ArgumentNullException.ThrowIfNull(imageBytes);
+        if (imageBytes.Length == 0)
+        {
+            throw new ArgumentException("Image bytes cannot be empty.", nameof(imageBytes));
+        }
+
         var fullPath = Path.Join(storagePath, fileName);
 
         await using var sourceStream = new FileStream(fullPath, FileMode.Create, FileAccess.Write, FileShare.None,

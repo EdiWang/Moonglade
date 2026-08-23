@@ -82,6 +82,7 @@ When the primary path is backed by object storage and served through a CDN, the 
 | 6 | Add the breaking-change upgrade guide and synchronize `README.md`, `AGENTS.md`, configuration examples, and deployment guidance | 3-5 | Documentation review and repository-wide stale-reference scan | Complete |
 | 7 | Run focused and solution-level verification, inspect the final package graph and diff, and record remaining environmental risks | 2-6 | Focused tests, Web build, solution tests where available, `git status --short` | Complete |
 | 8 | Fix the default Docker image and Compose deployment after runtime testing exposed missing original-path ownership and persistence | 7 | Compose model assertions, image build, fresh-volume write, replacement-container persistence | Complete |
+| 9 | Address valid PR review findings for invalid image bytes and unnecessary asynchronous delete overhead | 2-8 | ImageStorage tests, Web build, Web tests | Complete |
 
 ## Execution Order
 
@@ -162,6 +163,15 @@ Run the focused suites after each batch, then run the Web build and the broadest
 
 Suggested commit: `fix: persist both image roots in docker`
 
+### Batch 8: PR review follow-up
+
+1. Reject null and empty image byte arrays before creating either a primary or original file.
+2. Return `Task.CompletedTask` directly from the synchronous filesystem delete implementation instead of building an async state machine around `Task.CompletedTask`.
+3. Add primary/original regression coverage for both invalid byte-array cases.
+4. Run the ImageStorage suite, Web build, and Web suite.
+
+Suggested commit: `fix: validate filesystem image writes`
+
 ## Acceptance Criteria
 
 - The application has no Azure Blob or S3-compatible image storage implementation, setting, registration, initialization, test, or SDK dependency.
@@ -176,13 +186,14 @@ Suggested commit: `fix: persist both image roots in docker`
 - Default configuration and startup output contain no cloud storage credentials, service endpoints, buckets, containers, regions, or provider names.
 - The Azure Bicep deployment does not use the read-only Azure Blob mount option and does not reintroduce Azure SDK/provider configuration into Moonglade.
 - The default Docker image pre-creates both configured image paths for the `app` user, and Compose maps each path to its own persistent named volume.
+- Primary and original writes reject null or empty image bytes without creating a file, and synchronous delete does not use a redundant async state machine.
 - The upgrade guide clearly states the breaking configuration and manual data/mount prerequisites.
 - `README.md` and `AGENTS.md` describe the new responsibility boundary consistently.
 - Focused tests and the Web build pass; any unavailable Docker, Azure CLI, or full-solution checks are explicitly recorded.
 
 ## Current Progress
 
-Task No. 8 and the planned filesystem-only image-storage implementation are complete. The default Docker image now pre-creates `/app/images` and `/app/images-origin` with `app:app` ownership. Compose configures both application paths and persists them in separate `moonglade-images` and `moonglade-images-origin` named volumes. A complete image build passed, two fresh volumes were writable by the non-root `app` user without initialization, and both files survived replacement containers through direct mounts and the actual Compose service definition. README and AGENTS now describe the default dual-volume behavior. The unrelated default Compose email startup failure is retained separately in `docs/tasks/task-compose-email-startup.md`; no Email code or configuration changed in this batch. Live Azure deployment and mount validation remain explicitly deferred to the user; no Azure resource query, validation, what-if, or deployment was performed.
+Task No. 9 and the planned filesystem-only image-storage implementation are complete. Both PR #999 inline review findings were confirmed and fixed. Primary and original writes now reject null image bytes with `ArgumentNullException` and empty image bytes with `ArgumentException` before a file is created. `DeleteAsync` performs its synchronous validation/delete work and returns `Task.CompletedTask` directly. Four new primary/original regression cases pass, bringing `Moonglade.ImageStorage.Tests` to 74 tests; the Web build and all 175 Web tests also pass. The unrelated default Compose email startup failure remains retained separately in `docs/tasks/task-compose-email-startup.md`. Live Azure deployment and mount validation remain explicitly deferred to the user; no Azure resource query, validation, what-if, or deployment was performed.
 
 ## Verification Log
 
@@ -243,6 +254,10 @@ Task No. 8 and the planned filesystem-only image-storage implementation are comp
 | 2026-08-23 | Two actual `docker compose run --rm --no-deps` replacement containers using the updated Web service | Passed | Compose supplied both ImageStorage environment paths, created both declared volumes, wrote both roots, and read both files from the replacement container |
 | 2026-08-23 | Cleanup of Docker-fix smoke containers, volumes, network, and image | Passed | All task-owned Docker objects were removed; no existing Docker data was modified |
 | 2026-08-23 | `dotnet run --project src/Tests/Moonglade.ImageStorage.Tests/Moonglade.ImageStorage.Tests.csproj --no-build -- -noColor` after the Docker fix | Passed | 70/70 image-storage tests passed with zero skips |
+| 2026-08-23 | Read all PR #999 reviews and inline review comments through GitHub CLI | Passed | One Copilot review contained two inline findings; both were current, technically valid, and limited to `FileSystemImageStorage` |
+| 2026-08-23 | `dotnet run --project src/Tests/Moonglade.ImageStorage.Tests/Moonglade.ImageStorage.Tests.csproj --no-restore -- -noColor` after review fixes | Passed | 74/74 tests passed with zero skips, including primary/original null and empty byte-array rejection without file creation |
+| 2026-08-23 | `dotnet build src/Moonglade.Web/Moonglade.Web.csproj --no-restore` after review fixes | Passed | Web and its dependency graph built with 0 warnings and 0 errors |
+| 2026-08-23 | `dotnet run --project src/Tests/Moonglade.Web.Tests/Moonglade.Web.Tests.csproj --no-build -- -noColor` after review fixes | Passed | 175/175 Web tests passed with zero skips |
 
 ## Issues and Resolutions
 
@@ -260,6 +275,8 @@ Task No. 8 and the planned filesystem-only image-storage implementation are comp
 - **Docker-dependent final verification was initially unavailable:** Docker CLI discovery succeeded, but the Docker Desktop Linux engine was not running during the first No. 7 pass. Resolution: after the user started Docker Desktop, run Setup tests, a complete image build, fresh-volume permission checks, replacement-container persistence checks, and an isolated Web/SQL Server health smoke test; results are recorded above.
 - **Default Compose startup is blocked by unrelated email option validation:** `appsettings.json` selects Azure Communication while its required ACS values are empty, and the supplied Compose environment does not override them. Resolution for isolation: supply task-only SMTP values and disable the outbox worker for the second smoke run; the application then became healthy. The future product fix is tracked separately in `docs/tasks/task-compose-email-startup.md`; no Email configuration changed in the image-storage work.
 - **The first compiled ARM assertion used the wrong resource-name representation:** Bicep compiled successfully, but the test expected a literal nested resource name instead of the generated ARM `format(...)` expression. Resolution: identify the single `Microsoft.Web/sites/config` resource by type, confirm its name expression contains `azurestorageaccounts`, and then assert both mount definitions and paths; the corrected validation passed.
+- **Filesystem writes accepted invalid byte arrays:** A null value produced an incidental null-reference failure and an empty array created a zero-byte file. Resolution: explicitly reject null and empty arrays at the shared primary/original write boundary and verify that neither root receives a file.
+- **Filesystem delete used redundant async machinery:** The method awaited `Task.CompletedTask` around synchronous path validation and deletion. Resolution: remove `async` and return `Task.CompletedTask` after the synchronous operation.
 
 ## Follow-ups
 

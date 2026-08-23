@@ -24,6 +24,40 @@ public class FileSystemImageStorageTests : IDisposable
         Assert.Equal(bytes, await File.ReadAllBytesAsync(Path.Combine(PrimaryDirectory, "test.jpg"), TestContext.Current.CancellationToken));
     }
 
+    [Theory]
+    [InlineData(false)]
+    [InlineData(true)]
+    public async Task InsertOperations_NullImageBytes_ThrowArgumentNullException(bool insertOriginal)
+    {
+        Directory.CreateDirectory(_tempDirectory);
+        var storage = CreateStorage();
+        Func<Task<string>> operation = insertOriginal
+            ? () => storage.InsertOriginalAsync("test.jpg", null!)
+            : () => storage.InsertAsync("test.jpg", null!);
+
+        var exception = await Assert.ThrowsAsync<ArgumentNullException>(operation);
+
+        Assert.Equal("imageBytes", exception.ParamName);
+        Assert.Empty(Directory.GetFiles(insertOriginal ? OriginalDirectory : PrimaryDirectory));
+    }
+
+    [Theory]
+    [InlineData(false)]
+    [InlineData(true)]
+    public async Task InsertOperations_EmptyImageBytes_ThrowArgumentException(bool insertOriginal)
+    {
+        Directory.CreateDirectory(_tempDirectory);
+        var storage = CreateStorage();
+        Func<Task<string>> operation = insertOriginal
+            ? () => storage.InsertOriginalAsync("test.jpg", [])
+            : () => storage.InsertAsync("test.jpg", []);
+
+        var exception = await Assert.ThrowsAsync<ArgumentException>(operation);
+
+        Assert.Equal("imageBytes", exception.ParamName);
+        Assert.Empty(Directory.GetFiles(insertOriginal ? OriginalDirectory : PrimaryDirectory));
+    }
+
     [Fact]
     public async Task GetInfoAsync_ExistingFile_ReturnsImageInfo()
     {
