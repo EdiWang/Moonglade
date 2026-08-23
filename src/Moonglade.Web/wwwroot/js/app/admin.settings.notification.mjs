@@ -18,8 +18,10 @@ async function sendTestEmail() {
     toggleButtonState(testEmailButton, true);
 
     try {
-        await fetch2('/api/settings/email/test', 'POST', {});
-        success(getLocalizedString('emailSent'));
+        const queued = await fetch2('/api/settings/email/test', 'POST', {});
+        if (queued === true) {
+            success(getLocalizedString('emailSent'));
+        }
     } catch (err) {
         error(err);
     } finally {
