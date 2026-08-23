@@ -198,6 +198,7 @@ else {
 Clear-Host
 Write-Host "Your Moonglade will be deployed to [$rsgName] in [$regionName] under Azure subscription [$subscriptionName]. Please confirm before continuing." -ForegroundColor Green
 Write-Host "+ Linux App Service Plan with Docker" -ForegroundColor Cyan
+Write-Host "+ Storage Account with separate primary and original Azure Files mounts" -ForegroundColor Cyan
 Read-Host -Prompt "Press [ENTER] to continue, [CTRL + C] to cancel"
 
 # Set subscription
@@ -249,9 +250,6 @@ $sqlServerFqdn = $deploymentOutput.properties.outputs.sqlServerFqdn.value
 # Build SQL connection string from known variables
 $sqlConnStr = "Server=tcp:${sqlServerFqdn},1433;Initial Catalog=${sqlDatabaseName};Persist Security Info=False;User ID=${sqlServerUsername};Password=${sqlServerPassword};MultipleActiveResultSets=False;Encrypt=True;TrustServerCertificate=False;Connection Timeout=30;"
 
-# Retrieve storage connection string securely
-$storageConnStr = az storage account show-connection-string -g $rsgName -n $storageAccountName --query connectionString -o tsv
-
 Write-Host "Web App URL: $webAppUrl" -ForegroundColor Cyan
 
 # Update Web App Configuration
@@ -260,10 +258,8 @@ Write-Host "Updating Web App Configuration..." -ForegroundColor Green
 Write-Host "Setting SQL Database Connection String"
 az webapp config connection-string set -g $rsgName -n $webAppName -t SQLAzure --settings MoongladeDatabase=$sqlConnStr | Out-Null
 
-Write-Host "Adding Blob Storage Connection String and other settings"
+Write-Host "Setting forwarded headers configuration"
 az webapp config appsettings set -g $rsgName -n $webAppName --settings `
-    ImageStorage__Provider=azurestorage `
-    ImageStorage__AzureStorageSettings__ConnectionString=$storageConnStr `
     ASPNETCORE_FORWARDEDHEADERS_ENABLED=true | Out-Null
 
 # Restart Web App
