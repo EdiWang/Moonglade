@@ -56,7 +56,7 @@ The intended behavior is now decided: absent configuration disables email with a
 
 | No. | Task | Dependencies | Verification | Status |
 | --- | --- | --- | --- | --- |
-| 1 | Define a shared email capability status model with `Available`, `NotConfigured`, `Invalid`, and `Disabled` states; separate absent/blank required values from malformed supplied values, give `Invalid` precedence when both occur, and return only secret-safe messages | None | Unit tests cover repository defaults, partially missing provider values, unsupported provider, malformed addresses, invalid ports/worker values, mixed missing-and-invalid values, disabled worker, and valid SMTP/ACS settings | Not started |
+| 1 | Define a shared email capability status model with `Available`, `NotConfigured`, `Invalid`, and `Disabled` states; separate absent/blank required values from malformed supplied values, give `Invalid` precedence when both occur, and return only secret-safe messages | None | Unit tests cover repository defaults, partially missing provider values, unsupported provider, malformed addresses, invalid ports/worker values, mixed missing-and-invalid values, disabled worker, and valid SMTP/ACS settings | Completed |
 | 2 | Change email service registration so missing or invalid provider/worker configuration is evaluated by the status model instead of being raised by `ValidateOnStart` or later `IOptions<T>.Value` resolution; retain the existing rules as explicitly invoked validators, and emit one Warning for `NotConfigured`, one Error with safe details for `Invalid`, and Information for `Disabled` | 1 | Hosts with missing and invalid `Email` settings start successfully and can resolve the status without an `OptionsValidationException`; captured logs have the correct level and contain no secrets; a valid host resolves all email services | Not started |
 | 3 | Guard email execution paths with the shared status: make the worker exit without polling, make notification handlers skip enqueueing without failing the originating blog operation, and preserve existing pending outbox rows | 1, 2 | Worker and event-handler tests prove there is no poll, send, or enqueue while unavailable and valid configuration behaves unchanged | Not started |
 | 4 | Make the test-email endpoint reject unavailable email with a clear ProblemDetails-compatible response appropriate to `NotConfigured`, `Invalid`, or `Disabled`, and update its client-side handling so the Admin Portal never reports a false queued result | 1, 3 | Controller and JavaScript-facing response tests cover every unavailable state and the available state | Not started |
@@ -88,7 +88,7 @@ Implement the shared status and classification contract first so startup logging
 
 ## Current Progress
 
-The product behavior has been clarified and this implementation plan now distinguishes missing configuration from invalid configuration, including their different log levels and Admin Portal messages. No email source, configuration, deployment asset, test, or operator documentation has yet been changed by this task.
+No.1 is complete. `Moonglade.Email` now has a shared `EmailCapabilityStatusEvaluator` and the `Available`, `NotConfigured`, `Invalid`, and `Disabled` state model. The existing provider validator now emits structured missing-versus-invalid issues while preserving its current `IValidateOptions` failure messages. Focused tests cover every classification and precedence case in No.1. No.2-6 remain not started; DI registration and host-start behavior are intentionally unchanged at this stage.
 
 ## Verification Log
 
@@ -96,6 +96,8 @@ The product behavior has been clarified and this implementation plan now disting
 | --- | --- | --- | --- |
 | 2026-08-23 | Clean isolated `docker compose --project-name moonglade-codex-app-smoke up --detach --build` and `/health` poll | Failed | SQL Server became ready; Web restarted because Azure Communication was selected without its required ACS connection string and sender address |
 | 2026-08-23 | Isolated Web/SQL Server run with task-only SMTP settings and `Email__OutboxWorker__Enabled=false` | Passed | Application remained running and `/health` returned HTTP 200; no email was sent |
+| 2026-08-23 | `dotnet test src/Tests/Moonglade.Email.Tests/Moonglade.Email.Tests.csproj --no-restore` | Not run | The installed .NET 10 SDK rejected the legacy VSTest entry point before building or executing tests because the repository has not opted into the new `dotnet test` experience |
+| 2026-08-23 | `dotnet run --project src/Tests/Moonglade.Email.Tests/Moonglade.Email.Tests.csproj --no-restore` | Passed | xUnit v3 executed 73 tests, including 10 new capability-status tests; 73 passed, 0 failed |
 
 ## Issues and Resolutions
 
