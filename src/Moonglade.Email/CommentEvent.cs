@@ -15,11 +15,12 @@ public record CommentEvent(
 
 public class CommentNotificationEventHandler(
     IEmailNotificationQueue queue,
-    IBlogConfig blogConfig) : IEventHandler<CommentEvent>
+    IBlogConfig blogConfig,
+    EmailCapabilityStatus capabilityStatus) : IEventHandler<CommentEvent>
 {
     public async Task HandleAsync(CommentEvent notification, CancellationToken ct)
     {
-        if (!blogConfig.NotificationSettings.EnableEmailSending)
+        if (!capabilityStatus.IsAvailable || !blogConfig.NotificationSettings.EnableEmailSending)
         {
             return;
         }

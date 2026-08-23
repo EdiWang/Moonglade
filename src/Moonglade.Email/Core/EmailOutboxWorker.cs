@@ -8,19 +8,19 @@ namespace Moonglade.Email.Core;
 public class EmailOutboxWorker(
     IServiceScopeFactory scopeFactory,
     IOptions<EmailOutboxWorkerOptions> options,
+    EmailCapabilityStatus capabilityStatus,
     ILogger<EmailOutboxWorker> logger) : BackgroundService
 {
     private readonly string _workerId = $"{Environment.MachineName}-{Guid.NewGuid():N}";
 
     protected override async Task ExecuteAsync(CancellationToken stoppingToken)
     {
-        var workerOptions = options.Value;
-        if (!workerOptions.Enabled)
+        if (!capabilityStatus.IsAvailable)
         {
-            logger.LogInformation("EmailOutboxWorker is disabled.");
             return;
         }
 
+        var workerOptions = options.Value;
         logger.LogInformation("EmailOutboxWorker started with worker ID {WorkerId}.", _workerId);
 
         while (!stoppingToken.IsCancellationRequested)
