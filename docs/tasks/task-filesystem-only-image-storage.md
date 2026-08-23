@@ -76,7 +76,7 @@ When the primary path is backed by object storage and served through a CDN, the 
 | 1 | Record the approved boundary, inventory affected code/configuration/deployment/docs, and define the filesystem/CDN contract | None | Repository inspection, task review | Complete |
 | 2 | Add separate primary and original filesystem roots, rename the secondary-write API to original-image terminology, and expand filesystem unit tests | 1 | `Moonglade.ImageStorage.Tests` | Complete |
 | 3 | Remove Azure/S3 providers, settings, startup initialization, DI selection, provider diagnostics, tests, and SDK package references | 2 | Restore, package-reference inspection, `Moonglade.ImageStorage.Tests`, Web build | Complete |
-| 4 | Update Web call sites and localized admin help text; add focused regressions for upload/original isolation and unchanged CDN behavior | 2-3 | `Moonglade.Web.Tests`, `Moonglade.Utils.Tests`, syndication tests | Not started |
+| 4 | Update Web call sites and localized admin help text; add focused regressions for upload/original isolation and unchanged CDN behavior | 2-3 | `Moonglade.Web.Tests`, `Moonglade.Utils.Tests`, syndication tests | Complete |
 | 5 | Update Docker and Azure deployment assets for two filesystem paths and remove image-specific Azure Storage provisioning | 3 | `docker compose config`, Docker smoke test when available, Bicep/PowerShell validation | Not started |
 | 6 | Add the breaking-change upgrade guide and synchronize `README.md`, `AGENTS.md`, configuration examples, and deployment guidance | 3-5 | Documentation review and repository-wide stale-reference scan | Not started |
 | 7 | Run focused and solution-level verification, inspect the final package graph and diff, and record remaining environmental risks | 2-6 | Focused tests, Web build, solution tests where available, `git status --short` | Not started |
@@ -166,7 +166,7 @@ Run the focused suites after each batch, then run the Web build and the broadest
 
 ## Current Progress
 
-Task No. 3 is complete. Azure Blob and S3-compatible implementations, settings, tests, SDK dependencies, provider selection, Azure container initialization, and the Setup-to-ImageStorage project dependency are removed. Image storage registration now always resolves the two filesystem roots, default configuration contains only filesystem settings, and startup diagnostics report file system storage without exposing path details. The remaining `SecondaryContainerName` admin help text and localized resources are intentionally assigned to Task No. 4.
+Task No. 4 is complete. Web code and localized admin help now use original-image/filesystem terminology. Focused regressions preserve `/image/{filename}` upload responses, verify that original files written to the private filesystem root are not readable through the public image endpoint, cover direct permanent CDN redirects for GET and HEAD without storage reads, retain streaming/cache/range behavior, keep avatar writes on primary storage with direct CDN URLs, and verify CDN rewriting for rendered HTML/Markdown feed content. Docker/Azure deployment assets and long-lived documentation remain assigned to Tasks No. 5 and No. 6.
 
 ## Verification Log
 
@@ -185,6 +185,13 @@ Task No. 3 is complete. Azure Blob and S3-compatible implementations, settings, 
 | 2026-08-23 | `dotnet run --project src/Tests/Moonglade.ImageStorage.Tests/Moonglade.ImageStorage.Tests.csproj --no-restore -- -noColor` | Passed | 70/70 filesystem-only tests passed after provider-specific tests were removed |
 | 2026-08-23 | `dotnet build src/Moonglade.Web/Moonglade.Web.csproj --no-restore` | Passed | 0 warnings, 0 errors with the direct filesystem registration and removed Setup dependency |
 | 2026-08-23 | Parsed `src/Moonglade.Web/appsettings.json`, scanned non-documentation source for provider code, and ran `git diff --check` | Passed | JSON is valid; cloud provider code/package/startup references are gone. Only the Task No. 4 admin/localization wording remains; diff check reported line-ending notices only |
+| 2026-08-23 | `dotnet restore src/Tests/Moonglade.Syndication.Tests/Moonglade.Syndication.Tests.csproj` and `dotnet restore src/Tests/Moonglade.Web.Tests/Moonglade.Web.Tests.csproj` | Passed | Restored the Web test graph and the new syndication InMemory test dependency |
+| 2026-08-23 | `dotnet build src/Tests/Moonglade.Web.Tests/Moonglade.Web.Tests.csproj --no-restore` and `dotnet build src/Tests/Moonglade.Syndication.Tests/Moonglade.Syndication.Tests.csproj --no-restore` | Passed | Both builds completed with 0 warnings and 0 errors; Web and localized Razor resources compiled successfully |
+| 2026-08-23 | `dotnet run --project src/Tests/Moonglade.Web.Tests/Moonglade.Web.Tests.csproj --no-restore -- -noColor` | Passed | 175/175 tests passed, including upload response, real-filesystem original isolation, GET/HEAD CDN redirect, streaming/cache/range, background original write, settings avatar migration, and CDN avatar tests |
+| 2026-08-23 | `dotnet run --project src/Tests/Moonglade.Utils.Tests/Moonglade.Utils.Tests.csproj --no-restore -- -noColor` | Passed | 288/288 tests passed, including post-content CDN image rewriting for HTML and Markdown output |
+| 2026-08-23 | `dotnet run --project src/Tests/Moonglade.Syndication.Tests/Moonglade.Syndication.Tests.csproj --no-restore -- -noColor` | Passed | 25/25 tests passed, including direct CDN image URLs in full-content HTML and Markdown feeds |
+| 2026-08-23 | `dotnet run --project src/Tests/Moonglade.ImageStorage.Tests/Moonglade.ImageStorage.Tests.csproj --no-restore -- -noColor` | Passed | 70/70 filesystem storage tests passed |
+| 2026-08-23 | Parsed all four localized `Program.*.resx` files, scanned Web source/tests for image-storage `secondary` terminology, and ran `git diff --check` | Passed | Vendor-specific admin wording is gone; all resource files contain the new key. Diff check reported line-ending notices only |
 
 ## Issues and Resolutions
 

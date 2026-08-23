@@ -14,6 +14,8 @@ using Moonglade.ActivityLog;
 using Moonglade.Auth;
 using Moonglade.Configuration;
 using Moonglade.Data;
+using Moonglade.Features.Asset;
+using Moonglade.ImageStorage;
 using Moonglade.Web.Controllers;
 using Moq;
 using System.Net;
@@ -100,6 +102,53 @@ public class SettingsControllerTests
             Times.Never);
     }
 
+    [Fact]
+    public async Task Image_WhenCdnIsEnabled_MigratesAvatarToPrimaryStorageAndUsesDirectCdnUrl()
+    {
+        var avatarBytes = new byte[] { 1, 2, 3, 4 };
+        var generalSettings = GeneralSettings.DefaultValue;
+        generalSettings.AvatarUrl = "/assets/avatar";
+        var blogConfig = new BlogConfig
+        {
+            GeneralSettings = generalSettings,
+            ImageSettings = ImageSettings.DefaultValue
+        };
+        var commandMediator = new RecordingCommandMediator();
+        var queryMediator = new Mock<IQueryMediator>();
+        queryMediator
+            .Setup(x => x.QueryAsync(
+                It.Is<GetAssetQuery>(query => query.AssetId == AssetId.AvatarBase64),
+                It.IsAny<QueryMediationSettings>(),
+                It.IsAny<CancellationToken>()))
+            .ReturnsAsync(Convert.ToBase64String(avatarBytes));
+        var imageStorage = new Mock<IBlogImageStorage>();
+        var expectedFileName = $"avatar-{AssetId.AvatarBase64:N}.png";
+        imageStorage
+            .Setup(x => x.InsertAsync(expectedFileName, It.IsAny<byte[]>()))
+            .ReturnsAsync("avatar-cdn.png");
+        var controller = CreateController(
+            blogConfig,
+            commandMediator,
+            queryMediator.Object,
+            new Mock<IAuthenticationService>());
+        var model = new ImageSettings
+        {
+            EnableCDNRedirect = true,
+            CDNEndpoint = "https://cdn.example.com/images"
+        };
+
+        var result = await controller.Image(model, imageStorage.Object);
+
+        Assert.IsType<NoContentResult>(result);
+        imageStorage.Verify(x => x.InsertAsync(expectedFileName, It.Is<byte[]>(bytes => bytes.SequenceEqual(avatarBytes))), Times.Once);
+        imageStorage.Verify(x => x.InsertOriginalAsync(It.IsAny<string>(), It.IsAny<byte[]>()), Times.Never);
+        Assert.Equal("https://cdn.example.com/images/avatar-cdn.png", blogConfig.GeneralSettings.AvatarUrl);
+
+        var settingsUpdates = commandMediator.Commands.OfType<UpdateConfigurationCommand>().ToList();
+        Assert.Contains(settingsUpdates, command => command.Name == nameof(GeneralSettings));
+        Assert.Contains(settingsUpdates, command => command.Name == nameof(ImageSettings));
+    }
+
     private static LocalAccountSettings CreateLocalAccount()
     {
         var salt = SecurityHelper.GenerateSalt();
@@ -119,6 +168,21 @@ public class SettingsControllerTests
         RecordingCommandMediator commandMediator,
         Mock<IAuthenticationService> authenticationService)
     {
+        return CreateController(
+            new BlogConfig { LocalAccountSettings = account },
+            commandMediator,
+            Mock.Of<IQueryMediator>(),
+            authenticationService,
+            account.Username);
+    }
+
+    private static SettingsController CreateController(
+        BlogConfig blogConfig,
+        RecordingCommandMediator commandMediator,
+        IQueryMediator queryMediator,
+        Mock<IAuthenticationService> authenticationService,
+        string username = "admin")
+    {
         var services = new ServiceCollection()
             .AddSingleton(authenticationService.Object)
             .BuildServiceProvider();
@@ -128,15 +192,15 @@ public class SettingsControllerTests
             RequestServices = services
         };
         httpContext.User = new ClaimsPrincipal(
-            new ClaimsIdentity([new Claim(ClaimTypes.Name, account.Username)], "TestAuth"));
+            new ClaimsIdentity([new Claim(ClaimTypes.Name, username)], "TestAuth"));
         httpContext.Connection.RemoteIpAddress = IPAddress.Parse("127.0.0.1");
         httpContext.Request.Headers.UserAgent = "unit-test-agent";
 
         var controller = new SettingsController(
-            new BlogConfig { LocalAccountSettings = account },
+            blogConfig,
             Mock.Of<ILogger<SettingsController>>(),
             Mock.Of<IEventMediator>(),
-            Mock.Of<IQueryMediator>(),
+            queryMediator,
             commandMediator);
 
         controller.ControllerContext = new ControllerContext

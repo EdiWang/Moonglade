@@ -1689,8 +1689,8 @@
   <data name="Password updated." xml:space="preserve">
     <value>パスワードを更新しました。</value>
   </data>
-  <data name="Please configure `SecondaryContainerName` in `appsettings.json`" xml:space="preserve">
-    <value>`appsettings.json` で `SecondaryContainerName` を設定してください</value>
+  <data name="Original images are stored in the private `OriginalFileSystemPath` location." xml:space="preserve">
+    <value>元画像は非公開の `OriginalFileSystemPath` 保存先に保存されます。</value>
   </data>
   <data name="Please provide a valid tag name." xml:space="preserve">
     <value>有効なタグ名を入力してください。</value>

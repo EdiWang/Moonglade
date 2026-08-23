@@ -94,7 +94,7 @@ public class ImageController(
         }
 
         var primaryFileName = fileNameGen.GetFileName(name);
-        var secondaryFileName = fileNameGen.GetFileName(name, "origin");
+        var originalFileName = fileNameGen.GetFileName(name, "origin");
 
         await using var stream = new MemoryStream();
         await file.CopyToAsync(stream);
@@ -111,7 +111,7 @@ public class ImageController(
 
         if (ShouldKeepOriginal(skipWatermark))
         {
-            StoreOriginalImageAsync(secondaryFileName, uploadValidation.ImageBytes);
+            StoreOriginalImageAsync(originalFileName, uploadValidation.ImageBytes);
         }
 
         logger.LogInformation("Image '{FileName}' uploaded.", primaryFileName);
