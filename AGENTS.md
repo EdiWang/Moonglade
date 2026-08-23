@@ -167,7 +167,7 @@ Important configuration areas:
 - Use structured logging placeholders, for example `logger.LogInformation("Post updated with ID: {PostId}", post.Id);`.
 - Keep comments sparse and useful. Add comments only for non-obvious compatibility, security, localization, protocol, or business decisions.
 - Keep changes cross-platform, especially paths, environment variables, container behavior, mounted-filesystem semantics, and Linux App Service scenarios.
-- When touching deployment assets, keep Azure App Service on Linux, Docker Compose, SQL Server, and PostgreSQL scenarios in mind. The official Bicep deployment provisions two Azure Files shares and App Service Path mappings at `/app/images` and `/app/images-origin`; it must not restore application-level Azure storage settings. Container deployments need two persistent writable mappings when original images must survive replacement.
+- When touching deployment assets, keep Azure App Service on Linux, Docker Compose, SQL Server, and PostgreSQL scenarios in mind. The official Bicep deployment provisions two Azure Files shares and App Service Path mappings at `/app/images` and `/app/images-origin`; it must not restore application-level Azure storage settings. The default Docker image pre-creates both paths for the `app` user, and Compose persists them in separate named volumes.
 
 ### HTTP And Error Handling
 

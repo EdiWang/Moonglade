@@ -52,7 +52,7 @@ For local testing or small-scale use, deploy Moonglade using Docker:
 docker compose up -d
 ```
 
-For durable image storage, map two separate writable volumes and set `ImageStorage__FileSystemPath` and `ImageStorage__OriginalFileSystemPath` to their container paths. The supplied Compose file maps the primary path for local use; add a second persistent mapping before relying on retained original images across container replacement.
+The supplied Compose file maps separate writable named volumes to `/app/images` and `/app/images-origin` and configures both `ImageStorage` paths. Keep both volumes when recreating or upgrading the container so public and retained original images remain durable and isolated.
 
 ## 🛠️ Development
 

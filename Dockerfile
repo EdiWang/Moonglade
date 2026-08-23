@@ -3,7 +3,7 @@ LABEL maintainer="edi.wang@outlook.com"
 LABEL repo="https://github.com/EdiWang/Moonglade"
 
 USER root
-RUN mkdir -p /app/images && chown -R app:app /app/images
+RUN mkdir -p /app/images /app/images-origin && chown -R app:app /app/images /app/images-origin
 
 USER app
 

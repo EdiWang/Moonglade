@@ -52,6 +52,7 @@ When the primary path is backed by object storage and served through a CDN, the 
 - Simplify image storage DI registration to the filesystem implementation only.
 - Remove vendor image-storage data from startup diagnostics and default application configuration.
 - Update the Azure deployment flow so Bicep retains its Storage Account, provisions and mounts separate writable Azure Files shares, and PowerShell no longer injects application-level Azure image-provider settings.
+- Update the default Docker image and Compose deployment so both image roots are writable by the `app` user and persist in separate named volumes.
 - Preserve and verify CDN URL generation, redirects, feeds, avatars, upload behavior, image streaming, cache headers, and range requests.
 - Add an upgrade guide for existing filesystem, Azure Blob, and S3-compatible installations without providing vendor-specific mount recipes.
 - Synchronize `README.md`, `AGENTS.md`, configuration examples, deployment documentation, and localized UI resources.
@@ -80,6 +81,7 @@ When the primary path is backed by object storage and served through a CDN, the 
 | 5 | Update the Azure Bicep and PowerShell deployment flow to provision and mount separate writable Azure Files shares without restoring application-level Azure provider settings | 3 | Local Bicep compilation/inspection and PowerShell syntax/stale-setting checks only; Azure deployment validation deferred by user request | Complete |
 | 6 | Add the breaking-change upgrade guide and synchronize `README.md`, `AGENTS.md`, configuration examples, and deployment guidance | 3-5 | Documentation review and repository-wide stale-reference scan | Complete |
 | 7 | Run focused and solution-level verification, inspect the final package graph and diff, and record remaining environmental risks | 2-6 | Focused tests, Web build, solution tests where available, `git status --short` | Complete |
+| 8 | Fix the default Docker image and Compose deployment after runtime testing exposed missing original-path ownership and persistence | 7 | Compose model assertions, image build, fresh-volume write, replacement-container persistence | Complete |
 
 ## Execution Order
 
@@ -150,6 +152,16 @@ Suggested commit: `docs: document filesystem-only image storage`
 
 Run the focused suites after each batch, then run the Web build and the broadest practical solution test pass. Inspect the final diff for accidental unrelated formatting and confirm that only the task record and approved implementation files changed. Record exact commands, test counts, failures, Docker availability, and any unverified deployment tooling in this task file.
 
+### Batch 7: Docker two-root deployment fix
+
+1. Pre-create `/app/images` and `/app/images-origin` in the runtime image and assign both to the `app` user.
+2. Configure `ImageStorage__FileSystemPath` and `ImageStorage__OriginalFileSystemPath` in Compose.
+3. Persist the two paths in separate named volumes.
+4. Update long-lived Docker guidance and record the unrelated default email startup failure in a separate deferred task.
+5. Parse the expanded Compose model, build the production image, and verify that two fresh volumes are writable without root initialization and survive container replacement.
+
+Suggested commit: `fix: persist both image roots in docker`
+
 ## Acceptance Criteria
 
 - The application has no Azure Blob or S3-compatible image storage implementation, setting, registration, initialization, test, or SDK dependency.
@@ -163,13 +175,14 @@ Run the focused suites after each batch, then run the Web build and the broadest
 - CDN configuration remains vendor-neutral and validates an HTTPS endpoint as it does today.
 - Default configuration and startup output contain no cloud storage credentials, service endpoints, buckets, containers, regions, or provider names.
 - The Azure Bicep deployment does not use the read-only Azure Blob mount option and does not reintroduce Azure SDK/provider configuration into Moonglade.
+- The default Docker image pre-creates both configured image paths for the `app` user, and Compose maps each path to its own persistent named volume.
 - The upgrade guide clearly states the breaking configuration and manual data/mount prerequisites.
 - `README.md` and `AGENTS.md` describe the new responsibility boundary consistently.
 - Focused tests and the Web build pass; any unavailable Docker, Azure CLI, or full-solution checks are explicitly recorded.
 
 ## Current Progress
 
-Task No. 7 and the planned implementation are complete. The full solution restores and builds with zero warnings and errors. All 14 test projects that do not require Docker passed: 1,036 tests executed with zero failures and zero skips, including the focused ImageStorage, Web, Utils, and Syndication regressions. The package graph and source scan contain no removed Azure Blob or S3 SDK/provider references. Bicep compilation and compiled-template assertions, PowerShell syntax parsing, Docker Compose configuration parsing, JSON/XML parsing, and the complete task-range diff audit passed. `Moonglade.Setup.Tests` and container runtime smoke tests remain unexecuted because the Docker Desktop engine was unavailable. Live Azure deployment and mount validation remain explicitly deferred to the user; no Azure resource query, validation, what-if, or deployment was performed.
+Task No. 8 and the planned filesystem-only image-storage implementation are complete. The default Docker image now pre-creates `/app/images` and `/app/images-origin` with `app:app` ownership. Compose configures both application paths and persists them in separate `moonglade-images` and `moonglade-images-origin` named volumes. A complete image build passed, two fresh volumes were writable by the non-root `app` user without initialization, and both files survived replacement containers through direct mounts and the actual Compose service definition. README and AGENTS now describe the default dual-volume behavior. The unrelated default Compose email startup failure is retained separately in `docs/tasks/task-compose-email-startup.md`; no Email code or configuration changed in this batch. Live Azure deployment and mount validation remain explicitly deferred to the user; no Azure resource query, validation, what-if, or deployment was performed.
 
 ## Verification Log
 
@@ -215,6 +228,21 @@ Task No. 7 and the planned implementation are complete. The full solution restor
 | 2026-08-23 | `bicep build Deployment/main.bicep --stdout` plus compiled ARM structure assertions | Passed | Exactly one Storage Account with Blob public access disabled, two Azure Files shares, two `AzureFiles` App Service mounts, and `/app/images` plus `/app/images-origin` were confirmed locally |
 | 2026-08-23 | Parsed `Deployment/Deploy-Azure-App-Service.ps1` with `System.Management.Automation.Language.Parser` and ran `docker compose config --quiet` | Passed | PowerShell syntax and Compose configuration are valid; neither check contacted Azure or required the Docker daemon |
 | 2026-08-23 | Inspected `b701f861a..HEAD`, ran stale-reference/default-configuration assertions, and ran `git diff --check` for the task range and current worktree | Passed | Five implementation commits changed 34 task-scoped files with 897 insertions and 1,756 deletions. Default ImageStorage contains only `CacheMinutes`, `FileSystemPath`, and `OriginalFileSystemPath`; before this final task-record update the working tree was clean |
+| 2026-08-23 | Rechecked `docker version` after Docker Desktop startup | Passed | Docker CLI and Linux engine 29.7.2 were available; no containers were running before the smoke tests |
+| 2026-08-23 | `dotnet run --project src/Tests/Moonglade.Setup.Tests/Moonglade.Setup.Tests.csproj --no-build -- -noColor` | Passed | 18/18 tests passed with zero skips, bringing the complete repository total to 1,054/1,054. The current Setup test source does not instantiate Testcontainers despite retaining the Testcontainers package references, so this command did not create database containers |
+| 2026-08-23 | `docker build --tag moonglade-codex-storage-smoke:20260823 .` | Passed | The complete production image restored, built, and published successfully; the containerized Release build reported 0 warnings and 0 errors |
+| 2026-08-23 | Fresh dual named-volume write as the image's `app` user | Failed | `/app/images` inherited `app:app` from the image and was writable, while the previously absent `/app/images-origin` mount root was `root:root`; creating an original file failed with permission denied |
+| 2026-08-23 | Initialize both task-owned volumes as root, write as `app`, remove the writer container, and read from a replacement container | Passed | Both roots were `app:app`; primary and original test files survived container replacement with their expected contents |
+| 2026-08-23 | Default `docker compose --project-name moonglade-codex-app-smoke up --detach --build` and `/health` poll | Failed outside image storage | SQL Server became ready, but the Web container restarted because the default `Email:Provider=AzureCommunication` requires non-empty ACS settings. This is an existing Compose/application configuration prerequisite, not an image-storage failure |
+| 2026-08-23 | Isolated Compose SQL Server plus one-off Web container with explicit test SMTP settings and disabled outbox worker | Passed | The built image stayed running, `/health` returned HTTP 200, and the `app` user wrote both `/app/images` and the unmounted default `/home/app/moonglade/images-origin` path. The latter is writable but ephemeral and does not prove original-image persistence in the supplied Compose deployment |
+| 2026-08-23 | Cleanup of task-owned Docker containers, volumes, networks, and image tags after both smoke-test sequences | Passed | No task-created Docker objects remained; repository files and existing Docker data were not removed |
+| 2026-08-23 | Parsed `docker compose config --format json` after the Docker fix | Passed | Both ImageStorage environment paths, both independent named-volume definitions, and both `/app/images` plus `/app/images-origin` mount targets were present |
+| 2026-08-23 | `docker build --tag moonglade-codex-storage-fixed:20260823 .` | Passed | The updated production image built successfully; both runtime paths were created and assigned to `app:app` in the base stage |
+| 2026-08-23 | Mount two fresh named volumes and write both roots as the image's non-root `app` user | Passed | `/app/images` and `/app/images-origin` both inherited `app:app`; primary and original writes succeeded without a root initialization container |
+| 2026-08-23 | Read both fresh-volume files from a replacement container | Passed | Primary and original contents persisted and both mount roots remained owned by `app:app` |
+| 2026-08-23 | Two actual `docker compose run --rm --no-deps` replacement containers using the updated Web service | Passed | Compose supplied both ImageStorage environment paths, created both declared volumes, wrote both roots, and read both files from the replacement container |
+| 2026-08-23 | Cleanup of Docker-fix smoke containers, volumes, network, and image | Passed | All task-owned Docker objects were removed; no existing Docker data was modified |
+| 2026-08-23 | `dotnet run --project src/Tests/Moonglade.ImageStorage.Tests/Moonglade.ImageStorage.Tests.csproj --no-build -- -noColor` after the Docker fix | Passed | 70/70 image-storage tests passed with zero skips |
 
 ## Issues and Resolutions
 
@@ -228,8 +256,9 @@ Task No. 7 and the planned implementation are complete. The full solution restor
 - **The App Service Blob path-mapping option is read-only:** Moonglade requires create, overwrite, and delete operations. Resolution: the official Bicep deployment uses two SMB-backed Azure Files shares and keeps the original-image share separate from the public primary-image share.
 - **Live Azure validation was explicitly deferred:** Local compilation can verify syntax and compiled structure but cannot prove that App Service successfully mounts the shares with the expected runtime permissions. Resolution: record this as an intentional final-validation item and do not call Azure from Task No. 5.
 - **A gitignored local development override still used the removed provider schema:** This could silently send a local run to the default profile paths after the application stopped binding provider settings. Resolution: replace only its local `ImageStorage` block with the two filesystem path keys, without recording its former values or treating the ignored file as a commit artifact.
-- **The supplied Compose file maps only the primary image root:** Retained originals would otherwise use the container profile default and would not be durable across container replacement. Resolution for this documentation-only batch: the README explicitly requires a second persistent mapping when original-image retention is used; Docker assets remain unchanged.
-- **Docker-dependent final verification was unavailable:** Docker CLI discovery succeeded, but the Docker Desktop Linux engine was not running. Resolution: run all 14 daemon-independent test projects and local Compose parsing now; retain `Moonglade.Setup.Tests`, image build/startup, mount persistence, and restart smoke tests as explicit environmental follow-ups.
+- **The supplied Compose file originally mapped only the primary image root, and a newly added original named volume was not writable by default:** A fresh volume mounted at the previously absent `/app/images-origin` path was `root:root`, so the image's `app` user received permission denied. Resolution: pre-create and assign both directories to `app:app` in the Dockerfile, configure both path variables, and mount separate named volumes in Compose. Fresh-volume and replacement-container tests passed without root initialization.
+- **Docker-dependent final verification was initially unavailable:** Docker CLI discovery succeeded, but the Docker Desktop Linux engine was not running during the first No. 7 pass. Resolution: after the user started Docker Desktop, run Setup tests, a complete image build, fresh-volume permission checks, replacement-container persistence checks, and an isolated Web/SQL Server health smoke test; results are recorded above.
+- **Default Compose startup is blocked by unrelated email option validation:** `appsettings.json` selects Azure Communication while its required ACS values are empty, and the supplied Compose environment does not override them. Resolution for isolation: supply task-only SMTP values and disable the outbox worker for the second smoke run; the application then became healthy. The future product fix is tracked separately in `docs/tasks/task-compose-email-startup.md`; no Email configuration changed in the image-storage work.
 - **The first compiled ARM assertion used the wrong resource-name representation:** Bicep compiled successfully, but the test expected a literal nested resource name instead of the generated ARM `format(...)` expression. Resolution: identify the single `Microsoft.Web/sites/config` resource by type, confirm its name expression contains `azurestorageaccounts`, and then assert both mount definitions and paths; the corrected validation passed.
 
 ## Follow-ups
@@ -237,7 +266,7 @@ Task No. 7 and the planned implementation are complete. The full solution restor
 - Community-maintained vendor mount examples may live outside the Moonglade core repository after this task, but Moonglade will not test or support them as product integrations.
 - A future task may add optional operational diagnostics for path writability or storage latency if real production evidence justifies it; it must not identify vendors or change the `/health` liveness contract.
 - Final Azure validation must confirm both Path mappings appear in App Service, the container user can create/read/delete files in each mount, files survive an app restart, and the original share is not exposed as the primary/CDN origin.
-- When Docker Desktop is available, run `Moonglade.Setup.Tests` and container smoke tests, including two-root writability and persistence across container replacement. The current Compose file requires an operator-supplied second persistent mapping when original-image retention is enabled.
+- Address the independent default Compose email configuration prerequisite under `docs/tasks/task-compose-email-startup.md` if `docker compose up -d` is expected to become healthy without additional environment overrides.
 
 ## Notes
 
