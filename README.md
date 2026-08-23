@@ -42,6 +42,8 @@ The main solution file is `src/Moonglade.slnx`.
 
 Get started in 10 minutes with minimal Azure resources using our [automated deployment script](https://github.com/EdiWang/Moonglade/wiki/Quick-Deploy-on-Azure).
 
+The Bicep template provisions separate writable Azure Files shares for public and original images, mounts them into the App Service container at `/app/images` and `/app/images-origin`, and configures Moonglade with those filesystem paths. It does not provision a CDN or migrate images from an older Blob container.
+
 ### Quick Local Deployment (Docker)
 
 For local testing or small-scale use, deploy Moonglade using Docker:
@@ -49,6 +51,8 @@ For local testing or small-scale use, deploy Moonglade using Docker:
 ```bash
 docker compose up -d
 ```
+
+For durable image storage, map two separate writable volumes and set `ImageStorage__FileSystemPath` and `ImageStorage__OriginalFileSystemPath` to their container paths. The supplied Compose file maps the primary path for local use; add a second persistent mapping before relying on retained original images across container replacement.
 
 ## 🛠️ Development
 
@@ -149,67 +153,33 @@ Built-in comment submissions also use a hidden honeypot field and form elapsed-t
 
 ### Image Storage
 
-Configure the `ImageStorage` section in `appsettings.json` to choose where blog images are stored.
+Moonglade stores images through the filesystem only. Local disks, Docker volumes, network filesystems, and object-storage mounts are deployment concerns; the application contains no Azure Blob or S3-compatible storage provider or SDK.
 
 Uploaded image files are validated against their file content before storage. SVG uploads are supported, but active content and unsafe URL references are sanitized before the image is saved.
 
-#### **Azure Blob Storage**
-
-Create an [Azure Blob Storage](https://azure.microsoft.com/en-us/services/storage/blobs/) container with appropriate permissions:
+Configure two absolute, non-overlapping roots:
 
 ```json
-{
-  "Provider": "azurestorage",
-  "AzureStorageSettings": {
-    "ConnectionString": "YOUR_CONNECTION_STRING",
-    "ContainerName": "YOUR_CONTAINER_NAME",
-    "SecondaryContainerName": "YOUR_ORIGINAL_IMAGE_CONTAINER_NAME"
-  }
-}
-```
-- Enable CDN in admin settings for faster image delivery.
-
-#### **S3-Compatible Object Storage**
-
-Use `s3compatible` for AWS S3 and S3-compatible object storage services such as Cloudflare R2, MinIO, Backblaze B2, DigitalOcean Spaces, Alibaba Cloud OSS, and Tencent Cloud COS.
-
-```json
-{
-  "Provider": "s3compatible",
-  "S3CompatibleStorageSettings": {
-    "ServiceUrl": "https://YOUR_S3_COMPATIBLE_ENDPOINT",
-    "Region": "us-east-1",
-    "AccessKeyId": "YOUR_ACCESS_KEY_ID",
-    "SecretAccessKey": "YOUR_SECRET_ACCESS_KEY",
-    "BucketName": "YOUR_BUCKET_NAME",
-    "SecondaryBucketName": "YOUR_ORIGINAL_IMAGE_BUCKET_NAME",
-    "ForcePathStyle": false
-  }
+"ImageStorage": {
+  "CacheMinutes": 60,
+  "FileSystemPath": "/app/images",
+  "OriginalFileSystemPath": "/app/images-origin"
 }
 ```
 
-Use environment variables or another secret provider for credentials in production, for example `ImageStorage__S3CompatibleStorageSettings__SecretAccessKey`. Keep `InsertAsync` results as object keys; CDN/public URL behavior still comes from the admin image settings and the `/image/{filename}` endpoint.
+`FileSystemPath` contains public, processed images and is the only root read by `/image/{filename}`. `OriginalFileSystemPath` contains private original uploads when original-image retention is enabled. Never nest either root inside the other, and never expose the original root through static files or a CDN origin.
 
-#### **File System** (Not recommended)
+Both paths must be writable by the application identity and persistent across process or container replacement. Replicated deployments require shared storage with a coherent view across all replicas. Moonglade attempts to create missing directories, but it does not configure mount drivers, cloud credentials, network filesystems, or volume plugins.
 
-Windows:
-```json
-{
-  "Provider": "filesystem",
-  "FileSystemPath": "C:\\UploadedImages"
-}
-```
-Linux:
-```json
-{
-  "Provider": "filesystem",
-  "FileSystemPath": "/app/images"
-}
-```
+Leave both paths empty only for development. The defaults are `<user-profile>/moonglade/images` and `<user-profile>/moonglade/images-origin`; an unmounted container user profile is not durable storage.
 
-When using the file system, ensure the path exists and has appropriate permissions. If the path does not exist, Moonglade will attempt to create it. 
+#### CDN Delivery
 
-Leave the `FileSystemPath` empty to use the default path (`~/home/moonglade/images` on Linux or `%UserProfile%\moonglade\images` on Windows).
+CDN delivery remains configured in the admin image settings. When enabled, rendered posts and feeds use the configured CDN endpoint directly, and `/image/{filename}` redirects the browser to the CDN URL instead of proxying image bytes through Moonglade.
+
+The CDN origin must map a primary-root filename to the same root object key, serve the correct image `Content-Type`, and make a file visible only after its write is closed. CDN caching, invalidation, TLS, origin access, and any storage mount adapter are operator responsibilities. The private original root must not be attached to the CDN origin.
+
+Upgrading from a previous filesystem, Azure Blob, or S3-compatible provider requires manual storage preparation and data migration before the new version starts. See [Upgrade to Filesystem-Only Image Storage](docs/upgrade-filesystem-image-storage.md).
 
 ### Comment Moderation
 

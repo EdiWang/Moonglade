@@ -78,7 +78,7 @@ When the primary path is backed by object storage and served through a CDN, the 
 | 3 | Remove Azure/S3 providers, settings, startup initialization, DI selection, provider diagnostics, tests, and SDK package references | 2 | Restore, package-reference inspection, `Moonglade.ImageStorage.Tests`, Web build | Complete |
 | 4 | Update Web call sites and localized admin help text; add focused regressions for upload/original isolation and unchanged CDN behavior | 2-3 | `Moonglade.Web.Tests`, `Moonglade.Utils.Tests`, syndication tests | Complete |
 | 5 | Update the Azure Bicep and PowerShell deployment flow to provision and mount separate writable Azure Files shares without restoring application-level Azure provider settings | 3 | Local Bicep compilation/inspection and PowerShell syntax/stale-setting checks only; Azure deployment validation deferred by user request | Complete |
-| 6 | Add the breaking-change upgrade guide and synchronize `README.md`, `AGENTS.md`, configuration examples, and deployment guidance | 3-5 | Documentation review and repository-wide stale-reference scan | Not started |
+| 6 | Add the breaking-change upgrade guide and synchronize `README.md`, `AGENTS.md`, configuration examples, and deployment guidance | 3-5 | Documentation review and repository-wide stale-reference scan | Complete |
 | 7 | Run focused and solution-level verification, inspect the final package graph and diff, and record remaining environmental risks | 2-6 | Focused tests, Web build, solution tests where available, `git status --short` | Not started |
 
 ## Execution Order
@@ -169,7 +169,7 @@ Run the focused suites after each batch, then run the Web build and the broadest
 
 ## Current Progress
 
-Task No. 5 is complete under the clarified Bicep-and-PowerShell scope. `Deployment/main.bicep` retains the Storage Account, disables public Blob access, provisions separate private SMB Azure Files shares for primary and original images, mounts them through App Service path mappings at `/app/images` and `/app/images-origin`, and configures the matching `ImageStorage` filesystem paths. `Deployment/Deploy-Azure-App-Service.ps1` still passes the Storage Account name to Bicep but no longer retrieves its connection string or injects removed Azure provider settings. Docker, Compose, application, and long-lived documentation files remain unchanged, and no Azure environment was queried or used for validation.
+Task No. 6 is complete. `README.md` and `AGENTS.md` now describe the filesystem-only application boundary, separate public primary and private original-image roots, operator-owned mounts, direct browser-to-CDN delivery, and the official Azure Files Path mappings. `docs/upgrade-filesystem-image-storage.md` records the breaking configuration change, migration and rollback sequence, storage and CDN contracts, permissions, persistence, multi-replica, commit-on-close, media-type, and validation requirements without vendor mount commands. The README also makes the supplied Compose file's primary-only mapping explicit and requires operators who retain originals to add a second persistent mapping. No application or deployment implementation changed in this batch.
 
 ## Verification Log
 
@@ -202,6 +202,9 @@ Task No. 5 is complete under the clarified Bicep-and-PowerShell scope. `Deployme
 | 2026-08-23 | Parsed `Deployment/Deploy-Azure-App-Service.ps1` with `System.Management.Automation.Language.Parser` | Passed | PowerShell syntax is valid without executing the script or any Azure CLI command |
 | 2026-08-23 | Scanned the PowerShell deployment script for `ImageStorage__Provider`, `AzureStorageSettings`, storage connection-string retrieval, and obsolete Blob configuration messages | Passed | No obsolete application-level Azure image-provider settings or connection-string handling remain; the Storage Account name is still passed to Bicep |
 | 2026-08-23 | Rebuilt `Deployment/main.bicep`, checked final changed-file scope, and ran `git diff --check` | Passed | Bicep compilation passed; only Bicep, PowerShell, and this task record changed. Docker, Compose, and application source remain untouched; diff check reported line-ending notices only |
+| 2026-08-23 | Reviewed current filesystem registration, path validation, image endpoint/CDN behavior, default configuration, Docker assets, and Azure Files mounts against the new documentation | Passed | Documentation distinguishes application behavior from operator-owned storage and does not claim that mounts, CDN provisioning, data migration, or storage readiness are managed by Moonglade |
+| 2026-08-23 | Repository-wide `rg` scan for removed image provider names, settings, SDKs, credentials, bucket/container terminology, and legacy UI wording | Passed | Remaining old provider names occur only in the breaking-change migration guide; `azurestorageaccounts` remains only as the required App Service configuration resource name |
+| 2026-08-23 | Parsed both available Web appsettings files as JSON, parsed all four localized resource files as XML, checked the new README/AGENTS upgrade-guide target, and ran `git diff --check` | Passed | Configuration and resources parse; the new documentation link resolves; diff check reports line-ending notices only |
 
 ## Issues and Resolutions
 
@@ -214,12 +217,13 @@ Task No. 5 is complete under the clarified Bicep-and-PowerShell scope. `Deployme
 - **The documented `dotnet test <project>` command is incompatible with the currently restored Microsoft.Testing.Platform packages under the installed .NET 10.0.400 SDK:** The legacy VSTest target rejected the run before executing tests, and `dotnet test --project` was parsed as an MSBuild switch because the repository has not opted into the new CLI mode. Resolution for this batch: run the xUnit v3 executable through `dotnet run --project <test-project>`; all focused tests then passed.
 - **The App Service Blob path-mapping option is read-only:** Moonglade requires create, overwrite, and delete operations. Resolution: the official Bicep deployment uses two SMB-backed Azure Files shares and keeps the original-image share separate from the public primary-image share.
 - **Live Azure validation was explicitly deferred:** Local compilation can verify syntax and compiled structure but cannot prove that App Service successfully mounts the shares with the expected runtime permissions. Resolution: record this as an intentional final-validation item and do not call Azure from Task No. 5.
+- **A gitignored local development override still used the removed provider schema:** This could silently send a local run to the default profile paths after the application stopped binding provider settings. Resolution: replace only its local `ImageStorage` block with the two filesystem path keys, without recording its former values or treating the ignored file as a commit artifact.
+- **The supplied Compose file maps only the primary image root:** Retained originals would otherwise use the container profile default and would not be durable across container replacement. Resolution for this documentation-only batch: the README explicitly requires a second persistent mapping when original-image retention is used; Docker assets remain unchanged.
 
 ## Follow-ups
 
 - Community-maintained vendor mount examples may live outside the Moonglade core repository after this task, but Moonglade will not test or support them as product integrations.
 - A future task may add optional operational diagnostics for path writability or storage latency if real production evidence justifies it; it must not identify vendors or change the `/health` liveness contract.
-- Select a release-specific upgrade filename before merging if the target Moonglade version is known.
 - Final Azure validation must confirm both Path mappings appear in App Service, the container user can create/read/delete files in each mount, files survive an app restart, and the original share is not exposed as the primary/CDN origin.
 
 ## Notes

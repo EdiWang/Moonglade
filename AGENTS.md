@@ -20,7 +20,7 @@ The solution file is `src/Moonglade.slnx`. The root `README.md` is the main depl
 | Background work | ASP.NET Core hosted services, `Cronos`, `ScheduledPublishService`, `UpdateCheckService`, `EmailOutboxWorker`, and `CannonService` for queued fire-and-forget work. |
 | Authentication | Cookie-based local account authentication and Microsoft Entra ID through `Microsoft.Identity.Web`. |
 | Frontend | Server-rendered Razor, Bootstrap, Bootstrap Icons, Alpine.js, unified Moonglade.Editor for rich HTML post editing plus Markdown/CSS/HTML code-like modes, Tagify, Mermaid.js for Markdown diagrams on post reading pages, and project-local JavaScript modules under `src/Moonglade.Web/wwwroot/js/app`. |
-| Image storage | `IBlogImageStorage` abstraction with Azure Blob Storage, S3-compatible object storage through `AWSSDK.S3`, and local file system providers. |
+| Image storage | `IBlogImageStorage` with one filesystem implementation and separate public primary and private original-image roots. External storage mounts and CDN origins are operator-owned. |
 | External integrations | Webmention, IndexNow, site ownership verification files, email outbox delivery, local content moderation, Gravatar, Azure App Service logging, and Azure/Docker deployment assets. |
 | Package management | NuGet package references in project files; no repository-level `Directory.Packages.props`, `NuGet.config`, or package lock file was found at the time this document was updated. |
 | Build tools | .NET SDK CLI, Visual Studio, VS Code task `dotnet build ${workspaceFolder}/src/Moonglade.Web/Moonglade.Web.csproj`, Docker multi-stage build, Docker Compose, and Azure Bicep/PowerShell deployment assets. |
@@ -48,7 +48,7 @@ Important configuration areas:
 | `IndexNow` | API key, ping targets, and cooldown interval. | Optional | API key also maps the IndexNow verification file endpoint. |
 | `ForwardedHeaders` | Reverse proxy/client IP configuration. | Deployment-dependent | Required behind some proxies/load balancers. Only explicitly configured `KnownProxies` are trusted; an empty or invalid list retains ASP.NET Core's loopback-only defaults. |
 | `EnableCSP`, `CSPValue` | Optional Content Security Policy response header. | Optional | `X-Content-Type-Options: nosniff` is always emitted; CSP is emitted only when enabled and non-empty. |
-| `ImageStorage` | Selects `filesystem`, `azurestorage`, or `s3compatible` and related paths/container/bucket names. | Yes | Use environment overrides for provider secrets and production paths. S3-compatible credentials live under `ImageStorage:S3CompatibleStorageSettings`. |
+| `ImageStorage` | Configures filesystem image storage through `FileSystemPath`, `OriginalFileSystemPath`, and `CacheMinutes`. | Yes | Both paths must be absolute, writable, durable, distinct, and non-overlapping. Environment overrides are `ImageStorage__FileSystemPath` and `ImageStorage__OriginalFileSystemPath`. |
 | `DefaultEditor` | Default post content editor/content type. | Optional | Used during startup backfill for older posts. |
 | `PostCacheMinutes`, `PagesCacheMinutes`, `WidgetCacheMinutes` | Cache durations. | Optional | Revisit when changing rendering or invalidation paths. |
 | `AutoDatabaseMigration` | Production startup migration behavior. | Optional | Automatic migration is skipped outside `Production`. A stable Production release reads the manifest directly, migrates before configuration initialization writes, and then initializes configuration once. Cumulative scripts update the manifest as their completion marker. When disabled, operators must apply the provider script before starting the new release. |
@@ -94,7 +94,10 @@ Important configuration areas:
 
 ### Images, Themes, Feeds, And Protocols
 
-- Image storage is abstracted in `Moonglade.ImageStorage` and supports Azure Blob Storage, S3-compatible object storage, and the local file system. New image behavior should depend on `IBlogImageStorage`, not on a concrete provider.
+- Image storage is abstracted in `Moonglade.ImageStorage` and has one filesystem implementation. New image behavior should depend on `IBlogImageStorage`, not on `FileSystemImageStorage`, but the interface is an internal application boundary rather than a supported provider extension model.
+- `ImageStorage:FileSystemPath` stores public processed images; `ImageStorage:OriginalFileSystemPath` stores private original uploads. The resolved roots must be absolute, distinct, and non-overlapping. Public reads and deletes must never resolve the original root.
+- Cloud object storage, network filesystems, mount drivers, sidecars, CSI manifests, Docker volume plugins, credentials, object metadata, and vendor-specific operational behavior remain outside application code and packages. Do not add Azure, S3, or other vendor image-storage providers or optional extensions.
+- CDN delivery stays browser-direct and settings-driven. Persisted content and upload responses use `/image/{filename}`; rendered posts/feeds and the image endpoint use `ImageSettings.CDNEndpoint` when redirects are enabled. A CDN origin may expose only the primary root, must preserve filename-to-key mapping and correct media types, and must never expose original images.
 - Image uploads are validated by content before storage. SVG upload is supported, but SVG content must pass through the Web-layer sanitizer before primary or original image bytes are saved.
 - Themes and custom CSS are handled by `Moonglade.Theme` and `Moonglade.Web.Middleware.StyleSheetEndpoints`.
 - RSS, Atom, and OPML generation lives in `Moonglade.Syndication`; OpenSearch, FOAF, manifest, robots, sitemap, and site verification file handlers live under `Moonglade.Web/Handlers`.
@@ -115,7 +118,7 @@ Important configuration areas:
 | Database providers | `src/Moonglade.Data.SqlServer`, `src/Moonglade.Data.PostgreSql` | SQL Server / PostgreSQL EF Core registration and provider-specific behavior. |
 | Configuration | `src/Moonglade.Configuration` | Blog setting models, defaults, loading, updates, and initialization-related logic. |
 | Authentication | `src/Moonglade.Auth` | Local account, TOTP verification, Entra ID, login validation, password updates, and authentication registration. |
-| Image storage | `src/Moonglade.ImageStorage` | Blog image storage abstractions, file naming, local file system storage, Azure Blob storage, S3-compatible object storage, and storage-related options. |
+| Image storage | `src/Moonglade.ImageStorage` | Blog image storage abstraction, file naming, filesystem storage, primary/original path isolation, and storage-related options. |
 | Integrations | `src/Moonglade.Email`, `src/Moonglade.IndexNow.Client`, `src/Moonglade.Moderation`, `src/Moonglade.Webmention` | Email outbox delivery, external service clients, protocol send/receive logic, notifications, and moderation. |
 | Startup and background work | `src/Moonglade.Setup`, `src/Moonglade.BackgroundServices`, `src/Moonglade.Email` | Startup initialization, database creation/migration, seed data, scheduled publishing, update checks, email outbox delivery, and fire-and-forget background queueing. |
 | Presentation helpers | `src/Moonglade.Theme`, `src/Moonglade.Widgets`, `src/Moonglade.Syndication` | Themes, widgets, feeds, and presentation-oriented read models. |
@@ -163,8 +166,8 @@ Important configuration areas:
 - Do not use C# anonymous object initializers (`new { ... }`) in C# source or test files. Razor files are excluded from this rule because route values, HTML attributes, and view component arguments commonly use anonymous objects there.
 - Use structured logging placeholders, for example `logger.LogInformation("Post updated with ID: {PostId}", post.Id);`.
 - Keep comments sparse and useful. Add comments only for non-obvious compatibility, security, localization, protocol, or business decisions.
-- Keep changes cross-platform, especially paths, environment variables, container behavior, and Linux App Service scenarios.
-- When touching deployment assets, keep Azure App Service on Linux, Docker Compose, SQL Server, and PostgreSQL scenarios in mind.
+- Keep changes cross-platform, especially paths, environment variables, container behavior, mounted-filesystem semantics, and Linux App Service scenarios.
+- When touching deployment assets, keep Azure App Service on Linux, Docker Compose, SQL Server, and PostgreSQL scenarios in mind. The official Bicep deployment provisions two Azure Files shares and App Service Path mappings at `/app/images` and `/app/images-origin`; it must not restore application-level Azure storage settings. Container deployments need two persistent writable mappings when original images must survive replacement.
 
 ### HTTP And Error Handling
 
@@ -216,7 +219,7 @@ dotnet test src/Tests/Moonglade.Web.Tests/Moonglade.Web.Tests.csproj
 docker compose up -d
 ```
 
-The relational migration harness uses `mcr.microsoft.com/mssql/server:2025-latest` and `postgres:18-alpine`. Run `Moonglade.Setup.Tests` with Docker Desktop available when changing database mappings, startup migration order, cumulative SQL, or upgrade documentation. The operator procedure for the v16.4 cutover is documented in `docs/upgrade-v16.4.md`.
+The relational migration harness uses `mcr.microsoft.com/mssql/server:2025-latest` and `postgres:18-alpine`. Run `Moonglade.Setup.Tests` with Docker Desktop available when changing database mappings, startup migration order, cumulative SQL, or upgrade documentation. The operator procedure for the v16.4 cutover is documented in `docs/upgrade-v16.4.md`; the filesystem-only image-storage cutover is documented in `docs/upgrade-filesystem-image-storage.md`.
 
 The default local launch URL comes from `src/Moonglade.Web/Properties/launchSettings.json`: `https://localhost:10210`. The admin portal is `/admin`; the default local account is documented in the README. In non-Development environments, or whenever `Authentication:Totp:Required` is `true`, first local-account sign-in after deployment or upgrade requires authenticator app TOTP setup.
 
@@ -237,12 +240,13 @@ Moonglade consumes Moonglade.Editor through the `Moonglade.Editor.StaticAssets` 
 ## Pre-Change Checklist
 
 1. Which business module owns this change? Prefer the owning class library over putting business rules in `Moonglade.Web`.
-2. Does it affect database queries, entities, configuration, or provider behavior? Check SQL Server and PostgreSQL compatibility.
+2. Does it affect database queries, entities, configuration, or database-provider behavior? Check SQL Server and PostgreSQL compatibility.
 3. Does it change post URLs, publish timestamps, status transitions, caches, feeds, sitemap, Webmention, IndexNow, or email notifications?
 4. Does it require updating `Program.LoadAssemblies()`, a DI extension, default configuration, resource files, or tests?
 5. Does it add an external call? Make it configurable, testable, logged, and avoid blocking the main request.
 6. Does it touch a security boundary? Check authentication, authorization, antiforgery, moderation, secret configuration, and forwarded headers.
-7. Does documentation need to change? The README and this file should reflect important developer-facing behavior.
+7. Does it affect image storage or CDN behavior? Check primary/original path isolation, filename-to-key mapping, direct browser delivery, mount persistence and permissions, multiple replicas, and the filesystem-only vendor boundary.
+8. Does documentation need to change? The README and this file should reflect important developer-facing behavior.
 
 ## Agent Working Rules
 
