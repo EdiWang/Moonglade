@@ -54,6 +54,8 @@ docker compose up -d
 
 The supplied Compose file maps separate writable named volumes to `/app/images` and `/app/images-origin` and configures both `ImageStorage` paths. Keep both volumes when recreating or upgrading the container so public and retained original images remain durable and isolated.
 
+Email notifications are optional. The supplied default Email section intentionally contains no provider credentials; the application still starts, logs a warning, and serves the blog with email notification inactive. Open `/admin/settings/notification` to see the setup guidance after signing in. Add provider configuration through deployment secrets only when email delivery is required.
+
 ## 🛠️ Development
 
 | Tools                      | Alternatives                                                                                       |
@@ -198,7 +200,7 @@ Moonglade always emits `X-Content-Type-Options: nosniff`. To enable a custom Con
 
 ### Email Notifications
 
-Email notifications for new comments, replies, and Webmentions are queued in the Moonglade database and delivered by the in-process email outbox worker. Configure the `Email` section in `appsettings.json`, then enable notifications in the admin portal.
+Email notifications for new comments, replies, and Webmentions are optional. When available, notifications are queued in the Moonglade database and delivered by the in-process email outbox worker. Configure the `Email` section through deployment configuration or secrets, restart the application, then enable notifications in the admin portal.
 
 ```json
 "Email": {
@@ -213,7 +215,15 @@ Email notifications for new comments, replies, and Webmentions are queued in the
 
 Supported providers are `AzureCommunication` and `smtp`. Use environment variable overrides such as `Email__AcsConnectionString` or `Email__SmtpPassword` for real secrets.
 
-Email delivery uses at-least-once processing. If the application stops while a message is being sent, a later retry can occasionally send a duplicate notification. Set `Email:OutboxWorker:Enabled` to `false` only when another process is responsible for draining the outbox.
+Email configuration never controls application liveness or database readiness:
+
+- Missing required provider values leave email inactive, produce one startup warning, and show setup guidance in `/admin/settings/notification`. The application continues to start normally.
+- Unsupported, malformed, out-of-range, or inconsistent values leave email inactive, produce a startup error log, and show secret-safe validation details on the Notification settings page. They do not stop application startup.
+- Setting `Email:OutboxWorker:Enabled` to `false` deliberately disables email notification and is shown as a separate non-error state in the admin portal.
+
+While email is unavailable, the worker does not poll or send and notification handlers do not enqueue new messages. Existing pending outbox messages are retained and can be processed after valid configuration is supplied and the application is restarted. The test-email action is disabled while delivery is unavailable.
+
+Email delivery uses at-least-once processing. If the application stops while a message is being sent, a later retry can occasionally send a duplicate notification. Keep secrets outside source control and use the platform's secret or environment-variable configuration mechanism.
 
 ### More Settings
 
