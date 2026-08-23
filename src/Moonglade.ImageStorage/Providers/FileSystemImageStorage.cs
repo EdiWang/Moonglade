@@ -16,11 +16,6 @@ public record FileSystemImageConfiguration(string PrimaryPath, string OriginalPa
 /// </summary>
 public class FileSystemImageStorage : IBlogImageStorage
 {
-    /// <summary>
-    /// Gets the name of this image storage provider.
-    /// </summary>
-    public string Name => nameof(FileSystemImageStorage);
-
     private readonly string _primaryPath;
     private readonly string _originalPath;
     private readonly ILogger<FileSystemImageStorage> _logger;

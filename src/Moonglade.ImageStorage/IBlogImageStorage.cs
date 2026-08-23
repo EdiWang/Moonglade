@@ -2,8 +2,6 @@
 
 public interface IBlogImageStorage
 {
-    string Name { get; }
-
     Task<string> InsertAsync(string fileName, byte[] imageBytes);
 
     Task<string> InsertOriginalAsync(string fileName, byte[] imageBytes);

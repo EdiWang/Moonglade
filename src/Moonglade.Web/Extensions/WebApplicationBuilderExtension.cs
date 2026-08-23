@@ -42,7 +42,7 @@ public static class WebApplicationBuilderExtension
             { "Host", Environment.MachineName },
             { "URLs", configuration["Urls"] ?? "N/A" },
             { "Database", GetConnectionStringProvider(configuration) },
-            { "Image storage", configuration["ImageStorage:Provider"] ?? "N/A" },
+            { "Image storage", "File system" },
             { "Authentication", configuration["Authentication:Provider"] ?? "N/A" },
             { "Environment", envName }
         };

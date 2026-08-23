@@ -2,8 +2,6 @@
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
 using Moonglade.Data;
-using Moonglade.ImageStorage;
-using Moonglade.ImageStorage.Providers;
 
 namespace Moonglade.Setup;
 
@@ -62,9 +60,6 @@ public class StartUpInitializer(
 
             // Step 5: Generate site icons (non-blocking operation)
             await GenerateSiteIconsAsync(cancellationToken);
-
-            // Step 6: Prepare image storage containers
-            await PrepareImageContainers();
 
             stopwatch.Stop();
             logger.LogInformation("Application initialization completed successfully in {ElapsedMs}ms",
@@ -189,45 +184,6 @@ public class StartUpInitializer(
         {
             // Non-blocking operation - log but don't fail startup
             logger.LogWarning(ex, "Failed to generate site icons, but startup will continue");
-        }
-    }
-
-    private async Task PrepareImageContainers()
-    {
-        var section = configuration.GetSection("ImageStorage");
-        var settings = section.Get<ImageStorageSettings>();
-
-        if (settings?.Provider == "azurestorage")
-        {
-            logger.LogInformation("Preparing Azure image storage containers...");
-
-            var primaryResult = await AzureBlobImageStorage.CreateContainerIfNotExistsAsync(
-                settings.AzureStorageSettings.ConnectionString,
-                settings.AzureStorageSettings.ContainerName,
-                publicAccessType: Azure.Storage.Blobs.Models.PublicAccessType.Blob);
-
-            if (primaryResult != null)
-            {
-                logger.LogInformation("Primary container '{ContainerName}' is ready. ETag '{ETag}'",
-                    settings.AzureStorageSettings.ContainerName,
-                    primaryResult.Value.ETag);
-            }
-
-            if (!string.IsNullOrEmpty(settings.AzureStorageSettings.SecondaryContainerName))
-            {
-                var secondaryResult = await AzureBlobImageStorage.CreateContainerIfNotExistsAsync(
-                    settings.AzureStorageSettings.ConnectionString,
-                    settings.AzureStorageSettings.SecondaryContainerName);
-
-                if (secondaryResult != null)
-                {
-                    logger.LogInformation("Secondary container '{ContainerName}' is ready. ETag '{ETag}'",
-                        settings.AzureStorageSettings.SecondaryContainerName,
-                        secondaryResult.Value.ETag);
-                }
-            }
-
-            logger.LogDebug("Azure image storage containers prepared successfully");
         }
     }
 

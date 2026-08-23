@@ -75,7 +75,7 @@ When the primary path is backed by object storage and served through a CDN, the 
 | --- | --- | --- | --- | --- |
 | 1 | Record the approved boundary, inventory affected code/configuration/deployment/docs, and define the filesystem/CDN contract | None | Repository inspection, task review | Complete |
 | 2 | Add separate primary and original filesystem roots, rename the secondary-write API to original-image terminology, and expand filesystem unit tests | 1 | `Moonglade.ImageStorage.Tests` | Complete |
-| 3 | Remove Azure/S3 providers, settings, startup initialization, DI selection, provider diagnostics, tests, and SDK package references | 2 | Restore, package-reference inspection, `Moonglade.ImageStorage.Tests`, Web build | Not started |
+| 3 | Remove Azure/S3 providers, settings, startup initialization, DI selection, provider diagnostics, tests, and SDK package references | 2 | Restore, package-reference inspection, `Moonglade.ImageStorage.Tests`, Web build | Complete |
 | 4 | Update Web call sites and localized admin help text; add focused regressions for upload/original isolation and unchanged CDN behavior | 2-3 | `Moonglade.Web.Tests`, `Moonglade.Utils.Tests`, syndication tests | Not started |
 | 5 | Update Docker and Azure deployment assets for two filesystem paths and remove image-specific Azure Storage provisioning | 3 | `docker compose config`, Docker smoke test when available, Bicep/PowerShell validation | Not started |
 | 6 | Add the breaking-change upgrade guide and synchronize `README.md`, `AGENTS.md`, configuration examples, and deployment guidance | 3-5 | Documentation review and repository-wide stale-reference scan | Not started |
@@ -166,7 +166,7 @@ Run the focused suites after each batch, then run the Web build and the broadest
 
 ## Current Progress
 
-Task No. 2 is complete. `OriginalFileSystemPath` now configures a separate original-image root, filesystem registration resolves both roots and rejects equal or nested paths, primary reads/deletes cannot reach original images, and the storage API now uses `InsertOriginalAsync`. Existing Azure/S3 implementations and Web call sites received only the minimum API rename required to keep the solution buildable; provider removal and broader Web/documentation/deployment changes have not started.
+Task No. 3 is complete. Azure Blob and S3-compatible implementations, settings, tests, SDK dependencies, provider selection, Azure container initialization, and the Setup-to-ImageStorage project dependency are removed. Image storage registration now always resolves the two filesystem roots, default configuration contains only filesystem settings, and startup diagnostics report file system storage without exposing path details. The remaining `SecondaryContainerName` admin help text and localized resources are intentionally assigned to Task No. 4.
 
 ## Verification Log
 
@@ -180,6 +180,11 @@ Task No. 2 is complete. `OriginalFileSystemPath` now configures a separate origi
 | 2026-08-23 | `dotnet build src/Moonglade.Web/Moonglade.Web.csproj --no-restore` | Passed | 0 warnings, 0 errors |
 | 2026-08-23 | `dotnet build src/Tests/Moonglade.Web.Tests/Moonglade.Web.Tests.csproj --no-restore` | Passed | 0 warnings, 0 errors after the interface rename |
 | 2026-08-23 | `dotnet run --project src/Tests/Moonglade.Web.Tests/Moonglade.Web.Tests.csproj --no-restore -- -class Moonglade.Web.Tests.ImageControllerTests -noColor` | Passed | 18/18 focused controller tests passed |
+| 2026-08-23 | `dotnet restore src/Moonglade.Web/Moonglade.Web.csproj` and `dotnet restore src/Tests/Moonglade.ImageStorage.Tests/Moonglade.ImageStorage.Tests.csproj` | Passed | Restored the provider-free project graph after removing Azure and AWS SDK references |
+| 2026-08-23 | `dotnet list src/Moonglade.ImageStorage/Moonglade.ImageStorage.csproj package --include-transitive` | Passed | No NuGet package references remain in `Moonglade.ImageStorage`; it retains only the ASP.NET Core framework reference |
+| 2026-08-23 | `dotnet run --project src/Tests/Moonglade.ImageStorage.Tests/Moonglade.ImageStorage.Tests.csproj --no-restore -- -noColor` | Passed | 70/70 filesystem-only tests passed after provider-specific tests were removed |
+| 2026-08-23 | `dotnet build src/Moonglade.Web/Moonglade.Web.csproj --no-restore` | Passed | 0 warnings, 0 errors with the direct filesystem registration and removed Setup dependency |
+| 2026-08-23 | Parsed `src/Moonglade.Web/appsettings.json`, scanned non-documentation source for provider code, and ran `git diff --check` | Passed | JSON is valid; cloud provider code/package/startup references are gone. Only the Task No. 4 admin/localization wording remains; diff check reported line-ending notices only |
 
 ## Issues and Resolutions
 
