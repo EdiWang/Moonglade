@@ -151,7 +151,7 @@ public static class ServiceCollectionExtensions
             .AddRazorPagesOptions(options =>
             {
                 options.Conventions.AddPageRoute("/Admin/Dashboard", "admin");
-                options.Conventions.AuthorizeFolder("/Admin");
+                options.Conventions.AuthorizeFolder("/Admin", BlogAuthSchemas.AdministratorPolicy);
             })
             .AddViewOptions(options =>
             {
@@ -281,7 +281,7 @@ public static class ServiceCollectionExtensions
         services.AddSyndication()
                 .AddInMemoryCacheAside()
                 .AddBlogConfig()
-                .AddBlogAuthenticaton(configuration)
+                .AddBlogAuthentication(configuration)
                 .AddImageStorage(configuration);
 
         services.AddMoongladeEmail(configuration);

@@ -24,7 +24,7 @@ The main solution file is `src/Moonglade.slnx`.
 | `src/Moonglade.Data` | EF Core `BlogDbContext`, entities, DTOs, mappings, and import/export primitives. |
 | `src/Moonglade.Data.SqlServer`, `src/Moonglade.Data.PostgreSql` | SQL Server and PostgreSQL provider registration and provider-specific EF Core behavior. |
 | `src/Moonglade.Configuration` | Persisted blog settings models, defaults, loading, and update commands. |
-| `src/Moonglade.Auth` | Local account and Microsoft Entra ID authentication support. |
+| `src/Moonglade.Auth` | Local account and standards-based OpenID Connect authentication support. |
 | `src/Moonglade.BackgroundServices` | Scheduled publishing, update checks, and fire-and-forget background work. |
 | `src/Moonglade.*` | Supporting projects for image storage, email, IndexNow, moderation, Webmention, syndication, themes, widgets, setup, utilities, and middleware. |
 | `src/Tests/Moonglade.*.Tests` | xUnit test projects aligned with the production projects. |
@@ -122,7 +122,26 @@ dotnet run --project src/Moonglade.Web/Moonglade.Web.csproj
 
 `Authentication:LocalAccountRateLimit` uses a fixed window. `PermitLimit` is the number of attempts allowed for the same partition during each window. Set `Enabled` to `false` only when another authentication-layer throttle is in place.
 
-- **Microsoft Entra ID** (Azure AD) supported. [Setup guide](https://github.com/EdiWang/Moonglade/wiki/Use-Microsoft-Entra-ID-Authentication)
+- A single standards-based **OpenID Connect** provider is supported as an alternative to the local account. Configure a confidential web client with authorization code flow and PKCE:
+
+```json
+"Authentication": {
+  "Provider": "OpenIdConnect",
+  "OpenIdConnect": {
+    "Authority": "https://identity.example.com/",
+    "ClientId": "moonglade",
+    "CallbackPath": "/signin-oidc",
+    "SignedOutCallbackPath": "/signout-callback-oidc",
+    "NameClaimType": "name",
+    "Scopes": [ "openid", "profile", "email" ],
+    "AllowedSubjects": [ "the-administrator-sub-claim" ]
+  }
+}
+```
+
+Supply `Authentication:OpenIdConnect:ClientSecret` from a secure external configuration source, such as the `Authentication__OpenIdConnect__ClientSecret` environment override; never commit the secret. `AllowedSubjects` contains the exact stable OIDC `sub` value for every administrator. An empty list safely denies all admin access while still allowing an authenticated OIDC user to retrieve their own `iss`, `sub`, and display name from `/auth/identity` for initial setup. Do not use email addresses or display names for authorization.
+
+For Microsoft Entra ID, use the tenant-specific authority `https://login.microsoftonline.com/{tenant-id}/v2.0`. Register both callback URLs shown above in the provider. Existing Entra-specific deployments must follow [the generic OIDC migration guide](docs/upgrade-generic-oidc-authentication.md).
 
 ### Comment Rate Limiting
 

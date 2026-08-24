@@ -6,7 +6,7 @@ namespace Moonglade.Web.Controllers;
 /// <summary>
 /// Base controller that provides common functionality for blog API controllers
 /// </summary>
-[Authorize]
+[Authorize(Policy = BlogAuthSchemas.AdministratorPolicy)]
 [ApiController]
 public abstract class BlogControllerBase(ICommandMediator commandMediator) : ControllerBase
 {

@@ -1,7 +1,6 @@
 using LiteBus.Commands.Abstractions;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.Cookies;
-using Microsoft.AspNetCore.Authentication.OpenIdConnect;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -143,7 +142,7 @@ public class SignInModelTests
     }
 
     [Fact]
-    public async Task OnPostAsync_WhenProviderIsEntraId_ChallengesWithoutLocalLogin()
+    public async Task OnPostAsync_WhenProviderIsOpenIdConnect_ChallengesWithoutLocalLogin()
     {
         var authenticationService = new Mock<IAuthenticationService>();
         var commandMediator = new StubCommandMediator(loginValid: true);
@@ -151,14 +150,14 @@ public class SignInModelTests
             LocalAccountSettings.DefaultValue,
             authenticationService,
             commandMediator,
-            AuthenticationProvider.EntraID);
+            AuthenticationProvider.OpenIdConnect);
         model.Username = "admin";
         model.Password = "admin123";
 
         var result = await model.OnPostAsync();
 
         var challenge = Assert.IsType<ChallengeResult>(result);
-        Assert.Contains(OpenIdConnectDefaults.AuthenticationScheme, challenge.AuthenticationSchemes);
+        Assert.Contains(BlogAuthSchemas.OpenIdConnect, challenge.AuthenticationSchemes);
         Assert.Equal(0, commandMediator.SendResultCallCount);
     }
 

@@ -1,6 +1,5 @@
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.Cookies;
-using Microsoft.AspNetCore.Authentication.OpenIdConnect;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Controllers;
@@ -18,10 +17,10 @@ namespace Moonglade.Web.Tests;
 public class AuthControllerTests
 {
     [Fact]
-    public async Task SignOut_WhenProviderIsEntraId_ReturnsSignOutResultWithRedirectUri()
+    public async Task SignOut_WhenProviderIsOpenIdConnect_ReturnsSignOutResultWithRedirectUri()
     {
         const string callbackUrl = "https://example.test/";
-        var controller = CreateController(AuthenticationProvider.EntraID, configure: httpContext =>
+        var controller = CreateController(AuthenticationProvider.OpenIdConnect, configure: httpContext =>
         {
             httpContext.Request.Scheme = "https";
         });
@@ -40,7 +39,7 @@ public class AuthControllerTests
         var signOutResult = Assert.IsType<SignOutResult>(result);
         Assert.Equal(callbackUrl, signOutResult.Properties?.RedirectUri);
         Assert.Equal(
-            [CookieAuthenticationDefaults.AuthenticationScheme, OpenIdConnectDefaults.AuthenticationScheme],
+            [CookieAuthenticationDefaults.AuthenticationScheme, BlogAuthSchemas.OpenIdConnect],
             signOutResult.AuthenticationSchemes);
     }
 
@@ -120,6 +119,85 @@ public class AuthControllerTests
         var okResult = Assert.IsType<OkObjectResult>(result);
         var userNameValue = okResult.Value!.GetType().GetProperty("UserName")!.GetValue(okResult.Value);
         Assert.Equal("Anonymous", userNameValue);
+    }
+
+    [Fact]
+    public void Identity_WhenOpenIdConnectUserIsAuthenticated_ReturnsStableIdentityClaims()
+    {
+        var controller = CreateController(AuthenticationProvider.OpenIdConnect, configure: httpContext =>
+        {
+            httpContext.User = new ClaimsPrincipal(new ClaimsIdentity(
+            [
+                new Claim("iss", "https://identity.example.com/"),
+                new Claim("sub", "allowed-subject"),
+                new Claim(ClaimTypes.Name, "Admin User")
+            ],
+            BlogAuthSchemas.OpenIdConnect));
+        });
+
+        var result = controller.Identity();
+
+        var okResult = Assert.IsType<OkObjectResult>(result);
+        Assert.Equal(
+            "https://identity.example.com/",
+            okResult.Value!.GetType().GetProperty("Issuer")!.GetValue(okResult.Value));
+        Assert.Equal(
+            "allowed-subject",
+            okResult.Value.GetType().GetProperty("Subject")!.GetValue(okResult.Value));
+        Assert.Equal(
+            "Admin User",
+            okResult.Value.GetType().GetProperty("DisplayName")!.GetValue(okResult.Value));
+    }
+
+    [Fact]
+    public void Identity_WhenIssuerClaimIsMissing_UsesSubjectClaimIssuer()
+    {
+        var controller = CreateController(AuthenticationProvider.OpenIdConnect, configure: httpContext =>
+        {
+            httpContext.User = new ClaimsPrincipal(new ClaimsIdentity(
+            [
+                new Claim("sub", "allowed-subject", ClaimValueTypes.String, "https://identity.example.com/"),
+                new Claim(ClaimTypes.Name, "Admin User")
+            ],
+            BlogAuthSchemas.OpenIdConnect));
+        });
+
+        var result = controller.Identity();
+
+        var okResult = Assert.IsType<OkObjectResult>(result);
+        Assert.Equal(
+            "https://identity.example.com/",
+            okResult.Value!.GetType().GetProperty("Issuer")!.GetValue(okResult.Value));
+        Assert.Equal(
+            "allowed-subject",
+            okResult.Value.GetType().GetProperty("Subject")!.GetValue(okResult.Value));
+    }
+
+    [Fact]
+    public void Identity_WhenLocalAuthenticationIsConfigured_ReturnsNotFound()
+    {
+        var controller = CreateController(AuthenticationProvider.Local);
+
+        var result = controller.Identity();
+
+        Assert.IsType<NotFoundResult>(result);
+    }
+
+    [Fact]
+    public void Identity_WhenRequiredClaimsAreMissing_ReturnsProblemDetails()
+    {
+        var controller = CreateController(AuthenticationProvider.OpenIdConnect, configure: httpContext =>
+        {
+            httpContext.User = new ClaimsPrincipal(new ClaimsIdentity(
+                [new Claim(ClaimTypes.Name, "Admin User")],
+                BlogAuthSchemas.OpenIdConnect));
+        });
+
+        var result = controller.Identity();
+
+        var objectResult = Assert.IsType<ObjectResult>(result);
+        Assert.Equal(StatusCodes.Status500InternalServerError, objectResult.StatusCode);
+        Assert.IsType<ProblemDetails>(objectResult.Value);
     }
 
     private static AuthController CreateController(AuthenticationProvider provider, Action<DefaultHttpContext>? configure = null)

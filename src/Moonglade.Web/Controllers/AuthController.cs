@@ -1,6 +1,5 @@
 ﻿using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.Cookies;
-using Microsoft.AspNetCore.Authentication.OpenIdConnect;
 using Microsoft.Extensions.Options;
 
 namespace Moonglade.Web.Controllers;
@@ -17,12 +16,12 @@ public class AuthController(
     {
         switch (_authenticationSettings.Provider)
         {
-            case AuthenticationProvider.EntraID:
+            case AuthenticationProvider.OpenIdConnect:
                 var callbackUrl = Url.Page("/Index", null, null, Request.Scheme);
                 return SignOut(
                     new AuthenticationProperties { RedirectUri = callbackUrl },
                     CookieAuthenticationDefaults.AuthenticationScheme,
-                    OpenIdConnectDefaults.AuthenticationScheme);
+                    BlogAuthSchemas.OpenIdConnect);
             case AuthenticationProvider.Local:
                 await HttpContext.SignOutAsync(CookieAuthenticationDefaults.AuthenticationScheme);
                 await HttpContext.SignOutAsync(BlogAuthSchemas.LocalAccountSetup);
@@ -42,12 +41,39 @@ public class AuthController(
         return Content("Access Denied");
     }
 
-    [Authorize]
+    [Authorize(Policy = BlogAuthSchemas.AdministratorPolicy)]
     [HttpGet("me")]
     public IActionResult Me()
     {
         return Ok(new CurrentUserResponse(User.Identity?.Name ?? "Anonymous"));
     }
+
+    [Authorize]
+    [HttpGet("identity")]
+    public IActionResult Identity()
+    {
+        if (_authenticationSettings.Provider != AuthenticationProvider.OpenIdConnect)
+        {
+            return NotFound();
+        }
+
+        var subjectClaim = User.FindFirst("sub");
+        var issuer = User.FindFirst("iss")?.Value ?? subjectClaim?.Issuer;
+        var subject = subjectClaim?.Value;
+
+        if (string.IsNullOrWhiteSpace(issuer) || string.IsNullOrWhiteSpace(subject))
+        {
+            return Problem(
+                statusCode: StatusCodes.Status500InternalServerError,
+                detail: "The OpenID Connect identity is missing its required issuer or subject claim.");
+        }
+
+        return Ok(new CurrentOidcIdentityResponse(
+            issuer,
+            subject,
+            User.Identity?.Name ?? string.Empty));
+    }
 }
 
 file sealed record CurrentUserResponse(string UserName);
+file sealed record CurrentOidcIdentityResponse(string Issuer, string Subject, string DisplayName);
