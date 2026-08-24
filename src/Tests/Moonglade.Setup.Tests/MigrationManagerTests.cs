@@ -36,10 +36,22 @@ public sealed class MigrationManagerTests
     }
 
     [Fact]
-    public async Task TryMigrationAsync_CurrentManifest_DoesNotRequireAutomaticMigration()
+    public async Task TryMigrationAsync_AutomaticMigrationDisabled_SkipsBeforeReadingManifest()
+    {
+        await using var context = CreateContext("not-json");
+        var manager = CreateManager(autoMigrationEnabled: false);
+
+        var result = await manager.TryMigrationAsync(context, TestContext.Current.CancellationToken);
+
+        Assert.Equal(MigrationStatus.Skipped, result.Status);
+        Assert.True(result.CanContinueStartup);
+    }
+
+    [Fact]
+    public async Task TryMigrationAsync_CurrentManifest_DoesNotRequireMigration()
     {
         await using var context = CreateContext(SystemManifestSettings.DefaultValueNew.ToJson());
-        var manager = CreateManager(autoMigrationEnabled: false);
+        var manager = CreateManager();
 
         var result = await manager.TryMigrationAsync(context, TestContext.Current.CancellationToken);
 
@@ -61,8 +73,8 @@ public sealed class MigrationManagerTests
 
     [Theory]
     [InlineData(true, MigrationStatus.UnsupportedVersion)]
-    [InlineData(false, MigrationStatus.ManualMigrationRequired)]
-    public async Task TryMigrationAsync_OlderManifestOnPrereleaseBuild_ReturnsExpectedBlockingStatus(
+    [InlineData(false, MigrationStatus.Skipped)]
+    public async Task TryMigrationAsync_OlderManifestOnPrereleaseBuild_HonorsAutomaticMigrationSetting(
         bool autoMigrationEnabled,
         MigrationStatus expectedStatus)
     {
@@ -82,14 +94,13 @@ public sealed class MigrationManagerTests
         var result = await manager.TryMigrationAsync(context, TestContext.Current.CancellationToken);
 
         Assert.Equal(expectedStatus, result.Status);
-        Assert.False(result.CanContinueStartup);
+        Assert.Equal(!autoMigrationEnabled, result.CanContinueStartup);
     }
 
     [Theory]
     [InlineData(MigrationStatus.Success, true)]
     [InlineData(MigrationStatus.NotRequired, true)]
     [InlineData(MigrationStatus.Skipped, true)]
-    [InlineData(MigrationStatus.ManualMigrationRequired, false)]
     [InlineData(MigrationStatus.UnsupportedVersion, false)]
     [InlineData(MigrationStatus.VersionParsingError, false)]
     [InlineData(MigrationStatus.UnsupportedProvider, false)]
