@@ -1,5 +1,5 @@
-﻿using Microsoft.Extensions.Logging;
 using Edi.AspNetCore.Utils;
+using Microsoft.Extensions.Logging;
 using System.Net;
 using System.Text.RegularExpressions;
 
