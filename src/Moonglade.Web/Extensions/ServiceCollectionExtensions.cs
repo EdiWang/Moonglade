@@ -281,7 +281,7 @@ public static class ServiceCollectionExtensions
         services.AddSyndication()
                 .AddInMemoryCacheAside()
                 .AddBlogConfig()
-                .AddBlogAuthenticaton(configuration)
+                .AddBlogAuthentication(configuration)
                 .AddImageStorage(configuration);
 
         services.AddMoongladeEmail(configuration);

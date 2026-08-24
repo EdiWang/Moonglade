@@ -14,10 +14,10 @@ public class ServiceCollectionExtensionsTests
     [Theory]
     [InlineData("Local")]
     [InlineData("OpenIdConnect")]
-    public async Task AddBlogAuthenticaton_RegistersLocalAccountTemporarySchemes(string provider)
+    public async Task AddBlogAuthentication_RegistersLocalAccountTemporarySchemes(string provider)
     {
         var services = new ServiceCollection();
-        services.AddBlogAuthenticaton(CreateConfiguration(provider));
+        services.AddBlogAuthentication(CreateConfiguration(provider));
 
         var providerServices = services.BuildServiceProvider();
         var schemeProvider = providerServices.GetRequiredService<IAuthenticationSchemeProvider>();
@@ -29,10 +29,10 @@ public class ServiceCollectionExtensionsTests
     }
 
     [Fact]
-    public void AddBlogAuthenticaton_ConfiguresGenericOpenIdConnectHandler()
+    public void AddBlogAuthentication_ConfiguresGenericOpenIdConnectHandler()
     {
         var services = new ServiceCollection();
-        services.AddBlogAuthenticaton(CreateConfiguration("OpenIdConnect"));
+        services.AddBlogAuthentication(CreateConfiguration("OpenIdConnect"));
 
         var providerServices = services.BuildServiceProvider();
         var options = providerServices
@@ -61,7 +61,7 @@ public class ServiceCollectionExtensionsTests
     {
         var services = new ServiceCollection();
         services.AddLogging();
-        services.AddBlogAuthenticaton(CreateConfiguration("OpenIdConnect"));
+        services.AddBlogAuthentication(CreateConfiguration("OpenIdConnect"));
 
         var providerServices = services.BuildServiceProvider();
         var authorizationService = providerServices.GetRequiredService<IAuthorizationService>();
@@ -82,7 +82,7 @@ public class ServiceCollectionExtensionsTests
     {
         var services = new ServiceCollection();
         services.AddLogging();
-        services.AddBlogAuthenticaton(CreateConfiguration("OpenIdConnect", includeAllowedSubject: false));
+        services.AddBlogAuthentication(CreateConfiguration("OpenIdConnect", includeAllowedSubject: false));
 
         var providerServices = services.BuildServiceProvider();
         var authorizationService = providerServices.GetRequiredService<IAuthorizationService>();
@@ -105,7 +105,7 @@ public class ServiceCollectionExtensionsTests
     {
         var services = new ServiceCollection();
         services.AddLogging();
-        services.AddBlogAuthenticaton(CreateConfiguration("Local"));
+        services.AddBlogAuthentication(CreateConfiguration("Local"));
 
         var claims = new List<Claim> { new(ClaimTypes.Name, "admin") };
         if (includeAdministratorRole)

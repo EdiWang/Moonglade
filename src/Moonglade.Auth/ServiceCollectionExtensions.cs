@@ -9,7 +9,7 @@ namespace Moonglade.Auth;
 
 public static class ServiceCollectionExtensions
 {
-    public static IServiceCollection AddBlogAuthenticaton(this IServiceCollection services, IConfiguration configuration)
+    public static IServiceCollection AddBlogAuthentication(this IServiceCollection services, IConfiguration configuration)
     {
         var section = configuration.GetSection("Authentication");
         var authentication = section.Get<AuthenticationSettings>() ?? new AuthenticationSettings();
