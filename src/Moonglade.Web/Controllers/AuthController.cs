@@ -57,8 +57,9 @@ public class AuthController(
             return NotFound();
         }
 
-        var issuer = User.FindFirst("iss")?.Value;
-        var subject = User.FindFirst("sub")?.Value;
+        var subjectClaim = User.FindFirst("sub");
+        var issuer = User.FindFirst("iss")?.Value ?? subjectClaim?.Issuer;
+        var subject = subjectClaim?.Value;
 
         if (string.IsNullOrWhiteSpace(issuer) || string.IsNullOrWhiteSpace(subject))
         {

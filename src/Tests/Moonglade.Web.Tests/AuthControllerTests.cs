@@ -150,6 +150,30 @@ public class AuthControllerTests
     }
 
     [Fact]
+    public void Identity_WhenIssuerClaimIsMissing_UsesSubjectClaimIssuer()
+    {
+        var controller = CreateController(AuthenticationProvider.OpenIdConnect, configure: httpContext =>
+        {
+            httpContext.User = new ClaimsPrincipal(new ClaimsIdentity(
+            [
+                new Claim("sub", "allowed-subject", ClaimValueTypes.String, "https://identity.example.com/"),
+                new Claim(ClaimTypes.Name, "Admin User")
+            ],
+            BlogAuthSchemas.OpenIdConnect));
+        });
+
+        var result = controller.Identity();
+
+        var okResult = Assert.IsType<OkObjectResult>(result);
+        Assert.Equal(
+            "https://identity.example.com/",
+            okResult.Value!.GetType().GetProperty("Issuer")!.GetValue(okResult.Value));
+        Assert.Equal(
+            "allowed-subject",
+            okResult.Value.GetType().GetProperty("Subject")!.GetValue(okResult.Value));
+    }
+
+    [Fact]
     public void Identity_WhenLocalAuthenticationIsConfigured_ReturnsNotFound()
     {
         var controller = CreateController(AuthenticationProvider.Local);
