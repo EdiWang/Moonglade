@@ -79,6 +79,13 @@ public partial class MigrationManager(
             return new MigrationResult(MigrationStatus.NotRequired, "No migration required", manifestVersion, currentVersion);
         }
 
+        if (!GetAutoMigrationEnabled())
+        {
+            const string message = "Database migration is required but automatic migration is disabled. Apply the cumulative provider script before starting this release.";
+            logger.LogWarning(message);
+            return new MigrationResult(MigrationStatus.ManualMigrationRequired, message, manifestVersion, currentVersion);
+        }
+
         if (VersionHelper.IsNonStableVersion())
         {
             const string message = "Database migration is not supported on a non-stable application version.";
@@ -94,13 +101,6 @@ public partial class MigrationManager(
             var message = $"Automatic database migration is not supported for provider `{provider}`. Please migrate manually.";
             logger.LogCritical("Automatic database migration is not supported for provider '{Provider}'. Please migrate manually.", provider);
             return new MigrationResult(MigrationStatus.UnsupportedProvider, message, manifestVersion, currentVersion);
-        }
-
-        if (!GetAutoMigrationEnabled())
-        {
-            const string message = "Database migration is required but automatic migration is disabled. Apply the cumulative provider script before starting this release.";
-            logger.LogWarning(message);
-            return new MigrationResult(MigrationStatus.ManualMigrationRequired, message, manifestVersion, currentVersion);
         }
 
         logger.LogInformation("Migrating database from {FromVersion} to {ToVersion} using provider {Provider}.",

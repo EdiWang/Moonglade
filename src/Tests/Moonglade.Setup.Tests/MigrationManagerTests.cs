@@ -59,8 +59,12 @@ public sealed class MigrationManagerTests
         Assert.False(result.CanContinueStartup);
     }
 
-    [Fact]
-    public async Task TryMigrationAsync_OlderManifestOnPrereleaseBuild_StopsStartup()
+    [Theory]
+    [InlineData(true, MigrationStatus.UnsupportedVersion)]
+    [InlineData(false, MigrationStatus.ManualMigrationRequired)]
+    public async Task TryMigrationAsync_OlderManifestOnPrereleaseBuild_ReturnsExpectedBlockingStatus(
+        bool autoMigrationEnabled,
+        MigrationStatus expectedStatus)
     {
         if (!VersionHelper.IsNonStableVersion())
         {
@@ -73,11 +77,11 @@ public sealed class MigrationManagerTests
             InstallTimeUtc = new DateTime(2026, 1, 1, 0, 0, 0, DateTimeKind.Utc)
         };
         await using var context = CreateContext(manifest.ToJson());
-        var manager = CreateManager();
+        var manager = CreateManager(autoMigrationEnabled);
 
         var result = await manager.TryMigrationAsync(context, TestContext.Current.CancellationToken);
 
-        Assert.Equal(MigrationStatus.UnsupportedVersion, result.Status);
+        Assert.Equal(expectedStatus, result.Status);
         Assert.False(result.CanContinueStartup);
     }
 
