@@ -1,4 +1,10 @@
-﻿@if (User.Identity is { IsAuthenticated: true })
+@using Microsoft.AspNetCore.Authorization
+@using Moonglade.Auth
+@inject IAuthorizationService AuthorizationService
+@{
+    var canManage = (await AuthorizationService.AuthorizeAsync(User, BlogAuthSchemas.AdministratorPolicy)).Succeeded;
+}
+@if (canManage)
 {
     @Html.AntiForgeryToken()
     <div class="admin-actions">

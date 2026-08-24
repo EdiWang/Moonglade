@@ -151,7 +151,7 @@ public static class ServiceCollectionExtensions
             .AddRazorPagesOptions(options =>
             {
                 options.Conventions.AddPageRoute("/Admin/Dashboard", "admin");
-                options.Conventions.AuthorizeFolder("/Admin");
+                options.Conventions.AuthorizeFolder("/Admin", BlogAuthSchemas.AdministratorPolicy);
             })
             .AddViewOptions(options =>
             {
