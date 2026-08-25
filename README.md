@@ -36,7 +36,7 @@ The main solution file is `src/Moonglade.slnx`.
 
 - **Stable Code:** Always use the [Release](https://github.com/EdiWang/Moonglade/releases) branch. Avoid deploying from `master`.
 - **Security:** Enable **HTTPS** and **HTTP/2** on your web server for optimal security and performance.
-- **Deployment Options:** While Azure is recommended, Moonglade can run on any cloud provider or on-premises.
+- **Deployment Options:** Moonglade can run on any cloud provider or on-premises.
 
 ### Quick Azure Deployment (App Service on Linux)
 
