@@ -1347,9 +1347,6 @@
   <data name="* Please use valid {0} code." xml:space="preserve">
     <value>* 请使用有效的 {0} 代码。</value>
   </data>
-  <data name="* Recommend to use {0}" xml:space="preserve">
-    <value>* 推荐使用 {0}</value>
-  </data>
   <data name="Actions" xml:space="preserve">
     <value>操作</value>
   </data>

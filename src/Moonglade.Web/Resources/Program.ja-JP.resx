@@ -1347,9 +1347,6 @@
   <data name="* Please use valid {0} code." xml:space="preserve">
     <value>* 有効な {0} コードを使用してください。</value>
   </data>
-  <data name="* Recommend to use {0}" xml:space="preserve">
-    <value>* {0} の使用を推奨します</value>
-  </data>
   <data name="Actions" xml:space="preserve">
     <value>操作</value>
   </data>

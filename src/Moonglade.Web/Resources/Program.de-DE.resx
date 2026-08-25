@@ -1347,9 +1347,6 @@
   <data name="* Please use valid {0} code." xml:space="preserve">
     <value>* Bitte verwenden Sie gültigen {0}-Code.</value>
   </data>
-  <data name="* Recommend to use {0}" xml:space="preserve">
-    <value>* Empfohlen: {0}</value>
-  </data>
   <data name="Actions" xml:space="preserve">
     <value>Aktionen</value>
   </data>
