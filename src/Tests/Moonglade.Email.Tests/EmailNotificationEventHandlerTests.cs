@@ -10,7 +10,7 @@ public class EmailNotificationEventHandlerTests
     public async Task CommentNotificationEventHandler_WhenEmailSendingEnabled_EnqueuesNewCommentNotification()
     {
         var queue = new CapturingEmailNotificationQueue();
-        var handler = new CommentNotificationEventHandler(queue, CreateBlogConfig());
+        var handler = new CommentNotificationEventHandler(queue, CreateBlogConfig(), CreateAvailableStatus());
 
         await handler.HandleAsync(
             new CommentEvent("Reader", "reader@example.com", "127.0.0.1", "Hello Post", "**Great** post"),
@@ -34,7 +34,23 @@ public class EmailNotificationEventHandlerTests
         var queue = new CapturingEmailNotificationQueue();
         var blogConfig = CreateBlogConfig();
         blogConfig.NotificationSettings.EnableEmailSending = false;
-        var handler = new CommentNotificationEventHandler(queue, blogConfig);
+        var handler = new CommentNotificationEventHandler(queue, blogConfig, CreateAvailableStatus());
+
+        await handler.HandleAsync(
+            new CommentEvent("Reader", "reader@example.com", "127.0.0.1", "Hello Post", "Great post"),
+            TestContext.Current.CancellationToken);
+
+        Assert.Empty(queue.Notifications);
+    }
+
+    [Fact]
+    public async Task CommentNotificationEventHandler_WhenEmailCapabilityUnavailable_DoesNotEnqueue()
+    {
+        var queue = new CapturingEmailNotificationQueue();
+        var handler = new CommentNotificationEventHandler(
+            queue,
+            CreateBlogConfig(),
+            CreateUnavailableStatus());
 
         await handler.HandleAsync(
             new CommentEvent("Reader", "reader@example.com", "127.0.0.1", "Hello Post", "Great post"),
@@ -47,7 +63,7 @@ public class EmailNotificationEventHandlerTests
     public async Task CommentReplyNotificationHandler_WhenEmailSendingEnabled_EnqueuesAdminReplyNotification()
     {
         var queue = new CapturingEmailNotificationQueue();
-        var handler = new CommentReplyNotificationHandler(queue, CreateBlogConfig());
+        var handler = new CommentReplyNotificationHandler(queue, CreateBlogConfig(), CreateAvailableStatus());
 
         await handler.HandleAsync(
             new CommentReplyEvent(
@@ -71,10 +87,31 @@ public class EmailNotificationEventHandlerTests
     }
 
     [Fact]
+    public async Task CommentReplyNotificationHandler_WhenEmailCapabilityUnavailable_DoesNotEnqueue()
+    {
+        var queue = new CapturingEmailNotificationQueue();
+        var handler = new CommentReplyNotificationHandler(
+            queue,
+            CreateBlogConfig(),
+            CreateUnavailableStatus());
+
+        await handler.HandleAsync(
+            new CommentReplyEvent(
+                "reader@example.com",
+                "Original comment",
+                "Hello Post",
+                "<p>Thanks</p>",
+                "https://blog.example/post"),
+            TestContext.Current.CancellationToken);
+
+        Assert.Empty(queue.Notifications);
+    }
+
+    [Fact]
     public async Task MentionNotificationHandler_WhenEmailSendingEnabled_EnqueuesBeingPingedNotification()
     {
         var queue = new CapturingEmailNotificationQueue();
-        var handler = new MentionNotificationHandler(queue, CreateBlogConfig());
+        var handler = new MentionNotificationHandler(queue, CreateBlogConfig(), CreateAvailableStatus());
 
         await handler.HandleAsync(
             new MentionEvent(
@@ -98,10 +135,31 @@ public class EmailNotificationEventHandlerTests
     }
 
     [Fact]
+    public async Task MentionNotificationHandler_WhenEmailCapabilityUnavailable_DoesNotEnqueue()
+    {
+        var queue = new CapturingEmailNotificationQueue();
+        var handler = new MentionNotificationHandler(
+            queue,
+            CreateBlogConfig(),
+            CreateUnavailableStatus());
+
+        await handler.HandleAsync(
+            new MentionEvent(
+                "Target Post",
+                "source.example",
+                "127.0.0.1",
+                "https://source.example/post",
+                "Source Post"),
+            TestContext.Current.CancellationToken);
+
+        Assert.Empty(queue.Notifications);
+    }
+
+    [Fact]
     public async Task TestNotificationHandler_WhenEmailSendingEnabled_EnqueuesTestMailNotification()
     {
         var queue = new CapturingEmailNotificationQueue();
-        var handler = new TestNotificationHandler(queue, CreateBlogConfig());
+        var handler = new TestNotificationHandler(queue, CreateBlogConfig(), CreateAvailableStatus());
 
         await handler.HandleAsync(new TestEmailEvent(), TestContext.Current.CancellationToken);
 
@@ -109,6 +167,20 @@ public class EmailNotificationEventHandlerTests
         Assert.Equal(MessageTypes.TestMail, notification.MessageType);
         Assert.Equal("admin@example.com", notification.DistributionList);
         Assert.Equal("{}", notification.MessageBody);
+    }
+
+    [Fact]
+    public async Task TestNotificationHandler_WhenEmailCapabilityUnavailable_DoesNotEnqueue()
+    {
+        var queue = new CapturingEmailNotificationQueue();
+        var handler = new TestNotificationHandler(
+            queue,
+            CreateBlogConfig(),
+            CreateUnavailableStatus());
+
+        await handler.HandleAsync(new TestEmailEvent(), TestContext.Current.CancellationToken);
+
+        Assert.Empty(queue.Notifications);
     }
 
     private static BlogConfig CreateBlogConfig() => new()
@@ -122,6 +194,35 @@ public class EmailNotificationEventHandlerTests
             EnableEmailSending = true
         }
     };
+
+    private static EmailCapabilityStatus CreateAvailableStatus() => CreateStatus(
+        new EmailServiceOptions
+        {
+            Provider = "smtp",
+            SmtpServer = "smtp.example.com",
+            SmtpUserName = "sender@example.com",
+            SmtpPassword = "password",
+            SmtpPort = 587
+        },
+        new EmailOutboxWorkerOptions());
+
+    private static EmailCapabilityStatus CreateUnavailableStatus() => CreateStatus(
+        new EmailServiceOptions
+        {
+            Provider = "AzureCommunication"
+        },
+        new EmailOutboxWorkerOptions());
+
+    private static EmailCapabilityStatus CreateStatus(
+        EmailServiceOptions serviceOptions,
+        EmailOutboxWorkerOptions workerOptions)
+    {
+        var evaluator = new EmailCapabilityStatusEvaluator(
+            new EmailServiceOptionsValidator(),
+            new EmailOutboxWorkerOptionsValidator());
+
+        return evaluator.Evaluate(serviceOptions, workerOptions);
+    }
 
     private static TPayload Deserialize<TPayload>(string json)
     {

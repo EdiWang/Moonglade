@@ -8,11 +8,12 @@ public record TestEmailEvent : IEvent;
 
 public class TestNotificationHandler(
     IEmailNotificationQueue queue,
-    IBlogConfig blogConfig) : IEventHandler<TestEmailEvent>
+    IBlogConfig blogConfig,
+    EmailCapabilityStatus capabilityStatus) : IEventHandler<TestEmailEvent>
 {
     public async Task HandleAsync(TestEmailEvent notification, CancellationToken ct)
     {
-        if (!blogConfig.NotificationSettings.EnableEmailSending)
+        if (!capabilityStatus.IsAvailable || !blogConfig.NotificationSettings.EnableEmailSending)
         {
             return;
         }

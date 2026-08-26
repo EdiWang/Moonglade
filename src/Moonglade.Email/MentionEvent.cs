@@ -14,11 +14,12 @@ public record MentionEvent(
 
 public class MentionNotificationHandler(
     IEmailNotificationQueue queue,
-    IBlogConfig blogConfig) : IEventHandler<MentionEvent>
+    IBlogConfig blogConfig,
+    EmailCapabilityStatus capabilityStatus) : IEventHandler<MentionEvent>
 {
     public async Task HandleAsync(MentionEvent notification, CancellationToken ct)
     {
-        if (!blogConfig.NotificationSettings.EnableEmailSending)
+        if (!capabilityStatus.IsAvailable || !blogConfig.NotificationSettings.EnableEmailSending)
         {
             return;
         }

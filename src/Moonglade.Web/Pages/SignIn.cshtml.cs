@@ -1,7 +1,6 @@
 using LiteBus.Commands.Abstractions;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.Cookies;
-using Microsoft.AspNetCore.Authentication.OpenIdConnect;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.AspNetCore.RateLimiting;
 using Microsoft.Extensions.Options;
@@ -40,10 +39,10 @@ public class SignInModel(IOptions<AuthenticationSettings> authSettings,
     {
         switch (_authenticationSettings.Provider)
         {
-            case AuthenticationProvider.EntraID:
+            case AuthenticationProvider.OpenIdConnect:
                 return Challenge(
                     new AuthenticationProperties { RedirectUri = "/" },
-                    OpenIdConnectDefaults.AuthenticationScheme);
+                    BlogAuthSchemas.OpenIdConnect);
             case AuthenticationProvider.Local:
                 await HttpContext.SignOutAsync(CookieAuthenticationDefaults.AuthenticationScheme);
                 await HttpContext.SignOutAsync(BlogAuthSchemas.LocalAccountSetup);
@@ -65,10 +64,10 @@ public class SignInModel(IOptions<AuthenticationSettings> authSettings,
             {
                 case AuthenticationProvider.Local:
                     break;
-                case AuthenticationProvider.EntraID:
+                case AuthenticationProvider.OpenIdConnect:
                     return Challenge(
                         new AuthenticationProperties { RedirectUri = "/" },
-                        OpenIdConnectDefaults.AuthenticationScheme);
+                        BlogAuthSchemas.OpenIdConnect);
                 default:
                     Response.StatusCode = StatusCodes.Status501NotImplemented;
                     return Content("Invalid AuthenticationProvider, please check system settings.");

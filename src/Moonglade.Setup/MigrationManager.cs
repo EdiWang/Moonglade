@@ -21,7 +21,6 @@ public enum MigrationStatus
     Success = 0,
     NotRequired,
     Skipped,
-    ManualMigrationRequired,
     UnsupportedVersion,
     VersionParsingError,
     UnsupportedProvider,
@@ -48,6 +47,13 @@ public partial class MigrationManager(
                 "Automatic database migration is skipped in the {EnvironmentName} environment.",
                 hostEnvironment.EnvironmentName);
             return new MigrationResult(MigrationStatus.Skipped);
+        }
+
+        if (!GetAutoMigrationEnabled())
+        {
+            const string message = "Automatic database migration is disabled. Skipping migration; database compatibility is the operator's responsibility.";
+            logger.LogWarning(message);
+            return new MigrationResult(MigrationStatus.Skipped, message);
         }
 
         SystemManifestSettings manifest;
@@ -94,13 +100,6 @@ public partial class MigrationManager(
             var message = $"Automatic database migration is not supported for provider `{provider}`. Please migrate manually.";
             logger.LogCritical("Automatic database migration is not supported for provider '{Provider}'. Please migrate manually.", provider);
             return new MigrationResult(MigrationStatus.UnsupportedProvider, message, manifestVersion, currentVersion);
-        }
-
-        if (!GetAutoMigrationEnabled())
-        {
-            const string message = "Database migration is required but automatic migration is disabled. Apply the cumulative provider script before starting this release.";
-            logger.LogWarning(message);
-            return new MigrationResult(MigrationStatus.ManualMigrationRequired, message, manifestVersion, currentVersion);
         }
 
         logger.LogInformation("Migrating database from {FromVersion} to {ToVersion} using provider {Provider}.",

@@ -1347,9 +1347,6 @@
   <data name="* Please use valid {0} code." xml:space="preserve">
     <value>* 请使用有效的 {0} 代码。</value>
   </data>
-  <data name="* Recommend to use {0}" xml:space="preserve">
-    <value>* 推荐使用 {0}</value>
-  </data>
   <data name="Actions" xml:space="preserve">
     <value>操作</value>
   </data>
@@ -1689,8 +1686,8 @@
   <data name="Password updated." xml:space="preserve">
     <value>密码已更新。</value>
   </data>
-  <data name="Please configure `SecondaryContainerName` in `appsettings.json`" xml:space="preserve">
-    <value>请在 `appsettings.json` 中配置 `SecondaryContainerName`</value>
+  <data name="Original images are stored in the private `OriginalFileSystemPath` location." xml:space="preserve">
+    <value>原始图片存储在私有的 `OriginalFileSystemPath` 路径中。</value>
   </data>
   <data name="Please provide a valid tag name." xml:space="preserve">
     <value>请提供有效的标签名称。</value>
@@ -1916,6 +1913,12 @@
   </data>
   <data name="Please configure email provider settings in appsettings.json." xml:space="preserve">
     <value>请在 `appsettings.json` 中配置邮件提供程序设置。</value>
+  </data>
+  <data name="Email notifications are not configured. Add email provider settings to enable this feature." xml:space="preserve">
+    <value>尚未配置邮件通知。请添加邮件提供程序配置以启用此功能。</value>
+  </data>
+  <data name="Email notification configuration is invalid." xml:space="preserve">
+    <value>邮件通知配置无效。</value>
   </data>
   <data name="Provider" xml:space="preserve">
     <value>提供程序</value>

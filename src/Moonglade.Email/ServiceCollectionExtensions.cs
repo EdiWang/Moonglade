@@ -16,15 +16,24 @@ public static class ServiceCollectionExtensions
     {
         services.TryAddSingleton(TimeProvider.System);
 
-        services.AddSingleton<IValidateOptions<EmailServiceOptions>, EmailServiceOptionsValidator>();
+        services.AddSingleton<EmailServiceOptionsValidator>();
         services.AddOptions<EmailServiceOptions>()
-            .Bind(configuration.GetSection("Email"))
-            .ValidateOnStart();
+            .Bind(configuration.GetSection("Email"));
 
-        services.AddSingleton<IValidateOptions<EmailOutboxWorkerOptions>, EmailOutboxWorkerOptionsValidator>();
+        services.AddSingleton<EmailOutboxWorkerOptionsValidator>();
         services.AddOptions<EmailOutboxWorkerOptions>()
-            .Bind(configuration.GetSection(EmailOutboxWorkerOptions.SectionName))
-            .ValidateOnStart();
+            .Bind(configuration.GetSection(EmailOutboxWorkerOptions.SectionName));
+
+        services.AddSingleton<EmailCapabilityStatusEvaluator>();
+        services.AddSingleton<EmailCapabilityStatus>(sp =>
+        {
+            var evaluator = sp.GetRequiredService<EmailCapabilityStatusEvaluator>();
+            var serviceOptions = sp.GetRequiredService<IOptions<EmailServiceOptions>>().Value;
+            var workerOptions = sp.GetRequiredService<IOptions<EmailOutboxWorkerOptions>>().Value;
+
+            return evaluator.Evaluate(serviceOptions, workerOptions);
+        });
+        services.AddHostedService<EmailCapabilityStatusReporter>();
 
         services.AddSingleton<IEmailHelper>(_ => new EmailHelper(LoadMailConfiguration()));
 

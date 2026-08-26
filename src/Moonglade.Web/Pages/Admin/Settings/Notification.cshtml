@@ -1,5 +1,9 @@
 ﻿@page "/admin/settings/notification"
-@inject IConfiguration Configuration
+@using Moonglade.Email.Core
+@using Moonglade.Web.Pages.Admin.Settings
+@inject EmailCapabilityStatus EmailCapabilityStatus
+@inject IOptions<EmailServiceOptions> EmailServiceOptions
+@inject IOptions<EmailOutboxWorkerOptions> EmailOutboxWorkerOptions
 @section scripts {
     <script type="module" src="~/js/app/admin.settings.notification.mjs"></script>
 }
@@ -11,48 +15,50 @@
 
 @{
     var settings = BlogConfig.NotificationSettings;
-    var emailProvider = string.IsNullOrWhiteSpace(Configuration["Email:Provider"])
-        ? "smtp"
-        : Configuration["Email:Provider"]!.Trim().ToLowerInvariant();
-    var isAzureCommunicationProvider = string.Equals(
-        emailProvider,
-        "azurecommunication",
-        StringComparison.OrdinalIgnoreCase);
-    var providerLabel = isAzureCommunicationProvider ? "Azure Communication Services" : "SMTP";
-    var senderAddress = isAzureCommunicationProvider
-        ? Configuration["Email:AcsSenderAddress"]
-        : Configuration["Email:SmtpUserName"];
-    var providerConfigured = isAzureCommunicationProvider
-        ? !string.IsNullOrWhiteSpace(Configuration["Email:AcsConnectionString"]) &&
-          !string.IsNullOrWhiteSpace(senderAddress)
-        : !string.IsNullOrWhiteSpace(Configuration["Email:SmtpServer"]) &&
-          !string.IsNullOrWhiteSpace(Configuration["Email:SmtpUserName"]) &&
-          !string.IsNullOrWhiteSpace(Configuration["Email:SmtpPassword"]);
-    var workerEnabledValue = Configuration["Email:OutboxWorker:Enabled"];
-    var workerEnabled = !bool.TryParse(workerEnabledValue, out var parsedWorkerEnabled) || parsedWorkerEnabled;
+    var pageState = EmailNotificationPageState.Create(
+        EmailCapabilityStatus,
+        EmailServiceOptions.Value,
+        EmailOutboxWorkerOptions.Value,
+        settings.EnableEmailSending);
 }
 
 @section admintoolbar {
     <partial name="_SettingsHeader" />
 }
 
-<form id="form-settings" asp-controller="Settings" asp-action="Notification">
+<form id="form-settings"
+      data-email-capability-state="@pageState.CapabilityState"
+      asp-controller="Settings"
+      asp-action="Notification">
     <div class="admin-settings-entry-container">
         <div class="row">
             <div class="col-md-6">
                 <div>
                     <h4 class="admin-subtitle fw-bold mb-2">@SharedLocalizer["Email Options"]</h4>
 
-                    @if (!providerConfigured)
+                    @if (pageState.ShowNotConfiguredPrompt)
                     {
                         <div class="alert alert-warning">
-                            @SharedLocalizer["Please configure email provider settings in appsettings.json."]
+                            @SharedLocalizer["Email notifications are not configured. Add email provider settings to enable this feature."]
                         </div>
                     }
 
-                    @if (!workerEnabled)
+                    @if (pageState.ShowInvalidConfiguration)
                     {
-                        <div class="alert alert-warning">
+                        <div class="alert alert-danger">
+                            <p class="mb-2">@SharedLocalizer["Email notification configuration is invalid."]</p>
+                            <ul class="mb-0">
+                                @foreach (var validationError in pageState.ValidationErrors)
+                                {
+                                    <li>@validationError</li>
+                                }
+                            </ul>
+                        </div>
+                    }
+
+                    @if (pageState.ShowDisabledNotice)
+                    {
+                        <div class="alert alert-info">
                             @SharedLocalizer["Email outbox worker is disabled."]
                         </div>
                     }
@@ -65,7 +71,7 @@
                             <label>@SharedLocalizer["Provider"]</label>
                         </div>
                         <div class="col-6">
-                            <input readonly="readonly" class="form-control" spellcheck="false" value="@providerLabel" />
+                            <input readonly="readonly" class="form-control" spellcheck="false" value="@pageState.ProviderLabel" />
                         </div>
                     </div>
 
@@ -77,7 +83,7 @@
                             <label>@SharedLocalizer["Sender Address"]</label>
                         </div>
                         <div class="col-6">
-                            <input readonly="readonly" class="form-control" spellcheck="false" value="@(string.IsNullOrWhiteSpace(senderAddress) ? SharedLocalizer["Not configured"] : senderAddress)" />
+                            <input readonly="readonly" class="form-control" spellcheck="false" value="@(string.IsNullOrWhiteSpace(pageState.SenderAddress) ? SharedLocalizer["Not configured"] : pageState.SenderAddress)" />
                         </div>
                     </div>
 
@@ -89,7 +95,7 @@
                             <label>@SharedLocalizer["Outbox Worker"]</label>
                         </div>
                         <div class="col-6">
-                            <input readonly="readonly" class="form-control" spellcheck="false" value="@(workerEnabled ? SharedLocalizer["Enabled"] : SharedLocalizer["Disabled"])" />
+                            <input readonly="readonly" class="form-control" spellcheck="false" value="@(pageState.WorkerEnabled ? SharedLocalizer["Enabled"] : SharedLocalizer["Disabled"])" />
                         </div>
                     </div>
 
@@ -113,9 +119,12 @@
                             @SharedLocalizer["Send Test Email"]
                         </div>
                         <div class="col-md-5 text-end">
-                            <a id="a-send-test-mail" class="btn btn-sm btn-outline-accent">
+                            <button type="button"
+                                    id="a-send-test-mail"
+                                    class="btn btn-sm btn-outline-accent"
+                                    disabled="@(!pageState.CanSendTestEmail)">
                                 @SharedLocalizer["Send"]
-                            </a>
+                            </button>
                         </div>
                     </div>
                 </div>

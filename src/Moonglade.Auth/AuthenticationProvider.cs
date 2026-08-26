@@ -2,6 +2,6 @@
 
 public enum AuthenticationProvider
 {
-    EntraID,
+    OpenIdConnect,
     Local
 }

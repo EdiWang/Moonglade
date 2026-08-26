@@ -1,6 +1,6 @@
 # 🌙 Moonglade Blog
 
-**Moonglade** is a personal blogging platform built for developers, optimized for seamless deployment on [**Microsoft Azure**](https://azure.microsoft.com/en-us/). It features essential blogging tools: posts, comments, categories, tags, archives, and pages.
+**Moonglade** is a personal blogging platform built for developers. It features essential blogging tools: posts, comments, categories, tags, archives, and pages.
 
 ## What Moonglade Does
 
@@ -24,7 +24,7 @@ The main solution file is `src/Moonglade.slnx`.
 | `src/Moonglade.Data` | EF Core `BlogDbContext`, entities, DTOs, mappings, and import/export primitives. |
 | `src/Moonglade.Data.SqlServer`, `src/Moonglade.Data.PostgreSql` | SQL Server and PostgreSQL provider registration and provider-specific EF Core behavior. |
 | `src/Moonglade.Configuration` | Persisted blog settings models, defaults, loading, and update commands. |
-| `src/Moonglade.Auth` | Local account and Microsoft Entra ID authentication support. |
+| `src/Moonglade.Auth` | Local account and standards-based OpenID Connect authentication support. |
 | `src/Moonglade.BackgroundServices` | Scheduled publishing, update checks, and fire-and-forget background work. |
 | `src/Moonglade.*` | Supporting projects for image storage, email, IndexNow, moderation, Webmention, syndication, themes, widgets, setup, utilities, and middleware. |
 | `src/Tests/Moonglade.*.Tests` | xUnit test projects aligned with the production projects. |
@@ -36,11 +36,13 @@ The main solution file is `src/Moonglade.slnx`.
 
 - **Stable Code:** Always use the [Release](https://github.com/EdiWang/Moonglade/releases) branch. Avoid deploying from `master`.
 - **Security:** Enable **HTTPS** and **HTTP/2** on your web server for optimal security and performance.
-- **Deployment Options:** While Azure is recommended, Moonglade can run on any cloud provider or on-premises.
+- **Deployment Options:** Moonglade can run on any cloud provider or on-premises.
 
 ### Quick Azure Deployment (App Service on Linux)
 
 Get started in 10 minutes with minimal Azure resources using our [automated deployment script](https://github.com/EdiWang/Moonglade/wiki/Quick-Deploy-on-Azure).
+
+The Bicep template provisions separate writable Azure Files shares for public and original images, mounts them into the App Service container at `/app/images` and `/app/images-origin`, and configures Moonglade with those filesystem paths. It does not provision a CDN or migrate images from an older Blob container.
 
 ### Quick Local Deployment (Docker)
 
@@ -49,6 +51,10 @@ For local testing or small-scale use, deploy Moonglade using Docker:
 ```bash
 docker compose up -d
 ```
+
+The supplied Compose file maps separate writable named volumes to `/app/images` and `/app/images-origin` and configures both `ImageStorage` paths. Keep both volumes when recreating or upgrading the container so public and retained original images remain durable and isolated.
+
+Email notifications are optional. The supplied default Email section intentionally contains no provider credentials; the application still starts, logs a warning, and serves the blog with email notification inactive. Open `/admin/settings/notification` to see the setup guidance after signing in. Add provider configuration through deployment secrets only when email delivery is required.
 
 ## 🛠️ Development
 
@@ -81,15 +87,6 @@ dotnet build src/Moonglade.Web/Moonglade.Web.csproj
 dotnet run --project src/Moonglade.Web/Moonglade.Web.csproj
 ```
 
-The admin content editor is provided by the `Moonglade.Editor.StaticAssets` NuGet package. Its browser assets are served from `/_content/Moonglade.Editor.StaticAssets/moonglade-editor/`; do not copy editor build output into `wwwroot`.
-
-Focused tests can be run from the matching test project, for example:
-
-```bash
-dotnet test src/Tests/Moonglade.Features.Tests/Moonglade.Features.Tests.csproj
-dotnet test src/Tests/Moonglade.Web.Tests/Moonglade.Web.Tests.csproj
-```
-
 1. Build and run `./src/Moonglade.slnx` or `src/Moonglade.Web/Moonglade.Web.csproj`
 2. Access your blog:
     - **Home:** `https://localhost:10210`
@@ -100,19 +97,11 @@ dotnet test src/Tests/Moonglade.Web.Tests/Moonglade.Web.Tests.csproj
 
 ## ⚙️ Configuration
 
-> Most settings are managed in `appsettings.json`. For blog settings, use the `/admin/settings` UI.
-
-### Site Verification Files
-
-Some search engines and external services verify site ownership by requesting a specific file from the website root, such as `/google123.html` or `/ads.txt`. In Docker and Azure deployments, use `/admin/settings/verification-files` to add these files without modifying `wwwroot` inside the container.
-
-Verification files are stored in the Moonglade database and served from root-level virtual endpoints. Supported file types are `.txt`, `.html`, `.htm`, `.xml`, and `.json`; each file is limited to 64 KB and must use a single root-level file name with letters, digits, dots, underscores, or hyphens. Existing static files and built-in endpoints such as `/robots.txt`, `/sitemap.xml`, and `/manifest.webmanifest` keep priority.
+> These settings are managed in `appsettings.json`. For blog settings, use the `/admin/settings` UI.
 
 ### Authentication
 
 - By default: Local accounts with TOTP authenticator app verification (manage via `/admin/account`)
-- Local sign-in is two-step after setup: username/password first, then the authenticator code on the next screen.
-- Local username/password sign-in and TOTP code verification are rate limited by client IP plus account context.
 - Local development can disable the TOTP step with `Authentication:Totp:Required=false`; this bypass is ignored outside the `Development` environment.
 - To replace a configured authenticator app, use `/admin/account` to reset it; the reset signs out the administrator and starts TOTP setup on the next sign-in.
 - TOTP options:
@@ -133,13 +122,26 @@ Verification files are stored in the Moonglade database and served from root-lev
 
 `Authentication:LocalAccountRateLimit` uses a fixed window. `PermitLimit` is the number of attempts allowed for the same partition during each window. Set `Enabled` to `false` only when another authentication-layer throttle is in place.
 
-- **Microsoft Entra ID** (Azure AD) supported. [Setup guide](https://github.com/EdiWang/Moonglade/wiki/Use-Microsoft-Entra-ID-Authentication)
+- A single standards-based **OpenID Connect** provider is supported as an alternative to the local account. Configure a confidential web client with authorization code flow and PKCE:
 
-### Reverse Proxy Client Addresses
+```json
+"Authentication": {
+  "Provider": "OpenIdConnect",
+  "OpenIdConnect": {
+    "Authority": "https://identity.example.com/",
+    "ClientId": "moonglade",
+    "CallbackPath": "/signin-oidc",
+    "SignedOutCallbackPath": "/signout-callback-oidc",
+    "NameClaimType": "name",
+    "Scopes": [ "openid", "profile", "email" ],
+    "AllowedSubjects": [ "the-administrator-sub-claim" ]
+  }
+}
+```
 
-When `ForwardedHeaders:Enabled` is enabled, list every trusted reverse proxy IP in `ForwardedHeaders:KnownProxies`. Moonglade accepts forwarded client addresses only from those proxies. If the list is empty or contains no valid addresses, ASP.NET Core's loopback-only defaults remain in effect; forwarded headers from unknown proxies are ignored.
+Supply `Authentication:OpenIdConnect:ClientSecret` from a secure external configuration source, such as the `Authentication__OpenIdConnect__ClientSecret` environment override; never commit the secret. `AllowedSubjects` contains the exact stable OIDC `sub` value for every administrator. An empty list safely denies all admin access while still allowing an authenticated OIDC user to retrieve their own `iss`, `sub`, and display name from `/auth/identity` for initial setup. Do not use email addresses or display names for authorization.
 
-The application reads the processed `HttpContext.Connection.RemoteIpAddress` and never trusts raw `X-Forwarded-For` or vendor-specific client-IP headers directly.
+For Microsoft Entra ID, use the tenant-specific authority `https://login.microsoftonline.com/{tenant-id}/v2.0`. Register both callback URLs shown above in the provider. Existing Entra-specific deployments must follow [the generic OIDC migration guide](docs/upgrade-generic-oidc-authentication.md).
 
 ### Comment Rate Limiting
 
@@ -172,67 +174,33 @@ Built-in comment submissions also use a hidden honeypot field and form elapsed-t
 
 ### Image Storage
 
-Configure the `ImageStorage` section in `appsettings.json` to choose where blog images are stored.
+Moonglade stores images through the filesystem only. Local disks, Docker volumes, network filesystems, and object-storage mounts are deployment concerns; the application contains no Azure Blob or S3-compatible storage provider or SDK.
 
 Uploaded image files are validated against their file content before storage. SVG uploads are supported, but active content and unsafe URL references are sanitized before the image is saved.
 
-#### **Azure Blob Storage**
-
-Create an [Azure Blob Storage](https://azure.microsoft.com/en-us/services/storage/blobs/) container with appropriate permissions:
+Configure two absolute, non-overlapping roots:
 
 ```json
-{
-  "Provider": "azurestorage",
-  "AzureStorageSettings": {
-    "ConnectionString": "YOUR_CONNECTION_STRING",
-    "ContainerName": "YOUR_CONTAINER_NAME",
-    "SecondaryContainerName": "YOUR_ORIGINAL_IMAGE_CONTAINER_NAME"
-  }
-}
-```
-- Enable CDN in admin settings for faster image delivery.
-
-#### **S3-Compatible Object Storage**
-
-Use `s3compatible` for AWS S3 and S3-compatible object storage services such as Cloudflare R2, MinIO, Backblaze B2, DigitalOcean Spaces, Alibaba Cloud OSS, and Tencent Cloud COS.
-
-```json
-{
-  "Provider": "s3compatible",
-  "S3CompatibleStorageSettings": {
-    "ServiceUrl": "https://YOUR_S3_COMPATIBLE_ENDPOINT",
-    "Region": "us-east-1",
-    "AccessKeyId": "YOUR_ACCESS_KEY_ID",
-    "SecretAccessKey": "YOUR_SECRET_ACCESS_KEY",
-    "BucketName": "YOUR_BUCKET_NAME",
-    "SecondaryBucketName": "YOUR_ORIGINAL_IMAGE_BUCKET_NAME",
-    "ForcePathStyle": false
-  }
+"ImageStorage": {
+  "CacheMinutes": 60,
+  "FileSystemPath": "/app/images",
+  "OriginalFileSystemPath": "/app/images-origin"
 }
 ```
 
-Use environment variables or another secret provider for credentials in production, for example `ImageStorage__S3CompatibleStorageSettings__SecretAccessKey`. Keep `InsertAsync` results as object keys; CDN/public URL behavior still comes from the admin image settings and the `/image/{filename}` endpoint.
+`FileSystemPath` contains public, processed images and is the only root read by `/image/{filename}`. `OriginalFileSystemPath` contains private original uploads when original-image retention is enabled. Never nest either root inside the other, and never expose the original root through static files or a CDN origin.
 
-#### **File System** (Not recommended)
+Both paths must be writable by the application identity and persistent across process or container replacement. Replicated deployments require shared storage with a coherent view across all replicas. Moonglade attempts to create missing directories, but it does not configure mount drivers, cloud credentials, network filesystems, or volume plugins.
 
-Windows:
-```json
-{
-  "Provider": "filesystem",
-  "FileSystemPath": "C:\\UploadedImages"
-}
-```
-Linux:
-```json
-{
-  "Provider": "filesystem",
-  "FileSystemPath": "/app/images"
-}
-```
+Leave both paths empty only for development. The defaults are `<user-profile>/moonglade/images` and `<user-profile>/moonglade/images-origin`; an unmounted container user profile is not durable storage.
 
-When using the file system, ensure the path exists and has appropriate permissions. If the path does not exist, Moonglade will attempt to create it. 
+#### CDN Delivery
 
-Leave the `FileSystemPath` empty to use the default path (`~/home/moonglade/images` on Linux or `%UserProfile%\moonglade\images` on Windows).
+CDN delivery remains configured in the admin image settings. When enabled, rendered posts and feeds use the configured CDN endpoint directly, and `/image/{filename}` redirects the browser to the CDN URL instead of proxying image bytes through Moonglade.
+
+The CDN origin must map a primary-root filename to the same root object key, serve the correct image `Content-Type`, and make a file visible only after its write is closed. CDN caching, invalidation, TLS, origin access, and any storage mount adapter are operator responsibilities. The private original root must not be attached to the CDN origin.
+
+Upgrading from a previous filesystem, Azure Blob, or S3-compatible provider requires manual storage preparation and data migration before the new version starts. See [Upgrade to Filesystem-Only Image Storage](docs/upgrade-filesystem-image-storage.md).
 
 ### Comment Moderation
 
@@ -251,7 +219,7 @@ Moonglade always emits `X-Content-Type-Options: nosniff`. To enable a custom Con
 
 ### Email Notifications
 
-Email notifications for new comments, replies, and Webmentions are queued in the Moonglade database and delivered by the in-process email outbox worker. Configure the `Email` section in `appsettings.json`, then enable notifications in the admin portal.
+Email notifications for new comments, replies, and Webmentions are optional. When available, notifications are queued in the Moonglade database and delivered by the in-process email outbox worker. Configure the `Email` section through deployment configuration or secrets, restart the application, then enable notifications in the admin portal.
 
 ```json
 "Email": {
@@ -266,19 +234,15 @@ Email notifications for new comments, replies, and Webmentions are queued in the
 
 Supported providers are `AzureCommunication` and `smtp`. Use environment variable overrides such as `Email__AcsConnectionString` or `Email__SmtpPassword` for real secrets.
 
-Email delivery uses at-least-once processing. If the application stops while a message is being sent, a later retry can occasionally send a duplicate notification. Set `Email:OutboxWorker:Enabled` to `false` only when another process is responsible for draining the outbox.
+Email configuration never controls application liveness or database readiness:
 
-### Background Work Queue
+- Missing required provider values leave email inactive, produce one startup warning, and show setup guidance in `/admin/settings/notification`. The application continues to start normally.
+- Unsupported, malformed, out-of-range, or inconsistent values leave email inactive, produce a startup error log, and show secret-safe validation details on the Notification settings page. They do not stop application startup.
+- Setting `Email:OutboxWorker:Enabled` to `false` deliberately disables email notification and is shown as a separate non-error state in the admin portal.
 
-`CannonService` handles low-volume in-process fire-and-forget work such as Webmention pings, IndexNow notifications, and original image storage. Configure `CannonService:QueueCapacity` to bound memory use:
+While email is unavailable, the worker does not poll or send and notification handlers do not enqueue new messages. Existing pending outbox messages are retained and can be processed after valid configuration is supplied and the application is restarted. The test-email action is disabled while delivery is unavailable.
 
-```json
-"CannonService": {
-  "QueueCapacity": 1000
-}
-```
-
-When the queue is full, new work is rejected and logged instead of running inline on the request path.
+Email delivery uses at-least-once processing. If the application stops while a message is being sent, a later retry can occasionally send a duplicate notification. Keep secrets outside source control and use the platform's secret or environment-variable configuration mechanism.
 
 ### More Settings
 

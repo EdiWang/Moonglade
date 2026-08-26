@@ -6,23 +6,31 @@ namespace Moonglade.ImageStorage.Providers;
 /// <summary>
 /// Configuration record for file system image storage settings.
 /// </summary>
-/// <param name="Path">The file system path where images will be stored.</param>
-public record FileSystemImageConfiguration(string Path);
+/// <param name="PrimaryPath">The file system path where public images will be stored.</param>
+/// <param name="OriginalPath">The private file system path where original images will be stored.</param>
+public record FileSystemImageConfiguration(string PrimaryPath, string OriginalPath);
 
 /// <summary>
 /// Provides file system-based image storage implementation for blog images.
-/// Stores images as files in a specified directory on the local file system.
+/// Stores public and original images in separate directories on the local file system.
 /// </summary>
-/// <param name="imgConfig">Configuration containing the storage path.</param>
-/// <param name="logger">Logger instance for tracking operations.</param>
-public class FileSystemImageStorage(FileSystemImageConfiguration imgConfig, ILogger<FileSystemImageStorage> logger) : IBlogImageStorage
+public class FileSystemImageStorage : IBlogImageStorage
 {
-    /// <summary>
-    /// Gets the name of this image storage provider.
-    /// </summary>
-    public string Name => nameof(FileSystemImageStorage);
+    private readonly string _primaryPath;
+    private readonly string _originalPath;
+    private readonly ILogger<FileSystemImageStorage> _logger;
 
-    private readonly string _path = imgConfig.Path;
+    public FileSystemImageStorage(FileSystemImageConfiguration imgConfig, ILogger<FileSystemImageStorage> logger)
+    {
+        ArgumentNullException.ThrowIfNull(imgConfig);
+        ArgumentNullException.ThrowIfNull(logger);
+
+        EnsureDistinctPaths(imgConfig.PrimaryPath, imgConfig.OriginalPath);
+
+        _primaryPath = imgConfig.PrimaryPath;
+        _originalPath = imgConfig.OriginalPath;
+        _logger = logger;
+    }
 
     /// <summary>
     /// Gets the default storage path for images when no custom path is specified.
@@ -36,11 +44,14 @@ public class FileSystemImageStorage(FileSystemImageConfiguration imgConfig, ILog
         }
     }
 
+    public static string DefaultOriginalPath =>
+        Path.Join(Environment.GetFolderPath(Environment.SpecialFolder.UserProfile), "moonglade", "images-origin");
+
     public async Task<ImageInfo> GetInfoAsync(string fileName)
     {
         await Task.CompletedTask;
         ValidateFileName(fileName);
-        var imagePath = Path.Join(_path, fileName);
+        var imagePath = Path.Join(_primaryPath, fileName);
 
         if (!File.Exists(imagePath))
         {
@@ -70,7 +81,7 @@ public class FileSystemImageStorage(FileSystemImageConfiguration imgConfig, ILog
     {
         await Task.CompletedTask;
         ValidateFileName(fileName);
-        var imagePath = Path.Join(_path, fileName);
+        var imagePath = Path.Join(_primaryPath, fileName);
 
         if (!File.Exists(imagePath))
         {
@@ -94,16 +105,17 @@ public class FileSystemImageStorage(FileSystemImageConfiguration imgConfig, ILog
     /// <remarks>
     /// If the file does not exist, the operation completes silently without error.
     /// </remarks>
-    public async Task DeleteAsync(string fileName)
+    public Task DeleteAsync(string fileName)
     {
-        await Task.CompletedTask;
         ValidateFileName(fileName);
-        var imagePath = Path.Join(_path, fileName);
+        var imagePath = Path.Join(_primaryPath, fileName);
         if (File.Exists(imagePath))
         {
             File.Delete(imagePath);
-            logger.LogInformation("Deleted image: {FileName}", fileName);
+            _logger.LogInformation("Deleted image: {FileName}", fileName);
         }
+
+        return Task.CompletedTask;
     }
 
     /// <summary>
@@ -154,29 +166,36 @@ public class FileSystemImageStorage(FileSystemImageConfiguration imgConfig, ILog
     /// </remarks>
     public async Task<string> InsertAsync(string fileName, byte[] imageBytes)
     {
+        return await InsertInternalAsync(_primaryPath, fileName, imageBytes);
+    }
+
+    /// <summary>
+    /// Saves an original image to the private original-image path.
+    /// </summary>
+    public async Task<string> InsertOriginalAsync(string fileName, byte[] imageBytes)
+    {
+        return await InsertInternalAsync(_originalPath, fileName, imageBytes);
+    }
+
+    private async Task<string> InsertInternalAsync(string storagePath, string fileName, byte[] imageBytes)
+    {
         ValidateFileName(fileName);
-        var fullPath = Path.Join(_path, fileName);
+        ArgumentNullException.ThrowIfNull(imageBytes);
+        if (imageBytes.Length == 0)
+        {
+            throw new ArgumentException("Image bytes cannot be empty.", nameof(imageBytes));
+        }
+
+        var fullPath = Path.Join(storagePath, fileName);
 
         await using var sourceStream = new FileStream(fullPath, FileMode.Create, FileAccess.Write, FileShare.None,
             4096, true);
         await sourceStream.WriteAsync(imageBytes.AsMemory(0, imageBytes.Length));
 
-        logger.LogInformation("Saved image: {FileName}", fileName);
+        _logger.LogInformation("Saved image: {FileName}", fileName);
 
         return fileName;
     }
-
-    /// <summary>
-    /// Saves a secondary copy of an image to the file system storage.
-    /// </summary>
-    /// <param name="fileName">The name to use for the saved image file.</param>
-    /// <param name="imageBytes">The image data as a byte array.</param>
-    /// <returns>The filename of the saved image.</returns>
-    /// <remarks>
-    /// This implementation delegates to <see cref="InsertAsync"/> as file system
-    /// storage doesn't distinguish between primary and secondary storage.
-    /// </remarks>
-    public Task<string> InsertSecondaryAsync(string fileName, byte[] imageBytes) => InsertAsync(fileName, imageBytes);
 
     /// <summary>
     /// Resolves and validates an image storage path, ensuring it's properly formatted
@@ -228,5 +247,49 @@ public class FileSystemImageStorage(FileSystemImageConfiguration imgConfig, ILog
             Directory.CreateDirectory(fullPath);
         }
         return fullPath;
+    }
+
+    public static FileSystemImageConfiguration ResolveImageStoragePaths(string primaryPath, string originalPath)
+    {
+        var resolvedPrimaryPath = ResolveImageStoragePath(primaryPath);
+        var resolvedOriginalPath = ResolveImageStoragePath(originalPath);
+        EnsureDistinctPaths(resolvedPrimaryPath, resolvedOriginalPath);
+
+        return new(resolvedPrimaryPath, resolvedOriginalPath);
+    }
+
+    private static void EnsureDistinctPaths(string primaryPath, string originalPath)
+    {
+        ArgumentException.ThrowIfNullOrWhiteSpace(primaryPath);
+        ArgumentException.ThrowIfNullOrWhiteSpace(originalPath);
+
+        var normalizedPrimaryPath = Path.TrimEndingDirectorySeparator(Path.GetFullPath(primaryPath));
+        var normalizedOriginalPath = Path.TrimEndingDirectorySeparator(Path.GetFullPath(originalPath));
+        var comparison = OperatingSystem.IsWindows()
+            ? StringComparison.OrdinalIgnoreCase
+            : StringComparison.Ordinal;
+
+        if (PathsOverlap(normalizedPrimaryPath, normalizedOriginalPath, comparison))
+        {
+            throw new InvalidOperationException("Primary and original image storage paths must not overlap.");
+        }
+    }
+
+    private static bool PathsOverlap(string firstPath, string secondPath, StringComparison comparison)
+    {
+        if (string.Equals(firstPath, secondPath, comparison))
+        {
+            return true;
+        }
+
+        var firstPathPrefix = Path.EndsInDirectorySeparator(firstPath)
+            ? firstPath
+            : firstPath + Path.DirectorySeparatorChar;
+        var secondPathPrefix = Path.EndsInDirectorySeparator(secondPath)
+            ? secondPath
+            : secondPath + Path.DirectorySeparatorChar;
+
+        return firstPath.StartsWith(secondPathPrefix, comparison) ||
+               secondPath.StartsWith(firstPathPrefix, comparison);
     }
 }

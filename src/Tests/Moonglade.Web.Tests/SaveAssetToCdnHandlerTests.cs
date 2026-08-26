@@ -73,6 +73,7 @@ public class SaveAssetToCdnHandlerTests
 
         _imageStorage.Verify(x => x.DeleteAsync(AvatarFileName), Times.Once);
         _imageStorage.Verify(x => x.InsertAsync(AvatarFileName, It.Is<byte[]>(bytes => bytes.SequenceEqual(imageBytes))), Times.Once);
+        _imageStorage.Verify(x => x.InsertOriginalAsync(It.IsAny<string>(), It.IsAny<byte[]>()), Times.Never);
 
         var avatarUrl = blogConfig.GeneralSettings.AvatarUrl;
         Assert.NotNull(avatarUrl);

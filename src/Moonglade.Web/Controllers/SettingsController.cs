@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Moonglade.ActivityLog;
 using Moonglade.Email;
+using Moonglade.Email.Core;
 using Moonglade.Features.Asset;
 
 namespace Moonglade.Web.Controllers;
@@ -15,6 +16,7 @@ public class SettingsController(
         IBlogConfig blogConfig,
         ILogger<SettingsController> logger,
         IEventMediator eventMediator,
+        EmailCapabilityStatus emailCapabilityStatus,
         IQueryMediator queryMediator,
         ICommandMediator commandMediator) : BlogControllerBase(commandMediator)
 {
@@ -63,6 +65,19 @@ public class SettingsController(
     [HttpPost("email/test")]
     public async Task<IActionResult> TestEmail()
     {
+        if (!emailCapabilityStatus.IsAvailable)
+        {
+            return CreateEmailCapabilityProblem();
+        }
+
+        if (!blogConfig.NotificationSettings.EnableEmailSending)
+        {
+            return Problem(
+                detail: "Enable email sending in Notification settings before sending a test email.",
+                statusCode: StatusCodes.Status409Conflict,
+                title: "Email notifications are disabled.");
+        }
+
         try
         {
             await eventMediator.PublishAsync(new TestEmailEvent());
@@ -70,8 +85,11 @@ public class SettingsController(
         }
         catch (Exception e)
         {
-            logger.LogError(e, "Error sending test email");
-            return StatusCode(StatusCodes.Status500InternalServerError, "Failed to send test email.");
+            logger.LogError(e, "Error queuing test email");
+            return Problem(
+                detail: "The test email could not be queued.",
+                statusCode: StatusCodes.Status500InternalServerError,
+                title: "Failed to queue test email.");
         }
     }
 
@@ -285,6 +303,32 @@ public class SettingsController(
     {
         var kvp = blogConfig.UpdateAsync(settings);
         await CommandMediator.SendAsync(new UpdateConfigurationCommand(kvp.Key, kvp.Value));
+    }
+
+    private IActionResult CreateEmailCapabilityProblem()
+    {
+        return emailCapabilityStatus.State switch
+        {
+            EmailCapabilityState.NotConfigured => Problem(
+                detail: "Add the required Email provider settings to enable email notifications.",
+                statusCode: StatusCodes.Status503ServiceUnavailable,
+                title: "Email notifications are not configured."),
+
+            EmailCapabilityState.Invalid => Problem(
+                detail: string.Join(" ", emailCapabilityStatus.ValidationErrors),
+                statusCode: StatusCodes.Status503ServiceUnavailable,
+                title: "Email notification configuration is invalid."),
+
+            EmailCapabilityState.Disabled => Problem(
+                detail: "Set Email:OutboxWorker:Enabled to true before sending a test email.",
+                statusCode: StatusCodes.Status409Conflict,
+                title: "Email notifications are disabled."),
+
+            _ => Problem(
+                detail: "Email notifications are currently unavailable.",
+                statusCode: StatusCodes.Status503ServiceUnavailable,
+                title: "Email notifications are unavailable.")
+        };
     }
 }
 

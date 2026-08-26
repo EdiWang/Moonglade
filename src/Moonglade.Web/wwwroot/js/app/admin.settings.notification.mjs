@@ -15,11 +15,17 @@ function toggleButtonState(button, isDisabled) {
 
 async function sendTestEmail() {
     const testEmailButton = document.querySelector('#a-send-test-mail');
+    if (testEmailButton.disabled) {
+        return;
+    }
+
     toggleButtonState(testEmailButton, true);
 
     try {
-        await fetch2('/api/settings/email/test', 'POST', {});
-        success(getLocalizedString('emailSent'));
+        const queued = await fetch2('/api/settings/email/test', 'POST', {});
+        if (queued === true) {
+            success(getLocalizedString('emailSent'));
+        }
     } catch (err) {
         error(err);
     } finally {

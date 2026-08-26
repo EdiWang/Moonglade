@@ -1347,9 +1347,6 @@
   <data name="* Please use valid {0} code." xml:space="preserve">
     <value>* 請使用有效的 {0} 程式碼。</value>
   </data>
-  <data name="* Recommend to use {0}" xml:space="preserve">
-    <value>* 建議使用 {0}</value>
-  </data>
   <data name="Actions" xml:space="preserve">
     <value>動作</value>
   </data>
@@ -1689,8 +1686,8 @@
   <data name="Password updated." xml:space="preserve">
     <value>密碼已更新。</value>
   </data>
-  <data name="Please configure `SecondaryContainerName` in `appsettings.json`" xml:space="preserve">
-    <value>請在 `appsettings.json` 中設定 `SecondaryContainerName`</value>
+  <data name="Original images are stored in the private `OriginalFileSystemPath` location." xml:space="preserve">
+    <value>原始圖片儲存在私有的 `OriginalFileSystemPath` 路徑中。</value>
   </data>
   <data name="Please provide a valid tag name." xml:space="preserve">
     <value>請提供有效的標籤名稱。</value>
@@ -1916,6 +1913,12 @@
   </data>
   <data name="Please configure email provider settings in appsettings.json." xml:space="preserve">
     <value>請在 `appsettings.json` 中設定郵件提供者設定。</value>
+  </data>
+  <data name="Email notifications are not configured. Add email provider settings to enable this feature." xml:space="preserve">
+    <value>尚未設定電子郵件通知。請新增郵件提供者設定以啟用此功能。</value>
+  </data>
+  <data name="Email notification configuration is invalid." xml:space="preserve">
+    <value>電子郵件通知設定無效。</value>
   </data>
   <data name="Provider" xml:space="preserve">
     <value>提供者</value>
