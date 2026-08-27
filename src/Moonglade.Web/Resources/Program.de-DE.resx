@@ -948,12 +948,6 @@
   <data name="Server Time Zone" xml:space="preserve">
     <value>Zeitzone des Servers</value>
   </data>
-  <data name="Azure App Service" xml:space="preserve">
-    <value>Azure App Service</value>
-  </data>
-  <data name="Azure Front Door" xml:space="preserve">
-    <value>Azure Front Door  </value>
-  </data>
   <data name="Legal Infomation" xml:space="preserve">
     <value>Rechtliche Hinweise</value>
   </data>
