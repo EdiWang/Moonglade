@@ -4,7 +4,9 @@ This file is for AI agents working in this repository. Before changing code, rea
 
 ## Project Overview
 
-Moonglade is a personal blogging platform built with ASP.NET Core / .NET 10. The main application host is `src/Moonglade.Web`. It targets developer-focused personal blogs and includes posts, pages, categories, tags, comments, archives, themes, widgets, image storage, syndication feeds, Webmention, IndexNow, email notifications, content moderation, an admin portal, and Azure/Docker deployment assets.
+Moonglade is a personal blogging platform built with ASP.NET Core / .NET 10. The main application host is `src/Moonglade.Web`. It targets developer-focused personal blogs and includes posts, pages, categories, tags, comments, archives, themes, widgets, image storage, syndication feeds, Webmention, IndexNow, email notifications, content moderation, an admin portal, container deployment assets, and optional provider-specific deployment examples.
+
+Moonglade is intended to remain cloud-platform-neutral. Application code, default configuration, and supported runtime behavior must not require Azure or any other cloud provider. Vendor-specific deployment examples may remain in the repository, but they do not define application compatibility requirements and must not drive provider-specific behavior into the core projects.
 
 The solution file is `src/Moonglade.slnx`. The root `README.md` is the main deployment and configuration guide. `AGENTS.md` is the consolidated repository-specific guidance for AI coding agents.
 
@@ -21,9 +23,9 @@ The solution file is `src/Moonglade.slnx`. The root `README.md` is the main depl
 | Authentication | Cookie-based local account authentication and one configurable OpenID Connect provider through the ASP.NET Core OIDC handler. |
 | Frontend | Server-rendered Razor, Bootstrap, Bootstrap Icons, Alpine.js, unified Moonglade.Editor for rich HTML post editing plus Markdown/CSS/HTML code-like modes, Tagify, Mermaid.js for Markdown diagrams on post reading pages, and project-local JavaScript modules under `src/Moonglade.Web/wwwroot/js/app`. |
 | Image storage | `IBlogImageStorage` with one filesystem implementation and separate public primary and private original-image roots. External storage mounts and CDN origins are operator-owned. |
-| External integrations | Webmention, IndexNow, site ownership verification files, email outbox delivery, local content moderation, Gravatar, Azure App Service logging, and Azure/Docker deployment assets. |
+| External integrations | Webmention, IndexNow, site ownership verification files, email outbox delivery through SMTP or optional Azure Communication Services, local content moderation, and Gravatar. |
 | Package management | NuGet package references in project files; no repository-level `Directory.Packages.props`, `NuGet.config`, or package lock file was found at the time this document was updated. |
-| Build tools | .NET SDK CLI, Visual Studio, VS Code task `dotnet build ${workspaceFolder}/src/Moonglade.Web/Moonglade.Web.csproj`, Docker multi-stage build, Docker Compose, and Azure Bicep/PowerShell deployment assets. |
+| Build tools | .NET SDK CLI, Visual Studio, VS Code task `dotnet build ${workspaceFolder}/src/Moonglade.Web/Moonglade.Web.csproj`, Docker multi-stage build, Docker Compose, and optional provider-specific Bicep/PowerShell deployment examples. |
 | Tests | xUnit v3, Moq, `Microsoft.NET.Test.Sdk`, `coverlet.collector`, EF Core InMemory/Sqlite patterns, and ASP.NET Core TestHost for Web tests. |
 | Formatting/linting | Minimal repository-level `.editorconfig` for UTF-8, CRLF, final newlines, trimmed trailing whitespace, 4-space C#/Razor/JS/JSON/YAML indentation, and tab-indented MSBuild XML. No dedicated analyzer config or lint task was found at the time this document was updated. Follow nearby style and avoid bulk formatting. |
 
@@ -45,7 +47,7 @@ Important configuration areas:
 | `CommentRateLimit` | Built-in comment submission rate limiting by client IP and post ID. | Optional | Uses a fixed window policy. |
 | `CommentSubmissionGuard` | Built-in comment honeypot and elapsed-time checks. | Optional | Rejects filled honeypot fields, too-fast submissions, and stale form timestamps. |
 | `Webmention` | Webmention options, including source rate limiting. | Optional | Preserve protocol endpoint behavior. |
-| `Email` | Email provider settings and database outbox worker options. | Optional | Supports `AzureCommunication` and `smtp`; store real connection strings and passwords outside source control. `Email:OutboxWorker:Enabled=false` stops in-process delivery but does not prevent enqueueing. |
+| `Email` | Email provider settings and database outbox worker options. | Optional | Defaults to `smtp` and also supports `AzureCommunication`; store real connection strings and passwords outside source control. `Email:OutboxWorker:Enabled=false` stops in-process delivery but does not prevent enqueueing. |
 | `IndexNow` | API key, ping targets, and cooldown interval. | Optional | API key also maps the IndexNow verification file endpoint. |
 | `ForwardedHeaders` | Reverse proxy/client IP configuration. | Deployment-dependent | Required behind some proxies/load balancers. Only explicitly configured `KnownProxies` are trusted; an empty or invalid list retains ASP.NET Core's loopback-only defaults. |
 | `EnableCSP`, `CSPValue` | Optional Content Security Policy response header. | Optional | `X-Content-Type-Options: nosniff` is always emitted; CSP is emitted only when enabled and non-empty. |
@@ -169,8 +171,9 @@ Important configuration areas:
 - Do not use C# anonymous object initializers (`new { ... }`) in C# source or test files. Razor files are excluded from this rule because route values, HTML attributes, and view component arguments commonly use anonymous objects there.
 - Use structured logging placeholders, for example `logger.LogInformation("Post updated with ID: {PostId}", post.Id);`.
 - Keep comments sparse and useful. Add comments only for non-obvious compatibility, security, localization, protocol, or business decisions.
-- Keep changes cross-platform, especially paths, environment variables, container behavior, mounted-filesystem semantics, and Linux App Service scenarios.
-- When touching deployment assets, keep Azure App Service on Linux, Docker Compose, SQL Server, and PostgreSQL scenarios in mind. The official Bicep deployment provisions two Azure Files shares and App Service Path mappings at `/app/images` and `/app/images-origin`; it must not restore application-level Azure storage settings. The default Docker image pre-creates both paths for the `app` user, and Compose persists them in separate named volumes.
+- Keep changes cross-platform, especially paths, environment variables, reverse-proxy behavior, container behavior, and mounted-filesystem semantics.
+- Treat vendor-specific deployment assets, including files under `Deployment`, as optional examples. They must not dictate application architecture, default configuration, storage abstractions, or compatibility requirements. Do not add cloud SDKs, provider detection, or vendor-specific settings to core application projects merely to preserve a deployment example.
+- For platform-neutral deployments, preserve standard environment-variable configuration, OCI/Docker compatibility, SQL Server and PostgreSQL support, and separate durable mounts for `/app/images` and `/app/images-origin`. The default Docker image pre-creates both paths for the `app` user, and Compose persists them in separate named volumes.
 
 ### HTTP And Error Handling
 
