@@ -9,12 +9,9 @@ public class EmailCapabilityStatusEvaluatorTests
         new EmailOutboxWorkerOptionsValidator());
 
     [Fact]
-    public void Evaluate_RepositoryDefaultAzureCommunicationSettings_AreNotConfigured()
+    public void Evaluate_RepositoryDefaultSmtpSettings_AreNotConfigured()
     {
-        var serviceOptions = new EmailServiceOptions
-        {
-            Provider = "AzureCommunication"
-        };
+        var serviceOptions = new EmailServiceOptions();
 
         var status = _sut.Evaluate(serviceOptions, new EmailOutboxWorkerOptions());
 
