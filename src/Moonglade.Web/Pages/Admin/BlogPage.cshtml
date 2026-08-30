@@ -39,9 +39,13 @@
         <div class="col">
             <div class="card shadow-sm mb-4" :id="`card-${page.id}`">
                 <div class="card-body">
-                    <h6 class="card-title">
-                        <a :href="`/page/${encodeURIComponent(page.slug)}`" target="_blank" x-text="page.title"></a>
-                    </h6>
+                    <div class="d-flex justify-content-between align-items-start gap-2">
+                        <h6 class="card-title">
+                            <a :href="`/page/${encodeURIComponent(page.slug)}`" target="_blank" x-text="page.title"></a>
+                        </h6>
+                        <span x-show="page.isPublished" x-cloak class="badge bg-success">@SharedLocalizer["Published"]</span>
+                        <span x-show="!page.isPublished" x-cloak class="badge bg-secondary">@SharedLocalizer["Unpublished"]</span>
+                    </div>
                     <p class="mt-2 h-30px" x-text="page.slug"></p>
                     <small class="text-muted" x-text="formatDate(page.createTimeUtc)"></small>
                 </div>

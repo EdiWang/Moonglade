@@ -552,6 +552,9 @@
   <data name="Published" xml:space="preserve">
     <value>Veröffentlicht</value>
   </data>
+  <data name="Unpublished" xml:space="preserve">
+    <value>Nicht veröffentlicht</value>
+  </data>
   <data name="Read origin article" xml:space="preserve">
     <value>Dieser Artikel ist eine Bearbeitung eines anderen Artikels. Lies den Originalartikel hier.</value>
   </data>

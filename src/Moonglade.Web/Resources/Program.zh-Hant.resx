@@ -552,6 +552,9 @@
   <data name="Published" xml:space="preserve">
     <value>已發佈</value>
   </data>
+  <data name="Unpublished" xml:space="preserve">
+    <value>未發佈</value>
+  </data>
   <data name="Read origin article" xml:space="preserve">
     <value>閱讀原文</value>
   </data>

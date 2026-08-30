@@ -552,6 +552,9 @@
   <data name="Published" xml:space="preserve">
     <value>公開</value>
   </data>
+  <data name="Unpublished" xml:space="preserve">
+    <value>未公開</value>
+  </data>
   <data name="Read origin article" xml:space="preserve">
     <value>元の記事を読む</value>
   </data>
