@@ -34,32 +34,13 @@ async init() {
         return this.tags.length > 0;
     },
 
-    get activeTags() {
+    get sortedTags() {
         return this.tags
-            .filter(t => t.postCount > 0)
             .sort((a, b) => a.displayName.localeCompare(b.displayName));
     },
 
-    get inactiveTags() {
-        return this.tags
-            .filter(t => t.postCount === 0)
-            .sort((a, b) => a.displayName.localeCompare(b.displayName));
-    },
-
-    get filteredActiveTags() {
-        return this.filterTagList(this.activeTags);
-    },
-
-    get filteredInactiveTags() {
-        return this.filterTagList(this.inactiveTags);
-    },
-
-    get hasActiveTags() {
-        return this.filteredActiveTags.length > 0;
-    },
-
-    get hasInactiveTags() {
-        return this.filteredInactiveTags.length > 0;
+    get filteredTags() {
+        return this.filterTagList(this.sortedTags);
     },
 
     groupByLetter(tagList) {
@@ -76,20 +57,8 @@ async init() {
         }));
     },
 
-    get groupedActiveTags() {
-        return this.groupByLetter(this.filteredActiveTags);
-    },
-
-    get groupedInactiveTags() {
-        return this.groupByLetter(this.filteredInactiveTags);
-    },
-
-    get activeLetters() {
-        return this.groupedActiveTags.map(g => g.letter);
-    },
-
-    get inactiveLetters() {
-        return this.groupedInactiveTags.map(g => g.letter);
+    get groupedTags() {
+        return this.groupByLetter(this.filteredTags);
     },
 
     filterTagList(tagList) {
