@@ -92,6 +92,11 @@
     padding: 1rem;
 }
 
+.dashboard-draft-empty {
+    background-color: transparent;
+    justify-content: center;
+}
+
 .dashboard-post-list {
     display: grid;
     gap: .75rem;
