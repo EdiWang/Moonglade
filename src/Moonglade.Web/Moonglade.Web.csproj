@@ -35,7 +35,7 @@
 		<PackageReference Include="Edi.CacheAside.InMemory" Version="4.0.0" />
 		<PackageReference Include="Edi.Gravatar" Version="1.4.0" />
 		<PackageReference Include="Edi.ImageWatermark" Version="3.0.0" />
-		<PackageReference Include="Edi.PasswordGenerator" Version="2.3.0" />
+		<PackageReference Include="Edi.PasswordGenerator" Version="3.0.0" />
 		<PackageReference Include="LiteBus.Extensions.Microsoft.DependencyInjection" Version="6.0.2" />
 		<PackageReference Include="Microsoft.Extensions.Diagnostics.HealthChecks.EntityFrameworkCore" Version="10.0.11" />
 		<PackageReference Include="Moonglade.Editor.StaticAssets" Version="0.8.0" />
