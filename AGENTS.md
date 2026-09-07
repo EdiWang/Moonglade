@@ -220,8 +220,8 @@ Important configuration areas:
 ```powershell
 dotnet restore src/Moonglade.Web/Moonglade.Web.csproj
 dotnet build src/Moonglade.Web/Moonglade.Web.csproj
-dotnet test src/Tests/Moonglade.Features.Tests/Moonglade.Features.Tests.csproj
-dotnet test src/Tests/Moonglade.Web.Tests/Moonglade.Web.Tests.csproj
+dotnet test --project src/Tests/Moonglade.Features.Tests/Moonglade.Features.Tests.csproj
+dotnet test --project src/Tests/Moonglade.Web.Tests/Moonglade.Web.Tests.csproj
 docker compose up -d
 ```
 

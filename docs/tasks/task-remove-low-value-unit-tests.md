@@ -46,7 +46,7 @@ The cleanup removed 14 low-value test cases. Seven affected test projects passed
 
 ## Issues and Resolutions
 
-The initial assertion-free scan also identified a Webmention request-failure test. It is retained because swallowing an outbound request exception is an intentional resilience contract; its behavior is now asserted explicitly. The normal `dotnet test` invocation was unavailable because the repository has not opted in to the .NET 10 native Microsoft Testing Platform experience, so the xUnit v3 test executables were run through `dotnet run --project` instead.
+The initial assertion-free scan also identified a Webmention request-failure test. It is retained because swallowing an outbound request exception is an intentional resilience contract; its behavior is now asserted explicitly. The normal `dotnet test` invocation was unavailable during this work because the repository had not yet opted in to the .NET 10 native Microsoft Testing Platform experience. That configuration was subsequently enabled in the repository root `global.json`.
 
 ## Follow-ups
 
