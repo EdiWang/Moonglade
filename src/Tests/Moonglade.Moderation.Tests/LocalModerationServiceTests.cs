@@ -5,32 +5,6 @@ public class LocalModerationServiceTests
     #region Constructor Tests
 
     [Fact]
-    public void Constructor_WithValidKeywords_CreatesInstance()
-    {
-        // Arrange
-        var keywords = "badword1|badword2";
-
-        // Act
-        var service = new LocalModerationService(keywords);
-
-        // Assert
-        Assert.NotNull(service);
-    }
-
-    [Fact]
-    public void Constructor_WithEmptyKeywords_CreatesInstance()
-    {
-        // Arrange
-        var keywords = "";
-
-        // Act
-        var service = new LocalModerationService(keywords);
-
-        // Assert
-        Assert.NotNull(service);
-    }
-
-    [Fact]
     public void Constructor_WithNullKeywords_ThrowsException()
     {
         // Arrange

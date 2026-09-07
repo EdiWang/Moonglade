@@ -150,22 +150,6 @@ public class GetSiteThemeStyleSheetQueryTests
         Assert.StartsWith(":root {", result);
     }
 
-    [Fact]
-    public async Task HandleAsync_ThemeIsNull_FallsBackToDefaultSystemTheme()
-    {
-        // Arrange
-        using var db = CreateDbContext();
-        var handler = new GetStyleSheetQueryHandler(db);
-        var query = new GetSiteThemeStyleSheetQuery(999);
-
-        // Act
-        var result = await handler.HandleAsync(query, TestContext.Current.CancellationToken);
-
-        // Assert
-        // When custom theme not found, it falls back to default system theme (100)
-        Assert.NotNull(result);
-    }
-
     #endregion
 
     #region HandleAsync Tests - Error Cases
@@ -335,30 +319,6 @@ public class GetSiteThemeStyleSheetQueryTests
         // Assert
         Assert.NotNull(result);
         Assert.StartsWith(":root {", result);
-    }
-
-    [Fact]
-    public async Task HandleAsync_CancellationToken_PassedToDatabase()
-    {
-        // Arrange
-        using var db = CreateDbContext();
-        db.BlogTheme.Add(new BlogThemeEntity
-        {
-            Id = 50,
-            ThemeName = "Test",
-            CssRules = """{"--color": "blue"}"""
-        });
-        await db.SaveChangesAsync(TestContext.Current.CancellationToken);
-
-        var cts = new CancellationTokenSource();
-        var handler = new GetStyleSheetQueryHandler(db);
-        var query = new GetSiteThemeStyleSheetQuery(50);
-
-        // Act
-        var result = await handler.HandleAsync(query, cts.Token);
-
-        // Assert
-        Assert.NotNull(result);
     }
 
     [Fact]

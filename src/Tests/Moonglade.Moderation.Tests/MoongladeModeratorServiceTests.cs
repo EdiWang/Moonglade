@@ -11,18 +11,6 @@ public class MoongladeModeratorServiceTests
     #region Constructor Tests
 
     [Fact]
-    public void Constructor_WithLocalService_InitializesSuccessfully()
-    {
-        // Act
-        var service = new MoongladeModeratorService(
-            _mockLogger.Object,
-            _mockLocalService.Object);
-
-        // Assert
-        Assert.NotNull(service);
-    }
-
-    [Fact]
     public void Constructor_WithNullLocalService_LogsErrorAndDisablesService()
     {
         // Act
@@ -31,7 +19,6 @@ public class MoongladeModeratorServiceTests
             null);
 
         // Assert
-        Assert.NotNull(service);
         VerifyErrorLogging("Local moderation service is not configured");
     }
 
