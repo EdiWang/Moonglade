@@ -7,7 +7,7 @@ using System.Xml;
 
 namespace Moonglade.Syndication;
 
-public class FeedGenerator : IFeedGenerator, IRssGenerator, IAtomGenerator
+public class FeedGenerator
 {
     public FeedGenerator()
     {
