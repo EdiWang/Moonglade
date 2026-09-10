@@ -20,9 +20,15 @@ public class DatedGuidFileNameGeneratorTests
     [InlineData("long-file-name.png", " ", ".png")]
     public void GetFileName_ReturnsDatedGuidName(string fileName, string appendix, string suffix)
     {
+        var dateBefore = DateTime.UtcNow.ToString("yyyyMMdd");
         var result = _generator.GetFileName(fileName, appendix);
+        var dateAfter = DateTime.UtcNow.ToString("yyyyMMdd");
 
-        Assert.Equal($"{DateTime.UtcNow:yyyyMMdd}-12345678{suffix}", result);
+        Assert.Contains(result, new[]
+        {
+            $"{dateBefore}-12345678{suffix}",
+            $"{dateAfter}-12345678{suffix}"
+        });
     }
 
     [Theory]

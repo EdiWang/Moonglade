@@ -35,6 +35,12 @@ public class MoongladeModeratorServiceTests
     }
 
     [Fact]
+    public void Detect_ChecksEveryInput()
+    {
+        Assert.True(CreateService("badword").Detect("Clean text", "Contains badword"));
+    }
+
+    [Fact]
     public void UsesLatestKeywords()
     {
         var provider = new MutableKeywordProvider("alpha");
