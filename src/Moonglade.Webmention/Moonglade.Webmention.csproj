@@ -16,6 +16,6 @@
 	</ItemGroup>
 	<ItemGroup>
 		<PackageReference Include="Edi.AspNetCore.Utils" Version="2.0.1" />
-		<PackageReference Include="Microsoft.Extensions.Http.Resilience" Version="10.9.0" />
+		<PackageReference Include="Microsoft.Extensions.Http.Resilience" Version="10.10.0" />
 	</ItemGroup>
 </Project>

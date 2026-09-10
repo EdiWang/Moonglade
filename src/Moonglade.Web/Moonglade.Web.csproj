@@ -36,7 +36,7 @@
 		<PackageReference Include="Edi.ImageWatermark" Version="3.0.0" />
 		<PackageReference Include="Edi.PasswordGenerator" Version="3.0.0" />
 		<PackageReference Include="LiteBus.Extensions.Microsoft.DependencyInjection" Version="6.0.2" />
-		<PackageReference Include="Microsoft.Extensions.Diagnostics.HealthChecks.EntityFrameworkCore" Version="10.0.11" />
+		<PackageReference Include="Microsoft.Extensions.Diagnostics.HealthChecks.EntityFrameworkCore" Version="10.0.12" />
 		<PackageReference Include="Moonglade.Editor.StaticAssets" Version="0.8.0" />
 
 		<PackageReference Include="QRCoder" Version="1.8.0" />
