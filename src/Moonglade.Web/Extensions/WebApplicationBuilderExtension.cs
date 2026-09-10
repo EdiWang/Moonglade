@@ -50,14 +50,7 @@ public static class WebApplicationBuilderExtension
 
     private static string GetConnectionStringProvider(IConfiguration configuration)
     {
-        var provider = configuration.GetConnectionString("DatabaseProvider");
-        if (string.IsNullOrEmpty(provider))
-        {
-            // Fallback to check if there's a default connection string
-            var defaultConnection = configuration.GetConnectionString("DefaultConnection");
-            return string.IsNullOrEmpty(defaultConnection) ? "N/A" : "Configured";
-        }
-        return provider;
+        return configuration.GetConnectionString("DatabaseProvider") ?? "N/A";
     }
 
     private static string TruncateValue(string value, int maxLength)

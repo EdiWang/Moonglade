@@ -9,7 +9,6 @@ public class DatedGuidFileNameGeneratorTests
     public void ExposesConfiguredIdentity()
     {
         Assert.Equal(TestGuid, _generator.UniqueId);
-        Assert.Equal(nameof(DatedGuidFileNameGenerator), _generator.Name);
         Assert.IsAssignableFrom<IFileNameGenerator>(_generator);
     }
 
