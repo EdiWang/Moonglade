@@ -93,7 +93,7 @@ public class CommentControllerTests
         _blogConfig.CommentSettings.WordFilterMode = WordFilterMode.Block;
         _moderator
             .Setup(x => x.Detect("reader", "Hello world"))
-            .ReturnsAsync(true);
+            .Returns(true);
         var controller = CreateController();
 
         var result = await controller.Create(Guid.NewGuid(), CreateCommentRequest());
@@ -124,8 +124,8 @@ public class CommentControllerTests
         _blogConfig.CommentSettings.WordFilterMode = WordFilterMode.Mask;
         _blogConfig.CommentSettings.RequireCommentReview = false;
         _commandMediator.SetResult<CreateCommentCommand, CommentDetailedItem>(comment);
-        _moderator.Setup(x => x.Mask("reader")).ReturnsAsync("masked-reader");
-        _moderator.Setup(x => x.Mask("Hello world")).ReturnsAsync("masked-content");
+        _moderator.Setup(x => x.Mask("reader")).Returns("masked-reader");
+        _moderator.Setup(x => x.Mask("Hello world")).Returns("masked-content");
         var controller = CreateController(remoteIpAddress: IPAddress.Parse("127.0.0.1"), userAgent: "unit-test-agent");
 
         var result = await controller.Create(postId, request);

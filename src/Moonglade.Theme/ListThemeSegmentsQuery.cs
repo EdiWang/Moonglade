@@ -13,11 +13,6 @@ public class ListThemeSegmentsQueryHandler(BlogDbContext db) : IQueryHandler<Lis
         var systemThemes = ThemeFactory.GetSystemThemes();
         var customThemes = await db.BlogTheme.AsNoTracking().ToListAsync(ct);
 
-        var result = new List<BlogThemeEntity>();
-
-        result.AddRange(systemThemes);
-        result.AddRange(customThemes);
-
-        return result;
+        return [.. systemThemes, .. customThemes];
     }
 }

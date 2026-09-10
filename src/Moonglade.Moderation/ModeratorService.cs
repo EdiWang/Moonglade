@@ -1,56 +1,21 @@
-using Microsoft.Extensions.Logging;
-
 namespace Moonglade.Moderation;
 
 public interface IModeratorService
 {
-    Task<string> Mask(string input);
-    Task<bool> Detect(params string[] input);
+    string Mask(string input);
+    bool Detect(params string[] input);
 }
 
-public class MoongladeModeratorService : IModeratorService
+public class MoongladeModeratorService(IModerationKeywordProvider keywordProvider) : IModeratorService
 {
-    private readonly ILogger<MoongladeModeratorService> _logger;
-    private readonly ILocalModerationService _localService;
-    private readonly bool _isEnabled;
+    public string Mask(string input) =>
+        string.IsNullOrWhiteSpace(input) ? input : CreateWordFilter().ModerateContent(input);
 
-    public MoongladeModeratorService(
-        ILogger<MoongladeModeratorService> logger,
-        ILocalModerationService localService = null)
+    public bool Detect(params string[] input)
     {
-        _logger = logger;
-        _localService = localService;
-        _isEnabled = ValidateConfiguration();
+        var validInputs = input?.Where(s => !string.IsNullOrWhiteSpace(s)).ToArray();
+        return validInputs is { Length: > 0 } && CreateWordFilter().HasBadWord(validInputs);
     }
 
-    public Task<string> Mask(string input)
-    {
-        if (!_isEnabled || string.IsNullOrWhiteSpace(input))
-            return Task.FromResult(input);
-
-        return Task.FromResult(_localService?.ModerateContent(input) ?? input);
-    }
-
-    public Task<bool> Detect(params string[] input)
-    {
-        if (!_isEnabled || input == null || input.Length == 0)
-            return Task.FromResult(false);
-
-        var validInputs = input.Where(s => !string.IsNullOrWhiteSpace(s)).ToArray();
-        if (validInputs.Length == 0)
-            return Task.FromResult(false);
-
-        return Task.FromResult(_localService?.HasBadWords(validInputs) ?? false);
-    }
-
-    private bool ValidateConfiguration()
-    {
-        if (_localService == null)
-        {
-            _logger.LogError("Local moderation service is not configured");
-            return false;
-        }
-
-        return true;
-    }
+    private LocalWordFilter CreateWordFilter() => new(keywordProvider.GetKeywords() ?? string.Empty);
 }
