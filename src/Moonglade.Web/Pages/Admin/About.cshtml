@@ -20,11 +20,6 @@
     var userName = Html.Encode($"{Environment.UserDomainName}\\{Environment.UserName}");
     var timeZone = Html.Encode(TimeZoneInfo.Local.Id);
     var aspNetCoreEnv = Html.Encode(Environment.GetEnvironmentVariable("ASPNETCORE_ENVIRONMENT") ?? "Not Set");
-
-    var isAzureAppService = EnvironmentHelper.IsRunningOnAzureAppService();
-    var azureFdId = Request.Headers.ContainsKey("X-Azure-FDID")
-        ? Html.Encode(Request.Headers["X-Azure-FDID"].ToString())
-        : null;
 }
 
 <div class="pb-3">
@@ -115,30 +110,6 @@
                         <td>@SharedLocalizer["Docker Container"]</td>
                         <td class="text-muted info-value">@EnvironmentHelper.IsRunningInDocker()</td>
                     </tr>
-
-                    @if (isAzureAppService)
-                    {
-                        <tr>
-                            <td>@SharedLocalizer["Azure App Service"]</td>
-                            <td class="text-muted info-value">
-                                <div>WEBSITE_SITE_NAME: @Html.Encode(Environment.GetEnvironmentVariable("WEBSITE_SITE_NAME") ?? "Not Available")</div>
-                                <div>WEBSITE_HOSTNAME: @Html.Encode(Environment.GetEnvironmentVariable("WEBSITE_HOSTNAME") ?? "Not Available")</div>
-                                <div>WEBSITE_SKU: @Html.Encode(Environment.GetEnvironmentVariable("WEBSITE_SKU") ?? "Not Available")</div>
-                                <div>WEBSITE_RESOURCE_GROUP: @Html.Encode(Environment.GetEnvironmentVariable("WEBSITE_RESOURCE_GROUP") ?? "Not Available")</div>
-                                <div>REGION_NAME: @Html.Encode(Environment.GetEnvironmentVariable("REGION_NAME") ?? "Not Available")</div>
-                            </td>
-                        </tr>
-                    }
-
-                    @if (!string.IsNullOrWhiteSpace(azureFdId))
-                    {
-                        <tr>
-                            <td>@SharedLocalizer["Azure Front Door"]</td>
-                            <td class="text-muted info-value">
-                                X-Azure-FDID: <code>@azureFdId</code>
-                            </td>
-                        </tr>
-                    }
                 </tbody>
             </table>
         </div>

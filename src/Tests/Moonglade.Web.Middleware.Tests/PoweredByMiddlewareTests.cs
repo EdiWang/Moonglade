@@ -75,20 +75,6 @@ public class PoweredByMiddlewareTests
     }
 
     [Fact]
-    public async Task Invoke_ShouldReturnCompletedTask()
-    {
-        // Arrange
-        var context = new DefaultHttpContext();
-        _mockNext.Setup(x => x.Invoke(It.IsAny<HttpContext>())).Returns(Task.CompletedTask);
-
-        // Act
-        await _middleware.Invoke(context);
-
-        // Assert
-        Assert.Equal(Task.CompletedTask, Task.CompletedTask); // Verify method returns properly
-    }
-
-    [Fact]
     public async Task Invoke_WhenNextMiddlewareThrows_ShouldPropagateException()
     {
         // Arrange
@@ -104,16 +90,4 @@ public class PoweredByMiddlewareTests
         Assert.True(context.Response.Headers.ContainsKey("X-Powered-By"));
     }
 
-    [Fact]
-    public void Constructor_WithValidRequestDelegate_ShouldCreateInstance()
-    {
-        // Arrange
-        var requestDelegate = new Mock<RequestDelegate>().Object;
-
-        // Act
-        var middleware = new PoweredByMiddleware(requestDelegate);
-
-        // Assert
-        Assert.NotNull(middleware);
-    }
 }

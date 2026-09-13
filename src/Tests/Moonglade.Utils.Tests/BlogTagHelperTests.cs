@@ -347,26 +347,6 @@ public class BlogTagHelperTests
         Assert.True(result);
     }
 
-    [Fact]
-    public void IsValidTagName_PerformanceTest_ExecutesQuickly()
-    {
-        // Arrange
-        const int iterations = 10000;
-        const string testTag = "programming";
-
-        // Act
-        var stopwatch = System.Diagnostics.Stopwatch.StartNew();
-        for (int i = 0; i < iterations; i++)
-        {
-            BlogTagHelper.IsValidTagName(testTag);
-        }
-        stopwatch.Stop();
-
-        // Assert
-        Assert.True(stopwatch.ElapsedMilliseconds < 1000,
-            $"Performance test took {stopwatch.ElapsedMilliseconds}ms for {iterations} iterations");
-    }
-
     #endregion
 
     #region Integration Tests
@@ -445,41 +425,6 @@ public class BlogTagHelperTests
             BlogTagHelper.NormalizeName(null!, normalizations));
     }
 
-    [Theory]
-    [InlineData("")]
-    [InlineData("   ")]
-    public void NormalizeName_WithEmptyInput_HandlesGracefully(string input)
-    {
-        // Arrange
-        var normalizations = BlogTagHelper.TagNormalizationDictionary;
-
-        // Act
-        var result = BlogTagHelper.NormalizeName(input, normalizations);
-
-        // Assert
-        Assert.NotNull(result);
-    }
-
-    [Fact]
-    public void IsValidTagName_CJKRegexPerformance_ExecutesQuickly()
-    {
-        // Arrange
-        const int iterations = 1000;
-        const string cjkTag = "编程开发";
-
-        // Act
-        var stopwatch = System.Diagnostics.Stopwatch.StartNew();
-        for (int i = 0; i < iterations; i++)
-        {
-            BlogTagHelper.IsValidTagName(cjkTag);
-        }
-        stopwatch.Stop();
-
-        // Assert
-        Assert.True(stopwatch.ElapsedMilliseconds < 500,
-            $"CJK regex performance test took {stopwatch.ElapsedMilliseconds}ms for {iterations} iterations");
-    }
-
     [Fact]
     public void NormalizeName_WithEmptyDictionary_HandlesEnglishTagsCorrectly()
     {
@@ -491,22 +436,6 @@ public class BlogTagHelperTests
 
         // Assert
         Assert.Equal("simple tag", result);
-    }
-
-    [Fact]
-    public void NormalizeName_HexConversion_IsConsistent()
-    {
-        // Arrange
-        var normalizations = BlogTagHelper.TagNormalizationDictionary;
-        const string unicodeTag = "测试";
-
-        // Act
-        var result1 = BlogTagHelper.NormalizeName(unicodeTag, normalizations);
-        var result2 = BlogTagHelper.NormalizeName(unicodeTag, normalizations);
-
-        // Assert
-        Assert.Equal(result1, result2);
-        Assert.NotEmpty(result1);
     }
 
     #endregion

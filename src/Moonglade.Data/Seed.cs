@@ -26,7 +26,28 @@ public class Seed
 
             logger.LogDebug("Adding example post...");
             // Add example post
-            var content = "<p dir=\"auto\"><strong>Moonglade</strong> is a personal blogging platform built for developers, optimized for seamless deployment on <a href=\"https://azure.microsoft.com/en-us/\" rel=\"nofollow\"><strong>Microsoft Azure</strong></a>. It features essential blogging tools: posts, comments, categories, tags, archives, and pages.</p><h2>🚀 Deployment</h2><hr /><ul dir=\"auto\">\r\n<li><strong>Stable Code:</strong> Always use the <a href=\"https://github.com/EdiWang/Moonglade/releases\">Release</a> branch. Avoid deploying from <code>master</code>.</li>\r\n<li><strong>Security:</strong> Enable <strong>HTTPS</strong> and <strong>HTTP/2</strong> on your web server for optimal security and performance.</li>\r\n<li><strong>Deployment Options:</strong> While Azure is recommended, Moonglade can run on any cloud provider or on-premises.</li>\r\n<li><strong>China Regulation:</strong> In China, Moonglade runs in <strong>read-only</strong> mode due to local regulations. If you are in China, please consider alternative platforms.</li>\r\n</ul><h3>Full Azure Deployment</h3><p dir=\"auto\">This mirrors how <a href=\"https://edi.wang\" rel=\"nofollow\">edi.wang</a> is deployed, utilizing a variety of Azure services for maximum speed and security. <strong>No automated script is provided</strong>—manual resource creation is required.</p><p><img src=\"https://camo.githubusercontent.com/7962a0a9554e8f5effa92383b175acc0c723b603ac19432f73984ecfff4450c4/68747470733a2f2f63646e2e6564692e77616e672f7765622d6173736574732f65646977616e672d617a7572652d617263682d766973696f2d6f6374323032342e737667\" alt=\"Azure Architecture\" data-canonical-src=\"https://cdn.edi.wang/web-assets/ediwang-azure-arch-visio-oct2024.svg\" style=\"max-width: 100%;\"></p><h3>Quick Azure Deploy (App Service on Linux)</h3><p dir=\"auto\">Get started in 10 minutes with minimal Azure resources using our <a href=\"https://github.com/EdiWang/Moonglade/wiki/Quick-Deploy-on-Azure\">automated deployment script</a>.</p>";
+            var content = """
+                <p dir="auto"><strong>Moonglade</strong> is a self-hosted personal blogging platform built for developers. It includes essential blogging tools such as posts, pages, comments, categories, tags, archives, themes, feeds, and an administration portal.</p>
+                <h2>Getting Started</h2>
+                <ul dir="auto">
+                <li>Sign in to the administration portal at <code>/admin</code>.</li>
+                <li>Review the settings for your site title, appearance, comments, images, and notifications.</li>
+                <li>Update or remove this welcome post.</li>
+                <li>Create your first post and publish it when you are ready.</li>
+                </ul>
+                <h2>Deployment</h2>
+                <ul dir="auto">
+                <li>Use a stable release from the <a href="https://github.com/EdiWang/Moonglade/releases" rel="nofollow">Moonglade releases page</a>.</li>
+                <li>Enable HTTPS and HTTP/2 on your web server or reverse proxy.</li>
+                <li>Keep the database and both image-storage directories on durable storage.</li>
+                <li>Store connection strings, passwords, and other secrets outside source control.</li>
+                <li>Use <code>/health</code> for liveness checks and <code>/health/ready</code> for database readiness.</li>
+                <li>Moonglade can run in containers, on virtual machines, on-premises, or on any cloud platform that supports ASP.NET Core.</li>
+                </ul>
+                <h2>Documentation</h2>
+                <p dir="auto">Configuration and deployment guidance is available in the <a href="https://github.com/EdiWang/Moonglade" rel="nofollow">project README</a>.</p>
+                <blockquote><p>Moonglade must not be used to serve users in mainland China or to publish content prohibited by Chinese law or any applicable regulations.</p></blockquote>
+                """;
 
             var post = new PostEntity
             {
@@ -37,7 +58,7 @@ public class Seed
                 PostContent = content,
                 CommentEnabled = true,
                 CreateTimeUtc = DateTime.UtcNow,
-                ContentAbstract = "Moonglade is a personal blogging platform built for developers, optimized for seamless deployment on Microsoft Azure. It features essential blogging tools: posts, comments, categories, tags, archives, and pages.",
+                ContentAbstract = "Moonglade is a self-hosted personal blogging platform for developers, with support for posts, pages, comments, categories, tags, archives, themes, feeds, and more.",
                 PostStatus = PostStatus.Published,
                 IsFeatured = true,
                 IsFeedIncluded = true,

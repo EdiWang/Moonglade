@@ -100,12 +100,12 @@ export function getLocalizedString(key) {
 }
 
 export function slugify(text) {
-    if (!/^[A-Za-z][A-Za-z0-9 \(\)#,\.\?]*$/.test(text)) {
+    if (!/^[A-Za-z][A-Za-z0-9 \(\)#,\.\?:]*$/.test(text)) {
         return '';
     }
     return text
         .toLowerCase()
-        .replace(/[()#,.?]/g, '')
+        .replace(/[()#,.?:]/g, '')
         .replace(/[^\w ]+/g, '')
         .replace(/ +/g, '-');
 }
@@ -115,4 +115,3 @@ export function formatDateString(dateString) {
     const date = parseUtcDate(dateString);
     return date ? date.toLocaleString() : dateString;
 }
-

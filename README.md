@@ -223,16 +223,19 @@ Email notifications for new comments, replies, and Webmentions are optional. Whe
 
 ```json
 "Email": {
-  "Provider": "AzureCommunication",
-  "AcsConnectionString": "",
-  "AcsSenderAddress": "",
+  "Provider": "smtp",
+  "SmtpServer": "",
+  "SmtpUserName": "",
+  "SmtpPassword": "",
+  "SmtpPort": 25,
+  "EnableSsl": false,
   "OutboxWorker": {
     "Enabled": true
   }
 }
 ```
 
-Supported providers are `AzureCommunication` and `smtp`. Use environment variable overrides such as `Email__AcsConnectionString` or `Email__SmtpPassword` for real secrets.
+The default provider is `smtp`; `AzureCommunication` is also supported. Adjust the SMTP port and TLS setting for your provider, and use environment variable overrides such as `Email__SmtpPassword` or `Email__AcsConnectionString` for real secrets.
 
 Email configuration never controls application liveness or database readiness:
 

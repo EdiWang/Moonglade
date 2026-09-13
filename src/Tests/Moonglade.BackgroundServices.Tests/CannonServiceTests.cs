@@ -24,16 +24,6 @@ public class CannonServiceTests
     }
 
     [Fact]
-    public void CannonService_CanBeConstructed()
-    {
-        // Arrange & Act
-        var service = new CannonService(_loggerMock.Object, _scopeFactoryMock.Object);
-
-        // Assert
-        Assert.NotNull(service);
-    }
-
-    [Fact]
     public async Task FireAsync_ExecutesWorkItem_Successfully()
     {
         // Arrange

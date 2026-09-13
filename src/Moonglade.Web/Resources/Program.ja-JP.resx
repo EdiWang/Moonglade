@@ -552,6 +552,9 @@
   <data name="Published" xml:space="preserve">
     <value>公開</value>
   </data>
+  <data name="Unpublished" xml:space="preserve">
+    <value>未公開</value>
+  </data>
   <data name="Read origin article" xml:space="preserve">
     <value>元の記事を読む</value>
   </data>
@@ -947,12 +950,6 @@
   </data>
   <data name="Server Time Zone" xml:space="preserve">
     <value>サーバーのタイムゾーン</value>
-  </data>
-  <data name="Azure App Service" xml:space="preserve">
-    <value>Azure App Service</value>
-  </data>
-  <data name="Azure Front Door" xml:space="preserve">
-    <value>Azure Front Door  </value>
   </data>
   <data name="Legal Infomation" xml:space="preserve">
     <value>法律情報</value>

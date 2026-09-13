@@ -6,11 +6,7 @@ public class PrefersColorSchemeMiddleware(RequestDelegate next)
 {
     public async Task InvokeAsync(HttpContext context)
     {
-        var headerName = "Sec-CH-Prefers-Color-Scheme";
-        if (string.IsNullOrWhiteSpace(headerName))
-        {
-            await next(context);
-        }
+        const string headerName = "Sec-CH-Prefers-Color-Scheme";
 
         context.Response.OnStarting(() =>
         {

@@ -9,10 +9,3 @@ internal sealed class EmptyModerationKeywordProvider : IModerationKeywordProvide
 {
     public string GetKeywords() => string.Empty;
 }
-
-internal sealed class StaticModerationKeywordProvider(string keywords) : IModerationKeywordProvider
-{
-    private readonly string _keywords = keywords ?? throw new ArgumentNullException(nameof(keywords));
-
-    public string GetKeywords() => _keywords;
-}

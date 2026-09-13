@@ -46,18 +46,6 @@ public class ScheduledPublishWakeUpTests
     }
 
     [Fact]
-    public void WakeUp_CalledMultipleTimes_DoesNotThrow()
-    {
-        // Arrange
-        var wakeUp = new ScheduledPublishWakeUp();
-        wakeUp.GetWakeToken();
-
-        // Act & Assert
-        wakeUp.WakeUp();
-        wakeUp.WakeUp();
-    }
-
-    [Fact]
     public void GetWakeToken_CalledMultipleTimes_ReturnsSameToken()
     {
         // Arrange

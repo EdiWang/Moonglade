@@ -117,10 +117,14 @@ public class WebmentionSenderTests
 
         var sender = CreateSender();
 
-        // Should not throw
-        await sender.SendWebmentionAsync(
+        var exception = await Record.ExceptionAsync(() => sender.SendWebmentionAsync(
             "https://example.com/post/2024/1/1/test",
-            "<p><a href=\"https://a.com/post\">link</a></p>");
+            "<p><a href=\"https://a.com/post\">link</a></p>"));
+
+        Assert.Null(exception);
+        _mockRequestor.Verify(
+            r => r.Send(It.IsAny<Uri>(), It.IsAny<Uri>(), It.IsAny<Uri>()),
+            Times.Once);
     }
 
     [Fact]

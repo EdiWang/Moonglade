@@ -26,8 +26,6 @@ public class Program
                 o.UseUtcTimestamp = true;
                 o.ColorBehavior = LoggerColorBehavior.Disabled;
             });
-
-            builder.Logging.AddAzureWebAppDiagnostics();
         }
 
         builder.Services.AddMoongladeWebServices(builder.Configuration, cultures);

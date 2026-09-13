@@ -43,7 +43,7 @@ public class CommentController(
         }
 
         // Apply word filtering
-        var filterResult = await ApplyWordFilteringAsync(request);
+        var filterResult = ApplyWordFiltering(request);
         if (filterResult != null) return filterResult;
 
         var ip = ClientIPHelper.GetClientIP(HttpContext);
@@ -227,7 +227,7 @@ public class CommentController(
         return null;
     }
 
-    private async Task<IActionResult> ApplyWordFilteringAsync(CommentRequest request)
+    private IActionResult ApplyWordFiltering(CommentRequest request)
     {
         if (!blogConfig.CommentSettings.EnableWordFilter || blogConfig.CommentSettings.RequireCommentReview)
         {
@@ -237,12 +237,12 @@ public class CommentController(
         switch (blogConfig.CommentSettings.WordFilterMode)
         {
             case WordFilterMode.Mask:
-                request.Username = await moderator.Mask(request.Username);
-                request.Content = await moderator.Mask(request.Content);
+                request.Username = moderator.Mask(request.Username);
+                request.Content = moderator.Mask(request.Content);
                 break;
 
             case WordFilterMode.Block:
-                if (await moderator.Detect(request.Username, request.Content))
+                if (moderator.Detect(request.Username, request.Content))
                 {
                     ModelState.AddModelError(nameof(request.Content), "Your comment contains inappropriate content.");
                     return ValidationProblem(ModelState);

@@ -552,6 +552,9 @@
   <data name="Published" xml:space="preserve">
     <value>已发布</value>
   </data>
+  <data name="Unpublished" xml:space="preserve">
+    <value>未发布</value>
+  </data>
   <data name="Read origin article" xml:space="preserve">
     <value>阅读原文</value>
   </data>
@@ -947,12 +950,6 @@
   </data>
   <data name="Server Time Zone" xml:space="preserve">
     <value>服务器时区</value>
-  </data>
-  <data name="Azure App Service" xml:space="preserve">
-    <value>Azure 应用服务</value>
-  </data>
-  <data name="Azure Front Door" xml:space="preserve">
-    <value>Azure Front Door</value>
   </data>
   <data name="Legal Infomation" xml:space="preserve">
     <value>法律信息</value>

@@ -1,4 +1,4 @@
-﻿using Edi.PasswordGenerator;
+using Edi.PasswordGenerator;
 using LiteBus.Commands.Abstractions;
 using LiteBus.Events.Abstractions;
 using LiteBus.Queries.Abstractions;
@@ -230,7 +230,7 @@ public class SettingsController(
     [HttpGet("password/generate")]
     public IActionResult GeneratePassword([FromServices] IPasswordGenerator passwordGenerator)
     {
-        var password = passwordGenerator.GeneratePassword(new(10, 3));
+        var password = passwordGenerator.GeneratePassword();
         return Ok(new GeneratedPasswordResponse(DateTime.UtcNow, password));
     }
 

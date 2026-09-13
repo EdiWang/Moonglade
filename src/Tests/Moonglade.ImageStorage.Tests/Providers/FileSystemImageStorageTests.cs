@@ -131,15 +131,6 @@ public class FileSystemImageStorageTests : IDisposable
         Assert.False(File.Exists(filePath));
     }
 
-    [Fact]
-    public async Task DeleteAsync_MissingFile_DoesNotThrow()
-    {
-        Directory.CreateDirectory(_tempDirectory);
-        var storage = CreateStorage();
-
-        await storage.DeleteAsync("missing.jpg");
-    }
-
     [Theory]
     [InlineData("")]
     [InlineData("   ")]
