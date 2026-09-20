@@ -63,6 +63,10 @@ The local SQL Server container used SQL Server 2025 CU9. The PostgreSQL containe
 
 The SQL Server backup contains five `CommentReply` rows whose non-null `CommentId` has no matching `Comment`. SQL Server has no `CommentReply` foreign key; the current PostgreSQL EF model creates one. All other tested foreign-key relationships had zero orphans. The trial preserved these five records in `MigrationOrphanCommentReply` outside the application table. A production migration must explicitly decide whether to repair, archive, or otherwise resolve them; silently dropping them or disabling PostgreSQL constraints is not recommended.
 
+Follow-up inspection on 2026-09-20: the backup has five replies with a non-null missing parent ID and none with a null parent ID. The current reply command checks that the comment exists before insertion, but the source SQL Server schema has no reply foreign key, so a concurrent delete could still leave a dangling reference. The current delete command loads replies and removes their comment; its optional EF relationship sets `CommentId` to null rather than deleting the replies. This was reproduced against the restored LocalDB backup inside a transaction and rolled back. Thus current deletion can create detached replies, but it does not explain the five non-null dangling IDs through its normal path. Their exact origin cannot be established from this backup alone.
+
+Cleanup and fix on 2026-09-20: after backing up the existing local `moonglade` database, the five identified orphan replies were deleted by ID inside a transaction. The local database now has 74 replies and zero orphan replies. The BACPAC and production database were not changed. Comment deletion now removes loaded replies, and the v16.7 schema requires a parent comment and cascades deletes in both providers. The upgrade scripts reject orphan or detached replies rather than silently deleting them. A future production upgrade needs a separate backup and explicit cleanup of any orphan replies present at that time.
+
 ### Search behavior
 
 The source database uses `Chinese_PRC_CI_AS` collation. The local PostgreSQL database uses `en_US.utf8`, where the current `Contains` queries are case-sensitive. `SearchPostQuery` produces different results on the same copied records. The admin post and comment filters also use string `Contains` and warrant the same review. Choose the intended case-insensitive behavior and test it on both providers before cutover.
@@ -82,7 +86,7 @@ The target has eight column-nullability differences and two string-length differ
 ## Follow-ups
 
 1. Review the admin activity-log, mention, and comment date filters and the admin post/comment keyword filters for the same provider differences.
-2. Decide how to preserve or reconcile the five historical orphan replies.
+2. Reconcile any orphan replies in the production database before the v16.7 schema upgrade; the local cleanup does not change production.
 3. Build a repeatable transfer from a fresh cutover BACPAC with row-level comparison, identity-sequence reset, foreign-key validation, and a failure rollback path. Keep the SQL Server backup unchanged.
 4. Run authenticated admin, comment, scheduled-publish, email-outbox, image, and performance checks against migrated PostgreSQL data before production cutover. Preserve the existing filesystem image mounts; image files are not in the BACPAC.
 

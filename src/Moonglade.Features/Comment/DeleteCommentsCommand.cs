@@ -16,6 +16,7 @@ public class DeleteCommentsCommandHandler(
             .Where(c => request.Ids.Contains(c.Id))
             .ToListAsync(ct);
 
+        db.CommentReply.RemoveRange(comments.SelectMany(c => c.Replies));
         db.Comment.RemoveRange(comments);
         await db.SaveChangesAsync(ct);
 

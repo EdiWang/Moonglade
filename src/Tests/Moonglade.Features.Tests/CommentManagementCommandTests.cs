@@ -101,7 +101,7 @@ public class CommentManagementCommandTests
     }
 
     [Fact]
-    public async Task DeleteCommentsCommand_RemovesMatchingCommentsAndDetachesReplies()
+    public async Task DeleteCommentsCommand_RemovesMatchingCommentsAndReplies()
     {
         await using var connection = new SqliteConnection("Data Source=:memory:");
         await connection.OpenAsync(TestContext.Current.CancellationToken);
@@ -114,6 +114,7 @@ public class CommentManagementCommandTests
         var deleteId = Guid.NewGuid();
         var keepId = Guid.NewGuid();
         var deleteComment = CreateCommentEntity(deleteId, postId, isApproved: true);
+        var keepComment = CreateCommentEntity(keepId, postId, isApproved: true);
         deleteComment.Replies.Add(new CommentReplyEntity
         {
             Id = Guid.NewGuid(),
@@ -121,8 +122,15 @@ public class CommentManagementCommandTests
             ReplyContent = "Reply",
             CreateTimeUtc = DateTime.UtcNow
         });
+        keepComment.Replies.Add(new CommentReplyEntity
+        {
+            Id = Guid.NewGuid(),
+            CommentId = keepId,
+            ReplyContent = "Keep reply",
+            CreateTimeUtc = DateTime.UtcNow
+        });
         db.Post.Add(CreatePostEntity(postId));
-        db.Comment.AddRange(deleteComment, CreateCommentEntity(keepId, postId, isApproved: true));
+        db.Comment.AddRange(deleteComment, keepComment);
         await db.SaveChangesAsync(TestContext.Current.CancellationToken);
 
         var handler = new DeleteCommentsCommandHandler(db, Mock.Of<ILogger<DeleteCommentsCommandHandler>>());
@@ -131,8 +139,10 @@ public class CommentManagementCommandTests
 
         Assert.Null(await db.Comment.FindAsync([deleteId], TestContext.Current.CancellationToken));
         Assert.NotNull(await db.Comment.FindAsync([keepId], TestContext.Current.CancellationToken));
-        var detachedReply = await db.CommentReply.SingleAsync(TestContext.Current.CancellationToken);
-        Assert.Null(detachedReply.CommentId);
+        Assert.Equal(keepId, (await db.CommentReply.SingleAsync(TestContext.Current.CancellationToken)).CommentId);
+
+        await db.Comment.Where(c => c.Id == keepId).ExecuteDeleteAsync(TestContext.Current.CancellationToken);
+        Assert.Empty(await db.CommentReply.ToListAsync(TestContext.Current.CancellationToken));
     }
 
     private static PostEntity CreatePostEntity(Guid id)
