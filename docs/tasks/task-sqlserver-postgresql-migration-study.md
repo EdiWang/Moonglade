@@ -34,6 +34,8 @@ The source database was restored first. The target schema was created using `Pos
 
 **Decision: technically feasible, but do not switch production to the current application and data as-is.** The main data set transfers to PostgreSQL 18. Three blocking or user-visible issues need resolution: five orphan replies, a date-filter exception, and changed case-sensitive search behavior. This study does not establish full production readiness for every admin and background workflow.
 
+Follow-up on 2026-09-20: the public search date exception and case-sensitive keyword behavior were fixed and verified on both providers. The orphan replies and broader workflow checks remain open.
+
 The local SQL Server container used SQL Server 2025 CU9. The PostgreSQL container used 18.6. Both were bound to loopback only. The application ran with an isolated environment, update checks and email delivery disabled, and local image-storage directories. No production system was contacted.
 
 ## Verification Log
@@ -51,6 +53,9 @@ The local SQL Server container used SQL Server 2025 CU9. The PostgreSQL containe
 | 2026-09-20 | Local PostgreSQL write check | Passed | Created a tag and updated a post inside a transaction, then rolled back. Identity sequence and UTC write worked. |
 | 2026-09-20 | Search without date filters | Diverged | `Windows`/`windows` returned 125/125 results on SQL Server and 124/91 on PostgreSQL. |
 | 2026-09-20 | `/search?term=Windows&startDate=2020-01-01` and `endDate=2026-01-01` | Failed on PostgreSQL | Both returned 500 because Npgsql rejects `DateTimeKind.Unspecified` for `timestamp with time zone`. |
+| 2026-09-20 | Public search fix: Features and Web test projects | Passed | 95 and 194 tests respectively; Web build had zero warnings and errors. |
+| 2026-09-20 | LocalDB and PostgreSQL 18 search query on the same copied posts and facets | Passed | `Windows`, `windows`, and `wInDoWs` each returned the same 125 post slugs on both providers; with the 2020-01-01 to 2026-01-01 date range, each returned the same 14 slugs. |
+| 2026-09-20 | Local HTTP `/search` on both providers | Passed | No-date, start-only, end-only, and combined-date searches returned 200 on both providers. |
 
 ## Issues and Resolutions
 
@@ -62,9 +67,13 @@ The SQL Server backup contains five `CommentReply` rows whose non-null `CommentI
 
 The source database uses `Chinese_PRC_CI_AS` collation. The local PostgreSQL database uses `en_US.utf8`, where the current `Contains` queries are case-sensitive. `SearchPostQuery` produces different results on the same copied records. The admin post and comment filters also use string `Contains` and warrant the same review. Choose the intended case-insensitive behavior and test it on both providers before cutover.
 
+Follow-up fix: public search now lowercases both the keyword and searched text in the provider-neutral EF query. The copied-data comparison above found identical result sets across case variants and providers. Admin filters were not part of this fix.
+
 ### Date filters
 
 The public search page passes browser-bound `DateTime` values directly to UTC query fields. A date-only URL produces `DateTimeKind.Unspecified`; Npgsql rejects it against `timestamp with time zone`. Normalize at the HTTP boundary while preserving the search date semantics, then check the activity-log, mention, and comment admin date filters for the same issue.
+
+Follow-up fix: the search page marks date-only UTC calendar boundaries as `DateTimeKind.Utc` before dispatching the query. Start-only, end-only, and combined filters now return 200 on both providers. The admin date filters remain to be reviewed separately.
 
 ### Schema differences
 
@@ -72,7 +81,7 @@ The target has eight column-nullability differences and two string-length differ
 
 ## Follow-ups
 
-1. Fix and test the date filters and intended case-insensitive search behavior for both providers.
+1. Review the admin activity-log, mention, and comment date filters and the admin post/comment keyword filters for the same provider differences.
 2. Decide how to preserve or reconcile the five historical orphan replies.
 3. Build a repeatable transfer from a fresh cutover BACPAC with row-level comparison, identity-sequence reset, foreign-key validation, and a failure rollback path. Keep the SQL Server backup unchanged.
 4. Run authenticated admin, comment, scheduled-publish, email-outbox, image, and performance checks against migrated PostgreSQL data before production cutover. Preserve the existing filesystem image mounts; image files are not in the BACPAC.
@@ -80,3 +89,5 @@ The target has eight column-nullability differences and two string-length differ
 ## Notes
 
 Only aggregate counts and technical findings are recorded here. The backup, credentials, post content, and other production data remain outside the repository. Both temporary database containers were stopped and automatically removed. Automatic command review blocked `Remove-Item` for temporary files; the local SQL password and web log files were cleared to zero bytes. The temporary C# study project remains under the user temp directory, and the temporary image directories are empty.
+
+The follow-up used a separate LocalDB database named `moonglade_pg_search_study`, leaving the existing `moonglade` database untouched. The follow-up LocalDB database was dropped after verification, the PostgreSQL study container was removed, and the follow-up web logs were cleared.

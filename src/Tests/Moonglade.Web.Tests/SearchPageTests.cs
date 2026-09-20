@@ -83,8 +83,8 @@ public class SearchPageTests
         Assert.Equal("dotnet", query.CategorySlug);
         Assert.Equal("azure", query.Tag);
         Assert.Equal("ja-jp", query.LanguageCode);
-        Assert.Equal(new DateTime(2026, 1, 2), query.StartDateUtc);
-        Assert.Equal(new DateTime(2026, 2, 3), query.EndDateUtc);
+        Assert.Equal(new DateTime(2026, 1, 2, 0, 0, 0, DateTimeKind.Utc), query.StartDateUtc);
+        Assert.Equal(new DateTime(2026, 2, 3, 0, 0, 0, DateTimeKind.Utc), query.EndDateUtc);
         Assert.Equal(SearchPostSort.TitleDescending, query.Sort);
     }
 

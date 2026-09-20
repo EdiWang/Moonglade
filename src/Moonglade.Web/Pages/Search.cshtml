@@ -190,8 +190,8 @@ else
             Category,
             Tag,
             Language,
-            StartDate,
-            EndDate,
+            StartDate.HasValue ? DateTime.SpecifyKind(StartDate.Value.Date, DateTimeKind.Utc) : null,
+            EndDate.HasValue ? DateTime.SpecifyKind(EndDate.Value.Date, DateTimeKind.Utc) : null,
             ParseSort(Sort)));
 
         Posts = new PagedResult<PostDigest>(result.Posts, pageNumber, pageSize, result.TotalRows);
