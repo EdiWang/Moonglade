@@ -73,13 +73,13 @@ public class SearchPostQueryHandler(BlogDbContext db) : IQueryHandler<SearchPost
     {
         foreach (var word in words)
         {
-            var keyword = word;
+            var keyword = word.ToLowerInvariant();
             query = query.Where(p =>
-                p.Title.Contains(keyword) ||
-                (p.ContentAbstract != null && p.ContentAbstract.Contains(keyword)) ||
-                (p.Keywords != null && p.Keywords.Contains(keyword)) ||
-                p.Tags.Any(t => t.DisplayName.Contains(keyword) || t.NormalizedName.Contains(keyword)) ||
-                p.PostCategory.Any(pc => pc.Category != null && (pc.Category.DisplayName.Contains(keyword) || pc.Category.Slug.Contains(keyword))));
+                p.Title.ToLower().Contains(keyword) ||
+                (p.ContentAbstract != null && p.ContentAbstract.ToLower().Contains(keyword)) ||
+                (p.Keywords != null && p.Keywords.ToLower().Contains(keyword)) ||
+                p.Tags.Any(t => t.DisplayName.ToLower().Contains(keyword) || t.NormalizedName.ToLower().Contains(keyword)) ||
+                p.PostCategory.Any(pc => pc.Category != null && (pc.Category.DisplayName.ToLower().Contains(keyword) || pc.Category.Slug.ToLower().Contains(keyword))));
         }
 
         return query;

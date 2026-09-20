@@ -68,22 +68,33 @@ public class PostQueryTests
     }
 
     [Fact]
-    public async Task SearchPostQuery_SingleWordSearchesTitleOrTag()
+    public async Task SearchPostQuery_SearchesAllFieldsCaseInsensitively()
     {
         using var db = CreateDbContext();
         var titlePost = CreatePost(Guid.NewGuid(), "title-match", PostStatus.Published, DateTime.UtcNow.AddDays(-1), title: "Azure Functions Guide");
         var tagPost = CreatePost(Guid.NewGuid(), "tag-match", PostStatus.Published, DateTime.UtcNow.AddDays(-2), title: "Serverless Notes");
         tagPost.Tags.Add(new TagEntity { DisplayName = "Azure", NormalizedName = "azure" });
-        db.Post.AddRange(titlePost, tagPost, CreatePost(Guid.NewGuid(), "draft", PostStatus.Draft, null, title: "Azure Draft"));
+        var abstractPost = CreatePost(Guid.NewGuid(), "abstract-match", PostStatus.Published, DateTime.UtcNow.AddDays(-3), title: "Serverless Notes", contentAbstract: "Azure hosting");
+        var keywordPost = CreatePost(Guid.NewGuid(), "keyword-match", PostStatus.Published, DateTime.UtcNow.AddDays(-4), title: "Serverless Notes");
+        keywordPost.Keywords = "Azure";
+        var category = new CategoryEntity { Id = Guid.NewGuid(), Slug = "cloud", DisplayName = "Azure" };
+        var categoryPost = CreatePost(Guid.NewGuid(), "category-match", PostStatus.Published, DateTime.UtcNow.AddDays(-5), title: "Serverless Notes");
+        categoryPost.PostCategory.Add(new PostCategoryEntity { Post = categoryPost, Category = category, CategoryId = category.Id });
+        db.Category.Add(category);
+        db.Post.AddRange(titlePost, tagPost, abstractPost, keywordPost, categoryPost,
+            CreatePost(Guid.NewGuid(), "draft", PostStatus.Draft, null, title: "Azure Draft"));
         await db.SaveChangesAsync(TestContext.Current.CancellationToken);
 
         var handler = new SearchPostQueryHandler(db);
 
-        var result = await handler.HandleAsync(new SearchPostQuery("Azure"), TestContext.Current.CancellationToken);
+        var result = await handler.HandleAsync(new SearchPostQuery("aZuRe"), TestContext.Current.CancellationToken);
 
-        Assert.Equal(2, result.TotalRows);
+        Assert.Equal(5, result.TotalRows);
         Assert.Contains(result.Posts, p => p.Slug == "title-match");
         Assert.Contains(result.Posts, p => p.Slug == "tag-match");
+        Assert.Contains(result.Posts, p => p.Slug == "abstract-match");
+        Assert.Contains(result.Posts, p => p.Slug == "keyword-match");
+        Assert.Contains(result.Posts, p => p.Slug == "category-match");
         Assert.DoesNotContain(result.Posts, p => p.Slug == "draft");
     }
 
