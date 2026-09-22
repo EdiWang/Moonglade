@@ -7,7 +7,8 @@ services:
     container_name: moonglade-web
     environment:
       ASPNETCORE_ENVIRONMENT: "Production"
-      ConnectionStrings__MoongladeDatabase: "Server=moonglade-sqlserver;Database=moonglade;User Id=sa;Password=${MSSQL_SA_PASSWORD:-Work@996};Trusted_Connection=False;TrustServerCertificate=True;"
+      ConnectionStrings__MoongladeDatabase: "Host=database;Port=5432;Database=moonglade;Username=postgres;Password=${POSTGRES_PASSWORD:-Work@996};"
+      ConnectionStrings__DatabaseProvider: "PostgreSql"
       ImageStorage__FileSystemPath: "/app/images"
       ImageStorage__OriginalFileSystemPath: "/app/images-origin"
     restart: unless-stopped
@@ -21,22 +22,21 @@ services:
     networks:
       - moonglade-network
   database:
-    image: mcr.microsoft.com/mssql/server:2025-latest
-    container_name: moonglade-sqlserver
+    image: postgres:18-alpine
+    container_name: moonglade-postgresql
     environment:
-      MSSQL_SA_PASSWORD: "${MSSQL_SA_PASSWORD:-Work@996}"
-      MSSQL_PID: "Express"
-      ACCEPT_EULA: "Y"
+      POSTGRES_DB: "moonglade"
+      POSTGRES_PASSWORD: "${POSTGRES_PASSWORD:-Work@996}"
     restart: unless-stopped
     ports:
-      - "1433:1433"
+      - "5432:5432"
     volumes:
-      - mssql-data:/var/opt/mssql
+      - postgres-data:/var/lib/postgresql
     networks:
       - moonglade-network
 
 volumes:
-  mssql-data:
+  postgres-data:
   moonglade-images:
   moonglade-images-origin:
 
