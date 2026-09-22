@@ -61,7 +61,7 @@ Email notifications are optional. The supplied default Email section intentional
 | Tools                      | Alternatives                                                                                       |
 |----------------------------|----------------------------------------------------------------------------------------------------|
 | [Visual Studio 2026](https://visualstudio.microsoft.com/) | [VS Code](https://code.visualstudio.com/) + [.NET 10.0 SDK](http://dot.net)           |
-| [SQL Server 2025](https://www.microsoft.com/en-us/sql-server/) | [LocalDB](https://learn.microsoft.com/en-us/sql/database-engine/configure-windows/sql-server-express-localdb?view=sql-server-ver16&WT.mc_id=AZ-MVP-5002809) or PostgreSQL |
+| [SQL Server 2025](https://www.microsoft.com/en-us/sql-server/) | [LocalDB](https://learn.microsoft.com/en-us/sql/database-engine/configure-windows/sql-server-express-localdb?view=sql-server-ver16) or PostgreSQL |
 
 ### Database Setup
 
@@ -69,8 +69,8 @@ Email notifications are optional. The supplied default Email section intentional
 
 | Database         | Example Connection String (`appsettings.json > ConnectionStrings > MoongladeDatabase`)         |
 |------------------|----------------------------------------------------------------------------------------------|
-| SQL Server       | `Server=(local);Database=moonglade;Trusted_Connection=True;`                                  |
 | PostgreSQL       | `User ID=***;Password=***;Host=localhost;Port=5432;Database=moonglade;Pooling=true;`          |
+| SQL Server       | `Server=(local);Database=moonglade;Trusted_Connection=True;`                                  |
 
 Change `ConnectionStrings:DatabaseProvider` in `appsettings.json` to match your database type.
 
