@@ -12,10 +12,17 @@ services:
       ImageStorage__FileSystemPath: "/app/images"
       ImageStorage__OriginalFileSystemPath: "/app/images-origin"
     restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "bash", "-c", "exec 3<>/dev/tcp/127.0.0.1/8080 && printf 'GET /health HTTP/1.0\\r\\nHost: localhost\\r\\n\\r\\n' >&3 && read -r _ status _ <&3 && [[ \"$$status\" == 200 ]]"]
+      interval: 30s
+      timeout: 5s
+      retries: 3
+      start_period: 60s
     ports:
       - "8080:8080"
     depends_on:
-      - database
+      database:
+        condition: service_healthy
     volumes:
       - moonglade-images:/app/images
       - moonglade-images-origin:/app/images-origin
@@ -28,6 +35,11 @@ services:
       POSTGRES_DB: "moonglade"
       POSTGRES_PASSWORD: "${POSTGRES_PASSWORD:-Work@996}"
     restart: unless-stopped
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -h 127.0.0.1 -U postgres -d \"$$POSTGRES_DB\""]
+      interval: 10s
+      timeout: 5s
+      retries: 5
     ports:
       - "5432:5432"
     volumes:

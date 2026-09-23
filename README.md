@@ -287,3 +287,5 @@ For readiness diagnostics that include database connectivity, use:
 ```
 GET /health/ready
 ```
+
+The supplied Compose file checks the web container's `/health` endpoint and PostgreSQL with `pg_isready`. It waits for PostgreSQL to report healthy before starting the web container.
