@@ -10,12 +10,13 @@ Update this file after every completed batch. Do not mark a batch complete witho
 
 | Field | Value |
 | --- | --- |
-| Overall status | Planning; no R2 changes have been made |
-| Current stage | VM observation before the primary-domain cutover |
-| Next batch | Batch 0 - freeze and re-record the Azure Files baseline |
-| Blocking prerequisite | The user must finish observing `https://preview.edi.wang/`, move `https://edi.wang/` to the VM, and delete the App Service |
+| Overall status | Batch 0 complete; Azure Files remains the only production image storage; R2 has not been changed |
+| Current stage | Batch 1 - create and validate an isolated R2 Docker volume (not started) |
+| Next batch | Batch 1 - create and validate an isolated R2 Docker volume |
+| Blocking prerequisite | None for Batch 0; obtain explicit user instruction before starting Batch 1 |
+| Decision status | D-001 through D-006 resolved by the user on 2026-09-23 |
 | Last verified | 2026-09-23 |
-| Last completed batch | None |
+| Last completed batch | Batch 0 |
 
 ## Operator Instructions for Future AI Sessions
 
@@ -31,6 +32,7 @@ Update this file after every completed batch. Do not mark a batch complete witho
    - the Decision Log if a decision was made;
    - the Progress Log with date, summary, tests, commit, and rollback state.
 8. If reality differs from this document, stop before a destructive or scope-changing action, record the discrepancy, and ask the user.
+9. Production deployment files live outside this repository at `D:\OneDrive\Projects\Moonglade\prod-compose`. Never copy Compose files, `.env`, `rclone.conf`, credentials, or other production deployment artifacts into this repository, even in sanitized form.
 
 ## Scope and Hard Constraints
 
@@ -55,6 +57,8 @@ Update this file after every completed batch. Do not mark a batch complete witho
 - Temporary VM validation URL: `https://preview.edi.wang/`.
 - Primary URL: `https://edi.wang/`; it is to be moved to the VM before this R2 plan starts.
 - VM deployment file: `/opt/docker/moonglade/compose.yaml`.
+- The private local source of truth for production deployment files is `D:\OneDrive\Projects\Moonglade\prod-compose`.
+- Production deployment files are intentionally excluded from this GitHub repository to prevent accidental open-source disclosure.
 - SSH connection coordinates and authentication are user-provided out of band and must not be stored in this repository.
 - Current VM Docker volumes:
   - `moonglade_moonglade-images` -> `/app/images`
@@ -102,7 +106,7 @@ Relevant repository references:
 
 The mounted backend must commit a complete remote object before a successful close returns and must preserve data across container, Docker, plugin, and VM restarts.
 
-## Proposed Architecture - Pending User Approval
+## Approved Architecture
 
 ```text
 Moonglade container
@@ -112,7 +116,7 @@ Moonglade container
    `- Docker named volume -> official rclone Docker volume plugin -> private R2 original-image bucket
 ```
 
-Recommended initial properties:
+Approved initial properties:
 
 - Two R2 Standard buckets, both private.
 - R2 `r2.dev` access disabled for both buckets.
@@ -132,18 +136,18 @@ However, rclone documents that a failed upload cannot be retried in this mode. E
 
 | ID | Decision | Recommendation | Status | User decision / date |
 | --- | --- | --- | --- | --- |
-| D-001 | Use two buckets or one bucket with two prefixes | Use two buckets to enforce public/original isolation | Pending user decision | |
-| D-002 | Accept `vfs_cache_mode=off` and its lack of upload retry | Accept it if strict no-local-image-storage remains the priority | Pending user decision | |
-| D-003 | Use the official rclone Docker volume plugin or a host systemd mount exposed as a named bind volume | Use the official plugin because the requirement is specifically Docker named volumes and it fails closed when the driver is unavailable | Pending user decision | |
-| D-004 | Keep CDN redirect disabled during migration | Keep it disabled; evaluate `img.edi.wang` as a separate later project | Pending user decision | |
-| D-005 | R2 post-cutover observation duration | Observe for seven days before Azure cleanup | Pending user decision | |
-| D-006 | Restore and version the sanitized VM Compose under `Deployment/https-edi.wang/` | Make the repository copy the deployment source of truth | Pending user decision | |
+| D-001 | Use two buckets or one bucket with two prefixes | Use two buckets to enforce public/original isolation | Approved | Two buckets; 2026-09-23 |
+| D-002 | Accept `vfs_cache_mode=off` and its lack of upload retry | Accept it if strict no-local-image-storage remains the priority | Approved | Use `vfs_cache_mode=off`; 2026-09-23 |
+| D-003 | Use the official rclone Docker volume plugin or a host systemd mount exposed as a named bind volume | Use the official plugin because the requirement is specifically Docker named volumes and it fails closed when the driver is unavailable | Approved | Use the official rclone Docker volume plugin; 2026-09-23 |
+| D-004 | Keep CDN redirect disabled during migration | Keep it disabled; evaluate `img.edi.wang` as a separate later project | Approved | Keep CDN redirect disabled; 2026-09-23 |
+| D-005 | R2 post-cutover observation duration | Observe for seven days before Azure cleanup | Approved | Seven-day observation period; 2026-09-23 |
+| D-006 | Location and versioning of production deployment files | Keep production deployment files outside the public repository | Approved | Use `D:\OneDrive\Projects\Moonglade\prod-compose`; never add these files to this repository; 2026-09-23 |
 
 ## Batch Plan and Progress
 
 ### Batch 0 - Freeze and Re-record the Azure Baseline
 
-**Status:** Not started
+**Status:** Completed - Azure Files baseline accepted; authenticated app upload/delete flow not exercised
 
 **Prerequisites**
 
@@ -155,11 +159,11 @@ However, rclone documents that a failed upload cannot be retried in this mode. E
 **Actions**
 
 1. Confirm the VM is the only image writer.
-2. Re-read the deployed Compose and Docker mount state without exposing secrets.
+2. Re-read the private Compose source at `D:\OneDrive\Projects\Moonglade\prod-compose` and the deployed Docker mount state without exposing secrets.
 3. Recalculate file count and total bytes for both Azure Files shares.
 4. Record the container's effective application UID/GID.
 5. Test upload, retrieval, original retention, deletion, and container restart while still using Azure Files.
-6. Record the exact rollback Compose revision and Docker volume names.
+6. Create and record a rollback checkpoint in the private deployment directory and record the exact Docker volume names. Do not copy the checkpoint into this repository.
 
 **Acceptance**
 
@@ -168,14 +172,23 @@ However, rclone documents that a failed upload cannot be retried in this mode. E
 - The application survives a container restart.
 - The recorded counts and byte totals are reproducible.
 
+**Acceptance result:** Met for mounted-storage behavior and the public image-read path. The authenticated upload and delete controller flows remain unverified because the admin UI requires Microsoft OIDC sign-in and no authenticated session was available.
+
 **Commit**
 
-- No migration commit is required.
-- If D-006 is approved, commit the sanitized current Compose before proceeding.
+- Do not commit production deployment files to this repository.
+- Commit only this tracker's Batch 0 progress update if a repository checkpoint is wanted.
 
 **Evidence**
 
-- Not recorded.
+- `https://edi.wang/` and `/health` returned HTTP 200; DNS still points to the Azure VM. The user confirmed that the App Service was deleted after the VM migration. The storage account and both Azure Files shares remain present.
+- Each named volume is attached only to the running `moonglade-web` container: `moonglade_moonglade-images` -> `/app/images` and `moonglade_moonglade-images-origin` -> `/app/images-origin`. Both use the Docker `local` driver with CIFS-backed mounts.
+- The application process runs as UID/GID `1654:1654`.
+- Recalculated counts match the historical baseline: processed `2,677` files / `205,616,089` bytes; originals `1,136` files / `96,400,055` bytes.
+- As UID/GID `1654:1654`, separate 69-byte PNG probes were written to the two mounts. Their SHA-256 hashes matched; each file was absent from the other mount. `GET /image/{processed filename}` returned `200 image/png` with 69 bytes, while the original probe returned 404.
+- Restarted only the `web` service. Both probe hashes remained unchanged, the processed image endpoint again returned `200 image/png` with 69 bytes, and `/health` returned 200. Removed both probes through their respective mounts; the processed URL then returned 404. Final counts and byte totals still match the baseline.
+- Created a private rollback checkpoint at `D:\OneDrive\Projects\Moonglade\prod-compose\batch0-rollback-20260923T091437Z` containing `compose.yaml` and `.env`; SHA-256 checks confirmed both copies. No deployment file or secret was added to this repository.
+- The admin URL redirected to Microsoft OIDC sign-in. Consequently the authenticated image-upload path (including runtime original-retention behavior) and application delete endpoint were not exercised; the probes validate mounted-volume writes, public reads, isolation, persistence, and deletion only.
 
 ### Batch 1 - Create and Validate an Isolated R2 Docker Volume
 
@@ -183,7 +196,7 @@ However, rclone documents that a failed upload cannot be retried in this mode. E
 
 **Prerequisites**
 
-- D-001, D-002, D-003, and D-004 are resolved by the user.
+- Batch 0 accepted.
 
 **Actions**
 
@@ -212,11 +225,11 @@ However, rclone documents that a failed upload cannot be retried in this mode. E
 - No image bytes persist on VM disk.
 - Failure behavior is explicit and understood.
 
-**Commit 1**
+**Repository checkpoint 1**
 
-Suggested message: `deployment: add validated R2 volume configuration`
+Suggested message: `docs: record validated R2 volume configuration`
 
-Commit only sanitized Compose/configuration examples and the updated tracker. Do not commit live credentials or `rclone.conf`.
+Commit only this tracker's progress update. Keep Compose, plugin configuration, `.env`, `rclone.conf`, and all other production deployment artifacts in `D:\OneDrive\Projects\Moonglade\prod-compose` and out of this repository.
 
 **Rollback**
 
@@ -275,14 +288,14 @@ Commit only sanitized Compose/configuration examples and the updated tracker. Do
 
 - Batch 2 accepted.
 - A maintenance window is approved.
-- The cutover Compose change is reviewed and committed locally.
+- The cutover Compose change in `D:\OneDrive\Projects\Moonglade\prod-compose` is reviewed and a private rollback checkpoint is recorded.
 
 **Actions**
 
 1. Stop the Moonglade web container to stop image writes.
 2. Run another one-time `rclone copy` for the final delta in both roots.
 3. Repeat `rclone check --download`.
-4. Switch Compose to newly named R2 Docker volumes.
+4. Switch the private production Compose to newly named R2 Docker volumes.
 5. Keep `/app/images`, `/app/images-origin`, and both `ImageStorage` environment paths unchanged.
 6. Validate `docker compose config` without exposing resolved secrets.
 7. Recreate and start the web container.
@@ -305,16 +318,18 @@ Commit only sanitized Compose/configuration examples and the updated tracker. Do
 - No fallback path under the container user's home is used.
 - No storage or FUSE errors appear in application, Docker, or plugin logs.
 
-**Commit 2**
+**Repository checkpoint 2**
 
-Suggested message: `deployment: switch image volumes from Azure Files to Cloudflare R2`
+Suggested message: `docs: record R2 storage cutover`
+
+Commit only this tracker's cutover evidence. The production Compose change remains outside this repository.
 
 **Rollback**
 
 1. Stop the web container.
 2. Compare R2 with Azure Files.
 3. If post-cutover objects exist, run one explicit R2-to-Azure `copy` and verify it.
-4. Restore the previous Compose commit.
+4. Restore the private Compose rollback checkpoint.
 5. Recreate the web container with the Azure volumes.
 6. Repeat the Azure baseline acceptance tests.
 
@@ -329,7 +344,6 @@ Suggested message: `deployment: switch image volumes from Azure Files to Cloudfl
 **Prerequisites**
 
 - Batch 3 accepted.
-- D-005 is resolved by the user.
 
 **Actions**
 
@@ -384,9 +398,11 @@ Suggested message: `deployment: switch image volumes from Azure Files to Cloudfl
 - The retained R2 credential is scoped only to the required buckets.
 - Every destructive cleanup action has explicit user approval and recorded evidence.
 
-**Commit 3**
+**Repository checkpoint 3**
 
-Suggested message: `deployment: remove retired Azure Files configuration`
+Suggested message: `docs: record Azure Files retirement`
+
+Commit only this tracker's cleanup evidence. Keep the production deployment configuration outside this repository.
 
 **Rollback**
 
@@ -421,6 +437,32 @@ Append one entry after every completed or rolled-back batch.
 - Verification: Confirmed current Azure share mappings, VM CIFS-backed Docker volumes, historical file counts, application filesystem behavior, original-image retention, and disabled CDN redirect.
 - Commit: Not yet committed.
 - Rollback state: Azure Files remains the only production image storage.
+
+### 2026-09-23 - Architecture decisions recorded
+
+- Status: Planning decisions D-001 through D-006 resolved; no migration batch started.
+- Decisions: Use two private R2 buckets, the official rclone Docker volume plugin, `vfs_cache_mode=off`, disabled CDN redirect during migration, and a seven-day observation period.
+- Deployment source: Production files moved to `D:\OneDrive\Projects\Moonglade\prod-compose` and must never be committed to this repository.
+- Changes: Updated this tracker only; no Compose, VM, Azure, Cloudflare, DNS, or data changes.
+- Rollback state: Azure Files remains the only production image storage.
+
+### 2026-09-23 - Batch 0 preflight blocked
+
+- Status: Read-only preflight completed; Batch 0 acceptance not met.
+- Verification: `edi.wang` returned HTTP 200 and its DNS address matched an Azure VM NIC. No `ediwang` App Service was found in five enabled Azure subscription contexts. The Azure storage account and both expected shares exist. The private Compose source retains the Azure CIFS volumes at the required container paths.
+- Blockers: The preview HEAD probe failed, so its observation completion is unconfirmed. No production VM SSH alias could be identified safely. The current Azure identity cannot list share contents, preventing file counts and byte totals; the Azure Run Command attempt returned no usable Compose/UID/file-count output. Live mounts, effective UID/GID, application storage tests, restart behavior, and rollback checkpoint remain unverified.
+- Changes: No image data, container state, Azure resources, Cloudflare settings, DNS, or production deployment files were changed. No commit was created.
+- Rollback state: Production remains on the existing Azure Files configuration; no data writes or rollbacks were performed.
+
+### 2026-09-23 - Batch 0 completed
+
+- Status: Accepted; Azure Files remains the production image storage and Batch 1 has not started.
+- Resolution: The user confirmed that the App Service had been deleted after the VM migration and authorized key-based SSH access. Live VM state and storage contents were then checked over SSH; no SSH coordinates or credentials are recorded here.
+- Verification: Confirmed the web container is the only running container attached to either image volume, both CIFS-backed mounts are writable by UID/GID `1654:1654`, processed/original test files remain isolated, the processed image is readable through `/image/{filename}`, and storage survives a web-container restart. Removed both temporary probes. The final file counts and byte totals match the historical baseline exactly.
+- Deviation: The app requires Microsoft OIDC sign-in for upload/delete operations, and no authenticated browser session was available. Direct volume probes do not verify the authenticated upload controller or its runtime original-retention setting, nor the application delete endpoint.
+- Checkpoint: Created and hash-verified `D:\OneDrive\Projects\Moonglade\prod-compose\batch0-rollback-20260923T091437Z\compose.yaml` and `.env`; the checkpoint remains outside the repository.
+- Commit: Not created.
+- Rollback state: Azure Files remains active; only temporary probe files were written and removed. The web container is running after the planned restart.
 
 ## Primary References
 
