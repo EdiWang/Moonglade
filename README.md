@@ -22,7 +22,7 @@ The main solution file is `src/Moonglade.slnx`.
 | `src/Moonglade.Web` | ASP.NET Core web host, Razor Pages, API controllers, endpoint mapping, filters, middleware wiring, and static assets. |
 | `src/Moonglade.Features` | Blog feature commands and queries for posts, pages, comments, categories, tags, assets, dashboard data, and recycle bin behavior. |
 | `src/Moonglade.Data` | EF Core `BlogDbContext`, entities, DTOs, mappings, and import/export primitives. |
-| `src/Moonglade.Data.SqlServer`, `src/Moonglade.Data.PostgreSql` | SQL Server and PostgreSQL provider registration and provider-specific EF Core behavior. |
+| `src/Moonglade.Data.PostgreSql`, `src/Moonglade.Data.SqlServer` | PostgreSQL and SQL Server provider registration and provider-specific EF Core behavior. |
 | `src/Moonglade.Configuration` | Persisted blog settings models, defaults, loading, and update commands. |
 | `src/Moonglade.Auth` | Local account and standards-based OpenID Connect authentication support. |
 | `src/Moonglade.BackgroundServices` | Scheduled publishing, update checks, and fire-and-forget background work. |
@@ -38,12 +38,6 @@ The main solution file is `src/Moonglade.slnx`.
 - **Security:** Enable **HTTPS** and **HTTP/2** on your web server for optimal security and performance.
 - **Deployment Options:** Moonglade can run on any cloud provider or on-premises.
 
-### Quick Azure Deployment (App Service on Linux)
-
-Get started in 10 minutes with minimal Azure resources using our [automated deployment script](https://github.com/EdiWang/Moonglade/wiki/Quick-Deploy-on-Azure).
-
-The Bicep template provisions separate writable Azure Files shares for public and original images, mounts them into the App Service container at `/app/images` and `/app/images-origin`, and configures Moonglade with those filesystem paths. It does not provision a CDN or migrate images from an older Blob container.
-
 ### Quick Local Deployment (Docker)
 
 For local testing or small-scale use, deploy Moonglade using Docker:
@@ -54,28 +48,34 @@ docker compose up -d
 
 The supplied Compose file maps separate writable named volumes to `/app/images` and `/app/images-origin` and configures both `ImageStorage` paths. Keep both volumes when recreating or upgrading the container so public and retained original images remain durable and isolated.
 
+Compose starts PostgreSQL and supplies the database connection string to the web container. For a direct `dotnet run`, the default connection string in `appsettings.json` points to PostgreSQL on `localhost:5432`; override it with `ConnectionStrings__MoongladeDatabase` for your environment.
+
 Email notifications are optional. The supplied default Email section intentionally contains no provider credentials; the application still starts, logs a warning, and serves the blog with email notification inactive. Open `/admin/settings/notification` to see the setup guidance after signing in. Add provider configuration through deployment secrets only when email delivery is required.
+
+### Quick Azure Deployment (App Service on Linux)
+
+The optional [automated deployment script](https://github.com/EdiWang/Moonglade/wiki/Quick-Deploy-on-Azure) provisions Azure SQL and sets `ConnectionStrings__DatabaseProvider=SqlServer`. It also mounts separate writable Azure Files shares at `/app/images` and `/app/images-origin`. It does not provision a CDN or migrate images from an older Blob container.
 
 ## 🛠️ Development
 
 | Tools                      | Alternatives                                                                                       |
 |----------------------------|----------------------------------------------------------------------------------------------------|
 | [Visual Studio 2026](https://visualstudio.microsoft.com/) | [VS Code](https://code.visualstudio.com/) + [.NET 10.0 SDK](http://dot.net)           |
-| [SQL Server 2025](https://www.microsoft.com/en-us/sql-server/) | [LocalDB](https://learn.microsoft.com/en-us/sql/database-engine/configure-windows/sql-server-express-localdb?view=sql-server-ver16) or PostgreSQL |
+| [PostgreSQL](https://www.postgresql.org/) | [SQL Server 2025](https://www.microsoft.com/en-us/sql-server/) or [LocalDB](https://learn.microsoft.com/en-us/sql/database-engine/configure-windows/sql-server-express-localdb?view=sql-server-ver16) |
 
 ### Database Setup
 
-> **Tip:** SQL Server Express (free) is sufficient for most production uses.
+PostgreSQL is the default database. SQL Server remains supported when configured explicitly.
 
 | Database         | Example Connection String (`appsettings.json > ConnectionStrings > MoongladeDatabase`)         |
 |------------------|----------------------------------------------------------------------------------------------|
 | PostgreSQL       | `User ID=***;Password=***;Host=localhost;Port=5432;Database=moonglade;Pooling=true;`          |
 | SQL Server       | `Server=(local);Database=moonglade;Trusted_Connection=True;`                                  |
 
-Change `ConnectionStrings:DatabaseProvider` in `appsettings.json` to match your database type.
+Set `ConnectionStrings:DatabaseProvider` to match your database type (`PostgreSql` by default):
 
-- SQL Server: `SqlServer`
 - PostgreSQL: `PostgreSql`
+- SQL Server: `SqlServer`
 
 ### Build & Run
 
