@@ -570,7 +570,7 @@ Append one entry after every completed or rolled-back batch.
 - Changes: Backed up the active private Compose and `.env` outside Git, removed the unused Azure CIFS volume definitions and `AZURE_STORAGE_KEY` from the private and VM deployment files, and inventoried Azure resources. No service restart or Azure data deletion occurred.
 - Verification: The private/VM files matched before editing; the private checkpoint was verified. The VM Compose validates and lists only the two R2 volumes. `moonglade-web` stayed healthy with zero restarts and R2 mounts. The Azure shares match the migration baseline. Two populated Blob containers outside the shares were found, so the account and resource group remain in place.
 - Deviations: Azure-side account-key rotation is deferred because the storage account key is account-wide and the account contains other Blob data whose consumers are unknown. The retired Docker volume metadata still contains CIFS options until those exact volumes are approved for removal.
-- Commit: Tracker-only Batch 5 in-progress checkpoint; commit hash to be recorded in a follow-up checkpoint.
+- Commit: Tracker-only Batch 5 in-progress checkpoint `c1abe6f4b0b37a50c8bfe8219f7815cb3b8147d9` (`docs: start Azure Files retirement`).
 - Rollback state: Restore the verified pre-cleanup files from `D:\OneDrive\Projects\Moonglade\prod-compose\batch5-rollback-20260924T1606`; no data was deleted.
 
 ## Primary References
