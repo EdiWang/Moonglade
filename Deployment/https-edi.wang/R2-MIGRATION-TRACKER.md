@@ -10,12 +10,12 @@ Update this file after every completed batch. Do not mark a batch complete witho
 
 | Field | Value |
 | --- | --- |
-| Overall status | Batch 5 VM cleanup complete; Azure shares and storage account remain intact per the user's scope |
+| Overall status | R2 migration complete; user reports the legacy Azure image storage account was deleted |
 | Current stage | Production uses R2; VM deployment and Docker runtime no longer contain Azure Files mount configuration or credentials |
-| Next batch | None for this VM-only migration scope; Azure-side cleanup requires a separate request |
-| Blocking prerequisite | None; Azure resources are intentionally preserved |
-| Decision status | D-001 through D-008 resolved; D-009 records the user's VM-only cleanup scope on 2026-09-24 |
-| Last verified | 2026-09-24 |
+| Next batch | None; batches 0-5 are complete |
+| Blocking prerequisite | None |
+| Decision status | D-001 through D-009 resolved; D-010 records the user's Azure storage account deletion report on 2026-09-24 |
+| Last verified | 2026-09-24 (VM state verified; Azure account deletion reported by the user) |
 | Last completed batch | Batch 5 - VM Azure Files configuration retirement |
 
 ## Operator Instructions for Future AI Sessions
@@ -63,14 +63,15 @@ Update this file after every completed batch. Do not mark a batch complete witho
 - Active VM Docker volumes after the Batch 3 cutover:
   - `moonglade-r2-images` -> `/app/images` -> private R2 bucket `moonglade-images`
   - `moonglade-r2-images-origin` -> `/app/images-origin` -> private R2 bucket `moonglade-images-origin`
-- The two Azure volumes remain intact and detached from the web container for rollback: `moonglade_moonglade-images` and `moonglade_moonglade-images-origin`. They use the Docker `local` driver with CIFS-backed Azure Files mounts.
+- The two Azure Docker volumes (`moonglade_moonglade-images` and `moonglade_moonglade-images-origin`) were removed during Batch 5. The user reports that the Azure storage account was deleted after the R2 migration; this deletion has not been independently verified.
 
-### Azure Resources
+### Azure Resources (Historical Migration Source)
 
 - App Service resource group: `rg-blog-eastasia`.
 - App Service name: `ediwang`.
 - Storage account: `ediblogstorage`.
 - The storage account is in resource group `rg-ediwangapps-eastasia`, not the App Service resource group.
+- The user reports deleting `ediblogstorage` on 2026-09-24 after R2 acceptance. Counts below are historical pre-deletion baselines; the account deletion has not been independently verified.
 - Azure Files mappings:
 
 | Purpose | Azure Files share | Container path | Files at 2026-09-23 | Bytes at 2026-09-23 |
@@ -145,6 +146,7 @@ However, rclone documents that a failed upload cannot be retried in this mode. E
 | D-007 | Resolve Batch 3 drift between the deployed VM and private Compose source | Preserve the currently deployed runtime behavior and use the deployed VM `.env` as the source | Approved | Use the VM `.env` as canonical; preserve its healthcheck and 4 GiB memory limits; 2026-09-24 |
 | D-008 | Batch 4 acceptance after manual observation | Require the planned seven-day observation unless the user accepts earlier | Approved | User reported manual observation passed and instructed continuation; 2026-09-24 |
 | D-009 | Batch 5 Azure cleanup scope | Remove Azure Files information from the VM while preserving Azure-side data and resources | Approved | User directed VM-only cleanup and said Azure-side cleanup is out of scope; 2026-09-24 |
+| D-010 | Final cleanup of the legacy Azure image storage account | Delete the account after R2 migration acceptance, once no longer needed for rollback | Completed (user-reported) | User reports deleting `ediblogstorage` after completing the R2 migration; 2026-09-24 |
 
 ## Batch Plan and Progress
 
@@ -573,6 +575,15 @@ Append one entry after every completed or rolled-back batch.
 - Scope: The user directed that Azure-side cleanup be left alone. The Azure Files shares and the storage account's two populated Blob containers remain intact; the storage account key was not rotated.
 - Commit: Tracker-only Batch 5 VM-cleanup checkpoint `8b5fb026607fbd5e44a0bbc6160db50eaa5a5749` (`docs: complete VM-only Azure cleanup`).
 - Rollback state: The verified pre-cleanup files remain in `D:\OneDrive\Projects\Moonglade\prod-compose\batch5-rollback-20260924T1606` on the workstation, outside Git and the VM. Azure-side data is unchanged.
+
+### 2026-09-24 - User-reported Azure Storage Account deletion
+
+- Status: Final legacy image-storage cleanup reported complete by the user; no further migration batch is planned.
+- Changes: The user reports deleting `ediblogstorage` after the R2 migration and manual observation were accepted. The account held the legacy processed-image and original-image Blob containers and Azure Files shares.
+- Verification: Not independently checked through Azure. Batch 5 had already verified that the VM deployment and runtime no longer referenced Azure storage and that production used only the R2 volumes.
+- Scope: This was performed by the user. The tracker records the report; no Azure or VM operation was performed for this entry.
+- Commit: Not created.
+- Rollback state: Production remains on R2. The legacy Azure storage account is reported deleted; local pre-cleanup rollback files remain on the workstation.
 
 ## Primary References
 
