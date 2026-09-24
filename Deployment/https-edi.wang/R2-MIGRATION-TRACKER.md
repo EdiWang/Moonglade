@@ -518,7 +518,7 @@ Append one entry after every completed or rolled-back batch.
 - Changes: After the final copy and downloaded checks, switched the VM Compose to the two new R2 named volumes. Preserved the VM `.env`, healthcheck, 4 GiB memory/swap limits, and application image paths. Restarted the rclone plugin and recreated the web container. No Azure resources or data were removed.
 - Verification: Final `rclone check --download` reported zero differences for `2,677` processed files / `205,616,089` bytes and `1,136` originals / `96,400,055` bytes. The app remained healthy; public image GET, ETag/content length/media type, range, original-image 404, direct mounted write/delete, web recreation, plugin restart, and remount checks passed. No storage/FUSE failure was found.
 - Deviations: A full recursive FUSE metadata scan stalled and was stopped; single-file probes and downloaded R2 checks passed. No authenticated Edge session was available, so no credentials were entered and application upload/SVG/delete flows were not attempted.
-- Commit: Pending tracker-only cutover checkpoint.
+- Commit: Tracker-only cutover checkpoint `167b5c890071898d4cf8b9ab92e027662347dfb2` (`docs: record R2 storage cutover`).
 - Rollback state: The exact pre-cutover VM Compose and `.env` are preserved in `D:\OneDrive\Projects\Moonglade\prod-compose\batch3-rollback-20260924T100219`; the previous private copies are also preserved. Azure volumes and data remain intact and detached from the web container. Production currently uses R2.
 
 ## Primary References
