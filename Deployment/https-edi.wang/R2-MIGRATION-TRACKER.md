@@ -10,10 +10,10 @@ Update this file after every completed batch. Do not mark a batch complete witho
 
 | Field | Value |
 | --- | --- |
-| Overall status | Batch 3 production cutover and acceptance complete; Batch 4 observation is not started |
-| Current stage | Production uses R2; Batch 3 accepted with one documented deletion-surface deviation on 2026-09-24 |
-| Next batch | Batch 4 - seven-day observation period |
-| Blocking prerequisite | User instruction to start Batch 4 |
+| Overall status | Batch 3 production cutover and acceptance complete; Batch 4 seven-day observation in progress |
+| Current stage | Production uses R2; planned VM reboot recovered; observation started 2026-09-24 11:09 Asia/Taipei |
+| Next batch | Complete Batch 4 observation through 2026-10-01, then obtain the user's acceptance decision |
+| Blocking prerequisite | Observation window completion and user judgment of latency and R2 operation volume |
 | Decision status | D-001 through D-006 resolved on 2026-09-23; D-007 approved for Batch 3 on 2026-09-24 |
 | Last verified | 2026-09-24 |
 | Last completed batch | Batch 3 - final delta copy, production cutover, and acceptance |
@@ -301,7 +301,7 @@ Commit only this tracker's progress update. Keep Compose, plugin configuration, 
 
 ### Batch 3 - Final Delta Copy and Production Cutover
 
-**Status:** Accepted on 2026-09-24. Batch 4 remains not started pending user instruction.
+**Status:** Accepted on 2026-09-24. Batch 4 observation started on 2026-09-24.
 
 **Prerequisites**
 
@@ -367,11 +367,11 @@ Commit only this tracker's cutover evidence. The production Compose change remai
 - The initial 1x1 PNG probe failed in watermark decoding before storage. Replacing it with the valid 256x256 synthetic PNG passed the raster flow; no production configuration or application code was changed.
 - The temporary VM candidate Compose file was removed after confirming it matched the active Compose file. No Azure data, Azure volumes, R2 data, or production runtime credentials were deleted or revoked.
 
-**Acceptance result:** Accepted with one documented deviation. The production cutover, R2 data verification, authenticated raster upload, SVG sanitization, original-image isolation, and direct filesystem create/read/delete behavior passed. No application-level image-file deletion endpoint exists, so deletion was verified through the mounted storage contract. Batch 4 has not been started.
+**Acceptance result:** Accepted with one documented deviation. The production cutover, R2 data verification, authenticated raster upload, SVG sanitization, original-image isolation, and direct filesystem create/read/delete behavior passed. No application-level image-file deletion endpoint exists, so deletion was verified through the mounted storage contract. Batch 4 observation started on 2026-09-24.
 
 ### Batch 4 - Observation Period
 
-**Status:** Not started
+**Status:** In progress; observation window started 2026-09-24 11:09 Asia/Taipei. Final scheduled read-only check: 2026-10-01.
 
 **Prerequisites**
 
@@ -395,7 +395,8 @@ Commit only this tracker's cutover evidence. The production Compose change remai
 
 **Commit**
 
-- Update and commit this tracker with the final observation evidence.
+- Interim tracker checkpoint records the observation start and baseline.
+- Update and commit the final evidence after the observation window and user review.
 
 **Rollback**
 
@@ -403,7 +404,14 @@ Commit only this tracker's cutover evidence. The production Compose change remai
 
 **Evidence**
 
-- Not recorded.
+- Production baseline at approximately 2026-09-24 11:09 Asia/Taipei: `/`, `/health`, and `/health/ready` returned HTTP 200. The `moonglade-web` container was `running`/`healthy`, with zero restarts and the intended two R2 mounts at `/app/images` and `/app/images-origin`; the rclone Docker volume plugin was enabled. Public route timings were 0.593 s (home), 0.291 s (liveness), and 0.300 s (readiness).
+- A published PNG (`/image/20260825-302c8a47.png`, 45,398 bytes) returned HTTP 200 as `image/png`. Five public GET samples took 2.100114, 0.514096, 0.514910, 0.596164, and 0.573774 s. A read-only direct-volume warm-read comparison of the same file recorded Azure Files at 21, 1, 1, 1, and 1 ms and R2 at 70, 60, 63, 73, and 182 ms. This is not a historical Azure public-HTTP baseline; the user must judge whether observed latency is acceptable.
+- R2 inventory before and after reboot was unchanged: processed bucket 2,677 objects / 205,616,089 bytes; originals bucket 1,136 objects / 96,400,055 bytes. The Cloudflare overview showed 2.68k / 1.14k objects and 205.79 / 96.48 MB, September 14–October 14 account billing period, 3.73k Class A and 8.12k Class B operations, and $0.00 with no billable usage. Its separate “Total storage” card displayed `0 B`, inconsistent with both bucket listings and rclone totals; reloading did not resolve the discrepancy.
+- Authenticated upload/read/original-retention/delete probe: uploaded a synthetic 256×256 PNG (80,638 bytes). Processed URL `/image/20260924-f168e109.png` returned HTTP 200 as `image/png` (2,561 bytes); the 80,638-byte original existed only under `/app/images-origin` and its public route returned 404. Both exact objects were removed, their mount paths were confirmed absent, and both URLs returned 404. No article was saved or published.
+- Planned VM reboot completed at approximately 2026-09-24 11:25 Asia/Taipei. During startup, one immediate `/health` check returned HTTP 502 while the container was `running`/`starting`; about 15 seconds later `/`, `/health`, `/health/ready`, and the published image all returned HTTP 200. The container became `healthy` with restart count 0, both R2 mounts and the plugin recovered, and bucket totals matched the pre-reboot inventory.
+- Web storage-error matches after reboot were zero. Docker journal contained five error-level wrapper lines for rclone's informational Unix-socket startup messages; after excluding this known wrapper quirk, actual storage/FUSE errors were zero. The root-only plugin cache contained only `docker-plugin.state` (572 bytes), with no image data. The two detached Azure rollback volumes remain present and unchanged.
+- An active local heartbeat, `Moonglade R2 Batch 4 observation`, is scheduled for daily read-only checks through 2026-10-01. Its checks cover public health/image latency, container/plugin/mount/log/cache state, and the existing authenticated Cloudflare usage view; it does not perform uploads, deletes, reboots, remediation, deployment changes, or Azure cleanup. Keep this computer and Codex desktop app running for scheduled local checks. No production Compose, `.env`, application code, Azure resource, or Azure data changes were made in this batch.
+- Batch 4 is not accepted yet. Acceptance remains subject to the seven-day observation completing without actionable failures and the user's judgment that latency and R2 operation volume are acceptable. Batch 5 has not started.
 
 ### Batch 5 - Retire Azure Files Configuration
 
@@ -532,6 +540,15 @@ Append one entry after every completed or rolled-back batch.
 - Deviation: The application has no authenticated image-file deletion endpoint. Direct UID/GID `1654:1654` deletion through both R2 mounts verified the filesystem delete contract. A 1x1 PNG probe failed in watermark decoding before storage; a valid 256x256 synthetic PNG then passed.
 - Commit: Tracker-only acceptance checkpoint `2f3775ac4c019c9702f02146a5ee938e29187c04` (`docs: record R2 application acceptance`).
 - Rollback state: Production remains on R2. The exact pre-cutover VM Compose and `.env` remain in the private rollback checkpoint; Azure volumes and data remain intact and detached from the web container.
+
+### 2026-09-24 - Batch 4 observation started
+
+- Status: In progress; seven-day observation began at approximately 11:09 Asia/Taipei and is scheduled to conclude with a final read-only check on 2026-10-01.
+- Changes: Performed baseline checks, authenticated upload/read/original-retention/delete verification, read-only R2 usage review, and one planned VM reboot. Created the active local heartbeat for daily observation checks. No production Compose, `.env`, application code, Azure resource, or Azure data changes were made.
+- Verification: Public health and a representative image returned HTTP 200 after reboot; the R2 container mounts and plugin recovered, the container returned to healthy with zero restarts, object counts and byte totals were unchanged, no real storage/FUSE errors were found, and the plugin cache held no image bytes. The synthetic upload and exact-object cleanup passed; no post was saved or published.
+- Deviations: There is no historical Azure public-HTTP latency baseline. The direct-volume warm-read comparison and current R2 public timings are recorded in Batch 4 evidence for the user's acceptance decision. Cloudflare's overview showed nonzero bucket sizes while its separate total-storage card showed `0 B`; this UI discrepancy remains unresolved.
+- Commit: Interim tracker-only observation-start checkpoint; commit hash to be recorded in the follow-up checkpoint.
+- Rollback state: Production remains on R2; Azure rollback volumes/data remain intact and detached. No Azure cleanup or Batch 5 action was performed.
 
 ## Primary References
 
