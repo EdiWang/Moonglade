@@ -10,13 +10,13 @@ Update this file after every completed batch. Do not mark a batch complete witho
 
 | Field | Value |
 | --- | --- |
-| Overall status | Batch 1 complete; R2 volumes validated in isolation; production still uses Azure Files |
-| Current stage | Batch 1 complete; ready for the initial one-time copy |
-| Next batch | Batch 2 - copy Azure Files data to R2 and verify byte equality |
-| Blocking prerequisite | None for Batch 1; obtain explicit user instruction before starting Batch 2 |
+| Overall status | Batch 2 complete; initial image dataset copied and verified in R2; Azure Files remains the production writer |
+| Current stage | Batch 2 complete; awaiting Batch 3 maintenance window and cutover authorization |
+| Next batch | Batch 3 - final delta copy and production cutover |
+| Blocking prerequisite | Batch 3 requires an approved maintenance window, reviewed private Compose change, and explicit instruction to start |
 | Decision status | D-001 through D-006 resolved by the user on 2026-09-23 |
 | Last verified | 2026-09-24 |
-| Last completed batch | Batch 1 |
+| Last completed batch | Batch 2 |
 
 ## Operator Instructions for Future AI Sessions
 
@@ -252,7 +252,7 @@ Commit only this tracker's progress update. Keep Compose, plugin configuration, 
 
 ### Batch 2 - Perform the Initial One-time Copy
 
-**Status:** Not started
+**Status:** Completed - initial R2 copy matches Azure Files by object count, byte total, and downloaded content verification
 
 **Prerequisites**
 
@@ -288,7 +288,15 @@ Commit only this tracker's progress update. Keep Compose, plugin configuration, 
 
 **Evidence**
 
-- Not recorded.
+- Both R2 buckets were confirmed empty immediately before the copy. Used the official `rclone/rclone:1.75.1` CLI image (`sha256:45401ad7410db1d67ffdb58e19059ad20b0d8e0285a60e38bbec55cc1019c7a5`) in temporary containers on the VM. Each Azure Docker volume and the root-only rclone config were mounted read-only; `rclone copy` wrote only to its corresponding R2 bucket. No `sync` or source mutation was used.
+- Processed images: Azure source `2,677` files / `205,616,089` bytes; R2 `moonglade-images` `2,677` objects / `205,616,089` bytes.
+- Original images: Azure source `1,136` files / `96,400,055` bytes; R2 `moonglade-images-origin` `1,136` objects / `96,400,055` bytes.
+- `rclone check --download` completed for both roots: `0 differences found`, with `2,677` and `1,136` matching files respectively. The command downloaded R2 object bytes for content verification.
+- The fully checked processed set includes GIF (4), JPEG (217), PNG (2,450), SVG (2), and WebP (4). The original set includes JPEG (50), PNG (1,085), and WebP (1). The full downloaded check covered all listed objects and formats.
+- Final source and R2 counts/bytes still match after the checks. `moonglade-web` remains healthy on the unchanged Azure CIFS volumes; Azure Files is still the only production image writer. No production Compose changes were made.
+- Azure remained online as the writer throughout this initial copy, so it is not an atomic snapshot. Batch 3 must stop writes, copy the final delta, and repeat the downloaded check before cutover.
+
+**Acceptance result:** Met. Counts and byte totals match for both roots, both `rclone check --download` runs report zero differences, and production continues to use Azure Files.
 
 ### Batch 3 - Final Delta Copy and Production Cutover
 
@@ -483,6 +491,15 @@ Append one entry after every completed or rolled-back batch.
 - Deviation: Plugin disable required `--force` while named test volumes existed, despite no running container using them. Interrupted writes may leave partial remote objects and are not retried with the approved cache mode.
 - Commit: Tracker-only Batch 1 checkpoint `ae831379fb31a361cc74b55c883537f6fd4468a5` (`docs: record validated R2 volume configuration`).
 - Rollback state: Production remains on Azure Files; temporary volumes and test objects were removed; both R2 buckets are empty.
+
+### 2026-09-24 - Batch 2 completed
+
+- Status: Accepted; the initial image dataset is present in the two private R2 buckets and passes full downloaded-content verification. Production remains on Azure Files.
+- Changes: Ran one `rclone copy` per Azure source volume to its corresponding R2 bucket from a temporary official rclone 1.75.1 container. Source volumes and the credential config were mounted read-only. No source files were modified or deleted.
+- Verification: Processed source and destination both contain 2,677 files/objects totaling 205,616,089 bytes; originals both contain 1,136 files/objects totaling 96,400,055 bytes. `rclone check --download` reported zero differences and all files matching in both buckets. Final counts and bytes were re-read after checking. The production web container is healthy and remains mounted to both Azure CIFS volumes.
+- Deviation: The VM did not have a standalone rclone CLI, so the pinned official rclone 1.75.1 container image was used for copy and check. This did not change Compose or production mounts.
+- Commit: Batch 2 tracker checkpoint to be recorded after commit.
+- Rollback state: No production rollback is needed; Azure remains the writer. The initial R2 copy is retained as the destination baseline for Batch 3.
 
 ## Primary References
 
