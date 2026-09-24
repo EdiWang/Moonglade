@@ -530,7 +530,7 @@ Append one entry after every completed or rolled-back batch.
 - Changes: No production configuration or application code changed. Uploaded synthetic raster and SVG probes through the authenticated admin editor, then removed all resulting test objects from the R2 mounts.
 - Verification: The processed PNG returned HTTP 200 as `image/png` (2,679 bytes); its 85,933-byte retained original existed only in the original-image mount and returned public HTTP 404. The SVG returned HTTP 200 as `image/svg+xml` (104 bytes), retained safe vector content, and contained none of the tested script, event-handler, or sentinel markers. Its retained copy was isolated from the public route. After cleanup, the four processed/original mount paths were absent and both public URLs returned HTTP 404. No post was saved or published.
 - Deviation: The application has no authenticated image-file deletion endpoint. Direct UID/GID `1654:1654` deletion through both R2 mounts verified the filesystem delete contract. A 1x1 PNG probe failed in watermark decoding before storage; a valid 256x256 synthetic PNG then passed.
-- Commit: Tracker-only acceptance checkpoint; hash to be recorded in the follow-up checkpoint.
+- Commit: Tracker-only acceptance checkpoint `2f3775ac4c019c9702f02146a5ee938e29187c04` (`docs: record R2 application acceptance`).
 - Rollback state: Production remains on R2. The exact pre-cutover VM Compose and `.env` remain in the private rollback checkpoint; Azure volumes and data remain intact and detached from the web container.
 
 ## Primary References
