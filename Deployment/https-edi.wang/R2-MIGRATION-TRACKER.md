@@ -10,13 +10,13 @@ Update this file after every completed batch. Do not mark a batch complete witho
 
 | Field | Value |
 | --- | --- |
-| Overall status | Batch 3 production cutover complete; authenticated application acceptance checks remain pending |
-| Current stage | Production uses R2; Batch 3 acceptance closeout is pending authenticated upload, SVG sanitization, and application deletion checks |
-| Next batch | Complete Batch 3 authenticated acceptance; then Batch 4 - seven-day observation period |
-| Blocking prerequisite | An authenticated administrator session is needed to exercise upload, SVG sanitization, and application deletion; no Moonglade session was available in the browser |
+| Overall status | Batch 3 production cutover and acceptance complete; Batch 4 observation is not started |
+| Current stage | Production uses R2; Batch 3 accepted with one documented deletion-surface deviation on 2026-09-24 |
+| Next batch | Batch 4 - seven-day observation period |
+| Blocking prerequisite | User instruction to start Batch 4 |
 | Decision status | D-001 through D-006 resolved on 2026-09-23; D-007 approved for Batch 3 on 2026-09-24 |
 | Last verified | 2026-09-24 |
-| Last completed batch | Batch 2; Batch 3 cutover is active and its authenticated acceptance checks remain open |
+| Last completed batch | Batch 3 - final delta copy, production cutover, and acceptance |
 
 ## Operator Instructions for Future AI Sessions
 
@@ -301,7 +301,7 @@ Commit only this tracker's progress update. Keep Compose, plugin configuration, 
 
 ### Batch 3 - Final Delta Copy and Production Cutover
 
-**Status:** Production cutover complete; acceptance partially verified. Do not start Batch 4 until the authenticated upload, SVG sanitization, and application deletion checks are completed.
+**Status:** Accepted on 2026-09-24. Batch 4 remains not started pending user instruction.
 
 **Prerequisites**
 
@@ -322,17 +322,17 @@ Commit only this tracker's progress update. Keep Compose, plugin configuration, 
 
 **Application Acceptance Tests**
 
-- A direct UID `1654` write through the processed R2 mount was retrieved by the public image route; the authenticated application raster-upload flow remains untested.
-- SVG upload validation and sanitization remain untested.
+- An authenticated raster upload through the admin editor succeeded. The processed PNG was retrieved from the public image route; the retained original was present only in `/app/images-origin`, and its public URL returned HTTP 404.
+- An authenticated SVG upload containing a script, event-handler attributes, and a synthetic sentinel succeeded. The public SVG retained its `svg` and `rect` elements and contained none of the tested active-content markers or sentinel.
 - Processed and original test objects were written through their separate R2 mounts; each mount uses its intended bucket.
 - An original-only filename returned HTTP 404 from `/image/{filename}`.
 - Public image responses included content length, `image/png`, and ETag; a byte-range request returned HTTP 206 with the expected range.
-- Direct deletion through both R2 mounts succeeded and absence was confirmed; the authenticated application deletion flow remains untested.
+- Direct deletion through both R2 mounts succeeded and absence was confirmed; the application has no image-file deletion endpoint, so an application-level image delete flow is not available to exercise.
 - Recreated the web container, restarted the rclone plugin, recreated the web container again, and confirmed persistence and remounting.
 
 **Acceptance**
 
-- Infrastructure and public-read acceptance passed; full application acceptance is pending the authenticated flows listed above.
+- Infrastructure, public-read, authenticated raster-upload, and SVG-sanitization acceptance passed. Direct mounted deletion passed; an application-level image deletion endpoint is not present.
 - The effective image paths remain `/app/images` and `/app/images-origin`, each backed by its intended R2 named volume; no home-directory image path is configured.
 - No storage or FUSE failure was found in the web or Docker/plugin logs during the cutover and plugin restart. Docker logged the plugin's informational unmount/socket messages at an outer `level=error`; the embedded rclone messages were `INFO`, and remounting succeeded.
 
@@ -361,10 +361,13 @@ Commit only this tracker's cutover evidence. The production Compose change remai
 - Stopped and removed the web container, disabled and re-enabled the rclone plugin, then recreated the web service. The container returned to `healthy` with the same two R2 mounts and exact bucket options; the public health/image/range/original-isolation checks passed again. Storage-specific web-log matches were zero. The Docker journal entries during plugin restart were informational rclone unmount/socket messages despite Docker's outer error-level wrapper; no FUSE or mount failure was found.
 - The effective `ImageStorage` environment paths still point to `/app/images` and `/app/images-origin`; the only container mounts for image storage are the intended R2 volumes. No user-home fallback path is configured.
 - A full recursive metadata scan through the FUSE mounts stalled, so it was stopped. No writes resulted; representative single-file mount probes and the full `rclone check --download` completed successfully.
-- No logged-in Moonglade admin session was available in Edge. No credentials were entered and no login flow was attempted. The temporary mounted-volume probes verify filesystem read/write/delete, public routing, and isolation, but do not replace the authenticated raster-upload, SVG sanitizer, or application-delete tests.
+- The authenticated admin session was used to upload a valid 256x256 synthetic PNG. The editor upload succeeded; the processed image returned HTTP 200 as `image/png` (2,679 bytes), while the 85,933-byte retained original was present only in `/app/images-origin` and returned HTTP 404 through the public image route.
+- The authenticated admin session was used to upload a synthetic SVG containing a script, `onload`/`onclick`, and a sentinel. The processed SVG returned HTTP 200 as `image/svg+xml` (104 bytes); it retained `<svg>` and `<rect>` and contained none of the tested active-content markers or sentinel. The retained copy was isolated in `/app/images-origin`; its public URL returned HTTP 404.
+- Application code has no authenticated image-file delete endpoint. The temporary PNG and SVG plus their retained originals were removed through the UID/GID `1654:1654` R2 mounts; all four paths were confirmed absent and both public URLs returned HTTP 404. No post was saved or published; auto-save was off, and the admin session was returned to the dashboard.
+- The initial 1x1 PNG probe failed in watermark decoding before storage. Replacing it with the valid 256x256 synthetic PNG passed the raster flow; no production configuration or application code was changed.
 - The temporary VM candidate Compose file was removed after confirming it matched the active Compose file. No Azure data, Azure volumes, R2 data, or production runtime credentials were deleted or revoked.
 
-**Acceptance result:** Partial. The production cutover, R2 data verification, public image behavior, mount persistence, plugin restart, health checks, and direct filesystem operations passed. Complete the authenticated raster upload, SVG sanitization, and application deletion checks before marking Batch 3 accepted or starting Batch 4.
+**Acceptance result:** Accepted with one documented deviation. The production cutover, R2 data verification, authenticated raster upload, SVG sanitization, original-image isolation, and direct filesystem create/read/delete behavior passed. No application-level image-file deletion endpoint exists, so deletion was verified through the mounted storage contract. Batch 4 has not been started.
 
 ### Batch 4 - Observation Period
 
@@ -520,6 +523,15 @@ Append one entry after every completed or rolled-back batch.
 - Deviations: A full recursive FUSE metadata scan stalled and was stopped; single-file probes and downloaded R2 checks passed. No authenticated Edge session was available, so no credentials were entered and application upload/SVG/delete flows were not attempted.
 - Commit: Tracker-only cutover checkpoint `167b5c890071898d4cf8b9ab92e027662347dfb2` (`docs: record R2 storage cutover`).
 - Rollback state: The exact pre-cutover VM Compose and `.env` are preserved in `D:\OneDrive\Projects\Moonglade\prod-compose\batch3-rollback-20260924T100219`; the previous private copies are also preserved. Azure volumes and data remain intact and detached from the web container. Production currently uses R2.
+
+### 2026-09-24 - Batch 3 authenticated acceptance and closeout
+
+- Status: Batch 3 accepted. Batch 4's seven-day observation period is not started.
+- Changes: No production configuration or application code changed. Uploaded synthetic raster and SVG probes through the authenticated admin editor, then removed all resulting test objects from the R2 mounts.
+- Verification: The processed PNG returned HTTP 200 as `image/png` (2,679 bytes); its 85,933-byte retained original existed only in the original-image mount and returned public HTTP 404. The SVG returned HTTP 200 as `image/svg+xml` (104 bytes), retained safe vector content, and contained none of the tested script, event-handler, or sentinel markers. Its retained copy was isolated from the public route. After cleanup, the four processed/original mount paths were absent and both public URLs returned HTTP 404. No post was saved or published.
+- Deviation: The application has no authenticated image-file deletion endpoint. Direct UID/GID `1654:1654` deletion through both R2 mounts verified the filesystem delete contract. A 1x1 PNG probe failed in watermark decoding before storage; a valid 256x256 synthetic PNG then passed.
+- Commit: Tracker-only acceptance checkpoint; hash to be recorded in the follow-up checkpoint.
+- Rollback state: Production remains on R2. The exact pre-cutover VM Compose and `.env` remain in the private rollback checkpoint; Azure volumes and data remain intact and detached from the web container.
 
 ## Primary References
 
