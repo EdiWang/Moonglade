@@ -10,13 +10,13 @@ Update this file after every completed batch. Do not mark a batch complete witho
 
 | Field | Value |
 | --- | --- |
-| Overall status | Batch 0 complete; Azure Files remains the only production image storage; R2 has not been changed |
-| Current stage | Batch 1 - create and validate an isolated R2 Docker volume (not started) |
-| Next batch | Batch 1 - create and validate an isolated R2 Docker volume |
-| Blocking prerequisite | None for Batch 0; obtain explicit user instruction before starting Batch 1 |
+| Overall status | Batch 1 complete; R2 volumes validated in isolation; production still uses Azure Files |
+| Current stage | Batch 1 complete; ready for the initial one-time copy |
+| Next batch | Batch 2 - copy Azure Files data to R2 and verify byte equality |
+| Blocking prerequisite | None for Batch 1; obtain explicit user instruction before starting Batch 2 |
 | Decision status | D-001 through D-006 resolved by the user on 2026-09-23 |
-| Last verified | 2026-09-23 |
-| Last completed batch | Batch 0 |
+| Last verified | 2026-09-24 |
+| Last completed batch | Batch 1 |
 
 ## Operator Instructions for Future AI Sessions
 
@@ -192,7 +192,7 @@ However, rclone documents that a failed upload cannot be retried in this mode. E
 
 ### Batch 1 - Create and Validate an Isolated R2 Docker Volume
 
-**Status:** Not started
+**Status:** Completed - isolated R2 volumes passed the filesystem and restart tests; production remains on Azure Files
 
 **Prerequisites**
 
@@ -238,7 +238,17 @@ Commit only this tracker's progress update. Keep Compose, plugin configuration, 
 
 **Evidence**
 
-- Not recorded.
+- Created `moonglade-images` and `moonglade-images-origin` in the Cloudflare account. Both use Standard storage and automatic Asia-Pacific placement; Public Access is disabled, no custom domain is assigned, and Public Development URL is disabled for both buckets. Both buckets are empty.
+- Installed host package `fuse3` version `3.18.2-1` and the official managed plugin `rclone/docker-volume-rclone:amd64-1.75.1`; its embedded rclone reports `v1.75.1`. The pulled plugin digest is `sha256:3f4ab4223629af9a20d7df12880eabc01a2559de4a86e53b3c44f314b756b420`.
+- Installed the replacement bucket-scoped credential through the no-echo SSH prompt. `/var/lib/docker-plugins/rclone/config/rclone.conf` is `root:root`, mode `0600`; the config directory contains only that file and its sole profile is `[r2]`. The config and cache directories are `root:root`, mode `0700`. No credential values were read into task output or stored in this repository.
+- Created temporary volumes `moonglade-r2-batch1-images` -> `r2:moonglade-images` and `moonglade-r2-batch1-origin` -> `r2:moonglade-images-origin`, both with `vfs-cache-mode=off` and `allow-other=true`. A disposable UID/GID `1654:1654` container passed sequential write/close, stat, read-back byte comparison, overwrite, and delete for representative PNG, JPEG, WebP, GIF, and SVG filenames. A lifecycle sentinel remained readable after the disposable container stopped and a new one remounted the volumes. Same-name objects with different contents remained isolated between buckets.
+- Restarted the rclone plugin and Docker daemon separately. Docker required `--force` to disable the plugin while named volumes existed; no container was using the temporary volumes at that time. Both volumes remounted and passed read/write checks afterward. The daemon restart also recovered production containers; `moonglade-web` is healthy and its original Azure CIFS volumes remain mounted at `/app/images` and `/app/images-origin`.
+- Invalid credentials caused Docker volume mount failure before the disposable container started; there was no local fallback. The cache directory contained only `docker-plugin.state` (2 bytes after cleanup), with no image data. Both R2 buckets were empty after cleanup, and all temporary test volumes were removed.
+- An upload of a 256 MiB probe was killed with SIGKILL after one second (container exit 137). The incomplete 48,234,496-byte object was visible in the processed bucket and was removed; both buckets were then confirmed empty. This demonstrates that interruption can leave a partial remote object. With `vfs-cache-mode=off`, rclone does not retry failed uploads, as documented in the rclone mount reference.
+- The first Cloudflare Account API token `Moonglade R2 volume plugin` had Object Read & Write limited to the two buckets. Its values were mistakenly pasted into the local PowerShell prompt and echoed as failed commands; the token was immediately deleted and must not be used. No credential file was written to the VM.
+- Created a replacement token with the same name, Object Read & Write limited to `moonglade-images` and `moonglade-images-origin`, Forever lifetime, and no IP filter. The replacement is installed on the VM; the first exposed token was deleted and was never used.
+
+**Acceptance result:** Met for isolated-volume filesystem operations, bucket separation/privacy, restart recovery, fail-closed behavior, and absence of image bytes in the plugin cache. The interrupted-upload limitation was observed and removed from R2; it is understood under the user's approved `vfs-cache-mode=off` decision. Production remains on Azure Files.
 
 ### Batch 2 - Perform the Initial One-time Copy
 
@@ -463,6 +473,16 @@ Append one entry after every completed or rolled-back batch.
 - Checkpoint: Created and hash-verified `D:\OneDrive\Projects\Moonglade\prod-compose\batch0-rollback-20260923T091437Z\compose.yaml` and `.env`; the checkpoint remains outside the repository.
 - Commit: Not created.
 - Rollback state: Azure Files remains active; only temporary probe files were written and removed. The web container is running after the planned restart.
+
+### 2026-09-24 - Batch 1 completed
+
+- Status: Accepted; R2 has passed isolated disposable-volume checks. Production remains on Azure Files.
+- Changes: Installed the replacement bucket-scoped token in the VM's root-only rclone config. Temporary R2 volumes were created for tests and removed afterward; no application or production Compose changes were made.
+- Security incident: The first token's one-time values were mistakenly pasted into the local PowerShell terminal and echoed as failed commands. It was deleted and not used. The replacement was entered through an SSH prompt with terminal echo disabled. No token values are recorded in this tracker or repository.
+- Verification: Filesystem operations and representative image formats passed; container, plugin, and Docker daemon remount checks passed; invalid credentials failed closed before container start; the plugin cache held no image bytes. A SIGKILL test left a 48,234,496-byte partial object, which was removed. The two buckets are empty after cleanup. The VM config is `root:root`/`0600`, contains only the `[r2]` profile, and the config directory contains no temporary files. The plugin is enabled, no Batch 1 test volumes remain, `moonglade-web` is healthy, and both production image mounts remain on Azure CIFS.
+- Deviation: Plugin disable required `--force` while named test volumes existed, despite no running container using them. Interrupted writes may leave partial remote objects and are not retried with the approved cache mode.
+- Commit: Batch 1 repository checkpoint to be recorded after commit.
+- Rollback state: Production remains on Azure Files; temporary volumes and test objects were removed; both R2 buckets are empty.
 
 ## Primary References
 
