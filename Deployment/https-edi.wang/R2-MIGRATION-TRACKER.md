@@ -498,7 +498,7 @@ Append one entry after every completed or rolled-back batch.
 - Changes: Ran one `rclone copy` per Azure source volume to its corresponding R2 bucket from a temporary official rclone 1.75.1 container. Source volumes and the credential config were mounted read-only. No source files were modified or deleted.
 - Verification: Processed source and destination both contain 2,677 files/objects totaling 205,616,089 bytes; originals both contain 1,136 files/objects totaling 96,400,055 bytes. `rclone check --download` reported zero differences and all files matching in both buckets. Final counts and bytes were re-read after checking. The production web container is healthy and remains mounted to both Azure CIFS volumes.
 - Deviation: The VM did not have a standalone rclone CLI, so the pinned official rclone 1.75.1 container image was used for copy and check. This did not change Compose or production mounts.
-- Commit: Batch 2 tracker checkpoint to be recorded after commit.
+- Commit: Tracker-only Batch 2 checkpoint `4ab2e6f4485ce75ff4726472aae1a77cf64c1091` (`docs: record initial R2 image copy`).
 - Rollback state: No production rollback is needed; Azure remains the writer. The initial R2 copy is retained as the destination baseline for Batch 3.
 
 ## Primary References
