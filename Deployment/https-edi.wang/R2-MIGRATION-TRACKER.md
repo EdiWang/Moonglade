@@ -10,13 +10,13 @@ Update this file after every completed batch. Do not mark a batch complete witho
 
 | Field | Value |
 | --- | --- |
-| Overall status | Batch 3 production cutover and acceptance complete; Batch 4 seven-day observation in progress |
-| Current stage | Production uses R2; planned VM reboot recovered; observation started 2026-09-24 11:09 Asia/Taipei |
-| Next batch | Complete Batch 4 observation through 2026-10-01, then obtain the user's acceptance decision |
-| Blocking prerequisite | Observation window completion and user judgment of latency and R2 operation volume |
-| Decision status | D-001 through D-006 resolved on 2026-09-23; D-007 approved for Batch 3 on 2026-09-24 |
+| Overall status | Batch 4 accepted by the user; Batch 5 in progress with destructive targets awaiting approval |
+| Current stage | Production uses R2; Azure CIFS definitions and the unused key were removed from deployment files; detached Azure volumes and shares remain intact |
+| Next batch | Obtain per-target approval, then remove only the approved Azure Docker volumes and file shares |
+| Blocking prerequisite | Separate user approval for each destructive Docker volume and Azure Files share; storage account and resource group are outside current cleanup scope |
+| Decision status | D-001 through D-007 resolved; D-008 records the user's Batch 4 acceptance on 2026-09-24 |
 | Last verified | 2026-09-24 |
-| Last completed batch | Batch 3 - final delta copy, production cutover, and acceptance |
+| Last completed batch | Batch 4 - manual observation accepted by the user |
 
 ## Operator Instructions for Future AI Sessions
 
@@ -143,6 +143,7 @@ However, rclone documents that a failed upload cannot be retried in this mode. E
 | D-005 | R2 post-cutover observation duration | Observe for seven days before Azure cleanup | Approved | Seven-day observation period; 2026-09-23 |
 | D-006 | Location and versioning of production deployment files | Keep production deployment files outside the public repository | Approved | Use `D:\OneDrive\Projects\Moonglade\prod-compose`; never add these files to this repository; 2026-09-23 |
 | D-007 | Resolve Batch 3 drift between the deployed VM and private Compose source | Preserve the currently deployed runtime behavior and use the deployed VM `.env` as the source | Approved | Use the VM `.env` as canonical; preserve its healthcheck and 4 GiB memory limits; 2026-09-24 |
+| D-008 | Batch 4 acceptance after manual observation | Require the planned seven-day observation unless the user accepts earlier | Approved | User reported manual observation passed and instructed continuation; 2026-09-24 |
 
 ## Batch Plan and Progress
 
@@ -367,11 +368,11 @@ Commit only this tracker's cutover evidence. The production Compose change remai
 - The initial 1x1 PNG probe failed in watermark decoding before storage. Replacing it with the valid 256x256 synthetic PNG passed the raster flow; no production configuration or application code was changed.
 - The temporary VM candidate Compose file was removed after confirming it matched the active Compose file. No Azure data, Azure volumes, R2 data, or production runtime credentials were deleted or revoked.
 
-**Acceptance result:** Accepted with one documented deviation. The production cutover, R2 data verification, authenticated raster upload, SVG sanitization, original-image isolation, and direct filesystem create/read/delete behavior passed. No application-level image-file deletion endpoint exists, so deletion was verified through the mounted storage contract. Batch 4 observation started on 2026-09-24.
+**Acceptance result:** Accepted with one documented deviation. The production cutover, R2 data verification, authenticated raster upload, SVG sanitization, original-image isolation, and direct filesystem create/read/delete behavior passed. No application-level image-file deletion endpoint exists, so deletion was verified through the mounted storage contract. Batch 4 was subsequently accepted by the user.
 
 ### Batch 4 - Observation Period
 
-**Status:** In progress; observation window started 2026-09-24 11:09 Asia/Taipei. Observation target: 2026-10-01; the user will conduct checks manually.
+**Status:** Accepted by the user on 2026-09-24 after reporting that manual observation passed.
 
 **Prerequisites**
 
@@ -396,7 +397,7 @@ Commit only this tracker's cutover evidence. The production Compose change remai
 **Commit**
 
 - Interim tracker checkpoint records the observation start and baseline.
-- Update and commit the final evidence after the observation window and user review.
+- Final evidence records the user's manual observation acceptance.
 
 **Rollback**
 
@@ -405,17 +406,17 @@ Commit only this tracker's cutover evidence. The production Compose change remai
 **Evidence**
 
 - Production baseline at approximately 2026-09-24 11:09 Asia/Taipei: `/`, `/health`, and `/health/ready` returned HTTP 200. The `moonglade-web` container was `running`/`healthy`, with zero restarts and the intended two R2 mounts at `/app/images` and `/app/images-origin`; the rclone Docker volume plugin was enabled. Public route timings were 0.593 s (home), 0.291 s (liveness), and 0.300 s (readiness).
-- A published PNG (`/image/20260825-302c8a47.png`, 45,398 bytes) returned HTTP 200 as `image/png`. Five public GET samples took 2.100114, 0.514096, 0.514910, 0.596164, and 0.573774 s. A read-only direct-volume warm-read comparison of the same file recorded Azure Files at 21, 1, 1, 1, and 1 ms and R2 at 70, 60, 63, 73, and 182 ms. This is not a historical Azure public-HTTP baseline; the user must judge whether observed latency is acceptable.
+- A published PNG (`/image/20260825-302c8a47.png`, 45,398 bytes) returned HTTP 200 as `image/png`. Five public GET samples took 2.100114, 0.514096, 0.514910, 0.596164, and 0.573774 s. A read-only direct-volume warm-read comparison of the same file recorded Azure Files at 21, 1, 1, 1, and 1 ms and R2 at 70, 60, 63, 73, and 182 ms. This is not a historical Azure public-HTTP baseline; the user accepted the observed latency after manual observation.
 - R2 inventory before and after reboot was unchanged: processed bucket 2,677 objects / 205,616,089 bytes; originals bucket 1,136 objects / 96,400,055 bytes. The Cloudflare overview showed 2.68k / 1.14k objects and 205.79 / 96.48 MB, September 14–October 14 account billing period, 3.73k Class A and 8.12k Class B operations, and $0.00 with no billable usage. Its separate “Total storage” card displayed `0 B`, inconsistent with both bucket listings and rclone totals; reloading did not resolve the discrepancy.
 - Authenticated upload/read/original-retention/delete probe: uploaded a synthetic 256×256 PNG (80,638 bytes). Processed URL `/image/20260924-f168e109.png` returned HTTP 200 as `image/png` (2,561 bytes); the 80,638-byte original existed only under `/app/images-origin` and its public route returned 404. Both exact objects were removed, their mount paths were confirmed absent, and both URLs returned 404. No article was saved or published.
 - Planned VM reboot completed at approximately 2026-09-24 11:25 Asia/Taipei. During startup, one immediate `/health` check returned HTTP 502 while the container was `running`/`starting`; about 15 seconds later `/`, `/health`, `/health/ready`, and the published image all returned HTTP 200. The container became `healthy` with restart count 0, both R2 mounts and the plugin recovered, and bucket totals matched the pre-reboot inventory.
 - Web storage-error matches after reboot were zero. Docker journal contained five error-level wrapper lines for rclone's informational Unix-socket startup messages; after excluding this known wrapper quirk, actual storage/FUSE errors were zero. The root-only plugin cache contained only `docker-plugin.state` (572 bytes), with no image data. The two detached Azure rollback volumes remain present and unchanged.
 - A local heartbeat, `Moonglade R2 Batch 4 observation`, was created for daily read-only checks and then deleted on 2026-09-24 at the user's request. The user will conduct observation manually; no scheduled checks remain. The planned checks cover public health/image latency, container/plugin/mount/log/cache state, and the existing authenticated Cloudflare usage view. No production Compose, `.env`, application code, Azure resource, or Azure data changes were made in this batch.
-- Batch 4 is not accepted yet. Acceptance remains subject to the seven-day observation completing without actionable failures and the user's judgment that latency and R2 operation volume are acceptable. Batch 5 has not started.
+- The user reported that manual observation passed and directed continuation on 2026-09-24. Batch 4 is accepted based on that explicit decision. The scheduled heartbeat was canceled at the user's request; no automated checks remain.
 
 ### Batch 5 - Retire Azure Files Configuration
 
-**Status:** Not started
+**Status:** In progress; obsolete Azure CIFS definitions and the unused key were removed from deployment files. Detached Azure Docker volumes and Azure Files shares remain pending per-target approval.
 
 **Prerequisites**
 
@@ -424,11 +425,11 @@ Commit only this tracker's cutover evidence. The production Compose change remai
 
 **Actions**
 
-1. Remove Azure Files volume definitions and secrets from the VM deployment.
-2. Remove obsolete Azure Docker volumes only after resolving their exact names and confirming the active container uses R2.
-3. Revoke migration-only credentials; retain only the required runtime R2 credential.
-4. Check whether the storage account contains anything outside the two Moonglade shares.
-5. Delete Azure shares, the storage account, or its resource group only if the user names and approves those exact targets.
+1. Remove Azure Files volume definitions and secrets from the VM deployment. **Completed:** removed the two unused CIFS volume definitions and `AZURE_STORAGE_KEY` from the private source and VM `.env`; the active service was not restarted.
+2. Remove obsolete Azure Docker volumes only after resolving their exact names, confirming the active container uses R2, and receiving separate approval for each volume.
+3. Revoke migration-only credentials; retain only the required runtime R2 credential. **Pending:** the account-level Azure key is no longer in the deployment `.env`, but its Azure-side rotation could affect the non-migration blob containers; do not rotate it without confirming other consumers.
+4. Check whether the storage account contains anything outside the two Moonglade shares. **Completed:** two populated blob containers were found; preserve them and the storage account.
+5. Delete the two Azure Files shares only after receiving separate approval for each exact share. Do not delete the storage account or its resource group in this batch.
 6. Record what was deleted and whether recovery remains possible.
 
 **Acceptance**
@@ -451,7 +452,12 @@ Commit only this tracker's cleanup evidence. Keep the production deployment conf
 
 **Evidence**
 
-- Not recorded.
+- Before editing, the private source `compose.yaml` and `.env` matched the VM files. A verified pre-cleanup checkpoint is stored outside Git at `D:\OneDrive\Projects\Moonglade\prod-compose\batch5-rollback-20260924T1606`.
+- Removed the retired Azure CIFS definitions `moonglade-images` and `moonglade-images-origin` and the `AZURE_STORAGE_KEY` entry from both private deployment files and the VM. Compose validation passes and lists only `moonglade-images-r2` and `moonglade-images-origin-r2`. The active `moonglade-web` container was not restarted and remains healthy with zero restarts on the two R2 mounts.
+- The detached Docker volumes `moonglade_moonglade-images` and `moonglade_moonglade-images-origin` remain present with the `local` driver and are not attached to any container. They still retain their Azure CIFS volume metadata until separately approved for removal.
+- Azure Files shares `ediblogstorage/moonglade-images` and `ediblogstorage/moonglade-images-origin` currently contain 2,677 files / 205,616,089 bytes and 1,136 files / 96,400,055 bytes, respectively, matching the last R2 migration baseline. Azure control-plane metadata reports last modification on 2026-08-23. No Azure share data has been deleted.
+- The storage account `ediblogstorage` also contains populated Blob containers `ediwang-images` (2,676 blobs / 205,570,691 bytes) and `ediwang-images-origin` (1,135 blobs / 96,348,081 bytes). These are outside the two migrated file shares. The storage account resource group also contains the VM, OS disk, network, and public-IP resources. Preserve the Blob containers, storage account, and resource group unless the user creates a separate scope and explicitly approves exact targets.
+- The Azure account key used by the old CIFS volume options is account-wide, so Azure-side rotation could disrupt consumers of the Blob containers. The unused key was removed from the deployment `.env`; no Azure account key was rotated. Batch 5 still requires separate user approval before removing each detached Docker volume or Azure Files share.
 
 ## Deferred Work
 
@@ -541,12 +547,12 @@ Append one entry after every completed or rolled-back batch.
 - Commit: Tracker-only acceptance checkpoint `2f3775ac4c019c9702f02146a5ee938e29187c04` (`docs: record R2 application acceptance`).
 - Rollback state: Production remains on R2. The exact pre-cutover VM Compose and `.env` remain in the private rollback checkpoint; Azure volumes and data remain intact and detached from the web container.
 
-### 2026-09-24 - Batch 4 observation started
+### 2026-09-24 - Batch 4 observation accepted
 
-- Status: In progress; seven-day observation began at approximately 11:09 Asia/Taipei and is scheduled to conclude with a final read-only check on 2026-10-01.
-- Changes: Performed baseline checks, authenticated upload/read/original-retention/delete verification, read-only R2 usage review, and one planned VM reboot. Created a local heartbeat for daily observation checks; it was later deleted at the user's request. No production Compose, `.env`, application code, Azure resource, or Azure data changes were made.
+- Status: Accepted by the user after manual observation on 2026-09-24.
+- Changes: Performed baseline checks, authenticated upload/read/original-retention/delete verification, read-only R2 usage review, and one planned VM reboot. A local heartbeat was created and later deleted at the user's request. No production Compose, `.env`, application code, Azure resource, or Azure data changes were made during Batch 4.
 - Verification: Public health and a representative image returned HTTP 200 after reboot; the R2 container mounts and plugin recovered, the container returned to healthy with zero restarts, object counts and byte totals were unchanged, no real storage/FUSE errors were found, and the plugin cache held no image bytes. The synthetic upload and exact-object cleanup passed; no post was saved or published.
-- Deviations: There is no historical Azure public-HTTP latency baseline. The direct-volume warm-read comparison and current R2 public timings are recorded in Batch 4 evidence for the user's acceptance decision. Cloudflare's overview showed nonzero bucket sizes while its separate total-storage card showed `0 B`; this UI discrepancy remains unresolved.
+- Deviations: The user accepted Batch 4 after manual observation before the initially planned 2026-10-01 target. There is no historical Azure public-HTTP latency baseline. Cloudflare's overview showed nonzero bucket sizes while its separate total-storage card showed `0 B`; this UI discrepancy remains unresolved.
 - Commit: Tracker-only observation-start checkpoint `8d1b0005873bc3a925d0997b7607e4721fbcc96b` (`docs: start R2 observation period`).
 - Rollback state: Production remains on R2; Azure rollback volumes/data remain intact and detached. No Azure cleanup or Batch 5 action was performed.
 
@@ -556,7 +562,16 @@ Append one entry after every completed or rolled-back batch.
 - Changes: Removed the scheduled automation from Codex and updated this tracker. No production deployment, R2, Azure, or application changes were made.
 - Verification: The automation tool confirmed deletion of `moonglade-r2-batch-4-observation`; no scheduled checks remain.
 - Commit: Tracker-only cancellation record.
-- Rollback state: Production remains on R2; Azure rollback volumes/data remain intact and detached. Batch 4 remains in progress; Batch 5 has not started.
+- Rollback state: Production remains on R2; Azure rollback volumes/data remain intact and detached. Batch 4 was awaiting the user's manual observation; Batch 5 had not started.
+
+### 2026-09-24 - Batch 5 started; deployment cleanup and inventory
+
+- Status: In progress; non-destructive deployment cleanup is complete, with destructive Azure Docker-volume and file-share removals awaiting per-target user approval.
+- Changes: Backed up the active private Compose and `.env` outside Git, removed the unused Azure CIFS volume definitions and `AZURE_STORAGE_KEY` from the private and VM deployment files, and inventoried Azure resources. No service restart or Azure data deletion occurred.
+- Verification: The private/VM files matched before editing; the private checkpoint was verified. The VM Compose validates and lists only the two R2 volumes. `moonglade-web` stayed healthy with zero restarts and R2 mounts. The Azure shares match the migration baseline. Two populated Blob containers outside the shares were found, so the account and resource group remain in place.
+- Deviations: Azure-side account-key rotation is deferred because the storage account key is account-wide and the account contains other Blob data whose consumers are unknown. The retired Docker volume metadata still contains CIFS options until those exact volumes are approved for removal.
+- Commit: Tracker-only Batch 5 in-progress checkpoint; commit hash to be recorded in a follow-up checkpoint.
+- Rollback state: Restore the verified pre-cleanup files from `D:\OneDrive\Projects\Moonglade\prod-compose\batch5-rollback-20260924T1606`; no data was deleted.
 
 ## Primary References
 
