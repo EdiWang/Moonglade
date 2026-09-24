@@ -371,7 +371,7 @@ Commit only this tracker's cutover evidence. The production Compose change remai
 
 ### Batch 4 - Observation Period
 
-**Status:** In progress; observation window started 2026-09-24 11:09 Asia/Taipei. Final scheduled read-only check: 2026-10-01.
+**Status:** In progress; observation window started 2026-09-24 11:09 Asia/Taipei. Observation target: 2026-10-01; the user will conduct checks manually.
 
 **Prerequisites**
 
@@ -410,7 +410,7 @@ Commit only this tracker's cutover evidence. The production Compose change remai
 - Authenticated upload/read/original-retention/delete probe: uploaded a synthetic 256×256 PNG (80,638 bytes). Processed URL `/image/20260924-f168e109.png` returned HTTP 200 as `image/png` (2,561 bytes); the 80,638-byte original existed only under `/app/images-origin` and its public route returned 404. Both exact objects were removed, their mount paths were confirmed absent, and both URLs returned 404. No article was saved or published.
 - Planned VM reboot completed at approximately 2026-09-24 11:25 Asia/Taipei. During startup, one immediate `/health` check returned HTTP 502 while the container was `running`/`starting`; about 15 seconds later `/`, `/health`, `/health/ready`, and the published image all returned HTTP 200. The container became `healthy` with restart count 0, both R2 mounts and the plugin recovered, and bucket totals matched the pre-reboot inventory.
 - Web storage-error matches after reboot were zero. Docker journal contained five error-level wrapper lines for rclone's informational Unix-socket startup messages; after excluding this known wrapper quirk, actual storage/FUSE errors were zero. The root-only plugin cache contained only `docker-plugin.state` (572 bytes), with no image data. The two detached Azure rollback volumes remain present and unchanged.
-- An active local heartbeat, `Moonglade R2 Batch 4 observation`, is scheduled for daily read-only checks through 2026-10-01. Its checks cover public health/image latency, container/plugin/mount/log/cache state, and the existing authenticated Cloudflare usage view; it does not perform uploads, deletes, reboots, remediation, deployment changes, or Azure cleanup. Keep this computer and Codex desktop app running for scheduled local checks. No production Compose, `.env`, application code, Azure resource, or Azure data changes were made in this batch.
+- A local heartbeat, `Moonglade R2 Batch 4 observation`, was created for daily read-only checks and then deleted on 2026-09-24 at the user's request. The user will conduct observation manually; no scheduled checks remain. The planned checks cover public health/image latency, container/plugin/mount/log/cache state, and the existing authenticated Cloudflare usage view. No production Compose, `.env`, application code, Azure resource, or Azure data changes were made in this batch.
 - Batch 4 is not accepted yet. Acceptance remains subject to the seven-day observation completing without actionable failures and the user's judgment that latency and R2 operation volume are acceptable. Batch 5 has not started.
 
 ### Batch 5 - Retire Azure Files Configuration
@@ -544,11 +544,19 @@ Append one entry after every completed or rolled-back batch.
 ### 2026-09-24 - Batch 4 observation started
 
 - Status: In progress; seven-day observation began at approximately 11:09 Asia/Taipei and is scheduled to conclude with a final read-only check on 2026-10-01.
-- Changes: Performed baseline checks, authenticated upload/read/original-retention/delete verification, read-only R2 usage review, and one planned VM reboot. Created the active local heartbeat for daily observation checks. No production Compose, `.env`, application code, Azure resource, or Azure data changes were made.
+- Changes: Performed baseline checks, authenticated upload/read/original-retention/delete verification, read-only R2 usage review, and one planned VM reboot. Created a local heartbeat for daily observation checks; it was later deleted at the user's request. No production Compose, `.env`, application code, Azure resource, or Azure data changes were made.
 - Verification: Public health and a representative image returned HTTP 200 after reboot; the R2 container mounts and plugin recovered, the container returned to healthy with zero restarts, object counts and byte totals were unchanged, no real storage/FUSE errors were found, and the plugin cache held no image bytes. The synthetic upload and exact-object cleanup passed; no post was saved or published.
 - Deviations: There is no historical Azure public-HTTP latency baseline. The direct-volume warm-read comparison and current R2 public timings are recorded in Batch 4 evidence for the user's acceptance decision. Cloudflare's overview showed nonzero bucket sizes while its separate total-storage card showed `0 B`; this UI discrepancy remains unresolved.
 - Commit: Tracker-only observation-start checkpoint `8d1b0005873bc3a925d0997b7607e4721fbcc96b` (`docs: start R2 observation period`).
 - Rollback state: Production remains on R2; Azure rollback volumes/data remain intact and detached. No Azure cleanup or Batch 5 action was performed.
+
+### 2026-09-24 - Automated observation canceled
+
+- Status: The Batch 4 local heartbeat was deleted at the user's request; the user will conduct observation manually.
+- Changes: Removed the scheduled automation from Codex and updated this tracker. No production deployment, R2, Azure, or application changes were made.
+- Verification: The automation tool confirmed deletion of `moonglade-r2-batch-4-observation`; no scheduled checks remain.
+- Commit: Tracker-only cancellation record.
+- Rollback state: Production remains on R2; Azure rollback volumes/data remain intact and detached. Batch 4 remains in progress; Batch 5 has not started.
 
 ## Primary References
 
