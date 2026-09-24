@@ -10,13 +10,13 @@ Update this file after every completed batch. Do not mark a batch complete witho
 
 | Field | Value |
 | --- | --- |
-| Overall status | Batch 4 accepted by the user; Batch 5 in progress with destructive targets awaiting approval |
-| Current stage | Production uses R2; Azure CIFS definitions and the unused key were removed from deployment files; detached Azure volumes and shares remain intact |
-| Next batch | Obtain per-target approval, then remove only the approved Azure Docker volumes and file shares |
-| Blocking prerequisite | Separate user approval for each destructive Docker volume and Azure Files share; storage account and resource group are outside current cleanup scope |
-| Decision status | D-001 through D-007 resolved; D-008 records the user's Batch 4 acceptance on 2026-09-24 |
+| Overall status | Batch 5 VM cleanup complete; Azure shares and storage account remain intact per the user's scope |
+| Current stage | Production uses R2; VM deployment and Docker runtime no longer contain Azure Files mount configuration or credentials |
+| Next batch | None for this VM-only migration scope; Azure-side cleanup requires a separate request |
+| Blocking prerequisite | None; Azure resources are intentionally preserved |
+| Decision status | D-001 through D-008 resolved; D-009 records the user's VM-only cleanup scope on 2026-09-24 |
 | Last verified | 2026-09-24 |
-| Last completed batch | Batch 4 - manual observation accepted by the user |
+| Last completed batch | Batch 5 - VM Azure Files configuration retirement |
 
 ## Operator Instructions for Future AI Sessions
 
@@ -144,6 +144,7 @@ However, rclone documents that a failed upload cannot be retried in this mode. E
 | D-006 | Location and versioning of production deployment files | Keep production deployment files outside the public repository | Approved | Use `D:\OneDrive\Projects\Moonglade\prod-compose`; never add these files to this repository; 2026-09-23 |
 | D-007 | Resolve Batch 3 drift between the deployed VM and private Compose source | Preserve the currently deployed runtime behavior and use the deployed VM `.env` as the source | Approved | Use the VM `.env` as canonical; preserve its healthcheck and 4 GiB memory limits; 2026-09-24 |
 | D-008 | Batch 4 acceptance after manual observation | Require the planned seven-day observation unless the user accepts earlier | Approved | User reported manual observation passed and instructed continuation; 2026-09-24 |
+| D-009 | Batch 5 Azure cleanup scope | Remove Azure Files information from the VM while preserving Azure-side data and resources | Approved | User directed VM-only cleanup and said Azure-side cleanup is out of scope; 2026-09-24 |
 
 ## Batch Plan and Progress
 
@@ -416,7 +417,7 @@ Commit only this tracker's cutover evidence. The production Compose change remai
 
 ### Batch 5 - Retire Azure Files Configuration
 
-**Status:** In progress; obsolete Azure CIFS definitions and the unused key were removed from deployment files. Detached Azure Docker volumes and Azure Files shares remain pending per-target approval.
+**Status:** Completed for VM cleanup on 2026-09-24; Azure shares and the storage account remain intact at the user's direction.
 
 **Prerequisites**
 
@@ -426,10 +427,10 @@ Commit only this tracker's cutover evidence. The production Compose change remai
 **Actions**
 
 1. Remove Azure Files volume definitions and secrets from the VM deployment. **Completed:** removed the two unused CIFS volume definitions and `AZURE_STORAGE_KEY` from the private source and VM `.env`; the active service was not restarted.
-2. Remove obsolete Azure Docker volumes only after resolving their exact names, confirming the active container uses R2, and receiving separate approval for each volume.
-3. Revoke migration-only credentials; retain only the required runtime R2 credential. **Pending:** the account-level Azure key is no longer in the deployment `.env`, but its Azure-side rotation could affect the non-migration blob containers; do not rotate it without confirming other consumers.
+2. Remove obsolete Azure Docker volumes only after resolving their exact names and confirming the active container uses R2. **Completed:** removed `moonglade_moonglade-images` and `moonglade_moonglade-images-origin`; no container used either volume.
+3. Remove Azure storage credentials from the VM and retain only the required runtime R2 credential. **Completed on the VM:** removed `AZURE_STORAGE_KEY` from `.env` and deleted the Docker volume metadata that held the CIFS options. The Azure-side account key was not rotated, per the user's instruction to leave Azure cleanup alone.
 4. Check whether the storage account contains anything outside the two Moonglade shares. **Completed:** two populated blob containers were found; preserve them and the storage account.
-5. Delete the two Azure Files shares only after receiving separate approval for each exact share. Do not delete the storage account or its resource group in this batch.
+5. Azure-side cleanup is outside this batch per the user's direction. The two Azure Files shares, Blob containers, storage account, and resource group remain intact.
 6. Record what was deleted and whether recovery remains possible.
 
 **Acceptance**
@@ -437,7 +438,7 @@ Commit only this tracker's cutover evidence. The production Compose change remai
 - Moonglade still passes the Batch 3 application tests.
 - No Azure Files credential or mount remains on the VM.
 - The retained R2 credential is scoped only to the required buckets.
-- Every destructive cleanup action has explicit user approval and recorded evidence.
+- VM-side cleanup has explicit user authorization and recorded evidence. Azure-side cleanup remains out of scope.
 
 **Repository checkpoint 3**
 
@@ -454,10 +455,10 @@ Commit only this tracker's cleanup evidence. Keep the production deployment conf
 
 - Before editing, the private source `compose.yaml` and `.env` matched the VM files. A verified pre-cleanup checkpoint is stored outside Git at `D:\OneDrive\Projects\Moonglade\prod-compose\batch5-rollback-20260924T1606`.
 - Removed the retired Azure CIFS definitions `moonglade-images` and `moonglade-images-origin` and the `AZURE_STORAGE_KEY` entry from both private deployment files and the VM. Compose validation passes and lists only `moonglade-images-r2` and `moonglade-images-origin-r2`. The active `moonglade-web` container was not restarted and remains healthy with zero restarts on the two R2 mounts.
-- The detached Docker volumes `moonglade_moonglade-images` and `moonglade_moonglade-images-origin` remain present with the `local` driver and are not attached to any container. They still retain their Azure CIFS volume metadata until separately approved for removal.
+- Removed the detached Docker volumes `moonglade_moonglade-images` and `moonglade_moonglade-images-origin` after confirming they were not attached to any container. Their Azure CIFS mount metadata is no longer stored in Docker.
 - Azure Files shares `ediblogstorage/moonglade-images` and `ediblogstorage/moonglade-images-origin` currently contain 2,677 files / 205,616,089 bytes and 1,136 files / 96,400,055 bytes, respectively, matching the last R2 migration baseline. Azure control-plane metadata reports last modification on 2026-08-23. No Azure share data has been deleted.
 - The storage account `ediblogstorage` also contains populated Blob containers `ediwang-images` (2,676 blobs / 205,570,691 bytes) and `ediwang-images-origin` (1,135 blobs / 96,348,081 bytes). These are outside the two migrated file shares. The storage account resource group also contains the VM, OS disk, network, and public-IP resources. Preserve the Blob containers, storage account, and resource group unless the user creates a separate scope and explicitly approves exact targets.
-- The Azure account key used by the old CIFS volume options is account-wide, so Azure-side rotation could disrupt consumers of the Blob containers. The unused key was removed from the deployment `.env`; no Azure account key was rotated. Batch 5 still requires separate user approval before removing each detached Docker volume or Azure Files share.
+- The old CIFS account key and endpoint are absent from the VM deployment, Docker volume metadata, and rclone configuration; the rclone config has only the `[r2]` profile. No Azure CIFS mount or `/etc/fstab` entry remains. The active container is healthy with zero restarts and only the two R2 mounts. The Azure-side account key and all Azure resources were left unchanged per the user's scope; the pre-cleanup rollback checkpoint containing the former `.env` remains on the workstation outside the VM.
 
 ## Deferred Work
 
@@ -564,14 +565,14 @@ Append one entry after every completed or rolled-back batch.
 - Commit: Tracker-only cancellation record.
 - Rollback state: Production remains on R2; Azure rollback volumes/data remain intact and detached. Batch 4 was awaiting the user's manual observation; Batch 5 had not started.
 
-### 2026-09-24 - Batch 5 started; deployment cleanup and inventory
+### 2026-09-24 - Batch 5 VM cleanup completed
 
-- Status: In progress; non-destructive deployment cleanup is complete, with destructive Azure Docker-volume and file-share removals awaiting per-target user approval.
-- Changes: Backed up the active private Compose and `.env` outside Git, removed the unused Azure CIFS volume definitions and `AZURE_STORAGE_KEY` from the private and VM deployment files, and inventoried Azure resources. No service restart or Azure data deletion occurred.
-- Verification: The private/VM files matched before editing; the private checkpoint was verified. The VM Compose validates and lists only the two R2 volumes. `moonglade-web` stayed healthy with zero restarts and R2 mounts. The Azure shares match the migration baseline. Two populated Blob containers outside the shares were found, so the account and resource group remain in place.
-- Deviations: Azure-side account-key rotation is deferred because the storage account key is account-wide and the account contains other Blob data whose consumers are unknown. The retired Docker volume metadata still contains CIFS options until those exact volumes are approved for removal.
-- Commit: Tracker-only Batch 5 in-progress checkpoint `c1abe6f4b0b37a50c8bfe8219f7815cb3b8147d9` (`docs: start Azure Files retirement`).
-- Rollback state: Restore the verified pre-cleanup files from `D:\OneDrive\Projects\Moonglade\prod-compose\batch5-rollback-20260924T1606`; no data was deleted.
+- Status: Completed for the user's VM-only scope; no Azure-side resources or data were changed.
+- Changes: Backed up the active private Compose and `.env` outside Git, removed the unused Azure CIFS volume definitions and `AZURE_STORAGE_KEY` from the private and VM deployment files, and removed both detached Azure Docker volumes. No service restart or Azure data deletion occurred.
+- Verification: The private/VM files matched before editing; the private checkpoint was verified. Compose validates and lists only the two R2 volumes. Both retired Docker volume names are absent; no Azure storage account endpoint or key variable remains in deployment/runtime configuration, no CIFS mount or fstab entry remains, and the R2 plugin config contains only `[r2]`. `moonglade-web` remains healthy with zero restarts and the two R2 mounts.
+- Scope: The user directed that Azure-side cleanup be left alone. The Azure Files shares and the storage account's two populated Blob containers remain intact; the storage account key was not rotated.
+- Commit: Tracker-only Batch 5 VM-cleanup checkpoint; commit hash to be recorded in a follow-up checkpoint.
+- Rollback state: The verified pre-cleanup files remain in `D:\OneDrive\Projects\Moonglade\prod-compose\batch5-rollback-20260924T1606` on the workstation, outside Git and the VM. Azure-side data is unchanged.
 
 ## Primary References
 
