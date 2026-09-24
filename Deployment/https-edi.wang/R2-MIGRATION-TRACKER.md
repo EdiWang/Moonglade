@@ -10,13 +10,13 @@ Update this file after every completed batch. Do not mark a batch complete witho
 
 | Field | Value |
 | --- | --- |
-| Overall status | Batch 2 complete; initial image dataset copied and verified in R2; Azure Files remains the production writer |
-| Current stage | Batch 2 complete; awaiting Batch 3 maintenance window and cutover authorization |
-| Next batch | Batch 3 - final delta copy and production cutover |
-| Blocking prerequisite | Batch 3 requires an approved maintenance window, reviewed private Compose change, and explicit instruction to start |
-| Decision status | D-001 through D-006 resolved by the user on 2026-09-23 |
+| Overall status | Batch 3 production cutover complete; authenticated application acceptance checks remain pending |
+| Current stage | Production uses R2; Batch 3 acceptance closeout is pending authenticated upload, SVG sanitization, and application deletion checks |
+| Next batch | Complete Batch 3 authenticated acceptance; then Batch 4 - seven-day observation period |
+| Blocking prerequisite | An authenticated administrator session is needed to exercise upload, SVG sanitization, and application deletion; no Moonglade session was available in the browser |
+| Decision status | D-001 through D-006 resolved on 2026-09-23; D-007 approved for Batch 3 on 2026-09-24 |
 | Last verified | 2026-09-24 |
-| Last completed batch | Batch 2 |
+| Last completed batch | Batch 2; Batch 3 cutover is active and its authenticated acceptance checks remain open |
 
 ## Operator Instructions for Future AI Sessions
 
@@ -55,15 +55,15 @@ Update this file after every completed batch. Do not mark a batch complete witho
 
 - Moonglade version observed on 2026-09-23: `16.7.0-preview.1` on .NET `10.0.12`.
 - Temporary VM validation URL: `https://preview.edi.wang/`.
-- Primary URL: `https://edi.wang/`; it is to be moved to the VM before this R2 plan starts.
+- Primary URL: `https://edi.wang/`; the user confirmed the App Service was deleted after migration to the VM, and Batch 0 confirmed the domain resolves to the VM.
 - VM deployment file: `/opt/docker/moonglade/compose.yaml`.
 - The private local source of truth for production deployment files is `D:\OneDrive\Projects\Moonglade\prod-compose`.
 - Production deployment files are intentionally excluded from this GitHub repository to prevent accidental open-source disclosure.
 - SSH connection coordinates and authentication are user-provided out of band and must not be stored in this repository.
-- Current VM Docker volumes:
-  - `moonglade_moonglade-images` -> `/app/images`
-  - `moonglade_moonglade-images-origin` -> `/app/images-origin`
-- Both current Docker volumes use the Docker `local` driver with CIFS-backed Azure Files mounts.
+- Active VM Docker volumes after the Batch 3 cutover:
+  - `moonglade-r2-images` -> `/app/images` -> private R2 bucket `moonglade-images`
+  - `moonglade-r2-images-origin` -> `/app/images-origin` -> private R2 bucket `moonglade-images-origin`
+- The two Azure volumes remain intact and detached from the web container for rollback: `moonglade_moonglade-images` and `moonglade_moonglade-images-origin`. They use the Docker `local` driver with CIFS-backed Azure Files mounts.
 
 ### Azure Resources
 
@@ -142,6 +142,7 @@ However, rclone documents that a failed upload cannot be retried in this mode. E
 | D-004 | Keep CDN redirect disabled during migration | Keep it disabled; evaluate `img.edi.wang` as a separate later project | Approved | Keep CDN redirect disabled; 2026-09-23 |
 | D-005 | R2 post-cutover observation duration | Observe for seven days before Azure cleanup | Approved | Seven-day observation period; 2026-09-23 |
 | D-006 | Location and versioning of production deployment files | Keep production deployment files outside the public repository | Approved | Use `D:\OneDrive\Projects\Moonglade\prod-compose`; never add these files to this repository; 2026-09-23 |
+| D-007 | Resolve Batch 3 drift between the deployed VM and private Compose source | Preserve the currently deployed runtime behavior and use the deployed VM `.env` as the source | Approved | Use the VM `.env` as canonical; preserve its healthcheck and 4 GiB memory limits; 2026-09-24 |
 
 ## Batch Plan and Progress
 
@@ -300,7 +301,7 @@ Commit only this tracker's progress update. Keep Compose, plugin configuration, 
 
 ### Batch 3 - Final Delta Copy and Production Cutover
 
-**Status:** Not started
+**Status:** Production cutover complete; acceptance partially verified. Do not start Batch 4 until the authenticated upload, SVG sanitization, and application deletion checks are completed.
 
 **Prerequisites**
 
@@ -321,20 +322,19 @@ Commit only this tracker's progress update. Keep Compose, plugin configuration, 
 
 **Application Acceptance Tests**
 
-- Upload and retrieve a raster image.
-- Upload SVG and confirm existing validation/sanitization still applies.
-- Confirm processed and original objects appear only in their intended buckets.
-- Confirm an original filename is unavailable through `/image/{filename}`.
-- Confirm content length, media type, ETag behavior, and an HTTP byte-range request.
-- Delete a test image and confirm the corresponding R2 objects are deleted as expected.
-- Restart the web container and confirm persistence.
-- Restart the rclone plugin, recreate the web container, and confirm remounting.
+- A direct UID `1654` write through the processed R2 mount was retrieved by the public image route; the authenticated application raster-upload flow remains untested.
+- SVG upload validation and sanitization remain untested.
+- Processed and original test objects were written through their separate R2 mounts; each mount uses its intended bucket.
+- An original-only filename returned HTTP 404 from `/image/{filename}`.
+- Public image responses included content length, `image/png`, and ETag; a byte-range request returned HTTP 206 with the expected range.
+- Direct deletion through both R2 mounts succeeded and absence was confirmed; the authenticated application deletion flow remains untested.
+- Recreated the web container, restarted the rclone plugin, recreated the web container again, and confirmed persistence and remounting.
 
 **Acceptance**
 
-- All application tests pass.
-- No fallback path under the container user's home is used.
-- No storage or FUSE errors appear in application, Docker, or plugin logs.
+- Infrastructure and public-read acceptance passed; full application acceptance is pending the authenticated flows listed above.
+- The effective image paths remain `/app/images` and `/app/images-origin`, each backed by its intended R2 named volume; no home-directory image path is configured.
+- No storage or FUSE failure was found in the web or Docker/plugin logs during the cutover and plugin restart. Docker logged the plugin's informational unmount/socket messages at an outer `level=error`; the embedded rclone messages were `INFO`, and remounting succeeded.
 
 **Repository checkpoint 2**
 
@@ -353,7 +353,18 @@ Commit only this tracker's cutover evidence. The production Compose change remai
 
 **Evidence**
 
-- Not recorded.
+- Before cutover, the VM `.env` and the local private `.env` had the same variable names but different values. The user approved the VM `.env` as canonical and asked to retain the deployed healthcheck and 4 GiB memory and swap limits. No values were read into the tracker. The private rollback checkpoint `D:\OneDrive\Projects\Moonglade\prod-compose\batch3-rollback-20260924T100219` contains the exact VM `compose.yaml` and `.env`; the previous private copies were also preserved there. The checkpoint and deployment files remain outside Git.
+- After stopping only the web service, ran the final one-time `rclone copy` for both Azure volumes and repeated `rclone check --download`. Processed images: `2,677` files / `205,616,089` bytes, `0 differences found`. Originals: `1,136` files / `96,400,055` bytes, `0 differences found`.
+- Validated the R2 Compose configuration locally and on the VM without printing resolved secrets. The web service now mounts `moonglade-r2-images` (`r2:moonglade-images`) at `/app/images` and `moonglade-r2-images-origin` (`r2:moonglade-images-origin`) at `/app/images-origin`, both with `vfs-cache-mode=off` and `allow-other=true`. The healthcheck and both 4 GiB limits were retained. Existing Azure volume definitions and data remain available for rollback. Compose warned that the pre-created R2 volumes were not created by Compose; it continued and started the service successfully.
+- Recreated only `moonglade-web`; it reached `healthy`. Public checks returned `/` and `/health` HTTP 200, an existing PNG HTTP 200 with 83,441 bytes, `image/png`, and ETag, a range response HTTP 206 for bytes `0-15/83441`, and HTTP 404 for a known original-image filename.
+- As UID/GID `1654:1654`, wrote a temporary 69-byte PNG through `/app/images` and a separate original-only probe through `/app/images-origin`. The processed probe returned HTTP 200 with `Content-Length: 69`, `Content-Type: image/png`, and ETag; its range request returned HTTP 206 for bytes `0-15/69`. The original-only route returned HTTP 404. Both probe objects were removed through their mounts, and absence was verified.
+- Stopped and removed the web container, disabled and re-enabled the rclone plugin, then recreated the web service. The container returned to `healthy` with the same two R2 mounts and exact bucket options; the public health/image/range/original-isolation checks passed again. Storage-specific web-log matches were zero. The Docker journal entries during plugin restart were informational rclone unmount/socket messages despite Docker's outer error-level wrapper; no FUSE or mount failure was found.
+- The effective `ImageStorage` environment paths still point to `/app/images` and `/app/images-origin`; the only container mounts for image storage are the intended R2 volumes. No user-home fallback path is configured.
+- A full recursive metadata scan through the FUSE mounts stalled, so it was stopped. No writes resulted; representative single-file mount probes and the full `rclone check --download` completed successfully.
+- No logged-in Moonglade admin session was available in Edge. No credentials were entered and no login flow was attempted. The temporary mounted-volume probes verify filesystem read/write/delete, public routing, and isolation, but do not replace the authenticated raster-upload, SVG sanitizer, or application-delete tests.
+- The temporary VM candidate Compose file was removed after confirming it matched the active Compose file. No Azure data, Azure volumes, R2 data, or production runtime credentials were deleted or revoked.
+
+**Acceptance result:** Partial. The production cutover, R2 data verification, public image behavior, mount persistence, plugin restart, health checks, and direct filesystem operations passed. Complete the authenticated raster upload, SVG sanitization, and application deletion checks before marking Batch 3 accepted or starting Batch 4.
 
 ### Batch 4 - Observation Period
 
@@ -500,6 +511,15 @@ Append one entry after every completed or rolled-back batch.
 - Deviation: The VM did not have a standalone rclone CLI, so the pinned official rclone 1.75.1 container image was used for copy and check. This did not change Compose or production mounts.
 - Commit: Tracker-only Batch 2 checkpoint `4ab2e6f4485ce75ff4726472aae1a77cf64c1091` (`docs: record initial R2 image copy`).
 - Rollback state: No production rollback is needed; Azure remains the writer. The initial R2 copy is retained as the destination baseline for Batch 3.
+
+### 2026-09-24 - Batch 3 production cutover; acceptance closeout pending
+
+- Status: The production web container now uses the two R2 volumes. Infrastructure and public-read checks passed; authenticated upload, SVG sanitization, and application-level deletion remain unverified, so Batch 3 is not marked fully accepted.
+- Changes: After the final copy and downloaded checks, switched the VM Compose to the two new R2 named volumes. Preserved the VM `.env`, healthcheck, 4 GiB memory/swap limits, and application image paths. Restarted the rclone plugin and recreated the web container. No Azure resources or data were removed.
+- Verification: Final `rclone check --download` reported zero differences for `2,677` processed files / `205,616,089` bytes and `1,136` originals / `96,400,055` bytes. The app remained healthy; public image GET, ETag/content length/media type, range, original-image 404, direct mounted write/delete, web recreation, plugin restart, and remount checks passed. No storage/FUSE failure was found.
+- Deviations: A full recursive FUSE metadata scan stalled and was stopped; single-file probes and downloaded R2 checks passed. No authenticated Edge session was available, so no credentials were entered and application upload/SVG/delete flows were not attempted.
+- Commit: Pending tracker-only cutover checkpoint.
+- Rollback state: The exact pre-cutover VM Compose and `.env` are preserved in `D:\OneDrive\Projects\Moonglade\prod-compose\batch3-rollback-20260924T100219`; the previous private copies are also preserved. Azure volumes and data remain intact and detached from the web container. Production currently uses R2.
 
 ## Primary References
 
