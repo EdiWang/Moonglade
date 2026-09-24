@@ -481,7 +481,7 @@ Append one entry after every completed or rolled-back batch.
 - Security incident: The first token's one-time values were mistakenly pasted into the local PowerShell terminal and echoed as failed commands. It was deleted and not used. The replacement was entered through an SSH prompt with terminal echo disabled. No token values are recorded in this tracker or repository.
 - Verification: Filesystem operations and representative image formats passed; container, plugin, and Docker daemon remount checks passed; invalid credentials failed closed before container start; the plugin cache held no image bytes. A SIGKILL test left a 48,234,496-byte partial object, which was removed. The two buckets are empty after cleanup. The VM config is `root:root`/`0600`, contains only the `[r2]` profile, and the config directory contains no temporary files. The plugin is enabled, no Batch 1 test volumes remain, `moonglade-web` is healthy, and both production image mounts remain on Azure CIFS.
 - Deviation: Plugin disable required `--force` while named test volumes existed, despite no running container using them. Interrupted writes may leave partial remote objects and are not retried with the approved cache mode.
-- Commit: Batch 1 repository checkpoint to be recorded after commit.
+- Commit: Tracker-only Batch 1 checkpoint `ae831379fb31a361cc74b55c883537f6fd4468a5` (`docs: record validated R2 volume configuration`).
 - Rollback state: Production remains on Azure Files; temporary volumes and test objects were removed; both R2 buckets are empty.
 
 ## Primary References
