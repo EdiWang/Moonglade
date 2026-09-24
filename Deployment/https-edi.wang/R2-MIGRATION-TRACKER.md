@@ -571,7 +571,7 @@ Append one entry after every completed or rolled-back batch.
 - Changes: Backed up the active private Compose and `.env` outside Git, removed the unused Azure CIFS volume definitions and `AZURE_STORAGE_KEY` from the private and VM deployment files, and removed both detached Azure Docker volumes. No service restart or Azure data deletion occurred.
 - Verification: The private/VM files matched before editing; the private checkpoint was verified. Compose validates and lists only the two R2 volumes. Both retired Docker volume names are absent; no Azure storage account endpoint or key variable remains in deployment/runtime configuration, no CIFS mount or fstab entry remains, and the R2 plugin config contains only `[r2]`. `moonglade-web` remains healthy with zero restarts and the two R2 mounts.
 - Scope: The user directed that Azure-side cleanup be left alone. The Azure Files shares and the storage account's two populated Blob containers remain intact; the storage account key was not rotated.
-- Commit: Tracker-only Batch 5 VM-cleanup checkpoint; commit hash to be recorded in a follow-up checkpoint.
+- Commit: Tracker-only Batch 5 VM-cleanup checkpoint `8b5fb026607fbd5e44a0bbc6160db50eaa5a5749` (`docs: complete VM-only Azure cleanup`).
 - Rollback state: The verified pre-cleanup files remain in `D:\OneDrive\Projects\Moonglade\prod-compose\batch5-rollback-20260924T1606` on the workstation, outside Git and the VM. Azure-side data is unchanged.
 
 ## Primary References
