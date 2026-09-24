@@ -547,7 +547,7 @@ Append one entry after every completed or rolled-back batch.
 - Changes: Performed baseline checks, authenticated upload/read/original-retention/delete verification, read-only R2 usage review, and one planned VM reboot. Created the active local heartbeat for daily observation checks. No production Compose, `.env`, application code, Azure resource, or Azure data changes were made.
 - Verification: Public health and a representative image returned HTTP 200 after reboot; the R2 container mounts and plugin recovered, the container returned to healthy with zero restarts, object counts and byte totals were unchanged, no real storage/FUSE errors were found, and the plugin cache held no image bytes. The synthetic upload and exact-object cleanup passed; no post was saved or published.
 - Deviations: There is no historical Azure public-HTTP latency baseline. The direct-volume warm-read comparison and current R2 public timings are recorded in Batch 4 evidence for the user's acceptance decision. Cloudflare's overview showed nonzero bucket sizes while its separate total-storage card showed `0 B`; this UI discrepancy remains unresolved.
-- Commit: Interim tracker-only observation-start checkpoint; commit hash to be recorded in the follow-up checkpoint.
+- Commit: Tracker-only observation-start checkpoint `8d1b0005873bc3a925d0997b7607e4721fbcc96b` (`docs: start R2 observation period`).
 - Rollback state: Production remains on R2; Azure rollback volumes/data remain intact and detached. No Azure cleanup or Batch 5 action was performed.
 
 ## Primary References
