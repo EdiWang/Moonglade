@@ -6,7 +6,7 @@ import { showConfirmModal, hideConfirmModal, escapeHtml } from './adminModal.mjs
 import { getLocalizedString, parseUtcDate } from './utils.module.mjs';
 import { createSlugMixin } from './admin.editpost.slug.mjs';
 import { createEditorMixin } from './admin.editpost.editor.mjs';
-import { createTagifyMixin } from './admin.editpost.tagify.mjs';
+import { createTagifyMixin } from './admin.editpost.tagify.mjs?v=1670';
 import { createScheduleMixin } from './admin.editpost.schedule.mjs';
 import { createFormMixin } from './admin.editpost.form.mjs';
 
@@ -149,16 +149,6 @@ Alpine.data('postEditor', () => ({
             }
         } catch (err) {
             error(err);
-        }
-    },
-
-    toggleCategory(catId, checked) {
-        if (checked) {
-            if (!this.formData.selectedCatIds.includes(catId)) {
-                this.formData.selectedCatIds.push(catId);
-            }
-        } else {
-            this.formData.selectedCatIds = this.formData.selectedCatIds.filter(id => id !== catId);
         }
     },
 

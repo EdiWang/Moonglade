@@ -266,24 +266,6 @@
         background-color: var(--transparent-dark-2);
     }
 
-.post-editor-catlist ul {
-    list-style-type: none;
-    margin: 0;
-    padding: 0;
-}
-
-    .post-editor-catlist ul li {
-        display: inline-block;
-        width: 100%;
-    }
-
-        .post-editor-catlist ul li label {
-            display: inline-block;
-            font-weight: normal;
-            padding-left: 6px;
-            vertical-align: middle;
-        }
-
 .tagify {
     width: 100% !important;
 }
