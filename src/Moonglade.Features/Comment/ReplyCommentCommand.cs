@@ -1,4 +1,5 @@
 using LiteBus.Commands.Abstractions;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
 using Moonglade.Data.DTO;
 using Moonglade.Utils;
@@ -9,7 +10,8 @@ public record ReplyCommentCommand(Guid CommentId, string ReplyContent) : IComman
 
 public class ReplyCommentCommandHandler(
     ILogger<ReplyCommentCommandHandler> logger,
-    BlogDbContext db) : ICommandHandler<ReplyCommentCommand, CommentReply>
+    BlogDbContext db,
+    IConfiguration configuration) : ICommandHandler<ReplyCommentCommand, CommentReply>
 {
     public async Task<CommentReply> HandleAsync(ReplyCommentCommand request, CancellationToken ct)
     {
@@ -38,7 +40,8 @@ public class ReplyCommentCommandHandler(
             Id = model.Id,
             PostId = cmt.PostId,
             ReplyContent = model.ReplyContent,
-            ReplyContentHtml = ContentProcessor.MarkdownToCommentHtml(model.ReplyContent),
+            ReplyContentHtml = ContentProcessor.MarkdownToCommentHtml(model.ReplyContent,
+                configuration.GetValue<bool>("CommentMarkdown:EnableLinks")),
             ReplyTimeUtc = model.CreateTimeUtc,
             RouteLink = cmt.Post.RouteLink,
             Title = cmt.Post.Title

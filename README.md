@@ -143,6 +143,10 @@ Supply `Authentication:OpenIdConnect:ClientSecret` from a secure external config
 
 For Microsoft Entra ID, use the tenant-specific authority `https://login.microsoftonline.com/{tenant-id}/v2.0`. Register both callback URLs shown above in the provider. Existing Entra-specific deployments must follow [the generic OIDC migration guide](docs/upgrade-generic-oidc-authentication.md).
 
+### Comment Markdown Links
+
+Comment Markdown links are disabled by default. Set `CommentMarkdown:EnableLinks` to `true` in `appsettings.json` (or `CommentMarkdown__EnableLinks=true` through an environment variable) to enable hyperlinks. When disabled, links retain their original Markdown syntax and URL as plain text; other Markdown formatting still renders. This setting applies to comments and replies in public pages, the admin portal, and generated email notifications. Stored content and post Markdown are unchanged. Enabled links retain protocol validation and `rel="nofollow ugc noopener noreferrer"`.
+
 ### Comment Rate Limiting
 
 Built-in comment submissions are rate limited by the combination of client IP address and post ID. Configure the `CommentRateLimit` section in `appsettings.json`:

@@ -1,4 +1,6 @@
 ﻿using Markdig;
+using Markdig.Syntax;
+using Markdig.Syntax.Inlines;
 using System.Text;
 using System.Text.RegularExpressions;
 using System.Web;
@@ -122,10 +124,39 @@ public static class ContentProcessor
         return result;
     }
 
-    public static string MarkdownToCommentHtml(string markdown)
+    public static string MarkdownToCommentHtml(string markdown, bool enableLinks = false)
     {
-        var html = MarkdownToContent(markdown, MarkdownConvertType.Html);
-        return SecureCommentLinks(html);
+        if (enableLinks)
+        {
+            return SecureCommentLinks(MarkdownToContent(markdown, MarkdownConvertType.Html));
+        }
+
+        var pipeline = new MarkdownPipelineBuilder()
+            .UsePipeTables()
+            .UseBootstrap()
+            .DisableHtml()
+            .UsePreciseSourceLocation()
+            .Build();
+        var document = Markdown.Parse(markdown, pipeline);
+        foreach (var inline in document.Descendants<Inline>().ToList())
+        {
+            if (inline is LinkInline { IsImage: false } or AutolinkInline)
+            {
+                inline.ReplaceBy(new LiteralInline(markdown.Substring(inline.Span.Start, inline.Span.Length)));
+            }
+        }
+
+        // Reference definitions contain the original URL, so keep them visible too.
+        foreach (var group in document.Descendants<LinkReferenceDefinitionGroup>().ToList())
+        {
+            var text = string.Join('\n', group.Select(definition =>
+                markdown.Substring(definition.Span.Start, definition.Span.Length)));
+            var paragraph = new ParagraphBlock { Inline = new ContainerInline() };
+            paragraph.Inline.AppendChild(new LiteralInline(text));
+            group.ReplaceBy(paragraph);
+        }
+
+        return document.ToHtml(pipeline);
     }
 
     private static string SecureCommentLinks(string html)

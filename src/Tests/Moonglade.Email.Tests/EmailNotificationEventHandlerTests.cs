@@ -1,3 +1,4 @@
+using Microsoft.Extensions.Configuration;
 using Moonglade.Configuration;
 using Moonglade.Email.Core;
 using System.Text.Json;
@@ -6,11 +7,38 @@ namespace Moonglade.Email.Tests;
 
 public class EmailNotificationEventHandlerTests
 {
+    [Theory]
+    [InlineData(null)]
+    [InlineData(false)]
+    [InlineData(true)]
+    public async Task CommentNotificationEventHandler_UsesConfiguredMarkdownLinks(bool? enableLinks)
+    {
+        var configuration = new ConfigurationBuilder().AddInMemoryCollection().Build();
+        configuration["CommentMarkdown:EnableLinks"] = enableLinks?.ToString();
+        var queue = new CapturingEmailNotificationQueue();
+        var handler = new CommentNotificationEventHandler(queue, CreateBlogConfig(), CreateAvailableStatus(), configuration);
+        const string markdown = "[example](https://example.com)";
+
+        await handler.HandleAsync(new CommentEvent("Reader", "reader@example.com", "127.0.0.1", "Post", markdown),
+            TestContext.Current.CancellationToken);
+
+        var payload = Deserialize<NewCommentPayload>(Assert.Single(queue.Notifications).MessageBody);
+        if (enableLinks == true)
+        {
+            Assert.Contains("<a href=\"https://example.com\"", payload.CommentContent);
+        }
+        else
+        {
+            Assert.Contains(markdown, payload.CommentContent);
+            Assert.DoesNotContain("<a", payload.CommentContent);
+        }
+    }
+
     [Fact]
     public async Task CommentNotificationEventHandler_WhenEmailSendingEnabled_EnqueuesNewCommentNotification()
     {
         var queue = new CapturingEmailNotificationQueue();
-        var handler = new CommentNotificationEventHandler(queue, CreateBlogConfig(), CreateAvailableStatus());
+        var handler = new CommentNotificationEventHandler(queue, CreateBlogConfig(), CreateAvailableStatus(), new ConfigurationBuilder().Build());
 
         await handler.HandleAsync(
             new CommentEvent("Reader", "reader@example.com", "127.0.0.1", "Hello Post", "**Great** post"),
@@ -34,7 +62,7 @@ public class EmailNotificationEventHandlerTests
         var queue = new CapturingEmailNotificationQueue();
         var blogConfig = CreateBlogConfig();
         blogConfig.NotificationSettings.EnableEmailSending = false;
-        var handler = new CommentNotificationEventHandler(queue, blogConfig, CreateAvailableStatus());
+        var handler = new CommentNotificationEventHandler(queue, blogConfig, CreateAvailableStatus(), new ConfigurationBuilder().Build());
 
         await handler.HandleAsync(
             new CommentEvent("Reader", "reader@example.com", "127.0.0.1", "Hello Post", "Great post"),
@@ -50,7 +78,8 @@ public class EmailNotificationEventHandlerTests
         var handler = new CommentNotificationEventHandler(
             queue,
             CreateBlogConfig(),
-            CreateUnavailableStatus());
+            CreateUnavailableStatus(),
+            new ConfigurationBuilder().Build());
 
         await handler.HandleAsync(
             new CommentEvent("Reader", "reader@example.com", "127.0.0.1", "Hello Post", "Great post"),
