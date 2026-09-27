@@ -154,6 +154,7 @@
 .post-editor-main {
     display: flex;
     flex-direction: column;
+    min-width: 0;
     min-height: 0;
     overflow: hidden;
 }
@@ -187,6 +188,8 @@
 }
 
 .post-editor-sidebar {
+    flex: 0 0 280px;
+    width: 280px;
     overflow-y: auto;
     min-height: 0;
 }
