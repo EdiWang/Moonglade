@@ -442,6 +442,14 @@ public class ContentProcessorTests
     }
 
     [Fact]
+    public void MarkdownToCommentHtml_WithLinksDisabled_DoesNotDuplicateLinkText()
+    {
+        var result = ContentProcessor.MarkdownToCommentHtml("ccc [ddd](https://eee.com)");
+
+        Assert.Equal("<p>ccc [ddd](https://eee.com)</p>\n", result.ReplaceLineEndings("\n"));
+    }
+
+    [Fact]
     public void MarkdownToCommentHtml_WithLinksDisabled_PreservesOtherMarkdownAndEncodesHtml()
     {
         const string markdown = "**Hello** [<script>alert(1)</script>](https://example.com) `code` ![image](/image/test.png)";

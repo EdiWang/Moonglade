@@ -142,7 +142,7 @@ public static class ContentProcessor
         {
             if (inline is LinkInline { IsImage: false } or AutolinkInline)
             {
-                inline.ReplaceBy(new LiteralInline(markdown.Substring(inline.Span.Start, inline.Span.Length)));
+                inline.ReplaceBy(new LiteralInline(markdown.Substring(inline.Span.Start, inline.Span.Length)), copyChildren: false);
             }
         }
 
